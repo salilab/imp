@@ -1,7 +1,7 @@
 /**
  *  \file IMP/atom/Atom.h     \brief Simple atom decorator.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -25,7 +25,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-typedef Key<IMP_ATOM_TYPE_INDEX, false> AtomType;
+typedef Key<IMP_ATOM_TYPE_INDEX> AtomType; 
 IMP_VALUES(AtomType, AtomTypes);
 
 /** \class IMP::atom::AtomType

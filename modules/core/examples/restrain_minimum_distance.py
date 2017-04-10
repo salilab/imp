@@ -32,7 +32,7 @@ r = IMP.core.PairRestraint(m, ps, (ds0[0].get_particle_index(),
                            "distance")
 
 mc = IMP.core.MonteCarlo(m)
-bm = IMP.core.BallMover(ds0 + ds1, 1)
+bm = IMP.core.BallMover(m, ds0 + ds1, 1)
 mc.add_mover(bm)
 mc.set_scoring_function([r])
 mc.optimize(1000)

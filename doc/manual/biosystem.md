@@ -22,13 +22,23 @@ We recommend the following contents for your repository (see the
 [Nup84 repository](https://github.com/integrativemodeling/nup84)
 for an example):
 
- - subdirectories containing your modeling protocol (generally one or more
-   Python scripts), input files (e.g. PDB files, EM density maps, lists of
-   crosslinks), and outputs (where possible, due to size; it may not be feasible
-   to upload all of your output models, for example, but only cluster
-   representatives).
+ - subdirectories containing
+   - your modeling protocol (generally one or more Python scripts)
+   - input files (e.g. PDB files, EM density maps, lists of crosslinks),
+     especially if these files aren't in a database somewhere already
+   - outputs (trajectories, clusters, analysis). Where this isn't possible
+     due to size, we can host the larger files, such as trajectories, elsewhere
+     (e.g. as a dataset in [Zenodo](https://zenodo.org)) and link to them
+     from the repository.
  - a top-level `%README.md` file describing the system and explaining how to
    run the protocol.
+ - a top-level `LICENSE` file with the license for the data files and scripts.
+   This doesn't need to be the same license (LGPL/GPL) that %IMP uses; in fact,
+   for data files one of the [Creative Commons](https://creativecommons.org/)
+   licenses probably makes more sense. We recommend the
+   [CC BY-SA license](https://creativecommons.org/licenses/by-sa/4.0/)
+   which allows anybody to use and modify the data under the same terms, as
+   long as they cite the original work.
  - a `test` directory containing one or more Python scripts with names starting
    with `test`. It should be
    possible to run these scripts without any "special" setup (e.g. they should

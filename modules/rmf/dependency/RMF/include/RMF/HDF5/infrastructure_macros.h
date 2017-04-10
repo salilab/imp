@@ -2,7 +2,7 @@
  *  \file RMF/HDF5/infrastructure_macros.h
  *  \brief Various general useful macros for IMP.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -41,7 +41,7 @@ using RMF::operator<<;
 
 #ifndef RMF_DOXYGEN
 /** Expand to applying the macro to each type supported by
-    the rmf library. The macro should take six argments
+    the RMF library. The macro should take six arguments
     - the lower case name of the type
     - the upper case name
     - the C++ type for accepting the value

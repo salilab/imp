@@ -3,7 +3,7 @@
  * \brief
  *
  * \authors Dina Schneidman
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -90,7 +90,7 @@ void read_connect_chains_file(const std::string& file_name,
     connect_atoms.push_back(connecting_atoms);
   }
   std::cerr << connect_atoms.size() << " chain connecting atoms/residues "
-            << " were read from file "  << file_name << std::endl;
+            << "were read from file "  << file_name << std::endl;
 }
 
 void read_angle_file(const std::string& file_name,
@@ -133,7 +133,7 @@ void read_angle_file(const std::string& file_name,
   }
   std::cerr << flexible_residues.size() << " residues "
             << dihedral_angles.size() << " bonds "
-            << " were read from file "  << file_name << std::endl;
+            << "were read from file "  << file_name << std::endl;
 
 }
 

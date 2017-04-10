@@ -2,7 +2,7 @@
  *  \file CoarseCCatIntervals.cpp
  *  \brief Cross correlation coefficient calculator.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,30 +11,21 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd) {
-
-  // Number of times the evaluation has been called. The evaluation is only
-  // performed the first time and when calls_counter_ reaches eval_interval.
-  // Otherwise the stored_cc_ value is returned
-  calls_counter_ = 0;
-
-  stored_cc_ = 0.0;
-  dv_memory_allocated_ = false;
+CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd)
+     : calls_counter_(0), stored_cc_(0.0), dv_memory_allocated_(false) {
   allocate_derivatives_array(ncd);
 }
 
-CoarseCCatIntervals::CoarseCCatIntervals() {
-  calls_counter_ = 0;
-  stored_cc_ = 0.0;
-  dv_memory_allocated_ = false;
+CoarseCCatIntervals::CoarseCCatIntervals()
+     : calls_counter_(0), stored_cc_(0.0), dv_memory_allocated_(false) {
 }
 
 void CoarseCCatIntervals::allocate_derivatives_array(int ncd) {
   if (dv_memory_allocated_) return;
   // Allocate memory for the derivative terms if not done yet
-  stored_dvx_ = new double[ncd];
-  stored_dvy_ = new double[ncd];
-  stored_dvz_ = new double[ncd];
+  stored_dvx_.reset(new double[ncd]);
+  stored_dvy_.reset(new double[ncd]);
+  stored_dvz_.reset(new double[ncd]);
 
   for (int i = 0; i < ncd; i++) {
     stored_dvx_[i] = 0.0;

@@ -86,6 +86,10 @@
     $1=0;
   }
 }
+/* Older SWIG doesn't realize that ::IMP::ParticleIndex (e.g. as emitted
+   by the IMP_DECORATOR_SETUP* macros) is the same as IMP::ParticleIndex,
+   so copy the typemaps. */
+%apply IMP::ParticleIndex { ::IMP::ParticleIndex };
 /*%{
   BOOST_STATIC_ASSERT(Convert<IMP::Particle>::converter ==2);
   BOOST_STATIC_ASSERT(Convert<IMP::internal::_TrivialDecorator>::converter ==3);

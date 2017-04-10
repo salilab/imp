@@ -1,13 +1,15 @@
 /**
- *  \file BallMover.cpp  \brief A modifier which perturbs a discrete variable.
+ *  \file NeighborsTable.cpp
+ * \brief
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/core/NeighborsTable.h>
 #include <IMP/PairModifier.h>
 #include <IMP/container_macros.h>
+#include <IMP/PairContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

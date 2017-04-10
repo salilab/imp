@@ -4,12 +4,15 @@ IMP_SWIG_BASE_OBJECT(IMP::core,  MonteCarloMover, MonteCarloMovers);
 IMP_SWIG_VALUE(IMP::core, MonteCarloMoverResult, MonteCarloMoverResults);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, SerialMover, Mover, mover);
+IMP_SWIG_CONTAINER(IMP::core, IMP::core, SubsetMover, Mover, mover);
 
 IMP_SWIG_OBJECT( IMP::core, AngleRestraint, AngleRestraints);
 IMP_SWIG_OBJECT( IMP::core, AngleTripletScore, AngleTripletScores);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, AttributeSingletonScore, AttributeSingletonScore, AttributeSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, BallMover, BallMovers);
 IMP_SWIG_OBJECT( IMP::core, SerialMover, SerialMovers);
+IMP_SWIG_OBJECT( IMP::core, SubsetMover, SubsetMovers);
+IMP_SWIG_OBJECT( IMP::core, SurfaceMover, SurfaceMovers);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, BoundingBox3DSingletonScore, BoundingBox3DSingletonScore, BoundingBox3DSingletonScores);
 #ifdef IMP_CORE_USE_IMP_CGAL
 IMP_SWIG_OBJECT( IMP::core, BoxSweepClosePairsFinder, BoxSweepClosePairsFinders);
@@ -43,6 +46,11 @@ IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBound, HarmonicUpperBounds);
 IMP_SWIG_OBJECT( IMP::core, HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDistancePairScore, HarmonicUpperBoundSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDiameterPairScore, HarmonicUpperBoundSphereDiameterPairScores);
+IMP_SWIG_OBJECT( IMP::core, HarmonicSurfaceDistancePairScore, HarmonicSurfaceDistancePairScores);
+IMP_SWIG_OBJECT( IMP::core, HarmonicSurfaceHeightPairScore, HarmonicSurfaceHeightPairScores);
+IMP_SWIG_OBJECT( IMP::core, HarmonicSurfaceDepthPairScore, HarmonicSurfaceDepthPairScores);
+IMP_SWIG_OBJECT( IMP::core, WeightedSum, WeightedSums);
+IMP_SWIG_OBJECT( IMP::core, WeightedSumOfExponential, WeightedSumOfExponentials);
 IMP_SWIG_OBJECT( IMP::core, IncrementalScoringFunction, IncrementalScoringFunctions);
 IMP_SWIG_OBJECT( IMP::core, KClosePairsPairScore, KClosePairsPairScores);
 IMP_SWIG_OBJECT( IMP::core, LeavesRefiner, LeavesRefiners);
@@ -76,6 +84,13 @@ IMP_SWIG_OBJECT( IMP::core, SingletonRestraint, SingletonRestraints);
 IMP_SWIG_OBJECT( IMP::core, SoftSpherePairScore, SoftSpherePairScores);
 IMP_SWIG_OBJECT( IMP::core, SphereDistancePairScore, SphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, SphereDistanceToSingletonScore, SphereDistanceToSingletonScores);
+IMP_SWIG_OBJECT( IMP::core, SoftSubSurfacePairScore, SoftSubSurfacePairScores);
+IMP_SWIG_OBJECT( IMP::core, SoftSuperSurfacePairScore, SoftSuperSurfacePairScores);
+IMP_SWIG_OBJECT( IMP::core, SurfaceDistancePairScore, SurfaceDistancePairScores);
+IMP_SWIG_OBJECT( IMP::core, SurfaceHeightPairScore, SurfaceHeightPairScores);
+IMP_SWIG_OBJECT( IMP::core, SurfaceDepthPairScore, SurfaceDepthPairScores);
+IMP_SWIG_OBJECT( IMP::core, SurfaceTetheredChain, SurfaceTetheredChains);
+IMP_SWIG_OBJECT( IMP::core, SurfaceSymmetryConstraint, SurfaceSymmetryConstraints);
 IMP_SWIG_OBJECT( IMP::core, SteepestDescent, SteepestDescents);
 IMP_SWIG_OBJECT( IMP::core, TableRefiner, TableRefiners);
 IMP_SWIG_OBJECT( IMP::core, Transform, Transforms);
@@ -93,6 +108,7 @@ IMP_SWIG_OBJECT( IMP::core, WeightedSphereDistancePairScore, WeightedSphereDista
 IMP_SWIG_OBJECT( IMP::core, MoveStatisticsScoreState, MoveStatisticsScoreStates);
 IMP_SWIG_OBJECT( IMP::core, MinimumRestraint, MinimumRestraints);
 IMP_SWIG_OBJECT( IMP::core, WriteRestraintScoresOptimizerState, WriteRestraintScoresOptimizerStates);
+IMP_SWIG_OBJECT( IMP::core, LateralSurfaceConstraint, LateralSurfaceConstraints);
 
 IMP_SWIG_OBJECT( IMP::core, ConstantSingletonPredicate, ConstantSingletonPredicates);
 IMP_SWIG_OBJECT( IMP::core, ConstantPairPredicate, ConstantPairPredicates);
@@ -132,6 +148,8 @@ IMP_SWIG_VALUE_INSTANCE(IMP::core, ParticleType, ParticleType, ParticleTypes);
 IMP_SWIG_DECORATOR( IMP::core, Typed, Typeds);
 IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, Hierarchy, GenericHierarchies);
 IMP_SWIG_DECORATOR( IMP::core, Gaussian, Gaussians)
+IMP_SWIG_DIRECTOR(IMP::core, HierarchyVisitor);
+IMP_SWIG_DECORATOR( IMP::core, Surface, Surfaces);
 
 IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
 IMP_SWIG_VALUE( IMP::core, HierarchyTraits, HierarchyTraitsList);
@@ -156,10 +174,16 @@ IMP_SWIG_OBJECT(IMP::core, RigidBodyFramesGeometry, RigidBodyFramesGeometries);
 IMP_SWIG_OBJECT(IMP::core, RigidBodyTorque, RigidBodyFramesTorques);
 IMP_SWIG_OBJECT(IMP::core, EdgePairGeometry, EdgePairGeometries);
 IMP_SWIG_OBJECT(IMP::core, EdgePairsGeometry, EdgePairsGeometries);
+IMP_SWIG_OBJECT(IMP::core, SurfaceGeometry, SurfaceGeometries);
+IMP_SWIG_OBJECT(IMP::core, SurfaceGeometryConstraint, SurfaceGeometryConstraints);
 
 IMP_SWIG_OBJECT(IMP::core, AttributeSingletonPredicate, AttributeSingletonPredicates);
 IMP_SWIG_OBJECT(IMP::core, InBoundingBox3DSingletonPredicate, InBoundingBox3DSingletonPredicates);
 IMP_SWIG_OBJECT(IMP::core, IsCollisionPairPredicate, IsCollisionPairPredicates);
+
+IMP_SWIG_VALUE(IMP::core, BinormalTerm, BinormalTermList);
+IMP_SWIG_OBJECT(IMP::core, MultipleBinormalRestraint, MultipleBinormalRestraints);
+
 
 /* Don't wrap internal classes */
 %ignore IMP::core::internal::ChildArrayTraits;
@@ -172,11 +196,15 @@ IMP_SWIG_OBJECT(IMP::core, IsCollisionPairPredicate, IsCollisionPairPredicates);
 
 %include "IMP/core/XYZR.h"
 
+%include "IMP/core/Surface.h"
+
 /* Wrap the final classes */
 %include "IMP/core/AngleTripletScore.h"
-%include "IMP/core/AttributeSingletonScore.h"
+%include "IMP/core/GenericAttributeSingletonScore.h"
 %include "IMP/core/BallMover.h"
 %include "IMP/core/SerialMover.h"
+%include "IMP/core/SubsetMover.h"
+%include "IMP/core/SurfaceMover.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/CentroidOfRefined.h"
 %include "IMP/core/ChecksScoreState.h"
@@ -205,6 +233,8 @@ IMP_SWIG_OBJECT(IMP::core, IsCollisionPairPredicate, IsCollisionPairPredicates);
 %include "IMP/core/HarmonicWell.h"
 %include "IMP/core/HarmonicLowerBound.h"
 %include "IMP/core/HarmonicUpperBound.h"
+%include "IMP/core/WeightedSum.h"
+%include "IMP/core/WeightedSumOfExponential.h"
 %include "IMP/core/PeriodicOptimizerState.h"
 %include "IMP/core/MSConnectivityRestraint.h"
 %inline %{
@@ -268,6 +298,9 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/RestraintsScoringFunction.h"
 %include "IMP/core/RigidClosePairsFinder.h"
 %include "IMP/core/SphereDistancePairScore.h"
+%include "IMP/core/SurfaceDistancePairScore.h"
+%include "IMP/core/SurfaceTetheredChain.h"
+%include "IMP/core/SurfaceSymmetryConstraint.h"
 %include "IMP/core/SteepestDescent.h"
 %include "IMP/core/TransformedDistancePairScore.h"
 %include "IMP/core/TypedPairScore.h"
@@ -306,6 +339,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/Typed.h"
 %include "IMP/core/model_statistics.h"
 %include "IMP/core/blame.h"
+%include "IMP/core/MultipleBinormalRestraint.h"
 
 %inline %{
 namespace IMP {
@@ -334,11 +368,11 @@ namespace IMP {
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
     // swig screws up on scopes, I can't be bothered to fix it
     //%template(show_named_hierarchy) show<::IMP::core::Name>;
-   %template(ParticleType) ::IMP::Key<IMP_PARTICLE_TYPE_INDEX, true>;
+   %template(ParticleType) ::IMP::Key<IMP_PARTICLE_TYPE_INDEX>;
 
   }
 }
 
-IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, AttributeSingletonScore, attribute_singleton_score, UnaryFunction);
+IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, AttributeSingletonScore, generic_attribute_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingBox3DSingletonScore, bounding_box_3d_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, DistanceToSingletonScore, distance_to_singleton_score, UnaryFunction);

@@ -2,7 +2,7 @@
  *  \file RMF/HDF5/File.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,12 +16,13 @@
 RMF_ENABLE_WARNINGS namespace RMF {
   /** We provide a simple set of classes for accessing core HDF5 functionality
       from C++. This was needed since
-      - The HDF5 C interface is not trivial to use peroperly, particularly in
+      - The HDF5 C interface is not trivial to use properly, particularly in
       regards to data type conversions and resource management
-      - It is very easy to use the C interface incorrectly without knowning it.
-      - The \external{http://hdf5.org, standard HDF5 C++ interface} doesn't
-      really simplify use of the HDF5 library and doesn't make use of the
-      features of C++.
+      - It is very easy to use the C interface incorrectly without knowing it.
+      - The
+      \external{https://support.hdfgroup.org/HDF5/, standard HDF5 C++ interface}
+      doesn't really simplify use of the HDF5 library and doesn't make use
+      of the features of C++.
 
       The main classes provide access too:
       - HDF5 files through RMF::File and RMF::HDF5::ConstFile
@@ -69,21 +70,21 @@ RMF_ENABLE_WARNINGS namespace RMF {
     ~File();
   };
 
-  /** Create a new hdf5 file, clearing any existing file with the same
+  /** Create a new HDF5 file, clearing any existing file with the same
       name if needed. The file cannot already be open.
 
       \exception RMF::IOException couldn't create file
    */
   RMFEXPORT File create_file(std::string name);
 
-  /** Open an existing hdf5 file. The file cannot already be open/.
+  /** Open an existing HDF5 file. The file cannot already be open/.
 
       \exception RMF::IOException couldn't open file
    */
   RMFEXPORT File open_file(std::string name);
 
 #ifndef RMF_DOXYGEN
-  /** Open an existing hdf5 file read only. The file cannot already
+  /** Open an existing HDF5 file read only. The file cannot already
       be open.
    */
   RMFEXPORT File open_file_read_only_returning_nonconst(std::string name);

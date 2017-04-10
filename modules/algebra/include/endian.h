@@ -2,7 +2,7 @@
  *  \file IMP/algebra/endian.h
  *  \brief Functions to deal with byte order.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_ENDIAN_H

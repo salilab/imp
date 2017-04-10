@@ -6,7 +6,7 @@ import IMP.pmi
 import random
 
 
-class TestUtilities(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def python_version_min_distance(self,xyzrs1,xyzrs2):
         mindist=-1.0

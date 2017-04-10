@@ -180,7 +180,7 @@ class DominoModel:
         k = core.Harmonic.get_k_from_standard_deviation(stddev)
         score = core.HarmonicUpperBound(xlink.distance, k)
         pair_score = IMP.core.DistancePairScore(score)
-        r = IMP.core.PairRestraint(pair_score, IMP.ParticlePair(p1, p2))
+        r = IMP.core.PairRestraint(self.model, pair_score, (p1, p2))
         if not max_score:
             error_distance_allowed = 100
             max_score = weight * \
@@ -763,8 +763,8 @@ class DominoModel:
                     close_pair_score = core.ClosePairsPairScore(pair_score,
                                                                 table_refiner,
                                                                 distance)
-                    r = core.PairRestraint(close_pair_score,
-                                           IMP.ParticlePair(marker1, marker2))
+                    r = core.PairRestraint(self.model, close_pair_score,
+                                           (marker1, marker2))
 
                     if not max_score:
                         minimum_distance_allowed = 0
@@ -819,11 +819,7 @@ class DominoModel:
 
         log.info("Setting pair score restraint for %s %s. k = %s, max_score "
                  "= %s, stddev %s", name1, name2, k, max_score, stddev)
-        r = core.PairRestraint(
-            pair_score,
-            IMP.ParticlePair(
-                marker1,
-                marker2))
+        r = core.PairRestraint(self.model, pair_score, (marker1, marker2))
         self.add_restraint(r, restraint_name, weight, max_score)
 
     def write_solutions_database(self, fn_database, max_number=None):

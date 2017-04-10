@@ -1,7 +1,5 @@
 #!/bin/sh
-branch=`git rev-parse --abbrev-ref HEAD`
-
-last_message=`git log -n 1 --oneline | grep "Merge branch"`
+last_message=$(git log -n 1 --oneline | grep "Merge branch")
 
 if test -n "$last_message"
 then

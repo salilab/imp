@@ -2,7 +2,7 @@
  *  \file RelativePositionMover.cpp
  *  \brief Mover for Rigid Bodies moving respect to each other
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -19,7 +19,8 @@ IMPEM2D_BEGIN_NAMESPACE
 RelativePositionMover::RelativePositionMover(core::RigidBody d,
                                              Float max_translation,
                                              Float max_rotation)
-    : RigidBodyMover(d, max_translation, max_rotation) {
+    : RigidBodyMover(d.get_model(), d.get_particle_index(),
+                     max_translation, max_rotation) {
   IMP_LOG_VERBOSE("Building RelativePositionMover");
   rbA_ = d;
   max_angle_ = max_rotation;

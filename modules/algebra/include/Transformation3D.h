@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Transformation3D.h
  *  \brief Simple 3D transformation class.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,6 +11,7 @@
 
 #include <IMP/algebra/algebra_config.h>
 #include "Vector3D.h"
+#include "Line3D.h"
 #include "Rotation3D.h"
 #include "BoundingBoxD.h"
 #include "GeometricPrimitiveD.h"
@@ -163,6 +164,12 @@ inline BoundingBoxD<3> get_transformed(const BoundingBoxD<3> &bb,
     }
   }
   return nbb;
+}
+
+inline algebra::Line3D get_transformed(const algebra::Line3D &l,
+                                       const Transformation3D &tr) {
+  return Line3D(tr.get_rotation().get_rotated(l.get_direction()),
+                tr.get_transformed(l.get_point_on_line()));
 }
 
 IMPALGEBRA_END_NAMESPACE

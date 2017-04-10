@@ -1,8 +1,8 @@
 /**
  *  \file isd/GaussianEMRestraint.cpp
- *  \brief Restraint two sets of gaussians (model and gmm derived from EM map)
+ *  \brief Restrain two sets of Gaussians (model and GMM derived from EM map)
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,6 +16,41 @@
 
 IMPISD_BEGIN_NAMESPACE
 
+namespace {
+
+struct KahanAccumulation{
+  double sum;
+  double correction;
+  KahanAccumulation(): sum(0.0),correction(0.0) {}
+};
+struct KahanVectorAccumulation{
+  IMP_Eigen::Vector3d sum;
+  IMP_Eigen::Vector3d correction;
+  KahanVectorAccumulation(): sum(IMP_Eigen::Vector3d(0,0,0)),
+                             correction(IMP_Eigen::Vector3d(0,0,0)) {}
+};
+inline KahanAccumulation kahan_sum(KahanAccumulation accumulation,
+                                   double value) {
+  KahanAccumulation result;
+  double y = value - accumulation.correction;
+  double t = accumulation.sum + y;
+  result.correction = (t - accumulation.sum) - y;
+  result.sum = t;
+  return result;
+}
+inline KahanVectorAccumulation
+kahan_vector_sum(KahanVectorAccumulation accumulation,
+                 IMP_Eigen::Vector3d value) {
+  KahanVectorAccumulation result;
+  IMP_Eigen::Vector3d y = value - accumulation.correction;
+  IMP_Eigen::Vector3d t = accumulation.sum + y;
+  result.correction = (t - accumulation.sum) - y;
+  result.sum = t;
+  return result;
+}
+
+} // anonymous namespace
+
 GaussianEMRestraint::GaussianEMRestraint(
                          Model *mdl,
                          ParticleIndexes model_ps, ParticleIndexes density_ps,
@@ -23,13 +58,15 @@ GaussianEMRestraint::GaussianEMRestraint(
                          Float model_cutoff_dist,Float density_cutoff_dist,
                          Float slope,
                          bool update_model, bool backbone_slope,
+                         bool local,
                          std::string name):
   Restraint(mdl,name),
   model_ps_(model_ps),
   density_ps_(density_ps),
   global_sigma_(global_sigma),
   slope_(slope),
-  update_model_(update_model){
+  update_model_(update_model),
+  local_(local){
 
     msize_=model_ps.size();
     dsize_=density_ps.size();
@@ -67,8 +104,8 @@ GaussianEMRestraint::GaussianEMRestraint(
           slope_ps_.push_back(model_ps_[nm]);
         }
       }
-      std::cout<<"limited slope to "<<slope_ps_.size()<<" ps out of "
-               <<model_ps_.size()<<std::endl;
+      IMP_LOG_TERSE("Limited slope to " << slope_ps_.size()
+                    << " particles out of " << model_ps_.size() << std::endl);
     }
     else slope_ps_ = model_ps_;
   }
@@ -95,19 +132,16 @@ void GaussianEMRestraint::compute_initial_scores() {
                     &deriv);
     self_mm_score_+=score;
   }
-  //std::cout<<"init dd: "<<dd_score_<<" init mm "<<self_mm_score_<<std::endl;
 }
 
 double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   const {
   //score is the square difference between two GMMs
-  //Float scale=isd::Scale(get_model(),global_sigma_).get_scale();
   KahanAccumulation md_score,mm_score;
-  mm_score = KahanSum(mm_score,self_mm_score_);
+  mm_score = kahan_sum(mm_score,self_mm_score_);
   IMP_Eigen::Vector3d deriv;
-  //std::cout<<"\neval"<<std::endl;
   boost::unordered_map<ParticleIndex,KahanVectorAccumulation> derivs_mm,derivs_md,slope_md;
-  //boost::unordered_map<ParticleIndexPair,Float> md_dists(msize_*dsize_);
+  std::set<ParticleIndex> local_dens;
 
   Float slope_score=0.0;
 
@@ -121,8 +155,7 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
                                 IMP_Eigen::Vector3d(core::XYZ(get_model(),*dit).
                                                 get_coordinates().get_data());
         Float sd = v.norm();
-        //md_dists[ParticleIndexPair(*mit,*dit)]=dist;
-        slope_md[*mit] = KahanVectorSum(slope_md[*mit],v*slope_/sd);
+        slope_md[*mit] = kahan_vector_sum(slope_md[*mit],v*slope_/sd);
         slope_score+=slope_*sd;
       }
     }
@@ -131,36 +164,46 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   IMP_CONTAINER_FOREACH(container::ClosePairContainer,
                           mm_container_,{
       Float score = score_gaussian_overlap(get_model(),_1,&deriv);
-      mm_score = KahanSum(mm_score,2*score);
+      mm_score = kahan_sum(mm_score,2*score);
       if (accum) {
         //multiply by 2 because...
-        derivs_mm[_1[0]] = KahanVectorSum(derivs_mm[_1[0]],-2.0*deriv);
-        derivs_mm[_1[1]] = KahanVectorSum(derivs_mm[_1[1]],2.0*deriv);
+        derivs_mm[_1[0]] = kahan_vector_sum(derivs_mm[_1[0]],-2.0*deriv);
+        derivs_mm[_1[1]] = kahan_vector_sum(derivs_mm[_1[1]],2.0*deriv);
       }
   });
 
-  //std::cout<<"calculating MD score"<<std::endl;
   IMP_CONTAINER_FOREACH(container::CloseBipartitePairContainer,
                         md_container_,{
     Float score = score_gaussian_overlap(get_model(),_1,&deriv);
-    md_score = KahanSum(md_score,score);
+    md_score = kahan_sum(md_score,score);
+    if (local_) local_dens.insert(_1[1]);
     if (accum) {
-      derivs_md[_1[0]] = KahanVectorSum(derivs_md[_1[0]],-deriv);
+      derivs_md[_1[0]] = kahan_vector_sum(derivs_md[_1[0]],-deriv);
     }
   });
 
+
+  //local gets new DD score each time
+  Float dd_score = 0.0;
+  if (local_){
+    for(std::set<ParticleIndex>::const_iterator it1=local_dens.begin();
+        it1!=local_dens.end();++it1){
+      for(std::set<ParticleIndex>::const_iterator it2=local_dens.begin();
+          it2!=local_dens.end();++it2){
+        Float score = score_gaussian_overlap(get_model(),
+                                             ParticleIndexPair(*it1,*it2),
+                                             &deriv);
+        dd_score+=score;
+      }
+    }
+  }
+  else dd_score = dd_score_;
+
   /* distance calculation */
-  double cc=2*md_score.sum/(mm_score.sum+dd_score_);
-  //double cc=2*md_score/(dd_score_);
+  double cc=2*md_score.sum/(mm_score.sum+dd_score);
   double log_score=-std::log(cc) + slope_score;
-  //double dist=-std::log(cc+std::numeric_limits<float>::min()*(1-cc));
-  //double dist=mm_score+dd_score_-2*md_score;
 
   /* energy calculation */
-  //double log_score=std::log(2)+std::log(dist);
-  //double log_score=dist;
-
-  //std::cout<<"\ndd: "<<dd_score_<<" mm: "<<mm_score.sum<<" md: "<<md_score.sum<<" dist: "<<dist<<" slope score: "<<slope_score<<std::endl;
 
   if (accum){
     for (ParticleIndexes::const_iterator it=model_ps_.begin();
@@ -172,9 +215,8 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
       else{
         algebra::Vector3D d_mm(derivs_mm[*it].sum[0],derivs_mm[*it].sum[1],derivs_mm[*it].sum[2]);
         algebra::Vector3D d_md(derivs_md[*it].sum[0],derivs_md[*it].sum[1],derivs_md[*it].sum[2]);
-        Float mmdd=mm_score.sum+dd_score_;
+        Float mmdd=mm_score.sum+dd_score;
         algebra::Vector3D d = -2.0 / cc * (mmdd*d_md - md_score.sum*d_mm) / (mmdd * mmdd);
-        //std::cout<<"deriv calc-> d_mm: "<<d_mm<<" d_md: "<<d_md<<" mmdd: "<<mmdd<<" d: "<<d<<std::endl;
         d += algebra::Vector3D(slope_md[*it].sum[0],slope_md[*it].sum[1],slope_md[*it].sum[2]);
         core::XYZ(get_model(),*it).add_to_derivatives(d,*accum);
       }

@@ -1,7 +1,7 @@
 /**
  *  \file Log.cpp   \brief Logging and error reporting support.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,6 +15,7 @@
 #include <IMP/random.h>
 #include "internal/base_static.h"
 #include <boost/program_options/parsers.hpp>
+#include <boost/program_options/errors.hpp>
 
 #if IMP_KERNEL_HAS_GPERFTOOLS
 #include <gperftools/profiler.h>
@@ -147,9 +148,9 @@ void write_help(std::ostream &out) {
   }
   out << "This program is part of IMP, the Integrative Modeling Platform,"
       << std::endl;
-  out << "which is Copyright 2007-2016 IMP Inventors." << std::endl;
+  out << "which is Copyright 2007-2017 IMP Inventors." << std::endl;
   out << "For additional information about IMP, "
-      << "see <http://integrativemodeling.org>." << std::endl;
+      << "see <https://integrativemodeling.org>." << std::endl;
 }
 
 namespace {
@@ -249,6 +250,10 @@ Strings setup_from_argv_internal(int argc, char **argv, std::string description,
     }
   }
   catch (const std::runtime_error &e) {
+    std::cerr << "Error parsing arguments: " << e.what() << std::endl;
+    write_help(std::cerr);
+    throw IMP::UsageException(e.what());
+  } catch (const boost::program_options::error &e) {
     std::cerr << "Error parsing arguments: " << e.what() << std::endl;
     write_help(std::cerr);
     throw IMP::UsageException(e.what());

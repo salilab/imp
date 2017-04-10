@@ -1,7 +1,7 @@
 /**
  *  \file IMP/Key.h    \brief Keys to cache lookup of attribute strings.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,6 +13,7 @@
 #include <IMP/check_macros.h>
 #include <IMP/comparison_macros.h>
 #include <IMP/hash_macros.h>
+#include <IMP/log_macros.h>
 #include <IMP/thread_macros.h>
 #include <IMP/Value.h>
 #include <vector>
@@ -38,32 +39,56 @@ IMPKERNEL_BEGIN_NAMESPACE
     Keys used for storing attributes in particles should never be statically
     initialized. While this is annoying, statically initializing them is bad,
     as unused attribute keys can result in wasted memory in each particle.
-
-    If LazyAdd is true, keys created with a new string will be added,
-    otherwise this is an error.
  */
-template <unsigned int ID, bool LazyAdd>
+template <unsigned int ID>
 class Key : public Value {
-  int str_;
+ private:
 
+  //! returns a static structure with mapping between
+  //! key int identifiers and strings
+  static internal::KeyData& get_key_data() {
+#ifndef IMPKERNEL_INTERNAL_OLD_COMPILER
+    static internal::KeyData static_key_data_(ID);
+    return static_key_data_;
+#else
+    return internal::get_key_data(ID);
+#endif
+  }
+
+ private:
+  int str_;
   static const internal::KeyData::Map& get_map() {
-    return IMP::internal::get_key_data(ID).get_map();
+    return get_key_data().get_map();
   }
   static const internal::KeyData::RMap& get_rmap() {
-    return IMP::internal::get_key_data(ID).get_rmap();
+    internal::KeyData const& kd=get_key_data();
+    internal::KeyData::RMap const& ret=kd.get_rmap();
+    return ret;
   }
 
-  static unsigned int find_index(std::string sc) {
+  //! returns the index of sc, adds it if it's not there
+  static unsigned int find_or_add_index(std::string const& sc) {
     IMP_USAGE_CHECK(!sc.empty(), "Can't create a key with an empty name");
     unsigned int val;
     IMP_OMP_PRAGMA(critical(imp_key)) {
       if (get_map().find(sc) == get_map().end()) {
-        IMP_INTERNAL_CHECK(LazyAdd, "You must explicitly create the type"
-                                        << " first: " << sc);
-        val = IMP::internal::get_key_data(ID).add_key(sc);
+        val = get_key_data().add_key(sc);
       } else {
         val = get_map().find(sc)->second;
       }
+    }
+    return val;
+  }
+
+
+  static unsigned int find_index(std::string const& sc) {
+    IMP_USAGE_CHECK(!sc.empty(), "Can't create a key with an empty name");
+    unsigned int val;
+    IMP_OMP_PRAGMA(critical(imp_key)) {
+      IMP_USAGE_CHECK( get_key_exists(sc), "Key<" << ID << ">::find_index():"
+		       << " You must explicitly create the type first: "
+		       << sc);
+      val = get_map().find(sc)->second;
     }
     return val;
   }
@@ -93,22 +118,38 @@ class Key : public Value {
   //! make a default key in a well-defined null state
   Key() : str_(-1) {}
 
-  //! Generate a key from the given string
-  /** This operation can be expensive, so please cache the result.*/
-  explicit Key(std::string c) : str_(find_index(c)) {}
+    //! Generate a key object from the given string
+    /**
+       Generate a key object from the given string. 
+       
+       @param c key string representation
+       @param is_implicit_add_permitted If true, a key for c can be created even if it hasn't
+                        been created earlier. If false, than it is assumed that a key for c 
+                        has already been instantiated by e.g., a previous
+			call to Key(c, true) or using Key::add_key().
+			Formally, it is assumed that get_has_key(c) is true.
+    
+       @note This operation can be expensive, so please cache the result.
+    */
+    explicit Key(std::string const& c, bool is_implicit_add_permitted=true) 
+      : str_(is_implicit_add_permitted ? find_or_add_index(c) : find_index(c))
+      {}
 
 #if !defined(IMP_DOXYGEN)
-  explicit Key(unsigned int i) : str_(i) {
-    IMP_INTERNAL_CHECK(str_ >= 0, "Invalid initializer " << i);
-    // cannot check here as we need a past end iterator
-  }
+      //! this is a fast and lean constructor that should be used
+      //! whenever performence is of the essence
+      explicit Key(unsigned int i) : str_(i) {
+	IMP_INTERNAL_CHECK(str_ >= 0, "Invalid initializer " << i);
+	// cannot check here as we need a past end iterator
+      }
 #endif
 
   static unsigned int add_key(std::string sc) {
     IMP_USAGE_CHECK(!sc.empty(), "Can't create a key with an empty name");
     unsigned int val;
     IMP_OMP_PRAGMA(critical(imp_key))
-    val = IMP::internal::get_key_data(ID).add_key(sc);
+    IMP_LOG_PROGRESS("Key::add_key " << sc  << " ID " << ID << std::endl);
+    val = get_key_data().add_key(sc);
     return val;
   }
 
@@ -140,14 +181,16 @@ class Key : public Value {
       Key<ID>(old_key.get_string()) == Key<ID>(new_name)
       \endcode
    */
-  static Key<ID, LazyAdd> add_alias(Key<ID, LazyAdd> old_key,
-                                    std::string new_name) {
-    IMP_INTERNAL_CHECK(
-        get_map().find(new_name) == get_map().end(),
-        "The name is already taken with an existing key or alias");
-    IMP::internal::get_key_data(ID)
-        .add_alias(new_name, old_key.get_index());
-    return Key<ID, LazyAdd>(new_name.c_str());
+  static Key<ID> add_alias(Key<ID> old_key,
+			   std::string new_name) {
+    IMP_INTERNAL_CHECK( get_map().find(new_name) == get_map().end(),
+			"The name is already taken with an existing key or alias");
+    get_key_data().add_alias(new_name, old_key.get_index());
+    return Key<ID>(new_name.c_str());
+  }
+
+  static unsigned int get_number_of_keys() {
+    return get_rmap().size();
   }
 
 #ifndef DOXYGEN
@@ -195,25 +238,26 @@ class Key : public Value {
 
 #ifndef IMP_DOXYGEN
 
-template <unsigned int ID, bool LA>
-inline std::ostream& operator<<(std::ostream& out, Key<ID, LA> k) {
+
+template <unsigned int ID>
+inline std::ostream& operator<<(std::ostream& out, Key<ID> k) {
   k.show(out);
   return out;
 }
 
-template <unsigned int ID, bool LA>
-inline bool Key<ID, LA>::is_default() const {
+template <unsigned int ID>
+inline bool Key<ID>::is_default() const {
   return str_ == -1;
 }
 
-template <unsigned int ID, bool LA>
-inline void Key<ID, LA>::show_all(std::ostream& out) {
+template <unsigned int ID>
+  inline void Key<ID>::show_all(std::ostream& out) {
   IMP_OMP_PRAGMA(critical(imp_key))
-  internal::get_key_data(ID).show(out);
+    get_key_data().show(out);
 }
 
-template <unsigned int ID, bool LA>
-Vector<std::string> Key<ID, LA>::get_all_strings() {
+template <unsigned int ID>
+Vector<std::string> Key<ID>::get_all_strings() {
   Vector<std::string> str;
   IMP_OMP_PRAGMA(critical(imp_key))
   for (internal::KeyData::Map::const_iterator it = get_map().begin();
@@ -227,3 +271,4 @@ Vector<std::string> Key<ID, LA>::get_all_strings() {
 IMPKERNEL_END_NAMESPACE
 
 #endif /* IMPKERNEL_KEY_H */
+

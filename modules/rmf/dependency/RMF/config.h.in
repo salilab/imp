@@ -3,7 +3,7 @@
  * \brief Provide macros to mark functions and classes as exported
  *        from a DLL/.so, and to set up namespaces
  *
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

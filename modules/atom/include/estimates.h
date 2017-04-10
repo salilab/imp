@@ -2,7 +2,7 @@
     *  \file IMP/atom/estimates.h
     *  \brief Estimates of various physical quantities.
     *
-    *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+    *  Copyright 2007-2017 IMP Inventors. All rights reserved.
     */
 
 #ifndef IMPATOM_ESTIMATES_H
@@ -72,7 +72,7 @@ IMPATOMEXPORT double get_mass_from_number_of_residues(unsigned int num_aa);
 //! Return an estimate for the volume of a given residue
 /** The volume estimates are taken from
  Pontius J, Richelle J, Wodak SJ.,
- \external{http://www.ncbi.nlm.nih.gov/pubmed/8950272,
+ \external{https://www.ncbi.nlm.nih.gov/pubmed/8950272,
  Deviations from standard atomic volumes as a quality measure for
  protein crystal structures}, J Mol Biol. 1996 Nov 22;264(1):121-36.
 
@@ -110,7 +110,7 @@ IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r);
 IMPATOMEXPORT double get_einstein_rotational_diffusion_coefficient(double r);
 
 /** Return the standard deviation for the Brownian step in Angstroms given the
-    diffusion coefficient D and the time step t.*/
+    diffusion coefficient D in A^2/fs and the time step t in fs.*/
 IMPATOMEXPORT double get_diffusion_length(double D, double t);
 
 /** Return the scale for diffusion in Angstroms given the specified force,
@@ -125,7 +125,7 @@ IMPATOMEXPORT double get_diffusion_length(double D, double force, double t,
                                           double temp = 273);
 
 /** Get the standard deviation of the diffusion angle change in radians given
-    the rigid body diffusion coefficient and the time step dtfs in femtoseconds.*/
+    the rigid body diffusion coefficient in A^2/fs and the time step dtfs in fs.*/
 IMPATOMEXPORT double get_diffusion_angle(double D, double dtfs);
 
 /** Estimate the diffusion coefficient of a particle in A^2/fs from a list of
@@ -139,10 +139,27 @@ IMPATOMEXPORT double get_diffusion_coefficient(
 
 /** Estimate the rotational diffusion coefficient of a particle in Rad^2/fs
     from a list of rotational displacements each taken after the given time
-    step dt.
+    step dt [fs].
 */
 IMPATOMEXPORT double get_rotational_diffusion_coefficient(
     const algebra::Rotation3Ds &displacements, double dt);
+
+/**\name Energy conversions
+
+   Convert energy from kcal/mol to femtojoules
+   @{
+*/
+IMPATOMEXPORT double get_energy_in_femto_joules(double energy_in_kcal_per_mol);
+
+//! Convert force from kcal/mol/A to femtonewtons
+IMPATOMEXPORT double get_force_in_femto_newtons(
+    double force_in_kcal_per_mol_per_angstrom);
+
+//! Convert spring constant from kcal/mol/A^2 to femtonewton/A
+IMPATOMEXPORT double get_spring_constant_in_femto_newtons_per_angstrom(
+    double k_in_kcal_per_mol_per_angstrom_square);
+
+
 
 IMPATOM_END_NAMESPACE
 

@@ -57,7 +57,7 @@ for i in range(0, ni):
                 IMP.algebra.get_random_vector_in(bb), radius)
             d = IMP.core.XYZR.setup_particle(p, s)
             d.set_coordinates_are_optimized(True)
-            movers.append(IMP.core.BallMover([p], radius * 2))
+            movers.append(IMP.core.BallMover(m, p, radius * 2))
             movers[-1].set_was_used(True)
             IMP.display.Colored.setup_particle(
                 p, IMP.display.get_display_color(i * nj + j))
@@ -85,7 +85,7 @@ mc.set_name("MC")
 sm = IMP.core.SerialMover(movers)
 mc.add_mover(sm)
 # we are special casing the nbl term
-isf = IMP.core.IncrementalScoringFunction(aps, restraints)
+isf = IMP.core.IncrementalScoringFunction(m, aps, restraints)
 isf.set_name("I")
 # use special incremental support for the non-bonded part
 # apply the pair score sps to all touching ball pairs from the list of particles

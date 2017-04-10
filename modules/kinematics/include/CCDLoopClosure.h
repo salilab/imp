@@ -3,7 +3,7 @@
  * \brief
  *
  * \authors Dina Schneidman, Yannick Spill
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,14 +16,15 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-/**
-   CCD loop closure
-   see Canutescu and Dunbrack, Protein Science
-*/
+//! CCD loop closure
+/** see Canutescu and Dunbrack, Protein Science
+ */
 class IMPKINEMATICSEXPORT CCDLoopClosure {
 public:
-  // F1-3 are the target points for closed loop
-  // M1-3 are the points in the model
+  //! Constructor.
+  /** F1-3 are the target points for closed loop
+      M1-3 are the points in the model
+   */
   CCDLoopClosure(DihedralAngleRevoluteJoints joints,
                  const algebra::Vector3D& F1,
                  const algebra::Vector3D& F2,

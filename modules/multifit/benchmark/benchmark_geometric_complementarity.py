@@ -5,7 +5,7 @@
 # Output:
 # ComplementarityRestraint, (time in sec/score computation), (percentage error)
 #
-# Copyright 2007-2016 IMP Inventors. All rights reserved.
+# Copyright 2007-2017 IMP Inventors. All rights reserved.
 #
 
 import sys
@@ -39,11 +39,11 @@ def load_proteins(model):
     h1 = IMP.atom.read_pdb(pdb_name, model)
     mh1 = IMP.atom.get_by_type(h1, IMP.atom.ATOM_TYPE)
     r1 = [x.get_particle() for x in mh1]
-    rb1 = IMP.atom.setup_as_rigid_body(h1)
+    rb1 = IMP.atom.create_rigid_body(h1)
     h2 = IMP.atom.read_pdb(pdb_name, model)
     mh2 = IMP.atom.get_by_type(h2, IMP.atom.ATOM_TYPE)
     r2 = [x.get_particle() for x in mh2]
-    rb2 = IMP.atom.setup_as_rigid_body(h2)
+    rb2 = IMP.atom.create_rigid_body(h2)
     return (r1, r2, rb1, rb2)
 
 

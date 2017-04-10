@@ -1,7 +1,7 @@
 /**
  *  \file cgal_predicates.h
  *  \brief predicates implemented using CGAL
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_INTERNAL_VECTOR_GENERATORS_H
@@ -16,6 +16,7 @@
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/sphere_cover.h>
 #endif
+#include <limits>
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/uniform_01.hpp>
 #include <boost/random/uniform_real.hpp>
@@ -65,7 +66,7 @@ inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
 }
 
 //! returns a random vector on a sphere of radius 1
-//! with implementation optimized for the 3D + unit vector case
+//! with implementation optimized for the 3D unit vector case
 inline VectorD<3> get_random_vector_on_unit_sphere() {
   //  ::boost::uniform_real<> rand(-1, 1);
   do {
@@ -74,12 +75,12 @@ inline VectorD<3> get_random_vector_on_unit_sphere() {
     double x1 = IMP::get_random_double_uniform(-1,1);
     double x2 = IMP::get_random_double_uniform(-1,1);
     double ssq = get_squared(x1) + get_squared(x2);
-    if (ssq <= 1) {
+    if (ssq <= 1) { // = (x1,x2) is a random point sampled uniformly inside the unit circle
       VectorD<3> ret;
-      double sq = std::sqrt(1 - ssq);
-      ret[0] = 2 * x1 * sq;
-      ret[1] = 2 * x2 * sq;
-      ret[2] = 1 - 2 * ssq;
+      double sq = std::sqrt(1 - ssq); // x3 s.t. (x1,x2,x3) is on the unit sphere
+      ret[0] = 2 * x1 * sq; // =  4 (1-x1^2-x2^2) x1^2  =  4 x1^2 - 4 x1^4 - 4 x1^2 x2^2
+      ret[1] = 2 * x2 * sq; // =  4 (1-x1^2-x2^2) x2^2  =  4 x2^2 - 4 x2^4 - 4 x1^2 x2^2
+      ret[2] = 1 - 2*ssq;   // =  1 - 4 x1^2 - 4 x2^2 + 4 x1^4 + 8 x1^2 x2^2 + 4 x2^4
       return ret;
     }
   } while (true);
@@ -190,24 +191,26 @@ inline Vector<VectorD<4> > uniform_cover_sphere(unsigned int n,
   return ret;
 }
 
+//! returns a uniform cover of the sphere (center,r) with N points
+//! ALL indicates whether to cover the whole sphere or only one hemisphere
 inline Vector3Ds uniform_cover_sphere(unsigned int N, const Vector3D &center,
                                       double r, bool ALL) {
+  if (N == 0 ) {
+    return Vector3Ds();
+  }
   if (N == 1) {
     Vector3D ret = center;
     ret[0] += r;
     return Vector3Ds(1, ret);
   }
+
   Vector3Ds ret(N);
 
-  if (N == 1) {
-    ret[0] = Vector3D(center[0] + r, center[1], center[2]);
-    return ret;
-  }
   double f = 1;
   if (!ALL) {
     f = 2.0;
   }
-  double opsi;
+  double opsi(1000000.0);
   for (unsigned long k = 1; k <= N; ++k) {
     double h = 2.0 * (k - 1.0) / (f * N - 1) - 1.0;
     double theta = std::acos(h);
@@ -215,6 +218,8 @@ inline Vector3Ds uniform_cover_sphere(unsigned int N, const Vector3D &center,
     if (k == 1 || (ALL && k == N)) {
       psi = 0;
     } else {
+      IMP_USAGE_CHECK(opsi<10000.0,
+                      "opsi should have been initialized by now");
       psi = opsi + 3.6 / std::sqrt(f * (1.0 - h * h));
       int div = static_cast<int>(psi / (2.0 * PI));
       psi -= div * 2.0 * PI;

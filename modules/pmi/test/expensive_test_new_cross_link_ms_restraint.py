@@ -82,7 +82,7 @@ def log_evaluate(restraints):
     score=score-log(prob)
     return score
 
-class XLRestraintTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def setup_crosslinks_complex(self,representation=None,mode=None,root_hier=None):
         cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()

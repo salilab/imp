@@ -44,9 +44,16 @@ class Alignment(object):
                                in template and query does not match!''')
 
     def permute(self):
-
+        # get unique protein names for each protein
+        # this is, unfortunately, expecting that names are all 'Molname..X'
+        #  where X is different for each copy.
         self.proteins = sorted(self.query.keys())
         prots_uniq = [i.split('..')[0] for i in self.proteins]
+
+        # for each unique name, store list of permutations
+        # e.g. for keys A..1,A..2 store P[A] = [[A..1,A..2],[A..2,A..1]]
+        # then store the product: [[[A1,A2],[B1,B2]],[[A1,A2],[B2,B1]],
+        #                          [[A2,A1],[B1,B2]],[[A2,A1],[B2,B1]]]
         P = {}
         for p in prots_uniq:
             np = prots_uniq.count(p)
@@ -71,8 +78,6 @@ class Alignment(object):
 
         self.rmsd = 10000000000.
         for comb in self.Product:
-
-
 
             order = sum([list(i) for i in comb], [])
             query_xyz = []
@@ -99,13 +104,17 @@ class Alignment(object):
 
         self.permute()
 
+        # create flat coordinate list from template in standard order
+        # then loop through the permutations and try to align and get RMSD
+        # should allow you to try all mappings within each protein
         template_xyz = []
         torder = sum([list(i) for i in self.Product[0]], [])
         for t in torder:
             template_xyz += [IMP.algebra.Vector3D(i) for i in self.template[t]]
-        #template_xyz = np.array(template_xyz)
-
+        # template_xyz = np.array(template_xyz)
         self.rmsd, Transformation = 10000000000., ''
+
+        # then for each permutation, get flat list of coords and get RMSD
         for comb in self.Product:
             order = sum([list(i) for i in comb], [])
             query_xyz = []
@@ -129,6 +138,7 @@ class Alignment(object):
                 self.rmsd = dist
                 Transformation = transformation
 
+        # return the transformation
         return (self.rmsd, Transformation)
 
 
@@ -517,13 +527,13 @@ class Precision(object):
         """Read an RMF file and return the particles"""
         rh = RMF.open_rmf_file_read_only(rmf_name)
         if not self.prots:
+            print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
             self.prots = IMP.rmf.create_hierarchies(rh, self.model)
             IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
-            print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
         else:
+            print("linking coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
             IMP.rmf.link_hierarchies(rh, self.prots)
             IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
-            print("linking coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
         del rh
 
         if self.resolution==1:
@@ -972,6 +982,60 @@ class Precision(object):
         else:
             raise ValueError("No such style")
 
+class GetRMSD(object):
+    """This object can be added to output_objects in (for example in the ReplicaExchange0 macro).
+    It will load a frame from an rmf file and compute the rmsd of a hierarchy with respect to that reference structure.
+    The output can be parsed from the stat.*.out files.
+    """
+    import math
+
+    def __init__(self, hier, rmf_file_name, rmf_frame_index, rmf_state_index, label):
+        """Constructor.
+           @param hier hierarchy of the structure
+           @param rmf_file_name path to the rmf file containing the reference structure
+           @param rmf_frame_index the index of the frame containing the reference structure in the rmf file
+           @param voxel rmf_state_index the index of the state containing the reference structure in the rmf file
+           @param label label that will be used when parsing the stat file
+        """
+
+        rmf_fh = RMF.open_rmf_file_read_only(rmf_file_name)
+        hh = IMP.rmf.create_hierarchies(rmf_fh, hier.get_model())
+        self.rmf_state = hh[0].get_children()[rmf_state_index]
+        self.current_state = hier.get_children()[rmf_state_index]
+        IMP.rmf.load_frame(rmf_fh, RMF.FrameID(rmf_frame_index))
+        self.current_moldict = {}
+        self.rmf_moldict = {}
+        for mol in self.rmf_state.get_children():
+            name = mol.get_name()
+            if name in self.rmf_moldict:
+                self.rmf_moldict[name].append(mol)
+            else:
+                self.rmf_moldict[name] = [mol]
+        for mol in self.current_state.get_children():
+            name = mol.get_name()
+            if name in self.current_moldict:
+                self.current_moldict[name].append(mol)
+            else:
+                self.current_moldict[name] = [mol]
+        self.label = label
+
+    def get_output(self):
+        total_rmsd = 0
+        total_N = 0
+        for molname, rmf_mols in self.rmf_moldict.iteritems():
+            sel_rmf = IMP.atom.Selection(
+                rmf_mols, representation_type=IMP.atom.BALLS)
+            N = len(sel_rmf.get_selected_particle_indexes())
+            total_N += N
+            rmsd = []
+            for current_mols in itertools.permutations(self.current_moldict[molname]):
+                sel_current = IMP.atom.Selection(
+                    current_mols, representation_type=IMP.atom.BALLS)
+                rmsd.append(IMP.atom.get_rmsd(sel_rmf, sel_current))
+            m = min(rmsd)
+            total_rmsd += m * m * N
+        return {self.label: "%e" % (self.math.sqrt(total_rmsd / total_N))}
+
 
 class GetModelDensity(object):
     """Compute mean density maps from structures.
@@ -1122,41 +1186,9 @@ class GetContactMap(object):
             for p in particles_dictionary[name]:
                 print(p.get_name())
                 residue_indexes += IMP.pmi.tools.get_residue_indexes(p)
-                #residue_indexes.add( )
 
             if len(residue_indexes) != 0:
                 self.protnames.append(name)
-                for res in range(min(residue_indexes), max(residue_indexes) + 1):
-                    d = IMP.core.XYZR(p)
-                    new_name = name + ":" + str(res)
-                    if name not in self.resmap:
-                        self.resmap[name] = {}
-                    if res not in self.resmap:
-                        self.resmap[name][res] = {}
-
-                    self.resmap[name][res] = new_name
-                    namelist.append(new_name)
-
-                    crd = np.array([d.get_x(), d.get_y(), d.get_z()])
-                    coords.append(crd)
-                    radii.append(d.get_radius())
-
-        coords = np.array(coords)
-        radii = np.array(radii)
-
-        if len(self.namelist) == 0:
-            self.namelist = namelist
-            self.contactmap = np.zeros((len(coords), len(coords)))
-
-        distances = cdist(coords, coords)
-        distances = (distances - radii).T - radii
-        distances = distances <= self.distance
-
-        print(coords)
-        print(radii)
-        print(distances)
-
-        self.contactmap += distances
 
     def get_subunit_coords(self, frame, align=0):
         from scipy.spatial.distance import cdist
@@ -1232,7 +1264,7 @@ class GetContactMap(object):
                     self.XL[t1].append((int(d[2]) + 1, int(d[3]) + 1))
                     self.XL[t2].append((int(d[3]) + 1, int(d[2]) + 1))
 
-    def dist_matrix(self, skip_cmap=0, skip_xl=1):
+    def dist_matrix(self, skip_cmap=0, skip_xl=1, outname=None):
         K = self.namelist
         M = self.contactmap
         C, R = [], []
@@ -1305,7 +1337,7 @@ class GetContactMap(object):
                                 xl2 = pl2
                             mtr[xl2 - 1, xl1 - 1] = 100
                     else:
-                        raise RuntimeError('WTF!')
+                        print('No cross links between: ', pn1, pn2)
                     Matrices_xl[(pn1, pn2)] = mtr
 
         # expand the matrix to individual residues
@@ -1331,7 +1363,7 @@ class GetContactMap(object):
                 R.append(R[-1] + cl)
 
         # start plotting
-        if filename:
+        if outname:
             # Don't require a display
             import matplotlib as mpl
             mpl.use('Agg')
@@ -1364,10 +1396,10 @@ class GetContactMap(object):
                         mtr = Matrices[(C[x2], C[x1])].T
                     #cax = ax.imshow(log(NewM[s1:r1,s2:r2] / 1.), interpolation='nearest', vmin=0., vmax=log(NewM.max()))
                     cax = ax.imshow(
-                        log(mtr),
+                        np.log(mtr),
                         interpolation='nearest',
                         vmin=0.,
-                        vmax=log(NewM.max()))
+                        vmax=log(mtr.max()))
                     ax.set_xticks([])
                     ax.set_yticks([])
                 if skip_xl == 0:
@@ -1387,7 +1419,10 @@ class GetContactMap(object):
                 cnt += 1
                 if x2 == 0:
                     ax.set_ylabel(C[x1], rotation=90)
-        plt.show()
+        if outname:
+            plt.savefig(outname + ".pdf", dpi=300, transparent="False")
+        else:
+            plt.show()
 
 
 # ------------------------------------------------------------------

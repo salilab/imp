@@ -1,3 +1,4 @@
+from __future__ import print_function
 import glob
 import os
 import os.path
@@ -133,10 +134,7 @@ def link(source, target, verbose=False):
 def link_dir(source_dir, target_dir, match=["*"], exclude=[],
              clean=True, verbose=False):
     if not isinstance(match, list):
-        adkfjads
-        lkfjd
-        laskjfdl
-        k
+        raise TypeError("match must be a list")
     exclude = exclude + ["SConscript", "CMakeLists.txt", ".svn"]
     # print "linking", source_dir, target_dir
     mkdir(target_dir, clean=False)
@@ -179,93 +177,12 @@ def split(string, sep=":"):
          for x in string.replace("\:", "@").split(sep) if x != ""]
     )
 
-
-def toposort2(data):
-    ret = []
-    while True:
-        ordered = [item for item, dep in data.items() if not dep]
-        if not ordered:
-            break
-        ret.extend(sorted(ordered))
-        d = {}
-        for item, dep in data.items():
-            if item not in ordered:
-                d[item] = [x for x in dep if x not in ordered]
-        data = d
-    return ret
-
-order_cache = None
-
-
-def get_sorted_order(root="."):
-    global order_cache
-    if order_cache:
-        return order_cache
-    order = split(
-        open(
-            os.path.join(
-                root,
-                "data",
-                "build_info",
-                "sorted_modules"),
-            "r").read(
-        ),
-        "\n")
-    order_cache = order
-    return order
-
-
-def set_sorted_order(
-    sorted,
-    outpath=os.path.join(
-        "data",
-        "build_info",
-        "sorted_modules")):
-    global order_cache
-    order_cache = sorted
-    rewrite(outpath,
-            "\n".join(sorted))
-
-
-def compute_sorted_order(source, extra_data_path):
-    data = {}
-    for m, path in get_modules(source):
-        df = os.path.join(path, "dependencies.py")
-        if not os.path.exists(df):
-            continue
-        info = get_module_description(source, m, extra_data_path)
-        data[m] = info["required_modules"] + info["optional_modules"]
-        # toposort is destructive
-        # get external modules, a bit sloppy for now
-    while True:
-        to_add = {}
-        for mk in data.keys():
-            for m in data[mk]:
-                if m not in data:
-                    print('adding', m)
-                    info = get_module_info(m, extra_data_path)
-                    to_add[m] = info["modules"]
-        for m in to_add.keys():
-            data[m] = to_add[m]
-        if len(to_add.keys()) == 0:
-            break
-    sorted = toposort2(data)
-    return sorted
-
-
-def setup_sorted_order(source, extra_data_path,
-                       outpath=os.path.join("data", "build_info", "sorted_modules")):
-    sorted = compute_sorted_order(source, extra_data_path)
-    set_sorted_order(sorted, outpath)
-    # return sorted
-
-
 def get_project_info(path):
     cp = os.path.join(path, ".imp_info.py")
     if os.path.exists(cp):
         return eval(open(cp, "r").read())
     else:
-        if path == "":
+        if path in ("", "/"):
             raise ValueError("no .imp_info.py found")
         return get_project_info(os.path.split(path)[0])
 

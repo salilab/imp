@@ -2,6 +2,7 @@
 """This script shows how to represent a system at multiple scales and do basic sampling.
 """
 
+from __future__ import print_function
 import IMP
 import RMF
 import IMP.atom
@@ -12,12 +13,19 @@ import IMP.pmi.dof
 import IMP.pmi.macros
 import IMP.pmi.restraints
 import IMP.pmi.restraints.stereochemistry
+import sys
+
+IMP.setup_from_argv(sys.argv, "Representation at multiple scales")
+if IMP.get_is_quick_test():
+    print("This example is too slow to test in debug mode - run without")
+    print("internal tests enabled, or without the --run-quick-test flag")
+    sys.exit(0)
 
 ###################### SYSTEM SETUP #####################
 # Read sequences etc
 seqs = IMP.pmi.topology.Sequences(IMP.pmi.get_example_path('data/1WCM.fasta'))
 components = ["Rpb1","Rpb2","Rpb3","Rpb4"]
-colors = [0.1,0.9,0.5,0.8]
+colors = ['medium purple','goldenrod','orchid','olive drab']
 chains = "ABCD"
 beadsize = 10
 
@@ -64,6 +72,9 @@ for mol in mols:
                           max_trans=0.1,
                           max_rot=0.78,
                           nonrigid_max_trans=0.1)
+    # display the bonds between consecutive fragments,
+    # so that they are shown in the psf
+    IMP.pmi.tools.display_bonds(mol)
 
 
 ###################### RESTRAINTS #####################

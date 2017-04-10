@@ -2,7 +2,7 @@
  *  \file IMP/algebra/utility.h
  *  \brief Functions to deal with very common math operations
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_UTILITY_H

@@ -2,7 +2,7 @@
  *  \file IMP/example/complex_assembly.h
  *  \brief A simple unary function.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -22,7 +22,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     assembling the residues of a protein from a truncated distance matrix.
 */
 IMPEXAMPLEEXPORT void optimize_assembly(
-    Model *m, const ParticlesTemp &components,
+    Model *m, const ParticleIndexes &components,
     const RestraintsTemp &interactions,
     const RestraintsTemp &other_restraints,
     const algebra::BoundingBox3D &bb, PairScore *ev, double cutoff,

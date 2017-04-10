@@ -2,7 +2,7 @@
  *  \file IMP/isd/MultivariateFNormalSufficient.h
  *  \brief Normal distribution of Function
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_H
@@ -194,7 +194,7 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object {
   //! use conjugate gradients (default false)
   void set_use_cg(bool use, double tol);
 
-  //! print runtime statistics
+  IMPISD_DEPRECATED_METHOD_DECL(2.7)
   void stats() const;
 
   //! return Sigma's eigenvalues from smallest to biggest

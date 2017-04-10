@@ -1,5 +1,10 @@
 #!/usr/bin/env python
-import cPickle
+
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 di = {'ALA': {'HB': ('HB1', 'HB2', 'HB3'),
               'HB%': ('HB1', 'HB2', 'HB3'),
               'QB': ('HB1', 'HB2', 'HB3')},
@@ -165,6 +170,5 @@ di = {'ALA': {'HB': ('HB1', 'HB2', 'HB3'),
               'QG1': ('HG11', 'HG12', 'HG13'),
               'QG2': ('HG21', 'HG22', 'HG23'),
               'QQG': ('HG11', 'HG12', 'HG13', 'HG21', 'HG22', 'HG23')}}
-fl = open('CHARMM_pseudoatoms.dict', 'w')
-cPickle.dump(di, fl)
-fl.close()
+with open('CHARMM_pseudoatoms.dict', 'wb') as fl:
+    pickle.dump(di, fl)

@@ -3,7 +3,7 @@
  * \brief Enumeration of an ensemble of good scoring MultiStateModels
  *
  * \authors Dina Schneidman
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

@@ -1,7 +1,7 @@
 /*!
  *  \file IMP/em2d/RegistrationResult.h
  *  \brief Registration results class
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_REGISTRATION_RESULT_H
@@ -150,8 +150,7 @@ class IMPEM2DEXPORT RegistrationResult {
   //! Euler angles (ZYZ)
   double phi_, theta_, psi_;
   algebra::Rotation3D R_;
-  // false when the RegistrationResult is built from a rotation directly
-  bool angles_defined_, is_optimized_result_;
+  bool is_optimized_result_;
 };
 IMP_VALUES(RegistrationResult, RegistrationResults);
 

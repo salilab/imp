@@ -1,7 +1,7 @@
 /**
  *  \file Profile.cpp   \brief A class for profile storing and computation
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/saxs/Profile.h>
@@ -1181,3 +1181,4 @@ void Profile::calculate_profile_reciprocal_partial(const Particles& particles,
 }
 
 IMPSAXS_END_NAMESPACE
+

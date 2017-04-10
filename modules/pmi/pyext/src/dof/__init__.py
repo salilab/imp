@@ -22,6 +22,7 @@ import IMP.pmi.topology
 import IMP.pmi.samplers
 import IMP.pmi.tools
 import itertools
+import IMP.pmi.samplers
 
 class DegreesOfFreedom(object):
     """A class to simplify create of constraints and movers for an IMP Hierarchy.
@@ -31,9 +32,16 @@ class DegreesOfFreedom(object):
     def __init__(self,mdl):
         self.mdl = mdl
         self.movers = []
+        self.fb_movers = [] #stores movers corresponding to floppy parts
         self.rigid_bodies = [] #stores rigid body objects
         self.flexible_beads = [] # stores all beads including nonrigid members of rigid bodies
         self.nuisances = []
+        self._rb2mov = {}   # Keys are the RigidBody objects, values are list of movers
+        # the following is needed to keep track of disabled movers
+        self.movers_particles_map=IMP.pmi.tools.OrderedDict()
+        self.movers_rb_map={}
+        self.movers_xyz_map={}
+        self.disabled_movers=[]
 
         #self.particle_map = {} # map from particles/rb objects to relevant movers+constraints
         # internal mover  = [mover obj, list of particles, enabled?] ?
@@ -42,9 +50,9 @@ class DegreesOfFreedom(object):
     def create_rigid_body(self,
                           rigid_parts,
                           nonrigid_parts=None,
-                          max_trans=1.0,
-                          max_rot=0.1,
-                          nonrigid_max_trans = 0.1,
+                          max_trans=4.0,
+                          max_rot=0.5,
+                          nonrigid_max_trans = 4.0,
                           resolution='all',
                           name=None):
         """Create rigid body constraint and mover
@@ -71,8 +79,10 @@ class DegreesOfFreedom(object):
         # First, is this already a rigid body?
         if type(rigid_parts) is IMP.core.RigidBody:
             rb = rigid_parts
+            model=rb.get_model()
             if name is not None:
                 name = rb.get_name()
+            hiers= [IMP.atom.get_leaves(IMP.atom.Hierarchy(m.get_particle(i)))[0] for i in rb.get_member_particle_indexes()]
         else:
             ### Otherwise, setup RB
             hiers = IMP.pmi.tools.input_adaptor(rigid_parts,
@@ -84,12 +94,16 @@ class DegreesOfFreedom(object):
             rb = IMP.atom.create_rigid_body(hiers)
         self.rigid_bodies.append(rb)
         rb.set_coordinates_are_optimized(True)
-        rb_mover = IMP.core.RigidBodyMover(rb,max_trans,max_rot)
+        rb_mover = IMP.core.RigidBodyMover(rb.get_model(), rb, max_trans,
+                                           max_rot)
         if name is not None:
             rb.set_name(name)
             rb_mover.set_name(name)
         rb_movers.append(rb_mover)
-
+        self.movers_particles_map[rb_mover]=[]
+        self.movers_rb_map[rb_mover]=[rb]
+        for h in hiers:
+            self.movers_particles_map[rb_mover]+=IMP.atom.get_leaves(h)
         ### setup nonrigid parts
         if nonrigid_parts:
             nr_hiers = IMP.pmi.tools.input_adaptor(nonrigid_parts,
@@ -108,11 +122,37 @@ class DegreesOfFreedom(object):
                     rb.set_is_rigid_member(p.get_index(),False)
                     for fk in floatkeys:
                         p.set_is_optimized(fk,True)
-                    rb_movers.append(IMP.core.BallMover([p],
-                                                        IMP.FloatKeys(floatkeys),
-                                                        nonrigid_max_trans))
+                    fbmv=IMP.core.BallMover(p.get_model(), p,
+                                            IMP.FloatKeys(floatkeys),
+                                            nonrigid_max_trans)
+                    self.fb_movers.append(fbmv)
+                    self.movers_particles_map[fbmv]=IMP.atom.get_leaves(h)
+                    self.movers_xyz_map[fbmv]=IMP.atom.get_leaves(h)
+                    rb_movers.append(fbmv)
+
         self.movers += rb_movers # probably need to store more info
+        self._rb2mov[rb] = rb_movers #dictionary relating rb to movers
+
         return rb_movers,rb
+
+    def create_main_chain_mover(self,molecule,resolution=10,lengths=[5,10]):
+        """Create crankshaft moves from a set of SUPER rigid body mover from one molecule.
+        See http://scfbm.biomedcentral.com/articles/10.1186/1751-0473-3-12
+        """
+        hiers=IMP.pmi.tools.input_adaptor(molecule,resolution,flatten=True)
+
+        for length in lengths:
+            for n in range(len(hiers)-length):
+                hs=hiers[n+1:n+length]
+                #print("MIDDLE",n+1,n+length,hs)
+                self.create_super_rigid_body(hs, max_trans=0.0,max_rot=0.05, axis=(hiers[n].get_particle(),hiers[n+length].get_particle()))
+        #for n in range(1,len(hiers)-1,10):
+        #    hs=hiers[n:]
+        #    print("END",n,hs)
+        #    self.create_super_rigid_body(hs, max_trans=0.01,axis=(hiers[n].get_particle(),hiers[n+1].get_particle()))
+        #    hs=hiers[:n+1]
+        #    print("BEGIN",n-1,hs)
+        #    self.create_super_rigid_body(hs, max_trans=0.01,axis=(hiers[n].get_particle(),hiers[n-1].get_particle()))
 
     def create_super_rigid_body(self,
                                 srb_parts,
@@ -121,8 +161,11 @@ class DegreesOfFreedom(object):
                                 chain_min_length=None,
                                 chain_max_length=None,
                                 resolution='all',
-                                name=None):
+                                name=None,
+                                axis=None):
         """Create SUPER rigid body mover from one or more hierarchies. Can also create chain of SRBs.
+        If you don't pass chain min/max, it'll treat everything you pass as ONE rigid body.
+        If you DO pass chain min/max, it'll expect srb_parts is a list and break it into bits.
         @param srb_parts Can be one of the following inputs:
                IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.
                Must be uniform input, however. No mixing object types.
@@ -133,6 +176,8 @@ class DegreesOfFreedom(object):
         @param chain_max_length Maximum chain length
         @param resolution Only used if you pass PMI objects. Probably you want 'all'.
         @param name The name of the SRB (hard to assign a good one automatically)
+        @param axis A tuple containing two particles which are used to compute
+                    the rotation axis of the SRB. The default is None, meaning that the rotation axis is random.
         \note If you set the chain parameters, will NOT create an SRB from all of them together,
         but rather in groups made from the outermost list.
         """
@@ -150,14 +195,19 @@ class DegreesOfFreedom(object):
         else:
             if not hasattr(srb_parts,'__iter__'):
                 raise Exception("You tried to make a chain without a list!")
-            srb_groups = [IMP.pmi.tools.input_adaptor(h,resolution,flatten=True) for h in srb_parts]
+            srb_groups = [IMP.pmi.tools.input_adaptor(h,resolution,flatten=True,
+                                                      warn_about_slices=False) for h in srb_parts]
 
         ## create SRBs either from all hierarchies or chain
         if chain_min_length is None and chain_max_length is None:
-            srb_movers.append(self._setup_srb(srb_groups,max_trans,max_rot))
+            mv = self._setup_srb(srb_groups,max_trans,max_rot,axis)
+            if mv:
+                srb_movers.append(mv)
         elif chain_min_length is not None and chain_max_length is not None:
             for hs in IMP.pmi.tools.sublist_iterator(srb_groups, chain_min_length, chain_max_length):
-                srb_movers.append(self._setup_srb(hs,max_trans,max_rot))
+                mv = self._setup_srb(hs,max_trans,max_rot,axis)
+                if mv:
+                    srb_movers.append(mv)
         else:
             raise Exception("DegreesOfFreedom: SetupSuperRigidBody: if you want chain, specify min AND max")
         self.movers += srb_movers
@@ -169,19 +219,31 @@ class DegreesOfFreedom(object):
                 srb_movers[0].set_name(name)
         return srb_movers
 
-    def _setup_srb(self,hiers,max_trans,max_rot):
-        srbm = IMP.pmi.TransformMover(hiers[0][0].get_model(), max_trans, max_rot)
+    def _setup_srb(self,hiers,max_trans,max_rot,axis):
+        if axis is None:
+            srbm = IMP.pmi.TransformMover(hiers[0][0].get_model(), max_trans, max_rot)
+        else:
+            srbm = IMP.pmi.TransformMover(hiers[0][0].get_model(),axis[0],axis[1],max_trans, max_rot)
         super_rigid_rbs,super_rigid_xyzs = IMP.pmi.tools.get_rbs_and_beads(hiers)
+        ct = 0
+        self.movers_particles_map[srbm]=[]
+        for h in hiers:
+            self.movers_particles_map[srbm]+=IMP.atom.get_leaves(h)
         for xyz in super_rigid_xyzs:
             srbm.add_xyz_particle(xyz)
+            ct+=1
         for rb in super_rigid_rbs:
             srbm.add_rigid_body_particle(rb)
-        return srbm
+            ct+=1
+        if ct>1:
+            return srbm
+        else:
+            return 0
 
 
     def create_flexible_beads(self,
                               flex_parts,
-                              max_trans=0.1,
+                              max_trans=3.0,
                               resolution='all'):
         """Create a chain of flexible beads
         @param flex_parts Can be one of the following inputs:
@@ -204,7 +266,11 @@ class DegreesOfFreedom(object):
             if IMP.core.RigidMember.get_is_setup(h) or IMP.core.NonRigidMember.get_is_setup(h):
                 raise Exception("Cannot create flexible beads from members of rigid body")
             self.flexible_beads.append(h)
-            fb_movers.append(IMP.core.BallMover([p],max_trans))
+            fbmv=IMP.core.BallMover(p.get_model(), p, max_trans)
+            fb_movers.append(fbmv)
+            self.fb_movers.append(fbmv)
+            self.movers_particles_map[fbmv]=IMP.atom.get_leaves(h)
+            self.movers_xyz_map[fbmv]=IMP.atom.get_leaves(h)
         self.movers += fb_movers
         return fb_movers
 
@@ -241,20 +307,21 @@ class DegreesOfFreedom(object):
         hiers = IMP.pmi.tools.input_adaptor(hspec,flatten=True)
         mdl = hiers[0].get_model()
         all_ps = []
-        for h in hiers:
-            p = h.get_particle()
-            IMP.core.XYZ(mdl,p.get_index()).set_coordinates_are_optimized(True)
-            mdl.add_attribute(vxkey,p.get_index(),0.0)
-            mdl.add_attribute(vykey,p.get_index(),0.0)
-            mdl.add_attribute(vzkey,p.get_index(),0.0)
-            all_ps.append(p)
+        for hl in hiers:
+            for h in IMP.core.get_leaves(hl):
+                p = h.get_particle()
+                IMP.core.XYZ(mdl,p.get_index()).set_coordinates_are_optimized(True)
+                mdl.add_attribute(vxkey,p.get_index(),0.0)
+                mdl.add_attribute(vykey,p.get_index(),0.0)
+                mdl.add_attribute(vzkey,p.get_index(),0.0)
+                all_ps.append(p)
         return all_ps
 
     def constrain_symmetry(self,
                            references,
                            clones,
                            transform,
-                           resolution=1):
+                           resolution='all'):
         """Create a symmetry constraint. Checks:
         same number of particles
         disable ANY movers involving symmetry copies
@@ -278,19 +345,32 @@ class DegreesOfFreedom(object):
         clones_rbs,clones_beads = IMP.pmi.tools.get_rbs_and_beads(hclones)
 
         # dumb check for matching numbers of particles
-        if len(ref_rbs)!=len(clones_rbs) or len(ref_beads)!=len(clones_beads):
-            raise Exception("ERROR: Your references don't match your clones")
+        #if len(ref_rbs)!=len(clones_rbs) or len(ref_beads)!=len(clones_beads):
+        #    raise Exception("ERROR: Your references don't match your clones")
 
         # symmetry RBs
-        for ref,clone in zip(ref_rbs+ref_beads,clones_rbs+clones_beads):
-            IMP.core.Reference.setup_particle(clone,ref)
+        # this code produces weird results (random flipping of rigid bodies
+        #for ref,clone in zip(ref_rbs+ref_beads,clones_rbs+clones_beads):
+        #    print(clone.get_particle().get_index(),ref.get_particle().get_index())
+        #    IMP.core.Reference.setup_particle(clone.get_particle(),ref.get_particle())
+        for ref,clone in zip(href,hclones):
+            IMP.core.Reference.setup_particle(clone.get_particle(),ref.get_particle())
+
         sm = IMP.core.TransformationSymmetry(transform.get_inverse())
         lsc = IMP.container.ListSingletonContainer(
-            self.mdl,[p.get_particle_index() for p in clones_rbs+clones_beads])
+            self.mdl,[p.get_particle().get_index() for p in hclones])
         c = IMP.container.SingletonsConstraint(sm, None, lsc)
         self.mdl.add_score_state(c)
         print('Created symmetry restraint for',len(ref_rbs),'rigid bodies and',
               len(ref_beads),'flexible beads')
+
+        # removing movers involved in clones
+        #sym_movers = []
+
+        #sym_movers = [m for cl in clones_rbs for m in self._rb2mov[cl]]
+        #self.movers = [m for m in self.movers if m not in sym_movers]
+        self.mdl.update()
+        self.disable_movers(hclones)
 
     def __repr__(self):
         # would like something fancy like this:
@@ -305,7 +385,6 @@ class DegreesOfFreedom(object):
         '''Set up MC run with just flexible beads.
         Optimization works much better when restraints
         are already set up.'''
-        import IMP.pmi.samplers
         pts = IMP.pmi.tools.ParticleToSampleList()
         for n, fb in enumerate(self.get_flexible_beads()):
             pts.add_particle(fb, "Floppy_Bodies", 1.0, "Flexible_Bead_" + str(n))
@@ -317,8 +396,19 @@ class DegreesOfFreedom(object):
             print("optimize_flexible_beads: no particle to optimize")
 
     def get_movers(self):
-        """Should only return Enabled movers?"""
-        return self.movers
+        """Returns Enabled movers"""
+        if self.disabled_movers:
+            filtered_mover_list=[]
+            for mv in self.movers:
+                if not mv in self.disabled_movers:
+                    filtered_mover_list.append(mv)
+            return filtered_mover_list
+        else:
+            return self.movers
+
+    def get_floppy_body_movers(self):
+        """Return all movers corresponding to individual beads"""
+        return self.fb_movers
 
     def get_rigid_bodies(self):
         """Return list of rigid body objects"""
@@ -327,6 +417,41 @@ class DegreesOfFreedom(object):
     def get_flexible_beads(self):
         """Return all flexible beads, including nonrigid members of rigid bodies"""
         return self.flexible_beads
+
+    def disable_movers(self,objects,mover_types=None):
+        """Fix the position of the particles by disabling the corresponding movers
+        @param objects Can be one of the following inputs:
+            IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.
+            Must be uniform input, however. No mixing object types.
+        @param mover_types further filter the mover type that will be disabled, it can be a list of IMP.core.RigidBodyMover,
+            IMP.core.BallMover etc etc if one wants to fix the corresponding rigid body, or the floppy bodies.
+            An empty mover_types list is interpreted as all possible movers.
+        It returns the list of fixed xyz particles (ie, floppy bodies/beads) and rigid bodies
+        whose movers were disabled
+        """
+        hierarchies = IMP.pmi.tools.input_adaptor(objects,
+                                              pmi_resolution='all',
+                                              flatten=True)
+        tmp_set=set()
+        fixed_rb=set()
+        fixed_xyz=set()
+        if mover_types is None: mover_types=[]
+
+        for key in self.movers_particles_map:
+            for h in hierarchies:
+                if h in self.movers_particles_map[key] and (type(key) in mover_types or not mover_types):
+                    tmp_set.add(key)
+                    if key in self.movers_rb_map:
+                        fixed_rb|=set(self.movers_rb_map[key])
+                    if key in self.movers_xyz_map:
+                        fixed_xyz|=set(self.movers_xyz_map[key])
+        print("Fixing %s movers" %(str(len(list(tmp_set)))))
+        self.disabled_movers+=list(tmp_set)
+        return list(fixed_xyz),list(fixed_rb)
+
+    def enable_all_movers(self):
+        """Reenable all movers: previously fixed particles will be released"""
+        self.disabled_movers=[]
 
     def get_nuisances_from_restraint(self,r):
         """Extract the nuisances from get_particles_to_sample()"""

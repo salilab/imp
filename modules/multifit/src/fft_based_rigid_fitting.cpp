@@ -2,7 +2,7 @@
  *  \file FFTFitting.cpp
  *  \brief FFT based fitting
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multifit/fft_based_rigid_fitting.h>
@@ -470,7 +470,9 @@ void FFTFitting::fftw_translational_search(
                           fftw_scale_;
   }
 
-  for (long jj = 0; jj < fftw_nvox_r2c_; jj++) reversed_fftw_data_[jj] = 0.;
+  for (unsigned long jj = 0; jj < fftw_nvox_r2c_; jj++) {
+    reversed_fftw_data_[jj] = 0.;
+  }
   fftw_execute(fftw_plan_reverse_hi_.get());
   // update the highest score found so far for each grid translation,
   // and save corresponding rotation
@@ -904,7 +906,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
   IMP_LOG_TERSE("Found " << peak_count << " peaks" << std::endl);
   /* Adjust num_fits_reported_ if necessary. */
   if (peak_count < num_fits_reported_) {
-    IMP_WARN("Found less peaks than requested \n");
+    IMP_WARN("Found fewer peaks than requested \n");
     num_fits_reported_ = peak_count;
   }
   int output_count = std::min((int)num_fits_reported_, (int)found_peak.size());

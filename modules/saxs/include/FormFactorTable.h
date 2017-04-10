@@ -2,7 +2,7 @@
  *  \file IMP/saxs/FormFactorTable.h   \brief A class for computation of
  * atomic and residue level form factors for SAXS calculations
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -28,11 +28,13 @@ IMPSAXS_BEGIN_NAMESPACE
  ALL_ATOMS - all atoms including hydrogens
  HEAVY_ATOMS - no hydrogens, all other atoms included
  CA_ATOMS - residue level, residue represented by CA
+ RESIDUES - residue level, represented by residue bead
 */
 enum FormFactorType {
   ALL_ATOMS,
   HEAVY_ATOMS,
-  CA_ATOMS
+  CA_ATOMS,
+  RESIDUES
 };
 
 /**
@@ -157,23 +159,24 @@ class IMPSAXSEXPORT FormFactorTable {
     Zn,
     Se,
     Br,  // line 4 (11)
+    Ag,
     I,
     Ir,
     Pt,
     Au,
     Hg,
-    ALL_ATOM_SIZE = 34,
-    CH = 34,
-    CH2 = 35,
-    CH3 = 36,
-    NH = 37,
-    NH2 = 38,
-    NH3 = 39,
-    OH = 40,
-    OH2 = 41,
-    SH = 42,
-    HEAVY_ATOM_SIZE = 43,
-    UNK = 44
+    ALL_ATOM_SIZE = 35,
+    CH = 35,
+    CH2 = 36,
+    CH3 = 37,
+    NH = 38,
+    NH2 = 39,
+    NH3 = 40,
+    OH = 41,
+    OH2 = 42,
+    SH = 43,
+    HEAVY_ATOM_SIZE = 44,
+    UNK = 45
   };
 
   // map between atom element and FormFactorAtomType

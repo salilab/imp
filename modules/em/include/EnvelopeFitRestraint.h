@@ -3,7 +3,7 @@
  * \brief score envelope fit based on map distance transform
  *
  * \authors Dina Schneidman
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -26,8 +26,10 @@ IMPEM_BEGIN_NAMESPACE
    of principal components of the particles with principal components
    of the map. Therefore, the particle set should comprise all
    subunits that fill the map. The aligned particles are scored using
-   EnvelopeScore. This is a fast alignment and scoring that works well
+   EnvelopeScore. This is a fast alignment and scoring that can work well
    for low resolution density maps.
+
+   \note In most cases it is more appropriate to use isd::GaussianEMRestraint.
  */
 class IMPEMEXPORT EnvelopeFitRestraint : public IMP::Restraint {
  public:

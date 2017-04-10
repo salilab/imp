@@ -2,7 +2,7 @@
  *  \file IMP/modeller/MultipleBinormalRestraint.h
  *  \brief Modeller-style multiple binormal (phi/psi) restraint.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -27,12 +27,15 @@ class BinormalTerm;
     \external{https://salilab.org/modeller/9.16/manual/node491.html,
    Modeller manual}.
     The two angles are typically the phi and psi dihedrals of a residue.
+    \deprecated_at{2.7} Moved to core::MultipleBinormalRestraint
+
  */
 class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint {
   std::vector<BinormalTerm> terms_;
   ParticleIndexQuad q1_, q2_;
 
  public:
+
   //! Create the multiple binormal restraint.
   /** After creating the restraint, call add_term one or more times to add
       BinormalTerms to the restraint.
@@ -40,6 +43,7 @@ class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint {
       \param[in] q1 First quad of particles.
       \param[in] q2 Second quad of particles.
    */
+  IMPMODELLER_DEPRECATED_OBJECT_DECL(2.7)
   MultipleBinormalRestraint(Model *m, const ParticleIndexQuad &q1,
                             const ParticleIndexQuad &q2);
 
@@ -62,7 +66,8 @@ class BinormalTerm {
 
  public:
   BinormalTerm()
-      : correlation_(-1), weight_(-1), means_(-1, -1), stdevs_(-1, -1) {}
+      : correlation_(-1), weight_(-1), means_(-1, -1), stdevs_(-1, -1) {
+  }
   friend class MultipleBinormalRestraint;
 
   void set_correlation(double correlation) { correlation_ = correlation; }

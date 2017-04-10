@@ -1,7 +1,7 @@
 /**
  * \file RRT \brief
  *
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/kinematics/RRT.h>
@@ -86,6 +86,10 @@ void RRT::add_nodes(RRTNode* q_near, const std::vector<DOFValues>& new_nodes) {
 }
 
 bool RRT::run(unsigned int number_of_iterations) {
+  set_was_used(true);
+  if (dofs_sampler_->get_number_of_dofs() == 0) {
+    throw IMP::ValueException("No degrees of freedom to sample!");
+  }
   ScoringFunction *sf = get_scoring_function();
   if(tree_.size() == 1) check_initial_configuration(sf);
   unsigned int iter_counter = 0;

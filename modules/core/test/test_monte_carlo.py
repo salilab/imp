@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
         hps = IMP.core.HarmonicDistancePairScore(1, 100)
         r = IMP.container.PairsRestraint(hps, cpc)
         mc.set_scoring_function([r])
-        ms = [IMP.core.BallMover([x], .1) for x in ps]
+        ms = [IMP.core.BallMover(m, x, .1) for x in ps]
         mv = IMP.core.SerialMover(ms)
         mc.add_mover(mv)
         self.assertEqual(mc.get_number_of_accepted_steps(), 0)

@@ -4,7 +4,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -117,10 +117,10 @@ double ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 
 Restraints ConnectivityRestraint::do_create_current_decomposition()
     const {
-  ParticlePairsTemp pp = get_connected_pairs();
+  ParticleIndexPairs pp = get_connected_index_pairs();
   Restraints ret;
   for (unsigned int i = 0; i < pp.size(); ++i) {
-    IMP_NEW(PairRestraint, pr, (ps_, pp[i]));
+    IMP_NEW(PairRestraint, pr, (get_model(), ps_, pp[i]));
     double score = pr->evaluate(false);
     /** We want to keep the edge even if it has weight 0 */
     if (score == 0) pr->set_last_score(.00001);
@@ -132,10 +132,9 @@ Restraints ConnectivityRestraint::do_create_current_decomposition()
   return ret;
 }
 
-ParticlePairsTemp ConnectivityRestraint::get_connected_pairs() const {
+ParticleIndexPairs ConnectivityRestraint::get_connected_index_pairs() const {
   IMP_CHECK_OBJECT(ps_.get());
-  ParticleIndexPairs edges = get_edges(sc_, ps_);
-  return IMP::internal::get_particle(get_model(), edges);
+  return get_edges(sc_, ps_);
 }
 
 ModelObjectsTemp ConnectivityRestraint::do_get_inputs() const {

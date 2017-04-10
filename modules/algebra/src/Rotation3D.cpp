@@ -1,7 +1,7 @@
 /**
  *  \file Rotation3D.cpp   \brief Simple 3D rotation class.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -178,7 +178,6 @@ const Vector3D Rotation3D::get_derivative(const Vector3D &o,
     default:
       IMP_THROW("Invalid derivative component", IndexException);
   };
-  return Vector3D(0, 0, 0);
 }
 
 Rotation3D get_random_rotation_3d() {
@@ -293,25 +292,6 @@ FixedXYZ get_fixed_xyz_from_rotation(const Rotation3D &r) {
       std::atan2(mat32, mat33),
       std::atan2(mat31, std::sqrt(std::pow(mat21, 2) + std::pow(mat11, 2))),
       std::atan2(mat21, mat11));
-}
-
-Rotation3D get_rotation_about_normalized_axis(const Vector3D &axis_norm,
-                                              double angle) {
-  IMP_USAGE_CHECK(axis_norm.get_magnitude() - 1.0 < 1e-6,
-                  "expected normalized vector as axis of rotation");
-  double s = std::sin(angle / 2);
-  double a, b, c, d;
-  a = std::cos(angle / 2);
-  b = axis_norm[0] * s;
-  c = axis_norm[1] * s;
-  d = axis_norm[2] * s;
-  return Rotation3D(a, b, c, d);
-}
-
-Rotation3D get_rotation_about_axis(const Vector3D &axis, double angle) {
-  // normalize the vector
-  Vector3D axis_norm = axis.get_unit_vector();
-  return get_rotation_about_normalized_axis(axis_norm, angle);
 }
 
 Rotation3D get_rotation_taking_first_to_second(const Vector3D &v1,

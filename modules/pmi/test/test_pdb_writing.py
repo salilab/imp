@@ -9,6 +9,12 @@ import IMP.pmi.dof
 import IMP.pmi.macros
 import os,shutil
 
+try:
+    import IMP.mpi
+    rem = IMP.mpi.ReplicaExchange()
+except ImportError:
+    rem = None
+
 class Tests(IMP.test.TestCase):
     def test_pdb_writing(self):
         """Test writing of PDB files"""
@@ -187,12 +193,55 @@ ENDMDL'''.split("\n")
                                               number_of_frames=3,
                                               monte_carlo_steps=10,
                                               number_of_best_scoring_models=3,
-                                              global_output_directory='pdb_test/')
+                                              global_output_directory='pdb_test/',
+                                              replica_exchange_object = rem)
         rex.execute_macro()
         for i in range(3):
             self.assertTrue(os.path.isfile('pdb_test/pdbs/model.%i.pdb'%i))
         mhtest = IMP.atom.read_pdb('pdb_test/pdbs/model.0.pdb',mdl)
         self.assertEqual(len(IMP.core.get_leaves(mhtest)),17)
+        shutil.rmtree("pdb_test/")
+
+    def test_pdb_multistate(self):
+        """Test PDB writing in PMI2 from replica exchange"""
+        mdl = IMP.Model()
+        pdb_file = self.get_input_file_name("mini.pdb")
+        fasta_file = self.get_input_file_name("mini.fasta")
+
+        seqs = IMP.pmi.topology.Sequences(fasta_file)
+        s = IMP.pmi.topology.System(mdl)
+        st = s.create_state()
+
+        molA = st.create_molecule("P1",seqs[0],chain_id='A')
+        aresA = molA.add_structure(pdb_file,chain_id='A',soft_check=True)
+        molA.add_representation(aresA,[0])
+
+        st2 = s.create_state()
+        molB = st2.create_molecule("P1",seqs[0],chain_id='A')
+        aresB = molB.add_structure(pdb_file,chain_id='A',soft_check=True)
+        molB.add_representation(molB,[1])
+
+        root_hier = s.build()
+
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        dof.create_rigid_body(molA,name="rbA")
+        dof.create_rigid_body(molB,name="rbB")
+        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+                                              root_hier=root_hier,
+                                              monte_carlo_sample_objects = dof.get_movers(),
+                                              number_of_frames=3,
+                                              monte_carlo_steps=10,
+                                              number_of_best_scoring_models=3,
+                                              global_output_directory='pdb_test/',
+                                              replica_exchange_object = rem)
+        rex.execute_macro()
+        for i in range(3):
+            self.assertTrue(os.path.isfile('pdb_test/pdbs/0/model.%i.pdb'%i))
+            self.assertTrue(os.path.isfile('pdb_test/pdbs/1/model.%i.pdb'%i))
+        testA = IMP.atom.read_pdb('pdb_test/pdbs/0/model.0.pdb',mdl)
+        self.assertEqual(len(IMP.core.get_leaves(testA)),53)
+        testB = IMP.atom.read_pdb('pdb_test/pdbs/1/model.0.pdb',mdl)
+        self.assertEqual(len(IMP.core.get_leaves(testB)),8)
         shutil.rmtree("pdb_test/")
 
 if __name__ == '__main__':

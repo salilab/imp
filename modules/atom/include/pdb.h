@@ -2,7 +2,7 @@
  *  \file IMP/atom/pdb.h
  *  \brief Functions to read PDBs
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -259,6 +259,26 @@ class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
       : NonAlternativePDBSelector("NonWaterPDBSelector%1%"),
         ws_(new WaterPDBSelector()),
         hs_(new HydrogenPDBSelector()) {}
+};
+
+//! Select non hydrogen atoms
+class NonHydrogenPDBSelector : public NonAlternativePDBSelector {
+  IMP::PointerMember<PDBSelector> hs_;
+
+ public:
+  bool get_is_selected(const std::string &pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+      return false;
+    }
+    return (!hs_->get_is_selected(pdb_line));
+  }
+  IMP_OBJECT_METHODS(NonHydrogenPDBSelector);
+  NonHydrogenPDBSelector(std::string name)
+    : NonAlternativePDBSelector(name),
+      hs_(new HydrogenPDBSelector()) {}
+  NonHydrogenPDBSelector()
+    : NonAlternativePDBSelector("NonHydrogenPDBSelector%1%"),
+      hs_(new HydrogenPDBSelector()) {}
 };
 
 //! Select all non-water non-alternative ATOM and HETATM records
@@ -518,7 +538,7 @@ IMPATOMEXPORT void write_multimodel_pdb(const Hierarchies &mhd,
 IMPATOMEXPORT std::string get_pdb_string(
     const algebra::Vector3D &v, int index = -1, AtomType at = AT_CA,
     ResidueType rt = atom::ALA, char chain = ' ', int res_index = 1,
-    char res_icode = ' ', double occpancy = 1.00, double tempFactor = 0.00,
+    char res_icode = ' ', double occupancy = 1.00, double tempFactor = 0.00,
     Element e = C);
 
 /**

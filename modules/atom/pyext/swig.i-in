@@ -79,6 +79,7 @@ IMP_SWIG_OBJECT(IMP::atom, MolecularDynamics, MolecularDynamicsList);
 IMP_SWIG_OBJECT(IMP::atom, NPDBSelector, NPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, NonAlternativePDBSelector, NonAlternativePDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, NonHydrogenMol2Selector, NonHydrogenMol2Selectors);
+IMP_SWIG_OBJECT(IMP::atom, NonHydrogenPDBSelector, NonHydrogenPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, NonWaterNonHydrogenPDBSelector, NonWaterNonHydrogenPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, NonWaterPDBSelector,NonWaterPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, NotPDBSelector,NotPDBSelectors);
@@ -114,7 +115,7 @@ IMP_SWIG_OBJECT(IMP::atom, BondGeometry, BondGeometries);
 IMP_SWIG_OBJECT(IMP::atom, BondsGeometry, BondsGeometries);
 IMP_SWIG_OBJECT(IMP::atom, CAAngleRestraint, CAAngleRestraints);
 IMP_SWIG_OBJECT(IMP::atom, CADihedralRestraint, CADihedralRestraints);
-
+IMP_SWIG_OBJECT(IMP::atom, HelixRestraint, HelixRestraints);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMDihedral, CHARMMConnection, CHARMMDihedrals);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMBond, CHARMMConnection, CHARMMBonds);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
@@ -253,8 +254,8 @@ namespace IMP {
 namespace IMP {
   namespace atom {
    // swig has random, perplexing issues if these are higher in the file
-   %template(AtomType) ::IMP::Key<IMP_ATOM_TYPE_INDEX, false>;
-   %template(ResidueType) ::IMP::Key<IMP_RESIDUE_TYPE_INDEX, true>;
+   %template(AtomType) ::IMP::Key<IMP_ATOM_TYPE_INDEX>;
+   %template(ResidueType) ::IMP::Key<IMP_RESIDUE_TYPE_INDEX>;
   }
 }
 %include "IMP/atom/element.h"
@@ -288,6 +289,7 @@ namespace IMP {
 %include "IMP/atom/CAAngleRestraint.h"
 %include "IMP/atom/CADihedralRestraint.h"
 %include "IMP/atom/StructureSource.h"
+%include "IMP/atom/HelixRestraint.h"
 
 namespace IMP {
   namespace atom {

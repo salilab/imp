@@ -1,8 +1,8 @@
 /**
  *  \file IMP/rmf/restraint_io.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Manage read/write of Restraints from/to RMF files.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

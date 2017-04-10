@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Rotation3D.h   \brief Simple 3D rotation class.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -72,7 +72,19 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   }
 
  public:
-  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Rotation3D);
+  //! Rotation3D copy constructor, faster than default copy constructor
+  //! in some cases
+  Rotation3D(const Rotation3D &rot) :
+  v_(rot.v_), has_cache_(rot.has_cache_)
+  {
+    if(has_cache_){
+      matrix_[0]=rot.matrix_[0];
+      matrix_[1]=rot.matrix_[1];
+      matrix_[2]=rot.matrix_[2];
+    }
+  }
+
+  //!  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Rotation3D);
 
   //! Create a rotation from a vector of 4 quaternion coefficients.
   //! @note: use assume_normalized with care - inputting an unnormalized
@@ -152,8 +164,6 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
 #endif
   //! Rotate a vector around the origin
   Vector3D get_rotated(const Vector3D &o) const {
-    IMP_USAGE_CHECK(get_is_valid(),
-                    "Attempting to apply uninitialized rotation");
     if (!has_cache_) fill_cache();
     return Vector3D(o * matrix_[0], o * matrix_[1], o * matrix_[2]);
   }
@@ -161,8 +171,6 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   //! Get only the requested rotation coordinate of the vector
   double get_rotated_one_coordinate(const Vector3D &o,
                                     unsigned int coord) const {
-    IMP_USAGE_CHECK(get_is_valid(),
-                    "Attempting to apply uninitialized rotation");
     if (!has_cache_) fill_cache();
     return o * matrix_[coord];
   }
@@ -270,8 +278,21 @@ inline double get_distance(const Rotation3D &r0, const Rotation3D &r1) {
    angleToQuaternion/index.htm
    \see Rotation3D
 */
-IMPALGEBRAEXPORT Rotation3D
-    get_rotation_about_normalized_axis(const Vector3D &axis_norm, double angle);
+inline Rotation3D
+get_rotation_about_normalized_axis
+(const Vector3D &axis_norm, double angle)
+{
+  IMP_USAGE_CHECK(axis_norm.get_magnitude() - 1.0 < 1e-6,
+                  "expected normalized vector as axis of rotation");
+  double s = std::sin(angle / 2);
+  double a, b, c, d;
+  a = std::cos(angle / 2);
+  b = axis_norm[0] * s;
+  c = axis_norm[1] * s;
+  d = axis_norm[2] * s;
+  return Rotation3D(a, b, c, d);
+}
+
 
 //! Generate a Rotation3D object from a rotation around an axis
 /**
@@ -283,8 +304,14 @@ IMPALGEBRAEXPORT Rotation3D
    angleToQuaternion/index.htm
    \see Rotation3D
 */
-IMPALGEBRAEXPORT Rotation3D
-    get_rotation_about_axis(const Vector3D &axis, double angle);
+inline Rotation3D
+get_rotation_about_axis
+(const Vector3D &axis, double angle)
+{
+    // normalize the vector
+    Vector3D axis_norm = axis.get_unit_vector();
+  return get_rotation_about_normalized_axis(axis_norm, angle);
+}
 
 //! Create a rotation from the first vector to the second one.
 /** \see Rotation3D

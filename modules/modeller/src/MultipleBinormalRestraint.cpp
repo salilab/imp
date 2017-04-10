@@ -2,7 +2,7 @@
  *  \file MultipleBinormalRestraint.cpp
  *  \brief Modeller-style multiple binormal (phi/psi) restraint.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,7 +48,10 @@ MultipleBinormalRestraint::MultipleBinormalRestraint(
     : Restraint(m, "MultipleBinormalRestraint%1%"),
       terms_(),
       q1_(q1),
-      q2_(q2) {}
+      q2_(q2) {
+  IMPMODELLER_DEPRECATED_OBJECT_DEF(2.7,
+                        "Use core::MultipleBinormalRestraint instead");
+}
 
 double MultipleBinormalRestraint::unprotected_evaluate(
     DerivativeAccumulator *accum) const {

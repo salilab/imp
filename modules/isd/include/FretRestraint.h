@@ -2,7 +2,7 @@
  *  \file IMP/isd/FretRestraint.h
  *  \brief FRET_R restraint to use in vivo FRET data.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,7 +16,7 @@
 IMPISD_BEGIN_NAMESPACE
 /** A restraint for using in-vivo ensemble FRET data.
     See [Muller et al. Mol Biol Cell
-    16, 3341, 2005](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1165416/)
+    16, 3341, 2005](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1165416/)
     for more info.
  */
 

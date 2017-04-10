@@ -2,7 +2,7 @@
  *  \file PrefixStream.h
  *  \brief A stream which prefixes each line with a string.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

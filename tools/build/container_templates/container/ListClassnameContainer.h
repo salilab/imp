@@ -2,7 +2,7 @@
  *  \file IMP/container/ListClassnameContainer.h
  *  \brief Store a list of PLURALINDEXTYPE.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_LIST_CLASSNAME_CONTAINER_H
@@ -39,32 +39,16 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
   ListClassnameContainer(Model *m, const PLURALINDEXTYPE &contents,
                          std::string name = "ListClassnameContainer%1%");
 
+  /** \deprecated_at{2.7} Use the index-based constructor instead */
+  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.7)
   ListClassnameContainer(const PLURALVARIABLETYPE &ps,
                          std::string name = "ListClassnameContainer%1%");
 
-  /** \deprecated_at{2.5} Use set() with indexes instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &ps);
-
-  /** \deprecated_at{2.5} Use set() instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void set_FUNCTIONNAMEs(const PLURALINDEXTYPE &contents);
 #ifndef IMP_DOXYGEN
   ListClassnameContainer(Model *m,
                          std::string name = "ListClassnameContainer %1%");
   ListClassnameContainer(Model *m, const char *name);
 
-  /** \deprecated_at{2.5} Use add() with indexes instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void add_FUNCTIONNAME(ARGUMENTTYPE vt);
-
-  /** \deprecated_at{2.5} Use add() with indexes instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
-
-  /** \deprecated_at{2.5} Use clear() instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void clear_FUNCTIONNAMEs();
 #endif
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   //! Add a single PASSINDEXTYPE to the container.

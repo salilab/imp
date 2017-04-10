@@ -2,7 +2,7 @@
  *  \file RMF/decorator/alternatives.h
  *  \brief Helper functions for manipulating RMF files.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -101,7 +101,7 @@ struct AlternativesConstFactory : public AlternativesFactory {
 };
 #endif
 
-/** Return the cannonical resolution of the subtree. */
+/** Return the canonical resolution of the subtree. */
 RMFEXPORT double get_resolution(NodeConstHandle root);
 
 /** Return a list of (clustered) resolution levels available in the subtree.

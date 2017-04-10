@@ -2,7 +2,7 @@
  *  \file DensityHeader.cpp
  *  \brief Metadata for a density file.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -116,7 +116,7 @@ DensityHeader::DensityHeader() {
   Objectpixelsize_ = 1.0;
   machinestamp = 0;
   nlabl = 0;
-  strcpy(map, "MAP\0");
+  strcpy(map, "MAP");
   magic = 6;
 }
 

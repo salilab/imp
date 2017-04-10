@@ -67,6 +67,7 @@ class IMPMockTests(unittest.TestCase):
             except OSError:
                 raise OSError("Could not run %s" % app)
             out = p.stdout.read()
+            p.stdout.close()
             ret = p.wait()
             self.assertTrue(ret == 1 or ret == 0,
                             "Return code for %s app is %d, not 0 or 1; "

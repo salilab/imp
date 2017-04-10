@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Gaussian3D.h
  *  \brief Gaussian shape
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -25,10 +25,10 @@ class Gaussian3D : public GeometricPrimitiveD<3> {
   ReferenceFrame3D tr_;
   Vector3D variances_;
 
- public:
+public:
   Gaussian3D() {
     tr_ = ReferenceFrame3D();
-    variances_=Vector3D(0,0,0);
+    variances_ = Vector3D(0, 0, 0);
   }
   Gaussian3D(const ReferenceFrame3D &tr, const Vector3D &variances)
       : tr_(tr), variances_(variances) {}
@@ -48,14 +48,21 @@ IMPALGEBRAEXPORT IMP_Eigen::Matrix3d get_covariance(const Gaussian3D &g);
 
 //! Return a Gaussian centered at the origin from a covariance matrix.
 IMPALGEBRAEXPORT Gaussian3D
-    get_gaussian_from_covariance(const IMP_Eigen::Matrix3d &covariance,
-                                 const Vector3D &center);
+get_gaussian_from_covariance(const IMP_Eigen::Matrix3d &covariance,
+                             const Vector3D &center);
 
 //! Rasterize the Gaussians to a grid.
-IMPALGEBRAEXPORT DenseGrid3D<float> get_rasterized(const Gaussian3Ds &gmm,
-                                                   const Floats &weights,
-                                                   double cell_width,
-                                                   const BoundingBox3D &bb);
+IMPALGEBRAEXPORT DenseGrid3D<double>
+get_rasterized(const Gaussian3Ds &gmm, const Floats &weights, double cell_width,
+               const BoundingBox3D &bb);
+
+//! Rasterize the Gaussians to a grid.
+/** The result is an approximation, but is obtained significantly faster.
+ * Good for quickly checking a GMM.
+ */
+IMPALGEBRAEXPORT DenseGrid3D<double>
+get_rasterized_fast(const Gaussian3Ds &gmm, const Floats &weights,
+                    double cell_width, const BoundingBox3D &bb, double factor=2.5);
 
 IMPALGEBRA_END_NAMESPACE
 

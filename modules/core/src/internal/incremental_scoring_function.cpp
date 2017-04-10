@@ -1,19 +1,22 @@
 /**
- *  \file MonteCarlo.cpp  \brief Simple Monte Carlo optimizer.
+ *  \file incremental_scoring_function.cpp
+ *  \brief Helper functions for incremental scoring functions.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/core/internal/incremental_scoring_function.h>
+#include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/internal/StaticListContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/core/internal/CoreClosePairContainer.h>
+//#include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/core/GridClosePairsFinder.h>
+#include <IMP/core/PairRestraint.h>
 #include <IMP/generic.h>
 #include <IMP/internal/ContainerRestraint.h>
-#include <IMP/core/internal/close_pairs_helpers.h>
+//#include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/XYZR.h>
 #include <boost/unordered_set.hpp>
@@ -40,8 +43,7 @@ class DummyPairContainer
     ParticleIndexPairs all = get_range_indexes();
     Restraints ret(all.size());
     for (unsigned int i = 0; i < all.size(); ++i) {
-      ret[i] = new PairRestraint(
-          ps, IMP::internal::get_particle(get_model(), all[i]));
+      ret[i] = new PairRestraint(get_model(), ps, all[i]);
     }
     return ret;
   }

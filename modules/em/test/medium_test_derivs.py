@@ -84,10 +84,11 @@ class Tests(IMP.test.TestCase):
                 xorigin) + " y=" + str(
                 yorigin) + " z=" + str(
                 zorigin)))
-        mapfile = IMP.create_temporary_file_name('xxx.em')
-        IMP.em.write_map(model_map, mapfile, erw)
-        # EM restraint
-        em_map = IMP.em.read_map(mapfile, erw)
+        with IMP.test.temporary_directory() as tempdir:
+            mapfile = os.path.join(tempdir, 'xxx.em')
+            IMP.em.write_map(model_map, mapfile, erw)
+            # EM restraint
+            em_map = IMP.em.read_map(mapfile, erw)
         em_map.get_header_writable().set_xorigin(xorigin)
         em_map.get_header_writable().set_yorigin(yorigin)
         em_map.get_header_writable().set_zorigin(zorigin)
@@ -115,7 +116,6 @@ class Tests(IMP.test.TestCase):
             detailed_debugging=True)
         self.assertLess(nviol, 1, "at least one partial derivative is wrong!")
         print(" derivs done ...")
-        os.unlink(mapfile)
 
     def test_deriv_to_pull_particles_into_density(self):
         """Test if the derivatives can pull the particles back into the density"""
@@ -173,10 +173,11 @@ class Tests(IMP.test.TestCase):
                 xorigin) + " y=" + str(
                 yorigin) + " z=" + str(
                 zorigin)))
-        mapfile = IMP.create_temporary_file_name('xxx.em')
-        IMP.em.write_map(model_map, mapfile, erw)
-        # EM restraint
-        em_map = IMP.em.read_map(mapfile, erw)
+        with IMP.test.temporary_directory() as tempdir:
+            mapfile = os.path.join(tempdir, 'xxx.em')
+            IMP.em.write_map(model_map, mapfile, erw)
+            # EM restraint
+            em_map = IMP.em.read_map(mapfile, erw)
         em_map.get_header_writable().set_xorigin(xorigin)
         em_map.get_header_writable().set_yorigin(yorigin)
         em_map.get_header_writable().set_zorigin(zorigin)
@@ -210,7 +211,6 @@ class Tests(IMP.test.TestCase):
             detailed_debugging=True)
         self.assertLess(nviol, 1, "at least one partial derivative is wrong!")
         print(" derivs done ...")
-        os.unlink(mapfile)
 
     def test_fr_deriv(self):
         """Testing FitRestraint derivative magnitudes"""

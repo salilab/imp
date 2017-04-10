@@ -2,7 +2,7 @@
  *  \file complex_assembly.cpp
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/example/complex_assembly.h>
@@ -61,10 +61,11 @@ class AssemblyData {
   }
 
  public:
-  AssemblyData(ParticlesTemp ps, const RestraintsTemp &rs)
-      : ps_(ps), rs_(rs.begin(), rs.end()) {
+  AssemblyData(Model *m, ParticleIndexes ps, const RestraintsTemp &rs)
+      : rs_(rs.begin(), rs.end()) {
+    ps_ = IMP::get_particles(m, ps);
     std::sort(ps_.begin(), ps_.end());
-    interactions_ = domino::get_interaction_graph(rs, ps);
+    interactions_ = domino::get_interaction_graph(rs, ps_);
     for (unsigned int i = 0; i < rs.size(); ++i) {
       ParticlesTemp cur = IMP::get_input_particles(rs[i]->get_inputs());
       std::sort(cur.begin(), cur.end());
@@ -114,7 +115,7 @@ class AssemblyData {
     assembling the residues of a protein from a truncated distance matrix.
 */
 void optimize_assembly(Model *m,
-                       const ParticlesTemp &components,
+                       const ParticleIndexes &components,
                        const RestraintsTemp &interactions,
                        const RestraintsTemp &other_restraints,
                        const algebra::BoundingBox3D &bb, PairScore *ev,
@@ -124,9 +125,9 @@ void optimize_assembly(Model *m,
   IMP_NEW(core::MonteCarlo, mc, (m));
   mc->set_log_level(IMP::SILENT);
   IMP_NEW(core::IncrementalScoringFunction, isf,
-          (components, other_restraints));
+          (m, components, other_restraints));
   mc->set_incremental_scoring_function(isf);
-  AssemblyData ad(components, interactions);
+  AssemblyData ad(m, components, interactions);
   ParticlesTemp cur;
   IMP_NEW(container::ListSingletonContainer, active, (m));
   // fix distance
@@ -144,7 +145,7 @@ void optimize_assembly(Model *m,
     cur.push_back(add);
     core::XYZ(add).set_coordinates(algebra::get_random_vector_in(bb));
     mc->clear_movers();
-    mc->add_mover(create_serial_mover(cur));
+    mc->add_mover(create_serial_mover(m, IMP::get_indexes(cur)));
     isf->clear_close_pair_scores();
     isf->add_close_pair_score(ev, 0, cur, excluded);
     RestraintsTemp rs = other_restraints + ad.get_restraints(cur);

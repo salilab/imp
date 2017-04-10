@@ -1,7 +1,8 @@
 /**
- *  \file graph_base.cpp   \brief classes for implementing a graph.
+ *  \file rigid_body_tree.cpp
+ *  \brief Handle trees of rigid bodies.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

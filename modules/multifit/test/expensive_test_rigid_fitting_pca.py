@@ -32,8 +32,8 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         self.ps = IMP.core.get_leaves(self.mp)
-        self.rb = IMP.atom.setup_as_rigid_body(self.mp)
-        self.refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
+        self.rb = IMP.atom.create_rigid_body(self.mp)
+        self.refiner = IMP.core.RigidMembersRefiner()
 
     def setUp(self):
         """Build test model and optimizer"""

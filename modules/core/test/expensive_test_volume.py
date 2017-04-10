@@ -39,7 +39,7 @@ class Volume(IMP.test.TestCase):
         sf = IMP.core.RestraintsScoringFunction([vr])
         mc = IMP.core.MonteCarlo(m)
         mc.set_scoring_function(sf)
-        mc.add_mover(IMP.core.BallMover(ps, 4))
+        mc.add_mover(IMP.core.BallMover(m, ps, 4))
         mc.set_score_threshold(.2)
         for i in range(5):
             try:

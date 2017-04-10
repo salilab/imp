@@ -1,7 +1,7 @@
 /**
  *  \file AttributeTable.h    \brief Keys to cache lookup of attribute strings.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -26,13 +26,25 @@ IMPKERNEL_END_NAMESPACE
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
+/**
+   base class for defining traits of attributes in the attribute table
+   to be stored in a Model object. The traits define the type of attribute values,
+   the attributate key, a container for the list of values etc.
+
+   Template params:
+   T - the attribute type
+   K - the attribute key type
+*/
 template <class T, class K>
 struct DefaultTraits {
+  //! a container storing the attribute data for all particles (indexed by ParticleIndex)
   typedef IndexVector<ParticleIndexTag, T> Container;
   typedef T Value;
   typedef T PassValue;
   typedef K Key;
+  //! returns the maximum of a and b
   static const T &max(const T &a, const T &b) { return std::max(a, b); }
+  //! returns the minimum of a and b
   static const T &min(const T &a, const T &b) { return std::min(a, b); }
 };
 
@@ -48,6 +60,8 @@ struct ArrayTraits {
   static const Value &min(const Value &, const Value &b) { return b; }
 };
 
+//! traits for a table of Float attribute (a C/C++ double type),
+//! see also DefaultTraits
 struct FloatAttributeTableTraits : public DefaultTraits<double, FloatKey> {
   static double get_invalid() {
     /* do not use NaN as sometimes GCC will optimize things incorrectly.*/
@@ -66,6 +80,11 @@ struct FloatAttributeTableTraits : public DefaultTraits<double, FloatKey> {
       } else*/
     return f < std::numeric_limits<double>::max();
   }
+  //! allow direct const access to the container data
+  static double const* access_container_data(Container const& c) { return c.data(); }
+  //! allow direct non-const access to the container data
+  static double*       access_container_data(Container&       c) { return c.data(); }
+
 };
 
 struct ParticleAttributeTableTraits
@@ -139,6 +158,11 @@ struct BoolAttributeTableTraits : public DefaultTraits<bool, FloatKey> {
   };
   static bool get_invalid() { return false; }
   static bool get_is_valid(bool f) { return f; }
+    //! allow direct const access to the container data
+  Container const& access_container_data(Container const& c) { return c; }
+  //! allow direct non-const access to the container data
+  static Container& access_container_data(Container&       c) { return c; }
+
 };
 
 struct StringAttributeTableTraits : public DefaultTraits<String, StringKey> {

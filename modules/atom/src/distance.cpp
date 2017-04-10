@@ -1,7 +1,7 @@
 /**
  *  \file distance.cpp  \brief distance measures
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/distance.h>
@@ -102,27 +102,30 @@ std::pair<double, double> get_component_placement_score(
 }
 
 namespace {
-double get_weight(bool mass, bool radii, Particle* p) {
-  if (mass) {
-    return Mass(p).get_mass();
-  } else if (radii) {
-    return cube(core::XYZR(p).get_radius());
-  } else {
-    return 1;
+  //! returns mass if mass=true, or radii^3 if radii=true, or 1.0
+  double get_weight
+  (bool mass, bool radii, Particle* p) {
+    if (mass) {
+      return Mass(p).get_mass();
+    } else if (radii) {
+      return cube(core::XYZR(p).get_radius());
+    } else {
+      return 1.0;
+    }
   }
 }
-}
 
-double get_radius_of_gyration(const ParticlesTemp& ps) {
+double get_radius_of_gyration
+(const ParticlesTemp& ps, bool weighted) {
   IMP_USAGE_CHECK(ps.size() > 0, "No particles provided");
-  bool mass = Mass::get_is_setup(ps[0]);
-  bool radii = core::XYZR::get_is_setup(ps[0]);
+  bool mass= Mass::get_is_setup(ps[0]) && weighted;
+  bool radii= core::XYZR::get_is_setup(ps[0]) && weighted;
   algebra::Vector3D cm(0, 0, 0);
-  double total = 0;
-  for (unsigned int i = 0; i < ps.size(); ++i) {
-    double weight = get_weight(mass, radii, ps[i]);
-    total += weight;
-    cm += core::XYZ(ps[i]).get_coordinates() * weight;
+  double total= 0;
+  for (unsigned int i= 0; i < ps.size(); ++i) {
+    double weight= get_weight(mass, radii, ps[i]);
+    total+= weight;
+    cm+= core::XYZ(ps[i]).get_coordinates() * weight;
   }
   cm /= total;
   double ret = 0;

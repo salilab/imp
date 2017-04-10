@@ -1,5 +1,5 @@
 ## \example rmf/pdb.py
-# Write a PDB to an hdf5 file.
+# Write a PDB to an RMF file.
 #
 
 from __future__ import print_function
@@ -15,12 +15,11 @@ m = IMP.Model()
 # Create a new IMP.atom.Hierarchy from the contents of the pdb file
 h = IMP.atom.read_pdb(IMP.rmf.get_example_path("simple.pdb"), m)
 
-# find the name for a temporary file to use to for writing the hdf5 file
-tfn = IMP.create_temporary_file_name("pdb", ".rmf")
+tfn = "pdb.rmf"
 
 print("File name is", tfn)
 
-# open the temporary file, clearing any existing contents
+# open the file, clearing any existing contents
 rh = RMF.create_rmf_file(tfn)
 
 # add the hierarchy to the file
@@ -49,4 +48,4 @@ IMP.atom.show_molecular_hierarchy(hps[0])
 # load the second configuration into hps
 IMP.rmf.load_frame(rh, RMF.FrameID(0))
 
-print("Try running hdf5_display or hdf5_show on", tfn)
+print("Try running rmf_display or rmf_show on", tfn)

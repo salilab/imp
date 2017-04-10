@@ -1,0 +1,4 @@
+#!/bin/sh
+find /usr/lib/python2.*/dist-packages/IMP -name '*.pyc' -exec rm \{\} \;
+rm -f /usr/lib/python2.*/dist-packages/RMF.pyc
+rm -f /usr/lib/python2.*/dist-packages/RMF_HDF5.pyc

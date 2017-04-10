@@ -1,7 +1,7 @@
 /**
  *  \file ScoreState.cpp \brief Shared score state.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -26,7 +26,6 @@ ScoreState::ScoreState(Model *m, std::string name)
 
 void ScoreState::before_evaluate() {
   IMP_OBJECT_LOG;
-  Timer t(this, str_before_evaluate);
   validate_inputs();
   validate_outputs();
   do_before_evaluate();
@@ -34,7 +33,6 @@ void ScoreState::before_evaluate() {
 
 void ScoreState::after_evaluate(DerivativeAccumulator *da) {
   IMP_OBJECT_LOG;
-  Timer t(this, str_after_evaluate);
   validate_inputs();
   validate_outputs();
   do_after_evaluate(da);

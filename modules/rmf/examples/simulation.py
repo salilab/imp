@@ -63,9 +63,8 @@ bd.set_scoring_function(sf)
 
 bd.set_maximum_time_step(10)
 
-name = IMP.create_temporary_file_name("brownian", ".rmf")
-rmf = RMF.create_rmf_file(name)
-rmf.set_description("Brownian dyanmics trajectory with 10fs timestep.\n")
+rmf = RMF.create_rmf_file("brownian.rmf")
+rmf.set_description("Brownian dynamics trajectory with 10fs timestep.\n")
 IMP.rmf.add_hierarchy(rmf, h)
 IMP.rmf.add_restraints(rmf, rs)
 IMP.rmf.add_geometry(rmf, IMP.display.BoundingBoxGeometry(bb))

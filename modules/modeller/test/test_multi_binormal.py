@@ -18,12 +18,14 @@ class Tests(IMP.test.TestCase):
                 v[n] = 1.
             IMP.core.XYZ.setup_particle(m, p, v)
             ps.append(p)
-        t = IMP.modeller.BinormalTerm()
+        with IMP.allow_deprecated():
+            t = IMP.modeller.BinormalTerm()
         t.set_correlation(0.5)
         t.set_weight(1.0)
         t.set_means([0., 0.])
         t.set_standard_deviations([1., 1.])
-        r = IMP.modeller.MultipleBinormalRestraint(m, ps, ps)
+        with IMP.allow_deprecated():
+            r = IMP.modeller.MultipleBinormalRestraint(m, ps, ps)
         r.add_term(t)
         for deriv in (False, True):
             self.assertAlmostEqual(r.evaluate(deriv), 1.40246, delta=1e-4)

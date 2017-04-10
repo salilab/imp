@@ -2,7 +2,7 @@
  *  \file IMP/algebra/GeometricPrimitiveD.h
  *  \brief Base class for geometric types.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

@@ -1,7 +1,7 @@
 /**
  *  \file Restraint.cpp   \brief Abstract base class for all restraints.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -220,7 +220,6 @@ double Restraint::get_score() const { return evaluate(false); }
 
 void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   IMP_OBJECT_LOG;
-  Timer t(this, "evaluate");
   // implement these in macros to avoid extra virtual function call
   ScoreAccumulator nsa(sa, this);
   validate_inputs();

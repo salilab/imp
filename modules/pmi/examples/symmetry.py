@@ -12,6 +12,9 @@ import IMP.pmi.dof
 import IMP.pmi.macros
 import IMP.pmi.restraints.stereochemistry
 import math
+import sys
+
+IMP.setup_from_argv(sys.argv, "Symmetry constraint example")
 
 # Create System and State
 mdl = IMP.Model()

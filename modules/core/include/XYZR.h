@@ -2,7 +2,7 @@
  *  \file IMP/core/XYZR.h
  *  \brief Decorator for a sphere-like particle.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -74,6 +74,8 @@ class IMPCOREEXPORT XYZR : public XYZ {
   }
   //! Get the key for the radius.
   static FloatKey get_radius_key() { return IMP::internal::xyzr_keys[3]; }
+
+  //! add v to the derivative of the radius attribute
   void add_to_radius_derivative(double v, DerivativeAccumulator &d) {
     get_particle()->add_to_derivative(get_radius_key(), v, d);
   }

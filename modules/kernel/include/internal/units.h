@@ -1,7 +1,7 @@
 /**
  *  \file units.h     \brief Classes to help with converting between units.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -33,7 +33,7 @@ struct MDEnergyTag;
 
 template <>
 inline std::string get_unit_name<MDEnergyTag>(int) {
-  std::string os[] = {"Cal/Mol"};
+  std::string os[] = {"kcal/Mol"};
   return os[0];
 }
 
@@ -41,7 +41,7 @@ struct MDDerivativeTag;
 
 template <>
 inline std::string get_unit_name<MDDerivativeTag>(int) {
-  std::string os[] = {"Cal/(A Mol)"};
+  std::string os[] = {"kcal/(A Mol)"};
   return os[0];
 }
 
@@ -49,7 +49,7 @@ struct MKSTag {};
 
 template <>
 inline std::string get_unit_name<MKSTag>(int o) {
-  std::string os[] = {"kg", "m", "s", "k", "Cal"};
+  std::string os[] = {"kg", "m", "s", "K", "kcal"}; // kcal preferred over Cal
   return os[o];
 }
 
@@ -71,18 +71,19 @@ inline std::string get_unit_name<MolarTag>(int) {
 
 }  // namespace unit::internal
 
+// units coefficient specified by convention using units kg,m,s,K,kcal(Cal)
 typedef boost::mpl::vector_c<int, 0, 0, 0, 0, 0> Scalar;
-typedef boost::mpl::vector_c<int, 1, 0, 0, 0, 0> Mass;
-typedef boost::mpl::vector_c<int, 0, 1, 0, 0, 0> Length;
-typedef boost::mpl::vector_c<int, 0, 3, 0, 0, 0> Volume;
-typedef boost::mpl::vector_c<int, 0, 0, 1, 0, 0> Time;
-typedef boost::mpl::vector_c<int, 0, 0, 0, 1, 0> Temperature;
-typedef boost::mpl::vector_c<int, 0, 0, 0, 0, 1> HeatEnergy;
+ typedef boost::mpl::vector_c<int, 1, 0, 0, 0, 0> Mass; // kg
+ typedef boost::mpl::vector_c<int, 0, 1, 0, 0, 0> Length; // m
+ typedef boost::mpl::vector_c<int, 0, 3, 0, 0, 0> Volume; // m^3
+ typedef boost::mpl::vector_c<int, 0, 0, 1, 0, 0> Time; // s
+ typedef boost::mpl::vector_c<int, 0, 0, 0, 1, 0> Temperature; // K
+ typedef boost::mpl::vector_c<int, 0, 0, 0, 0, 1> HeatEnergy; // Joule
 
-typedef boost::mpl::vector_c<int, 1, 2, -2, 0, 0> Energy;
-typedef boost::mpl::vector_c<int, 1, 1, -2, 0, 0> Force;
-typedef boost::mpl::vector_c<int, 1, -1, -2, 0, 0> Pressure;
-typedef boost::mpl::vector_c<int, 0, -1, 0, 0, 1> HeatEnergyDerivative;
+ typedef boost::mpl::vector_c<int, 1, 2, -2, 0, 0> Energy; // = 1 Joule
+ typedef boost::mpl::vector_c<int, 1, 1, -2, 0, 0> Force; // = 1 Newton
+ typedef boost::mpl::vector_c<int, 1, -1, -2, 0, 0> Pressure; // = 1 Pascal
+ typedef boost::mpl::vector_c<int, 0, -1, 0, 0, 1> HeatEnergyDerivative; // Joule/m
 
 typedef Unit<internal::MKSTag, 0, Scalar> MKSScalar;
 typedef Unit<internal::MKSTag, 0, Length> Meter;
@@ -115,7 +116,7 @@ typedef Unit<internal::MKSTag, 0, HeatEnergy> Kilocalorie;
 typedef Unit<internal::MKSTag, -21, HeatEnergy> YoctoKilocalorie;
 typedef Divide<Kilocalorie, Meter>::type KilocaloriePerMeter;
 typedef Divide<Kilocalorie, Angstrom>::type KilocaloriePerAngstrom;
-// Calorie is ambiguous given our naming convention
+// Calorie is ambiguous given our naming convention - Kilocalorie preferred
 typedef Shift<KilocaloriePerMeter, -21>::type YoctoKilocaloriePerMeter;
 typedef Shift<KilocaloriePerAngstrom, -21>::type YoctoKilocaloriePerAngstrom;
 typedef Multiply<Multiply<Centimeter, Centimeter>::type, Centimeter>::type
@@ -130,7 +131,7 @@ typedef Shift<Meter, -6>::type Micron;
 template <int EXP, class Units>
 inline typename Exchange<Unit<internal::MKSTag, EXP, Units>, Kilocalorie, Joule,
                          4>::type
-convert_Cal_to_J(Unit<internal::MKSTag, EXP, Units> i) {
+convert_kcal_to_J(Unit<internal::MKSTag, EXP, Units> i) {
   typedef typename Exchange<Unit<internal::MKSTag, EXP, Units>, Kilocalorie,
                             Joule, 4>::type Return;
   return Return(i.get_exponential_value() * JOULES_PER_KILOCALORIE);
@@ -139,7 +140,7 @@ convert_Cal_to_J(Unit<internal::MKSTag, EXP, Units> i) {
 template <int EXP, class Units>
 inline typename Exchange<Unit<internal::MKSTag, EXP, Units>, Joule, Kilocalorie,
                          -3>::type
-convert_J_to_Cal(Unit<internal::MKSTag, EXP, Units> i) {
+convert_J_to_kcal(Unit<internal::MKSTag, EXP, Units> i) {
   typedef typename Exchange<Unit<internal::MKSTag, EXP, Units>, Joule,
                             Kilocalorie, -3>::type Return;
   return Return(i.get_exponential_value() / JOULES_PER_KILOCALORIE);

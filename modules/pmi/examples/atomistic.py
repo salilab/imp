@@ -3,6 +3,7 @@
 with a secondary structure elastic network to speed things up.
 """
 
+from __future__ import print_function
 import IMP
 import RMF
 import IMP.atom
@@ -12,6 +13,13 @@ import IMP.pmi.topology
 import IMP.pmi.dof
 import IMP.pmi.macros
 import IMP.pmi.restraints.stereochemistry
+import sys
+
+IMP.setup_from_argv(sys.argv, "Simulation of an atomic system")
+if IMP.get_is_quick_test():
+    print("This example is too slow to test in debug mode - run without")
+    print("internal tests enabled, or without the --run-quick-test flag")
+    sys.exit(0)
 
 # Setup System and add a State
 mdl = IMP.Model()
@@ -37,7 +45,8 @@ charmm = IMP.pmi.restraints.stereochemistry.CharmmForceFieldRestraint(hier)
 charmm.add_to_model()
 
 # add elastic network on secondary structure units
-sses = IMP.pmi.io.parse_dssp(IMP.pmi.get_example_path('data/gcp2.dssp'),'A')
+sses = IMP.pmi.io.parse_dssp(IMP.pmi.get_example_path('data/gcp2.dssp'),'A',
+                             name_map={'A':'GCP2'})
 all_rs = []
 for sse in sses['helix']+sses['beta']:
     er = IMP.pmi.restraints.stereochemistry.ElasticNetworkRestraint(

@@ -1,8 +1,8 @@
 /**
- *  \file PMFTable.h
- *  \brief Functions to read mol2s
+ *  \file grid_close_pair_impl.h
+ *  \brief Implementation of close pairs finder that is based on a grid hierarchy
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -152,6 +152,8 @@ struct Helper {
     return ii;
   }
 
+  //! returns the maximal radius of particles in ps0, using tr to compute
+  //! that radius
   template <class It>
   static double get_max_radius(const ParticleSet<It> &ps0, const Traits &tr) {
     double maxr = 0;

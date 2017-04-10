@@ -5,6 +5,7 @@
 *.bak
 *.old
 .*.sw?
+*#
 modules/*/CMakeLists.txt
 modules/*/CMakeModules
 modules/*/utility/CMakeLists.txt
@@ -20,3 +21,6 @@ modules/*/examples/CMakeLists.txt
 applications/*/CMakeLists.txt
 tools/build/cmake_files/MakeContainers.cmake
 Files.cmake
+.DS_Store
+modules/npctransport/
+.#*

@@ -1,7 +1,7 @@
 /**
  *  \file Simulator.cpp  \brief Simple Brownian dynamics optimizer.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -179,27 +179,5 @@ double Simulator::get_kt() const {
 
 IMP_LIST_IMPL(Simulator, Particle, particle, Particle *,
               Particles);
-
-double get_energy_in_femto_joules(double energy_in_kcal_per_mol) {
-  unit::KilocaloriePerMol cforce(energy_in_kcal_per_mol);
-  unit::Femtojoule nforce =
-      unit::convert_Cal_to_J(cforce / unit::ATOMS_PER_MOL);
-  return nforce.get_value();
-}
-
-double get_force_in_femto_newtons(double f) {
-  unit::KilocaloriePerAngstromPerMol cforce(f);
-  unit::Femtonewton nforce =
-      unit::convert_Cal_to_J(cforce / unit::ATOMS_PER_MOL);
-  return nforce.get_value();
-}
-
-double get_spring_constant_in_femto_newtons_per_angstrom(double k) {
-  // cheating a bit
-  unit::KilocaloriePerAngstromPerMol cforce(k);
-  unit::Femtonewton nforce =
-      unit::convert_Cal_to_J(cforce / unit::ATOMS_PER_MOL);
-  return nforce.get_value();
-}
 
 IMPATOM_END_NAMESPACE

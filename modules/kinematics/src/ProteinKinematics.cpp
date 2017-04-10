@@ -2,7 +2,7 @@
  * \file ProteinKinematics
  * \brief functionality for defining a kinematic forest for proteins
  *
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *  \authors Dina Schneidman, Barak Raveh
  *
  */

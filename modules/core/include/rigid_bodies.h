@@ -2,7 +2,7 @@
  *  \file IMP/core/rigid_bodies.h
  *  \brief functionality for defining rigid bodies
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_BODIES_H
@@ -176,9 +176,18 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   // swig doesn't support using, so the method is wrapped
   //! Get the coordinates of the particle
+  //! (= translation from local to global rigid body coordinates)
   algebra::Vector3D get_coordinates() const { return XYZ::get_coordinates(); }
 
-  //! Get the reference frame for the local coordinates
+  //! returns the rotation of the particle
+  //! (= rotation from local to global rigid body orientation)
+  IMP::algebra::Rotation3D get_rotation() const {
+    return get_reference_frame().get_transformation_to().get_rotation();
+  }
+
+  //! Get the reference frame of this rigid body, which enables
+  //! trnasformation between the local rigid body coordinates
+  //! global coordinates
   IMP::algebra::ReferenceFrame3D get_reference_frame() const {
     algebra::VectorD<4> v(
         get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],
@@ -213,7 +222,60 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   //! Change the reference, delay updating the members until evaluate
   /** \see set_reference_frame()
    */
-  void set_reference_frame_lazy(const IMP::algebra::ReferenceFrame3D &tr);
+  inline void set_reference_frame_lazy
+    (const IMP::algebra::ReferenceFrame3D &tr)
+  {
+    algebra::VectorD<4> v =
+      tr.get_transformation_to().get_rotation().get_quaternion();
+    get_particle()->set_value(internal::rigid_body_data().quaternion_[0], v[0]);
+    get_particle()->set_value(internal::rigid_body_data().quaternion_[1], v[1]);
+    get_particle()->set_value(internal::rigid_body_data().quaternion_[2], v[2]);
+    get_particle()->set_value(internal::rigid_body_data().quaternion_[3], v[3]);
+    set_coordinates(tr.get_transformation_to().get_translation());
+  }
+
+#ifndef SWIG
+#ifndef IMP_DOXYGEN
+  //! 'expert' method for setting the reference more quickly
+  //! use at own risk
+  inline void set_rotation_lazy_using_internal_tables
+    (const IMP::algebra::Rotation3D &rot,
+     double* quaternion_tables[])
+  {
+    algebra::VectorD<4> v =
+      rot.get_quaternion();
+    int pi=get_particle_index().get_index();
+    quaternion_tables[0][pi]=v[0];
+    quaternion_tables[1][pi]=v[1];
+    quaternion_tables[2][pi]=v[2];
+    quaternion_tables[3][pi]=v[3];
+  }
+
+  //! 'expert' method for setting the reference more quickly
+  //! use at own risk
+  inline void apply_rotation_lazy_using_internal_tables
+    (const IMP::algebra::Rotation3D &rot,
+     double* quaternion_tables[])
+  {
+    int pi=get_particle_index().get_index();
+    IMP::algebra::Rotation3D cur_rot
+      ( quaternion_tables[0][pi],
+        quaternion_tables[1][pi],
+        quaternion_tables[2][pi],
+        quaternion_tables[3][pi] );
+    algebra::VectorD<4> v=
+      (cur_rot*rot).get_quaternion();;
+    quaternion_tables[0][pi]=v[0];
+    quaternion_tables[1][pi]=v[1];
+    quaternion_tables[2][pi]=v[2];
+    quaternion_tables[3][pi]=v[3];
+  }
+
+#endif // IMP_DOXYGEN
+#endif // SWIG
+
+
+
 
   /** Update the reference frame of the rigid body based on aligning
       the current global coordinates of the passed rigid body members
@@ -229,23 +291,51 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   */
   void set_reference_frame_from_members(const ParticleIndexes &members);
 
-#ifndef IMP_DOXYGEN
-  /** This takes a Cartesian derivative in global coordinates,
-      and a location in internal coordinates.
+  /**  Update the translational and rotational derivatives
+       on the rigid body center of mass, using the Cartesian derivative
+       vector at a speicified location (the point where the force is
+       being applied).
 
-      It is currently hidden since the function signature is highly ambiguous.
+       Updates both the quaternion derivatives and the torque.
+
+      @param local_derivative The derivative vector in local rigid body coordinates
+      @param local_location   The location where the derivative is taken in local
+                              rigid body coordinates
+      @param da               Accumulates the output derivative over the rigid body
+                              center of mass (translation and rotation torque, quaternion)
    */
-  inline void add_to_derivatives(const algebra::Vector3D &derivative,
+  inline void add_to_derivatives(const algebra::Vector3D &local_derivative,
                           const algebra::Vector3D &local_location,
                           DerivativeAccumulator &da);
 
-  // faster if all is cached
-  inline void add_to_derivatives(const algebra::Vector3D &derivative,
+  /** Faster version of the above, if all is cached.
+
+      @param local_derivative    The derivative vector in local rigid body coordinates
+      @param global_derivative   The derivative vector in global coordinates
+      @param local_location      The location where the derivative is taken in local
+                                 rigid body coordinates
+      @param rot_local_to_global Rotation matrix from local rigid body to
+                                 global coordinates
+      @param da                  Accumulates the output derivative over the rigid body
+                                 center of mass (translation and rotation torque, quaternion)
+  */
+  inline void add_to_derivatives(const algebra::Vector3D &local_derivative,
                           const algebra::Vector3D &global_derivative,
                           const algebra::Vector3D &local_location,
-                          const algebra::Rotation3D &rot,
+                          const algebra::Rotation3D &rot_local_to_global,
                           DerivativeAccumulator &da);
-#endif
+
+  /** Add torque to derivative table of this rigid body
+      Note that this method does not update the quaternion derivatives, so should
+      be used by optimizers that rely on torque only (e.g. BrownianDynamics)
+
+      @param torque_local Torque vector in local reference frame,
+                          in units of kCal/Mol/Radian
+      @param da           Object for accumulating derivatives
+  */
+  inline void add_to_torque(const algebra::Vector3D &torque_local,
+				DerivativeAccumulator &da);
+
 
   /** The units are kCal/Mol/Radian */
   algebra::Vector3D get_torque() const {
@@ -256,6 +346,56 @@ class IMPCOREEXPORT RigidBody : public XYZ {
     }
     return ret;
   }
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+   //! expert method for fast const-access to internal torque
+  //! of coordinate #i table
+  static double const* access_torque_i_data
+    (IMP::Model const* m, unsigned int i)
+  {
+    IMP_USAGE_CHECK(i<3,"torque is 3 dimensional");
+    FloatKey k=
+          internal::rigid_body_data().torque_[i];
+    double const* ret=m->access_derivative_data(k);
+    return ret;
+  }
+
+  //! expert method for fast access to internal torque
+  //! of coordinate #i table
+  static double* access_torque_i_data
+    (IMP::Model* m, unsigned int i)
+  {
+    IMP_USAGE_CHECK(i<3,"torque is 3 dimensional");
+    FloatKey k=
+          internal::rigid_body_data().torque_[i];
+    double* ret=m->access_derivative_data(k);
+    return ret;
+  }
+
+  //! expert method for fast const-access to internal quaternion coordinate #i table
+  static double const* access_quaternion_i_data
+    (IMP::Model const* m, unsigned int i)
+  {
+    IMP_USAGE_CHECK(i<4,"quaternion is 4 dimensional");
+    FloatKey k=
+          internal::rigid_body_data().quaternion_[i];
+    double const* ret=m->access_attribute_data(k);
+    return ret;
+  }
+
+  //! expert method for fast access to internal quaternion coordinate #i table
+  static double* access_quaternion_i_data
+    (IMP::Model* m, unsigned int i)
+  {
+    IMP_USAGE_CHECK(i<4,"quaternion is 4 dimensional");
+    FloatKey k=
+          internal::rigid_body_data().quaternion_[i];
+    double* ret=m->access_attribute_data(k);
+    return ret;
+  }
+
+
+#endif
 
   //! Returns true if the rigid body coordinates are flagged as
   //! optimized for Optimizer objects
@@ -312,19 +452,28 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
 #ifndef IMP_DOXYGEN
 // inline implementation
+void RigidBody::add_to_torque(const algebra::Vector3D &torque_local,
+                                   DerivativeAccumulator &da) {
+  for (unsigned int i = 0; i < 3; ++i) {
+    get_model()->add_to_derivative(internal::rigid_body_data().torque_[i],
+                                   get_particle_index(), torque_local[i], da);
+  }
+}
+
+
+// inline implementation
 void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &deriv_global,
                                    const algebra::Vector3D &local,
-                                   const algebra::Rotation3D &rot,
+                                   const algebra::Rotation3D &rot_local_to_global,
                                    DerivativeAccumulator &da) {
-  // const algebra::Vector3D deriv_global= rot*deriv_local;
   // IMP_LOG_TERSE( "Accumulating rigid body derivatives" << std::endl);
+  XYZ::add_to_derivatives(deriv_global, da);
   algebra::VectorD<4> q(0, 0, 0, 0);
   for (unsigned int j = 0; j < 4; ++j) {
-    algebra::Vector3D v = rot.get_derivative(local, j);
+    algebra::Vector3D v = rot_local_to_global.get_derivative(local, j);
     q[j] = deriv_global * v;
   }
-  XYZ::add_to_derivatives(deriv_global, da);
   for (unsigned int j = 0; j < 4; ++j) {
     get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[j],
                                    get_particle_index(), q[j], da);
@@ -340,10 +489,11 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
 void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &local,
                                    DerivativeAccumulator &da) {
-  algebra::Rotation3D rot =
+  algebra::Rotation3D rot_local_to_global =
       get_reference_frame().get_transformation_to().get_rotation();
-  const algebra::Vector3D deriv_global = rot * deriv_local;
-  add_to_derivatives(deriv_local, deriv_global, local, rot, da);
+  const algebra::Vector3D deriv_global = rot_local_to_global * deriv_local;
+  add_to_derivatives(deriv_local, deriv_global, local,
+		     rot_local_to_global, da);
 }
 #endif
 

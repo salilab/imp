@@ -49,4 +49,5 @@ def search_start(d):
         elif not cp.endswith('gitflow'):
             search_start(cp)
 
-search_start(".")
+if __name__ == '__main__':
+    search_start(".")

@@ -22,7 +22,7 @@ class Tests(IMP.test.TestCase):
         print(keys)
         for k in keys:
             pm.set_is_optimized(k, True)
-        mv = IMP.core.BallMover([pm],
+        mv = IMP.core.BallMover(m, [pm],
                                 keys, 1)
 
         mv.set_log_level(IMP.VERBOSE)

@@ -2,7 +2,7 @@
  *  \file IMP/core/ClosePairsFinder.h
  *  \brief A base class for algorithms to detect proximities.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CLOSE_PAIRS_FINDER_H
@@ -40,8 +40,10 @@ class IMPCOREEXPORT ClosePairsFinder : public ParticleInputs,
   ClosePairsFinder(std::string name);
   ~ClosePairsFinder();
 
+  //! return all close pairs among pc in model m
   virtual ParticleIndexPairs get_close_pairs(
       Model *m, const ParticleIndexes &pc) const = 0;
+  //! return all close pairs among pc in model m
   virtual ParticleIndexPairs get_close_pairs(
       Model *m, const ParticleIndexes &pca,
       const ParticleIndexes &pcb) const = 0;

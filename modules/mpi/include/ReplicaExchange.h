@@ -2,7 +2,7 @@
  *  \file IMP/mpi/ReplicaExchange.h
  *  \brief A class to do replica exchange in a generic Hamiltonian parameter
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMPI_REPLICA_EXCHANGE_H
@@ -44,8 +44,6 @@ class IMPMPIEXPORT ReplicaExchange : public Object {
   bool get_acceptance(double myscore, double fscore);
   //! Get the rank for a given replica index
   int get_rank(int index);
-
-  virtual void do_destroy() IMP_OVERRIDE { MPI_Finalize(); }
 
  public:
   ReplicaExchange();

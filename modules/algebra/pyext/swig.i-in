@@ -41,6 +41,7 @@ IMP_SWIG_VALUE(IMP::algebra, Triangle3D, Triangle3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Cone3D, Cone3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Cylinder3D, Cylinder3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Ellipsoid3D, Ellipsoid3Ds);
+IMP_SWIG_VALUE(IMP::algebra,  Line3D, Line3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Plane3D, Plane3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Segment3D, Segment3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  SpherePatch3D, SpherePatch3Ds);
@@ -126,6 +127,7 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 
 %include "IMP_algebra.spherical_coords.i"
 %include "IMP/algebra/eigen_analysis.h"
+%include "IMP/algebra/Line3D.h"
 %include "IMP/algebra/Segment3D.h"
 %include "IMP/algebra/Triangle3D.h"
 %include "IMP/algebra/LinearFit.h"

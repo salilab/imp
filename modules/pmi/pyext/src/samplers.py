@@ -56,7 +56,8 @@ class MonteCarlo(object):
             "Floppy_Bodies",
             "Nuisances",
             "X_coord",
-            "Weights"]
+            "Weights"
+            "Surfaces"]
         self.simulated_annealing = False
         self.selfadaptive = False
         # that is -1 because mc has not yet run
@@ -123,6 +124,16 @@ class MonteCarlo(object):
                         if not self.isd_available:
                             raise ValueError("isd module needed to use weights")
                         mvs = self.get_weight_movers(pts[k][0], pts[k][1])
+                        for mv in mvs:
+                            mv.set_name(k)
+                        self.mvs += mvs
+
+                    if "Surfaces" in k:
+                        mvs = self.get_surface_movers(
+                            pts[k][0],
+                            pts[k][1],
+                            pts[k][2],
+                            pts[k][3])
                         for mv in mvs:
                             mv.set_name(k)
                         self.mvs += mvs
@@ -248,7 +259,8 @@ class MonteCarlo(object):
     def get_rigid_body_movers(self, rbs, maxtrans, maxrot):
         mvs = []
         for rb in rbs:
-            mvs.append(IMP.core.RigidBodyMover(rb, maxtrans, maxrot))
+            mvs.append(IMP.core.RigidBodyMover(rb.get_model(), rb,
+                                               maxtrans, maxrot))
         return mvs
 
     def get_super_rigid_body_movers(self, rbs, maxtrans, maxrot):
@@ -257,13 +269,29 @@ class MonteCarlo(object):
             if len(rb) == 2:
                 # normal Super Rigid Body
                 srbm = IMP.pmi.TransformMover(self.m, maxtrans, maxrot)
-            if len(rb) == 3:
-                # super rigid body with 2D rotation, rb[2] is the axis
-                srbm = IMP.pmi.TransformMover(
-                    self.m,
-                    IMP.algebra.Vector3D(rb[2]),
-                    maxtrans,
-                    maxrot)
+            elif len(rb) == 3:
+                if type(rb[2]) == tuple and type(rb[2][0]) == float \
+                    and type(rb[2][1]) == float and type(rb[2][2]) == float \
+                    and len(rb[2])== 3:
+                    # super rigid body with 2D rotation, rb[2] is the axis
+                    srbm = IMP.pmi.TransformMover(
+                      self.m,
+                      IMP.algebra.Vector3D(rb[2]),
+                      maxtrans,
+                      maxrot)
+                #elif type(rb[2]) == tuple and type(rb[2][0]) == IMP.Particle \
+                #    and type(rb[2][1]) == IMP.Particle and len(rb[2])== 2:
+                #    # super rigid body with bond rotation
+
+                #    srbm = IMP.pmi.TransformMover(
+                #      self.m,
+                #      rb[2][0],rb[2][1],
+                #      0, #no translation
+                #      maxrot)
+                else:
+                    print("Setting up a super rigid body with wrong parameters")
+                    raise
+
             for xyz in rb[0]:
                 srbm.add_xyz_particle(xyz)
             for rb in rb[1]:
@@ -281,12 +309,12 @@ class MonteCarlo(object):
                 for fk in floatkeys:
                     fb.set_is_optimized(fk, True)
                 mvs.append(
-                    IMP.core.BallMover([fb],
+                    IMP.core.BallMover(fb.get_model(), fb,
                                        IMP.FloatKeys(floatkeys),
                                        maxtrans))
             else:
                 # otherwise use the normal ball mover
-                mvs.append(IMP.core.BallMover([fb], maxtrans))
+                mvs.append(IMP.core.BallMover(fb.get_model(), fb, maxtrans))
         return mvs
 
     def get_X_movers(self, fbs, maxtrans):
@@ -306,6 +334,13 @@ class MonteCarlo(object):
         for weight in weights:
             if(weight.get_number_of_states() > 1):
                 mvs.append(IMP.isd.WeightMover(weight, maxstep))
+        return mvs
+
+    def get_surface_movers(self, surfaces, maxtrans, maxrot, refprob):
+        mvs = []
+        for surface in surfaces:
+            mvs.append(IMP.core.SurfaceMover(surface, maxtrans, maxrot,
+                                             refprob))
         return mvs
 
     def temp_simulated_annealing(self):
@@ -349,7 +384,7 @@ class MonteCarlo(object):
 class MolecularDynamics(object):
     """Sample using molecular dynamics"""
 
-    def __init__(self,m,objects,kt,gamma=0.01,maximum_time_step=1.0):
+    def __init__(self,m,objects,kt,gamma=0.01,maximum_time_step=1.0,sf=None):
         """Setup MD
         @param m The IMP Model
         @param objects What to sample. Use flat list of particles or (deprecated) 'MD Sample Objects' from PMI1
@@ -371,7 +406,10 @@ class MolecularDynamics(object):
                                                                gamma)
         self.md = IMP.atom.MolecularDynamics(self.m)
         self.md.set_maximum_time_step(maximum_time_step)
-        self.md.set_scoring_function(get_restraint_set(self.m))
+        if sf:
+            self.md.set_scoring_function(sf)
+        else:
+            self.md.set_scoring_function(get_restraint_set(self.m))
         self.md.add_optimizer_state(self.ltstate)
         self.simulated_annealing = False
         self.nframe = -1

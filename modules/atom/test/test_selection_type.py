@@ -198,7 +198,7 @@ class Tests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
         r = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
-        IMP.atom.setup_as_rigid_body(r)
+        rb = IMP.atom.create_rigid_body(r)
         s = IMP.atom.Selection([r], residue_indexes=[436, 437])
         pis = s.get_selected_particle_indexes()
         for pi in pis:

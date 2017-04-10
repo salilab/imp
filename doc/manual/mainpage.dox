@@ -85,6 +85,7 @@ complex might want to skip ahead to
    - [Cross platform compatibility](@ref cross_platform)
    - [Contributing code back to IMP](@ref cont_back)
    - [Supporting your code](@ref supporting)
+   - [Automated builds and checks](@ref autobuild)
 
  - [Internals](@ref internals)
    - [Dependencies](@ref internal_dependencies)

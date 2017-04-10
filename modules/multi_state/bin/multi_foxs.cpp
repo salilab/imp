@@ -4,7 +4,7 @@
  * \brief Multiple states generation for multiple SAXS profiles
  *
  * Author: Dina Schneidman
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multi_state/EnsembleGenerator.h>
@@ -95,7 +95,7 @@ void read_files(const std::vector<std::string>& files,
                 Profiles& exp_profiles,
                 int multi_model_pdb,
                 bool partial_profiles, double max_q) {
-
+  IMP_NEW(IMP::Model, m, ());
   for (unsigned int i = 0; i < files.size(); i++) {
     // check if file exists
     std::ifstream in_file(files[i].c_str());
@@ -107,7 +107,8 @@ void read_files(const std::vector<std::string>& files,
     try {
       IMP::Vector<IMP::Particles> particles_vec;
       IMP::Vector<std::string> curr_pdb_file_names;
-      read_pdb(files[i], curr_pdb_file_names, particles_vec, false, true, multi_model_pdb);
+      read_pdb(m, files[i], curr_pdb_file_names, particles_vec, false,
+               true, multi_model_pdb);
       if(particles_vec.size() > 0) { // pdb file
         for(unsigned int j=0; j<particles_vec.size(); j++) {
           // compute profile
@@ -161,6 +162,7 @@ int main(int argc, char* argv[]) {
   double max_c2 = 2.0;
   bool partial_profiles = true;
   bool vr_score = false;
+  bool use_offset = false;
 
   po::options_description desc("Options");
   desc.add_options()
@@ -168,7 +170,7 @@ int main(int argc, char* argv[]) {
 The weights are computed to minimize the chi between the first profile \
 and a weighted average of the rest.")
     ("version", "MultiFoXS (IMP applications)\n \
-Copyright 2007-2016 IMP Inventors.\nAll rights reserved. \n \
+Copyright 2007-2017 IMP Inventors.\nAll rights reserved. \n \
 License: GNU LGPL version 2.1 or later<http://gnu.org/licenses/lgpl.html>.\n\
 Written by Dina Schneidman.")
     ("number-of-states,s", po::value<int>(&number_of_states)->default_value(10),
@@ -198,7 +200,9 @@ recommended q value is 0.2")
   po::options_description hidden("Hidden options");
   hidden.add_options()
     ("input-files", po::value< std::vector<std::string> >(),
-     "input profile files");
+     "input profile files")
+    ("offset,o", "use offset in fitting (default = false)")
+    ;
 
   po::options_description cmdline_options;
   cmdline_options.add(desc).add(hidden);
@@ -224,7 +228,8 @@ recommended q value is 0.2")
   if(vm.count("nnls")) nnls = true;
   if(vm.count("fixed_c1_c2_score")) fixed_c1_c2_score = false;
   if(vm.count("partial_profiles")) partial_profiles = false;
-  if (vm.count("volatility_ratio")) vr_score = true;
+  if(vm.count("volatility_ratio")) vr_score = true;
+  if(vm.count("offset")) use_offset = true;
 
   Profiles exp_profiles;
   Profiles computed_profiles;
@@ -271,7 +276,7 @@ recommended q value is 0.2")
       SAXSMultiStateModelScore<ChiScore> *saxs_chi_score =
         new SAXSMultiStateModelScore<ChiScore>(clustered_profiles, exp_profiles[i],
                                                fixed_c1_c2_score,
-                                               min_c1, max_c1, min_c2, max_c2);
+                                               min_c1, max_c1, min_c2, max_c2, use_offset);
       scorers.push_back(saxs_chi_score);
     } else {
       SAXSMultiStateModelScore<RatioVolatilityScore> *saxs_vr_score =

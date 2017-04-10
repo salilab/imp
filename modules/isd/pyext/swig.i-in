@@ -49,6 +49,7 @@ IMP_SWIG_OBJECT(IMP::isd, WeightMover, WeightMovers);
 IMP_SWIG_OBJECT(IMP::isd, WeightRestraint, WeightRestraints);
 IMP_SWIG_OBJECT(IMP::isd, AtomicCrossLinkMSRestraint, AtomicCrossLinkMSRestraints);
 IMP_SWIG_OBJECT(IMP::isd, GaussianEMRestraint, GaussianEMRestraints);
+IMP_SWIG_OBJECT(IMP::isd, GaussianAnchorEMRestraint, GaussianAnchorEMRestraints);
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.isds.say_hello(). */
@@ -108,4 +109,5 @@ def create_model_and_particles():
 %include "IMP/isd/WeightRestraint.h"
 %include "IMP/isd/AtomicCrossLinkMSRestraint.h"
 %include "IMP/isd/GaussianEMRestraint.h"
+%include "IMP/isd/GaussianAnchorEMRestraint.h"
 %include "IMP/isd/em_utilities.h"

@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 #include <IMP/PairPredicate.h>
 #include <IMP/atom/BrownianDynamics.h>
@@ -18,7 +18,7 @@
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/container/SingletonsRestraint.h>
 #include <IMP/container/generic.h>
-#include <IMP/core/AttributeSingletonScore.h>
+#include <IMP/core/GenericAttributeSingletonScore.h>
 #include <IMP/core/BallMover.h>
 #include <IMP/core/ConjugateGradients.h>
 #include <IMP/core/DistancePairScore.h>

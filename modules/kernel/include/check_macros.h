@@ -2,7 +2,7 @@
  *  \file IMP/check_macros.h
  *  \brief Exception definitions and assertions.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -284,7 +284,7 @@
 #define IMP_CHECK_OBJECT(obj)                                            \
   do {                                                                   \
     IMP_UNUSED(obj);                                                     \
-    IMP_INTERNAL_CHECK((obj), "nullptr object");                         \
+    IMP_INTERNAL_CHECK((obj!=nullptr), "nullptr object");             \
     IMP_INTERNAL_CHECK((obj)->get_is_valid(),                            \
                        "Check object " << static_cast<const void *>(obj) \
                                        << " was previously freed");      \

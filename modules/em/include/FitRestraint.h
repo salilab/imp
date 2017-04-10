@@ -2,7 +2,7 @@
  *  \file IMP/em/FitRestraint.h
  *  \brief Calculate score based on fit to EM map.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -26,8 +26,15 @@
 IMPEM_BEGIN_NAMESPACE
 
 //! Calculate score based on fit to EM map
-/** \ingroup exp_restraint
+/** The score is a function of the cross correlation between the
+    EM map and the map simulated from the particles. This is calculated
+    by means of a double sum over the two sets of voxels.
 
+    \note In most cases it is faster to approximate the two maps with
+          a Gaussian Mixture Model and to use that for the scoring, with
+          isd::GaussianEMRestraint.
+
+    \ingroup exp_restraint
  */
 class IMPEMEXPORT FitRestraint : public Restraint {
  public:

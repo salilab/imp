@@ -1,7 +1,7 @@
 /**
  * \file IMP/integrative_docking/EMFit.h \brief
  *
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,6 +17,8 @@
 #include <IMP/em/DensityMap.h>
 
 #include <IMP/Particle.h>
+
+#include <boost/scoped_ptr.hpp>
 
 IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
@@ -57,7 +59,7 @@ class IMPINTEGRATIVEDOCKINGEXPORT EMFit {
   IMP::PointerMember<IMP::em::DensityMap> map_;
   IMP::PointerMember<IMP::em::MapDistanceTransform> distance_transform_;
   IMP::PointerMember<IMP::em::EnvelopeScore> envelope_score_;
-  MapScorer* cc_score_;
+  boost::scoped_ptr<MapScorer> cc_score_;
   float dist_thr_;
   float density_threshold_;
   std::vector<EM3DFitResult> fit_results_;

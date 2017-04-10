@@ -2,7 +2,7 @@
  *  \file IMP/container/DynamicListClassnameContainer.h
  *  \brief Store a list of PLURALVARIABLETYPE
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_DYNAMIC_LIST_CLASSNAME_CONTAINER_H
@@ -59,21 +59,6 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
   //! Clear the contents of the container.
   void clear();
 #endif
-  /** \deprecated_at{2.5} Use add() with indexes instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void add_FUNCTIONNAME(ARGUMENTTYPE vt);
-
-  /** \deprecated_at{2.5} Use add() with indexes instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
-
-  /** \deprecated_at{2.5} Use set() instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
-
-  /** \deprecated_at{2.5} Use clear() instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.5)
-  void clear_FUNCTIONNAMEs();
 
 /**@}*/
 #ifdef SWIG

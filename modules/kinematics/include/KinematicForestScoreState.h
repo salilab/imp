@@ -3,7 +3,7 @@
  \brief
 
  \authors Dina Schneidman, Barak Raveh
- Copyright 2007-2016 IMP Inventors. All rights reserved.
+ Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_KINEMATIC_FOREST_SCORE_STATE_H
@@ -33,7 +33,7 @@ Model *extract_model(const IMP::core::RigidBodies &rbs,
 /**
    A score state that uses a KinematicForest of the model to update
    external coordinates before energy evaluation, if internal coordinates
-   in the forest where altered previously.
+   in the forest were altered previously.
 
    \see KinematicForest
    \see Joint

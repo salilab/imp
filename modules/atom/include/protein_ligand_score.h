@@ -2,7 +2,7 @@
  *  \file IMP/atom/protein_ligand_score.h
  *  \brief Functions to read mol2s
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -35,7 +35,7 @@ class ProteinLigandRestraint;
 
 #ifndef SWIG
 /** The marker to identify the atom types.*/
-typedef Key<783462, false> ProteinLigandType;
+typedef Key<783462> ProteinLigandType;
 IMP_VALUES(ProteinLigandType, ProteinLigandTypes);
 #else
 class ProteinLigandType;

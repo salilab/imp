@@ -1,7 +1,7 @@
 /**
  *  \file BrownianDynamics.cpp  \brief Simple Brownian dynamics optimizer.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -64,14 +64,14 @@ bool BrownianDynamics::get_is_simulation_particle(ParticleIndex pi)
 
 namespace {
 /** get the force displacement term in the Ermak-Mccammon equation
-    for coordinate i of  particle pi in model m, with time step dt and ikT=1/kT
+    for coordinate i of  particle pi in model m, with time step dt [fs] and ikT=1/kT [mol/kcal]
 */
 inline double get_force_displacement(Model *m, ParticleIndex pi,
                         unsigned int i, double dt, double ikT) {
   Diffusion d(m, pi);
-  double nforce(-d.get_derivative(i));
+  double nforce(-d.get_derivative(i)); // [kCal/mol/A]
   // unit::Angstrom R(sampler_());
-  double dd = d.get_diffusion_coefficient();
+  double dd = d.get_diffusion_coefficient(); // [A^2/fs]
   double force_term(nforce * dd * dt * ikT);
   /*if (force_term > unit::Angstrom(.5)) {
     std::cout << "Forces on " << _1->get_name() << " are "
@@ -84,15 +84,16 @@ inline double get_force_displacement(Model *m, ParticleIndex pi,
             << std::endl;*/
   return force_term;
 }
-// radians
+// returns i'th torque displacement in radians given model m, particle index p,
+// torque component number i, time dt in fs, and ikT (1/kT) in mol/kcal
 inline double get_torque(Model *m, ParticleIndex p,
                          unsigned int i, double dt, double ikT) {
   RigidBodyDiffusion d(m, p);
   core::RigidBody rb(m, p);
 
-  double cforce(rb.get_torque()[i]);
+  double cforce(rb.get_torque()[i]); // in kcal/mol/rad
   // unit::Angstrom R(sampler_());
-  double dr = d.get_rotational_diffusion_coefficient();
+  double dr = d.get_rotational_diffusion_coefficient(); // rad^2/fs
   double force_term = dr * cforce * dt * ikT;
   /*if (force_term > unit::Angstrom(.5)) {
     std::cout << "Forces on " << _1->get_name() << " are "
@@ -106,13 +107,16 @@ inline double get_torque(Model *m, ParticleIndex p,
   // returns the std-dev for the random displacement in the Ermak-Mccammon equation
 inline double get_sigma_displacement(Model *m, ParticleIndex p,
                         double dtfs) {
-  // 6.0 is 2.0 for each dof (Barak)
+  // 6.0 is 2.0 for the variance of each translation dof (Barak)
   // 6.0 since we are picking radius rather than the coordinates (Daniel)
   double dd = Diffusion(m, p).get_diffusion_coefficient();
   return sqrt(6.0 * dd * dtfs);
 }
+
+ // returns the std-dev for the random rotation angle in the Ermak-Mccammon equation
 inline double get_rotational_sigma(Model *m, ParticleIndex p,
                                    double dtfs) {
+  // 6.0 is 2.0 for the variance of each rotational dof (Barak)
   double dr = RigidBodyDiffusion(m, p).get_rotational_diffusion_coefficient();
   return sqrt(6.0 * dr * dtfs);
 }
@@ -279,7 +283,7 @@ BrownianDynamics::do_step
   get_scoring_function()->evaluate(true);
   //  Ek = 0.0; // DEBUG: monitor kinetic energy
   //  M = 0.0; // DEBUG: monitor kinetic energy
-  const unsigned int chunk_size = 20;
+  const unsigned int chunk_size = 5000;
   for (unsigned int b = 0; b < ps.size(); b += chunk_size) {
     IMP_TASK_SHARED(
         (dtfs, ikT, b), (ps),
@@ -388,7 +392,6 @@ double get_harmonic_sigma(double D, double f) {
   IMP_UNUSED(D);
   IMP_UNUSED(f);
   IMP_NOT_IMPLEMENTED;
-  return 0;
 }
 
 IMPATOM_END_NAMESPACE

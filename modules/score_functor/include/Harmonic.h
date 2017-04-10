@@ -1,8 +1,9 @@
 /**
  *  \file IMP/score_functor/Harmonic.h
- *  \brief A Score on the distance between a pair of particles.
+ *  \brief A harmonic score on the directed distance between a pair of particles,
+ *         centered at 0.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_HARMONIC_H
@@ -13,8 +14,9 @@
 #include <IMP/algebra/utility.h>
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
-/** A DistanceScore that scores with a harmonic on the distance, centered
-    at 0.*/
+/** A harmonic score on the directed distance between a pair of particles,
+    centered at 0.
+*/
 class Harmonic : public Score {
   double k_;
 

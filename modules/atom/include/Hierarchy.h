@@ -2,7 +2,7 @@
  *  \file IMP/atom/Hierarchy.h
  *  \brief Decorator for helping deal with a hierarchy of molecules.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,27 +16,12 @@
 #include "atom_macros.h"
 #include <IMP/core/XYZR.h>
 #include <IMP/core/rigid_bodies.h>
-
+#include <IMP/core/Gaussian.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 
 #include <vector>
 #include <deque>
-
-#define IMP_ATOM_GET_AS_DECL(UCName, lcname, CAPSNAME) \
-  IMPATOM_DEPRECATED_METHOD_DECL(2.6)                  \
-  UCName get_as_##lcname() const;
-
-// figure out how to inline
-#define IMP_ATOM_GET_AS_DEF(UCName, lcname, CAPSNAME) \
-  UCName Hierarchy::get_as_##lcname() const {         \
-    IMPATOM_DEPRECATED_METHOD_DEF(2.6, "Use decorators instead"); \
-    if (UCName::get_is_setup(get_particle())) {       \
-      return UCName(get_particle());                  \
-    } else {                                          \
-      return UCName();                                \
-    }                                                 \
-  }
 
 // DOMAIN is defined to be 1 by a fedora math header
 #define IMP_ATOM_FOREACH_HIERARCHY_TYPE_LIST(macro)                        \
@@ -325,10 +310,6 @@ class IMPATOMEXPORT Hierarchy : public core::Hierarchy {
     }
   }
 
-#ifndef IMP_DOXYGEN
-  IMP_ATOM_FOREACH_HIERARCHY_TYPE_FUNCTIONS(IMP_ATOM_GET_AS_DECL);
-#endif
-
   //! Get the molecular hierarchy HierarchyTraits.
   static const IMP::core::HierarchyTraits &get_traits();
 
@@ -457,6 +438,7 @@ IMPATOMEXPORT IMP::core::RigidBody create_compatible_rigid_body(
     Hierarchy h, Hierarchy reference);
 
 #ifndef IMP_DOXYGEN
+IMPATOM_DEPRECATED_FUNCTION_DECL(2.7)
 IMPATOMEXPORT IMP::core::RigidBody setup_as_rigid_body(Hierarchy h);
 #endif
 
@@ -514,6 +496,20 @@ IMPATOMEXPORT algebra::BoundingBoxD<3> get_bounding_box(const Hierarchy &h);
     \relates Hierarchy
  */
 IMPATOMEXPORT algebra::Sphere3D get_bounding_sphere(const Hierarchy &h);
+
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+// Get the parent, or if non-tree Representation get the fake parent
+inline atom::Hierarchy get_parent_representation(Hierarchy h){
+  if (h.get_model()->get_has_attribute(
+     Hierarchy::get_traits().get_parent_key(),h.get_particle_index())){
+    ParticleIndex pidx = h.get_model()->get_attribute(
+          Hierarchy::get_traits().get_parent_key(),h.get_particle_index());
+      return Hierarchy(h.get_model(),pidx);
+  }
+  else return Hierarchy();
+}
+#endif
 
 IMPATOM_END_NAMESPACE
 

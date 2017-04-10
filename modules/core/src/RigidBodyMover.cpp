@@ -2,7 +2,7 @@
  *  \file RigidBodyMover.cpp
  *  \brief A mover that transforms a rigid body
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/core/RigidBodyMover.h>
@@ -28,6 +28,8 @@ RigidBodyMover::RigidBodyMover(Model *m, ParticleIndex pi,
 RigidBodyMover::RigidBodyMover(RigidBody d, Float max_translation,
                                Float max_angle)
     : MonteCarloMover(d->get_model(), d->get_name() + " mover") {
+  IMPCORE_DEPRECATED_METHOD_DEF(2.7,
+                                "Use the index-based constructor instead.");
   IMP_USAGE_CHECK(
       d.get_coordinates_are_optimized(),
       "Rigid body passed to RigidBodyMover"
@@ -67,14 +69,14 @@ MonteCarloMoverResult RigidBodyMover::do_propose() {
       d.get_coordinates_are_optimized(),
       "Rigid body passed to RigidBodyMover"
           << " must be set to be optimized. particle: " << d->get_name());
-  d.set_reference_frame(algebra::ReferenceFrame3D(t));
+  d.set_reference_frame_lazy(algebra::ReferenceFrame3D(t));
 
   return MonteCarloMoverResult(ParticleIndexes(1, pi_), 1.0);
 }
 
 void RigidBodyMover::do_reject() {
   RigidBody d(get_model(), pi_);
-  d.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
+  d.set_reference_frame_lazy(algebra::ReferenceFrame3D(last_transformation_));
   last_transformation_ = algebra::Transformation3D();
 }
 

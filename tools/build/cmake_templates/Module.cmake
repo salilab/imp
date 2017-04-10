@@ -40,6 +40,10 @@ if(${status} EQUAL 0)
     file(GLOB examples ${CMAKE_BINARY_DIR}/doc/examples/%(name)s/*.py
       ${CMAKE_BINARY_DIR}/doc/examples/%(name)s/*.cpp)
 
+    if(NOT IMP_STATIC)
+      set(IMP_%(name)s_TAG_DEPENDS "${IMP.%(name)s-python}")
+    endif()
+
     add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/doxygen/%(name)s/tags ${CMAKE_BINARY_DIR}/doxygen/%(name)s/xml/index.xml
       COMMAND mkdir -p ${CMAKE_BINARY_DIR}/doc/html
       COMMAND ln -s -f ../../include
@@ -49,7 +53,7 @@ if(${status} EQUAL 0)
       COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_patch_tags.py --module=%(name)s --file=../../doxygen/%(name)s/tags
       COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=../../doxygen/%(name)s/warnings.txt
       COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_spell_check.py xml ${CMAKE_SOURCE_DIR}/modules/%(name)s/test/standards_exceptions
-      DEPENDS %(tags)s ${headers} ${docs} ${examples} ${CMAKE_SOURCE_DIR}/modules/%(name)s/README.md IMP.%(name)s-python
+      DEPENDS %(tags)s ${headers} ${docs} ${examples} ${CMAKE_SOURCE_DIR}/modules/%(name)s/README.md ${IMP_%(name)s_TAG_DEPENDS}
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/doxygen/%(name)s/
       COMMENT "Running doxygen on %(name)s")
 

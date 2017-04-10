@@ -1,7 +1,7 @@
 /**
  *  \file IMP/Index.h    \brief Basic types used by IMP.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -51,7 +51,8 @@ inline Index<Tag> get_invalid_index() {
   return Index<Tag>(-1);
 }
 
-/** This class implements a vector tied to a particular index.
+/** This class implements a vector tied to a particular index
+    of type Index<Tag>.
  */
 template <class Tag, class T>
 class IndexVector : public Vector<T> {

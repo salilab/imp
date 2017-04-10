@@ -1,4 +1,4 @@
-## \example multiresolution.py
+## \example atom/multiresolution.py
 # This example shows how to use the multiresolution support available in
 # IMP.atom via the IMP.atom.Resolution decorator and IMP.atom.Selection
 

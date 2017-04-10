@@ -18,20 +18,40 @@ import re
 from collections import defaultdict
 import itertools
 
-def parse_dssp(dssp_fn, limit_to_chains=''):
-    """read dssp file, get SSEs. values are all PDB residue numbering.
-    Returns a dictionary with keys helix, beta, loop
+def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
+    """Read a DSSP file, and return secondary structure elements (SSEs).
+    Values are all PDB residue numbering.
+    @param dssp_fn The file to read
+    @param limit_to_chains Only read/return these chain IDs
+    @param name_map If passed, return tuples organized by molecule name
+           (name_map should be a dictionary with chain IDs as keys and
+           molecule names as values).
+
+    @return a dictionary with keys 'helix', 'beta', 'loop'
     Each contains a list of SSEs.
     Each SSE is a list of elements (e.g. strands in a sheet)
-    Each element is a pair (chain,(residue_indexes))
+    Each element is a tuple (residue start, residue end, chain)
 
     Example for a structure with helix A:5-7 and Beta strands A:1-3,A:9-11:
-    ret = { 'helix' : [ [ ('A',5,7 ) ],... ]
-            'beta'  : [ [ ('A',1,3),
-                          ('A',9,11),...],...]
+
+    @code{.py}
+    ret = { 'helix' : [ [ (5,7,'A') ],... ]
+            'beta'  : [ [ (1,3,'A'),
+                          (9,11,'A'),...],...]
             'loop'  : same format as helix
           }
+    @endcode
     """
+
+    def convert_chain(ch):
+        if name_map is None:
+            return ch
+        else:
+            try:
+                return name_map[ch]
+            except:
+                return ch
+
     # setup
     helix_classes = 'GHI'
     strand_classes = 'EB'
@@ -51,51 +71,52 @@ def parse_dssp(dssp_fn, limit_to_chains=''):
     start = False
 
     # temporary beta dictionary indexed by DSSP's ID
-    beta_dict = defaultdict(list)
+    beta_dict = IMP.pmi.tools.OrderedDefaultDict(list)
     prev_sstype = None
-    cur_sse = ['',[]]
     prev_beta_id = None
-    for line in open(dssp_fn, 'r'):
-        fields = line.split()
-        chain_break = False
-        if len(fields) < 2:
-            continue
-        if fields[1] == "RESIDUE":
-            # Start parsing from here
-            start = True
-            continue
-        if not start:
-            continue
-        if line[9] == " ":
-            chain_break = True
-        elif limit_to_chains != '' and line[11] not in limit_to_chains:
-            continue
 
-        # gather line info
-        if not chain_break:
-            pdb_res_num = int(line[5:10])
-            chain = line[11]
-            sstype = sse_dict[line[16]]
-            beta_id = line[33]
+    with open(dssp_fn, 'r') as fh:
+        for line in fh:
+            fields = line.split()
+            chain_break = False
+            if len(fields) < 2:
+                continue
+            if fields[1] == "RESIDUE":
+                # Start parsing from here
+                start = True
+                continue
+            if not start:
+                continue
+            if line[9] == " ":
+                chain_break = True
+            elif limit_to_chains != '' and line[11] not in limit_to_chains:
+                continue
 
-        # decide whether to extend or store the SSE
-        if prev_sstype is None:
-            cur_sse = [chain,pdb_res_num,pdb_res_num]
-        elif sstype != prev_sstype or chain_break:
-            # add cur_sse to the right place
-            if prev_sstype in ['helix', 'loop']:
-                sses[prev_sstype].append([cur_sse])
-            elif prev_sstype == 'beta':
-                beta_dict[prev_beta_id].append(cur_sse)
-            cur_sse = [chain,pdb_res_num,pdb_res_num]
-        else:
-            cur_sse[2] = pdb_res_num
-        if chain_break:
-            prev_sstype = None
-            prev_beta_id = None
-        else:
-            prev_sstype = sstype
-            prev_beta_id = beta_id
+            # gather line info
+            if not chain_break:
+                pdb_res_num = int(line[5:10])
+                chain = line[11]
+                sstype = sse_dict[line[16]]
+                beta_id = line[33]
+
+            # decide whether to extend or store the SSE
+            if prev_sstype is None:
+                cur_sse = [pdb_res_num,pdb_res_num,convert_chain(chain)]
+            elif sstype != prev_sstype or chain_break:
+                # add cur_sse to the right place
+                if prev_sstype in ['helix', 'loop']:
+                    sses[prev_sstype].append([cur_sse])
+                elif prev_sstype == 'beta':
+                    beta_dict[prev_beta_id].append(cur_sse)
+                cur_sse = [pdb_res_num,pdb_res_num,convert_chain(chain)]
+            else:
+                cur_sse[1] = pdb_res_num
+            if chain_break:
+                prev_sstype = None
+                prev_beta_id = None
+            else:
+                prev_sstype = sstype
+                prev_beta_id = beta_id
 
     # final SSE processing
     if not prev_sstype is None:
@@ -251,24 +272,27 @@ def get_best_models(stat_files,
         po = IMP.pmi.output.ProcessOutput(sf)
 
         try:
-            keywords = po.get_keys()
+            file_keywords = po.get_keys()
         except:
             continue
 
-        feature_keywords = [score_key,
-                            rmf_file_key,
-                            rmf_file_frame_key]
+        keywords = [score_key,
+                    rmf_file_key,
+                    rmf_file_frame_key]
 
-        for k in keywords:
-            for fk in feature_keys:
-                if fk in k:
-                    feature_keywords.append(k)
+        # check all requested keys are in the file
+        #  this looks weird because searching for "*requested_key*"
+        if feature_keys:
+            for requested_key in feature_keys:
+                for file_k in file_keywords:
+                    if requested_key in file_k:
+                        keywords.append(file_k)
 
         if prefiltervalue is None:
-            fields = po.get_fields(feature_keywords,
+            fields = po.get_fields(keywords,
                                    get_every=get_every)
         else:
-            fields = po.get_fields(feature_keywords,
+            fields = po.get_fields(keywords,
                                    filtertuple=(score_key,"<",prefiltervalue),
                                    get_every=get_every)
 
@@ -292,9 +316,8 @@ def get_best_models(stat_files,
 
         rmf_file_frame_list += fields[rmf_file_frame_key]
 
-        if feature_keywords is not None:
-            for k in feature_keywords:
-                feature_keyword_list_dict[k] += fields[k]
+        for k in keywords:
+            feature_keyword_list_dict[k] += fields[k]
 
     return rmf_file_list,rmf_file_frame_list,score_list,feature_keyword_list_dict
 
@@ -369,8 +392,8 @@ def read_coordinates_of_rmfs(model,
         frame_number = tpl[2]
         if cnt==0:
             prots = IMP.pmi.analysis.get_hiers_from_rmf(model,
-                                                   frame_number,
-                                                   rmf_file)
+                                                        frame_number,
+                                                        rmf_file)
         else:
             IMP.pmi.analysis.link_hiers_to_rmf(model,prots,frame_number,rmf_file)
 
@@ -393,6 +416,8 @@ def read_coordinates_of_rmfs(model,
         for pr in part_dict:
             model_coordinate_dict[pr] = np.array(
                 [np.array(IMP.core.XYZ(i).get_coordinates()) for i in part_dict[pr]])
+        # for each file, get (as floats) a list of all coordinates
+        #  of all requested tuples, organized as dictionaries.
         for tuple_dict,result_dict in zip((alignment_components,rmsd_calculation_components),
                                           (template_coordinate_dict,rmsd_coordinate_dict)):
 
@@ -402,16 +427,9 @@ def read_coordinates_of_rmfs(model,
             # PMI2: do selection of resolution and name at the same time
             if IMP.pmi.get_is_canonical(prot):
                 for pr in tuple_dict:
-                    if type(tuple_dict[pr]) is str:
-                        name = tuple_dict[pr]
-                        s = IMP.atom.Selection(prot,molecule=name,resolution=1)
-                    elif type(tuple_dict[pr]) is tuple:
-                        rend = tuple_dict[pr][1]
-                        rbegin = tuple_dict[pr][0]
-                        s = IMP.atom.Selection(prot,molecule=name,resolution=1,
-                                               residue_indexes=range(rbegin,rend+1))
+                    ps = IMP.pmi.tools.select_by_tuple_2(prot,tuple_dict[pr],resolution=1)
                     result_dict[pr] = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
-                                       for p in s.get_selected_particles()]
+                                       for p in ps]
             else:
                 for pr in tuple_dict:
                     if type(tuple_dict[pr]) is str:
@@ -461,16 +479,9 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
     # PMI2: do selection of resolution and name at the same time
     if IMP.pmi.get_is_canonical(prot):
         for pr in rmsd_calculation_components:
-            if type(rmsd_calculation_components[pr]) is str:
-                name = rmsd_calculation_components[pr]
-                s = IMP.atom.Selection(prot,molecule=name,resolution=1)
-            elif type(rmsd_calculation_components[pr]) is tuple:
-                rend = rmsd_calculation_components[pr][1]
-                rbegin = rmsd_calculation_components[pr][0]
-                s = IMP.atom.Selection(prot,molecule=name,resolution=1,
-                                       residue_indexes=range(rbegin,rend+1))
+            ps = IMP.pmi.tools.select_by_tuple_2(prot,rmsd_calculation_components[pr],resolution=1)
             rmsd_bead_size_dict[pr] = [len(IMP.pmi.tools.get_residue_indexes(p))
-                                       for p in s.get_selected_particles()]
+                                       for p in ps]
     else:
         # getting the particles
         part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)

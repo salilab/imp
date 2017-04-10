@@ -2,7 +2,7 @@
  *  \file IMP/container/CloseBipartitePairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
- *  Copyright 2007-2016 IMP Inventors. Close rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. Close rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
@@ -10,7 +10,7 @@
 
 #include <IMP/container/container_config.h>
 #include <IMP/core/ClosePairsFinder.h>
-#include <IMP/core/internal/CoreCloseBipartitePairContainer.h>
+#include "internal/CloseBipartitePairContainer.h"
 #include <IMP/core/internal/MovedSingletonContainer.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairPredicate.h>
@@ -20,8 +20,8 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-/** \brief Return all close ordered pairs of particles taken from the
-    two SingletonContainers.
+/** \brief Return all spatially-proximals pairs of particles (a,b) from the
+    two SingletonContainers A and B, where a is in A and b is in B.
 
     \see ClosePairContainer for a more detailed description. This
     container lists all close pairs of particles where one particle is
@@ -34,10 +34,10 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public PairContainer
 #else
-    public IMP::core::internal::CoreCloseBipartitePairContainer
+    public IMP::container::internal::CloseBipartitePairContainer
 #endif
     {
-  typedef IMP::core::internal::CoreCloseBipartitePairContainer P;
+  typedef IMP::container::internal::CloseBipartitePairContainer P;
 
  public:
   //! Get the individual particles from the passed SingletonContainer

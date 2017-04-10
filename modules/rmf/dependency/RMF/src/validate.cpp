@@ -1,8 +1,8 @@
 /**
- *  \file RMF/Category.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \file RMF/validate.h
+ *  \brief Support for validating the data in a file.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

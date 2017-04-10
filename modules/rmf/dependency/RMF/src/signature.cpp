@@ -1,8 +1,8 @@
 /**
- *  \file RMF/Category.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \file RMF/signature.cpp
+ *  \brief Return a (long) string describing a file that can be compared.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

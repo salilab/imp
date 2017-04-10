@@ -10,8 +10,11 @@ import IMP.atom
 import IMP.container
 import IMP.isd
 import IMP.pmi.tools
+import IMP.pmi.metadata
 import IMP.isd.gmm_tools
 import sys
+import re
+import os
 from math import sqrt
 
 class GaussianEMRestraint(object):
@@ -25,6 +28,7 @@ class GaussianEMRestraint(object):
                  cutoff_dist_model_model=0.0,
                  cutoff_dist_model_data=0.0,
                  target_mass_scale=1.0,
+                 target_mass=None,
                  target_radii_scale=3.0,
                  model_radii_scale=1.0,
                  slope=0.0,
@@ -33,7 +37,9 @@ class GaussianEMRestraint(object):
                  backbone_slope=False,
                  scale_target_to_mass=False,
                  weight=1.0,
-                 target_is_rigid_body=False):
+                 target_is_rigid_body=False,
+                 local=False,
+                 representation=None):
         """Constructor.
         @param densities The Gaussian-decorated particles to be restrained
         @param target_fn GMM file of the target density map
@@ -49,6 +55,8 @@ class GaussianEMRestraint(object):
                the mass is accurate.
                Needed if the GMM you generated was not already scaled.
                To make it the same as model mass, set scale_to_target_mass=True
+        @param target_mass Sets the mass of the target density to the given value. Default is None. This
+               will override target_mass_scale argument
         @param target_radii_scale Scale the target density radii -
                only used for the close pair container.
                If you keep this at 3.0 or so you don't have to use cutoff dist.
@@ -69,6 +77,8 @@ class GaussianEMRestraint(object):
         @param target_is_rigid_body Set True if you want to put the target density particles
                into a rigid body that need to be sampled (e.g.,when you need to fit one density
                against another one). Default is False.
+        @param local Only consider density particles that are within the
+                specified model-density cutoff (experimental)
         """
 
         # some parameters
@@ -77,21 +87,24 @@ class GaussianEMRestraint(object):
         self.sigmamaxtrans = 0.3
         self.sigmamin = 1.0
         self.sigmamax = 100.0
-        self.sigmainit = 2.0
+        self.sigmainit = 1.0
         self.label = "None"
         self.densities = densities
         self.em_root_hier = None
 
         # setup target GMM
         self.m = self.densities[0].get_model()
+
         if scale_target_to_mass:
             def hierarchy_mass(h):
                 leaves = IMP.atom.get_leaves(h)
                 return sum(IMP.atom.Mass(p).get_mass() for p in leaves)
-            target_mass_scale = sum(hierarchy_mass(h) for h in densities)
+            target_mass = sum(hierarchy_mass(h) for h in densities)
+            print('will set target mass to', target_mass)
         print('will scale target mass by', target_mass_scale)
 
         if target_fn != '':
+            self._set_dataset(target_fn, representation)
             self.target_ps = []
             IMP.isd.gmm_tools.decorate_gmm_from_text(
                 target_fn,
@@ -104,6 +117,17 @@ class GaussianEMRestraint(object):
         else:
             print('Gaussian EM restraint: must provide target density file or properly set up target densities')
             return
+
+        if target_mass:
+            tmass=sum([IMP.atom.Mass(p).get_mass() for p in self.target_ps])
+            scale=target_mass/tmass
+            for p in self.target_ps:
+                ms=IMP.atom.Mass(p).get_mass()
+                IMP.atom.Mass(p).set_mass(ms*scale)
+
+        if representation:
+            for p in representation._protocol_output:
+                p.add_em3d_restraint(self.target_ps, self.densities, self)
 
         # setup model GMM
         self.model_ps = []
@@ -148,12 +172,27 @@ class GaussianEMRestraint(object):
             cutoff_dist_model_model,
             cutoff_dist_model_data,
             slope,
-            update_model, backbone_slope)
+            update_model, backbone_slope, local)
 
         print('done EM setup')
         self.rs = IMP.RestraintSet(self.m, 'GaussianEMRestraint')
         self.rs.add_restraint(self.gaussianEM_restraint)
         self.set_weight(weight)
+
+    def _set_dataset(self, target_fn, representation):
+        """Set the dataset to point to the input file"""
+        if representation:
+            self.dataset = representation.get_file_dataset(target_fn)
+            if self.dataset:
+                return
+        l = IMP.pmi.metadata.FileLocation(target_fn)
+        self.dataset = IMP.pmi.metadata.EMDensityDataset(l)
+        # If the GMM was derived from an MRC file that exists, add that too
+        m = re.match('(.*\.mrc)\..*\.txt$', target_fn)
+        if m and os.path.exists(m.group(1)):
+            l = IMP.pmi.metadata.FileLocation(path=m.group(1),
+                     details='Original MRC file from which the GMM was derived')
+            self.dataset.add_parent(IMP.pmi.metadata.EMDensityDataset(l))
 
     def center_target_density_on_model(self):
         target_com = IMP.algebra.Vector3D(0, 0, 0)
@@ -242,6 +281,33 @@ class GaussianEMRestraint(object):
 
         for p in list(XYZRs):
             IMP.core.transform(IMP.core.XYZ(p), transformation)
+
+    def center_on_target_density(self):
+        target_com = self.get_center_of_mass()
+        print('target com', target_com)
+        model_com = self.get_center_of_mass(target=False)
+        print('model com', model_com)
+        v = target_com - model_com
+        print('translating with', v)
+        transformation = IMP.algebra.Transformation3D(IMP.algebra.Vector3D(v))
+
+        rigid_bodies = set()
+        XYZRs = set()
+
+        for p in self.model_ps:
+            if IMP.core.RigidBodyMember.get_is_setup(p):
+                rb = IMP.core.RigidBodyMember(p).get_rigid_body()
+                rigid_bodies.add(rb)
+            elif IMP.core.XYZR.get_is_setup(p):
+                XYZRs.add(p)
+
+        for rb in list(rigid_bodies):
+            IMP.core.transform(rb, transformation)
+
+        for p in list(XYZRs):
+            IMP.core.transform(IMP.core.XYZ(p), transformation)
+
+
 
 
     def set_weight(self,weight):

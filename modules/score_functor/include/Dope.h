@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/Dope.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_DOPE_H
@@ -18,7 +18,7 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 class DopeType;
 #else
 /** The type of atoms for Dope.*/
-typedef Key<6453462, false> DopeType;
+typedef Key<6453462> DopeType;
 IMP_VALUES(DopeType, DopeTypes);
 #endif
 

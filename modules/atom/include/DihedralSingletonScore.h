@@ -2,7 +2,7 @@
  *  \file IMP/atom/DihedralSingletonScore.h
  *  \brief A score on a dihedral angle.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_DIHEDRAL_SINGLETON_SCORE_H

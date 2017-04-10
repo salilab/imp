@@ -1,7 +1,7 @@
 /**
  *  \file ImageHeader.cpp
  *  \brief Header for EM images
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
 **/
 
 #include "IMP/em/ImageHeader.h"
@@ -395,7 +395,9 @@ void ImageHeader::set_time() {
 char* ImageHeader::get_title() const { return (char*)spider_header_.szITit; }
 
 void ImageHeader::set_title(String newName) {
-  strcpy(spider_header_.szITit, newName.c_str());
+  // Be sure not to overrun the buffer size (160)
+  strncpy(spider_header_.szITit, newName.c_str(), 160);
+  spider_header_.szITit[159] = '\0';
 }
 
 double ImageHeader::get_fGeo_matrix(unsigned int i, unsigned int j) const {

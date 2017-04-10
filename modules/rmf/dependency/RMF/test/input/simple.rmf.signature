@@ -1,0 +1,91 @@
+hierarchy [
+n0: n1
+n1: n2 n11 n19
+n2: n3 n4 n5 n6 n7 n8 n9 n10
+n3:
+n4:
+n5:
+n6:
+n7:
+n8:
+n9:
+n10:
+n11: n12 n13 n14 n15 n16 n17 n18
+n12:
+n13:
+n14:
+n15:
+n16:
+n17:
+n18:
+n19: n20 n21 n22 n23 n24 n25 n26 n27
+n20:
+n21:
+n22:
+n23:
+n24:
+n25:
+n26:
+n27:
+]
+static [
+n0:
+n1: chain
+n2: residue
+n3: atom
+n4: atom
+n5: atom
+n6: atom
+n7: atom
+n8: atom
+n9: atom
+n10: atom
+n11: residue
+n12: atom
+n13: atom
+n14: atom
+n15: atom
+n16: atom
+n17: atom
+n18: atom
+n19: residue
+n20: atom
+n21: atom
+n22: atom
+n23: atom
+n24: atom
+n25: atom
+n26: atom
+n27: atom
+]
+
+f0 [
+n0:
+n1: chain
+n2: residue
+n3: particle atom
+n4: particle atom
+n5: particle atom
+n6: particle atom
+n7: particle atom
+n8: particle atom
+n9: particle atom
+n10: particle atom
+n11: residue
+n12: particle atom
+n13: particle atom
+n14: particle atom
+n15: particle atom
+n16: particle atom
+n17: particle atom
+n18: particle atom
+n19: residue
+n20: particle atom
+n21: particle atom
+n22: particle atom
+n23: particle atom
+n24: particle atom
+n25: particle atom
+n26: particle atom
+n27: particle atom
+]

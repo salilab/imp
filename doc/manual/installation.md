@@ -22,10 +22,11 @@ to see if the code is currently stable enough for your purposes.
 
 In order to build %IMP from source, you will need:
 
-- [CMake](http://www.cmake.org) (2.8 or later)
+- [CMake](https://cmake.org) (2.8 or later)
 - [Boost](http://www.boost.org) (1.40 or later)
-- [HDF5](http://www.hdfgroup.org/HDF5/) (1.8 or later)
-- [Python](http://www.python.org) (2.6 or later, or any version of Python 3)
+- [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later; 1.10 should also
+  work)
+- [Python](https://www.python.org) (2.6 or later, or any version of Python 3)
 - [SWIG](http://www.swig.org) (1.3.40 or later; 2.0.4 or later is needed
   if you want to use Python 3)
 
@@ -62,7 +63,7 @@ All of the prerequisites should be available as pre-built packages for
 your Linux distribution of choice. For example, on a Fedora system the
 following should install most of the prerequisites:
 
-        sudo yum install boost-devel gperftools-devel CGAL-devel graphviz gsl-devel cmake doxygen hdf5-devel swig fftw-devel opencv-devel
+        sudo dnf install boost-devel gperftools-devel CGAL-devel graphviz gsl-devel cmake doxygen hdf5-devel swig fftw-devel opencv-devel
 
 ### Getting prerequisites on a Mac {#installation_prereqs_mac}
 
@@ -106,7 +107,7 @@ procedure we use.
 
         tar -xvzf ../imp-<version>.tar.gz
 
-- Alternatively you can use [git](http://git-scm.com/) to get the code
+- Alternatively you can use [git](https://git-scm.com/) to get the code
   directly from our [GitHub repository](https://github.com/salilab/imp)
   with something like:
 

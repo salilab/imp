@@ -59,7 +59,7 @@ for c in chains:
         c.add_child(mm)
 
 print("writing")
-fn = IMP.create_temporary_file_name("multires", ".rmf")
+fn = "multires.rmf"
 rmf = RMF.create_rmf_file(fn)
 print("adding")
 IMP.rmf.add_hierarchies(rmf, chains)

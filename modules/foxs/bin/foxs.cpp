@@ -46,12 +46,12 @@ int main(int argc, char** argv) {
   bool vr_score = false;
   bool score_log = false;
   bool gnuplot_script = false;
-
+  bool explicit_water = false;
   po::options_description desc("Options");
   desc.add_options()
     ("help", "Any number of input PDBs and profiles is supported. \
 Each PDB will be fitted against each profile.")
-    ("version", "FoXS (IMP applications)\nCopyright 2007-2016 IMP Inventors.\n\
+    ("version", "FoXS (IMP applications)\nCopyright 2007-2017 IMP Inventors.\n\
 All rights reserved. \nLicense: GNU LGPL version 2.1 or later\n\
 <http://gnu.org/licenses/lgpl.html>.\n\
 Written by Dina Schneidman.")
@@ -89,6 +89,7 @@ Written by Dina Schneidman.")
      "input PDB and profile files")
     ("form_factor_table,f", po::value<std::string>(&form_factor_table_file),
      "ff table name")
+    ("explicit_water", "use waters from input PDB (default = false)")
     ("beam_profile", po::value<std::string>(&beam_profile_file),
      "beam profile file name for desmearing")
     ("ab_initio,a", "compute profile for a bead model with \
@@ -133,6 +134,7 @@ constant form factor (default = false)")
   if (vm.count("write-partial-profile")) write_partial_profile = true;
   if (vm.count("score_log")) score_log = true;
   if (vm.count("gnuplot_script")) gnuplot_script = true;
+  if (vm.count("explicit_water")) explicit_water = true;
 
   // no water layer or fitting in ab initio mode for now
   if (vm.count("ab_initio")) {
@@ -169,9 +171,11 @@ constant form factor (default = false)")
   // 1. read pdbs and profiles, prepare particles
   std::vector<IMP::Particles> particles_vec;
   Profiles exp_profiles;
+  IMP_NEW(IMP::Model, m, ());
 
-  read_files(files, pdb_files, dat_files, particles_vec, exp_profiles,
-             residue_level, heavy_atoms_only, multi_model_pdb, max_q);
+  read_files(m, files, pdb_files, dat_files, particles_vec, exp_profiles,
+             residue_level, heavy_atoms_only, multi_model_pdb, explicit_water,
+             max_q);
 
   if (background_adjustment_q > 0.0) {
     for (unsigned int i = 0; i < exp_profiles.size(); i++)
@@ -210,7 +214,7 @@ constant form factor (default = false)")
               << particles_vec[i].size() << " atoms " << std::endl;
     IMP::Pointer<Profile> profile =
         compute_profile(particles_vec[i], 0.0, max_q, delta_q, ft, ff_type,
-                        fit, fit, reciprocal, ab_initio, vacuum,
+                        !explicit_water, fit, reciprocal, ab_initio, vacuum,
                         beam_profile_file);
 
     // save the profile
@@ -258,20 +262,21 @@ constant form factor (default = false)")
           fp = pf->fit_profile(profile, min_c1, max_c1, min_c2, max_c2,
                                use_offset, fit_file_name2);
           if (chi_free > 0) {
-            //float dmax = compute_max_distance(particles_vec[i]);
-            // unsigned int ns = IMP::algebra::get_rounded(
-            //                exp_saxs_profile->get_max_q() * dmax / IMP::PI);
-            // int K = chi_free;
-            // ChiFreeScore cfs(ns, K);
-            IMP_NEW(RatioVolatilityScore, rvs, ());
-            rvs->set_was_used(true);
+            float dmax = compute_max_distance(particles_vec[i]);
+            unsigned int ns = IMP::algebra::get_rounded(
+                           exp_saxs_profile->get_max_q() * dmax / IMP::PI);
+            int K = chi_free;
+            IMP_NEW(ChiFreeScore, cfs, (ns, K));
+            cfs->set_was_used(true);
+            // IMP_NEW(RatioVolatilityScore, rvs, ());
+            // rvs->set_was_used(true);
             // resample the profile
             IMP_NEW(Profile, resampled_profile,
                     (exp_saxs_profile->get_min_q(), exp_saxs_profile->get_max_q(),
                      exp_saxs_profile->get_delta_q()));
             pf->resample(profile, resampled_profile);
             float chi_free =
-              rvs->compute_score(exp_saxs_profile, resampled_profile);
+              cfs->compute_score(exp_saxs_profile, resampled_profile);
             fp.set_chi(chi_free);
           }
         }

@@ -2,7 +2,7 @@
  * \file IMP/atom/force_fields.h
  * \brief Define functions to add bonds and radii to atoms.
  *
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

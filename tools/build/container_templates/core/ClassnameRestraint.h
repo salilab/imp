@@ -2,7 +2,7 @@
  *  \file IMP/core/ClassnameRestraint.h
  *  \brief Apply a ClassnameScore to a Classname.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -37,21 +37,6 @@ class ClassnameRestraint :
   ClassnameRestraint(Model *m, ClassnameScore *ss, PASSINDEXTYPE vt,
                      std::string name = "ClassnameRestraint %1%")
       : IMP::internal::TupleRestraint<ClassnameScore>(ss, m, vt, name) {
-  }
-
-  //! Create the restraint.
-  /** This function takes the function to apply to the
-      stored Classname and the Classname.
-      \deprecated_at{2.5} Use the index-based constructor instead.
-   */
-  IMPCORE_DEPRECATED_METHOD_DECL(2.5)
-  ClassnameRestraint(ClassnameScore *ss, ARGUMENTTYPE vt,
-                     std::string name = "ClassnameRestraint %1%")
-      : IMP::internal::TupleRestraint<ClassnameScore>(
-            ss, IMP::internal::get_model(vt),
-            IMP::internal::get_index(vt), name) {
-    IMPCORE_DEPRECATED_METHOD_DEF(2.5,
-                                  "Use the index-based constructor instead.");
   }
 
 #if defined(SWIG) || defined(IMP_DOXYGEN)

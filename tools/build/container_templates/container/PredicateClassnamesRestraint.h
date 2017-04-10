@@ -2,7 +2,7 @@
  *  \file IMP/container/PredicateClassnamesRestraint.h
  *  \brief Apply a ClassnameScore to each Classname in a list.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -33,6 +33,7 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   mutable boost::unordered_map<int, PLURALINDEXTYPE> lists_;
   boost::unordered_map<int, PointerMember<ClassnameScore> > scores_;
   mutable std::size_t input_version_;
+  bool is_unknown_score_set_;
   bool error_on_unknown_;
   void update_lists_if_necessary() const;
 

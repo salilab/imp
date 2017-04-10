@@ -151,7 +151,7 @@ def setup_crosslinks_beads(representation,mode):
 
 
 
-class ISDCrossMSTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def init_representation_complex(self, m):
         pdbfile = self.get_input_file_name("1WCM.pdb")

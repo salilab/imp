@@ -8,7 +8,7 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.pmi.tools
-
+import IMP.pmi.metadata
 
 class ElectronMicroscopy2D(object):
     """Fit particles against a set of class averages by principal components.
@@ -49,6 +49,23 @@ class ElectronMicroscopy2D(object):
             raise Exception("Must pass pixel size")
         if image_resolution is None:
             raise Exception("must pass image resolution")
+
+        self.datasets = []
+        for image in images:
+            if representation:
+                d = representation.get_file_dataset(image)
+                if d:
+                    self.datasets.append(d)
+                    continue
+            l = IMP.pmi.metadata.FileLocation(image)
+            d = IMP.pmi.metadata.EM2DClassDataset(l)
+            self.datasets.append(d)
+
+        if representation:
+            for p in representation._protocol_output:
+                for i in range(len(self.datasets)):
+                    p.add_em2d_restraint(self, i, resolution, pixel_size,
+                                         image_resolution, projection_number)
 
         # PMI1/2 selection
         if representation is None and hier is not None:
@@ -97,7 +114,7 @@ class ElectronMicroscopy2D(object):
         output["ElectronMicroscopy2D_" + self.label] = str(score)
         return output
 
-class ElectronMicroscopy2D_FFT():
+class ElectronMicroscopy2D_FFT(object):
     """FFT based image alignment, developed by Javier Velazquez-Muriel"""
     def __init__(
             self,

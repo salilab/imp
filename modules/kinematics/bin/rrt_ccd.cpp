@@ -38,7 +38,10 @@ using namespace IMP::kinematics;
 int main(int argc, char **argv)
 {
   // output arguments
-  for(int i=0; i<argc; i++) std::cerr << argv[i] << " "; std::cerr << std::endl;
+  for (int i=0; i<argc; i++) {
+    std::cerr << argv[i] << " ";
+  }
+  std::cerr << std::endl;
 
   int number_of_iterations = 100;
   int number_of_nodes = 100;
@@ -100,7 +103,8 @@ int main(int argc, char **argv)
     return 0;
   }
   if(radii_scaling < 0.5 || radii_scaling > 1.0) {
-    std::cerr << "radii_scaling parameter outside allowed range" << radii_scaling << std::endl;
+    std::cerr << "radii_scaling parameter outside allowed range "
+	      << radii_scaling << std::endl;
   }
   if(vm.count("reset_angles")) reset_angles=true;
 
@@ -190,7 +194,8 @@ int main(int argc, char **argv)
   pair_filter->set_dihedrals(dihedrals);
 
   // close pair container
-  IMP_NEW(IMP::container::ListSingletonContainer, lsc, (atoms));
+  IMP_NEW(IMP::container::ListSingletonContainer, lsc,
+                                (model, IMP::get_indexes(atoms)));
   IMP_NEW(IMP::container::ClosePairContainer, cpc, (lsc, 15.0));
   cpc->add_pair_filter(pair_filter);
 

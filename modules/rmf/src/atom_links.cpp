@@ -2,7 +2,7 @@
  *  \file IMP/rmf/atom_links.cpp
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -181,8 +181,8 @@ void HierarchyLoadLink::add_link_recursive(Model *m,
                          "Not at the back");
       IMP_INTERNAL_CHECK(alts[0] == node, "Not at front of RMF");
       for (unsigned int i = 0; i < reps.size() - 1; ++i) {
-        std::cout << "Linking reps " << reps[i]->get_name() << " and "
-                  << alts[i + 1].get_name() << std::endl;
+        IMP_LOG_VERBOSE("Linking reps " << reps[i]->get_name() << " and "
+                        << alts[i + 1].get_name() << std::endl);
         add_link_recursive(m, root, reps[i].get_particle_index(), alts[i + 1],
                            rigid_bodies, data);
       }
@@ -196,8 +196,8 @@ void HierarchyLoadLink::add_link_recursive(Model *m,
                   IOException);
       }
       for (unsigned int i = 0; i < reps.size(); ++i) {
-        std::cout << "Linking reps " << reps[i]->get_name() << " and "
-                  << alts[i].get_name() << std::endl;
+        IMP_LOG_VERBOSE("Linking reps " << reps[i]->get_name() << " and "
+                        << alts[i].get_name() << std::endl);
         add_link_recursive(m, root, reps[i].get_particle_index(), alts[i],
                            rigid_bodies, data);
       }
@@ -223,7 +223,7 @@ void HierarchyLoadLink::add_link_recursive(Model *m,
         "at "
             << m->get_particle_name(cur) << ". "
             << "They are " << pchs.size() << " and " << nchs.size()
-            << " respectively. " << pchs << " vs " << nchs,
+            << " respectively. " << get_particles(m, pchs) << " vs " << nchs,
         ValueException);
   }
   for (unsigned int i = 0; i < nchs.size(); ++i) {

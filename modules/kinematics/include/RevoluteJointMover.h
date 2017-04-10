@@ -2,7 +2,7 @@
  *  \file IMP/kinematics/RevoluteJointMover.h
  *  \brief A modifier which perturbs a point with a normal distribution.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,9 +15,9 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-//! Modify a set of joints using a normal distribution with zero mean and
-//provided standard deviation.
-/** \see MonteCarlo
+//! Modify a set of joints using a normal distribution
+/** The normal distribution has a zero mean and the given standard deviation.
+    \see MonteCarlo
  */
 class IMPKINEMATICSEXPORT RevoluteJointMover : public core::MonteCarloMover {
     kinematics::RevoluteJoints joints_;

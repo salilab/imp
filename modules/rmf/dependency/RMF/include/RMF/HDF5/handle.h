@@ -2,7 +2,7 @@
  *  \file RMF/HDF5/handle.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -34,7 +34,7 @@ typedef herr_t (*HDF5CloseFunction)(hid_t);
 
 //! Make sure an HDF5 handle is released
 /** CloseFunction should be an appropriate close function
-    for the handle type, eg H5Aclose. Handle is not available
+    for the handle type, e.g. H5Aclose. Handle is not available
     in python.
  */
 class RMFEXPORT Handle : public boost::noncopyable {
@@ -70,7 +70,7 @@ class RMFEXPORT Handle : public boost::noncopyable {
     }
     h_ = -1;
   }
-  ~Handle() {
+  ~Handle() RMF_CANEXCEPT {
     if (h_ != -1) {
       RMF_HDF5_CALL(f_(h_));
     }

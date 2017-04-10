@@ -36,10 +36,10 @@ rb = IMP.container.SingletonsRestraint(
         IMP.core.HarmonicUpperBound(0, 1), bb),
     psl)
 mc = IMP.core.MonteCarlo(m)
-isf = IMP.core.IncrementalScoringFunction(ps, [r, rb])
+isf = IMP.core.IncrementalScoringFunction(m, ps, [r, rb])
 mc.set_incremental_scoring_function(isf)
 
-mvs = [IMP.core.BallMover([p], 5) for p in ps]
+mvs = [IMP.core.BallMover(m, p, 5) for p in ps]
 sm = IMP.core.SerialMover(mvs)
 mc.add_mover(sm)
 IMP.set_log_level(IMP.SILENT)

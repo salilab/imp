@@ -1,7 +1,8 @@
 Deprecation {#deprecation}
 ===========
 
-Sometimes it is useful to drop support for code for various reasons, for example
+Sometimes it is useful to drop support for code (or other things, like file
+formats) for various reasons, for example
 - it represents a failed experiment
 - there is better functionality that replaced it
 - it wasn't used
@@ -81,6 +82,8 @@ deprecated):
           ...
           #endif // IMP_MY_DEPRECATED_HEADER_H
 
+- Other deprecated code paths (e.g., reading an obsolete file format) can call
+  the IMP::handle_use_deprecated() function to print a warning message.
 
 - All things should also use the `\deprecated_at` doxygen macro in their docs:
 
@@ -92,7 +95,7 @@ Python
 ------
 
 For Python code, we provide similar functions and decorators to mark modules,
-classes, methods, or functions as deprecated:
+classes, methods, functions, or other code paths as deprecated:
 
     IMP.deprecated_module("2.1", __name__, "Use my_new_module instead")
 
@@ -109,6 +112,10 @@ classes, methods, or functions as deprecated:
 For Python there is no need to use the `\\deprecated_at` macro - the
 warning message from the decorator is automatically added to the documentation.
 
+As in C++, the IMP.handle_use_deprecated() function can be used to
+print a warning message in other deprecated code paths (such as reading an
+obsolete file format).
+
 Tests and examples
 ------------------
 
@@ -123,7 +130,7 @@ call deprecated code. It is highly recommended that all examples do this.
 All unit tests that call IMP.test.main() will also trigger exceptions if they
 try to call deprecated code. If for some reason you need to test a deprecated
 code pathway, use the IMP.allow_deprecated()
-[context manager](http://eigenhombre.com/2013/04/20/introduction-to-context-managers/) as follows:
+[context manager](http://eigenhombre.com/introduction-to-context-managers-in-python.html) as follows:
 
     with IMP.allow_deprecated():
        my_deprecated_function()

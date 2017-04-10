@@ -2,7 +2,7 @@
  *  \file DensityMap.cpp
  *  \brief Class for handling density maps.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -72,20 +72,17 @@ DensityMap *create_density_map(int nx, int ny, int nz, double spacing) {
   return ret.release();
 }
 
-DensityMap::DensityMap(std::string name) : Object(name) {
-  loc_calculated_ = false;
-  normalized_ = false;
-  rms_calculated_ = false;
-}
+DensityMap::DensityMap(std::string name)
+    : Object(name), data_allocated_(false), loc_calculated_(false),
+      normalized_(false), rms_calculated_(false) {}
 
 DensityMap::DensityMap(const DensityHeader &header, std::string name)
-    : Object(name) {
-  header_ = header;
+    : Object(name), header_(header), data_allocated_(false),
+      loc_calculated_(false), normalized_(false), rms_calculated_(false) {
   header_.compute_xyz_top(true);
   // allocate the data
   long nvox = get_number_of_voxels();
   data_.reset(new emreal[nvox]);
-  loc_calculated_ = false;
   calc_all_voxel2loc();
 }
 
@@ -612,6 +609,12 @@ void DensityMap::add(const DensityMap *other) {
             other->data_[other_znxny_ynx + ix + ox_orig_ind];
       }
     }
+  }
+}
+
+void DensityMap::add(Float d){
+  for (long l = 0; l < get_number_of_voxels(); l++) {
+    set_value(l,get_value(l)+d);
   }
 }
 
@@ -1469,10 +1472,14 @@ algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> get_grid(
   return ret;
 }
 
-DensityMap *create_density_map(
-    const algebra::GridD<3, algebra::DenseGridStorageD<3, float>, float> &arg) {
+DensityMap *create_density_map(algebra::DenseGrid3D<float> &grid) {
   return create_density_map<algebra::DenseGridStorageD<3, float>, float,
-                            algebra::DefaultEmbeddingD<3> >(arg);
+                            algebra::DefaultEmbeddingD<3> >(grid);
+}
+
+DensityMap *create_density_map(algebra::DenseGrid3D<double> &grid) {
+  return create_density_map<algebra::DenseGridStorageD<3, double>, double,
+                            algebra::DefaultEmbeddingD<3> >(grid);
 }
 
 DensityMap *get_binarized_interior(DensityMap *dmap) {

@@ -59,19 +59,19 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
         p = gem.target_ps[0]
         pos = IMP.core.XYZ(p).get_coordinates()
 
-        self.assertEqual(pos[0], -6.50710525063)
-        self.assertEqual(pos[1], -44.7706839578)
-        self.assertEqual(pos[2], -70.33819299)
+        self.assertAlmostEqual(pos[0], -6.50710525063, delta=1e-6)
+        self.assertAlmostEqual(pos[1], -44.7706839578, delta=1e-6)
+        self.assertAlmostEqual(pos[2], -70.33819299, delta=1e-6)
 
         gem.center_target_density_on_model()
         pos = IMP.core.XYZ(p).get_coordinates()
-        self.assertNotEqual(pos[0], -6.50710525063)
+        self.assertNotAlmostEqual(pos[0], -6.50710525063, delta=1e-6)
 
         gem.center_target_density_on_origin()
         pos = IMP.core.XYZ(p).get_coordinates()
-        self.assertEqual(pos[0], 0)
-        self.assertEqual(pos[1], 0)
-        self.assertEqual(pos[2], 0)
+        self.assertAlmostEqual(pos[0], 0, delta=1e-6)
+        self.assertAlmostEqual(pos[1], 0, delta=1e-6)
+        self.assertAlmostEqual(pos[2], 0, delta=1e-6)
 
     def test_add_em_gmms_to_hierarchy(self):
         """Test adding EM Restraint GMMs to PMI2 Hierarchies and RMF"""

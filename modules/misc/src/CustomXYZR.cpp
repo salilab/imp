@@ -1,7 +1,7 @@
 /**
  *  \file XYZR.cpp   \brief Simple xyzr decorator.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

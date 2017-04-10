@@ -1,7 +1,7 @@
 /**
- *  \file graph_base.cpp   \brief classes for implementing a graph.
+ *  \file close_pairs_helpers.cpp   \brief Helper functions for close pairs.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,6 +10,8 @@
 #include <sstream>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
+
+IntKey core::internal::InList::key_ = IntKey("in list temp");
 
 ModelObjectsTemp get_inputs(Model *m, SingletonContainer *sc_,
                             const PairPredicates &filters_) {

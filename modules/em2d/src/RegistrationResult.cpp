@@ -1,7 +1,7 @@
 /**
  *  \file RegistrationResult.cpp
  *  \brief Registration results class
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/RegistrationResult.h"
@@ -167,7 +167,8 @@ RegistrationResults read_registration_results(const String &filename) {
   return results;
 }
 
-RegistrationResult::RegistrationResult() {
+RegistrationResult::RegistrationResult()
+    : Score_(0.0), is_optimized_result_(false) {
   ccc_ = 0.0;
   name_ = "";
   image_index_ = 0;
@@ -179,7 +180,8 @@ RegistrationResult::RegistrationResult() {
 RegistrationResult::RegistrationResult(algebra::Rotation3D R,
                                        algebra::Vector2D shift,
                                        int projection_index, int image_index,
-                                       String name) {
+                                       String name)
+    : Score_(0.0), is_optimized_result_(false) {
   ccc_ = 0.0;
   set_rotation(R);
   set_shift(shift);

@@ -2,10 +2,11 @@
  *  \file ReplicaExchange.cpp
  *  \brief Replica Exchange
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/mpi/ReplicaExchange.h>
+#include <IMP/mpi/internal/mpi_helpers.h>
 #include "mpi.h"
 #include <IMP/random.h>
 #include <boost/scoped_array.hpp>
@@ -14,8 +15,8 @@
 IMPMPI_BEGIN_NAMESPACE
 
 ReplicaExchange::ReplicaExchange() : Object("Replica Exchange") {
-  // These are needed to initialize the MPI communicator
-  MPI::Init();
+  // Initialize the MPI communicator
+  internal::setup_mpi_communicator();
   MPI_Comm_size(MPI_COMM_WORLD, &nproc_);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank_);
   // Create the list of replica indexes

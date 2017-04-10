@@ -2,7 +2,7 @@
  *  \file RMF/enums.h
  *  \brief The various enums used in RMF.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -50,7 +50,7 @@ extern RMFEXPORT const NodeType ALIAS;
  */
 extern RMFEXPORT const NodeType CUSTOM;
 //! A link between two atoms
-/** These are mostly for display purposes eg to show a wireframe
+/** These are mostly for display purposes e.g. to show a wireframe
     view of the molecule. */
 extern RMFEXPORT const NodeType BOND;
 //! A node that is purely there for organizational purposes

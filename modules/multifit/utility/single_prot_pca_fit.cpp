@@ -2,7 +2,7 @@
  *  \file single_prot_pca_fit.cpp
  *  \brief Fit a single protein to a density map
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
 **/
 // others
 #include <boost/program_options.hpp>
@@ -19,7 +19,7 @@
 #include <IMP/em/rigid_fitting.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/multifit/pca_based_rigid_fitting.h>
-#include <IMP/core/LeavesRefiner.h>
+#include <IMP/multifit/RigidLeavesRefiner.h>
 #include <IMP/em/SampledDensityMap.h>
 #include <IMP/em/envelope_penetration.h>
 #include <IMP/em/converters.h>
@@ -190,7 +190,7 @@ int main(int argc, char **argv) {
   Model *mdl = new Model();
   atom::Hierarchy mh;
   mh = atom::read_pdb(protein_filename, mdl, new atom::CAlphaPDBSelector());
-  core::RigidBody rb = atom::setup_as_rigid_body(mh);
+  core::RigidBody rb = atom::create_rigid_body(mh);
   ParticlesTemp mh_ps = core::get_leaves(mh);
   core::XYZs mh_xyz;
   mh_xyz = core::XYZs(mh_ps);
@@ -201,7 +201,7 @@ int main(int argc, char **argv) {
     ref_mh = atom::read_pdb(ref_filename, mdl, new atom::CAlphaPDBSelector());
     ref_mh_xyz = core::XYZs(core::get_leaves(ref_mh));
   }
-  IMP_NEW(core::LeavesRefiner, rb_refiner, (atom::Hierarchy::get_traits()));
+  IMP_NEW(multifit::RigidLeavesRefiner, rb_refiner, ());
   em::FittingSolutions sols = multifit::pca_based_rigid_fitting(
       rb_refiner->get_refined(rb), dmap, threshold);
 

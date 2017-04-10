@@ -4,6 +4,77 @@ import IMP.pmi.representation as representation
 import IMP.pmi.tools as tools
 
 class Tests(IMP.test.TestCase):
+
+    def init_representation_complex(self, m):
+        pdbfile = self.get_input_file_name("1WCM.pdb")
+        fastafile = self.get_input_file_name("1WCM.fasta.txt")
+        components = ["Rpb3","Rpb4","Rpb5","Rpb6"]
+        chains = "CDEF"
+        colors = [0.,0.1,0.5,1.0]
+        beadsize = 20
+        fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
+
+        r = IMP.pmi.representation.Representation(m)
+        hierarchies = {}
+        for n in range(len(components)):
+            r.create_component(components[n], color=colors[n])
+            r.add_component_sequence(components[n], fastafile,
+                                     id="1WCM:"+chains[n])
+            hierarchies[components[n]] = r.autobuild_model(
+                components[n], pdbfile, chains[n],
+                resolutions=[1, 10, 100], missingbeadsize=beadsize)
+            r.setup_component_sequence_connectivity(components[n], 1)
+
+        return r
+
+    def test_get_terminal_residue_two_methods(self):
+        m = IMP.Model()
+        rcomplex=self.init_representation_complex(m)
+
+
+        results={("Rpb4","cter"):221,
+        ("Rpb4","nter"):4,
+        ("Rpb5","cter"):215,
+        ("Rpb5","nter"):1,
+        ("Rpb6","cter"):155,
+        ("Rpb6","nter"):72,
+        ("Rpb3","cter"):268,
+        ("Rpb3","nter"):3}
+
+        for name in ["Rpb3","Rpb4","Rpb5","Rpb6"]:
+            cter=IMP.pmi.tools.get_terminal_residue(rcomplex, rcomplex.hier_dict[name], terminus="C", resolution=1)
+            self.assertEqual(results[(name,"cter")],IMP.atom.Residue(cter).get_index())
+            nter=IMP.pmi.tools.get_terminal_residue(rcomplex, rcomplex.hier_dict[name], terminus="N", resolution=1)
+            self.assertEqual(results[(name,"nter")],IMP.atom.Residue(nter).get_index())
+            pos = IMP.pmi.tools.get_terminal_residue_position(
+                          rcomplex, rcomplex.hier_dict[name], terminus="N",
+                          resolution=1)
+            self.assertIsInstance(pos, IMP.algebra.Vector3D)
+
+        results={("Rpb4","cter"):(IMP.atom.Residue,221),
+        ("Rpb4","nter"):(IMP.atom.Fragment,list(range(1,4))),
+        ("Rpb5","cter"):(IMP.atom.Residue,215),
+        ("Rpb5","nter"):(IMP.atom.Residue,1),
+        ("Rpb6","cter"):(IMP.atom.Residue,155),
+        ("Rpb6","nter"):(IMP.atom.Fragment,list(range(1,21))),
+        ("Rpb3","cter"):(IMP.atom.Fragment,list(range(309, 319))),
+        ("Rpb3","nter"):(IMP.atom.Fragment,list(range(1, 3)))}
+
+        for name in ["Rpb3","Rpb4","Rpb5","Rpb6"]:
+            all=IMP.pmi.tools.select_by_tuple(rcomplex,name,resolution=1)
+            nter=all[0]
+            cter=all[-1]
+            result=results[(name,"nter")]
+            if result[0] is IMP.atom.Residue:
+                self.assertEqual(result[1],IMP.atom.Residue(nter).get_index())
+            if result[0] is IMP.atom.Fragment:
+                self.assertEqual(result[1],IMP.atom.Fragment(nter).get_residue_indexes())
+            result=results[(name,"cter")]
+            if result[0] is IMP.atom.Residue:
+                self.assertEqual(result[1],IMP.atom.Residue(cter).get_index())
+            if result[0] is IMP.atom.Fragment:
+                self.assertEqual(result[1],IMP.atom.Fragment(cter).get_residue_indexes())
+
     def test_selection(self):
         """Test selection"""
         # input parameter

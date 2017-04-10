@@ -2,7 +2,7 @@
  *  \file IMP/core/RigidClosePairsFinder.h
  *  \brief Handle rigid bodies by looking at their members
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_CLOSE_PAIRS_FINDER_H
@@ -18,18 +18,17 @@ IMPCORE_BEGIN_NAMESPACE
 /** The class finds all close pairs consisting of particles taken from the
     passed list(s) (if they are not rigid bodies) or members of rigid
     bodies passed as input. That is, given an input list \c l, for each
-    pair of particles \c p, \c q taken from the list, that are closer than
+    pair of particles \c p, \c q taken from the list that are closer than
     the distance threshold, it returns
-    - if neither \c p or \c q are RigidBody particles it returns
-    (\c p,\c q)
-    - if bother \c p and \c q are RigidBody particles, it returns
-    all \c (\c r,\c s) where \c r is a member of \c p and \c s is member of
-    \c q and \c r and \c s are closer than the distance threshold
+    - (\c p,\c q) if neither \c p or \c q are RigidBody particles
+    - all \c (\c r,\c s) where \c r is a member of \c p, \c s is a member of
+    \c q, and \c r and \c s are closer than the distance threshold if both
+    \c p and \c q are RigidBody particles
     - pairs \c (\c p,\c s) or \c (\c r,\c q) as appropriate if only one of
     \c p or \c q is a rigid body.
 
-    Consequently, the user must ensure that the RigidBody are
-    assigned a radius that encloses all of their RigidMember
+    Consequently, the user must ensure that each RigidBody is
+    assigned a radius that encloses all of its RigidMember
     particles.
 
     It uses another ClosePairsFinder to find which pairs of particles in

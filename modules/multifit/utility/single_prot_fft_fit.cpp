@@ -2,7 +2,7 @@
  *  \file single_prot_fft_fit.cpp
  *  \brief Fit a single protein to a density map
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
 **/
 #include <IMP/em/KernelParameters.h>
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
@@ -16,7 +16,6 @@
 #include <boost/progress.hpp>
 #include <IMP/atom/distance.h>
 #include <IMP/constants.h>
-#include <IMP/core/LeavesRefiner.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/multifit/FittingSolutionRecord.h>
@@ -140,7 +139,6 @@ int main(int argc, char **argv) {
   core::XYZs mh_xyz = core::XYZs(core::get_leaves(mol2fit));
   // create a rigid body
   core::RigidBody rb = atom::create_rigid_body(mol2fit);
-  IMP_NEW(core::LeavesRefiner, rb_refiner, (atom::Hierarchy::get_traits()));
   // run the fitting
   IMP_NEW(multifit::FFTFitting, ff, ());
 

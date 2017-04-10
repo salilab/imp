@@ -57,8 +57,8 @@ class Tests(IMP.test.TestCase):
             self.assert_(False)
 
         print(ps0, ps1)
-        rbm0 = IMP.core.RigidBodyMover(rb0, 5, 1)
-        rbm1 = IMP.core.RigidBodyMover(rb1, 5, 1)
+        rbm0 = IMP.core.RigidBodyMover(m, rb0, 5, 1)
+        rbm1 = IMP.core.RigidBodyMover(m, rb1, 5, 1)
         tested = False
         for i in range(0, 100):
             rbm0.propose()

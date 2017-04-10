@@ -1,12 +1,12 @@
-full_name="OpenCV 2.2 or later"
+full_name="OpenCV 2.2 (or later versions of OpenCV 2)"
 pkg_config_name="opencv"
-libraries="opencv_core:opencv_imgproc:opencv_highgui:opencv_contrib"
+libraries="opencv_core:opencv_imgproc:opencv_highgui"
 headers="opencv2/core/core.hpp:opencv2/imgproc/imgproc.hpp:opencv2/highgui/highgui.hpp:opencv2/core/version.hpp"
 body="""
-#if CV_MAJOR_VERSION>=2 && CV_MINOR_VERSION>=1
+#if CV_MAJOR_VERSION==2 && CV_MINOR_VERSION>=2
 new cv::Mat();
 #else
-#error "Version is not at least 2.1"
+#error "Version is not at least 2.2"
 #endif
 """
 versionheader="opencv2/core/version.hpp"

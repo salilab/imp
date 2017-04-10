@@ -2,7 +2,7 @@
  *  \file IMP/atom/Selection.cpp
  *  \brief Select a subset of a hierarchy.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -905,17 +905,18 @@ Restraint *create_connectivity_restraint(const Selections &s, double k,
 Restraint *create_internal_connectivity_restraint(const Selection &ss,
                                                   double x0, double k,
                                                   std::string name) {
-  ParticlesTemp s = ss.get_selected_particles();
+  ParticleIndexes s = ss.get_selected_particle_indexes();
   if (s.size() < 2) return nullptr;
+  Hierarchies h = ss.get_hierarchies();
+  Model *m = h[0].get_model();
   if (s.size() == 2) {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, ps, (x0, k));
     IMP_NEW(core::PairRestraint, r,
-            (ps, ParticlePair(s[0], s[1]), name));
+            (m, ps, ParticleIndexPair(s[0], s[1]), name));
     return r.release();
   } else {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0, k));
-    IMP_NEW(container::ListSingletonContainer, lsc,
-            (s[0]->get_model(), IMP::get_indexes(s)));
+    IMP_NEW(container::ListSingletonContainer, lsc, (m, s));
     IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 0));
     Pointer<Restraint> cr =
         container::create_restraint(hdps.get(), cpc.get(), name);
@@ -1160,7 +1161,7 @@ std::string get_molecule_name(Hierarchy h) {
     if (Molecule::get_is_setup(h)) {
       return h->get_name();
     }
-  } while ((h = h.get_parent()));
+  } while ((h = get_parent_representation(h)));
   IMP_THROW("Hierarchy " << h << " has no molecule name.", ValueException);
 }
 IMPATOM_END_NAMESPACE

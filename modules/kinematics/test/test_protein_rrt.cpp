@@ -110,7 +110,8 @@ int main(int argc, char *argv[]) {
   pair_filter->set_dihedrals(dihedrals);
 
   // close pair container
-  IMP_NEW(IMP::container::ListSingletonContainer, lsc, (atoms));
+  IMP_NEW(IMP::container::ListSingletonContainer, lsc,
+                            (model, IMP::get_indexes(atoms)));
   IMP_NEW(IMP::container::ClosePairContainer, cpc, (lsc, 15.0));
   cpc->add_pair_filter(pair_filter);
 

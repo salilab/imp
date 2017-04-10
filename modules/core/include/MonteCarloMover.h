@@ -1,8 +1,8 @@
 /**
  *  \file IMP/core/MonteCarloMover.h
- *  \brief The base class for movers for MC optimization.
+ *  \brief The base class for movers for Monte Carlo optimization.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,9 +18,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-/** The MonteCarloMoverResult is used as the return value for the
-    MonteCarloMover::propose() function. The values are the list of
-    particle (indexes) moved and the ratio between the probability of
+//! Return value of the MonteCarloMover::propose() function.
+/** The values are the list of
+    particle indexes moved and the ratio between the probability of
     the backwards move and the probability of the forwards move (for
     many or most move sets this is 1.0).
 */
@@ -47,7 +47,7 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
  public:
   MonteCarloMover(Model *m, std::string name);
 
-  //! propose a modification
+  //! Propose a modification
   /** The method should return the list of all particles that were
       actually moved and the ratio between the backward move probability
       and the forward move probability (for Metropolis-Hastings moves).

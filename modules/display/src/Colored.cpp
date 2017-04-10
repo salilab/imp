@@ -2,7 +2,7 @@
  *  \file Colored.cpp
  *  \brief A decorator for a particle with a color.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

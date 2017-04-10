@@ -4,7 +4,7 @@
  * projection directions on a sphere
  *
  *  \authors Dina Schneidman
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

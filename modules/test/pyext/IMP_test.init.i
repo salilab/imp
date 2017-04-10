@@ -19,6 +19,7 @@ from . import _compat_python
 from ._compat_python import unittest2
 import datetime
 import pickle
+import contextlib
 
 # Fall back to the sets.Set class on older Pythons that don't have
 # the 'set' builtin type.
@@ -61,6 +62,7 @@ skip = unittest.skip
 skipIf = unittest.skipIf
 skipUnless = unittest.skipUnless
 
+@IMP.deprecated_object("2.7", "Use temporary_working_directory() instead.")
 class RunInTempDir(object):
     """Simple RAII-style class to run in a temporary directory.
        When the object is created, the temporary directory is created
@@ -75,7 +77,21 @@ class RunInTempDir(object):
         os.chdir(self.origdir)
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
+@contextlib.contextmanager
+def temporary_working_directory():
+    """Simple context manager to run in a temporary directory.
+       While the context manager is active (within the 'with' block)
+       the current working directory is set to a temporary directory.
+       When the context manager exists, the working directory is reset
+       and the temporary directory deleted."""
+    origdir = os.getcwd()
+    tmpdir = tempfile.mkdtemp()
+    os.chdir(tmpdir)
+    yield tmpdir
+    os.chdir(origdir)
+    shutil.rmtree(tmpdir, ignore_errors=True)
 
+@IMP.deprecated_object("2.7", "Use temporary_directory() instead.")
 class TempDir(object):
     """Simple RAII-style class to make a temporary directory. When the object
        is created, the temporary directory is created. When the object goes
@@ -85,6 +101,26 @@ class TempDir(object):
     def __del__(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
+class _TempDir(object):
+    def __init__(self, dir=None):
+        self.tmpdir = tempfile.mkdtemp(dir=dir)
+    def __del__(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
+@contextlib.contextmanager
+def temporary_directory(dir=None):
+    """Simple context manager to make a temporary directory.
+       The temporary directory has the same lifetime as the context manager
+       (i.e. it is created at the start of the 'with' block, and deleted
+       at the end of the block).
+       @param dir If given, the temporary directory is made as a subdirectory
+                  of that directory, rather than in the default temporary
+                  directory location (e.g. /tmp)
+       @return the full path to the temporary directory.
+    """
+    tmpdir = tempfile.mkdtemp(dir=dir)
+    yield tmpdir
+    shutil.rmtree(tmpdir, ignore_errors=True)
 
 def numerical_derivative(func, val, step):
     """Calculate the derivative of the single-value function `func` at
@@ -144,7 +180,13 @@ def xyz_numerical_derivatives(sf, xyz, step):
 
 
 class TestCase(unittest.TestCase):
-    """Super class for IMP test cases"""
+    """Super class for IMP test cases.
+       This provides a number of useful IMP-specific methods on top of
+       the standard Python `unittest.TestCase` class.
+       Test scripts should generally contain a subclass of this class,
+       conventionally called `Tests` (this makes it easier to run an
+       individual test from the commane line) and use IMP::test::main()
+       as their main function."""
 
     def __init__(self, *args, **keys):
         unittest.TestCase.__init__(self, *args, **keys)
@@ -161,6 +203,9 @@ class TestCase(unittest.TestCase):
     def tearDown(self):
         # Restore original check level
         IMP.set_check_level(self.__check_level)
+        # Clean up any temporary files
+        if hasattr(self, '_tmpdir'):
+            del self._tmpdir
 
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
@@ -181,13 +226,16 @@ class TestCase(unittest.TestCase):
         return open(self.get_input_file_name(filename), mode)
 
     def get_tmp_file_name(self, filename):
-        """Get the full name of an output file in the tmp directory."""
+        """Get the full name of an output file in the tmp directory.
+           The directory containing this file will be automatically
+           cleaned up when the test completes."""
         if not hasattr(self, '_tmpdir'):
-            self._tmpdir = TempDir(os.environ['IMP_TMP_DIR'])
+            self._tmpdir = _TempDir(os.environ['IMP_TMP_DIR'])
         tmpdir = self._tmpdir.tmpdir
         return os.path.join(tmpdir, filename)
 
     def get_magnitude(self, vector):
+        """Get the magnitude of a list of floats"""
         return sum([x*x for x in vector], 0)**.5
 
     def assertRaisesUsageException(self, c, *args, **keys):
@@ -240,7 +288,13 @@ class TestCase(unittest.TestCase):
     def probabilistic_test(self, testcall, chance_of_failure):
         """Help handle a test which is expected to fail some fraction of
         the time. The test is run multiple times and an exception
-        is thrown only if it fails too many times."""
+        is thrown only if it fails too many times.
+        @note Use of this function should be avoided. If there is a corner
+              case that results in a test 'occasionally' failing, write a
+              new test specifically for that corner case and assert that
+              it fails consistently (and remove the corner case from the
+              old test).
+        """
         prob=chance_of_failure
         tries=1
         while prob > .001:
@@ -382,7 +436,8 @@ class TestCase(unittest.TestCase):
         else:
             return True
     def assertClassNames(self, module, exceptions, words):
-        """Check that all the classes in the module follow the imp naming conventions."""
+        """Check that all the classes in the module follow the IMP
+           naming conventions."""
         all= dir(module)
         misspelled = []
         bad=[]
@@ -535,9 +590,9 @@ class TestCase(unittest.TestCase):
 
     def run_example(self, filename):
         """Run the named example script.
-           A dictionary of all the script's global variables is returned.
-           This can be queried in a test case to make sure the example
-           performed correctly."""
+           @return a dictionary of all the script's global variables.
+                   This can be queried in a test case to make sure
+                   the example performed correctly."""
         class _FatalError(Exception): pass
 
         # Add directory containing the example to sys.path, so it can import

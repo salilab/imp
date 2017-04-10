@@ -17,7 +17,7 @@ if matplotlib is not None:
     import IMP.pmi.io.xltable
 
 
-class ISDCrossMSTest(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
 
     def init_crosslink_db(self):
         cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()

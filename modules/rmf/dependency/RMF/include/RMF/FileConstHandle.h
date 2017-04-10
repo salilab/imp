@@ -2,7 +2,7 @@
  *  \file RMF/FileConstHandle.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -348,8 +348,8 @@ class RMFEXPORT FileConstHandle {
   }
   /** @} */
 
-  /** Reread the file.
-      \note This may invalidate various thing (eg the number of nodes may
+  //! Reread the file.
+  /** \note This may invalidate various things (e.g. the number of nodes may
       vary). Be careful.
    */
   void reload();

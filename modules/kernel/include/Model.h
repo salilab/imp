@@ -2,7 +2,7 @@
  *  \file IMP/Model.h
  *  \brief Storage of a model, its restraints, constraints and particles.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -216,22 +216,27 @@ class IMPKERNELEXPORT Model : public Object
 #ifdef IMP_DOXYGEN
   /** \name Accessing attributes
       \anchor model_attributes
-      All the attribute data associated with each Particle is stored in the
+      All the attribute data associated with each Particle are stored in the
       Model. For each type of attribute, there are the methods detailed below
       (where, eg, TypeKey is FloatKey or StringKey)
       @{
   */
+  //! add particle atribute with the specied key and initial value
   /** \pre get_has_attribute(attribute_key, particle) is false*/
   void add_attribute(TypeKey attribute_key, ParticleIndex particle, Type value);
 
+  //! remove particle attribute with the specied key
   /** \pre get_has_attribute(attribute_key, particle) is true*/
   void remove_attribute(TypeKey attribute_key, ParticleIndex particle);
 
+  //! return true if particle has attribute with the specified key
   bool get_has_attribute(TypeKey attribute_key, ParticleIndex particle) const;
 
+  //! set the value of particle attribute with the specified key
   /** \pre get_has_attribute(attribute_key, particle) is true*/
   void set_attribute(TypeKey attribute_key, ParticleIndex particle, Type value);
 
+  //! get the value of the particle attribute with the specified key
   /** \pre get_has_attribute(attribute_key, particle) is true*/
   Type get_attribute(TypeKey attribute_key, ParticleIndex particle);
 
@@ -249,9 +254,8 @@ class IMPKERNELEXPORT Model : public Object
   void add_cache_attribute(TypeKey attribute_key, ParticleIndex particle,
                            Type value);
 
-  //! Optimized attributes are the parameters of the model
-  /** They will be modified by the samplers and optimizers.
-   */
+  //! Optimized attributes are the parameters of the model that are 
+  //! allowed to be modified by samplers and optimizers
   void set_is_optimized(TypeKey attribute_key, ParticleIndex particle,
                         bool true_or_false);
 /** @} */
@@ -284,10 +288,16 @@ class IMPKERNELEXPORT Model : public Object
 #endif
 
   //! Get the particle from an index.
-  Particle *get_particle(ParticleIndex p) const;
+  Particle *get_particle(ParticleIndex p) const {
+    IMP_USAGE_CHECK(get_has_particle(p), "Invalid particle requested");
+    return particle_index_[p];
+  }
 
   //! Check whether a given particle index exists.
-  bool get_has_particle(ParticleIndex p) const;
+  bool get_has_particle(ParticleIndex p) const {
+    if (particle_index_.size() <= get_as_unsigned_int(p)) return false;
+    return particle_index_[p];
+  }
 
   //! Get all particle indexes
   ParticleIndexes get_particle_indexes();

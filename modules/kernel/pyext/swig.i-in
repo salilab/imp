@@ -310,13 +310,13 @@ IMP_SWIG_CONTAINER(IMP, IMP, Optimizer, OptimizerState, optimizer_state)
 %include "IMP/Key.h"
 
 namespace IMP {
-  %template(FloatKey) ::IMP::Key<0, true>;
-  %template(IntKey) ::IMP::Key<1, true>;
-  %template(StringKey) ::IMP::Key<2, true>;
-  %template(ParticleIndexKey) ::IMP::Key<3, true>;
-  %template(ObjectKey) ::IMP::Key<4, true>;
-  %template(ParticleIndexesKey) ::IMP::Key<6, true>;
-  %template(ModelKey) ::IMP::Key<8, true>;
+  %template(FloatKey) ::IMP::Key<0>;
+  %template(IntKey) ::IMP::Key<1>;
+  %template(StringKey) ::IMP::Key<2>;
+  %template(ParticleIndexKey) ::IMP::Key<3>;
+  %template(ObjectKey) ::IMP::Key<4>;
+  %template(ParticleIndexesKey) ::IMP::Key<6>;
+  %template(ModelKey) ::IMP::Key<8>;
   %template(ParticleIndex) ::IMP::Index<IMP::ParticleIndexTag>;
 }
 

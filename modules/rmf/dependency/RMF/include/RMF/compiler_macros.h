@@ -2,7 +2,7 @@
  *  \file RMF/compiler_macros.h
  *  \brief Various compiler workarounds
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef RMF_INTERNAL_COMPILER_MACROS_H
@@ -61,12 +61,14 @@
 
 #if RMF_HAS_NOEXCEPT
 #define RMF_NOEXCEPT noexcept
+#define RMF_CANEXCEPT noexcept(false)
 #define RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(Name) \
   Name(const Name &) = default;                  \
   Name &operator=(const Name &) = default
 #else
 // probably should be finer here
 #define RMF_NOEXCEPT throw()
+#define RMF_CANEXCEPT
 #define RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(Name)
 #endif
 

@@ -2,7 +2,7 @@
  *  \file IMP/Vector.h
  *  \brief A class for storing lists of IMP items.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -27,17 +27,14 @@
 #endif
 
 IMPKERNEL_BEGIN_NAMESPACE
-/** This class provides a more \imp-like version of the
-       \c std::vector.
-       Specifically it adds functionality from \c Python
-       arrays such as
-       - hashing
-       - output to streams
-       - use of \c +=es
-       - implicit conversion when the contents are
-       implicitly convertible
-       - bounds checking in debug mode
-   */
+//! A more \imp-like version of the \c std::vector.
+/** Specifically this class adds functionality from \c Python arrays such as
+    - hashing
+    - output to streams
+    - use of \c +=es
+    - implicit conversion when the contents are implicitly convertible
+    - bounds checking in debug mode
+ */
 template <class T>
 class Vector : public Value
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)

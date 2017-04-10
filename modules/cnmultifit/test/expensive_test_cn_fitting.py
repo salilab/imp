@@ -27,8 +27,7 @@ class CnFittingTests(IMP.test.TestCase):
         self.mdl = IMP.Model()
         self.ref = IMP.atom.read_pdb(self.ref_prot_fn, self.mdl)
         self.ref_chains = IMP.atom.get_by_type(self.ref, IMP.atom.CHAIN_TYPE)
-        for mh in self.ref_chains:
-            IMP.atom.setup_as_rigid_body(mh)
+        self.ref_rbs = [IMP.atom.create_rigid_body(c) for c in self.ref_chains]
 
     def test_consistent_fitting(self):
         mh_pca = IMP.cnmultifit.MolCnSymmAxisDetector(self.cn_symm_deg,
@@ -40,8 +39,8 @@ class CnFittingTests(IMP.test.TestCase):
         # Enumerating all (~25) the transformations would take way too long,
         # so instead just pick a random subset
         for i, t in random.sample(list(enumerate(all_trans)), 3):
-            for h in self.ref_chains:
-                IMP.core.transform(IMP.core.RigidBody(h), t)
+            for rb in self.ref_rbs:
+                IMP.core.transform(rb, t)
             sols = IMP.cnmultifit.fit_cn_assembly(self.ref_chains, 1,
                                                   self.dmap, self.dens_threshold,
                                                   aligner, False, False)
@@ -52,17 +51,13 @@ class CnFittingTests(IMP.test.TestCase):
             # 0.05 to 0.15.
             self.assertLess(sols.get_score(0), 0.15)
 #           IMP.atom.write_pdb(self.ref_chains,"mdl_"+str(i)+".pdb")
-            for h in self.ref_chains:
-                IMP.core.transform(
-                    IMP.core.RigidBody(h),
-                    sols.get_transformation(0))
+            for rb in self.ref_rbs:
+                IMP.core.transform(rb, sols.get_transformation(0))
 #           IMP.atom.write_pdb(self.ref_chains,"mdl_fitted_"+str(i)+".pdb")
-            for h in self.ref_chains:
-                IMP.core.transform(
-                    IMP.core.RigidBody(h),
-                    sols.get_transformation(0).get_inverse())
-            for h in self.ref_chains:
-                IMP.core.transform(IMP.core.RigidBody(h), t.get_inverse())
+            for rb in self.ref_rbs:
+                IMP.core.transform(rb, sols.get_transformation(0).get_inverse())
+            for rb in self.ref_rbs:
+                IMP.core.transform(rb, t.get_inverse())
 
 if __name__ == '__main__':
     IMP.test.main()

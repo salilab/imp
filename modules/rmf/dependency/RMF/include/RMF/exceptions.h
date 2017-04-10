@@ -2,7 +2,7 @@
  *  \file RMF/exceptions.h
  *  \brief Declarations of the various exception types.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -41,7 +41,7 @@ class RMFEXPORT Exception : public virtual std::exception,
 RMFEXPORT std::string get_message(const Exception& e);
 
 /** Usage exceptions are thrown when the library is misused in some way,
-    eg, an out of bounds element is requested from a collection. In general
+    e.g., an out of bounds element is requested from a collection. In general
     when these are throw, the failed operation should have been cleanly
     aborted without changing the file.
  */

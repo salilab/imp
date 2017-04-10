@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/Typed.h     \brief A particle with a user-defined type.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -19,19 +19,17 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-// TODO: why this number? how can we tell it's unique
+// TODO: why this number? how can we tell it's unique?
 #define IMP_PARTICLE_TYPE_INDEX 34897493
 
-/** A ParticleType is an IMP::Key object for identifying types
-   of
-    particles by strings. The ParticleType key is used to type particles
-   within
+//! An IMP::Key object for identifying types of particles by strings.
+/** The ParticleType key is used to type particles within
     the Typed decorator */
-typedef Key<IMP_PARTICLE_TYPE_INDEX, true> ParticleType;
+typedef Key<IMP_PARTICLE_TYPE_INDEX> ParticleType;
 IMP_VALUES(ParticleType, ParticleTypes);
 
 //! A decorator for classifying particles in your system.
-/** This decorator
+/** \see ParticleType
  */
 class IMPCOREEXPORT Typed : public Decorator {
   static void do_setup_particle(Model *m, ParticleIndex pi,
@@ -40,7 +38,7 @@ class IMPCOREEXPORT Typed : public Decorator {
   }
 
  public:
-  static IntKey get_type_key();
+  inline static IntKey get_type_key();
 
   IMP_DECORATOR_METHODS(Typed, Decorator);
   IMP_DECORATOR_SETUP_1(Typed, ParticleType, t);
@@ -53,7 +51,20 @@ class IMPCOREEXPORT Typed : public Decorator {
     return ParticleType(
         get_model()->get_attribute(get_type_key(), get_particle_index()));
   }
+
+  void set_type(ParticleType pt) const {
+    get_model()->set_attribute(get_type_key(), get_particle_index(),
+                               pt.get_index());
+  }
+
 };
+
+// in header for faster access
+IntKey Typed::get_type_key() {
+  static IntKey k("particle type");
+  return k;
+}
+
 
 IMP_DECORATORS(Typed, Typeds, ParticlesTemp);
 

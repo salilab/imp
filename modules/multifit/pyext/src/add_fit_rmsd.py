@@ -50,7 +50,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, dock_trans):
         mh_ref = IMP.atom.read_pdb(
             asmb.get_component_header(i).get_reference_fn(),
             mdl)
-        rb = IMP.atom.setup_as_rigid_body(mh_ref)
+        rb = IMP.atom.create_rigid_body(mh_ref)
         xyz_ref = IMP.core.XYZs(IMP.core.get_leaves(mh_ref))
         new_fits = []
         for i, rec in enumerate(fits):

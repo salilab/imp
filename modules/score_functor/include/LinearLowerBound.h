@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/LinearLowerBound.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_LINEAR_LOWER_BOUND_H
@@ -47,6 +47,10 @@ class LinearLowerBound : public Score {
                              const Array<D, ParticleIndex> &,
                              double squared_distance) const {
     return squared_distance > 0;
+  }
+
+  float get_k() const{
+    return k_;
   }
 };
 

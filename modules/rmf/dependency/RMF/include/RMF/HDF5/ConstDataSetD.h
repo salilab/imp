@@ -2,7 +2,7 @@
  *  \file RMF/HDF5/ConstDataSetD.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -144,7 +144,7 @@ class ConstDataSetD : public ConstDataSetAttributes {
     if (ret[D - 1] > 0) {
       // some versions will spew an error on this
       // we will call this function again before rds_ is needed
-      // std::cout << "inializing row to " << ret[data_->dim_-1] << std::endl;
+      // std::cout << "initializing row to " << ret[data_->dim_-1] << std::endl;
       data_->rds_.open(H5Screate_simple(1, ret + D - 1, NULL), &H5Sclose);
     } else {
       // std::cout << "clearing row data" << std::endl;

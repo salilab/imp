@@ -141,9 +141,10 @@ class Tests(IMP.test.TestCase):
             leaves = leaves + self._get_ordered_leaves(child)
         return leaves
 
-
+    @IMP.test.expectedFailure
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
+        self.skipTest("TAMD is temporarily disabled")
         m = IMP.Model()
         LOCAL_WELLS = True
 #        rmf_fname = self.get_tmp_file_name("bd_rb_no_tamd_multi_lw_50.rmf")

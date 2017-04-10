@@ -2,7 +2,7 @@
  *  \file RMF/HDF5/Object.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -54,7 +54,7 @@ class RMFEXPORT Object {
   RMF_SHOWABLE(Object, "Object " << get_name());
 
   hid_t get_handle() const {
-    RMF_USAGE_CHECK(h_, "No handle in unintialized Object");
+    RMF_USAGE_CHECK(h_, "No handle in uninitialized Object");
     return h_->get_hid();
   }
 

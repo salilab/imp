@@ -18,7 +18,7 @@ We ship a copy of Eigen. To patch an updated version, first commit the unpatched
     sed -i.old "s#{EIGEN#{IMP_EIGEN#g" `find  modules/algebra/include/eigen3 -type f`
     sed -i.old "s#,EIGEN#,IMP_EIGEN#g" `find  modules/algebra/include/eigen3 -type f`
     sed -i.old "s#>EIGEN#>IMP_EIGEN#g" `find  modules/algebra/include/eigen3 -type f`
-    sed -i.old "s#!Eigen#!IMP_Eigen#g" `find  modules/algebra/include/eigen3 -type f`
+    sed -i.old "s#\!Eigen#\!IMP_Eigen#g" `find  modules/algebra/include/eigen3 -type f`
     sed -i.old "s#\*Eigen#*IMP_Eigen#g" `find  modules/algebra/include/eigen3 -type f`
     sed -i.old "s#=EIGEN#=IMP_EIGEN#g" `find  modules/algebra/include/eigen3 -type f`
     sed -i.old "s#ei_declare_aligned_stack_constructed_variable#imp_ei_declare_aligned_stack_constructed_variable#g" `find  modules/algebra/include/eigen3 -type f`
@@ -29,5 +29,6 @@ We ship a copy of Eigen. To patch an updated version, first commit the unpatched
 
 in addition, the following commits introduced some modifications to the code
 - `26a1f70d5faef3f`
+- `5c0b9b7b57dbf97`
 
 Eigen headers can be found at `IMP/algebra/eigen3`.

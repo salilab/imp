@@ -2,7 +2,7 @@
  *  \file domino/DominoSampler.h \brief A Bayesian inference-based
  *  sampler.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/domino/domino_config.h>
@@ -16,6 +16,7 @@
 #include <boost/graph/copy.hpp>
 #include <IMP/warning_macros.h>
 #include <IMP/domino/internal/maximal_cliques.h>
+#include <IMP/input_output.h>
 #include <IMP/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>

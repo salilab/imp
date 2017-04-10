@@ -2,7 +2,7 @@
  *  \file CoverBond.cpp
  *  \brief Cover a bond with a sphere.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

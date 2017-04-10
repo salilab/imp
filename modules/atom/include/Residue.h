@@ -1,7 +1,7 @@
 /**
  *  \file IMP/atom/Residue.h     \brief A decorator for Residues.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,7 +23,7 @@ IMPATOM_BEGIN_NAMESPACE
 /* each static must be on a separate line because of MSVC bug C2487:
    see http://support.microsoft.com/kb/127900/
 */
-typedef Key<IMP_RESIDUE_TYPE_INDEX, true> ResidueType;
+typedef Key<IMP_RESIDUE_TYPE_INDEX> ResidueType;
 IMP_VALUES(ResidueType, ResidueTypes);
 
 /** \class IMP::atom::ResidueType

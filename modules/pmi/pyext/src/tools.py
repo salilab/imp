@@ -111,6 +111,18 @@ class SetupWeight(object):
         return self.weight
 
 
+class SetupSurface(object):
+
+    def __init__(self, m, center, normal, isoptimized=True):
+        p = IMP.Particle(m)
+        self.surface = IMP.core.Surface.setup_particle(p, center, normal)
+        self.surface.set_coordinates_are_optimized(isoptimized)
+        self.surface.set_normal_is_optimized(isoptimized)
+
+    def get_particle(self):
+        return self.surface
+
+
 class ParticleToSampleFilter(object):
     def __init__(self, sampled_objects):
         self.sampled_objects=sampled_objects
@@ -147,7 +159,7 @@ class ParticleToSampleList(object):
         particle_type,
         particle_transformation,
             name):
-        if not particle_type in ["Rigid_Bodies", "Floppy_Bodies", "Nuisances", "X_coord", "Weights"]:
+        if not particle_type in ["Rigid_Bodies", "Floppy_Bodies", "Nuisances", "X_coord", "Weights", "Surfaces"]:
             raise TypeError("not the right particle type")
         else:
             self.dictionary_particle_type[particle] = particle_type
@@ -157,14 +169,21 @@ class ParticleToSampleList(object):
                         particle] = particle_transformation
                     self.dictionary_particle_name[particle] = name
                 else:
-                    raise TypeError("ParticleToSampleList: not the right transformation format for Rigid_Bodies, should be a tuple a floats")
+                    raise TypeError("ParticleToSampleList: not the right transformation format for Rigid_Bodies, should be a tuple of floats")
+            elif particle_type == "Surfaces":
+                if type(particle_transformation) == tuple and len(particle_transformation) == 3 and all(isinstance(x, float) for x in particle_transformation):
+                    self.dictionary_particle_transformation[
+                        particle] = particle_transformation
+                    self.dictionary_particle_name[particle] = name
+                else:
+                    raise TypeError("ParticleToSampleList: not the right transformation format for Surfaces, should be a tuple of floats")
             else:
                 if type(particle_transformation) == float:
                     self.dictionary_particle_transformation[
                         particle] = particle_transformation
                     self.dictionary_particle_name[particle] = name
                 else:
-                    raise TypeError("ParticleToSampleList: not the right transformation format sould be a float")
+                    raise TypeError("ParticleToSampleList: not the right transformation format, should be a float")
 
     def get_particles_to_sample(self):
         ps = {}
@@ -585,9 +604,15 @@ def get_position_terminal_residue(hier, terminus="C", resolution=1):
 
     return IMP.core.XYZ(termparticle).get_coordinates()
 
-def get_terminal_residue_position(representation,hier, terminus="C", resolution=1):
+def get_terminal_residue(representation, hier, terminus="C", resolution=1):
     '''
-    Get the xyz position of the terminal residue at the given resolution.
+    Get the particle of the terminal residue at the GIVEN resolution
+    (NOTE: not the closest resolution!).
+    To get the terminal residue at the closest resolution use:
+    particles=IMP.pmi.tools.select_by_tuple(representation,molecule_name)
+    particles[0] and particles[-1] will be the first and last particles
+    corresponding to the two termini.
+    It is needed for instance to determine the last residue of a pdb.
     @param hier hierarchy containing the terminal residue
     @param terminus either 'N' or 'C'
     @param resolution resolution to use.
@@ -618,9 +643,13 @@ def get_terminal_residue_position(representation,hier, terminus="C", resolution=
                     termparticle = p
             else:
                 raise ValueError("terminus argument should be either N or C")
+    return termparticle
 
-    return IMP.core.XYZ(termparticle).get_coordinates()
-
+def get_terminal_residue_position(representation, hier, terminus="C",
+                                  resolution=1):
+    """Get XYZ coordinates of the terminal residue at the GIVEN resolution"""
+    p = get_terminal_residue(representation, hier, terminus, resolution)
+    return IMP.core.XYZ(p).get_coordinates()
 
 def get_residue_gaps_in_hierarchy(hierarchy, start, end):
     '''
@@ -817,6 +846,45 @@ def select_by_tuple(
     particles = IMP.pmi.tools.sort_by_residues(particles)
 
     return particles
+
+def select_by_tuple_2(hier,tuple_selection,resolution):
+    """New tuple format: molname OR (start,stop,molname,copynum,statenum)
+    Copy and state are optional. Can also use 'None' for them which will get all.
+    You can also pass -1 for stop which will go to the end.
+    Returns the particles
+    """
+    kwds = {} # going to accumulate keywords
+    kwds['resolution'] = resolution
+    if type(tuple_selection) is str:
+        kwds['molecule'] = tuple_selection
+    elif type(tuple_selection) is tuple:
+        rbegin = tuple_selection[0]
+        rend = tuple_selection[1]
+        kwds['molecule'] = tuple_selection[2]
+        try:
+            copynum = tuple_selection[3]
+            if copynum is not None:
+                kwds['copy_index'] = copynum
+        except:
+            pass
+        try:
+            statenum = tuple_selection[4]
+            if statenum is not None:
+                kwds['state_index'] = statenum
+        except:
+            pass
+        if rend==-1:
+            if rbegin>1:
+                s = IMP.atom.Selection(hier,**kwds)
+                s -= IMP.atom.Selection(hier,
+                                        residue_indexes=range(1,rbegin),
+                                        **kwds)
+                return s.get_selected_particles()
+        else:
+            kwds['residue_indexes'] = range(rbegin,rend+1)
+    s = IMP.atom.Selection(hier,**kwds)
+    return s.get_selected_particles()
+
 
 
 def get_db_from_csv(csvfilename):
@@ -1130,6 +1198,89 @@ def chunk_list_into_segments(seq, num):
         last += avg
 
     return out
+
+
+class Segments(object):
+
+    ''' This class stores integers
+    in ordered compact lists eg:
+    [[1,2,3],[6,7,8]]
+    the methods help splitting and merging the internal lists
+    Example:
+    s=Segments([1,2,3]) is [[1,2,3]]
+    s.add(4) is [[1,2,3,4]] (add right)
+    s.add(3) is [[1,2,3,4]] (item already existing)
+    s.add(7) is [[1,2,3,4],[7]] (new list)
+    s.add([8,9]) is [[1,2,3,4],[7,8,9]]  (add item right)
+    s.add([5,6]) is [[1,2,3,4,5,6,7,8,9]]  (merge)
+    s.remove(3) is [[1,2],[4,5,6,7,8,9]]  (split)
+    etc.
+    '''
+
+    def __init__(self,index):
+        '''index can be a integer or a list of integers '''
+        if type(index) is int:
+            self.segs=[[index]]
+        elif type(index) is list:
+            self.segs=[[index[0]]]
+            for i in index[1:]:
+                self.add(i)
+
+    def add(self,index):
+        '''index can be a integer or a list of integers '''
+        if type(index) is int:
+            mergeleft=None
+            mergeright=None
+            for n,s in enumerate(self.segs):
+                if index in s:
+                    return 0
+                else:
+                    if s[0]-index==1:
+                        mergeleft=n
+                    if index-s[-1]==1:
+                        mergeright=n
+            if mergeright is None and mergeleft is None:
+                self.segs.append([index])
+            if not mergeright is None and mergeleft is None:
+                self.segs[mergeright].append(index)
+            if not mergeleft is None and  mergeright is None:
+                self.segs[mergeleft]=[index]+self.segs[mergeleft]
+            if not mergeleft is None and not mergeright is None:
+                self.segs[mergeright]=self.segs[mergeright]+[index]+self.segs[mergeleft]
+                del self.segs[mergeleft]
+
+            for n in range(len(self.segs)):
+                self.segs[n].sort()
+
+            self.segs.sort(key=lambda tup: tup[0])
+
+        elif type(index) is list:
+            for i in index:
+                self.add(i)
+
+    def remove(self,index):
+        '''index can be a integer'''
+        for n,s in enumerate(self.segs):
+            if index in s:
+                if s[0]==index:
+                    self.segs[n]=s[1:]
+                elif s[-1]==index:
+                    self.segs[n]=s[:-1]
+                else:
+                    i=self.segs[n].index(index)
+                    self.segs[n]=s[:i]
+                    self.segs.append(s[i+1:])
+        for n in range(len(self.segs)):
+            self.segs[n].sort()
+            if len(self.segs[n])==0:
+                del self.segs[n]
+        self.segs.sort(key=lambda tup: tup[0])
+
+    def get_flatten(self):
+        ''' Returns a flatten list '''
+        return [item for sublist in self.segs for item in sublist]
+
+
 
 #
 # COORDINATE MANIPULATION
@@ -1447,7 +1598,8 @@ def set_coordinates_from_rmf(hier,rmf_fn,frame_num=0):
 def input_adaptor(stuff,
                   pmi_resolution=0,
                   flatten=False,
-                  selection_tuple=None):
+                  selection_tuple=None,
+                  warn_about_slices=True):
     """Adapt things for PMI (degrees of freedom, restraints, ...)
     Returns list of list of hierarchies, separated into Molecules if possible.
     (iterable of ^2) hierarchy -> returns input as list of list of hierarchies, only one entry.
@@ -1459,6 +1611,8 @@ def input_adaptor(stuff,
     @param pmi_resolution For selecting, only does it if you pass PMI objects. Set it to "all"
           if you want all resolutions!
     @param flatten Set to True if you just want all hierarchies in one list.
+    @param warn_about_slices Print a warning if you are requesting only part of a bead.
+           Sometimes you just don't care!
     \note since this relies on IMP::atom::Selection, this will not return any objects if they weren't built!
     But there should be no problem if you request unbuilt residues, they should be ignored.
     """
@@ -1526,11 +1680,35 @@ def input_adaptor(stuff,
                                          resolution=pmi_resolution,
                                          residue_indexes=indexes_per_mol[mol])
                 ps = sel.get_selected_particles()
+
+            # check that you don't have any incomplete fragments!
+            if warn_about_slices:
+                rset = set(indexes_per_mol[mol])
+                for p in ps:
+                    if IMP.atom.Fragment.get_is_setup(p):
+                        fset = set(IMP.atom.Fragment(p).get_residue_indexes())
+                        if not fset <= rset:
+                            print('BAD')
+                            minset = min(fset)
+                            maxset = max(fset)
+                            found = fset&rset
+                            minf = min(found)
+                            maxf = max(found)
+                            resbreak = maxf if minf==minset else minset-1
+                            print('WARNING: You are trying to select only part of the bead %s:%i-%i.\n'
+                                  'The residues you requested are %i-%i. You can fix this by:\n'
+                                  '1) requesting the whole bead/none of it or\n'
+                                  '2) break the bead up by passing bead_extra_breaks=[\'%i\'] in '
+                                  'molecule.add_representation()'
+                                            %(mol.get_name(),minset,maxset,minf,maxf,resbreak))
             hier_list.append([IMP.atom.Hierarchy(p) for p in ps])
     else:
         try:
             if IMP.atom.Hierarchy.get_is_setup(stuff[0]):
-                hier_list = stuff
+                if flatten:
+                    hier_list = stuff
+                else:
+                    hier_list = [stuff]
             else:
                 raise Exception('input_adaptor: you passed something of type',tp)
         except:
@@ -1541,12 +1719,66 @@ def input_adaptor(stuff,
     else:
         return hier_list
 
-def get_residue_type_from_one_letter_code(code):
-    threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
-                  'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
-                  'HIS': 'H', 'ILE': 'I', 'LEU': 'L', 'LYS': 'K',
-                  'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S',
-                  'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'UNK': 'X'}
+
+def get_sorted_segments(mol):
+    """Returns sequence-sorted segments array, each containing the first particle
+    the last particle and the first residue index."""
+
+    from operator import itemgetter
+    hiers=IMP.pmi.tools.input_adaptor(mol)
+    if len(hiers)>1:
+        raise Exception("IMP.pmi.tools.get_sorted_segments: only pass stuff from one Molecule, please")
+    hiers = hiers[0]
+    SortedSegments = []
+    for h in hiers:
+        try:
+            start = IMP.atom.Hierarchy(h).get_children()[0]
+        except:
+            start = IMP.atom.Hierarchy(h)
+
+        try:
+            end = IMP.atom.Hierarchy(h).get_children()[-1]
+        except:
+            end = IMP.atom.Hierarchy(h)
+
+        startres = IMP.pmi.tools.get_residue_indexes(start)[0]
+        endres = IMP.pmi.tools.get_residue_indexes(end)[-1]
+        SortedSegments.append((start, end, startres))
+    SortedSegments = sorted(SortedSegments, key=itemgetter(2))
+    return SortedSegments
+
+def display_bonds(mol):
+    """Decorate the sequence-consecutive particles from a PMI2 molecule with a bond,
+    so that they appear connected in the rmf file"""
+    SortedSegments=get_sorted_segments(mol)
+    for x in range(len(SortedSegments) - 1):
+
+        last = SortedSegments[x][1]
+        first = SortedSegments[x + 1][0]
+
+        p1 = last.get_particle()
+        p2 = first.get_particle()
+        if not IMP.atom.Bonded.get_is_setup(p1):
+            IMP.atom.Bonded.setup_particle(p1)
+        if not IMP.atom.Bonded.get_is_setup(p2):
+            IMP.atom.Bonded.setup_particle(p2)
+
+        if not IMP.atom.get_bond(IMP.atom.Bonded(p1),IMP.atom.Bonded(p2)):
+            IMP.atom.create_bond(
+                IMP.atom.Bonded(p1),
+                IMP.atom.Bonded(p2),1)
+
+
+def get_residue_type_from_one_letter_code(code,is_nucleic=None):
+    if not is_nucleic:
+        threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
+                        'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
+                        'HIS': 'H', 'ILE': 'I', 'LEU': 'L', 'LYS': 'K',
+                        'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S',
+                        'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'UNK': 'X'}
+    else:
+        threetoone = {'ADE': 'A', 'URA': 'U', 'CYT': 'C', 'GUA': 'G',
+                      'THY': 'T', 'UNK': 'X'}
     one_to_three={}
     for k in threetoone:
         one_to_three[threetoone[k]] = k
@@ -1649,20 +1881,38 @@ def get_rbs_and_beads(hiers):
             beads.append(p)
     return rbs_ordered,beads
 
-def shuffle_configuration(root_hier,
+
+def get_densities(input_objects):
+    """Given a list of PMI objects, return all density hierarchies within
+    these objects.  The output of this function can be inputted into
+    things such as EM restraints.
+    """
+    stuff=input_adaptor(input_objects, flatten=True)
+    densities=[]
+    try:
+        for i in iter(stuff):
+            densities.append(IMP.atom.Selection(i,representation_type=IMP.atom.DENSITIES).get_selected_particles())
+    except TypeError as te:
+        densities.append(IMP.atom.Selection(stuff,representation_type=IMP.atom.DENSITIES).get_selected_particles())
+
+    return [h for sublist in densities for h in sublist]
+
+def shuffle_configuration(objects,
                           max_translation=300., max_rotation=2.0 * pi,
                           avoidcollision_rb=True, avoidcollision_fb=False,
                           cutoff=10.0, niterations=100,
                           bounding_box=None,
                           excluded_rigid_bodies=[],
                           hierarchies_excluded_from_collision=[],
+                          hierarchies_included_in_collision=[],
                           verbose=False):
     """Shuffle particles. Used to restart the optimization.
     The configuration of the system is initialized by placing each
     rigid body and each bead randomly in a box with a side of
     max_translation angstroms, and far enough from each other to
     prevent any steric clashes. The rigid bodies are also randomly rotated.
-    @param root_hier The hierarchy to shuffle. Will find rigid bodies and flexible beads.
+    @param objects Can be one of the following inputs:
+               IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set of them
     @param max_translation Max translation (rbs and flexible beads)
     @param max_rotation Max rotation (rbs only)
     @param avoidcollision_rb check if the particle/rigid body was
@@ -1674,93 +1924,113 @@ def shuffle_configuration(root_hier,
     @param bounding_box Only shuffle particles within this box. Defined by ((x1,y1,z1),(x2,y2,z2)).
     @param excluded_rigid_bodies Don't shuffle these rigid body objects
     @param hierarchies_excluded_from_collision Don't count collision with these bodies
+    @param hierarchies_included_in_collision Hierarchies that are not shuffled, but should be included in collision calculation (for fixed regions)
     @param verbose Give more output
     \note Best to only call this function after you've set up degrees of freedom
+    For debugging purposes, returns: <shuffled indexes>, <collision avoided indexes>
     """
 
     ### checking input
-    rigid_bodies,flexible_beads = get_rbs_and_beads(root_hier)
-
+    hierarchies = IMP.pmi.tools.input_adaptor(objects,
+                                              pmi_resolution='all',
+                                              flatten=True)
+    rigid_bodies,flexible_beads = get_rbs_and_beads(hierarchies)
     if len(rigid_bodies)>0:
         mdl = rigid_bodies[0].get_model()
     elif len(flexible_beads)>0:
         mdl = flexible_beads[0].get_model()
     else:
-        raise Exception("You passed something weird to shuffle_configuration")
-
+        raise Exception("Could not find any particles in the hierarchy")
     if len(rigid_bodies) == 0:
         print("shuffle_configuration: rigid bodies were not intialized")
 
     ### gather all particles
     gcpf = IMP.core.GridClosePairsFinder()
     gcpf.set_distance(cutoff)
-    allparticleindexes = []
-    hierarchies_excluded_from_collision_indexes = []
 
     # Add particles from excluded hierarchies to excluded list
-    for h in hierarchies_excluded_from_collision:
-        for p in IMP.core.get_leaves(h):
-            hierarchies_excluded_from_collision_indexes.append(p.get_particle_index())
+    collision_excluded_hierarchies = IMP.pmi.tools.input_adaptor(hierarchies_excluded_from_collision,
+                                              pmi_resolution='all',
+                                              flatten=True)
 
-    for p in IMP.core.get_leaves(root_hier):
+    collision_included_hierarchies = IMP.pmi.tools.input_adaptor(hierarchies_included_in_collision,
+                                              pmi_resolution='all',
+                                              flatten=True)
+
+    collision_excluded_idxs = set([l.get_particle().get_index() for h in collision_excluded_hierarchies \
+                               for l in IMP.core.get_leaves(h)])
+
+    collision_included_idxs = set([l.get_particle().get_index() for h in collision_included_hierarchies \
+                               for l in IMP.core.get_leaves(h)])
+
+    # Excluded collision with Gaussians
+    all_idxs = [] #expand to representations?
+    for p in IMP.pmi.tools.get_all_leaves(hierarchies):
         if IMP.core.XYZ.get_is_setup(p):
-            allparticleindexes.append(p.get_particle_index())
-        # remove the fixed densities particles out of the calculation
+            all_idxs.append(p.get_particle_index())
         if IMP.core.Gaussian.get_is_setup(p):
-            hierarchies_excluded_from_collision_indexes.append(p.get_particle_index())
-    if not bounding_box is None:
+            collision_excluded_idxs.add(p.get_particle_index())
+
+    print(len(all_idxs), len(collision_included_idxs), len(collision_excluded_idxs))
+
+    if bounding_box is not None:
         ((x1, y1, z1), (x2, y2, z2)) = bounding_box
         ub = IMP.algebra.Vector3D(x1, y1, z1)
         lb = IMP.algebra.Vector3D(x2, y2, z2)
         bb = IMP.algebra.BoundingBox3D(ub, lb)
 
-    allparticleindexes = list(
-        set(allparticleindexes) - set(hierarchies_excluded_from_collision_indexes))
-
+    all_idxs = set(all_idxs) | collision_included_idxs
+    all_idxs = all_idxs - collision_excluded_idxs
+    print(len(all_idxs), len(collision_included_idxs), len(collision_excluded_idxs))
+    debug = []
     print('shuffling', len(rigid_bodies), 'rigid bodies')
     for rb in rigid_bodies:
         if rb not in excluded_rigid_bodies:
+            # gather particles to avoid with this transform
             if avoidcollision_rb:
-
-                rbindexes = rb.get_member_particle_indexes()
-
-                rbindexes = list(
-                    set(rbindexes) - set(hierarchies_excluded_from_collision_indexes))
-                otherparticleindexes = list(
-                    set(allparticleindexes) - set(rbindexes))
-
-                if len(otherparticleindexes) is None:
+                rb_idxs = set(rb.get_member_particle_indexes()) - \
+                          collision_excluded_idxs
+                other_idxs = all_idxs - rb_idxs
+                print("----INOI", rb, len(other_idxs), len(rb_idxs))
+                if not other_idxs:
                     continue
 
+            # iterate, trying to avoid collisions
             niter = 0
             while niter < niterations:
                 rbxyz = (rb.get_x(), rb.get_y(), rb.get_z())
 
-                # overrides the perturbation
-                if not bounding_box is None:
+                # local transform
+                if bounding_box:
                     translation = IMP.algebra.get_random_vector_in(bb)
-                    old_coord=IMP.core.XYZ(rb).get_coordinates()
+                    # First move to origin
+                    transformation_orig = IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
+                                                                       -IMP.core.XYZ(rb).get_coordinates())
+                    IMP.core.transform(rb, transformation_orig)
+                    old_coord = IMP.core.XYZ(rb).get_coordinates()
                     rotation = IMP.algebra.get_random_rotation_3d()
-                    transformation = IMP.algebra.Transformation3D(
-                        rotation,
-                        translation-old_coord)
+                    transformation = IMP.algebra.Transformation3D(rotation,
+                                                                  translation)
+
                 else:
                     transformation = IMP.algebra.get_random_local_transformation(
                         rbxyz,
                         max_translation,
                         max_rotation)
 
+                debug.append([rb, other_idxs if avoidcollision_rb else set()])
                 IMP.core.transform(rb, transformation)
+                print("TSFM", rb)
 
+                # check collisions
                 if avoidcollision_rb:
                     mdl.update()
-                    npairs = len(
-                        gcpf.get_close_pairs(
-                            mdl,
-                            otherparticleindexes,
-                            rbindexes))
-                    if npairs == 0:
-                        niter = niterations
+                    npairs = len(gcpf.get_close_pairs(mdl,
+                                                      list(other_idxs),
+                                                      list(rb_idxs)))
+                    #print("NPAIRS:", npairs)
+                    if npairs==0:
+                        break
                     else:
                         niter += 1
                         if verbose:
@@ -1773,41 +2043,58 @@ def shuffle_configuration(root_hier,
 
     print('shuffling', len(flexible_beads), 'flexible beads')
     for fb in flexible_beads:
+        # gather particles to avoid
         if avoidcollision_fb:
-            fbindexes = IMP.get_indexes([fb])
-            otherparticleindexes = list(
-                    set(allparticleindexes) - set(fbindexes))
-            if len(otherparticleindexes) is None:
+            fb_idxs = set(IMP.get_indexes([fb]))
+            other_idxs = all_idxs - fb_idxs
+            if not other_idxs:
                 continue
+
+        # iterate, trying to avoid collisions
         niter = 0
         while niter < niterations:
-            fbxyz = IMP.core.XYZ(fb).get_coordinates()
-            if not bounding_box is None:
-                # overrides the perturbation
+            if bounding_box:
                 translation = IMP.algebra.get_random_vector_in(bb)
-                transformation = IMP.algebra.Transformation3D(translation-fbxyz)
+                transformation = IMP.algebra.Transformation3D(translation)
             else:
-                transformation = IMP.algebra.get_random_local_transformation(
-                    fbxyz,
-                    max_translation,
-                    max_rotation)
+                fbxyz = IMP.core.XYZ(fb).get_coordinates()
+                transformation = IMP.algebra.get_random_local_transformation(fbxyz,
+                                                                             max_translation,
+                                                                             max_rotation)
 
-            if IMP.core.RigidBody.get_is_setup(fb): #for gaussians
-                d=IMP.core.RigidBody(fb)
+            # For gaussians, treat this fb as an rb
+            if IMP.core.NonRigidMember.get_is_setup(fb):
+                xyz=[fb.get_value(IMP.FloatKey(4)), fb.get_value(IMP.FloatKey(5)), fb.get_value(IMP.FloatKey(6))]
+                xyz_transformed=transformation.get_transformed(xyz)
+                if bounding_box:
+                    # Translate to origin
+                    fb.set_value(IMP.FloatKey(4),xyz_transformed[0]-xyz[0])
+                    fb.set_value(IMP.FloatKey(5),xyz_transformed[1]-xyz[1])
+                    fb.set_value(IMP.FloatKey(6),xyz_transformed[2]-xyz[2])
+                    debug.append([xyz,other_idxs if avoidcollision_fb else set()])
+                    xyz2=[fb.get_value(IMP.FloatKey(4)), fb.get_value(IMP.FloatKey(5)), fb.get_value(IMP.FloatKey(6))]
+                else:
+                    fb.set_value(IMP.FloatKey(4),xyz_transformed[0])
+                    fb.set_value(IMP.FloatKey(5),xyz_transformed[1])
+                    fb.set_value(IMP.FloatKey(6),xyz_transformed[2])
+                    debug.append([xyz,other_idxs if avoidcollision_fb else set()])
             else:
-                d=IMP.core.XYZ(fb)
-
-            IMP.core.transform(d, transformation)
+                d =IMP.core.XYZ(fb)
+                if bounding_box:
+                    # Translate to origin first
+                    IMP.core.transform(d, -d.get_coordinates())
+                    d =IMP.core.XYZ(fb)
+                debug.append([d,other_idxs if avoidcollision_fb else set()])
+                IMP.core.transform(d, transformation)
 
             if avoidcollision_fb:
                 mdl.update()
-                npairs = len(
-                    gcpf.get_close_pairs(
-                        mdl,
-                        otherparticleindexes,
-                        fbindexes))
-                if npairs == 0:
-                    niter = niterations
+                npairs = len(gcpf.get_close_pairs(mdl,
+                                                  list(other_idxs),
+                                                  list(fb_idxs)))
+
+                if npairs==0:
+                    break
                 else:
                     niter += 1
                     print("shuffle_configuration: floppy body placed close to other %d particles, trying again..." % npairs)
@@ -1815,6 +2102,71 @@ def shuffle_configuration(root_hier,
                         raise ValueError("tried the maximum number of iterations to avoid collisions, increase the distance cutoff")
             else:
                 break
+    return debug
+
+def color2rgb(colorname):
+    """Given a chimera color name, return RGB"""
+    d = {'aquamarine': (0.4980392156862745, 1.0, 0.8313725490196079),
+         'black': (0.0, 0.0, 0.0),
+         'blue': (0.0, 0.0, 1.0),
+         'brown': (0.6470588235294118, 0.16470588235294117, 0.16470588235294117),
+         'chartreuse': (0.4980392156862745, 1.0, 0.0),
+         'coral': (1.0, 0.4980392156862745, 0.3137254901960784),
+         'cornflower blue': (0.39215686274509803, 0.5843137254901961, 0.9294117647058824),
+         'cyan': (0.0, 1.0, 1.0),
+         'dark cyan': (0.0, 0.5450980392156862, 0.5450980392156862),
+         'dark gray': (0.6627450980392157, 0.6627450980392157, 0.6627450980392157),
+         'dark green': (0.0, 0.39215686274509803, 0.0),
+         'dark khaki': (0.7411764705882353, 0.7176470588235294, 0.4196078431372549),
+         'dark magenta': (0.5450980392156862, 0.0, 0.5450980392156862),
+         'dark olive green': (0.3333333333333333, 0.4196078431372549, 0.1843137254901961),
+         'dark red': (0.5450980392156862, 0.0, 0.0),
+         'dark slate blue': (0.2823529411764706, 0.23921568627450981, 0.5450980392156862),
+         'dark slate gray': (0.1843137254901961, 0.30980392156862746, 0.30980392156862746),
+         'deep pink': (1.0, 0.0784313725490196, 0.5764705882352941),
+         'deep sky blue': (0.0, 0.7490196078431373, 1.0),
+         'dim gray': (0.4117647058823529, 0.4117647058823529, 0.4117647058823529),
+         'dodger blue': (0.11764705882352941, 0.5647058823529412, 1.0),
+         'firebrick': (0.6980392156862745, 0.13333333333333333, 0.13333333333333333),
+         'forest green': (0.13333333333333333, 0.5450980392156862, 0.13333333333333333),
+         'gold': (1.0, 0.8431372549019608, 0.0),
+         'goldenrod': (0.8549019607843137, 0.6470588235294118, 0.12549019607843137),
+         'gray': (0.7450980392156863, 0.7450980392156863, 0.7450980392156863),
+         'green': (0.0, 1.0, 0.0),
+         'hot pink': (1.0, 0.4117647058823529, 0.7058823529411765),
+         'khaki': (0.9411764705882353, 0.9019607843137255, 0.5490196078431373),
+         'light blue': (0.6784313725490196, 0.8470588235294118, 0.9019607843137255),
+         'light gray': (0.8274509803921568, 0.8274509803921568, 0.8274509803921568),
+         'light green': (0.5647058823529412, 0.9333333333333333, 0.5647058823529412),
+         'light sea green': (0.12549019607843137, 0.6980392156862745, 0.6666666666666666),
+         'lime green': (0.19607843137254902, 0.803921568627451, 0.19607843137254902),
+         'magenta': (1.0, 0.0, 1.0),
+         'medium blue': (0.19607843137254902, 0.19607843137254902, 0.803921568627451),
+         'medium purple': (0.5764705882352941, 0.4392156862745098, 0.8588235294117647),
+         'navy blue': (0.0, 0.0, 0.5019607843137255),
+         'olive drab': (0.4196078431372549, 0.5568627450980392, 0.13725490196078433),
+         'orange red': (1.0, 0.27058823529411763, 0.0),
+         'orange': (1.0, 0.4980392156862745, 0.0),
+         'orchid': (0.8549019607843137, 0.4392156862745098, 0.8392156862745098),
+         'pink': (1.0, 0.7529411764705882, 0.796078431372549),
+         'plum': (0.8666666666666667, 0.6274509803921569, 0.8666666666666667),
+         'purple': (0.6274509803921569, 0.12549019607843137, 0.9411764705882353),
+         'red': (1.0, 0.0, 0.0),
+         'rosy brown': (0.7372549019607844, 0.5607843137254902, 0.5607843137254902),
+         'salmon': (0.9803921568627451, 0.5019607843137255, 0.4470588235294118),
+         'sandy brown': (0.9568627450980393, 0.6431372549019608, 0.3764705882352941),
+         'sea green': (0.1803921568627451, 0.5450980392156862, 0.3411764705882353),
+         'sienna': (0.6274509803921569, 0.3215686274509804, 0.17647058823529413),
+         'sky blue': (0.5294117647058824, 0.807843137254902, 0.9215686274509803),
+         'slate gray': (0.4392156862745098, 0.5019607843137255, 0.5647058823529412),
+         'spring green': (0.0, 1.0, 0.4980392156862745),
+         'steel blue': (0.27450980392156865, 0.5098039215686274, 0.7058823529411765),
+         'tan': (0.8235294117647058, 0.7058823529411765, 0.5490196078431373),
+         'turquoise': (0.25098039215686274, 0.8784313725490196, 0.8156862745098039),
+         'violet red': (0.8156862745098039, 0.12549019607843137, 0.5647058823529412),
+         'white': (1.0, 1.0, 1.0),
+         'yellow': (1.0, 1.0, 0.0)}
+    return d[colorname]
 
 class Colors(object):
     def __init__(self):
@@ -1898,3 +2250,27 @@ class Colors(object):
                     IMP.display.Colored(part).set_color(color)
                 else:
                     IMP.display.Colored.setup_particle(part,color)
+
+    def get_list_distant_colors(self):
+        cnames = ['#F0F8FF', '#FAEBD7', '#00FFFF', '#7FFFD4', '#F0FFFF', '#F5F5DC',
+        '#FFE4C4', '#000000', '#FFEBCD', '#0000FF', '#8A2BE2', '#A52A2A', '#DEB887',
+        '#5F9EA0', '#7FFF00', '#D2691E', '#FF7F50', '#6495ED', '#FFF8DC', '#DC143C',
+        '#00FFFF', '#00008B', '#008B8B', '#B8860B', '#A9A9A9', '#006400', '#BDB76B',
+        '#8B008B', '#556B2F', '#FF8C00', '#9932CC', '#8B0000', '#E9967A', '#8FBC8F',
+        '#483D8B', '#2F4F4F', '#00CED1', '#9400D3', '#FF1493', '#00BFFF', '#696969',
+        '#1E90FF', '#B22222', '#FFFAF0', '#228B22', '#FF00FF', '#DCDCDC', '#F8F8FF',
+        '#FFD700', '#DAA520', '#808080', '#008000', '#ADFF2F', '#F0FFF0', '#FF69B4',
+        '#CD5C5C', '#4B0082', '#FFFFF0', '#F0E68C', '#E6E6FA', '#FFF0F5', '#7CFC00',
+        '#FFFACD', '#ADD8E6', '#F08080', '#E0FFFF', '#FAFAD2', '#90EE90', '#D3D3D3',
+        '#FFB6C1', '#FFA07A', '#20B2AA', '#87CEFA', '#778899', '#B0C4DE', '#FFFFE0',
+        '#00FF00', '#32CD32', '#FAF0E6', '#FF00FF', '#800000', '#66CDAA', '#0000CD',
+        '#BA55D3', '#9370DB', '#3CB371', '#7B68EE', '#00FA9A', '#48D1CC', '#C71585',
+        '#191970', '#F5FFFA', '#FFE4E1', '#FFE4B5', '#FFDEAD', '#000080', '#FDF5E6',
+        '#808000', '#6B8E23', '#FFA500', '#FF4500', '#DA70D6', '#EEE8AA', '#98FB98',
+        '#AFEEEE', '#DB7093', '#FFEFD5', '#FFDAB9', '#CD853F', '#FFC0CB', '#DDA0DD',
+        '#B0E0E6', '#800080', '#FF0000', '#BC8F8F', '#4169E1', '#8B4513', '#FA8072',
+        '#FAA460', '#2E8B57', '#FFF5EE', '#A0522D', '#C0C0C0', '#87CEEB', '#6A5ACD',
+        '#708090', '#FFFAFA', '#00FF7F', '#4682B4', '#D2B48C', '#008080', '#D8BFD8',
+        '#FF6347', '#40E0D0', '#EE82EE', '#F5DEB3', '#FFFFFF', '#F5F5F5', '#FFFF00',
+        '#9ACD32']
+        return cnames

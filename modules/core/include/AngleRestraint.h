@@ -2,7 +2,7 @@
  *  \file IMP/core/AngleRestraint.h
  *  \brief Angle restraint between three particles.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/atom/Simulator.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -75,8 +75,12 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   double simulate_wave(double time_in_fs, double max_time_step_factor = 10.0,
                        double base = 1.5);
 
+  //! Return the simulator temeprature in kelvin
   double get_temperature() const { return temperature_; }
+
+  //! Set the temperature of the simulator to d in kelvin units
   void set_temperature(double d) { temperature_ = d; }
+
   /** \name Time steps
       The simulator has a maximum allowed time step. It can take
       shorter ones if needed due to stability concerns.
@@ -85,7 +89,12 @@ class IMPATOMEXPORT Simulator : public Optimizer {
       @{
   */
   void set_maximum_time_step(double ts) { max_time_step_ = ts; }
+
+  //! Get the maximum allowed time step in fs
   double get_maximum_time_step() const { return max_time_step_; }
+
+  //! Get the time of the last simulated time step (or the maximal time step
+  //! if the simulation has not started), in units of fs
   double get_last_time_step() const {
     if (last_time_step_ < 0)
       return get_maximum_time_step();
@@ -97,6 +106,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   void set_time_step(double ts) { set_maximum_time_step(ts); }
 #endif
 
+  // returns kt in units of kCal/mol for temperature get_temeprature() [K]
   double get_kt() const;
 
   /**
@@ -198,22 +208,6 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
 IMP_OBJECTS(Simulator, Simulators);
 
-/**\name Energy conversions
-
-   Convert energy from kcal/mol to femtojoules
-   @{
-*/
-IMPATOMEXPORT double get_energy_in_femto_joules(double energy_in_kcal_per_mol);
-
-//! Convert force from kcal/mol/A to femtonewtons
-IMPATOMEXPORT double get_force_in_femto_newtons(
-    double force_in_kcal_per_mol_per_angstrom);
-
-//! Convert spring constant from kcal/mol/A^2 to femtonewton/A
-IMPATOMEXPORT double get_spring_constant_in_femto_newtons_per_angstrom(
-    double k_in_kcal_per_mol_per_angstrom_square);
-
-/** @} */
 
 IMPATOM_END_NAMESPACE
 

@@ -3,7 +3,7 @@
  *  \brief A modifier which perturbs XYZs or Nuisances with a constant energy
  *  MD simulation.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

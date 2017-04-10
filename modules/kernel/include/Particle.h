@@ -3,7 +3,7 @@
  *  \brief Classes to handle individual model particles.
  *         (Note that implementation of inline functions is in internal)
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -30,9 +30,13 @@ IMPKERNEL_BEGIN_NAMESPACE
 class Changed;
 class SaveOptimizeds;
 
-//! Class to handle individual model particles.
-/** At this point a Particle should only be considered as a placeholder for the
-    ParticleIndex, accessed through the get_index() method.
+//! Class to handle individual particles of a Model object.
+/** A particle is a lightweight object that serves as a place holder for the
+    particle index in a given Model object. The Model object itself stores
+    the particle attributes of various types:
+    Float, Int, String, Object, and WeakObject, and any data concerning the 
+    optimization of these particles by Optimizer and Simulator classes.
+
 */
 class IMPKERNELEXPORT Particle : public ModelObject {
  private:
@@ -68,10 +72,10 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(WeakObject, weak_object, Object *);
 
   /** @name Float Attributes
-       Float attributes can be optimized, meaning the optimizer is
+       Float attributes can be optimized, meaning an Optimizer class is
        allowed to change their value in order to improve the score.
-       As a result, there are a number of extra methods to manipulate
-       them.
+       As a result, there are a number of specialized methods to manipulate
+       the value of float attributes.
 
        All distances are assumed to be in angstroms
        and derivatives in kcal/mol/angstrom. This is not enforced.
@@ -85,7 +89,8 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   */
   void add_attribute(FloatKey name, const Float initial_value, bool optimized);
 
-  /** Adds a derivative value to the derivatives table of this particle
+  /** Adds value to the derivatives table of the
+      specified particle attribute
 
       @param key the attribute key whose derivative is updated
       @param value the derivative value to be added
@@ -99,8 +104,8 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   //! returns true if key k is marked by model as optimized
   inline bool get_is_optimized(FloatKey k) const;
 
-  //! get the particle derivative
-  inline Float get_derivative(FloatKey name) const;
+  //! returns the derivative of the specified particle attribute
+  inline Float get_derivative(FloatKey k) const;
   /** @} */
 
   /** \name Particle attributes
@@ -174,9 +179,9 @@ bool Particle::get_is_optimized(FloatKey k) const {
   return get_model()->get_is_optimized(k, id_);
 }
 
-Float Particle::get_derivative(FloatKey name) const {
+Float Particle::get_derivative(FloatKey k) const {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
-  return get_model()->get_derivative(name, id_);
+  return get_model()->get_derivative(k, id_);
 }
 
 Particle *Particle::get_value(ParticleIndexKey k) const {

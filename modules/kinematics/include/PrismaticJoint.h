@@ -3,7 +3,7 @@
  *  \brief a prismatic joint between rigid bodies as part of a kinematic tree
  *  \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_PRISMATIC_JOINT_H
@@ -20,11 +20,7 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-/********************** PrismaticJoint ***************/
-
-/**
-   joint in which too rigid bodies may slide along a line
-*/
+//! Joint in which two rigid bodies may slide along a line
 class IMPKINEMATICSEXPORT PrismaticJoint : public Joint {
  public:
   /********* Constructors ********/
@@ -46,10 +42,9 @@ class IMPKINEMATICSEXPORT PrismaticJoint : public Joint {
  private:
  public:
   /************* Public getters / setters *************/
-  /**
-     gets the length of the prismatic joint, that is the length
-     between the two witnesses
-  */
+  //! Get the length of the prismatic joint
+  /** The length is defined as the length between the two witnesses.
+   */
   double get_length() const;
 
   /**

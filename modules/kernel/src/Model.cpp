@@ -2,7 +2,7 @@
  *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,6 +48,7 @@ Model::Model(std::string name) : Object(name) {
                                                &this->Masks::add_remove_mask_);
 #endif
 }
+
 
 IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
                      score_states, ScoreState *, ScoreStates);
@@ -137,16 +138,6 @@ void Model::add_undecorator(ParticleIndex pi, Undecorator *d) {
   undecorators_index_.resize(
       std::max<size_t>(pi.get_index() + 1, undecorators_index_.size()));
   undecorators_index_[pi].push_back(d);
-}
-
-Particle *Model::get_particle(ParticleIndex p) const {
-  IMP_USAGE_CHECK(get_has_particle(p), "Invalid particle requested");
-  return particle_index_[p];
-}
-
-bool Model::get_has_particle(ParticleIndex p) const {
-  if (particle_index_.size() <= get_as_unsigned_int(p)) return false;
-  return particle_index_[p];
 }
 
 void Model::do_add_score_state(ScoreState *obj) {

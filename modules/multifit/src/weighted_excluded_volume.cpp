@@ -3,7 +3,7 @@
  *  \brief handles low resolution weighted excluded
  *           volume calculation.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multifit/weighted_excluded_volume.h>
@@ -11,7 +11,7 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container/CloseBipartitePairContainer.h>
 #include <IMP/core/RigidClosePairsFinder.h>
-#include <IMP/core/LeavesRefiner.h>
+#include <IMP/multifit/RigidLeavesRefiner.h>
 #include <IMP/core/HarmonicLowerBound.h>
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/container/PairsRestraint.h>
@@ -41,7 +41,7 @@ IMP::Restraint* create_weighted_excluded_volume_restraint(core::RigidBody rb1,
                                                           FloatKey) {
   IMP::Model* mdl = rb1.get_particle()->get_model();
   // generate the list singleton containers
-  IMP_NEW(core::LeavesRefiner, leaves_refiner, (atom::Hierarchy::get_traits()));
+  IMP_NEW(RigidLeavesRefiner, leaves_refiner, ());
   ParticlesTemp ps1 = leaves_refiner->get_refined(rb1),
                         ps2 = leaves_refiner->get_refined(rb2);
   IMP_NEW(container::ListSingletonContainer, ls1, (mdl, IMP::get_indexes(ps1)));

@@ -2,7 +2,7 @@
  *  \file DataPointsAssignment.cpp
  *  \brief Tools for data points assignment, after anchor point segmentation
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,7 +18,6 @@
 #include <IMP/display/particle_geometry.h>
 #include <IMP/em/Voxel.h>
 #include <IMP/atom/Hierarchy.h>
-#include <IMP/core/LeavesRefiner.h>
 #include <IMP/multifit/density_analysis.h>
 #include <IMP/statistics/internal/ClusteringEngine.h>
 #include <IMP/statistics/internal/DataPoints.h>

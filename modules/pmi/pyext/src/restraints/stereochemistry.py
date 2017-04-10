@@ -17,6 +17,7 @@ from math import pi,log,sqrt
 import sys
 
 
+
 class ConnectivityRestraint(object):
     """ This class creates a restraint between consecutive TempResidue objects OR an entire
     PMI MOlecule object. """
@@ -26,10 +27,12 @@ class ConnectivityRestraint(object):
                  scale=1.0,
                  disorderedlength=False,
                  upperharmonic=True,
-                 resolution=1):
+                 resolution=1,
+                 label="None"):
         """
         @param objects - a list of hierarchies, PMI TempResidues OR a single Molecule
-        @param scale - Riccardo knows what this is
+        @param scale Scale the maximal distance between the beads by this factor when disorderedlength is False.
+                     The maximal distance is calculated as ((float(residuegap) + 1.0) * 3.6) * scale.
         @param disorderedlength - This flag uses either disordered length
                      calculated for random coil peptides (True) or zero
                      surface-to-surface distance between beads (False)
@@ -38,9 +41,10 @@ class ConnectivityRestraint(object):
         @param upperharmonic - This flag uses either harmonic (False)
                      or upperharmonic (True) in the intra-pair
                      connectivity restraint.
-        @parm resolution The resolution to connect things at - only used if you pass PMI objects
+        @param resolution - The resolution to connect things at - only used if you pass PMI objects
+        @param label - A string to identify this restraint in the output/stat file
         """
-        self.label = "None"
+        self.label = label
         self.weight = 1.0
 
         hiers = IMP.pmi.tools.input_adaptor(objects,resolution)
@@ -48,7 +52,7 @@ class ConnectivityRestraint(object):
             raise Exception("ConnectivityRestraint: only pass stuff from one Molecule, please")
         hiers = hiers[0]
 
-        self.kappa = 10  # No idea what this is
+        self.kappa = 10  # spring constant used for the harmonic restraints
         self.m = list(hiers)[0].get_model()
         SortedSegments = []
         self.rs = IMP.RestraintSet(self.m, "connectivity_restraint")
@@ -123,7 +127,6 @@ class ConnectivityRestraint(object):
 
                 print("Adding sequence connectivity restraint between", pt0.get_name(), " and ", pt1.get_name(), 'of distance', optdist)
                 self.rs.add_restraint(r)
-
 
     def set_label(self, label):
         self.label = label
@@ -200,6 +203,7 @@ class ExcludedVolumeSphere(object):
                                                             flatten=True)
             other_ps = []
 
+
         # perform selection
         if representation is None:
             if hierarchies is None:
@@ -208,15 +212,14 @@ class ExcludedVolumeSphere(object):
             included_ps = [h.get_particle() for h in hierarchies]
             if bipartite:
                 other_ps = [h.get_particle() for h in other_hierarchies]
-        elif type(representation) is IMP.pmi.representation.Representation or \
-            type(representation) is IMP.pmi.representation.SimplifiedModel:
+        elif isinstance(representation, IMP.pmi.representation.Representation):
             self.mdl = representation.m
             included_ps = IMP.pmi.tools.select(
                 representation,
                 resolution=resolution,
                 hierarchies=hierarchies)
             if bipartite:
-                other_particles = IMP.pmi.tools.select(
+                other_ps = IMP.pmi.tools.select(
                     representation,
                     resolution=resolution,
                     hierarchies=other_hierarchies)
@@ -236,7 +239,7 @@ class ExcludedVolumeSphere(object):
             evr = IMP.container.PairsRestraint(ssps, self.cpc)
         else:
             other_lsa = IMP.container.ListSingletonContainer(self.mdl)
-            other_lsa.add_particles(other_ps)
+            other_lsa.add(IMP.get_indexes(other_ps))
             self.cpc = IMP.container.CloseBipartitePairContainer(
                 lsa,
                 other_lsa,
@@ -277,35 +280,110 @@ class ExcludedVolumeSphere(object):
     def evaluate(self):
         return self.weight * self.rs.unprotected_evaluate(None)
 
+class HelixRestraint(object):
+    """Enforce ideal Helix dihedrals and bonds for a selection at resolution 0"""
+    def __init__(self,
+                 hierarchy,
+                 selection_tuple,
+                 weight=1.0,
+                 label=''):
+        """Constructor
+        @param hierarchy the root node
+        @param selection_tuple (start, stop, molname, copynum=0)
+        @param weight
+        """
+        self.mdl = hierarchy.get_model()
+        self.rs = IMP.RestraintSet(self.mdl)
+        self.weight = weight
+        self.label = label
+        start = selection_tuple[0]
+        stop = selection_tuple[1]
+        mol = selection_tuple[2]
+        copy_index = 0
+        if len(selection_tuple)>3:
+            copy_index = selection_tuple[3]
+
+        sel = IMP.atom.Selection(hierarchy,molecule=mol,copy_index=copy_index,
+                                 residue_indexes=range(start,stop+1))
+        ps = sel.get_selected_particles(with_representation=False)
+        res = [IMP.atom.Residue(p) for p in ps]
+        self.rs = IMP.RestraintSet(self.mdl,self.weight)
+        self.r = IMP.atom.HelixRestraint(res)
+        self.rs.add_restraint(self.r)
+        print('Created helix %s.%i.%i-%i with %i dihedrals and %i bonds'%(
+            mol,copy_index,start,stop,
+            self.get_number_of_bonds(),self.get_number_of_dihedrals()))
+    def set_label(self, label):
+        self.label = label
+
+    def get_weight(self):
+        return self.weight
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.mdl, self.rs)
+
+    def get_restraint(self):
+        return self.rs
+
+    def set_weight(self, weight):
+        self.weight = weight
+        self.rs.set_weight(weight)
+
+    def get_number_of_bonds(self):
+        return self.r.get_number_of_bonds()
+
+    def get_number_of_dihedrals(self):
+        return self.r.get_number_of_dihedrals()
+
+    def evaluate(self):
+        return self.weight * self.rs.unprotected_evaluate(None)
+
+    def get_output(self):
+        self.mdl.update()
+        output = {}
+        score = self.evaluate()
+        output["_TotalScore"] = str(score)
+        output["HelixRestraint_" + self.label] = str(score)
+        return output
 
 class ResidueBondRestraint(object):
     """ Add bond restraint between pair of consecutive
     residues/beads to enforce the stereochemistry.
     """
     def __init__(self,
-                 representation,
-                 selection_tuple,
+                 representation=None,
+                 selection_tuple=None,
+                 objects=None,
                  distance=3.78,
                  strength=10.0,
                  jitter=None):
         """Constructor
-        @param representation
-        @param selection_tuple Requested selection
+        @param representation (PMI1)
+        @param selection_tuple Requested selection (PMI1)
+        @param objects (PMI2)
         @param distance Resting distance for restraint
         @param strength Bond constant
         @param jitter Defines the +- added to the optimal distance in the harmonic well restraint
                       used to increase the tolerance
         """
-        self.m = representation.prot.get_model()
+
+        if representation is not None and selection_tuple is not None:
+            self.m = representation.prot.get_model()
+            particles = IMP.pmi.tools.select_by_tuple(
+                representation,
+                selection_tuple,
+                resolution=1)
+
+        elif objects is not None:
+            particles = IMP.pmi.tools.input_adaptor(objects,1,flatten=True)
+            self.m = particles[0].get_model()
+
         self.rs = IMP.RestraintSet(self.m, "Bonds")
         self.weight = 1
         self.label = "None"
         self.pairslist = []
 
-        particles = IMP.pmi.tools.select_by_tuple(
-            representation,
-            selection_tuple,
-            resolution=1)
+
 
         if not jitter:
             ts = IMP.core.Harmonic(distance, strength)
@@ -361,21 +439,28 @@ class ResidueAngleRestraint(object):
     residues/beads to enforce the stereochemistry.
     """
     def __init__(self,
-                 representation,
-                 selection_tuple,
+                 representation=None,
+                 selection_tuple=None,
+                 objects=None,
                  anglemin=100.0,
                  anglemax=140.0,
                  strength=10.0):
-        self.m = representation.prot.get_model()
+
+        if representation is not None and selection_tuple is not None:
+            self.m = representation.prot.get_model()
+            particles = IMP.pmi.tools.select_by_tuple(
+                representation,
+                selection_tuple,
+                resolution=1)
+
+        elif objects is not None:
+            particles = IMP.pmi.tools.input_adaptor(objects,1,flatten=True)
+            self.m = particles[0].get_model()
+
         self.rs = IMP.RestraintSet(self.m, "Angles")
         self.weight = 1
         self.label = "None"
         self.pairslist = []
-
-        particles = IMP.pmi.tools.select_by_tuple(
-            representation,
-            selection_tuple,
-            resolution=1)
 
         ts = IMP.core.HarmonicWell(
             (pi * anglemin / 180.0,
@@ -437,20 +522,27 @@ class ResidueDihedralRestraint(object):
     """
     def __init__(
             self,
-            representation,
-            selection_tuple,
+            representation=None,
+            selection_tuple=None,
+            objects=None,
             stringsequence=None,
             strength=10.0):
-        self.m = representation.prot.get_model()
+
+        if representation is not None and selection_tuple is not None:
+            self.m = representation.prot.get_model()
+            particles = IMP.pmi.tools.select_by_tuple(
+                representation,
+                selection_tuple,
+                resolution=1)
+
+        elif objects is not None:
+            particles = IMP.pmi.tools.input_adaptor(objects,1,flatten=True)
+            self.m = particles[0].get_model()
+
         self.rs = IMP.RestraintSet(self.m, "Angles")
         self.weight = 1
         self.label = "None"
         self.pairslist = []
-
-        particles = IMP.pmi.tools.select_by_tuple(
-            representation,
-            selection_tuple,
-            resolution=1)
 
         if stringsequence is None:
             stringsequence = "T" * (len(particles) - 3)
@@ -484,7 +576,7 @@ class ResidueDihedralRestraint(object):
                 print("ResidueDihedralRestraint: adding a TRANS restraint between %s %s %s %s" % (quadruplet[0].get_name(), quadruplet[1].get_name(),
                                                                                                   quadruplet[2].get_name(), quadruplet[3].get_name()))
             self.rs.add_restraint(
-                IMP.core.DihedralRestraint(ts,
+                IMP.core.DihedralRestraint(self.m,ts,
                                            quadruplet[0],
                                            quadruplet[1],
                                            quadruplet[2],
@@ -759,7 +851,7 @@ class ElasticNetworkRestraint(object):
                  hierarchy=None):
         """Constructor
         @param representation Representation object
-        @param selection_tuples Selecting regions for the restraint
+        @param selection_tuples Selecting regions for the restraint [[start,stop,molname,copy_index=0],...]
         @param resolution Resolution for applying restraint
         @param strength Bond strength
         @param dist_cutoff Cutoff for making restraints
@@ -771,10 +863,15 @@ class ElasticNetworkRestraint(object):
         if representation is None and hierarchy is not None:
             self.m = hierarchy.get_model()
             for st in selection_tuples:
+                copy_index=0
+                if len(st)>3:
+                    copy_index=st[3]
                 if not ca_only:
-                    sel = IMP.atom.Selection(hierarchy,chain=st[0],residue_indexes=range(st[1],st[2]+1))
+                    sel = IMP.atom.Selection(hierarchy,molecule=st[2],residue_indexes=range(st[0],st[1]+1),
+                                             copy_index=copy_index)
                 else:
-                    sel = IMP.atom.Selection(hierarchy,chain=st[0],residue_indexes=range(st[1],st[2]+1),
+                    sel = IMP.atom.Selection(hierarchy,molecule=st[2],residue_indexes=range(st[0],st[1]+1),
+                                             copy_index=copy_index,
                                              atom_type=IMP.atom.AtomType("CA"))
                 particles+=sel.get_selected_particles()
         elif representation is not None and type(representation)==IMP.pmi.representation.Representation:
@@ -799,7 +896,7 @@ class ElasticNetworkRestraint(object):
             a1,a2 = r.get_inputs()
             self.pairslist.append(IMP.ParticlePair(a1,a2))
             self.pairslist.append(IMP.ParticlePair(a2,a1))
-        print('created',self.rs.get_number_of_restraints(),'restraints')
+        print('ElasticNetwork: created',self.rs.get_number_of_restraints(),'restraints')
 
     def set_label(self, label):
         self.label = label
@@ -882,6 +979,7 @@ class CharmmForceFieldRestraint(object):
             else:
                 r = IMP.atom.CHARMMStereochemistryRestraint(root, topology)
                 self.ps = IMP.core.get_leaves(root)
+            print('init bonds score',r.unprotected_evaluate(None))
             self.bonds_rs.add_restraint(r)
             ff.add_radii(root)
             ff.add_well_depths(root)
@@ -1157,3 +1255,118 @@ class SymmetryRestraint(object):
         output["SymmetryRestraint_" + self.label] = str(score)
         output["_TotalScore"] = str(score)
         return output
+
+
+class FusionRestraint(object):
+    """ This class creates a restraint between the termini two polypeptides, to simulate the sequence connectivity. """
+    def __init__(self,
+                 nterminal,
+                 cterminal,
+                 scale=1.0,
+                 disorderedlength=False,
+                 upperharmonic=True,
+                 resolution=1,
+                 label="None"):
+        """
+        @param nterminal -  single PMI2 Hierarchy/molecule at the nterminal
+        @param cterminal -  single PMI2 Hierarchy/molecule at the cterminal
+        @param scale Scale the maximal distance between the beads by this factor when disorderedlength is False.
+                     The maximal distance is calculated as ((float(residuegap) + 1.0) * 3.6) * scale.
+        @param disorderedlength - This flag uses either disordered length
+                     calculated for random coil peptides (True) or zero
+                     surface-to-surface distance between beads (False)
+                     as optimal distance for the sequence connectivity
+                     restraint.
+        @param upperharmonic - This flag uses either harmonic (False)
+                     or upperharmonic (True) in the intra-pair
+                     connectivity restraint.
+        @param resolution - The resolution to connect things at - only used if you pass PMI objects
+        @param label - A string to identify this restraint in the output/stat file
+        """
+        self.label = label
+        self.weight = 1.0
+        ssn=IMP.pmi.tools.get_sorted_segments(nterminal)
+        ssc=IMP.pmi.tools.get_sorted_segments(cterminal)
+        nter_lastres=ssn[-1][1]
+        cter_firstres=ssc[0][0]
+        self.m = nter_lastres.get_model()
+
+        self.kappa = 10  # spring constant used for the harmonic restraints
+
+        optdist = (3.6) * scale
+        if upperharmonic:  # default
+            hu = IMP.core.HarmonicUpperBound(optdist, self.kappa)
+        else:
+            hu = IMP.core.Harmonic(optdist, self.kappa)
+        dps = IMP.core.SphereDistancePairScore(hu)
+
+        pt0 = nter_lastres.get_particle()
+        pt1 = cter_firstres.get_particle()
+        r = IMP.core.PairRestraint(self.m, dps, (pt0.get_index(), pt1.get_index()))
+        self.rs = IMP.RestraintSet(self.m, "fusion_restraint")
+        print("Adding fusion connectivity restraint between", pt0.get_name(), " and ", pt1.get_name(), 'of distance', optdist)
+        self.rs.add_restraint(r)
+
+    def set_label(self, label):
+        self.label = label
+
+    def get_weight(self):
+        return self.weight
+
+    def add_to_model(self):
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+
+    def get_restraint(self):
+        return self.rs
+
+    def set_weight(self, weight):
+        self.weight = weight
+        self.rs.set_weight(weight)
+
+    def get_output(self):
+        self.m.update()
+        output = {}
+        score = self.weight * self.rs.unprotected_evaluate(None)
+        output["_TotalScore"] = str(score)
+        output["FusionRestraint_" + self.label] = str(score)
+        return output
+
+    def evaluate(self):
+        return self.weight * self.rs.unprotected_evaluate(None)
+
+
+
+
+class PlaneDihedralRestraint(IMP.pmi.restraints.RestraintBase):
+
+    """Restrain the dihedral between planes defined by three particles.
+
+    This restraint is useful for restraining the twist of a string of
+    more or less identical rigid bodies, so long as the curvature is mild.
+    """
+
+    def __init__(self, particle_triplets, angle=0., k=1., label=None,
+                 weight=1.):
+        """Constructor
+        @param particle_triplets List of lists of 3 particles. Each triplet
+                                 defines a plane. Dihedrals of adjacent planes
+                                 in list are scored.
+        @param angle Angle of plane dihedral in degrees
+        @param k Strength of restraint
+        @param label Label for output
+        @param weight Weight of restraint
+        \note Particles defining planes should be rigid and more or less
+              parallel for proper behavior
+        """
+        m = particle_triplets[0][0].get_model()
+        super(PlaneDihedralRestraint, self).__init__(m, label=label,
+                                                     weight=weight)
+
+        angle = pi * angle / 180.
+        ds = IMP.core.Cosine(.5 * k, 1., -angle)
+        for i, t1 in enumerate(particle_triplets[:-1]):
+            t2 = particle_triplets[i + 1]
+            q1 = [t1[1], t1[0], t2[0], t2[1]]
+            q2 = [t1[2], t1[0], t2[0], t2[2]]
+            self.rs.add_restraint(IMP.core.DihedralRestraint(self.m, ds, *q1))
+            self.rs.add_restraint(IMP.core.DihedralRestraint(self.m, ds, *q2))

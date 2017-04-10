@@ -2,7 +2,7 @@
  *  \file IMP/cnmultifit/symmetry_utils.h
  *  \brief Symmetry utilities.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

@@ -235,63 +235,27 @@ template<> IMP_EIGEN_STRONG_INLINE Packet4i pload<Packet4i>(const int*     from)
     return _mm_loadu_ps(from);
     #endif
   }
-  template<> IMP_EIGEN_STRONG_INLINE Packet2d ploadu<Packet2d>(const double* from) { IMP_EIGEN_DEBUG_UNALIGNED_LOAD return _mm_loadu_pd(from); }
-  template<> IMP_EIGEN_STRONG_INLINE Packet4i ploadu<Packet4i>(const int*    from) { IMP_EIGEN_DEBUG_UNALIGNED_LOAD return _mm_loadu_si128(reinterpret_cast<const Packet4i*>(from)); }
 #else
-// Fast unaligned loads. Note that here we cannot directly use intrinsics: this would
-// require pointer casting to incompatible pointer types and leads to invalid code
-// because of the strict aliasing rule. The "dummy" stuff are required to enforce
-// a correct instruction dependency.
-// TODO: do the same for MSVC (ICC is compatible)
 // NOTE: with the code below, MSVC's compiler crashes!
-
-#if defined(__GNUC__) && defined(__i386__)
-  // bug 195: gcc/i386 emits weird x87 fldl/fstpl instructions for _mm_load_sd
-  #define IMP_EIGEN_AVOID_CUSTOM_UNALIGNED_LOADS 1
-#elif defined(__clang__)
-  // bug 201: Segfaults in __mm_loadh_pd with clang 2.8
-  #define IMP_EIGEN_AVOID_CUSTOM_UNALIGNED_LOADS 1
-#else
-  #define IMP_EIGEN_AVOID_CUSTOM_UNALIGNED_LOADS 0
-#endif
 
 template<> IMP_EIGEN_STRONG_INLINE Packet4f ploadu<Packet4f>(const float* from)
 {
   IMP_EIGEN_DEBUG_UNALIGNED_LOAD
-#if IMP_EIGEN_AVOID_CUSTOM_UNALIGNED_LOADS
   return _mm_loadu_ps(from);
-#else
-  __m128d res;
-  res =  _mm_load_sd((const double*)(from)) ;
-  res =  _mm_loadh_pd(res, (const double*)(from+2)) ;
-  return _mm_castpd_ps(res);
-#endif
 }
+#endif
+
 template<> IMP_EIGEN_STRONG_INLINE Packet2d ploadu<Packet2d>(const double* from)
 {
   IMP_EIGEN_DEBUG_UNALIGNED_LOAD
-#if IMP_EIGEN_AVOID_CUSTOM_UNALIGNED_LOADS
   return _mm_loadu_pd(from);
-#else
-  __m128d res;
-  res = _mm_load_sd(from) ;
-  res = _mm_loadh_pd(res,from+1);
-  return res;
-#endif
 }
 template<> IMP_EIGEN_STRONG_INLINE Packet4i ploadu<Packet4i>(const int* from)
 {
   IMP_EIGEN_DEBUG_UNALIGNED_LOAD
-#if IMP_EIGEN_AVOID_CUSTOM_UNALIGNED_LOADS
-  return _mm_loadu_si128(reinterpret_cast<const Packet4i*>(from));
-#else
-  __m128d res;
-  res =  _mm_load_sd((const double*)(from)) ;
-  res =  _mm_loadh_pd(res, (const double*)(from+2)) ;
-  return _mm_castpd_si128(res);
-#endif
+  return _mm_loadu_si128(reinterpret_cast<const __m128i*>(from));
 }
-#endif
+
 
 template<> IMP_EIGEN_STRONG_INLINE Packet4f ploaddup<Packet4f>(const float*   from)
 {

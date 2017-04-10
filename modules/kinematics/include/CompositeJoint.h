@@ -5,7 +5,7 @@
  *  \authors Dina Schneidman, Barak Raveh
  *
 
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_COMPOSITE_JOINT_H
@@ -24,17 +24,12 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 
 class KinematicForest;
 
-/********************** CompositeJoint ***************/
-
-/**
-    A joint that combines several inner joints, acting on the same
-    pair of rigid bodies
-*/
+//! Joint that combines several inner joints, acting on the same rigid body pair
 class IMPKINEMATICSEXPORT CompositeJoint : public Joint {
  public:
-  /**
-     Constructs a composite joint between parent and child,
-     with the specified list of inner joints connecting them.
+  //! Constructor.
+  /** Constructs a composite joint between parent and child,
+      with the specified list of inner joints connecting them.
 
      @param parent rigid body upstream of this joint
      @param child rigid body downstream of this joint
@@ -48,9 +43,8 @@ class IMPKINEMATICSEXPORT CompositeJoint : public Joint {
   CompositeJoint(IMP::core::RigidBody parent, IMP::core::RigidBody child,
                  Joints joints = Joints());
 
+  //! Adds a joint at the end of the list (closest to the child rigid body)
   /**
-     adds a joint at the end of the list of joints (closest to the child
-     rigid body)
      @note the joint must have the same parent and child as the composite
            joint
    */
@@ -63,10 +57,8 @@ class IMPKINEMATICSEXPORT CompositeJoint : public Joint {
     joints_.push_back(j);
   }
 
-  /**
-     adds a joint at the front of the list of joints (closest to the parent
-     rigid body)
-     @note the joint must have the same parent and child as the composite
+  //! Adds a joint at the front of the list (closest to the parent rigid body)
+  /** @note the joint must have the same parent and child as the composite
            joint
    */
   void add_upstream_joint(Joint* j) {
@@ -78,10 +70,8 @@ class IMPKINEMATICSEXPORT CompositeJoint : public Joint {
     joints_.insert(joints_.begin(), j);
   }
 
-  /**
-     Sets the list of inner joints instead of the existing one,
-
-     @param joints the new joints, ordered from the parent rigid body
+  //! Sets the list of inner joints instead of the existing one.
+  /** @param joints the new joints, ordered from the parent rigid body
                    downstream to the child rigid body.
 
      @note All joints must have the same parent and child as the composite
@@ -91,25 +81,22 @@ class IMPKINEMATICSEXPORT CompositeJoint : public Joint {
   */
   void set_joints(Joints joints);
 
-  /**
-     returns the list of inner joints, ordered from the parent
-     rigid body downstream to the child rigid body
+  //! Returns the inner joints.
+  /** Returns the list of inner joints, ordered from the parent
+      rigid body downstream to the child rigid body.
   */
   const Joints& get_inner_joints() const { return joints_; }
 
 #ifndef SWIG
-  /**
-     returns the list of inner joints, ordered from the parent
-     rigid body downstream to the child rigid body
+  //! Returns the inner joints.
+  /** Returns the list of inner joints, ordered from the parent
+      rigid body downstream to the child rigid body.
   */
   Joints& get_inner_joints() { return joints_; }
 #endif
 
  protected:
-  /**
-     update the child node reference frame by applying all the
-     inner joints
-   */
+  //! Update the child node reference frame by applying all the inner joints
   virtual void update_child_node_reference_frame() const;
 
   /**

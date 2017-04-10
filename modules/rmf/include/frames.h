@@ -1,8 +1,8 @@
 /**
  *  \file IMP/rmf/frames.h
- *  \brief Handle read/write of Model data from/to files.
+ *  \brief Read or write RMF frames.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,8 +15,9 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-/** Load the specified frame into the state of the associated
-    IMP::Objects with the RMF file.
+//! Load the given RMF frame into the state of the linked objects.
+/** The specified frame from the RMF file is loaded into the state
+    of the IMP::Objects that were previously associated with that file.
 
     The current frame is left as the passed frame number.
 */

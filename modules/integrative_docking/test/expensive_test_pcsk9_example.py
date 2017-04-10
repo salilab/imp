@@ -48,14 +48,14 @@ for n, line in enumerate(open(trans_in)):
         cmds = self.read_shell_commands(
             '../../../doc/manual/idock_pcsk9.dox')
         input_docking = self.get_input_file_name('docking.res.pcsk9')
-        d = IMP.test.RunInTempDir()
-        self.make_dummy_patch_dock(input_docking)
-        for c in cmds:
-            self.run_shell_command(c)
-        # Should have produced 3 solutions
-        with open('results_cxms_soap.txt') as fh:
-            wc = len(fh.readlines())
-        self.assertEqual(wc, 6) # account for 3 header lines
+        with IMP.test.temporary_working_directory():
+            self.make_dummy_patch_dock(input_docking)
+            for c in cmds:
+                self.run_shell_command(c)
+            # Should have produced 3 solutions
+            with open('results_cxms_soap.txt') as fh:
+                wc = len(fh.readlines())
+            self.assertEqual(wc, 6) # account for 3 header lines
 
 if __name__ == '__main__':
     IMP.test.main()

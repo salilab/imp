@@ -30,12 +30,17 @@ file in that directory or a subdirectory whose name matches `test_*.{py,cpp}`,
 Normal tests should run in at most a few seconds on a typical machine, medium
 tests in 10 seconds or so and expensive tests in a couple of minutes.
 
-Some tests will require input files or temporary files. Input files
+Python tests can, in principle, be any Python script that exits without error
+if the test passes. However, in most cases it makes sense to use the Python
+[unittest framework](https://docs.python.org/2/library/unittest.html). We
+provide a custom test case subclass that provides some useful IMP-specific
+functions (IMP::test::TestCase). The convention in %IMP is for tests to
+make a subclass of this class called `Tests` (this makes it easier to run
+individual tests from the command line). Some tests will require input files
+or temporary files. Input files
 should be placed in a directory called `input` in the `test`
 directory. The test script should then call
 \command{self.get_input_file_name(file_name)} to get the true path to
 the file. Likewise, appropriate names for temporary files should be
 found by calling
-\command{self.get_tmp_file_name(file_name)}. Temporary files will be
-located in `build/tmp.` The test should remove temporary files after
-using them.
+\command{self.get_tmp_file_name(file_name)}.

@@ -2,7 +2,7 @@
  * \file IMP/kinematics/ProteinKinematics.h
  * \brief functionality for defining a kinematic forest for proteins
  *
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *  \authors Dina Schneidman, Barak Raveh
  *
  */
@@ -54,19 +54,15 @@ public:
   int counter_;
 };
 
-/**
-   Defines a kinematic structure over a protein, with backbone
-   and side chain dihedrals
- */
+//! Kinematic structure over a protein, with backbone and side chain dihedrals
 class IMPKINEMATICSEXPORT ProteinKinematics {
  public:
-  /* Constructors */
 
-  // all phi/psi rotatable
+  //! Constructor with all phi/psi rotatable
   ProteinKinematics(atom::Hierarchy mhd, bool flexible_backbone = true,
                     bool flexible_side_chains = false);
 
-  // only torsions from dihedral_angles list are rotatable
+  // Constructor; only torsions from dihedral_angles list are rotatable
   ProteinKinematics(atom::Hierarchy mhd,
                     const atom::Residues& flexible_residues,
                     const std::vector<atom::Atoms>& dihedral_angles,
@@ -109,7 +105,6 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
   }
 
   KinematicForest* get_kinematic_forest() { return kf_; }
-  // TODO: not sure if we have to return Pointer or just raw pointer
 
   core::RigidBodies get_rigid_bodies() { return rbs_; }
 
@@ -230,7 +225,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
   // joints
   DihedralAngleRevoluteJoints joints_;
 
-  Pointer<kinematics::KinematicForest> kf_;
+  PointerMember<kinematics::KinematicForest> kf_;
 
   // map between residue phi/psi/chis and joints
   AngleToJointMap joint_map_;

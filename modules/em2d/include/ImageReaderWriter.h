@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/ImageReaderWriter.h
  *  \brief Virtual class for reader/writers of images
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_IMAGE_READER_WRITER_H

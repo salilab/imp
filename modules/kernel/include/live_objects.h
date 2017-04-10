@@ -2,7 +2,7 @@
  *  \file IMP/live_objects.h
  *  \brief A shared base class to help in debugging and things.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

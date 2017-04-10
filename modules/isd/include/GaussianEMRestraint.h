@@ -1,8 +1,8 @@
 /**
  *  \file IMP/isd/GaussianEMRestraint.h
- *  \brief Restraint two sets of gaussians (model and gmm derived from EM map)
+ *  \brief Restrain two sets of Gaussians (model and GMM derived from EM map)
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -25,44 +25,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-struct KahanAccumulation{
-double sum;
-double correction;
-KahanAccumulation():
-  sum(0.0),correction(0.0)
-  {}
-};
-struct KahanVectorAccumulation{
-  IMP_Eigen::Vector3d sum;
-  IMP_Eigen::Vector3d correction;
-KahanVectorAccumulation():
-  sum(IMP_Eigen::Vector3d(0,0,0)),
-    correction(IMP_Eigen::Vector3d(0,0,0))
-  {}
-};
-inline KahanAccumulation KahanSum(KahanAccumulation accumulation, double value){
-  KahanAccumulation result;
-  double y = value - accumulation.correction;
-  double t = accumulation.sum + y;
-  result.correction = (t - accumulation.sum) - y;
-  result.sum = t;
-  return result;
-}
-inline KahanVectorAccumulation
-KahanVectorSum(KahanVectorAccumulation accumulation, IMP_Eigen::Vector3d value){
-  KahanVectorAccumulation result;
-  IMP_Eigen::Vector3d y = value - accumulation.correction;
-  IMP_Eigen::Vector3d t = accumulation.sum + y;
-  result.correction = (t - accumulation.sum) - y;
-  result.sum = t;
-  return result;
-}
-#endif
-
-
-//! Creates a restraint between two Gaussian Mixture Models, "model" and "density"
-//
+//! Restraint between two Gaussian Mixture Models, "model" and "density"
 /** This restrains two sets of GMMs with a density overlap function.
     The function is correlation of the two GMMs \f$f_M\f$ and \f$f_D\f$:
     \f[
@@ -89,14 +52,18 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
      \param[in] slope Gentle term to move all particles to the density
      \param[in] update_model (DEPRECATED) update model each cycle
      \param[in] backbone_slope Limit the slope only to backbone particles
+     \param[in] local Only consider density particles that are within the
+                specified cutoff of the model particles (experimental)
      \param[in] name Name of this restraint
      \note the model and density particles must be set up as Gaussian
   */
   GaussianEMRestraint(Model *mdl,
                       ParticleIndexes model_ps, ParticleIndexes density_ps,
                       ParticleIndex global_sigma,
-                      Float model_cutoff_dist,Float density_cutoff_dist,Float slope,
+                      Float model_cutoff_dist, Float density_cutoff_dist,
+                      Float slope,
                       bool update_model=true, bool backbone_slope=false,
+                      bool local=false,
                       std::string name="GaussianEMRestraint%1%");
 
   //! Returns exp(score)
@@ -106,7 +73,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
 
   //! Pre-calculate the density-density and model-model scores
   /** This is automatically called by the constructor.
-      You only need to call it manually if you change Gaussian variances
+      You only need to call it manually if you change Gaussian variances.
   */
   void compute_initial_scores();
 
@@ -116,8 +83,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   //! Get restraint slope
   Float get_slope(){return slope_;}
   virtual double
-    unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-    const IMP_OVERRIDE;
+    unprotected_evaluate(IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   void show(std::ostream &out) const { out << "GEM restraint"; }
   IMP_OBJECT_METHODS(GaussianEMRestraint);
@@ -127,7 +93,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   ParticleIndexes density_ps_;
   ParticleIndex global_sigma_;
   Float slope_;
-  bool update_model_;
+  bool update_model_,local_;
   int msize_,dsize_;
   Float normalization_;
   Float dd_score_;

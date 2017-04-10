@@ -2,7 +2,7 @@
  * \file IMP/kinematics/local_planners.h
  * \brief Planners
  *
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -44,26 +44,22 @@ class IMPKINEMATICSEXPORT LocalPlanner : public IMP::Object {
 
  protected:
   PointerMember<Model> model_;
-  DOFsSampler* dofs_sampler_;
+  PointerMember<DOFsSampler> dofs_sampler_;
 };
 
-/**
-  Local planner implementation that samples conformations on a path
-  between two nodes.
-  @note the default path planning is over a linear interpolation between
-        the nodes
-*/
+//! Local planner that samples conformations on a path between two nodes.
+/** @note the default path planning is over a linear interpolation between
+          the nodes
+ */
 class IMPKINEMATICSEXPORT PathLocalPlanner : public LocalPlanner {
  public:
-  //! construct a path planner (default planning is linear)
-  /**
-     construct a path planner
-     @param model the working model
-     @param dofs_sampler an object for sampling node configurations
-     @param directional_dof XX TODO XX
-     @param save_step_interval the interval for recording nodes in the path.
-                               For instance, 2 would mean save every second node
-                               in the local plan.
+  //! Construct a path planner (default planning is linear)
+  /** @param model the working model
+      @param dofs_sampler an object for sampling node configurations
+      @param directional_dof XX TODO XX
+      @param save_step_interval the interval for recording nodes in the path.
+                                For instance, 2 would mean save every
+                                node in the local plan.
    */
   PathLocalPlanner(Model* model, DOFsSampler* dofs_sampler,
                    DirectionalDOF* directional_dof, int save_step_interval = 1);

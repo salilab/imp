@@ -2,7 +2,7 @@
  *  \file IMP/domino/DependencyScoreState.h
  *  \brief Add a dependency to the dependency graph.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

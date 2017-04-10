@@ -1,7 +1,7 @@
 /**
  *  \file ClassnameContainerStatistics.cpp   \brief Container for classname.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -261,23 +261,6 @@ DynamicListClassnameContainer::DynamicListClassnameContainer(Container *m,
                                                              std::string name)
     : P(m, name) {}
 
-void DynamicListClassnameContainer::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
-  add(IMP::internal::get_index(vt));
-}
-void DynamicListClassnameContainer::add_FUNCTIONNAMEs(
-    const PLURALVARIABLETYPE &c) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
-  add(IMP::internal::get_index(c));
-}
-void DynamicListClassnameContainer::set_FUNCTIONNAMEs(PLURALVARIABLETYPE c) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
-  set(IMP::internal::get_index(c));
-}
-void DynamicListClassnameContainer::clear_FUNCTIONNAMEs() {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
-  clear();
-}
 IMPCONTAINER_END_NAMESPACE
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -325,7 +308,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 ListClassnameContainer::ListClassnameContainer(const PLURALVARIABLETYPE &ps,
                                                std::string name)
     : P(IMP::internal::get_model(ps[0]), name) {
-  set_FUNCTIONNAMEs(ps);
+  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.7,
+                                 "Use the index-based constructor instead");
+  set(IMP::internal::get_index(ps));
 }
 
 ListClassnameContainer::ListClassnameContainer(Model *m,
@@ -342,27 +327,6 @@ ListClassnameContainer::ListClassnameContainer(Model *m,
 ListClassnameContainer::ListClassnameContainer(Model *m,
                                                const char *name)
     : P(m, name) {}
-
-void ListClassnameContainer::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
-  add(IMP::internal::get_index(vt));
-}
-void ListClassnameContainer::add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use add() with indexes instead");
-  add(IMP::internal::get_index(c));
-}
-void ListClassnameContainer::set_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
-  set(IMP::internal::get_index(c));
-}
-void ListClassnameContainer::set_FUNCTIONNAMEs(const PLURALINDEXTYPE &c) {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
-  set(c);
-}
-void ListClassnameContainer::clear_FUNCTIONNAMEs() {
-  IMPCONTAINER_DEPRECATED_METHOD_DEF(2.5, "Use set() with indexes instead");
-  clear();
-}
 
 IMPCONTAINER_END_NAMESPACE
 
@@ -520,6 +484,7 @@ PredicateClassnamesRestraint::PredicateClassnamesRestraint(
       predicate_(pred),
       input_(input),
       input_version_(input->get_contents_hash()),
+      is_unknown_score_set_(false),
       error_on_unknown_(true) {}
 
 void PredicateClassnamesRestraint::do_add_score_and_derivatives(
@@ -567,34 +532,29 @@ Restraints PredicateClassnamesRestraint::do_create_current_decomposition()
 }
 
 void PredicateClassnamesRestraint::update_lists_if_necessary() const {
+  // return if input ClassnameContainer hasn't changed
   std::size_t h = input_->get_contents_hash();
   if (h == input_version_) return;
   input_version_ = h;
-  lists_.clear();
 
-  IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
-    int bin = predicate_->get_value_index(get_model(), it);
-    lists_[bin].push_back(it);
-  }
-
-  typedef std::pair<int, PLURALINDEXTYPE> LP;
-  Ints unknown;
-  IMP_FOREACH(const LP & lp, lists_) {
-    int bin = lp.first;
-    if (scores_.find(bin) == scores_.end()) {
-      IMP_USAGE_CHECK(!error_on_unknown_, "Unknown predicate value of "
-                                              << bin << " found for tuples "
-                                              << lp.second);
-      unknown.push_back(bin);
-    }
-  }
+  // populate lists with bins of PLURALINDEXTYPE for each predicate,
+  // and put unknown predicates in unknown_bin, is unknown score exists
   const int unknown_bin = std::numeric_limits<int>::max();
-  if (scores_.find(unknown_bin) != scores_.end()) {
-    IMP_FOREACH(int i, unknown) {
-      lists_[unknown_bin] += lists_.find(i)->second;
-    }
-  }
-  IMP_FOREACH(int i, unknown) { lists_.erase(i); }
+  //  bool is_unknown_score=(scores_.find(unknown_bin) != scores_.end());
+  lists_.clear();
+  IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
+    int bin = predicate_->get_value_index(get_model(), it); // TODO: get_value index seems more expensive computationally for OrderedTypeClassnamePredicate than it should - check it out
+    if (scores_.find(bin) != scores_.end()) {
+      lists_[bin].push_back(it);
+    } else {
+      IMP_USAGE_CHECK(!error_on_unknown_, "Unknown predicate value of "
+                      << bin << " found for tuple "
+                      << it);
+      if(is_unknown_score_set_){
+        lists_[unknown_bin].push_back(it);
+      }
+    } // if score found
+  } // IMP_FOREACH
 }
 
 void PredicateClassnamesRestraint::set_score(int predicate_value,
@@ -610,6 +570,7 @@ void PredicateClassnamesRestraint::set_unknown_score(ClassnameScore *score) {
   error_on_unknown_ = false;
   scores_[std::numeric_limits<int>::max()] = score;
   score->set_was_used(true);
+  is_unknown_score_set_=true;
 }
 
 IMPCONTAINER_END_NAMESPACE

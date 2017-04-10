@@ -2,7 +2,7 @@
  *  \file IMP/kernel/src/internal/random_number_generation_cuda.cu
  *  \brief GPU or CPU pooled random number generation
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -22,7 +22,6 @@
 #include <iostream>
 
 
-
 static curandGenerator_t prngGPU; // GPU random number generator
 
 void
@@ -36,6 +35,7 @@ IMPcuda::kernel::internal::get_random_numbers_normal_cuda
   IMP_checkCudaErrors(cudaMemcpy(p_random_array, d_Rand,
                                  n * sizeof(double), cudaMemcpyDeviceToHost));
   IMP_checkCudaErrors(cudaFree(d_Rand));
+  IMP_checkCudaErrors(cudaDeviceSynchronize()); // DEBUG
 }
 
 void

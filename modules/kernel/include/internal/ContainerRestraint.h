@@ -2,7 +2,7 @@
  *  \file core/generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,7 +17,7 @@
 #include "functors.h"
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
-/** When programming in C++, you can use CoreRestraint instead
+/** When programming in C++, you can use ContainerRestraint instead
     of a SingletonsRestraint, PairsRestraint, etc. The result is
     somewhat faster (20% or so).
 */

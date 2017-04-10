@@ -1,7 +1,7 @@
 /**
  *  \file IMP/python_only.h   \brief Build dependency graphs on models.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,7 +48,7 @@ class PythonDirectedGraph {
 };
 
 /** Use the Python
-    \external{http://packages.python.org/altgraph/core.html,altgraph}
+    \external{https://pypi.python.org/pypi/altgraph/,altgraph}
     package to graphically display a graph.
     Note that is requires X11 to be running (you can find it in
     your Utilities folder in MacOS) and the window produced is shockingly

@@ -2,7 +2,7 @@
  *  \file RMF/Enum.h
  *  \brief Declaration of RMF::Enum.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -113,7 +113,7 @@ typedef Enum<FrameTypeTag> FrameType;
 typedef Enum<NodeTypeTag> NodeType;
 /**  The type for representations used in decorator::Alternatives.
 
-     See \ref representationtypes "Representaiton Types" for a complete list of
+     See \ref representationtypes "Representation Types" for a complete list of
      the possible values.
 */
 typedef Enum<RepresentationTypeTag> RepresentationType;

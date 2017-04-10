@@ -155,7 +155,7 @@ s.set_scoring_function(sf)
 # Add movers for the rigid bodies
 movers = []
 for rbd in rigid_bodies:
-    movers.append(IMP.core.RigidBodyMover(rbd, 5, 2))
+    movers.append(IMP.core.RigidBodyMover(m, rbd, 5, 2))
 s.add_movers(movers)
 print("MonteCarlo sampler has", s.get_number_of_movers(), "movers")
 # Add an optimizer state to save intermediate configurations of the hierarchy

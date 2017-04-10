@@ -5,9 +5,9 @@
 
 # This is similar to 'git subtree pull' but makes the commit a little
 # differently (subtree uses git commit-tree followed by merge; we just
-# cherry-pick and squash the commits). git subtree results in two commits,
+# use git diff and git apply). git subtree results in two commits,
 # and "git show" and GitHub can get very confused by the tree commit,
-# thinking it modifies every file in IMP. On the other hand, cherry-picking
+# thinking it modifies every file in IMP. On the other hand, diff/apply
 # gives a single "small" commit. The commit message is formatted in the
 # same way as that from "git subtree" so using this script should not
 # break future "git subtree pull" or "git subtree push" invocations.
@@ -17,7 +17,7 @@
 
 die() {
   msg="$1"
-  echo $msg
+  echo "$msg"
   exit 1
 }
 
@@ -92,17 +92,14 @@ new_squash_commit()
     oldsub="$3"
     newsub="$4"
     github="$5"
-    oldhead=$(git rev-parse HEAD)
-    # Get all subtree commits, in the order they were made
-    # (this is the reverse of the normal log order)
-    revs=$(git log --reverse --pretty=tformat:'%H' "$oldsub..$newsub")
-    # Cherry-pick into the subtree directory, but don't make a commit (-n)
-    git cherry-pick -n --strategy=recursive -Xsubtree="$dir" $revs || exit $?
-    # Commit the combination of all the cherry-picked changes
+    # Apply all of the original commits in one go
+    git diff --binary "$oldsub..$newsub" \
+        | git apply --whitespace=nowarn --directory="$dir" --index || exit $?
+    # Commit the combination of all the changes
     if [ -n "$old" ]; then
-        squash_msg "$dir" "$oldsub" "$newsub" $github | git commit -n -F - || exit $?
+        squash_msg "$dir" "$oldsub" "$newsub" "$github" | git commit -n -F - || exit $?
     else
-        squash_msg "$dir" "" "$newsub" $github | git commit -n -F - || exit $?
+        squash_msg "$dir" "" "$newsub" "$github" | git commit -n -F - || exit $?
     fi
 }
 
@@ -110,7 +107,8 @@ merge()
 {
     local dir=$1
     local github=$2
-    local rev=$(git rev-parse FETCH_HEAD)
+    local rev
+    rev=$(git rev-parse FETCH_HEAD)
     first_split="$(find_latest_squash "$dir")"
     if [ -z "$first_split" ]; then
         die "Can't squash-merge: '$dir' was never added."
@@ -122,7 +120,7 @@ merge()
         echo "Subtree is already at commit $rev."
         exit 0
     fi
-    new_squash_commit "$dir" "$old" "$sub" "$rev" $github || exit $?
+    new_squash_commit "$dir" "$old" "$sub" "$rev" "$github" || exit $?
 }
 
 pull()
@@ -132,6 +130,6 @@ pull()
     local branch=$3
     local github=$4
     ensure_clean
-    git fetch $refspec $branch || exit $?
-    merge $1 $github
+    git fetch "$refspec" "$branch" || exit $?
+    merge "$prefix" "$github"
 }

@@ -1,7 +1,7 @@
 /**
  *  \file ChiFreeScore.h   \brief Chi free SAXS score
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -83,7 +83,7 @@ double ChiFreeScore::compute_score(const Profile* exp_profile,
       double delta = exp_profile_selection->get_intensity(i) - offset -
                     c * model_profile_selection->get_intensity(i);
       // Exclude the uncertainty originated from limitation of floating number
-      if (fabs(delta / exp_profile_selection->get_intensity(k)) >= 1.0e-15)
+      if (fabs(delta / exp_profile_selection->get_intensity(i)) >= 1.0e-15)
         chi_square += weight_tilda * square(delta);
     }
     chi_square /= profile_size;

@@ -1,8 +1,8 @@
 /**
  *  \file IMP/core/RigidBodyMover.h
- *  \brief A mover that transform a rigid body
+ *  \brief A mover that transforms a rigid body
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -19,8 +19,10 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Modify the transformation of a rigid body
-/** The transformation of a rigid body is moved in a ball of given
-    size. The probability distribution is uniform over the ball.
+/** The transformation of the rigid body is moved in two ways -
+    the translation is moved with a ball of given size, and the
+    rotation changed up to a given maximum angle. In both cases
+    the probability distribution is uniform over the ball.
     \see MonteCarlo
  */
 class IMPCOREEXPORT RigidBodyMover : public MonteCarloMover {
@@ -30,15 +32,17 @@ class IMPCOREEXPORT RigidBodyMover : public MonteCarloMover {
   ParticleIndex pi_;
 
  public:
+  //! Constructor. The given rigid body is rotated and translated.
+  /** \param[in] m the Model
+      \param[in] pi particle index of the rigid body
+      \param[in] max_translation maximum translation during a step
+      \param[in] max_rotation maximum rotation angle in radians
+   */
   RigidBodyMover(Model *m, ParticleIndex pi,
                  Float max_translation, Float max_rotation);
 
 #ifndef IMP_DOXYGEN
-  /** The rigid body is rotated and translated to move
-      \param[in] d   the rigid body decorator
-      \param[in] max_translation maximum translation during a step
-      \param[in] max_rotation maximum rotation angle in radians
-   */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.7)
   RigidBodyMover(RigidBody d, Float max_translation, Float max_rotation);
 #endif
 

@@ -1,7 +1,7 @@
 /**
  * \file IMP/integrative_docking/EMFit.cpp \brief
  *
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/integrative_docking/internal/EMFit.h>
@@ -46,7 +46,7 @@ EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
   envelope_score_ = new IMP::em::EnvelopeScore(distance_transform_);
 
   // init cc score
-  cc_score_ = new MapScorer(rec_particles_, lig_particles_, *map_);
+  cc_score_.reset(new MapScorer(rec_particles_, lig_particles_, *map_));
 }
 
 EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
@@ -78,7 +78,7 @@ EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
   envelope_score_ = new IMP::em::EnvelopeScore(distance_transform_);
 
   // init cc score
-  cc_score_ = new MapScorer(rec_particles_, *map_);
+  cc_score_.reset(new MapScorer(rec_particles_, *map_));
 }
 
 float EMFit::compute_volume(const IMP::Particles& particles) {

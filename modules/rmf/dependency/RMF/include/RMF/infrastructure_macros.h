@@ -2,7 +2,7 @@
  *  \file RMF/infrastructure_macros.h
  *  \brief Various general useful macros for IMP.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -137,7 +137,7 @@ RMF_ENABLE_WARNINGS
 */
 #define RMF_NO_RETURN(type) return type()
 
-/** Apply the macro to each supported constant size type (eg int as opposed
+/** Apply the macro to each supported constant size type (e.g. int as opposed
     to string).
 
     \see RMF_FOREACH_TYPE()
@@ -148,7 +148,7 @@ RMF_ENABLE_WARNINGS
   macroname(index, Index, int, int, const Ints&, Ints)
 
 /** Expand to applying the macro to each type supported by
-    the rmf library. The macro should take six argments
+    the RMF library. The macro should take six arguments
     - the lower case name of the type
     - the upper case name
     - the C++ type for accepting the value

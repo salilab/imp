@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         rb2 = IMP.atom.create_rigid_body(mh2)
         rt.add_child(mh2)
         mh3 = IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), m)
-        IMP.atom.setup_as_rigid_body(mh3)
+        rb3 = IMP.atom.create_rigid_body(mh3)
         rt.add_child(mh3)
 
         leaves = IMP.atom.get_leaves(rt)

@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
             mh = IMP.atom.read_pdb(prot_fn, self.mdl, self.ca_sel)
             self.mhs.append(mh)
             IMP.atom.add_radii(mh)
-            IMP.atom.setup_as_rigid_body(mh)
+            IMP.atom.create_rigid_body(mh)
 
     def test_reading_fitting_solutions(self):
         """Check correct parsing of fitting solutions file"""

@@ -51,4 +51,3 @@ namespace IMP {
   IMP::algebra::BoundingBoxD<D> __add__(const IMP::algebra::VectorD<D> &o) { return self->operator+(o); }
   IMP::algebra::BoundingBoxD<D> __add__(double o) { return self->operator+(o); }
 };
-%ignore IMP::algebra::BoundingBoxD::BoundingBoxD();

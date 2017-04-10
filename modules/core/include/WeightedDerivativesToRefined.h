@@ -4,7 +4,7 @@
  *         to its refined set of particles using weights
  *         indicated by a weight key.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_WEIGHTED_DERIVATIVES_TO_REFINED_H
@@ -21,8 +21,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Copy the derivatives from a coarse particle to its refined particles
-/** \see DerivatvesFromRefined
-    \see DerivatvesToRefined
+/** \see DerivativesFromRefined
+    \see DerivativesToRefined
     \see Centroid
     \see atom::CenterOfMass
  */

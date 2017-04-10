@@ -5,7 +5,7 @@
 
  \authors Dina Schneidman, Barak Raveh
 
- Copyright 2007-2016 IMP Inventors. All rights reserved.
+ Copyright 2007-2017 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPKINEMATICS_JOINT_H
@@ -26,10 +26,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 class KinematicForest;
 
 // TODO: make abstract?
-/**
-    Base class for joints between rigid bodies in a kinematic
-    tree.
-*/
+//! Base class for joints between rigid bodies in a kinematic tree.
 class IMPKINEMATICSEXPORT Joint : public IMP::Object {
   friend class KinematicForest;
   friend class CompositeJoint;
@@ -37,9 +34,8 @@ class IMPKINEMATICSEXPORT Joint : public IMP::Object {
   IMP_OBJECT_METHODS(Joint);
 
  public:
+  //! Constructor.
   /**
-     An abstract class for a joint between a parent and a child
-
      @param parent rigid body upstream of this joint
      @param child rigid body downstream of this joint
      @note we currently assume that a parent cannot be switched

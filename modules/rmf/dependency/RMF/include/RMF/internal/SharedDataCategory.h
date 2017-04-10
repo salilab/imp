@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -24,7 +24,7 @@ struct CategoryData {
   From from_name;
   typedef RMF_SMALL_UNORDERED_MAP<Category, std::string> To;
   To to_name;
-  // Mac OS 10.8 and earlied Clang needs these for some reason
+  // Mac OS 10.8 and earlier Clang needs these for some reason
   CategoryData() {}
   CategoryData &operator=(const CategoryData &o) {
     from_name = o.from_name;

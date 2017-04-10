@@ -2,7 +2,7 @@
  *  \file rigid_fitting.cpp
  *  \brief Rigid fitting functionality
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -64,8 +64,8 @@ core::MonteCarlo *set_optimizer(Model *model,
   core::RigidBody rb =
       core::RigidMember(refiner->get_refined(p)[0]).get_rigid_body();
   // create a rigid body mover
-  core::RigidBodyMover *rb_mover =
-      new core::RigidBodyMover(rb, max_translation, max_rotation);
+  IMP_NEW(core::RigidBodyMover, rb_mover,
+          (model, rb.get_particle_index(), max_translation, max_rotation));
   // preform mc search
   //  core::SteepestDescent *lopt = new core::SteepestDescent();
   IMP_NEW(core::ConjugateGradients, lopt, (model));

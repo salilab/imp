@@ -15,11 +15,12 @@ def all_module_docs(modules):
 
 def get_module_readme(module):
     """Make a Page object for a module's top-level README file"""
-    p = Page('namespace' + module)
+    modulesub = module.replace('_', '__')
+    p = Page('namespace' + modulesub)
     if module == 'kernel':
         p.out_file_name = 'namespaceIMP'
     else:
-        p.out_file_name = 'namespaceIMP_1_1' + module
+        p.out_file_name = 'namespaceIMP_1_1' + modulesub
     p.source_file_name = 'modules/%s/README.md' % module
     return p
 
@@ -41,7 +42,7 @@ def main():
     p.source_file_name = 'doc/ref/mainpage.md'
 
     for p in docs.pages:
-        if os.path.exists(docs.get_html_page(p)):
+        if docs.get_html_pages(p):
             docs.add_page_navigation(p)
         else:
             print("Not handling %s: HTML file does not exist" % p.id)

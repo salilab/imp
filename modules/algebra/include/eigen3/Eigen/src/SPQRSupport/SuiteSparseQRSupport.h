@@ -59,7 +59,7 @@ class SPQR
   public:
     typedef typename _MatrixType::Scalar Scalar;
     typedef typename _MatrixType::RealScalar RealScalar;
-    typedef SuiteSparse_long Index ; 
+    typedef SuiteSparse_long Index ;
     typedef SparseMatrix<Scalar, ColMajor, Index> MatrixType;
     typedef PermutationMatrix<Dynamic, Dynamic> PermutationType;
   public:

@@ -92,7 +92,7 @@ class Tests(IMP.test.TestCase):
         IMP.atom.write_pdb(mp, self.get_tmp_file_name("water_write.pdb"))
         self.assertEqual(len(a), 320)
 
-    def test_read_non_hydrogen(self):
+    def test_read_hydrogen(self):
         """Check that the Hydrogen selector can identify all hydrogens"""
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
@@ -100,6 +100,15 @@ class Tests(IMP.test.TestCase):
                                m, IMP.atom.HydrogenPDBSelector())
         a = IMP.atom.get_leaves(mp)
         self.assertEqual(len(a), 22)
+
+    def test_read_non_hydrogen(self):
+        """Check NonHydrogenPDBSelector"""
+        IMP.set_log_level(IMP.VERBOSE)
+        m = IMP.Model()
+        mp = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
+                               m, IMP.atom.NonHydrogenPDBSelector())
+        a = IMP.atom.get_leaves(mp)
+        self.assertEqual(len(a), 3)
 
     def test_atom_type(self):
         """Test AtomTypePDBSelector"""

@@ -1,7 +1,7 @@
 /**
  *  \file ClosePairContainer.cpp   \brief A list of ParticlePairs.
  *
- *  Copyright 2007-2016 IMP Inventors. Close rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. Close rights reserved.
  *
  */
 

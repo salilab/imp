@@ -2,7 +2,7 @@
  *  \file RMF/show_hierarchy.h
  *  \brief Functions to show the hierarchy.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -19,7 +19,7 @@ class FileConstHandle;
 /** \name Showing the hierarchy
 
 These functions print out the hierarchy with various extra information
-for each node. Each prints out an ascii tree designed for human inspection.
+for each node. Each prints out an ASCII tree designed for human inspection.
 @{ */
 
 /** Print out just the node names and types.

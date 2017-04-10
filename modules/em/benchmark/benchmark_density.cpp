@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 #include <IMP.h>
 #include <IMP/benchmark.h>
@@ -67,7 +67,11 @@ void do_benchmark() {
 }
 
 int main(int argc, char **argv) {
-  IMP::setup_from_argv(argc, argv, "Benchmark scanning density maps");
+  try {
+    IMP::setup_from_argv(argc, argv, "Benchmark scanning density maps");
+  } catch (const IMP::UsageException &) {
+    return 1;
+  }
   do_benchmark();
   return IMP::benchmark::get_return_value();
 }

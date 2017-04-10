@@ -2,7 +2,7 @@
  *  \file IMP/em/masking.h
  *  \brief masking tools
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -43,12 +43,11 @@ class IMPEMEXPORT DistanceMask
     // class  DistanceMask
     {
  public:
-  DistanceMask() { initialized_ = false; }
+  DistanceMask()
+          : initialized_(false), header_(nullptr) {}
 
-  DistanceMask(const DensityHeader *header) {
-    header_ = header;
-    initialized_ = true;
-  }
+  DistanceMask(const DensityHeader *header)
+          : initialized_(true), header_(header) {}
 
   void show(std::ostream &out) const { out << "DistanceMask"; }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)

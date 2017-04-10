@@ -2,7 +2,7 @@
  *  \file IMP/domino/utility.h
  *  \brief Functions for helping optimize and understand DOMINO-based sampling.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDOMINO_UTILITY_H
@@ -16,7 +16,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/RestraintSet.h>
 #include <IMP/Model.h>
-#include <IMP/core/internal/CoreClosePairContainer.h>
+#include <IMP/container/internal/ClosePairContainer.h>
 #include <IMP/display/Writer.h>
 #include <IMP/dependency_graph.h>
 #include <IMP/statistics/metric_clustering.h>

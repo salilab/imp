@@ -3,7 +3,7 @@
  *  \brief Restrain a list of particle pairs with a lognormal+ISPA.
  *  NOTE: for now, the derivatives are written to all variables.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,9 +21,9 @@ IMPISD_BEGIN_NAMESPACE
 // add a contribution: simple case
 void MarginalNOERestraint::add_contribution(Particle *p1,
                                             Particle *p2, double Iexp) {
-  ParticlePair pc(p1, p2);
-  ParticlePairsTemp pct(1, pc);
-  IMP_NEW(container::ListPairContainer, cont, (pct));
+  ParticleIndexPair pc(p1->get_index(), p2->get_index());
+  ParticleIndexPairs pct(1, pc);
+  IMP_NEW(container::ListPairContainer, cont, (get_model(), pct));
   // container::ListPairContainer cont(pct);
   add_contribution(cont, Iexp);
 }

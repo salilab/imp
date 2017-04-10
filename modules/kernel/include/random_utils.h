@@ -1,7 +1,7 @@
 /**
  *  \file IMP/random_utils.h    \brief Random number utility functions used by IMP.
  *
- *  Copyright 2007-2016 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,6 +21,9 @@
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_real.hpp>
+
+// #include <ctime> // DEBUG
+//#include <sys/time.h> // DEBUG
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -47,6 +50,9 @@ void get_random_numbers_normal
   if(n==0) return;
   if(n>v.size())
     v.resize(n);
+  //  struct timeval  start_time; // DEBUG
+  //struct timeval t_time; // DEBUG
+  //gettimeofday(&start_time, 0); // DEBUG
 #ifdef IMP_KERNEL_CUDA_LIB
   IMPcuda::kernel::internal::init_gpu_rng_once(get_random_seed());
   IMPcuda::kernel::internal::get_random_numbers_normal_cuda
@@ -54,6 +60,12 @@ void get_random_numbers_normal
 #else
   internal::get_random_numbers_normal_boost(&v[0], n, mean, stddev);
 #endif
+  //  gettimeofday(&t_time, 0); // DEBUG
+  // double time_diff_sec= (double)( (t_time.tv_sec - start_time.tv_sec)
+  //                                + 0.000001 * (t_time.tv_usec - start_time.tv_usec) ); // DEBUG
+  // std::cout << "get_random_numbers_uniform_cuda(" << n
+  //          << ") " << time_diff_sec << " seconds" << std::endl; // DEBUG
+
 }
 
 //! Fill the float array with random uniformly distributed values.
@@ -149,7 +161,7 @@ inline double
 get_random_double_uniform()
 {
 #ifdef IMP_KERNEL_CUDA_LIB
-  const static unsigned int cache_n=20000000;
+  const static unsigned int cache_n=2000000;
   static IMP::Vector<double> cache;
   static unsigned int i=0;
   if(i>=cache.size()){

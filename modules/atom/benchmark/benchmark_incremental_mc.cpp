@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2016 IMP Inventors. All rights reserved.
+ * Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 #include <IMP/core.h>
 #include <IMP.h>
@@ -103,7 +103,8 @@ void benchmark_it(std::string name, bool incr, bool nbl) {
   }
   rs.push_back(create_diameter_restraint(m, rbs, 50.0));
   if (incr) {
-    IMP_NEW(core::IncrementalScoringFunction, sf, (rbs, rs));
+    IMP_NEW(core::IncrementalScoringFunction, sf,
+            (m, IMP::internal::get_index(rbs), rs));
     if (nbl) {
       sf->add_close_pair_score(create_pair_score(h, rbs, 1.0), 0, rbs);
     }
@@ -118,7 +119,7 @@ void benchmark_it(std::string name, bool incr, bool nbl) {
   mc->set_kt(1.0);
   MonteCarloMovers mvs;
   for (unsigned int i = 0; i < rbs.size(); ++i) {
-    IMP_NEW(RigidBodyMover, mv, (rbs[i], 80, .2));
+    IMP_NEW(RigidBodyMover, mv, (m, rbs[i].get_particle_index(), 80, .2));
     mvs.push_back(mv);
   }
   mc->add_mover(new SerialMover(get_as<MonteCarloMovers>(mvs)));

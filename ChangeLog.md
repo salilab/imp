@@ -1,6 +1,37 @@
 ChangeLog {#changelog}
 =========
 
+# 2.7.0 - 2017-04-13 # {#changelog_2_7_0}
+- New applications of IMP are now available:
+  - [Modeling of the yeast Mediator complex](https://salilab.org/mediator/)
+  - [Modeling of the yeast and human TFIIH complex](https://salilab.org/tfiih/)
+  - [Modeling of complexes between the 26S proteasome and proteasome interacting proteins](https://salilab.org/26S-PIPs)
+  - [Human Complement modeling](https://salilab.org/Complement)
+  - [Modeling of a region of the fly genome](https://integrativemodeling.org/systems/?sys=22) using IMP and [TADbit](http://sgt.cnag.cat/3dg/tadbit/)
+- Memory and CPU performance improvements across the code, particularly
+  in IMP::pmi.
+- Preview of mmCIF support for deposition of integrative models in
+  [PDB-dev](https://pdb-dev.rcsb.rutgers.edu/). See the IMP::pmi::mmcif
+  module for more details.
+- This will be the last release that includes packages for RedHat Enterprise
+  Linux 5 (and variants, such as CentOS 5), since RHEL 5 has reached end
+  of life.
+- The IMP::em::SurfaceShellDensityMap::binaries() method has been replaced
+  with the (correctly spelled) IMP::em::SurfaceShellDensityMap::binarize()
+  method.
+- IMP::multifit::WeightedExcludedVolumeRestraint no longer expects that the
+  IMP::core::RigidBody particles it acts on are also IMP::atom::Hierarchy
+  objects.  Use an IMP::multifit::RigidLeavesRefiner in place of
+  IMP::core::LeavesRefiner to get the old behavior.
+- IMP::modeller::MultipleBinormalRestraint has moved to the IMP::core
+  module.
+- The IMP::core::setup_as_rigid_body() method has been removed.
+  Use IMP::core::create_rigid_body() instead.
+- IMP::test:TempDir and IMP::test::RunInTempDir are deprecated in favor
+  of similar functions that work as Python context managers
+  (IMP::test::temporary_directory() and IMP::Test::temporary_working_directory()
+  respectively).
+
 # 2.6.2 - 2016-05-25 # {#changelog_2_6_2}
 - Add support for SWIG 3.0.8.
 - Add support for Ubuntu 16.04, Xenial Xerus.
