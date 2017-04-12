@@ -4,6 +4,7 @@
 import gzip
 from math import exp, log
 from random import sample
+import ast
 
 # imp general
 import IMP
@@ -32,11 +33,8 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
         sigma_grid = self.get_log_grid(sigmamin, sigmamax, nsigma)
         # try to open the cross-link database
         filen = IMP.isd.get_data_path("CrossLinkPMFs.dict")
-        xlpot = open(filen)
-
-        for line in xlpot:
-            dictionary = eval(line)
-            break
+        with open(filen) as fh:
+            dictionary = ast.literal_eval(fh.readline())
         xpot = dictionary[directory][filename]["distance"]
         pot = dictionary[directory][filename]["gofr"]
 
@@ -171,7 +169,7 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
 
             # structure of file entries:
             # fexp,x1,x2,ibeta,iweight,iepsilon,cystrest.unprotected_evaluate(None),cystrest.get_model_frequency()
-            t = eval(l)
+            t = ast.literal_eval(l)
             testlist.append(t)
 
         for t in sample(testlist, int(len(testlist) * 0.2)):
