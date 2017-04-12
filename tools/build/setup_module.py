@@ -205,10 +205,11 @@ def write_ok(module, modules, unfound_modules, dependencies,
              unfound_dependencies, swig_includes, swig_wrapper_includes):
     print("yes")
     config = ["ok=True"]
+    vardict = locals()
     for varname in ("modules", "unfound_modules", "dependencies",
                     "unfound_dependencies", "swig_includes",
                     "swig_wrapper_includes"):
-        var = eval(varname)
+        var = vardict[varname]
         if len(var) > 0:
             config.append("%s = %s" % (varname, repr(":".join(var))))
     tools.rewrite(os.path.join("data", "build_info", "IMP." + module),
