@@ -33,12 +33,10 @@ def add_list_to_defines(cppdefines, data, sym, val, names):
     names.sort()
     for n in names:
         nn = n.replace(".", "_").upper()
-        cppdefines.append(
-            "#define IMP_%s_%s_%s" %
-            (data["name"].upper(), sym, nn))
-        cppdefines.append(
-            "#define IMP_%s_HAS_%s %d" %
-            (data["name"].upper(), nn, val))
+        cppdefines.append("#define IMP_%s_%s_%s"
+                          % (data["name"].upper(), sym, nn))
+        cppdefines.append("#define IMP_%s_HAS_%s %d"
+                          % (data["name"].upper(), nn, val))
 
 
 def make_header(options):
@@ -105,27 +103,20 @@ using ::IMP::hash_value;
 
     info = tools.get_module_info(data["name"], options.datapath)
 
-    optional_modules = [
-        x for x in info[
-            "modules"] if x not in tools.split(
-            d['required_modules']) and x != ""]
+    optional_modules = [x for x in info["modules"]
+                        if x not in tools.split(d['required_modules'])
+                             and x != ""]
     unfound_modules = [x for x in info["unfound_modules"] if x != ""]
-    optional_dependencies = [
-        x for x in info[
-            "dependencies"] if x not in tools.split(
-            d['required_dependencies']) and x != ""]
+    optional_dependencies = [x for x in info["dependencies"]
+                             if x not in tools.split(d['required_dependencies'])
+                                  and x != ""]
     unfound_dependencies = [x for x in info["unfound_dependencies"] if x != ""]
     add_list_to_defines(cppdefines, data, "USE", 1,
                         ["imp_" + x for x in optional_modules])
     add_list_to_defines(cppdefines, data, "NO", 0,
                         ["imp_" + x for x in unfound_modules])
     add_list_to_defines(cppdefines, data, "USE", 1, optional_dependencies)
-    add_list_to_defines(
-        cppdefines,
-        data,
-        "NO",
-        0,
-        info["unfound_dependencies"])
+    add_list_to_defines(cppdefines, data, "NO", 0, info["unfound_dependencies"])
     data["cppdefines"] = "\n".join(cppdefines)
     header_template.write(file, data)
 
@@ -208,18 +199,11 @@ def make_doxygen(options, modules):
 def write_no_ok(module):
     new_order = [x for x in tools.get_sorted_order() if x != module]
     tools.set_sorted_order(new_order)
-    tools.rewrite(
-        os.path.join(
-            "data",
-            "build_info",
-            "IMP." + module),
-        "ok=False\n",
-        verbose=False)
+    tools.rewrite(os.path.join("data", "build_info", "IMP." + module),
+                  "ok=False\n", verbose=False)
 
-
-def write_ok(
-    module, modules, unfound_modules, dependencies, unfound_dependencies,
-        swig_includes, swig_wrapper_includes):
+def write_ok(module, modules, unfound_modules, dependencies,
+             unfound_dependencies, swig_includes, swig_wrapper_includes):
     print("yes")
     config = ["ok=True"]
     for varname in ("modules", "unfound_modules", "dependencies",
@@ -228,12 +212,8 @@ def write_ok(
         var = eval(varname)
         if len(var) > 0:
             config.append("%s = %s" % (varname, repr(":".join(var))))
-    tools.rewrite(
-        os.path.join("data",
-                     "build_info",
-                     "IMP." + module),
-        "\n".join(config))
-
+    tools.rewrite(os.path.join("data", "build_info", "IMP." + module),
+                   "\n".join(config))
 
 def setup_module(module, source, datapath):
     sys.stdout.write("Configuring module %s ..." % module)
@@ -264,18 +244,24 @@ def setup_module(module, source, datapath):
             unfound_modules.append(d)
     all_modules = tools.get_dependent_modules(modules, datapath)
     moddir = os.path.join('IMP', '' if module == 'kernel' else module)
-    swig_includes = [os.path.split(x)[1] for x
-                     in tools.get_glob([os.path.join(source, "modules", module,
-                                                     "pyext", "include", "*.i")])]\
-        + [os.path.join(moddir, os.path.split(x)[1]) for x
-           in tools.get_glob([os.path.join("include", moddir, "*_macros.h")])]
-    swig_wrapper_includes = [os.path.join(moddir, "internal", os.path.split(x)[1]) for x
-                             in tools.get_glob([os.path.join(source, "modules", module, "include", "internal", "swig*.h")])]
+    swig_includes = [os.path.split(x)[1]
+                     for x in tools.get_glob(
+                         [os.path.join(source, "modules", module, "pyext",
+                                       "include", "*.i")])] \
+                    + [os.path.join(moddir, os.path.split(x)[1])
+                       for x in tools.get_glob(
+                           [os.path.join("include", moddir, "*_macros.h")])]
+    swig_wrapper_includes = [os.path.join(moddir, "internal",
+                                          os.path.split(x)[1])
+                             for x in tools.get_glob(
+                                 [os.path.join(source, "modules", module,
+                                               "include", "internal",
+                                               "swig*.h")])]
     tools.mkdir(os.path.join("src", module))
     tools.mkdir(os.path.join("src", module + "_swig"))
-    write_ok(module, all_modules,
-             unfound_modules, tools.get_dependent_dependencies(
-                 all_modules, dependencies, datapath),
+    write_ok(module, all_modules, unfound_modules,
+             tools.get_dependent_dependencies(all_modules, dependencies,
+                                              datapath),
              unfound_dependencies, swig_includes, swig_wrapper_includes)
     return True, all_modules
 
@@ -291,29 +277,17 @@ def link_bin(options):
     tools.mkdir(path, clean=False)
     for old in tools.get_glob([os.path.join(path, "*.py")]):
         os.unlink(old)
-    tools.link_dir(
-        os.path.join(options.source,
-                     "modules",
-                     options.name,
-                     "bin"),
-        path,
-        clean=False,
-        match=["*.py"])
-
+    tools.link_dir(os.path.join(options.source, "modules", options.name, "bin"),
+                   path, clean=False, match=["*.py"])
 
 def link_benchmark(options):
     path = os.path.join("benchmark", options.name)
     tools.mkdir(path, clean=False)
     for old in tools.get_glob([os.path.join(path, "*.py")]):
         os.unlink(old)
-    tools.link_dir(
-        os.path.join(options.source,
-                     "modules",
-                     options.name,
-                     "benchmark"),
-        path,
-        clean=False,
-        match=["*.py"])
+    tools.link_dir(os.path.join(options.source, "modules", options.name,
+                                "benchmark"),
+                   path, clean=False, match=["*.py"])
 
 def find_cmdline_links(mod, docdir, cmdline_tools):
     """Look for (sub)sections in the .dox or .md docs for each cmdline tool,
@@ -408,7 +382,7 @@ def make_overview(options, cmdline_tools):
 
 
 def main():
-    (options, apps) = parser.parse_args()
+    options, apps = parser.parse_args()
     disabled = tools.split(open("data/build_info/disabled", "r").read(), "\n")
     if options.name in disabled:
         print("%s is disabled" % options.name)
@@ -417,8 +391,8 @@ def main():
         tools.rmdir(os.path.join("benchmark", options.name))
         tools.rmdir(os.path.join("lib", "IMP", options.name))
         sys.exit(1)
-    success, modules = setup_module(
-        options.name, options.source, options.datapath)
+    success, modules = setup_module(options.name, options.source,
+                                    options.datapath)
     if success:
         make_header(options)
         make_doxygen(options, modules)
