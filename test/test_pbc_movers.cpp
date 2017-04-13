@@ -6,7 +6,7 @@
 #include <IMP/atom.h>
 #include <IMP/algebra.h>
 #include <IMP/container.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <IMP/display.h>
 #include <IMP/rmf.h>
 #include <string>
@@ -19,7 +19,7 @@
 #include <IMP/test/test_macros.h>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
 int main(int argc, char* argv[])
 {
@@ -96,12 +96,12 @@ centers.push_back(algebra::Vector3D(1.0,4.0,10.0));
 centers.push_back(algebra::Vector3D(1.0,4.0,0.0));
 
 // define the mover for non-rigid particles
-IMP_NEW(membrane::PbcBoxedMover,pbm,(p4,ps,1.0,centers,trs,
+IMP_NEW(spb::PbcBoxedMover,pbm,(p4,ps,1.0,centers,trs,
  dx,dy,dz));
 
 // define the mover for rigid particles
 Particles fake;
-IMP_NEW(membrane::PbcBoxedRigidBodyMover,pbrm,
+IMP_NEW(spb::PbcBoxedRigidBodyMover,pbrm,
  (rb, fake, 1.0, 0.1, centers, trs, dx,dy,dz));
 
  return EXIT_SUCCESS;

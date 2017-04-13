@@ -7,14 +7,14 @@
 
 #include <IMP/Particle.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/membrane/TwoStateGoModelRestraint.h>
+#include <IMP/spb/TwoStateGoModelRestraint.h>
 #include <math.h>
 #include <iostream>
 #include <limits>
 #include <numeric>
 #include <string>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 TwoStateGoModelRestraint::TwoStateGoModelRestraint(Particles ps, Particles psA,
                                                    Particles psB, Float Beta,
@@ -114,4 +114,4 @@ ContainersTemp TwoStateGoModelRestraint::get_input_containers() const {
 }
 */
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

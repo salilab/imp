@@ -5,19 +5,19 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_MONTE_CARLO_WITH_WTE_H
-#define IMPMEMBRANE_MONTE_CARLO_WITH_WTE_H
+#ifndef IMPSPB_MONTE_CARLO_WITH_WTE_H
+#define IMPSPB_MONTE_CARLO_WITH_WTE_H
 
-#include "membrane_config.h"
+#include "spb_config.h"
 
 #include <IMP/Restraint.h>
 #include <IMP/core.h>
 #include <boost/scoped_array.hpp>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! MonteCarlo in the Well-Tempered Ensemble
-class IMPMEMBRANEEXPORT MonteCarloWithWte : public core::MonteCarlo {
+class IMPSPBEXPORT MonteCarloWithWte : public core::MonteCarlo {
   double min_;
   double max_;
   double sigma_;
@@ -70,6 +70,6 @@ class IMPMEMBRANEEXPORT MonteCarloWithWte : public core::MonteCarlo {
   IMP_OBJECT_METHODS(MonteCarloWithWte);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_MONTE_CARLO_WITH_WTE_H */
+#endif /* IMPSPB_MONTE_CARLO_WITH_WTE_H */

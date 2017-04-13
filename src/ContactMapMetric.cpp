@@ -8,12 +8,12 @@
 #include <IMP/vector_property_map.h>
 #include <IMP/algebra.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/membrane/ContactMapMetric.h>
+#include <IMP/spb/ContactMapMetric.h>
 #include <IMP/statistics.h>
 #include <algorithm>
 #include <vector>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 ContactMapMetric::ContactMapMetric(Particles ps, double r0, int nn, int mm)
     : statistics::Metric("Contact Map Metric %1%"),
@@ -82,4 +82,4 @@ unsigned int ContactMapMetric::get_number_of_items() const {
   return matrices_.size();
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

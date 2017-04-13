@@ -6,14 +6,14 @@
  *
  */
 #include <IMP/base_types.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <boost/program_options.hpp>
 #include <string>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 #define OPTION(type, name) \
   type name = -1;          \
@@ -438,4 +438,4 @@ SPBParameters get_SPBParameters(IMP::TextInput in, std::string suffix) {
 #endif
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

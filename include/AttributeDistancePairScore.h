@@ -5,22 +5,22 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_ATTRIBUTE_DISTANCE_PAIR_SCORE_H
-#define IMPMEMBRANE_ATTRIBUTE_DISTANCE_PAIR_SCORE_H
+#ifndef IMPSPB_ATTRIBUTE_DISTANCE_PAIR_SCORE_H
+#define IMPSPB_ATTRIBUTE_DISTANCE_PAIR_SCORE_H
 
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/pair_macros.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Apply a function to an attribute.
 /** This Score scores a particle by passing an attribute value directly
     to a UnaryFunction.
  */
-class IMPMEMBRANEEXPORT AttributeDistancePairScore : public PairScore {
+class IMPSPBEXPORT AttributeDistancePairScore : public PairScore {
   // IMP::OwnerPointer<UnaryFunction> f_; //replaced deprecated version
   IMP::PointerMember<UnaryFunction> f_;
   FloatKey k_;
@@ -48,6 +48,6 @@ class IMPMEMBRANEEXPORT AttributeDistancePairScore : public PairScore {
 
 IMP_OBJECTS(AttributeDistancePairScore, AttributeDistancePairScores);
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_ATTRIBUTE_DISTANCE_PAIR_SCORE_H */
+#endif /* IMPSPB_ATTRIBUTE_DISTANCE_PAIR_SCORE_H */

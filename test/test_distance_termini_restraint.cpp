@@ -6,7 +6,7 @@
 #include <IMP/atom.h>
 #include <IMP/algebra.h>
 #include <IMP/container.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <IMP/display.h>
 #include <IMP/rmf.h>
 #include <string>
@@ -19,7 +19,7 @@
 #include <IMP/test/test_macros.h>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
 int main(int argc, char* argv[])
 {
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
  dist.set_lower(0.0);
  dist.set_upper(10.0);
 
- IMP_NEW(membrane::DistanceTerminiRestraint, dtr,
+ IMP_NEW(spb::DistanceTerminiRestraint, dtr,
  (p1,p2,dist,0.001));
   dtr->set_name("Distance terminus restraint");
 

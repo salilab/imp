@@ -8,12 +8,12 @@
 #include <IMP/vector_property_map.h>
 #include <IMP/algebra.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/membrane/RMSDMetric.h>
+#include <IMP/spb/RMSDMetric.h>
 #include <IMP/statistics.h>
 #include <algorithm>
 #include <vector>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 RMSDMetric::RMSDMetric(Particles ps)
     : statistics::Metric("Distance RMSD Metric %1%"), ps_(ps) {}
@@ -47,4 +47,4 @@ Float RMSDMetric::get_weight(unsigned i) { return weight_[i]; }
 
 unsigned int RMSDMetric::get_number_of_items() const { return coords_.size(); }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

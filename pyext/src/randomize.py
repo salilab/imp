@@ -1,5 +1,5 @@
 # python files placed in this src directory are automatically added to the module.
-# The function below can be accessed as IMP.membrane.randomize.randomize_particles().
+# The function below can be accessed as IMP.spb.randomize.randomize_particles().
 
 import IMP.core
 

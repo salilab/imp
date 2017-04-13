@@ -9,7 +9,7 @@
 #include <IMP/atom.h>
 #include <IMP/core.h>
 #include <IMP/isd.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <IMP/rmf.h>
 #include <IMP/statistics.h>
 #include <fstream>
@@ -17,7 +17,7 @@
 #include <sstream>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
 int main(int argc, char *argv[]) {
   std::string inputfile = "config.ini";
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Metric DRMS
-  IMP_NEW(membrane::DistanceRMSDMetric, drmsd,
+  IMP_NEW(spb::DistanceRMSDMetric, drmsd,
           (cluster_ps, assign, mydata.trs, ISD_ps["SideXY"], ISD_ps["SideXY"],
            ISD_ps["SideZ"]));
 
@@ -220,7 +220,7 @@ int main(int argc, char *argv[]) {
 
   // NOW do the clustering
   IMP::Pointer<statistics::PartitionalClustering> pc =
-      membrane::create_gromos_clustering(drmsd, mydata.Cluster.cutoff);
+      spb::create_gromos_clustering(drmsd, mydata.Cluster.cutoff);
 
   // calculate total population
   Float pop_norm = 0.;

@@ -9,9 +9,9 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/domino/particle_states.h>
-#include <IMP/membrane/RigidBodyGridStates.h>
+#include <IMP/spb/RigidBodyGridStates.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 RigidBodyGridStates::RigidBodyGridStates(algebra::Vector6D begin,
                                          algebra::Vector6D end,
@@ -86,4 +86,4 @@ void RigidBodyGridStates::show(std::ostream &out) const {
   out << "size: " << nstates_ << std::endl;
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

@@ -5,24 +5,24 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_DIAMETER_RGYR_RESTRAINT_H
-#define IMPMEMBRANE_DIAMETER_RGYR_RESTRAINT_H
+#ifndef IMPSPB_DIAMETER_RGYR_RESTRAINT_H
+#define IMPSPB_DIAMETER_RGYR_RESTRAINT_H
 
 #include "IMP/Restraint.h"
-#include "membrane_config.h"
+#include "spb_config.h"
 //#include "IMP/restraint_macros.h"
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <map>
 #include <string>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Diameter and radius of gyration Restraint
 /** Restraint to fix the diameter based on radius of gyration from SAXS
 
  */
-class IMPMEMBRANEEXPORT DiameterRgyrRestraint : public Restraint {
+class IMPSPBEXPORT DiameterRgyrRestraint : public Restraint {
  private:
   Particles ps_;
   Float diameter_;
@@ -39,6 +39,6 @@ class IMPMEMBRANEEXPORT DiameterRgyrRestraint : public Restraint {
   IMP_OBJECT_METHODS(DiameterRgyrRestraint);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_DIAMETER_RGYR_RESTRAINT_H */
+#endif /* IMPSPB_DIAMETER_RGYR_RESTRAINT_H */

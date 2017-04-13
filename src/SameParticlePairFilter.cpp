@@ -6,10 +6,10 @@
  *
  */
 
-#include "IMP/membrane/SameParticlePairFilter.h"
+#include "IMP/spb/SameParticlePairFilter.h"
 #include "IMP/core/rigid_bodies.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 SameParticlePairFilter::SameParticlePairFilter()
     : PairPredicate("PairPredicate %1%") {}
@@ -34,4 +34,4 @@ IMP::ModelObjectsTemp SameParticlePairFilter::do_get_inputs(
   return (IMP::get_particles(m, pis));
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

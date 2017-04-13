@@ -8,10 +8,10 @@
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/Scale.h>
-#include <IMP/membrane/PbcBoxedRigidBodyMover.h>
+#include <IMP/spb/PbcBoxedRigidBodyMover.h>
 #include <list>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 PbcBoxedRigidBodyMover::PbcBoxedRigidBodyMover(
     core::RigidBody d, Particles ps, Float max_translation, Float max_angle,
@@ -187,4 +187,4 @@ void PbcBoxedRigidBodyMover::show(std::ostream &out) const {
   out << "max angle: " << max_angle_ << "\n";
 }
  */
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

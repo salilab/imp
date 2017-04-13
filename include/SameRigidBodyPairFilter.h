@@ -5,19 +5,19 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_SAME_RIGID_BODY_PAIR_FILTER_H
-#define IMPMEMBRANE_SAME_RIGID_BODY_PAIR_FILTER_H
+#ifndef IMPSPB_SAME_RIGID_BODY_PAIR_FILTER_H
+#define IMPSPB_SAME_RIGID_BODY_PAIR_FILTER_H
 
 #include <IMP/PairPredicate.h>
 #include <IMP/pair_macros.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //!
 /** Filter particles belonging to the same rigid body
 */
-class IMPMEMBRANEEXPORT SameRigidBodyPairFilter : public PairPredicate {
+class IMPSPBEXPORT SameRigidBodyPairFilter : public PairPredicate {
  public:
   SameRigidBodyPairFilter();
 
@@ -31,6 +31,6 @@ class IMPMEMBRANEEXPORT SameRigidBodyPairFilter : public PairPredicate {
   IMP_OBJECT_METHODS(SameRigidBodyPairFilter);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_SAME_RIGID_BODY_PAIR_FILTER_H */
+#endif /* IMPSPB_SAME_RIGID_BODY_PAIR_FILTER_H */

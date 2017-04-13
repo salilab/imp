@@ -6,18 +6,18 @@
  *
  */
 
-#ifndef IMPMEMBRANE_SPB_PARSER_H
-#define IMPMEMBRANE_SPB_PARSER_H
+#ifndef IMPSPB_SPB_PARSER_H
+#define IMPSPB_SPB_PARSER_H
 #include <IMP.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <string>
-#include "membrane_config.h"
+#include "spb_config.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
-IMPMEMBRANEEXPORT SPBParameters get_SPBParameters(IMP::TextInput in,
+IMPSPBEXPORT SPBParameters get_SPBParameters(IMP::TextInput in,
                                                   std::string suffix);
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_SPB_PARSER_H */
+#endif /* IMPSPB_SPB_PARSER_H */

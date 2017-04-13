@@ -8,9 +8,9 @@
 #include <IMP/random.h>
 #include <IMP/algebra.h>
 #include <IMP/core.h>
-#include <IMP/membrane/RigidBodyNewMover.h>
+#include <IMP/spb/RigidBodyNewMover.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 RigidBodyNewMover::RigidBodyNewMover(core::RigidBody d, Float max_x_translation,
                                      Float max_y_translation,
@@ -79,4 +79,4 @@ void RigidBodyNewMover::show(std::ostream &out) const {
   out << "max z translation: " << max_z_translation_ << "\n";
   out << "max angle: " << max_angle_ << "\n";
 }
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

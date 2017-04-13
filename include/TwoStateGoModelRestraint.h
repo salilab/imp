@@ -5,21 +5,21 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_TWO_STATE_GO_MODEL_RESTRAINT_H
-#define IMPMEMBRANE_TWO_STATE_GO_MODEL_RESTRAINT_H
+#ifndef IMPSPB_TWO_STATE_GO_MODEL_RESTRAINT_H
+#define IMPSPB_TWO_STATE_GO_MODEL_RESTRAINT_H
 
 #include "IMP/Restraint.h"
-#include "membrane_config.h"
+#include "spb_config.h"
 //#include "IMP/restraint_macros.h"
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <map>
 #include <string>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Two-state Go-Model Restraint
-class IMPMEMBRANEEXPORT TwoStateGoModelRestraint : public Restraint {
+class IMPSPBEXPORT TwoStateGoModelRestraint : public Restraint {
  private:
   Particles ps_;
   Float Beta_;
@@ -43,6 +43,6 @@ class IMPMEMBRANEEXPORT TwoStateGoModelRestraint : public Restraint {
   IMP_OBJECT_METHODS(TwoStateGoModelRestraint);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_TWO_STATE_GO_MODEL_RESTRAINT_H */
+#endif /* IMPSPB_TWO_STATE_GO_MODEL_RESTRAINT_H */

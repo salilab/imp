@@ -5,14 +5,14 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/membrane/AttributeDistancePairScore.h>
+#include <IMP/spb/AttributeDistancePairScore.h>
 
 #include <IMP/Particle.h>
 #include <IMP/UnaryFunction.h>
 
 #include <boost/tuple/tuple.hpp>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 AttributeDistancePairScore::AttributeDistancePairScore(UnaryFunction *f,
                                                        FloatKey k)
@@ -84,4 +84,4 @@ ModelObjectsTemp AttributeDistancePairScore::do_get_inputs(
   return IMP::get_particles(m, pis);
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

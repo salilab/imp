@@ -5,10 +5,10 @@
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <math.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 double* create_temperatures(double tmin, double tmax, int nrep) {
   double* temp;
@@ -78,4 +78,4 @@ bool get_acceptance(double score0, double score1, double delta_wte, double T0,
   }
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

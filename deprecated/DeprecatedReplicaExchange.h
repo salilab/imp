@@ -5,18 +5,18 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_DEPRECATED_REPLICA_EXCHANGE_H
-#define IMPMEMBRANE_DEPRECATED_REPLICA_EXCHANGE_H
+#ifndef IMPSPB_DEPRECATED_REPLICA_EXCHANGE_H
+#define IMPSPB_DEPRECATED_REPLICA_EXCHANGE_H
 
-#include "membrane_config.h"
+#include "spb_config.h"
 #include <IMP/base/Object.h>
 #include "mpi.h"
 #include <string>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 // Replica Exchange
-class IMPMEMBRANEEXPORT ReplicaExchange: public base::Object
+class IMPSPBEXPORT ReplicaExchange: public base::Object
 {
   int myrank_,nproc_;
   Ints index_;
@@ -52,6 +52,6 @@ public:
 
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_DEPRECATED_REPLICA_EXCHANGE_H */
+#endif  /* IMPSPB_DEPRECATED_REPLICA_EXCHANGE_H */

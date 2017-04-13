@@ -5,24 +5,24 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_EZ_RESTRAINT_H
-#define IMPMEMBRANE_EZ_RESTRAINT_H
+#ifndef IMPSPB_EZ_RESTRAINT_H
+#define IMPSPB_EZ_RESTRAINT_H
 
 #include "IMP/Restraint.h"
-#include "membrane_config.h"
+#include "spb_config.h"
 //#include "IMP/restraint_macros.h"
 #include <IMP/Particle.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/base_types.h>
 #include <string>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Ez Potential Restraint
 /** Ez Restraint description here
 
  */
-class IMPMEMBRANEEXPORT EzRestraint : public Restraint {
+class IMPSPBEXPORT EzRestraint : public Restraint {
   Particles ps_;
   UnaryFunctions ufs_;
   Floats get_parameters(std::string restype);
@@ -41,6 +41,6 @@ class IMPMEMBRANEEXPORT EzRestraint : public Restraint {
   //  IMP_RESTRAINT(EzRestraint);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_EZ_RESTRAINT_H */
+#endif /* IMPSPB_EZ_RESTRAINT_H */

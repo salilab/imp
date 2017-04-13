@@ -8,9 +8,9 @@
 #include <IMP/UnaryFunction.h>
 #include <IMP/algebra.h>
 #include <IMP/core.h>
-#include <IMP/membrane/TiltSingletonScore.h>
+#include <IMP/spb/TiltSingletonScore.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 TiltSingletonScore::TiltSingletonScore(UnaryFunction *f,
                                        const algebra::VectorD<3> &v1,
@@ -65,4 +65,4 @@ IMP::ModelObjectsTemp TiltSingletonScore::do_get_inputs(
   return IMP::get_particles(m, pis);
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

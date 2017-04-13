@@ -2,7 +2,7 @@ import IMP
 import IMP.core
 import IMP.algebra
 import IMP.atom
-import IMP.membrane
+import IMP.spb
 import math
 import random
 
@@ -73,7 +73,7 @@ def create_representation(m):
          IMP.algebra.Vector3D(xx,yy,0))))
         bb=IMP.core.RigidMember(atoms[0]).get_internal_coordinates()[0]
         ee=IMP.core.RigidMember(atoms[-1]).get_internal_coordinates()[0]
-        d_rbs=IMP.membrane.HelixDecorator.setup_particle(prb,bb,ee)
+        d_rbs=IMP.spb.HelixDecorator.setup_particle(prb,bb,ee)
 
     for i in range(len(TM_names)):
         generate_tm(i,TM_names[i],TM_res[i],TM_topo[i],TM_struct[i])

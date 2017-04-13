@@ -9,13 +9,13 @@
 #include <IMP/algebra.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/Scale.h>
-#include <IMP/membrane/DistanceRMSDMetric.h>
+#include <IMP/spb/DistanceRMSDMetric.h>
 #include <IMP/statistics.h>
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <algorithm>
 #include <vector>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 DistanceRMSDMetric::DistanceRMSDMetric(Particles ps, Ints align,
                                        algebra::Transformation3Ds tr,
@@ -162,8 +162,8 @@ statistics::PartitionalClustering *create_gromos_clustering(
   unsigned nitems = d->get_number_of_items();
 
   // are we using the DistanceRMSDMetric ?
-  membrane::DistanceRMSDMetric *dd =
-      dynamic_cast<membrane::DistanceRMSDMetric *>(d);
+  spb::DistanceRMSDMetric *dd =
+      dynamic_cast<spb::DistanceRMSDMetric *>(d);
 
   // create vector of neighbors and weights
   std::vector<Ints> neighbors(nitems);
@@ -244,4 +244,4 @@ statistics::PartitionalClustering *create_gromos_clustering(
   return ret.release();
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

@@ -11,11 +11,11 @@
 #include <IMP/atom/RemoveRigidMotionOptimizerState.h>
 #include <IMP/atom/Simulator.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/membrane/MolecularDynamicsWithWte.h>
+#include <IMP/spb/MolecularDynamicsWithWte.h>
 #include <boost/random/normal_distribution.hpp>
 #include <cmath>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 MolecularDynamicsWithWte::MolecularDynamicsWithWte(Model *m, double emin,
                                                    double emax, double sigma,
@@ -261,4 +261,4 @@ void MolecularDynamicsWithWte::rescale_velocities(Float rescale) {
   }
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

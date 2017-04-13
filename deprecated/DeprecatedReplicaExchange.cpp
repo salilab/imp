@@ -5,13 +5,13 @@
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/membrane/DeprecatedReplicaExchange.h>
+#include <IMP/spb/DeprecatedReplicaExchange.h>
 #include "mpi.h"
 #include <iostream>
 #include <string>
 #include <time.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 ReplicaExchange::ReplicaExchange(): Object("Replica Exchange")
 {
@@ -180,4 +180,4 @@ Floats ReplicaExchange::create_temperatures(double tmin,double tmax,int nrep)
  return temp;
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

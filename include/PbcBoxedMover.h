@@ -6,23 +6,23 @@
  *
  */
 
-#ifndef IMPMEMBRANE_PBC_BOXED_MOVER_H
-#define IMPMEMBRANE_PBC_BOXED_MOVER_H
+#ifndef IMPSPB_PBC_BOXED_MOVER_H
+#define IMPSPB_PBC_BOXED_MOVER_H
 
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core.h>
 #include <IMP/core/MonteCarlo.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 //#include <IMP/core/mover_macros.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Move a particle and keep it in a box
 /** The transformation of a rigid body is moved in a ball of given
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPMEMBRANEEXPORT PbcBoxedMover : public core::MonteCarloMover {
+class IMPSPBEXPORT PbcBoxedMover : public core::MonteCarloMover {
  public:
   /** The particle is moved withing a (hexagonal or cubic) box
       \param[in] p is the particle
@@ -55,6 +55,6 @@ class IMPMEMBRANEEXPORT PbcBoxedMover : public core::MonteCarloMover {
   algebra::Transformation3D get_transformation(algebra::Transformation3D trans);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_PBC_BOXED_MOVER_H */
+#endif /* IMPSPB_PBC_BOXED_MOVER_H */

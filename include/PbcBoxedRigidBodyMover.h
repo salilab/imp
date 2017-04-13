@@ -6,25 +6,25 @@
  *
  */
 
-#ifndef IMPMEMBRANE_PBC_BOXED_RIGID_BODY_MOVER_H
-#define IMPMEMBRANE_PBC_BOXED_RIGID_BODY_MOVER_H
+#ifndef IMPSPB_PBC_BOXED_RIGID_BODY_MOVER_H
+#define IMPSPB_PBC_BOXED_RIGID_BODY_MOVER_H
 
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core/MonteCarlo.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 //#include <IMP/core/rigid_bodies.h>
 //#include <IMP/core/mover_macros.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Modify the transformation of a rigid body
 /** The transformation of a rigid body is moved in a ball of given
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPMEMBRANEEXPORT PbcBoxedRigidBodyMover : public core::MonteCarloMover {
+class IMPSPBEXPORT PbcBoxedRigidBodyMover : public core::MonteCarloMover {
  public:
   /** The rigid body is rotated and translated to move
       \param[in] d   the rigid body decorator
@@ -68,6 +68,6 @@ class IMPMEMBRANEEXPORT PbcBoxedRigidBodyMover : public core::MonteCarloMover {
   std::vector<core::RigidBody> get_rigid_bodies(IMP::Particles ps);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_PBC_BOXED_RIGID_BODY_MOVER_H */
+#endif /* IMPSPB_PBC_BOXED_RIGID_BODY_MOVER_H */

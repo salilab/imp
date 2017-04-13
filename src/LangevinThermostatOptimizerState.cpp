@@ -8,9 +8,9 @@
 
 #include <IMP/random.h>
 #include <IMP/atom/Mass.h>
-#include <IMP/membrane/LangevinThermostatOptimizerState.h>
-#include <IMP/membrane/MolecularDynamicsWithWte.h>
-IMPMEMBRANE_BEGIN_NAMESPACE
+#include <IMP/spb/LangevinThermostatOptimizerState.h>
+#include <IMP/spb/MolecularDynamicsWithWte.h>
+IMPSPB_BEGIN_NAMESPACE
 
 LangevinThermostatOptimizerState::LangevinThermostatOptimizerState(
     const ParticlesTemp &pis, Float temperature, double gamma)
@@ -54,4 +54,4 @@ void LangevinThermostatOptimizerState::show(std::ostream &out) const {
   out << "Langevin thermostat with " << temperature_ << std::endl;
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

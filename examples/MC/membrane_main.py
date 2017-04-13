@@ -3,7 +3,7 @@ import IMP.core
 import IMP.algebra
 import IMP.domino
 import IMP.atom
-import IMP.membrane
+import IMP.spb
 import IMP.rmf
 import math
 

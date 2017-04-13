@@ -5,17 +5,17 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_RIGID_BODY_GRID_STATES_H
-#define IMPMEMBRANE_RIGID_BODY_GRID_STATES_H
+#ifndef IMPSPB_RIGID_BODY_GRID_STATES_H
+#define IMPSPB_RIGID_BODY_GRID_STATES_H
 
-#include "membrane_config.h"
+#include "spb_config.h"
 
 #include <IMP/algebra.h>
 #include <IMP/domino/particle_states.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
-class IMPMEMBRANEEXPORT RigidBodyGridStates : public domino::ParticleStates {
+class IMPSPBEXPORT RigidBodyGridStates : public domino::ParticleStates {
   algebra::Vector6D begin_, end_, binsize_;
   Float rot0_;
   int nbin_[6];
@@ -36,6 +36,6 @@ class IMPMEMBRANEEXPORT RigidBodyGridStates : public domino::ParticleStates {
   IMP_SHOWABLE(RigidBodyGridStates);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_RIGID_BODY_GRID_STATES_H */
+#endif /* IMPSPB_RIGID_BODY_GRID_STATES_H */

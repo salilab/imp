@@ -8,10 +8,10 @@
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/Scale.h>
-#include <IMP/membrane/CellMover.h>
+#include <IMP/spb/CellMover.h>
 #include <list>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Apply a mover that moves particles inside the unit cell.
 /** The mover takes into account the fact that the unit cell size
@@ -149,4 +149,4 @@ IMP::ModelObjectsTemp CellMover::do_get_inputs() const {
 void CellMover::show(std::ostream &out) const {
   out << "max translation: " << max_translation_ << "\n";
 }
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

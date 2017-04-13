@@ -5,20 +5,20 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_DISTANCE_RMSD_METRIC_H
-#define IMPMEMBRANE_DISTANCE_RMSD_METRIC_H
+#ifndef IMPSPB_DISTANCE_RMSD_METRIC_H
+#define IMPSPB_DISTANCE_RMSD_METRIC_H
 
 #include <IMP/algebra.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/statistics.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 /** Compute the RMSD between two sets of particles in two configurations.
  */
-class IMPMEMBRANEEXPORT DistanceRMSDMetric : public statistics::Metric {
+class IMPSPBEXPORT DistanceRMSDMetric : public statistics::Metric {
   Particles ps_;
   algebra::Transformation3Ds tr_;
   IMP::PointerMember<IMP::Particle> px_;
@@ -48,9 +48,9 @@ class IMPMEMBRANEEXPORT DistanceRMSDMetric : public statistics::Metric {
   IMP_OBJECT_METHODS(DistanceRMSDMetric);
 };
 
-IMPMEMBRANEEXPORT statistics::PartitionalClustering *create_gromos_clustering(
+IMPSPBEXPORT statistics::PartitionalClustering *create_gromos_clustering(
     statistics::Metric *d, double cutoff);
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_DISTANCE_RMSD_METRIC_H */
+#endif /* IMPSPB_DISTANCE_RMSD_METRIC_H */

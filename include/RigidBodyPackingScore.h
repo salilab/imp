@@ -5,19 +5,19 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_RIGID_BODY_PACKING_SCORE_H
-#define IMPMEMBRANE_RIGID_BODY_PACKING_SCORE_H
+#ifndef IMPSPB_RIGID_BODY_PACKING_SCORE_H
+#define IMPSPB_RIGID_BODY_PACKING_SCORE_H
 
-#include "membrane_config.h"
+#include "spb_config.h"
 #include <IMP/Pointer.h>
 #include <IMP/PairScore.h>
 #include <IMP/core/TableRefiner.h>
 #include <IMP/pair_macros.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Score on the crossing angles between two helices
-class IMPMEMBRANEEXPORT RigidBodyPackingScore : public PairScore {
+class IMPSPBEXPORT RigidBodyPackingScore : public PairScore {
   IMP::PointerMember<core::TableRefiner> tbr_;
   Floats omb_, ome_, ddb_, dde_;
   double kappa_;
@@ -40,6 +40,6 @@ class IMPMEMBRANEEXPORT RigidBodyPackingScore : public PairScore {
 
 IMP_OBJECTS(RigidBodyPackingScore, RigidBodyPackingScores);
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_RIGID_BODY_PACKING_SCORE_H */
+#endif /* IMPSPB_RIGID_BODY_PACKING_SCORE_H */

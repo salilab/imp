@@ -5,18 +5,18 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_CHI_SQUARE_METRIC_H
-#define IMPMEMBRANE_CHI_SQUARE_METRIC_H
+#ifndef IMPSPB_CHI_SQUARE_METRIC_H
+#define IMPSPB_CHI_SQUARE_METRIC_H
 
 #include <IMP/algebra.h>
 #include <IMP/statistics.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 /** Compute the RMSD between two sets of particles in two configurations.
  */
-class IMPMEMBRANEEXPORT ChiSquareMetric : public statistics::Metric {
+class IMPSPBEXPORT ChiSquareMetric : public statistics::Metric {
   Floats weight_;
   Floats nu_exp_;
   Floats norm_;
@@ -48,6 +48,6 @@ class IMPMEMBRANEEXPORT ChiSquareMetric : public statistics::Metric {
   // IMP_METRIC(ChiSquareMetric);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_CHI_SQUARE_METRIC_H */
+#endif /* IMPSPB_CHI_SQUARE_METRIC_H */

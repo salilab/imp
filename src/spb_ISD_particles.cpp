@@ -7,14 +7,14 @@
  */
 #include <IMP/core.h>
 #include <IMP/isd.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <map>
 #include <string>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 std::map<std::string, IMP::Pointer<Particle> > add_ISD_particles(
     Model *m, RestraintSet *allrs, SPBParameters mydata,
@@ -284,4 +284,4 @@ std::map<std::string, IMP::Pointer<Particle> > add_ISD_particles(
   return ISD_ps;
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

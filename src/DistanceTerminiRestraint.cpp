@@ -7,13 +7,13 @@
 #include <IMP/constants.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/isd/Scale.h>
-#include <IMP/membrane/DistanceTerminiRestraint.h>
+#include <IMP/spb/DistanceTerminiRestraint.h>
 #include <IMP/random.h>
 #include <limits.h>
 #include <math.h>
 #include <stdio.h>
 #include <iostream>
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 DistanceTerminiRestraint::DistanceTerminiRestraint(
     IMP::Particle* nterm, IMP::Particle* cterm, IMP::Particle* reqd_dist_term,
@@ -71,4 +71,4 @@ ModelObjectsTemp DistanceTerminiRestraint::do_get_inputs() const {
   return ret;
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

@@ -6,7 +6,7 @@
 #include <IMP/atom.h>
 #include <IMP/algebra.h>
 #include <IMP/container.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <IMP/display.h>
 #include <IMP/rmf.h>
 #include <string>
@@ -19,7 +19,7 @@
 #include <IMP/test/test_macros.h>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
 int main(int argc, char* argv[])
 {
@@ -52,7 +52,7 @@ allrs->add_restraint(sr);
 
  // set WTE
  IMP::Pointer<core::MonteCarlo> mc;
- mc = new membrane::MonteCarloWithWte(
+ mc = new spb::MonteCarloWithWte(
         m, -100.0, 5000.0, 0.001,
         9.0, 1.0);
   mc->set_return_best(false);

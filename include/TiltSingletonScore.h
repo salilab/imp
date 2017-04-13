@@ -5,17 +5,17 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_TILT_SINGLETON_SCORE_H
-#define IMPMEMBRANE_TILT_SINGLETON_SCORE_H
+#ifndef IMPSPB_TILT_SINGLETON_SCORE_H
+#define IMPSPB_TILT_SINGLETON_SCORE_H
 
 #include <IMP/Pointer.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/singleton_macros.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Apply a function to the distance to a fixed point.
 /** A particle is scored based on the distance between it and a constant
@@ -26,7 +26,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     do the following:
     \htmlinclude restrain_in_sphere.py
  */
-class IMPMEMBRANEEXPORT TiltSingletonScore : public SingletonScore {
+class IMPSPBEXPORT TiltSingletonScore : public SingletonScore {
   IMP::PointerMember<UnaryFunction> f_;
   algebra::VectorD<3> local_;
   algebra::VectorD<3> global_;
@@ -47,6 +47,6 @@ class IMPMEMBRANEEXPORT TiltSingletonScore : public SingletonScore {
   // IMP_SIMPLE_SINGLETON_SCORE(TiltSingletonScore);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_TILT_SINGLETON_SCORE_H */
+#endif /* IMPSPB_TILT_SINGLETON_SCORE_H */

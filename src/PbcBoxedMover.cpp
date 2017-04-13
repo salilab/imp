@@ -10,10 +10,10 @@
 #include <IMP/atom.h>
 #include <IMP/core.h>
 #include <IMP/isd/Scale.h>
-#include <IMP/membrane/PbcBoxedMover.h>
+#include <IMP/spb/PbcBoxedMover.h>
 #include <iostream>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 PbcBoxedMover::PbcBoxedMover(Particle *p, Particles ps, Float max_tr,
                              algebra::Vector3Ds centers,
@@ -113,4 +113,4 @@ void PbcBoxedMover::show(std::ostream &out) const {
   out << "max translation: " << symmetry::BallMover::max_tr_ << "\n";
 }
 */
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

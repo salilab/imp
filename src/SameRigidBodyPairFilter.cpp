@@ -6,10 +6,10 @@
  *
  */
 
-#include "IMP/membrane/SameRigidBodyPairFilter.h"
+#include "IMP/spb/SameRigidBodyPairFilter.h"
 #include "IMP/core/rigid_bodies.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 SameRigidBodyPairFilter::SameRigidBodyPairFilter() {}
 
@@ -64,4 +64,4 @@ IMP::ModelObjectsTemp SameRigidBodyPairFilter::do_get_inputs(
   return ret;
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

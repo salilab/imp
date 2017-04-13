@@ -2,7 +2,7 @@ import IMP
 import IMP.core
 import IMP.algebra
 import IMP.atom
-import IMP.membrane
+import IMP.spb
 import math
 
 from membrane_parameters import *
@@ -59,7 +59,7 @@ def create_restraints(m,protein,tbr):
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             lrb.add_particle(rb)
         nrb= IMP.container.ClosePairContainer(lrb, 25.0)
-        ps=  IMP.membrane.RigidBodyPackingScore(tbr, om_b, om_e, dd_b, dd_e)
+        ps=  IMP.spb.RigidBodyPackingScore(tbr, om_b, om_e, dd_b, dd_e)
         prs= IMP.container.PairsRestraint(ps, nrb)
         m.add_restraint(prs)
         m.set_maximum_score(prs, max_score_)
@@ -71,7 +71,7 @@ def create_restraints(m,protein,tbr):
             s=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_indexes=[(h[0],h[1]+1)])
             dsc.add_particles(s.get_selected_particles())
         dpc=IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
-        f=IMP.membrane.SameHelixPairFilter()
+        f=IMP.spb.SameHelixPairFilter()
         dpc.add_pair_filter(f)
         dps=IMP.atom.DopePairScore(15.0, IMP.atom.get_data_path(score_name_))
         dope=IMP.container.PairsRestraint(dps, dpc)
@@ -119,7 +119,7 @@ def create_restraints(m,protein,tbr):
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             lrb.add_particle(rb)
         well=IMP.core.HarmonicWell(range, kappa_)
-        tss=IMP.membrane.TiltSingletonScore(well, laxis, zaxis)
+        tss=IMP.spb.TiltSingletonScore(well, laxis, zaxis)
         sr=IMP.container.SingletonsRestraint(tss, lrb)
         m.add_restraint(sr)
         m.set_maximum_score(sr, max_score_)

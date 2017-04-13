@@ -5,18 +5,18 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_RMSD_METRIC_H
-#define IMPMEMBRANE_RMSD_METRIC_H
+#ifndef IMPSPB_RMSD_METRIC_H
+#define IMPSPB_RMSD_METRIC_H
 
 #include <IMP/algebra.h>
 #include <IMP/statistics.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 /** Compute the RMSD between two sets of particles in two configurations.
  */
-class IMPMEMBRANEEXPORT RMSDMetric : public statistics::Metric {
+class IMPSPBEXPORT RMSDMetric : public statistics::Metric {
   Particles ps_;
   Floats weight_;
   std::vector<algebra::Vector3Ds> coords_;
@@ -34,6 +34,6 @@ class IMPMEMBRANEEXPORT RMSDMetric : public statistics::Metric {
   IMP_OBJECT_METHODS(RMSDMetric);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_RMSD_METRIC_H */
+#endif /* IMPSPB_RMSD_METRIC_H */

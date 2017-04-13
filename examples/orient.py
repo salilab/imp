@@ -3,7 +3,7 @@ import IMP.core
 import IMP.algebra
 import IMP.domino
 import IMP.atom
-import IMP.membrane
+import IMP.spb
 import IMP.container
 import math
 
@@ -31,7 +31,7 @@ def create_restraints(m, chain, up, down):
         p0=s0.get_selected_particles()[0]
         p1=s1.get_selected_particles()[0]
         lpc.add_particle_pair([p0,p1])
-    df= IMP.membrane.AttributeDistancePairScore(hf,f)
+    df= IMP.spb.AttributeDistancePairScore(hf,f)
     pr= IMP.container.PairsRestraint(df, lpc)
     m.add_restraint(pr)
 

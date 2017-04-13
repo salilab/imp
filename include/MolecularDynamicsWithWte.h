@@ -1,22 +1,22 @@
 /**
- *  \file membrane/MolecularDynamicsWithWte.h
+ *  \file spb/MolecularDynamicsWithWte.h
  *  \brief Simple molecular dynamics optimizer.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPMEMBRANE_MOLECULAR_DYNAMICS_WITH_WTE_H
-#define IMPMEMBRANE_MOLECULAR_DYNAMICS_WITH_WTE_H
+#ifndef IMPSPB_MOLECULAR_DYNAMICS_WITH_WTE_H
+#define IMPSPB_MOLECULAR_DYNAMICS_WITH_WTE_H
 
 #include <IMP/Optimizer.h>
 #include <IMP/Particle.h>
 #include <boost/scoped_array.hpp>
 #include "IMP/atom/Simulator.h"
 #include "IMP/atom/atom_macros.h"
-#include "membrane_config.h"
+#include "spb_config.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Simple molecular dynamics optimizer.
 /** The particles to be optimized must have optimizable x,y,z attributes
@@ -30,7 +30,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     \see BerendsenThermostatOptimizerState
     \see RemoveRigidMotionOptimizerState
  */
-class IMPMEMBRANEEXPORT MolecularDynamicsWithWte : public atom::Simulator {
+class IMPSPBEXPORT MolecularDynamicsWithWte : public atom::Simulator {
  private:
   double min_, max_, sigma_, gamma_, dx_, w0_, currentscore_;
   boost::scoped_array<double> bias_;
@@ -125,6 +125,6 @@ class IMPMEMBRANEEXPORT MolecularDynamicsWithWte : public atom::Simulator {
   Float velocity_cap_;
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_MOLECULAR_DYNAMICS_WITH_WTE_H */
+#endif /* IMPSPB_MOLECULAR_DYNAMICS_WITH_WTE_H */

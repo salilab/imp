@@ -9,10 +9,10 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/atom.h>
 #include <IMP/core.h>
-#include <IMP/membrane/BoxedMover.h>
+#include <IMP/spb/BoxedMover.h>
 #include <iostream>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 BoxedMover::BoxedMover(Particle *p, Float max_tr, algebra::Vector3Ds centers)
     : MonteCarloMover(p->get_model(), "BoxMover%1%") {
@@ -83,4 +83,4 @@ void BoxedMover::show(std::ostream &out) const {
   out << "max translation: " << max_tr_ << "\n";
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

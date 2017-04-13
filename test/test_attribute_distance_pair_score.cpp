@@ -6,7 +6,7 @@
 #include <IMP/atom.h>
 #include <IMP/algebra.h>
 #include <IMP/container.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <IMP/display.h>
 #include <IMP/rmf.h>
 #include <string>
@@ -19,7 +19,7 @@
 #include <IMP/test/test_macros.h>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
 int main(int argc, char* argv[])
 {
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
    (1.0,4.0,67.0));
 
  IMP_NEW(core::Harmonic, har, (0.0, 1.0));
- IMP_NEW(membrane::AttributeDistancePairScore, adps,
+ IMP_NEW(spb::AttributeDistancePairScore, adps,
           (har, core::XYZ::get_coordinate_key(2)));
 IMP_NEW(core::PairRestraint, pr,(m,adps,IMP::internal::get_index
 (ParticlePair(p1, p2))));

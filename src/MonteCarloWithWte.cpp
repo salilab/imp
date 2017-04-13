@@ -7,9 +7,9 @@
  */
 #include <IMP/Restraint.h>
 #include <IMP/core.h>
-#include <IMP/membrane/MonteCarloWithWte.h>
+#include <IMP/spb/MonteCarloWithWte.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin, double emax,
                                      double sigma, double gamma, double w0)
@@ -117,4 +117,4 @@ double MonteCarloWithWte::do_evaluate(const ParticleIndexes &moved) const {
   return totenergy + get_bias(energy);
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

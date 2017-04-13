@@ -1,23 +1,23 @@
 /**
- *  \file IMP/membrane/DistanceTerminiRestraint.h
+ *  \file IMP/spb/DistanceTerminiRestraint.h
  *  \brief Distance Termini restraint
  *
  *  Copyright 2007-2014 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_DISTANCE_TERMINI_RESTRAINT_H
-#define IMPMEMBRANE_DISTANCE_TERMINI_RESTRAINT_H
+#ifndef IMPSPB_DISTANCE_TERMINI_RESTRAINT_H
+#define IMPSPB_DISTANCE_TERMINI_RESTRAINT_H
 
 #include <IMP/Restraint.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/isd_config.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 /* A distance restraint between protein termini.
  * The distance between the termini is a sampled ISD particle.
  */
 
-class IMPMEMBRANEEXPORT DistanceTerminiRestraint : public IMP::Restraint {
+class IMPSPBEXPORT DistanceTerminiRestraint : public IMP::Restraint {
   IMP::Pointer<IMP::Particle> nterm_;
   IMP::Pointer<IMP::Particle> cterm_;
   double sigma0_dist_;
@@ -45,6 +45,6 @@ class IMPMEMBRANEEXPORT DistanceTerminiRestraint : public IMP::Restraint {
  private:
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_DISTANCE_TERMINI_RESTRAINT_H */
+#endif /* IMPSPB_DISTANCE_TERMINI_RESTRAINT_H */

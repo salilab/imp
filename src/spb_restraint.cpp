@@ -12,7 +12,7 @@
 #include <IMP/core.h>
 #include <IMP/em2d.h>
 #include <IMP/isd.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <boost/algorithm/string.hpp>
 #include <iostream>
 #include <list>
@@ -21,7 +21,7 @@
 
 using namespace IMP;
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 IMP::Pointer<core::DistancePairScore> get_pair_score(FloatRange dist,
                                                      double kappa) {
@@ -190,7 +190,7 @@ void add_restrain_coiledcoil_to_cterm(Model *m, RestraintSet *allrs,
       // std::cout << cce[i]->get_name() << " " << ct[j]->get_name()<< " "
       //<< isd::Scale(dist).get_scale() << " " <<sigma0_dist ;
 
-      IMP_NEW(membrane::DistanceTerminiRestraint, dtr,
+      IMP_NEW(spb::DistanceTerminiRestraint, dtr,
               (cce[i], ct[j], dist, sigma0_dist));
 
       dtr->set_name(name_restraint);
@@ -230,7 +230,7 @@ void add_restrain_protein_length(Model *m, RestraintSet *allrs,
           protein_a + "-" + std::to_string(i) + ":" + std::to_string(j);
 
       // std::cout << name_restraint <<std::endl ;
-      IMP_NEW(membrane::DistanceTerminiRestraint, dtr,
+      IMP_NEW(spb::DistanceTerminiRestraint, dtr,
               (nt[i], ct[j], dist, sigma0_dist));
 
       dtr->set_name(name_restraint);
@@ -632,7 +632,7 @@ void add_symmetry_restraint(Model *m, atom::Hierarchies &hs,
   std::vector<core::RigidBody> rbs0 = get_rigid_bodies(ps0);
   for (unsigned int i = 1; i < transformations.size(); ++i) {
     // apply transformation symmetry using sm
-    IMP_NEW(membrane::TransformationSymmetry, sm,
+    IMP_NEW(spb::TransformationSymmetry, sm,
             (transformations[i], SideXY, SideXY, SideZ));
     Particles ps1 = atom::get_leaves(hs[i]);
     IMP_NEW(container::ListSingletonContainer, lc, (m));
@@ -675,7 +675,7 @@ void add_bayesian_layer_restraint(Model *m, RestraintSet *allrs,
                                   Particle *a, Particle *b) {
   Particles ps = lsc->get_particles();
   for (unsigned i = 0; i < ps.size(); ++i) {
-    IMP_NEW(membrane::UniformBoundedRestraint, ubr,
+    IMP_NEW(spb::UniformBoundedRestraint, ubr,
             (ps[i], FloatKey("z"), a, b));
     // m->add_restraint(ubr);
     allrs->add_restraint(ubr);
@@ -830,7 +830,7 @@ void add_stay_on_plane_restraint(Model *m, RestraintSet *allrs,
   s.set_residue_index(residue);
   Particles ps = s.get_selected_particles();
   IMP_NEW(core::Harmonic, har, (0.0, kappa));
-  IMP_NEW(membrane::AttributeDistancePairScore, adps,
+  IMP_NEW(spb::AttributeDistancePairScore, adps,
           (har, core::XYZ::get_coordinate_key(2)));
   for (unsigned i = 0; i < ps.size() - 1; ++i) {
     for (unsigned j = i + 1; j < ps.size(); ++j) {
@@ -850,7 +850,7 @@ void add_diameter_rgyr_restraint(Model *m, RestraintSet *allrs,
   for (unsigned int j = 0; j < hs.size(); ++j) {
     if (hs[j]->get_name() == protein) {
       Particles ps = atom::get_leaves(hs[j]);
-      IMP_NEW(membrane::DiameterRgyrRestraint, dr, (ps, diameter, rgyr, kappa));
+      IMP_NEW(spb::DiameterRgyrRestraint, dr, (ps, diameter, rgyr, kappa));
       dr->set_name("Diameter and Radius of Gyration Restraint");
       // m->add_restraint(dr);
       allrs->add_restraint(dr);
@@ -858,7 +858,7 @@ void add_diameter_rgyr_restraint(Model *m, RestraintSet *allrs,
   }
 }
 
-IMP::Pointer<membrane::EM2DRestraint> em2d_restraint(Model *m,
+IMP::Pointer<spb::EM2DRestraint> em2d_restraint(Model *m,
                                                      atom::Hierarchies &hs,
                                                      std::string protein,
                                                      EM2DParameters EM2D,
@@ -869,13 +869,13 @@ IMP::Pointer<membrane::EM2DRestraint> em2d_restraint(Model *m,
   if (ps.size() == 0) {
     return nullptr;
   }
-  IMP_NEW(membrane::EM2DRestraint, er,
+  IMP_NEW(spb::EM2DRestraint, er,
           (ps, Sigma, EM2D.filename, EM2D.pixel_size, EM2D.resolution));
   er->set_name("EM2D restraint");
   return er.release();
 }
 
-IMP::Pointer<membrane::EM2DRestraint> em2d_restraint(
+IMP::Pointer<spb::EM2DRestraint> em2d_restraint(
     Model *m, atom::Hierarchies &hs, std::string protein, EM2DParameters EM2D,
     Floats sigma_grid, Floats fmod_grid) {
   atom::Selection s = atom::Selection(hs);
@@ -884,7 +884,7 @@ IMP::Pointer<membrane::EM2DRestraint> em2d_restraint(
   if (ps.size() == 0) {
     return nullptr;
   }
-  IMP_NEW(membrane::EM2DRestraint, er,
+  IMP_NEW(spb::EM2DRestraint, er,
           (ps, sigma_grid, fmod_grid, EM2D.filename, EM2D.pixel_size,
            EM2D.resolution));
 
@@ -892,4 +892,4 @@ IMP::Pointer<membrane::EM2DRestraint> em2d_restraint(
   return er.release();
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

@@ -8,13 +8,13 @@
 #include <IMP/vector_property_map.h>
 #include <IMP/algebra.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/membrane/ChiSquareMetric.h>
+#include <IMP/spb/ChiSquareMetric.h>
 #include <IMP/statistics.h>
 #include <math.h>
 #include <algorithm>
 #include <vector>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 ChiSquareMetric::ChiSquareMetric(Floats nu_exp, int constr_type)
     : statistics::Metric("ChiSquare Metric %1%"),
@@ -95,4 +95,4 @@ Floats ChiSquareMetric::get_nu(unsigned i) const { return nus_[i]; }
 
 Floats ChiSquareMetric::get_stddev(unsigned i) const { return stddev_[i]; }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

@@ -10,16 +10,16 @@
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/membrane/EzRestraint.h>
-#include <IMP/membrane/Gaussian.h>
-#include <IMP/membrane/Sigmoid.h>
+#include <IMP/spb/EzRestraint.h>
+#include <IMP/spb/Gaussian.h>
+#include <IMP/spb/Sigmoid.h>
 #include <IMP/utility.h>
 #include <math.h>
 #include <iostream>
 #include <numeric>
 #include <string>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 EzRestraint::EzRestraint(Particles ps)
     : Restraint(ps[0]->get_model(), "Ez Potential") {
@@ -30,10 +30,10 @@ EzRestraint::EzRestraint(Particles ps)
                               .get_string();
     Floats param = get_parameters(restype);
     if (restype != "TYR" && restype != "TRP") {
-      IMP_NEW(membrane::Sigmoid, ptr, (param[0], param[1], param[2]));
+      IMP_NEW(spb::Sigmoid, ptr, (param[0], param[1], param[2]));
       ufs_.push_back(ptr);
     } else {
-      IMP_NEW(membrane::Gaussian, ptr, (param[0], param[1], param[2]));
+      IMP_NEW(spb::Gaussian, ptr, (param[0], param[1], param[2]));
       ufs_.push_back(ptr);
     }
   }
@@ -155,4 +155,4 @@ ContainersTemp EzRestraint::get_input_containers() const {
 */
 void EzRestraint::show(std::ostream &) const {}
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

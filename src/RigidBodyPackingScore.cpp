@@ -14,10 +14,10 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/core/rigid_bodies.h>
-#include <IMP/membrane/HelixDecorator.h>
-#include <IMP/membrane/RigidBodyPackingScore.h>
+#include <IMP/spb/HelixDecorator.h>
+#include <IMP/spb/RigidBodyPackingScore.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 RigidBodyPackingScore::RigidBodyPackingScore(core::TableRefiner *tbr,
                                              Floats omb, Floats ome, Floats ddb,
@@ -63,8 +63,8 @@ Float RigidBodyPackingScore::evaluate_index(IMP::Model *m,
   }
 
   // assume they have an helix decorator
-  membrane::HelixDecorator d0(m->get_particle(pip[0]));
-  membrane::HelixDecorator d1(m->get_particle(pip[1]));
+  spb::HelixDecorator d0(m->get_particle(pip[0]));
+  spb::HelixDecorator d1(m->get_particle(pip[1]));
   // begin and end point
   algebra::Vector3D b0 = algebra::Vector3D(d0.get_begin(), 0.0, 0.0);
   algebra::Vector3D e0 = algebra::Vector3D(d0.get_end(), 0.0, 0.0);
@@ -151,4 +151,4 @@ void RigidBodyPackingScore::show(std::ostream &out) const {
     out << "i" << i << "omb_=" << omb_[i] << "ome_=" << ome_[i] << std::endl;
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

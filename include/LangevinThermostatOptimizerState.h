@@ -1,5 +1,5 @@
 /**
- *  \file membrane/LangevinThermostatOptimizerState.h
+ *  \file spb/LangevinThermostatOptimizerState.h
  *  \brief Maintains temperature during molecular dynamics using
  *         a Langevin thermostat.
  *
@@ -7,23 +7,23 @@
  *
  */
 
-#ifndef IMPMEMBRANE_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H
-#define IMPMEMBRANE_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H
+#ifndef IMPSPB_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H
+#define IMPSPB_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H
 
 #include <IMP/OptimizerState.h>
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 //#include <IMP/optimizer_state_macros.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Maintains temperature during molecular dynamics.
 /** The thermostat scales velocities using the algorithm described in
     G. Bussi and M. Parrinello "Accurate sampling using Langevin dynamics",
     Phys. Rev. E 75, 056707 (2007)
  */
-class IMPMEMBRANEEXPORT LangevinThermostatOptimizerState
+class IMPSPBEXPORT LangevinThermostatOptimizerState
     : public OptimizerState {
  public:
   LangevinThermostatOptimizerState(const ParticlesTemp &pis, double temperature,
@@ -61,6 +61,6 @@ class IMPMEMBRANEEXPORT LangevinThermostatOptimizerState
 IMP_OBJECTS(LangevinThermostatOptimizerState,
             LangevinThermostatOptimizerStates);
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H */
+#endif /* IMPSPB_LANGEVIN_THERMOSTAT_OPTIMIZER_STATE_H */

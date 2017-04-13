@@ -6,14 +6,14 @@
  *
  */
 
-#ifndef IMPMEMBRANE_SPB_MAIN_H
-#define IMPMEMBRANE_SPB_MAIN_H
+#ifndef IMPSPB_SPB_MAIN_H
+#define IMPSPB_SPB_MAIN_H
 #include <IMP.h>
 #include <map>
 #include <string>
-#include "membrane_config.h"
+#include "spb_config.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 // convert degrees to radians
 double radians(double d);
@@ -156,6 +156,6 @@ struct SPBParameters {
   bool restrain_distance_Spc42_Cterm;
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_SPB_MAIN_H */
+#endif /* IMPSPB_SPB_MAIN_H */

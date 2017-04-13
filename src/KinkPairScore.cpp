@@ -8,9 +8,9 @@
 #include <IMP/UnaryFunction.h>
 #include <IMP/algebra.h>
 #include <IMP/core.h>
-#include <IMP/membrane/KinkPairScore.h>
+#include <IMP/spb/KinkPairScore.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 KinkPairScore::KinkPairScore(UnaryFunction *f) : f_(f) {}
 /*
@@ -111,4 +111,4 @@ ContainersTemp KinkPairScore::get_input_containers(Particle *p) const {
 */
 void KinkPairScore::show(std::ostream &out) const { out << "function " << *f_; }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

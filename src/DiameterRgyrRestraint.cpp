@@ -8,14 +8,14 @@
 
 #include <IMP/Particle.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/membrane/DiameterRgyrRestraint.h>
+#include <IMP/spb/DiameterRgyrRestraint.h>
 #include <math.h>
 #include <iostream>
 #include <limits>
 #include <numeric>
 #include <string>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 DiameterRgyrRestraint::DiameterRgyrRestraint(Particles ps, Float diameter,
                                              Float rgyr, Float kappa)
@@ -67,4 +67,4 @@ ContainersTemp DiameterRgyrRestraint::get_input_containers() const {
 }
 */
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

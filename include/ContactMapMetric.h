@@ -5,18 +5,18 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_CONTACT_MAP_METRIC_H
-#define IMPMEMBRANE_CONTACT_MAP_METRIC_H
+#ifndef IMPSPB_CONTACT_MAP_METRIC_H
+#define IMPSPB_CONTACT_MAP_METRIC_H
 
 #include <IMP/algebra.h>
 #include <IMP/statistics.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 /** Compute the RMSD between two sets of particles in two configurations.
  */
-class IMPMEMBRANEEXPORT ContactMapMetric : public statistics::Metric {
+class IMPSPBEXPORT ContactMapMetric : public statistics::Metric {
   Particles ps_;
   double r0_;
   int nn_;
@@ -42,6 +42,6 @@ class IMPMEMBRANEEXPORT ContactMapMetric : public statistics::Metric {
   IMP_OBJECT_METHODS(ContactMapMetric);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_CONTACT_MAP_METRIC_H */
+#endif /* IMPSPB_CONTACT_MAP_METRIC_H */

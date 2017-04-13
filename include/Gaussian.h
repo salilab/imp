@@ -4,14 +4,14 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_GAUSSIAN_H
-#define IMPMEMBRANE_GAUSSIAN_H
+#ifndef IMPSPB_GAUSSIAN_H
+#define IMPSPB_GAUSSIAN_H
 
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! %Gaussian function (symmetric about the mean)
 /**
@@ -54,6 +54,6 @@ class Gaussian : public UnaryFunction {
   Float sigma_;
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_GAUSSIAN_H */
+#endif /* IMPSPB_GAUSSIAN_H */

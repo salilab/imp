@@ -9,7 +9,7 @@
 #include <IMP/atom.h>
 #include <IMP/core.h>
 #include <IMP/isd.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <IMP/rmf.h>
 #include <stdio.h>
 #include <time.h>
@@ -21,7 +21,7 @@
 #include "mpi.h"
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
 int main(int argc, char* argv[]) {
   MPI_Init(&argc, &argv);
@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
   // Add cell Mover
   //
   Particles ps0 = atom::get_leaves(all_mol[0]);
-  IMP_NEW(membrane::CellMover, cm, (ISD_ps["SideXY"], ps0, mydata.MC.dSide));
+  IMP_NEW(spb::CellMover, cm, (ISD_ps["SideXY"], ps0, mydata.MC.dSide));
   mvs.push_back(cm);
   //
   // restart from individual rmf file
@@ -186,8 +186,8 @@ int main(int argc, char* argv[]) {
       while (biasfile >> bias) {
         val.push_back(bias);
       }
-      IMP::Pointer<membrane::MonteCarloWithWte> ptr =
-          dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
+      IMP::Pointer<spb::MonteCarloWithWte> ptr =
+          dynamic_cast<spb::MonteCarloWithWte*>(mc.get());
       ptr->set_bias(val);
       biasfile.close();
     }
@@ -221,8 +221,8 @@ int main(int argc, char* argv[]) {
     // and bias
     double mybias = 0.;
     if (mydata.MC.do_wte) {
-      IMP::Pointer<membrane::MonteCarloWithWte> ptr =
-          dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
+      IMP::Pointer<spb::MonteCarloWithWte> ptr =
+          dynamic_cast<spb::MonteCarloWithWte*>(mc.get());
       mybias = ptr->get_bias(myscore);
     }
 
@@ -364,8 +364,8 @@ int main(int argc, char* argv[]) {
         std::ofstream biasfile;
         std::string names = "BIAS" + out.str();
         biasfile.open(names.c_str());
-        IMP::Pointer<membrane::MonteCarloWithWte> ptr =
-            dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
+        IMP::Pointer<spb::MonteCarloWithWte> ptr =
+            dynamic_cast<spb::MonteCarloWithWte*>(mc.get());
         double* mybias = ptr->get_bias_buffer();
         for (int i = 0; i < ptr->get_nbin(); ++i) {
           biasfile << mybias[i] << "\n";
@@ -386,8 +386,8 @@ int main(int argc, char* argv[]) {
     double delta_wte = 0.0;
 
     if (mydata.MC.do_wte) {
-      IMP::Pointer<membrane::MonteCarloWithWte> ptr =
-          dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
+      IMP::Pointer<spb::MonteCarloWithWte> ptr =
+          dynamic_cast<spb::MonteCarloWithWte*>(mc.get());
       double U_mybias[2] = {ptr->get_bias(myscore), ptr->get_bias(fscore)};
       double U_fbias[2];
       MPI_Sendrecv(U_mybias, 2, MPI_DOUBLE, frank, myrank, U_fbias, 2,
@@ -406,8 +406,8 @@ int main(int argc, char* argv[]) {
       mc->set_kt(temp[myindex]);
       // if WTE, rescale W0 and exchange bias
       if (mydata.MC.do_wte) {
-        IMP::Pointer<membrane::MonteCarloWithWte> ptr =
-            dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
+        IMP::Pointer<spb::MonteCarloWithWte> ptr =
+            dynamic_cast<spb::MonteCarloWithWte*>(mc.get());
         ptr->set_w0(mydata.MC.wte_w0 * temp[myindex] / mydata.MC.tmin);
         int nbins = ptr->get_nbin();
         double* mybias = ptr->get_bias_buffer();

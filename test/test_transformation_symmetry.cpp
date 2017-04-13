@@ -6,7 +6,7 @@
 #include <IMP/atom.h>
 #include <IMP/algebra.h>
 #include <IMP/container.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <IMP/display.h>
 #include <IMP/rmf.h>
 #include <string>
@@ -19,7 +19,7 @@
 #include <IMP/test/test_macros.h>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
 int main(int argc, char* argv[])
 {
@@ -70,7 +70,7 @@ algebra::Transformation3D tr =
  isd::Scale dz = isd::Scale::setup_particle(pz, 1.0);
 
 // define the transformation symmetry
-IMP_NEW(membrane::TransformationSymmetry, sm,
+IMP_NEW(spb::TransformationSymmetry, sm,
             (tr,dx,dy,dz));
 
 // constrain rigid bodies

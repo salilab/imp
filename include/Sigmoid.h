@@ -4,14 +4,14 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPMEMBRANE_SIGMOID_H
-#define IMPMEMBRANE_SIGMOID_H
+#ifndef IMPSPB_SIGMOID_H
+#define IMPSPB_SIGMOID_H
 
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! %Sigmoid function (symmetric about the mean)
 /**
@@ -47,6 +47,6 @@ class Sigmoid : public UnaryFunction {
   Float n_;
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_SIGMOID_H */
+#endif /* IMPSPB_SIGMOID_H */

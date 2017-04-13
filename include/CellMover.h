@@ -6,25 +6,25 @@
  *
  */
 
-#ifndef IMPMEMBRANE_CELL_MOVER_H
-#define IMPMEMBRANE_CELL_MOVER_H
+#ifndef IMPSPB_CELL_MOVER_H
+#define IMPSPB_CELL_MOVER_H
 
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core/MonteCarloMover.h>
 #include <IMP/core/rigid_bodies.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 
 //#include <IMP/core/mover_macros.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Apply a mover that moves particles inside the unit cell.
 /** The mover takes into account the fact that the unit cell size
     changes from one step to the next.
  */
-class IMPMEMBRANEEXPORT CellMover : public core::MonteCarloMover {
+class IMPSPBEXPORT CellMover : public core::MonteCarloMover {
  public:
   CellMover(Particle *p, Particles ps, Float max_translation);
 
@@ -52,6 +52,6 @@ class IMPMEMBRANEEXPORT CellMover : public core::MonteCarloMover {
   algebra::Vector3D get_transformed(Float cf, algebra::Vector3D oc);
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_CELL_MOVER_H */
+#endif /* IMPSPB_CELL_MOVER_H */

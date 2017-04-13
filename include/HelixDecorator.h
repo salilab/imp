@@ -1,14 +1,14 @@
 /**
- *  \file membrane/ExampleDecorator.h     \brief Add a name to a particle.
+ *  \file spb/ExampleDecorator.h     \brief Add a name to a particle.
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPMEMBRANE_HELIX_DECORATOR_H
-#define IMPMEMBRANE_HELIX_DECORATOR_H
+#ifndef IMPSPB_HELIX_DECORATOR_H
+#define IMPSPB_HELIX_DECORATOR_H
 
-#include "membrane_config.h"
+#include "spb_config.h"
 
 //#include <IMP/core/core_macros.h>
 #include <IMP/Decorator.h>
@@ -16,9 +16,9 @@
 #include <IMP/Particle.h>
 #include <IMP/decorator_macros.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
-class IMPMEMBRANEEXPORT HelixDecorator : public Decorator {
+class IMPSPBEXPORT HelixDecorator : public Decorator {
   static FloatKey get_helix_key(unsigned int i);
 
  public:
@@ -58,6 +58,6 @@ class IMPMEMBRANEEXPORT HelixDecorator : public Decorator {
 
 IMP_VALUES(HelixDecorator, HelixDecorators);
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_HELIX_DECORATOR_H */
+#endif /* IMPSPB_HELIX_DECORATOR_H */

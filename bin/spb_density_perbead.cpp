@@ -9,7 +9,7 @@
 #include <IMP/atom.h>
 #include <IMP/core.h>
 #include <IMP/isd.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <IMP/rmf.h>
 #include <IMP/statistics.h>
 #include <array>
@@ -20,7 +20,7 @@
 #include "mpi.h"
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
 Particles generate_new_particles(Model* m, const atom::Hierarchies& all_mol,
                                  double side, double off_x, double off_y,

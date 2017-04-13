@@ -3,7 +3,7 @@ import IMP.core
 import IMP.algebra
 import IMP.domino
 import IMP.atom
-import IMP.membrane
+import IMP.spb
 import math
 
 def create_representation(seq,tmh,topo):
@@ -42,7 +42,7 @@ def create_representation(seq,tmh,topo):
         # adjust axis to match topology
         bb=IMP.core.RigidMember(begin).get_internal_coordinates()[0]
         ee=IMP.core.RigidMember(end).get_internal_coordinates()[0]
-        d_rbs=IMP.membrane.HelixDecorator.setup_particle(rb,bb,ee)
+        d_rbs=IMP.spb.HelixDecorator.setup_particle(rb,bb,ee)
         if ( sign * ( ee - bb ) > 0 ): rot0= -math.pi/2.0
         else :                         rot0=  math.pi/2.0
         return rot0
@@ -116,7 +116,7 @@ def create_restraints(m, chain, tbr, TMH):
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             lrb.add_particle(rb)
         nrb= IMP.container.ClosePairContainer(lrb, 25.0)
-        ps=  IMP.membrane.RigidBodyPackingScore(tbr, om_b, om_e, dd_b, dd_e)
+        ps=  IMP.spb.RigidBodyPackingScore(tbr, om_b, om_e, dd_b, dd_e)
         prs= IMP.container.PairsRestraint(ps, nrb)
         m.add_restraint(prs)
         m.set_maximum_score(prs, .01)
@@ -129,7 +129,7 @@ def create_restraints(m, chain, tbr, TMH):
             s=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_indexes=[(h[0],h[1]+1)])
             dsc.add_particles(s.get_selected_particles())
         dpc=IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
-        f=IMP.membrane.SameHelixPairFilter()
+        f=IMP.spb.SameHelixPairFilter()
         dpc.add_pair_filter(f)
         dps=IMP.atom.DopePairScore(15.0)#, IMP.atom.get_data_path("dope_new.lib"))
         dope=IMP.container.PairsRestraint(dps, dpc)

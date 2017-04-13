@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMPMEMBRANE_RIGID_BODY_NEW_MOVER_H
-#define IMPMEMBRANE_RIGID_BODY_NEW_MOVER_H
+#ifndef IMPSPB_RIGID_BODY_NEW_MOVER_H
+#define IMPSPB_RIGID_BODY_NEW_MOVER_H
 
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Transformation3D.h>
@@ -15,17 +15,17 @@
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/MonteCarloMover.h>
 #include <IMP/core/rigid_bodies.h>
-#include "membrane_config.h"
+#include "spb_config.h"
 //#include <IMP/core/mover_macros.h>
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 //! Modify the transformation of a rigid body
 /** The transformation of a rigid body is moved in a ball of given
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPMEMBRANEEXPORT RigidBodyNewMover : public core::MonteCarloMover {
+class IMPSPBEXPORT RigidBodyNewMover : public core::MonteCarloMover {
  public:
   /** The rigid body is rotated and translated to move
       \param[in] d   the rigid body decorator
@@ -54,6 +54,6 @@ class IMPMEMBRANEEXPORT RigidBodyNewMover : public core::MonteCarloMover {
   core::RigidBody d_;
 };
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
 
-#endif /* IMPMEMBRANE_RIGID_BODY_NEW_MOVER_H */
+#endif /* IMPSPB_RIGID_BODY_NEW_MOVER_H */

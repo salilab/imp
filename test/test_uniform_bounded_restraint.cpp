@@ -6,7 +6,7 @@
 #include <IMP/atom.h>
 #include <IMP/algebra.h>
 #include <IMP/container.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <IMP/display.h>
 #include <IMP/rmf.h>
 #include <string>
@@ -19,7 +19,7 @@
 #include <IMP/test/test_macros.h>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
 int main(int argc, char* argv[])
 {
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
  b.set_lower(90.0);
  b.set_upper(110.0);
 
-IMP_NEW(membrane::UniformBoundedRestraint, ubr,
+IMP_NEW(spb::UniformBoundedRestraint, ubr,
             (p2, FloatKey("z"),pa,pb));
 allrs->add_restraint(ubr);
 

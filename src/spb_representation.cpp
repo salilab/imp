@@ -10,7 +10,7 @@
 #include <IMP/container.h>
 #include <IMP/core.h>
 #include <IMP/display.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <IMP/rmf.h>
 #include <math.h>
 #include <time.h>
@@ -19,9 +19,9 @@
 #include <string>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 atom::Hierarchies create_representation(
     Model *m, RestraintSet *allrs, SPBParameters mydata,
@@ -135,7 +135,7 @@ atom::Hierarchies create_representation(
               core::RigidMember(atom::get_leaves(Spc42p_CC[0])[0])
                   .get_rigid_body();
           rb.set_coordinates_are_optimized(true);
-          IMP_NEW(membrane::PbcBoxedRigidBodyMover, rbmv,
+          IMP_NEW(spb::PbcBoxedRigidBodyMover, rbmv,
                   (rb, ps, mydata.MC.dx, mydata.MC.dang, mydata.CP_centers,
                    mydata.trs, SideXY, SideXY, SideZ));
           mvs.push_back(rbmv);
@@ -413,7 +413,7 @@ atom::Hierarchies create_representation(
                   .get_rigid_body();
           rb.set_coordinates_are_optimized(true);
 
-          IMP_NEW(membrane::PbcBoxedRigidBodyMover, rbmv,
+          IMP_NEW(spb::PbcBoxedRigidBodyMover, rbmv,
                   (rb, ps, mydata.MC.dx, mydata.MC.dang, mydata.CP_centers,
                    mydata.trs, SideXY, SideXY, SideZ));
           mvs.push_back(rbmv);
@@ -773,4 +773,4 @@ void load_restart(atom::Hierarchies &all_mol, SPBParameters mydata) {
   }
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE

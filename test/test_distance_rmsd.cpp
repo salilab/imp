@@ -6,7 +6,7 @@
 #include <IMP/atom.h>
 #include <IMP/algebra.h>
 #include <IMP/container.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <IMP/display.h>
 #include <IMP/rmf.h>
 #include <string>
@@ -19,7 +19,7 @@
 #include <IMP/test/test_macros.h>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
 int main(int argc, char* argv[])
 {
@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
  trs.push_back(algebra::get_identity_transformation_3d());
 
  // Metric DRMS
- IMP_NEW(membrane::DistanceRMSDMetric,drmsd,(cluster_ps,assign,trs,
+ IMP_NEW(spb::DistanceRMSDMetric,drmsd,(cluster_ps,assign,trs,
  pxscale,pyscale,pzscale));
 
  // first model's coordinates
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 
  // NOW do the clustering
  IMP::Pointer<statistics::PartitionalClustering> pc =
- membrane::create_gromos_clustering(drmsd,2.0);
+ spb::create_gromos_clustering(drmsd,2.0);
 
  IMP_TEST_EQUAL(pc->get_number_of_clusters(),2);
 

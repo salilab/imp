@@ -9,14 +9,14 @@
 #include <IMP/atom.h>
 #include <IMP/container.h>
 #include <IMP/core.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <fstream>
 #include <map>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
-IMPMEMBRANE_BEGIN_NAMESPACE
+IMPSPB_BEGIN_NAMESPACE
 
 std::map<std::string, IMP::Pointer<RestraintSet> > spb_assemble_restraints(
     Model *m, RestraintSet *allrs, SPBParameters &mydata,
@@ -253,4 +253,4 @@ std::map<std::string, IMP::Pointer<RestraintSet> > spb_assemble_restraints(
   return rst_map;
 }
 
-IMPMEMBRANE_END_NAMESPACE
+IMPSPB_END_NAMESPACE
