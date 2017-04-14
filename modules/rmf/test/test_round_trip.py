@@ -113,5 +113,26 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(IMP.atom.Chain(chs2[0]).get_id(), 'A')
             self.assertEqual(chs2[0].get_name(), 'simple')
 
+    def test_references(self):
+        """Test if Reference information is preserved in RMF"""
+        for suffix in [".rmfz", ".rmf3"]:
+            m = IMP.Model()
+            h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
+                                  IMP.atom.NonAlternativePDBSelector())
+            rs = IMP.atom.get_by_type(h, IMP.atom.RESIDUE_TYPE)
+            IMP.core.Reference.setup_particle(rs[1], rs[0])
+            name = self.get_tmp_file_name("test_rt_refs" + suffix)
+            f = RMF.create_rmf_file(name)
+            IMP.rmf.add_hierarchy(f, h)
+            IMP.rmf.save_frame(f, str(0))
+            del f
+            f = RMF.open_rmf_file_read_only(name)
+            h2 = IMP.rmf.create_hierarchies(f, m)
+            rs2 = IMP.atom.get_by_type(h2[0], IMP.atom.RESIDUE_TYPE)
+            self.assertFalse(IMP.core.Reference.get_is_setup(rs2[0]))
+            self.assertTrue(IMP.core.Reference.get_is_setup(rs2[1]))
+            r = IMP.core.Reference(rs2[1])
+            self.assertEqual(r.get_reference_particle(), rs2[0])
+
 if __name__ == '__main__':
     IMP.test.main()
