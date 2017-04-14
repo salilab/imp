@@ -17,6 +17,7 @@
 #include "RMF/decorator/representation.h"
 #include "RMF/decorator/alternatives.h"
 #include "RMF/decorator/shape.h"
+#include "RMF/decorator/reference.h"
 #include "RMF/enums.h"
 #include "RMF/infrastructure_macros.h"
 #include "RMF/types.h"
@@ -173,7 +174,8 @@ void show_node_decorators(
     decorator::ResidueFactory rcf, decorator::AtomFactory acf,
     decorator::ChainFactory chaincf, decorator::DomainFactory fragcf,
     decorator::CopyFactory copycf, decorator::DiffuserFactory diffusercf,
-    decorator::TypedFactory typedcf, std::string) {
+    decorator::TypedFactory typedcf, decorator::ReferenceFactory refcf,
+    std::string) {
   using std::operator<<;
   out << "\"" << n.get_name() << "\"" << node_suffix << " [" << n.get_type()
       << ":";
@@ -215,6 +217,8 @@ void show_node_decorators(
   else if (typedcf.get_is(n)) out << " typed";
   if (diffusercf.get_is_static(n)) out << " diffuser(s)";
   else if (diffusercf.get_is(n)) out << " diffuser";
+  if (refcf.get_is_static(n)) out << " reference(s)";
+  else if (refcf.get_is(n)) out << " reference";
   out << "]";
 }
 
@@ -273,6 +277,7 @@ struct ShowDecorators {
   decorator::CopyFactory copycf;
   decorator::DiffuserFactory diffusercf;
   decorator::TypedFactory typedcf;
+  decorator::ReferenceFactory refcf;
   ShowDecorators(FileConstHandle fh)
       : bdf(fh),
         ccf(fh),
@@ -290,12 +295,13 @@ struct ShowDecorators {
         fragcf(fh),
         copycf(fh),
         diffusercf(fh),
-        typedcf(fh) {}
+        typedcf(fh),
+        refcf(fh) {}
   void operator()(NodeConstHandle cur, std::string prefix, std::string suffix,
                   std::ostream& out) {
     show_node_decorators(cur, suffix, out, bdf, ccf, pcf, ipcf, rpcf, scf,
                          repcf, bcf, cycf, segcf, rcf, acf, chaincf, fragcf,
-                         copycf, diffusercf, typedcf, prefix + "   ");
+                         copycf, diffusercf, typedcf, refcf, prefix + "   ");
   }
 };
 }
