@@ -111,32 +111,9 @@ void read_pdb(Model *m, const std::string file,
               int multi_model_pdb = 2,
               bool explicit_water = false);
 
-IMPSAXS_DEPRECATED_FUNCTION_DECL(2.7)
-IMPSAXSEXPORT
-void read_pdb(const std::string file,
-              std::vector<std::string>& pdb_file_names,
-              std::vector<IMP::Particles>& particles_vec,
-              bool residue_level = false,
-              bool heavy_atoms_only = true,
-              int multi_model_pdb = 2,
-              bool explicit_water = false);
-
 //! Parse PDB and profile files
 IMPSAXSEXPORT
 void read_files(Model *m, const std::vector<std::string>& files,
-                std::vector<std::string>& pdb_file_names,
-                std::vector<std::string>& dat_files,
-                std::vector<IMP::Particles>& particles_vec,
-                Profiles& exp_profiles,
-                bool residue_level = false,
-                bool heavy_atoms_only = true,
-                int multi_model_pdb = 2,
-                bool explicit_water = false,
-                float max_q = 0.0);
-
-IMPSAXS_DEPRECATED_FUNCTION_DECL(2.7)
-IMPSAXSEXPORT
-void read_files(const std::vector<std::string>& files,
                 std::vector<std::string>& pdb_file_names,
                 std::vector<std::string>& dat_files,
                 std::vector<IMP::Particles>& particles_vec,
