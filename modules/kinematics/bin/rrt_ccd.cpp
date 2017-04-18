@@ -214,12 +214,12 @@ int main(int argc, char **argv)
   open_loop_bond_atoms.push_back(psi_atoms[2]);
   open_loop_bond_atoms.push_back(psi_atoms[3]);
 
-  ProteinKinematics pk(mhd, flexible_residues, dihedral_angles,
-                       open_loop_bond_atoms);
+  IMP_NEW(ProteinKinematics, pk,
+          (mhd, flexible_residues, dihedral_angles, open_loop_bond_atoms));
   std::cerr << "ProteinKinematics done" << std::endl;
-  DihedralAngleRevoluteJoints joints = pk.get_ordered_joints();
-  IMP_NEW(KinematicForestScoreState, kfss, (pk.get_kinematic_forest(),
-                                            pk.get_rigid_bodies(),
+  DihedralAngleRevoluteJoints joints = pk->get_ordered_joints();
+  IMP_NEW(KinematicForestScoreState, kfss, (pk->get_kinematic_forest(),
+                                            pk->get_rigid_bodies(),
                                             atoms));
   model->add_score_state(kfss);
 
@@ -258,7 +258,7 @@ int main(int argc, char **argv)
                      number_of_nodes, number_of_active_dofs));
   rrt->set_scoring_function(pr);
 
-  DihedralAngleRevoluteJoints loop_joints = pk.get_loop_joints();
+  DihedralAngleRevoluteJoints loop_joints = pk->get_loop_joints();
   std::cerr << "All joints = " << joints.size() << " loop joints = " << loop_joints.size() << std::endl;
 
   CCDLoopClosure* loop_closer;

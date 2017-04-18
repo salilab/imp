@@ -123,11 +123,11 @@ int main(int argc, char *argv[]) {
   //   IMP::container::create_restraint(score, cpc);
 
   // create phi/psi joints
-  ProteinKinematics pk(mhd, true, false);
+  IMP_NEW(ProteinKinematics, pk, (mhd, true, false));
   std::cerr << "ProteinKinematics done" << std::endl;
-  DihedralAngleRevoluteJoints joints = pk.get_joints();
+  DihedralAngleRevoluteJoints joints = pk->get_joints();
   IMP_NEW(KinematicForestScoreState, kfss,
-          (pk.get_kinematic_forest(), pk.get_rigid_bodies(), atoms));
+          (pk->get_kinematic_forest(), pk->get_rigid_bodies(), atoms));
   model->add_score_state(kfss);
 
   // create dofs

@@ -19,7 +19,7 @@ IMPKINEMATICS_BEGIN_NAMESPACE
 ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      bool flexible_backbone,
                                      bool flexible_side_chains)
-  : mhd_(mhd),
+  : Object("ProteinKinematics%1%"), mhd_(mhd),
     atom_particles_(atom::get_by_type(mhd_, atom::ATOM_TYPE)),
     graph_(atom_particles_.size()) {
   init(atom::get_by_type(mhd, atom::RESIDUE_TYPE),
@@ -36,7 +36,7 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      atom::Atoms open_loop_bond_atoms,
                                      bool flexible_backbone,
                                      bool flexible_side_chains )
-  : mhd_(mhd),
+  : Object("ProteinKinematics%1%"), mhd_(mhd),
     atom_particles_(atom::get_by_type(mhd_, atom::ATOM_TYPE)),
     graph_(atom_particles_.size())
 {

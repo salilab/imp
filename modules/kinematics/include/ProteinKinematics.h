@@ -55,7 +55,7 @@ public:
 };
 
 //! Kinematic structure over a protein, with backbone and side chain dihedrals
-class IMPKINEMATICSEXPORT ProteinKinematics {
+class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
  public:
 
   //! Constructor with all phi/psi rotatable
@@ -123,6 +123,8 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
   }
 
   // TODO: add chi
+
+  IMP_OBJECT_METHODS(ProteinKinematics);
 
  private:
   enum ProteinAngleType {
@@ -234,6 +236,8 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
 
   DihedralAngleRevoluteJoints loop_joints_;
 };
+
+IMP_OBJECTS(ProteinKinematics, ProteinKinematicsList);
 
 IMPKINEMATICS_END_NAMESPACE
 

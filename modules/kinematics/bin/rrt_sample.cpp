@@ -206,11 +206,11 @@ int rrt_sample(int argc, char **argv)
   IMP::Pointer<IMP::Restraint> pr=
     IMP::container::create_restraint(score_ptr, cpc_ptr, "stereochemistry");
 
-  ProteinKinematics pk(mhd, flexible_residues, dihedral_angles);
+  IMP_NEW(ProteinKinematics, pk, (mhd, flexible_residues, dihedral_angles));
   std::cerr << "ProteinKinematics done" << std::endl;
-  DihedralAngleRevoluteJoints joints = pk.get_ordered_joints();
-  IMP_NEW(KinematicForestScoreState, kfss, (pk.get_kinematic_forest(),
-                                            pk.get_rigid_bodies(),
+  DihedralAngleRevoluteJoints joints = pk->get_ordered_joints();
+  IMP_NEW(KinematicForestScoreState, kfss, (pk->get_kinematic_forest(),
+                                            pk->get_rigid_bodies(),
                                             atoms));
   model->add_score_state(kfss);
 
