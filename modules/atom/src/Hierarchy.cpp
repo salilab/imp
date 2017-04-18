@@ -1,6 +1,5 @@
 /**
- *  \file Hierarchy.cpp   \brief Decorator for helping deal
- *                                                 with a hierarchy.
+ *  \file Hierarchy.cpp   \brief Decorator for helping deal with a hierarchy.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
