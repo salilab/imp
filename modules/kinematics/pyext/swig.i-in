@@ -23,6 +23,9 @@ IMP_SWIG_OBJECT( IMP::kinematics, DirectionalDOF, DirectionalDOFs);
 IMP_SWIG_BASE_OBJECT( IMP::kinematics, DOFsSampler, DOFsSamplers);
 IMP_SWIG_OBJECT( IMP::kinematics, UniformBackboneSampler, UniformBackboneSamplers);
 IMP_SWIG_OBJECT( IMP::kinematics, ProteinKinematics, ProteinKinematicsList);
+IMP_SWIG_OBJECT( IMP::kinematics, LocalPlanner, LocalPlanners);
+IMP_SWIG_OBJECT( IMP::kinematics, PathLocalPlanner, PathLocalPlanners);
+IMP_SWIG_OBJECT( IMP::kinematics, RRT, RRTs);
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.kinematicss.say_hello(). */
@@ -44,5 +47,5 @@ IMP_SWIG_OBJECT( IMP::kinematics, ProteinKinematics, ProteinKinematicsList);
 %include "IMP/kinematics/DOFsSampler.h"
 %include "IMP/kinematics/UniformBackboneSampler.h"
 %include "IMP/kinematics/ProteinKinematics.h"
-# %include "IMP/kinematics/local_planners.h"
-# %include "IMP/kinematics/RRT.h"
+%include "IMP/kinematics/local_planners.h"
+%include "IMP/kinematics/RRT.h"
