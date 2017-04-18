@@ -142,8 +142,8 @@ int main(int argc, char *argv[]) {
   DOFValues val(dofs);
   std::cerr << "DOFs done" << std::endl;
 
-  DirectionalDOF dd(dofs);
-  PathLocalPlanner planner(model, &sampler, &dd, 10);
+  IMP_NEW(DirectionalDOF, dd, (dofs));
+  PathLocalPlanner planner(model, &sampler, dd, 10);
   std::cerr << "Start RRT" << std::endl;
   IMP_NEW(RRT, rrt, (model, &sampler, &planner, dofs));
   rrt->set_scoring_function(pr);

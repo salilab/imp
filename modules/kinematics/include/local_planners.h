@@ -73,7 +73,7 @@ class IMPKINEMATICSEXPORT PathLocalPlanner : public LocalPlanner {
                                       ScoringFunction *sf);
 
  private:
-  DirectionalDOF* d_;
+  PointerMember<DirectionalDOF> d_;
   unsigned int save_step_interval_;  // if 0, save only last valid node
 };
 

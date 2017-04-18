@@ -247,10 +247,10 @@ int main(int argc, char **argv)
     }
   }
 
-  DirectionalDOF dd(dofs);
+  IMP_NEW(DirectionalDOF, dd, (dofs));
 
   IMP_NEW(UniformBackboneSampler, ub_sampler, (joints, dofs));
-  IMP_NEW(PathLocalPlanner, planner, (model, ub_sampler, &dd,
+  IMP_NEW(PathLocalPlanner, planner, (model, ub_sampler, dd,
                                       save_configuration_number));
 
   std::cerr << "Init  RRT" << std::endl;

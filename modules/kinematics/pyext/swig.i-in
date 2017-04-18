@@ -19,7 +19,7 @@ IMP_SWIG_OBJECT( IMP::kinematics, CompositeJoint, CompositeJoints);
 IMP_SWIG_OBJECT( IMP::kinematics, RevoluteJointMover, RevoluteJointMovers);
 IMP_SWIG_OBJECT( IMP::kinematics, DOF, DOFs);
 IMP_SWIG_VALUE( IMP::kinematics, DOFValues, DOFValuesList);
-IMP_SWIG_VALUE( IMP::kinematics, DirectionalDOF, DirectionalDOFs);
+IMP_SWIG_OBJECT( IMP::kinematics, DirectionalDOF, DirectionalDOFs);
 IMP_SWIG_BASE_OBJECT( IMP::kinematics, DOFsSampler, DOFsSamplers);
 IMP_SWIG_OBJECT( IMP::kinematics, UniformBackboneSampler, UniformBackboneSamplers);
 IMP_SWIG_OBJECT( IMP::kinematics, ProteinKinematics, ProteinKinematicsList);
