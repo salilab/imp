@@ -8,6 +8,7 @@
  */
 
 #include <IMP/kinematics/ProteinKinematics.h>
+#include <IMP/kinematics/internal/graph_helpers.h>
 
 #include <IMP/atom/dihedrals.h>
 #include <IMP/exception.h>
@@ -16,34 +17,6 @@
 #include <boost/graph/undirected_dfs.hpp>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
-
-namespace {
-
-class MyDFSVisitor : public boost::default_dfs_visitor {
-public:
-  MyDFSVisitor(std::vector<int>& dfs_order, std::vector<int>& parents) :
-    dfs_order_(dfs_order), parents_(parents), counter_(0) {}
-
-  template < typename Vertex, typename Graph >
-  void discover_vertex(Vertex v, const Graph& ) {
-    dfs_order_[v] = counter_;
-    counter_++;
-  }
-
-  template < typename Edge, typename Graph >
-  void tree_edge(Edge e, const Graph& g) {
-    std::cerr << "tree_edge " << source(e, g) << " -- " << target(e, g)
-              << " dfs_order " <<  dfs_order_[source(e, g)] << " -- " <<  dfs_order_[target(e, g)] << std::endl;
-    parents_[target(e,g)] = source(e, g);
-  }
-
-  std::vector<int>& dfs_order_;
-  std::vector<int>& parents_;
-  int counter_;
-};
-
-} // anonymous namespace
-
 
 ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      bool flexible_backbone,
@@ -321,7 +294,7 @@ void ProteinKinematics::order_rigid_bodies(
   parents_.resize(rbs_.size());
 
   // run DFS
-  MyDFSVisitor vis(rb_order_, parents_);
+  internal::MyDFSVisitor vis(rb_order_, parents_);
   int starting_vertex = largest_rb_;
   int rb_index1(0), rb_index2(0);
   if(open_loop_bond_atoms.size() > 0) {
