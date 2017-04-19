@@ -1,5 +1,8 @@
 \brief Python classes to represent, score, sample and analyze models.
 
+[![Build Status](https://travis-ci.org/salilab/pmi.svg?branch=develop)](https://travis-ci.org/salilab/pmi)
+[![codecov](https://codecov.io/gh/salilab/pmi/branch/develop/graph/badge.svg)](https://codecov.io/gh/salilab/pmi)
+
 This module contains a variety of high-level Python
 classes to simplify the construction of a modeling protocol in IMP. One recent
 use of PMI is the modeling of the

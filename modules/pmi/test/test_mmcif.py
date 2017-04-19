@@ -52,6 +52,11 @@ class Tests(IMP.test.TestCase):
         root = os.path.dirname(sys.argv[0]) or '.'
         simo.add_metadata(IMP.pmi.metadata.Repository(doi="foo", root=root))
         po = DummyPO(None)
+        # Usually main_script is populated from sys.argv[0], which is usually
+        # the name of the modeling script. But if we run the tests with nose,
+        # it will be 'nosetests' instead. So make sure it's reliably the name
+        # of the test script:
+        po._main_script = __file__
         simo.add_protocol_output(po)
 
         r = IMP.pmi.metadata.Repository(doi="bar")
@@ -444,6 +449,14 @@ _citation_author.ordinal
         l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
         l.id = 97
         pds = dump.add(IMP.pmi.metadata.CXMSDataset(l))
+        # group1 contains just the first dataset
+        group1 = dump.get_all_group()
+        l = IMP.pmi.metadata.FileLocation(repo='foo2', path='bar2')
+        l.id = 98
+        pds = dump.add(IMP.pmi.metadata.CXMSDataset(l))
+        # group2 contains the first two datasets
+        group2 = dump.get_all_group()
+        # last dataset is in no group
         l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
         ds = dump.add(IMP.pmi.metadata.PDBDataset(l))
         ds.add_primary(pds)
@@ -456,13 +469,21 @@ _citation_author.ordinal
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
-_ihm_dataset_list.ordinal_id
 _ihm_dataset_list.id
-_ihm_dataset_list.group_id
 _ihm_dataset_list.data_type
 _ihm_dataset_list.database_hosted
-1 1 1 'CX-MS data' NO
-2 2 1 'Experimental model' YES
+1 'CX-MS data' NO
+2 'CX-MS data' NO
+3 'Experimental model' YES
+#
+#
+loop_
+_ihm_dataset_group.ordinal_id
+_ihm_dataset_group.group_id
+_ihm_dataset_group.dataset_list_id
+1 1 1
+2 2 1
+3 2 2
 #
 #
 loop_
@@ -470,6 +491,7 @@ _ihm_dataset_external_reference.id
 _ihm_dataset_external_reference.dataset_list_id
 _ihm_dataset_external_reference.file_id
 1 1 97
+2 2 98
 #
 #
 loop_
@@ -479,14 +501,14 @@ _ihm_dataset_related_db_reference.db_name
 _ihm_dataset_related_db_reference.accession_code
 _ihm_dataset_related_db_reference.version
 _ihm_dataset_related_db_reference.details
-1 2 PDB 1abc 1.0 'test details'
+1 3 PDB 1abc 1.0 'test details'
 #
 #
 loop_
 _ihm_related_datasets.ordinal_id
 _ihm_related_datasets.dataset_list_id_derived
 _ihm_related_datasets.dataset_list_id_primary
-1 2 1
+1 3 2
 #
 """)
 
@@ -996,15 +1018,17 @@ _ihm_2dem_class_average_restraint.details
             def get_index(self):
                 return 42
         class DummySource(object):
-            id = 39
             chain_id = 'X'
+        class DummyModel(object):
+            name = 'dummy-m1'
 
         po = DummyPO()
         d = IMP.pmi.mmcif._StartingModelDumper(po)
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
         d.dump_seq_dif(w, [IMP.pmi.mmcif._MSESeqDif(DummyRes(), 'nup84',
-                                                    DummySource(), 2)])
+                                                    DummySource(),
+                                                    DummyModel(), 2)])
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
@@ -1013,12 +1037,12 @@ _ihm_starting_model_seq_dif.entity_id
 _ihm_starting_model_seq_dif.asym_id
 _ihm_starting_model_seq_dif.seq_id
 _ihm_starting_model_seq_dif.comp_id
-_ihm_starting_model_seq_dif.starting_model_ordinal_id
+_ihm_starting_model_seq_dif.starting_model_id
 _ihm_starting_model_seq_dif.db_asym_id
 _ihm_starting_model_seq_dif.db_seq_id
 _ihm_starting_model_seq_dif.db_comp_id
 _ihm_starting_model_seq_dif.details
-1 4 H 42 MET 39 X 40 MSE 'Conversion of modified residue MSE to MET'
+1 4 H 42 MET dummy-m1 X 40 MSE 'Conversion of modified residue MSE to MET'
 #
 """)
 

@@ -15,6 +15,7 @@ import itertools
 from math import log,pi,sqrt,exp
 import sys,os
 import random
+import ast
 import time
 import RMF
 import IMP.rmf
@@ -402,11 +403,8 @@ def get_cross_link_data(directory, filename, dist, omega, sigma,
     (sigmamin, sigmamax, nsigma) = sigma
 
     filen = IMP.isd.get_data_path("CrossLinkPMFs.dict")
-    xlpot = open(filen)
-
-    for line in xlpot:
-        dictionary = eval(line)
-        break
+    with open(filen) as xlpot:
+        dictionary = ast.literal_eval(filen.readline())
 
     xpot = dictionary[directory][filename]["distance"]
     pot = dictionary[directory][filename][type_of_profile]

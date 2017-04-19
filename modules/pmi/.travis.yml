@@ -1,0 +1,16 @@
+sudo: false
+language: python
+python:
+  - 2.7
+  - 3.6
+cache:
+  pip: true
+install:
+  - tools/setup_travis.sh $HOME/miniconda $TRAVIS_PYTHON_VERSION
+  - source $HOME/miniconda/bin/activate python$TRAVIS_PYTHON_VERSION
+  - python -V
+  - export IMP_TMP_DIR=/tmp
+script:
+  - test/nosetests --with-coverage --cover-branches -e 'probabilistic' test/test_*.py
+after_script:
+  - bash <(curl -s https://codecov.io/bash)

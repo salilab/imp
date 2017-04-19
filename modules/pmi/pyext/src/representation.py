@@ -2603,12 +2603,3 @@ class Representation(object):
                     last_residue=20))
 
         return output
-
-
-# Deprecation warning for the old SimplifiedModel class
-
-@IMP.deprecated_object("2.5", "Use Representation instead.")
-class SimplifiedModel(Representation):
-
-    def __init__(self, *args, **kwargs):
-        Representation.__init__(self, *args, **kwargs)

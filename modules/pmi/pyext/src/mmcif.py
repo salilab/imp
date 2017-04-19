@@ -22,6 +22,7 @@ from IMP.pmi.tools import OrderedDict
 import IMP.pmi.output
 import IMP.pmi.metadata
 import re
+import ast
 import sys
 import os
 import textwrap
@@ -200,7 +201,7 @@ class _SoftwareDumper(_Dumper):
 
     def __init__(self, simo):
         super(_SoftwareDumper, self).__init__(simo)
-        self.modeller_used = False
+        self.modeller_used = self.phyre2_used = False
 
     def set_modeller_used(self, version, date):
         if self.modeller_used:
@@ -212,6 +213,16 @@ class _SoftwareDumper(_Dumper):
                                 'of spatial restraints, build ' + date,
                     url='https://salilab.org/modeller/',
                     version=version))
+
+    def set_phyre2_used(self):
+        if self.phyre2_used:
+            return
+        self.phyre2_used = True
+        self.software.append(IMP.pmi.metadata.Software(
+                   name='Phyre2', classification='protein homology modeling',
+                   description='Protein Homology/analogY Recognition '
+                               'Engine V 2.0',
+                   version='2.0', url='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
 
     def dump(self, writer):
         ordinal = 1
@@ -721,8 +732,6 @@ class _DatasetDumper(_Dumper):
                                       _ExternalReferenceDumper.INPUT_DATA)
             _assign_id(d, seen_datasets, self._dataset_by_id)
 
-        # Make sure that all datasets are listed, even if they weren't used
-        all_group = self.get_all_group(True)
         # Assign IDs to all groups and remove duplicates
         seen_group_ids = {}
         self._dataset_group_by_id = []
@@ -753,17 +762,13 @@ class _DatasetDumper(_Dumper):
             yield d
 
     def dump(self, writer):
-        ordinal = 1
         with writer.loop("_ihm_dataset_list",
-                         ["ordinal_id", "id", "group_id", "data_type",
-                          "database_hosted"]) as l:
-            for g in self._dataset_group_by_id:
-                for d in g._datasets:
-                    l.write(ordinal_id=ordinal, id=d.id, group_id=g.id,
-                            data_type=d._data_type,
-                            database_hosted=isinstance(d.location,
-                                            IMP.pmi.metadata.DatabaseLocation))
-                    ordinal += 1
+                         ["id", "data_type", "database_hosted"]) as l:
+            for d in self._dataset_by_id:
+                l.write(id=d.id, data_type=d._data_type,
+                        database_hosted=isinstance(d.location,
+                                        IMP.pmi.metadata.DatabaseLocation))
+        self.dump_groups(writer)
         self.dump_other((d for d in self._dataset_by_id
                          if not isinstance(d.location,
                                             IMP.pmi.metadata.DatabaseLocation)),
@@ -773,6 +778,16 @@ class _DatasetDumper(_Dumper):
                                             IMP.pmi.metadata.DatabaseLocation)),
                           writer)
         self.dump_related(writer)
+
+    def dump_groups(self, writer):
+        ordinal = 1
+        with writer.loop("_ihm_dataset_group",
+                         ["ordinal_id", "group_id", "dataset_list_id"]) as l:
+            for g in self._dataset_group_by_id:
+                for d in g._datasets:
+                    l.write(ordinal_id=ordinal, group_id=g.id,
+                            dataset_list_id=d.id)
+                    ordinal += 1
 
     def dump_related(self, writer):
         ordinal = 1
@@ -1290,8 +1305,9 @@ class _MSESeqDif(object):
     comp_id = 'MET'
     db_comp_id = 'MSE'
     details = 'Conversion of modified residue MSE to MET'
-    def __init__(self, res, component, source, offset):
+    def __init__(self, res, component, source, model, offset):
         self.res, self.component, self.source = res, component, source
+        self.model = model
         self.offset = offset
 
 
@@ -1367,6 +1383,16 @@ class _StartingModelDumper(_Dumper):
         return (first_line[50:59].strip(),
                 details if details else _CifWriter.unknown, metadata)
 
+    def _parse_details(self, fh):
+        """Extract TITLE records from a PDB file"""
+        details = ''
+        for line in fh:
+            if line.startswith('TITLE'):
+                details += line[10:].rstrip()
+            elif line.startswith('ATOM'):
+                break
+        return details
+
     def get_sources(self, model, pdbname, chain):
         # Attempt to identity PDB file vs. comparative model
         fh = open(pdbname)
@@ -1381,23 +1407,56 @@ class _StartingModelDumper(_Dumper):
             d = IMP.pmi.metadata.PDBDataset(l)
             model.dataset = self.simo.dataset_dump.add(file_dataset or d)
             return [source]
+        elif first_line.startswith('EXPDTA    DERIVED FROM PDB:'):
+            # Model derived from a PDB structure; treat as a local experimental
+            # model with the official PDB as a parent
+            local_file.details = self._parse_details(fh)
+            db_code = first_line[27:].strip()
+            d = IMP.pmi.metadata.PDBDataset(local_file)
+            pdb_loc = IMP.pmi.metadata.PDBLocation(db_code)
+            parent = IMP.pmi.metadata.PDBDataset(pdb_loc)
+            d.add_parent(parent)
+            model.dataset = self.simo.dataset_dump.add(file_dataset or d)
+            return [_UnknownSource(model, chain)]
+        elif first_line.startswith('EXPDTA    DERIVED FROM COMPARATIVE '
+                                   'MODEL, DOI:'):
+            # Model derived from a comparative model; link back to the original
+            # model as a parent
+            local_file.details = self._parse_details(fh)
+            d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
+            repo = IMP.pmi.metadata.Repository(doi=first_line[46:].strip())
+            # todo: better specify an unknown path
+            orig_loc = IMP.pmi.metadata.FileLocation(repo=repo, path='.')
+            parent = IMP.pmi.metadata.ComparativeModelDataset(orig_loc)
+            d.add_parent(parent)
+            model.dataset = self.simo.dataset_dump.add(file_dataset or d)
+            return [_UnknownSource(model, chain)]
         elif first_line.startswith('EXPDTA    THEORETICAL MODEL, MODELLER'):
             self.simo.software_dump.set_modeller_used(
                                         *first_line[38:].split(' ', 1))
-            d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
-            model.dataset = self.simo.dataset_dump.add(file_dataset or d)
-            templates = self.get_templates(pdbname, model)
-
-            if templates:
-                return templates
-            else:
-                return [_UnknownSource(model, chain)]
+            return self.handle_comparative_model(local_file, file_dataset,
+                                                 pdbname, model, chain)
+        elif first_line.startswith('REMARK  99  Chain ID :'):
+            # Model generated by Phyre2
+            self.simo.software_dump.set_phyre2_used()
+            return self.handle_comparative_model(local_file, file_dataset,
+                                                 pdbname, model, chain)
         else:
             # todo: extract Modeller-like template info for Phyre models;
             # revisit assumption that all such unknown source PDBs are
             # comparative models
-            d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
-            model.dataset = self.simo.dataset_dump.add(file_dataset or d)
+            return self.handle_comparative_model(local_file, file_dataset,
+                                                 pdbname, model, chain)
+
+    def handle_comparative_model(self, local_file, file_dataset, pdbname,
+                                 model, chain):
+        d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
+        model.dataset = self.simo.dataset_dump.add(file_dataset or d)
+        templates = self.get_templates(pdbname, model)
+
+        if templates:
+            return templates
+        else:
             return [_UnknownSource(model, chain)]
 
     def assign_model_details(self):
@@ -1428,7 +1487,7 @@ class _StartingModelDumper(_Dumper):
         ordinal = 1
         with writer.loop("_ihm_starting_model_seq_dif",
                      ["ordinal_id", "entity_id", "asym_id",
-                      "seq_id", "comp_id", "starting_model_ordinal_id",
+                      "seq_id", "comp_id", "starting_model_id",
                       "db_asym_id", "db_seq_id", "db_comp_id",
                       "details"]) as l:
             for sd in seq_dif:
@@ -1441,7 +1500,7 @@ class _StartingModelDumper(_Dumper):
                         db_asym_id=sd.source.chain_id,
                         db_seq_id=sd.res.get_index() - sd.offset,
                         db_comp_id=sd.db_comp_id,
-                        starting_model_ordinal_id=sd.source.id,
+                        starting_model_id=sd.model.name,
                         details=sd.details)
                 ordinal += 1
 
@@ -1449,9 +1508,12 @@ class _StartingModelDumper(_Dumper):
         """Dump details on comparative models. Must be called after
            dump_details() since it uses IDs assigned there."""
         with writer.loop("_ihm_starting_comparative_models",
-                     ["starting_model_ordinal_id", "starting_model_id",
-                      "template_auth_asym_id", "template_seq_begin",
-                      "template_seq_end", "template_sequence_identity",
+                     ["ordinal_id", "starting_model_id",
+                      "starting_model_auth_asym_id",
+                      "starting_model_seq_id_begin",
+                      "starting_model_seq_id_end",
+                      "template_auth_asym_id", "template_seq_id_begin",
+                      "template_seq_id_end", "template_sequence_identity",
                       "template_sequence_identity_denominator",
                       "template_dataset_list_id",
                       "alignment_file_id"]) as l:
@@ -1459,17 +1521,22 @@ class _StartingModelDumper(_Dumper):
             for model in self.all_models():
                 for template in [s for s in model.sources
                                  if isinstance(s, _TemplateSource)]:
+                    seq_id_begin, seq_id_end = template.get_seq_id_range(model)
                     denom = template.sequence_identity_denominator
-                    l.write(starting_model_ordinal_id=template.id,
+                    l.write(ordinal_id=ordinal,
                       starting_model_id=model.name,
+                      starting_model_auth_asym_id=template.chain_id,
+                      starting_model_seq_id_begin=seq_id_begin,
+                      starting_model_seq_id_end=seq_id_end,
                       template_auth_asym_id=template.tm_chain_id,
-                      template_seq_begin=template.tm_seq_id_begin,
-                      template_seq_end=template.tm_seq_id_end,
+                      template_seq_id_begin=template.tm_seq_id_begin,
+                      template_seq_id_end=template.tm_seq_id_end,
                       template_sequence_identity=template.sequence_identity,
                       template_sequence_identity_denominator=denom,
                       template_dataset_list_id=template.tm_dataset.id
                                                if template.tm_dataset
                                                else _CifWriter.unknown)
+                    ordinal += 1
 
     def dump_details(self, writer):
         writer.write_comment("""IMP will attempt to identify which input models
@@ -1477,21 +1544,17 @@ are crystal structures and which are comparative models, but does not always
 have sufficient information to deduce all of the templates used for comparative
 modeling. These may need to be added manually below.""")
         with writer.loop("_ihm_starting_model_details",
-                     ["ordinal_id", "entity_id", "entity_description",
+                     ["starting_model_id", "entity_id", "entity_description",
                       "asym_id", "seq_id_begin",
                       "seq_id_end", "starting_model_source",
                       "starting_model_auth_asym_id",
                       "starting_model_sequence_offset",
-                      "starting_model_id",
                       "dataset_list_id"]) as l:
-            ordinal = 1
             for model in self.all_models():
                 f = model.fragments[0]
                 entity = self.simo.entities[f.component]
                 chain_id = self.simo._get_chain_for_component(f.component,
                                                               self.output)
-                for source in model.sources:
-                    source.id = ordinal
                 source0 = model.sources[0]
                 # Where there are multiple sources (to date, this can only
                 # mean multiple templates for a comparative model) consolidate
@@ -1501,8 +1564,7 @@ modeling. These may need to be added manually below.""")
                     this_begin, this_end = source.get_seq_id_range(model)
                     seq_id_begin = min(seq_id_begin, this_begin)
                     seq_id_end = max(seq_id_end, this_end)
-                l.write(ordinal_id=ordinal,
-                      entity_id=entity.id,
+                l.write(entity_id=entity.id,
                       entity_description=entity.description,
                       asym_id=chain_id,
                       seq_id_begin=seq_id_begin,
@@ -1512,7 +1574,6 @@ modeling. These may need to be added manually below.""")
                       starting_model_source=source0.source,
                       starting_model_sequence_offset=f.offset,
                       dataset_list_id=model.dataset.id)
-                ordinal += 1
 
     def dump_coords(self, writer):
         seq_dif = []
@@ -1556,7 +1617,7 @@ modeling. These may need to be added manually below.""")
                                 assert(len(model.sources) == 1)
                                 seq_dif.append(_MSESeqDif(res, f.component,
                                                           model.sources[0],
-                                                          f.offset))
+                                                          model, f.offset))
                         chain_id = self.simo._get_chain_for_component(
                                             f.component, self.output)
                         entity = self.simo.entities[f.component]
@@ -1731,7 +1792,7 @@ class _ReplicaExchangeAnalysisEnsemble(_Ensemble):
         stat_fname = self.postproc.get_stat_file(self.cluster_num)
         model_num = 0
         with open(stat_fname) as fh:
-            stats = eval(fh.readline())
+            stats = ast.literal_eval(fh.readline())
             # Correct path
             rmf_file = os.path.join(os.path.dirname(stat_fname),
                                     "%d.rmf3" % model_num)
