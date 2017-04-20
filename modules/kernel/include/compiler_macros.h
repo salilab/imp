@@ -243,4 +243,16 @@
 #define IMP_DEPRECATED_ATTRIBUTE
 #endif
 
+// likely/unlikely macros provide manual optimization of branch
+// prediction - particularly useful for rare cases in scoring
+// functions, but use only if you know what you're doing cause
+// profiler is better at this in 99.9% of times:
+#if defined(__GNUC__)
+#define IMP_LIKELY(x)    __builtin_expect (!!(x), 1)
+#define IMP_UNIMP_LIKELY(x)  __builtin_expect (!!(x), 0)
+#else // ifdef __GNUC__
+#define IMP_LIKELY(x) x
+#define IMP_UNIMP_LIKELY(x) x
+#endif // ifdef __GNUC__
+
 #endif /* IMPKERNEL_COMPILER_MACROS_H */
