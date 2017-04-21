@@ -42,6 +42,9 @@ class Tests(IMP.test.TestCase):
         ("Rpb3","nter"):3}
 
         for name in ["Rpb3","Rpb4","Rpb5","Rpb6"]:
+            self.assertRaises(ValueError, IMP.pmi.tools.get_terminal_residue,
+                              rcomplex, rcomplex.hier_dict[name],
+                              terminus="notCotN", resolution=1)
             cter=IMP.pmi.tools.get_terminal_residue(rcomplex, rcomplex.hier_dict[name], terminus="C", resolution=1)
             self.assertEqual(results[(name,"cter")],IMP.atom.Residue(cter).get_index())
             nter=IMP.pmi.tools.get_terminal_residue(rcomplex, rcomplex.hier_dict[name], terminus="N", resolution=1)

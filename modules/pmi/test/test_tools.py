@@ -19,6 +19,50 @@ import IMP.rmf
 from math import *
 
 class Tests(IMP.test.TestCase):
+    def test_particle_to_sample_filter(self):
+        """Test ParticleToSampleFilter"""
+        class MockRestraint(object):
+            def __init__(self, sos):
+                self.sos = sos
+            def get_particles_to_sample(self):
+                return self.sos
+        r1 = MockRestraint({'Nuisances_Sigma': ('p0', 'p1'),
+                            'Nuisances_Psi': ('p2', 'p3')})
+        r2 = MockRestraint({'Nuisances_Sigma': ('p0', 'p4')})
+        with IMP.allow_deprecated():
+            p = IMP.pmi.tools.ParticleToSampleFilter([r1, r2])
+        p.add_filter('Sigma')
+        ps = p.get_particles_to_sample()
+        self.assertEqual(list(ps.keys()), ['Nuisances_Sigma'])
+        val = ps['Nuisances_Sigma']
+        self.assertEqual(sorted(val), ['p0', 'p0', 'p1', 'p4'])
+
+    def test_particle_to_sample_list(self):
+        """Test ParticleToSampleList"""
+        p = IMP.pmi.tools.ParticleToSampleList()
+        self.assertEqual(p.label, 'None')
+        self.assertRaises(TypeError, p.add_particle, 'P0', 'bad_type', 1, 'foo')
+
+        p.add_particle('RB1', 'Rigid_Bodies', (1., 2.), 'myRB1')
+        # Test bad rigid body transformation
+        self.assertRaises(TypeError, p.add_particle,
+                          'RB1', 'Rigid_Bodies', [1., 2.], 'myRB1')
+
+        p.add_particle('S1', 'Surfaces', (1., 2., 3.), 'myS1')
+        self.assertRaises(TypeError, p.add_particle,
+                          'S1', 'Surfaces', [1., 2.], 'myS1')
+
+        p.add_particle('F1', 'Floppy_Bodies', 1., 'myF1')
+        self.assertRaises(TypeError, p.add_particle,
+                          'F1', 'Floppy_Bodies', 'badtransform', 'myF1')
+
+        self.assertEqual(p.get_particles_to_sample(),
+                {'SurfacesParticleToSampleList_myS1_None':
+                        (['S1'], (1.0, 2.0, 3.0)),
+                 'Rigid_BodiesParticleToSampleList_myRB1_None':
+                        (['RB1'], (1.0, 2.0)),
+                 'Floppy_BodiesParticleToSampleList_myF1_None': (['F1'], 1.0)})
+
     def test_shuffle(self):
         """Test moving rbs, fbs"""
         mdl = IMP.Model()
@@ -74,7 +118,7 @@ class Tests(IMP.test.TestCase):
 
         mol3 = st1.create_molecule("GCP2_YEAST_BEADS",sequence=seqs["GCP2_YEAST"][:100],chain_id='C')
         mol3.add_representation(mol3.get_non_atomic_residues(), resolutions=[10])
-        
+
         hier = s.build()
 
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
@@ -87,13 +131,13 @@ class Tests(IMP.test.TestCase):
         fbs_position_after={}
 
         rbs,fbs = IMP.pmi.tools.get_rbs_and_beads([hier])
-        
+
         for rb in rbs:
             coor_rb = IMP.core.XYZ(rb).get_coordinates()
             self.assertTrue(100.0 <coor_rb[0]< 200.0)
             self.assertTrue(100.0 <coor_rb[1]< 200.0)
             self.assertTrue(100.0 <coor_rb[2]< 200.0)
-    
+
         for fb in fbs:
             if IMP.core.NonRigidMember.get_is_setup(fb):
                 coor_fb=IMP.algebra.Vector3D([fb.get_value(IMP.FloatKey(4)),
@@ -102,13 +146,13 @@ class Tests(IMP.test.TestCase):
                 self.assertTrue(100.0 <coor_fb[0]< 200.0)
                 self.assertTrue(100.0 <coor_fb[1]< 200.0)
                 self.assertTrue(100.0 <coor_fb[2]< 200.0)
-                
+
             else:
                 coor_fb=IMP.core.XYZ(fb).get_coordinates()
                 self.assertTrue(100.0 <coor_fb[0]< 200.0)
                 self.assertTrue(100.0 <coor_fb[1]< 200.0)
                 self.assertTrue(100.0 <coor_fb[2]< 200.0)
-                
+
 
     def test_shuffle_deep(self):
         """Test moving rbs, fbs"""

@@ -45,6 +45,7 @@ class Tests(IMP.test.TestCase):
         # be on different drives)
         with IMP.test.temporary_directory(os.getcwd()) as tmpdir:
             subdir = os.path.join(tmpdir, 'subdir')
+            subdir2 = os.path.join(tmpdir, 'subdir2')
             os.mkdir(subdir)
             with open(os.path.join(subdir, 'bar'), 'w') as f:
                 f.write("")
@@ -74,7 +75,11 @@ class Tests(IMP.test.TestCase):
             s2 = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46280',
                                              root=os.path.relpath(subdir),
                                              url='foo', top_directory='baz')
-            IMP.pmi.metadata.Repository.update_in_repos(loc, [s, s2])
+            # Repositories that aren't above the file shouldn't count
+            s3 = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.56280',
+                                             root=os.path.relpath(subdir2),
+                                             url='foo', top_directory='baz')
+            IMP.pmi.metadata.Repository.update_in_repos(loc, [s2, s3, s])
             self.assertEqual(loc.repo.doi, '10.5281/zenodo.46280')
             self.assertEqual(loc.path, 'bar')
 
