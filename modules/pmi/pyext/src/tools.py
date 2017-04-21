@@ -404,7 +404,7 @@ def get_cross_link_data(directory, filename, dist, omega, sigma,
 
     filen = IMP.isd.get_data_path("CrossLinkPMFs.dict")
     with open(filen) as xlpot:
-        dictionary = ast.literal_eval(filen.readline())
+        dictionary = ast.literal_eval(xlpot.readline())
 
     xpot = dictionary[directory][filename]["distance"]
     pot = dictionary[directory][filename][type_of_profile]

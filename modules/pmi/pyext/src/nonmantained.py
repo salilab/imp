@@ -6,6 +6,10 @@ from __future__ import print_function
 import IMP
 import IMP.atom
 
+IMP.deprecated_module('2.8', __name__,
+        "If you use any functionality from this module, please let the "
+        "IMP developers know. It will be removed in the next IMP release.")
+
 class Rods(object):
 
     def __init__(self, m):

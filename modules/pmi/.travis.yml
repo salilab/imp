@@ -11,6 +11,6 @@ install:
   - python -V
   - export IMP_TMP_DIR=/tmp
 script:
-  - test/nosetests --with-coverage --cover-branches -e 'probabilistic' test/test_*.py
+  - test/nosetests --with-coverage --cover-branches -e 'probabilistic' test/test_*.py test/medium_test_*.py
 after_script:
   - bash <(curl -s https://codecov.io/bash)
