@@ -274,7 +274,7 @@
 //! Perform actions dependent on whether a particle has an attribute.
 /** A common pattern is to check if a particle has a particular attribute,
     do one thing if it does and another if it does not. This macro implements
-    that pattern. It requires that the method get_particle() return the
+    that pattern. It requires that the method get_particle_index() return the
     particle being used.
 
     \param[in] AttributeKey The key for the attribute
@@ -326,12 +326,12 @@
    \see IMP_DECORATOR_SET()
 */
 #define IMP_DECORATOR_GET_SET(name, AttributeKey, Type, ReturnType)	\
-  //! returns the value of the name attribute				\
+  /** returns the value of the name attribute	*/			\
   ReturnType get_##name() const {					\
     return static_cast<ReturnType>					\
       (get_model()->get_attribute(AttributeKey, get_particle_index())); \
   }									\
-  //! sets the value of the name attribute to t				\
+  /** sets the value of the name attribute to t	*/			\
   void set_##name(ReturnType t) {					\
     get_model()->set_attribute(AttributeKey, get_particle_index(), t);	\
   }									\
@@ -349,14 +349,14 @@
 */
 #define IMP_DECORATOR_GET_SET_OPT(name, AttributeKey, Type, ReturnType, \
                                   default_value)                        \
-  //! returns the value of the name attribute, or default_value if	\
-  //! the name attribute is missing					\
+  /** returns the value of the name attribute, or default_value if 	\
+      the name attribute is missing				*/	\
   ReturnType get_##name() const {                                       \
     IMP_DECORATOR_GET(AttributeKey, Type,                               \
                       return static_cast<ReturnType>(VALUE),            \
                       return default_value);                            \
   }                                                                     \
-  //! sets the name attribute to t					\
+  /** sets the name attribute to t */					\
   void set_##name(ReturnType t) { IMP_DECORATOR_SET(AttributeKey, t); } \
   IMP_REQUIRE_SEMICOLON_CLASS(getset_##name)
 
