@@ -325,14 +325,16 @@
    \see IMP_DECORATOR_GET()
    \see IMP_DECORATOR_SET()
 */
-#define IMP_DECORATOR_GET_SET(name, AttributeKey, Type, ReturnType)      \
-  ReturnType get_##name() const {                                        \
-    return static_cast<ReturnType>(                                      \
-        get_model()->get_attribute(AttributeKey, get_particle_index())); \
-  }                                                                      \
-  void set_##name(ReturnType t) {                                        \
-    get_model()->set_attribute(AttributeKey, get_particle_index(), t);   \
-  }                                                                      \
+#define IMP_DECORATOR_GET_SET(name, AttributeKey, Type, ReturnType)	\
+  //! returns the value of the name attribute				\
+  ReturnType get_##name() const {					\
+    return static_cast<ReturnType>					\
+      (get_model()->get_attribute(AttributeKey, get_particle_index())); \
+  }									\
+  //! sets the value of the name attribute to t				\
+  void set_##name(ReturnType t) {					\
+    get_model()->set_attribute(AttributeKey, get_particle_index(), t);	\
+  }									\
   IMP_REQUIRE_SEMICOLON_CLASS(getset##name)
 
 //! Define methods for getting and setting an optional simple field.
@@ -347,11 +349,14 @@
 */
 #define IMP_DECORATOR_GET_SET_OPT(name, AttributeKey, Type, ReturnType, \
                                   default_value)                        \
+  //! returns the value of the name attribute, or default_value if	\
+  //! the name attribute is missing					\
   ReturnType get_##name() const {                                       \
     IMP_DECORATOR_GET(AttributeKey, Type,                               \
                       return static_cast<ReturnType>(VALUE),            \
                       return default_value);                            \
   }                                                                     \
+  //! sets the name attribute to t					\
   void set_##name(ReturnType t) { IMP_DECORATOR_SET(AttributeKey, t); } \
   IMP_REQUIRE_SEMICOLON_CLASS(getset_##name)
 

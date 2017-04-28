@@ -56,9 +56,12 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   static bool get_is_setup(Model *m, ParticleIndex p) {
     return m->get_has_attribute(get_diffusion_coefficient_key(), p);
   }
+  //! set diffusion coefficient in \f$A^2/fs\f$
   void set_diffusion_coefficient(double d) {
     get_particle()->set_value(get_diffusion_coefficient_key(), d);
-  }
+  
+  } 
+  //! get diffusion coefficient in \f$A^2/fs\f$
   double get_diffusion_coefficient() const {
     return get_model()->get_attribute(get_diffusion_coefficient_key(),
                                       get_particle_index());
