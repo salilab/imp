@@ -608,6 +608,8 @@ class FloatAttributeTable {
     IMP_USAGE_CHECK(k.get_index()>=7,
 		    "coordinates and radius should be accessed by specialized methods");
     unsigned int ki=k.get_index() - 7;
+    IMP_USAGE_CHECK(ki < (data_.access_data()).size(),
+                    "trying to access an attribute that was not added to this model");
     return internal::FloatAttributeTableTraits::access_container_data
       ((data_.access_data())[ki]);
   }
@@ -615,6 +617,8 @@ class FloatAttributeTable {
     IMP_USAGE_CHECK(k.get_index()>=7,
 		    "coordinates and radius should be accessed by specialized methods");
     unsigned int ki= k.get_index()-7;
+    IMP_USAGE_CHECK(ki < (data_.access_data()).size(),
+                    "trying to access an attribute that was not added to this model");
     return internal::FloatAttributeTableTraits::access_container_data
       ((data_.access_data())[ki]);
   }
@@ -622,6 +626,8 @@ class FloatAttributeTable {
     IMP_USAGE_CHECK(k.get_index()>=7,
 		    "coordinates and radius should be accessed by specialized methods");
     unsigned int ki= k.get_index()-7;
+    IMP_USAGE_CHECK(ki < (derivatives_.access_data()).size(),
+                    "trying to access an attribute that was not added to this model");
     return internal::FloatAttributeTableTraits::access_container_data
       (derivatives_.access_data()[ki]);
   }
@@ -629,16 +635,49 @@ class FloatAttributeTable {
     IMP_USAGE_CHECK(k.get_index()>=7,
 		    "coordinates and radius should be accessed by specialized methods");
     unsigned int ki= k.get_index()-7;
+    IMP_USAGE_CHECK(ki < (derivatives_.access_data()).size(),
+                    "trying to access an attribute that was not added to this model");
     return internal::FloatAttributeTableTraits::access_container_data
       (derivatives_.access_data()[ki]);
   }
   BoolAttributeTableTraits::Container const&
     access_optimizeds_data(FloatKey k) const{
+    IMP_USAGE_CHECK(k.get_index() < (optimizeds_.access_data()).size(),
+                    "trying to access an attribute that was not added to this model");
     return optimizeds_.access_data()[k.get_index()];
   }
   BoolAttributeTableTraits::Container&
     access_optimizeds_data(FloatKey k){
+    IMP_USAGE_CHECK(k.get_index() < (optimizeds_.access_data()).size(),
+                    "trying to access an attribute that was not added to this model");
     return optimizeds_.access_data()[k.get_index()];
+  }
+  //! to verify that an attribute actually exists in the model
+  //! before its table is being accesed
+  bool get_has_attribute(FloatKey k) const{
+    int ki=k.get_index()-7;
+    if(ki<0) {
+      return true; // coordinate or radius are special and always exist in the model
+    }
+    return ki < int((data_.access_data()).size());
+  }
+  //! to verify that an attribute derivative actually exists
+  //! in the modelbefore its table is being accesed
+  bool get_has_attribute_derivative(FloatKey k) const{
+    int ki=k.get_index()-7;
+    if(ki<0) {
+      return true; // coordinate or radius are special and always exist in the model
+    }
+    return ki < int((derivatives_.access_data()).size());
+  }
+  //! to verify that an attribute optimizeds actually exists in the model
+  //! before its table is being accesed
+  bool get_has_attribute_optimizeds(FloatKey k) const{
+    int ki=k.get_index()-7;
+    if(ki<0) {
+      return true; // coordinate or radius are special and always exist in the model
+    }
+    return ki < int((optimizeds_.access_data()).size());
   }
   /** @} */
 
