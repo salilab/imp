@@ -249,10 +249,10 @@
 // profiler is better at this in 99.9% of times:
 #if defined(__GNUC__)
 #define IMP_LIKELY(x)    __builtin_expect (!!(x), 1)
-#define IMP_UNIMP_LIKELY(x)  __builtin_expect (!!(x), 0)
+#define IMP_UNLIKELY(x)  __builtin_expect (!!(x), 0)
 #else // ifdef __GNUC__
 #define IMP_LIKELY(x) x
-#define IMP_UNIMP_LIKELY(x) x
+#define IMP_UNLIKELY(x) x
 #endif // ifdef __GNUC__
 
 #endif /* IMPKERNEL_COMPILER_MACROS_H */
