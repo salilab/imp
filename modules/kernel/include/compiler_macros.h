@@ -255,4 +255,18 @@
 #define IMP_UNLIKELY(x) x
 #endif // ifdef __GNUC__
 
+#if defined(_MSC_VER)
+//! platform independent C open() method
+#define IMP_C_OPEN _open
+#define IMP_C_CLOSE _close
+  //! platform independent C flag for open() method
+#define IMP_C_OPEN_FLAG(x) _##x
+#else
+//! platform independent C open() method
+#define IMP_C_OPEN open
+#define IMP_C_CLOSE close
+//! platform independent C flag for open() method
+#define IMP_C_OPEN_FLAG(x) x
+#endif
+
 #endif /* IMPKERNEL_COMPILER_MACROS_H */
