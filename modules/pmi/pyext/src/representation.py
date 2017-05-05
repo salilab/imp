@@ -150,6 +150,7 @@ class Representation(object):
         self.reference_structures = {}
         self.elements = {}
         self.linker_restraints = IMP.RestraintSet(self.m, "linker_restraints")
+        self.linker_restraints.set_was_used(True)
         self.linker_restraints_dict = {}
         self.threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
                            'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',

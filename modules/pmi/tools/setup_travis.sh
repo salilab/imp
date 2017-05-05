@@ -38,6 +38,12 @@ mv pmi pmi.orig
 cp -sr ${pmi_dir}/pyext/src pmi
 cp pmi.orig/__init__.py pmi.orig/_version_check.py pmi/
 
+# Also replace PMI examples, since some tests use data from them
+EXAMPLE_PATH=$(echo "import IMP.pmi, sys; sys.stdout.write(IMP.pmi.get_example_path('..'))" | python)
+cd ${EXAMPLE_PATH}
+mv pmi pmi.orig
+cp -sr ${pmi_dir}/examples pmi
+
 # IMP tests use sys.argv[0] to determine their location, which won't work if
 # we use nosetests, so add a workaround
 ln -sf `which nosetests` ${pmi_dir}/test/

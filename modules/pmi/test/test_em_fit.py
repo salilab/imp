@@ -46,6 +46,7 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
                                                         target_fn=self.get_input_file_name('prot_gmm.txt'),
                                                         target_is_rigid_body=True)
 
+        gem.get_restraint_set().set_was_used(True)
         gem.add_to_model()
         mdl.update()
         init_em_score = gem.evaluate()
@@ -90,6 +91,7 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
         gem = IMP.pmi.restraints.em.GaussianEMRestraint(densities,
                                                         target_fn=self.get_input_file_name('prot_gmm.txt'),
                                                         target_is_rigid_body=True)
+        gem.get_restraint_set().set_was_used(True)
         gem.set_label("em_1")
         gem.add_to_model()
         gem.add_target_density_to_hierarchy(st1)
@@ -99,6 +101,7 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
                                                         target_fn=self.get_input_file_name('prot_gmm.txt'),
                                                         target_is_rigid_body=True)
 
+        gem2.get_restraint_set().set_was_used(True)
         gem2.set_label("em_2")
         gem2.add_to_model()
         gem2.add_target_density_to_hierarchy(st1)
@@ -162,6 +165,7 @@ class TestPMI(IMP.test.TestCase):
             target_mass_scale=middle_mass,
             slope=0.000001,
             target_radii_scale=3.0)
+        gemh.get_restraint_set().set_was_used(True)
 
 if __name__ == '__main__':
     IMP.test.main()

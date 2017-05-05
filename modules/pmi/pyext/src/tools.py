@@ -1186,7 +1186,7 @@ class Segments(object):
     etc.
     '''
 
-    def __init__(self,index):
+    def __init__(self,index=None):
         '''index can be a integer or a list of integers '''
         if type(index) is int:
             self.segs=[[index]]
@@ -1194,6 +1194,8 @@ class Segments(object):
             self.segs=[[index[0]]]
             for i in index[1:]:
                 self.add(i)
+        elif index is None:
+            self.segs=[]
 
     def add(self,index):
         '''index can be a integer or a list of integers '''
@@ -2221,6 +2223,8 @@ class Colors(object):
                     IMP.display.Colored.setup_particle(part,color)
 
     def get_list_distant_colors(self):
+        cnames=['red','azure','brown','blue','crimson','green','magenta','cyan','gray','khaki','lime','olive','orange','purple','turquoise','pink']
+        """
         cnames = ['#F0F8FF', '#FAEBD7', '#00FFFF', '#7FFFD4', '#F0FFFF', '#F5F5DC',
         '#FFE4C4', '#000000', '#FFEBCD', '#0000FF', '#8A2BE2', '#A52A2A', '#DEB887',
         '#5F9EA0', '#7FFF00', '#D2691E', '#FF7F50', '#6495ED', '#FFF8DC', '#DC143C',
@@ -2242,4 +2246,5 @@ class Colors(object):
         '#708090', '#FFFAFA', '#00FF7F', '#4682B4', '#D2B48C', '#008080', '#D8BFD8',
         '#FF6347', '#40E0D0', '#EE82EE', '#F5DEB3', '#FFFFFF', '#F5F5F5', '#FFFF00',
         '#9ACD32']
+        """
         return cnames

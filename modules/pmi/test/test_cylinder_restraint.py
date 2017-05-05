@@ -34,7 +34,9 @@ class Tests(IMP.test.TestCase):
         hier = s.build()
 
         cr=IMP.pmi.restraints.basic.CylinderRestraint(mdl,mol[:100],10,20)
-        self.assertAlmostEqual(cr.unprotected_evaluate(None),97.8664513750441)
+        cr.set_was_used(True)
+        self.assertAlmostEqual(cr.unprotected_evaluate(None),
+                               97.8378602841374, delta=1e-5)
         cr.add_to_model()
         self.assertEqual(len(cr.do_get_inputs()),12)
         cr.get_output()
@@ -46,6 +48,7 @@ class Tests(IMP.test.TestCase):
         d.set_coordinates((0,0,0))
         h=IMP.atom.Hierarchy.setup_particle(p)
         cr=IMP.pmi.restraints.basic.CylinderRestraint(mdl,[h],10,20)
+        cr.set_was_used(True)
         for r in range(100):
             d.set_coordinates((r,0,0))
             cr.unprotected_evaluate(None)
@@ -58,6 +61,7 @@ class Tests(IMP.test.TestCase):
         d.set_coordinates((0,0,0))
         h=IMP.atom.Hierarchy.setup_particle(p)
         cr=IMP.pmi.restraints.basic.CylinderRestraint(mdl,[h],10,20,-72,72)
+        cr.set_was_used(True)
         for angle in range(360):
             anglerad=float(angle)/180.0*math.pi
             d.set_coordinates((math.cos(anglerad),math.sin(anglerad),0))

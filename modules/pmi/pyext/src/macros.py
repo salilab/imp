@@ -46,6 +46,7 @@ class ReplicaExchange0(object):
                  num_sample_rounds=1,
                  number_of_best_scoring_models=500,
                  monte_carlo_steps=10,
+                 self_adaptive=False,
                  molecular_dynamics_steps=10,
                  molecular_dynamics_max_time_step=1.0,
                  number_of_frames=1000,
@@ -98,6 +99,7 @@ class ReplicaExchange0(object):
            @param number_of_best_scoring_models Number of top-scoring PDB models
                   to keep around for analysis
            @param monte_carlo_steps        Number of MC steps per round
+           @param self_adaptive        self adaptive scheme for monte carlo movers
            @param molecular_dynamics_steps  Number of MD steps per round
            @param molecular_dynamics_max_time_step Max time step for MD
            @param number_of_frames         Number of REX frames to run
@@ -142,6 +144,7 @@ class ReplicaExchange0(object):
         self.crosslink_restraints = crosslink_restraints
         self.em_object_for_rmf = em_object_for_rmf
         self.monte_carlo_sample_objects = monte_carlo_sample_objects
+        self.vars["self_adaptive"]=self_adaptive
         if sample_objects is not None:
             self.monte_carlo_sample_objects+=sample_objects
         self.molecular_dynamics_sample_objects=molecular_dynamics_sample_objects
@@ -220,6 +223,8 @@ class ReplicaExchange0(object):
                 nfmin=self.vars["simulated_annealing_minimum_temperature_nframes"]
                 nfmax=self.vars["simulated_annealing_maximum_temperature_nframes"]
                 sampler_mc.set_simulated_annealing(tmin,tmax,nfmin,nfmax)
+            if self.vars["self_adaptive"]:
+                sampler_mc.set_self_adaptive(isselfadaptive=self.vars["self_adaptive"])
             self.output_objects.append(sampler_mc)
             samplers.append(sampler_mc)
 

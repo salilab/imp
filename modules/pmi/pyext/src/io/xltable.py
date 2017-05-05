@@ -23,6 +23,8 @@ import IMP.pmi.io.crosslink
 import IMP.pmi.io.utilities
 import IMP.pmi.topology
 import IMP.pmi.analysis
+import operator
+
 class XLTable():
     """ class to read, analyze, and plot xlink data on contact maps
     Canonical way to read the data:
@@ -129,16 +131,35 @@ class XLTable():
         if len(selpart_2)==0: return None
         mindist=None
         minparticlepair=None
+        minparticleindex1=None
+        minparticleindex2=None
+
+        results=[]
         for p1 in selpart_1:
             for p2 in selpart_2:
                 if p1 == p2: continue
                 d1=IMP.core.XYZ(p1)
                 d2=IMP.core.XYZ(p2)
-                dist=IMP.core.get_distance(d1,d2)
-                if mindist is None or mindist>dist:
-                    mindist=dist
-                    minparticlepair=(p1,p2)
-        return (mindist,minparticlepair[0],minparticlepair[1])
+                #round distance to second decimal
+                dist=float(int(IMP.core.get_distance(d1,d2)*100.0))/100.0
+                h1=IMP.atom.Hierarchy(p1)
+                while not IMP.atom.Molecule.get_is_setup(h1.get_particle()):
+                    h1=h1.get_parent()
+                copy_index1=IMP.atom.Copy(h1).get_copy_index()
+                while not IMP.atom.State.get_is_setup(h1.get_particle()):
+                    h1=h1.get_parent()
+                state_index1=IMP.atom.State(h1).get_state_index()
+                h2=IMP.atom.Hierarchy(p2)
+                while not IMP.atom.Molecule.get_is_setup(h2.get_particle()):
+                    h2=h2.get_parent()
+                copy_index2=IMP.atom.Copy(h2).get_copy_index()
+                while not IMP.atom.State.get_is_setup(h2.get_particle()):
+                    h2=h2.get_parent()
+                state_index2=IMP.atom.State(h2).get_state_index()
+
+                results.append((dist,state_index1,copy_index1,state_index2,copy_index2,p1,p2))
+        results_sorted = sorted(results, key=operator.itemgetter(0,1,2,3,4))
+        return (results_sorted[0][0],results_sorted[0][5],results_sorted[0][6]),(results_sorted[0][1],results_sorted[0][2],results_sorted[0][3],results_sorted[0][4])
 
     def _internal_load_maps(self,maps_fn):
         npzfile = np.load(maps_fn)
@@ -587,14 +608,22 @@ class XLTable():
                     data.append(sorted_ids+["UniqueID","Distance","MinAmbiguousDistance"])
                 (c1,c2,r1,r2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
                 try:
-                    (mdist,p1,p2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
+                    (mdist,p1,p2),(state1,copy1,state2,copy2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
                 except:
                     mdist="None"
+                    state1="None"
+                    copy1="None"
+                    state2="None"
+                    copy2="None"
                 values=[xl[k] for k in sorted_ids]
                 values+=[group,mdist]
                 group_dists.append(mdist)
                 #group_block.append(values)
                 xl["Distance"]=mdist
+                xl["State1"]=state1
+                xl["Copy1"]=copy1
+                xl["State2"]=state2
+                xl["Copy2"]=copy2
 
             for xl in self.cross_link_db.data_base[group]:
                 xl["MinAmbiguousDistance"]=min(group_dists)
@@ -603,6 +632,8 @@ class XLTable():
 
 
     def save_rmf_snapshot(self,filename,color_id=None):
+        import operator
+
         if color_id is None:
             color_id=self.cross_link_db.id_score_key
         sorted_ids=None
@@ -617,7 +648,7 @@ class XLTable():
                 (c1,c2,r1,r2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
                 print (c1,c2,r1,r2)
                 try:
-                    (mdist,p1,p2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
+                    (mdist,p1,p2),(state1,copy1,state2,copy2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
                 except TypeError:
                     print("TypeError or missing chain/residue ",r1,c1,r2,c2)
                     continue

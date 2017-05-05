@@ -67,6 +67,7 @@ class MonteCarlo(object):
         self.mvslabels = []
         self.label = "None"
         self.m = m
+        self.movers_data={}
 
         # check if using PMI1 or just passed a list of movers
         gather_objects = False
@@ -206,41 +207,48 @@ class MonteCarlo(object):
 
         # apply self adaptive protocol
         if self.selfadaptive:
-            for i, mv in enumerate(self.smv.get_movers()):
-                name = mv.get_name()
+            for i, mv in enumerate(self.mvs):
 
-                if "Nuisances" in name:
-                    mvacc = mv.get_number_of_accepted()
-                    mvprp = mv.get_number_of_proposed()
+                mvacc = mv.get_number_of_accepted()
+                mvprp = mv.get_number_of_proposed()
+                if mv not in self.movers_data:
                     accept = float(mvacc) / float(mvprp)
-                    nmv = IMP.core.NormalMover.get_from(mv)
-                    stepsize = nmv.get_sigma()
+                    self.movers_data[mv]=(mvacc,mvprp)
+                else:
+                    oldmvacc,oldmvprp=self.movers_data[mv]
+                    accept = float(mvacc-oldmvacc) / float(mvprp-oldmvprp)
+                    self.movers_data[mv]=(mvacc,mvprp)
+                if accept < 0.05: accept = 0.05
+                if accept > 1.0: accept = 1.0
 
+                if type(mv) is IMP.core.NormalMover:
+                    stepsize = mv.get_sigma()
                     if 0.4 > accept or accept > 0.6:
-                        nmv.set_sigma(stepsize * 2 * accept)
-                    if accept < 0.05:
-                        accept = 0.05
-                        nmv.set_sigma(stepsize * 2 * accept)
-                    if accept > 1.0:
-                        accept = 1.0
-                        nmv.set_sigma(stepsize * 2 * accept)
+                        mv.set_sigma(stepsize * 2 * accept)
 
-                if "Weights" in name:
-
-                    mvacc = mv.get_number_of_accepted()
-                    mvprp = mv.get_number_of_proposed()
-                    accept = float(mvacc) / float(mvprp)
-                    wmv = IMP.isd.WeightMover.get_from(mv)
-                    stepsize = wmv.get_radius()
-
+                if type(mv) is IMP.isd.WeightMover:
+                    stepsize = mv.get_radius()
                     if 0.4 > accept or accept > 0.6:
-                        wmv.set_radius(stepsize * 2 * accept)
-                    if accept < 0.05:
-                        accept = 0.05
-                        wmv.set_radius(stepsize * 2 * accept)
-                    if accept > 1.0:
-                        accept = 1.0
-                        wmv.set_radius(stepsize * 2 * accept)
+                        mv.set_radius(stepsize * 2 * accept)
+
+                if type(mv) is IMP.core.RigidBodyMover:
+                    mr=mv.get_maximum_rotation()
+                    mt=mv.get_maximum_translation()
+                    if 0.4 > accept or accept > 0.6:
+                        mv.set_maximum_rotation(mr * 2 * accept)
+                        mv.set_maximum_translation(mt * 2 * accept)
+
+                if type(mv) is IMP.pmi.TransformMover:
+                    mr=mv.get_maximum_rotation()
+                    mt=mv.get_maximum_translation()
+                    if 0.4 > accept or accept > 0.6:
+                        mv.set_maximum_rotation(mr * 2 * accept)
+                        mv.set_maximum_translation(mt * 2 * accept)
+
+                if type(mv) is IMP.core.BallMover:
+                    mr=mv.get_radius()
+                    if 0.4 > accept or accept > 0.6:
+                        mv.set_radius(mr * 2 * accept)
 
     @IMP.deprecated_method("2.5", "Use optimize() instead.")
     def run(self, *args, **kwargs):

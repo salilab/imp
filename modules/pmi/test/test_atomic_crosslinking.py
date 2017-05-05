@@ -67,6 +67,7 @@ class Tests(IMP.test.TestCase):
         # check that you created 8 restraints:
         #  Each state: A1-B1, A1-B2, A2-B1, A2-B2
         rs=xl.get_restraint_set()
+        rs.set_was_used(True)
         self.assertEqual(rs.get_number_of_restraints(),1)
         xlrs=IMP.isd.AtomicCrossLinkMSRestraint.get_from(rs.get_restraint(0))
         self.assertIsInstance(xlrs,IMP.isd.AtomicCrossLinkMSRestraint)

@@ -21,6 +21,7 @@ class MembraneRestraintPrototype(IMP.Restraint):
         theta is the cutoff distance for a protein-protein contact
         '''
         IMP.Restraint.__init__(self, m, "MembraneRestraintPrototype_ %1%")
+        self.set_was_used(True)
         self.thickness = thickness
         self.z_nuisance = z_nuisance
         self.softness = softness
@@ -102,6 +103,7 @@ class MembraneRestraint(IMP.test.TestCase):
 
         r2 = IMP.pmi.MembraneRestraint(
             m, z_center.get_particle_index(), 30.0, 3.0, 0.0000000001, 0.02)
+        r2.set_was_used(True)
         r2.add_particles_inside([atom.get_index()])
         for z_c in range(-500, 500, 100):
             z_center.set_nuisance(z_c)
@@ -128,6 +130,7 @@ class MembraneRestraint(IMP.test.TestCase):
 
         r2 = IMP.pmi.MembraneRestraint(
             m, z_center.get_particle_index(), 30.0, 3.0, 0.0000000001, 0.02)
+        r2.set_was_used(True)
         r2.add_particles_above([atom.get_index()])
         for z_c in range(-500, 500, 100):
             z_center.set_nuisance(z_c)
@@ -154,6 +157,7 @@ class MembraneRestraint(IMP.test.TestCase):
 
         r2 = IMP.pmi.MembraneRestraint(
             m, z_center.get_particle_index(), 30.0, 3.0, 0.0000000001, 0.02)
+        r2.set_was_used(True)
         r2.add_particles_below([atom.get_index()])
 
         for z_c in range(-500, 500, 100):

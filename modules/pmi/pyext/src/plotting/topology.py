@@ -265,7 +265,10 @@ def draw_component_composition(DegreesOfFreedom, max=1000, draw_pdb_names=False)
             for mol in movers_mols_res[mv]:
                 if not mol in elements: elements[mol]=[]
                 for seg in movers_mols_res[mv][mol].segs:
-                    elements[mol].append((seg[0],seg[-1]," ","pdb",mvrb_color[mv]))
+                    try:
+                        elements[mol].append((seg[0],seg[-1]," ","pdb",mvrb_color[mv]))
+                    except:
+                        continue
         if type(mv) is IMP.core.BallMover:
             mvtype="FB"
             for mol in movers_mols_res[mv]:

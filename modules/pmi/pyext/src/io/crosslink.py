@@ -8,6 +8,7 @@
 import IMP
 import IMP.pmi
 import operator
+import math
 import sys
 
 # json default serializations
@@ -72,6 +73,11 @@ class _CrossLinkDataBaseStandardKeys(object):
         self.redundancy_list_key="RedundancyList"
         self.type[self.redundancy_key]=list
         self.ambiguity_key="Ambiguity"
+        self.type[self.ambiguity_key]=int
+        self.residue1_links_number_key="Residue1LinksNumber"
+        self.type[self.residue1_links_number_key]=int
+        self.residue2_links_number_key="Residue2LinksNumber"
+        self.type[self.residue2_links_number_key]=int
         self.type[self.ambiguity_key]=int
         self.state_key="State"
         self.type[self.state_key]=int
@@ -440,7 +446,6 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             self.cldbkc =    None
             self.list_parser=None
             self.converter = None
-
         self._update()
 
     def _update(self):
@@ -449,6 +454,8 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         '''
         self.update_cross_link_unique_sub_index()
         self.update_cross_link_redundancy()
+        self.update_residues_links_number()
+
 
     def __iter__(self):
         sorted_ids=sorted(self.data_base.keys())
@@ -605,6 +612,24 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             xl[self.redundancy_key]=len(redundancy_data_base[pra])
             xl[self.redundancy_list_key]=redundancy_data_base[pra]
 
+    def update_residues_links_number(self):
+        residue_links={}
+        for xl in self:
+            (p1,p2,r1,r2)=_ProteinsResiduesArray(xl)
+            if (p1,r1) not in residue_links:
+                residue_links[(p1,r1)]=set([(p2,r2)])
+            else:
+                residue_links[(p1,r1)].add((p2,r2))
+            if (p2,r2) not in residue_links:
+                residue_links[(p2,r2)]=set([(p1,r1)])
+            else:
+                residue_links[(p2,r2)].add((p1,r1))
+
+        for xl in self:
+            (p1,p2,r1,r2)=_ProteinsResiduesArray(xl)
+            xl[self.residue1_links_number_key]=len(residue_links[(p1,r1)])
+            xl[self.residue2_links_number_key]=len(residue_links[(p2,r2)])
+
     def get_cross_link_string(self,xl):
         string='|'
         for k in self.ordered_key_list:
@@ -648,6 +673,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                         new_xl_dict[id]=[xl]
                     else:
                         new_xl_dict[id].append(xl)
+        self._update()
         return CrossLinkDataBase(self.cldbkc,new_xl_dict)
 
 
@@ -850,13 +876,20 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 colorkey=kwargs["colorkey"]
             if "sizekey" in kwargs:
                 sizekey=kwargs["sizekey"]
+            if "logyscale" in kwargs:
+                logyscale=kwargs["logyscale"]
+            else:
+                logyscale=False
             xs=[]
             ys=[]
             colors=[]
             for xl in self:
                 try:
                     xs.append(float(xl[xkey]))
-                    ys.append(float(xl[ykey]))
+                    if logyscale:
+                        ys.append(math.log10(float(xl[ykey])))
+                    else:
+                        ys.append(float(xl[ykey]))
                     colors.append(float(xl[colorkey]))
                 except ValueError:
                     print("Value error for cross-link %s" % (xl[self.unique_id_key]))
@@ -875,6 +908,39 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             plt.savefig(filename)
             plt.show()
             plt.close()
+
+        if kwargs["type"] == "residue_links":
+            #plot the number of distinct links to a residue
+            #in an histogram
+            #molecule name
+            molecule=kwargs["molecule"]
+            if type(molecule) is IMP.pmi.topology.Molecule:
+                length=len(molecule.sequence)
+                molecule=molecule.get_name()
+            else:
+                #you need a IMP.pmi.topology.Sequences object
+                sequences_object=kwargs["sequences_object"]
+                sequence=sequences_object.sequences[molecule]
+                length=len(sequence)
+
+            histogram=[0]*length
+            for xl in self:
+                if xl[self.protein1_key]==molecule:
+                    histogram[xl[self.residue1_key]-1]=xl[self.residue1_links_number_key]
+                if xl[self.protein2_key]==molecule:
+                    histogram[xl[self.residue2_key]-1]=xl[self.residue2_links_number_key]
+            rects = plt.bar(range(1,length+1), histogram)
+                 #bar_width,
+                 #alpha=opacity,
+                 #color='b',
+                 #yerr=std_men,
+                 #error_kw=error_config,
+                 #label='Men')
+            plt.savefig(filename)
+            plt.show()
+            plt.close()
+
+
 
         if kwargs["type"] == "histogram":
             valuekey=kwargs["valuekey"]
@@ -1021,7 +1087,7 @@ class CrossLinkDataBaseFromStructure(object):
                             # uniform random reactivities
                             #self.reactivity_dictionary[(protein,r)]=random.uniform(reactivity_range[0],reactivity_range[1])
                             # getting reactivities from the CDF of an exponential distribution
-                            rexp=numpy.random.exponential(0.1)
+                            rexp=numpy.random.exponential(0.00000001)
                             prob=1.0-math.exp(-rexp)
                             self.reactivity_dictionary[(molecule,r)]=prob
 
@@ -1041,6 +1107,39 @@ class CrossLinkDataBaseFromStructure(object):
                                 index=p.get_index()
                                 self.indexes_dict2[index]=(molecule,r)
                                 self.protein_residue_dict[(molecule,r)]=index
+
+
+    def get_all_possible_pairs(self):
+        n=float(len(self.protein_residue_dict.keys()))
+        return n*(n-1.0)/2.0
+
+    def get_all_feasible_pairs(self,distance=21):
+        import itertools
+        particle_index_pairs=[]
+        nxl=0
+        for a,b in itertools.combinations(self.protein_residue_dict.keys(),2):
+
+            new_xl={}
+            index1=self.protein_residue_dict[a]
+            index2=self.protein_residue_dict[b]
+            particle_distance=IMP.core.get_distance(IMP.core.XYZ(IMP.get_particles(self.model,[index1])[0]),IMP.core.XYZ(IMP.get_particles(self.model,[index2])[0]))
+            if particle_distance <= distance:
+                particle_index_pairs.append((index1,index2))
+                if self.mode=="pmi1":
+                    new_xl[self.cldb.protein1_key]=a[0]
+                    new_xl[self.cldb.protein2_key]=b[0]
+                elif self.mode=="pmi2":
+                    new_xl[self.cldb.protein1_key]=a[0].get_name()
+                    new_xl[self.cldb.protein2_key]=b[0].get_name()
+                    new_xl["molecule_object1"]=a[0]
+                    new_xl["molecule_object2"]=b[0]
+                new_xl[self.cldb.residue1_key]=a[1]
+                new_xl[self.cldb.residue2_key]=b[1]
+                self.cldb.data_base[str(nxl)]=[new_xl]
+                nxl+=1
+        self.cldb._update()
+        return self.cldb
+
 
 
 
@@ -1095,7 +1194,7 @@ class CrossLinkDataBaseFromStructure(object):
             r2=new_xl["Reactivity_Residue2"]
             #combined reactivity 1-exp(-k12*Delta t),
             # k12=k1*k2/(k1+k2)
-            new_xl["Reactivity"]=1.0-math.exp(-math.log(1.0/(1.0-r1))*math.log(1.0/(1.0-r2))/math.log(1.0/(1.0-r1)*1.0/(1.0-r2)))
+            #new_xl["Reactivity"]=1.0-math.exp(-math.log(1.0/(1.0-r1))*math.log(1.0/(1.0-r2))/math.log(1.0/(1.0-r1)*1.0/(1.0-r2)))
             if noisy:
                 #new_xl["Score"]=uniform(-1.0,1.0)
                 new_xl["Score"]=np.random.beta(1.0,self.beta_false)
@@ -1225,8 +1324,9 @@ class CrossLinkDataBaseFromStructure(object):
                         break
                     elif particle_distance>=distance and (protein1,residue1) != (protein2,residue2) and max_delta_distance:
                         #allow some flexibility
-                        prob=1.0-((particle_distance-distance)/max_delta_distance)**(0.3)
-                        if uniform(0.0,1.0)<prob: break
+                        #prob=1.0-((particle_distance-distance)/max_delta_distance)**(0.3)
+                        #if uniform(0.0,1.0)<prob: break
+                        if particle_distance-distance <  max_delta_distance: break
 
 
 

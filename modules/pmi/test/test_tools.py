@@ -358,6 +358,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqualUnordered(testState, compareAll)
 
     def test_Segments(self):
+        s=IMP.pmi.tools.Segments()
+        self.assertEqual(s.segs,[])
         s=IMP.pmi.tools.Segments(1)
         self.assertEqual(s.segs,[[1]])
         s=IMP.pmi.tools.Segments([1])
