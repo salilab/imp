@@ -437,6 +437,28 @@ class NotPDBSelector : public PDBSelector {
     can produce warnings on files which are not valid. It will attempt to read
     such files, but all bets are off.
 
+    In order to track the provenance of IMP-generated models, the provenance
+    of any PDB files read in here - for example, the PDB id, or detail about
+    a comparative model - needs to also be tracked. This is done using the
+    PDB headers:
+    - Structures stored in the PDB database should keep the standard
+      `HEADER` record stating their PDB ID.
+    - Comparative models generated using MODELLER should include the
+      MODELLER-generated `EXPDTA` and `REMARK` records.
+    - Structures that are trivial modifications of an existing PDB structure
+      or comparative model should use the `TITLE` record to describe the
+      nature of the modification (e.g. rotation and translation) and one of
+      the two following custom `EXPDTA` record formats to point to the original
+      structure:
+      - `EXPDTA    DERIVED FROM PDB:1XYZ`
+      - `EXPDTA    DERIVED FROM COMPARATIVE MODEL, DOI:x.y/z`
+    - Structures generated from multiple sources (e.g. two structures that
+      have been docked and then concatenated into a single PDB file) are not
+      allowed. Store each constituent structure in its own file and annotate
+      each one with a suitable `EXPDTA` record, as above.
+    Note that while provenance of PDB files is not currently enforced, it
+    likely will be in future IMP releases.
+
     When reading PDBs, PDBSelector objects can be used to choose to only process
     certain record types. See the class documentation for more information.
     When no PDB selector is supplied for reading, the
