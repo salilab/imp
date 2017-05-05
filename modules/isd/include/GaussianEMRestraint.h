@@ -99,7 +99,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   Float dd_score_;
   Float self_mm_score_;
   PointerMember<container::CloseBipartitePairContainer> md_container_;
-  Pointer<container::ClosePairContainer> mm_container_;
+  PointerMember<container::ClosePairContainer> mm_container_;
   ParticleIndexes slope_ps_; //experiment
 
   //variables needed to tabulate the exponential
