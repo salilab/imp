@@ -47,8 +47,13 @@ void TransformationSymmetry::apply_index(Model *m,
                                          ParticleIndex pi) const {
   set_was_used(true);
   algebra::Transformation3D t = get_internal_transformation(m);
-  if (RigidBody::get_is_setup(m, pi)) {
-    RigidBody rrb(Reference(m, pi).get_reference_particle());
+    if (NonRigidMember::get_is_setup(m, pi)) {
+        NonRigidMember nrmr(Reference(m, pi).get_reference_particle());
+        NonRigidMember nrm(m,pi);
+        nrm.set_internal_coordinates(nrmr.get_internal_coordinates());
+    }
+    else if (RigidBody::get_is_setup(m, pi)) {
+        RigidBody rrb(Reference(m, pi).get_reference_particle());
     RigidBody rb(m, pi);
     // We do the non-lazy version in order as it is hard
     // for the dependency checker to get the dependencies right
