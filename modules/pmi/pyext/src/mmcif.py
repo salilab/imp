@@ -184,24 +184,22 @@ class _EntryDumper(_Dumper):
 
 
 class _SoftwareDumper(_Dumper):
-    software = [
-       IMP.pmi.metadata.Software(
-             name="Integrative Modeling Platform (IMP)",
-             version=IMP.__version__,
-             classification="integrative model building",
-             description="integrative model building",
-             url='https://integrativemodeling.org'),
-       IMP.pmi.metadata.Software(
-            name="IMP PMI module",
-            version=IMP.pmi.__version__,
-            classification="integrative model building",
-            description="integrative model building",
-            url='https://integrativemodeling.org')
-       ]
-
     def __init__(self, simo):
         super(_SoftwareDumper, self).__init__(simo)
         self.modeller_used = self.phyre2_used = False
+        self.software = [
+           IMP.pmi.metadata.Software(
+                 name="Integrative Modeling Platform (IMP)",
+                 version=IMP.__version__,
+                 classification="integrative model building",
+                 description="integrative model building",
+                 url='https://integrativemodeling.org'),
+           IMP.pmi.metadata.Software(
+                name="IMP PMI module",
+                version=IMP.pmi.__version__,
+                classification="integrative model building",
+                description="integrative model building",
+                url='https://integrativemodeling.org') ]
 
     def set_modeller_used(self, version, date):
         if self.modeller_used:
@@ -505,10 +503,14 @@ class _TemplateSource(object):
                  chain_id, seq_id_end, seq_id, model):
         # Assume a code of 1abcX refers to a real PDB structure
         if len(tm_code) == 5:
+            self._orig_tm_code = None
             self.tm_db_code = tm_code[:4].upper()
             self.tm_chain_id = tm_code[4]
         else:
-            self.tm_db_code = self.tm_chain_id = _CifWriter.unknown
+            # Otherwise, will need to look up in TEMPLATE PATH remarks
+            self._orig_tm_code = tm_code
+            self.tm_db_code = _CifWriter.omitted
+            self.tm_chain_id = tm_code[-1]
         self.sequence_identity = seq_id
         self.tm_seq_id_begin = tm_seq_id_begin
         self.tm_seq_id_end = tm_seq_id_end
@@ -540,25 +542,18 @@ class _UnknownSource(object):
 
 class _DatasetGroup(object):
     """A group of datasets"""
-    def __init__(self, datasets, include_primaries):
+    def __init__(self, datasets):
         self._datasets = list(datasets)
-        self.include_primaries = include_primaries
 
     def finalize(self):
         """Get final datasets for each restraint and remove duplicates"""
         final_datasets = OrderedDict()
-        def add_parents(d):
-            for p in d._parents.keys():
-                final_datasets[p] = None
-                add_parents(p)
         for ds in self._datasets:
             if isinstance(ds, _RestraintDataset):
                 d = ds.dataset
             else:
                 d = ds
             final_datasets[d] = None
-            if self.include_primaries:
-                add_parents(d)
         self._datasets = final_datasets.keys()
 
 
@@ -709,9 +704,9 @@ class _DatasetDumper(_Dumper):
         self._datasets = []
         self._dataset_groups = []
 
-    def get_all_group(self, include_primaries=False):
+    def get_all_group(self):
         """Get a _DatasetGroup encompassing all datasets so far"""
-        g = _DatasetGroup(self._datasets, include_primaries)
+        g = _DatasetGroup(self._datasets)
         self._dataset_groups.append(g)
         return g
 
@@ -1125,7 +1120,7 @@ class _Model(object):
         self.protocol = protocol
         self.assembly = assembly
         self.stats = None
-        o = IMP.pmi.output.Output()
+        o = IMP.pmi.output.Output(atomistic=True)
         name = 'cif-output'
         o.dictionary_pdbs[name] = prot
         o._init_dictchain(name, prot)
@@ -1340,7 +1335,11 @@ class _StartingModelDumper(_Dumper):
             models[-1].fragments.append(fragment)
 
     def get_templates(self, pdbname, model):
+        template_path_map = {}
         templates = []
+        alnfile = None
+        alnfilere = re.compile('REMARK   6 ALIGNMENT: (\S+)')
+        tmppathre = re.compile('REMARK   6 TEMPLATE PATH (\S+) (\S+)')
         tmpre = re.compile('REMARK   6 TEMPLATE: '
                            '(\S+) (\S+):\S+ \- (\S+):\S+ '
                            'MODELS (\S+):(\S+) \- (\S+):\S+ AT (\S+)%')
@@ -1349,6 +1348,14 @@ class _StartingModelDumper(_Dumper):
             for line in fh:
                 if line.startswith('ATOM'): # Read only the header
                     break
+                m = tmppathre.match(line)
+                if m:
+                    template_path_map[m.group(1)] = \
+                              IMP.get_relative_path(pdbname, m.group(2))
+                m = alnfilere.match(line)
+                if m:
+                    # Path to alignment is relative to that of the PDB file
+                    alnfile = IMP.get_relative_path(pdbname, m.group(1))
                 m = tmpre.match(line)
                 if m:
                     templates.append(_TemplateSource(m.group(1),
@@ -1360,16 +1367,20 @@ class _StartingModelDumper(_Dumper):
                                                      m.group(7), model))
         # Add datasets for templates
         for t in templates:
-            # todo: handle templates that aren't in PDB
-            if t.tm_db_code:
+            if t._orig_tm_code:
+                fname = template_path_map[t._orig_tm_code]
+                l = IMP.pmi.metadata.FileLocation(fname)
+            else:
                 l = IMP.pmi.metadata.PDBLocation(t.tm_db_code)
-                d = IMP.pmi.metadata.PDBDataset(l)
-                d = self.simo.dataset_dump.add(d)
-                t.tm_dataset = d
-                model.dataset.add_primary(d)
+            d = IMP.pmi.metadata.PDBDataset(l)
+            d = self.simo.dataset_dump.add(d)
+            t.tm_dataset = d
+            model.dataset.add_parent(d)
 
         # Sort by starting residue, then ending residue
-        return sorted(templates, key=lambda x: (x._seq_id_begin, x._seq_id_end))
+        return(sorted(templates,
+                      key=lambda x: (x._seq_id_begin, x._seq_id_end)),
+               alnfile)
 
     def _parse_pdb(self, fh, first_line):
         """Extract information from an official PDB"""
@@ -1452,7 +1463,11 @@ class _StartingModelDumper(_Dumper):
                                  model, chain):
         d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
         model.dataset = self.simo.dataset_dump.add(file_dataset or d)
-        templates = self.get_templates(pdbname, model)
+        templates, alnfile = self.get_templates(pdbname, model)
+        if alnfile:
+            model.alignment_file = IMP.pmi.metadata.FileLocation(alnfile)
+            self.simo.extref_dump.add(model.alignment_file,
+                                      _ExternalReferenceDumper.INPUT_DATA)
 
         if templates:
             return templates
@@ -1535,7 +1550,10 @@ class _StartingModelDumper(_Dumper):
                       template_sequence_identity_denominator=denom,
                       template_dataset_list_id=template.tm_dataset.id
                                                if template.tm_dataset
-                                               else _CifWriter.unknown)
+                                               else _CifWriter.unknown,
+                      alignment_file_id=model.alignment_file.id
+                                        if hasattr(model, 'alignment_file')
+                                        else _CifWriter.unknown)
                     ordinal += 1
 
     def dump_details(self, writer):

@@ -15,6 +15,10 @@ else:
 class EmptyObject(object):
     pass
 
+class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
+    def flush(self):
+        pass
+
 def make_dataset_dumper():
     """Make an empty DatasetDumper object."""
     class MockExtRef(IMP.pmi.mmcif._ExternalReferenceDumper):
@@ -34,6 +38,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         r = IMP.pmi.representation.Representation(m)
         r.add_metadata(s)
+        r.add_metadata(IMP.pmi.metadata.Repository(doi="foo", root='.'))
         d = IMP.pmi.mmcif._SoftwareDumper(r)
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
@@ -42,11 +47,33 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(out[-3],
                          "3 test 'test code' 1 program http://salilab.org")
 
+    def test_software_modeller(self):
+        """Test SoftwareDumper.set_modeller_used"""
+        d = IMP.pmi.mmcif._SoftwareDumper(EmptyObject())
+        self.assertEqual(d.modeller_used, False)
+        d.set_modeller_used('9.18', '2018-01-01')
+        self.assertEqual(d.modeller_used, True)
+        self.assertEqual(len(d.software), 3)
+        self.assertEqual(d.software[-1].version, '9.18')
+        # Further calls should have no effect
+        d.set_modeller_used('9.0', 'xxx')
+        self.assertEqual(len(d.software), 3)
+        self.assertEqual(d.software[-1].version, '9.18')
+
+    def test_software_phyre2(self):
+        """Test SoftwareDumper.set_phyre2_used"""
+        d = IMP.pmi.mmcif._SoftwareDumper(EmptyObject())
+        self.assertEqual(d.phyre2_used, False)
+        d.set_phyre2_used()
+        self.assertEqual(d.phyre2_used, True)
+        self.assertEqual(len(d.software), 3)
+        self.assertEqual(d.software[-1].version, '2.0')
+        # Further calls should have no effect
+        d.set_phyre2_used()
+        self.assertEqual(len(d.software), 3)
+
     def test_workflow(self):
         """Test output of workflow files"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
         m = IMP.Model()
         simo = IMP.pmi.representation.Representation(m)
         root = os.path.dirname(sys.argv[0]) or '.'
@@ -109,9 +136,6 @@ _ihm_external_files.details
 
     def test_assembly_dumper_get_subassembly(self):
         """Test AssemblyDumper.get_subassembly()"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
         po = DummyPO(EmptyObject())
         d = IMP.pmi.mmcif._AssemblyDumper(po)
         complete = IMP.pmi.mmcif._Assembly(['a', 'b', 'c'])
@@ -125,9 +149,6 @@ _ihm_external_files.details
 
     def test_assembly_all_modeled(self):
         """Test AssemblyDumper, all components modeled"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
         po = DummyPO(EmptyObject())
         d = IMP.pmi.mmcif._AssemblyDumper(po)
         for c, seq in (("foo", "AAA"), ("bar", "AAA"), ("baz", "AA")):
@@ -158,9 +179,6 @@ _ihm_struct_assembly.seq_id_end
 
     def test_assembly_subset_modeled(self):
         """Test AssemblyDumper, subset of components modeled"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
         po = DummyPO(EmptyObject())
         for c, seq, modeled in (("foo", "AAA", True), ("bar", "AA", False)):
             po.create_component(c, modeled)
@@ -187,9 +205,6 @@ _ihm_struct_assembly.seq_id_end
 
     def test_struct_asym(self):
         """Test StructAsymDumper"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
         po = DummyPO(EmptyObject())
         d = IMP.pmi.mmcif._StructAsymDumper(po)
         for c, seq in (("foo", "AAA"), ("bar", "AAA"), ("baz", "AA")):
@@ -208,6 +223,134 @@ _struct_asym.details
 A 1 foo
 B 1 bar
 C 2 baz
+#
+""")
+
+    def test_entry(self):
+        """Test EntryDumper"""
+        po = DummyPO(EmptyObject())
+        d = IMP.pmi.mmcif._EntryDumper(po)
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        d.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, "data_imp_model\n_entry.id imp_model\n")
+
+    def test_audit_author(self):
+        """Test AuditAuthorDumper"""
+        m = IMP.Model()
+        r = IMP.pmi.representation.Representation(m)
+
+        s = IMP.pmi.metadata.Citation(pmid='25161197', title='foo',
+              journal="Mol Cell Proteomics", volume=13, page_range=(2927,2943),
+              year=2014, authors=['auth1', 'auth2', 'auth3'], doi='doi1')
+        r.add_metadata(s)
+        s = IMP.pmi.metadata.Citation(pmid='45161197', title='bar',
+              journal="Mol Cell Proteomics", volume=13, page_range=(2927,2943),
+              year=2014, authors=['auth2', 'auth4'], doi='doi2')
+        r.add_metadata(s)
+
+        d = IMP.pmi.mmcif._AuditAuthorDumper(r)
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        d.dump(w)
+        out = fh.getvalue()
+        # auth2 is repeated in the input; we should see it only once in the
+        # output
+        self.assertEqual(out,"""#
+loop_
+_audit_author.name
+_audit_author.pdbx_ordinal
+auth1 1
+auth2 2
+auth3 3
+auth4 4
+#
+""")
+
+    def test_entity_dumper(self):
+        """Test EntityDumper"""
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        po.add_component_sequence('foo', 'ACGT')
+        po.add_component_sequence('bar', 'ACGT')
+        po.add_component_sequence('baz', 'ACC')
+        d = IMP.pmi.mmcif._EntityDumper(po)
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        d.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_entity.id
+_entity.type
+_entity.src_method
+_entity.pdbx_description
+_entity.formula_weight
+_entity.pdbx_number_of_molecules
+_entity.details
+1 polymer man foo ? 1 ?
+2 polymer man baz ? 1 ?
+#
+""")
+
+    def test_entity_poly_dumper(self):
+        """Test EntityPolyDumper"""
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        po.add_component_sequence('foo', 'ACGT')
+        po.add_component_sequence('bar', 'ACGT')
+        po.add_component_sequence('baz', 'ACC')
+        d = IMP.pmi.mmcif._EntityPolyDumper(po)
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        d.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_entity_poly.entity_id
+_entity_poly.type
+_entity_poly.nstd_linkage
+_entity_poly.nstd_monomer
+_entity_poly.pdbx_strand_id
+_entity_poly.pdbx_seq_one_letter_code
+_entity_poly.pdbx_seq_one_letter_code_can
+1 polypeptide(L) no no . ACGT ACGT
+2 polypeptide(L) no no . ACC ACC
+#
+""")
+
+    def test_entity_poly_seq_dumper(self):
+        """Test EntityPolySeqDumper"""
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        po.add_component_sequence('foo', 'ACGT')
+        po.add_component_sequence('bar', 'ACGT')
+        po.add_component_sequence('baz', 'ACC')
+        d = IMP.pmi.mmcif._EntityPolySeqDumper(po)
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        d.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_entity_poly_seq.entity_id
+_entity_poly_seq.num
+_entity_poly_seq.mon_id
+_entity_poly_seq.hetero
+1 1 ALA .
+1 2 CYS .
+1 3 GLY .
+1 4 THR .
+2 1 ALA .
+2 2 CYS .
+2 3 CYS .
 #
 """)
 
@@ -514,10 +657,6 @@ _ihm_related_datasets.dataset_list_id_primary
 
     def test_external_reference_dumper_dump(self):
         """Test ExternalReferenceDumper.dump()"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
-
         m = IMP.Model()
         simo = IMP.pmi.representation.Representation(m)
         po = DummyPO(None)
@@ -589,10 +728,6 @@ _ihm_external_files.details
 
     def test_model_dumper_sphere(self):
         """Test ModelDumper sphere_obj output"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
-
         m = IMP.Model()
         simo = IMP.pmi.representation.Representation(m)
         po = DummyPO(None)
@@ -648,12 +783,78 @@ _ihm_sphere_obj_site.model_id
 #
 """)
 
+    def test_model_dumper_atom(self):
+        """Test ModelDumper atom_site output"""
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+        nup84 = simo.autobuild_model("Nup84",
+                                     self.get_input_file_name("test.nup84.pdb"),
+                                     "A", resolutions=[0])
+
+        d = IMP.pmi.mmcif._ModelDumper(po)
+        assembly = IMP.pmi.mmcif._Assembly()
+        assembly.id = 42
+        protocol = IMP.pmi.mmcif._Protocol()
+        protocol.id = 93
+        group = IMP.pmi.mmcif._ModelGroup("all models")
+        group.id = 7
+        model = d.add(simo.prot, protocol, assembly, group)
+        self.assertEqual(model.id, 1)
+        self.assertEqual(model.get_rmsf('Nup84', (1,)), '.')
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        d.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_model_list.ordinal_id
+_ihm_model_list.model_id
+_ihm_model_list.model_group_id
+_ihm_model_list.model_name
+_ihm_model_list.model_group_name
+_ihm_model_list.assembly_id
+_ihm_model_list.protocol_id
+1 1 7 . 'all models' 42 93
+#
+#
+loop_
+_atom_site.id
+_atom_site.label_atom_id
+_atom_site.label_comp_id
+_atom_site.label_seq_id
+_atom_site.label_asym_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.label_entity_id
+_atom_site.model_id
+1 CA MET 1 A 0.000 0.000 0.000 1 1
+2 CA GLU 2 A 0.000 0.000 0.000 1 1
+#
+#
+loop_
+_ihm_sphere_obj_site.ordinal_id
+_ihm_sphere_obj_site.entity_id
+_ihm_sphere_obj_site.seq_id_begin
+_ihm_sphere_obj_site.seq_id_end
+_ihm_sphere_obj_site.asym_id
+_ihm_sphere_obj_site.Cartn_x
+_ihm_sphere_obj_site.Cartn_y
+_ihm_sphere_obj_site.Cartn_z
+_ihm_sphere_obj_site.object_radius
+_ihm_sphere_obj_site.rmsf
+_ihm_sphere_obj_site.model_id
+1 1 3 4 A 0.000 0.000 0.000 3.504 . 1
+#
+""")
+
     def test_model_dumper_sphere_rmsf(self):
         """Test ModelDumper sphere_obj output with RMSF"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
-
         m = IMP.Model()
         simo = IMP.pmi.representation.Representation(m)
         po = DummyPO(None)
@@ -713,12 +914,207 @@ _ihm_sphere_obj_site.model_id
 #
 """)
 
+    def test_starting_model_dumper(self):
+        """Test StartingModelDumper"""
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+        nup84 = simo.autobuild_model("Nup84",
+                                     self.get_input_file_name("test.nup84.pdb"),
+                                     "A")
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        po.dataset_dump.finalize()
+        po.starting_model_dump.finalize()
+        po.starting_model_dump.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out,
+"""# IMP will attempt to identify which input models are crystal structures and
+# which are comparative models, but does not always have sufficient information
+# to deduce all of the templates used for comparative modeling. These may need
+# to be added manually below.
+#
+loop_
+_ihm_starting_model_details.starting_model_id
+_ihm_starting_model_details.entity_id
+_ihm_starting_model_details.entity_description
+_ihm_starting_model_details.asym_id
+_ihm_starting_model_details.seq_id_begin
+_ihm_starting_model_details.seq_id_end
+_ihm_starting_model_details.starting_model_source
+_ihm_starting_model_details.starting_model_auth_asym_id
+_ihm_starting_model_details.starting_model_sequence_offset
+_ihm_starting_model_details.dataset_list_id
+Nup84-m1 1 Nup84 A 1 2 'comparative model' A 0 1
+#
+#
+loop_
+_ihm_starting_model_coord.starting_model_id
+_ihm_starting_model_coord.group_PDB
+_ihm_starting_model_coord.id
+_ihm_starting_model_coord.type_symbol
+_ihm_starting_model_coord.atom_id
+_ihm_starting_model_coord.comp_id
+_ihm_starting_model_coord.entity_id
+_ihm_starting_model_coord.asym_id
+_ihm_starting_model_coord.seq_id
+_ihm_starting_model_coord.Cartn_x
+_ihm_starting_model_coord.Cartn_y
+_ihm_starting_model_coord.Cartn_z
+_ihm_starting_model_coord.B_iso_or_equiv
+_ihm_starting_model_coord.ordinal_id
+Nup84-m1 ATOM 1 C CA MET 1 A 1 -8.986 11.688 -5.817 91.820 1
+Nup84-m1 ATOM 2 C CA GLU 1 A 2 -8.986 11.688 -5.817 91.820 2
+#
+""")
+
+    def get_dumper_sources(self, pdbname):
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        chain = 'A'
+        fragment = IMP.pmi.mmcif._PDBFragment(m, "mypdb", 1, 10, 0, pdbname,
+                                              chain, None)
+        model = IMP.pmi.mmcif._StartingModel(fragment)
+        sources = po.starting_model_dump.get_sources(model, pdbname, chain)
+        return m, model, sources
+
+    def test_get_sources_official_pdb(self):
+        """Test get_sources() when given an official PDB"""
+        pdbname = self.get_input_file_name('official.pdb')
+        m, model, sources = self.get_dumper_sources(pdbname)
+        (s, ) = sources
+        self.assertEqual(s.db_code, '2HBJ')
+        self.assertEqual(s.chain_id, 'A')
+        self.assertEqual(model.dataset._data_type, 'Experimental model')
+        self.assertEqual(model.dataset.location.db_name, 'PDB')
+        self.assertEqual(model.dataset.location.access_code, '2HBJ')
+        self.assertEqual(model.dataset.location.version, '14-JUN-06')
+        self.assertEqual(model.dataset.location.details,
+                         'STRUCTURE OF THE YEAST NUCLEAR EXOSOME COMPONENT, '
+                         'RRP6P, REVEALS AN INTERPLAY BETWEEN THE ACTIVE '
+                         'SITE AND THE HRDC DOMAIN')
+
+    def test_get_sources_derived_pdb(self):
+        """Test get_sources() when given a file derived from a PDB"""
+        pdbname = self.get_input_file_name('derived_pdb.pdb')
+        m, model, sources = self.get_dumper_sources(pdbname)
+        (s, ) = sources
+        self.assertEqual(s.db_code, '?')
+        self.assertEqual(s.chain_id, 'A')
+        self.assertEqual(model.dataset._data_type, 'Experimental model')
+        self.assertEqual(model.dataset.location.path, pdbname)
+        self.assertEqual(model.dataset.location.repo, None)
+        self.assertEqual(model.dataset.location.details,
+                         'MED7C AND MED21 STRUCTURES FROM PDB ENTRY 1YKH, '
+                         'ROTATED AND TRANSLATED TO ALIGN WITH THE '
+                         'MED4-MED9 MODEL')
+        (parent,) = model.dataset._parents
+        self.assertEqual(parent._data_type, 'Experimental model')
+        self.assertEqual(parent.location.db_name, 'PDB')
+        self.assertEqual(parent.location.access_code, '1YKH')
+        self.assertEqual(parent.location.version, None)
+        self.assertEqual(parent.location.details, None)
+
+    def test_get_sources_derived_model(self):
+        """Test get_sources() when given a file derived from a model"""
+        pdbname = self.get_input_file_name('derived_model.pdb')
+        m, model, sources = self.get_dumper_sources(pdbname)
+        (s, ) = sources
+        self.assertEqual(s.db_code, '?')
+        self.assertEqual(s.chain_id, 'A')
+        self.assertEqual(model.dataset._data_type, 'Comparative model')
+        self.assertEqual(model.dataset.location.path, pdbname)
+        self.assertEqual(model.dataset.location.repo, None)
+        self.assertEqual(model.dataset.location.details,
+                         'MED4 AND MED9 STRUCTURE TAKEN FROM LARIVIERE '
+                         'ET AL, NUCLEIC ACIDS RESEARCH. 2013;41:9266-9273. '
+                         'DOI: 10.1093/nar/gkt704. THE MED10 STRUCTURE ALSO '
+                         'PROPOSED IN THAT WORK IS NOT USED IN THIS STUDY.')
+        (parent,) = model.dataset._parents
+        self.assertEqual(parent._data_type, 'Comparative model')
+        self.assertEqual(parent.location.path, '.')
+        self.assertEqual(parent.location.repo.doi, '10.1093/nar/gkt704')
+        self.assertEqual(parent.location.details, None)
+
+    def test_get_sources_modeller(self):
+        """Test get_sources() when given a Modeller model with alignment"""
+        pdbname = self.get_input_file_name('modeller_model.pdb')
+        m, model, sources = self.check_modeller_model(pdbname)
+        self.assertEqual(model.alignment_file.path,
+                         self.get_input_file_name('modeller_model.ali'))
+
+    def test_get_sources_modeller_no_aln(self):
+        """Test get_sources() when given a Modeller model with no alignment"""
+        pdbname = self.get_input_file_name('modeller_model_no_aln.pdb')
+        m, model, sources = self.check_modeller_model(pdbname)
+
+    def check_modeller_model(self, pdbname):
+        m, model, sources = self.get_dumper_sources(pdbname)
+        s1, s2 = sources
+        self.assertEqual(s1.db_code, '.')
+        self.assertEqual(s1.chain_id, 'A')
+        self.assertEqual(s1.tm_db_code, '3JRO')
+        self.assertEqual(s1.tm_chain_id, 'C')
+        self.assertEqual(s2.db_code, '.')
+        self.assertEqual(s2.chain_id, 'A')
+        self.assertEqual(s2.tm_db_code, '3F3F')
+        self.assertEqual(s2.tm_chain_id, 'G')
+        self.assertEqual(model.dataset._data_type, 'Comparative model')
+        self.assertEqual(model.dataset.location.path, pdbname)
+        self.assertEqual(model.dataset.location.repo, None)
+        self.assertEqual(model.dataset.location.details, None)
+        p1, p2 = model.dataset._parents
+        self.assertEqual(p1._data_type, 'Experimental model')
+        self.assertEqual(p1.location.db_name, 'PDB')
+        self.assertEqual(p1.location.access_code, '3JRO')
+        self.assertEqual(p1.location.version, None)
+        self.assertEqual(p1.location.details, None)
+        self.assertEqual(p2.location.access_code, '3F3F')
+        return m, model, sources
+
+    def test_get_sources_modeller_local(self):
+        """Test get_sources() when given a Modeller model with local template"""
+        pdbname = self.get_input_file_name('modeller_model_local.pdb')
+        m, model, sources = self.get_dumper_sources(pdbname)
+        s1, = sources
+        self.assertEqual(s1.db_code, '.')
+        self.assertEqual(s1.chain_id, 'A')
+        self.assertEqual(s1.tm_db_code, '.')
+        self.assertEqual(s1.tm_chain_id, 'C')
+        p1, = model.dataset._parents
+        self.assertEqual(p1._data_type, 'Experimental model')
+        self.assertEqual(p1.location.details, None)
+        self.assertEqual(p1.location.path,
+                         self.get_input_file_name('15133C.pdb'))
+
+    def test_get_sources_phyre2(self):
+        """Test get_sources() when given a Phyre2 model"""
+        pdbname = self.get_input_file_name('phyre2_model.pdb')
+        m, model, sources = self.get_dumper_sources(pdbname)
+        (s,) = sources
+        self.assertEqual(s.db_code, '.')
+        self.assertEqual(s.chain_id, 'A')
+        self.assertEqual(s.tm_db_code, '4BZK')
+        self.assertEqual(s.tm_chain_id, 'A')
+        self.assertEqual(model.dataset._data_type, 'Comparative model')
+        self.assertEqual(model.dataset.location.path, pdbname)
+        self.assertEqual(model.dataset.location.repo, None)
+        self.assertEqual(model.dataset.location.details, None)
+        (p,) = model.dataset._parents
+        self.assertEqual(p._data_type, 'Experimental model')
+        self.assertEqual(p.location.db_name, 'PDB')
+        self.assertEqual(p.location.access_code, '4BZK')
+        self.assertEqual(p.location.version, None)
+        self.assertEqual(p.location.details, None)
+
     def test_chem_comp_dumper(self):
         """Test ChemCompDumper"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
-
         po = DummyPO(None)
         po.create_component("Nup84", True)
         po.add_component_sequence("Nup84", "MELS")
@@ -745,10 +1141,6 @@ CYS 'L-peptide linking'
 
     def test_protocol_dumper(self):
         """Test ModelProtocolDumper output"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
-
         m = IMP.Model()
         simo = IMP.pmi.representation.Representation(m)
         po = DummyPO(None)
@@ -797,12 +1189,69 @@ _ihm_modeling_protocol.time_ordered_flag
 #
 """)
 
+    def test_simple_postprocessing(self):
+        """Test add_simple_postprocessing"""
+        po = DummyPO(None)
+        pp = po._add_simple_postprocessing(10, 90)
+        self.assertEqual(pp.type, 'cluster')
+        self.assertEqual(pp.feature, 'RMSD')
+        self.assertEqual(pp.num_models_begin, 10)
+        self.assertEqual(pp.num_models_end, 90)
+
+    def test_simple_ensemble(self):
+        """Test add_simple_ensemble"""
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+        simo.create_component("Nup85", True)
+        simo.add_component_sequence("Nup85",
+                                    self.get_input_file_name("test.fasta"))
+
+        densities = {'Nup84': "foo.mrc"}
+        pp = None
+        e = po._add_simple_ensemble(pp, 'Ensemble 1', 5, 0.1, 1, densities,
+                                    None)
+        self.assertEqual(e.num_models, 5)
+        self.assertEqual(e.num_deposit, 1)
+
+    def test_ensemble_dumper(self):
+        """Test EnsembleDumper"""
+        class DummyPostProcess(object):
+            pass
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+
+        pp = DummyPostProcess()
+        pp.id = 99
+        e = po._add_simple_ensemble(pp, 'Ensemble 1', 5, 0.1, 1, {}, None)
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        po.ensemble_dump.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_ensemble_info.ensemble_id
+_ihm_ensemble_info.ensemble_name
+_ihm_ensemble_info.post_process_id
+_ihm_ensemble_info.model_group_id
+_ihm_ensemble_info.ensemble_clustering_method
+_ihm_ensemble_info.ensemble_clustering_feature
+_ihm_ensemble_info.num_ensemble_models
+_ihm_ensemble_info.num_ensemble_models_deposited
+_ihm_ensemble_info.ensemble_precision_value
+_ihm_ensemble_info.ensemble_file_id
+1 'Ensemble 1' 99 1 . dRMSD 5 1 0.100 .
+#
+""")
+
     def test_density_dumper(self):
         """Test DensityDumper"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
-
         class DummyEnsemble(object):
             pass
 
@@ -835,6 +1284,81 @@ _ihm_localization_density_files.asym_id
 _ihm_localization_density_files.seq_id_begin
 _ihm_localization_density_files.seq_id_end
 1 97 42 1 A 1 4
+#
+""")
+
+    def test_cross_link_dumper(self):
+        """Test the CrossLinkDumper"""
+        class DummyDataset(object):
+            pass
+        class DummyRestraint(object):
+            label = 'foo'
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+        nup84 = simo.autobuild_model("Nup84",
+                                     self.get_input_file_name("test.nup84.pdb"),
+                                     "A")
+        r = DummyRestraint()
+        r.dataset = DummyDataset()
+        r.dataset.id = 42
+        xl_group = po.get_cross_link_group(r)
+        ex_xl = po.add_experimental_cross_link(1, 'Nup84',
+                                               2, 'Nup84', 42.0, xl_group)
+        # Non-modeled component should be ignored
+        nm_ex_xl = po.add_experimental_cross_link(1, 'Nup85',
+                                                  2, 'Nup84', 42.0, xl_group)
+        self.assertEqual(nm_ex_xl, None)
+        rs = nup84[0].get_children()
+        sigma1 = IMP.isd.Scale.setup_particle(IMP.Particle(m), 1.0)
+        sigma2 = IMP.isd.Scale.setup_particle(IMP.Particle(m), 0.5)
+        psi = IMP.isd.Scale.setup_particle(IMP.Particle(m), 0.8)
+        po.add_cross_link(ex_xl, rs[0], rs[1], sigma1, sigma2, psi)
+
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        po.cross_link_dump.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_cross_link_list.id
+_ihm_cross_link_list.group_id
+_ihm_cross_link_list.entity_description_1
+_ihm_cross_link_list.entity_id_1
+_ihm_cross_link_list.seq_id_1
+_ihm_cross_link_list.comp_id_1
+_ihm_cross_link_list.entity_description_2
+_ihm_cross_link_list.entity_id_2
+_ihm_cross_link_list.seq_id_2
+_ihm_cross_link_list.comp_id_2
+_ihm_cross_link_list.type
+_ihm_cross_link_list.dataset_list_id
+1 1 Nup84 1 1 MET Nup84 1 2 GLU foo 42
+#
+#
+loop_
+_ihm_cross_link_restraint.id
+_ihm_cross_link_restraint.group_id
+_ihm_cross_link_restraint.entity_id_1
+_ihm_cross_link_restraint.asym_id_1
+_ihm_cross_link_restraint.seq_id_1
+_ihm_cross_link_restraint.comp_id_1
+_ihm_cross_link_restraint.entity_id_2
+_ihm_cross_link_restraint.asym_id_2
+_ihm_cross_link_restraint.seq_id_2
+_ihm_cross_link_restraint.comp_id_2
+_ihm_cross_link_restraint.type
+_ihm_cross_link_restraint.conditional_crosslink_flag
+_ihm_cross_link_restraint.model_granularity
+_ihm_cross_link_restraint.distance_threshold
+_ihm_cross_link_restraint.psi
+_ihm_cross_link_restraint.sigma_1
+_ihm_cross_link_restraint.sigma_2
+1 1 1 A 1 MET 1 A 2 GLU foo ALL by-residue 42.000 0.800 1.000 0.500
 #
 """)
 
@@ -931,9 +1455,6 @@ _ihm_localization_density_files.seq_id_end
 
     def test_em2d_dumper(self):
         """Test EM2DDumper class"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
         class DummyRestraint(object):
             pass
         pr = DummyRestraint()
@@ -972,11 +1493,57 @@ _ihm_2dem_class_average_restraint.details
 #
 """)
 
+    def test_em3d_dumper(self):
+        """Test EM3DDumper class"""
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+        nup84 = simo.autobuild_model("Nup84",
+                                     self.get_input_file_name("test.nup84.pdb"),
+                                     "A")
+        class DummyRestraint(object):
+            pass
+        class DummyProtocol(object):
+            pass
+        pr = DummyRestraint()
+        rd = IMP.pmi.mmcif._RestraintDataset(pr, num=None,
+                                             allow_duplicates=True)
+        r = IMP.pmi.mmcif._EM3DRestraint(po, rd, target_ps=[None, None],
+                                         densities=[])
+
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
+        d = IMP.pmi.metadata.EM2DClassDataset(l)
+        d.id = 4
+        pr.dataset = d
+
+        po.model_prot_dump.add(DummyProtocol())
+        po.add_model()
+        po.add_model()
+        po.em3d_dump.add(r)
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        po.em3d_dump.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_3dem_restraint.ordinal_id
+_ihm_3dem_restraint.dataset_list_id
+_ihm_3dem_restraint.fitting_method
+_ihm_3dem_restraint.struct_assembly_id
+_ihm_3dem_restraint.number_of_gaussians
+_ihm_3dem_restraint.model_id
+_ihm_3dem_restraint.cross_correlation_coefficient
+1 4 'Gaussian mixture models' 2 2 1 .
+2 4 'Gaussian mixture models' 2 2 2 .
+#
+""")
+
     def test_update_location(self):
         """Test update_location() method"""
-        class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
-            def flush(self):
-                pass
         m = IMP.Model()
         simo = IMP.pmi.representation.Representation(m)
         po = DummyPO(None)
@@ -1045,6 +1612,135 @@ _ihm_starting_model_seq_dif.details
 1 4 H 42 MET dummy-m1 X 40 MSE 'Conversion of modified residue MSE to MET'
 #
 """)
+
+    def test_beads_fragment(self):
+        """Test _BeadsFragment class"""
+        m = None
+        bf1 = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=0,
+                                           end=10, num=2, hier=None)
+        bf2 = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=11,
+                                           end=30, num=3, hier=None)
+        bf3 = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=31,
+                                           end=50, num=4, hier=None)
+        self.assertFalse(bf1.combine(None))
+        self.assertFalse(bf1.combine(bf3))
+        self.assertTrue(bf1.combine(bf2))
+        self.assertEqual(bf1.start, 0)
+        self.assertEqual(bf1.end, 30)
+        self.assertEqual(bf1.num, 5)
+        self.assertTrue(bf1.combine(bf3))
+        self.assertEqual(bf1.start, 0)
+        self.assertEqual(bf1.end, 50)
+        self.assertEqual(bf1.num, 9)
+
+    def test_model_repr_dump_add_frag(self):
+        """Test ModelRepresentationDumper.add_fragment()"""
+        m = None
+        d = IMP.pmi.mmcif._ModelRepresentationDumper(EmptyObject())
+        b = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=0,
+                                         end=10, num=2, hier=None)
+        d.add_fragment(b)
+        self.assertEqual(len(d.fragments['comp1']), 1)
+        frag = d.fragments['comp1'][0]
+        self.assertEqual(frag.start, 0)
+        self.assertEqual(frag.end, 10)
+
+        b = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=11,
+                                         end=30, num=3, hier=None)
+        d.add_fragment(b)
+        self.assertEqual(len(d.fragments['comp1']), 1)
+        frag = d.fragments['comp1'][0]
+        self.assertEqual(frag.start, 0)
+        self.assertEqual(frag.end, 30)
+
+    def test_model_repr_dump(self):
+        """Test ModelRepresentationDumper"""
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+        nup84 = simo.autobuild_model("Nup84",
+                                     self.get_input_file_name("test.nup84.pdb"),
+                                     "A")
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        # Need this to assign starting model details
+        po.starting_model_dump.finalize()
+        po.model_repr_dump.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_model_representation.ordinal_id
+_ihm_model_representation.representation_id
+_ihm_model_representation.segment_id
+_ihm_model_representation.entity_id
+_ihm_model_representation.entity_description
+_ihm_model_representation.entity_asym_id
+_ihm_model_representation.seq_id_begin
+_ihm_model_representation.seq_id_end
+_ihm_model_representation.model_object_primitive
+_ihm_model_representation.starting_model_id
+_ihm_model_representation.model_mode
+_ihm_model_representation.model_granularity
+_ihm_model_representation.model_object_count
+1 1 1 1 Nup84 A 1 2 sphere Nup84-m1 flexible by-residue .
+2 1 2 1 Nup84 A 3 4 sphere . flexible by-feature 1
+#
+""")
+
+    def test_pdb_source(self):
+        """Test PDBSource class"""
+        class DummyModel(object):
+            seq_id_begin = 1
+            seq_id_end = 100
+        m = DummyModel()
+        p = IMP.pmi.mmcif._PDBSource(m, '1abc', 'A', metadata=[])
+        self.assertEqual(p.source, 'experimental model')
+        self.assertEqual(p.get_seq_id_range(m), (1, 100))
+
+    def test_template_source_pdb(self):
+        """Test TemplateSource class, where template is from PDB"""
+        class DummyModel(object):
+            seq_id_begin = 10
+            seq_id_end = 100
+        m = DummyModel()
+        p = IMP.pmi.mmcif._TemplateSource(tm_code='1abcA', tm_seq_id_begin=30,
+                    tm_seq_id_end=90, seq_id_begin=1, chain_id='G',
+                    seq_id_end=90, seq_id=42., model=m)
+        self.assertEqual(p.source, 'comparative model')
+        self.assertEqual(p.tm_db_code, '1ABC')
+        self.assertEqual(p.tm_chain_id, 'A')
+        self.assertEqual(p.get_seq_id_range(m), (10, 90))
+
+    def test_template_source_unknown(self):
+        """Test TemplateSource class, where template is not in PDB"""
+        class DummyModel(object):
+            seq_id_begin = 10
+            seq_id_end = 100
+        m = DummyModel()
+        p = IMP.pmi.mmcif._TemplateSource(tm_code='fooA', tm_seq_id_begin=30,
+                    tm_seq_id_end=90, seq_id_begin=1, chain_id='G',
+                    seq_id_end=90, seq_id=42., model=m)
+        self.assertEqual(p.source, 'comparative model')
+        self.assertEqual(p.tm_db_code, '.')
+        self.assertEqual(p.tm_chain_id, 'A')
+        self.assertEqual(p.get_seq_id_range(m), (10, 90))
+
+    def test_unknown_source(self):
+        """Test UnknownSource class"""
+        class DummyDataset(object):
+            _data_type = 'Comparative model'
+        class DummyModel(object):
+            dataset = DummyDataset()
+            seq_id_begin = 10
+            seq_id_end = 100
+        m = DummyModel()
+        p = IMP.pmi.mmcif._UnknownSource(m, 'A')
+        self.assertEqual(p.source, 'comparative model')
+        self.assertEqual(p.get_seq_id_range(m), (10, 100))
 
 if __name__ == '__main__':
     IMP.test.main()

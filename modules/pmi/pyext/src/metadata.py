@@ -3,6 +3,7 @@ Classes for attaching metadata to PMI objects.
 """
 
 from __future__ import print_function, division
+from IMP.pmi.tools import OrderedDict
 import os
 
 class Metadata(object):
@@ -60,7 +61,7 @@ class Dataset(Metadata):
     _data_type = 'unspecified'
     def __init__(self, location):
         self.location = location
-        self._parents = {}
+        self._parents = OrderedDict()
 
     def add_parent(self, dataset):
         """Add another Dataset from which this one was derived.
