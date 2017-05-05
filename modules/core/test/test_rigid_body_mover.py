@@ -4,9 +4,6 @@ import IMP.core
 import IMP.atom
 import IMP.algebra
 
-import IMP.rmf
-import RMF
-
 from math import *
 
 def get_axis_and_angle(q):
@@ -78,7 +75,6 @@ class NormalMoverTest(IMP.test.TestCase):
         mdl,root,mc,rb=self.setup_mv_mover_test(1.0,0.0)
         r0=rb.get_coordinates()
         rot0=rb.get_rotation()
-        #coords_begin=[IMP.core.XYZ(p).get_coordinates() for p in IMP.atom.get_leaves(root)]
         mc.optimize(1)
         r1=rb.get_coordinates()
         rot1=rb.get_rotation()
@@ -86,17 +82,11 @@ class NormalMoverTest(IMP.test.TestCase):
         q=(rot1/rot0).get_quaternion()
         self.assertAlmostEqual(get_axis_and_angle(q)[0],0.0,places=6)
         self.assertLessEqual(transm,1.0)
-        #coords_end=[IMP.core.XYZ(p).get_coordinates() for p in IMP.atom.get_leaves(root)]
-        #t=IMP.algebra.get_transformation_aligning_first_to_second(coords_end,coords_begin)
-        #trans=t.get_translation()
-        #q=t.get_rotation().get_quaternion()
-
 
     def test_mc_mover_rotate(self):
         mdl,root,mc,rb=self.setup_mv_mover_test(0.0,1.0)
         r0=rb.get_coordinates()
         rot0=rb.get_rotation()
-        #coords_begin=[IMP.core.XYZ(p).get_coordinates() for p in IMP.atom.get_leaves(root)]
         mc.optimize(1)
         r1=rb.get_coordinates()
         rot1=rb.get_rotation()
@@ -109,7 +99,6 @@ class NormalMoverTest(IMP.test.TestCase):
         mdl,root,mc,rb=self.setup_mv_mover_test(1.0,1.0)
         r0=rb.get_coordinates()
         rot0=rb.get_rotation()
-        #coords_begin=[IMP.core.XYZ(p).get_coordinates() for p in IMP.atom.get_leaves(root)]
         mc.optimize(1)
         r1=rb.get_coordinates()
         rot1=rb.get_rotation()
