@@ -68,7 +68,6 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
      @param flexible_residues all residues for which non-custom backbone of side-chain dihedrals may
                               be flexible (side-chains are not implemented as of May 2017)
      @param custom_dihedral_angles lists of four atoms that define a custom dihedral angle
-     @param open_loop_bond_atoms TODO: what is this?
      @param flexible_backbone whether all phi/psi angles in flexible_residues are flexible
      @param flexible_side_chains whether all chi angles in flexible_residues are flexible      
                (currently not implemented)
@@ -95,7 +94,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
   ProteinKinematics(atom::Hierarchy mhd,
                     const atom::Residues& flexible_residues,
                     const std::vector<atom::Atoms>& custom_dihedral_angles,
-		    const std::vector<ProteinAngleType>& custom_dihedral_angle_types,	   
+                    const std::vector<ProteinAngleType>& custom_dihedral_angle_types,    
                     atom::Atoms open_loop_bond_atoms = atom::Atoms(),
                     bool flexible_backbone = true,
                     bool flexible_side_chains = false);
@@ -105,7 +104,6 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
   //! see constructors for documentation
   /**
      initialize the protein kinematics object
-
      @param flexible_residues all reidues whose phi/psi angles are activated
      @param custom_dihedral_angles lists of four atoms that define a custom dihedral angle
      @param custom_dihedral_angle_types the types of all custom dihedral angles (a list of the same size)
@@ -115,7 +113,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
    */
   void init( const atom::Residues& flexible_residues,
              const std::vector<atom::Atoms>& custom_dihedral_angles,
-	     const std::vector<ProteinAngleType>& custom_dihedral_angle_types,	   
+             const std::vector<ProteinAngleType>& custom_dihedral_angle_types,     
              atom::Atoms open_loop_bond_atoms,
              bool flexible_backbone,
              bool flexible_side_chains);
@@ -198,8 +196,8 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
   //! automatically build rigid bodies for the protein kinematics structure
   void build_rigid_bodies();
 
-  void add_dihedral_joints(const std::vector<atom::Atoms>& dihedral_angles,
-			   const std::vector<ProteinAngleType>);
+  //void add_dihedral_joints(const std::vector<atom::Atoms>& dihedral_angles,
+  //       const std::vector<ProteinAngleType>);
 
   void add_dihedral_joints(const std::vector<atom::Residue>& residues,
                            ProteinAngleType angle_type,
