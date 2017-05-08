@@ -30,7 +30,23 @@ IMP_SWIG_OBJECT( IMP::kinematics, RRT, RRTs);
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.kinematicss.say_hello(). */
 
-#  %template  <AtomsList> std::vector<atom::Atoms>;
+# %template(AtomsList) std::vector<std::vector<atom::Atom>>;
+
+
+%inline %{
+namespace IMP {
+namespace kinematics {
+
+int test_atoms_list
+(const std::vector<atom::Atoms>& dihedral_angles)
+{
+ return dihedral_angles.size();
+}
+
+}
+}
+%}
+
 
 
 /* Wrap our own classes. Each header in the module should be listed here with a
