@@ -14,6 +14,11 @@ class Test(IMP.test.TestCase):
         atoms = IMP.atom.get_by_type(hier, IMP.atom.ATOM_TYPE)
 
         joints = pk.get_joints()
+
+
+        self.assertEqual(len(joints), 4)
+
+        '''
         kfss = IMP.kinematics.KinematicForestScoreState(pk.get_kinematic_forest(), pk.get_rigid_bodies(), atoms)
         m.add_score_state(kfss)
         
@@ -34,7 +39,6 @@ class Test(IMP.test.TestCase):
         self.assertTrue(abs(c1[0]-c2[0]) > 0.0001)
         self.assertTrue(abs(c1[1]-c2[1]) > 0.0001)    
         self.assertTrue(abs(c1[2]-c2[2]) > 0.0001)
-        '''
         dofs = []
 
         for j in joints:
@@ -48,8 +52,33 @@ class Test(IMP.test.TestCase):
         rrt.set_scoring_function(pr)
 
         rrt.run()
-
         dof_values = rrt.get_DOFValues()
         '''
+
+    def test_list_of_atoms_input(self):
+        # Test to debug passing a list of list of atoms
+        # to C++ functions.
+
+        m = IMP.Model()
+        hier = IMP.atom.read_pdb(self.open_input_file("three.pdb"), m)
+
+        atoms = IMP.atom.Selection(hier, residue_index=2).get_selected_particles()
+
+        self.assertEqual(7, len(atoms))
+
+        #Make a list of atoms
+        list_of_atoms = IMP.atom.Atoms([IMP.atom.Atom(atoms[0]), IMP.atom.Atom(atoms[1]),
+                                        IMP.atom.Atom(atoms[3]), IMP.atom.Atom(atoms[4])])
+
+        # Pass a list of lists of atoms
+        n_dih = IMP.kinematics.test_atoms_list([list_of_atoms])
+
+        self.assertEqual(n_dih, 1)
+
+        n_dih = IMP.kinematics.test_atoms_list([list_of_atoms, list_of_atoms])
+
+        self.assertEqual(n_dih, 2)
+
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -26,13 +26,6 @@
 #include <boost/graph/adjacency_list.hpp>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
-//(const std::vector<atom::Atoms>& dihedral_angles)
-IMPKINEMATICSEXPORT 
-void test_atoms_list
-(const std::vector<atom::Atoms>& dihedral_angle)
-{
-std::cout << dihedral_angle.size() << std::endl;
-}
 
 //! Kinematic structure over a protein, with backbone and side chain dihedrals
 //!
