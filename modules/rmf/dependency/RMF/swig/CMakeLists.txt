@@ -39,7 +39,14 @@ SET(CMAKE_SWIG_FLAGS "-castmode" "-naturalvar" "-Wextra" "-fvirtual"
   "-DPySwigIterator=RMF_PySwigIterator" "-c++"
   "-DSwigPyIterator=RMF_SwigPyIterator"
   "-DRMFEXPORT")
-SWIG_ADD_MODULE(RMF python RMF.i)
+
+# cmake 3.8 replaced SWIG_ADD_MODULE with SWIG_ADD_LIBRARY
+IF (COMMAND SWIG_ADD_LIBRARY)
+  SWIG_ADD_LIBRARY(RMF LANGUAGE python TYPE MODULE SOURCES RMF.i)
+ELSE()
+  SWIG_ADD_MODULE(RMF python RMF.i)
+ENDIF()
+
 set_property(TARGET "${SWIG_MODULE_RMF_REAL_NAME}" PROPERTY FOLDER "RMF")
 if(APPLE)
   set_target_properties("${SWIG_MODULE_RMF_REAL_NAME}" PROPERTIES LINK_FLAGS "-flat_namespace -undefined suppress")
@@ -72,7 +79,13 @@ SET(CMAKE_SWIG_FLAGS "-castmode" "-naturalvar" "-Wextra" "-fvirtual"
   "-DPySwigIterator=RMF_HDF5_PySwigIterator" "-c++"
   "-DSwigPyIterator=RMF_HDF5_SwigPyIterator"
   "-DRMFEXPORT")
-SWIG_ADD_MODULE(RMF_HDF5 python RMF_HDF5.i)
+
+IF (COMMAND SWIG_ADD_LIBRARY)
+  SWIG_ADD_LIBRARY(RMF_HDF5 LANGUAGE python TYPE MODULE SOURCES RMF_HDF5.i)
+ELSE()
+  SWIG_ADD_MODULE(RMF_HDF5 python RMF_HDF5.i)
+ENDIF()
+
 set_property(TARGET "${SWIG_MODULE_RMF_HDF5_REAL_NAME}" PROPERTY FOLDER "RMF")
 if(APPLE)
   set_target_properties("${SWIG_MODULE_RMF_HDF5_REAL_NAME}" PROPERTIES LINK_FLAGS "-flat_namespace -undefined suppress")
