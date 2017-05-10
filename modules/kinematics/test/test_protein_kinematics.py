@@ -15,8 +15,18 @@ class Test(IMP.test.TestCase):
 
         joints = pk.get_joints()
 
-
         self.assertEqual(len(joints), 4)
+
+        parts = IMP.atom.Selection(hier, residue_index=2).get_selected_particles()
+        ats = [parts[0].get_index(), parts[1].get_index(), parts[3].get_index(), parts[4].get_index()]
+        piq = IMP.ParticleIndexQuads([ats])
+        residues = IMP.atom.Residues(IMP.atom.get_by_type(hier, IMP.atom.RESIDUE_TYPE))
+
+        pk2 = IMP.kinematics.ProteinKinematics(hier, residues, piq)
+        joints2 = pk2.get_joints()
+
+        self.assertEqual(len(joints), len(joints2)-1)
+
 
         '''
         kfss = IMP.kinematics.KinematicForestScoreState(pk.get_kinematic_forest(), pk.get_rigid_bodies(), atoms)
