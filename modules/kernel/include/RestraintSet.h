@@ -62,7 +62,10 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
                   if (container) on_remove(container, obj));
   /**@}*/
 
-  /** Divide the list of contained restraints into sets and non-sets.*/
+  //! Divide the list of contained restraints into non-sets and sets.
+  /** \return a list of all contained Restraints that are not also
+              RestraintSets, and another list of contained RestraintSets.
+   */
   std::pair<RestraintsTemp, RestraintSetsTemp> get_non_sets_and_sets() const;
 
  public:
