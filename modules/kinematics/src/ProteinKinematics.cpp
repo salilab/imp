@@ -110,12 +110,11 @@ void ProteinKinematics::init(const atom::Residues& flexible_residues,
 
   // 0. Are we given custom_dihedral_atoms or custom_dihedral_angles?
   // Convert custom_dihedral_angles into atom lists
-
   std::vector<atom::Atoms> custom_dihedral_angles_atoms;
-
-  if (custom_dihedral_atoms.size() > 0) {
-    custom_dihedral_angles_atoms = quick_hack_converter(mhd_.get_model(), custom_dihedral_angles);
+  if (custom_dihedral_atoms.size() == 0) {
+    if (custom_dihedral_angles.size() > 0) {custom_dihedral_angles_atoms = quick_hack_converter(mhd_.get_model(), custom_dihedral_angles);}
   } else { custom_dihedral_angles_atoms = custom_dihedral_atoms; }
+
   // 1. update graph_ with the topology from mhd_
   build_topology_graph();
 
