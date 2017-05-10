@@ -70,7 +70,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
    */
   ProteinKinematics(atom::Hierarchy mhd,
                     const atom::Residues& flexible_residues,
-                    const ParticleIndexQuads& custom_dihedral_angles,
+                    const ParticleIndexQuads custom_dihedral_angles,
                     atom::Atoms open_loop_bond_atoms = atom::Atoms(),
                     bool flexible_backbone = true,
                     bool flexible_side_chains = false);
@@ -87,9 +87,30 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
      @param flexible_side_chains whether all chi angles in flexible_residues are flexible      
                (currently not implemented)
    */
+
   ProteinKinematics(atom::Hierarchy mhd,
                     const atom::Residues& flexible_residues,
-                    const ParticleIndexQuads& custom_dihedral_angles,
+                    const std::vector<atom::Atoms>& custom_dihedral_atoms,
+                    atom::Atoms open_loop_bond_atoms = atom::Atoms(),
+                    bool flexible_backbone = true,
+                    bool flexible_side_chains = false);
+
+  // Constructor; torsions from custom_dihedral_angles list are rotatable
+  /**
+     @param mhd hierarchy of a protein, obtained by e.g. reading a Pdb using IMP::Atom::read_pdb()
+     @param flexible_residues all residues for which non-custom backbone of side-chain dihedrals may
+                              be flexible (side-chains are not implemented as of May 2017)
+     @param custom_dihedral_angles lists of four atoms that define a custom dihedral angle
+     @param custom_dihedral_angle_types the types of all custom dihedral angles (a list of the same size)
+     @param open_loop_bond_atoms TODO: document
+     @param flexible_backbone whether all phi/psi angles in flexible_residues are flexible
+     @param flexible_side_chains whether all chi angles in flexible_residues are flexible      
+               (currently not implemented)
+   */
+
+  ProteinKinematics(atom::Hierarchy mhd,
+                    const atom::Residues& flexible_residues,
+                    const ParticleIndexQuads custom_dihedral_angles,
                     const std::vector<ProteinAngleType>& custom_dihedral_angle_types,    
                     atom::Atoms open_loop_bond_atoms = atom::Atoms(),
                     bool flexible_backbone = true,
@@ -108,7 +129,8 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
      @param flexible_side_chains are dihedral joints defined for the side chains
    */
   void init( const atom::Residues& flexible_residues,
-             const ParticleIndexQuads& custom_dihedral_angles,
+             const ParticleIndexQuads custom_dihedral_angles,
+             const std::vector<atom::Atoms>& custom_dihedral_atoms,
              const std::vector<ProteinAngleType>& custom_dihedral_angle_types,     
              atom::Atoms open_loop_bond_atoms,
              bool flexible_backbone,
@@ -116,7 +138,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
 
   void add_edges_to_rb_graph(const std::vector<atom::Atoms>& dihedral_angles);
 
-  std::vector<atom::Atoms> quick_hack_converter(Model* m, const ParticleIndexQuads& piqs);
+  std::vector<atom::Atoms> quick_hack_converter(Model* m, const ParticleIndexQuads piqs);
 
  public:
   /* Access methods */

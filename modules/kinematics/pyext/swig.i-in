@@ -31,25 +31,6 @@ IMP_SWIG_OBJECT( IMP::kinematics, RRT, RRTs);
    This function can be called as IMP.kinematics.say_hello(). */
 
 
-# %template(ParticleIndexQuadsVector) std::vector<ParticleIndexQuads>;
-
-%inline %{
-namespace IMP {
-
-namespace kinematics {
-
-int test_atoms_list
-(const std::vector<ParticleIndexQuads> dihedral_angles)
-{
- return 10+1;
-}
-
-
-}
-}
-%}
-
-
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
