@@ -74,7 +74,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
    */
   ProteinKinematics(atom::Hierarchy mhd,
                     const atom::Residues& flexible_residues,
-                    const std::vector<atom::Atoms>& custom_dihedral_angles,
+                    const ParticleIndexQuads& custom_dihedral_angles,
                     atom::Atoms open_loop_bond_atoms = atom::Atoms(),
                     bool flexible_backbone = true,
                     bool flexible_side_chains = false);
@@ -93,7 +93,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
    */
   ProteinKinematics(atom::Hierarchy mhd,
                     const atom::Residues& flexible_residues,
-                    const std::vector<atom::Atoms>& custom_dihedral_angles,
+                    const ParticleIndexQuads& custom_dihedral_angles,
                     const std::vector<ProteinAngleType>& custom_dihedral_angle_types,    
                     atom::Atoms open_loop_bond_atoms = atom::Atoms(),
                     bool flexible_backbone = true,
@@ -112,13 +112,15 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
      @param flexible_side_chains are dihedral joints defined for the side chains
    */
   void init( const atom::Residues& flexible_residues,
-             const std::vector<atom::Atoms>& custom_dihedral_angles,
+             const ParticleIndexQuads& custom_dihedral_angles,
              const std::vector<ProteinAngleType>& custom_dihedral_angle_types,     
              atom::Atoms open_loop_bond_atoms,
              bool flexible_backbone,
              bool flexible_side_chains);
 
   void add_edges_to_rb_graph(const std::vector<atom::Atoms>& dihedral_angles);
+
+  std::vector<atom::Atoms> quick_hack_converter(Model* m, const ParticleIndexQuads& piqs);
 
  public:
   /* Access methods */
