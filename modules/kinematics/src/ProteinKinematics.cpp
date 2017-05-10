@@ -25,7 +25,7 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
     atom_particles_(atom::get_by_type(mhd_, atom::ATOM_TYPE)),
     graph_(atom_particles_.size()) {
   init(atom::get_by_type(mhd, atom::RESIDUE_TYPE),
-       std::vector<atom::Atoms>(),
+       ParticleIndexQuads&,
        std::vector<ProteinAngleType>(),
        atom::Atoms(),
        flexible_backbone,
@@ -35,7 +35,7 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
 
 ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      const atom::Residues& flexible_residues,
-                                     const std::vector<atom::Atoms>& custom_dihedral_angles,
+                                     const ParticleIndexQuads& custom_dihedral_angles,
                                      atom::Atoms open_loop_bond_atoms,
                                      bool flexible_backbone,
                                      bool flexible_side_chains )
@@ -54,7 +54,7 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
 
 ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      const atom::Residues& flexible_residues,
-                                     const std::vector<atom::Atoms>& custom_dihedral_angles,
+                                     const ParticleIndexQuads& custom_dihedral_angles,
                                      const std::vector<ProteinAngleType>& custom_dihedral_angle_types,
                                      atom::Atoms open_loop_bond_atoms,
                                      bool flexible_backbone,
@@ -75,19 +75,23 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
 
 
 void ProteinKinematics::init(const atom::Residues& flexible_residues,
-                             const std::vector<atom::Atoms>& custom_dihedral_angles,
-           const std::vector<ProteinAngleType>& custom_dihedral_angle_types,
+                             const ParticleIndexQuads& custom_dihedral_angles,
+              const std::vector<ProteinAngleType>& custom_dihedral_angle_types,
                              atom::Atoms open_loop_bond_atoms,
                              bool flexible_backbone,
                              bool flexible_side_chains)
 {
   kf_ = new kinematics::KinematicForest(mhd_.get_model());
 
+  // 0. Convert custom_dihedral_angles into atom lists
+
+  std::vector<atom::Atoms> custom_dihedral_angles_atoms = quick_hack_converter(mhd_.get_model(), custom_dihedral_angles);
+
   // 1. update graph_ with the topology from mhd_
   build_topology_graph();
 
   // 2. define and mark all custom rotatable dihedral angles
-  mark_rotatable_angles(custom_dihedral_angles);
+  mark_rotatable_angles(custom_dihedral_angles_atoms);
 
   // 3. define and mark all phi angles, if flexible_backbone is true
   std::vector<atom::Atoms> phi_angles, psi_angles;
@@ -127,12 +131,12 @@ void ProteinKinematics::init(const atom::Residues& flexible_residues,
 
   // 3. build rbs and sort them by dfs
   build_rigid_bodies();
-  order_rigid_bodies(custom_dihedral_angles, phi_angles, psi_angles, open_loop_bond_atoms);
+  order_rigid_bodies(custom_dihedral_angles_atoms, phi_angles, psi_angles, open_loop_bond_atoms);
 
   // 4. add joints to kf
 
-  //first add the custom_dihedral_angles
-  for (unsigned int i = 0; i < custom_dihedral_angles.size(); i++) {
+  //first add the custom_dihedral_angles_atoms
+  for (unsigned int i = 0; i < custom_dihedral_angles_atoms.size(); i++) {
 
     ProteinAngleType angle_type = OTHER;
     // Get the angle type (default to OTHER if not specified)
@@ -140,13 +144,13 @@ void ProteinKinematics::init(const atom::Residues& flexible_residues,
     }
 
     // Get the residue that we will assign this to
-    atom::Residue res = atom::Residue(custom_dihedral_angles[i][1].get_parent());
-    add_dihedral_joint(res, angle_type, custom_dihedral_angles[i]);
+    atom::Residue res = atom::Residue(custom_dihedral_angles_atoms[i][1].get_parent());
+    add_dihedral_joint(res, angle_type, custom_dihedral_angles_atoms[i]);
 
   }
 
 
-  //add_dihedral_joints(custom_dihedral_angles, custom_dihedral_angle_types);
+  //add_dihedral_joints(custom_dihedral_angles_atoms, custom_dihedral_angle_types);
   if (flexible_backbone) {
     add_dihedral_joints(phi_residues, PHI, phi_angles);
     add_dihedral_joints(psi_residues, PSI, psi_angles);
@@ -466,5 +470,21 @@ void ProteinKinematics::AngleToJointMap::add_joint(const atom::Residue r,
     residue_joints[angle_type] = joint;
   }
 }
+
+std::vector<atom::Atoms> quick_hack_converter
+(Model* m, const ParticleIndexQuads& piqs)
+{
+   std::vector<atom::Atoms> ret_value;
+   for(unsigned int i=0; i<piqs.size(); i++){
+      atom::Atoms cur_atoms_quad;
+      for(unsigned int j=0; j<4; j++) {
+        IMP_INTERNAL_CHECK(IMP::atom::Atom::get_is_setup(m, piqs[i][j]), 
+                                            "All particle indexes in quads must be decorated with Atom")
+        cur_atoms_quad.push_back(IMP::atom::Atom(m, piqs[i][j]));
+      } // for j
+      ret_value.push_back(cur_atoms_quad);
+   } // for i
+   return ret_value;
+} // end of function
 
 IMPKINEMATICS_END_NAMESPACE
