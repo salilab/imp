@@ -23,9 +23,11 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      bool flexible_side_chains)
   : Object("ProteinKinematics%1%"), mhd_(mhd),
     atom_particles_(atom::get_by_type(mhd_, atom::ATOM_TYPE)),
-    graph_(atom_particles_.size()) {
+    graph_(atom_particles_.size()) 
+{
   init(atom::get_by_type(mhd, atom::RESIDUE_TYPE),
-       ParticleIndexQuads&,
+       ParticleIndexQuads(),
+       std::vector<atom::Atoms>(),
        std::vector<ProteinAngleType>(),
        atom::Atoms(),
        flexible_backbone,
@@ -35,7 +37,7 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
 
 ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      const atom::Residues& flexible_residues,
-                                     const ParticleIndexQuads& custom_dihedral_angles,
+                                     const ParticleIndexQuads custom_dihedral_angles,
                                      atom::Atoms open_loop_bond_atoms,
                                      bool flexible_backbone,
                                      bool flexible_side_chains )
@@ -45,6 +47,7 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
 {
   init(flexible_residues,
        custom_dihedral_angles,
+       std::vector<atom::Atoms>(),
        std::vector<ProteinAngleType>(),
        open_loop_bond_atoms,
        flexible_backbone,
@@ -53,8 +56,28 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
 
 
 ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
+                    const atom::Residues& flexible_residues,
+                    const std::vector<atom::Atoms>& custom_dihedral_atoms,
+                    atom::Atoms open_loop_bond_atoms,
+                    bool flexible_backbone,
+                    bool flexible_side_chains)
+
+  : Object("ProteinKinematics%1%"), mhd_(mhd),
+    atom_particles_(atom::get_by_type(mhd_, atom::ATOM_TYPE)),
+    graph_(atom_particles_.size())
+{
+  init(flexible_residues,
+       ParticleIndexQuads(),
+       custom_dihedral_atoms,
+       std::vector<ProteinAngleType>(),
+       open_loop_bond_atoms,
+       flexible_backbone,
+       flexible_side_chains);
+}
+
+ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      const atom::Residues& flexible_residues,
-                                     const ParticleIndexQuads& custom_dihedral_angles,
+                                     const ParticleIndexQuads custom_dihedral_angles,
                                      const std::vector<ProteinAngleType>& custom_dihedral_angle_types,
                                      atom::Atoms open_loop_bond_atoms,
                                      bool flexible_backbone,
@@ -67,6 +90,7 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
 //       "there should be at least the same number of custom angles as custom angle types");
   init(flexible_residues,
        custom_dihedral_angles,
+       std::vector<atom::Atoms>(),
        custom_dihedral_angle_types,
        open_loop_bond_atoms,
        flexible_backbone,
@@ -75,7 +99,8 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
 
 
 void ProteinKinematics::init(const atom::Residues& flexible_residues,
-                             const ParticleIndexQuads& custom_dihedral_angles,
+                             const ParticleIndexQuads custom_dihedral_angles,
+                             const std::vector<atom::Atoms>& custom_dihedral_atoms,
               const std::vector<ProteinAngleType>& custom_dihedral_angle_types,
                              atom::Atoms open_loop_bond_atoms,
                              bool flexible_backbone,
@@ -83,10 +108,14 @@ void ProteinKinematics::init(const atom::Residues& flexible_residues,
 {
   kf_ = new kinematics::KinematicForest(mhd_.get_model());
 
-  // 0. Convert custom_dihedral_angles into atom lists
+  // 0. Are we given custom_dihedral_atoms or custom_dihedral_angles?
+  // Convert custom_dihedral_angles into atom lists
 
-  std::vector<atom::Atoms> custom_dihedral_angles_atoms = quick_hack_converter(mhd_.get_model(), custom_dihedral_angles);
+  std::vector<atom::Atoms> custom_dihedral_angles_atoms;
 
+  if (custom_dihedral_atoms.size() > 0) {
+    custom_dihedral_angles_atoms = quick_hack_converter(mhd_.get_model(), custom_dihedral_angles);
+  } else { custom_dihedral_angles_atoms = custom_dihedral_atoms; }
   // 1. update graph_ with the topology from mhd_
   build_topology_graph();
 
@@ -471,8 +500,8 @@ void ProteinKinematics::AngleToJointMap::add_joint(const atom::Residue r,
   }
 }
 
-std::vector<atom::Atoms> quick_hack_converter
-(Model* m, const ParticleIndexQuads& piqs)
+std::vector<atom::Atoms> ProteinKinematics::quick_hack_converter
+(Model* m, const ParticleIndexQuads piqs)
 {
    std::vector<atom::Atoms> ret_value;
    for(unsigned int i=0; i<piqs.size(); i++){
