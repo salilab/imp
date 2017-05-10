@@ -5,8 +5,8 @@ import IMP.test
 import IMP.kinematics
 
 class Test(IMP.test.TestCase):
-    # Failing test for manually moving joints using ProteinKinematics
-    @IMP.test.expectedFailure
+#    # Failing test for manually moving joints using ProteinKinematics
+#    @IMP.test.expectedFailure
     def test_protein_kinematics(self):
         m = IMP.Model()
         hier = IMP.atom.read_pdb(self.open_input_file("three.pdb"), m)
@@ -17,6 +17,8 @@ class Test(IMP.test.TestCase):
 
         self.assertEqual(len(joints), 4)
 
+
+        # Test a construction adding a single custom dihedral on the side chain of residue 2
         parts = IMP.atom.Selection(hier, residue_index=2).get_selected_particles()
         ats = [parts[0].get_index(), parts[1].get_index(), parts[3].get_index(), parts[4].get_index()]
         piq = IMP.ParticleIndexQuads([ats])
@@ -25,9 +27,11 @@ class Test(IMP.test.TestCase):
         pk2 = IMP.kinematics.ProteinKinematics(hier, residues, piq)
         joints2 = pk2.get_joints()
 
+        # Test that one more joint was created
         self.assertEqual(len(joints), len(joints2)-1)
 
 
+        # Eventually expand test through RRT steps
         '''
         kfss = IMP.kinematics.KinematicForestScoreState(pk.get_kinematic_forest(), pk.get_rigid_bodies(), atoms)
         m.add_score_state(kfss)

@@ -67,7 +67,8 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
      @param mhd hierarchy of a protein, obtained by e.g. reading a Pdb using IMP::Atom::read_pdb()
      @param flexible_residues all residues for which non-custom backbone of side-chain dihedrals may
                               be flexible (side-chains are not implemented as of May 2017)
-     @param custom_dihedral_angles lists of four atoms that define a custom dihedral angle
+     @param custom_dihedral_angles IMP::ParticleIndexQuads - list of four particles that define a 
+                              custom dihedral angle
      @param flexible_backbone whether all phi/psi angles in flexible_residues are flexible
      @param flexible_side_chains whether all chi angles in flexible_residues are flexible      
                (currently not implemented)
@@ -84,8 +85,8 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
      @param mhd hierarchy of a protein, obtained by e.g. reading a Pdb using IMP::Atom::read_pdb()
      @param flexible_residues all residues for which non-custom backbone of side-chain dihedrals may
                               be flexible (side-chains are not implemented as of May 2017)
-     @param custom_dihedral_angles lists of four atoms that define a custom dihedral angle
-     @param custom_dihedral_angle_types the types of all custom dihedral angles (a list of the same size)
+     @param custom_dihedral_atoms lists of four atoms that define a custom dihedral angle !!Only accessible from C++
+                              use custom_dihedral_angles if constructingi n python.
      @param open_loop_bond_atoms TODO: document
      @param flexible_backbone whether all phi/psi angles in flexible_residues are flexible
      @param flexible_side_chains whether all chi angles in flexible_residues are flexible      
@@ -104,7 +105,8 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
      @param mhd hierarchy of a protein, obtained by e.g. reading a Pdb using IMP::Atom::read_pdb()
      @param flexible_residues all residues for which non-custom backbone of side-chain dihedrals may
                               be flexible (side-chains are not implemented as of May 2017)
-     @param custom_dihedral_angles lists of four atoms that define a custom dihedral angle
+     @param custom_dihedral_angles IMP::ParticleIndexQuads - list of four particles that define a 
+                              custom dihedral angle
      @param custom_dihedral_angle_types the types of all custom dihedral angles (a list of the same size)
      @param open_loop_bond_atoms TODO: document
      @param flexible_backbone whether all phi/psi angles in flexible_residues are flexible
@@ -126,7 +128,10 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
   /**
      initialize the protein kinematics object
      @param flexible_residues all reidues whose phi/psi angles are activated
-     @param custom_dihedral_angles lists of four atoms that define a custom dihedral angle
+     @param custom_dihedral_angles IMP::ParticleIndexQuads - list of four particles that define a 
+                              custom dihedral angle
+     @param custom_dihedral_atoms lists of four atoms that define a custom dihedral angle !!Only accessible from C++
+                              use custom_dihedral_angles if constructingi n python.
      @param custom_dihedral_angle_types the types of all custom dihedral angles (a list of the same size)
      @param open_loop_bond_atoms TODO: document
      @param flexible_backbone are dihedral joints defined for the backbone
