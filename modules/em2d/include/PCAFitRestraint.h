@@ -86,6 +86,7 @@ public:
 
   // from last calculation
   IMP::algebra::Vector3Ds best_projections_axis_;
+  std::vector<internal::ImageTransform> best_image_transform_;
 
   // Projector class instance
   internal::Projector projector_;

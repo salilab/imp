@@ -80,6 +80,7 @@ double PCAFitRestraint::unprotected_evaluate(
   PCAFitRestraint* non_const_this = const_cast<PCAFitRestraint *>(this);
   non_const_this->best_projections_.clear();
   non_const_this->best_projections_axis_.clear();
+  non_const_this->best_image_transform_.clear();
   for (unsigned int i = 0; i < images_.size(); i++) {
     internal::ImageTransform best_transform;
     best_transform.set_score(0.000000001);
@@ -111,6 +112,7 @@ double PCAFitRestraint::unprotected_evaluate(
     transformed_image.translate(best_transform.get_x(), best_transform.get_y());
     non_const_this->best_projections_.push_back(transformed_image);
     non_const_this->best_projections_axis_.push_back(projections[best_projection_id].get_axis());
+    non_const_this->best_image_transform_.push_back(best_transform);
   }
   return total_score;
 }
