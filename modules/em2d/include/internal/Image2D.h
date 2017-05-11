@@ -174,6 +174,7 @@ class Image2D : public boost::multi_array<T, 2> {
   // Read a PGM file in binary format; each pixel is represented by 2 bytes,
   // MSB first
   void read_2byte_binary_pgm(std::ifstream &infile, int width, int height);
+  void write_PGM(std::ofstream& fh) const;
 };
 
 template <class T>
@@ -237,8 +238,14 @@ void Image2D<T>::read_2byte_binary_pgm(std::ifstream &infile, int width,
 
 template <class T>
 void Image2D<T>::write_PGM(const std::string& filename) const {
-  std::ofstream outfile(filename.c_str());
-  outfile << "P2" << std::endl;
+  std::ofstream outfile(filename.c_str(), std::ofstream::binary);
+  write_PGM(outfile);
+  outfile.close();
+}
+
+template <class T>
+void Image2D<T>::write_PGM(std::ofstream& outfile) const {
+  outfile << "P5" << std::endl;
   outfile << get_width() << " " << get_height() << std::endl;
   outfile << "255" << std::endl;
 
@@ -251,16 +258,14 @@ void Image2D<T>::write_PGM(const std::string& filename) const {
       min_value = std::min((double)(*this)[i][j], min_value);
     }
   }
+  std::vector<unsigned char> row(get_width());
   for (int i = 0; i < get_height(); i++) {
     for (int j = 0; j < get_width(); j++) {
-      outfile << symm_round(255.0 * ((*this)[i][j] - min_value) /
-                            (max_value - min_value));
-      outfile << " ";
-      if (j > 0 && j % 12 == 0) outfile << std::endl;
+      row[j] = symm_round(255.0 * ((*this)[i][j] - min_value) /
+                          (max_value - min_value));
     }
-    outfile << std::endl;
+    outfile.write((char *)&row[0], get_width());
   }
-  outfile.close();
 }
 
 template <class T>
@@ -276,71 +281,10 @@ template <class T>
 void Image2D<T>::write_PGM(const std::vector<Image2D<> >& images,
                            const std::string& filename) {
   if (images.size() <= 0) return;
-  std::ofstream outfile(filename.c_str());
-  outfile << "P2" << std::endl;
-  // assume same height and width for all images
-  int width, height;
-  if (images.size() >= 10) {
-    width = 10 * images[0].get_width() + 9;
-  } else {
-    int n = images.size();
-    width = n * images[0].get_width() + n - 1;
-  }
-  unsigned int rows_number = images.size() / 10;
-  if (images.size() % 10 > 0) rows_number++;
-  IMP_LOG_VERBOSE("height = " << rows_number << " all images " << images.size()
-                  << std::endl);
-  height = rows_number * images[0].get_height() + rows_number - 1;
-  outfile << width << " " << height << std::endl;
-  outfile << "255" << std::endl;
+  std::ofstream outfile(filename.c_str(), std::ofstream::binary);
 
-  // convert each image to 0-255 color space
-  std::vector<Image2D<int> > out_images(images.size());
-  for (unsigned int image_index = 0; image_index < images.size();
-       image_index++) {
-    images[image_index].convert_to_int(out_images[image_index]);
-  }
-
-  // write 10 images in a row
-  // iterate over 10 images
-  for (unsigned int image_index = 0; image_index < images.size();
-       image_index += 10) {
-    for (int i = 0; i < images[image_index].get_height();
-         i++) {  // i goes over rows
-      for (unsigned int k = 0; k < 10;
-           k++) {  // k iterates over images in one row
-        if (image_index + k < images.size()) {
-          // j goes over columns
-          for (int j = 0; j < images[image_index + k].get_width(); j++) {
-            outfile << out_images[image_index + k][i][j];
-            outfile << " ";
-            if (j > 0 && j % 12 == 0) outfile << std::endl;
-          }
-          if (k != 9 && k != images.size() - 1 &&
-              image_index + k <= images.size() - 1)
-            outfile << " 255 ";  // white frame at the end of each image row
-          outfile << std::endl;
-        } else {
-          if (images.size() > 10) {  // print black row
-            for (int j = 0; j < images[0].get_width();
-                 j++) {  // j goes over columns
-              outfile << "0 ";
-              if (j > 0 && j % 12 == 0) outfile << std::endl;
-            }
-            if (k != 9)
-              outfile << "255 ";  // white frame at the end of each image
-            outfile << std::endl;
-          }
-        }
-      }  // end image row iteration (k)
-    }
-    if (image_index % 10 < rows_number - 1) {  // print white row
-      for (int i = 0; i < width; i++) {
-        outfile << "255 ";
-        if (i > 0 && i % 12 == 0) outfile << std::endl;
-      }
-      outfile << std::endl;
-    }
+  for (unsigned i = 0; i < images.size(); ++i) {
+    images[i].write_PGM(outfile);
   }
   outfile.close();
 }
