@@ -35,7 +35,37 @@ namespace {
 int symm_round(double r) {
   return static_cast<int>(r > 0.0 ? floor(r + 0.5) : ceil(r - 0.5));
 }
+
+void read_pgm_header(std::ifstream &infile, bool &binary_fmt, int &width,
+                     int &height, int &maxval) {
+  char c;
+  char ftype = ' ';
+  const int MAX_LENGTH = 1000;
+  char line[MAX_LENGTH];
+  while (infile.get(c)) {
+    switch (c) {
+      case '#':  // if comment line, read the whole line and move on
+        infile.getline(line, MAX_LENGTH);
+        break;
+      case 'P':  // format magick number
+        infile.get(ftype);
+        infile.getline(line, MAX_LENGTH);
+        break;
+      default:  // return the first character
+        infile.putback(c);
+        break;
+    }
+    if (ftype != ' ' && isdigit(c)) break;  // magick number read and the next line is numbers
+  }
+
+  infile >> width >> height >> maxval;
+  IMP_LOG_VERBOSE("Image width = " << width << " height = " << height
+                  << " max color val = " << maxval << std::endl);
+  // magic number P5 = binary PGM; P2 = text PGM
+  binary_fmt = (ftype == '5');
 }
+
+} // anonymous namespace
 
 template <class T = double>
 class Image2D : public boost::multi_array<T, 2> {
@@ -135,42 +165,43 @@ class Image2D : public boost::multi_array<T, 2> {
   bool stddev_computed_;
   IMP::algebra::PrincipalComponentAnalysis2D pca_;
   std::vector<IMP::algebra::Vector2D> points_;  // segmented area
+
+ private:
+  // Read a PGM file in text format
+  void read_text_pgm(std::ifstream &infile, int width, int height);
+  // Read a PGM file in binary format; each pixel is represented by 1 byte
+  void read_1byte_binary_pgm(std::ifstream &infile, int width, int height);
+  // Read a PGM file in binary format; each pixel is represented by 2 bytes,
+  // MSB first
+  void read_2byte_binary_pgm(std::ifstream &infile, int width, int height);
 };
 
 template <class T>
 void Image2D<T>::read_PGM(const std::string& filename) {
-  std::ifstream infile(filename.c_str());
+  std::ifstream infile(filename.c_str(), std::ifstream::binary);
   if (!infile) {
     IMP_WARN("Unable to open file " << filename << std::endl);
     return;
   }
-
-  char c;
-  char ftype = ' ';
-  const int MAX_LENGTH = 1000;
-  char line[MAX_LENGTH];
-  while (infile.get(c)) {
-    switch (c) {
-      case '#':  // if comment line, read the whole line and move on
-        infile.getline(line, MAX_LENGTH);
-        break;
-      case 'P':  // format magick number
-        infile.get(ftype);
-        infile.getline(line, MAX_LENGTH);
-        break;
-      default:  // return the first character
-        infile.putback(c);
-        break;
-    }
-    if (ftype != ' ' && isdigit(c)) break;  // magick number read and the next line is numbers
-  }
-
+  bool binary_fmt;
   int width, height, maxval;
-  infile >> width >> height >> maxval;
-  IMP_LOG_VERBOSE("Image width = " << width << " height = " << height
-                  << " max color val = " << maxval << std::endl);
+  read_pgm_header(infile, binary_fmt, width, height, maxval);
 
   this->resize(boost::extents[height][width]);
+  if (binary_fmt) {
+    if (maxval < 256) {
+      read_1byte_binary_pgm(infile, width, height);
+    } else {
+      read_2byte_binary_pgm(infile, width, height);
+    }
+  } else {
+    read_text_pgm(infile, width, height);
+  }
+  infile.close();
+}
+
+template <class T>
+void Image2D<T>::read_text_pgm(std::ifstream &infile, int width, int height) {
   int gray_level;
   for (int i = 0; i < height; i++) {
     for (int j = 0; j < width; j++) {
@@ -178,7 +209,30 @@ void Image2D<T>::read_PGM(const std::string& filename) {
       (*this)[i][j] = (T)gray_level;
     }
   }
-  infile.close();
+}
+
+template <class T>
+void Image2D<T>::read_1byte_binary_pgm(std::ifstream &infile, int width,
+                                       int height) {
+  std::vector<unsigned char> row(width);
+  for (int i = 0; i < height; i++) {
+    infile.read((char *)&row[0], width);
+    for (int j = 0; j < width; j++) {
+      (*this)[i][j] = (T)row[j];
+    }
+  }
+}
+
+template <class T>
+void Image2D<T>::read_2byte_binary_pgm(std::ifstream &infile, int width,
+                                       int height) {
+  std::vector<unsigned char> row(width * 2);
+  for (int i = 0; i < height; i++) {
+    infile.read((char *)&row[0], width * 2);
+    for (int j = 0; j < width; j++) {
+      (*this)[i][j] = (T)((int)row[j * 2] * 256 + (int)row[j * 2 + 1]);
+    }
+  }
 }
 
 template <class T>

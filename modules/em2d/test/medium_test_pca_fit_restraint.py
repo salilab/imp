@@ -18,14 +18,15 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
 
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
 
-        image_list = [self.get_input_file_name('image_1.pgm')]
+        for image_name in ('image_1_text.pgm', 'image_1_binary.pgm'):
+            image_list = [self.get_input_file_name(image_name)]
 
-        pca_fit_restraint = IMP.em2d.PCAFitRestraint(
-            particles, image_list, 2.2, 20, 100)
-        score = pca_fit_restraint.evaluate(False)
-        print('initial score = ' + str(score))
-        self.assertAlmostEqual(score, 0.052, delta=0.01)
-        os.unlink('images.pgm')
+            pca_fit_restraint = IMP.em2d.PCAFitRestraint(
+                particles, image_list, 2.2, 20, 100)
+            score = pca_fit_restraint.evaluate(False)
+            print('initial score = ' + str(score))
+            self.assertAlmostEqual(score, 0.052, delta=0.01)
+            os.unlink('images.pgm')
 
 
 if __name__ == '__main__':
