@@ -62,7 +62,7 @@ IMP_BUILTIN_VALUES(Transformation3Ds, Transformation3DsList);
 // IMP_SWIG_OBJECT(IMP::em2d, TemplateFinder, TemplateFinders);
 
 
-// wrapping of a decorator with swigg. Parameters: namespace, name, plural name
+// wrapping of a decorator with swig. Parameters: namespace, name, plural name
 IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 
 
