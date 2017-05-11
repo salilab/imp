@@ -185,7 +185,10 @@ class GaussianEMRestraint(object):
             self.dataset = representation.get_file_dataset(target_fn)
             if self.dataset:
                 return
-        l = IMP.pmi.metadata.FileLocation(target_fn)
+        l = IMP.pmi.metadata.FileLocation(target_fn,
+                              details="Electron microscopy density map, "
+                                      "represented as a Gaussian Mixture "
+                                      "Model (GMM)")
         self.dataset = IMP.pmi.metadata.EMDensityDataset(l)
         # If the GMM was derived from an MRC file that exists, add that too
         m = re.match('(.*\.mrc)\..*\.txt$', target_fn)

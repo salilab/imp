@@ -312,7 +312,10 @@ def get_best_models(stat_files,
         # append to the lists
         score_list += fields[score_key]
         for rmf in fields[rmf_file_key]:
-            rmf_file_list.append(os.path.join(root_directory_of_stat_file,"/".join(rmf.split("/")[-4:])))
+            rmf=os.path.normpath(rmf)
+            if root_directory_of_stat_file not in rmf:
+                rmf=os.path.join(root_directory_of_stat_file,rmf)
+            rmf_file_list.append(rmf)
 
         rmf_file_frame_list += fields[rmf_file_frame_key]
 

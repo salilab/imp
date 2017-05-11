@@ -1369,7 +1369,8 @@ class _StartingModelDumper(_Dumper):
         for t in templates:
             if t._orig_tm_code:
                 fname = template_path_map[t._orig_tm_code]
-                l = IMP.pmi.metadata.FileLocation(fname)
+                l = IMP.pmi.metadata.FileLocation(fname,
+                                 details="Template for comparative modeling")
             else:
                 l = IMP.pmi.metadata.PDBLocation(t.tm_db_code)
             d = IMP.pmi.metadata.PDBDataset(l)
@@ -1408,7 +1409,8 @@ class _StartingModelDumper(_Dumper):
         # Attempt to identity PDB file vs. comparative model
         fh = open(pdbname)
         first_line = fh.readline()
-        local_file = IMP.pmi.metadata.FileLocation(pdbname)
+        local_file = IMP.pmi.metadata.FileLocation(pdbname,
+                                          details="Starting model structure")
         file_dataset = self.simo.get_file_dataset(pdbname)
         if first_line.startswith('HEADER'):
             version, details, metadata = self._parse_pdb(fh, first_line)
@@ -1437,7 +1439,8 @@ class _StartingModelDumper(_Dumper):
             d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
             repo = IMP.pmi.metadata.Repository(doi=first_line[46:].strip())
             # todo: better specify an unknown path
-            orig_loc = IMP.pmi.metadata.FileLocation(repo=repo, path='.')
+            orig_loc = IMP.pmi.metadata.FileLocation(repo=repo, path='.',
+                              details="Starting comparative model structure")
             parent = IMP.pmi.metadata.ComparativeModelDataset(orig_loc)
             d.add_parent(parent)
             model.dataset = self.simo.dataset_dump.add(file_dataset or d)
@@ -1465,7 +1468,9 @@ class _StartingModelDumper(_Dumper):
         model.dataset = self.simo.dataset_dump.add(file_dataset or d)
         templates, alnfile = self.get_templates(pdbname, model)
         if alnfile:
-            model.alignment_file = IMP.pmi.metadata.FileLocation(alnfile)
+            model.alignment_file = IMP.pmi.metadata.FileLocation(alnfile,
+                                    details="Alignment for starting "
+                                            "comparative model")
             self.simo.extref_dump.add(model.alignment_file,
                                       _ExternalReferenceDumper.INPUT_DATA)
 
@@ -1801,7 +1806,8 @@ class _ReplicaExchangeAnalysisEnsemble(_Ensemble):
     def load_localization_density(self, mdl, component, extref_dump):
         fname = self.get_localization_density_file(component)
         if os.path.exists(fname):
-            local_file = IMP.pmi.metadata.FileLocation(fname)
+            local_file = IMP.pmi.metadata.FileLocation(fname,
+                              details="Localization density for %s" % component)
             self.localization_density[component] = local_file
             extref_dump.add(local_file,
                             _ExternalReferenceDumper.MODELING_OUTPUT)

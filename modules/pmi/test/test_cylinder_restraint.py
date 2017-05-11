@@ -44,8 +44,10 @@ class Tests(IMP.test.TestCase):
     def test_values(self):
         mdl = IMP.Model()
         p=IMP.Particle(mdl)
-        d=IMP.core.XYZ.setup_particle(p)
+        d=IMP.core.XYZR.setup_particle(p)
         d.set_coordinates((0,0,0))
+        d.set_radius(1.0)
+        IMP.atom.Mass.setup_particle(p,1.0)
         h=IMP.atom.Hierarchy.setup_particle(p)
         cr=IMP.pmi.restraints.basic.CylinderRestraint(mdl,[h],10,20)
         cr.set_was_used(True)
@@ -57,15 +59,16 @@ class Tests(IMP.test.TestCase):
     def test_angles(self):
         mdl = IMP.Model()
         p=IMP.Particle(mdl)
-        d=IMP.core.XYZ.setup_particle(p)
+        d=IMP.core.XYZR.setup_particle(p)
         d.set_coordinates((0,0,0))
+        d.set_radius(1.0)
+        IMP.atom.Mass.setup_particle(p,1.0)
         h=IMP.atom.Hierarchy.setup_particle(p)
         cr=IMP.pmi.restraints.basic.CylinderRestraint(mdl,[h],10,20,-72,72)
         cr.set_was_used(True)
         for angle in range(360):
             anglerad=float(angle)/180.0*math.pi
             d.set_coordinates((math.cos(anglerad),math.sin(anglerad),0))
-            print('AAA',angle,cr.unprotected_evaluate(None))
 
 if __name__ == '__main__':
     IMP.test.main()

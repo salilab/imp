@@ -1040,7 +1040,8 @@ Nup84-m1 ATOM 2 C CA GLU 1 A 2 -8.986 11.688 -5.817 91.820 2
         self.assertEqual(parent._data_type, 'Comparative model')
         self.assertEqual(parent.location.path, '.')
         self.assertEqual(parent.location.repo.doi, '10.1093/nar/gkt704')
-        self.assertEqual(parent.location.details, None)
+        self.assertEqual(parent.location.details,
+                         'Starting comparative model structure')
 
     def test_get_sources_modeller(self):
         """Test get_sources() when given a Modeller model with alignment"""
@@ -1068,7 +1069,8 @@ Nup84-m1 ATOM 2 C CA GLU 1 A 2 -8.986 11.688 -5.817 91.820 2
         self.assertEqual(model.dataset._data_type, 'Comparative model')
         self.assertEqual(model.dataset.location.path, pdbname)
         self.assertEqual(model.dataset.location.repo, None)
-        self.assertEqual(model.dataset.location.details, None)
+        self.assertEqual(model.dataset.location.details,
+                         'Starting model structure')
         p1, p2 = model.dataset._parents
         self.assertEqual(p1._data_type, 'Experimental model')
         self.assertEqual(p1.location.db_name, 'PDB')
@@ -1089,7 +1091,8 @@ Nup84-m1 ATOM 2 C CA GLU 1 A 2 -8.986 11.688 -5.817 91.820 2
         self.assertEqual(s1.tm_chain_id, 'C')
         p1, = model.dataset._parents
         self.assertEqual(p1._data_type, 'Experimental model')
-        self.assertEqual(p1.location.details, None)
+        self.assertEqual(p1.location.details,
+                         'Template for comparative modeling')
         self.assertEqual(p1.location.path,
                          self.get_input_file_name('15133C.pdb'))
 
@@ -1105,7 +1108,8 @@ Nup84-m1 ATOM 2 C CA GLU 1 A 2 -8.986 11.688 -5.817 91.820 2
         self.assertEqual(model.dataset._data_type, 'Comparative model')
         self.assertEqual(model.dataset.location.path, pdbname)
         self.assertEqual(model.dataset.location.repo, None)
-        self.assertEqual(model.dataset.location.details, None)
+        self.assertEqual(model.dataset.location.details,
+                         'Starting model structure')
         (p,) = model.dataset._parents
         self.assertEqual(p._data_type, 'Experimental model')
         self.assertEqual(p.location.db_name, 'PDB')

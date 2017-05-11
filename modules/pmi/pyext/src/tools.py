@@ -1186,7 +1186,7 @@ class Segments(object):
     etc.
     '''
 
-    def __init__(self,index=None):
+    def __init__(self,index):
         '''index can be a integer or a list of integers '''
         if type(index) is int:
             self.segs=[[index]]
@@ -1194,8 +1194,6 @@ class Segments(object):
             self.segs=[[index[0]]]
             for i in index[1:]:
                 self.add(i)
-        elif index is None:
-            self.segs=[]
 
     def add(self,index):
         '''index can be a integer or a list of integers '''
@@ -1573,7 +1571,9 @@ def input_adaptor(stuff,
                   warn_about_slices=True):
     """Adapt things for PMI (degrees of freedom, restraints, ...)
     Returns list of list of hierarchies, separated into Molecules if possible.
-    (iterable of ^2) hierarchy -> returns input as list of list of hierarchies, only one entry.
+    The input can be a list, or a list of lists (iterable of ^1 or iterable of ^2)
+    (iterable of ^2) Hierarchy -> returns input as list of list of hierarchies,
+        only one entry, not grouped by molecules.
     (iterable of ^2) PMI::System/State/Molecule/TempResidue ->
         returns residue hierarchies, grouped in molecules, at requested resolution
     @param stuff Can be one of the following inputs:
@@ -1588,56 +1588,59 @@ def input_adaptor(stuff,
     But there should be no problem if you request unbuilt residues, they should be ignored.
     """
 
-    # if iterable (of iterable), make sure uniform type
-    def get_ok_iter(it):
-        type_set = set(type(a) for a in it)
-        if len(type_set)!=1:
-            raise Exception('input_adaptor: can only pass one type of object at a time')
-        xtp = type_set.pop()
-        return xtp,list(it)
-
     if stuff is None:
         return stuff
+
     if hasattr(stuff,'__iter__'):
         if len(stuff)==0:
             return stuff
-        tp,thelist = get_ok_iter(stuff)
+        thelist=list(stuff)
 
         # iter of iter of should be ok
-        if hasattr(next(iter(thelist)),'__iter__'):
-            flatlist = [i for sublist in thelist for i in sublist]
-            tp,thelist = get_ok_iter(flatlist)
+        if all(hasattr(el,'__iter__') for el in thelist):
+            thelist = [i for sublist in thelist for i in sublist]
+        elif any(hasattr(el,'__iter__') for el in thelist):
+            raise Exception('input_adaptor: input_object must be a list or a list of lists')
 
         stuff = thelist
     else:
-        tp = type(stuff)
         stuff = [stuff]
+
+    # check that it is a hierarchy homogenously:
+    try:
+        is_hierarchy=all(IMP.atom.Hierarchy.get_is_setup(s) for s in stuff)
+    except:
+        is_hierarchy=False
+    # get the other types homogenously
+    is_system=all(isinstance(s, IMP.pmi.topology.System) for s in stuff)
+    is_state=all(isinstance(s, IMP.pmi.topology.State) for s in stuff)
+    is_molecule=all(isinstance(s, IMP.pmi.topology.Molecule) for s in stuff)
+    is_temp_residue=all(isinstance(s, IMP.pmi.topology.TempResidue) for s in stuff)
 
     # now that things are ok, do selection if requested
     hier_list = []
     pmi_input = False
-    if tp in (IMP.pmi.topology.System,IMP.pmi.topology.State,
-              IMP.pmi.topology.Molecule,IMP.pmi.topology.TempResidue):
+    if is_system or is_state or is_molecule or is_temp_residue:
         # if PMI, perform selection using gathered indexes
         pmi_input = True
         indexes_per_mol = OrderedDefaultDict(list) #key is Molecule object, value are residues
-        if tp==IMP.pmi.topology.System:
+        if is_system:
             for system in stuff:
                 for state in system.get_states():
                     mdict = state.get_molecules()
                     for molname in mdict:
                         for copy in mdict[molname]:
                             indexes_per_mol[copy] += [r.get_index() for r in copy.get_residues()]
-        elif tp==IMP.pmi.topology.State:
+        elif is_state:
             for state in stuff:
                 mdict = state.get_molecules()
                 for molname in mdict:
                     for copy in mdict[molname]:
                         indexes_per_mol[copy] += [r.get_index() for r in copy.get_residues()]
-        elif tp==IMP.pmi.topology.Molecule:
+        elif is_molecule:
             for molecule in stuff:
                 indexes_per_mol[molecule] += [r.get_index() for r in molecule.get_residues()]
-        elif tp==IMP.pmi.topology.TempResidue:
+        elif is_temp_residue:
             for tempres in stuff:
                 indexes_per_mol[tempres.get_molecule()].append(tempres.get_index())
         for mol in indexes_per_mol:
@@ -1673,17 +1676,20 @@ def input_adaptor(stuff,
                                   'molecule.add_representation()'
                                             %(mol.get_name(),minset,maxset,minf,maxf,resbreak))
             hier_list.append([IMP.atom.Hierarchy(p) for p in ps])
+    elif is_hierarchy:
+        #check
+        ps=[]
+        if pmi_resolution=='all':
+            for h in stuff:
+                ps+=select_at_all_resolutions(h)
+        else:
+            for h in stuff:
+                ps+=IMP.atom.Selection(h,resolution=pmi_resolution).get_selected_particles()
+        hier_list=[IMP.atom.Hierarchy(p) for p in ps]
+        if not flatten:
+            hier_list = [hier_list]
     else:
-        try:
-            if IMP.atom.Hierarchy.get_is_setup(stuff[0]):
-                if flatten:
-                    hier_list = stuff
-                else:
-                    hier_list = [stuff]
-            else:
-                raise Exception('input_adaptor: you passed something of type',tp)
-        except:
-            raise Exception('input_adaptor: you passed something of type',tp)
+        raise Exception('input_adaptor: you passed something of wrong type or a list with mixed types')
 
     if flatten and pmi_input:
         return [h for sublist in hier_list for h in sublist]
@@ -2223,8 +2229,6 @@ class Colors(object):
                     IMP.display.Colored.setup_particle(part,color)
 
     def get_list_distant_colors(self):
-        cnames=['red','azure','brown','blue','crimson','green','magenta','cyan','gray','khaki','lime','olive','orange','purple','turquoise','pink']
-        """
         cnames = ['#F0F8FF', '#FAEBD7', '#00FFFF', '#7FFFD4', '#F0FFFF', '#F5F5DC',
         '#FFE4C4', '#000000', '#FFEBCD', '#0000FF', '#8A2BE2', '#A52A2A', '#DEB887',
         '#5F9EA0', '#7FFF00', '#D2691E', '#FF7F50', '#6495ED', '#FFF8DC', '#DC143C',
@@ -2246,5 +2250,4 @@ class Colors(object):
         '#708090', '#FFFAFA', '#00FF7F', '#4682B4', '#D2B48C', '#008080', '#D8BFD8',
         '#FF6347', '#40E0D0', '#EE82EE', '#F5DEB3', '#FFFFFF', '#F5F5F5', '#FFFF00',
         '#9ACD32']
-        """
         return cnames

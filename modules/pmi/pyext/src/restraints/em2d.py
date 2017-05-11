@@ -57,7 +57,8 @@ class ElectronMicroscopy2D(object):
                 if d:
                     self.datasets.append(d)
                     continue
-            l = IMP.pmi.metadata.FileLocation(image)
+            l = IMP.pmi.metadata.FileLocation(image,
+                                 details="Electron microscopy class average")
             d = IMP.pmi.metadata.EM2DClassDataset(l)
             self.datasets.append(d)
 
