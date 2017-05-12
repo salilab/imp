@@ -94,6 +94,7 @@ namespace IMP {
   namespace em {
     %extend FitRestraint {
       static FitRestraint* cast(Restraint *r) {
+        IMPEM_DEPRECATED_FUNCTION_DEF(2.8, "Use get_from() instead");
         return dynamic_cast<IMP::em::FitRestraint *>(r);
       }
     }

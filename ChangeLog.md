@@ -5,6 +5,7 @@ ChangeLog {#changelog}
 - IMP::em2d::PCAFitRestraint now uses binary PGM files by default, rather than
   the less well supported text PGM format. It can still read text PGM files
   as input.
+- IMP::em::FitRestraint::cast() is deprecated. Use `get_from()` instead.
 
 # 2.7.0 - 2017-04-13 # {#changelog_2_7_0}
 - New applications of IMP are now available:
