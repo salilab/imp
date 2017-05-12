@@ -17,7 +17,6 @@
 #include "IMP/flags.h"
 #include "IMP/live_objects.h"
 #include "boost/unordered_map.hpp"
-#include "IMP/base_statistics.h"
 #include "IMP/types.h"
 #include <boost/unordered_set.hpp>
 #include <IMP/random.h>
@@ -187,11 +186,6 @@ Flag<LogLevel, IMP_HAS_LOG != IMP_SILENT> log_level("log_level",
                                                     "\"VERBOSE\"",
                                                     LogLevel(WARNING));
 
-AdvancedFlag<StatisticsLevel> stats_level(
-    "statistics_level",
-    "The level of statistics to gather: \"NONE\" or \"ALL\".",
-    StatisticsLevel(ALL_STATISTICS));
-
 AdvancedFlag<bool, IMP_KERNEL_HAS_GPERFTOOLS> cpu_profile(
     "cpu_profile", "Perform CPU profiling.", false);
 AdvancedFlag<bool, IMP_KERNEL_HAS_GPERFTOOLS> heap_profile(
@@ -241,24 +235,5 @@ AdvancedFlag<bool> exceptions_on_deprecation(
     "deprecation_exceptions",
     "Throw an exception when deprecated functions are used.", false);
 boost::unordered_set<std::string> printed_deprecation_messages;
-
-boost::unordered_map<std::string, Timing> timings;
-
-namespace {
-std::string timings_name;
-AdvancedFlag<std::string> statistics(
-    "statistics",
-    "Writing statistics about various aspects to a file (or stdout)", "");
-
-struct TimingsWriter {
-  ~TimingsWriter() {
-    if (timings_name == "stdout") {
-      show_timings(std::cout);
-    } else if (!timings_name.empty()) {
-      show_timings(TextOutput(timings_name));
-    }
-  }
-} tw;
-}
 
 IMPKERNEL_END_INTERNAL_NAMESPACE

@@ -12,7 +12,6 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/geometric_alignment.h>
-#include <IMP/base_statistics.h>
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/internal/rigid_body_tree.h>
 #include <IMP/internal/ContainerConstraint.h>

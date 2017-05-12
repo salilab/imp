@@ -67,17 +67,6 @@ IMPKERNELEXPORT std::istream &operator>>(std::istream &in, CheckLevel &ll);
 IMPKERNELEXPORT std::ostream &operator<<(std::ostream &in, CheckLevel ll);
 #endif
 
-//! Specify the level of statistics to record
-/** \see show_timings(). */
-enum StatisticsLevel {
-  NO_STATISTICS = 0,
-  ALL_STATISTICS = 1
-};
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-IMPKERNELEXPORT std::istream &operator>>(std::istream &in, StatisticsLevel &ll);
-IMPKERNELEXPORT std::ostream &operator<<(std::ostream &in, StatisticsLevel ll);
-#endif
-
 }  // imp
 
 #endif /* IMPKERNEL_ENUMS_H */

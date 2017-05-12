@@ -26,7 +26,6 @@ extern IMPKERNELEXPORT boost::program_options::variables_map variables_map;
 
 extern IMPKERNELEXPORT AdvancedFlag<CheckLevel, IMP_HAS_CHECKS != IMP_NONE>
     check_level;
-extern IMPKERNELEXPORT AdvancedFlag<StatisticsLevel> stats_level;
 
 // needed for flags
 extern IMPKERNELEXPORT Flag<LogLevel, IMP_HAS_LOG != IMP_SILENT> log_level;

@@ -6,6 +6,9 @@ ChangeLog {#changelog}
   the less well supported text PGM format. It can still read text PGM files
   as input.
 - IMP::em::FitRestraint::cast() is deprecated. Use `get_from()` instead.
+- The deprecated profiling (timing statistics) support has been removed.
+  A number of third party packages (such as gperftools) are available
+  for profiling and should be used instead.
 
 # 2.7.0 - 2017-04-13 # {#changelog_2_7_0}
 - New applications of IMP are now available:
