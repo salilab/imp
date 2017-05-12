@@ -362,11 +362,22 @@ class TestCase(unittest.TestCase):
                 fmin, vmin = f, v
         self.assertAlmostEqual(fmin, expected_fmin, delta=step)
 
-    def check_get_from(self, obj):
-        """Check that the get_from() static method works correctly"""
+    def check_standard_object_methods(self, obj):
+        """Check methods that every IMP::Object class should have"""
+        obj.set_was_used(True)
+        # Test get_from static method
         cls = type(obj)
         self.assertIsNotNone(cls.get_from(obj))
         self.assertRaises(ValueError, cls.get_from, IMP.Model())
+        # Test __str__ and __repr__
+        self.assertIsInstance(str(obj), str)
+        self.assertIsInstance(repr(obj), str)
+        # Test get_version_info()
+        verinf = obj.get_version_info()
+        self.assertIsInstance(verinf, IMP.VersionInfo)
+        # Test SWIG thisown flag
+        o = obj.thisown
+        obj.thisown = o
 
     def create_particles_in_box(self, model, num=10,
                                 lb= [0,0,0],

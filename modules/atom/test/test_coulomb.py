@@ -34,11 +34,11 @@ class Tests(IMP.test.TestCase):
 
     """Test the CoulombPairScore"""
 
-    def test_cast(self):
-        """Check CoulombPairScore cast"""
+    def test_standard_object_methods(self):
+        """Check CoulombPairScore standard object methods"""
         sm = IMP.atom.ForceSwitch(9.0, 10.0)
         c = IMP.atom.CoulombPairScore(sm)
-        self.check_get_from(c)
+        self.check_standard_object_methods(c)
 
     def test_get_set(self):
         """Check CoulombPairScore get/set methods"""
