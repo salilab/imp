@@ -353,7 +353,7 @@ _object_types.append(#Name)
 
 
 
-%define IMP_SWIG_OBJECT_INSTANCE(Namespace,Name, Nicename, PluralName)
+%define IMP_SWIG_OBJECT_INSTANCE(Namespace,Name, Nicename, PluralName, UniqueID...)
 IMP_SWIG_VALUE_CHECKS(Namespace, PluralName, SWIGTYPE);
 %typemap(out) Namespace::Name* {
   if (!($owner & SWIG_POINTER_NEW)) {
@@ -373,17 +373,17 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Namespace::Name, PluralName##Temp,);
 IMP_SWIG_OBJECT_CHECKS(Namespace, Name);
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
-%template(_object_cast_to_##Name) IMP::object_cast<Namespace::Name>;
+%template(_object_cast_to_##UniqueID##Name) IMP::object_cast<Namespace::Name>;
 %enddef
 
-%define IMP_SWIG_OBJECT(Namespace,Name, PluralName)
-IMP_SWIG_OBJECT_INSTANCE(Namespace, Name, Name, PluralName);
+%define IMP_SWIG_OBJECT(Namespace,Name, PluralName, UniqueID...)
+IMP_SWIG_OBJECT_INSTANCE(Namespace, Name, Name, PluralName, UniqueID);
 IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
 %extend Namespace::Name {
   %pythoncode %{
     @staticmethod
     def get_from(o):
-       return _object_cast_to_##Name(o)
+       return _object_cast_to_##UniqueID##Name(o)
   %}
  }
 %enddef
