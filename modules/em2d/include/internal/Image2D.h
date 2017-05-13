@@ -71,17 +71,20 @@ template <class T = double>
 class Image2D : public boost::multi_array<T, 2> {
  public:
   // Constructors
-  Image2D() : average_computed_(false), stddev_computed_(false) {}
+  Image2D() : average_computed_(false), stddev_computed_(false),
+              center_x_(0), center_y_(0) {}
 
   // Loads an image from the specified file
   // The file is assumed to contain an image in PGM format
   Image2D(const std::string& file_name)
-      : average_computed_(false), stddev_computed_(false) {
+      : average_computed_(false), stddev_computed_(false)
+        , center_x_(0), center_y_(0) {
     read_PGM(file_name);
   }
 
   Image2D(const boost::multi_array<T, 2>& in)
-      : average_computed_(false), stddev_computed_(false) {
+      : average_computed_(false), stddev_computed_(false)
+        , center_x_(0), center_y_(0) {
     this->resize(boost::extents[in.shape()[0]][in.shape()[1]]);
     for (unsigned int i = 0; i < in.num_elements(); i++) {
       *(this->data() + i) = *(in.data() + i);
@@ -95,6 +98,8 @@ class Image2D : public boost::multi_array<T, 2> {
         average_computed_(in.average_computed_),
         stddev_computed_(in.stddev_computed_),
         pca_(in.pca_),
+	center_x_(in.center_x_),
+	center_y_(in.center_y_),
         points_(in.points_) {
     this->resize(boost::extents[in.shape()[0]][in.shape()[1]]);
     for (unsigned int i = 0; i < in.num_elements(); i++) {
@@ -103,7 +108,8 @@ class Image2D : public boost::multi_array<T, 2> {
   }
 
   Image2D(int height, int width)
-      : average_computed_(false), stddev_computed_(false) {
+      : average_computed_(false), stddev_computed_(false)
+        , center_x_(0), center_y_(0) {
     this->resize(boost::extents[height][width]);
   }
 
@@ -144,6 +150,7 @@ class Image2D : public boost::multi_array<T, 2> {
   double ncc_score(const Image2D<T>& other_image) const;
   double ncc_score(const Image2D<T>& other_image, T thr) const;
   void compute_PCA();
+  IMP::algebra::Vector2D get_centroid() const { return pca_.get_centroid(); }
 
   void add(const Image2D<T>& image, double weight = 0.5);
   void convert_to_int(Image2D<int>& out_image) const;
@@ -158,12 +165,16 @@ class Image2D : public boost::multi_array<T, 2> {
   double max_distance() const;
   int segmented_pixels() const { return (int)points_.size(); }
 
+  int get_center_x() const { return center_x_; }
+  int get_center_y() const { return center_y_; }
+
  protected:
   double average_;
   double stddev_;
   bool average_computed_;
   bool stddev_computed_;
   IMP::algebra::PrincipalComponentAnalysis2D pca_;
+  int center_x_, center_y_;
   std::vector<IMP::algebra::Vector2D> points_;  // segmented area
 
  private:
@@ -599,6 +610,8 @@ void Image2D<T>::pad(Image2D<T>& out_image, int new_width, int new_height,
 
   int t_x = new_width / 2 - get_width() / 2;
   int t_y = new_height / 2 - get_height() / 2;
+  out_image.center_x_ = center_x_ + t_x;
+  out_image.center_y_ = center_y_ + t_y;
   for (int i = 0; i < get_height(); i++) {
     for (int j = 0; j < get_width(); j++) {
       out_image[i + t_y][j + t_x] = (*this)[i][j];
@@ -616,10 +629,14 @@ void Image2D<T>::pad(int new_width, int new_height, T pad_value) {
 
 template <class T>
 void Image2D<T>::center() {
+  int old_center_x = center_x_;
+  int old_center_y = center_y_;
   std::pair<double, double> center = weighted_average();
-  int t_x = symm_round(get_width() / 2 - center.first);
-  int t_y = symm_round(get_height() / 2 - center.second);
-  translate(t_x, t_y);
+  int cx = symm_round(get_width() / 2 - center.first);
+  int cy = symm_round(get_height() / 2 - center.second);
+  translate(cx, cy);
+  center_x_ = old_center_x + cx;
+  center_y_ = old_center_y + cy;
 }
 
 template <class T>

@@ -56,6 +56,8 @@ void Projection::init(const IMP::algebra::Vector3Ds& points, int axis_size) {
     y_max_ = std::max(y_max_, points[i][1]);
     center += points[i];
   }
+  orig_x_min_ = x_min_;
+  orig_y_min_ = y_min_;
   center /= points.size();
 
   static IMP::em::KernelParameters kp(resolution_);
