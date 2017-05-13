@@ -1,5 +1,5 @@
 show_exceptions=['Decorator', "ParticlePair", "ParticleTriplet", "ParticleQuad",
-                 'RandomNumberGenerator',"Timer"]
+                 'RandomNumberGenerator']
 function_name_exceptions=[
     'deprecated_module',
     'deprecated_function',
@@ -37,7 +37,7 @@ value_object_exceptions=['Exception', 'TypeException',
                                             'RandomNumberGenerator',
                                            'ValueException',
                                            'FailureHandlerBase',
-                                            "TextInput", "TextOutput", "RefCounted", "Timer",
+                                            "TextInput", "TextOutput", "RefCounted",
                        'Decorator', 'DerivativeAccumulator',
                                            'RestraintBase', 'ScoreStateBase']
 spelling_exceptions=["undecorator", "undecorate", "altgraph", "networkx"]
