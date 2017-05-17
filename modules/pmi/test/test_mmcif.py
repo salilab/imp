@@ -1430,7 +1430,8 @@ _ihm_cross_link_restraint.sigma_2
         pr = DummyRestraint()
         rd = IMP.pmi.mmcif._RestraintDataset(pr, num=None,
                                              allow_duplicates=False)
-        r = IMP.pmi.mmcif._EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
+        r = IMP.pmi.mmcif._EM2DRestraint(rd, pr, 0,
+                                         resolution=10.0, pixel_size=4.2,
                                          image_resolution=1.0,
                                          projection_number=200)
         l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
@@ -1446,7 +1447,8 @@ _ihm_cross_link_restraint.sigma_2
         pr = DummyRestraint()
         rd = IMP.pmi.mmcif._RestraintDataset(pr, num=None,
                                              allow_duplicates=False)
-        r = IMP.pmi.mmcif._EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
+        r = IMP.pmi.mmcif._EM2DRestraint(rd, pr, 0,
+                                         resolution=10.0, pixel_size=4.2,
                                          image_resolution=1.0,
                                          projection_number=200)
         lp = IMP.pmi.metadata.FileLocation(repo='foo', path='baz')
@@ -1459,12 +1461,26 @@ _ihm_cross_link_restraint.sigma_2
 
     def test_em2d_dumper(self):
         """Test EM2DDumper class"""
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+        nup84 = simo.autobuild_model("Nup84",
+                                     self.get_input_file_name("test.nup84.pdb"),
+                                     "A")
+
         class DummyRestraint(object):
+            label = 'foo'
+        class DummyProtocol(object):
             pass
         pr = DummyRestraint()
         rd = IMP.pmi.mmcif._RestraintDataset(pr, num=None,
                                              allow_duplicates=False)
-        r = IMP.pmi.mmcif._EM2DRestraint(rd, resolution=10.0, pixel_size=4.2,
+        r = IMP.pmi.mmcif._EM2DRestraint(rd, pr, 0,
+                                         resolution=10.0, pixel_size=4.2,
                                          image_resolution=1.0,
                                          projection_number=200)
         lp = IMP.pmi.metadata.FileLocation(repo='foo', path='baz')
@@ -1474,12 +1490,21 @@ _ihm_cross_link_restraint.sigma_2
         d.id = 4
         d.add_primary(dp)
         pr.dataset = d
-        po = DummyPO(EmptyObject())
-        d = IMP.pmi.mmcif._EM2DDumper(po)
-        d.add(r)
+        po.model_prot_dump.add(DummyProtocol())
+        m = po.add_model()
+        prefix = 'ElectronMicroscopy2D_foo_Image1_'
+        m.stats = {prefix + 'CCC': '0.872880665234',
+                   prefix + 'Translation0': '304.187464117',
+                   prefix + 'Translation1': '219.585852373',
+                   prefix + 'Translation2': '0.0',
+                   prefix + 'Rotation0': '0.443696289233',
+                   prefix + 'Rotation1': '0.316041672423',
+                   prefix + 'Rotation2': '-0.419293315413',
+                   prefix + 'Rotation3': '-0.726253660826'}
+        po.em2d_dump.add(r)
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
-        d.dump(w)
+        po.em2d_dump.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
@@ -1494,6 +1519,27 @@ _ihm_2dem_class_average_restraint.number_of_projections
 _ihm_2dem_class_average_restraint.struct_assembly_id
 _ihm_2dem_class_average_restraint.details
 1 4 50 4.200 4.200 1.000 NO 200 1 .
+#
+#
+loop_
+_ihm_2dem_class_average_fitting.ordinal_id
+_ihm_2dem_class_average_fitting.restraint_id
+_ihm_2dem_class_average_fitting.model_id
+_ihm_2dem_class_average_fitting.cross_correlation_coefficient
+_ihm_2dem_class_average_fitting.rot_matrix[1][1]
+_ihm_2dem_class_average_fitting.rot_matrix[2][1]
+_ihm_2dem_class_average_fitting.rot_matrix[3][1]
+_ihm_2dem_class_average_fitting.rot_matrix[1][2]
+_ihm_2dem_class_average_fitting.rot_matrix[2][2]
+_ihm_2dem_class_average_fitting.rot_matrix[3][2]
+_ihm_2dem_class_average_fitting.rot_matrix[1][3]
+_ihm_2dem_class_average_fitting.rot_matrix[2][3]
+_ihm_2dem_class_average_fitting.rot_matrix[3][3]
+_ihm_2dem_class_average_fitting.tr_vector[1]
+_ihm_2dem_class_average_fitting.tr_vector[2]
+_ihm_2dem_class_average_fitting.tr_vector[3]
+1 1 1 0.873 -0.407 -0.910 -0.087 0.379 -0.255 0.889 -0.831 0.329 0.449 304.187
+219.586 0.000
 #
 """)
 

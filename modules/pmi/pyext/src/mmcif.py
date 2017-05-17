@@ -961,11 +961,28 @@ class _CrossLinkDumper(_Dumper):
                         ordinal += 1
 
 class _EM2DRestraint(object):
-    def __init__(self, rdataset, resolution, pixel_size,
-                 image_resolution, projection_number):
+    def __init__(self, rdataset, pmi_restraint, image_number, resolution,
+                 pixel_size, image_resolution, projection_number):
+        self.pmi_restraint, self.image_number = pmi_restraint, image_number
         self.rdataset, self.resolution = rdataset, resolution
         self.pixel_size, self.image_resolution = pixel_size, image_resolution
         self.projection_number = projection_number
+
+    def get_transformation(self, model):
+        """Get the transformation that places the model on the image"""
+        prefix = 'ElectronMicroscopy2D_%s_Image%d' % (self.pmi_restraint.label,
+                                                      self.image_number + 1)
+        r = [float(model.stats[prefix + '_Rotation%d' % i]) for i in range(4)]
+        t = [float(model.stats[prefix + '_Translation%d' % i])
+             for i in range(3)]
+        return IMP.algebra.Transformation3D(IMP.algebra.Rotation3D(*r),
+                                            IMP.algebra.Vector3D(*t))
+    def get_cross_correlation(self, model):
+        """Get the cross correlation coefficient between the model projection
+           and the image"""
+        return float(model.stats['ElectronMicroscopy2D_%s_Image%d_CCC'
+                                 % (self.pmi_restraint.label,
+                                    self.image_number + 1)])
 
     def get_num_raw_micrographs(self):
         """Return the number of raw micrographs used, if known.
@@ -984,6 +1001,10 @@ class _EM2DDumper(_Dumper):
         rsr.id = len(self.restraints)
 
     def dump(self, writer):
+        self.dump_restraints(writer)
+        self.dump_fitting(writer)
+
+    def dump_restraints(self, writer):
         with writer.loop("_ihm_2dem_class_average_restraint",
                          ["id", "dataset_list_id", "number_raw_micrographs",
                           "pixel_size_width", "pixel_size_height",
@@ -1001,6 +1022,32 @@ class _EM2DDumper(_Dumper):
                         number_of_projections=r.projection_number,
                         struct_assembly_id=self.simo.modeled_assembly.id,
                         image_segment_flag=False)
+
+    def dump_fitting(self, writer):
+        ordinal = 1
+        with writer.loop("_ihm_2dem_class_average_fitting",
+                ["ordinal_id", "restraint_id", "model_id",
+                 "cross_correlation_coefficient", "rot_matrix[1][1]",
+                 "rot_matrix[2][1]", "rot_matrix[3][1]", "rot_matrix[1][2]",
+                 "rot_matrix[2][2]", "rot_matrix[3][2]", "rot_matrix[1][3]",
+                 "rot_matrix[2][3]", "rot_matrix[3][3]", "tr_vector[1]",
+                 "tr_vector[2]", "tr_vector[3]"]) as l:
+            for m in self.models:
+                for r in self.restraints:
+                    trans = r.get_transformation(m)
+                    rot = trans.get_rotation()
+                    rm = [rot.get_rotation_matrix_row(i) for i in range(3)]
+                    t = trans.get_translation()
+                    ccc = r.get_cross_correlation(m)
+                    l.write(ordinal_id=ordinal, restraint_id=r.id,
+                            model_id=m.id, cross_correlation_coefficient=ccc,
+                            rot_matrix11=rm[0][0], rot_matrix21=rm[1][0],
+                            rot_matrix31=rm[2][0], rot_matrix12=rm[0][1],
+                            rot_matrix22=rm[1][1], rot_matrix32=rm[2][1],
+                            rot_matrix13=rm[0][2], rot_matrix23=rm[1][2],
+                            rot_matrix33=rm[2][2], tr_vector1=t[0],
+                            tr_vector2=t[1], tr_vector3=t[2])
+                    ordinal += 1
 
 class _EM3DRestraint(object):
     fitting_method = 'Gaussian mixture models'
@@ -2042,6 +2089,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         # the model list
         self.cross_link_dump.models = self.model_dump.models
         self.em3d_dump.models = self.model_dump.models
+        self.em2d_dump.models = self.model_dump.models
 
         self._dumpers = [_EntryDumper(self), # should always be first
                          _AuditAuthorDumper(self),
@@ -2202,7 +2250,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def add_em2d_restraint(self, r, i, resolution, pixel_size,
                            image_resolution, projection_number):
         d = self._get_restraint_dataset(r, i)
-        self.em2d_dump.add(_EM2DRestraint(d, resolution, pixel_size,
+        self.em2d_dump.add(_EM2DRestraint(d, r, i, resolution, pixel_size,
                                           image_resolution, projection_number))
 
     def add_em3d_restraint(self, target_ps, densities, r):
