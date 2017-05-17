@@ -61,19 +61,6 @@ class IMPEM2DEXPORT Projection : public Image2D<> {
 
   void add(const Projection& p);
 
-  // Return min x/y coordinates with padding
-  double get_x_min() const { return x_min_; }
-  double get_y_min() const { return y_min_; }
-
-  // Return min x/y coordinates without padding
-  double get_orig_x_min() const { return orig_x_min_; }
-  double get_orig_y_min() const { return orig_y_min_; }
-
-  // Return size of x/y margins in pixels
-  void get_margin(int &x, int &y) const {
-    algebra::Vector3D point(orig_x_min_, orig_y_min_, 0.);
-    get_index_for_point(point, x, y);
-  }
   algebra::Vector3D get_point_for_index(double x, double y) const {
     algebra::Vector3D point;
     point[0] = (x - t_j_) * scale_ + x_min_;
@@ -81,9 +68,6 @@ class IMPEM2DEXPORT Projection : public Image2D<> {
     point[2] = 0.;
     return point;
   }
-
-  int get_x_margin() const { return t_j_; }
-  int get_y_margin() const { return t_i_; }
 
  private:
   // Make noncopyable
@@ -121,7 +105,7 @@ class IMPEM2DEXPORT Projection : public Image2D<> {
  private:
   int id_;
   double scale_;
-  double x_min_, y_min_, orig_x_min_, orig_y_min_, x_max_, y_max_;
+  double x_min_, y_min_, x_max_, y_max_;
   int t_i_, t_j_;
   double resolution_;
   IMP::algebra::Rotation3D rotation_;

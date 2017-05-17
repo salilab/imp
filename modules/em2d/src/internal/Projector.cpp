@@ -117,10 +117,4 @@ void Projector::compute_projections(const algebra::Vector3Ds& axis,
   }
 }
 
-Projection *Projector::make_projection(
-                     const IMP::algebra::Vector3Ds& points) const {
-  int axis_size = estimate_image_size(points);
-  return new Projection(points, mass_, pixel_size_, resolution_, axis_size);
-}
-
 IMPEM2D_END_INTERNAL_NAMESPACE

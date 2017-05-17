@@ -36,10 +36,6 @@ public:
                            double angle_thr,
                            boost::ptr_vector<Projection>& projections,
                            int image_size) const;
-
-  // make a projection using the given points
-  Projection* make_projection(const IMP::algebra::Vector3Ds& points) const;
-
 private:
   int estimate_image_size(const IMP::algebra::Vector3Ds& points) const;
 
