@@ -73,6 +73,7 @@ class ConnectivityRestraint(object):
         SortedSegments = sorted(SortedSegments, key=itemgetter(2))
 
         # connect the particles
+        self.particle_pairs=[]
         for x in range(len(SortedSegments) - 1):
 
             last = SortedSegments[x][1]
@@ -123,6 +124,7 @@ class ConnectivityRestraint(object):
 
                 pt0 = last.get_particle()
                 pt1 = first.get_particle()
+                self.particle_pairs.append((pt0,pt1))
                 r = IMP.core.PairRestraint(self.m, dps, (pt0.get_index(), pt1.get_index()))
 
                 print("Adding sequence connectivity restraint between", pt0.get_name(), " and ", pt1.get_name(), 'of distance', optdist)
@@ -155,6 +157,10 @@ class ConnectivityRestraint(object):
     def get_num_restraints(self):
         """ Returns number of connectivity restraints """
         return len(self.rs.get_restraints())
+
+    def get_particle_pairs(self):
+        """ Returns the list of connected particles pairs """
+        return self.particle_pairs
 
     def evaluate(self):
         return self.weight * self.rs.unprotected_evaluate(None)

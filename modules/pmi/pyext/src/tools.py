@@ -1609,7 +1609,7 @@ def input_adaptor(stuff,
     # check that it is a hierarchy homogenously:
     try:
         is_hierarchy=all(IMP.atom.Hierarchy.get_is_setup(s) for s in stuff)
-    except:
+    except NotImplementedError:
         is_hierarchy=False
     # get the other types homogenously
     is_system=all(isinstance(s, IMP.pmi.topology.System) for s in stuff)
@@ -1858,21 +1858,36 @@ def get_rbs_and_beads(hiers):
             beads.append(p)
     return rbs_ordered,beads
 
+def get_molecules(input_objects):
+    "This function returns the parent molecule hierarchies of given objects"
+    stuff=input_adaptor(input_objects, pmi_resolution='all',flatten=True)
+    molecules=set()
+    for h in stuff:
+        is_root=False
+        is_molecule=False
+        while not (is_molecule or is_root):
+            root=IMP.atom.get_root(h)
+            if root == h:
+                is_root=True
+            is_molecule=IMP.atom.Molecule.get_is_setup(h)
+            if is_molecule:
+                molecules.add(IMP.atom.Molecule(h))
+            h=h.get_parent()
+    return list(molecules)
 
 def get_densities(input_objects):
-    """Given a list of PMI objects, return all density hierarchies within
+    """Given a list of PMI objects, returns all density hierarchies within
     these objects.  The output of this function can be inputted into
-    things such as EM restraints.
+    things such as EM restraints. This function is intended to gather density particles
+    appended to molecules (and not other hierarchies which might have been appended to the root node directly).
     """
-    stuff=input_adaptor(input_objects, flatten=True)
+    # Note that Densities can only be selected at the Root or Molecule level and not at the Leaves level.
+    # we'll first get all molecule hierarchies corresponding to the leaves.
+    molecules=get_molecules(input_objects)
     densities=[]
-    try:
-        for i in iter(stuff):
-            densities.append(IMP.atom.Selection(i,representation_type=IMP.atom.DENSITIES).get_selected_particles())
-    except TypeError as te:
-        densities.append(IMP.atom.Selection(stuff,representation_type=IMP.atom.DENSITIES).get_selected_particles())
-
-    return [h for sublist in densities for h in sublist]
+    for i in molecules:
+        densities+=IMP.atom.Selection(i,representation_type=IMP.atom.DENSITIES).get_selected_particles()
+    return densities
 
 def shuffle_configuration(objects,
                           max_translation=300., max_rotation=2.0 * pi,
@@ -1958,7 +1973,6 @@ def shuffle_configuration(objects,
 
     all_idxs = set(all_idxs) | collision_included_idxs
     all_idxs = all_idxs - collision_excluded_idxs
-    print(len(all_idxs), len(collision_included_idxs), len(collision_excluded_idxs))
     debug = []
     print('shuffling', len(rigid_bodies), 'rigid bodies')
     for rb in rigid_bodies:
@@ -1968,7 +1982,6 @@ def shuffle_configuration(objects,
                 rb_idxs = set(rb.get_member_particle_indexes()) - \
                           collision_excluded_idxs
                 other_idxs = all_idxs - rb_idxs
-                print("----INOI", rb, len(other_idxs), len(rb_idxs))
                 if not other_idxs:
                     continue
 
@@ -1997,7 +2010,6 @@ def shuffle_configuration(objects,
 
                 debug.append([rb, other_idxs if avoidcollision_rb else set()])
                 IMP.core.transform(rb, transformation)
-                print("TSFM", rb)
 
                 # check collisions
                 if avoidcollision_rb:

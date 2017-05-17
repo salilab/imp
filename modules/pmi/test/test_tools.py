@@ -232,8 +232,8 @@ class Tests(IMP.test.TestCase):
 
 
 
-    def test_select_at_all_resolutions_sklearn(self):
-        """Test this actually gets everything"""
+    def test_select_all_resolutions_and_densities_sklearn(self):
+        """Test this actually check selec_all_resoltions and get_densities"""
         try:
             import sklearn
         except:
@@ -265,12 +265,75 @@ class Tests(IMP.test.TestCase):
         for r in rs:
             leaves+=IMP.atom.Selection(hier,resolution=r).get_selected_particles()
 
-        leaves+=IMP.atom.Selection(hier,representation_type=IMP.atom.DENSITIES).get_selected_particles()
+        dens=IMP.atom.Selection(hier,representation_type=IMP.atom.DENSITIES).get_selected_particles()
+        leaves+=dens
         ps = IMP.pmi.tools.select_at_all_resolutions(mol.get_hierarchy())
         inds1=sorted(list(set([p.get_index() for p in leaves])))
-        inds2=sorted([p.get_index() for p in ps])
+        inds2=sorted(p.get_index() for p in ps)
         self.assertEqual(inds1,inds2)
+
+        #check densities
+        dens_test=IMP.pmi.tools.get_densities(hier)
+        inds1=sorted(p.get_index() for p in dens)
+        inds2=sorted(p.get_index() for p in dens_test)
+        self.assertEqual(inds1,inds2)
+
+        dens_test=IMP.pmi.tools.get_densities([mol])
+        inds1=sorted(p.get_index() for p in dens)
+        inds2=sorted(p.get_index() for p in dens_test)
+        self.assertEqual(inds1,inds2)
+
         os.unlink('testselect.txt')
+
+    def test_get_molecules(self):
+        """Test that get_molecules correctly selected IMP.atom.Molecules"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        st1 = s.create_state()
+
+        m1 = st1.create_molecule("Prot1",sequence=seqs["Protein_1"])
+        m2 = st1.create_molecule("Prot2",sequence=seqs["Protein_2"])
+        m3 = st1.create_molecule("Prot3",sequence=seqs["Protein_3"])
+        a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='A',res_range=(55,63),offset=-54)
+        a2 = m2.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='B',res_range=(180,192),offset=-179)
+        a3 = m3.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='G',res_range=(55,63),offset=-54)
+        m1.add_representation(a1,resolutions=[0,1])
+        m1.add_representation(m1.get_non_atomic_residues(),resolutions=[1])
+        m2.add_representation(a2,resolutions=[0,1]) # m2 only has atoms
+        m3.add_representation(a3,resolutions=[1,10])
+        m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1], setup_particles_as_densities=True)
+        hier = s.build()
+        ind1=m1.hier.get_particle_index()
+        ind2=m2.hier.get_particle_index()
+        ind3=m3.hier.get_particle_index()
+
+        mols=IMP.pmi.tools.get_molecules(hier)
+        inds=sorted(p.get_particle_index() for p in mols)
+        self.assertEqual(inds,[ind1,ind2,ind3])
+
+        mols=IMP.pmi.tools.get_molecules([m1,m2,m3])
+        inds=sorted(p.get_particle_index() for p in mols)
+        self.assertEqual(inds,[ind1,ind2,ind3])
+
+        mols=IMP.pmi.tools.get_molecules([m1,m2])
+        inds=sorted(p.get_particle_index() for p in mols)
+        self.assertEqual(inds,[ind1,ind2])
+
+        mols=IMP.pmi.tools.get_molecules(IMP.atom.get_leaves(m1.hier))
+        inds=sorted(p.get_particle_index() for p in mols)
+        self.assertEqual(inds,[ind1])
+
+        mols=IMP.pmi.tools.get_molecules(IMP.atom.get_leaves(hier))
+        inds=sorted(p.get_particle_index() for p in mols)
+        self.assertEqual(inds,[ind1,ind2,ind3])
+
+        mols=IMP.pmi.tools.get_molecules([IMP.atom.get_leaves(m1.hier)[0],IMP.atom.get_leaves(m3.hier)[1]])
+        inds=sorted(p.get_particle_index() for p in mols)
+        self.assertEqual(inds,[ind1,ind3])
 
     def test_select_at_all_resolutions_no_density(self):
         """More stringent and runs without sklearn"""
@@ -297,7 +360,7 @@ class Tests(IMP.test.TestCase):
 
         ps = IMP.pmi.tools.select_at_all_resolutions(mol.get_hierarchy())
         inds1=sorted(list(set([p.get_index() for p in leaves])))
-        inds2=sorted([p.get_index() for p in ps])
+        inds2=sorted(p.get_index() for p in ps)
         self.assertEqual(inds1,inds2)
 
 
@@ -318,6 +381,28 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(IMP.pmi.get_molecule_name_and_copy(sel0[0]),"Prot1.0")
         sel1 = IMP.atom.Selection(hier,resolution=1,copy_index=1).get_selected_particles()
         self.assertEqual(IMP.pmi.get_molecule_name_and_copy(sel1[0]),"Prot1.1")
+
+    def test_get_densities(self):
+
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        st1 = s.create_state()
+        m3 = st1.create_molecule("Prot3",sequence=seqs["Protein_3"])
+        a3 = m3.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='G',res_range=(55,63),offset=-54)
+        m3.add_representation(a3,resolutions=[1,10])
+        m3.add_representation(m3.get_non_atomic_residues(),resolutions=[1], setup_particles_as_densities=True)
+        hier = s.build()
+        densities = IMP.pmi.tools.get_densities(m3)
+        densities_test=IMP.atom.Selection(hier,representation_type=IMP.atom.DENSITIES).get_selected_particles()
+        self.assertEqual(densities,densities_test)
+        densities = IMP.pmi.tools.get_densities(m3.get_hierarchy())
+        self.assertEqual(densities,densities_test)
+        densities = IMP.pmi.tools.get_densities(hier)
+        self.assertEqual(densities,densities_test)
+        densities = IMP.pmi.tools.get_densities(IMP.atom.get_leaves(hier))
+        self.assertEqual(densities,densities_test)
 
     def test_input_adaptor_pmi(self):
         """Test that input adaptor correctly performs selection"""

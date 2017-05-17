@@ -92,6 +92,8 @@ class ElectronMicroscopy2D(object):
         else :
             em2d = IMP.em2d.PCAFitRestraint(
                 particles, images, pixel_size, image_resolution, projection_number, True)
+        self._em2d_restraint = em2d
+        self._num_images = len(images)
         self.rs.add_restraint(em2d)
 
     def set_label(self, label):
@@ -113,6 +115,17 @@ class ElectronMicroscopy2D(object):
         score = self.weight*self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
         output["ElectronMicroscopy2D_" + self.label] = str(score)
+        # For each image, get the transformation that places the
+        # model on the image
+        for i in range(self._num_images):
+            tran = self._em2d_restraint.get_transformation(i)
+            r = tran.get_rotation().get_quaternion()
+            t = tran.get_translation()
+            prefix = 'ElectronMicroscopy2D_%s_Image%d' % (self.label, i+1)
+            for j in range(4):
+                output[prefix + '_Rotation%d' % j] = str(r[j])
+            for j in range(3):
+                output[prefix + '_Translation%d' % j] = str(t[j])
         return output
 
 class ElectronMicroscopy2D_FFT(object):
