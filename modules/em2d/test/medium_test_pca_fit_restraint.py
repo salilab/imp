@@ -65,6 +65,8 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
             score = pca_fit_restraint.evaluate(False)
             print('initial score = ' + str(score))
             self.assertAlmostEqual(score, 0.052, delta=0.01)
+            c = pca_fit_restraint.get_cross_correlation_coefficient(0)
+            self.assertGreater(c, 0.9)
             # Test that transformation puts model on the image
             t = pca_fit_restraint.get_transformation(0)
             pgm = PGM(110, 110, 2.2)

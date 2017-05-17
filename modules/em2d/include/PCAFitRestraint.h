@@ -68,6 +68,13 @@ public:
     */
   algebra::Transformation3D get_transformation(unsigned int image_number) const;
 
+  //! Get cross correlation between the image and the best model projection
+  /** This CCC is that calculated from the last scoring function
+      evaluation; calling this function before the score is calculated
+      results in undefined behavior.
+    */
+  double get_cross_correlation_coefficient(unsigned int image_number) const;
+
   // write best projections from last calculation, if evaluate is true,
   // best projections will be recalculated
   void write_best_projections(std::string file_name, bool evaluate=false);

@@ -127,6 +127,13 @@ double PCAFitRestraint::unprotected_evaluate(
   return total_score;
 }
 
+double PCAFitRestraint::get_cross_correlation_coefficient(
+                                    unsigned int image_number) const {
+  IMP_USAGE_CHECK(image_number < best_projections_.size(),
+                  "image number is out of bounds");
+  return best_image_transform_[image_number].get_score();
+}
+
 algebra::Transformation3D PCAFitRestraint::get_transformation(
                                     unsigned int image_number) const {
   IMP_USAGE_CHECK(image_number < best_projections_.size(),
