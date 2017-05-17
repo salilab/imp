@@ -22,6 +22,7 @@ IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 // Information about a projection
 struct ProjectionInfo {
   algebra::Rotation3D rotation; // rotation to make projection from Particles
+  algebra::Vector3D centroid; // coordinates of the centroid in model space
 };
 
 class IMPEM2DEXPORT Projection : public Image2D<> {

@@ -109,6 +109,11 @@ double PCAFitRestraint::unprotected_evaluate(
     // save best projections, info and their projection axis
     internal::ProjectionInfo pinfo;
     pinfo.rotation = projections[best_projection_id].get_rotation();
+    algebra::Vector2D c = projections[best_projection_id].get_centroid();
+    // centroid of original (pre-center()) projection
+    pinfo.centroid = projections[best_projection_id].get_point_for_index(
+                         c[0] - projections[best_projection_id].get_center_x(),
+                         c[1] - projections[best_projection_id].get_center_y());
 
     internal::Image2D<> transformed_image;
     projections[best_projection_id]
@@ -128,30 +133,17 @@ algebra::Transformation3D PCAFitRestraint::get_transformation(
                   "image number is out of bounds");
 
   // The rotation is the projection 3D rotation followed a 2D rotation
-  // (in the xy plane) to align the projection with the image
+  // (in the xy plane) about the centroid to align the projection with the image
   internal::ProjectionInfo pinfo = best_projections_info_[image_number];
   internal::ImageTransform best_transform = best_image_transform_[image_number];
 
   algebra::Vector3D axis(0., 0., 1.);
-  algebra::Rotation3D rot = algebra::get_rotation_about_normalized_axis(
+  algebra::Rotation3D rot_orig = algebra::get_rotation_about_normalized_axis(
                                            axis, best_transform.get_angle());
+  algebra::Transformation3D rot = algebra::get_rotation_about_point(
+                                           pinfo.centroid, rot_orig);
 
-  // To determine the translation that places the projection on the image,
-  // make a new projection using the combined rotation then translate its
-  // centroid to that of the image (we could use the centroid of the original
-  // projection, but it won't be quite the same due to centering, etc.)
-  IMP::algebra::Vector3Ds rotated_points(ps_.size());
-  for (unsigned int point_index = 0; point_index < rotated_points.size();
-         point_index++) {
-    algebra::Vector3D point = core::XYZ(ps_[point_index]).get_coordinates();
-    rotated_points[point_index] = rot * pinfo.rotation * point;
-  }
-  IMP_UNIQUE_PTR<internal::Projection>
-                         p(projector_.make_projection(rotated_points));
-  p->compute_PCA();
-  algebra::Vector2D p_centroid = p->get_centroid();
-  algebra::Vector3D p_center = p->get_point_for_index(p_centroid[0],
-                                                      p_centroid[1]);
+  // Finally, translate centroid to that of the image
   algebra::Vector2D i_centroid = images_[image_number].get_centroid();
   // image was padded and centered, but we want to align with the original,
   // so reverse the padding and centering translation
@@ -159,7 +151,9 @@ algebra::Transformation3D PCAFitRestraint::get_transformation(
   int center_y = images_[image_number].get_center_y();
   algebra::Vector3D i_center((i_centroid[0] - center_x) * pixel_size_,
                              (i_centroid[1] - center_y) * pixel_size_, 0.);
-  return algebra::Transformation3D(rot * pinfo.rotation, i_center - p_center);
+
+  return algebra::Transformation3D(i_center - pinfo.centroid)
+         * rot * algebra::Transformation3D(pinfo.rotation);
 }
 
 void PCAFitRestraint::write_best_projections(std::string file_name,
