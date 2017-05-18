@@ -975,8 +975,11 @@ class _EM2DRestraint(object):
         r = [float(model.stats[prefix + '_Rotation%d' % i]) for i in range(4)]
         t = [float(model.stats[prefix + '_Translation%d' % i])
              for i in range(3)]
+        # If the model coordinates are transformed, need to back transform
+        # them first
+        inv = model.transform.get_inverse()
         return IMP.algebra.Transformation3D(IMP.algebra.Rotation3D(*r),
-                                            IMP.algebra.Vector3D(*t))
+                                            IMP.algebra.Vector3D(*t)) * inv
     def get_cross_correlation(self, model):
         """Get the cross correlation coefficient between the model projection
            and the image"""
@@ -1036,7 +1039,10 @@ class _EM2DDumper(_Dumper):
                 for r in self.restraints:
                     trans = r.get_transformation(m)
                     rot = trans.get_rotation()
-                    rm = [rot.get_rotation_matrix_row(i) for i in range(3)]
+                    # mmCIF writer usually outputs floats to 3 decimal places,
+                    # but we need more precision for rotation matrices
+                    rm = [["%.6f" % e for e in rot.get_rotation_matrix_row(i)]
+                          for i in range(3)]
                     t = trans.get_translation()
                     ccc = r.get_cross_correlation(m)
                     l.write(ordinal_id=ordinal, restraint_id=r.id,
@@ -1162,6 +1168,11 @@ class _ModelGroup(object):
 
 class _Model(object):
     def __init__(self, prot, simo, protocol, assembly, group):
+        # Transformation from IMP coordinates into mmCIF coordinate system.
+        # Normally we pass through coordinates unchanged, but in some cases
+        # we may want to translate them (e.g. Nup84, where the deposited PDB
+        # files are all centered; we want the mmCIF files to match)
+        self.transform = IMP.algebra.get_identity_transformation_3d()
         self.group = group
         # The _Protocol which produced this model
         self.protocol = protocol
@@ -1173,6 +1184,7 @@ class _Model(object):
         o._init_dictchain(name, prot)
         (particle_infos_for_pdb,
          self.geometric_center) = o.get_particle_infos_for_pdb_writing(name)
+        self.geometric_center = IMP.algebra.Vector3D(*self.geometric_center)
         self.entity_for_chain = {}
         self.comp_for_chain = {}
         for protname, chain_id in o.dictchain[name].items():
@@ -1246,14 +1258,13 @@ class _ModelDumper(_Dumper):
                 for atom in model.atoms:
                     (xyz, atom_type, residue_type, chain_id, residue_index,
                      all_indexes, radius) = atom
+                    pt = model.transform * xyz
                     l.write(id=ordinal, label_atom_id=atom_type.get_string(),
                             label_comp_id=residue_type.get_string(),
                             label_asym_id=chain_id,
                             label_entity_id=model.entity_for_chain[chain_id].id,
                             label_seq_id=residue_index,
-                            Cartn_x=xyz[0] - model.geometric_center[0],
-                            Cartn_y=xyz[1] - model.geometric_center[1],
-                            Cartn_z=xyz[2] - model.geometric_center[2],
+                            Cartn_x=pt[0], Cartn_y=pt[1], Cartn_z=pt[2],
                             model_id=model.id)
                     ordinal += 1
 
@@ -1270,14 +1281,13 @@ class _ModelDumper(_Dumper):
                      all_indexes, radius) = sphere
                     if all_indexes is None:
                         all_indexes = (residue_index,)
+                    pt = model.transform * xyz
                     l.write(ordinal_id=ordinal,
                             entity_id=model.entity_for_chain[chain_id].id,
                             seq_id_begin = all_indexes[0],
                             seq_id_end = all_indexes[-1],
                             asym_id=chain_id,
-                            Cartn_x=xyz[0] - model.geometric_center[0],
-                            Cartn_y=xyz[1] - model.geometric_center[1],
-                            Cartn_z=xyz[2] - model.geometric_center[2],
+                            Cartn_x=pt[0], Cartn_y=pt[1], Cartn_z=pt[2],
                             object_radius=radius,
                             rmsf=model.get_rmsf(model.comp_for_chain[chain_id],
                                                 all_indexes),
@@ -2241,8 +2251,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                 # best scoring one
                 m.name = 'Best scoring model'
                 m.stats = stats
-                # Don't alter original RMF coordinates
-                m.geometric_center = [0,0,0]
                 # Add RMSF info if available
                 for c in self.all_modeled_components:
                     e.load_rmsf(m, c)

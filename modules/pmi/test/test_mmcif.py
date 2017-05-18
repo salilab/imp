@@ -777,9 +777,9 @@ _ihm_sphere_obj_site.Cartn_z
 _ihm_sphere_obj_site.object_radius
 _ihm_sphere_obj_site.rmsf
 _ihm_sphere_obj_site.model_id
-1 1 1 1 A 0.000 0.000 0.000 3.068 . 1
-2 1 2 2 A 0.000 0.000 0.000 2.997 . 1
-3 1 3 4 A 0.000 0.000 0.000 3.504 . 1
+1 1 1 1 A -8.986 11.688 -5.817 3.068 . 1
+2 1 2 2 A -8.986 11.688 -5.817 2.997 . 1
+3 1 3 4 A -8.986 11.688 -5.817 3.504 . 1
 #
 """)
 
@@ -833,8 +833,8 @@ _atom_site.Cartn_y
 _atom_site.Cartn_z
 _atom_site.label_entity_id
 _atom_site.model_id
-1 CA MET 1 A 0.000 0.000 0.000 1 1
-2 CA GLU 2 A 0.000 0.000 0.000 1 1
+1 CA MET 1 A -8.986 11.688 -5.817 1 1
+2 CA GLU 2 A -8.986 11.688 -5.817 1 1
 #
 #
 loop_
@@ -849,7 +849,7 @@ _ihm_sphere_obj_site.Cartn_z
 _ihm_sphere_obj_site.object_radius
 _ihm_sphere_obj_site.rmsf
 _ihm_sphere_obj_site.model_id
-1 1 3 4 A 0.000 0.000 0.000 3.504 . 1
+1 1 3 4 A -8.986 11.688 -5.817 3.504 . 1
 #
 """)
 
@@ -908,9 +908,9 @@ _ihm_sphere_obj_site.Cartn_z
 _ihm_sphere_obj_site.object_radius
 _ihm_sphere_obj_site.rmsf
 _ihm_sphere_obj_site.model_id
-1 1 1 1 A 0.000 0.000 0.000 3.068 4.500 1
-2 1 2 2 A 0.000 0.000 0.000 2.997 3.500 1
-3 1 3 4 A 0.000 0.000 0.000 3.504 5.500 1
+1 1 1 1 A -8.986 11.688 -5.817 3.068 4.500 1
+2 1 2 2 A -8.986 11.688 -5.817 2.997 3.500 1
+3 1 3 4 A -8.986 11.688 -5.817 3.504 5.500 1
 #
 """)
 
@@ -1538,8 +1538,8 @@ _ihm_2dem_class_average_fitting.rot_matrix[3][3]
 _ihm_2dem_class_average_fitting.tr_vector[1]
 _ihm_2dem_class_average_fitting.tr_vector[2]
 _ihm_2dem_class_average_fitting.tr_vector[3]
-1 1 1 0.873 -0.407 -0.910 -0.087 0.379 -0.255 0.889 -0.831 0.329 0.449 304.187
-219.586 0.000
+1 1 1 0.873 -0.406503 -0.909500 -0.086975 0.379444 -0.254653 0.889480 -0.831131
+0.328574 0.448622 304.187 219.586 0.000
 #
 """)
 
