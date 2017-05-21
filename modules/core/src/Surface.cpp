@@ -6,6 +6,7 @@
  */
 #include <IMP/core/Surface.h>
 #include <IMP/score_functor/internal/surface_helpers.h>
+#include <IMP/score_functor/internal/direction_helpers.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <cmath>
 
@@ -37,7 +38,7 @@ bool Surface::get_is_setup(Model *m, ParticleIndex pi) {
 
 FloatKey Surface::get_normal_key(unsigned int i) {
   IMP_USAGE_CHECK(i < 3, "Out of range coordinate");
-  return score_functor::internal::get_surface_normal_key(i);
+  return score_functor::internal::get_direction_key(i);
 }
 
 algebra::Vector3D Surface::get_normal_derivatives() const {
@@ -66,8 +67,8 @@ void Surface::set_normal_is_optimized(bool tf) const {
 }
 
 algebra::Vector3D Surface::get_normal() const {
-  return score_functor::internal::get_surface_normal(get_model(),
-                                                     get_particle_index());
+  return score_functor::internal::get_direction(get_model(),
+                                                get_particle_index());
 }
 
 void Surface::set_normal(const algebra::Vector3D &normal) {

@@ -11,19 +11,6 @@
 
 IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 
-FloatKey get_surface_normal_key(unsigned int i) {
-  static const FloatKey surface_normal_keys[] = {FloatKey("normal_x"),
-                                                 FloatKey("normal_y"),
-                                                 FloatKey("normal_z")};
-  return surface_normal_keys[i];
-}
-
-algebra::Vector3D get_surface_normal(Model *m, ParticleIndex pi) {
-  return algebra::Vector3D(m->get_attribute(get_surface_normal_key(0), pi),
-                           m->get_attribute(get_surface_normal_key(1), pi),
-                           m->get_attribute(get_surface_normal_key(2), pi));
-}
-
 double get_height_above_surface(const algebra::Vector3D &center,
                                 const algebra::Vector3D &normal,
                                 const algebra::Vector3D &point,

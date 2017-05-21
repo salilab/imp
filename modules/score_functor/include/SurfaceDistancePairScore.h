@@ -10,6 +10,7 @@
 
 #include <IMP/score_functor/score_functor_config.h>
 #include <IMP/score_functor/internal/surface_helpers.h>
+#include <IMP/score_functor/internal/direction_helpers.h>
 #include <IMP/PairScore.h>
 #include <IMP/pair_macros.h>
 
@@ -74,7 +75,7 @@ inline double SurfaceDistancePairScore<DistanceScore>::evaluate_index(
   algebra::Vector3D delta; // normal vector from surface to point
 
   double dist = get_distance(m->get_sphere(p[0]).get_center(),
-                             internal::get_surface_normal(m, p[0]),
+                             internal::get_direction(m, p[0]),
                              m->get_sphere(p[1]).get_center(), &delta);
 
   // Using squared distance for trivial check currently doesn't work for surfaces

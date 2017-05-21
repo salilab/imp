@@ -16,13 +16,6 @@
 
 IMPSCOREFUNCTOR_BEGIN_INTERNAL_NAMESPACE
 
-//! Get key for surface normal attribute at coordinate i.
-IMPSCOREFUNCTOREXPORT FloatKey get_surface_normal_key(unsigned int i);
-
-//! Get key for surface normal vector for surface particle.
-IMPSCOREFUNCTOREXPORT algebra::Vector3D get_surface_normal(Model *m,
-                                                           ParticleIndex pi);
-
 //! Get height of point above surface.
 /** \return the height above the surface
     If derv is non-nullptr, it is filled with the direction of
