@@ -71,6 +71,15 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
     return exp(-unprotected_evaluate(NULL));
   }
 
+  //! Get cross correlation between the model and the map
+  /** This CCC is that calculated from the last scoring function
+      evaluation; calling this function before the score is calculated
+      results in undefined behavior.
+    */
+  double get_cross_correlation_coefficient() const {
+    return cross_correlation_;
+  }
+
   //! Pre-calculate the density-density and model-model scores
   /** This is automatically called by the constructor.
       You only need to call it manually if you change Gaussian variances.
@@ -107,6 +116,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   double invdx_;
   double argmax_;
 
+  mutable double cross_correlation_;
 };
 
 IMPISD_END_NAMESPACE
