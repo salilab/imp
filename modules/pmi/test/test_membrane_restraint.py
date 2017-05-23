@@ -5,7 +5,6 @@ import IMP.test
 import IMP.isd
 import IMP.pmi.nonmantained
 import IMP.pmi.restraints.proteomics
-import IMP.pmi.nonmantained
 import IMP.pmi.representation
 import IMP.pmi.io
 import IMP.rmf

@@ -2,9 +2,8 @@ import IMP.pmi
 import IMP.test
 import RMF
 import IMP.rmf
-import os,sys
+import os
 from math import sqrt
-import itertools
 import random
 try:
     import scipy

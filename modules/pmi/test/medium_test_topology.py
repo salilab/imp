@@ -692,10 +692,10 @@ class Tests(IMP.test.TestCase):
         self.assertEquals(set(sel11 + sel21), set(sel31))
 
     def test_round_trip(self):
+        """Test RMF write/read representations"""
         def get_color(p):
             c = IMP.display.Colored(p).get_color()
             return [int(c.get_red() * 255), int(c.get_green() * 255), int(c.get_blue() * 255)]
-        """Test RMF write/read representations"""
         base_res = 0
         bead_res = 1
         mdl = IMP.Model()

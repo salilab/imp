@@ -6,7 +6,7 @@ import IMP.pmi
 import IMP.pmi.tools
 import IMP.pmi.analysis
 import argparse
-import sys,os
+import os
 from collections import defaultdict
 
 def parse_args():

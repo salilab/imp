@@ -5,7 +5,6 @@ import IMP.core
 import IMP.pmi
 import random
 
-
 class Tests(IMP.test.TestCase):
 
     def python_version_min_distance(self,xyzrs1,xyzrs2):
@@ -42,7 +41,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(dist,7.0)
 
     def test_two_composites(self):
-        import random
         m=IMP.Model()
         xyzrs1=[]
         xyzrs2=[]
@@ -66,7 +64,6 @@ class Tests(IMP.test.TestCase):
                                delta=1e-5)
 
     def test_multiple_composite(self):
-        import random
         m=IMP.Model()
         ps1=[]
         ps2=[]

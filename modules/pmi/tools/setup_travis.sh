@@ -7,10 +7,10 @@ if [ $# -ne 2 ]; then
   exit 1
 fi
 
-pmi_dir=`pwd`
+pmi_dir=$(pwd)
 conda_dir=$1
 python_version=$2
-temp_dir=`mktemp -d`
+temp_dir=$(mktemp -d)
 
 cd ${temp_dir}
 
@@ -27,7 +27,7 @@ fi
 bash miniconda.sh -b -p ${conda_dir}
 export PATH=${conda_dir}/bin:$PATH
 conda update --yes -q conda
-conda create --yes -q -n python${python_version} -c salilab python=${python_version} pip scipy nose imp
+conda create --yes -q -n python${python_version} -c salilab python=${python_version} pip scipy nose imp-nightly
 source activate python${python_version}
 pip install coverage
 
@@ -46,6 +46,6 @@ cp -sr ${pmi_dir}/examples pmi
 
 # IMP tests use sys.argv[0] to determine their location, which won't work if
 # we use nosetests, so add a workaround
-ln -sf `which nosetests` ${pmi_dir}/test/
+ln -sf $(which nosetests) ${pmi_dir}/test/
 
 rm -rf ${temp_dir}

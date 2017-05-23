@@ -6,7 +6,7 @@ import IMP.pmi.topology
 import IMP.pmi.dof
 import IMP.pmi.restraints.crosslinking
 import IMP.pmi.io.crosslink
-import sys,os
+import os
 
 class Tests(IMP.test.TestCase):
     def test_atomic_xl(self):

@@ -5,8 +5,6 @@ import IMP.pmi.macros
 import os
 import IMP.test
 import IMP.rmf
-import RMF
-import math
 import IMP.pmi.plotting
 import IMP.pmi.plotting.topology
 

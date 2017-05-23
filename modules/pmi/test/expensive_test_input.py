@@ -5,7 +5,7 @@ import IMP.pmi.analysis
 import IMP.test
 import IMP.rmf
 import RMF
-import os,sys
+import os
 
 class Tests(IMP.test.TestCase):
     def setUp(self):

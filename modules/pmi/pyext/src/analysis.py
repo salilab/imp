@@ -1098,9 +1098,15 @@ class GetModelDensity(object):
 
                     if type(seg) == str:
                         s = IMP.atom.Selection(hierarchy,molecule=seg)
-                    elif type(seg) == tuple:
+                    elif type(seg) == tuple and len(seg) == 2:
+                        s = IMP.atom.Selection(
+                            hierarchy, molecule=seg[0],copy_index=seg[1])
+                    elif type(seg) == tuple and len(seg) == 3:
                         s = IMP.atom.Selection(
                             hierarchy, molecule=seg[2],residue_indexes=range(seg[0], seg[1] + 1))
+                    elif type(seg) == tuple and len(seg) == 4:
+                        s = IMP.atom.Selection(
+                            hierarchy, molecule=seg[2],residue_indexes=range(seg[0], seg[1] + 1),copy_index=seg[3])
                     else:
                         raise Exception('could not understand selection tuple '+str(seg))
 

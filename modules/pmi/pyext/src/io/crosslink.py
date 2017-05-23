@@ -181,8 +181,6 @@ class FilterOperator(object):
         '''
         (argument1,operator,argument2) can be either a (keyword,operator.eq|lt|gt...,value)
         or  (FilterOperator1,operator.or|and...,FilterOperator2)
-
-        we need to implement a NOT
         '''
         if isinstance(argument1, FilterOperator):
             self.operations = [argument1, operator, argument2]
@@ -196,6 +194,9 @@ class FilterOperator(object):
     def __and__(self, FilterOperator2):
         return FilterOperator(self, operator.and_, FilterOperator2)
 
+    def __invert__(self):
+        return FilterOperator(self, operator.not_, None)
+
     def evaluate(self, xl_item):
 
         if len(self.operations) == 0:
@@ -203,7 +204,10 @@ class FilterOperator(object):
             return operator(xl_item[keyword], value)
         FilterOperator1, op, FilterOperator2 = self.operations
 
-        return op(FilterOperator1.evaluate(xl_item), FilterOperator2.evaluate(xl_item))
+        if FilterOperator2 is None:
+            return op(FilterOperator1.evaluate(xl_item))
+        else:
+            return op(FilterOperator1.evaluate(xl_item), FilterOperator2.evaluate(xl_item))
 
 '''
 def filter_factory(xl_):

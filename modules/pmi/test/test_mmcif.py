@@ -30,6 +30,36 @@ def make_dataset_dumper():
 
 class Tests(IMP.test.TestCase):
 
+    def test_assign_id(self):
+        """Test _assign_id utility function"""
+        class DummyObj(object):
+            def __init__(self, hashval):
+                self.hashval = hashval
+            def __eq__(self, other):
+                return self.hashval == other.hashval
+            def __hash__(self):
+                return self.hashval
+        seen_objs = {}
+        obj_by_id = []
+        obj1a = DummyObj(42) # obj1a and 1b are identical
+        obj1b = DummyObj(42)
+        obj2 = DummyObj(34)
+        obj3 = DummyObj(23) # obj3 already has an id
+        obj3.id = 'foo'
+        for obj in (obj1a, obj1b, obj2, obj3):
+            IMP.pmi.mmcif._assign_id(obj, seen_objs, obj_by_id)
+        self.assertEqual(obj1a.id, 1)
+        self.assertEqual(obj1b.id, 1)
+        self.assertEqual(obj2.id, 2)
+        self.assertEqual(obj3.id, 'foo')
+        self.assertEqual(obj_by_id, [obj1a, obj2])
+
+    def test_dumper(self):
+        """Test _Dumper base class"""
+        d = IMP.pmi.mmcif._Dumper(EmptyObject())
+        d.finalize()
+        d.finalize_metadata()
+
     def test_software(self):
         """Test SoftwareDumper"""
         s = IMP.pmi.metadata.Software(name='test', classification='test code',
@@ -949,7 +979,24 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-Nup84-m1 1 Nup84 A 1 2 'comparative model' A 0 1
+Nup84-m1 1 Nup84 A 33 2 'comparative model' A 0 3
+#
+#
+loop_
+_ihm_starting_comparative_models.ordinal_id
+_ihm_starting_comparative_models.starting_model_id
+_ihm_starting_comparative_models.starting_model_auth_asym_id
+_ihm_starting_comparative_models.starting_model_seq_id_begin
+_ihm_starting_comparative_models.starting_model_seq_id_end
+_ihm_starting_comparative_models.template_auth_asym_id
+_ihm_starting_comparative_models.template_seq_id_begin
+_ihm_starting_comparative_models.template_seq_id_end
+_ihm_starting_comparative_models.template_sequence_identity
+_ihm_starting_comparative_models.template_sequence_identity_denominator
+_ihm_starting_comparative_models.template_dataset_list_id
+_ihm_starting_comparative_models.alignment_file_id
+1 Nup84-m1 A 33 2 C 33 424 100.0 1 1 1
+2 Nup84-m1 A 429 2 G 482 551 10.0 1 2 1
 #
 #
 loop_
@@ -1201,6 +1248,23 @@ _ihm_modeling_protocol.time_ordered_flag
         self.assertEqual(pp.feature, 'RMSD')
         self.assertEqual(pp.num_models_begin, 10)
         self.assertEqual(pp.num_models_end, 90)
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        po.post_process_dump.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_modeling_post_process.id
+_ihm_modeling_post_process.protocol_id
+_ihm_modeling_post_process.analysis_id
+_ihm_modeling_post_process.step_id
+_ihm_modeling_post_process.type
+_ihm_modeling_post_process.feature
+_ihm_modeling_post_process.num_models_begin
+_ihm_modeling_post_process.num_models_end
+1 1 1 1 cluster RMSD 10 90
+#
+""")
 
     def test_simple_ensemble(self):
         """Test add_simple_ensemble"""
@@ -1221,6 +1285,122 @@ _ihm_modeling_protocol.time_ordered_flag
                                     None)
         self.assertEqual(e.num_models, 5)
         self.assertEqual(e.num_deposit, 1)
+
+    def test_rex_postproces(self):
+        """Test ReplicaExchangeAnalysisPostProcess"""
+        class DummyRex(object):
+            _number_of_clusters = 2
+        d = DummyRex()
+        with IMP.test.temporary_directory() as tmpdir:
+            d._outputdir = tmpdir
+            for i in range(d._number_of_clusters):
+                subdir = os.path.join(tmpdir, 'cluster.%d' % i)
+                os.mkdir(subdir)
+                with open(os.path.join(subdir, 'stat.out'), 'w') as fh:
+                    # 1 model for first cluster, 2 for second cluster
+                    for line in range(i + 1):
+                        fh.write('#\n')
+            pp = IMP.pmi.mmcif._ReplicaExchangeAnalysisPostProcess(d, 45)
+        self.assertEqual(pp.rex, d)
+        self.assertEqual(pp.num_models_begin, 45)
+        self.assertEqual(pp.num_models_end, 3)
+
+    def test_rex_ensemble(self):
+        """Test ReplicaExchangeAnalysisEnsemble"""
+        class DummyModel(object):
+            def parse_rmsf_file(self, fname, comp):
+                self.comp = comp
+        class DummyRepresentation(object):
+            def set_coordinates_from_rmf(self, comp, fname, frame,
+                                         force_rigid_update):
+                pass
+        class DummySimo(object):
+            all_modeled_components = ['Nup84', 'Nup85']
+        class DummyRex(object):
+            _number_of_clusters = 1
+        extref_dump = IMP.pmi.mmcif._ExternalReferenceDumper(EmptyObject())
+        with IMP.test.temporary_directory() as tmpdir:
+            d = DummyRex()
+            d._outputdir = tmpdir
+            subdir = os.path.join(tmpdir, 'cluster.0')
+            os.mkdir(subdir)
+            # Two models
+            with open(os.path.join(subdir, 'stat.out'), 'w') as fh:
+                fh.write("{'modelnum': 0}\n")
+                fh.write("{'modelnum': 1}\n")
+            # Mock localization density file
+            with open(os.path.join(subdir, 'Nup84.mrc'), 'w') as fh:
+                pass
+            # Mock RMSF file
+            with open(os.path.join(subdir, 'rmsf.Nup84.dat'), 'w') as fh:
+                pass
+            pp = IMP.pmi.mmcif._ReplicaExchangeAnalysisPostProcess(d, 45)
+            mg = None
+            e = IMP.pmi.mmcif._ReplicaExchangeAnalysisEnsemble(pp, 0, mg, 1)
+            self.assertEqual(e.cluster_num, 0)
+            self.assertEqual(e.postproc, pp)
+            self.assertEqual(e.num_deposit, 1)
+            self.assertEqual(e.localization_density, {})
+            self.assertEqual(e.num_models, 2)
+            self.assertEqual(e.feature, 'RMSD')
+            self.assertEqual(e.name, 'Cluster 1')
+            self.assertEqual(e.get_rmsf_file('Nup84'),
+                             os.path.join(tmpdir, 'cluster.0',
+                                          'rmsf.Nup84.dat'))
+            # RMSF that doesn't exist
+            e.load_rmsf(None, 'normsf')
+            # RMSF that does exist
+            dm = DummyModel()
+            e.load_rmsf(dm, 'Nup84')
+            self.assertEqual(dm.comp, 'Nup84')
+            self.assertEqual(e.get_localization_density_file('Nup84'),
+                             os.path.join(tmpdir, 'cluster.0', 'Nup84.mrc'))
+            self.assertEqual(list(e.localization_density.keys()), [])
+            # Density that doesn't exist
+            e.load_localization_density(None, 'noden', extref_dump)
+            self.assertEqual(list(e.localization_density.keys()), [])
+            # Density that does exist
+            e.load_localization_density(None, 'Nup84', extref_dump)
+            self.assertEqual(e.localization_density['Nup84'].path,
+                             os.path.join(tmpdir, 'cluster.0', 'Nup84.mrc'))
+            # No precision available
+            self.assertEqual(e._get_precision(), '?')
+            self.assertEqual(e.precision, '?')
+            # Make precision available
+            with open(os.path.join(tmpdir, 'precision.0.0.out'), 'w') as fh:
+                fh.write("""
+All kmeans_weight_500_2/cluster.0/ average centroid distance 24.3744728893
+All kmeans_weight_500_2/cluster.0/ centroid index 49
+""")
+            self.assertAlmostEqual(e._get_precision(), 24.374, delta=1e-3)
+            ds = DummySimo()
+            ds._representation = DummyRepresentation()
+            stats = list(e.load_all_models(ds))
+            self.assertEqual(stats, [{'modelnum': 0}])
+
+    def test_add_rex(self):
+        """Test add_replica_exchange_analysis"""
+        class DummyProtocol(object):
+            pass
+        class DummyRex(object):
+            _number_of_clusters = 1
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        with IMP.test.temporary_directory() as tmpdir:
+            rex = DummyRex()
+            rex._outputdir = tmpdir
+            subdir = os.path.join(tmpdir, 'cluster.0')
+            os.mkdir(subdir)
+            # Two models
+            with open(os.path.join(subdir, 'stat.out'), 'w') as fh:
+                fh.write("{'modelnum': 0}\n")
+                fh.write("{'modelnum': 1}\n")
+            prot = DummyProtocol()
+            prot.num_models_end = 10
+            po.model_prot_dump.add(prot)
+            po.add_replica_exchange_analysis(rex)
 
     def test_ensemble_dumper(self):
         """Test EnsembleDumper"""
@@ -1457,6 +1637,10 @@ _ihm_cross_link_restraint.sigma_2
         d = IMP.pmi.metadata.EM2DClassDataset(l)
         d.add_primary(dp)
         pr.dataset = d
+        # Random other dataset that isn't micrographs
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
+        oth = IMP.pmi.metadata.EM2DClassDataset(l)
+        d.add_parent(oth)
         self.assertEqual(r.get_num_raw_micrographs(), 50)
 
     def test_em2d_dumper(self):
@@ -1741,6 +1925,46 @@ _ihm_model_representation.model_object_count
 #
 """)
 
+    def test_model_repr_dump_rigid(self):
+        """Test ModelRepresentationDumper with rigid bodies"""
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+        nup84 = simo.autobuild_model("Nup84",
+                                     self.get_input_file_name("test.nup84.pdb"),
+                                     "A")
+        simo.set_rigid_body_from_hierarchies(nup84)
+        simo.set_floppy_bodies()
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        # Need this to assign starting model details
+        po.starting_model_dump.finalize()
+        po.model_repr_dump.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_model_representation.ordinal_id
+_ihm_model_representation.representation_id
+_ihm_model_representation.segment_id
+_ihm_model_representation.entity_id
+_ihm_model_representation.entity_description
+_ihm_model_representation.entity_asym_id
+_ihm_model_representation.seq_id_begin
+_ihm_model_representation.seq_id_end
+_ihm_model_representation.model_object_primitive
+_ihm_model_representation.starting_model_id
+_ihm_model_representation.model_mode
+_ihm_model_representation.model_granularity
+_ihm_model_representation.model_object_count
+1 1 1 1 Nup84 A 1 2 sphere Nup84-m1 rigid by-residue .
+2 1 2 1 Nup84 A 3 4 sphere . flexible by-feature 1
+#
+""")
+
     def test_pdb_source(self):
         """Test PDBSource class"""
         class DummyModel(object):
@@ -1791,6 +2015,64 @@ _ihm_model_representation.model_object_count
         p = IMP.pmi.mmcif._UnknownSource(m, 'A')
         self.assertEqual(p.source, 'comparative model')
         self.assertEqual(p.get_seq_id_range(m), (10, 100))
+
+    def test_flush(self):
+        """Test ProtocolOutput.flush()"""
+        class DummyDumper(IMP.pmi.mmcif._Dumper):
+            def __init__(self):
+                self.actions = []
+            def finalize_metadata(self):
+                self.actions.append('fm')
+            def finalize(self):
+                self.actions.append('f')
+            def dump(self, cw):
+                self.actions.append('d')
+        dump = DummyDumper()
+        po = IMP.pmi.mmcif.ProtocolOutput(None)
+        po._dumpers = [dump]
+        po.flush()
+        self.assertEqual(dump.actions, ['fm', 'f', 'd'])
+
+    def test_struct_conf_dumper(self):
+        """Test StructConfDumper"""
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+        nup84 = simo.autobuild_model("Nup84",
+                         self.get_input_file_name("test.nup84.helix.pdb"), "A")
+        simo.set_rigid_body_from_hierarchies(nup84)
+        simo.set_floppy_bodies()
+        d = IMP.pmi.mmcif._StructConfDumper(po)
+
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        po.starting_model_dump.finalize()
+        d.dump(w)
+        out = fh.getvalue().split('\n')
+        # Account for the fact that _struct_conf_type items do not have a
+        # guaranteed order (they are stored in a dict), by sorting them
+        out = sorted(out[:3]) + out[3:]
+        self.assertEqual("\n".join(out),
+"""_struct_conf_type.criteria ?
+_struct_conf_type.id HELX_P
+_struct_conf_type.reference ?
+#
+loop_
+_struct_conf.id
+_struct_conf.conf_type_id
+_struct_conf.beg_label_comp_id
+_struct_conf.beg_label_asym_id
+_struct_conf.beg_label_seq_id
+_struct_conf.end_label_comp_id
+_struct_conf.end_label_asym_id
+_struct_conf.end_label_seq_id
+HELX_P1 HELX_P MET A 1 GLU A 2
+#
+""")
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -7,7 +7,6 @@ import IMP.pmi.representation
 import IMP.pmi.tools
 import IMP.pmi.output
 import IMP.pmi.macros
-import IMP.pmi.output
 
 class Tests(IMP.test.TestCase):
     def test_set_from_rmf(self):

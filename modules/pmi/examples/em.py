@@ -10,7 +10,6 @@ python create_gmm.py emd_1883.mrc 50 emd_1883.gmm50.txt -m emd_1883.gmm50.mrc
 """
 
 import IMP
-import RMF
 import IMP.atom
 import IMP.algebra
 import IMP.rmf
@@ -19,8 +18,6 @@ import IMP.pmi.topology
 import IMP.pmi.dof
 import IMP.pmi.macros
 import IMP.pmi.restraints.em
-import tempfile
-import os
 import sys
 
 IMP.setup_from_argv(sys.argv, "Set up the EM restraint")

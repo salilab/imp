@@ -297,6 +297,11 @@ class Tests(IMP.test.TestCase):
         for xl in cldb:
             self.assertEqual(fo.evaluate(xl),((xl[cldb.residue1_key]>30)|(xl[cldb.protein2_key]=="BBB") ))
 
+        fo=~(FO(cldb.residue1_key,operator.gt,30)|FO(cldb.protein2_key,operator.eq,"BBB"))
+
+        for xl in cldb:
+            self.assertEqual(fo.evaluate(xl),((xl[cldb.residue1_key]<=30)&(xl[cldb.protein2_key]!="BBB") ))
+
 
     def test_filter_cldbkc(self):
         import operator

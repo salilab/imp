@@ -5,7 +5,6 @@ with a secondary structure elastic network to speed things up.
 
 from __future__ import print_function
 import IMP
-import RMF
 import IMP.atom
 import IMP.rmf
 import IMP.pmi

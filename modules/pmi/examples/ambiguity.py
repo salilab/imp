@@ -6,7 +6,6 @@ That way when you perform Selection it automatically finds all relevant molecule
 """
 
 import IMP
-import RMF
 import IMP.atom
 import IMP.algebra
 import IMP.rmf

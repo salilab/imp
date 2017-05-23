@@ -133,11 +133,10 @@ class XLTable():
         minparticlepair=None
         minparticleindex1=None
         minparticleindex2=None
-
         results=[]
         for p1 in selpart_1:
             for p2 in selpart_2:
-                if p1 == p2: continue
+                if p1 == p2 and r1 == r2: continue
                 d1=IMP.core.XYZ(p1)
                 d2=IMP.core.XYZ(p2)
                 #round distance to second decimal
@@ -158,6 +157,7 @@ class XLTable():
                 state_index2=IMP.atom.State(h2).get_state_index()
 
                 results.append((dist,state_index1,copy_index1,state_index2,copy_index2,p1,p2))
+        if len(results)==0: return None
         results_sorted = sorted(results, key=operator.itemgetter(0,1,2,3,4))
         return (results_sorted[0][0],results_sorted[0][5],results_sorted[0][6]),(results_sorted[0][1],results_sorted[0][2],results_sorted[0][3],results_sorted[0][4])
 
@@ -659,7 +659,6 @@ class XLTable():
                 list_of_pairs.append((minp1,minp2,minxllabel,mincolor_score))
             else:
                 continue
-
 
         m=self.prots[0].get_model()
         linear = IMP.core.Linear(0, 0.0)
