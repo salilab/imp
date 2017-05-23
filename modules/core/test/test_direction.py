@@ -28,6 +28,8 @@ class DirectionRestraint(IMP.Restraint):
                 derv = derv * -self.u / math.sin(angle)
             d.add_to_direction_derivatives(derv,
                                            sa.get_derivative_accumulator())
+        else:
+            score = self.uf.evaluate(angle)
         sa.add_score(score)
 
     def do_get_inputs(self):
@@ -99,6 +101,29 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(
             (exp_derv -
              d.get_direction_derivatives()).get_magnitude(), 0., delta=1e-6)
+
+    def test_optimization(self):
+        """Test optimize angle between direction and vector."""
+        v = IMP.algebra.Vector3D(0, 0, 1)
+        axis = IMP.algebra.Vector3D(0, 1, 0)
+        angles = [0.25 * math.pi, 0.3 * math.pi, 0.6 * math.pi, 0.75 * math.pi]
+        for angle in angles:
+            m = IMP.Model()
+            rot = IMP.algebra.get_rotation_about_axis(axis, angle)
+            d = IMP.core.Direction.setup_particle(IMP.Particle(m),
+                                                  rot.get_rotated(v))
+            d.set_direction_is_optimized(True)
+            r = DirectionRestraint(m, d.get_particle_index(), v, 10.)
+            self.assertAlmostEqual(angle, math.acos(d.get_direction() * v))
+            sf = IMP.core.RestraintsScoringFunction([r])
+            self.assertAlmostEqual(math.acos(d.get_direction() * v), angle,
+                                   delta=1e-6)
+            self.assertGreater(sf.evaluate(False), 1.)
+            opt = IMP.core.ConjugateGradients(m)
+            opt.set_scoring_function(sf)
+            self.assertLess(opt.optimize(50), 1e-6)
+            self.assertAlmostEqual(math.acos(d.get_direction() * v), 0.,
+                                   delta=1e-6)
 
 
 if __name__ == '__main__':
