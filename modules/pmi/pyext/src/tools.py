@@ -1897,7 +1897,8 @@ def shuffle_configuration(objects,
                           excluded_rigid_bodies=[],
                           hierarchies_excluded_from_collision=[],
                           hierarchies_included_in_collision=[],
-                          verbose=False):
+                          verbose=False,
+                          return_debug=False):
     """Shuffle particles. Used to restart the optimization.
     The configuration of the system is initialized by placing each
     rigid body and each bead randomly in a box with a side of
@@ -1962,8 +1963,6 @@ def shuffle_configuration(objects,
             all_idxs.append(p.get_particle_index())
         if IMP.core.Gaussian.get_is_setup(p):
             collision_excluded_idxs.add(p.get_particle_index())
-
-    print(len(all_idxs), len(collision_included_idxs), len(collision_excluded_idxs))
 
     if bounding_box is not None:
         ((x1, y1, z1), (x2, y2, z2)) = bounding_box
@@ -2091,7 +2090,8 @@ def shuffle_configuration(objects,
                         raise ValueError("tried the maximum number of iterations to avoid collisions, increase the distance cutoff")
             else:
                 break
-    return debug
+    if return_debug:
+        return debug
 
 def color2rgb(colorname):
     """Given a chimera color name, return RGB"""

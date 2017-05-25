@@ -82,7 +82,7 @@ class Tests(IMP.test.TestCase):
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
         mv,rb1 = dof.create_rigid_body(mol, nonrigid_parts=mol.get_non_atomic_residues())
         mv,rb2 = dof.create_rigid_body(mol2, nonrigid_parts=mol2.get_non_atomic_residues())
-        results = IMP.pmi.tools.shuffle_configuration(hier)
+        results = IMP.pmi.tools.shuffle_configuration(hier,return_debug=True)
 
         ps1 = IMP.get_indexes(IMP.core.get_leaves(mol.get_hierarchy()))
         ps2 = IMP.get_indexes(IMP.core.get_leaves(mol2.get_hierarchy()))
@@ -94,7 +94,7 @@ class Tests(IMP.test.TestCase):
             self.assertFalse(r[1])
 
         # test it works if you pass particles
-        r2 = IMP.pmi.tools.shuffle_configuration(IMP.core.get_leaves(hier))
+        r2 = IMP.pmi.tools.shuffle_configuration(IMP.core.get_leaves(hier),return_debug=True)
         self.assertEqual(len(r2),16)
         self.assertEqual(r2[0],[rb1,set(ps2)])
         self.assertEqual(r2[1],[rb2,set(ps1)])
@@ -125,7 +125,8 @@ class Tests(IMP.test.TestCase):
         mv,rb1 = dof.create_rigid_body(mol, nonrigid_parts=mol.get_non_atomic_residues())
         mv,rb2 = dof.create_rigid_body(mol2, nonrigid_parts=mol2.get_non_atomic_residues())
         results = IMP.pmi.tools.shuffle_configuration(hier,
-                                                      bounding_box=((100,100,100),(200,200,200)))
+                                                      bounding_box=((100,100,100),
+                                                      (200,200,200)),return_debug=True)
 
         rbs_trans_after={}
         fbs_position_after={}

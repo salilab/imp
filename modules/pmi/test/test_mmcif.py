@@ -1413,7 +1413,11 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
 
         pp = DummyPostProcess()
         pp.id = 99
-        e = po._add_simple_ensemble(pp, 'Ensemble 1', 5, 0.1, 1, {}, None)
+        e1 = po._add_simple_ensemble(pp, 'Ensemble 1', 5, 0.1, 1, {}, None)
+        e2 = po._add_simple_ensemble(pp, 'Ensemble 2', 5, 0.1, 1, {}, None)
+        loc = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
+        po.set_ensemble_file(1, loc)
+        loc.id = 42
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
         po.ensemble_dump.dump(w)
@@ -1431,6 +1435,7 @@ _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
 1 'Ensemble 1' 99 1 . dRMSD 5 1 0.100 .
+2 'Ensemble 2' 99 2 . dRMSD 5 1 0.100 42
 #
 """)
 

@@ -50,6 +50,10 @@ class TestGaussianEMRestraint(IMP.test.TestCase):
         gem.add_to_model()
         mdl.update()
         init_em_score = gem.evaluate()
+        output = gem.get_output()
+        self.assertEqual(sorted(output.keys()),
+             ['GaussianEMRestraint_None', 'GaussianEMRestraint_None_CCC',
+              'GaussianEMRestraint_sigma_None', '_TotalScore'])
 
         # get rigid body object
         rb = gem.get_rigid_body()

@@ -1072,6 +1072,10 @@ class ConnectivityCrossLinkMS(object):
 
             s1 = IMP.atom.Selection(ps1)
             s2 = IMP.atom.Selection(ps2)
+            if s1.get_selected_particles() == s2.get_selected_particles():
+                print("ConnectivityCrossLinkMS: WARNING> %s %s and %s %s "
+                      "select the same bead(s) - ignoring" % (c1, r1, c2, r2))
+                continue
 
             # calculate the radii to estimate the slope of the restraint
             if self.strength is None:

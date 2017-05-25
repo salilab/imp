@@ -2227,6 +2227,14 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                 e.load_localization_density(self.m, c, den, self.extref_dump)
         return e
 
+    def set_ensemble_file(self, i, location):
+        """Point a previously-created ensemble to an 'all-models' file.
+           This could be a trajectory such as DCD, an RMF, or a multimodel
+           PDB file."""
+        self.extref_dump.add(location,
+                             _ExternalReferenceDumper.MODELING_OUTPUT)
+        self.ensemble_dump.ensembles[i].file = location
+
     def add_replica_exchange_analysis(self, rex):
         # todo: add prefilter as an additional postprocess step (complication:
         # we don't know how many models it filtered)

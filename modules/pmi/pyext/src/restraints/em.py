@@ -365,9 +365,12 @@ class GaussianEMRestraint(object):
         self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
+        ccc = self.gaussianEM_restraint.get_cross_correlation_coefficient()
+
         output["_TotalScore"] = str(score)
         output["GaussianEMRestraint_" +
                self.label] = str(score)
+        output["GaussianEMRestraint_%s_CCC" % self.label] = ccc
         output["GaussianEMRestraint_sigma_" +
                self.label] = str(self.sigmaglobal.get_scale())
         return output
