@@ -519,6 +519,26 @@ _citation_author.ordinal
         self.assertEqual(a[1].description, 'bar')
         self.assertEqual(a[1].sequence, 'SELM')
 
+    def test_dataset_group_finalize(self):
+        """Test DatasetGroup.finalize()"""
+        class DummyRestraint(object):
+            pass
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='baz')
+        ds1 = IMP.pmi.metadata.EM2DClassDataset(l)
+        # Duplicate dataset
+        ds2 = IMP.pmi.metadata.EM2DClassDataset(l)
+        # Restraint dataset
+        r = DummyRestraint()
+        l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
+        ds3 = IMP.pmi.metadata.EM2DClassDataset(l)
+        r.dataset = ds3
+        rds = IMP.pmi.mmcif._RestraintDataset(r, None, False)
+        dg = IMP.pmi.mmcif._DatasetGroup([ds1, ds2, rds])
+        dg.finalize()
+        # ds2 should be ignored (duplicate of ds1) and rds should have been
+        # replaced by the real underlying dataset, ds3
+        self.assertEqual(list(dg._datasets), [ds1, ds3])
+
     def test_dataset_dumper_all_group(self):
         """Test DatasetDumper.get_all_group()"""
         dump, simo = make_dataset_dumper()
@@ -629,11 +649,17 @@ _citation_author.ordinal
         pds = dump.add(IMP.pmi.metadata.CXMSDataset(l))
         # group2 contains the first two datasets
         group2 = dump.get_all_group()
-        # last dataset is in no group
+        # last dataset is in no group and is wrapped by RestraintDataset
+        class DummyRestraint(object):
+            pass
+        dr = DummyRestraint()
         l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
-        ds = dump.add(IMP.pmi.metadata.PDBDataset(l))
-        ds.add_primary(pds)
-        self.assertEqual(ds.location.access_code, '1abc')
+        dr.dataset = IMP.pmi.metadata.PDBDataset(l)
+        dr.dataset.add_primary(pds)
+        rd = IMP.pmi.mmcif._RestraintDataset(dr, num=None,
+                                             allow_duplicates=False)
+        ds = dump.add(rd)
+        self.assertEqual(ds.dataset.location.access_code, '1abc')
 
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
@@ -1640,12 +1666,12 @@ _ihm_cross_link_restraint.sigma_2
         dp = IMP.pmi.metadata.EMMicrographsDataset(lp, number=50)
         l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
         d = IMP.pmi.metadata.EM2DClassDataset(l)
-        d.add_primary(dp)
         pr.dataset = d
         # Random other dataset that isn't micrographs
         l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
         oth = IMP.pmi.metadata.EM2DClassDataset(l)
         d.add_parent(oth)
+        d.add_parent(dp)
         self.assertEqual(r.get_num_raw_micrographs(), 50)
 
     def test_em2d_dumper(self):
