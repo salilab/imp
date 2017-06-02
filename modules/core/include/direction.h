@@ -1,6 +1,6 @@
 /**
- *  \file IMP/core/Direction.h
- *  \brief Simple direction decorator.
+ *  \file IMP/core/direction.h
+ *  \brief Decorators for directions and the angle between them.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
@@ -34,7 +34,7 @@ class IMPCOREEXPORT Direction : public Decorator {
     //! Get key for direction attribute.
     static FloatKey get_direction_key(unsigned int i);
   
-    //! Get the vector of derivatives added to the direction.
+    //! Get the derivative added to the ith coordinate of the direction.
     Float get_direction_derivative(int i) const {
       return get_particle()->get_derivative(get_direction_key(i));
     }
@@ -72,6 +72,71 @@ class IMPCOREEXPORT Direction : public Decorator {
 
 IMP_DECORATORS(Direction, Directions, Decorators);
 
+//! Get angle between directions.
+IMPCOREEXPORT double get_angle(Direction a, Direction b);
+
+//! A decorator for an angle between two directions.
+/** \ingroup decorators
+    \see Direction
+    \note A Constraint is used to maintain the angle and propagate its
+          derivatives to its Directions.
+*/
+class IMPCOREEXPORT DirectionAngle : public Decorator {
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                const ParticleIndexPair &ds);
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                ParticleIndexAdaptor d0,
+                                ParticleIndexAdaptor d1);
+  void create_constraint();
+  static ObjectKey get_constraint_key();
+
+  public:
+    IMP_DECORATOR_METHODS(DirectionAngle, Decorator);
+    IMP_DECORATOR_SETUP_1(DirectionAngle, ParticleIndexPair, ds);
+    IMP_DECORATOR_SETUP_2(DirectionAngle, ParticleIndexAdaptor, d0,
+                          ParticleIndexAdaptor, d1);
+
+    //! Check if particle is setup as an angle.
+    static bool get_is_setup(Model *m, ParticleIndex pi);
+  
+    //! Get key for angle attribute.
+    static FloatKey get_angle_key();
+
+    //! Get key for ith direction particle.
+    static ParticleIndexKey get_particle_key(unsigned int i);
+
+    //! Get ith direction particle.
+    Particle* get_particle(unsigned int i) const;
+
+    Particle* get_particle() const {
+      return Decorator::get_particle();
+    }
+
+    //! Get ith direction particle index.
+    ParticleIndex get_particle_index(unsigned int i) const;
+
+    ParticleIndex get_particle_index() const {
+      return Decorator::get_particle_index();
+    }
+
+    //! Get angle.
+    Float get_angle() const;
+
+    //! Get the derivative added to the angle.
+    Float get_angle_derivative() const;
+
+    //! Add to the derivative of the angle.
+    void add_to_angle_derivative(Float v, DerivativeAccumulator &d);
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+    //! Recalculate and store the angle.
+    void update_angle();
+#endif
+
+};
+
+IMP_DECORATORS(DirectionAngle, DirectionAngles, Decorators);
+
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 //! Constrain a direction as unit and its derivative as tangent.
@@ -92,6 +157,26 @@ class IMPCOREEXPORT DirectionUnitConstraint : public IMP::Constraint {
     virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
     IMP_OBJECT_METHODS(DirectionUnitConstraint);
 };
+
+//! Constrain an angle between two directions.
+class IMPCOREEXPORT DirectionAngleConstraint : public IMP::Constraint {
+  private:
+    ParticleIndex pi_;
+
+  private:
+    DirectionAngleConstraint(Particle *p)
+        : IMP::Constraint(p->get_model(), "DirectionAngleConstraint%1%")
+        , pi_(p->get_index()) {}
+
+  public:
+    friend class DirectionAngle;
+    virtual void do_update_attributes() IMP_OVERRIDE;
+    virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
+    virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+    virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+    IMP_OBJECT_METHODS(DirectionAngleConstraint);
+};
+
 #endif
 
 IMPCORE_END_NAMESPACE

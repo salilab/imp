@@ -152,6 +152,7 @@ IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, Hierarchy, GenericHierarchies);
 IMP_SWIG_DECORATOR( IMP::core, Gaussian, Gaussians)
 IMP_SWIG_DIRECTOR(IMP::core, HierarchyVisitor);
 IMP_SWIG_DECORATOR( IMP::core, Direction, Directions);
+IMP_SWIG_DECORATOR( IMP::core, DirectionAngle, DirectionAngles);
 IMP_SWIG_DECORATOR( IMP::core, Surface, Surfaces);
 
 IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
@@ -199,7 +200,7 @@ IMP_SWIG_OBJECT(IMP::core, MultipleBinormalRestraint, MultipleBinormalRestraints
 
 %include "IMP/core/XYZR.h"
 
-%include "IMP/core/Direction.h"
+%include "IMP/core/direction.h"
 
 %include "IMP/core/Surface.h"
 
