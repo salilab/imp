@@ -10,7 +10,7 @@
 #define IMPCORE_DIRECTION_MOVER_H
 
 #include <IMP/core/core_config.h>
-#include <IMP/core/Direction.h>
+#include <IMP/core/direction.h>
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/MonteCarloMover.h>
 #include <IMP/Particle.h>

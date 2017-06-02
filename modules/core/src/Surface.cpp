@@ -7,7 +7,7 @@
 #include <IMP/core/Surface.h>
 #include <IMP/score_functor/internal/surface_helpers.h>
 #include <IMP/score_functor/internal/direction_helpers.h>
-#include <IMP/core/Direction.h>
+#include <IMP/core/direction.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <cmath>
 
