@@ -9,7 +9,7 @@ import IMP.test
 
 class DirectionRestraint(IMP.Restraint):
 
-    """Harmonically restrain a Direction to an angle."""
+    """Harmonically restrain a Direction to a vector."""
 
     def __init__(self, m, pi, v, k):
         super(DirectionRestraint, self).__init__(m, "DirectionRestraint%1%")
@@ -89,7 +89,7 @@ class Tests(IMP.test.TestCase):
                                 d.get_direction()).get_magnitude(), 0.)
 
     def test_direction_tangent_enforced(self):
-        """Test derivative is tangent after model update."""
+        """Test derivative is tangent after score evaluate."""
         m = IMP.Model()
         p = IMP.Particle(m)
         d = IMP.core.Direction.setup_particle(
@@ -114,7 +114,6 @@ class Tests(IMP.test.TestCase):
                                                   rot.get_rotated(v))
             d.set_direction_is_optimized(True)
             r = DirectionRestraint(m, d.get_particle_index(), v, 10.)
-            self.assertAlmostEqual(angle, math.acos(d.get_direction() * v))
             sf = IMP.core.RestraintsScoringFunction([r])
             self.assertAlmostEqual(math.acos(d.get_direction() * v), angle,
                                    delta=1e-6)
@@ -127,5 +126,4 @@ class Tests(IMP.test.TestCase):
 
 
 if __name__ == '__main__':
-    print("test")
     IMP.test.main()
