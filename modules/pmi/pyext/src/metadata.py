@@ -179,9 +179,12 @@ class FileLocation(Location):
         self.repo = repo
         if repo:
             self.path = path
+            # Cannot determine file size if non-local
+            self.file_size = None
         else:
             if not os.path.exists(path):
                 raise ValueError("%s does not exist" % path)
+            self.file_size = os.stat(path).st_size
             # Store absolute path in case the working directory changes later
             self.path = os.path.abspath(path)
 

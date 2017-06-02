@@ -145,6 +145,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(d.repo.doi, 'mydoi')
         self.assertEqual(d.path, 'mypath')
         self.assertEqual(d.details, 'bar')
+        self.assertEqual(d.file_size, None)
         d2 = IMP.pmi.metadata.FileLocation(repo=r, path='mypath')
         self.assertEqual(d, d2)
         d3 = IMP.pmi.metadata.FileLocation(repo=r, path='otherpath')
@@ -160,7 +161,7 @@ class Tests(IMP.test.TestCase):
         # be on different drives)
         with IMP.test.temporary_directory(os.getcwd()) as tmpdir:
             with open(os.path.join(tmpdir, 'bar'), 'w') as f:
-                f.write("")
+                f.write("ab")
             d1 = IMP.pmi.metadata.FileLocation(
                                   os.path.relpath(os.path.join(tmpdir, 'bar')),
                                   details='foo')
@@ -169,6 +170,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(d1, d2)
             self.assertEqual(d1.path, os.path.join(tmpdir, 'bar'))
             self.assertEqual(d1.details, 'foo')
+            self.assertEqual(d1.file_size, 2)
             self.assertRaises(ValueError, IMP.pmi.metadata.FileLocation,
                               os.path.join(tmpdir, 'not-exists'))
 

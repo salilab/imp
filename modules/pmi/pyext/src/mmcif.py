@@ -566,6 +566,7 @@ class _ExternalReference(object):
     def __set_id(self, i):
         self.location.id = i
     id = property(lambda x: x.location.id, __set_id)
+    file_size = property(lambda x: x.location.file_size)
 
     def __eq__(self, other):
         return self.location == other.location
@@ -679,14 +680,19 @@ class _ExternalReferenceDumper(_Dumper):
     def dump_refs(self, writer):
         with writer.loop("_ihm_external_files",
                          ["id", "reference_id", "file_path", "content_type",
-                          "details"]) as l:
+                          "file_size_bytes", "details"]) as l:
             for r in self._ref_by_id:
                 loc = r.location
                 repo = loc.repo or self._local_files
                 file_path=self._posix_path(repo._get_full_path(loc.path))
+                if r.file_size is None:
+                    file_size = _CifWriter.omitted
+                else:
+                    file_size = r.file_size
                 l.write(id=loc.id, reference_id=repo.id,
                         file_path=file_path,
                         content_type=r.content_type,
+                        file_size_bytes=file_size,
                         details=loc.details or _CifWriter.omitted)
 
     # On Windows systems, convert native paths to POSIX-like (/-separated) paths
@@ -1058,7 +1064,8 @@ class _EM2DDumper(_Dumper):
 class _EM3DRestraint(object):
     fitting_method = 'Gaussian mixture models'
 
-    def __init__(self, simo, rdataset, target_ps, densities):
+    def __init__(self, simo, rdataset, pmi_restraint, target_ps, densities):
+        self.pmi_restraint = pmi_restraint
         self.rdataset = rdataset
         self.number_of_gaussians = len(target_ps)
         self.assembly = self.get_assembly(densities, simo)
@@ -1070,6 +1077,12 @@ class _EM3DRestraint(object):
         for d in densities:
             components[cm[d]] = None
         return simo.assembly_dump.get_subassembly(components)
+
+    def get_cross_correlation(self, model):
+        """Get the cross correlation coefficient between the model
+           and the map"""
+        return float(model.stats['GaussianEMRestraint_%s_CCC'
+                                 % self.pmi_restraint.label])
 
 
 class _EM3DDumper(_Dumper):
@@ -1090,13 +1103,14 @@ class _EM3DDumper(_Dumper):
                           "cross_correlation_coefficient"]) as l:
             for model in self.models:
                 for r in self.restraints:
-                    # todo: fill in CCC
+                    ccc = r.get_cross_correlation(model)
                     l.write(ordinal_id=ordinal,
                             dataset_list_id=r.rdataset.dataset.id,
                             fitting_method=r.fitting_method,
                             struct_assembly_id=r.assembly.id,
                             number_of_gaussians=r.number_of_gaussians,
-                            model_id=model.id)
+                            model_id=model.id,
+                            cross_correlation_coefficient=ccc)
                     ordinal += 1
 
 class _Assembly(list):
@@ -2273,7 +2287,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         # A 3DEM restraint's dataset ID uniquely defines the restraint, so
         # we need to allow duplicates
         d = self._get_restraint_dataset(r, allow_duplicates=True)
-        self.em3d_dump.add(_EM3DRestraint(self, d, target_ps, densities))
+        self.em3d_dump.add(_EM3DRestraint(self, d, r, target_ps, densities))
 
     def add_model(self, group=None):
         if group is None:
