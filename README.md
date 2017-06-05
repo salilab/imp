@@ -1,4 +1,4 @@
-\brief Integrative Modeling of the Spindle Pole Body Core
+Integrative Modeling of the Spindle Pole Body Core
 
 Here we determine the molecular architecture of the yeast spindle pole body (SPB), 
 the structural and functional equivalent of the metazoan centrosome. 
