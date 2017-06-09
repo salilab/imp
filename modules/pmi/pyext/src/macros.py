@@ -425,8 +425,8 @@ class ReplicaExchange0(object):
                 output.write_stat2(replica_stat_file)
             rex.swap_temp(i, score)
         if self.representation:
-            for p in self.representation._protocol_output:
-                p.add_replica_exchange(self)
+            for p, state in self.representation._protocol_output:
+                p.add_replica_exchange(state, self)
 
         if not self.test_mode:
             print("closing production rmf files")
@@ -1421,7 +1421,8 @@ class AnalysisReplicaExchange0(object):
         """Capture details of the modeling protocol.
            @param p an instance of IMP.pmi.output.ProtocolOutput or a subclass.
         """
-        self._protocol_output.append(p)
+        # Assume last state is the one we're interested in
+        self._protocol_output.append((p, p._get_last_state()))
 
     def get_modeling_trajectory(self,
                                 score_key="SimplifiedModel_Total_Score_None",
@@ -1566,10 +1567,10 @@ class AnalysisReplicaExchange0(object):
         @param write_pdb_with_centered_coordinates
         @param voxel_size                     Used for the density output
         """
-        self._outputdir = outputdir
+        self._outputdir = os.path.abspath(outputdir)
         self._number_of_clusters = number_of_clusters
-        for p in self._protocol_output:
-            p.add_replica_exchange_analysis(self)
+        for p, state in self._protocol_output:
+            p.add_replica_exchange_analysis(state, self)
 
         if self.test_mode:
             return
