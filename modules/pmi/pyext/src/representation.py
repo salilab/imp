@@ -33,7 +33,8 @@ class _Repo(object):
 
 class _StateInfo(object):
     """Score state-specific information about this representation."""
-    name = None
+    short_name = None
+    long_name = None
 
 class Representation(object):
     # Authors: Peter Cimermancic, Riccardo Pellarin, Charles Greenberg

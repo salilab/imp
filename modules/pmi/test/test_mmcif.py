@@ -13,12 +13,14 @@ else:
     from io import BytesIO as StringIO
 
 class DummyState(object):
-    name = None
+    short_name = None
+    long_name = None
 
 class DummyRepr(object):
-    def __init__(self, name):
+    def __init__(self, short_name, long_name):
         self.state = DummyState()
-        self.state.name = name
+        self.state.short_name = short_name
+        self.state.long_name = long_name
 
 class EmptyObject(object):
     state = DummyState()
@@ -117,7 +119,7 @@ class Tests(IMP.test.TestCase):
     def test_single_state(self):
         """Test MultiStateDumper with a single state"""
         po = DummyPO(None)
-        po._add_state(DummyRepr(None))
+        po._add_state(DummyRepr(None, None))
         d = IMP.pmi.mmcif._MultiStateDumper(po)
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
@@ -127,11 +129,11 @@ class Tests(IMP.test.TestCase):
     def test_multi_state(self):
         """Test MultiStateDumper with multiple states"""
         po = DummyPO(None)
-        r1 = DummyRepr(None)
+        r1 = DummyRepr(None, None)
         state1 = po._add_state(r1)
         po.add_model_group(IMP.pmi.mmcif._ModelGroup(state1, "group 1"))
         po.add_model_group(IMP.pmi.mmcif._ModelGroup(state1, "group 2"))
-        r2 = DummyRepr('state2')
+        r2 = DummyRepr('state2 short', 'state2 long')
         state2 = po._add_state(r2)
         po.add_model_group(IMP.pmi.mmcif._ModelGroup(state2, "group 3"))
         d = IMP.pmi.mmcif._MultiStateDumper(po)
@@ -149,9 +151,9 @@ _ihm_multi_state_modeling.state_name
 _ihm_multi_state_modeling.model_group_id
 _ihm_multi_state_modeling.experiment_type
 _ihm_multi_state_modeling.details
-1 1 1 . . . 1 . .
-2 1 1 . . . 2 . .
-3 2 2 . . state2 3 . .
+1 1 1 . . . 1 'Fraction of bulk' 'Group 1'
+2 1 1 . . . 2 'Fraction of bulk' 'Group 2'
+3 2 2 . . 'state2 long' 3 'Fraction of bulk' 'state2 short group 3'
 #
 """)
 
@@ -563,7 +565,9 @@ _citation_author.ordinal
     def test_asym_id_mapper(self):
         """Test AsymIDMapper class"""
         m = IMP.Model()
+        po = DummyPO(None)
         simo = IMP.pmi.representation.Representation(m)
+        simo.add_protocol_output(po)
         simo.create_component("Nup84", True)
         simo.add_component_sequence("Nup84",
                                     self.get_input_file_name("test.fasta"))
@@ -572,11 +576,22 @@ _citation_author.ordinal
                                     self.get_input_file_name("test.fasta"))
         h1 = simo.add_component_beads("Nup84", [(1,2), (3,4)])
         h2 = simo.add_component_beads("Nup85", [(1,2), (3,4)])
-        mapper = IMP.pmi.mmcif._AsymIDMapper(simo.prot)
+        mapper = IMP.pmi.mmcif._AsymIDMapper(po, simo.prot)
         self.assertEqual(mapper[h1[0]], 'A')
         self.assertEqual(mapper[h1[1]], 'A')
         self.assertEqual(mapper[h2[0]], 'B')
         self.assertEqual(mapper[h2[1]], 'B')
+        # Check handling of multiple states
+        simo2 = IMP.pmi.representation.Representation(m)
+        simo2.add_protocol_output(po)
+        simo2.create_component("Nup85", True)
+        simo2.add_component_sequence("Nup85",
+                                     self.get_input_file_name("test.fasta"))
+        h1 = simo2.add_component_beads("Nup85", [(1,2), (3,4)])
+        mapper = IMP.pmi.mmcif._AsymIDMapper(po, simo2.prot)
+        # First chain, but ID isn't "A" since it gets the same chain ID
+        # as the component in the first state (simo)
+        self.assertEqual(mapper[h1[0]], 'B')
 
     def test_component_mapper(self):
         """Test ComponentMapper class"""
@@ -638,6 +653,8 @@ _citation_author.ordinal
 
     def test_dataset_dumper_all_group(self):
         """Test DatasetDumper.get_all_group()"""
+        state1 = 'state1'
+        state2 = 'state2'
         dump, simo = make_dataset_dumper()
         l = IMP.pmi.metadata.FileLocation(repo='foo', path='baz')
         ds1 = IMP.pmi.metadata.EM2DClassDataset(l)
@@ -646,15 +663,17 @@ _citation_author.ordinal
         l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
         ds3 = IMP.pmi.metadata.PDBDataset(l)
 
-        g1 = dump.get_all_group()
+        g1 = dump.get_all_group(state1)
 
-        dump.add(ds1)
-        dump.add(ds2)
-        g2 = dump.get_all_group()
-        g3 = dump.get_all_group()
+        dump.add(state1, ds1)
+        dump.add(state1, ds2)
+        g2 = dump.get_all_group(state1)
+        g3 = dump.get_all_group(state1)
 
-        dump.add(ds3)
-        g4 = dump.get_all_group()
+        dump.add(state1, ds3)
+        g4 = dump.get_all_group(state1)
+        dump.add(state2, ds3)
+        g5 = dump.get_all_group(state2)
         dump.finalize() # Assign IDs
 
         self.assertEqual(g1.id, 1)
@@ -667,14 +686,17 @@ _citation_author.ordinal
         self.assertEqual(g4.id, 3)
         self.assertEqual(list(g4._datasets), [ds1, ds2, ds3])
 
+        self.assertEqual(g5.id, 4)
+        self.assertEqual(list(g5._datasets), [ds3])
+
     def test_dataset_dumper_duplicates_details(self):
         """DatasetDumper ignores duplicate datasets with differing details"""
         dump, simo = make_dataset_dumper()
         l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'test details')
-        ds1 = dump.add(IMP.pmi.metadata.PDBDataset(l))
+        ds1 = dump.add('state', IMP.pmi.metadata.PDBDataset(l))
         # A duplicate dataset should be ignored even if details differ
         l = IMP.pmi.metadata.PDBLocation('1abc', '1.0', 'other details')
-        ds2 = dump.add(IMP.pmi.metadata.PDBDataset(l))
+        ds2 = dump.add('state', IMP.pmi.metadata.PDBDataset(l))
         dump.finalize() # Assign IDs
         self.assertEqual(ds1.id, 1)
         self.assertEqual(ds2.id, 1)
@@ -682,6 +704,7 @@ _citation_author.ordinal
 
     def test_dataset_dumper_duplicates_location(self):
         """DatasetDumper ignores duplicate dataset locations"""
+        state = 'state1'
         loc1 = IMP.pmi.metadata.DatabaseLocation("mydb", "abc", "1.0", "")
         loc2 = IMP.pmi.metadata.DatabaseLocation("mydb", "xyz", "1.0", "")
 
@@ -690,8 +713,8 @@ _citation_author.ordinal
         cx2 = IMP.pmi.metadata.CXMSDataset(loc1)
 
         dump, simo = make_dataset_dumper()
-        dump.add(cx1)
-        dump.add(cx2)
+        dump.add(state, cx1)
+        dump.add(state, cx2)
         dump.finalize() # Assign IDs
         self.assertEqual(cx1.id, 1)
         self.assertEqual(cx2.id, 1)
@@ -701,8 +724,8 @@ _citation_author.ordinal
         cx1 = IMP.pmi.metadata.CXMSDataset(loc1)
         cx2 = IMP.pmi.metadata.CXMSDataset(loc2)
         dump, simo = make_dataset_dumper()
-        dump.add(cx1)
-        dump.add(cx2)
+        dump.add(state, cx1)
+        dump.add(state, cx2)
         dump.finalize() # Assign IDs
         self.assertEqual(cx1.id, 1)
         self.assertEqual(cx2.id, 2)
@@ -712,8 +735,8 @@ _citation_author.ordinal
         cx2 = IMP.pmi.metadata.CXMSDataset(loc2)
         em2d = IMP.pmi.metadata.EM2DClassDataset(loc2)
         dump, simo = make_dataset_dumper()
-        dump.add(cx2)
-        dump.add(em2d)
+        dump.add(state, cx2)
+        dump.add(state, em2d)
         dump.finalize() # Assign IDs
         self.assertEqual(cx2.id, 1)
         self.assertEqual(em2d.id, 2)
@@ -726,8 +749,8 @@ _citation_author.ordinal
         em3d_1 = IMP.pmi.metadata.EMDensityDataset(emloc1)
         em3d_2 = IMP.pmi.metadata.EMDensityDataset(emloc2)
         dump, simo = make_dataset_dumper()
-        dump.add(em3d_1)
-        dump.add(em3d_2)
+        dump.add(state, em3d_1)
+        dump.add(state, em3d_2)
         dump.finalize() # Assign IDs
         self.assertEqual(em3d_1.id, 1)
         self.assertEqual(em3d_2.id, 2)
@@ -735,17 +758,18 @@ _citation_author.ordinal
 
     def test_dataset_dumper_dump(self):
         """Test DatasetDumper.dump()"""
+        state1 = 'state'
         dump, simo = make_dataset_dumper()
         l = IMP.pmi.metadata.FileLocation(repo='foo', path='bar')
         l.id = 97
-        pds = dump.add(IMP.pmi.metadata.CXMSDataset(l))
+        pds = dump.add(state1, IMP.pmi.metadata.CXMSDataset(l))
         # group1 contains just the first dataset
-        group1 = dump.get_all_group()
+        group1 = dump.get_all_group(state1)
         l = IMP.pmi.metadata.FileLocation(repo='foo2', path='bar2')
         l.id = 98
-        pds = dump.add(IMP.pmi.metadata.CXMSDataset(l))
+        pds = dump.add(state1, IMP.pmi.metadata.CXMSDataset(l))
         # group2 contains the first two datasets
-        group2 = dump.get_all_group()
+        group2 = dump.get_all_group(state1)
         # last dataset is in no group and is wrapped by RestraintDataset
         class DummyRestraint(object):
             pass
@@ -755,7 +779,7 @@ _citation_author.ordinal
         dr.dataset.add_primary(pds)
         rd = IMP.pmi.mmcif._RestraintDataset(dr, num=None,
                                              allow_duplicates=False)
-        ds = dump.add(rd)
+        ds = dump.add(state1, rd)
         self.assertEqual(ds.dataset.location.access_code, '1abc')
 
         fh = StringIO()
@@ -917,7 +941,7 @@ _ihm_model_list.model_name
 _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
-1 1 7 . 'all models' 42 93
+1 1 7 . 'All models' 42 93
 #
 #
 loop_
@@ -975,7 +999,7 @@ _ihm_model_list.model_name
 _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
-1 1 7 . 'all models' 42 93
+1 1 7 . 'All models' 42 93
 #
 #
 loop_
@@ -1050,7 +1074,7 @@ _ihm_model_list.model_name
 _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
-1 1 7 foo 'all models' 42 93
+1 1 7 foo 'All models' 42 93
 #
 #
 loop_
@@ -1074,8 +1098,8 @@ _ihm_sphere_obj_site.model_id
     def test_starting_model_dumper(self):
         """Test StartingModelDumper"""
         m = IMP.Model()
-        simo = IMP.pmi.representation.Representation(m)
         po = DummyPO(None)
+        simo = IMP.pmi.representation.Representation(m)
         simo.add_protocol_output(po)
         simo.create_component("Nup84", True)
         simo.add_component_sequence("Nup84",
@@ -1083,6 +1107,23 @@ _ihm_sphere_obj_site.model_id
         nup84 = simo.autobuild_model("Nup84",
                                      self.get_input_file_name("test.nup84.pdb"),
                                      "A")
+
+        # Test multiple states: components that are the same in both states
+        # (Nup84) should not be duplicated in the mmCIF output
+        simo2 = IMP.pmi.representation.Representation(m)
+        simo2.add_protocol_output(po)
+        simo2.create_component("Nup84", True)
+        simo2.add_component_sequence("Nup84",
+                                     self.get_input_file_name("test.fasta"))
+        simo2.autobuild_model("Nup84",
+                              self.get_input_file_name("test.nup84.pdb"), "A")
+        simo2.create_component("Nup85", True)
+        simo2.add_component_sequence("Nup85",
+                                     self.get_input_file_name("test.fasta"))
+        simo2.autobuild_model("Nup85",
+                              self.get_input_file_name("test.nup84.pdb"), "A")
+
+
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
         po.dataset_dump.finalize()
@@ -1107,6 +1148,7 @@ _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
 Nup84-m1 1 Nup84 A 33 2 'comparative model' A 0 3
+Nup85-m1 2 Nup85 B 33 2 'comparative model' A 0 3
 #
 #
 loop_
@@ -1124,6 +1166,8 @@ _ihm_starting_comparative_models.template_dataset_list_id
 _ihm_starting_comparative_models.alignment_file_id
 1 Nup84-m1 A 33 2 C 33 424 100.0 1 1 1
 2 Nup84-m1 A 429 2 G 482 551 10.0 1 2 1
+3 Nup85-m1 A 33 2 C 33 424 100.0 1 1 1
+4 Nup85-m1 A 429 2 G 482 551 10.0 1 2 1
 #
 #
 loop_
@@ -1143,6 +1187,8 @@ _ihm_starting_model_coord.B_iso_or_equiv
 _ihm_starting_model_coord.ordinal_id
 Nup84-m1 ATOM 1 C CA MET 1 A 1 -8.986 11.688 -5.817 91.820 1
 Nup84-m1 ATOM 2 C CA GLU 1 A 2 -8.986 11.688 -5.817 91.820 2
+Nup85-m1 ATOM 1 C CA MET 2 B 1 -8.986 11.688 -5.817 91.820 3
+Nup85-m1 ATOM 2 C CA GLU 2 B 2 -8.986 11.688 -5.817 91.820 4
 #
 """)
 
@@ -1372,15 +1418,29 @@ _ihm_modeling_protocol.time_ordered_flag
 
     def test_simple_postprocessing(self):
         """Test add_simple_postprocessing"""
+        class DummyProtocolStep(object):
+            pass
         po = DummyPO(None)
+        po._add_state(DummyRepr(None, None))
+        p = DummyProtocolStep()
+        p.state = po._last_state
+        p.num_models_end = 10
+        po.model_prot_dump.add(p)
         pp = po._add_simple_postprocessing(10, 90)
         self.assertEqual(pp.type, 'cluster')
         self.assertEqual(pp.feature, 'RMSD')
         self.assertEqual(pp.num_models_begin, 10)
         self.assertEqual(pp.num_models_end, 90)
-        # Duplicates should be ignored
-        po._add_simple_postprocessing(10, 90)
         po._add_simple_postprocessing(12, 90)
+
+        # Add protocol and postprocessing for a second state
+        po._add_state(DummyRepr(None, None))
+        p = DummyProtocolStep()
+        p.state = po._last_state
+        p.num_models_end = 10
+        po.model_prot_dump.add(p)
+        po._add_simple_postprocessing(20, 80)
+
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
         po.post_process_dump.finalize()
@@ -1398,6 +1458,7 @@ _ihm_modeling_post_process.num_models_begin
 _ihm_modeling_post_process.num_models_end
 1 1 1 1 cluster RMSD 10 90
 2 1 1 2 cluster RMSD 12 90
+3 2 1 1 cluster RMSD 20 80
 #
 """)
 
@@ -1435,7 +1496,7 @@ _ihm_modeling_post_process.num_models_end
                     # 1 model for first cluster, 2 for second cluster
                     for line in range(i + 1):
                         fh.write('#\n')
-            pp = IMP.pmi.mmcif._ReplicaExchangeAnalysisPostProcess(d, 45)
+            pp = IMP.pmi.mmcif._ReplicaExchangeAnalysisPostProcess(None, d, 45)
         self.assertEqual(pp.rex, d)
         self.assertEqual(pp.num_models_begin, 45)
         self.assertEqual(pp.num_models_end, 3)
@@ -1455,6 +1516,8 @@ _ihm_modeling_post_process.num_models_end
             all_modeled_components = ['Nup84', 'Nup85']
         class DummyRex(object):
             _number_of_clusters = 1
+        class DummyGroup(object):
+            name = 'dgroup'
         extref_dump = IMP.pmi.mmcif._ExternalReferenceDumper(EmptyObject())
         with IMP.test.temporary_directory() as tmpdir:
             d = DummyRex()
@@ -1471,8 +1534,8 @@ _ihm_modeling_post_process.num_models_end
             # Mock RMSF file
             with open(os.path.join(subdir, 'rmsf.Nup84.dat'), 'w') as fh:
                 pass
-            pp = IMP.pmi.mmcif._ReplicaExchangeAnalysisPostProcess(d, 45)
-            mg = None
+            pp = IMP.pmi.mmcif._ReplicaExchangeAnalysisPostProcess(None, d, 45)
+            mg = DummyGroup()
             e = IMP.pmi.mmcif._ReplicaExchangeAnalysisEnsemble(pp, 0, mg, 1)
             self.assertEqual(e.cluster_num, 0)
             self.assertEqual(e.postproc, pp)
@@ -1480,7 +1543,7 @@ _ihm_modeling_post_process.num_models_end
             self.assertEqual(e.localization_density, {})
             self.assertEqual(e.num_models, 2)
             self.assertEqual(e.feature, 'RMSD')
-            self.assertEqual(e.name, 'Cluster 1')
+            self.assertEqual(e.name, 'cluster 1')
             self.assertEqual(e.get_rmsf_file('Nup84'),
                              os.path.join(tmpdir, 'cluster.0',
                                           'rmsf.Nup84.dat'))
@@ -1497,9 +1560,14 @@ _ihm_modeling_post_process.num_models_end
             e.load_localization_density(None, 'noden', extref_dump)
             self.assertEqual(list(e.localization_density.keys()), [])
             # Density that does exist
-            e.load_localization_density(None, 'Nup84', extref_dump)
+            po = DummyPO(None)
+            r = DummyRepr('dummy', 'none')
+            state = po._add_state(r)
+            e.load_localization_density(state, 'Nup84', extref_dump)
             self.assertEqual(e.localization_density['Nup84'].path,
                              os.path.join(tmpdir, 'cluster.0', 'Nup84.mrc'))
+            self.assertEqual(e.localization_density['Nup84'].details,
+                         'Localization density for Nup84 dgroup in state dummy')
             # No precision available
             self.assertEqual(e._get_precision(), '?')
             self.assertEqual(e.precision, '?')
@@ -1518,7 +1586,7 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
 
     def test_add_rex(self):
         """Test add_replica_exchange_analysis"""
-        class DummyProtocol(object):
+        class DummyProtocolStep(object):
             pass
         class DummyRex(object):
             _number_of_clusters = 1
@@ -1535,7 +1603,8 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
             with open(os.path.join(subdir, 'stat.out'), 'w') as fh:
                 fh.write("{'modelnum': 0}\n")
                 fh.write("{'modelnum': 1}\n")
-            prot = DummyProtocol()
+            prot = DummyProtocolStep()
+            prot.state = po._last_state
             prot.num_models_end = 10
             po.model_prot_dump.add(prot)
             po.add_replica_exchange_analysis(simo._protocol_output[0][1], rex)
@@ -1639,8 +1708,8 @@ _ihm_localization_density_files.seq_id_end
         xl_group = po.get_cross_link_group(r)
         ex_xl = po.add_experimental_cross_link(1, 'Nup84',
                                                2, 'Nup84', 42.0, xl_group)
-        po.add_experimental_cross_link(1, 'Nup84',
-                                       3, 'Nup84', 42.0, xl_group)
+        ex_xl2 = po.add_experimental_cross_link(1, 'Nup84',
+                                                3, 'Nup84', 42.0, xl_group)
         # Duplicates should be ignored
         po.add_experimental_cross_link(1, 'Nup84',
                                        3, 'Nup84', 42.0, xl_group)
@@ -1652,6 +1721,8 @@ _ihm_localization_density_files.seq_id_end
         sigma1 = IMP.isd.Scale.setup_particle(IMP.Particle(m), 1.0)
         sigma2 = IMP.isd.Scale.setup_particle(IMP.Particle(m), 0.5)
         psi = IMP.isd.Scale.setup_particle(IMP.Particle(m), 0.8)
+        po.add_cross_link(state, ex_xl, rs[0], rs[1], sigma1, sigma2, psi)
+        # Duplicates should be ignored
         po.add_cross_link(state, ex_xl, rs[0], rs[1], sigma1, sigma2, psi)
 
         fh = StringIO()
@@ -1817,7 +1888,7 @@ _ihm_cross_link_restraint.sigma_2
 
         class DummyRestraint(object):
             label = 'foo'
-        class DummyProtocol(object):
+        class DummyProtocolStep(object):
             pass
         pr = DummyRestraint()
         rd = IMP.pmi.mmcif._RestraintDataset(pr, num=None,
@@ -1833,7 +1904,9 @@ _ihm_cross_link_restraint.sigma_2
         d.id = 4
         d.add_primary(dp)
         pr.dataset = d
-        po.model_prot_dump.add(DummyProtocol())
+        p = DummyProtocolStep()
+        p.state = po._last_state
+        po.model_prot_dump.add(p)
         group = get_all_models_group(simo, po)
         m = po.add_model(group)
         prefix = 'ElectronMicroscopy2D_foo_Image1_'
@@ -1903,7 +1976,7 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
                                      "A")
         class DummyRestraint(object):
             label = 'foo'
-        class DummyProtocol(object):
+        class DummyProtocolStep(object):
             pass
         pr = DummyRestraint()
         rd = IMP.pmi.mmcif._RestraintDataset(pr, num=None,
@@ -1916,7 +1989,9 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
         d.id = 4
         pr.dataset = d
 
-        po.model_prot_dump.add(DummyProtocol())
+        p = DummyProtocolStep()
+        p.state = po._last_state
+        po.model_prot_dump.add(p)
         group = get_all_models_group(simo, po)
         m = po.add_model(group)
         m.stats = {'GaussianEMRestraint_foo_CCC': 0.1}
@@ -2250,6 +2325,26 @@ _struct_conf.end_label_seq_id
 HELX_P1 HELX_P MET A 1 GLU A 2
 #
 """)
+
+    def test_state_prefix(self):
+        """Test _State.get_prefixed_name()"""
+        po = DummyPO(None)
+        r = DummyRepr('short', 'long')
+        state = po._add_state(r)
+        self.assertEqual(state.get_prefixed_name('foo'), 'short foo')
+        r = DummyRepr(None, None)
+        state = po._add_state(r)
+        self.assertEqual(state.get_prefixed_name('foo'), 'Foo')
+
+    def test_state_postfix(self):
+        """Test _State.get_postfixed_name()"""
+        po = DummyPO(None)
+        r = DummyRepr('short', 'long')
+        state = po._add_state(r)
+        self.assertEqual(state.get_postfixed_name('foo'), 'foo in state short')
+        r = DummyRepr(None, None)
+        state = po._add_state(r)
+        self.assertEqual(state.get_postfixed_name('foo'), 'foo')
 
 if __name__ == '__main__':
     IMP.test.main()

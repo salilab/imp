@@ -1422,7 +1422,7 @@ class AnalysisReplicaExchange0(object):
            @param p an instance of IMP.pmi.output.ProtocolOutput or a subclass.
         """
         # Assume last state is the one we're interested in
-        self._protocol_output.append((p, p._get_last_state()))
+        self._protocol_output.append((p, p._last_state))
 
     def get_modeling_trajectory(self,
                                 score_key="SimplifiedModel_Total_Score_None",
