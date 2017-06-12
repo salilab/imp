@@ -62,8 +62,8 @@ double CrossLinkMSRestraint::get_probability() const {
             (d0.get_coordinates() - d1.get_coordinates()).get_magnitude();
         } else {
             // If the residues are assigned to the same particle-domain
-            // get the distance as if the residues positions 
-            // where randomly taken from the 
+            // get the distance as if the residue positions
+            // were randomly taken from the
             // within the sphere representing the domain
             // Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
             double R=core::XYZR(get_model(), ppi[0]).get_radius();
