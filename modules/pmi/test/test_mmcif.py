@@ -611,6 +611,20 @@ _citation_author.ordinal
         self.assertEqual(mapper[h2[0]], 'Nup85')
         self.assertEqual(mapper[h2[1]], 'Nup85')
 
+    def test_cif_repr(self):
+        """Test _CifWriter._repr()"""
+        w = IMP.pmi.mmcif._CifWriter(None)
+        self.assertEqual(w._repr('foo'), 'foo')
+        self.assertEqual(w._repr('foo bar'), "'foo bar'")
+        self.assertEqual(w._repr("foo'bar"), '"foo\'bar"')
+        self.assertEqual(w._repr(42), '42')
+        self.assertEqual(w._repr(42.1234567), '42.123')
+        self.assertEqual(w._repr(False), 'NO')
+        self.assertEqual(w._repr(True), 'YES')
+        # Test handling of 'long' type
+        if sys.version_info[0] == 2:
+            self.assertEqual(w._repr(42L), '42')
+
     def test_cif_entities(self):
         """Test _EntityMapper class"""
         c = IMP.pmi.mmcif._EntityMapper()

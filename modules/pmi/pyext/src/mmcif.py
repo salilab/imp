@@ -30,6 +30,12 @@ import weakref
 import operator
 import itertools
 
+# Python 3 has no 'long' type, so use 'int' instead
+if sys.version_info[0] >= 3:
+    _long_type = int
+else:
+    _long_type = long
+
 def _assign_id(obj, seen_objs, obj_by_id):
     """Assign a unique ID to obj, and track all ids in obj_by_id."""
     if obj not in seen_objs:
@@ -128,6 +134,10 @@ class _CifWriter(object):
             return obj
         elif isinstance(obj, float):
             return "%.3f" % obj
+        # Don't use repr(x) if type(x) == long since that adds an 'L' suffix,
+        # which isn't valid mmCIF syntax. _long_type = long only on Python 2.
+        elif isinstance(obj, _long_type):
+            return "%d" % obj
         elif isinstance(obj, bool):
             return self._boolmap[obj]
         else:
