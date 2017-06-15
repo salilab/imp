@@ -1,4 +1,4 @@
-Integrative Modeling of the Spindle Pole Body Core
+\brief Integrative Modeling of the Spindle Pole Body Core
 
 Here we determine the molecular architecture of the yeast spindle pole body (SPB), 
 the structural and functional equivalent of the metazoan centrosome. 
@@ -59,5 +59,5 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
-- M. Bonomi, S. Viswanath, S.J. Kim et. al., Molecular Architecture of the Spindle Body Core determined by an Integrative Bayesian approach, submitted.  
+- S. Viswanath, M. Bonomi, S.J. Kim et. al., Molecular Architecture of the Spindle Body Core determined by an Integrative Bayesian approach, submitted.  
 - See [main IMP papers list](@ref publications).
