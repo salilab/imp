@@ -184,7 +184,8 @@ void add_restrain_coiledcoil_to_cterm(Model *m, RestraintSet *allrs,
       // we want to restrain termini belonging to the same protein
 
       std::string name_restraint = "spc42c-" + protein_a + "-" +
-                                   std::to_string(i) + ":" + std::to_string(j);
+                                   std::to_string(static_cast<long long>(i)) + ":" + 
+				   std::to_string(static_cast<long long>(j));
 
       // std::cout << name_restraint <<std::endl ;
       // std::cout << cce[i]->get_name() << " " << ct[j]->get_name()<< " "
@@ -227,7 +228,8 @@ void add_restrain_protein_length(Model *m, RestraintSet *allrs,
       // we want to restrain termini belonging to the same protein
 
       std::string name_restraint =
-          protein_a + "-" + std::to_string(i) + ":" + std::to_string(j);
+          protein_a + "-" + std::to_string(static_cast<long long>(i)) + ":" +
+                                   std::to_string(static_cast<long long>(j));
 
       // std::cout << name_restraint <<std::endl ;
       IMP_NEW(spb::DistanceTerminiRestraint, dtr,
