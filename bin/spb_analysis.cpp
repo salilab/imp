@@ -9,7 +9,7 @@
 #include <IMP/atom.h>
 #include <IMP/core.h>
 #include <IMP/isd.h>
-#include <IMP/membrane.h>
+#include <IMP/spb.h>
 #include <IMP/rmf.h>
 #include <IMP/statistics.h>
 #include <fstream>
@@ -17,7 +17,7 @@
 #include <sstream>
 
 using namespace IMP;
-using namespace IMP::membrane;
+using namespace IMP::spb;
 
 Particles generate_new_particles(Model *m, const atom::Hierarchies &all_mol,
                                  double side, double off_x, double off_y,
@@ -158,7 +158,7 @@ int main(int argc, char *argv[]) {
   //
   // Initialize MonteCarloWithWte to deal with bias
   //
-  IMP_NEW(membrane::MonteCarloWithWte, mcwte,
+  IMP_NEW(spb::MonteCarloWithWte, mcwte,
           (m, mydata.MC.wte_emin, mydata.MC.wte_emax, mydata.MC.wte_sigma,
            mydata.MC.wte_gamma, 1.0));
   //
@@ -340,8 +340,8 @@ int main(int argc, char *argv[]) {
     }
 
     // calculate cross-correlation
-    IMP::Pointer<membrane::EM2DRestraint> rst =
-        dynamic_cast<membrane::EM2DRestraint *>(
+    IMP::Pointer<spb::EM2DRestraint> rst =
+        dynamic_cast<spb::EM2DRestraint *>(
             rst_map["EM2D"]->get_restraint(0));
 
     // side
