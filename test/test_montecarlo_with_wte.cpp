@@ -45,8 +45,8 @@ allrs->add_restraint(sr);
 
  //set the movers
  core::MonteCarloMovers mvs;
- Particles pps;
- pps.push_back(p1);
+ ParticleIndexes pps;
+ pps.push_back(p1->get_index());
  IMP_NEW(core::BallMover, bmv, (pps, 1.0));
  mvs.push_back(bmv);
 
