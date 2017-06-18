@@ -181,10 +181,10 @@ IMP::ModelObjectsTemp PbcBoxedRigidBodyMover::do_get_inputs() const {
   ret.push_back(pz_);
   return ret;
 }
-/*
+
 void PbcBoxedRigidBodyMover::show(std::ostream &out) const {
   out << "max translation: " << max_translation_ << "\n";
   out << "max angle: " << max_angle_ << "\n";
 }
- */
+ 
 IMPSPB_END_NAMESPACE

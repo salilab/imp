@@ -107,10 +107,10 @@ void PbcBoxedMover::do_reject() {
   }
 }
 
-/*
+
 void PbcBoxedMover::show(std::ostream &out) const {
 
   out << "max translation: " << symmetry::BallMover::max_tr_ << "\n";
 }
-*/
+
 IMPSPB_END_NAMESPACE
