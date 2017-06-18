@@ -48,7 +48,7 @@ allrs->add_restraint(sr);
  //Particles pps;
  //pps.push_back(p1);
  //IMP_NEW(core::BallMover, bmv, (pps,1.0));
- IMP_NEW(core::BallMover, bmv, (p1->get_index(),1.0));
+ IMP_NEW(core::BallMover, bmv, (m,p1->get_index(),1.0));
  mvs.push_back(bmv);
 
  // set WTE
