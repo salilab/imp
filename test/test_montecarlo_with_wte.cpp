@@ -33,6 +33,7 @@ IMP_NEW(RestraintSet, allrs, (m, "All restraints"));
  IMP::core::XYZR d1=IMP::core::XYZR::setup_particle(
  m,p1->get_index(),IMP::algebra::Sphere3D(
 IMP::algebra::Vector3D(1.0,4.0,8.0),1.0));
+ d1.set_coordinates_are_optimized(true);
  atom::Mass mm1 = atom::Mass::setup_particle(p1, 30.0);
 
  // set the scoring function
