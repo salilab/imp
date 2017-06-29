@@ -81,7 +81,7 @@ MonteCarloMoverResult BallMover::do_propose() {
           get_model()->get_is_optimized(keys_[j], pis_[i]),
           "BallMover can't move non-optimized attribute. "
               << "particle: " << get_model()->get_particle_name(pis_[i])
-              << "attribute: " << keys_[j]);
+              << " attribute: " << keys_[j]);
       get_model()->set_attribute(keys_[j], pis_[i], nv[j]);
     }
   }
