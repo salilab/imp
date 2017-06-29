@@ -80,8 +80,6 @@ int main(int argc, char* argv[])
  }
 
  // print statistics
- double fretr_score=0.0;
- double y2h_score=0.0;
 
  // open rmf for coordinates
  RMF::FileConstHandle rhc =
@@ -90,9 +88,6 @@ int main(int argc, char* argv[])
  RMF::Category my_kc_read   = rhc.get_category("my data");
 
  RMF::FloatKey my_key0_read = rhc.get_key<RMF::FloatTag>(my_kc_read,"my score");
- RMF::IntKey   my_key1_read = rhc.get_key<RMF::IntTag>(my_kc_read,"my index");
- RMF::FloatKey   my_key2_read = rhc.get_key<
- RMF::FloatTag>(my_kc_read,"my bias");
 
  // linking hierarchies
  rmf::link_hierarchies(rhc, hhs);
@@ -112,7 +107,6 @@ int main(int argc, char* argv[])
 
 
  // cycle on frames
- unsigned int imc=0;
  for(unsigned int imc = 0; imc < nframes; imc++){
 
    // load coordinates
@@ -125,8 +119,6 @@ int main(int argc, char* argv[])
 
    // get score and REM index
    Float score = (rhc.get_root_node()).get_value(my_key0_read);
-   Int myindex = (rhc.get_root_node()).get_value(my_key1_read);
-   Float bias = (rhc.get_root_node()).get_value(my_key2_read);
 
   // do the scoring here
   //
@@ -135,8 +127,6 @@ int main(int argc, char* argv[])
 
   std::cout << "Stored score" << score <<
   " Calculated score " <<totalscore <<std::endl;
-   if(mydata.add_fret){fretr_score=rst_map["FRET_R"]->evaluate(false);}
-   if(mydata.add_y2h) {y2h_score=rst_map["Y2H"]->evaluate(false);}
 
          // get all the restraints in the model
 
