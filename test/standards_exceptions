@@ -1,7 +1,6 @@
 function_name_exceptions=[
             'ChiSquareMetric.get_chisquare_exp',
             'ChiSquareMetric.get_stddev',
-            'LangevinThermostatOptimizerState.rescale_velocities',
             'MolecularDynamicsWithWte.assign_velocities',
             'MolecularDynamicsWithWte.get_nbin',
             'MolecularDynamicsWithWte.rescale_velocities',
