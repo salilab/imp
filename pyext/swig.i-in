@@ -20,7 +20,6 @@ IMP_SWIG_OBJECT(IMP::spb,ChiSquareMetric,ChiSquareMetrics);
 IMP_SWIG_OBJECT(IMP::spb,ContactMapMetric,ContactMapMetrics);
 IMP_SWIG_OBJECT(IMP::spb,DiameterRgyrRestraint,DiameterRgyrRestraints);
 IMP_SWIG_OBJECT(IMP::spb,DistanceRMSDMetric,DistanceRMSDMetrics);
-IMP_SWIG_OBJECT(IMP::spb,EzRestraint,EzRestraints);
 IMP_SWIG_OBJECT(IMP::spb,Gaussian,Gaussians);
 IMP_SWIG_OBJECT(IMP::spb,ISDRestraint,ISDRestraints);
 IMP_SWIG_OBJECT(IMP::spb,KinkPairScore,KinkPairScores);
