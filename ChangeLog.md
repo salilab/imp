@@ -2,6 +2,9 @@ ChangeLog {#changelog}
 =========
 
 # For next stable IMP release #
+- This will be the last release that includes packages for Ubuntu 12.04
+  (Precise Pangolin) since it has reached end of life. We will continue to
+  provide packages for newer Ubuntu LTS releases.
 - IMP::em2d::PCAFitRestraint now uses binary PGM files by default, rather than
   the less well supported text PGM format. It can still read text PGM files
   as input.
