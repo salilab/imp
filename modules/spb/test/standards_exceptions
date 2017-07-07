@@ -1,0 +1,12 @@
+function_name_exceptions=[
+            'ChiSquareMetric.get_chisquare_exp',
+            'ChiSquareMetric.get_stddev',
+            'MolecularDynamicsWithWte.assign_velocities',
+            'MolecularDynamicsWithWte.get_nbin',
+            'MolecularDynamicsWithWte.rescale_velocities',
+            'MolecularDynamicsWithWte.simulate',
+            'MolecularDynamicsWithWte.simulate_wave',
+            'MonteCarloWithWte.get_bias_asfloats',
+            'MonteCarloWithWte.get_nbin',
+            'create_gromos_clustering']
+spelling_exceptions=['rgyr', 'langevin', 'wte', 'pbc', 'ez']
