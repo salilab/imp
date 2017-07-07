@@ -35,7 +35,6 @@ IMP_SWIG_OBJECT(IMP::spb,RigidBodyPackingScore,RigidBodyPackingScores);
 IMP_SWIG_OBJECT(IMP::spb,RMSDMetric,RMSDMetrics);
 IMP_SWIG_OBJECT(IMP::spb,SameParticlePairFilter,SameParticlePairFilters);
 IMP_SWIG_OBJECT(IMP::spb,SameRigidBodyPairFilter,SameRigidBodyPairFilters);
-IMP_SWIG_OBJECT(IMP::spb,Sigmoid,Sigmoids);
 IMP_SWIG_OBJECT(IMP::spb,TiltSingletonScore,TiltSingletonScores);
 IMP_SWIG_OBJECT(IMP::spb,TransformationSymmetry,TransformationSymmetrys);
 IMP_SWIG_OBJECT(IMP::spb,TwoStateGoModelRestraint,TwoStateGoModelRestraints);
@@ -67,7 +66,6 @@ IMP_SWIG_OBJECT(IMP::spb,UniformBoundedRestraint,UniformBoundedRestraints);
 %include "IMP/spb/RMSDMetric.h"
 %include "IMP/spb/SameParticlePairFilter.h"
 %include "IMP/spb/SameRigidBodyPairFilter.h"
-%include "IMP/spb/Sigmoid.h"
 %include "IMP/spb/TiltSingletonScore.h"
 %include "IMP/spb/TransformationSymmetry.h"
 %include "IMP/spb/TwoStateGoModelRestraint.h"
