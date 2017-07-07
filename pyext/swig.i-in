@@ -23,7 +23,6 @@ IMP_SWIG_OBJECT(IMP::spb,DistanceRMSDMetric,DistanceRMSDMetrics);
 IMP_SWIG_OBJECT(IMP::spb,Gaussian,Gaussians);
 IMP_SWIG_OBJECT(IMP::spb,ISDRestraint,ISDRestraints);
 IMP_SWIG_OBJECT(IMP::spb,KinkPairScore,KinkPairScores);
-IMP_SWIG_OBJECT(IMP::spb,LangevinThermostatOptimizerState,LangevinThermostatOptimizerStates);
 IMP_SWIG_OBJECT(IMP::spb,MolecularDynamicsWithWte,MolecularDynamicsWithWtes);
 IMP_SWIG_OBJECT(IMP::spb,MonteCarloWithWte,MonteCarloWithWtes);
 IMP_SWIG_OBJECT(IMP::spb,NuisanceRangeModifier,NuisanceRangeModifiers);
@@ -49,12 +48,10 @@ IMP_SWIG_OBJECT(IMP::spb,UniformBoundedRestraint,UniformBoundedRestraints);
 %include "IMP/spb/ContactMapMetric.h"
 %include "IMP/spb/DiameterRgyrRestraint.h"
 %include "IMP/spb/DistanceRMSDMetric.h"
-%include "IMP/spb/EzRestraint.h"
 %include "IMP/spb/Gaussian.h"
 %include "IMP/spb/HelixDecorator.h"
 %include "IMP/spb/ISDRestraint.h"
 %include "IMP/spb/KinkPairScore.h"
-%include "IMP/spb/LangevinThermostatOptimizerState.h"
 %include "IMP/spb/MolecularDynamicsWithWte.h"
 %include "IMP/spb/MonteCarloWithWte.h"
 %include "IMP/spb/NuisanceRangeModifier.h"
