@@ -2,7 +2,7 @@
  *  \file DistanceRMSDMetric.h
  *  \brief Distance RMSD Metric
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_DISTANCE_RMSD_METRIC_H

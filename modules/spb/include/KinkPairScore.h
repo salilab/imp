@@ -2,7 +2,7 @@
  *  \file KinkPairScore.h
  *  \brief A Score on the crossing angle between two rigid bodies
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_KINK_PAIR_SCORE_H

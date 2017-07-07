@@ -2,7 +2,7 @@
  *  \file IMP/spb/DistanceTerminiRestraint.h
  *  \brief Distance Termini restraint
  *
- *  Copyright 2007-2014 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_DISTANCE_TERMINI_RESTRAINT_H

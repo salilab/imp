@@ -2,7 +2,7 @@
  *  \file BoxedMover.h
  *  \brief A mover that keeps a particle in a box
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 

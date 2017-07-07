@@ -2,7 +2,7 @@
  *  \file MonteCarloWithWte.h
  *  \brief An exotic version of MonteCarlo
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_MONTE_CARLO_WITH_WTE_H

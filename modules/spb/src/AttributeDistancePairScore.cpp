@@ -2,7 +2,7 @@
  *  \file AttributeDistancePairScore.cpp
  *  \brief A score based on the difference between the attributes
  *  of two particles
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/spb/AttributeDistancePairScore.h>

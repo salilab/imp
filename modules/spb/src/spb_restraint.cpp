@@ -2,7 +2,7 @@
  *  \file spb_restraint.cpp
  *  \brief SPB Restraints
  *
- *  Copyright 2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/nullptr.h>

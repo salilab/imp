@@ -2,7 +2,7 @@
  *  \file AttributeDistancePairScore.h
  *  \brief A score based on the unmodified value of an attribute.
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_ATTRIBUTE_DISTANCE_PAIR_SCORE_H

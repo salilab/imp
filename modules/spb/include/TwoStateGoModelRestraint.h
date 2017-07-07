@@ -2,7 +2,7 @@
  *  \file TwoStateGoModelRestraint.h
  *  \brief Two-state Go-Model Restraint
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_TWO_STATE_GO_MODEL_RESTRAINT_H

@@ -2,7 +2,7 @@
  *  \file RigidBodyGridStates.cpp
  *  \brief RigidBody states on a grid
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/algebra.h>

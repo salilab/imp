@@ -2,7 +2,7 @@
  *  \file RigidBodyGridStates.h
  *  \brief RigidBody states on a grid
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_RIGID_BODY_GRID_STATES_H

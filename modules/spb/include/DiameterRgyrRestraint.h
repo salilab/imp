@@ -2,7 +2,7 @@
  *  \file DiameterRgyrRestraint.h
  *  \brief Diameter Restraint
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_DIAMETER_RGYR_RESTRAINT_H
