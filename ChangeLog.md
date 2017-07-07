@@ -12,6 +12,10 @@ ChangeLog {#changelog}
 - The deprecated profiling (timing statistics) support has been removed.
   A number of third party packages (such as gperftools) are available
   for profiling and should be used instead.
+- The new module IMP::spb provides specialized restraints, samplers, and
+  other objects to support modeling of the Spindle Pole Body (SPB). While
+  designed specifically for this system, they may be useful for modeling
+  similar systems.
 
 # 2.7.0 - 2017-04-13 # {#changelog_2_7_0}
 - New applications of IMP are now available:
