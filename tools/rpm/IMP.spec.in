@@ -200,26 +200,29 @@ This package contains wrappers for Python 3 (the base package already
 includes Python 2 wrappers).
 %endif
 
+%define MPI_MODULES mpich spb
+
 %if 0%{?with_mpich}
 %package mpich
 Group:         Applications/Engineering
-Summary:       MPI module, for mpich
+Summary:       MPI module and dependents, for mpich
 Requires:      %{name} = %{version}-%{release}
 Requires:      mpich
 BuildRequires: mpich-devel
 
 %description mpich
 This package contains an IMP.mpi module to add MPI support,
-using the mpich library.
+using the mpich library. It also includes all IMP modules that depend
+on IMP.mpi (IMP.spb).
 
 %package mpich-devel
 Group:         Applications/Engineering
-Summary:       MPI module development files, for mpich
+Summary:       MPI module and dependents development files, for mpich
 Requires:      %{name}-mpich = %{version}-%{release}
 Requires:      mpich
 
 %description mpich-devel
-Development files for IMP.mpi module with mpich.
+Development files for IMP.mpi module (and dependents) with mpich.
 %endif
 
 %prep
@@ -322,8 +325,10 @@ module purge
 %endif
 
 # Don't build Python 3 MPI for now
-rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/IMP/mpi
-rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/_IMP_mpi.so
+for mod in %{MPI_MODULES}; do
+  rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/IMP/${mod}
+  rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/_IMP_${mod}.so
+done
 
 # Replace .py files with symlinks to Python 2 files (since they are the same)
 (cd ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver} \
@@ -334,11 +339,15 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/_IMP_mpi.so
 
 # Put MPI-dependent libraries in mpich directories
 %if 0%{?with_mpich}
-(cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/ && mkdir mpich \
- &&  mv _IMP_mpi.so mpich/)
-(cd ${RPM_BUILD_ROOT}%{_libdir} && mkdir mpich && mv libimp_mpi.so.* mpich)
-(cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_mpi.so \
- && ln -sf mpich/libimp_mpi.so.* libimp_mpi.so)
+(cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/ && mkdir mpich)
+(cd ${RPM_BUILD_ROOT}%{_libdir} && mkdir mpich)
+for mod in %{MPI_MODULES}; do
+  (cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/ \
+   && mv _IMP_${mod}.so mpich/)
+  (cd ${RPM_BUILD_ROOT}%{_libdir} && mv libimp_${mod}.so.* mpich)
+  (cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_${mod}.so \
+   && ln -sf mpich/libimp_${mod}.so.* libimp_${mod}.so)
+done
 %endif
 
 # Note that we currently don't include the documentation in the RPM, since
@@ -410,9 +419,13 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %if 0%{?with_mpich}
 %exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
 %exclude %{_prefix}/share/IMP/swig/IMP_mpi.*
+%exclude %{_prefix}/share/IMP/swig/IMP_spb.*
 %exclude %{_prefix}/share/IMP/build_info/IMP.mpi
 %exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
+%exclude %{_prefix}/share/IMP/build_info/IMP.spb
+%exclude %{_prefix}/share/IMP/build_info/IMP_spb.pck
 %exclude %{_libdir}/python2*/site-packages/IMP/mpi
+%exclude %{_libdir}/python2*/site-packages/IMP/spb
 %endif
 
 %if 0%{?with_python3}
@@ -429,17 +442,26 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %files mpich
 %defattr(-,root,root)
 %doc %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
+%doc %{_prefix}/share/doc/%{name}-%{version}/examples/spb
 %{_prefix}/share/IMP/swig/IMP_mpi.*
+%{_prefix}/share/IMP/swig/IMP_spb.*
 %{_prefix}/share/IMP/build_info/IMP.mpi
 %{_prefix}/share/IMP/build_info/IMP_mpi.pck
+%{_prefix}/share/IMP/build_info/IMP.spb
+%{_prefix}/share/IMP/build_info/IMP_spb.pck
 %{_libdir}/python2*/site-packages/IMP/mpi
+%{_libdir}/python2*/site-packages/IMP/spb
 %{_libdir}/python2*/site-packages/mpich/_IMP_mpi.so
+%{_libdir}/python2*/site-packages/mpich/_IMP_spb.so
 %{_libdir}/mpich/libimp_mpi.so.*
+%{_libdir}/mpich/libimp_spb.so.*
 
 %files mpich-devel
 %defattr(-,root,root)
 %{_libdir}/libimp_mpi.so
+%{_libdir}/libimp_spb.so
 %{_prefix}/include/IMP/mpi
+%{_prefix}/include/IMP/spb
 %endif
 
 %files devel
@@ -450,7 +472,9 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %{_libdir}/libimp*.so
 %if 0%{?with_mpich}
 %exclude %{_prefix}/include/IMP/mpi
+%exclude %{_prefix}/include/IMP/spb
 %exclude %{_libdir}/libimp_mpi.so
+%exclude %{_libdir}/libimp_spb.so
 %endif
 
 %changelog
