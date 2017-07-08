@@ -13,6 +13,9 @@
 
 #include <IMP/em2d/em2d_config.h>
 #include <IMP/algebra/SphericalVector3D.h>
+#include <IMP/algebra/Rotation3D.h>
+#include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/standard_grids.h>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
