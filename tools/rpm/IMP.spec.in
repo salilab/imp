@@ -200,7 +200,7 @@ This package contains wrappers for Python 3 (the base package already
 includes Python 2 wrappers).
 %endif
 
-%define MPI_MODULES mpich spb
+%define MPI_MODULES mpi spb
 
 %if 0%{?with_mpich}
 %package mpich
