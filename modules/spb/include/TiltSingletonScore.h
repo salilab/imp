@@ -1,5 +1,5 @@
 /**
- *  \file TiltSingletonScore.h
+ *  \file IMP/spb/TiltSingletonScore.h
  *  \brief A Score on the distance to a fixed point.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

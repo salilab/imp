@@ -1,5 +1,5 @@
 /**
- *  \file ContactMapMetric.h
+ *  \file IMP/spb/ContactMapMetric.h
  *  \brief Contact Map Metric
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

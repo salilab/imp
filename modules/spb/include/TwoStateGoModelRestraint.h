@@ -1,5 +1,5 @@
 /**
- *  \file TwoStateGoModelRestraint.h
+ *  \file IMP/spb/TwoStateGoModelRestraint.h
  *  \brief Two-state Go-Model Restraint
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

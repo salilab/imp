@@ -1,5 +1,5 @@
 /**
- *  \file AttributeDistancePairScore.h
+ *  \file IMP/spb/AttributeDistancePairScore.h
  *  \brief A score based on the unmodified value of an attribute.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

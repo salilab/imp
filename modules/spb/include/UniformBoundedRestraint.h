@@ -1,6 +1,6 @@
 /**
- *  \file UniformBoundedRestraint.h
- *  \brief
+ *  \file IMP/spb/UniformBoundedRestraint.h
+ *  \brief A uniform bounded restraint
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *

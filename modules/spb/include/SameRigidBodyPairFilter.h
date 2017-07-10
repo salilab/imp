@@ -1,5 +1,5 @@
 /**
- *  \file SameRigidBodyPairFilter.h
+ *  \file IMP/spb/SameRigidBodyPairFilter.h
  *  \brief A Score on the distance between a pair of particles.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

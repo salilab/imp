@@ -1,5 +1,5 @@
 /**
- *  \file spb_restraint.h
+ *  \file IMP/spb/spb_restraint.h
  *  \brief SPB Restraints
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

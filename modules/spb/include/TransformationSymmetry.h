@@ -1,12 +1,14 @@
 /**
- *  \file TransformationSymmetry.h     \brief Implement various types of
- * symmetry
+ *  \file IMP/spb/TransformationSymmetry.h
+ *  \brief Implement various types of symmetry
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
  */
-#ifndef IMPSPB_SYMMETRY_H
-#define IMPSPB_SYMMETRY_H
+
+#ifndef IMPSPB_TRANSFORMATION_SYMMETRY_H
+#define IMPSPB_TRANSFORMATION_SYMMETRY_H
+
 #include <IMP/SingletonModifier.h>
 #include <IMP/algebra/Reflection3D.h>
 #include <IMP/algebra/Transformation3D.h>
@@ -50,4 +52,5 @@ class IMPSPBEXPORT TransformationSymmetry : public SingletonModifier {
 };
 
 IMPSPB_END_NAMESPACE
-#endif /* IMPSPB_SYMMETRY_H */
+
+#endif /* IMPSPB_TRANSFORMATION_SYMMETRY_H */

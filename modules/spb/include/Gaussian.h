@@ -1,5 +1,5 @@
 /**
- *  \file Gaussian.h    \brief Gaussian function.
+ *  \file IMP/spb/Gaussian.h    \brief Gaussian function.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */

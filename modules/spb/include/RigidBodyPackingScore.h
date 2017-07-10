@@ -1,5 +1,5 @@
 /**
- *  \file RigidBodyPackingScore.h
+ *  \file IMP/spb/RigidBodyPackingScore.h
  *  \brief A Score on the crossing angle between two rigid bodies
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

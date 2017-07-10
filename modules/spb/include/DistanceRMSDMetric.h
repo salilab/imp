@@ -1,5 +1,5 @@
 /**
- *  \file DistanceRMSDMetric.h
+ *  \file IMP/spb/DistanceRMSDMetric.h
  *  \brief Distance RMSD Metric
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file MonteCarloWithWte.h
+ *  \file IMP/spb/MonteCarloWithWte.h
  *  \brief An exotic version of MonteCarlo
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

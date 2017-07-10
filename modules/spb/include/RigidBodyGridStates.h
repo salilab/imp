@@ -1,5 +1,5 @@
 /**
- *  \file RigidBodyGridStates.h
+ *  \file IMP/spb/RigidBodyGridStates.h
  *  \brief RigidBody states on a grid
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

@@ -1,5 +1,5 @@
 /**
- *  \file spb/MolecularDynamicsWithWte.h
+ *  \file IMP/spb/MolecularDynamicsWithWte.h
  *  \brief Simple molecular dynamics optimizer.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

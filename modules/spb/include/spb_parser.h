@@ -1,5 +1,5 @@
 /**
- *  \file spb_parser.h
+ *  \file IMP/spb/spb_parser.h
  *  \brief SPB Parser
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

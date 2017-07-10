@@ -1,5 +1,5 @@
 /**
- *  \file  pt_stuff.h
+ *  \file IMP/spb/pt_stuff.h
  *  \brief Useful stuff for parallel tempering
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

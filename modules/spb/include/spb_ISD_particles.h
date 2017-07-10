@@ -1,5 +1,5 @@
 /**
- *  \file spb_ISD_particles.h
+ *  \file IMP/spb/spb_ISD_particles.h
  *  \brief SPB ISD particles
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

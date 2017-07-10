@@ -1,5 +1,5 @@
 /**
- *  \file DiameterRgyrRestraint.h
+ *  \file IMP/spb/DiameterRgyrRestraint.h
  *  \brief Diameter Restraint
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.

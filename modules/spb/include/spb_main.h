@@ -1,5 +1,5 @@
 /**
- *  \file  spb_main.h
+ *  \file IMP/spb/spb_main.h
  *  \brief SPB MonteCarlo
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
