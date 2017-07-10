@@ -1,5 +1,5 @@
 /**
- *  \file PbcBoxedMover.h
+ *  \file IMP/spb/PbcBoxedMover.h
  *  \brief A mover that keeps a particle in a box
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
@@ -24,7 +24,7 @@ IMPSPB_BEGIN_NAMESPACE
  */
 class IMPSPBEXPORT PbcBoxedMover : public core::MonteCarloMover {
  public:
-  /** The particle is moved withing a (hexagonal or cubic) box
+  /** The particle is moved within a (hexagonal or cubic) box
       \param[in] p is the particle
       \param[in] max_tr is the maximum translation during a step
    */
