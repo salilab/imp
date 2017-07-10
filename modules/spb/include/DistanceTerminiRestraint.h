@@ -10,7 +10,7 @@
 
 #include <IMP/Restraint.h>
 #include <IMP/isd/Scale.h>
-#include <IMP/isd/isd_config.h>
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 /* A distance restraint between protein termini.

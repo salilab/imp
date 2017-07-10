@@ -11,6 +11,7 @@
 
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/Gaussian3D.h>
+#include <IMP/algebra/vector_generators.h>
 #include <IMP/core/Gaussian.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/DensityHeader.h>

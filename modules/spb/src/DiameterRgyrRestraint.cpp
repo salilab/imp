@@ -8,6 +8,7 @@
 
 #include <IMP/Particle.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/core/XYZR.h>
 #include <IMP/spb/DiameterRgyrRestraint.h>
 #include <math.h>
 #include <iostream>
