@@ -10,12 +10,9 @@
 #define IMPSPB_BOXED_MOVER_H
 
 #include "spb_config.h"
-//#include <IMP/core/MonteCarlo.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core.h>
 #include <IMP/core/MonteCarloMover.h>
-
-//#include <IMP/core/mover_macros.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

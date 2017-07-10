@@ -13,7 +13,6 @@
 #include <IMP/core.h>
 #include <IMP/core/MonteCarlo.h>
 #include "spb_config.h"
-//#include <IMP/core/mover_macros.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

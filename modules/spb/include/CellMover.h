@@ -16,8 +16,6 @@
 #include <IMP/core/rigid_bodies.h>
 #include "spb_config.h"
 
-//#include <IMP/core/mover_macros.h>
-
 IMPSPB_BEGIN_NAMESPACE
 
 //! Apply a mover that moves particles inside the unit cell.
