@@ -38,10 +38,10 @@ std::map<std::string, IMP::Pointer<RestraintSet> > spb_assemble_restraints(
   // Layer restraints
   //
   // inside CP
-  add_bayesian_layer_restraint(m, allrs, CP_ps, ISD_ps["CP_A"], ISD_ps["CP_B"]);
+  add_bayesian_layer_restraint(allrs, CP_ps, ISD_ps["CP_A"], ISD_ps["CP_B"]);
   // inside IL2
   if (mydata.add_IL2_layer) {
-    add_bayesian_layer_restraint(m, allrs, IL2_ps, ISD_ps["GAP_A"],
+    add_bayesian_layer_restraint(allrs, IL2_ps, ISD_ps["GAP_A"],
                                  ISD_ps["GAP_B"]);
   }
   //
@@ -99,7 +99,7 @@ std::map<std::string, IMP::Pointer<RestraintSet> > spb_assemble_restraints(
     fretfile.open(mydata.Fret.filename.c_str());
     while (fretfile >> name_d >> ter_d >> name_a >> ter_a >> fexp >> sexp) {
       fret->add_restraint(fret_restraint(
-          m, all_mol, name_d, ter_d, name_a, ter_a, fexp, mydata.Fret,
+          all_mol, name_d, ter_d, name_a, ter_a, fexp, mydata.Fret,
           mydata.cell_type, mydata.add_GFP, ISD_ps["Kda"], ISD_ps["Ida"],
           ISD_ps["R0"], ISD_ps["Sigma0"], ISD_ps["pBl"]));
     }
@@ -121,21 +121,21 @@ std::map<std::string, IMP::Pointer<RestraintSet> > spb_assemble_restraints(
         // both are strings
         if (int_d == 0 && int_a == 0) {
           fret->add_restraint(fret_restraint(
-              m, all_mol, name_d, ter_d, name_a, ter_a, fexp, mydata.Fret,
+              all_mol, name_d, ter_d, name_a, ter_a, fexp, mydata.Fret,
               mydata.cell_type, mydata.add_GFP, ISD_ps["Kda"], ISD_ps["Ida"],
               ISD_ps["R0"], ISD_ps["Sigma0"], ISD_ps["pBl"]));
         }
         // donor is string, acceptor is residue index
         if (int_d == 0 && int_a != 0) {
           fret->add_restraint(fret_restraint(
-              m, all_mol, name_d, ter_d, name_a, int_a, fexp, mydata.Fret,
+              all_mol, name_d, ter_d, name_a, int_a, fexp, mydata.Fret,
               mydata.cell_type, mydata.add_GFP, ISD_ps["Kda"], ISD_ps["Ida"],
               ISD_ps["R0"], ISD_ps["Sigma0"], ISD_ps["pBl"]));
         }
         // donor is residue index, acceptor is string
         if (int_d != 0 && int_a == 0) {
           fret->add_restraint(fret_restraint(
-              m, all_mol, name_d, int_d, name_a, ter_a, fexp, mydata.Fret,
+              all_mol, name_d, int_d, name_a, ter_a, fexp, mydata.Fret,
               mydata.cell_type, mydata.add_GFP, ISD_ps["Kda"], ISD_ps["Ida"],
               ISD_ps["R0"], ISD_ps["Sigma0"], ISD_ps["pBl"]));
         }
@@ -204,7 +204,7 @@ std::map<std::string, IMP::Pointer<RestraintSet> > spb_assemble_restraints(
   }
   // Add restraint to fix distance between termini for Spc29
   if (mydata.restrain_distance_Spc29_termini) {
-    add_restrain_protein_length(m, allrs, all_mol[0], "Spc29p",
+    add_restrain_protein_length(allrs, all_mol[0], "Spc29p",
                                 ISD_ps["Spc29TermDist"], mydata.sigma0_dist);
   }
 
@@ -219,7 +219,7 @@ std::map<std::string, IMP::Pointer<RestraintSet> > spb_assemble_restraints(
   // Add restraint to diameter and rgyr of Spc29 from SAXS
   //
   // if(mydata.protein_list["Spc29p"]){
-  // add_diameter_rgyr_restraint(m,RestraintSet *allrs,all_mol[0],"Spc29p",
+  // add_diameter_rgyr_restraint(RestraintSet *allrs,all_mol[0],"Spc29p",
   //          mydata.Spc29_diameter,mydata.Spc29_rgyr,mydata.kappa);
   //}
   //

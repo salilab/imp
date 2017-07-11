@@ -43,7 +43,7 @@ IMPSPBEXPORT void add_my_connectivity(Model *m, RestraintSet *allrs,
                                            double kappa);
 
 IMPSPBEXPORT void add_restrain_protein_length(
-    Model *m, RestraintSet *allrs, const atom::Hierarchy &hs,
+    RestraintSet *allrs, const atom::Hierarchy &hs,
     std::string protein_a, Particle *dist, double sigma0_dist);
 
 IMPSPBEXPORT void add_restrain_coiledcoil_to_cterm(
@@ -61,28 +61,28 @@ do_bipartite_mindist(Model *m, Particles p1, Particles p2,
                      bool filter = true);
 
 IMPSPBEXPORT void add_layer_restraint(
-    Model *m, RestraintSet *allrs, container::ListSingletonContainer *lsc,
+    RestraintSet *allrs, container::ListSingletonContainer *lsc,
     FloatRange range, double kappa);
 
 IMPSPBEXPORT void add_bayesian_layer_restraint(
-    Model *m, RestraintSet *allrs, container::ListSingletonContainer *lsc,
+    RestraintSet *allrs, container::ListSingletonContainer *lsc,
     Particle *a, Particle *b);
 
 IMPSPBEXPORT IMP::Pointer<isd::FretRestraint> fret_restraint(
-    Model *m, atom::Hierarchies &hs, std::string protein_a,
+    atom::Hierarchies &hs, std::string protein_a,
     std::string residues_a, std::string protein_b, std::string residues_b,
     double fexp, FretParameters Fret, std::string cell_type, bool use_GFP,
     Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0,
     Particle *pBl);
 
 IMPSPBEXPORT IMP::Pointer<isd::FretRestraint> fret_restraint(
-    Model *m, atom::Hierarchies &hs, std::string protein_a,
+    atom::Hierarchies &hs, std::string protein_a,
     std::string residues_a, std::string protein_b, int residues_b, double fexp,
     FretParameters Fret, std::string cell_type, bool use_GFP, Particle *Kda,
     Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl);
 
 IMPSPBEXPORT IMP::Pointer<isd::FretRestraint> fret_restraint(
-    Model *m, atom::Hierarchies &hs, std::string protein_a, int residues_a,
+    atom::Hierarchies &hs, std::string protein_a, int residues_a,
     std::string protein_b, std::string residues_b, double fexp,
     FretParameters Fret, std::string cell_type, bool use_GFP, Particle *Kda,
     Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl);
@@ -154,15 +154,15 @@ IMPSPBEXPORT void add_stay_on_plane_restraint(Model *m,
                                                    int residue, double kappa);
 
 IMPSPBEXPORT void add_diameter_rgyr_restraint(
-    Model *m, RestraintSet *allrs, const atom::Hierarchy &h,
+    RestraintSet *allrs, const atom::Hierarchy &h,
     std::string protein, double diameter, double rgyr, double kappa);
 
 IMPSPBEXPORT IMP::Pointer<spb::EM2DRestraint> em2d_restraint(
-    Model *m, atom::Hierarchies &hs, std::string protein, EM2DParameters EM2D,
+    atom::Hierarchies &hs, std::string protein, EM2DParameters EM2D,
     Particle *Sigma);
 
 IMPSPBEXPORT IMP::Pointer<spb::EM2DRestraint> em2d_restraint(
-    Model *m, atom::Hierarchies &hs, std::string protein, EM2DParameters EM2D,
+    atom::Hierarchies &hs, std::string protein, EM2DParameters EM2D,
     Floats sigma_grid, Floats fmod_grid);
 
 IMPSPB_END_NAMESPACE

@@ -199,7 +199,7 @@ void add_restrain_coiledcoil_to_cterm(Model *m, RestraintSet *allrs,
   }
 }
 
-void add_restrain_protein_length(Model *m, RestraintSet *allrs,
+void add_restrain_protein_length(RestraintSet *allrs,
                                  const atom::Hierarchy &hs,
                                  std::string protein_a, Particle *dist,
                                  double sigma0_dist) {
@@ -294,7 +294,7 @@ IMP::Pointer<container::MinimumPairRestraint> do_bipartite_mindist(
 }
 
 IMP::Pointer<isd::FretRestraint> fret_restraint(
-    Model *m, atom::Hierarchies &hs, std::string protein_a,
+    atom::Hierarchies &hs, std::string protein_a,
     std::string residues_a, std::string protein_b, std::string residues_b,
     double fexp, FretParameters Fret, std::string cell_type, bool use_GFP,
     Particle *Kda, Particle *Ida, Particle *R0, Particle *Sigma0,
@@ -348,7 +348,7 @@ IMP::Pointer<isd::FretRestraint> fret_restraint(
 }
 
 IMP::Pointer<isd::FretRestraint> fret_restraint(
-    Model *m, atom::Hierarchies &hs, std::string protein_a,
+    atom::Hierarchies &hs, std::string protein_a,
     std::string residues_a, std::string protein_b, int residues_b, double fexp,
     FretParameters Fret, std::string cell_type, bool use_GFP, Particle *Kda,
     Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl) {
@@ -397,7 +397,7 @@ IMP::Pointer<isd::FretRestraint> fret_restraint(
 }
 
 IMP::Pointer<isd::FretRestraint> fret_restraint(
-    Model *m, atom::Hierarchies &hs, std::string protein_a, int residues_a,
+    atom::Hierarchies &hs, std::string protein_a, int residues_a,
     std::string protein_b, std::string residues_b, double fexp,
     FretParameters Fret, std::string cell_type, bool use_GFP, Particle *Kda,
     Particle *Ida, Particle *R0, Particle *Sigma0, Particle *pBl) {
@@ -659,7 +659,7 @@ void add_symmetry_restraint(Model *m, atom::Hierarchies &hs,
   }
 }
 
-void add_layer_restraint(Model *m, RestraintSet *allrs,
+void add_layer_restraint(RestraintSet *allrs,
                          container::ListSingletonContainer *lsc,
                          FloatRange range, double kappa) {
   IMP_NEW(core::HarmonicWell, hw, (range, kappa));
@@ -669,7 +669,7 @@ void add_layer_restraint(Model *m, RestraintSet *allrs,
   allrs->add_restraint(sr);
 }
 
-void add_bayesian_layer_restraint(Model *m, RestraintSet *allrs,
+void add_bayesian_layer_restraint(RestraintSet *allrs,
                                   container::ListSingletonContainer *lsc,
                                   Particle *a, Particle *b) {
   Particles ps = lsc->get_particles();
@@ -842,7 +842,7 @@ void add_stay_on_plane_restraint(Model *m, RestraintSet *allrs,
   }
 }
 
-void add_diameter_rgyr_restraint(Model *m, RestraintSet *allrs,
+void add_diameter_rgyr_restraint(RestraintSet *allrs,
                                  const atom::Hierarchy &h, std::string protein,
                                  double diameter, double rgyr, double kappa) {
   atom::Hierarchies hs = h.get_children();
@@ -857,8 +857,7 @@ void add_diameter_rgyr_restraint(Model *m, RestraintSet *allrs,
   }
 }
 
-IMP::Pointer<spb::EM2DRestraint> em2d_restraint(Model *m,
-                                                     atom::Hierarchies &hs,
+IMP::Pointer<spb::EM2DRestraint> em2d_restraint(atom::Hierarchies &hs,
                                                      std::string protein,
                                                      EM2DParameters EM2D,
                                                      Particle *Sigma) {
@@ -875,7 +874,7 @@ IMP::Pointer<spb::EM2DRestraint> em2d_restraint(Model *m,
 }
 
 IMP::Pointer<spb::EM2DRestraint> em2d_restraint(
-    Model *m, atom::Hierarchies &hs, std::string protein, EM2DParameters EM2D,
+    atom::Hierarchies &hs, std::string protein, EM2DParameters EM2D,
     Floats sigma_grid, Floats fmod_grid) {
   atom::Selection s = atom::Selection(hs);
   s.set_molecule(protein);

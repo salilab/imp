@@ -213,7 +213,7 @@ int main(int argc, char *argv[]) {
   fretfile.open(mydata.Fret.filename.c_str());
   while (fretfile >> name_d >> ter_d >> name_a >> ter_a >> fexp >> sexp) {
     fret->add_restraint(fret_restraint(
-        m, all_mol, name_d, ter_d, name_a, ter_a, fexp, mydata.Fret,
+        all_mol, name_d, ter_d, name_a, ter_a, fexp, mydata.Fret,
         mydata.cell_type, mydata.add_GFP, ISD_ps["Kda"], ISD_ps["Ida"],
         ISD_ps["R0"], ISD_ps["Sigma0"], ISD_ps["pBl"]));
   }
@@ -230,21 +230,21 @@ int main(int argc, char *argv[]) {
     // both are strings
     if (int_d == 0 && int_a == 0) {
       fret->add_restraint(fret_restraint(
-          m, all_mol, name_d, ter_d, name_a, ter_a, fexp, mydata.Fret,
+          all_mol, name_d, ter_d, name_a, ter_a, fexp, mydata.Fret,
           mydata.cell_type, mydata.add_GFP, ISD_ps["Kda"], ISD_ps["Ida"],
           ISD_ps["R0"], ISD_ps["Sigma0"], ISD_ps["pBl"]));
     }
     // donor is string, acceptor is residue index
     if (int_d == 0 && int_a != 0) {
       fret->add_restraint(fret_restraint(
-          m, all_mol, name_d, ter_d, name_a, int_a, fexp, mydata.Fret,
+          all_mol, name_d, ter_d, name_a, int_a, fexp, mydata.Fret,
           mydata.cell_type, mydata.add_GFP, ISD_ps["Kda"], ISD_ps["Ida"],
           ISD_ps["R0"], ISD_ps["Sigma0"], ISD_ps["pBl"]));
     }
     // donor is residue index, acceptor is string
     if (int_d != 0 && int_a == 0) {
       fret->add_restraint(fret_restraint(
-          m, all_mol, name_d, int_d, name_a, ter_a, fexp, mydata.Fret,
+          all_mol, name_d, int_d, name_a, ter_a, fexp, mydata.Fret,
           mydata.cell_type, mydata.add_GFP, ISD_ps["Kda"], ISD_ps["Ida"],
           ISD_ps["R0"], ISD_ps["Sigma0"], ISD_ps["pBl"]));
     }
@@ -281,7 +281,7 @@ int main(int argc, char *argv[]) {
 
   // add restraint to set
   em2d->add_restraint(
-      em2d_restraint(m, all_mol, "Spc42p", mydata.EM2D, s_grid, fmod_grid));
+      em2d_restraint(all_mol, "Spc42p", mydata.EM2D, s_grid, fmod_grid));
   // add the RestraintSet to model
   // m->add_restraint(em2d);
   allrs->add_restraint(em2d);
