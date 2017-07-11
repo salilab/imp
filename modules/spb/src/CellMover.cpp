@@ -79,7 +79,7 @@ core::MonteCarloMoverResult CellMover::do_propose() {
   boost::uniform_real<> rand(0, 1);
   boost::normal_distribution<double> mrng(0, max_translation_);
   boost::variate_generator<IMP::RandomNumberGenerator &,
-                           boost::normal_distribution<double>>
+                           boost::normal_distribution<double> >
       sampler(IMP::random_number_generator, mrng);
 
   // scale decorator
