@@ -442,7 +442,6 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %files mpich
 %defattr(-,root,root)
 %doc %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
-%doc %{_prefix}/share/doc/%{name}-%{version}/examples/spb
 %{_prefix}/share/IMP/swig/IMP_mpi.*
 %{_prefix}/share/IMP/swig/IMP_spb.*
 %{_prefix}/share/IMP/build_info/IMP.mpi
