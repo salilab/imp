@@ -75,6 +75,7 @@ class SoapDoublets {
 };
 
 // Storage of the SOAP statistical potential
+IMPSCOREFUNCTOREXPORT
 class SoapPotential {
   std::vector<double> bin_min_, bin_width_, inv_bin_width_;
   boost::shared_array<float> data_;
