@@ -264,7 +264,6 @@ int main(int argc, char* argv[]) {
   int nproc, myrank;
   MPI_Comm_size(MPI_COMM_WORLD, &nproc);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-  MPI_Status status;
 
   // read input
   std::string inputfile = "config.ini";
