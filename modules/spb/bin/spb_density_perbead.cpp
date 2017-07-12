@@ -47,7 +47,6 @@ namespace {
       return false;
     }
   };
-}
 
 Particles generate_new_particles(Model* m, const atom::Hierarchies& all_mol,
                                  double side, double off_x, double off_y,
@@ -281,6 +280,8 @@ void print_map(
           "class field");
   fclose(mapfile);
 }
+
+} // anonymous namespace
 
 int main(int argc, char* argv[]) {
   // MPI stuff

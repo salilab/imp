@@ -19,6 +19,8 @@
 using namespace IMP;
 using namespace IMP::spb;
 
+namespace {
+
 Particles generate_new_particles(Model *m, const atom::Hierarchies &all_mol,
                                  double side, double off_x, double off_y,
                                  double xmin, double xmax, double ymin,
@@ -66,7 +68,9 @@ Particles generate_new_particles(Model *m, const atom::Hierarchies &all_mol,
     }
   }
   return ps;
-};
+}
+
+} // anonymous namespace
 
 int main(int argc, char *argv[]) {
   // read input
