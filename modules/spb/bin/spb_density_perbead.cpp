@@ -12,7 +12,6 @@
 #include <IMP/spb.h>
 #include <IMP/rmf.h>
 #include <IMP/statistics.h>
-#include <array>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -21,6 +20,34 @@
 
 using namespace IMP;
 using namespace IMP::spb;
+
+namespace {
+  //! Simple 3D int vector class.
+  /** This should be faster and more efficient than std::vector<int> since
+      the data are stored on the stack (no dynamic memory allocations
+      are required) and there is no overhead for handling dynamic sizing.
+      Note that we can't use std::array<int, 3> as that requires C++11.
+   */
+  class IntVector3 {
+    int data_[3];
+  public:
+    IntVector3(int x, int y, int z) {
+      data_[0] = x;
+      data_[1] = y;
+      data_[2] = z;
+    }
+    bool operator<(const IntVector3& o) const {
+      for (unsigned i = 0; i < 3; ++i) {
+        if (data_[i] < o.data_[i]) {
+          return true;
+	} else if (data_[i] > o.data_[i]) {
+          return false;
+        }
+      }
+      return false;
+    }
+  };
+}
 
 Particles generate_new_particles(Model* m, const atom::Hierarchies& all_mol,
                                  double side, double off_x, double off_y,
@@ -85,10 +112,9 @@ Particles generate_new_particles(Model* m, const atom::Hierarchies& all_mol,
   return ps;
 };
 
-std::vector<std::array<int, 3> > get_indices(core::XYZR xyzr,
-                                             MapParameters Map) {
+std::vector<IntVector3> get_indices(core::XYZR xyzr, MapParameters Map) {
   // list of indices
-  std::vector<std::array<int, 3> > ijk_s;
+  std::vector<IntVector3> ijk_s;
   // get positions
   algebra::Vector3D xyz = xyzr.get_coordinates();
   // number of bins forming the cube in which the bead is inscribed
@@ -121,7 +147,7 @@ std::vector<std::array<int, 3> > get_indices(core::XYZR xyzr,
 
         // add indices to vector
         if (dist < xyzr.get_radius()) {
-          std::array<int, 3> ijk = {{ii, jj, kk}};
+          IntVector3 ijk(ii, jj, kk);
           ijk_s.push_back(ijk);
         }
       }
@@ -130,9 +156,9 @@ std::vector<std::array<int, 3> > get_indices(core::XYZR xyzr,
   return ijk_s;
 }
 
-std::map<std::pair<std::array<int, 3>, std::string>, double> get_map(
+std::map<std::pair<IntVector3, std::string>, double> get_map(
     Particles ps, MapParameters Map) {
-  std::map<std::pair<std::array<int, 3>, std::string>, double> new_map;
+  std::map<std::pair<IntVector3, std::string>, double> new_map;
 
   // cycle on all the particles
   for (unsigned i = 0; i < ps.size(); ++i) {
@@ -171,11 +197,10 @@ std::map<std::pair<std::array<int, 3>, std::string>, double> get_map(
     found = name_ps.find("Spc29p_c2");
     if (found != std::string::npos) name_map = "Spc29p_c2";
 
-    std::vector<std::array<int, 3> > ijk_s =
-        get_indices(core::XYZR(ps[i]), Map);
+    std::vector<IntVector3> ijk_s = get_indices(core::XYZR(ps[i]), Map);
     for (unsigned j = 0; j < ijk_s.size(); ++j) {
       // creating the keys from indices and name
-      std::pair<std::array<int, 3>, std::string> key =
+      std::pair<IntVector3, std::string> key =
           std::make_pair(ijk_s[j], name_map);
       // adding mass
       new_map[key] += 1.0;
@@ -185,10 +210,10 @@ std::map<std::pair<std::array<int, 3>, std::string>, double> get_map(
 }
 
 void add_to_map(
-    std::map<std::pair<std::array<int, 3>, std::string>, double>& map_from,
-    std::map<std::pair<std::array<int, 3>, std::string>, double>& map_to,
+    std::map<std::pair<IntVector3, std::string>, double>& map_from,
+    std::map<std::pair<IntVector3, std::string>, double>& map_to,
     double weight) {
-  std::map<std::pair<std::array<int, 3>, std::string>, double>::iterator iit;
+  std::map<std::pair<IntVector3, std::string>, double>::iterator iit;
 
   for (iit = map_from.begin(); iit != map_from.end(); ++iit) {
     if (map_to.count((*iit).first) == 0)
@@ -199,7 +224,7 @@ void add_to_map(
 }
 
 void print_map(
-    std::map<std::pair<std::array<int, 3>, std::string>, double>& map,
+    std::map<std::pair<IntVector3, std::string>, double>& map,
     MapParameters Map, double normalization, std::string label) {
   FILE* mapfile;
   std::string suff = ".dx";
@@ -229,9 +254,8 @@ void print_map(
     for (int j = 0; j <= Map.nbiny; ++j) {
       for (int k = 0; k <= Map.nbinz; ++k) {
         // make key
-        std::array<int, 3> ijk = {{i, j, k}};
-        std::pair<std::array<int, 3>, std::string> key =
-            std::make_pair(ijk, label);
+        IntVector3 ijk(i, j, k);
+        std::pair<IntVector3, std::string> key = std::make_pair(ijk, label);
         // get entry
         Float m0 = 0.;
         if (map.count(key) > 0) {
@@ -362,7 +386,7 @@ int main(int argc, char* argv[]) {
   double normalization = 0.;
 
   // global map
-  std::map<std::pair<std::array<int, 3>, std::string>, double> map_total;
+  std::map<std::pair<IntVector3, std::string>, double> map_total;
 
   // cycle on file in file_list frames
   for (unsigned ifile = myrank; ifile < frame_files.size(); ifile += nproc) {
@@ -394,7 +418,7 @@ int main(int argc, char* argv[]) {
                                           mydata.Map.xmin, mydata.Map.xmax,
                                           mydata.Map.ymin, mydata.Map.ymax);
 
-    std::map<std::pair<std::array<int, 3>, std::string>, double> map_frame =
+    std::map<std::pair<IntVector3, std::string>, double> map_frame =
         get_map(Ps, mydata.Map);
 
     // add to global map
@@ -407,7 +431,7 @@ int main(int argc, char* argv[]) {
 
   // vector of strings with labels
   std::vector<std::string> labels;
-  std::map<std::pair<std::array<int, 3>, std::string>, double>::iterator iit;
+  std::map<std::pair<IntVector3, std::string>, double>::iterator iit;
   for (iit = map_total.begin(); iit != map_total.end(); ++iit) {
     std::string l = ((*iit).first).second;
     int mycount = std::count(labels.begin(), labels.end(), l);
@@ -432,8 +456,8 @@ int main(int argc, char* argv[]) {
       for (int j = 0; j <= mydata.Map.nbiny; ++j) {
         for (int k = 0; k <= mydata.Map.nbinz; ++k) {
           // get key
-          std::array<int, 3> ijk = {{i, j, k}};
-          std::pair<std::array<int, 3>, std::string> key =
+          IntVector3 ijk(i, j, k);
+          std::pair<IntVector3, std::string> key =
               std::make_pair(ijk, labels[l]);
           // fill array at position index
           double m = 0.;
@@ -457,8 +481,8 @@ int main(int argc, char* argv[]) {
       for (int j = 0; j <= mydata.Map.nbiny; ++j) {
         for (int k = 0; k <= mydata.Map.nbinz; ++k) {
           // get key
-          std::array<int, 3> ijk = {{i, j, k}};
-          std::pair<std::array<int, 3>, std::string> key =
+          IntVector3 ijk(i, j, k);
+          std::pair<IntVector3, std::string> key =
               std::make_pair(ijk, labels[l]);
           // fill map
           if (map_array_recv[index] > 0.) {
@@ -499,8 +523,8 @@ int main(int argc, char* argv[]) {
         for (int j = 0; j <= mydata.Map.nbiny; ++j) {
           for (int k = 0; k <= mydata.Map.nbinz; ++k) {
             // get key
-            std::array<int, 3> ijk = {{i, j, k}};
-            std::pair<std::array<int, 3>, std::string> key =
+            IntVector3 ijk(i, j, k);
+            std::pair<IntVector3, std::string> key =
                 std::make_pair(ijk, labels[l]);
             // get entry
             Float m0 = 0.;
