@@ -49,8 +49,7 @@ class Hdf5File : public boost::noncopyable {
 class Hdf5Dataset;
 class Hdf5Attribute;
 
-IMPSCOREFUNCTOREXPORT
-class Hdf5Dataspace : public boost::noncopyable {
+class IMPSCOREFUNCTOREXPORT Hdf5Dataspace : public boost::noncopyable {
   hid_t id_;
 
  public:

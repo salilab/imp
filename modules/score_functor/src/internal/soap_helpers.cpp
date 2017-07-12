@@ -47,35 +47,6 @@ void SoapPotential::read(Hdf5File &file_id, const SoapDoublets &doublets) {
   dset.read_float(data_.get());
 }
 
-void SoapDoublets::read(Hdf5File &file_id) {
-  Hdf5Group group(file_id.get(), "/library/tuples");
-  Hdf5Dataset ntypes_ds(group.get(), "ntypes");
-  std::vector<int> ntypes = ntypes_ds.read_int_vector();
-  unsigned total_types = std::accumulate(ntypes.begin(), ntypes.end(), 0) * 3;
-
-  Hdf5Dataset type_names_ds(group.get(), "type_names");
-  std::vector<std::string> type_names = type_names_ds.read_string_vector();
-
-  if (type_names.size() != total_types) {
-    IMP_THROW("Number of atom types (" << type_names.size()
-                                       << ") does not match sum of ntypes ("
-                                       << total_types << ")",
-              ValueException);
-  }
-
-  int class_id = 0;
-  for (unsigned i = 0; i < type_names.size(); i += 3) {
-    atom::ResidueType rt(type_names[i]);
-    atom::AtomType at1(type_names[i + 1]);
-    atom::AtomType at2(type_names[i + 2]);
-    doublets_[std::make_pair(rt, at1)][at2] = class_id;
-    if (--ntypes[class_id] == 0) {
-      class_id++;
-    }
-  }
-  n_classes_ = class_id;
-}
-
 void SoapPotential::read_feature_info(Hdf5File &file_id) {
   bin_min_.resize(4);
   bin_width_.resize(4);

@@ -46,7 +46,34 @@ class SoapDoublets {
  public:
   SoapDoublets() : n_classes_(0) {}
 
-  void read(Hdf5File &file_id);
+  void read(Hdf5File &file_id) {
+    Hdf5Group group(file_id.get(), "/library/tuples");
+    Hdf5Dataset ntypes_ds(group.get(), "ntypes");
+    std::vector<int> ntypes = ntypes_ds.read_int_vector();
+    unsigned total_types = std::accumulate(ntypes.begin(), ntypes.end(), 0) * 3;
+
+    Hdf5Dataset type_names_ds(group.get(), "type_names");
+    std::vector<std::string> type_names = type_names_ds.read_string_vector();
+
+    if (type_names.size() != total_types) {
+      IMP_THROW("Number of atom types (" << type_names.size()
+                                         << ") does not match sum of ntypes ("
+                                         << total_types << ")",
+                ValueException);
+    }
+
+    int class_id = 0;
+    for (unsigned i = 0; i < type_names.size(); i += 3) {
+      atom::ResidueType rt(type_names[i]);
+      atom::AtomType at1(type_names[i + 1]);
+      atom::AtomType at2(type_names[i + 2]);
+      doublets_[std::make_pair(rt, at1)][at2] = class_id;
+      if (--ntypes[class_id] == 0) {
+        class_id++;
+      }
+    }
+    n_classes_ = class_id;
+  }
 
   int get_number_of_classes() const { return n_classes_; }
 
@@ -75,8 +102,7 @@ class SoapDoublets {
 };
 
 // Storage of the SOAP statistical potential
-IMPSCOREFUNCTOREXPORT
-class SoapPotential {
+class IMPSCOREFUNCTOREXPORT SoapPotential {
   std::vector<double> bin_min_, bin_width_, inv_bin_width_;
   boost::shared_array<float> data_;
   Ints dims_, stride_;
@@ -98,8 +124,14 @@ class SoapPotential {
   }
 
  public:
-  static const int DISTANCE = 0, ANGLE1 = 1, ANGLE2 = 2, DIHEDRAL = 3,
-                   CLASS1 = 4, CLASS2 = 5;
+  // Each of these needs to be on a separate line, otherwise MSVC fails
+  // with a C2487 error
+  static const int DISTANCE = 0;
+  static const int ANGLE1 = 1;
+  static const int ANGLE2 = 2;
+  static const int DIHEDRAL = 3;
+  static const int CLASS1 = 4;
+  static const int CLASS2 = 5;
   SoapPotential() {}
 
   void read(Hdf5File &file_id, const SoapDoublets &doublets);
