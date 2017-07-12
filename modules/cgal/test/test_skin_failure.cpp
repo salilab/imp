@@ -14,6 +14,7 @@ IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
 #include <CGAL/make_skin_surface_mesh_3.h>
 #include <CGAL/Union_of_balls_3.h>
 #include <CGAL/Gmpq.h>
+#include <CGAL/version.h>
 IMP_COMPILER_ENABLE_WARNINGS
 
 int main(int argc, char *argv[]) {
@@ -30,7 +31,11 @@ int main(int argc, char *argv[]) {
                      {5.46575, 3.92853, 0.183865}};
   typedef CGAL::Exact_predicates_inexact_constructions_kernel IKernel;
   typedef IKernel::Point_3 Bare_point;
+#if CGAL_VERSION_NR > 1040911000
+  typedef IKernel::Weighted_point_3 Weighted_point;
+#else
   typedef CGAL::Weighted_point<Bare_point, IKernel::RT> Weighted_point;
+#endif
   unsigned int size = sizeof(pts) / (3 * sizeof(double));
   IMP::Vector<Weighted_point> l;
   for (unsigned int i = 0; i < size; ++i) {
