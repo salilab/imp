@@ -64,7 +64,11 @@ typedef CGAL::Alpha_shape_3<Triangulation> Alpha_shape;
 
 #endif
 
+#if CGAL_VERSION_NR > 1040911000
+typedef Gt::Point_3 Wpoint;
+#else
 typedef Gt::Point Wpoint;
+#endif
 typedef Alpha_shape::Cell Cell;
 typedef Alpha_shape::Vertex Vertex;
 typedef Alpha_shape::Edge Edge;
@@ -110,8 +114,13 @@ class SpacefillingVolumetric {
  public:
   // types
   typedef typename Gt::Vector_3 Vector;
+#if CGAL_VERSION_NR > 1040911000
+  typedef typename Gt::Bare_point Point;
+  typedef typename Gt::Point_3 Wpoint;
+#else
   typedef typename Gt::Point_3 Point;
   typedef typename Gt::Point Wpoint;
+#endif
 
  public:
   /*!
@@ -167,10 +176,6 @@ class SpacefillingVolumetric {
   //! center of some weighted points
   typename Gt::Compute_squared_radius_smallest_orthogonal_sphere_3
       radicalRadius;
-  //! a global that says if a simplex intersect it's dual support
-  /*! needed to decide attachedness see cap_H() and segment_H() functions
-  */
-  typename Gt::Does_simplex_intersect_dual_support_3 doesIntersectDual;
   // end name A
   //\@}
 
@@ -559,8 +564,7 @@ inline typename SpacefillingVolumetric<Gt>::Vector SpacefillingVolumetric<
 template <typename Gt>
 inline bool SpacefillingVolumetric<Gt>::is_hidden(Wpoint const &i,
                                                   Wpoint const &j) {
-  // return !doesIntersectDual(i,j);
-  double dist = vector_squared_length(i - j);
+  double dist = vector_squared_length(i.point() - j.point());
   return (0.5 - (j.weight() - i.weight()) / (2 * dist)) < 0;
 }
 /*! is an edge hidden by a sphere ?
@@ -584,7 +588,6 @@ template <typename Gt>
 inline bool SpacefillingVolumetric<Gt>::is_hidden(Wpoint const &i,
                                                   Wpoint const &j,
                                                   Wpoint const &k) {
-  // return !doesIntersectDual(i,j,k);
   Point o2 = orthoCenter(i, j);
   Point o = orthoCenter(i, j, k);
   return ((k.point() - o2) * (o - o2) < 0);
@@ -1719,7 +1722,6 @@ SpacefillingVolumetric<Gt>::SpacefillingVolumetric() {
   radicalCenter = gt.construct_weighted_circumcenter_3_object();
   radicalRadius =
       gt.compute_squared_radius_smallest_orthogonal_sphere_3_object();
-  doesIntersectDual = gt.does_simplex_intersect_dual_support_3_object();
 }
 
 namespace {

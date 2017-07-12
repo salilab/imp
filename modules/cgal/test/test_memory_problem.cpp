@@ -29,7 +29,11 @@ typedef CGAL::Fixed_alpha_shape_vertex_base_3<Gt> Vb;
 typedef CGAL::Fixed_alpha_shape_cell_base_3<Gt> Fb;
 typedef CGAL::Triangulation_data_structure_3<Vb, Fb> TDS;
 typedef CGAL::Regular_triangulation_3<Gt, TDS> Triangulation;
+#if CGAL_VERSION_NR > 1040911000
+typedef typename Gt::Point_3 Wpoint;
+#else
 typedef Gt::Point Wpoint;
+#endif
 
 int main(int argc, char *argv[]) {
   IMP::setup_from_argv(argc, argv, "Test memory problem.");
