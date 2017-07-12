@@ -43,6 +43,7 @@
   #endif
   #pragma GCC diagnostic ignored "-Wignored-attributes"
   #pragma GCC diagnostic ignored "-Wmisleading-indentation"
+  #pragma GCC diagnostic ignored "-Wint-in-bool-context"
 
 #endif
 
