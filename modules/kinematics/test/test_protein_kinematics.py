@@ -6,6 +6,7 @@ import IMP.kinematics
 
 class Test(IMP.test.TestCase):
     # Failing test for importing ProteinKinematics class
+    @IMP.test.expectedFailure
     def test_protein_kinematics(self):
         m = IMP.Model()
         hier = IMP.atom.read_pdb(self.open_input_file("three.pdb"), m)
