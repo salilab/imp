@@ -623,7 +623,7 @@ _citation_author.ordinal
         self.assertEqual(w._repr(True), 'YES')
         # Test handling of 'long' type
         if sys.version_info[0] == 2:
-            self.assertEqual(w._repr(42L), '42')
+            self.assertEqual(w._repr(long(42)), '42')
 
     def test_cif_entities(self):
         """Test _EntityMapper class"""

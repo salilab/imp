@@ -879,6 +879,7 @@ def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
             pdbnames=[name]
         for pdbname in pdbnames:
             for group in pdb_sequences.sequences[pdbname]:
+                if group[1]-group[0]+1<7:continue
                 seq_frag_pdb=pdb_sequences.sequences[pdbname][group]
                 if show:
                     print("########################")

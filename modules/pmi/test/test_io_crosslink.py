@@ -443,6 +443,47 @@ class Tests(IMP.test.TestCase):
             if r[1]=='AAA':
                 self.assertEqual(r[3],records_2[n][3]+100)
 
+    def test_jaccard_distance(self):
+        cldb1=self.setup_cldb("xl_dataset_test.dat")
+        cldb2=self.setup_cldb("xl_dataset_test.dat")
+        cldb3=self.setup_cldb("xl_dataset_test.dat")
+        cldb3.offset_residue_index('AAA',100)
+
+        ddb={1:cldb1,2:cldb2,3:cldb3}
+        jdm=IMP.pmi.io.crosslink.JaccardDistanceMatrix(ddb)
+        self.assertEqual(jdm.get_distance(1,2),0.0)
+        self.assertEqual(jdm.get_distance(1,3),0.875)
+
+    def test_check_consistency(self):
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name("proteasome.fasta"))
+
+        cldbkc = IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+        cldbkc.set_unique_id_key("linkage ID")
+        cldbkc.set_protein1_key("Linked protein 1")
+        cldbkc.set_protein2_key("Linked protein 2")
+        cldbkc.set_residue1_key("linked resid 1")
+        cldbkc.set_residue2_key("linked resid 2")
+        cldbkc.set_residue1_amino_acid_key("Cross-linked residue 1 in 4CR2")
+        cldbkc.set_residue2_amino_acid_key("Cross-linked residue 2 in 4CR2")
+        # instead of a score we're using the number of events here, which 'might' resemble a score
+        cldbkc.set_id_score_key("Number of quantified event")
+        cldb = IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc, fasta_seq=seqs, linkable_aa=('K', 'S', 'T', 'Y'))
+        cldb.set_name("master")
+        cldb.create_set_from_file(self.get_input_file_name("proteasome_xlinks.csv"))
+        matched,non_matched=cldb.check_cross_link_consistency()
+
+
+        calc_matched=dict([(prot,len(matched[prot])) for prot in matched])
+        calc_non_matched=dict([(prot,len(non_matched[prot])) for prot in non_matched])
+        # expected results; summed up crosslinks
+        exp_matched={'RPN3': 11, 'RPN5': 14, 'RPN6': 12, 'RPN7': 15, 'RPN8': 15, 'RPN9': 11, 'RPN11': 11, 'SEM1': 6}
+        exp_non_matched={'RPN7': 1}
+
+        for prot_name, amount in calc_matched.items():
+            self.assertEqual(amount, exp_matched[prot_name])
+        for prot_name, amount in calc_non_matched.items():
+            self.assertEqual(amount, exp_non_matched[prot_name])
+
 
 if __name__ == '__main__':
     IMP.test.main()

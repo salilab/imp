@@ -134,12 +134,12 @@ class _CifWriter(object):
             return obj
         elif isinstance(obj, float):
             return "%.3f" % obj
+        elif isinstance(obj, bool):
+            return self._boolmap[obj]
         # Don't use repr(x) if type(x) == long since that adds an 'L' suffix,
         # which isn't valid mmCIF syntax. _long_type = long only on Python 2.
         elif isinstance(obj, _long_type):
             return "%d" % obj
-        elif isinstance(obj, bool):
-            return self._boolmap[obj]
         else:
             return repr(obj)
 

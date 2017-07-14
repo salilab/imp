@@ -4,7 +4,7 @@
    Utilities are also provided to help in the analysis of models that
    contain cross-links.
 """
-
+from __future__ import print_function
 import IMP
 import IMP.pmi
 import operator
@@ -50,6 +50,14 @@ class _CrossLinkDataBaseStandardKeys(object):
         self.type[self.residue1_key]=int
         self.residue2_key="Residue2"
         self.type[self.residue2_key]=int
+        self.residue1_amino_acid_key="Residue1AminoAcid"
+        self.type[self.residue1_amino_acid_key]=str
+        self.residue2_amino_acid_key="Residue2AminoAcid"
+        self.type[self.residue2_amino_acid_key]=str
+        self.residue1_moiety_key="Residue1Moiety"
+        self.type[self.residue1_moiety_key]=str
+        self.residue2_moiety_key="Residue2Moiety"
+        self.type[self.residue2_moiety_key]=str
         self.site_pairs_key="SitePairs"
         self.type[self.site_pairs_key]=str
         self.unique_id_key="XLUniqueID"
@@ -100,6 +108,10 @@ class _CrossLinkDataBaseStandardKeys(object):
                         self.protein2_key,
                         self.residue1_key,
                         self.residue2_key,
+                        self.residue1_amino_acid_key,
+                        self.residue2_amino_acid_key,
+                        self.residue1_moiety_key,
+                        self.residue2_moiety_key,
                         self.cross_linker_chemical_key,
                         self.id_score_key,
                         self.fdr_key,
@@ -289,6 +301,22 @@ class CrossLinkDataBaseKeywordsConverter(_CrossLinkDataBaseStandardKeys):
         self.converter[origin_key]=self.residue2_key
         self.backward_converter[self.residue2_key]=origin_key
 
+    def set_residue1_amino_acid_key(self, origin_key):
+        self.converter[origin_key] = self.residue1_amino_acid_key
+        self.backward_converter[self.residue1_amino_acid_key] = origin_key
+
+    def set_residue2_amino_acid_key(self, origin_key):
+        self.converter[origin_key] = self.residue2_amino_acid_key
+        self.backward_converter[self.residue2_amino_acid_key] = origin_key
+
+    def set_residue1_moiety_key(self, origin_key):
+        self.converter[origin_key] = self.residue1_moiety_key
+        self.backward_converter[self.residue1_moiety_key] = origin_key
+
+    def set_residue2_moiety_key(self, origin_key):
+        self.converter[origin_key] = self.residue2_moiety_key
+        self.backward_converter[self.residue2_moiety_key] = origin_key
+
     def set_site_pairs_key(self,origin_key):
         self.converter[origin_key]=self.site_pairs_key
         self.backward_converter[self.site_pairs_key]=origin_key
@@ -429,12 +457,18 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
     operations, adding cross-links, merge datasets...
     '''
 
-    def __init__(self, converter=None, data_base=None):
+    def __init__(self, converter=None, data_base=None, fasta_seq=None, linkable_aa=('K',)):
         '''
         Constructor.
         @param converter an instance of CrossLinkDataBaseKeywordsConverter
         @param data_base an instance of CrossLinkDataBase to build the new database on
+        @param fasta_seq an instance of IMP.pmi.topology.Sequences containing protein fasta sequences to check
+                crosslink consistency. If not given consistency will not be checked
+        @param linkable_aa a tuple containing one-letter amino acids which are linkable by the crosslinker;
+                only used if the database DOES NOT provide a value for a certain residueX_amino_acid_key
+                and if a fasta_seq is given
         '''
+
         if data_base is None:
             self.data_base = {}
         else:
@@ -442,14 +476,18 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
         _CrossLinkDataBaseStandardKeys.__init__(self)
         if converter is not None:
-            self.cldbkc = converter
+            self.cldbkc = converter                     #type: CrossLinkDataBaseKeywordsConverter
             self.list_parser=self.cldbkc.rplp
             self.converter = converter.get_converter()
 
         else:
-            self.cldbkc =    None
+            self.cldbkc =    None               #type: CrossLinkDataBaseKeywordsConverter
             self.list_parser=None
             self.converter = None
+
+        # default amino acids considered to be 'linkable' if none are given
+        self.def_aa_tuple = linkable_aa
+        self.fasta_seq = fasta_seq      #type: IMP.pmi.topology.Sequences
         self._update()
 
     def _update(self):
@@ -459,6 +497,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         self.update_cross_link_unique_sub_index()
         self.update_cross_link_redundancy()
         self.update_residues_links_number()
+        self.check_cross_link_consistency()
 
 
     def __iter__(self):
@@ -633,6 +672,79 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             (p1,p2,r1,r2)=_ProteinsResiduesArray(xl)
             xl[self.residue1_links_number_key]=len(residue_links[(p1,r1)])
             xl[self.residue2_links_number_key]=len(residue_links[(p2,r2)])
+
+    def check_cross_link_consistency(self):
+        if self.cldbkc and self.fasta_seq:
+            cnt_matched, cnt_matched_file = 0, 0
+            matched = {}
+            non_matched = {}
+            for xl in self:
+                (p1, p2, r1, r2) = _ProteinsResiduesArray(xl)
+                b_matched_file = False
+                if self.residue1_amino_acid_key in xl:
+                    # either you know the residue type and aa_tuple is a single entry
+                    aa_from_file = (xl[self.residue1_amino_acid_key].upper(),)
+                    b_matched = self._match_xlinks(p1, r1, aa_from_file)
+                    b_matched_file = b_matched
+                else:
+                    # or pass the possible list of types that can be crosslinked
+                    b_matched = self._match_xlinks(p1, r1, self.def_aa_tuple)
+
+                matched, non_matched = self._update_matched_xlinks(b_matched, p1, r1, matched, non_matched)
+
+                if self.residue2_amino_acid_key in xl:
+                    aa_from_file = (xl[self.residue2_amino_acid_key].upper(), )
+                    b_matched = self._match_xlinks(p2, r2, aa_from_file)
+                    b_matched_file = b_matched
+                else:
+                    b_matched = self._match_xlinks(p2, r2, self.def_aa_tuple)
+
+                matched, non_matched = self._update_matched_xlinks(b_matched, p2, r2, matched, non_matched)
+                if b_matched: cnt_matched += 1
+                if b_matched_file: cnt_matched_file += 1
+            if len(self) > 0:
+                percentage_matched = round(100*cnt_matched/len(self),1)
+                percentage_matched_file = round(100 * cnt_matched_file / len(self), 1)
+                #if matched: print "Matched xlinks:", matched
+                if matched or non_matched: print("check_cross_link_consistency: Out of %d crosslinks "
+                                                 "%d were matched to the fasta sequence (%f %%).\n "
+                                                 "%d were matched by using the crosslink file (%f %%)."%
+                                                 (len(self),cnt_matched,percentage_matched,cnt_matched_file,
+                                                  percentage_matched_file) )
+                if non_matched: print("check_cross_link_consistency: Warning: Non matched xlinks:",
+                                      [(prot_name, sorted(list(non_matched[prot_name]))) for prot_name in non_matched])
+            return matched,non_matched
+
+    def _match_xlinks(self, prot_name, res_index, aa_tuple):
+        # returns Boolean whether given aa matchas a position in the fasta file
+        # cross link files usually start counting at 1 and not 0; therefore substract -1 to compare with fasta
+        amino_dict = IMP.pmi.tools.ThreeToOneConverter()
+        res_index -= 1
+        for amino_acid in aa_tuple:
+            if len(amino_acid) == 3:
+                amino_acid = amino_dict[amino_acid.upper()]
+            if prot_name in self.fasta_seq.sequences:
+                seq = self.fasta_seq.sequences[prot_name]
+                if res_index < len(seq):
+                    if amino_acid == seq[res_index]:
+                        return True
+                    # else:
+                    #     print "Could not match", prot, res+1, amino_acid, seq[res]
+        return False
+
+    def _update_matched_xlinks(self, b_matched, prot, res, matched, non_matched):
+        if b_matched:
+            if prot in matched:
+                matched[prot].add(res)
+            else:
+                matched[prot] = set([res])
+        else:
+            if prot in non_matched:
+                non_matched[prot].add(res)
+            else:
+                non_matched[prot] = set([res])
+        return matched, non_matched
+
 
     def get_cross_link_string(self,xl):
         string='|'
@@ -896,7 +1008,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                         ys.append(float(xl[ykey]))
                     colors.append(float(xl[colorkey]))
                 except ValueError:
-                    print("Value error for cross-link %s" % (xl[self.unique_id_key]))
+                    print("CrossLinkDataBase.plot: Value error for cross-link %s" % (xl[self.unique_id_key]))
                     continue
 
             cs=[]
@@ -956,7 +1068,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 try:
                     values_list.append(float(xl[valuekey]))
                 except ValueError:
-                    print("Value error for cross-link %s" % (xl[self.unique_id_key]))
+                    print("CrossLinkDataBase.plot: Value error for cross-link %s" % (xl[self.unique_id_key]))
                     continue
             IMP.pmi.output.plot_field_histogram(
                   filename, [values_list], valuename=valuename, bins=bins,
@@ -1006,6 +1118,94 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             a.writerow(sorted_ids)
             a.writerows(data)
 
+
+class JaccardDistanceMatrix(object):
+    """This class allows to compute and plot the distance between datasets"""
+
+    def __init__(self,cldb_dictionary):
+        """Input a dictionary where keys are cldb names and values are cldbs"""
+        import scipy.spatial.distance
+        self.dbs=cldb_dictionary
+        self.keylist=list(self.dbs.keys())
+        self.distances=list()
+
+
+        for i,key1 in enumerate(self.keylist):
+            for key2 in self.keylist[i+1:]:
+                distance=self.get_distance(key1,key2)
+                self.distances.append(distance)
+
+        self.distances=scipy.spatial.distance.squareform(self.distances)
+
+    def get_distance(self,key1,key2):
+        return 1.0-self.jaccard_index(self.dbs[key1],self.dbs[key2])
+
+    def jaccard_index(self,CrossLinkDataBase1,CrossLinkDataBase2):
+        """Similarity index between two datasets
+        https://en.wikipedia.org/wiki/Jaccard_index"""
+
+        set1=set()
+        set2=set()
+        for xl1 in CrossLinkDataBase1:
+            a1f=_ProteinsResiduesArray(xl1)
+            a1b=a1f.get_inverted()
+            set1.add(a1f)
+            set1.add(a1b)
+        for xl2 in CrossLinkDataBase2:
+            a2f=_ProteinsResiduesArray(xl2)
+            a2b=a2f.get_inverted()
+            set2.add(a2f)
+            set2.add(a2b)
+        return float(len(set1&set2)/2)/(len(set1)/2+len(set2)/2-len(set1&set2)/2)
+
+    def plot_matrix(self,figurename="clustermatrix.pdf"):
+        import matplotlib as mpl
+        import numpy
+        mpl.use('Agg')
+        import matplotlib.pylab as pl
+        from scipy.cluster import hierarchy as hrc
+
+        raw_distance_matrix=self.distances
+        labels=self.keylist
+
+        fig = pl.figure()
+        #fig.autolayout=True
+
+        ax = fig.add_subplot(1,1,1)
+        dendrogram = hrc.dendrogram(
+            hrc.linkage(raw_distance_matrix),
+            color_threshold=7,
+            no_labels=True)
+        leaves_order = dendrogram['leaves']
+        ax.set_xlabel('Dataset')
+        ax.set_ylabel('Jaccard Distance')
+        pl.tight_layout()
+        pl.savefig("dendrogram."+figurename, dpi=300)
+        pl.close(fig)
+
+        fig = pl.figure()
+        #fig.autolayout=True
+
+        ax = fig.add_subplot(1,1,1)
+        cax = ax.imshow(
+            raw_distance_matrix[leaves_order,
+                                     :][:,
+                                        leaves_order],
+            interpolation='nearest')
+        cb = fig.colorbar(cax)
+        cb.set_label('Jaccard Distance')
+        ax.set_xlabel('Dataset')
+        ax.set_ylabel('Dataset')
+        ax.set_xticks(range(len(labels)))
+        ax.set_xticklabels(numpy.array(labels)[leaves_order], rotation='vertical')
+        ax.set_yticks(range(len(labels)))
+        ax.set_yticklabels(numpy.array(labels)[leaves_order], rotation='horizontal')
+        pl.tight_layout()
+        pl.savefig("matrix."+figurename, dpi=300)
+        pl.close(fig)
+
+
+
 class CrossLinkDataBaseFromStructure(object):
     '''
     This class generates a CrossLinkDataBase from a given structure
@@ -1051,7 +1251,7 @@ class CrossLinkDataBaseFromStructure(object):
 
         if self.mode=="pmi1":
             for protein in self.representation.sequence_dict.keys():
-                # we are saving a dictionary with protein name, residue number and random reactivity of the residue
+            # we are saving a dictionary with protein name, residue number and random reactivity of the residue
                 seq=self.representation.sequence_dict[protein]
                 residues=[i for i in range(1,len(seq)+1) if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2))]
 
@@ -1083,7 +1283,7 @@ class CrossLinkDataBaseFromStructure(object):
             for state in self.system.get_states():
                 for moleculename,molecules in state.get_molecules().iteritems():
                     for molecule in molecules:
-                        # we are saving a dictionary with protein name, residue number and random reactivity of the residue
+                # we are saving a dictionary with protein name, residue number and random reactivity of the residue
                         seq=molecule.sequence
                         residues=[i for i in range(1,len(seq)+1) if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2))]
 

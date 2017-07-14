@@ -1746,16 +1746,27 @@ def display_bonds(mol):
                 IMP.atom.Bonded(p2),1)
 
 
-def get_residue_type_from_one_letter_code(code,is_nucleic=None):
-    if not is_nucleic:
-        threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
-                        'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
-                        'HIS': 'H', 'ILE': 'I', 'LEU': 'L', 'LYS': 'K',
-                        'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S',
-                        'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'UNK': 'X'}
-    else:
-        threetoone = {'ADE': 'A', 'URA': 'U', 'CYT': 'C', 'GUA': 'G',
-                      'THY': 'T', 'UNK': 'X'}
+class ThreeToOneConverter(defaultdict):
+    """This class converts three to one letter codes, and return X for any unknown codes"""
+    def __init__(self,is_nucleic=False):
+
+        if not is_nucleic:
+            threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
+                              'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
+                              'HIS': 'H', 'ILE': 'I', 'LEU': 'L', 'LYS': 'K',
+                              'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S',
+                              'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'UNK': 'X'}
+        else:
+            threetoone = {'ADE': 'A', 'URA': 'U', 'CYT': 'C', 'GUA': 'G',
+                              'THY': 'T', 'UNK': 'X'}
+
+        defaultdict.__init__(self,lambda: "X", threetoone)
+
+
+
+
+def get_residue_type_from_one_letter_code(code,is_nucleic=False):
+    threetoone=ThreeToOneConverter(is_nucleic)
     one_to_three={}
     for k in threetoone:
         one_to_three[threetoone[k]] = k

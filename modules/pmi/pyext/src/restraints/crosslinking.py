@@ -1072,7 +1072,9 @@ class ConnectivityCrossLinkMS(object):
 
             s1 = IMP.atom.Selection(ps1)
             s2 = IMP.atom.Selection(ps2)
-            if s1.get_selected_particles() == s2.get_selected_particles():
+            s1_inds = s1.get_selected_particle_indexes()
+            s2_inds = s2.get_selected_particle_indexes()
+            if not set(s1_inds).isdisjoint(set(s2_inds)):
                 print("ConnectivityCrossLinkMS: WARNING> %s %s and %s %s "
                       "select the same bead(s) - ignoring" % (c1, r1, c2, r2))
                 continue

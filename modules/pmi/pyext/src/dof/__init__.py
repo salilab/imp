@@ -24,6 +24,14 @@ import IMP.pmi.tools
 import itertools
 import IMP.pmi.samplers
 
+
+def create_rigid_body_movers(dof,maxtrans,maxrot):
+    mvs = []
+    for rb in dof.rigid_bodies:
+        mvs.append(IMP.core.RigidBodyMover(rb.get_model(), rb,
+                                               maxtrans, maxrot))
+    return mvs
+
 class DegreesOfFreedom(object):
     """A class to simplify create of constraints and movers for an IMP Hierarchy.
     Call the various create() functions to get started.
@@ -89,6 +97,8 @@ class DegreesOfFreedom(object):
             hiers = IMP.pmi.tools.input_adaptor(rigid_parts,
                                                 resolution,
                                                 flatten=True)
+
+            model=hiers[0].get_model()
             if not hiers:
                 print("WARNING: No hierarchies were passed to create_rigid_body()")
                 return []
@@ -96,9 +106,12 @@ class DegreesOfFreedom(object):
             #we need to use the following constructor because the IMP.core.create_rigid_body seems
             #to construct an arbitrary reference frame, which will be different for all copies.
             #therefore, symmetry won't work all the time
-            tr=IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),IMP.core.XYZ(hiers[0].get_particle()).get_coordinates())
+
+            com=IMP.atom.CenterOfMass.setup_particle(IMP.Particle(model),hiers)
+            comcoor=IMP.core.XYZ(com).get_coordinates()
+            tr=IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),comcoor)
             rf = IMP.algebra.ReferenceFrame3D(tr)
-            rbp=IMP.Particle(hiers[0].get_model())
+            rbp=IMP.Particle(model)
             rb=IMP.core.RigidBody.setup_particle(rbp,rf)
             for h in hiers:
                 rb.add_member(h.get_particle())

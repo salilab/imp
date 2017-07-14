@@ -470,6 +470,112 @@ class Clustering(object):
         return raw_distance_dict, transformation_distance_dict
 
 
+class RMSD(object):
+    """Compute the RMSD (without alignment) taking into account the copy ambiguity.
+    To be used with pmi2 hierarchies. Can be used for instance as follows:
+
+    rmsd=IMP.pmi.analysis.RMSD(hier,hier,[mol.get_name() for mol in mols],dynamic0=True,dynamic1=False)
+    output_objects.append(rmsd)
+
+    before shuffling the coordinates
+    """
+
+    def __init__(self,hier0,hier1,molnames,label="None",dynamic0=True,dynamic1=True,metric=IMP.algebra.get_rmsd):
+        """
+        @param hier0 first input hierarchy
+        @param hier1 second input hierarchy
+        @param molname the names of the molecules used for the RMSD
+        @dynamic0 if True stores the decorators XYZ and coordinates of hier0 can be update. If false coordinates are static (stored in Vector3Ds)
+        and will never be updated
+        @dynamic1 same as above
+        metric what metric should be used
+        """
+        self.moldict0,self.molcoords0,self.mol_XYZs0=self.get_moldict_coorddict(hier0,molnames)
+        self.moldict1,self.molcoords1,self.mol_XYZs1=self.get_moldict_coorddict(hier1,molnames)
+        self.dynamic0=dynamic0
+        self.dynamic1=dynamic1
+        self.metric=metric
+        self.label=label
+
+    def get_moldict_coorddict(self,hier,molnames):
+        """return data structure for the RMSD calculation"""
+        moldict={}
+        mol_coords={}
+        mol_XYZs={}
+        for mol in IMP.pmi.tools.get_molecules(hier):
+            name=mol.get_name()
+            if name not in molnames:
+                continue
+            parts=True
+            mol_coords[mol]=[]
+            mol_XYZs[mol]=[]
+            i=1
+            while parts:
+                sel=IMP.atom.Selection(mol,residue_index=i,representation_type=IMP.atom.BALLS,resolution=1)
+                parts=sel.get_selected_particles()
+                if parts:
+                    mol_coords[mol].append(IMP.core.XYZ(parts[0]).get_coordinates())
+                    mol_XYZs[mol].append(IMP.core.XYZ(parts[0]))
+                    i=i+1
+            if  name in moldict:
+                moldict[name].append(mol)
+            else:
+                moldict[name]=[mol]
+        return moldict, mol_coords, mol_XYZs
+
+    def get_rmsd_and_assigments(self):
+        best_orders=[]
+        total_rmsd=0
+        total_N=0
+        best_assignments=[]
+        rmsd_dict={}
+        for molname, ref_mols in self.moldict1.items():
+            selref=IMP.atom.Selection(ref_mols,representation_type=IMP.atom.BALLS)
+            rmsd=[]
+            rmf_mols_list=[]
+            for rmf_mols in itertools.permutations(self.moldict0[molname]):
+                selrmf=IMP.atom.Selection(rmf_mols,representation_type=IMP.atom.BALLS)
+                rmsd.append(IMP.atom.get_rmsd(selref, selrmf))
+                rmf_mols_list.append(rmf_mols)
+            m=min(rmsd)
+            rmf_mols_best_order=rmf_mols_list[rmsd.index(m)]
+
+
+            for n, (ref_mol,rmf_mol) in enumerate(zip(ref_mols,rmf_mols_best_order)):
+                best_assignments.append((rmf_mol,ref_mol))
+                if self.dynamic0:
+                    coord0=[XYZ.get_coordinates() for XYZ in self.mol_XYZs0[rmf_mol]]
+                else:
+                    coord0=self.molcoords0[rmf_mol]
+
+                if self.dynamic1:
+                    coord1=[XYZ.get_coordinates() for XYZ in self.mol_XYZs1[ref_mol]]
+                else:
+                    coord1=self.molcoords1[ref_mol]
+                rmsd_pair=self.metric(coord1, coord0)
+                N=len(self.molcoords1[ref_mol])
+                total_N+=N
+                total_rmsd+=rmsd_pair*rmsd_pair*N
+                rmsd_dict[ref_mol]=rmsd_pair
+        total_rmsd = sqrt(total_rmsd/total_N)
+        return total_rmsd,best_assignments
+
+    def get_output(self):
+        """Returns output for IMP.pmi.output.Output object"""
+        total_rmsd,best_assignments=self.get_rmsd_and_assigments()
+
+        assignments_out=[]
+        for rmf_mol,ref_mol in best_assignments:
+            ref_name=ref_mol.get_name()
+            ref_copy=IMP.atom.Copy(ref_mol).get_copy_index()
+            rmf_name=rmf_mol.get_name()
+            rmf_copy=IMP.atom.Copy(rmf_mol).get_copy_index()
+            assignments_out.append(rmf_name+"."+str(rmf_copy)+"->"+ref_name+"."+str(ref_copy))
+        return {"RMSD_"+self.label:str(total_rmsd),"RMSD_assignments_"+self.label:str(assignments_out)}
+
+
+
+
 class Precision(object):
     """A class to evaluate the precision of an ensemble.
 
@@ -981,60 +1087,6 @@ class Precision(object):
             self.style=style
         else:
             raise ValueError("No such style")
-
-class GetRMSD(object):
-    """This object can be added to output_objects in (for example in the ReplicaExchange0 macro).
-    It will load a frame from an rmf file and compute the rmsd of a hierarchy with respect to that reference structure.
-    The output can be parsed from the stat.*.out files.
-    """
-    import math
-
-    def __init__(self, hier, rmf_file_name, rmf_frame_index, rmf_state_index, label):
-        """Constructor.
-           @param hier hierarchy of the structure
-           @param rmf_file_name path to the rmf file containing the reference structure
-           @param rmf_frame_index the index of the frame containing the reference structure in the rmf file
-           @param voxel rmf_state_index the index of the state containing the reference structure in the rmf file
-           @param label label that will be used when parsing the stat file
-        """
-
-        rmf_fh = RMF.open_rmf_file_read_only(rmf_file_name)
-        hh = IMP.rmf.create_hierarchies(rmf_fh, hier.get_model())
-        self.rmf_state = hh[0].get_children()[rmf_state_index]
-        self.current_state = hier.get_children()[rmf_state_index]
-        IMP.rmf.load_frame(rmf_fh, RMF.FrameID(rmf_frame_index))
-        self.current_moldict = {}
-        self.rmf_moldict = {}
-        for mol in self.rmf_state.get_children():
-            name = mol.get_name()
-            if name in self.rmf_moldict:
-                self.rmf_moldict[name].append(mol)
-            else:
-                self.rmf_moldict[name] = [mol]
-        for mol in self.current_state.get_children():
-            name = mol.get_name()
-            if name in self.current_moldict:
-                self.current_moldict[name].append(mol)
-            else:
-                self.current_moldict[name] = [mol]
-        self.label = label
-
-    def get_output(self):
-        total_rmsd = 0
-        total_N = 0
-        for molname, rmf_mols in self.rmf_moldict.iteritems():
-            sel_rmf = IMP.atom.Selection(
-                rmf_mols, representation_type=IMP.atom.BALLS)
-            N = len(sel_rmf.get_selected_particle_indexes())
-            total_N += N
-            rmsd = []
-            for current_mols in itertools.permutations(self.current_moldict[molname]):
-                sel_current = IMP.atom.Selection(
-                    current_mols, representation_type=IMP.atom.BALLS)
-                rmsd.append(IMP.atom.get_rmsd(sel_rmf, sel_current))
-            m = min(rmsd)
-            total_rmsd += m * m * N
-        return {self.label: "%e" % (self.math.sqrt(total_rmsd / total_N))}
 
 
 class GetModelDensity(object):

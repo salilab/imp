@@ -666,5 +666,48 @@ class Tests(IMP.test.TestCase):
         for c0,c2 in zip(orig_coords,coords2):
             self.assertAlmostEqual(IMP.algebra.get_distance(c0,c2),0.0)
 
+    def test_threetoone(self):
+
+        import string
+        import random
+        def id_generator(size=3, chars=string.ascii_uppercase + string.digits):
+            return ''.join(random.choice(chars) for _ in range(size))
+
+        threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
+                              'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
+                              'HIS': 'H', 'ILE': 'I', 'LEU': 'L', 'LYS': 'K',
+                              'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S',
+                              'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'UNK': 'X'}
+
+        tto=IMP.pmi.tools.ThreeToOneConverter(is_nucleic=False)
+
+        for key in threetoone:
+            self.assertEqual(threetoone[key],tto[key])
+
+        for s in range(10):
+            id=id_generator()
+            if id in threetoone:
+                self.assertEqual(threetoone[id], tto[id])
+            else:
+                self.assertEqual("X",tto[id])
+
+        threetoone = {'ADE': 'A', 'URA': 'U', 'CYT': 'C', 'GUA': 'G',
+                      'THY': 'T', 'UNK': 'X'}
+
+        tto = IMP.pmi.tools.ThreeToOneConverter(is_nucleic=True)
+
+        for key in threetoone:
+            self.assertEqual(threetoone[key], tto[key])
+
+
+        for s in range(10):
+            id = id_generator()
+            if id in threetoone:
+                self.assertEqual(threetoone[id], tto[id])
+            else:
+                self.assertEqual("X", tto[id])
+
+
+
 if __name__ == '__main__':
     IMP.test.main()

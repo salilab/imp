@@ -1,0 +1,7 @@
+|molecule_name|color|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|
+| 1MDA:A | yellow | 1mda_fix.fasta | 1MDA:A | 1mda_fix.pdb | A | 1,END | 0 | 10 | 10 | 3 | 1 |  |
+| 1MDA:A.1 | cyan | 1mda_fix.fasta | 1MDA:B | 1mda_fix.pdb | B | 1,END | 0 | 10 | 10 | 4 | 1 |  |
+| 1MDA:H | magenta | 1mda_fix.fasta | 1MDA:H | 1mda_fix.pdb | H | 1,END | 0 | 10 | 10 | 5 | 1 |  |
+| 1MDA:H.1 | orange | 1mda_fix.fasta | 1MDA:J | 1mda_fix.pdb | J | 1,END | 0 | 10 | 10 | 6 | 1 |  |
+| 1MDA:L | red | 1mda_fix.fasta | 1MDA:L | 1mda_fix.pdb | L | 1,END | 0 | 10 | 10 | 1 | 1 |  |
+| 1MDA:L.1 | green | 1mda_fix.fasta | 1MDA:M | 1mda_fix.pdb | M | 1,END | 0 | 10 | 10 | 2 | 1 |  |
