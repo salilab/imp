@@ -444,6 +444,11 @@ class Tests(IMP.test.TestCase):
                 self.assertEqual(r[3],records_2[n][3]+100)
 
     def test_jaccard_distance(self):
+        try:
+            import scipy.spatial
+        except ImportError:
+            self.skipTest("no scipy spatial")
+
         cldb1=self.setup_cldb("xl_dataset_test.dat")
         cldb2=self.setup_cldb("xl_dataset_test.dat")
         cldb3=self.setup_cldb("xl_dataset_test.dat")
@@ -451,8 +456,8 @@ class Tests(IMP.test.TestCase):
 
         ddb={1:cldb1,2:cldb2,3:cldb3}
         jdm=IMP.pmi.io.crosslink.JaccardDistanceMatrix(ddb)
-        self.assertEqual(jdm.get_distance(1,2),0.0)
-        self.assertEqual(jdm.get_distance(1,3),0.875)
+        self.assertAlmostEqual(jdm.get_distance(1,2), 0.0, delta=1e-3)
+        self.assertAlmostEqual(jdm.get_distance(1,3), 0.875, delta=1e-3)
 
     def test_check_consistency(self):
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name("proteasome.fasta"))
