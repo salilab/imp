@@ -244,7 +244,7 @@ class TestSymmetryMC(IMP.test.TestCase):
             #first check that all translations and rotation magnitudes are identical
             trans_list=[]
             rot_list=[]
-            for i,(rb,rbt) in enumerate(rb_rbt.iteritems()):
+            for i,(rb,rbt) in enumerate(rb_rbt.items()):
                 rbt.set_final()
                 trans_list.append(rbt.get_translation())
                 rot_list.append(rbt.get_rotation()[0])
@@ -256,7 +256,7 @@ class TestSymmetryMC(IMP.test.TestCase):
                 self.assertAlmostEqual(a,b,places=7)
 
             #second store the pairwise transformations
-            for i,(rb,rbpt) in enumerate(rb_rbpt.iteritems()):
+            for i,(rb,rbpt) in enumerate(rb_rbpt.items()):
                 trans=rbpt.get_translation()
                 (angle,axis)=rbpt.get_rotation()
                 for key in rb_rbpt_values:
