@@ -125,7 +125,7 @@ foreach(m ${percpplist})
   set(IMP_${m}_IS_PER_CPP 1)
 endforeach(m)
 
-string(REGEX MATCHALL "[a-zA-Z]+" cudalist "${IMP_CUDA}")
+string(REGEX MATCHALL "[a-zA-Z1-9]+" cudalist "${IMP_CUDA}")
 foreach(m ${cudalist})
   string(TOUPPER ${m} M)
   message(STATUS ${m} " is cuda lib")
