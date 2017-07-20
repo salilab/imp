@@ -235,7 +235,7 @@ Development files for IMP.mpi module (and dependents) with mpich.
 # (rpm-mpi-hooks package)
 %if 0%{?with_mpich}
 %global __provides_exclude ^libTAU\\.so.*|libimp_mpi\\.so.*|libimp_spb\\.so.*$
-%global __requires_exclude ^libTAU\\.so.*|libmpi\\.so.*|libimp_mpi\\.so.*|libimp_spb\\.so.*$
+%global __requires_exclude ^libTAU\\.so.*|libmpi\\.so.*|libmpicxx\\.so.*|libimp_mpi\\.so.*|libimp_spb\\.so.*$
 %else
 %global __provides_exclude ^libTAU\\.so.*$
 %global __requires_exclude ^libTAU\\.so.*$
