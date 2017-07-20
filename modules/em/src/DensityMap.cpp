@@ -100,7 +100,7 @@ MapReaderWriter *create_reader_writer_from_name(std::string name) {
   IMP_USAGE_CHECK(name.rfind('.') != std::string::npos,
                   "No suffix in file name: " << name);
   std::string suf = name.substr(name.rfind('.'));
-  if (suf == ".mrc") {
+  if (suf == ".mrc" || suf == ".mrcs") {
     return new MRCReaderWriter();
   } else if (suf == ".em") {
     return new EMReaderWriter();

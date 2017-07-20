@@ -15,6 +15,7 @@
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/endian.h>
 #include <IMP/exception.h>
+#include <IMP/log_macros.h>
 #include <IMP/log.h>
 #include <typeinfo>
 #include <complex>

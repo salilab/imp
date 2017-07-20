@@ -15,6 +15,10 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/Particle.h>
+#include <IMP/atom/Mass.h>
+#include <IMP/core/XYZR.h>
+
+
 #include <boost/ptr_container/ptr_vector.hpp>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE

@@ -11,6 +11,7 @@
 
 #include "IMP/em2d/ImageReaderWriter.h"
 #include <boost/filesystem.hpp>
+#include <IMP/log_macros.h>
 
 IMPEM2D_BEGIN_NAMESPACE
 
