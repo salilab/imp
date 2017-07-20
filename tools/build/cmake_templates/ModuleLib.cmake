@@ -10,7 +10,11 @@ add_definitions("-DIMP%(CPPNAME)s_EXPORTS")
 
 include(Files.cmake)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
+if(NOT "${OpenMP_CXX_FLAGS}" MATCHES ".*NOTFOUND.*")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
 
 set(headers %(headers)s)
 
