@@ -596,7 +596,7 @@ void recenter_rb(core::RigidBody &rb, core::XYZRs &rbps, algebra::Vector3D x0,
     // rbps[size-1]).get_internal_coordinates() << std::endl ;
 
     rb.set_reference_frame(algebra::ReferenceFrame3D(
-        algebra::Transformation3D(algebra::Rotation3D(), x0)));
+                                         algebra::Transformation3D(x0)));
   } else  // Spc110-Cmd1 dimer
   {
     rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D(
