@@ -33,10 +33,10 @@ class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Transformation3D);
   //! Default construct (makes an invalid transformation)
   Transformation3D() {}
-  /** Basic constructor */
+  //! Basic constructor
   Transformation3D(const Rotation3D &r, const Vector3D &t = Vector3D(0, 0, 0))
       : trans_(t), rot_(r) {}
-  /** Construct a transformation with an identity rotation.*/
+  //! Construct a transformation with an identity rotation.
   Transformation3D(const Vector3D &t)
       : trans_(t), rot_(get_identity_rotation_3d()) {}
   ~Transformation3D();
