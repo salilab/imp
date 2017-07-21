@@ -1,3 +1,5 @@
+\brief Classes, functions and executables for modeling of the Spindle Pole Body
+
 # Integrative Modeling of the Spindle Pole Body Core
 
 Here we determine the molecular architecture of the yeast spindle pole body (SPB), 
