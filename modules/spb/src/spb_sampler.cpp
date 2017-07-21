@@ -36,9 +36,7 @@ IMP::Pointer<core::MonteCarlo> setup_SPBMonteCarlo(Model *m,
 
 void add_BallMover(Particles ps, double dx, core::MonteCarloMovers &mvs) {
   for (unsigned int k = 0; k < ps.size(); ++k) {
-    Particles pps;
-    pps.push_back(ps[k]);
-    IMP_NEW(core::BallMover, bmv, (pps, dx));
+    IMP_NEW(core::BallMover, bmv, (ps[k]->get_model(), ps[k]->get_index(), dx));
     mvs.push_back(bmv);
   }
 }
@@ -51,9 +49,7 @@ void add_PbcBoxedMover(Particles ps, double dx, algebra::Vector3Ds centers,
           (ps[0], ps, dx, centers, trs, SideXY, SideXY, SideZ));
   mvs.push_back(mv);
   for (unsigned int k = 1; k < ps.size(); ++k) {
-    Particles pps;
-    pps.push_back(ps[k]);
-    IMP_NEW(core::BallMover, bmv, (pps, dx));
+    IMP_NEW(core::BallMover, bmv, (ps[k]->get_model(), ps[k]->get_index(), dx));
     mvs.push_back(bmv);
   }
 }
