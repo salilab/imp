@@ -28,7 +28,6 @@ IMP_SWIG_OBJECT(IMP::spb,MonteCarloWithWte,MonteCarloWithWtes);
 IMP_SWIG_OBJECT(IMP::spb,NuisanceRangeModifier,NuisanceRangeModifiers);
 IMP_SWIG_OBJECT(IMP::spb,PbcBoxedMover,PbcBoxedMovers);
 IMP_SWIG_OBJECT(IMP::spb,PbcBoxedRigidBodyMover,PbcBoxedRigidBodyMovers);
-IMP_SWIG_OBJECT(IMP::spb,RigidBodyGridStates,RigidBodyGridStatess);
 IMP_SWIG_OBJECT(IMP::spb,RigidBodyNewMover,RigidBodyNewMovers);
 IMP_SWIG_OBJECT(IMP::spb,RigidBodyPackingScore,RigidBodyPackingScores);
 IMP_SWIG_OBJECT(IMP::spb,RMSDMetric,RMSDMetrics);
@@ -57,7 +56,6 @@ IMP_SWIG_OBJECT(IMP::spb,UniformBoundedRestraint,UniformBoundedRestraints);
 %include "IMP/spb/NuisanceRangeModifier.h"
 %include "IMP/spb/PbcBoxedMover.h"
 %include "IMP/spb/PbcBoxedRigidBodyMover.h"
-%include "IMP/spb/RigidBodyGridStates.h"
 %include "IMP/spb/RigidBodyNewMover.h"
 %include "IMP/spb/RigidBodyPackingScore.h"
 %include "IMP/spb/RMSDMetric.h"
