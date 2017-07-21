@@ -1,6 +1,6 @@
 /**
  *  \file IMP/spb/DistanceTerminiRestraint.h
- *  \brief Distance Termini restraint
+ *  \brief A distance restraint between protein termini.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
@@ -13,10 +13,10 @@
 #include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
-/* A distance restraint between protein termini.
- * The distance between the termini is a sampled ISD particle.
- */
 
+//! A distance restraint between protein termini.
+/** The distance between the termini is a sampled ISD particle.
+ */
 class IMPSPBEXPORT DistanceTerminiRestraint : public IMP::Restraint {
   IMP::Pointer<IMP::Particle> nterm_;
   IMP::Pointer<IMP::Particle> cterm_;

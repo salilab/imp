@@ -1,7 +1,9 @@
 /**
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  \brief A distance restraint between protein termini.
  *
+ *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
+
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/constants.h>

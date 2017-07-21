@@ -1,7 +1,6 @@
 /**
  *  \file spb/NuisanceRangeModifier.cpp
- *  \brief A singleton modifier which wraps an attribute into a
- *  given range.
+ *  \brief Ensure that a Nuisance stays within its set range.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *

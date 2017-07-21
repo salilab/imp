@@ -18,6 +18,7 @@
 
 IMPSPB_BEGIN_NAMESPACE
 
+//! Add helix parameters to a particle.
 class IMPSPBEXPORT HelixDecorator : public Decorator {
   static FloatKey get_helix_key(unsigned int i);
 
