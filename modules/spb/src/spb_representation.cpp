@@ -389,7 +389,7 @@ atom::Hierarchies create_representation(
           //  add mover for the rigid body
           if (i == 0) {
             IMP_NEW(core::RigidBodyMover, rbmv,
-                    (rb, mydata.MC.dx, mydata.MC.dang));
+                    (m, rb.get_particle_index(), mydata.MC.dx, mydata.MC.dang));
             mvs.push_back(rbmv);
           }
         }
