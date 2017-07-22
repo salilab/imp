@@ -126,6 +126,7 @@ double GaussianRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   /* compute all arguments to FNormal */
   double JA = 1.0;
   IMP_NEW(FNormal, normal, (x, JA, mu, sigma));
+  normal->set_was_used(true);
   // normal->set_was_used(true); // get rid of warning
   /* get score */
   double score = normal->evaluate();
