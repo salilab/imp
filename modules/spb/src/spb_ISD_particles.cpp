@@ -112,7 +112,9 @@ std::map<std::string, IMP::Pointer<Particle> > add_ISD_particles(
   // CP_A particle
   IMP_NEW(Particle, pA, (m));
   // initial value
-  isd::Scale A = isd::Scale::setup_particle(pA, -mydata.CP_thicknessMax);
+  // note that CP_A is a Nuisance, not a Scale, since it can have
+  // negative values
+  isd::Nuisance A = isd::Nuisance::setup_particle(pA, -mydata.CP_thicknessMax);
   A.set_lower(-mydata.CP_thicknessMax);
   A.set_upper(-mydata.CP_thicknessMin);
   // IMP_NEW(core::SingletonConstraint,sc5,(nrm,NULL,A));

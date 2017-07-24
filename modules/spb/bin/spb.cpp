@@ -270,7 +270,7 @@ int main(int argc, char* argv[]) {
       //}
       fprintf(logfile, "TimeStep %10d CP %12.6f GAP %12.6f Cell %12.6f\n", imc,
               isd::Scale(ISD_ps["CP_B"]).get_scale() -
-                  isd::Scale(ISD_ps["CP_A"]).get_scale(),
+                  isd::Nuisance(ISD_ps["CP_A"]).get_nuisance(),
               isd::Scale(ISD_ps["GAP_A"]).get_scale(),
               mydata.sideMin * isd::Scale(ISD_ps["SideXY"]).get_scale());
       // print fmod, fmod_err, ferr, for every data point
