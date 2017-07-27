@@ -9,7 +9,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-double OneDimensionalDistribution::do_get_density(double v) {
+double OneDimensionalDistribution::do_get_density(double v) const {
   return std::exp(-evaluate(v));
 }
 

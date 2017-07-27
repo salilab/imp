@@ -35,8 +35,8 @@ IMP_OBJECTS(Distribution, Distributions);
  */
 class IMPISDEXPORT OneDimensionalDistribution : public Distribution {
   protected:
-    virtual double do_evaluate(double v) = 0;
-    virtual double do_get_density(double v);
+    virtual double do_evaluate(double v) const = 0;
+    virtual double do_get_density(double v) const;
 
   public:
     OneDimensionalDistribution(
@@ -44,10 +44,10 @@ class IMPISDEXPORT OneDimensionalDistribution : public Distribution {
     }
 
     //! Get negative log-density for passed variable value.
-    double evaluate(double v) { return do_evaluate(v); }
+    double evaluate(double v) const { return do_evaluate(v); }
 
     //! Get probability density for passed variable value.
-    double get_density(double v) { return do_get_density(v); }
+    double get_density(double v) const { return do_get_density(v); }
 
   IMP_OBJECT_METHODS(OneDimensionalDistribution);
 };
