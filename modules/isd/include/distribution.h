@@ -64,20 +64,17 @@ IMP_OBJECTS(OneDimensionalDistribution, OneDimensionalDistributions);
 
     Children must overload do_update_sufficient_statistics() and do_evaluate().
  */
-class IMPISDEXPORT OneDimensionalSufficientDistribution : public OneDimensionalDistribution {
+class IMPISDEXPORT OneDimensionalSufficientDistribution : public Distribution {
   protected:
     virtual void do_update_sufficient_statistics(Floats data) = 0;
     virtual double do_evaluate() const = 0;
-    virtual double do_evaluate(double v) IMP_OVERRIDE;
-    virtual double do_evaluate(Floats vs);
     virtual double do_get_density() const;
-    virtual double do_get_density(Floats vs);
 
   public:
     //! Constructor
     OneDimensionalSufficientDistribution(
       std::string name = "OneDimensionalSufficientDistribution %1%")
-    : OneDimensionalDistribution(name) {}
+    : Distribution(name) {}
 
     //! Update cached sufficient statistics from data.
     void update_sufficient_statistics(Floats vs) {
@@ -87,18 +84,8 @@ class IMPISDEXPORT OneDimensionalSufficientDistribution : public OneDimensionalD
     //! Get negative log-density using cached sufficient statistics.
     double evaluate() const { return do_evaluate(); }
 
-    //! Get negative log-density of passed values.
-    /** \note Cached sufficient statistics are updated.
-     */
-    double evaluate(Floats vs) { return do_evaluate(vs); }
-
     //! Get probability density using cached sufficient statistics.
     double get_density() const { return do_get_density(); }
-
-    //! Get probability density of passed values.
-    /** \note Cached sufficient statistics are updated.
-     */
-    double get_density(Floats vs) { return do_get_density(vs); }
 
   IMP_OBJECT_METHODS(OneDimensionalSufficientDistribution);
 };
