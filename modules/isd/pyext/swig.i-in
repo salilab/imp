@@ -17,6 +17,7 @@ IMP_SWIG_BASE_OBJECT(IMP::isd, Distribution, Distributions);
 IMP_SWIG_BASE_OBJECT(IMP::isd, OneDimensionalDistribution, OneDimensionalDistributions);
 IMP_SWIG_BASE_OBJECT(IMP::isd, OneDimensionalSufficientDistribution, OneDimensionalSufficientDistributions);
 IMP_SWIG_OBJECT(IMP::isd, FNormal, FNormals);
+IMP_SWIG_OBJECT(IMP::isd, FStudentT, FStudentTs);
 IMP_SWIG_OBJECT(IMP::isd, vonMises, vonMisess);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesSufficient, vonMisesSufficients);
 IMP_SWIG_DECORATOR(IMP::isd, Nuisance, Nuisances);
@@ -83,6 +84,7 @@ def create_model_and_particles():
 %include "IMP/isd/JeffreysRestraint.h"
 %include "IMP/isd/distribution.h"
 %include "IMP/isd/FNormal.h"
+%include "IMP/isd/FStudentT.h"
 %include "IMP/isd/vonMises.h"
 %include "IMP/isd/vonMisesSufficient.h"
 %include "IMP/isd/vonMisesKappaJeffreysRestraint.h"
