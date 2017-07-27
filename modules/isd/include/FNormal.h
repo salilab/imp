@@ -18,16 +18,21 @@ IMPISD_BEGIN_NAMESPACE
 
 //! FNormal
 /** Probability density function and -log(p) of normal sampling from some
- * function F. If A is drawn from the F-Normal distribution then F(A) is drawn
- * from a normal distribution with mean M and standard deviation sigma.
- * Arguments: F(A), J(A) the derivative of F w/r to A, F(M) and sigma.  The
- * distribution is normalized with respect to the variable A.
- *
- *  Example: if F is the log function, the F-normal distribution is the
- *  lognormal distribution with mean M and standard deviation sigma.
- *
- *  NOTE: for now, F must be monotonically increasing, so that JA > 0. The
- *  program will not check for that.
+    function F. If A is drawn from the F-Normal distribution then F(A) is
+    drawn from a normal distribution with mean F(M) and standard deviation
+    sigma (w/r F(A)).
+
+    Arguments: F(A), J(A) the derivative of F w/r to A, F(M), and sigma. The
+    distribution is normalized with respect to the variable A. Note that the
+    mean and standard deviation with respect to A may not be M and sigma.
+    
+    Example: If F is the log function, the F-normal distribution is the
+    lognormal distribution with mean log(M) and standard deviation sigma
+    (wrt. log(A)).
+    
+    \note F must be a one-to-one function, i.e., it must be monotonically
+          increasing or decreasing. This is not checked. For a monotonically
+          decreasing function, set JA to -JA, so that JA > 0.
  */
 class IMPISDEXPORT FNormal : public OneDimensionalSufficientDistribution {
  public:
