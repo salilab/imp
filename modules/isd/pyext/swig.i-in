@@ -13,6 +13,9 @@ IMP_SWIG_OBJECT(IMP::isd, UniformPrior, UniformPriors);
 IMP_SWIG_OBJECT(IMP::isd, JeffreysRestraint, JeffreysRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaJeffreysRestraint, vonMisesKappaJeffreysRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaConjugateRestraint, vonMisesKappaConjugateRestraints);
+IMP_SWIG_BASE_OBJECT(IMP::isd, Distribution, Distributions);
+IMP_SWIG_BASE_OBJECT(IMP::isd, OneDimensionalDistribution, OneDimensionalDistributions);
+IMP_SWIG_BASE_OBJECT(IMP::isd, OneDimensionalSufficientDistribution, OneDimensionalSufficientDistributions);
 IMP_SWIG_OBJECT(IMP::isd, FNormal, FNormals);
 IMP_SWIG_OBJECT(IMP::isd, vonMises, vonMisess);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesSufficient, vonMisesSufficients);
@@ -78,6 +81,7 @@ def create_model_and_particles():
 %include "IMP/isd/Switching.h"
 %include "IMP/isd/Weight.h"
 %include "IMP/isd/JeffreysRestraint.h"
+%include "IMP/isd/distribution.h"
 %include "IMP/isd/FNormal.h"
 %include "IMP/isd/vonMises.h"
 %include "IMP/isd/vonMisesSufficient.h"
