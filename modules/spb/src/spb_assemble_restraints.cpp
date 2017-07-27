@@ -23,6 +23,10 @@ std::map<std::string, IMP::Pointer<RestraintSet> > spb_assemble_restraints(
     atom::Hierarchies &all_mol, container::ListSingletonContainer *CP_ps,
     container::ListSingletonContainer *IL2_ps,
     std::map<std::string, IMP::Pointer<Particle> > ISD_ps) {
+
+  CP_ps->set_was_used(true);
+  IL2_ps->set_was_used(true);
+
   // prepare the map of RestraintSet
   std::map<std::string, IMP::Pointer<RestraintSet> > rst_map;
   //
