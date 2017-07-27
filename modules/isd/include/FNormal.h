@@ -50,6 +50,10 @@ class IMPISDEXPORT FNormal : public OneDimensionalSufficientDistribution {
     update_sufficient_statistics(data[0]);
   }
 
+  virtual Floats do_get_sufficient_statistics() const IMP_OVERRIDE {
+    return Floats(1, FA_);
+  }
+
   /* energy (score) functions, aka -log(p) */
   virtual double do_evaluate() const IMP_OVERRIDE {
     return -log(JA_ / sigma_) + 0.5 * log(2 * IMP::PI) +

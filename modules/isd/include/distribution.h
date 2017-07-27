@@ -70,11 +70,13 @@ IMP_OBJECTS(OneDimensionalDistribution, OneDimensionalDistributions);
     mean and various for a normal distribution) often exist, permitting one-time
     calculation and efficient use of memory.
 
-    Children must overload do_update_sufficient_statistics() and do_evaluate().
+    Children must overload do_update_sufficient_statistics(),
+    do_get_sufficient_statistics, and do_evaluate().
  */
 class IMPISDEXPORT OneDimensionalSufficientDistribution : public Distribution {
   protected:
     virtual void do_update_sufficient_statistics(Floats vs) = 0;
+    virtual Floats do_get_sufficient_statistics() const = 0;
     virtual double do_evaluate() const = 0;
     virtual double do_get_density() const;
 
@@ -87,6 +89,10 @@ class IMPISDEXPORT OneDimensionalSufficientDistribution : public Distribution {
     //! Update cached sufficient statistics from data.
     void update_sufficient_statistics(Floats vs) {
       do_update_sufficient_statistics(vs);
+    }
+
+    Floats get_sufficient_statistics() const {
+      return do_get_sufficient_statistics();
     }
 
     //! Get negative log-density using cached sufficient statistics.
