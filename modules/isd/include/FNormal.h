@@ -8,6 +8,7 @@
 #define IMPISD_FNORMAL_H
 
 #include <IMP/isd/isd_config.h>
+#include <IMP/isd/distribution.h>
 #include <IMP/macros.h>
 #include <IMP/Model.h>
 #include <IMP/constants.h>
@@ -28,14 +29,29 @@ IMPISD_BEGIN_NAMESPACE
  *  NOTE: for now, F must be monotonically increasing, so that JA > 0. The
  *  program will not check for that.
  */
-
-class IMPISDEXPORT FNormal : public Object {
+class IMPISDEXPORT FNormal : public OneDimensionalSufficientDistribution {
  public:
   FNormal(double FA, double JA, double FM, double sigma)
-      : Object("FNormal %1%"), FA_(FA), JA_(JA), FM_(FM), sigma_(sigma) {}
+      : OneDimensionalSufficientDistribution("FNormal %1%"), JA_(JA), FM_(FM)
+      , sigma_(sigma) {
+    update_sufficient_statistics(FA);
+  }
+
+  virtual void update_sufficient_statistics(double FA) {
+    set_FA(FA);
+  }
+
+  virtual void do_update_sufficient_statistics(Floats data) IMP_OVERRIDE {
+    update_sufficient_statistics(data[0]);
+  }
+
+  virtual double do_evaluate(double FA) IMP_OVERRIDE {
+    update_sufficient_statistics(FA);
+    return evaluate();
+  }
 
   /* energy (score) functions, aka -log(p) */
-  virtual double evaluate() const {
+  virtual double do_evaluate() const IMP_OVERRIDE {
     return -log(JA_ / sigma_) + 0.5 * log(2 * IMP::PI) +
            1 / (2 * square(sigma_)) * square(FA_ - FM_);
   }
@@ -57,9 +73,13 @@ class IMPISDEXPORT FNormal : public Object {
   }
 
   /* probability density function */
-  virtual double density() const {
+  virtual double do_get_density() const IMP_OVERRIDE {
     return JA_ / (sqrt(2 * IMP::PI) * sigma_) *
            exp(-square(FA_ - FM_) / (2 * square(sigma_)));
+  }
+
+  virtual double density() const {
+    return get_density();
   }
 
   /* change of parameters */
