@@ -37,6 +37,8 @@ class IMPISDEXPORT OneDimensionalDistribution : public Distribution {
   protected:
     virtual double do_evaluate(double v) const = 0;
     virtual double do_get_density(double v) const;
+    virtual Floats do_evaluate(const Floats &vs) const;
+    virtual Floats do_get_density(const Floats &vs) const;
 
   public:
     OneDimensionalDistribution(
@@ -46,8 +48,14 @@ class IMPISDEXPORT OneDimensionalDistribution : public Distribution {
     //! Get negative log-density for passed variable value.
     double evaluate(double v) const { return do_evaluate(v); }
 
+    //! Get negative log-densities for passed variable values.
+    Floats evaluate(const Floats &vs) const { return do_evaluate(vs); }
+
     //! Get probability density for passed variable value.
     double get_density(double v) const { return do_get_density(v); }
+
+    //! Get probability densities for passed variable values.
+    Floats get_density(const Floats &vs) const { return do_get_density(vs); }
 
   IMP_OBJECT_METHODS(OneDimensionalDistribution);
 };
