@@ -74,7 +74,7 @@ IMP_OBJECTS(OneDimensionalDistribution, OneDimensionalDistributions);
  */
 class IMPISDEXPORT OneDimensionalSufficientDistribution : public Distribution {
   protected:
-    virtual void do_update_sufficient_statistics(Floats data) = 0;
+    virtual void do_update_sufficient_statistics(Floats vs) = 0;
     virtual double do_evaluate() const = 0;
     virtual double do_get_density() const;
 
