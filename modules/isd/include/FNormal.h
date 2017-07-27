@@ -83,9 +83,9 @@ class IMPISDEXPORT FNormal : public OneDimensionalSufficientDistribution {
            exp(-square(FA_ - FM_) / (2 * square(sigma_)));
   }
 
-  IMPISD_DEPRECATED_FUNCTION_DECL(2.7)
+  IMPISD_DEPRECATED_FUNCTION_DECL(2.8)
   virtual double density() const {
-    IMPISD_DEPRECATED_FUNCTION_DEF(2.7, "Use get_density() instead");
+    IMPISD_DEPRECATED_FUNCTION_DEF(2.8, "Use get_density() instead");
     return get_density();
   }
 
