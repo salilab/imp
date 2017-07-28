@@ -22,8 +22,8 @@ FStudentT::FStudentT(Floats FXs, Floats JXs, double FM, double sigma, double nu,
 FStudentT::FStudentT(double sumFX, double sumFX2, unsigned N, double LogJX,
                      double FM, double sigma, double nu, std::string name)
   : OneDimensionalSufficientDistribution(name), sumFX_(sumFX)
-  , sumFX2_(sumFX2), N_(N), LogJX_(LogJX), FM_(FM), sigma_(sigma)
-  , nu_(nu) {}
+  , sumFX2_(sumFX2), LogJX_(LogJX), FM_(FM), sigma_(sigma)
+  , nu_(nu), N_(N) {}
 
 void FStudentT::do_update_sufficient_statistics(Floats FXs) {
   N_ = FXs.size();
