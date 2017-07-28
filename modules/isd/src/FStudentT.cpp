@@ -7,7 +7,7 @@
 #include <IMP/isd/FStudentT.h>
 #include <IMP/constants.h>
 #include <boost/math/special_functions/gamma.hpp>
-#include <boost/math/special_functions/polygamma.hpp>
+#include <boost/math/special_functions/digamma.hpp>
 #include <math.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -76,8 +76,8 @@ double FStudentT::evaluate_derivative_sigma() const {
 }
 
 double FStudentT::evaluate_derivative_nu() const {
-  return .5 * (-1 + boost::math::polygamma(0, .5 * nu_) -
-               boost::math::polygamma(0, .5 * (N_ + nu_)) +
+  return .5 * (-1 + boost::math::digamma(.5 * nu_) -
+               boost::math::digamma(.5 * (N_ + nu_)) +
                std::log(1 + t2_ / nu_) + (N_ + nu_) / (nu_ + t2_));
 }
 

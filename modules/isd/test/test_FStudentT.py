@@ -3,7 +3,7 @@ from __future__ import division
 from random import uniform
 
 import numpy as np
-from scipy.special import gammaln, polygamma
+from scipy.special import gammaln, digamma
 import IMP
 from IMP.isd import FStudentT
 import IMP.test
@@ -51,7 +51,7 @@ def evaluate_derivative_v(fxs, fm, s, v):
     sumfx = np.sum(fxs)
     sumfx2 = np.sum(fxs**2)
     t2 = (sumfx2 - 2 * fm * sumfx + n * fm**2) / s**2
-    return .5 * (-1 + polygamma(0, .5 * v) - polygamma(0, .5 * (n + v)) +
+    return .5 * (-1 + digamma(.5 * v) - digamma(.5 * (n + v)) +
                  np.log(1 + t2 / v) + (n + v) / (v + t2))
 
 
