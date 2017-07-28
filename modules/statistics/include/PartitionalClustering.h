@@ -18,7 +18,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 
 //! A base class for clustering results where each item is in one cluster
 /** Data items are represented by an index. In a partitional clustering
-    each item can only be contained on one cluster. The indexes used refer
+    each item can only be contained in one cluster. The indexes used refer
     to the index used in the Metric or Embedding used to generate the
     clustering.
 */
