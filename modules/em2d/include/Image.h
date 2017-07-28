@@ -123,6 +123,7 @@ class IMPEM2DEXPORT Image : public IMP::Object {
    * @param reader The image reader to use
    */
   void read(String filename, const ImageReaderWriter *reader) {
+    reader->set_was_used(true);
     Pointer<const ImageReaderWriter> ptr(reader);
     reader->read(filename, header_, data_);
   }
