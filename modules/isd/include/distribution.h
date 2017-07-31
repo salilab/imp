@@ -31,7 +31,7 @@ IMP_OBJECTS(Distribution, Distributions);
 
 
 //! Base class for distributions that are passed a single random variable.
-/** Children must overload do_evaluate().
+/** Children must overload IMP::isd::OneDimensionalDistribution::do_evaluate().
  */
 class IMPISDEXPORT OneDimensionalDistribution : public Distribution {
   protected:
@@ -70,8 +70,11 @@ IMP_OBJECTS(OneDimensionalDistribution, OneDimensionalDistributions);
     mean and various for a normal distribution) often exist, permitting one-time
     calculation and efficient use of memory.
 
-    Children must overload do_update_sufficient_statistics(),
-    do_get_sufficient_statistics, and do_evaluate().
+    Children must overload the following methods:
+    - IMP::isd::OneDimensionalSufficientDistribution::do_update_sufficient_statistics()
+    - IMP::isd::OneDimensionalSufficientDistribution::do_get_sufficient_statistics()
+    - IMP::isd::OneDimensionalSufficientDistribution::do_evaluate()
+
  */
 class IMPISDEXPORT OneDimensionalSufficientDistribution : public Distribution {
   protected:
