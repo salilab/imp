@@ -194,7 +194,7 @@ statistics::PartitionalClustering *create_gromos_clustering(
   }
 
   double maxweight = 1.0;
-  while (maxweight > 0.0) {
+  while (maxweight >= 0.0) {
     // find the conf with maximum weight
     maxweight = -1.0;
     unsigned icenter;
