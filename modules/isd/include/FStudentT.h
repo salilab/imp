@@ -17,10 +17,11 @@ IMPISD_BEGIN_NAMESPACE
 /** If a vector of values \f$F(X)\f$ is jointly distributed according to the t
     distribution with shared center \f$F(M)\f$, scale \f$\sigma\f$, and degrees
     of freedom \f$\nu\f$, then the vector \f$X\f$ is distributed according to
-    the F-t distribution, where \f$F\f$ is a one-to-one function.
+    the F-t distribution, where \f$F\f$ is a one-to-one (strictly monotonic)
+    function.
 
-    For a vector \f$X=\{x_1,...,x_N\}\f$ containing N observations, the joint
-    F-t density is given by
+    For a vector \f$X=\{x_1,...,x_N\}\f$ containing \f$N\f$ observations, the
+    joint F-t density is given by
     \f[
       p(X \mid M, \sigma, \nu) = \frac{
         \Gamma[(N + \nu) / 2]}{\Gamma[\nu / 2]}
@@ -30,13 +31,9 @@ IMPISD_BEGIN_NAMESPACE
 
     where
     \f[
-      J(X) = \prod_{i=1}^N F'(x_i),
+      J(X) = \left| \prod_{i=1}^N F'(x_i) \right|,
     \f]
-    if F is monotonically increasing and 
-    \f[
-      J(X) = -\prod_{i=1}^N F'(x_i),
-    \f]
-    if F is monotonically decreasing,
+    is a normalization factor according to the change of variables technique. 
 
     \f[
       t(X, M, \sigma)^2 = \frac{S_2(X) - 2 F(M) S_1(X) + N F(M)^2}{\sigma^2},
@@ -44,7 +41,7 @@ IMPISD_BEGIN_NAMESPACE
 
     and the minimally sufficient statistics are
     \f{align*}{
-      S_1(X) &= \sum_{i=1}^N F(x_i)
+      S_1(X) &= \sum_{i=1}^N F(x_i) \\
       S_2(X) &= \sum_{i=1}^N F(x_i)^2.
     \f}
 
@@ -70,9 +67,9 @@ class IMPISDEXPORT FStudentT : public OneDimensionalSufficientDistribution {
 
   public:
     //! Create from observations vectors.
-    /** \param [in] FXs Vector of N \f$F(X)\f$ observations drawn independently
-                        from the same F-t distribution.
-        \param [in] JXs Vector of N derivatives of \f$F(X)\f$ with respect to
+    /** \param [in] FXs Vector of N \f$F(x)\f$ observations drawn
+                        independently from the same F-t distribution.
+        \param [in] JXs Vector of N derivatives of \f$F(x)\f$ with respect to
                         \f$X\f$ vector.
         \param [in] FM Center of F-Student t with respect to \f$F(x)\f$.
         \param [in] sigma Scale of F-Student t with respect to \f$F(x)\f$.
@@ -83,11 +80,10 @@ class IMPISDEXPORT FStudentT : public OneDimensionalSufficientDistribution {
               std::string name = "FStudentT %1%");
 
     //! Create from sufficient statistics.
-    /** \param [in] sumFX Sum of observations of \f$F(X)\f$.
-        \param [in] sumFX2 Sum of observations of \f$F(X)^2\f$.
+    /** \param [in] sumFX Sum of observations of \f$F(x)\f$.
+        \param [in] sumFX2 Sum of observations of \f$F(x)^2\f$.
         \param [in] N Number of observations.
-        \param [in] LogJX Log of product of derivatives of \f$F(X)\f$ with
-                          respect to \f$X\f$ values.
+        \param [in] LogJX Log of \f$J(X)\f$.
         \param [in] FM Center of F-t with respect to \f$F(x)\f$.
         \param [in] sigma Scale of F-t with respect to \f$F(x)\f$.
         \param [in] nu Degrees of freedom of Student t distribution.
