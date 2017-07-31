@@ -160,6 +160,7 @@ statistics::PartitionalClustering *create_gromos_clustering(
     statistics::Metric *d, double cutoff) {
   IntsList clusters;
   unsigned nitems = d->get_number_of_items();
+  d->set_was_used(true);
 
   // are we using the DistanceRMSDMetric ?
   spb::DistanceRMSDMetric *dd =
