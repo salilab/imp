@@ -550,5 +550,14 @@ int main(int argc, char* argv[]) {
   // finalize MPI
   MPI_Finalize();
 
+  // Hide warnings about unused IMP objects
+  allrs->set_was_used(true);
+  CP_ps->set_was_used(true);
+  IL2_ps->set_was_used(true);
+  for (core::MonteCarloMovers::iterator it = mvs.begin(); it != mvs.end();
+       ++it) {
+    (*it)->set_was_used(true);
+  }
+
   return 0;
 }
