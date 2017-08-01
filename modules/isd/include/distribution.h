@@ -14,7 +14,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Base class for all distributions provided for common inheritance.
+//! Base class for all distributions, provided for common inheritance.
 /** This base class exists to define a common parent for all distribution types.
     Children are expected to define one or more evaluate() and get_density()
     methods taking an arbitrary number of arguments to provide negative
@@ -66,9 +66,9 @@ IMP_OBJECTS(OneDimensionalDistribution, OneDimensionalDistributions);
 /** Sufficient statistics are one or more statistics whose values are sufficient
     to describe the entire distribution. For the joint probability of many
     independent draws from a distribution, the set of all drawn values is
-    a sufficient statistic, but minimal sufficient statistics (such as the
-    mean and various for a normal distribution) often exist, permitting one-time
-    calculation and efficient use of memory.
+    a sufficient statistic, but minimally sufficient statistics (such as the
+    mean and variance for a joint normal distribution) often exist, permitting
+    one-time calculation and efficient use of memory.
 
     Children must overload the following methods:
     - IMP::isd::OneDimensionalSufficientDistribution::do_update_sufficient_statistics()
