@@ -236,6 +236,10 @@ void RigidMovedSingletonContainer::do_reset_moved() {
   moved_.clear();
 }
 
+// This operator is only used by IMP_INTERNAL_CHECK below, so omit its
+// definition if internal checks are disabled (to avoid the compiler
+// warning about an unused definition)
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
 namespace {
 std::ostream &operator<<(
     std::ostream &out, const boost::unordered_map<ParticleIndex,
@@ -247,6 +251,7 @@ std::ostream &operator<<(
   return out;
 }
 }
+#endif
 
 ParticleIndexes RigidMovedSingletonContainer::do_get_moved() {
   IMP_OBJECT_LOG;
