@@ -3,7 +3,10 @@ from __future__ import division
 from random import uniform
 
 import numpy as np
-from scipy.special import gammaln, digamma
+try:
+    import scipy.special
+except ImportError:
+    scipy = None
 import IMP
 from IMP.isd import FStudentT
 import IMP.test
@@ -15,9 +18,10 @@ def evaluate_fstudentt(fxs, jxs, fm, s, v):
     sumfx2 = np.sum(fxs**2)
     logjx = np.sum(np.log(jxs))
     t2 = (sumfx2 - 2 * fm * sumfx + n * fm**2) / s**2
-    return (gammaln(.5 * v) - gammaln(.5 * (n + v)) +
-            .5 * n * np.log(np.pi * v) + n * np.log(s) +
-            .5 * (n + v) * np.log(1 + t2 / v) - logjx)
+    return (scipy.special.gammaln(.5 * v)
+            - scipy.special.gammaln(.5 * (n + v))
+            + .5 * n * np.log(np.pi * v) + n * np.log(s)
+            + .5 * (n + v) * np.log(1 + t2 / v) - logjx)
 
 
 def evaluate_studentt(xs, fm, s, v):
@@ -51,8 +55,9 @@ def evaluate_derivative_v(fxs, fm, s, v):
     sumfx = np.sum(fxs)
     sumfx2 = np.sum(fxs**2)
     t2 = (sumfx2 - 2 * fm * sumfx + n * fm**2) / s**2
-    return .5 * (-1 + digamma(.5 * v) - digamma(.5 * (n + v)) +
-                 np.log(1 + t2 / v) + (n + v) / (v + t2))
+    return .5 * (-1 + scipy.special.digamma(.5 * v)
+                 - scipy.special.digamma(.5 * (n + v))
+                 + np.log(1 + t2 / v) + (n + v) / (v + t2))
 
 
 class Tests(IMP.test.TestCase):
@@ -62,6 +67,8 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(0)
+        if scipy is None:
+            self.skipTest("No scipy.special module")
 
     def test_update_sufficient_statistics(self):
         """Test sufficient statistics correctly updated."""
