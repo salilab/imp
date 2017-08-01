@@ -31,28 +31,24 @@ InputOutputException::~InputOutputException() throw() {}
 
 std::string InputOutputException::get_message(ModelObject *o) const {
   std::ostringstream oss;
-  switch (get_entity()) {
-    case DERIVATIVE:
-      if (o->get_model()->get_stage() == BEFORE_EVALUATING) {
-        oss << "Derivatives cannot be read before evaluating.";
+  if (get_entity() == DERIVATIVE
+      && o->get_model()->get_stage() == BEFORE_EVALUATING) {
+    oss << "Derivatives cannot be read before evaluating.";
+  } else {
+    switch (get_operation()) {
+      case GET:
+        oss << "Not in input list.";
         break;
-      }
-    default:
-      switch (get_operation()) {
-        case GET:
-          oss << "Not in input list.";
-          break;
-        case SET:
-        case ADD:
-        case REMOVE:
-          oss << "Not in output list.";
-          break;
-        default:
-          // should not exist
-          oss << "Unknown read/write error";
-      }
-      break;
-  };
+      case SET:
+      case ADD:
+      case REMOVE:
+        oss << "Not in output list.";
+        break;
+      default:
+        // should not exist
+        oss << "Unknown read/write error";
+    }
+  }
   oss << " Violating object: \"" << o->get_name() << "\".";
   if (particle_index_ >= 0) {
     oss << " Attribute " << get_key_name() << " of particle \""
