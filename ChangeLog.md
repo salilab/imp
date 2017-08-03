@@ -5,9 +5,9 @@ ChangeLog {#changelog}
 - This will be the last release that includes packages for Ubuntu 12.04
   (Precise Pangolin) since it has reached end of life. We will continue to
   provide packages for newer Ubuntu LTS releases.
-- IMP::em2d::PCAFitRestraint now uses binary PGM files by default, rather than
-  the less well supported text PGM format. It can still read text PGM files
-  as input.
+- IMP::em2d::PCAFitRestraint now uses binary PGM files as output, rather than
+  the less well supported text PGM format. (It can still read both text and
+  binary PGM files as input.)
 - IMP::em::FitRestraint::cast() is deprecated. Use `get_from()` instead.
 - The deprecated profiling (timing statistics) support has been removed.
   A number of third party packages (such as gperftools) are available
