@@ -114,11 +114,18 @@ class IMPISDEXPORT FStudentT : public OneDimensionalSufficientDistribution {
      */
     void update_cached_values() const;
 
+    void set_sumFX(double v) { sumFX_ = v; }
+    void set_sumFX2(double v) { sumFX2_ = v; }
+    void set_N(unsigned v) { N_ = v; }
+    void set_LogJX(double v) { LogJX_ = v; }
     void set_FM(double v) { FM_ = v; }
     void set_sigma(double v) { sigma_ = v; }
     void set_nu(double v) { nu_ = v; }
 
     //! Get sufficient statistic for passed \f$J(X)\f$ values.
+    double get_sumFX() { return sumFX_; }
+    double get_sumFX2() { return sumFX2_; }
+    unsigned get_N() { return N_; }
     double get_LogJX() { return LogJX_; }
     double get_FM() { return FM_; }
     double get_sigma() { return sigma_; }
@@ -128,8 +135,8 @@ class IMPISDEXPORT FStudentT : public OneDimensionalSufficientDistribution {
 
   private:
     double sumFX_, sumFX2_, LogJX_, FM_, sigma_, nu_;
-    mutable double t2_; // square of t-statistic
     unsigned N_;
+    mutable double t2_; // square of t-statistic
 };
 IMP_OBJECTS(FStudentT, FStudentTs);
 

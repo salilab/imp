@@ -60,6 +60,13 @@ def evaluate_derivative_v(fxs, fm, s, v):
                  + np.log(1 + t2 / v) + (n + v) / (v + t2))
 
 
+def get_random_attributes():
+    attributes = np.random.uniform(1., 100, 6)
+    attributes = list(attributes)
+    attributes = attributes[:2] + [np.random.randint(1, 100)] + attributes[2:]
+    return attributes
+
+
 class Tests(IMP.test.TestCase):
 
     """Tests for FStudentT."""
@@ -97,6 +104,25 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(stats[1], sumx2, delta=1e-2)
             self.assertAlmostEqual(stats[2], n, delta=1e-6)
             self.assertAlmostEqual(f.get_LogJX(), logJX, delta=1e-6)
+
+    def test_setters_getters(self):
+        f = FStudentT(*get_random_attributes())
+        for i in range(10):
+            vs = get_random_attributes()
+            f.set_sumFX(vs[0])
+            f.set_sumFX2(vs[1])
+            f.set_N(vs[2])
+            f.set_LogJX(vs[3])
+            f.set_FM(vs[4])
+            f.set_sigma(vs[5])
+            f.set_nu(vs[6])
+            self.assertAlmostEqual(f.get_sumFX(), vs[0], delta=1e-6)
+            self.assertAlmostEqual(f.get_sumFX2(), vs[1], delta=1e-6)
+            self.assertAlmostEqual(f.get_N(), vs[2], delta=1e-6)
+            self.assertAlmostEqual(f.get_LogJX(), vs[3], delta=1e-6)
+            self.assertAlmostEqual(f.get_FM(), vs[4], delta=1e-6)
+            self.assertAlmostEqual(f.get_sigma(), vs[5], delta=1e-6)
+            self.assertAlmostEqual(f.get_nu(), vs[6], delta=1e-6)
 
     def test_create_from_sufficient_statistics(self):
         """Test constructor with sufficient stats."""
