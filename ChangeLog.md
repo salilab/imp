@@ -2,6 +2,9 @@ ChangeLog {#changelog}
 =========
 
 # For next stable IMP release #
+- New applications of IMP are now available:
+  - [Modeling of the yeast Spindle Pole Body core](https://salilab.org/spb/)
+  - [Modeling of the SEA complex, a modulator of the TORC1 pathway](https://salilab.org/sea/)
 - This will be the last release that includes packages for Ubuntu 12.04
   (Precise Pangolin) since it has reached end of life. We will continue to
   provide packages for newer Ubuntu LTS releases.
