@@ -26,6 +26,7 @@ IMP_SWIG_DECORATOR(IMP::isd, Switching, Switchings);
 IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
 IMP_SWIG_DECORATOR(IMP::isd, Weight, Weights);
 IMP_SWIG_OBJECT(IMP::isd, GaussianRestraint, GaussianRestraints);
+IMP_SWIG_OBJECT(IMP::isd, StudentTRestraint, StudentTRestraints);
 IMP_SWIG_OBJECT(IMP::isd, LognormalRestraint, LognormalRestraints);
 IMP_SWIG_OBJECT(IMP::isd, LognormalAmbiguousRestraint, LognormalAmbiguousRestraints);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousNOERestraint, AmbigousNOERestraints);
@@ -91,6 +92,7 @@ def create_model_and_particles():
 %include "IMP/isd/vonMisesKappaConjugateRestraint.h"
 %include "IMP/isd/NOERestraint.h"
 %include "IMP/isd/GaussianRestraint.h"
+%include "IMP/isd/StudentTRestraint.h"
 %include "IMP/isd/LognormalRestraint.h"
 %include "IMP/isd/LognormalAmbiguousRestraint.h"
 %include "IMP/isd/AmbiguousNOERestraint.h"
