@@ -1,0 +1,4 @@
+P1,P2,R1,R2
+Prot2,Prot2,6,10
+Prot1,Prot2,5,10
+Prot2,Prot1,1,7

@@ -530,12 +530,26 @@ class RMSD(object):
         best_assignments=[]
         rmsd_dict={}
         for molname, ref_mols in self.moldict1.items():
-            selref=IMP.atom.Selection(ref_mols,representation_type=IMP.atom.BALLS)
+            ref_coords=[]
+            for ref_mol in ref_mols:
+                if self.dynamic1:
+                    coord1=[XYZ.get_coordinates() for XYZ in self.mol_XYZs1[ref_mol]]
+                else:
+                    coord1=self.molcoords1[ref_mol]
+                ref_coords+=coord1
+
             rmsd=[]
             rmf_mols_list=[]
             for rmf_mols in itertools.permutations(self.moldict0[molname]):
-                selrmf=IMP.atom.Selection(rmf_mols,representation_type=IMP.atom.BALLS)
-                rmsd.append(IMP.atom.get_rmsd(selref, selrmf))
+                rmf_coords=[]
+                for rmf_mol in rmf_mols:
+                    if self.dynamic0:
+                        coord0=[XYZ.get_coordinates() for XYZ in self.mol_XYZs0[rmf_mol]]
+                    else:
+                        coord0=self.molcoords0[rmf_mol]
+                    rmf_coords+=coord0
+
+                rmsd.append(IMP.algebra.get_rmsd(ref_coords, rmf_coords))
                 rmf_mols_list.append(rmf_mols)
             m=min(rmsd)
             rmf_mols_best_order=rmf_mols_list[rmsd.index(m)]

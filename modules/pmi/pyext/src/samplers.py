@@ -495,6 +495,10 @@ class ConjugateGradients(object):
         return output
 
 
+
+
+
+
 class ReplicaExchange(object):
     """Sample using replica exchange"""
 
@@ -612,6 +616,46 @@ class ReplicaExchange(object):
             output["ReplicaExchange_MaxTempFrequency"] = str(0)
         output["ReplicaExchange_CurrentTemp"] = str(self.get_my_temp())
         return output
+
+
+
+class MPI_values(object):
+    def __init__(self,replica_exchange_object=None):
+        """Query values (ie score, and others)
+        from a set of parallel jobs"""
+
+        if replica_exchange_object is None:
+            # initialize Replica Exchange class
+            try:
+                import IMP.mpi
+                print('MPI_values: MPI was found. Using Parallel Replica Exchange')
+                self.rem = IMP.mpi.ReplicaExchange()
+            except ImportError:
+                print('MPI_values: Could not find MPI. Using Serial Replica Exchange')
+                self.rem = _SerialReplicaExchange()
+
+        else:
+            # get the replica exchange class instance from elsewhere
+            print('got existing rex object')
+            self.rem = replica_exchange_object
+
+    def set_value(self,name,value):
+        self.rem.set_my_parameter(name,[value])
+
+    def get_values(self,name):
+        values=[]
+        for i in range(self.rem.get_number_of_replicas()):
+            v=self.rem.get_friend_parameter(name, i)[0]
+            values.append(v)
+        return values
+
+    def get_percentile(self,name):
+        value=self.rem.get_my_parameter(name)[0]
+        values=sorted(self.get_values(name))
+        ind=values.index(value)
+        percentile=float(ind)/len(values)
+        return percentile
+
 
 
 class PyMCMover(object):
