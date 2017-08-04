@@ -60,6 +60,18 @@ def evaluate_derivative_v(fxs, fm, s, v):
                  + np.log(1 + t2 / v) + (n + v) / (v + t2))
 
 
+def evaluate_derivative_fx(fxs, fm, s, v):
+    n = float(fxs.size)
+    sumfx = np.sum(fxs)
+    sumfx2 = np.sum(fxs**2)
+    t2 = (sumfx2 - 2 * fm * sumfx + n * fm**2) / s**2
+    return (n + v) * (fxs - fm) / (s**2 * (v + t2))
+
+
+def evaluate_derivative_logjx(fxs, fm, s, v):
+    return -1.
+
+
 def get_random_attributes():
     attributes = np.random.uniform(1., 100, 6)
     attributes = list(attributes)
@@ -172,6 +184,37 @@ class Tests(IMP.test.TestCase):
             f = FStudentT(x, jx, m, s, v, "test")
             exp_dens = np.exp(-evaluate_studentt(x, m, s, v))
             self.assertAlmostEqual(f.get_density(), exp_dens, delta=1e-6)
+
+    def test_evaluate_DFX(self):
+        """Test FStudentT.evaluate_derivative_FX"""
+        n = 10
+        for i in range(10):
+            m, s, v = uniform(-10, 10), uniform(1, 10), uniform(1, 60)
+            x = np.random.uniform(-100, 100, n)
+            jx = np.ones_like(x)
+            f = FStudentT(x, jx, m, s, v, "test")
+            f.update_cached_values()
+            exp_dervs = evaluate_derivative_fx(x, m, s, v)
+            batch_dervs = f.evaluate_derivative_FX(x)
+            for i in range(n):
+                single_derv = f.evaluate_derivative_Fx(x[i])
+                self.assertAlmostEqual(single_derv, exp_dervs[i],
+                                       delta=1e-6)
+                self.assertAlmostEqual(batch_dervs[i], exp_dervs[i],
+                                       delta=1e-6)
+
+    def test_evaluate_DLogJX(self):
+        """Test FStudentT.evaluate_derivative_LogJX"""
+        n = 10
+        for i in range(10):
+            m, s, v = uniform(-10, 10), uniform(1, 10), uniform(1, 60)
+            x = np.random.uniform(-100, 100, n)
+            jx = np.ones_like(x)
+            f = FStudentT(x, jx, m, s, v, "test")
+            f.update_cached_values()
+            exp_derv = evaluate_derivative_logjx(x, m, s, v)
+            self.assertAlmostEqual(f.evaluate_derivative_LogJX(), exp_derv,
+                                   delta=1e-6)
 
     def test_evaluate_DFM(self):
         """Test FStudentT.evaluate_derivative_FM"""

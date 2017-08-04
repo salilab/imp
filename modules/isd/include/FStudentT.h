@@ -98,6 +98,21 @@ class IMPISDEXPORT FStudentT : public OneDimensionalSufficientDistribution {
       do_update_sufficient_statistics(FXs, JXs);
     }
 
+    //! Evaluate derivative of negative log-density wrt single \f$F(x_i)\f$.
+    /** \f$F(x_i)\f$ represents an element of \f$F(X)\f$. Since only the
+        sufficient statistics are stored, this value must be provided.
+     */
+    virtual double evaluate_derivative_Fx(double Fx) const;
+
+    //! Evaluate derivative of negative log-density wrt elements of \f$F(X)\f$.
+    /** This is equivalent to though faster than running
+        evaluate_derivative_Fx() on every element of \f$F(X)\f$.
+    */
+    Floats evaluate_derivative_FX(const Floats FXs) const;
+
+    //! Evaluate derivative of negative log-density wrt \f$\log J(X)\f$.
+    virtual double evaluate_derivative_LogJX() const;
+
     //! Evaluate derivative of negative log-density wrt \f$F(M)\f$.
     virtual double evaluate_derivative_FM() const;
 

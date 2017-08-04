@@ -67,6 +67,23 @@ double FStudentT::do_evaluate() const {
          .5 * (N_ + nu_) * std::log(1. + t2_ / nu_) - LogJX_;
 }
 
+double FStudentT::evaluate_derivative_Fx(double Fx) const {
+  return (N_ + nu_) * (Fx - FM_) / IMP::square(sigma_) / (nu_ + t2_);
+}
+
+Floats FStudentT::evaluate_derivative_FX(const Floats FXs) const {
+  Floats dervs;
+  double c = (N_ + nu_) / IMP::square(sigma_) / (nu_ + t2_);
+  for (unsigned int i = 0; i < FXs.size(); i++) {
+    dervs.push_back(c * (FXs[i] - FM_));
+  }
+  return dervs;
+}
+
+double FStudentT::evaluate_derivative_LogJX() const {
+  return -1;
+}
+
 double FStudentT::evaluate_derivative_FM() const {
   return (N_ + nu_) * (N_ * FM_ - sumFX_) / IMP::square(sigma_) / (nu_ + t2_);
 }
