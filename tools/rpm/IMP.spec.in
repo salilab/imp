@@ -340,16 +340,17 @@ done
  && symlinks -rc .)
 %endif
 
-# Put MPI-dependent libraries in mpich directories
+# Put MPI-dependent libraries and binaries in mpich directories
 %if 0%{?with_mpich}
 (cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/ && mkdir mpich)
-(cd ${RPM_BUILD_ROOT}%{_libdir} && mkdir mpich)
+(cd ${RPM_BUILD_ROOT}%{_libdir} && mkdir -p mpich/bin mpich/lib)
+(cd ${RPM_BUILD_ROOT}%{_bindir} && mv spb* ${RPM_BUILD_ROOT}%{_libdir}/mpich/bin)
 for mod in %{MPI_MODULES}; do
   (cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/ \
    && mv _IMP_${mod}.so mpich/)
-  (cd ${RPM_BUILD_ROOT}%{_libdir} && mv libimp_${mod}.so.* mpich)
+  (cd ${RPM_BUILD_ROOT}%{_libdir} && mv libimp_${mod}.so.* mpich/lib/)
   (cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_${mod}.so \
-   && ln -sf mpich/libimp_${mod}.so.* libimp_${mod}.so)
+   && ln -sf mpich/lib/libimp_${mod}.so.* libimp_${mod}.so)
 done
 %endif
 
@@ -428,7 +429,6 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %exclude %{_prefix}/share/IMP/build_info/IMP.spb
 %exclude %{_prefix}/share/IMP/build_info/IMP_spb.pck
-%exclude %{_prefix}/bin/spb*
 %exclude %{_libdir}/python2*/site-packages/IMP/mpi
 %exclude %{_libdir}/python2*/site-packages/IMP/spb
 %endif
@@ -454,13 +454,13 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %{_prefix}/share/IMP/build_info/IMP.spb
 %{_prefix}/share/IMP/build_info/IMP_spb.pck
-%{_prefix}/bin/spb*
 %{_libdir}/python2*/site-packages/IMP/mpi
 %{_libdir}/python2*/site-packages/IMP/spb
 %{_libdir}/python2*/site-packages/mpich/_IMP_mpi.so
 %{_libdir}/python2*/site-packages/mpich/_IMP_spb.so
 %{_libdir}/mpich/lib/libimp_mpi.so.*
 %{_libdir}/mpich/lib/libimp_spb.so.*
+%{_libdir}/mpich/bin/spb*
 
 %files mpich-devel
 %defattr(-,root,root)
