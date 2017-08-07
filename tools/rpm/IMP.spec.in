@@ -208,6 +208,9 @@ Group:         Applications/Engineering
 Summary:       MPI module and dependents, for mpich
 Requires:      %{name} = %{version}-%{release}
 Requires:      mpich
+%if 0%{?fedora}
+Requires:      mpich2-python
+%endif
 BuildRequires: mpich-devel
 
 %description mpich
