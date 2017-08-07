@@ -352,6 +352,17 @@ for mod in %{MPI_MODULES}; do
   (cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_${mod}.so \
    && ln -sf mpich/lib/libimp_${mod}.so.* libimp_${mod}.so)
 done
+
+# Add MPI-dependent directory to Python search path
+%if 0%{?rhel} == 6
+cat > ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/imp-mpi.pth <<END
+# Set MPI implementation-specific Python search path, for IMP.
+# On Fedora this is handled by the python2-mpich package, while in RHEL7
+# the mpich modulefile sets PYTHONPATH, but nothing appears to handle it
+# in RHEL6, so we'll do it ourselves.
+import sys, os; s = os.getenv('MPI_PYTHON_SITEARCH'); s and (s in sys.path or sys.path.append(s))
+END
+%endif
 %endif
 
 # Note that we currently don't include the documentation in the RPM, since
@@ -456,6 +467,9 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %{_prefix}/share/IMP/build_info/IMP_spb.pck
 %{_libdir}/python2*/site-packages/IMP/mpi
 %{_libdir}/python2*/site-packages/IMP/spb
+%if 0%{?rhel} == 6
+%{_libdir}/python2*/site-packages/imp-mpi.pth
+%endif
 %{_libdir}/python2*/site-packages/mpich/_IMP_mpi.so
 %{_libdir}/python2*/site-packages/mpich/_IMP_spb.so
 %{_libdir}/mpich/lib/libimp_mpi.so.*
