@@ -209,7 +209,7 @@ Summary:       MPI module and dependents, for mpich
 Requires:      %{name} = %{version}-%{release}
 Requires:      mpich
 %if 0%{?fedora}
-Requires:      mpich2-python
+Requires:      python2-mpich
 %endif
 BuildRequires: mpich-devel
 
