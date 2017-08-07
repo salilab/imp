@@ -456,8 +456,8 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %{_libdir}/python2*/site-packages/IMP/spb
 %{_libdir}/python2*/site-packages/mpich/_IMP_mpi.so
 %{_libdir}/python2*/site-packages/mpich/_IMP_spb.so
-%{_libdir}/mpich/libimp_mpi.so.*
-%{_libdir}/mpich/libimp_spb.so.*
+%{_libdir}/mpich/lib/libimp_mpi.so.*
+%{_libdir}/mpich/lib/libimp_spb.so.*
 
 %files mpich-devel
 %defattr(-,root,root)
