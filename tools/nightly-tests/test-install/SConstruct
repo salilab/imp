@@ -5,6 +5,8 @@ vars.Add('cxxflags', 'C++ compile flags', '')
 vars.Add('linkflags', 'Link flags', '')
 vars.Add('mock_config', 'Name of the mock config used to build IMP RPMs. '
          'Specifying this adds extra RPM/.deb and OS-specific tests.', None)
+vars.Add('mpi_module', 'Name of the module to load to enable MPI.'
+         'Specifying this adds extra tests, of MPI components.', None)
 vars.Add(PathVariable('pypath',
                       'Directory/ies where IMP Python wrappers are installed',
                       None, PathVariable.PathAccept))
@@ -26,6 +28,7 @@ if cpppath is not None:
 pypath = env.get('pypath', None)
 path = env.get('path', None)
 mock = env.get('mock_config', None)
+mpi = env.get('mpi_module', None)
 cxxflags = env.get('cxxflags', '').split(' ')
 linkflags = env.get('linkflags', '').split(' ')
 python = env['python']
@@ -70,5 +73,12 @@ if mock:
     runpy_mock = env.Command('mock.out', 'test_mock.py',
                              "%s $SOURCES -v > $TARGET" % python)
     tests.append(runpy_mock)
+
+# Add MPI-specific tests if requested
+if mpi:
+    runpy_mpi = env.Command('mpi.out', 'test_mpi.py',
+                             "source /etc/profile && module load %s "
+                             "&& %s $SOURCES -v > $TARGET" % (mpi, python))
+    tests.append(runpy_mpi)
 
 env.Default(tests)
