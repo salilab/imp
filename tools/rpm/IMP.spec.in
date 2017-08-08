@@ -355,7 +355,7 @@ done
 
 # Add MPI-dependent directory to Python search path
 %if 0%{?rhel} == 6
-cat > ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/imp-mpi.pth <<END
+(cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages && cat > imp-mpi.pth <<END)
 # Set MPI implementation-specific Python search path, for IMP.
 # On Fedora this is handled by the python2-mpich package, while in RHEL7
 # the mpich modulefile sets PYTHONPATH, but nothing appears to handle it
