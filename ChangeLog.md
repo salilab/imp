@@ -8,6 +8,8 @@ ChangeLog {#changelog}
 - This will be the last release that includes packages for Ubuntu 12.04
   (Precise Pangolin) since it has reached end of life. We will continue to
   provide packages for newer Ubuntu LTS releases.
+- The Anaconda and Windows .exe packages are now MPI-enabled. On Windows, in
+  order to use MPI, install [MS-MPI](https://msdn.microsoft.com/en-us/library/bb524831.aspx).
 - IMP::em2d::PCAFitRestraint now uses binary PGM files as output, rather than
   the less well supported text PGM format. (It can still read both text and
   binary PGM files as input.)
