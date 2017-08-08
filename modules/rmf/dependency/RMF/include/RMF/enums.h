@@ -80,6 +80,14 @@ extern RMFEXPORT const FrameType MODEL;
 extern RMFEXPORT const FrameType CENTER;
 //! An alias for another frame
 extern RMFEXPORT const FrameType FRAME_ALIAS;
+
+// Work around a Windows compile error. Standard Windows header WinGDI.h
+// globally #defines ALTERNATE to be "1", which will cause a compile
+// error below unless we #undef it first.
+#ifdef ALTERNATE
+#undef ALTERNATE
+#endif
+
 //! An alternate state for a frame or model
 extern RMFEXPORT const FrameType ALTERNATE;
 /** @} */
