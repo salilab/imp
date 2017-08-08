@@ -422,12 +422,10 @@ int main(int argc, char* argv[]) {
 
     // in any case, update index vector
     MPI_Barrier(MPI_COMM_WORLD);
-    int sbuf[nproc], rbuf[nproc];
-    for (int i = 0; i < nproc; ++i) {
-      sbuf[i] = 0;
-    }
+    std::vector<int> sbuf(nproc, 0);
+    std::vector<int> rbuf(nproc);
     sbuf[myrank] = myindex;
-    MPI_Allreduce(sbuf, rbuf, nproc, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(&sbuf[0], &rbuf[0], nproc, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
     for (int i = 0; i < nproc; ++i) {
       index[i] = rbuf[i];
     }
