@@ -1,10 +1,14 @@
 import unittest
+import sys
 import subprocess
 
 class Tests(unittest.TestCase):
 
     def test_modules_installed(self):
         """Check MPI-dependent Python modules"""
+        # No IMP-python3-mpich package currently
+        if sys.version_info[0] >= 3:
+            self.skipTest("No Python3 support for MPI yet")
         import IMP.mpi
         import IMP.spb
 
