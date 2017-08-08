@@ -11,7 +11,7 @@
 #include "mpi_config.h"
 #include <IMP/Object.h>
 #include <IMP/types.h>
-#include "mpi.h"
+#include <mpi.h>
 #include <string>
 
 IMPMPI_BEGIN_NAMESPACE
