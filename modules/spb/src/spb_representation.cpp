@@ -12,7 +12,6 @@
 #include <IMP/display.h>
 #include <IMP/spb.h>
 #include <IMP/rmf.h>
-#include <math.h>
 #include <time.h>
 #include <list>
 #include <map>
@@ -514,7 +513,7 @@ atom::Molecule create_protein(Model *m, std::string name, std::string filename,
   atom::Hierarchy hpdb = atom::read_pdb(filename, m, sel);
   Particles ps = atom::get_leaves(hpdb);
   int nres = ps.size();
-  int nbeads = (int)round((double)nres / (double)nres_per_bead);
+  int nbeads = (int)((double)nres / (double)nres_per_bead + 0.5);
   Ints nres_bead;
   for (int i = 0; i < nbeads; ++i) {
     nres_bead.push_back(nres / nbeads);
