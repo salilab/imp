@@ -11,3 +11,9 @@ mix and match.)
 
 One easy way to run IMP Python scripts is to open them in
 Python's IDLE program and run them by pressing F5.
+
+IMP is built with MPI support using Microsoft MPI. To use MPI-enabled IMP
+components (such as the IMP.mpi and IMP.spb modules, and the spb* programs)
+install MS MPI from https://msdn.microsoft.com/en-us/library/bb524831.aspx
+and use its mpiexec utility to run IMP. If you do *not* want to use MPI, the
+rest of IMP should work fine without needing MS MPI installed.
