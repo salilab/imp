@@ -1,7 +1,7 @@
 ChangeLog {#changelog}
 =========
 
-# For next stable IMP release #
+# 2.8.0 - 2017-08-16 # {#changelog_2_8_0}
 - New applications of IMP are now available:
   - [Modeling of the yeast Spindle Pole Body core](https://salilab.org/spb/)
   - [Modeling of the SEA complex, a modulator of the TORC1 pathway](https://salilab.org/sea/)
