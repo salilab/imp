@@ -4,6 +4,7 @@ import IMP.algebra
 import IMP.atom
 import IMP.isd
 import gzip
+import ast
 from math import exp, log, pi
 
 '''This program generate a Table of score values for the cross-link restraint varying the
@@ -114,11 +115,8 @@ def get_cross_link_data(
         x = 1 / 0
         # try to open the cross-link database
         filen = IMP.isd.get_data_path("CrossLinkPMFs.dict")
-        xlpot = open(filen)
-
-        for line in xlpot:
-            dictionary = eval(line)
-            break
+        with open(filen) as fh:
+            dictionary = ast.literal_eval(fh.readline())
         xpot = dictionary[directory][filename]["distance"]
         pot = dictionary[directory][filename]["gofr"]
 

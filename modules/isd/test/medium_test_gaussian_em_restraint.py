@@ -67,7 +67,7 @@ def gem_score(model_ps, density_ps,slope=0.0):
             slope_score+=dist*slope
     cc = 2*md_score/(mm_score+dd_score)
     dist = -log(cc) + slope_score
-    return dist
+    return cc, dist
 
 def create_random_gaussians(m,randstate,num,spherical,rad_scale=1.0):
     ret=[]
@@ -133,8 +133,10 @@ class Tests(IMP.test.TestCase):
         for nt in range(10):
             shuffle_particles(self.model_ps)
             score = self.sf.evaluate(False)
-            pyscore = gem_score(self.model_ps, self.density_ps)
+            cc = self.gem.get_cross_correlation_coefficient()
+            pycc, pyscore = gem_score(self.model_ps, self.density_ps)
             self.assertAlmostEqual(score, pyscore, delta=0.02)
+            self.assertAlmostEqual(cc, pycc, delta=0.02)
 
     def test_gem_score_with_slope(self):
         """test accuracy of GMM score using slope"""
@@ -144,8 +146,11 @@ class Tests(IMP.test.TestCase):
         for nt in range(10):
             shuffle_particles(self.model_ps)
             score = self.sf.evaluate(False)
-            pyscore = gem_score(self.model_ps, self.density_ps,slope=slope)
+            cc = self.gem.get_cross_correlation_coefficient()
+            pycc, pyscore = gem_score(self.model_ps, self.density_ps,
+                                      slope=slope)
             self.assertAlmostEqual(score, pyscore, delta=0.02)
+            self.assertAlmostEqual(cc, pycc, delta=0.02)
         self.gem.set_slope(0.0)
 
 
@@ -206,8 +211,8 @@ class LocalTests(IMP.test.TestCase):
         for nt in range(10):
             shuffle_particles(self.model_ps,5.0,1.5)
             score = self.sf.evaluate(False)
-            pyscore = gem_score(self.model_ps, self.density_ps)
-            print(score,pyscore)
+            pycc, pyscore = gem_score(self.model_ps, self.density_ps)
+            print(score,pycc,pyscore)
 
 if __name__ == '__main__':
     IMP.test.main()

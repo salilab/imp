@@ -15,9 +15,19 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/Particle.h>
+#include <IMP/atom/Mass.h>
+#include <IMP/core/XYZR.h>
+
+
 #include <boost/ptr_container/ptr_vector.hpp>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
+
+// Information about a projection
+struct ProjectionInfo {
+  algebra::Rotation3D rotation; // rotation to make projection from Particles
+  algebra::Vector3D centroid; // coordinates of the centroid in model space
+};
 
 class IMPEM2DEXPORT Projection : public Image2D<> {
  public:
@@ -54,6 +64,14 @@ class IMPEM2DEXPORT Projection : public Image2D<> {
   void set_id(int id) { id_ = id; }
 
   void add(const Projection& p);
+
+  algebra::Vector3D get_point_for_index(double x, double y) const {
+    algebra::Vector3D point;
+    point[0] = (x - t_j_) * scale_ + x_min_;
+    point[1] = (y - t_i_) * scale_ + y_min_;
+    point[2] = 0.;
+    return point;
+  }
 
  private:
   // Make noncopyable

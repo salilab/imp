@@ -8,6 +8,7 @@
 #define IMPISD_FNORMAL_H
 
 #include <IMP/isd/isd_config.h>
+#include <IMP/isd/distribution.h>
 #include <IMP/macros.h>
 #include <IMP/Model.h>
 #include <IMP/constants.h>
@@ -17,25 +18,44 @@ IMPISD_BEGIN_NAMESPACE
 
 //! FNormal
 /** Probability density function and -log(p) of normal sampling from some
- * function F. If A is drawn from the F-Normal distribution then F(A) is drawn
- * from a normal distribution with mean M and standard deviation sigma.
- * Arguments: F(A), J(A) the derivative of F w/r to A, F(M) and sigma.  The
- * distribution is normalized with respect to the variable A.
- *
- *  Example: if F is the log function, the F-normal distribution is the
- *  lognormal distribution with mean M and standard deviation sigma.
- *
- *  NOTE: for now, F must be monotonically increasing, so that JA > 0. The
- *  program will not check for that.
- */
+    function F. If A is drawn from the F-Normal distribution then F(A) is
+    drawn from a normal distribution with mean F(M) and standard deviation
+    sigma (w/r F(A)).
 
-class IMPISDEXPORT FNormal : public Object {
+    Arguments: F(A), J(A) the derivative of F w/r to A, F(M), and sigma. The
+    distribution is normalized with respect to the variable A. Note that the
+    mean and standard deviation with respect to A may not be M and sigma.
+    
+    Example: If F is the log function, the F-normal distribution is the
+    lognormal distribution with mean log(M) and standard deviation sigma
+    (wrt. log(A)).
+    
+    \note F must be a one-to-one function, i.e., it must be monotonically
+          increasing or decreasing. This is not checked. For a monotonically
+          decreasing function, set JA to -JA, so that JA > 0.
+ */
+class IMPISDEXPORT FNormal : public OneDimensionalSufficientDistribution {
  public:
   FNormal(double FA, double JA, double FM, double sigma)
-      : Object("FNormal %1%"), FA_(FA), JA_(JA), FM_(FM), sigma_(sigma) {}
+      : OneDimensionalSufficientDistribution("FNormal %1%"), JA_(JA), FM_(FM)
+      , sigma_(sigma) {
+    update_sufficient_statistics(FA);
+  }
+
+  virtual void update_sufficient_statistics(double FA) {
+    set_FA(FA);
+  }
+
+  virtual void do_update_sufficient_statistics(Floats data) IMP_OVERRIDE {
+    update_sufficient_statistics(data[0]);
+  }
+
+  virtual Floats do_get_sufficient_statistics() const IMP_OVERRIDE {
+    return Floats(1, FA_);
+  }
 
   /* energy (score) functions, aka -log(p) */
-  virtual double evaluate() const {
+  virtual double do_evaluate() const IMP_OVERRIDE {
     return -log(JA_ / sigma_) + 0.5 * log(2 * IMP::PI) +
            1 / (2 * square(sigma_)) * square(FA_ - FM_);
   }
@@ -57,9 +77,15 @@ class IMPISDEXPORT FNormal : public Object {
   }
 
   /* probability density function */
-  virtual double density() const {
+  virtual double do_get_density() const IMP_OVERRIDE {
     return JA_ / (sqrt(2 * IMP::PI) * sigma_) *
            exp(-square(FA_ - FM_) / (2 * square(sigma_)));
+  }
+
+  IMPISD_DEPRECATED_FUNCTION_DECL(2.8)
+  virtual double density() const {
+    IMPISD_DEPRECATED_FUNCTION_DEF(2.8, "Use get_density() instead");
+    return get_density();
   }
 
   /* change of parameters */

@@ -67,6 +67,7 @@ class MonteCarlo(object):
         self.mvslabels = []
         self.label = "None"
         self.m = m
+        self.movers_data={}
 
         # check if using PMI1 or just passed a list of movers
         gather_objects = False
@@ -206,41 +207,48 @@ class MonteCarlo(object):
 
         # apply self adaptive protocol
         if self.selfadaptive:
-            for i, mv in enumerate(self.smv.get_movers()):
-                name = mv.get_name()
+            for i, mv in enumerate(self.mvs):
 
-                if "Nuisances" in name:
-                    mvacc = mv.get_number_of_accepted()
-                    mvprp = mv.get_number_of_proposed()
+                mvacc = mv.get_number_of_accepted()
+                mvprp = mv.get_number_of_proposed()
+                if mv not in self.movers_data:
                     accept = float(mvacc) / float(mvprp)
-                    nmv = IMP.core.NormalMover.get_from(mv)
-                    stepsize = nmv.get_sigma()
+                    self.movers_data[mv]=(mvacc,mvprp)
+                else:
+                    oldmvacc,oldmvprp=self.movers_data[mv]
+                    accept = float(mvacc-oldmvacc) / float(mvprp-oldmvprp)
+                    self.movers_data[mv]=(mvacc,mvprp)
+                if accept < 0.05: accept = 0.05
+                if accept > 1.0: accept = 1.0
 
+                if type(mv) is IMP.core.NormalMover:
+                    stepsize = mv.get_sigma()
                     if 0.4 > accept or accept > 0.6:
-                        nmv.set_sigma(stepsize * 2 * accept)
-                    if accept < 0.05:
-                        accept = 0.05
-                        nmv.set_sigma(stepsize * 2 * accept)
-                    if accept > 1.0:
-                        accept = 1.0
-                        nmv.set_sigma(stepsize * 2 * accept)
+                        mv.set_sigma(stepsize * 2 * accept)
 
-                if "Weights" in name:
-
-                    mvacc = mv.get_number_of_accepted()
-                    mvprp = mv.get_number_of_proposed()
-                    accept = float(mvacc) / float(mvprp)
-                    wmv = IMP.isd.WeightMover.get_from(mv)
-                    stepsize = wmv.get_radius()
-
+                if type(mv) is IMP.isd.WeightMover:
+                    stepsize = mv.get_radius()
                     if 0.4 > accept or accept > 0.6:
-                        wmv.set_radius(stepsize * 2 * accept)
-                    if accept < 0.05:
-                        accept = 0.05
-                        wmv.set_radius(stepsize * 2 * accept)
-                    if accept > 1.0:
-                        accept = 1.0
-                        wmv.set_radius(stepsize * 2 * accept)
+                        mv.set_radius(stepsize * 2 * accept)
+
+                if type(mv) is IMP.core.RigidBodyMover:
+                    mr=mv.get_maximum_rotation()
+                    mt=mv.get_maximum_translation()
+                    if 0.4 > accept or accept > 0.6:
+                        mv.set_maximum_rotation(mr * 2 * accept)
+                        mv.set_maximum_translation(mt * 2 * accept)
+
+                if type(mv) is IMP.pmi.TransformMover:
+                    mr=mv.get_maximum_rotation()
+                    mt=mv.get_maximum_translation()
+                    if 0.4 > accept or accept > 0.6:
+                        mv.set_maximum_rotation(mr * 2 * accept)
+                        mv.set_maximum_translation(mt * 2 * accept)
+
+                if type(mv) is IMP.core.BallMover:
+                    mr=mv.get_radius()
+                    if 0.4 > accept or accept > 0.6:
+                        mv.set_radius(mr * 2 * accept)
 
     @IMP.deprecated_method("2.5", "Use optimize() instead.")
     def run(self, *args, **kwargs):
@@ -487,6 +495,10 @@ class ConjugateGradients(object):
         return output
 
 
+
+
+
+
 class ReplicaExchange(object):
     """Sample using replica exchange"""
 
@@ -604,6 +616,46 @@ class ReplicaExchange(object):
             output["ReplicaExchange_MaxTempFrequency"] = str(0)
         output["ReplicaExchange_CurrentTemp"] = str(self.get_my_temp())
         return output
+
+
+
+class MPI_values(object):
+    def __init__(self,replica_exchange_object=None):
+        """Query values (ie score, and others)
+        from a set of parallel jobs"""
+
+        if replica_exchange_object is None:
+            # initialize Replica Exchange class
+            try:
+                import IMP.mpi
+                print('MPI_values: MPI was found. Using Parallel Replica Exchange')
+                self.rem = IMP.mpi.ReplicaExchange()
+            except ImportError:
+                print('MPI_values: Could not find MPI. Using Serial Replica Exchange')
+                self.rem = _SerialReplicaExchange()
+
+        else:
+            # get the replica exchange class instance from elsewhere
+            print('got existing rex object')
+            self.rem = replica_exchange_object
+
+    def set_value(self,name,value):
+        self.rem.set_my_parameter(name,[value])
+
+    def get_values(self,name):
+        values=[]
+        for i in range(self.rem.get_number_of_replicas()):
+            v=self.rem.get_friend_parameter(name, i)[0]
+            values.append(v)
+        return values
+
+    def get_percentile(self,name):
+        value=self.rem.get_my_parameter(name)[0]
+        values=sorted(self.get_values(name))
+        ind=values.index(value)
+        percentile=float(ind)/len(values)
+        return percentile
+
 
 
 class PyMCMover(object):

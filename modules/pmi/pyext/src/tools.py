@@ -15,6 +15,7 @@ import itertools
 from math import log,pi,sqrt,exp
 import sys,os
 import random
+import ast
 import time
 import RMF
 import IMP.rmf
@@ -55,9 +56,14 @@ def get_restraint_set(model):
     return IMP.RestraintSet.get_from(model.get_data(mk))
 
 class Stopwatch(object):
+    """Collect timing information.
+       Add an instance of this class to outputobjects to get timing information
+       in a stat file."""
 
     def __init__(self, isdelta=True):
-
+        """Constructor.
+           @param isdelta if True (the default) then report the time since the
+                  last use of this class; if False, report cumulative time."""
         self.starttime = time.clock()
         self.label = "None"
         self.isdelta = isdelta
@@ -69,16 +75,12 @@ class Stopwatch(object):
         output = {}
         if self.isdelta:
             newtime = time.clock()
-            output[
-                "Stopwatch_" +
-                self.label +
-                "_delta_seconds"] = str(
-                newtime -
-                self.starttime)
+            output["Stopwatch_" + self.label + "_delta_seconds"] \
+                    = str(newtime - self.starttime)
             self.starttime = newtime
         else:
-            output["Stopwatch_" + self.label +
-                   "_elapsed_seconds"] = str(time.clock() - self.starttime)
+            output["Stopwatch_" + self.label + "_elapsed_seconds"] \
+                    = str(time.clock() - self.starttime)
         return output
 
 
@@ -123,6 +125,8 @@ class SetupSurface(object):
         return self.surface
 
 
+@IMP.deprecated_object(2.8,
+        "If you use this class please let the PMI developers know.")
 class ParticleToSampleFilter(object):
     def __init__(self, sampled_objects):
         self.sampled_objects=sampled_objects
@@ -402,11 +406,8 @@ def get_cross_link_data(directory, filename, dist, omega, sigma,
     (sigmamin, sigmamax, nsigma) = sigma
 
     filen = IMP.isd.get_data_path("CrossLinkPMFs.dict")
-    xlpot = open(filen)
-
-    for line in xlpot:
-        dictionary = eval(line)
-        break
+    with open(filen) as xlpot:
+        dictionary = ast.literal_eval(xlpot.readline())
 
     xpot = dictionary[directory][filename]["distance"]
     pot = dictionary[directory][filename][type_of_profile]
@@ -571,38 +572,6 @@ def get_closest_residue_position(hier, resindex, terminus="N"):
             hier, resindex))
     else:
         raise ValueError("got multiple residues for hierarchy %s and residue %i; the list of particles is %s" % (hier, resindex, str([pp.get_name() for pp in p])))
-
-@IMP.deprecated_function("2.6", "Use get_terminal_residue_position() instead.")
-def get_position_terminal_residue(hier, terminus="C", resolution=1):
-    '''
-    Get the xyz position of the terminal residue at the given resolution.
-    @param hier hierarchy containing the terminal residue
-    @param terminus either 'N' or 'C'
-    @param resolution resolution to use.
-    '''
-    termresidue = None
-    termparticle = None
-    for p in IMP.atom.get_leaves(hier):
-        if IMP.pmi.Resolution(p).get_resolution() == resolution:
-            residues = IMP.pmi.tools.get_residue_indexes(p)
-            if terminus == "C":
-                if max(residues) >= termresidue and not termresidue is None:
-                    termresidue = max(residues)
-                    termparticle = p
-                elif termresidue is None:
-                    termresidue = max(residues)
-                    termparticle = p
-            elif terminus == "N":
-                if min(residues) <= termresidue and not termresidue is None:
-                    termresidue = min(residues)
-                    termparticle = p
-                elif termresidue is None:
-                    termresidue = min(residues)
-                    termparticle = p
-            else:
-                raise ValueError("terminus argument should be either N or C")
-
-    return IMP.core.XYZ(termparticle).get_coordinates()
 
 def get_terminal_residue(representation, hier, terminus="C", resolution=1):
     '''
@@ -1602,7 +1571,9 @@ def input_adaptor(stuff,
                   warn_about_slices=True):
     """Adapt things for PMI (degrees of freedom, restraints, ...)
     Returns list of list of hierarchies, separated into Molecules if possible.
-    (iterable of ^2) hierarchy -> returns input as list of list of hierarchies, only one entry.
+    The input can be a list, or a list of lists (iterable of ^1 or iterable of ^2)
+    (iterable of ^2) Hierarchy -> returns input as list of list of hierarchies,
+        only one entry, not grouped by molecules.
     (iterable of ^2) PMI::System/State/Molecule/TempResidue ->
         returns residue hierarchies, grouped in molecules, at requested resolution
     @param stuff Can be one of the following inputs:
@@ -1617,56 +1588,59 @@ def input_adaptor(stuff,
     But there should be no problem if you request unbuilt residues, they should be ignored.
     """
 
-    # if iterable (of iterable), make sure uniform type
-    def get_ok_iter(it):
-        type_set = set(type(a) for a in it)
-        if len(type_set)!=1:
-            raise Exception('input_adaptor: can only pass one type of object at a time')
-        xtp = type_set.pop()
-        return xtp,list(it)
-
     if stuff is None:
         return stuff
+
     if hasattr(stuff,'__iter__'):
         if len(stuff)==0:
             return stuff
-        tp,thelist = get_ok_iter(stuff)
+        thelist=list(stuff)
 
         # iter of iter of should be ok
-        if hasattr(next(iter(thelist)),'__iter__'):
-            flatlist = [i for sublist in thelist for i in sublist]
-            tp,thelist = get_ok_iter(flatlist)
+        if all(hasattr(el,'__iter__') for el in thelist):
+            thelist = [i for sublist in thelist for i in sublist]
+        elif any(hasattr(el,'__iter__') for el in thelist):
+            raise Exception('input_adaptor: input_object must be a list or a list of lists')
 
         stuff = thelist
     else:
-        tp = type(stuff)
         stuff = [stuff]
+
+    # check that it is a hierarchy homogenously:
+    try:
+        is_hierarchy=all(IMP.atom.Hierarchy.get_is_setup(s) for s in stuff)
+    except NotImplementedError:
+        is_hierarchy=False
+    # get the other types homogenously
+    is_system=all(isinstance(s, IMP.pmi.topology.System) for s in stuff)
+    is_state=all(isinstance(s, IMP.pmi.topology.State) for s in stuff)
+    is_molecule=all(isinstance(s, IMP.pmi.topology.Molecule) for s in stuff)
+    is_temp_residue=all(isinstance(s, IMP.pmi.topology.TempResidue) for s in stuff)
 
     # now that things are ok, do selection if requested
     hier_list = []
     pmi_input = False
-    if tp in (IMP.pmi.topology.System,IMP.pmi.topology.State,
-              IMP.pmi.topology.Molecule,IMP.pmi.topology.TempResidue):
+    if is_system or is_state or is_molecule or is_temp_residue:
         # if PMI, perform selection using gathered indexes
         pmi_input = True
         indexes_per_mol = OrderedDefaultDict(list) #key is Molecule object, value are residues
-        if tp==IMP.pmi.topology.System:
+        if is_system:
             for system in stuff:
                 for state in system.get_states():
                     mdict = state.get_molecules()
                     for molname in mdict:
                         for copy in mdict[molname]:
                             indexes_per_mol[copy] += [r.get_index() for r in copy.get_residues()]
-        elif tp==IMP.pmi.topology.State:
+        elif is_state:
             for state in stuff:
                 mdict = state.get_molecules()
                 for molname in mdict:
                     for copy in mdict[molname]:
                         indexes_per_mol[copy] += [r.get_index() for r in copy.get_residues()]
-        elif tp==IMP.pmi.topology.Molecule:
+        elif is_molecule:
             for molecule in stuff:
                 indexes_per_mol[molecule] += [r.get_index() for r in molecule.get_residues()]
-        elif tp==IMP.pmi.topology.TempResidue:
+        elif is_temp_residue:
             for tempres in stuff:
                 indexes_per_mol[tempres.get_molecule()].append(tempres.get_index())
         for mol in indexes_per_mol:
@@ -1702,17 +1676,20 @@ def input_adaptor(stuff,
                                   'molecule.add_representation()'
                                             %(mol.get_name(),minset,maxset,minf,maxf,resbreak))
             hier_list.append([IMP.atom.Hierarchy(p) for p in ps])
+    elif is_hierarchy:
+        #check
+        ps=[]
+        if pmi_resolution=='all':
+            for h in stuff:
+                ps+=select_at_all_resolutions(h)
+        else:
+            for h in stuff:
+                ps+=IMP.atom.Selection(h,resolution=pmi_resolution).get_selected_particles()
+        hier_list=[IMP.atom.Hierarchy(p) for p in ps]
+        if not flatten:
+            hier_list = [hier_list]
     else:
-        try:
-            if IMP.atom.Hierarchy.get_is_setup(stuff[0]):
-                if flatten:
-                    hier_list = stuff
-                else:
-                    hier_list = [stuff]
-            else:
-                raise Exception('input_adaptor: you passed something of type',tp)
-        except:
-            raise Exception('input_adaptor: you passed something of type',tp)
+        raise Exception('input_adaptor: you passed something of wrong type or a list with mixed types')
 
     if flatten and pmi_input:
         return [h for sublist in hier_list for h in sublist]
@@ -1769,16 +1746,27 @@ def display_bonds(mol):
                 IMP.atom.Bonded(p2),1)
 
 
-def get_residue_type_from_one_letter_code(code,is_nucleic=None):
-    if not is_nucleic:
-        threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
-                        'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
-                        'HIS': 'H', 'ILE': 'I', 'LEU': 'L', 'LYS': 'K',
-                        'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S',
-                        'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'UNK': 'X'}
-    else:
-        threetoone = {'ADE': 'A', 'URA': 'U', 'CYT': 'C', 'GUA': 'G',
-                      'THY': 'T', 'UNK': 'X'}
+class ThreeToOneConverter(defaultdict):
+    """This class converts three to one letter codes, and return X for any unknown codes"""
+    def __init__(self,is_nucleic=False):
+
+        if not is_nucleic:
+            threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
+                              'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
+                              'HIS': 'H', 'ILE': 'I', 'LEU': 'L', 'LYS': 'K',
+                              'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S',
+                              'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'UNK': 'X'}
+        else:
+            threetoone = {'ADE': 'A', 'URA': 'U', 'CYT': 'C', 'GUA': 'G',
+                              'THY': 'T', 'UNK': 'X'}
+
+        defaultdict.__init__(self,lambda: "X", threetoone)
+
+
+
+
+def get_residue_type_from_one_letter_code(code,is_nucleic=False):
+    threetoone=ThreeToOneConverter(is_nucleic)
     one_to_three={}
     for k in threetoone:
         one_to_three[threetoone[k]] = k
@@ -1881,21 +1869,36 @@ def get_rbs_and_beads(hiers):
             beads.append(p)
     return rbs_ordered,beads
 
+def get_molecules(input_objects):
+    "This function returns the parent molecule hierarchies of given objects"
+    stuff=input_adaptor(input_objects, pmi_resolution='all',flatten=True)
+    molecules=set()
+    for h in stuff:
+        is_root=False
+        is_molecule=False
+        while not (is_molecule or is_root):
+            root=IMP.atom.get_root(h)
+            if root == h:
+                is_root=True
+            is_molecule=IMP.atom.Molecule.get_is_setup(h)
+            if is_molecule:
+                molecules.add(IMP.atom.Molecule(h))
+            h=h.get_parent()
+    return list(molecules)
 
 def get_densities(input_objects):
-    """Given a list of PMI objects, return all density hierarchies within
+    """Given a list of PMI objects, returns all density hierarchies within
     these objects.  The output of this function can be inputted into
-    things such as EM restraints.
+    things such as EM restraints. This function is intended to gather density particles
+    appended to molecules (and not other hierarchies which might have been appended to the root node directly).
     """
-    stuff=input_adaptor(input_objects, flatten=True)
+    # Note that Densities can only be selected at the Root or Molecule level and not at the Leaves level.
+    # we'll first get all molecule hierarchies corresponding to the leaves.
+    molecules=get_molecules(input_objects)
     densities=[]
-    try:
-        for i in iter(stuff):
-            densities.append(IMP.atom.Selection(i,representation_type=IMP.atom.DENSITIES).get_selected_particles())
-    except TypeError as te:
-        densities.append(IMP.atom.Selection(stuff,representation_type=IMP.atom.DENSITIES).get_selected_particles())
-
-    return [h for sublist in densities for h in sublist]
+    for i in molecules:
+        densities+=IMP.atom.Selection(i,representation_type=IMP.atom.DENSITIES).get_selected_particles()
+    return densities
 
 def shuffle_configuration(objects,
                           max_translation=300., max_rotation=2.0 * pi,
@@ -1905,7 +1908,8 @@ def shuffle_configuration(objects,
                           excluded_rigid_bodies=[],
                           hierarchies_excluded_from_collision=[],
                           hierarchies_included_in_collision=[],
-                          verbose=False):
+                          verbose=False,
+                          return_debug=False):
     """Shuffle particles. Used to restart the optimization.
     The configuration of the system is initialized by placing each
     rigid body and each bead randomly in a box with a side of
@@ -1971,8 +1975,6 @@ def shuffle_configuration(objects,
         if IMP.core.Gaussian.get_is_setup(p):
             collision_excluded_idxs.add(p.get_particle_index())
 
-    print(len(all_idxs), len(collision_included_idxs), len(collision_excluded_idxs))
-
     if bounding_box is not None:
         ((x1, y1, z1), (x2, y2, z2)) = bounding_box
         ub = IMP.algebra.Vector3D(x1, y1, z1)
@@ -1981,7 +1983,6 @@ def shuffle_configuration(objects,
 
     all_idxs = set(all_idxs) | collision_included_idxs
     all_idxs = all_idxs - collision_excluded_idxs
-    print(len(all_idxs), len(collision_included_idxs), len(collision_excluded_idxs))
     debug = []
     print('shuffling', len(rigid_bodies), 'rigid bodies')
     for rb in rigid_bodies:
@@ -1991,7 +1992,6 @@ def shuffle_configuration(objects,
                 rb_idxs = set(rb.get_member_particle_indexes()) - \
                           collision_excluded_idxs
                 other_idxs = all_idxs - rb_idxs
-                print("----INOI", rb, len(other_idxs), len(rb_idxs))
                 if not other_idxs:
                     continue
 
@@ -2020,7 +2020,6 @@ def shuffle_configuration(objects,
 
                 debug.append([rb, other_idxs if avoidcollision_rb else set()])
                 IMP.core.transform(rb, transformation)
-                print("TSFM", rb)
 
                 # check collisions
                 if avoidcollision_rb:
@@ -2102,7 +2101,8 @@ def shuffle_configuration(objects,
                         raise ValueError("tried the maximum number of iterations to avoid collisions, increase the distance cutoff")
             else:
                 break
-    return debug
+    if return_debug:
+        return debug
 
 def color2rgb(colorname):
     """Given a chimera color name, return RGB"""

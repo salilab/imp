@@ -5,6 +5,7 @@ IMP_SWIG_DECORATOR(IMP::pmi, Symmetric, Symmetrics);
 IMP_SWIG_OBJECT(IMP::pmi, SigmoidRestraintSphere, SigmoidRestraintSpheres);
 IMP_SWIG_OBJECT(IMP::pmi, TransformMover, TransformMovers);
 IMP_SWIG_OBJECT(IMP::pmi, MembraneRestraint, MembraneRestraints);
+IMP_SWIG_OBJECT(IMP::pmi, InternalCoordinatesConstraint, InternalCoordinatesConstraints);
 
 %include "IMP/pmi/MembraneRestraint.h"
 %include "IMP/pmi/CompositeRestraint.h"
@@ -14,3 +15,4 @@ IMP_SWIG_OBJECT(IMP::pmi, MembraneRestraint, MembraneRestraints);
 %include "IMP/pmi/SigmoidRestraintSphere.h"
 %include "IMP/pmi/TransformMover.h"
 %include "IMP/pmi/utilities.h"
+%include "IMP/pmi/InternalCoordinatesConstraint.h"

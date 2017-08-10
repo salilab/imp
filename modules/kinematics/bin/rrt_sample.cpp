@@ -206,11 +206,11 @@ int rrt_sample(int argc, char **argv)
   IMP::Pointer<IMP::Restraint> pr=
     IMP::container::create_restraint(score_ptr, cpc_ptr, "stereochemistry");
 
-  ProteinKinematics pk(mhd, flexible_residues, dihedral_angles);
+  IMP_NEW(ProteinKinematics, pk, (mhd, flexible_residues, dihedral_angles));
   std::cerr << "ProteinKinematics done" << std::endl;
-  DihedralAngleRevoluteJoints joints = pk.get_ordered_joints();
-  IMP_NEW(KinematicForestScoreState, kfss, (pk.get_kinematic_forest(),
-                                            pk.get_rigid_bodies(),
+  DihedralAngleRevoluteJoints joints = pk->get_ordered_joints();
+  IMP_NEW(KinematicForestScoreState, kfss, (pk->get_kinematic_forest(),
+                                            pk->get_rigid_bodies(),
                                             atoms));
   model->add_score_state(kfss);
 
@@ -239,10 +239,10 @@ int rrt_sample(int argc, char **argv)
     }
   }
 
-  DirectionalDOF dd(dofs);
+  IMP_NEW(DirectionalDOF, dd, (dofs));
 
   IMP_NEW(UniformBackboneSampler, ub_sampler, (joints, dofs));
-  IMP_NEW(PathLocalPlanner, planner, (model, ub_sampler, &dd,
+  IMP_NEW(PathLocalPlanner, planner, (model, ub_sampler, dd,
                                       save_configuration_number));
   std::cerr << "Init  RRT" << std::endl;
   IMP_NEW(RRT, rrt, (model, ub_sampler, planner, dofs, number_of_iterations,

@@ -55,18 +55,6 @@ Profile* compute_profile(Particles particles, double min_q,
   return profile.release();
 }
 
-void read_pdb(const std::string file, std::vector<std::string>& pdb_file_names,
-              std::vector<IMP::Particles>& particles_vec,
-              bool residue_level, bool heavy_atoms_only, int multi_model_pdb,
-              bool explicit_water) {
-  IMPSAXS_DEPRECATED_FUNCTION_DEF(2.7,
-                                  "Use the variant that takes a Model pointer");
-  // Note that this leaks a Model*
-  IMP::Model* m = new IMP::Model();
-  read_pdb(m, file, pdb_file_names, particles_vec, residue_level,
-           heavy_atoms_only, multi_model_pdb, explicit_water);
-}
-
 void read_pdb(Model *model, const std::string file,
               std::vector<std::string>& pdb_file_names,
               std::vector<IMP::Particles>& particles_vec,
@@ -123,22 +111,6 @@ void read_pdb(Model *model, const std::string file,
       }
     }
   }
-}
-
-void read_files(const std::vector<std::string>& files,
-                std::vector<std::string>& pdb_file_names,
-                std::vector<std::string>& dat_files,
-                std::vector<IMP::Particles>& particles_vec,
-                Profiles& exp_profiles, bool residue_level,
-                bool heavy_atoms_only, int multi_model_pdb,
-                bool explicit_water, float max_q) {
-  IMPSAXS_DEPRECATED_FUNCTION_DEF(2.7,
-                                  "Use the variant that takes a Model pointer");
-  // Note that this leaks a Model*
-  IMP::Model* m = new IMP::Model();
-  read_files(m, files, pdb_file_names, dat_files, particles_vec, exp_profiles,
-             residue_level, heavy_atoms_only, multi_model_pdb, explicit_water,
-             max_q);
 }
 
 void read_files(Model *m, const std::vector<std::string>& files,

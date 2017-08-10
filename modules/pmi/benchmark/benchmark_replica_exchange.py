@@ -7,6 +7,7 @@ import IMP.pmi.macros
 import IMP.pmi.output
 import time
 import sys
+import shutil
 
 IMP.setup_from_argv(sys.argv, "Replica exchange benchmark.")
 IMP.set_log_level(IMP.SILENT)
@@ -19,8 +20,6 @@ sys.stdout = DummyFile()
 """setting up the representation
 PMI 1.0 representation. Creates two particles and
 an harmonic distance restraints between them"""
-import shutil
-import itertools
 m=IMP.Model()
 r=IMP.pmi.representation.Representation(m)
 r.create_component("A")

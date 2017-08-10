@@ -190,8 +190,8 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(xl[cldb.residue2_key],e[5])
             nxl+=1
 
-    def test_quantitation_style(self):
-        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("QUANTITATION")
+    def test_xtract_style(self):
+        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("XTRACT")
         cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter(rplp)
         cldbkc.set_site_pairs_key("uID")
         cldbkc.set_unique_id_key("dbindex")
@@ -200,12 +200,12 @@ class Tests(IMP.test.TestCase):
         cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
         cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_quant.dat"))
 
-        expected_list=[('1',1,"AAA","AAA",1,10,0.001,1.0),
-                       ('1',2,"AAA","AAA",5,100,0.001,1.0),
-                       ('2',1,"BBB","AAA",5,21,0.001,1.0),
-                       ('2',2,"BBB","AAA",100,3,0.001,1.0),
-                       ('2',3,"BBB","AAA",1,100,0.001,1.0),
-                       ('3',1,"CCC","AAA",7,11,0.001,1.0)]
+        expected_list=[('1',1,"AAA","AAA",1,10,0.001,1.0,"CROSSLINK"),
+                       ('1',2,"AAA","AAA",5,100,0.001,1.0,"CROSSLINK"),
+                       ('2',1,"BBB","AAA",5,21,0.001,1.0,"CROSSLINK"),
+                       ('2',2,"BBB","AAA",100,3,0.001,1.0,"CROSSLINK"),
+                       ('2',3,"BBB","AAA",1,100,0.001,1.0,"CROSSLINK"),
+                       ('3',1,"CCC","AAA",7,11,0.001,1.0,"CROSSLINK")]
 
         nxl=0
         for xl in cldb:
@@ -218,7 +218,38 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(xl[cldb.residue2_key],e[5])
             self.assertEqual(xl[cldb.id_score_key],e[6])
             self.assertEqual(xl[cldb.quantitation_key],e[7])
+            self.assertEqual(xl[cldb.link_type_key],e[8])
             nxl+=1
+
+    def test_xtract_style_monolinks(self):
+        rplp=IMP.pmi.io.crosslink.ResiduePairListParser("XTRACT")
+        cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter(rplp)
+        cldbkc.set_site_pairs_key("uID")
+        cldbkc.set_unique_id_key("dbindex")
+        cldbkc.set_id_score_key("pvalue")
+        cldbkc.set_quantitation_key("log2ratio")
+        cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
+        cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_quant_monolink.dat"))
+
+        expected_list=[('1',1,"AAA","",1,None,0.001,1.0,"MONOLINK"),
+                       ('1',2,"AAA","",5,None,0.001,1.0,"MONOLINK"),
+                       ('2',1,"BBB","",5,None,0.001,1.0,"MONOLINK"),
+                       ('2',2,"BBB","",100,None,0.001,1.0,"MONOLINK"),
+                       ('2',3,"BBB","",1,None,0.001,1.0,"MONOLINK"),
+                       ('3',1,"CCC","",7,None,0.001,1.0,"MONOLINK")]
+
+        nxl=0
+        for xl in cldb:
+            e=expected_list[nxl]
+            self.assertEqual(xl[cldb.unique_id_key],e[0])
+            self.assertEqual(xl[cldb.unique_sub_index_key],e[1])
+            self.assertEqual(xl[cldb.protein1_key],e[2])
+            self.assertEqual(xl[cldb.residue1_key],e[4])
+            self.assertEqual(xl[cldb.id_score_key],e[6])
+            self.assertEqual(xl[cldb.quantitation_key],e[7])
+            self.assertEqual(xl[cldb.link_type_key],e[8])
+            nxl+=1
+
 
 
     def test_msstudio_style_no_id(self):
@@ -296,6 +327,11 @@ class Tests(IMP.test.TestCase):
 
         for xl in cldb:
             self.assertEqual(fo.evaluate(xl),((xl[cldb.residue1_key]>30)|(xl[cldb.protein2_key]=="BBB") ))
+
+        fo=~(FO(cldb.residue1_key,operator.gt,30)|FO(cldb.protein2_key,operator.eq,"BBB"))
+
+        for xl in cldb:
+            self.assertEqual(fo.evaluate(xl),((xl[cldb.residue1_key]<=30)&(xl[cldb.protein2_key]!="BBB") ))
 
 
     def test_filter_cldbkc(self):
@@ -438,6 +474,77 @@ class Tests(IMP.test.TestCase):
             if r[1]=='AAA':
                 self.assertEqual(r[3],records_2[n][3]+100)
 
+    def test_jaccard_distance(self):
+        try:
+            import scipy.spatial
+        except ImportError:
+            self.skipTest("no scipy spatial")
+
+        cldb1=self.setup_cldb("xl_dataset_test.dat")
+        cldb2=self.setup_cldb("xl_dataset_test.dat")
+        cldb3=self.setup_cldb("xl_dataset_test.dat")
+        cldb3.offset_residue_index('AAA',100)
+
+        ddb={1:cldb1,2:cldb2,3:cldb3}
+        jdm=IMP.pmi.io.crosslink.JaccardDistanceMatrix(ddb)
+        self.assertAlmostEqual(jdm.get_distance(1,2), 0.0, delta=1e-3)
+        self.assertAlmostEqual(jdm.get_distance(1,3), 0.875, delta=1e-3)
+
+    def test_check_consistency(self):
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name("proteasome.fasta"))
+
+        cldbkc = IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+        cldbkc.set_unique_id_key("linkage ID")
+        cldbkc.set_protein1_key("Linked protein 1")
+        cldbkc.set_protein2_key("Linked protein 2")
+        cldbkc.set_residue1_key("linked resid 1")
+        cldbkc.set_residue2_key("linked resid 2")
+        cldbkc.set_residue1_amino_acid_key("Cross-linked residue 1 in 4CR2")
+        cldbkc.set_residue2_amino_acid_key("Cross-linked residue 2 in 4CR2")
+        # instead of a score we're using the number of events here, which 'might' resemble a score
+        cldbkc.set_id_score_key("Number of quantified event")
+        cldb = IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc, fasta_seq=seqs, linkable_aa=('K', 'S', 'T', 'Y'))
+        cldb.set_name("master")
+        cldb.create_set_from_file(self.get_input_file_name("proteasome_xlinks.csv"))
+        matched,non_matched=cldb.check_cross_link_consistency()
+
+
+        calc_matched=dict([(prot,len(matched[prot])) for prot in matched])
+        calc_non_matched=dict([(prot,len(non_matched[prot])) for prot in non_matched])
+        # expected results; summed up crosslinks
+        exp_matched={'RPN3': 11, 'RPN5': 14, 'RPN6': 12, 'RPN7': 16, 'RPN8': 15, 'RPN9': 11, 'RPN11': 11, 'SEM1': 6}
+        exp_non_matched={'RPN7': 1}
+
+        for prot_name, amount in calc_matched.items():
+            self.assertEqual(amount, exp_matched[prot_name])
+        for prot_name, amount in calc_non_matched.items():
+            self.assertEqual(amount, exp_non_matched[prot_name])
+
+    def test_map_crosslink_database(self):
+        model=IMP.Model()
+
+        cldbkc = IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+        cldbkc.set_protein1_key("P1")
+        cldbkc.set_protein2_key("P2")
+        cldbkc.set_residue1_key("R1")
+        cldbkc.set_residue2_key("R2")
+        cldb = IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
+        cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_io_crosslink_map.txt"))
+
+        rmf_name=self.get_input_file_name("pmi2_sample_0/rmfs/0.rmf3")
+        frame_index=9
+
+        mcldb=IMP.pmi.io.crosslink.MapCrossLinkDataBaseOnStructure(model,cldb,rmf_name,frame_index)
+
+        for xl in cldb:
+            (prot1,prot2,res1,res2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
+            p1=IMP.atom.Selection(mcldb.prots[0],molecule=prot1,residue_index=res1,resolution=1).get_selected_particles()[0]
+            p2=IMP.atom.Selection(mcldb.prots[0],molecule=prot2,residue_index=res2,resolution=1).get_selected_particles()[0]
+            v1=IMP.core.XYZ(p1).get_coordinates()
+            v2=IMP.core.XYZ(p2).get_coordinates()
+            dist=IMP.algebra.get_distance(v1,v2)
+            d1 = xl["MinAmbiguousDistance"]
+            self.assertAlmostEqual(dist,d1,1)
 
 if __name__ == '__main__':
     IMP.test.main()

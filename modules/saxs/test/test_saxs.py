@@ -146,12 +146,12 @@ class Tests(IMP.test.TestCase):
 
     def test_saxs_residue_particle_restraint(self):
         """Check residue level saxs restraint using
-        IMP.saxs.RESIDUES particles. Needed for PMI 
+        IMP.saxs.RESIDUES particles. Needed for PMI
         hierarchies at resolution=1, which have no atom particles
         """
-        m = IMP.Model() 
-        mdl = IMP.Model() # New model for residue particles only 
-             
+        m = IMP.Model()
+        mdl = IMP.Model() # New model for residue particles only
+
         #! read PDB (only CA atoms)
         mp = IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
                                IMP.atom.CAlphaPDBSelector())

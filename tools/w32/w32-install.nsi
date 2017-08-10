@@ -47,8 +47,8 @@ Caption "${FULL_PRODVER} Setup"
 !define MUI_WELCOMEPAGE_TITLE "Welcome to the ${FULL_PRODVER} Setup Wizard"
 !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the installation of the Integrative Modeling Platform (${PRODUCT}) version ${VERSION}."
 
-!define MUI_FINISHPAGE_LINK "http://integrativemodeling.org/"
-!define MUI_FINISHPAGE_LINK_LOCATION "http://integrativemodeling.org/"
+!define MUI_FINISHPAGE_LINK "https://integrativemodeling.org/"
+!define MUI_FINISHPAGE_LINK_LOCATION "https://integrativemodeling.org/"
 
 !define UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODVER}"
 
@@ -77,7 +77,7 @@ Section ""
   WriteRegStr HKLM "${UNINST_KEY}" "UninstallString" "$INSTDIR\Uninstall.exe"
   WriteRegStr HKLM "${UNINST_KEY}" "DisplayVersion" "${VERSION}"
   WriteRegStr HKLM "${UNINST_KEY}" "Publisher" "Andrej Sali Lab, UCSF"
-  WriteRegStr HKLM "${UNINST_KEY}" "URLInfoAbout" "http://integrativemodeling.org/"
+  WriteRegStr HKLM "${UNINST_KEY}" "URLInfoAbout" "https://integrativemodeling.org/"
   WriteRegDWORD HKLM "${UNINST_KEY}" "NoModify" 1
   WriteRegDWORD HKLM "${UNINST_KEY}" "NoRepair" 1
 

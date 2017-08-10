@@ -110,6 +110,37 @@ class Tests(unittest.TestCase):
             self.assertTrue(":4: Test case has multiple tests with "
                             "the same name test_xyz" in errors[0])
 
+    def test_check_example_no_doxygen(self):
+        """Test Python example with missing doxygen comments"""
+        with utils.TempDir() as tmpdir:
+            os.mkdir(os.path.join(tmpdir, 'examples'))
+            fname = os.path.join(tmpdir, "examples", "my_example.py")
+            utils.write_file(fname, "x = 42\n")
+            errors = []
+            check_standards.check_python_file(fname, errors)
+            self.assertEqual(len(errors), 2)
+            self.assertTrue(":1: Example does not have doxygen comments "
+                            "at start" in errors[0])
+            self.assertTrue(":1: Example \\example marker in first line"
+                            in errors[1])
+
+    def test_check_example_bad_import(self):
+        """Test Python example with bad imports"""
+        with utils.TempDir() as tmpdir:
+            os.mkdir(os.path.join(tmpdir, 'examples'))
+            fname = os.path.join(tmpdir, "examples", "my_example.py")
+            utils.write_file(fname, """## \\example my_example.py
+from foo import bar
+import bar as baz
+""")
+            errors = []
+            check_standards.check_python_file(fname, errors)
+            self.assertEqual(len(errors), 2)
+            self.assertTrue(":2: Examples should not use import from as "
+                            "that confuses doxygen" in errors[0])
+            self.assertTrue(":3: Examples should not rename types on import"
+                            in errors[1])
+
     def test_check_c_file_incomp_merge(self):
         """Test check_c_file() with incomplete merge"""
         with utils.TempDir() as tmpdir:
@@ -175,13 +206,25 @@ class Tests(unittest.TestCase):
                 else:
                     self.assertEqual(len(errors), 0)
 
-    def test_check_c_file_ok(self):
-        """Test check_c_file() with ok file"""
+    def test_check_c_file_cpp_ok(self):
+        """Test check_c_file() with ok cpp file"""
         with utils.TempDir() as tmpdir:
             imp_info = os.path.join(tmpdir, ".imp_info.py")
             utils.write_file(imp_info, '{\n  "name": "IMP.test"\n}\n')
             fname = os.path.join(tmpdir, "test.cpp")
             utils.write_file(fname, "int x;\n")
+            errors = []
+            check_standards.check_c_file(fname, errors)
+            self.assertEqual(len(errors), 0)
+
+    def test_check_c_file_header_ok(self):
+        """Test check_c_file() with ok header file"""
+        with utils.TempDir() as tmpdir:
+            os.makedirs(os.path.join(tmpdir, 'IMP', 'test', 'include'))
+            imp_info = os.path.join(tmpdir, ".imp_info.py")
+            utils.write_file(imp_info, '{\n  "name": "IMP.test"\n}\n')
+            fname = os.path.join(tmpdir, "IMP", "test", "include", "foo.h")
+            utils.write_file(fname, "\\file IMP/test/include/foo.h'")
             errors = []
             check_standards.check_c_file(fname, errors)
             self.assertEqual(len(errors), 0)

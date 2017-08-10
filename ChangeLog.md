@@ -1,6 +1,27 @@
 ChangeLog {#changelog}
 =========
 
+# 2.8.0 - 2017-08-16 # {#changelog_2_8_0}
+- New applications of IMP are now available:
+  - [Modeling of the yeast Spindle Pole Body core](https://salilab.org/spb/)
+  - [Modeling of the SEA complex, a modulator of the TORC1 pathway](https://salilab.org/sea/)
+- This will be the last release that includes packages for Ubuntu 12.04
+  (Precise Pangolin) since it has reached end of life. We will continue to
+  provide packages for newer Ubuntu LTS releases.
+- The Anaconda and Windows .exe packages are now MPI-enabled. On Windows, in
+  order to use MPI, install [MS-MPI](https://msdn.microsoft.com/en-us/library/bb524831.aspx).
+- IMP::em2d::PCAFitRestraint now uses binary PGM files as output, rather than
+  the less well supported text PGM format. (It can still read both text and
+  binary PGM files as input.)
+- IMP::em::FitRestraint::cast() is deprecated. Use `get_from()` instead.
+- The deprecated profiling (timing statistics) support has been removed.
+  A number of third party packages (such as gperftools) are available
+  for profiling and should be used instead.
+- The new module IMP::spb provides specialized restraints, samplers, and
+  other objects to support modeling of the Spindle Pole Body (SPB). While
+  designed specifically for this system, they may be useful for modeling
+  similar systems.
+
 # 2.7.0 - 2017-04-13 # {#changelog_2_7_0}
 - New applications of IMP are now available:
   - [Modeling of the yeast Mediator complex](https://salilab.org/mediator/)

@@ -126,8 +126,9 @@ class GaussianEMRestraint(object):
                 IMP.atom.Mass(p).set_mass(ms*scale)
 
         if representation:
-            for p in representation._protocol_output:
-                p.add_em3d_restraint(self.target_ps, self.densities, self)
+            for p, state in representation._protocol_output:
+                p.add_em3d_restraint(state, self.target_ps, self.densities,
+                                     self)
 
         # setup model GMM
         self.model_ps = []
@@ -185,7 +186,10 @@ class GaussianEMRestraint(object):
             self.dataset = representation.get_file_dataset(target_fn)
             if self.dataset:
                 return
-        l = IMP.pmi.metadata.FileLocation(target_fn)
+        l = IMP.pmi.metadata.FileLocation(target_fn,
+                              details="Electron microscopy density map, "
+                                      "represented as a Gaussian Mixture "
+                                      "Model (GMM)")
         self.dataset = IMP.pmi.metadata.EMDensityDataset(l)
         # If the GMM was derived from an MRC file that exists, add that too
         m = re.match('(.*\.mrc)\..*\.txt$', target_fn)
@@ -362,9 +366,12 @@ class GaussianEMRestraint(object):
         self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
+        ccc = self.gaussianEM_restraint.get_cross_correlation_coefficient()
+
         output["_TotalScore"] = str(score)
         output["GaussianEMRestraint_" +
                self.label] = str(score)
+        output["GaussianEMRestraint_%s_CCC" % self.label] = ccc
         output["GaussianEMRestraint_sigma_" +
                self.label] = str(self.sigmaglobal.get_scale())
         return output

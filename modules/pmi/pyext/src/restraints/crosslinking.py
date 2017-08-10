@@ -1072,6 +1072,12 @@ class ConnectivityCrossLinkMS(object):
 
             s1 = IMP.atom.Selection(ps1)
             s2 = IMP.atom.Selection(ps2)
+            s1_inds = s1.get_selected_particle_indexes()
+            s2_inds = s2.get_selected_particle_indexes()
+            if not set(s1_inds).isdisjoint(set(s2_inds)):
+                print("ConnectivityCrossLinkMS: WARNING> %s %s and %s %s "
+                      "select the same bead(s) - ignoring" % (c1, r1, c2, r2))
+                continue
 
             # calculate the radii to estimate the slope of the restraint
             if self.strength is None:
@@ -1710,11 +1716,12 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
 
         self.dataset = representations[0].get_file_dataset(restraints_file)
         if not self.dataset and os.path.exists(restraints_file):
-            l = IMP.pmi.metadata.FileLocation(restraints_file)
+            l = IMP.pmi.metadata.FileLocation(restraints_file,
+                                              details="Crosslinks")
             self.dataset = IMP.pmi.metadata.CXMSDataset(l)
 
         xl_groups = [p.get_cross_link_group(self)
-                     for p in representations[0]._protocol_output]
+                     for p, state in representations[0]._protocol_output]
 
         # isd_map is a dictionary/map that is used to determine the psi
         # parameter from identity scores (such as ID-Score, or FDR)
@@ -1852,8 +1859,8 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
                     continue
 
             # todo: check that offset is handled correctly
-            ex_xls = [p.add_experimental_cross_link(r1, c1, r2, c2,
-                                                    length, group)
+            ex_xls = [p[0].add_experimental_cross_link(r1, c1, r2, c2,
+                                                       length, group)
                       for p, group in zip(representations[0]._protocol_output,
                                           xl_groups)]
 
@@ -1936,7 +1943,8 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
                 indb.write(str(entry) + "\n")
                 for p, ex_xl in zip(representations[0]._protocol_output,
                                     ex_xls):
-                    p.add_cross_link(ex_xl, p1, p2, sigma1, sigma2, psi)
+                    p[0].add_cross_link(p[1], ex_xl, p1, p2, sigma1, sigma2,
+                                        psi)
 
                 # check if the two residues belong to the same rigid body
                 if(IMP.core.RigidMember.get_is_setup(p1) and

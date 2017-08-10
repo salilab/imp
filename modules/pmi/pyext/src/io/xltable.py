@@ -23,6 +23,8 @@ import IMP.pmi.io.crosslink
 import IMP.pmi.io.utilities
 import IMP.pmi.topology
 import IMP.pmi.analysis
+import operator
+
 class XLTable():
     """ class to read, analyze, and plot xlink data on contact maps
     Canonical way to read the data:
@@ -117,28 +119,7 @@ class XLTable():
             return dist
 
 
-    def _get_distance_and_particle_pair(self,r1,c1,r2,c2):
-        '''more robust and slower version of above'''
-        sel=IMP.atom.Selection(self.prots,molecule=c1,residue_index=r1,resolution=1)
-        selpart_1=sel.get_selected_particles()
-        #selpart_res_one_1=list(set(self.particles_resolution_one) & set(selpart))
-        if len(selpart_1)==0: return None
-        sel=IMP.atom.Selection(self.prots,molecule=c2,residue_index=r2,resolution=1)
-        selpart_2=sel.get_selected_particles()
-        #selpart_res_one_2=list(set(self.particles_resolution_one) & set(selpart))
-        if len(selpart_2)==0: return None
-        mindist=None
-        minparticlepair=None
-        for p1 in selpart_1:
-            for p2 in selpart_2:
-                if p1 == p2: continue
-                d1=IMP.core.XYZ(p1)
-                d2=IMP.core.XYZ(p2)
-                dist=IMP.core.get_distance(d1,d2)
-                if mindist is None or mindist>dist:
-                    mindist=dist
-                    minparticlepair=(p1,p2)
-        return (mindist,minparticlepair[0],minparticlepair[1])
+
 
     def _internal_load_maps(self,maps_fn):
         npzfile = np.load(maps_fn)
@@ -574,86 +555,6 @@ class XLTable():
         plugins.connect(fig, tooltip)
         mpld3.save_html(fig,"output.html")
 
-    def compute_distances(self):
-        data=[]
-        sorted_ids=None
-        sorted_group_ids=sorted(self.cross_link_db.data_base.keys())
-        for group in sorted_group_ids:
-            #group_block=[]
-            group_dists=[]
-            for xl in self.cross_link_db.data_base[group]:
-                if not sorted_ids:
-                    sorted_ids=sorted(xl.keys())
-                    data.append(sorted_ids+["UniqueID","Distance","MinAmbiguousDistance"])
-                (c1,c2,r1,r2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
-                try:
-                    (mdist,p1,p2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
-                except:
-                    mdist="None"
-                values=[xl[k] for k in sorted_ids]
-                values+=[group,mdist]
-                group_dists.append(mdist)
-                #group_block.append(values)
-                xl["Distance"]=mdist
-
-            for xl in self.cross_link_db.data_base[group]:
-                xl["MinAmbiguousDistance"]=min(group_dists)
-            #for l in group_block:
-            #    l.append(min(group_dists))
-
-
-    def save_rmf_snapshot(self,filename,color_id=None):
-        if color_id is None:
-            color_id=self.cross_link_db.id_score_key
-        sorted_ids=None
-        sorted_group_ids=sorted(self.cross_link_db.data_base.keys())
-        list_of_pairs=[]
-        color_scores=[]
-        for group in sorted_group_ids:
-            group_xls=[]
-            group_dists_particles=[]
-            for xl in self.cross_link_db.data_base[group]:
-                xllabel=self.cross_link_db.get_short_cross_link_string(xl)
-                (c1,c2,r1,r2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
-                print (c1,c2,r1,r2)
-                try:
-                    (mdist,p1,p2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
-                except TypeError:
-                    print("TypeError or missing chain/residue ",r1,c1,r2,c2)
-                    continue
-                group_dists_particles.append((mdist,p1,p2,xllabel,float(xl[color_id])))
-            if group_dists_particles:
-                (minmdist,minp1,minp2,minxllabel,mincolor_score)=min(group_dists_particles, key = lambda t: t[0])
-                color_scores.append(mincolor_score)
-                list_of_pairs.append((minp1,minp2,minxllabel,mincolor_score))
-            else:
-                continue
-
-
-        m=self.prots[0].get_model()
-        linear = IMP.core.Linear(0, 0.0)
-        linear.set_slope(1.0)
-        dps2 = IMP.core.DistancePairScore(linear)
-        rslin = IMP.RestraintSet(m, 'linear_dummy_restraints')
-        sgs=[]
-        offset=min(color_scores)
-        maxvalue=max(color_scores)
-        for pair in list_of_pairs:
-            pr = IMP.core.PairRestraint(m, dps2, (pair[0], pair[1]))
-            pr.set_name(pair[2])
-            factor=(pair[3]-offset)/(maxvalue-offset)
-            print(factor)
-            c=IMP.display.get_rgb_color(factor)
-            seg=IMP.algebra.Segment3D(IMP.core.XYZ(pair[0]).get_coordinates(),IMP.core.XYZ(pair[1]).get_coordinates())
-            rslin.add_restraint(pr)
-            sgs.append(IMP.display.SegmentGeometry(seg,c,pair[2]))
-
-        rh = RMF.create_rmf_file(filename)
-        IMP.rmf.add_hierarchies(rh, self.prots)
-        IMP.rmf.add_restraints(rh,[rslin])
-        IMP.rmf.add_geometries(rh, sgs)
-        IMP.rmf.save_frame(rh)
-        del rh
 
     def get_residue_contacts(self,prot_listx,prot_listy):
         for px in prot_listx:

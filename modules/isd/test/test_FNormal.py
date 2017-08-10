@@ -79,13 +79,13 @@ class Tests(IMP.test.TestCase):
                                            2]) ** 2 / randno[3] ** 3,
                                    delta=0.001)
 
-    def testDensity(self):
-        "tests FNormal.density"
+    def testGetDensity(self):
+        "tests FNormal.get_density"
         for i in range(100):
             randno = [uniform(-100, 100), uniform(0.1, 100),
                       uniform(-100, 100), uniform(0.1, 100)]
             fn = FNormal(*randno)
-            self.assertAlmostEqual(fn.density(),
+            self.assertAlmostEqual(fn.get_density(),
                                    randno[1] / (sqrt(2 * pi) * randno[3])
                                    * exp(-(randno[0] - randno[2]) ** 2 / (2 * randno[3] ** 2)),
                                    delta=0.001)

@@ -1,0 +1,5 @@
+HEADER    PHOTOSYNTHESIS                          28-MAR-07   2UXK
+HELIX    1  HA MET A    1  GLU A    2  1                                   2
+HELIX    2  HB MET A    8  GLU A    9  1                                   2
+ATOM      1  CA  MET A   1      -8.986  11.688  -5.817  1.00 91.82           C
+ATOM      2  CA  GLU A   2      -8.986  11.688  -5.817  1.00 91.82           C

@@ -50,7 +50,7 @@ MonteCarloMoverResult RigidBodyMover::do_propose() {
     translation = algebra::get_random_vector_in(
         algebra::Sphere3D(d.get_coordinates(), max_translation_));
   } else {
-    translation = algebra::get_zero_vector_d<3>();
+    translation = d.get_coordinates();
   }
   algebra::Rotation3D rc;
   if (max_angle_ > 0) {
@@ -61,7 +61,7 @@ MonteCarloMoverResult RigidBodyMover::do_propose() {
     algebra::Rotation3D r = algebra::get_rotation_about_axis(axis, angle);
     rc = r * d.get_reference_frame().get_transformation_to().get_rotation();
   } else {
-    rc = algebra::get_identity_rotation_3d();
+    rc = d.get_reference_frame().get_transformation_to().get_rotation();
   }
   algebra::Transformation3D t(rc, translation);
   IMP_LOG_VERBOSE("proposed move " << t << std::endl);

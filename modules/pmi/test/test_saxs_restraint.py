@@ -37,8 +37,8 @@ class Tests(IMP.test.TestCase):
         saxs_rest = IMP.pmi.restraints.saxs.SAXSRestraint(m1, self.get_exp_profile(), ff_type=IMP.saxs.HEAVY_ATOMS)
         mdl.update()
 
-        self.assertEqual(len(saxs_rest.particles), 257)
-        self.assertAlmostEqual(saxs_rest.evaluate(), 0.107, delta = 0.01)
+        self.assertEqual(len(saxs_rest.particles), 256)
+        self.assertAlmostEqual(saxs_rest.evaluate(), 0.1279, delta = 0.01)
 
         saxs_rest.add_to_model()
 

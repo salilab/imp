@@ -43,6 +43,9 @@
   #endif
   #pragma GCC diagnostic ignored "-Wignored-attributes"
   #pragma GCC diagnostic ignored "-Wmisleading-indentation"
+  #if __GNUC__>=7
+    #pragma GCC diagnostic ignored "-Wint-in-bool-context"
+  #endif
 
 #endif
 

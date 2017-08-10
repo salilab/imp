@@ -18,6 +18,8 @@
 #include <IMP/Particle.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 
+#include <IMP/em/KernelParameters.h>
+
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
 class IMPEM2DEXPORT Projector {

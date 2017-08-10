@@ -254,6 +254,7 @@ def build_representation(parent,rep,coord_finder):
                                                 num_components,
                                                 mdl,
                                                 density_ps,
+                                                min_covar=4.0,
                                                 mass_multiplier=total_mass)
 
             IMP.isd.gmm_tools.write_gmm_to_text(density_ps,rep.density_prefix+'.txt')

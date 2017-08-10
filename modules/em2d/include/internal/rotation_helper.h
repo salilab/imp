@@ -14,6 +14,7 @@
 #include "IMP/algebra/SphericalVector3D.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Rotation3D.h"
+#include <IMP/log_macros.h>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 

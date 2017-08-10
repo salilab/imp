@@ -13,10 +13,10 @@ class Tests(IMP.test.TestCase):
         s = IMP.atom.ForceSwitch(5.0, 6.0)
         self.assertRaisesUsageException(IMP.atom.ForceSwitch, 6.0, 5.0)
 
-    def test_cast(self):
-        """Check ForceSwitch cast"""
+    def test_standard_object_methods(self):
+        """Check ForceSwitch standard object methods"""
         sm = IMP.atom.ForceSwitch(9.0, 10.0)
-        self.check_get_from(sm)
+        self.check_standard_object_methods(sm)
 
     def test_value(self):
         """Check value of ForceSwitch"""

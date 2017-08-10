@@ -10,15 +10,15 @@ def _get_random_reference_frame():
         IMP.algebra.get_random_local_transformation((0, 0, 0), 10., 6.))
 
 
-def _get_angle_delta_to_normal(s, d):
+def _get_angle_harmonic_normal_score(s, d, k):
     norm = s.get_normal()
-    v = d.get_coordinates() - s.get_coordinates()
-    dist = v.get_magnitude()
-    v = v / dist
+    v = (d.get_coordinates() - s.get_coordinates()).get_unit_vector()
     angle = math.acos(v * norm)
-    axis = IMP.algebra.get_vector_product(norm, v).get_unit_vector()
-    tangent = IMP.algebra.get_vector_product(axis, v).get_unit_vector()
-    return angle, angle * tangent
+    if angle == 0:
+        return 0, -k * v
+    score = .5 * k * angle**2
+    derv = -k * angle * v / math.sin(angle)
+    return score, derv
 
 
 class NormalRestraint(IMP.Restraint):
@@ -34,11 +34,9 @@ class NormalRestraint(IMP.Restraint):
         s = IMP.core.Surface(self.get_model(), self.s)
         d = IMP.core.XYZR(self.get_model(), self.d)
 
-        angle, delta = _get_angle_delta_to_normal(s, d)
-
-        score = .5 * self.k * angle**2
+        score, derv = _get_angle_harmonic_normal_score(s, d, self.k)
         if sa.get_derivative_accumulator():
-            s.add_to_normal_derivatives(delta, sa.get_derivative_accumulator())
+            s.add_to_normal_derivatives(derv, sa.get_derivative_accumulator())
         sa.add_score(score)
 
     def do_get_inputs(self):
@@ -109,10 +107,13 @@ class Tests(IMP.test.TestCase):
         r2 = NormalRestraint(m, s1, rb1, 1.)
         m.add_score_state(c)
 
+        tf2 = IMP.algebra.Transformation3D(IMP.algebra.Vector3D(0, 0, 1))
+        rb2.set_reference_frame(IMP.algebra.ReferenceFrame3D(tf2))
+        s2.set_normal(IMP.algebra.Vector3D(1, 0, 0))
+
         for i in range(100):
-            s2.set_reference_frame(_get_random_reference_frame())
+            s1.set_reference_frame(_get_random_reference_frame())
             rb1.set_reference_frame(_get_random_reference_frame())
-            rb2.set_reference_frame(_get_random_reference_frame())
 
             rb_tf = IMP.algebra.get_transformation_from_first_to_second(
                 rb1.get_reference_frame(), rb2.get_reference_frame())
@@ -127,8 +128,10 @@ class Tests(IMP.test.TestCase):
 
             untrans_derv = s1.get_normal_derivatives()
             trans_derv = rb_tf.get_rotation().get_rotated(untrans_derv)
+
             self.assertAlmostEqual(
-                (trans_derv - s2.get_normal_derivatives()).get_magnitude(), 0.)
+                (trans_derv - s2.get_normal_derivatives()).get_magnitude(), 0.,
+                delta=1e-6)
 
 
 if __name__ == "__main__":

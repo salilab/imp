@@ -254,42 +254,45 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
   Model* m = get_model();
 
   // Rotate chunk:
-  double const* rotational_diffusion_coefficient_table=
-    m->access_attribute_data(RigidBodyDiffusion::get_rotational_diffusion_coefficient_key());
-  double const* torque_tables[3];
-  for(unsigned int i = 0; i < 3; i++){
-    torque_tables[i]=
-      core::RigidBody::access_torque_i_data(m, i);
-  }
-  double* quaternion_tables[4];
-  for(unsigned int i = 0; i < 4; i++){
-    quaternion_tables[i]=
-      core::RigidBody::access_quaternion_i_data(m, i);
-  }
-  for (unsigned int i = begin; i < end; ++i) {
-    ParticleIndex pi= ps[i];
-    algebra::Rotation3D rot(1,0,0,0);
-    double rdc=
-      rotational_diffusion_coefficient_table[pi.get_index()];
-    //    if (RigidBodyDiffusion::get_is_setup(m, pi)) {
-    if(IMP::internal::FloatAttributeTableTraits::get_is_valid(rdc)){
-      // std::cout << "rb" << std::endl;
-      rot=compute_rotation_0
-        (pi, dtfs, ikT, rdc, torque_tables);
-      core::RigidBody(m, pi).apply_rotation_lazy_using_internal_tables
-        (rot, quaternion_tables);
+  FloatKey rdck= RigidBodyDiffusion::get_rotational_diffusion_coefficient_key();
+  if(m->get_has_attribute(rdck)){
+    double const* rotational_diffusion_coefficient_table=
+      m->access_attribute_data(rdck);
+    double const* torque_tables[3];
+    for(unsigned int i = 0; i < 3; i++){
+      torque_tables[i]=
+        core::RigidBody::access_torque_i_data(m, i);
     }
+    double* quaternion_tables[4];
+    for(unsigned int i = 0; i < 4; i++){
+      quaternion_tables[i]=
+        core::RigidBody::access_quaternion_i_data(m, i);
+    }
+    for (unsigned int i = begin; i < end; ++i) {
+      ParticleIndex pi= ps[i];
+      algebra::Rotation3D rot(1,0,0,0);
+      double rdc=
+        rotational_diffusion_coefficient_table[pi.get_index()];
+      //    if (RigidBodyDiffusion::get_is_setup(m, pi)) {
+      if(IMP::internal::FloatAttributeTableTraits::get_is_valid(rdc)){
+        // std::cout << "rb" << std::endl;
+        rot=compute_rotation_0
+          (pi, dtfs, ikT, rdc, torque_tables);
+        core::RigidBody(m, pi).apply_rotation_lazy_using_internal_tables
+          (rot, quaternion_tables);
+      }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-    else  {
-      Particle *p = m->get_particle(ps[i]);
-      IMP_INTERNAL_CHECK(!core::RigidBody::get_is_setup(p),
-                         "A rigid body without rigid body diffusion info"
-                         << " was found: " << p->get_name());
-      IMP_INTERNAL_CHECK(!core::RigidMember::get_is_setup(p),
-                         "A rigid member with diffusion info"
-                         << " was found: " << p->get_name());
-    }
+      else  {
+        Particle *p = m->get_particle(ps[i]);
+        IMP_INTERNAL_CHECK(!core::RigidBody::get_is_setup(p),
+                           "A rigid body without rigid body diffusion info"
+                           << " was found: " << p->get_name());
+        IMP_INTERNAL_CHECK(!core::RigidMember::get_is_setup(p),
+                           "A rigid member with diffusion info"
+                           << " was found: " << p->get_name());
+      }
 #endif
+    }
   }
 
   // Translate chunk:
@@ -297,14 +300,17 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
     m->access_spheres_data();
   algebra::Sphere3D const* sphere_derivatives_table=
     m->access_sphere_derivatives_data();
-  double const* diffusion_coefficients_table=
-    m->access_attribute_data(Diffusion::get_diffusion_coefficient_key());
-  for (unsigned int i = begin; i < end; ++i) {
-    ParticleIndex pi= ps[i];
-    advance_coordinates_0(i, dtfs, ikT,
-                          diffusion_coefficients_table[pi.get_index()],
-                          sphere_derivatives_table[pi.get_index()],
-                          spheres_table[pi.get_index()]);
+  FloatKey dck= Diffusion::get_diffusion_coefficient_key();
+  if(m->get_has_attribute(dck)){
+    double const* diffusion_coefficients_table=
+      m->access_attribute_data(dck);
+    for (unsigned int i = begin; i < end; ++i) {
+      ParticleIndex pi= ps[i];
+      advance_coordinates_0(i, dtfs, ikT,
+                            diffusion_coefficients_table[pi.get_index()],
+                            sphere_derivatives_table[pi.get_index()],
+                            spheres_table[pi.get_index()]);
+    }
   } // for i
 } // method def
 

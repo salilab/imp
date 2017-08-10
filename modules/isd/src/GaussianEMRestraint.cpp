@@ -200,8 +200,8 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   else dd_score = dd_score_;
 
   /* distance calculation */
-  double cc=2*md_score.sum/(mm_score.sum+dd_score);
-  double log_score=-std::log(cc) + slope_score;
+  cross_correlation_ = 2*md_score.sum/(mm_score.sum+dd_score);
+  double log_score=-std::log(cross_correlation_) + slope_score;
 
   /* energy calculation */
 
@@ -216,7 +216,8 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
         algebra::Vector3D d_mm(derivs_mm[*it].sum[0],derivs_mm[*it].sum[1],derivs_mm[*it].sum[2]);
         algebra::Vector3D d_md(derivs_md[*it].sum[0],derivs_md[*it].sum[1],derivs_md[*it].sum[2]);
         Float mmdd=mm_score.sum+dd_score;
-        algebra::Vector3D d = -2.0 / cc * (mmdd*d_md - md_score.sum*d_mm) / (mmdd * mmdd);
+        algebra::Vector3D d = -2.0 / cross_correlation_
+                              * (mmdd*d_md - md_score.sum*d_mm) / (mmdd * mmdd);
         d += algebra::Vector3D(slope_md[*it].sum[0],slope_md[*it].sum[1],slope_md[*it].sum[2]);
         core::XYZ(get_model(),*it).add_to_derivatives(d,*accum);
       }

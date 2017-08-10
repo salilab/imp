@@ -8,8 +8,7 @@ import time
 import sys
 import os
 
-import IMP.pmi.restraints.stereochemistry as stereochemistry
-import IMP.pmi.restraints.crosslinking as crosslinking
+import IMP.pmi.restraints.stereochemistry
 import IMP.pmi.representation as representation
 import IMP.pmi.tools as tools
 import IMP.pmi.samplers as samplers

@@ -9,6 +9,11 @@ function_name_exceptions=['DOFValues.append','DOFValues.assign', 'DOFValues.back
                      'KinematicForest.mark_internal_coordinates_changed',
                      'UniformBackboneSampler.sample_and_apply',
                      'DOFsSampler.get_dof',
-                     'UniformBackboneSampler.get_dof' ]
+                     'UniformBackboneSampler.get_dof',
+                     'LocalPlanner.is_valid',
+                     'LocalPlanner.plan',
+                     'PathLocalPlanner.is_valid',
+                     'PathLocalPlanner.plan',
+                     'RRT.get_DOFValues' ]
 show_exceptions=[]
 value_object_exceptions=[]

@@ -17,6 +17,7 @@
 #include <RMF/decorator/shape.h>
 #include <RMF/decorator/labels.h>
 #include <RMF/decorator/bond.h>
+#include <RMF/decorator/reference.h>
 #include <IMP/Model.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
@@ -37,6 +38,7 @@ class IMPRMFEXPORT HierarchyLoadStatic {
   RMF::decorator::BackwardsCompatibilityFragmentFactory
       backwards_fragment_factory_;
   RMF::decorator::StateFactory state_factory_;
+  RMF::decorator::ReferenceFactory reference_factory_;
   RMF::decorator::Molecule molecule_;
   RMF::FloatKey radius_key_;
   RMF::FloatKey mass_key_;
@@ -65,6 +67,7 @@ class IMPRMFEXPORT HierarchySaveStatic {
   RMF::decorator::DomainFactory domain_factory_;
   RMF::decorator::FragmentFactory fragment_factory_;
   RMF::decorator::StateFactory state_factory_;
+  RMF::decorator::ReferenceFactory reference_factory_;
   RMF::decorator::Molecule molecule_;
 
  public:

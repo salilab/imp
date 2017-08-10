@@ -71,6 +71,15 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
     return exp(-unprotected_evaluate(NULL));
   }
 
+  //! Get cross correlation between the model and the map
+  /** This CCC is that calculated from the last scoring function
+      evaluation; calling this function before the score is calculated
+      results in undefined behavior.
+    */
+  double get_cross_correlation_coefficient() const {
+    return cross_correlation_;
+  }
+
   //! Pre-calculate the density-density and model-model scores
   /** This is automatically called by the constructor.
       You only need to call it manually if you change Gaussian variances.
@@ -99,7 +108,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   Float dd_score_;
   Float self_mm_score_;
   PointerMember<container::CloseBipartitePairContainer> md_container_;
-  Pointer<container::ClosePairContainer> mm_container_;
+  PointerMember<container::ClosePairContainer> mm_container_;
   ParticleIndexes slope_ps_; //experiment
 
   //variables needed to tabulate the exponential
@@ -107,6 +116,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   double invdx_;
   double argmax_;
 
+  mutable double cross_correlation_;
 };
 
 IMPISD_END_NAMESPACE

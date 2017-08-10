@@ -19,9 +19,9 @@ IMPKINEMATICS_BEGIN_NAMESPACE
   \note We may want to make it more general. This will require
   turning it into a virtual class.
 */
-class IMPKINEMATICSEXPORT DirectionalDOF {
+class IMPKINEMATICSEXPORT DirectionalDOF : public IMP::Object {
  public:
-  DirectionalDOF(const DOFs& dofs) : dofs_(dofs) {}
+  DirectionalDOF(const DOFs& dofs) : Object("DirectionalDOF%1%"), dofs_(dofs) {}
 
   void set_end_points(const DOFValues& q1, const DOFValues& q2) {
     endpoint1_ = q1;
@@ -69,6 +69,8 @@ class IMPKINEMATICSEXPORT DirectionalDOF {
   }
 #endif
 
+  IMP_OBJECT_METHODS(DirectionalDOF);
+
  protected:
   DOFs dofs_;  // can be a pointer
   DOFValues endpoint1_;
@@ -88,15 +90,9 @@ class IMPKINEMATICSEXPORT DirectionalDOF {
 
   // delta for value
   double delta_;
-
- public:
-  IMP_SHOWABLE_INLINE(DirectionalDOF, {
-    out << "(direction dof from " << endpoint1_ << " to " << endpoint2_
-        << " ; step number " << current_step_number_ << ")";
-  });
 };
 
-IMP_VALUES(DirectionalDOF, DirectionalDOFs);
+IMP_OBJECTS(DirectionalDOF, DirectionalDOFs);
 
 IMPKINEMATICS_END_NAMESPACE
 

@@ -60,6 +60,7 @@ class Tests(IMP.test.TestCase):
         r = IMP.pmi.restraints.basic.BiStableDistanceRestraint(
             m, p1, p2, dists[0], dists[1], sigmas[0], sigmas[1], weights[0],
             weights[1])
+        r.set_was_used(True)
         rscore = r.unprotected_evaluate(None)
 
         tprob = (.5 * _harmonic_prob(2., dists[0], sigmas[0]) +

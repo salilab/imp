@@ -45,6 +45,7 @@ class Tests(IMP.test.TestCase):
         # be on different drives)
         with IMP.test.temporary_directory(os.getcwd()) as tmpdir:
             subdir = os.path.join(tmpdir, 'subdir')
+            subdir2 = os.path.join(tmpdir, 'subdir2')
             os.mkdir(subdir)
             with open(os.path.join(subdir, 'bar'), 'w') as f:
                 f.write("")
@@ -74,7 +75,11 @@ class Tests(IMP.test.TestCase):
             s2 = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46280',
                                              root=os.path.relpath(subdir),
                                              url='foo', top_directory='baz')
-            IMP.pmi.metadata.Repository.update_in_repos(loc, [s, s2])
+            # Repositories that aren't above the file shouldn't count
+            s3 = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.56280',
+                                             root=os.path.relpath(subdir2),
+                                             url='foo', top_directory='baz')
+            IMP.pmi.metadata.Repository.update_in_repos(loc, [s2, s3, s])
             self.assertEqual(loc.repo.doi, '10.5281/zenodo.46280')
             self.assertEqual(loc.path, 'bar')
 
@@ -140,6 +145,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(d.repo.doi, 'mydoi')
         self.assertEqual(d.path, 'mypath')
         self.assertEqual(d.details, 'bar')
+        self.assertEqual(d.file_size, None)
         d2 = IMP.pmi.metadata.FileLocation(repo=r, path='mypath')
         self.assertEqual(d, d2)
         d3 = IMP.pmi.metadata.FileLocation(repo=r, path='otherpath')
@@ -155,7 +161,7 @@ class Tests(IMP.test.TestCase):
         # be on different drives)
         with IMP.test.temporary_directory(os.getcwd()) as tmpdir:
             with open(os.path.join(tmpdir, 'bar'), 'w') as f:
-                f.write("")
+                f.write("ab")
             d1 = IMP.pmi.metadata.FileLocation(
                                   os.path.relpath(os.path.join(tmpdir, 'bar')),
                                   details='foo')
@@ -164,6 +170,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(d1, d2)
             self.assertEqual(d1.path, os.path.join(tmpdir, 'bar'))
             self.assertEqual(d1.details, 'foo')
+            self.assertEqual(d1.file_size, 2)
             self.assertRaises(ValueError, IMP.pmi.metadata.FileLocation,
                               os.path.join(tmpdir, 'not-exists'))
 

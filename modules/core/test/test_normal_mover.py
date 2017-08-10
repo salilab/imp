@@ -8,6 +8,8 @@ from math import *
 
 class NormalMoverTest(IMP.test.TestCase):
 
+    mv = IMP.core.NormalMover
+
     def _make_stuff(self):
         IMP.test.TestCase.setUp(self)
         m = IMP.Model()
@@ -15,7 +17,7 @@ class NormalMoverTest(IMP.test.TestCase):
         att = IMP.FloatKey("test")
         m.add_attribute(att, pa, 5.0)
         m.set_is_optimized(att, pa, True)
-        mv = IMP.core.NormalMover(m, pa, [att], 1.0)
+        mv = self.mv(m, pa, [att], 1.0)
         return m, mv, pa, att
 
     def test_propose(self):
@@ -35,6 +37,12 @@ class NormalMoverTest(IMP.test.TestCase):
         mv.reject()
         new = m.get_attribute(att, pa)
         self.assertAlmostEqual(new, old)
+
+
+class LogNormalMoverTest(NormalMoverTest):
+
+    mv = IMP.core.LogNormalMover
+
 
 if __name__ == '__main__':
     IMP.test.main()

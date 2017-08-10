@@ -12,6 +12,8 @@
 #include <IMP/kernel_config.h>
 #include "deprecation.h"
 
+#if !defined(SWIG)
+
 /** Used to implement deprecation support. See the
     [IMP deprecation policy](@ref deprecation).*/
 #define IMP_DEPRECATED_MACRO(version, help_message)                 \
@@ -59,5 +61,7 @@
   }
 
 #define IMP_DEPRECATED_FUNCTION_DEF(version, message)
+
+#endif // SWIG
 
 #endif /* IMPKERNEL_DEPRECATION_MACROS_H */

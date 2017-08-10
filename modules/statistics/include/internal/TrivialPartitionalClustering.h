@@ -1,5 +1,6 @@
 /**
- *  \file random_generator.h   \brief random number generator
+ *  \file IMP/statistics/internal/TrivialPartitionalClustering.h
+ *  \brief Partitional clustering with a static list of cluster assignments.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *
@@ -23,6 +24,7 @@
 #include <boost/graph/adjacency_list.hpp>
 
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
+//! Partitional clustering with a static list of cluster assignments.
 class TrivialPartitionalClustering : public PartitionalClustering {
   IMP::Vector<Ints> clusters_;
   Ints reps_;

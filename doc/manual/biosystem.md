@@ -71,3 +71,6 @@ for an example):
      - `runtime`: upper limit to the time the tests will take to run
      - `build`: which type of %IMP build to run the tests with
        (`release`, `fast` or `debug`); `release` is generally recommended
+     - `parallel`: if set, the tests will be run in an MPI environment, with
+       the given number of cores available (by default, a serial environment
+       is used)

@@ -21,7 +21,7 @@ License:       LGPLv2+ and GPLv3
 Summary:       The Integrative Modeling Platform
 Group:         Applications/Engineering
 Packager:      Ben Webb <ben@salilab.org>
-URL:           http://www.integrativemodeling.org/
+URL:           https://integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
 %if 0%{?rhel} == 5
 BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -33,7 +33,7 @@ BuildRequires: python3-devel, symlinks
 # from EPEL (note we need to tell the build later on where to find this python)
 # The HDF5 package in EPEL is too old though - we need a newer version
 # (which can be obtained from
-# http://integrativemodeling.org/build-extras/RHEL5/)
+# https://integrativemodeling.org/build-extras/RHEL5/)
 %if 0%{?rhel} == 5
 BuildRequires: python26-devel
 BuildRequires: hdf518-devel
@@ -47,19 +47,19 @@ BuildRequires: hdf5-devel >= 1.8
 # Note that RHEL 5 doesn't have a new enough swig to build IMP. If you must
 # use RHEL 5 (we recommend RHEL 6) you will need to build a newer SWIG package
 # before building IMP (or use ours, available at
-# http://integrativemodeling.org/build-extras/RHEL5/)
+# https://integrativemodeling.org/build-extras/RHEL5/)
 BuildRequires: swig >= 1.3.40
 BuildRequires: gsl-devel, fftw-devel
 BuildRequires: zlib-devel, perl
 BuildRequires: ann-devel
 # Needed to build the cnmultifit module; obtain
-# from https://salilab.org/imp/libTAU.html
+# from https://integrativemodeling.org/libTAU.html
 # (Or, if you don't need cnmultifit, you can comment out this line)
 BuildRequires: libTAU-devel
 
 # The cmake included with RHEL 5 is too old; use a newer cmake28 instead.
 # You will need to build this package yourself (or use ours, available at
-# http://integrativemodeling.org/build-extras/RHEL5/)
+# https://integrativemodeling.org/build-extras/RHEL5/)
 %if 0%{?rhel} == 5
 BuildRequires: cmake28
 %define cmake cmake28
@@ -95,7 +95,7 @@ BuildRequires: opencv-devel
 # invocation. This will pull in our custom OpenCV (on RHEL5/6) and CGAL packages
 # and bundle the libraries with IMP.
 # If building outside of the lab and you still want these packages, get them
-# from http://integrativemodeling.org/build-extras/
+# from https://integrativemodeling.org/build-extras/
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
 %if 0%{?rhel} < 7
 BuildRequires: opencv-nogui-devel
@@ -200,26 +200,32 @@ This package contains wrappers for Python 3 (the base package already
 includes Python 2 wrappers).
 %endif
 
+%define MPI_MODULES mpi spb
+
 %if 0%{?with_mpich}
 %package mpich
 Group:         Applications/Engineering
-Summary:       MPI module, for mpich
+Summary:       MPI module and dependents, for mpich
 Requires:      %{name} = %{version}-%{release}
 Requires:      mpich
+%if 0%{?fedora}
+Requires:      python2-mpich
+%endif
 BuildRequires: mpich-devel
 
 %description mpich
 This package contains an IMP.mpi module to add MPI support,
-using the mpich library.
+using the mpich library. It also includes all IMP modules that depend
+on IMP.mpi (IMP.spb).
 
 %package mpich-devel
 Group:         Applications/Engineering
-Summary:       MPI module development files, for mpich
+Summary:       MPI module and dependents development files, for mpich
 Requires:      %{name}-mpich = %{version}-%{release}
 Requires:      mpich
 
 %description mpich-devel
-Development files for IMP.mpi module with mpich.
+Development files for IMP.mpi module (and dependents) with mpich.
 %endif
 
 %prep
@@ -231,8 +237,8 @@ Development files for IMP.mpi module with mpich.
 # nicely with the new mechanism for adding MPI dependencies
 # (rpm-mpi-hooks package)
 %if 0%{?with_mpich}
-%global __provides_exclude ^libTAU\\.so.*|libimp_mpi\\.so.*$
-%global __requires_exclude ^libTAU\\.so.*|libimp_mpi\\.so.*$
+%global __provides_exclude ^libTAU\\.so.*|libimp_mpi\\.so.*|libimp_spb\\.so.*$
+%global __requires_exclude ^libTAU\\.so.*|libmpi\\.so.*|libmpicxx\\.so.*|libimp_mpi\\.so.*|libimp_spb\\.so.*$
 %else
 %global __provides_exclude ^libTAU\\.so.*$
 %global __requires_exclude ^libTAU\\.so.*$
@@ -322,8 +328,10 @@ module purge
 %endif
 
 # Don't build Python 3 MPI for now
-rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/IMP/mpi
-rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/_IMP_mpi.so
+for mod in %{MPI_MODULES}; do
+  rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/IMP/${mod}
+  rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/_IMP_${mod}.so
+done
 
 # Replace .py files with symlinks to Python 2 files (since they are the same)
 (cd ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver} \
@@ -332,13 +340,29 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/_IMP_mpi.so
  && symlinks -rc .)
 %endif
 
-# Put MPI-dependent libraries in mpich directories
+# Put MPI-dependent libraries and binaries in mpich directories
 %if 0%{?with_mpich}
-(cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/ && mkdir mpich \
- &&  mv _IMP_mpi.so mpich/)
-(cd ${RPM_BUILD_ROOT}%{_libdir} && mkdir mpich && mv libimp_mpi.so.* mpich)
-(cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_mpi.so \
- && ln -sf mpich/libimp_mpi.so.* libimp_mpi.so)
+(cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/ && mkdir mpich)
+(cd ${RPM_BUILD_ROOT}%{_libdir} && mkdir -p mpich/bin mpich/lib)
+(cd ${RPM_BUILD_ROOT}%{_bindir} && mv spb* ${RPM_BUILD_ROOT}%{_libdir}/mpich/bin)
+for mod in %{MPI_MODULES}; do
+  (cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/ \
+   && mv _IMP_${mod}.so mpich/)
+  (cd ${RPM_BUILD_ROOT}%{_libdir} && mv libimp_${mod}.so.* mpich/lib/)
+  (cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_${mod}.so \
+   && ln -sf mpich/lib/libimp_${mod}.so.* libimp_${mod}.so)
+done
+
+# Add MPI-dependent directory to Python search path
+%if 0%{?rhel} == 6
+(cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages && cat > imp-mpi.pth <<END)
+# Set MPI implementation-specific Python search path, for IMP.
+# On Fedora this is handled by the python2-mpich package, while in RHEL7
+# the mpich modulefile sets PYTHONPATH, but nothing appears to handle it
+# in RHEL6, so we'll do it ourselves.
+import sys, os; s = os.getenv('MPI_PYTHON_SITEARCH'); s and (s in sys.path or sys.path.append(s))
+END
+%endif
 %endif
 
 # Note that we currently don't include the documentation in the RPM, since
@@ -352,9 +376,9 @@ README=${RPM_BUILD_ROOT}%{_prefix}/share/doc/%{name}-%{version}/README
 echo "For full IMP documentation, please go to" > ${README}
 # Direct nightly build users to most recent nightly build docs
 if echo ${version} | grep -q git; then
-  echo "http://integrativemodeling.org/nightly/doc/manual/" >> ${README}
+  echo "https://integrativemodeling.org/nightly/doc/manual/" >> ${README}
 else
-  echo "http://integrativemodeling.org/%{version}/doc/manual/" >> ${README}
+  echo "https://integrativemodeling.org/%{version}/doc/manual/" >> ${README}
 fi
 # Bundle libTAU from build machine so users don't have to get it separately
 # (can't use %_libdir here since that is dependent on whatever we redefined
@@ -410,9 +434,14 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %if 0%{?with_mpich}
 %exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
 %exclude %{_prefix}/share/IMP/swig/IMP_mpi.*
+%exclude %{_prefix}/share/IMP/swig/IMP_spb.*
+%exclude %{_prefix}/share/IMP/build_info/MPI
 %exclude %{_prefix}/share/IMP/build_info/IMP.mpi
 %exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
+%exclude %{_prefix}/share/IMP/build_info/IMP.spb
+%exclude %{_prefix}/share/IMP/build_info/IMP_spb.pck
 %exclude %{_libdir}/python2*/site-packages/IMP/mpi
+%exclude %{_libdir}/python2*/site-packages/IMP/spb
 %endif
 
 %if 0%{?with_python3}
@@ -430,16 +459,29 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %defattr(-,root,root)
 %doc %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
 %{_prefix}/share/IMP/swig/IMP_mpi.*
+%{_prefix}/share/IMP/swig/IMP_spb.*
+%{_prefix}/share/IMP/build_info/MPI
 %{_prefix}/share/IMP/build_info/IMP.mpi
 %{_prefix}/share/IMP/build_info/IMP_mpi.pck
+%{_prefix}/share/IMP/build_info/IMP.spb
+%{_prefix}/share/IMP/build_info/IMP_spb.pck
 %{_libdir}/python2*/site-packages/IMP/mpi
+%{_libdir}/python2*/site-packages/IMP/spb
+%if 0%{?rhel} == 6
+%{_libdir}/python2*/site-packages/imp-mpi.pth
+%endif
 %{_libdir}/python2*/site-packages/mpich/_IMP_mpi.so
-%{_libdir}/mpich/libimp_mpi.so.*
+%{_libdir}/python2*/site-packages/mpich/_IMP_spb.so
+%{_libdir}/mpich/lib/libimp_mpi.so.*
+%{_libdir}/mpich/lib/libimp_spb.so.*
+%{_libdir}/mpich/bin/spb*
 
 %files mpich-devel
 %defattr(-,root,root)
 %{_libdir}/libimp_mpi.so
+%{_libdir}/libimp_spb.so
 %{_prefix}/include/IMP/mpi
+%{_prefix}/include/IMP/spb
 %endif
 
 %files devel
@@ -450,10 +492,15 @@ perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 %{_libdir}/libimp*.so
 %if 0%{?with_mpich}
 %exclude %{_prefix}/include/IMP/mpi
+%exclude %{_prefix}/include/IMP/spb
 %exclude %{_libdir}/libimp_mpi.so
+%exclude %{_libdir}/libimp_spb.so
 %endif
 
 %changelog
+* Wed Aug 16 2017 Ben Webb <ben@salilab.org>   2.8.0-1
+- 2.8.0 release.
+
 * Thu Apr 13 2017 Ben Webb <ben@salilab.org>   2.7.0-1
 - 2.7.0 release.
 

@@ -120,6 +120,7 @@ class RestraintBase(object):
         rs = IMP.RestraintSet(self.m, name)
         rs.set_weight(self.weight)
         self.restraint_sets.append(rs)
+        rs.set_was_used(True)
         return rs
 
 

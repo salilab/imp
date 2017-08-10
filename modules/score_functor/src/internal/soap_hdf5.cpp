@@ -32,6 +32,14 @@ void handle_hdf5_error() {
   IMP_THROW("Generic HDF5 error", IOException);
 }
 
+Hdf5Dataspace::Hdf5Dataspace(Hdf5Dataset &dataset) : id_(-1) {
+  IMP_HDF5_ERRCHECK(id_ = H5Dget_space(dataset.get()));
+}
+
+Hdf5Dataspace::Hdf5Dataspace(Hdf5Attribute &attribute) : id_(-1) {
+  IMP_HDF5_ERRCHECK(id_ = H5Aget_space(attribute.get()));
+}
+
 IMPSCOREFUNCTOR_END_INTERNAL_NAMESPACE
 
 #endif  // IMP_SCORE_FUNCTOR_USE_HDF5

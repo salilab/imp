@@ -51,7 +51,7 @@ class Key : public Value {
     static internal::KeyData static_key_data_(ID);
     return static_key_data_;
 #else
-    return internal::get_key_data(ID);
+    return IMP::internal::get_key_data(ID);
 #endif
   }
 
@@ -61,8 +61,8 @@ class Key : public Value {
     return get_key_data().get_map();
   }
   static const internal::KeyData::RMap& get_rmap() {
-    internal::KeyData const& kd=get_key_data();
-    internal::KeyData::RMap const& ret=kd.get_rmap();
+    IMP::internal::KeyData const& kd=get_key_data();
+    IMP::internal::KeyData::RMap const& ret=kd.get_rmap();
     return ret;
   }
 

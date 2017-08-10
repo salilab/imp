@@ -71,6 +71,24 @@ class Vector : public Value
       push_back(T(*it));
     }
   }
+
+  // MSVC 2008 doesn't support std::vector::data() (technically it requires
+  // a C++11 compiler), so provide an implementation
+  T* data() {
+    if (empty()) {
+      return NULL;
+    } else {
+      return &front();
+    }
+  }
+  const T* data() const {
+    if (empty()) {
+      return NULL;
+    } else {
+      return &front();
+    }
+  }
+
 #else
   template <class It>
   Vector(It b, It e)

@@ -19,7 +19,7 @@ def _get_score(z, N, b):
 def _get_derv(z, N, b):
     beta = _get_beta(N, b)
     return 2 * beta * z - 2. / float(z)
- 
+
 
 def _get_linear_score(z, N, b):
     z = max(z, 0)

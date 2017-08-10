@@ -9,6 +9,10 @@
  */
 
 #include <IMP/em2d/internal/ProjectionSphere.h>
+#include <IMP/constants.h>
+#include <IMP/algebra/BoundingBoxD.h>
+#include <IMP/algebra/SphericalVector3D.h>
+#include <IMP/algebra/Vector3D.h>
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 

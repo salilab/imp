@@ -69,6 +69,7 @@ The category name is `sequence` and it includes information about the types and 
 | `type name`      | string       |  An arbitrary type name for a particle. It could be the protein type or ligand type. |
 | `state index`    | int       |  An arbitrary integer to label different states of a hierarchy. |
 | `explicit resolution` | float     |  Explicitly-specified resolution for a hierarchy. |
+| `reference` | int          |  The RMF::NodeID of the reference node    |
 
 
 ## Decorators ## {#sequencedecorators}
@@ -83,6 +84,7 @@ The category name is `sequence` and it includes information about the types and 
 | RMF::decorator::Typed           | RMF::REPRESENTATION     |  type name                         |
 | RMF::decorator::State           | RMF::REPRESENTATION     |  state index                       |
 | RMF::decorator::ExplicitResolution | RMF::REPRESENTATION  |  explicit resolution               |
+| RMF::decorator::Reference       | RMF::REPRESENTATION     |  pointer to reference node         |
 
 
 # Feature # {#feature}

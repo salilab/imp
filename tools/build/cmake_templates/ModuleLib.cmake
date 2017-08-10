@@ -10,7 +10,11 @@ add_definitions("-DIMP%(CPPNAME)s_EXPORTS")
 
 include(Files.cmake)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
+if(NOT "${OpenMP_CXX_FLAGS}" MATCHES ".*NOTFOUND.*")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${%(NAME)s_CXX_FLAGS}")
 
 set(headers %(headers)s)
 
@@ -27,6 +31,7 @@ if(DEFINED IMP_%(name)s_IS_CUDA)
   FIND_PACKAGE(CUDA REQUIRED)
   INCLUDE(FindCUDA)
   LIST(APPEND CUDA_NVCC_FLAGS --compiler-options -fno-strict-aliasing -lineinfo -use_fast_math -Xptxas -dlcm=cg)
+  LIST(APPEND CUDA_NVCC_FLAGS -lcufft)
   LIST(APPEND CUDA_NVCC_FLAGS -gencode arch=compute_20,code=sm_20)
   LIST(APPEND CUDA_NVCC_FLAGS -gencode arch=compute_30,code=sm_30)
   LIST(APPEND CUDA_NVCC_FLAGS -gencode arch=compute_35,code=sm_35)
@@ -37,9 +42,10 @@ if(DEFINED IMP_%(name)s_IS_CUDA)
     ${IMP_%(name)s_LIBRARY_EXTRA_SOURCES}
     ${IMP_LIB_TYPE}
     )
-  target_link_libraries(IMP.%(name)s-lib ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY})
+  target_link_libraries(IMP.%(name)s-lib ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY} ${CUDA_cufft_LIBRARY})
   message(STATUS "CUDA libraries: " "${CUDA_LIBRARIES}")
   message(STATUS "CUDA curand library: " "${CUDA_curand_LIBRARY}")
+  message(STATUS "CUDA cufft library: " "${CUDA_cufft_LIBRARY}")
 elseif(DEFINED IMP_%(name)s_IS_PER_CPP)
   set(sources ${cppfiles})
   add_library(IMP.%(name)s-lib  ${IMP_LIB_TYPE} ${gensources} ${genheaders}

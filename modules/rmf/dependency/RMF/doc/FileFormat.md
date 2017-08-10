@@ -33,7 +33,7 @@ as extra markers to highlight key parts of the molecule.
 Multiple conformations on the hierarchy are stored as frames.  Each
 frame has the same hierarchical structure, but some aspects of the
 data (eg coordinates) can have different values for each frame (or no
-value for a particle frame if they happen not be be applicable then).
+value for a particular frame if they happen to not be applicable then).
 
 A hierarchical storage format was chosen since
 - most biological molecules have a natural hierarchical structure

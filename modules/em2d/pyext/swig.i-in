@@ -52,7 +52,10 @@ IMP_SWIG_OBJECT(IMP::em2d, DummyRestraint, DummyRestraints);
 IMP_SWIG_OBJECT(IMP::em2d, ParticlesDummyRestraint, ParticlesDummyRestraints);
 IMP_SWIG_OBJECT(IMP::em2d, RelativePositionMover, RelativePositionMovers);
 
-IMP_SWIG_OBJECT(IMP::em2d, PCAFitRestraint, PCAFitRestraints);
+// 4th argument is to help SWIG distinguish this class from the
+// identically-named class in IMP::em
+// (see https://github.com/salilab/imp/issues/985)
+IMP_SWIG_OBJECT(IMP::em2d, PCAFitRestraint, PCAFitRestraints, em2d);
 
 IMP_BUILTIN_VALUES(Transformation3Ds, Transformation3DsList);
 
@@ -62,7 +65,7 @@ IMP_BUILTIN_VALUES(Transformation3Ds, Transformation3DsList);
 // IMP_SWIG_OBJECT(IMP::em2d, TemplateFinder, TemplateFinders);
 
 
-// wrapping of a decorator with swigg. Parameters: namespace, name, plural name
+// wrapping of a decorator with swig. Parameters: namespace, name, plural name
 IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 
 

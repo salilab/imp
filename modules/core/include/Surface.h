@@ -29,6 +29,8 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! A decorator for a particle that represents a surface, its coordinates, and orientation.
 /** \ingroup decorators
+    \see XYZ
+    \see Direction
 */
 class IMPCOREEXPORT Surface : public XYZ {
  public:

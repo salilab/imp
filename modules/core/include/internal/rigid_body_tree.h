@@ -35,6 +35,7 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::Object {
   ParticleIndexes validate_internal(Model *m, int cur,
                                             algebra::Sphere3Ds bounds) const;
   typedef std::pair<unsigned int, SphereIndexes> Node;
+  void add_node_as_leaf(Model *m, const Node &cur);
   void build_tree(Model *m, const Node &n,
                   const algebra::Sphere3Ds &spheres, Vector<Node> &stack);
 

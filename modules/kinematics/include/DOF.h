@@ -16,7 +16,7 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-//! Represention of one degree of freedom (DOF).
+//! Representation of one degree of freedom (DOF).
 /**
   A general class for representing one degree of freedom (DOF) that is
   a double.  the class holds min/max range for the DOF, as well as the

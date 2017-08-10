@@ -58,6 +58,23 @@ public:
 
   void set_projection_number(unsigned int n) { projection_number_ = n; }
 
+  //! Get transformation that best places the model on the image
+  /** The transformation places the model such that if the image is placed
+      on the xy plane with its lower left corner at the origin the model's
+      projection along the z axis will coincide with the image.
+      This transformation is that calculated from the last scoring function
+      evaluation; calling this function before the score is calculated
+      results in undefined behavior.
+    */
+  algebra::Transformation3D get_transformation(unsigned int image_number) const;
+
+  //! Get cross correlation between the image and the best model projection
+  /** This CCC is that calculated from the last scoring function
+      evaluation; calling this function before the score is calculated
+      results in undefined behavior.
+    */
+  double get_cross_correlation_coefficient(unsigned int image_number) const;
+
   // write best projections from last calculation, if evaluate is true,
   // best projections will be recalculated
   void write_best_projections(std::string file_name, bool evaluate=false);
@@ -85,7 +102,9 @@ public:
   std::vector<internal::Image2D<> > best_projections_;
 
   // from last calculation
+  std::vector<internal::ProjectionInfo> best_projections_info_;
   IMP::algebra::Vector3Ds best_projections_axis_;
+  std::vector<internal::ImageTransform> best_image_transform_;
 
   // Projector class instance
   internal::Projector projector_;

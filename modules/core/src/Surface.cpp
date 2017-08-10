@@ -6,6 +6,8 @@
  */
 #include <IMP/core/Surface.h>
 #include <IMP/score_functor/internal/surface_helpers.h>
+#include <IMP/score_functor/internal/direction_helpers.h>
+#include <IMP/core/direction.h>
 #include <IMP/algebra/Rotation3D.h>
 #include <cmath>
 
@@ -18,10 +20,9 @@ void Surface::do_setup_particle(Model *m, ParticleIndex pi,
     XYZ::setup_particle(m, pi);
   }
   XYZ(m, pi).set_coordinates(center);
-  algebra::Vector3D u = normal.get_unit_vector();
-  m->add_attribute(get_normal_key(0), pi, u[0]);
-  m->add_attribute(get_normal_key(1), pi, u[1]);
-  m->add_attribute(get_normal_key(2), pi, u[2]);
+  if (!Direction::get_is_setup(m, pi)) {
+    Direction::setup_particle(m, pi, normal);
+  }
 }
 
 void Surface::do_setup_particle(Model *m, ParticleIndex pi,
@@ -32,51 +33,38 @@ void Surface::do_setup_particle(Model *m, ParticleIndex pi,
 }
 
 bool Surface::get_is_setup(Model *m, ParticleIndex pi) {
-  return m->get_has_attribute(get_normal_key(2), pi);
+  return (m->get_has_attribute(get_coordinate_key(2), pi) &&
+          m->get_has_attribute(get_normal_key(2), pi));
 }
 
 FloatKey Surface::get_normal_key(unsigned int i) {
   IMP_USAGE_CHECK(i < 3, "Out of range coordinate");
-  return score_functor::internal::get_surface_normal_key(i);
+  return score_functor::internal::get_direction_key(i);
 }
 
 algebra::Vector3D Surface::get_normal_derivatives() const {
-  return algebra::Vector3D(get_normal_derivative(0),
-                           get_normal_derivative(1),
-                           get_normal_derivative(2));
+  return Direction(get_particle()).get_direction_derivatives();
 }
 
 void Surface::add_to_normal_derivatives(const algebra::Vector3D &v,
                                         DerivativeAccumulator &d) {
-  add_to_normal_derivative(0, v[0], d);
-  add_to_normal_derivative(1, v[1], d);
-  add_to_normal_derivative(2, v[2], d);
+  Direction(get_particle()).add_to_direction_derivatives(v, d);
 }
 
 bool Surface::get_normal_is_optimized() const {
-  return get_particle()->get_is_optimized(get_normal_key(0)) &&
-         get_particle()->get_is_optimized(get_normal_key(1)) &&
-         get_particle()->get_is_optimized(get_normal_key(2));
+  return Direction(get_particle()).get_direction_is_optimized();
 }
 
 void Surface::set_normal_is_optimized(bool tf) const {
-  get_particle()->set_is_optimized(get_normal_key(0), tf);
-  get_particle()->set_is_optimized(get_normal_key(1), tf);
-  get_particle()->set_is_optimized(get_normal_key(2), tf);
+  Direction(get_particle()).set_direction_is_optimized(tf);
 }
 
 algebra::Vector3D Surface::get_normal() const {
-  return score_functor::internal::get_surface_normal(get_model(),
-                                                     get_particle_index());
+  return Direction(get_particle()).get_direction();
 }
 
 void Surface::set_normal(const algebra::Vector3D &normal) {
-  Model *m = get_model();
-  ParticleIndex pi = get_particle_index();
-  algebra::Vector3D u = normal.get_unit_vector();
-  m->set_attribute(get_normal_key(0), pi, u[0]);
-  m->set_attribute(get_normal_key(1), pi, u[1]);
-  m->set_attribute(get_normal_key(2), pi, u[2]);
+  Direction(get_particle()).set_direction(normal);
 }
 
 double Surface::get_height(const algebra::Vector3D &v) const {

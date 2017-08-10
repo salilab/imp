@@ -99,7 +99,6 @@ IMP_SWIG_VALUE(IMP::internal, _Protection, _Protections);
 %include "IMP/live_objects.h"
 %include "IMP/deprecation.h"
 %include "IMP/threads.h"
-%include "IMP/base_statistics.h"
 
 %{
 #if IMP_KERNEL_HAS_LOG4CXX

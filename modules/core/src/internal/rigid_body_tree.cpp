@@ -63,6 +63,9 @@ RigidBodyHierarchy::SpheresSplit RigidBodyHierarchy::divide_spheres(
   for (unsigned int j = 0; j < 3; ++j) {
     side = std::max(side, (maxc[j] - minc[j]) / 2.0);
   }
+  if (side == 0.) {
+    return SpheresSplit();
+  }
   typedef algebra::DenseGrid3D<SphereIndexes> Grid;
   Grid grid(side, algebra::BoundingBox3D(minc, maxc), SphereIndexes());
   for (unsigned int i = 0; i < s.size(); ++i) {
@@ -175,20 +178,34 @@ void RigidBodyHierarchy::build_tree(Model *m, const Node &cur,
     }
   }
   if (cur.second.size() < MAX_LEAF_SIZE) {
-    ParticleIndexes particles(cur.second.size());
-    for (unsigned int i = 0; i < particles.size(); ++i) {
-      particles[i] = constituents_[cur.second[i]];
-    }
-    set_leaf(cur.first, particles);
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      validate_internal(m, cur.first, algebra::Sphere3Ds());
-    }
+    // add all particles to this leaf
+    add_node_as_leaf(m, cur);
   } else {
+    // too many particles to search efficiently (linear search),
+    // so try to divide the node by Cartesian space
     SpheresSplit ss = divide_spheres(spheres, cur.second);
-    unsigned int nc = add_children(cur.first, ss.size());
-    for (unsigned int i = 0; i < ss.size(); ++i) {
-      stack.push_back(Node(nc + i, ss[i]));
+    if (ss.empty()) {
+      // if all spheres are colocated, division isn't possible, so add
+      // them all to the leaf
+      add_node_as_leaf(m, cur);
+    } else {
+      unsigned int nc = add_children(cur.first, ss.size());
+      for (unsigned int i = 0; i < ss.size(); ++i) {
+        stack.push_back(Node(nc + i, ss[i]));
+      }
     }
+  }
+}
+
+// Add all particles from the given node as a leaf
+void RigidBodyHierarchy::add_node_as_leaf(Model *m, const Node &cur) {
+  ParticleIndexes particles(cur.second.size());
+  for (unsigned int i = 0; i < particles.size(); ++i) {
+    particles[i] = constituents_[cur.second[i]];
+  }
+  set_leaf(cur.first, particles);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    validate_internal(m, cur.first, algebra::Sphere3Ds());
   }
 }
 

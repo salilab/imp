@@ -250,6 +250,7 @@ namespace {
 
 void Selection::init_predicate() {
   and_predicate_ = new AndSelectionPredicate();
+  and_predicate_->set_was_used(true);
   predicate_ = and_predicate_;
 }
 

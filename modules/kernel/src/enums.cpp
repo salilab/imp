@@ -78,28 +78,4 @@ std::ostream &operator<<(std::ostream &in, CheckLevel ll) {
   return in;
 }
 
-std::istream &operator>>(std::istream &in, StatisticsLevel &ll) {
-  std::string str;
-  in >> str;
-  if (str == "NONE")
-    ll = NO_STATISTICS;
-  else if (str == "ALL")
-    ll = ALL_STATISTICS;
-  else {
-    IMP_THROW("Bad statistics level " << str, IOException);
-  }
-  return in;
-}
-
-std::ostream &operator<<(std::ostream &out, StatisticsLevel ll) {
-  if (ll == NO_STATISTICS)
-    out << "NONE";
-  else if (ll == ALL_STATISTICS)
-    out << "ALL";
-  else {
-    IMP_THROW("Bad statistics level " << ll, IOException);
-  }
-  return out;
-}
-
 IMPKERNEL_END_NAMESPACE

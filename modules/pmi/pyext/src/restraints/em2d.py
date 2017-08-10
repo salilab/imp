@@ -57,14 +57,15 @@ class ElectronMicroscopy2D(object):
                 if d:
                     self.datasets.append(d)
                     continue
-            l = IMP.pmi.metadata.FileLocation(image)
+            l = IMP.pmi.metadata.FileLocation(image,
+                                 details="Electron microscopy class average")
             d = IMP.pmi.metadata.EM2DClassDataset(l)
             self.datasets.append(d)
 
         if representation:
-            for p in representation._protocol_output:
+            for p, state in representation._protocol_output:
                 for i in range(len(self.datasets)):
-                    p.add_em2d_restraint(self, i, resolution, pixel_size,
+                    p.add_em2d_restraint(state, self, i, resolution, pixel_size,
                                          image_resolution, projection_number)
 
         # PMI1/2 selection
@@ -91,6 +92,8 @@ class ElectronMicroscopy2D(object):
         else :
             em2d = IMP.em2d.PCAFitRestraint(
                 particles, images, pixel_size, image_resolution, projection_number, True)
+        self._em2d_restraint = em2d
+        self._num_images = len(images)
         self.rs.add_restraint(em2d)
 
     def set_label(self, label):
@@ -112,6 +115,19 @@ class ElectronMicroscopy2D(object):
         score = self.weight*self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
         output["ElectronMicroscopy2D_" + self.label] = str(score)
+        # For each image, get the transformation that places the
+        # model on the image, and its cross correlation coefficient
+        for i in range(self._num_images):
+            prefix = 'ElectronMicroscopy2D_%s_Image%d' % (self.label, i+1)
+            ccc = self._em2d_restraint.get_cross_correlation_coefficient(i)
+            output[prefix + '_CCC'] = str(ccc)
+            tran = self._em2d_restraint.get_transformation(i)
+            r = tran.get_rotation().get_quaternion()
+            t = tran.get_translation()
+            for j in range(4):
+                output[prefix + '_Rotation%d' % j] = str(r[j])
+            for j in range(3):
+                output[prefix + '_Translation%d' % j] = str(t[j])
         return output
 
 class ElectronMicroscopy2D_FFT(object):

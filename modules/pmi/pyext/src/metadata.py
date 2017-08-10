@@ -3,6 +3,7 @@ Classes for attaching metadata to PMI objects.
 """
 
 from __future__ import print_function, division
+from IMP.pmi.tools import OrderedDict
 import os
 
 class Metadata(object):
@@ -60,7 +61,7 @@ class Dataset(Metadata):
     _data_type = 'unspecified'
     def __init__(self, location):
         self.location = location
-        self._parents = {}
+        self._parents = OrderedDict()
 
     def add_parent(self, dataset):
         """Add another Dataset from which this one was derived.
@@ -178,9 +179,12 @@ class FileLocation(Location):
         self.repo = repo
         if repo:
             self.path = path
+            # Cannot determine file size if non-local
+            self.file_size = None
         else:
             if not os.path.exists(path):
                 raise ValueError("%s does not exist" % path)
+            self.file_size = os.stat(path).st_size
             # Store absolute path in case the working directory changes later
             self.path = os.path.abspath(path)
 

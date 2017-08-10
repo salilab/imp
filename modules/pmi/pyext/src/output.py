@@ -744,8 +744,12 @@ class ProcessOutput(object):
     def get_fields(self, fields, filtertuple=None, filterout=None, get_every=1):
         '''
         Get the desired field names, and return a dictionary.
+        Namely, "fields" are the queried keys in the stat file (eg. ["Total_Score",...])
+        The returned data structure is a dictionary, where each key is a field and the value
+        is the time series (ie, frame ordered series)
+        of that field (ie, {"Total_Score":[Score_0,Score_1,Score_2,Score_3,...],....} )
 
-        @param fields desired field names
+        @param fields (list of strings) queried keys in the stat file (eg. "Total_Score"....)
         @param filterout specify if you want to "grep" out something from
                          the file, so that it is faster
         @param filtertuple a tuple that contains

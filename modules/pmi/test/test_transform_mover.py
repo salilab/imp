@@ -6,12 +6,13 @@ import IMP.pmi
 import IMP.pmi.representation
 import IMP.pmi.samplers
 import IMP.pmi.macros
+import IMP.pmi.restraints
+import IMP.pmi.restraints.stereochemistry
 import IMP.container
 import IMP.algebra
 import IMP.rmf
 import RMF
-import os,shutil
-
+import shutil
 
 # initialize Replica Exchange class
 try:
@@ -56,7 +57,6 @@ class Tests(IMP.test.TestCase):
         mc = IMP.core.MonteCarlo(m)
         mc.set_scoring_function([dr])
         mc.set_return_best(False)
-        mc.set_scoring_function
         mc.set_kt(1.0)
         mc.add_mover(smv)
 
@@ -250,12 +250,6 @@ class Tests(IMP.test.TestCase):
         #shutil.rmtree("test_transform_mover_output_1")
     """
     def test_pmi_representation_sampling_macro1_helix(self):
-        import IMP
-        import IMP.pmi
-        import IMP.pmi.representation
-        import IMP.pmi.restraints
-        import IMP.pmi.restraints.stereochemistry
-        import IMP.pmi.macros
 
         rbmaxtrans = 3.00
         fbmaxtrans = 3.00
@@ -330,13 +324,6 @@ class Tests(IMP.test.TestCase):
 
 
     def test_pmi_representation_sampling_mainchain_mover(self):
-        import IMP
-        import IMP.pmi
-        import IMP.pmi.representation
-        import IMP.pmi.restraints
-        import IMP.pmi.restraints.stereochemistry
-        import IMP.pmi.macros
-
         rbmaxtrans = 3.00
         fbmaxtrans = 3.00
         rbmaxrot=0.1

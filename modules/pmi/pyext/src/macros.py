@@ -43,12 +43,15 @@ class ReplicaExchange0(object):
                  simulated_annealing_maximum_temperature_nframes=100,
                  replica_exchange_minimum_temperature=1.0,
                  replica_exchange_maximum_temperature=2.5,
+                 replica_exchange_swap=True,
                  num_sample_rounds=1,
                  number_of_best_scoring_models=500,
                  monte_carlo_steps=10,
+                 self_adaptive=False,
                  molecular_dynamics_steps=10,
                  molecular_dynamics_max_time_step=1.0,
                  number_of_frames=1000,
+                 save_coordinates_mode="lowest_temperature",
                  nframes_write_coordinates=1,
                  write_initial_rmf=True,
                  initial_rmf_name_suffix="initial",
@@ -94,13 +97,21 @@ class ReplicaExchange0(object):
            @param replica_exchange_minimum_temperature Low temp for REX; should
                   generally be the same as monte_carlo_temperature.
            @param replica_exchange_maximum_temperature High temp for REX
+           @param replica_exchange_swap Boolean, enable disable temperature
+                  swap (Default=True)
            @param num_sample_rounds        Number of rounds of MC/MD per cycle
            @param number_of_best_scoring_models Number of top-scoring PDB models
                   to keep around for analysis
            @param monte_carlo_steps        Number of MC steps per round
+           @param self_adaptive        self adaptive scheme for monte carlo movers
            @param molecular_dynamics_steps  Number of MD steps per round
            @param molecular_dynamics_max_time_step Max time step for MD
            @param number_of_frames         Number of REX frames to run
+           @param save_coordinates_mode  string: how to save coordinates.
+                  "lowest_temperature" (default) only the lowest temperatures is saved
+                  "25th_score" all replicas whose score is below the 25th percentile
+                  "50th_score" all replicas whose score is below the 50th percentile
+                  "75th_score" all replicas whose score is below the 75th percentile
            @param nframes_write_coordinates How often to write the coordinates
                   of a frame
            @param write_initial_rmf        Write the initial configuration
@@ -142,6 +153,7 @@ class ReplicaExchange0(object):
         self.crosslink_restraints = crosslink_restraints
         self.em_object_for_rmf = em_object_for_rmf
         self.monte_carlo_sample_objects = monte_carlo_sample_objects
+        self.vars["self_adaptive"]=self_adaptive
         if sample_objects is not None:
             self.monte_carlo_sample_objects+=sample_objects
         self.molecular_dynamics_sample_objects=molecular_dynamics_sample_objects
@@ -152,7 +164,7 @@ class ReplicaExchange0(object):
             "replica_exchange_minimum_temperature"] = replica_exchange_minimum_temperature
         self.vars[
             "replica_exchange_maximum_temperature"] = replica_exchange_maximum_temperature
-
+        self.vars["replica_exchange_swap"] = replica_exchange_swap
         self.vars["simulated_annealing"]=\
                                    simulated_annealing
         self.vars["simulated_annealing_minimum_temperature"]=\
@@ -170,6 +182,10 @@ class ReplicaExchange0(object):
         self.vars["monte_carlo_steps"] = monte_carlo_steps
         self.vars["molecular_dynamics_steps"]=molecular_dynamics_steps
         self.vars["number_of_frames"] = number_of_frames
+        if not save_coordinates_mode  in ["lowest_temperature","25th_score","50th_score","75th_score"]:
+            raise Exception("save_coordinates_mode has unrecognized value")
+        else:
+            self.vars["save_coordinates_mode"] = save_coordinates_mode
         self.vars["nframes_write_coordinates"] = nframes_write_coordinates
         self.vars["write_initial_rmf"] = write_initial_rmf
         self.vars["initial_rmf_name_suffix"] = initial_rmf_name_suffix
@@ -220,6 +236,8 @@ class ReplicaExchange0(object):
                 nfmin=self.vars["simulated_annealing_minimum_temperature_nframes"]
                 nfmax=self.vars["simulated_annealing_maximum_temperature_nframes"]
                 sampler_mc.set_simulated_annealing(tmin,tmax,nfmin,nfmax)
+            if self.vars["self_adaptive"]:
+                sampler_mc.set_self_adaptive(isselfadaptive=self.vars["self_adaptive"])
             self.output_objects.append(sampler_mc)
             samplers.append(sampler_mc)
 
@@ -368,6 +386,11 @@ class ReplicaExchange0(object):
 #----------------------------------------------
 
         if not self.test_mode:
+            mpivs=IMP.pmi.samplers.MPI_values(self.replica_exchange_object)
+
+#----------------------------------------------
+
+        if not self.test_mode:
             print("Setting up production rmf files")
             rmfname = rmf_dir + "/" + str(myindex) + ".rmf3"
             output.init_rmf(rmfname, output_hierarchies, geometries=self.vars["geometries"])
@@ -395,11 +418,26 @@ class ReplicaExchange0(object):
                         sampler_mc.optimize(self.vars["monte_carlo_steps"])
                 score = IMP.pmi.tools.get_restraint_set(
                                              self.model).evaluate(False)
+                mpivs.set_value("score",score)
             output.set_output_entry("score", score)
+
+
 
             my_temp_index = int(rex.get_my_temp() * temp_index_factor)
 
-            if min_temp_index == my_temp_index:
+            if self.vars["save_coordinates_mode"] == "lowest_temperature":
+                save_frame=(min_temp_index == my_temp_index)
+            elif self.vars["save_coordinates_mode"] == "25th_score":
+                score_perc=mpivs.get_percentile("score")
+                save_frame=(score_perc*100.0<=25.0)
+            elif self.vars["save_coordinates_mode"] == "50th_score":
+                score_perc=mpivs.get_percentile("score")
+                save_frame=(score_perc*100.0<=50.0)
+            elif self.vars["save_coordinates_mode"] == "75th_score":
+                score_perc=mpivs.get_percentile("score")
+                save_frame=(score_perc*100.0<=75.0)
+
+            if save_frame:
                 print("--- frame %s score %s " % (str(i), str(score)))
 
                 if not self.test_mode:
@@ -418,10 +456,11 @@ class ReplicaExchange0(object):
 
             if not self.test_mode:
                 output.write_stat2(replica_stat_file)
-            rex.swap_temp(i, score)
+            if self.vars["replica_exchange_swap"]:
+                rex.swap_temp(i, score)
         if self.representation:
-            for p in self.representation._protocol_output:
-                p.add_replica_exchange(self)
+            for p, state in self.representation._protocol_output:
+                p.add_replica_exchange(state, self)
 
         if not self.test_mode:
             print("closing production rmf files")
@@ -476,10 +515,11 @@ class BuildSystem(object):
 
     def add_state(self,
                   reader,
-                  keep_chain_id=False):
+                  keep_chain_id=False, fasta_name_map=None):
         """Add a state using the topology info in a IMP::pmi::topology::TopologyReader object.
         When you are done adding states, call execute_macro()
         @param reader The TopologyReader object
+        @param fasta_name_map dictionary for converting protein names found in the fasta file
         """
         state = self.system.create_state()
         self._readers.append(reader)
@@ -504,8 +544,7 @@ class BuildSystem(object):
                     is_nucleic=False
                     fasta_flag=copy[0].fasta_flag
                     if fasta_flag == "RNA" or fasta_flag == "DNA": is_nucleic=True
-
-                    seq = IMP.pmi.topology.Sequences(copy[0].fasta_file)[copy[0].fasta_id]
+                    seq = IMP.pmi.topology.Sequences(copy[0].fasta_file, fasta_name_map)[copy[0].fasta_id]
                     print("BuildSystem.add_state: molecule %s sequence has %s residues" % (molname,len(seq)))
                     orig_mol = state.create_molecule(molname,
                                                      seq,
@@ -1416,7 +1455,8 @@ class AnalysisReplicaExchange0(object):
         """Capture details of the modeling protocol.
            @param p an instance of IMP.pmi.output.ProtocolOutput or a subclass.
         """
-        self._protocol_output.append(p)
+        # Assume last state is the one we're interested in
+        self._protocol_output.append((p, p._last_state))
 
     def get_modeling_trajectory(self,
                                 score_key="SimplifiedModel_Total_Score_None",
@@ -1561,10 +1601,10 @@ class AnalysisReplicaExchange0(object):
         @param write_pdb_with_centered_coordinates
         @param voxel_size                     Used for the density output
         """
-        self._outputdir = outputdir
+        self._outputdir = os.path.abspath(outputdir)
         self._number_of_clusters = number_of_clusters
-        for p in self._protocol_output:
-            p.add_replica_exchange_analysis(self)
+        for p, state in self._protocol_output:
+            p.add_replica_exchange_analysis(state, self)
 
         if self.test_mode:
             return

@@ -31,6 +31,11 @@ class _Repo(object):
         """Return a path relative to the top of the repository"""
         return os.path.relpath(fname, self._root)
 
+class _StateInfo(object):
+    """Score state-specific information about this representation."""
+    short_name = None
+    long_name = None
+
 class Representation(object):
     # Authors: Peter Cimermancic, Riccardo Pellarin, Charles Greenberg
 
@@ -90,6 +95,7 @@ class Representation(object):
                      restraint.
         """
 
+        self.state = _StateInfo()
         self._metadata = []
         self._file_dataset = {}
         self._protocol_output = []
@@ -150,6 +156,7 @@ class Representation(object):
         self.reference_structures = {}
         self.elements = {}
         self.linker_restraints = IMP.RestraintSet(self.m, "linker_restraints")
+        self.linker_restraints.set_was_used(True)
         self.linker_restraints_dict = {}
         self.threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
                            'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
@@ -190,14 +197,14 @@ class Representation(object):
         """Capture details of the modeling protocol.
            @param p an instance of IMP.pmi.output.ProtocolOutput or a subclass.
         """
-        self._protocol_output.append(p)
-        p._metadata = self._metadata
-        p._file_dataset = self._file_dataset
-        p.m = self.m
-        p.prot = self.prot
-        # Ugly, but we need to be able to call set_coordinates_from_rmf().
-        p._representation = weakref.proxy(self)
-    protocol_output = property(lambda self: self._protocol_output[:])
+        state = p._add_state(self)
+        self._protocol_output.append((p, state))
+        p._each_metadata.append(self._metadata)
+        p._file_datasets.append(self._file_dataset)
+        state.m = self.m
+        state.prot = self.prot
+    protocol_output = property(lambda self:
+                               [x[0] for x in self._protocol_output])
 
     def set_label(self, label):
         self.label = label
@@ -211,8 +218,8 @@ class Representation(object):
         self.prot.add_child(protein_h)
         self.color_dict[name] = color
         self.elements[name] = []
-        for p in self._protocol_output:
-            p.create_component(name, True)
+        for p, state in self._protocol_output:
+            p.create_component(state, name, True)
 
     def create_non_modeled_component(self, name):
         """Create a component that isn't used in the modeling.
@@ -222,8 +229,8 @@ class Representation(object):
            than that modeled. Any references to these non-modeled components
            can then be correctly resolved later."""
         self.elements[name] = []
-        for p in self._protocol_output:
-            p.create_component(name, False)
+        for p, state in self._protocol_output:
+            p.create_component(state, name, False)
 
     # Deprecation warning
 
@@ -256,7 +263,7 @@ class Representation(object):
             self.sequence_dict[name]=offs_str+self.sequence_dict[name]
 
         self.elements[name].append((length, length, " ", "end"))
-        for p in self._protocol_output:
+        for p, state in self._protocol_output:
             p.add_component_sequence(name, self.sequence_dict[name])
 
     def autobuild_model(self, name, pdbname, chain,
@@ -475,8 +482,8 @@ class Representation(object):
         hiers = self.coarse_hierarchy(name, start, end,
                                       resolutions, isnucleicacid, c0, protein_h, "pdb", color)
         outhiers += hiers
-        for p in self._protocol_output:
-            p.add_pdb_element(name, start, end, offset, pdbname, chain,
+        for p, state in self._protocol_output:
+            p.add_pdb_element(state, name, start, end, offset, pdbname, chain,
                               hiers[0])
 
         if show:
@@ -653,8 +660,9 @@ class Representation(object):
             IMP.core.XYZ(prt).set_coordinates_are_optimized(True)
             outhiers += [h]
 
-        for p in self._protocol_output:
-            p.add_bead_element(name, ds[0][0], ds[-1][1], len(ds), outhiers[0])
+        for p, state in self._protocol_output:
+            p.add_bead_element(state, name, ds[0][0], ds[-1][1], len(ds),
+                               outhiers[0])
 
         return outhiers
 
@@ -2603,12 +2611,3 @@ class Representation(object):
                     last_residue=20))
 
         return output
-
-
-# Deprecation warning for the old SimplifiedModel class
-
-@IMP.deprecated_object("2.5", "Use Representation instead.")
-class SimplifiedModel(Representation):
-
-    def __init__(self, *args, **kwargs):
-        Representation.__init__(self, *args, **kwargs)

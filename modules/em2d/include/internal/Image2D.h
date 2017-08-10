@@ -32,26 +32,34 @@
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
+
 int symm_round(double r) {
   return static_cast<int>(r > 0.0 ? floor(r + 0.5) : ceil(r - 0.5));
 }
-}
+
+} // anonymous namespace
+
+void read_pgm_header(std::ifstream &infile, bool &binary_fmt, int &width,
+                     int &height, int &maxval);
 
 template <class T = double>
 class Image2D : public boost::multi_array<T, 2> {
  public:
   // Constructors
-  Image2D() : average_computed_(false), stddev_computed_(false) {}
+  Image2D() : average_computed_(false), stddev_computed_(false),
+              center_x_(0), center_y_(0) {}
 
   // Loads an image from the specified file
   // The file is assumed to contain an image in PGM format
   Image2D(const std::string& file_name)
-      : average_computed_(false), stddev_computed_(false) {
+      : average_computed_(false), stddev_computed_(false)
+        , center_x_(0), center_y_(0) {
     read_PGM(file_name);
   }
 
   Image2D(const boost::multi_array<T, 2>& in)
-      : average_computed_(false), stddev_computed_(false) {
+      : average_computed_(false), stddev_computed_(false)
+        , center_x_(0), center_y_(0) {
     this->resize(boost::extents[in.shape()[0]][in.shape()[1]]);
     for (unsigned int i = 0; i < in.num_elements(); i++) {
       *(this->data() + i) = *(in.data() + i);
@@ -65,6 +73,8 @@ class Image2D : public boost::multi_array<T, 2> {
         average_computed_(in.average_computed_),
         stddev_computed_(in.stddev_computed_),
         pca_(in.pca_),
+	center_x_(in.center_x_),
+	center_y_(in.center_y_),
         points_(in.points_) {
     this->resize(boost::extents[in.shape()[0]][in.shape()[1]]);
     for (unsigned int i = 0; i < in.num_elements(); i++) {
@@ -73,7 +83,8 @@ class Image2D : public boost::multi_array<T, 2> {
   }
 
   Image2D(int height, int width)
-      : average_computed_(false), stddev_computed_(false) {
+      : average_computed_(false), stddev_computed_(false)
+        , center_x_(0), center_y_(0) {
     this->resize(boost::extents[height][width]);
   }
 
@@ -114,6 +125,7 @@ class Image2D : public boost::multi_array<T, 2> {
   double ncc_score(const Image2D<T>& other_image) const;
   double ncc_score(const Image2D<T>& other_image, T thr) const;
   void compute_PCA();
+  IMP::algebra::Vector2D get_centroid() const { return pca_.get_centroid(); }
 
   void add(const Image2D<T>& image, double weight = 0.5);
   void convert_to_int(Image2D<int>& out_image) const;
@@ -128,49 +140,55 @@ class Image2D : public boost::multi_array<T, 2> {
   double max_distance() const;
   int segmented_pixels() const { return (int)points_.size(); }
 
+  int get_center_x() const { return center_x_; }
+  int get_center_y() const { return center_y_; }
+
  protected:
   double average_;
   double stddev_;
   bool average_computed_;
   bool stddev_computed_;
   IMP::algebra::PrincipalComponentAnalysis2D pca_;
+  int center_x_, center_y_;
   std::vector<IMP::algebra::Vector2D> points_;  // segmented area
+
+ private:
+  // Read a PGM file in text format
+  void read_text_pgm(std::ifstream &infile, int width, int height);
+  // Read a PGM file in binary format; each pixel is represented by 1 byte
+  void read_1byte_binary_pgm(std::ifstream &infile, int width, int height);
+  // Read a PGM file in binary format; each pixel is represented by 2 bytes,
+  // MSB first
+  void read_2byte_binary_pgm(std::ifstream &infile, int width, int height);
+  void write_PGM(std::ofstream& fh) const;
 };
 
 template <class T>
 void Image2D<T>::read_PGM(const std::string& filename) {
-  std::ifstream infile(filename.c_str());
+  std::ifstream infile(filename.c_str(), std::ifstream::binary);
   if (!infile) {
     IMP_WARN("Unable to open file " << filename << std::endl);
     return;
   }
-
-  char c;
-  char ftype = ' ';
-  const int MAX_LENGTH = 1000;
-  char line[MAX_LENGTH];
-  while (infile.get(c)) {
-    switch (c) {
-      case '#':  // if comment line, read the whole line and move on
-        infile.getline(line, MAX_LENGTH);
-        break;
-      case 'P':  // format magick number
-        infile.get(ftype);
-        infile.getline(line, MAX_LENGTH);
-        break;
-      default:  // return the first character
-        infile.putback(c);
-        break;
-    }
-    if (ftype != ' ' && isdigit(c)) break;  // magick number read and the next line is numbers
-  }
-
+  bool binary_fmt;
   int width, height, maxval;
-  infile >> width >> height >> maxval;
-  IMP_LOG_VERBOSE("Image width = " << width << " height = " << height
-                  << " max color val = " << maxval << std::endl);
+  read_pgm_header(infile, binary_fmt, width, height, maxval);
 
   this->resize(boost::extents[height][width]);
+  if (binary_fmt) {
+    if (maxval < 256) {
+      read_1byte_binary_pgm(infile, width, height);
+    } else {
+      read_2byte_binary_pgm(infile, width, height);
+    }
+  } else {
+    read_text_pgm(infile, width, height);
+  }
+  infile.close();
+}
+
+template <class T>
+void Image2D<T>::read_text_pgm(std::ifstream &infile, int width, int height) {
   int gray_level;
   for (int i = 0; i < height; i++) {
     for (int j = 0; j < width; j++) {
@@ -178,13 +196,42 @@ void Image2D<T>::read_PGM(const std::string& filename) {
       (*this)[i][j] = (T)gray_level;
     }
   }
-  infile.close();
+}
+
+template <class T>
+void Image2D<T>::read_1byte_binary_pgm(std::ifstream &infile, int width,
+                                       int height) {
+  std::vector<unsigned char> row(width);
+  for (int i = 0; i < height; i++) {
+    infile.read((char *)&row[0], width);
+    for (int j = 0; j < width; j++) {
+      (*this)[i][j] = (T)row[j];
+    }
+  }
+}
+
+template <class T>
+void Image2D<T>::read_2byte_binary_pgm(std::ifstream &infile, int width,
+                                       int height) {
+  std::vector<unsigned char> row(width * 2);
+  for (int i = 0; i < height; i++) {
+    infile.read((char *)&row[0], width * 2);
+    for (int j = 0; j < width; j++) {
+      (*this)[i][j] = (T)((int)row[j * 2] * 256 + (int)row[j * 2 + 1]);
+    }
+  }
 }
 
 template <class T>
 void Image2D<T>::write_PGM(const std::string& filename) const {
-  std::ofstream outfile(filename.c_str());
-  outfile << "P2" << std::endl;
+  std::ofstream outfile(filename.c_str(), std::ofstream::binary);
+  write_PGM(outfile);
+  outfile.close();
+}
+
+template <class T>
+void Image2D<T>::write_PGM(std::ofstream& outfile) const {
+  outfile << "P5" << std::endl;
   outfile << get_width() << " " << get_height() << std::endl;
   outfile << "255" << std::endl;
 
@@ -197,16 +244,14 @@ void Image2D<T>::write_PGM(const std::string& filename) const {
       min_value = std::min((double)(*this)[i][j], min_value);
     }
   }
+  std::vector<unsigned char> row(get_width());
   for (int i = 0; i < get_height(); i++) {
     for (int j = 0; j < get_width(); j++) {
-      outfile << symm_round(255.0 * ((*this)[i][j] - min_value) /
-                            (max_value - min_value));
-      outfile << " ";
-      if (j > 0 && j % 12 == 0) outfile << std::endl;
+      row[j] = symm_round(255.0 * ((*this)[i][j] - min_value) /
+                          (max_value - min_value));
     }
-    outfile << std::endl;
+    outfile.write((char *)&row[0], get_width());
   }
-  outfile.close();
 }
 
 template <class T>
@@ -222,71 +267,10 @@ template <class T>
 void Image2D<T>::write_PGM(const std::vector<Image2D<> >& images,
                            const std::string& filename) {
   if (images.size() <= 0) return;
-  std::ofstream outfile(filename.c_str());
-  outfile << "P2" << std::endl;
-  // assume same height and width for all images
-  int width, height;
-  if (images.size() >= 10) {
-    width = 10 * images[0].get_width() + 9;
-  } else {
-    int n = images.size();
-    width = n * images[0].get_width() + n - 1;
-  }
-  unsigned int rows_number = images.size() / 10;
-  if (images.size() % 10 > 0) rows_number++;
-  IMP_LOG_VERBOSE("height = " << rows_number << " all images " << images.size()
-                  << std::endl);
-  height = rows_number * images[0].get_height() + rows_number - 1;
-  outfile << width << " " << height << std::endl;
-  outfile << "255" << std::endl;
+  std::ofstream outfile(filename.c_str(), std::ofstream::binary);
 
-  // convert each image to 0-255 color space
-  std::vector<Image2D<int> > out_images(images.size());
-  for (unsigned int image_index = 0; image_index < images.size();
-       image_index++) {
-    images[image_index].convert_to_int(out_images[image_index]);
-  }
-
-  // write 10 images in a row
-  // iterate over 10 images
-  for (unsigned int image_index = 0; image_index < images.size();
-       image_index += 10) {
-    for (int i = 0; i < images[image_index].get_height();
-         i++) {  // i goes over rows
-      for (unsigned int k = 0; k < 10;
-           k++) {  // k iterates over images in one row
-        if (image_index + k < images.size()) {
-          // j goes over columns
-          for (int j = 0; j < images[image_index + k].get_width(); j++) {
-            outfile << out_images[image_index + k][i][j];
-            outfile << " ";
-            if (j > 0 && j % 12 == 0) outfile << std::endl;
-          }
-          if (k != 9 && k != images.size() - 1 &&
-              image_index + k <= images.size() - 1)
-            outfile << " 255 ";  // white frame at the end of each image row
-          outfile << std::endl;
-        } else {
-          if (images.size() > 10) {  // print black row
-            for (int j = 0; j < images[0].get_width();
-                 j++) {  // j goes over columns
-              outfile << "0 ";
-              if (j > 0 && j % 12 == 0) outfile << std::endl;
-            }
-            if (k != 9)
-              outfile << "255 ";  // white frame at the end of each image
-            outfile << std::endl;
-          }
-        }
-      }  // end image row iteration (k)
-    }
-    if (image_index % 10 < rows_number - 1) {  // print white row
-      for (int i = 0; i < width; i++) {
-        outfile << "255 ";
-        if (i > 0 && i % 12 == 0) outfile << std::endl;
-      }
-      outfile << std::endl;
-    }
+  for (unsigned i = 0; i < images.size(); ++i) {
+    images[i].write_PGM(outfile);
   }
   outfile.close();
 }
@@ -601,6 +585,8 @@ void Image2D<T>::pad(Image2D<T>& out_image, int new_width, int new_height,
 
   int t_x = new_width / 2 - get_width() / 2;
   int t_y = new_height / 2 - get_height() / 2;
+  out_image.center_x_ = center_x_ + t_x;
+  out_image.center_y_ = center_y_ + t_y;
   for (int i = 0; i < get_height(); i++) {
     for (int j = 0; j < get_width(); j++) {
       out_image[i + t_y][j + t_x] = (*this)[i][j];
@@ -618,10 +604,14 @@ void Image2D<T>::pad(int new_width, int new_height, T pad_value) {
 
 template <class T>
 void Image2D<T>::center() {
+  int old_center_x = center_x_;
+  int old_center_y = center_y_;
   std::pair<double, double> center = weighted_average();
-  int t_x = symm_round(get_width() / 2 - center.first);
-  int t_y = symm_round(get_height() / 2 - center.second);
-  translate(t_x, t_y);
+  int cx = symm_round(get_width() / 2 - center.first);
+  int cy = symm_round(get_height() / 2 - center.second);
+  translate(cx, cy);
+  center_x_ = old_center_x + cx;
+  center_y_ = old_center_y + cy;
 }
 
 template <class T>

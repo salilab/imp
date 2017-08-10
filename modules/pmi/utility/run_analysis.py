@@ -6,13 +6,9 @@ import IMP.rmf
 import IMP.pmi.analysis
 import IMP.pmi.output
 import IMP.pmi.macros
-import RMF
-import numpy as np
-from operator import itemgetter
 from optparse import OptionParser
-import sys,os
+import os
 import glob
-import re
 
 def parse_args():
     usage = """%prog [options] <analysis_option> <input file>

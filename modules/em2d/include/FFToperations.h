@@ -9,6 +9,7 @@
 
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/opencv_interface.h"
+#include <IMP/log_macros.h>
 
 IMPEM2D_BEGIN_NAMESPACE
 

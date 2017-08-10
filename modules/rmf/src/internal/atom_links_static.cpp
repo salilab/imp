@@ -18,6 +18,7 @@
 #include <IMP/atom/Representation.h>
 #include <IMP/atom/State.h>
 #include <IMP/core/Typed.h>
+#include <IMP/core/symmetry.h>
 #include <IMP/display/Colored.h>
 #include <RMF/SetCurrentFrame.h>
 #include <RMF/NodeHandle.h>
@@ -39,6 +40,7 @@ HierarchyLoadStatic::HierarchyLoadStatic(RMF::FileConstHandle fh)
       fragment_factory_(fh),
       backwards_fragment_factory_(fh),
       state_factory_(fh),
+      reference_factory_(fh),
       molecule_(fh) {
   RMF::Category phy = fh.get_category("physics");
   radius_key_ = fh.get_key(phy, "radius", RMF::FloatTraits());
@@ -128,6 +130,12 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
     int dv = state_factory_.get(nh).get_state_index();
     atom::State::setup_particle(m, p, dv);
   }
+  if (reference_factory_.get_is_static(nh)) {
+    IMP_LOG_VERBOSE("reference " << std::endl);
+    RMF::NodeConstHandle refn = reference_factory_.get(nh).get_reference();
+    Particle *refp = get_association<Particle>(refn);
+    core::Reference::setup_particle(m, p, refp);
+  }
 }
 
 void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
@@ -215,6 +223,13 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
     IMP_USAGE_CHECK(atom::State(m, p).get_state_index() == dv,
                     "State indexes don't match");
   }
+  if (reference_factory_.get_is_static(nh)) {
+    IMP_LOG_VERBOSE("reference " << std::endl);
+    RMF::NodeConstHandle refn = reference_factory_.get(nh).get_reference();
+    Particle *refp = get_association<Particle>(refn);
+    IMP_USAGE_CHECK(core::Reference(m, p).get_reference_particle() == refp,
+                    "Reference particles don't match");
+  }
 }
 
 void HierarchySaveStatic::setup_node(Model *m, ParticleIndex p,
@@ -284,6 +299,12 @@ void HierarchySaveStatic::setup_node(Model *m, ParticleIndex p,
     atom::State d(m, p);
     state_factory_.get(n).set_state_index(d.get_state_index());
   }
+  if (core::Reference::get_is_setup(m, p)) {
+    core::Reference d(m, p);
+    Particle *refp = d.get_reference_particle();
+    RMF::NodeHandle refn = get_node_from_association(n.get_file(), refp);
+    reference_factory_.get(n).set_reference(refn);
+  }
 }
 
 HierarchySaveStatic::HierarchySaveStatic(RMF::FileHandle fh)
@@ -299,6 +320,7 @@ HierarchySaveStatic::HierarchySaveStatic(RMF::FileHandle fh)
       domain_factory_(fh),
       fragment_factory_(fh),
       state_factory_(fh),
+      reference_factory_(fh),
       molecule_(fh) {}
 
 namespace {

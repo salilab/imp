@@ -6,11 +6,8 @@ import IMP.algebra
 import IMP.atom
 import IMP.container
 
-import IMP.pmi.restraints as restraints
-import IMP.pmi.representation as representation
 import IMP.pmi.tools as tools
 import IMP.pmi.samplers as samplers
-import IMP.pmi.output as output
 
 
 class XTransRestraint(IMP.Restraint):

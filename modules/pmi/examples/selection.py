@@ -5,7 +5,6 @@ Then you call System.build() and this creates all requested representations.
 """
 
 import IMP
-import RMF
 import IMP.atom
 import IMP.rmf
 import IMP.pmi

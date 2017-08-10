@@ -8,18 +8,20 @@
  */
 
 #include <IMP/kinematics/ProteinKinematics.h>
+#include <IMP/kinematics/internal/graph_helpers.h>
 
 #include <IMP/atom/dihedrals.h>
 #include <IMP/exception.h>
 
 #include <boost/graph/connected_components.hpp>
+#include <boost/graph/undirected_dfs.hpp>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
 ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      bool flexible_backbone,
                                      bool flexible_side_chains)
-  : mhd_(mhd),
+  : Object("ProteinKinematics%1%"), mhd_(mhd),
     atom_particles_(atom::get_by_type(mhd_, atom::ATOM_TYPE)),
     graph_(atom_particles_.size()) {
   init(atom::get_by_type(mhd, atom::RESIDUE_TYPE),
@@ -36,7 +38,7 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      atom::Atoms open_loop_bond_atoms,
                                      bool flexible_backbone,
                                      bool flexible_side_chains )
-  : mhd_(mhd),
+  : Object("ProteinKinematics%1%"), mhd_(mhd),
     atom_particles_(atom::get_by_type(mhd_, atom::ATOM_TYPE)),
     graph_(atom_particles_.size())
 {
@@ -292,7 +294,7 @@ void ProteinKinematics::order_rigid_bodies(
   parents_.resize(rbs_.size());
 
   // run DFS
-  MyDFSVisitor vis(rb_order_, parents_);
+  internal::MyDFSVisitor vis(rb_order_, parents_);
   int starting_vertex = largest_rb_;
   int rb_index1(0), rb_index2(0);
   if(open_loop_bond_atoms.size() > 0) {

@@ -4,10 +4,17 @@
    Utilities are also provided to help in the analysis of models that
    contain cross-links.
 """
-
+from __future__ import print_function
 import IMP
 import IMP.pmi
+import IMP.atom
+import IMP.core
+import IMP.algebra
+import IMP.rmf
+import RMF
+import IMP.display
 import operator
+import math
 import sys
 
 # json default serializations
@@ -49,6 +56,14 @@ class _CrossLinkDataBaseStandardKeys(object):
         self.type[self.residue1_key]=int
         self.residue2_key="Residue2"
         self.type[self.residue2_key]=int
+        self.residue1_amino_acid_key="Residue1AminoAcid"
+        self.type[self.residue1_amino_acid_key]=str
+        self.residue2_amino_acid_key="Residue2AminoAcid"
+        self.type[self.residue2_amino_acid_key]=str
+        self.residue1_moiety_key="Residue1Moiety"
+        self.type[self.residue1_moiety_key]=str
+        self.residue2_moiety_key="Residue2Moiety"
+        self.type[self.residue2_moiety_key]=str
         self.site_pairs_key="SitePairs"
         self.type[self.site_pairs_key]=str
         self.unique_id_key="XLUniqueID"
@@ -73,6 +88,11 @@ class _CrossLinkDataBaseStandardKeys(object):
         self.type[self.redundancy_key]=list
         self.ambiguity_key="Ambiguity"
         self.type[self.ambiguity_key]=int
+        self.residue1_links_number_key="Residue1LinksNumber"
+        self.type[self.residue1_links_number_key]=int
+        self.residue2_links_number_key="Residue2LinksNumber"
+        self.type[self.residue2_links_number_key]=int
+        self.type[self.ambiguity_key]=int
         self.state_key="State"
         self.type[self.state_key]=int
         self.sigma1_key="Sigma1"
@@ -85,6 +105,9 @@ class _CrossLinkDataBaseStandardKeys(object):
         self.type[self.distance_key]=float
         self.min_ambiguous_distance_key="MinAmbiguousDistance"
         self.type[self.distance_key]=float
+        #link types are either Monolink, Intralink or Interlink
+        self.link_type_key="LinkType"
+        self.type[self.link_type_key]=str
 
         self.ordered_key_list =[self.data_set_name_key,
                         self.unique_id_key,
@@ -94,6 +117,10 @@ class _CrossLinkDataBaseStandardKeys(object):
                         self.protein2_key,
                         self.residue1_key,
                         self.residue2_key,
+                        self.residue1_amino_acid_key,
+                        self.residue2_amino_acid_key,
+                        self.residue1_moiety_key,
+                        self.residue2_moiety_key,
                         self.cross_linker_chemical_key,
                         self.id_score_key,
                         self.fdr_key,
@@ -105,13 +132,14 @@ class _CrossLinkDataBaseStandardKeys(object):
                         self.sigma2_key,
                         self.psi_key,
                         self.distance_key,
-                        self.min_ambiguous_distance_key]
+                        self.min_ambiguous_distance_key,
+                        self.link_type_key]
 
 
 class _ProteinsResiduesArray(tuple):
     '''
     This class is inherits from tuple, and it is a shorthand for a cross-link
-    (p1,p2,r1,r2) where p1 and p2 are protein1 and protein2, r1 and r2 are
+    (p1,p2,r1,r2) or a monolink (p1,r1) where p1 and p2 are protein1 and protein2, r1 and r2 are
     residue1 and residue2.
     '''
 
@@ -121,23 +149,40 @@ class _ProteinsResiduesArray(tuple):
         '''
         self.cldbsk=_CrossLinkDataBaseStandardKeys()
         if type(input_data) is dict:
+            monolink=False
             p1=input_data[self.cldbsk.protein1_key]
-            p2=input_data[self.cldbsk.protein2_key]
+            try:
+                p2=input_data[self.cldbsk.protein2_key]
+            except KeyError:
+                monolink=True
             r1=input_data[self.cldbsk.residue1_key]
-            r2=input_data[self.cldbsk.residue2_key]
-            t=(p1,p2,r1,r2)
+            try:
+                r2=input_data[self.cldbsk.residue2_key]
+            except KeyError:
+                monolink=True
+            if not monolink:
+                t=(p1,p2,r1,r2)
+            else:
+                t=(p1,"",r1,None)
         elif type(input_data) is tuple:
-            if len(input_data)>4:
+            if len(input_data)>4 or len(input_data)==3 or len(input_data)==1:
                 raise TypeError("_ProteinsResiduesArray: must have only 4 elements")
-            p1 = _handle_string_input(input_data[0])
-            p2 = _handle_string_input(input_data[1])
-            r1=input_data[2]
-            r2=input_data[3]
-            if type(r1) is not int:
-                raise TypeError("_ProteinsResiduesArray: residue1 must be a integer")
-            if type(r2) is not int:
-                raise TypeError("_ProteinsResiduesArray: residue2 must be a integer")
-            t=(p1,p2,r1,r2)
+            if len(input_data)==4:
+                p1 = _handle_string_input(input_data[0])
+                p2 = _handle_string_input(input_data[1])
+                r1=input_data[2]
+                r2=input_data[3]
+                if (not (type(r1) is int)) and (not (r1 is None)):
+                    raise TypeError("_ProteinsResiduesArray: residue1 must be a integer")
+                if (not (type(r2) is int)) and (not (r1 is None)):
+                    raise TypeError("_ProteinsResiduesArray: residue2 must be a integer")
+                t=(p1,p2,r1,r2)
+            if len(input_data) == 2:
+                p1 = _handle_string_input(input_data[0])
+                r1 = input_data[1]
+                if type(r1) is not int:
+                    raise TypeError("_ProteinsResiduesArray: residue1 must be a integer")
+                t = (p1,"",r1,None)
         else:
             raise TypeError("_ProteinsResiduesArray: input must be a dict or tuple")
         return tuple.__new__(_ProteinsResiduesArray, t)
@@ -175,8 +220,6 @@ class FilterOperator(object):
         '''
         (argument1,operator,argument2) can be either a (keyword,operator.eq|lt|gt...,value)
         or  (FilterOperator1,operator.or|and...,FilterOperator2)
-
-        we need to implement a NOT
         '''
         if isinstance(argument1, FilterOperator):
             self.operations = [argument1, operator, argument2]
@@ -190,6 +233,9 @@ class FilterOperator(object):
     def __and__(self, FilterOperator2):
         return FilterOperator(self, operator.and_, FilterOperator2)
 
+    def __invert__(self):
+        return FilterOperator(self, operator.not_, None)
+
     def evaluate(self, xl_item):
 
         if len(self.operations) == 0:
@@ -197,7 +243,10 @@ class FilterOperator(object):
             return operator(xl_item[keyword], value)
         FilterOperator1, op, FilterOperator2 = self.operations
 
-        return op(FilterOperator1.evaluate(xl_item), FilterOperator2.evaluate(xl_item))
+        if FilterOperator2 is None:
+            return op(FilterOperator1.evaluate(xl_item))
+        else:
+            return op(FilterOperator1.evaluate(xl_item), FilterOperator2.evaluate(xl_item))
 
 '''
 def filter_factory(xl_):
@@ -279,6 +328,22 @@ class CrossLinkDataBaseKeywordsConverter(_CrossLinkDataBaseStandardKeys):
         self.converter[origin_key]=self.residue2_key
         self.backward_converter[self.residue2_key]=origin_key
 
+    def set_residue1_amino_acid_key(self, origin_key):
+        self.converter[origin_key] = self.residue1_amino_acid_key
+        self.backward_converter[self.residue1_amino_acid_key] = origin_key
+
+    def set_residue2_amino_acid_key(self, origin_key):
+        self.converter[origin_key] = self.residue2_amino_acid_key
+        self.backward_converter[self.residue2_amino_acid_key] = origin_key
+
+    def set_residue1_moiety_key(self, origin_key):
+        self.converter[origin_key] = self.residue1_moiety_key
+        self.backward_converter[self.residue1_moiety_key] = origin_key
+
+    def set_residue2_moiety_key(self, origin_key):
+        self.converter[origin_key] = self.residue2_moiety_key
+        self.backward_converter[self.residue2_moiety_key] = origin_key
+
     def set_site_pairs_key(self,origin_key):
         self.converter[origin_key]=self.site_pairs_key
         self.backward_converter[self.site_pairs_key]=origin_key
@@ -298,6 +363,10 @@ class CrossLinkDataBaseKeywordsConverter(_CrossLinkDataBaseStandardKeys):
     def set_psi_key(self,origin_key):
         self.converter[origin_key]=self.psi_key
         self.backward_converter[self.psi_key]=origin_key
+
+    def set_link_type_key(self,link_type_key):
+        self.converter[link_type_key]=self.link_type_key
+        self.backward_converter[self.link_type_key]=link_type_key
 
     def get_converter(self):
         '''
@@ -333,7 +402,7 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
             self.compulsory_keys= set([self.protein1_key,
                                   self.protein2_key,
                                   self.site_pairs_key])
-        elif style is "QUANTITATION":
+        elif style is "XTRACT" or style is "QUANTITATION":
             self.style=style
             self.compulsory_keys= set([self.site_pairs_key])
         else:
@@ -366,23 +435,37 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
                     residue_type_1,residue_index_1=m2.group(1,2)
             # at this stage chain_pair_indexes is empty
             return  residue_pair_indexes,chain_pair_indexes
-        if self.style == "QUANTITATION":
-            input_strings=input_string.split(":x:")
-            first_peptides=input_strings[0].split(":|:")
-            second_peptides=input_strings[1].split(":|:")
-            first_peptides_indentifiers=[(f.split(":")[0],f.split(":")[1]) for f in first_peptides]
-            second_peptides_indentifiers=[(f.split(":")[0],f.split(":")[1]) for f in second_peptides]
-            residue_pair_indexes=[]
-            chain_pair_indexes=[]
-            for fpi in first_peptides_indentifiers:
-                for spi in second_peptides_indentifiers:
+        if self.style is "XTRACT" or self.style is "QUANTITATION":
+            if ":x:" in input_string:
+                # if it is a crosslink....
+                input_strings=input_string.split(":x:")
+                first_peptides=input_strings[0].split(":|:")
+                second_peptides=input_strings[1].split(":|:")
+                first_peptides_indentifiers=[(f.split(":")[0],f.split(":")[1]) for f in first_peptides]
+                second_peptides_indentifiers=[(f.split(":")[0],f.split(":")[1]) for f in second_peptides]
+                residue_pair_indexes=[]
+                chain_pair_indexes=[]
+                for fpi in first_peptides_indentifiers:
+                    for spi in second_peptides_indentifiers:
+                        chain1=fpi[0]
+                        chain2=spi[0]
+                        residue1=fpi[1]
+                        residue2=spi[1]
+                        residue_pair_indexes.append((residue1,residue2))
+                        chain_pair_indexes.append((chain1,chain2))
+                return residue_pair_indexes, chain_pair_indexes
+            else:
+                # if it is a monolink....
+                first_peptides = input_string.split(":|:")
+                first_peptides_indentifiers = [(f.split(":")[0], f.split(":")[1]) for f in first_peptides]
+                residue_indexes = []
+                chain_indexes = []
+                for fpi in first_peptides_indentifiers:
                     chain1=fpi[0]
-                    chain2=spi[0]
                     residue1=fpi[1]
-                    residue2=spi[1]
-                    residue_pair_indexes.append((residue1,residue2))
-                    chain_pair_indexes.append((chain1,chain2))
-            return residue_pair_indexes,chain_pair_indexes
+                    residue_indexes.append((residue1,))
+                    chain_indexes.append((chain1,))
+                return residue_indexes, chain_indexes
 
 
 class FixedFormatParser(_CrossLinkDataBaseStandardKeys):
@@ -419,12 +502,18 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
     operations, adding cross-links, merge datasets...
     '''
 
-    def __init__(self, converter=None, data_base=None):
+    def __init__(self, converter=None, data_base=None, fasta_seq=None, linkable_aa=('K',)):
         '''
         Constructor.
         @param converter an instance of CrossLinkDataBaseKeywordsConverter
         @param data_base an instance of CrossLinkDataBase to build the new database on
+        @param fasta_seq an instance of IMP.pmi.topology.Sequences containing protein fasta sequences to check
+                crosslink consistency. If not given consistency will not be checked
+        @param linkable_aa a tuple containing one-letter amino acids which are linkable by the crosslinker;
+                only used if the database DOES NOT provide a value for a certain residueX_amino_acid_key
+                and if a fasta_seq is given
         '''
+
         if data_base is None:
             self.data_base = {}
         else:
@@ -432,15 +521,18 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
         _CrossLinkDataBaseStandardKeys.__init__(self)
         if converter is not None:
-            self.cldbkc = converter
+            self.cldbkc = converter                     #type: CrossLinkDataBaseKeywordsConverter
             self.list_parser=self.cldbkc.rplp
             self.converter = converter.get_converter()
 
         else:
-            self.cldbkc =    None
+            self.cldbkc =    None               #type: CrossLinkDataBaseKeywordsConverter
             self.list_parser=None
             self.converter = None
 
+        # default amino acids considered to be 'linkable' if none are given
+        self.def_aa_tuple = linkable_aa
+        self.fasta_seq = fasta_seq      #type: IMP.pmi.topology.Sequences
         self._update()
 
     def _update(self):
@@ -449,6 +541,9 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         '''
         self.update_cross_link_unique_sub_index()
         self.update_cross_link_redundancy()
+        self.update_residues_links_number()
+        self.check_cross_link_consistency()
+
 
     def __iter__(self):
         sorted_ids=sorted(self.data_base.keys())
@@ -539,15 +634,26 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
                     # then create the crosslinks
                     for n,p in enumerate(residue_pair_list):
+                        is_monolink=False
+                        if len(p)==1:
+                            is_monolink=True
+
                         new_xl={}
                         for k in new_dict:
                             new_xl[k]=new_dict[k]
                         new_xl[self.residue1_key]=self.type[self.residue1_key](p[0])
-                        new_xl[self.residue2_key]=self.type[self.residue2_key](p[1])
+                        if not is_monolink:
+                            new_xl[self.residue2_key]=self.type[self.residue2_key](p[1])
 
                         if len(chain_pair_list)==len(residue_pair_list):
                             new_xl[self.protein1_key]=self.type[self.protein1_key](chain_pair_list[n][0])
-                            new_xl[self.protein2_key]=self.type[self.protein2_key](chain_pair_list[n][1])
+                            if not is_monolink:
+                                new_xl[self.protein2_key]=self.type[self.protein2_key](chain_pair_list[n][1])
+
+                        if not is_monolink:
+                            new_xl[self.link_type_key]="CROSSLINK"
+                        else:
+                            new_xl[self.link_type_key]="MONOLINK"
 
                         if self.unique_id_key in self.cldbkc.get_setup_keys():
                             if new_xl[self.unique_id_key] not in new_xl_dict:
@@ -605,6 +711,103 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             xl[self.redundancy_key]=len(redundancy_data_base[pra])
             xl[self.redundancy_list_key]=redundancy_data_base[pra]
 
+    def update_residues_links_number(self):
+        residue_links={}
+        for xl in self:
+            (p1,p2,r1,r2)=_ProteinsResiduesArray(xl)
+            if (p1,r1) not in residue_links:
+                residue_links[(p1,r1)]=set([(p2,r2)])
+            else:
+                residue_links[(p1,r1)].add((p2,r2))
+            if (p2,r2) not in residue_links:
+                residue_links[(p2,r2)]=set([(p1,r1)])
+            else:
+                residue_links[(p2,r2)].add((p1,r1))
+
+        for xl in self:
+            (p1,p2,r1,r2)=_ProteinsResiduesArray(xl)
+            xl[self.residue1_links_number_key]=len(residue_links[(p1,r1)])
+            xl[self.residue2_links_number_key]=len(residue_links[(p2,r2)])
+
+    def check_cross_link_consistency(self):
+        if self.cldbkc and self.fasta_seq:
+            cnt_matched, cnt_matched_file = 0, 0
+            matched = {}
+            non_matched = {}
+            for xl in self:
+                (p1, p2, r1, r2) = _ProteinsResiduesArray(xl)
+                b_matched_file = False
+                if self.residue1_amino_acid_key in xl:
+                    # either you know the residue type and aa_tuple is a single entry
+                    aa_from_file = (xl[self.residue1_amino_acid_key].upper(),)
+                    b_matched = self._match_xlinks(p1, r1, aa_from_file)
+                    b_matched_file = b_matched
+                else:
+                    # or pass the possible list of types that can be crosslinked
+                    b_matched = self._match_xlinks(p1, r1, self.def_aa_tuple)
+
+                matched, non_matched = self._update_matched_xlinks(b_matched, p1, r1, matched, non_matched)
+
+                if self.residue2_amino_acid_key in xl:
+                    aa_from_file = (xl[self.residue2_amino_acid_key].upper(), )
+                    b_matched = self._match_xlinks(p2, r2, aa_from_file)
+                    b_matched_file = b_matched
+                else:
+                    b_matched = self._match_xlinks(p2, r2, self.def_aa_tuple)
+
+                matched, non_matched = self._update_matched_xlinks(b_matched, p2, r2, matched, non_matched)
+                if b_matched: cnt_matched += 1
+                if b_matched_file: cnt_matched_file += 1
+            if len(self) > 0:
+                percentage_matched = round(100*cnt_matched/len(self),1)
+                percentage_matched_file = round(100 * cnt_matched_file / len(self), 1)
+                #if matched: print "Matched xlinks:", matched
+                if matched or non_matched: print("check_cross_link_consistency: Out of %d crosslinks "
+                                                 "%d were matched to the fasta sequence (%f %%).\n "
+                                                 "%d were matched by using the crosslink file (%f %%)."%
+                                                 (len(self),cnt_matched,percentage_matched,cnt_matched_file,
+                                                  percentage_matched_file) )
+                if non_matched: print("check_cross_link_consistency: Warning: Non matched xlinks:",
+                                      [(prot_name, sorted(list(non_matched[prot_name]))) for prot_name in non_matched])
+            return matched,non_matched
+
+    def _match_xlinks(self, prot_name, res_index, aa_tuple):
+        # returns Boolean whether given aa matches a position in the fasta file
+        # cross link files usually start counting at 1 and not 0; therefore subtract -1 to compare with fasta
+        amino_dict = IMP.pmi.tools.ThreeToOneConverter()
+        res_index -= 1
+        for amino_acid in aa_tuple:
+            if len(amino_acid) == 3:
+                amino_acid = amino_dict[amino_acid.upper()]
+            if prot_name in self.fasta_seq.sequences:
+                seq = self.fasta_seq.sequences[prot_name]
+                # if we are looking at the first amino acid in a given sequence always return a match
+                # the first aa should always be the n-terminal aa
+                # which may form a crosslink in any case (for BS3-like crosslinkers)
+                # for some data sets the first aa is at position 1; todo: check why this is the case
+                if res_index == 0 or res_index == 1:
+                    return True
+                if res_index < len(seq):
+                    if amino_acid == seq[res_index]:
+                        return True
+                    # else:
+                    #     print "Could not match", prot, res+1, amino_acid, seq[res]
+        return False
+
+    def _update_matched_xlinks(self, b_matched, prot, res, matched, non_matched):
+        if b_matched:
+            if prot in matched:
+                matched[prot].add(res)
+            else:
+                matched[prot] = set([res])
+        else:
+            if prot in non_matched:
+                non_matched[prot].add(res)
+            else:
+                non_matched[prot] = set([res])
+        return matched, non_matched
+
+
     def get_cross_link_string(self,xl):
         string='|'
         for k in self.ordered_key_list:
@@ -648,6 +851,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                         new_xl_dict[id]=[xl]
                     else:
                         new_xl_dict[id].append(xl)
+        self._update()
         return CrossLinkDataBase(self.cldbkc,new_xl_dict)
 
 
@@ -850,16 +1054,23 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 colorkey=kwargs["colorkey"]
             if "sizekey" in kwargs:
                 sizekey=kwargs["sizekey"]
+            if "logyscale" in kwargs:
+                logyscale=kwargs["logyscale"]
+            else:
+                logyscale=False
             xs=[]
             ys=[]
             colors=[]
             for xl in self:
                 try:
                     xs.append(float(xl[xkey]))
-                    ys.append(float(xl[ykey]))
+                    if logyscale:
+                        ys.append(math.log10(float(xl[ykey])))
+                    else:
+                        ys.append(float(xl[ykey]))
                     colors.append(float(xl[colorkey]))
                 except ValueError:
-                    print("Value error for cross-link %s" % (xl[self.unique_id_key]))
+                    print("CrossLinkDataBase.plot: Value error for cross-link %s" % (xl[self.unique_id_key]))
                     continue
 
             cs=[]
@@ -876,6 +1087,39 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             plt.show()
             plt.close()
 
+        if kwargs["type"] == "residue_links":
+            #plot the number of distinct links to a residue
+            #in an histogram
+            #molecule name
+            molecule=kwargs["molecule"]
+            if type(molecule) is IMP.pmi.topology.Molecule:
+                length=len(molecule.sequence)
+                molecule=molecule.get_name()
+            else:
+                #you need a IMP.pmi.topology.Sequences object
+                sequences_object=kwargs["sequences_object"]
+                sequence=sequences_object.sequences[molecule]
+                length=len(sequence)
+
+            histogram=[0]*length
+            for xl in self:
+                if xl[self.protein1_key]==molecule:
+                    histogram[xl[self.residue1_key]-1]=xl[self.residue1_links_number_key]
+                if xl[self.protein2_key]==molecule:
+                    histogram[xl[self.residue2_key]-1]=xl[self.residue2_links_number_key]
+            rects = plt.bar(range(1,length+1), histogram)
+                 #bar_width,
+                 #alpha=opacity,
+                 #color='b',
+                 #yerr=std_men,
+                 #error_kw=error_config,
+                 #label='Men')
+            plt.savefig(filename)
+            plt.show()
+            plt.close()
+
+
+
         if kwargs["type"] == "histogram":
             valuekey=kwargs["valuekey"]
             reference_xline=kwargs["reference_xline"]
@@ -886,7 +1130,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 try:
                     values_list.append(float(xl[valuekey]))
                 except ValueError:
-                    print("Value error for cross-link %s" % (xl[self.unique_id_key]))
+                    print("CrossLinkDataBase.plot: Value error for cross-link %s" % (xl[self.unique_id_key]))
                     continue
             IMP.pmi.output.plot_field_histogram(
                   filename, [values_list], valuename=valuename, bins=bins,
@@ -936,6 +1180,241 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             a.writerow(sorted_ids)
             a.writerows(data)
 
+
+class JaccardDistanceMatrix(object):
+    """This class allows to compute and plot the distance between datasets"""
+
+    def __init__(self,cldb_dictionary):
+        """Input a dictionary where keys are cldb names and values are cldbs"""
+        import scipy.spatial.distance
+        self.dbs=cldb_dictionary
+        self.keylist=list(self.dbs.keys())
+        self.distances=list()
+
+
+        for i,key1 in enumerate(self.keylist):
+            for key2 in self.keylist[i+1:]:
+                distance=self.get_distance(key1,key2)
+                self.distances.append(distance)
+
+        self.distances=scipy.spatial.distance.squareform(self.distances)
+
+    def get_distance(self,key1,key2):
+        return 1.0-self.jaccard_index(self.dbs[key1],self.dbs[key2])
+
+    def jaccard_index(self,CrossLinkDataBase1,CrossLinkDataBase2):
+        """Similarity index between two datasets
+        https://en.wikipedia.org/wiki/Jaccard_index"""
+
+        set1=set()
+        set2=set()
+        for xl1 in CrossLinkDataBase1:
+            a1f=_ProteinsResiduesArray(xl1)
+            a1b=a1f.get_inverted()
+            set1.add(a1f)
+            set1.add(a1b)
+        for xl2 in CrossLinkDataBase2:
+            a2f=_ProteinsResiduesArray(xl2)
+            a2b=a2f.get_inverted()
+            set2.add(a2f)
+            set2.add(a2b)
+        return float(len(set1&set2)/2)/(len(set1)/2+len(set2)/2-len(set1&set2)/2)
+
+    def plot_matrix(self,figurename="clustermatrix.pdf"):
+        import matplotlib as mpl
+        import numpy
+        mpl.use('Agg')
+        import matplotlib.pylab as pl
+        from scipy.cluster import hierarchy as hrc
+
+        raw_distance_matrix=self.distances
+        labels=self.keylist
+
+        fig = pl.figure()
+        #fig.autolayout=True
+
+        ax = fig.add_subplot(1,1,1)
+        dendrogram = hrc.dendrogram(
+            hrc.linkage(raw_distance_matrix),
+            color_threshold=7,
+            no_labels=True)
+        leaves_order = dendrogram['leaves']
+        ax.set_xlabel('Dataset')
+        ax.set_ylabel('Jaccard Distance')
+        pl.tight_layout()
+        pl.savefig("dendrogram."+figurename, dpi=300)
+        pl.close(fig)
+
+        fig = pl.figure()
+        #fig.autolayout=True
+
+        ax = fig.add_subplot(1,1,1)
+        cax = ax.imshow(
+            raw_distance_matrix[leaves_order,
+                                     :][:,
+                                        leaves_order],
+            interpolation='nearest')
+        cb = fig.colorbar(cax)
+        cb.set_label('Jaccard Distance')
+        ax.set_xlabel('Dataset')
+        ax.set_ylabel('Dataset')
+        ax.set_xticks(range(len(labels)))
+        ax.set_xticklabels(numpy.array(labels)[leaves_order], rotation='vertical')
+        ax.set_yticks(range(len(labels)))
+        ax.set_yticklabels(numpy.array(labels)[leaves_order], rotation='horizontal')
+        pl.tight_layout()
+        pl.savefig("matrix."+figurename, dpi=300)
+        pl.close(fig)
+
+
+
+
+
+
+
+
+class MapCrossLinkDataBaseOnStructure(object):
+    '''
+    This class maps a CrossLinkDataBase on a given structure
+    and save an rmf file with the color coded crosslinks
+    '''
+
+
+    def __init__(self,model,CrossLinkDataBase,rmf_name,frame_index):
+        self.CrossLinkDataBase=CrossLinkDataBase
+        rh = RMF.open_rmf_file_read_only(rmf_name)
+        self.model=model
+        self.prots = IMP.rmf.create_hierarchies(rh, self.model)
+        IMP.rmf.load_frame(rh, RMF.FrameID(frame_index))
+        self.compute_distances()
+        self.model.update()
+
+    def compute_distances(self):
+        data=[]
+        sorted_ids=None
+        sorted_group_ids=sorted(self.CrossLinkDataBase.data_base.keys())
+        for group in sorted_group_ids:
+            #group_block=[]
+            group_dists=[]
+            for xl in self.CrossLinkDataBase.data_base[group]:
+                if not sorted_ids:
+                    sorted_ids=sorted(xl.keys())
+                    data.append(sorted_ids+["UniqueID","Distance","MinAmbiguousDistance"])
+                (c1,c2,r1,r2)=_ProteinsResiduesArray(xl)
+                try:
+                    (mdist,p1,p2),(state1,copy1,state2,copy2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
+                except:
+                    mdist="None"
+                    state1="None"
+                    copy1="None"
+                    state2="None"
+                    copy2="None"
+                values=[xl[k] for k in sorted_ids]
+                values+=[group,mdist]
+                group_dists.append(mdist)
+                #group_block.append(values)
+                xl["Distance"]=mdist
+                xl["State1"]=state1
+                xl["Copy1"]=copy1
+                xl["State2"]=state2
+                xl["Copy2"]=copy2
+
+            for xl in self.CrossLinkDataBase.data_base[group]:
+                xl["MinAmbiguousDistance"]=min(group_dists)
+
+    def _get_distance_and_particle_pair(self,r1,c1,r2,c2):
+        '''more robust and slower version of above'''
+        sel=IMP.atom.Selection(self.prots,molecule=c1,residue_index=r1,resolution=1)
+        selpart_1=sel.get_selected_particles()
+        if len(selpart_1)==0:
+            print("MapCrossLinkDataBaseOnStructure: Warning: no particle selected for first site")
+            return None
+        sel=IMP.atom.Selection(self.prots,molecule=c2,residue_index=r2,resolution=1)
+        selpart_2=sel.get_selected_particles()
+        if len(selpart_2)==0:
+            print("MapCrossLinkDataBaseOnStructure: Warning: no particle selected for second site")
+            return None
+        results=[]
+        for p1 in selpart_1:
+            for p2 in selpart_2:
+                if p1 == p2 and r1 == r2: continue
+                d1=IMP.core.XYZ(p1)
+                d2=IMP.core.XYZ(p2)
+                #round distance to second decimal
+                dist=float(int(IMP.core.get_distance(d1,d2)*100.0))/100.0
+                h1=IMP.atom.Hierarchy(p1)
+                while not IMP.atom.Molecule.get_is_setup(h1.get_particle()):
+                    h1=h1.get_parent()
+                copy_index1=IMP.atom.Copy(h1).get_copy_index()
+                while not IMP.atom.State.get_is_setup(h1.get_particle()):
+                    h1=h1.get_parent()
+                state_index1=IMP.atom.State(h1).get_state_index()
+                h2=IMP.atom.Hierarchy(p2)
+                while not IMP.atom.Molecule.get_is_setup(h2.get_particle()):
+                    h2=h2.get_parent()
+                copy_index2=IMP.atom.Copy(h2).get_copy_index()
+                while not IMP.atom.State.get_is_setup(h2.get_particle()):
+                    h2=h2.get_parent()
+                state_index2=IMP.atom.State(h2).get_state_index()
+
+                results.append((dist,state_index1,copy_index1,state_index2,copy_index2,p1,p2))
+        if len(results)==0: return None
+        results_sorted = sorted(results, key=operator.itemgetter(0,1,2,3,4))
+        return (results_sorted[0][0],results_sorted[0][5],results_sorted[0][6]),(results_sorted[0][1],results_sorted[0][2],results_sorted[0][3],results_sorted[0][4])
+
+    def save_rmf_snapshot(self,filename,color_id=None):
+        import operator
+
+        if color_id is None:
+            color_id=self.CrossLinkDataBase.id_score_key
+        sorted_group_ids=sorted(self.CrossLinkDataBase.data_base.keys())
+        list_of_pairs=[]
+        color_scores=[]
+        for group in sorted_group_ids:
+            group_dists_particles=[]
+            for xl in self.CrossLinkDataBase.data_base[group]:
+                xllabel=self.CrossLinkDataBase.get_short_cross_link_string(xl)
+                (c1,c2,r1,r2)=_ProteinsResiduesArray(xl)
+                print (c1,c2,r1,r2)
+                try:
+                    (mdist,p1,p2),(state1,copy1,state2,copy2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
+                except TypeError:
+                    print("TypeError or missing chain/residue ",r1,c1,r2,c2)
+                    continue
+                print(xl[color_id])
+                group_dists_particles.append((mdist,p1,p2,xllabel,float(xl[color_id])))
+            if group_dists_particles:
+                (minmdist,minp1,minp2,minxllabel,mincolor_score)=min(group_dists_particles, key = lambda t: t[0])
+                color_scores.append(mincolor_score)
+                list_of_pairs.append((minp1,minp2,minxllabel,mincolor_score))
+            else:
+                continue
+
+        linear = IMP.core.Linear(0, 0.0)
+        linear.set_slope(1.0)
+        dps2 = IMP.core.DistancePairScore(linear)
+        rslin = IMP.RestraintSet(self.model, 'linear_dummy_restraints')
+        sgs=[]
+        offset=min(color_scores)
+        maxvalue=max(color_scores)
+        for pair in list_of_pairs:
+            pr = IMP.core.PairRestraint(self.model, dps2, (pair[0], pair[1]))
+            pr.set_name(pair[2])
+            factor=(pair[3]-offset)/(maxvalue-offset)
+            print(factor)
+            c=IMP.display.get_rgb_color(factor)
+            seg=IMP.algebra.Segment3D(IMP.core.XYZ(pair[0]).get_coordinates(),IMP.core.XYZ(pair[1]).get_coordinates())
+            rslin.add_restraint(pr)
+            sgs.append(IMP.display.SegmentGeometry(seg,c,pair[2]))
+
+        rh = RMF.create_rmf_file(filename)
+        IMP.rmf.add_hierarchies(rh, self.prots)
+        IMP.rmf.add_restraints(rh,[rslin])
+        IMP.rmf.add_geometries(rh, sgs)
+        IMP.rmf.save_frame(rh)
+        del rh
+
+
 class CrossLinkDataBaseFromStructure(object):
     '''
     This class generates a CrossLinkDataBase from a given structure
@@ -981,7 +1460,7 @@ class CrossLinkDataBaseFromStructure(object):
 
         if self.mode=="pmi1":
             for protein in self.representation.sequence_dict.keys():
-                # we are saving a dictionary with protein name, residue number and random reactivity of the residue
+            # we are saving a dictionary with protein name, residue number and random reactivity of the residue
                 seq=self.representation.sequence_dict[protein]
                 residues=[i for i in range(1,len(seq)+1) if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2))]
 
@@ -1013,7 +1492,7 @@ class CrossLinkDataBaseFromStructure(object):
             for state in self.system.get_states():
                 for moleculename,molecules in state.get_molecules().iteritems():
                     for molecule in molecules:
-                        # we are saving a dictionary with protein name, residue number and random reactivity of the residue
+                # we are saving a dictionary with protein name, residue number and random reactivity of the residue
                         seq=molecule.sequence
                         residues=[i for i in range(1,len(seq)+1) if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2))]
 
@@ -1021,7 +1500,7 @@ class CrossLinkDataBaseFromStructure(object):
                             # uniform random reactivities
                             #self.reactivity_dictionary[(protein,r)]=random.uniform(reactivity_range[0],reactivity_range[1])
                             # getting reactivities from the CDF of an exponential distribution
-                            rexp=numpy.random.exponential(0.1)
+                            rexp=numpy.random.exponential(0.00000001)
                             prob=1.0-math.exp(-rexp)
                             self.reactivity_dictionary[(molecule,r)]=prob
 
@@ -1041,6 +1520,39 @@ class CrossLinkDataBaseFromStructure(object):
                                 index=p.get_index()
                                 self.indexes_dict2[index]=(molecule,r)
                                 self.protein_residue_dict[(molecule,r)]=index
+
+
+    def get_all_possible_pairs(self):
+        n=float(len(self.protein_residue_dict.keys()))
+        return n*(n-1.0)/2.0
+
+    def get_all_feasible_pairs(self,distance=21):
+        import itertools
+        particle_index_pairs=[]
+        nxl=0
+        for a,b in itertools.combinations(self.protein_residue_dict.keys(),2):
+
+            new_xl={}
+            index1=self.protein_residue_dict[a]
+            index2=self.protein_residue_dict[b]
+            particle_distance=IMP.core.get_distance(IMP.core.XYZ(IMP.get_particles(self.model,[index1])[0]),IMP.core.XYZ(IMP.get_particles(self.model,[index2])[0]))
+            if particle_distance <= distance:
+                particle_index_pairs.append((index1,index2))
+                if self.mode=="pmi1":
+                    new_xl[self.cldb.protein1_key]=a[0]
+                    new_xl[self.cldb.protein2_key]=b[0]
+                elif self.mode=="pmi2":
+                    new_xl[self.cldb.protein1_key]=a[0].get_name()
+                    new_xl[self.cldb.protein2_key]=b[0].get_name()
+                    new_xl["molecule_object1"]=a[0]
+                    new_xl["molecule_object2"]=b[0]
+                new_xl[self.cldb.residue1_key]=a[1]
+                new_xl[self.cldb.residue2_key]=b[1]
+                self.cldb.data_base[str(nxl)]=[new_xl]
+                nxl+=1
+        self.cldb._update()
+        return self.cldb
+
 
 
 
@@ -1095,7 +1607,7 @@ class CrossLinkDataBaseFromStructure(object):
             r2=new_xl["Reactivity_Residue2"]
             #combined reactivity 1-exp(-k12*Delta t),
             # k12=k1*k2/(k1+k2)
-            new_xl["Reactivity"]=1.0-math.exp(-math.log(1.0/(1.0-r1))*math.log(1.0/(1.0-r2))/math.log(1.0/(1.0-r1)*1.0/(1.0-r2)))
+            #new_xl["Reactivity"]=1.0-math.exp(-math.log(1.0/(1.0-r1))*math.log(1.0/(1.0-r2))/math.log(1.0/(1.0-r1)*1.0/(1.0-r2)))
             if noisy:
                 #new_xl["Score"]=uniform(-1.0,1.0)
                 new_xl["Score"]=np.random.beta(1.0,self.beta_false)
@@ -1225,8 +1737,9 @@ class CrossLinkDataBaseFromStructure(object):
                         break
                     elif particle_distance>=distance and (protein1,residue1) != (protein2,residue2) and max_delta_distance:
                         #allow some flexibility
-                        prob=1.0-((particle_distance-distance)/max_delta_distance)**(0.3)
-                        if uniform(0.0,1.0)<prob: break
+                        #prob=1.0-((particle_distance-distance)/max_delta_distance)**(0.3)
+                        #if uniform(0.0,1.0)<prob: break
+                        if particle_distance-distance <  max_delta_distance: break
 
 
 

@@ -28,14 +28,14 @@ IMPISD_BEGIN_NAMESPACE
     \f$ \lambda_0 \f$ is the maximum length for the cross-linker.
 
     Usage: Construct the ambiguous set using
-    LognormalAmbiguousRestraint(\f$ z_i \f$, \f$ sigma_G \f$,
-    \f$ sigma_B \f$, \f$ k_i \f$, \f$ \lambda_0 \f$).
+    LognormalAmbiguousRestraint(\f$ z_i \f$, \f$ \sigma_G \f$,
+    \f$ \sigma_B \f$, \f$ k_i \f$, \f$ \lambda_0 \f$).
     Pass individual cross-linked particles to
     add_contribution(part0, part1).
     The marginal likelihood is modeled by a sigmoid function:
 
     \f[p(D|X,I) = \frac{1}{\lambda_0+\sigma(\sqrt(\pi/2)-1)}
-    [1+\theta(r_k-\lambda_0+\sigma)[exp(-\frac{(r_k-
+    [1+\theta(r_k-\lambda_0+\sigma)[\exp(-\frac{(r_k-
     \lambda_0+\sigma)^2}{2\sigma^2})]]
     \f]
 

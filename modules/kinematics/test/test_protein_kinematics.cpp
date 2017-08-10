@@ -64,19 +64,19 @@ int main(int argc, char *argv[]) {
   //   = new IMP::atom::CHARMMStereochemistryRestraint(mhd, topology);
   IMP::ParticlesTemp bonds = topology->add_bonds(mhd);
 
-  ProteinKinematics pk(mhd, true, false);
+  IMP_NEW(ProteinKinematics, pk, (mhd, true, false));
   std::cerr << "ProteinKinematics done" << std::endl;
 
   IMP::Particles residue_particles =
       IMP::atom::get_by_type(mhd, IMP::atom::RESIDUE_TYPE);
 
   std::cerr << "Psi of the first residue "
-            << pk.get_psi(IMP::atom::Residue(residue_particles[0]))
+            << pk->get_psi(IMP::atom::Residue(residue_particles[0]))
             << std::endl;
-  pk.set_psi(IMP::atom::Residue(residue_particles[0]), 3.14);
+  pk->set_psi(IMP::atom::Residue(residue_particles[0]), 3.14);
 
   std::cerr << "Psi of the first residue after change"
-            << pk.get_psi(IMP::atom::Residue(residue_particles[0]))
+            << pk->get_psi(IMP::atom::Residue(residue_particles[0]))
             << std::endl;
 
   IMP::atom::write_pdb(mhd, "./after_set_psi1_to_180deg.pdb");

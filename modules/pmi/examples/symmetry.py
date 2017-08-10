@@ -3,7 +3,6 @@
 """
 
 import IMP
-import RMF
 import IMP.atom
 import IMP.rmf
 import IMP.pmi

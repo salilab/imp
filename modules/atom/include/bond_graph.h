@@ -1,5 +1,6 @@
 /**
- *  \file IMP/atom/bond_graph.h     \brief Contains decorators for a bond
+ *  \file IMP/atom/bond_graph.h     
+ *  \brief Represents a graph of the bonds within an atomic structure
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  *

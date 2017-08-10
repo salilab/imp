@@ -36,6 +36,25 @@ class Tests(IMP.test.TestCase):
         ps = IMP.em.density2particles(self.scene2, 9.0, m)
         self.assertGreater(len(ps), 0)
 
+    def test_standard_methods(self):
+        """Test standard methods of FitRestraint objects"""
+        m = IMP.Model()
+        ps = []
+        res = 3
+        apix = 1
+        radius_key = IMP.core.XYZR.get_radius_key()
+        weight_key = IMP.atom.Mass.get_mass_key()
+        ps.append(self.create_point_particle(m, 0, 0, 0))
+        ps[-1].add_attribute(radius_key, 5)
+        ps[-1].add_attribute(weight_key, 100.0)
+        dmap = IMP.em.particles2density(ps, res, apix)
+        r = IMP.em.FitRestraint(ps, dmap)
+        self.check_standard_object_methods(r)
+        # Test deprecated cast() static method
+        with IMP.allow_deprecated():
+            self.assertTrue(IMP.em.FitRestraint.cast(r))
+            self.assertFalse(IMP.em.FitRestraint.cast(None))
+
     def test_particles2density(self):
         """Test conversion of particles to a density map"""
         m = IMP.Model()

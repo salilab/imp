@@ -49,7 +49,7 @@ class Hdf5File : public boost::noncopyable {
 class Hdf5Dataset;
 class Hdf5Attribute;
 
-class Hdf5Dataspace : public boost::noncopyable {
+class IMPSCOREFUNCTOREXPORT Hdf5Dataspace : public boost::noncopyable {
   hid_t id_;
 
  public:
@@ -245,14 +245,6 @@ class Hdf5Group : public boost::noncopyable {
 
   IMP_HDF5_OBJECT(Hdf5Group, H5Gclose)
 };
-
-Hdf5Dataspace::Hdf5Dataspace(Hdf5Dataset &dataset) : id_(-1) {
-  IMP_HDF5_ERRCHECK(id_ = H5Dget_space(dataset.get()));
-}
-
-Hdf5Dataspace::Hdf5Dataspace(Hdf5Attribute &attribute) : id_(-1) {
-  IMP_HDF5_ERRCHECK(id_ = H5Aget_space(attribute.get()));
-}
 
 IMPSCOREFUNCTOR_END_INTERNAL_NAMESPACE
 

@@ -11,6 +11,7 @@
 
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/Gaussian3D.h>
+#include <IMP/algebra/vector_generators.h>
 #include <IMP/core/Gaussian.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/DensityHeader.h>
@@ -36,6 +37,7 @@ inline Float score_gaussian_overlap(Model *m,
     - IMP_Eigen::Vector3d(g1.get_coordinates().get_data());
   covar.computeInverseAndDetWithCheck(inverse,determinant,invertible);
   IMP_Eigen::Vector3d tmp = inverse*v;
+  // 0.06349... = 1. / sqrt(2.0 * pi) ** 3
   Float score = mass12 * 0.06349363593424097 / (std::sqrt(determinant)) *
     std::exp(-0.5*v.transpose()*tmp);
   *deriv = -score*tmp;

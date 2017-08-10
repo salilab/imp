@@ -24,38 +24,11 @@
 #include <iostream>
 
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/undirected_dfs.hpp>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-typedef boost::adjacency_list<
-    boost::vecS, boost::vecS, boost::undirectedS > Graph;
-
-class MyDFSVisitor : public boost::default_dfs_visitor {
-public:
-  MyDFSVisitor(std::vector<int>& dfs_order, std::vector<int>& parents) :
-    dfs_order_(dfs_order), parents_(parents), counter_(0) {}
-
-  template < typename Vertex, typename Graph >
-  void discover_vertex(Vertex v, const Graph& ) {
-    dfs_order_[v] = counter_;
-    counter_++;
-  }
-
-  template < typename Edge, typename Graph >
-  void tree_edge(Edge e, const Graph& g) {
-    std::cerr << "tree_edge " << source(e, g) << " -- " << target(e, g)
-              << " dfs_order " <<  dfs_order_[source(e, g)] << " -- " <<  dfs_order_[target(e, g)] << std::endl;
-    parents_[target(e,g)] = source(e, g);
-  }
-
-  std::vector<int>& dfs_order_;
-  std::vector<int>& parents_;
-  int counter_;
-};
-
 //! Kinematic structure over a protein, with backbone and side chain dihedrals
-class IMPKINEMATICSEXPORT ProteinKinematics {
+class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
  public:
 
   //! Constructor with all phi/psi rotatable
@@ -123,6 +96,8 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
   }
 
   // TODO: add chi
+
+  IMP_OBJECT_METHODS(ProteinKinematics);
 
  private:
   enum ProteinAngleType {
@@ -197,6 +172,10 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
 #endif  // IMP_DOXYGEN
 
  private:
+
+  typedef boost::adjacency_list<
+    boost::vecS, boost::vecS, boost::undirectedS > Graph;
+
   // protein hierarchy
   atom::Hierarchy mhd_;
 
@@ -234,6 +213,8 @@ class IMPKINEMATICSEXPORT ProteinKinematics {
 
   DihedralAngleRevoluteJoints loop_joints_;
 };
+
+IMP_OBJECTS(ProteinKinematics, ProteinKinematicsList);
 
 IMPKINEMATICS_END_NAMESPACE
 
