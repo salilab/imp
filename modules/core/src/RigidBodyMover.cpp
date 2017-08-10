@@ -25,22 +25,6 @@ RigidBodyMover::RigidBodyMover(Model *m, ParticleIndex pi,
   IMP_LOG_VERBOSE("finish mover construction" << std::endl);
 }
 
-RigidBodyMover::RigidBodyMover(RigidBody d, Float max_translation,
-                               Float max_angle)
-    : MonteCarloMover(d->get_model(), d->get_name() + " mover") {
-  IMPCORE_DEPRECATED_METHOD_DEF(2.7,
-                                "Use the index-based constructor instead.");
-  IMP_USAGE_CHECK(
-      d.get_coordinates_are_optimized(),
-      "Rigid body passed to RigidBodyMover"
-          << " must be set to be optimized. particle: " << d->get_name());
-  IMP_LOG_VERBOSE("start RigidBodyMover constructor");
-  max_translation_ = max_translation;
-  max_angle_ = max_angle;
-  pi_ = d.get_particle_index();
-  IMP_LOG_VERBOSE("finish mover construction" << std::endl);
-}
-
 MonteCarloMoverResult RigidBodyMover::do_propose() {
   IMP_OBJECT_LOG;
   RigidBody d(get_model(), pi_);

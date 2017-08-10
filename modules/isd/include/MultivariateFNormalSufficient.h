@@ -194,9 +194,6 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object {
   //! use conjugate gradients (default false)
   void set_use_cg(bool use, double tol);
 
-  IMPISD_DEPRECATED_METHOD_DECL(2.7)
-  void stats() const;
-
   //! return Sigma's eigenvalues from smallest to biggest
   IMP_Eigen::VectorXd get_Sigma_eigenvalues() const;
 

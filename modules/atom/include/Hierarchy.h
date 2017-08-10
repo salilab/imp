@@ -437,11 +437,6 @@ IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(Hierarchy h);
 IMPATOMEXPORT IMP::core::RigidBody create_compatible_rigid_body(
     Hierarchy h, Hierarchy reference);
 
-#ifndef IMP_DOXYGEN
-IMPATOM_DEPRECATED_FUNCTION_DECL(2.7)
-IMPATOMEXPORT IMP::core::RigidBody setup_as_rigid_body(Hierarchy h);
-#endif
-
 //! Return true if the piece of hierarchy should be classified as a heterogen
 /** For the purposes of classification, a heterogen is anything that
     - is a heterogen atom (one whose name starts with HET:)

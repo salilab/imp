@@ -339,27 +339,6 @@ Bonds get_internal_bonds(Hierarchy mhd) {
   n=.5*(3*V+2*PI*r^3*f^3-6*PI*r^3*f^2)/((-3*f^2+f^3+2)*r^3*PI)
  */
 
-core::RigidBody setup_as_rigid_body(Hierarchy h) {
-  IMPATOM_DEPRECATED_FUNCTION_DEF(2.7, "Use atom::create_rigid_body instead");
-  IMP_USAGE_CHECK(h.get_is_valid(true),
-                  "Invalid hierarchy passed to setup_as_rigid_body");
-  core::RigidBody rbd = core::RigidBody::setup_particle(h, get_leaves(h));
-  rbd.set_coordinates_are_optimized(true);
-  ParticlesTemp internal = core::get_internal(h);
-  for (unsigned int i = 0; i < internal.size(); ++i) {
-    if (internal[i] != h) {
-      core::RigidMembers leaves(get_leaves(Hierarchy(internal[i])));
-      if (!leaves.empty()) {
-        algebra::ReferenceFrame3D rf = core::get_initial_reference_frame(
-            get_as<ParticlesTemp>(leaves));
-        core::RigidBody::setup_particle(internal[i], rf);
-      }
-    }
-  }
-  IMP_INTERNAL_CHECK(h.get_is_valid(true), "Invalid hierarchy produced");
-  return rbd;
-}
-
 namespace {
 ParticlesTemp rb_process(Hierarchy h) {
   ParticlesTemp internal = core::get_internal(h);

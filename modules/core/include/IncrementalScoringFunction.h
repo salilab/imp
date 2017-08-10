@@ -94,13 +94,6 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
                              std::string name =
                                  "IncrementalScoringFunction%1%");
 
-  IMPCORE_DEPRECATED_METHOD_DECL(2.7)
-  IncrementalScoringFunction(const ParticlesTemp &to_move,
-                             const RestraintsTemp &rs,
-                             double weight = 1.0, double max = NO_MAX,
-                             std::string name =
-                                 "IncrementalScoringFunction%1%");
-
   //! Undo the last moved particles.
   /** This is similar in effect to, but perhaps
       more efficient than, calling set_moved_particles() a second time with

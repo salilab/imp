@@ -56,15 +56,6 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
    */
   BallMover(Model *m, const ParticleIndexes &pis, Float radius);
 
-#ifndef IMP_DOXYGEN
-  IMPCORE_DEPRECATED_METHOD_DECL(2.7)
-  BallMover(const ParticlesTemp &sc, const FloatKeys &vars,
-            Float radius);
-
-  IMPCORE_DEPRECATED_METHOD_DECL(2.7)
-  BallMover(const ParticlesTemp &sc, Float radius);
-#endif
-
   void set_radius(Float radius) {
     IMP_ALWAYS_CHECK(radius > 0, "The radius must be positive",
                      IMP::ValueException);

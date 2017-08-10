@@ -51,16 +51,6 @@ class IMPCOREEXPORT ConnectivityRestraint : public Restraint {
   */
   ParticleIndexPairs get_connected_index_pairs() const;
 
-#ifndef IMP_DOXYGEN
-  IMPCORE_DEPRECATED_METHOD_DECL(2.7)
-  ParticlePairsTemp get_connected_pairs() const {
-    IMPCORE_DEPRECATED_METHOD_DEF(2.7,
-                                  "Use get_connected_index_pairs() instead");
-    return IMP::internal::get_particle(get_model(),
-                                       get_connected_index_pairs());
-  }
-#endif
-
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const { return ps_; }
 

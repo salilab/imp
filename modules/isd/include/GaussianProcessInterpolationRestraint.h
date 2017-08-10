@@ -54,9 +54,6 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
       calling model.evaluate(False) is enough. */
   double get_probability() const { return mvn_->density(); }
 
-  IMPISD_DEPRECATED_METHOD_DECL(2.7)
-  void stats() const;
-
   //! Use conjugate gradients when possible (default false)
   void set_use_cg(bool use, double tol) { mvn_->set_use_cg(use, tol); }
 

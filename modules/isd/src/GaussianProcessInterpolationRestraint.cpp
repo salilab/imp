@@ -96,11 +96,6 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
   return ene;
 }
 
-void GaussianProcessInterpolationRestraint::stats() const {
-  IMPISD_DEPRECATED_METHOD_DEF(2.7, "Use profiling tools instead");
-  mvn_->stats();
-}
-
 double GaussianProcessInterpolationRestraint::get_minus_log_normalization()
     const {
   ss_->do_before_evaluate();

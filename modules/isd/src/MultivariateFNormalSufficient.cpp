@@ -83,19 +83,6 @@ void MultivariateFNormalSufficient::set_use_cg(bool use, double tol) {
   if (use) setup_cg();
 }
 
-void MultivariateFNormalSufficient::stats() const {
-  IMPISD_DEPRECATED_METHOD_DEF(2.7, "Use profiling tools instead");
-
-  static std::string func_displays[IMP_MVN_TIMER_NFUNCS] = {
-      "eval/density",                "  trace(WP)",
-      "  get_mean_square_residuals", "deriv_FM",
-      "deriv_Sigma",                 "  compute_PTP",
-      "  compute_PWP",               "Cholesky",
-      "Sigma*X=B",                   "compute_PW_direct",
-      "compute_PW_CG_success"};
-  timer_.stats(func_displays);
-}
-
 void MultivariateFNormalSufficient::reset_flags() {
   flag_FM_ = false;
   flag_FX_ = false;

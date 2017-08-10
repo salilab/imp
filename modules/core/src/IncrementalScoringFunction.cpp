@@ -47,22 +47,6 @@ IncrementalScoringFunction::IncrementalScoringFunction(
   flattened_restraints_scores_.resize(flattened_restraints_.size());
 }
 
-IncrementalScoringFunction::IncrementalScoringFunction(
-    const ParticlesTemp &ps, const RestraintsTemp &rs,
-    double weight, double max, std::string name)
-    : ScoringFunction(extract_model(ps), name), weight_(weight), max_(max) {
-  IMPCORE_DEPRECATED_METHOD_DEF(2.7,
-		                "Use the index-based constructor instead.");
-  IMP_OBJECT_LOG;
-  IMP_LOG_TERSE("Creating IncrementalScoringFunction with particles "
-                << ps << " and restraints " << rs << std::endl);
-  all_ = IMP::internal::get_index(ps);
-  create_flattened_restraints(rs);
-  create_scoring_functions();
-  dirty_ = all_;
-  flattened_restraints_scores_.resize(flattened_restraints_.size());
-}
-
 namespace {
 class IncrementalRestraintsScoringFunction
     : public IMP::internal::RestraintsScoringFunction {

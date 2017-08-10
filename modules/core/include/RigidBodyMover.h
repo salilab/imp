@@ -41,11 +41,6 @@ class IMPCOREEXPORT RigidBodyMover : public MonteCarloMover {
   RigidBodyMover(Model *m, ParticleIndex pi,
                  Float max_translation, Float max_rotation);
 
-#ifndef IMP_DOXYGEN
-  IMPCORE_DEPRECATED_METHOD_DECL(2.7)
-  RigidBodyMover(RigidBody d, Float max_translation, Float max_rotation);
-#endif
-
   void set_maximum_translation(Float mt) {
     IMP_USAGE_CHECK(mt > 0, "Max translation must be positive");
     max_translation_ = mt;
