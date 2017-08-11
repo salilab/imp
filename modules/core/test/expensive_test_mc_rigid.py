@@ -63,9 +63,11 @@ class MCOptimizerTest(IMP.test.TestCase):
         opt = IMP.core.MonteCarloWithLocalOptimization(lopt, 100)
         opt.set_scoring_function(self.sf)
         lopt.set_scoring_function(self.sf)
-        mover1 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.rb0), 5., 15.)
+        mover1 = IMP.core.RigidBodyMover(self.m, IMP.core.RigidBody(self.rb0),
+                                         5., 15.)
         opt.add_mover(mover1)
-        mover2 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.rb1), 5., 15.)
+        mover2 = IMP.core.RigidBodyMover(self.m, IMP.core.RigidBody(self.rb1),
+                                         5., 15.)
         opt.add_mover(mover2)
         opt.set_score_threshold(.001)
         for i in range(0, 5):
