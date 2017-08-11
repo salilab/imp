@@ -24,15 +24,6 @@ IMPCORE_BEGIN_NAMESPACE
     restraint set that return 0 or inf if the last scores for the
     set are bad.*/
 
-namespace {
-// TODO: this can be made a general library function at some point
-IMP::Model *extract_model(const ParticlesTemp &ps) {
-  IMP_USAGE_CHECK(ps.size() > 0,
-                  "needs at least one particle to extract a model");
-  return ps[0]->get_model();
-}
-}
-
 IncrementalScoringFunction::IncrementalScoringFunction(
     Model *m, const ParticleIndexes &ps, const RestraintsTemp &rs,
     double weight, double max, std::string name)
