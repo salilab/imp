@@ -1,6 +1,8 @@
 ChangeLog {#changelog}
 =========
 
+# HEAD
+
 # 2.8.0 - 2017-08-16 # {#changelog_2_8_0}
 - New applications of IMP are now available:
   - [Modeling of the yeast Spindle Pole Body core](https://salilab.org/spb/)
