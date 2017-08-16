@@ -207,7 +207,9 @@ statistics::PartitionalClustering *create_gromos_clustering(
     }
 
     // no more clusters to find
-    if (maxweight < 0.) {
+    // note that while the minimum weight should be zero, it may be very
+    // slightly less (say -1e-15) due to rounding error
+    if (maxweight < -0.01) {
       break;
     }
 
