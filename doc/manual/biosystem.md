@@ -23,13 +23,19 @@ We recommend the following contents for your repository (see the
 for an example):
 
  - subdirectories containing
-   - your modeling protocol (generally one or more Python scripts)
+   - your modeling protocol (generally one or more Python scripts).
    - input files (e.g. PDB files, EM density maps, lists of crosslinks),
-     especially if these files aren't in a database somewhere already
+     especially if these files aren't in a database somewhere already.
+     If these inputs are derived in some fashion (e.g. you use a PDB file as
+     input that's a comparative model or docking result, or you use an EM map
+     that's been segmented) then this needs to be described somewhere, with
+     links to the original unmodified files (e.g. PDB IDs for templates of any
+     comparative models, alignment files, Modeller scripts).
    - outputs (trajectories, clusters, analysis). Where this isn't possible
      due to size, we can host the larger files, such as trajectories, elsewhere
      (e.g. as a dataset in [Zenodo](https://zenodo.org)) and link to them
-     from the repository.
+     from the repository. Aim to keep the repository below 1GB in size so that
+     it's manageable.
  - a top-level `%README.md` file describing the system and explaining how to
    run the protocol.
  - a top-level `LICENSE` file with the license for the data files and scripts.
