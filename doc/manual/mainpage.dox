@@ -93,7 +93,6 @@ complex might want to skip ahead to
    - [Close pairs lists](@ref close_pairs)
    - [RMF](@ref rmf)
    - [Building](@ref building)
-   - [Eigen](@ref eigen)
    - [git submodules and subtrees](@ref subtree)
 
  - [Copyright and licenses](@ref licenses)
