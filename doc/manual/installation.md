@@ -24,6 +24,7 @@ In order to build %IMP from source, you will need:
 
 - [CMake](https://cmake.org) (2.8 or later)
 - [Boost](http://www.boost.org) (1.41 or later)
+- [Eigen](https://eigen.tuxfamily.org/) (3.0 or later)
 - [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later; 1.10 should also
   work)
 - [Python](https://www.python.org) (2.6 or later, or any version of Python 3)
@@ -80,7 +81,7 @@ such as
 
         brew tap homebrew/science
         brew tap salilab/salilab
-        brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr opencv libtau
+        brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr opencv libtau eigen
 
   to install everything %IMP finds useful (or that you will want for installing various useful Python libs that %IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
 - [Macports](http://www.macports.org/) If you use MacPorts, you must add `/opt/local/bin` to your path (either by modifying your shell's

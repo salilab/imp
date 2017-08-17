@@ -277,6 +277,9 @@ if(NOT IMP_STATIC)
   find_package(OpenMP3)
 endif()
 
+find_package(Eigen3 3.0 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIR})
+
 add_custom_target("IMP-version"
                   COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_version.py --source=${CMAKE_SOURCE_DIR}
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
