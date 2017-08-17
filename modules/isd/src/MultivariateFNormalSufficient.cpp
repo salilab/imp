@@ -28,8 +28,8 @@ enum func_names {
 };
 
 MultivariateFNormalSufficient::MultivariateFNormalSufficient(
-    const IMP_Eigen::MatrixXd& FX, double JF, const IMP_Eigen::VectorXd& FM,
-    const IMP_Eigen::MatrixXd& Sigma, double factor)
+    const Eigen::MatrixXd& FX, double JF, const Eigen::VectorXd& FM,
+    const Eigen::MatrixXd& Sigma, double factor)
     : Object("Multivariate Normal distribution %1%") {
   // O(1)
   reset_flags();
@@ -49,8 +49,8 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(
 }
 
 MultivariateFNormalSufficient::MultivariateFNormalSufficient(
-    const IMP_Eigen::VectorXd& Fbar, double JF, const IMP_Eigen::VectorXd& FM,
-    int Nobs, const IMP_Eigen::MatrixXd& W, const IMP_Eigen::MatrixXd& Sigma,
+    const Eigen::VectorXd& Fbar, double JF, const Eigen::VectorXd& FM,
+    int Nobs, const Eigen::MatrixXd& W, const Eigen::MatrixXd& Sigma,
     double factor)
     : Object("Multivariate Normal distribution %1%") {
   reset_flags();
@@ -72,7 +72,7 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(
 
 void MultivariateFNormalSufficient::setup_cg() {
   cg_ = new internal::ConjugateGradientEigen();
-  precond_ = IMP_Eigen::MatrixXd::Identity(M_, M_);
+  precond_ = Eigen::MatrixXd::Identity(M_, M_);
   first_PW_ = true;
   first_PWP_ = true;
 }
@@ -160,22 +160,21 @@ double MultivariateFNormalSufficient::get_minus_log_normalization() const {
 }
 
 // O(1) if up to date, O(M^2) if epsilon new, O(M^3) if Sigma new
-IMP_Eigen::VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM()
-    const {
+Eigen::VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const {
   timer_.start(DFM);
   // d(-log(p))/d(FM) = - N * P * epsilon
   IMP_LOG_TERSE("MVN: evaluate_derivative_FM() = " << std::endl);
-  IMP_Eigen::VectorXd tmp(-N_ * get_Peps() / IMP::square(factor_));
+  Eigen::VectorXd tmp(-N_ * get_Peps() / IMP::square(factor_));
   timer_.stop(DFM);
   return tmp;
 }
 
-IMP_Eigen::MatrixXd MultivariateFNormalSufficient::evaluate_derivative_Sigma()
+Eigen::MatrixXd MultivariateFNormalSufficient::evaluate_derivative_Sigma()
     const {
   timer_.start(DSIGMA);
   // d(-log(p))/dSigma = 1/2 (N P - N P epsilon transpose(epsilon) P - PWP)
   IMP_LOG_TERSE("MVN: evaluate_derivative_Sigma() = " << std::endl);
-  IMP_Eigen::MatrixXd R;
+  Eigen::MatrixXd R;
   if (N_ == 1)  // O(M) if up to date, O(M^3) if Sigma new
   {
     R = 0.5 * (get_P() - compute_PTP() / IMP::square(factor_));
@@ -203,43 +202,43 @@ double MultivariateFNormalSufficient::evaluate_derivative_factor() const {
   return R;
 }
 
-IMP_Eigen::MatrixXd
+Eigen::MatrixXd
 MultivariateFNormalSufficient::evaluate_second_derivative_FM_FM() const {
   if (N_ != 1) IMP_THROW("not implemented when N>1", ModelException);
-  IMP_Eigen::MatrixXd ret(get_P() / IMP::square(factor_));
+  Eigen::MatrixXd ret(get_P() / IMP::square(factor_));
   return ret;
 }
 
-IMP_Eigen::MatrixXd
+Eigen::MatrixXd
 MultivariateFNormalSufficient::evaluate_second_derivative_FM_Sigma(unsigned k)
     const {
   if (N_ != 1) IMP_THROW("not implemented when N>1", ModelException);
-  IMP_Eigen::MatrixXd P(get_P());
-  IMP_Eigen::VectorXd Peps(get_Peps());
-  IMP_Eigen::MatrixXd ret(P.transpose().col(k) * Peps.transpose());
+  Eigen::MatrixXd P(get_P());
+  Eigen::VectorXd Peps(get_Peps());
+  Eigen::MatrixXd ret(P.transpose().col(k) * Peps.transpose());
   return ret / IMP::square(factor_);
 }
 
-IMP_Eigen::MatrixXd
+Eigen::MatrixXd
 MultivariateFNormalSufficient::evaluate_second_derivative_Sigma_Sigma(
     unsigned m, unsigned n) const {
   if (N_ != 1) IMP_THROW("not implemented when N>1", ModelException);
-  IMP_Eigen::MatrixXd P(get_P());
-  IMP_Eigen::VectorXd Peps(get_Peps());
-  IMP_Eigen::MatrixXd tmp(P.col(m) * Peps.transpose());
-  IMP_Eigen::MatrixXd ret(
+  Eigen::MatrixXd P(get_P());
+  Eigen::VectorXd Peps(get_Peps());
+  Eigen::MatrixXd tmp(P.col(m) * Peps.transpose());
+  Eigen::MatrixXd ret(
       0.5 * (-P.col(n) * P.row(m) + Peps(n) * (tmp + tmp.transpose())));
   return ret / IMP::square(factor_);
 }
 
-IMP_Eigen::MatrixXd MultivariateFNormalSufficient::get_FX() const {
+Eigen::MatrixXd MultivariateFNormalSufficient::get_FX() const {
   if (!flag_FX_) {
     IMP_THROW("FX was not set!", ModelException);
   }
   return FX_;
 }
 
-void MultivariateFNormalSufficient::set_FX(const IMP_Eigen::MatrixXd& FX) {
+void MultivariateFNormalSufficient::set_FX(const Eigen::MatrixXd& FX) {
   if (FX.rows() != FX_.rows() || FX.cols() != FX_.cols() || FX != FX_) {
     if (FX.rows() != N_) {
       IMP_THROW("size mismatch for FX in the number of repetitions: got "
@@ -262,14 +261,14 @@ void MultivariateFNormalSufficient::set_FX(const IMP_Eigen::MatrixXd& FX) {
   flag_FX_ = true;
 }
 
-IMP_Eigen::VectorXd MultivariateFNormalSufficient::get_FM() const {
+Eigen::VectorXd MultivariateFNormalSufficient::get_FM() const {
   if (!flag_FM_) {
     IMP_THROW("FM was not set!", ModelException);
   }
   return FM_;
 }
 
-void MultivariateFNormalSufficient::set_FM(const IMP_Eigen::VectorXd& FM) {
+void MultivariateFNormalSufficient::set_FM(const Eigen::VectorXd& FM) {
   if (FM.rows() != FM_.rows() || FM.cols() != FM_.cols() || FM != FM_) {
     if (FM.rows() != M_) {
       IMP_THROW("size mismatch for FM: got " << FM.rows() << " instead of "
@@ -284,17 +283,17 @@ void MultivariateFNormalSufficient::set_FM(const IMP_Eigen::VectorXd& FM) {
   flag_FM_ = true;
 }
 
-IMP_Eigen::VectorXd MultivariateFNormalSufficient::get_Fbar() const {
+Eigen::VectorXd MultivariateFNormalSufficient::get_Fbar() const {
   if (!flag_Fbar_) {
     // Fbar is either given or computed from FX
     // try to get FX which will throw an exception if it is not set
-    IMP_Eigen::VectorXd Fbar = get_FX().colwise().mean();
+    Eigen::VectorXd Fbar = get_FX().colwise().mean();
     const_cast<MultivariateFNormalSufficient*>(this)->set_Fbar(Fbar);
   }
   return Fbar_;
 }
 
-void MultivariateFNormalSufficient::set_Fbar(const IMP_Eigen::VectorXd& Fbar) {
+void MultivariateFNormalSufficient::set_Fbar(const Eigen::VectorXd& Fbar) {
   if (Fbar.rows() != Fbar_.rows() || Fbar.cols() != Fbar_.cols() ||
       Fbar != Fbar_) {
     if (Fbar.rows() != M_) {
@@ -328,32 +327,31 @@ void MultivariateFNormalSufficient::set_minus_log_jacobian(double lJF) {
   lJF_ = lJF;
 }
 
-IMP_Eigen::VectorXd MultivariateFNormalSufficient::get_epsilon() const {
+Eigen::VectorXd MultivariateFNormalSufficient::get_epsilon() const {
   if (!flag_epsilon_) {
-    IMP_Eigen::VectorXd epsilon = get_Fbar() - get_FM();
+    Eigen::VectorXd epsilon = get_Fbar() - get_FM();
     const_cast<MultivariateFNormalSufficient*>(this)->set_epsilon(epsilon);
   }
   return epsilon_;
 }
 
-void MultivariateFNormalSufficient::set_epsilon(
-    const IMP_Eigen::VectorXd& eps) {
+void MultivariateFNormalSufficient::set_epsilon(const Eigen::VectorXd& eps) {
   IMP_LOG_TERSE("MVN:   set epsilon to new vector" << std::endl);
   epsilon_ = eps;
   flag_epsilon_ = true;
   flag_Peps_ = false;
 }
 
-IMP_Eigen::MatrixXd MultivariateFNormalSufficient::get_W() const {
+Eigen::MatrixXd MultivariateFNormalSufficient::get_W() const {
   if (!flag_W_) {
     // this only happens if W was not given as input
     // compute W from epsilon
     IMP_LOG_TERSE("MVN:   computing W" << std::endl);
-    IMP_Eigen::MatrixXd W(M_, M_);
+    Eigen::MatrixXd W(M_, M_);
     if (N_ == 1) {
       W.setZero();
     } else {
-      IMP_Eigen::MatrixXd A(get_FX().rowwise() - get_Fbar().transpose());
+      Eigen::MatrixXd A(get_FX().rowwise() - get_Fbar().transpose());
       W = A.transpose() * A;
     }
     const_cast<MultivariateFNormalSufficient*>(this)->set_W(W);
@@ -361,7 +359,7 @@ IMP_Eigen::MatrixXd MultivariateFNormalSufficient::get_W() const {
   return W_;
 }
 
-void MultivariateFNormalSufficient::set_W(const IMP_Eigen::MatrixXd& W) {
+void MultivariateFNormalSufficient::set_W(const Eigen::MatrixXd& W) {
   if (W.rows() != W_.rows() || W.cols() != W_.cols() || W != W_) {
     if (W.cols() != W.rows()) {
       IMP_THROW("need a square matrix!", ModelException);
@@ -376,15 +374,14 @@ void MultivariateFNormalSufficient::set_W(const IMP_Eigen::MatrixXd& W) {
   flag_W_ = true;
 }
 
-IMP_Eigen::MatrixXd MultivariateFNormalSufficient::get_Sigma() const {
+Eigen::MatrixXd MultivariateFNormalSufficient::get_Sigma() const {
   if (!flag_Sigma_) {
     IMP_THROW("Sigma was not set!", ModelException);
   }
   return Sigma_;
 }
 
-void MultivariateFNormalSufficient::set_Sigma(
-    const IMP_Eigen::MatrixXd& Sigma) {
+void MultivariateFNormalSufficient::set_Sigma(const Eigen::MatrixXd& Sigma) {
   if (Sigma.rows() != Sigma_.rows() || Sigma.cols() != Sigma_.cols() ||
       Sigma != Sigma_) {
     if (Sigma.cols() != Sigma.rows()) {
@@ -409,17 +406,17 @@ void MultivariateFNormalSufficient::set_factor(double f) {
   flag_norms_ = false;
 }
 
-// IMP_Eigen::LLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper>
-IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper>
+// Eigen::LLT<Eigen::MatrixXd, Eigen::Upper>
+Eigen::LDLT<Eigen::MatrixXd, Eigen::Upper>
 MultivariateFNormalSufficient::get_ldlt() const {
   if (!flag_ldlt_) {
     timer_.start(CHOLESKY);
     IMP_LOG_TERSE("MVN:   computing Cholesky decomposition" << std::endl);
     // compute Cholesky decomposition for determinant and inverse
-    // IMP_Eigen::LLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper>
+    // Eigen::LLT<Eigen::MatrixXd, Eigen::Upper>
     // ldlt(get_Sigma());
-    IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> ldlt(get_Sigma());
-    // if (ldlt.info() != IMP_Eigen::Success)
+    Eigen::LDLT<Eigen::MatrixXd, Eigen::Upper> ldlt(get_Sigma());
+    // if (ldlt.info() != Eigen::Success)
     if (!ldlt.isPositive()) {
       std::cout << "Sigma" << std::endl;
       // std::cout << get_Sigma() << std::endl;
@@ -433,7 +430,7 @@ MultivariateFNormalSufficient::get_ldlt() const {
 }
 
 void MultivariateFNormalSufficient::set_ldlt(
-    const IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper>& ldlt) {
+    const Eigen::LDLT<Eigen::MatrixXd, Eigen::Upper>& ldlt) {
   IMP_LOG_TERSE("MVN:   set ldlt factorization" << std::endl);
   ldlt_ = ldlt;
   flag_ldlt_ = true;
@@ -445,11 +442,11 @@ void MultivariateFNormalSufficient::set_ldlt(
 
 std::vector<double> MultivariateFNormalSufficient::get_norms() const {
   if (!flag_norms_) {
-    // IMP_Eigen::LLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper>
+    // Eigen::LLT<Eigen::MatrixXd, Eigen::Upper>
     // ldlt(get_ldlt());
-    IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> ldlt(get_ldlt());
+    Eigen::LDLT<Eigen::MatrixXd, Eigen::Upper> ldlt(get_ldlt());
     // determinant and derived constants
-    // IMP_Eigen::MatrixXd L(ldlt.matrixU());
+    // Eigen::MatrixXd L(ldlt.matrixU());
     // std::cout << "L: " << L << std::endl << std::endl;
     // std::cout << "D: " << ldlt.vectorD() << std::endl << std::endl;
     // double logDetSigma=2*L.diagonal().array().log().sum() ;
@@ -478,22 +475,22 @@ void MultivariateFNormalSufficient::set_norms(double norm, double lnorm) {
   flag_norms_ = true;
 }
 
-IMP_Eigen::MatrixXd MultivariateFNormalSufficient::get_P() const {
+Eigen::MatrixXd MultivariateFNormalSufficient::get_P() const {
   if (!flag_P_) {
     // inverse
     timer_.start(SOLVE);
-    // IMP_Eigen::LLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper>
+    // Eigen::LLT<Eigen::MatrixXd, Eigen::Upper>
     // ldlt(get_ldlt());
-    IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> ldlt(get_ldlt());
+    Eigen::LDLT<Eigen::MatrixXd, Eigen::Upper> ldlt(get_ldlt());
     IMP_LOG_TERSE("MVN:   solving for inverse" << std::endl);
     const_cast<MultivariateFNormalSufficient*>(this)
-        ->set_P(ldlt.solve(IMP_Eigen::MatrixXd::Identity(M_, M_)));
+        ->set_P(ldlt.solve(Eigen::MatrixXd::Identity(M_, M_)));
     timer_.stop(SOLVE);
   }
   return P_;
 }
 
-void MultivariateFNormalSufficient::set_P(const IMP_Eigen::MatrixXd& P) {
+void MultivariateFNormalSufficient::set_P(const Eigen::MatrixXd& P) {
   P_ = P;
   if (use_cg_) precond_ = P;
   // std::cout << "P: " << P_ << std::endl << std::endl;
@@ -501,11 +498,11 @@ void MultivariateFNormalSufficient::set_P(const IMP_Eigen::MatrixXd& P) {
   flag_P_ = true;
 }
 
-IMP_Eigen::MatrixXd MultivariateFNormalSufficient::get_PW() const {
+Eigen::MatrixXd MultivariateFNormalSufficient::get_PW() const {
   if (!flag_PW_) {
     ////PW
     timer_.start(SOLVE);
-    IMP_Eigen::MatrixXd PW(M_, M_);
+    Eigen::MatrixXd PW(M_, M_);
     if (N_ == 1) {
       IMP_LOG_TERSE("MVN:   W=0 => PW=0" << std::endl);
       PW.setZero();
@@ -528,16 +525,16 @@ IMP_Eigen::MatrixXd MultivariateFNormalSufficient::get_PW() const {
   return PW_;
 }
 
-IMP_Eigen::MatrixXd MultivariateFNormalSufficient::compute_PW_direct() const {
+Eigen::MatrixXd MultivariateFNormalSufficient::compute_PW_direct() const {
   timer_.start(PW_DIRECT);
-  // IMP_Eigen::LLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> ldlt(get_ldlt());
-  IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> ldlt(get_ldlt());
-  IMP_Eigen::MatrixXd tmp(ldlt.solve(get_W()));
+  // Eigen::LLT<Eigen::MatrixXd, Eigen::Upper> ldlt(get_ldlt());
+  Eigen::LDLT<Eigen::MatrixXd, Eigen::Upper> ldlt(get_ldlt());
+  Eigen::MatrixXd tmp(ldlt.solve(get_W()));
   timer_.stop(PW_DIRECT);
   return tmp;
 }
 
-IMP_Eigen::MatrixXd MultivariateFNormalSufficient::compute_PW_cg() const {
+Eigen::MatrixXd MultivariateFNormalSufficient::compute_PW_cg() const {
   // compute PW using CG. Preconditionner is Sigma^-1 and initial guess
   // is previous value of PW. Do M steps (theoretically sufficient) and if the
   // residuals are too big do the inversion.
@@ -549,7 +546,7 @@ IMP_Eigen::MatrixXd MultivariateFNormalSufficient::compute_PW_cg() const {
   cg_->set_B(get_W());
   cg_->set_X0(PW_);
   cg_->set_tol(cg_tol_);
-  IMP_Eigen::MatrixXd PW(cg_->optimize(precond_, M_));
+  Eigen::MatrixXd PW(cg_->optimize(precond_, M_));
   if (cg_->info() > 0) timer_.stop(PW_CG_SUCCESS);
   double resid = (get_Sigma() * PW - get_W()).norm();
   if (resid > cg_tol_) {
@@ -561,14 +558,14 @@ IMP_Eigen::MatrixXd MultivariateFNormalSufficient::compute_PW_cg() const {
   return PW;
 }
 
-void MultivariateFNormalSufficient::set_PW(const IMP_Eigen::MatrixXd& PW) {
+void MultivariateFNormalSufficient::set_PW(const Eigen::MatrixXd& PW) {
   PW_ = PW;
   // std::cout << "PW: " << PW_ << std::endl << std::endl;
   IMP_LOG_TERSE("MVN:   set PW to new matrix" << std::endl);
   flag_PW_ = true;
 }
 
-IMP_Eigen::VectorXd MultivariateFNormalSufficient::get_Peps() const {
+Eigen::VectorXd MultivariateFNormalSufficient::get_Peps() const {
   if (!flag_Peps_) {
     ////Peps
     timer_.start(SOLVE);
@@ -580,7 +577,7 @@ IMP_Eigen::VectorXd MultivariateFNormalSufficient::get_Peps() const {
   return Peps_;
 }
 
-void MultivariateFNormalSufficient::set_Peps(const IMP_Eigen::VectorXd& Peps) {
+void MultivariateFNormalSufficient::set_Peps(const Eigen::VectorXd& Peps) {
   Peps_ = Peps;
   // std::cout << "Peps: " << Peps_ << std::endl << std::endl;
   IMP_LOG_TERSE("MVN:   set P*epsilon to new matrix" << std::endl);
@@ -608,27 +605,27 @@ double MultivariateFNormalSufficient::get_mean_square_residuals() const {
   timer_.start(MD);
   // std::cout << "P " << std::endl << P_ << std::endl;
   // std::cout << "epsilon " << std::endl << get_epsilon() << std::endl;
-  IMP_Eigen::VectorXd Peps(get_Peps());
-  IMP_Eigen::VectorXd epsilon(get_epsilon());
+  Eigen::VectorXd Peps(get_Peps());
+  Eigen::VectorXd epsilon(get_epsilon());
   double dist = epsilon.transpose() * Peps;
   IMP_LOG_TERSE("MVN:   get_mean_square_residuals = " << dist << std::endl);
   timer_.stop(MD);
   return dist;
 }
 
-IMP_Eigen::MatrixXd MultivariateFNormalSufficient::compute_PTP() const {
+Eigen::MatrixXd MultivariateFNormalSufficient::compute_PTP() const {
   timer_.start(PTP);
   IMP_LOG_TERSE("MVN:   computing PTP" << std::endl);
-  IMP_Eigen::VectorXd peps(get_Peps());
-  IMP_Eigen::MatrixXd tmp(peps * peps.transpose());
+  Eigen::VectorXd peps(get_Peps());
+  Eigen::MatrixXd tmp(peps * peps.transpose());
   timer_.stop(PTP);
   return tmp;
 }
 
-IMP_Eigen::MatrixXd MultivariateFNormalSufficient::compute_PWP() const {
+Eigen::MatrixXd MultivariateFNormalSufficient::compute_PWP() const {
   timer_.start(PWP);
   // compute PWP
-  IMP_Eigen::MatrixXd tmp(M_, M_);
+  Eigen::MatrixXd tmp(M_, M_);
   if (N_ == 1) {
     IMP_LOG_TERSE("MVN:   W = 0 => PWP = 0" << std::endl);
     tmp.setZero();
@@ -648,12 +645,12 @@ IMP_Eigen::MatrixXd MultivariateFNormalSufficient::compute_PWP() const {
     }*/
     // if (use_cg_)
     //{
-    // IMP_Eigen::MatrixXd WP(get_PW().transpose());
+    // Eigen::MatrixXd WP(get_PW().transpose());
     // return get_ldlt().solve(WP);
     // return get_P()*WP;
     //} else {
-    IMP_Eigen::MatrixXd P(get_P());
-    IMP_Eigen::MatrixXd W(get_W());
+    Eigen::MatrixXd P(get_P());
+    Eigen::MatrixXd W(get_W());
     tmp = P * W * P;
     //}
   }
@@ -661,11 +658,11 @@ IMP_Eigen::MatrixXd MultivariateFNormalSufficient::compute_PWP() const {
   return tmp;
 }
 
-IMP_Eigen::VectorXd MultivariateFNormalSufficient::get_Sigma_eigenvalues()
+Eigen::VectorXd MultivariateFNormalSufficient::get_Sigma_eigenvalues()
     const {
-  IMP_Eigen::SelfAdjointEigenSolver<IMP_Eigen::MatrixXd> eigensolver(
-      get_Sigma(), IMP_Eigen::EigenvaluesOnly);
-  if (eigensolver.info() != IMP_Eigen::Success)
+  Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver(
+      get_Sigma(), Eigen::EigenvaluesOnly);
+  if (eigensolver.info() != Eigen::Success)
     IMP_THROW("Could not determine eigenvalues!", ModelException);
   return eigensolver.eigenvalues();
 }
@@ -674,7 +671,7 @@ double MultivariateFNormalSufficient::get_Sigma_condition_number() const {
   return get_Sigma().norm() * get_P().norm();
 }
 
-IMP_Eigen::MatrixXd MultivariateFNormalSufficient::solve(IMP_Eigen::MatrixXd B)
+Eigen::MatrixXd MultivariateFNormalSufficient::solve(Eigen::MatrixXd B)
     const {
   return get_ldlt().solve(B);
 }

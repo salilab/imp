@@ -9,7 +9,7 @@
 #include <IMP/isd/GaussianEMRestraint.h>
 #include <IMP/math.h>
 #include <IMP/atom/Atom.h>
-#include <IMP/algebra/eigen3/Eigen/LU>
+#include <Eigen/LU>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/isd/em_utilities.h>
@@ -24,10 +24,10 @@ struct KahanAccumulation{
   KahanAccumulation(): sum(0.0),correction(0.0) {}
 };
 struct KahanVectorAccumulation{
-  IMP_Eigen::Vector3d sum;
-  IMP_Eigen::Vector3d correction;
-  KahanVectorAccumulation(): sum(IMP_Eigen::Vector3d(0,0,0)),
-                             correction(IMP_Eigen::Vector3d(0,0,0)) {}
+  Eigen::Vector3d sum;
+  Eigen::Vector3d correction;
+  KahanVectorAccumulation(): sum(Eigen::Vector3d(0,0,0)),
+                             correction(Eigen::Vector3d(0,0,0)) {}
 };
 inline KahanAccumulation kahan_sum(KahanAccumulation accumulation,
                                    double value) {
@@ -40,10 +40,10 @@ inline KahanAccumulation kahan_sum(KahanAccumulation accumulation,
 }
 inline KahanVectorAccumulation
 kahan_vector_sum(KahanVectorAccumulation accumulation,
-                 IMP_Eigen::Vector3d value) {
+                 Eigen::Vector3d value) {
   KahanVectorAccumulation result;
-  IMP_Eigen::Vector3d y = value - accumulation.correction;
-  IMP_Eigen::Vector3d t = accumulation.sum + y;
+  Eigen::Vector3d y = value - accumulation.correction;
+  Eigen::Vector3d t = accumulation.sum + y;
   result.correction = (t - accumulation.sum) - y;
   result.sum = t;
   return result;
@@ -113,7 +113,7 @@ GaussianEMRestraint::GaussianEMRestraint(
 void GaussianEMRestraint::compute_initial_scores() {
 
   // precalculate DD score
-  IMP_Eigen::Vector3d deriv;
+  Eigen::Vector3d deriv;
   dd_score_=0.0;
   self_mm_score_=0.0;
   for (int i1=0;i1<dsize_;i1++){
@@ -139,7 +139,7 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   //score is the square difference between two GMMs
   KahanAccumulation md_score,mm_score;
   mm_score = kahan_sum(mm_score,self_mm_score_);
-  IMP_Eigen::Vector3d deriv;
+  Eigen::Vector3d deriv;
   boost::unordered_map<ParticleIndex,KahanVectorAccumulation> derivs_mm,derivs_md,slope_md;
   std::set<ParticleIndex> local_dens;
 
@@ -150,10 +150,10 @@ double GaussianEMRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
          mit!=slope_ps_.end();++mit){
       for (ParticleIndexes::const_iterator dit=density_ps_.begin();
            dit!=density_ps_.end();++dit){
-        IMP_Eigen::Vector3d v = IMP_Eigen::Vector3d(core::XYZ(get_model(),*mit).
-                                                get_coordinates().get_data()) -
-                                IMP_Eigen::Vector3d(core::XYZ(get_model(),*dit).
-                                                get_coordinates().get_data());
+        Eigen::Vector3d v = Eigen::Vector3d(core::XYZ(get_model(),*mit).
+                                            get_coordinates().get_data()) -
+                            Eigen::Vector3d(core::XYZ(get_model(),*dit).
+                                            get_coordinates().get_data());
         Float sd = v.norm();
         slope_md[*mit] = kahan_vector_sum(slope_md[*mit],v*slope_/sd);
         slope_score+=slope_*sd;

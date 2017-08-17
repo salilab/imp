@@ -42,8 +42,8 @@ double ChiFreeScore::compute_score(const Profile* exp_profile,
 
   IMP_NEW(Profile, exp_profile_selection, ());
   IMP_NEW(Profile, model_profile_selection, ());
-  IMP_Eigen::VectorXf qs(ns_), errors(ns_);
-  IMP_Eigen::VectorXf exp_intensities(ns_), model_intensities(ns_);
+  Eigen::VectorXf qs(ns_), errors(ns_);
+  Eigen::VectorXf exp_intensities(ns_), model_intensities(ns_);
 
   // repeat K_ times
   for (unsigned int k = 0; k < K_; k++) {

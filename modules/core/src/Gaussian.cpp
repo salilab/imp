@@ -18,7 +18,7 @@ void Gaussian::do_setup_particle(Model *m, ParticleIndex pi,
     RigidBody r(m, pi);
     r.set_reference_frame(g.get_reference_frame());
   }
-  IMP_NEW(Matrix3D,local,(IMP_Eigen::Vector3d(g.get_variances().get_data()).asDiagonal()));
+  IMP_NEW(Matrix3D,local,(Eigen::Vector3d(g.get_variances().get_data()).asDiagonal()));
   m->add_attribute(get_local_covariance_key(), pi,local);
   local->set_was_used(true);
   core::Gaussian(m,pi).update_global_covariance();
@@ -47,7 +47,7 @@ ObjectKey Gaussian::get_global_covariance_key(){
 }
 
 void Gaussian::update_global_covariance(){
- IMP_Eigen::Quaterniond q(
+ Eigen::Quaterniond q(
       get_model()->get_attribute(internal::rigid_body_data().quaternion_[0],
                                  get_particle_index()),
       get_model()->get_attribute(internal::rigid_body_data().quaternion_[1],
@@ -56,9 +56,9 @@ void Gaussian::update_global_covariance(){
                                  get_particle_index()),
       get_model()->get_attribute(internal::rigid_body_data().quaternion_[3],
                                  get_particle_index()));
-  IMP_Eigen::Matrix3d rot = q.toRotationMatrix();
-  IMP_Eigen::Matrix3d rad = get_local_covariance();
-  IMP_Eigen::Matrix3d covar = rot * (rad * rot.transpose());
+  Eigen::Matrix3d rot = q.toRotationMatrix();
+  Eigen::Matrix3d rad = get_local_covariance();
+  Eigen::Matrix3d covar = rot * (rad * rot.transpose());
   set_global_covariance(covar);
 }
 
@@ -73,7 +73,7 @@ void Gaussian::show(std::ostream &out) const { out << get_gaussian(); }
   }*/
 
 /*Float Gaussian::get_probability_at_point(const algebra::Vector3D &point) const{
-  IMP_Eigen::Vector3d v = IMP_Eigen::Vector3d(point.get_data());
+  Eigen::Vector3d v = Eigen::Vector3d(point.get_data());
   Float prob = current_det_invsqrt_ *
       std::exp(-0.5*v.transpose()*(current_inv_ * v));
   return prob;

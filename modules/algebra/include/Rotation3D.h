@@ -13,7 +13,7 @@
 #include "utility.h"
 #include "constants.h"
 #include "GeometricPrimitiveD.h"
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 #include <IMP/log.h>
 #include <cmath>
@@ -332,7 +332,7 @@ IMPALGEBRAEXPORT Rotation3D
 /**
    \see Rotation3D
 */
-IMPALGEBRAEXPORT Rotation3D get_rotation_from_matrix(IMP_Eigen::Matrix3d m);
+IMPALGEBRAEXPORT Rotation3D get_rotation_from_matrix(Eigen::Matrix3d m);
 
 //! Pick a rotation at random from all possible rotations
 /** \see Rotation3D */

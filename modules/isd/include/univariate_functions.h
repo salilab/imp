@@ -14,7 +14,7 @@
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/Switching.h>
 #include <IMP/Object.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 #define IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM 1e-7
 
@@ -29,7 +29,7 @@ class IMPISDEXPORT UnivariateFunction : public Object {
   virtual Floats operator()(const Floats& x) const = 0;
 
   //! evaluate the function at a list of points
-  virtual IMP_Eigen::VectorXd operator()(const IMP::FloatsList& xlist)
+  virtual Eigen::VectorXd operator()(const IMP::FloatsList& xlist)
       const = 0;
 
   //! used for testing only
@@ -65,7 +65,7 @@ class IMPISDEXPORT UnivariateFunction : public Object {
    * where N = xlist.size() and M is the number of particles
    * associated to this function.
    */
-  virtual IMP_Eigen::VectorXd get_derivative_vector(
+  virtual Eigen::VectorXd get_derivative_vector(
       unsigned particle_no, const FloatsList& xlist) const = 0;
 
   //! for testing purposes
@@ -73,7 +73,7 @@ class IMPISDEXPORT UnivariateFunction : public Object {
                                            bool stupid) const = 0;
 
   //! return second derivative vector
-  virtual IMP_Eigen::VectorXd get_second_derivative_vector(
+  virtual Eigen::VectorXd get_second_derivative_vector(
       unsigned particle_a, unsigned particle_b,
       const FloatsList& xlist) const = 0;
 
@@ -143,9 +143,9 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
     return ret;
   }
 
-  IMP_Eigen::VectorXd operator()(const FloatsList& xlist) const {
+  Eigen::VectorXd operator()(const FloatsList& xlist) const {
     unsigned M = xlist.size();
-    IMP_Eigen::VectorXd retlist(M);
+    Eigen::VectorXd retlist(M);
     for (unsigned i = 0; i < M; i++) {
       IMP_USAGE_CHECK(xlist[i].size() == 1, "expecting a 1-D vector");
       retlist(i) = a_val_ * xlist[i][0] + b_val_;
@@ -154,7 +154,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
   }
 
   FloatsList operator()(const FloatsList& xlist, bool) const {
-    IMP_Eigen::VectorXd vec((*this)(xlist));
+    Eigen::VectorXd vec((*this)(xlist));
     FloatsList ret;
     for (unsigned i = 0; i < xlist.size(); i++)
       ret.push_back(Floats(1, vec(i)));
@@ -182,10 +182,10 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
     }
   }
 
-  IMP_Eigen::VectorXd get_derivative_vector(unsigned particle_no,
-                                            const FloatsList& xlist) const {
+  Eigen::VectorXd get_derivative_vector(unsigned particle_no,
+                                        const FloatsList& xlist) const {
     unsigned N = xlist.size();
-    IMP_Eigen::VectorXd ret(N);
+    Eigen::VectorXd ret(N);
     switch (particle_no) {
       case 0:  // a
         for (unsigned i = 0; i < N; i++) ret(i) = xlist[i][0];
@@ -200,7 +200,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
   }
 
   FloatsList get_derivative_matrix(const FloatsList& xlist, bool) const {
-    IMP_Eigen::MatrixXd mat(xlist.size(), 2);
+    Eigen::MatrixXd mat(xlist.size(), 2);
     mat.col(0) = get_derivative_vector(0, xlist);
     mat.col(1) = get_derivative_vector(1, xlist);
     FloatsList ret;
@@ -212,18 +212,18 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
     return ret;
   }
 
-  IMP_Eigen::VectorXd get_second_derivative_vector(
+  Eigen::VectorXd get_second_derivative_vector(
       unsigned, unsigned, const FloatsList& xlist) const {
     // The Hessian is zero for all particles.
     unsigned N = xlist.size();
-    IMP_Eigen::VectorXd H(IMP_Eigen::VectorXd::Zero(N));
+    Eigen::VectorXd H(Eigen::VectorXd::Zero(N));
     return H;
   }
 
   FloatsList get_second_derivative_vector(unsigned particle_a,
                                           unsigned particle_b,
                                           const FloatsList& xlist, bool) const {
-    IMP_Eigen::VectorXd mat(
+    Eigen::VectorXd mat(
         get_second_derivative_vector(particle_a, particle_b, xlist));
     FloatsList ret;
     for (int i = 0; i < mat.rows(); i++) {
@@ -358,9 +358,9 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
     return ret;
   }
 
-  IMP_Eigen::VectorXd operator()(const FloatsList& xlist) const {
+  Eigen::VectorXd operator()(const FloatsList& xlist) const {
     unsigned M = xlist.size();
-    IMP_Eigen::VectorXd retlist(M);
+    Eigen::VectorXd retlist(M);
     for (unsigned i = 0; i < M; i++) {
       IMP_USAGE_CHECK(xlist[i].size() == 1, "expecting a 1-D vector");
       retlist(i) = get_value(xlist[i][0]);
@@ -369,7 +369,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
   }
 
   FloatsList operator()(const FloatsList& xlist, bool) const {
-    IMP_Eigen::VectorXd vec((*this)(xlist));
+    Eigen::VectorXd vec((*this)(xlist));
     FloatsList ret;
     for (unsigned i = 0; i < xlist.size(); i++)
       ret.push_back(Floats(1, vec(i)));
@@ -444,14 +444,14 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
     }
   }
 
-  IMP_Eigen::VectorXd get_derivative_vector(unsigned particle_no,
-                                            const FloatsList& xlist) const {
+  Eigen::VectorXd get_derivative_vector(unsigned particle_no,
+                                        const FloatsList& xlist) const {
     unsigned N = xlist.size();
-    IMP_Eigen::VectorXd ret(N);
+    Eigen::VectorXd ret(N);
     switch (particle_no) {
       case 0:  // G
         // d[f(x)]/dG = f(x)/G
-        ret = ((*this)(xlist) - IMP_Eigen::VectorXd::Constant(N, A_val_)) /
+        ret = ((*this)(xlist) - Eigen::VectorXd::Constant(N, A_val_)) /
               G_val_;
         break;
       case 1:  // Rg
@@ -497,7 +497,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
         }
         break;
       case 4:  // A
-        ret = IMP_Eigen::VectorXd::Constant(N, 1);
+        ret = Eigen::VectorXd::Constant(N, 1);
         break;
       default:
         IMP_THROW("Invalid particle number", ModelException);
@@ -506,7 +506,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
   }
 
   FloatsList get_derivative_matrix(const FloatsList& xlist, bool) const {
-    IMP_Eigen::MatrixXd mat(xlist.size(), 5);
+    Eigen::MatrixXd mat(xlist.size(), 5);
     mat.col(0) = get_derivative_vector(0, xlist);
     mat.col(1) = get_derivative_vector(1, xlist);
     mat.col(2) = get_derivative_vector(2, xlist);
@@ -521,22 +521,22 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
     return ret;
   }
 
-  IMP_Eigen::VectorXd get_second_derivative_vector(
+  Eigen::VectorXd get_second_derivative_vector(
       unsigned particle_a, unsigned particle_b, const FloatsList& xlist) const {
     if (particle_a >= 5) IMP_THROW("Invalid particle 1 number", ModelException);
     if (particle_b >= 5) IMP_THROW("Invalid particle 2 number", ModelException);
     unsigned N = xlist.size();
     // hessian involving A is always 0
-    if (particle_a == 4 || particle_b == 4) return IMP_Eigen::VectorXd::Zero(N);
+    if (particle_a == 4 || particle_b == 4) return Eigen::VectorXd::Zero(N);
     unsigned pa = std::min(particle_a, particle_b);
     unsigned pb = std::max(particle_a, particle_b);
-    IMP_Eigen::VectorXd ret(N);
+    Eigen::VectorXd ret(N);
     switch (pa) {
       case 0:  // G
         switch (pb) {
           case 0:  // G
             // d2f/dG2 = 0
-            ret.noalias() = IMP_Eigen::VectorXd::Zero(N);
+            ret.noalias() = Eigen::VectorXd::Zero(N);
             break;
 
           case 1:  // Rg
@@ -713,7 +713,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
   FloatsList get_second_derivative_vector(unsigned particle_a,
                                           unsigned particle_b,
                                           const FloatsList& xlist, bool) const {
-    IMP_Eigen::VectorXd mat(
+    Eigen::VectorXd mat(
         get_second_derivative_vector(particle_a, particle_b, xlist));
     FloatsList ret;
     for (int i = 0; i < mat.rows(); i++) {

@@ -14,7 +14,7 @@
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/Switching.h>
 #include <IMP/Object.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 #define IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM 1e-7
 
@@ -32,7 +32,7 @@ class IMPISDEXPORT BivariateFunction : public Object {
   /* returns a NxN matrix of entries where N=xlist.rows()
    * and entry ij of the matrix is f(xlist(i),xlist(j))
    */
-  virtual IMP_Eigen::MatrixXd operator()(const IMP::FloatsList& xlist)
+  virtual Eigen::MatrixXd operator()(const IMP::FloatsList& xlist)
       const = 0;
 
   //! used for testing only
@@ -62,7 +62,7 @@ class IMPISDEXPORT BivariateFunction : public Object {
   /* m_ij = d(func(xlist[i],xlist[j]))/dparticle_no
    * the matrix is NxN where N = xlist.size()
    */
-  virtual IMP_Eigen::MatrixXd get_derivative_matrix(
+  virtual Eigen::MatrixXd get_derivative_matrix(
       unsigned particle_no, const FloatsList& xlist) const = 0;
 
   // for testing purposes
@@ -71,7 +71,7 @@ class IMPISDEXPORT BivariateFunction : public Object {
                                            bool stupid) const = 0;
 
   //! return second derivative matrix
-  virtual IMP_Eigen::MatrixXd get_second_derivative_matrix(
+  virtual Eigen::MatrixXd get_second_derivative_matrix(
       unsigned particle_a, unsigned particle_b,
       const FloatsList& xlist) const = 0;
 
@@ -169,9 +169,9 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
     return ret;
   }
 
-  IMP_Eigen::MatrixXd operator()(const IMP::FloatsList& xlist) const {
+  Eigen::MatrixXd operator()(const IMP::FloatsList& xlist) const {
     const unsigned M = xlist.size();
-    IMP_Eigen::MatrixXd Mret(M, M);
+    Eigen::MatrixXd Mret(M, M);
     for (unsigned i = 0; i < M; i++) {
       for (unsigned j = i; j < M; j++) {
         IMP_USAGE_CHECK(xlist[i].size() == 1, "expecting a 1-D vector");
@@ -187,7 +187,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
   }
 
   FloatsList operator()(const IMP::FloatsList& xlist, bool) const {
-    IMP_Eigen::MatrixXd mat((*this)(xlist));
+    Eigen::MatrixXd mat((*this)(xlist));
     FloatsList ret;
     for (unsigned i = 0; i < xlist.size(); i++)
       for (unsigned j = 0; j < xlist.size(); j++)
@@ -228,13 +228,13 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
     }
   }
 
-  IMP_Eigen::MatrixXd get_derivative_matrix(unsigned particle_no,
-                                            const FloatsList& xlist) const {
+  Eigen::MatrixXd get_derivative_matrix(unsigned particle_no,
+                                        const FloatsList& xlist) const {
     // Strategy: fill in the main diagonal, then fill with zeros
     // if the value of the function falls below cutoff.
     // assumes data points are ordered!
     unsigned N = xlist.size();
-    IMP_Eigen::MatrixXd ret(N, N);
+    Eigen::MatrixXd ret(N, N);
     double diag;
     switch (particle_no) {
       case 0:  // tau
@@ -316,7 +316,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
 
   FloatsList get_derivative_matrix(unsigned particle_no,
                                    const FloatsList& xlist, bool) const {
-    IMP_Eigen::MatrixXd mat(get_derivative_matrix(particle_no, xlist));
+    Eigen::MatrixXd mat(get_derivative_matrix(particle_no, xlist));
     FloatsList ret;
     for (int i = 0; i < mat.rows(); i++) {
       Floats line;
@@ -326,10 +326,10 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
     return ret;
   }
 
-  IMP_Eigen::MatrixXd get_second_derivative_matrix(
+  Eigen::MatrixXd get_second_derivative_matrix(
       unsigned particle_a, unsigned particle_b, const FloatsList& xlist) const {
     unsigned N(xlist.size());
-    IMP_Eigen::MatrixXd ret(N, N);
+    Eigen::MatrixXd ret(N, N);
     if (particle_a > 1) IMP_THROW("Invalid particle 1 number", ModelException);
     if (particle_b > 1) IMP_THROW("Invalid particle 2 number", ModelException);
     // d2f/dtau2
@@ -372,7 +372,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
   FloatsList get_second_derivative_matrix(unsigned particle_a,
                                           unsigned particle_b,
                                           const FloatsList& xlist, bool) const {
-    IMP_Eigen::MatrixXd mat(
+    Eigen::MatrixXd mat(
         get_second_derivative_matrix(particle_a, particle_b, xlist));
     FloatsList ret;
     for (int i = 0; i < mat.rows(); i++) {

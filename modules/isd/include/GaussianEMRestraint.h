@@ -20,7 +20,7 @@
 #include <IMP/container/ClosePairContainer.h>
 #include <IMP/atom/Mass.h>
 #include <math.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include <boost/unordered_map.hpp>
 
 IMPISD_BEGIN_NAMESPACE

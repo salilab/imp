@@ -67,9 +67,9 @@ void Profile::init(unsigned int size, unsigned int partial_profiles_size) {
     number_of_q_entries = (int)std::ceil((max_q_ - min_q_) / delta_q_) + 1;
   }
 
-  q_ = IMP_Eigen::VectorXf::Zero(number_of_q_entries);
-  intensity_ = IMP_Eigen::VectorXf::Zero(number_of_q_entries);
-  error_ = IMP_Eigen::VectorXf::Zero(number_of_q_entries);
+  q_ = Eigen::VectorXf::Zero(number_of_q_entries);
+  intensity_ = Eigen::VectorXf::Zero(number_of_q_entries);
+  error_ = Eigen::VectorXf::Zero(number_of_q_entries);
 
   if(size == 0) {
     for (int i = 0; i < number_of_q_entries; i++) {
@@ -80,7 +80,7 @@ void Profile::init(unsigned int size, unsigned int partial_profiles_size) {
   if(partial_profiles_size > 0) {
     partial_profiles_.insert(partial_profiles_.begin(),
                              partial_profiles_size,
-                             IMP_Eigen::VectorXf::Zero(number_of_q_entries));
+                             Eigen::VectorXf::Zero(number_of_q_entries));
   }
 }
 
@@ -918,7 +918,7 @@ void Profile::add_partial_profiles(const Profile* other_profile, double weight) 
       partial_profiles_.size() == 0) {
     partial_profiles_.insert(partial_profiles_.begin(),
                              other_profile->partial_profiles_.size(),
-                             IMP_Eigen::VectorXf::Zero(q_.size()));
+                             Eigen::VectorXf::Zero(q_.size()));
   }
   if (partial_profiles_.size() != other_profile->partial_profiles_.size()) {
     IMP_WARN("Can't add different partial profile sizes "

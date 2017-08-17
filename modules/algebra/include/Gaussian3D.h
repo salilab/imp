@@ -14,7 +14,7 @@
 #include "ReferenceFrame3D.h"
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/standard_grids.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -44,11 +44,11 @@ IMP_VALUES(Gaussian3D, Gaussian3Ds);
 
 /** Return the covariance matrix from a given set of standard deviations in
     the passed reference frame. */
-IMPALGEBRAEXPORT IMP_Eigen::Matrix3d get_covariance(const Gaussian3D &g);
+IMPALGEBRAEXPORT Eigen::Matrix3d get_covariance(const Gaussian3D &g);
 
 //! Return a Gaussian centered at the origin from a covariance matrix.
 IMPALGEBRAEXPORT Gaussian3D
-get_gaussian_from_covariance(const IMP_Eigen::Matrix3d &covariance,
+get_gaussian_from_covariance(const Eigen::Matrix3d &covariance,
                              const Vector3D &center);
 
 //! Rasterize the Gaussians to a grid.

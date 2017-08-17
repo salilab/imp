@@ -14,11 +14,11 @@ Referential::Referential(Model* m, ParticleIndex pi)
     : m_(m), pi_(pi), centroid_(compute_centroid()), base_(compute_base()),
       q_(compute_quaternion()) {}
 
-IMP_Eigen::Vector3d Referential::compute_centroid() const {
+Eigen::Vector3d Referential::compute_centroid() const {
   // get rigid body member coordinates
   RigidBody d(m_, pi_);
   ParticleIndexes pis(d.get_member_particle_indexes());
-  IMP_Eigen::Matrix<double, IMP_Eigen::Dynamic, 3> coords(pis.size(), 3);
+  Eigen::Matrix<double, Eigen::Dynamic, 3> coords(pis.size(), 3);
   for (unsigned i = 0; i < pis.size(); i++) {
     XYZ xyz(m_, pis[i]);
     coords(i, 0) = xyz.get_x();
@@ -28,13 +28,13 @@ IMP_Eigen::Vector3d Referential::compute_centroid() const {
   return coords.colwise().mean();
 }
 
-IMP_Eigen::Matrix3d Referential::compute_base() const {
+Eigen::Matrix3d Referential::compute_base() const {
   RigidBody d(m_, pi_);
   ParticleIndexes pis(d.get_member_particle_indexes());
   if (pis.size() < 3)
     IMP_THROW("rigid body must contain at least 3 xyzs", ModelException);
   XYZ o(m_, pis[0]), x(m_, pis[1]), y(m_, pis[2]);
-  IMP_Eigen::Vector3d vo, e1, e2;
+  Eigen::Vector3d vo, e1, e2;
   vo << o.get_x(), o.get_y(), o.get_z();
   e1 << x.get_x(), x.get_y(), x.get_z();
   e1 = e1 - vo;
@@ -43,40 +43,40 @@ IMP_Eigen::Matrix3d Referential::compute_base() const {
   e2 = e2 - vo;
   e2 = e2 - e2.dot(e1) * e1;
   e2.normalize();
-  IMP_Eigen::Matrix3d retmat;
+  Eigen::Matrix3d retmat;
   retmat << e1, e2, e1.cross(e2);
   return retmat;
 }
 
-IMP_Eigen::Quaterniond Referential::compute_quaternion() const {
-  return pick_positive(IMP_Eigen::Quaterniond(base_));
+Eigen::Quaterniond Referential::compute_quaternion() const {
+  return pick_positive(Eigen::Quaterniond(base_));
 }
 
-IMP_Eigen::Vector3d Referential::get_local_coords(const IMP_Eigen::Vector3d
+Eigen::Vector3d Referential::get_local_coords(const Eigen::Vector3d
                                                   & other) const {
   return q_.conjugate() * (other - centroid_);
 }
 
-IMP_Eigen::Quaterniond Referential::get_local_rotation(
-    const IMP_Eigen::Quaterniond& other) const {
+Eigen::Quaterniond Referential::get_local_rotation(
+    const Eigen::Quaterniond& other) const {
   return pick_positive(q_.conjugate() * other);  // * q_);
 }
 
 void Transformer::transform() {
   // convert translation and rotation from local to global coords
-  IMP_Eigen::Quaterniond refq = ref_.get_rotation();
-  IMP_Eigen::Vector3d global_t(refq * t_);
-  IMP_Eigen::Quaterniond global_q(pick_positive(refq * q_ * refq.conjugate()));
+  Eigen::Quaterniond refq = ref_.get_rotation();
+  Eigen::Vector3d global_t(refq * t_);
+  Eigen::Quaterniond global_q(pick_positive(refq * q_ * refq.conjugate()));
   // get rb centroid as a translation
-  IMP_Eigen::Vector3d centroid(Referential(m_, target_).get_centroid());
+  Eigen::Vector3d centroid(Referential(m_, target_).get_centroid());
   // transform each rigid member
   RigidBody d(m_, target_);
   ParticleIndexes pis(d.get_member_particle_indexes());
   for (unsigned i = 0; i < pis.size(); i++) {
     XYZ xyz(m_, pis[i]);
-    IMP_Eigen::Vector3d coords;
+    Eigen::Vector3d coords;
     coords << xyz.get_x(), xyz.get_y(), xyz.get_z();
-    IMP_Eigen::Vector3d newcoords = global_q * (coords - centroid) + centroid
+    Eigen::Vector3d newcoords = global_q * (coords - centroid) + centroid
                                     + global_t;
     xyz.set_x(newcoords(0));
     xyz.set_y(newcoords(1));
@@ -101,12 +101,12 @@ Coord::Coord(Floats fl) {
   IMP_USAGE_CHECK(fl.size() % 7 == 0, "coordinates must be multiple of 7");
   unsigned nrbs = fl.size()/7;
   for (unsigned i = 0; i < nrbs; i++) {
-    IMP_Eigen::Vector3d com;
+    Eigen::Vector3d com;
     com << fl[3 * i], fl[3 * i + 1], fl[3 * i + 2];
     coms.push_back(com);
-    IMP_Eigen::Quaterniond quat(fl[3 * nrbs + 4 * i], fl[3 * nrbs + 4 * i + 1],
-                                fl[3 * nrbs + 4 * i + 2],
-                                fl[3 * nrbs + 4 * i + 3]);
+    Eigen::Quaterniond quat(fl[3 * nrbs + 4 * i], fl[3 * nrbs + 4 * i + 1],
+                            fl[3 * nrbs + 4 * i + 2],
+                            fl[3 * nrbs + 4 * i + 3]);
     quat.normalize();
     quats.push_back(quat);
   }
@@ -140,11 +140,9 @@ std::ostream& operator<<(std::ostream& out, const Coord& c) {
   return out;
 }
 
-IMP_Eigen::Quaterniond pick_positive(const IMP_Eigen::Quaterniond
-                                     & other) {
+Eigen::Quaterniond pick_positive(const Eigen::Quaterniond& other) {
   if (other.w() < 0) {
-    return IMP_Eigen::Quaterniond(-other.w(), -other.x(), -other.y(),
-                                  -other.z());
+    return Eigen::Quaterniond(-other.w(), -other.x(), -other.y(), -other.z());
   } else {
     return other;
   }

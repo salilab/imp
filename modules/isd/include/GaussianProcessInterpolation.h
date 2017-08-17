@@ -14,8 +14,8 @@
 #include <IMP/isd/univariate_functions.h>
 #include <IMP/isd/bivariate_functions.h>
 #include <IMP/isd/Scale.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
-#include <IMP/algebra/eigen3/Eigen/Cholesky>
+#include <Eigen/Dense>
+#include <Eigen/Cholesky>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -81,31 +81,31 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object {
   double get_posterior_covariance(Floats x1, Floats x2) const;
 #ifndef SWIG
   // c++ only
-  IMP_Eigen::MatrixXd get_posterior_covariance_matrix(FloatsList x) const;
+  Eigen::MatrixXd get_posterior_covariance_matrix(FloatsList x) const;
 #endif
   // for Python
   FloatsList get_posterior_covariance_matrix(FloatsList x, bool) const;
 
 #ifndef SWIG
 // derivative: d(mean(q))/(dparticle_i)
-// IMP_Eigen::VectorXd get_posterior_mean_derivative(Floats x) const;
+// Eigen::VectorXd get_posterior_mean_derivative(Floats x) const;
 #endif
 
 #ifndef SWIG
   // derivative: d(cov(q,q))/(dparticle_i)
-  IMP_Eigen::VectorXd get_posterior_covariance_derivative(Floats x) const;
+  Eigen::VectorXd get_posterior_covariance_derivative(Floats x) const;
 #endif
   // for Python
   Floats get_posterior_covariance_derivative(Floats x, bool) const;
 
 #ifndef SWIG
 // hessian: d(mean(q))/(dparticle_i dparticle_j)
-// IMP_Eigen::MatrixXd get_posterior_mean_hessian(Floats x) const;
+// Eigen::MatrixXd get_posterior_mean_hessian(Floats x) const;
 #endif
 
 #ifndef SWIG
   // hessian: d(cov(q,q))/(dparticle_i dparticle_j)
-  IMP_Eigen::MatrixXd get_posterior_covariance_hessian(Floats x) const;
+  Eigen::MatrixXd get_posterior_covariance_hessian(Floats x) const;
 #endif
   // for Python
   FloatsList get_posterior_covariance_hessian(Floats x, bool) const;
@@ -146,41 +146,41 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object {
 
  protected:
   // returns updated data vector
-  IMP_Eigen::VectorXd get_I() const { return I_; }
+  Eigen::VectorXd get_I() const { return I_; }
   // returns updated prior mean vector
-  IMP_Eigen::VectorXd get_m() const;
+  Eigen::VectorXd get_m() const;
   // returns dm/dparticle
-  IMP_Eigen::VectorXd get_m_derivative(unsigned particle) const;
+  Eigen::VectorXd get_m_derivative(unsigned particle) const;
   // returns d2m/(dparticle_1 dparticle_2)
-  IMP_Eigen::VectorXd get_m_second_derivative(unsigned particle1,
+  Eigen::VectorXd get_m_second_derivative(unsigned particle1,
                                               unsigned particle2) const;
   // returns updated prior covariance vector
   void add_to_m_particle_derivative(unsigned particle, double value,
                                     DerivativeAccumulator &accum);
   // returns updated prior covariance vector
-  IMP_Eigen::VectorXd get_wx_vector(Floats xval) const;
+  Eigen::VectorXd get_wx_vector(Floats xval) const;
   // returns updated data covariance matrix
-  IMP_Eigen::DiagonalMatrix<double, IMP_Eigen::Dynamic> get_S() const {
+  Eigen::DiagonalMatrix<double, Eigen::Dynamic> get_S() const {
     return S_;
   }
   // returns updated prior covariance matrix
-  IMP_Eigen::MatrixXd get_W() const;
+  Eigen::MatrixXd get_W() const;
   // returns Omega=(W+S/N)
-  IMP_Eigen::MatrixXd get_Omega() const;
+  Eigen::MatrixXd get_Omega() const;
   // returns dOmega/dparticle
-  IMP_Eigen::MatrixXd get_Omega_derivative(unsigned particle) const;
+  Eigen::MatrixXd get_Omega_derivative(unsigned particle) const;
   // returns d2Omega/(dparticle_1 dparticle_2)
-  IMP_Eigen::MatrixXd get_Omega_second_derivative(unsigned particle1,
-                                                  unsigned particle2) const;
+  Eigen::MatrixXd get_Omega_second_derivative(unsigned particle1,
+                                              unsigned particle2) const;
   // returns updated prior covariance vector
   void add_to_Omega_particle_derivative(unsigned particle, double value,
                                         DerivativeAccumulator &accum);
   // returns LDLT decomp of omega
-  IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> get_ldlt() const;
+  Eigen::LDLT<Eigen::MatrixXd, Eigen::Upper> get_ldlt() const;
   // returns updated Omega^{-1}
-  IMP_Eigen::MatrixXd get_Omi() const;
+  Eigen::MatrixXd get_Omi() const;
   // returns updated Omega^{-1}(I-m)
-  IMP_Eigen::VectorXd get_OmiIm() const;
+  Eigen::VectorXd get_OmiIm() const;
 
  private:
   // ensures the mean/covariance function has updated parameters. Signals an
@@ -201,21 +201,21 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object {
   void compute_OmiIm();
 
   // compute dw(q)/dparticle_i
-  IMP_Eigen::VectorXd get_wx_vector_derivative(Floats q, unsigned i) const;
+  Eigen::VectorXd get_wx_vector_derivative(Floats q, unsigned i) const;
   // compute dw(q)/(dparticle_i * dparticle_j)
-  IMP_Eigen::VectorXd get_wx_vector_second_derivative(Floats q, unsigned i,
-                                                      unsigned j) const;
+  Eigen::VectorXd get_wx_vector_second_derivative(Floats q, unsigned i,
+                                                  unsigned j) const;
 
   // compute dcov(q,q)/dw(q)
-  IMP_Eigen::VectorXd get_dcov_dwq(Floats q) const;
+  Eigen::VectorXd get_dcov_dwq(Floats q) const;
   // compute dcov(q,q)/dOmega
-  IMP_Eigen::MatrixXd get_dcov_dOm(Floats q) const;
+  Eigen::MatrixXd get_dcov_dOm(Floats q) const;
   // compute d2cov(q,q)/(dw(q) dw(q)) (independent of q !)
-  IMP_Eigen::MatrixXd get_d2cov_dwq_dwq() const;
+  Eigen::MatrixXd get_d2cov_dwq_dwq() const;
   // compute d2cov(q,q)/(dw(q)_m dOmega)
-  IMP_Eigen::MatrixXd get_d2cov_dwq_dOm(Floats q, unsigned m) const;
+  Eigen::MatrixXd get_d2cov_dwq_dOm(Floats q, unsigned m) const;
   // compute d2cov(q,q)/(dOmega dOmega_mn)
-  IMP_Eigen::MatrixXd get_d2cov_dOm_dOm(Floats q, unsigned m, unsigned n) const;
+  Eigen::MatrixXd get_d2cov_dOm_dOm(Floats q, unsigned m, unsigned n) const;
 
   // compute mean observations
   void compute_I(Floats mean);
@@ -233,16 +233,16 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object {
   IMP::PointerMember<UnivariateFunction> mean_function_;
   // pointer to the prior covariance function
   IMP::PointerMember<BivariateFunction> covariance_function_;
-  IMP_Eigen::VectorXd I_, m_;
-  IMP_Eigen::MatrixXd W_, Omega_, Omi_;  // Omi = Omega^{-1}
-  IMP_Eigen::DiagonalMatrix<double, IMP_Eigen::Dynamic> S_;
-  IMP_Eigen::VectorXd OmiIm_;  // Omi * (I - m)
+  Eigen::VectorXd I_, m_;
+  Eigen::MatrixXd W_, Omega_, Omi_;  // Omi = Omega^{-1}
+  Eigen::DiagonalMatrix<double, Eigen::Dynamic> S_;
+  Eigen::VectorXd OmiIm_;  // Omi * (I - m)
   bool flag_m_, flag_m_gpir_, flag_Omi_, flag_OmiIm_, flag_W_, flag_Omega_,
       flag_Omega_gpir_, flag_ldlt_;
   IMP::Pointer<IMP::Particle> sigma_;
   double cutoff_;
   double sigma_val_;  // to know if an update is needed
-  IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> ldlt_;
+  Eigen::LDLT<Eigen::MatrixXd, Eigen::Upper> ldlt_;
 };
 
 IMPISD_END_NAMESPACE

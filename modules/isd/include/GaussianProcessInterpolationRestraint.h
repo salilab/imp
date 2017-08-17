@@ -15,7 +15,7 @@
 #include <IMP/isd/GaussianProcessInterpolation.h>
 #include <IMP/isd/MultivariateFNormalSufficient.h>
 #include <IMP/Pointer.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 #include <IMP/ScoreState.h>
 
@@ -62,7 +62,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
   double get_minus_exponent() const;
 
   //! Get hessian of the minus log likelihood
-  IMP_Eigen::MatrixXd get_hessian() const;
+  Eigen::MatrixXd get_hessian() const;
 
   //! Get log determinant of hessian
   double get_logdet_hessian() const;

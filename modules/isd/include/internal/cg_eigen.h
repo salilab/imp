@@ -9,7 +9,7 @@
 #include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
 #include <IMP/Model.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 IMPISD_BEGIN_INTERNAL_NAMESPACE
 
@@ -19,7 +19,7 @@ IMPISD_BEGIN_INTERNAL_NAMESPACE
 class ConjugateGradientEigen : public Object {
 
  private:
-  IMP_Eigen::MatrixXd A_, B_, X0_, R_;
+  Eigen::MatrixXd A_, B_, X0_, R_;
   bool has_A_, has_B_, has_X0_, has_tol_, success_, col_success_;
   double tol_;
   unsigned M_, N_, nsteps_, vec_steps_;
@@ -37,7 +37,7 @@ class ConjugateGradientEigen : public Object {
   /* \param[in] A the spd matrix for which the system AX=B
    *               is to be solved.
    */
-  void set_A(const IMP_Eigen::MatrixXd& A) {
+  void set_A(const Eigen::MatrixXd& A) {
     unsigned M = A.rows();
     IMP_USAGE_CHECK(A.cols() == M, "must provide spd matrix!");
     M_ = M;
@@ -47,7 +47,7 @@ class ConjugateGradientEigen : public Object {
   }
 
   // \param[in] B
-  void set_B(const IMP_Eigen::MatrixXd& B) {
+  void set_B(const Eigen::MatrixXd& B) {
     N_ = B.cols();
     B_ = B;
     has_B_ = true;
@@ -55,7 +55,7 @@ class ConjugateGradientEigen : public Object {
   }
 
   // \param[in] X0 an initial guess for X
-  void set_X0(const IMP_Eigen::MatrixXd& X0) {
+  void set_X0(const Eigen::MatrixXd& X0) {
     X0_ = X0;
     has_X0_ = true;
     success_ = false;
@@ -89,8 +89,8 @@ class ConjugateGradientEigen : public Object {
    * \param[in] the maximum number of steps which will be performed
    * returns: the X matrix.
    */
-  IMP_Eigen::MatrixXd optimize(const IMP_Eigen::MatrixXd& precond,
-                               unsigned max_steps_per_column) {
+  Eigen::MatrixXd optimize(const Eigen::MatrixXd& precond,
+                           unsigned max_steps_per_column) {
     success_ = false;
     col_success_ = true;
     nsteps_ = 0;
@@ -98,7 +98,7 @@ class ConjugateGradientEigen : public Object {
                     "X0 must have " << M_ << " rows and " << N_ << " columns!");
     IMP_USAGE_CHECK(has_A_ && has_B_ && has_X0_ && has_tol_,
                     "You must provide the matrices first!");
-    IMP_Eigen::MatrixXd X(X0_);
+    Eigen::MatrixXd X(X0_);
     for (unsigned col = 0; col < N_; col++) {
       X.col(col).noalias() =
           optimize_vec(precond, B_.col(col), X.col(col), max_steps_per_column);
@@ -109,21 +109,21 @@ class ConjugateGradientEigen : public Object {
   }
 
  private:
-  IMP_Eigen::VectorXd optimize_vec(const IMP_Eigen::MatrixXd& precond,
-                                   const IMP_Eigen::VectorXd& b,
-                                   const IMP_Eigen::VectorXd& x0,
-                                   unsigned max_steps) {
+  Eigen::VectorXd optimize_vec(const Eigen::MatrixXd& precond,
+                               const Eigen::VectorXd& b,
+                               const Eigen::VectorXd& x0,
+                               unsigned max_steps) {
     // initial conditions
-    IMP_Eigen::VectorXd x(x0), r(b - A_ * x0);
-    IMP_Eigen::VectorXd z;
+    Eigen::VectorXd x(x0), r(b - A_ * x0);
+    Eigen::VectorXd z;
     z.noalias() = precond * r;
-    IMP_Eigen::VectorXd p(z);
-    IMP_Eigen::VectorXd rold, zold;
+    Eigen::VectorXd p(z);
+    Eigen::VectorXd rold, zold;
     double a, beta, rz(r.transpose() * z), rzold, norm;
     // follow the gradients
     unsigned k;
     for (k = 0; k < max_steps; k++) {
-      IMP_Eigen::VectorXd tmp(A_ * p);
+      Eigen::VectorXd tmp(A_ * p);
       a = rz / (p.transpose() * tmp);
       x += a * p;
       // rold=r;

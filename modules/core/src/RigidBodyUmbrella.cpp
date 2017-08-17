@@ -11,8 +11,8 @@
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/log.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
-#include <IMP/algebra/eigen3/Eigen/Geometry>
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -39,14 +39,14 @@ internal::Coord RigidBodyUmbrella::interpolate(double lambda, Floats x1,
     IMP_USAGE_CHECK(lambda >= 0, "lambda should be >=0");
     IMP_USAGE_CHECK(lambda <= 1, "lambda should be <=1");
     //centroid
-    IMP_Eigen::Vector3d cx1,cx2,cx0;
+    Eigen::Vector3d cx1,cx2,cx0;
     cx1 << x1[0], x1[1], x1[2];
     cx2 << x2[0], x2[1], x2[2];
     cx0 = (1-lambda)*cx1 + lambda*cx2;
     //quaternion
-    IMP_Eigen::Quaterniond qx1(x1[3],x1[4],x1[5],x1[6]);
-    IMP_Eigen::Quaterniond qx2(x2[3],x2[4],x2[5],x2[6]);
-    IMP_Eigen::Quaterniond qx0(qx1.slerp(lambda,qx2));
+    Eigen::Quaterniond qx1(x1[3],x1[4],x1[5],x1[6]);
+    Eigen::Quaterniond qx2(x2[3],x2[4],x2[5],x2[6]);
+    Eigen::Quaterniond qx0(qx1.slerp(lambda,qx2));
     qx0.normalize();
     //return it
     internal::Coord x0;

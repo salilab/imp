@@ -16,7 +16,7 @@
 #include "ChiScore.h"
 #include "WeightedFitParameters.h"
 #include "nnls.h"
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -38,7 +38,7 @@ class WeightedProfileFitter : public ProfileFitter<ScoringFunctionT> {
     Wb_(exp_profile->size()),
     A_(exp_profile->size(), 2) {
 
-    IMP_Eigen::VectorXf b(exp_profile->size());
+    Eigen::VectorXf b(exp_profile->size());
     for (unsigned int i = 0; i < exp_profile->size(); i++) {
       Wb_(i) = exp_profile->get_intensity(i);
       W_(i) = 1.0 / (exp_profile->get_error(i));
@@ -78,13 +78,13 @@ class WeightedProfileFitter : public ProfileFitter<ScoringFunctionT> {
       double max_c2, double old_chi, Vector<double>& weights, bool use_offset) const;
 
  private:
-  IMP_Eigen::MatrixXf W_;  // weights matrix
+  Eigen::MatrixXf W_;  // weights matrix
 
   // weights matrix multiplied by experimental intensities vector
-  IMP_Eigen::VectorXf Wb_;
+  Eigen::VectorXf Wb_;
 
   // intensities
-  IMP_Eigen::MatrixXf A_;
+  Eigen::MatrixXf A_;
 };
 
 template <typename ScoringFunctionT>
@@ -117,10 +117,11 @@ double WeightedProfileFitter<ScoringFunctionT>::compute_score(
     }
   }
 
-  IMP_Eigen::VectorXf w;
+  Eigen::VectorXf w;
   if (!nnls) {  // solve least squares
-    IMP_Eigen::JacobiSVD<IMP_Eigen::MatrixXf> svd(W_.asDiagonal() * A_,
-                                                  ComputeThinU | ComputeThinV);
+    Eigen::JacobiSVD<Eigen::MatrixXf> svd(W_.asDiagonal() * A_,
+                                          Eigen::ComputeThinU
+                                          | Eigen::ComputeThinV);
     w = svd.solve(Wb_);
     // zero the negatives
     for (int i = 0; i < w.size(); i++)
@@ -135,7 +136,7 @@ double WeightedProfileFitter<ScoringFunctionT>::compute_score(
           (ProfileFitter<ScoringFunctionT>::exp_profile_->get_min_q(),
            ProfileFitter<ScoringFunctionT>::exp_profile_->get_max_q(),
            ProfileFitter<ScoringFunctionT>::exp_profile_->get_delta_q()));
-  IMP_Eigen::VectorXf wp = A_ * w;
+  Eigen::VectorXf wp = A_ * w;
   weighted_profile->set_qs(profiles[0]->get_qs());
   weighted_profile->set_intensities(wp);
   weights.resize(w.size());

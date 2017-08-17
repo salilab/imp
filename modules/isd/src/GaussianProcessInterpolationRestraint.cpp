@@ -27,7 +27,7 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
   // args are: sample mean, jacobian, true mean,
   // nobs, sample variance, true variance
   mvn_ = new MultivariateFNormalSufficient(gpi_->get_I(), 1.0, gpi_->get_m(), 1,
-                                           IMP_Eigen::MatrixXd::Zero(M_, M_),
+                                           Eigen::MatrixXd::Zero(M_, M_),
                                            gpi_->get_Omega());
   mvn_->set_use_cg(false, 0.0);
   IMP_LOG_TERSE("GPIR: done init" << std::endl);
@@ -69,22 +69,22 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
   if (accum)  // O(M) if unchanged, O(M^2) if mean changed, else O(M^3)
   {
     // derivatives for mean particles
-    IMP_Eigen::VectorXd dmv = mvn_->evaluate_derivative_FM();
+    Eigen::VectorXd dmv = mvn_->evaluate_derivative_FM();
     unsigned npart = gpi_->get_number_of_m_particles();
     // std::cout << "derivs: ";
     for (unsigned i = 0; i < npart; i++) {
       if (!gpi_->get_m_particle_is_optimized(i)) continue;
-      IMP_Eigen::VectorXd dmean = gpi_->get_m_derivative(i);
+      Eigen::VectorXd dmean = gpi_->get_m_derivative(i);
       double tmp = dmv.transpose() * dmean;
       // std::cout << i << " = " << tmp << " ";
       gpi_->add_to_m_particle_derivative(i, tmp, *accum);
     }
     // derivatives for covariance particles
-    IMP_Eigen::MatrixXd dmvS = mvn_->evaluate_derivative_Sigma();
+    Eigen::MatrixXd dmvS = mvn_->evaluate_derivative_Sigma();
     npart = gpi_->get_number_of_Omega_particles();
     for (unsigned i = 0; i < npart; i++) {
       if (!gpi_->get_Omega_particle_is_optimized(i)) continue;
-      IMP_Eigen::MatrixXd dcov = gpi_->get_Omega_derivative(i);
+      Eigen::MatrixXd dcov = gpi_->get_Omega_derivative(i);
       double tmp = (dmvS.transpose() * dcov).trace();
       // std::cout << i+2 << " = " << tmp << " ";
       gpi_->add_to_Omega_particle_derivative(i, tmp, *accum);
@@ -107,7 +107,7 @@ double GaussianProcessInterpolationRestraint::get_minus_exponent() const {
   return mvn_->get_minus_exponent();
 }
 
-IMP_Eigen::MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const {
+Eigen::MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const {
   // update everything
   ss_->do_before_evaluate();
   // get how many and which particles are optimized
@@ -127,38 +127,38 @@ IMP_Eigen::MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const {
   }
   unsigned num_opt = mnum_opt + Onum_opt;
   // Only upper corner of hessian will be computed
-  IMP_Eigen::MatrixXd Hessian(IMP_Eigen::MatrixXd::Zero(num_opt, num_opt));
+  Eigen::MatrixXd Hessian(Eigen::MatrixXd::Zero(num_opt, num_opt));
 
   // d2E/(dm_k dm_l) * dm^k/dTheta_i dm^l/dTheta_j
-  IMP_Eigen::MatrixXd dmdm = mvn_->evaluate_second_derivative_FM_FM();
-  std::vector<IMP_Eigen::VectorXd> funcm;
+  Eigen::MatrixXd dmdm = mvn_->evaluate_second_derivative_FM_FM();
+  std::vector<Eigen::VectorXd> funcm;
   for (unsigned i = 0; i < mnum; i++)
     if (mopt[i]) funcm.push_back(gpi_->get_m_derivative(i));
   //     dm_k/dTheta_i = 0 if i is a covariance particle
   //     only fill upper triangle e.g. j>=i
   for (unsigned i = 0; i < mnum_opt; ++i) {
-    IMP_Eigen::VectorXd tmp(funcm[i].transpose() * dmdm);
+    Eigen::VectorXd tmp(funcm[i].transpose() * dmdm);
     for (unsigned j = i; j < mnum_opt; ++j)
       Hessian(i, j) += tmp.transpose() * funcm[j];
   }
   // dmdm.resize(0,0); // free up some space
 
   // d2E/(dOm_kl dOm_mn) * dOm_kl/dTheta_i * dOm_mn/dTheta_j
-  std::vector<std::vector<IMP_Eigen::MatrixXd> > dodo;
+  std::vector<std::vector<Eigen::MatrixXd> > dodo;
   //  get values
   for (unsigned m = 0; m < M_; ++m)  // row of second matrix
   {
-    std::vector<IMP_Eigen::MatrixXd> tmp;
+    std::vector<Eigen::MatrixXd> tmp;
     for (unsigned n = 0; n < M_; ++n)  // column of second matrix
       tmp.push_back(mvn_->evaluate_second_derivative_Sigma_Sigma(m, n));
     dodo.push_back(tmp);
   }
-  std::vector<IMP_Eigen::MatrixXd> funcO;
+  std::vector<Eigen::MatrixXd> funcO;
   for (unsigned i = 0; i < Onum; ++i)
     if (Oopt[i]) funcO.push_back(gpi_->get_Omega_derivative(i));
   //  compute contribution
   for (unsigned i = mnum_opt; i < num_opt; ++i) {
-    IMP_Eigen::MatrixXd tmp(M_, M_);
+    Eigen::MatrixXd tmp(M_, M_);
     for (unsigned m = 0; m < M_; ++m)
       for (unsigned n = 0; n < M_; ++n)
         tmp(m, n) = (dodo[m][n].transpose() * funcO[i - mnum_opt]).trace();
@@ -174,12 +174,12 @@ IMP_Eigen::MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const {
   // d2E/(dm_k dOm_lm) * (  dm^k/dTheta_i dOm^lm/dTheta_j)
   //
   // get values
-  std::vector<IMP_Eigen::MatrixXd> dmdo;
+  std::vector<Eigen::MatrixXd> dmdo;
   for (unsigned k = 0; k < M_; k++)
     dmdo.push_back(mvn_->evaluate_second_derivative_FM_Sigma(k));
   // compute hessian
   for (unsigned j = mnum_opt; j < num_opt; ++j) {
-    IMP_Eigen::VectorXd tmp(M_);
+    Eigen::VectorXd tmp(M_);
     for (unsigned k = 0; k < M_; ++k)
       tmp(k) = (dmdo[k].transpose() * funcO[j - mnum_opt]).trace();
     for (unsigned i = 0; i < mnum_opt; ++i)
@@ -191,7 +191,7 @@ IMP_Eigen::MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const {
   funcO.clear();
 
   // dE/dm_k * d2m^k/(dTheta_i dTheta_j)
-  IMP_Eigen::VectorXd dem(mvn_->evaluate_derivative_FM());
+  Eigen::VectorXd dem(mvn_->evaluate_derivative_FM());
   for (unsigned i = 0, iopt = 0; i < mnum; i++) {
     if (!mopt[i]) continue;
     for (unsigned j = i, jopt = iopt; j < mnum; j++) {
@@ -206,7 +206,7 @@ IMP_Eigen::MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const {
   // dem.resize(0);
 
   // dE/dOm_kl * d2Om^kl/(dTheta_i dTheta_j)
-  IMP_Eigen::MatrixXd dOm(mvn_->evaluate_derivative_Sigma());
+  Eigen::MatrixXd dOm(mvn_->evaluate_derivative_Sigma());
   for (unsigned i = mnum, iopt = mnum_opt; i < mnum + Onum; i++) {
     if (!Oopt[i - mnum]) continue;
     for (unsigned j = i, jopt = iopt; j < mnum + Onum; j++) {
@@ -223,12 +223,12 @@ IMP_Eigen::MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const {
   // return hessian as full matrix
   for (unsigned i = 0; i < num_opt; ++i)
     for (unsigned j = i + 1; j < num_opt; ++j) Hessian(j, i) = Hessian(i, j);
-  // return Hessian.selfadjointView<IMP_Eigen::Upper>();
+  // return Hessian.selfadjointView<Eigen::Upper>();
   return Hessian;
 }
 
 FloatsList GaussianProcessInterpolationRestraint::get_hessian(bool) const {
-  IMP_Eigen::MatrixXd tmp(get_hessian());
+  Eigen::MatrixXd tmp(get_hessian());
   FloatsList ret;
   for (unsigned i = 0; i < tmp.rows(); ++i) {
     Floats buf;
@@ -240,7 +240,7 @@ FloatsList GaussianProcessInterpolationRestraint::get_hessian(bool) const {
 
 double GaussianProcessInterpolationRestraint::get_logdet_hessian() const {
   // compute ldlt
-  IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> ldlt(get_hessian());
+  Eigen::LDLT<Eigen::MatrixXd, Eigen::Upper> ldlt(get_hessian());
   if (!ldlt.isPositive())
     IMP_THROW("Hessian matrix is not positive definite!", ModelException);
   return ldlt.vectorD().array().abs().log().sum();

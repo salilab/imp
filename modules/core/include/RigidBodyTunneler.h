@@ -15,8 +15,8 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/internal/tunneler_helpers.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
-#include <IMP/algebra/eigen3/Eigen/Geometry>
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
 #include <iostream>
 #include <boost/ptr_container/ptr_vector.hpp>
 

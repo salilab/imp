@@ -19,7 +19,7 @@
 #include <IMP/exception.h>
 #include <IMP/core/rigid_bodies.h>
 #include "internal/rigid_bodies.h"
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -27,11 +27,11 @@ IMPCORE_BEGIN_NAMESPACE
 
 /** little class to store an Eigen::Matrix3d */
 class IMPCOREEXPORT Matrix3D : public IMP::Object{
-  IMP_Eigen::Matrix3d mat_;
+  Eigen::Matrix3d mat_;
  public:
- Matrix3D(IMP_Eigen::Matrix3d mat,
+ Matrix3D(Eigen::Matrix3d mat,
           std::string name="Matrix3DDensityMap%1%"):Object(name),mat_(mat){ }
-  IMP_Eigen::Matrix3d get_mat() const {return mat_;}
+  Eigen::Matrix3d get_mat() const {return mat_;}
 };
 
 #endif
@@ -56,7 +56,7 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
 
 
   //! retrieve local covariance (as diagonal matrix)
-  IMP_Eigen::Matrix3d get_local_covariance() const {
+  Eigen::Matrix3d get_local_covariance() const {
     /* Kind of evil, but dynamic_cast fails randomly here
        on our RHEL 5 systems */
     Matrix3D* local
@@ -73,7 +73,7 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   }
 
   //! retrieve global covariance
-  IMP_Eigen::Matrix3d get_global_covariance() {
+  Eigen::Matrix3d get_global_covariance() {
     ObjectKey k = get_global_covariance_key();
     ParticleIndex pi = get_particle_index();
     if (!get_model()->get_has_attribute(k, pi)) {
@@ -92,7 +92,7 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
   void set_gaussian(const algebra::Gaussian3D &g);
 
   //! set the local-frame covariance.
-  void set_local_covariance(const IMP_Eigen::Vector3d covar) {
+  void set_local_covariance(const Eigen::Vector3d covar) {
     IMP_NEW(Matrix3D,local,(covar.asDiagonal()));
     get_model()->set_attribute(get_local_covariance_key(),
                                get_particle_index(),
@@ -104,11 +104,11 @@ class IMPCOREEXPORT Gaussian : public RigidBody {
 
   //! equivalent to set_local_covariance, used for backwards compatibility
   void set_variances(const algebra::Vector3D v) {
-    set_local_covariance(IMP_Eigen::Vector3d(v.get_data()));
+    set_local_covariance(Eigen::Vector3d(v.get_data()));
   }
 
   //! set the global-frame covariance. does NOT update local frame!
-  void set_global_covariance(IMP_Eigen::Matrix3d covar){
+  void set_global_covariance(Eigen::Matrix3d covar){
     IMP_NEW(Matrix3D,global,(covar));
     ObjectKey k = get_global_covariance_key();
     ParticleIndex pi = get_particle_index();
