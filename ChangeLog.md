@@ -2,6 +2,7 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- [Eigen](https://eigen.tuxfamily.org/) is now required to build IMP.
 
 # 2.8.0 - 2017-08-16 # {#changelog_2_8_0}
 - New applications of IMP are now available:
