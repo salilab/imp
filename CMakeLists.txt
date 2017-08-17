@@ -278,7 +278,10 @@ if(NOT IMP_STATIC)
 endif()
 
 find_package(Eigen3 3.0 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
+# Add Eigen3 to 'system' include path. Amongst other things, this will suppress
+# many compiler warnings about Eigen code which a) clutter the output and
+# b) we're not going to fix, since Eigen isn't our code.
+include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
 
 add_custom_target("IMP-version"
                   COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_version.py --source=${CMAKE_SOURCE_DIR}
