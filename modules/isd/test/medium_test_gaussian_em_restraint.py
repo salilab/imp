@@ -179,7 +179,11 @@ class Tests(IMP.test.TestCase):
 
     def test_rasterize(self):
         """Test making a map from a GMM"""
+        # Suppress warnings (we don't use the objects set up above)
+        self.sf.set_was_used(True)
+        self.gem.set_was_used(True)
         dmap = IMP.isd.gmm_tools.gmm2map(self.model_ps,1.0,fast=False)
+        dmap.set_was_used(True)
 
 class LocalTests(IMP.test.TestCase):
     def test_local_score(self):
