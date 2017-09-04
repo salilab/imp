@@ -290,6 +290,7 @@ namespace IMP {
 %include "IMP/atom/CADihedralRestraint.h"
 %include "IMP/atom/StructureSource.h"
 %include "IMP/atom/HelixRestraint.h"
+%include "IMP/atom/alignment.h"
 
 namespace IMP {
   namespace atom {
