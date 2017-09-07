@@ -16,26 +16,41 @@
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
-/**  Score pair of atoms based on SOAP.
+//! Score pairs of atoms based on SOAP.
+/** This is a simple pairwise atomistic statistical potential. For more
+    details, see
+    Optimized atomic statistical potentials: Assessment of protein interfaces
+    and loops. Dong GQ, Fan H, Schneidman-Duhovny D, Webb B, Sali A.
+    Bioinformatics. 2013
 
-  Optimized atomic statistical potentials: Assessment of protein interfaces
-  and loops. Dong GQ, Fan H, Schneidman-Duhovny D, Webb B, Sali A.
-  Bioinformatics. 2013
+    \note This potential is independent of the orientation of the pairs of
+          particles. Use OrientedSoap instead for a score that takes
+          orientation into account.
 
-  soap_score.lib is the table that was developed for scoring docking models.
-  Should be applied on pairs of atoms from the two docked proteins.
-
-  You need to use IMP::atom::add_dope_score_data() to add the requisite
-  atom type data to the particles being scored.
+    You need to use IMP::atom::add_dope_score_data() to add the requisite
+    atom type data to the particles being scored.
 */
 class Soap : public Statistical<DopeType, false, false> {
   typedef Statistical<DopeType, false, false> P;
 
  public:
+
+  //! Set up using the default SOAP-PP potential file.
+  /** This uses soap_score.lib, which is the pairwise part of the SOAP-PP
+      score (see https://salilab.org/SOAP/). This is designed for ranking
+      docking solutions. The score should be applied to pairs of atoms
+      from the two docked proteins.
+      \note The full SOAP-PP score also includes a surface accessibility
+            term, which can be applied using SingletonStatistical (but this
+            is unnecessary for simple ranking of solutions).
+   */
   Soap(double threshold = std::numeric_limits<double>::max())
       : P(get_soap_type_key(), threshold, get_data_path("soap_score.lib")) {}
+
+  //! Set up SOAP using an arbitrary potential file
   Soap(double threshold, TextInput data_file)
       : P(get_soap_type_key(), threshold, data_file) {}
+
   static IntKey get_soap_type_key() {
     static const IntKey ik("dope atom type");
     return ik;

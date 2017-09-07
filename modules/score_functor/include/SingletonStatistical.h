@@ -17,10 +17,10 @@
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
-/** Create a single key/single particle statistical potential from a file.
-    The Key passed as a template argument is used to determine how to map
+//! Create a single key/single particle statistical potential from a file.
+/** The Key passed as a template argument is used to determine how to map
     the name of the type as described in the loaded file to table index.
-    That is, if atom::ResidueKey is passed as the Keys, the potential will
+    That is, if atom::ResidueKey is passed as the Key, the potential will
     expect a file which has one line for each residue name.
 
     The expected file format is:
