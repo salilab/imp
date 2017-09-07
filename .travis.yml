@@ -54,8 +54,8 @@ before_install:
 script:
  - mkdir ../build
  - cd ../build
- - PYTHON_INC=$(echo $(dirname $(which python))/../include/*/)
- - PYTHON_LIB=$(echo /opt/python/2.7.*/lib/libpython2.7*.so)
- - cmake ../imp -DIMP_PER_CPP_COMPILATION=$PERCPP -DPYTHON_INCLUDE_DIR=$PYTHON_INC -DPYTHON_LIBRARY=$PYTHON_LIB
+ - [ "$(which python)" = "/usr/bin/python" ] || PYTHON_INC="-DPYTHON_INCLUDE_DIR=$(echo $(dirname $(which python))/../include/*/)"
+ - [ "$(which python)" = "/usr/bin/python" ] || PYTHON_LIB="-DPYTHON_LIBRARY=$(echo /opt/python/2.7.*/lib/libpython2.7*.so)"
+ - cmake ../imp -DIMP_PER_CPP_COMPILATION=$PERCPP $PYTHON_INC $PYTHON_LIB
  - make -k $BUILD
  - ctest -j 2 -R $TEST
