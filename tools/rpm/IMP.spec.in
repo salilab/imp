@@ -71,6 +71,13 @@ BuildRequires: CGAL-nogui-devel
 BuildRequires: numpy, scipy
 Requires: numpy, scipy
 
+# RHEL 6 ships with Python 2.6, which doesn't have the argparse module,
+# so pull in the extra package that provides it
+%if 0%{?rhel} == 6
+BuildRequires: python-argparse
+Requires: python-argparse
+%endif
+
 %define cmake_opts -DCMAKE_INSTALL_RPATH=%{_libdir}/IMP
 
 %if 0%{?rhel} == 6
