@@ -4,11 +4,7 @@
 %define with_python3 0
 %endif
 
-%if 0%{?rhel} == 5
-%define with_mpich 0
-%else
 %define with_mpich 1
-%endif
 
 # Change '#' to '%' in the line below if you want to build to install
 # somewhere other than the default /usr
@@ -23,31 +19,11 @@ Group:         Applications/Engineering
 Packager:      Ben Webb <ben@salilab.org>
 URL:           https://integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
-%if 0%{?rhel} == 5
-BuildRoot:     %{_tmppath}/%{name}-%{version}-%{release}-root
-%endif
 %if 0%{?with_python3}
 BuildRequires: python3-devel, symlinks
 %endif
-# RHEL 5 ships with Python 2.4. We need Python 2.6 or later, so pull in that
-# from EPEL (note we need to tell the build later on where to find this python)
-# The HDF5 package in EPEL is too old though - we need a newer version
-# (which can be obtained from
-# https://integrativemodeling.org/build-extras/RHEL5/)
-%if 0%{?rhel} == 5
-BuildRequires: python26-devel
-BuildRequires: hdf518-devel
-Requires: python26
-%define apppython /usr/bin/python26
-%else
-%define apppython /usr/bin/python
 BuildRequires: python-devel >= 2.6
 BuildRequires: hdf5-devel >= 1.8
-%endif
-# Note that RHEL 5 doesn't have a new enough swig to build IMP. If you must
-# use RHEL 5 (we recommend RHEL 6) you will need to build a newer SWIG package
-# before building IMP (or use ours, available at
-# https://integrativemodeling.org/build-extras/RHEL5/)
 BuildRequires: swig >= 1.3.40
 BuildRequires: gsl-devel, fftw-devel
 BuildRequires: zlib-devel, perl
@@ -57,28 +33,8 @@ BuildRequires: ann-devel, eigen3-devel
 # (Or, if you don't need cnmultifit, you can comment out this line)
 BuildRequires: libTAU-devel
 
-# The cmake included with RHEL 5 is too old; use a newer cmake28 instead.
-# You will need to build this package yourself (or use ours, available at
-# https://integrativemodeling.org/build-extras/RHEL5/)
-%if 0%{?rhel} == 5
-BuildRequires: cmake28
-%define cmake cmake28
-%define ctest ctest28
-%else
 BuildRequires: cmake >= 2.8
-%define cmake cmake
-%define ctest ctest
-%endif
-
-# RHEL 5 ships with an ancient version of boost. Require the newer version
-# that is in EPEL instead
-%if 0%{?rhel} == 5
-BuildRequires: boost141-devel
-%define boost -DCMAKE_INCLUDE_PATH="/usr/include/boost141;/usr/include/hdf518/" -DCMAKE_LIBRARY_PATH="%{_libdir}/boost141;%{_libdir}/hdf518"
-%else
 BuildRequires: boost-devel >= 1.41
-%define boost %{nil}
-%endif
 
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
 # doesn't have a new enough OpenCV in the base distribution or in EPEL until
@@ -92,7 +48,7 @@ BuildRequires: opencv-devel
 %endif
 
 # If building in the Sali lab, pass '-D "RHEL_SALI_LAB 1"' to your rpmbuild
-# invocation. This will pull in our custom OpenCV (on RHEL5/6) and CGAL packages
+# invocation. This will pull in our custom OpenCV (on RHEL6) and CGAL packages
 # and bundle the libraries with IMP.
 # If building outside of the lab and you still want these packages, get them
 # from https://integrativemodeling.org/build-extras/
@@ -101,24 +57,10 @@ BuildRequires: opencv-devel
 BuildRequires: opencv-nogui-devel
 %endif
 BuildRequires: CGAL-nogui-devel
-%if 0%{?rhel} == 5
-%ifarch x86_64
-# Also bundle mpfr on 64-bit RHEL5
-%define extralib \\|libmpfr\\.so
-%else
-# On 32-bit RHEL5, sometimes 'file' misidentifies libimp_domino.so or
-# other DSOs as a core file (not as a shared object) and doesn't add
-# it to the Provides - this results in a broken dependency. Work around
-# this by excluding it from the Requires too.
-%define extralib \\|libimp_domino\\.so\\|libimp_isd\\.so\\|libimp_integrative_docking\\.so
-%endif
-%else
-%define extralib %{nil}
-%endif
 %if 0%{?rhel} < 7
-%define bundled 'libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so%{extralib}'
+%define bundled 'libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so'
 %else
-%define bundled 'libTAU\\.so\\|libCGAL\\.so%{extralib}'
+%define bundled 'libTAU\\.so\\|libCGAL\\.so'
 %endif
 %else
 %define bundled 'libTAU\\.so'
@@ -126,13 +68,10 @@ BuildRequires: CGAL-nogui-devel
 
 # Many modules use Python's numpy and scipy modules, so pull those in
 # (at build time for tests; at install time for using the modules).
-# Note that the python26-numpy package in EPEL5 has been retired.
-%if 0%{?rhel} != 5
 BuildRequires: numpy, scipy
 Requires: numpy, scipy
-%endif
 
-%define cmake_opts %{boost} -DCMAKE_INSTALL_RPATH=%{_libdir}/IMP
+%define cmake_opts -DCMAKE_INSTALL_RPATH=%{_libdir}/IMP
 
 %if 0%{?rhel} == 6
 %define mpiprefix %{nil}
@@ -172,11 +111,7 @@ Summary:       Development package for IMP developers.
 Requires:      %{name} = %{version}-%{release}
 Requires:      gsl-devel, fftw-devel, zlib-devel
 Requires:      ann-devel, eigen3-devel
-%if 0%{?rhel} == 5
-Requires:      boost141-devel, python26-devel, hdf518-devel
-%else
 Requires:      boost-devel, python-devel, hdf5-devel
-%endif
 %if 0%{?fedora}
 Requires:      CGAL-devel, opencv-devel
 %endif
@@ -268,21 +203,15 @@ chmod a+x %{proprog}
 # For now, bundle RMF with IMP (long term, may be better to put in a separate
 # RPM)
 mkdir imp && mv * imp || :
-# On RHEL5, we need 'python' to be Python 2.6
-%if 0%{?rhel} == 5
-mkdir python-bin
-ln -sf /usr/bin/python26 python-bin/python
-PATH="`pwd`/python-bin:$PATH"
-%endif
 mkdir build && cd build
 %if 0%{?with_mpich}
 module load %{mpiprefix}mpich-%{_arch}
 %endif
-%{cmake} ../imp -DCMAKE_BUILD_TYPE=Release \
-                -DCMAKE_INSTALL_PREFIX=%{_prefix} \
-                -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
-                -DIMP_TIMEOUT_FACTOR=4 \
-                -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
+cmake ../imp -DCMAKE_BUILD_TYPE=Release \
+             -DCMAKE_INSTALL_PREFIX=%{_prefix} \
+             -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
+             -DIMP_TIMEOUT_FACTOR=4 \
+             -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
 
 # Normally make will stop at the first error. Since an RPM cannot be built
 # if the build did not complete successfully, this is the default here too.
@@ -291,7 +220,7 @@ module load %{mpiprefix}mpich-%{_arch}
 # not just the first one.
 %if 0%{?keep_going}
 mkdir logs
-../imp/tools/nightly-tests/build_all.py --run-tests=fast --ctest="%{ctest} --output-on-failure" --outdir=logs --summary=logs/summary.pck "make -k"
+../imp/tools/nightly-tests/build_all.py --run-tests=fast --ctest="ctest --output-on-failure" --outdir=logs --summary=logs/summary.pck "make -k"
 %else
 make
 %endif
@@ -300,9 +229,6 @@ module purge
 %endif
 
 %install
-%if 0%{?rhel} == 5
-PATH="`pwd`/python-bin:$PATH"
-%endif
 cd build
 make DESTDIR=${RPM_BUILD_ROOT} install
 
@@ -315,13 +241,13 @@ py3_inc=`echo /usr/include/python3.*`
 %if 0%{?with_mpich}
 module load %{mpiprefix}mpich-%{_arch}
 %endif
-%{cmake} ../imp \
-         -DCMAKE_INSTALL_PREFIX=%{_prefix} \
-         -DCMAKE_INSTALL_PYTHONDIR=%{_libdir}/python${py3_ver}/site-packages \
-         -DSWIG_PYTHON_LIBRARIES=${py3_lib} \
-         -DPYTHON_INCLUDE_DIRS=${py3_inc} \
-         -DPYTHON_INCLUDE_PATH=${py3_inc} \
-         -DPYTHON_LIBRARIES=${py3_lib}
+cmake ../imp \
+      -DCMAKE_INSTALL_PREFIX=%{_prefix} \
+      -DCMAKE_INSTALL_PYTHONDIR=%{_libdir}/python${py3_ver}/site-packages \
+      -DSWIG_PYTHON_LIBRARIES=${py3_lib} \
+      -DPYTHON_INCLUDE_DIRS=${py3_inc} \
+      -DPYTHON_INCLUDE_PATH=${py3_inc} \
+      -DPYTHON_LIBRARIES=${py3_lib}
 make DESTDIR=${RPM_BUILD_ROOT} install
 %if 0%{?with_mpich}
 module purge
@@ -394,12 +320,6 @@ for cvlib in cv cxcore highgui; do
 done
 %endif
 cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
-# Also bundle mpfr on 64-bit RHEL5
-%if 0%{?rhel} == 5
-%ifarch x86_64
-cp /usr/%{_lib}/libmpfr.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
-%endif
-%endif
 %endif
 
 # Don't distribute example application, dependency, or system
@@ -412,12 +332,7 @@ rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/example \
        ${pydir}/_IMP_example_system_local.so
 
 # Make sure all Python applications use the same Python we built with
-perl -pi -e 's^#!.*python.*^#!%{apppython}^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
-
-%if 0%{?rhel} == 5
-%clean
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
-%endif
+perl -pi -e 's^#!.*python.*^#!/usr/bin/python^' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
 
 %files
 %defattr(-,root,root)
