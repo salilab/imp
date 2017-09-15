@@ -20,7 +20,7 @@ IMPISD_BEGIN_NAMESPACE
  *  \left[
  *    \kappa
  *    -\frac{I_1(\kappa)}{I_0(\kappa)}
- *    -kappa\left(\frac{I_1(\kappa)}{I_0(\kappa)}\right)^2
+ *    -\kappa\left(\frac{I_1(\kappa)}{I_0(\kappa)}\right)^2
  *  \right]}\f]
 */
 
