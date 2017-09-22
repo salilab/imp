@@ -23,15 +23,15 @@ int main(int argc, char *argv[]) {
              IMP::algebra::get_surface_area(balls[1]);
   double v =
       IMP::algebra::get_volume(balls[0]) + IMP::algebra::get_volume(balls[1]);
-  std::cout << "summ of volumetrics for the two balls : " << s << " and " << v
+  std::cout << "sum of volumetrics for the two balls : " << s << " and " << v
             << std::endl;
   double epsilon = std::numeric_limits<double>::epsilon();
   IMP_UNUSED(epsilon);
   IMP_USAGE_CHECK(dp.first > 0, "Surface area must be positive");
   IMP_USAGE_CHECK(dp.second > 0, "Volume must be positive");
   IMP_INTERNAL_CHECK(abs(dp.first - s) < epsilon,
-                     "surface computation missmatch");
+                     "surface computation mismatch");
   IMP_INTERNAL_CHECK(abs(dp.second - v) < epsilon,
-                     "volume computation missmatch");
+                     "volume computation mismatch");
   return 0;
 }
