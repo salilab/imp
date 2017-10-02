@@ -277,9 +277,7 @@ ParticleIndex HierarchySaveRigidBodies::fill_external(
   if (rbs.size() == 1 &&
       *rbs.begin() != IMP::get_invalid_index<ParticleIndexTag>()) {
     externals_[p] = *rbs.begin();
-    int index = rigid_body_count;
-    ++rigid_body_count;
-    external_index_[externals_[p]] = index;
+    external_index_[externals_[p]] = externals_[p].get_index();
     IMP_FOREACH(ParticleIndex ch,
                 atom::Hierarchy(m, p).get_children_indexes()) {
       not_externals_.insert(ch);
