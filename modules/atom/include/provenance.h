@@ -32,9 +32,9 @@ class IMPATOMEXPORT Provenance : public Decorator {
     m->add_attribute(get_previous_state_key(), pi, pi);
   }
 
-public:
   static ParticleIndexKey get_previous_state_key();
 
+public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_previous_state_key(), pi);
   }
@@ -66,6 +66,53 @@ public:
   IMP_DECORATOR_SETUP_0(Provenance);
 };
 
+//! Track creation of a system fragment from a PDB file.
+class IMPATOMEXPORT StructureProvenance : public Provenance {
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                std::string filename,
+                                std::string chain_id) {
+    IMP_USAGE_CHECK(!filename.empty(), "The filename cannot be empty.");
+    m->add_attribute(get_filename_key(), pi, filename);
+    m->add_attribute(get_chain_key(), pi, chain_id);
+  }
+
+  static StringKey get_filename_key();
+  static StringKey get_chain_key();
+
+public:
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_filename_key(), pi)
+           && m->get_has_attribute(get_chain_key(), pi);
+  }
+
+  //! Set the filename
+  void set_filename(std::string filename) const {
+    IMP_USAGE_CHECK(!filename.empty(), "The filename cannot be empty");
+    return get_model()->set_attribute(get_filename_key(), get_particle_index(),
+                                      filename);
+  }
+
+  //! \return the filename
+  std::string get_filename() const {
+    return get_model()->get_attribute(get_filename_key(), get_particle_index());
+  }
+
+  //! Set the chain ID
+  void set_chain_id(std::string chain_id) const {
+    return get_model()->set_attribute(get_chain_key(), get_particle_index(),
+                                      chain_id);
+  }
+
+  //! \return the chain ID
+  std::string get_chain_id() const {
+    return get_model()->get_attribute(get_chain_key(), get_particle_index());
+  }
+
+  IMP_DECORATOR_METHODS(StructureProvenance, Provenance);
+  IMP_DECORATOR_SETUP_2(StructureProvenance, std::string, filename,
+                        std::string, chain_id);
+};
+
 //! Tag part of the system to track how it was created.
 class IMPATOMEXPORT Provenanced : public Decorator {
   static void do_setup_particle(Model *m, ParticleIndex pi,
@@ -73,8 +120,8 @@ class IMPATOMEXPORT Provenanced : public Decorator {
     m->add_attribute(get_provenance_key(), pi, p.get_particle_index());
   }
 
-public:
   static ParticleIndexKey get_provenance_key();
+public:
 
   static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_provenance_key(), pi);

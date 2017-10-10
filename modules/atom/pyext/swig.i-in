@@ -38,6 +38,7 @@ IMP_SWIG_DECORATOR(IMP::atom, Copy, Copies);
 IMP_SWIG_DECORATOR(IMP::atom, SecondaryStructureResidue, SecondaryStructureResidues);
 IMP_SWIG_DECORATOR(IMP::atom, StructureSource, StructureSources);
 IMP_SWIG_DECORATOR(IMP::atom, Provenance, Provenances);
+IMP_SWIG_DECORATOR(IMP::atom, StructureProvenance, StructureProvenances);
 IMP_SWIG_DECORATOR(IMP::atom, Provenanced, Provenanceds);
 IMP_SWIG_BASE_OBJECT(IMP::atom, Simulator, Simulators);
 IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);

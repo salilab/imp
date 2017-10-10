@@ -27,4 +27,19 @@ void Provenance::show(std::ostream &out) const {
   out << "Provenance" << std::endl;
 }
 
+StringKey StructureProvenance::get_filename_key() {
+  static const StringKey filename("sp_filename");
+  return filename;
+}
+
+StringKey StructureProvenance::get_chain_key() {
+  static const StringKey chain("sp_chain");
+  return chain;
+}
+
+void StructureProvenance::show(std::ostream &out) const {
+  out << "StructureProvenance " << get_filename() << " " << get_chain_id()
+      << std::endl;
+}
+
 IMPATOM_END_NAMESPACE

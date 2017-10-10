@@ -16,6 +16,15 @@ class Tests(IMP.test.TestCase):
         p.set_previous_state(p2)
         self.assertEqual(p.get_previous_state(), p2)
 
+    def test_structure_provenance(self):
+        """Test StructureProvenance decorator"""
+        m = IMP.Model()
+        p = IMP.atom.StructureProvenance.setup_particle(m, IMP.Particle(m),
+                               "testfile", "testchain")
+        self.assertTrue(IMP.atom.StructureProvenance.get_is_setup(p))
+        self.assertEqual(p.get_filename(), "testfile")
+        self.assertEqual(p.get_chain_id(), "testchain")
+
     def test_provenanced(self):
         """Test Provenanced decorator"""
         m = IMP.Model()
