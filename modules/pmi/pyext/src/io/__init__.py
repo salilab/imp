@@ -267,7 +267,9 @@ def get_best_models(stat_files,
     score_list=[]                 # best scores
     feature_keyword_list_dict=defaultdict(list)  # best values of the feature keys
     for sf in stat_files:
-        root_directory_of_stat_file = os.path.dirname(os.path.dirname(os.path.abspath(sf)))
+        root_directory_of_stat_file = os.path.dirname(os.path.abspath(sf))
+        if sf[-4:]=='rmf3':
+            root_directory_of_stat_file = os.path.dirname(os.path.abspath(root_directory_of_stat_file))
         print("getting data from file %s" % sf)
         po = IMP.pmi.output.ProcessOutput(sf)
 
@@ -286,7 +288,8 @@ def get_best_models(stat_files,
             for requested_key in feature_keys:
                 for file_k in file_keywords:
                     if requested_key in file_k:
-                        keywords.append(file_k)
+                        if file_k not in keywords:
+                            keywords.append(file_k)
 
         if prefiltervalue is None:
             fields = po.get_fields(keywords,
@@ -314,7 +317,8 @@ def get_best_models(stat_files,
         for rmf in fields[rmf_file_key]:
             rmf=os.path.normpath(rmf)
             if root_directory_of_stat_file not in rmf:
-                rmf=os.path.join(root_directory_of_stat_file,rmf)
+                rmf_local_path=os.path.join(os.path.basename(os.path.dirname(rmf)),os.path.basename(rmf))
+                rmf=os.path.join(root_directory_of_stat_file,rmf_local_path)
             rmf_file_list.append(rmf)
 
         rmf_file_frame_list += fields[rmf_file_frame_key]

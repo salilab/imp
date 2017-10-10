@@ -884,5 +884,21 @@ class Tests(IMP.test.TestCase):
         states = IMP.atom.get_by_type(hs[0],IMP.atom.STATE_TYPE)
         self.assertEqual(len(states),2)
 
+    def test_pmi_molecule_hierarchy(self):
+        mdl=IMP.Model()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        state=IMP.atom.State.setup_particle(IMP.Particle(mdl),0)
+        for seq in seqs:
+            mol=IMP.atom.Molecule.setup_particle(IMP.Particle(mdl))
+            state.add_child(mol)
+            mol.set_name(seq)
+            IMP.atom.Copy.setup_particle(mol,0)
+            pmimol=IMP.pmi.topology.PMIMoleculeHierarchy(mol)
+            print(pmimol.get_sequence())
+            pmimol.set_sequence(seqs[seq])
+            print(pmimol.get_sequence())
+            print(pmimol)
+            print(pmimol.get_extended_name())
+
 if __name__ == '__main__':
     IMP.test.main()

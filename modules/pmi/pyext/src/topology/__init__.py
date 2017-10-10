@@ -1145,6 +1145,8 @@ class TopologyReader(object):
             colorfields = values[2].split(',')
             if len(colorfields)==3:
                 c.color = [float(x) for x in colorfields]
+                if any([x>1 for x in c.color]):
+                    c.color=[x/255 for x in c.color]
             else:
                 c.color = values[2]
         c._orig_fasta_file = values[3]
@@ -1419,3 +1421,36 @@ class _Component(object):
                            "Use 'get_unique_name()' instead of 'domain_name'.")
     def __get_domain_name(self): return self._domain_name
     domain_name = property(__get_domain_name)
+
+class PMIMoleculeHierarchy(IMP.atom.Molecule):
+    '''Extends the functionality of IMP.atom.Molecule'''
+
+    def __init__(self,hierarchy):
+        IMP.atom.Molecule.__init__(self,hierarchy)
+        self.sequence=''
+
+    def get_state_index(self):
+        state = self.get_parent()
+        return IMP.atom.State(state).get_state_index()
+
+    def get_copy_index(self):
+        return IMP.atom.Copy(self).get_copy_index()
+
+    def get_extended_name(self):
+        return self.get_name()+"."+\
+               str(self.get_copy_index())+\
+               "."+str(self.get_state_index())
+
+    def set_sequence(self,sequence):
+        self.sequence=sequence
+
+    def get_sequence(self):
+        return self.sequence
+
+    def __repr__(self):
+        s='Hello '
+        s+=self.get_name()
+        s+=" "+"Copy  "+str(IMP.atom.Copy(self).get_copy_index())
+        s+=" "+"State "+str(self.get_state_index())
+        s+=" "+"N residues "+str(len(self.get_sequence()))
+        return s

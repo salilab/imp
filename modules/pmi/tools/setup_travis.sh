@@ -27,7 +27,7 @@ fi
 bash miniconda.sh -b -p ${conda_dir}
 export PATH=${conda_dir}/bin:$PATH
 conda update --yes -q conda
-conda create --yes -q -n python${python_version} -c salilab python=${python_version} pip scipy nose imp-nightly
+conda create --yes -q -n python${python_version} -c salilab python=${python_version} pip scipy matplotlib nose imp-nightly
 source activate python${python_version}
 pip install coverage
 

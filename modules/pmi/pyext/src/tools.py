@@ -1038,7 +1038,7 @@ def get_residue_indexes(hier):
     '''
     Retrieve the residue indexes for the given particle.
 
-    The particle must be an instance of Fragment,Residue or Atom
+    The particle must be an instance of Fragment,Residue, Atom or Molecule
     or else returns an empty list
     '''
     resind = []
@@ -1049,6 +1049,12 @@ def get_residue_indexes(hier):
     elif IMP.atom.Atom.get_is_setup(hier):
         a = IMP.atom.Atom(hier)
         resind = [IMP.atom.Residue(a.get_parent()).get_index()]
+    elif IMP.atom.Molecule.get_is_setup(hier):
+        resind_tmp=IMP.pmi.tools.OrderedSet()
+        for lv in IMP.atom.get_leaves(hier):
+            for ind in get_residue_indexes(lv):
+                resind_tmp.add(ind)
+            resind=list(resind_tmp)
     else:
         resind = []
     return resind
@@ -1885,6 +1891,21 @@ def get_molecules(input_objects):
                 molecules.add(IMP.atom.Molecule(h))
             h=h.get_parent()
     return list(molecules)
+
+def get_molecules_dictionary(input_objects):
+    moldict=defaultdict(list)
+    for mol in IMP.pmi.tools.get_molecules(input_objects):
+        name=mol.get_name()
+        moldict[name].append(mol)
+    return moldict
+
+def get_selections_dictionary(input_objects):
+    moldict=IMP.pmi.tools.get_molecules_dictionary(input_objects)
+    seldict=defaultdict(list)
+    for name, mols in moldict.items():
+        for m in mols:
+            seldict[name].append(IMP.atom.Selection(m))
+    return seldict
 
 def get_densities(input_objects):
     """Given a list of PMI objects, returns all density hierarchies within

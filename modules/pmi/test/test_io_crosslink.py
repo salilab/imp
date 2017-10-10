@@ -532,19 +532,22 @@ class Tests(IMP.test.TestCase):
         cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_io_crosslink_map.txt"))
 
         rmf_name=self.get_input_file_name("pmi2_sample_0/rmfs/0.rmf3")
-        frame_index=9
 
-        mcldb=IMP.pmi.io.crosslink.MapCrossLinkDataBaseOnStructure(model,cldb,rmf_name,frame_index)
+        rmfh=IMP.pmi.output.RMFHierarchyHandler(model,rmf_name)
 
-        for xl in cldb:
-            (prot1,prot2,res1,res2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
-            p1=IMP.atom.Selection(mcldb.prots[0],molecule=prot1,residue_index=res1,resolution=1).get_selected_particles()[0]
-            p2=IMP.atom.Selection(mcldb.prots[0],molecule=prot2,residue_index=res2,resolution=1).get_selected_particles()[0]
-            v1=IMP.core.XYZ(p1).get_coordinates()
-            v2=IMP.core.XYZ(p2).get_coordinates()
-            dist=IMP.algebra.get_distance(v1,v2)
-            d1 = xl["MinAmbiguousDistance"]
-            self.assertAlmostEqual(dist,d1,1)
+        mcldb=IMP.pmi.io.crosslink.MapCrossLinkDataBaseOnStructure(cldb,rmfh)
+
+        for i in rmfh:
+            mcldb.compute_distances()
+            for xl in cldb:
+                (prot1,prot2,res1,res2)=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
+                p1=IMP.atom.Selection(rmfh,molecule=prot1,residue_index=res1,resolution=1).get_selected_particles()[0]
+                p2=IMP.atom.Selection(rmfh,molecule=prot2,residue_index=res2,resolution=1).get_selected_particles()[0]
+                v1=IMP.core.XYZ(p1).get_coordinates()
+                v2=IMP.core.XYZ(p2).get_coordinates()
+                dist=IMP.algebra.get_distance(v1,v2)
+                d1 = xl["MinAmbiguousDistance"]
+                self.assertAlmostEqual(dist,d1,1)
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -20,6 +20,8 @@ from operator import itemgetter
 from collections import defaultdict
 import numpy as np
 import string
+import itertools
+import math
 
 class ReplicaExchange0(object):
     """A macro to help setup and run replica exchange.
@@ -34,6 +36,7 @@ class ReplicaExchange0(object):
                  monte_carlo_sample_objects=None,
                  molecular_dynamics_sample_objects=None,
                  output_objects=[],
+                 rmf_output_objects=None,
                  crosslink_restraints=None,
                  monte_carlo_temperature=1.0,
                  simulated_annealing=False,
@@ -80,7 +83,11 @@ class ReplicaExchange0(object):
            @param molecular_dynamics_sample_objects Objects for MD sampling
                   For PMI2: just pass flat list of particles
            @param output_objects A list of structural objects and restraints
-                  that will be included in output (statistics files). Any object
+                  that will be included in output (ie, statistics "stat" files). Any object
+                  that provides a get_output() method can be used here. If None is passed
+                  the macro will not write stat files.
+           @param rmf_output_objects A list of structural objects and restraints
+                  that will be included in rmf. Any object
                   that provides a get_output() method can be used here.
            @param crosslink_restraints List of cross-link restraints that will
                   be included in output RMF files (for visualization).
@@ -125,6 +132,7 @@ class ReplicaExchange0(object):
 
         ### add check hierarchy is multistate
         self.output_objects = output_objects
+        self.rmf_output_objects=rmf_output_objects
         self.representation = representation
         if representation:
             if type(representation) == list:
@@ -137,7 +145,10 @@ class ReplicaExchange0(object):
                 self.vars["number_of_states"] = 1
         elif root_hier and type(root_hier) == IMP.atom.Hierarchy and root_hier.get_name()=='System':
             self.pmi2 = True
-            self.output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
+            if self.output_objects is not None:
+                self.output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
+            if self.rmf_output_objects is not None:
+                self.rmf_output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
             self.root_hier = root_hier
             states = IMP.atom.get_by_type(root_hier,IMP.atom.STATE_TYPE)
             self.vars["number_of_states"] = len(states)
@@ -238,7 +249,10 @@ class ReplicaExchange0(object):
                 sampler_mc.set_simulated_annealing(tmin,tmax,nfmin,nfmax)
             if self.vars["self_adaptive"]:
                 sampler_mc.set_self_adaptive(isselfadaptive=self.vars["self_adaptive"])
-            self.output_objects.append(sampler_mc)
+            if self.output_objects is not None:
+                self.output_objects.append(sampler_mc)
+            if self.rmf_output_objects is not None:
+                self.rmf_output_objects.append(sampler_mc)
             samplers.append(sampler_mc)
 
 
@@ -254,7 +268,10 @@ class ReplicaExchange0(object):
                 nfmin=self.vars["simulated_annealing_minimum_temperature_nframes"]
                 nfmax=self.vars["simulated_annealing_maximum_temperature_nframes"]
                 sampler_md.set_simulated_annealing(tmin,tmax,nfmin,nfmax)
-            self.output_objects.append(sampler_md)
+            if self.output_objects is not None:
+                self.output_objects.append(sampler_md)
+            if self.rmf_output_objects is not None:
+                self.rmf_output_objects.append(sampler_md)
             samplers.append(sampler_md)
 # -------------------------------------------------------------------------
 
@@ -269,8 +286,10 @@ class ReplicaExchange0(object):
         self.replica_exchange_object = rex.rem
 
         myindex = rex.get_my_index()
-        self.output_objects.append(rex)
-
+        if self.output_objects is not None:
+            self.output_objects.append(rex)
+        if self.rmf_output_objects is not None:
+            self.rmf_output_objects.append(rex)
         # must reset the minimum temperature due to the
         # different binary length of rem.get_my_parameter double and python
         # float
@@ -312,16 +331,25 @@ class ReplicaExchange0(object):
 # -------------------------------------------------------------------------
 
         sw = IMP.pmi.tools.Stopwatch()
-        self.output_objects.append(sw)
+        if self.output_objects is not None:
+            self.output_objects.append(sw)
+        if self.rmf_output_objects is not None:
+            self.rmf_output_objects.append(sw)
 
         print("Setting up stat file")
         output = IMP.pmi.output.Output(atomistic=self.vars["atomistic"])
         low_temp_stat_file = globaldir + \
             self.vars["stat_file_name_suffix"] + "." + str(myindex) + ".out"
         if not self.test_mode:
-            output.init_stat2(low_temp_stat_file,
+            if self.output_objects is not None:
+                output.init_stat2(low_temp_stat_file,
                               self.output_objects,
                               extralabels=["rmf_file", "rmf_frame_index"])
+        else:
+            print("Stat file writing is disabled")
+
+        if self.rmf_output_objects is not None:
+            print("Stat info being written in the rmf file")
 
         print("Setting up replica stat file")
         replica_stat_file = globaldir + \
@@ -375,7 +403,7 @@ class ReplicaExchange0(object):
             print("Setting up and writing initial rmf coordinate file")
             init_suffix = globaldir + self.vars["initial_rmf_name_suffix"]
             output.init_rmf(init_suffix + "." + str(myindex) + ".rmf3",
-                            output_hierarchies)
+                            output_hierarchies,listofobjects=self.rmf_output_objects)
             if self.crosslink_restraints:
                 output.add_restraints_to_rmf(
                     init_suffix + "." + str(myindex) + ".rmf3",
@@ -393,7 +421,8 @@ class ReplicaExchange0(object):
         if not self.test_mode:
             print("Setting up production rmf files")
             rmfname = rmf_dir + "/" + str(myindex) + ".rmf3"
-            output.init_rmf(rmfname, output_hierarchies, geometries=self.vars["geometries"])
+            output.init_rmf(rmfname, output_hierarchies, geometries=self.vars["geometries"],
+                            listofobjects = self.rmf_output_objects)
 
             if self.crosslink_restraints:
                 output.add_restraints_to_rmf(rmfname, self.crosslink_restraints)
@@ -451,7 +480,8 @@ class ReplicaExchange0(object):
                     else:
                         output.set_output_entry("rmf_file", rmfname)
                         output.set_output_entry("rmf_frame_index", '-1')
-                    output.write_stat2(low_temp_stat_file)
+                    if self.output_objects is not None:
+                        output.write_stat2(low_temp_stat_file)
                 ntimes_at_low_temp += 1
 
             if not self.test_mode:
@@ -1401,6 +1431,7 @@ data = [("Rpb1",     pdbfile,   "A",     0.00000000,  (fastafile,    0)),
 
 # ----------------------------------------------------------------------
 
+@IMP.deprecated_object("2.8", "Use AnalysisReplicaExchange instead")
 class AnalysisReplicaExchange0(object):
     """A macro for running all the basic operations of analysis.
     Includes clustering, precision analysis, and making ensemble density maps.
@@ -2052,3 +2083,531 @@ class AnalysisReplicaExchange0(object):
         objects = pickle.load(inputf)
         inputf.close()
         return objects
+
+class AnalysisReplicaExchange(object):
+
+    def __init__(self,model,
+                 stat_files,
+                 best_models=None):
+
+        self.model=model
+        self.best_models=best_models
+        self.stath0=IMP.pmi.output.StatHierarchyHandler(model,stat_files,self.best_models)
+        self.stath1=IMP.pmi.output.StatHierarchyHandler(StatHierarchyHandler=self.stath0)
+
+        self.rbs1, self.beads1 = IMP.pmi.tools.get_rbs_and_beads(IMP.pmi.tools.select_at_all_resolutions(self.stath1))
+        self.rbs0, self.beads0 = IMP.pmi.tools.get_rbs_and_beads(IMP.pmi.tools.select_at_all_resolutions(self.stath0))
+        self.sel0_rmsd=IMP.atom.Selection(self.stath0)
+        self.sel1_rmsd=IMP.atom.Selection(self.stath1)
+        self.sel0_alignment=IMP.atom.Selection(self.stath0)
+        self.sel1_alignment=IMP.atom.Selection(self.stath1)
+        self.clusters=[]
+        self.pairwise_rmsd={}
+        self.pairwise_molecular_assignment={}
+        self.alignment=True
+        self.update_seldicts()
+
+    def set_rmsd_selection(self,**kwargs):
+        self.sel0_rmsd=IMP.atom.Selection(self.stath0,**kwargs)
+        self.sel1_rmsd=IMP.atom.Selection(self.stath1,**kwargs)
+        self.update_seldicts()
+
+    def set_alignment_selection(self,**kwargs):
+        self.sel0_alignment=IMP.atom.Selection(self.stath0,**kwargs)
+        self.sel1_alignment=IMP.atom.Selection(self.stath1,**kwargs)
+
+    def update_seldicts(self):
+        self.seldict0=IMP.pmi.tools.get_selections_dictionary(self.sel0_rmsd.get_selected_particles())
+        self.seldict1=IMP.pmi.tools.get_selections_dictionary(self.sel1_rmsd.get_selected_particles())
+
+    def get_molecule(self, hier, name, copy):
+        s=IMP.atom.Selection(hier, molecule=name, copy_index=copy)
+        return IMP.pmi.tools.get_molecules(s.get_selected_particles()[0])[0]
+
+    def cluster(self, rmsd_cutoff=10, alignment=True, stop_at_first_found=False):
+        self.alignment=alignment
+
+        self.clusters = []
+        for n1,d1 in enumerate(self.stath1):
+            assigned={}
+            for c in self.clusters:
+                for n0 in c.members:
+                    d0=self.stath0[n0]
+                    if self.alignment: self.align()
+                    rmsd, molecular_assignment=self.rmsd()
+                    if rmsd<=rmsd_cutoff:
+                        assigned[rmsd]=(n0,c)
+                        if stop_at_first_found:
+                            break
+
+            if len(assigned) == 0:
+                c=IMP.pmi.output.Cluster(len(self.clusters))
+                c.add_member(n1,d1)
+                self.clusters.append(c)
+            else:
+                minrmsd=min(assigned.keys())
+                n0,c=assigned[minrmsd]
+                c.add_member(n1,d1)
+
+    def set_cluster_assignments(self, cluster_ids):
+        if len(cluster_ids)!=len(self.stath0):
+            raise ValueError('cluster ids has to be same length as number of frames')
+
+        self.clusters=[]
+        for i in sorted(list(set(cluster_ids))):
+            self.clusters.append(IMP.pmi.output.Cluster(i))
+        for i, (idx, d) in enumerate(zip(cluster_ids, self.stath0)):
+            self.clusters[idx].add_member(i,d)
+
+    def get_cluster_data(self, cluster):
+        data=[]
+        for m in cluster:
+            data.append(m)
+        return data
+
+    def save_data(self,filename='data.pkl'):
+        self.stath0.save_data(filename)
+
+    def set_data(self,data):
+        self.stath0.data=data
+        self.stath1.data=data
+
+    def load_data(self,filename='data.pkl'):
+        self.stath0.load_data(filename)
+        self.stath1.load_data(filename)
+        self.best_models=len(self.stath0)
+
+    def save_clusters(self,filename='clusters.pkl'):
+        try:
+            import cPickle as pickle
+        except ImportError:
+            import pickle
+        fl=open(filename,'wb')
+        pickle.dump(self.clusters,fl)
+
+    def load_clusters(self,filename='clusters.pkl'):
+        try:
+            import cPickle as pickle
+        except ImportError:
+            import pickle
+        fl=open(filename,'rb')
+        self.clusters=pickle.load(fl)
+
+    def compute_cluster_center(self,cluster):
+        member_distance=defaultdict(float)
+
+        for n0 in cluster.members:
+            d0=self.stath0[n0]
+            for n1 in cluster.members:
+                d1=self.stath1[n1]
+                if n0!=n1:
+                    rmsd, _ = self.rmsd()
+                    member_distance[n0]+=rmsd
+
+        if len(member_distance)>0:
+            cluster.center_index=min(member_distance, key=member_distance.get)
+        else:
+            cluster.center_index=cluster.members[0]
+
+    def set_reference(self,reference,cluster):
+
+        if reference=="Absolute":
+            d0=self.stath0[0]
+        elif reference=="Relative":
+            if cluster.center_index:
+                n0=cluster.center_index
+            else:
+                n0=cluster.members[0]
+            d0=self.stath0[n0]
+
+
+    def save_coordinates(self,cluster,reference="Absolute", prefix="./"):
+        if self.alignment: self.set_reference(reference,cluster)
+        o=IMP.pmi.output.Output()
+        rmf_name=prefix+'/'+str(cluster.cluster_id)+".rmf3"
+        o.init_rmf(rmf_name, [self.stath1])
+        for n1 in cluster.members:
+            self.apply_molecular_assignments(n1)
+            d1=self.stath1[n1]
+            if self.alignment: self.align()
+            o.write_rmf(rmf_name)
+            self.undo_apply_molecular_assignments(n1)
+        o.close_rmf(rmf_name)
+
+    def precision(self,cluster):
+        npairs=0
+        rmsd=0.0
+        precision=None
+
+        if not cluster.center_index is None:
+            members1=[cluster.center_index]
+        else:
+            members1=cluster.members
+
+        for n0 in cluster.members:
+            d0=self.stath0[n0]
+            for n1 in members1:
+                if n0!=n1:
+                    d1=self.stath1[n1]
+                    tmp_rmsd, _ = self.rmsd()
+                    rmsd+=tmp_rmsd
+
+        if npairs>0:
+            precision=rmsd/npairs
+        cluster.precision=precision
+        return precision
+
+    def bipartite_precision(self,cluster1,cluster2):
+        npairs=0
+        rmsd=0.0
+        for n0 in cluster1.members:
+            d0=self.stath0[n0]
+            for n1 in cluster2.members:
+                d1=self.stath1[n1]
+                if self.alignment: self.align()
+                tmp_rmsd, tmp_pairwise_molecular_assignment=self.rmsd()
+                rmsd+=tmp_rmsd
+                npairs+=1
+        precision=rmsd/npairs
+        return precision
+
+    def rmsf(self,cluster,molecule,copy_index=0,state_index=0):
+        rmsf=IMP.pmi.tools.OrderedDict()
+
+        #assumes that residue indexes are identical for stath0 and stath1
+        s0=IMP.atom.Selection(self.stath0,molecule=molecule,resolution=1,
+                              copy_index=copy_index,state_index=state_index)
+        ps0=s0.get_selected_particles()
+        #get the residue indexes
+        residue_indexes=list(IMP.pmi.tools.OrderedSet([IMP.pmi.tools.get_residue_indexes(p)[0] for p in ps0]))
+
+        #get the corresponding particles
+        s0=IMP.atom.Selection(self.stath0,molecule=molecule,residue_indexes=residue_indexes,resolution=1,
+                              copy_index=copy_index,state_index=state_index)
+        ps0 = s0.get_selected_particles()
+
+        if not cluster.center_index is None:
+            members1=[cluster.center_index]
+        else:
+            members1=cluster.members
+
+        npairs=0
+        for n0 in cluster.members:
+            d0=self.stath0[n0]
+            for n1 in members1:
+                if n0!=n1:
+                    m1,c1 = self.pairwise_molecular_assignment[(n0,n1)][(molecule, copy_index)]
+                    s1=IMP.atom.Selection(self.stath0,molecule=m1,residue_indexes=residue_indexes,resolution=1,
+                                          copy_index=c1,state_index=state_index)
+                    ps1 = s1.get_selected_particles()
+
+                    d1=self.stath0[n1]
+                    if self.alignment: self.align()
+                    for n,(p0,p1) in enumerate(zip(ps0,ps1)):
+                        r=residue_indexes[n]
+                        d0=IMP.core.XYZ(p0)
+                        d1=IMP.core.XYZ(p1)
+                        if r in rmsf:
+                            rmsf[r]+=IMP.core.get_distance(d0,d1)
+                        else:
+                            rmsf[r]=IMP.core.get_distance(d0,d1)
+                    npairs+=1
+        for r in rmsf:
+            rmsf[r]/=npairs
+        return rmsf
+
+    def apply_molecular_assignments(self, n1):
+        d1=self.stath1[n1]
+        _, molecular_assignment = self.rmsd()
+        for (m0, c0), (m1,c1) in molecular_assignment.items():
+            mol0 = self.get_molecule(self.stath0, m0, c0)
+            mol1 = self.get_molecule(self.stath1, m1, c1)
+            cik0=IMP.atom.Copy(mol0).get_copy_index_key()
+            p1=IMP.atom.Copy(mol1).get_particle()
+            p1.set_value(cik0,c0)
+
+    def undo_apply_molecular_assignments(self, n1):
+        d1=self.stath1[n1]
+        _, molecular_assignment = self.rmsd()
+        for (m0, c0), (m1,c1) in molecular_assignment.items():
+            mol0 = self.get_molecule(self.stath0, m0, c0)
+            mol1 = self.get_molecule(self.stath1, m1, c1)
+            cik0=IMP.atom.Copy(mol0).get_copy_index_key()
+            p1=IMP.atom.Copy(mol1).get_particle()
+            p1.set_value(cik0,c1)
+
+
+    def save_densities(self,cluster,density_custom_ranges,voxel_size=5,reference="Absolute", prefix="./"):
+        if self.alignment: self.set_reference(reference,cluster)
+        dens = IMP.pmi.analysis.GetModelDensity(density_custom_ranges,
+                                                voxel=voxel_size)
+
+        for n1 in cluster.members:
+            self.apply_molecular_assignments(n1)
+            d1=self.stath1[n1]
+            if self.alignment: self.align()
+            dens.add_subunits_density(self.stath1)
+            self.undo_apply_molecular_assignments(n1)
+        dens.write_mrc(path=prefix+'/',suffix=str(cluster.cluster_id))
+        del dens
+
+    def align(self):
+        tr = IMP.atom.get_transformation_aligning_first_to_second(self.sel1_alignment, self.sel0_alignment)
+
+        for rb in self.rbs1:
+            IMP.core.transform(rb, tr)
+
+        for bead in self.beads1:
+            IMP.core.transform(IMP.core.XYZ(bead), tr)
+
+        self.model.update()
+
+    def rmsd(self,metric=IMP.atom.get_rmsd):
+        '''
+        Computes the RMSD. Resolves ambiguous pairs assignments
+        '''
+        # here we memoize the rmsd and molecular assignment so that it's not done multiple times
+        n0=self.stath0.current_index
+        n1=self.stath1.current_index
+        if ((n0,n1) in self.pairwise_rmsd) and ((n0,n1) in self.pairwise_molecular_assignment):
+            return self.pairwise_rmsd[(n0,n1)], self.pairwise_molecular_assignment[(n0,n1)]
+
+        #if it's not yet memoized
+        total_rmsd=0.0
+        total_N=0
+        # this is a dictionary which keys are the molecule names, and values are the list of IMP.atom.Selection for all molecules that share the molecule name
+        seldict_best_order={}
+        for molname, sels0 in self.seldict0.items():
+            rmsd2s = {}
+            for sels in itertools.permutations(sels0):
+                rmsd2=0
+                for sel0, sel1 in zip(sels, self.seldict1[molname]):
+                    r=metric(sel0, sel1)
+                    rmsd2+=r*r
+                rmsd2s[sels]=rmsd2
+            sels_best_order = min(rmsd2s, key=rmsd2s.get)
+            seldict_best_order[molname]=sels_best_order
+            best_rmsd2 = rmsd2s[sels_best_order]
+            Ncoords = len(sels_best_order[0].get_selected_particles())
+            Ncopies = len(sels_best_order)
+            total_rmsd += Ncoords*best_rmsd2
+            total_N += Ncoords*Ncopies
+        total_rmsd = math.sqrt(total_rmsd/total_N)
+
+        molecular_assignment={}
+        for molname, sels in seldict_best_order.items():
+            for sel0, sel1 in zip(sels, self.seldict1[molname]):
+                p0 = sel0.get_selected_particles()[0]
+                p1 = sel1.get_selected_particles()[0]
+                m0,m1 = IMP.pmi.tools.get_molecules([p0,p1])
+                c0 = IMP.atom.Copy(m0).get_copy_index()
+                c1 = IMP.atom.Copy(m1).get_copy_index()
+                molecular_assignment[(molname,c0)]=(molname,c1)
+
+        self.pairwise_rmsd[(n0,n1)]=total_rmsd
+        self.pairwise_molecular_assignment[(n0,n1)]=molecular_assignment
+        return total_rmsd, molecular_assignment
+
+
+    def contact_map(self,cluster,contact_threshold=15, prefix='./',reference="Absolute"):
+        if self.alignment: self.set_reference(reference,cluster)
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import matplotlib.cm as cm
+        from scipy.spatial.distance import cdist
+        import IMP.pmi.topology
+
+        mols=IMP.pmi.tools.get_molecules(IMP.atom.get_leaves(self.stath1))
+        mol_names=dict([(mol,mol.get_name()) for mol in mols])
+        mols_rindexes=dict([(mol,range(1,IMP.pmi.tools.get_residue_indexes(mol)[-1]+1)) for mol in mols])
+        total_len = sum(len(mols_rindexes[mol]) for mol in mols)
+        coords = np.ones((total_len,3)) * 1e6 #default to coords "very far away"
+        index_dict={}
+
+        for ncl,n1 in enumerate(cluster.members):
+
+            self.apply_molecular_assignments(n1)
+
+            #d1=self.stath1[n1]
+
+            prev_stop = 0
+
+            for mol in mols:
+                mol_name=mol_names[mol]
+                rindexes = mols_rindexes[mol]
+                index_dict[mol] = range(prev_stop, prev_stop + len(rindexes))
+
+
+                for rnum in rindexes:
+                    sel = IMP.atom.Selection(mol, residue_index=rnum, resolution=1)
+                    selpart = sel.get_selected_particles()
+                    if len(selpart) == 0: continue
+                    selpart = selpart[0]
+                    try:
+                        coords[rnum + prev_stop - 1, :] = IMP.core.XYZ(selpart).get_coordinates()
+                    except IndexError:
+                        print("Error: exceed max size", prev_stop, total_len, cname, rnum)
+                        exit()
+                prev_stop += len(rindexes)
+            dists = cdist(coords, coords)
+            binary_dists = np.where((dists <= contact_threshold) & (dists >= 1.0), 1.0, 0.0)
+            if ncl==0:
+                dist_maps = [dists]
+                av_dist_map = dists
+                contact_freqs = binary_dists
+            else:
+                dist_maps.append(dists)
+                av_dist_map += dists
+                contact_freqs += binary_dists
+
+            self.undo_apply_molecular_assignments(n1)
+
+        contact_freqs =1.0/len(cluster)*contact_freqs
+        av_dist_map=1.0/len(cluster)*contact_freqs
+
+        fig = plt.figure(figsize=(100, 100))
+        ax = fig.add_subplot(111)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        gap_between_components=50
+        colormap = cm.Blues
+        colornorm=None
+
+
+        #if cbar_labels is not None:
+        #    if len(cbar_labels)!=4:
+        #        print("to provide cbar labels, give 3 fields (first=first input file, last=last input) in oppose order of input contact maps")
+        #        exit()
+        # set the list of proteins on the x axis
+        sorted_tuple=sorted([(IMP.pmi.topology.PMIMoleculeHierarchy(mol).get_extended_name(),mol) for mol in mols])
+        prot_list=list(zip(*sorted_tuple))[1]
+
+        prot_listx = prot_list
+        nresx = gap_between_components + \
+            sum([len(mols_rindexes[mol])
+                + gap_between_components for mol in prot_listx])
+
+        # set the list of proteins on the y axis
+        prot_listy = prot_list
+        nresy = gap_between_components + \
+            sum([len(mols_rindexes[mol])
+                + gap_between_components for mol in prot_listy])
+
+        # this is the residue offset for each protein
+        resoffsetx = {}
+        resendx = {}
+        res = gap_between_components
+        for mol in prot_listx:
+            resoffsetx[mol] = res
+            res += len(mols_rindexes[mol])
+            resendx[mol] = res
+            res += gap_between_components
+
+        resoffsety = {}
+        resendy = {}
+        res = gap_between_components
+        for mol in prot_listy:
+            resoffsety[mol] = res
+            res += len(mols_rindexes[mol])
+            resendy[mol] = res
+            res += gap_between_components
+
+        resoffsetdiagonal = {}
+        res = gap_between_components
+        for mol in IMP.pmi.tools.OrderedSet(prot_listx + prot_listy):
+            resoffsetdiagonal[mol] = res
+            res += len(mols_rindexes[mol])
+            res += gap_between_components
+
+        # plot protein boundaries
+        xticks = []
+        xlabels = []
+        for n, prot in enumerate(prot_listx):
+            res = resoffsetx[prot]
+            end = resendx[prot]
+            for proty in prot_listy:
+                resy = resoffsety[proty]
+                endy = resendy[proty]
+                ax.plot([res, res], [resy, endy], linestyle='-',color='gray', lw=0.4)
+                ax.plot([end, end], [resy, endy], linestyle='-',color='gray', lw=0.4)
+            xticks.append((float(res) + float(end)) / 2)
+            xlabels.append(IMP.pmi.topology.PMIMoleculeHierarchy(prot).get_extended_name())
+
+        yticks = []
+        ylabels = []
+        for n, prot in enumerate(prot_listy):
+            res = resoffsety[prot]
+            end = resendy[prot]
+            for protx in prot_listx:
+                resx = resoffsetx[protx]
+                endx = resendx[protx]
+                ax.plot([resx, endx], [res, res], linestyle='-',color='gray', lw=0.4)
+                ax.plot([resx, endx], [end, end], linestyle='-',color='gray', lw=0.4)
+            yticks.append((float(res) + float(end)) / 2)
+            ylabels.append(IMP.pmi.topology.PMIMoleculeHierarchy(prot).get_extended_name())
+
+        # plot the contact map
+
+        tmp_array = np.zeros((nresx, nresy))
+        for px in prot_listx:
+            for py in prot_listy:
+                resx = resoffsetx[px]
+                lengx = resendx[px] - 1
+                resy = resoffsety[py]
+                lengy = resendy[py] - 1
+                indexes_x = index_dict[px]
+                minx = min(indexes_x)
+                maxx = max(indexes_x)
+                indexes_y = index_dict[py]
+                miny = min(indexes_y)
+                maxy = max(indexes_y)
+                tmp_array[resx:lengx,resy:lengy] = contact_freqs[minx:maxx,miny:maxy]
+
+        cax = ax.imshow(tmp_array,
+                  cmap=colormap,
+                  norm=colornorm,
+                  origin='lower',
+                  alpha=0.6,
+                  interpolation='nearest')
+
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xlabels, rotation=90)
+        ax.set_yticks(yticks)
+        ax.set_yticklabels(ylabels)
+        plt.setp(ax.get_xticklabels(), fontsize=6)
+        plt.setp(ax.get_yticklabels(), fontsize=6)
+
+        # display and write to file
+        fig.set_size_inches(0.002 * nresx, 0.002 * nresy)
+        [i.set_linewidth(2.0) for i in ax.spines.values()]
+        #if cbar_labels is not None:
+        #    cbar = fig.colorbar(cax, ticks=[0.5,1.5,2.5,3.5])
+        #    cbar.ax.set_yticklabels(cbar_labels)# vertically oriented colorbar
+
+        plt.savefig(prefix+"/contact_map."+str(cluster.cluster_id)+".pdf", dpi=300,transparent="False")
+
+
+    def __repr__(self):
+        s= "AnalysisReplicaExchange\n"
+        s+="---- number of clusters %s \n"%str(len(self.clusters))
+        s+="---- number of models %s \n"%str(self.best_models)
+        return s
+
+    def __getitem__(self,int_slice_adaptor):
+        if type(int_slice_adaptor) is int:
+            return self.clusters[int_slice_adaptor]
+        elif type(int_slice_adaptor) is slice:
+            return self.__iter__(int_slice_adaptor)
+        else:
+            raise TypeError("Unknown Type")
+
+    def __len__(self):
+        return len(self.clusters)
+
+    def __iter__(self,slice_key=None):
+        if slice_key is None:
+            for i in range(len(self)):
+                yield self[i]
+        else:
+            for i in range(len(self))[slice_key]:
+                yield self[i]

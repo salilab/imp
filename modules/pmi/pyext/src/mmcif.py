@@ -897,8 +897,8 @@ class _CrossLinkDumper(_Dumper):
                          ["id", "group_id", "entity_description_1",
                           "entity_id_1", "seq_id_1", "comp_id_1",
                           "entity_description_2",
-                          "entity_id_2", "seq_id_2", "comp_id_2", "type",
-                          "dataset_list_id"]) as l:
+                          "entity_id_2", "seq_id_2", "comp_id_2",
+                          "linker_type", "dataset_list_id"]) as l:
             xl_id = 0
             for xl in self.exp_cross_links:
                 # Skip identical cross links
@@ -925,7 +925,7 @@ class _CrossLinkDumper(_Dumper):
                         entity_id_2=entity2.id,
                         seq_id_2=xl.r2,
                         comp_id_2=rt2.get_string(),
-                        type=xl.group.label,
+                        linker_type=xl.group.label,
                         dataset_list_id=xl.group.rdataset.dataset.id)
 
     def _granularity(self, xl):
@@ -942,7 +942,7 @@ class _CrossLinkDumper(_Dumper):
                          ["id", "group_id", "entity_id_1", "asym_id_1",
                           "seq_id_1", "comp_id_1",
                           "entity_id_2", "asym_id_2", "seq_id_2", "comp_id_2",
-                          "type", "conditional_crosslink_flag",
+                          "restraint_type", "conditional_crosslink_flag",
                           "model_granularity", "distance_threshold",
                           "psi", "sigma_1", "sigma_2"]) as l:
             xl_id = 0
@@ -976,7 +976,7 @@ class _CrossLinkDumper(_Dumper):
                         asym_id_2=asym2,
                         seq_id_2=xl.ex_xl.r2,
                         comp_id_2=rt2.get_string(),
-                        type=xl.ex_xl.group.label,
+                        restraint_type='upper bound',
                         # todo: any circumstances where this could be ANY?
                         conditional_crosslink_flag="ALL",
                         model_granularity=self._granularity(xl),
@@ -1205,7 +1205,8 @@ class _AssemblyDumper(_Dumper):
     def dump(self, writer):
         ordinal = 1
         with writer.loop("_ihm_struct_assembly",
-                         ["ordinal_id", "assembly_id", "entity_description",
+                         ["ordinal_id", "assembly_id", "parent_assembly_id",
+                          "entity_description",
                           "entity_id", "asym_id", "seq_id_begin",
                           "seq_id_end"]) as l:
             for a in self._assembly_by_id:
@@ -1215,6 +1216,9 @@ class _AssemblyDumper(_Dumper):
                     chain_id = self.simo._get_chain_for_component(comp,
                                                                   self.output)
                     l.write(ordinal_id=ordinal, assembly_id=a.id,
+                            # Currently all assemblies are not hierarchical,
+                            # so each assembly is a self-parent
+                            parent_assembly_id=a.id,
                             entity_description=entity.description,
                             entity_id=entity.id,
                             asym_id=chain_id,

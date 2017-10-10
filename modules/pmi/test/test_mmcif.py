@@ -289,15 +289,16 @@ _ihm_external_files.details
 loop_
 _ihm_struct_assembly.ordinal_id
 _ihm_struct_assembly.assembly_id
+_ihm_struct_assembly.parent_assembly_id
 _ihm_struct_assembly.entity_description
 _ihm_struct_assembly.entity_id
 _ihm_struct_assembly.asym_id
 _ihm_struct_assembly.seq_id_begin
 _ihm_struct_assembly.seq_id_end
-1 1 foo 1 A 1 3
-2 1 foo 1 B 1 3
-3 2 foo 1 B 1 3
-4 2 baz 2 C 1 2
+1 1 1 foo 1 A 1 3
+2 1 1 foo 1 B 1 3
+3 2 2 foo 1 B 1 3
+4 2 2 baz 2 C 1 2
 #
 """)
 
@@ -318,14 +319,15 @@ _ihm_struct_assembly.seq_id_end
 loop_
 _ihm_struct_assembly.ordinal_id
 _ihm_struct_assembly.assembly_id
+_ihm_struct_assembly.parent_assembly_id
 _ihm_struct_assembly.entity_description
 _ihm_struct_assembly.entity_id
 _ihm_struct_assembly.asym_id
 _ihm_struct_assembly.seq_id_begin
 _ihm_struct_assembly.seq_id_end
-1 1 foo 1 A 1 3
-2 1 bar 2 . 1 2
-3 2 foo 1 A 1 3
+1 1 1 foo 1 A 1 3
+2 1 1 bar 2 . 1 2
+3 2 2 foo 1 A 1 3
 #
 """)
 
@@ -1755,7 +1757,7 @@ _ihm_cross_link_list.entity_description_2
 _ihm_cross_link_list.entity_id_2
 _ihm_cross_link_list.seq_id_2
 _ihm_cross_link_list.comp_id_2
-_ihm_cross_link_list.type
+_ihm_cross_link_list.linker_type
 _ihm_cross_link_list.dataset_list_id
 1 1 Nup84 1 1 MET Nup84 1 2 GLU foo 42
 2 2 Nup84 1 1 MET Nup84 1 3 LEU foo 42
@@ -1772,14 +1774,14 @@ _ihm_cross_link_restraint.entity_id_2
 _ihm_cross_link_restraint.asym_id_2
 _ihm_cross_link_restraint.seq_id_2
 _ihm_cross_link_restraint.comp_id_2
-_ihm_cross_link_restraint.type
+_ihm_cross_link_restraint.restraint_type
 _ihm_cross_link_restraint.conditional_crosslink_flag
 _ihm_cross_link_restraint.model_granularity
 _ihm_cross_link_restraint.distance_threshold
 _ihm_cross_link_restraint.psi
 _ihm_cross_link_restraint.sigma_1
 _ihm_cross_link_restraint.sigma_2
-1 1 1 A 1 MET 1 A 2 GLU foo ALL by-residue 42.000 0.800 1.000 0.500
+1 1 1 A 1 MET 1 A 2 GLU 'upper bound' ALL by-residue 42.000 0.800 1.000 0.500
 #
 """)
 

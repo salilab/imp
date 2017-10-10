@@ -7,6 +7,7 @@
 from __future__ import print_function
 import IMP
 import IMP.pmi
+import IMP.pmi.output
 import IMP.atom
 import IMP.core
 import IMP.algebra
@@ -730,6 +731,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             xl[self.residue2_links_number_key]=len(residue_links[(p2,r2)])
 
     def check_cross_link_consistency(self):
+        """This function checks the consistency of the dataset with the amino acid sequence"""
         if self.cldbkc and self.fasta_seq:
             cnt_matched, cnt_matched_file = 0, 0
             matched = {}
@@ -1180,6 +1182,17 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             a.writerow(sorted_ids)
             a.writerows(data)
 
+    def get_number_of_unique_crosslinked_sites(self):
+        """
+        Returns the number of non redundant crosslink sites
+        """
+        praset=set()
+        for xl in self:
+            pra=_ProteinsResiduesArray(xl)
+            prai=pra.get_inverted()
+            praset.add(pra)
+            praset.add(prai)
+        return len(list(praset))
 
 class JaccardDistanceMatrix(object):
     """This class allows to compute and plot the distance between datasets"""
@@ -1267,27 +1280,18 @@ class JaccardDistanceMatrix(object):
         pl.close(fig)
 
 
-
-
-
-
-
-
 class MapCrossLinkDataBaseOnStructure(object):
     '''
     This class maps a CrossLinkDataBase on a given structure
-    and save an rmf file with the color coded crosslinks
+    and save an rmf file with color-coded crosslinks
     '''
 
 
-    def __init__(self,model,CrossLinkDataBase,rmf_name,frame_index):
+    def __init__(self,CrossLinkDataBase,rmf_or_stat_handler):
         self.CrossLinkDataBase=CrossLinkDataBase
-        rh = RMF.open_rmf_file_read_only(rmf_name)
-        self.model=model
-        self.prots = IMP.rmf.create_hierarchies(rh, self.model)
-        IMP.rmf.load_frame(rh, RMF.FrameID(frame_index))
-        self.compute_distances()
-        self.model.update()
+        if type(rmf_or_stat_handler) is IMP.pmi.output.RMFHierarchyHandler or \
+                type(rmf_or_stat_handler) is IMP.pmi.output.StatHierarchyHandler:
+            self.prots=rmf_or_stat_handler
 
     def compute_distances(self):
         data=[]
@@ -1363,8 +1367,6 @@ class MapCrossLinkDataBaseOnStructure(object):
         return (results_sorted[0][0],results_sorted[0][5],results_sorted[0][6]),(results_sorted[0][1],results_sorted[0][2],results_sorted[0][3],results_sorted[0][4])
 
     def save_rmf_snapshot(self,filename,color_id=None):
-        import operator
-
         if color_id is None:
             color_id=self.CrossLinkDataBase.id_score_key
         sorted_group_ids=sorted(self.CrossLinkDataBase.data_base.keys())
@@ -1375,13 +1377,11 @@ class MapCrossLinkDataBaseOnStructure(object):
             for xl in self.CrossLinkDataBase.data_base[group]:
                 xllabel=self.CrossLinkDataBase.get_short_cross_link_string(xl)
                 (c1,c2,r1,r2)=_ProteinsResiduesArray(xl)
-                print (c1,c2,r1,r2)
                 try:
                     (mdist,p1,p2),(state1,copy1,state2,copy2)=self._get_distance_and_particle_pair(r1,c1,r2,c2)
                 except TypeError:
                     print("TypeError or missing chain/residue ",r1,c1,r2,c2)
                     continue
-                print(xl[color_id])
                 group_dists_particles.append((mdist,p1,p2,xllabel,float(xl[color_id])))
             if group_dists_particles:
                 (minmdist,minp1,minp2,minxllabel,mincolor_score)=min(group_dists_particles, key = lambda t: t[0])
@@ -1490,7 +1490,7 @@ class CrossLinkDataBaseFromStructure(object):
 
         if self.mode=="pmi2":
             for state in self.system.get_states():
-                for moleculename,molecules in state.get_molecules().iteritems():
+                for moleculename,molecules in state.get_molecules().items():
                     for molecule in molecules:
                 # we are saving a dictionary with protein name, residue number and random reactivity of the residue
                         seq=molecule.sequence

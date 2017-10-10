@@ -102,6 +102,10 @@ class Tests(IMP.test.TestCase):
             import matplotlib
         except ImportError:
             self.skipTest("no matplotlib package")
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
         mdl = IMP.Model()
         tfile = self.get_input_file_name('topology_new.txt')
         input_dir = os.path.dirname(tfile)
