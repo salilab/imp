@@ -46,7 +46,7 @@ class Tests(IMP.test.TestCase):
         #! read PDB
         mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                                m, IMP.atom.NonWaterPDBSelector())
-        self.assertEqual(len(m.get_particle_indexes()), 1132)
+        self.assertEqual(len(m.get_particle_indexes()), 1133)
         # IMP.atom.show_molecular_hierarchy(mp)
         IMP.atom.show(mp)
         IMP.atom.add_bonds(mp)
@@ -58,7 +58,7 @@ class Tests(IMP.test.TestCase):
         m2 = IMP.Model()
         mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                                m2, IMP.atom.CAlphaPDBSelector())
-        self.assertEqual(len(m2.get_particle_indexes()), 260)
+        self.assertEqual(len(m2.get_particle_indexes()), 261)
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 129)
         IMP.atom.add_bonds(mp)
@@ -217,6 +217,22 @@ class Tests(IMP.test.TestCase):
         hp = IMP.atom.read_pdb(tn, m)
         lvs = IMP.atom.get_leaves(hp)
         self.assertEqual(IMP.atom.Atom(lvs[2]).get_input_index(), 3)
+
+    def test_provenance(self):
+        """Test that StructureProvenance is set"""
+        m = IMP.Model()
+        fname = self.get_input_file_name("hydrogen.pdb")
+        mp = IMP.atom.read_pdb(fname, m)
+        chains = IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)
+        self.assertEqual(len(chains), 5)
+        for c in chains:
+            self.assertTrue(IMP.atom.Provenanced.get_is_setup(c))
+            p = IMP.atom.Provenanced(c).get_provenance()
+            self.assertTrue(IMP.atom.StructureProvenance.get_is_setup(p))
+            sp = IMP.atom.StructureProvenance(p)
+            self.assertEqual(sp.get_filename(), fname)
+            self.assertEqual(sp.get_chain_id(), IMP.atom.Chain(c).get_id())
+
 
 if __name__ == '__main__':
     IMP.test.main()
