@@ -142,6 +142,10 @@ public:
   IMP_DECORATOR_SETUP_1(Provenanced, Provenance, p);
 };
 
+//! Add provenance to part of the model.
+IMPATOMEXPORT void add_provenance(Model *m, ParticleIndex pi,
+                                  Provenance p);
+
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_PROVENANCE_H */

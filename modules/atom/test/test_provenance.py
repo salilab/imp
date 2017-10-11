@@ -36,5 +36,24 @@ class Tests(IMP.test.TestCase):
         self.assertFalse(IMP.atom.Provenanced.get_is_setup(p))
         self.assertFalse(IMP.atom.Provenance.get_is_setup(pd))
 
+    def test_add_provenance(self):
+        """Test add_provenance()"""
+        m = IMP.Model()
+        prov1 = IMP.atom.Provenance.setup_particle(m, IMP.Particle(m))
+        prov2 = IMP.atom.Provenance.setup_particle(m, IMP.Particle(m))
+
+        p = IMP.Particle(m)
+        self.assertFalse(IMP.atom.Provenanced.get_is_setup(p))
+
+        IMP.atom.add_provenance(m, p, prov1)
+        self.assertTrue(IMP.atom.Provenanced.get_is_setup(p))
+        pd = IMP.atom.Provenanced(p)
+        self.assertTrue(pd.get_provenance(), prov1)
+
+        IMP.atom.add_provenance(m, p, prov2)
+        self.assertTrue(IMP.atom.Provenanced.get_is_setup(p))
+        self.assertTrue(pd.get_provenance(), prov2)
+        self.assertTrue(pd.get_provenance().get_previous_state(), prov1)
+
 if __name__ == '__main__':
     IMP.test.main()

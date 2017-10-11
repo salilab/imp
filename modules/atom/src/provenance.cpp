@@ -42,4 +42,16 @@ void StructureProvenance::show(std::ostream &out) const {
       << std::endl;
 }
 
+void add_provenance(Model *m, ParticleIndex pi, Provenance p) {
+  if (Provenanced::get_is_setup(m, pi)) {
+    // add the new provenance as a new root
+    Provenanced pd = Provenanced(m, pi);
+    Provenance old_provenance = pd.get_provenance();
+    p.set_previous_state(old_provenance);
+    pd.set_provenance(p);
+  } else {
+    Provenanced::setup_particle(m, pi, p);
+  }
+}
+
 IMPATOM_END_NAMESPACE
