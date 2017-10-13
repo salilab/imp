@@ -14,12 +14,6 @@
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
-namespace {
-// kind of icky, but we need to make sure the rigid body ids are unique
-// and can't store the FileHandle as that would keep the file open
-unsigned int rigid_body_count = 0;
-}
-
 HierarchyLoadRigidBodies::HierarchyLoadRigidBodies(RMF::FileConstHandle f)
     : reference_frame_factory_(f), ip_factory_(f) {
   RMF::Category cat = f.get_category("IMP");

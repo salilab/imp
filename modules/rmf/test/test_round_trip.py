@@ -92,26 +92,31 @@ class Tests(IMP.test.TestCase):
     def test_names(self):
         """Test if RMF can recall the molecule name and chain ID"""
         for suffix in [".rmfz", ".rmf3"]:
-            m = IMP.Model()
-            h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
-                                  IMP.atom.NonAlternativePDBSelector())
-            chs = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
-            chs[0].set_name('simple')
-            self.assertEqual(chs[0].get_name(), 'simple')
+            for sequence in ('', 'CYW'):
+                m = IMP.Model()
+                h = IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
+                                      IMP.atom.NonAlternativePDBSelector())
+                chs = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
+                chs[0].set_name('simple')
+                IMP.atom.Chain(chs[0]).set_sequence(sequence)
+                self.assertEqual(chs[0].get_name(), 'simple')
 
-            IMP.set_log_level(IMP.SILENT)
-            IMP.atom.add_bonds(h)
-            IMP.set_log_level(IMP.VERBOSE)
-            name = self.get_tmp_file_name("test_rt_parts" + suffix)
-            f = RMF.create_rmf_file(name)
-            IMP.rmf.add_hierarchy(f, h)
-            IMP.rmf.save_frame(f, str(0))
-            del f
-            f = RMF.open_rmf_file_read_only(name)
-            h2 = IMP.rmf.create_hierarchies(f, m)
-            chs2 = IMP.atom.get_by_type(h2[0], IMP.atom.CHAIN_TYPE)
-            self.assertEqual(IMP.atom.Chain(chs2[0]).get_id(), 'A')
-            self.assertEqual(chs2[0].get_name(), 'simple')
+                IMP.set_log_level(IMP.SILENT)
+                IMP.atom.add_bonds(h)
+
+                IMP.set_log_level(IMP.VERBOSE)
+                name = self.get_tmp_file_name("test_rt_parts" + suffix)
+                f = RMF.create_rmf_file(name)
+                IMP.rmf.add_hierarchy(f, h)
+                IMP.rmf.save_frame(f, str(0))
+                del f
+                f = RMF.open_rmf_file_read_only(name)
+                h2 = IMP.rmf.create_hierarchies(f, m)
+                chs2 = IMP.atom.get_by_type(h2[0], IMP.atom.CHAIN_TYPE)
+                c = IMP.atom.Chain(chs2[0])
+                self.assertEqual(c.get_id(), 'A')
+                self.assertEqual(c.get_sequence(), sequence)
+                self.assertEqual(chs2[0].get_name(), 'simple')
 
     def test_references(self):
         """Test if Reference information is preserved in RMF"""

@@ -20,6 +20,7 @@ IMPRMF_BEGIN_NAMESPACE
     the information contained in the following decorators
     - IMP::atom::Atom
     - IMP::atom::Residue
+    - IMP::atom::Chain
     - IMP::core::XYZR
     - IMP::atom::Mass
     - IMP::atom::Diffusion

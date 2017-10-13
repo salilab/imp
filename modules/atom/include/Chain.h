@@ -23,16 +23,15 @@ class IMPATOMEXPORT Chain : public Hierarchy {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 std::string id) {
     m->add_attribute(get_id_key(), pi, id);
+    m->add_attribute(get_sequence_key(), pi, "");
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
   }
-  static void do_setup_particle(Model *m, ParticleIndex pi,
-                                char c) {
+  static void do_setup_particle(Model *m, ParticleIndex pi, char c) {
     do_setup_particle(m, pi, std::string(1, c));
   }
-  static void do_setup_particle(Model *m, ParticleIndex pi,
-                                Chain o) {
+  static void do_setup_particle(Model *m, ParticleIndex pi, Chain o) {
     do_setup_particle(m, pi, o.get_id());
   }
 
@@ -44,6 +43,7 @@ class IMPATOMEXPORT Chain : public Hierarchy {
 
   static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_id_key(), pi) &&
+           m->get_has_attribute(get_sequence_key(), pi) &&
            Hierarchy::get_is_setup(m, pi);
   }
 
@@ -57,8 +57,30 @@ class IMPATOMEXPORT Chain : public Hierarchy {
     get_model()->set_attribute(get_id_key(), get_particle_index(), c);
   }
 
+  //! Return the primary sequence (or any empty string)
+  std::string get_sequence() const {
+    return get_model()->get_attribute(get_sequence_key(), get_particle_index());
+  }
+
+  //! Set the primary sequence, as a string
+  /** Usually the primary sequence of a chain can be uniquely deduced by
+      iterating over all child Residue decorators and querying their type.
+      However, this may not be possible in all cases (e.g. if there are gaps
+      in the sequence or parts that are not explictly represented).
+
+      \note The sequence set here should be consistent with that of any
+            children of this Chain. This is not currently enforced.
+      */
+  void set_sequence(std::string sequence) {
+    get_model()->set_attribute(get_sequence_key(), get_particle_index(),
+                               sequence);
+  }
+
   //! The key used to store the chain
   static StringKey get_id_key();
+
+  //! The key used to store the primary sequence
+  static StringKey get_sequence_key();
 };
 
 IMP_DECORATORS(Chain, Chains, Hierarchies);

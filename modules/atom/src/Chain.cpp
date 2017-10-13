@@ -15,6 +15,12 @@ StringKey Chain::get_id_key() {
   return k;
 }
 
+StringKey Chain::get_sequence_key() {
+  static StringKey k("sequence");
+  return k;
+}
+
+
 void Chain::show(std::ostream &out) const { out << "Chain " << get_id(); }
 
 Chain get_chain(Hierarchy h) {
