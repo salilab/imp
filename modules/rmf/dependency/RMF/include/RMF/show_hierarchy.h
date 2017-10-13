@@ -12,6 +12,8 @@
 #include <RMF/config.h>
 #include <iostream>
 
+RMF_ENABLE_WARNINGS
+
 namespace RMF {
 class NodeConstHandle;
 class FileConstHandle;

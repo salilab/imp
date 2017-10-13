@@ -72,11 +72,8 @@ class Base:
 
 class Attribute(Base):
 
-    def __init__(
-        self,
-        name,
-        attribute_type,
-            function_name=None):
+    def __init__(self, name, attribute_type, function_name=None,
+                 allow_null=False):
         if not function_name:
             function_name = name.replace(" ", "_")
         Base.__init__(self, name, attribute_type +
@@ -98,6 +95,10 @@ class Attribute(Base):
     } RMF_DECORATOR_CATCH( );
   }
 """ % (function_name, function_name, function_name)
+        # Note that this currently only works for string attributes
+        if allow_null:
+            self.get_methods = self.get_methods.replace('return',
+                     'if (!get_node().get_has_value(NAME_)) return "";\nreturn')
         self.set_methods = """
   void set_%s(TYPE v) {
     try {
@@ -115,7 +116,11 @@ class Attribute(Base):
     } RMF_DECORATOR_CATCH( );
   }
 """ % (function_name, function_name, function_name)
-        self.check = "!nh.GET(NAME_).get_is_null()"
+        # If the attribute is allowed to be null, skip check
+        if allow_null:
+            self.check = ""
+        else:
+            self.check = "!nh.GET(NAME_).get_is_null()"
         self.data_initialize = "fh.get_key<TYPETag>(cat_, \"%s\")" % name
 
 

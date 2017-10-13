@@ -111,7 +111,8 @@ residue = Decorator(["REPRESENTATION"], "sequence",
 
 chain = Decorator(["REPRESENTATION"], "sequence",
                   "Chain",
-                  [Attribute("chain id", "String")])
+                  [Attribute("chain id", "String"),
+                   Attribute("sequence", "String", allow_null=True)])
 
 domain = Decorator(["REPRESENTATION"], "sequence",
                    "Domain",

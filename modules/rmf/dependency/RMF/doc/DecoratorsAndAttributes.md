@@ -77,7 +77,7 @@ The category name is `sequence` and it includes information about the types and 
 | Name                            |  Node Type              | Attributes                         |
 |--------------------------------:|:-----------------------:|:-----------------------------------|
 | RMF::decorator::Residue         | RMF::REPRESENTATION     |  index, residue type               |
-| RMF::decorator::Chain           | RMF::REPRESENTATION     |  chain id                          |
+| RMF::decorator::Chain           | RMF::REPRESENTATION     |  chain id, sequence                |
 | RMF::decorator::Domain          | RMF::REPRESENTATION     |  first residue index, last residue index |
 | RMF::decorator::Fragment        | RMF::REPRESENTATION     |  residue indexes                   |
 | RMF::decorator::Copy            | RMF::REPRESENTATION     |  copy index                        |
