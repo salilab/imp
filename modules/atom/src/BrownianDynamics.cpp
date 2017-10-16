@@ -276,9 +276,8 @@ BrownianDynamics::reset_random_pool()
  */
 double
 BrownianDynamics::do_step
-(const ParticleIndexes &ps, double dt)
+(const ParticleIndexes &ps, double dt_fs)
 {
-  double dtfs(dt);
   double ikT = 1.0 / get_kt();
   get_scoring_function()->evaluate(true);
   //  Ek = 0.0; // DEBUG: monitor kinetic energy
@@ -286,8 +285,8 @@ BrownianDynamics::do_step
   const unsigned int chunk_size = 5000;
   for (unsigned int b = 0; b < ps.size(); b += chunk_size) {
     IMP_TASK_SHARED(
-        (dtfs, ikT, b), (ps),
-        do_advance_chunk(dtfs, ikT, ps, b,
+        (dt_fs, ikT, b), (ps),
+        do_advance_chunk(dt_fs, ikT, ps, b,
                          std::min<unsigned int>(b + chunk_size, ps.size()));
         , "brownian");
   }
@@ -302,10 +301,10 @@ BrownianDynamics::do_step
   if (srk_) {
     get_scoring_function()->evaluate(true);
     for (unsigned int i = 0; i < ps.size(); ++i) {
-      advance_coordinates_1(ps[i], i, dtfs, ikT);
+      advance_coordinates_1(ps[i], i, dt_fs, ikT);
     }
   }
-  return dt;
+  return dt_fs;
 }
 
 namespace {

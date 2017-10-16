@@ -68,6 +68,10 @@ class SimulationParameters;
     If the skt (stochastic Runge Kutta) flag is true, the simulation is
     altered slightly to apply the SKT scheme.
 
+    _Time step_
+    The time step is always equal precisely to Simulater::get_maximum_time_step() 
+    when using either Simulator::simulate() or Optimizer::optimize()
+
     \see Diffusion
     \see RigidBodyDiffusion
   */
@@ -114,13 +118,13 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   /** Calls do_advance_chunk() to advance ps in chunks
 
    @param sc particles to simulate in this step
-   @param dt maximal step size in femtoseconds
+   @param dt_fs step size in femtoseconds
 
    @return the time step actually simulated (for this class,
-           it is always equal to the inut dt)
+           it is always equal to the input dt_fs)
   */
   virtual double do_step(const ParticleIndexes &sc,
-                         double dt) IMP_OVERRIDE;
+                         double dt_fs) IMP_OVERRIDE;
 
   virtual bool get_is_simulation_particle(ParticleIndex p) const
       IMP_OVERRIDE;
