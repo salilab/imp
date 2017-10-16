@@ -40,7 +40,7 @@ BrownianDynamics::BrownianDynamics(Model *m, std::string name,
                                    double wave_factor,
                                    unsigned int random_pool_size)
     : Simulator(m, name, wave_factor),
-      max_step_(std::numeric_limits<double>::max()),
+      max_step_in_A_(std::numeric_limits<double>::max()),
       srk_(false),
       random_pool_(random_pool_size),
       i_random_pool_(0)
@@ -147,13 +147,13 @@ void BrownianDynamics::setup(const ParticleIndexes &ips) {
 IMP_GCC_DISABLE_WARNING(-Wuninitialized)
 
 namespace {
-void check_dX(algebra::Vector3D &dX, double max_step) {
+void check_dX(algebra::Vector3D &dX, double max_step_in_A) {
   for (unsigned int j = 0; j < 3; ++j) {
     // if (std::abs(dX[j]) > max_step) {
     /*std::cerr << "Truncating motion: " << dX[j] << " to " << max_step
       << std::endl;*/
-    dX[j] = std::min(dX[j], max_step);
-    dX[j] = std::max(dX[j], -max_step);
+    dX[j] = std::min(dX[j], max_step_in_A);
+    dX[j] = std::max(dX[j], -max_step_in_A);
     //}
   }
 }
@@ -168,7 +168,7 @@ void BrownianDynamics::advance_coordinates_1(ParticleIndex pi,
                           get_force_displacement(get_model(), pi, 1, dt, ikT),
                           get_force_displacement(get_model(), pi, 2, dt, ikT));
   algebra::Vector3D dX = (force - forces_[i]) / 2.0;
-  check_dX(dX, max_step_);
+  check_dX(dX, max_step_in_A_);
   xd.set_coordinates(xd.get_coordinates() + dX);
 }
 
@@ -188,7 +188,7 @@ void BrownianDynamics::advance_coordinates_0(ParticleIndex pi,
   }
   algebra::Vector3D dX = random_dX + force_dX;
   if (!srk_) {
-    check_dX(dX, max_step_);
+    check_dX(dX, max_step_in_A_);
   }
 
   // // DEBUG - get kinetic energy

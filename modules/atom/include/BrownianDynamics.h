@@ -74,7 +74,7 @@ class SimulationParameters;
 class IMPATOMEXPORT BrownianDynamics : public Simulator {
  private:
 
-  double max_step_;
+  double max_step_in_A_;
   bool srk_;
   IMP::Vector<algebra::Vector3D> forces_;
   IMP::Vector<double> random_pool_; // pool of random doubles ~N(0.0,1.0)
@@ -101,7 +101,8 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   BrownianDynamics(Model *m, std::string name = "BrownianDynamics%1%",
                    double wave_factor = 1.0,
                    unsigned int random_pool_size=IMP_ATOM_DEFAULT_BD_RANDOM_POOL_SIZE);
-  void set_maximum_move(double ms) { max_step_ = ms; }
+  //! sets the maximum move in A along either x,y or z axes
+  void set_maximum_move(double ms_in_A) { max_step_in_A_ = ms_in_A_; }
   void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
 
   IMP_OBJECT_METHODS(BrownianDynamics);
@@ -140,7 +141,8 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
 
  protected:
   //! returns the maximal step size allowed in this simulation
-  double get_max_step() const { return max_step_; }
+  //! in A along x, y or z axes
+  double get_max_step() const { return max_step_in_A_; }
 
   //! returns true if implementing the Stochastic Runga-Kutta
   //! Brownian Dynamics variant
