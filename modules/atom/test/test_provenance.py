@@ -43,6 +43,15 @@ class Tests(IMP.test.TestCase):
         p.set_number_of_iterations(42)
         self.assertEqual(p.get_number_of_iterations(), 42)
 
+    def test_cluster_provenance(self):
+        """Test ClusterProvenance decorator"""
+        m = IMP.Model()
+        p = IMP.atom.ClusterProvenance.setup_particle(m, IMP.Particle(m), 10)
+        self.assertTrue(IMP.atom.ClusterProvenance.get_is_setup(p))
+        self.assertEqual(p.get_number_of_members(), 10)
+        p.set_number_of_members(42)
+        self.assertEqual(p.get_number_of_members(), 42)
+
     def test_provenanced(self):
         """Test Provenanced decorator"""
         m = IMP.Model()

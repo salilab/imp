@@ -71,6 +71,16 @@ void SampleProvenance::show(std::ostream &out) const {
       << get_method() << std::endl;
 }
 
+IntKey ClusterProvenance::get_members_key() {
+  static const IntKey members("cp_members");
+  return members;
+}
+
+void ClusterProvenance::show(std::ostream &out) const {
+  out << "ClusterProvenance with " << get_number_of_members()
+      << " members" << std::endl;
+}
+
 void add_provenance(Model *m, ParticleIndex pi, Provenance p) {
   if (Provenanced::get_is_setup(m, pi)) {
     // add the new provenance as a new root

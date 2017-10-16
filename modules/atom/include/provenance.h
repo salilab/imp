@@ -184,6 +184,39 @@ public:
   IMP_DECORATOR_SETUP_2(SampleProvenance, std::string, method, int, frames);
 };
 
+//! Track creation of a system fragment from clustering.
+/** Part of the system (usually the top of a Hierarchy) tagged with this
+    decorator is understood to be a single frame inside a cluster of
+    specified size. The rest of the cluster members are generally stored
+    in a file (e.g. an RMF file).
+  */
+class IMPATOMEXPORT ClusterProvenance : public Provenance {
+  static void do_setup_particle(Model *m, ParticleIndex pi, int members) {
+    m->add_attribute(get_members_key(), pi, members);
+  }
+
+  static IntKey get_members_key();
+
+public:
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_members_key(), pi);
+  }
+
+  //! Set the number of cluster members
+  void set_number_of_members(int members) const {
+    return get_model()->set_attribute(get_members_key(), get_particle_index(),
+                                      members);
+  }
+
+  //! \return the number of cluster members
+  int get_number_of_members() const {
+    return get_model()->get_attribute(get_members_key(), get_particle_index());
+  }
+
+  IMP_DECORATOR_METHODS(ClusterProvenance, Provenance);
+  IMP_DECORATOR_SETUP_1(ClusterProvenance, int, members);
+};
+
 //! Tag part of the system to track how it was created.
 class IMPATOMEXPORT Provenanced : public Decorator {
   static void do_setup_particle(Model *m, ParticleIndex pi,
