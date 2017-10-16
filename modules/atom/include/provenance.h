@@ -184,6 +184,56 @@ public:
   IMP_DECORATOR_SETUP_2(SampleProvenance, std::string, method, int, frames);
 };
 
+//! Track creation of a system fragment by combination.
+/** Part of the system (usually the top of a Hierarchy) tagged with this
+    decorator is understood to be a single frame within an ensemble that
+    was created by combining a number of independent runs. One of those runs
+    should be the previous state of this provenance. The runs should be
+    essentially identical, differing at most only in the number of frames.
+    The total size of the resulting ensemble is stored here.
+  */
+class IMPATOMEXPORT CombineProvenance : public Provenance {
+  static void do_setup_particle(Model *m, ParticleIndex pi, int runs,
+                                int frames) {
+    m->add_attribute(get_runs_key(), pi, runs);
+    m->add_attribute(get_frames_key(), pi, frames);
+  }
+
+  static IntKey get_runs_key();
+  static IntKey get_frames_key();
+
+public:
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_frames_key(), pi)
+           && m->get_has_attribute(get_runs_key(), pi);
+  }
+
+  //! Set the total number of frames
+  void set_number_of_frames(int frames) const {
+    return get_model()->set_attribute(get_frames_key(), get_particle_index(),
+                                      frames);
+  }
+
+  //! \return the total number of frames
+  int get_number_of_frames() const {
+    return get_model()->get_attribute(get_frames_key(), get_particle_index());
+  }
+
+  //! Set the number of runs
+  void set_number_of_runs(int runs) const {
+    return get_model()->set_attribute(get_runs_key(), get_particle_index(),
+                                      runs);
+  }
+
+  //! \return the number of runs
+  int get_number_of_runs() const {
+    return get_model()->get_attribute(get_runs_key(), get_particle_index());
+  }
+
+  IMP_DECORATOR_METHODS(CombineProvenance, Provenance);
+  IMP_DECORATOR_SETUP_2(CombineProvenance, int, runs, int, frames);
+};
+
 //! Track creation of a system fragment from clustering.
 /** Part of the system (usually the top of a Hierarchy) tagged with this
     decorator is understood to be a single frame inside a cluster of

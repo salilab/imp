@@ -71,6 +71,22 @@ void SampleProvenance::show(std::ostream &out) const {
       << get_method() << std::endl;
 }
 
+IntKey CombineProvenance::get_runs_key() {
+  static const IntKey runs("cp_runs");
+  return runs;
+}
+
+IntKey CombineProvenance::get_frames_key() {
+  static const IntKey frames("cp_frames");
+  return frames;
+}
+
+void CombineProvenance::show(std::ostream &out) const {
+  out << "CombineProvenance of " << get_number_of_runs()
+      << " runs resulting in " << get_number_of_frames()
+      << " frames" << std::endl;
+}
+
 IntKey ClusterProvenance::get_members_key() {
   static const IntKey members("cp_members");
   return members;

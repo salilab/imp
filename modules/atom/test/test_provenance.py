@@ -43,6 +43,18 @@ class Tests(IMP.test.TestCase):
         p.set_number_of_iterations(42)
         self.assertEqual(p.get_number_of_iterations(), 42)
 
+    def test_combine_provenance(self):
+        """Test CombineProvenance decorator"""
+        m = IMP.Model()
+        p = IMP.atom.CombineProvenance.setup_particle(m, IMP.Particle(m), 5, 42)
+        self.assertTrue(IMP.atom.CombineProvenance.get_is_setup(p))
+        self.assertEqual(p.get_number_of_runs(), 5)
+        p.set_number_of_runs(7)
+        self.assertEqual(p.get_number_of_runs(), 7)
+        self.assertEqual(p.get_number_of_frames(), 42)
+        p.set_number_of_frames(100)
+        self.assertEqual(p.get_number_of_frames(), 100)
+
     def test_cluster_provenance(self):
         """Test ClusterProvenance decorator"""
         m = IMP.Model()
