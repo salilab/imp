@@ -25,6 +25,24 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(p.get_filename(), "testfile")
         self.assertEqual(p.get_chain_id(), "testchain")
 
+    def test_sample_provenance(self):
+        """Test SampleProvenance decorator"""
+        m = IMP.Model()
+        p = IMP.atom.SampleProvenance.setup_particle(m, IMP.Particle(m),
+                               "Monte Carlo", 100)
+        self.assertTrue(IMP.atom.SampleProvenance.get_is_setup(p))
+        self.assertEqual(p.get_method(), "Monte Carlo")
+        p.set_method("Molecular Dynamics")
+        self.assertEqual(p.get_method(), "Molecular Dynamics")
+        if IMP.get_check_level() == IMP.USAGE_AND_INTERNAL:
+            self.assertRaises(IMP.UsageError, p.set_method, "Garbage")
+        self.assertEqual(p.get_number_of_frames(), 100)
+        p.set_number_of_frames(200)
+        self.assertEqual(p.get_number_of_frames(), 200)
+        self.assertEqual(p.get_number_of_iterations(), 1)
+        p.set_number_of_iterations(42)
+        self.assertEqual(p.get_number_of_iterations(), 42)
+
     def test_provenanced(self):
         """Test Provenanced decorator"""
         m = IMP.Model()

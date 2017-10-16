@@ -15,6 +15,7 @@
 #include <IMP/object_macros.h>
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
+#include <set>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -111,6 +112,76 @@ public:
   IMP_DECORATOR_METHODS(StructureProvenance, Provenance);
   IMP_DECORATOR_SETUP_2(StructureProvenance, std::string, filename,
                         std::string, chain_id);
+};
+
+//! Track creation of a system fragment from sampling.
+/** Part of the system (usually the top of a Hierarchy) tagged with this
+    decorator is understood to be a single frame from an ensemble of
+    multiple frames generated with some sampling method (e.g. Monte Carlo).
+    Additionally, the number of iterations of the sampler used to generate
+    each frame can be stored, if known and applicable.
+    The rest of the frames are generally stored in a file (e.g. an RMF file).
+  */
+class IMPATOMEXPORT SampleProvenance : public Provenance {
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                std::string method, int frames) {
+    m->add_attribute(get_method_key(), pi, method);
+    m->add_attribute(get_frames_key(), pi, frames);
+    m->add_attribute(get_iterations_key(), pi, 1);
+  }
+
+  static StringKey get_method_key();
+  static IntKey get_frames_key();
+  static IntKey get_iterations_key();
+
+  static std::set<std::string>& get_allowed_methods();
+
+public:
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_method_key(), pi)
+           && m->get_has_attribute(get_iterations_key(), pi)
+           && m->get_has_attribute(get_frames_key(), pi);
+  }
+
+  //! Set the sampling method
+  void set_method(std::string method) const {
+    IMP_USAGE_CHECK(get_allowed_methods().find(method)
+                                 != get_allowed_methods().end(),
+                    "Invalid sampling method");
+    return get_model()->set_attribute(get_method_key(), get_particle_index(),
+                                      method);
+  }
+
+  //! \return the sampling method
+  std::string get_method() const {
+    return get_model()->get_attribute(get_method_key(), get_particle_index());
+  }
+
+  //! Set the number of frames
+  void set_number_of_frames(int frames) const {
+    return get_model()->set_attribute(get_frames_key(), get_particle_index(),
+                                      frames);
+  }
+
+  //! \return the number of frames
+  int get_number_of_frames() const {
+    return get_model()->get_attribute(get_frames_key(), get_particle_index());
+  }
+
+  //! Set the number of iterations
+  void set_number_of_iterations(int iterations) const {
+    return get_model()->set_attribute(get_iterations_key(),
+                                      get_particle_index(), iterations);
+  }
+
+  //! \return the number of iterations
+  int get_number_of_iterations() const {
+    return get_model()->get_attribute(get_iterations_key(),
+                                      get_particle_index());
+  }
+
+  IMP_DECORATOR_METHODS(SampleProvenance, Provenance);
+  IMP_DECORATOR_SETUP_2(SampleProvenance, std::string, method, int, frames);
 };
 
 //! Tag part of the system to track how it was created.

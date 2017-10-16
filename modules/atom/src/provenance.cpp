@@ -42,6 +42,35 @@ void StructureProvenance::show(std::ostream &out) const {
       << std::endl;
 }
 
+std::set<std::string>& SampleProvenance::get_allowed_methods() {
+  static std::set<std::string> m;
+  if (m.empty()) {
+    m.insert("Monte Carlo");
+    m.insert("Molecular Dynamics");
+  }
+  return m;
+}
+
+StringKey SampleProvenance::get_method_key() {
+  static const StringKey method("sp_method");
+  return method;
+}
+
+IntKey SampleProvenance::get_frames_key() {
+  static const IntKey frames("sp_frames");
+  return frames;
+}
+
+IntKey SampleProvenance::get_iterations_key() {
+  static const IntKey iterations("sp_iterations");
+  return iterations;
+}
+
+void SampleProvenance::show(std::ostream &out) const {
+  out << "SampleProvenance " << get_number_of_frames() << " of "
+      << get_method() << std::endl;
+}
+
 void add_provenance(Model *m, ParticleIndex pi, Provenance p) {
   if (Provenanced::get_is_setup(m, pi)) {
     // add the new provenance as a new root
