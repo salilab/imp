@@ -18,9 +18,9 @@ void Provenanced::show(std::ostream &out) const {
   out << "Provenanced" << std::endl;
 }
 
-ParticleIndexKey Provenance::get_previous_state_key() {
-  static const ParticleIndexKey previous_state("previous_state");
-  return previous_state;
+ParticleIndexKey Provenance::get_previous_key() {
+  static const ParticleIndexKey previous("previous_provenance");
+  return previous;
 }
 
 void Provenance::show(std::ostream &out) const {
@@ -115,9 +115,9 @@ void FilterProvenance::show(std::ostream &out) const {
 void add_provenance(Model *m, ParticleIndex pi, Provenance p) {
   if (Provenanced::get_is_setup(m, pi)) {
     // add the new provenance as a new root
-    Provenanced pd = Provenanced(m, pi);
+    Provenanced pd(m, pi);
     Provenance old_provenance = pd.get_provenance();
-    p.set_previous_state(old_provenance);
+    p.set_previous(old_provenance);
     pd.set_provenance(p);
   } else {
     Provenanced::setup_particle(m, pi, p);

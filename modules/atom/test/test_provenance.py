@@ -10,11 +10,11 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         p = IMP.atom.Provenance.setup_particle(m, IMP.Particle(m))
         self.assertTrue(IMP.atom.Provenance.get_is_setup(p))
-        self.assertFalse(p.get_previous_state())
+        self.assertFalse(p.get_previous())
 
         p2 = IMP.atom.Provenance.setup_particle(m, IMP.Particle(m))
-        p.set_previous_state(p2)
-        self.assertEqual(p.get_previous_state(), p2)
+        p.set_previous(p2)
+        self.assertEqual(p.get_previous(), p2)
 
     def test_structure_provenance(self):
         """Test StructureProvenance decorator"""
@@ -105,7 +105,7 @@ class Tests(IMP.test.TestCase):
         IMP.atom.add_provenance(m, p, prov2)
         self.assertTrue(IMP.atom.Provenanced.get_is_setup(p))
         self.assertTrue(pd.get_provenance(), prov2)
-        self.assertTrue(pd.get_provenance().get_previous_state(), prov1)
+        self.assertTrue(pd.get_provenance().get_previous(), prov1)
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -29,22 +29,22 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT Provenance : public Decorator {
   static void do_setup_particle(Model *m, ParticleIndex pi) {
-    // Use self-index to indicate no previous state is set yet
-    m->add_attribute(get_previous_state_key(), pi, pi);
+    // Use self-index to indicate no previous provenance is set yet
+    m->add_attribute(get_previous_key(), pi, pi);
   }
 
-  static ParticleIndexKey get_previous_state_key();
+  static ParticleIndexKey get_previous_key();
 
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
-    return m->get_has_attribute(get_previous_state_key(), pi);
+    return m->get_has_attribute(get_previous_key(), pi);
   }
 
-  //! \return the previous state, or Provenance() if none exists.
-  Provenance get_previous_state() const {
-    ParticleIndex pi = get_model()->get_attribute(get_previous_state_key(),
+  //! \return the previous provenance, or Provenance() if none exists.
+  Provenance get_previous() const {
+    ParticleIndex pi = get_model()->get_attribute(get_previous_key(),
                                                   get_particle_index());
-    // self-index indicates no previous state is set yet
+    // self-index indicates no previous provenance is set yet
     if (pi == get_particle_index()) {
       return Provenance();
     } else {
@@ -52,14 +52,20 @@ public:
     }
   }
 
-  //! Set the previous state
-  /** It is considered an error to try to set this more than once. */
-  void set_previous_state(Provenance p) {
-    IMP_USAGE_CHECK(get_model()->get_attribute(get_previous_state_key(),
+  //! Set the previous provenance.
+  /** This can be used to show that a given part of the system was
+      generated through multiple steps in order, for example by first
+      being read from a PDB file, then sampled, filtered, and finally
+      clustered.
+
+      \note it is considered an error to try to set this more than once.
+    */
+  void set_previous(Provenance p) {
+    IMP_USAGE_CHECK(get_model()->get_attribute(get_previous_key(),
                                                get_particle_index())
                             == get_particle_index(),
-                    "Previous state is already set");
-    get_model()->set_attribute(get_previous_state_key(),
+                    "Previous provenance is already set");
+    get_model()->set_attribute(get_previous_key(),
                                get_particle_index(), p.get_particle_index());
   }
 
@@ -188,7 +194,7 @@ public:
 /** Part of the system (usually the top of a Hierarchy) tagged with this
     decorator is understood to be a single frame within an ensemble that
     was created by combining a number of independent runs. One of those runs
-    should be the previous state of this provenance. The runs should be
+    should be the 'previous' provenance. The runs should be
     essentially identical, differing at most only in the number of frames.
     The total size of the resulting ensemble is stored here.
   */
@@ -237,7 +243,7 @@ public:
 //! Track creation of a system fragment by filtering.
 /** Part of the system (usually the top of a Hierarchy) tagged with this
     decorator is understood to be a single frame within an ensemble that
-    resulted from filtering a larger ensemble (the previous state of this
+    resulted from filtering a larger ensemble (the 'previous'
     provenance) by discarding models with scores above the threshold.
   */
 class IMPATOMEXPORT FilterProvenance : public Provenance {
