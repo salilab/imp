@@ -97,6 +97,21 @@ void ClusterProvenance::show(std::ostream &out) const {
       << " members" << std::endl;
 }
 
+FloatKey FilterProvenance::get_threshold_key() {
+  static const FloatKey threshold("fp_threshold");
+  return threshold;
+}
+
+IntKey FilterProvenance::get_frames_key() {
+  static const IntKey frames("fp_frames");
+  return frames;
+}
+
+void FilterProvenance::show(std::ostream &out) const {
+  out << "FilterProvenance threshold " << get_threshold()
+      << " resulting in " << get_number_of_frames() << " frames" << std::endl;
+}
+
 void add_provenance(Model *m, ParticleIndex pi, Provenance p) {
   if (Provenanced::get_is_setup(m, pi)) {
     // add the new provenance as a new root

@@ -55,6 +55,19 @@ class Tests(IMP.test.TestCase):
         p.set_number_of_frames(100)
         self.assertEqual(p.get_number_of_frames(), 100)
 
+    def test_filter_provenance(self):
+        """Test FilterProvenance decorator"""
+        m = IMP.Model()
+        p = IMP.atom.FilterProvenance.setup_particle(m, IMP.Particle(m), 100.5,
+                                                     42)
+        self.assertTrue(IMP.atom.FilterProvenance.get_is_setup(p))
+        self.assertAlmostEqual(p.get_threshold(), 100.5, delta=0.01)
+        p.set_threshold(76.0)
+        self.assertAlmostEqual(p.get_threshold(), 76.0, delta=0.01)
+        self.assertEqual(p.get_number_of_frames(), 42)
+        p.set_number_of_frames(100)
+        self.assertEqual(p.get_number_of_frames(), 100)
+
     def test_cluster_provenance(self):
         """Test ClusterProvenance decorator"""
         m = IMP.Model()

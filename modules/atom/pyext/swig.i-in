@@ -42,6 +42,7 @@ IMP_SWIG_DECORATOR(IMP::atom, StructureProvenance, StructureProvenances);
 IMP_SWIG_DECORATOR(IMP::atom, SampleProvenance, SampleProvenances);
 IMP_SWIG_DECORATOR(IMP::atom, ClusterProvenance, ClusterProvenances);
 IMP_SWIG_DECORATOR(IMP::atom, CombineProvenance, CombineProvenances);
+IMP_SWIG_DECORATOR(IMP::atom, FilterProvenance, FilterProvenances);
 IMP_SWIG_DECORATOR(IMP::atom, Provenanced, Provenanceds);
 IMP_SWIG_BASE_OBJECT(IMP::atom, Simulator, Simulators);
 IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);

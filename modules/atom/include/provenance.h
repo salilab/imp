@@ -234,6 +234,55 @@ public:
   IMP_DECORATOR_SETUP_2(CombineProvenance, int, runs, int, frames);
 };
 
+//! Track creation of a system fragment by filtering.
+/** Part of the system (usually the top of a Hierarchy) tagged with this
+    decorator is understood to be a single frame within an ensemble that
+    resulted from filtering a larger ensemble (the previous state of this
+    provenance) by discarding models with scores above the threshold.
+  */
+class IMPATOMEXPORT FilterProvenance : public Provenance {
+  static void do_setup_particle(Model *m, ParticleIndex pi, double threshold,
+                                int frames) {
+    m->add_attribute(get_threshold_key(), pi, threshold);
+    m->add_attribute(get_frames_key(), pi, frames);
+  }
+
+  static FloatKey get_threshold_key();
+  static IntKey get_frames_key();
+
+public:
+  static bool get_is_setup(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_threshold_key(), pi)
+           && m->get_has_attribute(get_frames_key(), pi);
+  }
+
+  //! Set the number of frames
+  void set_number_of_frames(int frames) const {
+    return get_model()->set_attribute(get_frames_key(), get_particle_index(),
+                                      frames);
+  }
+
+  //! \return the number of frames
+  int get_number_of_frames() const {
+    return get_model()->get_attribute(get_frames_key(), get_particle_index());
+  }
+
+  //! Set the score threshold
+  void set_threshold(double threshold) const {
+    return get_model()->set_attribute(get_threshold_key(), get_particle_index(),
+                                      threshold);
+  }
+
+  //! \return the threshold
+  double get_threshold() const {
+    return get_model()->get_attribute(get_threshold_key(),
+                                      get_particle_index());
+  }
+
+  IMP_DECORATOR_METHODS(FilterProvenance, Provenance);
+  IMP_DECORATOR_SETUP_2(FilterProvenance, double, threshold, int, frames);
+};
+
 //! Track creation of a system fragment from clustering.
 /** Part of the system (usually the top of a Hierarchy) tagged with this
     decorator is understood to be a single frame inside a cluster of
