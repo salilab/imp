@@ -77,7 +77,7 @@ The category name is `sequence` and it includes information about the types and 
 | Name                            |  Node Type              | Attributes                         |
 |--------------------------------:|:-----------------------:|:-----------------------------------|
 | RMF::decorator::Residue         | RMF::REPRESENTATION     |  index, residue type               |
-| RMF::decorator::Chain           | RMF::REPRESENTATION     |  chain id                          |
+| RMF::decorator::Chain           | RMF::REPRESENTATION     |  chain id, sequence                |
 | RMF::decorator::Domain          | RMF::REPRESENTATION     |  first residue index, last residue index |
 | RMF::decorator::Fragment        | RMF::REPRESENTATION     |  residue indexes                   |
 | RMF::decorator::Copy            | RMF::REPRESENTATION     |  copy index                        |
@@ -207,3 +207,33 @@ should be loaded as a child of the current node.
 | Name                            |  Node Type              | Attributes                         |
 |--------------------------------:|:-----------------------:|:-----------------------------------|
 | RMF::decorator::JournalArticle  | RMF::ORGANIZATIONAL     |  title, journal, pubmed id, year, authors |
+
+# Provenance # {#provenance}
+
+The category name is `provenance`. It includes information about how the
+structure was generated.
+
+## Attributes ## {#provenanceattributes}
+
+| Name                  | Type         | Description                               |
+|----------------------:|-------------:|:------------------------------------------|
+| `structure filename`  | string       |  File from which the structure was read   |
+| `structure chain`     | string       |  Chain ID of the structure that was read  |
+| `sampling method`     | string       |  Sampling method utilized                 |
+| `sampling frames`     | int          |  Number of frames in the sample ensemble  |
+| `sampling iterations` | int          |  Number of sampling iterations used       |
+| `combined runs`       | int          |  Number of sampling runs utilized         |
+| `combined frames`     | int          |  Total number of frames combined          |
+| `filter threshold`    | float        |  Score threshold to discard bad models    |
+| `cluster members`     | int          |  Number of members in a cluster           |
+
+
+## Decorators ## {#provenancedecorators}
+
+| Name                                |  Node Type          | Attributes                                            |
+|------------------------------------:|:-------------------:|:------------------------------------------------------|
+| RMF::decorator::StructureProvenance |  RMF::PROVENANCE    | structure filename, structure chain                   |
+| RMF::decorator::SampleProvenance    |  RMF::PROVENANCE    | sampling method, sampling frames, sampling iterations |
+| RMF::decorator::CombineProvenance   |  RMF::PROVENANCE    | combined runs, combined frames                        |
+| RMF::decorator::FilterProvenance    |  RMF::PROVENANCE    | filter threshold, filter frames                       |
+| RMF::decorator::ClusterProvenance   |  RMF::PROVENANCE    | cluster members                                       |

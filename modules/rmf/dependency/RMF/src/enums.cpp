@@ -24,6 +24,7 @@ const NodeType CUSTOM(5, "custom");
 const NodeType BOND(6, "bond");
 const NodeType ORGANIZATIONAL(7, "organizational");
 const NodeType LINK(8, "link");
+const NodeType PROVENANCE(9, "provenance");
 
 const FrameType INVALID_FRAME_TYPE(-1, "inv");
 const FrameType STATIC(0, "static");

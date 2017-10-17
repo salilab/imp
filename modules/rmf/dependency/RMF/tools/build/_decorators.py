@@ -72,13 +72,12 @@ class Base:
 
 class Attribute(Base):
 
-    def __init__(
-        self,
-        name,
-        attribute_type,
-            function_name=None):
+    def __init__(self, name, attribute_type, function_name=None,
+                 allow_null=False):
         if not function_name:
-            function_name = name.replace(" ", "_")
+            self.function_name = name.replace(" ", "_")
+        else:
+            self.function_name = function_name
         Base.__init__(self, name, attribute_type +
                       "Key", attribute_type)
         self.get_methods = """
@@ -97,7 +96,11 @@ class Attribute(Base):
       return get_node().GET_STATIC(NAME_);
     } RMF_DECORATOR_CATCH( );
   }
-""" % (function_name, function_name, function_name)
+""" % (self.function_name, self.function_name, self.function_name)
+        # Note that this currently only works for string attributes
+        if allow_null:
+            self.get_methods = self.get_methods.replace('return',
+                     'if (!get_node().get_has_value(NAME_)) return "";\nreturn')
         self.set_methods = """
   void set_%s(TYPE v) {
     try {
@@ -114,8 +117,12 @@ class Attribute(Base):
       get_node().SET_STATIC(NAME_, v);
     } RMF_DECORATOR_CATCH( );
   }
-""" % (function_name, function_name, function_name)
-        self.check = "!nh.GET(NAME_).get_is_null()"
+""" % (self.function_name, self.function_name, self.function_name)
+        # If the attribute is allowed to be null, skip check
+        if allow_null:
+            self.check = ""
+        else:
+            self.check = "!nh.GET(NAME_).get_is_null()"
         self.data_initialize = "fh.get_key<TYPETag>(cat_, \"%s\")" % name
 
 
@@ -142,26 +149,26 @@ class NodeAttribute(Attribute):
 
 class PathAttribute(Attribute):
 
-    def __init__(self, name):
-        Attribute.__init__(self, name, "String")
+    def __init__(self, name, function_name=None):
+        Attribute.__init__(self, name, "String", function_name)
         self.get_methods = """
-  String get_NAME() const {
+  String get_%s() const {
     try {
       String relpath = get_node().GET_BOTH(NAME_);
       String filename = get_node().get_file().get_path();
       return internal::get_absolute_path(filename, relpath);
     } RMF_DECORATOR_CATCH( );
   }
-"""
+""" % self.function_name
         self.set_methods = """
-  void set_NAME(String path) {
+  void set_%s(String path) {
    try {
      String filename = get_node().get_file().get_path();
      String relpath = internal::get_relative_path(filename, path);
      get_node().SET_BOTH(NAME_, relpath);
    } RMF_DECORATOR_CATCH( );
   }
-"""
+""" % self.function_name
 
 
 class AttributePair(Base):

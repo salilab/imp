@@ -18,6 +18,7 @@
 #include "RMF/decorator/alternatives.h"
 #include "RMF/decorator/shape.h"
 #include "RMF/decorator/reference.h"
+#include "RMF/decorator/provenance.h"
 #include "RMF/enums.h"
 #include "RMF/infrastructure_macros.h"
 #include "RMF/types.h"
@@ -175,6 +176,11 @@ void show_node_decorators(
     decorator::ChainFactory chaincf, decorator::DomainFactory fragcf,
     decorator::CopyFactory copycf, decorator::DiffuserFactory diffusercf,
     decorator::TypedFactory typedcf, decorator::ReferenceFactory refcf,
+    decorator::StructureProvenanceFactory strucpcf,
+    decorator::SampleProvenanceFactory samppcf,
+    decorator::CombineProvenanceFactory combpcf,
+    decorator::FilterProvenanceFactory filtpcf,
+    decorator::ClusterProvenanceFactory clustpcf,
     std::string) {
   using std::operator<<;
   out << "\"" << n.get_name() << "\"" << node_suffix << " [" << n.get_type()
@@ -219,6 +225,16 @@ void show_node_decorators(
   else if (diffusercf.get_is(n)) out << " diffuser";
   if (refcf.get_is_static(n)) out << " reference(s)";
   else if (refcf.get_is(n)) out << " reference";
+  if (strucpcf.get_is_static(n)) out << " structure provenance(s)";
+  else if (strucpcf.get_is(n)) out << " structure provenance";
+  if (samppcf.get_is_static(n)) out << " sample provenance(s)";
+  else if (samppcf.get_is(n)) out << " sample provenance";
+  if (combpcf.get_is_static(n)) out << " combine provenance(s)";
+  else if (combpcf.get_is(n)) out << " combine provenance";
+  if (filtpcf.get_is_static(n)) out << " filter provenance(s)";
+  else if (filtpcf.get_is(n)) out << " filter provenance";
+  if (clustpcf.get_is_static(n)) out << " cluster provenance(s)";
+  else if (clustpcf.get_is(n)) out << " cluster provenance";
   out << "]";
 }
 
@@ -278,6 +294,11 @@ struct ShowDecorators {
   decorator::DiffuserFactory diffusercf;
   decorator::TypedFactory typedcf;
   decorator::ReferenceFactory refcf;
+  decorator::StructureProvenanceFactory strucpcf;
+  decorator::SampleProvenanceFactory samppcf;
+  decorator::CombineProvenanceFactory combpcf;
+  decorator::FilterProvenanceFactory filtpcf;
+  decorator::ClusterProvenanceFactory clustpcf;
   ShowDecorators(FileConstHandle fh)
       : bdf(fh),
         ccf(fh),
@@ -296,12 +317,18 @@ struct ShowDecorators {
         copycf(fh),
         diffusercf(fh),
         typedcf(fh),
-        refcf(fh) {}
+        refcf(fh),
+        strucpcf(fh),
+        samppcf(fh),
+        combpcf(fh),
+        filtpcf(fh),
+        clustpcf(fh) {}
   void operator()(NodeConstHandle cur, std::string prefix, std::string suffix,
                   std::ostream& out) {
     show_node_decorators(cur, suffix, out, bdf, ccf, pcf, ipcf, rpcf, scf,
                          repcf, bcf, cycf, segcf, rcf, acf, chaincf, fragcf,
-                         copycf, diffusercf, typedcf, refcf, prefix + "   ");
+                         copycf, diffusercf, typedcf, refcf, strucpcf,
+                         samppcf, combpcf, filtpcf, clustpcf, prefix + "   ");
   }
 };
 }

@@ -26,9 +26,7 @@ script:
  - mkdir build
  - cd build
  - ../tools/coverage/setup.py
- - PYTHON_INC=$(echo $(dirname $(which python))/../include/*/)
- - PYTHON_LIB=$(echo /opt/python/2.7.*/lib/libpython2.7*.so)
- - PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE="$BUILD" -DCMAKE_CXX_FLAGS="$FLAGS" -DCMAKE_EXE_LINKER_FLAGS="$FLAGS" -DCMAKE_MODULE_LINKER_FLAGS="$FLAGS" -DCMAKE_SHARED_LINKER_FLAGS="$FLAGS" -DIMP_TEST_SETUP=$TEST_SETUP -DPYTHON_INCLUDE_DIR=$PYTHON_INC -DPYTHON_LIBRARY=$PYTHON_LIB
+ - PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE="$BUILD" -DCMAKE_CXX_FLAGS="$FLAGS" -DCMAKE_EXE_LINKER_FLAGS="$FLAGS" -DCMAKE_MODULE_LINKER_FLAGS="$FLAGS" -DCMAKE_SHARED_LINKER_FLAGS="$FLAGS" -DIMP_TEST_SETUP=$TEST_SETUP
  - make -j 2
  - export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
  - ctest -j 2 --output-on-failure -L $TESTS
