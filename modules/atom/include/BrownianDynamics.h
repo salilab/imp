@@ -69,7 +69,7 @@ class SimulationParameters;
     altered slightly to apply the SKT scheme.
 
     _Time step_
-    The time step is always equal precisely to Simulater::get_maximum_time_step() 
+    The time step is always equal precisely to Simulater::get_maximum_time_step()
     when using either Simulator::simulate() or Optimizer::optimize()
 
     \see Diffusion
@@ -106,7 +106,7 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
                    double wave_factor = 1.0,
                    unsigned int random_pool_size=IMP_ATOM_DEFAULT_BD_RANDOM_POOL_SIZE);
   //! sets the maximum move in A along either x,y or z axes
-  void set_maximum_move(double ms_in_A) { max_step_in_A_ = ms_in_A_; }
+  void set_maximum_move(double ms_in_A) { max_step_in_A_ = ms_in_A; }
   void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
 
   IMP_OBJECT_METHODS(BrownianDynamics);
