@@ -84,7 +84,9 @@ class Tests(IMP.test.TestCase):
         pd = IMP.atom.Provenanced.setup_particle(m, IMP.Particle(m), p)
         self.assertEqual(pd.get_provenance(), p)
         pd.set_provenance(p)
+        self.assertEqual(pd.get_provenance(), p)
         self.assertTrue(IMP.atom.Provenanced.get_is_setup(pd))
+        self.assertTrue(IMP.atom.Provenance.get_is_setup(p))
         self.assertFalse(IMP.atom.Provenanced.get_is_setup(p))
         self.assertFalse(IMP.atom.Provenance.get_is_setup(pd))
 
