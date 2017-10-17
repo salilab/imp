@@ -78,6 +78,7 @@ class IMPATOMEXPORT StructureProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 std::string filename,
                                 std::string chain_id) {
+    Provenance::setup_particle(m, pi);
     IMP_USAGE_CHECK(!filename.empty(), "The filename cannot be empty.");
     m->add_attribute(get_filename_key(), pi, filename);
     m->add_attribute(get_chain_key(), pi, chain_id);
@@ -131,6 +132,7 @@ public:
 class IMPATOMEXPORT SampleProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 std::string method, int frames) {
+    Provenance::setup_particle(m, pi);
     m->add_attribute(get_method_key(), pi, method);
     m->add_attribute(get_frames_key(), pi, frames);
     m->add_attribute(get_iterations_key(), pi, 1);
@@ -201,6 +203,7 @@ public:
 class IMPATOMEXPORT CombineProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi, int runs,
                                 int frames) {
+    Provenance::setup_particle(m, pi);
     m->add_attribute(get_runs_key(), pi, runs);
     m->add_attribute(get_frames_key(), pi, frames);
   }
@@ -249,6 +252,7 @@ public:
 class IMPATOMEXPORT FilterProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi, double threshold,
                                 int frames) {
+    Provenance::setup_particle(m, pi);
     m->add_attribute(get_threshold_key(), pi, threshold);
     m->add_attribute(get_frames_key(), pi, frames);
   }
@@ -297,6 +301,7 @@ public:
   */
 class IMPATOMEXPORT ClusterProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi, int members) {
+    Provenance::setup_particle(m, pi);
     m->add_attribute(get_members_key(), pi, members);
   }
 
