@@ -73,7 +73,7 @@ class Base:
 class Attribute(Base):
 
     def __init__(self, name, attribute_type, function_name=None,
-                 allow_null=False):
+                 default=None):
         if not function_name:
             self.function_name = name.replace(" ", "_")
         else:
@@ -97,10 +97,10 @@ class Attribute(Base):
     } RMF_DECORATOR_CATCH( );
   }
 """ % (self.function_name, self.function_name, self.function_name)
-        # Note that this currently only works for string attributes
-        if allow_null:
+        if default is not None:
             self.get_methods = self.get_methods.replace('return',
-                     'if (!get_node().get_has_value(NAME_)) return "";\nreturn')
+                     'if (!get_node().get_has_value(NAME_)) return %s;\n'
+                     'return' % repr(default).replace("'", '"'))
         self.set_methods = """
   void set_%s(TYPE v) {
     try {
@@ -119,7 +119,7 @@ class Attribute(Base):
   }
 """ % (self.function_name, self.function_name, self.function_name)
         # If the attribute is allowed to be null, skip check
-        if allow_null:
+        if default is not None:
             self.check = ""
         else:
             self.check = "!nh.GET(NAME_).get_is_null()"
