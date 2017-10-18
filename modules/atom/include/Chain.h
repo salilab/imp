@@ -22,14 +22,16 @@ IMP_VALUES(ChainType, ChainTypes);
 /** \class IMP::atom::ChainType
     \brief The type for a chain.
 
-    A given chain is either a Protein, DNA, or RNA polymer.
+    A given chain can be a Protein, DNA, or RNA polymer (or a few other much
+    more rare types).
 
-    The standard chain types are provided with names like
-    IMP::atom::Protein. New chain types can be added simply by creating an
-    instance of ResidueType("my_chain_type").
+    The standard chain types are provided with names like IMP::atom::Protein.
 
     \see Chain
 */
+
+// To add a new chain type, add both here and in src/Chain.cpp.
+// RMF may also need to be updated to understand the new type.
 
 //! Unknown chain type
 IMPATOMEXPORT extern const ChainType UnknownChainType;
