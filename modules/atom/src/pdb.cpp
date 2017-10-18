@@ -16,7 +16,7 @@
 #include <IMP/atom/CHARMMAtom.h>
 #include <IMP/atom/CHARMMParameters.h>
 #include <IMP/atom/charmm_segment_topology.h>
-#include <IMP/atom/provenance.h>
+#include <IMP/core/provenance.h>
 #include <IMP/core/Hierarchy.h>
 #include <IMP/core/rigid_bodies.h>
 #include <boost/algorithm/string.hpp>
@@ -252,10 +252,10 @@ Particle* chain_particle(Model* m, char chain_id, std::string filename) {
   Molecule::setup_particle(p);
 
   // Set provenance of this chain
-  StructureProvenance sp
-          = StructureProvenance::setup_particle(new Particle(m),
+  core::StructureProvenance sp
+          = core::StructureProvenance::setup_particle(new Particle(m),
                                           filename, std::string(1, chain_id));
-  add_provenance(m, p->get_index(), sp);
+  core::add_provenance(m, p->get_index(), sp);
 
   return p;
 }

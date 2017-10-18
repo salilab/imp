@@ -22,7 +22,7 @@
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
 #include <IMP/atom/Hierarchy.h>
-#include <IMP/atom/provenance.h>
+#include <IMP/core/provenance.h>
 #include <IMP/rmf/links.h>
 #include <IMP/rmf/link_macros.h>
 #include <IMP/tuple_macros.h>
@@ -85,7 +85,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
                          ParticleIndex cur);
 
   // Make *Provenance IMP particle corresponding to that in the RMF
-  atom::Provenance create_one_provenance(Model *m, RMF::NodeConstHandle node);
+  core::Provenance create_one_provenance(Model *m, RMF::NodeConstHandle node);
 
   virtual void do_load_one(RMF::NodeConstHandle nh,
                            Particle *o) IMP_FINAL IMP_OVERRIDE;

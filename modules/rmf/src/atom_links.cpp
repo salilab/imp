@@ -171,45 +171,45 @@ void HierarchyLoadLink::create_recursive(Model *m,
 // Make *Provenance IMP particles corresponding to those in the RMF
 void HierarchyLoadLink::create_provenance(Model *m, RMF::NodeConstHandle node,
                                           ParticleIndex cur) {
-  atom::Provenance prov = create_one_provenance(m, node);
-  atom::Provenanced provd = atom::Provenanced::setup_particle(m, cur, prov);
+  core::Provenance prov = create_one_provenance(m, node);
+  core::Provenanced provd = core::Provenanced::setup_particle(m, cur, prov);
 
   while ((node = get_previous_rmf_provenance(node)) != RMF::NodeConstHandle()) {
-    atom::Provenance thisprov = create_one_provenance(m, node);
+    core::Provenance thisprov = create_one_provenance(m, node);
     prov.set_previous(thisprov);
     prov = thisprov;
   }
 }
 
-atom::Provenance HierarchyLoadLink::create_one_provenance(Model *m,
+core::Provenance HierarchyLoadLink::create_one_provenance(Model *m,
                                               RMF::NodeConstHandle node) {
   if (strucpf_.get_is(node)) {
     RMF::decorator::StructureProvenanceConst rp = strucpf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
-    return atom::StructureProvenance::setup_particle(m, ip, rp.get_filename(),
+    return core::StructureProvenance::setup_particle(m, ip, rp.get_filename(),
                                                      rp.get_chain());
   } else if (samppf_.get_is(node)) {
     RMF::decorator::SampleProvenanceConst rp = samppf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
-    atom::SampleProvenance sp =
-        atom::SampleProvenance::setup_particle(m, ip, rp.get_method(),
+    core::SampleProvenance sp =
+        core::SampleProvenance::setup_particle(m, ip, rp.get_method(),
                                                rp.get_frames());
     sp.set_number_of_iterations(rp.get_iterations());
     return sp;
   } else if (combpf_.get_is(node)) {
     RMF::decorator::CombineProvenanceConst rp = combpf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
-    return atom::CombineProvenance::setup_particle(m, ip, rp.get_runs(),
+    return core::CombineProvenance::setup_particle(m, ip, rp.get_runs(),
                                                    rp.get_frames());
   } else if (filtpf_.get_is(node)) {
     RMF::decorator::FilterProvenanceConst rp = filtpf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
-    return atom::FilterProvenance::setup_particle(m, ip, rp.get_threshold(),
+    return core::FilterProvenance::setup_particle(m, ip, rp.get_threshold(),
                                                   rp.get_frames());
   } else if (clustpf_.get_is(node)) {
     RMF::decorator::ClusterProvenanceConst rp = clustpf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
-    return atom::ClusterProvenance::setup_particle(m, ip, rp.get_members());
+    return core::ClusterProvenance::setup_particle(m, ip, rp.get_members());
   } else {
     IMP_THROW("Unhandled provenance type " << node, IOException);
   }
@@ -420,7 +420,7 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
     }
   }
 
-  if (atom::Provenanced::get_is_setup(m, p)) {
+  if (core::Provenanced::get_is_setup(m, p)) {
     add_provenance(m, p, cur);
   }
 
@@ -438,40 +438,40 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
 // Make RMF PROVENANCE nodes corresponding to those in IMP
 void HierarchySaveLink::add_provenance(Model *m, ParticleIndex p,
                                        RMF::NodeHandle cur) {
-  atom::Provenanced provd(m, p);
-  for (atom::Provenance prov = provd.get_provenance(); prov;
+  core::Provenanced provd(m, p);
+  for (core::Provenance prov = provd.get_provenance(); prov;
        prov = prov.get_previous()) {
-    if (atom::StructureProvenance::get_is_setup(prov)) {
-      atom::StructureProvenance ip(prov);
+    if (core::StructureProvenance::get_is_setup(prov)) {
+      core::StructureProvenance ip(prov);
       cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
                           RMF::PROVENANCE);
       RMF::decorator::StructureProvenance rp = strucpf_.get(cur);
       rp.set_filename(ip.get_filename());
       rp.set_chain(ip.get_chain_id());
-    } else if (atom::SampleProvenance::get_is_setup(prov)) {
-      atom::SampleProvenance ip(prov);
+    } else if (core::SampleProvenance::get_is_setup(prov)) {
+      core::SampleProvenance ip(prov);
       cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
                           RMF::PROVENANCE);
       RMF::decorator::SampleProvenance rp = samppf_.get(cur);
       rp.set_method(ip.get_method());
       rp.set_frames(ip.get_number_of_frames());
       rp.set_iterations(ip.get_number_of_iterations());
-    } else if (atom::CombineProvenance::get_is_setup(prov)) {
-      atom::CombineProvenance ip(prov);
+    } else if (core::CombineProvenance::get_is_setup(prov)) {
+      core::CombineProvenance ip(prov);
       cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
                           RMF::PROVENANCE);
       RMF::decorator::CombineProvenance rp = combpf_.get(cur);
       rp.set_runs(ip.get_number_of_runs());
       rp.set_frames(ip.get_number_of_frames());
-    } else if (atom::FilterProvenance::get_is_setup(prov)) {
-      atom::FilterProvenance ip(prov);
+    } else if (core::FilterProvenance::get_is_setup(prov)) {
+      core::FilterProvenance ip(prov);
       cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
                           RMF::PROVENANCE);
       RMF::decorator::FilterProvenance rp = filtpf_.get(cur);
       rp.set_threshold(ip.get_threshold());
       rp.set_frames(ip.get_number_of_frames());
-    } else if (atom::ClusterProvenance::get_is_setup(prov)) {
-      atom::ClusterProvenance ip(prov);
+    } else if (core::ClusterProvenance::get_is_setup(prov)) {
+      core::ClusterProvenance ip(prov);
       cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
                           RMF::PROVENANCE);
       RMF::decorator::ClusterProvenance rp = clustpf_.get(cur);

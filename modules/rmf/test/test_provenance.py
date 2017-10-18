@@ -9,36 +9,36 @@ class Tests(IMP.test.TestCase):
 
     def add_provenance(self, h):
         m = h.get_model()
-        struc = IMP.atom.StructureProvenance.setup_particle(
+        struc = IMP.core.StructureProvenance.setup_particle(
                             m, IMP.Particle(m), "testfile", "testchain")
         struc.set_name("structure provenance")
-        IMP.atom.add_provenance(m, h, struc)
+        IMP.core.add_provenance(m, h, struc)
 
-        samp = IMP.atom.SampleProvenance.setup_particle(
+        samp = IMP.core.SampleProvenance.setup_particle(
                             m, IMP.Particle(m), "Monte Carlo", 100)
         samp.set_number_of_iterations(42)
-        IMP.atom.add_provenance(m, h, samp)
+        IMP.core.add_provenance(m, h, samp)
 
-        comb = IMP.atom.CombineProvenance.setup_particle(
+        comb = IMP.core.CombineProvenance.setup_particle(
                             m, IMP.Particle(m), 4, 27)
-        IMP.atom.add_provenance(m, h, comb)
+        IMP.core.add_provenance(m, h, comb)
 
-        filt = IMP.atom.FilterProvenance.setup_particle(
+        filt = IMP.core.FilterProvenance.setup_particle(
                             m, IMP.Particle(m), 100.5, 39)
-        IMP.atom.add_provenance(m, h, filt)
+        IMP.core.add_provenance(m, h, filt)
 
-        clus = IMP.atom.ClusterProvenance.setup_particle(m, IMP.Particle(m), 10)
-        IMP.atom.add_provenance(m, h, clus)
+        clus = IMP.core.ClusterProvenance.setup_particle(m, IMP.Particle(m), 10)
+        IMP.core.add_provenance(m, h, clus)
 
     def check_provenance(self, h):
         m = h.get_model()
 
         # Test IMP-added chain provenance
         chain, = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
-        self.assertTrue(IMP.atom.Provenanced.get_is_setup(m, chain))
-        prov = IMP.atom.Provenanced(m, chain).get_provenance()
-        self.assertTrue(IMP.atom.StructureProvenance.get_is_setup(m, prov))
-        struc = IMP.atom.StructureProvenance(m, prov)
+        self.assertTrue(IMP.core.Provenanced.get_is_setup(m, chain))
+        prov = IMP.core.Provenanced(m, chain).get_provenance()
+        self.assertTrue(IMP.core.StructureProvenance.get_is_setup(m, prov))
+        struc = IMP.core.StructureProvenance(m, prov)
         self.assertEqual(struc.get_chain_id(), 'A')
 
         # Should be no more chain provenance
@@ -46,35 +46,35 @@ class Tests(IMP.test.TestCase):
         self.assertFalse(prov)
 
         # Check the provenance we added at the top level
-        self.assertTrue(IMP.atom.Provenanced.get_is_setup(m, h))
-        prov = IMP.atom.Provenanced(m, h).get_provenance()
+        self.assertTrue(IMP.core.Provenanced.get_is_setup(m, h))
+        prov = IMP.core.Provenanced(m, h).get_provenance()
 
-        self.assertTrue(IMP.atom.ClusterProvenance.get_is_setup(m, prov))
-        clus = IMP.atom.ClusterProvenance(m, prov)
+        self.assertTrue(IMP.core.ClusterProvenance.get_is_setup(m, prov))
+        clus = IMP.core.ClusterProvenance(m, prov)
         self.assertEqual(clus.get_number_of_members(), 10)
 
         prov = prov.get_previous()
-        self.assertTrue(IMP.atom.FilterProvenance.get_is_setup(m, prov))
-        filt = IMP.atom.FilterProvenance(m, prov)
+        self.assertTrue(IMP.core.FilterProvenance.get_is_setup(m, prov))
+        filt = IMP.core.FilterProvenance(m, prov)
         self.assertAlmostEqual(filt.get_threshold(), 100.5, delta=1e-4)
         self.assertEqual(filt.get_number_of_frames(), 39)
 
         prov = prov.get_previous()
-        self.assertTrue(IMP.atom.CombineProvenance.get_is_setup(m, prov))
-        comb = IMP.atom.CombineProvenance(m, prov)
+        self.assertTrue(IMP.core.CombineProvenance.get_is_setup(m, prov))
+        comb = IMP.core.CombineProvenance(m, prov)
         self.assertEqual(comb.get_number_of_runs(), 4)
         self.assertEqual(comb.get_number_of_frames(), 27)
 
         prov = prov.get_previous()
-        self.assertTrue(IMP.atom.SampleProvenance.get_is_setup(m, prov))
-        samp = IMP.atom.SampleProvenance(m, prov)
+        self.assertTrue(IMP.core.SampleProvenance.get_is_setup(m, prov))
+        samp = IMP.core.SampleProvenance(m, prov)
         self.assertEqual(samp.get_method(), "Monte Carlo")
         self.assertEqual(samp.get_number_of_frames(), 100)
         self.assertEqual(samp.get_number_of_iterations(), 42)
 
         prov = prov.get_previous()
-        self.assertTrue(IMP.atom.StructureProvenance.get_is_setup(m, prov))
-        struc = IMP.atom.StructureProvenance(m, prov)
+        self.assertTrue(IMP.core.StructureProvenance.get_is_setup(m, prov))
+        struc = IMP.core.StructureProvenance(m, prov)
         self.assertEqual(struc.get_filename(), "testfile")
         self.assertEqual(struc.get_chain_id(), "testchain")
         self.assertEqual(struc.get_name(), "structure provenance")

@@ -3,6 +3,7 @@ import io
 import IMP
 import IMP.test
 import IMP.atom
+import IMP.core
 
 
 class Tests(IMP.test.TestCase):
@@ -226,10 +227,10 @@ class Tests(IMP.test.TestCase):
         chains = IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)
         self.assertEqual(len(chains), 5)
         for c in chains:
-            self.assertTrue(IMP.atom.Provenanced.get_is_setup(c))
-            p = IMP.atom.Provenanced(c).get_provenance()
-            self.assertTrue(IMP.atom.StructureProvenance.get_is_setup(p))
-            sp = IMP.atom.StructureProvenance(p)
+            self.assertTrue(IMP.core.Provenanced.get_is_setup(c))
+            p = IMP.core.Provenanced(c).get_provenance()
+            self.assertTrue(IMP.core.StructureProvenance.get_is_setup(p))
+            sp = IMP.core.StructureProvenance(p)
             self.assertEqual(sp.get_filename(), fname)
             self.assertEqual(sp.get_chain_id(), IMP.atom.Chain(c).get_id())
 

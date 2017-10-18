@@ -1,14 +1,14 @@
 /**
- *  \file IMP/atom/provenance.h
+ *  \file IMP/core/provenance.h
  *  \brief Classes to track how the model was created.
  *
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPATOM_PROVENANCE_H
-#define IMPATOM_PROVENANCE_H
+#ifndef IMPCORE_PROVENANCE_H
+#define IMPCORE_PROVENANCE_H
 
-#include <IMP/atom/atom_config.h>
+#include <IMP/core/core_config.h>
 
 #include <IMP/base_types.h>
 #include <IMP/Object.h>
@@ -17,7 +17,7 @@
 #include <IMP/decorator_macros.h>
 #include <set>
 
-IMPATOM_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
 //! Track how parts of the system were created.
 /** Particles are linked with this decorator into a directed acyclic graph
@@ -27,7 +27,7 @@ IMPATOM_BEGIN_NAMESPACE
     Typically, part of an IMP::Model (usually an atom::Hierarchy particle)
     is decorated with Provenanced that points to the root of this graph.
  */
-class IMPATOMEXPORT Provenance : public Decorator {
+class IMPCOREEXPORT Provenance : public Decorator {
   static void do_setup_particle(Model *m, ParticleIndex pi) {
     // Use self-index to indicate no previous provenance is set yet
     m->add_attribute(get_previous_key(), pi, pi);
@@ -74,7 +74,7 @@ public:
 };
 
 //! Track creation of a system fragment from a PDB file.
-class IMPATOMEXPORT StructureProvenance : public Provenance {
+class IMPCOREEXPORT StructureProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 std::string filename,
                                 std::string chain_id) {
@@ -129,7 +129,7 @@ public:
     each frame can be stored, if known and applicable.
     The rest of the frames are generally stored in a file (e.g. an RMF file).
   */
-class IMPATOMEXPORT SampleProvenance : public Provenance {
+class IMPCOREEXPORT SampleProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 std::string method, int frames) {
     Provenance::setup_particle(m, pi);
@@ -200,7 +200,7 @@ public:
     essentially identical, differing at most only in the number of frames.
     The total size of the resulting ensemble is stored here.
   */
-class IMPATOMEXPORT CombineProvenance : public Provenance {
+class IMPCOREEXPORT CombineProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi, int runs,
                                 int frames) {
     Provenance::setup_particle(m, pi);
@@ -249,7 +249,7 @@ public:
     resulted from filtering a larger ensemble (the 'previous'
     provenance) by discarding models with scores above the threshold.
   */
-class IMPATOMEXPORT FilterProvenance : public Provenance {
+class IMPCOREEXPORT FilterProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi, double threshold,
                                 int frames) {
     Provenance::setup_particle(m, pi);
@@ -299,7 +299,7 @@ public:
     specified size. The rest of the cluster members are generally stored
     in a file (e.g. an RMF file).
   */
-class IMPATOMEXPORT ClusterProvenance : public Provenance {
+class IMPCOREEXPORT ClusterProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi, int members) {
     Provenance::setup_particle(m, pi);
     m->add_attribute(get_members_key(), pi, members);
@@ -328,7 +328,7 @@ public:
 };
 
 //! Tag part of the system to track how it was created.
-class IMPATOMEXPORT Provenanced : public Decorator {
+class IMPCOREEXPORT Provenanced : public Decorator {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 Provenance p) {
     m->add_attribute(get_provenance_key(), pi, p.get_particle_index());
@@ -357,9 +357,9 @@ public:
 };
 
 //! Add provenance to part of the model.
-IMPATOMEXPORT void add_provenance(Model *m, ParticleIndex pi,
+IMPCOREEXPORT void add_provenance(Model *m, ParticleIndex pi,
                                   Provenance p);
 
-IMPATOM_END_NAMESPACE
+IMPCORE_END_NAMESPACE
 
-#endif /* IMPATOM_PROVENANCE_H */
+#endif /* IMPCORE_PROVENANCE_H */

@@ -5,9 +5,9 @@
  *  Copyright 2007-2017 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/atom/provenance.h>
+#include <IMP/core/provenance.h>
 
-IMPATOM_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
 ParticleIndexKey Provenanced::get_provenance_key() {
   static const ParticleIndexKey provenance("provenance");
@@ -124,4 +124,4 @@ void add_provenance(Model *m, ParticleIndex pi, Provenance p) {
   }
 }
 
-IMPATOM_END_NAMESPACE
+IMPCORE_END_NAMESPACE

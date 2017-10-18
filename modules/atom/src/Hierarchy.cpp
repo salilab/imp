@@ -21,7 +21,7 @@
 #include <IMP/atom/Molecule.h>
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/atom/hierarchy_tools.h>
-#include <IMP/atom/provenance.h>
+#include <IMP/core/provenance.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/core/rigid_bodies.h>
 
@@ -532,10 +532,10 @@ void destroy(Hierarchy d) {
         destroy_bond(b.get_bond(b.get_number_of_bonds() - 1));
       }
     }
-    if (Provenanced::get_is_setup(all[i])) {
-      Provenance prov = Provenanced(all[i]).get_provenance();
+    if (core::Provenanced::get_is_setup(all[i])) {
+      core::Provenance prov = core::Provenanced(all[i]).get_provenance();
       while (prov) {
-        Provenance previous = prov.get_previous();
+        core::Provenance previous = prov.get_previous();
         prov.get_model()->remove_particle(prov.get_particle_index());
         prov = previous;
       }

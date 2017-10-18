@@ -154,6 +154,13 @@ IMP_SWIG_DIRECTOR(IMP::core, HierarchyVisitor);
 IMP_SWIG_DECORATOR( IMP::core, Direction, Directions);
 IMP_SWIG_DECORATOR( IMP::core, DirectionAngle, DirectionAngles);
 IMP_SWIG_DECORATOR( IMP::core, Surface, Surfaces);
+IMP_SWIG_DECORATOR(IMP::core, Provenance, Provenances);
+IMP_SWIG_DECORATOR(IMP::core, StructureProvenance, StructureProvenances);
+IMP_SWIG_DECORATOR(IMP::core, SampleProvenance, SampleProvenances);
+IMP_SWIG_DECORATOR(IMP::core, ClusterProvenance, ClusterProvenances);
+IMP_SWIG_DECORATOR(IMP::core, CombineProvenance, CombineProvenances);
+IMP_SWIG_DECORATOR(IMP::core, FilterProvenance, FilterProvenances);
+IMP_SWIG_DECORATOR(IMP::core, Provenanced, Provenanceds);
 
 IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
 IMP_SWIG_VALUE( IMP::core, HierarchyTraits, HierarchyTraitsList);
@@ -348,6 +355,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/model_statistics.h"
 %include "IMP/core/blame.h"
 %include "IMP/core/MultipleBinormalRestraint.h"
+%include "IMP/core/provenance.h"
 
 %inline %{
 namespace IMP {
