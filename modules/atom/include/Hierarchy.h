@@ -470,7 +470,8 @@ IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
 /** All bonds connecting to these atoms are destroyed as are
     hierarchy links in the Hierarchy and the particles are
     removed from the Model. If this particle has a parent, it is
-    removed from the parent.
+    removed from the parent. Any provenance information for this
+    Hierarchy is also removed.
     \relates Hierarchy
 */
 IMPATOMEXPORT void destroy(Hierarchy d);
