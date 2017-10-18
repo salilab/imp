@@ -99,6 +99,7 @@ class Tests(IMP.test.TestCase):
                 chs = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
                 chs[0].set_name('simple')
                 IMP.atom.Chain(chs[0]).set_sequence(sequence)
+                IMP.atom.Chain(chs[0]).set_chain_type(IMP.atom.Protein)
                 self.assertEqual(chs[0].get_name(), 'simple')
 
                 IMP.set_log_level(IMP.SILENT)
@@ -116,6 +117,9 @@ class Tests(IMP.test.TestCase):
                 c = IMP.atom.Chain(chs2[0])
                 self.assertEqual(c.get_id(), 'A')
                 self.assertEqual(c.get_sequence(), sequence)
+                # Protein should be an alias for LPolypeptide
+                self.assertEqual(c.get_chain_type(), IMP.atom.Protein)
+                self.assertEqual(c.get_chain_type(), IMP.atom.LPolypeptide)
                 self.assertEqual(chs2[0].get_name(), 'simple')
 
     def test_references(self):

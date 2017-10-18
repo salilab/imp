@@ -109,6 +109,7 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
     atom::Chain imp_chain = atom::Chain::setup_particle(m, p,
                                                         chain.get_chain_id());
     imp_chain.set_sequence(chain.get_sequence());
+    imp_chain.set_chain_type(atom::ChainType(chain.get_chain_type()));
   }
   if (typed_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("typed " << std::endl);
@@ -198,6 +199,7 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
     atom::Chain imp_chain(m, p);
     imp_chain.set_id(chain.get_chain_id());
     imp_chain.set_sequence(chain.get_sequence());
+    imp_chain.set_chain_type(atom::ChainType(chain.get_chain_type()));
   }
   if (typed_factory_.get_is_static(nh)) {
     // can't set
@@ -289,6 +291,7 @@ void HierarchySaveStatic::setup_node(Model *m, ParticleIndex p,
     RMF::decorator::Chain chain = chain_factory_.get(n);
     chain.set_chain_id(d.get_id());
     chain.set_sequence(d.get_sequence());
+    chain.set_chain_type(d.get_chain_type().get_string());
   }
   if (atom::Diffusion::get_is_setup(m, p)) {
     atom::Diffusion d(m, p);
