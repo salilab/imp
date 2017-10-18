@@ -29,17 +29,20 @@ class Tests(IMP.test.TestCase):
         """Test SampleProvenance decorator"""
         m = IMP.Model()
         p = IMP.core.SampleProvenance.setup_particle(m, IMP.Particle(m),
-                               "Monte Carlo", 100)
+                               "Monte Carlo", 100, 5)
         self.assertTrue(IMP.core.SampleProvenance.get_is_setup(p))
         self.assertEqual(p.get_method(), "Monte Carlo")
         p.set_method("Molecular Dynamics")
         self.assertEqual(p.get_method(), "Molecular Dynamics")
         if IMP.get_check_level() == IMP.USAGE_AND_INTERNAL:
             self.assertRaises(IMP.UsageError, p.set_method, "Garbage")
+            self.assertRaises(IMP.UsageError,
+                 IMP.core.SampleProvenance.setup_particle, m, IMP.Particle(m),
+                 "Garbage", 100)
         self.assertEqual(p.get_number_of_frames(), 100)
         p.set_number_of_frames(200)
         self.assertEqual(p.get_number_of_frames(), 200)
-        self.assertEqual(p.get_number_of_iterations(), 1)
+        self.assertEqual(p.get_number_of_iterations(), 5)
         p.set_number_of_iterations(42)
         self.assertEqual(p.get_number_of_iterations(), 42)
 

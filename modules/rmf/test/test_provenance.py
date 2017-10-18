@@ -15,8 +15,7 @@ class Tests(IMP.test.TestCase):
         IMP.core.add_provenance(m, h, struc)
 
         samp = IMP.core.SampleProvenance.setup_particle(
-                            m, IMP.Particle(m), "Monte Carlo", 100)
-        samp.set_number_of_iterations(42)
+                            m, IMP.Particle(m), "Monte Carlo", 100, 42)
         IMP.core.add_provenance(m, h, samp)
 
         comb = IMP.core.CombineProvenance.setup_particle(

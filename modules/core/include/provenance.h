@@ -131,11 +131,13 @@ public:
   */
 class IMPCOREEXPORT SampleProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi,
-                                std::string method, int frames) {
+                                std::string method, int frames,
+                                int iterations) {
+    validate_method(method);
     Provenance::setup_particle(m, pi);
     m->add_attribute(get_method_key(), pi, method);
     m->add_attribute(get_frames_key(), pi, frames);
-    m->add_attribute(get_iterations_key(), pi, 1);
+    m->add_attribute(get_iterations_key(), pi, iterations);
   }
 
   static StringKey get_method_key();
@@ -143,6 +145,12 @@ class IMPCOREEXPORT SampleProvenance : public Provenance {
   static IntKey get_iterations_key();
 
   static std::set<std::string>& get_allowed_methods();
+
+  static void validate_method(std::string method) {
+    IMP_USAGE_CHECK(get_allowed_methods().find(method)
+                                 != get_allowed_methods().end(),
+                    "Invalid sampling method");
+  }
 
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
@@ -153,9 +161,7 @@ public:
 
   //! Set the sampling method
   void set_method(std::string method) const {
-    IMP_USAGE_CHECK(get_allowed_methods().find(method)
-                                 != get_allowed_methods().end(),
-                    "Invalid sampling method");
+    validate_method(method);
     return get_model()->set_attribute(get_method_key(), get_particle_index(),
                                       method);
   }
@@ -189,7 +195,8 @@ public:
   }
 
   IMP_DECORATOR_METHODS(SampleProvenance, Provenance);
-  IMP_DECORATOR_SETUP_2(SampleProvenance, std::string, method, int, frames);
+  IMP_DECORATOR_SETUP_3(SampleProvenance, std::string, method, int, frames,
+                        int, iterations);
 };
 
 //! Track creation of a system fragment by combination.
