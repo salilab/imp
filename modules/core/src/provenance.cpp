@@ -9,6 +9,35 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+
+Provenance clone_one(Provenance prov) {
+  Particle *p = new IMP::Particle(prov.get_model());
+  p->set_name(prov->get_name());
+
+  if (StructureProvenance::get_is_setup(prov.get_particle())) {
+    StructureProvenance::setup_particle(p,
+                                StructureProvenance(prov.get_particle()));
+  } else if (SampleProvenance::get_is_setup(prov.get_particle())) {
+    SampleProvenance::setup_particle(p,
+                                SampleProvenance(prov.get_particle()));
+  } else if (CombineProvenance::get_is_setup(prov.get_particle())) {
+    CombineProvenance::setup_particle(p,
+                                CombineProvenance(prov.get_particle()));
+  } else if (FilterProvenance::get_is_setup(prov.get_particle())) {
+    FilterProvenance::setup_particle(p,
+                                FilterProvenance(prov.get_particle()));
+  } else if (ClusterProvenance::get_is_setup(prov.get_particle())) {
+    ClusterProvenance::setup_particle(p,
+                                ClusterProvenance(prov.get_particle()));
+  } else {
+    IMP_THROW("Unhandled provenance", IOException);
+  }
+  return Provenance(p);
+}
+
+} // anonymous namespace
+
 ParticleIndexKey Provenanced::get_provenance_key() {
   static const ParticleIndexKey provenance("provenance");
   return provenance;
@@ -122,6 +151,22 @@ void add_provenance(Model *m, ParticleIndex pi, Provenance p) {
   } else {
     Provenanced::setup_particle(m, pi, p);
   }
+}
+
+Provenance create_clone(Provenance prov) {
+  Provenance root = clone_one(prov);
+
+  Provenance newprov = root;
+  while (prov) {
+    Provenance previous = prov.get_previous();
+    if (previous) {
+      Provenance newprevious = clone_one(previous);
+      newprov.set_previous(newprevious);
+      newprov = newprevious;
+    }
+    prov = previous;
+  }
+  return root;
 }
 
 IMPCORE_END_NAMESPACE

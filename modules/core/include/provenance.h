@@ -84,6 +84,11 @@ class IMPCOREEXPORT StructureProvenance : public Provenance {
     m->add_attribute(get_chain_key(), pi, chain_id);
   }
 
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                StructureProvenance o) {
+    do_setup_particle(m, pi, o.get_filename(), o.get_chain_id());
+  }
+
   static StringKey get_filename_key();
   static StringKey get_chain_key();
 
@@ -119,6 +124,7 @@ public:
   IMP_DECORATOR_METHODS(StructureProvenance, Provenance);
   IMP_DECORATOR_SETUP_2(StructureProvenance, std::string, filename,
                         std::string, chain_id);
+  IMP_DECORATOR_SETUP_1(StructureProvenance, StructureProvenance, o);
 };
 
 //! Track creation of a system fragment from sampling.
@@ -138,6 +144,12 @@ class IMPCOREEXPORT SampleProvenance : public Provenance {
     m->add_attribute(get_method_key(), pi, method);
     m->add_attribute(get_frames_key(), pi, frames);
     m->add_attribute(get_iterations_key(), pi, iterations);
+  }
+
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                SampleProvenance o) {
+    do_setup_particle(m, pi, o.get_method(), o.get_number_of_frames(),
+                      o.get_number_of_iterations());
   }
 
   static StringKey get_method_key();
@@ -197,6 +209,7 @@ public:
   IMP_DECORATOR_METHODS(SampleProvenance, Provenance);
   IMP_DECORATOR_SETUP_3(SampleProvenance, std::string, method, int, frames,
                         int, iterations);
+  IMP_DECORATOR_SETUP_1(SampleProvenance, SampleProvenance, o);
 };
 
 //! Track creation of a system fragment by combination.
@@ -213,6 +226,11 @@ class IMPCOREEXPORT CombineProvenance : public Provenance {
     Provenance::setup_particle(m, pi);
     m->add_attribute(get_runs_key(), pi, runs);
     m->add_attribute(get_frames_key(), pi, frames);
+  }
+
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                CombineProvenance o) {
+    do_setup_particle(m, pi, o.get_number_of_runs(), o.get_number_of_frames());
   }
 
   static IntKey get_runs_key();
@@ -248,6 +266,7 @@ public:
 
   IMP_DECORATOR_METHODS(CombineProvenance, Provenance);
   IMP_DECORATOR_SETUP_2(CombineProvenance, int, runs, int, frames);
+  IMP_DECORATOR_SETUP_1(CombineProvenance, CombineProvenance, o);
 };
 
 //! Track creation of a system fragment by filtering.
@@ -262,6 +281,10 @@ class IMPCOREEXPORT FilterProvenance : public Provenance {
     Provenance::setup_particle(m, pi);
     m->add_attribute(get_threshold_key(), pi, threshold);
     m->add_attribute(get_frames_key(), pi, frames);
+  }
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                FilterProvenance o) {
+    do_setup_particle(m, pi, o.get_threshold(), o.get_number_of_frames());
   }
 
   static FloatKey get_threshold_key();
@@ -298,6 +321,7 @@ public:
 
   IMP_DECORATOR_METHODS(FilterProvenance, Provenance);
   IMP_DECORATOR_SETUP_2(FilterProvenance, double, threshold, int, frames);
+  IMP_DECORATOR_SETUP_1(FilterProvenance, FilterProvenance, o);
 };
 
 //! Track creation of a system fragment from clustering.
@@ -310,6 +334,11 @@ class IMPCOREEXPORT ClusterProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi, int members) {
     Provenance::setup_particle(m, pi);
     m->add_attribute(get_members_key(), pi, members);
+  }
+
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                ClusterProvenance o) {
+    do_setup_particle(m, pi, o.get_number_of_members());
   }
 
   static IntKey get_members_key();
@@ -332,6 +361,7 @@ public:
 
   IMP_DECORATOR_METHODS(ClusterProvenance, Provenance);
   IMP_DECORATOR_SETUP_1(ClusterProvenance, int, members);
+  IMP_DECORATOR_SETUP_1(ClusterProvenance, ClusterProvenance, o);
 };
 
 //! Tag part of the system to track how it was created.
@@ -366,6 +396,9 @@ public:
 //! Add provenance to part of the model.
 IMPCOREEXPORT void add_provenance(Model *m, ParticleIndex pi,
                                   Provenance p);
+
+//! Clone provenance (including previous provenance)
+IMPCOREEXPORT Provenance create_clone(Provenance p);
 
 IMPCORE_END_NAMESPACE
 
