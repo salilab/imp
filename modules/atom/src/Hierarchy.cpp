@@ -21,6 +21,7 @@
 #include <IMP/atom/Molecule.h>
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/atom/hierarchy_tools.h>
+#include <IMP/core/provenance.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/core/rigid_bodies.h>
 
@@ -437,6 +438,11 @@ Hierarchy clone_internal(Hierarchy d,
   if (Representation::get_is_setup(d.get_particle())) {
     nd = Representation::setup_particle(p, Representation(d.get_particle()));
   }
+  if (core::Provenanced::get_is_setup(d.get_particle())) {
+    core::Provenanced pd(d.get_particle());
+    core::Provenance prov = core::create_clone(pd.get_provenance());
+    core::Provenanced::setup_particle(p, prov);
+  }
 
   if (nd == Hierarchy()) nd = Hierarchy::setup_particle(p);
   using core::XYZ;
@@ -529,6 +535,14 @@ void destroy(Hierarchy d) {
       Bonded b(all[i]);
       while (b.get_number_of_bonds() > 0) {
         destroy_bond(b.get_bond(b.get_number_of_bonds() - 1));
+      }
+    }
+    if (core::Provenanced::get_is_setup(all[i])) {
+      core::Provenance prov = core::Provenanced(all[i]).get_provenance();
+      while (prov) {
+        core::Provenance previous = prov.get_previous();
+        prov.get_model()->remove_particle(prov.get_particle_index());
+        prov = previous;
       }
     }
     Hierarchy hc(all[i]);

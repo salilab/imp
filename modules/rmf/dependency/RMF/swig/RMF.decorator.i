@@ -10,3 +10,4 @@
 %include "RMF/decorator/bond.h"
 %include "RMF/decorator/labels.h"
 %include "RMF/decorator/reference.h"
+%include "RMF/decorator/provenance.h"

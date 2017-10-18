@@ -451,7 +451,7 @@ IMPATOMEXPORT bool get_is_heterogen(Hierarchy h);
 
 //! Clone the Hierarchy
 /** This method copies the Bond, Bonded, Atom,
-    Residue, and Domain data and the particle name to the
+    Residue, Domain, and provenance data and the particle name to the
     new copies in addition to the Hierarchy relationships.
 
     \relates Hierarchy
@@ -460,7 +460,7 @@ IMPATOMEXPORT Hierarchy create_clone(Hierarchy d);
 
 //! Clone the node in the Hierarchy
 /** This method copies the Atom,
-    Residue, Chain and Domain data and the particle name.
+    Residue, Chain, Domain, and provenance data and the particle name.
 
     \relates Hierarchy
 */
@@ -470,7 +470,8 @@ IMPATOMEXPORT Hierarchy create_clone_one(Hierarchy d);
 /** All bonds connecting to these atoms are destroyed as are
     hierarchy links in the Hierarchy and the particles are
     removed from the Model. If this particle has a parent, it is
-    removed from the parent.
+    removed from the parent. Any provenance information for this
+    Hierarchy is also removed.
     \relates Hierarchy
 */
 IMPATOMEXPORT void destroy(Hierarchy d);

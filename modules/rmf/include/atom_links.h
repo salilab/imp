@@ -16,11 +16,13 @@
 #include "internal/atom_links_xyzs.h"
 #include "internal/atom_links_gaussians.h"
 #include <RMF/decorator/alternatives.h>
+#include <RMF/decorator/provenance.h>
 #include <IMP/object_macros.h>
 #include <IMP/utility_macros.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
 #include <IMP/atom/Hierarchy.h>
+#include <IMP/core/provenance.h>
 #include <IMP/rmf/links.h>
 #include <IMP/rmf/link_macros.h>
 #include <IMP/tuple_macros.h>
@@ -37,6 +39,11 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
   RMF::decorator::IntermediateParticleFactory intermediate_particle_factory_;
   RMF::decorator::ReferenceFrameFactory reference_frame_factory_;
   RMF::decorator::AlternativesFactory af_;
+  RMF::decorator::StructureProvenanceFactory strucpf_;
+  RMF::decorator::SampleProvenanceFactory samppf_;
+  RMF::decorator::CombineProvenanceFactory combpf_;
+  RMF::decorator::FilterProvenanceFactory filtpf_;
+  RMF::decorator::ClusterProvenanceFactory clustpf_;
   RMF::decorator::ExplicitResolutionFactory explicit_resolution_factory_;
   RMF::IntKey external_rigid_body_key_;
   struct Data {
@@ -72,6 +79,14 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
   void create_recursive(Model *m, ParticleIndex root,
                         ParticleIndex cur, RMF::NodeConstHandle name,
                         ParticleIndexes rigid_bodies, Data &data);
+
+  // Make tree of *Provenance IMP particles corresponding to those in the RMF
+  void create_provenance(Model *m, RMF::NodeConstHandle node,
+                         ParticleIndex cur);
+
+  // Make *Provenance IMP particle corresponding to that in the RMF
+  core::Provenance create_one_provenance(Model *m, RMF::NodeConstHandle node);
+
   virtual void do_load_one(RMF::NodeConstHandle nh,
                            Particle *o) IMP_FINAL IMP_OVERRIDE;
 
@@ -138,6 +153,11 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
       DM;
   DM data_;
   RMF::decorator::AlternativesFactory af_;
+  RMF::decorator::StructureProvenanceFactory strucpf_;
+  RMF::decorator::SampleProvenanceFactory samppf_;
+  RMF::decorator::CombineProvenanceFactory combpf_;
+  RMF::decorator::FilterProvenanceFactory filtpf_;
+  RMF::decorator::ClusterProvenanceFactory clustpf_;
   RMF::decorator::ExplicitResolutionFactory explicit_resolution_factory_;
   RMF::IntKey external_rigid_body_key_;
 
@@ -145,6 +165,10 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
                      ParticleIndex p,
                      ParticleIndexes rigid_bodies, RMF::NodeHandle cur,
                      Data &data);
+
+  // Make RMF PROVENANCE nodes corresponding to those in IMP
+  void add_provenance(Model *m, ParticleIndex p, RMF::NodeHandle cur);
+
   virtual void do_add(Particle *p, RMF::NodeHandle cur) IMP_OVERRIDE;
   virtual void do_save_one(Particle *o,
                            RMF::NodeHandle nh) IMP_OVERRIDE;

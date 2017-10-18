@@ -103,6 +103,44 @@ journal = Decorator(["ORGANIZATIONAL"], "publication",
 
 make_header("publication", [journal], [])
 
+structure = Decorator(["PROVENANCE"], "provenance",
+                      "StructureProvenance",
+                      # Note that this should really be PathAttribute,
+                      # but that currently requires that the file exists,
+                      # otherwise reading the RMF file will fail
+                      [Attribute("structure filename", "String",
+                                 function_name='filename'),
+                       Attribute("structure chain", "String",
+                                 function_name='chain')])
+
+sample = Decorator(["PROVENANCE"], "provenance",
+                    "SampleProvenance",
+                    [Attribute("sampling method", "String",
+                               function_name='method'),
+                     Attribute("sampling frames", "Int",
+                               function_name='frames'),
+                     Attribute("sampling iterations", "Int",
+                               function_name='iterations')])
+
+combine = Decorator(["PROVENANCE"], "provenance",
+                    "CombineProvenance",
+                    [Attribute("combined runs", "Int", function_name='runs'),
+                     Attribute("combined frames", "Int",
+                               function_name='frames')])
+
+filterp = Decorator(["PROVENANCE"], "provenance",
+                    "FilterProvenance",
+                    [Attribute("filter threshold", "Float",
+                               function_name='threshold'),
+                     Attribute("filter frames", "Int", function_name='frames')])
+
+cluster = Decorator(["PROVENANCE"], "provenance",
+                    "ClusterProvenance",
+                    [Attribute("cluster members", "Int",
+                               function_name='members')])
+
+make_header("provenance",
+            [structure, sample, combine, filterp, cluster], [])
 
 residue = Decorator(["REPRESENTATION"], "sequence",
                     "Residue",

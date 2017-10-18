@@ -40,7 +40,27 @@ std::string get_good_name(Model *m, ParticleIndex h) {
     return m->get_particle_name(h);
   }
 }
+
+// Get the 'child' provenance from the RMF, or a default-constructed
+// object if no children exist
+RMF::NodeConstHandle get_previous_rmf_provenance(RMF::NodeConstHandle node) {
+  RMF::NodeConstHandles nchs;
+  IMP_FOREACH(RMF::NodeConstHandle ch, node.get_children()) {
+    if (ch.get_type() == RMF::PROVENANCE) {
+      nchs.push_back(ch);
+    }
+  }
+  if (nchs.size() > 1) {
+    IMP_THROW("RMF provenance hierarchy has more than one child at " << node,
+              IOException);
+  } else if (nchs.empty()) {
+    return RMF::NodeConstHandle();
+  } else {
+    return nchs[0];
+  }
 }
+
+} // anonymous namespace
 
 void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh,
                                     Particle *o) {
@@ -118,6 +138,11 @@ void HierarchyLoadLink::create_recursive(Model *m,
         atom::Hierarchy(m, cur)
             .add_child(atom::Hierarchy::setup_particle(m, child));
       }
+    } else if (ch.get_type() == RMF::PROVENANCE) {
+      // Note that at most only one such node should be encountered. If more
+      // than one is found, this is an error (and Provenanced::setup_particle()
+      // will throw)
+      create_provenance(m, ch, cur);
     }
   }
   do_setup_particle(m, root, cur, name);
@@ -140,6 +165,50 @@ void HierarchyLoadLink::create_recursive(Model *m,
   RMF_FOREACH(ParticleIndex r, greps) {
     atom::Representation(m, cur).add_representation(r, atom::DENSITIES,
                                                     gresols[i++]);
+  }
+}
+
+// Make *Provenance IMP particles corresponding to those in the RMF
+void HierarchyLoadLink::create_provenance(Model *m, RMF::NodeConstHandle node,
+                                          ParticleIndex cur) {
+  core::Provenance prov = create_one_provenance(m, node);
+  core::Provenanced provd = core::Provenanced::setup_particle(m, cur, prov);
+
+  while ((node = get_previous_rmf_provenance(node)) != RMF::NodeConstHandle()) {
+    core::Provenance thisprov = create_one_provenance(m, node);
+    prov.set_previous(thisprov);
+    prov = thisprov;
+  }
+}
+
+core::Provenance HierarchyLoadLink::create_one_provenance(Model *m,
+                                              RMF::NodeConstHandle node) {
+  if (strucpf_.get_is(node)) {
+    RMF::decorator::StructureProvenanceConst rp = strucpf_.get(node);
+    ParticleIndex ip = m->add_particle(node.get_name());
+    return core::StructureProvenance::setup_particle(m, ip, rp.get_filename(),
+                                                     rp.get_chain());
+  } else if (samppf_.get_is(node)) {
+    RMF::decorator::SampleProvenanceConst rp = samppf_.get(node);
+    ParticleIndex ip = m->add_particle(node.get_name());
+    return core::SampleProvenance::setup_particle(m, ip, rp.get_method(),
+                                    rp.get_frames(), rp.get_iterations());
+  } else if (combpf_.get_is(node)) {
+    RMF::decorator::CombineProvenanceConst rp = combpf_.get(node);
+    ParticleIndex ip = m->add_particle(node.get_name());
+    return core::CombineProvenance::setup_particle(m, ip, rp.get_runs(),
+                                                   rp.get_frames());
+  } else if (filtpf_.get_is(node)) {
+    RMF::decorator::FilterProvenanceConst rp = filtpf_.get(node);
+    ParticleIndex ip = m->add_particle(node.get_name());
+    return core::FilterProvenance::setup_particle(m, ip, rp.get_threshold(),
+                                                  rp.get_frames());
+  } else if (clustpf_.get_is(node)) {
+    RMF::decorator::ClusterProvenanceConst rp = clustpf_.get(node);
+    ParticleIndex ip = m->add_particle(node.get_name());
+    return core::ClusterProvenance::setup_particle(m, ip, rp.get_members());
+  } else {
+    IMP_THROW("Unhandled provenance type " << node, IOException);
   }
 }
 
@@ -247,7 +316,8 @@ HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh)
     : P("HierarchyLoadLink%1%"),
       intermediate_particle_factory_(fh),
       reference_frame_factory_(fh),
-      af_(fh),
+      af_(fh), strucpf_(fh), samppf_(fh),
+      combpf_(fh), filtpf_(fh), clustpf_(fh),
       explicit_resolution_factory_(fh) {
   RMF::Category imp_cat = fh.get_category("IMP");
   external_rigid_body_key_ =
@@ -347,6 +417,10 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
     }
   }
 
+  if (core::Provenanced::get_is_setup(m, p)) {
+    add_provenance(m, p, cur);
+  }
+
   if (!prep_nodes.empty() || !grep_nodes.empty()) {
     RMF::decorator::Alternatives ad = af_.get(cur);
     IMP_FOREACH(RMF::NodeHandle nh, prep_nodes) {
@@ -358,8 +432,59 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
   }
 }
 
+// Make RMF PROVENANCE nodes corresponding to those in IMP
+void HierarchySaveLink::add_provenance(Model *m, ParticleIndex p,
+                                       RMF::NodeHandle cur) {
+  core::Provenanced provd(m, p);
+  for (core::Provenance prov = provd.get_provenance(); prov;
+       prov = prov.get_previous()) {
+    if (core::StructureProvenance::get_is_setup(prov)) {
+      core::StructureProvenance ip(prov);
+      cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
+                          RMF::PROVENANCE);
+      RMF::decorator::StructureProvenance rp = strucpf_.get(cur);
+      rp.set_filename(ip.get_filename());
+      rp.set_chain(ip.get_chain_id());
+    } else if (core::SampleProvenance::get_is_setup(prov)) {
+      core::SampleProvenance ip(prov);
+      cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
+                          RMF::PROVENANCE);
+      RMF::decorator::SampleProvenance rp = samppf_.get(cur);
+      rp.set_method(ip.get_method());
+      rp.set_frames(ip.get_number_of_frames());
+      rp.set_iterations(ip.get_number_of_iterations());
+    } else if (core::CombineProvenance::get_is_setup(prov)) {
+      core::CombineProvenance ip(prov);
+      cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
+                          RMF::PROVENANCE);
+      RMF::decorator::CombineProvenance rp = combpf_.get(cur);
+      rp.set_runs(ip.get_number_of_runs());
+      rp.set_frames(ip.get_number_of_frames());
+    } else if (core::FilterProvenance::get_is_setup(prov)) {
+      core::FilterProvenance ip(prov);
+      cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
+                          RMF::PROVENANCE);
+      RMF::decorator::FilterProvenance rp = filtpf_.get(cur);
+      rp.set_threshold(ip.get_threshold());
+      rp.set_frames(ip.get_number_of_frames());
+    } else if (core::ClusterProvenance::get_is_setup(prov)) {
+      core::ClusterProvenance ip(prov);
+      cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
+                          RMF::PROVENANCE);
+      RMF::decorator::ClusterProvenance rp = clustpf_.get(cur);
+      rp.set_members(ip.get_number_of_members());
+    } else {
+      IMP_THROW("Unhandled provenance type "
+                << m->get_particle_name(prov.get_particle_index()),
+                IOException);
+    }
+  }
+}
+
 HierarchySaveLink::HierarchySaveLink(RMF::FileHandle f)
-    : P("HierarchySaveLink%1%"), af_(f), explicit_resolution_factory_(f) {
+    : P("HierarchySaveLink%1%"), af_(f), strucpf_(f), samppf_(f),
+      combpf_(f), filtpf_(f), clustpf_(f),
+      explicit_resolution_factory_(f) {
   RMF::Category imp_cat = f.get_category("IMP");
   external_rigid_body_key_ =
       f.get_key(imp_cat, "external frame", RMF::IntTraits());

@@ -16,6 +16,7 @@
 #include <IMP/atom/CHARMMAtom.h>
 #include <IMP/atom/CHARMMParameters.h>
 #include <IMP/atom/charmm_segment_topology.h>
+#include <IMP/core/provenance.h>
 #include <IMP/core/Hierarchy.h>
 #include <IMP/core/rigid_bodies.h>
 #include <boost/algorithm/string.hpp>
@@ -244,11 +245,18 @@ Particle* residue_particle(Model* m, const std::string& pdb_line) {
   return p;
 }
 
-Particle* chain_particle(Model* m, char chain_id) {
+Particle* chain_particle(Model* m, char chain_id, std::string filename) {
   Particle* p = new Particle(m);
   Chain::setup_particle(p, chain_id);
   p->set_name(std::string("Chain " + std::string(1, chain_id)));
   Molecule::setup_particle(p);
+
+  // Set provenance of this chain
+  core::StructureProvenance sp
+          = core::StructureProvenance::setup_particle(new Particle(m),
+                                          filename, std::string(1, chain_id));
+  core::add_provenance(m, p->get_index(), sp);
+
   return p;
 }
 }
@@ -350,7 +358,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
         if (cp == nullptr || chain != curr_chain) {
           curr_chain = chain;
           // create new chain particle
-          cp = chain_particle(model, chain);
+          cp = chain_particle(model, chain, name);
           chain_name_set = false;
           Hierarchy(root_p).add_child(Chain(cp));
           rp = nullptr;  // make sure we get a new residue
