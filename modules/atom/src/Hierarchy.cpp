@@ -438,6 +438,11 @@ Hierarchy clone_internal(Hierarchy d,
   if (Representation::get_is_setup(d.get_particle())) {
     nd = Representation::setup_particle(p, Representation(d.get_particle()));
   }
+  if (core::Provenanced::get_is_setup(d.get_particle())) {
+    core::Provenanced pd(d.get_particle());
+    core::Provenance prov = core::create_clone(pd.get_provenance());
+    core::Provenanced::setup_particle(p, prov);
+  }
 
   if (nd == Hierarchy()) nd = Hierarchy::setup_particle(p);
   using core::XYZ;
