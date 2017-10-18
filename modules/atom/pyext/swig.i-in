@@ -104,6 +104,7 @@ IMP_SWIG_VALUE(IMP::atom, CHARMMInternalCoordinate, CHARMMInternalCoordinates);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMPatch, CHARMMPatches);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMResidueTopologyBase, CHARMMResidueTopologyBases);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, ResidueType, ResidueType, ResidueTypes);
+IMP_SWIG_VALUE_INSTANCE(IMP::atom, ChainType, ChainType, ChainTypes);
 IMP_SWIG_VALUE(IMP::atom, Selection, Selections);
 IMP_SWIG_OBJECT(IMP::atom, RemoveRigidMotionOptimizerState, RemoveRigidMotionOptimizerStates);
 IMP_SWIG_OBJECT(IMP::atom, BerendsenThermostatOptimizerState, BerendsenThermostatOptimizerStates);
@@ -256,6 +257,7 @@ namespace IMP {
    // swig has random, perplexing issues if these are higher in the file
    %template(AtomType) ::IMP::Key<IMP_ATOM_TYPE_INDEX>;
    %template(ResidueType) ::IMP::Key<IMP_RESIDUE_TYPE_INDEX>;
+   %template(ChainType) ::IMP::Key<IMP_CHAIN_TYPE_INDEX>;
   }
 }
 %include "IMP/atom/element.h"

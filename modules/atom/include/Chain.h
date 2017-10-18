@@ -12,8 +12,46 @@
 #include "Hierarchy.h"
 #include <IMP/macros.h>
 #include <IMP/Decorator.h>
+#include <IMP/base_types.h>
 
 IMPATOM_BEGIN_NAMESPACE
+
+typedef Key<IMP_CHAIN_TYPE_INDEX> ChainType;
+IMP_VALUES(ChainType, ChainTypes);
+
+/** \class IMP::atom::ChainType
+    \brief The type for a chain.
+
+    A given chain is either a Protein, DNA, or RNA polymer.
+
+    The standard chain types are provided with names like
+    IMP::atom::Protein. New chain types can be added simply by creating an
+    instance of ResidueType("my_chain_type").
+
+    \see Chain
+*/
+
+//! Unknown chain type
+IMPATOMEXPORT extern const ChainType UnknownChainType;
+//! Polypeptide(D)
+IMPATOMEXPORT extern const ChainType DPolypeptide;
+//! Polypeptide(L)
+IMPATOMEXPORT extern const ChainType LPolypeptide;
+//! DNA
+IMPATOMEXPORT extern const ChainType Polydeoxyribonucleotide;
+//! RNA
+IMPATOMEXPORT extern const ChainType Polyribonucleotide;
+//! Polysaccharide(D)
+IMPATOMEXPORT extern const ChainType DPolysaccharide;
+//! Polysaccharide(L)
+IMPATOMEXPORT extern const ChainType LPolysaccharide;
+//! Shorthand for IMP::atom::LPolypeptide
+IMPATOMEXPORT extern const ChainType Protein;
+//! Shorthand for IMP::atom::Polydeoxyribonucleotide
+IMPATOMEXPORT extern const ChainType DNA;
+//! Shorthand for IMP::atom::Polyribonucleotide
+IMPATOMEXPORT extern const ChainType RNA;
+
 
 //! Store info for a chain of a protein
 /** \see Hierarchy
@@ -24,6 +62,7 @@ class IMPATOMEXPORT Chain : public Hierarchy {
                                 std::string id) {
     m->add_attribute(get_id_key(), pi, id);
     m->add_attribute(get_sequence_key(), pi, "");
+    m->add_attribute(get_chain_type_key(), pi, UnknownChainType.get_index());
     if (!Hierarchy::get_is_setup(m, pi)) {
       Hierarchy::setup_particle(m, pi);
     }
@@ -44,6 +83,7 @@ class IMPATOMEXPORT Chain : public Hierarchy {
   static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_id_key(), pi) &&
            m->get_has_attribute(get_sequence_key(), pi) &&
+           m->get_has_attribute(get_chain_type_key(), pi) &&
            Hierarchy::get_is_setup(m, pi);
   }
 
@@ -76,11 +116,36 @@ class IMPATOMEXPORT Chain : public Hierarchy {
                                sequence);
   }
 
+  //! Return the chain type
+  ChainType get_chain_type() const {
+    return ChainType(get_model()->get_attribute(get_chain_type_key(),
+                                                  get_particle_index()));
+  }
+
+
+  //! Set the chain type, using IMP::atom::ChainType
+  /** Usually the chain type can be uniquely deduced by
+      iterating over all child Residue decorators and querying their type.
+      However, this may not be possible in all cases.
+
+      \note The type set here should be consistent with that of any
+            children of this Chain. This is not currently enforced.
+            One can use IMP::atom::Residue::get_is_protein() on the leaves.
+      */
+  void set_chain_type(ChainType t) {
+    get_model()->set_attribute(get_chain_type_key(), get_particle_index(),
+                               t.get_index());
+  }
+
+
   //! The key used to store the chain
   static StringKey get_id_key();
 
   //! The key used to store the primary sequence
   static StringKey get_sequence_key();
+
+  //! The key used to store the polymer type
+  static IntKey get_chain_type_key();
 };
 
 IMP_DECORATORS(Chain, Chains, Hierarchies);
