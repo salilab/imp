@@ -76,6 +76,7 @@ std::set<std::string>& SampleProvenance::get_allowed_methods() {
   if (m.empty()) {
     m.insert("Monte Carlo");
     m.insert("Molecular Dynamics");
+    m.insert("Hybrid MD/MC");
   }
   return m;
 }
