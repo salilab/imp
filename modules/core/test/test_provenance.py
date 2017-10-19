@@ -34,9 +34,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(p.get_method(), "Monte Carlo")
         p.set_method("Molecular Dynamics")
         self.assertEqual(p.get_method(), "Molecular Dynamics")
-        if IMP.get_check_level() == IMP.USAGE_AND_INTERNAL:
-            self.assertRaises(IMP.UsageError, p.set_method, "Garbage")
-            self.assertRaises(IMP.UsageError,
+        self.assertRaisesUsageException(p.set_method, "Garbage")
+        self.assertRaisesUsageException(
                  IMP.core.SampleProvenance.setup_particle, m, IMP.Particle(m),
                  "Garbage", 100)
         self.assertEqual(p.get_number_of_frames(), 100)
