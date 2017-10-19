@@ -44,7 +44,6 @@ class Tests(IMP.test.TestCase):
 
     def test_cc_after_grid_rotation(self):
         """Check that CC score does not change after grid and protein rotation"""
-        check = IMP.get_check_level()
         mrw = IMP.em.MRCReaderWriter()
         # create a rigid body
         rb_p = IMP.Particle(self.imp_model)
@@ -114,8 +113,6 @@ class Tests(IMP.test.TestCase):
 
     def test_cc_with_sampled_grid_rotation(self):
         """CC score does not change after sampled grid and protein rotation"""
-        check = IMP.get_check_level()
-
         # set a small random transformation
         translation = IMP.algebra.get_random_vector_in(
             IMP.algebra.get_unit_bounding_box_3d())
