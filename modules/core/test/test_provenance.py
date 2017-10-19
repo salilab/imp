@@ -45,6 +45,9 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(p.get_number_of_iterations(), 5)
         p.set_number_of_iterations(42)
         self.assertEqual(p.get_number_of_iterations(), 42)
+        self.assertEqual(p.get_number_of_replicas(), 1)
+        p.set_number_of_replicas(8)
+        self.assertEqual(p.get_number_of_replicas(), 8)
 
     def test_combine_provenance(self):
         """Test CombineProvenance decorator"""

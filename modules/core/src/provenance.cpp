@@ -96,6 +96,11 @@ IntKey SampleProvenance::get_iterations_key() {
   return iterations;
 }
 
+IntKey SampleProvenance::get_replicas_key() {
+  static const IntKey replicas("sp_replicas");
+  return replicas;
+}
+
 void SampleProvenance::show(std::ostream &out) const {
   out << "SampleProvenance " << get_number_of_frames() << " of "
       << get_method() << std::endl;

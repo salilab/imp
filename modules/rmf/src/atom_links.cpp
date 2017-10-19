@@ -192,7 +192,8 @@ core::Provenance HierarchyLoadLink::create_one_provenance(Model *m,
     RMF::decorator::SampleProvenanceConst rp = samppf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
     return core::SampleProvenance::setup_particle(m, ip, rp.get_method(),
-                                    rp.get_frames(), rp.get_iterations());
+                                    rp.get_frames(), rp.get_iterations(),
+                                    rp.get_replicas());
   } else if (combpf_.get_is(node)) {
     RMF::decorator::CombineProvenanceConst rp = combpf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
@@ -453,6 +454,7 @@ void HierarchySaveLink::add_provenance(Model *m, ParticleIndex p,
       rp.set_method(ip.get_method());
       rp.set_frames(ip.get_number_of_frames());
       rp.set_iterations(ip.get_number_of_iterations());
+      rp.set_replicas(ip.get_number_of_replicas());
     } else if (core::CombineProvenance::get_is_setup(prov)) {
       core::CombineProvenance ip(prov);
       cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),

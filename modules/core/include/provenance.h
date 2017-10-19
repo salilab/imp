@@ -138,23 +138,26 @@ public:
 class IMPCOREEXPORT SampleProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 std::string method, int frames,
-                                int iterations) {
+                                int iterations, int replicas=1) {
     validate_method(method);
     Provenance::setup_particle(m, pi);
     m->add_attribute(get_method_key(), pi, method);
     m->add_attribute(get_frames_key(), pi, frames);
     m->add_attribute(get_iterations_key(), pi, iterations);
+    m->add_attribute(get_replicas_key(), pi, replicas);
   }
 
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 SampleProvenance o) {
     do_setup_particle(m, pi, o.get_method(), o.get_number_of_frames(),
-                      o.get_number_of_iterations());
+                      o.get_number_of_iterations(),
+                      o.get_number_of_replicas());
   }
 
   static StringKey get_method_key();
   static IntKey get_frames_key();
   static IntKey get_iterations_key();
+  static IntKey get_replicas_key();
 
   static std::set<std::string>& get_allowed_methods();
 
@@ -206,7 +209,21 @@ public:
                                       get_particle_index());
   }
 
+  //! Set the number of replicas
+  void set_number_of_replicas(int replicas) const {
+    return get_model()->set_attribute(get_replicas_key(),
+                                      get_particle_index(), replicas);
+  }
+
+  //! \return the number of replicas
+  int get_number_of_replicas() const {
+    return get_model()->get_attribute(get_replicas_key(),
+                                      get_particle_index());
+  }
+
   IMP_DECORATOR_METHODS(SampleProvenance, Provenance);
+  IMP_DECORATOR_SETUP_4(SampleProvenance, std::string, method, int, frames,
+                        int, iterations, int, replicas);
   IMP_DECORATOR_SETUP_3(SampleProvenance, std::string, method, int, frames,
                         int, iterations);
   IMP_DECORATOR_SETUP_1(SampleProvenance, SampleProvenance, o);
