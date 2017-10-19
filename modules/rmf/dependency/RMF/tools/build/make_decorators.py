@@ -120,7 +120,9 @@ sample = Decorator(["PROVENANCE"], "provenance",
                      Attribute("sampling frames", "Int",
                                function_name='frames'),
                      Attribute("sampling iterations", "Int",
-                               function_name='iterations')])
+                               function_name='iterations'),
+                     Attribute("sampling replicas", "Int",
+                               function_name='replicas')])
 
 combine = Decorator(["PROVENANCE"], "provenance",
                     "CombineProvenance",

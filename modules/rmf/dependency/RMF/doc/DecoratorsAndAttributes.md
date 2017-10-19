@@ -224,6 +224,7 @@ structure was generated.
 | `sampling method`     | string       |  Sampling method utilized                 |
 | `sampling frames`     | int          |  Number of frames in the sample ensemble  |
 | `sampling iterations` | int          |  Number of sampling iterations used       |
+| `sampling replicas`   | int          |  Number of sampling replicas used         |
 | `combined runs`       | int          |  Number of sampling runs utilized         |
 | `combined frames`     | int          |  Total number of frames combined          |
 | `filter threshold`    | float        |  Score threshold to discard bad models    |
@@ -235,7 +236,7 @@ structure was generated.
 | Name                                |  Node Type          | Attributes                                            |
 |------------------------------------:|:-------------------:|:------------------------------------------------------|
 | RMF::decorator::StructureProvenance |  RMF::PROVENANCE    | structure filename, structure chain                   |
-| RMF::decorator::SampleProvenance    |  RMF::PROVENANCE    | sampling method, sampling frames, sampling iterations |
+| RMF::decorator::SampleProvenance    |  RMF::PROVENANCE    | sampling method, sampling frames, sampling iterations, sampling replicas |
 | RMF::decorator::CombineProvenance   |  RMF::PROVENANCE    | combined runs, combined frames                        |
 | RMF::decorator::FilterProvenance    |  RMF::PROVENANCE    | filter threshold, filter frames                       |
 | RMF::decorator::ClusterProvenance   |  RMF::PROVENANCE    | cluster members                                       |

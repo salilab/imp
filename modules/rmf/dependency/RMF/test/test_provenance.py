@@ -28,6 +28,7 @@ class Tests(unittest.TestCase):
         samp.set_method("Monte Carlo")
         samp.set_frames(100)
         samp.set_iterations(10)
+        samp.set_replicas(8)
 
         struc_node = samp_node.add_child("structure", RMF.PROVENANCE)
         struc = strucpf.get(struc_node)
@@ -66,6 +67,7 @@ class Tests(unittest.TestCase):
         samp = samppf.get(samp_node)
         self.assertEqual(samp.get_frames(), 100)
         self.assertEqual(samp.get_iterations(), 10)
+        self.assertEqual(samp.get_replicas(), 8)
         self.assertEqual(samp.get_method(), "Monte Carlo")
 
         struc_node = samp_node.get_children()[0]
