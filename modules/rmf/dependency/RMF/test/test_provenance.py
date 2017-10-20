@@ -17,13 +17,20 @@ class Tests(unittest.TestCase):
         """Add *Provenance nodes under rt. Return the root."""
         strucpf = RMF.StructureProvenanceFactory(rmf)
         samppf = RMF.SampleProvenanceFactory(rmf)
+        filtpf = RMF.FilterProvenanceFactory(rmf)
         clustpf = RMF.ClusterProvenanceFactory(rmf)
 
         clust_node = rt.add_child("clustering", RMF.PROVENANCE)
         clust = clustpf.get(clust_node)
         clust.set_members(10)
 
-        samp_node = clust_node.add_child("sampling", RMF.PROVENANCE)
+        filt_node = clust_node.add_child("filtering", RMF.PROVENANCE)
+        filt = filtpf.get(filt_node)
+        filt.set_method("Total score")
+        filt.set_threshold(250.)
+        filt.set_frames(4)
+
+        samp_node = filt_node.add_child("sampling", RMF.PROVENANCE)
         samp = samppf.get(samp_node)
         samp.set_method("Monte Carlo")
         samp.set_frames(100)
@@ -55,6 +62,7 @@ class Tests(unittest.TestCase):
 
     def _check_provenance_nodes(self, rmf, prov_root):
         strucpf = RMF.StructureProvenanceFactory(rmf)
+        filtpf = RMF.FilterProvenanceFactory(rmf)
         samppf = RMF.SampleProvenanceFactory(rmf)
         clustpf = RMF.ClusterProvenanceFactory(rmf)
 
@@ -62,7 +70,14 @@ class Tests(unittest.TestCase):
         clust = clustpf.get(prov_root)
         self.assertEqual(clust.get_members(), 10)
 
-        samp_node = prov_root.get_children()[0]
+        filt_node = prov_root.get_children()[0]
+        self.assertTrue(filtpf.get_is(filt_node))
+        filt = filtpf.get(filt_node)
+        self.assertEqual(filt.get_method(), "Total score")
+        self.assertAlmostEqual(filt.get_threshold(), 250., delta=1e-4)
+        self.assertEqual(filt.get_frames(), 4)
+
+        samp_node = filt_node.get_children()[0]
         self.assertTrue(samppf.get_is(samp_node))
         samp = samppf.get(samp_node)
         self.assertEqual(samp.get_frames(), 100)

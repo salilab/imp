@@ -132,7 +132,9 @@ combine = Decorator(["PROVENANCE"], "provenance",
 
 filterp = Decorator(["PROVENANCE"], "provenance",
                     "FilterProvenance",
-                    [Attribute("filter threshold", "Float",
+                    [Attribute("filter method", "String",
+                               function_name='method'),
+                     Attribute("filter threshold", "Float",
                                function_name='threshold'),
                      Attribute("filter frames", "Int", function_name='frames')])
 

@@ -227,7 +227,9 @@ structure was generated.
 | `sampling replicas`   | int          |  Number of sampling replicas used         |
 | `combined runs`       | int          |  Number of sampling runs utilized         |
 | `combined frames`     | int          |  Total number of frames combined          |
+| `filter method`       | string       |  Filtering method utilized                |
 | `filter threshold`    | float        |  Score threshold to discard bad models    |
+| `filter frames`       | float        |  Number of frames after filtering         |
 | `cluster members`     | int          |  Number of members in a cluster           |
 
 
