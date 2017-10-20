@@ -258,7 +258,9 @@ class Molecule(_SystemBase):
         self.hier = self._create_child(self.state.get_hierarchy())
         self.hier.set_name(name)
         IMP.atom.Copy.setup_particle(self.hier,copy_num)
-        IMP.atom.Chain.setup_particle(self.hier,chain_id)
+        # store the sequence
+        self.chain=IMP.atom.Chain.setup_particle(self.hier,chain_id)
+        self.chain.set_sequence(self.sequence)
         # create TempResidues from the sequence (if passed)
         self.residues=[]
         for ns,s in enumerate(sequence):
@@ -398,6 +400,8 @@ class Molecule(_SystemBase):
                 self.sequence += IMP.atom.get_one_letter_code(rh.get_residue_type())
             internal_res.set_structure(rh,soft_check)
             atomic_res.add(internal_res)
+
+        self.chain.set_sequence(self.sequence)
         return atomic_res
 
     def add_representation(self,
@@ -1422,12 +1426,12 @@ class _Component(object):
     def __get_domain_name(self): return self._domain_name
     domain_name = property(__get_domain_name)
 
+
 class PMIMoleculeHierarchy(IMP.atom.Molecule):
     '''Extends the functionality of IMP.atom.Molecule'''
 
     def __init__(self,hierarchy):
         IMP.atom.Molecule.__init__(self,hierarchy)
-        self.sequence=''
 
     def get_state_index(self):
         state = self.get_parent()
@@ -1441,14 +1445,20 @@ class PMIMoleculeHierarchy(IMP.atom.Molecule):
                str(self.get_copy_index())+\
                "."+str(self.get_state_index())
 
-    def set_sequence(self,sequence):
-        self.sequence=sequence
-
     def get_sequence(self):
-        return self.sequence
+        return IMP.atom.Chain(self).get_sequence()
+
+    def get_residue_indexes(self):
+        return IMP.pmi.tools.get_residue_indexes(self)
+
+    def get_residue_segments(self):
+        return IMP.pmi.tools.Segments(self.get_residue_indexes())
+
+    def get_chain_id(self):
+        return IMP.atom.Chain(self).get_id()
 
     def __repr__(self):
-        s='Hello '
+        s='PMIMoleculeHierarchy '
         s+=self.get_name()
         s+=" "+"Copy  "+str(IMP.atom.Copy(self).get_copy_index())
         s+=" "+"State "+str(self.get_state_index())

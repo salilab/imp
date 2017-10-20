@@ -5,6 +5,7 @@ import IMP.pmi.representation
 import IMP.pmi.restraints.basic
 import IMP.pmi.macros
 import IMP.pmi.output
+import RMF
 import glob
 import time
 import os.path
@@ -69,6 +70,8 @@ class Tests(IMP.test.TestCase):
 
 
         rex.execute_macro()
+
+        self.check_rmf_file('./test_replica_exchange_macro_output/rmfs/0.rmf3')
 
         # check that each replica index is below the total number of replicas
         my_index= rex.replica_exchange_object.get_my_index()
@@ -147,6 +150,19 @@ class Tests(IMP.test.TestCase):
         # always fails
         #self.assertGreater(float(d[rex_max_temp_key][-1]), 0.0)
 
+    def check_rmf_file(self, fname):
+        rmf = RMF.open_rmf_file_read_only(fname)
+        m = IMP.Model()
+        h = IMP.rmf.create_hierarchies(rmf, m)
+        top = h[0]
+        self.assertTrue(IMP.core.Provenanced.get_is_setup(top))
+        prov = IMP.core.Provenanced(top).get_provenance()
+        self.assertTrue(IMP.core.SampleProvenance.get_is_setup(prov))
+        samp = IMP.core.SampleProvenance(prov)
+        self.assertEqual(samp.get_method(), 'Monte Carlo')
+        self.assertEqual(samp.get_number_of_frames(), 100)
+        self.assertEqual(samp.get_number_of_iterations(), 10)
+
     def test_macro_rmf_stat(self):
         """setting up the representation
         PMI 1.0 representation. Creates two particles and
@@ -192,6 +208,8 @@ class Tests(IMP.test.TestCase):
 
 
         rex.execute_macro()
+
+        self.check_rmf_file('./test_replica_exchange_macro_output/rmfs/0.rmf3')
 
         # check that each replica index is below the total number of replicas
         my_index= rex.replica_exchange_object.get_my_index()

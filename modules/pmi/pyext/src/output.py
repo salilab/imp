@@ -747,6 +747,17 @@ class Output(object):
             self.write_stat2(stat)
 
 
+class OutputStatistics(object):
+    """Collect statistics from ProcessOutput.get_fields().
+       Counters of the total number of frames read, plus the models that
+       passed the various filters used in get_fields(), are provided."""
+    def __init__(self):
+        self.total = 0
+        self.passed_get_every = 0
+        self.passed_filterout = 0
+        self.passed_filtertuple = 0
+
+
 class ProcessOutput(object):
     """A class for reading stat files (either rmf or ascii v1 and v2)"""
     def __init__(self, filename):
@@ -811,7 +822,8 @@ class ProcessOutput(object):
     def show_keys(self, ncolumns=2, truncate=65):
         IMP.pmi.tools.print_multicolumn(self.get_keys(), ncolumns, truncate)
 
-    def get_fields(self, fields, filtertuple=None, filterout=None, get_every=1):
+    def get_fields(self, fields, filtertuple=None, filterout=None, get_every=1,
+                   statistics=None):
         '''
         Get the desired field names, and return a dictionary.
         Namely, "fields" are the queried keys in the stat file (eg. ["Total_Score",...])
@@ -826,8 +838,12 @@ class ProcessOutput(object):
                      ("TheKeyToBeFiltered",relationship,value)
                      where relationship = "<", "==", or ">"
         @param get_every only read every Nth line from the file
+        @param statistics if provided, accumulate statistics in an
+                          OutputStatistics object
         '''
 
+        if statistics is None:
+            statistics = OutputStatistics()
         outdict = {}
         for field in fields:
             outdict[field] = []
@@ -837,6 +853,10 @@ class ProcessOutput(object):
             rh = RMF.open_rmf_file_read_only(self.filename)
             nframes=rh.get_number_of_frames()
             for i in range(nframes):
+                statistics.total += 1
+                # "get_every" and "filterout" not enforced for RMF
+                statistics.passed_get_every += 1
+                statistics.passed_filterout += 1
                 IMP.rmf.load_frame(rh, RMF.FrameID(i))
                 if not filtertuple is None:
                     keytobefiltered = filtertuple[0]
@@ -845,6 +865,7 @@ class ProcessOutput(object):
                     datavalue=rh.get_root_node().get_value(self.rmf_names_keys[keytobefiltered])
                     if self.isfiltered(datavalue,relationship,value): continue
 
+                statistics.passed_filtertuple += 1
                 for field in fields:
                     outdict[field].append(rh.get_root_node().get_value(self.rmf_names_keys[field]))
 
@@ -853,13 +874,19 @@ class ProcessOutput(object):
             line_number = 0
 
             for line in f.readlines():
+                statistics.total += 1
                 if not filterout is None:
                     if filterout in line:
                         continue
+                statistics.passed_filterout += 1
                 line_number += 1
 
                 if line_number % get_every != 0:
+                    if line_number == 1 and self.isstat2:
+                        statistics.total -= 1
+                        statistics.passed_filterout -= 1
                     continue
+                statistics.passed_get_every += 1
                 #if line_number % 1000 == 0:
                 #    print "ProcessOutput.get_fields: read line %s from file %s" % (str(line_number), self.filename)
                 try:
@@ -877,10 +904,14 @@ class ProcessOutput(object):
                         datavalue=d[keytobefiltered]
                         if self.isfiltered(datavalue, relationship, value): continue
 
+                    statistics.passed_filtertuple += 1
                     [outdict[field].append(d[field]) for field in fields]
 
                 elif self.isstat2:
                     if line_number == 1:
+                        statistics.total -= 1
+                        statistics.passed_filterout -= 1
+                        statistics.passed_get_every -= 1
                         continue
 
                     if not filtertuple is None:
@@ -890,6 +921,7 @@ class ProcessOutput(object):
                         datavalue=d[self.invstat2_dict[keytobefiltered]]
                         if self.isfiltered(datavalue, relationship, value): continue
 
+                    statistics.passed_filtertuple += 1
                     [outdict[field].append(d[self.invstat2_dict[field]]) for field in fields]
 
             f.close()

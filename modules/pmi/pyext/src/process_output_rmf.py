@@ -11,7 +11,7 @@ import difflib
 
 
 parser = argparse.ArgumentParser(
-    description='Process output data file saved as dictionaries. It has two modality: print selected fields for all lines or print a particular line where a filed has a given value. Example of usage: process_output.py --soft -s To E S -f log.3.native-2-no-red. process_output.py --soft --search_field EV0 --search_value 5.67750116023 -f log.3.native-2-no-red')
+    description='Process output data file saved as rmfs. It has two modality: print selected fields for all lines or print a particular line where a filed has a given value.')
 parser.add_argument(
     '-f',
     action="store",

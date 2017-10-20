@@ -86,7 +86,8 @@ class Tests(IMP.test.TestCase):
                                                         distancemax=15)
         dr.add_to_model()
 
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+        with IMP.allow_deprecated():
+            rex = IMP.pmi.macros.ReplicaExchange0(mdl,
                                               root_hier=hier,
                                               output_objects=[dr],
                                               monte_carlo_sample_objects=dof.get_movers(),
@@ -100,7 +101,8 @@ class Tests(IMP.test.TestCase):
         for rb in dof.rigid_bodies:
             IMP.core.transform(rb,trans)
 
-        rex2 = IMP.pmi.macros.ReplicaExchange0(mdl,
+        with IMP.allow_deprecated():
+            rex2 = IMP.pmi.macros.ReplicaExchange0(mdl,
                                                root_hier=hier,
                                                output_objects=[dr],
                                                monte_carlo_sample_objects=dof.get_movers(),
@@ -142,7 +144,8 @@ class Tests(IMP.test.TestCase):
                                                         distancemax=15)
         dr.add_to_model()
 
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+        with IMP.allow_deprecated():
+            rex = IMP.pmi.macros.ReplicaExchange0(mdl,
                                               root_hier=hier,
                                               output_objects=[dr],
                                               monte_carlo_sample_objects=dof.get_movers(),
@@ -180,7 +183,8 @@ class Tests(IMP.test.TestCase):
         ps0 = IMP.atom.Selection(hier,molecule='Prot1',copy_index=0).get_selected_particles()
         ps1 = IMP.atom.Selection(hier,molecule='Prot1',copy_index=1).get_selected_particles()
 
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+        with IMP.allow_deprecated():
+            rex = IMP.pmi.macros.ReplicaExchange0(mdl,
                                               root_hier=hier,
                                               monte_carlo_sample_objects=dof.get_movers(),
                                               number_of_frames=1,
@@ -196,7 +200,8 @@ class Tests(IMP.test.TestCase):
         IMP.core.transform(rb2,trans.get_inverse())
         IMP.core.transform(rb1,trans)
 
-        rex2 = IMP.pmi.macros.ReplicaExchange0(mdl,
+        with IMP.allow_deprecated():
+            rex2 = IMP.pmi.macros.ReplicaExchange0(mdl,
                                                root_hier=hier,
                                                monte_carlo_sample_objects=dof.get_movers(),
                                                number_of_frames=1,
@@ -258,11 +263,12 @@ class Tests(IMP.test.TestCase):
                       "Prot2":"Prot2"}
         density_ranges = {"Prot1":["Prot1"],
                           "Prot2":["Prot2"]}
-        am = IMP.pmi.macros.AnalysisReplicaExchange0(
-            mdl,
-            merge_directories=[self.get_input_file_name("pmi2_sample_0/"),
-                               self.get_input_file_name("pmi2_sample_1/")],
-            global_output_directory="./")
+        with IMP.allow_deprecated():
+            am = IMP.pmi.macros.AnalysisReplicaExchange0(
+                mdl,
+                merge_directories=[self.get_input_file_name("pmi2_sample_0/"),
+                                   self.get_input_file_name("pmi2_sample_1/")],
+                global_output_directory="./")
 
         with IMP.test.temporary_directory() as out_dir:
             am.clustering(score_key="Total_Score",
@@ -346,6 +352,9 @@ class Tests(IMP.test.TestCase):
             rhC = RMF.open_rmf_file_read_only(os.path.join(cl0,'0.rmf3'))
             protC = IMP.rmf.create_hierarchies(rhC,mdl)[0]
             self.assertTrue(IMP.pmi.get_is_canonical(protC))
+            # Provenance information should be attached to the state,
+            # which is one level down (under the System)
+            self.check_provenance(protC.get_children()[0])
 
             # check density
             bbox1 = IMP.algebra.BoundingBox3D(c_prot01)
@@ -354,6 +363,37 @@ class Tests(IMP.test.TestCase):
             dmap2 = IMP.em.read_map(os.path.join(cl0,'Prot2.mrc'))
             self.assertTrue(IMP.em.get_bounding_box(dmap1).get_contains(bbox1))
             self.assertTrue(IMP.em.get_bounding_box(dmap2).get_contains(bbox2))
+
+    def check_provenance(self, h):
+        """Make sure that appropriate provenance information was added to
+           the cluster"""
+        prov = list(self.get_all_provenance(h))
+        self.assertEqual(len(prov), 3)
+        self.assertIsInstance(prov[0], IMP.core.ClusterProvenance)
+        self.assertEqual(prov[0].get_number_of_members(), 10)
+
+        self.assertIsInstance(prov[1], IMP.core.FilterProvenance)
+        self.assertEqual(prov[1].get_method(), 'Best scoring')
+        self.assertEqual(prov[1].get_number_of_frames(), 20)
+        self.assertAlmostEqual(prov[1].get_threshold(), 0., delta=1e-6)
+
+        self.assertIsInstance(prov[2], IMP.core.CombineProvenance)
+        self.assertEqual(prov[2].get_number_of_frames(), 20)
+        self.assertEqual(prov[2].get_number_of_runs(), 2)
+
+    def get_all_provenance(self, h):
+        def get_subclass(p):
+            for c in (IMP.core.StructureProvenance, IMP.core.SampleProvenance,
+                      IMP.core.CombineProvenance, IMP.core.FilterProvenance,
+                      IMP.core.ClusterProvenance):
+                if c.get_is_setup(p):
+                    return c(p)
+            raise TypeError("Unknown provenance type", p)
+        if IMP.core.Provenanced.get_is_setup(h):
+            prov = IMP.core.Provenanced(h).get_provenance()
+            while prov:
+                yield get_subclass(prov)
+                prov = prov.get_previous()
 
     def test_precision(self):
         """Test correct calcluation of precision and RMSF"""
@@ -453,11 +493,12 @@ class Tests(IMP.test.TestCase):
         #alignment_comp = {"Prot1..0":(1,-1,"Prot1",0),"Prot1..1":(1,-1,"Prot1",1)}
         #rmsd_comp = {"Prot1..0":(1,-1,"Prot1",0),"Prot1..1":(1,-1,"Prot1",1)}
 
-        am = IMP.pmi.macros.AnalysisReplicaExchange0(
-            mdl,
-            merge_directories=[self.get_input_file_name("pmi2_copies_0/"),
-                               self.get_input_file_name("pmi2_copies_1/")],
-            global_output_directory="./")
+        with IMP.allow_deprecated():
+            am = IMP.pmi.macros.AnalysisReplicaExchange0(
+                mdl,
+                merge_directories=[self.get_input_file_name("pmi2_copies_0/"),
+                                   self.get_input_file_name("pmi2_copies_1/")],
+                global_output_directory="./")
 
         with IMP.test.temporary_directory() as out_dir:
             am.clustering(feature_keys=["Total_Score"],

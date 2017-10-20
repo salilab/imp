@@ -13,11 +13,15 @@ class Tests(IMP.test.TestCase):
         are.set_alignment_selection(molecule="Rpb4")
         are.save_data()
         are.cluster(20)
+        self.assertEqual(len(are),4)
         print(are)
+        are.refine(40)
+        print(are)
+        self.assertEqual(len(are),2)
 
         dcr={"Rpb4":["Rpb4"],"Rpb7":["Rpb7"],"All":["Rpb4","Rpb7"]}
 
-        self.assertEqual(len(are),4)
+
 
         for cluster in are:
             are.save_coordinates(cluster)

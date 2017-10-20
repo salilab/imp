@@ -1052,9 +1052,11 @@ def get_residue_indexes(hier):
     elif IMP.atom.Molecule.get_is_setup(hier):
         resind_tmp=IMP.pmi.tools.OrderedSet()
         for lv in IMP.atom.get_leaves(hier):
-            for ind in get_residue_indexes(lv):
-                resind_tmp.add(ind)
-            resind=list(resind_tmp)
+            if IMP.atom.Fragment.get_is_setup(lv) or \
+               IMP.atom.Residue.get_is_setup(lv) or \
+               IMP.atom.Atom.get_is_setup(lv):
+                for ind in get_residue_indexes(lv): resind_tmp.add(ind)
+        resind=list(resind_tmp)
     else:
         resind = []
     return resind
@@ -1254,6 +1256,13 @@ class Segments(object):
     def get_flatten(self):
         ''' Returns a flatten list '''
         return [item for sublist in self.segs for item in sublist]
+
+    def __repr__(self):
+        ret_tmp="["
+        for seg in self.segs:
+            ret_tmp+=str(seg[0])+"-"+str(seg[-1])+","
+        ret=ret_tmp[:-1]+"]"
+        return ret
 
 
 
@@ -1897,6 +1906,14 @@ def get_molecules_dictionary(input_objects):
     for mol in IMP.pmi.tools.get_molecules(input_objects):
         name=mol.get_name()
         moldict[name].append(mol)
+    return moldict
+
+def get_molecules_dictionary_by_copy(input_objects):
+    moldict=defaultdict(dict)
+    for mol in IMP.pmi.tools.get_molecules(input_objects):
+        name=mol.get_name()
+        c=IMP.atom.Copy(mol).get_copy_index()
+        moldict[name][c]=mol
     return moldict
 
 def get_selections_dictionary(input_objects):

@@ -65,6 +65,16 @@ class Tests(IMP.test.TestCase):
         vals = po.get_fields(["AtomicXLRestraint"])["AtomicXLRestraint"]
         self.assertAlmostEqual(numpy.average(numpy.array(vals).astype(numpy.float)), 10.1270600392)
 
+        # Test filters and statistics
+        stats = IMP.pmi.output.OutputStatistics()
+        vals = po.get_fields(["AtomicXLRestraint"], get_every=3,
+                             filtertuple=("AtomicXLRestraint", "<", 10.0),
+                             statistics=stats)
+        self.assertEqual(stats.total, 16)
+        self.assertEqual(stats.passed_filterout, 16)
+        self.assertEqual(stats.passed_get_every, 5)
+        self.assertEqual(stats.passed_filtertuple, 3)
+
     def _check_coordinate_identity(self,ps1,ps2):
         for n,p in enumerate(ps1):
             d1=IMP.core.XYZ(p)
@@ -79,6 +89,47 @@ class Tests(IMP.test.TestCase):
         for k in d1.features:
             self.assertEqual(d1.features[k], d2.features[k])
 
+    def test_get_best_models_provenance_no_filter(self):
+        """Test provenance info added by get_best_models(), no filtering"""
+        stat = self.get_input_file_name("./output1/stat.0.out")
+        prov = []
+        models = IMP.pmi.io.get_best_models([stat],
+                        score_key='AtomicXLRestraint', provenance=prov)
+        self.assertEqual(prov, [])
+
+    def test_get_best_models_provenance(self):
+        """Test provenance info added by get_best_models()"""
+        stat1 = self.get_input_file_name("./output1/stat.0.out")
+        stat2 = self.get_input_file_name("./output1/stat.1.out")
+        prov = []
+        models = IMP.pmi.io.get_best_models([stat1, stat2],
+                        score_key='AtomicXLRestraint', get_every=2,
+                        prefiltervalue=10.0, provenance=prov)
+        self.assertEqual(len(prov), 3)
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        IMP.pmi.io.add_provenance(prov, [p])
+        self.assertTrue(IMP.core.Provenanced.get_is_setup(p))
+        prov = IMP.core.Provenanced(p).get_provenance()
+
+        self.assertTrue(IMP.core.FilterProvenance.get_is_setup(prov))
+        tp = IMP.core.FilterProvenance(prov)
+        self.assertEqual(tp.get_method(), 'Total score')
+        self.assertAlmostEqual(tp.get_threshold(), 10.0, delta=1e-4)
+        self.assertEqual(tp.get_number_of_frames(), 12)
+        prov = prov.get_previous()
+
+        self.assertTrue(IMP.core.FilterProvenance.get_is_setup(prov))
+        tp = IMP.core.FilterProvenance(prov)
+        self.assertEqual(tp.get_method(), 'Keep fraction')
+        self.assertAlmostEqual(tp.get_threshold(), 0.0, delta=1e-4)
+        self.assertEqual(tp.get_number_of_frames(), 17)
+        prov = prov.get_previous()
+
+        self.assertTrue(IMP.core.CombineProvenance.get_is_setup(prov))
+        tp = IMP.core.CombineProvenance(prov)
+        self.assertEqual(tp.get_number_of_runs(), 2)
+        self.assertEqual(tp.get_number_of_frames(), 33)
 
     def _get_info_from_stat_file(self, stat_file):
         po=IMP.pmi.output.ProcessOutput(stat_file)

@@ -249,8 +249,50 @@ def save_best_models(mdl,
         print('wrote stats to',out_stat_fn)
         print('wrote rmfs to',out_rmf_fn)
 
+class _TempProvenance(object):
+    """Placeholder to track provenance information added to the IMP model.
+       This is since we typically don't preserve the IMP::Model object
+       throughout a PMI protocol."""
+    def __init__(self, provclass, particle_name, *args, **kwargs):
+        self.provclass = provclass
+        self.particle_name = particle_name
+        self.args = args
+        self.kwargs = kwargs
+
+    def get_decorator(self, model):
+        """Instantiate and return an IMP Provenance object in the model."""
+        pi = model.add_particle(self.particle_name)
+        return self.provclass.setup_particle(model, pi, *self.args,
+                                             **self.kwargs)
 
 
+class ClusterProvenance(_TempProvenance):
+    def __init__(self, *args, **kwargs):
+        _TempProvenance.__init__(self, IMP.core.ClusterProvenance,
+                                 "clustering", *args, **kwargs)
+
+
+class FilterProvenance(_TempProvenance):
+    def __init__(self, *args, **kwargs):
+        _TempProvenance.__init__(self, IMP.core.FilterProvenance,
+                                 "filtering", *args, **kwargs)
+
+
+class CombineProvenance(_TempProvenance):
+    def __init__(self, *args, **kwargs):
+        _TempProvenance.__init__(self, IMP.core.CombineProvenance,
+                                 "combine runs", *args, **kwargs)
+
+
+def add_provenance(prov, hiers):
+    """Add provenance information in `prov` (a list of _TempProvenance
+       objects) to each of the IMP hierarchies provided.
+       Note that we do this all at once since we typically don't preserve
+       the IMP::Model object throughout a PMI protocol."""
+    for h in hiers:
+        for p in prov:
+            m = h.get_model()
+            IMP.core.add_provenance(m, h, p.get_decorator(m))
 
 def get_best_models(stat_files,
                     score_key="SimplifiedModel_Total_Score_None",
@@ -258,7 +300,7 @@ def get_best_models(stat_files,
                     rmf_file_key="rmf_file",
                     rmf_file_frame_key="rmf_frame_index",
                     prefiltervalue=None,
-                    get_every=1):
+                    get_every=1, provenance=None):
     """ Given a list of stat files, read them all and find the best models.
     Returns the best rmf filenames, frame numbers, scores, and values for feature keywords
     """
@@ -266,6 +308,7 @@ def get_best_models(stat_files,
     rmf_file_frame_list=[]        # best RMF frames
     score_list=[]                 # best scores
     feature_keyword_list_dict=defaultdict(list)  # best values of the feature keys
+    statistics = IMP.pmi.output.OutputStatistics()
     for sf in stat_files:
         root_directory_of_stat_file = os.path.dirname(os.path.abspath(sf))
         if sf[-4:]=='rmf3':
@@ -293,11 +336,13 @@ def get_best_models(stat_files,
 
         if prefiltervalue is None:
             fields = po.get_fields(keywords,
-                                   get_every=get_every)
+                                   get_every=get_every,
+                                   statistics=statistics)
         else:
             fields = po.get_fields(keywords,
                                    filtertuple=(score_key,"<",prefiltervalue),
-                                   get_every=get_every)
+                                   get_every=get_every,
+                                   statistics=statistics)
 
         # check that all lengths are all equal
         length_set = set()
@@ -325,6 +370,19 @@ def get_best_models(stat_files,
 
         for k in keywords:
             feature_keyword_list_dict[k] += fields[k]
+
+    # Record combining and filtering operations in provenance, if requested
+    if provenance is not None:
+        if len(stat_files) > 1:
+            provenance.append(CombineProvenance(len(stat_files),
+                                                statistics.total))
+        if get_every != 1:
+            provenance.append(FilterProvenance("Keep fraction",
+                                               0., statistics.passed_get_every))
+        if prefiltervalue is not None:
+            provenance.append(FilterProvenance("Total score",
+                                               prefiltervalue,
+                                               statistics.passed_filtertuple))
 
     return rmf_file_list,rmf_file_frame_list,score_list,feature_keyword_list_dict
 
