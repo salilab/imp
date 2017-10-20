@@ -290,27 +290,55 @@ public:
 /** Part of the system (usually the top of a Hierarchy) tagged with this
     decorator is understood to be a single frame within an ensemble that
     resulted from filtering a larger ensemble (the 'previous'
-    provenance) by discarding models with scores above the threshold.
+    provenance) in some fashion, such as
+     - by discarding models with scores above the threshold;
+     - by ranking the models and keeping the best scoring subset;
+     - by keeping a fraction of models from the ensemble.
   */
 class IMPCOREEXPORT FilterProvenance : public Provenance {
-  static void do_setup_particle(Model *m, ParticleIndex pi, double threshold,
-                                int frames) {
+  static void do_setup_particle(Model *m, ParticleIndex pi, std::string method,
+                                double threshold, int frames) {
+    validate_method(method);
     Provenance::setup_particle(m, pi);
+    m->add_attribute(get_method_key(), pi, method);
     m->add_attribute(get_threshold_key(), pi, threshold);
     m->add_attribute(get_frames_key(), pi, frames);
   }
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 FilterProvenance o) {
-    do_setup_particle(m, pi, o.get_threshold(), o.get_number_of_frames());
+    do_setup_particle(m, pi, o.get_method(), o.get_threshold(),
+                      o.get_number_of_frames());
   }
 
+  static StringKey get_method_key();
   static FloatKey get_threshold_key();
   static IntKey get_frames_key();
 
+  static std::set<std::string>& get_allowed_methods();
+
+  static void validate_method(std::string method) {
+    IMP_USAGE_CHECK(get_allowed_methods().find(method)
+                    != get_allowed_methods().end(),
+                    "Invalid filtering method");
+  }
+
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
-    return m->get_has_attribute(get_threshold_key(), pi)
+    return m->get_has_attribute(get_method_key(), pi)
+           && m->get_has_attribute(get_threshold_key(), pi)
            && m->get_has_attribute(get_frames_key(), pi);
+  }
+
+  //! Set the filtering method
+  void set_method(std::string method) const {
+    validate_method(method);
+    return get_model()->set_attribute(get_method_key(), get_particle_index(),
+                                      method);
+  }
+
+  //! \return the filtering method
+  std::string get_method() const {
+    return get_model()->get_attribute(get_method_key(), get_particle_index());
   }
 
   //! Set the number of frames
@@ -337,7 +365,8 @@ public:
   }
 
   IMP_DECORATOR_METHODS(FilterProvenance, Provenance);
-  IMP_DECORATOR_SETUP_2(FilterProvenance, double, threshold, int, frames);
+  IMP_DECORATOR_SETUP_3(FilterProvenance, std::string, method,
+                        double, threshold, int, frames);
   IMP_DECORATOR_SETUP_1(FilterProvenance, FilterProvenance, o);
 };
 

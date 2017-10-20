@@ -132,6 +132,21 @@ void ClusterProvenance::show(std::ostream &out) const {
       << " members" << std::endl;
 }
 
+std::set<std::string>& FilterProvenance::get_allowed_methods() {
+  static std::set<std::string> m;
+  if (m.empty()) {
+    m.insert("Total score");
+    m.insert("Best scoring");
+    m.insert("Keep fraction");
+  }
+  return m;
+}
+
+StringKey FilterProvenance::get_method_key() {
+  static const StringKey method("fp_method");
+  return method;
+}
+
 FloatKey FilterProvenance::get_threshold_key() {
   static const FloatKey threshold("fp_threshold");
   return threshold;

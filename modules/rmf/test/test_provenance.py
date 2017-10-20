@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         IMP.core.add_provenance(m, h, comb)
 
         filt = IMP.core.FilterProvenance.setup_particle(
-                            m, IMP.Particle(m), 100.5, 39)
+                            m, IMP.Particle(m), "Total score", 100.5, 39)
         IMP.core.add_provenance(m, h, filt)
 
         clus = IMP.core.ClusterProvenance.setup_particle(m, IMP.Particle(m), 10)
@@ -55,6 +55,7 @@ class Tests(IMP.test.TestCase):
         prov = prov.get_previous()
         self.assertTrue(IMP.core.FilterProvenance.get_is_setup(m, prov))
         filt = IMP.core.FilterProvenance(m, prov)
+        self.assertEqual(filt.get_method(), "Total score")
         self.assertAlmostEqual(filt.get_threshold(), 100.5, delta=1e-4)
         self.assertEqual(filt.get_number_of_frames(), 39)
 

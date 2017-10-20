@@ -63,9 +63,16 @@ class Tests(IMP.test.TestCase):
     def test_filter_provenance(self):
         """Test FilterProvenance decorator"""
         m = IMP.Model()
-        p = IMP.core.FilterProvenance.setup_particle(m, IMP.Particle(m), 100.5,
-                                                     42)
+        p = IMP.core.FilterProvenance.setup_particle(m, IMP.Particle(m),
+                                "Total score", 100.5, 42)
         self.assertTrue(IMP.core.FilterProvenance.get_is_setup(p))
+        self.assertEqual(p.get_method(), "Total score")
+        p.set_method("Keep fraction")
+        self.assertEqual(p.get_method(), "Keep fraction")
+        self.assertRaisesUsageException(p.set_method, "Garbage")
+        self.assertRaisesUsageException(
+                 IMP.core.FilterProvenance.setup_particle, m, IMP.Particle(m),
+                 "Garbage", 100.5, 42)
         self.assertAlmostEqual(p.get_threshold(), 100.5, delta=0.01)
         p.set_threshold(76.0)
         self.assertAlmostEqual(p.get_threshold(), 76.0, delta=0.01)
@@ -127,7 +134,7 @@ class Tests(IMP.test.TestCase):
         comb.set_previous(samp)
 
         filt = IMP.core.FilterProvenance.setup_particle(
-                            m, IMP.Particle(m), 100.5, 39)
+                            m, IMP.Particle(m), "Total score", 100.5, 39)
         filt.set_previous(comb)
 
         clus = IMP.core.ClusterProvenance.setup_particle(m, IMP.Particle(m), 10)

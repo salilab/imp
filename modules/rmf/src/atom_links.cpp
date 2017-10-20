@@ -202,7 +202,8 @@ core::Provenance HierarchyLoadLink::create_one_provenance(Model *m,
   } else if (filtpf_.get_is(node)) {
     RMF::decorator::FilterProvenanceConst rp = filtpf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
-    return core::FilterProvenance::setup_particle(m, ip, rp.get_threshold(),
+    return core::FilterProvenance::setup_particle(m, ip, rp.get_method(),
+                                                  rp.get_threshold(),
                                                   rp.get_frames());
   } else if (clustpf_.get_is(node)) {
     RMF::decorator::ClusterProvenanceConst rp = clustpf_.get(node);
@@ -467,6 +468,7 @@ void HierarchySaveLink::add_provenance(Model *m, ParticleIndex p,
       cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
                           RMF::PROVENANCE);
       RMF::decorator::FilterProvenance rp = filtpf_.get(cur);
+      rp.set_method(ip.get_method());
       rp.set_threshold(ip.get_threshold());
       rp.set_frames(ip.get_number_of_frames());
     } else if (core::ClusterProvenance::get_is_setup(prov)) {
