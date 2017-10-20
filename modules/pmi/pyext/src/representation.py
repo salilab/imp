@@ -210,7 +210,12 @@ class Representation(object):
         self.label = label
 
     def create_component(self, name, color=0.0):
-        protein_h = IMP.atom.Molecule.setup_particle(IMP.Particle(self.m))
+        # Note that we set up the component as *both* a Chain and a Molecule.
+        # This is because old PMI1 code expects the top-level particle to be
+        # a Molecule, but we also need it to be a Chain to set the sequence.
+        # This looks a little odd but is a valid IMP atom::Hierarchy.
+        protein_h = IMP.atom.Chain.setup_particle(IMP.Particle(self.m), 'X')
+        IMP.atom.Molecule.setup_particle(protein_h)
         protein_h.set_name(name)
         self.hier_dict[name] = protein_h
         self.hier_representation[name] = {}
@@ -258,6 +263,8 @@ class Representation(object):
             raise KeyError("id %s not found in fasta file" % id)
         length = len(record_dict[id])
         self.sequence_dict[name] = str(record_dict[id])
+        protein_h = self.hier_dict[name]
+        protein_h.set_sequence(self.sequence_dict[name])
         if offs is not None:
             offs_str="-"*offs
             self.sequence_dict[name]=offs_str+self.sequence_dict[name]
