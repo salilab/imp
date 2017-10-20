@@ -37,7 +37,7 @@ class Tests(IMP.test.TestCase):
         self.assertRaisesUsageException(p.set_method, "Garbage")
         self.assertRaisesUsageException(
                  IMP.core.SampleProvenance.setup_particle, m, IMP.Particle(m),
-                 "Garbage", 100)
+                 "Garbage", 100, 5)
         self.assertEqual(p.get_number_of_frames(), 100)
         p.set_number_of_frames(200)
         self.assertEqual(p.get_number_of_frames(), 200)
