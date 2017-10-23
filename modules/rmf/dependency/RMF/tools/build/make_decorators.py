@@ -105,11 +105,8 @@ make_header("publication", [journal], [])
 
 structure = Decorator(["PROVENANCE"], "provenance",
                       "StructureProvenance",
-                      # Note that this should really be PathAttribute,
-                      # but that currently requires that the file exists,
-                      # otherwise reading the RMF file will fail
-                      [Attribute("structure filename", "String",
-                                 function_name='filename'),
+                      [PathAttribute("structure filename",
+                                     function_name='filename'),
                        Attribute("structure chain", "String",
                                  function_name='chain')])
 

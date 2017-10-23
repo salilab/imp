@@ -148,6 +148,10 @@ class NodeAttribute(Attribute):
 
 
 class PathAttribute(Attribute):
+    """Similar to a string Attribute, but designed for storing paths.
+       Paths are stored internally relative to the directory containing
+       the RMF file (in-memory RMFs are considered to be in the current
+       working directory) but the API always returns absolute paths."""
 
     def __init__(self, name, function_name=None):
         Attribute.__init__(self, name, "String", function_name)

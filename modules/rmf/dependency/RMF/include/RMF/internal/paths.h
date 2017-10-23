@@ -17,8 +17,13 @@ RMF_ENABLE_WARNINGS
 namespace RMF {
 namespace internal {
 RMFEXPORT std::string get_file_name(std::string file);
+
+// Get a relative path to file from the directory containing base
 RMFEXPORT std::string get_relative_path(std::string base, std::string file);
+
+// Get an absolute path to file from the directory containing base
 RMFEXPORT std::string get_absolute_path(std::string base, std::string file);
+
 RMFEXPORT std::string get_unique_path();
 }  // namespace internal
 } /* namespace RMF */

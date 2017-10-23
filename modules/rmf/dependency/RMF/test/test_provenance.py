@@ -39,7 +39,7 @@ class Tests(unittest.TestCase):
 
         struc_node = samp_node.add_child("structure", RMF.PROVENANCE)
         struc = strucpf.get(struc_node)
-        struc.set_filename('foo.pdb')
+        struc.set_filename(os.path.abspath('foo.pdb'))
         struc.set_chain('X')
 
         return clust_node
@@ -88,7 +88,7 @@ class Tests(unittest.TestCase):
         struc_node = samp_node.get_children()[0]
         self.assertTrue(strucpf.get_is(struc_node))
         struc = strucpf.get(struc_node)
-        self.assertEqual(struc.get_filename(), 'foo.pdb')
+        self.assertEqual(struc.get_filename(), os.path.abspath('foo.pdb'))
         self.assertEqual(struc.get_chain(), 'X')
 
 if __name__ == '__main__':
