@@ -18,10 +18,12 @@
 #include <boost/algorithm/string.hpp>
 
 #include <boost/version.hpp>
-#if BOOST_VERSION >= 104600 && !defined(BOOST_FILESYSTEM_VERSION)
+#if !defined(BOOST_FILESYSTEM_VERSION)
+#if BOOST_VERSION >= 104600
 #define BOOST_FILESYSTEM_VERSION 3
 #else
 #define BOOST_FILESYSTEM_VERSION 2
+#endif
 #endif
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
