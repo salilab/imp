@@ -177,6 +177,16 @@ IMPKERNELEXPORT std::string create_temporary_file_name(std::string prefix =
 IMPKERNELEXPORT std::string get_relative_path(std::string base,
                                             std::string relative);
 
+//! Convert a possibly relative path to an absolute path.
+/** If the provided path is a relative path, add the current working
+    directory to make it an absolute path.
+
+    \note If the path is already absolute, it is returned unchanged.
+          Paths are not made canonical (symlinks or '..' elements are
+	  not removed). On Windows, the path is always returned unchanged.
+  */
+IMPKERNELEXPORT std::string get_absolute_path(std::string file);
+
 IMPKERNEL_END_NAMESPACE
 
 #endif /* IMPKERNEL_FILE_H */

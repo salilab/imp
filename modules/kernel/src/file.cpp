@@ -11,7 +11,17 @@
 #include <IMP/internal/directories.h>
 #include <cstdlib>
 //#include <unistd.h>
+#include <boost/version.hpp>
+#if defined(BOOST_FILESYSTEM_VERSION)
+#if BOOST_VERSION >= 104600
+#define BOOST_FILESYSTEM_VERSION 3
+#else
+#define BOOST_FILESYSTEM_VERSION 2
+#endif
+#endif
 #include <boost/scoped_array.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 #ifdef _MSC_VER
 #include <windows.h>
 #endif
@@ -180,6 +190,21 @@ std::string create_temporary_file_name(std::string prefix, std::string suffix) {
 std::string get_relative_path(std::string base, std::string relative) {
   std::string dir = internal::get_directory_path(base);
   return internal::get_concatenated_path(dir, relative);
+}
+
+std::string get_absolute_path(std::string file) {
+#ifdef _MSC_VER
+  // No implementation for Windows right now
+  return file;
+#else
+  if (file[0] == '/') {
+    return file;
+  } else {
+    boost::filesystem::path p = boost::filesystem::current_path()
+                                       / boost::filesystem::path(file);
+    return p.string();
+  }
+#endif
 }
 
 IMPKERNEL_END_NAMESPACE

@@ -74,5 +74,19 @@ class Tests(IMP.test.TestCase):
         # shouldn't raise
         IMP._test_ifile_overloaded(s, "hi")
 
+    def test_abspath(self):
+        """Test get_absolute_path()"""
+        relpth = "bar/foo.pdb"
+        abspth = os.path.abspath(relpth)
+
+        # Absolute path should be returned unchanged
+        self.assertEqual(IMP.get_absolute_path(abspth), abspth)
+
+        # Relative path should be converted to abspath, except on Windows
+        if sys.platform == 'win32':
+            self.assertEqual(IMP.get_absolute_path(relpth), relpth)
+        else:
+            self.assertEqual(IMP.get_absolute_path(relpth), abspth)
+
 if __name__ == '__main__':
     IMP.test.main()
