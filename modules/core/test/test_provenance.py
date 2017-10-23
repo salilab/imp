@@ -2,6 +2,8 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.core
+import sys
+import os
 
 class Tests(IMP.test.TestCase):
 
@@ -22,7 +24,11 @@ class Tests(IMP.test.TestCase):
         p = IMP.core.StructureProvenance.setup_particle(m, IMP.Particle(m),
                                "testfile", "testchain")
         self.assertTrue(IMP.core.StructureProvenance.get_is_setup(p))
-        self.assertEqual(p.get_filename(), "testfile")
+        # Paths are stored internally as absolute paths (except on Windows)
+        if sys.platform == 'win32':
+            self.assertEqual(p.get_filename(), "testfile")
+        else:
+            self.assertEqual(p.get_filename(), os.path.abspath("testfile"))
         self.assertEqual(p.get_chain_id(), "testchain")
 
     def test_sample_provenance(self):
@@ -169,7 +175,10 @@ class Tests(IMP.test.TestCase):
         prov = prov.get_previous()
         self.assertTrue(IMP.core.StructureProvenance.get_is_setup(m, prov))
         struc = IMP.core.StructureProvenance(m, prov)
-        self.assertEqual(struc.get_filename(), "testfile")
+        if sys.platform == 'win32':
+            self.assertEqual(struc.get_filename(), "testfile")
+        else:
+            self.assertEqual(struc.get_filename(), os.path.abspath("testfile"))
         self.assertEqual(struc.get_chain_id(), "testchain")
 
         # Should be no more provenance

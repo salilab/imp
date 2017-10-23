@@ -15,6 +15,7 @@
 #include <IMP/object_macros.h>
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>
+#include <IMP/file.h>
 #include <set>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -80,7 +81,7 @@ class IMPCOREEXPORT StructureProvenance : public Provenance {
                                 std::string chain_id) {
     Provenance::setup_particle(m, pi);
     IMP_USAGE_CHECK(!filename.empty(), "The filename cannot be empty.");
-    m->add_attribute(get_filename_key(), pi, filename);
+    m->add_attribute(get_filename_key(), pi, get_absolute_path(filename));
     m->add_attribute(get_chain_key(), pi, chain_id);
   }
 
@@ -99,13 +100,17 @@ public:
   }
 
   //! Set the filename
+  /** The path can be relative or absolute. Internally, an absolute
+      path will be stored (although generally it will be converted to
+      a relative path when storing in a file, such as RMF).
+    */
   void set_filename(std::string filename) const {
     IMP_USAGE_CHECK(!filename.empty(), "The filename cannot be empty");
     return get_model()->set_attribute(get_filename_key(), get_particle_index(),
-                                      filename);
+                                      get_absolute_path(filename));
   }
 
-  //! \return the filename
+  //! \return the filename, as an absolute path
   std::string get_filename() const {
     return get_model()->get_attribute(get_filename_key(), get_particle_index());
   }

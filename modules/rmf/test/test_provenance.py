@@ -3,7 +3,8 @@ import unittest
 import IMP.rmf
 import IMP.test
 import RMF
-
+import os
+import sys
 
 class Tests(IMP.test.TestCase):
 
@@ -75,7 +76,10 @@ class Tests(IMP.test.TestCase):
         prov = prov.get_previous()
         self.assertTrue(IMP.core.StructureProvenance.get_is_setup(m, prov))
         struc = IMP.core.StructureProvenance(m, prov)
-        self.assertEqual(struc.get_filename(), "testfile")
+        if sys.platform == 'win32':
+            self.assertEqual(struc.get_filename(), "testfile")
+        else:
+            self.assertEqual(struc.get_filename(), os.path.abspath("testfile"))
         self.assertEqual(struc.get_chain_id(), "testchain")
         self.assertEqual(struc.get_name(), "structure provenance")
 
