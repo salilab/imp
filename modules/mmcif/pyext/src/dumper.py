@@ -5,6 +5,14 @@
 from __future__ import print_function
 import IMP.atom
 
+def get_molecule(h):
+    """Given a Hierarchy, walk up and find the parent Molecule"""
+    while h:
+        if IMP.atom.Molecule.get_is_setup(h):
+            return IMP.atom.Molecule(h)
+        h = h.get_parent()
+    return None
+
 class _Dumper(object):
     """Base class for helpers to dump output to mmCIF"""
     def __init__(self):
@@ -64,3 +72,16 @@ class _EntityPolySeqDumper(_Dumper):
                     l.write(entity_id=entity.id, num=num + 1,
                             mon_id=restyp.get_string(),
                             hetero=writer.omitted)
+
+
+class _StructAsymDumper(_Dumper):
+    def dump(self, cifdata, writer):
+        with writer.loop("_struct_asym",
+                         ["id", "entity_id", "details"]) as l:
+            for chain in cifdata.chains:
+                molecule = get_molecule(chain)
+                entity = cifdata.entities[chain]
+                l.write(id=chain.get_id(),
+                        entity_id=entity.id,
+                        details=molecule.get_name() if molecule
+                                                    else writer.omitted)

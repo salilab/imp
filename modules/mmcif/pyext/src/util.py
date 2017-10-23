@@ -6,30 +6,24 @@ class Writer(object):
         self._dumpers = [IMP.mmcif.dumper._EntryDumper(), # must be first
                          IMP.mmcif.dumper._EntityDumper(),
                          IMP.mmcif.dumper._EntityPolyDumper(),
-                         IMP.mmcif.dumper._EntityPolySeqDumper()]
+                         IMP.mmcif.dumper._EntityPolySeqDumper(),
+                         IMP.mmcif.dumper._StructAsymDumper()]
         self.entities = _EntityMapper()
+        self.chains = []
 
     def add_hierarchy(self, h):
         chains = [IMP.atom.Chain(c)
                   for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)]
-        # todo: handle chains with duplicated IDs
+        # todo: handle chains with duplicated IDs, same chain in multiple states
         for c in chains:
             self.entities.add(c)
+            self.chains.append(c)
 
     def write(self, fname):
         with open(fname, 'w') as fh:
             writer = IMP.mmcif.format._CifWriter(fh)
             for dumper in self._dumpers:
                 dumper.dump(self, writer)
-
-def get_molecule(h):
-    """Given a Hierarchy, walk up and find the parent Molecule"""
-    while h:
-        if IMP.atom.Molecule.get_is_setup(h):
-            return IMP.atom.Molecule(h)
-        h = h.get_parent()
-    return None
-
 
 class _Entity(object):
     """Represent a CIF entity (a chain with a unique sequence)"""
@@ -51,7 +45,7 @@ class _EntityMapper(dict):
         # todo: handle non-protein sequences
         sequence = chain.get_sequence()
         if sequence not in self._sequence_dict:
-            mol = get_molecule(chain)
+            mol = IMP.mmcif.dumper.get_molecule(chain)
             entity = _Entity(sequence, chain, mol.get_name() if mol else None)
             self._entities.append(entity)
             entity.id = len(self._entities)

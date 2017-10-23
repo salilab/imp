@@ -118,5 +118,28 @@ _entity_poly_seq.hetero
 #
 """)
 
+    def test_struct_asym_dumper(self):
+        """Test StructAsymDumper"""
+        m = IMP.Model()
+        writer = IMP.mmcif.Writer()
+        h = self.make_model(m, writer)
+        writer.add_hierarchy(h)
+        dumper = IMP.mmcif.dumper._StructAsymDumper()
+        fh = StringIO()
+        cifw = IMP.mmcif.format._CifWriter(fh)
+        dumper.dump(writer, cifw)
+
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_struct_asym.id
+_struct_asym.entity_id
+_struct_asym.details
+A 1 foo
+B 1 bar
+C 2 baz
+#
+""")
+
 if __name__ == '__main__':
     IMP.test.main()
