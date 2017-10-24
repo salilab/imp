@@ -4,18 +4,15 @@
 
 from __future__ import print_function
 import IMP.atom
-
-def get_molecule(h):
-    """Given a Hierarchy, walk up and find the parent Molecule"""
-    while h:
-        if IMP.atom.Molecule.get_is_setup(h):
-            return IMP.atom.Molecule(h)
-        h = h.get_parent()
-    return None
+import IMP.mmcif.data
 
 class _Dumper(object):
     """Base class for helpers to dump output to mmCIF"""
     def __init__(self):
+        pass
+    def finalize_metadata(self):
+        pass
+    def finalize(self):
         pass
 
 class _EntryDumper(_Dumper):
@@ -79,9 +76,56 @@ class _StructAsymDumper(_Dumper):
         with writer.loop("_struct_asym",
                          ["id", "entity_id", "details"]) as l:
             for chain in cifdata.chains:
-                molecule = get_molecule(chain)
+                molecule = IMP.mmcif.data.get_molecule(chain)
                 entity = cifdata.entities[chain]
                 l.write(id=chain.get_id(),
                         entity_id=entity.id,
                         details=molecule.get_name() if molecule
                                                     else writer.omitted)
+
+
+class _AssemblyDumper(_Dumper):
+    def __init__(self):
+        super(_AssemblyDumper, self).__init__()
+        self.assemblies = []
+
+    def add(self, a):
+        """Add a new assembly. The first such assembly is assumed to contain
+           all components. Duplicate assemblies will be pruned at the end."""
+        self.assemblies.append(a)
+        return a
+
+    def get_subassembly(self, compdict):
+        """Get an _Assembly consisting of the given components."""
+        # Put components in creation order
+        newa = IMP.mmcif.data._Assembly(c for c in self.assemblies[0]
+                                        if c in compdict)
+        return self.add(newa)
+
+    def finalize(self):
+        seen_assemblies = {}
+        # Assign IDs to all assemblies
+        self._assembly_by_id = []
+        for a in self.assemblies:
+            IMP.mmcif.data._assign_id(a, seen_assemblies, self._assembly_by_id)
+
+    def dump(self, cifdata, writer):
+        ordinal = 1
+        with writer.loop("_ihm_struct_assembly",
+                         ["ordinal_id", "assembly_id", "parent_assembly_id",
+                          "entity_description",
+                          "entity_id", "asym_id", "seq_id_begin",
+                          "seq_id_end"]) as l:
+            for a in self._assembly_by_id:
+                for chain in a:
+                    entity = cifdata.entities[chain]
+                    l.write(ordinal_id=ordinal, assembly_id=a.id,
+                            # Currently all assemblies are not hierarchical,
+                            # so each assembly is a self-parent
+                            parent_assembly_id=a.id,
+                            entity_description=entity.description,
+                            entity_id=entity.id,
+                            asym_id=chain.get_id(),
+                            seq_id_begin=1,
+                            seq_id_end=len(entity.sequence))
+                    ordinal += 1
