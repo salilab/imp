@@ -14,11 +14,12 @@ def get_molecule(h):
     return None
 
 class _Entity(object):
-    """Represent a CIF entity (a chain with a unique sequence)"""
-    def __init__(self, seq, first_chain, description):
+    """Represent a CIF entity (a component with a unique sequence)"""
+    def __init__(self, seq):
         self.sequence = seq
-        self.first_chain = first_chain
-        self.description = description
+        self.first_component = None
+    # Use the name of the first component as the description of the entity
+    description = property(lambda self: self.first_component.name)
 
 
 class _EntityMapper(dict):
@@ -33,8 +34,7 @@ class _EntityMapper(dict):
         # todo: handle non-protein sequences
         sequence = chain.get_sequence()
         if sequence not in self._sequence_dict:
-            mol = get_molecule(chain)
-            entity = _Entity(sequence, chain, mol.get_name() if mol else None)
+            entity = _Entity(sequence)
             self._entities.append(entity)
             entity.id = len(self._entities)
             self._sequence_dict[sequence] = entity
@@ -84,19 +84,27 @@ class _ComponentMapper(dict):
         if isinstance(chain, IMP.atom.Chain):
             modeled = True
             mol = get_molecule(chain)
-            asym_id = chain.get_id()
+            asym_id = map_key = chain.get_id()
             name = mol.get_name() if mol else None
         else:
             modeled = False
             asym_id = None
-            name = chain
-        if (entity, asym_id) not in self._map:
+            name = map_key = chain
+        if map_key not in self._map:
             component = _Component(entity, asym_id, name)
+            if entity.first_component is None:
+                entity.first_component = component
             self._all_components.append(component)
             if modeled:
                 self._all_modeled_components.append(component)
-            self._map[(entity, asym_id)] = component
-        return self._map[(entity, asym_id)]
+            self._map[map_key] = component
+        else:
+            component = self._map[map_key]
+            if component.entity != entity:
+                raise ValueError("Two chains have the same ID (%s) but "
+                                 "different sequences - rename one of the "
+                                 "chains" % map_key)
+        return component
 
     def get_all(self):
         """Get all components"""
@@ -109,7 +117,7 @@ class _ComponentMapper(dict):
 
 class _Assembly(list):
     """A collection of components. Currently simply implemented as a list of
-       the chain objects. These must be in creation order."""
+       the _Component objects. These must be in creation order."""
     def __hash__(self):
         # allow putting assemblies in a dict. 'list' isn't hashable
         # but 'tuple' is

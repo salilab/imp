@@ -28,7 +28,8 @@ class Writer(object):
         for c in chains:
             entity = self.entities.add(c)
             component = self.components.add(c, entity)
-            self.complete_assembly.append(c)
+            if component not in self.complete_assembly:
+                self.complete_assembly.append(component)
 
     def _remove_duplicate_chain_ids(self, chains):
         chain_ids = [c.get_id() for c in chains]

@@ -69,10 +69,10 @@ class _EntityPolyDumper(_Dumper):
                 seq = entity.sequence
                 # Split into lines to get tidier CIF output
                 seq = "\n".join(seq[i:i+70] for i in range(0, len(seq), 70))
-                chain = entity.first_chain
+                comp = entity.first_component
                 l.write(entity_id=entity.id, type='polypeptide(L)',
                         nstd_linkage='no', nstd_monomer='no',
-                        pdbx_strand_id=chain.get_id(),
+                        pdbx_strand_id=comp.asym_id,
                         pdbx_seq_one_letter_code=seq,
                         pdbx_seq_one_letter_code_can=seq)
 
@@ -132,15 +132,15 @@ class _AssemblyDumper(_Dumper):
                           "entity_id", "asym_id", "seq_id_begin",
                           "seq_id_end"]) as l:
             for a in self._assembly_by_id:
-                for chain in a:
-                    entity = cifdata.entities[chain]
+                for comp in a:
+                    entity = comp.entity
                     l.write(ordinal_id=ordinal, assembly_id=a.id,
                             # Currently all assemblies are not hierarchical,
                             # so each assembly is a self-parent
                             parent_assembly_id=a.id,
                             entity_description=entity.description,
                             entity_id=entity.id,
-                            asym_id=chain.get_id(),
+                            asym_id=comp.asym_id,
                             seq_id_begin=1,
                             seq_id_end=len(entity.sequence))
                     ordinal += 1
