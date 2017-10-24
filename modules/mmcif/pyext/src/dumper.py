@@ -93,13 +93,10 @@ class _StructAsymDumper(_Dumper):
     def dump(self, cifdata, writer):
         with writer.loop("_struct_asym",
                          ["id", "entity_id", "details"]) as l:
-            for chain in cifdata.chains:
-                molecule = IMP.mmcif.data.get_molecule(chain)
-                entity = cifdata.entities[chain]
-                l.write(id=chain.get_id(),
-                        entity_id=entity.id,
-                        details=molecule.get_name() if molecule
-                                                    else writer.omitted)
+            for comp in cifdata.components.get_all_modeled():
+                l.write(id=comp.asym_id,
+                        entity_id=comp.entity.id,
+                        details=comp.name if comp.name else writer.omitted)
 
 
 class _AssemblyDumper(_Dumper):

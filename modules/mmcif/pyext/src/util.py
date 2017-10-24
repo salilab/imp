@@ -1,6 +1,7 @@
 import IMP.mmcif.dumper
 import IMP.mmcif.data
 import IMP.mmcif.format
+import string
 
 class Writer(object):
     def __init__(self):
@@ -17,16 +18,26 @@ class Writer(object):
                          IMP.mmcif.dumper._StructAsymDumper(),
                          self.assembly_dump]
         self.entities = IMP.mmcif.data._EntityMapper()
-        self.chains = []
+        self.components = IMP.mmcif.data._ComponentMapper()
 
     def add_hierarchy(self, h):
         chains = [IMP.atom.Chain(c)
                   for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)]
-        # todo: handle chains with duplicated IDs, same chain in multiple states
+        self._remove_duplicate_chain_ids(chains)
+        # todo: handle same chain in multiple states
         for c in chains:
-            self.entities.add(c)
-            self.chains.append(c)
+            entity = self.entities.add(c)
+            component = self.components.add(c, entity)
             self.complete_assembly.append(c)
+
+    def _remove_duplicate_chain_ids(self, chains):
+        chain_ids = [c.get_id() for c in chains]
+        if len(set(chain_ids)) < len(chain_ids):
+            print("Duplicate chain IDs detected - reassigning as A-Z, a-z, 0-9")
+            # todo: handle > 62 chains
+            for chain, cid in zip(chains, string.uppercase
+                                          + string.lowercase + string.digits):
+                chain.set_id(cid)
 
     def write(self, fname):
         with open(fname, 'w') as fh:
