@@ -488,6 +488,7 @@ class Representation(object):
 
         hiers = self.coarse_hierarchy(name, start, end,
                                       resolutions, isnucleicacid, c0, protein_h, "pdb", color)
+        self._copy_pdb_provenance(t, hiers[0])
         outhiers += hiers
         for p, state in self._protocol_output:
             p.add_pdb_element(state, name, start, end, offset, pdbname, chain,
@@ -511,6 +512,13 @@ class Representation(object):
         IMP.atom.destroy(t)
 
         return outhiers
+
+    def _copy_pdb_provenance(self, pdb, h):
+        """Copy the provenance information from the PDB to our hierarchy"""
+        c = IMP.atom.Chain(IMP.atom.get_by_type(pdb, IMP.atom.CHAIN_TYPE)[0])
+        prov = IMP.core.Provenanced(c).get_provenance()
+        newprov = IMP.core.create_clone(prov)
+        IMP.core.Provenanced.setup_particle(h, newprov)
 
     def add_component_ideal_helix(
         self,

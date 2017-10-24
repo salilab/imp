@@ -2187,39 +2187,22 @@ class AnalysisReplicaExchange(object):
     ######################
 
 
-    def cluster(self, rmsd_cutoff=10, stop_at_first_found=False):
+    def cluster(self, rmsd_cutoff=10, metric=IMP.atom.get_rmsd):
         """
         Cluster the models based on RMSD.
         @param rmsd_cutoff Float the distance cutoff in Angstrom
-        @param stop_at_first_found bool (Default=True) don't compute the complete pairwise
-               distance computation, but stop as soon as a model is within the distance cutoff from a cluster
+        @param metric (Default=IMP.atom.get_rmsd) the metric that will be used to compute rmsds
         """
-        self.clusters = []
-        for n1,d1 in enumerate(self.stath1):
-            assigned={}
-            for c in self.clusters:
-                for n0 in c.members:
-                    d0=self.stath0[n0]
-                    if self.alignment: self.align()
-                    rmsd, molecular_assignment=self.rmsd()
-                    if rmsd<=rmsd_cutoff:
-                        assigned[rmsd]=(n0,c)
-                        if stop_at_first_found:
-                            break
-
-            if len(assigned) == 0:
-                c=IMP.pmi.output.Cluster(len(self.clusters))
-                c.add_member(n1,d1)
-                self.clusters.append(c)
-            else:
-                minrmsd=min(assigned.keys())
-                n0,c=assigned[minrmsd]
-                c.add_member(n1,d1)
-
+        self.clusters=[]
+        not_clustered=set(range(len(self.stath1)))
+        while len(not_clustered)>0:
+            self.aggregate(not_clustered, rmsd_cutoff, metric)
+        self.merge_aggregates(rmsd_cutoff, metric)
+        self.update_clusters()
 
     def refine(self,rmsd_cutoff=10):
         """
-        Refine the clusters by merging similar ones
+        Refine the clusters by merging the ones whose centers are close
         @param rmsd_cutoff cutoff distance in Angstorms
         """
         merge_pairs=[]
@@ -2231,7 +2214,6 @@ class AnalysisReplicaExchange(object):
                 self.compute_cluster_center(c1)
             d0=self.stath0[c0.center_index]
             d1=self.stath1[c1.center_index]
-            if self.alignment: self.align()
             rmsd, molecular_assignment = self.rmsd()
             if rmsd <= rmsd_cutoff:
                 if c1 in self.clusters:
@@ -2330,7 +2312,6 @@ class AnalysisReplicaExchange(object):
         for n0,n1 in itertools.combinations(cluster.members,2):
             d0=self.stath0[n0]
             d1 = self.stath1[n1]
-            if self.alignment: self.align()
             rmsd, _ = self.rmsd()
             member_distance[n0]+=rmsd
 
@@ -2394,7 +2375,6 @@ class AnalysisReplicaExchange(object):
             d0=self.stath0[n0]
             for n1 in cluster2.members:
                 d1=self.stath1[n1]
-                if self.alignment: self.align()
                 tmp_rmsd, tmp_pairwise_molecular_assignment=self.rmsd()
                 rmsd+=tmp_rmsd
                 npairs+=1
@@ -2680,6 +2660,86 @@ class AnalysisReplicaExchange(object):
 
         self.model.update()
 
+    def aggregate(self, idxs, rmsd_cutoff=10, metric=IMP.atom.get_rmsd):
+        '''
+        initial filling of the clusters.
+        '''
+        n0 = idxs.pop()
+        d0 = self.stath0[n0]
+        c = IMP.pmi.output.Cluster(len(self.clusters))
+        self.clusters.append(c)
+        c.add_member(n0,d0)
+        clustered = set([n0])
+        for n1 in idxs:
+            d1 = self.stath1[n1]
+            if self.alignment: self.align()
+            rmsd, _ = self.rmsd(metric=metric)
+            if rmsd<rmsd_cutoff:
+                c.add_member(n1,d1)
+                clustered.add(n1)
+        idxs-=clustered
+
+    def merge_aggregates(self, rmsd_cutoff, metric=IMP.atom.get_rmsd):
+        """
+        merge the clusters that have close members
+        @param rmsd_cutoff cutoff distance in Angstorms
+        """
+        # before merging, clusters are spheres of radius rmsd_cutoff centered on the 1st element
+        # here we only try to merge clusters whose centers are closer than 2*rmsd_cutoff
+        to_merge = []
+        for c0, c1 in filter(lambda x: len(x[0].members)>1, itertools.combinations(self.clusters, 2)):
+            n0, n1 = [c.members[0] for c in (c0,c1)]
+            d0 = self.stath0[n0]
+            d1 = self.stath1[n1]
+            rmsd, _ = self.rmsd()
+            if rmsd<2*rmsd_cutoff and self.have_close_members(c0,c1,rmsd_cutoff,metric):
+                to_merge.append((c0,c1))
+
+        for c0, c in reversed(to_merge):
+            self.merge(c0,c)
+
+        #keep only full clusters
+        self.clusters = [c for c in filter(lambda x: len(x.members)>0, self.clusters)]
+
+
+    def have_close_members(self, c0, c1, rmsd_cutoff, metric):
+        '''
+        returns true if c0 and c1 have members that are closer than rmsd_cutoff
+        '''
+        for n0, n1 in itertools.product(c0.members[1:], c1.members):
+            d0 = self.stath0[n0]
+            d1 = self.stath1[n1]
+            rmsd, _ = self.rmsd(metric=metric)
+            if rmsd<rmsd_cutoff:
+                return True
+
+        return False
+
+
+    def merge(self, c0, c1):
+        '''
+        merge two clusters
+        '''
+        c0+=c1
+        c1.members=[]
+        c1.data={}
+
+    def rmsd_helper(self, sels0, sels1, metric):
+        '''
+        a function that returns the permutation best_sel of sels0 that minimizes metric
+        '''
+        best_rmsd2 = float('inf')
+        best_sel = None
+        for sels in itertools.permutations(sels0):
+            rmsd2=0.0
+            for sel0, sel1 in itertools.takewhile(lambda x: rmsd2<best_rmsd2, zip(sels, sels1)):
+                r=metric(sel0, sel1)
+                rmsd2+=r*r
+            if rmsd2 < best_rmsd2:
+                best_rmsd2 = rmsd2
+                best_sel = sels
+        return  best_sel, best_rmsd2
+
     def rmsd(self,metric=IMP.atom.get_rmsd):
         '''
         Computes the RMSD. Resolves ambiguous pairs assignments
@@ -2690,31 +2750,23 @@ class AnalysisReplicaExchange(object):
         if ((n0,n1) in self.pairwise_rmsd) and ((n0,n1) in self.pairwise_molecular_assignment):
             return self.pairwise_rmsd[(n0,n1)], self.pairwise_molecular_assignment[(n0,n1)]
 
+        if self.alignment:
+            self.align()
         #if it's not yet memoized
         total_rmsd=0.0
         total_N=0
         # this is a dictionary which keys are the molecule names, and values are the list of IMP.atom.Selection for all molecules that share the molecule name
         seldict_best_order={}
+        molecular_assignment={}
         for molname, sels0 in self.seldict0.items():
-            rmsd2s = {}
-            for sels in itertools.permutations(sels0):
-                rmsd2=0
-                for sel0, sel1 in zip(sels, self.seldict1[molname]):
-                    r=metric(sel0, sel1)
-                    rmsd2+=r*r
-                rmsd2s[sels]=rmsd2
-            sels_best_order = min(rmsd2s, key=rmsd2s.get)
-            seldict_best_order[molname]=sels_best_order
-            best_rmsd2 = rmsd2s[sels_best_order]
+            sels_best_order, best_rmsd2 = self.rmsd_helper(sels0, self.seldict1[molname], metric)
+
             Ncoords = len(sels_best_order[0].get_selected_particles())
             Ncopies = len(sels_best_order)
             total_rmsd += Ncoords*best_rmsd2
             total_N += Ncoords*Ncopies
-        total_rmsd = math.sqrt(total_rmsd/total_N)
 
-        molecular_assignment={}
-        for molname, sels in seldict_best_order.items():
-            for sel0, sel1 in zip(sels, self.seldict1[molname]):
+            for sel0, sel1 in zip(sels_best_order, self.seldict1[molname]):
                 p0 = sel0.get_selected_particles()[0]
                 p1 = sel1.get_selected_particles()[0]
                 m0,m1 = IMP.pmi.tools.get_molecules([p0,p1])
@@ -2722,8 +2774,12 @@ class AnalysisReplicaExchange(object):
                 c1 = IMP.atom.Copy(m1).get_copy_index()
                 molecular_assignment[(molname,c0)]=(molname,c1)
 
+        total_rmsd = math.sqrt(total_rmsd/total_N)
+
         self.pairwise_rmsd[(n0,n1)]=total_rmsd
         self.pairwise_molecular_assignment[(n0,n1)]=molecular_assignment
+        self.pairwise_rmsd[(n1,n0)]=total_rmsd
+        self.pairwise_molecular_assignment[(n1,n0)]=molecular_assignment
         return total_rmsd, molecular_assignment
 
     def set_reference(self,reference,cluster):
