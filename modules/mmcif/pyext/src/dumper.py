@@ -23,6 +23,24 @@ class _EntryDumper(_Dumper):
         with writer.category("_entry") as l:
             l.write(id=entry_id)
 
+class _ChemCompDumper(_Dumper):
+    def dump(self, cifdata, writer):
+        seen = {}
+        std = dict.fromkeys(('ALA', 'CYS', 'ASP', 'GLU', 'PHE', 'GLY', 'HIS',
+               'ILE', 'LYS', 'LEU', 'MET', 'ASN', 'PRO', 'GLN', 'ARG', 'SER',
+               'THR', 'VAL', 'TRP', 'TYR'))
+        with writer.loop("_chem_comp", ["id", "type"]) as l:
+            for entity in cifdata.entities.get_all():
+                seq = entity.sequence
+                for num, one_letter_code in enumerate(seq):
+                    restyp = IMP.atom.get_residue_type(one_letter_code)
+                    resid = restyp.get_string()
+                    if resid not in seen:
+                        seen[resid] = None
+                        l.write(id=resid,
+                                type='L-peptide linking' if resid in std \
+                                                         else 'other')
+
 
 class _EntityDumper(_Dumper):
     # todo: we currently only support amino acid sequences here (and

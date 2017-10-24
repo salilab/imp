@@ -10,6 +10,7 @@ class Writer(object):
         self.assembly_dump.add(self.complete_assembly)
 
         self._dumpers = [IMP.mmcif.dumper._EntryDumper(), # must be first
+                         IMP.mmcif.dumper._ChemCompDumper(),
                          IMP.mmcif.dumper._EntityDumper(),
                          IMP.mmcif.dumper._EntityPolyDumper(),
                          IMP.mmcif.dumper._EntityPolySeqDumper(),

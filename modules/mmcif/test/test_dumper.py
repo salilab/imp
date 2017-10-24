@@ -38,6 +38,28 @@ class Tests(IMP.test.TestCase):
         out = fh.getvalue()
         self.assertEqual(out, "data_imp_model\n_entry.id imp_model\n")
 
+    def test_chem_comp_dumper(self):
+        """Test ChemCompDumper"""
+        m = IMP.Model()
+        writer = IMP.mmcif.Writer()
+        h = self.make_model(m, writer)
+        writer.add_hierarchy(h)
+        dumper = IMP.mmcif.dumper._ChemCompDumper()
+        fh = StringIO()
+        cifw = IMP.mmcif.format._CifWriter(fh)
+        dumper.dump(writer, cifw)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_chem_comp.id
+_chem_comp.type
+ALA 'L-peptide linking'
+CYS 'L-peptide linking'
+GLY 'L-peptide linking'
+THR 'L-peptide linking'
+#
+""")
+
     def test_entity_dumper(self):
         """Test EntityDumper"""
         m = IMP.Model()
