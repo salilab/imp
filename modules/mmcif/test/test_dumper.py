@@ -209,6 +209,35 @@ _ihm_struct_assembly.seq_id_end
 #
 """)
 
+    def test_assembly_subset_modeled(self):
+        """Test AssemblyDumper, subset of components modeled"""
+        writer = IMP.mmcif.Writer()
+        h, state = self.make_model(writer, (("foo", "AAA", 'A'),))
+        state.add_hierarchy(h)
+        writer.add_non_modeled_chain(name="bar", sequence="AA")
+        d = writer.assembly_dump
+        fh = StringIO()
+        cifw = IMP.mmcif.format._CifWriter(fh)
+
+        d.finalize() # assign IDs
+        d.dump(writer, cifw)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_struct_assembly.ordinal_id
+_ihm_struct_assembly.assembly_id
+_ihm_struct_assembly.parent_assembly_id
+_ihm_struct_assembly.entity_description
+_ihm_struct_assembly.entity_id
+_ihm_struct_assembly.asym_id
+_ihm_struct_assembly.seq_id_begin
+_ihm_struct_assembly.seq_id_end
+1 1 1 foo 1 A 1 3
+2 1 1 bar 2 . 1 2
+3 2 2 foo 1 A 1 3
+#
+""")
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -140,7 +140,8 @@ class _AssemblyDumper(_Dumper):
                             parent_assembly_id=a.id,
                             entity_description=entity.description,
                             entity_id=entity.id,
-                            asym_id=comp.asym_id,
+                            asym_id=comp.asym_id if comp.asym_id
+                                                 else writer.omitted,
                             seq_id_begin=1,
                             seq_id_end=len(entity.sequence))
                     ordinal += 1

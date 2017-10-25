@@ -65,7 +65,7 @@ class _Component(object):
        same structure, just in different states, and potentially in
        different IMP Models). A _Component may also represent something
        that is described by an experiment but was not modeled by IMP, and
-       so no Chains map to it."""
+       so no Chains map to it but a string name does."""
     def __init__(self, entity, asym_id, name):
         self.entity, self.asym_id, self.name = entity, asym_id, name
 
@@ -79,8 +79,8 @@ class _ComponentMapper(dict):
         self._map = {}
 
     def add(self, chain, entity):
-        """Add a chain (either an IMP Chain object, or a descriptive name
-           for a non-modeled component)"""
+        """Add a chain (either an IMP Chain object for a modeled component,
+           or a NonModeledChain object for a non-modeled component)"""
         if isinstance(chain, IMP.atom.Chain):
             modeled = True
             mol = get_molecule(chain)
@@ -89,7 +89,7 @@ class _ComponentMapper(dict):
         else:
             modeled = False
             asym_id = None
-            name = map_key = chain
+            name = map_key = chain.name
         if map_key not in self._map:
             component = _Component(entity, asym_id, name)
             if entity.first_component is None:
@@ -104,7 +104,7 @@ class _ComponentMapper(dict):
                 raise ValueError("Two chains have the same ID (%s) but "
                                  "different sequences - rename one of the "
                                  "chains" % map_key)
-        return component, modeled
+        return component
 
     def get_all(self):
         """Get all components"""

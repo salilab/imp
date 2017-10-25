@@ -2,9 +2,22 @@ import IMP.mmcif.dumper
 import IMP.mmcif.data
 import IMP.mmcif.format
 import IMP.rmf
+import IMP.atom
 import RMF
 import string
 import weakref
+
+class _NonModeledChain(object):
+    """Represent a chain that was experimentally characterized but not modeled.
+       Such a chain resembles an IMP.atom.Chain, but has no associated
+       structure, and belongs to no state."""
+    def __init__(self, name, sequence, chain_type):
+        self.name = name
+        self.sequence = sequence
+        self.chain_type = chain_type
+
+    get_sequence = lambda self: self.sequence
+
 
 class Writer(object):
     def __init__(self):
@@ -34,13 +47,22 @@ class Writer(object):
         self._remove_duplicate_chain_ids(chains)
         # todo: handle same chain in multiple states
         for c in chains:
-            entity = self.entities.add(c)
-            component, modeled = self.components.add(c, entity)
-            if component not in self.complete_assembly:
-                self.complete_assembly.append(component)
-            if modeled:
-                state._all_modeled_components.append(component)
-                state.modeled_assembly.append(component)
+            component = self._add_chain(c)
+            state._all_modeled_components.append(component)
+            state.modeled_assembly.append(component)
+
+    def add_non_modeled_chain(self, name, sequence,
+                              chain_type=IMP.atom.UnknownChainType):
+        """Add a chain that wasn't modeled by IMP."""
+        c = _NonModeledChain(name, sequence, chain_type)
+        self._add_chain(c)
+
+    def _add_chain(self, c):
+        entity = self.entities.add(c)
+        component = self.components.add(c, entity)
+        if component not in self.complete_assembly:
+            self.complete_assembly.append(component)
+        return component
 
     def _remove_duplicate_chain_ids(self, chains):
         chain_ids = [c.get_id() for c in chains]
