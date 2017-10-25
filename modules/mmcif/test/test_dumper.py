@@ -11,12 +11,14 @@ else:
     from io import BytesIO as StringIO
 
 class Tests(IMP.test.TestCase):
-    def make_model(self, writer):
+    def make_model(self, writer, chains=None):
+        if chains is None:
+            chains = (('foo', 'ACGT', 'A'), ('bar', 'ACGT', 'B'),
+                      ('baz', 'ACC', 'C'))
         s = IMP.mmcif.State(writer)
         m = s.model
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
-        for name, seq, cid in (('foo', 'ACGT', 'A'), ('bar', 'ACGT', 'B'),
-                               ('baz', 'ACC', 'C')):
+        for name, seq, cid in chains:
             h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
             mol = IMP.atom.Molecule.setup_particle(h)
             mol.set_name(name)
@@ -171,6 +173,41 @@ C 2 baz
         self.assertEqual(x1.id, 2)
         self.assertEqual(x1, ['a', 'b'])
         self.assertEqual(x2.id, 1)
+
+    def test_assembly_all_modeled(self):
+        """Test AssemblyDumper, all components modeled"""
+        writer = IMP.mmcif.Writer()
+        h, state = self.make_model(writer, (("foo", "AAA", 'A'),
+                                            ("bar", "AAA", 'B'),
+                                            ("baz", "AA", 'C')))
+        state.add_hierarchy(h)
+        foo, bar, baz = state._all_modeled_components
+        d = IMP.mmcif.dumper._AssemblyDumper()
+        fh = StringIO()
+        cifw = IMP.mmcif.format._CifWriter(fh)
+
+        d.add(IMP.mmcif.data._Assembly((foo, bar)))
+        d.add(IMP.mmcif.data._Assembly((bar, baz)))
+
+        d.finalize()
+        d.dump(writer, cifw)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_struct_assembly.ordinal_id
+_ihm_struct_assembly.assembly_id
+_ihm_struct_assembly.parent_assembly_id
+_ihm_struct_assembly.entity_description
+_ihm_struct_assembly.entity_id
+_ihm_struct_assembly.asym_id
+_ihm_struct_assembly.seq_id_begin
+_ihm_struct_assembly.seq_id_end
+1 1 1 foo 1 A 1 3
+2 1 1 foo 1 B 1 3
+3 2 2 foo 1 B 1 3
+4 2 2 baz 2 C 1 2
+#
+""")
 
 
 if __name__ == '__main__':
