@@ -104,7 +104,7 @@ class _ComponentMapper(dict):
                 raise ValueError("Two chains have the same ID (%s) but "
                                  "different sequences - rename one of the "
                                  "chains" % map_key)
-        return component
+        return component, modeled
 
     def get_all(self):
         """Get all components"""

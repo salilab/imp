@@ -11,7 +11,9 @@ else:
     from io import BytesIO as StringIO
 
 class Tests(IMP.test.TestCase):
-    def make_model(self, m, writer):
+    def make_model(self, writer):
+        s = IMP.mmcif.State(writer)
+        m = s.model
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         for name, seq, cid in (('foo', 'ACGT', 'A'), ('bar', 'ACGT', 'B'),
                                ('baz', 'ACC', 'C')):
@@ -24,11 +26,10 @@ class Tests(IMP.test.TestCase):
             chain = IMP.atom.Chain.setup_particle(h, cid)
             chain.set_sequence(seq)
             mol.add_child(chain)
-        return top
+        return top, s
 
     def test_entry_dumper(self):
         """Test EntryDumper"""
-        m = IMP.Model()
         writer = IMP.mmcif.Writer()
         dumper = IMP.mmcif.dumper._EntryDumper()
         fh = StringIO()
@@ -40,10 +41,9 @@ class Tests(IMP.test.TestCase):
 
     def test_chem_comp_dumper(self):
         """Test ChemCompDumper"""
-        m = IMP.Model()
         writer = IMP.mmcif.Writer()
-        h = self.make_model(m, writer)
-        writer.add_hierarchy(h)
+        h, state = self.make_model(writer)
+        state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._ChemCompDumper()
         fh = StringIO()
         cifw = IMP.mmcif.format._CifWriter(fh)
@@ -62,10 +62,9 @@ THR 'L-peptide linking'
 
     def test_entity_dumper(self):
         """Test EntityDumper"""
-        m = IMP.Model()
         writer = IMP.mmcif.Writer()
-        h = self.make_model(m, writer)
-        writer.add_hierarchy(h)
+        h, state = self.make_model(writer)
+        state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._EntityDumper()
         fh = StringIO()
         cifw = IMP.mmcif.format._CifWriter(fh)
@@ -88,10 +87,9 @@ _entity.details
 
     def test_entity_poly_dumper(self):
         """Test EntityPolyDumper"""
-        m = IMP.Model()
         writer = IMP.mmcif.Writer()
-        h = self.make_model(m, writer)
-        writer.add_hierarchy(h)
+        h, state = self.make_model(writer)
+        state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._EntityPolyDumper()
         fh = StringIO()
         cifw = IMP.mmcif.format._CifWriter(fh)
@@ -114,10 +112,9 @@ _entity_poly.pdbx_seq_one_letter_code_can
 
     def test_entity_poly_seq_dumper(self):
         """Test EntityPolySeqDumper"""
-        m = IMP.Model()
         writer = IMP.mmcif.Writer()
-        h = self.make_model(m, writer)
-        writer.add_hierarchy(h)
+        h, state = self.make_model(writer)
+        state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._EntityPolySeqDumper()
         fh = StringIO()
         cifw = IMP.mmcif.format._CifWriter(fh)
@@ -142,10 +139,9 @@ _entity_poly_seq.hetero
 
     def test_struct_asym_dumper(self):
         """Test StructAsymDumper"""
-        m = IMP.Model()
         writer = IMP.mmcif.Writer()
-        h = self.make_model(m, writer)
-        writer.add_hierarchy(h)
+        h, state = self.make_model(writer)
+        state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._StructAsymDumper()
         fh = StringIO()
         cifw = IMP.mmcif.format._CifWriter(fh)
