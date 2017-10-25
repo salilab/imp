@@ -159,5 +159,19 @@ C 2 baz
 #
 """)
 
+    def test_assembly_dumper_get_subassembly(self):
+        """Test AssemblyDumper.get_subassembly()"""
+        d = IMP.mmcif.dumper._AssemblyDumper()
+        complete = IMP.mmcif.data._Assembly(['a', 'b', 'c'])
+        d.add(complete)
+        x1 = d.get_subassembly({'a':None, 'b':None})
+        x2 = d.get_subassembly({'a':None, 'b':None, 'c':None})
+        d.finalize() # assign IDs to all assemblies
+        self.assertEqual(complete.id, 1)
+        self.assertEqual(x1.id, 2)
+        self.assertEqual(x1, ['a', 'b'])
+        self.assertEqual(x2.id, 1)
+
+
 if __name__ == '__main__':
     IMP.test.main()
