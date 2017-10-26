@@ -16,7 +16,7 @@ class _Dumper(object):
         pass
 
 class _EntryDumper(_Dumper):
-    def dump(self, cifdata, writer):
+    def dump(self, system, writer):
         entry_id = 'imp_model'
         # Write CIF header (so this dumper should always be first)
         writer.fh.write("data_%s\n" % entry_id)
@@ -24,13 +24,13 @@ class _EntryDumper(_Dumper):
             l.write(id=entry_id)
 
 class _ChemCompDumper(_Dumper):
-    def dump(self, cifdata, writer):
+    def dump(self, system, writer):
         seen = {}
         std = dict.fromkeys(('ALA', 'CYS', 'ASP', 'GLU', 'PHE', 'GLY', 'HIS',
                'ILE', 'LYS', 'LEU', 'MET', 'ASN', 'PRO', 'GLN', 'ARG', 'SER',
                'THR', 'VAL', 'TRP', 'TYR'))
         with writer.loop("_chem_comp", ["id", "type"]) as l:
-            for entity in cifdata.entities.get_all():
+            for entity in system.entities.get_all():
                 seq = entity.sequence
                 for num, one_letter_code in enumerate(seq):
                     restyp = IMP.atom.get_residue_type(one_letter_code)
@@ -45,12 +45,12 @@ class _ChemCompDumper(_Dumper):
 class _EntityDumper(_Dumper):
     # todo: we currently only support amino acid sequences here (and
     # then only standard amino acids; need to add support for MSE etc.)
-    def dump(self, cifdata, writer):
+    def dump(self, system, writer):
         with writer.loop("_entity",
                          ["id", "type", "src_method", "pdbx_description",
                           "formula_weight", "pdbx_number_of_molecules",
                           "details"]) as l:
-            for entity in cifdata.entities.get_all():
+            for entity in system.entities.get_all():
                 l.write(id=entity.id, type='polymer', src_method='man',
                         pdbx_description=entity.description,
                         formula_weight=writer.unknown,
@@ -59,13 +59,13 @@ class _EntityDumper(_Dumper):
 
 class _EntityPolyDumper(_Dumper):
     # todo: we currently only support amino acid sequences here
-    def dump(self, cifdata, writer):
+    def dump(self, system, writer):
         with writer.loop("_entity_poly",
                          ["entity_id", "type", "nstd_linkage",
                           "nstd_monomer", "pdbx_strand_id",
                           "pdbx_seq_one_letter_code",
                           "pdbx_seq_one_letter_code_can"]) as l:
-            for entity in cifdata.entities.get_all():
+            for entity in system.entities.get_all():
                 seq = entity.sequence
                 # Split into lines to get tidier CIF output
                 seq = "\n".join(seq[i:i+70] for i in range(0, len(seq), 70))
@@ -77,10 +77,10 @@ class _EntityPolyDumper(_Dumper):
                         pdbx_seq_one_letter_code_can=seq)
 
 class _EntityPolySeqDumper(_Dumper):
-    def dump(self, cifdata, writer):
+    def dump(self, system, writer):
         with writer.loop("_entity_poly_seq",
                          ["entity_id", "num", "mon_id", "hetero"]) as l:
-            for entity in cifdata.entities.get_all():
+            for entity in system.entities.get_all():
                 seq = entity.sequence
                 for num, one_letter_code in enumerate(seq):
                     restyp = IMP.atom.get_residue_type(one_letter_code)
@@ -90,10 +90,10 @@ class _EntityPolySeqDumper(_Dumper):
 
 
 class _StructAsymDumper(_Dumper):
-    def dump(self, cifdata, writer):
+    def dump(self, system, writer):
         with writer.loop("_struct_asym",
                          ["id", "entity_id", "details"]) as l:
-            for comp in cifdata.components.get_all_modeled():
+            for comp in system.components.get_all_modeled():
                 l.write(id=comp.asym_id,
                         entity_id=comp.entity.id,
                         details=comp.name if comp.name else writer.omitted)
@@ -124,7 +124,7 @@ class _AssemblyDumper(_Dumper):
         for a in self.assemblies:
             IMP.mmcif.data._assign_id(a, seen_assemblies, self._assembly_by_id)
 
-    def dump(self, cifdata, writer):
+    def dump(self, system, writer):
         ordinal = 1
         with writer.loop("_ihm_struct_assembly",
                          ["ordinal_id", "assembly_id", "parent_assembly_id",

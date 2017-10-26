@@ -11,11 +11,11 @@ else:
     from io import BytesIO as StringIO
 
 class Tests(IMP.test.TestCase):
-    def make_model(self, writer, chains=None):
+    def make_model(self, system, chains=None):
         if chains is None:
             chains = (('foo', 'ACGT', 'A'), ('bar', 'ACGT', 'B'),
                       ('baz', 'ACC', 'C'))
-        s = IMP.mmcif.State(writer)
+        s = IMP.mmcif.State(system)
         m = s.model
         top = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         for name, seq, cid in chains:
@@ -32,24 +32,24 @@ class Tests(IMP.test.TestCase):
 
     def test_entry_dumper(self):
         """Test EntryDumper"""
-        writer = IMP.mmcif.Writer()
+        system = IMP.mmcif.System()
         dumper = IMP.mmcif.dumper._EntryDumper()
         fh = StringIO()
-        cifw = IMP.mmcif.format._CifWriter(fh)
-        dumper.dump(writer, cifw)
+        writer = IMP.mmcif.format._CifWriter(fh)
+        dumper.dump(system, writer)
 
         out = fh.getvalue()
         self.assertEqual(out, "data_imp_model\n_entry.id imp_model\n")
 
     def test_chem_comp_dumper(self):
         """Test ChemCompDumper"""
-        writer = IMP.mmcif.Writer()
-        h, state = self.make_model(writer)
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system)
         state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._ChemCompDumper()
         fh = StringIO()
-        cifw = IMP.mmcif.format._CifWriter(fh)
-        dumper.dump(writer, cifw)
+        writer = IMP.mmcif.format._CifWriter(fh)
+        dumper.dump(system, writer)
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
@@ -64,13 +64,13 @@ THR 'L-peptide linking'
 
     def test_entity_dumper(self):
         """Test EntityDumper"""
-        writer = IMP.mmcif.Writer()
-        h, state = self.make_model(writer)
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system)
         state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._EntityDumper()
         fh = StringIO()
-        cifw = IMP.mmcif.format._CifWriter(fh)
-        dumper.dump(writer, cifw)
+        writer = IMP.mmcif.format._CifWriter(fh)
+        dumper.dump(system, writer)
 
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -89,13 +89,13 @@ _entity.details
 
     def test_entity_poly_dumper(self):
         """Test EntityPolyDumper"""
-        writer = IMP.mmcif.Writer()
-        h, state = self.make_model(writer)
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system)
         state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._EntityPolyDumper()
         fh = StringIO()
-        cifw = IMP.mmcif.format._CifWriter(fh)
-        dumper.dump(writer, cifw)
+        writer = IMP.mmcif.format._CifWriter(fh)
+        dumper.dump(system, writer)
 
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -114,13 +114,13 @@ _entity_poly.pdbx_seq_one_letter_code_can
 
     def test_entity_poly_seq_dumper(self):
         """Test EntityPolySeqDumper"""
-        writer = IMP.mmcif.Writer()
-        h, state = self.make_model(writer)
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system)
         state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._EntityPolySeqDumper()
         fh = StringIO()
-        cifw = IMP.mmcif.format._CifWriter(fh)
-        dumper.dump(writer, cifw)
+        writer = IMP.mmcif.format._CifWriter(fh)
+        dumper.dump(system, writer)
 
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -141,13 +141,13 @@ _entity_poly_seq.hetero
 
     def test_struct_asym_dumper(self):
         """Test StructAsymDumper"""
-        writer = IMP.mmcif.Writer()
-        h, state = self.make_model(writer)
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system)
         state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._StructAsymDumper()
         fh = StringIO()
-        cifw = IMP.mmcif.format._CifWriter(fh)
-        dumper.dump(writer, cifw)
+        writer = IMP.mmcif.format._CifWriter(fh)
+        dumper.dump(system, writer)
 
         out = fh.getvalue()
         self.assertEqual(out, """#
@@ -176,21 +176,21 @@ C 2 baz
 
     def test_assembly_all_modeled(self):
         """Test AssemblyDumper, all components modeled"""
-        writer = IMP.mmcif.Writer()
-        h, state = self.make_model(writer, (("foo", "AAA", 'A'),
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system, (("foo", "AAA", 'A'),
                                             ("bar", "AAA", 'B'),
                                             ("baz", "AA", 'C')))
         state.add_hierarchy(h)
         foo, bar, baz = state._all_modeled_components
         d = IMP.mmcif.dumper._AssemblyDumper()
         fh = StringIO()
-        cifw = IMP.mmcif.format._CifWriter(fh)
+        writer = IMP.mmcif.format._CifWriter(fh)
 
         d.add(IMP.mmcif.data._Assembly((foo, bar)))
         d.add(IMP.mmcif.data._Assembly((bar, baz)))
 
         d.finalize()
-        d.dump(writer, cifw)
+        d.dump(system, writer)
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
@@ -211,16 +211,16 @@ _ihm_struct_assembly.seq_id_end
 
     def test_assembly_subset_modeled(self):
         """Test AssemblyDumper, subset of components modeled"""
-        writer = IMP.mmcif.Writer()
-        h, state = self.make_model(writer, (("foo", "AAA", 'A'),))
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system, (("foo", "AAA", 'A'),))
         state.add_hierarchy(h)
-        writer.add_non_modeled_chain(name="bar", sequence="AA")
-        d = writer.assembly_dump
+        system.add_non_modeled_chain(name="bar", sequence="AA")
+        d = system.assembly_dump
         fh = StringIO()
-        cifw = IMP.mmcif.format._CifWriter(fh)
+        writer = IMP.mmcif.format._CifWriter(fh)
 
         d.finalize() # assign IDs
-        d.dump(writer, cifw)
+        d.dump(system, writer)
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_

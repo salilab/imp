@@ -19,7 +19,7 @@ class _NonModeledChain(object):
     get_sequence = lambda self: self.sequence
 
 
-class Writer(object):
+class System(object):
     def __init__(self):
         self._states = {}
         self.assembly_dump = IMP.mmcif.dumper._AssemblyDumper()
@@ -85,15 +85,15 @@ class Writer(object):
 
 class State(object):
     """Represent a single IMP state."""
-    def __init__(self, writer):
-        self.writer = weakref.proxy(writer)
-        writer._add_state(self)
+    def __init__(self, system):
+        self.system = weakref.proxy(system)
+        system._add_state(self)
         self.model = IMP.Model()
         self.hiers = None
         # The assembly of all components modeled by IMP in this state.
         # This may be smaller than the complete assembly.
         self.modeled_assembly = IMP.mmcif.data._Assembly()
-        writer.assembly_dump.add(self.modeled_assembly)
+        system.assembly_dump.add(self.modeled_assembly)
 
         self._all_modeled_components = []
 
@@ -110,4 +110,4 @@ class State(object):
                 self.add_hierarchy(h)
 
     def add_hierarchy(self, h):
-        self.writer._add_hierarchy(h, self)
+        self.system._add_hierarchy(h, self)
