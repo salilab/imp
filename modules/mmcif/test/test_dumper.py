@@ -10,6 +10,12 @@ if sys.version_info[0] >= 3:
 else:
     from io import BytesIO as StringIO
 
+def _get_dumper_output(dumper, system):
+    fh = StringIO()
+    writer = IMP.mmcif.format._CifWriter(fh)
+    dumper.dump(system, writer)
+    return fh.getvalue()
+
 class Tests(IMP.test.TestCase):
     def make_model(self, system, chains=None):
         if chains is None:
@@ -34,11 +40,7 @@ class Tests(IMP.test.TestCase):
         """Test EntryDumper"""
         system = IMP.mmcif.System()
         dumper = IMP.mmcif.dumper._EntryDumper()
-        fh = StringIO()
-        writer = IMP.mmcif.format._CifWriter(fh)
-        dumper.dump(system, writer)
-
-        out = fh.getvalue()
+        out = _get_dumper_output(dumper, system)
         self.assertEqual(out, "data_imp_model\n_entry.id imp_model\n")
 
     def test_chem_comp_dumper(self):
@@ -47,10 +49,7 @@ class Tests(IMP.test.TestCase):
         h, state = self.make_model(system)
         state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._ChemCompDumper()
-        fh = StringIO()
-        writer = IMP.mmcif.format._CifWriter(fh)
-        dumper.dump(system, writer)
-        out = fh.getvalue()
+        out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
 _chem_comp.id
@@ -68,11 +67,7 @@ THR 'L-peptide linking'
         h, state = self.make_model(system)
         state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._EntityDumper()
-        fh = StringIO()
-        writer = IMP.mmcif.format._CifWriter(fh)
-        dumper.dump(system, writer)
-
-        out = fh.getvalue()
+        out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
 _entity.id
@@ -93,11 +88,7 @@ _entity.details
         h, state = self.make_model(system)
         state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._EntityPolyDumper()
-        fh = StringIO()
-        writer = IMP.mmcif.format._CifWriter(fh)
-        dumper.dump(system, writer)
-
-        out = fh.getvalue()
+        out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
 _entity_poly.entity_id
@@ -118,11 +109,7 @@ _entity_poly.pdbx_seq_one_letter_code_can
         h, state = self.make_model(system)
         state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._EntityPolySeqDumper()
-        fh = StringIO()
-        writer = IMP.mmcif.format._CifWriter(fh)
-        dumper.dump(system, writer)
-
-        out = fh.getvalue()
+        out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
 _entity_poly_seq.entity_id
@@ -145,11 +132,7 @@ _entity_poly_seq.hetero
         h, state = self.make_model(system)
         state.add_hierarchy(h)
         dumper = IMP.mmcif.dumper._StructAsymDumper()
-        fh = StringIO()
-        writer = IMP.mmcif.format._CifWriter(fh)
-        dumper.dump(system, writer)
-
-        out = fh.getvalue()
+        out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
 _struct_asym.id
@@ -183,15 +166,12 @@ C 2 baz
         state.add_hierarchy(h)
         foo, bar, baz = state._all_modeled_components
         d = IMP.mmcif.dumper._AssemblyDumper()
-        fh = StringIO()
-        writer = IMP.mmcif.format._CifWriter(fh)
 
         d.add(IMP.mmcif.data._Assembly((foo, bar)))
         d.add(IMP.mmcif.data._Assembly((bar, baz)))
 
         d.finalize()
-        d.dump(system, writer)
-        out = fh.getvalue()
+        out = _get_dumper_output(d, system)
         self.assertEqual(out, """#
 loop_
 _ihm_struct_assembly.ordinal_id
@@ -216,12 +196,8 @@ _ihm_struct_assembly.seq_id_end
         state.add_hierarchy(h)
         system.add_non_modeled_chain(name="bar", sequence="AA")
         d = system.assembly_dump
-        fh = StringIO()
-        writer = IMP.mmcif.format._CifWriter(fh)
-
         d.finalize() # assign IDs
-        d.dump(system, writer)
-        out = fh.getvalue()
+        out = _get_dumper_output(d, system)
         self.assertEqual(out, """#
 loop_
 _ihm_struct_assembly.ordinal_id
@@ -257,12 +233,8 @@ _ihm_struct_assembly.seq_id_end
         chain.add_child(frag2)
         state.add_hierarchy(h)
         d = IMP.mmcif.dumper._ModelRepresentationDumper()
-        fh = StringIO()
-        writer = IMP.mmcif.format._CifWriter(fh)
-
-        d.dump(system, writer)
-        out = fh.getvalue()
-        self.assertEqual(out, "#
+        out = _get_dumper_output(d, system)
+        self.assertEqual(out, """#
 loop_
 _ihm_model_representation.ordinal_id
 _ihm_model_representation.representation_id
@@ -280,7 +252,7 @@ _ihm_model_representation.model_object_count
 1 1 1 1 foo A 1 2 sphere . flexible by-residue 2
 2 1 2 1 foo A 3 4 sphere . flexible by-feature 1
 #
-")
+""")
 
 
 if __name__ == '__main__':
