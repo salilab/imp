@@ -113,6 +113,7 @@ class Tests(IMP.test.TestCase):
                 del f
                 f = RMF.open_rmf_file_read_only(name)
                 h2 = IMP.rmf.create_hierarchies(f, m)
+                del f
                 chs2 = IMP.atom.get_by_type(h2[0], IMP.atom.CHAIN_TYPE)
                 c = IMP.atom.Chain(chs2[0])
                 self.assertEqual(c.get_id(), 'A')
