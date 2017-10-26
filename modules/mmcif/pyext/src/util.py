@@ -6,6 +6,7 @@ import IMP.atom
 import RMF
 import string
 import weakref
+import operator
 
 class _NonModeledChain(object):
     """Represent a chain that was experimentally characterized but not modeled.
@@ -33,7 +34,8 @@ class System(object):
                          IMP.mmcif.dumper._EntityPolyDumper(),
                          IMP.mmcif.dumper._EntityPolySeqDumper(),
                          IMP.mmcif.dumper._StructAsymDumper(),
-                         self.assembly_dump]
+                         self.assembly_dump,
+                         IMP.mmcif.dumper._ModelRepresentationDumper()]
         self.entities = IMP.mmcif.data._EntityMapper()
         self.components = IMP.mmcif.data._ComponentMapper()
 
@@ -50,6 +52,43 @@ class System(object):
             component = self._add_chain(c)
             state._all_modeled_components.append(component)
             state.modeled_assembly.append(component)
+            state.representation[component] = list(self._get_representation(c))
+
+    def _get_representation(self, chain):
+        """Yield groups of particles under chain with same representation"""
+        rep = IMP.mmcif.data._Representation()
+        for sp in self._get_structure_particles(chain):
+            if not rep.add(sp):
+                yield rep
+                rep = IMP.mmcif.data._Representation()
+                rep.add(sp)
+        if rep:
+            yield rep
+
+    def _get_structure_particles(self, chain):
+        """Yield all particles under chain with coordinates.
+           They are sorted by residue index."""
+        # todo: handle Representation decorators for non-PMI-1 models
+        ps = IMP.atom.get_leaves(chain)
+        resind_dict = {}
+        for p in ps:
+            if IMP.atom.Residue.get_is_setup(p):
+                residue = IMP.atom.Residue(p)
+                resind = residue.get_index()
+                if resind in resind_dict:
+                    continue
+                resind_dict[resind] = residue
+            elif IMP.atom.Fragment.get_is_setup(p):
+                fragment = IMP.atom.Fragment(p)
+                # todo: handle non-contiguous fragments
+                resinds = fragment.get_residue_indexes()
+                resind = resinds[len(resinds) // 2]
+                if resind in resind_dict:
+                    continue
+                resind_dict[resind] = fragment
+        # Return values sorted by key (residue index)
+        for item in sorted(resind_dict.items(), key=operator.itemgetter(0)):
+            yield item[1]
 
     def add_non_modeled_chain(self, name, sequence,
                               chain_type=IMP.atom.UnknownChainType):
@@ -94,6 +133,7 @@ class State(object):
         # This may be smaller than the complete assembly.
         self.modeled_assembly = IMP.mmcif.data._Assembly()
         system.assembly_dump.add(self.modeled_assembly)
+        self.representation = {}
 
         self._all_modeled_components = []
 

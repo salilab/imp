@@ -122,3 +122,54 @@ class _Assembly(list):
         # allow putting assemblies in a dict. 'list' isn't hashable
         # but 'tuple' is
         return hash(tuple(self))
+
+class _Representation(object):
+    """Group a set of contiguous particles with the same representation"""
+    def __init__(self):
+        self.particles = []
+        self.residue_range = () # inclusive range
+
+    def add(self, particle):
+        """Potentially add a new particle to this representation.
+           Iff the particle could be added, return True."""
+        resrange, rigid_body, primitive = self._get_particle_info(particle)
+        if not self.particles:
+            self.particles.append(particle)
+            self.residue_range = resrange
+            self.rigid_body = rigid_body
+            self.primitive = primitive
+            return True
+        elif type(particle) == type(self.particles[0]) \
+             and resrange[0] == self.residue_range[1] + 1 \
+             and self._same_rigid_body(rigid_body):
+            self.particles.append(particle)
+            self.residue_range = (self.residue_range[0], resrange[1])
+            return True
+
+    def _same_rigid_body(self, rigid_body):
+        # Note: can't just use self.rigid_body == rigid_body as IMP may
+        # crash when comparing a RigidBody object against None
+        if self.rigid_body is None and rigid_body is None:
+            return True
+        elif self.rigid_body is None or rigid_body is None:
+            return False
+        else:
+            return self.rigid_body == rigid_body
+
+    def _get_particle_info(self, p):
+        # Note that we consider nonrigid members to not be rigid here
+        if IMP.core.RigidMember.get_is_setup(p):
+            rigid_body = IMP.core.RigidMember(p).get_rigid_body()
+        else:
+            rigid_body = None
+        if isinstance(p, IMP.atom.Residue):
+            return (p.get_index(), p.get_index()), rigid_body, 'sphere'
+        elif isinstance(p, IMP.atom.Fragment):
+            resinds = p.get_residue_indexes()
+            return (resinds[0], resinds[-1]), rigid_body, 'sphere'
+        raise TypeError("Unknown particle ", p)
+
+    def __bool__(self):
+        return len(self.particles) > 0
+
+    __nonzero__ = __bool__ # Python 2 compatibility

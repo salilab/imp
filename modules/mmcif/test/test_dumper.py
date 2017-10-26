@@ -238,6 +238,50 @@ _ihm_struct_assembly.seq_id_end
 #
 """)
 
+    def test_model_representation_dumper(self):
+        """Test ModelRepresentationDumper"""
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system, (("foo", "AAAA", 'A'),))
+        chain = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)[0]
+        m = state.model
+        res1 = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                               IMP.atom.ALA, 1)
+        chain.add_child(res1)
+        res2 = IMP.atom.Residue.setup_particle(IMP.Particle(m),
+                                               IMP.atom.ALA, 2)
+        chain.add_child(res2)
+        # First matching object (res1 and res2) will be used
+        frag1 = IMP.atom.Fragment.setup_particle(IMP.Particle(m),[1,2])
+        chain.add_child(frag1)
+        frag2 = IMP.atom.Fragment.setup_particle(IMP.Particle(m),[3,4])
+        chain.add_child(frag2)
+        state.add_hierarchy(h)
+        d = IMP.mmcif.dumper._ModelRepresentationDumper()
+        fh = StringIO()
+        writer = IMP.mmcif.format._CifWriter(fh)
+
+        d.dump(system, writer)
+        out = fh.getvalue()
+        self.assertEqual(out, "#
+loop_
+_ihm_model_representation.ordinal_id
+_ihm_model_representation.representation_id
+_ihm_model_representation.segment_id
+_ihm_model_representation.entity_id
+_ihm_model_representation.entity_description
+_ihm_model_representation.entity_asym_id
+_ihm_model_representation.seq_id_begin
+_ihm_model_representation.seq_id_end
+_ihm_model_representation.model_object_primitive
+_ihm_model_representation.starting_model_id
+_ihm_model_representation.model_mode
+_ihm_model_representation.model_granularity
+_ihm_model_representation.model_object_count
+1 1 1 1 foo A 1 2 sphere . flexible by-residue 2
+2 1 2 1 foo A 3 4 sphere . flexible by-feature 1
+#
+")
+
 
 if __name__ == '__main__':
     IMP.test.main()
