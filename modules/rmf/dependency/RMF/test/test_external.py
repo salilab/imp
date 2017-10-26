@@ -2,7 +2,7 @@ from __future__ import print_function
 import RMF
 import os.path
 import unittest
-
+import sys
 
 class GenericTest(unittest.TestCase):
 
@@ -55,7 +55,11 @@ class GenericTest(unittest.TestCase):
         self.assertTrue(os.path.isabs(path0))
         # Internally, the path should be relative to that of the RMF
         key = self.get_path_key(rmf)
-        self.assertEqual(ref0.get_value(key), 'simple.pdb')
+        # On Windows the path is stored unchanged
+        if sys.platform == 'win32':
+            self.assertEqual(ref0.get_value(key), path0)
+        else:
+            self.assertEqual(ref0.get_value(key), 'simple.pdb')
 
         self.assert_(os.path.exists(path0))
         path1 = ref0d.get_path()

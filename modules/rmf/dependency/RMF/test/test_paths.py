@@ -74,7 +74,8 @@ class Tests(unittest.TestCase):
             self.assertEqual(prov.get_filename(), ap)
 
         del rmf
-        shutil.rmtree(tmpdir)
+        if sys.platform != 'win32':
+            shutil.rmtree(tmpdir)
 
 if __name__ == '__main__':
     unittest.main()
