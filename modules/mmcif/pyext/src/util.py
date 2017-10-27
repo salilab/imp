@@ -35,7 +35,8 @@ class System(object):
                          IMP.mmcif.dumper._EntityPolySeqDumper(),
                          IMP.mmcif.dumper._StructAsymDumper(),
                          self.assembly_dump,
-                         IMP.mmcif.dumper._ModelRepresentationDumper()]
+                         IMP.mmcif.dumper._ModelRepresentationDumper(),
+                         IMP.mmcif.dumper._StartingModelDumper()]
         self.entities = IMP.mmcif.data._EntityMapper()
         self.components = IMP.mmcif.data._ComponentMapper()
 
@@ -52,16 +53,27 @@ class System(object):
             component = self._add_chain(c)
             state._all_modeled_components.append(component)
             state.modeled_assembly.append(component)
-            state.representation[component] = list(self._get_representation(c))
+            state.representation[component] \
+                = list(self._get_representation(c,
+                                     self._get_all_starting_models(component)))
 
-    def _get_representation(self, chain):
+    def _get_all_starting_models(self, comp):
+        """Get all starting models (in all states) for the given component"""
+        for state in self._states:
+            for rep in state.representation.get(comp, []):
+                if rep.starting_model:
+                    yield rep.starting_model
+
+    def _get_representation(self, chain, existing_starting_models):
         """Yield groups of particles under chain with same representation"""
+        smf = IMP.mmcif.data._StartingModelFinder(existing_starting_models)
         rep = IMP.mmcif.data._Representation()
         for sp in self._get_structure_particles(chain):
-            if not rep.add(sp):
+            starting_model = smf.find(sp)
+            if not rep.add(sp, starting_model):
                 yield rep
                 rep = IMP.mmcif.data._Representation()
-                rep.add(sp)
+                rep.add(sp, starting_model)
         if rep:
             yield rep
 
@@ -116,9 +128,9 @@ class System(object):
         with open(fname, 'w') as fh:
             writer = IMP.mmcif.format._CifWriter(fh)
             for dumper in self._dumpers:
-                dumper.finalize_metadata()
+                dumper.finalize_metadata(self)
             for dumper in self._dumpers:
-                dumper.finalize()
+                dumper.finalize(self)
             for dumper in self._dumpers:
                 dumper.dump(self, writer)
 
@@ -133,6 +145,7 @@ class State(object):
         # This may be smaller than the complete assembly.
         self.modeled_assembly = IMP.mmcif.data._Assembly()
         system.assembly_dump.add(self.modeled_assembly)
+        # A list of Representation objects for each Component
         self.representation = {}
 
         self._all_modeled_components = []

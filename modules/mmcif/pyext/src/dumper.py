@@ -10,9 +10,9 @@ class _Dumper(object):
     """Base class for helpers to dump output to mmCIF"""
     def __init__(self):
         pass
-    def finalize_metadata(self):
+    def finalize_metadata(self, system):
         pass
-    def finalize(self):
+    def finalize(self, system):
         pass
 
 class _EntryDumper(_Dumper):
@@ -117,7 +117,7 @@ class _AssemblyDumper(_Dumper):
                                         if c in compdict)
         return self.add(newa)
 
-    def finalize(self):
+    def finalize(self, system):
         seen_assemblies = {}
         # Assign IDs to all assemblies
         self._assembly_by_id = []
@@ -178,8 +178,47 @@ class _ModelRepresentationDumper(_Dumper):
                             seq_id_begin=r.residue_range[0],
                             seq_id_end=r.residue_range[1],
                             model_object_primitive=r.primitive,
+                            starting_model_id=r.starting_model.id
+                                                  if r.starting_model
+                                                  else writer.omitted,
                             model_mode='rigid' if r.rigid_body else 'flexible',
                             model_granularity=self._get_granularity(r),
                             model_object_count=len(r.particles))
                     ordinal_id += 1
                     segment_id += 1
+
+
+class _StartingModelDumper(_Dumper):
+    def finalize(self, system):
+        for comp in system.components.get_all_modeled():
+            for n, starting_model in enumerate(self._all_models(system, comp)):
+                starting_model.id = '%s-m%d' % (comp.name, n + 1)
+
+    def _all_models(self, system, comp):
+        """Get the set of all starting models for a component"""
+        for state in system._states.keys():
+            seen_models = {}
+            for rep in state.representation.get(comp, []):
+                sm = rep.starting_model
+                if sm and sm not in seen_models:
+                    seen_models[sm] = None
+                    yield sm
+
+    def dump(self, system, writer):
+        self.dump_details(system, writer)
+
+    def dump_details(self, system, writer):
+        with writer.loop("_ihm_starting_model_details",
+                     ["starting_model_id", "entity_id", "entity_description",
+                      "asym_id", "seq_id_begin",
+                      "seq_id_end", "starting_model_source",
+                      "starting_model_auth_asym_id",
+                      "starting_model_sequence_offset",
+                      "dataset_list_id"]) as l:
+            for comp in system.components.get_all_modeled():
+                for sm in self._all_models(system, comp):
+                    # todo: fill in other fields
+                    l.write(starting_model_id=sm.id, entity_id=comp.entity.id,
+                            entity_description=comp.entity.description,
+                            asym_id=comp.asym_id,
+                            starting_model_auth_asym_id=sm.chain_id)

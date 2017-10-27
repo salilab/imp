@@ -128,8 +128,9 @@ class _Representation(object):
     def __init__(self):
         self.particles = []
         self.residue_range = () # inclusive range
+        self.starting_model = None
 
-    def add(self, particle):
+    def add(self, particle, starting_model):
         """Potentially add a new particle to this representation.
            Iff the particle could be added, return True."""
         resrange, rigid_body, primitive = self._get_particle_info(particle)
@@ -138,9 +139,11 @@ class _Representation(object):
             self.residue_range = resrange
             self.rigid_body = rigid_body
             self.primitive = primitive
+            self.starting_model = starting_model
             return True
         elif type(particle) == type(self.particles[0]) \
              and resrange[0] == self.residue_range[1] + 1 \
+             and starting_model == self.starting_model \
              and self._same_rigid_body(rigid_body):
             self.particles.append(particle)
             self.residue_range = (self.residue_range[0], resrange[1])
@@ -173,3 +176,68 @@ class _Representation(object):
         return len(self.particles) > 0
 
     __nonzero__ = __bool__ # Python 2 compatibility
+
+def _get_all_structure_provenance(p):
+    """Yield all StructureProvenance decorators for the given particle."""
+    if IMP.core.Provenanced.get_is_setup(p):
+        prov = IMP.core.Provenanced(p).get_provenance()
+        while prov:
+            if IMP.core.StructureProvenance.get_is_setup(prov):
+                yield IMP.core.StructureProvenance(prov)
+            prov = prov.get_previous()
+
+class _StartingModel(object):
+    _eq_keys = ['filename', 'chain_id']
+
+    def __init__(self, struc_prov):
+        self.filename = struc_prov[0].get_filename()
+        self.chain_id = struc_prov[0].get_chain_id()
+
+    # Two starting models with same filename and chain ID compare identical
+    def _eq_vals(self):
+        return tuple([self.__class__]
+                     + [getattr(self, x) for x in self._eq_keys])
+    def __eq__(self, other):
+        return other is not None and self._eq_vals() == other._eq_vals()
+    def __hash__(self):
+        return hash(self._eq_vals())
+
+
+class _StartingModelFinder(object):
+    """Map IMP particles to starting model objects"""
+    def __init__(self, existing_starting_models):
+        self._seen_particles = {}
+        self._seen_starting_models = dict.fromkeys(existing_starting_models)
+
+    def find(self, particle):
+        """Return a StartingModel object, or None, for this particle"""
+        def _get_starting_model(sp):
+            s = _StartingModel(sp)
+            if s not in self._seen_starting_models:
+                self._seen_starting_models[s] = s
+            return self._seen_starting_models[s]
+        sp = list(_get_all_structure_provenance(particle))
+        if sp:
+            return _get_starting_model(sp)
+        elif IMP.atom.Hierarchy.get_is_setup(particle):
+            h = IMP.atom.Hierarchy(particle).get_parent()
+            # Remember all nodes we inspect
+            seen_parents = []
+            while h:
+                pi = h.get_particle_index()
+                seen_parents.append(pi)
+                # If we inspected this node before, return the cached result
+                if pi in self._seen_particles:
+                    sp = self._seen_particles[pi]
+                    return sp[0] if sp else None
+                else:
+                    sp = list(_get_all_structure_provenance(h))
+                    self._seen_particles[pi] = []
+                    if sp:
+                        s = _get_starting_model(sp)
+                        # Set cache for this node and all the children we
+                        # inspected on the way up
+                        for spi in seen_parents:
+                            self._seen_particles[spi].append(s)
+                        return s
+                h = h.get_parent()

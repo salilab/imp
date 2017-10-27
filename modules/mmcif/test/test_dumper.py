@@ -151,7 +151,7 @@ C 2 baz
         d.add(complete)
         x1 = d.get_subassembly({'a':None, 'b':None})
         x2 = d.get_subassembly({'a':None, 'b':None, 'c':None})
-        d.finalize() # assign IDs to all assemblies
+        d.finalize(None) # assign IDs to all assemblies
         self.assertEqual(complete.id, 1)
         self.assertEqual(x1.id, 2)
         self.assertEqual(x1, ['a', 'b'])
@@ -170,7 +170,7 @@ C 2 baz
         d.add(IMP.mmcif.data._Assembly((foo, bar)))
         d.add(IMP.mmcif.data._Assembly((bar, baz)))
 
-        d.finalize()
+        d.finalize(system)
         out = _get_dumper_output(d, system)
         self.assertEqual(out, """#
 loop_
@@ -196,7 +196,7 @@ _ihm_struct_assembly.seq_id_end
         state.add_hierarchy(h)
         system.add_non_modeled_chain(name="bar", sequence="AA")
         d = system.assembly_dump
-        d.finalize() # assign IDs
+        d.finalize(system) # assign IDs
         out = _get_dumper_output(d, system)
         self.assertEqual(out, """#
 loop_
@@ -220,18 +220,27 @@ _ihm_struct_assembly.seq_id_end
         h, state = self.make_model(system, (("foo", "AAAA", 'A'),))
         chain = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)[0]
         m = state.model
+        # Add starting model information for residues 1-2
+        ress = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        sp = IMP.core.StructureProvenance.setup_particle(IMP.Particle(m),
+                                                         "foo.pdb", "A")
+        IMP.core.Provenanced.setup_particle(ress, sp)
+        chain.add_child(ress)
         res1 = IMP.atom.Residue.setup_particle(IMP.Particle(m),
                                                IMP.atom.ALA, 1)
-        chain.add_child(res1)
+        ress.add_child(res1)
         res2 = IMP.atom.Residue.setup_particle(IMP.Particle(m),
                                                IMP.atom.ALA, 2)
-        chain.add_child(res2)
+        ress.add_child(res2)
         # First matching object (res1 and res2) will be used
         frag1 = IMP.atom.Fragment.setup_particle(IMP.Particle(m),[1,2])
         chain.add_child(frag1)
         frag2 = IMP.atom.Fragment.setup_particle(IMP.Particle(m),[3,4])
         chain.add_child(frag2)
         state.add_hierarchy(h)
+        # Assign starting model IDs
+        d = IMP.mmcif.dumper._StartingModelDumper()
+        d.finalize(system)
         d = IMP.mmcif.dumper._ModelRepresentationDumper()
         out = _get_dumper_output(d, system)
         self.assertEqual(out, """#
@@ -249,8 +258,69 @@ _ihm_model_representation.starting_model_id
 _ihm_model_representation.model_mode
 _ihm_model_representation.model_granularity
 _ihm_model_representation.model_object_count
-1 1 1 1 foo A 1 2 sphere . flexible by-residue 2
+1 1 1 1 foo A 1 2 sphere foo-m1 flexible by-residue 2
 2 1 2 1 foo A 3 4 sphere . flexible by-feature 1
+#
+""")
+
+    def _make_residue_chain(self, name, chain_id, model):
+        if name == 'Nup84':
+            fname = 'test.nup84.pdb'
+            seq = 'ME'
+        else:
+            fname = 'test.nup85.pdb'
+            seq = 'GE'
+        h = IMP.atom.read_pdb(self.get_input_file_name(fname), model)
+        for hchain in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
+            chain = IMP.atom.Chain(hchain)
+            chain.set_sequence(seq)
+            chain.set_id(chain_id)
+            chain.set_name(name)
+        for hres in IMP.atom.get_by_type(h, IMP.atom.RESIDUE_TYPE):
+            res = IMP.atom.Residue(hres)
+            while res.get_number_of_children() > 0:
+                res.remove_child(0)
+        return h
+
+    def test_starting_model_dumper(self):
+        """Test StartingModelDumper"""
+        m = IMP.Model()
+        system = IMP.mmcif.System()
+
+        state1h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        h1 = self._make_residue_chain('Nup84', 'A', m)
+        state1h.add_child(h1)
+
+        # Test multiple states: components that are the same in both states
+        # (Nup84) should not be duplicated in the mmCIF output
+        state2h = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        h1 = self._make_residue_chain('Nup84', 'A', m)
+        state2h.add_child(h1)
+        h2 = self._make_residue_chain('Nup85', 'B', m)
+        state2h.add_child(h2)
+
+        state1 = IMP.mmcif.State(system)
+        state1.add_hierarchy(state1h)
+        state2 = IMP.mmcif.State(system)
+        state2.add_hierarchy(state2h)
+
+        d = IMP.mmcif.dumper._StartingModelDumper()
+        d.finalize(system)
+        out = _get_dumper_output(d, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_starting_model_details.starting_model_id
+_ihm_starting_model_details.entity_id
+_ihm_starting_model_details.entity_description
+_ihm_starting_model_details.asym_id
+_ihm_starting_model_details.seq_id_begin
+_ihm_starting_model_details.seq_id_end
+_ihm_starting_model_details.starting_model_source
+_ihm_starting_model_details.starting_model_auth_asym_id
+_ihm_starting_model_details.starting_model_sequence_offset
+_ihm_starting_model_details.dataset_list_id
+Nup84-m1 1 Nup84 A . . . A . .
+Nup85-m1 2 Nup85 B . . . A . .
 #
 """)
 
