@@ -36,9 +36,11 @@ class System(object):
                          IMP.mmcif.dumper._StructAsymDumper(),
                          self.assembly_dump,
                          IMP.mmcif.dumper._ModelRepresentationDumper(),
-                         IMP.mmcif.dumper._StartingModelDumper()]
+                         IMP.mmcif.dumper._StartingModelDumper(),
+                         IMP.mmcif.dumper._DatasetDumper()]
         self.entities = IMP.mmcif.data._EntityMapper()
         self.components = IMP.mmcif.data._ComponentMapper()
+        self.datasets = IMP.mmcif.data._Datasets()
 
     def _add_state(self, state):
         self._states[state] = None
@@ -69,7 +71,7 @@ class System(object):
         smf = IMP.mmcif.data._StartingModelFinder(existing_starting_models)
         rep = IMP.mmcif.data._Representation()
         for sp in self._get_structure_particles(chain):
-            starting_model = smf.find(sp)
+            starting_model = smf.find(sp, self.datasets)
             if not rep.add(sp, starting_model):
                 yield rep
                 rep = IMP.mmcif.data._Representation()

@@ -5,6 +5,7 @@
 from __future__ import print_function
 import IMP.atom
 import IMP.mmcif.data
+import operator
 
 class _Dumper(object):
     """Base class for helpers to dump output to mmCIF"""
@@ -221,4 +222,14 @@ class _StartingModelDumper(_Dumper):
                     l.write(starting_model_id=sm.id, entity_id=comp.entity.id,
                             entity_description=comp.entity.description,
                             asym_id=comp.asym_id,
-                            starting_model_auth_asym_id=sm.chain_id)
+                            starting_model_auth_asym_id=sm.chain_id,
+                            dataset_list_id=sm.dataset.id)
+
+
+class _DatasetDumper(_Dumper):
+    def dump(self, system, writer):
+        with writer.loop("_ihm_dataset_list",
+                         ["id", "data_type", "database_hosted"]) as l:
+            for d in sorted(system.datasets.get_all(),
+                            key=operator.attrgetter('id')):
+                l.write(id=d.id, data_type=d._data_type)

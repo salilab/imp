@@ -319,8 +319,25 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-Nup84-m1 1 Nup84 A . . . A . .
-Nup85-m1 2 Nup85 B . . . A . .
+Nup84-m1 1 Nup84 A . . . A . 1
+Nup85-m1 2 Nup85 B . . . A . 2
+#
+""")
+
+    def test_dataset_dumper(self):
+        """Test DatasetDumper"""
+        m = IMP.Model()
+        system = IMP.mmcif.System()
+        system.datasets.get_for_pdb_file('test.pdb', 'Test PDB')
+
+        d = IMP.mmcif.dumper._DatasetDumper()
+        out = _get_dumper_output(d, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_dataset_list.id
+_ihm_dataset_list.data_type
+_ihm_dataset_list.database_hosted
+1 'Experimental model' .
 #
 """)
 

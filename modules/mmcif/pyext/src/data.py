@@ -4,6 +4,7 @@
 
 from __future__ import print_function
 import IMP.atom
+import IMP.mmcif.dataset
 
 def get_molecule(h):
     """Given a Hierarchy, walk up and find the parent Molecule"""
@@ -209,12 +210,14 @@ class _StartingModelFinder(object):
         self._seen_particles = {}
         self._seen_starting_models = dict.fromkeys(existing_starting_models)
 
-    def find(self, particle):
+    def find(self, particle, datasets):
         """Return a StartingModel object, or None, for this particle"""
         def _get_starting_model(sp):
             s = _StartingModel(sp)
             if s not in self._seen_starting_models:
                 self._seen_starting_models[s] = s
+                s.dataset = datasets.get_for_pdb_file(s.filename,
+                                                  "Starting model structure")
             return self._seen_starting_models[s]
         sp = list(_get_all_structure_provenance(particle))
         if sp:
@@ -241,3 +244,28 @@ class _StartingModelFinder(object):
                             self._seen_particles[spi].append(s)
                         return s
                 h = h.get_parent()
+
+
+class _Datasets(object):
+    """Store all datasets used."""
+    def __init__(self):
+        super(_Datasets, self).__init__()
+        self._datasets = {}
+
+    def add(self, d):
+        """Add and return a new dataset."""
+        if d not in self._datasets:
+            self._datasets[d] = d
+            d.id = len(self._datasets)
+        return self._datasets[d]
+
+    def get_all(self):
+        """Yield all datasets"""
+        return self._datasets.keys()
+
+    def get_for_pdb_file(self, fname, details):
+        """Get an appropriate dataset for the PDB file fname."""
+        l = IMP.mmcif.dataset.FileLocation(fname, details)
+        # todo: parse PDB file, determine if comparative model, etc.
+        d = IMP.mmcif.dataset.PDBDataset(l)
+        return self.add(d)
