@@ -29,6 +29,7 @@ class System(object):
         self.assembly_dump.add(self.complete_assembly)
 
         self._dumpers = [IMP.mmcif.dumper._EntryDumper(), # must be first
+                         IMP.mmcif.dumper._SoftwareDumper(),
                          IMP.mmcif.dumper._CitationDumper(),
                          IMP.mmcif.dumper._ChemCompDumper(),
                          IMP.mmcif.dumper._EntityDumper(),
@@ -43,6 +44,7 @@ class System(object):
         self.components = IMP.mmcif.data._ComponentMapper()
         self.datasets = IMP.mmcif.data._Datasets()
         self._citations = []
+        self._software = []
 
     def add_citation(self, pmid, title, journal, volume, page_range, year,
                      authors, doi):
@@ -50,6 +52,12 @@ class System(object):
         self._citations.append(IMP.mmcif.data._Citation(
                     pmid, title, journal, volume, page_range, year,
                     authors, doi))
+
+    def add_software(self, name, classification, description, url,
+                     type='program', version=None):
+        "Add software (other than IMP) used as part of the modeling protocol."
+        self._software.append(IMP.mmcif.data._Software(
+                    name, classification, description, url, type, version))
 
     def _add_state(self, state):
         self._states[state] = None

@@ -277,3 +277,14 @@ class _Citation(object):
         self.title, self.journal, self.volume = title, journal, volume
         self.page_range, self.year = page_range, year
         self.pmid, self.authors, self.doi = pmid, authors, doi
+
+
+class _Software(object):
+    """Software (other than IMP) used as part of the modeling protocol."""
+    def __init__(self, name, classification, description, url, type, version):
+        self.name = name
+        self.classification = classification
+        self.description = description
+        self.url = url
+        self.type = type
+        self.version = version

@@ -266,3 +266,16 @@ class _CitationDumper(_Dumper):
                 for a in c.authors:
                     l.write(citation_id=n+1, name=a, ordinal=ordinal)
                     ordinal += 1
+
+
+class _SoftwareDumper(_Dumper):
+    def dump(self, system, writer):
+        ordinal = 1
+        with writer.loop("_software",
+                         ["pdbx_ordinal", "name", "classification", "version",
+                          "type", "location"]) as l:
+            for s in system._software:
+                l.write(pdbx_ordinal=ordinal, name=s.name,
+                        classification=s.classification, version=s.version,
+                        type=s.type, location=s.url)
+                ordinal += 1

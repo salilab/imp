@@ -92,6 +92,26 @@ _citation_author.ordinal
         out = _get_dumper_output(dumper, system)
         self.assertTrue("'Mol Cell Proteomics' 13 e1637 . 2014 " in out)
 
+    def test_software_dumper(self):
+        """Test SoftwareDumper"""
+        system = IMP.mmcif.System()
+        system.add_software(name='test', classification='test code',
+                            description='Some test program',
+                            version=1, url='http://salilab.org')
+        dumper = IMP.mmcif.dumper._SoftwareDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_software.pdbx_ordinal
+_software.name
+_software.classification
+_software.version
+_software.type
+_software.location
+1 test 'test code' 1 program http://salilab.org
+#
+""")
+
     def test_entry_dumper(self):
         """Test EntryDumper"""
         system = IMP.mmcif.System()
