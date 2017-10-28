@@ -29,6 +29,7 @@ class System(object):
         self.assembly_dump.add(self.complete_assembly)
 
         self._dumpers = [IMP.mmcif.dumper._EntryDumper(), # must be first
+                         IMP.mmcif.dumper._CitationDumper(),
                          IMP.mmcif.dumper._ChemCompDumper(),
                          IMP.mmcif.dumper._EntityDumper(),
                          IMP.mmcif.dumper._EntityPolyDumper(),
@@ -41,6 +42,14 @@ class System(object):
         self.entities = IMP.mmcif.data._EntityMapper()
         self.components = IMP.mmcif.data._ComponentMapper()
         self.datasets = IMP.mmcif.data._Datasets()
+        self._citations = []
+
+    def add_citation(self, pmid, title, journal, volume, page_range, year,
+                     authors, doi):
+        """Add a publication that describes the modeling"""
+        self._citations.append(IMP.mmcif.data._Citation(
+                    pmid, title, journal, volume, page_range, year,
+                    authors, doi))
 
     def _add_state(self, state):
         self._states[state] = None

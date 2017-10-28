@@ -36,6 +36,62 @@ class Tests(IMP.test.TestCase):
             mol.add_child(chain)
         return top, s
 
+    def test_citation_dumper(self):
+        """Test CitationDumper"""
+        system = IMP.mmcif.System()
+        system.add_citation(
+              pmid='25161197',
+              title="Structural characterization by cross-linking reveals the\n"
+                    "detailed architecture of a coatomer-related heptameric\n"
+                    "module from the nuclear pore complex.",
+              journal="Mol Cell Proteomics", volume=13, page_range=(2927,2943),
+              year=2014,
+              authors=['Shi Y', 'Fernandez-Martinez J', 'Tjioe E', 'Pellarin R',
+                       'Kim SJ', 'Williams R', 'Schneidman-Duhovny D', 'Sali A',
+                       'Rout MP', 'Chait BT'],
+              doi='10.1074/mcp.M114.041673')
+        dumper = IMP.mmcif.dumper._CitationDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_citation.id
+_citation.title
+_citation.journal_abbrev
+_citation.journal_volume
+_citation.page_first
+_citation.page_last
+_citation.year
+_citation.pdbx_database_id_PubMed
+_citation.pdbx_database_id_DOI
+1
+;Structural characterization by cross-linking reveals the
+detailed architecture of a coatomer-related heptameric
+module from the nuclear pore complex.
+;
+'Mol Cell Proteomics' 13 2927 2943 2014 25161197 10.1074/mcp.M114.041673
+#
+#
+loop_
+_citation_author.citation_id
+_citation_author.name
+_citation_author.ordinal
+1 'Shi Y' 1
+1 'Fernandez-Martinez J' 2
+1 'Tjioe E' 3
+1 'Pellarin R' 4
+1 'Kim SJ' 5
+1 'Williams R' 6
+1 'Schneidman-Duhovny D' 7
+1 'Sali A' 8
+1 'Rout MP' 9
+1 'Chait BT' 10
+#
+""")
+        # Handle no last page
+        system._citations[0].page_range = 'e1637'
+        out = _get_dumper_output(dumper, system)
+        self.assertTrue("'Mol Cell Proteomics' 13 e1637 . 2014 " in out)
+
     def test_entry_dumper(self):
         """Test EntryDumper"""
         system = IMP.mmcif.System()
