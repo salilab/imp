@@ -30,6 +30,9 @@ class Tests(IMP.test.TestCase):
         else:
             self.assertEqual(p.get_filename(), os.path.abspath("testfile"))
         self.assertEqual(p.get_chain_id(), "testchain")
+        self.assertEqual(p.get_start_residue_index(), 1)
+        p.set_start_residue_index(42)
+        self.assertEqual(p.get_start_residue_index(), 42)
 
     def test_sample_provenance(self):
         """Test SampleProvenance decorator"""

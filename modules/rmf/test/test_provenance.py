@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
     def add_provenance(self, h):
         m = h.get_model()
         struc = IMP.core.StructureProvenance.setup_particle(
-                            m, IMP.Particle(m), "testfile", "testchain")
+                            m, IMP.Particle(m), "testfile", "testchain", 19)
         struc.set_name("structure provenance")
         IMP.core.add_provenance(m, h, struc)
 
@@ -40,6 +40,7 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(IMP.core.StructureProvenance.get_is_setup(m, prov))
         struc = IMP.core.StructureProvenance(m, prov)
         self.assertEqual(struc.get_chain_id(), 'A')
+        self.assertEqual(struc.get_start_residue_index(), 1)
 
         # Should be no more chain provenance
         prov = prov.get_previous()
@@ -81,6 +82,7 @@ class Tests(IMP.test.TestCase):
         else:
             self.assertEqual(struc.get_filename(), os.path.abspath("testfile"))
         self.assertEqual(struc.get_chain_id(), "testchain")
+        self.assertEqual(struc.get_start_residue_index(), 19)
         self.assertEqual(struc.get_name(), "structure provenance")
 
         # Should be no more provenance

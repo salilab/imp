@@ -66,6 +66,11 @@ StringKey StructureProvenance::get_chain_key() {
   return chain;
 }
 
+IntKey StructureProvenance::get_start_residue_index_key() {
+  static const IntKey startres("sp_startres");
+  return startres;
+}
+
 void StructureProvenance::show(std::ostream &out) const {
   out << "StructureProvenance " << get_filename() << " " << get_chain_id()
       << std::endl;

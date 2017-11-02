@@ -75,28 +75,45 @@ public:
 };
 
 //! Track creation of a system fragment from a PDB file.
+/** This tracks the filename of the PDB file, and the chain ID,
+    that was used to populate an IMP Model (if multiple chains are
+    read, IMP::atom::read_pdb() assigns a StructureProvenance to each
+    chain). The index of the first residue in the chain is also stored,
+    since the range of residues read from the PDB file might not match
+    those in the model (for example, if residues are not numbered
+    starting at 1, or if two PDB files are concatenated). This is
+    essentially equivalent to storing the offset between the two numbering
+    systems. (Note that it isn't necessary to also store the *ending* residue
+    number - the number of residues to read can be deduced from those
+    in the model.)
+ */
 class IMPCOREEXPORT StructureProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 std::string filename,
-                                std::string chain_id) {
+                                std::string chain_id,
+                                int start_residue_index=1) {
     Provenance::setup_particle(m, pi);
     IMP_USAGE_CHECK(!filename.empty(), "The filename cannot be empty.");
     m->add_attribute(get_filename_key(), pi, get_absolute_path(filename));
     m->add_attribute(get_chain_key(), pi, chain_id);
+    m->add_attribute(get_start_residue_index_key(), pi, start_residue_index);
   }
 
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 StructureProvenance o) {
-    do_setup_particle(m, pi, o.get_filename(), o.get_chain_id());
+    do_setup_particle(m, pi, o.get_filename(), o.get_chain_id(),
+                      o.get_start_residue_index());
   }
 
   static StringKey get_filename_key();
   static StringKey get_chain_key();
+  static IntKey get_start_residue_index_key();
 
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
     return m->get_has_attribute(get_filename_key(), pi)
-           && m->get_has_attribute(get_chain_key(), pi);
+           && m->get_has_attribute(get_chain_key(), pi)
+           && m->get_has_attribute(get_start_residue_index_key(), pi);
   }
 
   //! Set the filename
@@ -126,7 +143,22 @@ public:
     return get_model()->get_attribute(get_chain_key(), get_particle_index());
   }
 
+  //! Set the index of the first residue (defaults to 1)
+  void set_start_residue_index(int start_residue_index) const {
+    return get_model()->set_attribute(get_start_residue_index_key(),
+                                      get_particle_index(),
+                                      start_residue_index);
+  }
+
+  //! \return the index of the first residue (defaults to 1)
+  int get_start_residue_index() const {
+    return get_model()->get_attribute(get_start_residue_index_key(),
+                                      get_particle_index());
+  }
+
   IMP_DECORATOR_METHODS(StructureProvenance, Provenance);
+  IMP_DECORATOR_SETUP_3(StructureProvenance, std::string, filename,
+                        std::string, chain_id, int, start_residue_index);
   IMP_DECORATOR_SETUP_2(StructureProvenance, std::string, filename,
                         std::string, chain_id);
   IMP_DECORATOR_SETUP_1(StructureProvenance, StructureProvenance, o);
