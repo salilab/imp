@@ -108,7 +108,10 @@ structure = Decorator(["PROVENANCE"], "provenance",
                       [PathAttribute("structure filename",
                                      function_name='filename'),
                        Attribute("structure chain", "String",
-                                 function_name='chain')])
+                                 function_name='chain'),
+                       Attribute("structure start residue", "Int",
+                                 function_name='start_residue_index',
+                                 default=1)])
 
 sample = Decorator(["PROVENANCE"], "provenance",
                     "SampleProvenance",
