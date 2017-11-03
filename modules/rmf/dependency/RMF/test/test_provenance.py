@@ -42,8 +42,8 @@ class Tests(unittest.TestCase):
         struc.set_filename(os.path.abspath('foo.pdb'))
         struc.set_chain('X')
         # Test default
-        self.assertEqual(struc.get_start_residue_index(), 1)
-        struc.set_start_residue_index(42)
+        self.assertEqual(struc.get_residue_offset(), 0)
+        struc.set_residue_offset(42)
 
         return clust_node
 
@@ -93,7 +93,7 @@ class Tests(unittest.TestCase):
         struc = strucpf.get(struc_node)
         self.assertEqual(struc.get_filename(), os.path.abspath('foo.pdb'))
         self.assertEqual(struc.get_chain(), 'X')
-        self.assertEqual(struc.get_start_residue_index(), 42)
+        self.assertEqual(struc.get_residue_offset(), 42)
 
 if __name__ == '__main__':
     unittest.main()
