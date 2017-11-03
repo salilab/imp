@@ -188,13 +188,17 @@ def _get_all_structure_provenance(p):
             prov = prov.get_previous()
 
 class _StartingModel(object):
-    _eq_keys = ['filename', 'chain_id']
+    _eq_keys = ['filename', 'chain_id', 'offset']
 
     def __init__(self, struc_prov):
         self.filename = struc_prov[0].get_filename()
         self.chain_id = struc_prov[0].get_chain_id()
+        self.offset = struc_prov[0].get_residue_offset()
 
-    # Two starting models with same filename and chain ID compare identical
+    # Two starting models with same filename, chain ID, and offset
+    # compare identical
+    # note: this results in separate starting models if only the offset differs;
+    # maybe consolidate into one?
     def _eq_vals(self):
         return tuple([self.__class__]
                      + [getattr(self, x) for x in self._eq_keys])
