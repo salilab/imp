@@ -1250,7 +1250,7 @@ class Cluster(object):
         self.average_score=self.compute_score()
         self.precision=None
         self.center_index=None
-
+        return self
 
 
 class CrossLinkIdentifierDatabase(object):
