@@ -226,7 +226,6 @@ class Tests(IMP.test.TestCase):
         mp = IMP.atom.read_pdb(fname, m)
         chains = IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)
         self.assertEqual(len(chains), 5)
-        start_res = []
         for c in chains:
             self.assertTrue(IMP.core.Provenanced.get_is_setup(c))
             p = IMP.core.Provenanced(c).get_provenance()
@@ -234,8 +233,7 @@ class Tests(IMP.test.TestCase):
             sp = IMP.core.StructureProvenance(p)
             self.assertEqual(sp.get_filename(), fname)
             self.assertEqual(sp.get_chain_id(), IMP.atom.Chain(c).get_id())
-            start_res.append(sp.get_start_residue_index())
-        self.assertEqual(start_res, [4, 1, 1, 1, 1])
+            self.assertEqual(sp.get_residue_offset(), 0)
 
 
 if __name__ == '__main__':

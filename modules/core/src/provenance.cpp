@@ -66,9 +66,9 @@ StringKey StructureProvenance::get_chain_key() {
   return chain;
 }
 
-IntKey StructureProvenance::get_start_residue_index_key() {
-  static const IntKey startres("sp_startres");
-  return startres;
+IntKey StructureProvenance::get_residue_offset_key() {
+  static const IntKey offset("sp_offset");
+  return offset;
 }
 
 void StructureProvenance::show(std::ostream &out) const {

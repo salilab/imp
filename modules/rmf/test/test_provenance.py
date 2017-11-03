@@ -40,7 +40,7 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(IMP.core.StructureProvenance.get_is_setup(m, prov))
         struc = IMP.core.StructureProvenance(m, prov)
         self.assertEqual(struc.get_chain_id(), 'A')
-        self.assertEqual(struc.get_start_residue_index(), 0)
+        self.assertEqual(struc.get_residue_offset(), 0)
 
         # Should be no more chain provenance
         prov = prov.get_previous()
@@ -82,7 +82,7 @@ class Tests(IMP.test.TestCase):
         else:
             self.assertEqual(struc.get_filename(), os.path.abspath("testfile"))
         self.assertEqual(struc.get_chain_id(), "testchain")
-        self.assertEqual(struc.get_start_residue_index(), 19)
+        self.assertEqual(struc.get_residue_offset(), 19)
         self.assertEqual(struc.get_name(), "structure provenance")
 
         # Should be no more provenance

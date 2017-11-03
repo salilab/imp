@@ -187,7 +187,7 @@ core::Provenance HierarchyLoadLink::create_one_provenance(Model *m,
     RMF::decorator::StructureProvenanceConst rp = strucpf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
     return core::StructureProvenance::setup_particle(m, ip, rp.get_filename(),
-                                rp.get_chain(), rp.get_start_residue_index());
+                                rp.get_chain(), rp.get_residue_offset());
   } else if (samppf_.get_is(node)) {
     RMF::decorator::SampleProvenanceConst rp = samppf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
@@ -447,7 +447,7 @@ void HierarchySaveLink::add_provenance(Model *m, ParticleIndex p,
       RMF::decorator::StructureProvenance rp = strucpf_.get(cur);
       rp.set_filename(ip.get_filename());
       rp.set_chain(ip.get_chain_id());
-      rp.set_start_residue_index(ip.get_start_residue_index());
+      rp.set_residue_offset(ip.get_residue_offset());
     } else if (core::SampleProvenance::get_is_setup(prov)) {
       core::SampleProvenance ip(prov);
       cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),

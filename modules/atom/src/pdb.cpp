@@ -260,13 +260,6 @@ Particle* chain_particle(Model* m, char chain_id, std::string filename) {
   return p;
 }
 
-void set_chain_start_residue(Particle *cp, Particle *rp) {
-  // get provenance
-  core::Provenanced provd(cp);
-  core::StructureProvenance sp(provd.get_provenance());
-  sp.set_start_residue_index(Residue(rp).get_index());
-}
-
 }
 
 namespace {
@@ -384,7 +377,6 @@ Hierarchies read_pdb(std::istream& in, std::string name, std::string filename,
 
         // set chain name (protein/nucleotide/other) according to residue name
         if (!chain_name_set) {
-          set_chain_start_residue(cp, rp);
           Chain cd(cp);
           chain_name_set = true;
         }
