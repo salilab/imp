@@ -1060,7 +1060,22 @@ class StatHierarchyHandler(RMFHierarchyHandler):
 
         except pickle.UnpicklingError:
             '''alternatively read the ascii stat files'''
-            scores,rmf_files,rmf_frame_indexes,features = self.get_info_from_stat_file(stat_file, self.score_threshold)
+            try:
+                scores,rmf_files,rmf_frame_indexes,features = self.get_info_from_stat_file(stat_file, self.score_threshold)
+            except KeyError:
+                # in this case check that is it an rmf file, probably without stat stored in
+                try:
+                    # let's see if that is an rmf file
+                    rh = RMF.open_rmf_file_read_only(stat_file)
+                    nframes = rh.get_number_of_frames()
+                    scores=[0.0]*nframes
+                    rmf_files=[stat_file]*nframes
+                    rmf_frame_indexes=range(nframes)
+                    features={}
+                except:
+                    return
+
+
             if len(set(rmf_files)) > 1:
                 raise ("Multiple RMF files found")
 

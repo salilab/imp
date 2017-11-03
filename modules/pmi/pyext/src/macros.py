@@ -2627,6 +2627,43 @@ class AnalysisReplicaExchange(object):
 
         plt.savefig(prefix+"/contact_map."+str(cluster.cluster_id)+".pdf", dpi=300,transparent="False")
 
+    def plot_rmsd_matrix(self,filename):
+        import numpy as np
+        self.compute_all_pairwise_rmsd()
+        distance_matrix = np.zeros(
+            (len(self.stath0), len(self.stath1)))
+        for (n0,n1) in self.pairwise_rmsd:
+            distance_matrix[n0, n1] = self.pairwise_rmsd[(n0,n1)]
+
+        import matplotlib as mpl
+        mpl.use('Agg')
+        import matplotlib.pylab as pl
+        from scipy.cluster import hierarchy as hrc
+
+        fig = pl.figure(figsize=(10,8))
+        ax = fig.add_subplot(212)
+        dendrogram = hrc.dendrogram(
+            hrc.linkage(distance_matrix),
+            color_threshold=7,
+            no_labels=True)
+        leaves_order = dendrogram['leaves']
+        ax.set_xlabel('Model')
+        ax.set_ylabel('RMSD [Angstroms]')
+
+        ax2 = fig.add_subplot(221)
+        cax = ax2.imshow(
+            distance_matrix[leaves_order,
+                                     :][:,
+                                        leaves_order],
+            interpolation='nearest')
+        cb = fig.colorbar(cax)
+        cb.set_label('RMSD [Angstroms]')
+        ax2.set_xlabel('Model')
+        ax2.set_ylabel('Model')
+
+        pl.savefig(filename, dpi=300)
+        pl.close(fig)
+
     ####################
     # Internal Functions
     ####################
@@ -2739,6 +2776,11 @@ class AnalysisReplicaExchange(object):
                 best_rmsd2 = rmsd2
                 best_sel = sels
         return  best_sel, best_rmsd2
+
+    def compute_all_pairwise_rmsd(self):
+        for d0 in self.stath0:
+            for d1 in self.stath1:
+                rmsd, _ = self.rmsd()
 
     def rmsd(self,metric=IMP.atom.get_rmsd):
         '''

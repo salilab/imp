@@ -28,7 +28,7 @@ class Tests(IMP.test.TestCase):
 
         r.create_component("A", color=0.)
         r.add_component_sequence("A", fastafile, id=fastids[0])
-        r.autobuild_model("A", pdbfile, "A", resrange=(12,12),
+        r.autobuild_model("A", pdbfile, "A", offset=1,
                           resolutions=[1, 10], missingbeadsize=1)
         return m, r
 
@@ -43,7 +43,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(prov[0].get_filename(),
                          self.get_input_file_name("nonbond.pdb"))
         self.assertEqual(prov[0].get_chain_id(), 'A')
-        self.assertEqual(prov[0].get_start_residue_index(), 12)
+        self.assertEqual(prov[0].get_residue_offset(), 1)
 
 if __name__ == '__main__':
     IMP.test.main()
