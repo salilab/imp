@@ -196,6 +196,23 @@ class _StartingModel(object):
         self.chain_id = struc_prov[0].get_chain_id()
         self.offset = struc_prov[0].get_residue_offset()
 
+    def _add_residue(self, resind):
+        self.seq_id_end = resind + self.offset
+        if not hasattr(self, 'seq_id_begin'):
+            self.seq_id_begin = self.seq_id_end
+
+    def get_seq_id_range_all_sources(self):
+        source0 = self.sources[0]
+        # Where there are multiple sources (to date, this can only
+        # mean multiple templates for a comparative model) consolidate
+        # them; template info is given in starting_comparative_models.
+        seq_id_begin, seq_id_end = source0.get_seq_id_range(self)
+        for source in self.sources[1:]:
+            this_begin, this_end = source.get_seq_id_range(self)
+            seq_id_begin = min(seq_id_begin, this_begin)
+            seq_id_end = max(seq_id_end, this_end)
+        return seq_id_begin, seq_id_end
+
     # Two starting models with same filename, chain ID, and offset
     # compare identical
     # note: this results in separate starting models if only the offset differs;
@@ -225,31 +242,41 @@ class _StartingModelFinder(object):
 
     def find(self, particle, system):
         """Return a StartingModel object, or None, for this particle"""
-        def _get_starting_model(sp):
+        def _get_starting_model(sp, resind):
             s = _StartingModel(sp)
             if s not in self._seen_starting_models:
                 self._seen_starting_models[s] = s
                 s._set_sources_datasets(system)
-            return self._seen_starting_models[s]
+            s = self._seen_starting_models[s]
+            if s:
+                s._add_residue(resind)
+            return s
+        resind = None
+        if IMP.atom.Residue.get_is_setup(particle):
+            resind = IMP.atom.Residue(particle).get_index()
         sp = list(_get_all_structure_provenance(particle))
         if sp:
-            return _get_starting_model(sp)
+            return _get_starting_model(sp, resind)
         elif IMP.atom.Hierarchy.get_is_setup(particle):
             h = IMP.atom.Hierarchy(particle).get_parent()
             # Remember all nodes we inspect
             seen_parents = []
             while h:
+                if IMP.atom.Residue.get_is_setup(h):
+                    resind = IMP.atom.Residue(h).get_index()
                 pi = h.get_particle_index()
                 seen_parents.append(pi)
                 # If we inspected this node before, return the cached result
                 if pi in self._seen_particles:
                     sp = self._seen_particles[pi]
+                    if sp and sp[0] and resind is not None:
+                        sp[0]._add_residue(resind)
                     return sp[0] if sp else None
                 else:
                     sp = list(_get_all_structure_provenance(h))
                     self._seen_particles[pi] = []
                     if sp:
-                        s = _get_starting_model(sp)
+                        s = _get_starting_model(sp, resind)
                         # Set cache for this node and all the children we
                         # inspected on the way up
                         for spi in seen_parents:

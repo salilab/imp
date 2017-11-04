@@ -396,8 +396,8 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-Nup84-m1 1 Nup84 A . . . A 0 1
-Nup85-m1 2 Nup85 B . . . A 0 2
+Nup84-m1 1 Nup84 A 1 2 'comparative model' A 0 1
+Nup85-m1 2 Nup85 B 1 2 'comparative model' A 0 2
 #
 """)
 

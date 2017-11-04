@@ -219,10 +219,13 @@ class _StartingModelDumper(_Dumper):
                       "dataset_list_id"]) as l:
             for comp in system.components.get_all_modeled():
                 for sm in self._all_models(system, comp):
-                    # todo: fill in other fields
+                    seq_id_begin, seq_id_end = sm.get_seq_id_range_all_sources()
                     l.write(starting_model_id=sm.id, entity_id=comp.entity.id,
                             entity_description=comp.entity.description,
                             asym_id=comp.asym_id,
+                            seq_id_begin=seq_id_begin,
+                            seq_id_end=seq_id_end,
+                            starting_model_source=sm.sources[0].source,
                             starting_model_auth_asym_id=sm.chain_id,
                             dataset_list_id=sm.dataset.id,
                             starting_model_sequence_offset=sm.offset)
