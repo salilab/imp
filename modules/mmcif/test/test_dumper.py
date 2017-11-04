@@ -3,6 +3,7 @@ import IMP.test
 import IMP.mmcif
 import IMP.mmcif.dumper
 import IMP.mmcif.format
+import IMP.mmcif.dataset
 import io
 import sys
 if sys.version_info[0] >= 3:
@@ -299,7 +300,7 @@ _ihm_struct_assembly.seq_id_end
         # Add starting model information for residues 1-2
         ress = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         sp = IMP.core.StructureProvenance.setup_particle(IMP.Particle(m),
-                                                         "foo.pdb", "A")
+                self.get_input_file_name("test.nup84.pdb"), "A")
         IMP.core.Provenanced.setup_particle(ress, sp)
         chain.add_child(ress)
         res1 = IMP.atom.Residue.setup_particle(IMP.Particle(m),
@@ -404,7 +405,9 @@ Nup85-m1 2 Nup85 B . . . A . 2
         """Test DatasetDumper"""
         m = IMP.Model()
         system = IMP.mmcif.System()
-        system.datasets.get_for_pdb_file('test.pdb', 'Test PDB')
+        l = IMP.mmcif.dataset.FileLocation("test.pdb", "Test PDB")
+        d = IMP.mmcif.dataset.PDBDataset(l)
+        system.datasets.add(d)
 
         d = IMP.mmcif.dumper._DatasetDumper()
         out = _get_dumper_output(d, system)

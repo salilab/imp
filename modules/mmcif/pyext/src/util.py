@@ -44,7 +44,7 @@ class System(object):
         self.components = IMP.mmcif.data._ComponentMapper()
         self.datasets = IMP.mmcif.data._Datasets()
         self._citations = []
-        self._software = []
+        self._software = IMP.mmcif.data._AllSoftware()
 
     def add_citation(self, pmid, title, journal, volume, page_range, year,
                      authors, doi):
@@ -88,7 +88,7 @@ class System(object):
         smf = IMP.mmcif.data._StartingModelFinder(existing_starting_models)
         rep = IMP.mmcif.data._Representation()
         for sp in self._get_structure_particles(chain):
-            starting_model = smf.find(sp, self.datasets)
+            starting_model = smf.find(sp, self)
             if not rep.add(sp, starting_model):
                 yield rep
                 rep = IMP.mmcif.data._Representation()

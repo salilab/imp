@@ -5,6 +5,7 @@
 from __future__ import print_function
 import IMP.atom
 import IMP.mmcif.dataset
+import IMP.mmcif.metadata
 
 def get_molecule(h):
     """Given a Hierarchy, walk up and find the parent Molecule"""
@@ -207,6 +208,14 @@ class _StartingModel(object):
     def __hash__(self):
         return hash(self._eq_vals())
 
+    def _set_sources_datasets(self, system):
+        # Attempt to identify PDB file vs. comparative model
+        p = IMP.mmcif.metadata._PDBMetadataParser()
+        p.parse_file(self.filename, self.chain_id, system)
+        self.dataset = p.dataset
+        self.sources = p.sources
+        self.alignment_file = p.alignment_file
+
 
 class _StartingModelFinder(object):
     """Map IMP particles to starting model objects"""
@@ -214,14 +223,13 @@ class _StartingModelFinder(object):
         self._seen_particles = {}
         self._seen_starting_models = dict.fromkeys(existing_starting_models)
 
-    def find(self, particle, datasets):
+    def find(self, particle, system):
         """Return a StartingModel object, or None, for this particle"""
         def _get_starting_model(sp):
             s = _StartingModel(sp)
             if s not in self._seen_starting_models:
                 self._seen_starting_models[s] = s
-                s.dataset = datasets.get_for_pdb_file(s.filename,
-                                                  "Starting model structure")
+                s._set_sources_datasets(system)
             return self._seen_starting_models[s]
         sp = list(_get_all_structure_provenance(particle))
         if sp:
@@ -267,12 +275,6 @@ class _Datasets(object):
         """Yield all datasets"""
         return self._datasets.keys()
 
-    def get_for_pdb_file(self, fname, details):
-        """Get an appropriate dataset for the PDB file fname."""
-        l = IMP.mmcif.dataset.FileLocation(fname, details)
-        # todo: parse PDB file, determine if comparative model, etc.
-        d = IMP.mmcif.dataset.PDBDataset(l)
-        return self.add(d)
 
 class _Citation(object):
     """A publication that describes the modeling."""
@@ -285,10 +287,39 @@ class _Citation(object):
 
 class _Software(object):
     """Software (other than IMP) used as part of the modeling protocol."""
-    def __init__(self, name, classification, description, url, type, version):
+    def __init__(self, name, classification, description, url,
+                 type='program', version=None):
         self.name = name
         self.classification = classification
         self.description = description
         self.url = url
         self.type = type
         self.version = version
+
+
+class _AllSoftware(list):
+    """Keep track of all _Software objects."""
+    def __init__(self):
+        super(_AllSoftware, self).__init__()
+        self.modeller_used = self.phyre2_used = False
+
+    def set_modeller_used(self, version, date):
+        if self.modeller_used:
+            return
+        self.modeller_used = True
+        self.append(_Software(
+                name='MODELLER', classification='comparative modeling',
+                description='Comparative modeling by satisfaction '
+                            'of spatial restraints, build ' + date,
+                url='https://salilab.org/modeller/',
+                version=version))
+
+    def set_phyre2_used(self):
+        if self.phyre2_used:
+            return
+        self.phyre2_used = True
+        self.append(_Software(
+               name='Phyre2', classification='protein homology modeling',
+               description='Protein Homology/analogY Recognition '
+                           'Engine V 2.0',
+               version='2.0', url='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
