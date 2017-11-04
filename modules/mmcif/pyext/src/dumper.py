@@ -5,6 +5,7 @@
 from __future__ import print_function
 import IMP.atom
 import IMP.mmcif.data
+import IMP.mmcif.dataset
 import operator
 
 class _Dumper(object):
@@ -228,12 +229,35 @@ class _StartingModelDumper(_Dumper):
 
 
 class _DatasetDumper(_Dumper):
+    def _dataset_by_id(self, system):
+        return sorted(system.datasets.get_all(), key=operator.attrgetter('id'))
+
     def dump(self, system, writer):
         with writer.loop("_ihm_dataset_list",
                          ["id", "data_type", "database_hosted"]) as l:
-            for d in sorted(system.datasets.get_all(),
-                            key=operator.attrgetter('id')):
-                l.write(id=d.id, data_type=d._data_type)
+            for d in self._dataset_by_id(system):
+                l.write(id=d.id, data_type=d._data_type,
+                        database_hosted=isinstance(d.location,
+                                        IMP.mmcif.dataset.DatabaseLocation))
+        self.dump_rel_dbs((d for d in self._dataset_by_id(system)
+                           if isinstance(d.location,
+                                         IMP.mmcif.dataset.DatabaseLocation)),
+                          writer)
+
+    def dump_rel_dbs(self, datasets, writer):
+        ordinal = 1
+        with writer.loop("_ihm_dataset_related_db_reference",
+                         ["id", "dataset_list_id", "db_name",
+                          "accession_code", "version", "details"]) as l:
+            for d in datasets:
+                l.write(id=ordinal, dataset_list_id=d.id,
+                        db_name=d.location.db_name,
+                        accession_code=d.location.access_code,
+                        version=d.location.version if d.location.version
+                                else writer.omitted,
+                        details=d.location.details if d.location.details
+                                else writer.omitted)
+                ordinal += 1
 
 
 class _CitationDumper(_Dumper):

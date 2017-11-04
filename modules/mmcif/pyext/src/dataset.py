@@ -36,6 +36,11 @@ class Dataset(object):
         self._parents[dataset] = None
 
 
+class CXMSDataset(Dataset):
+    """Processed crosslinks from a CX-MS experiment"""
+    _data_type = 'CX-MS data'
+
+
 class PDBDataset(Dataset):
     """An experimentally-determined 3D structure as a set of a coordinates,
        usually in a PDB file"""

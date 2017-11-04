@@ -405,7 +405,12 @@ Nup85-m1 2 Nup85 B . . . A 0 2
         """Test DatasetDumper"""
         m = IMP.Model()
         system = IMP.mmcif.System()
-        l = IMP.mmcif.dataset.FileLocation("test.pdb", "Test PDB")
+
+        l = IMP.mmcif.dataset.FileLocation(repo="foo", path="bar")
+        d = IMP.mmcif.dataset.CXMSDataset(l)
+        system.datasets.add(d)
+
+        l = IMP.mmcif.dataset.PDBLocation("1abc", "1.0", "test details")
         d = IMP.mmcif.dataset.PDBDataset(l)
         system.datasets.add(d)
 
@@ -416,7 +421,18 @@ loop_
 _ihm_dataset_list.id
 _ihm_dataset_list.data_type
 _ihm_dataset_list.database_hosted
-1 'Experimental model' .
+1 'CX-MS data' NO
+2 'Experimental model' YES
+#
+#
+loop_
+_ihm_dataset_related_db_reference.id
+_ihm_dataset_related_db_reference.dataset_list_id
+_ihm_dataset_related_db_reference.db_name
+_ihm_dataset_related_db_reference.accession_code
+_ihm_dataset_related_db_reference.version
+_ihm_dataset_related_db_reference.details
+1 2 PDB 1abc 1.0 'test details'
 #
 """)
 
