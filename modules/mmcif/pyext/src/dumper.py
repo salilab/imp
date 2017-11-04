@@ -223,7 +223,8 @@ class _StartingModelDumper(_Dumper):
                             entity_description=comp.entity.description,
                             asym_id=comp.asym_id,
                             starting_model_auth_asym_id=sm.chain_id,
-                            dataset_list_id=sm.dataset.id)
+                            dataset_list_id=sm.dataset.id,
+                            starting_model_sequence_offset=sm.offset)
 
 
 class _DatasetDumper(_Dumper):
