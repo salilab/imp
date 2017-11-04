@@ -408,10 +408,15 @@ Nup85-m1 2 Nup85 B 1 2 'comparative model' A 0 2
 
         l = IMP.mmcif.dataset.FileLocation(repo="foo", path="bar")
         d = IMP.mmcif.dataset.CXMSDataset(l)
-        system.datasets.add(d)
+        pds = system.datasets.add(d)
 
         l = IMP.mmcif.dataset.PDBLocation("1abc", "1.0", "test details")
         d = IMP.mmcif.dataset.PDBDataset(l)
+        system.datasets.add(d)
+
+        l = IMP.mmcif.dataset.FileLocation(repo="foo2", path="bar2")
+        d = IMP.mmcif.dataset.PDBDataset(l)
+        d.add_parent(pds)
         system.datasets.add(d)
 
         d = IMP.mmcif.dumper._DatasetDumper()
@@ -423,6 +428,7 @@ _ihm_dataset_list.data_type
 _ihm_dataset_list.database_hosted
 1 'CX-MS data' NO
 2 'Experimental model' YES
+3 'Experimental model' NO
 #
 #
 loop_
@@ -433,6 +439,13 @@ _ihm_dataset_related_db_reference.accession_code
 _ihm_dataset_related_db_reference.version
 _ihm_dataset_related_db_reference.details
 1 2 PDB 1abc 1.0 'test details'
+#
+#
+loop_
+_ihm_related_datasets.ordinal_id
+_ihm_related_datasets.dataset_list_id_derived
+_ihm_related_datasets.dataset_list_id_primary
+1 3 1
 #
 """)
 

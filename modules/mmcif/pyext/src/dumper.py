@@ -246,6 +246,7 @@ class _DatasetDumper(_Dumper):
                            if isinstance(d.location,
                                          IMP.mmcif.dataset.DatabaseLocation)),
                           writer)
+        self.dump_related(system, writer)
 
     def dump_rel_dbs(self, datasets, writer):
         ordinal = 1
@@ -261,6 +262,19 @@ class _DatasetDumper(_Dumper):
                         details=d.location.details if d.location.details
                                 else writer.omitted)
                 ordinal += 1
+
+    def dump_related(self, system, writer):
+        ordinal = 1
+        with writer.loop("_ihm_related_datasets",
+                         ["ordinal_id", "dataset_list_id_derived",
+                          "dataset_list_id_primary"]) as l:
+            for derived in self._dataset_by_id(system):
+                for parent in sorted(derived._parents.keys(),
+                                     key=operator.attrgetter('id')):
+                    l.write(ordinal_id=ordinal,
+                            dataset_list_id_derived=derived.id,
+                            dataset_list_id_primary=parent.id)
+                    ordinal += 1
 
 
 class _CitationDumper(_Dumper):
