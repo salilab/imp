@@ -208,6 +208,7 @@ class _StartingModelDumper(_Dumper):
 
     def dump(self, system, writer):
         self.dump_details(system, writer)
+        self.dump_comparative(system, writer)
 
     def dump_details(self, system, writer):
         with writer.loop("_ihm_starting_model_details",
@@ -229,6 +230,44 @@ class _StartingModelDumper(_Dumper):
                             starting_model_auth_asym_id=sm.chain_id,
                             dataset_list_id=sm.dataset.id,
                             starting_model_sequence_offset=sm.offset)
+
+    def dump_comparative(self, system, writer):
+        """Dump details on comparative models."""
+        with writer.loop("_ihm_starting_comparative_models",
+                     ["ordinal_id", "starting_model_id",
+                      "starting_model_auth_asym_id",
+                      "starting_model_seq_id_begin",
+                      "starting_model_seq_id_end",
+                      "template_auth_asym_id", "template_seq_id_begin",
+                      "template_seq_id_end", "template_sequence_identity",
+                      "template_sequence_identity_denominator",
+                      "template_dataset_list_id",
+                      "alignment_file_id"]) as l:
+            ordinal = 1
+            for comp in system.components.get_all_modeled():
+                for sm in self._all_models(system, comp):
+                    for template in [s for s in sm.sources
+                          if isinstance(s, IMP.mmcif.metadata._TemplateSource)]:
+                        seq_id_begin, seq_id_end = template.get_seq_id_range(sm)
+                        l.write(ordinal_id=ordinal,
+                          starting_model_id=sm.id,
+                          starting_model_auth_asym_id=template.chain_id,
+                          starting_model_seq_id_begin=seq_id_begin,
+                          starting_model_seq_id_end=seq_id_end,
+                          template_auth_asym_id=template.tm_chain_id,
+                          template_seq_id_begin=template.tm_seq_id_begin,
+                          template_seq_id_end=template.tm_seq_id_end,
+                          template_sequence_identity=template.sequence_identity,
+                          # Assume Modeller-style sequence identity for now
+                          template_sequence_identity_denominator=1,
+                          template_dataset_list_id=template.tm_dataset.id
+                                                   if template.tm_dataset
+                                                   else writer.unknown)
+                          # todo: add alignment once external files are ok
+                          # alignment_file_id=sm.alignment_file.id
+                          #                   if hasattr(sm, 'alignment_file')
+                          #                   else writer.unknown)
+                        ordinal += 1
 
 
 class _DatasetDumper(_Dumper):

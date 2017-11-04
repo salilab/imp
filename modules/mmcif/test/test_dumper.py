@@ -396,8 +396,27 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-Nup84-m1 1 Nup84 A 1 2 'comparative model' A 0 1
-Nup85-m1 2 Nup85 B 1 2 'comparative model' A 0 2
+Nup84-m1 1 Nup84 A 33 2 'comparative model' A 0 1
+Nup85-m1 2 Nup85 B 33 2 'comparative model' A 0 4
+#
+#
+loop_
+_ihm_starting_comparative_models.ordinal_id
+_ihm_starting_comparative_models.starting_model_id
+_ihm_starting_comparative_models.starting_model_auth_asym_id
+_ihm_starting_comparative_models.starting_model_seq_id_begin
+_ihm_starting_comparative_models.starting_model_seq_id_end
+_ihm_starting_comparative_models.template_auth_asym_id
+_ihm_starting_comparative_models.template_seq_id_begin
+_ihm_starting_comparative_models.template_seq_id_end
+_ihm_starting_comparative_models.template_sequence_identity
+_ihm_starting_comparative_models.template_sequence_identity_denominator
+_ihm_starting_comparative_models.template_dataset_list_id
+_ihm_starting_comparative_models.alignment_file_id
+1 Nup84-m1 A 33 2 C 33 424 100.0 1 2 .
+2 Nup84-m1 A 429 2 G 482 551 10.0 1 3 .
+3 Nup85-m1 A 33 2 C 33 424 100.0 1 2 .
+4 Nup85-m1 A 429 2 G 482 551 10.0 1 3 .
 #
 """)
 
