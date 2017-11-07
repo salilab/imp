@@ -9,7 +9,7 @@ IMP.set_check_level(IMP.USAGE_AND_INTERNAL)
 IMP.set_log_level(IMP.WARNING)
 m = IMP.Model()
 h = IMP.atom.read_pdb(
-    os.path.join(os.path.split(sys.argv[0])[0],
+    os.path.join(os.path.split(__file__)[0],
                  "input",
                  "input.pdb"),
     m)
