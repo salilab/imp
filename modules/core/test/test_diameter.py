@@ -33,7 +33,7 @@ class Tests(IMP.test.TestCase):
 
     def test_diameter(self):
         """Test that diameter restraints are reasonable"""
-        self.probabilistic_test("self._test_diameter()", .002)
+        self.probabilistic_check("self._test_diameter()", .002)
 
 if __name__ == '__main__':
     IMP.test.main()

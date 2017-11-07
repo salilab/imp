@@ -287,7 +287,7 @@ class TestCase(unittest.TestCase):
         p.add_attribute(IMP.FloatKey("z"), z, True)
         return p
 
-    def probabilistic_test(self, testcall, chance_of_failure):
+    def probabilistic_check(self, testcall, chance_of_failure):
         """Help handle a test which is expected to fail some fraction of
         the time. The test is run multiple times and an exception
         is thrown only if it fails too many times.
