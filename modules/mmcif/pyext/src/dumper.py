@@ -189,6 +189,15 @@ class _ModelRepresentationDumper(_Dumper):
                     ordinal_id += 1
                     segment_id += 1
 
+class _MSESeqDif(object):
+    """Track an MSE -> MET mutation in the starting model sequence"""
+    comp_id = 'MET'
+    db_comp_id = 'MSE'
+    details = 'Conversion of modified residue MSE to MET'
+    def __init__(self, res, comp, source, model):
+        self.res, self.comp, self.source, self.model = res, comp, source, model
+        self.model = model
+
 
 class _StartingModelDumper(_Dumper):
     def finalize(self, system):
@@ -209,6 +218,8 @@ class _StartingModelDumper(_Dumper):
     def dump(self, system, writer):
         self.dump_details(system, writer)
         self.dump_comparative(system, writer)
+        seq_dif = self.dump_coords(system, writer)
+        self.dump_seq_dif(writer, seq_dif)
 
     def dump_details(self, system, writer):
         with writer.loop("_ihm_starting_model_details",
@@ -268,6 +279,92 @@ class _StartingModelDumper(_Dumper):
                           #                   if hasattr(sm, 'alignment_file')
                           #                   else writer.unknown)
                         ordinal += 1
+
+    def dump_coords(self, system, writer):
+        seq_dif = []
+        ordinal = 1
+        with writer.loop("_ihm_starting_model_coord",
+                     ["starting_model_id", "group_PDB", "id", "type_symbol",
+                      "atom_id", "comp_id", "entity_id", "asym_id",
+                      "seq_id", "Cartn_x",
+                      "Cartn_y", "Cartn_z", "B_iso_or_equiv",
+                      "ordinal_id"]) as l:
+            for comp in system.components.get_all_modeled():
+                for sm in self._all_models(system, comp):
+                    m, sel = self._read_coords(sm)
+                    last_res_index = None
+                    for a in sel.get_selected_particles():
+                        coord = IMP.core.XYZ(a).get_coordinates()
+                        atom = IMP.atom.Atom(a)
+                        element = atom.get_element()
+                        element = IMP.atom.get_element_table().get_name(element)
+                        atom_name = atom.get_atom_type().get_string().strip()
+                        group_pdb = 'ATOM'
+                        if atom_name.startswith('HET:'):
+                            group_pdb = 'HETATM'
+                            atom_name = atom_name[4:]
+                        res = IMP.atom.get_residue(atom)
+                        res_name = res.get_residue_type().get_string()
+                        # MSE in the original PDB is automatically mutated
+                        # by IMP to MET, so reflect that in the output,
+                        # and pass back to populate the seq_dif category.
+                        if res_name == 'MSE':
+                            res_name = 'MET'
+                            # Only add one seq_dif record per residue
+                            ind = res.get_index()
+                            if ind != last_res_index:
+                                last_res_index = ind
+                                # This should only happen when we're using
+                                # a crystal structure as the source (a
+                                # comparative model would use MET in
+                                # the sequence)
+                                assert(len(sm.sources) == 1)
+                                seq_dif.append(_MSESeqDif(res, comp,
+                                                          sm.sources[0], sm))
+                        l.write(starting_model_id=sm.id,
+                                group_PDB=group_pdb,
+                                id=atom.get_input_index(), type_symbol=element,
+                                atom_id=atom_name, comp_id=res_name,
+                                entity_id=comp.entity.id,
+                                asym_id=sm.chain_id,
+                                seq_id=res.get_index() + sm.offset,
+                                Cartn_x=coord[0],
+                                Cartn_y=coord[1], Cartn_z=coord[2],
+                                B_iso_or_equiv=atom.get_temperature_factor(),
+                                ordinal_id=ordinal)
+                        ordinal += 1
+        return seq_dif
+
+    def dump_seq_dif(self, writer, seq_dif):
+        ordinal = 1
+        with writer.loop("_ihm_starting_model_seq_dif",
+                     ["ordinal_id", "entity_id", "asym_id",
+                      "seq_id", "comp_id", "starting_model_id",
+                      "db_asym_id", "db_seq_id", "db_comp_id",
+                      "details"]) as l:
+            for sd in seq_dif:
+                l.write(ordinal_id=ordinal, entity_id=sd.comp.entity.id,
+                        asym_id=sd.model.chain_id,
+                        seq_id=sd.res.get_index(),
+                        comp_id=sd.comp_id,
+                        db_asym_id=sd.source.chain_id,
+                        db_seq_id=sd.res.get_index() - sd.model.offset,
+                        db_comp_id=sd.db_comp_id,
+                        starting_model_id=sd.model.name,
+                        details=sd.details)
+                ordinal += 1
+
+    def _read_coords(self, sm):
+        """Read the coordinates for a starting model"""
+        m = IMP.Model()
+        # todo: support reading other subsets of the atoms (e.g. CA/CB)
+        slt = IMP.atom.ChainPDBSelector(sm.chain_id) \
+                   & IMP.atom.NonWaterNonHydrogenPDBSelector()
+        hier = IMP.atom.read_pdb(sm.filename, m, slt)
+        sel = IMP.atom.Selection(hier,
+                     residue_indexes=list(range(sm.seq_id_begin - sm.offset,
+                                                sm.seq_id_end + 1 - sm.offset)))
+        return m, sel
 
 
 class _DatasetDumper(_Dumper):

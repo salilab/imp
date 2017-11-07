@@ -418,6 +418,27 @@ _ihm_starting_comparative_models.alignment_file_id
 3 Nup85-m1 A 33 2 C 33 424 100.0 1 2 .
 4 Nup85-m1 A 429 2 G 482 551 10.0 1 3 .
 #
+#
+loop_
+_ihm_starting_model_coord.starting_model_id
+_ihm_starting_model_coord.group_PDB
+_ihm_starting_model_coord.id
+_ihm_starting_model_coord.type_symbol
+_ihm_starting_model_coord.atom_id
+_ihm_starting_model_coord.comp_id
+_ihm_starting_model_coord.entity_id
+_ihm_starting_model_coord.asym_id
+_ihm_starting_model_coord.seq_id
+_ihm_starting_model_coord.Cartn_x
+_ihm_starting_model_coord.Cartn_y
+_ihm_starting_model_coord.Cartn_z
+_ihm_starting_model_coord.B_iso_or_equiv
+_ihm_starting_model_coord.ordinal_id
+Nup84-m1 ATOM 1 C CA MET 1 A 1 -8.986 11.688 -5.817 91.820 1
+Nup84-m1 ATOM 2 C CA GLU 1 A 2 -8.986 11.688 -5.817 91.820 2
+Nup85-m1 ATOM 1 C CA GLY 2 A 1 -8.986 11.688 -5.817 91.820 3
+Nup85-m1 ATOM 2 C CA GLU 2 A 2 -8.986 11.688 -5.817 91.820 4
+#
 """)
 
     def test_dataset_dumper(self):
@@ -465,6 +486,44 @@ _ihm_related_datasets.ordinal_id
 _ihm_related_datasets.dataset_list_id_derived
 _ihm_related_datasets.dataset_list_id_primary
 1 3 1
+#
+""")
+
+    def test_seq_dif(self):
+        """Test StartingModelDumper.dump_seq_dif"""
+        class MockEntity(object):
+            id = 4
+        class MockRes(object):
+            def get_index(self):
+                return 42
+        class MockComponent(object):
+            entity = MockEntity()
+        class MockSource(object):
+            chain_id = 'X'
+        class MockModel(object):
+            name = 'dummy-m1'
+            chain_id = 'H'
+            offset = 2
+        fh = StringIO()
+        writer = IMP.mmcif.format._CifWriter(fh)
+        dumper = IMP.mmcif.dumper._StartingModelDumper()
+        sd = IMP.mmcif.dumper._MSESeqDif(MockRes(), MockComponent(),
+                                         MockSource(), MockModel())
+        dumper.dump_seq_dif(writer, [sd])
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_starting_model_seq_dif.ordinal_id
+_ihm_starting_model_seq_dif.entity_id
+_ihm_starting_model_seq_dif.asym_id
+_ihm_starting_model_seq_dif.seq_id
+_ihm_starting_model_seq_dif.comp_id
+_ihm_starting_model_seq_dif.starting_model_id
+_ihm_starting_model_seq_dif.db_asym_id
+_ihm_starting_model_seq_dif.db_seq_id
+_ihm_starting_model_seq_dif.db_comp_id
+_ihm_starting_model_seq_dif.details
+1 4 H 42 MET dummy-m1 X 40 MSE 'Conversion of modified residue MSE to MET'
 #
 """)
 
