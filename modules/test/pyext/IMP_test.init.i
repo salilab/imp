@@ -211,6 +211,8 @@ class TestCase(unittest.TestCase):
         """Get the full name of an input file in the top-level
            test directory."""
         testdir = os.path.dirname(self._progname)
+        if self.__module__ != '__main__':
+            testdir = os.path.dirname(sys.modules[self.__module__].__file__)
         dirs = testdir.split(os.path.sep)
         for i in range(len(dirs), 0, -1):
                 input = os.path.sep.join(dirs[:i] + ['input'])
