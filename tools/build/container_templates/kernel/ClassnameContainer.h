@@ -101,11 +101,13 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
 #endif
 #endif
 
-  /** \deprecated_at{2.1} Use get_indexes() instead.
+  /** \deprecated_at{2.1}
+      Use get_contents() instead.
    */
   PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
 
-  /** \deprecated_at{2.1}Use get_indexes() instead and thing about using the
+  /** \deprecated_at{2.1}
+      Use get_contents() instead and consider using the
       IMP_CONTAINER_FOREACH() macro.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
