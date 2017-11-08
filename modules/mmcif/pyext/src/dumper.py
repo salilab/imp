@@ -379,11 +379,23 @@ class _DatasetDumper(_Dumper):
                 l.write(id=d.id, data_type=d._data_type,
                         database_hosted=isinstance(d.location,
                                         IMP.mmcif.dataset.DatabaseLocation))
+        self.dump_other((d for d in self._dataset_by_id(system)
+                         if not isinstance(d.location,
+                                           IMP.mmcif.dataset.DatabaseLocation)),
+                        writer)
         self.dump_rel_dbs((d for d in self._dataset_by_id(system)
                            if isinstance(d.location,
                                          IMP.mmcif.dataset.DatabaseLocation)),
                           writer)
         self.dump_related(system, writer)
+
+    def dump_other(self, datasets, writer):
+        ordinal = 1
+        with writer.loop("_ihm_dataset_external_reference",
+                         ["id", "dataset_list_id", "file_id"]) as l:
+            for d in datasets:
+                l.write(id=ordinal, dataset_list_id=d.id, file_id=d.location.id)
+                ordinal += 1
 
     def dump_rel_dbs(self, datasets, writer):
         ordinal = 1

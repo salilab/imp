@@ -450,6 +450,7 @@ Nup85-m1 ATOM 2 C CA GLU 2 A 2 -8.986 11.688 -5.817 91.820 4
         system = IMP.mmcif.System()
 
         l = IMP.mmcif.dataset.FileLocation(repo="foo", path="bar")
+        l.id = 97
         d = IMP.mmcif.dataset.CXMSDataset(l)
         pds = system.datasets.add(d)
 
@@ -458,6 +459,7 @@ Nup85-m1 ATOM 2 C CA GLU 2 A 2 -8.986 11.688 -5.817 91.820 4
         system.datasets.add(d)
 
         l = IMP.mmcif.dataset.FileLocation(repo="foo2", path="bar2")
+        l.id = 98
         d = IMP.mmcif.dataset.PDBDataset(l)
         d.add_parent(pds)
         system.datasets.add(d)
@@ -472,6 +474,14 @@ _ihm_dataset_list.database_hosted
 1 'CX-MS data' NO
 2 'Experimental model' YES
 3 'Experimental model' NO
+#
+#
+loop_
+_ihm_dataset_external_reference.id
+_ihm_dataset_external_reference.dataset_list_id
+_ihm_dataset_external_reference.file_id
+1 1 97
+2 3 98
 #
 #
 loop_
