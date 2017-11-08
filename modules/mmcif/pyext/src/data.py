@@ -287,15 +287,17 @@ class _StartingModelFinder(object):
 
 class _Datasets(object):
     """Store all datasets used."""
-    def __init__(self):
+    def __init__(self, external_files):
         super(_Datasets, self).__init__()
         self._datasets = {}
+        self._external_files = external_files
 
     def add(self, d):
         """Add and return a new dataset."""
         if d not in self._datasets:
             self._datasets[d] = d
             d.id = len(self._datasets)
+            self._external_files.add_input(d.location)
         return self._datasets[d]
 
     def get_all(self):
@@ -350,3 +352,61 @@ class _AllSoftware(list):
                description='Protein Homology/analogY Recognition '
                            'Engine V 2.0',
                version='2.0', url='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
+
+class _ExternalFile(object):
+    """A single externally-referenced file"""
+
+    # All valid content types
+    INPUT_DATA = "Input data or restraints"
+    MODELING_OUTPUT = "Modeling or post-processing output"
+    WORKFLOW = "Modeling workflow or script"
+
+    def __init__(self, location, content_type):
+        self.location, self.content_type = location, content_type
+
+    # Pass id through to location
+    def __set_id(self, i):
+        self.location.id = i
+    id = property(lambda x: x.location.id, __set_id)
+    file_size = property(lambda x: x.location.file_size)
+
+    def __eq__(self, other):
+        return self.location == other.location
+    def __hash__(self):
+        return hash(self.location)
+
+
+class _ExternalFiles(object):
+    """Track all externally-referenced files
+       (i.e. anything that refers to a Location that isn't
+       a DatabaseLocation)."""
+    def __init__(self):
+        self._refs = []
+        self._repos = []
+
+    def add_repo(self, repo):
+        """Add a repository containing modeling files."""
+        self._repos.append(repo)
+
+    def _add(self, location, content_type):
+        """Add a new externally-referenced file.
+           Note that ids are assigned later."""
+        self._refs.append(_ExternalFile(location, content_type))
+
+    def add_input(self, location):
+        """Add a new externally-referenced file used as input."""
+        return self._add(location, _ExternalFile.INPUT_DATA)
+
+    def add_output(self, location):
+        """Add a new externally-referenced file produced as output."""
+        return self._add(location, _ExternalFile.MODELING_OUTPUT)
+
+    def add_workflow(self, location):
+        """Add a new externally-referenced file that's part of the workflow."""
+        return self._add(location, _ExternalFile.WORKFLOW)
+
+    def get_all_nondb(self):
+        """Yield all external files that are not database hosted"""
+        for x in self._refs:
+            if not isinstance(x.location, IMP.mmcif.dataset.DatabaseLocation):
+                yield x

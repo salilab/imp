@@ -1,4 +1,5 @@
 import IMP.mmcif.dumper
+import IMP.mmcif.dataset
 import IMP.mmcif.data
 import IMP.mmcif.format
 import IMP.rmf
@@ -38,13 +39,30 @@ class System(object):
                          IMP.mmcif.dumper._StructAsymDumper(),
                          self.assembly_dump,
                          IMP.mmcif.dumper._ModelRepresentationDumper(),
+                         IMP.mmcif.dumper._ExternalReferenceDumper(),
                          IMP.mmcif.dumper._StartingModelDumper(),
                          IMP.mmcif.dumper._DatasetDumper()]
         self.entities = IMP.mmcif.data._EntityMapper()
         self.components = IMP.mmcif.data._ComponentMapper()
-        self.datasets = IMP.mmcif.data._Datasets()
         self._citations = []
         self._software = IMP.mmcif.data._AllSoftware()
+        self._external_files = IMP.mmcif.data._ExternalFiles()
+        self.datasets = IMP.mmcif.data._Datasets(self._external_files)
+
+    def _update_location(self, fileloc):
+        """Update FileLocation to point to a parent repository, if any"""
+        IMP.mmcif.dataset.Repository.update_in_repos(fileloc,
+                                                   self._external_files._repos)
+
+    def add_modeling_script(self, path, details):
+        """Add a Python script that was used in the modeling."""
+        l = IMP.mmcif.dataset.FileLocation(path=path, details=details)
+        self._external_files.add_workflow(l)
+
+    def add_repository(self, doi, root=None, url=None, top_directory=None):
+        """Add a repository containing one or more modeling files."""
+        self._external_files.add_repo(IMP.mmcif.dataset.Repository(
+                                            doi, root, url, top_directory))
 
     def add_citation(self, pmid, title, journal, volume, page_range, year,
                      authors, doi):

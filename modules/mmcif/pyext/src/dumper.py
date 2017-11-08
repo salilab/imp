@@ -6,7 +6,9 @@ from __future__ import print_function
 import IMP.atom
 import IMP.mmcif.data
 import IMP.mmcif.dataset
+from IMP.mmcif.format import _CifWriter
 import operator
+import os
 
 class _Dumper(object):
     """Base class for helpers to dump output to mmCIF"""
@@ -273,11 +275,10 @@ class _StartingModelDumper(_Dumper):
                           template_sequence_identity_denominator=1,
                           template_dataset_list_id=template.tm_dataset.id
                                                    if template.tm_dataset
-                                                   else writer.unknown)
-                          # todo: add alignment once external files are ok
-                          # alignment_file_id=sm.alignment_file.id
-                          #                   if hasattr(sm, 'alignment_file')
-                          #                   else writer.unknown)
+                                                   else writer.unknown,
+                          alignment_file_id=sm.alignment_file.id
+                                            if hasattr(sm, 'alignment_file')
+                                            else writer.unknown)
                         ordinal += 1
 
     def dump_coords(self, system, writer):
@@ -457,3 +458,106 @@ class _SoftwareDumper(_Dumper):
                         classification=s.classification, version=s.version,
                         type=s.type, location=s.url)
                 ordinal += 1
+
+
+class _ExternalReferenceDumper(_Dumper):
+    """Output information on externally referenced files
+       (i.e. anything that refers to a Location that isn't
+       a DatabaseLocation)."""
+
+    class _LocalFiles(object):
+        reference_provider = _CifWriter.omitted
+        reference_type = 'Supplementary Files'
+        reference = _CifWriter.omitted
+        refers_to = 'Other'
+        associated_url = _CifWriter.omitted
+
+        def __init__(self, top_directory):
+            self.top_directory = top_directory
+
+        def _get_full_path(self, path):
+            return os.path.relpath(path, start=self.top_directory)
+
+    class _Repository(object):
+        reference_provider = _CifWriter.omitted
+        reference_type = 'DOI'
+        refers_to = 'Other'
+        associated_url = _CifWriter.omitted
+
+        def __init__(self, repo):
+            self.id = repo.id
+            self.reference = repo.doi
+            if 'zenodo' in self.reference:
+                self.reference_provider = 'Zenodo'
+            if repo.url:
+                self.associated_url = repo.url
+                if repo.url.endswith(".zip"):
+                    self.refers_to = 'Archive'
+                else:
+                    self.refers_to = 'File'
+
+    def finalize(self, system):
+        # Keep only locations that don't point into databases (these are
+        # handled elsewhere)
+        self._refs = list(system._external_files.get_all_nondb())
+        # Assign IDs to all locations and repos (including the None repo, which
+        # is for local files)
+        seen_refs = {}
+        seen_repos = {}
+        self._ref_by_id = []
+        self._repo_by_id = []
+        # Special dummy repo for repo=None (local files)
+        self._local_files = self._LocalFiles(os.getcwd())
+        for r in self._refs:
+            # Update location to point to parent repository, if any
+            # todo: this could probably happen when the location is first made
+            system._update_location(r.location)
+            # Assign a unique ID to the reference
+            IMP.mmcif.data._assign_id(r, seen_refs, self._ref_by_id)
+            # Assign a unique ID to the repository
+            IMP.mmcif.data._assign_id(r.location.repo or self._local_files,
+                                      seen_repos, self._repo_by_id)
+
+    def dump(self, system, writer):
+        self.dump_repos(writer)
+        self.dump_refs(writer)
+
+    def dump_repos(self, writer):
+        def map_repo(r):
+            return r if isinstance(r, self._LocalFiles) else self._Repository(r)
+        with writer.loop("_ihm_external_reference_info",
+                         ["reference_id", "reference_provider",
+                          "reference_type", "reference", "refers_to",
+                          "associated_url"]) as l:
+            for repo in [map_repo(r) for r in self._repo_by_id]:
+                l.write(reference_id=repo.id,
+                        reference_provider=repo.reference_provider,
+                        reference_type=repo.reference_type,
+                        reference=repo.reference, refers_to=repo.refers_to,
+                        associated_url=repo.associated_url)
+
+    def dump_refs(self, writer):
+        with writer.loop("_ihm_external_files",
+                         ["id", "reference_id", "file_path", "content_type",
+                          "file_size_bytes", "details"]) as l:
+            for r in self._ref_by_id:
+                loc = r.location
+                repo = loc.repo or self._local_files
+                file_path=self._posix_path(repo._get_full_path(loc.path))
+                if r.file_size is None:
+                    file_size = writer.omitted
+                else:
+                    file_size = r.file_size
+                l.write(id=loc.id, reference_id=repo.id,
+                        file_path=file_path,
+                        content_type=r.content_type,
+                        file_size_bytes=file_size,
+                        details=loc.details or writer.omitted)
+
+    # On Windows systems, convert native paths to POSIX-like (/-separated) paths
+    if os.sep == '/':
+        def _posix_path(self, path):
+            return path
+    else:
+        def _posix_path(self, path):
+            return path.replace(os.sep, '/')

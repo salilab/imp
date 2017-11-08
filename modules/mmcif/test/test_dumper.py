@@ -6,6 +6,7 @@ import IMP.mmcif.format
 import IMP.mmcif.dataset
 import io
 import sys
+import os
 if sys.version_info[0] >= 3:
     from io import StringIO
 else:
@@ -381,6 +382,8 @@ _ihm_model_representation.model_object_count
         state2 = IMP.mmcif.State(system)
         state2.add_hierarchy(state2h)
 
+        d = IMP.mmcif.dumper._ExternalReferenceDumper()
+        d.finalize(system) # assign file IDs (nup84 pdb = 1, alignment file = 2)
         d = IMP.mmcif.dumper._StartingModelDumper()
         d.finalize(system)
         out = _get_dumper_output(d, system)
@@ -413,10 +416,10 @@ _ihm_starting_comparative_models.template_sequence_identity
 _ihm_starting_comparative_models.template_sequence_identity_denominator
 _ihm_starting_comparative_models.template_dataset_list_id
 _ihm_starting_comparative_models.alignment_file_id
-1 Nup84-m1 A 33 2 C 33 424 100.0 1 2 .
-2 Nup84-m1 A 429 2 G 482 551 10.0 1 3 .
-3 Nup85-m1 A 33 2 C 33 424 100.0 1 2 .
-4 Nup85-m1 A 429 2 G 482 551 10.0 1 3 .
+1 Nup84-m1 A 33 2 C 33 424 100.0 1 2 2
+2 Nup84-m1 A 429 2 G 482 551 10.0 1 3 2
+3 Nup85-m1 A 33 2 C 33 424 100.0 1 2 2
+4 Nup85-m1 A 429 2 G 482 551 10.0 1 3 2
 #
 #
 loop_
@@ -526,6 +529,106 @@ _ihm_starting_model_seq_dif.details
 1 4 H 42 MET dummy-m1 X 40 MSE 'Conversion of modified residue MSE to MET'
 #
 """)
+
+    def test_external_reference_dumper_dump(self):
+        """Test ExternalReferenceDumper.dump()"""
+        system = IMP.mmcif.System()
+        exfil = system._external_files
+
+        repo1 = IMP.mmcif.dataset.Repository(doi="foo")
+        repo2 = IMP.mmcif.dataset.Repository(doi="10.5281/zenodo.46266",
+                                     url='nup84-v1.0.zip',
+                                     top_directory=os.path.join('foo', 'bar'))
+        repo3 = IMP.mmcif.dataset.Repository(doi="10.5281/zenodo.58025",
+                                             url='foo.spd')
+        l = IMP.mmcif.dataset.FileLocation(repo=repo1, path='bar')
+        exfil.add_input(l)
+        # Duplicates should be ignored
+        l = IMP.mmcif.dataset.FileLocation(repo=repo1, path='bar')
+        exfil.add_input(l)
+        # Different file, same repository
+        l = IMP.mmcif.dataset.FileLocation(repo=repo1, path='baz')
+        exfil.add_input(l)
+        # Different repository
+        l = IMP.mmcif.dataset.FileLocation(repo=repo2, path='baz')
+        exfil.add_output(l)
+        # Repository containing a single file (not an archive)
+        l = IMP.mmcif.dataset.FileLocation(repo=repo3, path='foo.spd',
+                                           details='EM micrographs')
+        exfil.add_input(l)
+        bar = 'test_mmcif_extref.tmp'
+        with open(bar, 'w') as f:
+            f.write("abcd")
+        # Local file
+        l = IMP.mmcif.dataset.FileLocation(bar)
+        exfil.add_workflow(l)
+        # DatabaseLocations should be ignored
+        l = IMP.mmcif.dataset.PDBLocation('1abc', '1.0', 'test details')
+        exfil.add_workflow(l)
+
+        dump = IMP.mmcif.dumper._ExternalReferenceDumper()
+        dump.finalize(system) # assign IDs
+        out = _get_dumper_output(dump, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_external_reference_info.reference_id
+_ihm_external_reference_info.reference_provider
+_ihm_external_reference_info.reference_type
+_ihm_external_reference_info.reference
+_ihm_external_reference_info.refers_to
+_ihm_external_reference_info.associated_url
+1 . DOI foo Other .
+2 Zenodo DOI 10.5281/zenodo.46266 Archive nup84-v1.0.zip
+3 Zenodo DOI 10.5281/zenodo.58025 File foo.spd
+4 . 'Supplementary Files' . Other .
+#
+#
+loop_
+_ihm_external_files.id
+_ihm_external_files.reference_id
+_ihm_external_files.file_path
+_ihm_external_files.content_type
+_ihm_external_files.file_size_bytes
+_ihm_external_files.details
+1 1 bar 'Input data or restraints' . .
+2 1 baz 'Input data or restraints' . .
+3 2 foo/bar/baz 'Modeling or post-processing output' . .
+4 3 foo.spd 'Input data or restraints' . 'EM micrographs'
+5 4 %s 'Modeling workflow or script' 4 .
+#
+""" % bar)
+        os.unlink(bar)
+
+    def test_workflow(self):
+        """Test output of workflow files"""
+        system = IMP.mmcif.System()
+        root = os.path.dirname(sys.argv[0]) or '.'
+        system.add_repository(doi="foo", root=root)
+        system.add_modeling_script(path=__file__, details='Main script')
+        dump = IMP.mmcif.dumper._ExternalReferenceDumper()
+        dump.finalize(system) # assign IDs
+        out = _get_dumper_output(dump, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_external_reference_info.reference_id
+_ihm_external_reference_info.reference_provider
+_ihm_external_reference_info.reference_type
+_ihm_external_reference_info.reference
+_ihm_external_reference_info.refers_to
+_ihm_external_reference_info.associated_url
+1 . DOI foo Other .
+#
+#
+loop_
+_ihm_external_files.id
+_ihm_external_files.reference_id
+_ihm_external_files.file_path
+_ihm_external_files.content_type
+_ihm_external_files.file_size_bytes
+_ihm_external_files.details
+1 1 test_dumper.py 'Modeling workflow or script' %d 'Main script'
+#
+""" % os.stat(__file__).st_size)
 
 
 if __name__ == '__main__':

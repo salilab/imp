@@ -194,8 +194,7 @@ class _PDBMetadataParser(_MetadataParser):
             self.alignment_file = IMP.mmcif.dataset.FileLocation(alnfile,
                                     details="Alignment for starting "
                                             "comparative model")
-#           self.simo.extref_dump.add(model.alignment_file,
-#                                     _ExternalReferenceDumper.INPUT_DATA)
+            system._external_files.add_input(self.alignment_file)
 
         if templates:
             self.sources = templates

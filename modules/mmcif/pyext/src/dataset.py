@@ -159,3 +159,22 @@ class Repository(object):
         if root:
             # Store absolute path in case the working directory changes later
             self._root = os.path.abspath(root)
+
+    @staticmethod
+    def update_in_repos(fileloc, repos):
+        """If the given FileLocation maps to somewhere within one of the
+           passed repositories, update it to reflect that."""
+        if fileloc.repo:
+            return
+        orig_path = fileloc.path
+        for repo in repos:
+            relpath = os.path.relpath(orig_path, repo._root)
+            if not relpath.startswith('..'):
+                # Prefer the shortest paths if multiple repositories can match
+                if fileloc.repo is None or len(fileloc.path) > len(relpath):
+                    fileloc.repo = repo
+                    fileloc.path = relpath
+
+    def _get_full_path(self, path):
+        """Prefix the given path with our top-level directory"""
+        return os.path.join(self.top_directory or "", path)
