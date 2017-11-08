@@ -5,7 +5,8 @@ import IMP.mmcif.data
 
 class MockSystem(object):
     def __init__(self):
-        self.datasets = IMP.mmcif.data._Datasets()
+        self._external_files = IMP.mmcif.data._ExternalFiles()
+        self.datasets = IMP.mmcif.data._Datasets(self._external_files)
         self._software = IMP.mmcif.data._AllSoftware()
 
 
