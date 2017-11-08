@@ -40,8 +40,8 @@ class System(object):
                          self.assembly_dump,
                          IMP.mmcif.dumper._ModelRepresentationDumper(),
                          IMP.mmcif.dumper._ExternalReferenceDumper(),
-                         IMP.mmcif.dumper._StartingModelDumper(),
-                         IMP.mmcif.dumper._DatasetDumper()]
+                         IMP.mmcif.dumper._DatasetDumper(),
+                         IMP.mmcif.dumper._StartingModelDumper()]
         self.entities = IMP.mmcif.data._EntityMapper()
         self.components = IMP.mmcif.data._ComponentMapper()
         self._citations = []
