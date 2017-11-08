@@ -224,13 +224,15 @@ C 2 baz
 
     def test_assembly_dumper_get_subassembly(self):
         """Test AssemblyDumper.get_subassembly()"""
+        system = IMP.mmcif.System()
+        a = system._assemblies
+        system.complete_assembly.extend(['a', 'b', 'c'])
+        x1 = a.get_subassembly({'a':None, 'b':None})
+        x2 = a.get_subassembly({'a':None, 'b':None, 'c':None})
+
         d = IMP.mmcif.dumper._AssemblyDumper()
-        complete = IMP.mmcif.data._Assembly(['a', 'b', 'c'])
-        d.add(complete)
-        x1 = d.get_subassembly({'a':None, 'b':None})
-        x2 = d.get_subassembly({'a':None, 'b':None, 'c':None})
-        d.finalize(None) # assign IDs to all assemblies
-        self.assertEqual(complete.id, 1)
+        d.finalize(system) # assign IDs to all assemblies
+        self.assertEqual(system.complete_assembly.id, 1)
         self.assertEqual(x1.id, 2)
         self.assertEqual(x1, ['a', 'b'])
         self.assertEqual(x2.id, 1)
@@ -243,11 +245,11 @@ C 2 baz
                                             ("baz", "AA", 'C')))
         state.add_hierarchy(h)
         foo, bar, baz = state._all_modeled_components
+
+        system._assemblies.add(IMP.mmcif.data._Assembly((foo, bar)))
+        system._assemblies.add(IMP.mmcif.data._Assembly((bar, baz)))
+
         d = IMP.mmcif.dumper._AssemblyDumper()
-
-        d.add(IMP.mmcif.data._Assembly((foo, bar)))
-        d.add(IMP.mmcif.data._Assembly((bar, baz)))
-
         d.finalize(system)
         out = _get_dumper_output(d, system)
         self.assertEqual(out, """#
@@ -262,8 +264,11 @@ _ihm_struct_assembly.seq_id_begin
 _ihm_struct_assembly.seq_id_end
 1 1 1 foo 1 A 1 3
 2 1 1 foo 1 B 1 3
-3 2 2 foo 1 B 1 3
-4 2 2 baz 2 C 1 2
+3 1 1 baz 2 C 1 2
+4 2 2 foo 1 A 1 3
+5 2 2 foo 1 B 1 3
+6 3 3 foo 1 B 1 3
+7 3 3 baz 2 C 1 2
 #
 """)
 
@@ -273,7 +278,7 @@ _ihm_struct_assembly.seq_id_end
         h, state = self.make_model(system, (("foo", "AAA", 'A'),))
         state.add_hierarchy(h)
         system.add_non_modeled_chain(name="bar", sequence="AA")
-        d = system.assembly_dump
+        d = IMP.mmcif.dumper._AssemblyDumper()
         d.finalize(system) # assign IDs
         out = _get_dumper_output(d, system)
         self.assertEqual(out, """#

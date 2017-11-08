@@ -24,10 +24,10 @@ class _NonModeledChain(object):
 class System(object):
     def __init__(self):
         self._states = {}
-        self.assembly_dump = IMP.mmcif.dumper._AssemblyDumper()
+        self._assemblies = IMP.mmcif.data._Assemblies()
         # The assembly of all known components.
         self.complete_assembly = IMP.mmcif.data._Assembly()
-        self.assembly_dump.add(self.complete_assembly)
+        self._assemblies.add(self.complete_assembly)
 
         self._dumpers = [IMP.mmcif.dumper._EntryDumper(), # must be first
                          IMP.mmcif.dumper._SoftwareDumper(),
@@ -37,7 +37,7 @@ class System(object):
                          IMP.mmcif.dumper._EntityPolyDumper(),
                          IMP.mmcif.dumper._EntityPolySeqDumper(),
                          IMP.mmcif.dumper._StructAsymDumper(),
-                         self.assembly_dump,
+                         IMP.mmcif.dumper._AssemblyDumper(),
                          IMP.mmcif.dumper._ModelRepresentationDumper(),
                          IMP.mmcif.dumper._ExternalReferenceDumper(),
                          IMP.mmcif.dumper._DatasetDumper(),
@@ -181,7 +181,7 @@ class State(object):
         # The assembly of all components modeled by IMP in this state.
         # This may be smaller than the complete assembly.
         self.modeled_assembly = IMP.mmcif.data._Assembly()
-        system.assembly_dump.add(self.modeled_assembly)
+        system._assemblies.add(self.modeled_assembly)
         # A list of Representation objects for each Component
         self.representation = {}
 
