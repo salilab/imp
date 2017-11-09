@@ -237,7 +237,6 @@ class ReplicaExchange0(object):
             output_hierarchies = [self.root_hier]
         else:
             output_hierarchies = self.root_hiers
-        pi = self.model.add_particle("sampling")
 
         iterations = 0
         if sampler_md:
@@ -251,12 +250,14 @@ class ReplicaExchange0(object):
             return
         iterations *= self.vars["num_sample_rounds"]
 
-        p = IMP.core.SampleProvenance.setup_particle(
-                self.model, pi, method, self.vars["number_of_frames"],
-                iterations)
-        p.set_number_of_replicas(
-                self.replica_exchange_object.get_number_of_replicas())
         for h in output_hierarchies:
+            pi = self.model.add_particle("sampling")
+            p = IMP.core.SampleProvenance.setup_particle(
+                    self.model, pi, method, self.vars["number_of_frames"],
+                    iterations)
+            p.set_number_of_replicas(
+                    self.replica_exchange_object.get_number_of_replicas())
+            IMP.core.add_script_provenance(h)
             IMP.core.add_provenance(self.model, h, p)
 
     def execute_macro(self):
