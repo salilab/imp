@@ -556,3 +556,82 @@ class _ExternalReferenceDumper(_Dumper):
     else:
         def _posix_path(self, path):
             return path.replace(os.sep, '/')
+
+
+class _ProtocolDumper(_Dumper):
+    class _Step(object):
+        name = 'Sampling' # todo: support 'refinement' too
+
+        def __init__(self, s):
+            self.orig_s = s
+        def __get_method(self):
+            first_prov = self.orig_s._prov[0]
+            meth = first_prov.get_method()
+            if first_prov.get_number_of_replicas() > 1:
+                meth = "Replica exchange " + meth
+            return meth
+
+        num_models_begin = property(lambda self: self.orig_s.num_models_begin)
+        num_models_end = property(lambda self: self.orig_s.num_models_end)
+        id = property(lambda self: self.orig_s.id)
+        method = property(__get_method)
+
+    def dump(self, system, writer):
+        ordinal = 1
+        with writer.loop("_ihm_modeling_protocol",
+                         ["ordinal_id", "protocol_id", "step_id",
+                          "struct_assembly_id", "dataset_group_id",
+                          "struct_assembly_description", "protocol_name",
+                          "step_name", "step_method", "num_models_begin",
+                          "num_models_end", "multi_scale_flag",
+                          "multi_state_flag", "time_ordered_flag"]) as l:
+            for p in system.protocols.get_all():
+                for s in p._steps:
+                    step = self._Step(s)
+                    l.write(ordinal_id=ordinal, protocol_id=p.id,
+                            step_id=step.id, step_method=step.method,
+                            step_name=step.name,
+                            struct_assembly_id=p.modeled_assembly.id,
+                            num_models_begin=step.num_models_begin,
+                            num_models_end=step.num_models_end,
+                            # todo: support multiple states, time ordered
+                            multi_state_flag=False, time_ordered_flag=False,
+                            # todo: revisit assumption all models are multiscale
+                            multi_scale_flag=True)
+                    ordinal += 1
+
+
+class _PostProcessDumper(_Dumper):
+    class _PostProc(object):
+        def __init__(self, pp):
+            self._pp = pp
+        def __get_type(self):
+            type_map = {IMP.core.ClusterProvenance: 'cluster',
+                        IMP.core.FilterProvenance: 'filter'}
+            return type_map[type(self._pp._prov)]
+        def __get_feature(self):
+            type_map = {IMP.core.ClusterProvenance: 'RMSD',
+                        IMP.core.FilterProvenance: 'energy/score'}
+            return type_map[type(self._pp._prov)]
+
+        num_models_begin = property(lambda self: self._pp.num_models_begin)
+        num_models_end = property(lambda self: self._pp.num_models_end)
+        id = property(lambda self: self._pp.id)
+        type = property(__get_type)
+        feature = property(__get_feature)
+
+    def dump(self, system, writer):
+        ordinal = 1
+        with writer.loop("_ihm_modeling_post_process",
+                         ["id", "protocol_id", "analysis_id", "step_id",
+                          "type", "feature", "num_models_begin",
+                          "num_models_end"]) as l:
+            # todo: handle multiple analyses
+            for prot in system.protocols.get_all():
+                for pp in prot._postprocs:
+                    p = self._PostProc(pp)
+                    l.write(id=ordinal, protocol_id=prot.id, analysis_id=1,
+                            step_id=p.id, type=p.type, feature=p.feature,
+                            num_models_begin=p.num_models_begin,
+                            num_models_end=p.num_models_end)
+                    ordinal += 1

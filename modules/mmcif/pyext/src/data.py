@@ -202,14 +202,22 @@ class _Representation(object):
 
     __nonzero__ = __bool__ # Python 2 compatibility
 
-def _get_all_structure_provenance(p):
-    """Yield all StructureProvenance decorators for the given particle."""
+def _get_all_provenance(p,
+                types=[IMP.core.StructureProvenance, IMP.core.SampleProvenance,
+                       IMP.core.CombineProvenance, IMP.core.FilterProvenance,
+                       IMP.core.ClusterProvenance]):
+    """Yield all provenance decorators of the given types for the particle."""
     if IMP.core.Provenanced.get_is_setup(p):
         prov = IMP.core.Provenanced(p).get_provenance()
         while prov:
-            if IMP.core.StructureProvenance.get_is_setup(prov):
-                yield IMP.core.StructureProvenance(prov)
+            for c in types:
+                if c.get_is_setup(prov):
+                    yield c(prov)
             prov = prov.get_previous()
+
+def _get_all_structure_provenance(p):
+    """Yield all StructureProvenance decorators for the given particle."""
+    return _get_all_provenance(p, types=[IMP.core.StructureProvenance])
 
 class _StartingModel(object):
     _eq_keys = ['filename', 'chain_id', 'offset']
@@ -433,3 +441,93 @@ class _ExternalFiles(object):
         for x in self._refs:
             if not isinstance(x.location, IMP.mmcif.dataset.DatabaseLocation):
                 yield x
+
+
+class _ProtocolStep(object):
+    """A single step (e.g. sampling, refinement) in a protocol."""
+    def __init__(self, prov, num_models_begin):
+        self.num_models_begin = num_models_begin
+        self._prov = [prov]
+        self.num_models_end = prov.get_number_of_frames()
+
+    def add_combine(self, prov):
+        self._prov.append(prov)
+        self.num_models_end = prov.get_number_of_frames()
+        return self.num_models_end
+
+
+class _PostProcessing(object):
+    """A single postprocessing step (e.g. filtering) in a protocol."""
+    def __init__(self, prov, num_models_begin):
+        self.num_models_begin = num_models_begin
+        self._prov = prov
+        if isinstance(prov, IMP.core.FilterProvenance):
+            self.num_models_end = prov.get_number_of_frames()
+        elif isinstance(prov, IMP.core.ClusterProvenance):
+            # Assume clustering uses all models
+            self.num_models_end = self.num_models_begin
+        else:
+            raise ValueError("Unhandled provenance", prov)
+
+
+class _Protocol(object):
+    """A modeling protocol.
+       Each protocol consists of a number of protocol steps (e.g. sampling,
+       refinement) followed by a number of postprocessing steps (e.g.
+       filtering, rescoring, clustering)"""
+    def __init__(self):
+        self._steps = []
+        self._postprocs = []
+
+    def add_step(self, prov, num_models):
+        if isinstance(prov, IMP.core.CombineProvenance):
+            # Fold CombineProvenance into a previous sampling step
+            if len(self._steps) == 0:
+                raise ValueError("CombineProvenance with no previous sampling")
+            return self._steps[-1].add_combine(prov)
+        else:
+            ps = _ProtocolStep(prov, num_models)
+            self._steps.append(ps)
+            ps.id = len(self._steps)
+            return ps.num_models_end
+
+    def add_postproc(self, prov, num_models):
+        pp = _PostProcessing(prov, num_models)
+        self._postprocs.append(pp)
+        pp.id = len(self._postprocs)
+        return pp.num_models_end
+
+
+class _Protocols(object):
+    """Track all modeling protocols used."""
+    def __init__(self):
+        self._protocols = []
+
+    def get_all(self):
+        return self._protocols
+
+    def _add_protocol(self, prot, modeled_assembly):
+        prot.modeled_assembly = modeled_assembly
+        self._protocols.append(prot)
+        prot.id = len(self._protocols)
+
+    def _add_hierarchy(self, h, modeled_assembly):
+        num_models = 0 # assume we always start with no models
+        prot_types = (IMP.core.SampleProvenance, IMP.core.CombineProvenance)
+        pp_types = (IMP.core.FilterProvenance, IMP.core.ClusterProvenance)
+        in_postproc = False
+        prot = _Protocol()
+        for p in reversed(list(_get_all_provenance(
+                                       h, types=prot_types + pp_types))):
+            if isinstance(p, pp_types):
+                num_models = prot.add_postproc(p, num_models)
+                in_postproc = True
+            else:
+                if in_postproc:
+                    # Start a new protocol
+                    self._add_protocol(prot, modeled_assembly)
+                    prot = _Protocol()
+                num_models = prot.add_step(p, num_models)
+                in_postproc = False
+        if len(prot._steps) > 0:
+            self._add_protocol(prot, modeled_assembly)

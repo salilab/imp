@@ -38,6 +38,29 @@ class Tests(IMP.test.TestCase):
             mol.add_child(chain)
         return top, s
 
+    def make_model_with_protocol(self, system, chains=None):
+        top, s = self.make_model(system, chains)
+        m = s.model
+        prov = IMP.core.SampleProvenance.setup_particle(m, IMP.Particle(m),
+                                "Monte Carlo", 100, 5)
+        IMP.core.add_provenance(m, top, prov)
+
+        prov = IMP.core.CombineProvenance.setup_particle(m, IMP.Particle(m),
+                                                         5, 500)
+        IMP.core.add_provenance(m, top, prov)
+
+        prov = IMP.core.FilterProvenance.setup_particle(m, IMP.Particle(m),
+                                                  "Total score", 100.5, 400)
+        IMP.core.add_provenance(m, top, prov)
+
+        prov = IMP.core.SampleProvenance.setup_particle(m, IMP.Particle(m),
+                                "Molecular Dynamics", 2000, 5, 16)
+        IMP.core.add_provenance(m, top, prov)
+
+        prov = IMP.core.ClusterProvenance.setup_particle(m, IMP.Particle(m), 10)
+        IMP.core.add_provenance(m, top, prov)
+        return top, s
+
     def test_citation_dumper(self):
         """Test CitationDumper"""
         system = IMP.mmcif.System()
@@ -644,6 +667,60 @@ _ihm_external_files.details
 1 1 test_dumper.py 'Modeling workflow or script' %d 'Main script'
 #
 """ % os.stat(__file__).st_size)
+
+    def test_modeling_protocol(self):
+        """Test ProtocolDumper"""
+        system = IMP.mmcif.System()
+        h, state = self.make_model_with_protocol(system)
+        state.add_hierarchy(h)
+
+        dumper = IMP.mmcif.dumper._AssemblyDumper()
+        dumper.finalize(system) # Assign assembly IDs
+
+        dumper = IMP.mmcif.dumper._ProtocolDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_modeling_protocol.ordinal_id
+_ihm_modeling_protocol.protocol_id
+_ihm_modeling_protocol.step_id
+_ihm_modeling_protocol.struct_assembly_id
+_ihm_modeling_protocol.dataset_group_id
+_ihm_modeling_protocol.struct_assembly_description
+_ihm_modeling_protocol.protocol_name
+_ihm_modeling_protocol.step_name
+_ihm_modeling_protocol.step_method
+_ihm_modeling_protocol.num_models_begin
+_ihm_modeling_protocol.num_models_end
+_ihm_modeling_protocol.multi_scale_flag
+_ihm_modeling_protocol.multi_state_flag
+_ihm_modeling_protocol.time_ordered_flag
+1 1 1 1 . . . Sampling 'Monte Carlo' 0 500 YES NO NO
+2 2 1 1 . . . Sampling 'Replica exchange Molecular Dynamics' 400 2000 YES NO NO
+#
+""")
+
+    def test_post_process(self):
+        """Test PostProcessDumper"""
+        system = IMP.mmcif.System()
+        h, state = self.make_model_with_protocol(system)
+        state.add_hierarchy(h)
+        dumper = IMP.mmcif.dumper._PostProcessDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_modeling_post_process.id
+_ihm_modeling_post_process.protocol_id
+_ihm_modeling_post_process.analysis_id
+_ihm_modeling_post_process.step_id
+_ihm_modeling_post_process.type
+_ihm_modeling_post_process.feature
+_ihm_modeling_post_process.num_models_begin
+_ihm_modeling_post_process.num_models_end
+1 1 1 1 filter energy/score 500 400
+2 2 1 1 cluster RMSD 2000 2000
+#
+""")
 
 
 if __name__ == '__main__':

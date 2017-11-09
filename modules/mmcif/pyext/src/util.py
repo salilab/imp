@@ -41,13 +41,17 @@ class System(object):
                          IMP.mmcif.dumper._ModelRepresentationDumper(),
                          IMP.mmcif.dumper._ExternalReferenceDumper(),
                          IMP.mmcif.dumper._DatasetDumper(),
-                         IMP.mmcif.dumper._StartingModelDumper()]
+                         IMP.mmcif.dumper._StartingModelDumper(),
+                         IMP.mmcif.dumper._ProtocolDumper(),
+                         IMP.mmcif.dumper._PostProcessDumper()]
         self.entities = IMP.mmcif.data._EntityMapper()
         self.components = IMP.mmcif.data._ComponentMapper()
         self._citations = []
         self._software = IMP.mmcif.data._AllSoftware()
         self._external_files = IMP.mmcif.data._ExternalFiles()
         self.datasets = IMP.mmcif.data._Datasets(self._external_files)
+        # All modeling protocols
+        self.protocols = IMP.mmcif.data._Protocols()
 
     def _update_location(self, fileloc):
         """Update FileLocation to point to a parent repository, if any"""
@@ -93,6 +97,7 @@ class System(object):
             state.representation[component] \
                 = list(self._get_representation(c,
                                      self._get_all_starting_models(component)))
+        self.protocols._add_hierarchy(h, state.modeled_assembly)
 
     def _get_all_starting_models(self, comp):
         """Get all starting models (in all states) for the given component"""
