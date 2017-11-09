@@ -4,19 +4,6 @@ import IMP.pmi.macros
 import IMP.pmi.tools
 
 class Tests(IMP.test.TestCase):
-    def get_all_provenance(self, h):
-        def get_subclass(p):
-            for c in (IMP.core.StructureProvenance, IMP.core.SampleProvenance,
-                      IMP.core.CombineProvenance, IMP.core.FilterProvenance,
-                      IMP.core.ClusterProvenance):
-                if c.get_is_setup(p):
-                    return c(p)
-            raise TypeError("Unknown provenance type", p)
-        if IMP.core.Provenanced.get_is_setup(h):
-            prov = IMP.core.Provenanced(h).get_provenance()
-            while prov:
-                yield get_subclass(prov)
-                prov = prov.get_previous()
 
     def make_representation(self):
         pdbfile = self.get_input_file_name("nonbond.pdb")
@@ -38,7 +25,7 @@ class Tests(IMP.test.TestCase):
         pdb_frags = [f for f in IMP.pmi.tools.select(r, resolution=1)
                      if 'pdb' in f.get_name()]
         parent = pdb_frags[0].get_parent()
-        prov = list(self.get_all_provenance(parent))
+        prov = list(IMP.core.get_all_provenance(parent))
         self.assertEqual(len(prov), 1)
         self.assertEqual(prov[0].get_filename(),
                          self.get_input_file_name("nonbond.pdb"))
