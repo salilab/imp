@@ -18,17 +18,20 @@ class Tests(IMP.test.TestCase):
         p.set_previous(p2)
         self.assertEqual(p.get_previous(), p2)
 
+    def assertFilenameEqual(self, f1, f2):
+        # Paths are stored internally as absolute paths (except on Windows)
+        if sys.platform == 'win32':
+            self.assertEqual(f1, f2)
+        else:
+            self.assertEqual(f1, os.path.abspath(f2))
+
     def test_structure_provenance(self):
         """Test StructureProvenance decorator"""
         m = IMP.Model()
         p = IMP.core.StructureProvenance.setup_particle(m, IMP.Particle(m),
                                "testfile", "testchain")
         self.assertTrue(IMP.core.StructureProvenance.get_is_setup(p))
-        # Paths are stored internally as absolute paths (except on Windows)
-        if sys.platform == 'win32':
-            self.assertEqual(p.get_filename(), "testfile")
-        else:
-            self.assertEqual(p.get_filename(), os.path.abspath("testfile"))
+        self.assertFilenameEqual(p.get_filename(), "testfile")
         self.assertEqual(p.get_chain_id(), "testchain")
         self.assertEqual(p.get_residue_offset(), 0)
         p.set_residue_offset(42)
@@ -40,11 +43,7 @@ class Tests(IMP.test.TestCase):
         p = IMP.core.ScriptProvenance.setup_particle(m, IMP.Particle(m),
                                                      "testfile")
         self.assertTrue(IMP.core.ScriptProvenance.get_is_setup(p))
-        # Paths are stored internally as absolute paths (except on Windows)
-        if sys.platform == 'win32':
-            self.assertEqual(p.get_filename(), "testfile")
-        else:
-            self.assertEqual(p.get_filename(), os.path.abspath("testfile"))
+        self.assertFilenameEqual(p.get_filename(), "testfile")
 
     def test_sample_provenance(self):
         """Test SampleProvenance decorator"""
@@ -253,7 +252,7 @@ class Tests(IMP.test.TestCase):
         IMP.core.add_script_provenance(p) # should be a noop
         allp = list(IMP.core.get_all_provenance(p))
         script, = allp
-        self.assertEqual(script.get_filename(), __file__)
+        self.assertIsInstance(script, IMP.core.ScriptProvenance)
 
 
 if __name__ == '__main__':
