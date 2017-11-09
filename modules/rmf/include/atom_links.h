@@ -44,6 +44,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
   RMF::decorator::CombineProvenanceFactory combpf_;
   RMF::decorator::FilterProvenanceFactory filtpf_;
   RMF::decorator::ClusterProvenanceFactory clustpf_;
+  RMF::decorator::ScriptProvenanceFactory scriptpf_;
   RMF::decorator::ExplicitResolutionFactory explicit_resolution_factory_;
   RMF::IntKey external_rigid_body_key_;
   struct Data {
@@ -158,6 +159,7 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
   RMF::decorator::CombineProvenanceFactory combpf_;
   RMF::decorator::FilterProvenanceFactory filtpf_;
   RMF::decorator::ClusterProvenanceFactory clustpf_;
+  RMF::decorator::ScriptProvenanceFactory scriptpf_;
   RMF::decorator::ExplicitResolutionFactory explicit_resolution_factory_;
   RMF::IntKey external_rigid_body_key_;
 

@@ -34,6 +34,18 @@ class Tests(IMP.test.TestCase):
         p.set_residue_offset(42)
         self.assertEqual(p.get_residue_offset(), 42)
 
+    def test_script_provenance(self):
+        """Test ScriptProvenance decorator"""
+        m = IMP.Model()
+        p = IMP.core.ScriptProvenance.setup_particle(m, IMP.Particle(m),
+                                                     "testfile")
+        self.assertTrue(IMP.core.ScriptProvenance.get_is_setup(p))
+        # Paths are stored internally as absolute paths (except on Windows)
+        if sys.platform == 'win32':
+            self.assertEqual(p.get_filename(), "testfile")
+        else:
+            self.assertEqual(p.get_filename(), os.path.abspath("testfile"))
+
     def test_sample_provenance(self):
         """Test SampleProvenance decorator"""
         m = IMP.Model()
@@ -131,8 +143,12 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(pd.get_provenance().get_previous(), prov1)
 
     def add_provenance(self, m):
+        script = IMP.core.ScriptProvenance.setup_particle(
+                            m, IMP.Particle(m), "testscript")
+
         struc = IMP.core.StructureProvenance.setup_particle(
                             m, IMP.Particle(m), "testfile", "testchain")
+        struc.set_previous(script)
 
         samp = IMP.core.SampleProvenance.setup_particle(
                             m, IMP.Particle(m), "Monte Carlo", 100, 42)
@@ -184,6 +200,15 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(struc.get_filename(), os.path.abspath("testfile"))
         self.assertEqual(struc.get_chain_id(), "testchain")
 
+        prov = prov.get_previous()
+        self.assertTrue(IMP.core.ScriptProvenance.get_is_setup(m, prov))
+        script = IMP.core.ScriptProvenance(m, prov)
+        if sys.platform == 'win32':
+            self.assertEqual(script.get_filename(), "testscript")
+        else:
+            self.assertEqual(script.get_filename(),
+                             os.path.abspath("testscript"))
+
         # Should be no more provenance
         prov = prov.get_previous()
         self.assertFalse(prov)
@@ -193,9 +218,9 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         prov = self.add_provenance(m)
         self.check_provenance(prov)
-        self.assertEqual(len(m.get_particle_indexes()), 5)
+        self.assertEqual(len(m.get_particle_indexes()), 6)
         newprov = IMP.core.create_clone(prov)
-        self.assertEqual(len(m.get_particle_indexes()), 10)
+        self.assertEqual(len(m.get_particle_indexes()), 12)
         self.check_provenance(newprov)
 
     def test_get_all_provenance(self):
@@ -210,7 +235,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual([type(x) for x in allp],
                          [IMP.core.ClusterProvenance, IMP.core.FilterProvenance,
                           IMP.core.CombineProvenance, IMP.core.SampleProvenance,
-                          IMP.core.StructureProvenance])
+                          IMP.core.StructureProvenance,
+                          IMP.core.ScriptProvenance])
 
         allp = list(IMP.core.get_all_provenance(p,
                            types=[IMP.core.ClusterProvenance,
