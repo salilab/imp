@@ -647,7 +647,7 @@ _ihm_external_files.details
         IMP.core.add_provenance(m, h, prov)
         state.add_hierarchy(h)
 
-        root = os.path.dirname(sys.argv[0]) or '.'
+        root = os.path.dirname(__file__)
         system.add_repository(doi="foo", root=root)
         dump = IMP.mmcif.dumper._ExternalReferenceDumper()
         dump.finalize(system) # assign IDs
@@ -670,10 +670,10 @@ _ihm_external_files.file_path
 _ihm_external_files.content_type
 _ihm_external_files.file_size_bytes
 _ihm_external_files.details
-1 1 test_dumper.py 'Modeling workflow or script' %d
+1 1 %s 'Modeling workflow or script' %d
 'Integrative modeling Python script'
 #
-""" % os.stat(__file__).st_size)
+""" % (os.path.basename(__file__), os.stat(__file__).st_size))
 
     def test_modeling_protocol(self):
         """Test ProtocolDumper"""
