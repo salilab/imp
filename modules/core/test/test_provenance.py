@@ -198,6 +198,27 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(m.get_particle_indexes()), 10)
         self.check_provenance(newprov)
 
+    def test_get_all_provenance(self):
+        """Test get_all_provenance()"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        self.assertEqual(list(IMP.core.get_all_provenance(p)), [])
+
+        prov = self.add_provenance(m)
+        IMP.core.Provenanced.setup_particle(p, prov)
+        allp = list(IMP.core.get_all_provenance(p))
+        self.assertEqual([type(x) for x in allp],
+                         [IMP.core.ClusterProvenance, IMP.core.FilterProvenance,
+                          IMP.core.CombineProvenance, IMP.core.SampleProvenance,
+                          IMP.core.StructureProvenance])
+
+        allp = list(IMP.core.get_all_provenance(p,
+                           types=[IMP.core.ClusterProvenance,
+                                  IMP.core.StructureProvenance]))
+        self.assertEqual([type(x) for x in allp],
+                         [IMP.core.ClusterProvenance,
+                          IMP.core.StructureProvenance])
+
 
 if __name__ == '__main__':
     IMP.test.main()

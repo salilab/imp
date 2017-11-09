@@ -392,3 +392,21 @@ namespace IMP {
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, AttributeSingletonScore, generic_attribute_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingBox3DSingletonScore, bounding_box_3d_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, DistanceToSingletonScore, distance_to_singleton_score, UnaryFunction);
+
+%pythoncode %{
+
+def get_all_provenance(p, types=[StructureProvenance, SampleProvenance,
+                                 CombineProvenance, FilterProvenance,
+                                 ClusterProvenance]):
+    """Yield all provenance decorators of the given types for the particle.
+       By default, all provenance types are returned. Provenance is returned
+       in order, most recent first. If the particle has no provenance
+       information, an empty generator is returned."""
+    if Provenanced.get_is_setup(p):
+        prov = Provenanced(p).get_provenance()
+        while prov:
+            for c in types:
+                if c.get_is_setup(prov):
+                    yield c(prov)
+            prov = prov.get_previous()
+%}
