@@ -410,4 +410,19 @@ def get_all_provenance(p, types=[StructureProvenance, SampleProvenance,
                 if c.get_is_setup(prov):
                     yield c(prov)
             prov = prov.get_previous()
+
+def add_script_provenance(p):
+   """Tag the given particle with the current Python script.
+      This is a noop if the particle is already so tagged."""
+   main = sys.modules['__main__']
+   # Can't do anything if running from an interactive interpreter
+   if not hasattr(main, '__file__'):
+       return
+   f = IMP.get_absolute_path(main.__file__)
+   for prov in get_all_provenance(p, types=[ScriptProvenance]):
+       if prov.get_filename() == f:
+           return
+   m = p.get_model()
+   prov = ScriptProvenance.setup_particle(IMP.Particle(m), f)
+   add_provenance(m, p, prov)
 %}
