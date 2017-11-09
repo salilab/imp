@@ -245,6 +245,16 @@ class Tests(IMP.test.TestCase):
                          [IMP.core.ClusterProvenance,
                           IMP.core.StructureProvenance])
 
+    def test_add_script_provenance(self):
+        """Test add_script_provenance()"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        IMP.core.add_script_provenance(p)
+        IMP.core.add_script_provenance(p) # should be a noop
+        allp = list(IMP.core.get_all_provenance(p))
+        script, = allp
+        self.assertEqual(script.get_filename(), __file__)
+
 
 if __name__ == '__main__':
     IMP.test.main()
