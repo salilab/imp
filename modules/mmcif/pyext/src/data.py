@@ -202,22 +202,10 @@ class _Representation(object):
 
     __nonzero__ = __bool__ # Python 2 compatibility
 
-def _get_all_provenance(p,
-                types=[IMP.core.StructureProvenance, IMP.core.SampleProvenance,
-                       IMP.core.CombineProvenance, IMP.core.FilterProvenance,
-                       IMP.core.ClusterProvenance]):
-    """Yield all provenance decorators of the given types for the particle."""
-    if IMP.core.Provenanced.get_is_setup(p):
-        prov = IMP.core.Provenanced(p).get_provenance()
-        while prov:
-            for c in types:
-                if c.get_is_setup(prov):
-                    yield c(prov)
-            prov = prov.get_previous()
 
 def _get_all_structure_provenance(p):
     """Yield all StructureProvenance decorators for the given particle."""
-    return _get_all_provenance(p, types=[IMP.core.StructureProvenance])
+    return IMP.core.get_all_provenance(p, types=[IMP.core.StructureProvenance])
 
 class _StartingModel(object):
     _eq_keys = ['filename', 'chain_id', 'offset']
@@ -438,7 +426,8 @@ class _ExternalFiles(object):
 
     def add_hierarchy(self, h):
         # Add all Python scripts that were used in the modeling
-        for p in _get_all_provenance(h, types=[IMP.core.ScriptProvenance]):
+        for p in IMP.core.get_all_provenance(h,
+                                     types=[IMP.core.ScriptProvenance]):
             # todo: set details
             l = IMP.mmcif.dataset.FileLocation(path=p.get_filename(),
                                details='Integrative modeling Python script')
@@ -525,8 +514,8 @@ class _Protocols(object):
         pp_types = (IMP.core.FilterProvenance, IMP.core.ClusterProvenance)
         in_postproc = False
         prot = _Protocol()
-        for p in reversed(list(_get_all_provenance(
-                                       h, types=prot_types + pp_types))):
+        for p in reversed(list(IMP.core.get_all_provenance(
+                                          h, types=prot_types + pp_types))):
             if isinstance(p, pp_types):
                 num_models = prot.add_postproc(p, num_models)
                 in_postproc = True
