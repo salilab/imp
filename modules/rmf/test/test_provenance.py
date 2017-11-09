@@ -35,48 +35,33 @@ class Tests(IMP.test.TestCase):
 
         # Test IMP-added chain provenance
         chain, = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
-        self.assertTrue(IMP.core.Provenanced.get_is_setup(m, chain))
-        prov = IMP.core.Provenanced(m, chain).get_provenance()
-        self.assertTrue(IMP.core.StructureProvenance.get_is_setup(m, prov))
-        struc = IMP.core.StructureProvenance(m, prov)
+        prov = IMP.core.get_all_provenance(chain)
+        struc, = prov
         self.assertEqual(struc.get_chain_id(), 'A')
         self.assertEqual(struc.get_residue_offset(), 0)
 
-        # Should be no more chain provenance
-        prov = prov.get_previous()
-        self.assertFalse(prov)
-
         # Check the provenance we added at the top level
-        self.assertTrue(IMP.core.Provenanced.get_is_setup(m, h))
-        prov = IMP.core.Provenanced(m, h).get_provenance()
+        allprov = list(IMP.core.get_all_provenance(h))
+        self.assertEqual(len(allprov), 5)
 
-        self.assertTrue(IMP.core.ClusterProvenance.get_is_setup(m, prov))
-        clus = IMP.core.ClusterProvenance(m, prov)
+        clus = allprov[0]
         self.assertEqual(clus.get_number_of_members(), 10)
 
-        prov = prov.get_previous()
-        self.assertTrue(IMP.core.FilterProvenance.get_is_setup(m, prov))
-        filt = IMP.core.FilterProvenance(m, prov)
+        filt = allprov[1]
         self.assertEqual(filt.get_method(), "Total score")
         self.assertAlmostEqual(filt.get_threshold(), 100.5, delta=1e-4)
         self.assertEqual(filt.get_number_of_frames(), 39)
 
-        prov = prov.get_previous()
-        self.assertTrue(IMP.core.CombineProvenance.get_is_setup(m, prov))
-        comb = IMP.core.CombineProvenance(m, prov)
+        comb = allprov[2]
         self.assertEqual(comb.get_number_of_runs(), 4)
         self.assertEqual(comb.get_number_of_frames(), 27)
 
-        prov = prov.get_previous()
-        self.assertTrue(IMP.core.SampleProvenance.get_is_setup(m, prov))
-        samp = IMP.core.SampleProvenance(m, prov)
+        samp = allprov[3]
         self.assertEqual(samp.get_method(), "Monte Carlo")
         self.assertEqual(samp.get_number_of_frames(), 100)
         self.assertEqual(samp.get_number_of_iterations(), 42)
 
-        prov = prov.get_previous()
-        self.assertTrue(IMP.core.StructureProvenance.get_is_setup(m, prov))
-        struc = IMP.core.StructureProvenance(m, prov)
+        struc = allprov[4]
         if sys.platform == 'win32':
             self.assertEqual(struc.get_filename(), "testfile")
         else:
@@ -84,10 +69,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(struc.get_chain_id(), "testchain")
         self.assertEqual(struc.get_residue_offset(), 19)
         self.assertEqual(struc.get_name(), "structure provenance")
-
-        # Should be no more provenance
-        prov = prov.get_previous()
-        self.assertFalse(prov)
 
     def test_rt(self):
         """Test that provenance info can be stored in RMF files"""
