@@ -156,7 +156,7 @@ class Repository(object):
         # todo: DOI should be optional (could also use URL, local path)
         self.doi = doi
         self.url, self.top_directory = url, top_directory
-        if root:
+        if root is not None:
             # Store absolute path in case the working directory changes later
             self._root = os.path.abspath(root)
 
