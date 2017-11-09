@@ -58,11 +58,6 @@ class System(object):
         IMP.mmcif.dataset.Repository.update_in_repos(fileloc,
                                                    self._external_files._repos)
 
-    def add_modeling_script(self, path, details):
-        """Add a Python script that was used in the modeling."""
-        l = IMP.mmcif.dataset.FileLocation(path=path, details=details)
-        self._external_files.add_workflow(l)
-
     def add_repository(self, doi, root=None, url=None, top_directory=None):
         """Add a repository containing one or more modeling files."""
         self._external_files.add_repo(IMP.mmcif.dataset.Repository(
@@ -98,6 +93,7 @@ class System(object):
                 = list(self._get_representation(c,
                                      self._get_all_starting_models(component)))
         self.protocols._add_hierarchy(h, state.modeled_assembly)
+        self._external_files.add_hierarchy(h)
 
     def _get_all_starting_models(self, comp):
         """Get all starting models (in all states) for the given component"""

@@ -640,9 +640,15 @@ _ihm_external_files.details
     def test_workflow(self):
         """Test output of workflow files"""
         system = IMP.mmcif.System()
+        h, state = self.make_model(system)
+        m = state.model
+        prov = IMP.core.ScriptProvenance.setup_particle(m, IMP.Particle(m),
+                                                        __file__)
+        IMP.core.add_provenance(m, h, prov)
+        state.add_hierarchy(h)
+
         root = os.path.dirname(sys.argv[0]) or '.'
         system.add_repository(doi="foo", root=root)
-        system.add_modeling_script(path=__file__, details='Main script')
         dump = IMP.mmcif.dumper._ExternalReferenceDumper()
         dump.finalize(system) # assign IDs
         out = _get_dumper_output(dump, system)
@@ -664,7 +670,8 @@ _ihm_external_files.file_path
 _ihm_external_files.content_type
 _ihm_external_files.file_size_bytes
 _ihm_external_files.details
-1 1 test_dumper.py 'Modeling workflow or script' %d 'Main script'
+1 1 test_dumper.py 'Modeling workflow or script' %d
+'Integrative modeling Python script'
 #
 """ % os.stat(__file__).st_size)
 

@@ -436,6 +436,14 @@ class _ExternalFiles(object):
         """Add a new externally-referenced file that's part of the workflow."""
         return self._add(location, _ExternalFile.WORKFLOW)
 
+    def add_hierarchy(self, h):
+        # Add all Python scripts that were used in the modeling
+        for p in _get_all_provenance(h, types=[IMP.core.ScriptProvenance]):
+            # todo: set details
+            l = IMP.mmcif.dataset.FileLocation(path=p.get_filename(),
+                               details='Integrative modeling Python script')
+            self.add_workflow(l)
+
     def get_all_nondb(self):
         """Yield all external files that are not database hosted"""
         for x in self._refs:
