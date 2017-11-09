@@ -10,6 +10,11 @@ class Tests(IMP.test.TestCase):
 
     def add_provenance(self, h):
         m = h.get_model()
+        script = IMP.core.ScriptProvenance.setup_particle(
+                            m, IMP.Particle(m), "test.py")
+        script.set_name("script provenance")
+        IMP.core.add_provenance(m, h, script)
+
         struc = IMP.core.StructureProvenance.setup_particle(
                             m, IMP.Particle(m), "testfile", "testchain", 19)
         struc.set_name("structure provenance")
@@ -42,7 +47,7 @@ class Tests(IMP.test.TestCase):
 
         # Check the provenance we added at the top level
         allprov = list(IMP.core.get_all_provenance(h))
-        self.assertEqual(len(allprov), 5)
+        self.assertEqual(len(allprov), 6)
 
         clus = allprov[0]
         self.assertEqual(clus.get_number_of_members(), 10)
@@ -69,6 +74,12 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(struc.get_chain_id(), "testchain")
         self.assertEqual(struc.get_residue_offset(), 19)
         self.assertEqual(struc.get_name(), "structure provenance")
+
+        script = allprov[5]
+        if sys.platform == 'win32':
+            self.assertEqual(script.get_filename(), "test.py")
+        else:
+            self.assertEqual(script.get_filename(), os.path.abspath("test.py"))
 
     def test_rt(self):
         """Test that provenance info can be stored in RMF files"""

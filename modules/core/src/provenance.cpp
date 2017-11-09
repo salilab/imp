@@ -30,6 +30,9 @@ Provenance clone_one(Provenance prov) {
   } else if (ClusterProvenance::get_is_setup(prov.get_particle())) {
     ClusterProvenance::setup_particle(p,
                                 ClusterProvenance(prov.get_particle()));
+  } else if (ScriptProvenance::get_is_setup(prov.get_particle())) {
+    ScriptProvenance::setup_particle(p,
+                                ScriptProvenance(prov.get_particle()));
   } else {
     IMP_THROW("Unhandled provenance", IOException);
   }
@@ -165,6 +168,15 @@ IntKey FilterProvenance::get_frames_key() {
 void FilterProvenance::show(std::ostream &out) const {
   out << "FilterProvenance threshold " << get_threshold()
       << " resulting in " << get_number_of_frames() << " frames" << std::endl;
+}
+
+StringKey ScriptProvenance::get_filename_key() {
+  static const StringKey filename("script_filename");
+  return filename;
+}
+
+void ScriptProvenance::show(std::ostream &out) const {
+  out << "ScriptProvenance " << get_filename() << std::endl;
 }
 
 void add_provenance(Model *m, ParticleIndex pi, Provenance p) {

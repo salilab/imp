@@ -209,6 +209,10 @@ core::Provenance HierarchyLoadLink::create_one_provenance(Model *m,
     RMF::decorator::ClusterProvenanceConst rp = clustpf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
     return core::ClusterProvenance::setup_particle(m, ip, rp.get_members());
+  } else if (scriptpf_.get_is(node)) {
+    RMF::decorator::ScriptProvenanceConst rp = scriptpf_.get(node);
+    ParticleIndex ip = m->add_particle(node.get_name());
+    return core::ScriptProvenance::setup_particle(m, ip, rp.get_filename());
   } else {
     IMP_THROW("Unhandled provenance type " << node, IOException);
   }
@@ -320,7 +324,7 @@ HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh)
       reference_frame_factory_(fh),
       af_(fh), strucpf_(fh), samppf_(fh),
       combpf_(fh), filtpf_(fh), clustpf_(fh),
-      explicit_resolution_factory_(fh) {
+      scriptpf_(fh), explicit_resolution_factory_(fh) {
   RMF::Category imp_cat = fh.get_category("IMP");
   external_rigid_body_key_ =
       fh.get_key(imp_cat, "external frame", RMF::IntTraits());
@@ -478,6 +482,12 @@ void HierarchySaveLink::add_provenance(Model *m, ParticleIndex p,
                           RMF::PROVENANCE);
       RMF::decorator::ClusterProvenance rp = clustpf_.get(cur);
       rp.set_members(ip.get_number_of_members());
+    } else if (core::ScriptProvenance::get_is_setup(prov)) {
+      core::ScriptProvenance ip(prov);
+      cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
+                          RMF::PROVENANCE);
+      RMF::decorator::ScriptProvenance rp = scriptpf_.get(cur);
+      rp.set_filename(ip.get_filename());
     } else {
       IMP_THROW("Unhandled provenance type "
                 << m->get_particle_name(prov.get_particle_index()),
@@ -488,7 +498,7 @@ void HierarchySaveLink::add_provenance(Model *m, ParticleIndex p,
 
 HierarchySaveLink::HierarchySaveLink(RMF::FileHandle f)
     : P("HierarchySaveLink%1%"), af_(f), strucpf_(f), samppf_(f),
-      combpf_(f), filtpf_(f), clustpf_(f),
+      combpf_(f), filtpf_(f), clustpf_(f), scriptpf_(f),
       explicit_resolution_factory_(f) {
   RMF::Category imp_cat = f.get_category("IMP");
   external_rigid_body_key_ =

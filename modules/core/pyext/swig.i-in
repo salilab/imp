@@ -160,6 +160,7 @@ IMP_SWIG_DECORATOR(IMP::core, SampleProvenance, SampleProvenances);
 IMP_SWIG_DECORATOR(IMP::core, ClusterProvenance, ClusterProvenances);
 IMP_SWIG_DECORATOR(IMP::core, CombineProvenance, CombineProvenances);
 IMP_SWIG_DECORATOR(IMP::core, FilterProvenance, FilterProvenances);
+IMP_SWIG_DECORATOR(IMP::core, ScriptProvenance, ScriptProvenances);
 IMP_SWIG_DECORATOR(IMP::core, Provenanced, Provenanceds);
 
 IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
@@ -397,7 +398,7 @@ IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, DistanceToSingletonScore, distance_t
 
 def get_all_provenance(p, types=[StructureProvenance, SampleProvenance,
                                  CombineProvenance, FilterProvenance,
-                                 ClusterProvenance]):
+                                 ClusterProvenance, ScriptProvenance]):
     """Yield all provenance decorators of the given types for the particle.
        By default, all provenance types are returned. Provenance is returned
        in order, most recent first. If the particle has no provenance
