@@ -143,8 +143,13 @@ cluster = Decorator(["PROVENANCE"], "provenance",
                     [Attribute("cluster members", "Int",
                                function_name='members')])
 
+script = Decorator(["PROVENANCE"], "provenance",
+                   "ScriptProvenance",
+                   [PathAttribute("script filename",
+                                  function_name='filename')])
+
 make_header("provenance",
-            [structure, sample, combine, filterp, cluster], [])
+            [structure, sample, combine, filterp, cluster, script], [])
 
 residue = Decorator(["REPRESENTATION"], "sequence",
                     "Residue",

@@ -232,6 +232,7 @@ structure was generated.
 | `filter threshold`    | float        |  Score threshold to discard bad models    |
 | `filter frames`       | float        |  Number of frames after filtering         |
 | `cluster members`     | int          |  Number of members in a cluster           |
+| `script filename`     | string       |  Path of a script used to generate the model |
 
 
 ## Decorators ## {#provenancedecorators}
@@ -243,3 +244,4 @@ structure was generated.
 | RMF::decorator::CombineProvenance   |  RMF::PROVENANCE    | combined runs, combined frames                        |
 | RMF::decorator::FilterProvenance    |  RMF::PROVENANCE    | filter threshold, filter frames                       |
 | RMF::decorator::ClusterProvenance   |  RMF::PROVENANCE    | cluster members                                       |
+| RMF::decorator::ScriptProvenance    |  RMF::PROVENANCE    | script filename                                       |

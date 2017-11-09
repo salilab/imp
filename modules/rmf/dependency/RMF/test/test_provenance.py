@@ -15,6 +15,7 @@ class Tests(unittest.TestCase):
 
     def _add_provenance_nodes(self, rmf, rt):
         """Add *Provenance nodes under rt. Return the root."""
+        scriptpf = RMF.ScriptProvenanceFactory(rmf)
         strucpf = RMF.StructureProvenanceFactory(rmf)
         samppf = RMF.SampleProvenanceFactory(rmf)
         filtpf = RMF.FilterProvenanceFactory(rmf)
@@ -45,6 +46,10 @@ class Tests(unittest.TestCase):
         self.assertEqual(struc.get_residue_offset(), 0)
         struc.set_residue_offset(42)
 
+        script_node = struc_node.add_child("script", RMF.PROVENANCE)
+        script = scriptpf.get(script_node)
+        script.set_filename(os.path.abspath('test.py'))
+
         return clust_node
 
     def _create(self, fname):
@@ -64,6 +69,7 @@ class Tests(unittest.TestCase):
         self._check_provenance_nodes(rmf, c0)
 
     def _check_provenance_nodes(self, rmf, prov_root):
+        scriptpf = RMF.ScriptProvenanceFactory(rmf)
         strucpf = RMF.StructureProvenanceFactory(rmf)
         filtpf = RMF.FilterProvenanceFactory(rmf)
         samppf = RMF.SampleProvenanceFactory(rmf)
@@ -94,6 +100,11 @@ class Tests(unittest.TestCase):
         self.assertEqual(struc.get_filename(), os.path.abspath('foo.pdb'))
         self.assertEqual(struc.get_chain(), 'X')
         self.assertEqual(struc.get_residue_offset(), 42)
+
+        script_node = struc_node.get_children()[0]
+        self.assertTrue(scriptpf.get_is(script_node))
+        script = scriptpf.get(script_node)
+        self.assertEqual(script.get_filename(), os.path.abspath('test.py'))
 
 if __name__ == '__main__':
     unittest.main()
