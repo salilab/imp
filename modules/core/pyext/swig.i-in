@@ -423,6 +423,8 @@ def add_script_provenance(p):
        if prov.get_filename() == f:
            return
    m = p.get_model()
-   prov = ScriptProvenance.setup_particle(IMP.Particle(m), f)
+   provp = IMP.Particle(m)
+   provp.set_name('script')
+   prov = ScriptProvenance.setup_particle(provp, f)
    add_provenance(m, p, prov)
 %}
