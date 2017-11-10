@@ -213,6 +213,11 @@ core::Provenance HierarchyLoadLink::create_one_provenance(Model *m,
     RMF::decorator::ScriptProvenanceConst rp = scriptpf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
     return core::ScriptProvenance::setup_particle(m, ip, rp.get_filename());
+  } else if (softpf_.get_is(node)) {
+    RMF::decorator::SoftwareProvenanceConst rp = softpf_.get(node);
+    ParticleIndex ip = m->add_particle(node.get_name());
+    return core::SoftwareProvenance::setup_particle(m, ip,
+                 rp.get_name(), rp.get_version(), rp.get_location());
   } else {
     IMP_THROW("Unhandled provenance type " << node, IOException);
   }
@@ -324,7 +329,7 @@ HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh)
       reference_frame_factory_(fh),
       af_(fh), strucpf_(fh), samppf_(fh),
       combpf_(fh), filtpf_(fh), clustpf_(fh),
-      scriptpf_(fh), explicit_resolution_factory_(fh) {
+      scriptpf_(fh), softpf_(fh), explicit_resolution_factory_(fh) {
   RMF::Category imp_cat = fh.get_category("IMP");
   external_rigid_body_key_ =
       fh.get_key(imp_cat, "external frame", RMF::IntTraits());
@@ -488,6 +493,14 @@ void HierarchySaveLink::add_provenance(Model *m, ParticleIndex p,
                           RMF::PROVENANCE);
       RMF::decorator::ScriptProvenance rp = scriptpf_.get(cur);
       rp.set_filename(ip.get_filename());
+    } else if (core::SoftwareProvenance::get_is_setup(prov)) {
+      core::SoftwareProvenance ip(prov);
+      cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),
+                          RMF::PROVENANCE);
+      RMF::decorator::SoftwareProvenance rp = softpf_.get(cur);
+      rp.set_name(ip.get_software_name());
+      rp.set_version(ip.get_version());
+      rp.set_location(ip.get_location());
     } else {
       IMP_THROW("Unhandled provenance type "
                 << m->get_particle_name(prov.get_particle_index()),
@@ -498,7 +511,7 @@ void HierarchySaveLink::add_provenance(Model *m, ParticleIndex p,
 
 HierarchySaveLink::HierarchySaveLink(RMF::FileHandle f)
     : P("HierarchySaveLink%1%"), af_(f), strucpf_(f), samppf_(f),
-      combpf_(f), filtpf_(f), clustpf_(f), scriptpf_(f),
+      combpf_(f), filtpf_(f), clustpf_(f), scriptpf_(f), softpf_(f),
       explicit_resolution_factory_(f) {
   RMF::Category imp_cat = f.get_category("IMP");
   external_rigid_body_key_ =
