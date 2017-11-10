@@ -368,7 +368,7 @@ class Tests(IMP.test.TestCase):
         """Make sure that appropriate provenance information was added to
            the cluster"""
         prov = list(IMP.core.get_all_provenance(h))
-        self.assertEqual(len(prov), 4)
+        self.assertEqual(len(prov), 6)
         self.assertIsInstance(prov[0], IMP.core.ClusterProvenance)
         self.assertEqual(prov[0].get_number_of_members(), 10)
 
@@ -382,6 +382,10 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(prov[2].get_number_of_runs(), 2)
 
         self.assertIsInstance(prov[3], IMP.core.ScriptProvenance)
+
+        self.assertEqual(prov[4].get_software_name(), "IMP PMI module")
+        self.assertEqual(prov[5].get_software_name(),
+                         "Integrative Modeling Platform (IMP)")
 
     def test_precision(self):
         """Test correct calcluation of precision and RMSF"""

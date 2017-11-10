@@ -257,7 +257,7 @@ class ReplicaExchange0(object):
                     iterations)
             p.set_number_of_replicas(
                     self.replica_exchange_object.get_number_of_replicas())
-            IMP.core.add_script_provenance(h)
+            IMP.pmi.tools._add_pmi_provenance(h)
             IMP.core.add_provenance(self.model, h, p)
 
     def execute_macro(self):
