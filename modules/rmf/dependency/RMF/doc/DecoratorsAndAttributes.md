@@ -233,6 +233,9 @@ structure was generated.
 | `filter frames`       | float        |  Number of frames after filtering         |
 | `cluster members`     | int          |  Number of members in a cluster           |
 | `script filename`     | string       |  Path of a script used to generate the model |
+| `software name`       | string       |  Name of the software used to make the model |
+| `software version`    | string       |  Version of the software used to make the model |
+| `software location`   | string       |  URI where the software can be found      |
 
 
 ## Decorators ## {#provenancedecorators}
@@ -245,3 +248,4 @@ structure was generated.
 | RMF::decorator::FilterProvenance    |  RMF::PROVENANCE    | filter threshold, filter frames                       |
 | RMF::decorator::ClusterProvenance   |  RMF::PROVENANCE    | cluster members                                       |
 | RMF::decorator::ScriptProvenance    |  RMF::PROVENANCE    | script filename                                       |
+| RMF::decorator::SoftwareProvenance  |  RMF::PROVENANCE    | software name, software version, software location    |
