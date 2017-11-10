@@ -45,6 +45,22 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(IMP.core.ScriptProvenance.get_is_setup(p))
         self.assertFilenameEqual(p.get_filename(), "testfile")
 
+    def test_software_provenance(self):
+        """Test SoftwareProvenance decorator"""
+        m = IMP.Model()
+        p = IMP.core.SoftwareProvenance.setup_particle(m, IMP.Particle(m),
+                            "IMP", "1.0", "https://imp.test.org")
+        self.assertTrue(IMP.core.SoftwareProvenance.get_is_setup(p))
+        self.assertEqual(p.get_software_name(), "IMP")
+        p.set_software_name('testname')
+        self.assertEqual(p.get_software_name(), "testname")
+        self.assertEqual(p.get_version(), "1.0")
+        p.set_version('2.0')
+        self.assertEqual(p.get_version(), "2.0")
+        self.assertEqual(p.get_location(), "https://imp.test.org")
+        p.set_location('foo')
+        self.assertEqual(p.get_location(), "foo")
+
     def test_sample_provenance(self):
         """Test SampleProvenance decorator"""
         m = IMP.Model()
@@ -142,8 +158,12 @@ class Tests(IMP.test.TestCase):
         self.assertTrue(pd.get_provenance().get_previous(), prov1)
 
     def add_provenance(self, m):
+        software = IMP.core.SoftwareProvenance.setup_particle(
+                            m, IMP.Particle(m), "IMP", "1.0", "test.org")
+
         script = IMP.core.ScriptProvenance.setup_particle(
                             m, IMP.Particle(m), "testscript")
+        script.set_previous(software)
 
         struc = IMP.core.StructureProvenance.setup_particle(
                             m, IMP.Particle(m), "testfile", "testchain")
@@ -208,6 +228,13 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(script.get_filename(),
                              os.path.abspath("testscript"))
 
+        prov = prov.get_previous()
+        self.assertTrue(IMP.core.SoftwareProvenance.get_is_setup(m, prov))
+        software = IMP.core.SoftwareProvenance(m, prov)
+        self.assertEqual(software.get_software_name(), "IMP")
+        self.assertEqual(software.get_version(), "1.0")
+        self.assertEqual(software.get_location(), "test.org")
+
         # Should be no more provenance
         prov = prov.get_previous()
         self.assertFalse(prov)
@@ -217,9 +244,9 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         prov = self.add_provenance(m)
         self.check_provenance(prov)
-        self.assertEqual(len(m.get_particle_indexes()), 6)
+        self.assertEqual(len(m.get_particle_indexes()), 7)
         newprov = IMP.core.create_clone(prov)
-        self.assertEqual(len(m.get_particle_indexes()), 12)
+        self.assertEqual(len(m.get_particle_indexes()), 14)
         self.check_provenance(newprov)
 
     def test_get_all_provenance(self):
@@ -235,7 +262,8 @@ class Tests(IMP.test.TestCase):
                          [IMP.core.ClusterProvenance, IMP.core.FilterProvenance,
                           IMP.core.CombineProvenance, IMP.core.SampleProvenance,
                           IMP.core.StructureProvenance,
-                          IMP.core.ScriptProvenance])
+                          IMP.core.ScriptProvenance,
+                          IMP.core.SoftwareProvenance])
 
         allp = list(IMP.core.get_all_provenance(p,
                            types=[IMP.core.ClusterProvenance,

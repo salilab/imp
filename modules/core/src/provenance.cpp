@@ -33,6 +33,9 @@ Provenance clone_one(Provenance prov) {
   } else if (ScriptProvenance::get_is_setup(prov.get_particle())) {
     ScriptProvenance::setup_particle(p,
                                 ScriptProvenance(prov.get_particle()));
+  } else if (SoftwareProvenance::get_is_setup(prov.get_particle())) {
+    SoftwareProvenance::setup_particle(p,
+                                SoftwareProvenance(prov.get_particle()));
   } else {
     IMP_THROW("Unhandled provenance", IOException);
   }
@@ -177,6 +180,26 @@ StringKey ScriptProvenance::get_filename_key() {
 
 void ScriptProvenance::show(std::ostream &out) const {
   out << "ScriptProvenance " << get_filename() << std::endl;
+}
+
+StringKey SoftwareProvenance::get_name_key() {
+  static const StringKey name("software_name");
+  return name;
+}
+
+StringKey SoftwareProvenance::get_version_key() {
+  static const StringKey version("software_version");
+  return version;
+}
+
+StringKey SoftwareProvenance::get_location_key() {
+  static const StringKey location("software_location");
+  return location;
+}
+
+void SoftwareProvenance::show(std::ostream &out) const {
+  out << "SoftwareProvenance " << get_software_name() << " version "
+      << get_version() << " at " << get_location() << std::endl;
 }
 
 void add_provenance(Model *m, ParticleIndex pi, Provenance p) {
