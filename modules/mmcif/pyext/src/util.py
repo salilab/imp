@@ -94,6 +94,7 @@ class System(object):
                                      self._get_all_starting_models(component)))
         self.protocols._add_hierarchy(h, state.modeled_assembly)
         self._external_files.add_hierarchy(h)
+        self._software.add_hierarchy(h)
 
     def _get_all_starting_models(self, comp):
         """Get all starting models (in all states) for the given component"""

@@ -372,6 +372,16 @@ class _AllSoftware(list):
                            'Engine V 2.0',
                version='2.0', url='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
 
+    def add_hierarchy(self, h):
+        for p in IMP.core.get_all_provenance(h,
+                                        types=[IMP.core.SoftwareProvenance]):
+            self.append(_Software(name=p.get_software_name(),
+                                  classification='integrative model building',
+                                  description=None,
+                                  version=p.get_version(),
+                                  url=p.get_location()))
+
+
 class _ExternalFile(object):
     """A single externally-referenced file"""
 

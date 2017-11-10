@@ -120,6 +120,11 @@ _citation_author.ordinal
     def test_software_dumper(self):
         """Test SoftwareDumper"""
         system = IMP.mmcif.System()
+        h, state = self.make_model(system)
+        m = state.model
+        IMP.core.add_imp_provenance(h)
+        state.add_hierarchy(h)
+
         system.add_software(name='test', classification='test code',
                             description='Some test program',
                             version=1, url='http://salilab.org')
@@ -133,9 +138,11 @@ _software.classification
 _software.version
 _software.type
 _software.location
-1 test 'test code' 1 program http://salilab.org
+1 'Integrative Modeling Platform (IMP)' 'integrative model building'
+%s program https://integrativemodeling.org
+2 test 'test code' 1 program http://salilab.org
 #
-""")
+""" % IMP.get_module_version())
 
     def test_entry_dumper(self):
         """Test EntryDumper"""
