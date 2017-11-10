@@ -429,4 +429,23 @@ def add_script_provenance(p):
    provp.set_name('script')
    prov = ScriptProvenance.setup_particle(provp, f)
    add_provenance(m, p, prov)
+
+def add_software_provenance(p, name, version, location):
+   """Tag the given particle with the software used to create it.
+      This is a noop if the particle is already so tagged."""
+   for prov in get_all_provenance(p, types=[SoftwareProvenance]):
+       if prov.get_software_name() == name and prov.get_version() == version \
+          and prov.get_location() == location:
+           return
+   m = p.get_model()
+   provp = IMP.Particle(m)
+   provp.set_name('software')
+   prov = SoftwareProvenance.setup_particle(provp, name, version, location)
+   add_provenance(m, p, prov)
+
+def add_imp_provenance(p):
+    """Tag the given particle as being created by the current version of IMP."""
+    add_software_provenance(p, name="Integrative Modeling Platform (IMP)",
+                            version=IMP.get_module_version(),
+                            location="https://integrativemodeling.org")
 %}

@@ -282,6 +282,23 @@ class Tests(IMP.test.TestCase):
         script, = allp
         self.assertIsInstance(script, IMP.core.ScriptProvenance)
 
+    def test_add_software_provenance(self):
+        """Test add_software_provenance()"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        IMP.core.add_software_provenance(p, "my prog", "1.0", "myprog.org")
+        IMP.core.add_software_provenance(p, "my prog",
+                                         "1.0", "myprog.org") # should be noop
+        IMP.core.add_software_provenance(p, "otherprog", "2.0", "othprog.org")
+        IMP.core.add_imp_provenance(p)
+        IMP.core.add_imp_provenance(p) # should be a noop
+        allp = list(IMP.core.get_all_provenance(p))
+        p1, p2, p3 = allp
+        self.assertEqual(p1.get_software_name(),
+                         "Integrative Modeling Platform (IMP)")
+        self.assertEqual(p2.get_software_name(), "otherprog")
+        self.assertEqual(p3.get_software_name(), "my prog")
+
 
 if __name__ == '__main__':
     IMP.test.main()
