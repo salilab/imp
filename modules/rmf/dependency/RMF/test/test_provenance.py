@@ -15,6 +15,7 @@ class Tests(unittest.TestCase):
 
     def _add_provenance_nodes(self, rmf, rt):
         """Add *Provenance nodes under rt. Return the root."""
+        softpf = RMF.SoftwareProvenanceFactory(rmf)
         scriptpf = RMF.ScriptProvenanceFactory(rmf)
         strucpf = RMF.StructureProvenanceFactory(rmf)
         samppf = RMF.SampleProvenanceFactory(rmf)
@@ -50,6 +51,12 @@ class Tests(unittest.TestCase):
         script = scriptpf.get(script_node)
         script.set_filename(os.path.abspath('test.py'))
 
+        soft_node = script_node.add_child("software", RMF.PROVENANCE)
+        soft = softpf.get(soft_node)
+        soft.set_name('RMF')
+        soft.set_version('1.0.1')
+        soft.set_location('https://test.url')
+
         return clust_node
 
     def _create(self, fname):
@@ -69,6 +76,7 @@ class Tests(unittest.TestCase):
         self._check_provenance_nodes(rmf, c0)
 
     def _check_provenance_nodes(self, rmf, prov_root):
+        softpf = RMF.SoftwareProvenanceFactory(rmf)
         scriptpf = RMF.ScriptProvenanceFactory(rmf)
         strucpf = RMF.StructureProvenanceFactory(rmf)
         filtpf = RMF.FilterProvenanceFactory(rmf)
@@ -105,6 +113,14 @@ class Tests(unittest.TestCase):
         self.assertTrue(scriptpf.get_is(script_node))
         script = scriptpf.get(script_node)
         self.assertEqual(script.get_filename(), os.path.abspath('test.py'))
+
+        soft_node = script_node.get_children()[0]
+        self.assertTrue(softpf.get_is(soft_node))
+        soft = softpf.get(soft_node)
+        self.assertEqual(soft.get_name(), 'RMF')
+        self.assertEqual(soft.get_version(), '1.0.1')
+        self.assertEqual(soft.get_location(), 'https://test.url')
+
 
 if __name__ == '__main__':
     unittest.main()

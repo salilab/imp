@@ -182,6 +182,7 @@ void show_node_decorators(
     decorator::FilterProvenanceFactory filtpcf,
     decorator::ClusterProvenanceFactory clustpcf,
     decorator::ScriptProvenanceFactory scriptpcf,
+    decorator::SoftwareProvenanceFactory softpcf,
     std::string) {
   using std::operator<<;
   out << "\"" << n.get_name() << "\"" << node_suffix << " [" << n.get_type()
@@ -238,6 +239,8 @@ void show_node_decorators(
   else if (clustpcf.get_is(n)) out << " cluster provenance";
   if (scriptpcf.get_is_static(n)) out << " script provenance(s)";
   else if (scriptpcf.get_is(n)) out << " script provenance";
+  if (softpcf.get_is_static(n)) out << " software provenance(s)";
+  else if (softpcf.get_is(n)) out << " software provenance";
   out << "]";
 }
 
@@ -303,6 +306,7 @@ struct ShowDecorators {
   decorator::FilterProvenanceFactory filtpcf;
   decorator::ClusterProvenanceFactory clustpcf;
   decorator::ScriptProvenanceFactory scriptpcf;
+  decorator::SoftwareProvenanceFactory softpcf;
   ShowDecorators(FileConstHandle fh)
       : bdf(fh),
         ccf(fh),
@@ -327,14 +331,15 @@ struct ShowDecorators {
         combpcf(fh),
         filtpcf(fh),
         clustpcf(fh),
-        scriptpcf(fh) {}
+        scriptpcf(fh),
+        softpcf(fh) {}
   void operator()(NodeConstHandle cur, std::string prefix, std::string suffix,
                   std::ostream& out) {
     show_node_decorators(cur, suffix, out, bdf, ccf, pcf, ipcf, rpcf, scf,
                          repcf, bcf, cycf, segcf, rcf, acf, chaincf, fragcf,
                          copycf, diffusercf, typedcf, refcf, strucpcf,
                          samppcf, combpcf, filtpcf, clustpcf, scriptpcf,
-                         prefix + "   ");
+                         softpcf, prefix + "   ");
   }
 };
 }

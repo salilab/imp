@@ -148,8 +148,18 @@ script = Decorator(["PROVENANCE"], "provenance",
                    [PathAttribute("script filename",
                                   function_name='filename')])
 
+software = Decorator(["PROVENANCE"], "provenance",
+                     "SoftwareProvenance",
+                     [Attribute("software name", "String",
+                               function_name='name'),
+                      Attribute("software version", "String",
+                               function_name='version'),
+                      Attribute("software location", "String",
+                               function_name='location')])
+
 make_header("provenance",
-            [structure, sample, combine, filterp, cluster, script], [])
+            [structure, sample, combine, filterp, cluster, script, software],
+            [])
 
 residue = Decorator(["REPRESENTATION"], "sequence",
                     "Residue",
