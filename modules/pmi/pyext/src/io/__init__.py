@@ -290,7 +290,7 @@ def add_provenance(prov, hiers):
        Note that we do this all at once since we typically don't preserve
        the IMP::Model object throughout a PMI protocol."""
     for h in hiers:
-        IMP.core.add_script_provenance(h)
+        IMP.pmi.tools._add_pmi_provenance(h)
         m = h.get_model()
         for p in prov:
             IMP.core.add_provenance(m, h, p.get_decorator(m))

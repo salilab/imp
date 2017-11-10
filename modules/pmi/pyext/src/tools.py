@@ -25,6 +25,14 @@ try:
 except ImportError:
     from IMP.pmi._compat_collections import OrderedDict
 
+def _add_pmi_provenance(p):
+    """Tag the given particle as being created by the current version of PMI."""
+    IMP.core.add_imp_provenance(p)
+    IMP.core.add_software_provenance(p, name="IMP PMI module",
+                                     version=IMP.pmi.get_module_version(),
+                                     location="https://integrativemodeling.org")
+    IMP.core.add_script_provenance(p)
+
 def _get_restraint_set_key():
     if not hasattr(_get_restraint_set_key, 'pmi_rs_key'):
         _get_restraint_set_key.pmi_rs_key = IMP.ModelKey("PMI restraints")
