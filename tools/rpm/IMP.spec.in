@@ -86,6 +86,12 @@ Requires: python-argparse
 %define mpiprefix mpi/
 %endif
 
+# Don't build debug source packages; they cause the build to fail with
+# error: Empty %files file [...]/debugsourcefiles.list
+%if 0%{?fedora} > 26
+%undefine _debugsource_packages
+%endif
+
 %description
 IMP's broad goal is to contribute to a comprehensive structural
 characterization of biomolecules ranging in size and complexity from small
