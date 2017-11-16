@@ -1776,7 +1776,8 @@ modeling. These may need to be added manually below.""")
             for model in self.all_models():
                 for f in model.fragments:
                     sel = IMP.atom.Selection(f.starting_hier,
-                               residue_indexes=list(range(f.start, f.end + 1)))
+                               residue_indexes=list(range(f.start - f.offset,
+                                                       f.end - f.offset + 1)))
                     last_res_index = None
                     for a in sel.get_selected_particles():
                         coord = IMP.core.XYZ(a).get_coordinates()
@@ -1816,7 +1817,8 @@ modeling. These may need to be added manually below.""")
                                 atom_id=atom_name, comp_id=res_name,
                                 entity_id=entity.id,
                                 asym_id=chain_id,
-                                seq_id=res.get_index(), Cartn_x=coord[0],
+                                seq_id=res.get_index() + f.offset,
+                                Cartn_x=coord[0],
                                 Cartn_y=coord[1], Cartn_z=coord[2],
                                 B_iso_or_equiv=atom.get_temperature_factor(),
                                 ordinal_id=ordinal)

@@ -1137,7 +1137,8 @@ _ihm_sphere_obj_site.model_id
         simo2.add_component_sequence("Nup85",
                                      self.get_input_file_name("test.fasta"))
         simo2.autobuild_model("Nup85",
-                              self.get_input_file_name("test.nup84.pdb"), "A")
+                              self.get_input_file_name("test.nup85.pdb"), "A",
+                              resrange=(8,9),offset=-7)
 
 
         fh = StringIO()
@@ -1164,7 +1165,7 @@ _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
 Nup84-m1 1 Nup84 A 33 2 'comparative model' A 0 3
-Nup85-m1 2 Nup85 B 33 2 'comparative model' A 0 3
+Nup85-m1 2 Nup85 B 33 -5 'comparative model' A -7 4
 #
 #
 loop_
@@ -1182,8 +1183,8 @@ _ihm_starting_comparative_models.template_dataset_list_id
 _ihm_starting_comparative_models.alignment_file_id
 1 Nup84-m1 A 33 2 C 33 424 100.0 1 1 1
 2 Nup84-m1 A 429 2 G 482 551 10.0 1 2 1
-3 Nup85-m1 A 33 2 C 33 424 100.0 1 1 1
-4 Nup85-m1 A 429 2 G 482 551 10.0 1 2 1
+3 Nup85-m1 A 33 -5 C 33 424 100.0 1 1 1
+4 Nup85-m1 A 429 -5 G 482 551 10.0 1 2 1
 #
 #
 loop_

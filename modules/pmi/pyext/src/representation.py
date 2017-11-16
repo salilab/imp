@@ -99,6 +99,7 @@ class Representation(object):
         self._metadata = []
         self._file_dataset = {}
         self._protocol_output = []
+        self._non_modeled_components = {}
 
         # this flag uses either harmonic (False) or upperharmonic (True)
         # in the intra-pair connectivity restraint. Harmonic is used whe you want to
@@ -233,6 +234,7 @@ class Representation(object):
            is useful if the input experimental data is of a system larger
            than that modeled. Any references to these non-modeled components
            can then be correctly resolved later."""
+        self._non_modeled_components[name] = None
         self.elements[name] = []
         for p, state in self._protocol_output:
             p.create_component(state, name, False)
@@ -263,8 +265,10 @@ class Representation(object):
             raise KeyError("id %s not found in fasta file" % id)
         length = len(record_dict[id])
         self.sequence_dict[name] = str(record_dict[id])
-        protein_h = self.hier_dict[name]
-        protein_h.set_sequence(self.sequence_dict[name])
+        # No Hierarchy for this component if it is non-modeled
+        if name not in self._non_modeled_components:
+            protein_h = self.hier_dict[name]
+            protein_h.set_sequence(self.sequence_dict[name])
         if offs is not None:
             offs_str="-"*offs
             self.sequence_dict[name]=offs_str+self.sequence_dict[name]

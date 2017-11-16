@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
 
         for cluster in are:
             are.save_coordinates(cluster)
-            are.save_densities(cluster,dcr)
+            are.save_densities(cluster,dcr,prefix="densities_out/")
             are.compute_cluster_center(cluster)
             are.precision(cluster)
 
