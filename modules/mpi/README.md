@@ -14,7 +14,7 @@ by recompiling OpenMPI with the `--disable-dlopen` configure flag, or by
 running `import DLFCN as dl; sys.setdlopenflags(dl.RTLD_NOW|dl.RTLD_GLOBAL)`
 in your Python script before importing IMP.mpi. We also recommend that you
 use version 1.7 of OpenMPI or older, as the 1.8 release does not appear to
-work with the [mpi4py](https://pythonhosted.org/mpi4py/) package that some parts
+work with the [mpi4py](http://mpi4py.scipy.org/docs/) package that some parts
 of IMP::pmi use.
 
 # Info
