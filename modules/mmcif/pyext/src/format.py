@@ -1,5 +1,8 @@
 """@namespace IMP.mmcif.format
    @brief Utility classes to handle CIF format.
+
+   This module provides classes to write out mmCIF files. While it is
+   designed for IMP, it could be used in other Python code.
 """
 
 from __future__ import print_function
