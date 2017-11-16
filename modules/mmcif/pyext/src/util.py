@@ -1,3 +1,7 @@
+"""@namespace IMP.mmcif.util
+   @brief Utility functions for IMP.mmcif.
+"""
+
 import IMP.mmcif.dumper
 import IMP.mmcif.dataset
 import IMP.mmcif.data
