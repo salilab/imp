@@ -6,7 +6,7 @@ from __future__ import print_function
 import IMP.atom
 import IMP.mmcif.data
 import IMP.mmcif.dataset
-from IMP.mmcif.format import _CifWriter
+from IMP.mmcif.format import CifWriter
 import operator
 import os
 
@@ -461,11 +461,11 @@ class _ExternalReferenceDumper(_Dumper):
        a DatabaseLocation)."""
 
     class _LocalFiles(object):
-        reference_provider = _CifWriter.omitted
+        reference_provider = CifWriter.omitted
         reference_type = 'Supplementary Files'
-        reference = _CifWriter.omitted
+        reference = CifWriter.omitted
         refers_to = 'Other'
-        associated_url = _CifWriter.omitted
+        associated_url = CifWriter.omitted
 
         def __init__(self, top_directory):
             self.top_directory = top_directory
@@ -474,10 +474,10 @@ class _ExternalReferenceDumper(_Dumper):
             return os.path.relpath(path, start=self.top_directory)
 
     class _Repository(object):
-        reference_provider = _CifWriter.omitted
+        reference_provider = CifWriter.omitted
         reference_type = 'DOI'
         refers_to = 'Other'
-        associated_url = _CifWriter.omitted
+        associated_url = CifWriter.omitted
 
         def __init__(self, repo):
             self.id = repo.id

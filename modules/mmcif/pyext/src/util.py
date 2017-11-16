@@ -169,7 +169,7 @@ class System(object):
 
     def write(self, fname):
         with open(fname, 'w') as fh:
-            writer = IMP.mmcif.format._CifWriter(fh)
+            writer = IMP.mmcif.format.CifWriter(fh)
             for dumper in self._dumpers:
                 dumper.finalize_metadata(self)
             for dumper in self._dumpers:

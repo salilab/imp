@@ -78,24 +78,68 @@ class _CifLoopWriter(object):
             self.writer.fh.write("#\n")
 
 
-class _CifWriter(object):
+class CifWriter(object):
+    """Write information to a CIF file.
+       The constructor takes a single argument - a Python filelike object
+       to write to - and provides methods to write Python objects to
+       that file. Most simple Python types are supported (string, float,
+       bool, int). The Python bool type is mapped to CIF strings
+       'NO' and 'YES'. Floats are always represented with 3 decimal places;
+       if a different amount of precision is desired, convert the float to
+       a string first."""
+
     omitted = '.'
     unknown = '?'
+
     _boolmap = {False: 'NO', True: 'YES'}
 
     def __init__(self, fh):
         self.fh = fh
+
     def category(self, category):
+        """Return a context manager to write a CIF category.
+           A CIF category is a simple list of key:value pairs.
+           `category` should be the name of the category
+           (e.g. "_struct_conf_type"). The returned object provides
+           a single method `write` which takes keyword arguments.
+
+           For example,
+
+               with writer.category("_struct_conf_type") as l:
+                   l.write(id='HELX_P', criteria=writer.unknown)
+           """
         return _CifCategoryWriter(self, category)
+
     def loop(self, category, keys):
+        """Return a context manager to write a CIF loop.
+           `category` should be the name of the category
+           (e.g. "_struct_conf") and `keys` a list of all the field keys
+           in that category. The returned object provides
+           a single method `write` which takes keyword arguments;
+           this can be called any number of times to add entries to the loop.
+           Any field keys in `keys` that are not provided as arguments to
+           `write` will get the CIF omitted value ('.'), while arguments to
+           `write` that are not present in `keys` will be ignored.
+
+           For example,
+
+               with writer.loop("_struct_conf", ["id", "conf_type_id"]) as l:
+                   for i in range(5):
+                       l.write(id='HELX_P1%d' % i, conf_type_id='HELX_P')
+           """
         return _CifLoopWriter(self, category, keys)
+
     def write_comment(self, comment):
+        """Write a simple comment to the CIF file.
+           The comment will be wrapped if necessary for readability."""
         for line in textwrap.wrap(comment, 78):
             self.fh.write('# ' + line + '\n')
+
     def _write(self, category, kwargs):
         for key in kwargs:
             self.fh.write("%s.%s %s\n" % (category, key,
                                           self._repr(kwargs[key])))
+
     def _repr(self, obj):
         if isinstance(obj, str) and '"' not in obj \
            and "'" not in obj and " " not in obj:
