@@ -553,7 +553,7 @@ _ihm_related_datasets.dataset_list_id_primary
             chain_id = 'H'
             offset = 2
         fh = StringIO()
-        writer = IMP.mmcif.format_CifWriter(fh)
+        writer = IMP.mmcif.format.CifWriter(fh)
         dumper = IMP.mmcif.dumper._StartingModelDumper()
         sd = IMP.mmcif.dumper._MSESeqDif(MockRes(), MockComponent(),
                                          MockSource(), MockModel())
