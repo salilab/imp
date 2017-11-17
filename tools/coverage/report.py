@@ -46,7 +46,8 @@ def report_python_module(cov, modname, srcdir, outdir):
         mods = glob.glob('lib/IMP/*.py')
     else:
         mods = glob.glob('lib/IMP/%s/*.py' % modname) \
-               + glob.glob('lib/IMP/%s/*/*.py' % modname)
+               + glob.glob('lib/IMP/%s/*/*.py' % modname) \
+               + glob.glob('lib/IMP/%s/*/*/*.py' % modname)
     mods = [x for x in mods if not x.endswith('_version_check.py')]
     bins = tools.get_glob([os.path.join(srcdir, 'modules', modname, 'bin',
                                         '*')])
