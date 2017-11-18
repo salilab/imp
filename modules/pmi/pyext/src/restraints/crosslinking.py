@@ -291,7 +291,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
         if len(self.xl_list) == 0:
             raise SystemError("CrossLinkingMassSpectrometryRestraint: no crosslink was constructed")
-
+        self.xl_restraints = restraints
         lw = IMP.isd.LogWrapper(restraints,1.0)
         self.rs.add_restraint(lw)
 
@@ -305,10 +305,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
     def get_restraints(self):
         """ get the restraints in a list """
-        rlist = []
-        for r in self.rs.get_restraints():
-            rlist.append(IMP.core.PairRestraint.get_from(r))
-        return rlist
+        return self.xl_restraints
 
     def get_restraint_for_rmf(self):
         """ get the dummy restraints to be displayed in the rmf file """
