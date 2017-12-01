@@ -3,6 +3,8 @@ ChangeLog {#changelog}
 
 # HEAD
 - [Eigen](https://eigen.tuxfamily.org/) is now required to build IMP.
+- The Windows .exe IMP installer no longer supports Python 2.6. Python 2.7,
+  3.4, 3.5, and 3.6 are supported by this installer.
 
 # 2.8.0 - 2017-08-16 # {#changelog_2_8_0}
 - New applications of IMP are now available:
