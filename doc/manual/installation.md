@@ -42,7 +42,7 @@ will not build, and some will not function optimally.
   nonbonded lists.
 - [Google perf tools](\ref perf): needed only for profiling %IMP code.
 - [ANN](\ref ANN): certain data structures will be faster if it is available.
-- [GSL](\ref GSL): needed to use the IMP.gsl module.
+- [GSL](\ref GSL) (1.13 or later): needed to use the IMP.gsl module.
 - [OpenCV](\ref OpenCV) (2.1 or later): needed to use the IMP.em2d module or the
   [idock](@ref idock_pcsk9) and [emagefit](@ref emagefit_3sfd) command
   line tools.
