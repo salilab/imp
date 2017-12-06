@@ -4,7 +4,6 @@
 #include <CGAL/Triangulation_cell_base_3.h>
 #include <CGAL/Alpha_shape_cell_base_3.h>
 //#include <CGAL/Triangulation_data_structure_3.h>
-#include <CGAL/Weighted_alpha_shape_euclidean_traits_3.h>
 #include <CGAL/Regular_triangulation_3.h>
 #include <CGAL/version.h>
 
