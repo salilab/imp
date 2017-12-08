@@ -957,7 +957,8 @@ _ihm_model_list.model_name
 _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
-1 1 7 . 'All models' 42 93
+_ihm_model_list.representation_id
+1 1 7 . 'All models' 42 93 1
 #
 #
 loop_
@@ -1015,7 +1016,8 @@ _ihm_model_list.model_name
 _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
-1 1 7 . 'All models' 42 93
+_ihm_model_list.representation_id
+1 1 7 . 'All models' 42 93 1
 #
 #
 loop_
@@ -1090,7 +1092,8 @@ _ihm_model_list.model_name
 _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
-1 1 7 foo 'All models' 42 93
+_ihm_model_list.representation_id
+1 1 7 foo 'All models' 42 93 1
 #
 #
 loop_
@@ -1427,7 +1430,7 @@ _ihm_modeling_protocol.num_models_begin
 _ihm_modeling_protocol.num_models_end
 _ihm_modeling_protocol.multi_scale_flag
 _ihm_modeling_protocol.multi_state_flag
-_ihm_modeling_protocol.time_ordered_flag
+_ihm_modeling_protocol.ordered_flag
 1 1 1 1 1 . . Sampling 'Replica exchange monte carlo' 0 1000 YES NO NO
 2 1 2 1 1 . . Sampling 'Replica exchange monte carlo' 1000 1000 YES NO NO
 #

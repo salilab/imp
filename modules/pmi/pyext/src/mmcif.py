@@ -1328,16 +1328,18 @@ class _ModelDumper(_Dumper):
         with writer.loop("_ihm_model_list",
                          ["ordinal_id", "model_id", "model_group_id",
                           "model_name", "model_group_name", "assembly_id",
-                          "protocol_id"]) as l:
+                          "protocol_id", "representation_id"]) as l:
             for model in self.models:
                 state = model.group.state
                 group_name = state.get_prefixed_name(model.group.name)
+                # todo: handle multiple representations
                 l.write(ordinal_id=ordinal, model_id=model.id,
                         model_group_id=model.group.id,
                         model_name=model.name,
                         model_group_name=group_name,
                         assembly_id=model.assembly.id,
-                        protocol_id=model.protocol.id)
+                        protocol_id=model.protocol.id,
+                        representation_id=1)
                 ordinal += 1
 
     def dump_atoms(self, writer):
@@ -1423,7 +1425,7 @@ class _ModelProtocolDumper(_Dumper):
                           "struct_assembly_description", "protocol_name",
                           "step_name", "step_method", "num_models_begin",
                           "num_models_end", "multi_scale_flag",
-                          "multi_state_flag", "time_ordered_flag"]) as l:
+                          "multi_state_flag", "ordered_flag"]) as l:
             for p in self.protocols.values():
                 for step in p:
                     l.write(ordinal_id=ordinal, protocol_id=p.id,
@@ -1434,7 +1436,7 @@ class _ModelProtocolDumper(_Dumper):
                             num_models_begin=step.num_models_begin,
                             num_models_end=step.num_models_end,
                             # todo: support multiple states, time ordered
-                            multi_state_flag=False, time_ordered_flag=False,
+                            multi_state_flag=False, ordered_flag=False,
                             # all PMI models are multi scale
                             multi_scale_flag=True)
                     ordinal += 1

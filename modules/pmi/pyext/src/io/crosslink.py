@@ -943,18 +943,22 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 xl[keyword] = None
         self._update()
 
-    def rename_proteins(self,old_to_new_names_dictionary):
+    def rename_proteins(self,old_to_new_names_dictionary, protein_to_rename="both"):
         '''
         This function renames all proteins contained in the input dictionary
         from the old names (keys) to the new name (values)
+        @param old_to_new_names_dictionary dictionary for converting old to new names
+        @param protein_to_rename specify whether to rename both or protein1 or protein2 only
         '''
 
         for old_name in old_to_new_names_dictionary:
             new_name=old_to_new_names_dictionary[old_name]
-            fo2=FilterOperator(self.protein1_key,operator.eq,old_name)
-            self.set_value(self.protein1_key,new_name,fo2)
-            fo2=FilterOperator(self.protein2_key,operator.eq,old_name)
-            self.set_value(self.protein2_key,new_name,fo2)
+            if protein_to_rename == "both" or protein_to_rename == "protein1":
+                fo2=FilterOperator(self.protein1_key,operator.eq,old_name)
+                self.set_value(self.protein1_key,new_name,fo2)
+            if protein_to_rename == "both" or protein_to_rename == "protein2":
+                fo2=FilterOperator(self.protein2_key,operator.eq,old_name)
+                self.set_value(self.protein2_key,new_name,fo2)
 
     def clone_protein(self,protein_name,new_protein_name):
         new_xl_dict={}
@@ -1313,8 +1317,12 @@ class MapCrossLinkDataBaseOnStructure(object):
                     copy1="None"
                     state2="None"
                     copy2="None"
-                values=[xl[k] for k in sorted_ids]
-                values+=[group,mdist]
+                try:
+                    # sometimes keys get "lost" in the database, not really sure why
+                    values=[xl[k] for k in sorted_ids]
+                    values += [group, mdist]
+                except KeyError as e:
+                    print("MapCrossLinkDataBaseOnStructure KeyError: {0} in {1}".format(e, xl))
                 group_dists.append(mdist)
                 #group_block.append(values)
                 xl["Distance"]=mdist
