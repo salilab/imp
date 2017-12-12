@@ -249,6 +249,7 @@ IMP_SWIG_BASE_OBJECT(IMP,TripletContainer, TripletContainers);
 IMP_SWIG_BASE_OBJECT(IMP,TripletModifier, TripletModifiers);
 IMP_SWIG_BASE_OBJECT(IMP,TripletScore, TripletScores);
 IMP_SWIG_BASE_OBJECT(IMP,UnaryFunction, UnaryFunctions);
+IMP_SWIG_OBJECT(IMP, RestraintInfo, RestraintInfos);
 IMP_SWIG_OBJECT(IMP,ConfigurationSet, ConfigurationSets);
 IMP_SWIG_OBJECT(IMP,Configuration, Configurations);
 IMP_SWIG_OBJECT(IMP,Model, Models);
@@ -368,6 +369,7 @@ namespace IMP {
   class ScoreStates;
 }
 
+%include "IMP/RestraintInfo.h"
 %include "IMP/Restraint.h"
 %include "IMP/RestraintSet.h"
 %include "IMP_kernel.particle.i"
