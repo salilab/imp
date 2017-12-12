@@ -65,6 +65,7 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
             score = pca_fit_restraint.evaluate(False)
             print('initial score = ' + str(score))
             self.assertAlmostEqual(score, 0.052, delta=0.01)
+            self._check_restraint_info(pca_fit_restraint)
             c = pca_fit_restraint.get_cross_correlation_coefficient(0)
             self.assertGreater(c, 0.9)
             # Test that transformation puts model on the image
@@ -76,6 +77,21 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
             #pgm.write_file(open('transformed_orig.pgm', 'w'))
             self.assertGreater(pgm.correlate(orig_pgm), 1400000.0)
             os.unlink('images.pgm')
+
+    def _check_restraint_info(self, r):
+        info = r.get_dynamic_info()
+
+        self.assertEqual(info.get_number_of_floats(), 3)
+        self.assertEqual(info.get_floats_key(0), "cross correlation")
+        v = info.get_floats_value(0)
+        self.assertEqual(len(v), 1)
+        self.assertAlmostEqual(v[0], r.get_cross_correlation_coefficient(0),
+                               delta=1e-6)
+
+        self.assertEqual(info.get_floats_key(1), "rotation")
+        self.assertEqual(len(info.get_floats_value(1)), 4)
+        self.assertEqual(info.get_floats_key(2), "translation")
+        self.assertEqual(len(info.get_floats_value(2)), 3)
 
 
 if __name__ == '__main__':

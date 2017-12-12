@@ -163,6 +163,31 @@ algebra::Transformation3D PCAFitRestraint::get_transformation(
          * rot * algebra::Transformation3D(pinfo.rotation);
 }
 
+RestraintInfo *PCAFitRestraint::get_dynamic_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+
+  Floats ccs, rotations, translations;
+  unsigned i;
+  for (i = 0; i < best_projections_.size(); ++i) {
+    ccs.push_back(get_cross_correlation_coefficient(i));
+    algebra::Transformation3D t = get_transformation(i);
+    algebra::Vector4D rotation = t.get_rotation().get_quaternion();
+    algebra::Vector3D translation = t.get_translation();
+    unsigned j;
+    for (j = 0; j < 4; ++j) {
+      rotations.push_back(rotation[j]);
+    }
+    for (j = 0; j < 3; ++j) {
+      translations.push_back(translation[j]);
+    }
+  }
+  ri->add_floats("cross correlation", ccs);
+  ri->add_floats("rotation", rotations);
+  ri->add_floats("translation", translations);
+
+  return ri.release();
+}
+
 void PCAFitRestraint::write_best_projections(std::string file_name,
                                              bool evaluate) {
   if(best_projections_.size() == 0 || evaluate) {
