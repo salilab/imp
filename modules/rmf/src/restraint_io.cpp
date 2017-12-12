@@ -27,11 +27,23 @@ IMP_OBJECTS(RMFRestraint, RMFRestraints);
     an RMF file.*/
 class IMPRMFEXPORT RMFRestraint : public Restraint {
   ParticlesTemp ps_;
+  PointerMember<RestraintInfo> info_;
 
  public:
 #ifndef IMP_DOXYGEN
   RMFRestraint(Model *m, std::string name);
   void set_particles(const ParticlesTemp &ps) { ps_ = ps; }
+
+  // Note that we don't make a distinction here between dynamic and static info
+  RestraintInfo *get_info() {
+    if (!info_) {
+      info_ = new RestraintInfo();
+    }
+    return info_;
+  }
+  RestraintInfo *get_dynamic_info() const IMP_OVERRIDE { return info_; }
+  RestraintInfo *get_static_info() const IMP_OVERRIDE { return info_; }
+
 #endif
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
   ModelObjectsTemp do_get_inputs() const;
@@ -132,7 +144,9 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   RMF::decorator::ScoreFactory sf_;
   RMF::decorator::RepresentationFactory rf_;
   RMF::Category imp_cat_;
+  RMF::Category imp_restraint_cat_;
   RMF::FloatKey weight_key_;
+  RMF::FloatsKeys fsks_;
 
   void do_load_one(RMF::NodeConstHandle nh, Restraint *oi) {
     if (sf_.get_is(nh)) {
@@ -184,11 +198,24 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
       IMP_NEW(RMFRestraint, r, (m, name.get_name()));
       ret = r;
       r->set_particles(inputs);
+      load_restraint_info(r, name);
     }
     if (name.get_has_value(weight_key_)) {
       ret->set_weight(name.get_value(weight_key_));
     }
     return ret.release();
+  }
+
+  void load_restraint_info(RMFRestraint *r, RMF::NodeConstHandle nh) {
+    RMF::FileConstHandle fh = nh.get_file();
+    RMF_FOREACH(RMF::FloatsKey k, fsks_) {
+      if (!nh.get_value(k).get_is_null()) {
+        // No automatic conversion from RMF::Floats to IMP::Floats
+        RMF::Floats rvalue = nh.get_value(k);
+        Floats value(rvalue.begin(), rvalue.end());
+        r->get_info()->add_floats(fh.get_name(k), value);
+      }
+    }
   }
 
  public:
@@ -197,7 +224,10 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         sf_(fh),
         rf_(fh),
         imp_cat_(fh.get_category("IMP")),
-        weight_key_(fh.get_key<RMF::FloatTraits>(imp_cat_, "weight")) {}
+        imp_restraint_cat_(fh.get_category("IMP restraint")),
+        weight_key_(fh.get_key<RMF::FloatTraits>(imp_cat_, "weight")) {
+    fsks_ = fh.get_keys<RMF::FloatsTraits>(imp_restraint_cat_);
+  }
   static const char *get_name() { return "restraint load"; }
 
   IMP_OBJECT_METHODS(RestraintLoadLink);
@@ -208,6 +238,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   RMF::decorator::ScoreFactory sf_;
   RMF::decorator::RepresentationFactory rf_;
   RMF::Category imp_cat_;
+  RMF::Category imp_restraint_cat_;
   RMF::FloatKey weight_key_;
   boost::unordered_map<Restraint *, RestraintSaveData> data_;
   Restraints all_;
@@ -251,6 +282,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       RMF::Ints nhs = get_node_ids(nh.get_file(), inputs);
       sdnf.set_static_representation(nhs);
     }
+    save_dynamic_info(o, nh);
 
     RMF::decorator::Score sd = sf_.get(nh);
     double score = o->get_last_score();
@@ -303,6 +335,24 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
     }
   }
 
+  // Save any info from Restraint::get_dynamic_info()
+  void save_dynamic_info(Restraint *o, RMF::NodeHandle nh) {
+    Pointer<RestraintInfo> ri = o->get_dynamic_info();
+    if (!ri) return;
+
+    ri->set_was_used(true);
+    unsigned i;
+    RMF::FileHandle fh = nh.get_file();
+    for (i = 0; i < ri->get_number_of_floats(); ++i) {
+      RMF::FloatsKey key = fh.get_key<RMF::FloatsTraits>(
+                             imp_restraint_cat_, ri->get_floats_key(i));
+      // No automatic conversion from IMP::Floats to RMF::Floats
+      Floats value = ri->get_floats_value(i);
+      RMF::Floats rvalue(value.begin(), value.end());
+      nh.set_static_value(key, rvalue);
+    }
+  }
+
   void do_save(RMF::FileHandle fh) {
     rsf_->evaluate(false);
     P::do_save(fh);
@@ -315,6 +365,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
         sf_(fh),
         rf_(fh),
         imp_cat_(fh.get_category("IMP")),
+        imp_restraint_cat_(fh.get_category("IMP restraint")),
         weight_key_(fh.get_key<RMF::FloatTraits>(imp_cat_, "weight")),
         max_terms_(100) {}
   void set_maximum_number_of_terms(unsigned int n) { max_terms_ = n; }

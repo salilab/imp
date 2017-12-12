@@ -6,15 +6,38 @@ import IMP.container
 import RMF
 from IMP.algebra import *
 
+class MockRestraint(IMP.Restraint):
+
+    def __init__(self, val, ps):
+        self.ps = ps
+        IMP.Restraint.__init__(self, ps[0].get_model(), "MockRestraint %1%")
+
+    def unprotected_evaluate(self, accum):
+        return 0.
+
+    def get_version_info(self):
+        return IMP.VersionInfo("IMP authors", "0.1")
+
+    def do_show(self, fh):
+        fh.write('MockRestraint')
+
+    def do_get_inputs(self):
+        return self.ps
+
+    def get_dynamic_info(self):
+        i = IMP.RestraintInfo()
+        i.add_floats("test", [42., 99.5])
+        return i
+
 
 class Tests(IMP.test.TestCase):
 
-    def _write_restraint(self, name):
+    def _write_restraint(self, name, cls=IMP._ConstRestraint):
         f = RMF.create_rmf_file(name)
         m = IMP.Model()
         p = IMP.Particle(m)
         IMP.rmf.add_particles(f, [p])
-        r = IMP._ConstRestraint(1, [p])
+        r = cls(1, [p])
         r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
         IMP.rmf.save_frame(f, str(0))
@@ -29,6 +52,7 @@ class Tests(IMP.test.TestCase):
         print([IMP.Particle.get_from(x).get_index() for x in r.get_inputs()])
         print([x.get_index() for x in ps])
         self.assertEqual(r.get_inputs(), ps)
+        return r
 
     def test_0(self):
         """Test writing restraints rmf"""
@@ -139,6 +163,20 @@ class Tests(IMP.test.TestCase):
         RMF.show_hierarchy(rh.get_root_node())
         self.assertEqual(rn.get_name(), r.get_name())
         self.assertEqual([x for x in rn.get_children()], [])
+
+    def test_dynamic_info(self):
+        """Test dynamic restraint info"""
+        for suffix in IMP.rmf.suffixes:
+            name = self.get_tmp_file_name("dynamic_info" + suffix)
+            self._write_restraint(name, cls=MockRestraint)
+            r = self._read_restraint(name)
+            info = r.get_dynamic_info()
+            self.assertEqual(info.get_number_of_floats(), 1)
+            self.assertEqual(info.get_floats_key(0), "test")
+            val = info.get_floats_value(0)
+            self.assertEqual(len(val), 2)
+            self.assertAlmostEqual(val[0], 42., delta=1e-6)
+            self.assertAlmostEqual(val[1], 99.5, delta=1e-6)
 
 if __name__ == '__main__':
     IMP.test.main()
