@@ -26,7 +26,10 @@ class MockRestraint(IMP.Restraint):
 
     def get_dynamic_info(self):
         i = IMP.RestraintInfo()
-        i.add_floats("test", [42., 99.5])
+        i.add_int("test int", 5)
+        i.add_float("test float", 42.4)
+        i.add_floats("test floats", [42., 99.5])
+        i.add_filenames("test filenames", ["foo", "bar"])
         return i
 
 
@@ -171,12 +174,21 @@ class Tests(IMP.test.TestCase):
             self._write_restraint(name, cls=MockRestraint)
             r = self._read_restraint(name)
             info = r.get_dynamic_info()
+            self.assertEqual(info.get_number_of_int(), 1)
+            self.assertEqual(info.get_int_key(0), "test int")
+            self.assertEqual(info.get_int_value(0), 5)
+            self.assertEqual(info.get_number_of_float(), 1)
+            self.assertEqual(info.get_float_key(0), "test float")
+            self.assertAlmostEqual(info.get_float_value(0), 42.4, delta=0.01)
             self.assertEqual(info.get_number_of_floats(), 1)
-            self.assertEqual(info.get_floats_key(0), "test")
+            self.assertEqual(info.get_floats_key(0), "test floats")
             val = info.get_floats_value(0)
             self.assertEqual(len(val), 2)
             self.assertAlmostEqual(val[0], 42., delta=1e-6)
             self.assertAlmostEqual(val[1], 99.5, delta=1e-6)
+            self.assertEqual(info.get_number_of_filenames(), 1)
+            self.assertEqual(info.get_filenames_key(0), "test filenames")
+            self.assertEqual(len(info.get_filenames_value(0)), 2)
 
 if __name__ == '__main__':
     IMP.test.main()
