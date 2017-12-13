@@ -102,6 +102,8 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   }
 /** @} */
 
+#endif
+
   //! \return static key:value information about this restraint, or null.
   /** \return a set of key:value pairs that contain static information
       about this restraint (i.e. information that doesn't change during
@@ -127,8 +129,6 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   virtual RestraintInfo *get_dynamic_info() const {
     return nullptr;
   }
-
-#endif
 
   //! Perform the actual restraint scoring.
   /** The restraints should assume that all appropriate ScoreState
