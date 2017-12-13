@@ -11,6 +11,7 @@
 
 #include <IMP/kernel_config.h>
 #include <IMP/Object.h>
+#include <IMP/types.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
