@@ -11,6 +11,7 @@
 
 #include <IMP/em2d/internal/Projection.h>
 #include <IMP/em2d/internal/ImageTransform.h>
+#include <IMP/file.h>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -31,6 +32,7 @@ PCAFitRestraint::PCAFitRestraint(Particles particles,
 {
   // read and process the images
   for (unsigned int i = 0; i < image_files.size(); i++) {
+    image_files_.push_back(get_absolute_path(image_files[i]));
     internal::Image2D<> image(image_files[i]);
     image.get_largest_connected_component(n_components_);
     image.pad((int)(image.get_width() * 1.7), (int)(image.get_height() * 1.7));
@@ -161,6 +163,15 @@ algebra::Transformation3D PCAFitRestraint::get_transformation(
 
   return algebra::Transformation3D(i_center - pinfo.centroid)
          * rot * algebra::Transformation3D(pinfo.rotation);
+}
+
+RestraintInfo *PCAFitRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_filenames("image files", image_files_);
+  ri->add_float("pixel size", pixel_size_);
+  ri->add_float("resolution", resolution_);
+  ri->add_int("projection number", projection_number_);
+  return ri.release();
 }
 
 RestraintInfo *PCAFitRestraint::get_dynamic_info() const {

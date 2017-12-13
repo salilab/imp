@@ -79,6 +79,27 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
             os.unlink('images.pgm')
 
     def _check_restraint_info(self, r):
+        self._check_static_restraint_info(r)
+        self._check_dynamic_restraint_info(r)
+
+    def _check_static_restraint_info(self, r):
+        info = r.get_static_info()
+
+        self.assertEqual(info.get_number_of_int(), 1)
+        self.assertEqual(info.get_int_key(0), "projection number")
+        self.assertEqual(info.get_int_value(0), 100)
+
+        self.assertEqual(info.get_number_of_float(), 2)
+        self.assertEqual(info.get_float_key(0), "pixel size")
+        self.assertAlmostEqual(info.get_float_value(0), 2.2, delta=1e-6)
+        self.assertEqual(info.get_float_key(1), "resolution")
+        self.assertAlmostEqual(info.get_float_value(1), 20., delta=1e-6)
+
+        self.assertEqual(info.get_number_of_filenames(), 1)
+        self.assertEqual(info.get_filenames_key(0), "image files")
+        self.assertEqual(len(info.get_filenames_value(0)), 1)
+
+    def _check_dynamic_restraint_info(self, r):
         info = r.get_dynamic_info()
 
         self.assertEqual(info.get_number_of_floats(), 3)

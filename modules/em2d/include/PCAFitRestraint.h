@@ -80,6 +80,9 @@ public:
   void write_best_projections(std::string file_name, bool evaluate=false);
 
   //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const IMP_OVERRIDE;
+
+  //! \return Information for writing to RMF files
   RestraintInfo *get_dynamic_info() const IMP_OVERRIDE;
 
   IMP::ModelObjectsTemp do_get_inputs() const { return ps_; }
@@ -91,6 +94,9 @@ public:
 
   // EM2D images
   std::vector<internal::Image2D<> > images_;
+
+  // Image file names (absolute paths)
+  Strings image_files_;
 
   // image pixel size
   double pixel_size_;
