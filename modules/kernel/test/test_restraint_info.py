@@ -25,6 +25,16 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(ri.get_float_key(0), "test float")
         self.assertAlmostEqual(ri.get_float_value(0), 4.5, delta=1e-6)
 
+    def test_string(self):
+        """Test get/set of string RestraintInfo"""
+        ri = IMP.RestraintInfo()
+        ri.set_was_used(True)
+        self.assertEqual(ri.get_number_of_string(), 0)
+        ri.add_string("test string", "foo")
+        self.assertEqual(ri.get_number_of_string(), 1)
+        self.assertEqual(ri.get_string_key(0), "test string")
+        self.assertEqual(ri.get_string_value(0), "foo")
+
     def test_floats(self):
         """Test get/set of floats RestraintInfo"""
         ri = IMP.RestraintInfo()

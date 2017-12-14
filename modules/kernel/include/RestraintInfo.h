@@ -53,6 +53,20 @@ public:
     return float_[i].second;
   }
 
+  //! Add a string value referenced by the given key
+  void add_string(std::string key, std::string value);
+
+  //! Get the number of string that have been added
+  unsigned get_number_of_string() const { return string_.size(); }
+
+  //! Get the key for the ith string mapping
+  std::string get_string_key(unsigned i) const { return string_[i].first; }
+
+  //! Get the value for the ith string mapping
+  std::string get_string_value(unsigned i) const {
+    return string_[i].second;
+  }
+
   //! Add a list of Float values referenced by the given key
   void add_floats(std::string key, Floats value);
 
@@ -95,6 +109,9 @@ private:
 
   typedef std::pair<std::string, double> FloatData;
   std::vector<FloatData> float_;
+
+  typedef std::pair<std::string, std::string> StringData;
+  std::vector<StringData> string_;
 
   typedef std::pair<std::string, Floats> FloatsData;
   std::vector<FloatsData> floats_;
