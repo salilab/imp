@@ -95,9 +95,17 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
     unprotected_evaluate(IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   void show(std::ostream &out) const { out << "GEM restraint"; }
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const IMP_OVERRIDE;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_dynamic_info() const IMP_OVERRIDE;
+
   IMP_OBJECT_METHODS(GaussianEMRestraint);
 
  private:
+  double model_cutoff_dist_, density_cutoff_dist_;
   ParticleIndexes model_ps_;
   ParticleIndexes density_ps_;
   ParticleIndex global_sigma_;

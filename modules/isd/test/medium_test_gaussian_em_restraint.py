@@ -128,6 +128,30 @@ class Tests(IMP.test.TestCase):
         self.sf = IMP.core.RestraintsScoringFunction([self.gem])
         self.orig_coords=[IMP.core.XYZ(p).get_coordinates() for p in self.model_ps]
 
+    def test_info(self):
+        """Test key:value restraint info"""
+        score = self.sf.evaluate(False)
+        s = self.gem.get_static_info()
+        s.set_was_used(True)
+        self.assertEqual(s.get_number_of_string(), 1)
+        self.assertEqual(s.get_string_key(0), "type")
+        self.assertEqual(s.get_string_value(0), "IMP.isd.GaussianEMRestraint")
+
+        self.assertEqual(s.get_number_of_int(), 0)
+        self.assertEqual(s.get_number_of_float(), 2)
+        self.assertEqual(s.get_float_key(0), "model cutoff")
+        self.assertAlmostEqual(s.get_float_value(0), 1e8, delta=1e-4)
+        self.assertEqual(s.get_float_key(1), "density cutoff")
+        self.assertAlmostEqual(s.get_float_value(1), 1e8, delta=1e-4)
+
+        s = self.gem.get_dynamic_info()
+        s.set_was_used(True)
+        self.assertEqual(s.get_number_of_float(), 1)
+        self.assertEqual(s.get_float_key(0), "cross correlation")
+        self.assertAlmostEqual(s.get_float_value(0),
+                               self.gem.get_cross_correlation_coefficient(),
+                               delta=1e-4)
+
     def test_gem_score(self):
         """test accuracy of GMM score"""
         for nt in range(10):

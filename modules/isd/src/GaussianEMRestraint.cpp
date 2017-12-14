@@ -61,13 +61,14 @@ GaussianEMRestraint::GaussianEMRestraint(
                          bool local,
                          std::string name):
   Restraint(mdl,name),
+  model_cutoff_dist_(model_cutoff_dist),
+  density_cutoff_dist_(density_cutoff_dist),
   model_ps_(model_ps),
   density_ps_(density_ps),
   global_sigma_(global_sigma),
   slope_(slope),
   update_model_(update_model),
   local_(local){
-
     msize_=model_ps.size();
     dsize_=density_ps.size();
 
@@ -240,6 +241,20 @@ ModelObjectsTemp GaussianEMRestraint::do_get_inputs() const {
   ret.push_back(md_container_);
   ret.push_back(mm_container_);
   return ret;
+}
+
+RestraintInfo *GaussianEMRestraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.isd.GaussianEMRestraint");
+  ri->add_float("model cutoff", model_cutoff_dist_);
+  ri->add_float("density cutoff", density_cutoff_dist_);
+  return ri.release();
+}
+
+RestraintInfo *GaussianEMRestraint::get_dynamic_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_float("cross correlation", get_cross_correlation_coefficient());
+  return ri.release();
 }
 
 IMPISD_END_NAMESPACE
