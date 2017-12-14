@@ -304,7 +304,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Saving restraint info for " << o->get_name() << std::endl);
     RestraintSaveData &d = data_[o];
-    if (!sf_.get_is(nh)) {
+    if (!rf_.get_is(nh)) {
       RMF::decorator::Representation sdnf = rf_.get(nh);
       // be lazy about it
       ParticlesTemp inputs =
