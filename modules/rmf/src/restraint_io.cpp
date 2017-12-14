@@ -148,6 +148,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   RMF::Category imp_restraint_fn_cat_;
   RMF::FloatKey weight_key_;
   RMF::IntKeys iks_;
+  RMF::StringKeys sks_;
   RMF::FloatKeys fks_;
   RMF::FloatsKeys fsks_;
   RMF::StringsKeys filenamesks_;
@@ -222,6 +223,11 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         r->get_info()->add_float(fh.get_name(k), nh.get_value(k));
       }
     }
+    RMF_FOREACH(RMF::StringKey k, sks_) {
+      if (!nh.get_value(k).get_is_null()) {
+        r->get_info()->add_string(fh.get_name(k), nh.get_value(k));
+      }
+    }
     RMF_FOREACH(RMF::FloatsKey k, fsks_) {
       if (!nh.get_value(k).get_is_null()) {
         // No automatic conversion from RMF::Floats to IMP::Floats
@@ -255,6 +261,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         weight_key_(fh.get_key<RMF::FloatTraits>(imp_cat_, "weight")) {
     iks_ = fh.get_keys<RMF::IntTraits>(imp_restraint_cat_);
     fks_ = fh.get_keys<RMF::FloatTraits>(imp_restraint_cat_);
+    sks_ = fh.get_keys<RMF::StringTraits>(imp_restraint_cat_);
     fsks_ = fh.get_keys<RMF::FloatsTraits>(imp_restraint_cat_);
     filenamesks_ = fh.get_keys<RMF::StringsTraits>(imp_restraint_fn_cat_);
   }
@@ -385,6 +392,11 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
                              imp_restraint_cat_, ri->get_float_key(i));
       nh.set_frame_value(key, ri->get_float_value(i));
     }
+    for (i = 0; i < ri->get_number_of_string(); ++i) {
+      RMF::StringKey key = fh.get_key<RMF::StringTraits>(
+                             imp_restraint_cat_, ri->get_string_key(i));
+      nh.set_frame_value(key, ri->get_string_value(i));
+    }
     for (i = 0; i < ri->get_number_of_floats(); ++i) {
       RMF::FloatsKey key = fh.get_key<RMF::FloatsTraits>(
                              imp_restraint_cat_, ri->get_floats_key(i));
@@ -423,6 +435,11 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       RMF::FloatKey key = fh.get_key<RMF::FloatTraits>(
                              imp_restraint_cat_, ri->get_float_key(i));
       nh.set_static_value(key, ri->get_float_value(i));
+    }
+    for (i = 0; i < ri->get_number_of_string(); ++i) {
+      RMF::StringKey key = fh.get_key<RMF::StringTraits>(
+                             imp_restraint_cat_, ri->get_string_key(i));
+      nh.set_static_value(key, ri->get_string_value(i));
     }
     for (i = 0; i < ri->get_number_of_floats(); ++i) {
       RMF::FloatsKey key = fh.get_key<RMF::FloatsTraits>(
