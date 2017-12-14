@@ -95,6 +95,10 @@ class EM2DFitRestraintTest(IMP.test.TestCase):
         self.assertEqual(info.get_float_key(1), "resolution")
         self.assertAlmostEqual(info.get_float_value(1), 20., delta=1e-6)
 
+        self.assertEqual(info.get_number_of_string(), 1)
+        self.assertEqual(info.get_string_key(0), "type")
+        self.assertEqual(info.get_string_value(0), "IMP.em2d.PCAFitRestraint")
+
         self.assertEqual(info.get_number_of_filenames(), 1)
         self.assertEqual(info.get_filenames_key(0), "image files")
         self.assertEqual(len(info.get_filenames_value(0)), 1)

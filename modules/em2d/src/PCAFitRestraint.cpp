@@ -167,6 +167,7 @@ algebra::Transformation3D PCAFitRestraint::get_transformation(
 
 RestraintInfo *PCAFitRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.em2d.PCAFitRestraint");
   ri->add_filenames("image files", image_files_);
   ri->add_float("pixel size", pixel_size_);
   ri->add_float("resolution", resolution_);
