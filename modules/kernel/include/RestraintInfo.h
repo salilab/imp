@@ -67,6 +67,24 @@ public:
     return string_[i].second;
   }
 
+  //! Add a filename value referenced by the given key
+  /** Filenames are treated similarly to strings but the caller is expected
+      to make them absolute paths before adding them here. When written to
+      file they may be converted to paths relative to the file.
+   */
+  void add_filename(std::string key, std::string value);
+
+  //! Get the number of filename that have been added
+  unsigned get_number_of_filename() const { return filename_.size(); }
+
+  //! Get the key for the ith filename mapping
+  std::string get_filename_key(unsigned i) const { return filename_[i].first; }
+
+  //! Get the value for the ith filename mapping
+  std::string get_filename_value(unsigned i) const {
+    return filename_[i].second;
+  }
+
   //! Add a list of Float values referenced by the given key
   void add_floats(std::string key, Floats value);
 
@@ -111,7 +129,7 @@ private:
   std::vector<FloatData> float_;
 
   typedef std::pair<std::string, std::string> StringData;
-  std::vector<StringData> string_;
+  std::vector<StringData> string_, filename_;
 
   typedef std::pair<std::string, Floats> FloatsData;
   std::vector<FloatsData> floats_;

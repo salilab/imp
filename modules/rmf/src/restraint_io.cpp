@@ -151,6 +151,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   RMF::StringKeys sks_;
   RMF::FloatKeys fks_;
   RMF::FloatsKeys fsks_;
+  RMF::StringKeys filenameks_;
   RMF::StringsKeys filenamesks_;
 
   void do_load_one(RMF::NodeConstHandle nh, Restraint *oi) {
@@ -228,6 +229,13 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         r->get_info()->add_string(fh.get_name(k), nh.get_value(k));
       }
     }
+    RMF_FOREACH(RMF::StringKey k, filenameks_) {
+      if (!nh.get_value(k).get_is_null()) {
+        r->get_info()->add_filename(fh.get_name(k),
+                                    RMF::internal::get_absolute_path(
+                                            fh.get_path(), nh.get_value(k)));
+      }
+    }
     RMF_FOREACH(RMF::FloatsKey k, fsks_) {
       if (!nh.get_value(k).get_is_null()) {
         // No automatic conversion from RMF::Floats to IMP::Floats
@@ -243,7 +251,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         Strings value;
         for (RMF::Strings::const_iterator it = rvalue.begin();
              it != rvalue.end(); ++it) {
-          value.push_back(RMF::internal::get_absolute_path(*it, fh.get_path()));
+          value.push_back(RMF::internal::get_absolute_path(fh.get_path(), *it));
         }
         r->get_info()->add_filenames(fh.get_name(k), value);
       }
@@ -263,6 +271,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     fks_ = fh.get_keys<RMF::FloatTraits>(imp_restraint_cat_);
     sks_ = fh.get_keys<RMF::StringTraits>(imp_restraint_cat_);
     fsks_ = fh.get_keys<RMF::FloatsTraits>(imp_restraint_cat_);
+    filenameks_ = fh.get_keys<RMF::StringTraits>(imp_restraint_fn_cat_);
     filenamesks_ = fh.get_keys<RMF::StringsTraits>(imp_restraint_fn_cat_);
   }
   static const char *get_name() { return "restraint load"; }
@@ -397,6 +406,12 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
                              imp_restraint_cat_, ri->get_string_key(i));
       nh.set_frame_value(key, ri->get_string_value(i));
     }
+    for (i = 0; i < ri->get_number_of_filename(); ++i) {
+      RMF::StringKey key = fh.get_key<RMF::StringTraits>(
+                             imp_restraint_fn_cat_, ri->get_filename_key(i));
+      nh.set_frame_value(key, RMF::internal::get_relative_path(
+                                 fh.get_path(), ri->get_filename_value(i)));
+    }
     for (i = 0; i < ri->get_number_of_floats(); ++i) {
       RMF::FloatsKey key = fh.get_key<RMF::FloatsTraits>(
                              imp_restraint_cat_, ri->get_floats_key(i));
@@ -412,7 +427,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       RMF::Strings rvalue;
       for (Strings::const_iterator it = value.begin();
            it != value.end(); ++it) {
-        rvalue.push_back(RMF::internal::get_relative_path(*it, fh.get_path()));
+        rvalue.push_back(RMF::internal::get_relative_path(fh.get_path(), *it));
       }
       nh.set_frame_value(key, rvalue);
     }
@@ -441,6 +456,12 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
                              imp_restraint_cat_, ri->get_string_key(i));
       nh.set_static_value(key, ri->get_string_value(i));
     }
+    for (i = 0; i < ri->get_number_of_filename(); ++i) {
+      RMF::StringKey key = fh.get_key<RMF::StringTraits>(
+                             imp_restraint_fn_cat_, ri->get_filename_key(i));
+      nh.set_static_value(key, RMF::internal::get_relative_path(
+                                  fh.get_path(), ri->get_filename_value(i)));
+    }
     for (i = 0; i < ri->get_number_of_floats(); ++i) {
       RMF::FloatsKey key = fh.get_key<RMF::FloatsTraits>(
                              imp_restraint_cat_, ri->get_floats_key(i));
@@ -456,7 +477,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       RMF::Strings rvalue;
       for (Strings::const_iterator it = value.begin();
            it != value.end(); ++it) {
-        rvalue.push_back(RMF::internal::get_relative_path(*it, fh.get_path()));
+        rvalue.push_back(RMF::internal::get_relative_path(fh.get_path(), *it));
       }
       nh.set_static_value(key, rvalue);
     }

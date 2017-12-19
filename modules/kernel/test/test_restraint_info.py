@@ -32,8 +32,20 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(ri.get_number_of_string(), 0)
         ri.add_string("test string", "foo")
         self.assertEqual(ri.get_number_of_string(), 1)
+        self.assertEqual(ri.get_number_of_filename(), 0)
         self.assertEqual(ri.get_string_key(0), "test string")
         self.assertEqual(ri.get_string_value(0), "foo")
+
+    def test_filename(self):
+        """Test get/set of filename RestraintInfo"""
+        ri = IMP.RestraintInfo()
+        ri.set_was_used(True)
+        self.assertEqual(ri.get_number_of_filename(), 0)
+        ri.add_filename("test filename", "foo")
+        self.assertEqual(ri.get_number_of_filename(), 1)
+        self.assertEqual(ri.get_number_of_string(), 0)
+        self.assertEqual(ri.get_filename_key(0), "test filename")
+        self.assertEqual(ri.get_filename_value(0), "foo")
 
     def test_floats(self):
         """Test get/set of floats RestraintInfo"""

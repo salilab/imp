@@ -22,6 +22,10 @@ void RestraintInfo::add_string(std::string key, std::string value) {
   string_.push_back(StringData(key, value));
 }
 
+void RestraintInfo::add_filename(std::string key, std::string value) {
+  filename_.push_back(StringData(key, value));
+}
+
 void RestraintInfo::add_floats(std::string key, Floats value) {
   floats_.push_back(FloatsData(key, value));
 }

@@ -29,6 +29,7 @@ class MockRestraint(IMP.Restraint):
         i.add_int("test int", 5)
         i.add_float("test float", 42.4)
         i.add_string("type", "MockRestraint")
+        i.add_filename("test filename", "/foobar")
         i.add_floats("test floats", [42., 99.5])
         i.add_filenames("test filenames", ["foo", "bar"])
         return i
@@ -184,6 +185,9 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(info.get_number_of_string(), 1)
             self.assertEqual(info.get_string_key(0), "type")
             self.assertEqual(info.get_string_value(0), "MockRestraint")
+            self.assertEqual(info.get_number_of_filename(), 1)
+            self.assertEqual(info.get_filename_key(0), "test filename")
+            self.assertEqual(info.get_filename_value(0), "/foobar")
             self.assertEqual(info.get_number_of_floats(), 1)
             self.assertEqual(info.get_floats_key(0), "test floats")
             val = info.get_floats_value(0)
