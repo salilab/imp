@@ -29,8 +29,6 @@ def parse_args():
     parser.add_option("-s","--threshold",dest="threshold",default=0.0,type='float',
                       help="threshold for the map before sampling")
 
-    parser.add_option("-c","--input_anchors_fn",dest="input_anchors_fn",default='',
-                      help="get initial centers from anchors file. ")
     parser.add_option("-f","--force_radii",dest="force_radii",default=-1.0,
                       type='float',
                       help="force radii to be this value (spherical) -1 means deactivated ")
