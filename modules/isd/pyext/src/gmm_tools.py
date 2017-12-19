@@ -59,10 +59,12 @@ def decorate_gmm_from_text(in_fn,
                     IMP.core.transform(IMP.core.RigidBody(ps[ncomp]),transform)
                 ncomp+=1
 
-def write_gmm_to_text(ps,out_fn):
+def write_gmm_to_text(ps,out_fn, comments=[]):
     """write a list of gaussians to text. must be decorated as Gaussian and Mass"""
     print('will write GMM text to',out_fn)
     with open(out_fn,'w') as outf:
+        for comment in comments:
+            outf.write('# ' + comment + '\n')
         outf.write('#|num|weight|mean|covariance matrix|\n')
         for ng,g in enumerate(ps):
             shape=IMP.core.Gaussian(g).get_gaussian()

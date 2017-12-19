@@ -129,7 +129,16 @@ def run():
                                                          gmm_threshold)
 
     ### Write to files
-    IMP.isd.gmm_tools.write_gmm_to_text(density_ps,out_txt_fn)
+    comments = ['Created by create_gmm.py, IMP.isd version %s'
+                % IMP.isd.get_module_version()]
+    comments.append('data_fn: ' + IMP.get_relative_path(out_txt_fn, data_fn))
+    comments.append('ncenters: %d' % ncenters)
+    for key in ('covar_type', 'apix', 'num_samples', 'num_iter',
+                'threshold', 'force_radii', 'force_weight',
+                'force_weight_frac', 'use_dirichlet', 'multiply_by_mass',
+                'chain'):
+        comments.append('%s: %s' % (key, repr(getattr(options, key))))
+    IMP.isd.gmm_tools.write_gmm_to_text(density_ps, out_txt_fn, comments)
     if options.out_map!='':
         IMP.isd.gmm_tools.write_gmm_to_map(density_ps,options.out_map,
                                            options.apix,
