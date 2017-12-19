@@ -246,6 +246,9 @@ ModelObjectsTemp GaussianEMRestraint::do_get_inputs() const {
 RestraintInfo *GaussianEMRestraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   ri->add_string("type", "IMP.isd.GaussianEMRestraint");
+  if (!density_fn_.empty()) {
+    ri->add_filename("filename", density_fn_);
+  }
   ri->add_float("model cutoff", model_cutoff_dist_);
   ri->add_float("density cutoff", density_cutoff_dist_);
   return ri.release();

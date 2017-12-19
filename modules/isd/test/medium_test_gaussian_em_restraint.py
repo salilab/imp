@@ -133,6 +133,8 @@ class Tests(IMP.test.TestCase):
         score = self.sf.evaluate(False)
         s = self.gem.get_static_info()
         s.set_was_used(True)
+        # No density_fn set
+        self.assertEqual(s.get_number_of_filename(), 0)
         self.assertEqual(s.get_number_of_string(), 1)
         self.assertEqual(s.get_string_key(0), "type")
         self.assertEqual(s.get_string_value(0), "IMP.isd.GaussianEMRestraint")
@@ -143,6 +145,13 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(s.get_float_value(0), 1e8, delta=1e-4)
         self.assertEqual(s.get_float_key(1), "density cutoff")
         self.assertAlmostEqual(s.get_float_value(1), 1e8, delta=1e-4)
+
+        self.gem.set_density_filename('/foobar')
+        s = self.gem.get_static_info()
+        s.set_was_used(True)
+        self.assertEqual(s.get_number_of_filename(), 1)
+        self.assertEqual(s.get_filename_key(0), "filename")
+        self.assertEqual(s.get_filename_value(0), "/foobar")
 
         s = self.gem.get_dynamic_info()
         s.set_was_used(True)

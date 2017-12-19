@@ -10,6 +10,7 @@
 #define IMPISD_GAUSSIAN_EM_RESTRAINT_H
 
 #include "isd_config.h"
+#include <IMP/file.h>
 #include <IMP/PairContainer.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container_macros.h>
@@ -80,6 +81,15 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
     return cross_correlation_;
   }
 
+  //! Set the filename corresponding to the density GMM particles
+  /** If the density GMM particles were read from a file, this method
+      can be used to tell the restraint so that it can track this
+      information back to the original EM density file, which is useful
+      for deposition. */
+  void set_density_filename(std::string density_fn) {
+    density_fn_ = get_absolute_path(density_fn);
+  }
+
   //! Pre-calculate the density-density and model-model scores
   /** This is automatically called by the constructor.
       You only need to call it manually if you change Gaussian variances.
@@ -118,6 +128,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   PointerMember<container::CloseBipartitePairContainer> md_container_;
   PointerMember<container::ClosePairContainer> mm_container_;
   ParticleIndexes slope_ps_; //experiment
+  std::string density_fn_;
 
   //variables needed to tabulate the exponential
   Floats exp_grid_;
