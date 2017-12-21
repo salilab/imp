@@ -6,6 +6,7 @@ import IMP.mmcif.dumper
 import IMP.mmcif.dataset
 import IMP.mmcif.data
 import IMP.mmcif.format
+import IMP.mmcif.restraint
 import IMP.rmf
 import IMP.atom
 import RMF
@@ -56,6 +57,7 @@ class System(object):
         self.datasets = IMP.mmcif.data._Datasets(self._external_files)
         # All modeling protocols
         self.protocols = IMP.mmcif.data._Protocols()
+        self._wrapped_restraints = []
 
     def _update_location(self, fileloc):
         """Update FileLocation to point to a parent repository, if any"""
@@ -83,6 +85,13 @@ class System(object):
     def _add_state(self, state):
         self._states[state] = None
         state.id = len(self._states)
+
+    def _add_restraints(self, rs, state):
+        m = IMP.mmcif.restraint._RestraintMapper(self)
+        for r in rs:
+            rw = m.handle(r)
+            if rw:
+                self._wrapped_restraints.append(rw)
 
     def _add_hierarchy(self, h, state):
         chains = [IMP.atom.Chain(c)
@@ -198,12 +207,18 @@ class State(object):
             rmf = RMF.open_rmf_file_read_only(fname)
             if self.hiers is None:
                 self.hiers = IMP.rmf.create_hierarchies(rmf, self.model)
+                self.restraints = IMP.rmf.create_restraints(rmf, self.model)
             else:
                 IMP.rmf.link_hierarchies(rmf, self.hiers)
+                IMP.rmf.link_restraints(rmf, self.restraints)
                 # todo: allow reading other frames
                 IMP.rmf.load_frame(rmf, RMF.FrameID(0))
             for h in self.hiers:
                 self.add_hierarchy(h)
+            self.add_restraints(self.restraints)
 
     def add_hierarchy(self, h):
         self.system._add_hierarchy(h, self)
+
+    def add_restraints(self, rs):
+        self.system._add_restraints(rs, self)

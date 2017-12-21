@@ -52,6 +52,11 @@ class ComparativeModelDataset(Dataset):
     _data_type = 'Comparative model'
 
 
+class EMDensityDataset(Dataset):
+    """A 3D electron microscopy dataset"""
+    _data_type = '3DEM volume'
+
+
 class Location(object):
     """Identifies the location where a resource can be found."""
 
