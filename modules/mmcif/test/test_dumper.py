@@ -121,9 +121,8 @@ _citation_author.ordinal
         """Test SoftwareDumper"""
         system = IMP.mmcif.System()
         h, state = self.make_model(system)
-        m = state.model
         IMP.core.add_imp_provenance(h)
-        state.add_hierarchy(h)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
 
         system.add_software(name='test', classification='test code',
                             description='Some test program',
@@ -155,7 +154,7 @@ _software.location
         """Test ChemCompDumper"""
         system = IMP.mmcif.System()
         h, state = self.make_model(system)
-        state.add_hierarchy(h)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         dumper = IMP.mmcif.dumper._ChemCompDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -173,7 +172,7 @@ THR 'L-peptide linking'
         """Test EntityDumper"""
         system = IMP.mmcif.System()
         h, state = self.make_model(system)
-        state.add_hierarchy(h)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         dumper = IMP.mmcif.dumper._EntityDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -194,7 +193,7 @@ _entity.details
         """Test EntityPolyDumper"""
         system = IMP.mmcif.System()
         h, state = self.make_model(system)
-        state.add_hierarchy(h)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         dumper = IMP.mmcif.dumper._EntityPolyDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -215,7 +214,7 @@ _entity_poly.pdbx_seq_one_letter_code_can
         """Test EntityPolySeqDumper"""
         system = IMP.mmcif.System()
         h, state = self.make_model(system)
-        state.add_hierarchy(h)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         dumper = IMP.mmcif.dumper._EntityPolySeqDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -238,7 +237,7 @@ _entity_poly_seq.hetero
         """Test StructAsymDumper"""
         system = IMP.mmcif.System()
         h, state = self.make_model(system)
-        state.add_hierarchy(h)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         dumper = IMP.mmcif.dumper._StructAsymDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -273,7 +272,7 @@ C 2 baz
         h, state = self.make_model(system, (("foo", "AAA", 'A'),
                                             ("bar", "AAA", 'B'),
                                             ("baz", "AA", 'C')))
-        state.add_hierarchy(h)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         foo, bar, baz = state._all_modeled_components
 
         system._assemblies.add(IMP.mmcif.data._Assembly((foo, bar)))
@@ -306,7 +305,7 @@ _ihm_struct_assembly.seq_id_end
         """Test AssemblyDumper, subset of components modeled"""
         system = IMP.mmcif.System()
         h, state = self.make_model(system, (("foo", "AAA", 'A'),))
-        state.add_hierarchy(h)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         system.add_non_modeled_chain(name="bar", sequence="AA")
         d = IMP.mmcif.dumper._AssemblyDumper()
         d.finalize(system) # assign IDs
@@ -350,7 +349,7 @@ _ihm_struct_assembly.seq_id_end
         chain.add_child(frag1)
         frag2 = IMP.atom.Fragment.setup_particle(IMP.Particle(m),[3,4])
         chain.add_child(frag2)
-        state.add_hierarchy(h)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         # Assign starting model IDs
         d = IMP.mmcif.dumper._StartingModelDumper()
         d.finalize(system)
@@ -413,9 +412,11 @@ _ihm_model_representation.model_object_count
         state2h.add_child(h2)
 
         state1 = IMP.mmcif.State(system)
-        state1.add_hierarchy(state1h)
+        IMP.mmcif.Ensemble(state1, "cluster 1").add_model([state1h],
+                                                          [], "model1")
         state2 = IMP.mmcif.State(system)
-        state2.add_hierarchy(state2h)
+        IMP.mmcif.Ensemble(state2, "cluster 1").add_model([state2h],
+                                                          [], "model1")
 
         d = IMP.mmcif.dumper._ExternalReferenceDumper()
         d.finalize(system) # assign file IDs (nup84 pdb = 1, alignment file = 2)
@@ -652,7 +653,7 @@ _ihm_external_files.details
         prov = IMP.core.ScriptProvenance.setup_particle(m, IMP.Particle(m),
                                                         __file__)
         IMP.core.add_provenance(m, h, prov)
-        state.add_hierarchy(h)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
 
         root = os.path.dirname(__file__)
         system.add_repository(doi="foo", root=root)
@@ -686,7 +687,7 @@ _ihm_external_files.details
         """Test ProtocolDumper"""
         system = IMP.mmcif.System()
         h, state = self.make_model_with_protocol(system)
-        state.add_hierarchy(h)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
 
         dumper = IMP.mmcif.dumper._AssemblyDumper()
         dumper.finalize(system) # Assign assembly IDs
@@ -718,7 +719,7 @@ _ihm_modeling_protocol.time_ordered_flag
         """Test PostProcessDumper"""
         system = IMP.mmcif.System()
         h, state = self.make_model_with_protocol(system)
-        state.add_hierarchy(h)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         dumper = IMP.mmcif.dumper._PostProcessDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -733,6 +734,53 @@ _ihm_modeling_post_process.num_models_begin
 _ihm_modeling_post_process.num_models_end
 1 1 1 1 filter energy/score 500 400
 2 2 1 1 cluster RMSD 2000 2000
+#
+""")
+
+    def test_ensemble_info(self):
+        """Test EnsembleDumper"""
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system)
+        e = IMP.mmcif.Ensemble(state, "cluster 1")
+        e.add_model([h], [], "model1")
+        dumper = IMP.mmcif.dumper._EnsembleDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_ensemble_info.ensemble_id
+_ihm_ensemble_info.ensemble_name
+_ihm_ensemble_info.post_process_id
+_ihm_ensemble_info.model_group_id
+_ihm_ensemble_info.ensemble_clustering_method
+_ihm_ensemble_info.ensemble_clustering_feature
+_ihm_ensemble_info.num_ensemble_models
+_ihm_ensemble_info.num_ensemble_models_deposited
+_ihm_ensemble_info.ensemble_precision_value
+_ihm_ensemble_info.ensemble_file_id
+1 'cluster 1' . 1 . . 1 . . .
+#
+""")
+
+    def test_model_list(self):
+        """Test ModelListDumper"""
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system)
+        e = IMP.mmcif.Ensemble(state, "cluster 1")
+        e.add_model([h], [], "model1")
+        e.add_model([h], [], "model2")
+        dumper = IMP.mmcif.dumper._ModelListDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_model_list.ordinal_id
+_ihm_model_list.model_id
+_ihm_model_list.model_group_id
+_ihm_model_list.model_name
+_ihm_model_list.model_group_name
+_ihm_model_list.assembly_id
+_ihm_model_list.protocol_id
+1 1 1 model1 'cluster 1' . .
+2 2 1 model2 'cluster 1' . .
 #
 """)
 

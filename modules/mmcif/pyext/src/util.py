@@ -14,6 +14,43 @@ import string
 import weakref
 import operator
 
+class _RMFFrame(object):
+    """An individual state conformation read from a PDB file"""
+    def __init__(self, filename, frame, name):
+        self.filename, self.frame = filename, frame
+        self.name = name
+
+    def create(self, model):
+        rmf = RMF.open_rmf_file_read_only(self.filename)
+        # todo: support frame!=0
+        hiers = IMP.rmf.create_hierarchies(rmf, model)
+        restraints = IMP.rmf.create_restraints(rmf, model)
+        return hiers, restraints
+
+    def link(self, hiers, restraints):
+        rmf = RMF.open_rmf_file_read_only(self.filename)
+        IMP.rmf.link_hierarchies(rmf, hiers)
+        IMP.rmf.link_restraints(rmf, restraints)
+        IMP.rmf.load_frame(rmf, RMF.FrameID(self.frame))
+
+
+class _ModelFrame(object):
+    """An individual state conformation read from an IMP.Model"""
+    def __init__(self, hiers, restraints, name):
+        self.hiers, self.restraints = hiers, restraints
+        self.name = name
+
+    def create(self, model):
+        return self.hiers, self.restraints
+
+    def link(self, hiers, restraints):
+        if len(hiers) != len(self.hiers) \
+           or len(restraints) != len(self.restraints):
+            raise ValueError("Frames do not match")
+        hiers[:] = self.hiers
+        restraints[:] = self.restraints
+
+
 class _NonModeledChain(object):
     """Represent a chain that was experimentally characterized but not modeled.
        Such a chain resembles an IMP.atom.Chain, but has no associated
@@ -29,6 +66,8 @@ class _NonModeledChain(object):
 class System(object):
     def __init__(self):
         self._states = {}
+        self._ensembles = []
+        self._frames = []
         self._assemblies = IMP.mmcif.data._Assemblies()
         # The assembly of all known components.
         self.complete_assembly = IMP.mmcif.data._Assembly()
@@ -48,7 +87,9 @@ class System(object):
                          IMP.mmcif.dumper._DatasetDumper(),
                          IMP.mmcif.dumper._StartingModelDumper(),
                          IMP.mmcif.dumper._ProtocolDumper(),
-                         IMP.mmcif.dumper._PostProcessDumper()]
+                         IMP.mmcif.dumper._PostProcessDumper(),
+                         IMP.mmcif.dumper._EnsembleDumper(),
+                         IMP.mmcif.dumper._ModelListDumper()]
         self.entities = IMP.mmcif.data._EntityMapper()
         self.components = IMP.mmcif.data._ComponentMapper()
         self._citations = []
@@ -85,6 +126,14 @@ class System(object):
     def _add_state(self, state):
         self._states[state] = None
         state.id = len(self._states)
+
+    def _add_ensemble(self, ensemble):
+        self._ensembles.append(ensemble)
+        ensemble.id = len(self._ensembles)
+
+    def _add_frame(self, frame):
+        self._frames.append(frame)
+        frame.id = len(self._frames)
 
     def _add_restraints(self, rs, state):
         m = IMP.mmcif.restraint._RestraintMapper(self)
@@ -202,23 +251,43 @@ class State(object):
 
         self._all_modeled_components = []
 
-    def add_rmf_files(self, rmfs):
-        for fname in rmfs:
-            rmf = RMF.open_rmf_file_read_only(fname)
-            if self.hiers is None:
-                self.hiers = IMP.rmf.create_hierarchies(rmf, self.model)
-                self.restraints = IMP.rmf.create_restraints(rmf, self.model)
-            else:
-                IMP.rmf.link_hierarchies(rmf, self.hiers)
-                IMP.rmf.link_restraints(rmf, self.restraints)
-                # todo: allow reading other frames
-                IMP.rmf.load_frame(rmf, RMF.FrameID(0))
-            for h in self.hiers:
-                self.add_hierarchy(h)
-            self.add_restraints(self.restraints)
+    def _add_frame(self, f):
+        self.system._add_frame(f)
+        self._load_frame(f)
+        for h in self.hiers:
+            self._add_hierarchy(h)
+        self._add_restraints(self.restraints)
 
-    def add_hierarchy(self, h):
+    def _load_frame(self, f):
+        """Load hierarchies and restraints from a frame"""
+        if self.hiers is None:
+            self.hiers, self.restraints = f.create(self.model)
+        else:
+            f.link(self.hiers, self.restraints)
+
+    def _add_hierarchy(self, h):
         self.system._add_hierarchy(h, self)
 
-    def add_restraints(self, rs):
+    def _add_restraints(self, rs):
         self.system._add_restraints(rs, self)
+
+
+class Ensemble(object):
+    """Represent a set of similar models in a state."""
+    def __init__(self, state, name):
+        self.state = weakref.proxy(state)
+        state.system._add_ensemble(self)
+        self.name = name
+        self._frames = []
+
+    def add_rmf(self, fname, name, frame=0):
+        """Add a frame from an RMF file"""
+        f = _RMFFrame(fname, frame, name)
+        self._frames.append(f)
+        self.state._add_frame(f)
+
+    def add_model(self, hiers, restraints, name):
+        """Add hierarchies and restraints from an IMP.Model"""
+        f = _ModelFrame(hiers, restraints, name)
+        self._frames.append(f)
+        self.state._add_frame(f)
