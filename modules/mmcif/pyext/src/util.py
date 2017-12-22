@@ -91,7 +91,8 @@ class System(object):
                          IMP.mmcif.dumper._ProtocolDumper(),
                          IMP.mmcif.dumper._PostProcessDumper(),
                          IMP.mmcif.dumper._EnsembleDumper(),
-                         IMP.mmcif.dumper._ModelListDumper()]
+                         IMP.mmcif.dumper._ModelListDumper(),
+                         IMP.mmcif.dumper._EM3DDumper()]
         self.entities = IMP.mmcif.data._EntityMapper()
         self.components = IMP.mmcif.data._ComponentMapper()
         self._citations = []

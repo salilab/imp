@@ -12,6 +12,32 @@ if sys.version_info[0] >= 3:
 else:
     from io import BytesIO as StringIO
 
+class MockGaussianEMRestraint(IMP.Restraint):
+
+    def __init__(self, m, em_filename):
+        self.em_filename = em_filename
+        IMP.Restraint.__init__(self, m, "MockRestraint %1%")
+    def unprotected_evaluate(self, accum):
+        return 0.
+    def get_version_info(self):
+        return IMP.VersionInfo("IMP authors", "0.1")
+    def do_show(self, fh):
+        fh.write('MockRestraint')
+    def do_get_inputs(self):
+        return []
+
+    def get_static_info(self):
+        i = IMP.RestraintInfo()
+        i.add_string("type", "IMP.isd.GaussianEMRestraint")
+        i.add_filename("filename", self.em_filename)
+        return i
+
+    def get_dynamic_info(self):
+        i = IMP.RestraintInfo()
+        i.add_float("cross correlation", 0.4)
+        return i
+
+
 def _get_dumper_output(dumper, system):
     fh = StringIO()
     writer = IMP.mmcif.format.CifWriter(fh)
@@ -781,6 +807,28 @@ _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
 1 1 1 model1 'cluster 1' . .
 2 2 1 model2 'cluster 1' . .
+#
+""")
+
+    def test_em3d_dumper(self):
+        """Test EM3DDumper"""
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system)
+        em_filename = self.get_input_file_name('emd_1883.map.mrc.gmm.50.txt')
+        r = MockGaussianEMRestraint(state.model, em_filename)
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [r], "model1")
+        dumper = IMP.mmcif.dumper._EM3DDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_3dem_restraint.ordinal_id
+_ihm_3dem_restraint.dataset_list_id
+_ihm_3dem_restraint.fitting_method
+_ihm_3dem_restraint.struct_assembly_id
+_ihm_3dem_restraint.number_of_gaussians
+_ihm_3dem_restraint.model_id
+_ihm_3dem_restraint.cross_correlation_coefficient
+1 1 'Gaussian mixture model' . . 1 0.400
 #
 """)
 

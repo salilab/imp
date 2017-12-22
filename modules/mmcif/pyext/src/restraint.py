@@ -25,6 +25,10 @@ class _MappedRestraint(object):
         self._setup_dataset(system)
         self._frame_info = {}
 
+    def _all_frame_info(self):
+        """Yield Frame:frame_info pairs, sorted by frame id"""
+        return sorted(self._frame_info.items(), key=lambda kv: kv[0].id)
+
     def _get_frame_info(self, frame):
         """Store any restraint info specific to this frame"""
         info = _parse_restraint_info(self._restraint.get_dynamic_info())
@@ -37,6 +41,8 @@ class _MappedRestraint(object):
 
 class _GaussianEMRestraint(_MappedRestraint):
     """Handle an IMP.isd.GaussianEMRestraint"""
+
+    fitting_method = 'Gaussian mixture model'
 
     def _setup_dataset(self, system):
         l = IMP.mmcif.dataset.FileLocation(self._info['filename'],

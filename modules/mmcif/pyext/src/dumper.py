@@ -6,6 +6,7 @@ from __future__ import print_function
 import IMP.atom
 import IMP.mmcif.data
 import IMP.mmcif.dataset
+import IMP.mmcif.restraint
 from IMP.mmcif.format import CifWriter
 import operator
 import os
@@ -665,4 +666,28 @@ class _ModelListDumper(_Dumper):
                     l.write(ordinal_id=ordinal, model_id=frame.id,
                             model_group_id=ens.id, model_name=frame.name,
                             model_group_name=ens.name)
+                    ordinal += 1
+
+
+class _EM3DDumper(_Dumper):
+    def dump(self, system, writer):
+        rs = []
+        # todo: restraints should really be per-system (same restraint might
+        # be used by multiple states)
+        for state in system._states.keys():
+            rs.extend(r for r in state._wrapped_restraints
+                   if isinstance(r, IMP.mmcif.restraint._GaussianEMRestraint))
+        ordinal = 1
+        with writer.loop("_ihm_3dem_restraint",
+                         ["ordinal_id", "dataset_list_id", "fitting_method",
+                          "struct_assembly_id",
+                          "number_of_gaussians", "model_id",
+                          "cross_correlation_coefficient"]) as l:
+            for r in rs:
+                for frame, info in r._all_frame_info():
+                    ccc = info['cross correlation']
+                    l.write(ordinal_id=ordinal, dataset_list_id=r.dataset.id,
+                            fitting_method=r.fitting_method,
+                            model_id=frame.id,
+                            cross_correlation_coefficient=ccc)
                     ordinal += 1
