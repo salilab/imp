@@ -23,6 +23,12 @@ class _MappedRestraint(object):
         self._restraint = restraint
         self._info = restraint_info
         self._setup_dataset(system)
+        self._frame_info = {}
+
+    def _get_frame_info(self, frame):
+        """Store any restraint info specific to this frame"""
+        info = _parse_restraint_info(self._restraint.get_dynamic_info())
+        self._frame_info[frame] = info
 
     def _setup_dataset(self, system):
         """Create any datasets used by this restraint"""
@@ -50,11 +56,12 @@ class _RestraintMapper(object):
         self._typemap = {"IMP.isd.GaussianEMRestraint": _GaussianEMRestraint}
         self._system = system
 
-    def handle(self, r):
+    def handle(self, r, frame):
         """Handle an individual IMP restraint.
            @return a wrapped version of the restraint if it is handled in
                    mmCIF, otherwise None."""
         info = _parse_restraint_info(r.get_static_info())
-        info.update(_parse_restraint_info(r.get_dynamic_info()))
         if 'type' in info and info['type'] in self._typemap:
-            return self._typemap[info['type']](r, info, self._system)
+            r = self._typemap[info['type']](r, info, self._system)
+            r._get_frame_info(frame)
+            return r

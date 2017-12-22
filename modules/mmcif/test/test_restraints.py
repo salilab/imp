@@ -19,11 +19,12 @@ class MockGaussianEMRestraint(IMP.Restraint):
     def get_static_info(self):
         i = IMP.RestraintInfo()
         i.add_string("type", "IMP.isd.GaussianEMRestraint")
+        i.add_filename("filename", self.em_filename)
         return i
 
     def get_dynamic_info(self):
         i = IMP.RestraintInfo()
-        i.add_filename("filename", self.em_filename)
+        i.add_float("cross correlation", 0.4)
         return i
 
 
@@ -57,10 +58,11 @@ class Tests(IMP.test.TestCase):
     def test_restraint_mapper_none(self):
         """Test _RestraintMapper with non-handled restraint"""
         m = IMP.Model()
+        frame = None
         r = IMP._ConstRestraint(m, [], 1)
         r.set_was_used(True)
         rm = IMP.mmcif.restraint._RestraintMapper(None)
-        self.assertEqual(rm.handle(r), None)
+        self.assertEqual(rm.handle(r, frame), None)
 
     def test_restraint_mapper_gaussian_em(self):
         """Test _RestraintMapper with GaussianEM restraint"""
@@ -70,7 +72,8 @@ class Tests(IMP.test.TestCase):
         r = MockGaussianEMRestraint(m, em_filename)
         r.set_was_used(True)
         rm = IMP.mmcif.restraint._RestraintMapper(s)
-        wr = rm.handle(r)
+        frame = None
+        wr = rm.handle(r, frame)
         self.assertEqual(type(wr), IMP.mmcif.restraint._GaussianEMRestraint)
         self.assertEqual(type(wr.dataset), IMP.mmcif.dataset.EMDensityDataset)
 

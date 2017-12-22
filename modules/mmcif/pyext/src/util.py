@@ -48,6 +48,8 @@ class _ModelFrame(object):
            or len(restraints) != len(self.restraints):
             raise ValueError("Frames do not match")
         hiers[:] = self.hiers
+        # todo: this won't work currently because the Restraint objects
+        # will change
         restraints[:] = self.restraints
 
 
@@ -98,7 +100,6 @@ class System(object):
         self.datasets = IMP.mmcif.data._Datasets(self._external_files)
         # All modeling protocols
         self.protocols = IMP.mmcif.data._Protocols()
-        self._wrapped_restraints = []
 
     def _update_location(self, fileloc):
         """Update FileLocation to point to a parent repository, if any"""
@@ -134,13 +135,6 @@ class System(object):
     def _add_frame(self, frame):
         self._frames.append(frame)
         frame.id = len(self._frames)
-
-    def _add_restraints(self, rs, state):
-        m = IMP.mmcif.restraint._RestraintMapper(self)
-        for r in rs:
-            rw = m.handle(r)
-            if rw:
-                self._wrapped_restraints.append(rw)
 
     def _add_hierarchy(self, h, state):
         chains = [IMP.atom.Chain(c)
@@ -242,6 +236,7 @@ class State(object):
         system._add_state(self)
         self.model = IMP.Model()
         self.hiers = None
+        self._wrapped_restraints = []
         # The assembly of all components modeled by IMP in this state.
         # This may be smaller than the complete assembly.
         self.modeled_assembly = IMP.mmcif.data._Assembly()
@@ -253,23 +248,36 @@ class State(object):
 
     def _add_frame(self, f):
         self.system._add_frame(f)
-        self._load_frame(f)
-        for h in self.hiers:
-            self._add_hierarchy(h)
-        self._add_restraints(self.restraints)
+        if self._load_frame(f):
+            for h in self.hiers:
+                self._add_hierarchy(h)
+            self._add_restraints(self.restraints, f)
+        else:
+            self._update_restraints(f)
 
     def _load_frame(self, f):
-        """Load hierarchies and restraints from a frame"""
+        """Load hierarchies and restraints from a frame.
+           Return True if this results in making new hierarchies."""
         if self.hiers is None:
             self.hiers, self.restraints = f.create(self.model)
+            return True
         else:
             f.link(self.hiers, self.restraints)
+            return False
 
     def _add_hierarchy(self, h):
         self.system._add_hierarchy(h, self)
 
-    def _add_restraints(self, rs):
-        self.system._add_restraints(rs, self)
+    def _add_restraints(self, rs, frame):
+        m = IMP.mmcif.restraint._RestraintMapper(self.system)
+        for r in rs:
+            rw = m.handle(r, frame)
+            if rw:
+                self._wrapped_restraints.append(rw)
+
+    def _update_restraints(self, frame):
+        for rw in self._wrapped_restraints:
+            rw._get_frame_info(frame)
 
 
 class Ensemble(object):
