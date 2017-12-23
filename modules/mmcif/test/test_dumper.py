@@ -833,6 +833,51 @@ _ihm_3dem_restraint.cross_correlation_coefficient
 #
 """)
 
+    def test_site_dumper_spheres_only(self):
+        """Test SiteDumper, spheres only"""
+        system = IMP.mmcif.System()
+        h, state = self.make_model(system, [("foo", "A", 'A'),
+                                            ("bar", "AA", "B")])
+        m = state.model
+
+        # Add coordinates
+        chains = IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)
+        pres = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        res = IMP.atom.Residue.setup_particle(pres, IMP.atom.ALA, 1)
+        xyzr = IMP.core.XYZR.setup_particle(pres)
+        xyzr.set_coordinates(IMP.algebra.Vector3D(1,2,3))
+        xyzr.set_radius(4.2)
+
+        chains[0].add_child(pres)
+
+        pfrag = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        frag = IMP.atom.Fragment.setup_particle(pfrag, [1,2])
+        xyzr = IMP.core.XYZR.setup_particle(pfrag)
+        xyzr.set_coordinates(IMP.algebra.Vector3D(4,5,6))
+        xyzr.set_radius(9.2)
+        chains[1].add_child(pfrag)
+
+        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
+        dumper = IMP.mmcif.dumper._SiteDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_sphere_obj_site.ordinal_id
+_ihm_sphere_obj_site.entity_id
+_ihm_sphere_obj_site.seq_id_begin
+_ihm_sphere_obj_site.seq_id_end
+_ihm_sphere_obj_site.asym_id
+_ihm_sphere_obj_site.Cartn_x
+_ihm_sphere_obj_site.Cartn_y
+_ihm_sphere_obj_site.Cartn_z
+_ihm_sphere_obj_site.object_radius
+_ihm_sphere_obj_site.rmsf
+_ihm_sphere_obj_site.model_id
+1 1 1 1 A 1.000 2.000 3.000 4.200 . 1
+2 2 1 2 B 4.000 5.000 6.000 9.200 . 1
+#
+""")
+
 
 if __name__ == '__main__':
     IMP.test.main()

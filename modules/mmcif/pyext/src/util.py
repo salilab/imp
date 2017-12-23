@@ -92,7 +92,8 @@ class System(object):
                          IMP.mmcif.dumper._PostProcessDumper(),
                          IMP.mmcif.dumper._EnsembleDumper(),
                          IMP.mmcif.dumper._ModelListDumper(),
-                         IMP.mmcif.dumper._EM3DDumper()]
+                         IMP.mmcif.dumper._EM3DDumper(),
+                         IMP.mmcif.dumper._SiteDumper()]
         self.entities = IMP.mmcif.data._EntityMapper()
         self.components = IMP.mmcif.data._ComponentMapper()
         self._citations = []
@@ -140,7 +141,6 @@ class System(object):
     def _add_hierarchy(self, h, state):
         chains = [IMP.atom.Chain(c)
                   for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)]
-        self._remove_duplicate_chain_ids(chains)
         # todo: handle same chain in multiple states
         for c in chains:
             component = self._add_chain(c)
@@ -211,15 +211,6 @@ class System(object):
             self.complete_assembly.append(component)
         return component
 
-    def _remove_duplicate_chain_ids(self, chains):
-        chain_ids = [c.get_id() for c in chains]
-        if len(set(chain_ids)) < len(chain_ids):
-            print("Duplicate chain IDs detected - reassigning as A-Z, a-z, 0-9")
-            # todo: handle > 62 chains
-            for chain, cid in zip(chains, string.uppercase
-                                          + string.lowercase + string.digits):
-                chain.set_id(cid)
-
     def write(self, fname):
         with open(fname, 'w') as fh:
             writer = IMP.mmcif.format.CifWriter(fh)
@@ -244,10 +235,12 @@ class State(object):
         system._assemblies.add(self.modeled_assembly)
         # A list of Representation objects for each Component
         self.representation = {}
+        self._frames = []
 
         self._all_modeled_components = []
 
     def _add_frame(self, f):
+        self._frames.append(f)
         self.system._add_frame(f)
         if self._load_frame(f):
             for h in self.hiers:
@@ -261,10 +254,33 @@ class State(object):
            Return True if this results in making new hierarchies."""
         if self.hiers is None:
             self.hiers, self.restraints = f.create(self.model)
+            self._remove_duplicate_chain_ids(True)
             return True
         else:
             f.link(self.hiers, self.restraints)
+            self._remove_duplicate_chain_ids(False)
             return False
+
+    def _remove_duplicate_chain_ids(self, new_hiers):
+        chains = []
+        for h in self.hiers:
+            chains.extend(IMP.atom.Chain(c)
+                          for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE))
+        if new_hiers:
+            self._assigned_chain_ids = []
+            chain_ids = [c.get_id() for c in chains]
+            if len(set(chain_ids)) < len(chain_ids):
+                print("Duplicate chain IDs detected - reassigning as "
+                      "A-Z, a-z, 0-9")
+                # todo: handle > 62 chains
+                for chain, cid in zip(chains, string.uppercase
+                                          + string.lowercase + string.digits):
+                    self._assigned_chain_ids.append(cid)
+                    chain.set_id(cid)
+        else:
+            for chain, cid in zip(chains, self._assigned_chain_ids):
+                chain.set_id(cid)
+
 
     def _add_hierarchy(self, h):
         self.system._add_hierarchy(h, self)
