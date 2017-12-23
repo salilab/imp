@@ -52,6 +52,7 @@ class Tests(IMP.test.TestCase):
         chain1 = MockChain("A")
         chain2 = MockChain("A")
         comp1 = cm.add(chain1, entity1)
+        self.assertEqual(cm[chain1], comp1)
         # Cannot add two chains with the same ID but different sequences
         self.assertRaises(ValueError, cm.add, chain2, entity2)
 

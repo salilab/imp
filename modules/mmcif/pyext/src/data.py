@@ -72,7 +72,7 @@ class _Component(object):
         self.entity, self.asym_id, self.name = entity, asym_id, name
 
 
-class _ComponentMapper(dict):
+class _ComponentMapper(object):
     """Handle mapping from chains to CIF components."""
     def __init__(self):
         super(_ComponentMapper, self).__init__()
@@ -80,9 +80,11 @@ class _ComponentMapper(dict):
         self._all_modeled_components = []
         self._map = {}
 
-    def add(self, chain, entity):
-        """Add a chain (either an IMP Chain object for a modeled component,
-           or a NonModeledChain object for a non-modeled component)"""
+    def __getitem__(self, chain):
+        modeled, asym_id, map_key, name = self._handle_chain(chain)
+        return self._map[map_key]
+
+    def _handle_chain(self, chain):
         if isinstance(chain, IMP.atom.Chain):
             modeled = True
             mol = get_molecule(chain)
@@ -92,6 +94,12 @@ class _ComponentMapper(dict):
             modeled = False
             asym_id = None
             name = map_key = chain.name
+        return modeled, asym_id, map_key, name
+
+    def add(self, chain, entity):
+        """Add a chain (either an IMP Chain object for a modeled component,
+           or a NonModeledChain object for a non-modeled component)"""
+        modeled, asym_id, map_key, name = self._handle_chain(chain)
         if map_key not in self._map:
             component = _Component(entity, asym_id, name)
             if entity.first_component is None:
