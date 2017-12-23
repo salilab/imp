@@ -7,7 +7,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-Vector3D SphericalVector3D::get_cartesian_coordinates() {
+Vector3D SphericalVector3D::get_cartesian_coordinates() const {
   return Vector3D(v_[0] * cos(v_[2]) * sin(v_[1]),
                   v_[0] * sin(v_[2]) * sin(v_[1]), v_[0] * cos(v_[1]));
 }
@@ -18,7 +18,7 @@ void SphericalVector3D::set_cartesian_coordinates(const Vector3D& v) {
   v_[2] = atan2(v[1], v[0]);
 }
 
-bool SphericalVector3D::check(double r, double theta, double psi) {
+bool SphericalVector3D::check(double r, double theta, double psi) const {
   if (r < 0) {
     return false;
   }
