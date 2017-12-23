@@ -816,6 +816,7 @@ _ihm_model_list.protocol_id
         h, state = self.make_model(system)
         em_filename = self.get_input_file_name('emd_1883.map.mrc.gmm.50.txt')
         r = MockGaussianEMRestraint(state.model, em_filename)
+        r.set_was_used(True)
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [r], "model1")
         dumper = IMP.mmcif.dumper._EM3DDumper()
         out = _get_dumper_output(dumper, system)
