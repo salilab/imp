@@ -40,6 +40,8 @@ class _EntityMapper(dict):
     def add(self, chain):
         # todo: handle non-protein sequences
         sequence = chain.get_sequence()
+        if sequence == '':
+            raise ValueError("Chain %s has no sequence" % chain)
         if sequence not in self._sequence_dict:
             entity = _Entity(sequence)
             self._entities.append(entity)

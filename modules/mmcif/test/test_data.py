@@ -48,6 +48,24 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(obj3.id, 'foo')
         self.assertEqual(obj_by_id, [obj1a, obj2])
 
+    def test_entity_mapper_add(self):
+        """Test EntityMapper.add()"""
+        e = IMP.mmcif.data._EntityMapper()
+        self.assertEqual(len(e.get_all()), 0)
+        chain1 = MockChain("A", sequence='ABC')
+        chain2 = MockChain("B", sequence='ABC')
+        e.add(chain1)
+        e.add(chain2)
+        # Identical sequences, so only one entity
+        self.assertEqual(len(e.get_all()), 1)
+        # Different sequences, so two entities
+        chain3 = MockChain("C", sequence='ABCD')
+        e.add(chain3)
+        self.assertEqual(len(e.get_all()), 2)
+        # Cannot add chains with no sequence
+        chain4 = MockChain("D", sequence='')
+        self.assertRaises(ValueError, e.add, chain4)
+
     def test_entity_naming(self):
         """Test naming of Entities"""
         cm = IMP.mmcif.data._ComponentMapper()
