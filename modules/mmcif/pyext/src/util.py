@@ -272,17 +272,25 @@ class State(object):
             self._assigned_chain_ids = []
             chain_ids = [c.get_id() for c in chains]
             if len(set(chain_ids)) < len(chain_ids):
-                print("Duplicate chain IDs detected - reassigning as "
-                      "A-Z, a-z, 0-9")
-                # todo: handle > 62 chains
-                for chain, cid in zip(chains, string.uppercase
-                                          + string.lowercase + string.digits):
+                print("Duplicate chain IDs detected - reassigning "
+                      "alphabetically")
+                for chain, cid in zip(chains, self._get_alpha_chain_ids()):
                     self._assigned_chain_ids.append(cid)
                     chain.set_id(cid)
         else:
             for chain, cid in zip(chains, self._assigned_chain_ids):
                 chain.set_id(cid)
 
+    def _get_alpha_chain_ids(self):
+        """Yield alphabetical chain IDs.
+           We label the first 26 chains A-Z, then we move to two-letter
+           chain IDs: AA through AZ, then BA through BZ, through to ZZ."""
+        for cid in string.uppercase:
+            yield cid
+        for al1 in string.uppercase:
+            for al2 in string.uppercase:
+                yield al1 + al2
+        raise ValueError("Out of chain IDs")
 
     def _add_hierarchy(self, h):
         self.system._add_hierarchy(h, self)
