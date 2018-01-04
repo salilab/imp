@@ -3,6 +3,13 @@ import IMP.test
 import IMP.atom
 import IMP.mmcif.data
 
+class MockChain(object):
+    def __init__(self, name, sequence=''):
+        self.name = name
+        self.sequence = sequence
+    def get_sequence(self):
+        return self.sequence
+
 class Tests(IMP.test.TestCase):
     def test_get_molecule(self):
         """Test get_molecule()"""
@@ -41,11 +48,20 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(obj3.id, 'foo')
         self.assertEqual(obj_by_id, [obj1a, obj2])
 
+    def test_entity_naming(self):
+        """Test naming of Entities"""
+        cm = IMP.mmcif.data._ComponentMapper()
+        entity1 = IMP.mmcif.data._Entity("ABC")
+        chain1 = MockChain("A.1@12")
+        chain2 = MockChain("A.2@12")
+        comp1 = cm.add(chain1, entity1)
+        comp2 = cm.add(chain2, entity1)
+        self.assertEqual(chain1.name, "A.1@12")
+        self.assertEqual(chain2.name, "A.2@12")
+        self.assertEqual(entity1.description, 'A')
+
     def test_component_mapper_same_id_chain(self):
         """Test ComponentMapper given two chains with same ID"""
-        class MockChain(object):
-            def __init__(self, name):
-                self.name = name
         cm = IMP.mmcif.data._ComponentMapper()
         entity1 = IMP.mmcif.data._Entity("ABC")
         entity2 = IMP.mmcif.data._Entity("DEF")
@@ -58,9 +74,6 @@ class Tests(IMP.test.TestCase):
 
     def test_component_mapper_get_all(self):
         """Test ComponentMapper get_all()"""
-        class MockChain(object):
-            def __init__(self, name):
-                self.name = name
         cm = IMP.mmcif.data._ComponentMapper()
         entity1 = IMP.mmcif.data._Entity("ABC")
         entity2 = IMP.mmcif.data._Entity("DEF")

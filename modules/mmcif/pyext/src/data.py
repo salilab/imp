@@ -20,8 +20,13 @@ class _Entity(object):
     def __init__(self, seq):
         self.sequence = seq
         self.first_component = None
-    # Use the name of the first component as the description of the entity
-    description = property(lambda self: self.first_component.name)
+    # Use the name of the first component, stripped of any copy number,
+    # as the description of the entity
+    def __get_description(self):
+        n = self.first_component.name
+        # Strip out anything after a @ or .
+        return n.split("@")[0].split(".")[0]
+    description = property(__get_description)
 
 
 class _EntityMapper(dict):
