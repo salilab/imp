@@ -141,6 +141,8 @@ class System(object):
     def _add_hierarchy(self, h, state):
         chains = [IMP.atom.Chain(c)
                   for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)]
+        if len(chains) == 0:
+            raise ValueError("No chains found in %s" % h)
         # todo: handle same chain in multiple states
         for c in chains:
             component = self._add_chain(c)
