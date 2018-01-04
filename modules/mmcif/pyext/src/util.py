@@ -14,7 +14,7 @@ import string
 import weakref
 import operator
 
-class _RMFFrame(object):
+class RMFFrame(object):
     """An individual state conformation read from a PDB file"""
     def __init__(self, filename, frame, name):
         self.filename, self.frame = filename, frame
@@ -305,14 +305,15 @@ class Ensemble(object):
         self.name = name
         self._frames = []
 
+    def add_frame(self, frame):
+        """Add a frame from a custom source"""
+        self._frames.append(frame)
+        self.state._add_frame(frame)
+
     def add_rmf(self, fname, name, frame=0):
         """Add a frame from an RMF file"""
-        f = _RMFFrame(fname, frame, name)
-        self._frames.append(f)
-        self.state._add_frame(f)
+        self.add_frame(RMFFrame(fname, frame, name))
 
     def add_model(self, hiers, restraints, name):
         """Add hierarchies and restraints from an IMP.Model"""
-        f = _ModelFrame(hiers, restraints, name)
-        self._frames.append(f)
-        self.state._add_frame(f)
+        self.add_frame(_ModelFrame(hiers, restraints, name))
