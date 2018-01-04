@@ -805,8 +805,9 @@ _ihm_model_list.model_name
 _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
-1 1 1 model1 'cluster 1' . .
-2 2 1 model2 'cluster 1' . .
+_ihm_model_list.representation_id
+1 1 1 model1 'cluster 1' . . 1
+2 2 1 model2 'cluster 1' . . 1
 #
 """)
 

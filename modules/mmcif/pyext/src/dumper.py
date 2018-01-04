@@ -660,12 +660,14 @@ class _ModelListDumper(_Dumper):
         with writer.loop("_ihm_model_list",
                          ["ordinal_id", "model_id", "model_group_id",
                           "model_name", "model_group_name", "assembly_id",
-                          "protocol_id"]) as l:
+                          "protocol_id", "representation_id"]) as l:
             for ens in system._ensembles:
                 for frame in ens._frames:
+                    # todo: handle multiple representations
                     l.write(ordinal_id=ordinal, model_id=frame.id,
                             model_group_id=ens.id, model_name=frame.name,
-                            model_group_name=ens.name)
+                            model_group_name=ens.name,
+                            representation_id=1)
                     ordinal += 1
 
 
