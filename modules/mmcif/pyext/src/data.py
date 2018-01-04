@@ -388,6 +388,7 @@ class _AllSoftware(list):
                version='2.0', url='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
 
     def add_hierarchy(self, h):
+        # todo: if no SoftwareProvenance available, use RMF producer field
         for p in IMP.core.get_all_provenance(h,
                                         types=[IMP.core.SoftwareProvenance]):
             self.append(_Software(name=p.get_software_name(),
