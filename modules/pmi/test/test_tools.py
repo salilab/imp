@@ -707,6 +707,31 @@ class Tests(IMP.test.TestCase):
             else:
                 self.assertEqual("X", tto[id])
 
+    def test_get_restraint_set(self):
+        """Test get_restraint_set()"""
+        m = IMP.Model()
+        # Should make an empty set
+        rs = IMP.pmi.tools.get_restraint_set(m)
+        self.assertEqual(rs.get_number_of_restraints(), 0)
+
+        for rmf in (True, False):
+            rs = IMP.pmi.tools.get_restraint_set(m, rmf)
+            self.assertEqual(rs.get_number_of_restraints(), 0)
+
+    def test_add_restraint(self):
+        """Test add_restraint_to_model()"""
+        m = IMP.Model()
+
+        r1 = IMP._ConstRestraint(m, [], 1)
+        IMP.pmi.tools.add_restraint_to_model(m, r1, add_to_rmf=False)
+        r2 = IMP._ConstRestraint(m, [], 1)
+        IMP.pmi.tools.add_restraint_to_model(m, r2, add_to_rmf=True)
+
+        rs = IMP.pmi.tools.get_restraint_set(m, rmf=False)
+        self.assertEqual(rs.get_number_of_restraints(), 2)
+
+        rs = IMP.pmi.tools.get_restraint_set(m, rmf=True)
+        self.assertEqual(rs.get_number_of_restraints(), 1)
 
 
 if __name__ == '__main__':

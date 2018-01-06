@@ -23,6 +23,35 @@ import string
 import itertools
 import math
 
+class _RMFRestraints(object):
+    """All restraints that are written out to the RMF file"""
+    def __init__(self, model, user_restraints):
+        self._rmf_rs = IMP.pmi.tools.get_restraint_set(model, rmf=True)
+        self._user_restraints = user_restraints if user_restraints else []
+
+    def __len__(self):
+        return (len(self._user_restraints)
+                + self._rmf_rs.get_number_of_restraints())
+
+    def __bool__(self):
+        return len(self) > 0
+    __nonzero__ = __bool__ # Python 2 compatibility
+
+    def __getitem__(self, i):
+        class FakePMIWrapper(object):
+            def __init__(self, r):
+                self.r = IMP.RestraintSet.get_from(r)
+            get_restraint = lambda self: self.r
+        lenuser = len(self._user_restraints)
+        if 0 <= i < lenuser:
+            return self._user_restraints[i]
+        elif 0 <= i - lenuser < self._rmf_rs.get_number_of_restraints():
+            r = self._rmf_rs.get_restraint(i - lenuser)
+            return FakePMIWrapper(r)
+        else:
+            raise IndexError("Out of range")
+
+
 class ReplicaExchange0(object):
     """A macro to help setup and run replica exchange.
     Supports Monte Carlo and molecular dynamics.
@@ -161,7 +190,7 @@ class ReplicaExchange0(object):
         else:
             raise Exception("Must provide representation or System hierarchy (root_hier)")
 
-        self.crosslink_restraints = crosslink_restraints
+        self._rmf_restraints = _RMFRestraints(model, crosslink_restraints)
         self.em_object_for_rmf = em_object_for_rmf
         self.monte_carlo_sample_objects = monte_carlo_sample_objects
         self.vars["self_adaptive"]=self_adaptive
@@ -433,10 +462,10 @@ class ReplicaExchange0(object):
             init_suffix = globaldir + self.vars["initial_rmf_name_suffix"]
             output.init_rmf(init_suffix + "." + str(myindex) + ".rmf3",
                             output_hierarchies,listofobjects=self.rmf_output_objects)
-            if self.crosslink_restraints:
+            if self._rmf_restraints:
                 output.add_restraints_to_rmf(
                     init_suffix + "." + str(myindex) + ".rmf3",
-                    self.crosslink_restraints)
+                    self._rmf_restraints)
             output.write_rmf(init_suffix + "." + str(myindex) + ".rmf3")
             output.close_rmf(init_suffix + "." + str(myindex) + ".rmf3")
 
@@ -455,8 +484,8 @@ class ReplicaExchange0(object):
             output.init_rmf(rmfname, output_hierarchies, geometries=self.vars["geometries"],
                             listofobjects = self.rmf_output_objects)
 
-            if self.crosslink_restraints:
-                output.add_restraints_to_rmf(rmfname, self.crosslink_restraints)
+            if self._rmf_restraints:
+                output.add_restraints_to_rmf(rmfname, self._rmf_restraints)
 
         ntimes_at_low_temp = 0
 

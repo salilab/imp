@@ -33,35 +33,51 @@ def _add_pmi_provenance(p):
                                      location="https://integrativemodeling.org")
     IMP.core.add_script_provenance(p)
 
-def _get_restraint_set_key():
-    if not hasattr(_get_restraint_set_key, 'pmi_rs_key'):
-        _get_restraint_set_key.pmi_rs_key = IMP.ModelKey("PMI restraints")
-    return _get_restraint_set_key.pmi_rs_key
+def _get_restraint_set_keys():
+    if not hasattr(_get_restraint_set_keys, 'pmi_rs_key'):
+        _get_restraint_set_keys.pmi_rs_key = IMP.ModelKey("PMI restraints")
+        _get_restraint_set_keys.rmf_rs_key = IMP.ModelKey("RMF restraints")
+    return (_get_restraint_set_keys.pmi_rs_key,
+            _get_restraint_set_keys.rmf_rs_key)
 
-def _add_restraint_set(model, mk):
+def _add_restraint_sets(model, mk, mk_rmf):
     rs = IMP.RestraintSet(model, "All PMI restraints")
+    rs_rmf = IMP.RestraintSet(model, "All PMI RMF restraints")
     model.add_data(mk, rs)
-    return rs
+    model.add_data(mk_rmf, rs_rmf)
+    return rs, rs_rmf
 
-def add_restraint_to_model(model, restraint):
+def add_restraint_to_model(model, restraint, add_to_rmf=False):
     """Add a PMI restraint to the model.
        Since Model.add_restraint() no longer exists (in modern IMP restraints
        should be added to a ScoringFunction instead) store them instead in
-       a RestraintSet, and keep a reference to it in the Model."""
-    mk = _get_restraint_set_key()
+       a RestraintSet, and keep a reference to it in the Model.
+
+       If `add_to_rmf` is True, also add the restraint to a separate list
+       of restraints that will be written out to RMF files (by default, most
+       PMI restraints are not)."""
+    mk, mk_rmf = _get_restraint_set_keys()
     if model.get_has_data(mk):
         rs = IMP.RestraintSet.get_from(model.get_data(mk))
+        rs_rmf = IMP.RestraintSet.get_from(model.get_data(mk_rmf))
     else:
-        rs = _add_restraint_set(model, mk)
+        rs, rs_rmf = _add_restraint_sets(model, mk, mk_rmf)
     rs.add_restraint(restraint)
+    if add_to_rmf:
+        rs_rmf.add_restraint(restraint)
 
-def get_restraint_set(model):
-    """Get a RestraintSet containing all PMI restraints added to the model"""
-    mk = _get_restraint_set_key()
+def get_restraint_set(model, rmf=False):
+    """Get a RestraintSet containing all PMI restraints added to the model.
+       If `rmf` is True, return only the subset of these restraints that
+       should be written out to RMF files."""
+    mk, mk_rmf = _get_restraint_set_keys()
     if not model.get_has_data(mk):
         print("WARNING: no restraints added to model yet")
-        _add_restraint_set(model, mk)
-    return IMP.RestraintSet.get_from(model.get_data(mk))
+        _add_restraint_sets(model, mk, mk_rmf)
+    if rmf:
+        return IMP.RestraintSet.get_from(model.get_data(mk_rmf))
+    else:
+        return IMP.RestraintSet.get_from(model.get_data(mk))
 
 class Stopwatch(object):
     """Collect timing information.
