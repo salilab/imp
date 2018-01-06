@@ -14,24 +14,14 @@ IMPISD_BEGIN_NAMESPACE
 
 LogWrapper::LogWrapper(Model *m, double weight,
                        const std::string &name)
-  : Restraint(m, name) {
-  set_weight(weight);
-}
+  : RestraintSet(m, weight, name) {}
 
 LogWrapper::LogWrapper(Model *m, const std::string &name)
-  : Restraint(m, name) {
-  set_weight(1.0);
-}
+  : RestraintSet(m, name) {}
 
 LogWrapper::LogWrapper(const RestraintsTemp &rs,double weight,
                        const std::string &name)
-  : Restraint(IMP::internal::get_model(rs),name){
-  set_weight(weight);
-  set_restraints(rs);
-}
-
-IMP_LIST_IMPL(LogWrapper, Restraint, restraint, Restraint *, Restraints);
-
+  : RestraintSet(rs, weight, name) {}
 
 double LogWrapper::unprotected_evaluate(DerivativeAccumulator* accum) const {
     double prob = 1;
@@ -52,6 +42,11 @@ double LogWrapper::unprotected_evaluate(DerivativeAccumulator* accum) const {
     return score;
 }
 
+void LogWrapper::do_add_score_and_derivatives(ScoreAccumulator sa) const {
+  // override RestraintSet implementation
+  Restraint::do_add_score_and_derivatives(sa);
+}
+
 void LogWrapper::show_it(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   for (RestraintConstIterator it = restraints_begin(); it != restraints_end();
@@ -59,22 +54,6 @@ void LogWrapper::show_it(std::ostream &out) const {
     (*it)->show(out);
   }
   out << "... end LogWrapper " << get_name() << std::endl;
-}
-
-void LogWrapper::on_add(Restraint *obj) {
-  set_has_dependencies(false);
-  obj->set_was_used(true);
-  IMP_USAGE_CHECK(obj != this, "Cannot add a LogWrapper to itself");
-}
-void LogWrapper::on_change() { set_has_dependencies(false); }
-
-ModelObjectsTemp LogWrapper::do_get_inputs() const {
-  return ModelObjectsTemp(restraints_begin(), restraints_end());
-}
-void LogWrapper::on_remove(LogWrapper *container, Restraint *) {
-  if (container && container->get_model()) {
-    container->set_has_dependencies(false);
-  }
 }
 
 IMPISD_END_NAMESPACE
