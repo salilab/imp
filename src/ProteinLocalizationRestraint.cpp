@@ -1200,7 +1200,7 @@ void MembraneSurfaceLocationRestraint::add_particle(Particle *ps) {
 }
 
 double
-MembraneSurfaceLocationRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+MembraneSurfaceLocationRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 {
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0;
@@ -1318,7 +1318,7 @@ void MembraneSurfaceLocationConditionalRestraint::add_particle2(Particle *ps) {
 }
 
 double
-MembraneSurfaceLocationConditionalRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+MembraneSurfaceLocationConditionalRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 {
   IMP_CHECK_OBJECT(sc1_.get());
   IMP_CHECK_OBJECT(sc2_.get());
@@ -1411,7 +1411,7 @@ void MembraneExclusionRestraint::add_particle(Particle *ps) {
 }
 
 double
-MembraneExclusionRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+MembraneExclusionRestraint::unprotected_evaluate(DerivativeAccumulator *) const
 {
   IMP_CHECK_OBJECT(sc_.get());
   double v = 0.0, x, y, z;
