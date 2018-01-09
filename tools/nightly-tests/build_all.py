@@ -22,6 +22,22 @@ try:
 except ImportError:
     import pickle
 
+# Hack: these are all of the invalid XML characters seen to date in
+# unittest output
+_xml_entities = {
+  '\x01': '[NON-XML-CHAR-0x1]',
+  '\x03': '[NON-XML-CHAR-0x3]',
+  '\x04': '[NON-XML-CHAR-0x4]',
+  '\x08': '[NON-XML-CHAR-0x8]',
+  '\x14': '[NON-XML-CHAR-0x14]',
+  '\x16': '[NON-XML-CHAR-0x16]',
+  '\x1b': '[NON-XML-CHAR-0x1B]',
+  '\x82': '[NON-UTF-8-BYTE-0x82]',
+  '\xb8': '[NON-UTF-8-BYTE-0xB8]'
+}
+
+def _xml_escape(s):
+    return xml.sax.saxutils.escape(s, entities=_xml_entities)
 
 class TestXMLHandler(XMLGenerator):
 
@@ -44,9 +60,9 @@ class TestXMLHandler(XMLGenerator):
         """Write unittest detail as XML"""
         self.fh.write('=' * 70 + '\n' +
                       test['state'] + ': '
-                      + xml.sax.saxutils.escape(test['name']) + '\n' +
+                      + _xml_escape(test['name']) + '\n' +
                       '-' * 70 + '\n'
-                      + xml.sax.saxutils.escape(test['detail']) + '\n')
+                      + _xml_escape(test['detail']) + '\n')
 
     def _get_pickle(self):
         name = self._test.get('name', '')
