@@ -2,7 +2,7 @@
  *  \file RMF/utility.h
  *  \brief Helper functions for manipulating RMF files.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file RMF/info.h
  *  \brief Show info about the file.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

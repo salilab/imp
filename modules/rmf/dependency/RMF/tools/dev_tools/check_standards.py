@@ -43,7 +43,6 @@ def check_c_file(filename, errors):
         fh = f.read().split("\n")
     srch = re.compile('\s+$')
     url = re.compile('https?://')
-    configh = False
     blank = False
     file_line = False
     exported = filename.find("internal") == - \
@@ -77,8 +76,6 @@ def check_c_file(filename, errors):
                 errors.append('%s:%d: error: Preprocessor symbols must start with %s or %s'
                               % (filename, num + 1, cppprefix, altcppprefix))
         blank = (len(line) == 0)
-        if line.startswith('#include "'):
-            configh = True
         if blank and num == 0:
             errors.append('%s:1: File has leading blank line(s)' % filename)
     if exported and filename.endswith(".h") and not file_line:
