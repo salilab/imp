@@ -156,7 +156,7 @@ class _ComponentMapper(object):
         self.prot = prot
         self.name = 'cif-output'
         self.o.dictionary_pdbs[self.name] = self.prot
-        self.o._init_dictchain(self.name, self.prot)
+        self.o._init_dictchain(self.name, self.prot, multichar_chain=True)
 
     def __getitem__(self, p):
         protname, is_a_bead = self.o.get_prot_name_from_particle(self.name, p)
@@ -303,7 +303,7 @@ class _EntityDumper(_Dumper):
                           "details"]) as l:
             for entity in self.simo.entities.get_all():
                 l.write(id=entity.id, type='polymer', src_method='man',
-                        pdbx_description=entity.first_component,
+                        pdbx_description=entity.description,
                         formula_weight=writer.unknown,
                         pdbx_number_of_molecules=1, details=writer.unknown)
 
@@ -324,7 +324,7 @@ class _EntityPolyDumper(_Dumper):
                 seq = entity.sequence
                 # Split into lines to get tidier CIF output
                 seq = "\n".join(seq[i:i+70] for i in range(0, len(seq), 70))
-                name = entity.first_component
+                name = entity.description
                 chain_id = self.simo._get_chain_for_component(name, self.output)
                 l.write(entity_id=entity.id, type='polypeptide(L)',
                         nstd_linkage='no', nstd_monomer='no',
@@ -1267,7 +1267,7 @@ class _Model(object):
         o = IMP.pmi.output.Output(atomistic=True)
         name = 'cif-output'
         o.dictionary_pdbs[name] = prot
-        o._init_dictchain(name, prot)
+        o._init_dictchain(name, prot, multichar_chain=True)
         (particle_infos_for_pdb,
          self.geometric_center) = o.get_particle_infos_for_pdb_writing(name)
         self.geometric_center = IMP.algebra.Vector3D(*self.geometric_center)
@@ -2163,8 +2163,12 @@ class _Entity(object):
     def __init__(self, seq, first_component):
         self.sequence = seq
         self.first_component = first_component
-        # Use the name of the first component as the description
-        self.description = first_component
+    # Use the name of the first component, stripped of any copy number,
+    # as the description of the entity
+    def __get_description(self):
+        # Strip out anything after a @ or .
+        return self.first_component.split("@")[0].split(".")[0]
+    description = property(__get_description)
 
 class _EntityMapper(dict):
     """Handle mapping from IMP components to CIF entities.
@@ -2341,7 +2345,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         # todo: handle multiple copies
         if name in self.chains:
             chain = self.chains[name]
-            return output.chainids[chain]
+            return output.multi_chainids[chain]
         else:
             # A non-modeled component doesn't have a chain ID
             return _CifWriter.omitted

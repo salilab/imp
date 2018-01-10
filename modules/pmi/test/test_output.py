@@ -21,6 +21,19 @@ output1_categories = ['AtomicXLRestraint', 'AtomicXLRestraint_0_BestDist',
         'rmf_file', 'rmf_frame_index']
 
 class Tests(IMP.test.TestCase):
+    def test_multi_chainids(self):
+        """Test multi-character chain IDs"""
+        output = IMP.pmi.output.Output()
+        c = output.multi_chainids
+        self.assertEqual([c[i] for i in range(0, 4)],
+                         ['A', 'B', 'C', 'D'])
+        self.assertEqual([c[i] for i in range(24,28)],
+                         ['Y', 'Z', 'AA', 'AB'])
+        self.assertEqual([c[i] for i in range(50,54)],
+                         ['AY', 'AZ', 'BA', 'BB'])
+        self.assertEqual([c[i] for i in range(700,704)],
+                         ['ZY', 'ZZ', 'AAA', 'AAB'])
+
     def test_get_particle_infos(self):
         """Test get_particle_infos_for_pdb_writing with no particles"""
         m = IMP.Model()

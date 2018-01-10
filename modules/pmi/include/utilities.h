@@ -2,7 +2,7 @@
  *  \file IMP/pmi/utilities.h
  *  \brief Useful utilities
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPPMI_UTILITIES_H

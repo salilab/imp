@@ -15,10 +15,27 @@ import ast
 import RMF
 import numpy as np
 import operator
+import string
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
+
+class _ChainIDs(object):
+    """Map indices to multi-character chain IDs.
+       We label the first 26 chains A-Z, then we move to two-letter
+       chain IDs: AA through AZ, then BA through BZ, through to ZZ.
+       This continues with longer chain IDs."""
+    def __getitem__(self, ind):
+        chars = string.ascii_uppercase
+        lc = len(chars)
+        ids = []
+        while ind >= lc:
+            ids.append(chars[ind % lc])
+            ind = ind // lc - 1
+        ids.append(chars[ind])
+        return "".join(reversed(ids))
+
 
 class ProtocolOutput(object):
     """Base class for capturing a modeling protocol.
@@ -59,7 +76,10 @@ class Output(object):
         self.ascii = ascii
         self.initoutput = {}
         self.residuetypekey = IMP.StringKey("ResidueName")
+        # 1-character chain IDs, suitable for PDB output
         self.chainids = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        # Multi-character chain IDs, suitable for mmCIF output
+        self.multi_chainids = _ChainIDs()
         self.dictchain = {}  # keys are molecule names, values are chain ids
         self.particle_infos_for_pdb = {}
         self.atomistic=atomistic
@@ -74,7 +94,7 @@ class Output(object):
     def get_stat_names(self):
         return list(self.dictionary_stats.keys())
 
-    def _init_dictchain(self, name, prot):
+    def _init_dictchain(self, name, prot, multichar_chain=False):
         self.dictchain[name] = {}
         self.use_pmi2 = False
 
@@ -86,8 +106,9 @@ class Output(object):
                 chid = IMP.atom.Chain(mol).get_id()
                 self.dictchain[name][IMP.pmi.get_molecule_name_and_copy(mol)] = chid
         else:
+            chainids = self.multi_chainids if multichar_chain else self.chainids
             for n, i in enumerate(self.dictionary_pdbs[name].get_children()):
-                self.dictchain[name][i.get_name()] = self.chainids[n]
+                self.dictchain[name][i.get_name()] = chainids[n]
 
     def init_pdb(self, name, prot):
         """Init PDB Writing.

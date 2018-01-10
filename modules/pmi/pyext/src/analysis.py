@@ -1587,29 +1587,6 @@ def link_hiers_and_restraints_to_rmf(model,hiers,rs, frame_number, rmf_file):
     return True
 
 
-def get_hiers_from_rmf(model, frame_number, rmf_file):
-    print("getting coordinates for frame %i rmf file %s" % (frame_number, rmf_file))
-
-    # load the frame
-    rh = RMF.open_rmf_file_read_only(rmf_file)
-
-    try:
-        prots = IMP.rmf.create_hierarchies(rh, model)
-    except:
-        print("Unable to open rmf file %s" % (rmf_file))
-        prot = None
-        return prot
-    #IMP.rmf.link_hierarchies(rh, prots)
-    try:
-        IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
-    except:
-        print("Unable to open frame %i of file %s" % (frame_number, rmf_file))
-        prots = None
-    model.update()
-    del rh
-    return prots
-
-
 def get_particles_at_resolution_one(prot):
     """Get particles at res 1, or any beads, based on the name.
     No Representation is needed. This is mainly used when the hierarchy

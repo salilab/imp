@@ -1090,8 +1090,9 @@ class Representation(object):
         '''
         import IMP.pmi.analysis
 
+        tempm = IMP.Model()
         prots = IMP.pmi.analysis.get_hiers_from_rmf(
-            self.m,
+            tempm,
             rmf_frame_number,
             rmf_file_name)
 
@@ -1101,7 +1102,7 @@ class Representation(object):
         prot=prots[0]
         # Make sure coordinates of rigid body members in the RMF are correct
         if force_rigid_update:
-            self.m.update()
+            tempm.update()
 
         # if len(self.rigid_bodies)!=0:
         #   print "set_coordinates_from_rmf: cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies"
@@ -1205,6 +1206,7 @@ class Representation(object):
                     continue
                 xyz = IMP.core.XYZ(prmf).get_coordinates()
                 IMP.core.XYZ(prepr).set_coordinates(xyz)
+
 
 
     def check_root(self, name, protein_h, resolution):
