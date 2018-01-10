@@ -54,17 +54,17 @@ class Tests(IMP.test.TestCase):
         return [IMP.atom.Chain(c).get_id()
                 for c in IMP.atom.get_by_type(hier, IMP.atom.CHAIN_TYPE)]
 
-    def test_get_alpha_chain_ids(self):
-        """Test _get_alpha_chain_ids()"""
-        system = IMP.mmcif.System()
-        state = IMP.mmcif.State(system)
-        # Get first 100 entries
-        cids = []
-        for i, cid in zip(range(100), state._get_alpha_chain_ids()):
-            cids.append(cid)
-        self.assertEqual(cids[0:4], ['A', 'B', 'C', 'D'])
-        self.assertEqual(cids[24:28], ['Y', 'Z', 'AA', 'AB'])
-        self.assertEqual(cids[50:54], ['AY', 'AZ', 'BA', 'BB'])
+    def test_get_chain_ids(self):
+        """Test _ChainIDs()"""
+        c = IMP.mmcif.util._ChainIDs()
+        self.assertEqual([c[i] for i in range(0, 4)],
+                         ['A', 'B', 'C', 'D'])
+        self.assertEqual([c[i] for i in range(24,28)],
+                         ['Y', 'Z', 'AA', 'AB'])
+        self.assertEqual([c[i] for i in range(50,54)],
+                         ['AY', 'AZ', 'BA', 'BB'])
+        self.assertEqual([c[i] for i in range(700,704)],
+                         ['ZY', 'ZZ', 'AAA', 'AAB'])
 
 if __name__ == '__main__':
     IMP.test.main()

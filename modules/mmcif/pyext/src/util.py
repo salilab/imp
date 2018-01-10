@@ -14,6 +14,22 @@ import string
 import weakref
 import operator
 
+class _ChainIDs(object):
+    """Map indices to multi-character chain IDs.
+       We label the first 26 chains A-Z, then we move to two-letter
+       chain IDs: AA through AZ, then BA through BZ, through to ZZ.
+       This continues with longer chain IDs."""
+    def __getitem__(self, ind):
+        chars = string.ascii_uppercase
+        lc = len(chars)
+        ids = []
+        while ind >= lc:
+            ids.append(chars[ind % lc])
+            ind = ind // lc - 1
+        ids.append(chars[ind])
+        return "".join(reversed(ids))
+
+
 class RMFFrame(object):
     """An individual state conformation read from a PDB file"""
     def __init__(self, filename, frame, name):
@@ -274,23 +290,12 @@ class State(object):
             if len(set(chain_ids)) < len(chain_ids):
                 print("Duplicate chain IDs detected - reassigning "
                       "alphabetically")
-                for chain, cid in zip(chains, self._get_alpha_chain_ids()):
+                for chain, cid in zip(chains, _ChainIDs()):
                     self._assigned_chain_ids.append(cid)
                     chain.set_id(cid)
         else:
             for chain, cid in zip(chains, self._assigned_chain_ids):
                 chain.set_id(cid)
-
-    def _get_alpha_chain_ids(self):
-        """Yield alphabetical chain IDs.
-           We label the first 26 chains A-Z, then we move to two-letter
-           chain IDs: AA through AZ, then BA through BZ, through to ZZ."""
-        for cid in string.uppercase:
-            yield cid
-        for al1 in string.uppercase:
-            for al2 in string.uppercase:
-                yield al1 + al2
-        raise ValueError("Out of chain IDs")
 
     def _add_hierarchy(self, h):
         self.system._add_hierarchy(h, self)
