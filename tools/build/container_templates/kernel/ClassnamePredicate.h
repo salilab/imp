@@ -39,8 +39,10 @@ class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
   virtual Ints get_value(const PLURALVARIABLETYPE &o) const;
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  //! remove any particles in ps for which this predicate evaluates to v
   virtual void remove_if_equal(Model *m, PLURALINDEXTYPE &ps,
                                int v) const;
+  //! remove any particles in ps for which this predicate does not evaluate to v
   virtual void remove_if_not_equal(Model *m, PLURALINDEXTYPE &ps,
                                    int v) const;
 #endif

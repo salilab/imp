@@ -1,6 +1,7 @@
 /**
  *  \file internal/core_FUNCTIONNAME_helpers.h
- *  \brief A container for Classnames.
+ *  \brief a templated list-like container of Base::ContainedIndexTypes
+ * (e.g. ParticlePairIndexes)
  *
  *  BLURB
  *
@@ -18,6 +19,7 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
+//! a list-like container of Base::ContainedIndexTypes (e.g. ParticlePairIndexes)
 template <class Base>
 class ListLikeContainer : public Base {
  private:
@@ -37,6 +39,8 @@ class ListLikeContainer : public Base {
       : Base(m, name), version_(0) {}
 
  public:
+  //! apply f->apply_indexes to data_. Use parallel mode using IMP_TASK
+  //! if get_number_of_threads()>=2
   template <class F>
   void apply_generic(const F *f) const {
     Base::validate_readable();
@@ -57,18 +61,27 @@ class ListLikeContainer : public Base {
     }
   }
 
+  //! apply sm->apply_indexes to data. Use parallel mode using IMP_TASK
+  //! if get_number_of_threads()>=2
   void do_apply(const typename Base::Modifier *sm) const { apply_generic(sm); }
 
+  //! returns a copy of list indexes of appropriate type
   typename Base::ContainedIndexTypes get_indexes() const IMP_OVERRIDE {
     return data_;
   }
   bool do_get_provides_access() const IMP_OVERRIDE { return true; }
+
+  //! direct access to contained data (which may or may not be properly updated)
   const typename Base::ContainedIndexTypes &get_access() const IMP_OVERRIDE {
     return data_;
   }
 
   typedef typename Base::ContainedIndexTypes::const_iterator const_iterator;
+
+  //! get first item in list
   const_iterator begin() const { return data_.begin(); }
+
+  //! get last item in list
   const_iterator end() const { return data_.end(); }
   IMP_OBJECT_METHODS(ListLikeContainer);
 };

@@ -74,7 +74,7 @@ class IMPKERNELEXPORT Container : public ModelObject {
   virtual bool get_is_decomposable() const { return true; }
 
 #if !defined(IMP_DOXYGEN)
-  // methods to implement checking for inputs and outputs
+  // methods to implement checking for inputs and outputs (only when checks beyond or equal internal)
   void validate_readable() const;
   void validate_writable() const;
   void set_is_readable(bool tf);

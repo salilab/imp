@@ -471,6 +471,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(
         IMP_IF_CHECK(USAGE_AND_INTERNAL) {
           cur->validate(rb.get_model());
         }
+        // TODO: good chance the next few lines are redundant but not removing till I'm sure (BR, 11/10/17)
         if (mykey != ObjectKey()) {
           IMP_LOG_TERSE("Storing tree at " << mykey << std::endl);
           rb.get_model()->add_cache_attribute(mykey, rb.get_particle_index(),

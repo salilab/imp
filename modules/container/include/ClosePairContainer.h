@@ -92,10 +92,10 @@ class IMPCONTAINEREXPORT ClosePairContainer :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   /** @name Methods to control the set of filters
 
-     PairPredicate objects can be used as filters to prevent
-     the addition of pairs to the container output list. Pairs
-     for which the predicates evaluate to a non-zero value are
-     excluded from the list.
+      PairPredicate objects can be added as filters to prevent
+      the addition of pairs to the container output list. Pairs
+      for which the predicates evaluate to a non-zero value are
+      excluded from the list.
   */
   /**@{*/
   IMP_LIST(public, PairPredicate, pair_filter, PairPredicate *, PairPredicates);
