@@ -203,7 +203,7 @@ inline void initialize_particles(
                                                          cur.end());
         IMP_USAGE_CHECK(cur.size() == scur.size(),
                         "Duplicate constituents for "
-                            << sc->get_model()->get_particle(pi)->get_name()
+                            << sc->get_model()->get_particle(rb_pi)->get_name()
                             << ": " << cur);
       }
     } else {
