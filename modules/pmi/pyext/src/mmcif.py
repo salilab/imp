@@ -1137,8 +1137,9 @@ class _EM3DRestraint(object):
     def get_cross_correlation(self, model):
         """Get the cross correlation coefficient between the model
            and the map"""
-        return float(model.stats['GaussianEMRestraint_%s_CCC'
-                                 % self.pmi_restraint.label])
+        if model.stats is not None:
+            return float(model.stats['GaussianEMRestraint_%s_CCC'
+                                     % self.pmi_restraint.label])
 
 
 class _EM3DDumper(_Dumper):
@@ -1166,7 +1167,8 @@ class _EM3DDumper(_Dumper):
                             struct_assembly_id=r.assembly.id,
                             number_of_gaussians=r.number_of_gaussians,
                             model_id=model.id,
-                            cross_correlation_coefficient=ccc)
+                            cross_correlation_coefficient=ccc if ccc is not None
+                                                        else _CifWriter.omitted)
                     ordinal += 1
 
 class _Assembly(list):
@@ -2446,8 +2448,9 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         # Always assumed that we're dealing with the last state
         state = self._last_state
         group = self.add_model_group(_ModelGroup(state, name))
-        self.extref_dump.add(ensemble_file,
-                             _ExternalReferenceDumper.MODELING_OUTPUT)
+        if ensemble_file:
+            self.extref_dump.add(ensemble_file,
+                                 _ExternalReferenceDumper.MODELING_OUTPUT)
         e = _SimpleEnsemble(pp, group, num_models, drmsd, num_models_deposited,
                             ensemble_file)
         self.ensemble_dump.add(e)
