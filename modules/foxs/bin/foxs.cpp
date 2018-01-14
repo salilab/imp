@@ -282,9 +282,9 @@ constant form factor (default = false)")
         }
       }
       std::cout << pdb_files[i] << " " << dat_files[j]
-                << " Chi = " << fp.get_chi() << " c1 = " << fp.get_c1()
+                << " Chi^2 = " << fp.get_chi() << " c1 = " << fp.get_c1()
                 << " c2 = " << fp.get_c2()
-                << " default chi = " << fp.get_default_chi() << std::endl;
+                << " default chi^2 = " << fp.get_default_chi() << std::endl;
       fp.set_pdb_file_name(pdb_files[i]);
       fp.set_profile_file_name(dat_files[j]);
       fp.set_mol_index(i);

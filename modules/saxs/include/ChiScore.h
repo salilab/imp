@@ -20,6 +20,7 @@ class IMPSAXSEXPORT ChiScore : public IMP::Object {
  public:
   ChiScore() : IMP::Object("ChiScore%1%") {}
 
+  // returns Chi_square score
   double compute_score(const Profile* exp_profile, const Profile* model_profile,
                        bool use_offset = false) const;
 

@@ -34,7 +34,7 @@ double ChiScore::compute_score(const Profile* exp_profile,
   }
 
   chi_square /= profile_size;
-  return sqrt(chi_square);
+  return chi_square; //sqrt(chi_square);
 }
 
 double ChiScore::compute_scale_factor(const Profile* exp_profile,

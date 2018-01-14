@@ -243,7 +243,7 @@ void ProfileFitter<ScoringFunctionT>::write_SAXS_fit_file(
 
   out_file.setf(std::ios::showpoint);
   out_file << "# offset = " << offset << ", scaling c = " << c
-           << ", Chi = " << score << std::endl;
+           << ", Chi^2 = " << score << std::endl;
   out_file << "#  q       exp_intensity   model_intensity" << std::endl;
 
   out_file.setf(std::ios::fixed, std::ios::floatfield);
