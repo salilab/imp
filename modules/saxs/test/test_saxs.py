@@ -51,7 +51,7 @@ class Tests(IMP.test.TestCase):
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         chi = saxs_score.compute_score(model_profile, False, 'chi.dat')
         print('Chi = ' + str(chi))
-        self.assertAlmostEqual(chi, 0.54, delta=0.01)
+        self.assertAlmostEqual(chi, 0.2916, delta=0.01)
 
         saxs_score_log = IMP.saxs.ProfileFitterChiLog(exp_profile)
         chi = saxs_score_log.compute_score(model_profile, False, 'chilog.dat')
@@ -68,7 +68,7 @@ class Tests(IMP.test.TestCase):
         print('Chi after adjustment of excluded volume and water layer parameters = ' + str(chi))
         sio = io.BytesIO()
         fp.show(sio)
-        self.assertAlmostEqual(chi, 0.45, delta=0.01)
+        self.assertAlmostEqual(chi, 0.2025, delta=0.01)
 
         #! test chi with log intensities
         chi = (saxs_score_log.fit_profile(model_profile,
@@ -105,12 +105,12 @@ class Tests(IMP.test.TestCase):
         #! calculate chi-square
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         chi = saxs_score.compute_score(model_profile)
-        self.assertAlmostEqual(chi, 0.54, delta=0.01)
+        self.assertAlmostEqual(chi, 0.2916, delta=0.01)
 
         #! define restraint
         saxs_restraint = IMP.saxs.Restraint(particles, exp_profile)
         score = saxs_restraint.evaluate(False)
-        self.assertAlmostEqual(score, 0.54, delta=0.01)
+        self.assertAlmostEqual(score, 0.2916, delta=0.01)
 
     def test_saxs_residue_level_restraint(self):
         """Check residue level saxs restraint"""
@@ -191,7 +191,7 @@ class Tests(IMP.test.TestCase):
         model_profile.calculate_profile(saxs_particles, IMP.saxs.RESIDUES)
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
 
-        self.assertAlmostEqual(saxs_score.compute_score(model_profile), 1.015, delta=0.01)
+        self.assertAlmostEqual(saxs_score.compute_score(model_profile), 1.03, delta=0.01)
 
 
 if __name__ == '__main__':

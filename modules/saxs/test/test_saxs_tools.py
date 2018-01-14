@@ -38,10 +38,10 @@ class SAXSToolsTest(IMP.test.ApplicationTestCase):
         self.assertIsNotNone(
             m,
             msg="chi value output not found in " + str(out))
-        self.assertAlmostEqual(float(m.group(1)), 0.537, delta=0.1)
+        self.assertAlmostEqual(float(m.group(1)), 0.288, delta=0.1)
 
     def test_compute_vr(self):
-        """Simple test of Chi calculation"""
+        """Simple test of VR calculation"""
         print(self.get_input_file_name('6lyz.pdb'))
         print(self.get_input_file_name('lyzexp.dat'))
         p = self.run_application('compute_vr',
