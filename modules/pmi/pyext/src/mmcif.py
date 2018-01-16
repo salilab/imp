@@ -241,7 +241,9 @@ class _SoftwareDumper(_Dumper):
             for m in itertools.chain(self.software, self.simo._metadata):
                 if isinstance(m, IMP.pmi.metadata.Software):
                     l.write(pdbx_ordinal=ordinal, name=m.name,
-                            classification=m.classification, version=m.version,
+                            classification=m.classification,
+                            version=m.version if m.version
+                                              else _CifWriter.unknown,
                             type=m.type, location=m.url)
                     ordinal += 1
 
@@ -548,6 +550,7 @@ class _UnknownSource(object):
     sequence_identity = _CifWriter.unknown
     # Map dataset types to starting model sources
     _source_map = {'Comparative model': 'comparative model',
+                   'Integrative model': 'integrative model',
                    'Experimental model': 'experimental model'}
 
     def __init__(self, model, chain):
@@ -1605,6 +1608,20 @@ class _StartingModelDumper(_Dumper):
             orig_loc = IMP.pmi.metadata.FileLocation(repo=repo, path='.',
                               details="Starting comparative model structure")
             parent = IMP.pmi.metadata.ComparativeModelDataset(orig_loc)
+            d.add_parent(parent)
+            model.dataset = self.simo._add_dataset(file_dataset or d)
+            return [_UnknownSource(model, chain)]
+        elif first_line.startswith('EXPDTA    DERIVED FROM INTEGRATIVE '
+                                   'MODEL, DOI:'):
+            # Model derived from an integrative model; link back to the original
+            # model as a parent
+            local_file.details = self._parse_details(fh)
+            d = IMP.pmi.metadata.IntegrativeModelDataset(local_file)
+            repo = IMP.pmi.metadata.Repository(doi=first_line[46:].strip())
+            # todo: better specify an unknown path
+            orig_loc = IMP.pmi.metadata.FileLocation(repo=repo, path='.',
+                              details="Starting integrative model structure")
+            parent = IMP.pmi.metadata.IntegrativeModelDataset(orig_loc)
             d.add_parent(parent)
             model.dataset = self.simo._add_dataset(file_dataset or d)
             return [_UnknownSource(model, chain)]

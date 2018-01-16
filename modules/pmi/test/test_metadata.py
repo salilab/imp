@@ -252,6 +252,12 @@ class Tests(IMP.test.TestCase):
         d = IMP.pmi.metadata.ComparativeModelDataset(loc)
         self.assertEqual(d._data_type, 'Comparative model')
 
+    def test_int_model_dataset(self):
+        """Test IntegrativeModelDataset"""
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
+        d = IMP.pmi.metadata.IntegrativeModelDataset(loc)
+        self.assertEqual(d._data_type, 'Integrative model')
+
     def test_em_micrographs_dataset(self):
         """Test EMMicrographsDataset"""
         loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')

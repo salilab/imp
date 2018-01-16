@@ -100,6 +100,10 @@ class ComparativeModelDataset(Dataset):
     """A 3D structure determined by comparative modeling"""
     _data_type = 'Comparative model'
 
+class IntegrativeModelDataset(Dataset):
+    """A 3D structure determined by integrative modeling"""
+    _data_type = 'Integrative model'
+
 class EMMicrographsDataset(Dataset):
     """Raw 2D electron micrographs"""
     _eq_keys = Dataset._eq_keys + ['number']

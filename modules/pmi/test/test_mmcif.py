@@ -79,17 +79,23 @@ class Tests(IMP.test.TestCase):
         s = IMP.pmi.metadata.Software(name='test', classification='test code',
                                       description='Some test program',
                                       version=1, url='http://salilab.org')
+        s2 = IMP.pmi.metadata.Software(name='foo', classification='test code',
+                                       description='Some test program',
+                                       url='http://salilab.org')
         m = IMP.Model()
         r = IMP.pmi.representation.Representation(m)
         r.add_metadata(s)
+        r.add_metadata(s2)
         r.add_metadata(IMP.pmi.metadata.Repository(doi="foo", root='.'))
         d = IMP.pmi.mmcif._SoftwareDumper(r)
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
         d.dump(w)
         out = fh.getvalue().split('\n')
-        self.assertEqual(out[-3],
+        self.assertEqual(out[-4],
                          "3 test 'test code' 1 program http://salilab.org")
+        self.assertEqual(out[-3],
+                         "4 foo 'test code' ? program http://salilab.org")
 
     def test_software_modeller(self):
         """Test SoftwareDumper.set_modeller_used"""
@@ -1262,8 +1268,8 @@ Nup85-m1 ATOM 2 C CA GLU 2 B 2 -8.986 11.688 -5.817 91.820 4
         self.assertEqual(parent.location.version, None)
         self.assertEqual(parent.location.details, None)
 
-    def test_get_sources_derived_model(self):
-        """Test get_sources() when given a file derived from a model"""
+    def test_get_sources_derived_comp_model(self):
+        """Test get_sources() given a file derived from a comparative model"""
         pdbname = self.get_input_file_name('derived_model.pdb')
         m, model, sources = self.get_dumper_sources(pdbname)
         (s, ) = sources
@@ -1283,6 +1289,26 @@ Nup85-m1 ATOM 2 C CA GLU 2 B 2 -8.986 11.688 -5.817 91.820 4
         self.assertEqual(parent.location.repo.doi, '10.1093/nar/gkt704')
         self.assertEqual(parent.location.details,
                          'Starting comparative model structure')
+
+    def test_get_sources_derived_int_model(self):
+        """Test get_sources() given a file derived from an integrative model"""
+        pdbname = self.get_input_file_name('derived_int_model.pdb')
+        m, model, sources = self.get_dumper_sources(pdbname)
+        (s, ) = sources
+        self.assertEqual(s.db_code, '?')
+        self.assertEqual(s.chain_id, 'A')
+        self.assertEqual(model.dataset._data_type, 'Integrative model')
+        self.assertEqual(model.dataset.location.path, pdbname)
+        self.assertEqual(model.dataset.location.repo, None)
+        self.assertEqual(model.dataset.location.details,
+                         'POM152 STRUCTURE TAKEN FROM UPLA ET AL, STRUCTURE '
+                         '25(3) 434-445. DOI: 10.1016/j.str.2017.01.006.')
+        (parent,) = model.dataset._parents
+        self.assertEqual(parent._data_type, 'Integrative model')
+        self.assertEqual(parent.location.path, '.')
+        self.assertEqual(parent.location.repo.doi, '10.1016/j.str.2017.01.006')
+        self.assertEqual(parent.location.details,
+                         'Starting integrative model structure')
 
     def test_get_sources_modeller(self):
         """Test get_sources() when given a Modeller model with alignment"""
