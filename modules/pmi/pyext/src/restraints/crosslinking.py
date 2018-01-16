@@ -197,13 +197,6 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                     elif len(ps1) == 0:
                         print("CrossLinkingMassSpectrometryRestraint: WARNING> residue %d of chain %s is not there" % (r1, c1))
                         midb.write(str(xl) + "\n")
-                        ps1 = IMP.atom.Selection(root_hier,
-                                                 state_index=nstate,
-                                                 molecule=name1,
-                                                 copy_index=int(copy1),
-                                                 resolution=resolution).get_selected_particles()
-                        if len(ps1) == 0:
-                            print("CrossLinkingMassSpectrometryRestraint: WARNING> No particles in", name1)
                         continue
 
                     if len(ps2) > 1:
@@ -211,13 +204,6 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                     elif len(ps2) == 0:
                         print("CrossLinkingMassSpectrometryRestraint: WARNING> residue %d of chain %s is not there" % (r2, c2))
                         midb.write(str(xl) + "\n")
-                        ps2 = IMP.atom.Selection(root_hier,
-                                                 state_index=nstate,
-                                                 molecule=name2,
-                                                 copy_index=int(copy2),
-                                                 resolution=resolution).get_selected_particles()
-                        if len(ps2) == 0:
-                            print("CrossLinkingMassSpectrometryRestraint: WARNING> No particles in", name2)
                         continue
 
                     p1 = ps1[0]
