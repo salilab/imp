@@ -454,6 +454,19 @@ class _ModelRepresentationDumper(_Dumper):
         else:
             return 'flexible'
 
+    def _all_fragments(self):
+        """Yield all fragments, with copies for any transformed components"""
+        trans_orig = {}
+        for tc in self.simo._transformed_components:
+            if tc.original not in trans_orig:
+                trans_orig[tc.original] = []
+            trans_orig[tc.original].append(tc.name)
+        for comp, statefrag in self.fragments.items():
+            yield comp, comp, statefrag
+        for orig, statefrag in self.fragments.items():
+            for comp in trans_orig.get(orig, []):
+                yield comp, orig, statefrag
+
     def dump(self, writer):
         ordinal_id = 1
         segment_id = 1
@@ -465,7 +478,7 @@ class _ModelRepresentationDumper(_Dumper):
                           "model_object_primitive", "starting_model_id",
                           "model_mode", "model_granularity",
                           "model_object_count"]) as l:
-            for comp, statefrag in self.fragments.items():
+            for comp, orig, statefrag in self._all_fragments():
                 # For now, assume that representation of the same-named
                 # component is the same in all states, so just take the first
                 state = list(statefrag.keys())[0]
@@ -475,7 +488,7 @@ class _ModelRepresentationDumper(_Dumper):
                     starting_model_id = _CifWriter.omitted
                     if hasattr(f, 'pdbname'):
                         starting_model_id \
-                             = self.starting_model[state, comp, f.pdbname].name
+                             = self.starting_model[state, orig, f.pdbname].name
                     # todo: handle multiple representations
                     l.write(ordinal_id=ordinal_id,
                             representation_id=1,
@@ -856,6 +869,9 @@ class _CrossLinkGroup(object):
     def __init__(self, pmi_restraint, rdataset):
         self.pmi_restraint, self.rdataset = pmi_restraint, rdataset
         self.label = self.pmi_restraint.label
+        # Map commonly-used subtypes to more standard labels
+        if self.label == 'wtDSS':
+            self.label = 'DSS'
 
 
 class _ExperimentalCrossLink(object):
@@ -1257,6 +1273,48 @@ class _ModelGroup(object):
         self.state = state
         self.name = name
 
+
+class _Chain(object):
+    """Represent a single chain in a Model"""
+    def __init__(self, pmi_chain_id, chain_id):
+        self.pmi_chain_id, self.chain_id = pmi_chain_id, chain_id
+        self.spheres = []
+        self.atoms = []
+
+    def add(self, xyz, atom_type, residue_type, residue_index,
+            all_indexes, radius):
+        if atom_type is None:
+            self.spheres.append((xyz, residue_type, residue_index,
+                                 all_indexes, radius))
+        else:
+            self.atoms.append((xyz, atom_type, residue_type, residue_index,
+                               all_indexes, radius))
+    orig_comp = property(lambda self: self.comp)
+
+class _TransformedChain(object):
+    """Represent a chain that is a transformed version of another"""
+    def __init__(self, orig_chain, chain_id, transform):
+        self.orig_chain, self.chain_id = orig_chain, chain_id
+        self.transform = transform
+
+    def __get_spheres(self):
+        for (xyz, residue_type, residue_index, all_indexes,
+             radius) in self.orig_chain.spheres:
+            yield (self.transform * xyz, residue_type, residue_index,
+                   all_indexes, radius)
+    spheres = property(__get_spheres)
+
+    def __get_atoms(self):
+        for (xyz, atom_type, residue_type, residue_index, all_indexes,
+             radius) in self.orig_chain.atoms:
+            yield (self.transform * xyz, atom_type, residue_type, residue_index,
+                   all_indexes, radius)
+    atoms = property(__get_atoms)
+
+    entity = property(lambda self: self.orig_chain.entity)
+    orig_comp = property(lambda self: self.orig_chain.comp)
+
+
 class _Model(object):
     def __init__(self, prot, simo, protocol, assembly, group):
         # Transformation from IMP coordinates into mmCIF coordinate system.
@@ -1269,28 +1327,57 @@ class _Model(object):
         self.protocol = protocol
         self.assembly = assembly
         self.stats = None
-        o = IMP.pmi.output.Output(atomistic=True)
+        o = self.output = IMP.pmi.output.Output(atomistic=True)
         name = 'cif-output'
         o.dictionary_pdbs[name] = prot
         o._init_dictchain(name, prot, multichar_chain=True)
         (particle_infos_for_pdb,
          self.geometric_center) = o.get_particle_infos_for_pdb_writing(name)
         self.geometric_center = IMP.algebra.Vector3D(*self.geometric_center)
-        self.entity_for_chain = {}
-        self.comp_for_chain = {}
-        self.correct_chain_id = {}
+        self._make_spheres_atoms(particle_infos_for_pdb, o, name, simo)
+        self.rmsf = {}
+        self.name = _CifWriter.omitted
+
+    def all_chains(self, simo):
+        """Yield all chains, including transformed ones"""
+        chain_for_comp = {}
+        for c in self.chains:
+            yield c
+            chain_for_comp[c.comp] = c
+        for tc in simo._transformed_components:
+            orig_chain = chain_for_comp.get(tc.original, None)
+            if orig_chain:
+                chain_id = simo._get_chain_for_component(tc.name, self.output)
+                c = _TransformedChain(orig_chain, chain_id, tc.transform)
+                c.comp = tc.name
+                yield c
+
+    def _make_spheres_atoms(self, particle_infos_for_pdb, o, name, simo):
+        entity_for_chain = {}
+        comp_for_chain = {}
+        correct_chain_id = {}
         for protname, chain_id in o.dictchain[name].items():
-            self.entity_for_chain[chain_id] = simo.entities[protname]
-            self.comp_for_chain[chain_id] = protname
+            entity_for_chain[chain_id] = simo.entities[protname]
+            comp_for_chain[chain_id] = protname
             # When doing multi-state modeling, the chain ID returned here
             # (assigned sequentially) might not be correct (states may have
             # gaps in the chain IDs). Map it to the correct ID.
-            self.correct_chain_id[chain_id] = \
+            correct_chain_id[chain_id] = \
                            simo._get_chain_for_component(protname, o)
-        self.spheres = [t for t in particle_infos_for_pdb if t[1] is None]
-        self.atoms = [t for t in particle_infos_for_pdb if t[1] is not None]
-        self.rmsf = {}
-        self.name = _CifWriter.omitted
+
+        # Gather by chain ID (should be sorted by chain ID already)
+        self.chains = []
+        chain = None
+
+        for (xyz, atom_type, residue_type, chain_id, residue_index,
+             all_indexes, radius) in particle_infos_for_pdb:
+            if chain is None or chain.pmi_chain_id != chain_id:
+                chain = _Chain(chain_id, correct_chain_id[chain_id])
+                chain.entity = entity_for_chain[chain_id]
+                chain.comp = comp_for_chain[chain_id]
+                self.chains.append(chain)
+            chain.add(xyz, atom_type, residue_type, residue_index,
+                      all_indexes, radius)
 
     def parse_rmsf_file(self, fname, component):
         self.rmsf[component] = rmsf = {}
@@ -1323,8 +1410,6 @@ class _ModelDumper(_Dumper):
 
     def dump(self, writer):
         self.dump_model_list(writer)
-        num_atoms = sum(len(m.atoms) for m in self.models)
-        num_spheres = sum(len(m.spheres) for m in self.models)
         self.dump_atoms(writer)
         self.dump_spheres(writer)
 
@@ -1356,18 +1441,20 @@ class _ModelDumper(_Dumper):
                           "Cartn_y", "Cartn_z", "label_entity_id",
                           "model_id"]) as l:
             for model in self.models:
-                for atom in model.atoms:
-                    (xyz, atom_type, residue_type, chain_id, residue_index,
-                     all_indexes, radius) = atom
-                    pt = model.transform * xyz
-                    l.write(id=ordinal, label_atom_id=atom_type.get_string(),
-                            label_comp_id=residue_type.get_string(),
-                            label_asym_id=model.correct_chain_id[chain_id],
-                            label_entity_id=model.entity_for_chain[chain_id].id,
-                            label_seq_id=residue_index,
-                            Cartn_x=pt[0], Cartn_y=pt[1], Cartn_z=pt[2],
-                            model_id=model.id)
-                    ordinal += 1
+                for chain in model.all_chains(self.simo):
+                    for atom in chain.atoms:
+                        (xyz, atom_type, residue_type, residue_index,
+                         all_indexes, radius) = atom
+                        pt = model.transform * xyz
+                        l.write(id=ordinal,
+                                label_atom_id=atom_type.get_string(),
+                                label_comp_id=residue_type.get_string(),
+                                label_asym_id=chain.chain_id,
+                                label_entity_id=chain.entity.id,
+                                label_seq_id=residue_index,
+                                Cartn_x=pt[0], Cartn_y=pt[1], Cartn_z=pt[2],
+                                model_id=model.id)
+                        ordinal += 1
 
     def dump_spheres(self, writer):
         ordinal = 1
@@ -1377,23 +1464,24 @@ class _ModelDumper(_Dumper):
                           "Cartn_y", "Cartn_z", "object_radius", "rmsf",
                           "model_id"]) as l:
             for model in self.models:
-                for sphere in model.spheres:
-                    (xyz, atom_type, residue_type, chain_id, residue_index,
-                     all_indexes, radius) = sphere
-                    if all_indexes is None:
-                        all_indexes = (residue_index,)
-                    pt = model.transform * xyz
-                    l.write(ordinal_id=ordinal,
-                            entity_id=model.entity_for_chain[chain_id].id,
-                            seq_id_begin = all_indexes[0],
-                            seq_id_end = all_indexes[-1],
-                            asym_id=model.correct_chain_id[chain_id],
-                            Cartn_x=pt[0], Cartn_y=pt[1], Cartn_z=pt[2],
-                            object_radius=radius,
-                            rmsf=model.get_rmsf(model.comp_for_chain[chain_id],
-                                                all_indexes),
-                            model_id=model.id)
-                    ordinal += 1
+                for chain in model.all_chains(self.simo):
+                    for sphere in chain.spheres:
+                        (xyz, residue_type, residue_index,
+                         all_indexes, radius) = sphere
+                        if all_indexes is None:
+                            all_indexes = (residue_index,)
+                        pt = model.transform * xyz
+                        l.write(ordinal_id=ordinal,
+                                entity_id=chain.entity.id,
+                                seq_id_begin = all_indexes[0],
+                                seq_id_end = all_indexes[-1],
+                                asym_id=chain.chain_id,
+                                Cartn_x=pt[0], Cartn_y=pt[1], Cartn_z=pt[2],
+                                object_radius=radius,
+                                rmsf=model.get_rmsf(chain.orig_comp,
+                                                    all_indexes),
+                                model_id=model.id)
+                        ordinal += 1
 
 
 class _ModelProtocolDumper(_Dumper):
@@ -2233,6 +2321,10 @@ class _RestraintDataset(object):
         return d
     dataset = property(__get_dataset)
 
+class _TransformedComponent(object):
+    def __init__(self, name, original, transform):
+        self.name, self.original, self.transform = name, original, transform
+
 
 class _State(object):
     """Representation of a single state in the system."""
@@ -2292,6 +2384,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.chains = {}
         self._all_components = {}
         self.all_modeled_components = []
+        self._transformed_components = []
         self.model_groups = []
         self.default_model_group = None
         self.sequence_dict = {}
@@ -2368,6 +2461,16 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         else:
             # A non-modeled component doesn't have a chain ID
             return _CifWriter.omitted
+
+    def create_transformed_component(self, state, name, original, transform):
+        if name in state.modeled_assembly:
+            raise ValueError("Component %s already exists" % name)
+        elif original not in state.modeled_assembly:
+            raise ValueError("Original component %s does not exist" % original)
+        self.create_component(state, name, True)
+        self.add_component_sequence(name, self.sequence_dict[original])
+        self._transformed_components.append(_TransformedComponent(
+                                            name, original, transform))
 
     def create_component(self, state, name, modeled):
         new_comp = name not in self._all_components

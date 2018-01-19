@@ -227,6 +227,17 @@ class Representation(object):
         for p, state in self._protocol_output:
             p.create_component(state, name, True)
 
+    def create_transformed_component(self, name, original, transform):
+        """Create a transformed view of a component.
+           This does not copy the coordinates or representation of the
+           component, and the transformed component is not visible to IMP,
+           but when the model is written to a ProtocolOutput, the transformed
+           component is added. This can be used to easily add symmetry-related
+           'copies' of a component without copying the underlying
+           IMP objects."""
+        for p, state in self._protocol_output:
+            p.create_transformed_component(state, name, original, transform)
+
     def create_non_modeled_component(self, name):
         """Create a component that isn't used in the modeling.
            No coordinates or other structural data for this component will

@@ -939,6 +939,8 @@ _ihm_external_files.details
         nup84 = simo.autobuild_model("Nup84",
                                      self.get_input_file_name("test.nup84.pdb"),
                                      "A")
+        simo.create_transformed_component("Nup84.2", "Nup84",
+                IMP.algebra.Transformation3D(IMP.algebra.Vector3D(1,2,3)))
 
         d = IMP.pmi.mmcif._ModelDumper(po)
         assembly = IMP.pmi.mmcif._Assembly()
@@ -982,6 +984,9 @@ _ihm_sphere_obj_site.model_id
 1 1 1 1 A -8.986 11.688 -5.817 3.068 . 1
 2 1 2 2 A -8.986 11.688 -5.817 2.997 . 1
 3 1 3 4 A -8.986 11.688 -5.817 3.504 . 1
+4 1 1 1 B -7.986 13.688 -2.817 3.068 . 1
+5 1 2 2 B -7.986 13.688 -2.817 2.997 . 1
+6 1 3 4 B -7.986 13.688 -2.817 3.504 . 1
 #
 """)
 
@@ -2197,6 +2202,8 @@ _ihm_starting_model_seq_dif.details
         nup84 = simo.autobuild_model("Nup84",
                                      self.get_input_file_name("test.nup84.pdb"),
                                      "A")
+        simo.create_transformed_component("Nup84.2", "Nup84",
+                IMP.algebra.Transformation3D(IMP.algebra.Vector3D(1,2,3)))
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
         # Need this to assign starting model details
@@ -2220,6 +2227,8 @@ _ihm_model_representation.model_granularity
 _ihm_model_representation.model_object_count
 1 1 1 1 Nup84 A 1 2 sphere Nup84-m1 flexible by-residue .
 2 1 2 1 Nup84 A 3 4 sphere . flexible by-feature 1
+3 1 3 1 Nup84 B 1 2 sphere Nup84-m1 flexible by-residue .
+4 1 4 1 Nup84 B 3 4 sphere . flexible by-feature 1
 #
 """)
 

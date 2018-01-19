@@ -322,7 +322,10 @@ class Output(object):
                                 geometric_center[1] / atom_count,
                                 geometric_center[2] / atom_count)
 
-        particle_infos_for_pdb = sorted(particle_infos_for_pdb, key=operator.itemgetter(3, 4))
+        # sort by chain ID, then residue index. Longer chain IDs (e.g. AA)
+        # should always come after shorter (e.g. Z)
+        particle_infos_for_pdb = sorted(particle_infos_for_pdb,
+                                        key=lambda x: (len(x[3]), x[3], x[4]))
 
         return (particle_infos_for_pdb, geometric_center)
 
