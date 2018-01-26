@@ -252,13 +252,20 @@ _ihm_external_files.details
         d = IMP.pmi.mmcif._AssemblyDumper(po)
         complete = IMP.pmi.mmcif._Assembly(['a', 'b', 'c'])
         d.add(complete)
-        x1 = d.get_subassembly({'a':None, 'b':None})
+        x1 = d.get_subassembly({'a':None, 'b':None}, name="foo",
+                               description="bar")
         x2 = d.get_subassembly({'a':None, 'b':None, 'c':None})
+        x3 = d.get_subassembly({'a':(10,20)})
         d.finalize() # assign IDs to all assemblies
         self.assertEqual(complete.id, 1)
         self.assertEqual(x1.id, 2)
-        self.assertEqual(x1, ['a', 'b'])
+        self.assertEqual(x1.name, "foo")
+        self.assertEqual(x1.description, "bar")
+        self.assertEqual([ac.component for ac in x1], ['a', 'b'])
         self.assertEqual(x2.id, 1)
+        self.assertEqual(x3.id, 3)
+        self.assertEqual([ac.component for ac in x3], ['a'])
+        self.assertEqual([ac._seqrange for ac in x3], [(10,20)])
 
     def test_create_component_repeat(self):
         """Test repeated calls to create_component()"""
@@ -285,6 +292,7 @@ _ihm_external_files.details
             po.add_component_sequence(c, seq)
         d.add(IMP.pmi.mmcif._Assembly(["foo", "bar"]))
         d.add(IMP.pmi.mmcif._Assembly(["bar", "baz"]))
+        d.get_subassembly({'foo':(2,3)})
 
         fh = StringIO()
         w = IMP.pmi.mmcif._CifWriter(fh)
@@ -292,6 +300,15 @@ _ihm_external_files.details
         d.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#
+loop_
+_ihm_struct_assembly_details.assembly_id
+_ihm_struct_assembly_details.assembly_name
+_ihm_struct_assembly_details.assembly_description
+1 . .
+2 . .
+3 Subassembly Subassembly
+#
+#
 loop_
 _ihm_struct_assembly.ordinal_id
 _ihm_struct_assembly.assembly_id
@@ -305,6 +322,7 @@ _ihm_struct_assembly.seq_id_end
 2 1 1 foo 1 B 1 3
 3 2 2 foo 1 B 1 3
 4 2 2 baz 2 C 1 2
+5 3 3 foo 1 A 2 3
 #
 """)
 
@@ -322,6 +340,14 @@ _ihm_struct_assembly.seq_id_end
         po.assembly_dump.dump(w)
         out = fh.getvalue()
         self.assertEqual(out, """#
+loop_
+_ihm_struct_assembly_details.assembly_id
+_ihm_struct_assembly_details.assembly_name
+_ihm_struct_assembly_details.assembly_description
+1 'Complete assembly' 'All known components'
+2 'Modeled assembly' 'All components modeled by IMP'
+#
+#
 loop_
 _ihm_struct_assembly.ordinal_id
 _ihm_struct_assembly.assembly_id
@@ -945,11 +971,13 @@ _ihm_external_files.details
         d = IMP.pmi.mmcif._ModelDumper(po)
         assembly = IMP.pmi.mmcif._Assembly()
         assembly.id = 42
+        representation = IMP.pmi.mmcif._Representation(name="test rep")
+        representation.id = 99
         protocol = IMP.pmi.mmcif._Protocol()
         protocol.id = 93
         group = IMP.pmi.mmcif._ModelGroup(state, "all models")
         group.id = 7
-        model = d.add(simo.prot, protocol, assembly, group)
+        model = d.add(simo.prot, protocol, assembly, representation, group)
         self.assertEqual(model.id, 1)
         self.assertEqual(model.get_rmsf('Nup84', (1,)), '.')
         fh = StringIO()
@@ -966,7 +994,7 @@ _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
 _ihm_model_list.representation_id
-1 1 7 . 'All models' 42 93 1
+1 1 7 . 'All models' 42 93 99
 #
 #
 loop_
@@ -1007,11 +1035,13 @@ _ihm_sphere_obj_site.model_id
         d = IMP.pmi.mmcif._ModelDumper(po)
         assembly = IMP.pmi.mmcif._Assembly()
         assembly.id = 42
+        representation = IMP.pmi.mmcif._Representation(name="test rep")
+        representation.id = 99
         protocol = IMP.pmi.mmcif._Protocol()
         protocol.id = 93
         group = IMP.pmi.mmcif._ModelGroup(state, "all models")
         group.id = 7
-        model = d.add(simo.prot, protocol, assembly, group)
+        model = d.add(simo.prot, protocol, assembly, representation, group)
         self.assertEqual(model.id, 1)
         self.assertEqual(model.get_rmsf('Nup84', (1,)), '.')
         fh = StringIO()
@@ -1028,7 +1058,7 @@ _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
 _ihm_model_list.representation_id
-1 1 7 . 'All models' 42 93 1
+1 1 7 . 'All models' 42 93 99
 #
 #
 loop_
@@ -1079,11 +1109,13 @@ _ihm_sphere_obj_site.model_id
         d = IMP.pmi.mmcif._ModelDumper(po)
         assembly = IMP.pmi.mmcif._Assembly()
         assembly.id = 42
+        representation = IMP.pmi.mmcif._Representation(name="test rep")
+        representation.id = 99
         protocol = IMP.pmi.mmcif._Protocol()
         protocol.id = 93
         group = IMP.pmi.mmcif._ModelGroup(state, "all models")
         group.id = 7
-        model = d.add(simo.prot, protocol, assembly, group)
+        model = d.add(simo.prot, protocol, assembly, representation, group)
         self.assertEqual(model.id, 1)
         model.name = 'foo'
         model.parse_rmsf_file(self.get_input_file_name('test.nup84.rmsf'),
@@ -1104,7 +1136,7 @@ _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
 _ihm_model_list.representation_id
-1 1 7 foo 'All models' 42 93 1
+1 1 7 foo 'All models' 42 93 99
 #
 #
 loop_
@@ -1467,6 +1499,12 @@ _ihm_modeling_protocol.ordered_flag
 #
 """)
 
+    def test_add_simple_dynamics(self):
+        """Test add_simple_dynamics()"""
+        po = DummyPO(None)
+        po._add_state(EmptyObject())
+        po._add_simple_dynamics(100, "Brownian dynamics")
+
     def test_simple_postprocessing(self):
         """Test add_simple_postprocessing"""
         class DummyProtocolStep(object):
@@ -1476,7 +1514,7 @@ _ihm_modeling_protocol.ordered_flag
         p = DummyProtocolStep()
         p.state = po._last_state
         p.num_models_end = 10
-        po.model_prot_dump.add(p)
+        po.model_prot_dump.add_step(p)
         pp = po._add_simple_postprocessing(10, 90)
         self.assertEqual(pp.type, 'cluster')
         self.assertEqual(pp.feature, 'RMSD')
@@ -1484,12 +1522,16 @@ _ihm_modeling_protocol.ordered_flag
         self.assertEqual(pp.num_models_end, 90)
         po._add_simple_postprocessing(12, 90)
 
+        # Start a new protocol
+        po._add_protocol()
+        po._add_simple_postprocessing(34, 56)
+
         # Add protocol and postprocessing for a second state
         po._add_state(DummyRepr(None, None))
         p = DummyProtocolStep()
         p.state = po._last_state
         p.num_models_end = 10
-        po.model_prot_dump.add(p)
+        po.model_prot_dump.add_step(p)
         po._add_simple_postprocessing(20, 80)
 
         fh = StringIO()
@@ -1509,7 +1551,43 @@ _ihm_modeling_post_process.num_models_begin
 _ihm_modeling_post_process.num_models_end
 1 1 1 1 cluster RMSD 10 90
 2 1 1 2 cluster RMSD 12 90
-3 2 1 1 cluster RMSD 20 80
+3 2 1 1 cluster RMSD 34 56
+4 3 1 1 cluster RMSD 20 80
+#
+""")
+
+    def test_no_postprocessing(self):
+        """Test add_no_postprocessing"""
+        class DummyProtocolStep(object):
+            pass
+        po = DummyPO(None)
+        po._add_state(DummyRepr(None, None))
+        p = DummyProtocolStep()
+        p.state = po._last_state
+        p.num_models_end = 10
+        po.model_prot_dump.add_step(p)
+        pp = po._add_no_postprocessing(10)
+        self.assertEqual(pp.type, 'none')
+        self.assertEqual(pp.feature, 'none')
+        self.assertEqual(pp.num_models_begin, 10)
+        self.assertEqual(pp.num_models_end, 10)
+
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        po.post_process_dump.finalize()
+        po.post_process_dump.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_modeling_post_process.id
+_ihm_modeling_post_process.protocol_id
+_ihm_modeling_post_process.analysis_id
+_ihm_modeling_post_process.step_id
+_ihm_modeling_post_process.type
+_ihm_modeling_post_process.feature
+_ihm_modeling_post_process.num_models_begin
+_ihm_modeling_post_process.num_models_end
+1 1 1 1 none none 10 10
 #
 """)
 
@@ -1657,7 +1735,7 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
             prot = DummyProtocolStep()
             prot.state = po._last_state
             prot.num_models_end = 10
-            po.model_prot_dump.add(prot)
+            po.model_prot_dump.add_step(prot)
             po.add_replica_exchange_analysis(simo._protocol_output[0][1], rex)
 
     def test_ensemble_dumper(self):
@@ -1957,7 +2035,7 @@ _ihm_cross_link_restraint.sigma_2
         pr.dataset = d
         p = DummyProtocolStep()
         p.state = po._last_state
-        po.model_prot_dump.add(p)
+        po.model_prot_dump.add_step(p)
         group = get_all_models_group(simo, po)
         m = po.add_model(group)
         prefix = 'ElectronMicroscopy2D_foo_Image1_'
@@ -2042,7 +2120,7 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
 
         p = DummyProtocolStep()
         p.state = po._last_state
-        po.model_prot_dump.add(p)
+        po.model_prot_dump.add_step(p)
         group = get_all_models_group(simo, po)
         m = po.add_model(group)
         m.stats = {'GaussianEMRestraint_foo_CCC': 0.1}
@@ -2164,29 +2242,30 @@ _ihm_starting_model_seq_dif.details
         m = None
         state1 = 'state1'
         state2 = 'state2'
+        rep1 = 'rep1'
         d = IMP.pmi.mmcif._ModelRepresentationDumper(EmptyObject())
         b = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=0,
                                          end=10, num=2, hier=None)
-        d.add_fragment(state1, b)
-        self.assertEqual(len(d.fragments['comp1']), 1)
-        self.assertEqual(len(d.fragments['comp1'][state1]), 1)
-        frag = d.fragments['comp1'][state1][0]
+        d.add_fragment(state1, rep1, b)
+        self.assertEqual(len(d.fragments['rep1']['comp1']), 1)
+        self.assertEqual(len(d.fragments['rep1']['comp1'][state1]), 1)
+        frag = d.fragments['rep1']['comp1'][state1][0]
         self.assertEqual(frag.start, 0)
         self.assertEqual(frag.end, 10)
 
         b = IMP.pmi.mmcif._BeadsFragment(m, 'comp1', start=11,
                                          end=30, num=3, hier=None)
-        d.add_fragment(state1, b)
-        self.assertEqual(len(d.fragments['comp1']), 1)
-        self.assertEqual(len(d.fragments['comp1'][state1]), 1)
-        frag = d.fragments['comp1'][state1][0]
+        d.add_fragment(state1, rep1, b)
+        self.assertEqual(len(d.fragments['rep1']['comp1']), 1)
+        self.assertEqual(len(d.fragments['rep1']['comp1'][state1]), 1)
+        frag = d.fragments['rep1']['comp1'][state1][0]
         self.assertEqual(frag.start, 0)
         self.assertEqual(frag.end, 30)
 
-        d.add_fragment(state2, b)
-        self.assertEqual(len(d.fragments['comp1']), 2)
-        self.assertEqual(len(d.fragments['comp1'][state2]), 1)
-        frag = d.fragments['comp1'][state2][0]
+        d.add_fragment(state2, rep1, b)
+        self.assertEqual(len(d.fragments['rep1']['comp1']), 2)
+        self.assertEqual(len(d.fragments['rep1']['comp1'][state2]), 1)
+        frag = d.fragments['rep1']['comp1'][state2][0]
         self.assertEqual(frag.start, 11)
         self.assertEqual(frag.end, 30)
 
@@ -2390,6 +2469,8 @@ HELX_P1 HELX_P MET A 1 GLU A 2
         r = DummyRepr(None, None)
         state = po._add_state(r)
         self.assertEqual(state.get_prefixed_name('foo'), 'Foo')
+        self.assertEqual(state.get_prefixed_name('FOO'), 'FOO')
+        self.assertEqual(state.get_prefixed_name(''), '')
 
     def test_state_postfix(self):
         """Test _State.get_postfixed_name()"""

@@ -429,18 +429,21 @@ class _StartingModel(object):
 class _ModelRepresentationDumper(_Dumper):
     def __init__(self, simo):
         super(_ModelRepresentationDumper, self).__init__(simo)
-        # dict of fragments, ordered by component name and then state
+        # dict of fragments, ordered by representation, then component name,
+        # then state
         self.fragments = OrderedDict()
         self.output = IMP.pmi.output.Output()
 
-    def add_fragment(self, state, fragment):
+    def add_fragment(self, state, representation, fragment):
         """Add a model fragment."""
         comp = fragment.component
-        if comp not in self.fragments:
-            self.fragments[comp] = OrderedDict()
-        if state not in self.fragments[comp]:
-            self.fragments[comp][state] = []
-        fragments = self.fragments[comp][state]
+        if representation not in self.fragments:
+            self.fragments[representation] = OrderedDict()
+        if comp not in self.fragments[representation]:
+            self.fragments[representation][comp] = OrderedDict()
+        if state not in self.fragments[representation][comp]:
+            self.fragments[representation][comp][state] = []
+        fragments = self.fragments[representation][comp][state]
         if len(fragments) == 0 or not fragments[-1].combine(fragment):
             fragments.append(fragment)
 
@@ -461,11 +464,13 @@ class _ModelRepresentationDumper(_Dumper):
             if tc.original not in trans_orig:
                 trans_orig[tc.original] = []
             trans_orig[tc.original].append(tc.name)
-        for comp, statefrag in self.fragments.items():
-            yield comp, comp, statefrag
-        for orig, statefrag in self.fragments.items():
-            for comp in trans_orig.get(orig, []):
-                yield comp, orig, statefrag
+        for representation, compdict in self.fragments.items():
+            for comp, statefrag in compdict.items():
+                yield representation, comp, comp, statefrag
+        for representation, compdict in self.fragments.items():
+            for orig, statefrag in compdict.items():
+                for comp in trans_orig.get(orig, []):
+                    yield representation, comp, orig, statefrag
 
     def dump(self, writer):
         ordinal_id = 1
@@ -478,7 +483,7 @@ class _ModelRepresentationDumper(_Dumper):
                           "model_object_primitive", "starting_model_id",
                           "model_mode", "model_granularity",
                           "model_object_count"]) as l:
-            for comp, orig, statefrag in self._all_fragments():
+            for representation, comp, orig, statefrag in self._all_fragments():
                 # For now, assume that representation of the same-named
                 # component is the same in all states, so just take the first
                 state = list(statefrag.keys())[0]
@@ -489,9 +494,8 @@ class _ModelRepresentationDumper(_Dumper):
                     if hasattr(f, 'pdbname'):
                         starting_model_id \
                              = self.starting_model[state, orig, f.pdbname].name
-                    # todo: handle multiple representations
                     l.write(ordinal_id=ordinal_id,
-                            representation_id=1,
+                            representation_id=representation.id,
                             segment_id=segment_id,
                             entity_id=entity.id,
                             entity_description=entity.description,
@@ -1150,8 +1154,10 @@ class _EM3DRestraint(object):
         cm = _ComponentMapper(state.prot)
         components = {}
         for d in densities:
-            components[cm[d]] = None
-        return simo.assembly_dump.get_subassembly(components)
+            components[cm[d]] = None # None == all residues in this component
+        return simo.assembly_dump.get_subassembly(components,
+                              name="EM subassembly",
+                              description="All components that fit the EM map")
 
     def get_cross_correlation(self, model):
         """Get the cross correlation coefficient between the model
@@ -1190,13 +1196,55 @@ class _EM3DDumper(_Dumper):
                                                         else _CifWriter.omitted)
                     ordinal += 1
 
+class _AssemblyComponent(object):
+    """A single component (or part of a component) in an _Assembly"""
+    def __init__(self, component, seqrange=None):
+        # todo: support multiple sequence ranges
+        self.component, self._seqrange = component, seqrange
+
+    def get_seq_range(self, simo):
+        """Get the sequence range. Defaults to the entire sequence."""
+        if self._seqrange:
+            return self._seqrange
+        else:
+            seq = simo.sequence_dict[self.component]
+            return (1, len(seq))
+
+    def __hash__(self):
+        return hash((self.component, self._seqrange))
+    def __eq__(self, other):
+        return (self.component, self._seqrange) \
+                == (other.component, other._seqrange)
+
+
 class _Assembly(list):
     """A collection of components. Currently simply implemented as a list of
-       the component names. These must be in creation order."""
+       _AssemblyComponent objects. These must be in creation order."""
+
+    def __init__(self, elements=()):
+        self.name = None
+        self.description = None
+        def fix_element(e):
+            if isinstance(e, _AssemblyComponent):
+                return e
+            else:
+                return _AssemblyComponent(e)
+        super(_Assembly, self).__init__(fix_element(e) for e in elements)
+
     def __hash__(self):
         # allow putting assemblies in a dict. 'list' isn't hashable
         # but 'tuple' is
         return hash(tuple(self))
+
+    def __contains__(self, item):
+        for ac in self:
+            if ac.component == item:
+                return True
+        return False
+
+    def append(self, component, seqrange=None):
+        super(_Assembly, self).append(_AssemblyComponent(component, seqrange))
+
 
 class _AssemblyDumper(_Dumper):
     def __init__(self, simo):
@@ -1210,10 +1258,20 @@ class _AssemblyDumper(_Dumper):
         self.assemblies.append(a)
         return a
 
-    def get_subassembly(self, compdict):
-        """Get an _Assembly consisting of the given components."""
+    def get_subassembly(self, compdict, name="Subassembly",
+                        description="Subassembly"):
+        """Get an _Assembly consisting of the given components.
+           `compdict` is a dictionary of the components to add, where keys
+           are the component names and values are the sequence ranges (or
+           None to use all residues in the component)."""
         # Put components in creation order
-        newa = _Assembly(c for c in self.assemblies[0] if c in compdict)
+        ac_from_name = {}
+        for c in compdict:
+            ac_from_name[c] = _AssemblyComponent(c, seqrange=compdict[c])
+        newa = _Assembly(ac_from_name[ac.component] for ac in self.assemblies[0]
+                         if ac.component in ac_from_name)
+        newa.name = name
+        newa.description = description
         return self.add(newa)
 
     def finalize(self):
@@ -1223,7 +1281,18 @@ class _AssemblyDumper(_Dumper):
         for a in self.assemblies:
             _assign_id(a, seen_assemblies, self._assembly_by_id)
 
+    def dump_details(self, writer):
+        with writer.loop("_ihm_struct_assembly_details",
+                         ["assembly_id", "assembly_name",
+                          "assembly_description"]) as l:
+            for a in self._assembly_by_id:
+                l.write(assembly_id=a.id,
+                        assembly_name=a.name if a.name else _CifWriter.omitted,
+                        assembly_description=a.description if a.description
+                                             else _CifWriter.omitted)
+
     def dump(self, writer):
+        self.dump_details(writer)
         ordinal = 1
         with writer.loop("_ihm_struct_assembly",
                          ["ordinal_id", "assembly_id", "parent_assembly_id",
@@ -1231,9 +1300,10 @@ class _AssemblyDumper(_Dumper):
                           "entity_id", "asym_id", "seq_id_begin",
                           "seq_id_end"]) as l:
             for a in self._assembly_by_id:
-                for comp in a:
+                for ac in a:
+                    comp = ac.component
+                    seqrange = ac.get_seq_range(self.simo)
                     entity = self.simo.entities[comp]
-                    seq = self.simo.sequence_dict[comp]
                     chain_id = self.simo._get_chain_for_component(comp,
                                                                   self.output)
                     l.write(ordinal_id=ordinal, assembly_id=a.id,
@@ -1243,8 +1313,8 @@ class _AssemblyDumper(_Dumper):
                             entity_description=entity.description,
                             entity_id=entity.id,
                             asym_id=chain_id,
-                            seq_id_begin=1,
-                            seq_id_end=len(seq))
+                            seq_id_begin=seqrange[0],
+                            seq_id_end=seqrange[1])
                     ordinal += 1
 
 
@@ -1266,6 +1336,16 @@ class _ReplicaExchangeProtocolStep(_ProtocolStep):
         else:
             self.method = 'Replica exchange molecular dynamics'
         self.num_models_end = rex.vars["number_of_frames"]
+
+
+class _SimpleProtocolStep(_ProtocolStep):
+    def __init__(self, state, num_models_end, method):
+        self.state = state
+        self.modeled_assembly = state.modeled_assembly
+        self.name = 'Sampling'
+        self.method = method
+        self.num_models_end = num_models_end
+
 
 class _ModelGroup(object):
     """Group sets of models"""
@@ -1316,7 +1396,7 @@ class _TransformedChain(object):
 
 
 class _Model(object):
-    def __init__(self, prot, simo, protocol, assembly, group):
+    def __init__(self, prot, simo, protocol, assembly, representation, group):
         # Transformation from IMP coordinates into mmCIF coordinate system.
         # Normally we pass through coordinates unchanged, but in some cases
         # we may want to translate them (e.g. Nup84, where the deposited PDB
@@ -1326,6 +1406,7 @@ class _Model(object):
         # The _Protocol which produced this model
         self.protocol = protocol
         self.assembly = assembly
+        self.representation = representation
         self.stats = None
         o = self.output = IMP.pmi.output.Output(atomistic=True)
         name = 'cif-output'
@@ -1402,8 +1483,8 @@ class _ModelDumper(_Dumper):
         super(_ModelDumper, self).__init__(simo)
         self.models = []
 
-    def add(self, prot, protocol, assembly, group):
-        m = _Model(prot, self.simo, protocol, assembly, group)
+    def add(self, prot, protocol, assembly, representation, group):
+        m = _Model(prot, self.simo, protocol, assembly, representation, group)
         self.models.append(m)
         m.id = len(self.models)
         return m
@@ -1422,14 +1503,13 @@ class _ModelDumper(_Dumper):
             for model in self.models:
                 state = model.group.state
                 group_name = state.get_prefixed_name(model.group.name)
-                # todo: handle multiple representations
                 l.write(ordinal_id=ordinal, model_id=model.id,
                         model_group_id=model.group.id,
                         model_name=model.name,
                         model_group_name=group_name,
                         assembly_id=model.assembly.id,
                         protocol_id=model.protocol.id,
-                        representation_id=1)
+                        representation_id=model.representation.id)
                 ordinal += 1
 
     def dump_atoms(self, writer):
@@ -1487,28 +1567,37 @@ class _ModelDumper(_Dumper):
 class _ModelProtocolDumper(_Dumper):
     def __init__(self, simo):
         super(_ModelProtocolDumper, self).__init__(simo)
-        # Protocols by state
+        # Lists of Protocols by state
         self.protocols = OrderedDict()
+        self._protocol_id = 1
 
-    def add(self, step):
+    def add_protocol(self, state):
+        """Add a new Protocol"""
+        if state not in self.protocols:
+            self.protocols[state] = []
+        p = _Protocol()
+        self.protocols[state].append(p)
+        p.id = self._protocol_id # IDs must be unique across states
+        self._protocol_id += 1
+
+    def add_step(self, step):
+        """Add a ProtocolStep to the last Protocol"""
         state = step.state
         if state not in self.protocols:
-            # Currently support only a single protocol per state
-            self.protocols[state] = _Protocol()
-            self.protocols[state].id = len(self.protocols)
+            self.add_protocol(state)
+        protocol = self.get_last_protocol(state)
+        if len(protocol) == 0:
             step.num_models_begin = 0
         else:
-            step.num_models_begin = self.protocols[state][-1].num_models_end
-        self.protocols[state].append(step)
-        # todo: support multiple protocols
-        step.id = len(self.protocols[state])
+            step.num_models_begin = protocol[-1].num_models_end
+        protocol.append(step)
+        step.id = len(protocol)
         # Assume that protocol uses all currently-defined datasets
         step.dataset_group = self.simo.dataset_dump.get_all_group(state)
 
     def get_last_protocol(self, state):
         """Return the most recently-added _Protocol"""
-        # For now, we only support a single protocol per state
-        return self.protocols[state]
+        return self.protocols[state][-1]
 
     def dump(self, writer):
         ordinal = 1
@@ -1519,20 +1608,21 @@ class _ModelProtocolDumper(_Dumper):
                           "step_name", "step_method", "num_models_begin",
                           "num_models_end", "multi_scale_flag",
                           "multi_state_flag", "ordered_flag"]) as l:
-            for p in self.protocols.values():
-                for step in p:
-                    l.write(ordinal_id=ordinal, protocol_id=p.id,
-                            step_id=step.id, step_method=step.method,
-                            step_name=step.name,
-                            struct_assembly_id=step.modeled_assembly.id,
-                            dataset_group_id=step.dataset_group.id,
-                            num_models_begin=step.num_models_begin,
-                            num_models_end=step.num_models_end,
-                            # todo: support multiple states, time ordered
-                            multi_state_flag=False, ordered_flag=False,
-                            # all PMI models are multi scale
-                            multi_scale_flag=True)
-                    ordinal += 1
+            for ps in self.protocols.values():
+                for p in ps:
+                    for step in p:
+                        l.write(ordinal_id=ordinal, protocol_id=p.id,
+                                step_id=step.id, step_method=step.method,
+                                step_name=step.name,
+                                struct_assembly_id=step.modeled_assembly.id,
+                                dataset_group_id=step.dataset_group.id,
+                                num_models_begin=step.num_models_begin,
+                                num_models_end=step.num_models_end,
+                                # todo: support multiple states, time ordered
+                                multi_state_flag=False, ordered_flag=False,
+                                # all PMI models are multi scale
+                                multi_scale_flag=True)
+                        ordinal += 1
 
 
 class _PDBHelix(object):
@@ -1939,17 +2029,19 @@ class _StructConfDumper(_Dumper):
         """Yield all rigid model representation fragments"""
         asym_states = {}
         model_repr = self.simo.model_repr_dump
-        for comp, statefrag in model_repr.fragments.items():
-            # For now, assume that representation of the same-named
-            # component is the same in all states, so just take the first
-            state = list(statefrag.keys())[0]
-            for f in statefrag[state]:
-                if hasattr(f, 'pdbname') \
-                   and model_repr.get_model_mode(f) == 'rigid':
-                    asym = get_asym_mapper_for_state(self.simo, f.state,
-                                                     asym_states)
-                    yield (f, model_repr.starting_model[state, comp, f.pdbname],
-                           asym[f.hier])
+        for representation, compdict in model_repr.fragments.items():
+            for comp, statefrag in compdict.items():
+                # For now, assume that representation of the same-named
+                # component is the same in all states, so just take the first
+                state = list(statefrag.keys())[0]
+                for f in statefrag[state]:
+                    if hasattr(f, 'pdbname') \
+                       and model_repr.get_model_mode(f) == 'rigid':
+                        asym = get_asym_mapper_for_state(self.simo, f.state,
+                                                         asym_states)
+                        yield (f, model_repr.starting_model[state, comp,
+                                                            f.pdbname],
+                               asym[f.hier])
 
     def all_helices(self):
         """Yield all helices that overlap with rigid model fragments"""
@@ -2027,6 +2119,16 @@ class _SimplePostProcess(_PostProcess):
         self.protocol = protocol
         self.num_models_begin = num_models_begin
         self.num_models_end = num_models_end
+
+
+class _NoPostProcess(_PostProcess):
+    """No post processing"""
+    type = 'none'
+    feature = 'none'
+
+    def __init__(self, protocol, num_models):
+        self.protocol = protocol
+        self.num_models_begin = self.num_models_end = num_models
 
 class _PostProcessDumper(_Dumper):
     def __init__(self, simo):
@@ -2340,6 +2442,8 @@ class _State(object):
         # The assembly of all components modeled by IMP in this state.
         # This may be smaller than the complete assembly.
         self.modeled_assembly = _Assembly()
+        self.modeled_assembly.name = "Modeled assembly"
+        self.modeled_assembly.description = "All components modeled by IMP"
         po.assembly_dump.add(self.modeled_assembly)
 
         self.all_modeled_components = []
@@ -2349,7 +2453,9 @@ class _State(object):
         if self.short_name:
             return self.short_name + ' ' + name
         else:
-            return name.capitalize()
+            # Can't use capitalize() since that un-capitalizes everything
+            # but the first letter
+            return name[0].upper() + name[1:] if name else ''
 
     def get_postfixed_name(self, name):
         """Postfix the given name with the state name, if available."""
@@ -2360,6 +2466,12 @@ class _State(object):
 
     short_name = property(lambda self: self._pmi_state.short_name)
     long_name = property(lambda self: self._pmi_state.long_name)
+
+
+class _Representation(object):
+    """A complete model representation"""
+    def __init__(self, name):
+        self.name = name
 
 
 class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
@@ -2380,6 +2492,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self._states = {}
         self._working_directory = os.getcwd()
         self._cif_writer = _CifWriter(fh)
+        self._representations = []
+        self.create_representation("Default representation")
         self.entities = _EntityMapper()
         self.chains = {}
         self._all_components = {}
@@ -2400,6 +2514,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
         # The assembly of all known components.
         self.complete_assembly = _Assembly()
+        self.complete_assembly.name = "Complete assembly"
+        self.complete_assembly.description = "All known components"
         self.assembly_dump.add(self.complete_assembly)
 
         self.model_dump = _ModelDumper(self)
@@ -2434,6 +2550,14 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                          self.model_prot_dump, self.post_process_dump,
                          self.ensemble_dump, self.density_dump, self.model_dump,
                          _MultiStateDumper(self)]
+
+    def create_representation(self, name):
+        """Create a new Representation and return it. This can be
+           passed to add_model(), add_bead_element() or add_pdb_element()."""
+        r = _Representation(name)
+        self._representations.append(r)
+        r.id = len(self._representations)
+        return r
 
     def _add_state(self, state):
         """Create a new state and return a pointer to it."""
@@ -2501,15 +2625,20 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             dumper.dump(self._cif_writer)
 
     def add_pdb_element(self, state, name, start, end, offset, pdbname,
-                        chain, hier):
+                        chain, hier, representation=None):
+        if representation is None:
+            representation = self._representations[0]
         p = _PDBFragment(state, name, start, end, offset, pdbname, chain,
                          hier)
-        self.model_repr_dump.add_fragment(state, p)
+        self.model_repr_dump.add_fragment(state, representation, p)
         self.starting_model_dump.add_pdb_fragment(p)
 
-    def add_bead_element(self, state, name, start, end, num, hier):
+    def add_bead_element(self, state, name, start, end, num, hier,
+                         representation=None):
+        if representation is None:
+            representation = self._representations[0]
         b = _BeadsFragment(state, name, start, end, num, hier)
-        self.model_repr_dump.add_fragment(state, b)
+        self.model_repr_dump.add_fragment(state, representation, b)
 
     def _get_restraint_dataset(self, r, num=None, allow_duplicates=False):
         """Get a wrapper object for the dataset used by this restraint.
@@ -2542,7 +2671,18 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         # actual experiment, and how many independent runs were carried out
         # (use these as multipliers to get the correct total number of
         # output models)
-        self.model_prot_dump.add(_ReplicaExchangeProtocolStep(state, rex))
+        self.model_prot_dump.add_step(_ReplicaExchangeProtocolStep(state, rex))
+
+    def _add_simple_dynamics(self, num_models_end, method):
+        # Always assumed that we're dealing with the last state
+        state = self._last_state
+        self.model_prot_dump.add_step(_SimpleProtocolStep(state, num_models_end,
+                                                          method))
+
+    def _add_protocol(self):
+        # Always assumed that we're dealing with the last state
+        state = self._last_state
+        self.model_prot_dump.add_protocol(state)
 
     def _add_dataset(self, dataset):
         return self.dataset_dump.add(self._last_state, dataset)
@@ -2557,6 +2697,14 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         state = self._last_state
         protocol = self.model_prot_dump.get_last_protocol(state)
         pp = _SimplePostProcess(protocol, num_models_begin, num_models_end)
+        self.post_process_dump.add(pp)
+        return pp
+
+    def _add_no_postprocessing(self, num_models):
+        # Always assumed that we're dealing with the last state
+        state = self._last_state
+        protocol = self.model_prot_dump.get_last_protocol(state)
+        pp = _NoPostProcess(protocol, num_models)
         self.post_process_dump.add(pp)
         return pp
 
@@ -2635,11 +2783,14 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.em3d_dump.add(_EM3DRestraint(self, state, d, r, target_ps,
                                           densities))
 
-    def add_model(self, group):
+    def add_model(self, group, assembly=None, representation=None):
+        if representation is None:
+            representation = self._representations[0]
         state = group.state
         return self.model_dump.add(state.prot,
                            self.model_prot_dump.get_last_protocol(state),
-                           state.modeled_assembly, group)
+                           assembly if assembly else state.modeled_assembly,
+                           representation, group)
 
     def _update_location(self, fileloc):
         """Update FileLocation to point to a parent repository, if any"""
