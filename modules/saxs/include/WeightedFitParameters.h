@@ -22,17 +22,17 @@ class WeightedFitParameters : public FitParameters {
  public:
   WeightedFitParameters() : FitParameters() {}
 
-  WeightedFitParameters(double chi, double c1, double c2,
+  WeightedFitParameters(double chi_square, double c1, double c2,
                         const Vector<double>& weights)
-      : FitParameters(chi, c1, c2), weights_(weights) {}
+      : FitParameters(chi_square, c1, c2), weights_(weights) {}
 
   const Vector<double>& get_weights() const { return weights_; }
 
   void set_weights(const Vector<double>& weights) { weights_ = weights; }
 
   void show(std::ostream& s) const {
-    s << "Chi = " << chi_ << " c1 = " << c1_ << " c2 = " << c2_
-      << " default chi = " << default_chi_ << std::endl;
+    s << "Chi^2 = " << chi_square_ << " c1 = " << c1_ << " c2 = " << c2_
+      << " default chi^2 = " << default_chi_square_ << std::endl;
   }
 
  private:

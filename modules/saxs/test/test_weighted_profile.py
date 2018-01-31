@@ -64,7 +64,7 @@ class Tests(IMP.test.TestCase):
         profile_list = [resampled_profile1, resampled_profile2]
 
         wfp = saxs_score.fit_profile(profile_list, 0.95, 1.05, -2.0, 4.0)
-        chi = wfp.get_chi()
+        chi = wfp.get_chi_square()
         weights = wfp.get_weights()
 
         print('Chi = ', str(chi))

@@ -189,7 +189,7 @@ FitParameters ProfileFitter<ScoringFunctionT>::fit_profile(
                             use_offset, std::numeric_limits<double>::max());
   double best_c1 = fp.get_c1();
   double best_c2 = fp.get_c2();
-  fp.set_default_chi(default_chi);
+  fp.set_default_chi_square(default_chi);
 
   // compute a profile for best c1/c2 combination
   partial_profile->sum_partial_profiles(best_c1, best_c2);
@@ -244,14 +244,14 @@ void ProfileFitter<ScoringFunctionT>::write_SAXS_fit_file(
   out_file.setf(std::ios::showpoint);
   out_file << "# offset = " << offset << ", scaling c = " << c
            << ", Chi^2 = " << score << std::endl;
-  out_file << "#  q       exp_intensity   model_intensity" << std::endl;
+  out_file << "#  q       exp_intensity   model_intensity error" << std::endl;
 
   out_file.setf(std::ios::fixed, std::ios::floatfield);
   // Main data
   for (unsigned int i = 0; i < profile_size; i++) {
     out_file.setf(std::ios::left);
     out_file.width(10);
-    out_file.precision(5);
+    out_file.precision(8);
     out_file << exp_profile_->get_q(i) << " ";
 
     out_file.setf(std::ios::left);
@@ -266,10 +266,58 @@ void ProfileFitter<ScoringFunctionT>::write_SAXS_fit_file(
 
     out_file.setf(std::ios::left);
     out_file.width(10);
-    out_file.precision(5);
+    out_file.precision(8);
     out_file << exp_profile_->get_error(i)  << std::endl;
   }
   out_file.close();
+
+  // we are writing to the second file with .fit extension in the different
+  // column order. the goal is to retire .dat extension after some time
+  std::string file_name2 = file_name.substr(0, file_name.length()-4);
+  file_name2 += ".fit";
+  std::ofstream out_file2(file_name2.c_str());
+  if (!out_file2) {
+    IMP_THROW("Can't open file " << file_name2, IOException);
+  }
+
+  // header line
+  out_file2.precision(15);
+  out_file2 << "# SAXS profile: number of points = " << profile_size
+            << ", q_min = " << exp_profile_->get_min_q()
+            << ", q_max = " << exp_profile_->get_max_q();
+  out_file2 << ", delta_q = " << exp_profile_->get_delta_q() << std::endl;
+
+  out_file2.setf(std::ios::showpoint);
+  out_file2 << "# offset = " << offset << ", scaling c = " << c
+            << ", Chi^2 = " << score << std::endl;
+  out_file2 << "#  q       exp_intensity   error model_intensity" << std::endl;
+
+  out_file2.setf(std::ios::fixed, std::ios::floatfield);
+  // Main data
+  for (unsigned int i = 0; i < profile_size; i++) {
+    out_file2.setf(std::ios::left);
+    out_file2.width(10);
+    out_file2.precision(8);
+    out_file2 << exp_profile_->get_q(i) << " ";
+
+    out_file2.setf(std::ios::left);
+    out_file2.width(15);
+    out_file2.precision(8);
+    out_file2 << exp_profile_->get_intensity(i) << " ";
+
+    out_file2.setf(std::ios::left);
+    out_file2.width(10);
+    out_file2.precision(8);
+    out_file2 << exp_profile_->get_error(i)  << " ";
+
+    out_file2.setf(std::ios::left);
+    out_file2.width(15);
+    out_file2.precision(8);
+    out_file2 << model_profile->get_intensity(i) * c - offset << std::endl;
+
+  }
+  out_file2.close();
+
 }
 
 IMPSAXS_END_NAMESPACE

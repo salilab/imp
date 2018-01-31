@@ -187,7 +187,7 @@ void WeightedProfileFitter<ScoringFunctionT>::write_fit_file(
                                    ProfileFitter<ScoringFunctionT>::exp_profile_,
                                    partial_profiles[0], offset);
     ProfileFitter<ScoringFunctionT>::write_SAXS_fit_file(
-                                   fit_file_name, partial_profiles[0], fp.get_chi(), c, offset);
+                                   fit_file_name, partial_profiles[0], fp.get_chi_square(), c, offset);
   } else {
 
     // computed weighted profile
@@ -214,7 +214,7 @@ void WeightedProfileFitter<ScoringFunctionT>::write_fit_file(
 
     ProfileFitter<ScoringFunctionT>::write_SAXS_fit_file(
                                    fit_file_name, weighted_profile,
-                                   fp.get_chi(), c, offset);
+                                   fp.get_chi_square(), c, offset);
   }
 }
 

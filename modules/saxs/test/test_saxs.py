@@ -64,7 +64,7 @@ class Tests(IMP.test.TestCase):
 
         fp = saxs_score.fit_profile(model_profile,
                                     0.95, 1.12, -2.0, 4.0, False, "chi_fit.dat")
-        chi = fp.get_chi()
+        chi = fp.get_chi_square()
         print('Chi after adjustment of excluded volume and water layer parameters = ' + str(chi))
         sio = io.BytesIO()
         fp.show(sio)
@@ -72,14 +72,14 @@ class Tests(IMP.test.TestCase):
 
         #! test chi with log intensities
         chi = (saxs_score_log.fit_profile(model_profile,
-                                          0.95, 1.12, -2.0, 4.0, False, "chilog_fit.dat")).get_chi()
+                                          0.95, 1.12, -2.0, 4.0, False, "chilog_fit.dat")).get_score()
         print('ChiLog after adjustment of excluded volume and water layer parameters = ' + str(chi))
         self.assertAlmostEqual(chi, 0.0323, delta=0.001)
 
         #! test RatioVolatilityScore
         vr_score = IMP.saxs.ProfileFitterRatioVolatility(exp_profile);
         vr = (vr_score.fit_profile(model_profile,
-                                   0.95, 1.12, -2.0, 4.0, False, "vr_fit.dat")).get_chi()
+                                   0.95, 1.12, -2.0, 4.0, False, "vr_fit.dat")).get_score()
         print('RatioVolatilityScore after adjustment of excluded volume and water layer parameters = ' + str(vr))
         self.assertAlmostEqual(vr, 5.70, delta=0.01)
 

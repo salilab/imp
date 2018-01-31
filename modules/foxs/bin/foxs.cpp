@@ -277,17 +277,14 @@ constant form factor (default = false)")
             pf->resample(profile, resampled_profile);
             float chi_free =
               cfs->compute_score(exp_saxs_profile, resampled_profile);
-            fp.set_chi(chi_free);
+            fp.set_chi_square(chi_free);
           }
         }
       }
-      std::cout << pdb_files[i] << " " << dat_files[j]
-                << " Chi^2 = " << fp.get_chi() << " c1 = " << fp.get_c1()
-                << " c2 = " << fp.get_c2()
-                << " default chi^2 = " << fp.get_default_chi() << std::endl;
       fp.set_pdb_file_name(pdb_files[i]);
       fp.set_profile_file_name(dat_files[j]);
       fp.set_mol_index(i);
+      fp.show(std::cout);
       if (gnuplot_script) Gnuplot::print_fit_script(fp);
       fps.push_back(fp);
     }
