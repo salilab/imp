@@ -64,7 +64,7 @@ void JmolWriter::prepare_jmol_script(
   outstream << "<table align='center'>";
   outstream << "<tr><th> PDB file </th> "
             << "<th> " << show_all_checkbox_str << "</th>"
-            << "<th><center> &chi; </th><th><center> c<sub>1</sub> </th>"
+            << "<th><center> &chi;<sup>2</sup> </th><th><center> c<sub>1</sub> </th>"
             << "<th><center> c<sub>2</sub> </th><th><center>R<sub>g</sub></th>"
             << "<th><center> # atoms </th> <th> fit file </th><th> png file </th></tr>\n";
   for (unsigned int i = 0; i < fps.size(); i++) {
@@ -86,7 +86,7 @@ void JmolWriter::prepare_jmol_script(
       std::string checkbox_string = model_checkbox(i, showMolecule, true);
       outstream << checkbox_string << std::endl;
     }
-    outstream << "</center></td><td><center> " << fps[i].get_chi()
+    outstream << "</center></td><td><center> " << fps[i].get_chi_square()
               << "</center></td><td><center> " << fps[i].get_c1()
               << "</center></td><td><center> " << fps[i].get_c2()
               << "</center></td><td><center> " << rg

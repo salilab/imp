@@ -322,7 +322,7 @@ recommended q value is 0.2")("offset,f",
           wfp = weighted_vr_score->fit_profile(profiles, min_c1, max_c1, min_c2, max_c2);
         else
           wfp = weighted_chi_score->fit_profile(profiles, min_c1, max_c1, min_c2, max_c2);
-        chi = wfp.get_chi();
+        chi = wfp.get_chi_square();
         c1 = wfp.get_c1();
         c2 = wfp.get_c2();
         IMP::Vector<double> weights = wfp.get_weights();
@@ -346,7 +346,7 @@ recommended q value is 0.2")("offset,f",
           // fp.set_chi(rvs.compute_score(exp_profile, resampled_profile));
           // // end compute vr
         }
-        chi = fp.get_chi();
+        chi = fp.get_chi_square();
         c1 = fp.get_c1();
         c2 = fp.get_c2();
       }

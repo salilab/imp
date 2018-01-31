@@ -124,7 +124,7 @@ void Gnuplot::print_fit_script(const IMP::saxs::FitParameters& fp) {
   plt_file << "plot '" << fit_file_name
            << "' u 1:2 t 'Experimental' lc rgb '#333333' pt 6 ps 0.8"
            << ", '" << fit_file_name
-           << "' u 1:3 t 'FoXS χ = " << fp.get_chi()
+           << "' u 1:3 t 'FoXS χ^2 = " << fp.get_chi_square()
            << "' w lines lw 2.5 lc rgb '#e26261'\n";
   plt_file << "unset multiplot\n";
   plt_file << "reset\n";
@@ -154,7 +154,7 @@ void Gnuplot::print_fit_script(const IMP::saxs::FitParameters& fp) {
   // plt_file <<  "plot '" << fit_file_name
   //           << "' u 1:(log($2)) notitle lc rgb '#333333' pt 6 ps 0.8";
   // plt_file << ", '" << fit_file_name
-  //          << "' u 1:(log($3)) t 'FoXS {/Symbol c} = " << fp.get_chi()
+  //          << "' u 1:(log($3)) t 'FoXS {/Symbol c} = " << fp.get_chi_square()
   //          << "' w lines lw 2.5 lc rgb '#e26261'\n";
   // plt_file << "unset multiplot\n";
 }
@@ -206,7 +206,7 @@ void Gnuplot::print_fit_script(
                << "' u 1:2 t 'Experimental' lc rgb '#333333' pt 6 ps 0.8 ";
     }
     plt_file << ", '" << fit_file_name << "' u 1:3 t '" << pdb_name
-             << " χ = " << fps[i].get_chi() << "' w lines lw 2.5 lc rgb '#"
+             << " χ^2 = " << fps[i].get_chi_square() << "' w lines lw 2.5 lc rgb '#"
              << hex_color << "'";
   }
   plt_file << std::endl;

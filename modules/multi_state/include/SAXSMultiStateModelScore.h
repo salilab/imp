@@ -184,15 +184,15 @@ double SAXSMultiStateModelScore<ScoringFunctionT>::get_score(const MultiStateMod
       profiles[i]->sum_partial_profiles(average_c1_, average_c2_);
   }
 
-  double chi;
+  double chi_square;
   if(c1_c2_approximate_ || c1_c2_no_fitting_) { // just score calculation
-    chi = score_->compute_score(profiles, weights, use_offset_);
+    chi_square = score_->compute_score(profiles, weights, use_offset_);
   } else { // optimize c1/c2 fit and score
     saxs::WeightedFitParameters fp =
       score_->fit_profile(profiles, min_c1_, max_c1_, min_c2_, max_c2_, use_offset_);
-    chi = fp.get_chi();
+    chi_square = fp.get_chi_square();
   }
-  return chi;
+  return chi_square;
 }
 
 template <typename ScoringFunctionT>
@@ -220,7 +220,7 @@ saxs::WeightedFitParameters
 
   saxs::WeightedFitParameters fp =
     score_->fit_profile(profiles, min_c1_, max_c1_, min_c2_, max_c2_, use_offset_);
-  m.set_score(fp.get_chi());
+  m.set_score(fp.get_chi_square());
   return fp;
 }
 

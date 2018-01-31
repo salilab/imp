@@ -297,7 +297,7 @@ recommended q value is 0.2")
       std::string out_file_name = "nnls_" + std::string(boost::lexical_cast<std::string>(i+1)) + ".txt";
       std::ofstream s(out_file_name.c_str());
       s.setf(std::ios::fixed, std::ios::floatfield);
-      s << std::setw(6) << std::setprecision(3) << " Chi = " << fp.get_chi()
+      s << std::setw(6) << std::setprecision(3) << " Chi^2 = " << fp.get_chi_square()
         << " c1 = " << fp.get_c1() << " c2 = " << fp.get_c2() << std::endl;
       for(unsigned int i=0; i<clustered_profiles.size(); i++) {
         s << std::setw(4) << i << " " << clustered_profiles[i]->get_name();
