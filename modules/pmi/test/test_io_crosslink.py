@@ -549,5 +549,20 @@ class Tests(IMP.test.TestCase):
                 d1 = xl["MinAmbiguousDistance"]
                 self.assertAlmostEqual(dist,d1,1)
 
+    def test_ProteinsResiduesArray(self):
+        cldbkc = IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+        cldbkc.set_protein1_key("P1")
+        cldbkc.set_protein2_key("P2")
+        cldbkc.set_residue1_key("R1")
+        cldbkc.set_residue2_key("R2")
+        cldb = IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
+        cldb.create_set_from_file(self.get_input_file_name("xl_dataset_test_io_crosslink_map.txt"))
+        for xl in cldb:
+            pra=IMP.pmi.io.crosslink._ProteinsResiduesArray(xl)
+            self.assertEqual(pra[0],xl[cldb.protein1_key])
+            self.assertEqual(pra[1],xl[cldb.protein2_key])
+            self.assertEqual(pra[2],xl[cldb.residue1_key])
+            self.assertEqual(pra[3],xl[cldb.residue2_key])
+
 if __name__ == '__main__':
     IMP.test.main()

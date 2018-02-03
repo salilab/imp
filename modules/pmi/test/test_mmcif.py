@@ -122,6 +122,19 @@ class Tests(IMP.test.TestCase):
         d.set_phyre2_used()
         self.assertEqual(len(d.software), 3)
 
+    def test_comment_dumper(self):
+        """Test CommentDumper"""
+        po = DummyPO(None)
+        po.add_comment("Comment 1")
+        po.add_comment("Comment 2")
+        d = IMP.pmi.mmcif._CommentDumper(po)
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        d.dump(w)
+        self.assertEqual(fh.getvalue(), """# Comment 1
+# Comment 2
+""")
+
     def test_single_state(self):
         """Test MultiStateDumper with a single state"""
         po = DummyPO(None)
@@ -959,6 +972,7 @@ _ihm_external_files.details
         po = DummyPO(None)
         simo.add_protocol_output(po)
         state = simo._protocol_output[0][1]
+        po.exclude_coordinates('Nup84', (3,4))
         simo.create_component("Nup84", True)
         simo.add_component_sequence("Nup84",
                                     self.get_input_file_name("test.fasta"))
@@ -1011,10 +1025,8 @@ _ihm_sphere_obj_site.rmsf
 _ihm_sphere_obj_site.model_id
 1 1 1 1 A -8.986 11.688 -5.817 3.068 . 1
 2 1 2 2 A -8.986 11.688 -5.817 2.997 . 1
-3 1 3 4 A -8.986 11.688 -5.817 3.504 . 1
-4 1 1 1 B -7.986 13.688 -2.817 3.068 . 1
-5 1 2 2 B -7.986 13.688 -2.817 2.997 . 1
-6 1 3 4 B -7.986 13.688 -2.817 3.504 . 1
+3 1 1 1 B -7.986 13.688 -2.817 3.068 . 1
+4 1 2 2 B -7.986 13.688 -2.817 2.997 . 1
 #
 """)
 
@@ -2275,6 +2287,7 @@ _ihm_starting_model_seq_dif.details
         simo = IMP.pmi.representation.Representation(m)
         po = DummyPO(None)
         simo.add_protocol_output(po)
+        po.exclude_coordinates('Nup84', (3,4))
         simo.create_component("Nup84", True)
         simo.add_component_sequence("Nup84",
                                     self.get_input_file_name("test.fasta"))
@@ -2305,9 +2318,7 @@ _ihm_model_representation.model_mode
 _ihm_model_representation.model_granularity
 _ihm_model_representation.model_object_count
 1 1 1 1 Nup84 A 1 2 sphere Nup84-m1 flexible by-residue .
-2 1 2 1 Nup84 A 3 4 sphere . flexible by-feature 1
-3 1 3 1 Nup84 B 1 2 sphere Nup84-m1 flexible by-residue .
-4 1 4 1 Nup84 B 3 4 sphere . flexible by-feature 1
+2 1 2 1 Nup84 B 1 2 sphere Nup84-m1 flexible by-residue .
 #
 """)
 

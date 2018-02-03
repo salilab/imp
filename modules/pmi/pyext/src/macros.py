@@ -2341,7 +2341,7 @@ class AnalysisReplicaExchange(object):
 
         for n0,n1 in itertools.combinations(cluster.members,2):
             d0=self.stath0[n0]
-            d1 = self.stath1[n1]
+            d1=self.stath1[n1]
             rmsd, _ = self.rmsd()
             member_distance[n0]+=rmsd
 
@@ -2383,6 +2383,7 @@ class AnalysisReplicaExchange(object):
             d0=self.stath0[n0]
             for n1 in cluster.members:
                 if n0!=n1:
+                    npairs+=1
                     d1=self.stath1[n1]
                     self.apply_molecular_assignments(n1)
                     tmp_rmsd, _ = self.rmsd()

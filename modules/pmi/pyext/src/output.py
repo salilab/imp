@@ -985,7 +985,10 @@ class RMFHierarchyHandler(IMP.atom.Hierarchy):
         @param rmf_file_name: str, path of the rmf file
         """
         self.model=model
-        self.rh_ref = RMF.open_rmf_file_read_only(rmf_file_name)
+        try:
+            self.rh_ref = RMF.open_rmf_file_read_only(rmf_file_name)
+        except TypeError:
+            raise TypeError("Wrong rmf file name or type: %s"% str(rmf_file_name))
         hs = IMP.rmf.create_hierarchies(self.rh_ref, self.model)
         IMP.rmf.load_frame(self.rh_ref, RMF.FrameID(0))
         self.root_hier_ref = hs[0]
@@ -1036,6 +1039,14 @@ class RMFHierarchyHandler(IMP.atom.Hierarchy):
 class StatHierarchyHandler(RMFHierarchyHandler):
     """ class to link stat files to several rmf files """
     def __init__(self,model=None,stat_file=None,number_best_scoring_models=None,StatHierarchyHandler=None):
+        """
+
+        @param model: IMP.Model()
+        @param stat_file: either 1) a list or 2) a single stat file names (either rmfs or ascii, or pickled data or pickled cluster), 3) a dictionary containing an rmf/ascii
+            stat file name as key and a list of frames as values
+        @param number_best_scoring_models:
+        @param StatHierarchyHandler: copy constructor input object
+        """
 
         if not StatHierarchyHandler is None:
             #overrides all other arguments
@@ -1136,7 +1147,25 @@ class StatHierarchyHandler(RMFHierarchyHandler):
         except ImportError:
             import pickle
         fl=open(filename,'rb')
-        self.data=pickle.load(fl)
+        data_structure=pickle.load(fl)
+        #first check that it is a list
+        if not type(data_structure) is list:
+            raise TypeError("%filename should contain a list of IMP.pmi.output.DataEntry or IMP.pmi.output.Cluster" % filename)
+        # second check the types
+        if all(isinstance(item, IMP.pmi.output.DataEntry) for item in data_structure):
+            self.data=data_structure
+        elif all(isinstance(item, IMP.pmi.output.Cluster) for item in data_structure):
+            nmodels=0
+            for cluster in data_structure:
+                nmodels+=len(cluster)
+            self.data=[None]*nmodels
+            for cluster in data_structure:
+                print(cluster)
+                for n,data in enumerate(cluster):
+                    index=cluster.members[n]
+                    self.data[index]=data
+        else:
+            raise TypeError("%filename should contain a list of IMP.pmi.output.DataEntry or IMP.pmi.output.Cluster" % filename)
 
     def set_frame(self,index):
         nm=self.data[index].rmf_name
@@ -1291,6 +1320,51 @@ class Cluster(object):
         self.center_index=None
         return self
 
+
+def plot_clusters_populations(clusters):
+    indexes=[]
+    populations=[]
+    for cluster in clusters:
+        indexes.append(cluster.cluster_id)
+        populations.append(len(cluster))
+
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.bar(indexes, populations, 0.5, color='r') #, yerr=men_std)
+    ax.set_ylabel('Population')
+    ax.set_xlabel(('Cluster index'))
+    plt.show()
+
+def plot_clusters_precisions(clusters):
+    indexes=[]
+    precisions=[]
+    for cluster in clusters:
+        indexes.append(cluster.cluster_id)
+
+        prec=cluster.precision
+        print(cluster.cluster_id,prec)
+        if prec is None:
+            prec=0.0
+        precisions.append(prec)
+
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.bar(indexes, precisions, 0.5, color='r') #, yerr=men_std)
+    ax.set_ylabel('Precision [A]')
+    ax.set_xlabel(('Cluster index'))
+    plt.show()
+
+def plot_clusters_scores(clusters):
+    indexes=[]
+    values=[]
+    for cluster in clusters:
+        indexes.append(cluster.cluster_id)
+        values.append([])
+        for data in cluster:
+            values[-1].append(data.score)
+
+    plot_fields_box_plots("scores.pdf", values, indexes, frequencies=None,
+                          valuename="Scores", positionname="Cluster index", xlabels=None,scale_plot_length=1.0)
 
 class CrossLinkIdentifierDatabase(object):
     def __init__(self):

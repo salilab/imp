@@ -194,6 +194,12 @@ class _EntryDumper(_Dumper):
             l.write(id=entry_id)
 
 
+class _CommentDumper(_Dumper):
+    def dump(self, writer):
+        for comment in self.simo._comments:
+            writer.write_comment(comment)
+
+
 class _SoftwareDumper(_Dumper):
     def __init__(self, simo):
         super(_SoftwareDumper, self).__init__(simo)
@@ -1394,6 +1400,16 @@ class _TransformedChain(object):
     entity = property(lambda self: self.orig_chain.entity)
     orig_comp = property(lambda self: self.orig_chain.comp)
 
+class _Excluder(object):
+    def __init__(self, component, simo):
+        self._seqranges = simo._exclude_coords.get(component, [])
+
+    def is_excluded(self, indexes):
+        """Return True iff the given sequence range is excluded."""
+        for seqrange in self._seqranges:
+            if indexes[0] >= seqrange[0] and indexes[-1] <= seqrange[1]:
+                return True
+
 
 class _Model(object):
     def __init__(self, prot, simo, protocol, assembly, representation, group):
@@ -1449,6 +1465,7 @@ class _Model(object):
         # Gather by chain ID (should be sorted by chain ID already)
         self.chains = []
         chain = None
+        excluder = None
 
         for (xyz, atom_type, residue_type, chain_id, residue_index,
              all_indexes, radius) in particle_infos_for_pdb:
@@ -1457,8 +1474,11 @@ class _Model(object):
                 chain.entity = entity_for_chain[chain_id]
                 chain.comp = comp_for_chain[chain_id]
                 self.chains.append(chain)
-            chain.add(xyz, atom_type, residue_type, residue_index,
-                      all_indexes, radius)
+                excluder = _Excluder(chain.comp, simo)
+            if not excluder.is_excluded(all_indexes if all_indexes
+                                        else [residue_index]):
+                chain.add(xyz, atom_type, residue_type, residue_index,
+                          all_indexes, radius)
 
     def parse_rmsf_file(self, fname, component):
         self.rmsf[component] = rmsf = {}
@@ -2502,6 +2522,11 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.model_groups = []
         self.default_model_group = None
         self.sequence_dict = {}
+
+        # Coordinates to exclude
+        self._exclude_coords = {}
+        self._comments = []
+
         self.model_repr_dump = _ModelRepresentationDumper(self)
         self.cross_link_dump = _CrossLinkDumper(self)
         self.em2d_dump = _EM2DDumper(self)
@@ -2521,6 +2546,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.model_dump = _ModelDumper(self)
         self.model_repr_dump.starting_model \
                     = self.starting_model_dump.starting_model
+        self.comment_dump = _CommentDumper(self)
         self.software_dump = _SoftwareDumper(self)
         self.post_process_dump = _PostProcessDumper(self)
         self.ensemble_dump = _EnsembleDumper(self)
@@ -2533,6 +2559,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.em2d_dump.models = self.model_dump.models
 
         self._dumpers = [_EntryDumper(self), # should always be first
+                         self.comment_dump,
                          _AuditAuthorDumper(self),
                          self.software_dump, _CitationDumper(self),
                          _ChemCompDumper(self),
@@ -2558,6 +2585,29 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self._representations.append(r)
         r.id = len(self._representations)
         return r
+
+    def exclude_coordinates(self, component, seqrange):
+        """Don't record coordinates for the given domain.
+           Coordinates for the given domain (specified by a component name
+           and a 2-element tuple giving the start and end residue numbers)
+           will be excluded from the mmCIF file. This can be used to exclude
+           parts of the structure that weren't well resolved in modeling.
+           Any bead or residue that lies wholly within this range will be
+           excluded. Multiple ranges for a given component can be excluded
+           by calling this method multiple times."""
+        if component not in self._exclude_coords:
+            self._exclude_coords[component] = []
+        self._exclude_coords[component].append(seqrange)
+
+    def add_comment(self, comment):
+        """Add a comment to the mmCIF file"""
+        self._comments.append(comment)
+
+    def _is_excluded(self, component, start, end):
+        """Return True iff this chunk of sequence should be excluded"""
+        for seqrange in self._exclude_coords.get(component, ()):
+            if start >= seqrange[0] and end <= seqrange[1]:
+                return True
 
     def _add_state(self, state):
         """Create a new state and return a pointer to it."""
@@ -2626,6 +2676,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
     def add_pdb_element(self, state, name, start, end, offset, pdbname,
                         chain, hier, representation=None):
+        if self._is_excluded(name, start, end):
+            return
         if representation is None:
             representation = self._representations[0]
         p = _PDBFragment(state, name, start, end, offset, pdbname, chain,
@@ -2635,6 +2687,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
     def add_bead_element(self, state, name, start, end, num, hier,
                          representation=None):
+        if self._is_excluded(name, start, end):
+            return
         if representation is None:
             representation = self._representations[0]
         b = _BeadsFragment(state, name, start, end, num, hier)

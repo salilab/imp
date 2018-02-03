@@ -17,6 +17,7 @@ import IMP.display
 import operator
 import math
 import sys
+from collections import defaultdict
 
 # json default serializations
 def set_json_default(obj):
@@ -194,11 +195,15 @@ class _ProteinsResiduesArray(tuple):
         '''
         return _ProteinsResiduesArray((self[1],self[0],self[3],self[2]))
 
-    def __str__(self):
+    def __repr__(self):
         outstr=self.cldbsk.protein1_key+" "+str(self[0])
         outstr+=" "+self.cldbsk.protein2_key+" "+str(self[1])
         outstr+=" "+self.cldbsk.residue1_key+" "+str(self[2])
         outstr+=" "+self.cldbsk.residue2_key+" "+str(self[3])
+        return outstr
+
+    def __str__(self):
+        outstr=str(self[0])+"."+str(self[2])+"-"+str(self[1])+"."+str(self[3])
         return outstr
 
 class FilterOperator(object):
@@ -1296,6 +1301,19 @@ class MapCrossLinkDataBaseOnStructure(object):
         if type(rmf_or_stat_handler) is IMP.pmi.output.RMFHierarchyHandler or \
                 type(rmf_or_stat_handler) is IMP.pmi.output.StatHierarchyHandler:
             self.prots=rmf_or_stat_handler
+        self.distances=defaultdict(list)
+        self.array_to_id={}
+        self.id_to_array={}
+
+        print("computing distances fro all crosslinks and all structures")
+        for i in self.prots[::10]:
+            self.compute_distances()
+            for key,xl in enumerate(self.CrossLinkDataBase):
+                array=_ProteinsResiduesArray(xl)
+                self.array_to_id[array]=key
+                self.id_to_array[key]=array
+                if xl["MinAmbiguousDistance"] is not 'None':
+                    self.distances[key].append(xl["MinAmbiguousDistance"])
 
     def compute_distances(self):
         data=[]
@@ -1375,8 +1393,6 @@ class MapCrossLinkDataBaseOnStructure(object):
         return (results_sorted[0][0],results_sorted[0][5],results_sorted[0][6]),(results_sorted[0][1],results_sorted[0][2],results_sorted[0][3],results_sorted[0][4])
 
     def save_rmf_snapshot(self,filename,color_id=None):
-        if color_id is None:
-            color_id=self.CrossLinkDataBase.id_score_key
         sorted_group_ids=sorted(self.CrossLinkDataBase.data_base.keys())
         list_of_pairs=[]
         color_scores=[]
@@ -1390,7 +1406,10 @@ class MapCrossLinkDataBaseOnStructure(object):
                 except TypeError:
                     print("TypeError or missing chain/residue ",r1,c1,r2,c2)
                     continue
-                group_dists_particles.append((mdist,p1,p2,xllabel,float(xl[color_id])))
+                if color_id is not None:
+                    group_dists_particles.append((mdist,p1,p2,xllabel,float(xl[color_id])))
+                else:
+                    group_dists_particles.append((mdist,p1,p2,xllabel,0.0))
             if group_dists_particles:
                 (minmdist,minp1,minp2,minxllabel,mincolor_score)=min(group_dists_particles, key = lambda t: t[0])
                 color_scores.append(mincolor_score)
@@ -1401,26 +1420,48 @@ class MapCrossLinkDataBaseOnStructure(object):
         linear = IMP.core.Linear(0, 0.0)
         linear.set_slope(1.0)
         dps2 = IMP.core.DistancePairScore(linear)
-        rslin = IMP.RestraintSet(self.model, 'linear_dummy_restraints')
+        rslin = IMP.RestraintSet(self.prots.get_model(), 'linear_dummy_restraints')
         sgs=[]
         offset=min(color_scores)
         maxvalue=max(color_scores)
         for pair in list_of_pairs:
-            pr = IMP.core.PairRestraint(self.model, dps2, (pair[0], pair[1]))
+            pr = IMP.core.PairRestraint(self.prots.get_model(), dps2, (pair[0], pair[1]))
             pr.set_name(pair[2])
-            factor=(pair[3]-offset)/(maxvalue-offset)
-            print(factor)
+            if offset<maxvalue:
+                factor=(pair[3]-offset)/(maxvalue-offset)
+            else:
+                factor=0.0
             c=IMP.display.get_rgb_color(factor)
             seg=IMP.algebra.Segment3D(IMP.core.XYZ(pair[0]).get_coordinates(),IMP.core.XYZ(pair[1]).get_coordinates())
             rslin.add_restraint(pr)
             sgs.append(IMP.display.SegmentGeometry(seg,c,pair[2]))
 
         rh = RMF.create_rmf_file(filename)
-        IMP.rmf.add_hierarchies(rh, self.prots)
+        IMP.rmf.add_hierarchies(rh, [self.prots])
         IMP.rmf.add_restraints(rh,[rslin])
         IMP.rmf.add_geometries(rh, sgs)
         IMP.rmf.save_frame(rh)
         del rh
+
+    def boxplot_crosslink_distances(self,filename):
+        import numpy
+        keys=[self.id_to_array[k] for k in self.distances.keys()]
+        medians=[numpy.median(self.distances[self.array_to_id[k]]) for k in keys]
+        dists=[self.distances[self.array_to_id[k]] for k in keys]
+        distances_sorted_by_median=[x for _,x in sorted(zip(medians,dists))]
+        keys_sorted_by_median=[x for _,x in sorted(zip(medians,keys))]
+        IMP.pmi.output.plot_fields_box_plots(filename,
+                                         distances_sorted_by_median,
+                                         range(len(distances_sorted_by_median)),
+                                         xlabels=keys_sorted_by_median,scale_plot_length=0.2)
+
+    def get_crosslink_violations(self,threshold):
+        violations=defaultdict(list)
+        for k in self.distances:
+            #viols=map(lambda x:1.0*(x<= threshold), self.distances[k])
+            viols=self.distances[k]
+            violations[self.id_to_array[k]]=viols
+        return violations
 
 
 class CrossLinkDataBaseFromStructure(object):
