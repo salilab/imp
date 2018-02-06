@@ -998,7 +998,11 @@ class TopologyReader(object):
       hierarchy for this structure.
     - `color`: The color used in the output RMF file. Uses chimera names or R,G,B values
     - `fasta_fn`: Name of FASTA file containing this component.
-    - `fasta_id`: String found in FASTA sequence header line.
+    - `fasta_id`: String found in FASTA sequence header line. The sequence read
+      from the file is assumed to be a protein sequence. If it should instead
+      be treated as RNA or DNA, add an ',RNA' or ',DNA' suffix. For example,
+      a `fasta_id` of 'myseq,RNA' will read the sequence 'myseq' from the
+      FASTA file and treat it as RNA.
     - `pdb_fn`: Name of PDB file with coordinates (if available).
        If left empty, will set up as BEADS (you can also specify "BEADS")
        Can also write "IDEAL_HELIX".
