@@ -1974,9 +1974,11 @@ def shuffle_configuration(objects,
                           return_debug=False):
     """Shuffle particles. Used to restart the optimization.
     The configuration of the system is initialized by placing each
-    rigid body and each bead randomly in a box with a side of
-    max_translation angstroms, and far enough from each other to
-    prevent any steric clashes. The rigid bodies are also randomly rotated.
+    rigid body and each bead randomly in a box. If `bounding_box` is
+    specified, the particles are placed inside this box; otherwise, each
+    particle is displaced by up to max_translation angstroms, and randomly
+    rotated. Effort is made to place particles far enough from each other to
+    prevent any steric clashes.
     @param objects Can be one of the following inputs:
                IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set of them
     @param max_translation Max translation (rbs and flexible beads)
@@ -2125,20 +2127,20 @@ def shuffle_configuration(objects,
 
             # For gaussians, treat this fb as an rb
             if IMP.core.NonRigidMember.get_is_setup(fb):
-                xyz=[fb.get_value(IMP.FloatKey(4)), fb.get_value(IMP.FloatKey(5)), fb.get_value(IMP.FloatKey(6))]
-                xyz_transformed=transformation.get_transformed(xyz)
+                memb = IMP.core.NonRigidMember(fb)
+                xyz = memb.get_internal_coordinates()
                 if bounding_box:
-                    # Translate to origin
-                    fb.set_value(IMP.FloatKey(4),xyz_transformed[0]-xyz[0])
-                    fb.set_value(IMP.FloatKey(5),xyz_transformed[1]-xyz[1])
-                    fb.set_value(IMP.FloatKey(6),xyz_transformed[2]-xyz[2])
-                    debug.append([xyz,other_idxs if avoidcollision_fb else set()])
-                    xyz2=[fb.get_value(IMP.FloatKey(4)), fb.get_value(IMP.FloatKey(5)), fb.get_value(IMP.FloatKey(6))]
+                    # 'translation' is the new desired position in global
+                    # coordinates; we need to convert that to internal
+                    # coordinates first using the rigid body's ref frame
+                    rf = memb.get_rigid_body().get_reference_frame()
+                    glob_to_int = rf.get_transformation_from()
+                    memb.set_internal_coordinates(
+                            glob_to_int.get_transformed(translation))
                 else:
-                    fb.set_value(IMP.FloatKey(4),xyz_transformed[0])
-                    fb.set_value(IMP.FloatKey(5),xyz_transformed[1])
-                    fb.set_value(IMP.FloatKey(6),xyz_transformed[2])
-                    debug.append([xyz,other_idxs if avoidcollision_fb else set()])
+                    xyz_transformed=transformation.get_transformed(xyz)
+                    memb.set_internal_coordinates(xyz_transformed)
+                debug.append([xyz,other_idxs if avoidcollision_fb else set()])
             else:
                 d =IMP.core.XYZ(fb)
                 if bounding_box:

@@ -125,34 +125,26 @@ class Tests(IMP.test.TestCase):
         mv,rb1 = dof.create_rigid_body(mol, nonrigid_parts=mol.get_non_atomic_residues())
         mv,rb2 = dof.create_rigid_body(mol2, nonrigid_parts=mol2.get_non_atomic_residues())
         results = IMP.pmi.tools.shuffle_configuration(hier,
-                                                      bounding_box=((100,100,100),
-                                                      (200,200,200)),return_debug=True)
+                                                      bounding_box=((1000,1000,1000),
+                                                      (1200,1200,1200)),return_debug=True)
 
         rbs_trans_after={}
         fbs_position_after={}
 
         rbs,fbs = IMP.pmi.tools.get_rbs_and_beads([hier])
 
+        mdl.update()
         for rb in rbs:
             coor_rb = IMP.core.XYZ(rb).get_coordinates()
-            self.assertTrue(100.0 <coor_rb[0]< 200.0)
-            self.assertTrue(100.0 <coor_rb[1]< 200.0)
-            self.assertTrue(100.0 <coor_rb[2]< 200.0)
+            self.assertTrue(1000.0 <coor_rb[0]< 1200.0)
+            self.assertTrue(1000.0 <coor_rb[1]< 1200.0)
+            self.assertTrue(1000.0 <coor_rb[2]< 1200.0)
 
         for fb in fbs:
-            if IMP.core.NonRigidMember.get_is_setup(fb):
-                coor_fb=IMP.algebra.Vector3D([fb.get_value(IMP.FloatKey(4)),
-                                               fb.get_value(IMP.FloatKey(5)),
-                                               fb.get_value(IMP.FloatKey(6))])
-                self.assertTrue(100.0 <coor_fb[0]< 200.0)
-                self.assertTrue(100.0 <coor_fb[1]< 200.0)
-                self.assertTrue(100.0 <coor_fb[2]< 200.0)
-
-            else:
-                coor_fb=IMP.core.XYZ(fb).get_coordinates()
-                self.assertTrue(100.0 <coor_fb[0]< 200.0)
-                self.assertTrue(100.0 <coor_fb[1]< 200.0)
-                self.assertTrue(100.0 <coor_fb[2]< 200.0)
+            coor_fb=IMP.core.XYZ(fb).get_coordinates()
+            self.assertTrue(1000.0 <coor_fb[0]< 1200.0)
+            self.assertTrue(1000.0 <coor_fb[1]< 1200.0)
+            self.assertTrue(1000.0 <coor_fb[2]< 1200.0)
 
 
     def test_shuffle_deep(self):
@@ -194,10 +186,8 @@ class Tests(IMP.test.TestCase):
 
         for fb in fbs:
             if IMP.core.NonRigidMember.get_is_setup(fb):
-                fbs_position_before[fb]=IMP.algebra.Vector3D(
-                    [fb.get_value(IMP.FloatKey(4)),
-                    fb.get_value(IMP.FloatKey(5)),
-                    fb.get_value(IMP.FloatKey(6))])
+                fbs_position_before[fb] = \
+                        IMP.core.NonRigidMember(fb).get_internal_coordinates()
             else:
                 fbs_position_before[fb]=IMP.core.XYZ(fb).get_coordinates()
 
@@ -208,10 +198,8 @@ class Tests(IMP.test.TestCase):
 
         for fb in fbs:
             if IMP.core.NonRigidMember.get_is_setup(fb):
-                fbs_position_after[fb]=IMP.algebra.Vector3D(
-                    [fb.get_value(IMP.FloatKey(4)),
-                    fb.get_value(IMP.FloatKey(5)),
-                    fb.get_value(IMP.FloatKey(6))])
+                fbs_position_after[fb] = \
+                        IMP.core.NonRigidMember(fb).get_internal_coordinates()
             else:
                 fbs_position_after[fb]=IMP.core.XYZ(fb).get_coordinates()
 
