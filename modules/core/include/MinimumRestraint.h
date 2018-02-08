@@ -2,7 +2,7 @@
  *  \file IMP/core/MinimumRestraint.h
  *  \brief Score based on the k minimum restraints.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

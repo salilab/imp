@@ -1,7 +1,7 @@
 /**
  *  \file PDBParser.h   \brief A class for reading PDB files
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/pdb.h>

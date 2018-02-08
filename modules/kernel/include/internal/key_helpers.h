@@ -2,7 +2,7 @@
  *  \file key_helpers.h    \brief helpers for declaring keys
  *  such as classes KeyData, KeyTable and method get_key_data()
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

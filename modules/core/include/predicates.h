@@ -2,7 +2,7 @@
  *  \file IMP/core/predicates.h
  *  \brief Score particles based on a bounding box
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_PREDICATES_H

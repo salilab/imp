@@ -7,7 +7,7 @@
  *  test suite). For runtime checks of IMP itself, see IMP_INTERNAL_CHECK
  *  and IMP_USAGE_CHECK.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

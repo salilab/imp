@@ -2,7 +2,7 @@
  *  \file display/internal/utility.h
  *  \brief Base class for writing geometry to a file
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_INTERNAL_UTILITY_H

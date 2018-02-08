@@ -1,7 +1,7 @@
 /**
  *  \file ClosedCubicSpline.cpp  \brief Closed cubic spline function.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

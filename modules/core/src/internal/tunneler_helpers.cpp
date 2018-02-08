@@ -2,7 +2,7 @@
  *  \file tunneler_helpers.cpp
  *  \brief helper classes for RigidBodyTunneler
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

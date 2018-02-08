@@ -2,7 +2,7 @@
  *  \file IMP/ScoringFunction.h
  *  \brief Represents a scoring function on the model.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

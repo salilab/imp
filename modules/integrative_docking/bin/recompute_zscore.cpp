@@ -1,7 +1,7 @@
 /**
  *  \file recompute_zscore.cpp \brief A program for combination of score files
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 #include <math.h>

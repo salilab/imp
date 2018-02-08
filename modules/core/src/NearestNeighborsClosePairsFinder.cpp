@@ -2,7 +2,7 @@
  *  \file NearestNeighborsClosePairsFinder.cpp
  *  \brief Test all pairs.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

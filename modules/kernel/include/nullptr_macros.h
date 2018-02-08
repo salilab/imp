@@ -2,7 +2,7 @@
  *  \file IMP/nullptr_macros.h
  *  \brief Provide a nullptr keyword analog.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_NULLPTR_MACROS_H

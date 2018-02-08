@@ -2,7 +2,7 @@
  *  \file IMP/piecewise_linear_distribution.h
  *  \brief boost piecewise linear.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

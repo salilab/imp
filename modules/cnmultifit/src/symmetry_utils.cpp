@@ -2,7 +2,7 @@
  *  \file symmetry_utils.cpp
  *  \brief Symmetry utilities.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

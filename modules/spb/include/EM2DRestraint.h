@@ -2,7 +2,7 @@
  *  \file IMP/spb/EM2DRestraint.h
  *  \brief A restraint for using EM2D cross-corr in a Bayesian way
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/domino/DiscreteSampler.h
  *  \brief A base class for discrete samplers.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

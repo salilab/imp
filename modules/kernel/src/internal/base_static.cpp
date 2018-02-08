@@ -1,7 +1,7 @@
 /**
  *  \file static.cpp   \brief all static data for module.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

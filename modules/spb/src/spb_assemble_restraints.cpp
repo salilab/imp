@@ -2,7 +2,7 @@
  *  \file spb_create_restraints.cpp
  *  \brief Assemble the restraints
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/algebra.h>

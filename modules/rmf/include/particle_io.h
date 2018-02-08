@@ -2,7 +2,7 @@
  *  \file IMP/rmf/particle_io.h
  *  \brief Manage read/write of particles from/to RMF files.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

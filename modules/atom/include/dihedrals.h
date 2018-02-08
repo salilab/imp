@@ -2,7 +2,7 @@
  *  \file IMP/atom/dihedrals.h
  *  \brief Helpers to extract dihedral information.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

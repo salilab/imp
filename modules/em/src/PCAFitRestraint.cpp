@@ -2,7 +2,7 @@
  *  \file PCAFitRestraint.cpp
  *  \brief Calculate match between density and particle PCA
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/em/PCAFitRestraint.h>

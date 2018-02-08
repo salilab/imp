@@ -1,7 +1,7 @@
 /**
  *  \file MinimalSet.h    \brief Maintain a set of low scoring elements.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

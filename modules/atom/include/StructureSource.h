@@ -1,7 +1,7 @@
 /**
  *  \file IMP/atom/StructureSource.h     \brief Add a Structure ID and Chain ID
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

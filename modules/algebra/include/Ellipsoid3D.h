@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Ellipsoid3D.h   \brief Simple 3D ellipsoid class.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

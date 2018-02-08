@@ -4,7 +4,7 @@
  * \brief Multiple states generation for multiple SAXS profiles
  *
  * Author: Dina Schneidman
- * Copyright 2007-2017 IMP Inventors. All rights reserved.
+ * Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multi_state/EnsembleGenerator.h>
@@ -170,7 +170,7 @@ int main(int argc, char* argv[]) {
 The weights are computed to minimize the chi between the first profile \
 and a weighted average of the rest.")
     ("version", "MultiFoXS (IMP applications)\n \
-Copyright 2007-2017 IMP Inventors.\nAll rights reserved. \n \
+Copyright 2007-2018 IMP Inventors.\nAll rights reserved. \n \
 License: GNU LGPL version 2.1 or later<http://gnu.org/licenses/lgpl.html>.\n\
 Written by Dina Schneidman.")
     ("number-of-states,s", po::value<int>(&number_of_states)->default_value(10),

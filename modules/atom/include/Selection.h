@@ -2,7 +2,7 @@
  *  \file IMP/atom/Selection.h
  *  \brief Select a subset of a hierarchy.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_SELECTION_H

@@ -2,7 +2,7 @@
  *  \file spb/HelixDecorator.cpp
  *  \brief Add a name to a particle.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

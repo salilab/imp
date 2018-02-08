@@ -2,7 +2,7 @@
  *  \file IMP/core/SurfaceDistancePairScore.h
  *  \brief A score on the distance between a surface and a sphere.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_SURFACE_DISTANCE_PAIR_SCORE_H

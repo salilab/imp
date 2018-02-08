@@ -2,7 +2,7 @@
  *  \file IMP/spb/ChiSquareMetric.h
  *  \brief Contact Map Metric
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_CHI_SQUARE_METRIC_H

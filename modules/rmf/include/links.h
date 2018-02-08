@@ -2,7 +2,7 @@
  *  \file IMP/rmf/links.h
  *  \brief Manage links between \imp objects and a part of the RMF file.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

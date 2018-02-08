@@ -1,7 +1,7 @@
 /**
  *  \file IMP/random.h    \brief Random number generators used by IMP.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  * \file IMP/atom/CADihedralRestraint.h
  * \brief Dihedral restraint between five residues in CA-only representation.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

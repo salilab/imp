@@ -1,7 +1,7 @@
 /**
  *  \file Atom.cpp   \brief Simple atoms decorator.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

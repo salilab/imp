@@ -2,7 +2,7 @@
  *  \file IMP/core/WeightedSumOfExponential.h
  *  \brief Negative logarithm of weighted sum of negative exponential of unary functions.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_WEIGHTED_SUM_OF_EXPONENTIAL_H

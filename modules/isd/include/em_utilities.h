@@ -2,7 +2,7 @@
  *  \file IMP/isd/em_utilities.h
  *  \brief Common scoring functions
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

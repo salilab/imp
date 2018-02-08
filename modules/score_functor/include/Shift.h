@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/Shift.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_SHIFT_H

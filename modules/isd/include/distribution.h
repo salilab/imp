@@ -2,7 +2,7 @@
  *  \file IMP/isd/distribution.h
  *  \brief Base class for probability distributions
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_DISTRIBUTION_H

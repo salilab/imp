@@ -2,7 +2,7 @@
  *  \file IMP/display/display_macros.h
  *  \brief macros for display classes
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_MACROS_H

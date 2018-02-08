@@ -2,7 +2,7 @@
  *  \file IMP/rmf/atom_links.h
  *  \brief Manage links between an RMF file and an atom::Hierarchy.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

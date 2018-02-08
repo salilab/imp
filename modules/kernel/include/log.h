@@ -2,7 +2,7 @@
  *  \file IMP/log.h
  *  \brief Logging and error reporting support.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
