@@ -32,6 +32,7 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   PointerMember<ClassnameContainer> input_;
   mutable boost::unordered_map<int, PLURALINDEXTYPE> lists_;
   boost::unordered_map<int, PointerMember<ClassnameScore> > scores_;
+  bool is_get_inputs_ignores_individual_scores_;
   mutable std::size_t input_version_;
   bool is_unknown_score_set_;
   bool error_on_unknown_;
@@ -65,6 +66,15 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
       IMP_OVERRIDE;
   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+
+#ifndef SWIG
+  //! use at own risk - for efficiency in case e.g. all scores use same inputs
+  //! If true, do_get_inputs() includes all inputs in input container
+  //! but not individual inputs from individual scores
+  void set_is_get_inputs_ignores_individual_scores(bool is_ignore){
+    is_get_inputs_ignores_individual_scores_= is_ignore;
+  }
+#endif
   IMP_OBJECT_METHODS(PredicateClassnamesRestraint);
 
  private:

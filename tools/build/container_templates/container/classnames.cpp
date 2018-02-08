@@ -475,6 +475,7 @@ PredicateClassnamesRestraint::PredicateClassnamesRestraint(
     : Restraint(input->get_model(), name),
       predicate_(pred),
       input_(input),
+      is_get_inputs_ignores_individual_scores_(false),
       input_version_(input->get_contents_hash()),
       is_unknown_score_set_(false),
       error_on_unknown_(true) {}
@@ -498,13 +499,15 @@ void PredicateClassnamesRestraint::do_add_score_and_derivatives(
 
 ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
   ModelObjectsTemp ret;
+  ret.push_back(input_);
   ParticleIndexes all = input_->get_all_possible_indexes();
   ret += predicate_->get_inputs(get_model(), all);
-  typedef std::pair<int, PointerMember<ClassnameScore> > SP;
-  IMP_FOREACH(const SP & sp, scores_) {
-    ret += sp.second->get_inputs(get_model(), all);
+  if(!is_get_inputs_ignores_individual_scores_){
+    typedef std::pair<int, PointerMember<ClassnameScore> > SP;
+    IMP_FOREACH(const SP & sp, scores_) {
+      ret += sp.second->get_inputs(get_model(), all);
+    }
   }
-  ret.push_back(input_);
   return ret;
 }
 
