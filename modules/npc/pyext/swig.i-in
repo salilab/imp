@@ -12,6 +12,13 @@ IMP_SWIG_OBJECT( IMP::npc, AssemblySymmetryByDihedralRestraint, AssemblySymmetry
 IMP_SWIG_OBJECT( IMP::npc, ProteinProximityRestraint, ProteinProximityRestraints);
 IMP_SWIG_OBJECT( IMP::npc, CompositeRestraint, CompositeRestraints);
 IMP_SWIG_OBJECT( IMP::npc, MinimumSphereDistancePairScore, MinimumSphereDistancePairScores);
+IMP_SWIG_OBJECT( IMP::npc, MembraneExclusionRestraint, MembraneExclusionRestraints);
+IMP_SWIG_OBJECT( IMP::npc, MembraneSurfaceLocationConditionalRestraint, MembraneSurfaceLocationConditionalRestraints);
+IMP_SWIG_OBJECT( IMP::npc, XYRadialPositionRestraint, XYRadialPositionRestraints);
+IMP_SWIG_OBJECT( IMP::npc, YAxialPositionLowerRestraint, YAxialPositionLowerRestraints);
+IMP_SWIG_OBJECT( IMP::npc, YAxialPositionRestraint, YAxialPositionRestraints);
+IMP_SWIG_OBJECT( IMP::npc, YAxialPositionUpperRestraint, YAxialPositionUpperRestraints);
+IMP_SWIG_OBJECT( IMP::npc, ZAxialPositionRestraint, ZAxialPositionRestraints);
 
 %include "IMP/npc/ProteinLocalizationRestraint.h"
 %include "IMP/npc/CompositeRestraint.h"
