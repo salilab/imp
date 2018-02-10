@@ -19,6 +19,10 @@
 
 IMPNPC_BEGIN_NAMESPACE
 
+//! Restrain particles by their z coordinate
+/** Each particle's z coordinate is harmonically restrained to lie between
+    the given lower and upper bounds.
+  */
 class IMPNPCEXPORT ZAxialPositionRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -44,6 +48,10 @@ public:
   IMP_OBJECT_METHODS(ZAxialPositionRestraint);;
 };
 
+//! Restrain particles by their z coordinate
+/** Each particle's z coordinate is harmonically restrained to lie above
+    the given lower bound.
+  */
 class IMPNPCEXPORT ZAxialPositionLowerRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -68,6 +76,10 @@ public:
   IMP_OBJECT_METHODS(ZAxialPositionLowerRestraint);;
 };
 
+//! Restrain particles by their z coordinate
+/** Each particle's z coordinate is harmonically restrained to lie below
+    the given upper bound.
+  */
 class IMPNPCEXPORT ZAxialPositionUpperRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -93,6 +105,10 @@ public:
 };
 
 
+//! Restrain particles by their y coordinate
+/** Each particle's y coordinate is harmonically restrained to lie between
+    the given lower and upper bounds.
+  */
 class IMPNPCEXPORT YAxialPositionRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -118,6 +134,10 @@ public:
   IMP_OBJECT_METHODS(YAxialPositionRestraint);;
 };
 
+//! Restrain particles by their y coordinate
+/** Each particle's y coordinate is harmonically restrained to lie above
+    the given lower bound.
+  */
 class IMPNPCEXPORT YAxialPositionLowerRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -142,6 +162,10 @@ public:
   IMP_OBJECT_METHODS(YAxialPositionLowerRestraint);;
 };
 
+//! Restrain particles by their y coordinate
+/** Each particle's y coordinate is harmonically restrained to lie below
+    the given upper bound.
+  */
 class IMPNPCEXPORT YAxialPositionUpperRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -167,6 +191,10 @@ public:
 };
 
 
+//! Restrain particles by their distance from the z axis in the xy plane
+/** Each particle's distance to the z axis is harmonically restrained to
+    lie between the given lower and upper bounds.
+  */
 class IMPNPCEXPORT XYRadialPositionRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -192,6 +220,10 @@ public:
   IMP_OBJECT_METHODS(XYRadialPositionRestraint);;
 };
 
+//! Restrain particles by their distance from the z axis in the xy plane
+/** Each particle's distance to the z axis is harmonically restrained to
+    lie above the given lower bound.
+  */
 class IMPNPCEXPORT XYRadialPositionLowerRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -216,6 +248,10 @@ public:
   IMP_OBJECT_METHODS(XYRadialPositionLowerRestraint);;
 };
 
+//! Restrain particles by their distance from the z axis in the xy plane
+/** Each particle's distance to the z axis is harmonically restrained to
+    lie below the given upper bound.
+  */
 class IMPNPCEXPORT XYRadialPositionUpperRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -241,6 +277,11 @@ public:
 };
 
 
+//! Try to keep all particle surfaces in contact
+/** The particles (each of which should be a core::XYZR) are harmonically
+    restrained such that each particle's sphere surface is in contact
+    with every other surface.
+  */
 class IMPNPCEXPORT ProteinContactRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -265,6 +306,11 @@ public:
 };
 
 
+//! Try to keep particle surfaces in contact in a chain
+/** The particles (each of which should be a core::XYZR) are harmonically
+    restrained such that each particle's sphere surface is in contact
+    with the surface of the previous particle.
+  */
 class IMPNPCEXPORT ProteinChainRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -288,6 +334,10 @@ public:
 };
 
 
+//! Try to keep particles localized on a membrane surface
+/** The membrane is defined in this case to be a half torus in the xy
+    plane with center at the origin.
+  */
 class IMPNPCEXPORT MembraneSurfaceLocationRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -314,6 +364,11 @@ public:
 };
 
 
+//! Try to one set of particles localized on a membrane surface
+/** The membrane is defined in this case to be a half torus in the xy
+    plane with center at the origin. One of the two sets of particles
+    (whichever is closer) is restrained to the membrane surface.
+  */
 class IMPNPCEXPORT MembraneSurfaceLocationConditionalRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc1_;
