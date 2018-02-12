@@ -1,0 +1,2 @@
+headers="google/dense_hash_map"
+body="google::dense_hash_map<int,float> a;"
