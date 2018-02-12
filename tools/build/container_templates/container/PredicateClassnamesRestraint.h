@@ -13,12 +13,13 @@
 #include <IMP/ClassnamePredicate.h>
 #include "generic.h"
 
-#if IMP_CONTAINER_HAS_GOOGLE_DENSE_HASH_MAP==1
-#define IMP_CONTAINER_PREDICATE_USE_GOOGLE_DENSE_HASH_MAP
-#include <google/dense_hash_map>
-#elif IMP_CONTAINER_HAS_ROBIN_MAP==1
+
+#if IMP_CONTAINER_HAS_ROBIN_MAP==1
 #define IMP_CONTAINER_PREDICATE_USE_ROBIN_MAP
 #include <tsl/robin_map.h>
+#elif IMP_CONTAINER_HAS_GOOGLE_DENSE_HASH_MAP==1
+#define IMP_CONTAINER_PREDICATE_USE_GOOGLE_DENSE_HASH_MAP
+#include <google/dense_hash_map>
 #else
 #define IMP_CONTAINER_PREDICATE_USE_STL_MAP
 #include <boost/unordered_map.hpp>
@@ -26,7 +27,6 @@
 
 #include <iostream>
 
-//#define IMP_CONTAINER_TEASLE_ROBIN_MAP
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -42,12 +42,12 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   PointerMember<ClassnamePredicate> predicate_;
   PointerMember<ClassnameContainer> input_;
-#if IMP_CONTAINER_HAS_GOOGLE_DENSE_HASH_MAP==1
-  mutable google::dense_hash_map<int, PLURALINDEXTYPE> lists_;
-  google::dense_hash_map<int, PointerMember<ClassnameScore> > scores_;
-#elif IMP_CONTAINER_PREDICATE_USE_ROBIN_MAP==1
+#if IMP_CONTAINER_HAS_ROBIN_MAP==1
   mutable tsl::robin_map<int, PLURALINDEXTYPE> lists_;
   tsl::robin_map<int, PointerMember<ClassnameScore> > scores_;
+#elif IMP_CONTAINER_HAS_GOOGLE_DENSE_HASH_MAP==1
+  mutable google::dense_hash_map<int, PLURALINDEXTYPE> lists_;
+  google::dense_hash_map<int, PointerMember<ClassnameScore> > scores_;
 #else
   mutable std::unordered_map<int, PLURALINDEXTYPE> lists_;
   std::unordered_map<int, PointerMember<ClassnameScore> > scores_;
