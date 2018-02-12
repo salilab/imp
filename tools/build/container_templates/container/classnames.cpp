@@ -478,7 +478,12 @@ PredicateClassnamesRestraint::PredicateClassnamesRestraint(
       is_get_inputs_ignores_individual_scores_(false),
       input_version_(input->get_contents_hash()),
       is_unknown_score_set_(false),
-      error_on_unknown_(true) {}
+      error_on_unknown_(true) {
+#ifdef IMP_CONTAINER_PREDICATE_USE_GOOGLE_DENSE_HASH_MAP
+  lists_.set_empty_key(-1);
+  scores_.set_empty_key(-1);
+#endif
+}
 
 void PredicateClassnamesRestraint::do_add_score_and_derivatives(
     ScoreAccumulator sa) const {
@@ -516,11 +521,13 @@ Restraints PredicateClassnamesRestraint::do_create_current_decomposition()
   Restraints ret;
   typedef std::pair<int, PLURALINDEXTYPE> LP;
   IMP_FOREACH(const LP & lp, lists_) {
-    ClassnameScore *score = scores_.find(lp.first)->second;
-    IMP_FOREACH(PASSINDEXTYPE it, lp.second) {
-      Restraints r =
+    if(lists_.size()>0){
+      ClassnameScore *score = scores_.find(lp.first)->second;
+      IMP_FOREACH(PASSINDEXTYPE it, lp.second) {
+        Restraints r =
           score->create_current_decomposition(get_model(), it);
-      ret += r;
+        ret += r;
+      }
     }
   }
   return ret;
@@ -533,12 +540,25 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
   input_version_ = h;
 
   // populate lists with bins of PLURALINDEXTYPE for each predicate,
-  // and put unknown predicates in unknown_bin, is unknown score exists
+  // and put unknown predicates in unknown_bin, if unknown score exists
   const int unknown_bin = std::numeric_limits<int>::max();
   //  bool is_unknown_score=(scores_.find(unknown_bin) != scores_.end());
-  lists_.clear();
+  //   lists_.clear();
+#ifdef IMP_CONTAINER_PREDICATE_USE_ROBIN_MAP
+  for(tsl::robin_map<int, PLURALINDEXTYPE>::iterator lists_it= lists_.begin();
+      lists_it != lists_.end(); lists_it++){
+    lists_it.value().clear();
+  }
+#else
+  typedef std::pair<const int, PLURALINDEXTYPE> LP;
+  IMP_FOREACH(LP & lp, lists_) {
+    lp.second.clear();
+  }
+#endif
+  predicate_->prepare_for_get_value_index_in_batch(get_model());
   IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
-    int bin = predicate_->get_value_index(get_model(), it); // TODO: get_value index seems more expensive computationally for OrderedTypeClassnamePredicate than it should - check it out
+    // TODO: get_value index seems more expensive computationally for OrderedTypeClassnamePredicate than it should - check it out
+    int bin = predicate_->get_value_index_in_batch(get_model(), it);
     if (scores_.find(bin) != scores_.end()) {
       lists_[bin].push_back(it);
     } else {

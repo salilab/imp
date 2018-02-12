@@ -1,1 +1,2 @@
 headers="tsl/robin_map.h"
+body="tsl::robin_map<int, int> a;"
