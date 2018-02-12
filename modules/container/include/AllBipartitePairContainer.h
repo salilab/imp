@@ -38,12 +38,18 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
  public:
   template <class F>
   void apply_generic(F* f) const {
+    // Note: currently assumes putting all pairs in memory is
+    // feasible+reasonable but this could be easily made in chunks if
+    // needed.
     validate_readable();
+    ParticleIndexPairs pips;
     IMP_FOREACH(ParticleIndex pa, a_->get_contents()) {
       IMP_FOREACH(ParticleIndex pb, b_->get_contents()) {
-        f->apply_index(get_model(), ParticleIndexPair(pa, pb));
+        pips.push_back(ParticleIndexPair(pa, pb));
       }
     }
+    f->apply_indexes(get_model(), pips,
+                     0, pips.size());
   }
   AllBipartitePairContainer(SingletonContainerAdaptor a,
                             SingletonContainerAdaptor b,
