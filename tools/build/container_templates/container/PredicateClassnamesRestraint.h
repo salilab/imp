@@ -22,7 +22,8 @@
 #include <google/dense_hash_map>
 #else
 #define IMP_CONTAINER_PREDICATE_USE_STL_MAP
-#include <boost/unordered_map.hpp>
+#include <unordered_map>
+//#include <boost/unordered_map.hpp>
 #endif
 
 #include <iostream>
