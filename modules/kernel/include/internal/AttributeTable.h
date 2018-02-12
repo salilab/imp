@@ -42,10 +42,16 @@ struct DefaultTraits {
   typedef T Value;
   typedef T PassValue;
   typedef K Key;
+  typedef PassValue const* ContainerConstDataAccess;
+  typedef Value* ContainerDataAccess;
   //! returns the maximum of a and b
   static const T &max(const T &a, const T &b) { return std::max(a, b); }
   //! returns the minimum of a and b
   static const T &min(const T &a, const T &b) { return std::min(a, b); }
+  //! allow direct const access to the container data
+  static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
+  //! allow direct non-const access to the container data
+  static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
 };
 
 template <class T, class K>
@@ -54,10 +60,16 @@ struct ArrayTraits {
   typedef IndexVector<ParticleIndexTag, Value> Container;
   typedef const Value &PassValue;
   typedef K Key;
+  typedef Value const* ContainerConstDataAccess;
+  typedef Value* ContainerDataAccess;
   static Value get_invalid() { return Value(); }
   static bool get_is_valid(const Value &v) { return !v.empty(); }
   static const Value &max(const Value &a, const Value &) { return a; }
   static const Value &min(const Value &, const Value &b) { return b; }
+  //! allow direct const access to the container data
+  static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
+  //! allow direct non-const access to the container data
+  static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
 };
 
 //! traits for a table of Float attribute (a C/C++ double type),
@@ -80,10 +92,10 @@ struct FloatAttributeTableTraits : public DefaultTraits<double, FloatKey> {
       } else*/
     return f < std::numeric_limits<double>::max();
   }
-  //! allow direct const access to the container data
-  static double const* access_container_data(Container const& c) { return c.data(); }
-  //! allow direct non-const access to the container data
-  static double*       access_container_data(Container&       c) { return c.data(); }
+  //  //! allow direct const access to the container data
+  //  static double const* access_container_data(Container const& c) { return c.data(); }
+  //  //! allow direct non-const access to the container data
+  //  static double*       access_container_data(Container&       c) { return c.data(); }
 
 };
 
@@ -104,10 +116,17 @@ struct ObjectAttributeTableTraits {
   typedef ObjectKey Key;
   typedef IndexVector<ParticleIndexTag, Pointer<Object> >
       Container;
+  typedef Pointer<Object> const* ContainerConstDataAccess;
+  typedef Pointer<Object>* ContainerDataAccess;
   static Value get_invalid() { return nullptr; }
   static bool get_is_valid(const Value &f) { return f; }
   static Value min(Value a, Value b) { return std::min(a, b); }
   static Value max(Value a, Value b) { return std::max(a, b); }
+    //! allow direct const access to the container data
+  static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
+  //! allow direct non-const access to the container data
+  static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
+
 };
 
 struct WeakObjectAttributeTableTraits {
@@ -116,10 +135,16 @@ struct WeakObjectAttributeTableTraits {
   typedef WeakObjectKey Key;
   typedef IndexVector<ParticleIndexTag, WeakPointer<Object> >
       Container;
+  typedef WeakPointer<Object> const* ContainerConstDataAccess;
+  typedef WeakPointer<Object>* ContainerDataAccess;
   static Value get_invalid() { return nullptr; }
   static bool get_is_valid(const Value &f) { return f; }
   static Value min(Value a, Value b) { return std::min(a, b); }
   static Value max(Value a, Value b) { return std::max(a, b); }
+    //! allow direct const access to the container data
+  static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
+  //! allow direct non-const access to the container data
+  static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
 };
 
 struct ObjectsAttributeTableTraits {
@@ -127,6 +152,8 @@ struct ObjectsAttributeTableTraits {
   typedef const Objects &PassValue;
   typedef ObjectsKey Key;
   typedef IndexVector<ParticleIndexTag, Objects> Container;
+  typedef Objects const* ContainerConstDataAccess;
+  typedef Objects* ContainerDataAccess;
   static Value get_invalid() { return Value(); }
   static bool get_is_valid(const Value &f) { return !f.empty(); }
   static Value min(Value a, Value b) {
@@ -137,6 +164,10 @@ struct ObjectsAttributeTableTraits {
     IMP_UNUSED(a);
     return b;
   }
+  //! allow direct const access to the container data
+  static ContainerConstDataAccess access_container_data(Container const& c) { return c.data(); }
+  //! allow direct non-const access to the container data
+  static ContainerDataAccess access_container_data(Container&       c) { return c.data(); }
 };
 
 struct IntsAttributeTableTraits : ArrayTraits<int, IntsKey> {};
@@ -144,6 +175,7 @@ struct IntsAttributeTableTraits : ArrayTraits<int, IntsKey> {};
 struct IntAttributeTableTraits : public DefaultTraits<Int, IntKey> {
   static Int get_invalid() { return std::numeric_limits<Int>::max(); }
   static bool get_is_valid(Int f) { return f != get_invalid(); }
+
 };
 
 struct BoolAttributeTableTraits : public DefaultTraits<bool, FloatKey> {
@@ -156,12 +188,14 @@ struct BoolAttributeTableTraits : public DefaultTraits<bool, FloatKey> {
       return P::operator[](get_as_unsigned_int(i));
     }
   };
+  typedef Container const& ContainerConstDataAccess;
+  typedef Container& ContainerDataAccess;
   static bool get_invalid() { return false; }
   static bool get_is_valid(bool f) { return f; }
     //! allow direct const access to the container data
-  Container const& access_container_data(Container const& c) { return c; }
+  ContainerConstDataAccess access_container_data(Container const& c) { return c; }
   //! allow direct non-const access to the container data
-  static Container& access_container_data(Container&       c) { return c; }
+  static ContainerDataAccess access_container_data(Container&       c) { return c; }
 
 };
 

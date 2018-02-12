@@ -23,7 +23,12 @@ function_name_exceptions=['transform',
                           'Selection.union_update',
                           'get_all_atom_CHARMM_parameters',
                           'get_heavy_atom_CHARMM_parameters', "get_kd",
-                          'get_drmsd_Q', 'hash_value']
+                          'get_drmsd_Q', 'hash_value',
+                          'BondedPairFilter.prepare_for_get_value_index_in_batch',
+                          'SameResiduePairFilter.prepare_for_get_value_index_in_batch',
+                          'SoapPairFilter.prepare_for_get_value_index_in_batch',
+                          'StereochemistryPairFilter.prepare_for_get_value_index_in_batch'
+                          ]
 spelling_exceptions=['lennard', 'charmm', "jones",
                      "impropers", "ez",
                      "rmsd", "pdb", "multimodel", "conect",

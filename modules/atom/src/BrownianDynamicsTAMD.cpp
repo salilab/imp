@@ -257,7 +257,7 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
   FloatKey rdck= RigidBodyDiffusion::get_rotational_diffusion_coefficient_key();
   if(m->get_has_attribute(rdck)){
     double const* rotational_diffusion_coefficient_table=
-      m->access_attribute_data(rdck);
+      m->FloatAttributeTable::access_attribute_data(rdck);
     double const* torque_tables[3];
     for(unsigned int i = 0; i < 3; i++){
       torque_tables[i]=
@@ -303,7 +303,7 @@ void BrownianDynamicsTAMD::do_advance_chunk(double dtfs, double ikT,
   FloatKey dck= Diffusion::get_diffusion_coefficient_key();
   if(m->get_has_attribute(dck)){
     double const* diffusion_coefficients_table=
-      m->access_attribute_data(dck);
+      m->FloatAttributeTable::access_attribute_data(dck);
     for (unsigned int i = begin; i < end; ++i) {
       ParticleIndex pi= ps[i];
       advance_coordinates_0(i, dtfs, ikT,

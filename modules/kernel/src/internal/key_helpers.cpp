@@ -27,7 +27,8 @@ KeyData::KeyData(
 {
 #ifndef IMPKERNEL_INTERNAL_OLD_COMPILER
   //  IMP_LOG_PROGRESS("KeyData::KeyData ID " << ID << std::endl);
-  // float keys are special cased for historical reasons
+  // Float keys are special-cased for historical reasons
+  // and now for backward compatibility:
   if(ID==FloatKey::get_ID()){
     // IMP_LOG_PROGRESS("Adding special float keys" << std::endl);
     unsigned int x= add_key("x");

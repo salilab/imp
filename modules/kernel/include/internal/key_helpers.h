@@ -18,9 +18,11 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-//! true for some old compiler that have issues with initialization of static template variables
-//! and do it more than they should
-#define IMPKERNEL_INTERNAL_OLD_COMPILER 1
+//! IMPORTANT NOTE:
+//! Following flag results in much slower calls to get_key_date(), e.g. during predicate evaluation
+//! but must be set to true for some old compilers that have issues with initialization of static function
+//! variable in template classes, that are initialized more than they should (e.g. older MSVC, CentOS 5)
+#define IMPKERNEL_INTERNAL_OLD_COMPILER
 
 /** \internal The data concerning keys (strings and corresponding numbers).
   */

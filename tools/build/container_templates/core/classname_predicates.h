@@ -9,6 +9,7 @@
 #define IMPCORE_CLASSNAME_PREDICATES_H
 
 #include <IMP/core/core_config.h>
+#include <IMP/core/Typed.h>
 #include <IMP/ClassnamePredicate.h>
 #include <IMP/HELPERNAME_macros.h>
 #include <boost/random.hpp>
@@ -64,19 +65,45 @@ class IMPCOREEXPORT UnorderedTypeClassnamePredicate
     ParticleTypes (see Typed).
 */
 class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
+ private:
+  mutable int const* cached_particle_type_ids_table_;
+  mutable int cached_n_particle_types_;
  public:
   OrderedTypeClassnamePredicate(std::string name =
                                     "OrderedTypeClassnamePredicate%1%");
 #ifndef SWIG
   using ClassnamePredicate::get_value;
 #endif
+  //! Compute the predicate for specified types
   int get_value(const core::ParticleTypes &types) {
     return internal::get_ordered_type_hash(types);
   }
+  //! Compute the predicate for types of specific pi
   virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const
       IMP_OVERRIDE {
     return internal::get_ordered_type_hash(m, pi);
   }
+
+  //! Prepare for a batch of calls to get_value_index_in_batch()
+  //! (used for improving performance)
+  virtual void prepare_for_get_value_index_in_batch(Model* m) const
+  IMP_OVERRIDE{
+    cached_particle_type_ids_table_=
+      m->IMP::internal::IntAttributeTable::access_attribute_data(Typed::get_type_key());
+    cached_n_particle_types_= ParticleType::get_number_unique();
+  };
+
+  //! Same as get_value_index, but with optimizations
+  //! for a batch of calls. Call prepare_for_get_value_index_in_batch()
+  //! right before calling a batch of those, otherwise unexpected behavior.
+  virtual int get_value_index_in_batch(Model* m, PASSINDEXTYPE pi) const
+  IMP_OVERRIDE{
+    IMP_UNUSED(m);
+    return internal::get_ordered_type_hash( pi,
+                                            cached_particle_type_ids_table_,
+                                            cached_n_particle_types_);
+  }
+
   virtual ModelObjectsTemp do_get_inputs(
       Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
     ModelObjectsTemp ret;

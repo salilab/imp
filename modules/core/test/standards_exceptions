@@ -1,4 +1,44 @@
 value_object_exceptions=['HierarchyVisitor', 'ModifierVisitor']
-function_name_exceptions=['RigidBody.normalize_rotation','transform', 'ExperimentalTree.connect', 'ExperimentalTree.finalize','Gaussian.normalize_rotation','assign_blame','Surface.reflect','Direction.reflect']
+
+function_name_exceptions=['RigidBody.normalize_rotation',
+        'transform',
+        'ExperimentalTree.connect',
+        'ExperimentalTree.finalize',
+        'Gaussian.normalize_rotation',
+        'assign_blame',
+        'Surface.reflect',
+        'Direction.reflect',
+        'ConsecutivePairFilter.prepare_for_get_value_index_in_batch',
+        'ExclusiveConsecutivePairFilter.prepare_for_get_value_index_in_batch',
+        'InContainerPairFilter.prepare_for_get_value_index_in_batch'
+        'InContainerQuadFilter.prepare_for_get_value_index_in_batch'
+        'InContainerSingletonFilter.prepare_for_get_value_index_in_batch'
+        'InContainerTripletFilter.prepare_for_get_value_index_in_batch',
+        'AllSamePairPredicate.prepare_for_get_value_index_in_batch',
+        'AllSameQuadPredicate.prepare_for_get_value_index_in_batch',
+        'AllSameSingletonPredicate.prepare_for_get_value_index_in_batch',
+        'AllSameTripletPredicate.prepare_for_get_value_index_in_batch',
+        'AttributeSingletonPredicate.prepare_for_get_value_index_in_batch',
+        'CoinFlipPairPredicate.prepare_for_get_value_index_in_batch',
+        'CoinFlipQuadPredicate.prepare_for_get_value_index_in_batch',
+        'CoinFlipSingletonPredicate.prepare_for_get_value_index_in_batch',
+        'CoinFlipTripletPredicate.prepare_for_get_value_index_in_batch',
+        'ConstantPairPredicate.prepare_for_get_value_index_in_batch',
+        'ConstantQuadPredicate.prepare_for_get_value_index_in_batch',
+        'ConstantSingletonPredicate.prepare_for_get_value_index_in_batch',
+        'ConstantTripletPredicate.prepare_for_get_value_index_in_batch',
+        'InBoundingBox3DSingletonPredicate.prepare_for_get_value_index_in_batch',
+        'IsCollisionPairPredicate.prepare_for_get_value_index_in_batch',
+        'OrderedTypePairPredicate.prepare_for_get_value_index_in_batch',
+        'OrderedTypeQuadPredicate.prepare_for_get_value_index_in_batch',
+        'OrderedTypeSingletonPredicate.prepare_for_get_value_index_in_batch',
+        'OrderedTypeTripletPredicate.prepare_for_get_value_index_in_batch',
+        'UnorderedTypePairPredicate.prepare_for_get_value_index_in_batch',
+        'UnorderedTypeQuadPredicate.prepare_for_get_value_index_in_batch',
+        'UnorderedTypeSingletonPredicate.prepare_for_get_value_index_in_batch',
+        'UnorderedTypeTripletPredicate.prepare_for_get_value_index_in_batch'
+]
+
 show_exceptions=['HierarchyVisitor', 'ModifierVisitor']
+
 spelling_exceptions=["provenanced"]

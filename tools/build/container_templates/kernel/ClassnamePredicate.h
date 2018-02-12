@@ -50,6 +50,18 @@ class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
   //! Compute the predicate and the derivative if needed.
   virtual int get_value_index(Model *m, PASSINDEXTYPE vt) const;
 
+  //! Prepare for a batch of calls to get_value_index_in_batch()
+  //! (could be used for improving performance - e.g. preload various
+  //!  tables from model)
+  virtual void prepare_for_get_value_index_in_batch(Model*) const {};
+
+  //! Same as get_value_index, but possibly with optimizations
+  //! for a batch of calls. Call prepare_for_get_value_index_in_batch()
+  //! right before calling a batch of those.
+  virtual int get_value_index_in_batch(Model* m, PASSINDEXTYPE vt) const{
+    return get_value_index(m, vt);
+  }
+
   //! Enable them to be use as functors
   /** But beware of slicing.
    */

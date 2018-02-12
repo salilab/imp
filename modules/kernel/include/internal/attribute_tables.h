@@ -184,6 +184,26 @@ class BasicAttributeTable {
     return data_;
   }
 
+  //! fast access for batch operations - for advanced users only
+  typename Traits::ContainerConstDataAccess access_attribute_data
+    (Key k) const
+  {
+    unsigned int ki=k.get_index();
+    IMP_USAGE_CHECK(ki < data_.size(),
+                    "trying to access an attribute that was not added to this model");
+    return Traits::access_container_data(data_[ki]);
+  }
+
+  // fast access for batch operations - for advanced users only
+  typename Traits::ContainerDataAccess access_attribute_data
+    (Key k)
+  {
+    unsigned int ki= k.get_index();
+    IMP_USAGE_CHECK(ki < data_.size(),
+                    "trying to access an attribute that was not added to this model");
+    return Traits::access_container_data(data_[ki]);
+  }
+
   typename Traits::Container::reference access_attribute(
       Key k, ParticleIndex particle) {
     IMP_CHECK_MASK(write_mask_, particle, k, SET, ATTRIBUTE);
