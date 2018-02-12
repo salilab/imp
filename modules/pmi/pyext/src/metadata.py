@@ -166,6 +166,11 @@ class MassIVELocation(DatabaseLocation):
     def __init__(self, db_code, version=None, details=None):
         DatabaseLocation.__init__(self, 'MASSIVE', db_code, version, details)
 
+class EMPIARLocation(DatabaseLocation):
+    """Something stored in the EMPIAR database."""
+    def __init__(self, db_code, version=None, details=None):
+        DatabaseLocation.__init__(self, 'EMPIAR', db_code, version, details)
+
 class FileLocation(Location):
     """An individual file or directory.
        This may be in a repository (if `repo` is not None) or only on the

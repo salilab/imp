@@ -138,6 +138,14 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(d.version, 1)
         self.assertEqual(d.details, 'foo')
 
+    def test_empiar_location(self):
+        """Test EMPIARLocation class"""
+        d = IMP.pmi.metadata.EMPIARLocation('abc', version=1, details='foo')
+        self.assertEqual(d.db_name, 'EMPIAR')
+        self.assertEqual(d.access_code, 'abc')
+        self.assertEqual(d.version, 1)
+        self.assertEqual(d.details, 'foo')
+
     def test_repo_file_location(self):
         """Test FileLocation class pointing to a repository file"""
         r = IMP.pmi.metadata.Repository(doi='mydoi')
