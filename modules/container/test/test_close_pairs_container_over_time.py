@@ -22,10 +22,12 @@ class Tests(IMP.test.TestCase):
         # IMP.set_log_level(IMP.VERBOSE)
         print(1)
         threshold = 1
+        slack= 100
         cpss = IMP.container.ClosePairContainer(pc, threshold,
                                                 IMP.core.GridClosePairsFinder(
                                                 ),
-                                                100)
+                                                slack)
+        self.assertEqual(cpss.get_slack(), slack)
         m.update()
         n = len(cpss.get_indexes())
         for i in range(0, 100):
@@ -46,10 +48,12 @@ class Tests(IMP.test.TestCase):
             IMP.core.XYZR.setup_particle(m, p, 1)
         pc = IMP.container.ListSingletonContainer(m, ps)
         threshold = 1
+        slack= .01
         cpss = IMP.container.ClosePairContainer(pc, threshold,
                                                 IMP.core.GridClosePairsFinder(
                                                 ),
-                                                .01)
+                                                slack)
+        self.assertEqual(slack, cpss.get_slack())
         m.update()
         n = len(cpss.get_indexes())
         for p in ps:

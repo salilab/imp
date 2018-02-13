@@ -35,6 +35,7 @@ class Tests(IMP.test.TestCase):
             0,
             IMP.core.RigidClosePairsFinder(),
             slack)
+        self.assertEqual(nbl.get_slack(), slack)
         # nbl.set_log_level(IMP.VERBOSE)
         m.update()
         for p in nbl.get_particle_pairs():
