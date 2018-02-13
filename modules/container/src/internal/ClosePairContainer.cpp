@@ -180,15 +180,15 @@ void ClosePairContainer::do_incremental() {
     ret.insert(ret.begin(), ret1.begin(), ret1.end());
     core::internal::fix_order(ret);
     moved_count_ += moved.size();
-  });
+    });
   {
     /*InList il= InList::create(moved);
       remove_from_list_if(il);
       InList::destroy(il);*/
     ParticleIndexPairs cur;
     swap(cur);
-    cur.erase(std::remove_if(cur.begin(), cur.end(),
-                             core::internal::FarParticle(get_model(), distance_ + 2 * slack_)),
+    core::internal::FarParticle fp(get_model(), distance_ + 2 * slack_);
+    cur.erase(std::remove_if(cur.begin(), cur.end(), fp),
               cur.end());
     swap(cur);
     moved_count_ = 0;

@@ -19,10 +19,17 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder {
  public:
   QuadraticClosePairsFinder();
-  bool get_are_close(Particle *a, Particle *b) const {
-    return get_are_close(a->get_model(), a->get_index(), b->get_index());
+  //! returns true if a and b are close, and pass any filter added
+  //! to this
+  bool get_are_close_and_filtered(Particle *a, Particle *b) const {
+    return get_are_close_and_filtered
+      (a->get_model(),
+       a->get_index(),
+       b->get_index());
   }
-  bool get_are_close(Model *m, ParticleIndex a,
+  //! returns true if a and b of m are close, and pass any filter added
+  //! to this
+  bool get_are_close_and_filtered(Model *m, ParticleIndex a,
                      ParticleIndex b) const;
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
       IMP_OVERRIDE;

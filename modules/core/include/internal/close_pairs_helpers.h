@@ -9,6 +9,7 @@
 #define IMPCORE_INTERNAL_CLOSE_PAIRS_HELPERS_H
 
 #include <IMP/core/core_config.h>
+#include <IMP/algebra/Sphere3D.h>
 #include "../BoxSweepClosePairsFinder.h"
 #include "../GridClosePairsFinder.h"
 #include "grid_close_pairs_impl.h"
@@ -72,38 +73,62 @@ struct SameParticle {
   }
   };*/
 
-inline bool get_are_close(Model *m, const PairPredicates &filters,
-                          ParticleIndex a, ParticleIndex b,
-                          double distance) {
+//! returns trun if sa and sb sphere distance is lower then
+//! the specified distance
+inline bool get_are_close
+(algebra::Sphere3D const& sa,
+ algebra::Sphere3D const& sb,
+ double distance)
+{
+  algebra::Sphere3D sa_inflated(sa.get_center(),
+                                sa.get_radius() + distance );
+  return
+    algebra::get_interiors_intersect(sa_inflated, sb);
+}
+
+inline bool get_are_close_and_filtered
+(Model *m,
+ const PairPredicates &filters,
+ ParticleIndex a, ParticleIndex b,
+ double distance)
+{
   XYZ da(m, a);
   XYZ db(m, b);
   Float ra = XYZR(m, a).get_radius();
   Float rb = XYZR(m, b).get_radius();
-  Float sr = ra + rb + distance;
-  for (unsigned int i = 0; i < 3; ++i) {
-    double delta = std::abs(da.get_coordinate(i) - db.get_coordinate(i));
-    if (delta >= sr) {
-      return false;
-    }
-  }
-  return get_interiors_intersect(
-             algebra::Sphere3D(da.get_coordinates(), ra + distance),
-             algebra::Sphere3D(db.get_coordinates(), rb)) &&
-         !get_filters_contains(m, filters, ParticleIndexPair(a, b));
+  return algebra::get_interiors_intersect
+    ( algebra::Sphere3D(da.get_coordinates(), ra + distance),
+      algebra::Sphere3D(db.get_coordinates(), rb))
+    &&
+    !get_filters_contains(m, filters, ParticleIndexPair(a, b));
 }
 
 struct FarParticle {
   double d_;
   Model *m_;
-  FarParticle(Model *m, double d) : d_(d), m_(m) {}
+  mutable algebra::Sphere3D const* model_spheres_table_;
+
+FarParticle
+(Model *m, double d)
+: d_(d),
+    m_(m),
+    model_spheres_table_( m->access_spheres_data() )
+  {}
+
   bool operator()(const ParticleIndexPair &pp) const {
-    return !get_are_close(m_, PairPredicates(), pp[0], pp[1], d_);
+    int index0= pp[0].get_index();
+    int index1= pp[1].get_index();
+    return !get_are_close(model_spheres_table_[index0],
+                          model_spheres_table_[index1],
+                          d_);
   }
 };
 
 inline void filter_far(Model *m, ParticleIndexPairs &c,
                        double d) {
-  c.erase(std::remove_if(c.begin(), c.end(), FarParticle(m, d)), c.end());
+  FarParticle fp(m, d);
+  c.erase(std::remove_if(c.begin(), c.end(), fp),
+          c.end());
 }
 
 struct InList {
