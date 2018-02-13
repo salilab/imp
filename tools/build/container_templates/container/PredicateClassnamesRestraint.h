@@ -21,8 +21,8 @@
 #define IMP_CONTAINER_PREDICATE_USE_GOOGLE_DENSE_HASH_MAP
 #include <google/dense_hash_map>
 #else
-#define IMP_CONTAINER_PREDICATE_USE_STL_MAP
-#include <unordered_map>
+#define IMP_CONTAINER_PREDICATE_USE_KERNEL_MAP
+#include <IMP/set_map_macros.h>
 //#include <boost/unordered_map.hpp>
 #endif
 
@@ -50,8 +50,8 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   mutable google::dense_hash_map<int, PLURALINDEXTYPE> lists_;
   google::dense_hash_map<int, PointerMember<ClassnameScore> > scores_;
 #else
-  mutable std::unordered_map<int, PLURALINDEXTYPE> lists_;
-  std::unordered_map<int, PointerMember<ClassnameScore> > scores_;
+  mutable IMP_KERNEL_LARGE_UNORDERED_MAP<int, PLURALINDEXTYPE> lists_;
+  IMP_KERNEL_LARGE_UNORDERED_MAP<int, PointerMember<ClassnameScore> > scores_;
 #endif
 
   bool is_get_inputs_ignores_individual_scores_;
