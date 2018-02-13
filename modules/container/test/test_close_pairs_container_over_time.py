@@ -29,7 +29,7 @@ class Tests(IMP.test.TestCase):
                                                 slack)
         self.assertEqual(cpss.get_slack(), slack)
         m.update()
-        n = len(cpss.get_indexes())
+        n = len(cpss.get_contents())
         for i in range(0, 100):
             for p in ps:
                 r = IMP.algebra.get_random_vector_in(
@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
                 d.set_coordinates(d.get_coordinates() + r)
             # make sure internal checks in continer pass
             m.update()
-            self.assertEqual(n, len(cpss.get_indexes()))
+            self.assertEqual(n, len(cpss.get_contents()))
 
     def test_cache(self):
         m = IMP.Model()
@@ -55,7 +55,7 @@ class Tests(IMP.test.TestCase):
                                                 slack)
         self.assertEqual(slack, cpss.get_slack())
         m.update()
-        n = len(cpss.get_indexes())
+        n = len(cpss.get_contents())
         for p in ps:
             r = IMP.algebra.get_random_vector_in(
                 IMP.algebra.Sphere3D(IMP.algebra.get_zero_vector_3d(), 10))

@@ -67,7 +67,7 @@ class Tests(IMP.test.TestCase):
             rbm1.propose()
             rbm1.accept()
             m.update()
-            if len(nbl.get_indexes()) == 0:
+            if len(nbl.get_contents()) == 0:
                 test_empty()
                 print("tested")
                 tested = True
