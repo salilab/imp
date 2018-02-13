@@ -61,7 +61,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
       if (contents_hash_ != nhash || !cache_initialized_) {
         contents_hash_ = nhash;
         cache_initialized_ = true;
-        contents_cache_ = get_indexes();
+        get_indexes_in_place(contents_cache_); // inheriting class could implement this faster than get_indexes()
       }
       return contents_cache_;
     }
@@ -75,6 +75,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   */
   virtual PLURALINDEXTYPE get_indexes() const = 0;
 
+
 #ifndef IMP_DOXYGEN
 
   PLURALVARIABLETYPE get() const {
@@ -84,6 +85,10 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   VARIABLETYPE get(unsigned int i) const {
     return IMP::internal::get_particle(get_model(), get_indexes()[i]);
   }
+
+  //! Return size of current container content
+  //! Note that this may be expensive since my evaluate
+  //! refreshing of the container
   unsigned int get_number() const { return get_indexes().size(); }
 #ifndef SWIG
   bool get_provides_access() const;
@@ -118,6 +123,15 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
 
   virtual void do_apply(const ClassnameModifier *sm) const = 0;
   virtual bool do_get_provides_access() const { return false; }
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  //! Insert the contents of the container into output
+  //! Could be reimplemented to save time in terms of e.g. memory
+  //! allocation compared with calling get_indexes()
+  virtual void get_indexes_in_place(PLURALINDEXTYPE& output) const{
+    output= get_indexes();
+  }
+#endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(ClassnameContainer);
 

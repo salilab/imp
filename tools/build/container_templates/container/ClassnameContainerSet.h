@@ -69,6 +69,12 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
   PLURALINDEXTYPE get_range_indexes() const;
   ModelObjectsTemp do_get_inputs() const;
 #endif
+
+ protected:
+  //! Insert the contents of the container into output
+  //! instead of output's current content
+  virtual void get_indexes_in_place(PLURALINDEXTYPE& output)
+    const IMP_OVERRIDE;
 };
 
 IMPCONTAINER_END_NAMESPACE

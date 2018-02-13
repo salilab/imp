@@ -83,10 +83,22 @@ ClassnameContainerSet::ClassnameContainerSet(const ClassnameContainersTemp &in,
 PLURALINDEXTYPE ClassnameContainerSet::get_indexes() const {
   PLURALINDEXTYPE sum;
   IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
-    PLURALINDEXTYPE cur = c->get_indexes();
+    PLURALINDEXTYPE const& cur= c->get_contents();
     sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;
+}
+
+//! This may be faster than get_indexes() since memory doesn't have to
+//! be reallocated
+void
+ClassnameContainerSet::get_indexes_in_place
+(PLURALINDEXTYPE& output) const {
+  output.clear();
+  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
+    PLURALINDEXTYPE const& cur = c->get_contents();
+    output.insert(output.end(), cur.begin(), cur.end());
+  }
 }
 
 PLURALINDEXTYPE ClassnameContainerSet::get_range_indexes() const {
