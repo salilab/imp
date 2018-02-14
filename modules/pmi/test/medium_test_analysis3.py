@@ -7,6 +7,10 @@ import glob
 class Tests(IMP.test.TestCase):
 
     def test_analysis_replica_exchange(self):
+        try:
+            import matplotlib
+        except ImportError:
+            self.skipTest("no matplotlib package")
         model=IMP.Model()
         sts=sorted(glob.glob(self.get_input_file_name("output_test/stat.0.out").replace(".0.",".*.")))
         are=IMP.pmi.macros.AnalysisReplicaExchange(model,sts,10)
