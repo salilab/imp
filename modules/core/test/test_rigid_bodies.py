@@ -61,7 +61,7 @@ class Tests(IMP.test.TestCase):
 
     def test_create_one(self):
         """Testing create_rigid_body"""
-        count = 1
+        count = 3
         success = 0
         for i in range(0, count):
             m = IMP.Model()
@@ -88,7 +88,7 @@ class Tests(IMP.test.TestCase):
             cg.optimize(1000)
             if sf.evaluate(False) < .1:
                 success = success + 1
-        self.assertGreater(success, count / 2)
+        self.assertGreater(success, count / 2.0)
 
     def test_get_members(self):
         """Test rigid body get_member* functions"""
