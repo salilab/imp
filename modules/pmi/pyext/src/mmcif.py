@@ -543,11 +543,13 @@ class _TemplateSource(object):
 
     def __init__(self, tm_code, tm_seq_id_begin, tm_seq_id_end, seq_id_begin,
                  chain_id, seq_id_end, seq_id, model):
-        # Assume a code of 1abcX refers to a real PDB structure
-        if len(tm_code) == 5:
+        # Remove any unique suffix
+        stripped_tm_code = tm_code.split('_')[0]
+        # Assume a code of 1abcX or 1abcX_N refers to a real PDB structure
+        if len(stripped_tm_code) == 5:
             self._orig_tm_code = None
-            self.tm_db_code = tm_code[:4].upper()
-            self.tm_chain_id = tm_code[4]
+            self.tm_db_code = stripped_tm_code[:4].upper()
+            self.tm_chain_id = stripped_tm_code[4]
         else:
             # Otherwise, will need to look up in TEMPLATE PATH remarks
             self._orig_tm_code = tm_code
