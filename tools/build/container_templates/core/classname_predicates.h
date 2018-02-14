@@ -84,9 +84,9 @@ class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
     return internal::get_ordered_type_hash(m, pi);
   }
 
-  //! Prepare for a batch of calls to get_value_index_in_batch()
+  //! Setup for a batch of calls to get_value_index_in_batch()
   //! (used for improving performance)
-  virtual void prepare_for_get_value_index_in_batch(Model* m) const
+  virtual void setup_for_get_value_index_in_batch(Model* m) const
   IMP_OVERRIDE{
     cached_particle_type_ids_table_=
       m->IMP::internal::IntAttributeTable::access_attribute_data(Typed::get_type_key());
@@ -94,7 +94,7 @@ class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
   };
 
   //! Same as get_value_index, but with optimizations
-  //! for a batch of calls. Call prepare_for_get_value_index_in_batch()
+  //! for a batch of calls. Call setup_for_get_value_index_in_batch()
   //! right before calling a batch of those, otherwise unexpected behavior.
   virtual int get_value_index_in_batch(Model* m, PASSINDEXTYPE pi) const
   IMP_OVERRIDE{

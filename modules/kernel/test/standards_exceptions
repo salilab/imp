@@ -29,10 +29,7 @@ function_name_exceptions=[
     'OptionParser.print_help',
     'OptionParser.print_usage',
     'OptionParser.print_version',
-    'PairPredicate.prepare_for_get_value_index_in_batch',
-    'QuadPredicate.prepare_for_get_value_index_in_batch',
-    'SingletonPredicate.prepare_for_get_value_index_in_batch',
-    'TripletPredicate.prepare_for_get_value_index_in_batch']
+    ]
 
 value_object_exceptions=['Exception', 'TypeException',
                                             'IOException', 'IndexException',

@@ -1,2 +1,2 @@
-function_name_exceptions=['CommonEndpointPairFilter.prepare_for_get_value_index_in_batch'
+function_name_exceptions=[
                           ]

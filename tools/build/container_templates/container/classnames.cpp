@@ -567,7 +567,7 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
     lp.second.clear();
   }
 #endif
-  predicate_->prepare_for_get_value_index_in_batch(get_model());
+  predicate_->setup_for_get_value_index_in_batch(get_model());
   IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
     // TODO: get_value index seems more expensive computationally for OrderedTypeClassnamePredicate than it should - check it out
     int bin = predicate_->get_value_index_in_batch(get_model(), it);

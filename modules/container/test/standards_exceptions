@@ -1,8 +1,2 @@
-function_name_exceptions=['prepare_for_get_value_index_in_batch',
-        'ConsecutivePairFilter.prepare_for_get_value_index_in_batch',
-        'ExclusiveConsecutivePairFilter.prepare_for_get_value_index_in_batch',
-        'InContainerPairFilter.prepare_for_get_value_index_in_batch',
-        'InContainerQuadFilter.prepare_for_get_value_index_in_batch',
-        'InContainerSingletonFilter.prepare_for_get_value_index_in_batch',
-        'InContainerTripletFilter.prepare_for_get_value_index_in_batch'
+function_name_exceptions=[
 ]
