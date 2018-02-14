@@ -364,7 +364,7 @@ public:
 };
 
 
-//! Try to one set of particles localized on a membrane surface
+//! Try to keep one set of particles localized on a membrane surface
 /** The membrane is defined in this case to be a half torus in the xy
     plane with center at the origin. One of the two sets of particles
     (whichever is closer) is restrained to the membrane surface.
@@ -399,6 +399,10 @@ public:
 };
 
 
+//! Try to keep particles away from a membrane
+/** The membrane is defined in this case to be a half torus in the xy
+    plane with center at the origin.
+  */
 class IMPNPCEXPORT MembraneExclusionRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -425,6 +429,10 @@ public:
 };
 
 
+//! Try to keep particles on the pore side of a membrane
+/** The membrane is defined in this case to be a half torus in the xy
+    plane with center at the origin.
+  */
 class IMPNPCEXPORT PoreSideVolumeLocationRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -452,6 +460,10 @@ public:
 };
 
 
+//! Try to keep particles on the perinuclear side of a membrane
+/** The membrane is defined in this case to be a half torus in the xy
+    plane with center at the origin.
+  */
 class IMPNPCEXPORT PerinuclearVolumeLocationRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -479,6 +491,12 @@ public:
 };
 
 
+//! Restrain two interparticle distances to be the same
+/** This restraint must be given 4 particles. They are restrained to
+    be symmetric, by enforcing a harmonic penalty on the difference
+    between the distance between the first 2 particles and the distance
+    between the last two.
+  */
 class IMPNPCEXPORT AssemblySymmetryByDistanceRestraint : public Restraint
 {
   IMP::PointerMember<IMP::SingletonContainer> sc_;
@@ -502,6 +520,12 @@ public:
 };
 
 
+//! Restrain two interparticle dihedrals to be the same
+/** This restraint must be given 8 particles. They are restrained to
+    be symmetric, by enforcing a harmonic penalty on the difference
+    between the dihedral angle between the first 4 particles and the dihedral
+    between the last 4.
+  */
 class IMPNPCEXPORT AssemblySymmetryByDihedralRestraint
   : public Restraint
 {
@@ -525,7 +549,10 @@ public:
   IMP_OBJECT_METHODS(AssemblySymmetryByDihedralRestraint);;
 };
 
-
+//! Restrain a set of particles to be proximate to each other
+/** Each particle is harmonically restrained to be no more than
+    `max_dist` away from every other particle.
+  */
 class IMPNPCEXPORT ProteinProximityRestraint
   : public Restraint
 {
