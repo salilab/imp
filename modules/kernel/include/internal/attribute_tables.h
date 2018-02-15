@@ -340,6 +340,25 @@ class FloatAttributeTable {
     return internal_coordinates_[particle];
   }
 
+  /**  Expert function to add derviatives in v directly to xyzr_deriv[0..2],
+       after transforming the derivative using da (static cause does not depend
+       on model instance)
+
+   NOTE: this variant of add_to_coordinate_derivatives is for expert
+         usage only since input is explicit pointer to derivative
+         storage location, and lacks checks, but may be used for
+         faster implementations of evaluate_index() etc.
+  */
+  static void add_to_coordinate_derivatives(algebra::Sphere3D& xyzr_deriv,
+                                     const algebra::Vector3D &v,
+                                     const DerivativeAccumulator &da) {
+    IMP_ACCUMULATE(xyzr_deriv[0], da(v[0]));
+    IMP_ACCUMULATE(xyzr_deriv[1], da(v[1]));
+    IMP_ACCUMULATE(xyzr_deriv[2], da(v[2]));
+  }
+
+  //! add derviatives in v to xyz derivative of particle, after
+  //! transforming the derivative using da
   void add_to_coordinate_derivatives(ParticleIndex particle,
                                      const algebra::Vector3D &v,
                                      const DerivativeAccumulator &da) {
@@ -347,9 +366,7 @@ class FloatAttributeTable {
                    DERIVATIVE);
     IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),
                     "Particle does not have coordinates: " << particle);
-    IMP_ACCUMULATE(sphere_derivatives_[particle][0], da(v[0]));
-    IMP_ACCUMULATE(sphere_derivatives_[particle][1], da(v[1]));
-    IMP_ACCUMULATE(sphere_derivatives_[particle][2], da(v[2]));
+    add_to_coordinate_derivatives(sphere_derivatives_[particle], v, da);
   }
 
   void add_to_internal_coordinate_derivatives(ParticleIndex particle,
