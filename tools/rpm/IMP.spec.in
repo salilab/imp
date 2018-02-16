@@ -33,6 +33,14 @@ BuildRequires: ann-devel, eigen3-devel
 # (Or, if you don't need cnmultifit, you can comment out this line)
 BuildRequires: libTAU-devel
 
+# Need for npctransport module
+BuildRequires: protobuf-devel
+%if 0%{?fedora}
+Requires: python2-protobuf
+%else
+Requires: protobuf-python
+%endif
+
 BuildRequires: cmake >= 2.8
 BuildRequires: boost-devel >= 1.41
 
@@ -124,7 +132,7 @@ Summary:       Development package for IMP developers.
 Requires:      %{name} = %{version}-%{release}
 Requires:      gsl-devel, fftw-devel, zlib-devel
 Requires:      ann-devel, eigen3-devel
-Requires:      boost-devel, python-devel, hdf5-devel
+Requires:      boost-devel, python-devel, hdf5-devel, protobuf-devel
 %if 0%{?fedora}
 Requires:      CGAL-devel, opencv-devel
 %endif
@@ -142,6 +150,9 @@ Group:         Applications/Engineering
 Summary:       Python wrappers for Python 3
 Requires:      %{name} = %{version}-%{release}
 Requires:      python3
+%if 0%{?fedora}
+Requires: python3-protobuf
+%endif
 
 %description python3
 This package contains wrappers for Python 3 (the base package already
