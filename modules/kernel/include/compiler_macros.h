@@ -261,12 +261,14 @@
 #define IMP_C_CLOSE _close
   //! platform independent C flag for open() method
 #define IMP_C_OPEN_FLAG(x) _##x
+#define IMP_C_OPEN_BINARY _O_BINARY
 #else
 //! platform independent C open() method
 #define IMP_C_OPEN open
 #define IMP_C_CLOSE close
 //! platform independent C flag for open() method
 #define IMP_C_OPEN_FLAG(x) x
+#define IMP_C_OPEN_BINARY 0
 #endif
 
 #endif /* IMPKERNEL_COMPILER_MACROS_H */
