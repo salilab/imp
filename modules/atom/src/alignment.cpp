@@ -8,7 +8,7 @@
 
 #include "IMP/atom/alignment.h"
 
-IMP_ATOM_BEGIN_NAMESPACE
+IMPATOM_BEGIN_NAMESPACE
 
 algebra::Transformation3D get_transformation_aligning_first_to_second(
                              const Selection &s1, const Selection &s2)
@@ -29,4 +29,4 @@ algebra::Transformation3D get_transformation_aligning_first_to_second(
   return algebra::get_transformation_aligning_first_to_second(ds1, ds2);
 }
 
-IMP_ATOM_END_NAMESPACE
+IMPATOM_END_NAMESPACE
