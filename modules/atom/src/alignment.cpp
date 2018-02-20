@@ -6,7 +6,8 @@
  *
  */
 
-#include "IMP/atom/alignment.h"
+#include <IMP/atom/alignment.h>
+#include <IMP/algebra/geometric_alignment.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

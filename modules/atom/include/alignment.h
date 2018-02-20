@@ -10,9 +10,8 @@
 #define IMPATOM_ALIGNMENT_H
 
 #include <IMP/atom/atom_config.h>
-#include <IMP/core/XYZ.h>
-#include "Selection.h"
-#include <IMP/algebra.h>
+#include <IMP/atom/Selection.h>
+#include <IMP/algebra/Transformation3D.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

@@ -10,6 +10,7 @@
 
 #include <IMP/atom/atom_config.h>
 #include <IMP/InputAdaptor.h>
+#include <IMP/model_object_helpers.h>
 #include <boost/dynamic_bitset.hpp>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
