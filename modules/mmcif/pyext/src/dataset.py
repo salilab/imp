@@ -93,6 +93,12 @@ class DatabaseLocation(Location):
         self.version = version
 
 
+class EMDBLocation(DatabaseLocation):
+    """Something stored in the EMDB database."""
+    def __init__(self, db_code, version=None, details=None):
+        super(EMDBLocation, self).__init__('EMDB', db_code, version, details)
+
+
 class PDBLocation(DatabaseLocation):
     """Something stored in the PDB database."""
     def __init__(self, db_code, version=None, details=None):

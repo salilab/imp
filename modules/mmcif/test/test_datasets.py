@@ -3,6 +3,24 @@ import IMP.test
 import IMP.mmcif.dataset
 
 class Tests(IMP.test.TestCase):
+
+    def test_pdb_location(self):
+        """Test PDBLocation"""
+        l = IMP.mmcif.dataset.PDBLocation('1abc', version='foo', details='bar')
+        self.assertEqual(l.db_name, 'PDB')
+        self.assertEqual(l.access_code, '1abc')
+        self.assertEqual(l.version, 'foo')
+        self.assertEqual(l.details, 'bar')
+
+    def test_emdb_location(self):
+        """Test EMDBLocation"""
+        l = IMP.mmcif.dataset.EMDBLocation('EMDB-123', version='foo',
+                                           details='bar')
+        self.assertEqual(l.db_name, 'EMDB')
+        self.assertEqual(l.access_code, 'EMDB-123')
+        self.assertEqual(l.version, 'foo')
+        self.assertEqual(l.details, 'bar')
+
     def test_duplicate_datasets_details(self):
         """Datasets with differing details should be considered duplicates"""
         fname = self.get_input_file_name('test.nup84.pdb')
