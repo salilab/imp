@@ -690,6 +690,9 @@ class _EM3DDumper(_Dumper):
                     ccc = info['cross correlation']
                     l.write(ordinal_id=ordinal, dataset_list_id=r.dataset.id,
                             fitting_method=r.fitting_method,
+                            number_of_gaussians=r.number_of_gaussians
+                                       if r.number_of_gaussians is not None
+                                       else writer.unknown,
                             model_id=frame.id,
                             cross_correlation_coefficient=ccc)
                     ordinal += 1

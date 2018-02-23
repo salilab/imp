@@ -45,15 +45,10 @@ class _GaussianEMRestraint(_MappedRestraint):
     fitting_method = 'Gaussian mixture model'
 
     def _setup_dataset(self, system):
-        l = IMP.mmcif.dataset.FileLocation(self._info['filename'],
-                details="Electron microscopy density map, "
-                        "represented as a Gaussian Mixture Model (GMM)")
-        # A 3DEM restraint's dataset ID uniquely defines the mmCIF restraint, so
-        # we need to allow duplicates
-        l._allow_duplicates = True
-        d = IMP.mmcif.dataset.EMDensityDataset(l)
-        self.dataset = system.datasets.add(d)
-        # todo: parse file and pull out original MRC file
+        p = IMP.mmcif.metadata._GMMMetadataParser()
+        p.parse_file(self._info['filename'], system)
+        self.dataset = p.dataset
+        self.number_of_gaussians = p.number_of_gaussians
 
 
 class _RestraintMapper(object):

@@ -5,6 +5,11 @@
 
 import IMP.mmcif.dataset
 import re
+import struct
+import os
+import sys
+import json
+import urllib2
 
 class _MetadataParser(object):
     """Base class for all metadata parsers.
@@ -271,3 +276,86 @@ class _PDBMetadataParser(_MetadataParser):
             elif line.startswith('ATOM'):
                 break
         return details
+
+
+class _MRCMetadataParser(_MetadataParser):
+    """Extract metadata from an EM density map (MRC file)."""
+
+    def parse_file(self, filename, system):
+        """Extract metadata from `filename`.
+           Sets self.dataset to point to the MRC file"""
+        emdb = self._get_emdb(filename)
+        if emdb:
+            version, details = self._get_emdb_info(emdb)
+            l = IMP.mmcif.dataset.EMDBLocation(emdb, version=version,
+                    details=details if details
+                            else "Electron microscopy density map")
+        else:
+            l = IMP.mmcif.dataset.FileLocation(filename,
+                    details="Electron microscopy density map")
+        d = IMP.mmcif.dataset.EMDensityDataset(l)
+        self.dataset = system.datasets.add(d)
+
+    def _get_emdb_info(self, emdb):
+        """Query EMDB API and return version & details of a given entry"""
+        req = urllib2.Request('https://www.ebi.ac.uk/pdbe/api/emdb/entry/'
+                              'summary/%s' % emdb, None, {})
+        response = urllib2.urlopen(req)
+        contents = json.load(response)
+        keys = list(contents.keys())
+        info = contents[keys[0]][0]['deposition']
+        if sys.version_info[0] < 3:
+            return (info['map_release_date'].encode('ascii'),
+                    info['title'].encode('ascii'))
+        else:
+            return info['map_release_date'], info['title']
+
+    def _get_emdb(self, filename):
+        """Return the EMDB id of the file, or None."""
+        r = re.compile(b'EMDATABANK\.org.*(EMD\-\d+)')
+        with open(filename, 'rb') as fh:
+            fh.seek(220) # Offset of number of labels
+            num_labels_raw = fh.read(4)
+            # Number of labels in MRC is usually a very small number, so it's
+            # very likely to be the smaller of the big-endian and little-endian
+            # interpretations of this field
+            num_labels_big, = struct.unpack_from('>i', num_labels_raw)
+            num_labels_little, = struct.unpack_from('<i', num_labels_raw)
+            num_labels = min(num_labels_big, num_labels_little)
+            for i in range(num_labels):
+                label = fh.read(80).strip()
+                m = r.search(label)
+                if m:
+                    if sys.version_info[0] < 3:
+                        return m.group(1)
+                    else:
+                        return m.group(1).decode('ascii')
+
+
+class _GMMMetadataParser(_MetadataParser):
+    """Extract metadata from an EM density GMM file."""
+
+    def parse_file(self, filename, system):
+        """Extract metadata from `filename`.
+           Sets self.dataset to point to the GMM file and
+           self.number_of_gaussians to the number of GMMs (or None)"""
+        l = IMP.mmcif.dataset.FileLocation(filename,
+                details="Electron microscopy density map, "
+                        "represented as a Gaussian Mixture Model (GMM)")
+        # A 3DEM restraint's dataset ID uniquely defines the mmCIF restraint, so
+        # we need to allow duplicates
+        l._allow_duplicates = True
+        d = IMP.mmcif.dataset.EMDensityDataset(l)
+        self.dataset = system.datasets.add(d)
+        self.number_of_gaussians = None
+
+        with open(filename) as fh:
+            for line in fh:
+                if line.startswith('# data_fn: '):
+                    p = _MRCMetadataParser()
+                    fn = line[11:].rstrip('\r\n')
+                    p.parse_file(os.path.join(os.path.dirname(filename), fn),
+                                 system)
+                    self.dataset.add_parent(p.dataset)
+                elif line.startswith('# ncenters: '):
+                    self.number_of_gaussians = int(line[12:])

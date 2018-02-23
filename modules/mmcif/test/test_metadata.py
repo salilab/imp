@@ -2,6 +2,12 @@ from __future__ import print_function
 import IMP.test
 import IMP.mmcif.metadata
 import IMP.mmcif.data
+import urllib2
+import sys
+if sys.version_info[0] >= 3:
+    from io import StringIO
+else:
+    from io import BytesIO as StringIO
 
 class MockSystem(object):
     def __init__(self):
@@ -149,7 +155,52 @@ class Tests(IMP.test.TestCase):
         self.assertIs(parent.location.version, None)
         self.assertIs(parent.location.details, None)
 
+    def test_gmm_parser_local_mrc(self):
+        """Test GMMMetadataParser pointing to a locally-available MRC file"""
+        system = MockSystem()
+        p = IMP.mmcif.metadata._GMMMetadataParser()
+        fname = self.get_input_file_name('test.gmm.txt')
+        p.parse_file(fname, system)
+        self.assertEqual(p.number_of_gaussians, 20)
+        self.assertEqual(p.dataset._data_type, '3DEM volume')
+        self.assertEqual(p.dataset.location.path, fname)
+        self.assertIs(p.dataset.location.repo, None)
+        parent, = p.dataset._parents
+        self.assertEqual(parent._data_type, '3DEM volume')
+        self.assertEqual(parent.location.path,
+                         self.get_input_file_name('Rpb8.mrc-header'))
+        self.assertEqual(parent.location.details,
+                         'Electron microscopy density map')
+        self.assertIs(parent.location.repo, None)
 
+    def test_gmm_parser_emdb(self):
+        """Test GMMMetadataParser pointing to an MRC in EMDB"""
+        def mock_urlopen(url):
+            txt = '{"EMD-1883":[{"deposition":{"map_release_date":"2011-04-21"'\
+                  ',"title":"test details"}}]}'
+            return StringIO(txt)
+        system = MockSystem()
+        p = IMP.mmcif.metadata._GMMMetadataParser()
+        fname = self.get_input_file_name('emd_1883.map.mrc.gmm.50.txt')
+
+        # Need to mock out urllib2 so we don't hit the network (expensive)
+        # every time we test
+        try:
+            orig_urlopen = urllib2.urlopen
+            urllib2.urlopen = mock_urlopen
+            p.parse_file(fname, system)
+        finally:
+            urllib2.urlopen = orig_urlopen
+        self.assertEqual(p.number_of_gaussians, 50)
+        self.assertEqual(p.dataset._data_type, '3DEM volume')
+        self.assertEqual(p.dataset.location.path, fname)
+        self.assertIs(p.dataset.location.repo, None)
+        parent, = p.dataset._parents
+        self.assertEqual(parent._data_type, '3DEM volume')
+        self.assertEqual(parent.location.db_name, 'EMDB')
+        self.assertEqual(parent.location.access_code, 'EMD-1883')
+        self.assertEqual(parent.location.version, '2011-04-21')
+        self.assertEqual(parent.location.details, 'test details')
 
 if __name__ == '__main__':
     IMP.test.main()
