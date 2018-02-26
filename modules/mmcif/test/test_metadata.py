@@ -2,7 +2,10 @@ from __future__ import print_function
 import IMP.test
 import IMP.mmcif.metadata
 import IMP.mmcif.data
-import urllib2
+try:
+    import urllib.request as urllib2
+except ImportError:
+    import urllib2
 import sys
 if sys.version_info[0] >= 3:
     from io import StringIO

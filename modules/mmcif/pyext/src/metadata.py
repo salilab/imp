@@ -9,7 +9,10 @@ import struct
 import os
 import sys
 import json
-import urllib2
+try:
+    import urllib.request as urllib2
+except ImportError:
+    import urllib2
 
 class _MetadataParser(object):
     """Base class for all metadata parsers.
