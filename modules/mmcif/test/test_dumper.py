@@ -830,7 +830,7 @@ _ihm_3dem_restraint.struct_assembly_id
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id
 _ihm_3dem_restraint.cross_correlation_coefficient
-1 1 'Gaussian mixture model' . . 1 0.400
+1 1 'Gaussian mixture model' . 50 1 0.400
 #
 """)
 
