@@ -116,28 +116,28 @@ class _PDBMetadataParser(_MetadataParser):
            self.alignment_file to the comparative modeling alignment,
            if available."""
         self.alignment_file = None
-        fh = open(filename)
-        first_line = fh.readline()
-        local_file = IMP.mmcif.dataset.FileLocation(filename,
+        with open(filename) as fh:
+            first_line = fh.readline()
+            local_file = IMP.mmcif.dataset.FileLocation(filename,
                                           details="Starting model structure")
-        if first_line.startswith('HEADER'):
-            self._parse_official_pdb(fh, chain, first_line, system)
-        elif first_line.startswith('EXPDTA    DERIVED FROM PDB:'):
-            self._parse_derived_from_pdb(fh, chain, first_line, local_file,
-                                         system)
-        elif first_line.startswith('EXPDTA    DERIVED FROM COMPARATIVE '
-                                   'MODEL, DOI:'):
-            self._parse_derived_from_model(fh, chain, first_line, local_file,
-                                           system)
-        elif first_line.startswith('EXPDTA    THEORETICAL MODEL, MODELLER'):
-            self._parse_modeller_model(fh, chain, first_line, local_file,
-                                       filename, system)
-        elif first_line.startswith('REMARK  99  Chain ID :'):
-            self._parse_phyre_model(fh, chain, first_line, local_file,
-                                    filename, system)
-        else:
-            self._parse_unknown_model(fh, chain, first_line, local_file,
-                                      filename, system)
+            if first_line.startswith('HEADER'):
+                self._parse_official_pdb(fh, chain, first_line, system)
+            elif first_line.startswith('EXPDTA    DERIVED FROM PDB:'):
+                self._parse_derived_from_pdb(fh, chain, first_line, local_file,
+                                             system)
+            elif first_line.startswith('EXPDTA    DERIVED FROM COMPARATIVE '
+                                       'MODEL, DOI:'):
+                self._parse_derived_from_model(fh, chain, first_line,
+                                               local_file, system)
+            elif first_line.startswith('EXPDTA    THEORETICAL MODEL, MODELLER'):
+                self._parse_modeller_model(fh, chain, first_line, local_file,
+                                           filename, system)
+            elif first_line.startswith('REMARK  99  Chain ID :'):
+                self._parse_phyre_model(fh, chain, first_line, local_file,
+                                        filename, system)
+            else:
+                self._parse_unknown_model(fh, chain, first_line, local_file,
+                                          filename, system)
 
     def _parse_official_pdb(self, fh, chain, first_line, system):
         """Handle a file that's from the official PDB database."""
