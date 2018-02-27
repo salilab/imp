@@ -815,7 +815,7 @@ _ihm_model_list.representation_id
         """Test EM3DDumper"""
         system = IMP.mmcif.System()
         h, state = self.make_model(system)
-        em_filename = self.get_input_file_name('emd_1883.map.mrc.gmm.50.txt')
+        em_filename = self.get_input_file_name('test.gmm.txt')
         r = MockGaussianEMRestraint(state.model, em_filename)
         r.set_was_used(True)
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [r], "model1")
@@ -830,7 +830,7 @@ _ihm_3dem_restraint.struct_assembly_id
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id
 _ihm_3dem_restraint.cross_correlation_coefficient
-1 1 'Gaussian mixture model' . 50 1 0.400
+1 1 'Gaussian mixture model' . 20 1 0.400
 #
 """)
 

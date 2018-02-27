@@ -68,7 +68,7 @@ class Tests(IMP.test.TestCase):
         """Test _RestraintMapper with GaussianEM restraint"""
         s = IMP.mmcif.System()
         m = IMP.Model()
-        em_filename = self.get_input_file_name('emd_1883.map.mrc.gmm.50.txt')
+        em_filename = self.get_input_file_name('test.gmm.txt')
         r = MockGaussianEMRestraint(m, em_filename)
         r.set_was_used(True)
         rm = IMP.mmcif.restraint._RestraintMapper(s)
