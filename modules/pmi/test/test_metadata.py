@@ -28,6 +28,12 @@ class Tests(IMP.test.TestCase):
         f = IMP.pmi.metadata.FileLocation(repo=r, path='foo')
         s = IMP.pmi.metadata.PythonScript(location=f)
 
+    def test_chimerax_command_script(self):
+        """Test metadata.ChimeraXCommandScript"""
+        r = IMP.pmi.metadata.Repository(doi='10.5281/zenodo.46266')
+        f = IMP.pmi.metadata.FileLocation(repo=r, path='foo')
+        s = IMP.pmi.metadata.ChimeraXCommandScript(location=f)
+
     def test_repository_equality(self):
         """Test metadata.Repository equality"""
         r1 = IMP.pmi.metadata.Repository(doi='foo')

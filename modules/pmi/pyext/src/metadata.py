@@ -43,6 +43,12 @@ class PythonScript(RootMetadata):
         self.location = location
 
 
+class ChimeraXCommandScript(RootMetadata):
+    """A ChimeraX command script used to visualize the model."""
+    def __init__(self, location):
+        self.location = location
+
+
 class Dataset(Metadata):
     """A set of input data, for example, a crystal structure or EM map."""
 

@@ -176,8 +176,8 @@ _ihm_multi_state_modeling.details
 #
 """)
 
-    def test_workflow(self):
-        """Test output of workflow files"""
+    def test_workflow_visualization(self):
+        """Test output of workflow and visualization files"""
         m = IMP.Model()
         simo = IMP.pmi.representation.Representation(m)
         root = os.path.dirname(sys.argv[0]) or '.'
@@ -196,6 +196,12 @@ _ihm_multi_state_modeling.details
                                           path=os.path.join('bar', 'baz'),
                                           details='foo')
         s = IMP.pmi.metadata.PythonScript(location=l)
+        simo.add_metadata(s)
+
+        l = IMP.pmi.metadata.FileLocation(repo=r,
+                                          path=os.path.join('bar', 'test.cxc'),
+                                          details='ChimeraX commands')
+        s = IMP.pmi.metadata.ChimeraXCommandScript(location=l)
         simo.add_metadata(s)
 
         d = IMP.pmi.mmcif._ExternalReferenceDumper(po)
@@ -226,6 +232,7 @@ _ihm_external_files.details
 1 1 test_mmcif.py 'Modeling workflow or script' %d
 'The main integrative modeling script'
 2 2 bar/baz 'Modeling workflow or script' . foo
+3 2 bar/test.cxc 'Visualization script' . 'ChimeraX commands'
 #
 """ % file_size)
 

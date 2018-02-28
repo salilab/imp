@@ -627,6 +627,7 @@ class _ExternalReferenceDumper(_Dumper):
     INPUT_DATA = "Input data or restraints"
     MODELING_OUTPUT = "Modeling or post-processing output"
     WORKFLOW = "Modeling workflow or script"
+    VISUALIZATION = "Visualization script"
 
     class _LocalFiles(object):
         reference_provider = _CifWriter.omitted
@@ -679,6 +680,9 @@ class _ExternalReferenceDumper(_Dumper):
                             if isinstance(m, IMP.pmi.metadata.PythonScript)]
         for w in self._workflow:
             self.add(w.location, self.WORKFLOW)
+        for m in self.simo._metadata:
+            if isinstance(m, IMP.pmi.metadata.ChimeraXCommandScript):
+                self.add(m.location, self.VISUALIZATION)
 
     def finalize_after_datasets(self):
         """Note that this must happen *after* DatasetDumper.finalize()"""
