@@ -1751,8 +1751,10 @@ class Representation(object):
 
             c = IMP.container.SingletonsConstraint(sm, None, lc)
             self.m.add_score_state(c)
-            print("Completed setting " + str(maincopy) + " as a reference for " + str(copies[k]) \
-                   + " by rotating it in " + str(rotation_angle / 2.0 / pi * 360) + " degree around the " + str(rotational_axis) + " axis.")
+            print("Completed setting " + str(maincopy) + " as a reference for "
+                  + str(copies[k]) + " by rotating it by "
+                  + str(rotation_angle / 2.0 / pi * 360)
+                  + " degrees around the " + str(rotational_axis) + " axis.")
         self.m.update()
 
     def create_rigid_body_symmetry(self, particles_reference, particles_copy,label="None",

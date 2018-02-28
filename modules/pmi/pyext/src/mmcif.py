@@ -1043,6 +1043,7 @@ class _CrossLinkDumper(_Dumper):
                          ["ordinal_id", "restraint_id", "model_id",
                           "psi", "sigma_1", "sigma_2"]) as l:
             for model in self.models:
+                if not model._is_restrained: continue
                 for g in all_groups.keys():
                     self._set_psi_sigma(model, g)
                 for xl in self.cross_links:
@@ -1064,10 +1065,11 @@ class _EM2DRestraint(object):
 
     def get_transformation(self, model):
         """Get the transformation that places the model on the image"""
+        stats = model.em2d_stats or model.stats
         prefix = 'ElectronMicroscopy2D_%s_Image%d' % (self.pmi_restraint.label,
                                                       self.image_number + 1)
-        r = [float(model.stats[prefix + '_Rotation%d' % i]) for i in range(4)]
-        t = [float(model.stats[prefix + '_Translation%d' % i])
+        r = [float(stats[prefix + '_Rotation%d' % i]) for i in range(4)]
+        t = [float(stats[prefix + '_Translation%d' % i])
              for i in range(3)]
         # If the model coordinates are transformed, need to back transform
         # them first
@@ -1077,7 +1079,8 @@ class _EM2DRestraint(object):
     def get_cross_correlation(self, model):
         """Get the cross correlation coefficient between the model projection
            and the image"""
-        return float(model.stats['ElectronMicroscopy2D_%s_Image%d_CCC'
+        stats = model.em2d_stats or model.stats
+        return float(stats['ElectronMicroscopy2D_%s_Image%d_CCC'
                                  % (self.pmi_restraint.label,
                                     self.image_number + 1)])
 
@@ -1132,6 +1135,7 @@ class _EM2DDumper(_Dumper):
                  "rot_matrix[2][3]", "rot_matrix[3][3]", "tr_vector[1]",
                  "tr_vector[2]", "tr_vector[3]"]) as l:
             for m in self.models:
+                if not m._is_restrained: continue
                 for r in self.restraints:
                     trans = r.get_transformation(m)
                     rot = trans.get_rotation()
@@ -1196,6 +1200,7 @@ class _EM3DDumper(_Dumper):
                           "number_of_gaussians", "model_id",
                           "cross_correlation_coefficient"]) as l:
             for model in self.models:
+                if not model._is_restrained: continue
                 for r in self.restraints:
                     ccc = r.get_cross_correlation(model)
                     l.write(ordinal_id=ordinal,
@@ -1429,7 +1434,10 @@ class _Model(object):
         self.protocol = protocol
         self.assembly = assembly
         self.representation = representation
+        self.em2d_stats = None
         self.stats = None
+        # True iff restraints act on this model
+        self._is_restrained = True
         o = self.output = IMP.pmi.output.Output(atomistic=True)
         name = 'cif-output'
         o.dictionary_pdbs[name] = prot
