@@ -123,6 +123,10 @@ class EM2DClassDataset(Dataset):
     """2DEM class average"""
     _data_type = '2DEM class average'
 
+class SASDataset(Dataset):
+    """SAS data"""
+    _data_type = 'SAS data'
+
 class Location(Metadata):
     """Identifies the location where a resource can be found."""
 
@@ -176,6 +180,11 @@ class EMPIARLocation(DatabaseLocation):
     """Something stored in the EMPIAR database."""
     def __init__(self, db_code, version=None, details=None):
         DatabaseLocation.__init__(self, 'EMPIAR', db_code, version, details)
+
+class SASBDBLocation(DatabaseLocation):
+    """Something stored in the SASBDB database."""
+    def __init__(self, db_code, version=None, details=None):
+        DatabaseLocation.__init__(self, 'SASBDB', db_code, version, details)
 
 class FileLocation(Location):
     """An individual file or directory.

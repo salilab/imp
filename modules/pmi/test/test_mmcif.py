@@ -2109,6 +2109,48 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
 #
 """)
 
+    def test_sas_dumper(self):
+        """Test SASDumper class"""
+        class DummyModel(object):
+            pass
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        state = simo._protocol_output[0][1]
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+
+        lp = IMP.pmi.metadata.FileLocation(repo='foo', path='baz')
+        d = IMP.pmi.metadata.SASDataset(lp)
+        d.id = 4
+        model = DummyModel()
+        model.id = 42
+        po._add_foxs_restraint(model, 'Nup84', (2,3), d, 3.4, 1.2, 'test')
+
+        fh = StringIO()
+        w = IMP.pmi.mmcif._CifWriter(fh)
+        po.assembly_dump.finalize() # assign assembly IDs
+        po.sas_dump.dump(w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_sas_restraint.ordinal_id
+_ihm_sas_restraint.dataset_list_id
+_ihm_sas_restraint.model_id
+_ihm_sas_restraint.struct_assembly_id
+_ihm_sas_restraint.profile_segment_flag
+_ihm_sas_restraint.fitting_atom_type
+_ihm_sas_restraint.fitting_method
+_ihm_sas_restraint.fitting_state
+_ihm_sas_restraint.radius_of_gyration
+_ihm_sas_restraint.chi_value
+_ihm_sas_restraint.details
+1 4 42 2 No 'Heavy atoms' FoXS Single 3.400 1.200 test
+#
+""")
+
     def test_em3d_dumper(self):
         """Test EM3DDumper class"""
         m = IMP.Model()

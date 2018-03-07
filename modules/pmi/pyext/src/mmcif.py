@@ -1155,6 +1155,47 @@ class _EM2DDumper(_Dumper):
                             tr_vector2=t[1], tr_vector3=t[2])
                     ordinal += 1
 
+
+class _SASRestraint(object):
+    # todo: support multifoxs, etc.
+    fitting_state = 'Single'
+    def __init__(self, method, model, assembly, dataset, rg, chi, details):
+        self.method, self.model, self.assembly = method, model, assembly
+        self.dataset, self.rg, self.chi = dataset, rg, chi
+        self.details = details
+
+
+class _SASDumper(_Dumper):
+    def __init__(self, simo):
+        super(_SASDumper, self).__init__(simo)
+        self.restraints = []
+
+    def add(self, rsr):
+        self.restraints.append(rsr)
+        rsr.id = len(self.restraints)
+
+    def dump(self, writer):
+        self.dump_restraints(writer)
+
+    def dump_restraints(self, writer):
+        ordinal = 1
+        with writer.loop("_ihm_sas_restraint",
+                         ["ordinal_id", "dataset_list_id", "model_id",
+                          "struct_assembly_id", "profile_segment_flag",
+                          "fitting_atom_type", "fitting_method",
+                          "fitting_state", "radius_of_gyration",
+                          "chi_value", "details"]) as l:
+            for r in self.restraints:
+                l.write(ordinal_id=ordinal, dataset_list_id=r.dataset.id,
+                        model_id=r.model.id, struct_assembly_id=r.assembly.id,
+                        profile_segment_flag='No',
+                        fitting_atom_type='Heavy atoms',
+                        fitting_method=r.method, fitting_state=r.fitting_state,
+                        radius_of_gyration=r.rg, chi_value=r.chi,
+                        details=r.details if r.details else _CifWriter.omitted)
+                ordinal += 1
+
+
 class _EM3DRestraint(object):
     fitting_method = 'Gaussian mixture models'
 
@@ -2543,6 +2584,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
         self.model_repr_dump = _ModelRepresentationDumper(self)
         self.cross_link_dump = _CrossLinkDumper(self)
+        self.sas_dump = _SASDumper(self)
         self.em2d_dump = _EM2DDumper(self)
         self.em3d_dump = _EM3DDumper(self)
         self.model_prot_dump = _ModelProtocolDumper(self)
@@ -2583,7 +2625,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                          self.assembly_dump,
                          self.model_repr_dump, self.extref_dump,
                          self.dataset_dump,
-                         self.cross_link_dump,
+                         self.cross_link_dump, self.sas_dump,
                          self.em2d_dump, self.em3d_dump,
                          self.starting_model_dump,
                          # todo: detect atomic models and emit struct_conf
@@ -2836,6 +2878,17 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                 # Add RMSF info if available
                 for c in state.all_modeled_components:
                     e.load_rmsf(m, c)
+
+    def _add_foxs_restraint(self, model, comp, seqrange, dataset, rg, chi,
+                            details):
+        """Add a basic FoXS fit. This is largely intended for use from the
+           NPC application."""
+        assembly = self.assembly_dump.get_subassembly({comp:seqrange},
+                              name="SAXS subassembly",
+                              description="All components that fit SAXS data")
+        dataset = self._add_dataset(dataset)
+        self.sas_dump.add(_SASRestraint('FoXS', model, assembly, dataset,
+                                        rg, chi, details))
 
     def add_em2d_restraint(self, state, r, i, resolution, pixel_size,
                            image_resolution, projection_number):

@@ -152,6 +152,14 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(d.version, 1)
         self.assertEqual(d.details, 'foo')
 
+    def test_sasbdb_location(self):
+        """Test SASBDBLocation class"""
+        d = IMP.pmi.metadata.SASBDBLocation('abc', version=1, details='foo')
+        self.assertEqual(d.db_name, 'SASBDB')
+        self.assertEqual(d.access_code, 'abc')
+        self.assertEqual(d.version, 1)
+        self.assertEqual(d.details, 'foo')
+
     def test_repo_file_location(self):
         """Test FileLocation class pointing to a repository file"""
         r = IMP.pmi.metadata.Repository(doi='mydoi')
@@ -289,6 +297,12 @@ class Tests(IMP.test.TestCase):
         loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
         d = IMP.pmi.metadata.EM2DClassDataset(loc)
         self.assertEqual(d._data_type, '2DEM class average')
+
+    def test_sas_dataset(self):
+        """Test SASDataset"""
+        loc = IMP.pmi.metadata.FileLocation(repo='mydoi', path='a')
+        d = IMP.pmi.metadata.SASDataset(loc)
+        self.assertEqual(d._data_type, 'SAS data')
 
 if __name__ == '__main__':
     IMP.test.main()
