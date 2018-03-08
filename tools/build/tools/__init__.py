@@ -77,7 +77,7 @@ def rewrite(filename, contents, verbose=True):
         if verbose:
             print("    Was symlink - now new file: " + filename)
     try:
-        old = open(filename, "r").read()
+        old = open_utf8(filename, "r").read()
         if old == contents:
             return
         elif verbose:
@@ -92,7 +92,7 @@ def rewrite(filename, contents, verbose=True):
     dirpath = os.path.split(filename)[0]
     if dirpath != "":
         mkdir(dirpath, False)
-    open(filename, "w").write(contents)
+    open_utf8(filename, "w").write(contents)
 
 class FileGenerator(object):
     """Auto-generate an output file.
