@@ -84,7 +84,7 @@ class NormalMoverTest(IMP.test.TestCase):
         self.assertLessEqual(transm,1.0)
 
     def test_mc_mover_rotate(self):
-        for i in range(100):
+        for i in range(200):
             mdl,root,mc,rb=self.setup_mv_mover_test(0.0,1.0)
             r0=rb.get_coordinates()
             rot0=rb.get_rotation()
