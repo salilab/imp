@@ -1188,7 +1188,7 @@ class _SASDumper(_Dumper):
             for r in self.restraints:
                 l.write(ordinal_id=ordinal, dataset_list_id=r.dataset.id,
                         model_id=r.model.id, struct_assembly_id=r.assembly.id,
-                        profile_segment_flag='No',
+                        profile_segment_flag=False,
                         fitting_atom_type='Heavy atoms',
                         fitting_method=r.method, fitting_state=r.fitting_state,
                         radius_of_gyration=r.rg, chi_value=r.chi,

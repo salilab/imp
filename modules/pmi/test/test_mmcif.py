@@ -2147,7 +2147,7 @@ _ihm_sas_restraint.fitting_state
 _ihm_sas_restraint.radius_of_gyration
 _ihm_sas_restraint.chi_value
 _ihm_sas_restraint.details
-1 4 42 2 No 'Heavy atoms' FoXS Single 3.400 1.200 test
+1 4 42 2 NO 'Heavy atoms' FoXS Single 3.400 1.200 test
 #
 """)
 
