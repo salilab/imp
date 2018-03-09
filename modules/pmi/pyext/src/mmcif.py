@@ -130,7 +130,10 @@ class _CifWriter(object):
                                           self._repr(kwargs[key])))
     def _repr(self, obj):
         if isinstance(obj, str) and '"' not in obj \
-           and "'" not in obj and " " not in obj:
+           and "'" not in obj and " " not in obj \
+           and not obj.startswith('data_') \
+           and not obj.startswith('[') \
+           and obj not in ('save_', 'loop_', 'stop_', 'global_'):
             return obj
         elif isinstance(obj, float):
             return "%.3f" % obj
