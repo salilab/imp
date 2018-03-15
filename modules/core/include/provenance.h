@@ -168,7 +168,7 @@ public:
     each frame can be stored, if known and applicable.
     The rest of the frames are generally stored in a file (e.g. an RMF file).
 
-    Throw UsageException if invalid sampling method
+    \throw UsageException if invalid sampling method
   */
 class IMPCOREEXPORT SampleProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi,
@@ -198,7 +198,7 @@ class IMPCOREEXPORT SampleProvenance : public Provenance {
   static std::set<std::string>& get_allowed_methods();
 
   //! validate specified sampling method is in get_allowed_methods().
-  //! Otherwise throw IMP::UsageException
+  //! \throw IMP::UsageException if invalid
   static void validate_method(std::string method) {
     IMP_ALWAYS_CHECK(get_allowed_methods().find(method)
                            != get_allowed_methods().end(),
@@ -214,7 +214,7 @@ public:
   }
 
   //! Set the sampling method
-  //! Throw IMP::UsageException invalid = not in get_allowed_methods().
+  //! \throw IMP::UsageException invalid = not in get_allowed_methods().
   void set_method(std::string method) const {
     validate_method(method);
     return get_model()->set_attribute(get_method_key(), get_particle_index(),
@@ -335,7 +335,7 @@ public:
      - by ranking the models and keeping the best scoring subset;
      - by keeping a fraction of models from the ensemble.
 
-    Throw UsageException if method not in get_allowed_methods()
+    \throw UsageException if method not in get_allowed_methods()
   */
 class IMPCOREEXPORT FilterProvenance : public Provenance {
   static void do_setup_particle(Model *m, ParticleIndex pi, std::string method,
@@ -360,7 +360,7 @@ class IMPCOREEXPORT FilterProvenance : public Provenance {
   static std::set<std::string>& get_allowed_methods();
 
   //! validate specified sampling method is in get_allowed_methods().
-  //! Otherwise throw IMP::UsageException
+  //! \throw IMP::UsageException if invalid
   static void validate_method(std::string method) {
     IMP_ALWAYS_CHECK(get_allowed_methods().find(method)
                     != get_allowed_methods().end(),
@@ -376,7 +376,7 @@ public:
   }
 
   //! Set the filtering method
-  //! Throw IMP::UsageException if not a valid method for filtering
+  //! \throw IMP::UsageException if not a valid method for filtering
   void set_method(std::string method) const {
     validate_method(method);
     return get_model()->set_attribute(get_method_key(), get_particle_index(),
