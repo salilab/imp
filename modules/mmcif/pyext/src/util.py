@@ -139,7 +139,7 @@ class System(object):
     def add_software(self, name, classification, description, url,
                      type='program', version=None):
         "Add software (other than IMP) used as part of the modeling protocol."
-        self._software.append(IMP.mmcif.data._Software(
+        self._software.append(ihm.Software(
                     name, classification, description, url, type, version))
 
     def _add_state(self, state):

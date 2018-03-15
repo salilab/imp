@@ -348,20 +348,8 @@ class _Citation(object):
         self.pmid, self.authors, self.doi = pmid, authors, doi
 
 
-class _Software(object):
-    """Software (other than IMP) used as part of the modeling protocol."""
-    def __init__(self, name, classification, description, url,
-                 type='program', version=None):
-        self.name = name
-        self.classification = classification
-        self.description = description
-        self.url = url
-        self.type = type
-        self.version = version
-
-
 class _AllSoftware(list):
-    """Keep track of all _Software objects."""
+    """Keep track of all Software objects."""
     def __init__(self):
         super(_AllSoftware, self).__init__()
         self.modeller_used = self.phyre2_used = False
@@ -370,32 +358,32 @@ class _AllSoftware(list):
         if self.modeller_used:
             return
         self.modeller_used = True
-        self.append(_Software(
+        self.append(ihm.Software(
                 name='MODELLER', classification='comparative modeling',
                 description='Comparative modeling by satisfaction '
                             'of spatial restraints, build ' + date,
-                url='https://salilab.org/modeller/',
+                location='https://salilab.org/modeller/',
                 version=version))
 
     def set_phyre2_used(self):
         if self.phyre2_used:
             return
         self.phyre2_used = True
-        self.append(_Software(
+        self.append(ihm.Software(
                name='Phyre2', classification='protein homology modeling',
                description='Protein Homology/analogY Recognition '
                            'Engine V 2.0',
-               version='2.0', url='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
+               version='2.0', location='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
 
     def add_hierarchy(self, h):
         # todo: if no SoftwareProvenance available, use RMF producer field
         for p in IMP.core.get_all_provenance(h,
                                         types=[IMP.core.SoftwareProvenance]):
-            self.append(_Software(name=p.get_software_name(),
-                                  classification='integrative model building',
-                                  description=None,
-                                  version=p.get_version(),
-                                  url=p.get_location()))
+            self.append(ihm.Software(name=p.get_software_name(),
+                                 classification='integrative model building',
+                                 description=None,
+                                 version=p.get_version(),
+                                 location=p.get_location()))
 
 
 class _ExternalFiles(object):
