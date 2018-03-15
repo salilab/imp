@@ -31,15 +31,18 @@ int main(int argc, char** argv) {
     RMF::clone_hierarchy(rh, orh);
     RMF::clone_static_frame(rh, orh);
     std::cout << "Copying frames";
+    unsigned num_copied = 0;
     RMF_FOREACH(RMF::FrameID f, rh.get_frames()) {
       if (f.get_index() < static_cast<unsigned int>(start_frame)) continue;
       if ((f.get_index() - start_frame) % step_frame != 0) continue;
       rh.set_current_frame(f);
       orh.add_frame(rh.get_name(f), rh.get_type(f));
       RMF::clone_loaded_frame(rh, orh);
+      num_copied++;
       if (orh.get_number_of_frames() % 10 == 0) std::cout << "." << std::flush;
     }
     std::cout << std::endl;
+    std::cout << num_copied << " frames copied" << std::endl;
     return 0;
   }
   catch (const std::exception& e) {
