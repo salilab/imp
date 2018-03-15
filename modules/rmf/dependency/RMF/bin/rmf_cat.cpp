@@ -39,7 +39,9 @@ int main(int argc, char** argv) {
     for (unsigned int i = 0; i < inputs.size(); ++i) {
       RMF::FileConstHandle rh = RMF::open_rmf_file_read_only(inputs[i]);
       if (i == 0) {
+        RMF::clone_file_info(rh, orh); // creator etc. (not essential)
         RMF::clone_hierarchy(rh, orh);
+        RMF::clone_static_frame(rh, orh);
       }
       orh.set_description(orh.get_description() + "\n" + rh.get_description());
       RMF_FOREACH(RMF::FrameID ni, rh.get_frames()) {
