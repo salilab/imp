@@ -2,8 +2,8 @@ from __future__ import print_function
 import IMP.test
 import IMP.mmcif
 import IMP.mmcif.dumper
-import IMP.mmcif.format
 import IMP.mmcif.dataset
+import ihm.format
 import io
 import sys
 import os
@@ -40,7 +40,7 @@ class MockGaussianEMRestraint(IMP.Restraint):
 
 def _get_dumper_output(dumper, system):
     fh = StringIO()
-    writer = IMP.mmcif.format.CifWriter(fh)
+    writer = ihm.format.CifWriter(fh)
     dumper.dump(system, writer)
     return fh.getvalue()
 
@@ -580,7 +580,7 @@ _ihm_related_datasets.dataset_list_id_primary
             chain_id = 'H'
             offset = 2
         fh = StringIO()
-        writer = IMP.mmcif.format.CifWriter(fh)
+        writer = ihm.format.CifWriter(fh)
         dumper = IMP.mmcif.dumper._StartingModelDumper()
         sd = IMP.mmcif.dumper._MSESeqDif(MockRes(), MockComponent(),
                                          MockSource(), MockModel())

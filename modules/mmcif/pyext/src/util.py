@@ -5,11 +5,11 @@
 import IMP.mmcif.dumper
 import IMP.mmcif.dataset
 import IMP.mmcif.data
-import IMP.mmcif.format
 import IMP.mmcif.restraint
 import IMP.rmf
 import IMP.atom
 import RMF
+import ihm.format
 import string
 import weakref
 import operator
@@ -231,7 +231,7 @@ class System(object):
 
     def write(self, fname):
         with open(fname, 'w') as fh:
-            writer = IMP.mmcif.format.CifWriter(fh)
+            writer = ihm.format.CifWriter(fh)
             for dumper in self._dumpers:
                 dumper.finalize_metadata(self)
             for dumper in self._dumpers:
