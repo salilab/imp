@@ -2,8 +2,8 @@
    @brief Utility functions for IMP.mmcif.
 """
 
+import ihm.location
 import IMP.mmcif.dumper
-import IMP.mmcif.dataset
 import IMP.mmcif.data
 import IMP.mmcif.restraint
 import IMP.rmf
@@ -121,12 +121,12 @@ class System(object):
 
     def _update_location(self, fileloc):
         """Update FileLocation to point to a parent repository, if any"""
-        IMP.mmcif.dataset.Repository.update_in_repos(fileloc,
-                                                   self._external_files._repos)
+        ihm.location.Repository._update_in_repos(fileloc,
+                                                 self._external_files._repos)
 
     def add_repository(self, doi, root=None, url=None, top_directory=None):
         """Add a repository containing one or more modeling files."""
-        self._external_files.add_repo(IMP.mmcif.dataset.Repository(
+        self._external_files.add_repo(ihm.location.Repository(
                                             doi, root, url, top_directory))
 
     def add_citation(self, pmid, title, journal, volume, page_range, year,

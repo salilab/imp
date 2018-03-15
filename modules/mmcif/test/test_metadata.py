@@ -32,7 +32,7 @@ class Tests(IMP.test.TestCase):
         s, = p.sources
         self.assertEqual(s.db_code, '2HBJ')
         self.assertEqual(s.chain_id, 'A')
-        self.assertEqual(p.dataset._data_type, 'Experimental model')
+        self.assertEqual(p.dataset.data_type, 'Experimental model')
         self.assertEqual(p.dataset.location.db_name, 'PDB')
         self.assertEqual(p.dataset.location.access_code, '2HBJ')
         self.assertEqual(p.dataset.location.version, '14-JUN-06')
@@ -48,15 +48,15 @@ class Tests(IMP.test.TestCase):
         s, = p.sources
         self.assertIs(s.db_code, None)
         self.assertEqual(s.chain_id, 'A')
-        self.assertEqual(p.dataset._data_type, 'Experimental model')
+        self.assertEqual(p.dataset.data_type, 'Experimental model')
         self.assertEqual(p.dataset.location.path, pdbname)
         self.assertEqual(p.dataset.location.repo, None)
         self.assertEqual(p.dataset.location.details,
                          'MED7C AND MED21 STRUCTURES FROM PDB ENTRY 1YKH, '
                          'ROTATED AND TRANSLATED TO ALIGN WITH THE '
                          'MED4-MED9 MODEL')
-        parent, = p.dataset._parents
-        self.assertEqual(parent._data_type, 'Experimental model')
+        parent, = p.dataset.parents
+        self.assertEqual(parent.data_type, 'Experimental model')
         self.assertEqual(parent.location.db_name, 'PDB')
         self.assertEqual(parent.location.access_code, '1YKH')
         self.assertEqual(parent.location.version, None)
@@ -69,7 +69,7 @@ class Tests(IMP.test.TestCase):
         s, = p.sources
         self.assertIs(s.db_code, None)
         self.assertEqual(s.chain_id, 'A')
-        self.assertEqual(p.dataset._data_type, 'Comparative model')
+        self.assertEqual(p.dataset.data_type, 'Comparative model')
         self.assertEqual(p.dataset.location.path, pdbname)
         self.assertEqual(p.dataset.location.repo, None)
         self.assertEqual(p.dataset.location.details,
@@ -77,8 +77,8 @@ class Tests(IMP.test.TestCase):
                          'ET AL, NUCLEIC ACIDS RESEARCH. 2013;41:9266-9273. '
                          'DOI: 10.1093/nar/gkt704. THE MED10 STRUCTURE ALSO '
                          'PROPOSED IN THAT WORK IS NOT USED IN THIS STUDY.')
-        parent, = p.dataset._parents
-        self.assertEqual(parent._data_type, 'Comparative model')
+        parent, = p.dataset.parents
+        self.assertEqual(parent.data_type, 'Comparative model')
         self.assertEqual(parent.location.path, '.')
         self.assertEqual(parent.location.repo.doi, '10.1093/nar/gkt704')
         self.assertEqual(parent.location.details,
@@ -107,13 +107,13 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(s2.chain_id, 'A')
         self.assertEqual(s2.tm_db_code, '3F3F')
         self.assertEqual(s2.tm_chain_id, 'G')
-        self.assertEqual(p.dataset._data_type, 'Comparative model')
+        self.assertEqual(p.dataset.data_type, 'Comparative model')
         self.assertEqual(p.dataset.location.path, pdbname)
         self.assertEqual(p.dataset.location.repo, None)
         self.assertEqual(p.dataset.location.details,
                          'Starting model structure')
-        p1, p2 = p.dataset._parents
-        self.assertEqual(p1._data_type, 'Experimental model')
+        p1, p2 = p.dataset.parents
+        self.assertEqual(p1.data_type, 'Experimental model')
         self.assertEqual(p1.location.db_name, 'PDB')
         self.assertEqual(p1.location.access_code, '3JRO')
         self.assertEqual(p1.location.version, None)
@@ -130,8 +130,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(s.chain_id, 'A')
         self.assertIs(s.tm_db_code, None)
         self.assertEqual(s.tm_chain_id, 'C')
-        parent, = p.dataset._parents
-        self.assertEqual(parent._data_type, 'Experimental model')
+        parent, = p.dataset.parents
+        self.assertEqual(parent.data_type, 'Experimental model')
         self.assertEqual(parent.location.details,
                          'Template for comparative modeling')
         self.assertEqual(parent.location.path,
@@ -146,13 +146,13 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(s.chain_id, 'A')
         self.assertEqual(s.tm_db_code, '4BZK')
         self.assertEqual(s.tm_chain_id, 'A')
-        self.assertEqual(p.dataset._data_type, 'Comparative model')
+        self.assertEqual(p.dataset.data_type, 'Comparative model')
         self.assertEqual(p.dataset.location.path, pdbname)
         self.assertIs(p.dataset.location.repo, None)
         self.assertEqual(p.dataset.location.details,
                          'Starting model structure')
-        parent, = p.dataset._parents
-        self.assertEqual(parent._data_type, 'Experimental model')
+        parent, = p.dataset.parents
+        self.assertEqual(parent.data_type, 'Experimental model')
         self.assertEqual(parent.location.db_name, 'PDB')
         self.assertEqual(parent.location.access_code, '4BZK')
         self.assertIs(parent.location.version, None)
@@ -165,11 +165,11 @@ class Tests(IMP.test.TestCase):
         fname = self.get_input_file_name('test.gmm.txt')
         p.parse_file(fname, system)
         self.assertEqual(p.number_of_gaussians, 20)
-        self.assertEqual(p.dataset._data_type, '3DEM volume')
+        self.assertEqual(p.dataset.data_type, '3DEM volume')
         self.assertEqual(p.dataset.location.path, fname)
         self.assertIs(p.dataset.location.repo, None)
-        parent, = p.dataset._parents
-        self.assertEqual(parent._data_type, '3DEM volume')
+        parent, = p.dataset.parents
+        self.assertEqual(parent.data_type, '3DEM volume')
         self.assertEqual(parent.location.path,
                          self.get_input_file_name('Rpb8.mrc-header'))
         self.assertEqual(parent.location.details,
@@ -195,11 +195,11 @@ class Tests(IMP.test.TestCase):
         finally:
             urllib2.urlopen = orig_urlopen
         self.assertEqual(p.number_of_gaussians, 50)
-        self.assertEqual(p.dataset._data_type, '3DEM volume')
+        self.assertEqual(p.dataset.data_type, '3DEM volume')
         self.assertEqual(p.dataset.location.path, fname)
         self.assertIs(p.dataset.location.repo, None)
-        parent, = p.dataset._parents
-        self.assertEqual(parent._data_type, '3DEM volume')
+        parent, = p.dataset.parents
+        self.assertEqual(parent.data_type, '3DEM volume')
         self.assertEqual(parent.location.db_name, 'EMDB')
         self.assertEqual(parent.location.access_code, 'EMD-1883')
         self.assertEqual(parent.location.version, '2011-04-21')

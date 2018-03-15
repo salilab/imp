@@ -1,6 +1,7 @@
 from __future__ import print_function
 import IMP.test
 import IMP.mmcif.restraint
+import ihm.dataset
 
 class MockGaussianEMRestraint(IMP.Restraint):
 
@@ -75,7 +76,7 @@ class Tests(IMP.test.TestCase):
         frame = None
         wr = rm.handle(r, frame)
         self.assertEqual(type(wr), IMP.mmcif.restraint._GaussianEMRestraint)
-        self.assertEqual(type(wr.dataset), IMP.mmcif.dataset.EMDensityDataset)
+        self.assertEqual(type(wr.dataset), ihm.dataset.EMDensityDataset)
 
 
 if __name__ == '__main__':

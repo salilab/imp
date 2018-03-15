@@ -4,7 +4,7 @@
 
 from __future__ import print_function
 import IMP.atom
-import IMP.mmcif.dataset
+import ihm.location
 import IMP.mmcif.metadata
 
 def get_molecule(h):
@@ -331,7 +331,7 @@ class _Datasets(object):
         if d not in self._datasets:
             self._datasets[d] = d
             d.id = len(self._datasets)
-            self._external_files.add_input(d.location)
+            self._external_files.add(d.location)
         return self._datasets[d]
 
     def get_all(self):
@@ -398,29 +398,6 @@ class _AllSoftware(list):
                                   url=p.get_location()))
 
 
-class _ExternalFile(object):
-    """A single externally-referenced file"""
-
-    # All valid content types
-    INPUT_DATA = "Input data or restraints"
-    MODELING_OUTPUT = "Modeling or post-processing output"
-    WORKFLOW = "Modeling workflow or script"
-
-    def __init__(self, location, content_type):
-        self.location, self.content_type = location, content_type
-
-    # Pass id through to location
-    def __set_id(self, i):
-        self.location.id = i
-    id = property(lambda x: x.location.id, __set_id)
-    file_size = property(lambda x: x.location.file_size)
-
-    def __eq__(self, other):
-        return self.location == other.location
-    def __hash__(self):
-        return hash(self.location)
-
-
 class _ExternalFiles(object):
     """Track all externally-referenced files
        (i.e. anything that refers to a Location that isn't
@@ -433,36 +410,25 @@ class _ExternalFiles(object):
         """Add a repository containing modeling files."""
         self._repos.append(repo)
 
-    def _add(self, location, content_type):
+    def add(self, location):
         """Add a new externally-referenced file.
            Note that ids are assigned later."""
-        self._refs.append(_ExternalFile(location, content_type))
+        self._refs.append(location)
 
-    def add_input(self, location):
-        """Add a new externally-referenced file used as input."""
-        return self._add(location, _ExternalFile.INPUT_DATA)
-
-    def add_output(self, location):
-        """Add a new externally-referenced file produced as output."""
-        return self._add(location, _ExternalFile.MODELING_OUTPUT)
-
-    def add_workflow(self, location):
-        """Add a new externally-referenced file that's part of the workflow."""
-        return self._add(location, _ExternalFile.WORKFLOW)
 
     def add_hierarchy(self, h):
         # Add all Python scripts that were used in the modeling
         for p in IMP.core.get_all_provenance(h,
                                      types=[IMP.core.ScriptProvenance]):
             # todo: set details
-            l = IMP.mmcif.dataset.FileLocation(path=p.get_filename(),
+            l = ihm.location.WorkflowFileLocation(path=p.get_filename(),
                                details='Integrative modeling Python script')
-            self.add_workflow(l)
+            self.add(l)
 
     def get_all_nondb(self):
         """Yield all external files that are not database hosted"""
         for x in self._refs:
-            if not isinstance(x.location, IMP.mmcif.dataset.DatabaseLocation):
+            if not isinstance(x, ihm.location.DatabaseLocation):
                 yield x
 
 

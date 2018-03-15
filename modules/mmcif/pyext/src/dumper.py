@@ -3,9 +3,9 @@
 """
 
 from __future__ import print_function
+import ihm.location
 import IMP.atom
 import IMP.mmcif.data
-import IMP.mmcif.dataset
 import IMP.mmcif.restraint
 import operator
 import os
@@ -359,16 +359,16 @@ class _DatasetDumper(_Dumper):
         with writer.loop("_ihm_dataset_list",
                          ["id", "data_type", "database_hosted"]) as l:
             for d in self._dataset_by_id(system):
-                l.write(id=d.id, data_type=d._data_type,
+                l.write(id=d.id, data_type=d.data_type,
                         database_hosted=isinstance(d.location,
-                                        IMP.mmcif.dataset.DatabaseLocation))
+                                        ihm.location.DatabaseLocation))
         self.dump_other((d for d in self._dataset_by_id(system)
                          if not isinstance(d.location,
-                                           IMP.mmcif.dataset.DatabaseLocation)),
+                                           ihm.location.DatabaseLocation)),
                         writer)
         self.dump_rel_dbs((d for d in self._dataset_by_id(system)
                            if isinstance(d.location,
-                                         IMP.mmcif.dataset.DatabaseLocation)),
+                                         ihm.location.DatabaseLocation)),
                           writer)
         self.dump_related(system, writer)
 
@@ -401,7 +401,7 @@ class _DatasetDumper(_Dumper):
                          ["ordinal_id", "dataset_list_id_derived",
                           "dataset_list_id_primary"]) as l:
             for derived in self._dataset_by_id(system):
-                for parent in sorted(derived._parents.keys(),
+                for parent in sorted(derived.parents,
                                      key=operator.attrgetter('id')):
                     l.write(ordinal_id=ordinal,
                             dataset_list_id_derived=derived.id,
@@ -506,11 +506,11 @@ class _ExternalReferenceDumper(_Dumper):
         for r in self._refs:
             # Update location to point to parent repository, if any
             # todo: this could probably happen when the location is first made
-            system._update_location(r.location)
+            system._update_location(r)
             # Assign a unique ID to the reference
             IMP.mmcif.data._assign_id(r, seen_refs, self._ref_by_id)
             # Assign a unique ID to the repository
-            IMP.mmcif.data._assign_id(r.location.repo or self._local_files,
+            IMP.mmcif.data._assign_id(r.repo or self._local_files,
                                       seen_repos, self._repo_by_id)
 
     def dump(self, system, writer):
@@ -536,18 +536,17 @@ class _ExternalReferenceDumper(_Dumper):
                          ["id", "reference_id", "file_path", "content_type",
                           "file_size_bytes", "details"]) as l:
             for r in self._ref_by_id:
-                loc = r.location
-                repo = loc.repo or self._local_files
-                file_path=self._posix_path(repo._get_full_path(loc.path))
+                repo = r.repo or self._local_files
+                file_path=self._posix_path(repo._get_full_path(r.path))
                 if r.file_size is None:
                     file_size = writer.omitted
                 else:
                     file_size = r.file_size
-                l.write(id=loc.id, reference_id=repo.id,
+                l.write(id=r.id, reference_id=repo.id,
                         file_path=file_path,
                         content_type=r.content_type,
                         file_size_bytes=file_size,
-                        details=loc.details or writer.omitted)
+                        details=r.details or writer.omitted)
 
     # On Windows systems, convert native paths to POSIX-like (/-separated) paths
     if os.sep == '/':

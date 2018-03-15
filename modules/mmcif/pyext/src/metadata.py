@@ -3,7 +3,7 @@
    Classes to extract metadata for various input files.
 """
 
-import IMP.mmcif.dataset
+import IMP
 import re
 import struct
 import os
@@ -13,6 +13,8 @@ try:
     import urllib.request as urllib2
 except ImportError:
     import urllib2
+import ihm.dataset
+import ihm.location
 
 class _MetadataParser(object):
     """Base class for all metadata parsers.
@@ -98,7 +100,7 @@ class _UnknownSource(_StartingModelSource):
                    'Experimental model': 'experimental model'}
 
     def __init__(self, dataset, chain):
-        self.source = self._source_map[dataset._data_type]
+        self.source = self._source_map[dataset.data_type]
         self.chain_id = chain
 
     def get_seq_id_range(self, starting_model):
@@ -118,7 +120,7 @@ class _PDBMetadataParser(_MetadataParser):
         self.alignment_file = None
         with open(filename) as fh:
             first_line = fh.readline()
-            local_file = IMP.mmcif.dataset.FileLocation(filename,
+            local_file = ihm.location.InputFileLocation(filename,
                                           details="Starting model structure")
             if first_line.startswith('HEADER'):
                 self._parse_official_pdb(fh, chain, first_line, system)
@@ -143,8 +145,8 @@ class _PDBMetadataParser(_MetadataParser):
         """Handle a file that's from the official PDB database."""
         version, details, metadata = self._parse_pdb_records(fh, first_line)
         source = _PDBSource(first_line[62:66].strip(), chain, metadata)
-        l = IMP.mmcif.dataset.PDBLocation(source.db_code, version, details)
-        d = IMP.mmcif.dataset.PDBDataset(l)
+        l = ihm.location.PDBLocation(source.db_code, version, details)
+        d = ihm.dataset.PDBDataset(l)
         self.dataset = system.datasets.add(d)
         self.sources = [source]
 
@@ -154,10 +156,10 @@ class _PDBMetadataParser(_MetadataParser):
         # model with the official PDB as a parent
         local_file.details = self._parse_details(fh)
         db_code = first_line[27:].strip()
-        d = IMP.mmcif.dataset.PDBDataset(local_file)
-        pdb_loc = IMP.mmcif.dataset.PDBLocation(db_code)
-        parent = IMP.mmcif.dataset.PDBDataset(pdb_loc)
-        d.add_parent(parent)
+        d = ihm.dataset.PDBDataset(local_file)
+        pdb_loc = ihm.location.PDBLocation(db_code)
+        parent = ihm.dataset.PDBDataset(pdb_loc)
+        d.parents.append(parent)
         self.dataset = system.datasets.add(d)
         self.sources = [_UnknownSource(self.dataset, chain)]
 
@@ -166,13 +168,13 @@ class _PDBMetadataParser(_MetadataParser):
         # Model derived from a comparative model; link back to the original
         # model as a parent
         local_file.details = self._parse_details(fh)
-        d = IMP.mmcif.dataset.ComparativeModelDataset(local_file)
-        repo = IMP.mmcif.dataset.Repository(doi=first_line[46:].strip())
+        d = ihm.dataset.ComparativeModelDataset(local_file)
+        repo = ihm.location.Repository(doi=first_line[46:].strip())
         # todo: better specify an unknown path
-        orig_loc = IMP.mmcif.dataset.FileLocation(repo=repo, path='.',
+        orig_loc = ihm.location.InputFileLocation(repo=repo, path='.',
                           details="Starting comparative model structure")
-        parent = IMP.mmcif.dataset.ComparativeModelDataset(orig_loc)
-        d.add_parent(parent)
+        parent = ihm.dataset.ComparativeModelDataset(orig_loc)
+        d.parents.append(parent)
         self.dataset = system.datasets.add(d)
         self.sources = [_UnknownSource(self.dataset, chain)]
 
@@ -195,14 +197,14 @@ class _PDBMetadataParser(_MetadataParser):
         self._handle_comparative_model(local_file, filename, chain, system)
 
     def _handle_comparative_model(self, local_file, pdbname, chain, system):
-        d = IMP.mmcif.dataset.ComparativeModelDataset(local_file)
+        d = ihm.dataset.ComparativeModelDataset(local_file)
         self.dataset = system.datasets.add(d)
         templates, alnfile = self.get_templates(pdbname, system)
         if alnfile:
-            self.alignment_file = IMP.mmcif.dataset.FileLocation(alnfile,
+            self.alignment_file = ihm.location.InputFileLocation(alnfile,
                                     details="Alignment for starting "
                                             "comparative model")
-            system._external_files.add_input(self.alignment_file)
+            system._external_files.add(self.alignment_file)
 
         if templates:
             self.sources = templates
@@ -244,14 +246,14 @@ class _PDBMetadataParser(_MetadataParser):
         for t in templates:
             if t._orig_tm_code:
                 fname = template_path_map[t._orig_tm_code]
-                l = IMP.mmcif.dataset.FileLocation(fname,
+                l = ihm.location.InputFileLocation(fname,
                                  details="Template for comparative modeling")
             else:
-                l = IMP.mmcif.dataset.PDBLocation(t.tm_db_code)
-            d = IMP.mmcif.dataset.PDBDataset(l)
+                l = ihm.location.PDBLocation(t.tm_db_code)
+            d = ihm.dataset.PDBDataset(l)
             d = system.datasets.add(d)
             t.tm_dataset = d
-            self.dataset.add_parent(d)
+            self.dataset.parents.append(d)
 
         # Sort by starting residue, then ending residue
         return(sorted(templates,
@@ -290,13 +292,13 @@ class _MRCMetadataParser(_MetadataParser):
         emdb = self._get_emdb(filename)
         if emdb:
             version, details = self._get_emdb_info(emdb)
-            l = IMP.mmcif.dataset.EMDBLocation(emdb, version=version,
+            l = ihm.location.EMDBLocation(emdb, version=version,
                     details=details if details
-                            else "Electron microscopy density map")
+                                    else "Electron microscopy density map")
         else:
-            l = IMP.mmcif.dataset.FileLocation(filename,
+            l = ihm.location.InputFileLocation(filename,
                     details="Electron microscopy density map")
-        d = IMP.mmcif.dataset.EMDensityDataset(l)
+        d = ihm.dataset.EMDensityDataset(l)
         self.dataset = system.datasets.add(d)
 
     def _get_emdb_info(self, emdb):
@@ -342,13 +344,13 @@ class _GMMMetadataParser(_MetadataParser):
         """Extract metadata from `filename`.
            Sets self.dataset to point to the GMM file and
            self.number_of_gaussians to the number of GMMs (or None)"""
-        l = IMP.mmcif.dataset.FileLocation(filename,
+        l = ihm.location.InputFileLocation(filename,
                 details="Electron microscopy density map, "
                         "represented as a Gaussian Mixture Model (GMM)")
         # A 3DEM restraint's dataset ID uniquely defines the mmCIF restraint, so
         # we need to allow duplicates
         l._allow_duplicates = True
-        d = IMP.mmcif.dataset.EMDensityDataset(l)
+        d = ihm.dataset.EMDensityDataset(l)
         self.dataset = system.datasets.add(d)
         self.number_of_gaussians = None
 
@@ -359,6 +361,6 @@ class _GMMMetadataParser(_MetadataParser):
                     fn = line[11:].rstrip('\r\n')
                     p.parse_file(os.path.join(os.path.dirname(filename), fn),
                                  system)
-                    self.dataset.add_parent(p.dataset)
+                    self.dataset.parents.append(p.dataset)
                 elif line.startswith('# ncenters: '):
                     self.number_of_gaussians = int(line[12:])

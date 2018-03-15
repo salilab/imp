@@ -2,7 +2,7 @@
    @brief Map IMP restraints to mmCIF categories
 """
 
-import IMP.mmcif.dataset
+import IMP.mmcif.metadata
 
 def _parse_restraint_info(info):
     """Convert RestraintInfo object to Python dict"""

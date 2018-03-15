@@ -2,7 +2,8 @@ from __future__ import print_function
 import IMP.test
 import IMP.mmcif
 import IMP.mmcif.dumper
-import IMP.mmcif.dataset
+import ihm.location
+import ihm.dataset
 import ihm.format
 import io
 import sys
@@ -511,19 +512,19 @@ Nup85-m1 ATOM 2 C CA GLU 2 A 2 -8.986 11.688 -5.817 91.820 4
         m = IMP.Model()
         system = IMP.mmcif.System()
 
-        l = IMP.mmcif.dataset.FileLocation(repo="foo", path="bar")
+        l = ihm.location.InputFileLocation(repo="foo", path="bar")
         l.id = 97
-        d = IMP.mmcif.dataset.CXMSDataset(l)
+        d = ihm.dataset.CXMSDataset(l)
         pds = system.datasets.add(d)
 
-        l = IMP.mmcif.dataset.PDBLocation("1abc", "1.0", "test details")
-        d = IMP.mmcif.dataset.PDBDataset(l)
+        l = ihm.location.PDBLocation("1abc", "1.0", "test details")
+        d = ihm.dataset.PDBDataset(l)
         system.datasets.add(d)
 
-        l = IMP.mmcif.dataset.FileLocation(repo="foo2", path="bar2")
+        l = ihm.location.InputFileLocation(repo="foo2", path="bar2")
         l.id = 98
-        d = IMP.mmcif.dataset.PDBDataset(l)
-        d.add_parent(pds)
+        d = ihm.dataset.PDBDataset(l)
+        d.parents.append(pds)
         system.datasets.add(d)
 
         d = IMP.mmcif.dumper._DatasetDumper()
@@ -607,36 +608,36 @@ _ihm_starting_model_seq_dif.details
         system = IMP.mmcif.System()
         exfil = system._external_files
 
-        repo1 = IMP.mmcif.dataset.Repository(doi="foo")
-        repo2 = IMP.mmcif.dataset.Repository(doi="10.5281/zenodo.46266",
+        repo1 = ihm.location.Repository(doi="foo")
+        repo2 = ihm.location.Repository(doi="10.5281/zenodo.46266",
                                      url='nup84-v1.0.zip',
                                      top_directory=os.path.join('foo', 'bar'))
-        repo3 = IMP.mmcif.dataset.Repository(doi="10.5281/zenodo.58025",
-                                             url='foo.spd')
-        l = IMP.mmcif.dataset.FileLocation(repo=repo1, path='bar')
-        exfil.add_input(l)
+        repo3 = ihm.location.Repository(doi="10.5281/zenodo.58025",
+                                        url='foo.spd')
+        l = ihm.location.InputFileLocation(repo=repo1, path='bar')
+        exfil.add(l)
         # Duplicates should be ignored
-        l = IMP.mmcif.dataset.FileLocation(repo=repo1, path='bar')
-        exfil.add_input(l)
+        l = ihm.location.InputFileLocation(repo=repo1, path='bar')
+        exfil.add(l)
         # Different file, same repository
-        l = IMP.mmcif.dataset.FileLocation(repo=repo1, path='baz')
-        exfil.add_input(l)
+        l = ihm.location.InputFileLocation(repo=repo1, path='baz')
+        exfil.add(l)
         # Different repository
-        l = IMP.mmcif.dataset.FileLocation(repo=repo2, path='baz')
-        exfil.add_output(l)
+        l = ihm.location.OutputFileLocation(repo=repo2, path='baz')
+        exfil.add(l)
         # Repository containing a single file (not an archive)
-        l = IMP.mmcif.dataset.FileLocation(repo=repo3, path='foo.spd',
+        l = ihm.location.InputFileLocation(repo=repo3, path='foo.spd',
                                            details='EM micrographs')
-        exfil.add_input(l)
+        exfil.add(l)
         bar = 'test_mmcif_extref.tmp'
         with open(bar, 'w') as f:
             f.write("abcd")
         # Local file
-        l = IMP.mmcif.dataset.FileLocation(bar)
-        exfil.add_workflow(l)
+        l = ihm.location.WorkflowFileLocation(bar)
+        exfil.add(l)
         # DatabaseLocations should be ignored
-        l = IMP.mmcif.dataset.PDBLocation('1abc', '1.0', 'test details')
-        exfil.add_workflow(l)
+        l = ihm.location.PDBLocation('1abc', '1.0', 'test details')
+        exfil.add(l)
 
         dump = IMP.mmcif.dumper._ExternalReferenceDumper()
         dump.finalize(system) # assign IDs
