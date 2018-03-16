@@ -65,7 +65,11 @@ runpy = env.Command('py.out', 'test.py', "%s $SOURCES -v > $TARGET" % python)
 runpy_rmf = env.Command('py_rmf.out', 'test_rmf.py',
                         "%s $SOURCES -v > $TARGET" % python)
 
-tests = [runcpp, runcpp_rmf, runpy, runpy_rmf]
+# Test running a Python unittest program that uses ihm
+runpy_ihm = env.Command('py_ihm.out', 'test_ihm.py',
+                        "%s $SOURCES -v > $TARGET" % python)
+
+tests = [runcpp, runcpp_rmf, runpy, runpy_rmf, runpy_ihm]
 
 # Add extra RPM and OS-specific tests if requested
 if mock:
