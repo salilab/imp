@@ -370,6 +370,7 @@ perl -pi -e 's^#!.*python.*^#!/usr/bin/python^' ${RPM_BUILD_ROOT}%{_prefix}/bin/
 %{_libdir}/python2*/site-packages/_IMP*so
 %{_libdir}/python2*/site-packages/RMF*
 %{_libdir}/python2*/site-packages/_RMF*so
+%{_libdir}/python2*/site-packages/ihm
 %if 0%{?with_mpich}
 %exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
 %exclude %{_prefix}/share/IMP/swig/IMP_mpi.*
@@ -390,6 +391,7 @@ perl -pi -e 's^#!.*python.*^#!/usr/bin/python^' ${RPM_BUILD_ROOT}%{_prefix}/bin/
 %{_libdir}/python3*/site-packages/_IMP*so
 %{_libdir}/python3*/site-packages/RMF*
 %{_libdir}/python3*/site-packages/_RMF*so
+%{_libdir}/python3*/site-packages/ihm
 %{_libdir}/python3*/site-packages/__pycache__
 %endif
 
