@@ -49,8 +49,8 @@ cp ${TOOLDIR}/pkg-README.txt ${ROOT}/README.txt || exit 1
 
 # Move pure Python code to Windows location
 mkdir ${ROOT}/python || exit 1
-mv ${ROOT}/pylib/2.7/*.py ${ROOT}/pylib/2.7/IMP ${ROOT}/python || exit 1
-rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/IMP || exit 1
+mv ${ROOT}/pylib/2.7/*.py ${ROOT}/pylib/2.7/{IMP,ihm} ${ROOT}/python || exit 1
+rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/{IMP,ihm} || exit 1
 
 # Patch IMP/__init__.py and RMF.py so they can find Python version-specific
 # extensions and the IMP/RMF DLLs
