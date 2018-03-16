@@ -451,7 +451,7 @@ class _SoftwareDumper(_Dumper):
             for s in system._software:
                 l.write(pdbx_ordinal=ordinal, name=s.name,
                         classification=s.classification, version=s.version,
-                        type=s.type, location=s.url)
+                        type=s.type, location=s.location)
                 ordinal += 1
 
 
