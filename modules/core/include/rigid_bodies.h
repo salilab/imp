@@ -49,6 +49,11 @@ IMP_DECORATORS_DECL(RigidMember, RigidMembers);
     passed to the constructor, based on diagonalizing the
     inertial tensor (which is not stored, currently).
 
+    The rigid body radius is the farthest point of any of its
+    members from the origin of its reference frame. For rigid
+    body members, this takes into account the radius of the
+    member.
+
     RigidBodies can be nested (that is, a RigidBody can have
     another RigidBody as a member). This can be useful for
     organizational reasons as well as for accelerating
@@ -83,6 +88,10 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   void add_member_internal(Particle *p,
                            const algebra::ReferenceFrame3D &rf);
 
+  //! do updates to rigid body upon changes in its members
+  //! such as udpating the rigid body radius based on the
+  //! point/sphere distance of all of its point/sphere members
+  //! from its origin
   void on_change();
 
   static void teardown_constraints(Particle *p);
@@ -432,6 +441,8 @@ class IMPCOREEXPORT RigidBody : public XYZ {
      a strictly rigid member, in that its local coordinates are not expected
      to change independently.
 
+     The radius of the rigid body is updated to reflect the new member.
+
      \see add_non_rigid_member
    */
   void add_member(ParticleIndexAdaptor p);
@@ -446,6 +457,8 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   /** Set whether a particular member is flagged as a rigid member
       or as a non-rigid member. This affects the way the rigid body
       updates the coordinates and / or reference frame of its members.
+
+     The radius of the rigid body is updated to reflect this change.
   */
   void set_is_rigid_member(ParticleIndex pi, bool tf);
 };

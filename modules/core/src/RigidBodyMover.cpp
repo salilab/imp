@@ -62,6 +62,7 @@ void RigidBodyMover::do_reject() {
   RigidBody d(get_model(), pi_);
   d.set_reference_frame_lazy(algebra::ReferenceFrame3D(last_transformation_));
   last_transformation_ = algebra::Transformation3D();
+  IMP_LOG_VERBOSE("proposed move rejected" << std::endl);
 }
 
 ModelObjectsTemp RigidBodyMover::do_get_inputs() const {

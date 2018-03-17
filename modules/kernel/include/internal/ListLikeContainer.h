@@ -30,6 +30,7 @@ class ListLikeContainer : public Base {
   }
 
  protected:
+  //! swap internal data_ with data in cur - effectively make the container contain cur
   void swap(typename Base::ContainedIndexTypes &cur) {
     ++version_;
     IMP::swap(data_, cur);
