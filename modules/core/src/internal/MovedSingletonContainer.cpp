@@ -178,7 +178,7 @@ void RigidMovedSingletonContainer::check_upper_bound(
     algebra::Vector3D newv = cur.get_global_coordinates(local);
     double dist = get_distance(oldv, newv);
     IMP_CHECK_VARIABLE(dist);
-    IMP_CHECK_VARIABLE(d);
+    IMP_CHECK_VARIABLE(ub);
     IMP_INTERNAL_CHECK(dist < ub,
                        "Wrong upper bound " << ub << " on rigid body movement "
                        << " - rigid member "  << Showable(rms[i].get_particle())
@@ -193,7 +193,7 @@ void RigidMovedSingletonContainer::check_upper_bound(
 #else
   IMP_UNUSED(rbs);
   IMP_UNUSED(s);
-  IMP_UNUSED(d);
+  IMP_UNUSED(ub);
 #endif
 }
 
