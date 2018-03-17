@@ -55,6 +55,7 @@ void ClosePairContainer::initialize(SingletonContainer *c, double distance,
 void ClosePairContainer::set_slack(double s) {
   slack_ = s;
   cpf_->set_distance(distance_ + 2 * slack_);
+  moved_->set_threshold(slack_);
   ParticleIndexPairs et;
   swap(et);
   first_call_ = true;
@@ -171,6 +172,7 @@ void ClosePairContainer::do_incremental() {
   cpf_->set_pair_filters(pf);
   cpf_->set_distance(distance_ + 2 * slack_);
   ParticleIndexPairs ret;
+  // Go over particles that moved
   IMP_CONTAINER_ACCESS(SingletonContainer, moved_, {
     const ParticleIndexes &moved = imp_indexes;
     IMP_CONTAINER_ACCESS(
