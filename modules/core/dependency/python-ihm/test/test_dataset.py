@@ -25,6 +25,52 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(d.parents), 1)
         self.assertNotEqual(d, d2)
 
+    def test_add_primary_no_parents(self):
+        """Test add_primary() method, no parents"""
+        l1 = ihm.location.PDBLocation('1abc', version='foo', details='bar')
+        d1 = ihm.dataset.Dataset(l1)
+
+        l2 = ihm.location.PDBLocation('1xyz', version='foo', details='bar')
+        d2 = ihm.dataset.Dataset(l2)
+
+        d1.add_primary(d2)
+        self.assertEqual(d1.parents, [d2])
+
+    def test_add_primary_one_parent(self):
+        """Test add_primary() method, one parent"""
+        l1 = ihm.location.PDBLocation('1abc', version='foo', details='bar')
+        d1 = ihm.dataset.Dataset(l1)
+
+        l2 = ihm.location.PDBLocation('1xyz', version='foo', details='bar')
+        d2 = ihm.dataset.Dataset(l2)
+
+        l3 = ihm.location.PDBLocation('2def', version='foo', details='bar')
+        d3 = ihm.dataset.Dataset(l3)
+
+        d1.parents.append(d2)
+
+        d1.add_primary(d3)
+        self.assertEqual(d1.parents, [d2])
+        self.assertEqual(d2.parents, [d3])
+
+    def test_add_primary_two_parents(self):
+        """Test add_primary() method, two parents"""
+        l1 = ihm.location.PDBLocation('1abc', version='foo', details='bar')
+        d1 = ihm.dataset.Dataset(l1)
+
+        l2 = ihm.location.PDBLocation('1xyz', version='foo', details='bar')
+        d2 = ihm.dataset.Dataset(l2)
+
+        l3 = ihm.location.PDBLocation('2def', version='foo', details='bar')
+        d3 = ihm.dataset.Dataset(l3)
+
+        l4 = ihm.location.PDBLocation('2ghi', version='foo', details='bar')
+        d4 = ihm.dataset.Dataset(l3)
+
+        d1.parents.extend((d2, d3))
+
+        self.assertRaises(ValueError, d1.add_primary, d4)
+
     def test_cxms_dataset(self):
         """Test CXMSDataset"""
         loc = ihm.location.FileLocation(repo='mydoi', path='a')

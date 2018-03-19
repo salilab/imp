@@ -2,73 +2,40 @@
 
 from .format import CifWriter
 
-class Source(object):
-    """Base class for all sources for starting models."""
-    def get_seq_id_range(self, starting_model):
-        """Get the range of sequence in the starting model covered by
-           this source. By default, the source covers the entire model."""
-        return (starting_model.seq_id_begin, starting_model.seq_id_end)
+class Template(object):
+    """A PDB file used as a comparative modeling template for part of a
+       starting model.
 
+       See :class:`StartingModel`.
 
-class PDBSource(Source):
-    """An experimental PDB file used as part of a starting model"""
-    source = 'experimental model'
-    db_name = 'PDB'
-    sequence_identity = 100.0
+       :param dataset: Pointer to where this template is stored.
+       :type dataset: :class:`~ihm.dataset.Dataset`
+       :param str asym_id: The asymmetric unit (chain) to use from the template
+              dataset (not necessarily the same as the starting model's asym_id
+              or the ID of the asym_unit in the final IHM model).
+       :param tuple seq_id_range: The sequence range (in the IHM model) that
+              is modeled by this template.
+       :param tuple template_seq_id_range: The sequence range of the template
+              that is used in comparative modeling.
+       :param float sequence_identity: Sequence identity between template and
+              the target sequence, as a percentage.
+       :param int sequence_identity_denominator: Way in which sequence identity
+              was calculated.
+       :param alignment_file: Reference to the external file containing the
+              template-target alignment.
+       :type alignment_file: :class:`~ihm.location.Location`
+       """
+       # todo: handle sequence_identity_denominator as an enum, not int
 
-    def __init__(self, db_code, chain_id, metadata):
-        self.db_code = db_code
-        self.chain_id = chain_id
-        self.metadata = metadata
-
-
-class TemplateSource(Source):
-    """A PDB file used as a template for a comparative starting model"""
-    source = 'comparative model'
-    db_name = db_code = None
-    tm_dataset = None
-
-    def __init__(self, tm_code, tm_seq_id_begin, tm_seq_id_end, seq_id_begin,
-                 chain_id, seq_id_end, seq_id):
-        # Remove any unique suffix
-        stripped_tm_code = tm_code.split('_')[0]
-        # Assume a code of 1abcX or 1abcX_N refers to a real PDB structure
-        if len(stripped_tm_code) == 5:
-            self._orig_tm_code = None
-            self.tm_db_code = stripped_tm_code[:4].upper()
-            self.tm_chain_id = stripped_tm_code[4]
-        else:
-            # Otherwise, will need to look up in TEMPLATE PATH remarks
-            self._orig_tm_code = tm_code
-            self.tm_db_code = None
-            self.tm_chain_id = tm_code[-1]
-        self.sequence_identity = seq_id
-        self.tm_seq_id_begin = tm_seq_id_begin
-        self.tm_seq_id_end = tm_seq_id_end
-        self.chain_id = chain_id
-        self._seq_id_begin, self._seq_id_end = seq_id_begin, seq_id_end
-
-    def get_seq_id_range(self, starting_model):
-        # The template may cover more than the current starting model
-        seq_id_begin = max(starting_model.seq_id_begin, self._seq_id_begin)
-        seq_id_end = min(starting_model.seq_id_end, self._seq_id_end)
-        return (seq_id_begin, seq_id_end)
-
-
-class UnknownSource(Source):
-    """Part of a starting model from an unknown source"""
-    db_code = None
-    db_name = CifWriter.unknown
-    chain_id = CifWriter.unknown
-    sequence_identity = CifWriter.unknown
-    # Map dataset types to starting model sources
-    _source_map = {'Comparative model': 'comparative model',
-                   'Integrative model': 'integrative model',
-                   'Experimental model': 'experimental model'}
-
-    def __init__(self, dataset, chain):
-        self.source = self._source_map[dataset.data_type]
-        self.chain_id = chain
+    def __init__(self, dataset, asym_id, seq_id_range, template_seq_id_range,
+                 sequence_identity, sequence_identity_denominator=1,
+                 alignment_file=None):
+        self.dataset, self.asym_id = dataset, asym_id
+        self.seq_id_range = seq_id_range
+        self.template_seq_id_range = template_seq_id_range
+        self.sequence_identity = sequence_identity
+        self.sequence_identity_denominator = sequence_identity_denominator
+        self.alignment_file = alignment_file
 
 
 class StartingModel(object):
@@ -76,38 +43,45 @@ class StartingModel(object):
 
        See :attr:`~ihm.System.starting_models`.
 
-       :param asym_unit: The asymmetric unit this model represents.
-       :type asym_unit: :class:`~ihm.AsymUnit`
+       :param asym_unit: The asymmetric unit (or part of one) this starting
+              model represents.
+       :type asym_unit: :class:`~ihm.AsymUnit` or :class:`~ihm.AsymUnitRange`
        :param dataset: Pointer to where this model is stored.
        :type dataset: :class:`~ihm.dataset.Dataset`
        :param str asym_id: The asymmetric unit (chain) to use from the starting
-              model.
-       :param list sources: A list of :class:`Source` objects.
+              model's dataset (not necessarily the same as the ID of the
+              asym_unit in the final model).
+       :param list templates: A list of :class:`Template` objects, if this is
+              a comparative model.
        :param int offset: Offset between the residue numbering in the dataset
               and the IHM model (the offset is added to the starting model
               numbering to give the IHM model numbering).
+       :param list metadata: List of PDB metadata, such as HELIX records.
     """
-    def __init__(self, asym_unit, dataset, asym_id, sources, offset=0):
-        self.asym_unit, self.sources = asym_unit, sources
+    def __init__(self, asym_unit, dataset, asym_id, templates=[], offset=0,
+                 metadata=[]):
+        self.asym_unit, self.templates = asym_unit, templates
         self.dataset, self.asym_id, self.offset = dataset, asym_id, offset
+        self.metadata = metadata
 
-    def get_seq_id_range_all_sources(self):
-        """Get the seq_id range covered by all sources in this starting
-           model. Where there are multiple sources (to date, this can only
-           mean multiple templates for a comparative model) consolidate
+    def get_seq_id_range_all_templates(self):
+        """Get the seq_id range covered by all templates in this starting
+           model. Where there are multiple templates, consolidate
            them; template info is given in starting_comparative_models."""
-        class FullSeqIdRange(object):
-            pass
-        s = FullSeqIdRange()
-        s.seq_id_begin = 1
-        s.seq_id_end = len(self.asym_unit.entity.sequence)
-        source0 = self.sources[0]
-        seq_id_begin, seq_id_end = source0.get_seq_id_range(s)
-        for source in self.sources[1:]:
-            this_begin, this_end = source.get_seq_id_range(s)
-            seq_id_begin = min(seq_id_begin, this_begin)
-            seq_id_end = max(seq_id_end, this_end)
-        return seq_id_begin, seq_id_end
+        def get_seq_id_range(template, full):
+            # The template may cover more than the current starting model
+            rng = template.seq_id_range
+            return (max(rng[0], full[0]), min(rng[1], full[1]))
+
+        if self.templates:
+            full = self.asym_unit.seq_id_range
+            rng = get_seq_id_range(self.templates[0], full)
+            for template in self.templates[1:]:
+                this_rng = get_seq_id_range(template, full)
+                rng = (min(rng[0], this_rng[0]), max(rng[1], this_rng[1]))
+            return rng
+        else:
+            return self.asym_unit.seq_id_range
 
 
 class PDBHelix(object):

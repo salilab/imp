@@ -34,7 +34,9 @@ class Protocol(object):
        Each protocol consists of a number of protocol steps (e.g. sampling,
        refinement) followed by a number of analyses.
 
-       See :attr:`~ihm.System.protocols`.
+       Normally a protocol is passed to one or more :class:`~ihm.model.Model`
+       objects, although unused protocols can still be included in the file
+       if desired by adding them to :attr:`~ihm.System.orphan_protocols`.
     """
     def __init__(self, name=None):
         self.name = name

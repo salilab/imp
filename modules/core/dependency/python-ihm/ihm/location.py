@@ -6,8 +6,25 @@ import os
 class Location(object):
     """Identifies the location where a resource can be found.
 
-       See :data:`ihm.System.locations`, :class:`FileLocation`,
-       :class:`DatabaseLocation`."""
+       Typically the resource may be found in a file (either on the local
+       disk or at a DOI) - for this use one of the subclasses of
+       :class:`FileLocation`. Alternatively the resource may be found in
+       an experiment-specific database such as PDB or EMDB - for this use
+       :class:`DatabaseLocation` or one of its subclasses.
+
+       A Location may be passed to
+         - a :class:`~ihm.dataset.Dataset` to point to where an
+           experimental dataset may be found;
+         - an :class:`~ihm.model.Ensemble` to point to coordinates for an
+           entire ensemble, for example as a DCD file;
+         - a :class:`LocalizationDensity` to point to an external localization
+           density, for example in MRC format;
+         - to :data:`ihm.System.locations` to point to other files relating
+           to the modeling in general, such as a modeling control script
+           (:class:`WorkflowFileLocation`) or a command script for a
+           visualization package such as ChimeraX
+           (:class:`VisualizationFileLocation`).
+    """
 
     # 'details' can differ without affecting dataset equality
     _eq_keys = []

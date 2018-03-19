@@ -100,6 +100,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(l.path, 'foo/bar')
         self.assertEqual(l.repo, r)
         self.assertEqual(l.file_size, None)
+        # locations should only compare equal if path and repo both match
+        l2 = ihm.location.InputFileLocation('foo/bar', repo=r)
+        self.assertEqual(l, l2)
+        l3 = ihm.location.InputFileLocation('otherpath', repo=r)
+        self.assertNotEqual(l, l3)
+        r2 = ihm.location.Repository(doi='5.6.7.8')
+        l4 = ihm.location.InputFileLocation('foo/bar', repo=r2)
+        self.assertNotEqual(l, l4)
 
     def test_repository_equality(self):
         """Test Repository equality"""

@@ -33,12 +33,24 @@ class Dataset(object):
         #: For example, a 3D EM map may be derived from a set of 2D images.
         self.parents = []
 
+    def add_primary(self, dataset):
+        """Add another Dataset from which this one was ultimately derived."""
+        root = self
+        while root.parents:
+            if len(root.parents) > 1:
+                raise ValueError("This dataset has multiple parents - don't "
+                                 "know which one to add to")
+            root = root.parents[0]
+        root.parents.append(dataset)
+
 
 class DatasetGroup(list):
     """A set of :class:`Dataset` objects that are handled together.
        This is implemented as a simple list.
 
-       See :`~ihm.dataset_groups`.
+       Normally a group is passed to one or more :class:`~ihm.protocol.Protocol`
+       objects, although unused groups can still be included in the file
+       if desired by adding them to :attr:`ihm.System.orphan_dataset_groups`.
     """
     pass
 

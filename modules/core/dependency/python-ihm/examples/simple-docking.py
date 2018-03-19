@@ -88,7 +88,6 @@ system.restraints.append(em_rsr)
 # system using all of the experimental data:
 all_datasets = ihm.dataset.DatasetGroup((em_dataset, saxsA_dataset,
                                          saxsB_dataset))
-system.dataset_groups.append(all_datasets) # todo: remove
 protocol = ihm.protocol.Protocol(name='Modeling')
 protocol.steps.append(ihm.protocol.Step(
                         assembly=modeled_assembly,
@@ -97,7 +96,6 @@ protocol.steps.append(ihm.protocol.Step(
                         name='Production sampling',
                         num_models_begin=0,
                         num_models_end=1000, multi_scale=True))
-system.protocols.append(protocol) # todo: remove
 
 # Finally we can add coordinates for the deposited models. Typically these
 # will be stored in our own software's data structures somewhere (for this

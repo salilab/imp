@@ -38,12 +38,17 @@ class _EntryDumper(_Dumper):
 class _SoftwareDumper(_Dumper):
     def dump(self, system, writer):
         ordinal = 1
+        seen_software = {}
         # todo: specify these attributes in only one place (e.g. in the Software
         # class)
         with writer.loop("_software",
                          ["pdbx_ordinal", "name", "classification",
                           "description", "version", "type", "location"]) as l:
             for s in system.software:
+                # Remove duplicates
+                if s in seen_software:
+                    continue
+                seen_software[s] = None
                 l.write(pdbx_ordinal=ordinal, name=s.name,
                         classification=s.classification,
                         description=s.description, version=s.version,
@@ -220,7 +225,7 @@ class _ExternalReferenceDumper(_Dumper):
     def finalize(self, system):
         # Keep only locations that don't point into databases (these are
         # handled elsewhere)
-        self._refs = [x for x in system.locations
+        self._refs = [x for x in system._all_locations()
                       if not isinstance(x, location.DatabaseLocation)]
         # Assign IDs to all locations and repos (including the None repo, which
         # is for local files)
@@ -231,8 +236,6 @@ class _ExternalReferenceDumper(_Dumper):
         # Special dummy repo for repo=None (local files)
         self._local_files = self._LocalFiles(os.getcwd())
         for r in self._refs:
-            # todo: Update location to point to parent repository, if any
-            #location.Repository._update_in_repos(r)
             # Assign a unique ID to the reference
             util._assign_id(r, seen_refs, self._ref_by_id)
             # Assign a unique ID to the repository
@@ -291,7 +294,7 @@ class _DatasetDumper(_Dumper):
         # Assign IDs to all groups and remove duplicates
         seen_group_ids = {}
         self._dataset_group_by_id = []
-        for g in system.dataset_groups:
+        for g in system._all_dataset_groups():
             ids = tuple(sorted(d._id for d in g))
             if ids not in seen_group_ids:
                 self._dataset_group_by_id.append(g)
@@ -400,6 +403,7 @@ class _ModelRepresentationDumper(_Dumper):
                             model_object_count=segment.count)
                     ordinal_id += 1
 
+
 class _StartingModelDumper(_Dumper):
     def finalize(self, system):
         # Assign IDs to starting models
@@ -408,8 +412,14 @@ class _StartingModelDumper(_Dumper):
 
     def dump(self, system, writer):
         self.dump_details(system, writer)
+        self.dump_comparative(system, writer)
+        # todo: handle seq_id, coords
 
     def dump_details(self, system, writer):
+        # Map dataset types to starting model sources
+        source_map = {'Comparative model': 'comparative model',
+                      'Integrative model': 'integrative model',
+                      'Experimental model': 'experimental model'}
         with writer.loop("_ihm_starting_model_details",
                      ["starting_model_id", "entity_id", "entity_description",
                       "asym_id", "seq_id_begin",
@@ -418,23 +428,55 @@ class _StartingModelDumper(_Dumper):
                       "starting_model_sequence_offset",
                       "dataset_list_id"]) as l:
              for sm in system.starting_models:
-                seq_id_begin, seq_id_end = sm.get_seq_id_range_all_sources()
+                seq_id_range = sm.get_seq_id_range_all_templates()
                 l.write(starting_model_id=sm._id,
                         entity_id=sm.asym_unit.entity._id,
                         entity_description=sm.asym_unit.entity.description,
                         asym_id=sm.asym_unit._id,
-                        seq_id_begin=seq_id_begin,
-                        seq_id_end=seq_id_end,
-                        starting_model_source=sm.sources[0].source,
+                        seq_id_begin=seq_id_range[0],
+                        seq_id_end=seq_id_range[1],
+                        starting_model_source=source_map[sm.dataset.data_type],
                         starting_model_auth_asym_id=sm.asym_id,
                         dataset_list_id=sm.dataset._id,
                         starting_model_sequence_offset=sm.offset)
+
+    def dump_comparative(self, system, writer):
+        """Dump details on comparative models."""
+        with writer.loop("_ihm_starting_comparative_models",
+                     ["ordinal_id", "starting_model_id",
+                      "starting_model_auth_asym_id",
+                      "starting_model_seq_id_begin",
+                      "starting_model_seq_id_end",
+                      "template_auth_asym_id", "template_seq_id_begin",
+                      "template_seq_id_end", "template_sequence_identity",
+                      "template_sequence_identity_denominator",
+                      "template_dataset_list_id",
+                      "alignment_file_id"]) as l:
+            ordinal = 1
+            for sm in system.starting_models:
+                for template in sm.templates:
+                    denom = template.sequence_identity_denominator
+                    l.write(ordinal_id=ordinal,
+                      starting_model_id=sm._id,
+                      starting_model_auth_asym_id=sm.asym_id,
+                      starting_model_seq_id_begin=template.seq_id_range[0],
+                      starting_model_seq_id_end=template.seq_id_range[1],
+                      template_auth_asym_id=template.asym_id,
+                      template_seq_id_begin=template.template_seq_id_range[0],
+                      template_seq_id_end=template.template_seq_id_range[1],
+                      template_sequence_identity=template.sequence_identity,
+                      template_sequence_identity_denominator=denom,
+                      template_dataset_list_id=template.dataset._id
+                                               if template.dataset else None,
+                      alignment_file_id=template.alignment_file._id
+                                        if template.alignment_file else None)
+                    ordinal += 1
 
 
 class _ProtocolDumper(_Dumper):
     def finalize(self, system):
         # Assign IDs to protocols and steps
-        for np, p in enumerate(system.protocols):
+        for np, p in enumerate(system._all_protocols()):
             p._id = np + 1
             for ns, s in enumerate(p.steps):
                 s._id = ns + 1
@@ -448,7 +490,7 @@ class _ProtocolDumper(_Dumper):
                           "step_name", "step_method", "num_models_begin",
                           "num_models_end", "multi_scale_flag",
                           "multi_state_flag", "time_ordered_flag"]) as l:
-            for p in system.protocols:
+            for p in system._all_protocols():
                 for s in p.steps:
                     l.write(ordinal_id=ordinal, protocol_id=p._id,
                             step_id=s._id,
@@ -471,7 +513,7 @@ class _PostProcessDumper(_Dumper):
         # Assign IDs to analyses and steps
         # todo: handle case where one analysis is referred to from multiple
         # protocols
-        for p in system.protocols:
+        for p in system._all_protocols():
             for na, a in enumerate(p.analyses):
                 a._id = na + 1
                 for ns, s in enumerate(a.steps):
@@ -485,7 +527,7 @@ class _PostProcessDumper(_Dumper):
                          ["id", "protocol_id", "analysis_id", "step_id",
                           "type", "feature", "num_models_begin",
                           "num_models_end"]) as l:
-            for p in system.protocols:
+            for p in system._all_protocols():
                 for a in p.analyses:
                     for s in a.steps:
                         l.write(id=s._post_proc_id, protocol_id=p._id,
@@ -495,21 +537,16 @@ class _PostProcessDumper(_Dumper):
                                 num_models_end=s.num_models_end)
 
 class _ModelDumper(object):
-    def _all_model_groups(self, system):
-        for state_group in system.state_groups:
-            for state in state_group:
-                for model_group in state:
-                    yield model_group
 
     def finalize(self, system):
         # Remove any existing ID
-        for g in self._all_model_groups(system):
+        for g in system._all_model_groups():
             for m in g:
                 if hasattr(m, '_id'):
                     del m._id
         model_id = 1
         # Assign IDs to models and groups
-        for ng, g in enumerate(self._all_model_groups(system)):
+        for ng, g in enumerate(system._all_model_groups()):
             g._id = ng + 1
             for m in g:
                 if not hasattr(m, '_id'):
@@ -521,23 +558,13 @@ class _ModelDumper(object):
         self.dump_atoms(system, writer)
         self.dump_spheres(system, writer)
 
-    def _all_models(self, system):
-        seen_ids = {}
-        for group in self._all_model_groups(system):
-            for model in group:
-                # Skip duplicate models
-                if model._id in seen_ids:
-                    continue
-                seen_ids[model._id] = None
-                yield group, model
-
     def dump_model_list(self, system, writer):
         ordinal = 1
         with writer.loop("_ihm_model_list",
                          ["ordinal_id", "model_id", "model_group_id",
                           "model_name", "model_group_name", "assembly_id",
                           "protocol_id", "representation_id"]) as l:
-            for group, model in self._all_models(system):
+            for group, model in system._all_models():
                 l.write(ordinal_id=ordinal, model_id=model._id,
                         model_group_id=group._id,
                         model_name=model.name,
@@ -555,7 +582,7 @@ class _ModelDumper(object):
                           "label_asym_id", "Cartn_x",
                           "Cartn_y", "Cartn_z", "label_entity_id",
                           "model_id"]) as l:
-            for group, model in self._all_models(system):
+            for group, model in system._all_models():
                 for atom in model.get_atoms():
                     oneletter = atom.asym_unit.entity.sequence[atom.seq_id-1]
                     l.write(id=ordinal,
@@ -575,7 +602,7 @@ class _ModelDumper(object):
                           "seq_id_end", "asym_id", "Cartn_x",
                           "Cartn_y", "Cartn_z", "object_radius", "rmsf",
                           "model_id"]) as l:
-            for group, model in self._all_models(system):
+            for group, model in system._all_models():
                 for sphere in model.get_spheres():
                     l.write(ordinal_id=ordinal,
                             entity_id=sphere.asym_unit.entity._id,

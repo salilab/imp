@@ -7,16 +7,7 @@ The :mod:`ihm.startmodel` Python module
 
 .. automodule:: ihm.startmodel
 
-.. autoclass:: Source
-   :members:
-
-.. autoclass:: PDBSource
-   :members:
-
-.. autoclass:: TemplateSource
-   :members:
-
-.. autoclass:: UnknownSource
+.. autoclass:: Template
    :members:
 
 .. autoclass:: StartingModel

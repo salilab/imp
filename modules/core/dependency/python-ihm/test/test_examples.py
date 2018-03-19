@@ -7,8 +7,11 @@ import subprocess
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 
+def get_example_dir():
+    return os.path.join(TOPDIR, "examples")
+
 def get_example_path(fname):
-    return os.path.join(TOPDIR, "examples", fname)
+    return os.path.join(get_example_dir(), fname)
 
 class Tests(unittest.TestCase):
 
@@ -23,6 +26,18 @@ class Tests(unittest.TestCase):
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 contents = fh.readlines()
             self.assertEqual(len(contents), 227)
+
+    def test_locations_example(self):
+        """Test locations example"""
+        subprocess.check_call([sys.executable, "locations.py"],
+                              cwd=get_example_dir())
+        out = get_example_path("output.cif")
+
+        # Make sure that a complete output file was produced
+        with open(out) as fh:
+            contents = fh.readlines()
+        self.assertEqual(len(contents), 61)
+        os.unlink(out)
 
 
 if __name__ == '__main__':

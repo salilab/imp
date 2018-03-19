@@ -10,9 +10,11 @@
    metadata where available.
 """
 
+import ihm
 from . import location, dataset, startmodel, util
 from .format import CifWriter
 
+import operator
 import struct
 import json
 import sys
@@ -102,58 +104,49 @@ class PDBParser(Parser):
        some custom headers that can be used to indicate that a file has been
        locally modified in some way."""
 
-    def parse_file(self, filename, chain):
+    def parse_file(self, filename):
         """Extract metadata. See :meth:`Parser.parse_file` for details.
 
            :param str filename: the file to extract metadata from.
-           :param str chain: the ID of the chain to use from the PDB file.
            :return: a dict with key `dataset` pointing to the PDB dataset;
-                    'sources' pointing to a list of model sources (such as
-                    comparative model templates) as
-                    :class:`ihm.startmodel.Source` objects;
-                    'software' pointing to a dict with keys the name of
-                    comparative modeling packages used and values their
-                    versions;
-                    'alignment' pointing to the comparative modeling
-                    alignment if available
-                    (as a :class:`ihm.location.Location`).
+                    'templates' pointing to a list of comparative model
+                    templates as :class:`ihm.startmodel.Template` objects;
+                    'software' pointing to a list of software used to generate
+                    the file (as :class:`ihm.Software` objects);
+                    'metadata' a list of PDB metadata records.
         """
-        ret = {'alignment':None, 'software':{}}
+        ret = {'templates':[], 'software':[], 'metadata':[]}
         with open(filename) as fh:
             first_line = fh.readline()
             local_file = location.InputFileLocation(filename,
                                           details="Starting model structure")
             if first_line.startswith('HEADER'):
-                self._parse_official_pdb(fh, chain, first_line, ret)
+                self._parse_official_pdb(fh, first_line, ret)
             elif first_line.startswith('EXPDTA    DERIVED FROM PDB:'):
-                self._parse_derived_from_pdb(fh, chain, first_line, local_file,
+                self._parse_derived_from_pdb(fh, first_line, local_file,
                                              ret)
             elif first_line.startswith('EXPDTA    DERIVED FROM COMPARATIVE '
                                        'MODEL, DOI:'):
-                self._parse_derived_from_model(fh, chain, first_line,
-                                               local_file, ret)
+                self._parse_derived_from_model(fh, first_line, local_file, ret)
             elif first_line.startswith('EXPDTA    THEORETICAL MODEL, MODELLER'):
-                self._parse_modeller_model(fh, chain, first_line, local_file,
+                self._parse_modeller_model(fh, first_line, local_file,
                                            filename, ret)
             elif first_line.startswith('REMARK  99  Chain ID :'):
-                self._parse_phyre_model(fh, chain, first_line, local_file,
+                self._parse_phyre_model(fh, first_line, local_file,
                                         filename, ret)
             else:
-                self._parse_unknown_model(fh, chain, first_line, local_file,
+                self._parse_unknown_model(fh, first_line, local_file,
                                           filename, ret)
         return ret
 
-    def _parse_official_pdb(self, fh, chain, first_line, ret):
+    def _parse_official_pdb(self, fh, first_line, ret):
         """Handle a file that's from the official PDB database."""
         version, details, metadata = self._parse_pdb_records(fh, first_line)
-        source = startmodel.PDBSource(first_line[62:66].strip(), chain,
-                                      metadata)
-        l = location.PDBLocation(source.db_code, version, details)
+        l = location.PDBLocation(first_line[62:66].strip(), version, details)
+        ret['metadata'] = metadata
         ret['dataset'] = dataset.PDBDataset(l)
-        ret['sources'] = [source]
 
-    def _parse_derived_from_pdb(self, fh, chain, first_line, local_file,
-                                ret):
+    def _parse_derived_from_pdb(self, fh, first_line, local_file, ret):
         # Model derived from a PDB structure; treat as a local experimental
         # model with the official PDB as a parent
         local_file.details = self._parse_details(fh)
@@ -161,10 +154,8 @@ class PDBParser(Parser):
         d = dataset.PDBDataset(local_file)
         d.parents.append(dataset.PDBDataset(location.PDBLocation(db_code)))
         ret['dataset'] = d
-        ret['sources'] = [startmodel.UnknownSource(d, chain)]
 
-    def _parse_derived_from_model(self, fh, chain, first_line, local_file,
-                                  ret):
+    def _parse_derived_from_model(self, fh, first_line, local_file, ret):
         # Model derived from a comparative model; link back to the original
         # model as a parent
         local_file.details = self._parse_details(fh)
@@ -175,49 +166,47 @@ class PDBParser(Parser):
                           details="Starting comparative model structure")
         d.parents.append(dataset.ComparativeModelDataset(orig_loc))
         ret['dataset'] = d
-        ret['sources'] = [startmodel.UnknownSource(d, chain)]
 
-    def _parse_modeller_model(self, fh, chain, first_line, local_file,
-                              filename, ret):
-        # todo: handle this more cleanly (generate Software object?)
-        ret['software']['modeller'] = first_line[38:].split(' ', 1)
-        self._handle_comparative_model(local_file, filename, chain, ret)
+    def _parse_modeller_model(self, fh, first_line, local_file, filename, ret):
+        version, date = first_line[38:].split(' ', 1)
+        s = ihm.Software(
+                name='MODELLER', classification='comparative modeling',
+                description='Comparative modeling by satisfaction '
+                            'of spatial restraints, build ' + date,
+                location='https://salilab.org/modeller/',
+                version=version)
+        ret['software'].append(s)
+        self._handle_comparative_model(local_file, filename, ret)
 
-    def _parse_phyre_model(self, fh, chain, first_line, local_file,
-                           filename, ret):
+    def _parse_phyre_model(self, fh, first_line, local_file, filename, ret):
         # Model generated by Phyre2
-        # todo: extract Modeller-like template info for Phyre models
-        ret['software']['phyre2'] = CifWriter.unknown
-        self._handle_comparative_model(local_file, filename, chain, ret)
+        s = ihm.Software(
+               name='Phyre2', classification='protein homology modeling',
+               description='Protein Homology/analogY Recognition '
+                           'Engine V 2.0',
+               version='2.0', location='http://www.sbg.bio.ic.ac.uk/~phyre2/')
+        ret['software'].append(s)
+        self._handle_comparative_model(local_file, filename, ret)
 
-    def _parse_unknown_model(self, fh, chain, first_line, local_file, filename,
-                             ret):
+    def _parse_unknown_model(self, fh, first_line, local_file, filename, ret):
         # todo: revisit assumption that all unknown source PDBs are
         # comparative models
-        self._handle_comparative_model(local_file, filename, chain, ret)
+        self._handle_comparative_model(local_file, filename, ret)
 
-    def _handle_comparative_model(self, local_file, pdbname, chain, ret):
+    def _handle_comparative_model(self, local_file, pdbname, ret):
         d = dataset.ComparativeModelDataset(local_file)
         ret['dataset'] = d
-        templates, alnfile = self.get_templates(pdbname, ret)
-        if alnfile:
-            ret['alignment'] = location.InputFileLocation(alnfile,
-                                    details="Alignment for starting "
-                                            "comparative model")
-        if templates:
-            ret['sources'] = templates
-        else:
-            ret['sources'] = [startmodel.UnknownSource(ret['dataset'], chain)]
+        ret['templates'] = self._get_templates(pdbname, d)
 
-    def get_templates(self, pdbname, ret):
+    def _get_templates(self, pdbname, target_dataset):
         template_path_map = {}
-        templates = []
         alnfile = None
         alnfilere = re.compile('REMARK   6 ALIGNMENT: (\S+)')
         tmppathre = re.compile('REMARK   6 TEMPLATE PATH (\S+) (\S+)')
         tmpre = re.compile('REMARK   6 TEMPLATE: '
-                           '(\S+) (\S+):\S+ \- (\S+):\S+ '
-                           'MODELS (\S+):(\S+) \- (\S+):\S+ AT (\S+)%')
+                           '(\S+) (\S+):(\S+) \- (\S+):\S+ '
+                           'MODELS (\S+):\S+ \- (\S+):\S+ AT (\S+)%')
+        template_info = []
 
         with open(pdbname) as fh:
             for line in fh:
@@ -230,32 +219,48 @@ class PDBParser(Parser):
                 m = alnfilere.match(line)
                 if m:
                     # Path to alignment is relative to that of the PDB file
-                    alnfile = util._get_relative_path(pdbname, m.group(1))
+                    fname = util._get_relative_path(pdbname, m.group(1))
+                    alnfile = location.InputFileLocation(fname,
+                                        details="Alignment for starting "
+                                               "comparative model")
                 m = tmpre.match(line)
                 if m:
-                    templates.append(startmodel.TemplateSource(m.group(1),
-                                                     int(m.group(2)),
-                                                     int(m.group(3)),
-                                                     int(m.group(4)),
-                                                     m.group(5),
-                                                     int(m.group(6)),
-                                                     m.group(7)))
-        # Add datasets for templates
-        for t in templates:
-            if t._orig_tm_code:
-                fname = template_path_map[t._orig_tm_code]
-                l = location.InputFileLocation(fname,
-                                 details="Template for comparative modeling")
-            else:
-                l = location.PDBLocation(t.tm_db_code)
-            d = dataset.PDBDataset(l)
-            t.tm_dataset = d
-            ret['dataset'].parents.append(d)
+                    template_info.append(m)
 
-        # Sort by starting residue, then ending residue
-        return(sorted(templates,
-                      key=lambda x: (x._seq_id_begin, x._seq_id_end)),
-               alnfile)
+        templates = [self._handle_template(t, template_path_map,
+                            target_dataset, alnfile) for t in template_info]
+        # Sort templates by starting residue, then ending residue
+        return(sorted(templates, key=operator.attrgetter('seq_id_range')))
+
+    def _handle_template(self, info, template_path_map, target_dataset,
+                         alnfile):
+        """Create a Template object from Modeller PDB header information."""
+        template_code = info.group(1)
+        template_seq_id_range = (int(info.group(2)), int(info.group(4)))
+        template_asym_id = info.group(3)
+        seq_id_range = (int(info.group(5)), int(info.group(6)))
+        sequence_identity = float(info.group(7))
+
+        # Assume a code of 1abcX or 1abcX_N refers to a real PDB structure
+        m = re.match('(\d[a-zA-Z0-9]{3})[a-zA-Z](_.*)?$', template_code)
+        if m:
+            template_db_code = m.group(1).upper()
+            l = location.PDBLocation(template_db_code)
+        else:
+            # Otherwise, look up the PDB file in TEMPLATE PATH remarks
+            fname = template_path_map[template_code]
+            l = location.InputFileLocation(fname,
+                             details="Template for comparative modeling")
+        d = dataset.PDBDataset(l)
+
+        # Make the comparative model dataset derive from the template's
+        target_dataset.parents.append(d)
+
+        return startmodel.Template(dataset=d, asym_id=template_asym_id,
+                                   seq_id_range=seq_id_range,
+                                   template_seq_id_range=template_seq_id_range,
+                                   sequence_identity=sequence_identity,
+                                   alignment_file=alnfile)
 
     def _parse_pdb_records(self, fh, first_line):
         """Extract information from an official PDB"""

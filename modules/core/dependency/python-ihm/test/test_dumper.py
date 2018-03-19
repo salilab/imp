@@ -62,6 +62,10 @@ class Tests(unittest.TestCase):
                           name='foo', classification='test code',
                           description='Other test program',
                           location='http://test2.org'))
+        # Duplicate should be removed
+        system.software.append(ihm.Software(
+                          name='foo', classification='x',
+                          description='y', location='z'))
         dumper = ihm.dumper._SoftwareDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -454,7 +458,7 @@ _ihm_external_files.details
         group2 = ihm.dataset.DatasetGroup([ds1])
 
         system.datasets.append(ds1)
-        system.dataset_groups.extend((group1, group2))
+        system.orphan_dataset_groups.extend((group1, group2))
 
         d = ihm.dumper._DatasetDumper()
         d.finalize(system) # Assign IDs
@@ -471,7 +475,7 @@ _ihm_external_files.details
 
         # group1 contains just the first dataset (but duplicated)
         group1 = ihm.dataset.DatasetGroup([ds1, ds1])
-        system.dataset_groups.append(group1)
+        system.orphan_dataset_groups.append(group1)
 
         l = ihm.location.InputFileLocation(repo='foo2', path='bar2')
         l._id = 98
@@ -480,7 +484,7 @@ _ihm_external_files.details
 
         # group2 contains all datasets so far (ds1 & ds2)
         group2 = ihm.dataset.DatasetGroup([ds1, ds2])
-        system.dataset_groups.append(group2)
+        system.orphan_dataset_groups.append(group2)
 
         l = ihm.location.PDBLocation('1abc', '1.0', 'test details')
         ds3 = ihm.dataset.PDBDataset(l)
@@ -591,21 +595,35 @@ _ihm_model_representation.model_object_count
     def test_starting_model_dumper(self):
         """Test StartingModelDumper"""
         system = ihm.System()
-        e1 = ihm.Entity('AAA', description='foo')
+        e1 = ihm.Entity('A' * 20, description='foo')
         system.entities.append(e1)
         asym = ihm.AsymUnit(e1, 'bar')
         system.asym_units.append(asym)
         l = ihm.location.PDBLocation('1abc', '1.0', 'test details')
-        ds1 = ihm.dataset.PDBDataset(l)
-        system.datasets.append(ds1)
+        dstemplate = ihm.dataset.PDBDataset(l)
+        l = ihm.location.PDBLocation('2xyz', '1.0', 'test details')
+        dstarget = ihm.dataset.PDBDataset(l)
+        ali = ihm.location.InputFileLocation(repo='foo', path='test.ali')
 
-        s1 = ihm.startmodel.PDBSource('1abc', 'C', [])
-        sm = ihm.startmodel.StartingModel(asym, ds1, 'A', [s1], offset=10)
+        s1 = ihm.startmodel.Template(dataset=dstemplate, asym_id='C',
+                             seq_id_range=(1,10),
+                             template_seq_id_range=(101,110),
+                             sequence_identity=30.)
+        s2 = ihm.startmodel.Template(dataset=dstemplate, asym_id='D',
+                             seq_id_range=(5,12),
+                             template_seq_id_range=(201,210),
+                             sequence_identity=40.,
+                             alignment_file=ali)
+
+        sm = ihm.startmodel.StartingModel(asym(1,15), dstarget, 'A',
+                                          [s1, s2], offset=10)
         system.starting_models.append(sm)
 
         e1._id = 42
         asym._id = 99
-        ds1._id = 101
+        dstemplate._id = 101
+        dstarget._id = 102
+        ali._id = 5
         dumper = ihm.dumper._StartingModelDumper()
         dumper.finalize(system) # assign IDs
         out = _get_dumper_output(dumper, system)
@@ -621,7 +639,24 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-1 42 foo 99 1 3 'experimental model' A 10 101
+1 42 foo 99 1 12 'experimental model' A 10 102
+#
+#
+loop_
+_ihm_starting_comparative_models.ordinal_id
+_ihm_starting_comparative_models.starting_model_id
+_ihm_starting_comparative_models.starting_model_auth_asym_id
+_ihm_starting_comparative_models.starting_model_seq_id_begin
+_ihm_starting_comparative_models.starting_model_seq_id_end
+_ihm_starting_comparative_models.template_auth_asym_id
+_ihm_starting_comparative_models.template_seq_id_begin
+_ihm_starting_comparative_models.template_seq_id_end
+_ihm_starting_comparative_models.template_sequence_identity
+_ihm_starting_comparative_models.template_sequence_identity_denominator
+_ihm_starting_comparative_models.template_dataset_list_id
+_ihm_starting_comparative_models.alignment_file_id
+1 1 A 1 10 C 101 110 30.000 1 101 .
+2 1 A 5 12 D 201 210 40.000 1 101 5
 #
 """)
 
@@ -643,13 +678,13 @@ _ihm_starting_model_details.dataset_list_id
         p1.steps.append(ihm.protocol.Step(assembly=assembly, dataset_group=dsg,
                                method='Replica exchange', num_models_begin=500,
                                num_models_end=2000, multi_scale=True))
-        system.protocols.append(p1)
+        system.orphan_protocols.append(p1)
 
         p2 = ihm.protocol.Protocol('sampling')
         p2.steps.append(ihm.protocol.Step(assembly=assembly, dataset_group=dsg2,
                                method='Replica exchange', num_models_begin=2000,
                                num_models_end=1000, multi_scale=True))
-        system.protocols.append(p2)
+        system.orphan_protocols.append(p2)
 
         dumper = ihm.dumper._ProtocolDumper()
         dumper.finalize(system) # assign IDs
@@ -682,7 +717,7 @@ _ihm_modeling_protocol.time_ordered_flag
             pass
         system = ihm.System()
         p1 = ihm.protocol.Protocol('refinement')
-        system.protocols.append(p1)
+        system.orphan_protocols.append(p1)
 
         a1 = ihm.analysis.Analysis()
         a1.steps.append(ihm.analysis.EmptyStep())
