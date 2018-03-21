@@ -5,7 +5,7 @@ import IMP.core
 import IMP.algebra
 import IMP.kinematics
 import math
-
+import numpy as np
 
 class Test(IMP.test.TestCase):
 
@@ -157,6 +157,50 @@ class Test(IMP.test.TestCase):
         dj12.set_angle(math.pi / 2)
         for rb in rbs:
             print(kf.get_coordinates_safe(rb))
+
+
+    def test_transform_safe(self):
+        """
+        test transforming a tree safely
+        """
+#        IMP.set_log_level(IMP.VERBOSE)
+        coords_orig= [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]]
+        (m, rbs) = self.create_model_with_rbs(coords_orig)
+        # Construct kinematic forest
+        kf = IMP.kinematics.KinematicForest(m)
+        kf.set_was_used(True)
+        for i in range(0, len(rbs)-1):
+            j= IMP.kinematics.Joint(rbs[i], rbs[i+1])
+            kf.add_edge(j)
+        for rb in rbs:
+            print(kf.get_coordinates_safe(rb))
+        T = IMP.algebra.Transformation3D
+        V = IMP.algebra.Vector3D
+        idrot = IMP.algebra.get_identity_rotation_3d()
+        T1= T(idrot, V(1,2,3))
+        kf.transform_safe(T1)
+        for rb, coord_orig in zip(rbs, coords_orig):
+            print(kf.get_coordinates_safe(rb), coord_orig)
+            delta= kf.get_coordinates_safe(rb) - V(1,2,3) - coord_orig
+            self.assertAlmostEqual(V(delta).get_magnitude(), 0.0, places=10)
+        kf.transform_safe(T1.get_inverse())
+        for rb, coord_orig in zip(rbs, coords_orig):
+            print(kf.get_coordinates_safe(rb), coord_orig)
+            delta= kf.get_coordinates_safe(rb) - coord_orig
+            self.assertAlmostEqual(V(delta).get_magnitude(), 0.0, delta=1e-9)
+        x90_rot = IMP.algebra.get_rotation_about_axis([1,0,0], np.pi)
+        T2= T(x90_rot, [0,0,0])
+        kf.transform_safe(T2)
+        for rb, coord_orig in zip(rbs, coords_orig):
+            coord_new= kf.get_coordinates_safe(rb)
+            print(coord_new, coord_orig)
+            self.assertAlmostEqual(coord_new[0], coord_orig[0], places=10)
+            self.assertAlmostEqual(coord_new[1], -coord_orig[1], places=10)
+            self.assertAlmostEqual(coord_new[2], -coord_orig[2], places=10)
+
+
+
+
 
 
 if __name__ == '__main__':
