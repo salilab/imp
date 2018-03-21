@@ -18,17 +18,15 @@ import ihm.dumper
 # cases we use just one:
 system = ihm.System()
 
-# Next, we add the input data we used to the system.
+# Next, we describe the input data we used, using dataset classes.
 # Each source of data has a location, such as a file on disk or a database
 # entry, and a type. In this example we used EM density data, which we'll
 # say lives in the EMDB database:
 l = ihm.location.EMDBLocation('EMDB-1234')
 em_dataset = ihm.dataset.EMDensityDataset(l)
-system.datasets.append(em_dataset)
 # We also used two SAXS profiles, which we'll say live in SASBDB:
 saxsA_dataset = ihm.dataset.SASDataset(ihm.location.SASBDBLocation('SASDB123'))
 saxsB_dataset = ihm.dataset.SASDataset(ihm.location.SASBDBLocation('SASDB456'))
-system.datasets.extend((saxsA_dataset, saxsB_dataset))
 
 # Where datasets are derived from some other data, it is helpful to also point
 # back to that primary data. In this case, let's say the EM density was
@@ -58,7 +56,6 @@ system.asym_units.extend((asymA, asymB))
 modeled_assembly = ihm.Assembly((asymA, asymB), name='Modeled assembly')
 assemblyA = ihm.Assembly((asymA,), name='Subunit A')
 assemblyB = ihm.Assembly((asymB,), name='Subunit B')
-system.assemblies.extend((modeled_assembly, assemblyA, assemblyB))
 
 # Define how the system was represented. Multiple representations of the
 # system are possible, and can overlap. Here we'll say we represent A
@@ -67,7 +64,6 @@ rep = ihm.representation.Representation(
         [ihm.representation.AtomicSegment(asymA, rigid=True),
          ihm.representation.FeatureSegment(asymB, rigid=False,
                                            primitive='sphere', count=3)])
-system.representations.append(rep)
 
 # Set up restraints on the system. First, two on the subunits that use
 # the SAXS data; we'll say we used the FoXS software to do this fit:

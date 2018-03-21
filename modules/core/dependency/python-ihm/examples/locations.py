@@ -35,14 +35,17 @@ system.locations.append(l)
 # to an input PDB file in the current directory:
 l = ihm.location.InputFileLocation("simple.pdb", details="Input PDB file")
 d = ihm.dataset.PDBDataset(l)
-# Add to set of all datasets
-system.datasets.append(d)
+# Add the dataset to the mmCIF file. (Normally a dataset would be added to the
+# object that uses it, such as a restraint. If we want to include a dataset
+# that isn't referenced from anything else, as in this example, we can add it
+# to the 'orphan' list.)
+system.orphan_datasets.append(d)
 
 # Generally, datasets will be deposited in an experiment-specific database.
 # We can point to such a database using a subclass of DatabaseLocation, for
 # example to point to PDB:
 l = ihm.location.PDBLocation('1abc')
-system.datasets.append(ihm.dataset.PDBDataset(l))
+system.orphan_datasets.append(ihm.dataset.PDBDataset(l))
 
 # If the current working directory is itself a checkout of a repository which
 # is archived at a DOI, we can retroactively update all 'local' paths added

@@ -112,7 +112,9 @@ class Representation(list):
        spheres or atoms. This is implemented as a simple list of
        :class:`Segment` objects.
 
-       See :attr:`ihm.System.representations`.
+       Typically a Representation is assigned to a
+       :class:`~ihm.model.Model`. See also
+       :attr:`ihm.System.orphan_representations`.
 
        Multiple representations of the same system are possible (multi-scale).
     """

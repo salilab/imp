@@ -36,14 +36,22 @@ class System(object):
         #: List of all software used in the modeling. See :class:`Software`.
         self.software = []
 
+        #: List of all citations. See :class:`Citation`.
+        self.citations = []
+
         #: All entities used in the system. See :class:`Entity`.
         self.entities = []
 
         #: All asymmetric units used in the system. See :class:`AsymUnit`.
         self.asym_units = []
 
-        #: All assemblies used in the system. See :class:`Assembly`.
-        self.assemblies = []
+        #: All orphaned assemblies in the system. See :class:`Assembly`.
+        #: This can be used to keep track of all assemblies that are not
+        #: otherwise used - normally one is assigned to a
+        #: :class:`~ihm.model.Model`,
+        #: :class:`ihm.protocol.Step`, or
+        #: :class:`~ihm.restraint.Restraint`.
+        self.orphan_assemblies = []
 
         #: The assembly of the entire system. By convention this is always
         #: the first assembly in the mmCIF file (assembly_id=1). Note that
@@ -51,15 +59,21 @@ class System(object):
         #: is called.
         self.complete_assembly = Assembly((), name='Complete assembly',
                                           description='All known components')
-        self.assemblies.append(self.complete_assembly)
 
         #: Locations of all extra resources.
         #: See :class:`~ihm.location.Location`.
         self.locations = []
 
-        #: All datasets used in the modeling.
+        #: All orphaned datasets.
+        #: This can be used to keep track of all datasets that are not
+        #: otherwise used - normally a dataset is assigned to a
+        #: :class:`~ihm.dataset.DatasetGroup`,
+        #: :class:`~ihm.startmodel.StartingModel`,
+        #: :class:`~ihm.restraint.Restraint`,
+        #: :class:`~ihm.startmodel.Template`,
+        #: or as the parent of another :class:`~ihm.dataset.Dataset`.
         #: See :class:`~ihm.dataset.Dataset`.
-        self.datasets = []
+        self.orphan_datasets = []
 
         #: All orphaned groups of datasets.
         #: This can be used to keep track of all dataset groups that are not
@@ -68,9 +82,12 @@ class System(object):
         #: See :class:`~ihm.dataset.DatasetGroup`.
         self.orphan_dataset_groups = []
 
-        #: All representations of the system.
+        #: All orphaned representations of the system.
+        #: This can be used to keep track of all representations that are not
+        #: otherwise used - normally ion is assigned to a
+        #: :class:`~ihm.model.Model`.
         #: See :class:`~ihm.representation.Representation`.
-        self.representations = []
+        self.orphan_representations = []
 
         #: All starting models for the system.
         #: See :class:`~ihm.startmodel.StartingModel`.
@@ -143,6 +160,15 @@ class System(object):
                 seen_models[model] = None
                 yield group, model
 
+    def _all_representations(self):
+        """Iterate over all Representations in the system.
+           This includes all Representations referenced from other objects, plus
+           any orphaned Representations. Duplicates are filtered out."""
+        return _remove_identical(itertools.chain(
+                   self.orphan_representations,
+                   (model.representation for group, model in self._all_models()
+                                         if model.representation)))
+
     def _all_protocols(self):
         """Iterate over all Protocols in the system.
            This includes all Protocols referenced from other objects, plus
@@ -152,18 +178,69 @@ class System(object):
                         (model.protocol for group, model in self._all_models()
                                         if model.protocol)))
 
+    def _all_protocol_steps(self):
+        for protocol in self._all_protocols():
+            for step in protocol.steps:
+                yield step
+
+    def _all_assemblies(self):
+        """Iterate over all Assemblies in the system.
+           This includes all Assemblies referenced from other objects, plus
+           any orphaned Assemblies. Duplicates may be present."""
+        return itertools.chain(
+                        # Complete assembly is always first
+                        (self.complete_assembly,),
+                        self.orphan_assemblies,
+                        (model.assembly for group, model in self._all_models()
+                                        if model.assembly),
+                        (step.assembly for step in self._all_protocol_steps()
+                                       if step.assembly),
+                        (restraint.assembly for restraint in self.restraints
+                                            if restraint.assembly))
+
     def _all_dataset_groups(self):
         """Iterate over all DatasetGroups in the system.
            This includes all DatasetGroups referenced from other objects, plus
            any orphaned groups. Duplicates may be present."""
-        def all_protocol_steps():
-            for protocol in self._all_protocols():
-                for step in protocol.steps:
-                    yield step
         return itertools.chain(
                   self.orphan_dataset_groups,
-                  (step.dataset_group for step in all_protocol_steps()
+                  (step.dataset_group for step in self._all_protocol_steps()
                                       if step.dataset_group))
+
+    def _all_templates(self):
+        """Iterate over all Templates in the system."""
+        for startmodel in self.starting_models:
+            for template in startmodel.templates:
+                yield template
+
+    def _all_datasets_except_parents(self):
+        """Iterate over all Datasets except those referenced only
+           as the parent of another Dataset. Duplicates may be present."""
+        def _all_datasets_in_groups():
+            for dg in self._all_dataset_groups():
+                for d in dg:
+                    yield d
+        return itertools.chain(
+                  self.orphan_datasets,
+                  _all_datasets_in_groups(),
+                  (sm.dataset for sm in self.starting_models if sm.dataset),
+                  (restraint.dataset for restraint in self.restraints
+                                     if restraint.dataset),
+                  (template.dataset for template in self._all_templates()
+                                    if template.dataset))
+
+    def _all_datasets(self):
+        """Iterate over all Datasets in the system.
+           This includes all Datasets referenced from other objects, plus
+           any orphaned datasets. Duplicates may be present."""
+        def _all_datasets_and_parents(d):
+            for p in d.parents:
+                for alld in _all_datasets_and_parents(p):
+                    yield alld
+            yield d
+        for d in self._all_datasets_except_parents():
+            for alld in _all_datasets_and_parents(d):
+                yield alld
 
     def _all_locations(self):
         """Iterate over all Locations in the system.
@@ -174,18 +251,26 @@ class System(object):
             for ensemble in self.ensembles:
                 for density in ensemble.densities:
                     yield density
-        def all_templates():
-            for startmodel in self.starting_models:
-                for template in startmodel.templates:
-                    yield template
         return itertools.chain(
                 self.locations,
-                (dataset.location for dataset in self.datasets
+                (dataset.location for dataset in self._all_datasets()
                           if hasattr(dataset, 'location') and dataset.location),
                 (ensemble.file for ensemble in self.ensembles if ensemble.file),
                 (density.file for density in all_densities() if density.file),
-                (template.alignment_file for template in all_templates()
+                (template.alignment_file for template in self._all_templates()
                                          if template.alignment_file))
+
+    def _all_citations(self):
+        """Iterate over all Citations in the system.
+           This includes all Citations referenced from other objects, plus
+           any referenced from the top-level system.
+           Duplicates are filtered out."""
+        return _remove_identical(itertools.chain(
+                        self.citations,
+                        (restraint.fitting_method_citation_id
+                            for restraint in self.restraints
+                            if hasattr(restraint, 'fitting_method_citation_id')
+                            and restraint.fitting_method_citation_id)))
 
     def _make_complete_assembly(self):
         """Fill in the complete assembly with all entities/asym units"""
@@ -223,6 +308,29 @@ class Software(object):
         return self._eq_vals() == other._eq_vals()
     def __hash__(self):
         return hash(self._eq_vals())
+
+
+class Citation(object):
+    """A publication that describes the modeling.
+
+       See :attr:`System.citations`.
+
+       :param str pmid: The PubMed ID.
+       :param str title: Full title of the publication.
+       :param str journal: Abbreviated journal name.
+       :param int volume: Journal volume number.
+       :param page_range: The page (int) or page range (as a 2-element
+              int tuple).
+       :param int year: Year of publication.
+       :param authors: All authors in order, as a list of strings (last name
+              followed by initials, e.g. "Smith AJ").
+       :param str doi: Digitial Object Identifier of the publication.
+    """
+    def __init__(self, pmid, title, journal, volume, page_range, year, authors,
+                 doi):
+        self.title, self.journal, self.volume = title, journal, volume
+        self.page_range, self.year = page_range, year
+        self.pmid, self.authors, self.doi = pmid, authors, doi
 
 
 class Entity(object):
@@ -334,7 +442,12 @@ class Assembly(list):
        objects. (For convenience, the constructor will also accept
        :class:`Entity` and :class:`AsymUnit` objects in the initial list.)
 
-       See :attr:`System.assemblies`.
+       An Assembly is typically assigned to one or more of
+         - class:`~ihm.model.Model`
+         - :class:`ihm.protocol.Step`
+         - :class:`~ihm.restraint.Restraint`
+
+       See also :attr:`System.orphan_assemblies`.
 
        Note that any duplicate assemblies will be pruned on output."""
 

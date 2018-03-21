@@ -43,6 +43,15 @@ class Tests(unittest.TestCase):
         self.assertNotEqual(s1, s2)
         self.assertNotEqual(s1, s4)
 
+    def test_citation(self):
+        """Test Citation class"""
+        s = ihm.Citation(title='Test paper', journal='J Mol Biol',
+                         volume=45, page_range=(1,20), year=2016,
+                         authors=['Smith A', 'Jones B'],
+                         doi='10.2345/S1384107697000225',
+                         pmid='1234')
+        self.assertEqual(s.title, 'Test paper')
+
     def test_asym_range(self):
         """Test AsymUnitRange class"""
         e = ihm.Entity('ABCDAB')
@@ -152,6 +161,81 @@ class Tests(unittest.TestCase):
         # duplicates should be filtered globally
         self.assertEqual(list(s._all_protocols()), [p1, p2])
 
+    def test_all_representations(self):
+        """Test _all_representations() method"""
+        class MockObject(object):
+            pass
+        model1 = MockObject()
+        model2 = MockObject()
+        model3 = MockObject()
+        model_group1 = [model1, model2, model3]
+        s = ihm.System()
+        s.state_groups.append([[model_group1]])
+        r1 = MockObject()
+        r2 = MockObject()
+        s.orphan_representations.append(r1)
+        model1.representation = None
+        model2.representation = r2
+        model3.representation = r1
+        # duplicates should be filtered globally
+        self.assertEqual(list(s._all_representations()), [r1, r2])
+
+    def test_all_assemblies(self):
+        """Test _all_assemblies() method"""
+        class MockObject(object):
+            pass
+        model1 = MockObject()
+        model2 = MockObject()
+        model_group1 = [model1, model2]
+        s = ihm.System()
+        s.state_groups.append([[model_group1]])
+        asmb1 = MockObject()
+        asmb2 = MockObject()
+        s.orphan_assemblies.append(asmb1)
+        model1.assembly = None
+        model1.protocol = None
+        model2.assembly = asmb2
+        step = MockObject()
+        step.assembly = asmb1
+        prot = MockObject()
+        prot.steps = [step]
+        model2.protocol = prot
+        rsr1 = MockObject()
+        rsr1.assembly = asmb2
+        rsr2 = MockObject()
+        rsr2.assembly = None
+        s.restraints.extend((rsr1, rsr2))
+        # duplicates should be present; complete assembly is always first
+        self.assertEqual(list(s._all_assemblies()),
+                         [s.complete_assembly, asmb1, asmb2, asmb1, asmb2])
+
+    def test_all_citations(self):
+        """Test _all_citations() method"""
+        class MockObject(object):
+            pass
+
+        c1 = ihm.Citation(title='Test paper', journal='J Mol Biol',
+                          volume=45, page_range=(1,20), year=2016,
+                          authors=['Smith A', 'Jones B'],
+                          doi='10.2345/S1384107697000225',
+                          pmid='1234')
+        c2 = ihm.Citation(title='Test paper', journal='J Mol Biol',
+                          volume=45, page_range=(1,20), year=2016,
+                          authors=['Smith A', 'Jones B'],
+                          doi='1.2.3.4',
+                          pmid='1234')
+        rsr1 = MockObject() # Not a 3dem restraint
+        rsr2 = MockObject() # 3dem but with no provided citation
+        rsr2.fitting_method_citation_id = None
+        rsr3 = MockObject()
+        rsr2.fitting_method_citation_id = c1
+
+        s = ihm.System()
+        s.restraints.extend((rsr1, rsr2, rsr3))
+        s.citations.extend((c2, c2))
+        # duplicates should be filtered globally
+        self.assertEqual(list(s._all_citations()), [c2, c1])
+
     def test_all_dataset_groups(self):
         """Test _all_dataset_groups() method"""
         class MockObject(object):
@@ -176,19 +260,21 @@ class Tests(unittest.TestCase):
         """Test _all_locations() method"""
         class MockObject(object):
             pass
+        class MockDataset(object):
+            parents = []
         loc1 = MockObject()
         loc2 = MockObject()
         loc3 = MockObject()
 
         s = ihm.System()
-        dataset1 = MockObject()
-        dataset2 = MockObject()
+        dataset1 = MockDataset()
+        dataset2 = MockDataset()
         dataset2.location = None
-        dataset3 = MockObject()
+        dataset3 = MockDataset()
         dataset3.location = loc1
 
         s.locations.append(loc1)
-        s.datasets.extend((dataset1, dataset2, dataset3))
+        s.orphan_datasets.extend((dataset1, dataset2, dataset3))
 
         ensemble = MockObject()
         ensemble.file = loc2
@@ -198,7 +284,9 @@ class Tests(unittest.TestCase):
         s.ensembles.append(ensemble)
 
         start_model = MockObject()
+        start_model.dataset = None
         template = MockObject()
+        template.dataset = None
         template.alignment_file = loc3
         start_model.templates = [template]
         s.starting_models.append(start_model)
@@ -206,6 +294,46 @@ class Tests(unittest.TestCase):
         # duplicates should not be filtered
         self.assertEqual(list(s._all_locations()), [loc1, loc1, loc2,
                                                     loc1, loc3])
+
+    def test_all_datasets(self):
+        """Test _all_datasets() method"""
+        class MockObject(object):
+            pass
+        class MockDataset(object):
+            parents = []
+
+        s = ihm.System()
+        d1 = MockDataset()
+        d2 = MockDataset()
+        d3 = MockDataset()
+        d4 = MockDataset()
+
+        s.orphan_datasets.append(d1)
+
+        dg1 = [d2]
+        s.orphan_dataset_groups.append(dg1)
+
+        start_model1 = MockObject()
+        start_model1.dataset = None
+
+        start_model2 = MockObject()
+        start_model2.dataset = d3
+
+        template = MockObject()
+        template.dataset = None
+        start_model1.templates = [template]
+        start_model2.templates = []
+        s.starting_models.extend((start_model1, start_model2))
+
+        rsr1 = MockObject()
+        rsr1.dataset = d4
+        d4.parents = [d2]
+        d2.parents = [d1]
+        d1.parents = d3.parents = []
+        s.restraints.append(rsr1)
+
+        # duplicates should not be filtered
+        self.assertEqual(list(s._all_datasets()), [d1, d1, d2, d3, d1, d2, d4])
 
     def test_update_locations_in_repositories(self):
         """Test update_locations_in_repositories() method"""

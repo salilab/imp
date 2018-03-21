@@ -82,6 +82,92 @@ _software.location
 #
 """)
 
+    def test_citation(self):
+        """Test CitationDumper"""
+        system = ihm.System()
+        c1 = ihm.Citation(
+              pmid='25161197',
+              title="Structural characterization by cross-linking reveals the\n"
+                    "detailed architecture of a coatomer-related heptameric\n"
+                    "module from the nuclear pore complex.",
+              journal="Mol Cell Proteomics", volume=13, page_range=(2927,2943),
+              year=2014,
+              authors=['Shi Y', 'Fernandez-Martinez J', 'Tjioe E', 'Pellarin R',
+                       'Kim SJ', 'Williams R', 'Schneidman-Duhovny D', 'Sali A',
+                       'Rout MP', 'Chait BT'],
+              doi='10.1074/mcp.M114.041673')
+        system.citations.extend((c1, c1)) # duplicates should be removed
+        dumper = ihm.dumper._CitationDumper()
+        dumper.finalize(system) # Assign IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_citation.id
+_citation.title
+_citation.journal_abbrev
+_citation.journal_volume
+_citation.page_first
+_citation.page_last
+_citation.year
+_citation.pdbx_database_id_PubMed
+_citation.pdbx_database_id_DOI
+1
+;Structural characterization by cross-linking reveals the
+detailed architecture of a coatomer-related heptameric
+module from the nuclear pore complex.
+;
+'Mol Cell Proteomics' 13 2927 2943 2014 25161197 10.1074/mcp.M114.041673
+#
+#
+loop_
+_citation_author.citation_id
+_citation_author.name
+_citation_author.ordinal
+1 'Shi Y' 1
+1 'Fernandez-Martinez J' 2
+1 'Tjioe E' 3
+1 'Pellarin R' 4
+1 'Kim SJ' 5
+1 'Williams R' 6
+1 'Schneidman-Duhovny D' 7
+1 'Sali A' 8
+1 'Rout MP' 9
+1 'Chait BT' 10
+#
+""")
+        # Handle no last page
+        c1.page_range = 'e1637'
+        dumper = ihm.dumper._CitationDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertTrue("'Mol Cell Proteomics' 13 e1637 . 2014 " in out)
+
+    def test_audit_author(self):
+        """Test AuditAuthorDumper"""
+        system = ihm.System()
+
+        c1 = ihm.Citation(pmid='25161197', title='foo',
+              journal="Mol Cell Proteomics", volume=13, page_range=(2927,2943),
+              year=2014, authors=['auth1', 'auth2', 'auth3'], doi='doi1')
+        c2 = ihm.Citation(pmid='45161197', title='bar',
+              journal="Mol Cell Proteomics", volume=13, page_range=(2927,2943),
+              year=2014, authors=['auth2', 'auth4'], doi='doi2')
+        system.citations.extend((c1, c2))
+
+        dumper = ihm.dumper._AuditAuthorDumper()
+        out = _get_dumper_output(dumper, system)
+        # auth2 is repeated in the input; we should see it only once in the
+        # output
+        self.assertEqual(out, """#
+loop_
+_audit_author.name
+_audit_author.pdbx_ordinal
+auth1 1
+auth2 2
+auth3 3
+auth4 4
+#
+""")
+
     def test_entity_dumper(self):
         """Test EntityDumper"""
         system = ihm.System()
@@ -221,11 +307,11 @@ C 2 baz
         system.asym_units.extend((a1, a2, a3))
 
         c = ihm.AssemblyComponent(a2, seq_id_range=(2,3))
-        system.assemblies.append(ihm.Assembly((a1, c), name='foo'))
+        system.orphan_assemblies.append(ihm.Assembly((a1, c), name='foo'))
         # Out of order assembly (should be ordered on output)
-        system.assemblies.append(ihm.Assembly((a3, a2), name='bar'))
+        system.orphan_assemblies.append(ihm.Assembly((a3, a2), name='bar'))
         # Duplicate assembly (should be ignored)
-        system.assemblies.append(ihm.Assembly((a2, a3)))
+        system.orphan_assemblies.append(ihm.Assembly((a2, a3)))
 
         # Assign entity and asym IDs
         ihm.dumper._EntityDumper().finalize(system)
@@ -233,7 +319,8 @@ C 2 baz
 
         d = ihm.dumper._AssemblyDumper()
         d.finalize(system)
-        self.assertEqual([a._id for a in system.assemblies], [1,2,3,3])
+        self.assertEqual(system.complete_assembly._id, 1)
+        self.assertEqual([a._id for a in system.orphan_assemblies], [2,3,3])
         out = _get_dumper_output(d, system)
         self.assertEqual(out, """#
 loop_
@@ -378,11 +465,11 @@ _ihm_external_files.details
         dump = ihm.dumper._DatasetDumper()
         l = ihm.location.PDBLocation('1abc', '1.0', 'test details')
         ds1 = ihm.dataset.PDBDataset(l)
-        system.datasets.append(ds1)
+        system.orphan_datasets.append(ds1)
         # A duplicate dataset should be ignored even if details differ
         l = ihm.location.PDBLocation('1abc', '1.0', 'other details')
         ds2 = ihm.dataset.PDBDataset(l)
-        system.datasets.append(ds2)
+        system.orphan_datasets.append(ds2)
         dump.finalize(system) # Assign IDs
         self.assertEqual(ds1._id, 1)
         self.assertEqual(ds2._id, 1)
@@ -399,7 +486,7 @@ _ihm_external_files.details
         cx2 = ihm.dataset.CXMSDataset(loc1)
 
         dump = ihm.dumper._DatasetDumper()
-        system.datasets.extend((cx1, cx2))
+        system.orphan_datasets.extend((cx1, cx2))
         dump.finalize(system) # Assign IDs
         self.assertEqual(cx1._id, 1)
         self.assertEqual(cx2._id, 1)
@@ -413,7 +500,7 @@ _ihm_external_files.details
         cx1 = ihm.dataset.CXMSDataset(loc1)
         cx2 = ihm.dataset.CXMSDataset(loc2)
         dump = ihm.dumper._DatasetDumper()
-        system.datasets.extend((cx1, cx2))
+        system.orphan_datasets.extend((cx1, cx2))
         dump.finalize(system) # Assign IDs
         self.assertEqual(cx1._id, 1)
         self.assertEqual(cx2._id, 2)
@@ -427,7 +514,7 @@ _ihm_external_files.details
         cx2 = ihm.dataset.CXMSDataset(loc2)
         em3d = ihm.dataset.EMDensityDataset(loc2)
         dump = ihm.dumper._DatasetDumper()
-        system.datasets.extend((cx2, em3d))
+        system.orphan_datasets.extend((cx2, em3d))
         dump.finalize(system) # Assign IDs
         self.assertEqual(cx2._id, 1)
         self.assertEqual(em3d._id, 2)
@@ -442,7 +529,7 @@ _ihm_external_files.details
         em3d_1 = ihm.dataset.EMDensityDataset(emloc1)
         em3d_2 = ihm.dataset.EMDensityDataset(emloc2)
         dump = ihm.dumper._DatasetDumper()
-        system.datasets.extend((em3d_1, em3d_2))
+        system.orphan_datasets.extend((em3d_1, em3d_2))
         dump.finalize(system) # Assign IDs
         self.assertEqual(em3d_1._id, 1)
         self.assertEqual(em3d_2._id, 2)
@@ -457,7 +544,7 @@ _ihm_external_files.details
         # Duplicate group
         group2 = ihm.dataset.DatasetGroup([ds1])
 
-        system.datasets.append(ds1)
+        system.orphan_datasets.append(ds1)
         system.orphan_dataset_groups.extend((group1, group2))
 
         d = ihm.dumper._DatasetDumper()
@@ -471,7 +558,7 @@ _ihm_external_files.details
         l = ihm.location.InputFileLocation(repo='foo', path='bar')
         l._id = 97
         ds1 = ihm.dataset.CXMSDataset(l)
-        system.datasets.append(ds1)
+        system.orphan_datasets.append(ds1)
 
         # group1 contains just the first dataset (but duplicated)
         group1 = ihm.dataset.DatasetGroup([ds1, ds1])
@@ -480,7 +567,6 @@ _ihm_external_files.details
         l = ihm.location.InputFileLocation(repo='foo2', path='bar2')
         l._id = 98
         ds2 = ihm.dataset.CXMSDataset(l)
-        # Don't need to add to system.datasets since ds2 is ref'd by ds3
 
         # group2 contains all datasets so far (ds1 & ds2)
         group2 = ihm.dataset.DatasetGroup([ds1, ds2])
@@ -488,7 +574,7 @@ _ihm_external_files.details
 
         l = ihm.location.PDBLocation('1abc', '1.0', 'test details')
         ds3 = ihm.dataset.PDBDataset(l)
-        system.datasets.append(ds3)
+        system.orphan_datasets.append(ds3)
         ds3.parents.append(ds2)
         # Ignore duplicates
         ds3.parents.append(ds2)
@@ -562,7 +648,7 @@ _ihm_related_datasets.dataset_list_id_primary
                     rigid=True, primitive='other', count=3)
         r1 = ihm.representation.Representation((s1, s2))
         r2 = ihm.representation.Representation((s3, s4))
-        system.representations.extend((r1, r2))
+        system.orphan_representations.extend((r1, r2))
 
         e1._id = 42
         asym._id = 'X'
@@ -1069,21 +1155,30 @@ _ihm_multi_state_modeling.details
 
         dataset = MockObject()
         dataset._id = 97
+        dataset2 = MockObject()
+        dataset2._id = 87
         assembly = MockObject()
         assembly._id = 99
+        citation = MockObject()
+        citation._id = 8
         r = ihm.restraint.EM3DRestraint(dataset=dataset, assembly=assembly,
                        segment=False, fitting_method='Gaussian mixture model',
                        number_of_gaussians=40, details='GMM fitting')
+        r2 = ihm.restraint.EM3DRestraint(dataset=dataset2, assembly=assembly,
+                       segment=False, fitting_method='Gaussian mixture model',
+                       fitting_method_citation=citation,
+                       number_of_gaussians=30, details='GMM fitting')
         m = ihm.model.Model(assembly='foo', protocol='bar',
                             representation='baz')
         m._id = 42
         m2 = ihm.model.Model(assembly='foo', protocol='bar',
                             representation='baz')
         m2._id = 44
-        system.restraints.extend((r, MockObject()))
+        system.restraints.extend((r, r2, MockObject()))
 
         r.fits[m] = ihm.restraint.EM3DRestraintFit(0.4)
         r.fits[m2] = ihm.restraint.EM3DRestraintFit()
+        r2.fits[m2] = ihm.restraint.EM3DRestraintFit()
 
         dumper = ihm.dumper._EM3DDumper()
         dumper.finalize(system) # assign IDs
@@ -1094,12 +1189,14 @@ loop_
 _ihm_3dem_restraint.ordinal_id
 _ihm_3dem_restraint.dataset_list_id
 _ihm_3dem_restraint.fitting_method
+_ihm_3dem_restraint.fitting_method_citation
 _ihm_3dem_restraint.struct_assembly_id
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id
 _ihm_3dem_restraint.cross_correlation_coefficient
-1 97 'Gaussian mixture model' 99 40 42 0.400
-2 97 'Gaussian mixture model' 99 40 44 .
+1 97 'Gaussian mixture model' . 99 40 42 0.400
+2 97 'Gaussian mixture model' . 99 40 44 .
+3 87 'Gaussian mixture model' 8 99 30 44 .
 #
 """)
 

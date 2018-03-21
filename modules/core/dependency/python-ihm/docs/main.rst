@@ -15,6 +15,9 @@ The :mod:`ihm` Python module
 .. autoclass:: Software
    :members:
 
+.. autoclass:: Citation
+   :members:
+
 .. autoclass:: Entity
    :members:
 

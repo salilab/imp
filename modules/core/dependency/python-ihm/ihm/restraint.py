@@ -18,15 +18,20 @@ class EM3DRestraint(Restraint):
        :type assembly: :class:`~ihm.Assembly`
        :param bool segment: True iff the map has been segmented.
        :param str fitting_method: The method used to fit the model into the map.
+       :param fitting_method_citation: The publication describing the fitting
+              method.
+       :type fitting_method_citation: :class:`~ihm.Citation`
        :param int number_of_gaussians: Number of Gaussians used to represent
               the map as a Gaussian Mixture Model (GMM), if applicable.
        :param str details: Additional details regarding the fitting.
     """
 
     def __init__(self, dataset, assembly, segment=None, fitting_method=None,
-                 number_of_gaussians=None, details=None):
+                 fitting_method_citation=None, number_of_gaussians=None,
+                 details=None):
         self.dataset, self.assembly = dataset, assembly
         self.segment, self.fitting_method = segment, fitting_method
+        self.fitting_method_citation = fitting_method_citation
         self.number_of_gaussians = number_of_gaussians
         self.details = details
 

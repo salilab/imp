@@ -25,7 +25,7 @@ class Tests(unittest.TestCase):
             # Make sure that a complete output file was produced
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 contents = fh.readlines()
-            self.assertEqual(len(contents), 227)
+            self.assertEqual(len(contents), 228)
 
     def test_locations_example(self):
         """Test locations example"""
