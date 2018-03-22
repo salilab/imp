@@ -159,9 +159,9 @@ class Test(IMP.test.TestCase):
             print(kf.get_coordinates_safe(rb))
 
 
-    def test_transform_safe(self):
+    def test_apply_transform_safely(self):
         """
-        test transforming a tree safely
+        test transforming a tree reference frame safely
         """
 #        IMP.set_log_level(IMP.VERBOSE)
         coords_orig= [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]]
@@ -178,30 +178,25 @@ class Test(IMP.test.TestCase):
         V = IMP.algebra.Vector3D
         idrot = IMP.algebra.get_identity_rotation_3d()
         T1= T(idrot, V(1,2,3))
-        kf.transform_safe(T1)
+        kf.apply_transform_safely(T1)
         for rb, coord_orig in zip(rbs, coords_orig):
             print(kf.get_coordinates_safe(rb), coord_orig)
             delta= kf.get_coordinates_safe(rb) - V(1,2,3) - coord_orig
             self.assertAlmostEqual(V(delta).get_magnitude(), 0.0, places=10)
-        kf.transform_safe(T1.get_inverse())
+        kf.apply_transform_safely(T1.get_inverse())
         for rb, coord_orig in zip(rbs, coords_orig):
             print(kf.get_coordinates_safe(rb), coord_orig)
             delta= kf.get_coordinates_safe(rb) - coord_orig
             self.assertAlmostEqual(V(delta).get_magnitude(), 0.0, delta=1e-9)
         x90_rot = IMP.algebra.get_rotation_about_axis([1,0,0], np.pi)
         T2= T(x90_rot, [0,0,0])
-        kf.transform_safe(T2)
+        kf.apply_transform_safely(T2)
         for rb, coord_orig in zip(rbs, coords_orig):
             coord_new= kf.get_coordinates_safe(rb)
             print(coord_new, coord_orig)
             self.assertAlmostEqual(coord_new[0], coord_orig[0], places=10)
             self.assertAlmostEqual(coord_new[1], -coord_orig[1], places=10)
             self.assertAlmostEqual(coord_new[2], -coord_orig[2], places=10)
-
-
-
-
-
 
 if __name__ == '__main__':
     IMP.test.main()

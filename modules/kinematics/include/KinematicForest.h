@@ -244,13 +244,16 @@ class IMPKINEMATICSEXPORT KinematicForest
     mark_external_coordinates_changed();
   }
 
-  //! apply a rigid body transformation to the entire forest
-  //! safelt, such that the forest will return correct external
-  //! and internal coordinates if queries through get_coordinates_safe()
-  //! or get_reference_frame_safe(), or after updating with
-  //! update_all_external_coordinates() or update_all_internal_coordinates(),
-  //! respectively.
-  void transform_safe(IMP::algebra::Transformation3D tr){
+  //! apply a rigid body transformation to the entire forest safely
+  /** Apply a rigid body transformation to the entire forest
+      safely, such that the forest will return correct external
+      and internal coordinates if queries through get_coordinates_safe()
+      or get_reference_frame_safe(), or after updating with
+      update_all_external_coordinates() or update_all_internal_coordinates(),
+      respectively.
+  */
+  void apply_transform_safely(IMP::algebra::Transformation3D tr)
+  {
     IMP_FOREACH(KinematicNode root, roots_){
       IMP::core::transform(root, tr);
       mark_internal_coordinates_changed(); // technically, roots reference frames is a part of the internal tree coordinates, so external coordinates will need to be updated at some point
