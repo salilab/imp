@@ -183,14 +183,14 @@ class Representation(object):
            PDB file (not from the PDB database or Modeller) can be
            identified this way.
            @param fname filename
-           @dataset the IMP.pmi.metadata.Dataset object to associate.
+           @dataset the ihm.dataset.Dataset object to associate.
         """
         self._file_dataset[os.path.abspath(fname)] = dataset
 
     def get_file_dataset(self, fname):
         """Get the dataset associated with a filename, or None.
            @param fname filename
-           @return an IMP.pmi.metadata.Dataset, or None.
+           @return an ihm.dataset.Dataset, or None.
         """
         return self._file_dataset.get(os.path.abspath(fname), None)
 
@@ -286,7 +286,7 @@ class Representation(object):
 
         self.elements[name].append((length, length, " ", "end"))
         for p, state in self._protocol_output:
-            p.add_component_sequence(name, self.sequence_dict[name])
+            p.add_component_sequence(state, name, self.sequence_dict[name])
 
     def autobuild_model(self, name, pdbname, chain,
                         resolutions=None, resrange=None,

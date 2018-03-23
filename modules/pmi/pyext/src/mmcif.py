@@ -20,7 +20,6 @@ import IMP.pmi.representation
 import IMP.pmi.tools
 from IMP.pmi.tools import OrderedDict
 import IMP.pmi.output
-import IMP.pmi.metadata
 import re
 import ast
 import sys
@@ -29,12 +28,12 @@ import textwrap
 import weakref
 import operator
 import itertools
-
-# Python 3 has no 'long' type, so use 'int' instead
-if sys.version_info[0] >= 3:
-    _long_type = int
-else:
-    _long_type = long
+import ihm.format
+import ihm.location
+import ihm.dataset
+import ihm.dumper
+import ihm.metadata
+import ihm.startmodel
 
 def _assign_id(obj, seen_objs, obj_by_id):
     """Assign a unique ID to obj, and track all ids in obj_by_id."""
@@ -46,105 +45,6 @@ def _assign_id(obj, seen_objs, obj_by_id):
     else:
         obj.id = seen_objs[obj]
 
-class _LineWriter(object):
-    def __init__(self, writer, line_len=80):
-        self.writer = writer
-        self.line_len = line_len
-        self.column = 0
-    def write(self, val):
-        if isinstance(val, str) and '\n' in val:
-            self.writer.fh.write("\n;")
-            self.writer.fh.write(val)
-            if not val.endswith('\n'):
-                self.writer.fh.write("\n")
-            self.writer.fh.write(";\n")
-            self.column = 0
-            return
-        val = self.writer._repr(val)
-        if self.column > 0:
-            if self.column + len(val) + 1 > self.line_len:
-                self.writer.fh.write("\n")
-                self.column = 0
-            else:
-                self.writer.fh.write(" ")
-                self.column += 1
-        self.writer.fh.write(val)
-        self.column += len(val)
-
-
-class _CifCategoryWriter(object):
-    def __init__(self, writer, category):
-        self.writer = writer
-        self.category = category
-    def write(self, **kwargs):
-        self.writer._write(self.category, kwargs)
-    def __enter__(self):
-        return self
-    def __exit__(self, exc_type, exc_value, traceback):
-        pass
-
-
-class _CifLoopWriter(object):
-    def __init__(self, writer, category, keys):
-        self.writer = writer
-        self.category = category
-        self.keys = keys
-        # Remove characters that we can't use in Python identifiers
-        self.python_keys = [k.replace('[', '').replace(']', '') for k in keys]
-        self._empty_loop = True
-    def write(self, **kwargs):
-        if self._empty_loop:
-            f = self.writer.fh
-            f.write("#\nloop_\n")
-            for k in self.keys:
-                f.write("%s.%s\n" % (self.category, k))
-            self._empty_loop = False
-        l = _LineWriter(self.writer)
-        for k in self.python_keys:
-            l.write(kwargs.get(k, self.writer.omitted))
-        self.writer.fh.write("\n")
-    def __enter__(self):
-        return self
-    def __exit__(self, exc_type, exc_value, traceback):
-        if not self._empty_loop:
-            self.writer.fh.write("#\n")
-
-
-class _CifWriter(object):
-    omitted = '.'
-    unknown = '?'
-    _boolmap = {False: 'NO', True: 'YES'}
-
-    def __init__(self, fh):
-        self.fh = fh
-    def category(self, category):
-        return _CifCategoryWriter(self, category)
-    def loop(self, category, keys):
-        return _CifLoopWriter(self, category, keys)
-    def write_comment(self, comment):
-        for line in textwrap.wrap(comment, 78):
-            self.fh.write('# ' + line + '\n')
-    def _write(self, category, kwargs):
-        for key in kwargs:
-            self.fh.write("%s.%s %s\n" % (category, key,
-                                          self._repr(kwargs[key])))
-    def _repr(self, obj):
-        if isinstance(obj, str) and '"' not in obj \
-           and "'" not in obj and " " not in obj \
-           and not obj.startswith('data_') \
-           and not obj.startswith('[') \
-           and obj not in ('save_', 'loop_', 'stop_', 'global_'):
-            return obj
-        elif isinstance(obj, float):
-            return "%.3f" % obj
-        elif isinstance(obj, bool):
-            return self._boolmap[obj]
-        # Don't use repr(x) if type(x) == long since that adds an 'L' suffix,
-        # which isn't valid mmCIF syntax. _long_type = long only on Python 2.
-        elif isinstance(obj, _long_type):
-            return "%d" % obj
-        else:
-            return repr(obj)
 
 def _get_by_residue(p):
     """Determine whether the given particle represents a specific residue
@@ -188,213 +88,59 @@ class _Dumper(object):
         pass
 
 
-class _EntryDumper(_Dumper):
-    def dump(self, writer):
-        entry_id = 'imp_model'
-        # Write CIF header (so this dumper should always be first)
-        writer.fh.write("data_%s\n" % entry_id)
-        with writer.category("_entry") as l:
-            l.write(id=entry_id)
-
-
 class _CommentDumper(_Dumper):
     def dump(self, writer):
         for comment in self.simo._comments:
             writer.write_comment(comment)
 
 
-class _SoftwareDumper(_Dumper):
-    def __init__(self, simo):
-        super(_SoftwareDumper, self).__init__(simo)
+class _AllSoftware(object):
+    def __init__(self, system):
+        self.system = system
         self.modeller_used = self.phyre2_used = False
-        self.software = [
-           IMP.pmi.metadata.Software(
+        self.system.software.extend([
+           ihm.Software(
                  name="Integrative Modeling Platform (IMP)",
                  version=IMP.__version__,
                  classification="integrative model building",
                  description="integrative model building",
-                 url='https://integrativemodeling.org'),
-           IMP.pmi.metadata.Software(
+                 location='https://integrativemodeling.org'),
+           ihm.Software(
                 name="IMP PMI module",
                 version=IMP.pmi.__version__,
                 classification="integrative model building",
                 description="integrative model building",
-                url='https://integrativemodeling.org') ]
+                location='https://integrativemodeling.org')])
 
     def set_modeller_used(self, version, date):
         if self.modeller_used:
             return
         self.modeller_used = True
-        self.software.append(IMP.pmi.metadata.Software(
+        self.system.software.append(ihm.Software(
                     name='MODELLER', classification='comparative modeling',
                     description='Comparative modeling by satisfaction '
                                 'of spatial restraints, build ' + date,
-                    url='https://salilab.org/modeller/',
+                    location='https://salilab.org/modeller/',
                     version=version))
 
     def set_phyre2_used(self):
         if self.phyre2_used:
             return
         self.phyre2_used = True
-        self.software.append(IMP.pmi.metadata.Software(
+        self.system.software.append(ihm.Software(
                    name='Phyre2', classification='protein homology modeling',
                    description='Protein Homology/analogY Recognition '
                                'Engine V 2.0',
-                   version='2.0', url='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
+                   version='2.0',
+                   location='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
 
-    def dump(self, writer):
-        ordinal = 1
-        with writer.loop("_software",
-                         ["pdbx_ordinal", "name", "classification", "version",
-                          "type", "location"]) as l:
-            for m in itertools.chain(self.software, self.simo._metadata):
-                if isinstance(m, IMP.pmi.metadata.Software):
-                    l.write(pdbx_ordinal=ordinal, name=m.name,
-                            classification=m.classification,
-                            version=m.version if m.version
-                                              else _CifWriter.unknown,
-                            type=m.type, location=m.url)
-                    ordinal += 1
-
-class _AuditAuthorDumper(_Dumper):
-    """Populate the mmCIF audit_author category (a list of the people that
-       authored this mmCIF file; here we assume that's just the authors of
-       any associated publications)"""
-    def dump(self, writer):
-        citations = [m for m in self.simo._metadata
-                     if isinstance(m, IMP.pmi.metadata.Citation)]
-        seen_authors = {}
-        with writer.loop("_audit_author",
-                         ["name", "pdbx_ordinal"]) as l:
-            ordinal = 1
-            for n, c in enumerate(citations):
-                for a in c.authors:
-                    if a not in seen_authors:
-                        seen_authors[a] = None
-                        l.write(name=a, pdbx_ordinal=ordinal)
-                        ordinal += 1
-
-
-class _CitationDumper(_Dumper):
-    def dump(self, writer):
-        citations = [m for m in self.simo._metadata
-                     if isinstance(m, IMP.pmi.metadata.Citation)]
-        with writer.loop("_citation",
-                         ["id", "title", "journal_abbrev", "journal_volume",
-                          "page_first", "page_last", "year",
-                          "pdbx_database_id_PubMed",
-                          "pdbx_database_id_DOI"]) as l:
-            for n, c in enumerate(citations):
-                if isinstance(c.page_range, (tuple, list)):
-                    page_first, page_last = c.page_range
-                else:
-                    page_first = c.page_range
-                    page_last = _CifWriter.omitted
-                l.write(id=n+1, title=c.title, journal_abbrev=c.journal,
-                        journal_volume=c.volume, page_first=page_first,
-                        page_last=page_last, year=c.year,
-                        pdbx_database_id_PubMed=c.pmid,
-                        pdbx_database_id_DOI=c.doi)
-
-        with writer.loop("_citation_author",
-                         ["citation_id", "name", "ordinal"]) as l:
-            ordinal = 1
-            for n, c in enumerate(citations):
-                for a in c.authors:
-                    l.write(citation_id=n+1, name=a, ordinal=ordinal)
-                    ordinal += 1
-
-class _EntityDumper(_Dumper):
-    # todo: we currently only support amino acid sequences here (and
-    # then only standard amino acids; need to add support for MSE etc.)
-    def dump(self, writer):
-        with writer.loop("_entity",
-                         ["id", "type", "src_method", "pdbx_description",
-                          "formula_weight", "pdbx_number_of_molecules",
-                          "details"]) as l:
-            for entity in self.simo.entities.get_all():
-                l.write(id=entity.id, type='polymer', src_method='man',
-                        pdbx_description=entity.description,
-                        formula_weight=writer.unknown,
-                        pdbx_number_of_molecules=1, details=writer.unknown)
-
-
-class _EntityPolyDumper(_Dumper):
-    # todo: we currently only support amino acid sequences here
-    def __init__(self, simo):
-        super(_EntityPolyDumper, self).__init__(simo)
-        self.output = IMP.pmi.output.Output()
-
-    def dump(self, writer):
-        with writer.loop("_entity_poly",
-                         ["entity_id", "type", "nstd_linkage",
-                          "nstd_monomer", "pdbx_strand_id",
-                          "pdbx_seq_one_letter_code",
-                          "pdbx_seq_one_letter_code_can"]) as l:
-            for entity in self.simo.entities.get_all():
-                seq = entity.sequence
-                # Split into lines to get tidier CIF output
-                seq = "\n".join(seq[i:i+70] for i in range(0, len(seq), 70))
-                name = entity.description
-                chain_id = self.simo._get_chain_for_component(name, self.output)
-                l.write(entity_id=entity.id, type='polypeptide(L)',
-                        nstd_linkage='no', nstd_monomer='no',
-                        pdbx_strand_id=chain_id,
-                        pdbx_seq_one_letter_code=seq,
-                        pdbx_seq_one_letter_code_can=seq)
-
-
-class _ChemCompDumper(_Dumper):
-    def dump(self, writer):
-        seen = {}
-        std = dict.fromkeys(('ALA', 'CYS', 'ASP', 'GLU', 'PHE', 'GLY', 'HIS',
-               'ILE', 'LYS', 'LEU', 'MET', 'ASN', 'PRO', 'GLN', 'ARG', 'SER',
-               'THR', 'VAL', 'TRP', 'TYR'))
-        with writer.loop("_chem_comp", ["id", "type"]) as l:
-            for entity in self.simo.entities.get_all():
-                seq = entity.sequence
-                for num, one_letter_code in enumerate(seq):
-                    restyp = IMP.atom.get_residue_type(one_letter_code)
-                    resid = restyp.get_string()
-                    if resid not in seen:
-                        seen[resid] = None
-                        l.write(id=resid,
-                                type='L-peptide linking' if resid in std \
-                                                         else 'other')
-
-class _EntityPolySeqDumper(_Dumper):
-    def dump(self, writer):
-        with writer.loop("_entity_poly_seq",
-                         ["entity_id", "num", "mon_id", "hetero"]) as l:
-            for entity in self.simo.entities.get_all():
-                seq = entity.sequence
-                for num, one_letter_code in enumerate(seq):
-                    restyp = IMP.atom.get_residue_type(one_letter_code)
-                    l.write(entity_id=entity.id, num=num + 1,
-                            mon_id=restyp.get_string(),
-                            hetero=_CifWriter.omitted)
-
-class _StructAsymDumper(_Dumper):
-    def __init__(self, simo):
-        super(_StructAsymDumper, self).__init__(simo)
-        self.output = IMP.pmi.output.Output()
-
-    def dump(self, writer):
-        with writer.loop("_struct_asym",
-                         ["id", "entity_id", "details"]) as l:
-            for comp in self.simo.all_modeled_components:
-                entity = self.simo.entities[comp]
-                chain_id = self.simo._get_chain_for_component(comp, self.output)
-                l.write(id=chain_id,
-                        entity_id=entity.id,
-                        details=comp)
 
 class _PDBFragment(object):
     """Record details about part of a PDB file used as input
        for a component."""
     primitive = 'sphere'
     granularity = 'by-residue'
-    num = _CifWriter.omitted
+    num = None
     def __init__(self, state, component, start, end, offset, pdbname,
                  chain, hier):
         self.component, self.start, self.end, self.offset, self.pdbname \
@@ -427,13 +173,34 @@ class _StartingModel(object):
     """Record details about an input model (e.g. comparative modeling
        template) used for a component."""
 
-    source = _CifWriter.unknown
-    db_name = _CifWriter.unknown
-    db_code = _CifWriter.unknown
-    sequence_identity = _CifWriter.unknown
+    source = ihm.unknown
+    db_name = ihm.unknown
+    db_code = ihm.unknown
+    sequence_identity = ihm.unknown
 
     def __init__(self, fragment):
         self.fragments = [fragment]
+        self.asym_id = fragment.chain
+
+    def get_seq_id_range_all_templates(self):
+        """Get the seq_id range covered by all templates in this starting
+           model. Where there are multiple templates, consolidate
+           them; template info is given in starting_comparative_models."""
+        def get_seq_id_range(template, full):
+            # The template may cover more than the current starting model
+            rng = template.seq_id_range
+            return (max(rng[0], full[0]), min(rng[1], full[1]))
+
+        if self.templates:
+            full = self.seq_id_begin, self.seq_id_end
+            rng = get_seq_id_range(self.templates[0], full)
+            for template in self.templates[1:]:
+                this_rng = get_seq_id_range(template, full)
+                rng = (min(rng[0], this_rng[0]), max(rng[1], this_rng[1]))
+            return rng
+        else:
+            return self.seq_id_begin, self.seq_id_end
+
 
 class _ModelRepresentationDumper(_Dumper):
     def __init__(self, simo):
@@ -499,14 +266,14 @@ class _ModelRepresentationDumper(_Dumper):
                 chain_id = self.simo._get_chain_for_component(comp, self.output)
                 for f in statefrag[state]:
                     entity = self.simo.entities[f.component]
-                    starting_model_id = _CifWriter.omitted
+                    starting_model_id = None
                     if hasattr(f, 'pdbname'):
                         starting_model_id \
                              = self.starting_model[state, orig, f.pdbname].name
                     l.write(ordinal_id=ordinal_id,
                             representation_id=representation.id,
                             segment_id=segment_id,
-                            entity_id=entity.id,
+                            entity_id=entity._id,
                             entity_description=entity.description,
                             entity_asym_id=chain_id,
                             seq_id_begin=f.start,
@@ -518,75 +285,6 @@ class _ModelRepresentationDumper(_Dumper):
                             model_object_count=f.num)
                     ordinal_id += 1
                     segment_id += 1
-
-class _PDBSource(object):
-    """An experimental PDB file used as part of a starting model"""
-    source = 'experimental model'
-    db_name = 'PDB'
-    sequence_identity = 100.0
-
-    def __init__(self, model, db_code, chain_id, metadata):
-        self.db_code = db_code
-        self.chain_id = chain_id
-        self.metadata = metadata
-
-    def get_seq_id_range(self, model):
-        # Assume the structure covers the entire sequence
-        return (model.seq_id_begin, model.seq_id_end)
-
-class _TemplateSource(object):
-    """A PDB file used as a template for a comparative starting model"""
-    source = 'comparative model'
-    db_name = db_code = _CifWriter.omitted
-    tm_dataset = None
-    # Right now assume all alignments are Modeller alignments, which uses
-    # the length of the shorter sequence as the denominator for sequence
-    # identity
-    sequence_identity_denominator = 1
-
-    def __init__(self, tm_code, tm_seq_id_begin, tm_seq_id_end, seq_id_begin,
-                 chain_id, seq_id_end, seq_id, model):
-        # Remove any unique suffix
-        stripped_tm_code = tm_code.split('_')[0]
-        # Assume a code of 1abcX or 1abcX_N refers to a real PDB structure
-        if len(stripped_tm_code) == 5:
-            self._orig_tm_code = None
-            self.tm_db_code = stripped_tm_code[:4].upper()
-            self.tm_chain_id = stripped_tm_code[4]
-        else:
-            # Otherwise, will need to look up in TEMPLATE PATH remarks
-            self._orig_tm_code = tm_code
-            self.tm_db_code = _CifWriter.omitted
-            self.tm_chain_id = tm_code[-1]
-        self.sequence_identity = seq_id
-        self.tm_seq_id_begin = tm_seq_id_begin
-        self.tm_seq_id_end = tm_seq_id_end
-        self.chain_id = chain_id
-        self._seq_id_begin, self._seq_id_end = seq_id_begin, seq_id_end
-
-    def get_seq_id_range(self, model):
-        # The template may cover more than the current starting model
-        seq_id_begin = max(model.seq_id_begin, self._seq_id_begin)
-        seq_id_end = min(model.seq_id_end, self._seq_id_end)
-        return (seq_id_begin, seq_id_end)
-
-class _UnknownSource(object):
-    """Part of a starting model from an unknown source"""
-    db_code = _CifWriter.unknown
-    db_name = _CifWriter.unknown
-    chain_id = _CifWriter.unknown
-    sequence_identity = _CifWriter.unknown
-    # Map dataset types to starting model sources
-    _source_map = {'Comparative model': 'comparative model',
-                   'Integrative model': 'integrative model',
-                   'Experimental model': 'experimental model'}
-
-    def __init__(self, model, chain):
-        self.source = self._source_map[model.dataset._data_type]
-        self.chain_id = chain
-
-    def get_seq_id_range(self, model):
-        return (model.seq_id_begin, model.seq_id_end)
 
 class _DatasetGroup(object):
     """A group of datasets"""
@@ -605,160 +303,9 @@ class _DatasetGroup(object):
         self._datasets = final_datasets.keys()
 
 
-class _ExternalReference(object):
-    """A single externally-referenced file"""
-    def __init__(self, location, content_type):
-        self.location, self.content_type = location, content_type
-
-    # Pass id through to location
-    def __set_id(self, i):
-        self.location.id = i
-    id = property(lambda x: x.location.id, __set_id)
-    file_size = property(lambda x: x.location.file_size)
-
-    def __eq__(self, other):
-        return self.location == other.location
-    def __hash__(self):
-        return hash(self.location)
-
-
-class _ExternalReferenceDumper(_Dumper):
-    """Output information on externally referenced files
-       (i.e. anything that refers to a Location that isn't
-       a DatabaseLocation)."""
-
-    INPUT_DATA = "Input data or restraints"
-    MODELING_OUTPUT = "Modeling or post-processing output"
-    WORKFLOW = "Modeling workflow or script"
-    VISUALIZATION = "Visualization script"
-
-    class _LocalFiles(object):
-        reference_provider = _CifWriter.omitted
-        reference_type = 'Supplementary Files'
-        reference = _CifWriter.omitted
-        refers_to = 'Other'
-        associated_url = _CifWriter.omitted
-
-        def __init__(self, top_directory):
-            self.top_directory = top_directory
-
-        def _get_full_path(self, path):
-            return os.path.relpath(path, start=self.top_directory)
-
-    class _Repository(object):
-        reference_provider = _CifWriter.omitted
-        reference_type = 'DOI'
-        refers_to = 'Other'
-        associated_url = _CifWriter.omitted
-
-        def __init__(self, repo):
-            self.id = repo.id
-            self.reference = repo.doi
-            if 'zenodo' in self.reference:
-                self.reference_provider = 'Zenodo'
-            if repo.url:
-                self.associated_url = repo.url
-                if repo.url.endswith(".zip"):
-                    self.refers_to = 'Archive'
-                else:
-                    self.refers_to = 'File'
-
-    def __init__(self, simo):
-        super(_ExternalReferenceDumper, self).__init__(simo)
-        self._refs = []
-
-    def add(self, location, content_type):
-        """Add a new location.
-           Note that ids are assigned later."""
-        self._refs.append(_ExternalReference(location, content_type))
-        return location
-
-    def finalize_metadata(self):
-        """Register locations for any metadata and add the main script"""
-        loc = IMP.pmi.metadata.FileLocation(path=self.simo._main_script,
-                               details="The main integrative modeling script")
-        main_script = IMP.pmi.metadata.PythonScript(loc)
-        self._workflow = [main_script] \
-                         + [m for m in self.simo._metadata
-                            if isinstance(m, IMP.pmi.metadata.PythonScript)]
-        for w in self._workflow:
-            self.add(w.location, self.WORKFLOW)
-        for m in self.simo._metadata:
-            if isinstance(m, IMP.pmi.metadata.ChimeraXCommandScript):
-                self.add(m.location, self.VISUALIZATION)
-
-    def finalize_after_datasets(self):
-        """Note that this must happen *after* DatasetDumper.finalize()"""
-        # Keep only locations that don't point into databases (these are
-        # handled elsewhere)
-        self._refs = [x for x in self._refs
-                      if not isinstance(x.location,
-                                        IMP.pmi.metadata.DatabaseLocation)]
-        # Assign IDs to all locations and repos (including the None repo, which
-        # is for local files)
-        seen_refs = {}
-        seen_repos = {}
-        self._ref_by_id = []
-        self._repo_by_id = []
-        # Special dummy repo for repo=None (local files)
-        self._local_files = self._LocalFiles(self.simo._working_directory)
-        for r in self._refs:
-            # Update location to point to parent repository, if any
-            self.simo._update_location(r.location)
-            # Assign a unique ID to the reference
-            _assign_id(r, seen_refs, self._ref_by_id)
-            # Assign a unique ID to the repository
-            _assign_id(r.location.repo or self._local_files, seen_repos,
-                       self._repo_by_id)
-
-    def dump(self, writer):
-        self.dump_repos(writer)
-        self.dump_refs(writer)
-
-    def dump_repos(self, writer):
-        def map_repo(r):
-            return r if isinstance(r, self._LocalFiles) else self._Repository(r)
-        with writer.loop("_ihm_external_reference_info",
-                         ["reference_id", "reference_provider",
-                          "reference_type", "reference", "refers_to",
-                          "associated_url"]) as l:
-            for repo in [map_repo(r) for r in self._repo_by_id]:
-                l.write(reference_id=repo.id,
-                        reference_provider=repo.reference_provider,
-                        reference_type=repo.reference_type,
-                        reference=repo.reference, refers_to=repo.refers_to,
-                        associated_url=repo.associated_url)
-
-    def dump_refs(self, writer):
-        with writer.loop("_ihm_external_files",
-                         ["id", "reference_id", "file_path", "content_type",
-                          "file_size_bytes", "details"]) as l:
-            for r in self._ref_by_id:
-                loc = r.location
-                repo = loc.repo or self._local_files
-                file_path=self._posix_path(repo._get_full_path(loc.path))
-                if r.file_size is None:
-                    file_size = _CifWriter.omitted
-                else:
-                    file_size = r.file_size
-                l.write(id=loc.id, reference_id=repo.id,
-                        file_path=file_path,
-                        content_type=r.content_type,
-                        file_size_bytes=file_size,
-                        details=loc.details or _CifWriter.omitted)
-
-    # On Windows systems, convert native paths to POSIX-like (/-separated) paths
-    if os.sep == '/':
-        def _posix_path(self, path):
-            return path
-    else:
-        def _posix_path(self, path):
-            return path.replace(os.sep, '/')
-
-
-class _DatasetDumper(_Dumper):
-    def __init__(self, simo):
-        super(_DatasetDumper, self).__init__(simo)
+class _AllDatasets(object):
+    """Track all datasets generated by PMI and add them to the ihm.System"""
+    def __init__(self):
         self._datasets = []
         self._datasets_by_state = {}
         self._dataset_groups = []
@@ -770,39 +317,28 @@ class _DatasetDumper(_Dumper):
         return g
 
     def add(self, state, dataset):
-        """Add a new dataset.
-           Note that ids are assigned later."""
+        """Add a new dataset."""
         self._datasets.append(dataset)
         if state not in self._datasets_by_state:
             self._datasets_by_state[state] = []
         self._datasets_by_state[state].append(dataset)
+        # We don't add to ihm.System yet, since it can't handle RestraintDataset
         return dataset
 
-    def finalize(self):
-        seen_datasets = {}
-        # Assign IDs to all datasets
-        self._dataset_by_id = []
+    def _get_final_datasets(self):
+        """Get final set of datasets, with RestraintDatasets removed"""
         for d in self._flatten_dataset(self._datasets):
-            # Register location (need to do that now rather than in add() in
-            # order to properly handle _RestraintDataset)
-            self.simo.extref_dump.add(d.location,
-                                      _ExternalReferenceDumper.INPUT_DATA)
-            _assign_id(d, seen_datasets, self._dataset_by_id)
+            yield d
 
-        # Assign IDs to all groups and remove duplicates
-        seen_group_ids = {}
-        self._dataset_group_by_id = []
+    def _get_final_groups(self):
+        """Get final set of dataset groups, with RestraintDatasets removed"""
+        self._final_dataset_group = {}
         for g in self._dataset_groups:
             g.finalize()
-            ids = tuple(sorted(d.id for d in g._datasets))
-            if ids not in seen_group_ids:
-                self._dataset_group_by_id.append(g)
-                g.id = len(self._dataset_group_by_id)
-                seen_group_ids[ids] = g
-            else:
-                g.id = seen_group_ids[ids].id
-        # Finalize external references (must happen after dataset finalize)
-        self.simo.extref_dump.finalize_after_datasets()
+            dg = ihm.dataset.DatasetGroup(g._datasets)
+            # Map our temporary class to the ihm object
+            self._final_dataset_group[g] = dg
+            yield dg
 
     def _flatten_dataset(self, d):
         if isinstance(d, list):
@@ -813,74 +349,10 @@ class _DatasetDumper(_Dumper):
             for x in self._flatten_dataset(d.dataset):
                 yield x
         else:
-            for p in d._parents.keys():
+            for p in d.parents:
                 for x in self._flatten_dataset(p):
                     yield x
             yield d
-
-    def dump(self, writer):
-        with writer.loop("_ihm_dataset_list",
-                         ["id", "data_type", "database_hosted"]) as l:
-            for d in self._dataset_by_id:
-                l.write(id=d.id, data_type=d._data_type,
-                        database_hosted=isinstance(d.location,
-                                        IMP.pmi.metadata.DatabaseLocation))
-        self.dump_groups(writer)
-        self.dump_other((d for d in self._dataset_by_id
-                         if not isinstance(d.location,
-                                            IMP.pmi.metadata.DatabaseLocation)),
-                        writer)
-        self.dump_rel_dbs((d for d in self._dataset_by_id
-                           if isinstance(d.location,
-                                            IMP.pmi.metadata.DatabaseLocation)),
-                          writer)
-        self.dump_related(writer)
-
-    def dump_groups(self, writer):
-        ordinal = 1
-        with writer.loop("_ihm_dataset_group",
-                         ["ordinal_id", "group_id", "dataset_list_id"]) as l:
-            for g in self._dataset_group_by_id:
-                for d in g._datasets:
-                    l.write(ordinal_id=ordinal, group_id=g.id,
-                            dataset_list_id=d.id)
-                    ordinal += 1
-
-    def dump_related(self, writer):
-        ordinal = 1
-        with writer.loop("_ihm_related_datasets",
-                         ["ordinal_id", "dataset_list_id_derived",
-                          "dataset_list_id_primary"]) as l:
-            for derived in self._dataset_by_id:
-                for parent in sorted(derived._parents.keys(),
-                                     key=lambda d: d.id):
-                    l.write(ordinal_id=ordinal,
-                            dataset_list_id_derived=derived.id,
-                            dataset_list_id_primary=parent.id)
-                    ordinal += 1
-
-    def dump_rel_dbs(self, datasets, writer):
-        ordinal = 1
-        with writer.loop("_ihm_dataset_related_db_reference",
-                         ["id", "dataset_list_id", "db_name",
-                          "accession_code", "version", "details"]) as l:
-            for d in datasets:
-                l.write(id=ordinal, dataset_list_id=d.id,
-                        db_name=d.location.db_name,
-                        accession_code=d.location.access_code,
-                        version=d.location.version if d.location.version
-                                else _CifWriter.omitted,
-                        details=d.location.details if d.location.details
-                                else _CifWriter.omitted)
-                ordinal += 1
-
-    def dump_other(self, datasets, writer):
-        ordinal = 1
-        with writer.loop("_ihm_dataset_external_reference",
-                         ["id", "dataset_list_id", "file_id"]) as l:
-            for d in datasets:
-                l.write(id=ordinal, dataset_list_id=d.id, file_id=d.location.id)
-                ordinal += 1
 
 
 class _CrossLinkGroup(object):
@@ -956,15 +428,15 @@ class _CrossLinkDumper(_Dumper):
                 xl.id = xl_id
                 l.write(id=xl.id, group_id=xl.id,
                         entity_description_1=entity1.description,
-                        entity_id_1=entity1.id,
+                        entity_id_1=entity1._id,
                         seq_id_1=xl.r1,
                         comp_id_1=rt1.get_string(),
                         entity_description_2=entity2.description,
-                        entity_id_2=entity2.id,
+                        entity_id_2=entity2._id,
                         seq_id_2=xl.r2,
                         comp_id_2=rt2.get_string(),
                         linker_type=xl.group.label,
-                        dataset_list_id=xl.group.rdataset.dataset.id)
+                        dataset_list_id=xl.group.rdataset.dataset._id)
 
     def _granularity(self, xl):
         """Determine the granularity of a cross link"""
@@ -1006,11 +478,11 @@ class _CrossLinkDumper(_Dumper):
                 xl.id = xl_id
                 l.write(id=xl.id,
                         group_id=xl.ex_xl.id,
-                        entity_id_1=entity1.id,
+                        entity_id_1=entity1._id,
                         asym_id_1=asym1,
                         seq_id_1=xl.ex_xl.r1,
                         comp_id_1=rt1.get_string(),
-                        entity_id_2=entity2.id,
+                        entity_id_2=entity2._id,
                         asym_id_2=asym2,
                         seq_id_2=xl.ex_xl.r2,
                         comp_id_2=rt2.get_string(),
@@ -1059,12 +531,14 @@ class _CrossLinkDumper(_Dumper):
 
 class _EM2DRestraint(object):
     def __init__(self, state, rdataset, pmi_restraint, image_number, resolution,
-                 pixel_size, image_resolution, projection_number):
+                 pixel_size, image_resolution, projection_number,
+                 micrographs_number):
         self.state = state
         self.pmi_restraint, self.image_number = pmi_restraint, image_number
         self.rdataset, self.resolution = rdataset, resolution
         self.pixel_size, self.image_resolution = pixel_size, image_resolution
         self.projection_number = projection_number
+        self.micrographs_number = micrographs_number
 
     def get_transformation(self, model):
         """Get the transformation that places the model on the image"""
@@ -1087,12 +561,6 @@ class _EM2DRestraint(object):
                                  % (self.pmi_restraint.label,
                                     self.image_number + 1)])
 
-    def get_num_raw_micrographs(self):
-        """Return the number of raw micrographs used, if known.
-           This is extracted from the EMMicrographsDataset if any."""
-        for d in self.rdataset.dataset._parents.keys():
-            if isinstance(d, IMP.pmi.metadata.EMMicrographsDataset):
-                return d.number
 
 class _EM2DDumper(_Dumper):
     def __init__(self, simo):
@@ -1115,9 +583,9 @@ class _EM2DDumper(_Dumper):
                           "number_of_projections", "struct_assembly_id",
                           "details"]) as l:
             for r in self.restraints:
-                unk = _CifWriter.unknown
-                num_raw = r.get_num_raw_micrographs()
-                l.write(id=r.id, dataset_list_id=r.rdataset.dataset.id,
+                unk = ihm.unknown
+                num_raw = r.micrographs_number
+                l.write(id=r.id, dataset_list_id=r.rdataset.dataset._id,
                         number_raw_micrographs=num_raw if num_raw else unk,
                         pixel_size_width=r.pixel_size,
                         pixel_size_height=r.pixel_size,
@@ -1125,7 +593,7 @@ class _EM2DDumper(_Dumper):
                         number_of_projections=r.projection_number,
                         # todo: check that the assembly is the same for each
                         # state
-                        struct_assembly_id=r.state.modeled_assembly.id,
+                        struct_assembly_id=r.state.modeled_assembly._id,
                         image_segment_flag=False)
 
     def dump_fitting(self, writer):
@@ -1189,13 +657,13 @@ class _SASDumper(_Dumper):
                           "fitting_state", "radius_of_gyration",
                           "chi_value", "details"]) as l:
             for r in self.restraints:
-                l.write(ordinal_id=ordinal, dataset_list_id=r.dataset.id,
-                        model_id=r.model.id, struct_assembly_id=r.assembly.id,
+                l.write(ordinal_id=ordinal, dataset_list_id=r.dataset._id,
+                        model_id=r.model.id, struct_assembly_id=r.assembly._id,
                         profile_segment_flag=False,
                         fitting_atom_type='Heavy atoms',
                         fitting_method=r.method, fitting_state=r.fitting_state,
                         radius_of_gyration=r.rg, chi_value=r.chi,
-                        details=r.details if r.details else _CifWriter.omitted)
+                        details=r.details if r.details else None)
                 ordinal += 1
 
 
@@ -1215,7 +683,7 @@ class _EM3DRestraint(object):
         components = {}
         for d in densities:
             components[cm[d]] = None # None == all residues in this component
-        return simo.assembly_dump.get_subassembly(components,
+        return simo._get_subassembly(components,
                               name="EM subassembly",
                               description="All components that fit the EM map")
 
@@ -1248,134 +716,13 @@ class _EM3DDumper(_Dumper):
                 for r in self.restraints:
                     ccc = r.get_cross_correlation(model)
                     l.write(ordinal_id=ordinal,
-                            dataset_list_id=r.rdataset.dataset.id,
+                            dataset_list_id=r.rdataset.dataset._id,
                             fitting_method=r.fitting_method,
-                            struct_assembly_id=r.assembly.id,
+                            struct_assembly_id=r.assembly._id,
                             number_of_gaussians=r.number_of_gaussians,
                             model_id=model.id,
                             cross_correlation_coefficient=ccc if ccc is not None
-                                                        else _CifWriter.omitted)
-                    ordinal += 1
-
-class _AssemblyComponent(object):
-    """A single component (or part of a component) in an _Assembly"""
-    def __init__(self, component, seqrange=None):
-        # todo: support multiple sequence ranges
-        self.component, self._seqrange = component, seqrange
-
-    def get_seq_range(self, simo):
-        """Get the sequence range. Defaults to the entire sequence."""
-        if self._seqrange:
-            return self._seqrange
-        else:
-            seq = simo.sequence_dict[self.component]
-            return (1, len(seq))
-
-    def __hash__(self):
-        return hash((self.component, self._seqrange))
-    def __eq__(self, other):
-        return (self.component, self._seqrange) \
-                == (other.component, other._seqrange)
-
-
-class _Assembly(list):
-    """A collection of components. Currently simply implemented as a list of
-       _AssemblyComponent objects. These must be in creation order."""
-
-    def __init__(self, elements=()):
-        self.name = None
-        self.description = None
-        def fix_element(e):
-            if isinstance(e, _AssemblyComponent):
-                return e
-            else:
-                return _AssemblyComponent(e)
-        super(_Assembly, self).__init__(fix_element(e) for e in elements)
-
-    def __hash__(self):
-        # allow putting assemblies in a dict. 'list' isn't hashable
-        # but 'tuple' is
-        return hash(tuple(self))
-
-    def __contains__(self, item):
-        for ac in self:
-            if ac.component == item:
-                return True
-        return False
-
-    def append(self, component, seqrange=None):
-        super(_Assembly, self).append(_AssemblyComponent(component, seqrange))
-
-
-class _AssemblyDumper(_Dumper):
-    def __init__(self, simo):
-        super(_AssemblyDumper, self).__init__(simo)
-        self.assemblies = []
-        self.output = IMP.pmi.output.Output()
-
-    def add(self, a):
-        """Add a new assembly. The first such assembly is assumed to contain
-           all components. Duplicate assemblies will be pruned at the end."""
-        self.assemblies.append(a)
-        return a
-
-    def get_subassembly(self, compdict, name="Subassembly",
-                        description="Subassembly"):
-        """Get an _Assembly consisting of the given components.
-           `compdict` is a dictionary of the components to add, where keys
-           are the component names and values are the sequence ranges (or
-           None to use all residues in the component)."""
-        # Put components in creation order
-        ac_from_name = {}
-        for c in compdict:
-            ac_from_name[c] = _AssemblyComponent(c, seqrange=compdict[c])
-        newa = _Assembly(ac_from_name[ac.component] for ac in self.assemblies[0]
-                         if ac.component in ac_from_name)
-        newa.name = name
-        newa.description = description
-        return self.add(newa)
-
-    def finalize(self):
-        seen_assemblies = {}
-        # Assign IDs to all assemblies
-        self._assembly_by_id = []
-        for a in self.assemblies:
-            _assign_id(a, seen_assemblies, self._assembly_by_id)
-
-    def dump_details(self, writer):
-        with writer.loop("_ihm_struct_assembly_details",
-                         ["assembly_id", "assembly_name",
-                          "assembly_description"]) as l:
-            for a in self._assembly_by_id:
-                l.write(assembly_id=a.id,
-                        assembly_name=a.name if a.name else _CifWriter.omitted,
-                        assembly_description=a.description if a.description
-                                             else _CifWriter.omitted)
-
-    def dump(self, writer):
-        self.dump_details(writer)
-        ordinal = 1
-        with writer.loop("_ihm_struct_assembly",
-                         ["ordinal_id", "assembly_id", "parent_assembly_id",
-                          "entity_description",
-                          "entity_id", "asym_id", "seq_id_begin",
-                          "seq_id_end"]) as l:
-            for a in self._assembly_by_id:
-                for ac in a:
-                    comp = ac.component
-                    seqrange = ac.get_seq_range(self.simo)
-                    entity = self.simo.entities[comp]
-                    chain_id = self.simo._get_chain_for_component(comp,
-                                                                  self.output)
-                    l.write(ordinal_id=ordinal, assembly_id=a.id,
-                            # Currently all assemblies are not hierarchical,
-                            # so each assembly is a self-parent
-                            parent_assembly_id=a.id,
-                            entity_description=entity.description,
-                            entity_id=entity.id,
-                            asym_id=chain_id,
-                            seq_id_begin=seqrange[0],
-                            seq_id_end=seqrange[1])
+                                                        else None)
                     ordinal += 1
 
 
@@ -1417,8 +764,8 @@ class _ModelGroup(object):
 
 class _Chain(object):
     """Represent a single chain in a Model"""
-    def __init__(self, pmi_chain_id, chain_id):
-        self.pmi_chain_id, self.chain_id = pmi_chain_id, chain_id
+    def __init__(self, pmi_chain_id, asym_unit):
+        self.pmi_chain_id, self.asym_unit = pmi_chain_id, asym_unit
         self.spheres = []
         self.atoms = []
 
@@ -1434,8 +781,8 @@ class _Chain(object):
 
 class _TransformedChain(object):
     """Represent a chain that is a transformed version of another"""
-    def __init__(self, orig_chain, chain_id, transform):
-        self.orig_chain, self.chain_id = orig_chain, chain_id
+    def __init__(self, orig_chain, asym_unit, transform):
+        self.orig_chain, self.asym_unit = orig_chain, asym_unit
         self.transform = transform
 
     def __get_spheres(self):
@@ -1491,7 +838,7 @@ class _Model(object):
         self.geometric_center = IMP.algebra.Vector3D(*self.geometric_center)
         self._make_spheres_atoms(particle_infos_for_pdb, o, name, simo)
         self.rmsf = {}
-        self.name = _CifWriter.omitted
+        self.name = None
 
     def all_chains(self, simo):
         """Yield all chains, including transformed ones"""
@@ -1502,23 +849,22 @@ class _Model(object):
         for tc in simo._transformed_components:
             orig_chain = chain_for_comp.get(tc.original, None)
             if orig_chain:
-                chain_id = simo._get_chain_for_component(tc.name, self.output)
-                c = _TransformedChain(orig_chain, chain_id, tc.transform)
+                asym = simo.asym_units[tc.name]
+                c = _TransformedChain(orig_chain, asym, tc.transform)
                 c.comp = tc.name
                 yield c
 
     def _make_spheres_atoms(self, particle_infos_for_pdb, o, name, simo):
         entity_for_chain = {}
         comp_for_chain = {}
-        correct_chain_id = {}
+        correct_asym = {}
         for protname, chain_id in o.dictchain[name].items():
             entity_for_chain[chain_id] = simo.entities[protname]
             comp_for_chain[chain_id] = protname
             # When doing multi-state modeling, the chain ID returned here
             # (assigned sequentially) might not be correct (states may have
-            # gaps in the chain IDs). Map it to the correct ID.
-            correct_chain_id[chain_id] = \
-                           simo._get_chain_for_component(protname, o)
+            # gaps in the chain IDs). Map it to the correct asym unit.
+            correct_asym[chain_id] = simo.asym_units[protname]
 
         # Gather by chain ID (should be sorted by chain ID already)
         self.chains = []
@@ -1528,7 +874,7 @@ class _Model(object):
         for (xyz, atom_type, residue_type, chain_id, residue_index,
              all_indexes, radius) in particle_infos_for_pdb:
             if chain is None or chain.pmi_chain_id != chain_id:
-                chain = _Chain(chain_id, correct_chain_id[chain_id])
+                chain = _Chain(chain_id, correct_asym[chain_id])
                 chain.entity = entity_for_chain[chain_id]
                 chain.comp = comp_for_chain[chain_id]
                 self.chains.append(chain)
@@ -1548,7 +894,7 @@ class _Model(object):
     def get_rmsf(self, component, indexes):
         """Get the RMSF value for the given residue indexes."""
         if not self.rmsf:
-            return _CifWriter.omitted
+            return None
         rmsf = self.rmsf[component]
         blocknums = dict.fromkeys(rmsf[ind][0] for ind in indexes)
         if len(blocknums) != 1:
@@ -1585,7 +931,7 @@ class _ModelDumper(_Dumper):
                         model_group_id=model.group.id,
                         model_name=model.name,
                         model_group_name=group_name,
-                        assembly_id=model.assembly.id,
+                        assembly_id=model.assembly._id,
                         protocol_id=model.protocol.id,
                         representation_id=model.representation.id)
                 ordinal += 1
@@ -1607,8 +953,8 @@ class _ModelDumper(_Dumper):
                         l.write(id=ordinal,
                                 label_atom_id=atom_type.get_string(),
                                 label_comp_id=residue_type.get_string(),
-                                label_asym_id=chain.chain_id,
-                                label_entity_id=chain.entity.id,
+                                label_asym_id=chain.asym_unit._id,
+                                label_entity_id=chain.entity._id,
                                 label_seq_id=residue_index,
                                 Cartn_x=pt[0], Cartn_y=pt[1], Cartn_z=pt[2],
                                 model_id=model.id)
@@ -1630,10 +976,10 @@ class _ModelDumper(_Dumper):
                             all_indexes = (residue_index,)
                         pt = model.transform * xyz
                         l.write(ordinal_id=ordinal,
-                                entity_id=chain.entity.id,
+                                entity_id=chain.entity._id,
                                 seq_id_begin = all_indexes[0],
                                 seq_id_end = all_indexes[-1],
-                                asym_id=chain.chain_id,
+                                asym_id=chain.asym_unit._id,
                                 Cartn_x=pt[0], Cartn_y=pt[1], Cartn_z=pt[2],
                                 object_radius=radius,
                                 rmsf=model.get_rmsf(chain.orig_comp,
@@ -1671,7 +1017,7 @@ class _ModelProtocolDumper(_Dumper):
         protocol.append(step)
         step.id = len(protocol)
         # Assume that protocol uses all currently-defined datasets
-        step.dataset_group = self.simo.dataset_dump.get_all_group(state)
+        step.dataset_group = self.simo.all_datasets.get_all_group(state)
 
     def get_last_protocol(self, state):
         """Return the most recently-added _Protocol"""
@@ -1689,11 +1035,14 @@ class _ModelProtocolDumper(_Dumper):
             for ps in self.protocols.values():
                 for p in ps:
                     for step in p:
+                        # Map to final dataset group; todo: remove
+                        dg = step.dataset_group
+                        dg = self.simo.all_datasets._final_dataset_group[dg]
                         l.write(ordinal_id=ordinal, protocol_id=p.id,
                                 step_id=step.id, step_method=step.method,
                                 step_name=step.name,
-                                struct_assembly_id=step.modeled_assembly.id,
-                                dataset_group_id=step.dataset_group.id,
+                                struct_assembly_id=step.modeled_assembly._id,
+                                dataset_group_id=dg._id,
                                 num_models_begin=step.num_models_begin,
                                 num_models_end=step.num_models_end,
                                 # todo: support multiple states, time ordered
@@ -1703,27 +1052,13 @@ class _ModelProtocolDumper(_Dumper):
                         ordinal += 1
 
 
-class _PDBHelix(object):
-    """Represent a HELIX record from a PDB file."""
-    def __init__(self, line):
-        self.helix_id = line[11:14].strip()
-        self.start_resnam = line[14:18].strip()
-        self.start_asym = line[19]
-        self.start_resnum = int(line[21:25])
-        self.end_resnam = line[27:30].strip()
-        self.end_asym = line[31]
-        self.end_resnum = int(line[33:37])
-        self.helix_class = int(line[38:40])
-        self.length = int(line[71:76])
-
-
 class _MSESeqDif(object):
     """Track an MSE -> MET mutation in the starting model sequence"""
     comp_id = 'MET'
     db_comp_id = 'MSE'
     details = 'Conversion of modified residue MSE to MET'
-    def __init__(self, res, component, source, model, offset):
-        self.res, self.component, self.source = res, component, source
+    def __init__(self, res, component, asym_id, model, offset):
+        self.res, self.component, self.asym_id = res, component, asym_id
         self.model = model
         self.offset = offset
 
@@ -1751,169 +1086,24 @@ class _StartingModelDumper(_Dumper):
            or models[-1].fragments[0].pdbname != fragment.pdbname:
             model = _StartingModel(fragment)
             models.append(model)
-            model.sources = self.get_sources(model, fragment.pdbname,
-                                             fragment.chain)
+            self.get_model_metadata(model, fragment.pdbname, fragment.chain)
         else:
             models[-1].fragments.append(fragment)
 
-    def get_templates(self, pdbname, model):
-        template_path_map = {}
-        templates = []
-        alnfile = None
-        alnfilere = re.compile('REMARK   6 ALIGNMENT: (\S+)')
-        tmppathre = re.compile('REMARK   6 TEMPLATE PATH (\S+) (\S+)')
-        tmpre = re.compile('REMARK   6 TEMPLATE: '
-                           '(\S+) (\S+):\S+ \- (\S+):\S+ '
-                           'MODELS (\S+):(\S+) \- (\S+):\S+ AT (\S+)%')
+    def get_model_metadata(self, model, pdbname, chain):
+        parser = ihm.metadata.PDBParser()
+        r = parser.parse_file(pdbname)
 
-        with open(pdbname) as fh:
-            for line in fh:
-                if line.startswith('ATOM'): # Read only the header
-                    break
-                m = tmppathre.match(line)
-                if m:
-                    template_path_map[m.group(1)] = \
-                              IMP.get_relative_path(pdbname, m.group(2))
-                m = alnfilere.match(line)
-                if m:
-                    # Path to alignment is relative to that of the PDB file
-                    alnfile = IMP.get_relative_path(pdbname, m.group(1))
-                m = tmpre.match(line)
-                if m:
-                    templates.append(_TemplateSource(m.group(1),
-                                                     int(m.group(2)),
-                                                     int(m.group(3)),
-                                                     int(m.group(4)),
-                                                     m.group(5),
-                                                     int(m.group(6)),
-                                                     m.group(7), model))
-        # Add datasets for templates
-        for t in templates:
-            if t._orig_tm_code:
-                fname = template_path_map[t._orig_tm_code]
-                l = IMP.pmi.metadata.FileLocation(fname,
-                                 details="Template for comparative modeling")
-            else:
-                l = IMP.pmi.metadata.PDBLocation(t.tm_db_code)
-            d = IMP.pmi.metadata.PDBDataset(l)
-            d = self.simo._add_dataset(d)
-            t.tm_dataset = d
-            model.dataset.add_parent(d)
-
-        # Sort by starting residue, then ending residue
-        return(sorted(templates,
-                      key=lambda x: (x._seq_id_begin, x._seq_id_end)),
-               alnfile)
-
-    def _parse_pdb(self, fh, first_line):
-        """Extract information from an official PDB"""
-        metadata = []
-        details = ''
-        for line in fh:
-            if line.startswith('TITLE'):
-                details += line[10:].rstrip()
-            elif line.startswith('HELIX'):
-                metadata.append(_PDBHelix(line))
-        return (first_line[50:59].strip(),
-                details if details else _CifWriter.unknown, metadata)
-
-    def _parse_details(self, fh):
-        """Extract TITLE records from a PDB file"""
-        details = ''
-        for line in fh:
-            if line.startswith('TITLE'):
-                details += line[10:].rstrip()
-            elif line.startswith('ATOM'):
-                break
-        return details
-
-    def get_sources(self, model, pdbname, chain):
-        # Attempt to identity PDB file vs. comparative model
-        fh = open(pdbname)
-        first_line = fh.readline()
-        local_file = IMP.pmi.metadata.FileLocation(pdbname,
-                                          details="Starting model structure")
-        file_dataset = self.simo.get_file_dataset(pdbname)
-        if first_line.startswith('HEADER'):
-            version, details, metadata = self._parse_pdb(fh, first_line)
-            source = _PDBSource(model, first_line[62:66].strip(), chain,
-                                metadata)
-            l = IMP.pmi.metadata.PDBLocation(source.db_code, version, details)
-            d = IMP.pmi.metadata.PDBDataset(l)
-            model.dataset = self.simo._add_dataset(file_dataset or d)
-            return [source]
-        elif first_line.startswith('EXPDTA    DERIVED FROM PDB:'):
-            # Model derived from a PDB structure; treat as a local experimental
-            # model with the official PDB as a parent
-            local_file.details = self._parse_details(fh)
-            db_code = first_line[27:].strip()
-            d = IMP.pmi.metadata.PDBDataset(local_file)
-            pdb_loc = IMP.pmi.metadata.PDBLocation(db_code)
-            parent = IMP.pmi.metadata.PDBDataset(pdb_loc)
-            d.add_parent(parent)
-            model.dataset = self.simo._add_dataset(file_dataset or d)
-            return [_UnknownSource(model, chain)]
-        elif first_line.startswith('EXPDTA    DERIVED FROM COMPARATIVE '
-                                   'MODEL, DOI:'):
-            # Model derived from a comparative model; link back to the original
-            # model as a parent
-            local_file.details = self._parse_details(fh)
-            d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
-            repo = IMP.pmi.metadata.Repository(doi=first_line[46:].strip())
-            # todo: better specify an unknown path
-            orig_loc = IMP.pmi.metadata.FileLocation(repo=repo, path='.',
-                              details="Starting comparative model structure")
-            parent = IMP.pmi.metadata.ComparativeModelDataset(orig_loc)
-            d.add_parent(parent)
-            model.dataset = self.simo._add_dataset(file_dataset or d)
-            return [_UnknownSource(model, chain)]
-        elif first_line.startswith('EXPDTA    DERIVED FROM INTEGRATIVE '
-                                   'MODEL, DOI:'):
-            # Model derived from an integrative model; link back to the original
-            # model as a parent
-            local_file.details = self._parse_details(fh)
-            d = IMP.pmi.metadata.IntegrativeModelDataset(local_file)
-            repo = IMP.pmi.metadata.Repository(doi=first_line[46:].strip())
-            # todo: better specify an unknown path
-            orig_loc = IMP.pmi.metadata.FileLocation(repo=repo, path='.',
-                              details="Starting integrative model structure")
-            parent = IMP.pmi.metadata.IntegrativeModelDataset(orig_loc)
-            d.add_parent(parent)
-            model.dataset = self.simo._add_dataset(file_dataset or d)
-            return [_UnknownSource(model, chain)]
-        elif first_line.startswith('EXPDTA    THEORETICAL MODEL, MODELLER'):
-            self.simo.software_dump.set_modeller_used(
-                                        *first_line[38:].split(' ', 1))
-            return self.handle_comparative_model(local_file, file_dataset,
-                                                 pdbname, model, chain)
-        elif first_line.startswith('REMARK  99  Chain ID :'):
-            # Model generated by Phyre2
-            self.simo.software_dump.set_phyre2_used()
-            return self.handle_comparative_model(local_file, file_dataset,
-                                                 pdbname, model, chain)
-        else:
-            # todo: extract Modeller-like template info for Phyre models;
-            # revisit assumption that all such unknown source PDBs are
-            # comparative models
-            return self.handle_comparative_model(local_file, file_dataset,
-                                                 pdbname, model, chain)
-
-    def handle_comparative_model(self, local_file, file_dataset, pdbname,
-                                 model, chain):
-        d = IMP.pmi.metadata.ComparativeModelDataset(local_file)
-        model.dataset = self.simo._add_dataset(file_dataset or d)
-        templates, alnfile = self.get_templates(pdbname, model)
-        if alnfile:
-            model.alignment_file = IMP.pmi.metadata.FileLocation(alnfile,
-                                    details="Alignment for starting "
-                                            "comparative model")
-            self.simo.extref_dump.add(model.alignment_file,
-                                      _ExternalReferenceDumper.INPUT_DATA)
-
-        if templates:
-            return templates
-        else:
-            return [_UnknownSource(model, chain)]
+        model.dataset = r['dataset']
+        self.simo.system.software.extend(r['software'])
+        self.simo._add_dataset(model.dataset)
+        model.templates = r['templates']
+        model.metadata = r['metadata']
+        for t in model.templates:
+            if t.alignment_file:
+                self.simo.system.locations.append(t.alignment_file)
+            if t.dataset:
+                self.simo._add_dataset(t.dataset)
 
     def assign_model_details(self):
         for comp, states in self.models.items():
@@ -1957,10 +1147,10 @@ class _StartingModelDumper(_Dumper):
                 chain_id = self.simo._get_chain_for_component(
                                     sd.component, self.output)
                 entity = self.simo.entities[sd.component]
-                l.write(ordinal_id=ordinal, entity_id=entity.id,
+                l.write(ordinal_id=ordinal, entity_id=entity._id,
                         asym_id=chain_id, seq_id=sd.res.get_index(),
                         comp_id=sd.comp_id,
-                        db_asym_id=sd.source.chain_id,
+                        db_asym_id=sd.asym_id,
                         db_seq_id=sd.res.get_index() - sd.offset,
                         db_comp_id=sd.db_comp_id,
                         starting_model_id=sd.model.name,
@@ -1982,29 +1172,31 @@ class _StartingModelDumper(_Dumper):
                       "alignment_file_id"]) as l:
             ordinal = 1
             for model in self.all_models():
-                for template in [s for s in model.sources
-                                 if isinstance(s, _TemplateSource)]:
-                    seq_id_begin, seq_id_end = template.get_seq_id_range(model)
+                for template in model.templates:
                     denom = template.sequence_identity_denominator
                     l.write(ordinal_id=ordinal,
                       starting_model_id=model.name,
-                      starting_model_auth_asym_id=template.chain_id,
-                      starting_model_seq_id_begin=seq_id_begin,
-                      starting_model_seq_id_end=seq_id_end,
-                      template_auth_asym_id=template.tm_chain_id,
-                      template_seq_id_begin=template.tm_seq_id_begin,
-                      template_seq_id_end=template.tm_seq_id_end,
+                      starting_model_auth_asym_id=model.asym_id,
+                      starting_model_seq_id_begin=template.seq_id_range[0],
+                      starting_model_seq_id_end=template.seq_id_range[1],
+                      template_auth_asym_id=template.asym_id,
+                      template_seq_id_begin=template.template_seq_id_range[0],
+                      template_seq_id_end=template.template_seq_id_range[1],
                       template_sequence_identity=template.sequence_identity,
                       template_sequence_identity_denominator=denom,
-                      template_dataset_list_id=template.tm_dataset.id
-                                               if template.tm_dataset
-                                               else _CifWriter.unknown,
-                      alignment_file_id=model.alignment_file.id
-                                        if hasattr(model, 'alignment_file')
-                                        else _CifWriter.unknown)
+                      template_dataset_list_id=template.dataset._id
+                                               if template.dataset
+                                               else ihm.unknown,
+                      alignment_file_id=template.alignment_file._id
+                                        if template.alignment_file
+                                        else ihm.unknown)
                     ordinal += 1
 
     def dump_details(self, writer):
+        # Map dataset types to starting model sources
+        source_map = {'Comparative model': 'comparative model',
+                      'Integrative model': 'integrative model',
+                      'Experimental model': 'experimental model'}
         writer.write_comment("""IMP will attempt to identify which input models
 are crystal structures and which are comparative models, but does not always
 have sufficient information to deduce all of the templates used for comparative
@@ -2021,25 +1213,17 @@ modeling. These may need to be added manually below.""")
                 entity = self.simo.entities[f.component]
                 chain_id = self.simo._get_chain_for_component(f.component,
                                                               self.output)
-                source0 = model.sources[0]
-                # Where there are multiple sources (to date, this can only
-                # mean multiple templates for a comparative model) consolidate
-                # them; template info is given in starting_comparative_models.
-                seq_id_begin, seq_id_end = source0.get_seq_id_range(model)
-                for source in model.sources[1:]:
-                    this_begin, this_end = source.get_seq_id_range(model)
-                    seq_id_begin = min(seq_id_begin, this_begin)
-                    seq_id_end = max(seq_id_end, this_end)
-                l.write(entity_id=entity.id,
+                seq_id_range = model.get_seq_id_range_all_templates()
+                l.write(entity_id=entity._id,
                       entity_description=entity.description,
                       asym_id=chain_id,
-                      seq_id_begin=seq_id_begin,
-                      seq_id_end=seq_id_end,
-                      starting_model_auth_asym_id=source0.chain_id,
+                      seq_id_begin=seq_id_range[0],
+                      seq_id_end=seq_id_range[1],
+                      starting_model_auth_asym_id=model.asym_id,
                       starting_model_id=model.name,
-                      starting_model_source=source0.source,
+                      starting_model_source=source_map[model.dataset.data_type],
                       starting_model_sequence_offset=f.offset,
-                      dataset_list_id=model.dataset.id)
+                      dataset_list_id=model.dataset._id)
 
     def dump_coords(self, writer):
         seq_dif = []
@@ -2081,9 +1265,9 @@ modeling. These may need to be added manually below.""")
                                 # a crystal structure as the source (a
                                 # comparative model would use MET in
                                 # the sequence)
-                                assert(len(model.sources) == 1)
+                                assert(len(model.templates) == 0)
                                 seq_dif.append(_MSESeqDif(res, f.component,
-                                                          model.sources[0],
+                                                          model.asym_id,
                                                           model, f.offset))
                         chain_id = self.simo._get_chain_for_component(
                                             f.component, self.output)
@@ -2092,7 +1276,7 @@ modeling. These may need to be added manually below.""")
                                 group_PDB=group_pdb,
                                 id=atom.get_input_index(), type_symbol=element,
                                 atom_id=atom_name, comp_id=res_name,
-                                entity_id=entity.id,
+                                entity_id=entity._id,
                                 asym_id=chain_id,
                                 seq_id=res.get_index() + f.offset,
                                 Cartn_x=coord[0],
@@ -2124,21 +1308,19 @@ class _StructConfDumper(_Dumper):
     def all_helices(self):
         """Yield all helices that overlap with rigid model fragments"""
         for f, starting_model, asym_id in self.all_rigid_fragments():
-            if len(starting_model.sources) == 1 \
-               and isinstance(starting_model.sources[0], _PDBSource):
-                pdb = starting_model.sources[0]
-                for m in pdb.metadata:
-                    if isinstance(m, _PDBHelix) \
-                       and m.start_asym == pdb.chain_id \
-                       and m.end_asym == pdb.chain_id \
+            if len(starting_model.templates) == 0:
+                for m in starting_model.metadata:
+                    if isinstance(m, ihm.startmodel.PDBHelix) \
+                       and m.start_asym == starting_model.asym_id \
+                       and m.end_asym == starting_model.asym_id \
                        and m.start_resnum >= f.start and m.end_resnum <= f.end:
                         yield (m, max(f.start, m.start_resnum),
                                min(f.end, m.end_resnum), asym_id)
 
     def dump(self, writer):
         with writer.category("_struct_conf_type") as l:
-            l.write(id='HELX_P', criteria=_CifWriter.unknown,
-                    reference=_CifWriter.unknown)
+            l.write(id='HELX_P', criteria=ihm.unknown,
+                    reference=ihm.unknown)
         # Dump helix information for the model. For any model fragment that
         # is rigid, atomic, and uses an experimental PDB structure as the
         # starting model, inherit any helix information from that PDB file.
@@ -2277,16 +1459,15 @@ class _ReplicaExchangeAnalysisEnsemble(_Ensemble):
                             'cluster.%d' % self.cluster_num,
                             '%s.mrc' % component)
 
-    def load_localization_density(self, state, component, extref_dump):
+    def load_localization_density(self, state, component, locations):
         fname = self.get_localization_density_file(component)
         if os.path.exists(fname):
             details = "Localization density for %s %s" \
                       % (component, self.model_group.name)
-            local_file = IMP.pmi.metadata.FileLocation(fname,
+            local_file = ihm.location.OutputFileLocation(fname,
                               details=state.get_postfixed_name(details))
             self.localization_density[component] = local_file
-            extref_dump.add(local_file,
-                            _ExternalReferenceDumper.MODELING_OUTPUT)
+            locations.append(local_file)
 
     def load_all_models(self, simo, state):
         stat_fname = self.postproc.get_stat_file(self.cluster_num)
@@ -2312,7 +1493,7 @@ class _ReplicaExchangeAnalysisEnsemble(_Ensemble):
                                 "precision.%d.%d.out" % (self.cluster_num,
                                                          self.cluster_num))
         if not os.path.exists(precfile):
-            return _CifWriter.unknown
+            return ihm.unknown
         # Fail if the precision.x.x.out file doesn't match the cluster
         r = re.compile('All .*/cluster.%d/ average centroid distance ([\d\.]+)'
                        % self.cluster_num)
@@ -2342,10 +1523,9 @@ class _SimpleEnsemble(_Ensemble):
         self.precision = drmsd
 
     def load_localization_density(self, state, component, local_file,
-                                  extref_dump):
+                                  locations):
         self.localization_density[component] = local_file
-        extref_dump.add(local_file,
-                        _ExternalReferenceDumper.MODELING_OUTPUT)
+        locations.append(local_file)
 
     name = property(lambda self: self.model_group.name)
 
@@ -2378,8 +1558,8 @@ class _EnsembleDumper(_Dumper):
                         num_ensemble_models=e.num_models,
                         num_ensemble_models_deposited=e.num_deposit,
                         ensemble_precision_value=e.precision,
-                        ensemble_file_id=e.file.id if e.file
-                                                   else _CifWriter.omitted)
+                        ensemble_file_id=e.file._id if e.file
+                                                    else None)
 
 class _DensityDumper(_Dumper):
     """Output localization densities for ensembles"""
@@ -2410,8 +1590,8 @@ class _DensityDumper(_Dumper):
                     chain_id = self.simo._get_chain_for_component(comp,
                                                                   self.output)
                     l.write(id=ordinal, ensemble_id=ensemble.id,
-                            entity_id=entity.id,
-                            file_id=density.id,
+                            entity_id=entity._id,
+                            file_id=density._id,
                             seq_id_begin=1, seq_id_end=lenseq,
                             asym_id=chain_id)
                     ordinal += 1
@@ -2439,43 +1619,30 @@ class _MultiStateDumper(_Dumper):
                         state_group_id=state.id,
                         model_group_id=group.id,
                         state_name=state.long_name if state.long_name
-                                   else _CifWriter.omitted,
+                                   else None,
                         # No IMP models are currently single molecule
                         experiment_type='Fraction of bulk',
                         details=state.get_prefixed_name(group.name))
 
 
-class _Entity(object):
-    """Represent a CIF entity (a chain with a unique sequence)"""
-    def __init__(self, seq, first_component):
-        self.sequence = seq
-        self.first_component = first_component
-    # Use the name of the first component, stripped of any copy number,
-    # as the description of the entity
-    def __get_description(self):
-        # Strip out anything after a @ or .
-        return self.first_component.split("@")[0].split(".")[0]
-    description = property(__get_description)
-
 class _EntityMapper(dict):
     """Handle mapping from IMP components to CIF entities.
        Multiple components may map to the same entity if they share sequence."""
-    def __init__(self):
+    def __init__(self, system):
         super(_EntityMapper, self).__init__()
         self._sequence_dict = {}
         self._entities = []
+        self.system = system
 
     def add(self, component_name, sequence):
         if sequence not in self._sequence_dict:
-            entity = _Entity(sequence, component_name)
-            self._entities.append(entity)
-            entity.id = len(self._entities)
+            # Use the name of the first component, stripped of any copy number,
+            # as the description of the entity
+            d = component_name.split("@")[0].split(".")[0]
+            entity = ihm.Entity(sequence, description=d)
+            self.system.entities.append(entity)
             self._sequence_dict[sequence] = entity
         self[component_name] = self._sequence_dict[sequence]
-
-    def get_all(self):
-        """Yield all entities"""
-        return self._entities
 
 
 class _RestraintDataset(object):
@@ -2519,10 +1686,10 @@ class _State(object):
 
         # The assembly of all components modeled by IMP in this state.
         # This may be smaller than the complete assembly.
-        self.modeled_assembly = _Assembly()
-        self.modeled_assembly.name = "Modeled assembly"
-        self.modeled_assembly.description = "All components modeled by IMP"
-        po.assembly_dump.add(self.modeled_assembly)
+        self.modeled_assembly = ihm.Assembly(
+                        name="Modeled assembly",
+                        description="All components modeled by IMP")
+        po.system.orphan_assemblies.append(self.modeled_assembly)
 
         self.all_modeled_components = []
 
@@ -2563,17 +1730,28 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     output as mmCIF.
     """
     def __init__(self, fh):
+        # Ultimately, collect data in an ihm.System object
+        self.system = ihm.System()
+
+        self.fh = fh
         self._state_ensemble_offset = 0
         self._each_metadata = [] # list of metadata for each representation
         self._file_datasets = []
         self._main_script = os.path.abspath(sys.argv[0])
+
+        # Point to the main modeling script
+        loc = ihm.location.WorkflowFileLocation(path=self._main_script,
+                               details="The main integrative modeling script")
+        self.system.locations.append(loc)
+
         self._states = {}
         self._working_directory = os.getcwd()
-        self._cif_writer = _CifWriter(fh)
+        self._cif_writer = ihm.format.CifWriter(fh)
         self._representations = []
         self.create_representation("Default representation")
-        self.entities = _EntityMapper()
-        self.chains = {}
+        self.entities = _EntityMapper(self.system)
+        # Mapping from component names to ihm.AsymUnit
+        self.asym_units = {}
         self._all_components = {}
         self.all_modeled_components = []
         self._transformed_components = []
@@ -2591,22 +1769,14 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.em2d_dump = _EM2DDumper(self)
         self.em3d_dump = _EM3DDumper(self)
         self.model_prot_dump = _ModelProtocolDumper(self)
-        self.extref_dump = _ExternalReferenceDumper(self)
-        self.dataset_dump = _DatasetDumper(self)
+        self.all_datasets = _AllDatasets()
         self.starting_model_dump = _StartingModelDumper(self)
-        self.assembly_dump = _AssemblyDumper(self)
-
-        # The assembly of all known components.
-        self.complete_assembly = _Assembly()
-        self.complete_assembly.name = "Complete assembly"
-        self.complete_assembly.description = "All known components"
-        self.assembly_dump.add(self.complete_assembly)
 
         self.model_dump = _ModelDumper(self)
         self.model_repr_dump.starting_model \
                     = self.starting_model_dump.starting_model
         self.comment_dump = _CommentDumper(self)
-        self.software_dump = _SoftwareDumper(self)
+        self.all_software = _AllSoftware(self.system)
         self.post_process_dump = _PostProcessDumper(self)
         self.ensemble_dump = _EnsembleDumper(self)
         self.density_dump = _DensityDumper(self)
@@ -2617,17 +1787,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.em3d_dump.models = self.model_dump.models
         self.em2d_dump.models = self.model_dump.models
 
-        self._dumpers = [_EntryDumper(self), # should always be first
-                         self.comment_dump,
-                         _AuditAuthorDumper(self),
-                         self.software_dump, _CitationDumper(self),
-                         _ChemCompDumper(self),
-                         _EntityDumper(self),
-                         _EntityPolyDumper(self), _EntityPolySeqDumper(self),
-                         _StructAsymDumper(self),
-                         self.assembly_dump,
-                         self.model_repr_dump, self.extref_dump,
-                         self.dataset_dump,
+        self._dumpers = [self.comment_dump,
+                         self.model_repr_dump,
                          self.cross_link_dump, self.sas_dump,
                          self.em2d_dump, self.em3d_dump,
                          self.starting_model_dump,
@@ -2688,20 +1849,28 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def _get_chain_for_component(self, name, output):
         """Get the chain ID for a component, if any."""
         # todo: handle multiple copies
-        if name in self.chains:
-            chain = self.chains[name]
-            return output.multi_chainids[chain]
+        if name in self.asym_units:
+            return self.asym_units[name]._id
         else:
             # A non-modeled component doesn't have a chain ID
-            return _CifWriter.omitted
+            return None
+
+    def _get_assembly_comps(self, assembly):
+        """Get the names of the components in the given assembly"""
+        # component name = asym_unit.details
+        comps = {}
+        for ca in assembly:
+            comps[ca.asym.details] = None
+        return comps
 
     def create_transformed_component(self, state, name, original, transform):
-        if name in state.modeled_assembly:
+        assembly_comps = self._get_assembly_comps(state.modeled_assembly)
+        if name in assembly_comps:
             raise ValueError("Component %s already exists" % name)
-        elif original not in state.modeled_assembly:
+        elif original not in assembly_comps:
             raise ValueError("Original component %s does not exist" % original)
         self.create_component(state, name, True)
-        self.add_component_sequence(name, self.sequence_dict[original])
+        self.add_component_sequence(state, name, self.sequence_dict[original])
         self._transformed_components.append(_TransformedComponent(
                                             name, original, transform))
 
@@ -2711,21 +1880,39 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         if modeled:
             state.all_modeled_components.append(name)
             if new_comp:
-                self.chains[name] = len(self.chains)
+                self.asym_units[name] = None # assign asym once we get sequence
                 self.all_modeled_components.append(name)
-            state.modeled_assembly.append(name)
-        if new_comp:
-            self.complete_assembly.append(name)
 
-    def add_component_sequence(self, name, seq):
+    def add_component_sequence(self, state, name, seq):
         if name in self.sequence_dict:
             if self.sequence_dict[name] != seq:
                 raise ValueError("Sequence mismatch for component %s" % name)
         else:
             self.sequence_dict[name] = seq
             self.entities.add(name, seq)
+        if name in self.asym_units and self.asym_units[name] is None:
+            # Set up a new asymmetric unit for this component
+            entity = self.entities[name]
+            asym = ihm.AsymUnit(entity, details=name)
+            self.system.asym_units.append(asym)
+            state.modeled_assembly.append(ihm.AssemblyComponent(asym))
+            self.asym_units[name] = asym
 
     def flush(self):
+        # Make sure ihm knows about final datasets and groups
+        self.system.orphan_datasets.extend(
+                           self.all_datasets._get_final_datasets())
+        self.system.orphan_dataset_groups.extend(
+                           self.all_datasets._get_final_groups())
+
+        # Point all locations to repos, if applicable
+        all_repos = [m for m in self._metadata
+                     if isinstance(m, ihm.location.Repository)]
+        self.system.update_locations_in_repositories(all_repos)
+
+        # Dump out ihm-managed objects first
+        ihm.dumper.write(self.fh, [self.system])
+        # Now dump our own
         for dumper in self._dumpers:
             dumper.finalize_metadata()
         for dumper in self._dumpers:
@@ -2798,7 +1985,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.model_prot_dump.add_protocol(state)
 
     def _add_dataset(self, dataset):
-        return self.dataset_dump.add(self._last_state, dataset)
+        return self.all_datasets.add(self._last_state, dataset)
 
     def add_model_group(self, group):
         self.model_groups.append(group)
@@ -2830,8 +2017,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         state = self._last_state
         group = self.add_model_group(_ModelGroup(state, name))
         if ensemble_file:
-            self.extref_dump.add(ensemble_file,
-                                 _ExternalReferenceDumper.MODELING_OUTPUT)
+            self.system.locations.append(ensemble_file)
         e = _SimpleEnsemble(pp, group, num_models, drmsd, num_models_deposited,
                             ensemble_file)
         self.ensemble_dump.add(e)
@@ -2839,15 +2025,15 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         for c in state.all_modeled_components:
             den = localization_densities.get(c, None)
             if den:
-                e.load_localization_density(state, c, den, self.extref_dump)
+                e.load_localization_density(state, c, den,
+                                            self.system.locations)
         return e
 
     def set_ensemble_file(self, i, location):
         """Point a previously-created ensemble to an 'all-models' file.
            This could be a trajectory such as DCD, an RMF, or a multimodel
            PDB file."""
-        self.extref_dump.add(location,
-                             _ExternalReferenceDumper.MODELING_OUTPUT)
+        self.system.locations.append(location)
         # Ensure that we point to an ensemble related to the current state
         ind = i + self._state_ensemble_offset
         self.ensemble_dump.ensembles[ind].file = location
@@ -2871,7 +2057,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             self.density_dump.add(e)
             # Add localization density info if available
             for c in state.all_modeled_components:
-                e.load_localization_density(state, c, self.extref_dump)
+                e.load_localization_density(state, c, self.system.locations)
             for stats in e.load_all_models(self, state):
                 m = self.add_model(group)
                 # Since we currently only deposit 1 model, it is the
@@ -2882,11 +2068,25 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                 for c in state.all_modeled_components:
                     e.load_rmsf(m, c)
 
+    def _get_subassembly(self, comps, name, description):
+        """Get an Assembly consisting of the given components.
+           `compdict` is a dictionary of the components to add, where keys
+           are the component names and values are the sequence ranges (or
+           None to use all residues in the component)."""
+        asyms = []
+        for comp, seqrng in comps.items():
+            a = self.asym_units[comp]
+            asyms.append(a if seqrng is None else a(*seqrng))
+
+        a = ihm.Assembly(asyms, name=name, description=description)
+        self.system.orphan_assemblies.append(a)
+        return a
+
     def _add_foxs_restraint(self, model, comp, seqrange, dataset, rg, chi,
                             details):
         """Add a basic FoXS fit. This is largely intended for use from the
            NPC application."""
-        assembly = self.assembly_dump.get_subassembly({comp:seqrange},
+        assembly = self._get_subassembly({comp:seqrange},
                               name="SAXS subassembly",
                               description="All components that fit SAXS data")
         dataset = self._add_dataset(dataset)
@@ -2894,11 +2094,13 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                                         rg, chi, details))
 
     def add_em2d_restraint(self, state, r, i, resolution, pixel_size,
-                           image_resolution, projection_number):
+                           image_resolution, projection_number,
+                           micrographs_number):
         d = self._get_restraint_dataset(r, i)
         self.em2d_dump.add(_EM2DRestraint(state, d, r, i, resolution,
                                           pixel_size, image_resolution,
-                                          projection_number))
+                                          projection_number,
+                                          micrographs_number))
 
     def add_em3d_restraint(self, state, target_ps, densities, r):
         # A 3DEM restraint's dataset ID uniquely defines the restraint, so
@@ -2916,11 +2118,12 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                            assembly if assembly else state.modeled_assembly,
                            representation, group)
 
-    def _update_location(self, fileloc):
+    def _update_locations(self, filelocs):
         """Update FileLocation to point to a parent repository, if any"""
         all_repos = [m for m in self._metadata
-                     if isinstance(m, IMP.pmi.metadata.Repository)]
-        IMP.pmi.metadata.Repository.update_in_repos(fileloc, all_repos)
+                     if isinstance(m, ihm.location.Repository)]
+        for fileloc in filelocs:
+            ihm.location.Repository._update_in_repos(fileloc, all_repos)
 
     _metadata = property(lambda self:
                          itertools.chain.from_iterable(self._each_metadata))

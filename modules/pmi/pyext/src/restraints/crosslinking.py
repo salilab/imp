@@ -10,7 +10,6 @@ import IMP.atom
 import IMP.isd
 import IMP.container
 import IMP.pmi.tools
-import IMP.pmi.metadata
 import IMP.pmi.output
 import IMP.pmi.io.crosslink
 import IMP.pmi.restraints
@@ -19,6 +18,8 @@ from collections import defaultdict
 import itertools
 import operator
 import os
+import ihm.location
+import ihm.dataset
 
 class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
     """Setup cross-link distance restraints from mass spectrometry data.
@@ -1713,9 +1714,9 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
 
         self.dataset = representations[0].get_file_dataset(restraints_file)
         if not self.dataset and os.path.exists(restraints_file):
-            l = IMP.pmi.metadata.FileLocation(restraints_file,
-                                              details="Crosslinks")
-            self.dataset = IMP.pmi.metadata.CXMSDataset(l)
+            l = ihm.location.InputFileLocation(restraints_file,
+                                               details="Crosslinks")
+            self.dataset = ihm.dataset.CXMSDataset(l)
 
         xl_groups = [p.get_cross_link_group(self)
                      for p, state in representations[0]._protocol_output]
