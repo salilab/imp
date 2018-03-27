@@ -12,6 +12,7 @@ class Tests(IMP.test.TestCase):
 
     def _do_test_rot(self, dt):
         """Check rigid body brownian dynamics correlation time"""
+        print("Testing for dt=", dt)
         m = IMP.Model()
         p = IMP.Particle(m)
         d = IMP.core.XYZR.setup_particle(p)
@@ -29,30 +30,32 @@ class Tests(IMP.test.TestCase):
         bd.set_maximum_time_step(dt)
         angles = []
         rots = []
-        for i in range(0, 1000):
+        for i in range(0, 3000):
             bd.optimize(1)
             rots.append(
-                rb.get_reference_frame(
-                ).get_transformation_to(
-                ).get_rotation(
-                ))
+                rb.get_rotation())
             angle = IMP.algebra.get_axis_and_angle(rots[-1])
             angles.append(angle[1])
         # print angles
-        print(IMP.atom.get_diffusion_angle(dd.get_rotational_diffusion_coefficient(), dt),\
-            dd.get_rotational_diffusion_coefficient(),\
-            IMP.atom.get_rotational_diffusion_coefficient(rots, dt))
-        self.assertAlmostEqual(dd.get_rotational_diffusion_coefficient(),
-                               IMP.atom.get_rotational_diffusion_coefficient(
-                                   rots, dt),
-                               delta=.5 * dd.get_rotational_diffusion_coefficient())
+        real_D= dd.get_rotational_diffusion_coefficient()
+        IMP.set_log_level(IMP.PROGRESS)
+        estimate_D= IMP.atom.get_rotational_diffusion_coefficient(rots, dt)
+        print("Mean rot angle per dt/real rotD/estimated rotD: ",
+              IMP.atom.get_diffusion_angle(real_D, dt),
+              real_D, estimate_D)
+        self.assertAlmostEqual(real_D, estimate_D, delta= .05*(real_D+estimate_D))
+        return estimate_D
+
 
     def test_rot(self):
         """Check rigid body brownian dynamics correlation time"""
-        # self._do_test_rot(10000)
-        # loose steps to numerical errors
-        self._do_test_rot(1000)
-        # self._do_test_rot(100)
-        # self._do_test_rot(10)
+        estimate1000= self._do_test_rot(1000)
+#        self._do_test_rot(100000)
+        estimate10= self._do_test_rot(10)
+        # verify numerical stability and robustness to step size
+        self.assertAlmostEqual(estimate1000,
+                               estimate10,
+                               delta= .05*(estimate10+estimate1000))
+
 if __name__ == '__main__':
     IMP.test.main()
