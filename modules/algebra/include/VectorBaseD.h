@@ -227,18 +227,22 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
  */
 template <class VT>
 inline VT get_unit_vector(VT vt) {
-  const double tiny_double = 1e-12;
+  static const double tiny_double =
+    256.0 * std::numeric_limits<double>::epsilon();
   double mag = vt.get_magnitude();
   if (mag > tiny_double) {
-    return vt / mag;
+    VT ret_value= vt/mag;
+    IMP_USAGE_CHECK(std::abs(ret_value.get_magnitude() - 1.0) < 256.0 * tiny_double,
+                    "returned vector is not unit vector");
+    return ret_value;
   } else {
     // avoid division by zero - return random unit v
     // NOTE: (1) avoids vector_generators / SphereD to prevent recursiveness
     //       (2) D might be -1, so use get_dimension()
-    boost::variate_generator<RandomNumberGenerator,
-                             boost::normal_distribution<> >
-        generator(IMP::random_number_generator,
-                  ::boost::normal_distribution<>(0, 1.0));
+    static boost::variate_generator<RandomNumberGenerator,
+      boost::normal_distribution<> >
+      generator(IMP::random_number_generator,
+                ::boost::normal_distribution<>(0, 1.0));
     for (unsigned int i = 0; i < vt.get_dimension(); ++i) {
       vt[i] = generator();
     }
