@@ -11,6 +11,8 @@
 #include "IMP/algebra/utility.h"
 #include <IMP/check_macros.h>
 #include <IMP/log_macros.h>
+#include <limits>
+
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -332,11 +334,13 @@ std::pair<Vector3D, double> get_axis_and_angle(const Rotation3D &rot) {
   b = q[1];
   c = q[2];
   d = q[3];
-  // deal with singularity of a~1.0 first
+  //  deal with singularity of a~1.0 first
   double numerical_scale_factor(1.0+std::abs(a));
-  if ( std::abs(a) >= 1.0 - std::numeric_limits<double>::epsilon() * numerical_scale_factor ){
+  if ( std::abs(a) >= 1.0 - 4.0 * std::numeric_limits<double>::epsilon() * numerical_scale_factor ){
     return std::make_pair(Vector3D(1, 0, 0), 0.0);
   }
+  //if (std::abs(a) > .9999)
+  //  return std::make_pair(Vector3D(1, 0, 0), 0.0);
   double angle = std::acos(a) * 2;
   double s = std::sin(angle / 2);
   Vector3D axis(b / s, c / s, d / s);
