@@ -156,6 +156,7 @@ IMPATOMEXPORT double get_diffusion_coefficient(
     e.g.  cm^2/sec if displacements and dts are specified in cm and
     seconds, resp.
 */
+IMPATOMEXPORT
 double get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
                                  const Floats &dts);
 
