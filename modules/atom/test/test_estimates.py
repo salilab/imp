@@ -24,7 +24,7 @@ class Tests(IMP.test.TestCase):
         nonrandom_translation - non-random translation added to the coordinates at each time step and should be filtered out correctly
         """
         # see expensive_test_rot_bd.py for test of rotational diffusion coeff
-        print("dt={:.1f} [fs]".format(dt))
+        print("dt=%.1f [fs]" % dt)
         m = IMP.Model()
         p = IMP.Particle(m)
         d = IMP.core.XYZR.setup_particle(p)
