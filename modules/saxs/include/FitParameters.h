@@ -16,13 +16,13 @@ IMPSAXS_BEGIN_NAMESPACE
 class IMPSAXSEXPORT FitParameters {
  public:
   FitParameters()
-    : FitParameters(0.0, 0.0, 0.0, 0.0, 0.0) {}
-    //chi_square_(0.0), c1_(0.0), c2_(0.0), c_(0.0), o_(0.0), default_chi_square_(0.0) {}
+    : chi_square_(0.0), c1_(0.0), c2_(0.0), c_(0.0), o_(0.0),
+      default_chi_square_(0.0) {}
   FitParameters(double chi_square, double c1, double c2, double c, double o)
       : chi_square_(chi_square), c1_(c1), c2_(c2), c_(c), o_(o), default_chi_square_(0.0) {}
   FitParameters(double chi_square, double c1, double c2)
-    : FitParameters(chi_square, c1, c2, 0.0, 0.0) {}
-    //chi_square_(chi_square), c1_(c1), c2_(c2), c_(0.0), o_(0.0), default_chi_square_(0.0) {}
+    : chi_square_(chi_square), c1_(c1), c2_(c2), c_(0.0), o_(0.0),
+      default_chi_square_(0.0) {}
 
   double get_score() const { return chi_square_; }
   double get_chi_square() const { return chi_square_; }
