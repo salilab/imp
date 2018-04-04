@@ -18,7 +18,43 @@ The :mod:`ihm` Python module
 .. autoclass:: Citation
    :members:
 
+.. autoclass:: ChemComp
+   :members:
+
+.. autoclass:: PeptideChemComp
+   :members:
+
+.. autoclass:: LPeptideChemComp
+   :members:
+
+.. autoclass:: DPeptideChemComp
+   :members:
+
+.. autoclass:: RNAChemComp
+   :members:
+
+.. autoclass:: DNAChemComp
+   :members:
+
+.. autoclass:: Alphabet
+   :members:
+
+.. autoclass:: LPeptideAlphabet
+   :members:
+
+.. autoclass:: DPeptideAlphabet
+   :members:
+
+.. autoclass:: RNAAlphabet
+   :members:
+
+.. autoclass:: DNAAlphabet
+   :members:
+
 .. autoclass:: Entity
+   :members:
+
+.. autoclass:: EntityRange
    :members:
 
 .. autoclass:: AsymUnit
@@ -27,7 +63,7 @@ The :mod:`ihm` Python module
 .. autoclass:: AsymUnitRange
    :members:
 
-.. autoclass:: AssemblyComponent
+.. autoclass:: Residue
    :members:
 
 .. autoclass:: Assembly

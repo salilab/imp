@@ -11,6 +11,13 @@
 
 import itertools
 from .format import CifWriter
+import sys
+# Handle different naming of urllib in Python 2/3
+try:
+    import urllib.request as urllib2
+except ImportError:
+    import urllib2
+import json
 
 #: A value that isn't known. Note that this is distinct from a value that
 #: is deliberately omitted, which is represented by Python None.
@@ -28,10 +35,19 @@ def _remove_identical(gen):
         yield obj
 
 class System(object):
-    """Top-level class representing a complete modeled system"""
+    """Top-level class representing a complete modeled system.
 
-    def __init__(self, name='model'):
-        self.name = name
+       :param str title: Title (longer text description) of the system.
+       :param str id: Unique identifier for this system in the mmCIF file.
+    """
+
+    def __init__(self, title=None, id='model'):
+        self.id = id
+        self.title = title
+
+        #: List of plain text comments. These will be added to the top of
+        #: the mmCIF file.
+        self.comments = []
 
         #: List of all software used in the modeling. See :class:`Software`.
         self.software = []
@@ -56,7 +72,7 @@ class System(object):
         #: The assembly of the entire system. By convention this is always
         #: the first assembly in the mmCIF file (assembly_id=1). Note that
         #: currently this isn't filled in on output until dumper.write()
-        #: is called.
+        #: is called. See :class:`Assembly`
         self.complete_assembly = Assembly((), name='Complete assembly',
                                           description='All known components')
 
@@ -84,14 +100,17 @@ class System(object):
 
         #: All orphaned representations of the system.
         #: This can be used to keep track of all representations that are not
-        #: otherwise used - normally ion is assigned to a
+        #: otherwise used - normally one is assigned to a
         #: :class:`~ihm.model.Model`.
         #: See :class:`~ihm.representation.Representation`.
         self.orphan_representations = []
 
-        #: All starting models for the system.
+        #: All orphaned starting models for the system.
+        #: This can be used to keep track of all starting models that are not
+        #: otherwise used - normally one is assigned to an
+        #: :class:`ihm.representation.Segment`.
         #: See :class:`~ihm.startmodel.StartingModel`.
-        self.starting_models = []
+        self.orphan_starting_models = []
 
         #: All restraints on the system.
         #: See :class:`~ihm.restraint.Restraint`.
@@ -169,6 +188,20 @@ class System(object):
                    (model.representation for group, model in self._all_models()
                                          if model.representation)))
 
+    def _all_segments(self):
+        for representation in self._all_representations():
+            for segment in representation:
+                yield segment
+
+    def _all_starting_models(self):
+        """Iterate over all StartingModels in the system.
+           This includes all StartingModels referenced from other objects, plus
+           any orphaned StartingModels. Duplicates are filtered out."""
+        return _remove_identical(itertools.chain(
+                   self.orphan_starting_models,
+                   (segment.starting_model for segment in self._all_segments()
+                                           if segment.starting_model)))
+
     def _all_protocols(self):
         """Iterate over all Protocols in the system.
            This includes all Protocols referenced from other objects, plus
@@ -183,6 +216,12 @@ class System(object):
             for step in protocol.steps:
                 yield step
 
+    def _all_analysis_steps(self):
+        for protocol in self._all_protocols():
+            for analysis in protocol.analyses:
+                for step in analysis.steps:
+                    yield step
+
     def _all_assemblies(self):
         """Iterate over all Assemblies in the system.
            This includes all Assemblies referenced from other objects, plus
@@ -195,6 +234,8 @@ class System(object):
                                         if model.assembly),
                         (step.assembly for step in self._all_protocol_steps()
                                        if step.assembly),
+                        (step.assembly for step in self._all_analysis_steps()
+                                       if step.assembly),
                         (restraint.assembly for restraint in self.restraints
                                             if restraint.assembly))
 
@@ -205,11 +246,13 @@ class System(object):
         return itertools.chain(
                   self.orphan_dataset_groups,
                   (step.dataset_group for step in self._all_protocol_steps()
+                                      if step.dataset_group),
+                  (step.dataset_group for step in self._all_analysis_steps()
                                       if step.dataset_group))
 
     def _all_templates(self):
         """Iterate over all Templates in the system."""
-        for startmodel in self.starting_models:
+        for startmodel in self._all_starting_models():
             for template in startmodel.templates:
                 yield template
 
@@ -223,7 +266,8 @@ class System(object):
         return itertools.chain(
                   self.orphan_datasets,
                   _all_datasets_in_groups(),
-                  (sm.dataset for sm in self.starting_models if sm.dataset),
+                  (sm.dataset for sm in self._all_starting_models()
+                              if sm.dataset),
                   (restraint.dataset for restraint in self.restraints
                                      if restraint.dataset),
                   (template.dataset for template in self._all_templates()
@@ -280,16 +324,24 @@ class System(object):
         # Include all asym units
         seen_entities = {}
         for asym in self.asym_units:
-            self.complete_assembly.append(AssemblyComponent(asym))
+            self.complete_assembly.append(asym)
             seen_entities[asym.entity] = None
         # Add all entities without structure
         for entity in self.entities:
             if entity not in seen_entities:
-                self.complete_assembly.append(AssemblyComponent(entity))
+                self.complete_assembly.append(entity)
 
 
 class Software(object):
     """Software used as part of the modeling protocol.
+
+       :param str name: The name of the software.
+       :param str classification: The major function of the sofware, for
+              example 'model building', 'sample preparation', 'data collection'.
+       :param str description: A longer text description of the software.
+       :param str location: Place where the software can be found (e.g. URL).
+       :param str type: Type of software (program/package/library/other).
+       :param str version: The version used.
 
        See :attr:`System.software`."""
     def __init__(self, name, classification, description, location,
@@ -332,13 +384,254 @@ class Citation(object):
         self.page_range, self.year = page_range, year
         self.pmid, self.authors, self.doi = pmid, authors, doi
 
+    @classmethod
+    def from_pubmed_id(cls, pubmed_id):
+        """Create a Citation from just a PubMed ID.
+           This is done by querying NCBI's web api, so requires network access.
+
+           :param int pubmed_id: The PubMed identifier.
+           :return: A new Citation for the given identifier.
+           :rtype: :class:`Citation`
+        """
+        def get_doi(ref):
+            for art_id in ref['articleids']:
+                if art_id['idtype'] == 'doi':
+                    return enc(art_id['value'])
+        # JSON values are always Unicode, but on Python 2 we want non-Unicode
+        # strings, so convert to ASCII
+        if sys.version_info[0] < 3:
+            def enc(s):
+                return s.encode('ascii')
+        else:
+            def enc(s):
+                return s
+
+        url = ('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi'
+               '?db=pubmed&retmode=json&rettype=abstract&id=%s' % pubmed_id)
+        fh = urllib2.urlopen(url)
+        j = json.load(fh)
+        fh.close()
+        ref = j['result'][str(pubmed_id)]
+        authors = [enc(x['name']) for x in ref['authors'] \
+                   if x['authtype'] == 'Author']
+
+        return cls(pmid=pubmed_id, title=enc(ref['title']),
+                   journal=enc(ref['source']), volume=enc(ref['volume']),
+                   page_range=enc(ref['pages']).split('-'),
+                   year=enc(ref['pubdate']).split()[0],
+                   authors=authors, doi=get_doi(ref))
+
+
+class ChemComp(object):
+    """A chemical component from which :class:`Entity` objects are constructed.
+       Usually these are amino acids (see :class:`LPeptideChemComp`) or
+       nucleic acids (see :class:`DNAChemComp` and :class:`RNAChemComp`).
+
+       For standard amino and nucleic acids, it is generally easier to use
+       a :class:`Alphabet` and refer to the components with their one-letter
+       (amino acids, RNA) or two-letter (DNA) codes.
+
+       :param str id: A globally unique identifier for this component.
+       :param str code: A shorter identifier (usually one letter) that only
+              needs to be unique in the entity.
+       :param str code_canonical: Canonical version of `code` (which need not
+              be unique).
+
+       For example, glycine would have
+       ``id='GLY', code='G', code_canonical='G'`` while selenomethionine would
+       use ``id='MSE', code='MSE', code_canonical='M'``, guanosine (RNA)
+       ``id='G', code='G', code_canonical='G'``, and deoxyguanosine (DNA)
+       ``id='DG', code='DG', code_canonical='G'``.
+    """
+
+    __slots__ = ['code', 'code_canonical', 'id']
+
+    type = 'other'
+
+    def __init__(self, id, code, code_canonical):
+        self.id = id
+        self.code, self.code_canonical = code, code_canonical
+
+    # Equal if all identifiers are the same
+    def __eq__(self, other):
+        return ((self.code, self.code_canonical, self.id, self.type) ==
+                (other.code, other.code_canonical, other.id, other.type))
+    def __hash__(self):
+        return hash((self.code, self.code_canonical, self.id, self.type))
+
+
+class PeptideChemComp(ChemComp):
+    """A single peptide component. Usually :class:`LPeptideChemComp` is used
+       instead (except for glycine) to specify chirality.
+       See :class:`ChemComp` for a description of the parameters."""
+    type = 'Peptide linking'
+
+
+class LPeptideChemComp(PeptideChemComp):
+    """A single peptide component with (normal) L- chirality.
+       See :class:`ChemComp` for a description of the parameters."""
+    type = 'L-peptide linking'
+
+
+class DPeptideChemComp(PeptideChemComp):
+    """A single peptide component with (unusual) D- chirality.
+       See :class:`ChemComp` for a description of the parameters."""
+    type = 'D-peptide linking'
+
+
+class DNAChemComp(ChemComp):
+    """A single DNA component.
+       See :class:`ChemComp` for a description of the parameters."""
+    type = 'DNA linking'
+
+
+class RNAChemComp(ChemComp):
+    """A single RNA component.
+       See :class:`ChemComp` for a description of the parameters."""
+    type = 'RNA linking'
+
+
+class Alphabet(object):
+    """A mapping from codes (usually one-letter, or two-letter for DNA) to
+       chemical components.
+       These classes can be used to construct sequences of components
+       when creating an :class:`Entity`. They can also be used like a Python
+       dict to get standard components, e.g.::
+
+           a = ihm.LPeptideAlphabet()
+           met = a['M']
+           gly = a['G']
+
+       See :class:`LPeptideAlphabet`, :class:`RNAAlphabet`,
+       :class:`DNAAlphabet`.
+    """
+    def __getitem__(self, key):
+        return self._comps[key]
+
+    def __contains__(self, key):
+        return key in self._comps
+
+    keys = property(lambda self: self._comps.keys())
+    values = property(lambda self: self._comps.values())
+    items = property(lambda self: self._comps.items())
+
+
+class LPeptideAlphabet(Alphabet):
+    """A mapping from one-letter amino acid codes (e.g. H, M) to
+       L-amino acids (as :class:`LPeptideChemComp` objects, except for achiral
+       glycine which maps to :class:`PeptideChemComp`). Some other common
+       modified residues are also included (e.g. MSE). For these their full name
+       rather than a one-letter code is used.
+    """
+    _comps = dict([code, LPeptideChemComp(id, code, code)] for code, id in
+                    [('A', 'ALA'), ('C', 'CYS'), ('D', 'ASP'), ('E', 'GLU'),
+                     ('F', 'PHE'), ('H', 'HIS'), ('I', 'ILE'), ('K', 'LYS'),
+                     ('L', 'LEU'), ('M', 'MET'), ('N', 'ASN'), ('P', 'PRO'),
+                     ('Q', 'GLN'), ('R', 'ARG'), ('S', 'SER'), ('T', 'THR'),
+                     ('V', 'VAL'), ('W', 'TRP'), ('Y', 'TYR')])
+    _comps['G'] = PeptideChemComp('GLY', 'G', 'G')
+
+    # common non-standard L-amino acids
+    _comps.update([id, LPeptideChemComp(id, id, canon)] for id, canon in
+                     [('MSE', 'M')])
+
+
+class DPeptideAlphabet(Alphabet):
+    """A mapping from D-amino acid codes (e.g. DHI, MED) to
+       D-amino acids (as :class:`DPeptideChemComp` objects, except for achiral
+       glycine which maps to :class:`PeptideChemComp`). See
+       :class:`LPeptideAlphabet` for more details.
+    """
+    _comps = dict([code, DPeptideChemComp(code, code, canon)] for canon, code in
+                    [('A', 'DAL'), ('C', 'DCY'), ('D', 'DAS'), ('E', 'DGL'),
+                     ('F', 'DPN'), ('H', 'DHI'), ('I', 'DIL'), ('K', 'DLY'),
+                     ('L', 'DLE'), ('M', 'MED'), ('N', 'DSG'), ('P', 'DPR'),
+                     ('Q', 'DGN'), ('R', 'DAR'), ('S', 'DSN'), ('T', 'DTH'),
+                     ('V', 'DVA'), ('W', 'DTR'), ('Y', 'DTY')])
+    _comps['G'] = PeptideChemComp('GLY', 'G', 'G')
+
+
+class RNAAlphabet(Alphabet):
+    """A mapping from one-letter nucleic acid codes (e.g. A) to
+       RNA (as :class:`RNAChemComp` objects)."""
+    _comps = dict([id, RNAChemComp(id, id, id)] for id in 'ACGU')
+
+
+class DNAAlphabet(Alphabet):
+    """A mapping from two-letter nucleic acid codes (e.g. DA) to
+       DNA (as :class:`DNAChemComp` objects)."""
+    _comps = dict([code, DNAChemComp(code, code, canon)] for code, canon in
+                    [('DA', 'A'), ('DC', 'C'), ('DG', 'G'), ('DT', 'T')])
+
+
+class EntityRange(object):
+    """Part of an entity. Usually these objects are created from
+       an :class:`Entity`, e.g. to get a range covering residues 4 through
+       7 in `entity` use::
+
+           entity = ihm.Entity(seq=...)
+           rng = entity(4,7)
+    """
+    def __init__(self, entity, seq_id_begin, seq_id_end):
+        self.entity = entity
+        # todo: check range for validity (at property read time)
+        self.seq_id_range = (seq_id_begin, seq_id_end)
+
+    def __eq__(self, other):
+        try:
+            return (self.entity is other.entity
+                    and self.seq_id_range == other.seq_id_range)
+        except AttributeError:
+            return False
+    def __hash__(self):
+        return hash((id(self.entity), self.seq_id_range))
+
+    # Use same ID as the original entity
+    _id = property(lambda self: self.entity._id)
+
+
+class Residue(object):
+    """A single residue in an entity or asymmetric unit. Usually these objects
+       are created by calling :meth:`Entity.residue` or
+       :meth:`AsymUnit.residue`.
+    """
+    def __init__(self, seq_id, entity=None, asym=None):
+        self.entity = entity
+        self.asym = asym
+        # todo: check id for validity (at property read time)
+        self.seq_id = seq_id
+
 
 class Entity(object):
     """Represent a CIF entity (with a unique sequence)
 
-       See :attr:`System.entities`.
+       :param sequence sequence: The primary sequence, as a list of
+              :class:`ChemComp` objects, and/or codes looked up in `alphabet`.
+       :param alphabet: The mapping from code to chemical components to use
+              (it is not necessary to instantiate this class).
+       :type alphabet: :class:`Alphabet`
+       :param str description: A short text name for the sequence.
+       :param str details: Longer text describing the sequence.
 
-       Note that currently only standard amino acids are supported.
+       The sequence for an entity can be specified explicitly as a set of
+       chemical components, or (more usually) as a list or string of codes.
+       For example::
+
+           protein = ihm.Entity('AHMD')
+           protein_with_mse = ihm.Entity(['A', 'H', 'MSE', 'D'])
+
+           dna = ihm.Entity(('DA', 'DC'), alphabet=ihm.DNAAlphabet)
+           rna = ihm.Entity('AC', alphabet=ihm.RNAAlphabet)
+
+           dna_al = ihm.DNAAlphabet()
+           rna_al = ihm.RNAAlphabet()
+           dna_rna_hybrid = ihm.Entity((dna_al['DG'], rna_al['C']))
+
+           psu = ihm.RNAChemComp(id='PSU', code='PSU', code_canonical='U')
+           rna_with_psu = ihm.Entity(('A', 'C', psu), alphabet=ihm.RNAAlphabet)
+
+       All entities should be stored in the top-level System object;
+       see :attr:`System.entities`.
     """
 
     type = 'polymer'
@@ -346,15 +639,32 @@ class Entity(object):
     number_of_molecules = 1
     formula_weight = unknown
 
-    def __init__(self, seq, description=None, details=None):
-        self.sequence = seq
+    def __init__(self, sequence, alphabet=LPeptideAlphabet,
+                 description=None, details=None):
+        def get_chem_comp(s):
+            if isinstance(s, ChemComp):
+                return s
+            else:
+                return alphabet._comps[s]
+        self.sequence = tuple(get_chem_comp(s) for s in sequence)
         self.description, self.details = description, details
+
+    def residue(self, seq_id):
+        """Get a :class:`Residue` at the given sequence position"""
+        return Residue(entity=self, seq_id=seq_id)
 
     # Entities are considered identical if they have the same sequence
     def __eq__(self, other):
         return self.sequence == other.sequence
     def __hash__(self):
         return hash(self.sequence)
+
+    def __call__(self, seq_id_begin, seq_id_end):
+        return EntityRange(self, seq_id_begin, seq_id_end)
+
+    seq_id_range = property(lambda self: (1, len(self.sequence)),
+                            doc="Sequence range")
+
 
 class AsymUnitRange(object):
     """Part of an asymmetric unit. Usually these objects are created from
@@ -369,14 +679,28 @@ class AsymUnitRange(object):
         # todo: check range for validity (at property read time)
         self.seq_id_range = (seq_id_begin, seq_id_end)
 
+    def __eq__(self, other):
+        try:
+            return (self.asym is other.asym
+                    and self.seq_id_range == other.seq_id_range)
+        except AttributeError:
+            return False
+    def __hash__(self):
+        return hash((id(self.asym), self.seq_id_range))
+
     # Use same ID and entity as the original asym unit
     _id = property(lambda self: self.asym._id)
+    _ordinal = property(lambda self: self.asym._ordinal)
     entity = property(lambda self: self.asym.entity)
 
 
 class AsymUnit(object):
     """An asymmetric unit, i.e. a unique instance of an Entity that
        was modeled.
+
+       :param entity: The unique sequence of this asymmetric unit.
+       :type entity: :class:`Entity`
+       :param str details: Longer text description of this unit.
 
        See :attr:`System.asym_units`.
     """
@@ -387,67 +711,35 @@ class AsymUnit(object):
     def __call__(self, seq_id_begin, seq_id_end):
         return AsymUnitRange(self, seq_id_begin, seq_id_end)
 
+    def residue(self, seq_id):
+        """Get a :class:`Residue` at the given sequence position"""
+        return Residue(asym=self, seq_id=seq_id)
+
     seq_id_range = property(lambda self: (1, len(self.entity.sequence)),
                             doc="Sequence range")
-
-
-class AssemblyComponent(object):
-    """A single component in an :class:`Assembly`.
-
-       :param component: The part of the system. :class:`Entity` can be used
-                         here for a part that is known but has no structure.
-       :type component: :class:`AsymUnit` or :class:`Entity`
-       :param tuple seq_id_range: The subset of the sequence range to include in
-                         the assembly. This should be a two-element tuple.
-                         If `None` (the default) the entire range is included.
-    """
-
-    def __init__(self, component, seq_id_range=None):
-        self._component, self._seqrange = component, seq_id_range
-
-    def __eq__(self, other):
-        return (self._component is other._component
-                and self.seq_id_range == other.seq_id_range)
-    def __hash__(self):
-        return hash((id(self._component), self.seq_id_range))
-
-    def __get_seqrange(self):
-        if self._seqrange:
-            # todo: fail if this is out of entity.sequence range
-            return self._seqrange
-        else:
-            return (1, len(self.entity.sequence))
-    seq_id_range = property(__get_seqrange, doc="Sequence range")
-
-    def __get_entity(self):
-        if isinstance(self._component, Entity):
-            return self._component
-        else:
-            return self._component.entity
-    entity = property(__get_entity,
-                      doc="The Entity for this part of the system")
-
-    def __get_asym(self):
-        if isinstance(self._component, AsymUnit):
-            return self._component
-    asym = property(__get_asym,
-                    doc="The AsymUnit for this part of the system, or None")
 
 
 class Assembly(list):
     """A collection of parts of the system that were modeled or probed
        together.
 
-       This is implemented as a simple list of :class:`AssemblyComponent`
-       objects. (For convenience, the constructor will also accept
-       :class:`Entity` and :class:`AsymUnit` objects in the initial list.)
+       :param sequence elements: Initial set of parts of the system.
+       :param str name: Short text name of this assembly.
+       :param str description: Longer text that describes this assembly.
 
-       An Assembly is typically assigned to one or more of
-         - class:`~ihm.model.Model`
+       This is implemented as a simple list of asymmetric units (or parts of
+       them) and/or entities (or parts of them), i.e. a list of
+       :class:`AsymUnit`, :class:`AsymUnitRange`,
+       :class:`Entity`, and :class:`EntityRange` objects. An Assembly is
+       typically assigned to one or more of
+
+         - :class:`~ihm.model.Model`
          - :class:`ihm.protocol.Step`
+         - :class:`ihm.analysis.Step`
          - :class:`~ihm.restraint.Restraint`
 
-       See also :attr:`System.orphan_assemblies`.
+       See also :attr:`System.complete_assembly`
+       and :attr:`System.orphan_assemblies`.
 
        Note that any duplicate assemblies will be pruned on output."""
 
@@ -455,10 +747,5 @@ class Assembly(list):
     parent = None
 
     def __init__(self, elements=(), name=None, description=None):
-        def fix_element(e):
-            if isinstance(e, AssemblyComponent):
-                return e
-            else:
-                return AssemblyComponent(e)
-        super(Assembly, self).__init__(fix_element(e) for e in elements)
+        super(Assembly, self).__init__(elements)
         self.name, self.description = name, description

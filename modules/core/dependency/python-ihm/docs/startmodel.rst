@@ -15,3 +15,9 @@ The :mod:`ihm.startmodel` Python module
 
 .. autoclass:: PDBHelix
    :members:
+
+.. autoclass:: SeqDif
+   :members:
+
+.. autoclass:: MSESeqDif
+   :members:

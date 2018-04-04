@@ -19,6 +19,9 @@ The :mod:`ihm.analysis` Python module
 .. autoclass:: RescoreStep
    :members:
 
+.. autoclass:: ValidationStep
+   :members:
+
 .. autoclass:: OtherStep
    :members:
 

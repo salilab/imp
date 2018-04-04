@@ -96,9 +96,9 @@ protocol.steps.append(ihm.protocol.Step(
 # Finally we can add coordinates for the deposited models. Typically these
 # will be stored in our own software's data structures somewhere (for this
 # example in simple lists 'atoms' and 'spheres'):
-atoms = [('A', 1, 'CA', 1., 2., 3.),
-         ('A', 2, 'CA', 4., 5., 6.),
-         ('A', 3, 'CA', 7., 8., 9.)]
+atoms = [('A', 1, 'C', 'CA', 1., 2., 3.),
+         ('A', 2, 'C', 'CA', 4., 5., 6.),
+         ('A', 3, 'C', 'CA', 7., 8., 9.)]
 spheres = [('B', 1, 2, 1., 2., 3., 1.2),
            ('B', 3, 4, 4., 5., 6., 1.2),
            ('B', 5, 6, 7., 8., 9., 1.2)]
@@ -114,9 +114,10 @@ class MyModel(ihm.model.Model):
     asym_unit_map = {'A': asymA, 'B': asymB}
 
     def get_atoms(self):
-        for asym, seq_id, atom_id, x, y, z in atoms:
+        for asym, seq_id, type_symbol, atom_id, x, y, z in atoms:
             yield ihm.model.Atom(asym_unit=self.asym_unit_map[asym],
-                                 seq_id=seq_id, atom_id=atom_id, x=x, y=y, z=z)
+                                 type_symbol=type_symbol, seq_id=seq_id,
+                                 atom_id=atom_id, x=x, y=y, z=z)
     def get_spheres(self):
         for asym, seq_id_start, seq_id_end, x, y, z, radius in spheres:
             yield ihm.model.Sphere(asym_unit=self.asym_unit_map[asym],

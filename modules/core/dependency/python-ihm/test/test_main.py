@@ -6,26 +6,106 @@ if sys.version_info[0] >= 3:
     from io import StringIO
 else:
     from io import BytesIO as StringIO
+try:
+    import urllib.request as urllib2
+except ImportError:
+    import urllib2
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm
 import ihm.location
+import ihm.representation
 
 class Tests(unittest.TestCase):
     def test_system(self):
         """Test System class"""
-        s = ihm.System('test system')
-        self.assertEqual(s.name, 'test system')
+        s = ihm.System(title='test system')
+        self.assertEqual(s.title, 'test system')
+        self.assertEqual(s.id, 'model')
+
+    def test_chem_comp(self):
+        """Test ChemComp class"""
+        cc1 = ihm.ChemComp(id='GLY', code='G', code_canonical='G')
+        self.assertEqual(cc1.id, 'GLY')
+        self.assertEqual(cc1.code, 'G')
+        self.assertEqual(cc1.code_canonical, 'G')
+        self.assertEqual(cc1.type, 'other')
+        cc2 = ihm.ChemComp(id='GLY', code='G', code_canonical='G')
+        cc3 = ihm.ChemComp(id='G', code='G', code_canonical='G')
+        self.assertEqual(cc1, cc2)
+        self.assertEqual(hash(cc1), hash(cc2))
+        self.assertNotEqual(cc1, cc3)
+
+    def test_peptide_chem_comp(self):
+        """Test PeptideChemComp class"""
+        cc1 = ihm.PeptideChemComp(id='GLY', code='G', code_canonical='G')
+        self.assertEqual(cc1.type, 'Peptide linking')
+
+    def test_l_peptide_chem_comp(self):
+        """Test LPeptideChemComp class"""
+        cc1 = ihm.LPeptideChemComp(id='MET', code='M', code_canonical='M')
+        self.assertEqual(cc1.type, 'L-peptide linking')
+
+    def test_rna_chem_comp(self):
+        """Test RNAChemComp class"""
+        cc1 = ihm.RNAChemComp(id='G', code='G', code_canonical='G')
+        self.assertEqual(cc1.type, 'RNA linking')
+
+    def test_dna_chem_comp(self):
+        """Test DNAChemComp class"""
+        cc1 = ihm.DNAChemComp(id='DG', code='DG', code_canonical='G')
+        self.assertEqual(cc1.type, 'DNA linking')
+
+    def test_l_peptide_alphabet(self):
+        """Test LPeptideAlphabet class"""
+        a = ihm.LPeptideAlphabet
+        self.assertEqual(a._comps['G'].type, 'Peptide linking')
+
+        self.assertEqual(a._comps['M'].id, 'MET')
+        self.assertEqual(a._comps['M'].code, 'M')
+        self.assertEqual(a._comps['M'].code_canonical, 'M')
+        self.assertEqual(a._comps['M'].type, 'L-peptide linking')
+
+        a = ihm.LPeptideAlphabet()
+        self.assertTrue('MSE' in a)
+        self.assertFalse('DG' in a)
+        self.assertEqual(len(a.keys), 21)
+        self.assertEqual(len(a.values), 21)
+        self.assertEqual(sorted(a.keys)[0], 'A')
+        self.assertEqual(len(a.items), 21)
+        item0 = sorted(a.items)[0]
+        self.assertEqual(item0[0], 'A')
+        self.assertEqual(item0[1].id, 'ALA')
+        self.assertEqual(a['MSE'].code, 'MSE')
+        self.assertEqual(a['MSE'].code, 'MSE')
+        self.assertEqual(a['MSE'].code_canonical, 'M')
+        self.assertEqual(a['MSE'].type, 'L-peptide linking')
+
+    def test_rna_alphabet(self):
+        """Test RNAAlphabet class"""
+        a = ihm.RNAAlphabet
+        self.assertEqual(a._comps['A'].id, 'A')
+        self.assertEqual(a._comps['A'].code, 'A')
+        self.assertEqual(a._comps['A'].code_canonical, 'A')
+
+    def test_dna_alphabet(self):
+        """Test DNAAlphabet class"""
+        a = ihm.DNAAlphabet
+        self.assertEqual(a._comps['DA'].id, 'DA')
+        self.assertEqual(a._comps['DA'].code, 'DA')
+        self.assertEqual(a._comps['DA'].code_canonical, 'A')
 
     def test_entity(self):
         """Test Entity class"""
-        e1 = ihm.Entity('ABCD', description='foo')
+        e1 = ihm.Entity('AHCD', description='foo')
         # Should compare identical if sequences are the same
-        e2 = ihm.Entity('ABCD', description='bar')
-        e3 = ihm.Entity('ABCDE', description='foo')
+        e2 = ihm.Entity('AHCD', description='bar')
+        e3 = ihm.Entity('AHCDE', description='foo')
         self.assertEqual(e1, e2)
         self.assertNotEqual(e1, e3)
+        self.assertEqual(e1.seq_id_range, (1,4))
+        self.assertEqual(e3.seq_id_range, (1,5))
 
     def test_software(self):
         """Test Software class"""
@@ -52,9 +132,78 @@ class Tests(unittest.TestCase):
                          pmid='1234')
         self.assertEqual(s.title, 'Test paper')
 
+    def _get_from_pubmed_id(self, json_fname):
+        def mock_urlopen(url):
+            self.assertTrue(url.endswith('&id=29539637'))
+            fname = utils.get_input_file_name(TOPDIR, json_fname)
+            return open(fname)
+        # Need to mock out urllib2 so we don't hit the network (expensive)
+        # every time we test
+        try:
+            orig_urlopen = urllib2.urlopen
+            urllib2.urlopen = mock_urlopen
+            return ihm.Citation.from_pubmed_id(29539637)
+        finally:
+            urllib2.urlopen = orig_urlopen
+
+    def test_citation_from_pubmed_id(self):
+        """Test Citation.from_pubmed_id()"""
+        c = self._get_from_pubmed_id('pubmed_api.json')
+        self.assertEqual(c.title,
+                'Integrative structure and functional anatomy of a nuclear '
+                'pore complex (test of python-ihm lib).')
+        self.assertEqual(c.journal, 'Nature')
+        self.assertEqual(c.volume, '555')
+        self.assertEqual(c.page_range, ['475','482'])
+        self.assertEqual(c.year, '2018')
+        self.assertEqual(c.pmid, 29539637)
+        self.assertEqual(c.doi, '10.1038/nature26003')
+        self.assertEqual(len(c.authors), 32)
+        self.assertEqual(c.authors[0], 'Kim SJ')
+
+    def test_citation_from_pubmed_id_no_doi(self):
+        """Test Citation.from_pubmed_id() with no DOI"""
+        c = self._get_from_pubmed_id('pubmed_api_no_doi.json')
+        self.assertEqual(c.title,
+                'Integrative structure and functional anatomy of a nuclear '
+                'pore complex (test of python-ihm lib).')
+        self.assertEqual(c.doi, None)
+
+    def test_entity_residue(self):
+        """Test Residue derived from an Entity"""
+        e = ihm.Entity('AHCDAH')
+        r = e.residue(3)
+        self.assertEqual(r.entity, e)
+        self.assertEqual(r.asym, None)
+        self.assertEqual(r.seq_id, 3)
+
+    def test_asym_unit_residue(self):
+        """Test Residue derived from an AsymUnit"""
+        e = ihm.Entity('AHCDAH')
+        a = ihm.AsymUnit(e)
+        r = a.residue(3)
+        self.assertEqual(r.entity, None)
+        self.assertEqual(r.asym, a)
+        self.assertEqual(r.seq_id, 3)
+
+    def test_entity_range(self):
+        """Test EntityRange class"""
+        e = ihm.Entity('AHCDAH')
+        e._id = 42
+        self.assertEqual(e.seq_id_range, (1,6))
+        r = e(3,4)
+        self.assertEqual(r.seq_id_range, (3,4))
+        self.assertEqual(r._id, 42)
+        samer = e(3,4)
+        otherr = e(2,4)
+        self.assertEqual(r, samer)
+        self.assertEqual(hash(r), hash(samer))
+        self.assertNotEqual(r, otherr)
+        self.assertNotEqual(r, e) # entity_range != entity
+
     def test_asym_range(self):
         """Test AsymUnitRange class"""
-        e = ihm.Entity('ABCDAB')
+        e = ihm.Entity('AHCDAH')
         a = ihm.AsymUnit(e)
         a._id = 42
         self.assertEqual(a.seq_id_range, (1,6))
@@ -62,47 +211,20 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.seq_id_range, (3,4))
         self.assertEqual(r._id, 42)
         self.assertEqual(r.entity, e)
-
-    def test_assembly_component_entity(self):
-        """Test AssemblyComponent created from an entity"""
-        e = ihm.Entity('ABCD')
-        c = ihm.AssemblyComponent(e)
-        self.assertEqual(c.entity, e)
-        self.assertEqual(c.asym, None)
-
-    def test_assembly_component_asym(self):
-        """Test AssemblyComponent created from an asym unit"""
-        e = ihm.Entity('ABCD')
-        a = ihm.AsymUnit(e)
-        c = ihm.AssemblyComponent(a)
-        self.assertEqual(c.entity, e)
-        self.assertEqual(c.asym, a)
-
-    def test_assembly_component_seqrange_entity(self):
-        """Test AssemblyComponent default seq range from an entity"""
-        e = ihm.Entity('ABCD')
-        c = ihm.AssemblyComponent(e)
-        self.assertEqual(c.seq_id_range, (1, 4))
-
-    def test_assembly_component_seqrange_asym_unit(self):
-        """Test AssemblyComponent default seq range from an asym unit"""
-        e = ihm.Entity('ABCD')
-        a = ihm.AsymUnit(e)
-        c = ihm.AssemblyComponent(a)
-        self.assertEqual(c.seq_id_range, (1, 4))
-
-    def test_assembly_component_given_seqrange(self):
-        """Test AssemblyComponent with a seq range"""
-        e = ihm.Entity('ABCD')
-        c = ihm.AssemblyComponent(e, (2,3))
-        self.assertEqual(c.seq_id_range, (2, 3))
+        samer = a(3,4)
+        otherr = a(2,4)
+        self.assertEqual(r, samer)
+        self.assertEqual(hash(r), hash(samer))
+        self.assertNotEqual(r, otherr)
+        self.assertNotEqual(r, a)      # asym_range != asym
+        self.assertNotEqual(r, e(3,4)) # asym_range != entity_range
+        self.assertNotEqual(r, e)      # asym_range != entity
 
     def test_assembly(self):
         """Test Assembly class"""
-        e1 = ihm.Entity('ABCD')
-        e2 = ihm.Entity('ABC')
-        c = ihm.AssemblyComponent(e1)
-        a = ihm.Assembly([c, e2], name='foo', description='bar')
+        e1 = ihm.Entity('AHCD')
+        e2 = ihm.Entity('AHC')
+        a = ihm.Assembly([e1, e2], name='foo', description='bar')
         self.assertEqual(a.name, 'foo')
         self.assertEqual(a.description, 'bar')
 
@@ -199,6 +321,13 @@ class Tests(unittest.TestCase):
         step.assembly = asmb1
         prot = MockObject()
         prot.steps = [step]
+
+        analysis1 = MockObject()
+        astep1 = MockObject()
+        astep1.assembly = asmb2
+        analysis1.steps = [astep1]
+        prot.analyses = [analysis1]
+
         model2.protocol = prot
         rsr1 = MockObject()
         rsr1.assembly = asmb2
@@ -207,7 +336,8 @@ class Tests(unittest.TestCase):
         s.restraints.extend((rsr1, rsr2))
         # duplicates should be present; complete assembly is always first
         self.assertEqual(list(s._all_assemblies()),
-                         [s.complete_assembly, asmb1, asmb2, asmb1, asmb2])
+                         [s.complete_assembly, asmb1, asmb2, asmb1,
+                          asmb2, asmb2])
 
     def test_all_citations(self):
         """Test _all_citations() method"""
@@ -252,9 +382,14 @@ class Tests(unittest.TestCase):
         step3.dataset_group = dg1
         protocol1 = MockObject()
         protocol1.steps = [step1, step2, step3]
+        analysis1 = MockObject()
+        astep1 = MockObject()
+        astep1.dataset_group = dg2
+        analysis1.steps = [astep1]
+        protocol1.analyses = [analysis1]
         s.orphan_protocols.append(protocol1)
         # duplicates should not be filtered
-        self.assertEqual(list(s._all_dataset_groups()), [dg1, dg2, dg1])
+        self.assertEqual(list(s._all_dataset_groups()), [dg1, dg2, dg1, dg2])
 
     def test_all_locations(self):
         """Test _all_locations() method"""
@@ -289,7 +424,7 @@ class Tests(unittest.TestCase):
         template.dataset = None
         template.alignment_file = loc3
         start_model.templates = [template]
-        s.starting_models.append(start_model)
+        s.orphan_starting_models.append(start_model)
 
         # duplicates should not be filtered
         self.assertEqual(list(s._all_locations()), [loc1, loc1, loc2,
@@ -323,7 +458,7 @@ class Tests(unittest.TestCase):
         template.dataset = None
         start_model1.templates = [template]
         start_model2.templates = []
-        s.starting_models.extend((start_model1, start_model2))
+        s.orphan_starting_models.extend((start_model1, start_model2))
 
         rsr1 = MockObject()
         rsr1.dataset = d4
@@ -334,6 +469,27 @@ class Tests(unittest.TestCase):
 
         # duplicates should not be filtered
         self.assertEqual(list(s._all_datasets()), [d1, d1, d2, d3, d1, d2, d4])
+
+    def test_all_starting_models(self):
+        """Test _all_starting_models() method"""
+        class MockObject(object):
+            pass
+
+        s = ihm.System()
+        sm1 = MockObject()
+        sm2 = MockObject()
+        s.orphan_starting_models.append(sm1)
+        rep = ihm.representation.Representation()
+        seg1 = ihm.representation.Segment()
+        seg1.starting_model = None
+        seg2 = ihm.representation.Segment()
+        seg2.starting_model = sm2
+        seg3 = ihm.representation.Segment()
+        seg3.starting_model = sm2
+        rep.extend((seg1, seg2, seg3))
+        s.orphan_representations.append(rep)
+        # duplicates should be filtered
+        self.assertEqual(list(s._all_starting_models()), [sm1, sm2])
 
     def test_update_locations_in_repositories(self):
         """Test update_locations_in_repositories() method"""

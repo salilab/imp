@@ -10,9 +10,9 @@ class Location(object):
        disk or at a DOI) - for this use one of the subclasses of
        :class:`FileLocation`. Alternatively the resource may be found in
        an experiment-specific database such as PDB or EMDB - for this use
-       :class:`DatabaseLocation` or one of its subclasses.
+       :class:`DatabaseLocation` or one of its subclasses. A Location may
+       be passed to
 
-       A Location may be passed to
          - a :class:`~ihm.dataset.Dataset` to point to where an
            experimental dataset may be found;
          - an :class:`~ihm.model.Ensemble` to point to coordinates for an
@@ -24,6 +24,9 @@ class Location(object):
            (:class:`WorkflowFileLocation`) or a command script for a
            visualization package such as ChimeraX
            (:class:`VisualizationFileLocation`).
+
+       :param str details: Additional details about the dataset, if known.
+
     """
 
     # 'details' can differ without affecting dataset equality
@@ -48,7 +51,13 @@ class Location(object):
 
 
 class DatabaseLocation(Location):
-    """A dataset stored in an official database (PDB, EMDB, PRIDE, etc.)"""
+    """A dataset stored in an official database (PDB, EMDB, PRIDE, etc.).
+
+       :param str db_name: The name of the database.
+       :param str db_code: The accession code inside the database.
+       :param str version: The version of the dataset in the database.
+       :param str details: Additional details about the dataset, if known.
+    """
 
     _eq_keys = Location._eq_keys + ['db_name', 'access_code', 'version']
 
@@ -60,33 +69,38 @@ class DatabaseLocation(Location):
 
 
 class EMDBLocation(DatabaseLocation):
-    """Something stored in the EMDB database."""
+    """Something stored in the EMDB database.
+       See :class:`DatabaseLocation` for a description of the parameters."""
     def __init__(self, db_code, version=None, details=None):
         super(EMDBLocation, self).__init__('EMDB', db_code, version, details)
 
 
 class PDBLocation(DatabaseLocation):
-    """Something stored in the PDB database."""
+    """Something stored in the PDB database.
+       See :class:`DatabaseLocation` for a description of the parameters."""
     def __init__(self, db_code, version=None, details=None):
         super(PDBLocation, self).__init__('PDB', db_code, version, details)
 
 
 class MassIVELocation(DatabaseLocation):
-    """Something stored in the MassIVE database."""
+    """Something stored in the MassIVE database.
+       See :class:`DatabaseLocation` for a description of the parameters."""
     def __init__(self, db_code, version=None, details=None):
         super(MassIVELocation, self).__init__('MASSIVE', db_code, version,
                                               details)
 
 
 class EMPIARLocation(DatabaseLocation):
-    """Something stored in the EMPIAR database."""
+    """Something stored in the EMPIAR database.
+       See :class:`DatabaseLocation` for a description of the parameters."""
     def __init__(self, db_code, version=None, details=None):
         super(EMPIARLocation, self).__init__('EMPIAR', db_code, version,
                                              details)
 
 
 class SASBDBLocation(DatabaseLocation):
-    """Something stored in the SASBDB database."""
+    """Something stored in the SASBDB database.
+       See :class:`DatabaseLocation` for a description of the parameters."""
     def __init__(self, db_code, version=None, details=None):
         super(SASBDBLocation, self).__init__('SASBDB', db_code, version,
                                              details)
@@ -123,6 +137,7 @@ class FileLocation(Location):
 
 class InputFileLocation(FileLocation):
     """An externally stored file used as input.
+       See :class:`FileLocation` for a description of the parameters.
 
        For example, any :class:`~ihm.dataset.Dataset` that isn't stored in
        a domain-specific database would use this class."""
@@ -130,34 +145,51 @@ class InputFileLocation(FileLocation):
 
 
 class OutputFileLocation(FileLocation):
-    """An externally stored file used for output"""
+    """An externally stored file used for output.
+       See :class:`FileLocation` for a description of the parameters.
+
+       For example, this can be used to point to an externally-stored
+       :class:`model ensemble <ihm.model.Ensemble>` or a
+       :class:`localization density <ihm.model.LocalizationDensity>`.
+    """
+
     content_type = "Modeling or post-processing output"
 
 
 class WorkflowFileLocation(FileLocation):
-    """An externally stored file that controls the workflow (e.g. a script)"""
+    """An externally stored file that controls the workflow (e.g. a script).
+       See :class:`FileLocation` for a description of the parameters."""
+
     content_type = "Modeling workflow or script"
 
 
 class VisualizationFileLocation(FileLocation):
-    """An externally stored file that is used for visualization"""
+    """An externally stored file that is used for visualization.
+       See :class:`FileLocation` for a description of the parameters."""
+
     content_type = "Visualization script"
 
 
 class Repository(object):
-    """A repository containing modeling files.
-       This can be used if the script plus input files are part of a
+    """A repository containing modeling files, i.e. a collection of related
+       files at a remote, public location. This can include code repositories
+       such as GitHub, file archival services such as Zenodo, or any other
+       service that provides a DOI, such as the supplementary information for
+       a publication.
+
+       This can also be used if the script plus related files are part of a
        repository, which has been archived somewhere with a DOI.
        This will be used to construct permanent references to files
        used in this modeling, even if they haven't been uploaded to
        a database such as PDB or EMDB.
+       See :meth:`ihm.System.update_locations_in_repositories`.
 
        See also :class:`FileLocation`.
 
        :param str doi: the Digital Object Identifier for the repository
        :param str root: the path on the local disk to the top-level
               directory of the repository, or `None` if files in this
-              repository aren't checked out
+              repository aren't checked out.
        :param str url: If given, a location that this repository can be
               downloaded from.
        :param str top_directory: If given, prefix all paths for files in

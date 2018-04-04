@@ -49,14 +49,15 @@ class DatasetGroup(list):
        This is implemented as a simple list.
 
        Normally a group is passed to one or more :class:`~ihm.protocol.Protocol`
-       objects, although unused groups can still be included in the file
-       if desired by adding them to :attr:`ihm.System.orphan_dataset_groups`.
+       or :class:`~ihm.analysis.Analysis` objects, although unused groups
+       can still be included in the file if desired by adding them to
+       :attr:`ihm.System.orphan_dataset_groups`.
     """
     pass
 
 
 class CXMSDataset(Dataset):
-    """Processed crosslinks from a CX-MS experiment"""
+    """Processed cross-links from a CX-MS experiment"""
     data_type = 'CX-MS data'
 
 

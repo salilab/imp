@@ -7,5 +7,5 @@ This is a Python package to assist in handling mmCIF files compliant
 with the integrative/hybrid modeling (IHM) extension. It works with Python 2.6
 or later (Python 3 is fully supported).
 
-Please [see the API documentation](https://python-ihm.readthedocs.org/)
+Please [see the documentation](https://python-ihm.readthedocs.org/)
 or some [worked examples](examples) for more details.

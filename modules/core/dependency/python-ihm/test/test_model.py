@@ -18,8 +18,8 @@ class Tests(unittest.TestCase):
 
     def test_atom(self):
         """Test Atom class"""
-        s = ihm.model.Atom(asym_unit='foo', seq_id=1, atom_id='N', x=1.0,
-                             y=2.0, z=3.0)
+        s = ihm.model.Atom(asym_unit='foo', seq_id=1, atom_id='N',
+                           type_symbol='N', x=1.0, y=2.0, z=3.0)
         self.assertEqual(s.asym_unit, 'foo')
         self.assertEqual(s.seq_id, 1)
 

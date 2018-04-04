@@ -13,8 +13,9 @@ class Template(object):
        :param str asym_id: The asymmetric unit (chain) to use from the template
               dataset (not necessarily the same as the starting model's asym_id
               or the ID of the asym_unit in the final IHM model).
-       :param tuple seq_id_range: The sequence range (in the IHM model) that
-              is modeled by this template.
+       :param tuple seq_id_range: The sequence range in the dataset that
+              is modeled by this template. Note that this numbering may differ
+              from the IHM numbering. See `offset` in :class:`StartingModel`.
        :param tuple template_seq_id_range: The sequence range of the template
               that is used in comparative modeling.
        :param float sequence_identity: Sequence identity between template and
@@ -41,7 +42,8 @@ class Template(object):
 class StartingModel(object):
     """A starting guess for modeling of an asymmetric unit
 
-       See :attr:`~ihm.System.starting_models`.
+       See :class:`ihm.representation.Segment` and
+       :attr:`ihm.System.orphan_starting_models`.
 
        :param asym_unit: The asymmetric unit (or part of one) this starting
               model represents.
@@ -64,6 +66,31 @@ class StartingModel(object):
         self.dataset, self.asym_id, self.offset = dataset, asym_id, offset
         self.metadata = metadata
 
+    def get_atoms(self):
+        """Yield :class:`~ihm.model.Atom` objects that represent this
+           starting model. This allows the starting model coordinates to
+           be embedded in the mmCIF file, which is useful if the starting
+           model is not available elsewhere (or it has been modified).
+
+           The default implementation returns no atoms; it is necessary
+           to subclass and override this method.
+
+           Note that the returned atoms should be those used in modeling,
+           not those stored in the file. In particular, the numbering scheme
+           should be that used in the IHM model (add `offset` to the dataset
+           numbering). If any residues were changed (for example it is common
+           to mutate MSE in the dataset to MET in the modeling) the final
+           mutated name should be used (MET in this case) and
+           :meth:`get_seq_dif` overridden to note the change.
+        """
+        return []
+
+    def get_seq_dif(self):
+        """Yield :class:`SeqDif` objects for any sequence changes between
+           the dataset and the starting model. See :meth:`get_atoms`.
+        """
+        return []
+
     def get_seq_id_range_all_templates(self):
         """Get the seq_id range covered by all templates in this starting
            model. Where there are multiple templates, consolidate
@@ -71,7 +98,8 @@ class StartingModel(object):
         def get_seq_id_range(template, full):
             # The template may cover more than the current starting model
             rng = template.seq_id_range
-            return (max(rng[0], full[0]), min(rng[1], full[1]))
+            return (max(rng[0]+self.offset, full[0]),
+                    min(rng[1]+self.offset, full[1]))
 
         if self.templates:
             full = self.asym_unit.seq_id_range
@@ -96,3 +124,28 @@ class PDBHelix(object):
         self.end_resnum = int(line[33:37])
         self.helix_class = int(line[38:40])
         self.length = int(line[71:76])
+
+
+class SeqDif(object):
+    """Annotate a sequence difference between a dataset and starting model.
+       See :meth:`StartingModel.get_seq_dif` and :class:`MSESeqDif`.
+
+       :param int db_seq_id: The residue index in the dataset.
+       :param int seq_id: The residue index in the starting model. This should
+              normally be `db_seq_id + offset`.
+       :param str db_comp_id: The name of the residue in the dataset.
+       :param str details: Descriptive text for the sequence difference.
+    """
+    def __init__(self, db_seq_id, seq_id, db_comp_id, details=None):
+        self.db_seq_id, self.seq_id = db_seq_id, seq_id
+        self.db_comp_id, self.details = db_comp_id, details
+
+
+class MSESeqDif(object):
+    """Denote that a residue was mutated from MSE to MET.
+       See :class:`SeqDif` for a description of the parameters.
+    """
+    def __init__(self, db_seq_id, seq_id,
+                 details="Conversion of modified residue MSE to MET"):
+        self.db_seq_id, self.seq_id = db_seq_id, seq_id
+        self.db_comp_id, self.details = 'MSE', details

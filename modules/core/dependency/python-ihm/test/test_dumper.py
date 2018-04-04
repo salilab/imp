@@ -29,13 +29,13 @@ def _get_dumper_output(dumper, system):
 class Tests(unittest.TestCase):
     def test_write(self):
         """Test write() function"""
-        sys1 = ihm.System('system1')
-        sys2 = ihm.System('system 2+3')
+        sys1 = ihm.System(id='system1')
+        sys2 = ihm.System(id='system 2+3')
         fh = StringIO()
         ihm.dumper.write(fh, [sys1, sys2])
         lines = fh.getvalue().split('\n')
         self.assertEqual(lines[:2], ["data_system1", "_entry.id system1"])
-        self.assertEqual(lines[9:11],
+        self.assertEqual(lines[11:13],
                          ["data_system23", "_entry.id 'system 2+3'"])
 
     def test_dumper(self):
@@ -46,10 +46,29 @@ class Tests(unittest.TestCase):
 
     def test_entry_dumper(self):
         """Test EntryDumper"""
-        system = ihm.System(name='test_model')
+        system = ihm.System(id='test_model')
         dumper = ihm.dumper._EntryDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, "data_test_model\n_entry.id test_model\n")
+
+    def test_struct_dumper(self):
+        """Test StructDumper"""
+        system = ihm.System(title='test model')
+        dumper = ihm.dumper._StructDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """_struct.entry_id model
+_struct.title 'test model'
+""")
+
+    def test_comment_dumper(self):
+        """Test CommentDumper"""
+        system = ihm.System()
+        system.comments.extend(("Comment 1", "Comment 2"))
+        dumper = ihm.dumper._CommentDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """# Comment 1
+# Comment 2
+""")
 
     def test_software(self):
         """Test SoftwareDumper"""
@@ -171,8 +190,8 @@ auth4 4
     def test_entity_dumper(self):
         """Test EntityDumper"""
         system = ihm.System()
-        system.entities.append(ihm.Entity('ABC', description='foo'))
-        system.entities.append(ihm.Entity('ABCD', description='baz'))
+        system.entities.append(ihm.Entity('AHC', description='foo'))
+        system.entities.append(ihm.Entity('AHCD', description='baz'))
         dumper = ihm.dumper._EntityDumper()
         dumper.finalize(system) # Assign IDs
         out = _get_dumper_output(dumper, system)
@@ -193,8 +212,8 @@ _entity.details
     def test_entity_duplicates(self):
         """Test EntityDumper with duplicate entities"""
         system = ihm.System()
-        system.entities.append(ihm.Entity('ABC'))
-        system.entities.append(ihm.Entity('ABC'))
+        system.entities.append(ihm.Entity('AHC'))
+        system.entities.append(ihm.Entity('AHC'))
         dumper = ihm.dumper._EntityDumper()
         self.assertRaises(ValueError, dumper.finalize, system)
 
@@ -202,6 +221,9 @@ _entity.details
         """Test ChemCompDumper"""
         system = ihm.System()
         system.entities.append(ihm.Entity('ACGTTA'))
+        system.entities.append(ihm.Entity('ACGA', alphabet=ihm.RNAAlphabet))
+        system.entities.append(ihm.Entity(('DA', 'DC'),
+                                          alphabet=ihm.DNAAlphabet))
         dumper = ihm.dumper._ChemCompDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -210,21 +232,39 @@ _chem_comp.id
 _chem_comp.type
 ALA 'L-peptide linking'
 CYS 'L-peptide linking'
-GLY 'L-peptide linking'
+GLY 'Peptide linking'
 THR 'L-peptide linking'
+A 'RNA linking'
+C 'RNA linking'
+G 'RNA linking'
+DA 'DNA linking'
+DC 'DNA linking'
 #
 """)
 
     def test_entity_poly_dumper(self):
         """Test EntityPolyDumper"""
         system = ihm.System()
-        e1 = ihm.Entity('ACGT')
-        e2 = ihm.Entity('ACC')
-        system.entities.extend((e1, e2))
-        # One entity is modeled (with an asym unit) the other not; this should
-        # be reflected in pdbx_strand_id
+        e1 = ihm.Entity('ACGT') # sequence containing glycine
+        e2 = ihm.Entity(('A', 'C', 'C', 'MSE'))  # no glycine
+        # All D-peptides (with glycine)
+        e3 = ihm.Entity(('DAL', 'DCY', 'G'), alphabet=ihm.DPeptideAlphabet)
+        # All D-peptides (without glycine)
+        e4 = ihm.Entity(('DAL', 'DCY'), alphabet=ihm.DPeptideAlphabet)
+        # Mix of L- and D-peptides
+        dpep_al = ihm.DPeptideAlphabet()
+        e5 = ihm.Entity(('A', dpep_al['DCY'], 'G'))
+        system.entities.extend((e1, e2, e3, e4, e5))
+        # One protein entity is modeled (with an asym unit) the other not;
+        # this should be reflected in pdbx_strand_id
         system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
         system.asym_units.append(ihm.AsymUnit(e1, 'bar'))
+
+        rna = ihm.Entity('AC', alphabet=ihm.RNAAlphabet)
+        dna = ihm.Entity(('DA', 'DC'), alphabet=ihm.DNAAlphabet)
+        hybrid = ihm.Entity(rna.sequence + dna.sequence)
+        system.entities.extend((rna, dna, hybrid))
+
         ed = ihm.dumper._EntityDumper()
         ed.finalize(system) # Assign entity IDs
         sd = ihm.dumper._StructAsymDumper()
@@ -241,7 +281,13 @@ _entity_poly.pdbx_strand_id
 _entity_poly.pdbx_seq_one_letter_code
 _entity_poly.pdbx_seq_one_letter_code_can
 1 polypeptide(L) no no A ACGT ACGT
-2 polypeptide(L) no no . ACC ACC
+2 polypeptide(L) no no . ACC(MSE) ACCM
+3 polypeptide(D) no no . (DAL)(DCY)G ACG
+4 polypeptide(D) no no . (DAL)(DCY) AC
+5 polypeptide(L) no no . A(DCY)G ACG
+6 polyribonucleotide no no . AC AC
+7 polydeoxyribonucleotide no no . (DA)(DC) AC
+8 'polydeoxyribonucleotide/polyribonucleotide hybrid' no no . AC(DA)(DC) ACAC
 #
 """)
 
@@ -250,6 +296,9 @@ _entity_poly.pdbx_seq_one_letter_code_can
         system = ihm.System()
         system.entities.append(ihm.Entity('ACGT'))
         system.entities.append(ihm.Entity('ACC'))
+        system.entities.append(ihm.Entity('AC', alphabet=ihm.RNAAlphabet))
+        system.entities.append(ihm.Entity(('DA', 'DC'),
+                                          alphabet=ihm.DNAAlphabet))
         ed = ihm.dumper._EntityDumper()
         ed.finalize(system) # Assign IDs
         dumper = ihm.dumper._EntityPolySeqDumper()
@@ -267,6 +316,51 @@ _entity_poly_seq.hetero
 2 1 ALA .
 2 2 CYS .
 2 3 CYS .
+3 1 A .
+3 2 C .
+4 1 DA .
+4 2 DC .
+#
+""")
+
+    def test_poly_seq_scheme_dumper(self):
+        """Test PolySeqSchemeDumper"""
+        system = ihm.System()
+        e1 = ihm.Entity('ACGT')
+        e2 = ihm.Entity('ACC')
+        e3 = ihm.Entity('AC', alphabet=ihm.RNAAlphabet)
+        e4 = ihm.Entity(('DA', 'DC'), alphabet=ihm.DNAAlphabet)
+        system.entities.extend((e1, e2, e3, e4))
+        system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
+        system.asym_units.append(ihm.AsymUnit(e2, 'bar'))
+        system.asym_units.append(ihm.AsymUnit(e3, 'baz'))
+        system.asym_units.append(ihm.AsymUnit(e4, 'test'))
+        ihm.dumper._EntityDumper().finalize(system)
+        ihm.dumper._StructAsymDumper().finalize(system)
+        dumper = ihm.dumper._PolySeqSchemeDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.mon_id
+_pdbx_poly_seq_scheme.pdb_seq_num
+_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_mon_id
+_pdbx_poly_seq_scheme.auth_mon_id
+_pdbx_poly_seq_scheme.pdb_strand_id
+A 1 1 ALA 1 1 ALA ALA A
+A 1 2 CYS 2 2 CYS CYS A
+A 1 3 GLY 3 3 GLY GLY A
+A 1 4 THR 4 4 THR THR A
+B 2 1 ALA 1 1 ALA ALA B
+B 2 2 CYS 2 2 CYS CYS B
+B 2 3 CYS 3 3 CYS CYS B
+C 3 1 A 1 1 A A C
+C 3 2 C 2 2 C C C
+D 4 1 DA 1 1 DA DA D
+D 4 2 DC 2 2 DC DC D
 #
 """)
 
@@ -306,12 +400,13 @@ C 2 baz
         system.entities.extend((e1, e2))
         system.asym_units.extend((a1, a2, a3))
 
-        c = ihm.AssemblyComponent(a2, seq_id_range=(2,3))
-        system.orphan_assemblies.append(ihm.Assembly((a1, c), name='foo'))
+        system.orphan_assemblies.append(ihm.Assembly((a1, a2(2,3)), name='foo'))
         # Out of order assembly (should be ordered on output)
-        system.orphan_assemblies.append(ihm.Assembly((a3, a2), name='bar'))
+        system.orphan_assemblies.append(ihm.Assembly((a3, a2), name='bar',
+                                                     description='desc1'))
         # Duplicate assembly (should be ignored)
-        system.orphan_assemblies.append(ihm.Assembly((a2, a3)))
+        system.orphan_assemblies.append(ihm.Assembly((a2, a3),
+                                                     description='desc2'))
 
         # Assign entity and asym IDs
         ihm.dumper._EntityDumper().finalize(system)
@@ -329,7 +424,7 @@ _ihm_struct_assembly_details.assembly_name
 _ihm_struct_assembly_details.assembly_description
 1 'Complete assembly' 'All known components'
 2 foo .
-3 bar .
+3 bar 'desc1 & desc2'
 #
 #
 loop_
@@ -680,8 +775,17 @@ _ihm_model_representation.model_object_count
 
     def test_starting_model_dumper(self):
         """Test StartingModelDumper"""
+        class TestStartingModel(ihm.startmodel.StartingModel):
+            def get_atoms(self):
+                asym = self.asym_unit
+                return [ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
+                                       type_symbol='C', x=-8.0, y=-5.0, z=91.0,
+                                       biso=42.)]
+            def get_seq_dif(self):
+                return [ihm.startmodel.MSESeqDif(db_seq_id=5, seq_id=7)]
+
         system = ihm.System()
-        e1 = ihm.Entity('A' * 20, description='foo')
+        e1 = ihm.Entity('A' * 6 + 'M' + 'A' * 13, description='foo')
         system.entities.append(e1)
         asym = ihm.AsymUnit(e1, 'bar')
         system.asym_units.append(asym)
@@ -692,18 +796,17 @@ _ihm_model_representation.model_object_count
         ali = ihm.location.InputFileLocation(repo='foo', path='test.ali')
 
         s1 = ihm.startmodel.Template(dataset=dstemplate, asym_id='C',
-                             seq_id_range=(1,10),
+                             seq_id_range=(-9,0), # 1,10 in IHM numbering
                              template_seq_id_range=(101,110),
                              sequence_identity=30.)
         s2 = ihm.startmodel.Template(dataset=dstemplate, asym_id='D',
-                             seq_id_range=(5,12),
+                             seq_id_range=(-5,2), # 5,12 in IHM numbering
                              template_seq_id_range=(201,210),
                              sequence_identity=40.,
                              alignment_file=ali)
 
-        sm = ihm.startmodel.StartingModel(asym(1,15), dstarget, 'A',
-                                          [s1, s2], offset=10)
-        system.starting_models.append(sm)
+        sm = TestStartingModel(asym(1,15), dstarget, 'A', [s1, s2], offset=10)
+        system.orphan_starting_models.append(sm)
 
         e1._id = 42
         asym._id = 99
@@ -743,6 +846,38 @@ _ihm_starting_comparative_models.template_dataset_list_id
 _ihm_starting_comparative_models.alignment_file_id
 1 1 A 1 10 C 101 110 30.000 1 101 .
 2 1 A 5 12 D 201 210 40.000 1 101 5
+#
+#
+loop_
+_ihm_starting_model_coord.starting_model_id
+_ihm_starting_model_coord.group_PDB
+_ihm_starting_model_coord.id
+_ihm_starting_model_coord.type_symbol
+_ihm_starting_model_coord.atom_id
+_ihm_starting_model_coord.comp_id
+_ihm_starting_model_coord.entity_id
+_ihm_starting_model_coord.asym_id
+_ihm_starting_model_coord.seq_id
+_ihm_starting_model_coord.Cartn_x
+_ihm_starting_model_coord.Cartn_y
+_ihm_starting_model_coord.Cartn_z
+_ihm_starting_model_coord.B_iso_or_equiv
+_ihm_starting_model_coord.ordinal_id
+1 ATOM 1 C CA ALA 42 99 1 -8.000 -5.000 91.000 42.000 1
+#
+#
+loop_
+_ihm_starting_model_seq_dif.ordinal_id
+_ihm_starting_model_seq_dif.entity_id
+_ihm_starting_model_seq_dif.asym_id
+_ihm_starting_model_seq_dif.seq_id
+_ihm_starting_model_seq_dif.comp_id
+_ihm_starting_model_seq_dif.starting_model_id
+_ihm_starting_model_seq_dif.db_asym_id
+_ihm_starting_model_seq_dif.db_seq_id
+_ihm_starting_model_seq_dif.db_comp_id
+_ihm_starting_model_seq_dif.details
+1 42 99 7 MET 1 A 5 MSE 'Conversion of modified residue MSE to MET'
 #
 """)
 
@@ -790,7 +925,7 @@ _ihm_modeling_protocol.num_models_begin
 _ihm_modeling_protocol.num_models_end
 _ihm_modeling_protocol.multi_scale_flag
 _ihm_modeling_protocol.multi_state_flag
-_ihm_modeling_protocol.time_ordered_flag
+_ihm_modeling_protocol.ordered_flag
 1 1 1 42 99 foo equilibration s1 'Monte Carlo' 0 500 YES NO NO
 2 1 2 42 99 foo equilibration . 'Replica exchange' 500 2000 YES NO NO
 3 2 1 42 101 foo sampling . 'Replica exchange' 2000 1000 YES NO NO
@@ -814,6 +949,14 @@ _ihm_modeling_protocol.time_ordered_flag
         a2.steps.append(ihm.analysis.ClusterStep(
                              feature='RMSD', num_models_begin=200,
                              num_models_end=42))
+        asmb1 = MockObject()
+        asmb1._id = 101
+        dg1 = MockObject()
+        dg1._id = 301
+        a2.steps.append(ihm.analysis.ValidationStep(
+                             feature='energy/score', num_models_begin=42,
+                             num_models_end=42,
+                             assembly=asmb1, dataset_group=dg1))
         p1.analyses.extend((a1, a2))
 
         dumper = ihm.dumper._ProtocolDumper()
@@ -833,9 +976,12 @@ _ihm_modeling_post_process.type
 _ihm_modeling_post_process.feature
 _ihm_modeling_post_process.num_models_begin
 _ihm_modeling_post_process.num_models_end
-1 1 1 1 none none . .
-2 1 2 1 filter energy/score 1000 200
-3 1 2 2 cluster RMSD 200 42
+_ihm_modeling_post_process.struct_assembly_id
+_ihm_modeling_post_process.dataset_group_id
+1 1 1 1 none none . . . .
+2 1 2 1 filter energy/score 1000 200 . .
+3 1 2 2 cluster RMSD 200 42 . .
+4 1 2 3 validation energy/score 42 42 101 301
 #
 """)
 
@@ -963,11 +1109,13 @@ _ihm_sphere_obj_site.model_id
         """Test ModelDumper with atoms"""
         system, model, asym = self._make_test_model()
         model._atoms = [ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='C',
-                                       x=1.0, y=2.0, z=3.0),
+                                       type_symbol='C', x=1.0, y=2.0, z=3.0),
                         ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
-                                       x=10.0, y=20.0, z=30.0),
+                                       type_symbol='C', x=10.0, y=20.0, z=30.0,
+                                       het=True),
                         ihm.model.Atom(asym_unit=asym, seq_id=2, atom_id='N',
-                                       x=4.0, y=5.0, z=6.0)]
+                                       type_symbol='N', x=4.0, y=5.0, z=6.0,
+                                       biso=42.0)]
 
         dumper = ihm.dumper._ModelDumper()
         dumper.finalize(system) # assign model/group IDs
@@ -987,8 +1135,11 @@ _ihm_model_list.representation_id
 #
 #
 loop_
+_atom_site.group_PDB
 _atom_site.id
+_atom_site.type_symbol
 _atom_site.label_atom_id
+_atom_site.label_alt_id
 _atom_site.label_comp_id
 _atom_site.label_seq_id
 _atom_site.label_asym_id
@@ -996,10 +1147,19 @@ _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
 _atom_site.label_entity_id
-_atom_site.model_id
-1 C ALA 1 X 1.000 2.000 3.000 9 1
-2 CA ALA 1 X 10.000 20.000 30.000 9 1
-3 N CYS 2 X 4.000 5.000 6.000 9 1
+_atom_site.auth_asym_id
+_atom_site.B_iso_or_equiv
+_atom_site.pdbx_PDB_model_num
+_atom_site.ihm_model_id
+ATOM 1 C C . ALA 1 X 1.000 2.000 3.000 9 X . 1 1
+HETATM 2 C CA . ALA 1 X 10.000 20.000 30.000 9 X . 1 1
+ATOM 3 N N . CYS 2 X 4.000 5.000 6.000 9 X 42.000 1 1
+#
+#
+loop_
+_atom_type.symbol
+C
+N
 #
 """)
 
@@ -1052,7 +1212,7 @@ _ihm_ensemble_info.ensemble_file_id
         class MockObject(object):
             pass
         system = ihm.System()
-        e1 = ihm.Entity('ABCD')
+        e1 = ihm.Entity('AHCD')
         e1._id = 9
         asym = ihm.AsymUnit(e1)
         asym._id = 'X'
@@ -1317,6 +1477,112 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
 1 1 42 0.400 -0.640000 0.760000 0.150000 0.090000 -0.120000 0.990000 0.770000
 0.640000 0.010000 1.000 2.000 3.000
 2 1 44 . . . . . . . . . . . . .
+#
+""")
+
+    def test_cross_link_restraint_dumper(self):
+        """Test CrossLinkRestraintDumper"""
+        class MockObject(object):
+            pass
+        system = ihm.System()
+        e1 = ihm.Entity('ATC', description='foo')
+        e2 = ihm.Entity('DEF', description='bar')
+        system.entities.extend((e1, e2))
+        asym1 = ihm.AsymUnit(e1)
+        asym2 = ihm.AsymUnit(e2)
+        system.asym_units.extend((asym1, asym2))
+
+        dataset = MockObject()
+        dataset._id = 97
+        r = ihm.restraint.CrossLinkRestraint(dataset=dataset, linker_type='DSS')
+        # intra, unambiguous
+        xxl1 = ihm.restraint.ExperimentalCrossLink(e1.residue(2), e1.residue(3))
+        # inter, ambiguous
+        xxl2 = ihm.restraint.ExperimentalCrossLink(e1.residue(2), e2.residue(3))
+        xxl3 = ihm.restraint.ExperimentalCrossLink(e1.residue(2), e2.residue(2))
+        # duplicate crosslink, should be combined with the original (xxl2)
+        xxl4 = ihm.restraint.ExperimentalCrossLink(e1.residue(2), e2.residue(3))
+        # should end up in own group, not with xxl4 (since xxl4==xxl2)
+        xxl5 = ihm.restraint.ExperimentalCrossLink(e1.residue(1), e2.residue(1))
+        r.experimental_cross_links.extend(([xxl1], [xxl2, xxl3], [xxl4, xxl5]))
+        system.restraints.extend((r, MockObject()))
+
+        d = ihm.restraint.UpperBoundDistanceRestraint(25.0)
+        xl1 = ihm.restraint.ResidueCrossLink(xxl1, asym1, asym1, d,
+                                psi=0.5, sigma1=1.0, sigma2=2.0,
+                                restrain_all=True)
+        d = ihm.restraint.LowerBoundDistanceRestraint(34.0)
+        xl2 = ihm.restraint.AtomCrossLink(xxl3, asym1, asym2, 'C', 'N', d,
+                                restrain_all=False)
+        # Duplicates should be ignored
+        xl3 = ihm.restraint.AtomCrossLink(xxl3, asym1, asym2, 'C', 'N', d,
+                                restrain_all=False)
+        r.cross_links.extend((xl1, xl2, xl3))
+
+        model = MockObject()
+        model._id = 201
+        xl1.fits[model] = ihm.restraint.CrossLinkFit(psi=0.1, sigma1=4.2,
+                                                     sigma2=2.1)
+
+        ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
+        ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
+        dumper = ihm.dumper._CrossLinkDumper()
+        dumper.finalize(system) # assign IDs
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_cross_link_list.id
+_ihm_cross_link_list.group_id
+_ihm_cross_link_list.entity_description_1
+_ihm_cross_link_list.entity_id_1
+_ihm_cross_link_list.seq_id_1
+_ihm_cross_link_list.comp_id_1
+_ihm_cross_link_list.entity_description_2
+_ihm_cross_link_list.entity_id_2
+_ihm_cross_link_list.seq_id_2
+_ihm_cross_link_list.comp_id_2
+_ihm_cross_link_list.linker_type
+_ihm_cross_link_list.dataset_list_id
+1 1 foo 1 2 THR foo 1 3 CYS DSS 97
+2 2 foo 1 2 THR bar 2 3 PHE DSS 97
+3 2 foo 1 2 THR bar 2 2 GLU DSS 97
+4 3 foo 1 1 ALA bar 2 1 ASP DSS 97
+#
+#
+loop_
+_ihm_cross_link_restraint.id
+_ihm_cross_link_restraint.group_id
+_ihm_cross_link_restraint.entity_id_1
+_ihm_cross_link_restraint.asym_id_1
+_ihm_cross_link_restraint.seq_id_1
+_ihm_cross_link_restraint.comp_id_1
+_ihm_cross_link_restraint.entity_id_2
+_ihm_cross_link_restraint.asym_id_2
+_ihm_cross_link_restraint.seq_id_2
+_ihm_cross_link_restraint.comp_id_2
+_ihm_cross_link_restraint.atom_id_1
+_ihm_cross_link_restraint.atom_id_2
+_ihm_cross_link_restraint.restraint_type
+_ihm_cross_link_restraint.conditional_crosslink_flag
+_ihm_cross_link_restraint.model_granularity
+_ihm_cross_link_restraint.distance_threshold
+_ihm_cross_link_restraint.psi
+_ihm_cross_link_restraint.sigma_1
+_ihm_cross_link_restraint.sigma_2
+1 1 1 A 2 THR 1 A 3 CYS . . 'upper bound' ALL by-residue 25.000 0.500 1.000
+2.000
+2 3 1 A 2 THR 2 B 2 GLU C N 'lower bound' ANY by-atom 34.000 . . .
+#
+#
+loop_
+_ihm_cross_link_result_parameters.ordinal_id
+_ihm_cross_link_result_parameters.restraint_id
+_ihm_cross_link_result_parameters.model_id
+_ihm_cross_link_result_parameters.psi
+_ihm_cross_link_result_parameters.sigma_1
+_ihm_cross_link_result_parameters.sigma_2
+1 1 201 0.100 4.200 2.100
 #
 """)
 

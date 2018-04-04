@@ -169,7 +169,9 @@ class Tests(unittest.TestCase):
         s, = p['software']
         self.assertEqual(s.name, 'MODELLER')
         self.assertEqual(s.version, '9.18')
-        self.assertTrue('2017/02/10 22:21:34' in s.description)
+        self.assertEqual(s.description,
+                 'Comparative modeling by satisfaction of spatial restraints, '
+                 'build 2017/02/10 22:21:34')
         return p
 
     def test_modeller_local(self):

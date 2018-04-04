@@ -21,3 +21,36 @@ The :mod:`ihm.restraint` Python module
 
 .. autoclass:: SASRestraintFit
    :members:
+
+.. autoclass:: DistanceRestraint
+   :members:
+
+.. autoclass:: HarmonicDistanceRestraint
+   :members:
+
+.. autoclass:: UpperBoundDistanceRestraint
+   :members:
+
+.. autoclass:: LowerBoundDistanceRestraint
+   :members:
+
+.. autoclass:: CrossLinkRestraint
+   :members:
+
+.. autoclass:: ExperimentalCrossLink
+   :members:
+
+.. autoclass:: CrossLink
+   :members:
+
+.. autoclass:: ResidueCrossLink
+   :members:
+
+.. autoclass:: FeatureCrossLink
+   :members:
+
+.. autoclass:: AtomCrossLink
+   :members:
+
+.. autoclass:: CrossLinkFit
+   :members:

@@ -1,0 +1,269 @@
+{
+    "header": {
+        "type": "esummary",
+        "version": "0.3"
+    },
+    "result": {
+        "uids": [
+            "29539637"
+        ],
+        "29539637": {
+            "uid": "29539637",
+            "pubdate": "2018 Mar 22",
+            "epubdate": "2018 Mar 14",
+            "source": "Nature",
+            "authors": [
+                {
+                    "name": "Kim SJ",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Fernandez-Martinez J",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Nudelman I",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Shi Y",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Zhang W",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Raveh B",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Herricks T",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Slaughter BD",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Hogan JA",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Upla P",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Chemmama IE",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Pellarin R",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Echeverria I",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Shivaraju M",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Chaudhury AS",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Wang J",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Williams R",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Unruh JR",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Greenberg CH",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Jacobs EY",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Yu Z",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "de la Cruz MJ",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Mironska R",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Stokes DL",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Aitchison JD",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Jarrold MF",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Gerton JL",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Ludtke SJ",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Akey CW",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Chait BT",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Sali A",
+                    "authtype": "Author",
+                    "clusterid": ""
+                },
+                {
+                    "name": "Rout MP",
+                    "authtype": "Author",
+                    "clusterid": ""
+                }
+            ],
+            "lastauthor": "Rout MP",
+            "title": "Integrative structure and functional anatomy of a nuclear pore complex (test of python-ihm lib).",
+            "sorttitle": "integrative structure and functional anatomy of a nuclear pore complex",
+            "volume": "555",
+            "issue": "7697",
+            "pages": "475-482",
+            "lang": [
+                "eng"
+            ],
+            "nlmuniqueid": "0410462",
+            "issn": "0028-0836",
+            "essn": "1476-4687",
+            "pubtype": [
+                "Journal Article"
+            ],
+            "recordstatus": "PubMed - in process",
+            "pubstatus": "256",
+            "articleids": [
+                {
+                    "idtype": "pubmed",
+                    "idtypen": 1,
+                    "value": "29539637"
+                },
+                {
+                    "idtype": "pii",
+                    "idtypen": 4,
+                    "value": "nature26003"
+                },
+                {
+                    "idtype": "rid",
+                    "idtypen": 8,
+                    "value": "29539637"
+                },
+                {
+                    "idtype": "eid",
+                    "idtypen": 8,
+                    "value": "29539637"
+                }
+            ],
+            "history": [
+                {
+                    "pubstatus": "received",
+                    "date": "2017/06/21 00:00"
+                },
+                {
+                    "pubstatus": "accepted",
+                    "date": "2018/02/06 00:00"
+                },
+                {
+                    "pubstatus": "pubmed",
+                    "date": "2018/03/15 06:00"
+                },
+                {
+                    "pubstatus": "medline",
+                    "date": "2018/03/15 06:00"
+                },
+                {
+                    "pubstatus": "entrez",
+                    "date": "2018/03/15 06:00"
+                }
+            ],
+            "references": [
+            ],
+            "attributes": [
+                "Has Abstract"
+            ],
+            "pmcrefcount": "",
+            "fulljournalname": "Nature",
+            "elocationid": "doi: 10.1038/nature26003",
+            "doctype": "citation",
+            "srccontriblist": [
+            ],
+            "booktitle": "",
+            "medium": "",
+            "edition": "",
+            "publisherlocation": "",
+            "publishername": "",
+            "srcdate": "",
+            "reportnumber": "",
+            "availablefromurl": "",
+            "locationlabel": "",
+            "doccontriblist": [
+            ],
+            "docdate": "",
+            "bookname": "",
+            "chapter": "",
+            "sortpubdate": "2018/03/22 00:00",
+            "sortfirstauthor": "Kim SJ",
+            "vernaculartitle": ""
+        }
+    }
+}
+

@@ -54,6 +54,14 @@ class Tests(unittest.TestCase):
             l.write(bar='baz')
         self.assertEqual(fh.getvalue(), "foo.bar baz\n")
 
+    def test_category_none(self):
+        """Test CategoryWriter class with value=None"""
+        fh = StringIO()
+        writer = ihm.format.CifWriter(fh)
+        with writer.category('foo') as l:
+            l.write(bar=None)
+        self.assertEqual(fh.getvalue(), "foo.bar .\n")
+
     def test_empty_loop(self):
         """Test LoopWriter class with no values"""
         fh = StringIO()
