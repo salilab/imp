@@ -1895,7 +1895,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             entity = self.entities[name]
             asym = ihm.AsymUnit(entity, details=name)
             self.system.asym_units.append(asym)
-            state.modeled_assembly.append(ihm.AssemblyComponent(asym))
+            state.modeled_assembly.append(asym)
             self.asym_units[name] = asym
 
     def flush(self):

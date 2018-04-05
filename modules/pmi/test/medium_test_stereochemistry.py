@@ -241,5 +241,35 @@ class Tests(IMP.test.TestCase):
         # create elastic network from some SSEs
         charmm = IMP.pmi.restraints.stereochemistry.CharmmForceFieldRestraint(hier)
 
+    def test_symmetry(self):
+        """Test setup of symmetry"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('chainA.fasta'))
+        st1 = s.create_state()
+        m1 = st1.create_molecule("GCP2_YEAST",sequence=seqs["GCP2_YEAST"][:100],chain_id='A')
+        atomic_res = m1.add_structure(self.get_input_file_name('chainA.pdb'),
+                                      chain_id='A',
+                                      res_range=(1,100))
+        m1.add_representation(atomic_res,resolutions=[0])
+        m2 = m1.create_clone('B')
+        m3 = m1.create_clone('C')
+        hier = s.build()
+        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        mov1, rb1 = dof.create_rigid_body(m1)
+        mov2, rb2 = dof.create_rigid_body(m2)
+        mov2, rb3 = dof.create_rigid_body(m3)
+        trans = IMP.algebra.Transformation3D([50,0,0])
+        trans2 = trans*trans
+        IMP.atom.transform(rb2,trans)
+        IMP.atom.transform(rb3,trans2)
+
+        # setup restraint
+        rs = IMP.pmi.restraints.stereochemistry.SymmetryRestraint(m1,[m2,m3],
+                                                                  [trans.get_inverse(),
+                                                                   trans2.get_inverse()])
+        rs.add_to_model()
+        self.assertEqual(float(rs.get_output()['SymmetryRestraint_']),0.0)
+
 if __name__ == '__main__':
     IMP.test.main()
