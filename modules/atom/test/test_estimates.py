@@ -46,13 +46,13 @@ class Tests(IMP.test.TestCase):
             diffs.append(d.get_coordinates())
         nd = IMP.atom.get_diffusion_coefficient(diffs, dt)
         real_D= dd.get_diffusion_coefficient()
-        print("Estimated/real D: {:.4e} {:.4e} [A^2/fs]".format(nd, real_D))
+        print("Estimated/real D: %.4e %.4e [A^2/fs]" % (nd, real_D))
         self.assertAlmostEqual(
             nd, real_D, delta=.12 * (nd + real_D))
         # Test with vector of dts:
         dts= [float(dt)]*len(diffs)
         nd2 = IMP.atom.get_diffusion_coefficient(diffs, dts)
-        print("nd2 {:.4e}".format(nd2))
+        print("nd2 %.4e" % nd2)
         self.assertAlmostEqual(
             nd, nd2, delta=.000001*(nd+nd2))
         # Test with a change of timestep on-the-fly:
@@ -67,7 +67,7 @@ class Tests(IMP.test.TestCase):
             diffs.append(d.get_coordinates())
             dts.append(new_dt)
         nd3 = IMP.atom.get_diffusion_coefficient(diffs, dts)
-        print("After change of time step: {:.4e} [A^2/fs]".format(nd3))
+        print("After change of time step: %.4e [A^2/fs]" % nd3)
         self.assertAlmostEqual(nd, nd3, delta=.1*(nd+nd3))
 
         return nd
