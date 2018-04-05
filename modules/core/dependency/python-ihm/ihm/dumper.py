@@ -227,7 +227,7 @@ class _EntityPolySeqDumper(_Dumper):
 class _PolySeqSchemeDumper(_Dumper):
     """Output the _pdbx_poly_seq_scheme table.
        This is needed because it is a parent category of atom_site.
-       For now we assume we're using auth_seq_id==seq_id."""
+       For now we assume we're using auth_seq_num==pdb_seq_num."""
     def dump(self, system, writer):
         with writer.loop("_pdbx_poly_seq_scheme",
                          ["asym_id", "entity_id", "seq_id", "mon_id",
@@ -236,9 +236,11 @@ class _PolySeqSchemeDumper(_Dumper):
             for asym in system.asym_units:
                 entity = asym.entity
                 for num, comp in enumerate(entity.sequence):
+                    auth_seq_num = asym._get_auth_seq_id(num+1)
                     l.write(asym_id=asym._id, pdb_strand_id=asym._id,
                             entity_id=entity._id,
-                            seq_id=num+1, pdb_seq_num=num+1, auth_seq_num=num+1,
+                            seq_id=num+1, pdb_seq_num=auth_seq_num,
+                            auth_seq_num=auth_seq_num,
                             mon_id=comp.id, pdb_mon_id=comp.id,
                             auth_mon_id=comp.id)
 

@@ -569,7 +569,7 @@ class EntityRange(object):
        an :class:`Entity`, e.g. to get a range covering residues 4 through
        7 in `entity` use::
 
-           entity = ihm.Entity(seq=...)
+           entity = ihm.Entity(sequence=...)
            rng = entity(4,7)
     """
     def __init__(self, entity, seq_id_begin, seq_id_end):
@@ -595,11 +595,20 @@ class Residue(object):
        are created by calling :meth:`Entity.residue` or
        :meth:`AsymUnit.residue`.
     """
+
+    __slots__ = ['entity', 'asym', 'seq_id']
+
     def __init__(self, seq_id, entity=None, asym=None):
         self.entity = entity
         self.asym = asym
         # todo: check id for validity (at property read time)
         self.seq_id = seq_id
+
+    def _get_auth_seq_id(self):
+        return self.asym._get_auth_seq_id(self.seq_id)
+    auth_seq_id = property(_get_auth_seq_id,
+                           doc="Author-provided seq_id; only makes sense "
+                               "for asymmetric units")
 
 
 class Entity(object):
@@ -701,12 +710,30 @@ class AsymUnit(object):
        :param entity: The unique sequence of this asymmetric unit.
        :type entity: :class:`Entity`
        :param str details: Longer text description of this unit.
+       :param auth_seq_id_map: Mapping from internal 1-based consecutive
+              residue numbering (`seq_id`) to "author-provided" numbering
+              (`auth_seq_id`). This can be either be an int offset, in
+              which case ``auth_seq_id = seq_id + auth_seq_id_map``, or
+              a mapping type (dict, list, tuple) in which case
+              ``auth_seq_id = auth_seq_id_map[seq_id]``. The default if
+              not specified, or not in the mapping, is for
+              ``auth_seq_id == seq_id``.
 
        See :attr:`System.asym_units`.
     """
 
-    def __init__(self, entity, details=None):
+    def __init__(self, entity, details=None, auth_seq_id_map=0):
         self.entity, self.details = entity, details
+        self.auth_seq_id_map = auth_seq_id_map
+
+    def _get_auth_seq_id(self, seq_id):
+        if isinstance(self.auth_seq_id_map, int):
+            return seq_id + self.auth_seq_id_map
+        else:
+            try:
+                return self.auth_seq_id_map[seq_id]
+            except (KeyError, IndexError):
+                return seq_id
 
     def __call__(self, seq_id_begin, seq_id_end):
         return AsymUnitRange(self, seq_id_begin, seq_id_end)

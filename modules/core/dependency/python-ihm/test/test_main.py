@@ -77,7 +77,7 @@ class Tests(unittest.TestCase):
         item0 = sorted(a.items)[0]
         self.assertEqual(item0[0], 'A')
         self.assertEqual(item0[1].id, 'ALA')
-        self.assertEqual(a['MSE'].code, 'MSE')
+        self.assertEqual(a['MSE'].id, 'MSE')
         self.assertEqual(a['MSE'].code, 'MSE')
         self.assertEqual(a['MSE'].code_canonical, 'M')
         self.assertEqual(a['MSE'].type, 'L-peptide linking')
@@ -180,11 +180,12 @@ class Tests(unittest.TestCase):
     def test_asym_unit_residue(self):
         """Test Residue derived from an AsymUnit"""
         e = ihm.Entity('AHCDAH')
-        a = ihm.AsymUnit(e)
+        a = ihm.AsymUnit(e, auth_seq_id_map=5)
         r = a.residue(3)
         self.assertEqual(r.entity, None)
         self.assertEqual(r.asym, a)
         self.assertEqual(r.seq_id, 3)
+        self.assertEqual(r.auth_seq_id, 8)
 
     def test_entity_range(self):
         """Test EntityRange class"""
@@ -219,6 +220,28 @@ class Tests(unittest.TestCase):
         self.assertNotEqual(r, a)      # asym_range != asym
         self.assertNotEqual(r, e(3,4)) # asym_range != entity_range
         self.assertNotEqual(r, e)      # asym_range != entity
+
+    def test_auth_seq_id_offset(self):
+        """Test auth_seq_id offset from seq_id"""
+        e = ihm.Entity('AHCDAH')
+        a = ihm.AsymUnit(e, auth_seq_id_map=5)
+        self.assertEqual(a._get_auth_seq_id(1), 6)
+
+    def test_auth_seq_id_dict(self):
+        """Test auth_seq_id dict map from seq_id"""
+        e = ihm.Entity('AHCDAH')
+        a = ihm.AsymUnit(e, auth_seq_id_map={1:0, 2:4})
+        self.assertEqual(a._get_auth_seq_id(1), 0)
+        self.assertEqual(a._get_auth_seq_id(2), 4)
+        self.assertEqual(a._get_auth_seq_id(3), 3)
+
+    def test_auth_seq_id_list(self):
+        """Test auth_seq_id list map from seq_id"""
+        e = ihm.Entity('AHCDAH')
+        a = ihm.AsymUnit(e, auth_seq_id_map=[None, 0, 4])
+        self.assertEqual(a._get_auth_seq_id(1), 0)
+        self.assertEqual(a._get_auth_seq_id(2), 4)
+        self.assertEqual(a._get_auth_seq_id(3), 3)
 
     def test_assembly(self):
         """Test Assembly class"""

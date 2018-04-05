@@ -332,7 +332,7 @@ _entity_poly_seq.hetero
         e4 = ihm.Entity(('DA', 'DC'), alphabet=ihm.DNAAlphabet)
         system.entities.extend((e1, e2, e3, e4))
         system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
-        system.asym_units.append(ihm.AsymUnit(e2, 'bar'))
+        system.asym_units.append(ihm.AsymUnit(e2, 'bar', auth_seq_id_map=5))
         system.asym_units.append(ihm.AsymUnit(e3, 'baz'))
         system.asym_units.append(ihm.AsymUnit(e4, 'test'))
         ihm.dumper._EntityDumper().finalize(system)
@@ -354,9 +354,9 @@ A 1 1 ALA 1 1 ALA ALA A
 A 1 2 CYS 2 2 CYS CYS A
 A 1 3 GLY 3 3 GLY GLY A
 A 1 4 THR 4 4 THR THR A
-B 2 1 ALA 1 1 ALA ALA B
-B 2 2 CYS 2 2 CYS CYS B
-B 2 3 CYS 3 3 CYS CYS B
+B 2 1 ALA 6 6 ALA ALA B
+B 2 2 CYS 7 7 CYS CYS B
+B 2 3 CYS 8 8 CYS CYS B
 C 3 1 A 1 1 A A C
 C 3 2 C 2 2 C C C
 D 4 1 DA 1 1 DA DA D
