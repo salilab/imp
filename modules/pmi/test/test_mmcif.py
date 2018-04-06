@@ -33,7 +33,7 @@ class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
 
 def get_all_models_group(simo, po):
     state = simo._protocol_output[0][1]
-    return po.add_model_group(IMP.pmi.mmcif._ModelGroup(state, "All models"))
+    return state.add_model_group(ihm.model.ModelGroup(name="All models"))
 
 class Tests(IMP.test.TestCase):
 
@@ -94,43 +94,32 @@ class Tests(IMP.test.TestCase):
         d.set_phyre2_used()
         self.assertEqual(len(system.software), 3)
 
-    def test_comment_dumper(self):
-        """Test CommentDumper"""
-        po = DummyPO(None)
-        po.add_comment("Comment 1")
-        po.add_comment("Comment 2")
-        d = IMP.pmi.mmcif._CommentDumper(po)
-        fh = StringIO()
-        w = ihm.format.CifWriter(fh)
-        d.dump(w)
-        self.assertEqual(fh.getvalue(), """# Comment 1
-# Comment 2
-""")
-
     def test_single_state(self):
-        """Test MultiStateDumper with a single state"""
+        """Test with a single state"""
         po = DummyPO(None)
         po._add_state(DummyRepr(None, None))
-        d = IMP.pmi.mmcif._MultiStateDumper(po)
+        d = ihm.dumper._MultiStateDumper()
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
-        d.dump(w)
+        d.dump(po.system, w)
         self.assertEqual(fh.getvalue(), "")
 
     def test_multi_state(self):
-        """Test MultiStateDumper with multiple states"""
+        """Test with multiple states"""
         po = DummyPO(None)
         r1 = DummyRepr(None, None)
         state1 = po._add_state(r1)
-        po.add_model_group(IMP.pmi.mmcif._ModelGroup(state1, "group 1"))
-        po.add_model_group(IMP.pmi.mmcif._ModelGroup(state1, "group 2"))
+        state1.add_model_group(ihm.model.ModelGroup(name="Group 1"))
+        state1.add_model_group(ihm.model.ModelGroup(name="Group 2"))
         r2 = DummyRepr('state2 short', 'state2 long')
         state2 = po._add_state(r2)
-        po.add_model_group(IMP.pmi.mmcif._ModelGroup(state2, "group 3"))
-        d = IMP.pmi.mmcif._MultiStateDumper(po)
+        state2.add_model_group(ihm.model.ModelGroup(name="Group 3"))
+        d = ihm.dumper._MultiStateDumper()
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
-        d.dump(w)
+        ihm.dumper._ModelDumper().finalize(po.system)  # assign model group IDs
+        d.finalize(po.system)
+        d.dump(po.system, w)
         self.assertEqual(fh.getvalue(), """#
 loop_
 _ihm_multi_state_modeling.ordinal_id
@@ -142,9 +131,9 @@ _ihm_multi_state_modeling.state_name
 _ihm_multi_state_modeling.model_group_id
 _ihm_multi_state_modeling.experiment_type
 _ihm_multi_state_modeling.details
-1 1 1 . . . 1 'Fraction of bulk' 'Group 1'
-2 1 1 . . . 2 'Fraction of bulk' 'Group 2'
-3 2 2 . . 'state2 long' 3 'Fraction of bulk' 'state2 short group 3'
+1 1 1 . . . 1 'Fraction of bulk' .
+2 1 1 . . . 2 'Fraction of bulk' .
+3 2 1 . . 'state2 long' 3 'Fraction of bulk' .
 #
 """)
 
@@ -206,8 +195,10 @@ _ihm_multi_state_modeling.details
             po.add_component_sequence(state, c, seq)
         self.assertEqual(len(po.system.entities), 2)
         self.assertEqual(po.system.asym_units[0].details, 'foo')
-        self.assertEqual(po.system.entities[0].sequence, 'AAA')
-        self.assertEqual(po.system.entities[1].sequence, 'AA')
+        self.assertEqual(''.join(x.code for x in
+                                 po.system.entities[0].sequence), 'AAA')
+        self.assertEqual(''.join(x.code for x in
+                                 po.system.entities[1].sequence), 'AA')
         self.assertEqual(len(po.system.asym_units), 3)
         self.assertEqual(po.system.asym_units[0].details, 'foo')
         self.assertEqual(po.system.asym_units[1].details, 'bar')
@@ -297,9 +288,9 @@ _ihm_multi_state_modeling.details
         a = system.entities
         self.assertEqual(len(a), 2)
         self.assertEqual(a[0].description, 'foo')
-        self.assertEqual(a[0].sequence, 'MELS')
+        self.assertEqual(''.join(x.code for x in a[0].sequence), 'MELS')
         self.assertEqual(a[1].description, 'bar')
-        self.assertEqual(a[1].sequence, 'SELM')
+        self.assertEqual(''.join(x.code for x in a[1].sequence), 'SELM')
 
     def test_dataset_group_finalize(self):
         """Test DatasetGroup.finalize()"""
@@ -379,8 +370,8 @@ _ihm_multi_state_modeling.details
         representation.id = 99
         protocol = IMP.pmi.mmcif._Protocol()
         protocol.id = 93
-        group = IMP.pmi.mmcif._ModelGroup(state, "all models")
-        group.id = 7
+        group = ihm.model.ModelGroup(name="all models")
+        group._id = 7
         model = d.add(simo.prot, protocol, assembly, representation, group)
         self.assertEqual(model.id, 1)
         self.assertEqual(model.get_rmsf('Nup84', (1,)), None)
@@ -399,7 +390,7 @@ _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
 _ihm_model_list.representation_id
-1 1 7 . 'All models' 42 93 99
+1 1 7 . 'all models' 42 93 99
 #
 #
 loop_
@@ -442,8 +433,8 @@ _ihm_sphere_obj_site.model_id
         representation.id = 99
         protocol = IMP.pmi.mmcif._Protocol()
         protocol.id = 93
-        group = IMP.pmi.mmcif._ModelGroup(state, "all models")
-        group.id = 7
+        group = ihm.model.ModelGroup(name="all models")
+        group._id = 7
         model = d.add(simo.prot, protocol, assembly, representation, group)
         self.assertEqual(model.id, 1)
         self.assertEqual(model.get_rmsf('Nup84', (1,)), None)
@@ -462,7 +453,7 @@ _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
 _ihm_model_list.representation_id
-1 1 7 . 'All models' 42 93 99
+1 1 7 . 'all models' 42 93 99
 #
 #
 loop_
@@ -517,8 +508,9 @@ _ihm_sphere_obj_site.model_id
         representation.id = 99
         protocol = IMP.pmi.mmcif._Protocol()
         protocol.id = 93
-        group = IMP.pmi.mmcif._ModelGroup(state, "all models")
-        group.id = 7
+        group = ihm.model.ModelGroup(name='all models')
+        state.append(group)
+        group._id = 7
         model = d.add(simo.prot, protocol, assembly, representation, group)
         self.assertEqual(model.id, 1)
         model.name = 'foo'
@@ -541,7 +533,7 @@ _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
 _ihm_model_list.representation_id
-1 1 7 foo 'All models' 42 93 99
+1 1 7 foo 'all models' 42 93 99
 #
 #
 loop_
@@ -857,7 +849,7 @@ _ihm_modeling_post_process.num_models_end
         e = po._add_simple_ensemble(pp, 'Ensemble 1', 5, 0.1, 1, densities,
                                     None)
         self.assertEqual(e.num_models, 5)
-        self.assertEqual(e.num_deposit, 1)
+        self.assertEqual(e.num_models_deposited, 1)
 
     def test_rex_postproces(self):
         """Test ReplicaExchangeAnalysisPostProcess"""
@@ -915,11 +907,11 @@ _ihm_modeling_post_process.num_models_end
             mg = DummyGroup()
             e = IMP.pmi.mmcif._ReplicaExchangeAnalysisEnsemble(pp, 0, mg, 1)
             self.assertEqual(e.cluster_num, 0)
-            self.assertEqual(e.postproc, pp)
-            self.assertEqual(e.num_deposit, 1)
-            self.assertEqual(e.localization_density, {})
+            self.assertEqual(e.post_process, pp)
+            self.assertEqual(e.num_models_deposited, 1)
+            self.assertEqual(e.densities, [])
             self.assertEqual(e.num_models, 2)
-            self.assertEqual(e.feature, 'RMSD')
+            self.assertEqual(e.clustering_feature, 'RMSD')
             self.assertEqual(e.name, 'cluster 1')
             self.assertEqual(e.get_rmsf_file('Nup84'),
                              os.path.join(tmpdir, 'cluster.0',
@@ -932,18 +924,18 @@ _ihm_modeling_post_process.num_models_end
             self.assertEqual(dm.comp, 'Nup84')
             self.assertEqual(e.get_localization_density_file('Nup84'),
                              os.path.join(tmpdir, 'cluster.0', 'Nup84.mrc'))
-            self.assertEqual(list(e.localization_density.keys()), [])
+            self.assertEqual(len(e.densities), 0)
             # Density that doesn't exist
             e.load_localization_density(None, 'noden', locations)
-            self.assertEqual(list(e.localization_density.keys()), [])
+            self.assertEqual(len(e.densities), 0)
             # Density that does exist
             po = DummyPO(None)
             r = DummyRepr('dummy', 'none')
             state = po._add_state(r)
             e.load_localization_density(state, 'Nup84', locations)
-            self.assertEqual(e.localization_density['Nup84'].path,
+            self.assertEqual(e.densities[0].file.path,
                              os.path.join(tmpdir, 'cluster.0', 'Nup84.mrc'))
-            self.assertEqual(e.localization_density['Nup84'].details,
+            self.assertEqual(e.densities[0].file.details,
                          'Localization density for Nup84 dgroup in state dummy')
             # No precision available
             self.assertEqual(e._get_precision(), '?')
@@ -987,7 +979,7 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
             po.add_replica_exchange_analysis(simo._protocol_output[0][1], rex)
 
     def test_ensemble_dumper(self):
-        """Test EnsembleDumper"""
+        """Test dumping of simple ensembles"""
         class DummyPostProcess(object):
             pass
         m = IMP.Model()
@@ -996,7 +988,7 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
         simo.add_protocol_output(po)
 
         pp = DummyPostProcess()
-        pp.id = 99
+        pp._id = 99
         e1 = po._add_simple_ensemble(pp, 'Ensemble 1', 5, 0.1, 1,
                                      {}, None)
         e2 = po._add_simple_ensemble(pp, 'Ensemble 2', 5, 0.1, 1,
@@ -1006,7 +998,10 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
         loc._id = 42
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
-        po.ensemble_dump.dump(w)
+        ihm.dumper._ModelDumper().finalize(po.system)  # assign model group IDs
+        d = ihm.dumper._EnsembleDumper()
+        d.finalize(po.system)
+        d.dump(po.system, w)
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
@@ -1039,16 +1034,20 @@ _ihm_ensemble_info.ensemble_file_id
                                     self.get_input_file_name("test.fasta"))
 
         ensemble = DummyEnsemble()
-        ensemble.id = 42
+        ensemble._id = 42
         loc = ihm.location.OutputFileLocation(repo='foo', path='bar')
         loc._id = 97
-        ensemble.localization_density = {'Nup84': loc}
-        po.density_dump.add(ensemble)
+        den = ihm.model.LocalizationDensity(file=loc,
+                                asym_unit=po.asym_units['Nup84'])
+        ensemble.densities = [den]
+        po.system.ensembles.append(ensemble)
 
         fh = StringIO()
         self.assign_entity_asym_ids(po.system)
         w = ihm.format.CifWriter(fh)
-        po.density_dump.dump(w)
+        d = ihm.dumper._DensityDumper()
+        d.finalize(po.system)
+        d.dump(po.system, w)
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
@@ -1205,25 +1204,8 @@ _ihm_cross_link_restraint.sigma_2
         # since allow_duplicates=True
         self.assertNotEqual(d, d2)
 
-    def test_em2d_restraint_with_raw(self):
-        """Test EM2DRestraint class, with raw micrographs"""
-        class DummyRestraint(object):
-            pass
-        class DummyState(object):
-            pass
-        pr = DummyRestraint()
-        state = DummyState()
-        rd = IMP.pmi.mmcif._RestraintDataset(pr, num=None,
-                                             allow_duplicates=False)
-        r = IMP.pmi.mmcif._EM2DRestraint(state, rd, pr, 0,
-                                         resolution=10.0, pixel_size=4.2,
-                                         image_resolution=1.0,
-                                         projection_number=200,
-                                         micrographs_number=50)
-        self.assertEqual(r.micrographs_number, 50)
-
-    def test_em2d_dumper(self):
-        """Test EM2DDumper class"""
+    def test_add_em2d_restraint(self):
+        """Test add_em2d_restraint method"""
         m = IMP.Model()
         simo = IMP.pmi.representation.Representation(m)
         po = DummyPO(None)
@@ -1241,20 +1223,19 @@ _ihm_cross_link_restraint.sigma_2
         class DummyProtocolStep(object):
             pass
         pr = DummyRestraint()
-        rd = IMP.pmi.mmcif._RestraintDataset(pr, num=None,
-                                             allow_duplicates=False)
-        r = IMP.pmi.mmcif._EM2DRestraint(state, rd, pr, 0,
-                                         resolution=10.0, pixel_size=4.2,
-                                         image_resolution=1.0,
-                                         projection_number=200,
-                                         micrographs_number=50)
+        pr.datasets = [None]
+        po.add_em2d_restraint(state, pr, 0,
+                              resolution=10.0, pixel_size=4.2,
+                              image_resolution=1.0,
+                              projection_number=200,
+                              micrographs_number=50)
         lp = ihm.location.InputFileLocation(repo='foo', path='baz')
         dp = ihm.dataset.EMMicrographsDataset(lp)
         l = ihm.location.InputFileLocation(repo='foo', path='bar')
         d = ihm.dataset.EM2DClassDataset(l)
         d._id = 4
         d.parents.append(dp)
-        pr.dataset = d
+        pr.datasets[0] = d
         p = DummyProtocolStep()
         p.state = po._last_state
         po.model_prot_dump.add_step(p)
@@ -1269,12 +1250,15 @@ _ihm_cross_link_restraint.sigma_2
                    prefix + 'Rotation1': '0.316041672423',
                    prefix + 'Rotation2': '-0.419293315413',
                    prefix + 'Rotation3': '-0.726253660826'}
-        po.em2d_dump.add(r)
+        po._add_restraint_model_fits()
+
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
         self.assign_entity_asym_ids(po.system)
         ihm.dumper._AssemblyDumper().finalize(po.system)  # assign assembly IDs
-        po.em2d_dump.dump(w)
+        d = ihm.dumper._EM2DDumper()
+        d.finalize(po.system)
+        d.dump(po.system, w)
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
@@ -1330,14 +1314,16 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
         d = ihm.dataset.SASDataset(lp)
         d._id = 4
         model = DummyModel()
-        model.id = 42
+        model._id = 42
         po._add_foxs_restraint(model, 'Nup84', (2,3), d, 3.4, 1.2, 'test')
 
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
         self.assign_entity_asym_ids(po.system)
         ihm.dumper._AssemblyDumper().finalize(po.system)  # assign assembly IDs
-        po.sas_dump.dump(w)
+        dumper = ihm.dumper._SASDumper()
+        dumper.finalize(po.system)
+        dumper.dump(po.system, w)
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
@@ -1356,8 +1342,8 @@ _ihm_sas_restraint.details
 #
 """)
 
-    def test_em3d_dumper(self):
-        """Test EM3DDumper class"""
+    def test_add_em3d_restraint(self):
+        """Test add_em3d_restraint method"""
         m = IMP.Model()
         simo = IMP.pmi.representation.Representation(m)
         po = DummyPO(None)
@@ -1369,18 +1355,19 @@ _ihm_sas_restraint.details
         nup84 = simo.autobuild_model("Nup84",
                                      self.get_input_file_name("test.nup84.pdb"),
                                      "A")
+        p = IMP.atom.get_by_type(simo.hier_dict['Nup84'],
+                                 IMP.atom.FRAGMENT_TYPE)[0]
         class DummyRestraint(object):
             label = 'foo'
         class DummyProtocolStep(object):
             pass
         pr = DummyRestraint()
-        rd = IMP.pmi.mmcif._RestraintDataset(pr, num=None,
-                                             allow_duplicates=True)
-        r = IMP.pmi.mmcif._EM3DRestraint(po, state, rd, pr,
-                                         target_ps=[None, None], densities=[])
+        pr.dataset = None
+        po.add_em3d_restraint(state, pmi_restraint=pr,
+                              target_ps=[None, None], densities=[p])
 
         l = ihm.location.InputFileLocation(repo='foo', path='bar')
-        d = ihm.dataset.EM2DClassDataset(l)
+        d = ihm.dataset.EMDensityDataset(l)
         d._id = 4
         pr.dataset = d
 
@@ -1392,24 +1379,28 @@ _ihm_sas_restraint.details
         m.stats = {'GaussianEMRestraint_foo_CCC': 0.1}
         m = po.add_model(group)
         m.stats = {'GaussianEMRestraint_foo_CCC': 0.2}
-        po.em3d_dump.add(r)
+        po._add_restraint_model_fits()
+
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
         self.assign_entity_asym_ids(po.system)
         ihm.dumper._AssemblyDumper().finalize(po.system)  # assign assembly IDs
-        po.em3d_dump.dump(w)
+        d = ihm.dumper._EM3DDumper()
+        d.finalize(po.system)
+        d.dump(po.system, w)
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
 _ihm_3dem_restraint.ordinal_id
 _ihm_3dem_restraint.dataset_list_id
 _ihm_3dem_restraint.fitting_method
+_ihm_3dem_restraint.fitting_method_citation
 _ihm_3dem_restraint.struct_assembly_id
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id
 _ihm_3dem_restraint.cross_correlation_coefficient
-1 4 'Gaussian mixture models' 2 2 1 0.100
-2 4 'Gaussian mixture models' 2 2 2 0.200
+1 4 'Gaussian mixture models' . 1 2 1 0.100
+2 4 'Gaussian mixture models' . 1 2 2 0.200
 #
 """)
 

@@ -34,6 +34,7 @@ import ihm.dataset
 import ihm.dumper
 import ihm.metadata
 import ihm.startmodel
+import ihm.model
 
 def _assign_id(obj, seen_objs, obj_by_id):
     """Assign a unique ID to obj, and track all ids in obj_by_id."""
@@ -86,12 +87,6 @@ class _Dumper(object):
 
     def finalize_metadata(self):
         pass
-
-
-class _CommentDumper(_Dumper):
-    def dump(self, writer):
-        for comment in self.simo._comments:
-            writer.write_comment(comment)
 
 
 class _AllSoftware(object):
@@ -308,11 +303,13 @@ class _AllDatasets(object):
     def __init__(self):
         self._datasets = []
         self._datasets_by_state = {}
+        self._restraints_by_state = {}
         self._dataset_groups = []
 
     def get_all_group(self, state):
         """Get a _DatasetGroup encompassing all datasets so far in this state"""
-        g = _DatasetGroup(self._datasets_by_state.get(state, []))
+        g = _DatasetGroup(self._datasets_by_state.get(state, [])
+                + [r.dataset for r in self._restraints_by_state.get(state, [])])
         self._dataset_groups.append(g)
         return g
 
@@ -324,6 +321,12 @@ class _AllDatasets(object):
         self._datasets_by_state[state].append(dataset)
         # We don't add to ihm.System yet, since it can't handle RestraintDataset
         return dataset
+
+    def add_restraint(self, state, restraint):
+        """Add the dataset for a restraint"""
+        if state not in self._restraints_by_state:
+            self._restraints_by_state[state] = []
+        self._restraints_by_state[state].append(restraint)
 
     def _get_final_datasets(self):
         """Get final set of datasets, with RestraintDatasets removed"""
@@ -420,8 +423,6 @@ class _CrossLinkDumper(_Dumper):
                 entity2 = self.simo.entities[xl.c2]
                 seq1 = entity1.sequence
                 seq2 = entity2.sequence
-                rt1 = IMP.atom.get_residue_type(seq1[xl.r1-1])
-                rt2 = IMP.atom.get_residue_type(seq2[xl.r2-1])
                 # todo: handle experimental ambiguity (group_id) properly
                 xl_id += 1
                 seen_cross_links[sig] = xl_id
@@ -430,11 +431,11 @@ class _CrossLinkDumper(_Dumper):
                         entity_description_1=entity1.description,
                         entity_id_1=entity1._id,
                         seq_id_1=xl.r1,
-                        comp_id_1=rt1.get_string(),
+                        comp_id_1=seq1[xl.r1-1].id,
                         entity_description_2=entity2.description,
                         entity_id_2=entity2._id,
                         seq_id_2=xl.r2,
-                        comp_id_2=rt2.get_string(),
+                        comp_id_2=seq2[xl.r2-1].id,
                         linker_type=xl.group.label,
                         dataset_list_id=xl.group.rdataset.dataset._id)
 
@@ -463,8 +464,6 @@ class _CrossLinkDumper(_Dumper):
                 entity2 = self.simo.entities[xl.ex_xl.c2]
                 seq1 = entity1.sequence
                 seq2 = entity2.sequence
-                rt1 = IMP.atom.get_residue_type(seq1[xl.ex_xl.r1-1])
-                rt2 = IMP.atom.get_residue_type(seq2[xl.ex_xl.r2-1])
                 asym1 = asym[xl.p1]
                 asym2 = asym[xl.p2]
                 # Skip identical cross links
@@ -481,11 +480,11 @@ class _CrossLinkDumper(_Dumper):
                         entity_id_1=entity1._id,
                         asym_id_1=asym1,
                         seq_id_1=xl.ex_xl.r1,
-                        comp_id_1=rt1.get_string(),
+                        comp_id_1=seq1[xl.ex_xl.r1-1].id,
                         entity_id_2=entity2._id,
                         asym_id_2=asym2,
                         seq_id_2=xl.ex_xl.r2,
-                        comp_id_2=rt2.get_string(),
+                        comp_id_2=seq2[xl.ex_xl.r2-1].id,
                         restraint_type='upper bound',
                         # todo: any circumstances where this could be ANY?
                         conditional_crosslink_flag="ALL",
@@ -529,18 +528,37 @@ class _CrossLinkDumper(_Dumper):
                                 sigma_2=xl.sigma2.get_scale())
                         ordinal += 1
 
-class _EM2DRestraint(object):
-    def __init__(self, state, rdataset, pmi_restraint, image_number, resolution,
+class _EM2DRestraint(ihm.restraint.EM2DRestraint):
+    def __init__(self, state, pmi_restraint, image_number, resolution,
                  pixel_size, image_resolution, projection_number,
                  micrographs_number):
-        self.state = state
         self.pmi_restraint, self.image_number = pmi_restraint, image_number
-        self.rdataset, self.resolution = rdataset, resolution
-        self.pixel_size, self.image_resolution = pixel_size, image_resolution
-        self.projection_number = projection_number
-        self.micrographs_number = micrographs_number
+        super(_EM2DRestraint, self).__init__(
+                dataset=pmi_restraint.datasets[image_number],
+                assembly=state.modeled_assembly,
+                segment=False, number_raw_micrographs=micrographs_number,
+                pixel_size_width=pixel_size, pixel_size_height=pixel_size,
+                image_resolution=image_resolution,
+                number_of_projections=projection_number)
 
-    def get_transformation(self, model):
+    # Have our dataset point to that in the original PMI restraint
+    def __get_dataset(self):
+        return self.pmi_restraint.datasets[self.image_number]
+    def __set_dataset(self, val):
+        self.pmi_restraint.datasets[self.image_number] = val
+    dataset = property(__get_dataset, __set_dataset)
+
+    def add_fits_from_model_statfile(self, model):
+        ccc = self._get_cross_correlation(model)
+        transform = self._get_transformation(model)
+        rot = transform.get_rotation()
+        rm = [[e for e in rot.get_rotation_matrix_row(i)] for i in range(3)]
+        self.fits[model] = ihm.restraint.EM2DRestraintFit(
+                               cross_correlation_coefficient=ccc,
+                               rot_matrix=rm,
+                               tr_vector=transform.get_translation())
+
+    def _get_transformation(self, model):
         """Get the transformation that places the model on the image"""
         stats = model.em2d_stats or model.stats
         prefix = 'ElectronMicroscopy2D_%s_Image%d' % (self.pmi_restraint.label,
@@ -553,7 +571,8 @@ class _EM2DRestraint(object):
         inv = model.transform.get_inverse()
         return IMP.algebra.Transformation3D(IMP.algebra.Rotation3D(*r),
                                             IMP.algebra.Vector3D(*t)) * inv
-    def get_cross_correlation(self, model):
+
+    def _get_cross_correlation(self, model):
         """Get the cross correlation coefficient between the model projection
            and the image"""
         stats = model.em2d_stats or model.stats
@@ -562,168 +581,44 @@ class _EM2DRestraint(object):
                                     self.image_number + 1)])
 
 
-class _EM2DDumper(_Dumper):
-    def __init__(self, simo):
-        super(_EM2DDumper, self).__init__(simo)
-        self.restraints = []
+class _EM3DRestraint(ihm.restraint.EM3DRestraint):
 
-    def add(self, rsr):
-        self.restraints.append(rsr)
-        rsr.id = len(self.restraints)
-
-    def dump(self, writer):
-        self.dump_restraints(writer)
-        self.dump_fitting(writer)
-
-    def dump_restraints(self, writer):
-        with writer.loop("_ihm_2dem_class_average_restraint",
-                         ["id", "dataset_list_id", "number_raw_micrographs",
-                          "pixel_size_width", "pixel_size_height",
-                          "image_resolution", "image_segment_flag",
-                          "number_of_projections", "struct_assembly_id",
-                          "details"]) as l:
-            for r in self.restraints:
-                unk = ihm.unknown
-                num_raw = r.micrographs_number
-                l.write(id=r.id, dataset_list_id=r.rdataset.dataset._id,
-                        number_raw_micrographs=num_raw if num_raw else unk,
-                        pixel_size_width=r.pixel_size,
-                        pixel_size_height=r.pixel_size,
-                        image_resolution=r.image_resolution,
-                        number_of_projections=r.projection_number,
-                        # todo: check that the assembly is the same for each
-                        # state
-                        struct_assembly_id=r.state.modeled_assembly._id,
-                        image_segment_flag=False)
-
-    def dump_fitting(self, writer):
-        ordinal = 1
-        with writer.loop("_ihm_2dem_class_average_fitting",
-                ["ordinal_id", "restraint_id", "model_id",
-                 "cross_correlation_coefficient", "rot_matrix[1][1]",
-                 "rot_matrix[2][1]", "rot_matrix[3][1]", "rot_matrix[1][2]",
-                 "rot_matrix[2][2]", "rot_matrix[3][2]", "rot_matrix[1][3]",
-                 "rot_matrix[2][3]", "rot_matrix[3][3]", "tr_vector[1]",
-                 "tr_vector[2]", "tr_vector[3]"]) as l:
-            for m in self.models:
-                if not m._is_restrained: continue
-                for r in self.restraints:
-                    trans = r.get_transformation(m)
-                    rot = trans.get_rotation()
-                    # mmCIF writer usually outputs floats to 3 decimal places,
-                    # but we need more precision for rotation matrices
-                    rm = [["%.6f" % e for e in rot.get_rotation_matrix_row(i)]
-                          for i in range(3)]
-                    t = trans.get_translation()
-                    ccc = r.get_cross_correlation(m)
-                    l.write(ordinal_id=ordinal, restraint_id=r.id,
-                            model_id=m.id, cross_correlation_coefficient=ccc,
-                            rot_matrix11=rm[0][0], rot_matrix21=rm[1][0],
-                            rot_matrix31=rm[2][0], rot_matrix12=rm[0][1],
-                            rot_matrix22=rm[1][1], rot_matrix32=rm[2][1],
-                            rot_matrix13=rm[0][2], rot_matrix23=rm[1][2],
-                            rot_matrix33=rm[2][2], tr_vector1=t[0],
-                            tr_vector2=t[1], tr_vector3=t[2])
-                    ordinal += 1
-
-
-class _SASRestraint(object):
-    # todo: support multifoxs, etc.
-    fitting_state = 'Single'
-    def __init__(self, method, model, assembly, dataset, rg, chi, details):
-        self.method, self.model, self.assembly = method, model, assembly
-        self.dataset, self.rg, self.chi = dataset, rg, chi
-        self.details = details
-
-
-class _SASDumper(_Dumper):
-    def __init__(self, simo):
-        super(_SASDumper, self).__init__(simo)
-        self.restraints = []
-
-    def add(self, rsr):
-        self.restraints.append(rsr)
-        rsr.id = len(self.restraints)
-
-    def dump(self, writer):
-        self.dump_restraints(writer)
-
-    def dump_restraints(self, writer):
-        ordinal = 1
-        with writer.loop("_ihm_sas_restraint",
-                         ["ordinal_id", "dataset_list_id", "model_id",
-                          "struct_assembly_id", "profile_segment_flag",
-                          "fitting_atom_type", "fitting_method",
-                          "fitting_state", "radius_of_gyration",
-                          "chi_value", "details"]) as l:
-            for r in self.restraints:
-                l.write(ordinal_id=ordinal, dataset_list_id=r.dataset._id,
-                        model_id=r.model.id, struct_assembly_id=r.assembly._id,
-                        profile_segment_flag=False,
-                        fitting_atom_type='Heavy atoms',
-                        fitting_method=r.method, fitting_state=r.fitting_state,
-                        radius_of_gyration=r.rg, chi_value=r.chi,
-                        details=r.details if r.details else None)
-                ordinal += 1
-
-
-class _EM3DRestraint(object):
-    fitting_method = 'Gaussian mixture models'
-
-    def __init__(self, simo, state, rdataset, pmi_restraint, target_ps,
-                 densities):
+    def __init__(self, simo, state, pmi_restraint, target_ps, densities):
         self.pmi_restraint = pmi_restraint
-        self.rdataset = rdataset
-        self.number_of_gaussians = len(target_ps)
-        self.assembly = self.get_assembly(densities, simo, state)
+        super(_EM3DRestraint, self).__init__(
+                dataset=pmi_restraint.dataset,
+                assembly=self._get_assembly(densities, simo, state),
+                fitting_method='Gaussian mixture models',
+                number_of_gaussians=len(target_ps))
 
-    def get_assembly(self, densities, simo, state):
+    # Have our dataset point to that in the original PMI restraint
+    def __set_dataset(self, val):
+        self.pmi_restraint.dataset = val
+    dataset = property(lambda self: self.pmi_restraint.dataset,
+                       __set_dataset)
+
+    def _get_assembly(self, densities, simo, state):
         """Get the Assembly that this restraint acts on"""
         cm = _ComponentMapper(state.prot)
         components = {}
         for d in densities:
             components[cm[d]] = None # None == all residues in this component
-        return simo._get_subassembly(components,
+        a = simo._get_subassembly(components,
                               name="EM subassembly",
                               description="All components that fit the EM map")
+        return a
 
-    def get_cross_correlation(self, model):
+    def add_fits_from_model_statfile(self, model):
+        ccc = self._get_cross_correlation(model)
+        self.fits[model] = ihm.restraint.EM3DRestraintFit(
+                                           cross_correlation_coefficient=ccc)
+
+    def _get_cross_correlation(self, model):
         """Get the cross correlation coefficient between the model
            and the map"""
         if model.stats is not None:
             return float(model.stats['GaussianEMRestraint_%s_CCC'
                                      % self.pmi_restraint.label])
-
-
-class _EM3DDumper(_Dumper):
-    def __init__(self, simo):
-        super(_EM3DDumper, self).__init__(simo)
-        self.restraints = []
-
-    def add(self, rsr):
-        self.restraints.append(rsr)
-
-    def dump(self, writer):
-        # todo: support other fields
-        ordinal = 1
-        with writer.loop("_ihm_3dem_restraint",
-                         ["ordinal_id", "dataset_list_id", "fitting_method",
-                          "struct_assembly_id",
-                          "number_of_gaussians", "model_id",
-                          "cross_correlation_coefficient"]) as l:
-            for model in self.models:
-                if not model._is_restrained: continue
-                for r in self.restraints:
-                    ccc = r.get_cross_correlation(model)
-                    l.write(ordinal_id=ordinal,
-                            dataset_list_id=r.rdataset.dataset._id,
-                            fitting_method=r.fitting_method,
-                            struct_assembly_id=r.assembly._id,
-                            number_of_gaussians=r.number_of_gaussians,
-                            model_id=model.id,
-                            cross_correlation_coefficient=ccc if ccc is not None
-                                                        else None)
-                    ordinal += 1
 
 
 class _Protocol(list):
@@ -753,13 +648,6 @@ class _SimpleProtocolStep(_ProtocolStep):
         self.name = 'Sampling'
         self.method = method
         self.num_models_end = num_models_end
-
-
-class _ModelGroup(object):
-    """Group sets of models"""
-    def __init__(self, state, name):
-        self.state = state
-        self.name = name
 
 
 class _Chain(object):
@@ -911,6 +799,7 @@ class _ModelDumper(_Dumper):
         m = _Model(prot, self.simo, protocol, assembly, representation, group)
         self.models.append(m)
         m.id = len(self.models)
+        m._id = m.id # support using ihm.restraint classes
         return m
 
     def dump(self, writer):
@@ -925,12 +814,10 @@ class _ModelDumper(_Dumper):
                           "model_name", "model_group_name", "assembly_id",
                           "protocol_id", "representation_id"]) as l:
             for model in self.models:
-                state = model.group.state
-                group_name = state.get_prefixed_name(model.group.name)
                 l.write(ordinal_id=ordinal, model_id=model.id,
-                        model_group_id=model.group.id,
+                        model_group_id=model.group._id,
                         model_name=model.name,
-                        model_group_name=group_name,
+                        model_group_name=model.group.name,
                         assembly_id=model.assembly._id,
                         protocol_id=model.protocol.id,
                         representation_id=model.representation.id)
@@ -1399,6 +1286,7 @@ class _PostProcessDumper(_Dumper):
         protocol = postproc.protocol
         self.postprocs.append(postproc)
         postproc.id = len(self.postprocs)
+        postproc._id = postproc.id # work with python-ihm EnsembleDumper
 
     def finalize(self):
         # Assign step IDs per protocol
@@ -1423,26 +1311,24 @@ class _PostProcessDumper(_Dumper):
                         num_models_begin=p.num_models_begin,
                         num_models_end=p.num_models_end)
 
-class _Ensemble(object):
-    """Base class for any ensemble"""
-    pass
-
-
-class _ReplicaExchangeAnalysisEnsemble(_Ensemble):
+class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
     """Ensemble generated using AnalysisReplicaExchange0 macro"""
 
+    num_models_deposited = None # Override base class property
+
     def __init__(self, pp, cluster_num, model_group, num_deposit):
-        self.file = None
-        self.model_group = model_group
-        self.cluster_num = cluster_num
-        self.postproc = pp
-        self.num_deposit = num_deposit
-        self.localization_density = {}
         with open(pp.get_stat_file(cluster_num)) as fh:
-            self.num_models = len(fh.readlines())
+            num_models = len(fh.readlines())
+        super(_ReplicaExchangeAnalysisEnsemble, self).__init__(
+                num_models=num_models,
+                model_group=model_group, post_process=pp,
+                clustering_feature=pp.feature,
+                name="cluster %d" % (cluster_num + 1))
+        self.cluster_num = cluster_num
+        self.num_models_deposited = num_deposit
 
     def get_rmsf_file(self, component):
-        return os.path.join(self.postproc.rex._outputdir,
+        return os.path.join(self.post_process.rex._outputdir,
                             'cluster.%d' % self.cluster_num,
                             'rmsf.%s.dat' % component)
 
@@ -1455,22 +1341,22 @@ class _ReplicaExchangeAnalysisEnsemble(_Ensemble):
         # todo: this assumes that the localization density file name matches
         # the component name and is of the complete residue range (usually
         # this is the case, but it doesn't have to be)
-        return os.path.join(self.postproc.rex._outputdir,
+        return os.path.join(self.post_process.rex._outputdir,
                             'cluster.%d' % self.cluster_num,
                             '%s.mrc' % component)
 
-    def load_localization_density(self, state, component, locations):
+    def load_localization_density(self, state, component, asym):
         fname = self.get_localization_density_file(component)
         if os.path.exists(fname):
             details = "Localization density for %s %s" \
                       % (component, self.model_group.name)
             local_file = ihm.location.OutputFileLocation(fname,
                               details=state.get_postfixed_name(details))
-            self.localization_density[component] = local_file
-            locations.append(local_file)
+            den = ihm.model.LocalizationDensity(file=local_file, asym_unit=asym)
+            self.densities.append(den)
 
     def load_all_models(self, simo, state):
-        stat_fname = self.postproc.get_stat_file(self.cluster_num)
+        stat_fname = self.post_process.get_stat_file(self.cluster_num)
         model_num = 0
         with open(stat_fname) as fh:
             stats = ast.literal_eval(fh.readline())
@@ -1484,12 +1370,12 @@ class _ReplicaExchangeAnalysisEnsemble(_Ensemble):
             # todo: fill in other data from stat file, e.g. crosslink phi/psi
             yield stats
             model_num += 1
-            if model_num >= self.num_deposit:
+            if model_num >= self.num_models_deposited:
                 return
 
     # todo: also support dRMS precision
     def _get_precision(self):
-        precfile = os.path.join(self.postproc.rex._outputdir,
+        precfile = os.path.join(self.post_process.rex._outputdir,
                                 "precision.%d.%d.out" % (self.cluster_num,
                                                          self.cluster_num))
         if not os.path.exists(precfile):
@@ -1503,126 +1389,25 @@ class _ReplicaExchangeAnalysisEnsemble(_Ensemble):
                 if m:
                     return float(m.group(1))
 
-    feature = property(lambda self: self.postproc.feature)
-    name = property(lambda self: "cluster %d" % (self.cluster_num + 1))
-    precision = property(lambda self: self._get_precision())
+    precision = property(lambda self: self._get_precision(),
+                         lambda self, val: None)
 
-class _SimpleEnsemble(_Ensemble):
+class _SimpleEnsemble(ihm.model.Ensemble):
     """Simple manually-created ensemble"""
 
-    feature = 'dRMSD'
+    num_models_deposited = None # Override base class property
 
     def __init__(self, pp, model_group, num_models, drmsd,
                  num_models_deposited, ensemble_file):
-        self.file = ensemble_file
-        self.postproc = pp
-        self.model_group = model_group
-        self.num_deposit = num_models_deposited
-        self.localization_density = {}
-        self.num_models = num_models
-        self.precision = drmsd
+        super(_SimpleEnsemble, self).__init__(
+                model_group=model_group, post_process=pp, num_models=num_models,
+                file=ensemble_file, precision=drmsd, name=model_group.name,
+                clustering_feature='dRMSD')
+        self.num_models_deposited = num_models_deposited
 
-    def load_localization_density(self, state, component, local_file,
-                                  locations):
-        self.localization_density[component] = local_file
-        locations.append(local_file)
-
-    name = property(lambda self: self.model_group.name)
-
-
-class _EnsembleDumper(_Dumper):
-    def __init__(self, simo):
-        super(_EnsembleDumper, self).__init__(simo)
-        self.ensembles = []
-
-    def add(self, ensemble):
-        self.ensembles.append(ensemble)
-        ensemble.id = len(self.ensembles)
-
-    def dump(self, writer):
-        with writer.loop("_ihm_ensemble_info",
-                         ["ensemble_id", "ensemble_name", "post_process_id",
-                          "model_group_id", "ensemble_clustering_method",
-                          "ensemble_clustering_feature",
-                          "num_ensemble_models",
-                          "num_ensemble_models_deposited",
-                          "ensemble_precision_value",
-                          "ensemble_file_id"]) as l:
-            for e in self.ensembles:
-                state = e.model_group.state
-                l.write(ensemble_id=e.id,
-                        ensemble_name=state.get_prefixed_name(e.name),
-                        post_process_id=e.postproc.id,
-                        model_group_id=e.model_group.id,
-                        ensemble_clustering_feature=e.feature,
-                        num_ensemble_models=e.num_models,
-                        num_ensemble_models_deposited=e.num_deposit,
-                        ensemble_precision_value=e.precision,
-                        ensemble_file_id=e.file._id if e.file
-                                                    else None)
-
-class _DensityDumper(_Dumper):
-    """Output localization densities for ensembles"""
-
-    def __init__(self, simo):
-        super(_DensityDumper, self).__init__(simo)
-        self.ensembles = []
-        self.output = IMP.pmi.output.Output()
-
-    def add(self, ensemble):
-        self.ensembles.append(ensemble)
-
-    def get_density(self, ensemble, component):
-        return ensemble.localization_density.get(component, None)
-
-    def dump(self, writer):
-        with writer.loop("_ihm_localization_density_files",
-                         ["id", "file_id", "ensemble_id", "entity_id",
-                          "asym_id", "seq_id_begin", "seq_id_end"]) as l:
-            ordinal = 1
-            for ensemble in self.ensembles:
-                for comp in self.simo.all_modeled_components:
-                    density = self.get_density(ensemble, comp)
-                    if not density:
-                        continue
-                    entity = self.simo.entities[comp]
-                    lenseq = len(entity.sequence)
-                    chain_id = self.simo._get_chain_for_component(comp,
-                                                                  self.output)
-                    l.write(id=ordinal, ensemble_id=ensemble.id,
-                            entity_id=entity._id,
-                            file_id=density._id,
-                            seq_id_begin=1, seq_id_end=lenseq,
-                            asym_id=chain_id)
-                    ordinal += 1
-
-
-class _MultiStateDumper(_Dumper):
-    """Output information on multiple states"""
-
-    def dump(self, writer):
-        states = sorted(self.simo._states.keys(),
-                        key=operator.attrgetter('id'))
-        # Nothing to do for single state modeling
-        if len(states) <= 1:
-            return
-        # Sort all model groups first by state, then by their own ID
-        groups = sorted(self.simo.model_groups,
-                        key=lambda g: (g.state.id, g.id))
-        with writer.loop("_ihm_multi_state_modeling",
-                         ["ordinal_id", "state_id", "state_group_id",
-                          "population_fraction", "state_type", "state_name",
-                          "model_group_id", "experiment_type", "details"]) as l:
-            for n, group in enumerate(groups):
-                state = group.state
-                l.write(ordinal_id=n+1, state_id=state.id,
-                        state_group_id=state.id,
-                        model_group_id=group.id,
-                        state_name=state.long_name if state.long_name
-                                   else None,
-                        # No IMP models are currently single molecule
-                        experiment_type='Fraction of bulk',
-                        details=state.get_prefixed_name(group.name))
+    def load_localization_density(self, state, component, asym, local_file):
+        den = ihm.model.LocalizationDensity(file=local_file, asym_unit=asym)
+        self.densities.append(den)
 
 
 class _EntityMapper(dict):
@@ -1673,7 +1458,7 @@ class _TransformedComponent(object):
         self.name, self.original, self.transform = name, original, transform
 
 
-class _State(object):
+class _State(ihm.model.State):
     """Representation of a single state in the system."""
 
     def __init__(self, pmi_object, po):
@@ -1683,6 +1468,10 @@ class _State(object):
         # Representation object.
         self._pmi_object = weakref.proxy(pmi_object)
         self._pmi_state = pmi_object.state
+        # Preserve PMI state name
+        old_name = self.name
+        super(_State, self).__init__(experiment_type='Fraction of bulk')
+        self.name = old_name
 
         # The assembly of all components modeled by IMP in this state.
         # This may be smaller than the complete assembly.
@@ -1692,6 +1481,14 @@ class _State(object):
         po.system.orphan_assemblies.append(self.modeled_assembly)
 
         self.all_modeled_components = []
+
+    def __hash__(self):
+        return hash(self._pmi_state)
+    def __eq__(self, other):
+        return self._pmi_state == other._pmi_state
+
+    def add_model_group(self, group):
+        self.append(group)
 
     def get_prefixed_name(self, name):
         """Prefix the given name with the state name, if available."""
@@ -1711,6 +1508,11 @@ class _State(object):
 
     short_name = property(lambda self: self._pmi_state.short_name)
     long_name = property(lambda self: self._pmi_state.long_name)
+    def __get_name(self):
+        return self._pmi_state.long_name
+    def __set_name(self, val):
+        self._pmi_state.long_name = val
+    name = property(__get_name, __set_name)
 
 
 class _Representation(object):
@@ -1732,6 +1534,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def __init__(self, fh):
         # Ultimately, collect data in an ihm.System object
         self.system = ihm.System()
+        self._state_group = ihm.model.StateGroup()
+        self.system.state_groups.append(self._state_group)
 
         self.fh = fh
         self._state_ensemble_offset = 0
@@ -1755,19 +1559,13 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self._all_components = {}
         self.all_modeled_components = []
         self._transformed_components = []
-        self.model_groups = []
-        self.default_model_group = None
         self.sequence_dict = {}
 
         # Coordinates to exclude
         self._exclude_coords = {}
-        self._comments = []
 
         self.model_repr_dump = _ModelRepresentationDumper(self)
         self.cross_link_dump = _CrossLinkDumper(self)
-        self.sas_dump = _SASDumper(self)
-        self.em2d_dump = _EM2DDumper(self)
-        self.em3d_dump = _EM3DDumper(self)
         self.model_prot_dump = _ModelProtocolDumper(self)
         self.all_datasets = _AllDatasets()
         self.starting_model_dump = _StartingModelDumper(self)
@@ -1775,28 +1573,20 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.model_dump = _ModelDumper(self)
         self.model_repr_dump.starting_model \
                     = self.starting_model_dump.starting_model
-        self.comment_dump = _CommentDumper(self)
         self.all_software = _AllSoftware(self.system)
         self.post_process_dump = _PostProcessDumper(self)
-        self.ensemble_dump = _EnsembleDumper(self)
-        self.density_dump = _DensityDumper(self)
 
         # Some dumpers add per-model information; give them a pointer to
         # the model list
         self.cross_link_dump.models = self.model_dump.models
-        self.em3d_dump.models = self.model_dump.models
-        self.em2d_dump.models = self.model_dump.models
 
-        self._dumpers = [self.comment_dump,
-                         self.model_repr_dump,
-                         self.cross_link_dump, self.sas_dump,
-                         self.em2d_dump, self.em3d_dump,
+        self._dumpers = [self.model_repr_dump,
+                         self.cross_link_dump,
                          self.starting_model_dump,
                          # todo: detect atomic models and emit struct_conf
                          #_StructConfDumper(self),
                          self.model_prot_dump, self.post_process_dump,
-                         self.ensemble_dump, self.density_dump, self.model_dump,
-                         _MultiStateDumper(self)]
+                         self.model_dump]
 
     def create_representation(self, name):
         """Create a new Representation and return it. This can be
@@ -1819,10 +1609,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             self._exclude_coords[component] = []
         self._exclude_coords[component].append(seqrange)
 
-    def add_comment(self, comment):
-        """Add a comment to the mmCIF file"""
-        self._comments.append(comment)
-
     def _is_excluded(self, component, start, end):
         """Return True iff this chunk of sequence should be excluded"""
         for seqrange in self._exclude_coords.get(component, ()):
@@ -1831,12 +1617,9 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
     def _add_state(self, state):
         """Create a new state and return a pointer to it."""
-        self._state_ensemble_offset = len(self.ensemble_dump.ensembles)
+        self._state_ensemble_offset = len(self.system.ensembles)
         s = _State(state, self)
-        if not self._states:
-            self._first_state = s
-        self._states[s] = None
-        s.id = len(self._states)
+        self._state_group.append(s)
         self._last_state = s
         return s
 
@@ -1860,7 +1643,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         # component name = asym_unit.details
         comps = {}
         for ca in assembly:
-            comps[ca.asym.details] = None
+            comps[ca.details] = None
         return comps
 
     def create_transformed_component(self, state, name, original, transform):
@@ -1898,7 +1681,16 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             state.modeled_assembly.append(asym)
             self.asym_units[name] = asym
 
+    def _add_restraint_model_fits(self):
+        """Add fits to restraints for all known models"""
+        for m in self.model_dump.models:
+            if m._is_restrained:
+                for r in self.system.restraints:
+                    if hasattr(r, 'add_fits_from_model_statfile'):
+                        r.add_fits_from_model_statfile(m)
+
     def flush(self):
+        self._add_restraint_model_fits()
         # Make sure ihm knows about final datasets and groups
         self.system.orphan_datasets.extend(
                            self.all_datasets._get_final_datasets())
@@ -1987,10 +1779,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def _add_dataset(self, dataset):
         return self.all_datasets.add(self._last_state, dataset)
 
-    def add_model_group(self, group):
-        self.model_groups.append(group)
-        group.id = len(self.model_groups)
-        return group
+    def _add_restraint_dataset(self, restraint):
+        return self.all_datasets.add_restraint(self._last_state, restraint)
 
     def _add_simple_postprocessing(self, num_models_begin, num_models_end):
         # Always assumed that we're dealing with the last state
@@ -2015,18 +1805,17 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
            This is currently only used by the Nup84 system."""
         # Always assumed that we're dealing with the last state
         state = self._last_state
-        group = self.add_model_group(_ModelGroup(state, name))
+        group = ihm.model.ModelGroup(name=state.get_prefixed_name(name))
+        state.add_model_group(group)
         if ensemble_file:
             self.system.locations.append(ensemble_file)
         e = _SimpleEnsemble(pp, group, num_models, drmsd, num_models_deposited,
                             ensemble_file)
-        self.ensemble_dump.add(e)
-        self.density_dump.add(e)
+        self.system.ensembles.append(e)
         for c in state.all_modeled_components:
             den = localization_densities.get(c, None)
             if den:
-                e.load_localization_density(state, c, den,
-                                            self.system.locations)
+                e.load_localization_density(state, c, self.asym_units[c], den)
         return e
 
     def set_ensemble_file(self, i, location):
@@ -2036,7 +1825,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.system.locations.append(location)
         # Ensure that we point to an ensemble related to the current state
         ind = i + self._state_ensemble_offset
-        self.ensemble_dump.ensembles[ind].file = location
+        self.system.ensembles[ind].file = location
 
     def add_replica_exchange_analysis(self, state, rex):
         # todo: add prefilter as an additional postprocess step (complication:
@@ -2049,15 +1838,15 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         pp = _ReplicaExchangeAnalysisPostProcess(protocol, rex, num_models)
         self.post_process_dump.add(pp)
         for i in range(rex._number_of_clusters):
-            group = self.add_model_group(_ModelGroup(state,
-                                                     'cluster %d' % (i + 1)))
+            group = ihm.model.ModelGroup(name=state.get_prefixed_name(
+                                                      'cluster %d' % (i + 1)))
+            state.add_model_group(group)
             # todo: make # of models to deposit configurable somewhere
             e = _ReplicaExchangeAnalysisEnsemble(pp, i, group, 1)
-            self.ensemble_dump.add(e)
-            self.density_dump.add(e)
+            self.system.ensembles.append(e)
             # Add localization density info if available
             for c in state.all_modeled_components:
-                e.load_localization_density(state, c, self.system.locations)
+                e.load_localization_density(state, c, self.asym_units[c])
             for stats in e.load_all_models(self, state):
                 m = self.add_model(group)
                 # Since we currently only deposit 1 model, it is the
@@ -2079,7 +1868,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             asyms.append(a if seqrng is None else a(*seqrng))
 
         a = ihm.Assembly(asyms, name=name, description=description)
-        self.system.orphan_assemblies.append(a)
         return a
 
     def _add_foxs_restraint(self, model, comp, seqrange, dataset, rg, chi,
@@ -2090,29 +1878,32 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                               name="SAXS subassembly",
                               description="All components that fit SAXS data")
         dataset = self._add_dataset(dataset)
-        self.sas_dump.add(_SASRestraint('FoXS', model, assembly, dataset,
-                                        rg, chi, details))
+        r = ihm.restraint.SASRestraint(dataset, assembly, segment=False,
+                fitting_method='FoXS', fitting_atom_type='Heavy atoms',
+                multi_state=False, radius_of_gyration=rg, details=details)
+        r.fits[model] = ihm.restraint.SASRestraintFit(chi_value=chi)
+        self.system.restraints.append(r)
+        self._add_restraint_dataset(r) # so that all-dataset group works
 
     def add_em2d_restraint(self, state, r, i, resolution, pixel_size,
                            image_resolution, projection_number,
                            micrographs_number):
-        d = self._get_restraint_dataset(r, i)
-        self.em2d_dump.add(_EM2DRestraint(state, d, r, i, resolution,
-                                          pixel_size, image_resolution,
-                                          projection_number,
-                                          micrographs_number))
+        r = _EM2DRestraint(state, r, i, resolution, pixel_size,
+                           image_resolution, projection_number,
+                           micrographs_number)
+        self.system.restraints.append(r)
+        self._add_restraint_dataset(r) # so that all-dataset group works
 
-    def add_em3d_restraint(self, state, target_ps, densities, r):
-        # A 3DEM restraint's dataset ID uniquely defines the restraint, so
-        # we need to allow duplicates
-        d = self._get_restraint_dataset(r, allow_duplicates=True)
-        self.em3d_dump.add(_EM3DRestraint(self, state, d, r, target_ps,
-                                          densities))
+    def add_em3d_restraint(self, state, target_ps, densities, pmi_restraint):
+        # todo: need to set allow_duplicates on this dataset?
+        r = _EM3DRestraint(self, state, pmi_restraint, target_ps, densities)
+        self.system.restraints.append(r)
+        self._add_restraint_dataset(r) # so that all-dataset group works
 
     def add_model(self, group, assembly=None, representation=None):
+        state = self._last_state
         if representation is None:
             representation = self._representations[0]
-        state = group.state
         return self.model_dump.add(state.prot,
                            self.model_prot_dump.get_last_protocol(state),
                            assembly if assembly else state.modeled_assembly,
