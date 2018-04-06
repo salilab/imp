@@ -404,9 +404,14 @@ C 2 baz
         # Out of order assembly (should be ordered on output)
         system.orphan_assemblies.append(ihm.Assembly((a3, a2), name='bar',
                                                      description='desc1'))
-        # Duplicate assembly (should be ignored)
-        system.orphan_assemblies.append(ihm.Assembly((a2, a3),
-                                                     description='desc2'))
+        # Duplicate (equal) assembly (should be ignored, but description
+        # merged in)
+        a = ihm.Assembly((a2, a3), description='desc2')
+        system.orphan_assemblies.append(a)
+
+        # Duplicate (identical) assembly (should be ignored, including
+        # description)
+        system.orphan_assemblies.append(a)
 
         # Assign entity and asym IDs
         ihm.dumper._EntityDumper().finalize(system)
@@ -415,7 +420,7 @@ C 2 baz
         d = ihm.dumper._AssemblyDumper()
         d.finalize(system)
         self.assertEqual(system.complete_assembly._id, 1)
-        self.assertEqual([a._id for a in system.orphan_assemblies], [2,3,3])
+        self.assertEqual([a._id for a in system.orphan_assemblies], [2,3,3,3])
         out = _get_dumper_output(d, system)
         self.assertEqual(out, """#
 loop_

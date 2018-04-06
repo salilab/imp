@@ -281,6 +281,7 @@ class _AssemblyDumper(_Dumper):
         self._assembly_by_id = []
         description_by_id = {}
         all_assemblies = list(system._all_assemblies())
+        seen_assembly_ids = {}
         for a in all_assemblies:
             # list isn't hashable but tuple is
             hasha = tuple(a)
@@ -290,8 +291,9 @@ class _AssemblyDumper(_Dumper):
                 description_by_id[a._id] = []
             else:
                 a._id = seen_assemblies[hasha]
-            if a.description:
+            if a.description and id(a) not in seen_assembly_ids:
                 description_by_id[a._id].append(a.description)
+            seen_assembly_ids[id(a)] = None
 
         # If multiple assemblies map to the same ID, give them all the same
         # composite description
