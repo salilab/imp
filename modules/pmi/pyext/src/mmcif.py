@@ -28,13 +28,15 @@ import textwrap
 import weakref
 import operator
 import itertools
-import ihm.format
 import ihm.location
 import ihm.dataset
 import ihm.dumper
 import ihm.metadata
 import ihm.startmodel
 import ihm.model
+import ihm.protocol
+import ihm.analysis
+import ihm.representation
 
 def _assign_id(obj, seen_objs, obj_by_id):
     """Assign a unique ID to obj, and track all ids in obj_by_id."""
@@ -67,15 +69,15 @@ class _ComponentMapper(object):
         return protname
 
 
-class _AsymIDMapper(object):
-    """Map a Particle to an asym_id (chain ID)"""
+class _AsymMapper(object):
+    """Map a Particle to an asym_unit"""
     def __init__(self, simo, prot):
         self.simo = simo
         self._cm = _ComponentMapper(prot)
 
     def __getitem__(self, p):
         protname = self._cm[p]
-        return self.simo._get_chain_for_component(protname, self._cm.o)
+        return self.simo.asym_units[protname]
 
 class _Dumper(object):
     """Base class for helpers to dump output to mmCIF"""
@@ -129,15 +131,19 @@ class _AllSoftware(object):
                    version='2.0',
                    location='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
 
+def _get_fragment_is_rigid(fragment):
+    """Determine whether a fragment is modeled rigidly"""
+    leaves = IMP.atom.get_leaves(fragment.hier)
+    # Assume all leaves are set up as rigid/flexible in the same way
+    return IMP.core.RigidMember.get_is_setup(leaves[0])
 
-class _PDBFragment(object):
+class _PDBFragment(ihm.representation.ResidueSegment):
     """Record details about part of a PDB file used as input
        for a component."""
-    primitive = 'sphere'
-    granularity = 'by-residue'
-    num = None
     def __init__(self, state, component, start, end, offset, pdbname,
-                 chain, hier):
+                 chain, hier, asym_unit):
+        super(_PDBFragment, self).__init__(asym_unit=asym_unit(start, end),
+                      rigid=None, primitive='sphere')
         self.component, self.start, self.end, self.offset, self.pdbname \
               = component, start, end, offset, pdbname
         self.state, self.chain, self.hier = state, chain, hier
@@ -145,172 +151,99 @@ class _PDBFragment(object):
               & IMP.atom.ChainPDBSelector(chain)
         self.starting_hier = IMP.atom.read_pdb(pdbname, state.m, sel)
 
+    rigid = property(lambda self: _get_fragment_is_rigid(self),
+                     lambda self, val: None)
+
     def combine(self, other):
         pass
 
-class _BeadsFragment(object):
+
+class _BeadsFragment(ihm.representation.FeatureSegment):
     """Record details about beads used to represent part of a component."""
-    primitive = 'sphere'
-    granularity = 'by-feature'
     chain = None
-    def __init__(self, state, component, start, end, num, hier):
-        self.state, self.component, self.start, self.end, self.num, self.hier \
-              = state, component, start, end, num, hier
+    def __init__(self, state, component, start, end, count, hier, asym_unit):
+        super(_BeadsFragment, self).__init__(asym_unit=asym_unit(start, end),
+                    rigid=None, primitive='sphere', count=count)
+        self.state, self.component, self.start, self.end, self.hier \
+              = state, component, start, end, hier
+
+    rigid = property(lambda self: _get_fragment_is_rigid(self),
+                     lambda self, val: None)
 
     def combine(self, other):
         # todo: don't combine if one fragment is rigid and the other flexible
-        if type(other) == type(self) and other.start == self.end + 1:
-            self.end = other.end
-            self.num += other.num
+        if type(other) == type(self) and \
+          other.asym_unit.seq_id_range[0] == self.asym_unit.seq_id_range[1] + 1:
+            self.asym_unit.seq_id_range = (self.asym_unit.seq_id_range[0],
+                                           other.asym_unit.seq_id_range[1])
+            self.start, self.end = self.asym_unit.seq_id_range
+            self.count += other.count
             return True
 
-class _StartingModel(object):
-    """Record details about an input model (e.g. comparative modeling
-       template) used for a component."""
 
-    source = ihm.unknown
-    db_name = ihm.unknown
-    db_code = ihm.unknown
-    sequence_identity = ihm.unknown
-
-    def __init__(self, fragment):
-        self.fragments = [fragment]
-        self.asym_id = fragment.chain
-
-    def get_seq_id_range_all_templates(self):
-        """Get the seq_id range covered by all templates in this starting
-           model. Where there are multiple templates, consolidate
-           them; template info is given in starting_comparative_models."""
-        def get_seq_id_range(template, full):
-            # The template may cover more than the current starting model
-            rng = template.seq_id_range
-            return (max(rng[0], full[0]), min(rng[1], full[1]))
-
-        if self.templates:
-            full = self.seq_id_begin, self.seq_id_end
-            rng = get_seq_id_range(self.templates[0], full)
-            for template in self.templates[1:]:
-                this_rng = get_seq_id_range(template, full)
-                rng = (min(rng[0], this_rng[0]), max(rng[1], this_rng[1]))
-            return rng
-        else:
-            return self.seq_id_begin, self.seq_id_end
-
-
-class _ModelRepresentationDumper(_Dumper):
+class _AllModelRepresentations(object):
     def __init__(self, simo):
-        super(_ModelRepresentationDumper, self).__init__(simo)
+        self.simo = simo
         # dict of fragments, ordered by representation, then component name,
         # then state
         self.fragments = OrderedDict()
-        self.output = IMP.pmi.output.Output()
+        self._all_representations = {}
+
+    def copy_component(self, state, name, original, asym_unit):
+        """Copy all representation for `original` in `state` to `name`"""
+        def copy_frag(f):
+            newf = copy.copy(f)
+            newf.asym_unit = asym_unit(*f.asym_unit.seq_id_range)
+            return newf
+        for rep in self.fragments:
+            if original in self.fragments[rep]:
+                if name not in self.fragments[rep]:
+                    self.fragments[rep][name] = OrderedDict()
+                self.fragments[rep][name][state] = [copy_frag(f)
+                            for f in self.fragments[rep][original][state]]
+            # Assume representation for a component is the same in all states,
+            # so only write out the first one
+            first_state = list(self.fragments[rep][name].keys())[0]
+            if state is first_state:
+                representation = self._all_representations[rep]
+                representation.extend(self.fragments[rep][name][state])
 
     def add_fragment(self, state, representation, fragment):
         """Add a model fragment."""
         comp = fragment.component
-        if representation not in self.fragments:
-            self.fragments[representation] = OrderedDict()
-        if comp not in self.fragments[representation]:
-            self.fragments[representation][comp] = OrderedDict()
-        if state not in self.fragments[representation][comp]:
-            self.fragments[representation][comp][state] = []
-        fragments = self.fragments[representation][comp][state]
+        id_rep = id(representation)
+        self._all_representations[id_rep] = representation
+        if id_rep not in self.fragments:
+            self.fragments[id_rep] = OrderedDict()
+        if comp not in self.fragments[id_rep]:
+            self.fragments[id_rep][comp] = OrderedDict()
+        if state not in self.fragments[id_rep][comp]:
+            self.fragments[id_rep][comp][state] = []
+        fragments = self.fragments[id_rep][comp][state]
         if len(fragments) == 0 or not fragments[-1].combine(fragment):
             fragments.append(fragment)
-
-    def get_model_mode(self, fragment):
-        """Determine the model_mode for a given fragment ('rigid' or
-           'flexible')"""
-        leaves = IMP.atom.get_leaves(fragment.hier)
-        # Assume all leaves are set up as rigid/flexible in the same way
-        if IMP.core.RigidMember.get_is_setup(leaves[0]):
-            return 'rigid'
-        else:
-            return 'flexible'
-
-    def _all_fragments(self):
-        """Yield all fragments, with copies for any transformed components"""
-        trans_orig = {}
-        for tc in self.simo._transformed_components:
-            if tc.original not in trans_orig:
-                trans_orig[tc.original] = []
-            trans_orig[tc.original].append(tc.name)
-        for representation, compdict in self.fragments.items():
-            for comp, statefrag in compdict.items():
-                yield representation, comp, comp, statefrag
-        for representation, compdict in self.fragments.items():
-            for orig, statefrag in compdict.items():
-                for comp in trans_orig.get(orig, []):
-                    yield representation, comp, orig, statefrag
-
-    def dump(self, writer):
-        ordinal_id = 1
-        segment_id = 1
-        with writer.loop("_ihm_model_representation",
-                         ["ordinal_id", "representation_id",
-                          "segment_id", "entity_id", "entity_description",
-                          "entity_asym_id",
-                          "seq_id_begin", "seq_id_end",
-                          "model_object_primitive", "starting_model_id",
-                          "model_mode", "model_granularity",
-                          "model_object_count"]) as l:
-            for representation, comp, orig, statefrag in self._all_fragments():
-                # For now, assume that representation of the same-named
-                # component is the same in all states, so just take the first
-                state = list(statefrag.keys())[0]
-                chain_id = self.simo._get_chain_for_component(comp, self.output)
-                for f in statefrag[state]:
-                    entity = self.simo.entities[f.component]
-                    starting_model_id = None
-                    if hasattr(f, 'pdbname'):
-                        starting_model_id \
-                             = self.starting_model[state, orig, f.pdbname].name
-                    l.write(ordinal_id=ordinal_id,
-                            representation_id=representation.id,
-                            segment_id=segment_id,
-                            entity_id=entity._id,
-                            entity_description=entity.description,
-                            entity_asym_id=chain_id,
-                            seq_id_begin=f.start,
-                            seq_id_end=f.end,
-                            model_object_primitive=f.primitive,
-                            starting_model_id=starting_model_id,
-                            model_mode=self.get_model_mode(f),
-                            model_granularity=f.granularity,
-                            model_object_count=f.num)
-                    ordinal_id += 1
-                    segment_id += 1
-
-class _DatasetGroup(object):
-    """A group of datasets"""
-    def __init__(self, datasets):
-        self._datasets = list(datasets)
-
-    def finalize(self):
-        """Get final datasets for each restraint and remove duplicates"""
-        final_datasets = OrderedDict()
-        for ds in self._datasets:
-            if isinstance(ds, _RestraintDataset):
-                d = ds.dataset
-            else:
-                d = ds
-            final_datasets[d] = None
-        self._datasets = final_datasets.keys()
+            # Assume representation for a component is the same in all states,
+            # so only write out the first one
+            first_state = list(self.fragments[id_rep][comp].keys())[0]
+            if state is first_state:
+                representation.append(fragment)
 
 
 class _AllDatasets(object):
     """Track all datasets generated by PMI and add them to the ihm.System"""
-    def __init__(self):
+    def __init__(self, system):
+        self.system = system
         self._datasets = []
         self._datasets_by_state = {}
         self._restraints_by_state = {}
-        self._dataset_groups = []
 
     def get_all_group(self, state):
-        """Get a _DatasetGroup encompassing all datasets so far in this state"""
-        g = _DatasetGroup(self._datasets_by_state.get(state, [])
+        """Get a DatasetGroup encompassing all datasets so far in this state"""
+        # Note that if a restraint dataset is replaced after this is called,
+        # the group will still contain the old dataset - mark dataset as read
+        # only?
+        g = ihm.dataset.DatasetGroup(self._datasets_by_state.get(state, [])
                 + [r.dataset for r in self._restraints_by_state.get(state, [])])
-        self._dataset_groups.append(g)
         return g
 
     def add(self, state, dataset):
@@ -319,7 +252,9 @@ class _AllDatasets(object):
         if state not in self._datasets_by_state:
             self._datasets_by_state[state] = []
         self._datasets_by_state[state].append(dataset)
-        # We don't add to ihm.System yet, since it can't handle RestraintDataset
+        # Make sure that the dataset ends up in the mmCIF file even if nothing
+        # refers to it
+        self.system.orphan_datasets.append(dataset)
         return dataset
 
     def add_restraint(self, state, restraint):
@@ -328,205 +263,86 @@ class _AllDatasets(object):
             self._restraints_by_state[state] = []
         self._restraints_by_state[state].append(restraint)
 
-    def _get_final_datasets(self):
-        """Get final set of datasets, with RestraintDatasets removed"""
-        for d in self._flatten_dataset(self._datasets):
-            yield d
 
-    def _get_final_groups(self):
-        """Get final set of dataset groups, with RestraintDatasets removed"""
-        self._final_dataset_group = {}
-        for g in self._dataset_groups:
-            g.finalize()
-            dg = ihm.dataset.DatasetGroup(g._datasets)
-            # Map our temporary class to the ihm object
-            self._final_dataset_group[g] = dg
-            yield dg
+class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
+    """Restrain to a set of cross links"""
 
-    def _flatten_dataset(self, d):
-        if isinstance(d, list):
-            for p in d:
-                for x in self._flatten_dataset(p):
-                    yield x
-        elif isinstance(d, _RestraintDataset):
-            for x in self._flatten_dataset(d.dataset):
-                yield x
-        else:
-            for p in d.parents:
-                for x in self._flatten_dataset(p):
-                    yield x
-            yield d
+    assembly = None
 
-
-class _CrossLinkGroup(object):
-    """Group common information for a set of cross links"""
-    def __init__(self, pmi_restraint, rdataset):
-        self.pmi_restraint, self.rdataset = pmi_restraint, rdataset
-        self.label = self.pmi_restraint.label
+    def __init__(self, pmi_restraint):
+        self.pmi_restraint = pmi_restraint
+        label = self.pmi_restraint.label
         # Map commonly-used subtypes to more standard labels
-        if self.label == 'wtDSS':
-            self.label = 'DSS'
+        if label == 'wtDSS':
+            label = 'DSS'
+        self.label = label
+        super(_CrossLinkRestraint, self).__init__(
+                dataset=self.pmi_restraint.dataset,
+                linker_type=label)
 
+    def _set_psi_sigma(self, model):
+        old_values = []
+        for resolution in self.pmi_restraint.sigma_dictionary:
+            statname = 'ISDCrossLinkMS_Sigma_%s_%s' % (resolution, self.label)
+            if model.stats and statname in model.stats:
+                sigma = float(model.stats[statname])
+                p = self.pmi_restraint.sigma_dictionary[resolution][0]
+                old_values.append((p, p.get_scale()))
+                p.set_scale(sigma)
+        for psiindex in self.pmi_restraint.psi_dictionary:
+            statname = 'ISDCrossLinkMS_Psi_%s_%s' % (psiindex, self.label)
+            if model.stats and statname in model.stats:
+                psi = float(model.stats[statname])
+                p = self.pmi_restraint.psi_dictionary[psiindex][0]
+                old_values.append((p, p.get_scale()))
+                p.set_scale(psi)
+        # If the same particle is set multiple times, make sure we get the
+        # original value last
+        return reversed(old_values)
 
-class _ExperimentalCrossLink(object):
-    def __init__(self, r1, c1, r2, c2, length, group):
-        self.r1, self.c1, self.r2, self.c2 = r1, c1, r2, c2
-        self.length, self.group = length, group
+    def add_fits_from_model_statfile(self, model):
+        # Set psi/sigma for all particles
+        old_values = self._set_psi_sigma(model)
+        for xl in self.cross_links:
+            # Get current psi/sigma particle value for each XL
+            xl.fits[model] = ihm.restraint.CrossLinkFit(
+                               psi=xl.psi, sigma1=xl.sigma1, sigma2=xl.sigma2)
+        # Restore original psi/sigma
+        for p, scale in old_values:
+            p.set_scale(scale)
 
-class _CrossLink(object):
-    def __init__(self, state, ex_xl, p1, p2, sigma1, sigma2, psi):
-        self.state = state
-        self.ex_xl, self.sigma1, self.sigma2 = ex_xl, sigma1, sigma2
-        self.p1, self.p2 = p1, p2
-        self.psi = psi
+    # Have our dataset point to that in the original PMI restraint
+    def __set_dataset(self, val):
+        self.pmi_restraint.dataset = val
+    dataset = property(lambda self: self.pmi_restraint.dataset,
+                       __set_dataset)
+
 
 def get_asym_mapper_for_state(simo, state, asym_map):
     asym = asym_map.get(state, None)
     if asym is None:
-        asym = _AsymIDMapper(simo, state.prot)
+        asym = _AsymMapper(simo, state.prot)
         asym_map[state] = asym
     return asym
 
-class _CrossLinkDumper(_Dumper):
-    def __init__(self, simo):
-        super(_CrossLinkDumper, self).__init__(simo)
-        self.cross_links = []
-        self.exp_cross_links = []
+class _PMICrossLink(object):
+    # Query PMI particles to get psi and sigma values at time of use, not
+    # time of construction (since they may be set after creating the restraint)
+    psi = property(lambda self: self.psi_p.get_scale(),
+                   lambda self, val: None)
+    sigma1 = property(lambda self: self.sigma1_p.get_scale(),
+                      lambda self, val: None)
+    sigma2 = property(lambda self: self.sigma2_p.get_scale(),
+                      lambda self, val: None)
 
-    def add_experimental(self, cross_link):
-        self.exp_cross_links.append(cross_link)
 
-    def add(self, cross_link):
-        self.cross_links.append(cross_link)
+class _ResidueCrossLink(ihm.restraint.ResidueCrossLink, _PMICrossLink):
+    pass
 
-    def dump(self, writer):
-        self.dump_list(writer)
-        self.dump_restraint(writer)
-        self.dump_results(writer)
 
-    def dump_list(self, writer):
-        seen_cross_links = {}
-        with writer.loop("_ihm_cross_link_list",
-                         ["id", "group_id", "entity_description_1",
-                          "entity_id_1", "seq_id_1", "comp_id_1",
-                          "entity_description_2",
-                          "entity_id_2", "seq_id_2", "comp_id_2",
-                          "linker_type", "dataset_list_id"]) as l:
-            xl_id = 0
-            for xl in self.exp_cross_links:
-                # Skip identical cross links
-                sig = (xl.c1, xl.c2, xl.r1, xl.r2, xl.group.label)
-                if sig in seen_cross_links:
-                    xl.id = seen_cross_links[sig]
-                    continue
-                entity1 = self.simo.entities[xl.c1]
-                entity2 = self.simo.entities[xl.c2]
-                seq1 = entity1.sequence
-                seq2 = entity2.sequence
-                # todo: handle experimental ambiguity (group_id) properly
-                xl_id += 1
-                seen_cross_links[sig] = xl_id
-                xl.id = xl_id
-                l.write(id=xl.id, group_id=xl.id,
-                        entity_description_1=entity1.description,
-                        entity_id_1=entity1._id,
-                        seq_id_1=xl.r1,
-                        comp_id_1=seq1[xl.r1-1].id,
-                        entity_description_2=entity2.description,
-                        entity_id_2=entity2._id,
-                        seq_id_2=xl.r2,
-                        comp_id_2=seq2[xl.r2-1].id,
-                        linker_type=xl.group.label,
-                        dataset_list_id=xl.group.rdataset.dataset._id)
+class _FeatureCrossLink(ihm.restraint.FeatureCrossLink, _PMICrossLink):
+    pass
 
-    def _granularity(self, xl):
-        """Determine the granularity of a cross link"""
-        if _get_by_residue(xl.p1) and _get_by_residue(xl.p2):
-            return 'by-residue'
-        else:
-            return 'by-feature'
-
-    def dump_restraint(self, writer):
-        seen_cross_links = {}
-        asym_states = {} # AsymIDMapper for each state
-        with writer.loop("_ihm_cross_link_restraint",
-                         ["id", "group_id", "entity_id_1", "asym_id_1",
-                          "seq_id_1", "comp_id_1",
-                          "entity_id_2", "asym_id_2", "seq_id_2", "comp_id_2",
-                          "restraint_type", "conditional_crosslink_flag",
-                          "model_granularity", "distance_threshold",
-                          "psi", "sigma_1", "sigma_2"]) as l:
-            xl_id = 0
-            for xl in self.cross_links:
-                asym = get_asym_mapper_for_state(self.simo, xl.state,
-                                                 asym_states)
-                entity1 = self.simo.entities[xl.ex_xl.c1]
-                entity2 = self.simo.entities[xl.ex_xl.c2]
-                seq1 = entity1.sequence
-                seq2 = entity2.sequence
-                asym1 = asym[xl.p1]
-                asym2 = asym[xl.p2]
-                # Skip identical cross links
-                sig = (asym1, xl.ex_xl.r1, asym2, xl.ex_xl.r2,
-                       xl.ex_xl.group.label)
-                if sig in seen_cross_links:
-                    xl.id = seen_cross_links[sig]
-                    continue
-                xl_id += 1
-                seen_cross_links[sig] = xl_id
-                xl.id = xl_id
-                l.write(id=xl.id,
-                        group_id=xl.ex_xl.id,
-                        entity_id_1=entity1._id,
-                        asym_id_1=asym1,
-                        seq_id_1=xl.ex_xl.r1,
-                        comp_id_1=seq1[xl.ex_xl.r1-1].id,
-                        entity_id_2=entity2._id,
-                        asym_id_2=asym2,
-                        seq_id_2=xl.ex_xl.r2,
-                        comp_id_2=seq2[xl.ex_xl.r2-1].id,
-                        restraint_type='upper bound',
-                        # todo: any circumstances where this could be ANY?
-                        conditional_crosslink_flag="ALL",
-                        model_granularity=self._granularity(xl),
-                        distance_threshold=xl.ex_xl.length,
-                        psi=xl.psi.get_scale(),
-                        sigma_1=xl.sigma1.get_scale(),
-                        sigma_2=xl.sigma2.get_scale())
-
-    def _set_psi_sigma(self, model, g):
-        for resolution in g.pmi_restraint.sigma_dictionary:
-            statname = 'ISDCrossLinkMS_Sigma_%s_%s' % (resolution, g.label)
-            if model.stats and statname in model.stats:
-                sigma = float(model.stats[statname])
-                p = g.pmi_restraint.sigma_dictionary[resolution][0]
-                p.set_scale(sigma)
-        for psiindex in g.pmi_restraint.psi_dictionary:
-            statname = 'ISDCrossLinkMS_Psi_%s_%s' % (psiindex, g.label)
-            if model.stats and statname in model.stats:
-                psi = float(model.stats[statname])
-                p = g.pmi_restraint.psi_dictionary[psiindex][0]
-                p.set_scale(psi)
-
-    def dump_results(self, writer):
-        all_groups = {}
-        for xl in self.cross_links:
-            all_groups[xl.ex_xl.group] = None
-        ordinal = 1
-        with writer.loop("_ihm_cross_link_result_parameters",
-                         ["ordinal_id", "restraint_id", "model_id",
-                          "psi", "sigma_1", "sigma_2"]) as l:
-            for model in self.models:
-                if not model._is_restrained: continue
-                for g in all_groups.keys():
-                    self._set_psi_sigma(model, g)
-                for xl in self.cross_links:
-                    if model.stats:
-                        l.write(ordinal_id=ordinal, restraint_id=xl.id,
-                                model_id=model.id, psi=xl.psi.get_scale(),
-                                sigma_1=xl.sigma1.get_scale(),
-                                sigma_2=xl.sigma2.get_scale())
-                        ordinal += 1
 
 class _EM2DRestraint(ihm.restraint.EM2DRestraint):
     def __init__(self, state, pmi_restraint, image_number, resolution,
@@ -621,33 +437,30 @@ class _EM3DRestraint(ihm.restraint.EM3DRestraint):
                                      % self.pmi_restraint.label])
 
 
-class _Protocol(list):
-    """A modeling protocol. This can consist of multiple _ProtocolSteps."""
-    pass
-
-class _ProtocolStep(object):
-    """A single step in a _Protocol."""
-    pass
-
-class _ReplicaExchangeProtocolStep(_ProtocolStep):
+class _ReplicaExchangeProtocolStep(ihm.protocol.Step):
     def __init__(self, state, rex):
-        self.state = state
-        self.modeled_assembly = state.modeled_assembly
-        self.name = 'Sampling'
         if rex.monte_carlo_sample_objects is not None:
-            self.method = 'Replica exchange monte carlo'
+            method = 'Replica exchange monte carlo'
         else:
-            self.method = 'Replica exchange molecular dynamics'
-        self.num_models_end = rex.vars["number_of_frames"]
+            method = 'Replica exchange molecular dynamics'
+        super(_ReplicaExchangeProtocolStep, self).__init__(
+                assembly=state.modeled_assembly,
+                dataset_group=None, # filled in by add_step()
+                method=method, name='Sampling',
+                num_models_begin=None, # filled in by add_step()
+                num_models_end=rex.vars["number_of_frames"],
+                multi_scale=True, multi_state=False, ordered=False)
 
 
-class _SimpleProtocolStep(_ProtocolStep):
+class _SimpleProtocolStep(ihm.protocol.Step):
     def __init__(self, state, num_models_end, method):
-        self.state = state
-        self.modeled_assembly = state.modeled_assembly
-        self.name = 'Sampling'
-        self.method = method
-        self.num_models_end = num_models_end
+        super(_SimpleProtocolStep, self).__init__(
+                assembly=state.modeled_assembly,
+                dataset_group=None, # filled in by add_step()
+                method=method, name='Sampling',
+                num_models_begin=None, # filled in by add_step()
+                num_models_end=num_models_end,
+                multi_scale=True, multi_state=False, ordered=False)
 
 
 class _Chain(object):
@@ -701,18 +514,16 @@ class _Excluder(object):
                 return True
 
 
-class _Model(object):
-    def __init__(self, prot, simo, protocol, assembly, representation, group):
+class _Model(ihm.model.Model):
+    def __init__(self, prot, simo, protocol, assembly, representation):
+        super(_Model, self).__init__(assembly=assembly, protocol=protocol,
+                                     representation=representation)
+        self.simo = weakref.proxy(simo)
         # Transformation from IMP coordinates into mmCIF coordinate system.
         # Normally we pass through coordinates unchanged, but in some cases
         # we may want to translate them (e.g. Nup84, where the deposited PDB
         # files are all centered; we want the mmCIF files to match)
         self.transform = IMP.algebra.get_identity_transformation_3d()
-        self.group = group
-        # The _Protocol which produced this model
-        self.protocol = protocol
-        self.assembly = assembly
-        self.representation = representation
         self.em2d_stats = None
         self.stats = None
         # True iff restraints act on this model
@@ -726,7 +537,6 @@ class _Model(object):
         self.geometric_center = IMP.algebra.Vector3D(*self.geometric_center)
         self._make_spheres_atoms(particle_infos_for_pdb, o, name, simo)
         self.rmsf = {}
-        self.name = None
 
     def all_chains(self, simo):
         """Yield all chains, including transformed ones"""
@@ -790,174 +600,77 @@ class _Model(object):
                              % str(indexes))
         return rmsf[indexes[0]][1]
 
-class _ModelDumper(_Dumper):
+    def get_atoms(self):
+        for chain in self.all_chains(self.simo):
+            for atom in chain.atoms:
+                (xyz, atom_type, residue_type, residue_index,
+                 all_indexes, radius) = atom
+                pt = self.transform * xyz
+                yield ihm.model.Atom(asym_unit=chain.asym_unit,
+                        seq_id=residue_index, atom_id=atom_type.get_string(),
+                        type_symbol=None, # todo: get element
+                        x=pt[0], y=pt[1], z=pt[2])
+
+    def get_spheres(self):
+        for chain in self.all_chains(self.simo):
+            for sphere in chain.spheres:
+                (xyz, residue_type, residue_index,
+                 all_indexes, radius) = sphere
+                if all_indexes is None:
+                    all_indexes = (residue_index,)
+                pt = self.transform * xyz
+                yield ihm.model.Sphere(asym_unit=chain.asym_unit,
+                        seq_id_range=(all_indexes[0], all_indexes[-1]),
+                        x=pt[0], y=pt[1], z=pt[2], radius=radius,
+                        rmsf=self.get_rmsf(chain.orig_comp, all_indexes))
+
+
+class _AllProtocols(object):
     def __init__(self, simo):
-        super(_ModelDumper, self).__init__(simo)
-        self.models = []
-
-    def add(self, prot, protocol, assembly, representation, group):
-        m = _Model(prot, self.simo, protocol, assembly, representation, group)
-        self.models.append(m)
-        m.id = len(self.models)
-        m._id = m.id # support using ihm.restraint classes
-        return m
-
-    def dump(self, writer):
-        self.dump_model_list(writer)
-        self.dump_atoms(writer)
-        self.dump_spheres(writer)
-
-    def dump_model_list(self, writer):
-        ordinal = 1
-        with writer.loop("_ihm_model_list",
-                         ["ordinal_id", "model_id", "model_group_id",
-                          "model_name", "model_group_name", "assembly_id",
-                          "protocol_id", "representation_id"]) as l:
-            for model in self.models:
-                l.write(ordinal_id=ordinal, model_id=model.id,
-                        model_group_id=model.group._id,
-                        model_name=model.name,
-                        model_group_name=model.group.name,
-                        assembly_id=model.assembly._id,
-                        protocol_id=model.protocol.id,
-                        representation_id=model.representation.id)
-                ordinal += 1
-
-    def dump_atoms(self, writer):
-        ordinal = 1
-        with writer.loop("_atom_site",
-                         ["id", "label_atom_id", "label_comp_id",
-                          "label_seq_id",
-                          "label_asym_id", "Cartn_x",
-                          "Cartn_y", "Cartn_z", "label_entity_id",
-                          "model_id"]) as l:
-            for model in self.models:
-                for chain in model.all_chains(self.simo):
-                    for atom in chain.atoms:
-                        (xyz, atom_type, residue_type, residue_index,
-                         all_indexes, radius) = atom
-                        pt = model.transform * xyz
-                        l.write(id=ordinal,
-                                label_atom_id=atom_type.get_string(),
-                                label_comp_id=residue_type.get_string(),
-                                label_asym_id=chain.asym_unit._id,
-                                label_entity_id=chain.entity._id,
-                                label_seq_id=residue_index,
-                                Cartn_x=pt[0], Cartn_y=pt[1], Cartn_z=pt[2],
-                                model_id=model.id)
-                        ordinal += 1
-
-    def dump_spheres(self, writer):
-        ordinal = 1
-        with writer.loop("_ihm_sphere_obj_site",
-                         ["ordinal_id", "entity_id", "seq_id_begin",
-                          "seq_id_end", "asym_id", "Cartn_x",
-                          "Cartn_y", "Cartn_z", "object_radius", "rmsf",
-                          "model_id"]) as l:
-            for model in self.models:
-                for chain in model.all_chains(self.simo):
-                    for sphere in chain.spheres:
-                        (xyz, residue_type, residue_index,
-                         all_indexes, radius) = sphere
-                        if all_indexes is None:
-                            all_indexes = (residue_index,)
-                        pt = model.transform * xyz
-                        l.write(ordinal_id=ordinal,
-                                entity_id=chain.entity._id,
-                                seq_id_begin = all_indexes[0],
-                                seq_id_end = all_indexes[-1],
-                                asym_id=chain.asym_unit._id,
-                                Cartn_x=pt[0], Cartn_y=pt[1], Cartn_z=pt[2],
-                                object_radius=radius,
-                                rmsf=model.get_rmsf(chain.orig_comp,
-                                                    all_indexes),
-                                model_id=model.id)
-                        ordinal += 1
-
-
-class _ModelProtocolDumper(_Dumper):
-    def __init__(self, simo):
-        super(_ModelProtocolDumper, self).__init__(simo)
+        self.simo = weakref.proxy(simo)
         # Lists of Protocols by state
         self.protocols = OrderedDict()
-        self._protocol_id = 1
 
     def add_protocol(self, state):
         """Add a new Protocol"""
         if state not in self.protocols:
             self.protocols[state] = []
-        p = _Protocol()
+        p = ihm.protocol.Protocol()
+        self.simo.system.orphan_protocols.append(p)
         self.protocols[state].append(p)
-        p.id = self._protocol_id # IDs must be unique across states
-        self._protocol_id += 1
 
-    def add_step(self, step):
-        """Add a ProtocolStep to the last Protocol"""
-        state = step.state
+    def add_step(self, step, state):
+        """Add a ProtocolStep to the last Protocol of the given State"""
         if state not in self.protocols:
             self.add_protocol(state)
         protocol = self.get_last_protocol(state)
-        if len(protocol) == 0:
+        if len(protocol.steps) == 0:
             step.num_models_begin = 0
         else:
-            step.num_models_begin = protocol[-1].num_models_end
-        protocol.append(step)
-        step.id = len(protocol)
+            step.num_models_begin = protocol.steps[-1].num_models_end
+        protocol.steps.append(step)
+        step.id = len(protocol.steps)
         # Assume that protocol uses all currently-defined datasets
         step.dataset_group = self.simo.all_datasets.get_all_group(state)
+
+    def add_postproc(self, step, state):
+        """Add a postprocessing step to the last protocol"""
+        protocol = self.get_last_protocol(state)
+        if len(protocol.analyses) == 0:
+            protocol.analyses.append(ihm.analysis.Analysis())
+        protocol.analyses[-1].steps.append(step)
 
     def get_last_protocol(self, state):
         """Return the most recently-added _Protocol"""
         return self.protocols[state][-1]
 
-    def dump(self, writer):
-        ordinal = 1
-        with writer.loop("_ihm_modeling_protocol",
-                         ["ordinal_id", "protocol_id", "step_id",
-                          "struct_assembly_id", "dataset_group_id",
-                          "struct_assembly_description", "protocol_name",
-                          "step_name", "step_method", "num_models_begin",
-                          "num_models_end", "multi_scale_flag",
-                          "multi_state_flag", "ordered_flag"]) as l:
-            for ps in self.protocols.values():
-                for p in ps:
-                    for step in p:
-                        # Map to final dataset group; todo: remove
-                        dg = step.dataset_group
-                        dg = self.simo.all_datasets._final_dataset_group[dg]
-                        l.write(ordinal_id=ordinal, protocol_id=p.id,
-                                step_id=step.id, step_method=step.method,
-                                step_name=step.name,
-                                struct_assembly_id=step.modeled_assembly._id,
-                                dataset_group_id=dg._id,
-                                num_models_begin=step.num_models_begin,
-                                num_models_end=step.num_models_end,
-                                # todo: support multiple states, time ordered
-                                multi_state_flag=False, ordered_flag=False,
-                                # all PMI models are multi scale
-                                multi_scale_flag=True)
-                        ordinal += 1
 
-
-class _MSESeqDif(object):
-    """Track an MSE -> MET mutation in the starting model sequence"""
-    comp_id = 'MET'
-    db_comp_id = 'MSE'
-    details = 'Conversion of modified residue MSE to MET'
-    def __init__(self, res, component, asym_id, model, offset):
-        self.res, self.component, self.asym_id = res, component, asym_id
-        self.model = model
-        self.offset = offset
-
-
-class _StartingModelDumper(_Dumper):
+class _AllStartingModels(object):
     def __init__(self, simo):
-        super(_StartingModelDumper, self).__init__(simo)
+        self.simo = simo
         # dict of starting models (entire PDB files), collected from fragments,
         # ordered by component name and state
         self.models = OrderedDict()
-        # mapping from state+component+pdbname to starting model
-        self.starting_model = {}
         self.output = IMP.pmi.output.Output()
 
     def add_pdb_fragment(self, fragment):
@@ -971,283 +684,126 @@ class _StartingModelDumper(_Dumper):
         models = self.models[comp][state]
         if len(models) == 0 \
            or models[-1].fragments[0].pdbname != fragment.pdbname:
-            model = _StartingModel(fragment)
+            model = self._add_model(fragment)
             models.append(model)
-            self.get_model_metadata(model, fragment.pdbname, fragment.chain)
         else:
-            models[-1].fragments.append(fragment)
+            # Break circular ref between fragment and model
+            models[-1].fragments.append(weakref.proxy(fragment))
+            # Update residue range to cover all fragments
+            sid_begin = min(fragment.start + fragment.offset,
+                            models[-1].asym_unit.seq_id_range[0])
+            sid_end = max(fragment.end + fragment.offset,
+                          models[-1].asym_unit.seq_id_range[1])
+            models[-1].asym_unit = fragment.asym_unit.asym(sid_begin, sid_end)
+        fragment.starting_model = models[-1]
 
-    def get_model_metadata(self, model, pdbname, chain):
+    def _add_model(self, f):
         parser = ihm.metadata.PDBParser()
-        r = parser.parse_file(pdbname)
+        r = parser.parse_file(f.pdbname)
 
-        model.dataset = r['dataset']
         self.simo.system.software.extend(r['software'])
-        self.simo._add_dataset(model.dataset)
-        model.templates = r['templates']
-        model.metadata = r['metadata']
-        for t in model.templates:
+        self.simo._add_dataset(r['dataset'])
+        for t in r['templates']:
             if t.alignment_file:
                 self.simo.system.locations.append(t.alignment_file)
             if t.dataset:
                 self.simo._add_dataset(t.dataset)
+        m = _StartingModel(
+                    asym_unit=f.asym_unit.asym(f.start + f.offset,
+                                               f.end + f.offset),
+                    dataset=r['dataset'], asym_id=f.chain,
+                    templates=r['templates'], offset=f.offset,
+                    metadata=r['metadata'])
+        m.fragments = [weakref.proxy(f)]
+        return m
 
-    def assign_model_details(self):
-        for comp, states in self.models.items():
-            model_id = 0
-            for state in states:
-                for model in states[state]:
-                    model_id += 1
-                    model.name = "%s-m%d" % (comp, model_id)
-                    self.starting_model[state, comp,
-                                        model.fragments[0].pdbname] = model
-                    model.seq_id_begin = min(x.start + x.offset
-                                             for x in model.fragments)
-                    model.seq_id_end = max(x.end + x.offset
-                                           for x in model.fragments)
 
-    def all_models(self):
-        for comp, states in self.models.items():
-            # For now, assume that starting model of the same-named
-            # component is the same in all states, so just take the first
-            first_state = list(states.keys())[0]
-            for model in states[first_state]:
-                yield model
+class _MutantHandler(object):
+    def __init__(self, templates, asym):
+        self._seq_dif = []
+        self._last_res_index = None
+        self.templates = templates
+        self.asym = asym
 
-    def finalize(self):
-        self.assign_model_details()
+    def _residue_first_atom(self, res):
+        """Return True iff we're looking at the first atom in this residue"""
+        # Only add one seq_dif record per residue
+        ind = res.get_index()
+        if ind != self._last_res_index:
+            self._last_res_index = ind
+            return True
 
-    def dump(self, writer):
-        self.dump_details(writer)
-        self.dump_comparative(writer)
-        seq_dif = self.dump_coords(writer)
-        self.dump_seq_dif(writer, seq_dif)
+    def handle_residue(self, res, comp_id, seq_id, offset):
+        res_name = res.get_residue_type().get_string()
+        # MSE in the original PDB is automatically mutated
+        # by IMP to MET, so reflect that in the output,
+        # and pass back to populate the seq_dif category.
+        if res_name == 'MSE' and comp_id == 'MET':
+            if self._residue_first_atom(res):
+                # This should only happen when we're using
+                # a crystal structure as the source (a
+                # comparative model would use MET in
+                # the sequence)
+                assert(len(self.templates) == 0)
+                self._seq_dif.append(ihm.startmodel.MSESeqDif(
+                            res.get_index(), seq_id))
+        elif res_name != comp_id:
+            if self._residue_first_atom(res):
+                print("WARNING: Starting model residue %s does not match "
+                      "that in the output model (%s) for chain %s residue %d. "
+                      "Check offset (currently %d)."
+                      % (res_name, comp_id, self.asym._id, seq_id, offset))
+                self._seq_dif.append(ihm.startmodel.SeqDif(
+                         db_seq_id=res.get_index(), seq_id=seq_id,
+                         db_comp_id=res_name,
+                         details="Mutation of %s to %s" % (res_name, comp_id)))
 
-    def dump_seq_dif(self, writer, seq_dif):
-        ordinal = 1
-        with writer.loop("_ihm_starting_model_seq_dif",
-                     ["ordinal_id", "entity_id", "asym_id",
-                      "seq_id", "comp_id", "starting_model_id",
-                      "db_asym_id", "db_seq_id", "db_comp_id",
-                      "details"]) as l:
-            for sd in seq_dif:
-                chain_id = self.simo._get_chain_for_component(
-                                    sd.component, self.output)
-                entity = self.simo.entities[sd.component]
-                l.write(ordinal_id=ordinal, entity_id=entity._id,
-                        asym_id=chain_id, seq_id=sd.res.get_index(),
-                        comp_id=sd.comp_id,
-                        db_asym_id=sd.asym_id,
-                        db_seq_id=sd.res.get_index() - sd.offset,
-                        db_comp_id=sd.db_comp_id,
-                        starting_model_id=sd.model.name,
-                        details=sd.details)
-                ordinal += 1
 
-    def dump_comparative(self, writer):
-        """Dump details on comparative models. Must be called after
-           dump_details() since it uses IDs assigned there."""
-        with writer.loop("_ihm_starting_comparative_models",
-                     ["ordinal_id", "starting_model_id",
-                      "starting_model_auth_asym_id",
-                      "starting_model_seq_id_begin",
-                      "starting_model_seq_id_end",
-                      "template_auth_asym_id", "template_seq_id_begin",
-                      "template_seq_id_end", "template_sequence_identity",
-                      "template_sequence_identity_denominator",
-                      "template_dataset_list_id",
-                      "alignment_file_id"]) as l:
-            ordinal = 1
-            for model in self.all_models():
-                for template in model.templates:
-                    denom = template.sequence_identity_denominator
-                    l.write(ordinal_id=ordinal,
-                      starting_model_id=model.name,
-                      starting_model_auth_asym_id=model.asym_id,
-                      starting_model_seq_id_begin=template.seq_id_range[0],
-                      starting_model_seq_id_end=template.seq_id_range[1],
-                      template_auth_asym_id=template.asym_id,
-                      template_seq_id_begin=template.template_seq_id_range[0],
-                      template_seq_id_end=template.template_seq_id_range[1],
-                      template_sequence_identity=template.sequence_identity,
-                      template_sequence_identity_denominator=denom,
-                      template_dataset_list_id=template.dataset._id
-                                               if template.dataset
-                                               else ihm.unknown,
-                      alignment_file_id=template.alignment_file._id
-                                        if template.alignment_file
-                                        else ihm.unknown)
-                    ordinal += 1
+class _StartingModel(ihm.startmodel.StartingModel):
+    def get_seq_dif(self):
+        return self._seq_dif
 
-    def dump_details(self, writer):
-        # Map dataset types to starting model sources
-        source_map = {'Comparative model': 'comparative model',
-                      'Integrative model': 'integrative model',
-                      'Experimental model': 'experimental model'}
-        writer.write_comment("""IMP will attempt to identify which input models
-are crystal structures and which are comparative models, but does not always
-have sufficient information to deduce all of the templates used for comparative
-modeling. These may need to be added manually below.""")
-        with writer.loop("_ihm_starting_model_details",
-                     ["starting_model_id", "entity_id", "entity_description",
-                      "asym_id", "seq_id_begin",
-                      "seq_id_end", "starting_model_source",
-                      "starting_model_auth_asym_id",
-                      "starting_model_sequence_offset",
-                      "dataset_list_id"]) as l:
-            for model in self.all_models():
-                f = model.fragments[0]
-                entity = self.simo.entities[f.component]
-                chain_id = self.simo._get_chain_for_component(f.component,
-                                                              self.output)
-                seq_id_range = model.get_seq_id_range_all_templates()
-                l.write(entity_id=entity._id,
-                      entity_description=entity.description,
-                      asym_id=chain_id,
-                      seq_id_begin=seq_id_range[0],
-                      seq_id_end=seq_id_range[1],
-                      starting_model_auth_asym_id=model.asym_id,
-                      starting_model_id=model.name,
-                      starting_model_source=source_map[model.dataset.data_type],
-                      starting_model_sequence_offset=f.offset,
-                      dataset_list_id=model.dataset._id)
-
-    def dump_coords(self, writer):
-        seq_dif = []
-        ordinal = 1
-        with writer.loop("_ihm_starting_model_coord",
-                     ["starting_model_id", "group_PDB", "id", "type_symbol",
-                      "atom_id", "comp_id", "entity_id", "asym_id",
-                      "seq_id", "Cartn_x",
-                      "Cartn_y", "Cartn_z", "B_iso_or_equiv",
-                      "ordinal_id"]) as l:
-            for model in self.all_models():
-                for f in model.fragments:
-                    sel = IMP.atom.Selection(f.starting_hier,
-                               residue_indexes=list(range(f.start - f.offset,
+    def get_atoms(self):
+        mh = _MutantHandler(self.templates, self.asym_unit)
+        for f in self.fragments:
+            sel = IMP.atom.Selection(f.starting_hier,
+                            residue_indexes=list(range(f.start - f.offset,
                                                        f.end - f.offset + 1)))
-                    last_res_index = None
-                    for a in sel.get_selected_particles():
-                        coord = IMP.core.XYZ(a).get_coordinates()
-                        atom = IMP.atom.Atom(a)
-                        element = atom.get_element()
-                        element = IMP.atom.get_element_table().get_name(element)
-                        atom_name = atom.get_atom_type().get_string()
-                        group_pdb = 'ATOM'
-                        if atom_name.startswith('HET:'):
-                            group_pdb = 'HETATM'
-                            atom_name = atom_name[4:]
-                        res = IMP.atom.get_residue(atom)
-                        res_name = res.get_residue_type().get_string()
-                        # MSE in the original PDB is automatically mutated
-                        # by IMP to MET, so reflect that in the output,
-                        # and pass back to populate the seq_dif category.
-                        if res_name == 'MSE':
-                            res_name = 'MET'
-                            # Only add one seq_dif record per residue
-                            ind = res.get_index()
-                            if ind != last_res_index:
-                                last_res_index = ind
-                                # This should only happen when we're using
-                                # a crystal structure as the source (a
-                                # comparative model would use MET in
-                                # the sequence)
-                                assert(len(model.templates) == 0)
-                                seq_dif.append(_MSESeqDif(res, f.component,
-                                                          model.asym_id,
-                                                          model, f.offset))
-                        chain_id = self.simo._get_chain_for_component(
-                                            f.component, self.output)
-                        entity = self.simo.entities[f.component]
-                        l.write(starting_model_id=model.name,
-                                group_PDB=group_pdb,
-                                id=atom.get_input_index(), type_symbol=element,
-                                atom_id=atom_name, comp_id=res_name,
-                                entity_id=entity._id,
-                                asym_id=chain_id,
-                                seq_id=res.get_index() + f.offset,
-                                Cartn_x=coord[0],
-                                Cartn_y=coord[1], Cartn_z=coord[2],
-                                B_iso_or_equiv=atom.get_temperature_factor(),
-                                ordinal_id=ordinal)
-                        ordinal += 1
-        return seq_dif
+            for a in sel.get_selected_particles():
+                coord = IMP.core.XYZ(a).get_coordinates()
+                atom = IMP.atom.Atom(a)
+                element = atom.get_element()
+                element = IMP.atom.get_element_table().get_name(element)
+                atom_name = atom.get_atom_type().get_string()
+                het = atom_name.startswith('HET:')
+                if het:
+                    atom_name = atom_name[4:]
+                res = IMP.atom.get_residue(atom)
 
-class _StructConfDumper(_Dumper):
-    def all_rigid_fragments(self):
-        """Yield all rigid model representation fragments"""
-        asym_states = {}
-        model_repr = self.simo.model_repr_dump
-        for representation, compdict in model_repr.fragments.items():
-            for comp, statefrag in compdict.items():
-                # For now, assume that representation of the same-named
-                # component is the same in all states, so just take the first
-                state = list(statefrag.keys())[0]
-                for f in statefrag[state]:
-                    if hasattr(f, 'pdbname') \
-                       and model_repr.get_model_mode(f) == 'rigid':
-                        asym = get_asym_mapper_for_state(self.simo, f.state,
-                                                         asym_states)
-                        yield (f, model_repr.starting_model[state, comp,
-                                                            f.pdbname],
-                               asym[f.hier])
-
-    def all_helices(self):
-        """Yield all helices that overlap with rigid model fragments"""
-        for f, starting_model, asym_id in self.all_rigid_fragments():
-            if len(starting_model.templates) == 0:
-                for m in starting_model.metadata:
-                    if isinstance(m, ihm.startmodel.PDBHelix) \
-                       and m.start_asym == starting_model.asym_id \
-                       and m.end_asym == starting_model.asym_id \
-                       and m.start_resnum >= f.start and m.end_resnum <= f.end:
-                        yield (m, max(f.start, m.start_resnum),
-                               min(f.end, m.end_resnum), asym_id)
-
-    def dump(self, writer):
-        with writer.category("_struct_conf_type") as l:
-            l.write(id='HELX_P', criteria=ihm.unknown,
-                    reference=ihm.unknown)
-        # Dump helix information for the model. For any model fragment that
-        # is rigid, atomic, and uses an experimental PDB structure as the
-        # starting model, inherit any helix information from that PDB file.
-        # Note that we can't use the helix id from the original PDB, since
-        # it has to be unique and this might not be the case if we inherit
-        # from multiple PDBs.
-        ordinal = 0
-        with writer.loop("_struct_conf",
-                     ["id", "conf_type_id", "beg_label_comp_id",
-                      "beg_label_asym_id", "beg_label_seq_id",
-                      "end_label_comp_id", "end_label_asym_id",
-                      "end_label_seq_id",]) as l:
-            for h, begin, end, asym_id in self.all_helices():
-                ordinal += 1
-                l.write(id='HELX_P%d' % ordinal, conf_type_id='HELX_P',
-                        beg_label_comp_id=h.start_resnam,
-                        beg_label_asym_id=asym_id,
-                        beg_label_seq_id=begin,
-                        end_label_comp_id=h.end_resnam,
-                        end_label_asym_id=asym_id,
-                        end_label_seq_id=end)
+                seq_id = res.get_index() + f.offset
+                comp_id = self.asym_unit.entity.sequence[seq_id-1].id
+                mh.handle_residue(res, comp_id, seq_id, f.offset)
+                yield ihm.model.Atom(asym_unit=self.asym_unit,
+                                     seq_id=seq_id,
+                                     atom_id=atom_name, type_symbol=element,
+                                     x=coord[0], y=coord[1], z=coord[2],
+                                     het=het,
+                                     biso=atom.get_temperature_factor())
+        self._seq_dif = mh._seq_dif
 
 
-class _PostProcess(object):
-    """Base class for any post processing"""
-    pass
-
-class _ReplicaExchangeAnalysisPostProcess(_PostProcess):
+class _ReplicaExchangeAnalysisPostProcess(ihm.analysis.ClusterStep):
     """Post processing using AnalysisReplicaExchange0 macro"""
-    type = 'cluster'
-    feature = 'RMSD'
 
-    def __init__(self, protocol, rex, num_models_begin):
-        self.protocol = protocol
+    def __init__(self, rex, num_models_begin):
         self.rex = rex
-        self.num_models_begin = num_models_begin
-        self.num_models_end = 0
+        num_models_end = 0
         for fname in self.get_all_stat_files():
             with open(fname) as fh:
-                self.num_models_end += len(fh.readlines())
+                num_models_end += len(fh.readlines())
+        super(_ReplicaExchangeAnalysisPostProcess, self).__init__(
+                feature='RMSD', num_models_begin=num_models_begin,
+                num_models_end=num_models_end)
 
     def get_stat_file(self, cluster_num):
         return os.path.join(self.rex._outputdir, "cluster.%d" % cluster_num,
@@ -1257,59 +813,6 @@ class _ReplicaExchangeAnalysisPostProcess(_PostProcess):
         for i in range(self.rex._number_of_clusters):
             yield self.get_stat_file(i)
 
-class _SimplePostProcess(_PostProcess):
-    """Simple ad hoc clustering"""
-    type = 'cluster'
-    feature = 'RMSD'
-
-    def __init__(self, protocol, num_models_begin, num_models_end):
-        self.protocol = protocol
-        self.num_models_begin = num_models_begin
-        self.num_models_end = num_models_end
-
-
-class _NoPostProcess(_PostProcess):
-    """No post processing"""
-    type = 'none'
-    feature = 'none'
-
-    def __init__(self, protocol, num_models):
-        self.protocol = protocol
-        self.num_models_begin = self.num_models_end = num_models
-
-class _PostProcessDumper(_Dumper):
-    def __init__(self, simo):
-        super(_PostProcessDumper, self).__init__(simo)
-        self.postprocs = []
-
-    def add(self, postproc):
-        protocol = postproc.protocol
-        self.postprocs.append(postproc)
-        postproc.id = len(self.postprocs)
-        postproc._id = postproc.id # work with python-ihm EnsembleDumper
-
-    def finalize(self):
-        # Assign step IDs per protocol
-        pp_by_protocol = {}
-        for p in self.postprocs:
-            protocol = p.protocol
-            if id(protocol) not in pp_by_protocol:
-                pp_by_protocol[id(protocol)] = []
-            by_prot = pp_by_protocol[id(protocol)]
-            by_prot.append(p)
-            p.step_id = len(by_prot)
-
-    def dump(self, writer):
-        with writer.loop("_ihm_modeling_post_process",
-                         ["id", "protocol_id", "analysis_id", "step_id",
-                          "type", "feature", "num_models_begin",
-                          "num_models_end"]) as l:
-            # todo: handle multiple analyses
-            for p in self.postprocs:
-                l.write(id=p.id, protocol_id=p.protocol.id, analysis_id=1,
-                        step_id=p.step_id, type=p.type, feature=p.feature,
-                        num_models_begin=p.num_models_begin,
-                        num_models_end=p.num_models_end)
 
 class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
     """Ensemble generated using AnalysisReplicaExchange0 macro"""
@@ -1430,29 +933,6 @@ class _EntityMapper(dict):
         self[component_name] = self._sequence_dict[sequence]
 
 
-class _RestraintDataset(object):
-    """Wrapper around a dataset associated with a restraint.
-       This is needed because we need to delay access to the dataset
-       in case the writer of the PMI script overrides or changes it
-       after creating the restraint."""
-    def __init__(self, restraint, num, allow_duplicates):
-        self.restraint = restraint
-        self.num, self.allow_duplicates = num, allow_duplicates
-        self.__dataset = None
-    def __get_dataset(self):
-        if self.__dataset:
-            return self.__dataset
-        if self.num is not None:
-            d = copy.deepcopy(self.restraint.datasets[self.num])
-        else:
-            d = copy.deepcopy(self.restraint.dataset)
-        if self.allow_duplicates:
-            d.location._allow_duplicates = True
-        # Don't copy again next time we access self.dataset
-        self.__dataset = d
-        return d
-    dataset = property(__get_dataset)
-
 class _TransformedComponent(object):
     def __init__(self, name, original, transform):
         self.name, self.original, self.transform = name, original, transform
@@ -1489,6 +969,7 @@ class _State(ihm.model.State):
 
     def add_model_group(self, group):
         self.append(group)
+        return group
 
     def get_prefixed_name(self, name):
         """Prefix the given name with the state name, if available."""
@@ -1513,12 +994,6 @@ class _State(ihm.model.State):
     def __set_name(self, val):
         self._pmi_state.long_name = val
     name = property(__get_name, __set_name)
-
-
-class _Representation(object):
-    """A complete model representation"""
-    def __init__(self, name):
-        self.name = name
 
 
 class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
@@ -1549,10 +1024,10 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.system.locations.append(loc)
 
         self._states = {}
+        self.__asym_states = {}
         self._working_directory = os.getcwd()
-        self._cif_writer = ihm.format.CifWriter(fh)
-        self._representations = []
-        self.create_representation("Default representation")
+        self.default_representation = self.create_representation(
+                                                    "Default representation")
         self.entities = _EntityMapper(self.system)
         # Mapping from component names to ihm.AsymUnit
         self.asym_units = {}
@@ -1564,36 +1039,18 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         # Coordinates to exclude
         self._exclude_coords = {}
 
-        self.model_repr_dump = _ModelRepresentationDumper(self)
-        self.cross_link_dump = _CrossLinkDumper(self)
-        self.model_prot_dump = _ModelProtocolDumper(self)
-        self.all_datasets = _AllDatasets()
-        self.starting_model_dump = _StartingModelDumper(self)
+        self.all_representations = _AllModelRepresentations(self)
+        self.all_protocols = _AllProtocols(self)
+        self.all_datasets = _AllDatasets(self.system)
+        self.all_starting_models = _AllStartingModels(self)
 
-        self.model_dump = _ModelDumper(self)
-        self.model_repr_dump.starting_model \
-                    = self.starting_model_dump.starting_model
         self.all_software = _AllSoftware(self.system)
-        self.post_process_dump = _PostProcessDumper(self)
-
-        # Some dumpers add per-model information; give them a pointer to
-        # the model list
-        self.cross_link_dump.models = self.model_dump.models
-
-        self._dumpers = [self.model_repr_dump,
-                         self.cross_link_dump,
-                         self.starting_model_dump,
-                         # todo: detect atomic models and emit struct_conf
-                         #_StructConfDumper(self),
-                         self.model_prot_dump, self.post_process_dump,
-                         self.model_dump]
 
     def create_representation(self, name):
         """Create a new Representation and return it. This can be
            passed to add_model(), add_bead_element() or add_pdb_element()."""
-        r = _Representation(name)
-        self._representations.append(r)
-        r.id = len(self._representations)
+        r = ihm.representation.Representation()
+        self.system.orphan_representations.append(r)
         return r
 
     def exclude_coordinates(self, component, seqrange):
@@ -1647,6 +1104,9 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         return comps
 
     def create_transformed_component(self, state, name, original, transform):
+        """Make a new component that's a transformed copy of another.
+           All representation for the existing component is copied to the
+           new one."""
         assembly_comps = self._get_assembly_comps(state.modeled_assembly)
         if name in assembly_comps:
             raise ValueError("Component %s already exists" % name)
@@ -1656,6 +1116,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.add_component_sequence(state, name, self.sequence_dict[original])
         self._transformed_components.append(_TransformedComponent(
                                             name, original, transform))
+        self.all_representations.copy_component(state, name, original,
+                                                self.asym_units[name])
 
     def create_component(self, state, name, modeled):
         new_comp = name not in self._all_components
@@ -1683,98 +1145,104 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
     def _add_restraint_model_fits(self):
         """Add fits to restraints for all known models"""
-        for m in self.model_dump.models:
+        for group, m in self.system._all_models():
             if m._is_restrained:
                 for r in self.system.restraints:
                     if hasattr(r, 'add_fits_from_model_statfile'):
                         r.add_fits_from_model_statfile(m)
 
     def flush(self):
+        self.finalize()
+        ihm.dumper.write(self.fh, [self.system])
+
+    def finalize(self):
+        """Do any final processing on the class hierarchy.
+           After calling this method, the `system` member (an instance
+           of `ihm.System`) completely reproduces the PMI modeling, and
+           can be written out to an mmCIF file with `ihm.dumper.write`,
+           and/or modified using the ihm API."""
         self._add_restraint_model_fits()
-        # Make sure ihm knows about final datasets and groups
-        self.system.orphan_datasets.extend(
-                           self.all_datasets._get_final_datasets())
-        self.system.orphan_dataset_groups.extend(
-                           self.all_datasets._get_final_groups())
 
         # Point all locations to repos, if applicable
         all_repos = [m for m in self._metadata
                      if isinstance(m, ihm.location.Repository)]
         self.system.update_locations_in_repositories(all_repos)
 
-        # Dump out ihm-managed objects first
-        ihm.dumper.write(self.fh, [self.system])
-        # Now dump our own
-        for dumper in self._dumpers:
-            dumper.finalize_metadata()
-        for dumper in self._dumpers:
-            dumper.finalize()
-        for dumper in self._dumpers:
-            dumper.dump(self._cif_writer)
-
     def add_pdb_element(self, state, name, start, end, offset, pdbname,
                         chain, hier, representation=None):
         if self._is_excluded(name, start, end):
             return
         if representation is None:
-            representation = self._representations[0]
+            representation = self.default_representation
         p = _PDBFragment(state, name, start, end, offset, pdbname, chain,
-                         hier)
-        self.model_repr_dump.add_fragment(state, representation, p)
-        self.starting_model_dump.add_pdb_fragment(p)
+                         hier, self.asym_units[name])
+        self.all_representations.add_fragment(state, representation, p)
+        self.all_starting_models.add_pdb_fragment(p)
 
     def add_bead_element(self, state, name, start, end, num, hier,
                          representation=None):
         if self._is_excluded(name, start, end):
             return
         if representation is None:
-            representation = self._representations[0]
-        b = _BeadsFragment(state, name, start, end, num, hier)
-        self.model_repr_dump.add_fragment(state, representation, b)
+            representation = self.default_representation
+        b = _BeadsFragment(state, name, start, end, num, hier,
+                           self.asym_units[name])
+        self.all_representations.add_fragment(state, representation, b)
 
-    def _get_restraint_dataset(self, r, num=None, allow_duplicates=False):
-        """Get a wrapper object for the dataset used by this restraint.
-           This is needed because the restraint's dataset may be changed
-           in the PMI script before we get to use it."""
-        rs = _RestraintDataset(r, num, allow_duplicates)
-        self._add_dataset(rs)
-        return rs
+    def get_cross_link_group(self, pmi_restraint):
+        r = _CrossLinkRestraint(pmi_restraint)
+        self.system.restraints.append(r)
+        self._add_restraint_dataset(r) # so that all-dataset group works
+        return r
 
-    def get_cross_link_group(self, r):
-        return _CrossLinkGroup(r, self._get_restraint_dataset(r))
-
-    def add_experimental_cross_link(self, r1, c1, r2, c2, length, group):
+    def add_experimental_cross_link(self, r1, c1, r2, c2, rsr):
         if c1 not in self._all_components or c2 not in self._all_components:
             # Crosslink refers to a component we didn't model
             # As a quick hack, just ignore it.
             # todo: need to add an entity for this anyway (so will need the
             # sequence, and add to struct_assembly)
             return None
-        xl = _ExperimentalCrossLink(r1, c1, r2, c2, length, group)
-        self.cross_link_dump.add_experimental(xl)
+        e1 = self.entities[c1]
+        e2 = self.entities[c2]
+        xl = ihm.restraint.ExperimentalCrossLink(residue1=e1.residue(r1),
+                                                 residue2=e2.residue(r2))
+        rsr.experimental_cross_links.append([xl])
         return xl
 
-    def add_cross_link(self, state, ex_xl, p1, p2, sigma1, sigma2, psi):
-        self.cross_link_dump.add(_CrossLink(state, ex_xl, p1, p2, sigma1,
-                                            sigma2, psi))
+    def add_cross_link(self, state, ex_xl, p1, p2, length, sigma1_p, sigma2_p,
+                       psi_p, rsr):
+        # Map p1/p2 to asym units
+        asym = get_asym_mapper_for_state(self, state, self.__asym_states)
+        d = ihm.restraint.UpperBoundDistanceRestraint(length)
+
+        if _get_by_residue(p1) and _get_by_residue(p2):
+            cls = _ResidueCrossLink
+        else:
+            cls = _FeatureCrossLink
+        xl = cls(ex_xl, asym1=asym[p1], asym2=asym[p2], distance=d,
+                 restrain_all=True)
+        # Needed to look up fits later
+        xl.psi_p, xl.sigma1_p, xl.sigma2_p = psi_p, sigma1_p, sigma2_p
+        rsr.cross_links.append(xl)
 
     def add_replica_exchange(self, state, rex):
         # todo: allow for metadata to say how many replicas were used in the
         # actual experiment, and how many independent runs were carried out
         # (use these as multipliers to get the correct total number of
         # output models)
-        self.model_prot_dump.add_step(_ReplicaExchangeProtocolStep(state, rex))
+        self.all_protocols.add_step(_ReplicaExchangeProtocolStep(state, rex),
+                                    state)
 
     def _add_simple_dynamics(self, num_models_end, method):
         # Always assumed that we're dealing with the last state
         state = self._last_state
-        self.model_prot_dump.add_step(_SimpleProtocolStep(state, num_models_end,
-                                                          method))
+        self.all_protocols.add_step(_SimpleProtocolStep(state, num_models_end,
+                                                        method), state)
 
     def _add_protocol(self):
         # Always assumed that we're dealing with the last state
         state = self._last_state
-        self.model_prot_dump.add_protocol(state)
+        self.all_protocols.add_protocol(state)
 
     def _add_dataset(self, dataset):
         return self.all_datasets.add(self._last_state, dataset)
@@ -1785,17 +1253,16 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def _add_simple_postprocessing(self, num_models_begin, num_models_end):
         # Always assumed that we're dealing with the last state
         state = self._last_state
-        protocol = self.model_prot_dump.get_last_protocol(state)
-        pp = _SimplePostProcess(protocol, num_models_begin, num_models_end)
-        self.post_process_dump.add(pp)
+        pp = ihm.analysis.ClusterStep('RMSD', num_models_begin, num_models_end)
+        self.all_protocols.add_postproc(pp, state)
         return pp
 
     def _add_no_postprocessing(self, num_models):
         # Always assumed that we're dealing with the last state
         state = self._last_state
-        protocol = self.model_prot_dump.get_last_protocol(state)
-        pp = _NoPostProcess(protocol, num_models)
-        self.post_process_dump.add(pp)
+        pp = ihm.analysis.EmptyStep()
+        pp.num_models_begin = pp.num_models_end = num_models
+        self.all_protocols.add_postproc(pp, state)
         return pp
 
     def _add_simple_ensemble(self, pp, name, num_models, drmsd,
@@ -1833,10 +1300,10 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         # todo: postpone rmsf/density localization extraction until after
         # relevant methods are called (currently it is done from the
         # constructor)
-        protocol = self.model_prot_dump.get_last_protocol(state)
-        num_models = protocol[-1].num_models_end
-        pp = _ReplicaExchangeAnalysisPostProcess(protocol, rex, num_models)
-        self.post_process_dump.add(pp)
+        protocol = self.all_protocols.get_last_protocol(state)
+        num_models = protocol.steps[-1].num_models_end
+        pp = _ReplicaExchangeAnalysisPostProcess(rex, num_models)
+        self.all_protocols.add_postproc(pp, state)
         for i in range(rex._number_of_clusters):
             group = ihm.model.ModelGroup(name=state.get_prefixed_name(
                                                       'cluster %d' % (i + 1)))
@@ -1877,7 +1344,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         assembly = self._get_subassembly({comp:seqrange},
                               name="SAXS subassembly",
                               description="All components that fit SAXS data")
-        dataset = self._add_dataset(dataset)
         r = ihm.restraint.SASRestraint(dataset, assembly, segment=False,
                 fitting_method='FoXS', fitting_atom_type='Heavy atoms',
                 multi_state=False, radius_of_gyration=rg, details=details)
@@ -1903,11 +1369,13 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def add_model(self, group, assembly=None, representation=None):
         state = self._last_state
         if representation is None:
-            representation = self._representations[0]
-        return self.model_dump.add(state.prot,
-                           self.model_prot_dump.get_last_protocol(state),
-                           assembly if assembly else state.modeled_assembly,
-                           representation, group)
+            representation = self.default_representation
+        protocol = self.all_protocols.get_last_protocol(state)
+        m = _Model(state.prot, self, protocol,
+                   assembly if assembly else state.modeled_assembly,
+                   representation)
+        group.append(m)
+        return m
 
     def _update_locations(self, filelocs):
         """Update FileLocation to point to a parent repository, if any"""
