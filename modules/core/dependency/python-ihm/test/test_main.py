@@ -70,10 +70,10 @@ class Tests(unittest.TestCase):
         a = ihm.LPeptideAlphabet()
         self.assertTrue('MSE' in a)
         self.assertFalse('DG' in a)
-        self.assertEqual(len(a.keys), 21)
-        self.assertEqual(len(a.values), 21)
+        self.assertEqual(len(a.keys), 22)
+        self.assertEqual(len(a.values), 22)
         self.assertEqual(sorted(a.keys)[0], 'A')
-        self.assertEqual(len(a.items), 21)
+        self.assertEqual(len(a.items), 22)
         item0 = sorted(a.items)[0]
         self.assertEqual(item0[0], 'A')
         self.assertEqual(item0[1].id, 'ALA')
@@ -81,6 +81,10 @@ class Tests(unittest.TestCase):
         self.assertEqual(a['MSE'].code, 'MSE')
         self.assertEqual(a['MSE'].code_canonical, 'M')
         self.assertEqual(a['MSE'].type, 'L-peptide linking')
+        self.assertEqual(a['UNK'].id, 'UNK')
+        self.assertEqual(a['UNK'].code, 'UNK')
+        self.assertEqual(a['UNK'].code_canonical, 'X')
+        self.assertEqual(a['UNK'].type, 'L-peptide linking')
 
     def test_rna_alphabet(self):
         """Test RNAAlphabet class"""

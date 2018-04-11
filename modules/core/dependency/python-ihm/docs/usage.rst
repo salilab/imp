@@ -90,6 +90,27 @@ Metadata can also be added to the system, such as
    data, generate intermediate inputs, do the modeling itself, and/or
    process the output.
 
+Residue numbering
+=================
+
+The library keeps track of several numbering schemes to reflect the reality
+of the data used in modeling:
+
+ - *Internal numbering*. Residues are always numbered sequentially starting at
+   1 in an :class:`~ihm.Entity`. All references to residues or residue ranges in
+   the library use this numbering.
+ - *Author-provided numbering*. If a different numbering scheme is used by the
+   authors, for example to correspond to the numbering of the original sequence
+   that is modeled, this can be given as an author-provided numbering for
+   one or more asymmetric units. See the ``auth_seq_id_map`` parameter to
+   :class:`~ihm.AsymUnit`. (The mapping between author-provided and internal
+   numbering is given in the ``pdbx_poly_seq_scheme`` table in the mmCIF file.)
+ - *Starting model numbering*. If the initial state of the modeling is given
+   by one or more PDB files, the numbering of residues in those files may not
+   line up with the internal numbering. In this case an offset from starting
+   model numbering to internal numbering can be provided - see the ``offset``
+   parameter to :class:`~ihm.startmodel.StartingModel`.
+
 Output
 ======
 

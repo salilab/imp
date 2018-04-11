@@ -787,10 +787,13 @@ _ihm_model_representation.model_object_count
                                        type_symbol='C', x=-8.0, y=-5.0, z=91.0,
                                        biso=42.)]
             def get_seq_dif(self):
-                return [ihm.startmodel.MSESeqDif(db_seq_id=5, seq_id=7)]
+                return [ihm.startmodel.MSESeqDif(db_seq_id=5, seq_id=7),
+                        ihm.startmodel.SeqDif(db_seq_id=6, seq_id=8,
+                                              db_comp_id='LEU',
+                                              details='LEU -> GLY')]
 
         system = ihm.System()
-        e1 = ihm.Entity('A' * 6 + 'M' + 'A' * 13, description='foo')
+        e1 = ihm.Entity('A' * 6 + 'MG' + 'A' * 12, description='foo')
         system.entities.append(e1)
         asym = ihm.AsymUnit(e1, 'bar')
         system.asym_units.append(asym)
@@ -883,6 +886,7 @@ _ihm_starting_model_seq_dif.db_seq_id
 _ihm_starting_model_seq_dif.db_comp_id
 _ihm_starting_model_seq_dif.details
 1 42 99 7 MET 1 A 5 MSE 'Conversion of modified residue MSE to MET'
+2 42 99 8 GLY 1 A 6 LEU 'LEU -> GLY'
 #
 """)
 

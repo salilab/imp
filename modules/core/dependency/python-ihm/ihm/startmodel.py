@@ -88,6 +88,8 @@ class StartingModel(object):
     def get_seq_dif(self):
         """Yield :class:`SeqDif` objects for any sequence changes between
            the dataset and the starting model. See :meth:`get_atoms`.
+
+           Note that this is always called *after* :meth:`get_atoms`.
         """
         return []
 

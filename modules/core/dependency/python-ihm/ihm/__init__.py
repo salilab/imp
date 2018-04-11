@@ -533,7 +533,7 @@ class LPeptideAlphabet(Alphabet):
 
     # common non-standard L-amino acids
     _comps.update([id, LPeptideChemComp(id, id, canon)] for id, canon in
-                     [('MSE', 'M')])
+                     [('MSE', 'M'), ('UNK', 'X')])
 
 
 class DPeptideAlphabet(Alphabet):
