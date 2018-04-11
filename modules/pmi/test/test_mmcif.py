@@ -3,6 +3,7 @@ import IMP.test
 import IMP.pmi.representation
 import IMP.pmi.mmcif
 import IMP.pmi.macros
+import IMP.pmi.metadata
 import sys
 import os
 import io
@@ -60,12 +61,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(obj2.id, 2)
         self.assertEqual(obj3.id, 'foo')
         self.assertEqual(obj_by_id, [obj1a, obj2])
-
-    def test_dumper(self):
-        """Test _Dumper base class"""
-        d = IMP.pmi.mmcif._Dumper(EmptyObject())
-        d.finalize()
-        d.finalize_metadata()
 
     def test_software_modeller(self):
         """Test AllSoftware.set_modeller_used"""
@@ -215,11 +210,13 @@ _ihm_multi_state_modeling.details
         simo.create_component('baz')
         po.add_component_sequence(po._last_state, 'foo.1@12', 'ACGT')
         po.add_component_sequence(po._last_state, 'bar', 'ACGT')
-        po.add_component_sequence(po._last_state, 'baz', 'ACC')
+        po.add_component_sequence(po._last_state, 'baz', 'ACCX')
 
         self.assertEqual(len(po.system.entities), 2)
         self.assertEqual(po.system.entities[0].description, 'foo')
         self.assertEqual(po.system.entities[1].description, 'baz')
+        self.assertEqual([s.id for s in po.system.entities[1].sequence],
+                         ['ALA', 'CYS', 'CYS', 'UNK'])
 
     def test_asym_id_mapper(self):
         """Test AsymIDMapper class"""
@@ -903,7 +900,7 @@ _ihm_modeling_post_process.dataset_group_id
             self.assertEqual(e.densities, [])
             self.assertEqual(e.num_models, 2)
             self.assertEqual(e.clustering_feature, 'RMSD')
-            self.assertEqual(e.name, 'cluster 1')
+            self.assertEqual(e.name, 'dgroup')
             self.assertEqual(e.get_rmsf_file('Nup84'),
                              os.path.join(tmpdir, 'cluster.0',
                                           'rmsf.Nup84.dat'))
@@ -927,7 +924,7 @@ _ihm_modeling_post_process.dataset_group_id
             self.assertEqual(e.densities[0].file.path,
                              os.path.join(tmpdir, 'cluster.0', 'Nup84.mrc'))
             self.assertEqual(e.densities[0].file.details,
-                         'Localization density for Nup84 dgroup in state dummy')
+                         'Localization density for Nup84 dgroup')
             # No precision available
             self.assertEqual(e._get_precision(), '?')
             self.assertEqual(e.precision, '?')
@@ -1345,6 +1342,79 @@ _ihm_3dem_restraint.cross_correlation_coefficient
 #
 """)
 
+    def test_metadata(self):
+        """Test adding metadata to ihm.System"""
+        m = IMP.Model()
+        po = DummyPO(None)
+        simo = IMP.pmi.representation.Representation(m)
+        simo.add_protocol_output(po)
+
+        simo.add_metadata(ihm.Software(name='t', classification='c',
+          description='d', version='2.0.16', location='u'))
+        self.assertEqual(len(po.system.software), 2) # IMP & PMI
+
+        simo.add_metadata(ihm.Citation(pmid='p', title='t',
+          journal="j", volume=13, page_range=(2927,2943), year=2014,
+          authors=['A B'], doi='10.1074/mcp.M114.041673'))
+        self.assertEqual(len(po.system.citations), 0)
+
+        with IMP.test.temporary_directory() as tmpdir:
+            bar = os.path.join(tmpdir, 'bar')
+            with open(bar, 'w') as f:
+                f.write("")
+            local = ihm.location.WorkflowFileLocation(bar)
+            simo.add_metadata(local)
+        self.assertEqual(len(po.system.locations), 1) # This script
+
+        po.finalize()
+        self.assertEqual(len(po.system.software), 3)
+        self.assertEqual(len(po.system.citations), 1)
+        self.assertEqual(len(po.system.locations), 2)
+
+    def test_deprecated_metadata(self):
+        """Test deprecated metadata classes"""
+        m = IMP.Model()
+        po = DummyPO(None)
+        simo = IMP.pmi.representation.Representation(m)
+        simo.add_protocol_output(po)
+
+        with IMP.allow_deprecated():
+            simo.add_metadata(IMP.pmi.metadata.Software(
+                name='t', classification='c',
+                description='d', version='2.0.16', url='u'))
+        self.assertEqual(len(po.system.software), 2) # IMP & PMI
+
+        with IMP.allow_deprecated():
+            simo.add_metadata(IMP.pmi.metadata.Citation(pmid='p', title='t',
+              journal="j", volume=13, page_range=(2927,2943), year=2014,
+              authors=['A B'], doi='10.1074/mcp.M114.041673'))
+        self.assertEqual(len(po.system.citations), 0)
+
+        with IMP.test.temporary_directory() as tmpdir:
+            bar = os.path.join(tmpdir, 'bar')
+            with open(bar, 'w') as f:
+                f.write("")
+            with IMP.allow_deprecated():
+                l = IMP.pmi.metadata.FileLocation(bar)
+                local = IMP.pmi.metadata.PythonScript(location=l)
+            simo.add_metadata(local)
+        self.assertEqual(len(po.system.locations), 1) # This script
+
+        with IMP.allow_deprecated():
+            simo.add_metadata(IMP.pmi.metadata.Repository(doi='foo', root='/'))
+
+        with IMP.allow_deprecated():
+            loc = IMP.pmi.metadata.MassIVELocation('foo')
+            loc = IMP.pmi.metadata.EMDBLocation('foo')
+            d = IMP.pmi.metadata.EMMicrographsDataset(location=loc, number=10)
+            d = IMP.pmi.metadata.MassSpecDataset(location=loc)
+            d = IMP.pmi.metadata.EMDensityDataset(location=loc)
+
+        po.finalize()
+        self.assertEqual(len(po.system.software), 3)
+        self.assertEqual(len(po.system.citations), 1)
+        self.assertEqual(len(po.system.locations), 2)
+
     def test_update_locations(self):
         """Test update_locations() method"""
         m = IMP.Model()
@@ -1413,7 +1483,7 @@ _ihm_starting_model_seq_dif.db_seq_id
 _ihm_starting_model_seq_dif.db_comp_id
 _ihm_starting_model_seq_dif.details
 1 1 A 1 GLU 1 A 1 MET 'Mutation of MET to GLU'
-1 1 A 2 LEU 1 A 2 GLU 'Mutation of GLU to LEU'
+2 1 A 2 LEU 1 A 2 GLU 'Mutation of GLU to LEU'
 #
 """)
 
