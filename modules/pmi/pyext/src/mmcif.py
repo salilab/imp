@@ -190,12 +190,12 @@ class _AllModelRepresentations(object):
                     self.fragments[rep][name] = OrderedDict()
                 self.fragments[rep][name][state] = [copy_frag(f)
                             for f in self.fragments[rep][original][state]]
-            # Assume representation for a component is the same in all states,
-            # so only write out the first one
-            first_state = list(self.fragments[rep][name].keys())[0]
-            if state is first_state:
-                representation = self._all_representations[rep]
-                representation.extend(self.fragments[rep][name][state])
+                # Assume representation for a component is the same in all
+                # states, so only write out the first one
+                first_state = list(self.fragments[rep][name].keys())[0]
+                if state is first_state:
+                    representation = self._all_representations[rep]
+                    representation.extend(self.fragments[rep][name][state])
 
     def add_fragment(self, state, representation, fragment):
         """Add a model fragment."""
@@ -287,11 +287,14 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
                 p.set_scale(psi)
         # If the same particle is set multiple times, make sure we get the
         # original value last
-        return reversed(old_values)
+        return list(reversed(old_values))
 
     def add_fits_from_model_statfile(self, model):
         # Set psi/sigma for all particles
         old_values = self._set_psi_sigma(model)
+        # If no stats were collected, we can't show the fit
+        if not old_values:
+            return
         for xl in self.cross_links:
             # Get current psi/sigma particle value for each XL
             xl.fits[model] = ihm.restraint.CrossLinkFit(
@@ -692,7 +695,9 @@ class _AllStartingModels(object):
 
         self.simo.system.software.extend(r['software'])
         self.simo._add_dataset(r['dataset'])
-        for t in r['templates']:
+        # We only want the templates that model the starting model chain
+        templates = r['templates'].get(f.chain, [])
+        for t in templates:
             if t.alignment_file:
                 self.simo.system.locations.append(t.alignment_file)
             if t.dataset:
@@ -701,7 +706,7 @@ class _AllStartingModels(object):
                     asym_unit=f.asym_unit.asym(f.start + f.offset,
                                                f.end + f.offset),
                     dataset=r['dataset'], asym_id=f.chain,
-                    templates=r['templates'], offset=f.offset,
+                    templates=templates, offset=f.offset,
                     metadata=r['metadata'])
         m.fragments = [weakref.proxy(f)]
         return m
