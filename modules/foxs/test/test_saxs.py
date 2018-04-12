@@ -24,6 +24,23 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt', '6lyz.plt'):
             os.unlink(self.get_input_file_name(out))
 
+    def test_simple_exp_data_nm(self):
+        """Simple test of SAXS profile application"""
+        print(self.get_input_file_name('6lyz.pdb'))
+        print(self.get_input_file_name('lyzexp_nm.dat'))
+        p = self.run_application('foxs',
+                                 ['-g',
+                                  self.get_input_file_name('6lyz.pdb'),
+                                  self.get_input_file_name('lyzexp_nm.dat')])
+        out, err = p.communicate()
+        sys.stderr.write(err)
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        m = re.search('Chi\^2\s+=\s+([\d\.]+)\r?', out)
+        self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
+        self.assertAlmostEqual(float(m.group(1)), 0.20, delta=0.01)
+        for out in ('6lyz.pdb.dat', '6lyz_lyzexp_nm.dat', '6lyz_lyzexp_nm.plt', '6lyz.plt'):
+            os.unlink(self.get_input_file_name(out))
+
     def test_simple_no_fit(self):
         """Simple test of SAXS profile application no fitting of c1/c2 parameters"""
         print(self.get_input_file_name('6lyz.pdb'))

@@ -51,6 +51,7 @@ int main(int argc, char **argv) {
   bool water_layer = true;
   bool weighted_fit = false;
   bool accurate_water_layer = false;
+  int units = 1; // determine automatically
   bool vr_score = false;
 
   po::options_description desc(
@@ -84,8 +85,11 @@ recommended q value is 0.2")("offset,f",
       "fit monomers in addition to complex model (default = false)")(
       "accurate_slow,a",
       "accurate water layer, slower run time (default = false)")(
-      "no_filtering_by_rg", "do not filter by rg, compute chi score for all (default = false)")(
-      "volatility_ratio,v","calculate volatility ratio score (default = false)")(
+      "no_filtering_by_rg", "do not filter by rg, compute chi score for all (default = false)")
+    ("units,u", po::value<int>(&units)->default_value(1),
+     "1 - unknown --> determine automatically (default) \
+2 - q values are in 1/A, 3 - q values are in 1/nm")
+    ("volatility_ratio,v","calculate volatility ratio score (default = false)")(
       "output_file,o",
       po::value<std::string>(&out_file_name)->default_value("saxs_score.res"),
       "output file name, default name saxs_score.res");
@@ -122,6 +126,12 @@ recommended q value is 0.2")("offset,f",
   if (vm.count("weighted_fit")) weighted_fit = true;
   if (vm.count("accurate_slow")) accurate_water_layer = true;
   if (vm.count("volatility_ratio")) vr_score = true;
+  if (units != 1 && units != 2 && units != 3) {
+    std::cerr << "Incorrect option for units " << units << std::endl;
+    std::cerr << "Use 1 for unknown units, 2 for 1/A, 3 for 1/nm" << std::endl;
+    std::cerr << "Default value of 1 is used\n";
+    units = 1;
+  }
 
   FormFactorType ff_type = HEAVY_ATOMS;
   if (residue_level) ff_type = CA_ATOMS;
@@ -194,7 +204,7 @@ recommended q value is 0.2")("offset,f",
   }
 
   // read experimental profiles
-  IMP_NEW(Profile, exp_profile, (dat_file, false, max_q));
+  IMP_NEW(Profile, exp_profile, (dat_file, false, max_q, units));
   std::cerr << "Profile read from file " << dat_file
             << " min = " << exp_profile->get_min_q()
             << " max = " << exp_profile->get_max_q()
