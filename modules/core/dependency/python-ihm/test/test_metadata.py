@@ -70,7 +70,7 @@ class Tests(unittest.TestCase):
     def test_official_pdb(self):
         """Test PDBParser when given an official PDB"""
         p = self._parse_pdb(utils.get_input_file_name(TOPDIR, 'official.pdb'))
-        self.assertEqual(p['templates'], [])
+        self.assertEqual(p['templates'], {})
         self.assertEqual(len(p['metadata']), 1)
         self.assertEqual(p['metadata'][0].helix_id, '10')
         dataset = p['dataset']
@@ -87,7 +87,7 @@ class Tests(unittest.TestCase):
         """Test PDBarser when given a file derived from a PDB"""
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_pdb.pdb')
         p = self._parse_pdb(pdbname)
-        self.assertEqual(p['templates'], [])
+        self.assertEqual(p['templates'], {})
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Experimental model')
         self.assertEqual(dataset.location.path, pdbname)
@@ -107,7 +107,7 @@ class Tests(unittest.TestCase):
         """Test PDBParser when given a file derived from a comparative model"""
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_model.pdb')
         p = self._parse_pdb(pdbname)
-        self.assertEqual(p['templates'], [])
+        self.assertEqual(p['templates'], {})
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Comparative model')
         self.assertEqual(dataset.location.path, pdbname)
@@ -128,7 +128,7 @@ class Tests(unittest.TestCase):
         """Test PDBParser when given a file derived from an integrative model"""
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_int_model.pdb')
         p = self._parse_pdb(pdbname)
-        self.assertEqual(p['templates'], [])
+        self.assertEqual(p['templates'], {})
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Integrative model')
         self.assertEqual(dataset.location.path, pdbname)
@@ -149,20 +149,24 @@ class Tests(unittest.TestCase):
         p = self.check_modeller_model(pdbname)
 
         aliname = utils.get_input_file_name(TOPDIR, 'modeller_model.ali')
-        for t in p['templates']:
-            self.assertEqual(t.alignment_file.path, aliname)
+        for templates in p['templates'].values():
+            for t in templates:
+                self.assertEqual(t.alignment_file.path, aliname)
 
     def test_modeller_model_no_aln(self):
         "Test PDBParser when given a Modeller model with no alignment"
         pdbname = utils.get_input_file_name(TOPDIR, 'modeller_model_no_aln.pdb')
         p = self.check_modeller_model(pdbname)
-        for t in p['templates']:
-            self.assertEqual(t.alignment_file, None)
+        for templates in p['templates'].values():
+            for t in templates:
+                self.assertEqual(t.alignment_file, None)
 
     def check_modeller_model(self, pdbname):
         p = self._parse_pdb(pdbname)
         dataset = p['dataset']
-        s1, s2 = p['templates']
+        self.assertEqual(sorted(p['templates'].keys()), ['A', 'B'])
+        s1, s2 = p['templates']['A']
+        s3, = p['templates']['B']
         self.assertEqual(s1.asym_id, 'C')
         self.assertEqual(s1.seq_id_range, (33,424))
         self.assertEqual(s1.template_seq_id_range, (33,424))
@@ -176,15 +180,17 @@ class Tests(unittest.TestCase):
         self.assertEqual(dataset.location.repo, None)
         self.assertEqual(dataset.location.details,
                          'Starting model structure')
-        p1, p2 = dataset.parents
+        p1, p2, p3 = dataset.parents
         self.assertEqual(s1.dataset, p1)
         self.assertEqual(s2.dataset, p2)
+        self.assertEqual(s3.dataset, p3)
         self.assertEqual(p1.data_type, 'Experimental model')
         self.assertEqual(p1.location.db_name, 'PDB')
         self.assertEqual(p1.location.access_code, '3JRO')
         self.assertEqual(p1.location.version, None)
         self.assertEqual(p1.location.details, None)
         self.assertEqual(p2.location.access_code, '3F3F')
+        self.assertEqual(p3.location.access_code, '1ABC')
         s, = p['software']
         self.assertEqual(s.name, 'MODELLER')
         self.assertEqual(s.version, '9.18')
@@ -197,7 +203,8 @@ class Tests(unittest.TestCase):
         "Test PDBParser when given a Modeller model with local template"
         pdbname = utils.get_input_file_name(TOPDIR, 'modeller_model_local.pdb')
         p = self._parse_pdb(pdbname)
-        s, = p['templates']
+        self.assertEqual(list(p['templates'].keys()), ['A'])
+        s, = p['templates']['A']
         self.assertEqual(s.asym_id, 'C')
         parent, = p['dataset'].parents
         self.assertEqual(parent.data_type, 'Experimental model')
@@ -210,7 +217,7 @@ class Tests(unittest.TestCase):
         """Test PDBParser when given a Phyre2 model."""
         pdbname = utils.get_input_file_name(TOPDIR, 'phyre2_model.pdb')
         p = self._parse_pdb(pdbname)
-        s, = p['templates']
+        s, = p['templates']['A']
         self.assertEqual(s.asym_id, 'A')
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Comparative model')
@@ -232,7 +239,7 @@ class Tests(unittest.TestCase):
         """Test PDBParser when given an unknown model."""
         pdbname = utils.get_input_file_name(TOPDIR, 'unknown_model.pdb')
         p = self._parse_pdb(pdbname)
-        self.assertEqual(p['templates'], [])
+        self.assertEqual(p['templates'], {})
         self.assertEqual(p['software'], [])
         self.assertEqual(p['metadata'], [])
         dataset = p['dataset']
