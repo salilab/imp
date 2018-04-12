@@ -33,7 +33,13 @@ class IMPSAXSEXPORT Profile : public Object {
   // Constructors
 
   //! init from file
-  Profile(const std::string& file_name, bool fit_file = false, double max_q = 0.0);
+  /**
+     \param[in] file_name profile file name
+     \param[in] fit_file if true, intensities are read from column 3
+     \param[in] max_q read till maximal q value = max_q, or all if max_q<=0
+     \param[in] units gets 1, 2, or 3 for unknown q units, 1/A, or 1/nm
+  */
+  Profile(const std::string& file_name, bool fit_file = false, double max_q = 0.0, int units = 1);
 
   //! init for theoretical profile
   Profile(double qmin = 0.0, double qmax = 0.5, double delta = 0.005);
@@ -127,8 +133,9 @@ class IMPSAXSEXPORT Profile : public Object {
      \param[in] file_name profile file name
      \param[in] fit_file if true, intensities are read from column 3
      \param[in] max_q read till maximal q value = max_q, or all if max_q<=0
+     \param[in] units gets 1, 2, or 3 for unknown q units, 1/A, or 1/nm
    */
-  void read_SAXS_file(const std::string& file_name, bool fit_file = false, double max_q = 0.0);
+  void read_SAXS_file(const std::string& file_name, bool fit_file = false, double max_q = 0.0, int units = 1);
 
   //! print to file
   /** \param[in] file_name output file name
@@ -265,6 +272,8 @@ class IMPSAXSEXPORT Profile : public Object {
       const Vector<RadialDistributionFunction>& r_dist);
 
   double radius_of_gyration_fixed_q(double end_q) const;
+
+  double find_max_q(const std::string& file_name) const;
 
  protected:
   Eigen::VectorXf q_;  // q sampling points

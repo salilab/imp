@@ -7,8 +7,8 @@
 #include <IMP/saxs/Profile.h>
 #include <IMP/saxs/Distribution.h>
 #include <IMP/saxs/utility.h>
-#include <IMP/saxs/internal/sinc_function.h>
 #include <IMP/saxs/internal/exp_function.h>
+#include <IMP/saxs/internal/sinc_function.h>
 
 #include <IMP/math.h>
 #include <IMP/core/XYZ.h>
@@ -50,7 +50,7 @@ Profile::Profile(double qmin, double qmax, double delta)
   ff_table_ = get_default_form_factor_table();
 }
 
-Profile::Profile(const std::string& file_name, bool fit_file, double max_q)
+Profile::Profile(const std::string& file_name, bool fit_file, double max_q, int units)
     : Object("profile%1%"),
       experimental_(true),
       name_(file_name),
@@ -58,7 +58,7 @@ Profile::Profile(const std::string& file_name, bool fit_file, double max_q)
       beam_profile_(IMP_NULLPTR) {
   set_was_used(true);
   if (fit_file) experimental_ = false;
-  read_SAXS_file(file_name, fit_file, max_q);
+  read_SAXS_file(file_name, fit_file, max_q, units);
 }
 
 void Profile::init(unsigned int size, unsigned int partial_profiles_size) {
@@ -78,6 +78,7 @@ void Profile::init(unsigned int size, unsigned int partial_profiles_size) {
   }
 
   if(partial_profiles_size > 0) {
+    partial_profiles_.clear();
     partial_profiles_.insert(partial_profiles_.begin(),
                              partial_profiles_size,
                              Eigen::VectorXf::Zero(number_of_q_entries));
@@ -85,11 +86,43 @@ void Profile::init(unsigned int size, unsigned int partial_profiles_size) {
 }
 
 
-void Profile::read_SAXS_file(const std::string& file_name, bool fit_file, double max_q) {
+double Profile::find_max_q(const std::string& file_name) const {
   std::ifstream in_file(file_name.c_str());
   if (!in_file) {
     IMP_THROW("Can't open file " << file_name, IOException);
   }
+  std::string line;
+
+  double max_q = 0.0;
+  while (!in_file.eof()) {
+    getline(in_file, line);
+    boost::trim(line);  // remove all spaces
+    // skip comments
+    if (line[0] == '#' || line[0] == '\0' || !isdigit(line[0])) continue;
+    std::vector<std::string> split_results;
+    boost::split(split_results, line, boost::is_any_of("\t "),
+                 boost::token_compress_on);
+    if (split_results.size() < 2 || split_results.size() > 5) continue;
+
+    if (split_results[0].find_first_not_of("1234567890.-+Ee") != std::string::npos)
+      continue; // not a number
+
+    max_q = atof(split_results[0].c_str());
+  }
+  return max_q;
+}
+
+void Profile::read_SAXS_file(const std::string& file_name, bool fit_file, double max_q, int units) {
+  std::ifstream in_file(file_name.c_str());
+  if (!in_file) {
+    IMP_THROW("Can't open file " << file_name, IOException);
+  }
+
+  // determine the data units as some files use 1/nm
+  bool default_units = true; // units=2 ==> 1/A
+  if (units == 3) { default_units = false; } // units=3 ==> 1/nm
+  // units=1 ==> unknown units, determine based on max_q
+  if (units == 1 && find_max_q(file_name) > 1.0) { default_units = false; }
 
   bool with_error = false;
   std::string line;
@@ -109,12 +142,13 @@ void Profile::read_SAXS_file(const std::string& file_name, bool fit_file, double
       continue; // not a number
 
     q = atof(split_results[0].c_str());
+    if(!default_units) q /= 10.0; // convert from 1/nm to 1/A
 
     if(max_q > 0.0 && q > max_q) break; // stop reading after max_q
 
-    if (fit_file) {
-      if (split_results.size() != 3) continue;
-      intensity = atof(split_results[2].c_str());
+    if (fit_file) { // 4 columns: q, Iexp, err, Icomputed
+      if (split_results.size() != 4) continue;
+      intensity = atof(split_results[3].c_str());
     } else {
       intensity = atof(split_results[1].c_str());
     }
@@ -254,7 +288,7 @@ void Profile::write_SAXS_file(const std::string& file_name, double max_q) const 
     if (max_q > 0 && q_[i] > max_q) break;
     out_file.setf(std::ios::left);
     out_file.width(10);
-    out_file.precision(5);
+    out_file.precision(8);
     out_file << q_[i] << " ";
 
     out_file.setf(std::ios::left);
@@ -585,7 +619,7 @@ void Profile::sum_partial_profiles(double c1, double c2, bool check_cashed) {
   // this exponent should match the exponent of g(s) which doesn't have
   // (4pi/3)^3/2 part so it seems that this part is not needed here too.
   // double coefficient =
-  // - std::pow((4.0*PI/3.0), 3.0/2.0) * square(rm) * (c1*c1-1.0) /
+  // - std::pow((4.0*PI/3.0), 2.0/3.0) * square(rm) * (c1*c1-1.0) /
   // (4*PI);
   double coefficient = -square(rm) * (c1 * c1 - 1.0) / (4 * PI);
   double square_c2 = c2 * c2;
@@ -1181,4 +1215,3 @@ void Profile::calculate_profile_reciprocal_partial(const Particles& particles,
 }
 
 IMPSAXS_END_NAMESPACE
-

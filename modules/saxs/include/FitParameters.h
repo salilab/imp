@@ -35,6 +35,7 @@ class IMPSAXSEXPORT FitParameters {
   std::string get_profile_file_name() const { return profile_file_name_; }
   int get_mol_index() const { return mol_index_; }
 
+  void set_score(double score) { chi_square_ = score; }
   void set_chi_square(double chi_square) { chi_square_ = chi_square; }
   void set_default_chi_square(double chi_square) { default_chi_square_ = chi_square; }
   void set_profile_file_name(std::string file_name) {

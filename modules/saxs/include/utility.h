@@ -122,7 +122,8 @@ void read_files(Model *m, const std::vector<std::string>& files,
                 bool heavy_atoms_only = true,
                 int multi_model_pdb = 2,
                 bool explicit_water = false,
-                float max_q = 0.0);
+                float max_q = 0.0,
+                int units = 1);
 
 IMPSAXSEXPORT
 std::string trim_extension(const std::string file_name);

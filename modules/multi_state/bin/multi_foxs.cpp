@@ -94,7 +94,7 @@ void read_files(const std::vector<std::string>& files,
                 IMP::Vector<double> scores,
                 Profiles& exp_profiles,
                 int multi_model_pdb,
-                bool partial_profiles, double max_q) {
+                bool partial_profiles, double max_q, int units) {
   IMP_NEW(IMP::Model, m, ());
   for (unsigned int i = 0; i < files.size(); i++) {
     // check if file exists
@@ -125,7 +125,7 @@ void read_files(const std::vector<std::string>& files,
     }
     catch (IMP::ValueException e) {  // not a pdb file
       // 2. try as a dat profile file
-      IMP_NEW(Profile, profile, (files[i], false, max_q));
+      IMP_NEW(Profile, profile, (files[i], false, max_q, units));
       if (profile->size() > 0) {
         dat_files.push_back(files[i]);
         exp_profiles.push_back(profile);
@@ -161,6 +161,8 @@ int main(int argc, char* argv[]) {
   double min_c2 = -0.5;
   double max_c2 = 2.0;
   bool partial_profiles = true;
+  int multi_model_pdb = 1;
+  int units = 1; // determine automatically
   bool vr_score = false;
   bool use_offset = false;
 
@@ -188,6 +190,13 @@ Written by Dina Schneidman.")
     ("min_c2", po::value<double>(&min_c2)->default_value(-0.5, "-0.50"), "min c2 value")
     ("max_c2", po::value<double>(&max_c2)->default_value(2.0, "2.00"), "max c2 value")
     ("partial_profiles,p", "use precomputed partial profiles (default = true)")
+    ("multi-model-pdb,m", po::value<int>(&multi_model_pdb)->default_value(1),
+     "1 - read the first MODEL only (default), \
+2 - read each MODEL into a separate structure, \
+3 - read all models into a single structure")
+    ("units,u", po::value<int>(&units)->default_value(1),
+     "1 - unknown --> determine automatically (default) \
+2 - q values are in 1/A, 3 - q values are in 1/nm")
     ("volatility_ratio,v","calculate volatility ratio score (default = false)")
     ("background_q,b",
      po::value<double>(&background_adjustment_q)->default_value(0.0),
@@ -231,13 +240,30 @@ recommended q value is 0.2")
   if(vm.count("volatility_ratio")) vr_score = true;
   if(vm.count("offset")) use_offset = true;
 
+  if (multi_model_pdb != 1 && multi_model_pdb != 2 && multi_model_pdb != 3) {
+    std::cerr << "Incorrect option for multi_model_pdb " << multi_model_pdb
+              << std::endl;
+    std::cerr << "Use 1 to read first MODEL only\n"
+              << "    2 to read each MODEL into a separate structure,\n"
+              << "    3 to read all models into a single structure\n";
+    std::cerr << "Default value of 1 is used\n";
+    multi_model_pdb = 1;
+  }
+
+  if (units != 1 && units != 2 && units != 3) {
+    std::cerr << "Incorrect option for units " << units << std::endl;
+    std::cerr << "Use 1 for unknown units, 2 for 1/A, 3 for 1/nm" << std::endl;
+    std::cerr << "Default value of 1 is used\n";
+    units = 1;
+  }
+
   Profiles exp_profiles;
   Profiles computed_profiles;
   IMP::Vector<std::string> pdb_file_names;
   IMP::Vector<std::string> dat_file_names;
   IMP::Vector<double> scores;
 
-  read_files(files, pdb_file_names, dat_file_names, computed_profiles, scores, exp_profiles, false, partial_profiles, max_q);
+  read_files(files, pdb_file_names, dat_file_names, computed_profiles, scores, exp_profiles, multi_model_pdb, partial_profiles, max_q, units);
 
   if(exp_profiles.size() == 0) {
     std::cerr << "Please provide at least one exp. profile" << std::endl;
