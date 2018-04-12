@@ -103,8 +103,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(parent.location.version, None)
         self.assertEqual(parent.location.details, None)
 
-    def test_derived_model(self):
-        """Test PDBParser when given a file derived from a model"""
+    def test_derived_comp_model(self):
+        """Test PDBParser when given a file derived from a comparative model"""
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_model.pdb')
         p = self._parse_pdb(pdbname)
         self.assertEqual(p['templates'], [])
@@ -123,6 +123,25 @@ class Tests(unittest.TestCase):
         self.assertEqual(parent.location.repo.doi, '10.1093/nar/gkt704')
         self.assertEqual(parent.location.details,
                          'Starting comparative model structure')
+
+    def test_derived_int_model(self):
+        """Test PDBParser when given a file derived from an integrative model"""
+        pdbname = utils.get_input_file_name(TOPDIR, 'derived_int_model.pdb')
+        p = self._parse_pdb(pdbname)
+        self.assertEqual(p['templates'], [])
+        dataset = p['dataset']
+        self.assertEqual(dataset.data_type, 'Integrative model')
+        self.assertEqual(dataset.location.path, pdbname)
+        self.assertEqual(dataset.location.repo, None)
+        self.assertEqual(dataset.location.details,
+                         'POM152 STRUCTURE TAKEN FROM UPLA ET AL, STRUCTURE '
+                         '25(3) 434-445. DOI: 10.1016/j.str.2017.01.006.')
+        parent, = dataset.parents
+        self.assertEqual(parent.data_type, 'Integrative model')
+        self.assertEqual(parent.location.path, '.')
+        self.assertEqual(parent.location.repo.doi, '10.1016/j.str.2017.01.006')
+        self.assertEqual(parent.location.details,
+                         'Starting integrative model structure')
 
     def test_modeller_model_aln(self):
         """Test PDBParser when given a Modeller model with alignment"""
