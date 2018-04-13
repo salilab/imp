@@ -20,6 +20,7 @@ import IMP.pmi.representation
 import IMP.pmi.tools
 from IMP.pmi.tools import OrderedDict
 import IMP.pmi.output
+import IMP.pmi.metadata
 import re
 import ast
 import sys
