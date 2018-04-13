@@ -215,27 +215,30 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
     double dv = diffuser_factory_.get(nh).get_diffusion_coefficient();
     atom::Diffusion(m, p).set_diffusion_coefficient(dv);
   }
-  IMP_IF_CHECK(USAGE) {
-    if (copy_factory_.get_is_static(nh)) {
-      IMP_LOG_VERBOSE("copy " << std::endl);
-      int dv = copy_factory_.get(nh).get_copy_index();
-      IMP_USAGE_CHECK(atom::Copy(m, p).get_copy_index() == dv,
-                      "Copy indexes don't match");
-    }
-  }
-  if (state_factory_.get_is_static(nh)) {
-    IMP_LOG_VERBOSE("state " << std::endl);
-    unsigned int dv = state_factory_.get(nh).get_state_index();
-    IMP_USAGE_CHECK(atom::State(m, p).get_state_index() == dv,
-                    "State indexes don't match");
-  }
-  if (reference_factory_.get_is_static(nh)) {
-    IMP_LOG_VERBOSE("reference " << std::endl);
-    RMF::NodeConstHandle refn = reference_factory_.get(nh).get_reference();
-    Particle *refp = get_association<Particle>(refn);
-    IMP_USAGE_CHECK(core::Reference(m, p).get_reference_particle() == refp,
-                    "Reference particles don't match");
-  }
+  IMP_CHECK_CODE
+    (
+     IMP_IF_CHECK(USAGE) {
+       if (copy_factory_.get_is_static(nh)) {
+         IMP_LOG_VERBOSE("copy " << std::endl);
+         int dv = copy_factory_.get(nh).get_copy_index();
+         IMP_USAGE_CHECK(atom::Copy(m, p).get_copy_index() == dv,
+                         "Copy indexes don't match");
+       }
+     }
+     if (state_factory_.get_is_static(nh)) {
+       IMP_LOG_VERBOSE("state " << std::endl);
+       unsigned int dv = state_factory_.get(nh).get_state_index();
+       IMP_USAGE_CHECK(atom::State(m, p).get_state_index() == dv,
+                       "State indexes don't match");
+     }
+     if (reference_factory_.get_is_static(nh)) {
+       IMP_LOG_VERBOSE("reference " << std::endl);
+       RMF::NodeConstHandle refn = reference_factory_.get(nh).get_reference();
+       Particle *refp = get_association<Particle>(refn);
+       IMP_USAGE_CHECK(core::Reference(m, p).get_reference_particle() == refp,
+                       "Reference particles don't match");
+     }
+     );
 }
 
 void HierarchySaveStatic::setup_node(Model *m, ParticleIndex p,
