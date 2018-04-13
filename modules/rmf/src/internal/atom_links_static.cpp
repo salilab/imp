@@ -201,15 +201,18 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
     imp_chain.set_sequence(chain.get_sequence());
     imp_chain.set_chain_type(atom::ChainType(chain.get_chain_type()));
   }
-  if (typed_factory_.get_is_static(nh)) {
-    // can't set
-    IMP_LOG_VERBOSE("typed " << std::endl);
-    std::string t = typed_factory_.get(nh).get_type_name();
-    core::ParticleType pt(t);
-    IMP_USAGE_CHECK(core::Typed(m, p).get_type() == pt,
-                    "Particle types don't match");
-    // core::Typed(m, p).set_particle_type(pt);
-  }
+  IMP_CHECK_CODE
+    (
+     if (typed_factory_.get_is_static(nh)) {
+       // can't set
+       IMP_LOG_VERBOSE("typed " << std::endl);
+       std::string t = typed_factory_.get(nh).get_type_name();
+       core::ParticleType pt(t);
+       IMP_USAGE_CHECK(core::Typed(m, p).get_type() == pt,
+                       "Particle types don't match");
+       // core::Typed(m, p).set_particle_type(pt);
+     }
+     );
   if (diffuser_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("diffuser " << std::endl);
     double dv = diffuser_factory_.get(nh).get_diffusion_coefficient();
