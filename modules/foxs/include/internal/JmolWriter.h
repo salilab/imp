@@ -55,6 +55,7 @@ class IMPFOXSEXPORT JmolWriter {
 
  public:
   static unsigned int MAX_DISPLAY_NUM_;
+  static float MAX_C2_;
 };
 
 IMPFOXS_END_INTERNAL_NAMESPACE

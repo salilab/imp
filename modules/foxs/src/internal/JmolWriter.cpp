@@ -25,6 +25,8 @@ if (!{*}.ribbons) { select selection and (protein, nucleic);spacefill only; };";
 
 unsigned int JmolWriter::MAX_DISPLAY_NUM_ = 30;
 
+float JmolWriter::MAX_C2_ = 4.0;
+
 void JmolWriter::prepare_jmol_script(
     const std::vector<IMP::saxs::FitParameters>& fps,
     const std::vector<IMP::Particles>& particles_vec,
@@ -64,15 +66,17 @@ void JmolWriter::prepare_jmol_script(
   outstream << "<table align='center'>";
   outstream << "<tr><th> PDB file </th> "
             << "<th> " << show_all_checkbox_str << "</th>"
-            << "<th><center> &chi;<sup>2</sup> </th><th><center> c<sub>1</sub> </th>"
-            << "<th><center> c<sub>2</sub> </th><th><center>R<sub>g</sub></th>"
+            << "<th><center> &chi;<sup>2</sup> </th>"
+            << "<th><center><a href = \"https://modbase.compbio.ucsf.edu/foxs/help.html#c1c2\"> c<sub>1</sub> </a></th>"
+            << "<th><center><a href = \"https://modbase.compbio.ucsf.edu/foxs/help.html#c1c2\"> c<sub>2</sub> </a></th>"
+            << "<th><center>R<sub>g</sub></th>"
             << "<th><center> # atoms </th> <th> fit file </th><th> png file </th></tr>\n";
   for (unsigned int i = 0; i < fps.size(); i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = saxs::trim_extension(fps[i].get_pdb_file_name());
     std::string profile_name = saxs::trim_extension(
         basename(const_cast<char*>(fps[i].get_profile_file_name().c_str())));
-    std::string fit_file_name = pdb_name + "_" + profile_name + ".dat";
+    std::string fit_file_name = pdb_name + "_" + profile_name + ".fit";
     std::string png_file_name = pdb_name + "_" + profile_name + ".png";
     float rg =
         IMP::saxs::radius_of_gyration(particles_vec[fps[i].get_mol_index()]);
@@ -87,9 +91,17 @@ void JmolWriter::prepare_jmol_script(
       outstream << checkbox_string << std::endl;
     }
     outstream << "</center></td><td><center> " << fps[i].get_chi_square()
-              << "</center></td><td><center> " << fps[i].get_c1()
-              << "</center></td><td><center> " << fps[i].get_c2()
-              << "</center></td><td><center> " << rg
+              << "</center></td><td><center> " << fps[i].get_c1();
+
+    outstream << "</center></td><td><center> ";
+    if (fps[i].get_c2() >= MAX_C2_) {
+      outstream << "<a href = \"https://modbase.compbio.ucsf.edu/foxs/help.html#c1c2\"><font color=red>";
+      outstream << fps[i].get_c2();
+      outstream << "!</font></a>";
+    } else {
+      outstream << fps[i].get_c2();
+    }
+    outstream << "</center></td><td><center> " << rg
               << "</center></td><td><center> "
               << particles_vec[fps[i].get_mol_index()].size() << "</td><td>"
               << "<a href = \"dirname/" << fit_file_name << "\">"
