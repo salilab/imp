@@ -220,18 +220,19 @@ class ZAxialPositionRestraint(object):
         zax = IMP.npc.ZAxialPositionRestraint(self.m, lower_bound, upper_bound, consider_radius, sigma)
         #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
         residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
-        if (term == 'C'):
-            terminal = residues[-1]
-            #print (terminal, type(terminal))
-            zax.add_particle(terminal)
-        elif (term == 'N'):
-            terminal = residues[0]
-            #print (terminal, type(terminal))
-            zax.add_particle(terminal)
-        else:
-            for residue in residues:
-                #print (residue, type(residue))
-                zax.add_particle(residue)
+        if term == 'C':
+            residues = residues[-1:]
+        elif term == 'N':
+            residues = residues[:1]
+        for residue in residues:
+            zax.add_particle(residue)
+
+        self.dataset = None
+        if representation:
+            for p, state in representation._protocol_output:
+                p.add_zaxial_restraint(state, residues, lower_bound,
+                                       upper_bound, sigma, self)
+
         self.rs.add_restraint(zax)
 
     def set_label(self, label):
@@ -598,6 +599,13 @@ class MembraneSurfaceLocationRestraint(object):
         for residue in residues:
             #print (residue, type(residue))
             msl.add_particle(residue)
+
+        self.dataset = None
+        if representation:
+            for p, state in representation._protocol_output:
+                p.add_membrane_surface_location_restraint(
+                        state, residues, tor_R, tor_r, tor_th, sigma, self)
+
         self.rs.add_restraint(msl)
 
     def set_label(self, label):
