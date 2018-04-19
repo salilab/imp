@@ -125,6 +125,12 @@ class Tests(unittest.TestCase):
         d = ihm.dataset.SASDataset(loc)
         self.assertEqual(d.data_type, 'SAS data')
 
+    def test_fret_dataset(self):
+        """Test FRETDataset"""
+        loc = ihm.location.FileLocation(repo='mydoi', path='a')
+        d = ihm.dataset.FRETDataset(loc)
+        self.assertEqual(d.data_type, 'Single molecule FRET data')
+
     def test_duplicate_datasets_details(self):
         """Datasets with differing details should be considered duplicates"""
         with utils.temporary_directory() as tmpdir:

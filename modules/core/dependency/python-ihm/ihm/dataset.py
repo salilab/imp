@@ -1,3 +1,5 @@
+# coding=utf-8
+
 """Classes for handling experimental datasets used by mmCIF models.
 """
 
@@ -88,7 +90,7 @@ class EMDensityDataset(Dataset):
 
 
 class EMMicrographsDataset(Dataset):
-    """Raw 2D eletron micrographs"""
+    """Raw 2D electron micrographs"""
     data_type = 'EM raw micrographs'
 
 
@@ -100,3 +102,8 @@ class EM2DClassDataset(Dataset):
 class SASDataset(Dataset):
     """SAS data"""
     data_type = 'SAS data'
+
+
+class FRETDataset(Dataset):
+    """Data from a Förster resonance energy transfer (FRET) experiment"""
+    data_type = 'Single molecule FRET data'

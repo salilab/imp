@@ -131,6 +131,20 @@ class System(object):
         #: See :class:`~ihm.model.StateGroup`.
         self.state_groups = []
 
+        #: All orphaned geometric objects.
+        #: This can be used to keep track of all objects that are not
+        #: otherwise used - normally an object is assigned to a
+        #: :class:`~ihm.restraint.GeometricRestraint`.
+        #: See :class:`~ihm.geometry.GeometricObject`.
+        self.orphan_geometric_objects = []
+
+        #: All orphaned features.
+        #: This can be used to keep track of all features that are not
+        #: otherwise used - normally a feature is assigned to a
+        #: :class:`~ihm.restraint.GeometricRestraint`.
+        #: See :class:`~ihm.restraint.Feature`.
+        self.orphan_features = []
+
     def update_locations_in_repositories(self, repos):
         """Update all :class:`Location` objects in the system that lie within
            a checked-out :class:`Repository` to point to that repository.
@@ -303,6 +317,28 @@ class System(object):
                 (density.file for density in all_densities() if density.file),
                 (template.alignment_file for template in self._all_templates()
                                          if template.alignment_file))
+
+    def _all_geometric_objects(self):
+        """Iterate over all GeometricObjects in the system.
+           This includes all GeometricObjects referenced from other objects,
+           plus any referenced from the top-level system.
+           Duplicates may be present."""
+        return itertools.chain(
+                self.orphan_geometric_objects,
+                (restraint.geometric_object for restraint in self.restraints
+                          if hasattr(restraint, 'geometric_object')
+                          and restraint.geometric_object))
+
+    def _all_features(self):
+        """Iterate over all Features in the system.
+           This includes all Features referenced from other objects,
+           plus any referenced from the top-level system.
+           Duplicates may be present."""
+        return itertools.chain(
+                self.orphan_features,
+                (restraint.feature for restraint in self.restraints
+                          if hasattr(restraint, 'feature')
+                          and restraint.feature))
 
     def _all_citations(self):
         """Iterate over all Citations in the system.
@@ -718,13 +754,17 @@ class AsymUnit(object):
               ``auth_seq_id = auth_seq_id_map[seq_id]``. The default if
               not specified, or not in the mapping, is for
               ``auth_seq_id == seq_id``.
+       :param str id: User-specified ID (usually a string of one or more
+              upper-case letters, e.g. A, B, C, AA). If not specified,
+              IDs are automatically assigned alphabetically.
 
        See :attr:`System.asym_units`.
     """
 
-    def __init__(self, entity, details=None, auth_seq_id_map=0):
+    def __init__(self, entity, details=None, auth_seq_id_map=0, id=None):
         self.entity, self.details = entity, details
         self.auth_seq_id_map = auth_seq_id_map
+        self.id = id
 
     def _get_auth_seq_id(self, seq_id):
         if isinstance(self.auth_seq_id_map, int):

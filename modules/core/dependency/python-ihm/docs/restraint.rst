@@ -34,6 +34,9 @@ The :mod:`ihm.restraint` Python module
 .. autoclass:: LowerBoundDistanceRestraint
    :members:
 
+.. autoclass:: LowerUpperBoundDistanceRestraint
+   :members:
+
 .. autoclass:: CrossLinkRestraint
    :members:
 
@@ -53,4 +56,22 @@ The :mod:`ihm.restraint` Python module
    :members:
 
 .. autoclass:: CrossLinkFit
+   :members:
+
+.. autoclass:: Feature
+   :members:
+
+.. autoclass:: PolyResidueFeature
+   :members:
+
+.. autoclass:: GeometricRestraint
+   :members:
+
+.. autoclass:: CenterGeometricRestraint
+   :members:
+
+.. autoclass:: InnerSurfaceGeometricRestraint
+   :members:
+
+.. autoclass:: OuterSurfaceGeometricRestraint
    :members:

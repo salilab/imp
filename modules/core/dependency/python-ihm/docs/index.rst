@@ -31,6 +31,7 @@ API Reference:
    metadata
    startmodel
    representation
+   geometry
    restraint
    protocol
    analysis

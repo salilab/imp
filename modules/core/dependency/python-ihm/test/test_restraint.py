@@ -59,19 +59,32 @@ class Tests(unittest.TestCase):
         """Test HarmonicDistanceRestraint class"""
         r = ihm.restraint.HarmonicDistanceRestraint(42.0)
         self.assertAlmostEqual(r.distance, 42.0, places=1)
+        self.assertAlmostEqual(r.distance_lower_limit, 42.0, places=1)
+        self.assertAlmostEqual(r.distance_upper_limit, 42.0, places=1)
         self.assertEqual(r.restraint_type, "harmonic")
 
     def test_upper_bound_distance_restraint(self):
         """Test UpperBoundDistanceRestraint class"""
         r = ihm.restraint.UpperBoundDistanceRestraint(42.0)
         self.assertAlmostEqual(r.distance, 42.0, places=1)
+        self.assertEqual(r.distance_lower_limit, None)
+        self.assertAlmostEqual(r.distance_upper_limit, 42.0, places=1)
         self.assertEqual(r.restraint_type, "upper bound")
 
     def test_lower_bound_distance_restraint(self):
         """Test LowerBoundDistanceRestraint class"""
         r = ihm.restraint.LowerBoundDistanceRestraint(42.0)
         self.assertAlmostEqual(r.distance, 42.0, places=1)
+        self.assertAlmostEqual(r.distance_lower_limit, 42.0, places=1)
+        self.assertEqual(r.distance_upper_limit, None)
         self.assertEqual(r.restraint_type, "lower bound")
+
+    def test_lower_upper_bound_distance_restraint(self):
+        """Test LowerUpperBoundDistanceRestraint class"""
+        r = ihm.restraint.LowerUpperBoundDistanceRestraint(20.0, 30.0)
+        self.assertAlmostEqual(r.distance_lower_limit, 20.0, places=1)
+        self.assertAlmostEqual(r.distance_upper_limit, 30.0, places=1)
+        self.assertEqual(r.restraint_type, "lower and upper bound")
 
     def test_cross_link_restraint(self):
         """Test CrossLinkRestraint class"""
@@ -120,6 +133,51 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.atom2, 'N')
         self.assertEqual(f.asym1, 'asym1')
         self.assertEqual(f.asym2, 'asym2')
+
+    def test_feature(self):
+        """Test Feature base class"""
+        f = ihm.restraint.Feature() # does nothing
+
+    def test_poly_residue_feature(self):
+        """Test PolyResidueFeature class"""
+        f = ihm.restraint.PolyResidueFeature(ranges=[])
+        self.assertEqual(f.entity, None)
+
+    def test_geometric_restraint(self):
+        """Test GeometricRestraint class"""
+        f = ihm.restraint.GeometricRestraint(
+                dataset='foo', geometric_object='geom', feature='feat',
+                distance='dist')
+        self.assertEqual(f.dataset, 'foo')
+        self.assertEqual(f.object_characteristic, 'other')
+        self.assertEqual(f.assembly, None)
+
+    def test_center_geometric_restraint(self):
+        """Test CenterGeometricRestraint class"""
+        f = ihm.restraint.CenterGeometricRestraint(
+                dataset='foo', geometric_object='geom', feature='feat',
+                distance='dist')
+        self.assertEqual(f.dataset, 'foo')
+        self.assertEqual(f.object_characteristic, 'center')
+        self.assertEqual(f.assembly, None)
+
+    def test_inner_surface_geometric_restraint(self):
+        """Test InnerSurfaceGeometricRestraint class"""
+        f = ihm.restraint.InnerSurfaceGeometricRestraint(
+                dataset='foo', geometric_object='geom', feature='feat',
+                distance='dist')
+        self.assertEqual(f.dataset, 'foo')
+        self.assertEqual(f.object_characteristic, 'inner surface')
+        self.assertEqual(f.assembly, None)
+
+    def test_outer_surface_geometric_restraint(self):
+        """Test OuterSurfaceGeometricRestraint class"""
+        f = ihm.restraint.OuterSurfaceGeometricRestraint(
+                dataset='foo', geometric_object='geom', feature='feat',
+                distance='dist')
+        self.assertEqual(f.dataset, 'foo')
+        self.assertEqual(f.object_characteristic, 'outer surface')
+        self.assertEqual(f.assembly, None)
 
 
 if __name__ == '__main__':

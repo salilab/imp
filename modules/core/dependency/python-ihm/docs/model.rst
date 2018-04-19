@@ -30,3 +30,6 @@ The :mod:`ihm.model` Python module
 
 .. autoclass:: LocalizationDensity
    :members:
+
+.. autoclass:: DCDWriter
+   :members:

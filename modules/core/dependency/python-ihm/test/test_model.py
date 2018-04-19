@@ -105,6 +105,40 @@ class Tests(unittest.TestCase):
         s = ihm.model.StateGroup()
         self.assertEqual(s, [])
 
+    def test_dcd_writer(self):
+        """Test DCDWriter class"""
+        m1 = ihm.model.Model(None, None, None)
+        m1._atoms = [ihm.model.Atom(None, None, None, None, x=1,y=2,z=3),
+                     ihm.model.Atom(None, None, None, None, x=4,y=5,z=6)]
+
+        with utils.temporary_directory() as tmpdir:
+            dcd = os.path.join(tmpdir, 'out.dcd')
+
+            with open(dcd, 'wb') as fh:
+                d = ihm.model.DCDWriter(fh)
+                d.add_model(m1)
+                d.add_model(m1)
+
+            with open(dcd, 'rb') as fh:
+                contents = fh.read()
+        self.assertEqual(len(contents), 452)
+
+    def test_dcd_writer_framesize_mismatch(self):
+        """Test DCDWriter class with framesize mismatch"""
+        m1 = ihm.model.Model(None, None, None)
+        m1._atoms = [ihm.model.Atom(None, None, None, None, x=1,y=2,z=3),
+                     ihm.model.Atom(None, None, None, None, x=4,y=5,z=6)]
+        m2 = ihm.model.Model(None, None, None)
+        m2._atoms = [ihm.model.Atom(None, None, None, None, x=1,y=2,z=3)]
+
+        with utils.temporary_directory() as tmpdir:
+            dcd = os.path.join(tmpdir, 'out.dcd')
+
+            with open(dcd, 'wb') as fh:
+                d = ihm.model.DCDWriter(fh)
+                d.add_model(m1)
+                self.assertRaises(ValueError, d.add_model, m2)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -2,6 +2,9 @@
    groups of models.
 """
 
+import struct
+import itertools
+
 class Sphere(object):
     """Coordinates of part of the model represented by a sphere.
 
@@ -175,7 +178,8 @@ class Ensemble(object):
        :param str name: A descriptive name for this ensemble.
        :param float precision: The precision of the entire ensemble.
        :param file: A reference to an external file containing coordinates
-              for the entire ensemble, for example as a DCD file.
+              for the entire ensemble, for example as a DCD file
+              (see :class:`DCDWriter`).
        :type file: :class:`ihm.location.OutputFileLocation`
     """
     def __init__(self, model_group, num_models, post_process=None,
@@ -211,3 +215,88 @@ class LocalizationDensity(object):
     """
     def __init__(self, file, asym_unit):
         self.file, self.asym_unit = file, asym_unit
+
+
+class DCDWriter(object):
+    """Utility class to write model coordinates to a binary DCD file.
+
+       See :class:`Ensemble` and :class:`Model`. Since mmCIF is a text-based
+       format, it is not efficient to store entire ensembles in this format.
+       Instead, representative models should be deposited as mmCIF and
+       the :class:`Ensemble` then linked to an external file containing
+       only model coordinates. One such format is CHARMM/NAMD's DCD, which
+       is written out by this class. The DCD files simply contain the xyz
+       coordinates of all :class:`Atom` and :class:`Sphere` objects in each
+       :class:`Model`. (Note that no other data is stored, such as sphere
+       radii or restraint parameters.)
+
+       :param file fh: The filelike object to write the coordinates to. This
+              should be open in binary mode and should be a seekable object.
+    """
+    def __init__(self, fh):
+        self.fh = fh
+        self.nframes = 0
+
+    def add_model(self, model):
+        """Add the coordinates for the given :class:`Model` to the file as
+           a new frame. All models in the file should have the same number of
+           atoms and/or spheres, in the same order.
+
+           :param model: Model with coordinates to write to the file.
+           :type model: :class:`Model`
+        """
+        x = []
+        y = []
+        z = []
+        for a in itertools.chain(model.get_atoms(), model.get_spheres()):
+            x.append(a.x)
+            y.append(a.y)
+            z.append(a.z)
+        self._write_frame(x, y, z)
+
+    def _write_frame(self, x, y, z):
+        self.nframes += 1
+        if self.nframes == 1:
+            self.ncoord = len(x)
+            remarks = [
+              b'Produced by python-ihm, https://github.com/ihmwg/python-ihm',
+              b'This file is designed to be used in combination with an '
+              b'mmCIF file',
+              b'See PDB-Dev at https://pdb-dev.wwpdb.org/ for more details']
+            self._write_header(self.ncoord, remarks)
+        else:
+            if len(x) != self.ncoord:
+                raise ValueError("Frame size mismatch - frames contain %d "
+                        "coordinates but attempting to write a frame "
+                        "containing %d coordinates" % (self.ncoord, len(x)))
+            # Update number of frames
+            self.fh.seek(self._pos_nframes)
+            self.fh.write(struct.pack('i', self.nframes))
+            self.fh.seek(0, 2) # Move back to end of file
+
+        # Write coordinates
+        frame_size = struct.pack('i', struct.calcsize("%df" % self.ncoord))
+        for coord in x, y, z:
+            self.fh.write(frame_size)
+            self.fh.write(struct.pack("%df" % self.ncoord, *coord))
+            self.fh.write(frame_size)
+
+    def _write_header(self, natoms, remarks):
+        self.fh.write(struct.pack('i', 84) + b'CORD')
+        self._pos_nframes = self.fh.tell()
+        self.fh.write(struct.pack('i', self.nframes))
+        self.fh.write(struct.pack('i', 0)) # istart
+        self.fh.write(struct.pack('i', 0)) # nsavc
+        self.fh.write(struct.pack('5i', 0, 0, 0, 0, 0))
+        self.fh.write(struct.pack('i', 0)) # number of fixed atoms
+        self.fh.write(struct.pack('d', 0.)) # delta
+        self.fh.write(struct.pack('10i', 0, 0, 0, 0, 0, 0, 0, 0, 0, 84))
+        remark_size = struct.calcsize('i') + 80 * len(remarks)
+        self.fh.write(struct.pack('i', remark_size))
+        self.fh.write(struct.pack('i', len(remarks)))
+        for r in remarks:
+            self.fh.write(r.ljust(80)[:80])
+        self.fh.write(struct.pack('i', remark_size))
+        self.fh.write(struct.pack('i', struct.calcsize('i')))
+        self.fh.write(struct.pack('i', natoms)) # total number of atoms
+        self.fh.write(struct.pack('i', struct.calcsize('i')))

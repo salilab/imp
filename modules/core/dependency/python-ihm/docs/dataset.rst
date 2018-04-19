@@ -39,3 +39,6 @@ The :mod:`ihm.dataset` Python module
 
 .. autoclass:: SASDataset
    :members:
+
+.. autoclass:: FRETDataset
+   :members:

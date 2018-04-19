@@ -19,6 +19,7 @@ import ihm.protocol
 import ihm.analysis
 import ihm.model
 import ihm.restraint
+import ihm.geometry
 
 def _get_dumper_output(dumper, system):
     fh = StringIO()
@@ -372,9 +373,10 @@ D 4 2 DC 2 2 DC DC D
         e1._id = 1
         e2._id = 2
         system.entities.extend((e1, e2))
-        system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
+        system.asym_units.append(ihm.AsymUnit(e1, 'foo', id='Z'))
         system.asym_units.append(ihm.AsymUnit(e1, 'bar'))
-        system.asym_units.append(ihm.AsymUnit(e2, 'baz'))
+        system.asym_units.append(ihm.AsymUnit(e2, 'baz', id='A'))
+        system.asym_units.append(ihm.AsymUnit(e2, 'tmp'))
         dumper = ihm.dumper._StructAsymDumper()
         dumper.finalize(system) # assign IDs
         out = _get_dumper_output(dumper, system)
@@ -383,11 +385,23 @@ loop_
 _struct_asym.id
 _struct_asym.entity_id
 _struct_asym.details
-A 1 foo
+Z 1 foo
 B 1 bar
-C 2 baz
+A 2 baz
+C 2 tmp
 #
 """)
+
+    def test_struct_asym_dumper_duplicate_ids(self):
+        """Test StructAsymDumper detection of duplicate user IDs"""
+        system = ihm.System()
+        e1 = ihm.Entity('ACGT')
+        system.entities.append(e1)
+        a1 = ihm.AsymUnit(e1, 'foo', id='Z')
+        a2 = ihm.AsymUnit(e1, 'baz', id='Z')
+        system.asym_units.extend((a1, a2))
+        dumper = ihm.dumper._StructAsymDumper()
+        self.assertRaises(ValueError, dumper.finalize, system)
 
     def test_assembly_all_modeled(self):
         """Test AssemblyDumper, all components modeled"""
@@ -1592,6 +1606,188 @@ _ihm_cross_link_result_parameters.psi
 _ihm_cross_link_result_parameters.sigma_1
 _ihm_cross_link_result_parameters.sigma_2
 1 1 201 0.100 4.200 2.100
+#
+""")
+
+    def test_geometric_object_dumper(self):
+        """Test GeometricObjectDumper"""
+        system = ihm.System()
+        center = ihm.geometry.Center(1.,2.,3.)
+        trans = ihm.geometry.Transformation([[1,0,0],[0,1,0],[0,0,1]],
+                                            [1.,2.,3.])
+
+        sphere = ihm.geometry.Sphere(center=center, transformation=trans,
+                                     radius=2.2, name='my sphere',
+                                     description='a test sphere',
+                                     details='some details')
+        torus = ihm.geometry.Torus(center=center, transformation=trans,
+                                   major_radius=5.6, minor_radius=1.2)
+        half_torus = ihm.geometry.HalfTorus(center=center, transformation=trans,
+                                            major_radius=5.6, minor_radius=1.2,
+                                            thickness=0.1, inner=True)
+        axis = ihm.geometry.XAxis()
+        plane = ihm.geometry.XYPlane()
+
+        system.orphan_geometric_objects.extend((sphere, torus, half_torus,
+                                                axis, plane))
+
+        dumper = ihm.dumper._GeometricObjectDumper()
+        dumper.finalize(system) # assign IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_geometric_object_center.id
+_ihm_geometric_object_center.xcoord
+_ihm_geometric_object_center.ycoord
+_ihm_geometric_object_center.zcoord
+1 1.000 2.000 3.000
+#
+#
+loop_
+_ihm_geometric_object_transformation.id
+_ihm_geometric_object_transformation.rot_matrix[1][1]
+_ihm_geometric_object_transformation.rot_matrix[2][1]
+_ihm_geometric_object_transformation.rot_matrix[3][1]
+_ihm_geometric_object_transformation.rot_matrix[1][2]
+_ihm_geometric_object_transformation.rot_matrix[2][2]
+_ihm_geometric_object_transformation.rot_matrix[3][2]
+_ihm_geometric_object_transformation.rot_matrix[1][3]
+_ihm_geometric_object_transformation.rot_matrix[2][3]
+_ihm_geometric_object_transformation.rot_matrix[3][3]
+_ihm_geometric_object_transformation.tr_vector[1]
+_ihm_geometric_object_transformation.tr_vector[2]
+_ihm_geometric_object_transformation.tr_vector[3]
+1 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000
+1.000000 1.000 2.000 3.000
+#
+#
+loop_
+_ihm_geometric_object_list.object_id
+_ihm_geometric_object_list.object_type
+_ihm_geometric_object_list.object_name
+_ihm_geometric_object_list.object_description
+_ihm_geometric_object_list.other_details
+1 sphere 'my sphere' 'a test sphere' 'some details'
+2 torus . . .
+3 half-torus . . .
+4 axis . . .
+5 plane . . .
+#
+#
+loop_
+_ihm_geometric_object_sphere.object_id
+_ihm_geometric_object_sphere.center_id
+_ihm_geometric_object_sphere.transformation_id
+_ihm_geometric_object_sphere.radius_r
+1 1 1 2.200
+#
+#
+loop_
+_ihm_geometric_object_torus.object_id
+_ihm_geometric_object_torus.center_id
+_ihm_geometric_object_torus.transformation_id
+_ihm_geometric_object_torus.major_radius_R
+_ihm_geometric_object_torus.minor_radius_r
+2 1 1 5.600 1.200
+3 1 1 5.600 1.200
+#
+#
+loop_
+_ihm_geometric_object_half_torus.object_id
+_ihm_geometric_object_half_torus.thickness_th
+_ihm_geometric_object_half_torus.section
+3 0.100 'inner half'
+#
+#
+loop_
+_ihm_geometric_object_axis.object_id
+_ihm_geometric_object_axis.axis_type
+4 x-axis
+#
+#
+loop_
+_ihm_geometric_object_plane.object_id
+_ihm_geometric_object_plane.plane_type
+5 xy-plane
+#
+""")
+
+    def test_feature_dumper(self):
+        """Test FeatureDumper"""
+        system = ihm.System()
+        e1 = ihm.Entity('ACGT')
+        system.entities.append(e1)
+        a1 = ihm.AsymUnit(e1, 'foo')
+        a2 = ihm.AsymUnit(e1, 'baz')
+        system.asym_units.extend((a1, a2))
+
+        f = ihm.restraint.PolyResidueFeature([a1, a2(2,3)])
+        system.orphan_features.append(f)
+
+        ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
+        ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
+
+        dumper = ihm.dumper._FeatureDumper()
+        dumper.finalize(system) # assign IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_feature_list.feature_id
+_ihm_feature_list.feature_type
+_ihm_feature_list.entity_type
+1 'residue range' polymer
+#
+#
+loop_
+_ihm_poly_residue_feature.ordinal_id
+_ihm_poly_residue_feature.feature_id
+_ihm_poly_residue_feature.entity_id
+_ihm_poly_residue_feature.asym_id
+_ihm_poly_residue_feature.seq_id_begin
+_ihm_poly_residue_feature.comp_id_begin
+_ihm_poly_residue_feature.seq_id_end
+_ihm_poly_residue_feature.comp_id_end
+1 1 1 A 1 ALA 4 THR
+2 1 1 B 2 CYS 3 GLY
+#
+""")
+
+    def test_geometric_restraint_dumper(self):
+        """Test GeometricRestraintDumper"""
+        class MockObject(object):
+            pass
+        system = ihm.System()
+
+        feat = MockObject()
+        feat._id = 44
+        geom = MockObject()
+        geom._id = 23
+        dataset = MockObject()
+        dataset._id = 97
+
+        dist = ihm.restraint.UpperBoundDistanceRestraint(25.0)
+        r = ihm.restraint.CenterGeometricRestraint(dataset=dataset,
+                geometric_object=geom, feature=feat, distance=dist,
+                harmonic_force_constant=2.0)
+        system.restraints.append(r)
+
+        dumper = ihm.dumper._GeometricRestraintDumper()
+        dumper.finalize(system) # assign IDs
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_geometric_object_spatial_restraint.id
+_ihm_geometric_object_spatial_restraint.object_id
+_ihm_geometric_object_spatial_restraint.feature_id
+_ihm_geometric_object_spatial_restraint.object_characteristic
+_ihm_geometric_object_spatial_restraint.restraint_type
+_ihm_geometric_object_spatial_restraint.harmonic_force_constant
+_ihm_geometric_object_spatial_restraint.distance_lower_limit
+_ihm_geometric_object_spatial_restraint.distance_upper_limit
+_ihm_geometric_object_spatial_restraint.group_conditionality
+_ihm_geometric_object_spatial_restraint.dataset_list_id
+1 23 44 center 'distance restraint upper bound' 2.000 . 25.000 ANY 97
 #
 """)
 
