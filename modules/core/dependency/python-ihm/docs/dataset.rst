@@ -42,3 +42,6 @@ The :mod:`ihm.dataset` Python module
 
 .. autoclass:: FRETDataset
    :members:
+
+.. autoclass:: YeastTwoHybridDataset
+   :members:

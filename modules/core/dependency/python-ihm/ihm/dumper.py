@@ -1261,7 +1261,7 @@ class _EM3DDumper(_Dumper):
         ordinal = 1
         with writer.loop("_ihm_3dem_restraint",
                          ["ordinal_id", "dataset_list_id", "fitting_method",
-                          "fitting_method_citation",
+                          "fitting_method_citation_id",
                           "struct_assembly_id",
                           "number_of_gaussians", "model_id",
                           "cross_correlation_coefficient"]) as l:
@@ -1277,7 +1277,7 @@ class _EM3DDumper(_Dumper):
                     l.write(ordinal_id=ordinal,
                             dataset_list_id=r.dataset._id,
                             fitting_method=r.fitting_method,
-                            fitting_method_citation=citation_id,
+                            fitting_method_citation_id=citation_id,
                             struct_assembly_id=r.assembly._id,
                             number_of_gaussians=r.number_of_gaussians,
                             model_id=model._id,

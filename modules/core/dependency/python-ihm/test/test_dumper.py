@@ -1372,7 +1372,7 @@ loop_
 _ihm_3dem_restraint.ordinal_id
 _ihm_3dem_restraint.dataset_list_id
 _ihm_3dem_restraint.fitting_method
-_ihm_3dem_restraint.fitting_method_citation
+_ihm_3dem_restraint.fitting_method_citation_id
 _ihm_3dem_restraint.struct_assembly_id
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id

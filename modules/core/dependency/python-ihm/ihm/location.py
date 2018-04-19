@@ -106,6 +106,14 @@ class SASBDBLocation(DatabaseLocation):
                                              details)
 
 
+class BioGRIDLocation(DatabaseLocation):
+    """Something stored in the BioGRID database.
+       See :class:`DatabaseLocation` for a description of the parameters."""
+    def __init__(self, db_code, version=None, details=None):
+        super(BioGRIDLocation, self).__init__('BioGRID', db_code, version,
+                                              details)
+
+
 class FileLocation(Location):
     """Base class for an individual file or directory stored externally.
 

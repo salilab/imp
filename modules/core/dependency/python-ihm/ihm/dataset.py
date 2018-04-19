@@ -107,3 +107,8 @@ class SASDataset(Dataset):
 class FRETDataset(Dataset):
     """Data from a Förster resonance energy transfer (FRET) experiment"""
     data_type = 'Single molecule FRET data'
+
+
+class YeastTwoHybridDataset(Dataset):
+    """Yeast two-hybrid data"""
+    data_type = 'Yeast two-hybrid screening data'
