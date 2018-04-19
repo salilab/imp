@@ -38,6 +38,7 @@ import ihm.model
 import ihm.protocol
 import ihm.analysis
 import ihm.representation
+import ihm.geometry
 
 def _assign_id(obj, seen_objs, obj_by_id):
     """Assign a unique ID to obj, and track all ids in obj_by_id."""
@@ -79,6 +80,24 @@ class _AsymMapper(object):
     def __getitem__(self, p):
         protname = self._cm[p]
         return self.simo.asym_units[protname]
+
+    def get_feature(self, ps):
+        """Get an ihm.restraint.Feature that covers the given particles"""
+        # todo: handle things other than residues
+        rngs = []
+        for p in ps:
+            asym = self[p]
+            # todo: handle overlapping or adjoining ranges
+            if IMP.atom.Residue.get_is_setup(p):
+                rind = IMP.atom.Residue(p).get_index()
+                rngs.append(asym(rind, rind))
+            elif IMP.atom.Fragment.get_is_setup(p):
+                # PMI Fragments always contain contiguous residues
+                rinds = IMP.atom.Fragment(p).get_residue_indexes()
+                rngs.append(asym(rinds[0], rinds[-1]))
+            else:
+                raise ValueError("Unsupported particle type %s" % str(p))
+        return ihm.restraint.PolyResidueFeature(rngs)
 
 
 class _AllSoftware(object):
@@ -233,7 +252,8 @@ class _AllDatasets(object):
         # the group will still contain the old dataset - mark dataset as read
         # only?
         g = ihm.dataset.DatasetGroup(self._datasets_by_state.get(state, [])
-                + [r.dataset for r in self._restraints_by_state.get(state, [])])
+                + [r.dataset for r in self._restraints_by_state.get(state, [])
+                   if r.dataset])
         return g
 
     def add(self, state, dataset):
@@ -428,6 +448,24 @@ class _EM3DRestraint(ihm.restraint.EM3DRestraint):
         if model.stats is not None:
             return float(model.stats['GaussianEMRestraint_%s_CCC'
                                      % self.pmi_restraint.label])
+
+
+class _GeometricRestraint(ihm.restraint.GeometricRestraint):
+
+    def __init__(self, simo, state, pmi_restraint, geometric_object,
+                 feature, distance, sigma):
+        self.pmi_restraint = pmi_restraint
+        super(_GeometricRestraint, self).__init__(
+                dataset=pmi_restraint.dataset,
+                geometric_object=geometric_object, feature=feature,
+                distance=distance, harmonic_force_constant = 1. / sigma,
+                restrain_all=True)
+
+    # Have our dataset point to that in the original PMI restraint
+    def __set_dataset(self, val):
+        self.pmi_restraint.dataset = val
+    dataset = property(lambda self: self.pmi_restraint.dataset,
+                       __set_dataset)
 
 
 class _ReplicaExchangeProtocolStep(ihm.protocol.Step):
@@ -1037,6 +1075,11 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self._transformed_components = []
         self.sequence_dict = {}
 
+        # Common geometric objects used in PMI systems
+        self._xy_plane = ihm.geometry.XYPlane()
+        self._center_origin = ihm.geometry.Center(0,0,0)
+        self._identity_transform = ihm.geometry.Transformation.identity()
+
         # Coordinates to exclude
         self._exclude_coords = {}
 
@@ -1399,6 +1442,43 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def add_em3d_restraint(self, state, target_ps, densities, pmi_restraint):
         # todo: need to set allow_duplicates on this dataset?
         r = _EM3DRestraint(self, state, pmi_restraint, target_ps, densities)
+        self.system.restraints.append(r)
+        self._add_restraint_dataset(r) # so that all-dataset group works
+
+    def add_zaxial_restraint(self, state, ps, lower_bound, upper_bound,
+                             sigma, pmi_restraint):
+        asym = get_asym_mapper_for_state(self, state, self.__asym_states)
+        r = _GeometricRestraint(self, state, pmi_restraint, self._xy_plane,
+                             asym.get_feature(ps),
+                             ihm.restraint.LowerUpperBoundDistanceRestraint(
+                                                    lower_bound, upper_bound),
+                             sigma)
+        self.system.restraints.append(r)
+        self._add_restraint_dataset(r) # so that all-dataset group works
+
+    def _get_membrane(self, tor_R, tor_r, tor_th):
+        """Get an object representing a half-torus membrane"""
+        if not hasattr(self, '_seen_membranes'):
+            self._seen_membranes = {}
+        # If a membrane already exists with all dimensions within 0.01 of
+        # this one, reuse it
+        membrane_id = tuple(int(x * 100.) for x in (tor_R, tor_r, tor_th))
+        if membrane_id not in self._seen_membranes:
+            m = ihm.geometry.HalfTorus(center=self._center_origin,
+                    transformation=self._identity_transform,
+                    major_radius=tor_R, minor_radius=tor_r, thickness=tor_th,
+                    inner=True, name='Membrane')
+            self._seen_membranes[membrane_id] = m
+        return self._seen_membranes[membrane_id]
+
+    def add_membrane_surface_location_restraint(
+            self, state, ps, tor_R, tor_r, tor_th, sigma, pmi_restraint):
+        asym = get_asym_mapper_for_state(self, state, self.__asym_states)
+        r = _GeometricRestraint(self, state, pmi_restraint,
+                             self._get_membrane(tor_R, tor_r, tor_th),
+                             asym.get_feature(ps),
+                             ihm.restraint.UpperBoundDistanceRestraint(0.),
+                             sigma)
         self.system.restraints.append(r)
         self._add_restraint_dataset(r) # so that all-dataset group works
 
