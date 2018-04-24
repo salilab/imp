@@ -148,18 +148,52 @@ void ProteinKinematics::init(const atom::Residues& flexible_residues,
 
   open_loop(open_loop_bond_atoms);
 
-  // 4. TODO define and mark all chi angles, if flexible_side_chains is true
+  // 4. Mark all chi angles, if flexible_side_chains is true
+
   std::vector<atom::Atoms> chi1_angles, chi2_angles, chi3_angles,
-      chi4_angles;
+      chi4_angles, chi5_angles;
   std::vector<atom::Residue> chi1_residues, chi2_residues, chi3_residues,
-      chi4_residues;
+      chi4_residues, chi5_residues;
+
   if (flexible_side_chains) {
-    // TODO
+  // 4.1 Add chi angles
+    for (unsigned int i = 0; i < flexible_residues.size(); i++) {
+      std::vector< atom::Atoms > chi_atoms_list =
+          atom::get_chi_dihedral_atoms(flexible_residues[i]);
+          // Returns a list of all chi dihedrals for that residue
+          for (unsigned int j = 0; j < chi_atoms_list.size(); j++) {
+            // Chi values come in ascending order.
+            if (j==0) {
+              //std::cout << chi_atoms_list[j] << std::endl;
+              chi1_angles.push_back(chi_atoms_list[j]);
+              chi1_residues.push_back(flexible_residues[i]); 
+            } else if (j==1) {
+              chi2_angles.push_back(chi_atoms_list[j]);
+              chi2_residues.push_back(flexible_residues[i]); 
+            } else if (j==2) {
+              chi3_angles.push_back(chi_atoms_list[j]);
+              chi3_residues.push_back(flexible_residues[i]); 
+            } else if (j==3) {
+              chi4_angles.push_back(chi_atoms_list[j]);
+              chi4_residues.push_back(flexible_residues[i]); 
+            } else {
+              chi5_angles.push_back(chi_atoms_list[j]);
+              chi5_residues.push_back(flexible_residues[i]);
+            }
+          }
+    }
+    mark_rotatable_angles(chi1_angles);
+    mark_rotatable_angles(chi2_angles);
+    mark_rotatable_angles(chi3_angles);
+    mark_rotatable_angles(chi4_angles);
+    mark_rotatable_angles(chi5_angles);
   }
 
   // 3. build rbs and sort them by dfs
   build_rigid_bodies();
-  order_rigid_bodies(custom_dihedral_angles_atoms, phi_angles, psi_angles, open_loop_bond_atoms);
+  order_rigid_bodies(custom_dihedral_angles_atoms, phi_angles, psi_angles, 
+    chi1_angles, chi2_angles, chi3_angles, chi4_angles, chi5_angles, open_loop_bond_atoms);
+
 
   // 4. add joints to kf
 
@@ -188,6 +222,7 @@ void ProteinKinematics::init(const atom::Residues& flexible_residues,
     add_dihedral_joints(chi2_residues, CHI2, chi2_angles);
     add_dihedral_joints(chi3_residues, CHI3, chi3_angles);
     add_dihedral_joints(chi4_residues, CHI4, chi4_angles);
+    add_dihedral_joints(chi5_residues, CHI5, chi5_angles);
   }
 
   std::cerr << joints_.size() << " joints were constructed " << std::endl;
@@ -257,8 +292,6 @@ void ProteinKinematics::build_topology_graph() {
   // TODO: add IMP_CHECK on this code
   std::vector<int> component(boost::num_vertices(graph_));
   unsigned int num = boost::connected_components(graph_, &component[0]);
-  std::cerr << "CC NUM before removal of rotatable bonds = " << num
-            << std::endl;
 }
 
 void ProteinKinematics::mark_rotatable_angles(
@@ -275,6 +308,7 @@ void ProteinKinematics::mark_rotatable_angle(
   ParticleIndex p2 = dihedral_angle[2].get_particle_index();
   int atom_index1 = 0;
   int atom_index2 = 0;
+
   if (particle_index_to_node_map_.find(p1) !=
       particle_index_to_node_map_.end()) {
     atom_index1 = particle_index_to_node_map_[p1];
@@ -287,8 +321,16 @@ void ProteinKinematics::mark_rotatable_angle(
   } else {
     IMP_THROW("cannot find node index for angle", ValueException);
   }
-  
+  std::vector<int> component(boost::num_vertices(graph_));
+  unsigned int num = boost::connected_components(graph_, &component[0]);
+  //std::cerr << "CC NUM before removal of rotatable bonds = " << component[0]
+  //          << std::endl;
+  //std::cerr << "REMOVE EDGE = " << atom_index1 << atom_index2 << std::endl;
   boost::remove_edge(atom_index1, atom_index2, graph_);
+  std::vector<int> component2(boost::num_vertices(graph_));
+  unsigned int num1 = boost::connected_components(graph_, &component2[0]);
+  //std::cerr << "CC NUM after removal of rotatable bonds = " << component2[0]
+  //          << std::endl;
 }
 
 
@@ -320,14 +362,12 @@ void ProteinKinematics::build_rigid_bodies() {
   // compute connected components that represent rigid parts
   std::vector<int> component(boost::num_vertices(graph_));
   unsigned int num = boost::connected_components(graph_, &component[0]);
-  std::cerr << "CC NUM = " << num << std::endl;
 
   // store the atoms of each rigid body using node index
   std::vector<std::vector<int> > rigid_bodies_atoms(num);
   for (unsigned int i = 0; i < component.size(); i++) {
     rigid_bodies_atoms[component[i]].push_back(i);
   }
-
   // build the rigid bodies
   Model* m = mhd_->get_model();
   largest_rb_ = 0;
@@ -362,6 +402,11 @@ void ProteinKinematics::order_rigid_bodies(
                          const std::vector<atom::Atoms>& custom_dihedral_angles,
                          const std::vector<atom::Atoms>& phi_angles,
                          const std::vector<atom::Atoms>& psi_angles,
+                         const std::vector<atom::Atoms>& chi1_angles,
+                         const std::vector<atom::Atoms>& chi2_angles,
+                         const std::vector<atom::Atoms>& chi3_angles,
+                         const std::vector<atom::Atoms>& chi4_angles,
+                         const std::vector<atom::Atoms>& chi5_angles,
                          atom::Atoms open_loop_bond_atoms) {
 
   // build rigid bodies topology graph
@@ -372,6 +417,13 @@ void ProteinKinematics::order_rigid_bodies(
   add_edges_to_rb_graph(custom_dihedral_angles);
   add_edges_to_rb_graph(phi_angles);
   add_edges_to_rb_graph(psi_angles);
+
+  add_edges_to_rb_graph(chi1_angles);
+  add_edges_to_rb_graph(chi2_angles);
+  add_edges_to_rb_graph(chi3_angles);
+  add_edges_to_rb_graph(chi4_angles);
+  add_edges_to_rb_graph(chi5_angles);
+
   rb_order_.resize(rbs_.size());
   parents_.resize(rbs_.size());
 
@@ -393,8 +445,6 @@ void ProteinKinematics::order_rigid_bodies(
        rbs_[rb_index2].get_number_of_members()) {
       starting_vertex = rb_index2;
     }
-    std::cerr << "rb1 index = " << rb_index1 << " size = " << rbs_[rb_index1].get_number_of_members() << std::endl;
-    std::cerr << "rb2 index = " << rb_index2 << " size = " << rbs_[rb_index2].get_number_of_members() << std::endl;
   }
 
   boost::depth_first_search(rb_graph_, visitor(vis).root_vertex(starting_vertex));
@@ -425,14 +475,14 @@ void ProteinKinematics::add_dihedral_joints(
     ProteinAngleType angle_type,
     const std::vector<atom::Atoms>& dihedral_angles) {
 
-  for (unsigned int i = 0; i < dihedral_angles.size(); i++)
+  for (unsigned int i = 0; i < dihedral_angles.size(); i++){
     add_dihedral_joint(residues[i], angle_type, dihedral_angles[i]);
+  }
 }
 
 void ProteinKinematics::add_dihedral_joint(const atom::Residue r,
                                            ProteinAngleType angle_type,
                                            const atom::Atoms& atoms) {
-
   Particle* p1 = atoms[1].get_particle();
   Particle* p2 = atoms[2].get_particle();
 
@@ -443,9 +493,7 @@ void ProteinKinematics::add_dihedral_joint(const atom::Residue r,
     core::RigidBody rb2 = core::RigidMember(p2).get_rigid_body();
     int rb_index1 = rb_particle_index_to_node_map_[rb1->get_index()];
     int rb_index2 = rb_particle_index_to_node_map_[rb2->get_index()];
-
     Pointer<DihedralAngleRevoluteJoint> joint;
-
     if(rb_order_[rb_index1] < rb_order_[rb_index2]) {
       joint = new DihedralAngleRevoluteJoint(rb1, rb2,
                                              core::XYZ(atoms[0].get_particle()),
@@ -459,7 +507,6 @@ void ProteinKinematics::add_dihedral_joint(const atom::Residue r,
                                              core::XYZ(atoms[1].get_particle()),
                                              core::XYZ(atoms[0].get_particle()));
     }
-
     joints_.push_back(joint);
     kf_->add_edge(joint);
     joint_map_.add_joint(r, angle_type, joint);
