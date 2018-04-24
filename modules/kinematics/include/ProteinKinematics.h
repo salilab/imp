@@ -27,27 +27,32 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
+// public:
+enum ProteinAngleType {
+  PHI,
+  PSI,
+  CHI,
+  CHI1,
+  CHI2,
+  CHI3,
+  CHI4,
+  CHI5,
+  OTHER,
+  OTHER2,
+  OTHER3,
+  OTHER4,
+  OTHER5,
+  TOTAL
+};
+
+
 //! Kinematic structure over a protein, with backbone and side chain dihedrals
 //!
 //! Note: Particles that are handled by this class should never be decorated
 //! with IMP::core::RigidBody externally, as this could lead to unexpected behavior
 //! (e.g., wrong coordinates) and it cannot be detected by IMP at the current time.
 class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
- public:
-  enum ProteinAngleType {
-    PHI,
-    PSI,
-    CHI1,
-    CHI2,
-    CHI3,
-    CHI4,
-    OTHER,
-    OTHER2,
-    OTHER3,
-    OTHER4,
-    OTHER5,
-    TOTAL
-  };
+
 
   
  public:
@@ -212,6 +217,11 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
   void order_rigid_bodies(const std::vector<atom::Atoms>& dihedral_angles,
                           const std::vector<atom::Atoms>& phi_angles,
                           const std::vector<atom::Atoms>& psi_angles,
+                          const std::vector<atom::Atoms>& chi1_angles,
+                          const std::vector<atom::Atoms>& chi2_angles,
+                          const std::vector<atom::Atoms>& chi3_angles,   
+                          const std::vector<atom::Atoms>& chi4_angles,  
+                          const std::vector<atom::Atoms>& chi5_angles,    
                           atom::Atoms open_loop_bond_atoms);
 
   //! mark specified dihedral angles as rotatable - remove the edges of the
@@ -251,6 +261,27 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
     return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, OTHER);
   }
 
+  DihedralAngleRevoluteJoint* get_chi1_joint(const atom::Residue r) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, CHI1);
+  }
+  DihedralAngleRevoluteJoint* get_chi2_joint(const atom::Residue r) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, CHI2);
+  }
+  DihedralAngleRevoluteJoint* get_chi3_joint(const atom::Residue r) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, CHI3);
+  }
+  DihedralAngleRevoluteJoint* get_chi4_joint(const atom::Residue r) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, CHI4);
+  }
+  DihedralAngleRevoluteJoint* get_chi5_joint(const atom::Residue r) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, CHI5);
+  }
+
+  DihedralAngleRevoluteJoint* get_joint(const atom::Residue r, ProteinAngleType angle) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, angle);
+  }
+
+
   //DihedralAngleRevoluteJoints get_joints(const atom::Residue r) const;
 
 #ifndef IMP_DOXYGEN
@@ -275,6 +306,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
   };
 #endif  // IMP_DOXYGEN
 
+
  private:
 
   typedef boost::adjacency_list<
@@ -282,6 +314,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
 
   // protein hierarchy
   atom::Hierarchy mhd_;
+
 
   //! all atom particles in the protein
   ParticlesTemp atom_particles_;
@@ -310,7 +343,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
 
   PointerMember<kinematics::KinematicForest> kf_;
 
-  // map between residue phi/psi/chis and joints
+    // map between residue phi/psi/chis and joints
   AngleToJointMap joint_map_;
 
   boost::unordered_map<int, boost::unordered_map<int, Pointer<DihedralAngleRevoluteJoint> > > rigid_bodies_2_joint_map_;
