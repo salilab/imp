@@ -40,6 +40,8 @@ std::vector<DOFValues> PathLocalPlanner::plan(DOFValues q_from,
 
   // iterate path nodes and check validity
   while (d_->get_value() < 1.0) {
+    // Increase DOF value by delta and current_step_number_ by one. 
+    // Do we increase each DOF by delta at each step?
     (*d_)++;
     if (!is_valid(d_->get_dofs_values(), sf)) {  // TODO
       is_collision_detected = true;
