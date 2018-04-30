@@ -37,7 +37,6 @@ class IMPKINEMATICSEXPORT LocalPlanner : public IMP::Object {
   bool is_valid(const DOFValues& values, ScoringFunction *sf) {
     dofs_sampler_->apply(values);
     double score = sf->evaluate_if_below(false, 0.0);  // TODO: what here?
-    // std::cerr << "score = " << score << std::endl;
     if (score <= 0.000001) return true;
     return false;
   }
