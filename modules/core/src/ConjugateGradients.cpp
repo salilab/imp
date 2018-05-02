@@ -84,7 +84,7 @@ ConjugateGradients::NT ConjugateGradients::get_score(
   try {
     score = get_scoring_function()->evaluate(true);
   }
-  catch (ModelException) {
+  catch (const ModelException &) {
     // if we took a bad step, just return a bad score
     return std::numeric_limits<NT>::infinity();
   }

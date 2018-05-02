@@ -63,7 +63,7 @@ inline bool get_has_ancestor(const G &g, unsigned int v,
     boost::depth_first_visit(rg, v, av, color);
     return false;
   }
-  catch (AncestorException e) {
+  catch (const AncestorException &e) {
     /*IMP_LOG_VERBOSE( "Vertex has ancestor \"" << e.o->get_name()
       << "\"" << std::endl);*/
     return true;

@@ -171,7 +171,7 @@ std::string get_directory_path(std::string fileordirectory) {
     return dir.native_file_string();
 #endif
   }
-  catch (boost::filesystem::filesystem_error e) {
+  catch (const boost::filesystem::filesystem_error &e) {
     IMP_THROW("Error splitting file name \"" << fileordirectory << "\" got "
                                              << e.what(),
               IOException);

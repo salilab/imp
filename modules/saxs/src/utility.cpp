@@ -133,7 +133,7 @@ void read_files(Model *m, const std::vector<std::string>& files,
       read_pdb(m, files[i], pdb_file_names, particles_vec, residue_level,
                heavy_atoms_only, multi_model_pdb, explicit_water);
     }
-    catch (IMP::ValueException e) {  // not a pdb file
+    catch (const IMP::ValueException &e) {  // not a pdb file
       // 2. try as a dat profile file
       IMP_NEW(Profile, profile, (files[i], false, max_q, units));
       if (profile->size() == 0) {

@@ -123,7 +123,7 @@ void read_files(const std::vector<std::string>& files,
         }
       }
     }
-    catch (IMP::ValueException e) {  // not a pdb file
+    catch (const IMP::ValueException &e) {  // not a pdb file
       // 2. try as a dat profile file
       IMP_NEW(Profile, profile, (files[i], false, max_q, units));
       if (profile->size() > 0) {

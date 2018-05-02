@@ -716,7 +716,7 @@ namespace {
                   (params_->get_residue_topology(restyp)));
           segment->add_residue(residue);
         }
-        catch (ValueException) {
+        catch (const ValueException &) {
           // If residue type is unknown, add empty topology for this residue
           IMP_WARN_ONCE(
               restyp.get_string(),

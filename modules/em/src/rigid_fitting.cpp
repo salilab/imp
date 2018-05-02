@@ -118,7 +118,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
       fr.add_solution(
           rb.get_reference_frame().get_transformation_to() / starting_trans, e);
     }
-    catch (ModelException err) {
+    catch (const ModelException &err) {
       IMP_WARN("Optimization run " << i << " failed to converge." << std::endl);
     }
   }

@@ -374,7 +374,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
     try {
       mc->optimize(pms.mc_steps_);
     }
-    catch (ModelException) {
+    catch (const ModelException &) {
       IMP_LOG_TERSE("Optimization ended by exception" << std::endl);
       ++failures;
       continue;
