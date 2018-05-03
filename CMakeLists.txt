@@ -64,9 +64,7 @@ cmake_policy(SET CMP0017 NEW)
 endif(POLICY CMP0017)
 
 # Don't set MACOSX_RPATH by default
-if(POLICY CMP0042)
-cmake_policy(SET CMP0042 OLD)
-endif(POLICY CMP0042)
+set(CMAKE_MACOSX_RPATH 0)
 
 # Stop cmake warning about files in the build directory it didn't create
 # (see issue #909)
