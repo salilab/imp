@@ -86,7 +86,7 @@ struct ReaderTraits {
       try {
         reader_->seekBlockBytes(offset);
       }
-      catch (std::exception) {
+      catch (const std::exception &) {
         RMF_INFO("Seeking not supported");
       }
     }

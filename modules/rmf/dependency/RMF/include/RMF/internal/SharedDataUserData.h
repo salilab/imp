@@ -56,7 +56,7 @@ class SharedDataUserData {
     try {
       return boost::any_cast<T>(user_data_.find(i)->second);
     }
-    catch (boost::bad_any_cast) {
+    catch (const boost::bad_any_cast &) {
       RMF_THROW(Message("Type mismatch when recovering user data"),
                 UsageException);
     }
@@ -93,7 +93,7 @@ class SharedDataUserData {
     try {
       return association_[id];
     }
-    catch (boost::bad_any_cast) {
+    catch (const boost::bad_any_cast &) {
       RMF_THROW(Message("Type mismatch when recovering node data"),
                 UsageException);
     }
