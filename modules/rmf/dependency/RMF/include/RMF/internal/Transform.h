@@ -37,7 +37,9 @@ RMF_ENABLE_WARNINGS namespace RMF {
       v_[3] = 0;
       fill_matrix();
     }
-    Rotation(const Vector4& r) : v_(r) {}
+    Rotation(const Vector4& r) : v_(r) {
+      fill_matrix();
+    }
 
     //! Rotate a vector around the origin
     Vector3 get_rotated(const Vector3& o) const {
