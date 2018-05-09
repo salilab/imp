@@ -99,8 +99,6 @@ ClassnameContainerSet::get_indexes_in_place
     PLURALINDEXTYPE const& cur = c->get_contents();
     output.insert(output.end(), cur.begin(), cur.end());
   }
-  //  std::cout << "New size of output after get_indexes_in_place(): " << output.size()<< std::endl;
-  //  std::cout << "From # of containers: " << get_classname_containers().size() << std::endl;
 }
 
 PLURALINDEXTYPE ClassnameContainerSet::get_range_indexes() const {
@@ -505,24 +503,19 @@ void PredicateClassnamesRestraint::do_add_score_and_derivatives(
     ScoreAccumulator sa) const {
   // currently ignores all maxima
   // no longer parallizable
-  //  std::cout << "START do_add_score_and_derivatives()" << std::endl;
   update_lists_if_necessary();
-  //std::cout << "Lists updated" << std::endl;
   typedef std::pair<int, PLURALINDEXTYPE> LP;
   IMP_FOREACH(const LP & lp, lists_) {
     IMP_LOG_VERBOSE("Evaluating score for predicate value " << lp.first
                                                             << std::endl);
     ClassnameScore* score= get_score_for_predicate(lp.first);
     if(IMP_LIKELY(score != nullptr)){
-      //      std::cout << "Score for predicate #" << lp.first << " n = " << lp.second.size();
       double cur_score = score->evaluate_indexes(get_model(), lp.second,
                                                  sa.get_derivative_accumulator(),
                                                  0, lp.second.size());
-      //      std::cout << " is: " << cur_score << std::endl;
       sa.add_score(cur_score);
     }
   }
-  //   std::cout << "END do_add_score_and_derivatives()" << std::endl;
 }
 
 ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
@@ -582,36 +575,8 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
   IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
     int bin = predicate_->get_value_index_in_batch(get_model(), it);
     lists_[bin].push_back(it);
-    //  if (scores_.find(bin) != scores_.end()) {
-    //    update_lists_with_item(it);
   } // IMP_FOREACH
-  // for(tsl::robin_map<int, PLURALINDEXTYPE>::iterator lists_it= lists_.begin();
-  //     lists_it != lists_.end(); lists_it++){
-  //   std::cout << "List for predicate " << lists_it->first
-  //             << " of size " << lists_it->second.size() << std::endl;
-  // }
 }
-
-/*
-void
-PredicateClassnamesRestraint::update_lists_with_item
-(INDEXTYPE const &it) const
-{
-  // static const int unknown_bin =
-  //   std::numeric_limits<int>::max();
-  int bin = predicate_->get_value_index_in_batch(get_model(), it);
-  //  if (scores_.find(bin) != scores_.end()) {
-  lists_[bin].push_back(it);
-  // } else {
-  //   IMP_USAGE_CHECK(!error_on_unknown_, "Unknown predicate value of "
-  //                   << bin << " found for tuple "
-  //                   << it);
-  //   if(IMP_LIKELY(is_unknown_score_set_)){
-  //     lists_[unknown_bin].push_back(it);
-  //   }
-  // } // if score found
-}
-*/
 
 
 void PredicateClassnamesRestraint::set_score(int predicate_value,
