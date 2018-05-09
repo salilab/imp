@@ -44,20 +44,24 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   PointerMember<ClassnamePredicate> predicate_;
   PointerMember<ClassnameContainer> input_;
 #if IMP_CONTAINER_HAS_ROBIN_MAP==1
-  mutable tsl::robin_map<int, PLURALINDEXTYPE> lists_;
-  tsl::robin_map<int, PointerMember<ClassnameScore> > scores_;
+  typedef tsl::robin_map<int, PLURALINDEXTYPE> t_lists_map;
+  typedef tsl::robin_map<int, PointerMember<ClassnameScore> > t_score_map;
 #elif IMP_CONTAINER_HAS_GOOGLE_DENSE_HASH_MAP==1
-  mutable google::dense_hash_map<int, PLURALINDEXTYPE> lists_;
-  google::dense_hash_map<int, PointerMember<ClassnameScore> > scores_;
+  typedef google::dense_hash_map<int, PLURALINDEXTYPE> t_lists_map;
+  typedef google::dense_hash_map<int, PointerMember<ClassnameScore> > t_score_map;
 #else
-  mutable IMP_KERNEL_LARGE_UNORDERED_MAP<int, PLURALINDEXTYPE> lists_;
-  IMP_KERNEL_LARGE_UNORDERED_MAP<int, PointerMember<ClassnameScore> > scores_;
+  typedef IMP_KERNEL_LARGE_UNORDERED_MAP<int, PLURALINDEXTYPE> t_lists_map;
+  typedef IMP_KERNEL_LARGE_UNORDERED_MAP<int, PointerMember<ClassnameScore> > t_score_map;
 #endif
+  mutable t_lists_map lists_;
+  t_score_map scores_;
 
   bool is_get_inputs_ignores_individual_scores_;
   mutable std::size_t input_version_;
-  bool is_unknown_score_set_;
+  //  bool is_unknown_score_set_;
   bool error_on_unknown_;
+  PointerMember<ClassnameScore> unknown_score_;
+  //  void update_lists_with_item(INDEXTYPE const &it) const;
   void update_lists_if_necessary() const;
 
  public:
@@ -75,7 +79,8 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   void set_unknown_score(ClassnameScore *score);
 
   /** By default, it is an error if the predicate returns a value that is
-      not known. If this is false, then they are silently skipped.
+      not known. If this is false, then they are silently skipped even
+      if set_unknown_score() was not called.
   */
   void set_is_complete(bool tf) { error_on_unknown_ = tf; }
 
@@ -100,8 +105,41 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
   IMP_OBJECT_METHODS(PredicateClassnamesRestraint);
 
  private:
+  /**
+     Returns the score for specified predicate based on set_score()
+
+     Unknown scores:
+     If predicate was not added with set_score(), return the default unknown score
+     set by set_unknown_score() if applicable. If not, then if set_is_complete(false)
+     was called, return nullptr. Otherwise, undefined behavior (will fail when checks
+     are on)
+  */
+  inline ClassnameScore*
+    get_score_for_predicate(int predicate) const;
+
+
   Restraints do_create_current_decomposition() const;
 };
+
+
+#ifndef SWIG
+ClassnameScore*
+PredicateClassnamesRestraint::get_score_for_predicate
+(int predicate) const
+{
+  ClassnameScore* score;
+  t_score_map::const_iterator it= scores_.find(predicate);
+  if(it!=scores_.end()){
+    score= it->second;
+  } else {
+    IMP_USAGE_CHECK(!error_on_unknown_, // is_unknown_score_set_,
+                    "unknown interaction type cannot be scored when error_on_unknown is true");
+    score = unknown_score_;
+  }
+  return score;
+}
+#endif
+
 
 IMPCONTAINER_END_NAMESPACE
 

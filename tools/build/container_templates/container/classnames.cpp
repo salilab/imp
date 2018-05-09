@@ -99,6 +99,8 @@ ClassnameContainerSet::get_indexes_in_place
     PLURALINDEXTYPE const& cur = c->get_contents();
     output.insert(output.end(), cur.begin(), cur.end());
   }
+  //  std::cout << "New size of output after get_indexes_in_place(): " << output.size()<< std::endl;
+  //  std::cout << "From # of containers: " << get_classname_containers().size() << std::endl;
 }
 
 PLURALINDEXTYPE ClassnameContainerSet::get_range_indexes() const {
@@ -489,8 +491,10 @@ PredicateClassnamesRestraint::PredicateClassnamesRestraint(
       input_(input),
       is_get_inputs_ignores_individual_scores_(false),
       input_version_(input->get_contents_hash()),
-      is_unknown_score_set_(false),
-      error_on_unknown_(true) {
+      //      is_unknown_score_set_(false),
+      error_on_unknown_(true),
+      unknown_score_(nullptr)
+{
 #ifdef IMP_CONTAINER_PREDICATE_USE_GOOGLE_DENSE_HASH_MAP
   lists_.set_empty_key(-1);
   scores_.set_empty_key(-1);
@@ -501,17 +505,24 @@ void PredicateClassnamesRestraint::do_add_score_and_derivatives(
     ScoreAccumulator sa) const {
   // currently ignores all maxima
   // no longer parallizable
+  //  std::cout << "START do_add_score_and_derivatives()" << std::endl;
   update_lists_if_necessary();
+  //std::cout << "Lists updated" << std::endl;
   typedef std::pair<int, PLURALINDEXTYPE> LP;
   IMP_FOREACH(const LP & lp, lists_) {
     IMP_LOG_VERBOSE("Evaluating score for predicate value " << lp.first
                                                             << std::endl);
-    ClassnameScore *score = scores_.find(lp.first)->second;
-    double cur_score = score->evaluate_indexes(get_model(), lp.second,
-                                               sa.get_derivative_accumulator(),
-                                               0, lp.second.size());
-    sa.add_score(cur_score);
+    ClassnameScore* score= get_score_for_predicate(lp.first);
+    if(IMP_LIKELY(score != nullptr)){
+      //      std::cout << "Score for predicate #" << lp.first << " n = " << lp.second.size();
+      double cur_score = score->evaluate_indexes(get_model(), lp.second,
+                                                 sa.get_derivative_accumulator(),
+                                                 0, lp.second.size());
+      //      std::cout << " is: " << cur_score << std::endl;
+      sa.add_score(cur_score);
+    }
   }
+  //   std::cout << "END do_add_score_and_derivatives()" << std::endl;
 }
 
 ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
@@ -534,30 +545,30 @@ Restraints PredicateClassnamesRestraint::do_create_current_decomposition()
   typedef std::pair<int, PLURALINDEXTYPE> LP;
   IMP_FOREACH(const LP & lp, lists_) {
     if(lists_.size()>0){
-      ClassnameScore *score = scores_.find(lp.first)->second;
-      IMP_FOREACH(PASSINDEXTYPE it, lp.second) {
-        Restraints r =
-          score->create_current_decomposition(get_model(), it);
-        ret += r;
+      ClassnameScore* score= get_score_for_predicate(lp.first);
+      if(IMP_LIKELY(score != nullptr)){
+        IMP_FOREACH(PASSINDEXTYPE it, lp.second) {
+          Restraints r =
+            score->create_current_decomposition(get_model(), it);
+          ret += r;
+        }
       }
     }
   }
   return ret;
 }
 
+//! populate lists with bins of PLURALINDEXTYPE for each predicate,
+//! and put unknown predicates in unknown_bin, if unknown score exists
 void PredicateClassnamesRestraint::update_lists_if_necessary() const {
-  // return if input ClassnameContainer hasn't changed
+  // Compare hash to prevent needless refresh:
   std::size_t h = input_->get_contents_hash();
-  if (h == input_version_) return;
+  if (IMP_UNLIKELY(h == input_version_)){
+    return;
+  }
   input_version_ = h;
-
-  // populate lists with bins of PLURALINDEXTYPE for each predicate,
-  // and put unknown predicates in unknown_bin, if unknown score exists
-  const int unknown_bin = std::numeric_limits<int>::max();
-  //  bool is_unknown_score=(scores_.find(unknown_bin) != scores_.end());
-  //   lists_.clear();
 #ifdef IMP_CONTAINER_PREDICATE_USE_ROBIN_MAP
-  for(tsl::robin_map<int, PLURALINDEXTYPE>::iterator lists_it= lists_.begin();
+  for(t_lists_map::iterator lists_it= lists_.begin();
       lists_it != lists_.end(); lists_it++){
     lists_it.value().clear();
   }
@@ -569,20 +580,39 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
 #endif
   predicate_->setup_for_get_value_index_in_batch(get_model());
   IMP_FOREACH(INDEXTYPE it, input_->get_contents()) {
-    // TODO: get_value index seems more expensive computationally for OrderedTypeClassnamePredicate than it should - check it out
     int bin = predicate_->get_value_index_in_batch(get_model(), it);
-    if (scores_.find(bin) != scores_.end()) {
-      lists_[bin].push_back(it);
-    } else {
-      IMP_USAGE_CHECK(!error_on_unknown_, "Unknown predicate value of "
-                      << bin << " found for tuple "
-                      << it);
-      if(is_unknown_score_set_){
-        lists_[unknown_bin].push_back(it);
-      }
-    } // if score found
+    lists_[bin].push_back(it);
+    //  if (scores_.find(bin) != scores_.end()) {
+    //    update_lists_with_item(it);
   } // IMP_FOREACH
+  // for(tsl::robin_map<int, PLURALINDEXTYPE>::iterator lists_it= lists_.begin();
+  //     lists_it != lists_.end(); lists_it++){
+  //   std::cout << "List for predicate " << lists_it->first
+  //             << " of size " << lists_it->second.size() << std::endl;
+  // }
 }
+
+/*
+void
+PredicateClassnamesRestraint::update_lists_with_item
+(INDEXTYPE const &it) const
+{
+  // static const int unknown_bin =
+  //   std::numeric_limits<int>::max();
+  int bin = predicate_->get_value_index_in_batch(get_model(), it);
+  //  if (scores_.find(bin) != scores_.end()) {
+  lists_[bin].push_back(it);
+  // } else {
+  //   IMP_USAGE_CHECK(!error_on_unknown_, "Unknown predicate value of "
+  //                   << bin << " found for tuple "
+  //                   << it);
+  //   if(IMP_LIKELY(is_unknown_score_set_)){
+  //     lists_[unknown_bin].push_back(it);
+  //   }
+  // } // if score found
+}
+*/
+
 
 void PredicateClassnamesRestraint::set_score(int predicate_value,
                                              ClassnameScore *score) {
@@ -594,10 +624,13 @@ void PredicateClassnamesRestraint::set_score(int predicate_value,
 }
 
 void PredicateClassnamesRestraint::set_unknown_score(ClassnameScore *score) {
+  //static const int unknown_bin =
+  //  std::numeric_limits<int>::max();
   error_on_unknown_ = false;
-  scores_[std::numeric_limits<int>::max()] = score;
-  score->set_was_used(true);
-  is_unknown_score_set_=true;
+  //scores_[unknown_bin] = score;
+  unknown_score_= score;
+  //score->set_was_used(true);
+  //is_unknown_score_set_=true;
 }
 
 IMPCONTAINER_END_NAMESPACE
