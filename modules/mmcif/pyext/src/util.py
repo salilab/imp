@@ -89,8 +89,7 @@ class System(object):
         self._ensembles = []
         self._frames = []
 
-        self._dumpers = [IMP.mmcif.dumper._SoftwareDumper(),
-                         IMP.mmcif.dumper._ModelRepresentationDumper(),
+        self._dumpers = [IMP.mmcif.dumper._ModelRepresentationDumper(),
                          IMP.mmcif.dumper._ExternalReferenceDumper(),
                          IMP.mmcif.dumper._DatasetDumper(),
                          IMP.mmcif.dumper._StartingModelDumper(),
@@ -102,7 +101,7 @@ class System(object):
                          IMP.mmcif.dumper._SiteDumper()]
         self.entities = IMP.mmcif.data._EntityMapper(self.system)
         self.components = IMP.mmcif.data._ComponentMapper(self.system)
-        self._software = IMP.mmcif.data._AllSoftware()
+        self._software = IMP.mmcif.data._AllSoftware(self.system)
         self._external_files = IMP.mmcif.data._ExternalFiles()
         self.datasets = IMP.mmcif.data._Datasets(self._external_files)
         # All modeling protocols
@@ -117,12 +116,6 @@ class System(object):
         """Add a repository containing one or more modeling files."""
         self._external_files.add_repo(ihm.location.Repository(
                                             doi, root, url, top_directory))
-
-    def add_software(self, name, classification, description, url,
-                     type='program', version=None):
-        "Add software (other than IMP) used as part of the modeling protocol."
-        self._software.append(ihm.Software(
-                    name, classification, description, url, type, version))
 
     def _add_state(self, state):
         self._states[state] = None

@@ -295,19 +295,6 @@ class _DatasetDumper(_Dumper):
                     ordinal += 1
 
 
-class _SoftwareDumper(_Dumper):
-    def dump(self, system, writer):
-        ordinal = 1
-        with writer.loop("_software",
-                         ["pdbx_ordinal", "name", "classification", "version",
-                          "type", "location"]) as l:
-            for s in system._software:
-                l.write(pdbx_ordinal=ordinal, name=s.name,
-                        classification=s.classification, version=s.version,
-                        type=s.type, location=s.location)
-                ordinal += 1
-
-
 class _ExternalReferenceDumper(_Dumper):
     """Output information on externally referenced files
        (i.e. anything that refers to a Location that isn't

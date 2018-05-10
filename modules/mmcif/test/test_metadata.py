@@ -2,6 +2,7 @@ from __future__ import print_function
 import IMP.test
 import IMP.mmcif.metadata
 import IMP.mmcif.data
+import ihm
 try:
     import urllib.request as urllib2
 except ImportError:
@@ -14,9 +15,10 @@ else:
 
 class MockSystem(object):
     def __init__(self):
+        self.system = ihm.System()
         self._external_files = IMP.mmcif.data._ExternalFiles()
         self.datasets = IMP.mmcif.data._Datasets(self._external_files)
-        self._software = IMP.mmcif.data._AllSoftware()
+        self._software = IMP.mmcif.data._AllSoftware(self.system)
 
 
 class Tests(IMP.test.TestCase):

@@ -304,9 +304,10 @@ class _Datasets(object):
         return self._datasets.keys()
 
 
-class _AllSoftware(list):
+class _AllSoftware(object):
     """Keep track of all Software objects."""
-    def __init__(self):
+    def __init__(self, system):
+        self.system = system
         super(_AllSoftware, self).__init__()
         self.modeller_used = self.phyre2_used = False
 
@@ -314,7 +315,7 @@ class _AllSoftware(list):
         if self.modeller_used:
             return
         self.modeller_used = True
-        self.append(ihm.Software(
+        self.system.software.append(ihm.Software(
                 name='MODELLER', classification='comparative modeling',
                 description='Comparative modeling by satisfaction '
                             'of spatial restraints, build ' + date,
@@ -325,7 +326,7 @@ class _AllSoftware(list):
         if self.phyre2_used:
             return
         self.phyre2_used = True
-        self.append(ihm.Software(
+        self.system.software.append(ihm.Software(
                name='Phyre2', classification='protein homology modeling',
                description='Protein Homology/analogY Recognition '
                            'Engine V 2.0',
@@ -335,7 +336,8 @@ class _AllSoftware(list):
         # todo: if no SoftwareProvenance available, use RMF producer field
         for p in IMP.core.get_all_provenance(h,
                                         types=[IMP.core.SoftwareProvenance]):
-            self.append(ihm.Software(name=p.get_software_name(),
+            self.system.software.append(
+                    ihm.Software(name=p.get_software_name(),
                                  classification='integrative model building',
                                  description=None,
                                  version=p.get_version(),

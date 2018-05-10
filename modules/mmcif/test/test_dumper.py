@@ -95,22 +95,19 @@ class Tests(IMP.test.TestCase):
         IMP.core.add_imp_provenance(h)
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
 
-        system.add_software(name='test', classification='test code',
-                            description='Some test program',
-                            version=1, url='http://salilab.org')
-        dumper = IMP.mmcif.dumper._SoftwareDumper()
-        out = _get_dumper_output(dumper, system)
+        dumper = ihm.dumper._SoftwareDumper()
+        out = _get_dumper_output(dumper, system.system)
         self.assertEqual(out, """#
 loop_
 _software.pdbx_ordinal
 _software.name
 _software.classification
+_software.description
 _software.version
 _software.type
 _software.location
-1 'Integrative Modeling Platform (IMP)' 'integrative model building'
+1 'Integrative Modeling Platform (IMP)' 'integrative model building' .
 %s program https://integrativemodeling.org
-2 test 'test code' 1 program http://salilab.org
 #
 """ % IMP.get_module_version())
 
