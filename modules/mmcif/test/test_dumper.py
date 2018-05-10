@@ -170,95 +170,8 @@ _software.location
 #
 """ % IMP.get_module_version())
 
-    def test_entry_dumper(self):
-        """Test EntryDumper"""
-        system = IMP.mmcif.System()
-        dumper = IMP.mmcif.dumper._EntryDumper()
-        out = _get_dumper_output(dumper, system)
-        self.assertEqual(out, "data_imp_model\n_entry.id imp_model\n")
-
-    def test_chem_comp_dumper(self):
-        """Test ChemCompDumper"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system)
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
-        dumper = IMP.mmcif.dumper._ChemCompDumper()
-        out = _get_dumper_output(dumper, system)
-        self.assertEqual(out, """#
-loop_
-_chem_comp.id
-_chem_comp.type
-ALA 'L-peptide linking'
-CYS 'L-peptide linking'
-GLY 'L-peptide linking'
-THR 'L-peptide linking'
-#
-""")
-
-    def test_entity_dumper(self):
-        """Test EntityDumper"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system)
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
-        dumper = IMP.mmcif.dumper._EntityDumper()
-        out = _get_dumper_output(dumper, system)
-        self.assertEqual(out, """#
-loop_
-_entity.id
-_entity.type
-_entity.src_method
-_entity.pdbx_description
-_entity.formula_weight
-_entity.pdbx_number_of_molecules
-_entity.details
-1 polymer man foo ? 1 ?
-2 polymer man baz ? 1 ?
-#
-""")
-
-    def test_entity_poly_dumper(self):
-        """Test EntityPolyDumper"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system)
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
-        dumper = IMP.mmcif.dumper._EntityPolyDumper()
-        out = _get_dumper_output(dumper, system)
-        self.assertEqual(out, """#
-loop_
-_entity_poly.entity_id
-_entity_poly.type
-_entity_poly.nstd_linkage
-_entity_poly.nstd_monomer
-_entity_poly.pdbx_strand_id
-_entity_poly.pdbx_seq_one_letter_code
-_entity_poly.pdbx_seq_one_letter_code_can
-1 polypeptide(L) no no A ACGT ACGT
-2 polypeptide(L) no no C ACC ACC
-#
-""")
-
-    def test_entity_poly_seq_dumper(self):
-        """Test EntityPolySeqDumper"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system)
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
-        dumper = IMP.mmcif.dumper._EntityPolySeqDumper()
-        out = _get_dumper_output(dumper, system)
-        self.assertEqual(out, """#
-loop_
-_entity_poly_seq.entity_id
-_entity_poly_seq.num
-_entity_poly_seq.mon_id
-_entity_poly_seq.hetero
-1 1 ALA .
-1 2 CYS .
-1 3 GLY .
-1 4 THR .
-2 1 ALA .
-2 2 CYS .
-2 3 CYS .
-#
-""")
+    def _assign_entity_ids(self, system):
+        ihm.dumper._EntityDumper().finalize(system.system)
 
     def test_struct_asym_dumper(self):
         """Test StructAsymDumper"""
@@ -266,6 +179,7 @@ _entity_poly_seq.hetero
         h, state = self.make_model(system)
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         dumper = IMP.mmcif.dumper._StructAsymDumper()
+        self._assign_entity_ids(system)
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -305,6 +219,7 @@ C 2 baz
         system._assemblies.add(IMP.mmcif.data._Assembly((foo, bar)))
         system._assemblies.add(IMP.mmcif.data._Assembly((bar, baz)))
 
+        self._assign_entity_ids(system)
         d = IMP.mmcif.dumper._AssemblyDumper()
         d.finalize(system)
         out = _get_dumper_output(d, system)
@@ -334,6 +249,7 @@ _ihm_struct_assembly.seq_id_end
         h, state = self.make_model(system, (("foo", "AAA", 'A'),))
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         system.add_non_modeled_chain(name="bar", sequence="AA")
+        self._assign_entity_ids(system)
         d = IMP.mmcif.dumper._AssemblyDumper()
         d.finalize(system) # assign IDs
         out = _get_dumper_output(d, system)
@@ -377,6 +293,7 @@ _ihm_struct_assembly.seq_id_end
         frag2 = IMP.atom.Fragment.setup_particle(IMP.Particle(m),[3,4])
         chain.add_child(frag2)
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
+        self._assign_entity_ids(system)
         # Assign starting model IDs
         d = IMP.mmcif.dumper._StartingModelDumper()
         d.finalize(system)
@@ -445,6 +362,7 @@ _ihm_model_representation.model_object_count
         IMP.mmcif.Ensemble(state2, "cluster 1").add_model([state2h],
                                                           [], "model1")
 
+        self._assign_entity_ids(system)
         d = IMP.mmcif.dumper._ExternalReferenceDumper()
         d.finalize(system) # assign file IDs (nup84 pdb = 1, alignment file = 2)
         d = IMP.mmcif.dumper._StartingModelDumper()
@@ -860,6 +778,7 @@ _ihm_3dem_restraint.cross_correlation_coefficient
         chains[1].add_child(pfrag)
 
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
+        self._assign_entity_ids(system)
         dumper = IMP.mmcif.dumper._SiteDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#

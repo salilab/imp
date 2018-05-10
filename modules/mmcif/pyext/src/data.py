@@ -15,24 +15,12 @@ def get_molecule(h):
         h = h.get_parent()
     return None
 
-class _Entity(object):
-    """Represent a CIF entity (a component with a unique sequence)"""
-    def __init__(self, seq):
-        self.sequence = seq
-        self.first_component = None
-    # Use the name of the first component, stripped of any copy number,
-    # as the description of the entity
-    def __get_description(self):
-        n = self.first_component.name
-        # Strip out anything after a @ or .
-        return n.split("@")[0].split(".")[0]
-    description = property(__get_description)
-
 
 class _EntityMapper(dict):
     """Handle mapping from IMP chains to CIF entities.
        Multiple components may map to the same entity if they share sequence."""
-    def __init__(self):
+    def __init__(self, system):
+        self.system = system
         super(_EntityMapper, self).__init__()
         self._sequence_dict = {}
         self._entities = []
@@ -43,9 +31,9 @@ class _EntityMapper(dict):
         if sequence == '':
             raise ValueError("Chain %s has no sequence" % chain)
         if sequence not in self._sequence_dict:
-            entity = _Entity(sequence)
+            entity = ihm.Entity(sequence)
+            self.system.entities.append(entity)
             self._entities.append(entity)
-            entity.id = len(self._entities)
             self._sequence_dict[sequence] = entity
         self[chain] = self._sequence_dict[sequence]
         return self[chain]
@@ -83,6 +71,7 @@ class _ComponentMapper(object):
     """Handle mapping from chains to CIF components."""
     def __init__(self):
         super(_ComponentMapper, self).__init__()
+        self._used_entities = set()
         self._all_components = []
         self._all_modeled_components = []
         self._map = {}
@@ -109,8 +98,11 @@ class _ComponentMapper(object):
         modeled, asym_id, map_key, name = self._handle_chain(chain)
         if map_key not in self._map:
             component = _Component(entity, asym_id, name)
-            if entity.first_component is None:
-                entity.first_component = component
+            if entity not in self._used_entities:
+                self._used_entities.add(entity)
+                # Assign entity name from the component; strip out anything
+                # after a @ or .
+                entity.description = component.name.split("@")[0].split(".")[0]
             self._all_components.append(component)
             if modeled:
                 self._all_modeled_components.append(component)

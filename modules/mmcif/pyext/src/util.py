@@ -3,6 +3,7 @@
 """
 
 import ihm.location
+import ihm.dumper
 import IMP.mmcif.dumper
 import IMP.mmcif.data
 import IMP.mmcif.restraint
@@ -83,6 +84,7 @@ class _NonModeledChain(object):
 
 class System(object):
     def __init__(self):
+        self.system = ihm.System()
         self._states = {}
         self._ensembles = []
         self._frames = []
@@ -91,13 +93,8 @@ class System(object):
         self.complete_assembly = IMP.mmcif.data._Assembly()
         self._assemblies.add(self.complete_assembly)
 
-        self._dumpers = [IMP.mmcif.dumper._EntryDumper(), # must be first
-                         IMP.mmcif.dumper._SoftwareDumper(),
+        self._dumpers = [IMP.mmcif.dumper._SoftwareDumper(),
                          IMP.mmcif.dumper._CitationDumper(),
-                         IMP.mmcif.dumper._ChemCompDumper(),
-                         IMP.mmcif.dumper._EntityDumper(),
-                         IMP.mmcif.dumper._EntityPolyDumper(),
-                         IMP.mmcif.dumper._EntityPolySeqDumper(),
                          IMP.mmcif.dumper._StructAsymDumper(),
                          IMP.mmcif.dumper._AssemblyDumper(),
                          IMP.mmcif.dumper._ModelRepresentationDumper(),
@@ -110,7 +107,7 @@ class System(object):
                          IMP.mmcif.dumper._ModelListDumper(),
                          IMP.mmcif.dumper._EM3DDumper(),
                          IMP.mmcif.dumper._SiteDumper()]
-        self.entities = IMP.mmcif.data._EntityMapper()
+        self.entities = IMP.mmcif.data._EntityMapper(self.system)
         self.components = IMP.mmcif.data._ComponentMapper()
         self._citations = []
         self._software = IMP.mmcif.data._AllSoftware()
@@ -231,6 +228,9 @@ class System(object):
 
     def write(self, fname):
         with open(fname, 'w') as fh:
+            # First, write out categories handled by ihm library
+            ihm.dumper.write(fh, [self.system])
+
             writer = ihm.format.CifWriter(fh)
             for dumper in self._dumpers:
                 dumper.finalize_metadata(self)

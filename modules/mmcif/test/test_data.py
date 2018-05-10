@@ -2,6 +2,7 @@ from __future__ import print_function
 import IMP.test
 import IMP.atom
 import IMP.mmcif.data
+import ihm
 
 class MockChain(object):
     def __init__(self, name, sequence=''):
@@ -50,16 +51,17 @@ class Tests(IMP.test.TestCase):
 
     def test_entity_mapper_add(self):
         """Test EntityMapper.add()"""
-        e = IMP.mmcif.data._EntityMapper()
+        system = ihm.System()
+        e = IMP.mmcif.data._EntityMapper(system)
         self.assertEqual(len(e.get_all()), 0)
-        chain1 = MockChain("A", sequence='ABC')
-        chain2 = MockChain("B", sequence='ABC')
+        chain1 = MockChain("A", sequence='ANC')
+        chain2 = MockChain("B", sequence='ANC')
         e.add(chain1)
         e.add(chain2)
         # Identical sequences, so only one entity
         self.assertEqual(len(e.get_all()), 1)
         # Different sequences, so two entities
-        chain3 = MockChain("C", sequence='ABCD')
+        chain3 = MockChain("C", sequence='ANCD')
         e.add(chain3)
         self.assertEqual(len(e.get_all()), 2)
         # Cannot add chains with no sequence
@@ -69,7 +71,7 @@ class Tests(IMP.test.TestCase):
     def test_entity_naming(self):
         """Test naming of Entities"""
         cm = IMP.mmcif.data._ComponentMapper()
-        entity1 = IMP.mmcif.data._Entity("ABC")
+        entity1 = ihm.Entity("ANC")
         chain1 = MockChain("A.1@12")
         chain2 = MockChain("A.2@12")
         comp1 = cm.add(chain1, entity1)
@@ -81,8 +83,8 @@ class Tests(IMP.test.TestCase):
     def test_component_mapper_same_id_chain(self):
         """Test ComponentMapper given two chains with same ID"""
         cm = IMP.mmcif.data._ComponentMapper()
-        entity1 = IMP.mmcif.data._Entity("ABC")
-        entity2 = IMP.mmcif.data._Entity("DEF")
+        entity1 = ihm.Entity("ANC")
+        entity2 = ihm.Entity("DEF")
         chain1 = MockChain("A")
         chain2 = MockChain("A")
         comp1 = cm.add(chain1, entity1)
@@ -93,8 +95,8 @@ class Tests(IMP.test.TestCase):
     def test_component_mapper_get_all(self):
         """Test ComponentMapper get_all()"""
         cm = IMP.mmcif.data._ComponentMapper()
-        entity1 = IMP.mmcif.data._Entity("ABC")
-        entity2 = IMP.mmcif.data._Entity("DEF")
+        entity1 = ihm.Entity("ANC")
+        entity2 = ihm.Entity("DEF")
         chain1 = MockChain("A")
         chain2 = MockChain("B")
         comp1 = cm.add(chain1, entity1)
