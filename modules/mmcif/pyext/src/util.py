@@ -90,7 +90,6 @@ class System(object):
         self._frames = []
 
         self._dumpers = [IMP.mmcif.dumper._SoftwareDumper(),
-                         IMP.mmcif.dumper._CitationDumper(),
                          IMP.mmcif.dumper._ModelRepresentationDumper(),
                          IMP.mmcif.dumper._ExternalReferenceDumper(),
                          IMP.mmcif.dumper._DatasetDumper(),
@@ -103,7 +102,6 @@ class System(object):
                          IMP.mmcif.dumper._SiteDumper()]
         self.entities = IMP.mmcif.data._EntityMapper(self.system)
         self.components = IMP.mmcif.data._ComponentMapper(self.system)
-        self._citations = []
         self._software = IMP.mmcif.data._AllSoftware()
         self._external_files = IMP.mmcif.data._ExternalFiles()
         self.datasets = IMP.mmcif.data._Datasets(self._external_files)
@@ -119,13 +117,6 @@ class System(object):
         """Add a repository containing one or more modeling files."""
         self._external_files.add_repo(ihm.location.Repository(
                                             doi, root, url, top_directory))
-
-    def add_citation(self, pmid, title, journal, volume, page_range, year,
-                     authors, doi):
-        """Add a publication that describes the modeling"""
-        self._citations.append(IMP.mmcif.data._Citation(
-                    pmid, title, journal, volume, page_range, year,
-                    authors, doi))
 
     def add_software(self, name, classification, description, url,
                      type='program', version=None):

@@ -304,15 +304,6 @@ class _Datasets(object):
         return self._datasets.keys()
 
 
-class _Citation(object):
-    """A publication that describes the modeling."""
-    def __init__(self, pmid, title, journal, volume, page_range, year, authors,
-                 doi):
-        self.title, self.journal, self.volume = title, journal, volume
-        self.page_range, self.year = page_range, year
-        self.pmid, self.authors, self.doi = pmid, authors, doi
-
-
 class _AllSoftware(list):
     """Keep track of all Software objects."""
     def __init__(self):

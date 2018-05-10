@@ -295,39 +295,6 @@ class _DatasetDumper(_Dumper):
                     ordinal += 1
 
 
-class _CitationDumper(_Dumper):
-    def dump(self, system, writer):
-        self.dump_citation(system, writer)
-        self.dump_author(system, writer)
-
-    def dump_citation(self, system, writer):
-        with writer.loop("_citation",
-                         ["id", "title", "journal_abbrev", "journal_volume",
-                          "page_first", "page_last", "year",
-                          "pdbx_database_id_PubMed",
-                          "pdbx_database_id_DOI"]) as l:
-            for n, c in enumerate(system._citations):
-                if isinstance(c.page_range, (tuple, list)):
-                    page_first, page_last = c.page_range
-                else:
-                    page_first = c.page_range
-                    page_last = writer.omitted
-                l.write(id=n+1, title=c.title, journal_abbrev=c.journal,
-                        journal_volume=c.volume, page_first=page_first,
-                        page_last=page_last, year=c.year,
-                        pdbx_database_id_PubMed=c.pmid,
-                        pdbx_database_id_DOI=c.doi)
-
-    def dump_author(self, system, writer):
-        with writer.loop("_citation_author",
-                         ["citation_id", "name", "ordinal"]) as l:
-            ordinal = 1
-            for n, c in enumerate(system._citations):
-                for a in c.authors:
-                    l.write(citation_id=n+1, name=a, ordinal=ordinal)
-                    ordinal += 1
-
-
 class _SoftwareDumper(_Dumper):
     def dump(self, system, writer):
         ordinal = 1
