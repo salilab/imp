@@ -88,14 +88,9 @@ class System(object):
         self._states = {}
         self._ensembles = []
         self._frames = []
-        self._assemblies = IMP.mmcif.data._Assemblies()
-        # The assembly of all known components.
-        self.complete_assembly = IMP.mmcif.data._Assembly()
-        self._assemblies.add(self.complete_assembly)
 
         self._dumpers = [IMP.mmcif.dumper._SoftwareDumper(),
                          IMP.mmcif.dumper._CitationDumper(),
-                         IMP.mmcif.dumper._AssemblyDumper(),
                          IMP.mmcif.dumper._ModelRepresentationDumper(),
                          IMP.mmcif.dumper._ExternalReferenceDumper(),
                          IMP.mmcif.dumper._DatasetDumper(),
@@ -159,7 +154,10 @@ class System(object):
         for c in chains:
             component = self._add_chain(c)
             state._all_modeled_components.append(component)
-            state.modeled_assembly.append(component)
+            if hasattr(component, 'asym_unit'):
+                state.modeled_assembly.append(component.asym_unit)
+            else:
+                state.modeled_assembly.append(component.entity)
             state.representation[component] \
                 = list(self._get_representation(c,
                                      self._get_all_starting_models(component)))
@@ -221,8 +219,6 @@ class System(object):
     def _add_chain(self, c):
         entity = self.entities.add(c)
         component = self.components.add(c, entity)
-        if component not in self.complete_assembly:
-            self.complete_assembly.append(component)
         return component
 
     def write(self, fname):
@@ -248,8 +244,9 @@ class State(object):
         self._wrapped_restraints = []
         # The assembly of all components modeled by IMP in this state.
         # This may be smaller than the complete assembly.
-        self.modeled_assembly = IMP.mmcif.data._Assembly()
-        system._assemblies.add(self.modeled_assembly)
+        self.modeled_assembly = ihm.Assembly(name="Modeled assembly",
+                            description="All components modeled by IMP")
+        system.system.orphan_assemblies.append(self.modeled_assembly)
         # A list of Representation objects for each Component
         self.representation = {}
         self._frames = []

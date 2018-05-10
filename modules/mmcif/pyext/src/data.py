@@ -128,37 +128,6 @@ class _ComponentMapper(object):
         return self._all_modeled_components
 
 
-class _Assembly(list):
-    """A collection of components. Currently simply implemented as a list of
-       the _Component objects. These must be in creation order."""
-    def __hash__(self):
-        # allow putting assemblies in a dict. 'list' isn't hashable
-        # but 'tuple' is
-        return hash(tuple(self))
-
-
-class _Assemblies(object):
-    """Track all assemblies used in the modeling."""
-    def __init__(self):
-        self._assemblies = []
-
-    def add(self, a):
-        """Add a new assembly. The first such assembly is assumed to contain
-           all components. Duplicate assemblies will be pruned at the end."""
-        self._assemblies.append(a)
-        return a
-
-    def get_subassembly(self, compdict):
-        """Get an _Assembly consisting of the given components."""
-        # Put components in creation order
-        newa = _Assembly(c for c in self._assemblies[0] if c in compdict)
-        return self.add(newa)
-
-    def get_all(self):
-        """Get all assemblies"""
-        return self._assemblies
-
-
 class _Representation(object):
     """Group a set of contiguous particles with the same representation"""
     def __init__(self):

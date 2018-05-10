@@ -20,37 +20,6 @@ class _Dumper(object):
         pass
 
 
-class _AssemblyDumper(_Dumper):
-    def finalize(self, system):
-        seen_assemblies = {}
-        # Assign IDs to all assemblies
-        self._assembly_by_id = []
-        for a in system._assemblies.get_all():
-            IMP.mmcif.data._assign_id(a, seen_assemblies, self._assembly_by_id)
-
-    def dump(self, system, writer):
-        ordinal = 1
-        with writer.loop("_ihm_struct_assembly",
-                         ["ordinal_id", "assembly_id", "parent_assembly_id",
-                          "entity_description",
-                          "entity_id", "asym_id", "seq_id_begin",
-                          "seq_id_end"]) as l:
-            for a in self._assembly_by_id:
-                for comp in a:
-                    entity = comp.entity
-                    l.write(ordinal_id=ordinal, assembly_id=a.id,
-                            # Currently all assemblies are not hierarchical,
-                            # so each assembly is a self-parent
-                            parent_assembly_id=a.id,
-                            entity_description=entity.description,
-                            entity_id=entity._id,
-                            asym_id=comp.asym_id if comp.asym_id
-                                                 else writer.omitted,
-                            seq_id_begin=1,
-                            seq_id_end=len(entity.sequence))
-                    ordinal += 1
-
-
 class _ModelRepresentationDumper(_Dumper):
     def _get_granularity(self, r):
         if isinstance(r.particles[0], IMP.atom.Residue):
@@ -507,7 +476,7 @@ class _ProtocolDumper(_Dumper):
                     l.write(ordinal_id=ordinal, protocol_id=p.id,
                             step_id=step.id, step_method=step.method,
                             step_name=step.name,
-                            struct_assembly_id=p.modeled_assembly.id,
+                            struct_assembly_id=p.modeled_assembly._id,
                             num_models_begin=step.num_models_begin,
                             num_models_end=step.num_models_end,
                             # todo: support multiple states, time ordered

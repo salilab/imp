@@ -173,20 +173,8 @@ _software.location
     def _assign_entity_ids(self, system):
         ihm.dumper._EntityDumper().finalize(system.system)
 
-    def test_assembly_dumper_get_subassembly(self):
-        """Test AssemblyDumper.get_subassembly()"""
-        system = IMP.mmcif.System()
-        a = system._assemblies
-        system.complete_assembly.extend(['a', 'b', 'c'])
-        x1 = a.get_subassembly({'a':None, 'b':None})
-        x2 = a.get_subassembly({'a':None, 'b':None, 'c':None})
-
-        d = IMP.mmcif.dumper._AssemblyDumper()
-        d.finalize(system) # assign IDs to all assemblies
-        self.assertEqual(system.complete_assembly.id, 1)
-        self.assertEqual(x1.id, 2)
-        self.assertEqual(x1, ['a', 'b'])
-        self.assertEqual(x2.id, 1)
+    def _assign_asym_ids(self, system):
+        ihm.dumper._StructAsymDumper().finalize(system.system)
 
     def test_assembly_all_modeled(self):
         """Test AssemblyDumper, all components modeled"""
@@ -197,14 +185,26 @@ _software.location
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         foo, bar, baz = state._all_modeled_components
 
-        system._assemblies.add(IMP.mmcif.data._Assembly((foo, bar)))
-        system._assemblies.add(IMP.mmcif.data._Assembly((bar, baz)))
+        system.system.orphan_assemblies.append(
+                         ihm.Assembly((foo.asym_unit, bar.asym_unit)))
+        system.system.orphan_assemblies.append(
+                         ihm.Assembly((bar.asym_unit, baz.asym_unit)))
 
         self._assign_entity_ids(system)
-        d = IMP.mmcif.dumper._AssemblyDumper()
-        d.finalize(system)
-        out = _get_dumper_output(d, system)
+        self._assign_asym_ids(system)
+        d = ihm.dumper._AssemblyDumper()
+        d.finalize(system.system)
+        out = _get_dumper_output(d, system.system)
         self.assertEqual(out, """#
+loop_
+_ihm_struct_assembly_details.assembly_id
+_ihm_struct_assembly_details.assembly_name
+_ihm_struct_assembly_details.assembly_description
+1 'Complete assembly' 'All known components & All components modeled by IMP'
+2 . .
+3 . .
+#
+#
 loop_
 _ihm_struct_assembly.ordinal_id
 _ihm_struct_assembly.assembly_id
@@ -231,10 +231,19 @@ _ihm_struct_assembly.seq_id_end
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         system.add_non_modeled_chain(name="bar", sequence="AA")
         self._assign_entity_ids(system)
-        d = IMP.mmcif.dumper._AssemblyDumper()
-        d.finalize(system) # assign IDs
-        out = _get_dumper_output(d, system)
+        self._assign_asym_ids(system)
+        d = ihm.dumper._AssemblyDumper()
+        d.finalize(system.system) # assign IDs
+        out = _get_dumper_output(d, system.system)
         self.assertEqual(out, """#
+loop_
+_ihm_struct_assembly_details.assembly_id
+_ihm_struct_assembly_details.assembly_name
+_ihm_struct_assembly_details.assembly_description
+1 'Complete assembly' 'All known components'
+2 'Modeled assembly' 'All components modeled by IMP'
+#
+#
 loop_
 _ihm_struct_assembly.ordinal_id
 _ihm_struct_assembly.assembly_id
@@ -615,8 +624,10 @@ _ihm_external_files.details
         h, state = self.make_model_with_protocol(system)
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
 
-        dumper = IMP.mmcif.dumper._AssemblyDumper()
-        dumper.finalize(system) # Assign assembly IDs
+        self._assign_entity_ids(system)
+        self._assign_asym_ids(system)
+        dumper = ihm.dumper._AssemblyDumper()
+        dumper.finalize(system.system) # Assign assembly IDs
 
         dumper = IMP.mmcif.dumper._ProtocolDumper()
         out = _get_dumper_output(dumper, system)
