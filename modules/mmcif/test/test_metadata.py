@@ -16,8 +16,8 @@ else:
 class MockSystem(object):
     def __init__(self):
         self.system = ihm.System()
-        self._external_files = IMP.mmcif.data._ExternalFiles()
-        self.datasets = IMP.mmcif.data._Datasets(self._external_files)
+        self._external_files = IMP.mmcif.data._ExternalFiles(self.system)
+        self.datasets = IMP.mmcif.data._Datasets(self.system)
         self._software = IMP.mmcif.data._AllSoftware(self.system)
 
 

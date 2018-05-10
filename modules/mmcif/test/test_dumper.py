@@ -117,6 +117,12 @@ _software.location
     def _assign_asym_ids(self, system):
         ihm.dumper._StructAsymDumper().finalize(system.system)
 
+    def _assign_dataset_ids(self, system):
+        ihm.dumper._DatasetDumper().finalize(system.system)
+
+    def _assign_location_ids(self, system):
+        ihm.dumper._ExternalReferenceDumper().finalize(system.system)
+
     def test_assembly_all_modeled(self):
         """Test AssemblyDumper, all components modeled"""
         system = IMP.mmcif.System()
@@ -294,8 +300,10 @@ _ihm_model_representation.model_object_count
                                                           [], "model1")
 
         self._assign_entity_ids(system)
-        d = IMP.mmcif.dumper._ExternalReferenceDumper()
-        d.finalize(system) # assign file IDs (nup84 pdb = 1, alignment file = 2)
+        # Assign dataset IDs (templates=1,2, comparative models=3,4)
+        self._assign_dataset_ids(system)
+        # assign file IDs (alignment file = 1)
+        self._assign_location_ids(system)
         d = IMP.mmcif.dumper._StartingModelDumper()
         d.finalize(system)
         out = _get_dumper_output(d, system)
@@ -311,7 +319,7 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-Nup84-m1 1 Nup84 A 33 2 'comparative model' A 0 1
+Nup84-m1 1 Nup84 A 33 2 'comparative model' A 0 3
 Nup85-m1 2 Nup85 B 33 2 'comparative model' A 0 4
 #
 #
@@ -328,10 +336,10 @@ _ihm_starting_comparative_models.template_sequence_identity
 _ihm_starting_comparative_models.template_sequence_identity_denominator
 _ihm_starting_comparative_models.template_dataset_list_id
 _ihm_starting_comparative_models.alignment_file_id
-1 Nup84-m1 A 33 2 C 33 424 100.0 1 2 2
-2 Nup84-m1 A 429 2 G 482 551 10.0 1 3 2
-3 Nup85-m1 A 33 2 C 33 424 100.0 1 2 2
-4 Nup85-m1 A 429 2 G 482 551 10.0 1 3 2
+1 Nup84-m1 A 33 2 C 33 424 100.0 1 1 1
+2 Nup84-m1 A 429 2 G 482 551 10.0 1 2 1
+3 Nup85-m1 A 33 2 C 33 424 100.0 1 1 1
+4 Nup85-m1 A 429 2 G 482 551 10.0 1 2 1
 #
 #
 loop_
@@ -353,64 +361,6 @@ Nup84-m1 ATOM 1 C CA MET 1 A 1 -8.986 11.688 -5.817 91.820 1
 Nup84-m1 ATOM 2 C CA GLU 1 A 2 -8.986 11.688 -5.817 91.820 2
 Nup85-m1 ATOM 1 C CA GLY 2 A 1 -8.986 11.688 -5.817 91.820 3
 Nup85-m1 ATOM 2 C CA GLU 2 A 2 -8.986 11.688 -5.817 91.820 4
-#
-""")
-
-    def test_dataset_dumper(self):
-        """Test DatasetDumper"""
-        m = IMP.Model()
-        system = IMP.mmcif.System()
-
-        l = ihm.location.InputFileLocation(repo="foo", path="bar")
-        l.id = 97
-        d = ihm.dataset.CXMSDataset(l)
-        pds = system.datasets.add(d)
-
-        l = ihm.location.PDBLocation("1abc", "1.0", "test details")
-        d = ihm.dataset.PDBDataset(l)
-        system.datasets.add(d)
-
-        l = ihm.location.InputFileLocation(repo="foo2", path="bar2")
-        l.id = 98
-        d = ihm.dataset.PDBDataset(l)
-        d.parents.append(pds)
-        system.datasets.add(d)
-
-        d = IMP.mmcif.dumper._DatasetDumper()
-        out = _get_dumper_output(d, system)
-        self.assertEqual(out, """#
-loop_
-_ihm_dataset_list.id
-_ihm_dataset_list.data_type
-_ihm_dataset_list.database_hosted
-1 'CX-MS data' NO
-2 'Experimental model' YES
-3 'Experimental model' NO
-#
-#
-loop_
-_ihm_dataset_external_reference.id
-_ihm_dataset_external_reference.dataset_list_id
-_ihm_dataset_external_reference.file_id
-1 1 97
-2 3 98
-#
-#
-loop_
-_ihm_dataset_related_db_reference.id
-_ihm_dataset_related_db_reference.dataset_list_id
-_ihm_dataset_related_db_reference.db_name
-_ihm_dataset_related_db_reference.accession_code
-_ihm_dataset_related_db_reference.version
-_ihm_dataset_related_db_reference.details
-1 2 PDB 1abc 1.0 'test details'
-#
-#
-loop_
-_ihm_related_datasets.ordinal_id
-_ihm_related_datasets.dataset_list_id_derived
-_ihm_related_datasets.dataset_list_id_primary
-1 3 1
 #
 """)
 
@@ -452,75 +402,6 @@ _ihm_starting_model_seq_dif.details
 #
 """)
 
-    def test_external_reference_dumper_dump(self):
-        """Test ExternalReferenceDumper.dump()"""
-        system = IMP.mmcif.System()
-        exfil = system._external_files
-
-        repo1 = ihm.location.Repository(doi="foo")
-        repo2 = ihm.location.Repository(doi="10.5281/zenodo.46266",
-                                     url='nup84-v1.0.zip',
-                                     top_directory=os.path.join('foo', 'bar'))
-        repo3 = ihm.location.Repository(doi="10.5281/zenodo.58025",
-                                        url='foo.spd')
-        l = ihm.location.InputFileLocation(repo=repo1, path='bar')
-        exfil.add(l)
-        # Duplicates should be ignored
-        l = ihm.location.InputFileLocation(repo=repo1, path='bar')
-        exfil.add(l)
-        # Different file, same repository
-        l = ihm.location.InputFileLocation(repo=repo1, path='baz')
-        exfil.add(l)
-        # Different repository
-        l = ihm.location.OutputFileLocation(repo=repo2, path='baz')
-        exfil.add(l)
-        # Repository containing a single file (not an archive)
-        l = ihm.location.InputFileLocation(repo=repo3, path='foo.spd',
-                                           details='EM micrographs')
-        exfil.add(l)
-        bar = 'test_mmcif_extref.tmp'
-        with open(bar, 'w') as f:
-            f.write("abcd")
-        # Local file
-        l = ihm.location.WorkflowFileLocation(bar)
-        exfil.add(l)
-        # DatabaseLocations should be ignored
-        l = ihm.location.PDBLocation('1abc', '1.0', 'test details')
-        exfil.add(l)
-
-        dump = IMP.mmcif.dumper._ExternalReferenceDumper()
-        dump.finalize(system) # assign IDs
-        out = _get_dumper_output(dump, system)
-        self.assertEqual(out, """#
-loop_
-_ihm_external_reference_info.reference_id
-_ihm_external_reference_info.reference_provider
-_ihm_external_reference_info.reference_type
-_ihm_external_reference_info.reference
-_ihm_external_reference_info.refers_to
-_ihm_external_reference_info.associated_url
-1 . DOI foo Other .
-2 Zenodo DOI 10.5281/zenodo.46266 Archive nup84-v1.0.zip
-3 Zenodo DOI 10.5281/zenodo.58025 File foo.spd
-4 . 'Supplementary Files' . Other .
-#
-#
-loop_
-_ihm_external_files.id
-_ihm_external_files.reference_id
-_ihm_external_files.file_path
-_ihm_external_files.content_type
-_ihm_external_files.file_size_bytes
-_ihm_external_files.details
-1 1 bar 'Input data or restraints' . .
-2 1 baz 'Input data or restraints' . .
-3 2 foo/bar/baz 'Modeling or post-processing output' . .
-4 3 foo.spd 'Input data or restraints' . 'EM micrographs'
-5 4 %s 'Modeling workflow or script' 4 .
-#
-""" % bar)
-        os.unlink(bar)
-
     def test_workflow(self):
         """Test output of workflow files"""
         system = IMP.mmcif.System()
@@ -532,10 +413,12 @@ _ihm_external_files.details
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
 
         root = os.path.dirname(__file__)
-        system.add_repository(doi="foo", root=root)
-        dump = IMP.mmcif.dumper._ExternalReferenceDumper()
-        dump.finalize(system) # assign IDs
-        out = _get_dumper_output(dump, system)
+        repo = ihm.location.Repository(doi='foo', root=root)
+        system.system.update_locations_in_repositories([repo])
+
+        dump = ihm.dumper._ExternalReferenceDumper()
+        dump.finalize(system.system) # assign IDs
+        out = _get_dumper_output(dump, system.system)
         self.assertEqual(out, """#
 loop_
 _ihm_external_reference_info.reference_id
@@ -671,6 +554,8 @@ _ihm_model_list.representation_id
         r = MockGaussianEMRestraint(state.model, em_filename)
         r.set_was_used(True)
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [r], "model1")
+        # Assign dataset ID (=2 since the gmm is derived from an MRC)
+        self._assign_dataset_ids(system)
         dumper = IMP.mmcif.dumper._EM3DDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -682,7 +567,7 @@ _ihm_3dem_restraint.struct_assembly_id
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id
 _ihm_3dem_restraint.cross_correlation_coefficient
-1 1 'Gaussian mixture model' . 20 1 0.400
+1 2 'Gaussian mixture model' . 20 1 0.400
 #
 """)
 

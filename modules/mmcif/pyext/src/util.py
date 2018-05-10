@@ -90,8 +90,6 @@ class System(object):
         self._frames = []
 
         self._dumpers = [IMP.mmcif.dumper._ModelRepresentationDumper(),
-                         IMP.mmcif.dumper._ExternalReferenceDumper(),
-                         IMP.mmcif.dumper._DatasetDumper(),
                          IMP.mmcif.dumper._StartingModelDumper(),
                          IMP.mmcif.dumper._ProtocolDumper(),
                          IMP.mmcif.dumper._PostProcessDumper(),
@@ -102,8 +100,8 @@ class System(object):
         self.entities = IMP.mmcif.data._EntityMapper(self.system)
         self.components = IMP.mmcif.data._ComponentMapper(self.system)
         self._software = IMP.mmcif.data._AllSoftware(self.system)
-        self._external_files = IMP.mmcif.data._ExternalFiles()
-        self.datasets = IMP.mmcif.data._Datasets(self._external_files)
+        self._external_files = IMP.mmcif.data._ExternalFiles(self.system)
+        self.datasets = IMP.mmcif.data._Datasets(self.system)
         # All modeling protocols
         self.protocols = IMP.mmcif.data._Protocols()
 

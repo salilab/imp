@@ -110,7 +110,7 @@ class _StartingModelDumper(_Dumper):
                             seq_id_end=seq_id_end,
                             starting_model_source=sm.sources[0].source,
                             starting_model_auth_asym_id=sm.chain_id,
-                            dataset_list_id=sm.dataset.id,
+                            dataset_list_id=sm.dataset._id,
                             starting_model_sequence_offset=sm.offset)
 
     def dump_comparative(self, system, writer):
@@ -142,10 +142,10 @@ class _StartingModelDumper(_Dumper):
                           template_sequence_identity=template.sequence_identity,
                           # Assume Modeller-style sequence identity for now
                           template_sequence_identity_denominator=1,
-                          template_dataset_list_id=template.tm_dataset.id
+                          template_dataset_list_id=template.tm_dataset._id
                                                    if template.tm_dataset
                                                    else writer.unknown,
-                          alignment_file_id=sm.alignment_file.id
+                          alignment_file_id=sm.alignment_file._id
                                             if hasattr(sm, 'alignment_file')
                                             else writer.unknown)
                         ordinal += 1
@@ -235,166 +235,6 @@ class _StartingModelDumper(_Dumper):
                      residue_indexes=list(range(sm.seq_id_begin - sm.offset,
                                                 sm.seq_id_end + 1 - sm.offset)))
         return m, sel
-
-
-class _DatasetDumper(_Dumper):
-    def _dataset_by_id(self, system):
-        return sorted(system.datasets.get_all(), key=operator.attrgetter('id'))
-
-    def dump(self, system, writer):
-        with writer.loop("_ihm_dataset_list",
-                         ["id", "data_type", "database_hosted"]) as l:
-            for d in self._dataset_by_id(system):
-                l.write(id=d.id, data_type=d.data_type,
-                        database_hosted=isinstance(d.location,
-                                        ihm.location.DatabaseLocation))
-        self.dump_other((d for d in self._dataset_by_id(system)
-                         if not isinstance(d.location,
-                                           ihm.location.DatabaseLocation)),
-                        writer)
-        self.dump_rel_dbs((d for d in self._dataset_by_id(system)
-                           if isinstance(d.location,
-                                         ihm.location.DatabaseLocation)),
-                          writer)
-        self.dump_related(system, writer)
-
-    def dump_other(self, datasets, writer):
-        ordinal = 1
-        with writer.loop("_ihm_dataset_external_reference",
-                         ["id", "dataset_list_id", "file_id"]) as l:
-            for d in datasets:
-                l.write(id=ordinal, dataset_list_id=d.id, file_id=d.location.id)
-                ordinal += 1
-
-    def dump_rel_dbs(self, datasets, writer):
-        ordinal = 1
-        with writer.loop("_ihm_dataset_related_db_reference",
-                         ["id", "dataset_list_id", "db_name",
-                          "accession_code", "version", "details"]) as l:
-            for d in datasets:
-                l.write(id=ordinal, dataset_list_id=d.id,
-                        db_name=d.location.db_name,
-                        accession_code=d.location.access_code,
-                        version=d.location.version if d.location.version
-                                else writer.omitted,
-                        details=d.location.details if d.location.details
-                                else writer.omitted)
-                ordinal += 1
-
-    def dump_related(self, system, writer):
-        ordinal = 1
-        with writer.loop("_ihm_related_datasets",
-                         ["ordinal_id", "dataset_list_id_derived",
-                          "dataset_list_id_primary"]) as l:
-            for derived in self._dataset_by_id(system):
-                for parent in sorted(derived.parents,
-                                     key=operator.attrgetter('id')):
-                    l.write(ordinal_id=ordinal,
-                            dataset_list_id_derived=derived.id,
-                            dataset_list_id_primary=parent.id)
-                    ordinal += 1
-
-
-class _ExternalReferenceDumper(_Dumper):
-    """Output information on externally referenced files
-       (i.e. anything that refers to a Location that isn't
-       a DatabaseLocation)."""
-
-    class _LocalFiles(object):
-        reference_provider = None
-        reference_type = 'Supplementary Files'
-        reference = None
-        refers_to = 'Other'
-        associated_url = None
-
-        def __init__(self, top_directory):
-            self.top_directory = top_directory
-
-        def _get_full_path(self, path):
-            return os.path.relpath(path, start=self.top_directory)
-
-    class _Repository(object):
-        reference_provider = None
-        reference_type = 'DOI'
-        refers_to = 'Other'
-        associated_url = None
-
-        def __init__(self, repo):
-            self.id = repo.id
-            self.reference = repo.doi
-            if 'zenodo' in self.reference:
-                self.reference_provider = 'Zenodo'
-            if repo.url:
-                self.associated_url = repo.url
-                if repo.url.endswith(".zip"):
-                    self.refers_to = 'Archive'
-                else:
-                    self.refers_to = 'File'
-
-    def finalize(self, system):
-        # Keep only locations that don't point into databases (these are
-        # handled elsewhere)
-        self._refs = list(system._external_files.get_all_nondb())
-        # Assign IDs to all locations and repos (including the None repo, which
-        # is for local files)
-        seen_refs = {}
-        seen_repos = {}
-        self._ref_by_id = []
-        self._repo_by_id = []
-        # Special dummy repo for repo=None (local files)
-        self._local_files = self._LocalFiles(os.getcwd())
-        for r in self._refs:
-            # Update location to point to parent repository, if any
-            # todo: this could probably happen when the location is first made
-            system._update_location(r)
-            # Assign a unique ID to the reference
-            IMP.mmcif.data._assign_id(r, seen_refs, self._ref_by_id)
-            # Assign a unique ID to the repository
-            IMP.mmcif.data._assign_id(r.repo or self._local_files,
-                                      seen_repos, self._repo_by_id)
-
-    def dump(self, system, writer):
-        self.dump_repos(writer)
-        self.dump_refs(writer)
-
-    def dump_repos(self, writer):
-        def map_repo(r):
-            return r if isinstance(r, self._LocalFiles) else self._Repository(r)
-        with writer.loop("_ihm_external_reference_info",
-                         ["reference_id", "reference_provider",
-                          "reference_type", "reference", "refers_to",
-                          "associated_url"]) as l:
-            for repo in [map_repo(r) for r in self._repo_by_id]:
-                l.write(reference_id=repo.id,
-                        reference_provider=repo.reference_provider,
-                        reference_type=repo.reference_type,
-                        reference=repo.reference, refers_to=repo.refers_to,
-                        associated_url=repo.associated_url)
-
-    def dump_refs(self, writer):
-        with writer.loop("_ihm_external_files",
-                         ["id", "reference_id", "file_path", "content_type",
-                          "file_size_bytes", "details"]) as l:
-            for r in self._ref_by_id:
-                repo = r.repo or self._local_files
-                file_path=self._posix_path(repo._get_full_path(r.path))
-                if r.file_size is None:
-                    file_size = writer.omitted
-                else:
-                    file_size = r.file_size
-                l.write(id=r.id, reference_id=repo.id,
-                        file_path=file_path,
-                        content_type=r.content_type,
-                        file_size_bytes=file_size,
-                        details=r.details or writer.omitted)
-
-    # On Windows systems, convert native paths to POSIX-like (/-separated) paths
-    if os.sep == '/':
-        def _posix_path(self, path):
-            return path
-    else:
-        def _posix_path(self, path):
-            return path.replace(os.sep, '/')
 
 
 class _ProtocolDumper(_Dumper):
@@ -526,7 +366,7 @@ class _EM3DDumper(_Dumper):
             for r in rs:
                 for frame, info in r._all_frame_info():
                     ccc = info['cross correlation']
-                    l.write(ordinal_id=ordinal, dataset_list_id=r.dataset.id,
+                    l.write(ordinal_id=ordinal, dataset_list_id=r.dataset._id,
                             fitting_method=r.fitting_method,
                             number_of_gaussians=r.number_of_gaussians
                                        if r.number_of_gaussians is not None

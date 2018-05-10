@@ -286,17 +286,16 @@ class _StartingModelFinder(object):
 
 class _Datasets(object):
     """Store all datasets used."""
-    def __init__(self, external_files):
+    def __init__(self, system):
         super(_Datasets, self).__init__()
         self._datasets = {}
-        self._external_files = external_files
+        self.system = system
 
     def add(self, d):
         """Add and return a new dataset."""
         if d not in self._datasets:
             self._datasets[d] = d
-            d.id = len(self._datasets)
-            self._external_files.add(d.location)
+            self.system.orphan_datasets.append(d)
         return self._datasets[d]
 
     def get_all(self):
@@ -348,19 +347,13 @@ class _ExternalFiles(object):
     """Track all externally-referenced files
        (i.e. anything that refers to a Location that isn't
        a DatabaseLocation)."""
-    def __init__(self):
-        self._refs = []
-        self._repos = []
-
-    def add_repo(self, repo):
-        """Add a repository containing modeling files."""
-        self._repos.append(repo)
+    def __init__(self, system):
+        self.system = system
 
     def add(self, location):
         """Add a new externally-referenced file.
            Note that ids are assigned later."""
-        self._refs.append(location)
-
+        self.system.locations.append(location)
 
     def add_hierarchy(self, h):
         # Add all Python scripts that were used in the modeling
@@ -370,12 +363,6 @@ class _ExternalFiles(object):
             l = ihm.location.WorkflowFileLocation(path=p.get_filename(),
                                details='Integrative modeling Python script')
             self.add(l)
-
-    def get_all_nondb(self):
-        """Yield all external files that are not database hosted"""
-        for x in self._refs:
-            if not isinstance(x, ihm.location.DatabaseLocation):
-                yield x
 
 
 class _ProtocolStep(object):
