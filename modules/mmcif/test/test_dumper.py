@@ -173,25 +173,6 @@ _software.location
     def _assign_entity_ids(self, system):
         ihm.dumper._EntityDumper().finalize(system.system)
 
-    def test_struct_asym_dumper(self):
-        """Test StructAsymDumper"""
-        system = IMP.mmcif.System()
-        h, state = self.make_model(system)
-        IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
-        dumper = IMP.mmcif.dumper._StructAsymDumper()
-        self._assign_entity_ids(system)
-        out = _get_dumper_output(dumper, system)
-        self.assertEqual(out, """#
-loop_
-_struct_asym.id
-_struct_asym.entity_id
-_struct_asym.details
-A 1 foo
-B 1 bar
-C 2 baz
-#
-""")
-
     def test_assembly_dumper_get_subassembly(self):
         """Test AssemblyDumper.get_subassembly()"""
         system = IMP.mmcif.System()

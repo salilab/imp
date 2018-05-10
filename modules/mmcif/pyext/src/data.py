@@ -69,8 +69,9 @@ class _Component(object):
 
 class _ComponentMapper(object):
     """Handle mapping from chains to CIF components."""
-    def __init__(self):
+    def __init__(self, system):
         super(_ComponentMapper, self).__init__()
+        self.system = system
         self._used_entities = set()
         self._all_components = []
         self._all_modeled_components = []
@@ -105,6 +106,9 @@ class _ComponentMapper(object):
                 entity.description = component.name.split("@")[0].split(".")[0]
             self._all_components.append(component)
             if modeled:
+                asym = ihm.AsymUnit(entity, name, id=asym_id)
+                self.system.asym_units.append(asym)
+                component.asym_unit = asym
                 self._all_modeled_components.append(component)
             self._map[map_key] = component
         else:

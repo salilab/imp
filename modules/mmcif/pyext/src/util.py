@@ -95,7 +95,6 @@ class System(object):
 
         self._dumpers = [IMP.mmcif.dumper._SoftwareDumper(),
                          IMP.mmcif.dumper._CitationDumper(),
-                         IMP.mmcif.dumper._StructAsymDumper(),
                          IMP.mmcif.dumper._AssemblyDumper(),
                          IMP.mmcif.dumper._ModelRepresentationDumper(),
                          IMP.mmcif.dumper._ExternalReferenceDumper(),
@@ -108,7 +107,7 @@ class System(object):
                          IMP.mmcif.dumper._EM3DDumper(),
                          IMP.mmcif.dumper._SiteDumper()]
         self.entities = IMP.mmcif.data._EntityMapper(self.system)
-        self.components = IMP.mmcif.data._ComponentMapper()
+        self.components = IMP.mmcif.data._ComponentMapper(self.system)
         self._citations = []
         self._software = IMP.mmcif.data._AllSoftware()
         self._external_files = IMP.mmcif.data._ExternalFiles()

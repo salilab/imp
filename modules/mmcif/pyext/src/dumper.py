@@ -20,16 +20,6 @@ class _Dumper(object):
         pass
 
 
-class _StructAsymDumper(_Dumper):
-    def dump(self, system, writer):
-        with writer.loop("_struct_asym",
-                         ["id", "entity_id", "details"]) as l:
-            for comp in system.components.get_all_modeled():
-                l.write(id=comp.asym_id,
-                        entity_id=comp.entity._id,
-                        details=comp.name if comp.name else writer.omitted)
-
-
 class _AssemblyDumper(_Dumper):
     def finalize(self, system):
         seen_assemblies = {}

@@ -70,7 +70,8 @@ class Tests(IMP.test.TestCase):
 
     def test_entity_naming(self):
         """Test naming of Entities"""
-        cm = IMP.mmcif.data._ComponentMapper()
+        system = ihm.System()
+        cm = IMP.mmcif.data._ComponentMapper(system)
         entity1 = ihm.Entity("ANC")
         chain1 = MockChain("A.1@12")
         chain2 = MockChain("A.2@12")
@@ -82,7 +83,8 @@ class Tests(IMP.test.TestCase):
 
     def test_component_mapper_same_id_chain(self):
         """Test ComponentMapper given two chains with same ID"""
-        cm = IMP.mmcif.data._ComponentMapper()
+        system = ihm.System()
+        cm = IMP.mmcif.data._ComponentMapper(system)
         entity1 = ihm.Entity("ANC")
         entity2 = ihm.Entity("DEF")
         chain1 = MockChain("A")
@@ -94,7 +96,8 @@ class Tests(IMP.test.TestCase):
 
     def test_component_mapper_get_all(self):
         """Test ComponentMapper get_all()"""
-        cm = IMP.mmcif.data._ComponentMapper()
+        system = ihm.System()
+        cm = IMP.mmcif.data._ComponentMapper(system)
         entity1 = ihm.Entity("ANC")
         entity2 = ihm.Entity("DEF")
         chain1 = MockChain("A")
