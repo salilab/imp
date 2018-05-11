@@ -93,6 +93,10 @@ class _StartingModelDumper(_Dumper):
         self.dump_seq_dif(writer, seq_dif)
 
     def dump_details(self, system, writer):
+        # Map dataset types to starting model sources
+        s_map = {'Comparative model': 'comparative model',
+                 'Integrative model': 'integrative model',
+                 'Experimental model': 'experimental model'}
         with writer.loop("_ihm_starting_model_details",
                      ["starting_model_id", "entity_id", "entity_description",
                       "asym_id", "seq_id_begin",
@@ -102,13 +106,13 @@ class _StartingModelDumper(_Dumper):
                       "dataset_list_id"]) as l:
             for comp in system.components.get_all_modeled():
                 for sm in self._all_models(system, comp):
-                    seq_id_begin, seq_id_end = sm.get_seq_id_range_all_sources()
+                    seq_id_range = sm.get_seq_id_range_all_templates()
                     l.write(starting_model_id=sm.id, entity_id=comp.entity._id,
                             entity_description=comp.entity.description,
                             asym_id=comp.asym_id,
-                            seq_id_begin=seq_id_begin,
-                            seq_id_end=seq_id_end,
-                            starting_model_source=sm.sources[0].source,
+                            seq_id_begin=seq_id_range[0],
+                            seq_id_end=seq_id_range[1],
+                            starting_model_source=s_map[sm.dataset.data_type],
                             starting_model_auth_asym_id=sm.chain_id,
                             dataset_list_id=sm.dataset._id,
                             starting_model_sequence_offset=sm.offset)
@@ -128,25 +132,28 @@ class _StartingModelDumper(_Dumper):
             ordinal = 1
             for comp in system.components.get_all_modeled():
                 for sm in self._all_models(system, comp):
-                    for template in [s for s in sm.sources
-                          if isinstance(s, IMP.mmcif.metadata._TemplateSource)]:
-                        seq_id_begin, seq_id_end = template.get_seq_id_range(sm)
+                    off = sm.offset
+                    for template in sm.templates:
+                        seq_id_begin = template.seq_id_range[0] + off
+                        seq_id_end = template.seq_id_range[1] + off
+                        tm_seq_id_begin = template.template_seq_id_range[0]
+                        tm_seq_id_end = template.template_seq_id_range[1]
                         l.write(ordinal_id=ordinal,
                           starting_model_id=sm.id,
-                          starting_model_auth_asym_id=template.chain_id,
+                          starting_model_auth_asym_id=sm.chain_id,
                           starting_model_seq_id_begin=seq_id_begin,
                           starting_model_seq_id_end=seq_id_end,
-                          template_auth_asym_id=template.tm_chain_id,
-                          template_seq_id_begin=template.tm_seq_id_begin,
-                          template_seq_id_end=template.tm_seq_id_end,
+                          template_auth_asym_id=template.asym_id,
+                          template_seq_id_begin=tm_seq_id_begin,
+                          template_seq_id_end=tm_seq_id_end,
                           template_sequence_identity=template.sequence_identity,
                           # Assume Modeller-style sequence identity for now
                           template_sequence_identity_denominator=1,
-                          template_dataset_list_id=template.tm_dataset._id
-                                                   if template.tm_dataset
+                          template_dataset_list_id=template.dataset._id
+                                                   if template.dataset
                                                    else writer.unknown,
-                          alignment_file_id=sm.alignment_file._id
-                                            if hasattr(sm, 'alignment_file')
+                          alignment_file_id=template.alignment_file._id
+                                            if template.alignment_file
                                             else writer.unknown)
                         ordinal += 1
 

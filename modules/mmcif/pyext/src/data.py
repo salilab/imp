@@ -5,7 +5,7 @@
 from __future__ import print_function
 import IMP.atom
 import ihm.location
-import IMP.mmcif.metadata
+import ihm.metadata
 
 def get_molecule(h):
     """Given a Hierarchy, walk up and find the parent Molecule"""
@@ -200,17 +200,25 @@ class _StartingModel(object):
         if not hasattr(self, 'seq_id_begin'):
             self.seq_id_begin = self.seq_id_end
 
-    def get_seq_id_range_all_sources(self):
-        source0 = self.sources[0]
-        # Where there are multiple sources (to date, this can only
-        # mean multiple templates for a comparative model) consolidate
-        # them; template info is given in starting_comparative_models.
-        seq_id_begin, seq_id_end = source0.get_seq_id_range(self)
-        for source in self.sources[1:]:
-            this_begin, this_end = source.get_seq_id_range(self)
-            seq_id_begin = min(seq_id_begin, this_begin)
-            seq_id_end = max(seq_id_end, this_end)
-        return seq_id_begin, seq_id_end
+    def get_seq_id_range_all_templates(self):
+        def get_seq_id_range(template, full):
+            # The template may cover more than the current starting model
+            rng = template.seq_id_range
+            return (max(rng[0]+self.offset, full[0]),
+                    min(rng[1]+self.offset, full[1]))
+
+        full = (self.seq_id_begin, self.seq_id_end)
+        if self.templates:
+            # Where there are multiple sources (to date, this can only
+            # mean multiple templates for a comparative model) consolidate
+            # them; template info is given in starting_comparative_models.
+            rng = get_seq_id_range(self.templates[0], full)
+            for template in self.templates[1:]:
+                this_rng = get_seq_id_range(template, full)
+                rng = (min(rng[0], this_rng[0]), max(rng[1], this_rng[1]))
+            return rng
+        else:
+            return full
 
     # Two starting models with same filename, chain ID, and offset
     # compare identical
@@ -226,11 +234,19 @@ class _StartingModel(object):
 
     def _set_sources_datasets(self, system):
         # Attempt to identify PDB file vs. comparative model
-        p = IMP.mmcif.metadata._PDBMetadataParser()
-        p.parse_file(self.filename, self.chain_id, system)
-        self.dataset = p.dataset
-        self.sources = p.sources
-        self.alignment_file = p.alignment_file
+        p = ihm.metadata.PDBParser()
+        r = p.parse_file(self.filename)
+        system.system.software.extend(r['software'])
+        dataset = system.datasets.add(r['dataset'])
+        # We only want the templates that model the starting model chain
+        templates = r['templates'].get(self.chain_id, [])
+        for t in templates:
+            if t.alignment_file:
+                system.system.locations.append(t.alignment_file)
+            if t.dataset:
+                system.datasets.add(t.dataset)
+        self.dataset = dataset
+        self.templates = templates
 
 
 class _StartingModelFinder(object):
