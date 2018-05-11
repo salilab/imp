@@ -45,10 +45,11 @@ class _GaussianEMRestraint(_MappedRestraint):
     fitting_method = 'Gaussian mixture model'
 
     def _setup_dataset(self, system):
-        p = IMP.mmcif.metadata._GMMMetadataParser()
-        p.parse_file(self._info['filename'], system)
-        self.dataset = p.dataset
-        self.number_of_gaussians = p.number_of_gaussians
+        p = IMP.mmcif.metadata._GMMParser()
+        r = p.parse_file(self._info['filename'])
+        self.dataset = r['dataset']
+        system.datasets.add(self.dataset)
+        self.number_of_gaussians = r['number_of_gaussians']
 
 
 class _RestraintMapper(object):

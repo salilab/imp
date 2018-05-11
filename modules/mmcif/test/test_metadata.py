@@ -163,14 +163,14 @@ class Tests(IMP.test.TestCase):
     def test_gmm_parser_local_mrc(self):
         """Test GMMMetadataParser pointing to a locally-available MRC file"""
         system = MockSystem()
-        p = IMP.mmcif.metadata._GMMMetadataParser()
+        p = IMP.mmcif.metadata._GMMParser()
         fname = self.get_input_file_name('test.gmm.txt')
-        p.parse_file(fname, system)
-        self.assertEqual(p.number_of_gaussians, 20)
-        self.assertEqual(p.dataset.data_type, '3DEM volume')
-        self.assertEqual(p.dataset.location.path, fname)
-        self.assertIs(p.dataset.location.repo, None)
-        parent, = p.dataset.parents
+        r = p.parse_file(fname)
+        self.assertEqual(r['number_of_gaussians'], 20)
+        self.assertEqual(r['dataset'].data_type, '3DEM volume')
+        self.assertEqual(r['dataset'].location.path, fname)
+        self.assertIs(r['dataset'].location.repo, None)
+        parent, = r['dataset'].parents
         self.assertEqual(parent.data_type, '3DEM volume')
         self.assertEqual(parent.location.path,
                          self.get_input_file_name('Rpb8.mrc-header'))
@@ -179,13 +179,13 @@ class Tests(IMP.test.TestCase):
         self.assertIs(parent.location.repo, None)
 
     def test_gmm_parser_emdb(self):
-        """Test GMMMetadataParser pointing to an MRC in EMDB"""
+        """Test GMMParser pointing to an MRC in EMDB"""
         def mock_urlopen(url):
             txt = '{"EMD-1883":[{"deposition":{"map_release_date":"2011-04-21"'\
                   ',"title":"test details"}}]}'
             return StringIO(txt)
         system = MockSystem()
-        p = IMP.mmcif.metadata._GMMMetadataParser()
+        p = IMP.mmcif.metadata._GMMParser()
         fname = self.get_input_file_name('emd_1883.map.mrc.gmm.50.txt')
 
         # Need to mock out urllib2 so we don't hit the network (expensive)
@@ -193,14 +193,14 @@ class Tests(IMP.test.TestCase):
         try:
             orig_urlopen = urllib2.urlopen
             urllib2.urlopen = mock_urlopen
-            p.parse_file(fname, system)
+            r = p.parse_file(fname)
         finally:
             urllib2.urlopen = orig_urlopen
-        self.assertEqual(p.number_of_gaussians, 50)
-        self.assertEqual(p.dataset.data_type, '3DEM volume')
-        self.assertEqual(p.dataset.location.path, fname)
-        self.assertIs(p.dataset.location.repo, None)
-        parent, = p.dataset.parents
+        self.assertEqual(r['number_of_gaussians'], 50)
+        self.assertEqual(r['dataset'].data_type, '3DEM volume')
+        self.assertEqual(r['dataset'].location.path, fname)
+        self.assertIs(r['dataset'].location.repo, None)
+        parent, = r['dataset'].parents
         self.assertEqual(parent.data_type, '3DEM volume')
         self.assertEqual(parent.location.db_name, 'EMDB')
         self.assertEqual(parent.location.access_code, 'EMD-1883')
