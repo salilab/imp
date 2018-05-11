@@ -416,8 +416,9 @@ _ihm_external_files.details
         dumper = ihm.dumper._AssemblyDumper()
         dumper.finalize(system.system) # Assign assembly IDs
 
-        dumper = IMP.mmcif.dumper._ProtocolDumper()
-        out = _get_dumper_output(dumper, system)
+        dumper = ihm.dumper._ProtocolDumper()
+        dumper.finalize(system.system)
+        out = _get_dumper_output(dumper, system.system)
         self.assertEqual(out, """#
 loop_
 _ihm_modeling_protocol.ordinal_id
@@ -433,9 +434,11 @@ _ihm_modeling_protocol.num_models_begin
 _ihm_modeling_protocol.num_models_end
 _ihm_modeling_protocol.multi_scale_flag
 _ihm_modeling_protocol.multi_state_flag
-_ihm_modeling_protocol.time_ordered_flag
-1 1 1 1 . . . Sampling 'Monte Carlo' 0 500 YES NO NO
-2 2 1 1 . . . Sampling 'Replica exchange Molecular Dynamics' 400 2000 YES NO NO
+_ihm_modeling_protocol.ordered_flag
+1 1 1 1 . 'All known components & All components modeled by IMP' . Sampling
+'Monte Carlo' 0 500 YES NO NO
+2 2 1 1 . 'All known components & All components modeled by IMP' . Sampling
+'Replica exchange Molecular Dynamics' 400 2000 YES NO NO
 #
 """)
 
@@ -444,8 +447,15 @@ _ihm_modeling_protocol.time_ordered_flag
         system = IMP.mmcif.System()
         h, state = self.make_model_with_protocol(system)
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
-        dumper = IMP.mmcif.dumper._PostProcessDumper()
-        out = _get_dumper_output(dumper, system)
+        self._assign_entity_ids(system)
+        self._assign_asym_ids(system)
+        dumper = ihm.dumper._AssemblyDumper()
+        dumper.finalize(system.system)
+        dumper = ihm.dumper._ProtocolDumper()
+        dumper.finalize(system.system)
+        dumper = ihm.dumper._PostProcessDumper()
+        dumper.finalize(system.system)
+        out = _get_dumper_output(dumper, system.system)
         self.assertEqual(out, """#
 loop_
 _ihm_modeling_post_process.id
@@ -456,8 +466,10 @@ _ihm_modeling_post_process.type
 _ihm_modeling_post_process.feature
 _ihm_modeling_post_process.num_models_begin
 _ihm_modeling_post_process.num_models_end
-1 1 1 1 filter energy/score 500 400
-2 2 1 1 cluster RMSD 2000 2000
+_ihm_modeling_post_process.struct_assembly_id
+_ihm_modeling_post_process.dataset_group_id
+1 1 1 1 filter energy/score 500 400 1 .
+2 2 1 1 cluster RMSD 2000 2000 1 .
 #
 """)
 

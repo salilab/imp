@@ -90,8 +90,6 @@ class System(object):
         self._frames = []
 
         self._dumpers = [IMP.mmcif.dumper._ModelRepresentationDumper(),
-                         IMP.mmcif.dumper._ProtocolDumper(),
-                         IMP.mmcif.dumper._PostProcessDumper(),
                          IMP.mmcif.dumper._EnsembleDumper(),
                          IMP.mmcif.dumper._ModelListDumper(),
                          IMP.mmcif.dumper._EM3DDumper(),
@@ -102,7 +100,7 @@ class System(object):
         self._external_files = IMP.mmcif.data._ExternalFiles(self.system)
         self.datasets = IMP.mmcif.data._Datasets(self.system)
         # All modeling protocols
-        self.protocols = IMP.mmcif.data._Protocols()
+        self.protocols = IMP.mmcif.data._Protocols(self.system)
 
     def _update_location(self, fileloc):
         """Update FileLocation to point to a parent repository, if any"""
