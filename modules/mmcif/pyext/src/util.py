@@ -90,7 +90,6 @@ class System(object):
         self._frames = []
 
         self._dumpers = [IMP.mmcif.dumper._ModelRepresentationDumper(),
-                         IMP.mmcif.dumper._StartingModelDumper(),
                          IMP.mmcif.dumper._ProtocolDumper(),
                          IMP.mmcif.dumper._PostProcessDumper(),
                          IMP.mmcif.dumper._EnsembleDumper(),
@@ -141,7 +140,7 @@ class System(object):
             else:
                 state.modeled_assembly.append(component.entity)
             state.representation[component] \
-                = list(self._get_representation(c,
+                = list(self._get_representation(c, component,
                                      self._get_all_starting_models(component)))
         self.protocols._add_hierarchy(h, state.modeled_assembly)
         self._external_files.add_hierarchy(h)
@@ -154,9 +153,10 @@ class System(object):
                 if rep.starting_model:
                     yield rep.starting_model
 
-    def _get_representation(self, chain, existing_starting_models):
+    def _get_representation(self, chain, component, existing_starting_models):
         """Yield groups of particles under chain with same representation"""
-        smf = IMP.mmcif.data._StartingModelFinder(existing_starting_models)
+        smf = IMP.mmcif.data._StartingModelFinder(component,
+                                                  existing_starting_models)
         rep = IMP.mmcif.data._Representation()
         for sp in self._get_structure_particles(chain):
             starting_model = smf.find(sp, self)

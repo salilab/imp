@@ -6,6 +6,8 @@ from __future__ import print_function
 import IMP.atom
 import ihm.location
 import ihm.metadata
+import ihm.startmodel
+import ihm.model
 
 def get_molecule(h):
     """Given a Hierarchy, walk up and find the parent Molecule"""
@@ -187,38 +189,66 @@ def _get_all_structure_provenance(p):
     """Yield all StructureProvenance decorators for the given particle."""
     return IMP.core.get_all_provenance(p, types=[IMP.core.StructureProvenance])
 
-class _StartingModel(object):
-    _eq_keys = ['filename', 'chain_id', 'offset']
 
-    def __init__(self, struc_prov):
+class _MutantHandler(object):
+    def __init__(self, templates, asym):
+        self._seq_dif = []
+        self._last_res_index = None
+        self.templates = templates
+        self.asym = asym
+
+    def _residue_first_atom(self, res):
+        """Return True iff we're looking at the first atom in this residue"""
+        # Only add one seq_dif record per residue
+        ind = res.get_index()
+        if ind != self._last_res_index:
+            self._last_res_index = ind
+            return True
+
+    def handle_residue(self, res, comp_id, seq_id, offset):
+        res_name = res.get_residue_type().get_string()
+        # MSE in the original PDB is automatically mutated
+        # by IMP to MET, so reflect that in the output,
+        # and pass back to populate the seq_dif category.
+        if res_name == 'MSE' and comp_id == 'MET':
+            if self._residue_first_atom(res):
+                # This should only happen when we're using
+                # a crystal structure as the source (a
+                # comparative model would use MET in
+                # the sequence)
+                assert(len(self.templates) == 0)
+                self._seq_dif.append(ihm.startmodel.MSESeqDif(
+                            res.get_index(), seq_id))
+        elif res_name != comp_id:
+            if self._residue_first_atom(res):
+                print("WARNING: Starting model residue %s does not match "
+                      "that in the output model (%s) for chain %s residue %d. "
+                      "Check offset (currently %d)."
+                      % (res_name, comp_id, self.asym._id, seq_id, offset))
+                self._seq_dif.append(ihm.startmodel.SeqDif(
+                         db_seq_id=res.get_index(), seq_id=seq_id,
+                         db_comp_id=res_name,
+                         details="Mutation of %s to %s" % (res_name, comp_id)))
+
+
+class _StartingModel(ihm.startmodel.StartingModel):
+    _eq_keys = ['filename', 'asym_id', 'offset']
+
+    def __init__(self, asym_unit, struc_prov):
         self.filename = struc_prov[0].get_filename()
-        self.chain_id = struc_prov[0].get_chain_id()
-        self.offset = struc_prov[0].get_residue_offset()
+        super(_StartingModel, self).__init__(
+                asym_unit=asym_unit(0,0), # will update in _add_residue()
+                dataset=None, # will fill in later with _set_sources_datasets()
+                asym_id=struc_prov[0].get_chain_id(),
+                offset=struc_prov[0].get_residue_offset())
 
     def _add_residue(self, resind):
-        self.seq_id_end = resind + self.offset
-        if not hasattr(self, 'seq_id_begin'):
-            self.seq_id_begin = self.seq_id_end
-
-    def get_seq_id_range_all_templates(self):
-        def get_seq_id_range(template, full):
-            # The template may cover more than the current starting model
-            rng = template.seq_id_range
-            return (max(rng[0]+self.offset, full[0]),
-                    min(rng[1]+self.offset, full[1]))
-
-        full = (self.seq_id_begin, self.seq_id_end)
-        if self.templates:
-            # Where there are multiple sources (to date, this can only
-            # mean multiple templates for a comparative model) consolidate
-            # them; template info is given in starting_comparative_models.
-            rng = get_seq_id_range(self.templates[0], full)
-            for template in self.templates[1:]:
-                this_rng = get_seq_id_range(template, full)
-                rng = (min(rng[0], this_rng[0]), max(rng[1], this_rng[1]))
-            return rng
-        else:
-            return full
+        # Update seq_id_range to accommodate this residue
+        seq_id_end = resind + self.offset
+        seq_id_begin = self.asym_unit.seq_id_range[0]
+        if seq_id_begin == 0:
+            seq_id_begin = seq_id_end
+        self.asym_unit = self.asym_unit.asym(seq_id_begin, seq_id_end)
 
     # Two starting models with same filename, chain ID, and offset
     # compare identical
@@ -239,7 +269,7 @@ class _StartingModel(object):
         system.system.software.extend(r['software'])
         dataset = system.datasets.add(r['dataset'])
         # We only want the templates that model the starting model chain
-        templates = r['templates'].get(self.chain_id, [])
+        templates = r['templates'].get(self.asym_id, [])
         for t in templates:
             if t.alignment_file:
                 system.system.locations.append(t.alignment_file)
@@ -247,21 +277,64 @@ class _StartingModel(object):
                 system.datasets.add(t.dataset)
         self.dataset = dataset
         self.templates = templates
+        self.metadata = r['metadata']
+
+    def _read_coords(self):
+        """Read the coordinates for this starting model"""
+        m = IMP.Model()
+        # todo: support reading other subsets of the atoms (e.g. CA/CB)
+        slt = IMP.atom.ChainPDBSelector(self.asym_id) \
+                   & IMP.atom.NonWaterNonHydrogenPDBSelector()
+        hier = IMP.atom.read_pdb(self.filename, m, slt)
+        rng = self.asym_unit.seq_id_range
+        sel = IMP.atom.Selection(hier,
+                residue_indexes=list(range(rng[0] - self.offset,
+                                           rng[1] + 1 - self.offset)))
+        return m, sel
+
+    def get_seq_dif(self):
+        return self._seq_dif  # filled in by get_atoms()
+
+    def get_atoms(self):
+        mh = _MutantHandler(self.templates, self.asym_unit)
+        m, sel = self._read_coords()
+        for a in sel.get_selected_particles():
+            coord = IMP.core.XYZ(a).get_coordinates()
+            atom = IMP.atom.Atom(a)
+            element = atom.get_element()
+            element = IMP.atom.get_element_table().get_name(element)
+            atom_name = atom.get_atom_type().get_string()
+            het = atom_name.startswith('HET:')
+            if het:
+                atom_name = atom_name[4:]
+            res = IMP.atom.get_residue(atom)
+
+            seq_id = res.get_index() + self.offset
+            comp_id = self.asym_unit.entity.sequence[seq_id-1].id
+            mh.handle_residue(res, comp_id, seq_id, self.offset)
+            yield ihm.model.Atom(asym_unit=self.asym_unit,
+                                 seq_id=seq_id,
+                                 atom_id=atom_name, type_symbol=element,
+                                 x=coord[0], y=coord[1], z=coord[2],
+                                 het=het, biso=atom.get_temperature_factor())
+        self._seq_dif = mh._seq_dif
 
 
 class _StartingModelFinder(object):
     """Map IMP particles to starting model objects"""
-    def __init__(self, existing_starting_models):
+    def __init__(self, component, existing_starting_models):
         self._seen_particles = {}
+        self._component = component
         self._seen_starting_models = dict.fromkeys(existing_starting_models)
 
     def find(self, particle, system):
         """Return a StartingModel object, or None, for this particle"""
         def _get_starting_model(sp, resind):
-            s = _StartingModel(sp)
+            s = _StartingModel(self._component.asym_unit, sp)
             if s not in self._seen_starting_models:
                 self._seen_starting_models[s] = s
                 s._set_sources_datasets(system)
+                system.system.orphan_starting_models.append(s)
             s = self._seen_starting_models[s]
             if s:
                 s._add_residue(resind)

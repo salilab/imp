@@ -232,8 +232,8 @@ _ihm_struct_assembly.seq_id_end
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         self._assign_entity_ids(system)
         # Assign starting model IDs
-        d = IMP.mmcif.dumper._StartingModelDumper()
-        d.finalize(system)
+        d = ihm.dumper._StartingModelDumper()
+        d.finalize(system.system)
         d = IMP.mmcif.dumper._ModelRepresentationDumper()
         out = _get_dumper_output(d, system)
         self.assertEqual(out, """#
@@ -251,7 +251,7 @@ _ihm_model_representation.starting_model_id
 _ihm_model_representation.model_mode
 _ihm_model_representation.model_granularity
 _ihm_model_representation.model_object_count
-1 1 1 1 foo A 1 2 sphere foo-m1 flexible by-residue 2
+1 1 1 1 foo A 1 2 sphere 1 flexible by-residue 2
 2 1 2 1 foo A 3 4 sphere . flexible by-feature 1
 #
 """)
@@ -300,13 +300,14 @@ _ihm_model_representation.model_object_count
                                                           [], "model1")
 
         self._assign_entity_ids(system)
+        self._assign_asym_ids(system)
         # Assign dataset IDs (templates=1,2, comparative models=3,4)
         self._assign_dataset_ids(system)
         # assign file IDs (alignment file = 1)
         self._assign_location_ids(system)
-        d = IMP.mmcif.dumper._StartingModelDumper()
-        d.finalize(system)
-        out = _get_dumper_output(d, system)
+        d = ihm.dumper._StartingModelDumper()
+        d.finalize(system.system)
+        out = _get_dumper_output(d, system.system)
         self.assertEqual(out, """#
 loop_
 _ihm_starting_model_details.starting_model_id
@@ -319,8 +320,8 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-Nup84-m1 1 Nup84 A 33 2 'comparative model' A 0 3
-Nup85-m1 2 Nup85 B 33 2 'comparative model' A 0 4
+1 1 Nup84 A 33 2 'comparative model' A 0 3
+2 2 Nup85 B 33 2 'comparative model' A 0 4
 #
 #
 loop_
@@ -336,10 +337,10 @@ _ihm_starting_comparative_models.template_sequence_identity
 _ihm_starting_comparative_models.template_sequence_identity_denominator
 _ihm_starting_comparative_models.template_dataset_list_id
 _ihm_starting_comparative_models.alignment_file_id
-1 Nup84-m1 A 33 424 C 33 424 100.000 1 1 1
-2 Nup84-m1 A 429 488 G 482 551 10.000 1 2 1
-3 Nup85-m1 A 33 424 C 33 424 100.000 1 1 1
-4 Nup85-m1 A 429 488 G 482 551 10.000 1 2 1
+1 1 A 33 424 C 33 424 100.000 1 1 1
+2 1 A 429 488 G 482 551 10.000 1 2 1
+3 2 A 33 424 C 33 424 100.000 1 1 1
+4 2 A 429 488 G 482 551 10.000 1 2 1
 #
 #
 loop_
@@ -357,48 +358,10 @@ _ihm_starting_model_coord.Cartn_y
 _ihm_starting_model_coord.Cartn_z
 _ihm_starting_model_coord.B_iso_or_equiv
 _ihm_starting_model_coord.ordinal_id
-Nup84-m1 ATOM 1 C CA MET 1 A 1 -8.986 11.688 -5.817 91.820 1
-Nup84-m1 ATOM 2 C CA GLU 1 A 2 -8.986 11.688 -5.817 91.820 2
-Nup85-m1 ATOM 1 C CA GLY 2 A 1 -8.986 11.688 -5.817 91.820 3
-Nup85-m1 ATOM 2 C CA GLU 2 A 2 -8.986 11.688 -5.817 91.820 4
-#
-""")
-
-    def test_seq_dif(self):
-        """Test StartingModelDumper.dump_seq_dif"""
-        class MockEntity(object):
-            id = 4
-        class MockRes(object):
-            def get_index(self):
-                return 42
-        class MockComponent(object):
-            entity = MockEntity()
-        class MockSource(object):
-            chain_id = 'X'
-        class MockModel(object):
-            name = 'dummy-m1'
-            chain_id = 'H'
-            offset = 2
-        fh = StringIO()
-        writer = ihm.format.CifWriter(fh)
-        dumper = IMP.mmcif.dumper._StartingModelDumper()
-        sd = IMP.mmcif.dumper._MSESeqDif(MockRes(), MockComponent(),
-                                         MockSource(), MockModel())
-        dumper.dump_seq_dif(writer, [sd])
-        out = fh.getvalue()
-        self.assertEqual(out, """#
-loop_
-_ihm_starting_model_seq_dif.ordinal_id
-_ihm_starting_model_seq_dif.entity_id
-_ihm_starting_model_seq_dif.asym_id
-_ihm_starting_model_seq_dif.seq_id
-_ihm_starting_model_seq_dif.comp_id
-_ihm_starting_model_seq_dif.starting_model_id
-_ihm_starting_model_seq_dif.db_asym_id
-_ihm_starting_model_seq_dif.db_seq_id
-_ihm_starting_model_seq_dif.db_comp_id
-_ihm_starting_model_seq_dif.details
-1 4 H 42 MET dummy-m1 X 40 MSE 'Conversion of modified residue MSE to MET'
+1 ATOM 1 C CA MET 1 A 1 -8.986 11.688 -5.817 91.820 1
+1 ATOM 2 C CA GLU 1 A 2 -8.986 11.688 -5.817 91.820 2
+2 ATOM 1 C CA GLY 2 B 1 -8.986 11.688 -5.817 91.820 3
+2 ATOM 2 C CA GLU 2 B 2 -8.986 11.688 -5.817 91.820 4
 #
 """)
 
