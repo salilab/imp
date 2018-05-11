@@ -324,28 +324,6 @@ class _AllSoftware(object):
     def __init__(self, system):
         self.system = system
         super(_AllSoftware, self).__init__()
-        self.modeller_used = self.phyre2_used = False
-
-    def set_modeller_used(self, version, date):
-        if self.modeller_used:
-            return
-        self.modeller_used = True
-        self.system.software.append(ihm.Software(
-                name='MODELLER', classification='comparative modeling',
-                description='Comparative modeling by satisfaction '
-                            'of spatial restraints, build ' + date,
-                location='https://salilab.org/modeller/',
-                version=version))
-
-    def set_phyre2_used(self):
-        if self.phyre2_used:
-            return
-        self.phyre2_used = True
-        self.system.software.append(ihm.Software(
-               name='Phyre2', classification='protein homology modeling',
-               description='Protein Homology/analogY Recognition '
-                           'Engine V 2.0',
-               version='2.0', location='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
 
     def add_hierarchy(self, h):
         # todo: if no SoftwareProvenance available, use RMF producer field
