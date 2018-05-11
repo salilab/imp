@@ -58,7 +58,7 @@ class _EM3DDumper(_Dumper):
         rs = []
         # todo: restraints should really be per-system (same restraint might
         # be used by multiple states)
-        for state in system._states.keys():
+        for state in system._states:
             rs.extend(r for r in state._wrapped_restraints
                    if isinstance(r, IMP.mmcif.restraint._GaussianEMRestraint))
         ordinal = 1
@@ -88,7 +88,7 @@ class _SiteDumper(_Dumper):
 
     def all_frames(self, system):
         """Yield all frames in the system"""
-        for state in system._states.keys():
+        for state in system._states:
             for frame in state._frames:
                 state._load_frame(frame)
                 yield state, frame

@@ -86,7 +86,7 @@ class _NonModeledChain(object):
 class System(object):
     def __init__(self):
         self.system = ihm.System()
-        self._states = {}
+        self._states = []
         self._ensembles = []
         self._frames = []
 
@@ -115,8 +115,10 @@ class System(object):
                                             doi, root, url, top_directory))
 
     def _add_state(self, state):
-        self._states[state] = None
-        state.id = len(self._states)
+        if not self.system.state_groups:
+            self.system.state_groups.append(ihm.model.StateGroup())
+        self.system.state_groups[-1].append(state)
+        self._states.append(state)
 
     def _add_ensemble(self, ensemble):
         self._ensembles.append(ensemble)
@@ -224,9 +226,10 @@ class System(object):
             for dumper in self._dumpers:
                 dumper.dump(self, writer)
 
-class State(object):
+class State(ihm.model.State):
     """Represent a single IMP state."""
     def __init__(self, system):
+        super(State, self).__init__()
         self.system = weakref.proxy(system)
         system._add_state(self)
         self.model = IMP.Model()
