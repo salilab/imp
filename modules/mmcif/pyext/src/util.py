@@ -90,9 +90,7 @@ class System(object):
         self._ensembles = []
         self._frames = []
 
-        self._dumpers = [IMP.mmcif.dumper._EnsembleDumper(),
-                         IMP.mmcif.dumper._ModelListDumper(),
-                         IMP.mmcif.dumper._EM3DDumper(),
+        self._dumpers = [IMP.mmcif.dumper._EM3DDumper(),
                          IMP.mmcif.dumper._SiteDumper()]
         self.entities = IMP.mmcif.data._EntityMapper(self.system)
         self.components = IMP.mmcif.data._ComponentMapper(self.system)
@@ -122,7 +120,7 @@ class System(object):
 
     def _add_ensemble(self, ensemble):
         self._ensembles.append(ensemble)
-        ensemble.id = len(self._ensembles)
+        self.system.ensembles.append(ensemble)
 
     def _add_frame(self, frame):
         self._frames.append(frame)
@@ -301,17 +299,31 @@ class State(ihm.model.State):
             rw._get_frame_info(frame)
 
 
-class Ensemble(object):
+class _Model(ihm.model.Model):
+    def __init__(self, frame, state):
+        self.state = state # state already a weakproxy
+        super(_Model, self).__init__(
+                assembly=state.modeled_assembly,
+                # todo: add protocol, support multiple representations
+                protocol=None, representation=self.state.system.representation,
+                name=frame.name)
+
+
+class Ensemble(ihm.model.Ensemble):
     """Represent a set of similar models in a state."""
     def __init__(self, state, name):
         self.state = weakref.proxy(state)
         state.system._add_ensemble(self)
-        self.name = name
         self._frames = []
+        mg = ihm.model.ModelGroup(name=name)
+        state.append(mg)
+        super(Ensemble, self).__init__(model_group=mg, num_models=0, name=name)
 
     def add_frame(self, frame):
         """Add a frame from a custom source"""
         self._frames.append(frame)
+        self.num_models += 1
+        self.model_group.append(_Model(frame, self.state))
         self.state._add_frame(frame)
 
     def add_rmf(self, fname, name, frame=0):

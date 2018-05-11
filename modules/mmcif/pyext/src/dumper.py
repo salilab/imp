@@ -20,39 +20,6 @@ class _Dumper(object):
         pass
 
 
-class _EnsembleDumper(_Dumper):
-    def dump(self, system, writer):
-        ordinal = 1
-        with writer.loop("_ihm_ensemble_info",
-                         ["ensemble_id", "ensemble_name", "post_process_id",
-                          "model_group_id", "ensemble_clustering_method",
-                          "ensemble_clustering_feature", "num_ensemble_models",
-                          "num_ensemble_models_deposited",
-                          "ensemble_precision_value",
-                          "ensemble_file_id"]) as l:
-            for ens in system._ensembles:
-                l.write(ensemble_id=ens.id, ensemble_name=ens.name,
-                        model_group_id=ens.id,
-                        num_ensemble_models=len(ens._frames))
-
-
-class _ModelListDumper(_Dumper):
-    def dump(self, system, writer):
-        ordinal = 1
-        with writer.loop("_ihm_model_list",
-                         ["ordinal_id", "model_id", "model_group_id",
-                          "model_name", "model_group_name", "assembly_id",
-                          "protocol_id", "representation_id"]) as l:
-            for ens in system._ensembles:
-                for frame in ens._frames:
-                    # todo: handle multiple representations
-                    l.write(ordinal_id=ordinal, model_id=frame.id,
-                            model_group_id=ens.id, model_name=frame.name,
-                            model_group_name=ens.name,
-                            representation_id=1)
-                    ordinal += 1
-
-
 class _EM3DDumper(_Dumper):
     def dump(self, system, writer):
         rs = []

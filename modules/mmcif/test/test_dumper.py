@@ -481,8 +481,11 @@ _ihm_modeling_post_process.dataset_group_id
         h, state = self.make_model(system)
         e = IMP.mmcif.Ensemble(state, "cluster 1")
         e.add_model([h], [], "model1")
-        dumper = IMP.mmcif.dumper._EnsembleDumper()
-        out = _get_dumper_output(dumper, system)
+        dumper = ihm.dumper._ModelDumper()
+        dumper.finalize(system.system)
+        dumper = ihm.dumper._EnsembleDumper()
+        dumper.finalize(system.system)
+        out = _get_dumper_output(dumper, system.system)
         self.assertEqual(out, """#
 loop_
 _ihm_ensemble_info.ensemble_id
@@ -495,7 +498,7 @@ _ihm_ensemble_info.num_ensemble_models
 _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
-1 'cluster 1' . 1 . . 1 . . .
+1 'cluster 1' . 1 . . 1 1 . .
 #
 """)
 
@@ -506,8 +509,15 @@ _ihm_ensemble_info.ensemble_file_id
         e = IMP.mmcif.Ensemble(state, "cluster 1")
         e.add_model([h], [], "model1")
         e.add_model([h], [], "model2")
-        dumper = IMP.mmcif.dumper._ModelListDumper()
-        out = _get_dumper_output(dumper, system)
+        self._assign_entity_ids(system)
+        self._assign_asym_ids(system)
+        dumper = ihm.dumper._ModelRepresentationDumper()
+        dumper.finalize(system.system)
+        dumper = ihm.dumper._AssemblyDumper()
+        dumper.finalize(system.system)
+        dumper = ihm.dumper._ModelDumper()
+        dumper.finalize(system.system)
+        out = _get_dumper_output(dumper, system.system)
         self.assertEqual(out, """#
 loop_
 _ihm_model_list.ordinal_id
@@ -518,8 +528,8 @@ _ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
 _ihm_model_list.representation_id
-1 1 1 model1 'cluster 1' . . 1
-2 2 1 model2 'cluster 1' . . 1
+1 1 1 model1 'cluster 1' 1 . 1
+2 2 1 model2 'cluster 1' 1 . 1
 #
 """)
 
