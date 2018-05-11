@@ -20,47 +20,6 @@ class _Dumper(object):
         pass
 
 
-class _ModelRepresentationDumper(_Dumper):
-    def _get_granularity(self, r):
-        if isinstance(r.particles[0], IMP.atom.Residue):
-            return 'by-residue'
-        else:
-            return 'by-feature'
-
-    def dump(self, system, writer):
-        ordinal_id = 1
-        segment_id = 1
-        with writer.loop("_ihm_model_representation",
-                         ["ordinal_id", "representation_id",
-                          "segment_id", "entity_id", "entity_description",
-                          "entity_asym_id",
-                          "seq_id_begin", "seq_id_end",
-                          "model_object_primitive", "starting_model_id",
-                          "model_mode", "model_granularity",
-                          "model_object_count"]) as l:
-            for comp in system.components.get_all_modeled():
-                # For now, assume that representation of the same-named
-                # component is the same in all states, so just take the first
-                state = list(system._states.keys())[0]
-                for r in state.representation[comp]:
-                    # todo: handle multiple representations
-                    l.write(ordinal_id=ordinal_id, representation_id=1,
-                            segment_id=segment_id, entity_id=comp.entity._id,
-                            entity_description=comp.entity.description,
-                            entity_asym_id=comp.asym_id,
-                            seq_id_begin=r.residue_range[0],
-                            seq_id_end=r.residue_range[1],
-                            model_object_primitive=r.primitive,
-                            starting_model_id=r.starting_model._id
-                                                  if r.starting_model
-                                                  else writer.omitted,
-                            model_mode='rigid' if r.rigid_body else 'flexible',
-                            model_granularity=self._get_granularity(r),
-                            model_object_count=len(r.particles))
-                    ordinal_id += 1
-                    segment_id += 1
-
-
 class _EnsembleDumper(_Dumper):
     def dump(self, system, writer):
         ordinal = 1

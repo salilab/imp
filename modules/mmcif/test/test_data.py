@@ -109,14 +109,14 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(cm.get_all_modeled(), [])
 
     def test_representation_same_rigid_body(self):
-        """Test Representation._same_rigid_body()"""
+        """Test RepSegmentFactory._same_rigid_body()"""
         m = IMP.Model()
         xyz1 = IMP.core.XYZ.setup_particle(IMP.Particle(m),
                                            IMP.algebra.Vector3D(1,1,1))
         xyz2 = IMP.core.XYZ.setup_particle(IMP.Particle(m),
                                            IMP.algebra.Vector3D(2,2,2))
         rigid1 = IMP.core.RigidBody.setup_particle(IMP.Particle(m), [xyz1])
-        r = IMP.mmcif.data._Representation()
+        r = IMP.mmcif.data._RepSegmentFactory('mockcomp')
         r.rigid_body = None
         self.assertTrue(r._same_rigid_body(None))
         self.assertFalse(r._same_rigid_body(rigid1))

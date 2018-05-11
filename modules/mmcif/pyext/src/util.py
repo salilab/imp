@@ -11,6 +11,7 @@ import IMP.rmf
 import IMP.atom
 import RMF
 import ihm.format
+import ihm.representation
 import string
 import weakref
 import operator
@@ -89,8 +90,7 @@ class System(object):
         self._ensembles = []
         self._frames = []
 
-        self._dumpers = [IMP.mmcif.dumper._ModelRepresentationDumper(),
-                         IMP.mmcif.dumper._EnsembleDumper(),
+        self._dumpers = [IMP.mmcif.dumper._EnsembleDumper(),
                          IMP.mmcif.dumper._ModelListDumper(),
                          IMP.mmcif.dumper._EM3DDumper(),
                          IMP.mmcif.dumper._SiteDumper()]
@@ -101,6 +101,8 @@ class System(object):
         self.datasets = IMP.mmcif.data._Datasets(self.system)
         # All modeling protocols
         self.protocols = IMP.mmcif.data._Protocols(self.system)
+        self.representation = ihm.representation.Representation()
+        self.system.orphan_representations.append(self.representation)
 
     def _update_location(self, fileloc):
         """Update FileLocation to point to a parent repository, if any"""
@@ -137,9 +139,16 @@ class System(object):
                 state.modeled_assembly.append(component.asym_unit)
             else:
                 state.modeled_assembly.append(component.entity)
-            state.representation[component] \
-                = list(self._get_representation(c, component,
+            state.repsegments[component] \
+                = list(self._get_repsegments(c, component,
                                      self._get_all_starting_models(component)))
+            # Number of states that have representation for this component
+            num_state_reps = len([s for s in self._states
+                                  if component in s.repsegments])
+            # Assume representation for a given component is the same in all
+            # states, so we only need one copy of it in the mmCIF file
+            if num_state_reps == 1:
+                self.representation.extend(state.repsegments[component])
         self.protocols._add_hierarchy(h, state.modeled_assembly)
         self._external_files.add_hierarchy(h)
         self._software.add_hierarchy(h)
@@ -147,23 +156,24 @@ class System(object):
     def _get_all_starting_models(self, comp):
         """Get all starting models (in all states) for the given component"""
         for state in self._states:
-            for rep in state.representation.get(comp, []):
-                if rep.starting_model:
-                    yield rep.starting_model
+            for seg in state.repsegments.get(comp, []):
+                if seg.starting_model:
+                    yield seg.starting_model
 
-    def _get_representation(self, chain, component, existing_starting_models):
+    def _get_repsegments(self, chain, component, existing_starting_models):
         """Yield groups of particles under chain with same representation"""
         smf = IMP.mmcif.data._StartingModelFinder(component,
                                                   existing_starting_models)
-        rep = IMP.mmcif.data._Representation()
+        segfactory = IMP.mmcif.data._RepSegmentFactory(component)
+
         for sp in self._get_structure_particles(chain):
             starting_model = smf.find(sp, self)
-            if not rep.add(sp, starting_model):
-                yield rep
-                rep = IMP.mmcif.data._Representation()
-                rep.add(sp, starting_model)
-        if rep:
-            yield rep
+            seg = segfactory.add(sp, starting_model)
+            if seg:
+                yield seg
+        last = segfactory.get_last()
+        if last:
+            yield last
 
     def _get_structure_particles(self, chain):
         """Yield all particles under chain with coordinates.
@@ -227,8 +237,8 @@ class State(object):
         self.modeled_assembly = ihm.Assembly(name="Modeled assembly",
                             description="All components modeled by IMP")
         system.system.orphan_assemblies.append(self.modeled_assembly)
-        # A list of Representation objects for each Component
-        self.representation = {}
+        # A list of ihm.representation.Segment objects for each Component
+        self.repsegments = {}
         self._frames = []
 
         self._all_modeled_components = []

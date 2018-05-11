@@ -231,11 +231,13 @@ _ihm_struct_assembly.seq_id_end
         chain.add_child(frag2)
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         self._assign_entity_ids(system)
+        self._assign_asym_ids(system)
         # Assign starting model IDs
         d = ihm.dumper._StartingModelDumper()
         d.finalize(system.system)
-        d = IMP.mmcif.dumper._ModelRepresentationDumper()
-        out = _get_dumper_output(d, system)
+        d = ihm.dumper._ModelRepresentationDumper()
+        d.finalize(system.system)
+        out = _get_dumper_output(d, system.system)
         self.assertEqual(out, """#
 loop_
 _ihm_model_representation.ordinal_id
@@ -251,7 +253,7 @@ _ihm_model_representation.starting_model_id
 _ihm_model_representation.model_mode
 _ihm_model_representation.model_granularity
 _ihm_model_representation.model_object_count
-1 1 1 1 foo A 1 2 sphere 1 flexible by-residue 2
+1 1 1 1 foo A 1 2 sphere 1 flexible by-residue .
 2 1 2 1 foo A 3 4 sphere . flexible by-feature 1
 #
 """)

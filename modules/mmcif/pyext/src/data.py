@@ -132,31 +132,57 @@ class _ComponentMapper(object):
         return self._all_modeled_components
 
 
-class _Representation(object):
-    """Group a set of contiguous particles with the same representation"""
-    def __init__(self):
+class _RepSegmentFactory(object):
+    """Make ihm.representation.Segment objects for each set of contiguous
+       particles with the same representation"""
+    def __init__(self, component):
+        self.component = component
         self.particles = []
         self.residue_range = () # inclusive range
-        self.starting_model = None
 
     def add(self, particle, starting_model):
-        """Potentially add a new particle to this representation.
-           Iff the particle could be added, return True."""
-        resrange, rigid_body, primitive = self._get_particle_info(particle)
-        if not self.particles:
-            self.particles.append(particle)
+        """Add a new particle to the last segment (and return None).
+           Iff the particle could not be added, return the segment and start
+           a new one."""
+        resrange, rigid_body, is_res = self._get_particle_info(particle)
+        def start_new_segment():
+            self.particles = [particle]
             self.residue_range = resrange
             self.rigid_body = rigid_body
-            self.primitive = primitive
+            self.is_res = is_res
             self.starting_model = starting_model
-            return True
+        if not self.particles:
+            # First particle in a segment
+            start_new_segment()
         elif type(particle) == type(self.particles[0]) \
+             and is_res == self.is_res \
              and resrange[0] == self.residue_range[1] + 1 \
              and starting_model == self.starting_model \
              and self._same_rigid_body(rigid_body):
+            # Continue an existing segment
             self.particles.append(particle)
             self.residue_range = (self.residue_range[0], resrange[1])
-            return True
+        else:
+            # Make a new segment
+            seg = self.get_last()
+            start_new_segment()
+            return seg
+
+    def get_last(self):
+        """Return the last segment, or None"""
+        if self.particles:
+            asym = self.component.asym_unit(*self.residue_range)
+            if self.is_res:
+                return ihm.representation.ResidueSegment(
+                        asym_unit=asym,
+                        rigid=self.rigid_body is not None, primitive='sphere',
+                        starting_model=self.starting_model)
+            else:
+                return ihm.representation.FeatureSegment(
+                        asym_unit=asym,
+                        rigid=self.rigid_body is not None, primitive='sphere',
+                        count=len(self.particles),
+                        starting_model=self.starting_model)
 
     def _same_rigid_body(self, rigid_body):
         # Note: can't just use self.rigid_body == rigid_body as IMP may
@@ -175,16 +201,11 @@ class _Representation(object):
         else:
             rigid_body = None
         if isinstance(p, IMP.atom.Residue):
-            return (p.get_index(), p.get_index()), rigid_body, 'sphere'
+            return (p.get_index(), p.get_index()), rigid_body, True
         elif isinstance(p, IMP.atom.Fragment):
             resinds = p.get_residue_indexes()
-            return (resinds[0], resinds[-1]), rigid_body, 'sphere'
+            return (resinds[0], resinds[-1]), rigid_body, False
         raise TypeError("Unknown particle ", p)
-
-    def __bool__(self):
-        return len(self.particles) > 0
-
-    __nonzero__ = __bool__ # Python 2 compatibility
 
 
 def _get_all_structure_provenance(p):
