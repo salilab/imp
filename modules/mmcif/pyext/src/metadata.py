@@ -15,6 +15,7 @@ except ImportError:
     import urllib2
 import ihm.dataset
 import ihm.location
+import ihm.metadata
 
 class _MetadataParser(object):
     """Base class for all metadata parsers.
@@ -283,60 +284,6 @@ class _PDBMetadataParser(_MetadataParser):
         return details
 
 
-class _MRCMetadataParser(_MetadataParser):
-    """Extract metadata from an EM density map (MRC file)."""
-
-    def parse_file(self, filename, system):
-        """Extract metadata from `filename`.
-           Sets self.dataset to point to the MRC file"""
-        emdb = self._get_emdb(filename)
-        if emdb:
-            version, details = self._get_emdb_info(emdb)
-            l = ihm.location.EMDBLocation(emdb, version=version,
-                    details=details if details
-                                    else "Electron microscopy density map")
-        else:
-            l = ihm.location.InputFileLocation(filename,
-                    details="Electron microscopy density map")
-        d = ihm.dataset.EMDensityDataset(l)
-        self.dataset = system.datasets.add(d)
-
-    def _get_emdb_info(self, emdb):
-        """Query EMDB API and return version & details of a given entry"""
-        req = urllib2.Request('https://www.ebi.ac.uk/pdbe/api/emdb/entry/'
-                              'summary/%s' % emdb, None, {})
-        response = urllib2.urlopen(req)
-        contents = json.load(response)
-        keys = list(contents.keys())
-        info = contents[keys[0]][0]['deposition']
-        if sys.version_info[0] < 3:
-            return (info['map_release_date'].encode('ascii'),
-                    info['title'].encode('ascii'))
-        else:
-            return info['map_release_date'], info['title']
-
-    def _get_emdb(self, filename):
-        """Return the EMDB id of the file, or None."""
-        r = re.compile(b'EMDATABANK\.org.*(EMD\-\d+)')
-        with open(filename, 'rb') as fh:
-            fh.seek(220) # Offset of number of labels
-            num_labels_raw = fh.read(4)
-            # Number of labels in MRC is usually a very small number, so it's
-            # very likely to be the smaller of the big-endian and little-endian
-            # interpretations of this field
-            num_labels_big, = struct.unpack_from('>i', num_labels_raw)
-            num_labels_little, = struct.unpack_from('<i', num_labels_raw)
-            num_labels = min(num_labels_big, num_labels_little)
-            for i in range(num_labels):
-                label = fh.read(80).strip()
-                m = r.search(label)
-                if m:
-                    if sys.version_info[0] < 3:
-                        return m.group(1)
-                    else:
-                        return m.group(1).decode('ascii')
-
-
 class _GMMMetadataParser(_MetadataParser):
     """Extract metadata from an EM density GMM file."""
 
@@ -357,10 +304,11 @@ class _GMMMetadataParser(_MetadataParser):
         with open(filename) as fh:
             for line in fh:
                 if line.startswith('# data_fn: '):
-                    p = _MRCMetadataParser()
+                    p = ihm.metadata.MRCParser()
                     fn = line[11:].rstrip('\r\n')
-                    p.parse_file(os.path.join(os.path.dirname(filename), fn),
-                                 system)
-                    self.dataset.parents.append(p.dataset)
+                    dataset = p.parse_file(os.path.join(
+                                     os.path.dirname(filename), fn))['dataset']
+                    system.datasets.add(dataset)
+                    self.dataset.parents.append(dataset)
                 elif line.startswith('# ncenters: '):
                     self.number_of_gaussians = int(line[12:])
