@@ -7,6 +7,7 @@
  */
 
 #include <IMP/rmf/HierarchyLoadLink.h>
+#include <IMP/rmf/internal/hierarchy_links_helpers.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Mass.h>
@@ -27,40 +28,6 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-namespace {
-
-std::string get_good_name(Model *m, ParticleIndex h) {
-  if (atom::Atom::get_is_setup(m, h)) {
-    return atom::Atom(m, h).get_atom_type().get_string();
-  } else if (atom::Residue::get_is_setup(m, h)) {
-    std::ostringstream oss;
-    oss << atom::Residue(m, h).get_index();
-    return oss.str();
-  } else {
-    return m->get_particle_name(h);
-  }
-}
-
-// Get the 'child' provenance from the RMF, or a default-constructed
-// object if no children exist
-RMF::NodeConstHandle get_previous_rmf_provenance(RMF::NodeConstHandle node) {
-  RMF::NodeConstHandles nchs;
-  IMP_FOREACH(RMF::NodeConstHandle ch, node.get_children()) {
-    if (ch.get_type() == RMF::PROVENANCE) {
-      nchs.push_back(ch);
-    }
-  }
-  if (nchs.size() > 1) {
-    IMP_THROW("RMF provenance hierarchy has more than one child at " << node,
-              IOException);
-  } else if (nchs.empty()) {
-    return RMF::NodeConstHandle();
-  } else {
-    return nchs[0];
-  }
-}
-
-} // anonymous namespace
 
 void HierarchyLoadLink::do_load_one(RMF::NodeConstHandle nh,
                                     Particle *o) {
@@ -174,7 +141,7 @@ void HierarchyLoadLink::create_provenance(Model *m, RMF::NodeConstHandle node,
   core::Provenance prov = create_one_provenance(m, node);
   core::Provenanced provd = core::Provenanced::setup_particle(m, cur, prov);
 
-  while ((node = get_previous_rmf_provenance(node)) != RMF::NodeConstHandle()) {
+  while ((node = internal::get_previous_rmf_provenance(node)) != RMF::NodeConstHandle()) {
     core::Provenance thisprov = create_one_provenance(m, node);
     prov.set_previous(thisprov);
     prov = thisprov;
@@ -242,11 +209,11 @@ void HierarchyLoadLink::add_link_recursive(Model *m,
                                            RMF::NodeConstHandle node,
                                            ParticleIndexes rigid_bodies,
                                            Data &data) {
-  IMP_USAGE_CHECK(get_good_name(m, cur) == node.get_name(),
-                  "Names don't match: " << get_good_name(m, cur) << " vs "
-                                        << node.get_name());
+  IMP_USAGE_CHECK(internal::get_good_name_to_atom_node(m, cur) == node.get_name(),
+                  "Names don't match: " << internal::get_good_name_to_atom_node(m, cur)
+                  << " vs " << node.get_name());
   set_association(node, m->get_particle(cur), true);
-  if (af_.get_is(node)) {
+  if (af_.get_is(node)) { // alternative factory
     RMF::decorator::AlternativesConst ad = af_.get(node);
     atom::Representation rd(m, cur);
     {
@@ -282,7 +249,7 @@ void HierarchyLoadLink::add_link_recursive(Model *m,
                            rigid_bodies, data);
       }
     }
-  }
+  } // alternative factory
   data.load_static.link_particle(node, m, cur, rigid_bodies);
   data.load_rigid_bodies.link_particle(node, m, cur, rigid_bodies);
   data.load_xyzs.link_particle(node, m, cur, rigid_bodies);

@@ -38,6 +38,7 @@ class GeometryLoadLink : public SimpleLoadLink<G> {
   GeometryLoadLink(RMF::FileConstHandle fh)
       : P("SphereLoadLink%1%"), factory_(fh), colored_factory_(fh) {}
   void load_color(RMF::NodeConstHandle nh, display::Geometry *g) {
+    IMP_FUNCTION_LOG;
     if (colored_factory_.get_is(nh)) {
       RMF::Vector3 color = colored_factory_.get(nh).get_rgb_color();
       display::Color c(color.begin(), color.end());
@@ -69,6 +70,7 @@ class GeometrySaveLink : public SimpleSaveLink<G> {
   GeometrySaveLink(RMF::FileHandle fh)
       : P("GeometrySaveLink%1%"), factory_(fh), colored_factory_(fh) {}
   void save_color(display::Geometry *g, RMF::NodeHandle nh) {
+    IMP_FUNCTION_LOG;
     save_colored(g, nh, colored_factory_);
   }
   IMP_OBJECT_METHODS(GeometrySaveLink);

@@ -50,6 +50,7 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
                                          Model *m,
                                          ParticleIndex p,
                                          const ParticleIndexes &) {
+  IMP_FUNCTION_LOG;
   atom::Hierarchy hp = atom::Hierarchy::setup_particle(m, p);
   IMP_LOG_VERBOSE("Particle " << hp << " is " << std::endl);
   if (nh.get_has_value(radius_key_)) {
@@ -145,7 +146,9 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
                                         Model *m,
                                         ParticleIndex p,
                                         const ParticleIndexes &) {
+  IMP_FUNCTION_LOG;
   atom::Hierarchy hp(m, p);
+
   IMP_LOG_VERBOSE("Particle " << hp << " is " << std::endl);
   if (nh.get_has_value(radius_key_)) {
     IMP_LOG_VERBOSE("xyzr " << std::endl);
@@ -246,6 +249,7 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
 
 void HierarchySaveStatic::setup_node(Model *m, ParticleIndex p,
                                      RMF::NodeHandle n) {
+  IMP_FUNCTION_LOG;
   if (core::XYZR::get_is_setup(m, p)) {
     core::XYZR d(m, p);
     intermediate_particle_factory_.get(n).set_radius(d.get_radius());
@@ -350,6 +354,7 @@ atom::Bonded get_bonded(Particle *p) {
 
 void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, Model *m,
                                      ParticleIndex p) {
+  IMP_FUNCTION_LOG;
   if (af_.get_is(n)) {
     RMF::decorator::BondConst bd = af_.get(n);
     RMF::NodeConstHandle bd0 = bd.get_bonded_0();
@@ -369,6 +374,7 @@ void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, Model *m,
 
 namespace {
 atom::Bonds get_rep_bonds(atom::Hierarchy h) {
+  IMP_FUNCTION_LOG;
   atom::Bonds ret;
   if (atom::Representation::get_is_setup(h)) {
     IMP_FOREACH(atom::Hierarchy r,

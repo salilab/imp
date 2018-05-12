@@ -7,6 +7,7 @@
  */
 
 #include <IMP/rmf/HierarchySaveLink.h>
+#include <IMP/rmf/internal/hierarchy_links_helpers.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Mass.h>
@@ -26,22 +27,6 @@
 #include <RMF/SetCurrentFrame.h>
 
 IMPRMF_BEGIN_NAMESPACE
-
-namespace {
-
-std::string get_good_name(Model *m, ParticleIndex h) {
-  if (atom::Atom::get_is_setup(m, h)) {
-    return atom::Atom(m, h).get_atom_type().get_string();
-  } else if (atom::Residue::get_is_setup(m, h)) {
-    std::ostringstream oss;
-    oss << atom::Residue(m, h).get_index();
-    return oss.str();
-  } else {
-    return m->get_particle_name(h);
-  }
-}
-
-} // anonymous namespace
 
 
 void HierarchySaveLink::do_add(Particle *p, RMF::NodeHandle cur) {
@@ -87,8 +72,9 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
       IMP_FOREACH(atom::Hierarchy cr, reps) {
         i++;
         if (cr.get_particle_index() == p) continue;
-        RMF::NodeHandle cn = cur.get_file().add_node(
-            get_good_name(m, cr.get_particle_index()), RMF::REPRESENTATION);
+        RMF::NodeHandle cn = cur.get_file().add_node
+          ( internal::get_good_name_to_atom_node(m, cr.get_particle_index()),
+            RMF::REPRESENTATION);
         explicit_resolution_factory_.get(cn).set_static_explicit_resolution(
                                                       bresols[i]);
         prep_nodes.push_back(cn);
@@ -103,8 +89,9 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
       IMP_FOREACH(atom::Hierarchy cr, reps) {
         i++;
         if (cr.get_particle_index() == p) continue;
-        RMF::NodeHandle cn = cur.get_file().add_node(
-            get_good_name(m, cr.get_particle_index()), RMF::REPRESENTATION);
+        RMF::NodeHandle cn = cur.get_file().add_node
+          ( internal::get_good_name_to_atom_node(m, cr.get_particle_index()),
+            RMF::REPRESENTATION);
         explicit_resolution_factory_.get(cn).set_static_explicit_resolution(
                                                       gresols[i]);
         grep_nodes.push_back(cn);
@@ -129,7 +116,8 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
     ParticleIndex pc = atom::Hierarchy(m, p).get_child_index(i);
     if (rep_map.find(pc) == rep_map.end()) {
       RMF::NodeHandle curc =
-          cur.add_child(get_good_name(m, pc), RMF::REPRESENTATION);
+        cur.add_child( internal::get_good_name_to_atom_node(m, pc),
+                       RMF::REPRESENTATION);
       add_recursive(m, root, pc, rigid_bodies, curc, data);
     } else {
       /* Handle case where the child particle is also a representation */
