@@ -90,8 +90,7 @@ class System(object):
         self._ensembles = []
         self._frames = []
 
-        self._dumpers = [IMP.mmcif.dumper._EM3DDumper(),
-                         IMP.mmcif.dumper._SiteDumper()]
+        self._dumpers = [IMP.mmcif.dumper._EM3DDumper()]
         self.entities = IMP.mmcif.data._EntityMapper(self.system)
         self.components = IMP.mmcif.data._ComponentMapper(self.system)
         self._software = IMP.mmcif.data._AllSoftware(self.system)
@@ -299,16 +298,6 @@ class State(ihm.model.State):
             rw._get_frame_info(frame)
 
 
-class _Model(ihm.model.Model):
-    def __init__(self, frame, state):
-        self.state = state # state already a weakproxy
-        super(_Model, self).__init__(
-                assembly=state.modeled_assembly,
-                # todo: add protocol, support multiple representations
-                protocol=None, representation=self.state.system.representation,
-                name=frame.name)
-
-
 class Ensemble(ihm.model.Ensemble):
     """Represent a set of similar models in a state."""
     def __init__(self, state, name):
@@ -323,7 +312,7 @@ class Ensemble(ihm.model.Ensemble):
         """Add a frame from a custom source"""
         self._frames.append(frame)
         self.num_models += 1
-        self.model_group.append(_Model(frame, self.state))
+        self.model_group.append(IMP.mmcif.data._Model(frame, self.state))
         self.state._add_frame(frame)
 
     def add_rmf(self, fname, name, frame=0):

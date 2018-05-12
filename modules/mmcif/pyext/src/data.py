@@ -541,3 +541,39 @@ class _Protocols(object):
                 in_postproc = False
         if len(prot.steps) > 0:
             self._add_protocol(prot)
+
+
+class _Model(ihm.model.Model):
+    def __init__(self, frame, state):
+        self._frame = frame
+        self.state = state # state already a weakproxy
+        super(_Model, self).__init__(
+                assembly=state.modeled_assembly,
+                # todo: add protocol, support multiple representations
+                protocol=None, representation=self.state.system.representation,
+                name=frame.name)
+
+    def _get_structure_particles(self):
+        self.state._load_frame(self._frame)
+        for h in self.state.hiers:
+            chains = [IMP.atom.Chain(c)
+                      for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)]
+            for chain in chains:
+                asym = self.state.system.components[chain].asym_unit
+                for p in self.state.system._get_structure_particles(chain):
+                    yield asym, p
+
+    def get_spheres(self):
+        # todo: support atomic output too
+        for asym, p in self._get_structure_particles():
+            if isinstance(p, IMP.atom.Fragment):
+                resinds = p.get_residue_indexes()
+                # todo: handle non-contiguous fragments
+                sbegin = resinds[0]
+                send = resinds[-1]
+            else: # residue
+                sbegin = send = p.get_index()
+            xyzr = IMP.core.XYZR(p)
+            xyz = xyzr.get_coordinates()
+            yield ihm.model.Sphere(asym_unit=asym, seq_id_range=(sbegin, send),
+                    x=xyz[0], y=xyz[1], z=xyz[2], radius=xyzr.get_radius())

@@ -584,9 +584,27 @@ _ihm_3dem_restraint.cross_correlation_coefficient
 
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         self._assign_entity_ids(system)
-        dumper = IMP.mmcif.dumper._SiteDumper()
-        out = _get_dumper_output(dumper, system)
+        self._assign_asym_ids(system)
+        dumper = ihm.dumper._AssemblyDumper()
+        dumper.finalize(system.system)
+        dumper = ihm.dumper._ModelRepresentationDumper()
+        dumper.finalize(system.system)
+        dumper = ihm.dumper._ModelDumper()
+        dumper.finalize(system.system)
+        out = _get_dumper_output(dumper, system.system)
         self.assertEqual(out, """#
+loop_
+_ihm_model_list.ordinal_id
+_ihm_model_list.model_id
+_ihm_model_list.model_group_id
+_ihm_model_list.model_name
+_ihm_model_list.model_group_name
+_ihm_model_list.assembly_id
+_ihm_model_list.protocol_id
+_ihm_model_list.representation_id
+1 1 1 model1 'cluster 1' 1 . 1
+#
+#
 loop_
 _ihm_sphere_obj_site.ordinal_id
 _ihm_sphere_obj_site.entity_id
