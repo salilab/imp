@@ -4,7 +4,6 @@
 
 import ihm.location
 import ihm.dumper
-import IMP.mmcif.dumper
 import IMP.mmcif.data
 import IMP.mmcif.restraint
 import IMP.rmf
