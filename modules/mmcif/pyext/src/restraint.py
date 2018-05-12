@@ -3,6 +3,7 @@
 """
 
 import IMP.mmcif.metadata
+import ihm.restraint
 
 def _parse_restraint_info(info):
     """Convert RestraintInfo object to Python dict"""
@@ -17,39 +18,24 @@ def _parse_restraint_info(info):
             d[key] = value
     return d
 
-class _MappedRestraint(object):
-    """Map specific IMP restraint types to mmCIF output"""
-    def __init__(self, restraint, restraint_info, system):
-        self._restraint = restraint
-        self._info = restraint_info
-        self._setup_dataset(system)
-        self._frame_info = {}
 
-    def _all_frame_info(self):
-        """Yield Frame:frame_info pairs, sorted by frame id"""
-        return sorted(self._frame_info.items(), key=lambda kv: kv[0].id)
-
-    def _get_frame_info(self, frame):
-        """Store any restraint info specific to this frame"""
-        info = _parse_restraint_info(self._restraint.get_dynamic_info())
-        self._frame_info[frame] = info
-
-    def _setup_dataset(self, system):
-        """Create any datasets used by this restraint"""
-        pass
-
-
-class _GaussianEMRestraint(_MappedRestraint):
+class _GaussianEMRestraint(ihm.restraint.EM3DRestraint):
     """Handle an IMP.isd.GaussianEMRestraint"""
 
-    fitting_method = 'Gaussian mixture model'
-
-    def _setup_dataset(self, system):
+    def __init__(self, imp_restraint, info, modeled_assembly):
+        self._imp_restraint = imp_restraint
         p = IMP.mmcif.metadata._GMMParser()
-        r = p.parse_file(self._info['filename'])
-        self.dataset = r['dataset']
-        system.datasets.add(self.dataset)
-        self.number_of_gaussians = r['number_of_gaussians']
+        r = p.parse_file(info['filename'])
+        super(_GaussianEMRestraint, self).__init__(
+                dataset=r['dataset'],
+                assembly=modeled_assembly, # todo: fill in correct assembly
+                number_of_gaussians=r['number_of_gaussians'],
+                fitting_method='Gaussian mixture model')
+
+    def add_model_fit(self, model):
+        info = _parse_restraint_info(self._imp_restraint.get_dynamic_info())
+        self.fits[model] = ihm.restraint.EM3DRestraintFit(
+                cross_correlation_coefficient=info['cross correlation'])
 
 
 class _RestraintMapper(object):
@@ -58,12 +44,12 @@ class _RestraintMapper(object):
         self._typemap = {"IMP.isd.GaussianEMRestraint": _GaussianEMRestraint}
         self._system = system
 
-    def handle(self, r, frame):
+    def handle(self, r, model, modeled_assembly):
         """Handle an individual IMP restraint.
            @return a wrapped version of the restraint if it is handled in
                    mmCIF, otherwise None."""
         info = _parse_restraint_info(r.get_static_info())
         if 'type' in info and info['type'] in self._typemap:
-            r = self._typemap[info['type']](r, info, self._system)
-            r._get_frame_info(frame)
+            r = self._typemap[info['type']](r, info, modeled_assembly)
+            r.add_model_fit(model)
             return r

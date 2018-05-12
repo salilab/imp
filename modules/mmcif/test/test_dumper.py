@@ -543,18 +543,26 @@ _ihm_model_list.representation_id
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [r], "model1")
         # Assign dataset ID (=2 since the gmm is derived from an MRC)
         self._assign_dataset_ids(system)
-        dumper = IMP.mmcif.dumper._EM3DDumper()
-        out = _get_dumper_output(dumper, system)
+        self._assign_entity_ids(system)
+        self._assign_asym_ids(system)
+        dumper = ihm.dumper._ModelDumper()
+        dumper.finalize(system.system)
+        dumper = ihm.dumper._AssemblyDumper()
+        dumper.finalize(system.system)
+        dumper = ihm.dumper._EM3DDumper()
+        dumper.finalize(system.system)
+        out = _get_dumper_output(dumper, system.system)
         self.assertEqual(out, """#
 loop_
 _ihm_3dem_restraint.ordinal_id
 _ihm_3dem_restraint.dataset_list_id
 _ihm_3dem_restraint.fitting_method
+_ihm_3dem_restraint.fitting_method_citation_id
 _ihm_3dem_restraint.struct_assembly_id
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id
 _ihm_3dem_restraint.cross_correlation_coefficient
-1 2 'Gaussian mixture model' . 20 1 0.400
+1 2 'Gaussian mixture model' . 1 20 1 0.400
 #
 """)
 

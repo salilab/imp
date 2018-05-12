@@ -63,7 +63,7 @@ class Tests(IMP.test.TestCase):
         r = IMP._ConstRestraint(m, [], 1)
         r.set_was_used(True)
         rm = IMP.mmcif.restraint._RestraintMapper(None)
-        self.assertEqual(rm.handle(r, frame), None)
+        self.assertEqual(rm.handle(r, frame, None), None)
 
     def test_restraint_mapper_gaussian_em(self):
         """Test _RestraintMapper with GaussianEM restraint"""
@@ -74,7 +74,8 @@ class Tests(IMP.test.TestCase):
         r.set_was_used(True)
         rm = IMP.mmcif.restraint._RestraintMapper(s)
         frame = None
-        wr = rm.handle(r, frame)
+        assembly = None
+        wr = rm.handle(r, frame, assembly)
         self.assertEqual(type(wr), IMP.mmcif.restraint._GaussianEMRestraint)
         self.assertEqual(type(wr.dataset), ihm.dataset.EMDensityDataset)
 

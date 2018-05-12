@@ -90,7 +90,6 @@ class System(object):
         self._ensembles = []
         self._frames = []
 
-        self._dumpers = [IMP.mmcif.dumper._EM3DDumper()]
         self.entities = IMP.mmcif.data._EntityMapper(self.system)
         self.components = IMP.mmcif.data._ComponentMapper(self.system)
         self._software = IMP.mmcif.data._AllSoftware(self.system)
@@ -212,16 +211,8 @@ class System(object):
 
     def write(self, fname):
         with open(fname, 'w') as fh:
-            # First, write out categories handled by ihm library
             ihm.dumper.write(fh, [self.system])
 
-            writer = ihm.format.CifWriter(fh)
-            for dumper in self._dumpers:
-                dumper.finalize_metadata(self)
-            for dumper in self._dumpers:
-                dumper.finalize(self)
-            for dumper in self._dumpers:
-                dumper.dump(self, writer)
 
 class State(ihm.model.State):
     """Represent a single IMP state."""
@@ -243,15 +234,15 @@ class State(ihm.model.State):
 
         self._all_modeled_components = []
 
-    def _add_frame(self, f):
+    def _add_frame(self, f, model):
         self._frames.append(f)
         self.system._add_frame(f)
         if self._load_frame(f):
             for h in self.hiers:
                 self._add_hierarchy(h)
-            self._add_restraints(self.restraints, f)
+            self._add_restraints(self.restraints, model)
         else:
-            self._update_restraints(f)
+            self._update_restraints(model)
 
     def _load_frame(self, f):
         """Load hierarchies and restraints from a frame.
@@ -286,16 +277,17 @@ class State(ihm.model.State):
     def _add_hierarchy(self, h):
         self.system._add_hierarchy(h, self)
 
-    def _add_restraints(self, rs, frame):
+    def _add_restraints(self, rs, model):
         m = IMP.mmcif.restraint._RestraintMapper(self.system)
         for r in rs:
-            rw = m.handle(r, frame)
+            rw = m.handle(r, model, self.modeled_assembly)
             if rw:
                 self._wrapped_restraints.append(rw)
+                self.system.system.restraints.append(rw)
 
-    def _update_restraints(self, frame):
+    def _update_restraints(self, model):
         for rw in self._wrapped_restraints:
-            rw._get_frame_info(frame)
+            rw.add_model_fit(model)
 
 
 class Ensemble(ihm.model.Ensemble):
@@ -312,8 +304,9 @@ class Ensemble(ihm.model.Ensemble):
         """Add a frame from a custom source"""
         self._frames.append(frame)
         self.num_models += 1
-        self.model_group.append(IMP.mmcif.data._Model(frame, self.state))
-        self.state._add_frame(frame)
+        model = IMP.mmcif.data._Model(frame, self.state)
+        self.model_group.append(model)
+        self.state._add_frame(frame, model)
 
     def add_rmf(self, fname, name, frame=0):
         """Add a frame from an RMF file"""
