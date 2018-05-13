@@ -9,6 +9,7 @@
 #ifndef IMPRMF_INTERNAL_HIERARCHY_LINKS_HELPERS_H
 #define IMPRMF_INTERNAL_HIERARCHY_LINKS_HELPERS_H
 
+#include <IMP/rmf/rmf_config.h>
 #include <IMP/base_types.h>
 #include <IMP/Model.h>
 #include <RMF/NodeConstHandle.h>
