@@ -1,10 +1,10 @@
 from __future__ import print_function
 import IMP.test
 import IMP.mmcif
-import IMP.mmcif.dumper
 import ihm.location
 import ihm.dataset
 import ihm.format
+import ihm.dumper
 import io
 import sys
 import os
