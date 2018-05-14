@@ -213,7 +213,7 @@ def _get_all_structure_provenance(p):
     return IMP.core.get_all_provenance(p, types=[IMP.core.StructureProvenance])
 
 
-class _MutantHandler(object):
+class _StartingModelAtomHandler(object):
     def __init__(self, templates, asym):
         self._seq_dif = []
         self._last_res_index = None
@@ -252,6 +252,26 @@ class _MutantHandler(object):
                          db_seq_id=res.get_index(), seq_id=seq_id,
                          db_comp_id=res_name,
                          details="Mutation of %s to %s" % (res_name, comp_id)))
+
+    def get_ihm_atoms(self, particles, offset):
+        for a in particles:
+            coord = IMP.core.XYZ(a).get_coordinates()
+            atom = IMP.atom.Atom(a)
+            element = atom.get_element()
+            element = IMP.atom.get_element_table().get_name(element)
+            atom_name = atom.get_atom_type().get_string()
+            het = atom_name.startswith('HET:')
+            if het:
+                atom_name = atom_name[4:]
+            res = IMP.atom.get_residue(atom)
+
+            seq_id = res.get_index() + offset
+            comp_id = self.asym.entity.sequence[seq_id-1].id
+            self.handle_residue(res, comp_id, seq_id, offset)
+            yield ihm.model.Atom(asym_unit=self.asym, seq_id=seq_id,
+                                 atom_id=atom_name, type_symbol=element,
+                                 x=coord[0], y=coord[1], z=coord[2],
+                                 het=het, biso=atom.get_temperature_factor())
 
 
 class _StartingModel(ihm.startmodel.StartingModel):
@@ -319,27 +339,10 @@ class _StartingModel(ihm.startmodel.StartingModel):
         return self._seq_dif  # filled in by get_atoms()
 
     def get_atoms(self):
-        mh = _MutantHandler(self.templates, self.asym_unit)
+        mh = _StartingModelAtomHandler(self.templates, self.asym_unit)
         m, sel = self._read_coords()
-        for a in sel.get_selected_particles():
-            coord = IMP.core.XYZ(a).get_coordinates()
-            atom = IMP.atom.Atom(a)
-            element = atom.get_element()
-            element = IMP.atom.get_element_table().get_name(element)
-            atom_name = atom.get_atom_type().get_string()
-            het = atom_name.startswith('HET:')
-            if het:
-                atom_name = atom_name[4:]
-            res = IMP.atom.get_residue(atom)
-
-            seq_id = res.get_index() + self.offset
-            comp_id = self.asym_unit.entity.sequence[seq_id-1].id
-            mh.handle_residue(res, comp_id, seq_id, self.offset)
-            yield ihm.model.Atom(asym_unit=self.asym_unit,
-                                 seq_id=seq_id,
-                                 atom_id=atom_name, type_symbol=element,
-                                 x=coord[0], y=coord[1], z=coord[2],
-                                 het=het, biso=atom.get_temperature_factor())
+        for a in mh.get_ihm_atoms(sel.get_selected_particles(), self.offset):
+            yield a
         self._seq_dif = mh._seq_dif
 
 
