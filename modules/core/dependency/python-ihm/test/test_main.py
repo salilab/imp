@@ -191,6 +191,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.seq_id, 3)
         self.assertEqual(r.auth_seq_id, 8)
 
+    def test_atom(self):
+        """Test Atom class"""
+        e = ihm.Entity('AHCDAH')
+        a = e.residue(3).atom('CA')
+        self.assertEqual(a.id, 'CA')
+        self.assertEqual(a.residue.entity, e)
+        self.assertEqual(a.residue.seq_id, 3)
+
     def test_entity_range(self):
         """Test EntityRange class"""
         e = ihm.Entity('AHCDAH')

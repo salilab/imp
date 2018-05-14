@@ -71,46 +71,54 @@ class DatabaseLocation(Location):
 class EMDBLocation(DatabaseLocation):
     """Something stored in the EMDB database.
        See :class:`DatabaseLocation` for a description of the parameters."""
+    _db_name = 'EMDB'
     def __init__(self, db_code, version=None, details=None):
-        super(EMDBLocation, self).__init__('EMDB', db_code, version, details)
+        super(EMDBLocation, self).__init__(self._db_name, db_code,
+                                           version, details)
 
 
 class PDBLocation(DatabaseLocation):
     """Something stored in the PDB database.
        See :class:`DatabaseLocation` for a description of the parameters."""
+    _db_name = 'PDB'
     def __init__(self, db_code, version=None, details=None):
-        super(PDBLocation, self).__init__('PDB', db_code, version, details)
+        super(PDBLocation, self).__init__(self._db_name, db_code,
+                                          version, details)
 
 
 class MassIVELocation(DatabaseLocation):
     """Something stored in the MassIVE database.
        See :class:`DatabaseLocation` for a description of the parameters."""
+    _db_name = 'MASSIVE'
     def __init__(self, db_code, version=None, details=None):
-        super(MassIVELocation, self).__init__('MASSIVE', db_code, version,
+        super(MassIVELocation, self).__init__(self._db_name, db_code, version,
                                               details)
 
 
 class EMPIARLocation(DatabaseLocation):
     """Something stored in the EMPIAR database.
        See :class:`DatabaseLocation` for a description of the parameters."""
+    _db_name = 'EMPIAR'
     def __init__(self, db_code, version=None, details=None):
-        super(EMPIARLocation, self).__init__('EMPIAR', db_code, version,
+        super(EMPIARLocation, self).__init__(self._db_name, db_code, version,
                                              details)
 
 
 class SASBDBLocation(DatabaseLocation):
     """Something stored in the SASBDB database.
        See :class:`DatabaseLocation` for a description of the parameters."""
+    _db_name = 'SASBDB'
     def __init__(self, db_code, version=None, details=None):
-        super(SASBDBLocation, self).__init__('SASBDB', db_code, version,
+        super(SASBDBLocation, self).__init__(self._db_name, db_code, version,
                                              details)
 
 
 class BioGRIDLocation(DatabaseLocation):
     """Something stored in the BioGRID database.
        See :class:`DatabaseLocation` for a description of the parameters."""
+    _db_name = 'BioGRID'
     def __init__(self, db_code, version=None, details=None):
-        super(BioGRIDLocation, self).__init__('BioGRID', db_code, version,
+        super(BioGRIDLocation, self).__init__(self._db_name, db_code, version,
                                               details)
 
 

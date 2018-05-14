@@ -948,7 +948,7 @@ class _GeometricObjectDumper(_Dumper):
             util._assign_id(o, seen_objects, self._objects_by_id)
             if hasattr(o, 'center'):
                 util._assign_id(o.center, seen_centers, self._centers_by_id)
-            if hasattr(o, 'transformation'):
+            if hasattr(o, 'transformation') and o.transformation:
                 util._assign_id(o.transformation, seen_transformations,
                                 self._transformations_by_id)
 
@@ -1005,7 +1005,8 @@ class _GeometricObjectDumper(_Dumper):
                 if not isinstance(o, geometry.Sphere):
                     continue
                 l.write(object_id=o._id, center_id=o.center._id,
-                        transformation_id=o.transformation._id,
+                        transformation_id=o.transformation._id
+                                          if o.transformation else None,
                         radius_r=o.radius)
 
     def dump_torus(self, writer):
@@ -1016,7 +1017,8 @@ class _GeometricObjectDumper(_Dumper):
                 if not isinstance(o, (geometry.Torus, geometry.HalfTorus)):
                     continue
                 l.write(object_id=o._id, center_id=o.center._id,
-                        transformation_id=o.transformation._id,
+                        transformation_id=o.transformation._id
+                                          if o.transformation else None,
                         major_radius_R=o.major_radius,
                         minor_radius_r=o.minor_radius)
 
@@ -1032,19 +1034,23 @@ class _GeometricObjectDumper(_Dumper):
 
     def dump_axis(self, writer):
         with writer.loop("_ihm_geometric_object_axis",
-                         ["object_id", "axis_type"]) as l:
+                         ["object_id", "axis_type", "transformation_id"]) as l:
             for o in self._objects_by_id:
                 if not isinstance(o, geometry.Axis):
                     continue
-                l.write(object_id=o._id, axis_type=o.axis_type)
+                l.write(object_id=o._id, axis_type=o.axis_type,
+                        transformation_id=o.transformation._id
+                                          if o.transformation else None)
 
     def dump_plane(self, writer):
         with writer.loop("_ihm_geometric_object_plane",
-                         ["object_id", "plane_type"]) as l:
+                         ["object_id", "plane_type", "transformation_id"]) as l:
             for o in self._objects_by_id:
                 if not isinstance(o, geometry.Plane):
                     continue
-                l.write(object_id=o._id, plane_type=o.plane_type)
+                l.write(object_id=o._id, plane_type=o.plane_type,
+                        transformation_id=o.transformation._id
+                                          if o.transformation else None)
 
 
 class _FeatureDumper(_Dumper):
@@ -1057,6 +1063,7 @@ class _FeatureDumper(_Dumper):
     def dump(self, system, writer):
         self.dump_list(writer)
         self.dump_poly_residue(writer)
+        self.dump_poly_atom(writer)
 
     def dump_list(self, writer):
         with writer.loop("_ihm_feature_list",
@@ -1082,6 +1089,23 @@ class _FeatureDumper(_Dumper):
                             comp_id_begin=seq[r.seq_id_range[0]-1].id,
                             seq_id_end=r.seq_id_range[1],
                             comp_id_end=seq[r.seq_id_range[1]-1].id)
+                    ordinal += 1
+
+    def dump_poly_atom(self, writer):
+        ordinal = 1
+        with writer.loop("_ihm_poly_atom_feature",
+                         ["ordinal_id", "feature_id", "entity_id", "asym_id",
+                          "seq_id", "comp_id", "atom_id"]) as l:
+            for f in self._features_by_id:
+                if not isinstance(f, restraint.PolyAtomFeature):
+                    continue
+                for a in f.atoms:
+                    r = a.residue
+                    seq = r.asym.entity.sequence
+                    l.write(ordinal_id=ordinal, feature_id=f._id,
+                            entity_id=r.asym.entity._id, asym_id=r.asym._id,
+                            seq_id=r.seq_id, comp_id=seq[r.seq_id-1].id,
+                            atom_id=a.id)
                     ordinal += 1
 
 
@@ -1222,14 +1246,9 @@ class _GeometricRestraintDumper(_Dumper):
             r._id = nr + 1
 
     def dump(self, system, writer):
-        # Map DistanceRestraint types
-        rtmap = {'harmonic': 'harmonic restraint',
-                 'upper bound': 'distance restraint upper bound',
-                 'lower bound': 'distance restraint lower bound',
-                 'lower and upper bound':
-                      'distance restraint upper and lower bound'}
+        condmap = {True: 'ALL', False: 'ANY', None: None}
         ordinal = 1
-        with writer.loop("_ihm_geometric_object_spatial_restraint",
+        with writer.loop("_ihm_geometric_object_distance_restraint",
                          ["id", "object_id", "feature_id",
                           "object_characteristic", "restraint_type",
                           "harmonic_force_constant",
@@ -1239,12 +1258,39 @@ class _GeometricRestraintDumper(_Dumper):
                 l.write(id=r._id, object_id=r.geometric_object._id,
                         feature_id=r.feature._id,
                         object_characteristic=r.object_characteristic,
-                        restraint_type=rtmap.get(r.distance.restraint_type,
-                                                 'other'),
+                        restraint_type=r.distance.restraint_type,
                         distance_lower_limit=r.distance.distance_lower_limit,
                         distance_upper_limit=r.distance.distance_upper_limit,
                         harmonic_force_constant=r.harmonic_force_constant,
-                        group_conditionality='ALL' if r.restrain_all else 'ANY',
+                        group_conditionality=condmap[r.restrain_all],
+                        dataset_list_id=r.dataset._id if r.dataset else None)
+
+
+class _DerivedDistanceRestraintDumper(_Dumper):
+    def _all_restraints(self, system):
+        return [r for r in system.restraints
+                if isinstance(r, restraint.DerivedDistanceRestraint)]
+
+    def finalize(self, system):
+        for nr, r in enumerate(self._all_restraints(system)):
+            r._id = nr + 1
+
+    def dump(self, system, writer):
+        condmap = {True: 'ALL', False: 'ANY', None: None}
+        ordinal = 1
+        with writer.loop("_ihm_derived_distance_restraint",
+                         ["id", "feature_id_1", "feature_id_2",
+                          "restraint_type", "distance_lower_limit",
+                          "distance_upper_limit", "probability",
+                          "group_conditionality", "dataset_list_id"]) as l:
+            for r in self._all_restraints(system):
+                l.write(id=r._id, feature_id_1=r.feature1._id,
+                        feature_id_2=r.feature2._id,
+                        restraint_type=r.distance.restraint_type,
+                        distance_lower_limit=r.distance.distance_lower_limit,
+                        distance_upper_limit=r.distance.distance_upper_limit,
+                        probability=r.probability,
+                        group_conditionality=condmap[r.restrain_all],
                         dataset_list_id=r.dataset._id if r.dataset else None)
 
 
@@ -1412,6 +1458,7 @@ def write(fh, systems):
                _PostProcessDumper(),
                _GeometricObjectDumper(), _FeatureDumper(),
                _CrossLinkDumper(), _GeometricRestraintDumper(),
+               _DerivedDistanceRestraintDumper(),
                _EM3DDumper(),
                _EM2DDumper(),
                _SASDumper(),

@@ -63,6 +63,9 @@ The :mod:`ihm` Python module
 .. autoclass:: AsymUnitRange
    :members:
 
+.. autoclass:: Atom
+   :members:
+
 .. autoclass:: Residue
    :members:
 

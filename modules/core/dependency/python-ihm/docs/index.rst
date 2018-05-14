@@ -38,6 +38,7 @@ API Reference:
    model
    format
    dumper
+   reader
 
 
 Indices and tables

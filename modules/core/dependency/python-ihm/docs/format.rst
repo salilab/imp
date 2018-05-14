@@ -10,3 +10,9 @@ The :mod:`ihm.format` Python module
 .. autoclass:: CifWriter
    :members:
 
+.. autoclass:: CifReader
+   :members:
+
+.. autoexception:: CifParserError
+   :members:
+

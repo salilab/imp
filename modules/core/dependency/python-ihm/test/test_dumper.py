@@ -1702,13 +1702,15 @@ _ihm_geometric_object_half_torus.section
 loop_
 _ihm_geometric_object_axis.object_id
 _ihm_geometric_object_axis.axis_type
-4 x-axis
+_ihm_geometric_object_axis.transformation_id
+4 x-axis .
 #
 #
 loop_
 _ihm_geometric_object_plane.object_id
 _ihm_geometric_object_plane.plane_type
-5 xy-plane
+_ihm_geometric_object_plane.transformation_id
+5 xy-plane .
 #
 """)
 
@@ -1724,6 +1726,10 @@ _ihm_geometric_object_plane.plane_type
         f = ihm.restraint.PolyResidueFeature([a1, a2(2,3)])
         system.orphan_features.append(f)
 
+        f = ihm.restraint.PolyAtomFeature([a1.residue(1).atom('CA'),
+                                           a2.residue(2).atom('N')])
+        system.orphan_features.append(f)
+
         ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
         ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
 
@@ -1736,6 +1742,7 @@ _ihm_feature_list.feature_id
 _ihm_feature_list.feature_type
 _ihm_feature_list.entity_type
 1 'residue range' polymer
+2 atom polymer
 #
 #
 loop_
@@ -1749,6 +1756,18 @@ _ihm_poly_residue_feature.seq_id_end
 _ihm_poly_residue_feature.comp_id_end
 1 1 1 A 1 ALA 4 THR
 2 1 1 B 2 CYS 3 GLY
+#
+#
+loop_
+_ihm_poly_atom_feature.ordinal_id
+_ihm_poly_atom_feature.feature_id
+_ihm_poly_atom_feature.entity_id
+_ihm_poly_atom_feature.asym_id
+_ihm_poly_atom_feature.seq_id
+_ihm_poly_atom_feature.comp_id
+_ihm_poly_atom_feature.atom_id
+1 2 1 A 1 ALA CA
+2 2 1 B 2 CYS N
 #
 """)
 
@@ -1768,7 +1787,7 @@ _ihm_poly_residue_feature.comp_id_end
         dist = ihm.restraint.UpperBoundDistanceRestraint(25.0)
         r = ihm.restraint.CenterGeometricRestraint(dataset=dataset,
                 geometric_object=geom, feature=feat, distance=dist,
-                harmonic_force_constant=2.0)
+                harmonic_force_constant=2.0, restrain_all=False)
         system.restraints.append(r)
 
         dumper = ihm.dumper._GeometricRestraintDumper()
@@ -1777,17 +1796,55 @@ _ihm_poly_residue_feature.comp_id_end
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
-_ihm_geometric_object_spatial_restraint.id
-_ihm_geometric_object_spatial_restraint.object_id
-_ihm_geometric_object_spatial_restraint.feature_id
-_ihm_geometric_object_spatial_restraint.object_characteristic
-_ihm_geometric_object_spatial_restraint.restraint_type
-_ihm_geometric_object_spatial_restraint.harmonic_force_constant
-_ihm_geometric_object_spatial_restraint.distance_lower_limit
-_ihm_geometric_object_spatial_restraint.distance_upper_limit
-_ihm_geometric_object_spatial_restraint.group_conditionality
-_ihm_geometric_object_spatial_restraint.dataset_list_id
-1 23 44 center 'distance restraint upper bound' 2.000 . 25.000 ANY 97
+_ihm_geometric_object_distance_restraint.id
+_ihm_geometric_object_distance_restraint.object_id
+_ihm_geometric_object_distance_restraint.feature_id
+_ihm_geometric_object_distance_restraint.object_characteristic
+_ihm_geometric_object_distance_restraint.restraint_type
+_ihm_geometric_object_distance_restraint.harmonic_force_constant
+_ihm_geometric_object_distance_restraint.distance_lower_limit
+_ihm_geometric_object_distance_restraint.distance_upper_limit
+_ihm_geometric_object_distance_restraint.group_conditionality
+_ihm_geometric_object_distance_restraint.dataset_list_id
+1 23 44 center 'upper bound' 2.000 . 25.000 ANY 97
+#
+""")
+
+    def test_derived_distance_restraint_dumper(self):
+        """Test DerivedDistanceRestraintDumper"""
+        class MockObject(object):
+            pass
+        system = ihm.System()
+
+        feat1 = MockObject()
+        feat1._id = 44
+        feat2 = MockObject()
+        feat2._id = 84
+        dataset = MockObject()
+        dataset._id = 97
+
+        dist = ihm.restraint.LowerBoundDistanceRestraint(25.0)
+        r = ihm.restraint.DerivedDistanceRestraint(dataset=dataset,
+                feature1=feat1, feature2=feat2, distance=dist,
+                probability=0.8)
+        system.restraints.append(r)
+
+        dumper = ihm.dumper._DerivedDistanceRestraintDumper()
+        dumper.finalize(system) # assign IDs
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_derived_distance_restraint.id
+_ihm_derived_distance_restraint.feature_id_1
+_ihm_derived_distance_restraint.feature_id_2
+_ihm_derived_distance_restraint.restraint_type
+_ihm_derived_distance_restraint.distance_lower_limit
+_ihm_derived_distance_restraint.distance_upper_limit
+_ihm_derived_distance_restraint.probability
+_ihm_derived_distance_restraint.group_conditionality
+_ihm_derived_distance_restraint.dataset_list_id
+1 44 84 'lower bound' 25.000 . 0.800 . 97
 #
 """)
 

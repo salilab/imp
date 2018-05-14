@@ -179,6 +179,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.object_characteristic, 'outer surface')
         self.assertEqual(f.assembly, None)
 
+    def test_derived_distance_restraint(self):
+        """Test DerivedDistanceRestraint class"""
+        f = ihm.restraint.DerivedDistanceRestraint(
+                dataset='foo', feature1='feat1', feature2='feat2',
+                distance='dist')
+        self.assertEqual(f.dataset, 'foo')
+        self.assertEqual(f.assembly, None)
+
 
 if __name__ == '__main__':
     unittest.main()

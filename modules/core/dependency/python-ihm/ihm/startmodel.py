@@ -60,11 +60,12 @@ class StartingModel(object):
               numbering to give the IHM model numbering).
        :param list metadata: List of PDB metadata, such as HELIX records.
     """
-    def __init__(self, asym_unit, dataset, asym_id, templates=[], offset=0,
-                 metadata=[]):
-        self.asym_unit, self.templates = asym_unit, templates
+    def __init__(self, asym_unit, dataset, asym_id, templates=None, offset=0,
+                 metadata=None):
+        self.templates = templates if templates is not None else []
+        self.metadata = metadata if metadata is not None else []
+        self.asym_unit = asym_unit
         self.dataset, self.asym_id, self.offset = dataset, asym_id, offset
-        self.metadata = metadata
 
     def get_atoms(self):
         """Yield :class:`~ihm.model.Atom` objects that represent this

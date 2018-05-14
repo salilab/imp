@@ -399,7 +399,7 @@ class CrossLinkFit(object):
 
 class Feature(object):
     """Base class for selecting parts of the system that a restraint acts on.
-       See :class:`PolyResidueFeature`.
+       See :class:`PolyResidueFeature` and :class:`PolyAtomFeature`.
 
        Features are typically assigned to one or more
        :class:`~ihm.restraint.GeometricRestraint` objects.
@@ -421,6 +421,21 @@ class PolyResidueFeature(Feature):
     # todo: handle case where ranges span multiple entities?
     entity = property(lambda self: self.ranges[0].entity
                                    if self.ranges else None)
+
+
+class PolyAtomFeature(Feature):
+    """Selection of one or more atoms from the system.
+
+       :param sequence atoms: A list of :class:`ihm.Atom` objects.
+    """
+    type = 'atom'
+
+    def __init__(self, atoms):
+        self.atoms = atoms
+
+    # todo: handle case where atoms span multiple entities?
+    entity = property(lambda self: self.atoms[0].residue.asym.entity
+                                   if self.atoms else None)
 
 
 class GeometricRestraint(object):
@@ -474,3 +489,29 @@ class OuterSurfaceGeometricRestraint(GeometricRestraint):
        of the parameters.
     """
     object_characteristic = 'outer surface'
+
+
+class DerivedDistanceRestraint(object):
+    """A restraint between two parts of the system, derived from experimental
+       data.
+
+       :param dataset: Reference to the data from which the restraint is
+              derived.
+       :type dataset: :class:`~ihm.dataset.Dataset`
+       :param feature1: The first part of the system to restrain.
+       :type feature1: :class:`Feature`
+       :param feature2: The second part of the system to restrain.
+       :type feature2: :class:`Feature`
+       :param distance: Restraint on the distance.
+       :type distance: :class:`DistanceRestraint`
+       :param float probability: Likelihood that restraint is correct (0. - 1.)
+       :param bool restrain_all: If True, all distances are restrained.
+    """
+    assembly = None # no struct_assembly_id for derived distance restraints
+
+    def __init__(self, dataset, feature1, feature2, distance,
+                 probability=None, restrain_all=None):
+        self.dataset = dataset
+        self.feature1, self.feature2 = feature1, feature2
+        self.distance, self.restrain_all = distance, restrain_all
+        self.probability = probability

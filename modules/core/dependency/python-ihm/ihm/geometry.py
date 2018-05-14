@@ -55,10 +55,10 @@ class Sphere(GeometricObject):
 
        :param center: Coordinates of the center of the sphere.
        :type center: :class:`Center`
-       :param transformation: Rotation and translation that moves the sphere
-              from the original center to its final location.
-       :type transformation: :class:`Transformation`
        :param radius: Radius of the sphere.
+       :param transformation: Rotation and translation that moves the sphere
+              from the original center to its final location, if any.
+       :type transformation: :class:`Transformation`
        :param str name: A short user-provided name.
        :param str description: A brief description of the object.
        :param str details: Additional details about the object.
@@ -66,7 +66,7 @@ class Sphere(GeometricObject):
 
     type = 'sphere'
 
-    def __init__(self, center, transformation, radius,
+    def __init__(self, center, radius, transformation=None,
                  name=None, description=None, details=None):
         super(Sphere, self).__init__(name, description, details)
         self.center, self.transformation = center, transformation
@@ -78,20 +78,20 @@ class Torus(GeometricObject):
 
        :param center: Coordinates of the center of the torus.
        :type center: :class:`Center`
-       :param transformation: Rotation and translation that moves the torus
-              (which by default lies in the xy plane) from the original
-              center to its final location.
-       :type transformation: :class:`Transformation`
        :param major_radius: The major radius - the distance from the center of
               the tube to the center of the torus.
        :param minor_radius: The minor radius - the radius of the tube.
+       :param transformation: Rotation and translation that moves the torus
+              (which by default lies in the xy plane) from the original
+              center to its final location, if any.
+       :type transformation: :class:`Transformation`
        :param str name: A short user-provided name.
        :param str description: A brief description of the object.
        :param str details: Additional details about the object.
     """
     type = 'torus'
 
-    def __init__(self, center, transformation, major_radius, minor_radius,
+    def __init__(self, center, major_radius, minor_radius, transformation=None,
                  name=None, description=None, details=None):
         super(Torus, self).__init__(name, description, details)
         self.center, self.transformation = center, transformation
@@ -112,8 +112,8 @@ class HalfTorus(GeometricObject):
     """
     type = 'half-torus'
 
-    def __init__(self, center, transformation, major_radius, minor_radius,
-                 thickness, inner=None, name=None, description=None,
+    def __init__(self, center, major_radius, minor_radius, thickness,
+                 transformation=None, inner=None, name=None, description=None,
                  details=None):
         super(HalfTorus, self).__init__(name, description, details)
         self.center, self.transformation = center, transformation
@@ -125,9 +125,19 @@ class Axis(GeometricObject):
     """One of the three Cartesian axes - see :class:`XAxis`, :class:`YAxis`,
        :class:`ZAxis`.
 
-       See :class:`GeometricObject` for a description of the parameters.
+       :param transformation: Rotation and translation that moves the axis
+              from the original Cartesian axis to its final location, if any.
+       :type transformation: :class:`Transformation`
+       :param str name: A short user-provided name.
+       :param str description: A brief description of the object.
+       :param str details: Additional details about the object.
     """
     type = 'axis'
+
+    def __init__(self, transformation=None, name=None, description=None,
+                 details=None):
+        super(Axis, self).__init__(name, description, details)
+        self.transformation = transformation
 
 
 class XAxis(Axis):
@@ -158,9 +168,19 @@ class Plane(GeometricObject):
     """A plane in Cartesian space - see :class:`XYPlane`, :class:`YZPlane`,
        :class:`XZPlane`.
 
-       See :class:`GeometricObject` for a description of the parameters.
+       :param transformation: Rotation and translation that moves the plane
+              from the original position to its final location, if any.
+       :type transformation: :class:`Transformation`
+       :param str name: A short user-provided name.
+       :param str description: A brief description of the object.
+       :param str details: Additional details about the object.
     """
     type = 'plane'
+
+    def __init__(self, transformation=None, name=None, description=None,
+                 details=None):
+        super(Plane, self).__init__(name, description, details)
+        self.transformation = transformation
 
 
 class XYPlane(Plane):

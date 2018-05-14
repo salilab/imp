@@ -418,7 +418,8 @@ class Citation(object):
                  doi):
         self.title, self.journal, self.volume = title, journal, volume
         self.page_range, self.year = page_range, year
-        self.pmid, self.authors, self.doi = pmid, authors, doi
+        self.pmid, self.doi = pmid, doi
+        self.authors = authors if authors is not None else []
 
     @classmethod
     def from_pubmed_id(cls, pubmed_id):
@@ -479,8 +480,6 @@ class ChemComp(object):
        ``id='G', code='G', code_canonical='G'``, and deoxyguanosine (DNA)
        ``id='DG', code='DG', code_canonical='G'``.
     """
-
-    __slots__ = ['code', 'code_canonical', 'id']
 
     type = 'other'
 
@@ -626,6 +625,17 @@ class EntityRange(object):
     _id = property(lambda self: self.entity._id)
 
 
+class Atom(object):
+    """A single atom in an entity or asymmetric unit. Usually these objects
+       are created by calling :meth:`Residue.atom`.
+    """
+
+    __slots__ = ['residue', 'id']
+
+    def __init__(self, residue, id):
+        self.residue, self.id = residue, id
+
+
 class Residue(object):
     """A single residue in an entity or asymmetric unit. Usually these objects
        are created by calling :meth:`Entity.residue` or
@@ -639,6 +649,10 @@ class Residue(object):
         self.asym = asym
         # todo: check id for validity (at property read time)
         self.seq_id = seq_id
+
+    def atom(self, atom_id):
+        """Get a :class:`Atom` in this residue with the given name."""
+        return Atom(residue=self, id=atom_id)
 
     def _get_auth_seq_id(self):
         return self.asym._get_auth_seq_id(self.seq_id)
