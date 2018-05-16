@@ -141,10 +141,10 @@ void XYZRMovedSingletonContainer::do_reset_moved() {
 ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
   IMP_OBJECT_LOG;
   ParticleIndexes ret;
-  Model *m = get_model();
+  Model *m= get_model();
   IMP_CONTAINER_FOREACH(SingletonContainer, get_singleton_container(), {
     XYZR d(m, _1);
-    double dr = std::abs(d.get_radius() - backup_[_2].get_radius());
+    double dr= std::abs(d.get_radius() - backup_[_2].get_radius());
     if (!algebra::get_interiors_intersect(
              algebra::Sphere3D(d.get_coordinates(), 0),
              algebra::Sphere3D(backup_[_2].get_center(),
@@ -283,15 +283,13 @@ double RigidMovedSingletonContainer::get_distance_upper_bound(unsigned int i)
     const {
   IMP_OBJECT_LOG;
   core::XYZR xyzr(get_model(), bodies_[i]);
+  double dr= std::abs(xyzr.get_radius() - backup_[i].get_radius());
+  double dx =
+    (xyzr.get_coordinates() - backup_[i].first.get_center()).get_magnitude();
   if (!core::RigidBody::get_is_setup(get_model(), bodies_[i])) {
-    double ret =
-        (xyzr.get_coordinates() - backup_[i].first.get_center()).get_magnitude();
-    return ret;
+    return dr + dx;;
   } else {
     core::RigidBody rb(get_model(), bodies_[i]);
-    double dr = std::abs(xyzr.get_radius() - backup_[i].first.get_radius());
-    double dx =
-        (xyzr.get_coordinates() - backup_[i].first.get_center()).get_magnitude();
     algebra::Rotation3D nrot =
         rb.get_reference_frame().get_transformation_to().get_rotation();
     algebra::Rotation3D diffrot = backup_[i].second.get_inverse() * nrot;
