@@ -283,7 +283,7 @@ double RigidMovedSingletonContainer::get_distance_upper_bound(unsigned int i)
     const {
   IMP_OBJECT_LOG;
   core::XYZR xyzr(get_model(), bodies_[i]);
-  double dr= std::abs(xyzr.get_radius() - backup_[i].get_radius());
+  double dr= std::abs(xyzr.get_radius() - backup_[i].first.get_radius());
   double dx =
     (xyzr.get_coordinates() - backup_[i].first.get_center()).get_magnitude();
   if (!core::RigidBody::get_is_setup(get_model(), bodies_[i])) {
