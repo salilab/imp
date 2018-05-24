@@ -1280,7 +1280,8 @@ _ihm_geometric_object_list.other_details
 loop_
 _ihm_geometric_object_plane.object_id
 _ihm_geometric_object_plane.plane_type
-1 xy-plane
+_ihm_geometric_object_plane.transformation_id
+1 xy-plane .
 #
 """)
 
@@ -1413,17 +1414,17 @@ _ihm_poly_residue_feature.comp_id_end
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
-_ihm_geometric_object_spatial_restraint.id
-_ihm_geometric_object_spatial_restraint.object_id
-_ihm_geometric_object_spatial_restraint.feature_id
-_ihm_geometric_object_spatial_restraint.object_characteristic
-_ihm_geometric_object_spatial_restraint.restraint_type
-_ihm_geometric_object_spatial_restraint.harmonic_force_constant
-_ihm_geometric_object_spatial_restraint.distance_lower_limit
-_ihm_geometric_object_spatial_restraint.distance_upper_limit
-_ihm_geometric_object_spatial_restraint.group_conditionality
-_ihm_geometric_object_spatial_restraint.dataset_list_id
-1 1 1 other 'distance restraint upper bound' 0.500 . 0.000 ALL .
+_ihm_geometric_object_distance_restraint.id
+_ihm_geometric_object_distance_restraint.object_id
+_ihm_geometric_object_distance_restraint.feature_id
+_ihm_geometric_object_distance_restraint.object_characteristic
+_ihm_geometric_object_distance_restraint.restraint_type
+_ihm_geometric_object_distance_restraint.harmonic_force_constant
+_ihm_geometric_object_distance_restraint.distance_lower_limit
+_ihm_geometric_object_distance_restraint.distance_upper_limit
+_ihm_geometric_object_distance_restraint.group_conditionality
+_ihm_geometric_object_distance_restraint.dataset_list_id
+1 1 1 other 'upper bound' 0.500 . 0.000 ALL .
 #
 """)
 

@@ -396,6 +396,7 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
                   [Y3-;K4-] for dead-ends
     QUANTITATION: sp|P33298|PRS6B_YEAST:280:x:sp|P33298|PRS6B_YEAST:337
     QUANTITATION (with ambiguity separator :|:): Fbw7:107:|:StrepII2x-Fbw7fl:408:x:Nedd8:48
+    LAN_HUANG: PROT1:C88-PROT2:C448 ambiguous separators | or ;
     '''
 
     import re
@@ -409,6 +410,9 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
                                   self.protein2_key,
                                   self.site_pairs_key])
         elif style is "XTRACT" or style is "QUANTITATION":
+            self.style=style
+            self.compulsory_keys= set([self.site_pairs_key])
+        elif style is "LAN_HUANG":
             self.style=style
             self.compulsory_keys= set([self.site_pairs_key])
         else:
@@ -472,6 +476,23 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
                     residue_indexes.append((residue1,))
                     chain_indexes.append((chain1,))
                 return residue_indexes, chain_indexes
+        if self.style is "LAN_HUANG":
+            input_strings=input_string.split("-")
+            chain1,first_series=input_strings[0].split(":")
+            chain2,second_series=input_strings[1].split(":")
+
+            first_residues=first_series.replace(";","|").split("|")
+            second_residues=second_series.replace(";","|").split("|") 
+            residue_pair_indexes=[]
+            chain_pair_indexes=[]
+            for fpi in first_residues:
+                for spi in second_residues:
+                        residue1=self.re.sub("[^0-9]", "", fpi)
+                        residue2=self.re.sub("[^0-9]", "", spi)
+                        residue_pair_indexes.append((residue1,residue2))
+                        chain_pair_indexes.append((chain1,chain2))
+            return residue_pair_indexes, chain_pair_indexes
+
 
 
 class FixedFormatParser(_CrossLinkDataBaseStandardKeys):
@@ -861,6 +882,10 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         self._update()
         return CrossLinkDataBase(self.cldbkc,new_xl_dict)
 
+    def filter_score(self,score):
+        '''Get all crosslinks with score greater than an input value'''
+        FilterOperator=IMP.pmi.io.crosslink.FilterOperator(self.id_score_key,operator.gt,score)
+        return self.filter(FilterOperator)
 
     def merge(self,CrossLinkDataBase1,CrossLinkDataBase2):
         '''

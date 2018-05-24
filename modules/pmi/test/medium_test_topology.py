@@ -835,7 +835,7 @@ class Tests(IMP.test.TestCase):
                               resolutions=[1])
         hier = s.build()
         expect_sequence = [IMP.pmi.tools.get_residue_type_from_one_letter_code(
-            rname) for rname in 'QEAAVVKDL']
+            rname) for rname in 'AAAAAAAAA']
         ps = IMP.atom.Selection(hier).get_selected_particles()
         built_sequence = [IMP.atom.Residue(p).get_residue_type() for p in ps]
         self.assertEqual(expect_sequence, built_sequence)

@@ -21,6 +21,7 @@ import IMP.pmi.tools
 from IMP.pmi.tools import OrderedDict
 import IMP.pmi.output
 import IMP.pmi.metadata
+import IMP.mmcif.data
 import re
 import ast
 import sys
@@ -751,77 +752,19 @@ class _AllStartingModels(object):
         return m
 
 
-class _MutantHandler(object):
-    def __init__(self, templates, asym):
-        self._seq_dif = []
-        self._last_res_index = None
-        self.templates = templates
-        self.asym = asym
-
-    def _residue_first_atom(self, res):
-        """Return True iff we're looking at the first atom in this residue"""
-        # Only add one seq_dif record per residue
-        ind = res.get_index()
-        if ind != self._last_res_index:
-            self._last_res_index = ind
-            return True
-
-    def handle_residue(self, res, comp_id, seq_id, offset):
-        res_name = res.get_residue_type().get_string()
-        # MSE in the original PDB is automatically mutated
-        # by IMP to MET, so reflect that in the output,
-        # and pass back to populate the seq_dif category.
-        if res_name == 'MSE' and comp_id == 'MET':
-            if self._residue_first_atom(res):
-                # This should only happen when we're using
-                # a crystal structure as the source (a
-                # comparative model would use MET in
-                # the sequence)
-                assert(len(self.templates) == 0)
-                self._seq_dif.append(ihm.startmodel.MSESeqDif(
-                            res.get_index(), seq_id))
-        elif res_name != comp_id:
-            if self._residue_first_atom(res):
-                print("WARNING: Starting model residue %s does not match "
-                      "that in the output model (%s) for chain %s residue %d. "
-                      "Check offset (currently %d)."
-                      % (res_name, comp_id, self.asym._id, seq_id, offset))
-                self._seq_dif.append(ihm.startmodel.SeqDif(
-                         db_seq_id=res.get_index(), seq_id=seq_id,
-                         db_comp_id=res_name,
-                         details="Mutation of %s to %s" % (res_name, comp_id)))
-
-
 class _StartingModel(ihm.startmodel.StartingModel):
     def get_seq_dif(self):
         return self._seq_dif
 
     def get_atoms(self):
-        mh = _MutantHandler(self.templates, self.asym_unit)
+        mh = IMP.mmcif.data._StartingModelAtomHandler(self.templates,
+                                                      self.asym_unit)
         for f in self.fragments:
             sel = IMP.atom.Selection(f.starting_hier,
                             residue_indexes=list(range(f.start - f.offset,
                                                        f.end - f.offset + 1)))
-            for a in sel.get_selected_particles():
-                coord = IMP.core.XYZ(a).get_coordinates()
-                atom = IMP.atom.Atom(a)
-                element = atom.get_element()
-                element = IMP.atom.get_element_table().get_name(element)
-                atom_name = atom.get_atom_type().get_string()
-                het = atom_name.startswith('HET:')
-                if het:
-                    atom_name = atom_name[4:]
-                res = IMP.atom.get_residue(atom)
-
-                seq_id = res.get_index() + f.offset
-                comp_id = self.asym_unit.entity.sequence[seq_id-1].id
-                mh.handle_residue(res, comp_id, seq_id, f.offset)
-                yield ihm.model.Atom(asym_unit=self.asym_unit,
-                                     seq_id=seq_id,
-                                     atom_id=atom_name, type_symbol=element,
-                                     x=coord[0], y=coord[1], z=coord[2],
-                                     het=het,
-                                     biso=atom.get_temperature_factor())
+            for a in mh.get_ihm_atoms(sel.get_selected_particles(), f.offset):
+                yield a
         self._seq_dif = mh._seq_dif
 
 

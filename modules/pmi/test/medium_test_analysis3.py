@@ -11,9 +11,11 @@ class Tests(IMP.test.TestCase):
             import matplotlib
         except ImportError:
             self.skipTest("no matplotlib package")
+        matplotlib.pyplot.switch_backend('Agg')
         model=IMP.Model()
         sts=sorted(glob.glob(self.get_input_file_name("output_test/stat.0.out").replace(".0.",".*.")))
         are=IMP.pmi.macros.AnalysisReplicaExchange(model,sts,10)
+        ch=IMP.pmi.tools.ColorHierarchy(are.stath1)
         are.set_alignment_selection(molecule="Rpb4")
         are.save_data()
         are.cluster(20)
@@ -29,6 +31,8 @@ class Tests(IMP.test.TestCase):
 
         for cluster in are:
             are.save_coordinates(cluster)
+            ch.color_by_resid()
+            #are.save_coordinates(cluster,rmf_name="resid."+str(cluster.cluster_id)+".rmf3")
             are.save_densities(cluster,dcr,prefix="densities_out/")
             are.compute_cluster_center(cluster)
             are.precision(cluster)
@@ -42,9 +46,13 @@ class Tests(IMP.test.TestCase):
                     rmsfs.append(rmsf[r])
                 IMP.pmi.output.plot_xy_data(rs,rmsfs,out_fn=mol+"."+str(cluster.cluster_id)+".rmsf.pdf")
 
+            ch.color_by_uncertainty()
+            #are.save_coordinates(cluster,rmf_name="beta."+str(cluster.cluster_id)+".rmf3")
+            ch.get_color_bar("colorbar.pdf")
             print(cluster)
             #for member in cluster:
             #    print(member)
+
             are.contact_map(cluster)
 
         for c1 in are:
@@ -53,6 +61,11 @@ class Tests(IMP.test.TestCase):
 
         are.apply_molecular_assignments(1)
         are.save_clusters()
+
+        # read from data
+        are=IMP.pmi.macros.AnalysisReplicaExchange(model,"data.pkl")
+        # read clusters
+        are.load_clusters("clusters.pkl")
 
 
 if __name__ == '__main__':

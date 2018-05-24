@@ -2167,6 +2167,7 @@ class AnalysisReplicaExchange(object):
     def __init__(self,model,
                  stat_files,
                  best_models=None,
+                 score_key=None,
                  alignment=True):
         """
         Construction of the Class.
@@ -2178,7 +2179,7 @@ class AnalysisReplicaExchange(object):
 
         self.model=model
         self.best_models=best_models
-        self.stath0=IMP.pmi.output.StatHierarchyHandler(model,stat_files,self.best_models)
+        self.stath0=IMP.pmi.output.StatHierarchyHandler(model,stat_files,self.best_models,score_key,cache=True)
         self.stath1=IMP.pmi.output.StatHierarchyHandler(StatHierarchyHandler=self.stath0)
 
         self.rbs1, self.beads1 = IMP.pmi.tools.get_rbs_and_beads(IMP.pmi.tools.select_at_all_resolutions(self.stath1))
@@ -2188,9 +2189,16 @@ class AnalysisReplicaExchange(object):
         self.sel0_alignment=IMP.atom.Selection(self.stath0)
         self.sel1_alignment=IMP.atom.Selection(self.stath1)
         self.clusters=[]
+        # fill the cluster list with a single cluster containing all models
+        c = IMP.pmi.output.Cluster(0)
+        self.clusters.append(c)
+        for n0 in range(len(self.stath0)):
+            c.add_member(n0)
         self.pairwise_rmsd={}
         self.pairwise_molecular_assignment={}
         self.alignment=alignment
+        self.symmetric_molecules={}
+        self.issymmetricsel={}
         self.update_seldicts()
         self.molcopydict0=IMP.pmi.tools.get_molecules_dictionary_by_copy(IMP.atom.get_leaves(self.stath0))
         self.molcopydict1=IMP.pmi.tools.get_molecules_dictionary_by_copy(IMP.atom.get_leaves(self.stath1))
@@ -2204,6 +2212,13 @@ class AnalysisReplicaExchange(object):
         self.sel1_rmsd=IMP.atom.Selection(self.stath1,**kwargs)
         self.update_seldicts()
 
+    def set_symmetric(self,molecule_name):
+        """
+        Store names of symmetric molecules
+        """
+        self.symmetric_molecules[molecule_name]=0
+        self.update_seldicts()
+
     def set_alignment_selection(self,**kwargs):
         """
         Setup the selection onto which the alignment is computed
@@ -2215,6 +2230,9 @@ class AnalysisReplicaExchange(object):
     ######################
     # Clustering functions
     ######################
+    def clean_clusters(self):
+        for c in self.clusters: del c
+        self.clusters=[]
 
 
     def cluster(self, rmsd_cutoff=10, metric=IMP.atom.get_rmsd):
@@ -2223,11 +2241,11 @@ class AnalysisReplicaExchange(object):
         @param rmsd_cutoff Float the distance cutoff in Angstrom
         @param metric (Default=IMP.atom.get_rmsd) the metric that will be used to compute rmsds
         """
-        self.clusters=[]
+        self.clean_clusters()
         not_clustered=set(range(len(self.stath1)))
         while len(not_clustered)>0:
             self.aggregate(not_clustered, rmsd_cutoff, metric)
-        self.merge_aggregates(rmsd_cutoff, metric)
+        #self.merge_aggregates(rmsd_cutoff, metric)
         self.update_clusters()
 
     def refine(self,rmsd_cutoff=10):
@@ -2300,6 +2318,22 @@ class AnalysisReplicaExchange(object):
         self.stath1.load_data(filename)
         self.best_models=len(self.stath0)
 
+    def add_cluster(self,rmf_name_list):
+        c = IMP.pmi.output.Cluster(len(self.clusters))
+        print("creating cluster index "+str(len(self.clusters)))
+        self.clusters.append(c)
+        current_len=len(self.stath0)
+
+        for rmf in rmf_name_list:
+            print("adding rmf "+rmf)
+            self.stath0.add_stat_file(rmf)
+            self.stath1.add_stat_file(rmf)
+
+        for n0 in range(current_len,len(self.stath0)):
+            d0=self.stath0[n0]
+            c.add_member(n0,d0)
+        self.update_clusters()
+
     def save_clusters(self,filename='clusters.pkl'):
         """
         Save the clusters into a pickle file
@@ -2323,6 +2357,7 @@ class AnalysisReplicaExchange(object):
         except ImportError:
             import pickle
         fl=open(filename,'rb')
+        self.clean_clusters()
         if append:
             self.clusters+=pickle.load(fl)
         else:
@@ -2350,21 +2385,60 @@ class AnalysisReplicaExchange(object):
         else:
             cluster.center_index=cluster.members[0]
 
-    def save_coordinates(self,cluster,reference="Absolute", prefix="./"):
+    def save_coordinates(self,cluster,rmf_name=None,reference="Absolute", prefix="./"):
         """
         Save the coordinates of the current cluster a single rmf file
         """
+        print("saving coordinates",cluster)
         if self.alignment: self.set_reference(reference,cluster)
         o=IMP.pmi.output.Output()
-        rmf_name=prefix+'/'+str(cluster.cluster_id)+".rmf3"
+        if rmf_name is None:
+            rmf_name=prefix+'/'+str(cluster.cluster_id)+".rmf3"
+
+        d1=self.stath1[cluster.members[0]]
         o.init_rmf(rmf_name, [self.stath1])
         for n1 in cluster.members:
             d1=self.stath1[n1]
+            self.model.update()
             self.apply_molecular_assignments(n1)
             if self.alignment: self.align()
             o.write_rmf(rmf_name)
             self.undo_apply_molecular_assignments(n1)
         o.close_rmf(rmf_name)
+
+    def prune_redundant_structures(self,rmsd_cutoff=10):
+        """
+        remove structures that are similar
+        append it to a new cluster
+        """
+        print("pruning models")
+        selected=0
+        filtered=[selected]
+        remaining=range(1,len(self.stath1),10)
+
+        while len(remaining)>0:
+            d0=self.stath0[selected]
+            rm=[]
+            for n1 in remaining:
+                d1=self.stath1[n1]
+                if self.alignment: self.align()
+                d, _ = self.rmsd()
+                if d<=rmsd_cutoff:
+                    rm.append(n1)
+                    print("pruning model %s, similar to model %s, rmsd %s"%(str(n1),str(selected),str(d)))
+            remaining=[x for x in remaining if x not in rm]
+            if len(remaining)==0: break
+            selected=remaining[0]
+            filtered.append(selected)
+            remaining.pop(0)
+        c = IMP.pmi.output.Cluster(len(self.clusters))
+        self.clusters.append(c)
+        for n0 in filtered:
+            d0=self.stath0[n0]
+            c.add_member(n0,d0)
+        self.update_clusters()
+
+
 
     def precision(self,cluster):
         """
@@ -2395,24 +2469,25 @@ class AnalysisReplicaExchange(object):
         cluster.precision=precision
         return precision
 
-    def bipartite_precision(self,cluster1,cluster2):
+    def bipartite_precision(self,cluster1,cluster2,verbose=False):
         """
         Compute the bipartite precision (ie the cross-precision)
         between two clusters
         """
         npairs=0
         rmsd=0.0
-        for n0 in cluster1.members:
+        for cn0,n0 in enumerate(cluster1.members):
             d0=self.stath0[n0]
-            for n1 in cluster2.members:
+            for cn1,n1 in enumerate(cluster2.members):
                 d1=self.stath1[n1]
-                tmp_rmsd, tmp_pairwise_molecular_assignment=self.rmsd()
+                tmp_rmsd, _ =self.rmsd()
+                if verbose: print("--- rmsd between structure %s and structure %s is %s"%(str(cn0),str(cn1),str(tmp_rmsd)))
                 rmsd+=tmp_rmsd
                 npairs+=1
         precision=rmsd/npairs
         return precision
 
-    def rmsf(self,cluster,molecule,copy_index=0,state_index=0):
+    def rmsf(self,cluster,molecule,copy_index=0,state_index=0,cluster_ref=None,step=1):
         """
         Compute the Root mean square fluctuations
         of a molecule in a cluster
@@ -2421,6 +2496,17 @@ class AnalysisReplicaExchange(object):
         rmsf=IMP.pmi.tools.OrderedDict()
 
         #assumes that residue indexes are identical for stath0 and stath1
+        if cluster_ref is not None:
+            if not cluster_ref.center_index is None:
+                members0 = [cluster_ref.center_index]
+            else:
+                members0 = cluster_ref.members
+        else:
+            if not cluster.center_index is None:
+                members0 = [cluster.center_index]
+            else:
+                members0 = cluster.members
+
         s0=IMP.atom.Selection(self.stath0,molecule=molecule,resolution=1,
                               copy_index=copy_index,state_index=state_index)
         ps0=s0.get_selected_particles()
@@ -2428,20 +2514,18 @@ class AnalysisReplicaExchange(object):
         residue_indexes=list(IMP.pmi.tools.OrderedSet([IMP.pmi.tools.get_residue_indexes(p)[0] for p in ps0]))
 
         #get the corresponding particles
-        s0=IMP.atom.Selection(self.stath0,molecule=molecule,residue_indexes=residue_indexes,resolution=1,
-                              copy_index=copy_index,state_index=state_index)
-        ps0 = s0.get_selected_particles()
+        #s0=IMP.atom.Selection(stat_ref,molecule=molecule,residue_indexes=residue_indexes,resolution=1,
+        #                      copy_index=copy_index,state_index=state_index)
+        #ps0 = s0.get_selected_particles()
 
-        if not cluster.center_index is None:
-            members1=[cluster.center_index]
-        else:
-            members1=cluster.members
+
 
         npairs=0
-        for n0 in members1:
+        for n0 in members0:
             d0=self.stath0[n0]
-            for n1 in cluster.members:
+            for n1 in cluster.members[::step]:
                 if n0!=n1:
+                    print("--- rmsf %s %s"%(str(n0),str(n1)))
                     self.apply_molecular_assignments(n1)
 
                     s1=IMP.atom.Selection(self.stath1,molecule=molecule,residue_indexes=residue_indexes,resolution=1,
@@ -2462,14 +2546,31 @@ class AnalysisReplicaExchange(object):
                     self.undo_apply_molecular_assignments(n1)
         for r in rmsf:
             rmsf[r]/=npairs
+
+            for stath in [self.stath0,self.stath1]:
+                if molecule not in self.symmetric_molecules:
+                    s=IMP.atom.Selection(stath,molecule=molecule,residue_index=r,resolution=1,
+                                  copy_index=copy_index,state_index=state_index)
+                else:
+                    s=IMP.atom.Selection(stath,molecule=molecule,residue_index=r,resolution=1,
+                                 state_index=state_index)
+
+                ps = s.get_selected_particles()
+                for p in ps:
+                    if IMP.pmi.Uncertainty.get_is_setup(p):
+                        IMP.pmi.Uncertainty(p).set_uncertainty(rmsf[r])
+                    else:
+                        IMP.pmi.Uncertainty.setup_particle(p,rmsf[r])
+
         return rmsf
 
-    def save_densities(self,cluster,density_custom_ranges,voxel_size=5,reference="Absolute", prefix="./"):
+    def save_densities(self,cluster,density_custom_ranges,voxel_size=5,reference="Absolute", prefix="./",step=1):
         if self.alignment: self.set_reference(reference,cluster)
         dens = IMP.pmi.analysis.GetModelDensity(density_custom_ranges,
                                                 voxel=voxel_size)
 
-        for n1 in cluster.members:
+        for n1 in cluster.members[::step]:
+            print("density "+str(n1))
             d1=self.stath1[n1]
             self.apply_molecular_assignments(n1)
             if self.alignment: self.align()
@@ -2478,48 +2579,79 @@ class AnalysisReplicaExchange(object):
         dens.write_mrc(path=prefix+'/',suffix=str(cluster.cluster_id))
         del dens
 
-    def contact_map(self,cluster,contact_threshold=15,log_scale=False, prefix='./',reference="Absolute"):
+    def contact_map(self,cluster,contact_threshold=15,log_scale=False,consolidate=False,molecules=None,prefix='./',reference="Absolute"):
         if self.alignment: self.set_reference(reference,cluster)
         import numpy as np
         import matplotlib.pyplot as plt
         import matplotlib.cm as cm
         from scipy.spatial.distance import cdist
         import IMP.pmi.topology
+        if molecules is None:
+            mols=[IMP.pmi.topology.PMIMoleculeHierarchy(mol) for mol in IMP.pmi.tools.get_molecules(IMP.atom.get_leaves(self.stath1))]
+        else:
+            mols=[IMP.pmi.topology.PMIMoleculeHierarchy(mol) for mol in IMP.pmi.tools.get_molecules(IMP.atom.Selection(self.stath1,molecules=molecules).get_selected_particles())]
+        unique_copies=[mol for mol in mols if mol.get_copy_index() == 0]
+        mol_names_unique=dict((mol.get_name(),mol) for mol in unique_copies)
+        total_len_unique=sum(max(mol.get_residue_indexes()) for mol in unique_copies)
 
-        mols=IMP.pmi.tools.get_molecules(IMP.atom.get_leaves(self.stath1))
-        mol_names=dict([(mol,mol.get_name()) for mol in mols])
-        mols_rindexes=dict([(mol,range(1,IMP.pmi.tools.get_residue_indexes(mol)[-1]+1)) for mol in mols])
-        total_len = sum(len(mols_rindexes[mol]) for mol in mols)
-        coords = np.ones((total_len,3)) * 1e6 #default to coords "very far away"
+
+        # coords = np.ones((total_len,3)) * 1e6 #default to coords "very far away"
         index_dict={}
+        prev_stop=0
+
+        if not consolidate:
+            for mol in mols:
+                seqlen=max(mol.get_residue_indexes())
+                index_dict[mol] = range(prev_stop, prev_stop + seqlen)
+                prev_stop+=seqlen
+
+        else:
+            for mol in unique_copies:
+                seqlen=max(mol.get_residue_indexes())
+                index_dict[mol] = range(prev_stop, prev_stop + seqlen)
+                prev_stop+=seqlen
+
 
         for ncl,n1 in enumerate(cluster.members):
-
+            print(ncl)
             d1=self.stath1[n1]
-            self.apply_molecular_assignments(n1)
-
-
-            prev_stop = 0
-
+            #self.apply_molecular_assignments(n1)
+            coord_dict=IMP.pmi.tools.OrderedDict()
             for mol in mols:
-                mol_name=mol_names[mol]
-                rindexes = mols_rindexes[mol]
-                index_dict[mol] = range(prev_stop, prev_stop + len(rindexes))
-
-
+                mol_name=mol.get_name()
+                copy_index=mol.get_copy_index()
+                rindexes = mol.get_residue_indexes()
+                coords = np.ones((max(rindexes),3))
                 for rnum in rindexes:
                     sel = IMP.atom.Selection(mol, residue_index=rnum, resolution=1)
                     selpart = sel.get_selected_particles()
                     if len(selpart) == 0: continue
                     selpart = selpart[0]
-                    try:
-                        coords[rnum + prev_stop - 1, :] = IMP.core.XYZ(selpart).get_coordinates()
-                    except IndexError:
-                        print("Error: exceed max size", prev_stop, total_len, cname, rnum)
-                        exit()
-                prev_stop += len(rindexes)
-            dists = cdist(coords, coords)
-            binary_dists = np.where((dists <= contact_threshold) & (dists >= 1.0), 1.0, 0.0)
+                    coords[rnum - 1, :] = IMP.core.XYZ(selpart).get_coordinates()
+                coord_dict[mol]=coords
+
+            if not consolidate:
+                coords=np.concatenate(list(coord_dict.values()))
+                dists = cdist(coords, coords)
+                binary_dists = np.where((dists <= contact_threshold) & (dists >= 1.0), 1.0, 0.0)
+            else:
+                binary_dists_dict={}
+                for mol1 in mols:
+                    len1 = max(mol1.get_residue_indexes())
+                    for mol2 in mols:
+                        name1=mol1.get_name()
+                        name2=mol2.get_name()
+                        dists = cdist(coord_dict[mol1], coord_dict[mol2])
+                        if (name1, name2) not in binary_dists_dict:
+                            binary_dists_dict[(name1, name2)] = np.zeros((len1,len1))
+                        binary_dists_dict[(name1, name2)] += np.where((dists <= contact_threshold) & (dists >= 1.0), 1.0, 0.0)
+                binary_dists=np.zeros((total_len_unique,total_len_unique))
+
+                for name1,name2 in  binary_dists_dict:
+                    r1=index_dict[mol_names_unique[name1]]
+                    r2=index_dict[mol_names_unique[name2]]
+                    binary_dists[min(r1):max(r1)+1,min(r2):max(r2)+1] = np.where((binary_dists_dict[(name1, name2)]>=1.0),1.0,0.0)
+
             if ncl==0:
                 dist_maps = [dists]
                 av_dist_map = dists
@@ -2529,7 +2661,7 @@ class AnalysisReplicaExchange(object):
                 av_dist_map += dists
                 contact_freqs += binary_dists
 
-            self.undo_apply_molecular_assignments(n1)
+            #self.undo_apply_molecular_assignments(n1)
 
         if log_scale:
             contact_freqs =-np.log(1.0-1.0/(len(cluster)+1)*contact_freqs)
@@ -2551,18 +2683,22 @@ class AnalysisReplicaExchange(object):
         #        print("to provide cbar labels, give 3 fields (first=first input file, last=last input) in oppose order of input contact maps")
         #        exit()
         # set the list of proteins on the x axis
-        sorted_tuple=sorted([(IMP.pmi.topology.PMIMoleculeHierarchy(mol).get_extended_name(),mol) for mol in mols])
-        prot_list=list(zip(*sorted_tuple))[1]
+        if not consolidate:
+            sorted_tuple=sorted([(IMP.pmi.topology.PMIMoleculeHierarchy(mol).get_extended_name(),mol) for mol in mols])
+            prot_list=list(zip(*sorted_tuple))[1]
+        else:
+            sorted_tuple=sorted([(IMP.pmi.topology.PMIMoleculeHierarchy(mol).get_name(),mol) for mol in unique_copies])
+            prot_list=list(zip(*sorted_tuple))[1]
 
         prot_listx = prot_list
         nresx = gap_between_components + \
-            sum([len(mols_rindexes[mol])
+            sum([max(mol.get_residue_indexes())
                 + gap_between_components for mol in prot_listx])
 
         # set the list of proteins on the y axis
         prot_listy = prot_list
         nresy = gap_between_components + \
-            sum([len(mols_rindexes[mol])
+            sum([max(mol.get_residue_indexes())
                 + gap_between_components for mol in prot_listy])
 
         # this is the residue offset for each protein
@@ -2571,7 +2707,7 @@ class AnalysisReplicaExchange(object):
         res = gap_between_components
         for mol in prot_listx:
             resoffsetx[mol] = res
-            res += len(mols_rindexes[mol])
+            res += max(mol.get_residue_indexes())
             resendx[mol] = res
             res += gap_between_components
 
@@ -2580,7 +2716,7 @@ class AnalysisReplicaExchange(object):
         res = gap_between_components
         for mol in prot_listy:
             resoffsety[mol] = res
-            res += len(mols_rindexes[mol])
+            res += max(mol.get_residue_indexes())
             resendy[mol] = res
             res += gap_between_components
 
@@ -2588,7 +2724,7 @@ class AnalysisReplicaExchange(object):
         res = gap_between_components
         for mol in IMP.pmi.tools.OrderedSet(prot_listx + prot_listy):
             resoffsetdiagonal[mol] = res
-            res += len(mols_rindexes[mol])
+            res += max(mol.get_residue_indexes())
             res += gap_between_components
 
         # plot protein boundaries
@@ -2621,6 +2757,7 @@ class AnalysisReplicaExchange(object):
         # plot the contact map
 
         tmp_array = np.zeros((nresx, nresy))
+        ret={}
         for px in prot_listx:
             for py in prot_listy:
                 resx = resoffsetx[px]
@@ -2634,6 +2771,7 @@ class AnalysisReplicaExchange(object):
                 miny = min(indexes_y)
                 maxy = max(indexes_y)
                 tmp_array[resx:lengx,resy:lengy] = contact_freqs[minx:maxx,miny:maxy]
+                ret[(px,py)]=np.argwhere(contact_freqs[minx:maxx,miny:maxy] == 1.0)+1
 
         cax = ax.imshow(tmp_array,
                   cmap=colormap,
@@ -2650,13 +2788,15 @@ class AnalysisReplicaExchange(object):
         plt.setp(ax.get_yticklabels(), fontsize=6)
 
         # display and write to file
-        fig.set_size_inches(0.002 * nresx, 0.002 * nresy)
+        fig.set_size_inches(0.005 * nresx, 0.005 * nresy)
         [i.set_linewidth(2.0) for i in ax.spines.values()]
         #if cbar_labels is not None:
         #    cbar = fig.colorbar(cax, ticks=[0.5,1.5,2.5,3.5])
         #    cbar.ax.set_yticklabels(cbar_labels)# vertically oriented colorbar
 
         plt.savefig(prefix+"/contact_map."+str(cluster.cluster_id)+".pdf", dpi=300,transparent="False")
+        return ret
+
 
     def plot_rmsd_matrix(self,filename):
         import numpy as np
@@ -2716,8 +2856,17 @@ class AnalysisReplicaExchange(object):
         """
         self.seldict0=IMP.pmi.tools.get_selections_dictionary(self.sel0_rmsd.get_selected_particles())
         self.seldict1=IMP.pmi.tools.get_selections_dictionary(self.sel1_rmsd.get_selected_particles())
+        for mol in self.seldict0:
+            for sel in self.seldict0[mol]:
+                self.issymmetricsel[sel]=False
+        for mol in self.symmetric_molecules:
+            self.symmetric_molecules[mol]=len(self.seldict0[mol])
+            for sel in self.seldict0[mol]:
+                self.issymmetricsel[sel]=True
+
 
     def align(self):
+        print("alignment")
         tr = IMP.atom.get_transformation_aligning_first_to_second(self.sel1_alignment, self.sel0_alignment)
 
         for rb in self.rbs1:
@@ -2733,18 +2882,24 @@ class AnalysisReplicaExchange(object):
         initial filling of the clusters.
         '''
         n0 = idxs.pop()
+        print("clustering model "+str(n0))
         d0 = self.stath0[n0]
         c = IMP.pmi.output.Cluster(len(self.clusters))
+        print("creating cluster index "+str(len(self.clusters)))
         self.clusters.append(c)
         c.add_member(n0,d0)
         clustered = set([n0])
         for n1 in idxs:
+            print("--- trying to add model "+str(n1)+" to cluster "+str(len(self.clusters)))
             d1 = self.stath1[n1]
             if self.alignment: self.align()
             rmsd, _ = self.rmsd(metric=metric)
             if rmsd<rmsd_cutoff:
+                print("--- model "+str(n1)+" added, rmsd="+str(rmsd))
                 c.add_member(n1,d1)
                 clustered.add(n1)
+            else:
+                print("--- model "+str(n1)+" NOT added, rmsd="+str(rmsd))
         idxs-=clustered
 
     def merge_aggregates(self, rmsd_cutoff, metric=IMP.atom.get_rmsd):
@@ -2755,6 +2910,7 @@ class AnalysisReplicaExchange(object):
         # before merging, clusters are spheres of radius rmsd_cutoff centered on the 1st element
         # here we only try to merge clusters whose centers are closer than 2*rmsd_cutoff
         to_merge = []
+        print("merging...")
         for c0, c1 in filter(lambda x: len(x[0].members)>1, itertools.combinations(self.clusters, 2)):
             n0, n1 = [c.members[0] for c in (c0,c1)]
             d0 = self.stath0[n0]
@@ -2774,6 +2930,7 @@ class AnalysisReplicaExchange(object):
         '''
         returns true if c0 and c1 have members that are closer than rmsd_cutoff
         '''
+        print("check close members for clusters "+str(c0.cluster_id)+" and "+str(c1.cluster_id))
         for n0, n1 in itertools.product(c0.members[1:], c1.members):
             d0 = self.stath0[n0]
             d1 = self.stath1[n1]
@@ -2798,14 +2955,41 @@ class AnalysisReplicaExchange(object):
         '''
         best_rmsd2 = float('inf')
         best_sel = None
-        for sels in itertools.permutations(sels0):
-            rmsd2=0.0
-            for sel0, sel1 in itertools.takewhile(lambda x: rmsd2<best_rmsd2, zip(sels, sels1)):
+        if self.issymmetricsel[sels0[0]]:
+            #this cases happens when symmetries were defined
+            N = len(sels0)
+            for offset in range(N):
+                order=[(offset+i)%N for i in range(N)]
+                sels = [sels0[(offset+i)%N] for i in range(N)]
+                sel0 = sels[0]
+                sel1 = sels1[0]
                 r=metric(sel0, sel1)
-                rmsd2+=r*r
-            if rmsd2 < best_rmsd2:
-                best_rmsd2 = rmsd2
-                best_sel = sels
+                rmsd2=r*r*N
+                ###print(order,rmsd2)
+                if rmsd2 < best_rmsd2:
+                    best_rmsd2 = rmsd2
+                    best_sel = sels
+                    best_order=order
+        else:
+            for sels in itertools.permutations(sels0):
+                rmsd2=0.0
+                for sel0, sel1 in itertools.takewhile(lambda x: rmsd2<best_rmsd2, zip(sels, sels1)):
+                    r=metric(sel0, sel1)
+                    rmsd2+=r*r
+                if rmsd2 < best_rmsd2:
+                    best_rmsd2 = rmsd2
+                    best_sel = sels
+        ###for i,sel in enumerate(best_sel):
+        ###    p0 = sel.get_selected_particles()[0]
+        ###    p1 = sels1[i].get_selected_particles()[0]
+        ###    m0 = IMP.pmi.tools.get_molecules([p0])[0]
+        ###    m1 = IMP.pmi.tools.get_molecules([p1])[0]
+        ###    c0 = IMP.atom.Copy(m0).get_copy_index()
+        ###    c1 = IMP.atom.Copy(m1).get_copy_index()
+        ###    name0=m0.get_name()
+        ###    name1=m1.get_name()
+        ###    print("WWW",name0,name1,c0,c1)
+        ###print(best_order,best_rmsd2,m0,m1)
         return  best_sel, best_rmsd2
 
     def compute_all_pairwise_rmsd(self):
@@ -2835,16 +3019,18 @@ class AnalysisReplicaExchange(object):
             sels_best_order, best_rmsd2 = self.rmsd_helper(sels0, self.seldict1[molname], metric)
 
             Ncoords = len(sels_best_order[0].get_selected_particles())
-            Ncopies = len(sels_best_order)
+            Ncopies = len(self.seldict1[molname])
             total_rmsd += Ncoords*best_rmsd2
             total_N += Ncoords*Ncopies
 
             for sel0, sel1 in zip(sels_best_order, self.seldict1[molname]):
                 p0 = sel0.get_selected_particles()[0]
                 p1 = sel1.get_selected_particles()[0]
-                m0,m1 = IMP.pmi.tools.get_molecules([p0,p1])
+                m0 = IMP.pmi.tools.get_molecules([p0])[0]
+                m1 = IMP.pmi.tools.get_molecules([p1])[0]
                 c0 = IMP.atom.Copy(m0).get_copy_index()
                 c1 = IMP.atom.Copy(m1).get_copy_index()
+                ###print(molname,c0,c1)
                 molecular_assignment[(molname,c0)]=(molname,c1)
 
         total_rmsd = math.sqrt(total_rmsd/total_N)
@@ -2853,6 +3039,7 @@ class AnalysisReplicaExchange(object):
         self.pairwise_molecular_assignment[(n0,n1)]=molecular_assignment
         self.pairwise_rmsd[(n1,n0)]=total_rmsd
         self.pairwise_molecular_assignment[(n1,n0)]=molecular_assignment
+        ###print(n0,n1,molecular_assignment)
         return total_rmsd, molecular_assignment
 
     def set_reference(self,reference,cluster):
@@ -2905,7 +3092,7 @@ class AnalysisReplicaExchange(object):
     def __repr__(self):
         s= "AnalysisReplicaExchange\n"
         s+="---- number of clusters %s \n"%str(len(self.clusters))
-        s+="---- number of models %s \n"%str(self.best_models)
+        s+="---- number of models %s \n"%str(len(self.stath0))
         return s
 
     def __getitem__(self,int_slice_adaptor):

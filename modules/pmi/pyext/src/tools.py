@@ -1930,6 +1930,9 @@ def get_molecules_dictionary(input_objects):
     for mol in IMP.pmi.tools.get_molecules(input_objects):
         name=mol.get_name()
         moldict[name].append(mol)
+
+    for mol in moldict:
+        moldict[mol].sort(key=lambda x: IMP.atom.Copy(x).get_copy_index())
     return moldict
 
 def get_molecules_dictionary_by_copy(input_objects):
@@ -2170,6 +2173,100 @@ def shuffle_configuration(objects,
                 break
     if return_debug:
         return debug
+
+class ColorHierarchy(object):
+    import matplotlib.pyplot as plt
+    import matplotlib as mpl
+
+    def __init__(self,hier):
+        hier.ColorHierarchy=self
+        self.hier=hier
+        mols=IMP.pmi.tools.get_molecules(IMP.atom.get_leaves(self.hier))
+        self.mols=[IMP.pmi.topology.PMIMoleculeHierarchy(mol) for mol in mols]
+        self.method=self.nochange
+        self.scheme=None
+        self.first=None
+        self.last=None
+
+    def nochange(self):
+        pass
+
+    def get_color(self,fl):
+        return IMP.display.Color(*self.scheme(fl)[0:3])
+
+    def get_log_scale(self,fl):
+        import math
+        eps=1.0
+        return math.log(fl+eps)
+
+    def color_by_resid(self):
+        self.method=self.color_by_resid
+        self.scheme=self.mpl.cm.rainbow
+        for mol in self.mols:
+            self.first=1
+            self.last=len(IMP.pmi.topology.PMIMoleculeHierarchy(mol).get_residue_indexes())
+            for p in IMP.atom.get_leaves(mol):
+                if IMP.atom.Residue.get_is_setup(p):
+                    ri=IMP.atom.Residue(p).get_index()
+                    c=self.get_color(float(ri)/self.last)
+                    IMP.display.Colored(p).set_color(c)
+                if IMP.atom.Fragment.get_is_setup(p):
+                    ris=IMP.atom.Fragment(p).get_residue_indexes()
+                    avr=sum(ris)/len(ris)
+                    c=self.get_color(float(avr)/self.last)
+                    IMP.display.Colored(p).set_color(c)
+
+    def color_by_uncertainty(self):
+        self.method=self.color_by_uncertainty
+        self.scheme=self.mpl.cm.jet
+        ps=IMP.atom.get_leaves(self.hier)
+        unc_dict={}
+        for p in ps:
+            if IMP.pmi.Uncertainty.get_is_setup(p):
+                u=IMP.pmi.Uncertainty(p).get_uncertainty()
+                unc_dict[p]=u
+        self.first=self.get_log_scale(1.0) #math.log(min(unc_dict.values())+eps)
+        self.last=self.get_log_scale(100.0) #math.log(max(unc_dict.values())+eps)
+        for p in unc_dict:
+            value=self.get_log_scale(unc_dict[p])
+            if value>=self.last: value=self.last
+            if value<=self.first: value=self.first
+            c=self.get_color((value-self.first)/(self.last-self.first))
+            IMP.display.Colored(p).set_color(c)
+
+    def get_color_bar(self,filename):
+        import matplotlib as mpl
+        mpl.use('Agg')
+        import matplotlib.pyplot as plt
+        import math
+        plt.clf()
+        fig = plt.figure(figsize=(8, 3))
+        ax1 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
+
+        cmap = self.scheme
+        norm = mpl.colors.Normalize(vmin=0.0, vmax=1.0)
+
+        if self.method == self.color_by_uncertainty:
+            angticks=[1.0,2.5,5.0,10.0,25.0,50.0,100.0]
+            vvalues=[]
+            marks=[]
+            for at in angticks:
+                vvalue=(self.get_log_scale(at)-self.first)/(self.last-self.first)
+                if vvalue <= 1.0 and vvalue >= 0.0:
+                    vvalues.append(vvalue)
+                    marks.append(str(at))
+            cb1 = mpl.colorbar.ColorbarBase(ax1, cmap=cmap,
+                            norm=norm,
+                            ticks=vvalues,
+                            orientation='horizontal')
+            print(self.first,self.last,marks,vvalues)
+            cb1.ax.set_xticklabels(marks)
+            cb1.set_label('Angstorm')
+            plt.savefig(filename, dpi=150, transparent=True)
+            plt.show()
+
+
+
 
 def color2rgb(colorname):
     """Given a chimera color name, return RGB"""

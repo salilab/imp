@@ -994,6 +994,7 @@ class RMFHierarchyHandler(IMP.atom.Hierarchy):
         self.root_hier_ref = hs[0]
         IMP.atom.Hierarchy.__init__(self, self.root_hier_ref)
         self.model.update()
+        self.ColorHierarchy=None
 
 
     def link_to_rmf(self,rmf_file_name):
@@ -1002,6 +1003,8 @@ class RMFHierarchyHandler(IMP.atom.Hierarchy):
         """
         self.rh_ref = RMF.open_rmf_file_read_only(rmf_file_name)
         IMP.rmf.link_hierarchies(self.rh_ref, [self])
+        if self.ColorHierarchy:
+            self.ColorHierarchy.method()
         RMFHierarchyHandler.set_frame(self,0)
 
     def set_frame(self,index):
@@ -1034,11 +1037,71 @@ class RMFHierarchyHandler(IMP.atom.Hierarchy):
             for nframe in list(range(len(self)))[slice_key]:
                 yield self[nframe]
 
+class CacheHierarchyCoordinates(object):
+    def __init__(self,StatHierarchyHandler):
+        self.xyzs=[]
+        self.nrms=[]
+        self.rbs=[]
+        self.nrm_coors={}
+        self.xyz_coors={}
+        self.rb_trans={}
+        self.current_index=None
+        self.rmfh=StatHierarchyHandler
+        rbs,xyzs=IMP.pmi.tools.get_rbs_and_beads([self.rmfh])
+        self.model=self.rmfh.get_model()
+        self.rbs=rbs
+        for xyz in xyzs:
+            if IMP.core.NonRigidMember.get_is_setup(xyz):
+                nrm=IMP.core.NonRigidMember(xyz)
+                self.nrms.append(nrm)
+            else:
+                fb=IMP.core.XYZ(xyz)
+                self.xyzs.append(fb)
+
+    def do_store(self,index):
+        self.rb_trans[index]={}
+        self.nrm_coors[index]={}
+        self.xyz_coors[index]={}
+        for rb in self.rbs:
+            self.rb_trans[index][rb]=rb.get_reference_frame()
+        for nrm in self.nrms:
+            self.nrm_coors[index][nrm]=nrm.get_internal_coordinates()
+        for xyz in self.xyzs:
+            self.xyz_coors[index][xyz]=xyz.get_coordinates()
+        self.current_index=index
+
+    def do_update(self,index):
+        if self.current_index!=index:
+            for rb in self.rbs:
+                rb.set_reference_frame(self.rb_trans[index][rb])
+            for nrm in self.nrms:
+                nrm.set_internal_coordinates(self.nrm_coors[index][nrm])
+            for xyz in self.xyzs:
+                xyz.set_coordinates(self.xyz_coors[index][xyz])
+            self.current_index=index
+            self.model.update()
+
+    def get_number_of_frames(self):
+        return len(self.rb_trans.keys())
+
+    def __getitem__(self,index):
+        if type(index) is int:
+            if index in self.rb_trans.keys():
+                return True
+            else:
+                return False
+        else:
+            raise TypeError("Unknown Type")
+
+    def __len__(self):
+        return self.get_number_of_frames()
+
+
 
 
 class StatHierarchyHandler(RMFHierarchyHandler):
     """ class to link stat files to several rmf files """
-    def __init__(self,model=None,stat_file=None,number_best_scoring_models=None,StatHierarchyHandler=None):
+    def __init__(self,model=None,stat_file=None,number_best_scoring_models=None,score_key=None,StatHierarchyHandler=None,cache=None):
         """
 
         @param model: IMP.Model()
@@ -1046,6 +1109,7 @@ class StatHierarchyHandler(RMFHierarchyHandler):
             stat file name as key and a list of frames as values
         @param number_best_scoring_models:
         @param StatHierarchyHandler: copy constructor input object
+        @param cache: cache coordinates and rigid body transformations.
         """
 
         if not StatHierarchyHandler is None:
@@ -1056,16 +1120,29 @@ class StatHierarchyHandler(RMFHierarchyHandler):
             self.number_best_scoring_models=StatHierarchyHandler.number_best_scoring_models
             self.is_setup=True
             self.current_rmf=StatHierarchyHandler.current_rmf
-            self.current_frame=StatHierarchyHandler.current_frame
-            self.current_index=StatHierarchyHandler.current_index
+            self.current_frame=None
+            self.current_index=None
             self.score_threshold=StatHierarchyHandler.score_threshold
+            self.score_key=StatHierarchyHandler.score_key
+            self.cache=StatHierarchyHandler.cache
             RMFHierarchyHandler.__init__(self, self.model,self.current_rmf)
+            if self.cache:
+                self.cache=CacheHierarchyCoordinates(self)
+            else:
+                self.cache=None
+            self.set_frame(0)
 
         else:
             #standard constructor
             self.model=model
             self.data=[]
             self.number_best_scoring_models=number_best_scoring_models
+            self.cache=cache
+
+            if score_key is None:
+                self.score_key="Total_Score"
+            else:
+                self.score_key=score_key
             self.is_setup=None
             self.current_rmf=None
             self.current_frame=None
@@ -1129,8 +1206,13 @@ class StatHierarchyHandler(RMFHierarchyHandler):
 
         if not self.is_setup:
             RMFHierarchyHandler.__init__(self, self.model,self.get_rmf_names()[0])
+            if self.cache:
+                self.cache=CacheHierarchyCoordinates(self)
+            else:
+                self.cache=None
             self.is_setup=True
             self.current_rmf=self.get_rmf_names()[0]
+
         self.set_frame(0)
 
     def save_data(self,filename='data.pkl'):
@@ -1160,7 +1242,6 @@ class StatHierarchyHandler(RMFHierarchyHandler):
                 nmodels+=len(cluster)
             self.data=[None]*nmodels
             for cluster in data_structure:
-                print(cluster)
                 for n,data in enumerate(cluster):
                     index=cluster.members[n]
                     self.data[index]=data
@@ -1168,17 +1249,20 @@ class StatHierarchyHandler(RMFHierarchyHandler):
             raise TypeError("%filename should contain a list of IMP.pmi.output.DataEntry or IMP.pmi.output.Cluster" % filename)
 
     def set_frame(self,index):
-        nm=self.data[index].rmf_name
-        fidx=self.data[index].rmf_index
-
-        if nm != self.current_rmf:
-            self.link_to_rmf(nm)
-            self.current_rmf=nm
-            self.current_frame=None
-
-        if fidx!=self.current_frame:
-            RMFHierarchyHandler.set_frame(self, fidx)
-            self.current_frame=fidx
+        if self.cache is not None and self.cache[index]:
+            self.cache.do_update(index)
+        else:
+            nm=self.data[index].rmf_name
+            fidx=self.data[index].rmf_index
+            if nm != self.current_rmf:
+                self.link_to_rmf(nm)
+                self.current_rmf=nm
+                self.current_frame=-1
+            if fidx!=self.current_frame:
+                RMFHierarchyHandler.set_frame(self, fidx)
+                self.current_frame=fidx
+            if self.cache is not None:
+                self.cache.do_store(index)
 
         self.current_index = index
 
@@ -1227,7 +1311,7 @@ class StatHierarchyHandler(RMFHierarchyHandler):
         po=ProcessOutput(stat_file)
         fs=po.get_keys()
         models = IMP.pmi.io.get_best_models([stat_file],
-                                            score_key="Total_Score",
+                                            score_key=self.score_key,
                                             feature_keys=fs,
                                             rmf_file_key="rmf_file",
                                             rmf_file_frame_key="rmf_frame_index",
@@ -1281,7 +1365,11 @@ class Cluster(object):
         self.average_score=self.compute_score()
 
     def compute_score(self):
-        return sum([d.score for d in self])/len(self)
+        try:
+            score=sum([d.score for d in self])/len(self)
+        except AttributeError:
+            score=None
+        return score
 
     def __repr__(self):
         s= "IMP.pmi.output.Cluster\n"

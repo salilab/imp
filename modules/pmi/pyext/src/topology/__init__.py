@@ -381,7 +381,7 @@ class Molecule(_SystemBase):
         self.coord_finder.add_residues(rhs)
 
         if len(self.residues)==0:
-            print("WARNING: Extracting sequence from structure. Potentially dangerous.")
+            print("WARNING: Substituting PDB residue type with FASTA residue type. Potentially dangerous.")
 
         # load those into TempResidue object
         atomic_res = IMP.pmi.tools.OrderedSet() # collect integer indexes of atomic residues to return
@@ -962,10 +962,12 @@ class TempResidue(object):
     def set_structure(self,res,soft_check=False):
         if res.get_residue_type()!=self.get_residue_type():
             if soft_check:
-                print('WARNING: Replacing sequence residue',self.get_index(),self.hier.get_residue_type(),
-                      'with PDB type',res.get_residue_type())
-                self.hier.set_residue_type((res.get_residue_type()))
-                self.rtype = res.get_residue_type()
+                # note from commit a2c13eaa1 we give priority to the FASTA and not the PDB
+                print('WARNING: Inconsistency between FASTA sequence and PDB sequence. FASTA type',\
+                      self.get_index(),self.hier.get_residue_type(),
+                      'and PDB type',res.get_residue_type())
+                self.hier.set_residue_type((self.get_residue_type()))
+                self.rtype = self.get_residue_type()
             else:
                 raise Exception('ERROR: PDB residue index',self.get_index(),'is',
                                 IMP.atom.get_one_letter_code(res.get_residue_type()),
