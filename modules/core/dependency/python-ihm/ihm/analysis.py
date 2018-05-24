@@ -3,14 +3,10 @@
 
 class Step(object):
     """A single step in an :class:`Analysis`.
-       See :class:`FilterStep`, :class:`ClusterStep`, :class:`RescoreStep`,
-       :class:`ValidationStep`, :class:`OtherStep`.
-    """
-    pass
 
-
-class FilterStep(Step):
-    """A single filtering step in an :class:`Analysis`.
+       Normally one of the base classes is used; see :class:`FilterStep`,
+       :class:`ClusterStep`, :class:`RescoreStep`, :class:`ValidationStep`,
+       :class:`OtherStep`, and :class:`EmptyStep`.
 
        :param str feature: feature energy/score;RMSD;dRMSD;other
        :param int num_models_begin: The number of models at the beginning
@@ -21,107 +17,45 @@ class FilterStep(Step):
        :param dataset_group: The collection of datasets used in this analysis,
               if applicable
        :type dataset_group: :class:`~ihm.dataset.DatasetGroup`
-    """
-    type = 'filter'
-
-    def __init__(self, feature, num_models_begin, num_models_end,
-                 assembly=None, dataset_group=None):
-        self.assembly, self.dataset_group = assembly, dataset_group
-        self.feature = feature
-        self.num_models_begin = num_models_begin
-        self.num_models_end = num_models_end
-
-
-class ClusterStep(Step):
-    """A single clustering step in an :class:`Analysis`.
-
-       :param str feature: feature energy/score;RMSD;dRMSD;other
-       :param int num_models_begin: The number of models at the beginning
-              of the step
-       :param int num_models_end: The number of models at the end of the step
-       :param assembly: The part of the system analyzed in this step
-       :type assembly: :class:`~ihm.Assembly`
-       :param dataset_group: The collection of datasets used in this analysis,
-              if applicable
-       :type dataset_group: :class:`~ihm.dataset.DatasetGroup`
-    """
-    type = 'cluster'
-
-    def __init__(self, feature, num_models_begin, num_models_end,
-                 assembly=None, dataset_group=None):
-        self.assembly, self.dataset_group = assembly, dataset_group
-        self.feature = feature
-        self.num_models_begin = num_models_begin
-        self.num_models_end = num_models_end
-
-
-class RescoreStep(Step):
-    """A single rescoring step in an :class:`Analysis`.
-
-       :param str feature: feature energy/score;RMSD;dRMSD;other
-       :param int num_models_begin: The number of models at the beginning
-              of the step
-       :param int num_models_end: The number of models at the end of the step
-       :param assembly: The part of the system analyzed in this step
-       :type assembly: :class:`~ihm.Assembly`
-       :param dataset_group: The collection of datasets used in this analysis,
-              if applicable
-       :type dataset_group: :class:`~ihm.dataset.DatasetGroup`
-    """
-    type = 'rescore'
-
-    def __init__(self, feature, num_models_begin, num_models_end,
-                 assembly=None, dataset_group=None):
-        self.assembly, self.dataset_group = assembly, dataset_group
-        self.feature = feature
-        self.num_models_begin = num_models_begin
-        self.num_models_end = num_models_end
-
-
-class ValidationStep(Step):
-    """A single validation step in an :class:`Analysis`.
-
-       :param str feature: feature energy/score;RMSD;dRMSD;other
-       :param int num_models_begin: The number of models at the beginning
-              of the step
-       :param int num_models_end: The number of models at the end of the step
-       :param assembly: The part of the system analyzed in this step
-       :type assembly: :class:`~ihm.Assembly`
-       :param dataset_group: The collection of datasets used in this analysis,
-              if applicable
-       :type dataset_group: :class:`~ihm.dataset.DatasetGroup`
-    """
-    type = 'validation'
-
-    def __init__(self, feature, num_models_begin, num_models_end,
-                 assembly=None, dataset_group=None):
-        self.assembly, self.dataset_group = assembly, dataset_group
-        self.feature = feature
-        self.num_models_begin = num_models_begin
-        self.num_models_end = num_models_end
-
-
-class OtherStep(Step):
-    """A single step in an :class:`Analysis` of some other type.
-
-       :param str feature: feature energy/score;RMSD;dRMSD;other
-       :param int num_models_begin: The number of models at the beginning
-              of the step
-       :param int num_models_end: The number of models at the end of the step
-       :param assembly: The part of the system analyzed in this step
-       :type assembly: :class:`~ihm.Assembly`
-       :param dataset_group: The collection of datasets used in this analysis,
-              if applicable
-       :type dataset_group: :class:`~ihm.dataset.DatasetGroup`
+       :param software: The software used in this step
+       :type software: :class:`~ihm.Software`
     """
     type = 'other'
 
     def __init__(self, feature, num_models_begin, num_models_end,
-                 assembly=None, dataset_group=None):
+                 assembly=None, dataset_group=None, software=None):
         self.assembly, self.dataset_group = assembly, dataset_group
-        self.feature = feature
+        self.feature, self.software = feature, software
         self.num_models_begin = num_models_begin
         self.num_models_end = num_models_end
+
+
+class FilterStep(Step):
+    """A single filtering step in an :class:`Analysis`.
+       See :class:`Step` for a description of the parameters.
+    """
+    type = 'filter'
+
+
+class ClusterStep(Step):
+    """A single clustering step in an :class:`Analysis`.
+       See :class:`Step` for a description of the parameters.
+    """
+    type = 'cluster'
+
+
+class RescoreStep(Step):
+    """A single rescoring step in an :class:`Analysis`.
+       See :class:`Step` for a description of the parameters.
+    """
+    type = 'rescore'
+
+
+class ValidationStep(Step):
+    """A single validation step in an :class:`Analysis`.
+       See :class:`Step` for a description of the parameters.
+    """
+    type = 'validation'
 
 
 class EmptyStep(Step):
@@ -130,9 +64,9 @@ class EmptyStep(Step):
        any kind of analysis.
     """
     type = 'none'
-    feature = 'none'
-    num_models_begin = num_models_end = None
-    assembly = dataset_group = None
+    def __init__(self):
+        super(EmptyStep, self).__init__(
+                feature='none', num_models_begin=None, num_models_end=None)
 
 
 class Analysis(object):

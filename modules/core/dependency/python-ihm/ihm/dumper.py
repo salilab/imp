@@ -43,24 +43,23 @@ class _CommentDumper(_Dumper):
 
 
 class _SoftwareDumper(_Dumper):
-    def dump(self, system, writer):
-        ordinal = 1
+    def finalize(self, system):
         seen_software = {}
+        self._software_by_id = []
+        for s in system._all_software():
+            util._assign_id(s, seen_software, self._software_by_id)
+
+    def dump(self, system, writer):
         # todo: specify these attributes in only one place (e.g. in the Software
         # class)
         with writer.loop("_software",
                          ["pdbx_ordinal", "name", "classification",
                           "description", "version", "type", "location"]) as l:
-            for s in system.software:
-                # Remove duplicates
-                if s in seen_software:
-                    continue
-                seen_software[s] = None
-                l.write(pdbx_ordinal=ordinal, name=s.name,
+            for s in self._software_by_id:
+                l.write(pdbx_ordinal=s._id, name=s.name,
                         classification=s.classification,
                         description=s.description, version=s.version,
                         type=s.type, location=s.location)
-                ordinal += 1
 
 
 class _CitationDumper(_Dumper):
@@ -610,7 +609,8 @@ class _StartingModelDumper(_Dumper):
                       "template_seq_id_end", "template_sequence_identity",
                       "template_sequence_identity_denominator",
                       "template_dataset_list_id",
-                      "alignment_file_id"]) as l:
+                      "alignment_file_id", "software_id",
+                      "script_file_id"]) as l:
             ordinal = 1
             for sm in system._all_starting_models():
                 off = sm.offset
@@ -629,7 +629,10 @@ class _StartingModelDumper(_Dumper):
                       template_dataset_list_id=template.dataset._id
                                                if template.dataset else None,
                       alignment_file_id=template.alignment_file._id
-                                        if template.alignment_file else None)
+                                        if template.alignment_file else None,
+                      software_id=sm.software._id if sm.software else None,
+                      script_file_id=sm.script_file._id
+                                        if sm.script_file else None)
                     ordinal += 1
 
     def dump_coords(self, system, writer):
@@ -695,7 +698,8 @@ class _ProtocolDumper(_Dumper):
                           "struct_assembly_description", "protocol_name",
                           "step_name", "step_method", "num_models_begin",
                           "num_models_end", "multi_scale_flag",
-                          "multi_state_flag", "ordered_flag"]) as l:
+                          "multi_state_flag", "ordered_flag",
+                          "software_id"]) as l:
             for p in system._all_protocols():
                 for s in p.steps:
                     l.write(ordinal_id=ordinal, protocol_id=p._id,
@@ -710,7 +714,8 @@ class _ProtocolDumper(_Dumper):
                             num_models_end=s.num_models_end,
                             multi_state_flag=s.multi_state,
                             ordered_flag=s.ordered,
-                            multi_scale_flag=s.multi_scale)
+                            multi_scale_flag=s.multi_scale,
+                            software_id=s.software._id if s.software else None)
                     ordinal += 1
 
 
@@ -734,7 +739,7 @@ class _PostProcessDumper(_Dumper):
                          ["id", "protocol_id", "analysis_id", "step_id",
                           "type", "feature", "num_models_begin",
                           "num_models_end", "struct_assembly_id",
-                          "dataset_group_id"]) as l:
+                          "dataset_group_id", "software_id"]) as l:
             for p in system._all_protocols():
                 for a in p.analyses:
                     for s in a.steps:
@@ -746,7 +751,9 @@ class _PostProcessDumper(_Dumper):
                                 struct_assembly_id=s.assembly._id if s.assembly
                                                                   else None,
                                 dataset_group_id=s.dataset_group._id
-                                                 if s.dataset_group else None)
+                                                 if s.dataset_group else None,
+                                software_id=s.software._id if s.software
+                                                           else None)
 
 
 class _ModelDumper(object):

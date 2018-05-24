@@ -401,6 +401,43 @@ class Tests(unittest.TestCase):
         # duplicates should be filtered globally
         self.assertEqual(list(s._all_citations()), [c2, c1])
 
+    def test_all_software(self):
+        """Test _all_software() method"""
+        class MockObject(object):
+            pass
+
+        s1 = ihm.Software(name='test', classification='test code',
+                          description='Some test program',
+                          version=1, location='http://test.org')
+        s2 = ihm.Software(name='foo', classification='test code',
+                          description='Other test program',
+                          location='http://test2.org')
+
+        sm1 = MockObject()
+        sm1.software = None
+        sm2 = MockObject()
+        sm2.software = s1
+
+        s = ihm.System()
+        s.orphan_starting_models.extend((sm1, sm2))
+        s.software.extend((s2, s2))
+
+        step1 = MockObject()
+        step2 = MockObject()
+        step1.software = None
+        step2.software = s2
+        protocol1 = MockObject()
+        protocol1.steps = [step1, step2]
+        analysis1 = MockObject()
+        astep1 = MockObject()
+        astep1.software = s2
+        analysis1.steps = [astep1]
+        protocol1.analyses = [analysis1]
+        s.orphan_protocols.append(protocol1)
+
+        # duplicates are kept
+        self.assertEqual(list(s._all_software()), [s2, s2, s1, s2, s2])
+
     def test_all_dataset_groups(self):
         """Test _all_dataset_groups() method"""
         class MockObject(object):
@@ -455,6 +492,7 @@ class Tests(unittest.TestCase):
 
         start_model = MockObject()
         start_model.dataset = None
+        start_model.script_file = loc2
         template = MockObject()
         template.dataset = None
         template.alignment_file = loc3
@@ -463,7 +501,7 @@ class Tests(unittest.TestCase):
 
         # duplicates should not be filtered
         self.assertEqual(list(s._all_locations()), [loc1, loc1, loc2,
-                                                    loc1, loc3])
+                                                    loc1, loc2, loc3])
 
     def test_all_datasets(self):
         """Test _all_datasets() method"""

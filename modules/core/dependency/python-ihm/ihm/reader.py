@@ -147,7 +147,7 @@ class _SystemReader(object):
                                   ihm.representation.Representation)
         self.protocols = _IDMapper(self.system.orphan_protocols,
                                   ihm.protocol.Protocol)
-        self.analysis_steps = _AnalysisIDMapper(None, ihm.analysis.OtherStep,
+        self.analysis_steps = _AnalysisIDMapper(None, ihm.analysis.Step,
                                   *(None,)*3)
         self.analyses = _IDMapper(None, ihm.analysis.Analysis)
         self.models = _IDMapper(None, ihm.model.Model, *(None,)*3)
@@ -509,6 +509,11 @@ class _StartingComparativeModelsHandler(_Handler):
 
     def __call__(self, d):
         m = self.sysr.starting_models.get_by_id(d['starting_model_id'])
+        if 'script_file_id' in d:
+            m.script_file = self.sysr.external_files.get_by_id(
+                                                      d['script_file_id'])
+        if 'software_id' in d:
+            m.software = self.sysr.external_files.get_by_id(d['software_id'])
         dataset = self.sysr.datasets.get_by_id(d['template_dataset_list_id'])
         aln = self.sysr.external_files.get_by_id_or_none(
                                             d, 'alignment_file_id')
@@ -568,7 +573,7 @@ class _PostProcessHandler(_Handler):
 
         typ = d.get('type', 'other').lower()
         step = self.sysr.analysis_steps.get_by_id(d['id'],
-                                self.type_map.get(typ, ihm.analysis.OtherStep))
+                                self.type_map.get(typ, ihm.analysis.Step))
         analysis.steps.append(step)
 
         if typ == 'none':

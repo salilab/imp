@@ -315,6 +315,8 @@ class System(object):
                           if hasattr(dataset, 'location') and dataset.location),
                 (ensemble.file for ensemble in self.ensembles if ensemble.file),
                 (density.file for density in all_densities() if density.file),
+                (sm.script_file for sm in self._all_starting_models()
+                                         if sm.script_file),
                 (template.alignment_file for template in self._all_templates()
                                          if template.alignment_file))
 
@@ -339,6 +341,20 @@ class System(object):
                 (restraint.feature for restraint in self.restraints
                           if hasattr(restraint, 'feature')
                           and restraint.feature))
+
+    def _all_software(self):
+        """Iterate over all Software in the system.
+           This includes all Software referenced from other objects, plus
+           any referenced from the top-level system.
+           Duplicates may be present."""
+        return (itertools.chain(
+                        self.software,
+                        (sm.software for sm in self._all_starting_models()
+                              if sm.software),
+                        (step.software for step in self._all_protocol_steps()
+                                       if step.software),
+                        (step.software for step in self._all_analysis_steps()
+                                       if step.software)))
 
     def _all_citations(self):
         """Iterate over all Citations in the system.

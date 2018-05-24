@@ -22,9 +22,6 @@ The :mod:`ihm.analysis` Python module
 .. autoclass:: ValidationStep
    :members:
 
-.. autoclass:: OtherStep
-   :members:
-
 .. autoclass:: EmptyStep
    :members:
 

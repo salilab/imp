@@ -13,20 +13,22 @@ class Step(object):
        :param int num_models_begin: The number of models at the beginning
               of the step
        :param int num_models_end: The number of models at the end of the step
+       :param software: The software used in this step
+       :type software: :class:`~ihm.Software`
        :param bool multi_scale: Indicates if the modeling is multi-scale
        :param bool multi_state: Indicates if the modeling is multi-state
        :param bool ordered: Indicates if the modeling is ordered
     """
     def __init__(self, assembly, dataset_group, method, num_models_begin=None,
-                 num_models_end=None, multi_scale=False, multi_state=False,
-                 ordered=False, name=None):
+                 num_models_end=None, software=None, multi_scale=False,
+                 multi_state=False, ordered=False, name=None):
         self.assembly = assembly
         self.dataset_group = dataset_group
         self.method = method
         self.num_models_begin = num_models_begin
         self.num_models_end = num_models_end
         self.multi_scale, self.multi_state = multi_scale, multi_state
-        self.ordered, self.name = ordered, name
+        self.software, self.ordered, self.name = software, ordered, name
 
 
 class Protocol(object):

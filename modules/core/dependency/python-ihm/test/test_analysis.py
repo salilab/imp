@@ -9,10 +9,6 @@ import ihm.analysis
 
 class Tests(unittest.TestCase):
 
-    def test_step(self):
-        """Test analysis Step base class"""
-        s = ihm.analysis.Step() # does nothing
-
     def test_filter_step(self):
         """Test analysis FilterStep class"""
         s = ihm.analysis.FilterStep(feature='RMSD', num_models_begin=42,
@@ -40,10 +36,10 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.num_models_begin, 42)
         self.assertEqual(s.num_models_end, 5)
 
-    def test_other_step(self):
-        """Test analysis OtherStep class"""
-        s = ihm.analysis.OtherStep(feature='RMSD', num_models_begin=42,
-                                   num_models_end=5)
+    def test_step(self):
+        """Test analysis Step class"""
+        s = ihm.analysis.Step(feature='RMSD', num_models_begin=42,
+                              num_models_end=5)
         self.assertEqual(s.type, 'other')
         self.assertEqual(s.feature, 'RMSD')
         self.assertEqual(s.num_models_begin, 42)

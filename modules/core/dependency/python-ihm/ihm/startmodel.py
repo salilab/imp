@@ -59,13 +59,20 @@ class StartingModel(object):
               and the IHM model (the offset is added to the starting model
               numbering to give the IHM model numbering).
        :param list metadata: List of PDB metadata, such as HELIX records.
+       :param software: The software used to generate the starting model.
+       :type software: :class:`~ihm.Software`
+       :param script_file: Reference to the external file containing the
+              script used to generate the starting model (usually a
+              :class:`~ihm.location.WorkflowFileLocation`).
+       :type script_file: :class:`~ihm.location.Location`
     """
     def __init__(self, asym_unit, dataset, asym_id, templates=None, offset=0,
-                 metadata=None):
+                 metadata=None, software=None, script_file=None):
         self.templates = templates if templates is not None else []
         self.metadata = metadata if metadata is not None else []
         self.asym_unit = asym_unit
         self.dataset, self.asym_id, self.offset = dataset, asym_id, offset
+        self.software, self.script_file = software, script_file
 
     def get_atoms(self):
         """Yield :class:`~ihm.model.Atom` objects that represent this

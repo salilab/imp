@@ -73,6 +73,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(p['templates'], {})
         self.assertEqual(len(p['metadata']), 1)
         self.assertEqual(p['metadata'][0].helix_id, '10')
+        self.assertEqual(p['script'], None)
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Experimental model')
         self.assertEqual(dataset.location.db_name, 'PDB')
@@ -88,6 +89,7 @@ class Tests(unittest.TestCase):
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_pdb.pdb')
         p = self._parse_pdb(pdbname)
         self.assertEqual(p['templates'], {})
+        self.assertEqual(p['script'], None)
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Experimental model')
         self.assertEqual(dataset.location.path, pdbname)
@@ -108,6 +110,7 @@ class Tests(unittest.TestCase):
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_model.pdb')
         p = self._parse_pdb(pdbname)
         self.assertEqual(p['templates'], {})
+        self.assertEqual(p['script'], None)
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Comparative model')
         self.assertEqual(dataset.location.path, pdbname)
@@ -129,6 +132,7 @@ class Tests(unittest.TestCase):
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_int_model.pdb')
         p = self._parse_pdb(pdbname)
         self.assertEqual(p['templates'], {})
+        self.assertEqual(p['script'], None)
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Integrative model')
         self.assertEqual(dataset.location.path, pdbname)
@@ -144,17 +148,19 @@ class Tests(unittest.TestCase):
                          'Starting integrative model structure')
 
     def test_modeller_model_aln(self):
-        """Test PDBParser when given a Modeller model with alignment"""
+        """Test PDBParser when given a Modeller model with alignment/script"""
         pdbname = utils.get_input_file_name(TOPDIR, 'modeller_model.pdb')
         p = self.check_modeller_model(pdbname)
 
         aliname = utils.get_input_file_name(TOPDIR, 'modeller_model.ali')
+        script = utils.get_input_file_name(TOPDIR, 'modeller_model.py')
+        self.assertEqual(p['script'].path, script)
         for templates in p['templates'].values():
             for t in templates:
                 self.assertEqual(t.alignment_file.path, aliname)
 
     def test_modeller_model_no_aln(self):
-        "Test PDBParser when given a Modeller model with no alignment"
+        "Test PDBParser when given a Modeller model with no alignment/script"
         pdbname = utils.get_input_file_name(TOPDIR, 'modeller_model_no_aln.pdb')
         p = self.check_modeller_model(pdbname)
         for templates in p['templates'].values():
