@@ -38,8 +38,8 @@
 #endif
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
-extern std::string imp_data_path;
-extern std::string imp_example_path;
+extern const char *imp_data_path;
+extern const char *imp_example_path;
 
 namespace {
 

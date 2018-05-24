@@ -11,8 +11,8 @@ template = """
 #include <IMP/kernel_config.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
- std::string imp_data_path="%(datapath)s";
- std::string imp_example_path="%(examplepath)s";
+ const char *imp_data_path="%(datapath)s";
+ const char *imp_example_path="%(examplepath)s";
 IMPKERNEL_END_INTERNAL_NAMESPACE
 """
 
