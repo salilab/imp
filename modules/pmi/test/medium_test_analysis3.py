@@ -11,7 +11,6 @@ class Tests(IMP.test.TestCase):
             import matplotlib
         except ImportError:
             self.skipTest("no matplotlib package")
-        matplotlib.pyplot.switch_backend('Agg')
         model=IMP.Model()
         sts=sorted(glob.glob(self.get_input_file_name("output_test/stat.0.out").replace(".0.",".*.")))
         are=IMP.pmi.macros.AnalysisReplicaExchange(model,sts,10)

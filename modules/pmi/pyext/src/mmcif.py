@@ -733,7 +733,6 @@ class _AllStartingModels(object):
         parser = ihm.metadata.PDBParser()
         r = parser.parse_file(f.pdbname)
 
-        self.simo.system.software.extend(r['software'])
         self.simo._add_dataset(r['dataset'])
         # We only want the templates that model the starting model chain
         templates = r['templates'].get(f.chain, [])
@@ -747,7 +746,9 @@ class _AllStartingModels(object):
                                                f.end + f.offset),
                     dataset=r['dataset'], asym_id=f.chain,
                     templates=templates, offset=f.offset,
-                    metadata=r['metadata'])
+                    metadata=r['metadata'],
+                    software=r['software'][0] if r['software'] else None,
+                    script_file=r['script'])
         m.fragments = [weakref.proxy(f)]
         return m
 

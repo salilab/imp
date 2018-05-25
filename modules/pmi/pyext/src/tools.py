@@ -2175,10 +2175,14 @@ def shuffle_configuration(objects,
         return debug
 
 class ColorHierarchy(object):
-    import matplotlib.pyplot as plt
-    import matplotlib as mpl
 
     def __init__(self,hier):
+        import matplotlib as mpl
+        mpl.use('Agg')
+        import matplotlib.pyplot as plt
+        self.mpl = mpl
+        self.plt = plt
+
         hier.ColorHierarchy=self
         self.hier=hier
         mols=IMP.pmi.tools.get_molecules(IMP.atom.get_leaves(self.hier))
