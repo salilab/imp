@@ -499,9 +499,26 @@ class Tests(unittest.TestCase):
         start_model.templates = [template]
         s.orphan_starting_models.append(start_model)
 
+        step1 = MockObject()
+        step2 = MockObject()
+        step1.dataset_group = None
+        step2.dataset_group = None
+        step1.script_file = None
+        step2.script_file = loc2
+        protocol1 = MockObject()
+        protocol1.steps = [step1, step2]
+        analysis1 = MockObject()
+        astep1 = MockObject()
+        astep1.dataset_group = None
+        astep1.script_file = loc2
+        analysis1.steps = [astep1]
+        protocol1.analyses = [analysis1]
+        s.orphan_protocols.append(protocol1)
+
         # duplicates should not be filtered
         self.assertEqual(list(s._all_locations()), [loc1, loc1, loc2,
-                                                    loc1, loc2, loc3])
+                                                    loc1, loc2, loc3,
+                                                    loc2, loc2])
 
     def test_all_datasets(self):
         """Test _all_datasets() method"""

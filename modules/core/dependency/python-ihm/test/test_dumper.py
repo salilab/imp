@@ -836,6 +836,9 @@ _ihm_model_representation.model_object_count
                                script_file=script, software=software)
         system.orphan_starting_models.append(sm)
 
+        sm = TestStartingModel(asym(1,15), dstarget, 'A', [])
+        system.orphan_starting_models.append(sm)
+
         e1._id = 42
         asym._id = 99
         dstemplate._id = 101
@@ -859,6 +862,14 @@ _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
 1 42 foo 99 1 12 'experimental model' A 10 102
+2 42 foo 99 1 15 'experimental model' A 0 102
+#
+#
+loop_
+_ihm_starting_computational_models.starting_model_id
+_ihm_starting_computational_models.software_id
+_ihm_starting_computational_models.script_file_id
+1 99 8
 #
 #
 loop_
@@ -874,10 +885,8 @@ _ihm_starting_comparative_models.template_sequence_identity
 _ihm_starting_comparative_models.template_sequence_identity_denominator
 _ihm_starting_comparative_models.template_dataset_list_id
 _ihm_starting_comparative_models.alignment_file_id
-_ihm_starting_comparative_models.software_id
-_ihm_starting_comparative_models.script_file_id
-1 1 A 1 10 C 101 110 30.000 1 101 . 99 8
-2 1 A 5 12 D 201 210 40.000 1 101 5 99 8
+1 1 A 1 10 C 101 110 30.000 1 101 .
+2 1 A 5 12 D 201 210 40.000 1 101 5
 #
 #
 loop_
@@ -896,6 +905,7 @@ _ihm_starting_model_coord.Cartn_z
 _ihm_starting_model_coord.B_iso_or_equiv
 _ihm_starting_model_coord.ordinal_id
 1 ATOM 1 C CA ALA 42 99 1 -8.000 -5.000 91.000 42.000 1
+2 ATOM 1 C CA ALA 42 99 1 -8.000 -5.000 91.000 42.000 2
 #
 #
 loop_
@@ -911,6 +921,8 @@ _ihm_starting_model_seq_dif.db_comp_id
 _ihm_starting_model_seq_dif.details
 1 42 99 7 MET 1 A 5 MSE 'Conversion of modified residue MSE to MET'
 2 42 99 8 GLY 1 A 6 LEU 'LEU -> GLY'
+3 42 99 7 MET 2 A 5 MSE 'Conversion of modified residue MSE to MET'
+4 42 99 8 GLY 2 A 6 LEU 'LEU -> GLY'
 #
 """)
 
@@ -928,6 +940,8 @@ _ihm_starting_model_seq_dif.details
         dsg2._id = 101
         software = MockObject()
         software._id = 80
+        script = MockObject()
+        script._id = 90
         p1.steps.append(ihm.protocol.Step(assembly=assembly, dataset_group=dsg,
                                method='Monte Carlo', num_models_begin=0,
                                num_models_end=500, multi_scale=True, name='s1'))
@@ -940,7 +954,7 @@ _ihm_starting_model_seq_dif.details
         p2.steps.append(ihm.protocol.Step(assembly=assembly, dataset_group=dsg2,
                                method='Replica exchange', num_models_begin=2000,
                                num_models_end=1000, multi_scale=True,
-                               software=software))
+                               software=software, script_file=script))
         system.orphan_protocols.append(p2)
 
         dumper = ihm.dumper._ProtocolDumper()
@@ -963,9 +977,10 @@ _ihm_modeling_protocol.multi_scale_flag
 _ihm_modeling_protocol.multi_state_flag
 _ihm_modeling_protocol.ordered_flag
 _ihm_modeling_protocol.software_id
-1 1 1 42 99 foo equilibration s1 'Monte Carlo' 0 500 YES NO NO .
-2 1 2 42 99 foo equilibration . 'Replica exchange' 500 2000 YES NO NO .
-3 2 1 42 101 foo sampling . 'Replica exchange' 2000 1000 YES NO NO 80
+_ihm_modeling_protocol.script_file_id
+1 1 1 42 99 foo equilibration s1 'Monte Carlo' 0 500 YES NO NO . .
+2 1 2 42 99 foo equilibration . 'Replica exchange' 500 2000 YES NO NO . .
+3 2 1 42 101 foo sampling . 'Replica exchange' 2000 1000 YES NO NO 80 90
 #
 """)
 
@@ -992,11 +1007,13 @@ _ihm_modeling_protocol.software_id
         dg1._id = 301
         software = MockObject()
         software._id = 401
+        script = MockObject()
+        script._id = 501
         a2.steps.append(ihm.analysis.ValidationStep(
                              feature='energy/score', num_models_begin=42,
                              num_models_end=42,
                              assembly=asmb1, dataset_group=dg1,
-                             software=software))
+                             software=software, script_file=script))
         p1.analyses.extend((a1, a2))
 
         dumper = ihm.dumper._ProtocolDumper()
@@ -1019,10 +1036,11 @@ _ihm_modeling_post_process.num_models_end
 _ihm_modeling_post_process.struct_assembly_id
 _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
-1 1 1 1 none none . . . . .
-2 1 2 1 filter energy/score 1000 200 . . .
-3 1 2 2 cluster RMSD 200 42 . . .
-4 1 2 3 validation energy/score 42 42 101 301 401
+_ihm_modeling_post_process.script_file_id
+1 1 1 1 none none . . . . . .
+2 1 2 1 filter energy/score 1000 200 . . . .
+3 1 2 2 cluster RMSD 200 42 . . . .
+4 1 2 3 validation energy/score 42 42 101 301 401 501
 #
 """)
 

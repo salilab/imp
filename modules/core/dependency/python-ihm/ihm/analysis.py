@@ -19,15 +19,21 @@ class Step(object):
        :type dataset_group: :class:`~ihm.dataset.DatasetGroup`
        :param software: The software used in this step
        :type software: :class:`~ihm.Software`
+       :param script_file: Reference to the external file containing the
+              script used in this step (usually a
+              :class:`~ihm.location.WorkflowFileLocation`).
+       :type script_file: :class:`~ihm.location.Location`
     """
     type = 'other'
 
     def __init__(self, feature, num_models_begin, num_models_end,
-                 assembly=None, dataset_group=None, software=None):
+                 assembly=None, dataset_group=None, software=None,
+                 script_file=None):
         self.assembly, self.dataset_group = assembly, dataset_group
         self.feature, self.software = feature, software
         self.num_models_begin = num_models_begin
         self.num_models_end = num_models_end
+        self.script_file = script_file
 
 
 class FilterStep(Step):

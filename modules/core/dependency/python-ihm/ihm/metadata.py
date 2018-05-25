@@ -332,8 +332,9 @@ class PDBParser(Parser):
         target_asym_id = info.group(6)
         sequence_identity = float(info.group(8))
 
-        # Assume a code of 1abcX or 1abcX_N refers to a real PDB structure
-        m = re.match('(\d[a-zA-Z0-9]{3})[a-zA-Z](_.*)?$', template_code)
+        # Assume a code of 1abc, 1abc_N, 1abcX, or 1abcX_N refers
+        # to a real PDB structure
+        m = re.match('(\d[a-zA-Z0-9]{3})[a-zA-Z]?(_.*)?$', template_code)
         if m:
             template_db_code = m.group(1).upper()
             l = location.PDBLocation(template_db_code)

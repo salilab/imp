@@ -504,8 +504,8 @@ class _StartingModelDetailsHandler(_Handler):
             m.offset = int(d['starting_model_sequence_offset'])
 
 
-class _StartingComparativeModelsHandler(_Handler):
-    category = '_ihm_starting_comparative_models'
+class _StartingComputationalModelsHandler(_Handler):
+    category = '_ihm_starting_computational_models'
 
     def __call__(self, d):
         m = self.sysr.starting_models.get_by_id(d['starting_model_id'])
@@ -513,7 +513,14 @@ class _StartingComparativeModelsHandler(_Handler):
             m.script_file = self.sysr.external_files.get_by_id(
                                                       d['script_file_id'])
         if 'software_id' in d:
-            m.software = self.sysr.external_files.get_by_id(d['software_id'])
+            m.software = self.sysr.software.get_by_id(d['software_id'])
+
+
+class _StartingComparativeModelsHandler(_Handler):
+    category = '_ihm_starting_comparative_models'
+
+    def __call__(self, d):
+        m = self.sysr.starting_models.get_by_id(d['starting_model_id'])
         dataset = self.sysr.datasets.get_by_id(d['template_dataset_list_id'])
         aln = self.sysr.external_files.get_by_id_or_none(
                                             d, 'alignment_file_id')
@@ -543,10 +550,13 @@ class _ProtocolHandler(_Handler):
         assembly = self.sysr.assemblies.get_by_id_or_none(
                                             d, 'struct_assembly_id')
         dg = self.sysr.dataset_groups.get_by_id_or_none(d, 'dataset_group_id')
+        software = self.sysr.software.get_by_id_or_none(d, 'software_id')
+        script = self.sysr.external_files.get_by_id_or_none(d, 'script_file_id')
         s = ihm.protocol.Step(assembly=assembly, dataset_group=dg,
                               method=None, num_models_begin=nbegin,
                               num_models_end=nend, multi_scale=mscale,
-                              multi_state=mstate, ordered=ordered)
+                              multi_state=mstate, ordered=ordered,
+                              software=software, script_file=script)
         self._copy_if_present(s, d,
                 mapkeys={'step_name':'name', 'step_method':'method'})
         p.steps.append(s)
@@ -587,6 +597,10 @@ class _PostProcessHandler(_Handler):
                                             d, 'struct_assembly_id')
             step.dataset_group = self.sysr.dataset_groups.get_by_id_or_none(
                                             d, 'dataset_group_id')
+            step.software = self.sysr.software.get_by_id_or_none(
+                                            d, 'software_id')
+            step.script_file = self.sysr.external_files.get_by_id_or_none(
+                                            d, 'script_file_id')
             self._copy_if_present(step, d, keys=['feature'])
 
 
@@ -703,6 +717,7 @@ def read(fh):
                     _RelatedDatasetsHandler(s),
                     _ModelRepresentationHandler(s),
                     _StartingModelDetailsHandler(s),
+                    _StartingComputationalModelsHandler(s),
                     _StartingComparativeModelsHandler(s),
                     _ProtocolHandler(s), _PostProcessHandler(s),
                     _ModelListHandler(s), _MultiStateHandler(s),

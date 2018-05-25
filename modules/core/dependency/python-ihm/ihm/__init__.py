@@ -318,7 +318,11 @@ class System(object):
                 (sm.script_file for sm in self._all_starting_models()
                                          if sm.script_file),
                 (template.alignment_file for template in self._all_templates()
-                                         if template.alignment_file))
+                                         if template.alignment_file),
+                (step.script_file for step in self._all_protocol_steps()
+                                           if step.script_file),
+                (step.script_file for step in self._all_analysis_steps()
+                                           if step.script_file))
 
     def _all_geometric_objects(self):
         """Iterate over all GeometricObjects in the system.
