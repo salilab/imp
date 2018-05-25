@@ -470,8 +470,10 @@ _ihm_modeling_post_process.num_models_begin
 _ihm_modeling_post_process.num_models_end
 _ihm_modeling_post_process.struct_assembly_id
 _ihm_modeling_post_process.dataset_group_id
-1 1 1 1 filter energy/score 500 400 1 .
-2 2 1 1 cluster RMSD 2000 2000 1 .
+_ihm_modeling_post_process.software_id
+_ihm_modeling_post_process.script_file_id
+1 1 1 1 filter energy/score 500 400 1 . . .
+2 2 1 1 cluster RMSD 2000 2000 1 . . .
 #
 """)
 
