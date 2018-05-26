@@ -96,6 +96,7 @@ class Tests(IMP.test.TestCase):
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
 
         dumper = ihm.dumper._SoftwareDumper()
+        dumper.finalize(system.system)
         out = _get_dumper_output(dumper, system.system)
         self.assertEqual(out, """#
 loop_
@@ -437,10 +438,12 @@ _ihm_modeling_protocol.num_models_end
 _ihm_modeling_protocol.multi_scale_flag
 _ihm_modeling_protocol.multi_state_flag
 _ihm_modeling_protocol.ordered_flag
+_ihm_modeling_protocol.software_id
+_ihm_modeling_protocol.script_file_id
 1 1 1 1 . 'All known components & All components modeled by IMP' . Sampling
-'Monte Carlo' 0 500 YES NO NO
+'Monte Carlo' 0 500 YES NO NO . .
 2 2 1 1 . 'All known components & All components modeled by IMP' . Sampling
-'Replica exchange Molecular Dynamics' 400 2000 YES NO NO
+'Replica exchange Molecular Dynamics' 400 2000 YES NO NO . .
 #
 """)
 
