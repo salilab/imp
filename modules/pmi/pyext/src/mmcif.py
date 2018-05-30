@@ -279,13 +279,13 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
     """Restrain to a set of cross links"""
 
     assembly = None
+    _label_map = {'wtDSS':'DSS', 'scDSS':'DSS', 'scEDC':'EDC'}
 
     def __init__(self, pmi_restraint):
         self.pmi_restraint = pmi_restraint
         label = self.pmi_restraint.label
         # Map commonly-used subtypes to more standard labels
-        if label == 'wtDSS':
-            label = 'DSS'
+        label = self._label_map.get(label, label)
         self.label = label
         super(_CrossLinkRestraint, self).__init__(
                 dataset=self.pmi_restraint.dataset,
