@@ -399,7 +399,11 @@ class Software(object):
        :param str type: Type of software (program/package/library/other).
        :param str version: The version used.
 
-       See :attr:`System.software`."""
+       Generally these objects are added to :attr:`System.software` or
+       passed to :class:`ihm.startmodel.StartingModel`,
+       :class:`ihm.protocol.Step`, or
+       :class:`ihm.analysis.Step` objects.
+    """
     def __init__(self, name, classification, description, location,
                  type='program', version=None):
         self.name = name
@@ -421,7 +425,8 @@ class Software(object):
 class Citation(object):
     """A publication that describes the modeling.
 
-       See :attr:`System.citations`.
+       Generally citations are added to :attr:`System.citations` or
+       passed to :class:`ihm.restraint.EM3DRestraint` objects.
 
        :param str pmid: The PubMed ID.
        :param str title: Full title of the publication.
@@ -454,6 +459,12 @@ class Citation(object):
             for art_id in ref['articleids']:
                 if art_id['idtype'] == 'doi':
                     return enc(art_id['value'])
+        def get_page_range(ref):
+            rng = enc(ref['pages']).split('-')
+            if len(rng) == 2 and len(rng[1]) < len(rng[0]):
+                # map ranges like "2730-43" to 2730,2743 not 2730, 43
+                rng[1] = rng[0][:len(rng[0])-len(rng[1])] + rng[1]
+            return rng
         # JSON values are always Unicode, but on Python 2 we want non-Unicode
         # strings, so convert to ASCII
         if sys.version_info[0] < 3:
@@ -474,7 +485,7 @@ class Citation(object):
 
         return cls(pmid=pubmed_id, title=enc(ref['title']),
                    journal=enc(ref['source']), volume=enc(ref['volume']),
-                   page_range=enc(ref['pages']).split('-'),
+                   page_range=get_page_range(ref),
                    year=enc(ref['pubdate']).split()[0],
                    authors=authors, doi=get_doi(ref))
 
@@ -785,7 +796,10 @@ class AsymUnit(object):
               (`auth_seq_id`). This can be either be an int offset, in
               which case ``auth_seq_id = seq_id + auth_seq_id_map``, or
               a mapping type (dict, list, tuple) in which case
-              ``auth_seq_id = auth_seq_id_map[seq_id]``. The default if
+              ``auth_seq_id = auth_seq_id_map[seq_id]``. (Note that if a `list`
+              or `tuple` is used, the first element in the list or tuple does
+              **not** correspond to the first residue and will never be used -
+              since `seq_id` can never be zero.) The default if
               not specified, or not in the mapping, is for
               ``auth_seq_id == seq_id``.
        :param str id: User-specified ID (usually a string of one or more

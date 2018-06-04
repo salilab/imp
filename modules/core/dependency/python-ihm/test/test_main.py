@@ -172,6 +172,8 @@ class Tests(unittest.TestCase):
                 'Integrative structure and functional anatomy of a nuclear '
                 'pore complex (test of python-ihm lib).')
         self.assertEqual(c.doi, None)
+        # Make sure that page range "475-82" is handled as 475,482
+        self.assertEqual(c.page_range, ['475','482'])
 
     def test_entity_residue(self):
         """Test Residue derived from an Entity"""

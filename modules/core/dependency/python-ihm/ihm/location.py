@@ -19,11 +19,15 @@ class Location(object):
            entire ensemble, for example as a DCD file;
          - a :class:`LocalizationDensity` to point to an external localization
            density, for example in MRC format;
-         - to :data:`ihm.System.locations` to point to other files relating
+         - :data:`ihm.System.locations` to point to other files relating
            to the modeling in general, such as a modeling control script
            (:class:`WorkflowFileLocation`) or a command script for a
            visualization package such as ChimeraX
-           (:class:`VisualizationFileLocation`).
+           (:class:`VisualizationFileLocation`);
+         - a :class:`ihm.protocol.Step` or :class:`ihm.analysis.Step` to
+           describe an individual modeling step;
+         - or a :class:`~ihm.startmodel.StartingModel` to describe how a
+           starting model was constructed.
 
        :param str details: Additional details about the dataset, if known.
 
@@ -70,7 +74,8 @@ class DatabaseLocation(Location):
 
 class EMDBLocation(DatabaseLocation):
     """Something stored in the EMDB database.
-       See :class:`DatabaseLocation` for a description of the parameters."""
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'EMDB'
     def __init__(self, db_code, version=None, details=None):
         super(EMDBLocation, self).__init__(self._db_name, db_code,
@@ -79,7 +84,8 @@ class EMDBLocation(DatabaseLocation):
 
 class PDBLocation(DatabaseLocation):
     """Something stored in the PDB database.
-       See :class:`DatabaseLocation` for a description of the parameters."""
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'PDB'
     def __init__(self, db_code, version=None, details=None):
         super(PDBLocation, self).__init__(self._db_name, db_code,
@@ -88,7 +94,8 @@ class PDBLocation(DatabaseLocation):
 
 class MassIVELocation(DatabaseLocation):
     """Something stored in the MassIVE database.
-       See :class:`DatabaseLocation` for a description of the parameters."""
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'MASSIVE'
     def __init__(self, db_code, version=None, details=None):
         super(MassIVELocation, self).__init__(self._db_name, db_code, version,
@@ -97,7 +104,8 @@ class MassIVELocation(DatabaseLocation):
 
 class EMPIARLocation(DatabaseLocation):
     """Something stored in the EMPIAR database.
-       See :class:`DatabaseLocation` for a description of the parameters."""
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'EMPIAR'
     def __init__(self, db_code, version=None, details=None):
         super(EMPIARLocation, self).__init__(self._db_name, db_code, version,
@@ -106,7 +114,8 @@ class EMPIARLocation(DatabaseLocation):
 
 class SASBDBLocation(DatabaseLocation):
     """Something stored in the SASBDB database.
-       See :class:`DatabaseLocation` for a description of the parameters."""
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'SASBDB'
     def __init__(self, db_code, version=None, details=None):
         super(SASBDBLocation, self).__init__(self._db_name, db_code, version,
@@ -115,7 +124,8 @@ class SASBDBLocation(DatabaseLocation):
 
 class BioGRIDLocation(DatabaseLocation):
     """Something stored in the BioGRID database.
-       See :class:`DatabaseLocation` for a description of the parameters."""
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'BioGRID'
     def __init__(self, db_code, version=None, details=None):
         super(BioGRIDLocation, self).__init__(self._db_name, db_code, version,
@@ -153,7 +163,8 @@ class FileLocation(Location):
 
 class InputFileLocation(FileLocation):
     """An externally stored file used as input.
-       See :class:`FileLocation` for a description of the parameters.
+       See :class:`FileLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects.
 
        For example, any :class:`~ihm.dataset.Dataset` that isn't stored in
        a domain-specific database would use this class."""
@@ -162,27 +173,37 @@ class InputFileLocation(FileLocation):
 
 class OutputFileLocation(FileLocation):
     """An externally stored file used for output.
-       See :class:`FileLocation` for a description of the parameters.
+       See :class:`FileLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects.
 
        For example, this can be used to point to an externally-stored
        :class:`model ensemble <ihm.model.Ensemble>` or a
        :class:`localization density <ihm.model.LocalizationDensity>`.
     """
-
     content_type = "Modeling or post-processing output"
 
 
 class WorkflowFileLocation(FileLocation):
     """An externally stored file that controls the workflow (e.g. a script).
-       See :class:`FileLocation` for a description of the parameters."""
+       See :class:`FileLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects.
 
+       Typically these objects are used to provide more information on how
+       a :class:`~ihm.startmodel.StartingModel` was generated, how an
+       individual :class:`ihm.protocol.Step` or :class:`ihm.analysis.Step`
+       was performed, or to describe the overall modeling (by addition
+       to :data:`ihm.System.locations`). This can be useful to capture fine
+       details of the modeling that aren't covered by the mmCIF dictionary,
+       and to allow models to be precisely reproduced.
+    """
     content_type = "Modeling workflow or script"
 
 
 class VisualizationFileLocation(FileLocation):
     """An externally stored file that is used for visualization.
-       See :class:`FileLocation` for a description of the parameters."""
-
+       See :class:`FileLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects.
+    """
     content_type = "Visualization script"
 
 
