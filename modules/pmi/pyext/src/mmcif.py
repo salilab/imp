@@ -150,12 +150,14 @@ def _get_fragment_is_rigid(fragment):
 class _PDBFragment(ihm.representation.ResidueSegment):
     """Record details about part of a PDB file used as input
        for a component."""
-    def __init__(self, state, component, start, end, offset, pdbname,
-                 chain, hier, asym_unit):
-        super(_PDBFragment, self).__init__(asym_unit=asym_unit(start, end),
-                      rigid=None, primitive='sphere')
+    def __init__(self, state, component, start, end, pdb_offset,
+                 pdbname, chain, hier, asym_unit):
+        # start, end are PMI residue indexes (not IHM)
+        super(_PDBFragment, self).__init__(
+                   asym_unit=asym_unit.pmi_range(start, end),
+                   rigid=None, primitive='sphere')
         self.component, self.start, self.end, self.offset, self.pdbname \
-              = component, start, end, offset, pdbname
+              = component, start, end, pdb_offset, pdbname
         self.state, self.chain, self.hier = state, chain, hier
         sel = IMP.atom.NonWaterNonHydrogenPDBSelector() \
               & IMP.atom.ChainPDBSelector(chain)
@@ -174,8 +176,8 @@ class _BeadsFragment(ihm.representation.FeatureSegment):
     def __init__(self, state, component, start, end, count, hier, asym_unit):
         super(_BeadsFragment, self).__init__(asym_unit=asym_unit(start, end),
                     rigid=None, primitive='sphere', count=count)
-        self.state, self.component, self.start, self.end, self.hier \
-              = state, component, start, end, hier
+        self.state, self.component, self.hier \
+              = state, component, hier
 
     rigid = property(lambda self: _get_fragment_is_rigid(self),
                      lambda self, val: None)
@@ -186,7 +188,6 @@ class _BeadsFragment(ihm.representation.FeatureSegment):
           other.asym_unit.seq_id_range[0] == self.asym_unit.seq_id_range[1] + 1:
             self.asym_unit.seq_id_range = (self.asym_unit.seq_id_range[0],
                                            other.asym_unit.seq_id_range[1])
-            self.start, self.end = self.asym_unit.seq_id_range
             self.count += other.count
             return True
 
@@ -634,17 +635,20 @@ class _Model(ihm.model.Model):
 
     def get_atoms(self):
         for chain in self.all_chains(self.simo):
+            pmi_offset = chain.asym_unit.entity.pmi_offset
             for atom in chain.atoms:
                 (xyz, atom_type, residue_type, residue_index,
                  all_indexes, radius) = atom
                 pt = self.transform * xyz
                 yield ihm.model.Atom(asym_unit=chain.asym_unit,
-                        seq_id=residue_index, atom_id=atom_type.get_string(),
+                        seq_id=residue_index - pmi_offset,
+                        atom_id=atom_type.get_string(),
                         type_symbol=None, # todo: get element
                         x=pt[0], y=pt[1], z=pt[2])
 
     def get_spheres(self):
         for chain in self.all_chains(self.simo):
+            pmi_offset = chain.asym_unit.entity.pmi_offset
             for sphere in chain.spheres:
                 (xyz, residue_type, residue_index,
                  all_indexes, radius) = sphere
@@ -652,7 +656,8 @@ class _Model(ihm.model.Model):
                     all_indexes = (residue_index,)
                 pt = self.transform * xyz
                 yield ihm.model.Sphere(asym_unit=chain.asym_unit,
-                        seq_id_range=(all_indexes[0], all_indexes[-1]),
+                        seq_id_range=(all_indexes[0] - pmi_offset,
+                                      all_indexes[-1] - pmi_offset),
                         x=pt[0], y=pt[1], z=pt[2], radius=radius,
                         rmsf=self.get_rmsf(chain.orig_comp, all_indexes))
 
@@ -722,9 +727,10 @@ class _AllStartingModels(object):
             # Break circular ref between fragment and model
             models[-1].fragments.append(weakref.proxy(fragment))
             # Update residue range to cover all fragments
-            sid_begin = min(fragment.start + fragment.offset,
+            pmi_offset = models[-1].asym_unit.entity.pmi_offset
+            sid_begin = min(fragment.start + fragment.offset - pmi_offset,
                             models[-1].asym_unit.seq_id_range[0])
-            sid_end = max(fragment.end + fragment.offset,
+            sid_end = max(fragment.end + fragment.offset - pmi_offset,
                           models[-1].asym_unit.seq_id_range[1])
             models[-1].asym_unit = fragment.asym_unit.asym(sid_begin, sid_end)
         fragment.starting_model = models[-1]
@@ -741,11 +747,12 @@ class _AllStartingModels(object):
                 self.simo.system.locations.append(t.alignment_file)
             if t.dataset:
                 self.simo._add_dataset(t.dataset)
+        pmi_offset = f.asym_unit.entity.pmi_offset
         m = _StartingModel(
-                    asym_unit=f.asym_unit.asym(f.start + f.offset,
-                                               f.end + f.offset),
+                    asym_unit=f.asym_unit.asym.pmi_range(f.start + f.offset,
+                                                         f.end + f.offset),
                     dataset=r['dataset'], asym_id=f.chain,
-                    templates=templates, offset=f.offset,
+                    templates=templates, offset=f.offset + pmi_offset,
                     metadata=r['metadata'],
                     software=r['software'][0] if r['software'] else None,
                     script_file=r['script'])
@@ -758,13 +765,15 @@ class _StartingModel(ihm.startmodel.StartingModel):
         return self._seq_dif
 
     def get_atoms(self):
+        pmi_offset = self.asym_unit.entity.pmi_offset
         mh = IMP.mmcif.data._StartingModelAtomHandler(self.templates,
                                                       self.asym_unit)
         for f in self.fragments:
             sel = IMP.atom.Selection(f.starting_hier,
                             residue_indexes=list(range(f.start - f.offset,
                                                        f.end - f.offset + 1)))
-            for a in mh.get_ihm_atoms(sel.get_selected_particles(), f.offset):
+            for a in mh.get_ihm_atoms(sel.get_selected_particles(),
+                                      f.offset - pmi_offset):
                 yield a
         self._seq_dif = mh._seq_dif
 
@@ -817,22 +826,26 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
         if os.path.exists(fname):
             model.parse_rmsf_file(fname, component)
 
-    def get_localization_density_file(self, component):
-        # todo: this assumes that the localization density file name matches
-        # the component name and is of the complete residue range (usually
-        # this is the case, but it doesn't have to be)
+    def get_localization_density_file(self, fname):
         return os.path.join(self.post_process.rex._outputdir,
                             'cluster.%d' % self.cluster_num,
-                            '%s.mrc' % component)
+                            '%s.mrc' % fname)
 
-    def load_localization_density(self, state, component, asym):
-        fname = self.get_localization_density_file(component)
-        if os.path.exists(fname):
+    def load_localization_density(self, state, fname, select_tuple, asym_units):
+        fullpath = self.get_localization_density_file(fname)
+        if os.path.exists(fullpath):
             details = "Localization density for %s %s" \
-                      % (component, self.model_group.name)
-            local_file = ihm.location.OutputFileLocation(fname, details=details)
-            den = ihm.model.LocalizationDensity(file=local_file, asym_unit=asym)
-            self.densities.append(den)
+                      % (fname, self.model_group.name)
+            local_file = ihm.location.OutputFileLocation(fullpath,
+                                                         details=details)
+            for s in select_tuple:
+                if isinstance(s, tuple) and len(s) == 3:
+                    asym = asym_units[s[2]].pmi_range(s[0], s[1])
+                else:
+                    asym = asym_units[s]
+                den = ihm.model.LocalizationDensity(file=local_file,
+                                                    asym_unit=asym)
+                self.densities.append(den)
 
     def load_all_models(self, simo, state):
         stat_fname = self.post_process.get_stat_file(self.cluster_num)
@@ -898,7 +911,7 @@ class _EntityMapper(dict):
         self._entities = []
         self.system = system
 
-    def add(self, component_name, sequence):
+    def add(self, component_name, sequence, offset):
         def entity_seq(sequence):
             # Map X to UNK
             if 'X' in sequence:
@@ -909,7 +922,8 @@ class _EntityMapper(dict):
             # Use the name of the first component, stripped of any copy number,
             # as the description of the entity
             d = component_name.split("@")[0].split(".")[0]
-            entity = ihm.Entity(entity_seq(sequence), description=d)
+            entity = Entity(entity_seq(sequence), description=d,
+                            pmi_offset=offset)
             self.system.entities.append(entity)
             self._sequence_dict[sequence] = entity
         self[component_name] = self._sequence_dict[sequence]
@@ -977,6 +991,51 @@ class _State(ihm.model.State):
     def __set_name(self, val):
         self._pmi_state.long_name = val
     name = property(__get_name, __set_name)
+
+
+class Entity(ihm.Entity):
+    """A single entity in the system.
+       This functions identically to the base ihm.Entity class, but it
+       allows identifying residues by either the IHM numbering scheme
+       (seq_id, which is always contiguous starting at 1) or by the PMI
+       scheme (which is similar, but may not start at 1 if the sequence in
+       the FASTA file has one or more N-terminal gaps"""
+    def __init__(self, sequence, pmi_offset, *args, **keys):
+        # Offset between PMI numbering and IHM; <pmi_#> = <ihm_#> + pmi_offset
+        # (pmi_offset is also the number of N-terminal gaps in the FASTA file)
+        self.pmi_offset = pmi_offset
+        super(Entity, self).__init__(sequence, *args, **keys)
+
+    def pmi_residue(self, res_id):
+        """Return a single IHM residue indexed using PMI numbering"""
+        return self.residue(res_id - self.pmi_offset)
+
+    def pmi_range(self, res_id_begin, res_id_end):
+        """Return a range of IHM residues indexed using PMI numbering"""
+        off = self.pmi_offset
+        return self(res_id_begin - off, res_id_end - off)
+
+
+class AsymUnit(ihm.AsymUnit):
+    """A single asymmetric unit in the system.
+       This functions identically to the base ihm.AsymUnit class, but it
+       allows identifying residues by either the IHM numbering scheme
+       (seq_id, which is always contiguous starting at 1) or by the PMI
+       scheme (which is similar, but may not start at 1 if the sequence in
+       the FASTA file has one or more N-terminal gaps"""
+
+    def __init__(self, entity, *args, **keys):
+        super(AsymUnit, self).__init__(
+                entity, auth_seq_id_map=entity.pmi_offset, *args, **keys)
+
+    def pmi_residue(self, res_id):
+        """Return a single IHM residue indexed using PMI numbering"""
+        return self.residue(res_id - self.entity.pmi_offset)
+
+    def pmi_range(self, res_id_begin, res_id_end):
+        """Return a range of IHM residues indexed using PMI numbering"""
+        off = self.entity.pmi_offset
+        return self(res_id_begin - off, res_id_end - off)
 
 
 class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
@@ -1117,17 +1176,23 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                 self.all_modeled_components.append(name)
 
     def add_component_sequence(self, state, name, seq):
+        def get_offset(seq):
+            # Count length of gaps at start of sequence
+            for i in range(len(seq)):
+                if seq[i] != '-':
+                    return seq[i:], i
+        seq, offset = get_offset(seq)
         if name in self.sequence_dict:
             if self.sequence_dict[name] != seq:
                 raise ValueError("Sequence mismatch for component %s" % name)
         else:
             self.sequence_dict[name] = seq
-            self.entities.add(name, seq)
+            self.entities.add(name, seq, offset)
         if name in self.asym_units:
             if self.asym_units[name] is None:
                 # Set up a new asymmetric unit for this component
                 entity = self.entities[name]
-                asym = ihm.AsymUnit(entity, details=name)
+                asym = AsymUnit(entity, details=name)
                 self.system.asym_units.append(asym)
                 self.asym_units[name] = asym
             state.modeled_assembly.append(self.asym_units[name])
@@ -1186,8 +1251,9 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             return
         if representation is None:
             representation = self.default_representation
+        asym = self.asym_units[name]
         p = _PDBFragment(state, name, start, end, offset, pdbname, chain,
-                         hier, self.asym_units[name])
+                         hier, asym)
         self.all_representations.add_fragment(state, representation, p)
         self.all_starting_models.add_pdb_fragment(p)
 
@@ -1197,8 +1263,10 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             return
         if representation is None:
             representation = self.default_representation
-        b = _BeadsFragment(state, name, start, end, num, hier,
-                           self.asym_units[name])
+        asym = self.asym_units[name]
+        pmi_offset = asym.entity.pmi_offset
+        b = _BeadsFragment(state, name, start - pmi_offset, end - pmi_offset,
+                           num, hier, asym)
         self.all_representations.add_fragment(state, representation, b)
 
     def get_cross_link_group(self, pmi_restraint):
@@ -1216,8 +1284,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             return None
         e1 = self.entities[c1]
         e2 = self.entities[c2]
-        xl = ihm.restraint.ExperimentalCrossLink(residue1=e1.residue(r1),
-                                                 residue2=e2.residue(r2))
+        xl = ihm.restraint.ExperimentalCrossLink(residue1=e1.pmi_residue(r1),
+                                                 residue2=e2.pmi_residue(r2))
         rsr.experimental_cross_links.append([xl])
         return xl
 
@@ -1317,7 +1385,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         ind = i + self._state_ensemble_offset
         self.system.ensembles[ind].file = location
 
-    def add_replica_exchange_analysis(self, state, rex):
+    def add_replica_exchange_analysis(self, state, rex, density_custom_ranges):
         # todo: add prefilter as an additional postprocess step (complication:
         # we don't know how many models it filtered)
         # todo: postpone rmsf/density localization extraction until after
@@ -1335,8 +1403,9 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             e = _ReplicaExchangeAnalysisEnsemble(pp, i, group, 1)
             self.system.ensembles.append(e)
             # Add localization density info if available
-            for c in state.all_modeled_components:
-                e.load_localization_density(state, c, self.asym_units[c])
+            for fname, stuple in density_custom_ranges.items():
+                e.load_localization_density(state, fname, stuple,
+                                            self.asym_units)
             for stats in e.load_all_models(self, state):
                 m = self.add_model(group)
                 # Since we currently only deposit 1 model, it is the

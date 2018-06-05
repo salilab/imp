@@ -1697,7 +1697,7 @@ class AnalysisReplicaExchange0(object):
         self._outputdir = os.path.abspath(outputdir)
         self._number_of_clusters = number_of_clusters
         for p, state in self._protocol_output:
-            p.add_replica_exchange_analysis(state, self)
+            p.add_replica_exchange_analysis(state, self, density_custom_ranges)
 
         if self.test_mode:
             return
