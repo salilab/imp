@@ -127,6 +127,10 @@ class System(object):
         #: See :class:`~ihm.model.Ensemble`.
         self.ensembles = []
 
+        #: All ordered processes
+        #: See :class:`~ihm.model.OrderedProcess`.
+        self.ordered_processes = []
+
         #: All state groups (collections of models).
         #: See :class:`~ihm.model.StateGroup`.
         self.state_groups = []
@@ -177,6 +181,8 @@ class System(object):
     def _all_model_groups(self):
         """Iterate over all ModelGroups in the system"""
         # todo: raise an error if a modelgroup is present in multiple states
+        # note also that we don't pick up groups referred to only by an
+        # OrderedProcess here - should we?
         for state_group in self.state_groups:
             for state in state_group:
                 for model_group in state:

@@ -957,6 +957,36 @@ class _MultiStateDumper(object):
                         ordinal += 1
 
 
+class _OrderedDumper(object):
+    def finalize(self, system):
+        for nproc, proc in enumerate(system.ordered_processes):
+            proc._id = nproc + 1
+            edge_id = 1
+            for nstep, step in enumerate(proc.steps):
+                step._id = nstep + 1
+                for edge in step:
+                    edge._id = edge_id
+                    edge_id += 1
+
+    def dump(self, system, writer):
+        with writer.loop("_ihm_ordered_ensemble",
+                         ["process_id", "process_description", "ordered_by",
+                          "step_id", "step_description",
+                          "edge_id", "edge_description",
+                          "model_group_id_begin", "model_group_id_end"]) as l:
+            for proc in system.ordered_processes:
+                for step in proc.steps:
+                    for edge in step:
+                        l.write(process_id=proc._id,
+                                process_description=proc.description,
+                                ordered_by=proc.ordered_by, step_id=step._id,
+                                step_description=step.description,
+                                edge_id=edge._id,
+                                edge_description=edge.description,
+                                model_group_id_begin=edge.group_begin._id,
+                                model_group_id_end=edge.group_end._id)
+
+
 class _GeometricObjectDumper(_Dumper):
     def finalize(self, system):
         seen_objects = {}
@@ -1487,7 +1517,7 @@ def write(fh, systems):
                _ModelDumper(),
                _EnsembleDumper(),
                _DensityDumper(),
-               _MultiStateDumper()]
+               _MultiStateDumper(), _OrderedDumper()]
     writer = ihm.format.CifWriter(fh)
     for system in systems:
         for d in dumpers:

@@ -122,6 +122,16 @@ class SASBDBLocation(DatabaseLocation):
                                              details)
 
 
+class PRIDELocation(DatabaseLocation):
+    """Something stored in the PRIDE database.
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
+    _db_name = 'PRIDE'
+    def __init__(self, db_code, version=None, details=None):
+        super(PRIDELocation, self).__init__(self._db_name, db_code, version,
+                                            details)
+
+
 class BioGRIDLocation(DatabaseLocation):
     """Something stored in the BioGRID database.
        See :class:`DatabaseLocation` for a description of the parameters

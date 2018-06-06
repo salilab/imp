@@ -28,6 +28,15 @@ The :mod:`ihm.model` Python module
 .. autoclass:: Ensemble
    :members:
 
+.. autoclass:: OrderedProcess
+   :members:
+
+.. autoclass:: ProcessStep
+   :members:
+
+.. autoclass:: ProcessEdge
+   :members:
+
 .. autoclass:: LocalizationDensity
    :members:
 

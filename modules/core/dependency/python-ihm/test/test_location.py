@@ -68,6 +68,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(d.version, 1)
         self.assertEqual(d.details, 'foo')
 
+    def test_pride_location(self):
+        """Test PRIDELocation class"""
+        d = ihm.location.PRIDELocation('abc', version=1, details='foo')
+        self.assertEqual(d.db_name, 'PRIDE')
+        self.assertEqual(d.access_code, 'abc')
+        self.assertEqual(d.version, 1)
+        self.assertEqual(d.details, 'foo')
+
     def test_biogrid_location(self):
         """Test BioGRIDLocation class"""
         d = ihm.location.BioGRIDLocation('abc', version=1, details='foo')

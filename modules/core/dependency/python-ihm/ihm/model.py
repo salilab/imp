@@ -200,6 +200,58 @@ class Ensemble(object):
                                         "that are in the mmCIF file")
 
 
+class OrderedProcess(object):
+    """Details about a process that orders two or more model groups.
+
+       A process is represented as a directed graph, where the nodes
+       are :class:`ModelGroup` objects and the edges represent transitions.
+
+       These objects are generally added to
+       :attr:`ihm.System.ordered_processes`.
+
+       :param str ordered_by: Text that explains how the ordering is done,
+              such as "time steps".
+       :param str description: Text that describes this process.
+    """
+    def __init__(self, ordered_by, description=None):
+        self.ordered_by, self.description = ordered_by, description
+        #: All steps in this process, as a simple list of
+        #: :class:`ProcessStep` objects
+        self.steps = []
+
+
+class ProcessStep(list):
+    """A single step in an :class:`OrderedProcess`.
+    
+       This is implemented as a simple list of :class:`ProcessEdge` objects,
+       each of which orders two :class:`ModelGroup` objects. (To order more
+       than two groups, for example to represent a branched reaction step
+       that generates two products, simply add multiple edges to the step.)
+
+       :param sequence elements: Initial set of :class:`ProcessEdge` objects.
+       :param str description: Text that describes this step.
+    """
+    def __init__(self, elements=(), description=None):
+        self.description = description
+        super(ProcessStep, self).__init__(elements)
+
+
+class ProcessEdge(object):
+    """A single directed edge in the graph for a :class:`OrderedProcess`,
+       representing the transition from one :class:`ModelGroup` to another.
+       These objects are added to :class:`ProcessStep` objects.
+
+       :param group_begin: The set of models at the origin of the edge.
+       :type group_begin: :class:`ModelGroup`
+       :param group_end: The set of models at the end of the edge.
+       :type group_end: :class:`ModelGroup`
+       :param str description: Text that describes this edge.
+    """
+    def __init__(self, group_begin, group_end, description=None):
+        self.group_begin, self.group_end = group_begin, group_end
+        self.description = description
+
+
 class LocalizationDensity(object):
     """Localization density of part of the system, over all models
        in an ensemble.

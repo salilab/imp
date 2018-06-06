@@ -105,6 +105,21 @@ class Tests(unittest.TestCase):
         s = ihm.model.StateGroup()
         self.assertEqual(s, [])
 
+    def test_ordered_process(self):
+        """Test OrderedProcess class"""
+        p = ihm.model.OrderedProcess("time steps", "test process")
+        self.assertEqual(p.ordered_by, "time steps")
+        self.assertEqual(p.description, "test process")
+        self.assertEqual(p.steps, [])
+        s = ihm.model.ProcessStep(description="foo")
+        self.assertEqual(s.description, "foo")
+        p.steps.append(s)
+        e = ihm.model.ProcessEdge('from', 'to')
+        s.append(e)
+        self.assertEqual(p.steps[0][0].group_begin, 'from')
+        self.assertEqual(p.steps[0][0].group_end, 'to')
+        self.assertEqual(p.steps[0][0].description, None)
+
     def test_dcd_writer(self):
         """Test DCDWriter class"""
         m1 = ihm.model.Model(None, None, None)

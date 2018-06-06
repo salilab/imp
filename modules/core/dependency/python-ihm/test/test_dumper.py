@@ -1366,6 +1366,50 @@ _ihm_multi_state_modeling.details
 #
 """)
 
+    def test_ordered(self):
+        """Test OrderedDumper"""
+        system = ihm.System()
+        mg1 = ihm.model.ModelGroup(name="group1")
+        mg1._id = 42
+        mg2 = ihm.model.ModelGroup(name="group2")
+        mg2._id = 82
+        mg3 = ihm.model.ModelGroup(name="group3")
+        mg3._id = 92
+
+        proc = ihm.model.OrderedProcess("time steps")
+        edge = ihm.model.ProcessEdge(mg1, mg2)
+        step = ihm.model.ProcessStep([edge], "Linear reaction")
+        proc.steps.append(step)
+        system.ordered_processes.append(proc)
+
+        proc = ihm.model.OrderedProcess("time steps", "Proc 2")
+        edge1 = ihm.model.ProcessEdge(mg1, mg2)
+        edge2 = ihm.model.ProcessEdge(mg1, mg3)
+        step = ihm.model.ProcessStep([edge1, edge2], "Branched reaction")
+        proc.steps.append(step)
+        system.ordered_processes.append(proc)
+
+        dumper = ihm.dumper._OrderedDumper()
+        dumper.finalize(system)
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_ordered_ensemble.process_id
+_ihm_ordered_ensemble.process_description
+_ihm_ordered_ensemble.ordered_by
+_ihm_ordered_ensemble.step_id
+_ihm_ordered_ensemble.step_description
+_ihm_ordered_ensemble.edge_id
+_ihm_ordered_ensemble.edge_description
+_ihm_ordered_ensemble.model_group_id_begin
+_ihm_ordered_ensemble.model_group_id_end
+1 . 'time steps' 1 'Linear reaction' 1 . 42 82
+2 'Proc 2' 'time steps' 1 'Branched reaction' 1 . 42 82
+2 'Proc 2' 'time steps' 1 'Branched reaction' 2 . 42 92
+#
+""")
+
     def test_em3d_restraint_dumper(self):
         """Test EM3DRestraintDumper"""
         class MockObject(object):

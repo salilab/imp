@@ -28,6 +28,9 @@ The :mod:`ihm.location` Python module
 .. autoclass:: SASBDBLocation
    :members:
 
+.. autoclass:: PRIDELocation
+   :members:
+
 .. autoclass:: BioGRIDLocation
    :members:
 
