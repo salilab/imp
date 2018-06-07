@@ -29,6 +29,7 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 Edge_collapse/Count_stop_predicate.h>
 */
 #include <CGAL/IO/output_surface_facets_to_polyhedron.h>
+#include <CGAL/version.h>
 
 namespace {
 typedef CGAL::Exact_predicates_exact_constructions_kernel EKernel;
@@ -260,8 +261,12 @@ IMP::Vector<algebra::Vector3Ds> get_polyhedron_facets(
 std::pair<algebra::Vector3Ds, Ints> get_skin_surface(
     const algebra::Sphere3Ds &ss) {
   IMP_FUNCTION_LOG;
+#if CGAL_VERSION_NR > 1040911000
+  typedef IKernel::Weighted_point_3 Weighted_point;
+#else
   typedef IKernel::Point_3 Bare_point;
   typedef CGAL::Weighted_point<Bare_point, IKernel::RT> Weighted_point;
+#endif
   IMP::Vector<Weighted_point> l(ss.size());
   for (unsigned int i = 0; i < ss.size(); ++i) {
     l[i] = Weighted_point(trp<IKernel>(ss[i].get_center()),

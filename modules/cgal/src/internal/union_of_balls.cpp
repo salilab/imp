@@ -43,7 +43,16 @@ typedef K::Line_3 Line;
 typedef K::Triangle_3 Triangle3;
 
 // typedef CGAL::Regular_triangulation_euclidean_traits_3<K> Gt;
-#if CGAL_VERSION_NR > 1030701000
+#if CGAL_VERSION_NR > 1040911000
+typedef K Gt;
+typedef CGAL::Regular_triangulation_vertex_base_3<K> Vbb;
+typedef CGAL::Fixed_alpha_shape_vertex_base_3<K,Vbb> Vb;
+typedef CGAL::Regular_triangulation_cell_base_3<K> Fbb;
+typedef CGAL::Fixed_alpha_shape_cell_base_3<K,Fbb> Fb;
+typedef CGAL::Triangulation_data_structure_3<Vb, Fb> TDS;
+typedef CGAL::Regular_triangulation_3<K, TDS> Triangulation;
+typedef CGAL::Fixed_alpha_shape_3<Triangulation> Alpha_shape;
+#elif CGAL_VERSION_NR > 1030701000
 typedef CGAL::Regular_triangulation_euclidean_traits_3<K> Gt;
 typedef CGAL::Fixed_alpha_shape_vertex_base_3<Gt> Vb;
 typedef CGAL::Fixed_alpha_shape_cell_base_3<Gt> Fb;
@@ -64,7 +73,11 @@ typedef CGAL::Alpha_shape_3<Triangulation> Alpha_shape;
 
 #endif
 
+#if CGAL_VERSION_NR > 1040911000
+typedef K::Weighted_point_3 Wpoint;
+#else
 typedef Gt::Point Wpoint;
+#endif
 typedef Alpha_shape::Cell Cell;
 typedef Alpha_shape::Vertex Vertex;
 typedef Alpha_shape::Edge Edge;
@@ -110,8 +123,13 @@ class SpacefillingVolumetric {
  public:
   // types
   typedef typename Gt::Vector_3 Vector;
+#if CGAL_VERSION_NR > 1040911000
+  typedef typename K::Point_3 Point;
+  typedef typename K::Weighted_point_3 Wpoint;
+#else
   typedef typename Gt::Point_3 Point;
   typedef typename Gt::Point Wpoint;
+#endif
 
  public:
   /*!
@@ -167,10 +185,6 @@ class SpacefillingVolumetric {
   //! center of some weighted points
   typename Gt::Compute_squared_radius_smallest_orthogonal_sphere_3
       radicalRadius;
-  //! a global that says if a simplex intersect it's dual support
-  /*! needed to decide attachedness see cap_H() and segment_H() functions
-  */
-  typename Gt::Does_simplex_intersect_dual_support_3 doesIntersectDual;
   // end name A
   //\@}
 
@@ -559,8 +573,7 @@ inline typename SpacefillingVolumetric<Gt>::Vector SpacefillingVolumetric<
 template <typename Gt>
 inline bool SpacefillingVolumetric<Gt>::is_hidden(Wpoint const &i,
                                                   Wpoint const &j) {
-  // return !doesIntersectDual(i,j);
-  double dist = vector_squared_length(i - j);
+  double dist = vector_squared_length(i.point() - j.point());
   return (0.5 - (j.weight() - i.weight()) / (2 * dist)) < 0;
 }
 /*! is an edge hidden by a sphere ?
@@ -584,7 +597,6 @@ template <typename Gt>
 inline bool SpacefillingVolumetric<Gt>::is_hidden(Wpoint const &i,
                                                   Wpoint const &j,
                                                   Wpoint const &k) {
-  // return !doesIntersectDual(i,j,k);
   Point o2 = orthoCenter(i, j);
   Point o = orthoCenter(i, j, k);
   return ((k.point() - o2) * (o - o2) < 0);
@@ -758,7 +770,8 @@ inline double SpacefillingVolumetric<Gt>::sector_V(Wpoint const &i,
                                                    Wpoint const &j,
                                                    Wpoint const &k,
                                                    Wpoint const &l) {
-  double tmp = solid_angle(i, j, k, l) * ball_V(i);
+  double tmp = solid_angle(i.point(), j.point(), k.point(), l.point())
+               * ball_V(i);
   // TRACE(" sector_V: "<<tmp);
   return tmp;
 }
@@ -770,7 +783,7 @@ inline double SpacefillingVolumetric<Gt>::sector_A(Wpoint const &i,
                                                    Wpoint const &k,
                                                    Wpoint const &l) {
   // TRACE(" sector_A");
-  return solid_angle(i, j, k, l) * ball_A(i);
+  return solid_angle(i.point(), j.point(), k.point(), l.point()) * ball_A(i);
 }
 /*! volume of a wedge
  */
@@ -780,7 +793,8 @@ inline double SpacefillingVolumetric<Gt>::wedge_V(Wpoint const &i,
                                                   Wpoint const &k,
                                                   Wpoint const &l) {
   // TRACE(" wedge_V da:"<<dihedral_angle(i,j,k,l)<<" bi:"<<ballInter2_V(i,j));
-  return dihedral_angle(i, j, k, l) * ballInter2_V(i, j);
+  return dihedral_angle(i.point(), j.point(), k.point(), l.point())
+         * ballInter2_V(i, j);
 }
 /*! area of a wedge
  */
@@ -790,7 +804,8 @@ inline double SpacefillingVolumetric<Gt>::wedge_A(Wpoint const &i,
                                                   Wpoint const &k,
                                                   Wpoint const &l) {
   // TRACE(" wedge_A");
-  return dihedral_angle(i, j, k, l) * ballInter2_A(i, j);
+  return dihedral_angle(i.point(), j.point(), k.point(), l.point())
+         * ballInter2_A(i, j);
 }
 /*! length of a wedge
  */
@@ -800,7 +815,8 @@ inline double SpacefillingVolumetric<Gt>::wedge_L(Wpoint const &i,
                                                   Wpoint const &k,
                                                   Wpoint const &l) {
   // TRACE(" wedge_L");
-  return dihedral_angle(i, j, k, l) * disk_L(i, j);
+  return dihedral_angle(i.point(), j.point(), k.point(), l.point())
+         * disk_L(i, j);
 }
 /*! volume of a pawn
  */
@@ -941,7 +957,7 @@ inline double SpacefillingVolumetric<Gt>::capInter3and2_V(Wpoint const &i,
                                                           Wpoint const &kk,
                                                           Wpoint const &ll) {
   Wpoint k, l;
-  if (ccw_orientation(i, j, kk, ll)) {
+  if (ccw_orientation(i.point(), j.point(), kk.point(), ll.point())) {
     k = kk;
     l = ll;
   } else {
@@ -975,13 +991,19 @@ inline double SpacefillingVolumetric<Gt>::capInter3and2_V(Wpoint const &i,
   // dilj=vector_length(center4-dualilj) - vector_length(center3ijl-dualilj);
   dilk = vector_length(center4 - dualilk) - vector_length(center3ikl - dualilk);
   return (2 * Br * capInter3and2_A(i, j, k, l) +
-          (Br - cap_H(i, j)) * (2 * PI * rj * rj * dihedral_angle(i, j, k, l) +
+          (Br - cap_H(i, j)) * (2 * PI * rj * rj
+                                * dihedral_angle(i.point(), j.point(),
+                                                 k.point(), l.point()) +
                                 (rj - segment_H(i, j, k)) * dikj +
                                 (rj - segment_H(i, j, l)) * dijl) +
-          (Br - cap_H(i, k)) * (2 * PI * rk * rk * dihedral_angle(i, k, j, l) +
+          (Br - cap_H(i, k)) * (2 * PI * rk * rk
+                                * dihedral_angle(i.point(), k.point(),
+                                                 j.point(), l.point()) +
                                 (rk - segment_H(i, k, j)) * dikj +
                                 (rk - segment_H(i, k, l)) * dilk) +
-          (Br - cap_H(i, l)) * (2 * PI * rl * rl * dihedral_angle(i, l, j, k) +
+          (Br - cap_H(i, l)) * (2 * PI * rl * rl
+                                * dihedral_angle(i.point(), l.point(),
+                                                 j.point(), k.point()) +
                                 (rl - segment_H(i, l, j)) * dijl +
                                 (rl - segment_H(i, l, k)) * dilk)) /
          6.0;
@@ -1016,7 +1038,7 @@ inline double SpacefillingVolumetric<Gt>::capInter3and2_V(Wpoint const &i,
                                                           Wpoint const &ll,
                                                           double const surf) {
   Wpoint k, l;
-  if (ccw_orientation(i, j, kk, ll)) {
+  if (ccw_orientation(i.point(), j.point(), kk.point(), ll.point())) {
     k = kk;
     l = ll;
   } else {
@@ -1050,13 +1072,19 @@ inline double SpacefillingVolumetric<Gt>::capInter3and2_V(Wpoint const &i,
   dilj = vector_length(center4 - dualilj) - vector_length(center3ijl - dualilj);
   dilk = vector_length(center4 - dualilk) - vector_length(center3ikl - dualilk);
   return (2 * Br * surf +
-          (Br - cap_H(i, j)) * (2 * PI * rj * rj * dihedral_angle(i, j, k, l) +
+          (Br - cap_H(i, j)) * (2 * PI * rj * rj
+                                * dihedral_angle(i.point(), j.point(),
+                                                 k.point(), l.point()) +
                                 (rj - segment_H(i, j, k)) * dikj +
                                 (rj - segment_H(i, j, l)) * dijl) +
-          (Br - cap_H(i, k)) * (2 * PI * rk * rk * dihedral_angle(i, k, j, l) +
+          (Br - cap_H(i, k)) * (2 * PI * rk * rk
+                                * dihedral_angle(i.point(), k.point(),
+                                                 j.point(), l.point()) +
                                 (rk - segment_H(i, k, j)) * dikj +
                                 (rk - segment_H(i, k, l)) * dilk) +
-          (Br - cap_H(i, l)) * (2 * PI * rl * rl * dihedral_angle(i, l, j, k) +
+          (Br - cap_H(i, l)) * (2 * PI * rl * rl
+                                * dihedral_angle(i.point(), l.point(),
+                                                 j.point(), k.point()) +
                                 (rl - segment_H(i, l, j)) * dijl +
                                 (rl - segment_H(i, l, k)) * dilk)) /
          6.0;
@@ -1079,7 +1107,7 @@ inline double SpacefillingVolumetric<Gt>::capInter3_A(Wpoint const &i,
                                                       Wpoint const &kk,
                                                       Wpoint const &ll) {
   Wpoint k, l;
-  if (ccw_orientation(i, j, kk, ll)) {
+  if (ccw_orientation(i.point(), j.point(), kk.point(), ll.point())) {
     k = kk;
     l = ll;
   } else {
@@ -1127,9 +1155,12 @@ inline double SpacefillingVolumetric<Gt>::capInter3and2_A(Wpoint const &i,
                                                           Wpoint const &k,
                                                           Wpoint const &l) {
   return 2 * PI * ball_R(i) *
-         ((ball_R(i) - cap_H(i, j)) * dihedral_angle(i, j, k, l) +
-          (ball_R(i) - cap_H(i, k)) * dihedral_angle(i, k, j, l) +
-          (ball_R(i) - cap_H(i, l)) * dihedral_angle(i, l, j, k) -
+         ((ball_R(i) - cap_H(i, j))
+          * dihedral_angle(i.point(), j.point(), k.point(), l.point()) +
+          (ball_R(i) - cap_H(i, k))
+          * dihedral_angle(i.point(), k.point(), j.point(), l.point()) +
+          (ball_R(i) - cap_H(i, l))
+          * dihedral_angle(i.point(), l.point(), j.point(), k.point()) -
           0.5 * ball_R(i));
 }
 
@@ -1230,7 +1261,7 @@ inline double SpacefillingVolumetric<Gt>::segmentInter2_A(Wpoint const &i,
                                                           Wpoint const &kk,
                                                           Wpoint const &ll) {
   Wpoint k, l;
-  if (ccw_orientation(i, j, kk, ll)) {
+  if (ccw_orientation(i.point(), j.point(), kk.point(), ll.point())) {
     k = kk;
     l = ll;
   } else {
@@ -1550,7 +1581,7 @@ template <typename Gt>
 inline double SpacefillingVolumetric<Gt>::halfDiskInter2_A(Wpoint const &i,
                                                            Wpoint const &j) {
   double A = 0;  // area
-  Vector v = i - j;
+  Vector v = i.point() - j.point();
   double d = vector_length(v);
   if (ball_R(i) + ball_R(j) - d > 0) {
     double d2 = d * d;
@@ -1608,7 +1639,7 @@ inline void SpacefillingVolumetric<Gt>::halfDiskInter2_A(Wpoint const &i,
                                                          double &A, double &L) {
   A = 0;
   L = 0;
-  Vector v = i - j;
+  Vector v = i.point() - j.point();
   double d = vector_length(v);
   if (ball_R(i) + ball_R(j) - d > 0) {
     double d2 = d * d;
@@ -1719,7 +1750,6 @@ SpacefillingVolumetric<Gt>::SpacefillingVolumetric() {
   radicalCenter = gt.construct_weighted_circumcenter_3_object();
   radicalRadius =
       gt.compute_squared_radius_smallest_orthogonal_sphere_3_object();
-  doesIntersectDual = gt.does_simplex_intersect_dual_support_3_object();
 }
 
 namespace {
