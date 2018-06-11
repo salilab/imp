@@ -11,6 +11,8 @@ class Tests(IMP.test.TestCase):
             import matplotlib
         except ImportError:
             self.skipTest("no matplotlib package")
+        if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
+            self.skipTest("test too slow to run in debug mode")
         model=IMP.Model()
         sts=sorted(glob.glob(self.get_input_file_name("output_test/stat.0.out").replace(".0.",".*.")))
         are=IMP.pmi.macros.AnalysisReplicaExchange(model,sts,10)
