@@ -1042,7 +1042,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     """Class to encode a modeling protocol as mmCIF.
 
     IMP has basic support for writing out files in mmCIF format, for
-    deposition in [PDB-dev](https://pdb-dev.rcsb.rutgers.edu/).
+    deposition in [PDB-Dev](https://pdb-dev.wwpdb.org/).
     After creating an instance of this class, attach it to an
     IMP.pmi.representation.Representation object. After this, any
     generated models and metadata are automatically collected and
