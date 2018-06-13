@@ -38,7 +38,7 @@ ChangeLog {#changelog}
 - Memory and CPU performance improvements across the code, particularly
   in IMP::pmi.
 - Preview of mmCIF support for deposition of integrative models in
-  [PDB-dev](https://pdb-dev.rcsb.rutgers.edu/). See the IMP::pmi::mmcif
+  [PDB-Dev](https://pdb-dev.wwpdb.org/). See the IMP::pmi::mmcif
   module for more details.
 - This will be the last release that includes packages for RedHat Enterprise
   Linux 5 (and variants, such as CentOS 5), since RHEL 5 has reached end
