@@ -3,8 +3,10 @@ if (OPENMP_FOUND)
   set(CMAKE_REQUIRED_FLAGS ${OpenMP_CXX_FLAGS})
   set(mybody "#include <omp.h>
 int main() {
-#pragma omp taskwait
-return 0;
+omp_sched_t kind;
+int chunk_size;
+omp_get_schedule(&kind, &chunk_size);
+return chunk_size;
 }")
 
   check_cxx_source_compiles("${mybody}" OpenMP3)
