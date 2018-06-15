@@ -17,6 +17,10 @@ class IMPMockTests(unittest.TestCase):
         import IMP.em2d
         # We build our own Eigen on RHEL, so everyone should have IMP.isd
         import IMP.isd
+        # Make sure that npctransport is included and that the underlying
+        # protobuf stuff also works
+        import IMP.npctransport
+        x = IMP.npctransport.Configuration
         # Check that most other modules (particularly those with many
         # dependencies) are present
         import IMP.cnmultifit
