@@ -903,9 +903,9 @@ class ApplicationTestCase(TestCase):
         example_path = os.path.abspath(IMP.get_example_path('..'))
         with open(doc) as fh:
             for line in fh.readlines():
-                if '\code{.sh}' in line:
+                if '\\code{.sh}' in line:
                     inline = True
-                elif '\endcode' in line:
+                elif '\\endcode' in line:
                     inline = False
                 elif inline:
                     cmds.append(line.rstrip('\r\n').replace(
