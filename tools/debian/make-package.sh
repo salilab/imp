@@ -31,6 +31,10 @@ if [ "${CODENAME}" = "xenial" -o "${CODENAME}" = "bionic" ]; then
   # Help cmake to find CGALConfig.cmake
   perl -pi -e "s#\-DCMAKE_BUILD_TYPE#-DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/ -DCMAKE_BUILD_TYPE#g" debian/rules || exit 1
 fi
+# Older distributions don't support python3-protobuf
+if [ "${CODENAME}" = "xenial" -o "${CODENAME}" = "trusty" ]; then
+  perl -pi -e "s/, python3-protobuf//" debian/control || exit 1
+fi
 cd .. || exit 1
 if [ "${imp_dir_name}" != "imp" ]; then
   mv "${imp_dir_name}" imp
