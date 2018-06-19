@@ -6,6 +6,13 @@ ChangeLog {#changelog}
 - The Windows .exe IMP installer no longer supports Python 2.6. Python 2.7,
   3.4, 3.5, and 3.6 are supported by this installer.
 - Scores in IMP.saxs (and FoXS) now use the chi-square value rather than chi.
+- New applications of IMP are now available:
+  - [Modeling of the entire yeast nuclear pore complex](https://salilab.org/npc2018), as well as
+    [modeling of the flexible FG regions](https://salilab.org/npc_fg_2018) and
+    modeling of the individual [Nup133](https://salilab.org/nup133),
+    [Nup82](https://salilab.org/nup82), and
+    [Pom152](https://salilab.org/pom152) subcomplexes.
+  - [Modeling of the Ecm29-proteasome complex](https://salilab.org/ecm29)
 
 # 2.8.0 - 2017-08-16 # {#changelog_2_8_0}
 - New applications of IMP are now available:
