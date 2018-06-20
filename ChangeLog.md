@@ -5,6 +5,7 @@ ChangeLog {#changelog}
 - [Eigen](https://eigen.tuxfamily.org/) is now required to build IMP.
 - The Windows .exe IMP installer no longer supports Python 2.6. Python 2.7,
   3.4, 3.5, and 3.6 are supported by this installer.
+- A binary package is now provided for Ubuntu 18.04 LTS, Bionic Beaver.
 - Scores in IMP.saxs (and FoXS) now use the chi-square value rather than chi.
 - New applications of IMP are now available:
   - [Modeling of the entire yeast nuclear pore complex](https://salilab.org/npc2018), as well as
@@ -13,6 +14,14 @@ ChangeLog {#changelog}
     [Nup82](https://salilab.org/nup82), and
     [Pom152](https://salilab.org/pom152) subcomplexes.
   - [Modeling of the Ecm29-proteasome complex](https://salilab.org/ecm29)
+- The new modules IMP::npc and IMP::npctransport provide specialized
+  restraints and other functionality for modeling static nuclear pore complex
+  structures and transport through these structures, respectively, although
+  may also be useful for other modeling applications.
+- IMP's mmCIF support for deposition of models in
+  [PDB-Dev](https://pdb-dev.wwpdb.org/), in the IMP::pmi and IMP::mmcif modules,
+  now utilizes the [python-ihm](https://github.com/ihmwg/python-ihm) library,
+  a copy of which is included with IMP.
 
 # 2.8.0 - 2017-08-16 # {#changelog_2_8_0}
 - New applications of IMP are now available:
