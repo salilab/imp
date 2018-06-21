@@ -91,7 +91,7 @@ ChangeLog {#changelog}
   Use IMP::core::create_rigid_body() instead.
 - IMP::test:TempDir and IMP::test::RunInTempDir are deprecated in favor
   of similar functions that work as Python context managers
-  (IMP::test::temporary_directory() and IMP::Test::temporary_working_directory()
+  (IMP::test::temporary_directory() and IMP::test::temporary_working_directory()
   respectively).
 
 # 2.6.2 - 2016-05-25 # {#changelog_2_6_2}
