@@ -97,7 +97,7 @@ It also generates a file <tt>multifit.output</tt> that shows the
 transformation needed to place the subunit in the density.
 
 The optional <tt>--chimera</tt> parameter requests the same transformation
-output in a \external{http://www.cgl.ucsf.edu/chimera/,Chimera}-compatible
+output in a \external{https://www.cgl.ucsf.edu/chimera/,Chimera}-compatible
 format. To generate PDB files from the Chimera output file, use:
 
 \code{.sh}
