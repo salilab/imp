@@ -439,6 +439,9 @@ perl -pi -e 's^#!.*python.*^#!/usr/bin/python^' ${RPM_BUILD_ROOT}%{_prefix}/bin/
 %endif
 
 %changelog
+* Mon Jul 02 2018 Ben Webb <ben@salilab.org>   2.9.0-1
+- 2.9.0 release.
+
 * Wed Aug 16 2017 Ben Webb <ben@salilab.org>   2.8.0-1
 - 2.8.0 release.
 
