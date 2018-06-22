@@ -262,7 +262,8 @@ def build_representation(parent,rep,coord_finder):
                 IMP.isd.gmm_tools.write_gmm_to_map(density_ps,rep.density_prefix+'.mrc',
                                                    rep.density_voxel_size,fast=True)
 
-        for d in density_ps:
+        for n, d in enumerate(density_ps):
+            d.set_name('Density #%d' % n)
             density_frag.add_child(d)
         root_representation.add_representation(density_frag,
                                                IMP.atom.DENSITIES,
