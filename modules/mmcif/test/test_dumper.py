@@ -98,7 +98,9 @@ class Tests(IMP.test.TestCase):
         dumper = ihm.dumper._SoftwareDumper()
         dumper.finalize(system.system)
         out = _get_dumper_output(dumper, system.system)
-        self.assertEqual(out, """#
+        # Ignore line breaks, since these will be placed differently depending
+        # on how long the version number is
+        self.assertEqual(out.replace('\n', ' '), ("""#
 loop_
 _software.pdbx_ordinal
 _software.name
@@ -110,7 +112,7 @@ _software.location
 1 'Integrative Modeling Platform (IMP)' 'integrative model building' .
 %s program https://integrativemodeling.org
 #
-""" % IMP.get_module_version())
+""" % IMP.get_module_version()).replace('\n', ' '))
 
     def _assign_entity_ids(self, system):
         ihm.dumper._EntityDumper().finalize(system.system)
