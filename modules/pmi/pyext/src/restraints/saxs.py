@@ -45,8 +45,8 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
         # Get all hierarchies.
         hiers = IMP.pmi.tools.input_adaptor(input_objects,
                                             flatten=True)
-        m = list(hiers)[0].get_model()
-        super(SAXSRestraint, self).__init__(m, label=label, weight=weight)
+        model = list(hiers)[0].get_model()
+        super(SAXSRestraint, self).__init__(model, label=label, weight=weight)
 
         # Determine maxq to compare computed and experimental profiles
         if maxq == "standard":
@@ -103,8 +103,9 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
     def __init__(self, representation, profile, resolution=0, weight=1,
                  ff_type=IMP.saxs.HEAVY_ATOMS, label=None):
 
-        m = representation.prot.get_model()
-        super(SAXSISDRestraint, self).__init__(m, label=label, weight=weight)
+        model = representation.prot.get_model()
+        super(SAXSISDRestraint, self).__init__(model, label=label,
+                                               weight=weight)
 
         self.taumaxtrans = 0.05
         self.prof = IMP.saxs.Profile(profile)
@@ -115,24 +116,24 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
 
         # gamma nuisance
         self.gamma = IMP.pmi.tools.SetupNuisance(
-            self.m, 1., 0., None, False).get_particle()
+            self.model, 1., 0., None, False).get_particle()
 
         # sigma nuisance
-        self.sigma = IMP.pmi.tools.SetupNuisance(self.m, 10.0, 0., None, False
+        self.sigma = IMP.pmi.tools.SetupNuisance(self.model, 10.0, 0., None, False
                                                  ).get_particle()
 
         # tau nuisance, optimized
-        self.tau = IMP.pmi.tools.SetupNuisance(self.m, 1., 0., None, False,
+        self.tau = IMP.pmi.tools.SetupNuisance(self.model, 1., 0., None, False,
                                                ).get_particle()
 
         # c1 and c2, optimized
-        self.c1 = IMP.pmi.tools.SetupNuisance(self.m, 1.0, 0.95, 1.05,
+        self.c1 = IMP.pmi.tools.SetupNuisance(self.model, 1.0, 0.95, 1.05,
                                               True).get_particle()
-        self.c2 = IMP.pmi.tools.SetupNuisance(self.m, 0.0, -2., 4.,
+        self.c2 = IMP.pmi.tools.SetupNuisance(self.model, 0.0, -2., 4.,
                                               True).get_particle()
 
         # weight, optimized
-        self.w = IMP.pmi.tools.SetupWeight(self.m).get_particle()
+        self.w = IMP.pmi.tools.SetupWeight(self.model).get_particle()
         IMP.isd.Weight(self.w).set_weights_are_optimized(True)
 
         # take identity covariance matrix for the start
@@ -152,36 +153,36 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
 
         self.rs2 = self._create_restraint_set('Prior')
         # jeffreys restraints for nuisances
-        j1 = IMP.isd.JeffreysRestraint(self.m, self.sigma)
+        j1 = IMP.isd.JeffreysRestraint(self.model, self.sigma)
         self.rs2.add_restraint(j1)
-        j2 = IMP.isd.JeffreysRestraint(self.m, self.tau)
+        j2 = IMP.isd.JeffreysRestraint(self.model, self.tau)
         self.rs2.add_restraint(j2)
-        j3 = IMP.isd.JeffreysRestraint(self.m, self.gamma)
+        j3 = IMP.isd.JeffreysRestraint(self.model, self.gamma)
         self.rs2.add_restraint(j3)
 
     def optimize_sigma(self):
         """Set sigma to the value that maximizes its conditional likelihood"""
-        self.m.update()
+        self.model.update()
         sigma2hat = self.saxs.get_sigmasq_scale_parameter() \
             / (self.saxs.get_sigmasq_shape_parameter() + 1)
         IMP.isd.Scale(self.sigma).set_scale(math.sqrt(sigma2hat))
 
     def optimize_gamma(self):
         """Set gamma to the value that maximizes its conditional likelihood"""
-        self.m.update()
+        self.model.update()
         gammahat = math.exp(self.saxs.get_loggamma_variance_parameter() *
                             self.saxs.get_loggamma_jOg_parameter())
         IMP.isd.Scale(self.gamma).set_scale(gammahat)
 
     def optimize_tau(self, ltaumin=-2, ltaumax=3, npoints=100):
         values = []
-        self.m.update()
+        self.model.update()
         IMP.atom.write_pdb(self.atoms, 'tauvals.pdb')
         fl = open('tauvals.txt', 'w')
         for tauval in self._logspace(ltaumin, ltaumax, npoints):
             IMP.isd.Scale(self.tau).set_scale(tauval)
             try:
-                values.append((self.m.evaluate(False), tauval))
+                values.append((self.model.evaluate(False), tauval))
             except:
                 pass
             fl.write('%G %G\n' % (values[-1][1], values[-1][0]))
@@ -193,7 +194,7 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
             ltcenter - 2 * spacing, ltcenter + 2 * spacing,
                 npoints):
             IMP.isd.Scale(self.tau).set_scale(tauval)
-            values.append((self.m.evaluate(False), tauval))
+            values.append((self.model.evaluate(False), tauval))
             fl.write('%G %G\n' % (values[-1][1], values[-1][0]))
         values.sort()
         IMP.isd.Scale(self.tau).set_scale(values[0][1])
@@ -207,12 +208,12 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
 
     def draw_sigma(self):
         """Draw 1/sigma2 from gamma distribution."""
-        self.m.update()
+        self.model.update()
         self.saxs.draw_sigma()
 
     def draw_gamma(self):
         """Draw gamma from lognormal distribution."""
-        self.m.update()
+        self.model.update()
         self.saxs.draw_gamma()
 
     def update_covariance_matrix(self):

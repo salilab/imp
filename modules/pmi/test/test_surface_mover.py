@@ -13,8 +13,9 @@ class SurfaceRestraint(IMP.pmi.restraints.RestraintBase):
         super(SurfaceRestraint, self).__init__(m, weight=weight, label=label)
         self.surf = surface
         ss = IMP.core.HarmonicSurfaceHeightPairScore(0, 1)
-        r = IMP.core.PairRestraint(self.m, ss, (surface.get_particle_index(),
-                                                sphere.get_particle_index()))
+        r = IMP.core.PairRestraint(
+            self.model, ss, (surface.get_particle_index(),
+                             sphere.get_particle_index()))
         self.rs.add_restraint(r)
 
     def get_particles_to_sample(self):

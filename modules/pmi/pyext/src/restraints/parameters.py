@@ -22,8 +22,9 @@ class WeightRestraint(IMP.pmi.restraints.RestraintBase):
         @param weight The weight to apply to all internal restraints
         """
         self.w = w
-        m = self.w.get_model()
-        super(WeightRestraint, self).__init__(m, label=label, weight=weight)
+        model = self.w.get_model()
+        super(WeightRestraint, self).__init__(model, label=label,
+                                              weight=weight)
         self.lower = lower
         self.upper = upper
         self.kappa = kappa
@@ -45,7 +46,7 @@ class JeffreysPrior(IMP.pmi.restraints.RestraintBase):
         @param label A unique label to be used in outputs
         @param weight The weight to apply to all internal restraints
         """
-        m = nuisance.get_model()
-        super(JeffreysPrior, self).__init__(m, label=label, weight=weight)
-        jp = IMP.isd.JeffreysRestraint(self.m, nuisance)
+        model = nuisance.get_model()
+        super(JeffreysPrior, self).__init__(model, label=label, weight=weight)
+        jp = IMP.isd.JeffreysRestraint(self.model, nuisance)
         self.rs.add_restraint(jp)

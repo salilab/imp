@@ -129,7 +129,7 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
         sses['beta'].append(beta_dict[beta_sheet])
     return sses
 
-def save_best_models(mdl,
+def save_best_models(model,
                      out_dir,
                      stat_files,
                      number_of_best_scoring_models=10,
@@ -141,7 +141,7 @@ def save_best_models(mdl,
                      override_rmf_dir=None):
     """Given a list of stat files, read them all and find the best models.
     Save to a single RMF along with a stat file.
-    @param mdl The IMP Model
+    @param model The IMP Model
     @param out_dir The output directory. Will save 3 files (RMF, stat, summary)
     @param stat_files List of all stat files to collect
     @param number_of_best_scoring_models Num best models to gather
@@ -227,7 +227,7 @@ def save_best_models(mdl,
         stat = open(out_stat_fn,'w')
         rh0 = RMF.open_rmf_file_read_only(
             os.path.join(root_directory_of_stat_file,all_fields[rmf_file_key][0]))
-        prots = IMP.rmf.create_hierarchies(rh0,mdl)
+        prots = IMP.rmf.create_hierarchies(rh0,model)
         del rh0
         outf = RMF.create_rmf_file(out_rmf_fn)
         IMP.rmf.add_hierarchies(outf,prots)
@@ -574,15 +574,20 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
 class RMSDOutput(object):
     """A helper output based on dist to initial coordinates"""
     def __init__(self,ps,label,init_coords=None):
-        self.mdl = ps[0].get_model()
+        self.model = ps[0].get_model()
         self.ps = ps
         if init_coords is None:
             self.init_coords = [IMP.core.XYZ(p).get_coordinates() for p in self.ps]
         else:
             self.init_coords = init_coords
         self.label = label
+
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
+
     def get_output(self):
-        self.mdl.update()
         output = {}
         coords = [IMP.core.XYZ(p).get_coordinates() for p in self.ps]
         rmsd = IMP.algebra.get_rmsd(coords,self.init_coords)
@@ -591,11 +596,16 @@ class RMSDOutput(object):
 
 class TotalScoreOutput(object):
     """A helper output for model evaluation"""
-    def __init__(self,mdl):
-        self.mdl = mdl
-        self.rs = IMP.pmi.tools.get_restraint_set(self.mdl)
+    def __init__(self,model):
+        self.model = model
+        self.rs = IMP.pmi.tools.get_restraint_set(self.model)
+
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
+
     def get_output(self):
-        self.mdl.update()
         score = self.rs.evaluate(False)
         output = {}
         output["Total_Score"] = str(score)

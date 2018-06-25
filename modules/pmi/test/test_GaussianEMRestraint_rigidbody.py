@@ -11,9 +11,9 @@ import math
 class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        self.m = IMP.Model()
+        self.model = IMP.Model()
         self.simo1 = IMP.pmi.representation.Representation(
-            self.m, upperharmonic=True, disorderedlength=False)
+            self.model, upperharmonic=True, disorderedlength=False)
 
     def test_GaussianEMRestraint_rigid_body(self):
         """Test rigid body movement of target EM map"""
@@ -22,7 +22,7 @@ class Tests(IMP.test.TestCase):
         IMP.isd.gmm_tools.decorate_gmm_from_text(
             fname,
             target_ps,
-            self.m,
+            self.model,
             radius_scale=3.0,
             mass_scale=1.0)
         gemh = IMP.pmi.restraints.em.GaussianEMRestraint(target_ps, fname,

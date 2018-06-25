@@ -147,7 +147,6 @@ class ConnectivityRestraint(object):
         self.rs.set_weight(weight)
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -219,7 +218,7 @@ class ExcludedVolumeSphere(object):
             if bipartite:
                 other_ps = [h.get_particle() for h in other_hierarchies]
         elif isinstance(representation, IMP.pmi.representation.Representation):
-            self.mdl = representation.m
+            self.mdl = representation.model
             included_ps = IMP.pmi.tools.select(
                 representation,
                 resolution=resolution,
@@ -278,7 +277,6 @@ class ExcludedVolumeSphere(object):
         self.rs.set_weight(weight)
 
     def get_output(self):
-        self.mdl.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -347,7 +345,6 @@ class HelixRestraint(object):
         return self.weight * self.rs.unprotected_evaluate(None)
 
     def get_output(self):
-        self.mdl.update()
         output = {}
         score = self.evaluate()
         output["_TotalScore"] = str(score)
@@ -434,7 +431,6 @@ class ResidueBondRestraint(object):
         return self.pairslist
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -513,7 +509,6 @@ class ResidueAngleRestraint(object):
         return self.pairslist
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -614,7 +609,6 @@ class ResidueDihedralRestraint(object):
         return self.pairslist
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -834,7 +828,6 @@ class SecondaryStructure(object):
 
     def get_output(self):
         output = {}
-        self.m.update()
         score_angle = self.anglrs.unprotected_evaluate(None)
         score_dihers = self.dihers.unprotected_evaluate(None)
         score_bondrs = self.bondrs.unprotected_evaluate(None)
@@ -883,7 +876,7 @@ class ElasticNetworkRestraint(object):
                                              atom_type=IMP.atom.AtomType("CA"))
                 particles+=sel.get_selected_particles()
         elif representation is not None and type(representation)==IMP.pmi.representation.Representation:
-            self.m = representation.mdl
+            self.m = representation.model
             for st in selection_tuples:
                 print('selecting with',st)
                 for p in IMP.pmi.tools.select_by_tuple(representation,st,resolution=resolution):
@@ -926,7 +919,6 @@ class ElasticNetworkRestraint(object):
         return self.pairslist
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -1045,7 +1037,6 @@ class CharmmForceFieldRestraint(object):
         self.rs.set_weight(weight)
 
     def get_output(self):
-        self.mdl.update()
         output = {}
         bonds_score = self.weight * self.bonds_rs.unprotected_evaluate(None)
         nonbonded_score = self.weight * self.nonbonded_rs.unprotected_evaluate(None)
@@ -1193,7 +1184,6 @@ class PseudoAtomicRestraint(object):
         return self.pairslist
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -1263,7 +1253,6 @@ class SymmetryRestraint(object):
         return self.pairslist
 
     def get_output(self):
-        self.mdl.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["SymmetryRestraint_" + self.label] = str(score)
@@ -1338,7 +1327,6 @@ class FusionRestraint(object):
         self.rs.set_weight(weight)
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -1372,8 +1360,8 @@ class PlaneDihedralRestraint(IMP.pmi.restraints.RestraintBase):
         \note Particles defining planes should be rigid and more or less
               parallel for proper behavior
         """
-        m = particle_triplets[0][0].get_model()
-        super(PlaneDihedralRestraint, self).__init__(m, label=label,
+        model = particle_triplets[0][0].get_model()
+        super(PlaneDihedralRestraint, self).__init__(model, label=label,
                                                      weight=weight)
 
         angle = pi * angle / 180.
@@ -1382,5 +1370,7 @@ class PlaneDihedralRestraint(IMP.pmi.restraints.RestraintBase):
             t2 = particle_triplets[i + 1]
             q1 = [t1[1], t1[0], t2[0], t2[1]]
             q2 = [t1[2], t1[0], t2[0], t2[2]]
-            self.rs.add_restraint(IMP.core.DihedralRestraint(self.m, ds, *q1))
-            self.rs.add_restraint(IMP.core.DihedralRestraint(self.m, ds, *q2))
+            self.rs.add_restraint(
+                IMP.core.DihedralRestraint(self.model, ds, *q1))
+            self.rs.add_restraint(
+                IMP.core.DihedralRestraint(self.model, ds, *q2))

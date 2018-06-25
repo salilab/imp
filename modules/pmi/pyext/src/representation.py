@@ -82,9 +82,9 @@ class Representation(object):
 
     '''
 
-    def __init__(self, m, upperharmonic=True, disorderedlength=True):
+    def __init__(self, model, upperharmonic=True, disorderedlength=True):
         """Constructor.
-           @param m                the model
+           @param model            the model
            @param upperharmonic    This flag uses either harmonic (False)
                      or upperharmonic (True) in the intra-pair
                      connectivity restraint.
@@ -134,12 +134,12 @@ class Representation(object):
         self.resolution = 10.0
         self.bblenght = 100.0
         self.kappa = 100.0
-        self.m = m
+        self.model = model
 
         self.representation_is_modified = False
         self.unmodeledregions_cr_dict = {}
         self.sortedsegments_cr_dict = {}
-        self.prot = IMP.atom.Hierarchy.setup_particle(IMP.Particle(self.m))
+        self.prot = IMP.atom.Hierarchy.setup_particle(IMP.Particle(self.model))
         self.connected_intra_pairs = []
         self.hier_dict = {}
         self.color_dict = {}
@@ -156,7 +156,7 @@ class Representation(object):
         # structures that are used to calculate the rmsd
         self.reference_structures = {}
         self.elements = {}
-        self.linker_restraints = IMP.RestraintSet(self.m, "linker_restraints")
+        self.linker_restraints = IMP.RestraintSet(self.model, "linker_restraints")
         self.linker_restraints.set_was_used(True)
         self.linker_restraints_dict = {}
         self.threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
@@ -168,6 +168,11 @@ class Representation(object):
         self.onetothree = dict((v, k) for k, v in self.threetoone.items())
 
         self.residuenamekey = IMP.StringKey("ResidueName")
+
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def m(self):
+        return self.model
 
     def add_metadata(self, m):
         """Associate some metadata with this modeling.
@@ -202,7 +207,7 @@ class Representation(object):
         self._protocol_output.append((p, state))
         p._each_metadata.append(self._metadata)
         p._file_datasets.append(self._file_dataset)
-        state.m = self.m
+        state.model = self.model
         state.prot = self.prot
     protocol_output = property(lambda self:
                                [x[0] for x in self._protocol_output])
@@ -215,7 +220,7 @@ class Representation(object):
         # This is because old PMI1 code expects the top-level particle to be
         # a Molecule, but we also need it to be a Chain to set the sequence.
         # This looks a little odd but is a valid IMP atom::Hierarchy.
-        protein_h = IMP.atom.Chain.setup_particle(IMP.Particle(self.m), 'X')
+        protein_h = IMP.atom.Chain.setup_particle(IMP.Particle(self.model), 'X')
         IMP.atom.Molecule.setup_particle(protein_h)
         protein_h.set_name(name)
         self.hier_dict[name] = protein_h
@@ -308,7 +313,7 @@ class Representation(object):
         print("autobuild_model: constructing %s from pdb %s and chain %s" % (name, pdbname, str(chain)))
 
         # get the initial and end residues of the pdb
-        t = IMP.atom.read_pdb(pdbname, self.m,
+        t = IMP.atom.read_pdb(pdbname, self.model,
                               IMP.atom.AndPDBSelector(IMP.atom.ChainPDBSelector(chain), IMP.atom.CAlphaPDBSelector()))
 
         # find start and end indexes
@@ -438,7 +443,7 @@ class Representation(object):
             sel = IMP.atom.AndPDBSelector(
                 IMP.atom.ChainPDBSelector(chain),
                 sel)
-            t = IMP.atom.read_pdb(pdbname, self.m, sel)
+            t = IMP.atom.read_pdb(pdbname, self.model, sel)
 
             # get the first and last residue
             start = IMP.atom.Residue(
@@ -447,7 +452,7 @@ class Representation(object):
                 t.get_children()[0].get_children()[-1]).get_index()
             c = IMP.atom.Chain(IMP.atom.get_by_type(t, IMP.atom.CHAIN_TYPE)[0])
         else:
-            t = IMP.atom.read_pdb(pdbname, self.m, sel)
+            t = IMP.atom.read_pdb(pdbname, self.model, sel)
             c = IMP.atom.Chain(
                 IMP.atom.get_by_type(t, IMP.atom.CHAIN_TYPE)[chain])
 
@@ -485,7 +490,7 @@ class Representation(object):
         if len(ps) == 0:
             raise ValueError("%s no residue found in pdb %s chain %s that overlaps with the queried stretch %s-%s" \
                   % (name, pdbname, str(chain), str(resrange[0]), str(resrange[1])))
-        c0 = IMP.atom.Chain.setup_particle(IMP.Particle(self.m), "X")
+        c0 = IMP.atom.Chain.setup_particle(IMP.Particle(self.model), "X")
 
         for p in ps:
             par = IMP.atom.Atom(p).get_parent()
@@ -522,7 +527,7 @@ class Representation(object):
             residues[par] = None
         for r in residues.keys():
             IMP.atom.destroy(r)
-        self.m.remove_particle(c0)
+        self.model.remove_particle(c0)
 
         IMP.atom.destroy(t)
 
@@ -556,7 +561,7 @@ class Representation(object):
         start = resrange[0]
         end = resrange[1]
         self.elements[name].append((start, end, " ", "helix"))
-        c0 = IMP.atom.Chain.setup_particle(IMP.Particle(self.m), "X")
+        c0 = IMP.atom.Chain.setup_particle(IMP.Particle(self.model), "X")
         for n, res in enumerate(range(start, end + 1)):
             if name in self.sequence_dict:
                 try:
@@ -578,8 +583,8 @@ class Representation(object):
                 # mass=IMP.atom.get_mass_from_residue_type(IMP.atom.ResidueType("ALA"))
             radius = IMP.algebra.get_ball_radius_from_volume_3d(vol)
 
-            r = IMP.atom.Residue.setup_particle(IMP.Particle(self.m), rt, res)
-            p = IMP.Particle(self.m)
+            r = IMP.atom.Residue.setup_particle(IMP.Particle(self.model), rt, res)
+            p = IMP.Particle(self.model)
             d = IMP.core.XYZR.setup_particle(p)
             x = 2.3 * cos(n * 2 * pi / 3.6)
             y = 2.3 * sin(n * 2 * pi / 3.6)
@@ -622,7 +627,7 @@ class Representation(object):
         for n, dss in enumerate(ds):
             ds_frag = (dss[0], dss[1])
             self.elements[name].append((dss[0], dss[1], " ", "bead"))
-            prt = IMP.Particle(self.m)
+            prt = IMP.Particle(self.model)
             if ds_frag[0] == ds_frag[1]:
                 # if the bead represent a single residue
                 if name in self.sequence_dict:
@@ -645,7 +650,7 @@ class Representation(object):
                 h.set_residue_indexes(list(range(ds_frag[0], ds_frag[1] + 1)))
                 resolution = len(h.get_residue_indexes())
             if "Beads" not in self.hier_representation[name]:
-                root = IMP.atom.Hierarchy.setup_particle(IMP.Particle(self.m))
+                root = IMP.atom.Hierarchy.setup_particle(IMP.Particle(self.model))
                 root.set_name("Beads")
                 self.hier_representation[name]["Beads"] = root
                 protein_h.add_child(root)
@@ -764,7 +769,7 @@ class Representation(object):
         out_hier = []
         protein_h = self.hier_dict[name]
         if "Densities" not in self.hier_representation[name]:
-            root = IMP.atom.Hierarchy.setup_particle(IMP.Particle(self.m))
+            root = IMP.atom.Hierarchy.setup_particle(IMP.Particle(self.model))
             root.set_name("Densities")
             self.hier_representation[name]["Densities"] = root
             protein_h.add_child(root)
@@ -789,10 +794,10 @@ class Representation(object):
         if inputfile:
             IMP.isd.gmm_tools.decorate_gmm_from_text(
                 inputfile, density_particles,
-                self.m, transform)
+                self.model, transform)
         elif density_ps_to_copy:
             for ip in density_ps_to_copy:
-                p = IMP.Particle(self.m)
+                p = IMP.Particle(self.model)
                 shape = IMP.core.Gaussian(ip).get_gaussian()
                 mass = IMP.atom.Mass(ip).get_mass()
                 IMP.core.Gaussian.setup_particle(p, shape)
@@ -803,11 +808,11 @@ class Representation(object):
                 print("add_component_density: no particle was selected")
                 return out_hier
             for p in fragment_particles:
-                if not (IMP.atom.Fragment.get_is_setup(self.m,p.get_particle_index()) and
-                        IMP.core.XYZ.get_is_setup(self.m,p.get_particle_index())):
+                if not (IMP.atom.Fragment.get_is_setup(self.model,p.get_particle_index()) and
+                        IMP.core.XYZ.get_is_setup(self.model,p.get_particle_index())):
                     raise Exception("The particles you selected must be Fragments and XYZs")
-                nres=len(IMP.atom.Fragment(self.m,p.get_particle_index()).get_residue_indexes())
-                pos=IMP.core.XYZ(self.m,p.get_particle_index()).get_coordinates()
+                nres=len(IMP.atom.Fragment(self.model,p.get_particle_index()).get_residue_indexes())
+                pos=IMP.core.XYZ(self.model,p.get_particle_index()).get_coordinates()
                 density_particles=[]
                 try:
                     IMP.isd.get_data_path("beads/bead_%i.txt"%nres)
@@ -816,7 +821,7 @@ class Representation(object):
                 transform = IMP.algebra.Transformation3D(pos)
                 IMP.isd.gmm_tools.decorate_gmm_from_text(
                     IMP.isd.get_data_path("beads/bead_%i.txt"%nres), density_particles,
-                    self.m, transform)
+                    self.model, transform)
         else:
             #compute the gaussians here
             if len(fragment_particles) == 0:
@@ -824,7 +829,7 @@ class Representation(object):
                 return out_hier
 
             density_particles = IMP.isd.gmm_tools.sample_and_fit_to_particles(
-                self.m,
+                self.model,
                 fragment_particles,
                 num_components,
                 sampled_points,
@@ -837,7 +842,7 @@ class Representation(object):
                 outputfile)
 
         # prepare output hierarchy
-        s0 = IMP.atom.Fragment.setup_particle(IMP.Particle(self.m))
+        s0 = IMP.atom.Fragment.setup_particle(IMP.Particle(self.model))
         s0.set_name(out_hier_name)
         self.hier_representation[name]["Densities"].add_child(s0)
         out_hier.append(s0)
@@ -983,10 +988,10 @@ class Representation(object):
                                          "COORDINATES_NONRIGID_MEMBER":{},
                                          "COORDINATES_RIGID_MEMBER":{}}
             for mi in rb.get_member_indexes():
-                rm=self.m.get_particle(mi)
+                rm=self.model.get_particle(mi)
                 if IMP.core.NonRigidMember.get_is_setup(rm):
                     name_part=rm.get_name()
-                    xyz=[self.m.get_attribute(fk, rm) for fk in [IMP.FloatKey(4), IMP.FloatKey(5), IMP.FloatKey(6)]]
+                    xyz=[self.model.get_attribute(fk, rm) for fk in [IMP.FloatKey(4), IMP.FloatKey(5), IMP.FloatKey(6)]]
                     rigid_body_attributes[name]["COORDINATES_NONRIGID_MEMBER"][name_part]=numpy.array(xyz)
                 else:
                     name_part=rm.get_name()
@@ -1045,12 +1050,12 @@ class Representation(object):
             coor_rm_model=[]
             coor_rm_ref=[]
             for mi in rb.get_member_indexes():
-                rm=self.m.get_particle(mi)
+                rm=self.model.get_particle(mi)
                 if IMP.core.NonRigidMember.get_is_setup(rm):
                     name_part=rm.get_name()
                     xyz=coor_nrm_ref[name_part]
                     for n,fk in enumerate([IMP.FloatKey(4), IMP.FloatKey(5), IMP.FloatKey(6)]):
-                        self.m.set_attribute(fk, rm,xyz[n])
+                        self.model.set_attribute(fk, rm,xyz[n])
                 else:
                     name_part=rm.get_name()
                     coor_rm_ref.append(IMP.algebra.Vector3D(coor_rm_ref_dict[name_part]))
@@ -1059,7 +1064,7 @@ class Representation(object):
             t=IMP.algebra.get_transformation_aligning_first_to_second(coor_rm_model,coor_rm_ref)
             IMP.core.transform(rb,t)
 
-        IMP.isd.gmm_tools.decorate_gmm_from_text("model_gmm.txt",gaussians,self.m)
+        IMP.isd.gmm_tools.decorate_gmm_from_text("model_gmm.txt",gaussians,self.model)
 
     def _compare_rmf_repr_names(self, rmfname, reprname, component_name):
         """Print a warning if particle names in RMF and model don't match"""
@@ -1225,7 +1230,7 @@ class Representation(object):
         If the root hierarchy does not exist, construct it.
         '''
         if "Res:" + str(int(resolution)) not in self.hier_representation[name]:
-            root = IMP.atom.Hierarchy.setup_particle(IMP.Particle(self.m))
+            root = IMP.atom.Hierarchy.setup_particle(IMP.Particle(self.model))
             root.set_name(name + "_Res:" + str(int(resolution)))
             self.hier_representation[name][
                 "Res:" + str(int(resolution))] = root
@@ -1249,14 +1254,14 @@ class Representation(object):
 
             if 1 in resolutions:
                 self.check_root(name, protein_h, 1)
-                s1 = IMP.atom.Fragment.setup_particle(IMP.Particle(self.m))
+                s1 = IMP.atom.Fragment.setup_particle(IMP.Particle(self.model))
                 s1.set_name('%s_%i-%i_%s' % (name, start, end, type))
                 # s1.set_residue_indexes(range(start,end+1))
                 self.hier_representation[name]["Res:1"].add_child(s1)
                 outhiers += [s1]
             if 0 in resolutions:
                 self.check_root(name, protein_h, 0)
-                s0 = IMP.atom.Fragment.setup_particle(IMP.Particle(self.m))
+                s0 = IMP.atom.Fragment.setup_particle(IMP.Particle(self.model))
                 s0.set_name('%s_%i-%i_%s' % (name, start, end, type))
                 # s0.set_residue_indexes(range(start,end+1))
                 self.hier_representation[name]["Res:0"].add_child(s0)
@@ -1333,7 +1338,7 @@ class Representation(object):
                     r)
 
                 chil = s.get_children()
-                s0 = IMP.atom.Fragment.setup_particle(IMP.Particle(self.m))
+                s0 = IMP.atom.Fragment.setup_particle(IMP.Particle(self.model))
                 s0.set_name('%s_%i-%i_%s' % (name, start, end, type))
                 # Move all children from s to s0
                 for ch in chil:
@@ -1488,10 +1493,10 @@ class Representation(object):
                     IMP.core.transform(rb, transformation)
 
                     if avoidcollision:
-                        self.m.update()
+                        self.model.update()
                         npairs = len(
                             gcpf.get_close_pairs(
-                                self.m,
+                                self.model,
                                 otherparticleindexes,
                                 rbindexes))
                         if npairs == 0:
@@ -1554,10 +1559,10 @@ class Representation(object):
                 IMP.core.transform(d, transformation)
 
                 if (avoidcollision):
-                    self.m.update()
+                    self.model.update()
                     npairs = len(
                         gcpf.get_close_pairs(
-                            self.m,
+                            self.model,
                             otherparticleindexes,
                             fbindexes))
                     if npairs == 0:
@@ -1629,8 +1634,8 @@ class Representation(object):
 
         '''
 
-        unmodeledregions_cr = IMP.RestraintSet(self.m, "unmodeledregions")
-        sortedsegments_cr = IMP.RestraintSet(self.m, "sortedsegments")
+        unmodeledregions_cr = IMP.RestraintSet(self.model, "unmodeledregions")
+        sortedsegments_cr = IMP.RestraintSet(self.model, "sortedsegments")
 
         protein_h = self.hier_dict[name]
         SortedSegments = []
@@ -1686,7 +1691,7 @@ class Representation(object):
 
             pt0 = last.get_particle()
             pt1 = first.get_particle()
-            r = IMP.core.PairRestraint(self.m, dps, (pt0.get_index(), pt1.get_index()))
+            r = IMP.core.PairRestraint(self.model, dps, (pt0.get_index(), pt1.get_index()))
 
             print("Adding sequence connectivity restraint between", pt0.get_name(), " and ", pt1.get_name(), 'of distance', optdist)
             sortedsegments_cr.add_restraint(r)
@@ -1697,7 +1702,7 @@ class Representation(object):
 
         self.linker_restraints.add_restraint(sortedsegments_cr)
         self.linker_restraints.add_restraint(unmodeledregions_cr)
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.linker_restraints)
+        IMP.pmi.tools.add_restraint_to_model(self.model, self.linker_restraints)
         self.sortedsegments_cr_dict[name] = sortedsegments_cr
         self.unmodeledregions_cr_dict[name] = unmodeledregions_cr
 
@@ -1707,7 +1712,7 @@ class Representation(object):
         for n, fb in enumerate(self.floppy_bodies):
             pts.add_particle(fb, "Floppy_Bodies", 1.0, "Floppy_Body_" + str(n))
         if len(pts.get_particles_to_sample()) > 0:
-            mc = IMP.pmi.samplers.MonteCarlo(self.m, [pts], temperature)
+            mc = IMP.pmi.samplers.MonteCarlo(self.model, [pts], temperature)
             print("optimize_floppy_bodies: optimizing %i floppy bodies" % len(self.floppy_bodies))
             mc.optimize(nsteps)
         else:
@@ -1739,7 +1744,7 @@ class Representation(object):
             sm = IMP.core.TransformationSymmetry(rotation3D)
             clone_hiers = IMP.atom.get_leaves(self.hier_dict[copies[k]])
 
-            lc = IMP.container.ListSingletonContainer(self.m)
+            lc = IMP.container.ListSingletonContainer(self.model)
             for n, p in enumerate(main_hiers):
                 if (skip_gaussian_in_clones):
                     if (IMP.core.Gaussian.get_is_setup(p)) and not (IMP.atom.Fragment.get_is_setup(p) or IMP.atom.Residue.get_is_setup(p)):
@@ -1750,12 +1755,12 @@ class Representation(object):
                 lc.add(pc.get_particle().get_index())
 
             c = IMP.container.SingletonsConstraint(sm, None, lc)
-            self.m.add_score_state(c)
+            self.model.add_score_state(c)
             print("Completed setting " + str(maincopy) + " as a reference for "
                   + str(copies[k]) + " by rotating it by "
                   + str(rotation_angle / 2.0 / pi * 360)
                   + " degrees around the " + str(rotational_axis) + " axis.")
-        self.m.update()
+        self.model.update()
 
     def create_rigid_body_symmetry(self, particles_reference, particles_copy,label="None",
                     initial_transformation=IMP.algebra.get_identity_transformation_3d()):
@@ -1765,7 +1770,7 @@ class Representation(object):
         mainparticles = particles_reference
 
         t=initial_transformation
-        p=IMP.Particle(self.m)
+        p=IMP.Particle(self.model)
         p.set_name("RigidBody_Symmetry")
         rb=IMP.core.RigidBody.setup_particle(p,IMP.algebra.ReferenceFrame3D(t))
 
@@ -1792,7 +1797,7 @@ class Representation(object):
             else:
                 IMP.pmi.Symmetric(pc).set_symmetric(1)
 
-        lc = IMP.container.ListSingletonContainer(self.m)
+        lc = IMP.container.ListSingletonContainer(self.model)
         for n, p in enumerate(mainpurged):
 
             pc = copypurged[n]
@@ -1802,9 +1807,9 @@ class Representation(object):
             lc.add(pc.get_index())
 
         c = IMP.container.SingletonsConstraint(sm, None, lc)
-        self.m.add_score_state(c)
+        self.model.add_score_state(c)
 
-        self.m.update()
+        self.model.update()
         self.rigid_bodies.append(rb)
         self.rigid_body_symmetries.append(rb)
         rb.set_name(label+".rigid_body_symmetry."+str(len(self.rigid_body_symmetries)))
@@ -1838,7 +1843,7 @@ class Representation(object):
                 translation = IMP.algebra.Vector3D(translation_vector)
                 sm = IMP.core.TransformationSymmetry(
                     IMP.algebra.Transformation3D(rotation3D, translation))
-                lc = IMP.container.ListSingletonContainer(self.m)
+                lc = IMP.container.ListSingletonContainer(self.model)
                 for n, p in enumerate(mainparts):
                     pc = copyparts[n]
                     if not IMP.pmi.Symmetric.get_is_setup(p):
@@ -1848,8 +1853,8 @@ class Representation(object):
                     IMP.core.Reference.setup_particle(pc, p)
                     lc.add(pc.get_index())
                 c = IMP.container.SingletonsConstraint(sm, None, lc)
-                self.m.add_score_state(c)
-                self.m.update()
+                self.model.add_score_state(c)
+                self.model.update()
         return outhiers
 
     def link_components_to_rmf(self, rmfname, frameindex):
@@ -1874,7 +1879,7 @@ class Representation(object):
         load the coordinates from the rmf file at frameindex.
         '''
         rh = RMF.open_rmf_file_read_only(rmfname)
-        self.prot = IMP.rmf.create_hierarchies(rh, self.m)[0]
+        self.prot = IMP.rmf.create_hierarchies(rh, self.model)[0]
         IMP.atom.show_molecular_hierarchy(self.prot)
         IMP.rmf.link_hierarchies(rh, [self.prot])
         IMP.rmf.load_frame(rh, RMF.FrameID(frameindex))
@@ -2469,7 +2474,7 @@ class Representation(object):
 
     def _evaluate(self, deriv):
         """Evaluate the total score of all added restraints"""
-        r = IMP.pmi.tools.get_restraint_set(self.m)
+        r = IMP.pmi.tools.get_restraint_set(self.model)
         return r.evaluate(deriv)
 
     def get_output(self):

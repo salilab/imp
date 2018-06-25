@@ -37,8 +37,8 @@ class DegreesOfFreedom(object):
     Call the various create() functions to get started.
     Can get all enabled movers with get_movers(). Pass this to ReplicaExchange0.
     """
-    def __init__(self,mdl):
-        self.mdl = mdl
+    def __init__(self,model):
+        self.model = model
         self.movers = []
         self.fb_movers = [] #stores movers corresponding to floppy parts
         self.rigid_bodies = [] #stores rigid body objects
@@ -54,6 +54,11 @@ class DegreesOfFreedom(object):
         #self.particle_map = {} # map from particles/rb objects to relevant movers+constraints
         # internal mover  = [mover obj, list of particles, enabled?] ?
         # mover map = {particles/rbs : movers}
+
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
 
     def create_rigid_body(self,
                           rigid_parts,
@@ -335,15 +340,15 @@ class DegreesOfFreedom(object):
         vykey = IMP.FloatKey('vy')
         vzkey = IMP.FloatKey('vz')
         hiers = IMP.pmi.tools.input_adaptor(hspec,flatten=True)
-        mdl = hiers[0].get_model()
+        model = hiers[0].get_model()
         all_ps = []
         for hl in hiers:
             for h in IMP.core.get_leaves(hl):
                 p = h.get_particle()
-                IMP.core.XYZ(mdl,p.get_index()).set_coordinates_are_optimized(True)
-                mdl.add_attribute(vxkey,p.get_index(),0.0)
-                mdl.add_attribute(vykey,p.get_index(),0.0)
-                mdl.add_attribute(vzkey,p.get_index(),0.0)
+                IMP.core.XYZ(model,p.get_index()).set_coordinates_are_optimized(True)
+                model.add_attribute(vxkey,p.get_index(),0.0)
+                model.add_attribute(vykey,p.get_index(),0.0)
+                model.add_attribute(vzkey,p.get_index(),0.0)
                 all_ps.append(p)
         return all_ps
 
@@ -399,11 +404,11 @@ class DegreesOfFreedom(object):
 
 
         if type=="RIGID_BODY":
-            p=IMP.Particle(self.mdl)
+            p=IMP.Particle(self.model)
             p.set_name("RigidBody_Symmetry")
             rb=IMP.core.RigidBody.setup_particle(p,IMP.algebra.ReferenceFrame3D(transform))
             for cp in [(10,0,0),(0,10,0),(0,0,10)]:
-                p=IMP.Particle(self.mdl)
+                p=IMP.Particle(self.model)
                 IMP.core.XYZ.setup_particle(p,cp)
                 rb.add_member(p)
             sm = IMP.core.TransformationSymmetry(rb.get_particle_index())
@@ -428,9 +433,9 @@ class DegreesOfFreedom(object):
             #self._rb2mov[rb] = [rb_mover_tr] #dictionary relating rb to movers
 
         lsc = IMP.container.ListSingletonContainer(
-            self.mdl,[p.get_particle().get_index() for p in clones_rbs+clones_beads])
+            self.model,[p.get_particle().get_index() for p in clones_rbs+clones_beads])
         c = IMP.container.SingletonsConstraint(sm, None, lsc)
-        self.mdl.add_score_state(c)
+        self.model.add_score_state(c)
         print('Created symmetry restraint for',len(ref_rbs),'rigid bodies and',
               len(ref_beads),'flexible beads')
 
@@ -439,7 +444,7 @@ class DegreesOfFreedom(object):
 
         #sym_movers = [m for cl in clones_rbs for m in self._rb2mov[cl]]
         #self.movers = [m for m in self.movers if m not in sym_movers]
-        self.mdl.update()
+        self.model.update()
 
 
     def __repr__(self):
@@ -459,7 +464,7 @@ class DegreesOfFreedom(object):
         for n, fb in enumerate(self.get_flexible_beads()):
             pts.add_particle(fb, "Floppy_Bodies", 1.0, "Flexible_Bead_" + str(n))
         if len(pts.get_particles_to_sample()) > 0:
-            mc = IMP.pmi.samplers.MonteCarlo(self.mdl, [pts], temperature)
+            mc = IMP.pmi.samplers.MonteCarlo(self.model, [pts], temperature)
             print("optimize_flexible_beads: optimizing %i flexible beads" % len(self.get_flexible_beads()))
             mc.optimize(nsteps)
         else:

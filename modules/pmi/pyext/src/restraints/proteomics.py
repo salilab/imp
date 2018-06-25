@@ -84,7 +84,6 @@ class ConnectivityRestraint(object):
         self.rs.set_weight(weight)
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -163,7 +162,6 @@ class CompositeRestraint(object):
         IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -351,8 +349,6 @@ class AmbiguousCompositeRestraint(object):
     def get_output(self):
         # content of the crosslink database pairs
         # self.pairs.append((p1,p2,dr,r1,c1,r2,c2))
-        self.m.update()
-
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -519,8 +515,6 @@ class SimplifiedPEMAP(object):
     def get_output(self):
         # content of the crosslink database pairs
         # self.pairs.append((p1,p2,dr,r1,c1,r2,c2))
-        self.m.update()
-
         output = {}
         score = self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -623,7 +617,6 @@ class SetupConnectivityNetworkRestraint(object):
         self.rs.set_weight(weight)
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -954,7 +947,6 @@ class SetupMembraneRestraint(object):
 
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)

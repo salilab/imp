@@ -37,6 +37,8 @@ class Tests(IMP.test.TestCase):
         """Test basic reading"""
         topology_file = self.get_input_file_name("topology_new.txt")
         t = IMP.pmi.topology.TopologyReader(topology_file)
+        self.assertEqual(list(t.molecules.keys()),
+                         ['Prot1', 'Prot2', 'Prot3', 'Prot4', 'Prot5'])
         c1 = t.get_components()
         with IMP.allow_deprecated():
             # Test deprecated interface

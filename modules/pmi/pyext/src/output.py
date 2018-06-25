@@ -63,7 +63,10 @@ def _flatten(seq):
     return l
 
 class Output(object):
-    """Class for easy writing of PDBs, RMFs, and stat files"""
+    """Class for easy writing of PDBs, RMFs, and stat files
+
+    \note Model should be updated prior to writing outputs.
+    """
     def __init__(self, ascii=True,atomistic=False):
         self.dictionary_pdbs = {}
         self.dictionary_rmfs = {}

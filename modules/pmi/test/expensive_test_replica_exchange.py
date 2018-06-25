@@ -145,7 +145,7 @@ class Tests(IMP.test.TestCase):
                             rmf_file_index])
         nframes=len(d[mc_nframe_key])
         self.assertNotEqual(float(d[mc_nframe_key][-1]), 0)
-        self.assertEqual(map(float,d[mc_temp_key]), [1.0]*nframes)
+        self.assertEqual(list(map(float,d[mc_temp_key])), [1.0]*nframes)
         self.assertGreater(float(d[rex_min_temp_key][-1]), 0.0)
         # always fails
         #self.assertGreater(float(d[rex_max_temp_key][-1]), 0.0)
@@ -283,7 +283,7 @@ class Tests(IMP.test.TestCase):
                             rmf_file_index])
         nframes=len(d[mc_nframe_key])
         self.assertNotEqual(float(d[mc_nframe_key][-1]), 0)
-        self.assertEqual(map(float,d[mc_temp_key]), [1.0]*nframes)
+        self.assertEqual(list(map(float,d[mc_temp_key])), [1.0]*nframes)
         self.assertGreater(float(d[rex_min_temp_key][-1]), 0.0)
         # always fails
         #self.assertGreater(float(d[rex_max_temp_key][-1]), 0.0)

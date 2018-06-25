@@ -43,9 +43,9 @@ class MonteCarlo(object):
     except ImportError:
         isd_available = False
 
-    def __init__(self, m, objects=None, temp=1.0, filterbyname=None):
+    def __init__(self, model, objects=None, temp=1.0, filterbyname=None):
         """Setup Monte Carlo sampling
-        @param m             The IMP Model
+        @param model         The IMP Model
         @param objects       What to sample. Use flat list of particles or
                (deprecated) 'MC Sample Objects' from PMI1
         @param temp The MC temperature
@@ -66,7 +66,7 @@ class MonteCarlo(object):
         self.mvs = []
         self.mvslabels = []
         self.label = "None"
-        self.m = m
+        self.model = model
         self.movers_data={}
 
         # check if using PMI1 or just passed a list of movers
@@ -142,11 +142,16 @@ class MonteCarlo(object):
         # SerialMover
         self.smv = IMP.core.SerialMover(self.mvs)
 
-        self.mc = IMP.core.MonteCarlo(self.m)
-        self.mc.set_scoring_function(get_restraint_set(self.m))
+        self.mc = IMP.core.MonteCarlo(self.model)
+        self.mc.set_scoring_function(get_restraint_set(self.model))
         self.mc.set_return_best(False)
         self.mc.set_kt(self.temp)
         self.mc.add_mover(self.smv)
+
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def m(self):
+        return self.model
 
     def set_kt(self, temp):
         self.temp = temp
@@ -156,7 +161,7 @@ class MonteCarlo(object):
         return self.mc
 
     def set_scoring_function(self, objectlist):
-        rs = IMP.RestraintSet(self.m, 1.0, 'sfo')
+        rs = IMP.RestraintSet(self.model, 1.0, 'sfo')
         for ob in objectlist:
             rs.add_restraint(ob.get_restraint())
         sf = IMP.core.RestraintsScoringFunction([rs])
@@ -276,14 +281,14 @@ class MonteCarlo(object):
         for rb in rbs:
             if len(rb) == 2:
                 # normal Super Rigid Body
-                srbm = IMP.pmi.TransformMover(self.m, maxtrans, maxrot)
+                srbm = IMP.pmi.TransformMover(self.model, maxtrans, maxrot)
             elif len(rb) == 3:
                 if type(rb[2]) == tuple and type(rb[2][0]) == float \
                     and type(rb[2][1]) == float and type(rb[2][2]) == float \
                     and len(rb[2])== 3:
                     # super rigid body with 2D rotation, rb[2] is the axis
                     srbm = IMP.pmi.TransformMover(
-                      self.m,
+                      self.model,
                       IMP.algebra.Vector3D(rb[2]),
                       maxtrans,
                       maxrot)
@@ -292,7 +297,7 @@ class MonteCarlo(object):
                 #    # super rigid body with bond rotation
 
                 #    srbm = IMP.pmi.TransformMover(
-                #      self.m,
+                #      self.model,
                 #      rb[2][0],rb[2][1],
                 #      0, #no translation
                 #      maxrot)
@@ -392,15 +397,15 @@ class MonteCarlo(object):
 class MolecularDynamics(object):
     """Sample using molecular dynamics"""
 
-    def __init__(self,m,objects,kt,gamma=0.01,maximum_time_step=1.0,sf=None):
+    def __init__(self,model,objects,kt,gamma=0.01,maximum_time_step=1.0,sf=None):
         """Setup MD
-        @param m The IMP Model
+        @param model The IMP Model
         @param objects What to sample. Use flat list of particles or (deprecated) 'MD Sample Objects' from PMI1
         @param kt Temperature
         @param gamma Viscosity parameter
         @param maximum_time_step MD max time step
         """
-        self.m=m
+        self.model=model
 
         # check if using PMI1 objects dictionary, or just list of particles
         try:
@@ -409,18 +414,24 @@ class MolecularDynamics(object):
         except:
             to_sample = objects
 
-        self.ltstate=IMP.atom.LangevinThermostatOptimizerState(self.m,to_sample,
+        self.ltstate=IMP.atom.LangevinThermostatOptimizerState(self.model,to_sample,
                                                                kt/0.0019872041,
                                                                gamma)
-        self.md = IMP.atom.MolecularDynamics(self.m)
+        self.md = IMP.atom.MolecularDynamics(self.model)
         self.md.set_maximum_time_step(maximum_time_step)
         if sf:
             self.md.set_scoring_function(sf)
         else:
-            self.md.set_scoring_function(get_restraint_set(self.m))
+            self.md.set_scoring_function(get_restraint_set(self.model))
         self.md.add_optimizer_state(self.ltstate)
         self.simulated_annealing = False
         self.nframe = -1
+
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def m(self):
+        return self.model
+
     def set_kt(self,kt):
         temp=kt/0.0019872041
         self.ltstate.set_temperature(temp)
@@ -461,11 +472,16 @@ class MolecularDynamics(object):
 class ConjugateGradients(object):
     """Sample using conjugate gradients"""
 
-    def __init__(self, m, objects):
-        self.m = m
+    def __init__(self, model, objects):
+        self.model = model
         self.nframe = -1
-        self.cg = IMP.core.ConjugateGradients(self.m)
-        self.cg.set_scoring_function(get_restraint_set(self.m))
+        self.cg = IMP.core.ConjugateGradients(self.model)
+        self.cg.set_scoring_function(get_restraint_set(self.model))
+
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def m(self):
+        return self.model
 
     def set_label(self, label):
         self.label = label
@@ -482,7 +498,7 @@ class ConjugateGradients(object):
         self.cg.optimize(nstep)
 
     def set_scoring_function(self, objectlist):
-        rs = IMP.RestraintSet(self.m, 1.0, 'sfo')
+        rs = IMP.RestraintSet(self.model, 1.0, 'sfo')
         for ob in objectlist:
             rs.add_restraint(ob.get_restraint())
         sf = IMP.core.RestraintsScoringFunction([rs])
@@ -515,7 +531,7 @@ class ReplicaExchange(object):
         '''
 
 
-        self.m = model
+        self.model = model
         self.samplerobjects = samplerobjects
         # min and max temperature
         self.TEMPMIN_ = tempmin
@@ -559,6 +575,11 @@ class ReplicaExchange(object):
         self.nmaxtemp = 0
         self.nsuccess = 0
 
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def m(self):
+        return self.model
+
     def get_temperatures(self):
         return self.temperatures
 
@@ -570,7 +591,7 @@ class ReplicaExchange(object):
 
     def swap_temp(self, nframe, score=None):
         if score is None:
-            score = self.m.evaluate(False)
+            score = self.model.evaluate(False)
         # get my replica index and temperature
         myindex = self.rem.get_my_index()
         mytemp = self.rem.get_my_parameter("temp")[0]
@@ -702,10 +723,15 @@ class PyMC(object):
         from math import exp
         import random
 
-        self.m = model
+        self.model = model
         self.restraints = None
         self.first_call = True
         self.nframe = -1
+
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def m(self):
+        return self.model
 
     def add_mover(self, mv):
         self.mv = mv
@@ -723,13 +749,13 @@ class PyMC(object):
         if self.restraints:
             pot = sum([r.evaluate(False) for r in self.restraints])
         else:
-            pot = self.m.evaluate(False)
+            pot = self.model.evaluate(False)
         return pot
 
     def metropolis(self, old, new):
         deltaE = new - old
         print(": old %f new %f deltaE %f new_epot: %f" % (old, new, deltaE,
-                                                          self.m.evaluate(
+                                                          self.model.evaluate(
                                                               False)), end=' ')
         kT = self.kT
         if deltaE < 0:
@@ -771,7 +797,7 @@ class PyMC(object):
 
     def set_scoring_function(self, objects):
         # objects should be pmi.restraints
-        rs = IMP.RestraintSet(self.m, 1.0, 'sfo')
+        rs = IMP.RestraintSet(self.model, 1.0, 'sfo')
         for ob in objects:
             rs.add_restraint(ob.get_restraint())
         self.set_restraints([rs])

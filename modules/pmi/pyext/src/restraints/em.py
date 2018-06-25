@@ -369,7 +369,6 @@ class GaussianEMRestraint(object):
         return self.rs
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         ccc = self.gaussianEM_restraint.get_cross_correlation_coefficient()
@@ -458,7 +457,6 @@ class CrossCorrelationRestraint(object):
         return self.rs
 
     def get_output(self):
-        self.mdl.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -506,7 +504,6 @@ class ElectronMicroscopy2D(object):
         self.rs.set_weigth(self.weight)
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight*self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)

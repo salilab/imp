@@ -50,7 +50,12 @@ class XLTable():
         self._first = True
         self.index_dict={}
         self.stored_dists={}
-        self.mdl = IMP.Model()
+        self.model = IMP.Model()
+
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
 
     def _colormap_distance(self, dist, threshold=35, tolerance=0):
         if dist < threshold - tolerance:
@@ -160,7 +165,7 @@ class XLTable():
                                    Key: PDB chain ID. Value: Protein name (set in sequence reading)
         \note This function returns an error if the sequence for each chain has NOT been read
         """
-        mh = IMP.atom.read_pdb(pdbfile,self.mdl,IMP.atom.CAlphaPDBSelector())
+        mh = IMP.atom.read_pdb(pdbfile,self.model,IMP.atom.CAlphaPDBSelector())
         total_len = sum(len(self.sequence_dict[s]) for s in self.sequence_dict)
         coords = np.ones((total_len,3)) * 1e5 #default to coords "very far away"
         prev_stop = 0
@@ -248,7 +253,7 @@ class XLTable():
 
     def _get_rmf_structure(self,rmf_name,rmf_frame_index):
         rh= RMF.open_rmf_file_read_only(rmf_name)
-        prots=IMP.rmf.create_hierarchies(rh, self.mdl)
+        prots=IMP.rmf.create_hierarchies(rh, self.model)
         IMP.rmf.load_frame(rh, rmf_frame_index)
         print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
         del rh
@@ -267,7 +272,7 @@ class XLTable():
         maxlen=max(len(self.index_dict[key]) for key in self.index_dict)
         cnames=[]
         idxs=[]
-        for cname,idx in self.index_dict.iteritems():
+        for cname,idx in self.index_dict.items():
             cnames.append(cname)
             idxs.append(idx+[-1]*(maxlen-len(idx)))
         idx_array=np.array(idxs)
@@ -851,7 +856,7 @@ class XLTable():
 
         # display and write to file
         fig.set_size_inches(0.002 * nresx, 0.002 * nresy)
-        [i.set_linewidth(2.0) for i in ax.spines.itervalues()]
+        [i.set_linewidth(2.0) for i in ax.spines.values()]
         if cbar_labels is not None:
             cbar = fig.colorbar(cax, ticks=[0.5,1.5,2.5,3.5])
             cbar.ax.set_yticklabels(cbar_labels)# vertically oriented colorbar

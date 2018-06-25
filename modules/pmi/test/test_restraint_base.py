@@ -17,7 +17,7 @@ class DistanceRestraint(IMP.pmi.restraints.RestraintBase):
                                                 weight=weight)
         f = IMP.core.Harmonic(d, k)
         s = IMP.core.DistancePairScore(f)
-        r = IMP.core.PairRestraint(self.m, s, (p1, p2))
+        r = IMP.core.PairRestraint(self.model, s, (p1, p2))
         self.rs.add_restraint(r)
 
 
@@ -123,7 +123,7 @@ class Tests(IMP.test.TestCase):
 
                 self.rs_jeffreys = self._create_restraint_set(
                     "Sigma_JeffreysPrior")
-                r = IMP.isd.JeffreysRestraint(self.m, self.sigma)
+                r = IMP.isd.JeffreysRestraint(self.model, self.sigma)
                 self.rs_jeffreys.add_restraint(r)
 
         def calculate_gaussian(x, mu, sigma):

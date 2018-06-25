@@ -1,6 +1,6 @@
 """@namespace IMP.pmi.topology
 Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
-* Start by creating a System with `mdl = IMP.Model(); s = IMP.pmi.topology.System(mdl)`. The System will store all the states.
+* Start by creating a System with `model = IMP.Model(); s = IMP.pmi.topology.System(model)`. The System will store all the states.
 * Then call System.create_state(). You can easily create a multistate system by calling this function multiples times.
 * For each State, call State.create_molecule() to add a Molecule (a uniquely named polymer). This function returns the Molecule object which can be passed to various PMI functions.
 * Some useful functions to help you set up your Molecules:
@@ -31,7 +31,7 @@ from bisect import bisect_left
 from math import pi,cos,sin
 from operator import itemgetter
 
-def _build_ideal_helix(mdl, residues, coord_finder):
+def _build_ideal_helix(model, residues, coord_finder):
     """Creates an ideal helix from the specified residue range
     Residues MUST be contiguous.
     This function actually adds them to the TempResidue hierarchy
@@ -47,14 +47,14 @@ def _build_ideal_helix(mdl, residues, coord_finder):
             raise Exception("Passed non-contiguous segment to build_ideal_helix for",tempres.get_molecule())
 
         # New residue particle will replace the TempResidue's existing (empty) hierarchy
-        rp = IMP.Particle(mdl)
+        rp = IMP.Particle(model)
         rp.set_name("Residue_%i" % tempres.get_index())
 
         # Copy the original residue type and index
         this_res = IMP.atom.Residue.setup_particle(rp,tempres.get_hierarchy())
 
         # Create the CAlpha
-        ap = IMP.Particle(mdl)
+        ap = IMP.Particle(model)
         d = IMP.core.XYZR.setup_particle(ap)
         x = 2.3 * cos(n * 2 * pi / 3.6)
         y = 2.3 * sin(n * 2 * pi / 3.6)
@@ -76,15 +76,20 @@ class _SystemBase(object):
     classes. It contains shared functions in common to these classes
     """
 
-    def __init__(self,mdl=None):
-        if mdl is None:
-            self.mdl=IMP.Model()
+    def __init__(self,model=None):
+        if model is None:
+            self.model=IMP.Model()
         else:
-            self.mdl=mdl
+            self.model=model
+
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
 
     def _create_hierarchy(self):
         """create a new hierarchy"""
-        tmp_part=IMP.Particle(self.mdl)
+        tmp_part=IMP.Particle(self.model)
         return IMP.atom.Hierarchy.setup_particle(tmp_part)
 
     def _create_child(self,parent_hierarchy):
@@ -103,9 +108,10 @@ class _SystemBase(object):
 
 class System(_SystemBase):
     """This class initializes the root node of the global IMP.atom.Hierarchy."""
-    def __init__(self,mdl=None,name="System"):
-        _SystemBase.__init__(self,mdl)
+    def __init__(self,model=None,name="System"):
+        _SystemBase.__init__(self,model)
         self._number_of_states = 0
+        self._protocol_output = []
         self.states = []
         self.built=False
 
@@ -141,6 +147,17 @@ class System(_SystemBase):
             self.built=True
         return self.hier
 
+    def add_protocol_output(self, p):
+        """Capture details of the modeling protocol.
+           @param p an instance of IMP.pmi.output.ProtocolOutput or a subclass.
+        """
+        self._protocol_output.append(p)
+#       p._each_metadata.append(self._metadata)
+#       p._file_datasets.append(self._file_dataset)
+        for state in self.states:
+            state._add_protocol_output(p, self)
+
+
 #------------------------
 
 class State(_SystemBase):
@@ -152,18 +169,33 @@ class State(_SystemBase):
         @param system        the PMI System
         @param state_index   the index of the new state
         \note It's expected that you will not use this constructor directly,
-        but rather create it with pmi::System::create_molecule()
+        but rather create it with pmi::System::create_state()
         """
-        self.mdl = system.get_hierarchy().get_model()
+        self.model = system.get_hierarchy().get_model()
         self.system = system
         self.hier = self._create_child(system.get_hierarchy())
-        self.hier.set_name("State_"+str(state_index))
-        self.molecules = defaultdict(list) # key is molecule name. value are the molecule copies!
+        self.short_name = self.long_name = "State_"+str(state_index)
+        self.hier.set_name(self.short_name)
+        self.molecules = IMP.pmi.tools.OrderedDict() # key is molecule name. value are the molecule copies!
         IMP.atom.State.setup_particle(self.hier,state_index)
         self.built = False
+        self._protocol_output = []
+        for p in system._protocol_output:
+            self._add_protocol_output(p, system)
+
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
 
     def __repr__(self):
         return self.system.__repr__()+'.'+self.hier.get_name()
+
+    def _add_protocol_output(self, p, system):
+        state = p._add_state(self)
+        self._protocol_output.append((p, state))
+        state.model = system.model
+        state.prot = self.hier
 
     def get_molecules(self):
         """Return a dictionary where key is molecule name and value
@@ -197,7 +229,7 @@ class State(_SystemBase):
             raise Exception('Cannot use a molecule name already used')
 
         mol = Molecule(self,name,sequence,chain_id,copy_num=0,is_nucleic=is_nucleic)
-        self.molecules[name].append(mol)
+        self.molecules[name] = [mol]
         return mol
 
     def get_hierarchy(self):
@@ -243,7 +275,7 @@ class Molecule(_SystemBase):
         but rather create a Molecule with pmi::State::create_molecule()
         """
         # internal data storage
-        self.mdl = state.get_hierarchy().get_model()
+        self.model = state.get_hierarchy().get_model()
         self.state = state
         self.sequence = sequence
         self.built = False
@@ -266,6 +298,11 @@ class Molecule(_SystemBase):
         for ns,s in enumerate(sequence):
             r = TempResidue(self,s,ns+1,ns,is_nucleic)
             self.residues.append(r)
+
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
 
     def __repr__(self):
         return self.state.__repr__()+'.'+self.get_name()+'.'+ \
@@ -377,7 +414,7 @@ class Molecule(_SystemBase):
         self.pdb_fn = pdb_fn
 
         # get IMP.atom.Residues from the pdb file
-        rhs = system_tools.get_structure(self.mdl,pdb_fn,chain_id,res_range,offset,ca_only=ca_only)
+        rhs = system_tools.get_structure(self.model,pdb_fn,chain_id,res_range,offset,ca_only=ca_only)
         self.coord_finder.add_residues(rhs)
 
         if len(self.residues)==0:
@@ -553,6 +590,9 @@ class Molecule(_SystemBase):
                                                     ideal_helix,
                                                     color))
 
+    def _all_protocol_output(self):
+        return self.state._protocol_output
+
     def build(self):
         """Create all parts of the IMP hierarchy
         including Atoms, Residues, and Fragments/Representations and, finally, Copies
@@ -562,6 +602,11 @@ class Molecule(_SystemBase):
               from the PDB file
         """
         if not self.built:
+            # Add molecule name and sequence to any ProtocolOutput objects
+            name = self.hier.get_name()
+            for po, state in self._all_protocol_output():
+                po.create_component(state, name, True)
+                po.add_component_sequence(state, name, self.sequence)
             # if requested, clone structure and representations BEFORE building original
             if self.mol_to_clone is not None:
                 for nr,r in enumerate(self.mol_to_clone.residues):
@@ -598,7 +643,7 @@ class Molecule(_SystemBase):
             # first build any ideal helices (fills in structure for the TempResidues)
             for rep in self.representations:
                 if rep.ideal_helix:
-                    _build_ideal_helix(self.mdl,rep.residues,self.coord_finder)
+                    _build_ideal_helix(self.model,rep.residues,self.coord_finder)
 
             # build all the representations
             built_reps = []
@@ -775,7 +820,7 @@ class PDBSequences(object):
         @param pdb_fn  file
         @param name_map dictionary mapping the pdb chain id to final stored name
         """
-        self.m=model
+        self.model=model
         # self.sequences data-structure: (two-key dictionary)
         # it contains all contiguous fragments:
         # chain_id, tuples indicating first and last residue, sequence
@@ -788,9 +833,13 @@ class PDBSequences(object):
         self.sequences = IMP.pmi.tools.OrderedDict()
         self.read_sequences(pdb_fn,name_map)
 
+    @property
+    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    def m(self):
+        return self.model
 
     def read_sequences(self,pdb_fn,name_map):
-        t = IMP.atom.read_pdb(pdb_fn, self.m, IMP.atom.ATOMPDBSelector())
+        t = IMP.atom.read_pdb(pdb_fn, self.model, IMP.atom.ATOMPDBSelector())
         cs=IMP.atom.get_by_type(t,IMP.atom.CHAIN_TYPE)
         for c in cs:
             id=IMP.atom.Chain(c).get_id()
@@ -931,7 +980,7 @@ class TempResidue(object):
         self.state_index = IMP.atom.State(self.molecule.state.hier).get_state_index()
         #these are expected to change
         self._structured = False
-        self.hier = IMP.atom.Residue.setup_particle(IMP.Particle(molecule.mdl),
+        self.hier = IMP.atom.Residue.setup_particle(IMP.Particle(molecule.model),
                                                     self.rtype,
                                                     index)
     def __str__(self):
@@ -1040,7 +1089,7 @@ class TopologyReader(object):
         @param gmm_dir Relative path to the GMM directory
         """
         self.topology_file = topology_file
-        self.molecules = {} # key=molname, value=TempMolecule
+        self.molecules = IMP.pmi.tools.OrderedDict() # key=molname, value=TempMolecule
         self.pdb_dir = pdb_dir
         self.fasta_dir = fasta_dir
         self.gmm_dir = gmm_dir

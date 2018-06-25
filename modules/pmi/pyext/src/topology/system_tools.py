@@ -29,9 +29,9 @@ def resnums2str(res):
             ret+=', '
     return ret
 
-def get_structure(mdl,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,ca_only=False):
+def get_structure(model,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,ca_only=False):
     """read a structure from a PDB file and return a list of residues
-    @param mdl The IMP model
+    @param model The IMP model
     @param pdb_fn    The file to read
     @param chain_id  Chain ID to read
     @param res_range Add only a specific set of residues.
@@ -46,11 +46,11 @@ def get_structure(mdl,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,ca_
     if ca_only:
         sel = IMP.atom.CAlphaPDBSelector()
     if model_num is None:
-        mh = IMP.atom.read_pdb(pdb_fn,mdl,
+        mh = IMP.atom.read_pdb(pdb_fn,model,
                                IMP.atom.AndPDBSelector(IMP.atom.ChainPDBSelector(chain_id), sel))
 
     else:
-        mhs = IMP.atom.read_multimodel_pdb(pdb_fn,mdl,sel)
+        mhs = IMP.atom.read_multimodel_pdb(pdb_fn,model,sel)
         if model_num>=len(mhs):
             raise Exception("you requested model num "+str(model_num)+\
                             " but the PDB file only contains "+str(len(mhs))+" models")
@@ -83,11 +83,11 @@ def get_structure(mdl,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,ca_
               % (pdb_fn, res_range))
     return ret
 
-def build_bead(mdl,residues,input_coord=None):
+def build_bead(model,residues,input_coord=None):
     """Generates a single bead"""
 
     ds_frag = (residues[0].get_index(), residues[-1].get_index())
-    prt = IMP.Particle(mdl)
+    prt = IMP.Particle(model)
     IMP.core.XYZR.setup_particle(prt)
     ptem = IMP.core.XYZR(prt)
     mass = IMP.atom.get_mass_from_number_of_residues(len(residues))
@@ -121,19 +121,19 @@ def build_bead(mdl,residues,input_coord=None):
         pass
     return h
 
-def build_necklace(mdl,residues, resolution, input_coord=None):
+def build_necklace(model,residues, resolution, input_coord=None):
     """Generates a string of beads with given length"""
     out_hiers = []
     for chunk in list(IMP.pmi.tools.list_chunks_iterator(residues, resolution)):
-        out_hiers.append(build_bead(mdl,chunk, input_coord=input_coord))
+        out_hiers.append(build_bead(model,chunk, input_coord=input_coord))
     return out_hiers
 
-def build_ca_centers(mdl,residues):
+def build_ca_centers(model,residues):
     """Create a bead on the CA position with coarsened size and mass"""
     out_hiers = []
     for tempres in residues:
         residue = tempres.get_hierarchy()
-        rp1 = IMP.Particle(mdl)
+        rp1 = IMP.Particle(model)
         rp1.set_name("Residue_%i"%residue.get_index())
         rt = residue.get_residue_type()
         this_res = IMP.atom.Residue.setup_particle(rp1,residue)
@@ -200,7 +200,7 @@ def build_representation(parent,rep,coord_finder):
     built_reps = []
     atomic_res = 0
     ca_res = 1
-    mdl = parent.get_model()
+    model = parent.get_model()
     if rep.color is not None:
         if type(rep.color) is float:
             color = IMP.display.get_rgb_color(rep.color)
@@ -226,20 +226,20 @@ def build_representation(parent,rep,coord_finder):
         single_node = True
         num_components = len(rep.residues)//rep.density_residues_per_component+1
         rep_dict = defaultdict(list)
-        segp = IMP.Particle(mdl)
+        segp = IMP.Particle(model)
         root_representation = IMP.atom.Representation.setup_particle(segp,
                                                                      primary_resolution)
         built_reps.append(root_representation)
         res_nums = [r.get_index() for r in rep.residues]
         IMP.atom.Fragment.setup_particle(segp,res_nums)
-        density_frag = IMP.atom.Fragment.setup_particle(IMP.Particle(mdl),res_nums)
+        density_frag = IMP.atom.Fragment.setup_particle(IMP.Particle(model),res_nums)
         density_frag.get_particle().set_name("Densities %i"%rep.density_residues_per_component)
         density_ps = []
 
         if os.path.exists(rep.density_prefix+'.txt') and not rep.density_force_compute:
             IMP.isd.gmm_tools.decorate_gmm_from_text(rep.density_prefix+'.txt',
                                                      density_ps,
-                                                     mdl)
+                                                     model)
         if len(density_ps)!=num_components or not os.path.exists(rep.density_prefix+'.txt') or rep.density_force_compute:
             fit_coords = []
             total_mass = 0.0
@@ -252,7 +252,7 @@ def build_representation(parent,rep,coord_finder):
             density_ps = []
             IMP.isd.gmm_tools.fit_gmm_to_points(fit_coords,
                                                 num_components,
-                                                mdl,
+                                                model,
                                                 density_ps,
                                                 min_covar=4.0,
                                                 mass_multiplier=total_mass)
@@ -301,13 +301,13 @@ def build_representation(parent,rep,coord_finder):
         elif name_count==3:
             name_all +='...'
         name_count+=1
-        segp = IMP.Particle(mdl,name)
+        segp = IMP.Particle(model,name)
         this_segment = IMP.atom.Fragment.setup_particle(segp,res_nums)
         if not single_node:
             this_representation = IMP.atom.Representation.setup_particle(segp,primary_resolution)
             built_reps.append(this_representation)
         for resolution in rep.bead_resolutions:
-            fp = IMP.Particle(mdl)
+            fp = IMP.Particle(model)
             this_resolution = IMP.atom.Fragment.setup_particle(fp,res_nums)
             this_resolution.set_name("%s: Res %i"%(name,resolution))
             if frag_res[0].get_has_structure():
@@ -316,11 +316,11 @@ def build_representation(parent,rep,coord_finder):
                     for residue in frag_res:
                         this_resolution.add_child(residue.get_hierarchy())
                 elif resolution==ca_res and rep.bead_ca_centers:
-                    beads = build_ca_centers(mdl,frag_res)
+                    beads = build_ca_centers(model,frag_res)
                     for bead in beads:
                         this_resolution.add_child(bead)
                 else:
-                    tempc = IMP.atom.Chain.setup_particle(IMP.Particle(mdl),"X")
+                    tempc = IMP.atom.Chain.setup_particle(IMP.Particle(model),"X")
                     for residue in frag_res:
                         tempc.add_child(IMP.atom.create_clone(residue.hier))
                     beads = IMP.atom.create_simplified_along_backbone(tempc,resolution)
@@ -333,7 +333,7 @@ def build_representation(parent,rep,coord_finder):
                 input_coord = coord_finder.find_nearest_coord(min(r.get_index() for r in frag_res))
                 if input_coord is None:
                     input_coord = rep.bead_default_coord
-                beads = build_necklace(mdl,
+                beads = build_necklace(model,
                                        frag_res,
                                        resolution,
                                        input_coord)
@@ -371,7 +371,7 @@ def build_representation(parent,rep,coord_finder):
         d[0].set_name('%s: '%name_all + d[0].get_name())
         for resolution in rep.bead_resolutions:
             this_resolution = IMP.atom.Fragment.setup_particle(
-                IMP.Particle(mdl),
+                IMP.Particle(model),
                 [r.get_index() for r in rep.residues])
             this_resolution.set_name("%s: Res %i"%(name_all,resolution))
             for hier in rep_dict[resolution]:

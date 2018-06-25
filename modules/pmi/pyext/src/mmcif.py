@@ -161,7 +161,7 @@ class _PDBFragment(ihm.representation.ResidueSegment):
         self.state, self.chain, self.hier = state, chain, hier
         sel = IMP.atom.NonWaterNonHydrogenPDBSelector() \
               & IMP.atom.ChainPDBSelector(chain)
-        self.starting_hier = IMP.atom.read_pdb(pdbname, state.m, sel)
+        self.starting_hier = IMP.atom.read_pdb(pdbname, state.model, sel)
 
     rigid = property(lambda self: _get_fragment_is_rigid(self),
                      lambda self, val: None)
@@ -941,9 +941,12 @@ class _State(ihm.model.State):
         # Point to the PMI object for this state. Use a weak reference
         # since the state object typically points to us too, so we need
         # to break the reference cycle. In PMI1 this will be a
-        # Representation object.
+        # Representation object; in PMI2 it is the PMI2 State object itself.
         self._pmi_object = weakref.proxy(pmi_object)
-        self._pmi_state = pmi_object.state
+        if hasattr(pmi_object, 'state'):
+            self._pmi_state = pmi_object.state
+        else:
+            self._pmi_state = self._pmi_object
         # Preserve PMI state name
         old_name = self.name
         super(_State, self).__init__(experiment_type='Fraction of bulk')
