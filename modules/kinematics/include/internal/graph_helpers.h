@@ -2,7 +2,7 @@
  * \file IMP/kinematics/internal/graph_helpers.h
  * \brief Helper functions to deal with graphs.
  *
- * Copyright 2007-2017 IMP Inventors. All rights reserved.
+ * Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

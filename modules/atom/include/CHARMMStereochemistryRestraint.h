@@ -2,7 +2,7 @@
  * \file IMP/atom/CHARMMStereochemistryRestraint.h
  * \brief Class to maintain CHARMM stereochemistry.
  *
- * Copyright 2007-2017 IMP Inventors. All rights reserved.
+ * Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

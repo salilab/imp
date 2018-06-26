@@ -2,7 +2,7 @@
  *  \file RMF/compiler_macros.h
  *  \brief Various compiler workarounds
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef RMF_INTERNAL_COMPILER_MACROS_H

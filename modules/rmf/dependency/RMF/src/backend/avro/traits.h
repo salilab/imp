@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -86,7 +86,7 @@ struct ReaderTraits {
       try {
         reader_->seekBlockBytes(offset);
       }
-      catch (std::exception) {
+      catch (const std::exception &) {
         RMF_INFO("Seeking not supported");
       }
     }

@@ -2,7 +2,7 @@
  *  \file IMP/isd/LogWrapper.h
  *  \brief Calculate the -Log of a list of restraints.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,15 +11,12 @@
 
 #include "isd_config.h"
 #include <IMP/container_macros.h>
-#include <IMP/Restraint.h>
+#include <IMP/RestraintSet.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 //! Calculate the -Log of a list of restraints.
-class IMPISDEXPORT LogWrapper : public Restraint {
-  void on_add(Restraint *r);
-  void on_change();
-  static void on_remove(LogWrapper *container, Restraint *r);
+class IMPISDEXPORT LogWrapper : public RestraintSet {
   void show_it(std::ostream &out) const;
 
    public:
@@ -33,12 +30,10 @@ class IMPISDEXPORT LogWrapper : public Restraint {
 
     virtual double unprotected_evaluate(
         IMP::DerivativeAccumulator* accum) const IMP_OVERRIDE;
-    virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+    void do_add_score_and_derivatives(ScoreAccumulator sa) const;
+
     IMP_OBJECT_METHODS(LogWrapper);
 
-    IMP_LIST_ACTION(public, Restraint, Restraints, restraint, restraints,
-                  Restraint *, Restraints, on_add(obj), on_change(),
-                  if (container) on_remove(container, obj));
 };
 
 IMPISD_END_NAMESPACE

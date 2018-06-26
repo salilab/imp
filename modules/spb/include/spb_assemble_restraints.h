@@ -2,7 +2,7 @@
  *  \file IMP/spb/spb_assemble_restraints.h
  *  \brief Assemble SPB restraints
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

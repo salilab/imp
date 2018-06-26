@@ -2,7 +2,7 @@
  *  \file IMP/saxs/Profile.h
  *  \brief A class for profile storing and computation
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -33,7 +33,13 @@ class IMPSAXSEXPORT Profile : public Object {
   // Constructors
 
   //! init from file
-  Profile(const std::string& file_name, bool fit_file = false, double max_q = 0.0);
+  /**
+     \param[in] file_name profile file name
+     \param[in] fit_file if true, intensities are read from column 3
+     \param[in] max_q read till maximal q value = max_q, or all if max_q<=0
+     \param[in] units gets 1, 2, or 3 for unknown q units, 1/A, or 1/nm
+  */
+  Profile(const std::string& file_name, bool fit_file = false, double max_q = 0.0, int units = 1);
 
   //! init for theoretical profile
   Profile(double qmin = 0.0, double qmax = 0.5, double delta = 0.005);
@@ -127,8 +133,9 @@ class IMPSAXSEXPORT Profile : public Object {
      \param[in] file_name profile file name
      \param[in] fit_file if true, intensities are read from column 3
      \param[in] max_q read till maximal q value = max_q, or all if max_q<=0
+     \param[in] units gets 1, 2, or 3 for unknown q units, 1/A, or 1/nm
    */
-  void read_SAXS_file(const std::string& file_name, bool fit_file = false, double max_q = 0.0);
+  void read_SAXS_file(const std::string& file_name, bool fit_file = false, double max_q = 0.0, int units = 1);
 
   //! print to file
   /** \param[in] file_name output file name
@@ -161,9 +168,9 @@ class IMPSAXSEXPORT Profile : public Object {
     return 1.0;
   }
 
-  const IMP_Eigen::VectorXf& get_qs() const { return q_; }
-  const IMP_Eigen::VectorXf& get_intensities() const { return intensity_; }
-  const IMP_Eigen::VectorXf& get_errors() const { return error_; }
+  const Eigen::VectorXf& get_qs() const { return q_; }
+  const Eigen::VectorXf& get_intensities() const { return intensity_; }
+  const Eigen::VectorXf& get_errors() const { return error_; }
 
   double get_average_radius() const { return average_radius_; }
 
@@ -180,9 +187,9 @@ class IMPSAXSEXPORT Profile : public Object {
   unsigned int get_id() const { return id_; }
 
   // Modifiers
-  void set_qs(const IMP_Eigen::VectorXf& q) { q_ = q; }
-  void set_intensities(const IMP_Eigen::VectorXf& i) { intensity_ = i; }
-  void set_errors(const IMP_Eigen::VectorXf& e) { error_ = e; }
+  void set_qs(const Eigen::VectorXf& q) { q_ = q; }
+  void set_intensities(const Eigen::VectorXf& i) { intensity_ = i; }
+  void set_errors(const Eigen::VectorXf& e) { error_ = e; }
 
   void set_intensity(unsigned int i, double iq) { intensity_(i) = iq; }
 
@@ -266,17 +273,19 @@ class IMPSAXSEXPORT Profile : public Object {
 
   double radius_of_gyration_fixed_q(double end_q) const;
 
+  double find_max_q(const std::string& file_name) const;
+
  protected:
-  IMP_Eigen::VectorXf q_;  // q sampling points
-  IMP_Eigen::VectorXf intensity_;
-  IMP_Eigen::VectorXf error_;  // error bar of each point
+  Eigen::VectorXf q_;  // q sampling points
+  Eigen::VectorXf intensity_;
+  Eigen::VectorXf error_;  // error bar of each point
 
   double min_q_, max_q_;        // minimal and maximal q values in the profile
   double delta_q_;              // profile sampling resolution
   FormFactorTable* ff_table_;  // pointer to form factors table
 
   // stores the intensity split into 6 for c1/c2 enumeration
-  std::vector<IMP_Eigen::VectorXf> partial_profiles_;
+  std::vector<Eigen::VectorXf> partial_profiles_;
   double c1_, c2_;
 
   bool experimental_;     // experimental profile read from file

@@ -10,12 +10,13 @@ import IMP.atom
 import IMP.container
 import IMP.isd
 import IMP.pmi.tools
-import IMP.pmi.metadata
 import IMP.isd.gmm_tools
 import sys
 import re
 import os
 from math import sqrt
+import ihm.location
+import ihm.dataset
 
 class GaussianEMRestraint(object):
     """Fit Gaussian-decorated particles to an EM map
@@ -174,6 +175,8 @@ class GaussianEMRestraint(object):
             cutoff_dist_model_data,
             slope,
             update_model, backbone_slope, local)
+        if target_fn != '':
+            self.gaussianEM_restraint.set_density_filename(target_fn)
 
         print('done EM setup')
         self.rs = IMP.RestraintSet(self.m, 'GaussianEMRestraint')
@@ -186,17 +189,17 @@ class GaussianEMRestraint(object):
             self.dataset = representation.get_file_dataset(target_fn)
             if self.dataset:
                 return
-        l = IMP.pmi.metadata.FileLocation(target_fn,
+        l = ihm.location.InputFileLocation(target_fn,
                               details="Electron microscopy density map, "
                                       "represented as a Gaussian Mixture "
                                       "Model (GMM)")
-        self.dataset = IMP.pmi.metadata.EMDensityDataset(l)
+        self.dataset = ihm.dataset.EMDensityDataset(l)
         # If the GMM was derived from an MRC file that exists, add that too
         m = re.match('(.*\.mrc)\..*\.txt$', target_fn)
         if m and os.path.exists(m.group(1)):
-            l = IMP.pmi.metadata.FileLocation(path=m.group(1),
+            l = ihm.location.InputFileLocation(path=m.group(1),
                      details='Original MRC file from which the GMM was derived')
-            self.dataset.add_parent(IMP.pmi.metadata.EMDensityDataset(l))
+            self.dataset.parents.append(ihm.dataset.EMDensityDataset(l))
 
     def center_target_density_on_model(self):
         target_com = IMP.algebra.Vector3D(0, 0, 0)
@@ -322,7 +325,7 @@ class GaussianEMRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs, add_to_rmf=True)
 
     def get_particles_to_sample(self):
         ps = {}
@@ -358,6 +361,9 @@ class GaussianEMRestraint(object):
             inp.add_child(self.get_density_as_hierarchy())
         else:
             raise Exception("Can only add a density to a PMI State object or IMP.atom.Hierarchy. You passed a", type(inp))
+
+    def get_restraint(self):
+        return self.rs
 
     def get_restraint_set(self):
         return self.rs

@@ -2,7 +2,7 @@
  *  \file IMP/algebra/geometric_alignment.h
  *  \brief align sets of points.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_GEOMETRIC_ALIGNMENT_H
@@ -70,7 +70,7 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
   }
 
   // covariance matrix
-  IMP_Eigen::Matrix3d H;
+  Eigen::Matrix3d H;
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
       H(i, j) = 0;
@@ -85,10 +85,10 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
   }
 
   IMP_LOG_VERBOSE("H is " << H << std::endl);
-  IMP_Eigen::JacobiSVD<IMP_Eigen::Matrix3d> svd =
-      H.jacobiSvd(IMP_Eigen::ComputeFullV | IMP_Eigen::ComputeFullU);
-  IMP_Eigen::Matrix3d U = svd.matrixU(), V = svd.matrixV();
-  IMP_Eigen::Vector3d SV = svd.singularValues();
+  Eigen::JacobiSVD<Eigen::Matrix3d> svd =
+      H.jacobiSvd(Eigen::ComputeFullV | Eigen::ComputeFullU);
+  Eigen::Matrix3d U = svd.matrixU(), V = svd.matrixV();
+  Eigen::Vector3d SV = svd.singularValues();
   IMP_LOG_VERBOSE("SVD is " << U << std::endl << V << std::endl);
 
   double det = SV[0] * SV[1] * SV[2];
@@ -109,7 +109,7 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
   }
 
   IMP_IF_LOG(VERBOSE) {
-    IMP_Eigen::Matrix3d Sigma = IMP_Eigen::Matrix3d::Zero();
+    Eigen::Matrix3d Sigma = Eigen::Matrix3d::Zero();
 
     for (int i = 0; i < 3; ++i) {
       Sigma(i, i) = SV[i];
@@ -120,12 +120,12 @@ get_transformation_aligning_first_to_second(const Vector3DsOrXYZs0& source,
   }
 
   // the rotation matrix is R = VU^T
-  IMP_Eigen::Matrix3d rot = V * U.transpose();
+  Eigen::Matrix3d rot = V * U.transpose();
 
   // check for reflection
   if (rot.determinant() < 0) {
     IMP_LOG_VERBOSE("Flipping matrix" << std::endl);
-    IMP_Eigen::Matrix3d S = IMP_Eigen::Matrix3d::Zero();
+    Eigen::Matrix3d S = Eigen::Matrix3d::Zero();
     S(0, 0) = S(1, 1) = 1;
     S(2, 2) = -1;
     rot = V * S * U.transpose();

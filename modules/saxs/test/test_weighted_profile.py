@@ -64,13 +64,13 @@ class Tests(IMP.test.TestCase):
         profile_list = [resampled_profile1, resampled_profile2]
 
         wfp = saxs_score.fit_profile(profile_list, 0.95, 1.05, -2.0, 4.0)
-        chi = wfp.get_chi()
+        chi = wfp.get_chi_square()
         weights = wfp.get_weights()
 
         print('Chi = ', str(chi))
         print('weight1 = ', weights[0], ' weight2 = ', weights[1])
 
-        self.assertAlmostEqual(chi, 1.67, delta=0.1)
+        self.assertAlmostEqual(chi, 2.95, delta=0.1)
         self.assertAlmostEqual(weights[0], 0.283, delta=0.1)
         self.assertAlmostEqual(weights[1], 0.716, delta=0.1)
 

@@ -2,7 +2,7 @@
  *  \file IMP/atom/internal/SelectionPredicate.h
  *  \brief Predicates for selecting a subset of a hierarchy.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_SELECTION_PREDICATE_H
@@ -10,6 +10,7 @@
 
 #include <IMP/atom/atom_config.h>
 #include <IMP/InputAdaptor.h>
+#include <IMP/model_object_helpers.h>
 #include <boost/dynamic_bitset.hpp>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE

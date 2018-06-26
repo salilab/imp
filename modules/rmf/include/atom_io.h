@@ -2,7 +2,7 @@
  *  \file IMP/rmf/atom_io.h
  *  \brief Input/output of IMP::atom::Hierarchy information.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,6 +20,7 @@ IMPRMF_BEGIN_NAMESPACE
     the information contained in the following decorators
     - IMP::atom::Atom
     - IMP::atom::Residue
+    - IMP::atom::Chain
     - IMP::core::XYZR
     - IMP::atom::Mass
     - IMP::atom::Diffusion

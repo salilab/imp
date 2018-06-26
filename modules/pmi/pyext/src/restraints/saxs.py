@@ -19,7 +19,7 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
     """Basic SAXS restraint."""
 
     def __init__(self, input_objects, saxs_datafile, weight=1.0,
-                 ff_type=IMP.saxs.HEAVY_ATOMS, label=None):
+                 ff_type=IMP.saxs.HEAVY_ATOMS, label=None, maxq="standard"):
         """Builds the restraint.
         @param input_objects A list of hierarchies or PMI objects that the
                SAXS restraint will be applied to. This hierarchy MUST be
@@ -35,25 +35,53 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
                    - IMP.saxs.CA_ATOMS: use residue based form factors
                      centered at CA atoms
         @param label Label for the restraint in outputs
+
+        @param maxq - maximum q value that the restraint will be evaluated at
+                        Default vaules for ff_type = ALL_ATOMS : 0.5. HEAVY_ATOMS : 0.4,
+                        CA_ATOMS and RESIDUES = 0.15. These values were eyeballed
+                        by comparing ALL_ATOM calculated SAXS profiles to those calculated
+                        with the reduced representations, so could be improved.
         """
-        hiers = IMP.pmi.tools.input_adaptor(input_objects, pmi_resolution=0,
+        # Get all hierarchies.
+        hiers = IMP.pmi.tools.input_adaptor(input_objects,
                                             flatten=True)
         m = list(hiers)[0].get_model()
         super(SAXSRestraint, self).__init__(m, label=label, weight=weight)
-        self.profile = IMP.saxs.Profile(saxs_datafile)
 
-        if ff_type == IMP.saxs.CA_ATOMS:
+        # Determine maxq to compare computed and experimental profiles
+        if maxq == "standard":
+            if ff_type == IMP.saxs.CA_ATOMS or ff_type == IMP.saxs.RESIDUES:
+                maxq = 0.15
+            elif ff_type == IMP.saxs.HEAVY_ATOMS:
+                maxq = 0.4
+            else:
+                maxq = 0.5
+        elif type(maxq) == float:
+            if maxq < 0.01 or maxq > 4.0:
+                raise Exception("SAXSRestraint: maxq must be set between 0.01 and 4.0")
+            if (ff_type == IMP.saxs.CA_ATOMS or ff_type == IMP.saxs.RESIDUES) and maxq > 0.15:
+                print("SAXSRestraint: WARNING> for residue-resolved form factors, a maxq > 0.15 is not recommended!")
+        else:
+            raise Exception("SAXSRestraint: maxq must be set to a number between 0.01 and 4.0")
+
+        # Depending on the type of FF used, get the correct particles
+        # from the hierarchies list and create an IMP::saxs::Profile()
+        # at the appropriate maxq.
+        if ff_type == IMP.saxs.RESIDUES:
+            self.particles = IMP.atom.Selection(
+                hiers, resolution=1).get_selected_particles()
+            self.profile = IMP.saxs.Profile(saxs_datafile, False, maxq)
+        elif ff_type == IMP.saxs.CA_ATOMS:
             self.particles = IMP.atom.Selection(
                 hiers, atom_type=IMP.atom.AT_CA).get_selected_particles()
-        elif ff_type == IMP.saxs.HEAVY_ATOMS:
+            self.profile = IMP.saxs.Profile(saxs_datafile, False, maxq)
+        elif ff_type == IMP.saxs.HEAVY_ATOMS or ff_type == IMP.saxs.ALL_ATOMS:
             self.particles = IMP.atom.Selection(
                 hiers, resolution=0).get_selected_particles()
-        elif ff_type == IMP.saxs.ALL_ATOMS:
-            self.particles = IMP.atom.Selection(
-                hiers, resolution=0).get_selected_particles()
+            self.profile = IMP.saxs.Profile(saxs_datafile, False, maxq)
         else:
-            raise Exception("SAXSRestraint: Must provide an IMP.saxs atom "
-                            "type: CA_ATOMS, HEAVY_ATOMS or ALL_ATOMS")
+            raise Exception("SAXSRestraint: Must provide an IMP.saxs atom type: RESIDUES, CA_ATOMS, HEAVY_ATOMS or ALL_ATOMS")
+
         if len(self.particles) == 0:
             raise Exception("SAXSRestraint: There are no selected particles")
 

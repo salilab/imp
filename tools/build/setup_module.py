@@ -31,7 +31,7 @@ parser.add_option("-d", "--datapath",
 
 def add_list_to_defines(cppdefines, data, sym, val, names):
     for n in sorted(names):
-        nn = n.replace(".", "_").upper()
+        nn = n.replace(".", "_").replace("-", "_").upper()
         cppdefines.append("#define IMP_%s_%s_%s"
                           % (data["name"].upper(), sym, nn))
         cppdefines.append("#define IMP_%s_HAS_%s %d"

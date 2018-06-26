@@ -2,7 +2,7 @@
     *  \file IMP/atom/estimates.h
     *  \brief Estimates of various physical quantities.
     *
-    *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+    *  Copyright 2007-2018 IMP Inventors. All rights reserved.
     */
 
 #ifndef IMPATOM_ESTIMATES_H
@@ -129,20 +129,45 @@ IMPATOMEXPORT double get_diffusion_length(double D, double force, double t,
 IMPATOMEXPORT double get_diffusion_angle(double D, double dtfs);
 
 /** Estimate the diffusion coefficient of a particle in A^2/fs from a list of
-    displacements each taken after the given time step dt.
+    displacements each taken after the given time step dt. Removes any non-random
+    motion component (under the simplifying assumption it is constant over time)
 
     @param displacements displacement vectors in Angstroms
     @param dt time step in femtoseconds
+
+    @note The units of displacements and dt params could be actually
+    arbitrary.  The units of thE returned value will simply change to
+    e.g.  cm^2/sec if displacements and dt are specified in cm and
+    seconds, resp.
+
 */
 IMPATOMEXPORT double get_diffusion_coefficient(
     const algebra::Vector3Ds &displacements, double dt);
 
+/** Estimate the diffusion coefficient of a particle in A^2/fs from a list of
+    displacements each taken after the given time step dt. Removes any non-random
+    motion component (under the simplifying assumption it is constant over time)
+
+    @param displacements displacement vectors in Angstroms
+    @param dts corresponding time steps in femtoseconds, expected to sum to more than zero
+
+    @note The units of displacements and dt params could be actually
+    arbitrary.  The units of thE returned value will simply change to
+    e.g.  cm^2/sec if displacements and dts are specified in cm and
+    seconds, resp.
+*/
+IMPATOMEXPORT
+double get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
+                                 const Floats &dts);
+
 /** Estimate the rotational diffusion coefficient of a particle in Rad^2/fs
-    from a list of rotational displacements each taken after the given time
-    step dt [fs].
+    from a list of rotational orientations taken at consecutive time steps dt
+    (in fs). It is assumed that the mean angular rotation is zero (as it is otherwise
+    complicated to compute from a list of orientations - may require parameter
+    estimation of the folded-normal distribution)
 */
 IMPATOMEXPORT double get_rotational_diffusion_coefficient(
-    const algebra::Rotation3Ds &displacements, double dt);
+    const algebra::Rotation3Ds &orientations, double dt);
 
 /**\name Energy conversions
 

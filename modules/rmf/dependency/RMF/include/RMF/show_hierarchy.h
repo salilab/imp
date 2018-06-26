@@ -2,7 +2,7 @@
  *  \file RMF/show_hierarchy.h
  *  \brief Functions to show the hierarchy.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,6 +11,8 @@
 
 #include <RMF/config.h>
 #include <iostream>
+
+RMF_ENABLE_WARNINGS
 
 namespace RMF {
 class NodeConstHandle;

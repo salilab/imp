@@ -99,7 +99,8 @@ def setup_crosslinks_complex(representation,mode):
         ids_map=IMP.pmi.tools.map()
         ids_map.set_map_element(1.0,1.0)
 
-    xl = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(representation,
+    with IMP.allow_deprecated():
+        xl = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(representation,
                                IMP.pmi.get_data_path("polii_xlinks.csv"),
                                length=21.0,
                                slope=0.01,
@@ -129,14 +130,10 @@ def setup_crosslinks_beads(representation,mode):
     ids_map.set_map_element(25.0,0.1)
     ids_map.set_map_element(75,0.01)
 
-    xl = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(
-        representation,
-        restraints_beads,
-        21,
-        label="XL",
-        ids_map=ids_map,
-        resolution=1,
-        inner_slope=0.01)
+    with IMP.allow_deprecated():
+        xl = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(
+            representation, restraints_beads, 21, label="XL", ids_map=ids_map,
+            resolution=1, inner_slope=0.01)
 
     sig = xl.get_sigma(1.0)[0]
     psi1 = xl.get_psi(25.0)[0]
@@ -243,15 +240,10 @@ ProtA ProtB 1 21 87.4778223289 1'''
         ids_map.set_map_element(25.0,0.1)
         ids_map.set_map_element(75,0.01)
 
-        xl = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(
-            r,
-            restraints_beads,
-            21,
-            label="XL",
-            slope=0.0,
-            ids_map=ids_map,
-            resolution=1,
-            inner_slope=0.01)
+        with IMP.allow_deprecated():
+            xl = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(
+                            r, restraints_beads, 21, label="XL", slope=0.0,
+                            ids_map=ids_map, resolution=1, inner_slope=0.01)
 
         sig = xl.get_sigma(1.0)[0]
         psi1 = xl.get_psi(25.0)[0]

@@ -2,7 +2,7 @@
  *  \file IMP/em2d/internal/Image2D.cpp
  *  \brief A basic image class
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

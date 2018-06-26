@@ -3,7 +3,7 @@
  * \brief Define and manipulate a kinematic structure over a model.
  * \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_KINEMATIC_FOREST_H
@@ -78,6 +78,7 @@ class IMPKINEMATICSEXPORT KinematicForest
            future IMP versions)
   */
   void add_edge(Joint* joint);
+
   /**
      adds edges between each pair of consecutive rigid bodies in the list
      rbs, using default TransformationJoint joints (transforming from one
@@ -98,6 +99,8 @@ class IMPKINEMATICSEXPORT KinematicForest
     IMP_UNUSED(new_root);
   }
 
+  //! updated internal coordinates in the forest based on the current cartesian
+  //! coordinates and the architechture of joints in the tree
   void update_all_internal_coordinates() {
     IMP_LOG(VERBOSE, "updating internal coords needed?" << std::endl);
     if (is_internal_coords_updated_) {
@@ -110,6 +113,8 @@ class IMPKINEMATICSEXPORT KinematicForest
     is_internal_coords_updated_ = true;
   }
 
+  //! update all external coordinates of particles in the forest
+  //! based on their internal coordinates
   void update_all_external_coordinates() {
     if (is_external_coords_updated_) {
       return;
@@ -223,8 +228,9 @@ class IMPKINEMATICSEXPORT KinematicForest
 
   /**
      sets the reference frame of a rigid body, and makes sure that
-     particles and joints in the tree will return correct external
-     and internal coordinates when queried through the KinematicForest
+     particles and joints in the tree will return correct
+     internal coordinates when queried directly through the
+     KinematicForest
 
      @param rb a rigid body that was previously added to the tree
      @param r  new reference frame
@@ -236,6 +242,22 @@ class IMPKINEMATICSEXPORT KinematicForest
                         << " that were previously added to it");
     rb.set_reference_frame(r);
     mark_external_coordinates_changed();
+  }
+
+  //! apply a rigid body transformation to the entire forest safely
+  /** Apply a rigid body transformation to the entire forest
+      safely, such that the forest will return correct external
+      and internal coordinates if queries through get_coordinates_safe()
+      or get_reference_frame_safe(), or after updating with
+      update_all_external_coordinates() or update_all_internal_coordinates(),
+      respectively.
+  */
+  void apply_transform_safely(IMP::algebra::Transformation3D tr)
+  {
+    IMP_FOREACH(KinematicNode root, roots_){
+      IMP::core::transform(root, tr);
+      mark_internal_coordinates_changed(); // technically, roots reference frames is a part of the internal tree coordinates, so external coordinates will need to be updated at some point
+    }
   }
 
   // TODO: handle derivatives, and safe getting / setting of them

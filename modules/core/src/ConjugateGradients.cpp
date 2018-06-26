@@ -1,7 +1,7 @@
 /**
  *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -84,7 +84,7 @@ ConjugateGradients::NT ConjugateGradients::get_score(
   try {
     score = get_scoring_function()->evaluate(true);
   }
-  catch (ModelException) {
+  catch (const ModelException &) {
     // if we took a bad step, just return a bad score
     return std::numeric_limits<NT>::infinity();
   }

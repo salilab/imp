@@ -3,7 +3,7 @@
  *  \brief Restrain two sets of anchor points (e.g. protein and EM map)
  *  NOTE: derivitives not implemented
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

@@ -1,0 +1,6 @@
+[submodule "modules/npctransport"]
+	path = modules/npctransport
+	url = https://github.com/salilab/npctransport.git
+[submodule "components/pathway_mapping"]
+	path = components/pathway_mapping
+	url = https://github.com/salilab/pathway_mapping.git

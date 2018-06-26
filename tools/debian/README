@@ -1,6 +1,6 @@
 This directory contains files to build .deb packages for Debian-based
-systems (we have tested it on Ubuntu 12.04/Precise Pangolin and
-Ubuntu 14.04/Trusty Tahr, but it may work on other Debian or Ubuntu-based
-Linux variants).
+systems (we have tested it on Ubuntu 18.04/Bionic Badger,
+Ubuntu 16.04/Xenial Xerus, and Ubuntu 14.04/Trusty Tahr, but it may work on
+other Debian or Ubuntu-based Linux variants).
 
 To use, see the make-package.sh script.

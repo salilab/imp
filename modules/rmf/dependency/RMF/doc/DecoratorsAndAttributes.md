@@ -62,6 +62,8 @@ The category name is `sequence` and it includes information about the types and 
 | `residue type`   | string    |  Three letter residue type                       |
 | `residue index`  | int       |  The index of a residue                          |
 | `chain id`       | string    |  The chain ID                                    |
+| `sequence`       | string    |  Primary sequence of a chain                     |
+| `chain type`     | string    |  Type of chain sequence (e.g. Protein, DNA, RNA) |
 | `first residue index` | int  |  The index of the first residue (in a domain)    |
 | `last residue index` | int   |  The index of the last residue (in a domain)     |
 | `residue indexes` | ints      |  The list of indexes in a fragment               |
@@ -77,7 +79,7 @@ The category name is `sequence` and it includes information about the types and 
 | Name                            |  Node Type              | Attributes                         |
 |--------------------------------:|:-----------------------:|:-----------------------------------|
 | RMF::decorator::Residue         | RMF::REPRESENTATION     |  index, residue type               |
-| RMF::decorator::Chain           | RMF::REPRESENTATION     |  chain id                          |
+| RMF::decorator::Chain           | RMF::REPRESENTATION     |  chain id, sequence                |
 | RMF::decorator::Domain          | RMF::REPRESENTATION     |  first residue index, last residue index |
 | RMF::decorator::Fragment        | RMF::REPRESENTATION     |  residue indexes                   |
 | RMF::decorator::Copy            | RMF::REPRESENTATION     |  copy index                        |
@@ -207,3 +209,43 @@ should be loaded as a child of the current node.
 | Name                            |  Node Type              | Attributes                         |
 |--------------------------------:|:-----------------------:|:-----------------------------------|
 | RMF::decorator::JournalArticle  | RMF::ORGANIZATIONAL     |  title, journal, pubmed id, year, authors |
+
+# Provenance # {#provenance}
+
+The category name is `provenance`. It includes information about how the
+structure was generated.
+
+## Attributes ## {#provenanceattributes}
+
+| Name                  | Type         | Description                               |
+|----------------------:|-------------:|:------------------------------------------|
+| `structure filename`  | string       |  File from which the structure was read   |
+| `structure chain`     | string       |  Chain ID of the structure that was read  |
+| `structure residue offset` | int     |  Model residue # = Structure residue # + offset |
+| `sampling method`     | string       |  Sampling method utilized                 |
+| `sampling frames`     | int          |  Number of frames in the sample ensemble  |
+| `sampling iterations` | int          |  Number of sampling iterations used       |
+| `sampling replicas`   | int          |  Number of sampling replicas used         |
+| `combined runs`       | int          |  Number of sampling runs utilized         |
+| `combined frames`     | int          |  Total number of frames combined          |
+| `filter method`       | string       |  Filtering method utilized                |
+| `filter threshold`    | float        |  Score threshold to discard bad models    |
+| `filter frames`       | float        |  Number of frames after filtering         |
+| `cluster members`     | int          |  Number of members in a cluster           |
+| `script filename`     | string       |  Path of a script used to generate the model |
+| `software name`       | string       |  Name of the software used to make the model |
+| `software version`    | string       |  Version of the software used to make the model |
+| `software location`   | string       |  URI where the software can be found      |
+
+
+## Decorators ## {#provenancedecorators}
+
+| Name                                |  Node Type          | Attributes                                            |
+|------------------------------------:|:-------------------:|:------------------------------------------------------|
+| RMF::decorator::StructureProvenance |  RMF::PROVENANCE    | structure filename, structure chain, structure residue offset |
+| RMF::decorator::SampleProvenance    |  RMF::PROVENANCE    | sampling method, sampling frames, sampling iterations, sampling replicas |
+| RMF::decorator::CombineProvenance   |  RMF::PROVENANCE    | combined runs, combined frames                        |
+| RMF::decorator::FilterProvenance    |  RMF::PROVENANCE    | filter threshold, filter frames                       |
+| RMF::decorator::ClusterProvenance   |  RMF::PROVENANCE    | cluster members                                       |
+| RMF::decorator::ScriptProvenance    |  RMF::PROVENANCE    | script filename                                       |
+| RMF::decorator::SoftwareProvenance  |  RMF::PROVENANCE    | software name, software version, software location    |

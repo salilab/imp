@@ -354,10 +354,10 @@ class Context(object):
            that tasks complete, which may not be the same as the order they
            were submitted in.
 
-           \exception NoMoreSlavesError there are no slaves available
+           @exception NoMoreSlavesError there are no slaves available
                       to run the tasks (or they all failed during execution).
-           \exception RemoteError a slave encountered an unhandled exception.
-           \exception NetworkError the master lost (or was unable to
+           @exception RemoteError a slave encountered an unhandled exception.
+           @exception NetworkError the master lost (or was unable to
                       establish) communication with any slave.
         """
         return self._manager._get_results_unordered(self)

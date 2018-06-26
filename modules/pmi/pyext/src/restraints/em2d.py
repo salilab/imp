@@ -8,7 +8,8 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.pmi.tools
-import IMP.pmi.metadata
+import ihm.location
+import ihm.dataset
 
 class ElectronMicroscopy2D(object):
     """Fit particles against a set of class averages by principal components.
@@ -21,6 +22,7 @@ class ElectronMicroscopy2D(object):
                  pixel_size=None,
                  image_resolution=None,
                  projection_number=None,
+                 micrographs_number=None,
                  resolution=None,
                  n_components=1,
                  hier=None):
@@ -33,6 +35,8 @@ class ElectronMicroscopy2D(object):
         @param projection_number Number of projections of the model
                to generate and fit to images. The lower the number, the
                faster the evaluation, but the lower the accuracy
+        @param micrographs_number Number of micrograph particles that
+               were used to generate the class averages, if known
         @param resolution Which level of
                [model representation](@ref pmi_resolution) to use in the fit
         @param n_components Number of the largest components to be
@@ -57,16 +61,17 @@ class ElectronMicroscopy2D(object):
                 if d:
                     self.datasets.append(d)
                     continue
-            l = IMP.pmi.metadata.FileLocation(image,
+            l = ihm.location.InputFileLocation(image,
                                  details="Electron microscopy class average")
-            d = IMP.pmi.metadata.EM2DClassDataset(l)
+            d = ihm.dataset.EM2DClassDataset(l)
             self.datasets.append(d)
 
         if representation:
             for p, state in representation._protocol_output:
                 for i in range(len(self.datasets)):
                     p.add_em2d_restraint(state, self, i, resolution, pixel_size,
-                                         image_resolution, projection_number)
+                                         image_resolution, projection_number,
+                                         micrographs_number)
 
         # PMI1/2 selection
         if representation is None and hier is not None:

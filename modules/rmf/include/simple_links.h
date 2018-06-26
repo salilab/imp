@@ -2,7 +2,7 @@
  *  \file IMP/rmf/simple_links.h
  *  \brief Manage links between IMP objects and RMF nodes.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

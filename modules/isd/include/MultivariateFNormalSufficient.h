@@ -2,7 +2,7 @@
  *  \file IMP/isd/MultivariateFNormalSufficient.h
  *  \brief Normal distribution of Function
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_H
@@ -15,8 +15,8 @@
 #include <IMP/constants.h>
 #include <IMP/Object.h>
 #include <math.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
-#include <IMP/algebra/eigen3/Eigen/Cholesky>
+#include <Eigen/Dense>
+#include <Eigen/Cholesky>
 #include <IMP/isd/internal/cg_eigen.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -86,18 +86,18 @@ IMPISD_BEGIN_NAMESPACE
 class IMPISDEXPORT MultivariateFNormalSufficient : public Object {
 
  private:
-  IMP_Eigen::VectorXd FM_, Fbar_, epsilon_, Peps_;
+  Eigen::VectorXd FM_, Fbar_, epsilon_, Peps_;
   double JF_, lJF_, norm_, lnorm_;
-  IMP_Eigen::MatrixXd P_, W_, Sigma_, FX_, PW_;
+  Eigen::MatrixXd P_, W_, Sigma_, FX_, PW_;
   int N_;  // number of repetitions
   int M_;  // number of variables
-  // IMP_Eigen::LLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> ldlt_;
-  IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> ldlt_;
+  // Eigen::LLT<Eigen::MatrixXd, Eigen::Upper> ldlt_;
+  Eigen::LDLT<Eigen::MatrixXd, Eigen::Upper> ldlt_;
   // flags are true if the corresponding object is up to date.
   bool flag_FM_, flag_FX_, flag_Fbar_, flag_W_, flag_Sigma_, flag_epsilon_,
       flag_PW_, flag_P_, flag_ldlt_, flag_norms_, flag_Peps_;
   // cg-related variables
-  IMP_Eigen::MatrixXd precond_;
+  Eigen::MatrixXd precond_;
   bool use_cg_, first_PW_, first_PWP_;
   double cg_tol_;
   double factor_;
@@ -114,9 +114,9 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object {
       \param [in] Sigma : MxM variance-covariance matrix \f$\Sigma\f$.
       \param [in] factor : multiplicative factor (default 1)
    */
-  MultivariateFNormalSufficient(const IMP_Eigen::MatrixXd& FX, double JF,
-                                const IMP_Eigen::VectorXd& FM,
-                                const IMP_Eigen::MatrixXd& Sigma,
+  MultivariateFNormalSufficient(const Eigen::MatrixXd& FX, double JF,
+                                const Eigen::VectorXd& FM,
+                                const Eigen::MatrixXd& Sigma,
                                 double factor = 1);
 
   //! Initialize with sufficient statistics
@@ -129,10 +129,10 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object {
       \param [in] Sigma MxM variance-covariance matrix Sigma.
       \param [in] factor multiplicative factor (default 1)
    */
-  MultivariateFNormalSufficient(const IMP_Eigen::VectorXd& Fbar, double JF,
-                                const IMP_Eigen::VectorXd& FM, int Nobs,
-                                const IMP_Eigen::MatrixXd& W,
-                                const IMP_Eigen::MatrixXd& Sigma,
+  MultivariateFNormalSufficient(const Eigen::VectorXd& Fbar, double JF,
+                                const Eigen::VectorXd& FM, int Nobs,
+                                const Eigen::MatrixXd& W,
+                                const Eigen::MatrixXd& Sigma,
                                 double factor = 1);
 
   //! Probability density function
@@ -142,48 +142,48 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object {
   double evaluate() const;
 
   //! gradient of the energy wrt the mean F(M)
-  IMP_Eigen::VectorXd evaluate_derivative_FM() const;
+  Eigen::VectorXd evaluate_derivative_FM() const;
 
   //! gradient of the energy wrt the variance-covariance matrix Sigma
-  IMP_Eigen::MatrixXd evaluate_derivative_Sigma() const;
+  Eigen::MatrixXd evaluate_derivative_Sigma() const;
 
   //! derivative wrt scalar factor
   double evaluate_derivative_factor() const;
 
   //! second derivative wrt FM and FM
-  IMP_Eigen::MatrixXd evaluate_second_derivative_FM_FM() const;
+  Eigen::MatrixXd evaluate_second_derivative_FM_FM() const;
 
   //! second derivative wrt FM(l) and Sigma
   /** row and column indices in the matrix returned are for Sigma
    */
-  IMP_Eigen::MatrixXd evaluate_second_derivative_FM_Sigma(unsigned l) const;
+  Eigen::MatrixXd evaluate_second_derivative_FM_Sigma(unsigned l) const;
 
   //! second derivative wrt Sigma and Sigma(k,l)
-  IMP_Eigen::MatrixXd evaluate_second_derivative_Sigma_Sigma(unsigned k,
-                                                             unsigned l) const;
+  Eigen::MatrixXd evaluate_second_derivative_Sigma_Sigma(unsigned k,
+                                                         unsigned l) const;
 
   /* change of parameters */
-  void set_FX(const IMP_Eigen::MatrixXd& f);
-  IMP_Eigen::MatrixXd get_FX() const;
+  void set_FX(const Eigen::MatrixXd& f);
+  Eigen::MatrixXd get_FX() const;
 
-  void set_Fbar(const IMP_Eigen::VectorXd& f);
-  IMP_Eigen::VectorXd get_Fbar() const;
+  void set_Fbar(const Eigen::VectorXd& f);
+  Eigen::VectorXd get_Fbar() const;
 
-  IMP_Eigen::VectorXd get_epsilon() const;
+  Eigen::VectorXd get_epsilon() const;
 
   void set_jacobian(double f);
   double get_jacobian() const;
   void set_minus_log_jacobian(double f);  //-log(J)
   double get_minus_log_jacobian() const;
 
-  void set_FM(const IMP_Eigen::VectorXd& f);
-  IMP_Eigen::VectorXd get_FM() const;
+  void set_FM(const Eigen::VectorXd& f);
+  Eigen::VectorXd get_FM() const;
 
-  void set_W(const IMP_Eigen::MatrixXd& f);
-  IMP_Eigen::MatrixXd get_W() const;
+  void set_W(const Eigen::MatrixXd& f);
+  Eigen::MatrixXd get_W() const;
 
-  void set_Sigma(const IMP_Eigen::MatrixXd& f);
-  IMP_Eigen::MatrixXd get_Sigma() const;
+  void set_Sigma(const Eigen::MatrixXd& f);
+  Eigen::MatrixXd get_Sigma() const;
 
   void set_factor(double f);
   double get_factor() const;
@@ -194,17 +194,14 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object {
   //! use conjugate gradients (default false)
   void set_use_cg(bool use, double tol);
 
-  IMPISD_DEPRECATED_METHOD_DECL(2.7)
-  void stats() const;
-
   //! return Sigma's eigenvalues from smallest to biggest
-  IMP_Eigen::VectorXd get_Sigma_eigenvalues() const;
+  Eigen::VectorXd get_Sigma_eigenvalues() const;
 
   //! return Sigma's condition number
   double get_Sigma_condition_number() const;
 
   //! Solve for Sigma*X = B, yielding X
-  IMP_Eigen::MatrixXd solve(IMP_Eigen::MatrixXd B) const;
+  Eigen::MatrixXd solve(Eigen::MatrixXd B) const;
 
   //! return transpose(epsilon)*P*epsilon
   double get_mean_square_residuals() const;
@@ -232,27 +229,27 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object {
   void setup_cg();
 
   // precision matrix
-  IMP_Eigen::MatrixXd get_P() const;
-  void set_P(const IMP_Eigen::MatrixXd& P);
+  Eigen::MatrixXd get_P() const;
+  void set_P(const Eigen::MatrixXd& P);
 
   // precision * W
-  IMP_Eigen::MatrixXd get_PW() const;
-  IMP_Eigen::MatrixXd compute_PW_direct() const;
-  IMP_Eigen::MatrixXd compute_PW_cg() const;
-  void set_PW(const IMP_Eigen::MatrixXd& PW);
+  Eigen::MatrixXd get_PW() const;
+  Eigen::MatrixXd compute_PW_direct() const;
+  Eigen::MatrixXd compute_PW_cg() const;
+  void set_PW(const Eigen::MatrixXd& PW);
 
   // precision * epsilon
-  IMP_Eigen::VectorXd get_Peps() const;
-  void set_Peps(const IMP_Eigen::VectorXd& Peps);
+  Eigen::VectorXd get_Peps() const;
+  void set_Peps(const Eigen::VectorXd& Peps);
 
   // epsilon = Fbar - FM
-  void set_epsilon(const IMP_Eigen::VectorXd& eps);
+  void set_epsilon(const Eigen::VectorXd& eps);
 
   // gets factorization object
-  // IMP_Eigen::LLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> get_ldlt() const;
-  IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper> get_ldlt() const;
+  // Eigen::LLT<Eigen::MatrixXd, Eigen::Upper> get_ldlt() const;
+  Eigen::LDLT<Eigen::MatrixXd, Eigen::Upper> get_ldlt() const;
   void set_ldlt(
-      const IMP_Eigen::LDLT<IMP_Eigen::MatrixXd, IMP_Eigen::Upper>& ldlt);
+      const Eigen::LDLT<Eigen::MatrixXd, Eigen::Upper>& ldlt);
 
   // compute determinant and norm
   void set_norms(double norm, double lnorm);
@@ -262,10 +259,10 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object {
   double trace_WP() const;
 
   /* return P*epsilon*transpose(P*epsilon) */
-  IMP_Eigen::MatrixXd compute_PTP() const;
+  Eigen::MatrixXd compute_PTP() const;
 
   /* return P * W * P, O(M^2) */
-  IMP_Eigen::MatrixXd compute_PWP() const;
+  Eigen::MatrixXd compute_PWP() const;
 
   /*computes the discrepancy vector*/
   void compute_epsilon();

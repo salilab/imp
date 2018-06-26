@@ -33,10 +33,10 @@ print(IMP.multi_foxs.get_example_path('rpa'))</tt>'.
 \section multi_foxs_calc Calculation
 
 The structure of the RPA in complex with ssDNA is available in the
-\external{http://www.pdb.org,RCSB Protein Data Bank (PDB)} as code
-\external{http://www.pdb.org/pdb/explore/explore.do?structureId=1JMC,1jmc}
+\external{https://www.rcsb.org/,RCSB Protein Data Bank (PDB)} as code
+\external{https://www.rcsb.org/structure/1JMC,1jmc}
 (file <tt>1jmc.pdb</tt>), the unbound RPA structures are available as code
-\external{http://www.pdb.org/pdb/explore/explore.do?structureId=1FGU,1fgu}
+\external{https://www.rcsb.org/structure/1FGU,1fgu}
 (file <tt>1fguA.pdb</tt>, <tt>1fguB.pdb</tt>), while the SAXS profile is given in the <tt>weighted.dat</tt> file. The SAXS profile was simulated from the 3 structures with the following weights:
 
 \verbatim

@@ -1,3 +1,15 @@
 value_object_exceptions=['HierarchyVisitor', 'ModifierVisitor']
-function_name_exceptions=['RigidBody.normalize_rotation','transform', 'ExperimentalTree.connect', 'ExperimentalTree.finalize','Gaussian.normalize_rotation','assign_blame','Surface.reflect','Direction.reflect']
+
+function_name_exceptions=['RigidBody.normalize_rotation',
+        'transform',
+        'ExperimentalTree.connect',
+        'ExperimentalTree.finalize',
+        'Gaussian.normalize_rotation',
+        'assign_blame',
+        'Surface.reflect',
+        'Direction.reflect',
+]
+
 show_exceptions=['HierarchyVisitor', 'ModifierVisitor']
+
+spelling_exceptions=["provenanced"]

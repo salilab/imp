@@ -154,6 +154,15 @@ IMP_SWIG_DIRECTOR(IMP::core, HierarchyVisitor);
 IMP_SWIG_DECORATOR( IMP::core, Direction, Directions);
 IMP_SWIG_DECORATOR( IMP::core, DirectionAngle, DirectionAngles);
 IMP_SWIG_DECORATOR( IMP::core, Surface, Surfaces);
+IMP_SWIG_DECORATOR(IMP::core, Provenance, Provenances);
+IMP_SWIG_DECORATOR(IMP::core, StructureProvenance, StructureProvenances);
+IMP_SWIG_DECORATOR(IMP::core, SampleProvenance, SampleProvenances);
+IMP_SWIG_DECORATOR(IMP::core, ClusterProvenance, ClusterProvenances);
+IMP_SWIG_DECORATOR(IMP::core, CombineProvenance, CombineProvenances);
+IMP_SWIG_DECORATOR(IMP::core, FilterProvenance, FilterProvenances);
+IMP_SWIG_DECORATOR(IMP::core, ScriptProvenance, ScriptProvenances);
+IMP_SWIG_DECORATOR(IMP::core, SoftwareProvenance, SoftwareProvenances);
+IMP_SWIG_DECORATOR(IMP::core, Provenanced, Provenanceds);
 
 IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
 IMP_SWIG_VALUE( IMP::core, HierarchyTraits, HierarchyTraitsList);
@@ -348,6 +357,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/model_statistics.h"
 %include "IMP/core/blame.h"
 %include "IMP/core/MultipleBinormalRestraint.h"
+%include "IMP/core/provenance.h"
 
 %inline %{
 namespace IMP {
@@ -384,3 +394,58 @@ namespace IMP {
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, AttributeSingletonScore, generic_attribute_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingBox3DSingletonScore, bounding_box_3d_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, DistanceToSingletonScore, distance_to_singleton_score, UnaryFunction);
+
+%pythoncode %{
+
+def get_all_provenance(p, types=[StructureProvenance, SampleProvenance,
+                                 CombineProvenance, FilterProvenance,
+                                 ClusterProvenance, ScriptProvenance,
+                                 SoftwareProvenance]):
+    """Yield all provenance decorators of the given types for the particle.
+       By default, all provenance types are returned. Provenance is returned
+       in order, most recent first. If the particle has no provenance
+       information, an empty generator is returned."""
+    if Provenanced.get_is_setup(p):
+        prov = Provenanced(p).get_provenance()
+        while prov:
+            for c in types:
+                if c.get_is_setup(prov):
+                    yield c(prov)
+            prov = prov.get_previous()
+
+def add_script_provenance(p):
+   """Tag the given particle with the current Python script.
+      This is a noop if the particle is already so tagged."""
+   main = sys.modules['__main__']
+   # Can't do anything if running from an interactive interpreter
+   if not hasattr(main, '__file__'):
+       return
+   f = IMP.get_absolute_path(main.__file__)
+   for prov in get_all_provenance(p, types=[ScriptProvenance]):
+       if prov.get_filename() == f:
+           return
+   m = p.get_model()
+   provp = IMP.Particle(m)
+   provp.set_name('script')
+   prov = ScriptProvenance.setup_particle(provp, f)
+   add_provenance(m, p, prov)
+
+def add_software_provenance(p, name, version, location):
+   """Tag the given particle with the software used to create it.
+      This is a noop if the particle is already so tagged."""
+   for prov in get_all_provenance(p, types=[SoftwareProvenance]):
+       if prov.get_software_name() == name and prov.get_version() == version \
+          and prov.get_location() == location:
+           return
+   m = p.get_model()
+   provp = IMP.Particle(m)
+   provp.set_name('software')
+   prov = SoftwareProvenance.setup_particle(provp, name, version, location)
+   add_provenance(m, p, prov)
+
+def add_imp_provenance(p):
+    """Tag the given particle as being created by the current version of IMP."""
+    add_software_provenance(p, name="Integrative Modeling Platform (IMP)",
+                            version=IMP.get_module_version(),
+                            location="https://integrativemodeling.org")
+%}

@@ -2,7 +2,7 @@
  *  \file ClosePairContainer.cpp
  *  \brief internal implementation of close pair container
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -55,6 +55,7 @@ void ClosePairContainer::initialize(SingletonContainer *c, double distance,
 void ClosePairContainer::set_slack(double s) {
   slack_ = s;
   cpf_->set_distance(distance_ + 2 * slack_);
+  moved_->set_threshold(slack_);
   ParticleIndexPairs et;
   swap(et);
   first_call_ = true;
@@ -171,6 +172,7 @@ void ClosePairContainer::do_incremental() {
   cpf_->set_pair_filters(pf);
   cpf_->set_distance(distance_ + 2 * slack_);
   ParticleIndexPairs ret;
+  // Go over particles that moved
   IMP_CONTAINER_ACCESS(SingletonContainer, moved_, {
     const ParticleIndexes &moved = imp_indexes;
     IMP_CONTAINER_ACCESS(
@@ -180,15 +182,15 @@ void ClosePairContainer::do_incremental() {
     ret.insert(ret.begin(), ret1.begin(), ret1.end());
     core::internal::fix_order(ret);
     moved_count_ += moved.size();
-  });
+    });
   {
     /*InList il= InList::create(moved);
       remove_from_list_if(il);
       InList::destroy(il);*/
     ParticleIndexPairs cur;
     swap(cur);
-    cur.erase(std::remove_if(cur.begin(), cur.end(),
-                             core::internal::FarParticle(get_model(), distance_ + 2 * slack_)),
+    core::internal::FarParticle fp(get_model(), distance_ + 2 * slack_);
+    cur.erase(std::remove_if(cur.begin(), cur.end(), fp),
               cur.end());
     swap(cur);
     moved_count_ = 0;

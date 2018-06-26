@@ -211,6 +211,8 @@ class TestCase(unittest.TestCase):
         """Get the full name of an input file in the top-level
            test directory."""
         testdir = os.path.dirname(self._progname)
+        if self.__module__ != '__main__':
+            testdir = os.path.dirname(sys.modules[self.__module__].__file__)
         dirs = testdir.split(os.path.sep)
         for i in range(len(dirs), 0, -1):
                 input = os.path.sep.join(dirs[:i] + ['input'])
@@ -285,7 +287,7 @@ class TestCase(unittest.TestCase):
         p.add_attribute(IMP.FloatKey("z"), z, True)
         return p
 
-    def probabilistic_test(self, testcall, chance_of_failure):
+    def probabilistic_check(self, testcall, chance_of_failure):
         """Help handle a test which is expected to fail some fraction of
         the time. The test is run multiple times and an exception
         is thrown only if it fails too many times.
@@ -901,9 +903,9 @@ class ApplicationTestCase(TestCase):
         example_path = os.path.abspath(IMP.get_example_path('..'))
         with open(doc) as fh:
             for line in fh.readlines():
-                if '\code{.sh}' in line:
+                if '\\code{.sh}' in line:
                     inline = True
-                elif '\endcode' in line:
+                elif '\\endcode' in line:
                     inline = False
                 elif inline:
                     cmds.append(line.rstrip('\r\n').replace(

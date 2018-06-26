@@ -2,7 +2,7 @@
  *  \file IMP/algebra/SphericalVector3D.h
  *  \brief Stores and converts spherical coordinates
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_SPHERICAL_VECTOR_3D_H
@@ -27,7 +27,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
   \geometry
 */
 class IMPALGEBRAEXPORT SphericalVector3D : public GeometricPrimitiveD<3> {
-  bool check(double r, double theta, double psi);
+  bool check(double r, double theta, double psi) const;
 
  public:
   SphericalVector3D() {};
@@ -65,7 +65,7 @@ class IMPALGEBRAEXPORT SphericalVector3D : public GeometricPrimitiveD<3> {
   }
 
   //! Returns a vector with the Cartesian coordinates
-  Vector3D get_cartesian_coordinates();
+  Vector3D get_cartesian_coordinates() const;
 
   IMP_SHOWABLE_INLINE(SphericalVector3D, out << v_[0] << " , " << v_[1] << " , "
                                              << v_[2]);

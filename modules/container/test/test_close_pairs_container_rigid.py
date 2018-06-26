@@ -35,6 +35,7 @@ class Tests(IMP.test.TestCase):
             0,
             IMP.core.RigidClosePairsFinder(),
             slack)
+        self.assertEqual(nbl.get_slack(), slack)
         # nbl.set_log_level(IMP.VERBOSE)
         m.update()
         for p in nbl.get_particle_pairs():
@@ -66,7 +67,7 @@ class Tests(IMP.test.TestCase):
             rbm1.propose()
             rbm1.accept()
             m.update()
-            if len(nbl.get_indexes()) == 0:
+            if len(nbl.get_contents()) == 0:
                 test_empty()
                 print("tested")
                 tested = True

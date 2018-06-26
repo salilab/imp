@@ -4,7 +4,7 @@
  * \brief A class for profiles clustering
  *
  * Author: Dina Schneidman
- * Copyright 2007-2017 IMP Inventors. All rights reserved.
+ * Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/saxs/ProfileClustering.h>
@@ -53,8 +53,8 @@ void ProfileClustering::cluster_profiles() {
                                              exp_profile_->get_delta_q());
     profiles_[i]->resample(exp_profile_, resampled_profile);
     FitParameters fp  = pf->fit_profile(resampled_profile);
-    scored_profiles.insert(std::make_pair(fp.get_chi(), i));
-    chi_scores_.push_back(fp.get_chi());
+    scored_profiles.insert(std::make_pair(fp.get_score(), i));
+    chi_scores_.push_back(fp.get_score());
     resampled_profile->copy_errors(exp_profile_);
     resampled_profile->scale(chi_score->compute_scale_factor(exp_profile_,
                                                             resampled_profile));

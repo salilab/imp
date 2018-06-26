@@ -2,7 +2,7 @@
  *  \file Chain.cpp
  *  \brief Store info for a protein chain.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,8 +10,33 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+#define CTYPE_DEF(STR) const ChainType STR(ChainType::add_key(#STR))
+
+// Polymer type definitions from http://mmcif.wwpdb.org/dictionaries/mmcif_pdbx_v50.dic/Items/_entity_poly.type.html
+CTYPE_DEF(UnknownChainType);
+CTYPE_DEF(DPolypeptide);
+CTYPE_DEF(LPolypeptide);
+CTYPE_DEF(Polydeoxyribonucleotide);
+CTYPE_DEF(Polyribonucleotide);
+CTYPE_DEF(DPolysaccharide);
+CTYPE_DEF(LPolysaccharide);
+// Shorthand formats
+const ChainType Protein(LPolypeptide);
+const ChainType DNA(Polydeoxyribonucleotide);
+const ChainType RNA(Polyribonucleotide);
+
 StringKey Chain::get_id_key() {
   static StringKey k("chain");
+  return k;
+}
+
+StringKey Chain::get_sequence_key() {
+  static StringKey k("sequence");
+  return k;
+}
+
+IntKey Chain::get_chain_type_key() {
+  static IntKey k("chain_type");
   return k;
 }
 

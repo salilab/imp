@@ -21,10 +21,10 @@ Help(vars.GenerateHelpText(env))
 
 libpath = env.get('libpath', None)
 if libpath is not None:
-    libpath = libpath.split(';')
+    libpath = libpath.split(':')
 cpppath = env.get('cpppath', None)
 if cpppath is not None:
-    cpppath = cpppath.split(';')
+    cpppath = cpppath.split(':')
 pypath = env.get('pypath', None)
 path = env.get('path', None)
 mock = env.get('mock_config', None)
@@ -65,7 +65,11 @@ runpy = env.Command('py.out', 'test.py', "%s $SOURCES -v > $TARGET" % python)
 runpy_rmf = env.Command('py_rmf.out', 'test_rmf.py',
                         "%s $SOURCES -v > $TARGET" % python)
 
-tests = [runcpp, runcpp_rmf, runpy, runpy_rmf]
+# Test running a Python unittest program that uses ihm
+runpy_ihm = env.Command('py_ihm.out', 'test_ihm.py',
+                        "%s $SOURCES -v > $TARGET" % python)
+
+tests = [runcpp, runcpp_rmf, runpy, runpy_rmf, runpy_ihm]
 
 # Add extra RPM and OS-specific tests if requested
 if mock:

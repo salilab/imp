@@ -2,7 +2,7 @@
  *  \file internal/particle_helpers.h
  *  \brief A container for Singletons.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_CONTAINER_HELPERS_H
@@ -52,6 +52,33 @@ inline int get_ordered_type_hash
   return ret;
 }
 
+// faster version when done in batch (probably due to faster memore access)
+inline int get_ordered_type_hash(ParticleIndex pi,
+                                 int const* cached_particle_type_ids_table,
+                                 int cached_n_particle_types // just for compatibility with D-dimensional template)
+                                 ) {
+  IMP_UNUSED(cached_n_particle_types);
+  int type_id= cached_particle_type_ids_table[pi.get_index()];
+  return ParticleType(type_id).get_index();
+}
+
+// faster version when done in batch (probably due to faster memore access)
+template <unsigned int D>
+inline int get_ordered_type_hash
+(const Array<D, ParticleIndex> &pi,
+ int const* cached_particle_type_ids_table, // table from model with particle type index per each particle index
+ int cached_n_particle_types // total number of existing types, to make sure hash is unique
+ )
+{
+  int pow = 1;
+  int ret = 0;
+  for (unsigned int i = 0; i < pi.size(); ++i) {
+    int type_id= cached_particle_type_ids_table[pi[i].get_index()];
+    ret += pow * ParticleType(type_id).get_index();
+    pow *= cached_n_particle_types;
+  }
+  return ret;
+}
 
 
 inline int get_all_same(Model *, ParticleIndex) { return true; }

@@ -2,7 +2,7 @@
  * \file CHARMMParameters \brief access to CHARMMParameters
  *  force field parameters
  *
- * Copyright 2007-2017 IMP Inventors. All rights reserved.
+ * Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/CHARMMParameters.h>
@@ -716,7 +716,7 @@ namespace {
                   (params_->get_residue_topology(restyp)));
           segment->add_residue(residue);
         }
-        catch (ValueException) {
+        catch (const ValueException &) {
           // If residue type is unknown, add empty topology for this residue
           IMP_WARN_ONCE(
               restyp.get_string(),

@@ -258,7 +258,9 @@ class Molecule(_SystemBase):
         self.hier = self._create_child(self.state.get_hierarchy())
         self.hier.set_name(name)
         IMP.atom.Copy.setup_particle(self.hier,copy_num)
-        IMP.atom.Chain.setup_particle(self.hier,chain_id)
+        # store the sequence
+        self.chain=IMP.atom.Chain.setup_particle(self.hier,chain_id)
+        self.chain.set_sequence(self.sequence)
         # create TempResidues from the sequence (if passed)
         self.residues=[]
         for ns,s in enumerate(sequence):
@@ -379,7 +381,7 @@ class Molecule(_SystemBase):
         self.coord_finder.add_residues(rhs)
 
         if len(self.residues)==0:
-            print("WARNING: Extracting sequence from structure. Potentially dangerous.")
+            print("WARNING: Substituting PDB residue type with FASTA residue type. Potentially dangerous.")
 
         # load those into TempResidue object
         atomic_res = IMP.pmi.tools.OrderedSet() # collect integer indexes of atomic residues to return
@@ -398,6 +400,8 @@ class Molecule(_SystemBase):
                 self.sequence += IMP.atom.get_one_letter_code(rh.get_residue_type())
             internal_res.set_structure(rh,soft_check)
             atomic_res.add(internal_res)
+
+        self.chain.set_sequence(self.sequence)
         return atomic_res
 
     def add_representation(self,
@@ -958,10 +962,12 @@ class TempResidue(object):
     def set_structure(self,res,soft_check=False):
         if res.get_residue_type()!=self.get_residue_type():
             if soft_check:
-                print('WARNING: Replacing sequence residue',self.get_index(),self.hier.get_residue_type(),
-                      'with PDB type',res.get_residue_type())
-                self.hier.set_residue_type((res.get_residue_type()))
-                self.rtype = res.get_residue_type()
+                # note from commit a2c13eaa1 we give priority to the FASTA and not the PDB
+                print('WARNING: Inconsistency between FASTA sequence and PDB sequence. FASTA type',\
+                      self.get_index(),self.hier.get_residue_type(),
+                      'and PDB type',res.get_residue_type())
+                self.hier.set_residue_type((self.get_residue_type()))
+                self.rtype = self.get_residue_type()
             else:
                 raise Exception('ERROR: PDB residue index',self.get_index(),'is',
                                 IMP.atom.get_one_letter_code(res.get_residue_type()),
@@ -994,7 +1000,11 @@ class TopologyReader(object):
       hierarchy for this structure.
     - `color`: The color used in the output RMF file. Uses chimera names or R,G,B values
     - `fasta_fn`: Name of FASTA file containing this component.
-    - `fasta_id`: String found in FASTA sequence header line.
+    - `fasta_id`: String found in FASTA sequence header line. The sequence read
+      from the file is assumed to be a protein sequence. If it should instead
+      be treated as RNA or DNA, add an ',RNA' or ',DNA' suffix. For example,
+      a `fasta_id` of 'myseq,RNA' will read the sequence 'myseq' from the
+      FASTA file and treat it as RNA.
     - `pdb_fn`: Name of PDB file with coordinates (if available).
        If left empty, will set up as BEADS (you can also specify "BEADS")
        Can also write "IDEAL_HELIX".
@@ -1145,6 +1155,8 @@ class TopologyReader(object):
             colorfields = values[2].split(',')
             if len(colorfields)==3:
                 c.color = [float(x) for x in colorfields]
+                if any([x>1 for x in c.color]):
+                    c.color=[x/255 for x in c.color]
             else:
                 c.color = values[2]
         c._orig_fasta_file = values[3]
@@ -1419,3 +1431,42 @@ class _Component(object):
                            "Use 'get_unique_name()' instead of 'domain_name'.")
     def __get_domain_name(self): return self._domain_name
     domain_name = property(__get_domain_name)
+
+
+class PMIMoleculeHierarchy(IMP.atom.Molecule):
+    '''Extends the functionality of IMP.atom.Molecule'''
+
+    def __init__(self,hierarchy):
+        IMP.atom.Molecule.__init__(self,hierarchy)
+
+    def get_state_index(self):
+        state = self.get_parent()
+        return IMP.atom.State(state).get_state_index()
+
+    def get_copy_index(self):
+        return IMP.atom.Copy(self).get_copy_index()
+
+    def get_extended_name(self):
+        return self.get_name()+"."+\
+               str(self.get_copy_index())+\
+               "."+str(self.get_state_index())
+
+    def get_sequence(self):
+        return IMP.atom.Chain(self).get_sequence()
+
+    def get_residue_indexes(self):
+        return IMP.pmi.tools.get_residue_indexes(self)
+
+    def get_residue_segments(self):
+        return IMP.pmi.tools.Segments(self.get_residue_indexes())
+
+    def get_chain_id(self):
+        return IMP.atom.Chain(self).get_id()
+
+    def __repr__(self):
+        s='PMIMoleculeHierarchy '
+        s+=self.get_name()
+        s+=" "+"Copy  "+str(IMP.atom.Copy(self).get_copy_index())
+        s+=" "+"State "+str(self.get_state_index())
+        s+=" "+"N residues "+str(len(self.get_sequence()))
+        return s

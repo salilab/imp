@@ -51,7 +51,7 @@ class Tests(IMP.test.TestCase):
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         chi = saxs_score.compute_score(model_profile, False, 'chi.dat')
         print('Chi = ' + str(chi))
-        self.assertAlmostEqual(chi, 0.54, delta=0.01)
+        self.assertAlmostEqual(chi, 0.2916, delta=0.01)
 
         saxs_score_log = IMP.saxs.ProfileFitterChiLog(exp_profile)
         chi = saxs_score_log.compute_score(model_profile, False, 'chilog.dat')
@@ -64,22 +64,22 @@ class Tests(IMP.test.TestCase):
 
         fp = saxs_score.fit_profile(model_profile,
                                     0.95, 1.12, -2.0, 4.0, False, "chi_fit.dat")
-        chi = fp.get_chi()
+        chi = fp.get_chi_square()
         print('Chi after adjustment of excluded volume and water layer parameters = ' + str(chi))
         sio = io.BytesIO()
         fp.show(sio)
-        self.assertAlmostEqual(chi, 0.45, delta=0.01)
+        self.assertAlmostEqual(chi, 0.2025, delta=0.01)
 
         #! test chi with log intensities
         chi = (saxs_score_log.fit_profile(model_profile,
-                                          0.95, 1.12, -2.0, 4.0, False, "chilog_fit.dat")).get_chi()
+                                          0.95, 1.12, -2.0, 4.0, False, "chilog_fit.dat")).get_score()
         print('ChiLog after adjustment of excluded volume and water layer parameters = ' + str(chi))
         self.assertAlmostEqual(chi, 0.0323, delta=0.001)
 
         #! test RatioVolatilityScore
         vr_score = IMP.saxs.ProfileFitterRatioVolatility(exp_profile);
         vr = (vr_score.fit_profile(model_profile,
-                                   0.95, 1.12, -2.0, 4.0, False, "vr_fit.dat")).get_chi()
+                                   0.95, 1.12, -2.0, 4.0, False, "vr_fit.dat")).get_score()
         print('RatioVolatilityScore after adjustment of excluded volume and water layer parameters = ' + str(vr))
         self.assertAlmostEqual(vr, 5.70, delta=0.01)
 
@@ -105,12 +105,12 @@ class Tests(IMP.test.TestCase):
         #! calculate chi-square
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         chi = saxs_score.compute_score(model_profile)
-        self.assertAlmostEqual(chi, 0.54, delta=0.01)
+        self.assertAlmostEqual(chi, 0.2916, delta=0.01)
 
         #! define restraint
         saxs_restraint = IMP.saxs.Restraint(particles, exp_profile)
         score = saxs_restraint.evaluate(False)
-        self.assertAlmostEqual(score, 0.54, delta=0.01)
+        self.assertAlmostEqual(score, 0.2916, delta=0.01)
 
     def test_saxs_residue_level_restraint(self):
         """Check residue level saxs restraint"""
@@ -191,7 +191,7 @@ class Tests(IMP.test.TestCase):
         model_profile.calculate_profile(saxs_particles, IMP.saxs.RESIDUES)
         saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
 
-        self.assertAlmostEqual(saxs_score.compute_score(model_profile), 1.015, delta=0.01)
+        self.assertAlmostEqual(saxs_score.compute_score(model_profile), 1.03, delta=0.01)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@
  *  \file container/include/internal/CloseBipartitePairContainer.h
  *  \brief Internal class of close bipartite pair container
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
@@ -72,10 +72,9 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer
 
   /** @name Methods to control the set of filters
 
-     PairContainer objects can be used as filters to prevent
-     the addition of pairs to the containeroutput list. Pairs
-     which are contained in any container added to this list
-     will be excluded from the close pairs list.
+     PairPredicate objects can be added as filters on the
+     containers. Pairs that do not satisfy (evaluate to zero) any
+     of the PairPredicate are excluded from the close pairs list.
   */
   /**@{*/
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter, pair_filters,

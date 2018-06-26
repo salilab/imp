@@ -2,7 +2,7 @@
  *  \file IMP/Restraint.h
  *  \brief Abstract base class for all restraints.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,6 +17,8 @@
 #include "base_types.h"
 #include <IMP/InputAdaptor.h>
 #include <IMP/deprecation_macros.h>
+#include <IMP/nullptr.h>
+#include <IMP/RestraintInfo.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class DerivativeAccumulator;
@@ -99,7 +101,34 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
     return unprotected_evaluate(da);
   }
 /** @} */
+
 #endif
+
+  //! \return static key:value information about this restraint, or null.
+  /** \return a set of key:value pairs that contain static information
+      about this restraint (i.e. information that doesn't change during
+      a sampling run, such as the type of restraint or filename from
+      which information is read). Usually this includes a "type" key with
+      the fully qualified classname (e.g. IMP.mymodule.MyRestraint).
+      If no such information is available, a null pointer is returned.
+      This information is used when writing restraints to files, e.g. by
+      the IMP.rmf module.
+    */
+  virtual RestraintInfo *get_static_info() const {
+    return nullptr;
+  }
+
+  //! \return dynamic key:value information about this restraint, or null.
+  /** \return a set of key:value pairs that contain dynamic information
+      about this restraint (i.e. information that changes during a sampling
+      run, such as scores or cross correlations).
+      If no such information is available, a null pointer is returned.
+      This information is used when writing restraints to files, e.g. by
+      the IMP.rmf module.
+    */
+  virtual RestraintInfo *get_dynamic_info() const {
+    return nullptr;
+  }
 
   //! Perform the actual restraint scoring.
   /** The restraints should assume that all appropriate ScoreState

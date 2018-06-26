@@ -1,6 +1,47 @@
 ChangeLog {#changelog}
 =========
 
+# 2.9.0 - 2018-07-02 # {#changelog_2_9_0}
+- [Eigen](https://eigen.tuxfamily.org/) is now required to build IMP.
+- The Windows .exe IMP installer no longer supports Python 2.6. Python 2.7,
+  3.4, 3.5, and 3.6 are supported by this installer.
+- A binary package is now provided for Ubuntu 18.04 LTS, Bionic Beaver.
+- The IMP::atom::setup_as_rigid_body() function has been removed.
+  Use IMP::atom::create_rigid_body() instead.
+- Constructors for IMP::container classes, IMP::core::BallMover,
+  IMP::core::RigidBodyMover, and IMP::core::IncrementalScoringFunction taking
+  a RigidBody or Particles have been removed. Use constructors taking
+  ParticleIndexes instead.
+- The IMP::core::ConnectivityRestraint::get_connected_pairs() method has been
+  removed. Use get_connected_index_pairs() instead.
+- The stats() profiling method has been removed from
+  IMP::isd::GaussianProcessInterpolationRestraint and
+  IMP::isd::MultivariateFNormalSufficient. Use a third party package (such as
+  gperftools) for profiling instead.
+- Scores in IMP.saxs (and FoXS) now use the chi-square value rather than chi.
+- New applications of IMP are now available:
+  - [Modeling of the entire yeast nuclear pore complex](https://salilab.org/npc2018), as well as
+    [modeling of the flexible FG regions](https://salilab.org/npc_fg_2018) and
+    modeling of the individual [Nup133](https://salilab.org/nup133),
+    [Nup82](https://salilab.org/nup82), and
+    [Pom152](https://salilab.org/pom152) subcomplexes.
+  - [Modeling of the Ecm29-proteasome complex](https://salilab.org/ecm29)
+- The new modules IMP::npc and IMP::npctransport provide specialized
+  restraints and other functionality for modeling static nuclear pore complex
+  structures and transport through these structures, respectively, although
+  may also be useful for other modeling applications.
+- IMP's mmCIF support for deposition of models in
+  [PDB-Dev](https://pdb-dev.wwpdb.org/), in the IMP::pmi and IMP::mmcif modules,
+  now utilizes the [python-ihm](https://github.com/ihmwg/python-ihm) library,
+  a copy of which is included with IMP.
+- RMF files now store additional metadata, such as the primary sequence of
+  each chain, software used, information on each restraint (such as fit values),
+  and provenance (classes derived from IMP::core::Provenance) that describes
+  transformations of the system, such as initial input from a PDB file,
+  sampling, clustering, and filtering.
+- The new experimental IMP::mmcif module allows generating basic mmCIF files
+  directly from an IMP::Model and/or RMF files.
+
 # 2.8.0 - 2017-08-16 # {#changelog_2_8_0}
 - New applications of IMP are now available:
   - [Modeling of the yeast Spindle Pole Body core](https://salilab.org/spb/)
@@ -32,7 +73,7 @@ ChangeLog {#changelog}
 - Memory and CPU performance improvements across the code, particularly
   in IMP::pmi.
 - Preview of mmCIF support for deposition of integrative models in
-  [PDB-dev](https://pdb-dev.rcsb.rutgers.edu/). See the IMP::pmi::mmcif
+  [PDB-Dev](https://pdb-dev.wwpdb.org/). See the IMP::pmi::mmcif
   module for more details.
 - This will be the last release that includes packages for RedHat Enterprise
   Linux 5 (and variants, such as CentOS 5), since RHEL 5 has reached end
@@ -50,7 +91,7 @@ ChangeLog {#changelog}
   Use IMP::core::create_rigid_body() instead.
 - IMP::test:TempDir and IMP::test::RunInTempDir are deprecated in favor
   of similar functions that work as Python context managers
-  (IMP::test::temporary_directory() and IMP::Test::temporary_working_directory()
+  (IMP::test::temporary_directory() and IMP::test::temporary_working_directory()
   respectively).
 
 # 2.6.2 - 2016-05-25 # {#changelog_2_6_2}

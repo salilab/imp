@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
 
     """Test molecular dynamics optimizer"""
 
-    def broken_until_swig_hierarchies_gets_fixed_test_cp(self):
+    def _broken_until_swig_hierarchies_gets_fixed_test_cp(self):
         """Testing create_protein"""
         m = IMP.Model()
         rp = IMP.Particle(m)

@@ -27,7 +27,7 @@ class FoXSDockApplicationTest(IMP.test.ApplicationTestCase):
         lines = open('saxs_score.res', 'r').readlines()
         last_line = lines[-2]
         words = last_line.split('|')
-        self.assertAlmostEqual(float(words[1]), 0.69, delta=0.1)
+        self.assertAlmostEqual(float(words[1]), 0.48, delta=0.1)
         os.unlink('saxs_score.res')
 
     def test_simple2(self):
@@ -51,7 +51,7 @@ class FoXSDockApplicationTest(IMP.test.ApplicationTestCase):
         lines = open('saxs_score.res', 'r').readlines()
         last_line = lines[-2]
         words = last_line.split('|')
-        self.assertAlmostEqual(float(words[1]), 0.495, delta=0.1)
+        self.assertAlmostEqual(float(words[1]), 0.24, delta=0.1)
         os.unlink('saxs_score.res')
 
 

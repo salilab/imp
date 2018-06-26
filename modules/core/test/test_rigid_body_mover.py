@@ -84,16 +84,17 @@ class NormalMoverTest(IMP.test.TestCase):
         self.assertLessEqual(transm,1.0)
 
     def test_mc_mover_rotate(self):
-        mdl,root,mc,rb=self.setup_mv_mover_test(0.0,1.0)
-        r0=rb.get_coordinates()
-        rot0=rb.get_rotation()
-        mc.optimize(1)
-        r1=rb.get_coordinates()
-        rot1=rb.get_rotation()
-        transm=(r1-r0).get_magnitude()
-        q=(rot1/rot0).get_quaternion()
-        self.assertLessEqual(abs(get_axis_and_angle(q)[0]),1.0)
-        self.assertAlmostEqual(transm,0.0,places=6)
+        for i in range(200):
+            mdl,root,mc,rb=self.setup_mv_mover_test(0.0,1.0)
+            r0=rb.get_coordinates()
+            rot0=rb.get_rotation()
+            mc.optimize(1)
+            r1=rb.get_coordinates()
+            rot1=rb.get_rotation()
+            transm=(r1-r0).get_magnitude()
+            q=(rot1/rot0).get_quaternion()
+            self.assertLessEqual(abs(get_axis_and_angle(q)[0]),1.0)
+            self.assertAlmostEqual(transm,0.0,places=6)
 
     def test_mc_mover_rotate_transalte(self):
         mdl,root,mc,rb=self.setup_mv_mover_test(1.0,1.0)

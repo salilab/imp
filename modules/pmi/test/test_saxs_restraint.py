@@ -38,7 +38,7 @@ class Tests(IMP.test.TestCase):
         mdl.update()
 
         self.assertEqual(len(saxs_rest.particles), 256)
-        self.assertAlmostEqual(saxs_rest.evaluate(), 0.1279, delta = 0.01)
+        self.assertAlmostEqual(saxs_rest.evaluate(), 0.016358, delta = 0.01)
 
         saxs_rest.add_to_model()
 
@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
         mdl.update()
 
         self.assertEqual(len(saxs_rest2.particles), 31)
-        self.assertAlmostEqual(saxs_rest2.evaluate(), 0.491, delta = 0.01)
+        self.assertAlmostEqual(saxs_rest2.evaluate(), 0.241081, delta = 0.01)
 
 
 if __name__ == '__main__':

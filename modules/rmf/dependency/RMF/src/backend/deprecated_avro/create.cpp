@@ -2,7 +2,7 @@
  *  \file RMF/paths.cpp
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -72,7 +72,7 @@ struct SingleAvroFactory : public SingleTextAvroFactory {
     try {
       return boost::make_shared<SingleAvroShareData>(buffer);
     }
-    catch (std::exception e) {
+    catch (const std::exception &e) {
       RMF_INFO("Can't read buffer with old reader: " << e.what());
       return boost::shared_ptr<RMF::backends::IO>();
     }

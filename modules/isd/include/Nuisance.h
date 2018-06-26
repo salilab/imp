@@ -2,7 +2,7 @@
  *  \file IMP/isd/Nuisance.h
  *  \brief A decorator for nuisance parameters particles
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_NUISANCE_H

@@ -1,7 +1,7 @@
 /**
  *  \file PDBParser.h   \brief A class for reading PDB files
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/atom/pdb.h>
@@ -16,6 +16,7 @@
 #include <IMP/atom/CHARMMAtom.h>
 #include <IMP/atom/CHARMMParameters.h>
 #include <IMP/atom/charmm_segment_topology.h>
+#include <IMP/core/provenance.h>
 #include <IMP/core/Hierarchy.h>
 #include <IMP/core/rigid_bodies.h>
 #include <boost/algorithm/string.hpp>
@@ -244,13 +245,21 @@ Particle* residue_particle(Model* m, const std::string& pdb_line) {
   return p;
 }
 
-Particle* chain_particle(Model* m, char chain_id) {
+Particle* chain_particle(Model* m, char chain_id, std::string filename) {
   Particle* p = new Particle(m);
   Chain::setup_particle(p, chain_id);
   p->set_name(std::string("Chain " + std::string(1, chain_id)));
   Molecule::setup_particle(p);
+
+  // Set provenance of this chain
+  core::StructureProvenance sp
+          = core::StructureProvenance::setup_particle(new Particle(m),
+                                          filename, std::string(1, chain_id));
+  core::add_provenance(m, p->get_index(), sp);
+
   return p;
 }
+
 }
 
 namespace {
@@ -281,9 +290,9 @@ void add_pdb_radii(Hierarchy d) {
   IMP::core::visit_depth_first(d, visitor);
 }
 
-Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
-                     PDBSelector* selector, bool select_first_model,
-                     bool split_models, bool noradii) {
+Hierarchies read_pdb(std::istream& in, std::string name, std::string filename,
+                     Model* model, PDBSelector* selector,
+                     bool select_first_model, bool split_models, bool noradii) {
   IMP_FUNCTION_LOG;
   IMP::PointerMember<PDBSelector> sp(selector);
   // hierarchy decorator
@@ -350,7 +359,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, Model* model,
         if (cp == nullptr || chain != curr_chain) {
           curr_chain = chain;
           // create new chain particle
-          cp = chain_particle(model, chain);
+          cp = chain_particle(model, chain, filename);
           chain_name_set = false;
           Hierarchy(root_p).add_child(Chain(cp));
           rp = nullptr;  // make sure we get a new residue
@@ -457,8 +466,9 @@ Hierarchy read_pdb(TextInput in, Model* model,
                    PDBSelector* selector, bool select_first_model,
                    bool no_radii) {
   IMP::PointerMember<PDBSelector> sp(selector);
-  Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,
-                             select_first_model, false, no_radii);
+  Hierarchies ret = read_pdb(in, nicename(in.get_name()), in.get_name(),
+                             model, selector, select_first_model, false,
+                             no_radii);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
   }
@@ -468,8 +478,8 @@ Hierarchy read_pdb(TextInput in, Model* model,
 Hierarchies read_multimodel_pdb(TextInput in, Model* model,
                                 PDBSelector* selector, bool noradii) {
   IMP::PointerMember<PDBSelector> sp(selector);
-  Hierarchies ret = read_pdb(in, nicename(in.get_name()), model, selector,
-                             false, true, noradii);
+  Hierarchies ret = read_pdb(in, nicename(in.get_name()), in.get_name(),
+                             model, selector, false, true, noradii);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
   }

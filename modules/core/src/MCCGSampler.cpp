@@ -1,7 +1,7 @@
 /**
  *  \file ConjugateGradients.cpp  \brief Simple conjugate gradients optimizer.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -374,7 +374,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
     try {
       mc->optimize(pms.mc_steps_);
     }
-    catch (ModelException) {
+    catch (const ModelException &) {
       IMP_LOG_TERSE("Optimization ended by exception" << std::endl);
       ++failures;
       continue;

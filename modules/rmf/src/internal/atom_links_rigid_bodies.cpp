@@ -2,7 +2,7 @@
  *  \file IMP/rmf/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,12 +13,6 @@
 #include <cstdlib>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
-
-namespace {
-// kind of icky, but we need to make sure the rigid body ids are unique
-// and can't store the FileHandle as that would keep the file open
-unsigned int rigid_body_count = 0;
-}
 
 HierarchyLoadRigidBodies::HierarchyLoadRigidBodies(RMF::FileConstHandle f)
     : reference_frame_factory_(f), ip_factory_(f) {
@@ -277,9 +271,7 @@ ParticleIndex HierarchySaveRigidBodies::fill_external(
   if (rbs.size() == 1 &&
       *rbs.begin() != IMP::get_invalid_index<ParticleIndexTag>()) {
     externals_[p] = *rbs.begin();
-    int index = rigid_body_count;
-    ++rigid_body_count;
-    external_index_[externals_[p]] = index;
+    external_index_[externals_[p]] = externals_[p].get_index();
     IMP_FOREACH(ParticleIndex ch,
                 atom::Hierarchy(m, p).get_children_indexes()) {
       not_externals_.insert(ch);

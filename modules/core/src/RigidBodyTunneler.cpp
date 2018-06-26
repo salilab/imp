@@ -2,7 +2,7 @@
  *  \file RigidBodyTunneler.cpp
  *  \brief A mover that transforms a rigid body
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/core/RigidBodyTunneler.h>
@@ -160,8 +160,8 @@ Floats RigidBodyTunneler::get_reduced_coordinates(Model* m,
 Floats RigidBodyTunneler::get_reduced_coordinates(Model* m,
                                                   ParticleIndex pi) {
   internal::Referential target(m, pi);
-  IMP_Eigen::Vector3d com(target.get_centroid());
-  IMP_Eigen::Quaterniond rot(target.get_rotation());
+  Eigen::Vector3d com(target.get_centroid());
+  Eigen::Quaterniond rot(target.get_rotation());
   Floats retval;
   internal::Coord x;
   x.coms.push_back(com);
@@ -179,8 +179,8 @@ void RigidBodyTunneler::set_reduced_coordinates(Model* m,
   ParticleIndexes pis(1, target);
   internal::Coord my_c(internal::get_coordinates_from_rbs(m, pis, ref));
   //get translation vector
-  IMP_Eigen::Vector3d tr(target_c.coms[0] - my_c.coms[0]);
-  IMP_Eigen::Quaterniond rot(
+  Eigen::Vector3d tr(target_c.coms[0] - my_c.coms[0]);
+  Eigen::Quaterniond rot(
           internal::pick_positive(target_c.quats[0])*my_c.quats[0].conjugate());
   //apply transformation
   internal::Referential referential(m, ref);

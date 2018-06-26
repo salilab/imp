@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2017 IMP Inventors. All rights reserved.
+ * Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #include <exception>
@@ -34,8 +34,8 @@ int main(int argc, char** argv) {
     if (!rh.get_producer().empty()) {
       std::cout << "producer: " << rh.get_producer() << std::endl;
     }
-    rh.set_current_frame(RMF::FrameID(frame));
     std::cout << "frames: " << rh.get_number_of_frames() << std::endl;
+    rh.set_current_frame(RMF::FrameID(frame));
     RMF::show_info(rh, std::cout);
     RMF::decorator::AlternativesFactory af(rh);
     using RMF::operator<<;

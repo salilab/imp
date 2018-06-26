@@ -29,8 +29,6 @@ def parse_args():
     parser.add_option("-s","--threshold",dest="threshold",default=0.0,type='float',
                       help="threshold for the map before sampling")
 
-    parser.add_option("-c","--input_anchors_fn",dest="input_anchors_fn",default='',
-                      help="get initial centers from anchors file. ")
     parser.add_option("-f","--force_radii",dest="force_radii",default=-1.0,
                       type='float',
                       help="force radii to be this value (spherical) -1 means deactivated ")
@@ -131,7 +129,16 @@ def run():
                                                          gmm_threshold)
 
     ### Write to files
-    IMP.isd.gmm_tools.write_gmm_to_text(density_ps,out_txt_fn)
+    comments = ['Created by create_gmm.py, IMP.isd version %s'
+                % IMP.isd.get_module_version()]
+    comments.append('data_fn: ' + IMP.get_relative_path(out_txt_fn, data_fn))
+    comments.append('ncenters: %d' % ncenters)
+    for key in ('covar_type', 'apix', 'num_samples', 'num_iter',
+                'threshold', 'force_radii', 'force_weight',
+                'force_weight_frac', 'use_dirichlet', 'multiply_by_mass',
+                'chain'):
+        comments.append('%s: %s' % (key, repr(getattr(options, key))))
+    IMP.isd.gmm_tools.write_gmm_to_text(density_ps, out_txt_fn, comments)
     if options.out_map!='':
         IMP.isd.gmm_tools.write_gmm_to_map(density_ps,options.out_map,
                                            options.apix,

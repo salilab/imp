@@ -2,7 +2,7 @@
  *  \file container/internal/ClosePairContainer.h
  *  \brief Internal class of close pair container
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_PAIR_CONTAINER_H
@@ -26,7 +26,7 @@ class IMPCONTAINEREXPORT ClosePairContainer
     : public IMP::internal::ListLikeContainer<PairContainer> {
   IMP::PointerMember<SingletonContainer> c_;
   IMP::PointerMember<core::ClosePairsFinder> cpf_;
-  IMP::PointerMember<core::internal::MovedSingletonContainer> moved_;
+  IMP::PointerMember<core::internal::MovedSingletonContainer> moved_; // tracks particles that moved beyond a certain distance (for incremental update of data strcuture)
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;

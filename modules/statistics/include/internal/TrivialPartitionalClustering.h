@@ -2,7 +2,7 @@
  *  \file IMP/statistics/internal/TrivialPartitionalClustering.h
  *  \brief Partitional clustering with a static list of cluster assignments.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

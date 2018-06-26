@@ -3,7 +3,7 @@
  *
  * \brief A class for storing and generation of ensembles
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multi_state/EnsembleGenerator.h>
@@ -209,7 +209,7 @@ void EnsembleGenerator::output(Ensemble& ensemble,
       const saxs::WeightedFitParameters& p = fps[j][i];
       s << " | x" << std::string(boost::lexical_cast<std::string>(j+1))
         //scorers_[j]->get_dataset_name() << ": "
-        << " " << std::setprecision(2) << p.get_chi()
+        << " " << std::setprecision(2) << p.get_chi_square()
         << " (" << p.get_c1() << ", " << p.get_c2() << ")";
     }
     s << std::endl;

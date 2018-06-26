@@ -1,5 +1,6 @@
 show_exceptions=['Decorator', "ParticlePair", "ParticleTriplet", "ParticleQuad",
                  'RandomNumberGenerator']
+
 function_name_exceptions=[
     'deprecated_module',
     'deprecated_function',
@@ -27,7 +28,9 @@ function_name_exceptions=[
     'OptionParser.parse_args',
     'OptionParser.print_help',
     'OptionParser.print_usage',
-    'OptionParser.print_version']
+    'OptionParser.print_version',
+    ]
+
 value_object_exceptions=['Exception', 'TypeException',
                                             'IOException', 'IndexException',
                                            'InternalException',
@@ -40,6 +43,8 @@ value_object_exceptions=['Exception', 'TypeException',
                                             "TextInput", "TextOutput", "RefCounted",
                        'Decorator', 'DerivativeAccumulator',
                                            'RestraintBase', 'ScoreStateBase']
+
 spelling_exceptions=["undecorator", "undecorate", "altgraph", "networkx"]
+
 doc_spelling_exceptions=["optparse", "OptionParser", "num", "args", "pyext",
            "src", "py", "docstring", "multifit", "cnmultifit"]

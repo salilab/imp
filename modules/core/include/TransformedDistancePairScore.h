@@ -3,7 +3,7 @@
  *  \brief A score on the distance between a pair of particles
  *  after transforming one.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_TRANSFORMED_DISTANCE_PAIR_SCORE_H
@@ -21,7 +21,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 /** \brief  Apply a function to the distance between two particles
-    after transforming the first
+    after transforming the second
 
     Apply a transform to the second particle and then apply the unary
     function to the distance between the transformed particle and the

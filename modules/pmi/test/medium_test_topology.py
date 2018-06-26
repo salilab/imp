@@ -505,7 +505,7 @@ class Tests(IMP.test.TestCase):
         st1 = s.create_state()
         seqs = IMP.pmi.topology.Sequences(
             self.get_input_file_name('seqs.fasta'))
-        m1 = st1.create_molecule("Prot1", sequence=seqs["Protein_1"])
+        m1 = st1.create_molecule("Prot1", chain_id='A',sequence=seqs["Protein_1"])
         atomic_res = m1.add_structure(
             self.get_input_file_name('prot.pdb'), chain_id='A',
             res_range=(55, 63), offset=-54)
@@ -559,6 +559,23 @@ class Tests(IMP.test.TestCase):
         sel2 = IMP.atom.Selection(hier, residue_index=5, resolution=10)
         self.assertNotEquals(sel1.get_selected_particles(),
                              sel2.get_selected_particles())
+
+        #check internal Chain decoration
+        chain=m1.chain
+        self.assertEqual(chain.get_sequence(),seqs["Protein_1"])
+        self.assertEqual(chain.get_id(),"A")
+
+        #test PMIMoleculeHierarchy
+        mol=m1.hier
+        pmimol=IMP.pmi.topology.PMIMoleculeHierarchy(mol)
+        print(pmimol)
+        self.assertEqual(pmimol.get_extended_name(),'Prot1.0.0')
+        self.assertEqual(pmimol.get_sequence(),'QEALVVKDLL')
+        self.assertEqual(pmimol.get_residue_indexes(),[1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+        self.assertEqual(pmimol.get_residue_segments().segs[0],[1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+        self.assertEqual(pmimol.get_chain_id(),"A")
+        self.assertEqual(pmimol.get_copy_index(),0)
+        self.assertEqual(pmimol.get_state_index(),0)
 
     def test_build_no0(self):
         """test building without resolution 0"""
@@ -818,7 +835,7 @@ class Tests(IMP.test.TestCase):
                               resolutions=[1])
         hier = s.build()
         expect_sequence = [IMP.pmi.tools.get_residue_type_from_one_letter_code(
-            rname) for rname in 'QEAAVVKDL']
+            rname) for rname in 'AAAAAAAAA']
         ps = IMP.atom.Selection(hier).get_selected_particles()
         built_sequence = [IMP.atom.Residue(p).get_residue_type() for p in ps]
         self.assertEqual(expect_sequence, built_sequence)
@@ -883,6 +900,21 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(hs),1)
         states = IMP.atom.get_by_type(hs[0],IMP.atom.STATE_TYPE)
         self.assertEqual(len(states),2)
+
+    def test_pmi_molecule_hierarchy(self):
+        mdl=IMP.Model()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
+        state=IMP.atom.State.setup_particle(IMP.Particle(mdl),0)
+        for seq in seqs:
+            mol=IMP.atom.Molecule.setup_particle(IMP.Particle(mdl))
+            ch=IMP.atom.Chain.setup_particle(mol,"A")
+            ch.set_sequence(seqs[seq])
+            state.add_child(mol)
+            mol.set_name(seq)
+            IMP.atom.Copy.setup_particle(mol,0)
+            pmimol=IMP.pmi.topology.PMIMoleculeHierarchy(mol)
+            self.assertEqual(pmimol.get_sequence(),seqs[seq])
+            self.assertEqual(pmimol.get_residue_indexes(),[])
 
 if __name__ == '__main__':
     IMP.test.main()

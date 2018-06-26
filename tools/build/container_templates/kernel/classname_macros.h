@@ -2,7 +2,7 @@
  *  \file IMP/classname_macros.h
  *  \brief Macros for various classes.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_CLASSNAME_MACROS_H

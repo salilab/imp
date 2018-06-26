@@ -1,0 +1,2 @@
+/* Include top-level Python interface */
+%include "IMP_mmcif.init.i"

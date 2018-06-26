@@ -4,7 +4,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -50,16 +50,6 @@ class IMPCOREEXPORT ConnectivityRestraint : public Restraint {
       evaluate() call.
   */
   ParticleIndexPairs get_connected_index_pairs() const;
-
-#ifndef IMP_DOXYGEN
-  IMPCORE_DEPRECATED_METHOD_DECL(2.7)
-  ParticlePairsTemp get_connected_pairs() const {
-    IMPCORE_DEPRECATED_METHOD_DEF(2.7,
-                                  "Use get_connected_index_pairs() instead");
-    return IMP::internal::get_particle(get_model(),
-                                       get_connected_index_pairs());
-  }
-#endif
 
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const { return ps_; }

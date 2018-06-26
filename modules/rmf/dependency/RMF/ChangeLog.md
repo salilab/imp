@@ -1,6 +1,8 @@
 Change Log {#changelog}
 ==========
 
+- A new category of decorators 'provenance' allows information about how the
+  structure was generated to be added to the file.
 - The new RMF::decorator::Reference decorator allows for a node to mark
   another node as its reference.
 - The new RMF::decorator::ExplicitResolution decorator allows attaching an

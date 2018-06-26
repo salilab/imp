@@ -3,7 +3,7 @@
  *  \brief Get directories used by IMP.
  *  \note @AUTOGEN@
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,10 +18,12 @@
 #include <boost/algorithm/string.hpp>
 
 #include <boost/version.hpp>
-#if BOOST_VERSION >= 104600 && !defined(BOOST_FILESYSTEM_VERSION)
+#if !defined(BOOST_FILESYSTEM_VERSION)
+#if BOOST_VERSION >= 104600
 #define BOOST_FILESYSTEM_VERSION 3
 #else
 #define BOOST_FILESYSTEM_VERSION 2
+#endif
 #endif
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -36,8 +38,8 @@
 #endif
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
-extern std::string imp_data_path;
-extern std::string imp_example_path;
+extern const char *imp_data_path;
+extern const char *imp_example_path;
 
 namespace {
 
@@ -169,7 +171,7 @@ std::string get_directory_path(std::string fileordirectory) {
     return dir.native_file_string();
 #endif
   }
-  catch (boost::filesystem::filesystem_error e) {
+  catch (const boost::filesystem::filesystem_error &e) {
     IMP_THROW("Error splitting file name \"" << fileordirectory << "\" got "
                                              << e.what(),
               IOException);

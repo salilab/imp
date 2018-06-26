@@ -2,7 +2,7 @@
  *  \file RMF/Enum.h
  *  \brief Declaration of RMF::Enum.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -61,6 +61,14 @@ class Enum {
   explicit Enum(int i) : i_(i) {
     RMF_USAGE_CHECK(TagT::get_to().find(i) != TagT::get_to().end(),
                     "Enum value not defined");
+  }
+  Enum(bool, int i) : i_(i) {
+    // Map out of range values to the undefined type, rather than throwing
+    // an error. This can be used, for example, to handle reading files
+    // made with a newer version of RMF.
+    if (TagT::get_to().find(i) == TagT::get_to().end()) {
+      i_ = -1;
+    }
   }
   Enum(std::string name) {
     RMF_USAGE_CHECK(TagT::get_from().find(name) != TagT::get_from().end(),

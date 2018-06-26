@@ -8,16 +8,34 @@ import IMP.atom
 import IMP.core
 import IMP.pmi
 import IMP.pmi.tools
+import IMP.pmi.io
 import os
 import sys
 import ast
 import RMF
 import numpy as np
 import operator
+import string
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
+
+class _ChainIDs(object):
+    """Map indices to multi-character chain IDs.
+       We label the first 26 chains A-Z, then we move to two-letter
+       chain IDs: AA through AZ, then BA through BZ, through to ZZ.
+       This continues with longer chain IDs."""
+    def __getitem__(self, ind):
+        chars = string.ascii_uppercase
+        lc = len(chars)
+        ids = []
+        while ind >= lc:
+            ids.append(chars[ind % lc])
+            ind = ind // lc - 1
+        ids.append(chars[ind])
+        return "".join(reversed(ids))
+
 
 class ProtocolOutput(object):
     """Base class for capturing a modeling protocol.
@@ -58,7 +76,10 @@ class Output(object):
         self.ascii = ascii
         self.initoutput = {}
         self.residuetypekey = IMP.StringKey("ResidueName")
+        # 1-character chain IDs, suitable for PDB output
         self.chainids = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        # Multi-character chain IDs, suitable for mmCIF output
+        self.multi_chainids = _ChainIDs()
         self.dictchain = {}  # keys are molecule names, values are chain ids
         self.particle_infos_for_pdb = {}
         self.atomistic=atomistic
@@ -73,7 +94,7 @@ class Output(object):
     def get_stat_names(self):
         return list(self.dictionary_stats.keys())
 
-    def _init_dictchain(self, name, prot):
+    def _init_dictchain(self, name, prot, multichar_chain=False):
         self.dictchain[name] = {}
         self.use_pmi2 = False
 
@@ -85,8 +106,9 @@ class Output(object):
                 chid = IMP.atom.Chain(mol).get_id()
                 self.dictchain[name][IMP.pmi.get_molecule_name_and_copy(mol)] = chid
         else:
+            chainids = self.multi_chainids if multichar_chain else self.chainids
             for n, i in enumerate(self.dictionary_pdbs[name].get_children()):
-                self.dictchain[name][i.get_name()] = self.chainids[n]
+                self.dictchain[name][i.get_name()] = chainids[n]
 
     def init_pdb(self, name, prot):
         """Init PDB Writing.
@@ -300,7 +322,10 @@ class Output(object):
                                 geometric_center[1] / atom_count,
                                 geometric_center[2] / atom_count)
 
-        particle_infos_for_pdb = sorted(particle_infos_for_pdb, key=operator.itemgetter(3, 4))
+        # sort by chain ID, then residue index. Longer chain IDs (e.g. AA)
+        # should always come after shorter (e.g. Z)
+        particle_infos_for_pdb = sorted(particle_infos_for_pdb,
+                                        key=lambda x: (len(x[3]), x[3], x[4]))
 
         return (particle_infos_for_pdb, geometric_center)
 
@@ -390,14 +415,48 @@ class Output(object):
                 "self.best_score_list=" + str(self.best_score_list))
             best_score_file.close()
 
-    def init_rmf(self, name, hierarchies, rs=None, geometries=None):
+    def init_rmf(self, name, hierarchies, rs=None, geometries=None, listofobjects=None):
+        """
+        This function initialize an RMF file
+
+        @param name          the name of the RMF file
+        @param hierarchies   the hiearchies to be included (it is a list)
+        @param rs            optional, the restraint sets (it is a list)
+        @param geometries    optional, the geometries (it is a list)
+        @param listofobjects optional, the list of objects for the stat (it is a list)
+        """
         rh = RMF.create_rmf_file(name)
         IMP.rmf.add_hierarchies(rh, hierarchies)
+        cat=None
+        outputkey_rmfkey=None
+
         if rs is not None:
             IMP.rmf.add_restraints(rh,rs)
         if geometries is not None:
             IMP.rmf.add_geometries(rh,geometries)
-        self.dictionary_rmfs[name] = rh
+        if listofobjects is not None:
+            cat = rh.get_category("stat")
+            outputkey_rmfkey={}
+            for l in listofobjects:
+                if not "get_output" in dir(l):
+                    raise ValueError("Output: object %s doesn't have get_output() method" % str(l))
+                output=l.get_output()
+                for outputkey in output:
+                    rmftag=RMF.string_tag
+                    if type(output[outputkey]) is float:
+                        rmftag=RMF.float_tag
+                    elif type(output[outputkey]) is int:
+                        rmftag=RMF.int_tag
+                    elif type(output[outputkey]) is str:
+                        rmftag = RMF.string_tag
+                    else:
+                        rmftag = RMF.string_tag
+                    rmfkey=rh.get_key(cat, outputkey, rmftag)
+                    outputkey_rmfkey[outputkey]=rmfkey
+            outputkey_rmfkey["rmf_file"]=rh.get_key(cat, "rmf_file", RMF.string_tag)
+            outputkey_rmfkey["rmf_frame_index"]=rh.get_key(cat, "rmf_frame_index", RMF.int_tag)
+
+        self.dictionary_rmfs[name] = (rh,cat,outputkey_rmfkey,listofobjects)
 
     def add_restraints_to_rmf(self, name, objectlist):
         flatobjectlist=_flatten(objectlist)
@@ -407,13 +466,13 @@ class Output(object):
             except:
                 rs = o.get_restraint()
             IMP.rmf.add_restraints(
-                self.dictionary_rmfs[name],
+                self.dictionary_rmfs[name][0],
                 rs.get_restraints())
 
     def add_geometries_to_rmf(self, name, objectlist):
         for o in objectlist:
             geos = o.get_geometries()
-            IMP.rmf.add_geometries(self.dictionary_rmfs[name], geos)
+            IMP.rmf.add_geometries(self.dictionary_rmfs[name][0], geos)
 
     def add_particle_pair_from_restraints_to_rmf(self, name, objectlist):
         for o in objectlist:
@@ -421,19 +480,38 @@ class Output(object):
             pps = o.get_particle_pairs()
             for pp in pps:
                 IMP.rmf.add_geometry(
-                    self.dictionary_rmfs[name],
+                    self.dictionary_rmfs[name][0],
                     IMP.core.EdgePairGeometry(pp))
 
     def write_rmf(self, name):
-        IMP.rmf.save_frame(self.dictionary_rmfs[name])
-        self.dictionary_rmfs[name].flush()
+        IMP.rmf.save_frame(self.dictionary_rmfs[name][0])
+        if self.dictionary_rmfs[name][1] is not None:
+            cat=self.dictionary_rmfs[name][1]
+            outputkey_rmfkey=self.dictionary_rmfs[name][2]
+            listofobjects=self.dictionary_rmfs[name][3]
+            for l in listofobjects:
+                output=l.get_output()
+                for outputkey in output:
+                    rmfkey=outputkey_rmfkey[outputkey]
+                    try:
+                        self.dictionary_rmfs[name][0].get_root_node().set_value(rmfkey,output[outputkey])
+                    except NotImplementedError:
+                        continue
+            rmfkey = outputkey_rmfkey["rmf_file"]
+            self.dictionary_rmfs[name][0].get_root_node().set_value(rmfkey, name)
+            rmfkey = outputkey_rmfkey["rmf_frame_index"]
+            nframes=self.dictionary_rmfs[name][0].get_number_of_frames()
+            self.dictionary_rmfs[name][0].get_root_node().set_value(rmfkey, nframes-1)
+        self.dictionary_rmfs[name][0].flush()
 
     def close_rmf(self, name):
+        rh = self.dictionary_rmfs[name][0]
         del self.dictionary_rmfs[name]
+        del rh
 
     def write_rmfs(self):
-        for rmf in self.dictionary_rmfs.keys():
-            self.write_rmf(rmf)
+        for rmfinfo in self.dictionary_rmfs.keys():
+            self.write_rmf(rmfinfo[0])
 
     def init_stat(self, name, listofobjects):
         if self.ascii:
@@ -693,12 +771,24 @@ class Output(object):
             self.write_stat2(stat)
 
 
+class OutputStatistics(object):
+    """Collect statistics from ProcessOutput.get_fields().
+       Counters of the total number of frames read, plus the models that
+       passed the various filters used in get_fields(), are provided."""
+    def __init__(self):
+        self.total = 0
+        self.passed_get_every = 0
+        self.passed_filterout = 0
+        self.passed_filtertuple = 0
+
+
 class ProcessOutput(object):
-    """A class for reading stat files"""
+    """A class for reading stat files (either rmf or ascii v1 and v2)"""
     def __init__(self, filename):
         self.filename = filename
         self.isstat1 = False
         self.isstat2 = False
+        self.isrmf = False
 
         # open the file
         if not self.filename is None:
@@ -706,42 +796,58 @@ class ProcessOutput(object):
         else:
             raise ValueError("No file name provided. Use -h for help")
 
-        # get the keys from the first line
-        for line in f.readlines():
-            d = ast.literal_eval(line)
-            self.klist = list(d.keys())
-            # check if it is a stat2 file
-            if "STAT2HEADER" in self.klist:
-                self.isstat2 = True
-                for k in self.klist:
-                    if "STAT2HEADER" in str(k):
-                        # if print_header: print k, d[k]
-                        del d[k]
-                stat2_dict = d
-                # get the list of keys sorted by value
-                kkeys = [k[0]
-                         for k in sorted(stat2_dict.items(), key=operator.itemgetter(1))]
-                self.klist = [k[1]
-                              for k in sorted(stat2_dict.items(), key=operator.itemgetter(1))]
-                self.invstat2_dict = {}
-                for k in kkeys:
-                    self.invstat2_dict.update({stat2_dict[k]: k})
-            else:
-                IMP.handle_use_deprecated("statfile v1 is deprecated. "
-                                          "Please convert to statfile v2.\n")
-                self.isstat1 = True
-                self.klist.sort()
+        try:
+            #let's see if that is an rmf file
+            rh = RMF.open_rmf_file_read_only(self.filename)
+            self.isrmf=True
+            cat=rh.get_category('stat')
+            rmf_klist=rh.get_keys(cat)
+            self.rmf_names_keys=dict([(rh.get_name(k),k) for k in rmf_klist])
+            del rh
 
-            break
-        f.close()
+        except IOError:
+            # try with an ascii stat file
+            # get the keys from the first line
+            for line in f.readlines():
+                d = ast.literal_eval(line)
+                self.klist = list(d.keys())
+                # check if it is a stat2 file
+                if "STAT2HEADER" in self.klist:
+                    self.isstat2 = True
+                    for k in self.klist:
+                        if "STAT2HEADER" in str(k):
+                            # if print_header: print k, d[k]
+                            del d[k]
+                    stat2_dict = d
+                    # get the list of keys sorted by value
+                    kkeys = [k[0]
+                             for k in sorted(stat2_dict.items(), key=operator.itemgetter(1))]
+                    self.klist = [k[1]
+                                  for k in sorted(stat2_dict.items(), key=operator.itemgetter(1))]
+                    self.invstat2_dict = {}
+                    for k in kkeys:
+                        self.invstat2_dict.update({stat2_dict[k]: k})
+                else:
+                    IMP.handle_use_deprecated("statfile v1 is deprecated. "
+                                              "Please convert to statfile v2.\n")
+                    self.isstat1 = True
+                    self.klist.sort()
+
+                break
+            f.close()
+
 
     def get_keys(self):
-        return self.klist
+        if self.isrmf:
+            return sorted(self.rmf_names_keys.keys())
+        else:
+            return self.klist
 
     def show_keys(self, ncolumns=2, truncate=65):
         IMP.pmi.tools.print_multicolumn(self.get_keys(), ncolumns, truncate)
 
-    def get_fields(self, fields, filtertuple=None, filterout=None, get_every=1):
+    def get_fields(self, fields, filtertuple=None, filterout=None, get_every=1,
+                   statistics=None):
         '''
         Get the desired field names, and return a dictionary.
         Namely, "fields" are the queried keys in the stat file (eg. ["Total_Score",...])
@@ -756,73 +862,597 @@ class ProcessOutput(object):
                      ("TheKeyToBeFiltered",relationship,value)
                      where relationship = "<", "==", or ">"
         @param get_every only read every Nth line from the file
+        @param statistics if provided, accumulate statistics in an
+                          OutputStatistics object
         '''
 
+        if statistics is None:
+            statistics = OutputStatistics()
         outdict = {}
         for field in fields:
             outdict[field] = []
 
         # print fields values
-        f = open(self.filename, "r")
-        line_number = 0
-
-        for line in f.readlines():
-            if not filterout is None:
-                if filterout in line:
-                    continue
-            line_number += 1
-
-            if line_number % get_every != 0:
-                continue
-            #if line_number % 1000 == 0:
-            #    print "ProcessOutput.get_fields: read line %s from file %s" % (str(line_number), self.filename)
-            try:
-                d = ast.literal_eval(line)
-            except:
-                print("# Warning: skipped line number " + str(line_number) + " not a valid line")
-                continue
-
-            if self.isstat1:
-
+        if self.isrmf:
+            rh = RMF.open_rmf_file_read_only(self.filename)
+            nframes=rh.get_number_of_frames()
+            for i in range(nframes):
+                statistics.total += 1
+                # "get_every" and "filterout" not enforced for RMF
+                statistics.passed_get_every += 1
+                statistics.passed_filterout += 1
+                IMP.rmf.load_frame(rh, RMF.FrameID(i))
                 if not filtertuple is None:
                     keytobefiltered = filtertuple[0]
                     relationship = filtertuple[1]
                     value = filtertuple[2]
-                    if relationship == "<":
-                        if float(d[keytobefiltered]) >= value:
-                            continue
-                    if relationship == ">":
-                        if float(d[keytobefiltered]) <= value:
-                            continue
-                    if relationship == "==":
-                        if float(d[keytobefiltered]) != value:
-                            continue
-                [outdict[field].append(d[field]) for field in fields]
+                    datavalue=rh.get_root_node().get_value(self.rmf_names_keys[keytobefiltered])
+                    if self.isfiltered(datavalue,relationship,value): continue
 
-            elif self.isstat2:
-                if line_number == 1:
+                statistics.passed_filtertuple += 1
+                for field in fields:
+                    outdict[field].append(rh.get_root_node().get_value(self.rmf_names_keys[field]))
+
+        else:
+            f = open(self.filename, "r")
+            line_number = 0
+
+            for line in f.readlines():
+                statistics.total += 1
+                if not filterout is None:
+                    if filterout in line:
+                        continue
+                statistics.passed_filterout += 1
+                line_number += 1
+
+                if line_number % get_every != 0:
+                    if line_number == 1 and self.isstat2:
+                        statistics.total -= 1
+                        statistics.passed_filterout -= 1
+                    continue
+                statistics.passed_get_every += 1
+                #if line_number % 1000 == 0:
+                #    print "ProcessOutput.get_fields: read line %s from file %s" % (str(line_number), self.filename)
+                try:
+                    d = ast.literal_eval(line)
+                except:
+                    print("# Warning: skipped line number " + str(line_number) + " not a valid line")
                     continue
 
-                if not filtertuple is None:
-                    keytobefiltered = filtertuple[0]
-                    relationship = filtertuple[1]
-                    value = filtertuple[2]
-                    if relationship == "<":
-                        if float(d[self.invstat2_dict[keytobefiltered]]) >= value:
-                            continue
-                    if relationship == ">":
-                        if float(d[self.invstat2_dict[keytobefiltered]]) <= value:
-                            continue
-                    if relationship == "==":
-                        if float(d[self.invstat2_dict[keytobefiltered]]) != value:
-                            continue
+                if self.isstat1:
 
-                [outdict[field].append(d[self.invstat2_dict[field]])
-                 for field in fields]
-        f.close()
+                    if not filtertuple is None:
+                        keytobefiltered = filtertuple[0]
+                        relationship = filtertuple[1]
+                        value = filtertuple[2]
+                        datavalue=d[keytobefiltered]
+                        if self.isfiltered(datavalue, relationship, value): continue
+
+                    statistics.passed_filtertuple += 1
+                    [outdict[field].append(d[field]) for field in fields]
+
+                elif self.isstat2:
+                    if line_number == 1:
+                        statistics.total -= 1
+                        statistics.passed_filterout -= 1
+                        statistics.passed_get_every -= 1
+                        continue
+
+                    if not filtertuple is None:
+                        keytobefiltered = filtertuple[0]
+                        relationship = filtertuple[1]
+                        value = filtertuple[2]
+                        datavalue=d[self.invstat2_dict[keytobefiltered]]
+                        if self.isfiltered(datavalue, relationship, value): continue
+
+                    statistics.passed_filtertuple += 1
+                    [outdict[field].append(d[self.invstat2_dict[field]]) for field in fields]
+
+            f.close()
+
         return outdict
 
+    def isfiltered(self,datavalue,relationship,refvalue):
+        dofilter=False
+        try:
+            fdatavalue=float(datavalue)
+        except ValueError:
+            raise ValueError("ProcessOutput.filter: datavalue cannot be converted into a float")
 
+        if relationship == "<":
+            if float(datavalue) >= refvalue:
+                dofilter=True
+        if relationship == ">":
+            if float(datavalue) <= refvalue:
+                dofilter=True
+        if relationship == "==":
+            if float(datavalue) != refvalue:
+                dofilter=True
+        return dofilter
+
+
+class RMFHierarchyHandler(IMP.atom.Hierarchy):
+    """ class to allow more advanced handling of RMF files.
+    It is both a container and a IMP.atom.Hierarchy.
+     - it is iterable (while loading the corresponding frame)
+     - Item brackets [] load the corresponding frame
+     - slice create an iterator
+     - can relink to another RMF file
+     """
+    def __init__(self,model,rmf_file_name):
+        """
+        @param model: the IMP.Model()
+        @param rmf_file_name: str, path of the rmf file
+        """
+        self.model=model
+        try:
+            self.rh_ref = RMF.open_rmf_file_read_only(rmf_file_name)
+        except TypeError:
+            raise TypeError("Wrong rmf file name or type: %s"% str(rmf_file_name))
+        hs = IMP.rmf.create_hierarchies(self.rh_ref, self.model)
+        IMP.rmf.load_frame(self.rh_ref, RMF.FrameID(0))
+        self.root_hier_ref = hs[0]
+        IMP.atom.Hierarchy.__init__(self, self.root_hier_ref)
+        self.model.update()
+        self.ColorHierarchy=None
+
+
+    def link_to_rmf(self,rmf_file_name):
+        """
+        Link to another RMF file
+        """
+        self.rh_ref = RMF.open_rmf_file_read_only(rmf_file_name)
+        IMP.rmf.link_hierarchies(self.rh_ref, [self])
+        if self.ColorHierarchy:
+            self.ColorHierarchy.method()
+        RMFHierarchyHandler.set_frame(self,0)
+
+    def set_frame(self,index):
+        try:
+            IMP.rmf.load_frame(self.rh_ref, RMF.FrameID(index))
+        except:
+            print("skipping frame %s:%d\n"%(self.current_rmf, index))
+        self.model.update()
+
+    def get_number_of_frames(self):
+        return self.rh_ref.get_number_of_frames()
+
+    def __getitem__(self,int_slice_adaptor):
+        if type(int_slice_adaptor) is int:
+            self.set_frame(int_slice_adaptor)
+            return int_slice_adaptor
+        elif type(int_slice_adaptor) is slice:
+            return self.__iter__(int_slice_adaptor)
+        else:
+            raise TypeError("Unknown Type")
+
+    def __len__(self):
+        return self.get_number_of_frames()
+
+    def __iter__(self,slice_key=None):
+        if slice_key is None:
+            for nframe in range(len(self)):
+                yield self[nframe]
+        else:
+            for nframe in list(range(len(self)))[slice_key]:
+                yield self[nframe]
+
+class CacheHierarchyCoordinates(object):
+    def __init__(self,StatHierarchyHandler):
+        self.xyzs=[]
+        self.nrms=[]
+        self.rbs=[]
+        self.nrm_coors={}
+        self.xyz_coors={}
+        self.rb_trans={}
+        self.current_index=None
+        self.rmfh=StatHierarchyHandler
+        rbs,xyzs=IMP.pmi.tools.get_rbs_and_beads([self.rmfh])
+        self.model=self.rmfh.get_model()
+        self.rbs=rbs
+        for xyz in xyzs:
+            if IMP.core.NonRigidMember.get_is_setup(xyz):
+                nrm=IMP.core.NonRigidMember(xyz)
+                self.nrms.append(nrm)
+            else:
+                fb=IMP.core.XYZ(xyz)
+                self.xyzs.append(fb)
+
+    def do_store(self,index):
+        self.rb_trans[index]={}
+        self.nrm_coors[index]={}
+        self.xyz_coors[index]={}
+        for rb in self.rbs:
+            self.rb_trans[index][rb]=rb.get_reference_frame()
+        for nrm in self.nrms:
+            self.nrm_coors[index][nrm]=nrm.get_internal_coordinates()
+        for xyz in self.xyzs:
+            self.xyz_coors[index][xyz]=xyz.get_coordinates()
+        self.current_index=index
+
+    def do_update(self,index):
+        if self.current_index!=index:
+            for rb in self.rbs:
+                rb.set_reference_frame(self.rb_trans[index][rb])
+            for nrm in self.nrms:
+                nrm.set_internal_coordinates(self.nrm_coors[index][nrm])
+            for xyz in self.xyzs:
+                xyz.set_coordinates(self.xyz_coors[index][xyz])
+            self.current_index=index
+            self.model.update()
+
+    def get_number_of_frames(self):
+        return len(self.rb_trans.keys())
+
+    def __getitem__(self,index):
+        if type(index) is int:
+            if index in self.rb_trans.keys():
+                return True
+            else:
+                return False
+        else:
+            raise TypeError("Unknown Type")
+
+    def __len__(self):
+        return self.get_number_of_frames()
+
+
+
+
+class StatHierarchyHandler(RMFHierarchyHandler):
+    """ class to link stat files to several rmf files """
+    def __init__(self,model=None,stat_file=None,number_best_scoring_models=None,score_key=None,StatHierarchyHandler=None,cache=None):
+        """
+
+        @param model: IMP.Model()
+        @param stat_file: either 1) a list or 2) a single stat file names (either rmfs or ascii, or pickled data or pickled cluster), 3) a dictionary containing an rmf/ascii
+            stat file name as key and a list of frames as values
+        @param number_best_scoring_models:
+        @param StatHierarchyHandler: copy constructor input object
+        @param cache: cache coordinates and rigid body transformations.
+        """
+
+        if not StatHierarchyHandler is None:
+            #overrides all other arguments
+            #copy constructor: create a copy with different RMFHierarchyHandler
+            self.model=StatHierarchyHandler.model
+            self.data=StatHierarchyHandler.data
+            self.number_best_scoring_models=StatHierarchyHandler.number_best_scoring_models
+            self.is_setup=True
+            self.current_rmf=StatHierarchyHandler.current_rmf
+            self.current_frame=None
+            self.current_index=None
+            self.score_threshold=StatHierarchyHandler.score_threshold
+            self.score_key=StatHierarchyHandler.score_key
+            self.cache=StatHierarchyHandler.cache
+            RMFHierarchyHandler.__init__(self, self.model,self.current_rmf)
+            if self.cache:
+                self.cache=CacheHierarchyCoordinates(self)
+            else:
+                self.cache=None
+            self.set_frame(0)
+
+        else:
+            #standard constructor
+            self.model=model
+            self.data=[]
+            self.number_best_scoring_models=number_best_scoring_models
+            self.cache=cache
+
+            if score_key is None:
+                self.score_key="Total_Score"
+            else:
+                self.score_key=score_key
+            self.is_setup=None
+            self.current_rmf=None
+            self.current_frame=None
+            self.current_index=None
+            self.score_threshold=None
+
+            if type(stat_file) is str:
+                self.add_stat_file(stat_file)
+            elif type(stat_file) is list:
+                for f in stat_file:
+                    self.add_stat_file(f)
+
+    def add_stat_file(self,stat_file):
+        try:
+            import cPickle as pickle
+        except ImportError:
+            import pickle
+
+        try:
+            '''check that it is not a pickle file with saved data from a previous calculation'''
+            self.load_data(stat_file)
+
+            if self.number_best_scoring_models:
+                scores = self.get_scores()
+                max_score = sorted(scores)[0:min(len(self), self.number_best_scoring_models)][-1]
+                self.do_filter_by_score(max_score)
+
+        except pickle.UnpicklingError:
+            '''alternatively read the ascii stat files'''
+            try:
+                scores,rmf_files,rmf_frame_indexes,features = self.get_info_from_stat_file(stat_file, self.score_threshold)
+            except KeyError:
+                # in this case check that is it an rmf file, probably without stat stored in
+                try:
+                    # let's see if that is an rmf file
+                    rh = RMF.open_rmf_file_read_only(stat_file)
+                    nframes = rh.get_number_of_frames()
+                    scores=[0.0]*nframes
+                    rmf_files=[stat_file]*nframes
+                    rmf_frame_indexes=range(nframes)
+                    features={}
+                except:
+                    return
+
+
+            if len(set(rmf_files)) > 1:
+                raise ("Multiple RMF files found")
+
+            if not rmf_files:
+                print("StatHierarchyHandler: Error: Trying to set none as rmf_file (probably empty stat file), aborting")
+                return
+
+            for n,index in enumerate(rmf_frame_indexes):
+                featn_dict=dict([(k,features[k][n]) for k in features])
+                self.data.append(IMP.pmi.output.DataEntry(stat_file,rmf_files[n],index,scores[n],featn_dict))
+
+            if self.number_best_scoring_models:
+                scores=self.get_scores()
+                max_score=sorted(scores)[0:min(len(self),self.number_best_scoring_models)][-1]
+                self.do_filter_by_score(max_score)
+
+        if not self.is_setup:
+            RMFHierarchyHandler.__init__(self, self.model,self.get_rmf_names()[0])
+            if self.cache:
+                self.cache=CacheHierarchyCoordinates(self)
+            else:
+                self.cache=None
+            self.is_setup=True
+            self.current_rmf=self.get_rmf_names()[0]
+
+        self.set_frame(0)
+
+    def save_data(self,filename='data.pkl'):
+        try:
+            import cPickle as pickle
+        except ImportError:
+            import pickle
+        fl=open(filename,'wb')
+        pickle.dump(self.data,fl)
+
+    def load_data(self,filename='data.pkl'):
+        try:
+            import cPickle as pickle
+        except ImportError:
+            import pickle
+        fl=open(filename,'rb')
+        data_structure=pickle.load(fl)
+        #first check that it is a list
+        if not type(data_structure) is list:
+            raise TypeError("%filename should contain a list of IMP.pmi.output.DataEntry or IMP.pmi.output.Cluster" % filename)
+        # second check the types
+        if all(isinstance(item, IMP.pmi.output.DataEntry) for item in data_structure):
+            self.data=data_structure
+        elif all(isinstance(item, IMP.pmi.output.Cluster) for item in data_structure):
+            nmodels=0
+            for cluster in data_structure:
+                nmodels+=len(cluster)
+            self.data=[None]*nmodels
+            for cluster in data_structure:
+                for n,data in enumerate(cluster):
+                    index=cluster.members[n]
+                    self.data[index]=data
+        else:
+            raise TypeError("%filename should contain a list of IMP.pmi.output.DataEntry or IMP.pmi.output.Cluster" % filename)
+
+    def set_frame(self,index):
+        if self.cache is not None and self.cache[index]:
+            self.cache.do_update(index)
+        else:
+            nm=self.data[index].rmf_name
+            fidx=self.data[index].rmf_index
+            if nm != self.current_rmf:
+                self.link_to_rmf(nm)
+                self.current_rmf=nm
+                self.current_frame=-1
+            if fidx!=self.current_frame:
+                RMFHierarchyHandler.set_frame(self, fidx)
+                self.current_frame=fidx
+            if self.cache is not None:
+                self.cache.do_store(index)
+
+        self.current_index = index
+
+    def __getitem__(self,int_slice_adaptor):
+        if type(int_slice_adaptor) is int:
+            self.set_frame(int_slice_adaptor)
+            return self.data[int_slice_adaptor]
+        elif type(int_slice_adaptor) is slice:
+            return self.__iter__(int_slice_adaptor)
+        else:
+            raise TypeError("Unknown Type")
+
+    def __len__(self):
+        return len(self.data)
+
+    def __iter__(self,slice_key=None):
+        if slice_key is None:
+            for i in range(len(self)):
+                yield self[i]
+        else:
+            for i in range(len(self))[slice_key]:
+                yield self[i]
+
+    def do_filter_by_score(self,maximum_score):
+        self.data=[d for d in self.data if d.score<=maximum_score]
+
+    def get_scores(self):
+        return [d.score for d in self.data]
+
+    def get_feature_series(self,feature_name):
+        return [d.features[feature_name] for d in self.data]
+
+    def get_feature_names(self):
+        return self.data[0].features.keys()
+
+    def get_rmf_names(self):
+        return [d.rmf_name for d in self.data]
+
+    def get_stat_files_names(self):
+        return [d.stat_file for d in self.data]
+
+    def get_rmf_indexes(self):
+        return [d.rmf_index for d in self.data]
+
+    def get_info_from_stat_file(self, stat_file, score_threshold=None):
+        po=ProcessOutput(stat_file)
+        fs=po.get_keys()
+        models = IMP.pmi.io.get_best_models([stat_file],
+                                            score_key=self.score_key,
+                                            feature_keys=fs,
+                                            rmf_file_key="rmf_file",
+                                            rmf_file_frame_key="rmf_frame_index",
+                                            prefiltervalue=score_threshold,
+                                            get_every=1)
+
+
+
+        scores = [float(y) for y in models[2]]
+        rmf_files = models[0]
+        rmf_frame_indexes = models[1]
+        features=models[3]
+        return scores, rmf_files, rmf_frame_indexes,features
+
+
+class DataEntry(object):
+    '''
+    A class to store data associated to a model
+    '''
+    def __init__(self,stat_file=None,rmf_name=None,rmf_index=None,score=None,features=None):
+        self.rmf_name=rmf_name
+        self.rmf_index=rmf_index
+        self.score=score
+        self.features=features
+        self.stat_file=stat_file
+
+    def __repr__(self):
+        s= "IMP.pmi.output.DataEntry\n"
+        s+="---- stat file %s \n"%(self.stat_file)
+        s+="---- rmf file %s \n"%(self.rmf_name)
+        s+="---- rmf index %s \n"%(str(self.rmf_index))
+        s+="---- score %s \n"%(str(self.score))
+        s+="---- number of features %s \n"%(str(len(self.features.keys())))
+        return s
+
+
+class Cluster(object):
+    '''
+    A container for models organized into clusters
+    '''
+    def __init__(self,cid=None):
+        self.cluster_id=cid
+        self.members=[]
+        self.precision=None
+        self.center_index=None
+        self.members_data={}
+
+    def add_member(self,index,data=None):
+        self.members.append(index)
+        self.members_data[index]=data
+        self.average_score=self.compute_score()
+
+    def compute_score(self):
+        try:
+            score=sum([d.score for d in self])/len(self)
+        except AttributeError:
+            score=None
+        return score
+
+    def __repr__(self):
+        s= "IMP.pmi.output.Cluster\n"
+        s+="---- cluster_id %s \n"%str(self.cluster_id)
+        s+="---- precision %s \n"%str(self.precision)
+        s+="---- average score %s \n"%str(self.average_score)
+        s+="---- number of members %s \n"%str(len(self.members))
+        s+="---- center index %s \n"%str(self.center_index)
+        return s
+
+    def __getitem__(self,int_slice_adaptor):
+        if type(int_slice_adaptor) is int:
+            index=self.members[int_slice_adaptor]
+            return self.members_data[index]
+        elif type(int_slice_adaptor) is slice:
+            return self.__iter__(int_slice_adaptor)
+        else:
+            raise TypeError("Unknown Type")
+
+    def __len__(self):
+        return len(self.members)
+
+    def __iter__(self,slice_key=None):
+        if slice_key is None:
+            for i in range(len(self)):
+                yield self[i]
+        else:
+            for i in range(len(self))[slice_key]:
+                yield self[i]
+
+    def __add__(self, other):
+        self.members+=other.members
+        self.members_data.update(other.members_data)
+        self.average_score=self.compute_score()
+        self.precision=None
+        self.center_index=None
+        return self
+
+
+def plot_clusters_populations(clusters):
+    indexes=[]
+    populations=[]
+    for cluster in clusters:
+        indexes.append(cluster.cluster_id)
+        populations.append(len(cluster))
+
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.bar(indexes, populations, 0.5, color='r') #, yerr=men_std)
+    ax.set_ylabel('Population')
+    ax.set_xlabel(('Cluster index'))
+    plt.show()
+
+def plot_clusters_precisions(clusters):
+    indexes=[]
+    precisions=[]
+    for cluster in clusters:
+        indexes.append(cluster.cluster_id)
+
+        prec=cluster.precision
+        print(cluster.cluster_id,prec)
+        if prec is None:
+            prec=0.0
+        precisions.append(prec)
+
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.bar(indexes, precisions, 0.5, color='r') #, yerr=men_std)
+    ax.set_ylabel('Precision [A]')
+    ax.set_xlabel(('Cluster index'))
+    plt.show()
+
+def plot_clusters_scores(clusters):
+    indexes=[]
+    values=[]
+    for cluster in clusters:
+        indexes.append(cluster.cluster_id)
+        values.append([])
+        for data in cluster:
+            values[-1].append(data.score)
+
+    plot_fields_box_plots("scores.pdf", values, indexes, frequencies=None,
+                          valuename="Scores", positionname="Cluster index", xlabels=None,scale_plot_length=1.0)
 
 class CrossLinkIdentifierDatabase(object):
     def __init__(self):

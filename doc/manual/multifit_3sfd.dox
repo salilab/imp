@@ -118,7 +118,7 @@ each Gaussian. For example, with 50 residues per Gaussian, a 170-residue
 protein should use 3 Gaussians and a 260-residue protein should use
 5 Gaussians.) The reduced representation is written out as a PDB file
 containing fake CA atoms, where each CA corresponds to a single anchor point,
-and also as a \external{http://www.cgl.ucsf.edu/chimera/,Chimera} cmm file.
+and also as a \external{https://www.cgl.ucsf.edu/chimera/,Chimera} cmm file.
 
 \section multifit_3sfd_fit_fft Fit each protein to the map
 

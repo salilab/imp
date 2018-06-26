@@ -2,7 +2,7 @@
  *  \file rigid_bodies.cpp
  *  \brief Support for rigid bodies.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -402,18 +402,18 @@ ModelKey get_rb_list_key() {
 
 namespace {
   // compute inertia tensor for particles ds with origin center
-IMP_Eigen::Matrix3d compute_I(Model *model,
-                              const ParticleIndexes &ds,
-                              const algebra::Vector3D &center,
-                              const IMP::algebra::Rotation3D &rot) {
-  IMP_Eigen::Matrix3d I = IMP_Eigen::Matrix3d::Zero();
+Eigen::Matrix3d compute_I(Model *model,
+                          const ParticleIndexes &ds,
+                          const algebra::Vector3D &center,
+                          const IMP::algebra::Rotation3D &rot) {
+  Eigen::Matrix3d I = Eigen::Matrix3d::Zero();
   for (unsigned int pi = 0; pi < ds.size(); ++pi) {
     XYZ cm(model, ds[pi]);
     double m = 1;
     double r = 0;
     algebra::Vector3D cv = rot.get_rotated(cm.get_coordinates() - center);
 
-    IMP_Eigen::Matrix3d Is;
+    Eigen::Matrix3d Is;
     for (unsigned int i = 0; i < 3; ++i) {
       for (unsigned int j = 0; j < 3; ++j) {
         Is(i, j) = -m * cv[i] * cv[j];
@@ -427,7 +427,7 @@ IMP_Eigen::Matrix3d compute_I(Model *model,
   return I;
 }
 
-bool is_rotation_valid(IMP_Eigen::Matrix3d rm) {
+bool is_rotation_valid(Eigen::Matrix3d rm) {
   for (unsigned i = 0; i < 3; ++i) {
     for (unsigned j = i; j < 3; ++j) {
       double expected_dot = (i == j) ? 1. : 0.;
@@ -907,12 +907,12 @@ algebra::ReferenceFrame3D get_initial_reference_frame(
   // parallel axis theorem
   // I'ij= Iij+M(v^2delta_ij-vi*vj)
   // compute I
-  IMP_Eigen::Matrix3d I =
+  Eigen::Matrix3d I =
       compute_I(m, ps, v, IMP::algebra::get_identity_rotation_3d());
   // IMP_LOG_VERBOSE( "Initial I is " << I << std::endl);
   // diagonalize it
-  IMP_Eigen::EigenSolver<IMP_Eigen::Matrix3d> eig(I);
-  IMP_Eigen::Matrix3d rm = eig.eigenvectors().real();
+  Eigen::EigenSolver<Eigen::Matrix3d> eig(I);
+  Eigen::Matrix3d rm = eig.eigenvectors().real();
   if (rm.determinant() < 0) {
     rm.array() *= -1.0;
   }

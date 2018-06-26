@@ -2,7 +2,7 @@
  *  \file IMP/isd/GaussianProcessInterpolationRestraint.h
  *  \brief Restraint and ScoreState for GaussianProcessInterpolation
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_GAUSSIAN_PROCESS_INTERPOLATION_RESTRAINT_H
@@ -15,7 +15,7 @@
 #include <IMP/isd/GaussianProcessInterpolation.h>
 #include <IMP/isd/MultivariateFNormalSufficient.h>
 #include <IMP/Pointer.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 #include <IMP/ScoreState.h>
 
@@ -54,9 +54,6 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
       calling model.evaluate(False) is enough. */
   double get_probability() const { return mvn_->density(); }
 
-  IMPISD_DEPRECATED_METHOD_DECL(2.7)
-  void stats() const;
-
   //! Use conjugate gradients when possible (default false)
   void set_use_cg(bool use, double tol) { mvn_->set_use_cg(use, tol); }
 
@@ -65,7 +62,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
   double get_minus_exponent() const;
 
   //! Get hessian of the minus log likelihood
-  IMP_Eigen::MatrixXd get_hessian() const;
+  Eigen::MatrixXd get_hessian() const;
 
   //! Get log determinant of hessian
   double get_logdet_hessian() const;

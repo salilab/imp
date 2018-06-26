@@ -2,7 +2,7 @@
  *  \file IMP/container/CloseBipartitePairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
@@ -59,10 +59,10 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer :
 
   /** @name Methods to control the set of filters
 
-      PairPredicate objects can be used as filters to prevent
-     the addition of pairs to the containeroutput list. Pairs
-     for which the predicates evaluate to a non-zero value are
-     excluded from the list.
+      PairPredicate objects can be added as filters to prevent
+      the addition of pairs to the container output list. Pairs
+      for which the predicates evaluate to a non-zero value are
+      excluded from the list.
   */
   /**@{*/
   IMP_LIST_ACTION(public, PairPredicate, PairPredicates, pair_filter,

@@ -2,7 +2,7 @@
  *  \file RMF/signature.cpp
  *  \brief Return a (long) string describing a file that can be compared.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,6 +20,7 @@
 #include "RMF/decorator/feature.h"
 #include "RMF/decorator/bond.h"
 #include "RMF/decorator/reference.h"
+#include "RMF/decorator/provenance.h"
 #include "RMF/decorator/shape.h"
 
 RMF_ENABLE_WARNINGS

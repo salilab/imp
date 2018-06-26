@@ -2,7 +2,7 @@
  *  \file test_MultivariateFNormalSufficient.cpp
  *  \brief testing of the Multivariate FNormal.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/isd/MultivariateFNormalSufficient.h>
@@ -13,7 +13,7 @@
 #include <math.h>
 #include <IMP/random.h>
 #include <boost/random/uniform_real.hpp>
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include <IMP/flags.h>
 
 namespace {
@@ -73,7 +73,7 @@ bool test_sanity() {
   // observation matrix
   int M = 1 + floor(rand() * 100);
   int N = 1 + floor(rand() * 100);
-  IMP_Eigen::MatrixXd FA(N, M);
+  Eigen::MatrixXd FA(N, M);
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < M; j++) {
       FA(i, j) = (rand() * 100 - 50);
@@ -82,12 +82,12 @@ bool test_sanity() {
   // Jacobian
   double JA = 1.0;
   // mean vector
-  IMP_Eigen::VectorXd FM(M);
+  Eigen::VectorXd FM(M);
   for (int i = 0; i < M; i++) {
     FM(i) = rand() - 50;
   }
   // Precision matrix
-  IMP_Eigen::MatrixXd Sigma(IMP_Eigen::MatrixXd::Zero(M, M));
+  Eigen::MatrixXd Sigma(Eigen::MatrixXd::Zero(M, M));
   for (int i = 0; i < M; i++) {
     Sigma(i, i) = 1 + rand() * 10;
   }
@@ -125,15 +125,15 @@ bool test_sanity() {
 // when N=M=1
 bool test_degenerate() {
   // observation matrix
-  IMP_Eigen::MatrixXd FA(1, 1);
+  Eigen::MatrixXd FA(1, 1);
   FA(0, 0) = rand() * 10;
   // Jacobian
   double JA = 1.0;
   // mean vector
-  IMP_Eigen::VectorXd FM(1);
+  Eigen::VectorXd FM(1);
   FM(0) = rand() * 10;
   // Precision matrix
-  IMP_Eigen::MatrixXd Sigma(1, 1);
+  Eigen::MatrixXd Sigma(1, 1);
   Sigma(0, 0) = 1.0 + rand();
 
   IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA, JA, FM, Sigma));
@@ -177,16 +177,16 @@ bool test_degenerate() {
 // when N=2 and M=1
 bool test_degenerate_N2M1() {
   // observation matrix
-  IMP_Eigen::MatrixXd FA(2, 1);
+  Eigen::MatrixXd FA(2, 1);
   FA(0, 0) = rand() * 10;
   FA(1, 0) = rand() * 10;
   // Jacobian
   double JA = 1.0;
   // mean vector
-  IMP_Eigen::VectorXd FM(1);
+  Eigen::VectorXd FM(1);
   FM(0) = rand() * 10;
   // Covariance matrix
-  IMP_Eigen::MatrixXd Sigma(1, 1);
+  Eigen::MatrixXd Sigma(1, 1);
   Sigma(0, 0) = 1.0 + rand();
 
   IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA, JA, FM, Sigma));
@@ -240,17 +240,17 @@ bool test_degenerate_N2M1() {
 // when N=1 and M=2 in the absence of correlations
 bool test_degenerate_N1M2() {
   // observation matrix
-  IMP_Eigen::MatrixXd FA(1, 2);
+  Eigen::MatrixXd FA(1, 2);
   FA(0, 0) = rand() * 10;
   FA(0, 1) = rand() * 10;
   // Jacobian
   double JA = 1.0;
   // mean vector
-  IMP_Eigen::VectorXd FM(2);
+  Eigen::VectorXd FM(2);
   FM(0) = rand() * 10;
   FM(1) = rand() * 10;
   // Covariance matrix
-  IMP_Eigen::MatrixXd Sigma(2, 2);
+  Eigen::MatrixXd Sigma(2, 2);
   Sigma << 1.0 + rand(), 0.0, 0.0, 1.0 + rand();
 
   IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA, JA, FM, Sigma));
@@ -283,7 +283,7 @@ bool test_degenerate_N1M2() {
 
   {
     // evaluate_derivative_FM
-    IMP_Eigen::VectorXd observed = mv->evaluate_derivative_FM();
+    Eigen::VectorXd observed = mv->evaluate_derivative_FM();
     double expected = fn->evaluate_derivative_FM();
     if (naeq(observed(0), expected)) FAIL("evaluate_derivative_FM 1");
     expected = fn2->evaluate_derivative_FM();
@@ -292,7 +292,7 @@ bool test_degenerate_N1M2() {
 
   {
     // evaluate_derivative_Sigma
-    IMP_Eigen::MatrixXd observed = mv->evaluate_derivative_Sigma();
+    Eigen::MatrixXd observed = mv->evaluate_derivative_Sigma();
     double expected = fn->evaluate_derivative_sigma() / (2 * sqrt(Sigma(0, 0)));
     if (naeq(observed(0, 0), expected)) FAIL("evaluate_derivative_Sigma 1 1");
     expected = fn2->evaluate_derivative_sigma() / (2 * sqrt(Sigma(1, 1)));
@@ -304,17 +304,17 @@ bool test_degenerate_N1M2() {
 // test when M=1 and N>=1
 bool test_1D(int N) {
   // observation matrix: N values between 0 and 10
-  IMP_Eigen::MatrixXd FA(N, 1);
+  Eigen::MatrixXd FA(N, 1);
   for (int i = 0; i < N; i++) {
     FA(i, 0) = rand() * 10;
   }
   // Jacobian: normal distribution.
   double JA = 1.0;
   // mean vector
-  IMP_Eigen::VectorXd FM(1);
+  Eigen::VectorXd FM(1);
   FM(0) = rand() * 10;
   // Covariance matrix
-  IMP_Eigen::MatrixXd Sigma(1, 1);
+  Eigen::MatrixXd Sigma(1, 1);
   Sigma(0, 0) = rand() * 10;
 
   IMP_NEW(IMP::isd::FNormal, fn, (FA(0, 0), JA, FM(0), sqrt(Sigma(0, 0))));
@@ -360,7 +360,7 @@ bool test_1D(int N) {
 
   {
     // test evaluate_derivative_FM()
-    IMP_Eigen::VectorXd observed = mv->evaluate_derivative_FM();
+    Eigen::VectorXd observed = mv->evaluate_derivative_FM();
     double expected = -double(N) / Sigma(0, 0) * (sample_mean - FM(0));
     // PRINT("FM " << observed(0) << " " << expected );
     if (naeq(observed(0), expected)) FAIL("evaluate_derivative_FM");
@@ -368,7 +368,7 @@ bool test_1D(int N) {
 
   {
     // test evaluate_derivative_Sigma()
-    IMP_Eigen::MatrixXd observed = mv->evaluate_derivative_Sigma();
+    Eigen::MatrixXd observed = mv->evaluate_derivative_Sigma();
     double expected =
         (double)N / (2.0 * Sigma(0, 0)) -
         0.5 / IMP::square(Sigma(0, 0)) *
@@ -386,7 +386,7 @@ bool test_1D(int N) {
 // test when M=2 and N=1
 bool test_2D() {
   // observation matrix
-  IMP_Eigen::MatrixXd FA(1, 2);
+  Eigen::MatrixXd FA(1, 2);
   FA(0, 0) = 0.5;
   FA(0, 1) = 1.0;
   // FA(1,0)=0.7;
@@ -394,11 +394,11 @@ bool test_2D() {
   // Jacobian
   double JA = 1.0;
   // mean vector
-  IMP_Eigen::VectorXd FM(2);
+  Eigen::VectorXd FM(2);
   FM(0) = 0.0;
   FM(1) = 2.0;
   // Precision matrix
-  IMP_Eigen::MatrixXd Sigma(2, 2);
+  Eigen::MatrixXd Sigma(2, 2);
   double sigma1 = 2.0;
   double sigma2 = 1.0;
   double rho = 0.5;
@@ -442,7 +442,7 @@ bool test_2D() {
 
   {
     // test_evaluate_derivative_FM
-    IMP_Eigen::VectorXd observed = mv->evaluate_derivative_FM();
+    Eigen::VectorXd observed = mv->evaluate_derivative_FM();
     double expected =
         ((FM(1) - FA(0, 1)) * rho * sigma1 + (FA(0, 0) - FM(0)) * sigma2) /
         ((-1 + rho * rho) * sigma1 * sigma1 * sigma2);
@@ -458,7 +458,7 @@ bool test_2D() {
     double det = Sigma(0, 0) * Sigma(1, 1) - Sigma(0, 1) * Sigma(1, 0);
     double eps1 = FA(0, 0) - FM(0);
     double eps2 = FA(0, 1) - FM(1);
-    IMP_Eigen::MatrixXd observed = mv->evaluate_derivative_Sigma();
+    Eigen::MatrixXd observed = mv->evaluate_derivative_Sigma();
     double expected =
         0.5 / IMP::square(det) *
         (IMP::square(Sigma(1, 1)) * (Sigma(0, 0) - IMP::square(eps1)) -
@@ -484,7 +484,7 @@ bool test_2D() {
 // test when M=100 and N=10
 bool test_100D() {
   // observation matrix
-  IMP_Eigen::MatrixXd FA(10, 100);
+  Eigen::MatrixXd FA(10, 100);
   for (int i = 0; i < 10; i++) {
     for (int j = 0; j < 100; j++) {
       // a little bit beneath the maximum.
@@ -494,12 +494,12 @@ bool test_100D() {
   // Jacobian
   double JA = 1.0;
   // mean vector
-  IMP_Eigen::VectorXd FM(100);
+  Eigen::VectorXd FM(100);
   for (int i = 0; i < 100; i++) {
     FM(i) = i - 49.0;
   }
   // Covariance matrix
-  IMP_Eigen::MatrixXd Sigma(IMP_Eigen::MatrixXd::Zero(100, 100));
+  Eigen::MatrixXd Sigma(Eigen::MatrixXd::Zero(100, 100));
   for (int i = 0; i < 100; i++) {
     Sigma(i, i) = 1.0;
   }
@@ -520,7 +520,7 @@ bool test_100D() {
 // test factor when M=100 and N=10
 bool test_factor() {
   // observation matrix
-  IMP_Eigen::MatrixXd FA(10, 100);
+  Eigen::MatrixXd FA(10, 100);
   for (int i = 0; i < 10; i++) {
     for (int j = 0; j < 100; j++) {
       // a little bit beneath the maximum.
@@ -530,12 +530,12 @@ bool test_factor() {
   // Jacobian
   double JA = 1.0;
   // mean vector
-  IMP_Eigen::VectorXd FM(100);
+  Eigen::VectorXd FM(100);
   for (int i = 0; i < 100; i++) {
     FM(i) = i - 49.0;
   }
   // Covariance matrix
-  IMP_Eigen::MatrixXd Sigma(IMP_Eigen::MatrixXd::Zero(100, 100));
+  Eigen::MatrixXd Sigma(Eigen::MatrixXd::Zero(100, 100));
   for (int i = 0; i < 100; i++) {
     Sigma(i, i) = 1.0;
   }
@@ -564,8 +564,8 @@ bool test_factor() {
 
   {
     // derivative_FM
-    IMP_Eigen::VectorXd observed = mvf->evaluate_derivative_FM();
-    IMP_Eigen::VectorXd expected = mv->evaluate_derivative_FM();
+    Eigen::VectorXd observed = mvf->evaluate_derivative_FM();
+    Eigen::VectorXd expected = mv->evaluate_derivative_FM();
     for (unsigned i = 0; i < 100; i++)
       if (naeq(observed(i), expected(i))) FAIL("derivative_FM coef " << i);
   }
@@ -593,8 +593,8 @@ bool test_factor() {
 
   {
     // derivative_FM
-    IMP_Eigen::VectorXd observed = mvf->evaluate_derivative_FM();
-    IMP_Eigen::VectorXd expected = mv2->evaluate_derivative_FM();
+    Eigen::VectorXd observed = mvf->evaluate_derivative_FM();
+    Eigen::VectorXd expected = mv2->evaluate_derivative_FM();
     for (unsigned i = 0; i < 100; i++)
       if (naeq(observed(i), expected(i))) FAIL("derivative_FM 2 coef " << i);
   }
@@ -606,7 +606,7 @@ bool test_factor() {
 //test that sparse and non-sparse versions agree
 bool test_sparseness(){
     //observation matrix
-    IMP_Eigen::MatrixXd FA(10,100);
+    Eigen::MatrixXd FA(10,100);
     for (int i=0; i<10; i++){
         for (int j=0; j<100; j++){
             FA(i,j) = rand();
@@ -615,12 +615,12 @@ bool test_sparseness(){
     //Jacobian
     double JA =1.0;
     //mean vector
-    IMP_Eigen::VectorXd FM(100);
+    Eigen::VectorXd FM(100);
     for (int i=0; i<100; i++){
         FM(i)=rand();
     }
     //Covariance matrix should be sparse with a bandwidth of 6 at delta=1e-7
-    IMP_Eigen::MatrixXd Sigma(IMP_Eigen::MatrixXd::Zero(100,100));
+    Eigen::MatrixXd Sigma(Eigen::MatrixXd::Zero(100,100));
     for (int i=0; i<100; i++){
             for (int j=0; j<100; j++)
                 Sigma(i,j) = std::exp(-0.5*std::pow(double(std::abs(i-j)),2));
@@ -640,8 +640,8 @@ bool test_sparseness(){
 
     {
     //evaluate
-    IMP_Eigen::MatrixXd observed=mvsp->evaluate_derivative_Sigma();
-    IMP_Eigen::MatrixXd expected=mv->evaluate_derivative_Sigma();
+    Eigen::MatrixXd observed=mvsp->evaluate_derivative_Sigma();
+    Eigen::MatrixXd expected=mv->evaluate_derivative_Sigma();
     for (unsigned i=0; i<100; i++)
     {
         for (unsigned j=0; j<100; j++)
@@ -658,17 +658,17 @@ bool test_sparseness(){
 //test when M=2 and N=1 TODO: P->Sigma
 bool gen_2D(){
     //observation matrix
-    IMP_Eigen::MatrixXd FA(1,2);
+    Eigen::MatrixXd FA(1,2);
     FA(0,0)=0.5;
     FA(0,1)=1.0;
     //Jacobian
     double JA =1.0;
     //mean vector
-    IMP_Eigen::VectorXd FM(2);
+    Eigen::VectorXd FM(2);
     FM(0)=0.0;
     FM(1)=2.0;
     //Precision matrix
-    IMP_Eigen::MatrixXd P(2,2);
+    Eigen::MatrixXd P(2,2);
     double sigma1=2.0;
     double sigma2=1.0;
     double rho=0.5;
@@ -690,7 +690,7 @@ bool gen_2D(){
     FM(0)=mu1;
     mv->set_FM(FM);
     //evaluate
-    IMP_Eigen::VectorXd observed=mv->evaluate_derivative_FM();
+    Eigen::VectorXd observed=mv->evaluate_derivative_FM();
     double expected=((FM(1)-FA(0,1))*rho*sigma1
             + (FA(0,0)-FM(0))*sigma2)/((-1+rho*rho)*sigma1*sigma1*sigma2);
     double expected2=((FA(0,1)-FM(1))*sigma1
@@ -704,24 +704,24 @@ bool gen_2D(){
 //test with N MultivariateFNormalSufficient instances TODO
 bool test_degenerate_2(int N){
     //observation matrix
-    IMP_Eigen::MatrixXd FA(N,1);
+    Eigen::MatrixXd FA(N,1);
     for (int i=0; i<N; i++){
         FA(i,0)=rand()*10;
     }
     //Jacobian
     double JA =1.0;
     //mean vector
-    IMP_Eigen::VectorXd FM(1,rand()*10);
+    Eigen::VectorXd FM(1,rand()*10);
     //Precision matrix
-    IMP_Eigen::MatrixXd P(1,1,1.0+rand());
+    Eigen::MatrixXd P(1,1,1.0+rand());
 
     IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,P));
     //mv->set_was_used(true);
     Pointer<IMP::isd::MultivariateFNormalSufficient> * fn;
     fn = new Pointer<IMP::isd::MultivariateFNormalSufficient> (N);
     for (int i=0; i< N; i++){
-        IMP_Eigen::MatrixXd a(1,1,FA(i,0));
-        IMP_Eigen::VectorXd m(1,FM(i));
+        Eigen::MatrixXd a(1,1,FA(i,0));
+        Eigen::VectorXd m(1,FM(i));
         fn(i) = new IMP::isd::MultivariateFNormalSufficient(a,JA,m,P);
         //fn(i)->set_was_used(true);
     }
@@ -772,16 +772,16 @@ bool test_degenerate_2(int N){
 //test with M=1 and N=2, varying mu TODO
 bool test_mu(int N){
     //observation matrix
-    IMP_Eigen::MatrixXd FA(N,1,0.0);
+    Eigen::MatrixXd FA(N,1,0.0);
     //for (int i=0; i<N; i++){
     //    FA(i,0)=rand()*10;
     //}
     //Jacobian
     double JA =1.0;
     //mean vector
-    IMP_Eigen::VectorXd FM(1,0.0);
+    Eigen::VectorXd FM(1,0.0);
     //Precision matrix
-    IMP_Eigen::MatrixXd P(1,1,1.1);
+    Eigen::MatrixXd P(1,1,1.1);
 
     IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,P));
     //mv->set_was_used(true);
@@ -790,8 +790,8 @@ bool test_mu(int N){
     fn = new Pointer<IMP::isd::MultivariateFNormalSufficient> (N);
     fn2 = new Pointer<IMP::isd::FNormal> (N);
     for (int i=0; i< N; i++){
-        IMP_Eigen::MatrixXd a(1,1,FA(i,0));
-        IMP_Eigen::VectorXd m(1,FM(i));
+        Eigen::MatrixXd a(1,1,FA(i,0));
+        Eigen::VectorXd m(1,FM(i));
         fn(i) = new IMP::isd::MultivariateFNormalSufficient(a,JA,m,P);
         //fn(i)->set_was_used(true);
         fn2(i) = new IMP::isd::FNormal(a(0,0),JA,m(0),1/sqrt(P(0,0)));
@@ -828,16 +828,16 @@ bool test_mu(int N){
 //test with N MultivariateFNormalSufficient instances TODO
 bool test_test(int N){
     //observation matrix
-    IMP_Eigen::MatrixXd FA(N,1,0.0);
+    Eigen::MatrixXd FA(N,1,0.0);
     //for (int i=0; i<N; i++){
     //    FA(i,0)=rand()*10;
     //}
     //Jacobian
     double JA =1.0;
     //mean vector
-    IMP_Eigen::VectorXd FM(1,0.0);
+    Eigen::VectorXd FM(1,0.0);
     //Precision matrix
-    IMP_Eigen::MatrixXd P(1,1,1.1);
+    Eigen::MatrixXd P(1,1,1.1);
 
     IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,P));
     //mv->set_was_used(true);
@@ -846,8 +846,8 @@ bool test_test(int N){
     fn = new Pointer<IMP::isd::MultivariateFNormalSufficient> (N);
     fn2 = new Pointer<IMP::isd::FNormal> (N);
     for (int i=0; i< N; i++){
-        IMP_Eigen::MatrixXd a(1,1,FA(i,0));
-        IMP_Eigen::VectorXd m(1,FM(i));
+        Eigen::MatrixXd a(1,1,FA(i,0));
+        Eigen::VectorXd m(1,FM(i));
         fn(i) = new IMP::isd::MultivariateFNormalSufficient(a,JA,m,P);
         //fn(i)->set_was_used(true);
         fn2(i) = new IMP::isd::FNormal(a(0,0),JA,m(0),1/sqrt(P(0,0)));
@@ -878,17 +878,17 @@ bool test_test(int N){
 //test with N FNormal instances TODO
 bool test_degenerate_N(int N){
     //observation matrix
-    IMP_Eigen::MatrixXd FA(N,1);
+    Eigen::MatrixXd FA(N,1);
     for (int i=0; i<N; i++){
         FA(i,0)=rand()*10;
     }
     //Jacobian
     double JA =1.0;
     //mean vector
-    IMP_Eigen::VectorXd FM(1);
+    Eigen::VectorXd FM(1);
     FM(0) = rand()*10;
     //Precision matrix
-    IMP_Eigen::MatrixXd P(1,1,1.0+rand());
+    Eigen::MatrixXd P(1,1,1.0+rand());
 
     IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,P));
     //mv->set_was_used(true);

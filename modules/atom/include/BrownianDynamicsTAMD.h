@@ -2,7 +2,7 @@
  *  \file IMP/atom/BrownianDynamicsTAMD.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -61,6 +61,10 @@ class SimulationParameters;
 
     If the skt (stochastic runge kutta) flag is true, the simulation is
     altered slightly to apply the SKT scheme.
+
+    _Time step_
+    The time step is always equal precisely to Simulater::get_maximum_time_step() 
+    when using either Simulator::simulate() or Optimizer::optimize()
 
     \see Diffusion
     \see RigidBodyDiffusion

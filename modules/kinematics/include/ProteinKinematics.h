@@ -2,7 +2,7 @@
  * \file IMP/kinematics/ProteinKinematics.h
  * \brief functionality for defining a kinematic forest for proteins
  *
- * Copyright 2007-2017 IMP Inventors. All rights reserved.
+ * Copyright 2007-2018 IMP Inventors. All rights reserved.
  *  \authors Dina Schneidman, Barak Raveh
  *
  */
@@ -28,6 +28,10 @@
 IMPKINEMATICS_BEGIN_NAMESPACE
 
 //! Kinematic structure over a protein, with backbone and side chain dihedrals
+//!
+//! Note: Particles that are handled by this class should never be decorated
+//! with IMP::core::RigidBody externally, as this could lead to unexpected behavior
+//! (e.g., wrong coordinates) and it cannot be detected by IMP at the current time.
 class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
  public:
 
@@ -79,6 +83,8 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
 
   KinematicForest* get_kinematic_forest() { return kf_; }
 
+  //! get all rigid bodies that were automatically
+  //! generated in the tree
   core::RigidBodies get_rigid_bodies() { return rbs_; }
 
   // TODO: add chi
@@ -120,6 +126,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
 
   void mark_rotatable_angles(const std::vector<atom::Atoms>& dihedral_angles);
 
+  //! automatically build rigid bodies for the protein kinematics structure
   void build_rigid_bodies();
 
   void add_dihedral_joints(const std::vector<atom::Atoms>& dihedral_angles);

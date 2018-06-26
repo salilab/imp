@@ -2,7 +2,7 @@
  *  \file IMP/container/ClassnameContainerSet.h
  *  \brief Store a set of ClassnameContainers
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLASSNAME_CONTAINER_SET_H
@@ -69,6 +69,12 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
   PLURALINDEXTYPE get_range_indexes() const;
   ModelObjectsTemp do_get_inputs() const;
 #endif
+
+ protected:
+  //! Insert the contents of the container into output
+  //! instead of output's current content
+  virtual void get_indexes_in_place(PLURALINDEXTYPE& output)
+    const IMP_OVERRIDE;
 };
 
 IMPCONTAINER_END_NAMESPACE

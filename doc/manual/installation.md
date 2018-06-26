@@ -24,6 +24,7 @@ In order to build %IMP from source, you will need:
 
 - [CMake](https://cmake.org) (2.8 or later)
 - [Boost](http://www.boost.org) (1.41 or later)
+- [Eigen](https://eigen.tuxfamily.org/) (3.0 or later)
 - [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later; 1.10 should also
   work)
 - [Python](https://www.python.org) (2.6 or later, or any version of Python 3)
@@ -41,7 +42,7 @@ will not build, and some will not function optimally.
   nonbonded lists.
 - [Google perf tools](\ref perf): needed only for profiling %IMP code.
 - [ANN](\ref ANN): certain data structures will be faster if it is available.
-- [GSL](\ref GSL): needed to use the IMP.gsl module.
+- [GSL](\ref GSL) (1.13 or later): needed to use the IMP.gsl module.
 - [OpenCV](\ref OpenCV) (2.1 or later): needed to use the IMP.em2d module or the
   [idock](@ref idock_pcsk9) and [emagefit](@ref emagefit_3sfd) command
   line tools.
@@ -50,6 +51,8 @@ will not build, and some will not function optimally.
 - [libTAU](https://integrativemodeling.org/libTAU.html): needed to use the
   IMP.cnmultifit module or the [cnmultifit](@ref cnmultifit_groel) command
   line tool.
+- [Protobuf](https://github.com/google/protobuf): needed to use the
+  IMP.npctransport module.
 - An [MPI](@ref IMP::mpi) library is needed to use the IMP.mpi module.
 - The [numpy, scipy](http://www.scipy.org/scipylib/download.html),
   [scikit-learn](http://scikit-learn.org/stable/install.html),
@@ -80,7 +83,7 @@ such as
 
         brew tap homebrew/science
         brew tap salilab/salilab
-        brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr opencv libtau
+        brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr opencv libtau eigen
 
   to install everything %IMP finds useful (or that you will want for installing various useful Python libs that %IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
 - [Macports](http://www.macports.org/) If you use MacPorts, you must add `/opt/local/bin` to your path (either by modifying your shell's

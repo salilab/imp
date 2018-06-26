@@ -50,5 +50,5 @@ License as published by the Free Software Foundation; either
 version 2 of the License, or (at your option) any later version.
 
 _Publications_:
--  S. Viswanath*, M. Bonomi*, S.J. Kim, N.T. Umbreit, K. Taylor, D. Klenchin, K. Yabut, H.A.Van Epps, J. Meehl, M.H. Jones, D. Russel, J.A. Velazquez-Muriel, M. Winey, I. Rayment, T.N. Davis, A. Sali, and E.G. Muller, The molecular architecture of the yeast spindle pole body core determined by Bayesian integrative modeling, submitted.  
+- S. Viswanath\*, M. Bonomi\*, S.J. Kim, V.A. Klenchin, K.C. Taylor, K.C. Yabut, N.T. Umbreit, H.A. Van Epps, J. Meehl, M.H. Jones, D. Russel, J.A. Velazquez-Muriel, M. Winey, I. Rayment, T.N. Davis, A. Sali, and E.G. Muller. The molecular architecture of the yeast spindle pole body core determined by Bayesian integrative modeling. Mol Biol Cell 28, 3298-3314, 2017.
 - See [main IMP papers list](@ref publications).

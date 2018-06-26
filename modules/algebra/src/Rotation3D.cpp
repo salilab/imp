@@ -1,7 +1,7 @@
 /**
  *  \file Rotation3D.cpp   \brief Simple 3D rotation class.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,10 +11,12 @@
 #include "IMP/algebra/utility.h"
 #include <IMP/check_macros.h>
 #include <IMP/log_macros.h>
+#include <limits>
+
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-Rotation3D get_rotation_from_matrix(IMP_Eigen::Matrix3d m) {
+Rotation3D get_rotation_from_matrix(Eigen::Matrix3d m) {
   return get_rotation_from_matrix(m(0, 0), m(0, 1), m(0, 2), m(1, 0), m(1, 1),
                                   m(1, 2), m(2, 0), m(2, 1), m(2, 2));
 }
@@ -332,7 +334,13 @@ std::pair<Vector3D, double> get_axis_and_angle(const Rotation3D &rot) {
   b = q[1];
   c = q[2];
   d = q[3];
-  if (std::abs(a) > .9999) return std::make_pair(Vector3D(1, 0, 0), 0.0);
+  //  deal with singularity of a~1.0 first
+  double numerical_scale_factor(1.0+std::abs(a));
+  if ( std::abs(a) >= 1.0 - 4.0 * std::numeric_limits<double>::epsilon() * numerical_scale_factor ){
+    return std::make_pair(Vector3D(1, 0, 0), 0.0);
+  }
+  //if (std::abs(a) > .9999)
+  //  return std::make_pair(Vector3D(1, 0, 0), 0.0);
   double angle = std::acos(a) * 2;
   double s = std::sin(angle / 2);
   Vector3D axis(b / s, c / s, d / s);

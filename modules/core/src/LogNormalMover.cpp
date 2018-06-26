@@ -2,7 +2,7 @@
  *  \file LogNormalMover.cpp
  *  \brief A modifier that perturbs a point with a log-normal distribution.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

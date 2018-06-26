@@ -2,7 +2,7 @@
  *  \file IMP/rmf/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -50,6 +50,7 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
                                          Model *m,
                                          ParticleIndex p,
                                          const ParticleIndexes &) {
+  IMP_FUNCTION_LOG;
   atom::Hierarchy hp = atom::Hierarchy::setup_particle(m, p);
   IMP_LOG_VERBOSE("Particle " << hp << " is " << std::endl);
   if (nh.get_has_value(radius_key_)) {
@@ -105,8 +106,11 @@ void HierarchyLoadStatic::setup_particle(RMF::NodeConstHandle nh,
   }
   if (chain_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("chain " << std::endl);
-    std::string cci = chain_factory_.get(nh).get_chain_id();
-    atom::Chain::setup_particle(m, p, cci);
+    RMF::decorator::ChainConst chain = chain_factory_.get(nh);
+    atom::Chain imp_chain = atom::Chain::setup_particle(m, p,
+                                                        chain.get_chain_id());
+    imp_chain.set_sequence(chain.get_sequence());
+    imp_chain.set_chain_type(atom::ChainType(chain.get_chain_type()));
   }
   if (typed_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("typed " << std::endl);
@@ -142,7 +146,9 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
                                         Model *m,
                                         ParticleIndex p,
                                         const ParticleIndexes &) {
+  IMP_FUNCTION_LOG;
   atom::Hierarchy hp(m, p);
+
   IMP_LOG_VERBOSE("Particle " << hp << " is " << std::endl);
   if (nh.get_has_value(radius_key_)) {
     IMP_LOG_VERBOSE("xyzr " << std::endl);
@@ -192,48 +198,58 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
   }
   if (chain_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("chain " << std::endl);
-    std::string cci = chain_factory_.get(nh).get_chain_id();
-    atom::Chain(m, p).set_id(cci);
+    RMF::decorator::ChainConst chain = chain_factory_.get(nh);
+    atom::Chain imp_chain(m, p);
+    imp_chain.set_id(chain.get_chain_id());
+    imp_chain.set_sequence(chain.get_sequence());
+    imp_chain.set_chain_type(atom::ChainType(chain.get_chain_type()));
   }
-  if (typed_factory_.get_is_static(nh)) {
-    // can't set
-    IMP_LOG_VERBOSE("typed " << std::endl);
-    std::string t = typed_factory_.get(nh).get_type_name();
-    core::ParticleType pt(t);
-    IMP_USAGE_CHECK(core::Typed(m, p).get_type() == pt,
-                    "Particle types don't match");
-    // core::Typed(m, p).set_particle_type(pt);
-  }
+  IMP_CHECK_CODE
+    (
+     if (typed_factory_.get_is_static(nh)) {
+       // can't set
+       IMP_LOG_VERBOSE("typed " << std::endl);
+       std::string t = typed_factory_.get(nh).get_type_name();
+       core::ParticleType pt(t);
+       IMP_USAGE_CHECK(core::Typed(m, p).get_type() == pt,
+                       "Particle types don't match");
+       // core::Typed(m, p).set_particle_type(pt);
+     }
+     );
   if (diffuser_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("diffuser " << std::endl);
     double dv = diffuser_factory_.get(nh).get_diffusion_coefficient();
     atom::Diffusion(m, p).set_diffusion_coefficient(dv);
   }
-  IMP_IF_CHECK(USAGE) {
-    if (copy_factory_.get_is_static(nh)) {
-      IMP_LOG_VERBOSE("copy " << std::endl);
-      int dv = copy_factory_.get(nh).get_copy_index();
-      IMP_USAGE_CHECK(atom::Copy(m, p).get_copy_index() == dv,
-                      "Copy indexes don't match");
-    }
-  }
-  if (state_factory_.get_is_static(nh)) {
-    IMP_LOG_VERBOSE("state " << std::endl);
-    unsigned int dv = state_factory_.get(nh).get_state_index();
-    IMP_USAGE_CHECK(atom::State(m, p).get_state_index() == dv,
-                    "State indexes don't match");
-  }
-  if (reference_factory_.get_is_static(nh)) {
-    IMP_LOG_VERBOSE("reference " << std::endl);
-    RMF::NodeConstHandle refn = reference_factory_.get(nh).get_reference();
-    Particle *refp = get_association<Particle>(refn);
-    IMP_USAGE_CHECK(core::Reference(m, p).get_reference_particle() == refp,
-                    "Reference particles don't match");
-  }
+  IMP_CHECK_CODE
+    (
+     IMP_IF_CHECK(USAGE) {
+       if (copy_factory_.get_is_static(nh)) {
+         IMP_LOG_VERBOSE("copy " << std::endl);
+         int dv = copy_factory_.get(nh).get_copy_index();
+         IMP_USAGE_CHECK(atom::Copy(m, p).get_copy_index() == dv,
+                         "Copy indexes don't match");
+       }
+     }
+     if (state_factory_.get_is_static(nh)) {
+       IMP_LOG_VERBOSE("state " << std::endl);
+       unsigned int dv = state_factory_.get(nh).get_state_index();
+       IMP_USAGE_CHECK(atom::State(m, p).get_state_index() == dv,
+                       "State indexes don't match");
+     }
+     if (reference_factory_.get_is_static(nh)) {
+       IMP_LOG_VERBOSE("reference " << std::endl);
+       RMF::NodeConstHandle refn = reference_factory_.get(nh).get_reference();
+       Particle *refp = get_association<Particle>(refn);
+       IMP_USAGE_CHECK(core::Reference(m, p).get_reference_particle() == refp,
+                       "Reference particles don't match");
+     }
+     );
 }
 
 void HierarchySaveStatic::setup_node(Model *m, ParticleIndex p,
                                      RMF::NodeHandle n) {
+  IMP_FUNCTION_LOG;
   if (core::XYZR::get_is_setup(m, p)) {
     core::XYZR d(m, p);
     intermediate_particle_factory_.get(n).set_radius(d.get_radius());
@@ -282,7 +298,10 @@ void HierarchySaveStatic::setup_node(Model *m, ParticleIndex p,
   }
   if (atom::Chain::get_is_setup(m, p)) {
     atom::Chain d(m, p);
-    chain_factory_.get(n).set_chain_id(d.get_id());
+    RMF::decorator::Chain chain = chain_factory_.get(n);
+    chain.set_chain_id(d.get_id());
+    chain.set_sequence(d.get_sequence());
+    chain.set_chain_type(d.get_chain_type().get_string());
   }
   if (atom::Diffusion::get_is_setup(m, p)) {
     atom::Diffusion d(m, p);
@@ -335,6 +354,7 @@ atom::Bonded get_bonded(Particle *p) {
 
 void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, Model *m,
                                      ParticleIndex p) {
+  IMP_FUNCTION_LOG;
   if (af_.get_is(n)) {
     RMF::decorator::BondConst bd = af_.get(n);
     RMF::NodeConstHandle bd0 = bd.get_bonded_0();
@@ -354,6 +374,7 @@ void HierarchyLoadBonds::setup_bonds(RMF::NodeConstHandle n, Model *m,
 
 namespace {
 atom::Bonds get_rep_bonds(atom::Hierarchy h) {
+  IMP_FUNCTION_LOG;
   atom::Bonds ret;
   if (atom::Representation::get_is_setup(h)) {
     IMP_FOREACH(atom::Hierarchy r,

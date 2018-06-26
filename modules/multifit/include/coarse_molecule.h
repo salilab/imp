@@ -2,7 +2,7 @@
  *  \file IMP/multifit/coarse_molecule.h
  *  \brief coarsen molecule by clustering
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

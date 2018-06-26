@@ -1,7 +1,7 @@
 /**
  * \file IMP/foxs/JmolWriter.h \brief outputs javascript for jmol display
  *
- * Copyright 2007-2017 IMP Inventors. All rights reserved.
+ * Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -55,6 +55,7 @@ class IMPFOXSEXPORT JmolWriter {
 
  public:
   static unsigned int MAX_DISPLAY_NUM_;
+  static float MAX_C2_;
 };
 
 IMPFOXS_END_INTERNAL_NAMESPACE

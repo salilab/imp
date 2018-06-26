@@ -2,7 +2,7 @@
  *  \file IMP/isd/em_utilities.h
  *  \brief Common scoring functions
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,20 +23,20 @@ IMPISD_BEGIN_NAMESPACE
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 inline Float score_gaussian_overlap(Model *m,
                              ParticleIndexPair pp,
-                             IMP_Eigen::Vector3d * deriv){
+                             Eigen::Vector3d * deriv){
   double determinant;
   bool invertible;
-  IMP_Eigen::Matrix3d inverse = IMP_Eigen::Matrix3d::Zero();
+  Eigen::Matrix3d inverse = Eigen::Matrix3d::Zero();
   Float mass12 = atom::Mass(m,pp[0]).get_mass() *
                   atom::Mass(m,pp[1]).get_mass();
   core::Gaussian g1(m,pp[0]);
   core::Gaussian g2(m,pp[1]);
-  IMP_Eigen::Matrix3d covar = g1.get_global_covariance() +
+  Eigen::Matrix3d covar = g1.get_global_covariance() +
                                g2.get_global_covariance();
-  IMP_Eigen::Vector3d v = IMP_Eigen::Vector3d(g2.get_coordinates().get_data())
-    - IMP_Eigen::Vector3d(g1.get_coordinates().get_data());
+  Eigen::Vector3d v = Eigen::Vector3d(g2.get_coordinates().get_data())
+    - Eigen::Vector3d(g1.get_coordinates().get_data());
   covar.computeInverseAndDetWithCheck(inverse,determinant,invertible);
-  IMP_Eigen::Vector3d tmp = inverse*v;
+  Eigen::Vector3d tmp = inverse*v;
   // 0.06349... = 1. / sqrt(2.0 * pi) ** 3
   Float score = mass12 * 0.06349363593424097 / (std::sqrt(determinant)) *
     std::exp(-0.5*v.transpose()*tmp);

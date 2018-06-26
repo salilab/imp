@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -60,7 +60,7 @@ class Avro2IOBufferFactory : public backends::IOFactory {
       return boost::make_shared<Avro2IO<ReaderTraits<BufferReaderBase> > >(
           buffer);
     }
-    catch (std::exception e) {
+    catch (const std::exception &e) {
       RMF_INFO("Avro2 reader can't read buffer: " << e.what());
       return boost::shared_ptr<backends::IO>();
     }

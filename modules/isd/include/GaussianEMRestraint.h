@@ -2,7 +2,7 @@
  *  \file IMP/isd/GaussianEMRestraint.h
  *  \brief Restrain two sets of Gaussians (model and GMM derived from EM map)
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,6 +10,7 @@
 #define IMPISD_GAUSSIAN_EM_RESTRAINT_H
 
 #include "isd_config.h"
+#include <IMP/file.h>
 #include <IMP/PairContainer.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container_macros.h>
@@ -20,7 +21,7 @@
 #include <IMP/container/ClosePairContainer.h>
 #include <IMP/atom/Mass.h>
 #include <math.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include <boost/unordered_map.hpp>
 
 IMPISD_BEGIN_NAMESPACE
@@ -80,6 +81,15 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
     return cross_correlation_;
   }
 
+  //! Set the filename corresponding to the density GMM particles
+  /** If the density GMM particles were read from a file, this method
+      can be used to tell the restraint so that it can track this
+      information back to the original EM density file, which is useful
+      for deposition. */
+  void set_density_filename(std::string density_fn) {
+    density_fn_ = get_absolute_path(density_fn);
+  }
+
   //! Pre-calculate the density-density and model-model scores
   /** This is automatically called by the constructor.
       You only need to call it manually if you change Gaussian variances.
@@ -95,9 +105,17 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
     unprotected_evaluate(IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   void show(std::ostream &out) const { out << "GEM restraint"; }
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const IMP_OVERRIDE;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_dynamic_info() const IMP_OVERRIDE;
+
   IMP_OBJECT_METHODS(GaussianEMRestraint);
 
  private:
+  double model_cutoff_dist_, density_cutoff_dist_;
   ParticleIndexes model_ps_;
   ParticleIndexes density_ps_;
   ParticleIndex global_sigma_;
@@ -110,6 +128,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   PointerMember<container::CloseBipartitePairContainer> md_container_;
   PointerMember<container::ClosePairContainer> mm_container_;
   ParticleIndexes slope_ps_; //experiment
+  std::string density_fn_;
 
   //variables needed to tabulate the exponential
   Floats exp_grid_;

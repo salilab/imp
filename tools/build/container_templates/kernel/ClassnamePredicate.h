@@ -2,7 +2,7 @@
  *  \file IMP/ClassnamePredicate.h
  *  \brief Define ClassnamePredicate.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_CLASSNAME_PREDICATE_H
@@ -39,14 +39,28 @@ class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
   virtual Ints get_value(const PLURALVARIABLETYPE &o) const;
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  //! remove any particles in ps for which this predicate evaluates to v
   virtual void remove_if_equal(Model *m, PLURALINDEXTYPE &ps,
                                int v) const;
+  //! remove any particles in ps for which this predicate does not evaluate to v
   virtual void remove_if_not_equal(Model *m, PLURALINDEXTYPE &ps,
                                    int v) const;
 #endif
 
   //! Compute the predicate and the derivative if needed.
   virtual int get_value_index(Model *m, PASSINDEXTYPE vt) const;
+
+  //! Setup for a batch of calls to get_value_index_in_batch()
+  //! (could be used for improving performance - e.g. preload various
+  //!  tables from model)
+  virtual void setup_for_get_value_index_in_batch(Model*) const {};
+
+  //! Same as get_value_index, but possibly with optimizations
+  //! for a batch of calls. Call setup_for_get_value_index_in_batch()
+  //! right before calling a batch of those.
+  virtual int get_value_index_in_batch(Model* m, PASSINDEXTYPE vt) const{
+    return get_value_index(m, vt);
+  }
 
   //! Enable them to be use as functors
   /** But beware of slicing.

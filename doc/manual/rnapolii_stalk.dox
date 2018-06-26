@@ -32,7 +32,7 @@ packages installed in addition to [IMP itself](@ref installation):
 - [Chimera](https://www.cgl.ucsf.edu/chimera/download.html)
   for visualization of results
 
-(If you are using [Anaconda Python](https://store.continuum.io/cshop/anaconda/),
+(If you are using [Anaconda Python](https://www.anaconda.com/download/),
 you can get the Python packages above by simply running
 `conda install numpy scipy scikit-learn matplotlib`.
 On a Mac you can get them using the

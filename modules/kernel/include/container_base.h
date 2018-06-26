@@ -2,7 +2,7 @@
  *  \file IMP/container_base.h
  *  \brief Abstract base class for containers of particles.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -74,7 +74,7 @@ class IMPKERNELEXPORT Container : public ModelObject {
   virtual bool get_is_decomposable() const { return true; }
 
 #if !defined(IMP_DOXYGEN)
-  // methods to implement checking for inputs and outputs
+  // methods to implement checking for inputs and outputs (only when checks beyond or equal internal)
   void validate_readable() const;
   void validate_writable() const;
   void set_is_readable(bool tf);

@@ -3,7 +3,7 @@
  *  \brief Restrain a list of particle pairs with a lognormal+ISPA.
  *  NOTE: for now, the derivatives are written to all variables.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -130,7 +130,7 @@ double LognormalRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   double lx = log(x);
   double lmu = log(mu);
   IMP_NEW(FNormal, normal, (lx, JA, lmu, sigma));
-  // normal->set_was_used(true); // get rid of warning
+  normal->set_was_used(true);
   /* get score */
   double score = normal->evaluate();
   const_cast<LognormalRestraint *>(this)->set_chi(lx - lmu);

@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Triangle3D.h
  *  \brief Represent a triangle in 3D
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_TRIANGLE_3D_H

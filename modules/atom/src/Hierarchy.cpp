@@ -1,7 +1,7 @@
 /**
  *  \file Hierarchy.cpp   \brief Decorator for helping deal with a hierarchy.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,6 +21,7 @@
 #include <IMP/atom/Molecule.h>
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/atom/hierarchy_tools.h>
+#include <IMP/core/provenance.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/core/rigid_bodies.h>
 
@@ -339,27 +340,6 @@ Bonds get_internal_bonds(Hierarchy mhd) {
   n=.5*(3*V+2*PI*r^3*f^3-6*PI*r^3*f^2)/((-3*f^2+f^3+2)*r^3*PI)
  */
 
-core::RigidBody setup_as_rigid_body(Hierarchy h) {
-  IMPATOM_DEPRECATED_FUNCTION_DEF(2.7, "Use atom::create_rigid_body instead");
-  IMP_USAGE_CHECK(h.get_is_valid(true),
-                  "Invalid hierarchy passed to setup_as_rigid_body");
-  core::RigidBody rbd = core::RigidBody::setup_particle(h, get_leaves(h));
-  rbd.set_coordinates_are_optimized(true);
-  ParticlesTemp internal = core::get_internal(h);
-  for (unsigned int i = 0; i < internal.size(); ++i) {
-    if (internal[i] != h) {
-      core::RigidMembers leaves(get_leaves(Hierarchy(internal[i])));
-      if (!leaves.empty()) {
-        algebra::ReferenceFrame3D rf = core::get_initial_reference_frame(
-            get_as<ParticlesTemp>(leaves));
-        core::RigidBody::setup_particle(internal[i], rf);
-      }
-    }
-  }
-  IMP_INTERNAL_CHECK(h.get_is_valid(true), "Invalid hierarchy produced");
-  return rbd;
-}
-
 namespace {
 ParticlesTemp rb_process(Hierarchy h) {
   ParticlesTemp internal = core::get_internal(h);
@@ -458,6 +438,11 @@ Hierarchy clone_internal(Hierarchy d,
   if (Representation::get_is_setup(d.get_particle())) {
     nd = Representation::setup_particle(p, Representation(d.get_particle()));
   }
+  if (core::Provenanced::get_is_setup(d.get_particle())) {
+    core::Provenanced pd(d.get_particle());
+    core::Provenance prov = core::create_clone(pd.get_provenance());
+    core::Provenanced::setup_particle(p, prov);
+  }
 
   if (nd == Hierarchy()) nd = Hierarchy::setup_particle(p);
   using core::XYZ;
@@ -550,6 +535,14 @@ void destroy(Hierarchy d) {
       Bonded b(all[i]);
       while (b.get_number_of_bonds() > 0) {
         destroy_bond(b.get_bond(b.get_number_of_bonds() - 1));
+      }
+    }
+    if (core::Provenanced::get_is_setup(all[i])) {
+      core::Provenance prov = core::Provenanced(all[i]).get_provenance();
+      while (prov) {
+        core::Provenance previous = prov.get_previous();
+        prov.get_model()->remove_particle(prov.get_particle_index());
+        prov = previous;
       }
     }
     Hierarchy hc(all[i]);

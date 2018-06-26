@@ -2,7 +2,7 @@
  *  \file IMP/example/creating_restraints.h
  *  \brief A simple unary function.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,12 +48,12 @@ inline Restraint *create_chain_restraint(Model *m,
 
 /** Create an excluded-volume style ClosePairsContainer based score. */
 inline Restraint *create_excluded_volume(
-    const ParticlesTemp &ps, double k, std::string name) {
-  IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
+    Model *m, const ParticleIndexes &ps, double k, std::string name) {
+  IMP_USAGE_CHECK(!ps.empty(), "No ParticleIndexes passed.");
   //Model *m = ps[0]->get_model();
-  double scale = core::XYZR(ps[0]).get_radius();
+  double scale = core::XYZR(m, ps[0]).get_radius();
   IMP_NEW(container::ListSingletonContainer, cores_container,
-          (ps, name + " list"));
+          (m, ps, name + " list"));
   // Create a close pair container, with a distance bound of 0 and a slack
   // that is proportional to the particle radius
   IMP_NEW(container::ClosePairContainer, cpc, (cores_container, 0, scale * .3));

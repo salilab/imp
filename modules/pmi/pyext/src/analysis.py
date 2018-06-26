@@ -1223,12 +1223,23 @@ class GetModelDensity(object):
         else:
             return self.densities[name]
 
-    def write_mrc(self, path="./"):
+    def write_mrc(self, path="./",suffix=None):
+        import os, errno
         for density_name in self.densities:
             self.densities[density_name].multiply(1. / self.count_models)
+            if suffix is None:
+                name=path + "/" + density_name + ".mrc"
+            else:
+                name=path + "/" + density_name + "." + suffix + ".mrc"
+            path, file = os.path.split(name)
+            if not os.path.exists(path):
+                try:
+                    os.makedirs(path)
+                except OSError as e:
+                    if e.errno != errno.EEXIST:
+                        raise
             IMP.em.write_map(
-                self.densities[density_name],
-                path + "/" + density_name + ".mrc",
+                self.densities[density_name],name,
                 IMP.em.MRCReaderWriter())
 
 
@@ -1574,29 +1585,6 @@ def link_hiers_and_restraints_to_rmf(model,hiers,rs, frame_number, rmf_file):
     model.update()
     del rh
     return True
-
-
-def get_hiers_from_rmf(model, frame_number, rmf_file):
-    print("getting coordinates for frame %i rmf file %s" % (frame_number, rmf_file))
-
-    # load the frame
-    rh = RMF.open_rmf_file_read_only(rmf_file)
-
-    try:
-        prots = IMP.rmf.create_hierarchies(rh, model)
-    except:
-        print("Unable to open rmf file %s" % (rmf_file))
-        prot = None
-        return prot
-    #IMP.rmf.link_hierarchies(rh, prots)
-    try:
-        IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
-    except:
-        print("Unable to open frame %i of file %s" % (frame_number, rmf_file))
-        prots = None
-    model.update()
-    del rh
-    return prots
 
 
 def get_particles_at_resolution_one(prot):

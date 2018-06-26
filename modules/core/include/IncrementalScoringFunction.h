@@ -2,7 +2,7 @@
  *  \file IMP/core/IncrementalScoringFunction.h
  *  \brief Score model efficiently when a small number of particles are changed.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -89,13 +89,6 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
 */
   IncrementalScoringFunction(Model *m,
 		             const ParticleIndexes &to_move,
-                             const RestraintsTemp &rs,
-                             double weight = 1.0, double max = NO_MAX,
-                             std::string name =
-                                 "IncrementalScoringFunction%1%");
-
-  IMPCORE_DEPRECATED_METHOD_DECL(2.7)
-  IncrementalScoringFunction(const ParticlesTemp &to_move,
                              const RestraintsTemp &rs,
                              double weight = 1.0, double max = NO_MAX,
                              std::string name =

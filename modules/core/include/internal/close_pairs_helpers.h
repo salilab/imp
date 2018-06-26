@@ -2,13 +2,14 @@
  *  \file internal/close_pairs_helpers.h
  *  \brief utilities for rigid bodies.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_CLOSE_PAIRS_HELPERS_H
 #define IMPCORE_INTERNAL_CLOSE_PAIRS_HELPERS_H
 
 #include <IMP/core/core_config.h>
+#include <IMP/algebra/Sphere3D.h>
 #include "../BoxSweepClosePairsFinder.h"
 #include "../GridClosePairsFinder.h"
 #include "grid_close_pairs_impl.h"
@@ -23,6 +24,7 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
+//! The default close pair finder engine of close pair finders
 inline ClosePairsFinder *default_cpf(unsigned int) {
   return new GridClosePairsFinder();
 }
@@ -31,14 +33,17 @@ inline ClosePairsFinder *default_cpf(unsigned int) {
   return dynamic_cast<IMP::internal::InternalListPairContainer *>(pc);
   }*/
 
+//! remove any pairs in pips that do not satisfy (evaluate to zero) the
+//! filter predicates of c
 template <class C>
-inline void filter_close_pairs(C *c, ParticleIndexPairs &ps) {
+inline void filter_close_pairs(C *c, ParticleIndexPairs &pips) {
   for (typename C::PairFilterConstIterator it = c->pair_filters_begin();
        it != c->pair_filters_end(); ++it) {
-    (*it)->remove_if_not_equal(c->get_model(), ps, 0);
+    (*it)->remove_if_not_equal(c->get_model(), pips, 0);
   }
 }
 
+//! canonize pairs index order in pips, such that pi1>=pi0 for each pair (pi0,pi1)
 inline void fix_order(ParticleIndexPairs &pips) {
   for (unsigned int i = 0; i < pips.size(); ++i) {
     if (pips[i][0] > pips[i][1]) {
@@ -68,38 +73,62 @@ struct SameParticle {
   }
   };*/
 
-inline bool get_are_close(Model *m, const PairPredicates &filters,
-                          ParticleIndex a, ParticleIndex b,
-                          double distance) {
+//! returns trun if sa and sb sphere distance is lower then
+//! the specified distance
+inline bool get_are_close
+(algebra::Sphere3D const& sa,
+ algebra::Sphere3D const& sb,
+ double distance)
+{
+  algebra::Sphere3D sa_inflated(sa.get_center(),
+                                sa.get_radius() + distance );
+  return
+    algebra::get_interiors_intersect(sa_inflated, sb);
+}
+
+inline bool get_are_close_and_filtered
+(Model *m,
+ const PairPredicates &filters,
+ ParticleIndex a, ParticleIndex b,
+ double distance)
+{
   XYZ da(m, a);
   XYZ db(m, b);
   Float ra = XYZR(m, a).get_radius();
   Float rb = XYZR(m, b).get_radius();
-  Float sr = ra + rb + distance;
-  for (unsigned int i = 0; i < 3; ++i) {
-    double delta = std::abs(da.get_coordinate(i) - db.get_coordinate(i));
-    if (delta >= sr) {
-      return false;
-    }
-  }
-  return get_interiors_intersect(
-             algebra::Sphere3D(da.get_coordinates(), ra + distance),
-             algebra::Sphere3D(db.get_coordinates(), rb)) &&
-         !get_filters_contains(m, filters, ParticleIndexPair(a, b));
+  return algebra::get_interiors_intersect
+    ( algebra::Sphere3D(da.get_coordinates(), ra + distance),
+      algebra::Sphere3D(db.get_coordinates(), rb))
+    &&
+    !get_filters_contains(m, filters, ParticleIndexPair(a, b));
 }
 
 struct FarParticle {
   double d_;
   Model *m_;
-  FarParticle(Model *m, double d) : d_(d), m_(m) {}
+  mutable algebra::Sphere3D const* model_spheres_table_;
+
+FarParticle
+(Model *m, double d)
+: d_(d),
+    m_(m),
+    model_spheres_table_( m->access_spheres_data() )
+  {}
+
   bool operator()(const ParticleIndexPair &pp) const {
-    return !get_are_close(m_, PairPredicates(), pp[0], pp[1], d_);
+    int index0= pp[0].get_index();
+    int index1= pp[1].get_index();
+    return !get_are_close(model_spheres_table_[index0],
+                          model_spheres_table_[index1],
+                          d_);
   }
 };
 
 inline void filter_far(Model *m, ParticleIndexPairs &c,
                        double d) {
-  c.erase(std::remove_if(c.begin(), c.end(), FarParticle(m, d)), c.end());
+  FarParticle fp(m, d);
+  c.erase(std::remove_if(c.begin(), c.end(), fp),
+          c.end());
 }
 
 struct InList {
@@ -150,26 +179,29 @@ inline void reset_moved(
   }
 }
 
+/**
+ - initializes xyzrs_ with all particles in sc that are not rigid body members (note they could be rigid bodies but not a part of a rigid body!)
+ - initializes rbs_ with all rigid bodies that father a rigid body member in sc
+ - initializes constituents_ as a map from rigid bodies in rbs_ to their rigid body members in sc
+ - resets all backup variables
+*/
 inline void initialize_particles(
-    SingletonContainer *sc, ObjectKey key, ParticleIndexes &xyzrs_,
+    SingletonContainer *sc,
+    ObjectKey key,
+    ParticleIndexes &xyzrs_,
     ParticleIndexes &rbs_,
-    boost::unordered_map<ParticleIndex, ParticleIndexes> &
-        constituents_,
+    boost::unordered_map<ParticleIndex, ParticleIndexes> & constituents_,
     algebra::Sphere3Ds &rbs_backup_sphere_,
     algebra::Rotation3Ds &rbs_backup_rot_, algebra::Sphere3Ds &xyzrs_backup_,
     bool use_rigid_bodies = true) {
+  // Check for duplicates
   IMP_IF_CHECK(USAGE) {
     ParticleIndexes pis = sc->get_indexes();
     boost::unordered_set<ParticleIndex> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(),
                     "Duplicate particle indexes in input");
   }
-  IMP_IF_CHECK(USAGE) {
-    ParticlesTemp pis = sc->get();
-    boost::unordered_set<Particle *> spis(pis.begin(), pis.end());
-    IMP_USAGE_CHECK(pis.size() == spis.size(), "Duplicate particles in input");
-  }
-  // constituents_.clear();
+  // constituents_.clear(); //! TODO: why doesn't clear constituents_? (BR)
   xyzrs_.clear();
   rbs_.clear();
   using IMP::operator<<;
@@ -179,34 +211,37 @@ inline void initialize_particles(
                                   << ")" << std::endl);
     if (use_rigid_bodies && RigidMember::get_is_setup(m, _1)) {
       RigidBody rb = RigidMember(m, _1).get_rigid_body();
-      ParticleIndex pi = rb.get_particle_index();
-      rbs_.push_back(rb.get_particle_index());
-      if (constituents_.find(pi) == constituents_.end()) {
+      ParticleIndex rb_pi = rb.get_particle_index();
+      rbs_.push_back(rb_pi);
+      if (constituents_.find(rb_pi) == constituents_.end()) {
         constituents_.insert(
-            std::make_pair(pi, ParticleIndexes(1, _1)));
+            std::make_pair(rb_pi, ParticleIndexes(1, _1)));
       } else {
-        constituents_[pi].push_back(_1);
+        constituents_[rb_pi].push_back(_1);
       }
+      // Check for circular rigid body/members:
       IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-        ParticleIndexes cur = constituents_[pi];
-        IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), pi) == cur.end(),
+        ParticleIndexes cur = constituents_[rb_pi];
+        IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), rb_pi) == cur.end(),
                         "A rigid body can't be its own constituent.");
         boost::unordered_set<ParticleIndex> scur(cur.begin(),
                                                          cur.end());
         IMP_USAGE_CHECK(cur.size() == scur.size(),
                         "Duplicate constituents for "
-                            << sc->get_model()->get_particle(pi)->get_name()
+                            << sc->get_model()->get_particle(rb_pi)->get_name()
                             << ": " << cur);
       }
     } else {
       xyzrs_.push_back(_1);
     }
   });
+  // Remove rb duplicates:
   std::sort(rbs_.begin(), rbs_.end());
   rbs_.erase(std::unique(rbs_.begin(), rbs_.end()), rbs_.end());
   for (unsigned int i = 0; i < rbs_.size(); ++i) {
     internal::get_rigid_body_hierarchy(RigidBody(sc->get_model(), rbs_[i]),
-                                       constituents_[rbs_[i]], key);
+                                       constituents_[rbs_[i]],
+                                       key);
   }
   reset_moved(sc->get_model(), xyzrs_, rbs_, constituents_, rbs_backup_sphere_,
               rbs_backup_rot_, xyzrs_backup_);

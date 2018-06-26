@@ -2,7 +2,7 @@
  *  \file MovedSingletonContainer.cpp
  *  \brief Keep track of the maximum change of a set of attributes.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/core/internal/MovedSingletonContainer.h>
@@ -134,9 +134,9 @@ void XYZRMovedSingletonContainer::do_reset_moved() {
       IMP_FOREACH(int m, moved_) {
         backup_[m] =
             XYZR(get_model(), imp_indexes[m]).get_sphere();
-}
-});
-moved_.clear();
+      }
+    });
+  moved_.clear();
 }
 ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
   IMP_OBJECT_LOG;
@@ -163,10 +163,11 @@ XYZRMovedSingletonContainer::XYZRMovedSingletonContainer(SingletonContainer *pc,
 
 void RigidMovedSingletonContainer::validate() const { IMP_OBJECT_LOG; }
 
-void RigidMovedSingletonContainer::check_estimate(
+void RigidMovedSingletonContainer::check_upper_bound(
     core::RigidBody rbs, std::pair<algebra::Sphere3D, algebra::Rotation3D> s,
-    double d) const {
+    double ub) const {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
+  IMP_OBJECT_LOG;
   core::RigidMembers rms = rbs.get_rigid_members();
   algebra::Transformation3D tr(s.second, s.first.get_center());
   algebra::ReferenceFrame3D old(tr);
@@ -177,15 +178,22 @@ void RigidMovedSingletonContainer::check_estimate(
     algebra::Vector3D newv = cur.get_global_coordinates(local);
     double dist = get_distance(oldv, newv);
     IMP_CHECK_VARIABLE(dist);
-    IMP_CHECK_VARIABLE(d);
-    IMP_INTERNAL_CHECK(dist < d + 1, "Particle moved further than expected "
-                                         << dist << " > " << d << " for "
-                                         << Showable(rms[i].get_particle()));
+    IMP_CHECK_VARIABLE(ub);
+    IMP_INTERNAL_CHECK(dist < ub,
+                       "Wrong upper bound " << ub << " on rigid body movement "
+                       << " - rigid member "  << Showable(rms[i].get_particle())
+                       << " old coordinates " << oldv
+                       << " new coordinates " << newv
+                       << " rigid body " << rbs
+                       << " old rb refframe " << old
+                       << " rigid body radius (as xyzr) "
+                       << IMP::core::XYZR(rbs.get_particle()).get_radius()
+                       << " moved by " << dist);
   }
 #else
   IMP_UNUSED(rbs);
   IMP_UNUSED(s);
-  IMP_UNUSED(d);
+  IMP_UNUSED(ub);
 #endif
 }
 
@@ -258,7 +266,7 @@ ParticleIndexes RigidMovedSingletonContainer::do_get_moved() {
   ParticleIndexes ret;
   IMP_LOG_TERSE("Getting moved with " << moved_.size() << std::endl);
   for (unsigned int i = 0; i < bodies_.size(); ++i) {
-    if (get_distance_estimate(i) > get_threshold()) {
+    if (get_distance_upper_bound(i) > get_threshold()) {
       IMP_INTERNAL_CHECK(rbs_members_.find(bodies_[i]) != rbs_members_.end(),
                          "Can't find rigid body "
                              << bodies_[i] << " bodies are " << rbs_members_);
@@ -271,29 +279,43 @@ ParticleIndexes RigidMovedSingletonContainer::do_get_moved() {
   return ret;
 }
 
-double RigidMovedSingletonContainer::get_distance_estimate(unsigned int i)
+double RigidMovedSingletonContainer::get_distance_upper_bound(unsigned int i)
     const {
-  core::XYZR xyz(get_model(), bodies_[i]);
+  IMP_OBJECT_LOG;
+  core::XYZR xyzr(get_model(), bodies_[i]);
   if (!core::RigidBody::get_is_setup(get_model(), bodies_[i])) {
     double ret =
-        (xyz.get_coordinates() - backup_[i].first.get_center()).get_magnitude();
+        (xyzr.get_coordinates() - backup_[i].first.get_center()).get_magnitude();
     return ret;
   } else {
     core::RigidBody rb(get_model(), bodies_[i]);
-    double dr = std::abs(xyz.get_radius() - backup_[i].first.get_radius());
+    double dr = std::abs(xyzr.get_radius() - backup_[i].first.get_radius());
     double dx =
-        (xyz.get_coordinates() - backup_[i].first.get_center()).get_magnitude();
+        (xyzr.get_coordinates() - backup_[i].first.get_center()).get_magnitude();
     algebra::Rotation3D nrot =
         rb.get_reference_frame().get_transformation_to().get_rotation();
     algebra::Rotation3D diffrot = backup_[i].second.get_inverse() * nrot;
     double angle = algebra::get_axis_and_angle(diffrot).second;
+
     double drot =
-        std::abs(angle * xyz.get_radius());  // over estimate, but easy
-    double ret = dr + dx + drot;
+        std::abs(angle * xyzr.get_radius());  // over estimate, but easy
+    double ub = dr + dx + drot; // upper bound
+    IMP_LOG_TERSE("upperbound calc: Angle " << angle << " radius " << xyzr.get_radius()
+                  << " dr " << dr << " dx " << dx
+                  << " old sphere " << backup_[i].first.get_center()
+                  << " new rb sphere " << xyzr.get_coordinates()
+                  << " old rb rotation " << backup_[i].second
+                  << " new rb rotation " << nrot
+                  << " diffrot " << diffrot
+                  << std::endl)
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      check_estimate(core::RigidBody(get_model(), bodies_[i]), backup_[i], ret);
+      // make sure upper_bound of movement is not too low
+      double max_error= 1.0;
+      check_upper_bound(core::RigidBody(get_model(), bodies_[i]),
+                     backup_[i],
+                     ub+max_error);
     }
-    return ret;
+    return ub;
   }
 }
 
@@ -311,7 +333,7 @@ ModelObjectsTemp RigidMovedSingletonContainer::get_extra_inputs()
       RigidBody rb = core::RigidMember(get_model(), pi).get_rigid_body();
       ret.push_back(rb);
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-      // The checks in check_estimate() need to touch *all* members
+      // The checks in check_upper_bound() need to touch *all* members
       ret += rb.get_rigid_members();
 #endif
     }

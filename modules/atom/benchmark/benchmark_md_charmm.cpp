@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2017 IMP Inventors. All rights reserved.
+ * Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 #include <IMP.h>
 #include <IMP/core.h>
@@ -133,7 +133,7 @@ int do_benchmark() {
     IMP::benchmark::report("md charmm", time, score);
     return 0;
   }
-  catch (Exception e) {
+  catch (const Exception &e) {
     std::cerr << "Exception " << e.what() << std::endl;
     return 1;
   }

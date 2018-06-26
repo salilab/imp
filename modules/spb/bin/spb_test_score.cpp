@@ -18,7 +18,7 @@
 #include <map>
 #include <math.h>
 #include <time.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include <IMP/flags.h>
 
 using namespace IMP;

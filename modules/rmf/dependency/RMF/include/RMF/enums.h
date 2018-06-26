@@ -2,7 +2,7 @@
  *  \file RMF/enums.h
  *  \brief The various enums used in RMF.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -57,6 +57,8 @@ extern RMFEXPORT const NodeType BOND;
 /** This includes nodes that are just RMF::ReferenceFrame nodes.
  */
 extern RMFEXPORT const NodeType ORGANIZATIONAL;
+//! Represent the process by which a structure was created
+extern RMFEXPORT const NodeType PROVENANCE;
 #ifndef RMF_DOXYGEN
 //! An internal link to another node
 extern RMFEXPORT const NodeType LINK;

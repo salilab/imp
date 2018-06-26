@@ -1,7 +1,7 @@
 /**
  *  \file BrownianDynamics.cpp  \brief Simple Brownian dynamics optimizer.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -40,7 +40,7 @@ BrownianDynamics::BrownianDynamics(Model *m, std::string name,
                                    double wave_factor,
                                    unsigned int random_pool_size)
     : Simulator(m, name, wave_factor),
-      max_step_(std::numeric_limits<double>::max()),
+      max_step_in_A_(std::numeric_limits<double>::max()),
       srk_(false),
       random_pool_(random_pool_size),
       i_random_pool_(0)
@@ -147,13 +147,13 @@ void BrownianDynamics::setup(const ParticleIndexes &ips) {
 IMP_GCC_DISABLE_WARNING(-Wuninitialized)
 
 namespace {
-void check_dX(algebra::Vector3D &dX, double max_step) {
+void check_dX(algebra::Vector3D &dX, double max_step_in_A) {
   for (unsigned int j = 0; j < 3; ++j) {
     // if (std::abs(dX[j]) > max_step) {
     /*std::cerr << "Truncating motion: " << dX[j] << " to " << max_step
       << std::endl;*/
-    dX[j] = std::min(dX[j], max_step);
-    dX[j] = std::max(dX[j], -max_step);
+    dX[j] = std::min(dX[j], max_step_in_A);
+    dX[j] = std::max(dX[j], -max_step_in_A);
     //}
   }
 }
@@ -168,7 +168,7 @@ void BrownianDynamics::advance_coordinates_1(ParticleIndex pi,
                           get_force_displacement(get_model(), pi, 1, dt, ikT),
                           get_force_displacement(get_model(), pi, 2, dt, ikT));
   algebra::Vector3D dX = (force - forces_[i]) / 2.0;
-  check_dX(dX, max_step_);
+  check_dX(dX, max_step_in_A_);
   xd.set_coordinates(xd.get_coordinates() + dX);
 }
 
@@ -188,7 +188,7 @@ void BrownianDynamics::advance_coordinates_0(ParticleIndex pi,
   }
   algebra::Vector3D dX = random_dX + force_dX;
   if (!srk_) {
-    check_dX(dX, max_step_);
+    check_dX(dX, max_step_in_A_);
   }
 
   // // DEBUG - get kinetic energy
@@ -276,9 +276,8 @@ BrownianDynamics::reset_random_pool()
  */
 double
 BrownianDynamics::do_step
-(const ParticleIndexes &ps, double dt)
+(const ParticleIndexes &ps, double dt_fs)
 {
-  double dtfs(dt);
   double ikT = 1.0 / get_kt();
   get_scoring_function()->evaluate(true);
   //  Ek = 0.0; // DEBUG: monitor kinetic energy
@@ -286,8 +285,8 @@ BrownianDynamics::do_step
   const unsigned int chunk_size = 5000;
   for (unsigned int b = 0; b < ps.size(); b += chunk_size) {
     IMP_TASK_SHARED(
-        (dtfs, ikT, b), (ps),
-        do_advance_chunk(dtfs, ikT, ps, b,
+        (dt_fs, ikT, b), (ps),
+        do_advance_chunk(dt_fs, ikT, ps, b,
                          std::min<unsigned int>(b + chunk_size, ps.size()));
         , "brownian");
   }
@@ -302,10 +301,10 @@ BrownianDynamics::do_step
   if (srk_) {
     get_scoring_function()->evaluate(true);
     for (unsigned int i = 0; i < ps.size(); ++i) {
-      advance_coordinates_1(ps[i], i, dtfs, ikT);
+      advance_coordinates_1(ps[i], i, dt_fs, ikT);
     }
   }
-  return dt;
+  return dt_fs;
 }
 
 namespace {

@@ -2,7 +2,7 @@
  *  \file domino/DominoSampler.h
  *  \brief A Bayesian inference-based sampler.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/domino/assignment_containers.h>
@@ -312,12 +312,12 @@ void ReadAssignmentContainer::add_assignment(const Assignment &) {
 
 ////////////////////////// RangeViewAssignmentContainer
 
-inline unsigned int RangeViewAssignmentContainer::get_number_of_assignments()
+unsigned int RangeViewAssignmentContainer::get_number_of_assignments()
     const {
   return end_ - begin_;
 }
 
-inline Assignment RangeViewAssignmentContainer::get_assignment(unsigned int i)
+Assignment RangeViewAssignmentContainer::get_assignment(unsigned int i)
     const {
   IMP_USAGE_CHECK(i < get_number_of_assignments(),
                   "Invalid assignment requested: " << i);
@@ -336,11 +336,11 @@ void RangeViewAssignmentContainer::add_assignment(const Assignment &) {
 
 ////////////////////////// HEAP ASSIGNMENT CONTAINER
 
-inline unsigned int HeapAssignmentContainer::get_number_of_assignments() const {
+unsigned int HeapAssignmentContainer::get_number_of_assignments() const {
   return d_.size();
 }
 
-inline Assignment HeapAssignmentContainer::get_assignment(unsigned int i)
+Assignment HeapAssignmentContainer::get_assignment(unsigned int i)
     const {
   IMP_USAGE_CHECK(i < get_number_of_assignments(),
                   "Invalid assignment requested: " << i);

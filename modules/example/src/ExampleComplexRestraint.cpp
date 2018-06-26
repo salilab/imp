@@ -2,7 +2,7 @@
  *  \file example/ExampleComplexRestraint.cpp
  *  \brief Restrain the diameter of a set of points.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

@@ -3,7 +3,7 @@
  *  \brief A basic image class
  *
  *  \authors Dina Schneidman
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -324,10 +324,11 @@ template <class T>
 double Image2D<T>::cc_score(const Image2D<T>& other_image) const {
   if (get_height() != other_image.get_height() &&
       get_width() != other_image.get_width()) {
-    IMP_WARN("Can't compute correlation for different size images"
-             << get_height() << " vs. " << other_image.get_height()
-             << get_width() << " vs. " << other_image.get_width() << std::endl);
-    exit(1);
+    IMP_THROW("Can't compute correlation for different size images "
+              << get_height() << " vs. " << other_image.get_height()
+              << " and "
+              << get_width() << " vs. " << other_image.get_width(),
+              ValueException);
   }
   double cc = 0.0;
   for (int i = 0; i < get_height(); i++)
@@ -340,10 +341,11 @@ template <class T>
 double Image2D<T>::cc_score(const Image2D<T>& other_image, T thr) const {
   if (get_height() != other_image.get_height() &&
       get_width() != other_image.get_width()) {
-    IMP_WARN("Can't compute correlation for different size images"
-             << get_height() << " vs. " << other_image.get_height()
-             << get_width() << " vs. " << other_image.get_width() << std::endl);
-    exit(1);
+    IMP_THROW("Can't compute correlation for different size images "
+              << get_height() << " vs. " << other_image.get_height()
+              << " and "
+              << get_width() << " vs. " << other_image.get_width(),
+              ValueException);
   }
   double cc = 0;
   for (int i = 0; i < get_height(); i++) {

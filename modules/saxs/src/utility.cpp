@@ -1,7 +1,7 @@
 /**
  *  \file IMP/saxs/utility.cpp
  *  \brief Functions to deal with very common saxs operations
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
 */
 
 #include <IMP/saxs/utility.h>
@@ -119,7 +119,7 @@ void read_files(Model *m, const std::vector<std::string>& files,
                 std::vector<IMP::Particles>& particles_vec,
                 Profiles& exp_profiles, bool residue_level,
                 bool heavy_atoms_only, int multi_model_pdb,
-                bool explicit_water, float max_q) {
+                bool explicit_water, float max_q, int units) {
 
   for (unsigned int i = 0; i < files.size(); i++) {
     // check if file exists
@@ -133,9 +133,9 @@ void read_files(Model *m, const std::vector<std::string>& files,
       read_pdb(m, files[i], pdb_file_names, particles_vec, residue_level,
                heavy_atoms_only, multi_model_pdb, explicit_water);
     }
-    catch (IMP::ValueException e) {  // not a pdb file
+    catch (const IMP::ValueException &e) {  // not a pdb file
       // 2. try as a dat profile file
-      IMP_NEW(Profile, profile, (files[i], false, max_q));
+      IMP_NEW(Profile, profile, (files[i], false, max_q, units));
       if (profile->size() == 0) {
         IMP_WARN("can't parse input file " << files[i] << std::endl);
         return;

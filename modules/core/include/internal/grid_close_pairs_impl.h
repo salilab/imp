@@ -2,7 +2,7 @@
  *  \file grid_close_pair_impl.h
  *  \brief Implementation of close pairs finder that is based on a grid hierarchy
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -32,23 +32,46 @@ inline bool get_interiors_intersect(const algebra::Vector3D &v, double ra,
   if (a2 >= sr) return false;
   return v * v < square(sr);
 }
+inline bool get_interiors_intersect(const algebra::Sphere3D &s1,
+                                    const algebra::Sphere3D &s2,
+                                    double d) {
+  double sr = s1.get_radius() + s2.get_radius() + d;
+  algebra::Vector3D v(s1.get_center() - s2.get_center());
+  // Probably not worth it all the CPU time on ifs
+  /*  double a0 = std::abs(v[0]);
+  if (a0 >= sr) return false;
+  double a1 = std::abs(v[1]);
+  if (a1 >= sr) return false;
+  double a2 = std::abs(v[2]);
+  if (a2 >= sr) return false;*/
+  return v * v < square(sr);
+}
+
 struct ParticleTraits {
   typedef ParticleIndex ID;
   Model *m_;
   double d_;
-  ParticleTraits(Model *m, double d) : m_(m), d_(d) {}
+  mutable algebra::Sphere3D const* model_spheres_table_; // faster access to spheres data - this assumes model spheres table remains the same within the lifetime of object
+
+  ParticleTraits(Model *m, double d) : m_(m), d_(d),
+    model_spheres_table_( m->access_spheres_data() )
+  { }
   ParticleIndex get_id(Particle *p, int) const {
     return p->get_index();
   }
+  algebra::Sphere3D const& get_sphere(ParticleIndex p) const{
+    return model_spheres_table_[p.get_index()];
+  }
   algebra::Vector3D get_center(ParticleIndex p, int) const {
-    return m_->get_sphere(p).get_center();
+    return get_sphere(p).get_center();
   }
   double get_radius(ParticleIndex p, int) const {
-    return m_->get_sphere(p).get_radius();
+    return get_sphere(p).get_radius();
   }
   bool get_is_close(ParticleIndex a, ParticleIndex b) const {
-    return get_interiors_intersect(get_center(a, 0) - get_center(b, 0),
-                                   get_radius(b, 0) + d_, get_radius(a, 0));
+    return get_interiors_intersect(get_sphere(a),
+                                   get_sphere(b),
+                                   d_);
   }
   bool check_close(ParticleIndex a, ParticleIndex b) const {
     return get_interiors_intersect(get_center(a, 0) - get_center(b, 0),
@@ -110,9 +133,13 @@ struct BBPairSink {
 template <class Traits>
 struct Helper {
   typedef typename Traits::ID ID;
+  //! an extension of vector, containing a (template) vector of
+  //! Traits::ID, with an integer indentifier which_
   struct IDs : public Vector<ID> {
     int which_;
+    //! an empty ids vector identified by which
     IDs(int which) : which_(which) {}
+    //! an ids vector of one element with value id, identified by which
     IDs(ID id, int which) : Vector<ID>(1, id), which_(which) {}
     IDs() : which_(-1) {}
   };
@@ -212,6 +239,9 @@ struct Helper {
     return Grid(side, bb);
   }
 
+  //! ids - vector of IDs (e.g. Particle Indexes) identified by which_
+  //! traits - traits class for finding close pairs of IDs
+  //! g - a grid for storing the ids
   static void fill_grid(const IDs &ids, const Traits &tr, Grid &g) {
     for (typename IDs::const_iterator c = ids.begin(); c != ids.end(); ++c) {
       algebra::Vector3D v = tr.get_center(*c, ids.which_);

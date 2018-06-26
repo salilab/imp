@@ -2,7 +2,7 @@
  *  \file DensityMap.cpp
  *  \brief Class for handling density maps.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -47,7 +47,9 @@ DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
   algebra::Vector3D offset(hspace, hspace, hspace);
   algebra::Vector3D wid = bb.get_corner(1) - bb.get_corner(0);
   for (unsigned int i = 0; i < 3; ++i) {
-    n[i] = static_cast<int>(std::ceil(wid[i] / spacing));
+    // Account for machine rounding - don't round 40.0000001 up to 41
+    // (this would cause a "voxels don't match" check to fail later)
+    n[i] = static_cast<int>(std::ceil(wid[i] / spacing - 1e-6));
   }
   ret->set_void_map(n[0], n[1], n[2]);
   ret->set_origin(bb.get_corner(0) + offset);

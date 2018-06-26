@@ -410,89 +410,89 @@ struct ConvertEigenVector {
   %}
 
 %define IMP_SWIG_EIGEN_MATRIX(Name)
-%typemap(in) IMP_Eigen::Name const& {
+%typemap(in) Eigen::Name const& {
   try {
     // hack to get around swig's value wrapper being randomly used
-    assign($1, ConvertEigenMatrix<IMP_Eigen::Name>::get_cpp_object($input, $descriptor(IMP_Eigen::Name*)));
+    assign($1, ConvertEigenMatrix<Eigen::Name>::get_cpp_object($input, $descriptor(Eigen::Name*)));
   } catch (const IMP::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
   }
  }
-%typemap(freearg) IMP_Eigen::Name const& {
+%typemap(freearg) Eigen::Name const& {
   delete_if_pointer($1);
  }
-%typecheck(SWIG_TYPECHECK_POINTER) IMP_Eigen::Name const& {
-  $1= ConvertEigenMatrix<IMP_Eigen::Name>::get_is_cpp_object($input, $descriptor(IMP_Eigen::Name*));
+%typecheck(SWIG_TYPECHECK_POINTER) Eigen::Name const& {
+  $1= ConvertEigenMatrix<Eigen::Name>::get_is_cpp_object($input, $descriptor(Eigen::Name*));
  }
-%typemap(out) IMP_Eigen::Name const& {
-  $result = ConvertEigenMatrix<IMP_Eigen::Name >::create_python_object(ValueOrObject<IMP_Eigen::Name >::get($1), $descriptor(IMP_Eigen::Name*), SWIG_POINTER_OWN);
+%typemap(out) Eigen::Name const& {
+  $result = ConvertEigenMatrix<Eigen::Name >::create_python_object(ValueOrObject<Eigen::Name >::get($1), $descriptor(Eigen::Name*), SWIG_POINTER_OWN);
  }
-%typemap(out) IMP_Eigen::Name {
-  $result = ConvertEigenMatrix<IMP_Eigen::Name >::create_python_object(ValueOrObject<IMP_Eigen::Name >::get($1), $descriptor(IMP_Eigen::Name*), SWIG_POINTER_OWN);
+%typemap(out) Eigen::Name {
+  $result = ConvertEigenMatrix<Eigen::Name >::create_python_object(ValueOrObject<Eigen::Name >::get($1), $descriptor(Eigen::Name*), SWIG_POINTER_OWN);
  }
-%typemap(directorout) IMP_Eigen::Name const& {
+%typemap(directorout) Eigen::Name const& {
   // hack to get around swig's evil value wrapper being randomly used
-  assign($result, ConvertEigenMatrix<IMP_Eigen::Name >::get_cpp_object($input, $descriptor(IMP_Eigen::Name*)));
+  assign($result, ConvertEigenMatrix<Eigen::Name >::get_cpp_object($input, $descriptor(Eigen::Name*)));
  }
-%typemap(directorin) IMP_Eigen::Name const& {
-  $input = ConvertEigenMatrix<IMP_Eigen::Name >::create_python_object($1_name, $descriptor(IMP_Eigen::Name*), SWIG_POINTER_OWN);
+%typemap(directorin) Eigen::Name const& {
+  $input = ConvertEigenMatrix<Eigen::Name >::create_python_object($1_name, $descriptor(Eigen::Name*), SWIG_POINTER_OWN);
  }
-%typemap(in) IMP_Eigen::Name* {
+%typemap(in) Eigen::Name* {
   collections_like_##Name##_must_be_passed_by_value_or_const_ref;
  }
-%typemap(out) IMP_Eigen::Name* {
+%typemap(out) Eigen::Name* {
   collections_like_##Name##_must_be_returned_by_value_or_const_ref;
  }
-%typemap(in) IMP_Eigen::Name& {
+%typemap(in) Eigen::Name& {
   collections_like_##Name##_must_be_passed_by_value_or_const_ref;
  }
-%typemap(out) IMP_Eigen::Name& {
+%typemap(out) Eigen::Name& {
   collections_like_##Name##_must_be_returned_by_value_or_const_ref;
  }
 %enddef
 
 %define IMP_SWIG_EIGEN_VECTOR(Name)
-%typemap(in) IMP_Eigen::Name const& {
+%typemap(in) Eigen::Name const& {
   try {
     // hack to get around swig's value wrapper being randomly used
-    assign($1, ConvertEigenVector<IMP_Eigen::Name>::get_cpp_object($input, $descriptor(IMP_Eigen::Name*)));
+    assign($1, ConvertEigenVector<Eigen::Name>::get_cpp_object($input, $descriptor(Eigen::Name*)));
   } catch (const IMP::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
   }
  }
-%typemap(freearg) IMP_Eigen::Name const& {
+%typemap(freearg) Eigen::Name const& {
   delete_if_pointer($1);
  }
-%typecheck(SWIG_TYPECHECK_POINTER) IMP_Eigen::Name const& {
-  $1= ConvertEigenVector<IMP_Eigen::Name>::get_is_cpp_object($input, $descriptor(IMP_Eigen::Name*));
+%typecheck(SWIG_TYPECHECK_POINTER) Eigen::Name const& {
+  $1= ConvertEigenVector<Eigen::Name>::get_is_cpp_object($input, $descriptor(Eigen::Name*));
  }
-%typemap(out) IMP_Eigen::Name const& {
-  $result = ConvertEigenVector<IMP_Eigen::Name >::create_python_object(ValueOrObject<IMP_Eigen::Name >::get($1), $descriptor(IMP_Eigen::Name*), SWIG_POINTER_OWN);
+%typemap(out) Eigen::Name const& {
+  $result = ConvertEigenVector<Eigen::Name >::create_python_object(ValueOrObject<Eigen::Name >::get($1), $descriptor(Eigen::Name*), SWIG_POINTER_OWN);
  }
-%typemap(out) IMP_Eigen::Name {
-  $result = ConvertEigenVector<IMP_Eigen::Name >::create_python_object(ValueOrObject<IMP_Eigen::Name >::get($1), $descriptor(IMP_Eigen::Name*), SWIG_POINTER_OWN);
+%typemap(out) Eigen::Name {
+  $result = ConvertEigenVector<Eigen::Name >::create_python_object(ValueOrObject<Eigen::Name >::get($1), $descriptor(Eigen::Name*), SWIG_POINTER_OWN);
  }
-%typemap(directorout) IMP_Eigen::Name const& {
+%typemap(directorout) Eigen::Name const& {
   // hack to get around swig's evil value wrapper being randomly used
-  assign($result, ConvertEigenVector<IMP_Eigen::Name >::get_cpp_object($input, $descriptor(IMP_Eigen::Name*)));
+  assign($result, ConvertEigenVector<Eigen::Name >::get_cpp_object($input, $descriptor(Eigen::Name*)));
  }
-%typemap(directorin) IMP_Eigen::Name const& {
-  $input = ConvertEigenVector<IMP_Eigen::Name >::create_python_object($1_name, $descriptor(IMP_Eigen::Name*), SWIG_POINTER_OWN);
+%typemap(directorin) Eigen::Name const& {
+  $input = ConvertEigenVector<Eigen::Name >::create_python_object($1_name, $descriptor(Eigen::Name*), SWIG_POINTER_OWN);
  }
-%typemap(in) IMP_Eigen::Name* {
+%typemap(in) Eigen::Name* {
   collections_like_##Name##_must_be_passed_by_value_or_const_ref;
  }
-%typemap(out) IMP_Eigen::Name* {
+%typemap(out) Eigen::Name* {
   collections_like_##Name##_must_be_returned_by_value_or_const_ref;
  }
-%typemap(in) IMP_Eigen::Name& {
+%typemap(in) Eigen::Name& {
   collections_like_##Name##_must_be_passed_by_value_or_const_ref;
  }
-%typemap(out) IMP_Eigen::Name& {
+%typemap(out) Eigen::Name& {
   collections_like_##Name##_must_be_returned_by_value_or_const_ref;
  }
 %enddef

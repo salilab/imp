@@ -2,7 +2,7 @@
  *  \file RMF/NodeHandle.h
  *  \brief Declaration of NodeHandle.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

@@ -3,7 +3,7 @@
  *  \brief Restrain a list of particle pairs with a lognormal+ISPA.
  *  NOTE: for now, the derivatives are written to all variables.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -61,7 +61,7 @@ double AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   double FM = log(Icalc);
   double JA = 1.0 / Vexp_;
   IMP_NEW(FNormal, lognormal, (FA, JA, FM, sigma_val));
-  // lognormal->set_was_used(true); // get rid of warning
+  lognormal->set_was_used(true);
   /* get score */
   double score = lognormal->evaluate();
   const_cast<AmbiguousNOERestraint *>(this)->set_chi(FA - FM);

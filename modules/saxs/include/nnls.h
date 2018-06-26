@@ -3,7 +3,7 @@
  * \brief
  *
  * \authors Dina Schneidman
- * Copyright 2007-2017 IMP Inventors. All rights reserved.
+ * Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,19 +11,18 @@
 #define IMPSAXS_NNLS_H
 
 #include <IMP/saxs/saxs_config.h>
-#include <IMP/algebra/eigen3/Eigen/Dense>
-
-using namespace IMP_Eigen;
+#include <Eigen/Dense>
 
 IMPSAXS_BEGIN_NAMESPACE
 
 //! non-negative least square fitting for profile weight solving problem
-inline IMP_Eigen::VectorXf NNLS(const IMP_Eigen::MatrixXf& A,
-                                const IMP_Eigen::VectorXf& b) {
+inline Eigen::VectorXf NNLS(const Eigen::MatrixXf& A,
+                            const Eigen::VectorXf& b) {
 
   // TODO: make JacobiSVD a class object to avoid memory re-allocations
-  IMP_Eigen::JacobiSVD<IMP_Eigen::MatrixXf> svd(A, ComputeThinU | ComputeThinV);
-  IMP_Eigen::VectorXf x = svd.solve(b);
+  Eigen::JacobiSVD<Eigen::MatrixXf> svd(A, Eigen::ComputeThinU
+                                           | Eigen::ComputeThinV);
+  Eigen::VectorXf x = svd.solve(b);
 
   // compute a small negative tolerance
   double tol = 0;
@@ -39,8 +38,8 @@ inline IMP_Eigen::VectorXf NNLS(const IMP_Eigen::MatrixXf& A,
   int sip = int(negs / 100);
   if (sip < 1) sip = 1;
 
-  IMP_Eigen::VectorXf zeroed = IMP_Eigen::VectorXf::Zero(n);
-  IMP_Eigen::MatrixXf C = A;
+  Eigen::VectorXf zeroed = Eigen::VectorXf::Zero(n);
+  Eigen::MatrixXf C = A;
 
   // iteratively zero some x values
   for (int count = 0; count < n; count++) {  // loop till no negatives found
@@ -67,8 +66,8 @@ inline IMP_Eigen::VectorXf NNLS(const IMP_Eigen::MatrixXf& A,
     }
 
     // re-solve
-    IMP_Eigen::JacobiSVD<IMP_Eigen::MatrixXf> svd(C,
-                                                  ComputeThinU | ComputeThinV);
+    Eigen::JacobiSVD<Eigen::MatrixXf> svd(C, Eigen::ComputeThinU
+                                             | Eigen::ComputeThinV);
     x = svd.solve(b);
   }
 

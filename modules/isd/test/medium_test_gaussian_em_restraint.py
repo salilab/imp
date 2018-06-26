@@ -128,6 +128,39 @@ class Tests(IMP.test.TestCase):
         self.sf = IMP.core.RestraintsScoringFunction([self.gem])
         self.orig_coords=[IMP.core.XYZ(p).get_coordinates() for p in self.model_ps]
 
+    def test_info(self):
+        """Test key:value restraint info"""
+        score = self.sf.evaluate(False)
+        s = self.gem.get_static_info()
+        s.set_was_used(True)
+        # No density_fn set
+        self.assertEqual(s.get_number_of_filename(), 0)
+        self.assertEqual(s.get_number_of_string(), 1)
+        self.assertEqual(s.get_string_key(0), "type")
+        self.assertEqual(s.get_string_value(0), "IMP.isd.GaussianEMRestraint")
+
+        self.assertEqual(s.get_number_of_int(), 0)
+        self.assertEqual(s.get_number_of_float(), 2)
+        self.assertEqual(s.get_float_key(0), "model cutoff")
+        self.assertAlmostEqual(s.get_float_value(0), 1e8, delta=1e-4)
+        self.assertEqual(s.get_float_key(1), "density cutoff")
+        self.assertAlmostEqual(s.get_float_value(1), 1e8, delta=1e-4)
+
+        self.gem.set_density_filename('/foobar')
+        s = self.gem.get_static_info()
+        s.set_was_used(True)
+        self.assertEqual(s.get_number_of_filename(), 1)
+        self.assertEqual(s.get_filename_key(0), "filename")
+        self.assertEqual(s.get_filename_value(0), "/foobar")
+
+        s = self.gem.get_dynamic_info()
+        s.set_was_used(True)
+        self.assertEqual(s.get_number_of_float(), 1)
+        self.assertEqual(s.get_float_key(0), "cross correlation")
+        self.assertAlmostEqual(s.get_float_value(0),
+                               self.gem.get_cross_correlation_coefficient(),
+                               delta=1e-4)
+
     def test_gem_score(self):
         """test accuracy of GMM score"""
         for nt in range(10):
@@ -179,7 +212,11 @@ class Tests(IMP.test.TestCase):
 
     def test_rasterize(self):
         """Test making a map from a GMM"""
+        # Suppress warnings (we don't use the objects set up above)
+        self.sf.set_was_used(True)
+        self.gem.set_was_used(True)
         dmap = IMP.isd.gmm_tools.gmm2map(self.model_ps,1.0,fast=False)
+        dmap.set_was_used(True)
 
 class LocalTests(IMP.test.TestCase):
     def test_local_score(self):

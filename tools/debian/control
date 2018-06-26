@@ -1,7 +1,7 @@
 Source: imp
 Priority: optional
 Maintainer: Ben Webb <ben@salilab.org>
-Build-Depends: debhelper (>= 8.0.0), cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python-dev, coreutils, unzip, wget, python3-dev, symlinks, libann-dev
+Build-Depends: debhelper (>= 8.0.0), cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python-dev, coreutils, unzip, wget, python3-dev, symlinks, libann-dev, libeigen3-dev, libprotobuf-dev
 Standards-Version: 3.9.4
 Section: libs
 Homepage: https://integrativemodeling.org/
@@ -11,14 +11,14 @@ Vcs-Browser: https://github.com/salilab/imp/
 Package: imp-dev
 Section: libdevel
 Architecture: any
-Depends: imp (= ${binary:Version}), ${misc:Depends}, cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python-dev, libann-dev
+Depends: imp (= ${binary:Version}), ${misc:Depends}, cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python-dev, libann-dev, libeigen3-dev, libprotobuf-dev
 Description: The Integrative Modeling Platform
  Headers to compile against IMP.
 
 Package: imp
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python-numpy
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-numpy, python-protobuf
 Description: The Integrative Modeling Platform
   IMP's broad goal is to contribute to a comprehensive structural
   characterization of biomolecules ranging in size and complexity from small
@@ -48,6 +48,6 @@ Description: The Integrative Modeling Platform
 Package: imp-python3
 Section: libs
 Architecture: any
-Depends: imp (= ${binary:Version}), python3, python3-numpy
+Depends: imp (= ${binary:Version}), python3, python3-numpy, python3-protobuf
 Description: The Integrative Modeling Platform
  Wrappers for Python 3 (the base IMP package contains Python 2 wrappers).

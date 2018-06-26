@@ -23,7 +23,8 @@ function_name_exceptions=['transform',
                           'Selection.union_update',
                           'get_all_atom_CHARMM_parameters',
                           'get_heavy_atom_CHARMM_parameters', "get_kd",
-                          'get_drmsd_Q', 'hash_value']
+                          'get_drmsd_Q', 'hash_value',
+                          ]
 spelling_exceptions=['lennard', 'charmm', "jones",
                      "impropers", "ez",
                      "rmsd", "pdb", "multimodel", "conect",

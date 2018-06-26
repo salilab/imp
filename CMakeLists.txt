@@ -64,9 +64,7 @@ cmake_policy(SET CMP0017 NEW)
 endif(POLICY CMP0017)
 
 # Don't set MACOSX_RPATH by default
-if(POLICY CMP0042)
-cmake_policy(SET CMP0042 OLD)
-endif(POLICY CMP0042)
+set(CMAKE_MACOSX_RPATH 0)
 
 # Stop cmake warning about files in the build directory it didn't create
 # (see issue #909)
@@ -276,6 +274,12 @@ if(NOT IMP_STATIC)
   # Automatically enable OpenMP if available and at least version 3
   find_package(OpenMP3)
 endif()
+
+find_package(Eigen3 3.0 REQUIRED)
+# Add Eigen3 to 'system' include path. Amongst other things, this will suppress
+# many compiler warnings about Eigen code which a) clutter the output and
+# b) we're not going to fix, since Eigen isn't our code.
+include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
 
 add_custom_target("IMP-version"
                   COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_version.py --source=${CMAKE_SOURCE_DIR}

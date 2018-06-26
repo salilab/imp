@@ -1,4 +1,3 @@
-
 #include "traits.h"
 #include "raw_frame.h"
 
@@ -483,7 +482,7 @@ BufferConstHandle try_convert(BufferConstHandle buffer, std::string message) {
     reader = boost::make_shared<internal_avro::DataFileReader<BackwardsFrame> >(
         stream, valid_backwards_schema);
   }
-  catch (std::exception e) {
+  catch (const std::exception &e) {
     RMF_THROW(Message(message + " and " + e.what()), IOException);
   }
 

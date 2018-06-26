@@ -1,7 +1,7 @@
 /**
  *  \file Atom.cpp   \brief Simple atoms decorator.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -171,6 +171,14 @@ double get_mass(ResidueType c) {
     residue_type_to_mass[atom::TRP] = 186.213;
     residue_type_to_mass[atom::VAL] = 99.133;
     residue_type_to_mass[atom::UNK] = 113.160;
+    residue_type_to_mass[atom::ADE] = 507.2;
+    residue_type_to_mass[atom::URA] = 484.2;
+    residue_type_to_mass[atom::CYT] = 483.2;
+    residue_type_to_mass[atom::GUA] = 523.2;
+    residue_type_to_mass[atom::DADE] = 491.2;
+    residue_type_to_mass[atom::DTHY] = 482.2;
+    residue_type_to_mass[atom::DCYT] = 467.2;
+    residue_type_to_mass[atom::DGUA] = 507.2;
   }
   return residue_type_to_mass[c];
 }

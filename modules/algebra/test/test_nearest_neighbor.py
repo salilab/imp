@@ -41,16 +41,18 @@ class Tests(IMP.test.TestCase):
         nn = IMP.algebra.NearestNeighbor3D(vecs)
         for i in range(10):
             v = IMP.algebra.get_random_vector_in(bb)
+            # find the nearest neighbor of v using nn:
             n1 = nn.get_nearest_neighbor(v)
-            # find the closest point
-            closet_v = 0
-            min_dist = IMP.algebra.get_distance(v, vecs[closet_v])
+            # find the nearest neighbor of v independently:
+            closest_v = 0
+            min_dist = IMP.algebra.get_distance(v, vecs[closest_v])
             for j in range(1, 10):
                 if min_dist > IMP.algebra.get_distance(v, vecs[j]):
                     min_dist = IMP.algebra.get_distance(v, vecs[j])
-                    closet_v = j
-            print(n1, closet_v)
-            self.assertEqual(n1, closet_v)
+                    closest_v = j
+            print(n1, closest_v)
+            # verivy n1 is indeed nearest neighbor:
+            self.assertEqual(n1, closest_v)
 
     def test_nn_functionality(self):
         """Check that nearest neighbor works"""

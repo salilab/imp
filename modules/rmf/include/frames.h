@@ -2,7 +2,7 @@
  *  \file IMP/rmf/frames.h
  *  \brief Read or write RMF frames.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

@@ -99,6 +99,7 @@ class Representation(object):
         self._metadata = []
         self._file_dataset = {}
         self._protocol_output = []
+        self._non_modeled_components = {}
 
         # this flag uses either harmonic (False) or upperharmonic (True)
         # in the intra-pair connectivity restraint. Harmonic is used whe you want to
@@ -182,14 +183,14 @@ class Representation(object):
            PDB file (not from the PDB database or Modeller) can be
            identified this way.
            @param fname filename
-           @dataset the IMP.pmi.metadata.Dataset object to associate.
+           @dataset the ihm.dataset.Dataset object to associate.
         """
         self._file_dataset[os.path.abspath(fname)] = dataset
 
     def get_file_dataset(self, fname):
         """Get the dataset associated with a filename, or None.
            @param fname filename
-           @return an IMP.pmi.metadata.Dataset, or None.
+           @return an ihm.dataset.Dataset, or None.
         """
         return self._file_dataset.get(os.path.abspath(fname), None)
 
@@ -210,7 +211,12 @@ class Representation(object):
         self.label = label
 
     def create_component(self, name, color=0.0):
-        protein_h = IMP.atom.Molecule.setup_particle(IMP.Particle(self.m))
+        # Note that we set up the component as *both* a Chain and a Molecule.
+        # This is because old PMI1 code expects the top-level particle to be
+        # a Molecule, but we also need it to be a Chain to set the sequence.
+        # This looks a little odd but is a valid IMP atom::Hierarchy.
+        protein_h = IMP.atom.Chain.setup_particle(IMP.Particle(self.m), 'X')
+        IMP.atom.Molecule.setup_particle(protein_h)
         protein_h.set_name(name)
         self.hier_dict[name] = protein_h
         self.hier_representation[name] = {}
@@ -221,6 +227,17 @@ class Representation(object):
         for p, state in self._protocol_output:
             p.create_component(state, name, True)
 
+    def create_transformed_component(self, name, original, transform):
+        """Create a transformed view of a component.
+           This does not copy the coordinates or representation of the
+           component, and the transformed component is not visible to IMP,
+           but when the model is written to a ProtocolOutput, the transformed
+           component is added. This can be used to easily add symmetry-related
+           'copies' of a component without copying the underlying
+           IMP objects."""
+        for p, state in self._protocol_output:
+            p.create_transformed_component(state, name, original, transform)
+
     def create_non_modeled_component(self, name):
         """Create a component that isn't used in the modeling.
            No coordinates or other structural data for this component will
@@ -228,6 +245,7 @@ class Representation(object):
            is useful if the input experimental data is of a system larger
            than that modeled. Any references to these non-modeled components
            can then be correctly resolved later."""
+        self._non_modeled_components[name] = None
         self.elements[name] = []
         for p, state in self._protocol_output:
             p.create_component(state, name, False)
@@ -258,13 +276,17 @@ class Representation(object):
             raise KeyError("id %s not found in fasta file" % id)
         length = len(record_dict[id])
         self.sequence_dict[name] = str(record_dict[id])
+        # No Hierarchy for this component if it is non-modeled
+        if name not in self._non_modeled_components:
+            protein_h = self.hier_dict[name]
+            protein_h.set_sequence(self.sequence_dict[name])
         if offs is not None:
             offs_str="-"*offs
             self.sequence_dict[name]=offs_str+self.sequence_dict[name]
 
         self.elements[name].append((length, length, " ", "end"))
         for p, state in self._protocol_output:
-            p.add_component_sequence(name, self.sequence_dict[name])
+            p.add_component_sequence(state, name, self.sequence_dict[name])
 
     def autobuild_model(self, name, pdbname, chain,
                         resolutions=None, resrange=None,
@@ -481,6 +503,7 @@ class Representation(object):
 
         hiers = self.coarse_hierarchy(name, start, end,
                                       resolutions, isnucleicacid, c0, protein_h, "pdb", color)
+        self._copy_pdb_provenance(t, hiers[0], offset)
         outhiers += hiers
         for p, state in self._protocol_output:
             p.add_pdb_element(state, name, start, end, offset, pdbname, chain,
@@ -504,6 +527,15 @@ class Representation(object):
         IMP.atom.destroy(t)
 
         return outhiers
+
+    def _copy_pdb_provenance(self, pdb, h, offset):
+        """Copy the provenance information from the PDB to our hierarchy"""
+        c = IMP.atom.Chain(IMP.atom.get_by_type(pdb, IMP.atom.CHAIN_TYPE)[0])
+        prov = IMP.core.Provenanced(c).get_provenance()
+        newprov = IMP.core.create_clone(prov)
+        IMP.core.Provenanced.setup_particle(h, newprov)
+        assert(IMP.core.StructureProvenance.get_is_setup(newprov))
+        IMP.core.StructureProvenance(newprov).set_residue_offset(offset)
 
     def add_component_ideal_helix(
         self,
@@ -1069,8 +1101,9 @@ class Representation(object):
         '''
         import IMP.pmi.analysis
 
+        tempm = IMP.Model()
         prots = IMP.pmi.analysis.get_hiers_from_rmf(
-            self.m,
+            tempm,
             rmf_frame_number,
             rmf_file_name)
 
@@ -1080,7 +1113,7 @@ class Representation(object):
         prot=prots[0]
         # Make sure coordinates of rigid body members in the RMF are correct
         if force_rigid_update:
-            self.m.update()
+            tempm.update()
 
         # if len(self.rigid_bodies)!=0:
         #   print "set_coordinates_from_rmf: cannot proceed if rigid bodies were initialized. Use the function before defining the rigid bodies"
@@ -1184,6 +1217,7 @@ class Representation(object):
                     continue
                 xyz = IMP.core.XYZ(prmf).get_coordinates()
                 IMP.core.XYZ(prepr).set_coordinates(xyz)
+
 
 
     def check_root(self, name, protein_h, resolution):
@@ -1717,8 +1751,10 @@ class Representation(object):
 
             c = IMP.container.SingletonsConstraint(sm, None, lc)
             self.m.add_score_state(c)
-            print("Completed setting " + str(maincopy) + " as a reference for " + str(copies[k]) \
-                   + " by rotating it in " + str(rotation_angle / 2.0 / pi * 360) + " degree around the " + str(rotational_axis) + " axis.")
+            print("Completed setting " + str(maincopy) + " as a reference for "
+                  + str(copies[k]) + " by rotating it by "
+                  + str(rotation_angle / 2.0 / pi * 360)
+                  + " degrees around the " + str(rotational_axis) + " axis.")
         self.m.update()
 
     def create_rigid_body_symmetry(self, particles_reference, particles_copy,label="None",

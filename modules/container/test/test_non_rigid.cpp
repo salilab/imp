@@ -173,7 +173,7 @@ int main(int argc, char *argv[]) {
       move(movers);
     }
   }
-  catch (IMP::Exception e) {
+  catch (const IMP::Exception &e) {
     std::cerr << "Failed with exception " << e.what() << std::endl;
     return 1;
   }

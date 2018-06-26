@@ -1,5 +1,6 @@
 import unittest
 import os
+import sys
 import subprocess
 
 mock_config = os.environ['MOCK_CONFIG']
@@ -17,6 +18,13 @@ class IMPMockTests(unittest.TestCase):
         import IMP.em2d
         # We build our own Eigen on RHEL, so everyone should have IMP.isd
         import IMP.isd
+        # Make sure that npctransport is included and that the underlying
+        # protobuf stuff also works
+        import IMP.npctransport
+        # Ubuntu only supports protobuf with Python 3 in 18.04 or later
+        old_ubuntu = frozenset(('ubuntu-trusty', 'ubuntu-xenial'))
+        if sys.version_info[0] == 2 or mock_config not in old_ubuntu:
+            x = IMP.npctransport.Configuration
         # Check that most other modules (particularly those with many
         # dependencies) are present
         import IMP.cnmultifit

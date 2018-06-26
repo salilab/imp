@@ -2,7 +2,7 @@
  *  \file IMP/container/ListClassnameContainer.h
  *  \brief Store a list of PLURALINDEXTYPE.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_LIST_CLASSNAME_CONTAINER_H
@@ -37,11 +37,6 @@ class IMPCONTAINEREXPORT ListClassnameContainer :
 
  public:
   ListClassnameContainer(Model *m, const PLURALINDEXTYPE &contents,
-                         std::string name = "ListClassnameContainer%1%");
-
-  /** \deprecated_at{2.7} Use the index-based constructor instead */
-  IMPCONTAINER_DEPRECATED_METHOD_DECL(2.7)
-  ListClassnameContainer(const PLURALVARIABLETYPE &ps,
                          std::string name = "ListClassnameContainer%1%");
 
 #ifndef IMP_DOXYGEN

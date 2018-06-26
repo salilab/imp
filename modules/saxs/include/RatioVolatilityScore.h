@@ -3,7 +3,7 @@
  *
  * Hura et al. Nature Methods 2013
  *
- * Copyright 2007-2017 IMP Inventors. All rights reserved.
+ * Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

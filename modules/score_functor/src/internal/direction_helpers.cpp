@@ -2,7 +2,7 @@
  * \file direction_helpers.cpp
  * \brief Helper functions for directions.
  *
- * Copyright 2007-2017 IMP Inventors. All rights reserved.
+ * Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 

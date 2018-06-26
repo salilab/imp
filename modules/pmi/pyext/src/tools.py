@@ -25,35 +25,59 @@ try:
 except ImportError:
     from IMP.pmi._compat_collections import OrderedDict
 
-def _get_restraint_set_key():
-    if not hasattr(_get_restraint_set_key, 'pmi_rs_key'):
-        _get_restraint_set_key.pmi_rs_key = IMP.ModelKey("PMI restraints")
-    return _get_restraint_set_key.pmi_rs_key
+def _add_pmi_provenance(p):
+    """Tag the given particle as being created by the current version of PMI."""
+    IMP.core.add_imp_provenance(p)
+    IMP.core.add_software_provenance(p, name="IMP PMI module",
+                                     version=IMP.pmi.get_module_version(),
+                                     location="https://integrativemodeling.org")
+    IMP.core.add_script_provenance(p)
 
-def _add_restraint_set(model, mk):
+def _get_restraint_set_keys():
+    if not hasattr(_get_restraint_set_keys, 'pmi_rs_key'):
+        _get_restraint_set_keys.pmi_rs_key = IMP.ModelKey("PMI restraints")
+        _get_restraint_set_keys.rmf_rs_key = IMP.ModelKey("RMF restraints")
+    return (_get_restraint_set_keys.pmi_rs_key,
+            _get_restraint_set_keys.rmf_rs_key)
+
+def _add_restraint_sets(model, mk, mk_rmf):
     rs = IMP.RestraintSet(model, "All PMI restraints")
+    rs_rmf = IMP.RestraintSet(model, "All PMI RMF restraints")
     model.add_data(mk, rs)
-    return rs
+    model.add_data(mk_rmf, rs_rmf)
+    return rs, rs_rmf
 
-def add_restraint_to_model(model, restraint):
+def add_restraint_to_model(model, restraint, add_to_rmf=False):
     """Add a PMI restraint to the model.
        Since Model.add_restraint() no longer exists (in modern IMP restraints
        should be added to a ScoringFunction instead) store them instead in
-       a RestraintSet, and keep a reference to it in the Model."""
-    mk = _get_restraint_set_key()
+       a RestraintSet, and keep a reference to it in the Model.
+
+       If `add_to_rmf` is True, also add the restraint to a separate list
+       of restraints that will be written out to RMF files (by default, most
+       PMI restraints are not)."""
+    mk, mk_rmf = _get_restraint_set_keys()
     if model.get_has_data(mk):
         rs = IMP.RestraintSet.get_from(model.get_data(mk))
+        rs_rmf = IMP.RestraintSet.get_from(model.get_data(mk_rmf))
     else:
-        rs = _add_restraint_set(model, mk)
+        rs, rs_rmf = _add_restraint_sets(model, mk, mk_rmf)
     rs.add_restraint(restraint)
+    if add_to_rmf:
+        rs_rmf.add_restraint(restraint)
 
-def get_restraint_set(model):
-    """Get a RestraintSet containing all PMI restraints added to the model"""
-    mk = _get_restraint_set_key()
+def get_restraint_set(model, rmf=False):
+    """Get a RestraintSet containing all PMI restraints added to the model.
+       If `rmf` is True, return only the subset of these restraints that
+       should be written out to RMF files."""
+    mk, mk_rmf = _get_restraint_set_keys()
     if not model.get_has_data(mk):
         print("WARNING: no restraints added to model yet")
-        _add_restraint_set(model, mk)
-    return IMP.RestraintSet.get_from(model.get_data(mk))
+        _add_restraint_sets(model, mk, mk_rmf)
+    if rmf:
+        return IMP.RestraintSet.get_from(model.get_data(mk_rmf))
+    else:
+        return IMP.RestraintSet.get_from(model.get_data(mk))
 
 class Stopwatch(object):
     """Collect timing information.
@@ -1038,7 +1062,7 @@ def get_residue_indexes(hier):
     '''
     Retrieve the residue indexes for the given particle.
 
-    The particle must be an instance of Fragment,Residue or Atom
+    The particle must be an instance of Fragment,Residue, Atom or Molecule
     or else returns an empty list
     '''
     resind = []
@@ -1049,6 +1073,14 @@ def get_residue_indexes(hier):
     elif IMP.atom.Atom.get_is_setup(hier):
         a = IMP.atom.Atom(hier)
         resind = [IMP.atom.Residue(a.get_parent()).get_index()]
+    elif IMP.atom.Molecule.get_is_setup(hier):
+        resind_tmp=IMP.pmi.tools.OrderedSet()
+        for lv in IMP.atom.get_leaves(hier):
+            if IMP.atom.Fragment.get_is_setup(lv) or \
+               IMP.atom.Residue.get_is_setup(lv) or \
+               IMP.atom.Atom.get_is_setup(lv):
+                for ind in get_residue_indexes(lv): resind_tmp.add(ind)
+        resind=list(resind_tmp)
     else:
         resind = []
     return resind
@@ -1248,6 +1280,13 @@ class Segments(object):
     def get_flatten(self):
         ''' Returns a flatten list '''
         return [item for sublist in self.segs for item in sublist]
+
+    def __repr__(self):
+        ret_tmp="["
+        for seg in self.segs:
+            ret_tmp+=str(seg[0])+"-"+str(seg[-1])+","
+        ret=ret_tmp[:-1]+"]"
+        return ret
 
 
 
@@ -1886,6 +1925,32 @@ def get_molecules(input_objects):
             h=h.get_parent()
     return list(molecules)
 
+def get_molecules_dictionary(input_objects):
+    moldict=defaultdict(list)
+    for mol in IMP.pmi.tools.get_molecules(input_objects):
+        name=mol.get_name()
+        moldict[name].append(mol)
+
+    for mol in moldict:
+        moldict[mol].sort(key=lambda x: IMP.atom.Copy(x).get_copy_index())
+    return moldict
+
+def get_molecules_dictionary_by_copy(input_objects):
+    moldict=defaultdict(dict)
+    for mol in IMP.pmi.tools.get_molecules(input_objects):
+        name=mol.get_name()
+        c=IMP.atom.Copy(mol).get_copy_index()
+        moldict[name][c]=mol
+    return moldict
+
+def get_selections_dictionary(input_objects):
+    moldict=IMP.pmi.tools.get_molecules_dictionary(input_objects)
+    seldict=defaultdict(list)
+    for name, mols in moldict.items():
+        for m in mols:
+            seldict[name].append(IMP.atom.Selection(m))
+    return seldict
+
 def get_densities(input_objects):
     """Given a list of PMI objects, returns all density hierarchies within
     these objects.  The output of this function can be inputted into
@@ -1912,9 +1977,11 @@ def shuffle_configuration(objects,
                           return_debug=False):
     """Shuffle particles. Used to restart the optimization.
     The configuration of the system is initialized by placing each
-    rigid body and each bead randomly in a box with a side of
-    max_translation angstroms, and far enough from each other to
-    prevent any steric clashes. The rigid bodies are also randomly rotated.
+    rigid body and each bead randomly in a box. If `bounding_box` is
+    specified, the particles are placed inside this box; otherwise, each
+    particle is displaced by up to max_translation angstroms, and randomly
+    rotated. Effort is made to place particles far enough from each other to
+    prevent any steric clashes.
     @param objects Can be one of the following inputs:
                IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set of them
     @param max_translation Max translation (rbs and flexible beads)
@@ -2063,20 +2130,20 @@ def shuffle_configuration(objects,
 
             # For gaussians, treat this fb as an rb
             if IMP.core.NonRigidMember.get_is_setup(fb):
-                xyz=[fb.get_value(IMP.FloatKey(4)), fb.get_value(IMP.FloatKey(5)), fb.get_value(IMP.FloatKey(6))]
-                xyz_transformed=transformation.get_transformed(xyz)
+                memb = IMP.core.NonRigidMember(fb)
+                xyz = memb.get_internal_coordinates()
                 if bounding_box:
-                    # Translate to origin
-                    fb.set_value(IMP.FloatKey(4),xyz_transformed[0]-xyz[0])
-                    fb.set_value(IMP.FloatKey(5),xyz_transformed[1]-xyz[1])
-                    fb.set_value(IMP.FloatKey(6),xyz_transformed[2]-xyz[2])
-                    debug.append([xyz,other_idxs if avoidcollision_fb else set()])
-                    xyz2=[fb.get_value(IMP.FloatKey(4)), fb.get_value(IMP.FloatKey(5)), fb.get_value(IMP.FloatKey(6))]
+                    # 'translation' is the new desired position in global
+                    # coordinates; we need to convert that to internal
+                    # coordinates first using the rigid body's ref frame
+                    rf = memb.get_rigid_body().get_reference_frame()
+                    glob_to_int = rf.get_transformation_from()
+                    memb.set_internal_coordinates(
+                            glob_to_int.get_transformed(translation))
                 else:
-                    fb.set_value(IMP.FloatKey(4),xyz_transformed[0])
-                    fb.set_value(IMP.FloatKey(5),xyz_transformed[1])
-                    fb.set_value(IMP.FloatKey(6),xyz_transformed[2])
-                    debug.append([xyz,other_idxs if avoidcollision_fb else set()])
+                    xyz_transformed=transformation.get_transformed(xyz)
+                    memb.set_internal_coordinates(xyz_transformed)
+                debug.append([xyz,other_idxs if avoidcollision_fb else set()])
             else:
                 d =IMP.core.XYZ(fb)
                 if bounding_box:
@@ -2084,7 +2151,10 @@ def shuffle_configuration(objects,
                     IMP.core.transform(d, -d.get_coordinates())
                     d =IMP.core.XYZ(fb)
                 debug.append([d,other_idxs if avoidcollision_fb else set()])
-                IMP.core.transform(d, transformation)
+                if IMP.core.RigidBody.get_is_setup(fb.get_particle()):
+                    IMP.core.transform(IMP.core.RigidBody(fb.get_particle()), transformation)
+                else:
+                    IMP.core.transform(d, transformation)
 
             if avoidcollision_fb:
                 mdl.update()
@@ -2103,6 +2173,104 @@ def shuffle_configuration(objects,
                 break
     if return_debug:
         return debug
+
+class ColorHierarchy(object):
+
+    def __init__(self,hier):
+        import matplotlib as mpl
+        mpl.use('Agg')
+        import matplotlib.pyplot as plt
+        self.mpl = mpl
+        self.plt = plt
+
+        hier.ColorHierarchy=self
+        self.hier=hier
+        mols=IMP.pmi.tools.get_molecules(IMP.atom.get_leaves(self.hier))
+        self.mols=[IMP.pmi.topology.PMIMoleculeHierarchy(mol) for mol in mols]
+        self.method=self.nochange
+        self.scheme=None
+        self.first=None
+        self.last=None
+
+    def nochange(self):
+        pass
+
+    def get_color(self,fl):
+        return IMP.display.Color(*self.scheme(fl)[0:3])
+
+    def get_log_scale(self,fl):
+        import math
+        eps=1.0
+        return math.log(fl+eps)
+
+    def color_by_resid(self):
+        self.method=self.color_by_resid
+        self.scheme=self.mpl.cm.rainbow
+        for mol in self.mols:
+            self.first=1
+            self.last=len(IMP.pmi.topology.PMIMoleculeHierarchy(mol).get_residue_indexes())
+            for p in IMP.atom.get_leaves(mol):
+                if IMP.atom.Residue.get_is_setup(p):
+                    ri=IMP.atom.Residue(p).get_index()
+                    c=self.get_color(float(ri)/self.last)
+                    IMP.display.Colored(p).set_color(c)
+                if IMP.atom.Fragment.get_is_setup(p):
+                    ris=IMP.atom.Fragment(p).get_residue_indexes()
+                    avr=sum(ris)/len(ris)
+                    c=self.get_color(float(avr)/self.last)
+                    IMP.display.Colored(p).set_color(c)
+
+    def color_by_uncertainty(self):
+        self.method=self.color_by_uncertainty
+        self.scheme=self.mpl.cm.jet
+        ps=IMP.atom.get_leaves(self.hier)
+        unc_dict={}
+        for p in ps:
+            if IMP.pmi.Uncertainty.get_is_setup(p):
+                u=IMP.pmi.Uncertainty(p).get_uncertainty()
+                unc_dict[p]=u
+        self.first=self.get_log_scale(1.0) #math.log(min(unc_dict.values())+eps)
+        self.last=self.get_log_scale(100.0) #math.log(max(unc_dict.values())+eps)
+        for p in unc_dict:
+            value=self.get_log_scale(unc_dict[p])
+            if value>=self.last: value=self.last
+            if value<=self.first: value=self.first
+            c=self.get_color((value-self.first)/(self.last-self.first))
+            IMP.display.Colored(p).set_color(c)
+
+    def get_color_bar(self,filename):
+        import matplotlib as mpl
+        mpl.use('Agg')
+        import matplotlib.pyplot as plt
+        import math
+        plt.clf()
+        fig = plt.figure(figsize=(8, 3))
+        ax1 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
+
+        cmap = self.scheme
+        norm = mpl.colors.Normalize(vmin=0.0, vmax=1.0)
+
+        if self.method == self.color_by_uncertainty:
+            angticks=[1.0,2.5,5.0,10.0,25.0,50.0,100.0]
+            vvalues=[]
+            marks=[]
+            for at in angticks:
+                vvalue=(self.get_log_scale(at)-self.first)/(self.last-self.first)
+                if vvalue <= 1.0 and vvalue >= 0.0:
+                    vvalues.append(vvalue)
+                    marks.append(str(at))
+            cb1 = mpl.colorbar.ColorbarBase(ax1, cmap=cmap,
+                            norm=norm,
+                            ticks=vvalues,
+                            orientation='horizontal')
+            print(self.first,self.last,marks,vvalues)
+            cb1.ax.set_xticklabels(marks)
+            cb1.set_label('Angstorm')
+            plt.savefig(filename, dpi=150, transparent=True)
+            plt.show()
+
+
+
 
 def color2rgb(colorname):
     """Given a chimera color name, return RGB"""

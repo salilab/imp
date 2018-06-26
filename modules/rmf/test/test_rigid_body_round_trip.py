@@ -155,6 +155,81 @@ class Tests(IMP.test.TestCase):
             v = v.get_translation()
             self.assertEqual([i for i in v], [1,2,3])
 
+    def test_resolution_round_trip(self):
+        """Make sure that rigid bodies encompassing different representations
+        can be written to and read from RMFs"""
+        for suffix in IMP.rmf.suffixes:
+            m = IMP.Model()
+            proot1=IMP.Particle(m)
+            hroot1 = IMP.atom.Hierarchy.setup_particle(proot1)
+            hroot1.set_name("root1")
+            rep = IMP.atom.Representation.setup_particle(proot1,1)
+            ps=[]
+            for coor in [(1,2,3),(4,5,6)]:
+                p = IMP.Particle(m)
+                v = IMP.algebra.Vector3D(coor)
+                d = IMP.core.XYZR.setup_particle(p)
+                d.set_coordinates(v)
+                d.set_radius(.5)
+                IMP.atom.Mass.setup_particle(p, .1)
+                hroot1.add_child(p)
+                ps.append(p)
+            proot10=IMP.Particle(m)
+            hroot10=IMP.atom.Hierarchy.setup_particle(proot10)
+            hroot10.set_name("root10")
+            rep.add_representation(proot10,IMP.atom.BALLS,10)
+            for coor in [(7,8,9),(10,11,12)]:
+                p = IMP.Particle(m)
+                v = IMP.algebra.Vector3D(coor)
+                d = IMP.core.XYZR.setup_particle(p)
+                d.set_coordinates(v)
+                d.set_radius(.5)
+                IMP.atom.Mass.setup_particle(p, .1)
+                hroot10.add_child(p)
+                ps.append(p)
+
+            com=IMP.atom.CenterOfMass.setup_particle(IMP.Particle(m),ps)
+            comcoor=IMP.core.XYZ(com).get_coordinates()
+            tr=IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),comcoor)
+            rf = IMP.algebra.ReferenceFrame3D(tr)
+            rbp=IMP.Particle(m)
+            rb=IMP.core.RigidBody.setup_particle(rbp,rf)
+            for p in ps:
+                rb.add_member(p)
+
+            fn = self.get_tmp_file_name("representation" + suffix)
+            f = RMF.create_rmf_file(fn)
+            IMP.rmf.add_hierarchies(f, [hroot1])
+            IMP.rmf.save_frame(f)
+            del f
+            f = RMF.open_rmf_file_read_only(fn)
+            rmfh = IMP.rmf.create_hierarchies(f, m)[0]
+
+
+            lvs=IMP.atom.get_leaves(hroot1)
+            rmflvs=IMP.atom.get_leaves(rmfh)
+            self.assertEqual(len(rmflvs),len(lvs))
+
+            rmflvs10=IMP.atom.get_leaves(IMP.atom.Representation(rmfh).get_representation(10))
+
+            rmfrbs=set()
+            for p in rmflvs:
+                if IMP.core.RigidBodyMember.get_is_setup(p):
+                    rbt = IMP.core.RigidMember(p).get_rigid_body()
+                    rmfrbs.add(rbt)
+
+            for p in rmflvs10:
+                if IMP.core.RigidBodyMember.get_is_setup(p):
+                    rbt = IMP.core.RigidMember(p).get_rigid_body()
+                    rmfrbs.add(rbt)
+
+            # we expected a single rigid body, containing four particles,
+            # however the following fails
+            self.assertEqual(len(rmfrbs),1)
+            self.assertEqual(len(list(rmfrbs)[0].get_rigid_members()),len(rb.get_rigid_members()))
+
+
+
     def test_nested_rigid_body(self):
         """Test loading and saving of rigid bodies that contain
         non-rigid members that are also Gaussians (and thus Rigid Bodies)"""

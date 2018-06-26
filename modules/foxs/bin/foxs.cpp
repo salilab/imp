@@ -43,6 +43,7 @@ int main(int argc, char** argv) {
   bool use_offset = false;
   bool write_partial_profile = false;
   int multi_model_pdb = 1;
+  int units = 1; // determine automatically
   bool vr_score = false;
   bool score_log = false;
   bool gnuplot_script = false;
@@ -51,7 +52,7 @@ int main(int argc, char** argv) {
   desc.add_options()
     ("help", "Any number of input PDBs and profiles is supported. \
 Each PDB will be fitted against each profile.")
-    ("version", "FoXS (IMP applications)\nCopyright 2007-2017 IMP Inventors.\n\
+    ("version", "FoXS (IMP applications)\nCopyright 2007-2018 IMP Inventors.\n\
 All rights reserved. \nLicense: GNU LGPL version 2.1 or later\n\
 <http://gnu.org/licenses/lgpl.html>.\n\
 Written by Dina Schneidman.")
@@ -72,6 +73,9 @@ Written by Dina Schneidman.")
      "1 - read the first MODEL only (default), \
 2 - read each MODEL into a separate structure, \
 3 - read all models into a single structure")
+    ("units,u", po::value<int>(&units)->default_value(1),
+     "1 - unknown --> determine automatically (default) \
+2 - q values are in 1/A, 3 - q values are in 1/nm")
     ("volatility_ratio,v","calculate volatility ratio score (default = false)")
     ("score_log,l", "use log(intensity) in fitting and scoring (default = false)")
     ("gnuplot_script,g", "print gnuplot script for gnuplot viewing (default = false)");
@@ -161,6 +165,13 @@ constant form factor (default = false)")
     multi_model_pdb = 1;
   }
 
+  if (units != 1 && units != 2 && units != 3) {
+    std::cerr << "Incorrect option for units " << units << std::endl;
+    std::cerr << "Use 1 for unknown units, 2 for 1/A, 3 for 1/nm" << std::endl;
+    std::cerr << "Default value of 1 is used\n";
+    units = 1;
+  }
+
   //IMP::benchmark::Profiler pp("prof_out");
 
   // determine form factor type
@@ -175,7 +186,7 @@ constant form factor (default = false)")
 
   read_files(m, files, pdb_files, dat_files, particles_vec, exp_profiles,
              residue_level, heavy_atoms_only, multi_model_pdb, explicit_water,
-             max_q);
+             max_q, units);
 
   if (background_adjustment_q > 0.0) {
     for (unsigned int i = 0; i < exp_profiles.size(); i++)
@@ -277,17 +288,14 @@ constant form factor (default = false)")
             pf->resample(profile, resampled_profile);
             float chi_free =
               cfs->compute_score(exp_saxs_profile, resampled_profile);
-            fp.set_chi(chi_free);
+            fp.set_chi_square(chi_free);
           }
         }
       }
-      std::cout << pdb_files[i] << " " << dat_files[j]
-                << " Chi = " << fp.get_chi() << " c1 = " << fp.get_c1()
-                << " c2 = " << fp.get_c2()
-                << " default chi = " << fp.get_default_chi() << std::endl;
       fp.set_pdb_file_name(pdb_files[i]);
       fp.set_profile_file_name(dat_files[j]);
       fp.set_mol_index(i);
+      fp.show(std::cout);
       if (gnuplot_script) Gnuplot::print_fit_script(fp);
       fps.push_back(fp);
     }

@@ -2,7 +2,7 @@
     *  \file estimates.cpp
     *  \brief Estimates of various physical quantities.
     *
-    *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+    *  Copyright 2007-2018 IMP Inventors. All rights reserved.
     */
 
 #include "IMP/atom/estimates.h"
@@ -179,65 +179,151 @@ double get_diffusion_angle(double D, double dtfs) {
 }
 
 namespace {
-template <class It>
-double get_diffusion_coefficient(It b, It e, int index, double dt) {
-  double sum = 0;
-  for (It c = b; c != e; ++c) {
-    sum += (*c)[index];
+  template <class It>
+  double get_diffusion_coefficient_of_coord_i
+  (It b, It e, int index, double dt)
+  {
+    double sum_dx = 0;
+    for (It c = b; c != e; ++c) {
+      sum_dx += (*c)[index];
+    }
+    double mean_nonrandom_dx = sum_dx / std::distance(b, e);
+    double sum_random_dx2 = 0;
+    for (It c = b; c != e; ++c) {
+      double random_dx= (*c)[index] - mean_nonrandom_dx;
+      sum_random_dx2 += algebra::get_squared(random_dx);
+    }
+    double mean_random_dx2 = sum_random_dx2 / std::distance(b, e);
+    // dx^2= 2*D*dt for 1 dof
+    // D= dx^2/2dt
+    return mean_random_dx2 / (2.0 * dt);
   }
-  double average = sum / std::distance(b, e);
-  double stdsum = 0;
-  for (It c = b; c != e; ++c) {
-    stdsum += algebra::get_squared((*c)[index] - average);
-  }
-  double std = stdsum / std::distance(b, e);
-  // unit::Angstrom d= sqrt(6.0*unit::SquareAngstromPerFemtosecond(D)
-  //                        *unit::Femtosecond(dtfs));
-  // d^2= 6*D*dtfs
-  // D= d^2/6dt
-  return std / (2.0 * dt);
+}
+
+
+namespace {
+  template <class It, class It_dt>
+  double get_diffusion_coefficient_of_coord_i
+  (It b, It e, int index,
+   It_dt b_dt, It_dt e_dt)
+  {
+    IMP_USAGE_CHECK(std::distance(b,e) == std::distance(b_dt,e_dt),
+                    "Unqueal number of displacements and delta Ts");
+    double sum_dx= 0.0;
+    double sum_dt= 0.0;
+    {
+      It c;
+      It_dt dt;
+      for (c = b, dt= b_dt; c != e; ++c, ++dt)
+        {
+          sum_dx+= (*c)[index];
+          sum_dt+= *dt;
+        }
+    }
+    IMP_USAGE_CHECK(sum_dt > 0.0,
+                    "Cannot estimate diffusion coefficients from zero diffusion time");
+    double mean_nonrandom_dx_per_dt = sum_dx / sum_dt;
+    double sum_random_dx2= 0.0;
+    {
+      It c;
+      It_dt dt;
+      for (c = b, dt=b_dt; c != e; ++c, ++dt)
+        {
+          if(*dt == 0.0) {
+            continue;
+          }
+          double nonrandom_dx= mean_nonrandom_dx_per_dt * (*dt);
+          double random_dx= (*c)[index] - nonrandom_dx;
+          double random_dx2= algebra::get_squared( random_dx );
+          sum_random_dx2 += random_dx2;
+        }
+    }
+    double mean_random_dx2_per_dt = sum_random_dx2 / sum_dt;
+    // dx^2= 2*D*dt for 1 dofs
+    // D= dx^2/2dt
+    return mean_random_dx2_per_dt / 2.0;
 }
 }
+
 
 double get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
                                  double dt) {
   algebra::Vector3D Ds;
   for (unsigned int i = 0; i < 3; ++i) {
-    Ds[i] = get_diffusion_coefficient(displacements.begin(),
-                                      displacements.end(), i, dt);
+    Ds[i] = get_diffusion_coefficient_of_coord_i
+      ( displacements.begin(),
+        displacements.end(), i, dt);
   }
   IMP_LOG_TERSE("Diffusion coefficients are " << Ds << std::endl);
-  int len = displacements.size() / 2;
-  algebra::Vector3D Ds0;
-  for (unsigned int i = 0; i < 3; ++i) {
-    Ds0[i] = get_diffusion_coefficient(displacements.begin(),
-                                       displacements.begin() + len, i, dt);
-  }
-  algebra::Vector3D Ds1;
-  for (unsigned int i = 0; i < 3; ++i) {
-    Ds1[i] = get_diffusion_coefficient(displacements.begin() + len,
-                                       displacements.end(), i, dt);
-  }
-  IMP_LOG_TERSE("Partial coefficients are " << Ds0 << " and " << Ds1
-                                            << std::endl);
-  return std::accumulate(Ds1.begin(), Ds1.end(), 0.0) / 3.0;
+  // int len = displacements.size() / 2;
+  // algebra::Vector3D Ds0;
+  // for (unsigned int i = 0; i < 3; ++i) {
+  //   Ds0[i] = get_diffusion_coefficient_of_coord_i
+  //     ( displacements.begin(),
+  //       displacements.begin() + len, i, dt);
+  // }
+  // algebra::Vector3D Ds1;
+  // for (unsigned int i = 0; i < 3; ++i) {
+  //   Ds1[i] = get_diffusion_coefficient_of_coord_i
+  //     ( displacements.begin() + len,
+  //       displacements.end(), i, dt);
+  // }
+  // IMP_LOG_TERSE("Partial coefficients are " << Ds0 << " and " << Ds1
+  //                                           << std::endl);
+  return std::accumulate(Ds.begin(), Ds.end(), 0.0) / 3.0;
 }
+
+
+double get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
+                                 const Floats &dts) {
+  algebra::Vector3D Ds;
+  for (unsigned int i = 0; i < 3; ++i) {
+    Ds[i] = get_diffusion_coefficient_of_coord_i
+      ( displacements.begin(),
+        displacements.end(), i,
+        dts.begin(), dts.end() );
+  }
+  IMP_LOG_TERSE("Diffusion coefficients are " << Ds << std::endl);
+  // int len = displacements.size() / 2;
+  // algebra::Vector3D Ds0;
+  // for (unsigned int i = 0; i < 3; ++i) {
+  //   Ds0[i] = get_diffusion_coefficient_of_coord_i
+  //     ( displacements.begin(),
+  //       displacements.begin() + len, i,
+  //       dts.begin(), dts.begin()+len );
+  // }
+  // algebra::Vector3D Ds1;
+  // for (unsigned int i = 0; i < 3; ++i) {
+  //   Ds1[i] = get_diffusion_coefficient_of_coord_i
+  //     ( displacements.begin() + len,
+  //       displacements.end(), i,
+  //       dts.begin() + len, dts.end() );
+  // }
+  // IMP_LOG_TERSE("Partial coefficients are " << Ds0 << " and " << Ds1
+  //               << std::endl);
+  return std::accumulate(Ds.begin(), Ds.end(), 0.0) / 3.0;
+}
+
+
 
 double get_rotational_diffusion_coefficient(
     const algebra::Rotation3Ds &displacements, double dt) {
-  Floats diffs(displacements.size() - 1);
+  Floats diffs(displacements.size() - 1); // change in angle
   for (unsigned int i = 1; i < displacements.size(); ++i) {
     algebra::Rotation3D orot = displacements[i - 1];
     algebra::Rotation3D crot = displacements[i];
     algebra::Rotation3D diff = crot / orot;
     diffs[i - 1] = algebra::get_axis_and_angle(diff).second;
   }
-  double mean = std::accumulate(diffs.begin(), diffs.end(), 0.0) / diffs.size();
-  double stdsum = 0;
+  //  double mean_nonrandom = std::accumulate(diffs.begin(), diffs.end(), 0.0) / diffs.size();
+  //IMP_LOG_PROGRESS("Mean non-random component: "
+  //                 << mean_nonrandom << std::endl);
+  double sum2 = 0.0;
   for (unsigned int i = 0; i < diffs.size(); ++i) {
-    stdsum += algebra::get_squared(diffs[i] - mean);
+    //  double random= diffs[i]; // DEBUG: removing - mean_nonrandom;
+    sum2 += algebra::get_squared(diffs[i]);
   }
-  double sigma = stdsum / diffs.size();
+  double sigma = sum2 / diffs.size();
   return sigma / (6.0 * dt);
 }
 

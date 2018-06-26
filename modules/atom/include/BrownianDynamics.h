@@ -2,7 +2,7 @@
  *  \file IMP/atom/BrownianDynamics.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
@@ -68,13 +68,17 @@ class SimulationParameters;
     If the skt (stochastic Runge Kutta) flag is true, the simulation is
     altered slightly to apply the SKT scheme.
 
+    _Time step_
+    The time step is always equal precisely to Simulater::get_maximum_time_step()
+    when using either Simulator::simulate() or Optimizer::optimize()
+
     \see Diffusion
     \see RigidBodyDiffusion
   */
 class IMPATOMEXPORT BrownianDynamics : public Simulator {
  private:
 
-  double max_step_;
+  double max_step_in_A_;
   bool srk_;
   IMP::Vector<algebra::Vector3D> forces_;
   IMP::Vector<double> random_pool_; // pool of random doubles ~N(0.0,1.0)
@@ -101,7 +105,8 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   BrownianDynamics(Model *m, std::string name = "BrownianDynamics%1%",
                    double wave_factor = 1.0,
                    unsigned int random_pool_size=IMP_ATOM_DEFAULT_BD_RANDOM_POOL_SIZE);
-  void set_maximum_move(double ms) { max_step_ = ms; }
+  //! sets the maximum move in A along either x,y or z axes
+  void set_maximum_move(double ms_in_A) { max_step_in_A_ = ms_in_A; }
   void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
 
   IMP_OBJECT_METHODS(BrownianDynamics);
@@ -113,13 +118,13 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
   /** Calls do_advance_chunk() to advance ps in chunks
 
    @param sc particles to simulate in this step
-   @param dt maximal step size in femtoseconds
+   @param dt_fs step size in femtoseconds
 
    @return the time step actually simulated (for this class,
-           it is always equal to the inut dt)
+           it is always equal to the input dt_fs)
   */
   virtual double do_step(const ParticleIndexes &sc,
-                         double dt) IMP_OVERRIDE;
+                         double dt_fs) IMP_OVERRIDE;
 
   virtual bool get_is_simulation_particle(ParticleIndex p) const
       IMP_OVERRIDE;
@@ -140,7 +145,8 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
 
  protected:
   //! returns the maximal step size allowed in this simulation
-  double get_max_step() const { return max_step_; }
+  //! in A along x, y or z axes
+  double get_max_step() const { return max_step_in_A_; }
 
   //! returns true if implementing the Stochastic Runga-Kutta
   //! Brownian Dynamics variant

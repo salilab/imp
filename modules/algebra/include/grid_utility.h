@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/grid_utility.h  Utility functions for working with grids.
  *
- *  Copyright 2007-2017 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2018 IMP Inventors. All rights reserved.
  *
  */
 
