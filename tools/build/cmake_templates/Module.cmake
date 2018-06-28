@@ -31,7 +31,7 @@ if(${status} EQUAL 0)
   set_property(TARGET "IMP.%(name)s-all-header" PROPERTY FOLDER "IMP.%(name)s")
   list(APPEND IMP_%(name)s_LIBRARY_EXTRA_DEPENDENCIES IMP.%(name)s-all-header)
 
-
+  %(custom_build)s
   if(IMP_DOXYGEN_FOUND)
     # documentation
     file(GLOB headers ${CMAKE_BINARY_DIR}/include/IMP/%(name)s/*.h)

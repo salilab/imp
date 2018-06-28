@@ -192,6 +192,14 @@ def setup_module(module, path, ordered):
     values["pybins"] = "\n".join(pybins)
     values["bin_names"] = "\n".join([os.path.basename(x) \
                                      for x in pybins + cppbins])
+
+    local = os.path.join(path, "Build.cmake")
+    if os.path.exists(local):
+        values["custom_build"] = "include(${CMAKE_SOURCE_DIR}/%s)\n" \
+                                 % tools.to_cmake_path(local)
+    else:
+        values["custom_build"] = ""
+
     main = os.path.join(path, "src", "CMakeLists.txt")
     tests = os.path.join(path, "test", "CMakeLists.txt")
     swig = os.path.join(path, "pyext", "CMakeLists.txt")
