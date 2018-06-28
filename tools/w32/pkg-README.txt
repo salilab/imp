@@ -4,10 +4,10 @@ so can be run simply by opening a Command Prompt, changing to this bin
 directory (or adding it to your PATH), and typing 'foxs'.
 
 The IMP Python libraries are automatically set up to work with Python 2.7,
-3.4, 3.5, or 3.6. (You need to download Python separately from www.python.org
-and install it; be sure to get the 64-bit version of Python if you installed
-the 64-bit version of IMP, and likewise for the 32-bit version - you can't
-mix and match.)
+3.4, 3.5, 3.6, or 3.7. (You need to download Python separately from
+www.python.org and install it; be sure to get the 64-bit version of Python
+if you installed the 64-bit version of IMP, and likewise for the 32-bit
+version - you can't mix and match.)
 
 One easy way to run IMP Python scripts is to open them in
 Python's IDLE program and run them by pressing F5.

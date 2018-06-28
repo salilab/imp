@@ -85,6 +85,7 @@ Section ""
   WriteRegStr HKLM "Software\Python\PythonCore\3.4\PythonPath\${PRODVER}" "" "$INSTDIR\python"
   WriteRegStr HKLM "Software\Python\PythonCore\3.5${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}" "" "$INSTDIR\python"
   WriteRegStr HKLM "Software\Python\PythonCore\3.6${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}" "" "$INSTDIR\python"
+  WriteRegStr HKLM "Software\Python\PythonCore\3.7${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}" "" "$INSTDIR\python"
 
   !insertmacro MUI_STARTMENU_WRITE_BEGIN ${PRODVER}
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
@@ -117,6 +118,7 @@ Section "Uninstall"
   DeleteRegKey HKLM "Software\Python\PythonCore\3.4\PythonPath\${PRODVER}"
   DeleteRegKey HKLM "Software\Python\PythonCore\3.5${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}"
   DeleteRegKey HKLM "Software\Python\PythonCore\3.6${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}"
+  DeleteRegKey HKLM "Software\Python\PythonCore\3.7${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}"
  
 SectionEnd
 
