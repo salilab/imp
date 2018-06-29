@@ -41,6 +41,8 @@ IMPISD_BEGIN_NAMESPACE
 
     \f[p(\xi) = \frac{-\log\alpha}{2 \sqrt{D(\xi)}} \alpha^{\sqrt{D(\xi)}} |J(\xi)|.\f]
 
+    \see NormalSigmaPCRestraint
+
     \note For more details, see Simpson et al. Stat Sci. (2017) 32(1): 1. arXiv: 1403.4630
     \note The log-density with this parameterization overflows when
           \f$D(\xi)=0\f$. The value of the PC prior at the base model is
