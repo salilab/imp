@@ -129,22 +129,28 @@ unit::Femtojoule kt(unit::Kelvin t) {
 }
 }
 
-//! return units are A^2/fs, given radius r in A
-double get_einstein_diffusion_coefficient(double r) {
-  MillipascalSecond e = eta(IMP::internal::DEFAULT_TEMPERATURE);
+//! return units are A^2/fs, given radius r in A, temp in K
+double get_einstein_diffusion_coefficient(double r,
+                                          double temp) {
+  if(temp<0){
+    temp= IMP::internal::DEFAULT_TEMPERATURE;
+  }
+  MillipascalSecond e = eta(temp);
   unit::SquareAngstromPerFemtosecond ret(
-      kt(IMP::internal::DEFAULT_TEMPERATURE) /
-      (6.0 * PI * e * unit::Angstrom(r)));
+      kt(temp) / (6.0 * PI * e * unit::Angstrom(r)));
   return ret.get_value();
 }
 
 //! return units are Rad^2/fs, given radius r in A
-double get_einstein_rotational_diffusion_coefficient(double r) {
-  MillipascalSecond e = eta(IMP::internal::DEFAULT_TEMPERATURE);
+double get_einstein_rotational_diffusion_coefficient(double r,
+                                                     double temp) {
+  if(temp<0){
+    temp= IMP::internal::DEFAULT_TEMPERATURE;
+  }
+  MillipascalSecond e = eta(temp);
   // double kt= get_kt(IMP::internal::DEFAULT_TEMPERATURE);
   unit::PerFemtosecond ret =
-      kt(IMP::internal::DEFAULT_TEMPERATURE) /
-    (8 * PI * e * square(unit::Angstrom(r)) * unit::Angstrom(r));
+    kt(temp) / (8 * PI * e * square(unit::Angstrom(r)) * unit::Angstrom(r));
   return ret.get_value();
 }
 
@@ -163,9 +169,12 @@ double get_diffusion_length(double D, double dtfs) {
     @param temp  temperature in Kelvin
 \*/
 double get_diffusion_length(double D, double force, double dtfs, double temp) {
+  if(temp<0){
+    temp= IMP::internal::DEFAULT_TEMPERATURE;
+  }
   unit::Divide<unit::Femtosecond, unit::Femtojoule>::type dtikt =
-      unit::Femtosecond(dtfs) /
-      unit::Femtojoule(IMP::internal::KB * unit::Kelvin(temp));
+    unit::Femtosecond(dtfs) /
+    unit::Femtojoule(IMP::internal::KB * unit::Kelvin(temp));
   unit::Femtonewton nforce(get_force_in_femto_newtons(force));
   // unit::Angstrom R(sampler_());
   unit::Angstrom force_term(nforce * unit::SquareAngstromPerFemtosecond(D) *

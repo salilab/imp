@@ -96,18 +96,32 @@ inline double get_kd(double na, double nb, double nab, double volume) {
          get_molarity(nab, volume);
 }
 
-/** Return the prediction diffusion coefficient in Angstrom squared per
-    femtosecond given a radius in angstrom.
+/** Return the predicted diffusion coefficient in Angstrom squared per
+    femtosecond at the specified radius and temperature.
+
+    @param particle radius in angstroms
+    @param temp  temperature in Kelvin
+                 (negative = default IMP temperature of 273.15K)
+
     See
     \external{http://en.wikipedia.org/wiki/Einstein_relation_(kinetic_theory),
     wikipedia} for a reference and
     \external{http://en.wikipedia.org/wiki/Viscosity,Wikipedia on Viscosity}
     for the values of the viscosity of water used.*/
-IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r);
+IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r,
+                                                        double temp= -1);
 
-/** Return the prediction diffusion coefficient in radians squared per
-    femtosecond given a radius in angstrom.*/
-IMPATOMEXPORT double get_einstein_rotational_diffusion_coefficient(double r);
+/** Return the predicted diffusion coefficient in radians squared per
+    femtosecond at the specified radius and temeprature.
+
+    @param particle radius in angstroms
+    @param temp  temperature in Kelvin
+                 (negative = default IMP temperature of 273.15K)
+
+*/
+IMPATOMEXPORT double get_einstein_rotational_diffusion_coefficient(double r,
+                                                                   double temp= -1);
+);
 
 /** Return the standard deviation for the Brownian step in Angstroms given the
     diffusion coefficient D in A^2/fs and the time step t in fs.*/
@@ -120,9 +134,10 @@ IMPATOMEXPORT double get_diffusion_length(double D, double t);
     @param force applied force in kcal/mol/A
     @param t     time step in femtoseconds
     @param temp  temperature in Kelvin
+                 (negative = default IMP temperature of 273.15K)
 */
 IMPATOMEXPORT double get_diffusion_length(double D, double force, double t,
-                                          double temp = 273);
+                                          double temp = -1);
 
 /** Get the standard deviation of the diffusion angle change in radians given
     the rigid body diffusion coefficient in A^2/fs and the time step dtfs in fs.*/
