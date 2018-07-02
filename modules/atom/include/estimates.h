@@ -41,8 +41,8 @@ enum ProteinDensityReference {
 
 //! returns the protein density value (in Da/A^3)
 //! associated with a given reference
-IMPATOMEXPORT double get_protein_density_from_reference(
-    ProteinDensityReference densityReference);
+IMPATOMEXPORT double get_protein_density_from_reference
+( ProteinDensityReference densityReference );
 
 //! Estimate the volume of a protein from its mass
 /**
@@ -50,8 +50,9 @@ IMPATOMEXPORT double get_protein_density_from_reference(
  * \param[in] ref the protein density reference used in the computation.
  * As a default ref is the estimate published in Alber et. al, Structure 2005.
 */
-IMPATOMEXPORT double get_volume_from_mass(double m,
-                                          ProteinDensityReference ref = ALBER);
+IMPATOMEXPORT double get_volume_from_mass
+( double m,
+  ProteinDensityReference ref = ALBER);
 
 //! Estimate the mass of a protein from its volume
 /**
@@ -59,15 +60,17 @@ IMPATOMEXPORT double get_volume_from_mass(double m,
  * \param[in] ref the protein density reference used in the computation.
  * As a default ref is the estimate published in Alber et. al, Structure 2005.
 */
-IMPATOMEXPORT double get_mass_from_volume(double v,
-                                          ProteinDensityReference ref = ALBER);
+IMPATOMEXPORT double get_mass_from_volume
+( double v,
+  ProteinDensityReference ref = ALBER );
 
 //! Estimate the mass of a protein from the number of amino acids
 /** We use an estimate of 110 Daltons per residue, following Chimera.
 
     The mass is in Daltons.
  */
-IMPATOMEXPORT double get_mass_from_number_of_residues(unsigned int num_aa);
+IMPATOMEXPORT double get_mass_from_number_of_residues
+( unsigned int num_aa );
 
 //! Return an estimate for the volume of a given residue
 /** The volume estimates are taken from
@@ -79,19 +82,26 @@ IMPATOMEXPORT double get_mass_from_number_of_residues(unsigned int num_aa);
 
  \throw ValueException if a non-standard residue type is passed
  */
-IMPATOMEXPORT double get_volume_from_residue_type(ResidueType rt);
+IMPATOMEXPORT double get_volume_from_residue_type
+( ResidueType rt );
 
 //!@}
 
 /** Compute the concentration in molarity from the passed values*/
-inline double get_molarity(double n, double volume) {
+inline double get_molarity
+( double n,
+  double volume ) {
   double v = volume;
   // n*10^27/(v *6.02e23)
   return n * 1e4 / (v * 6.02);
 }
 
 /** Compute the concentration in molarity from the passed values*/
-inline double get_kd(double na, double nb, double nab, double volume) {
+inline double get_kd
+( double na,
+  double nb,
+  double nab,
+  double volume ) {
   return get_molarity(na, volume) * get_molarity(nb, volume) /
          get_molarity(nab, volume);
 }
@@ -108,8 +118,9 @@ inline double get_kd(double na, double nb, double nab, double volume) {
     wikipedia} for a reference and
     \external{http://en.wikipedia.org/wiki/Viscosity,Wikipedia on Viscosity}
     for the values of the viscosity of water used.*/
-IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r,
-                                                        double temp= -1);
+IMPATOMEXPORT double get_einstein_diffusion_coefficient
+( double r,
+  double temp= -1);
 
 /** Return the predicted diffusion coefficient in radians squared per
     femtosecond at the specified radius and temeprature.
@@ -119,13 +130,14 @@ IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r,
                  (negative = default IMP temperature of 273.15K)
 
 */
-IMPATOMEXPORT double get_einstein_rotational_diffusion_coefficient(double r,
-                                                                   double temp= -1);
-);
+IMPATOMEXPORT double get_einstein_rotational_diffusion_coefficient
+( double r,
+  double temp= -1 );
 
 /** Return the standard deviation for the Brownian step in Angstroms given the
     diffusion coefficient D in A^2/fs and the time step t in fs.*/
-IMPATOMEXPORT double get_diffusion_length(double D, double t);
+IMPATOMEXPORT double get_diffusion_length
+( double D, double t );
 
 /** Return the scale for diffusion in Angstroms given the specified force,
     the diffusion coefficient D and the time step t.
@@ -136,12 +148,17 @@ IMPATOMEXPORT double get_diffusion_length(double D, double t);
     @param temp  temperature in Kelvin
                  (negative = default IMP temperature of 273.15K)
 */
-IMPATOMEXPORT double get_diffusion_length(double D, double force, double t,
-                                          double temp = -1);
+IMPATOMEXPORT double get_diffusion_length
+( double D,
+  double force,
+  double t,
+  double temp = -1);
 
 /** Get the standard deviation of the diffusion angle change in radians given
     the rigid body diffusion coefficient in A^2/fs and the time step dtfs in fs.*/
-IMPATOMEXPORT double get_diffusion_angle(double D, double dtfs);
+IMPATOMEXPORT double get_diffusion_angle
+( double D,
+  double dtfs );
 
 /** Estimate the diffusion coefficient of a particle in A^2/fs from a list of
     displacements each taken after the given time step dt. Removes any non-random
@@ -156,8 +173,8 @@ IMPATOMEXPORT double get_diffusion_angle(double D, double dtfs);
     seconds, resp.
 
 */
-IMPATOMEXPORT double get_diffusion_coefficient(
-    const algebra::Vector3Ds &displacements, double dt);
+IMPATOMEXPORT double get_diffusion_coefficient
+( const algebra::Vector3Ds &displacements, double dt );
 
 /** Estimate the diffusion coefficient of a particle in A^2/fs from a list of
     displacements each taken after the given time step dt. Removes any non-random
@@ -171,9 +188,9 @@ IMPATOMEXPORT double get_diffusion_coefficient(
     e.g.  cm^2/sec if displacements and dts are specified in cm and
     seconds, resp.
 */
-IMPATOMEXPORT
-double get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
-                                 const Floats &dts);
+IMPATOMEXPORT double get_diffusion_coefficient
+( const algebra::Vector3Ds &displacements,
+  const Floats &dts);
 
 /** Estimate the rotational diffusion coefficient of a particle in Rad^2/fs
     from a list of rotational orientations taken at consecutive time steps dt
@@ -181,23 +198,25 @@ double get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
     complicated to compute from a list of orientations - may require parameter
     estimation of the folded-normal distribution)
 */
-IMPATOMEXPORT double get_rotational_diffusion_coefficient(
-    const algebra::Rotation3Ds &orientations, double dt);
+IMPATOMEXPORT double get_rotational_diffusion_coefficient
+( const algebra::Rotation3Ds &orientations,
+  double dt );
 
 /**\name Energy conversions
 
    Convert energy from kcal/mol to femtojoules
    @{
 */
-IMPATOMEXPORT double get_energy_in_femto_joules(double energy_in_kcal_per_mol);
+IMPATOMEXPORT double get_energy_in_femto_joules
+( double energy_in_kcal_per_mol );
 
 //! Convert force from kcal/mol/A to femtonewtons
-IMPATOMEXPORT double get_force_in_femto_newtons(
-    double force_in_kcal_per_mol_per_angstrom);
+IMPATOMEXPORT double get_force_in_femto_newtons
+( double force_in_kcal_per_mol_per_angstrom );
 
 //! Convert spring constant from kcal/mol/A^2 to femtonewton/A
-IMPATOMEXPORT double get_spring_constant_in_femto_newtons_per_angstrom(
-    double k_in_kcal_per_mol_per_angstrom_square);
+IMPATOMEXPORT double get_spring_constant_in_femto_newtons_per_angstrom
+( double k_in_kcal_per_mol_per_angstrom_square );
 
 
 
