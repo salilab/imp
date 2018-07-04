@@ -2,6 +2,8 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- The deprecated IMP::isd::FNormal::density() method has been removed.
+  Use IMP::isd::FNormal::get_density() instead.
 
 # 2.9.0 - 2018-07-02 # {#changelog_2_9_0}
 - [Eigen](https://eigen.tuxfamily.org/) is now required to build IMP.
