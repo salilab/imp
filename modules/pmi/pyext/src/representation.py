@@ -170,13 +170,14 @@ class Representation(object):
         self.residuenamekey = IMP.StringKey("ResidueName")
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def m(self):
         return self.model
 
     def add_metadata(self, m):
         """Associate some metadata with this modeling.
-           @param m an instance of IMP.pmi.metadata.Metadata or a subclass.
+           @param m an instance of an ihm metadata class, such as
+                    ihm.Software, ihm.Citation, or ihm.location.Repository.
         """
         self._metadata.append(m)
 

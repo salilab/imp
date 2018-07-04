@@ -3,7 +3,6 @@ import IMP.test
 import IMP.pmi.representation
 import IMP.pmi.mmcif
 import IMP.pmi.macros
-import IMP.pmi.metadata
 import sys
 import os
 import io
@@ -1575,54 +1574,6 @@ _ihm_3dem_restraint.cross_correlation_coefficient
             local = ihm.location.WorkflowFileLocation(bar)
             simo.add_metadata(local)
         self.assertEqual(len(po.system.locations), 1) # This script
-
-        po.finalize()
-        self.assertEqual(len(po.system.software), 3)
-        self.assertEqual(len(po.system.citations), 1)
-        self.assertEqual(len(po.system.locations), 2)
-
-    def test_deprecated_metadata(self):
-        """Test deprecated metadata classes"""
-        m = IMP.Model()
-        po = DummyPO(None)
-        simo = IMP.pmi.representation.Representation(m)
-        simo.add_protocol_output(po)
-
-        with IMP.allow_deprecated():
-            simo.add_metadata(IMP.pmi.metadata.Software(
-                name='t', classification='c',
-                description='d', version='2.0.16', url='u'))
-        self.assertEqual(len(po.system.software), 2) # IMP & PMI
-
-        with IMP.allow_deprecated():
-            simo.add_metadata(IMP.pmi.metadata.Citation(pmid='p', title='t',
-              journal="j", volume=13, page_range=(2927,2943), year=2014,
-              authors=['A B'], doi='10.1074/mcp.M114.041673'))
-        self.assertEqual(len(po.system.citations), 0)
-
-        with IMP.test.temporary_directory() as tmpdir:
-            bar = os.path.join(tmpdir, 'bar')
-            with open(bar, 'w') as f:
-                f.write("")
-            with IMP.allow_deprecated():
-                l = IMP.pmi.metadata.FileLocation(bar)
-                local = IMP.pmi.metadata.ChimeraXCommandScript(location=l)
-                local = IMP.pmi.metadata.PythonScript(location=l)
-            simo.add_metadata(local)
-        self.assertEqual(len(po.system.locations), 1) # This script
-
-        with IMP.allow_deprecated():
-            simo.add_metadata(IMP.pmi.metadata.Repository(doi='foo', root='/'))
-
-        with IMP.allow_deprecated():
-            loc = IMP.pmi.metadata.MassIVELocation('foo')
-            loc = IMP.pmi.metadata.EMDBLocation('foo')
-            loc = IMP.pmi.metadata.SASBDBLocation('foo')
-            loc = IMP.pmi.metadata.EMPIARLocation('foo')
-            d = IMP.pmi.metadata.EMMicrographsDataset(location=loc, number=10)
-            d = IMP.pmi.metadata.MassSpecDataset(location=loc)
-            d = IMP.pmi.metadata.EMDensityDataset(location=loc)
-            d = IMP.pmi.metadata.SASDataset(location=loc)
 
         po.finalize()
         self.assertEqual(len(po.system.software), 3)

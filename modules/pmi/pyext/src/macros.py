@@ -613,7 +613,7 @@ class BuildSystem(object):
         self.resolutions = resolutions
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def mdl(self):
         return self.model
 
@@ -945,7 +945,7 @@ class BuildModel(object):
         self.simo.setup_bonds()
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def m(self):
         return self.model
 

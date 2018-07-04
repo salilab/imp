@@ -149,7 +149,7 @@ class MonteCarlo(object):
         self.mc.add_mover(self.smv)
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def m(self):
         return self.model
 
@@ -428,7 +428,7 @@ class MolecularDynamics(object):
         self.nframe = -1
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def m(self):
         return self.model
 
@@ -479,7 +479,7 @@ class ConjugateGradients(object):
         self.cg.set_scoring_function(get_restraint_set(self.model))
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def m(self):
         return self.model
 
@@ -576,7 +576,7 @@ class ReplicaExchange(object):
         self.nsuccess = 0
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def m(self):
         return self.model
 
@@ -729,7 +729,7 @@ class PyMC(object):
         self.nframe = -1
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def m(self):
         return self.model
 

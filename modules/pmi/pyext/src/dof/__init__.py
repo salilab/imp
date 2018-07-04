@@ -56,7 +56,7 @@ class DegreesOfFreedom(object):
         # mover map = {particles/rbs : movers}
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def mdl(self):
         return self.model
 

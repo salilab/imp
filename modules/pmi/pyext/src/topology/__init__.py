@@ -83,7 +83,7 @@ class _SystemBase(object):
             self.model=model
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def mdl(self):
         return self.model
 
@@ -184,7 +184,7 @@ class State(_SystemBase):
             self._add_protocol_output(p, system)
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def mdl(self):
         return self.model
 
@@ -282,6 +282,7 @@ class Molecule(_SystemBase):
         self.mol_to_clone = mol_to_clone
         self.is_nucleic=is_nucleic
         self.representations = []  # list of stuff to build
+        self._pdb_elements = []
         self._represented = IMP.pmi.tools.OrderedSet()   # residues with representation
         self.coord_finder = _FindCloseStructure() # helps you place beads by storing structure
         self._ideal_helices = [] # list of OrderedSets of tempresidues set to ideal helix
@@ -300,7 +301,7 @@ class Molecule(_SystemBase):
             self.residues.append(r)
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def mdl(self):
         return self.model
 
@@ -419,6 +420,9 @@ class Molecule(_SystemBase):
 
         if len(self.residues)==0:
             print("WARNING: Substituting PDB residue type with FASTA residue type. Potentially dangerous.")
+
+        # Store info for ProtocolOutput usage later
+        self._pdb_elements.append((rhs, offset, pdb_fn, chain_id))
 
         # load those into TempResidue object
         atomic_res = IMP.pmi.tools.OrderedSet() # collect integer indexes of atomic residues to return
@@ -640,6 +644,14 @@ class Molecule(_SystemBase):
                 print('WARNING: Residues without representation in molecule',
                       self.get_name(),':',system_tools.resnums2str(no_rep))
 
+            # Tell ProtocolOutput about any PDBs we read in
+            for rhs, offset, pdb_fn, chain_id in self._pdb_elements:
+                for po, state in self._all_protocol_output():
+                    # todo handle last argument properly
+                    po.add_pdb_element(state, self.hier.get_name(),
+                            rhs[0].get_index(), rhs[1].get_index(), offset,
+                            pdb_fn, chain_id, rhs[0].get_parent())
+
             # first build any ideal helices (fills in structure for the TempResidues)
             for rep in self.representations:
                 if rep.ideal_helix:
@@ -648,7 +660,9 @@ class Molecule(_SystemBase):
             # build all the representations
             built_reps = []
             for rep in self.representations:
-                built_reps += system_tools.build_representation(self.hier,rep,self.coord_finder)
+                built_reps += system_tools.build_representation(
+                            self.hier, rep, self.coord_finder,
+                            self._all_protocol_output())
 
             # sort them before adding as children
             built_reps.sort(key=lambda r: IMP.atom.Fragment(r).get_residue_indexes()[0])
@@ -834,7 +848,7 @@ class PDBSequences(object):
         self.read_sequences(pdb_fn,name_map)
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def m(self):
         return self.model
 

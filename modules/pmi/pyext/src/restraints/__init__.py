@@ -42,12 +42,12 @@ class RestraintBase(object):
         self.rs = self._create_restraint_set(name=None)
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def m(self):
         return self.model
 
     @property
-    @IMP.deprecated_method("3.0", "Model should be accessed with `.model`.")
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
     def mdl(self):
         return self.model
 
