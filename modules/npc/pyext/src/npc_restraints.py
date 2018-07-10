@@ -44,6 +44,13 @@ class XYRadialPositionRestraint(object):
             for residue in residues:
                 #print (residue, type(residue))
                 xyr.add_particle(residue)
+
+        self.dataset = None
+        if representation:
+            for p, state in representation._protocol_output:
+                p.add_xyradial_restraint(state, residues, lower_bound,
+                                         upper_bound, sigma, self)
+
         self.rs.add_restraint(xyr)
 
     def set_label(self, label):
@@ -421,6 +428,13 @@ class YAxialPositionRestraint(object):
             for residue in residues:
                 #print (residue, type(residue))
                 yax.add_particle(residue)
+
+        self.dataset = None
+        if representation:
+            for p, state in representation._protocol_output:
+                p.add_yaxial_restraint(state, residues, lower_bound,
+                                       upper_bound, sigma, self)
+
         self.rs.add_restraint(yax)
 
     def set_label(self, label):
@@ -673,6 +687,15 @@ class MembraneSurfaceLocationConditionalRestraint(object):
         for residue in residues2:
             #print (residue, type(residue))
             msl.add_particle2(residue)
+
+        # Approximate as two membrane restraints
+        self.dataset = None
+        if representation:
+            for p, state in representation._protocol_output:
+                for residues in residues1, residues2:
+                    p.add_membrane_surface_location_restraint(
+                            state, residues, tor_R, tor_r, tor_th, sigma, self)
+
         self.rs.add_restraint(msl)
 
     def set_label(self, label):
@@ -733,6 +756,13 @@ class MembraneExclusionRestraint(object):
         for residue in residues:
             #print (residue, type(residue))
             mex.add_particle(residue)
+
+        self.dataset = None
+        if representation:
+            for p, state in representation._protocol_output:
+                p.add_membrane_exclusion_restraint(
+                        state, residues, tor_R, tor_r, tor_th, sigma, self)
+
         self.rs.add_restraint(mex)
 
     def set_label(self, label):
