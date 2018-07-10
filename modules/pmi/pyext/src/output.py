@@ -353,14 +353,13 @@ class Output(object):
             # initialize the array of scores internally
             self.best_score_list = []
         else:
-            # otherwise the replicas must cominucate
+            # otherwise the replicas must communicate
             # through a common file to know what are the best scores
             self.best_score_file_name = "best.scores.rex.py"
             self.best_score_list = []
-            best_score_file = open(self.best_score_file_name, "w")
-            best_score_file.write(
-                "self.best_score_list=" + str(self.best_score_list))
-            best_score_file.close()
+            with open(self.best_score_file_name, "w") as best_score_file:
+                best_score_file.write(
+                    "self.best_score_list=" + str(self.best_score_list) + "\n")
 
         self.nbestscoring = nbestscoring
         for i in range(self.nbestscoring):
@@ -413,10 +412,9 @@ class Output(object):
 
         if self.replica_exchange:
             # write the self.best_score_list to the file
-            best_score_file = open(self.best_score_file_name, "w")
-            best_score_file.write(
-                "self.best_score_list=" + str(self.best_score_list))
-            best_score_file.close()
+            with open(self.best_score_file_name, "w") as best_score_file:
+                best_score_file.write(
+                    "self.best_score_list=" + str(self.best_score_list) + '\n')
 
     def init_rmf(self, name, hierarchies, rs=None, geometries=None, listofobjects=None):
         """

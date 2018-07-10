@@ -76,6 +76,7 @@ class _AsymMapper(object):
     def __init__(self, simo, prot):
         self.simo = simo
         self._cm = _ComponentMapper(prot)
+        self._seen_ranges = {}
 
     def __getitem__(self, p):
         protname = self._cm[p]
@@ -87,36 +88,51 @@ class _AsymMapper(object):
         rngs = []
         for p in ps:
             asym = self[p]
-            # todo: handle overlapping or adjoining ranges
+            # todo: handle overlapping ranges
             if IMP.atom.Residue.get_is_setup(p):
                 rind = IMP.atom.Residue(p).get_index()
-                rngs.append(asym(rind, rind))
+                rng = asym(rind, rind)
             elif IMP.atom.Fragment.get_is_setup(p):
                 # PMI Fragments always contain contiguous residues
                 rinds = IMP.atom.Fragment(p).get_residue_indexes()
-                rngs.append(asym(rinds[0], rinds[-1]))
+                rng = asym(rinds[0], rinds[-1])
             else:
                 raise ValueError("Unsupported particle type %s" % str(p))
-        return ihm.restraint.PolyResidueFeature(rngs)
+            # Join contiguous ranges
+            if len(rngs) > 0 and rngs[-1].asym == asym \
+               and rngs[-1].seq_id_range[1] == rng.seq_id_range[0] - 1:
+                rngs[-1].seq_id_range = (rngs[-1].seq_id_range[0],
+                                         rng.seq_id_range[1])
+            else:
+                rngs.append(rng)
+        # If an identical feature already exists, return that
+        # todo: python-ihm should handle this automatically for us
+        hrngs = tuple(rngs)
+        if hrngs in self._seen_ranges:
+            return self._seen_ranges[hrngs]
+        else:
+            feat = ihm.restraint.PolyResidueFeature(rngs)
+            self._seen_ranges[hrngs] = feat
+            return feat
 
 
 class _AllSoftware(object):
     def __init__(self, system):
         self.system = system
         self.modeller_used = self.phyre2_used = False
-        self.system.software.extend([
-           ihm.Software(
-                 name="Integrative Modeling Platform (IMP)",
-                 version=IMP.__version__,
-                 classification="integrative model building",
-                 description="integrative model building",
-                 location='https://integrativemodeling.org'),
-           ihm.Software(
+        self.pmi = ihm.Software(
                 name="IMP PMI module",
                 version=IMP.pmi.__version__,
                 classification="integrative model building",
                 description="integrative model building",
-                location='https://integrativemodeling.org')])
+                location='https://integrativemodeling.org')
+        self.imp = ihm.Software(
+                 name="Integrative Modeling Platform (IMP)",
+                 version=IMP.__version__,
+                 classification="integrative model building",
+                 description="integrative model building",
+                 location='https://integrativemodeling.org')
+        self.system.software.extend([self.pmi, self.imp])
 
     def set_modeller_used(self, version, date):
         if self.modeller_used:
@@ -1092,6 +1108,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
         # Common geometric objects used in PMI systems
         self._xy_plane = ihm.geometry.XYPlane()
+        self._xz_plane = ihm.geometry.XZPlane()
+        self._z_axis = ihm.geometry.ZAxis()
         self._center_origin = ihm.geometry.Center(0,0,0)
         self._identity_transform = ihm.geometry.Transformation.identity()
 
@@ -1307,8 +1325,9 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         # actual experiment, and how many independent runs were carried out
         # (use these as multipliers to get the correct total number of
         # output models)
-        self.all_protocols.add_step(_ReplicaExchangeProtocolStep(state, rex),
-                                    state)
+        step = _ReplicaExchangeProtocolStep(state, rex)
+        step.software = self.all_software.pmi
+        self.all_protocols.add_step(step, state)
 
     def _add_simple_dynamics(self, num_models_end, method):
         # Always assumed that we're dealing with the last state
@@ -1380,6 +1399,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         protocol = self.all_protocols.get_last_protocol(state)
         num_models = protocol.steps[-1].num_models_end
         pp = _ReplicaExchangeAnalysisPostProcess(rex, num_models)
+        pp.software = self.all_software.pmi
         self.all_protocols.add_postproc(pp, state)
         for i in range(rex._number_of_clusters):
             group = ihm.model.ModelGroup(name=state.get_prefixed_name(
@@ -1446,8 +1466,23 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
     def add_zaxial_restraint(self, state, ps, lower_bound, upper_bound,
                              sigma, pmi_restraint):
+        self._add_geometric_restraint(state, ps, lower_bound, upper_bound,
+                                      sigma, pmi_restraint, self._xy_plane)
+
+    def add_yaxial_restraint(self, state, ps, lower_bound, upper_bound,
+                             sigma, pmi_restraint):
+        self._add_geometric_restraint(state, ps, lower_bound, upper_bound,
+                                      sigma, pmi_restraint, self._xz_plane)
+
+    def add_xyradial_restraint(self, state, ps, lower_bound, upper_bound,
+                               sigma, pmi_restraint):
+        self._add_geometric_restraint(state, ps, lower_bound, upper_bound,
+                                      sigma, pmi_restraint, self._z_axis)
+
+    def _add_geometric_restraint(self, state, ps, lower_bound, upper_bound,
+                                 sigma, pmi_restraint, geom):
         asym = get_asym_mapper_for_state(self, state, self.__asym_states)
-        r = _GeometricRestraint(self, state, pmi_restraint, self._xy_plane,
+        r = _GeometricRestraint(self, state, pmi_restraint, geom,
                              asym.get_feature(ps),
                              ihm.restraint.LowerUpperBoundDistanceRestraint(
                                                     lower_bound, upper_bound),
@@ -1472,12 +1507,20 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
     def add_membrane_surface_location_restraint(
             self, state, ps, tor_R, tor_r, tor_th, sigma, pmi_restraint):
+        self._add_membrane_restraint(state, ps, tor_R, tor_r, tor_th, sigma,
+                  pmi_restraint, ihm.restraint.UpperBoundDistanceRestraint(0.))
+
+    def add_membrane_exclusion_restraint(
+            self, state, ps, tor_R, tor_r, tor_th, sigma, pmi_restraint):
+        self._add_membrane_restraint(state, ps, tor_R, tor_r, tor_th, sigma,
+                  pmi_restraint, ihm.restraint.LowerBoundDistanceRestraint(0.))
+
+    def _add_membrane_restraint(self, state, ps, tor_R, tor_r, tor_th,
+                                sigma, pmi_restraint, rsr):
         asym = get_asym_mapper_for_state(self, state, self.__asym_states)
         r = _GeometricRestraint(self, state, pmi_restraint,
                              self._get_membrane(tor_R, tor_r, tor_th),
-                             asym.get_feature(ps),
-                             ihm.restraint.UpperBoundDistanceRestraint(0.),
-                             sigma)
+                             asym.get_feature(ps), rsr, sigma)
         self.system.restraints.append(r)
         self._add_restraint_dataset(r) # so that all-dataset group works
 

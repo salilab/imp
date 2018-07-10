@@ -700,6 +700,7 @@ _ihm_starting_model_coord.ordinal_id
         w = ihm.format.CifWriter(fh)
         self.assign_entity_asym_ids(po.system)
         ihm.dumper._AssemblyDumper().finalize(po.system)  # assign assembly IDs
+        ihm.dumper._SoftwareDumper().finalize(po.system)  # assign software IDs
         self.assign_dataset_ids(po)
         d = ihm.dumper._ProtocolDumper()
         d.finalize(po.system)
@@ -724,9 +725,9 @@ _ihm_modeling_protocol.ordered_flag
 _ihm_modeling_protocol.software_id
 _ihm_modeling_protocol.script_file_id
 1 1 1 1 1 'All known components & All components modeled by IMP' . Sampling
-'Replica exchange monte carlo' 0 1000 YES NO NO . .
+'Replica exchange monte carlo' 0 1000 YES NO NO 1 .
 2 1 2 1 1 'All known components & All components modeled by IMP' . Sampling
-'Replica exchange monte carlo' 1000 1000 YES NO NO . .
+'Replica exchange monte carlo' 1000 1000 YES NO NO 1 .
 #
 """)
 
@@ -1251,38 +1252,7 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
 
     def test_add_zaxial_restraint(self):
         """Test add_zaxial_restraint method"""
-        class MockObject(object):
-            pass
-        m = IMP.Model()
-        simo = IMP.pmi.representation.Representation(m)
-        po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
-
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
-        residues = IMP.pmi.tools.select_by_tuple(simo, "Nup84", resolution=1)
-        cterm = residues[-1:]
-        nterm = residues[:1]
-        pmi_r = MockObject()
-        pmi_r.dataset = None
-        po.add_zaxial_restraint(state, nterm + cterm, lower_bound=4.0,
-                                upper_bound=8.0, sigma=2.0, pmi_restraint=pmi_r)
-        self.assertRaises(ValueError, po.add_zaxial_restraint,
-                          state, [simo.hier_dict['Nup84']], lower_bound=4.0,
-                          upper_bound=8.0, sigma=2.0, pmi_restraint=pmi_r)
-        self.assign_entity_asym_ids(po.system)
-        d = ihm.dumper._GeometricObjectDumper()
-        d.finalize(po.system)
-        fh = StringIO()
-        w = ihm.format.CifWriter(fh)
-        d.dump(po.system, w)
-        out = fh.getvalue()
-        self.assertEqual(out, """#
+        self._check_geom_restraint('add_zaxial_restraint', """#
 loop_
 _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
@@ -1300,6 +1270,130 @@ _ihm_geometric_object_plane.transformation_id
 #
 """)
 
+    def test_add_yaxial_restraint(self):
+        """Test add_yaxial_restraint method"""
+        self._check_geom_restraint('add_yaxial_restraint', """#
+loop_
+_ihm_geometric_object_list.object_id
+_ihm_geometric_object_list.object_type
+_ihm_geometric_object_list.object_name
+_ihm_geometric_object_list.object_description
+_ihm_geometric_object_list.other_details
+1 plane . . .
+#
+#
+loop_
+_ihm_geometric_object_plane.object_id
+_ihm_geometric_object_plane.plane_type
+_ihm_geometric_object_plane.transformation_id
+1 xz-plane .
+#
+""")
+
+    def test_add_xyradial_restraint(self):
+        """Test add_xyradial_restraint method"""
+        self._check_geom_restraint('add_xyradial_restraint', """#
+loop_
+_ihm_geometric_object_list.object_id
+_ihm_geometric_object_list.object_type
+_ihm_geometric_object_list.object_name
+_ihm_geometric_object_list.object_description
+_ihm_geometric_object_list.other_details
+1 axis . . .
+#
+#
+loop_
+_ihm_geometric_object_axis.object_id
+_ihm_geometric_object_axis.axis_type
+_ihm_geometric_object_axis.transformation_id
+1 z-axis .
+#
+""")
+
+    def _check_geom_restraint(self, method_name, expected_output):
+        class MockObject(object):
+            pass
+        m = IMP.Model()
+        simo = IMP.pmi.representation.Representation(m)
+        po = DummyPO(None)
+        simo.add_protocol_output(po)
+        state = simo._protocol_output[0][1]
+
+        simo.create_component("Nup84", True)
+        simo.add_component_sequence("Nup84",
+                                    self.get_input_file_name("test.fasta"))
+        nup84 = simo.autobuild_model("Nup84",
+                                     self.get_input_file_name("test.nup84.pdb"),
+                                     "A")
+        residues = IMP.pmi.tools.select_by_tuple(simo, "Nup84", resolution=1)
+        pmi_r = MockObject()
+        pmi_r.dataset = None
+        method = getattr(po, method_name)
+        method(state, residues, lower_bound=4.0,
+               upper_bound=8.0, sigma=2.0, pmi_restraint=pmi_r)
+        # duplicate restraint should use the same feature
+        method(state, residues, lower_bound=4.0,
+               upper_bound=8.0, sigma=2.0, pmi_restraint=pmi_r)
+        self.assertRaises(ValueError, method,
+                          state, [simo.hier_dict['Nup84']], lower_bound=4.0,
+                          upper_bound=8.0, sigma=2.0, pmi_restraint=pmi_r)
+        self.assign_entity_asym_ids(po.system)
+        d = ihm.dumper._GeometricObjectDumper()
+        d.finalize(po.system)
+        fh = StringIO()
+        w = ihm.format.CifWriter(fh)
+        d.dump(po.system, w)
+        out = fh.getvalue()
+        self.assertEqual(out, expected_output)
+        d = ihm.dumper._FeatureDumper()
+        d.finalize(po.system)
+        fh = StringIO()
+        w = ihm.format.CifWriter(fh)
+        d.dump(po.system, w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_feature_list.feature_id
+_ihm_feature_list.feature_type
+_ihm_feature_list.entity_type
+1 'residue range' polymer
+#
+#
+loop_
+_ihm_poly_residue_feature.ordinal_id
+_ihm_poly_residue_feature.feature_id
+_ihm_poly_residue_feature.entity_id
+_ihm_poly_residue_feature.asym_id
+_ihm_poly_residue_feature.seq_id_begin
+_ihm_poly_residue_feature.comp_id_begin
+_ihm_poly_residue_feature.seq_id_end
+_ihm_poly_residue_feature.comp_id_end
+1 1 1 A 1 MET 4 SER
+#
+""")
+        d = ihm.dumper._GeometricRestraintDumper()
+        d.finalize(po.system)
+        fh = StringIO()
+        w = ihm.format.CifWriter(fh)
+        d.dump(po.system, w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_ihm_geometric_object_distance_restraint.id
+_ihm_geometric_object_distance_restraint.object_id
+_ihm_geometric_object_distance_restraint.feature_id
+_ihm_geometric_object_distance_restraint.object_characteristic
+_ihm_geometric_object_distance_restraint.restraint_type
+_ihm_geometric_object_distance_restraint.harmonic_force_constant
+_ihm_geometric_object_distance_restraint.distance_lower_limit
+_ihm_geometric_object_distance_restraint.distance_upper_limit
+_ihm_geometric_object_distance_restraint.group_conditionality
+_ihm_geometric_object_distance_restraint.dataset_list_id
+1 1 1 other 'lower and upper bound' 0.500 4.000 8.000 ALL .
+2 1 1 other 'lower and upper bound' 0.500 4.000 8.000 ALL .
+#
+""")
+
     def test_get_membrane(self):
         """Test _get_membrane() method"""
         po = DummyPO(None)
@@ -1313,6 +1407,17 @@ _ihm_geometric_object_plane.transformation_id
 
     def test_add_membrane_surface_restraint(self):
         """Test add_membrane_surface_restraint method"""
+        self._check_membrane_restraint(
+                   'add_membrane_surface_location_restraint',
+                   "'upper bound' 0.500 . 0.000")
+
+    def test_add_membrane_exclusion_restraint(self):
+        """Test add_membrane_exclusion_restraint method"""
+        self._check_membrane_restraint(
+                   'add_membrane_exclusion_restraint',
+                   "'lower bound' 0.500 0.000 .")
+
+    def _check_membrane_restraint(self, method_name, expected_dist_rsr):
         class MockObject(object):
             pass
         m = IMP.Model()
@@ -1331,9 +1436,9 @@ _ihm_geometric_object_plane.transformation_id
         nterm = residues[:1]
         pmi_r = MockObject()
         pmi_r.dataset = None
-        po.add_membrane_surface_location_restraint(
-                state, nterm, tor_R=4.0, tor_r=1.0, tor_th=0.1, sigma=2.0,
-                pmi_restraint=pmi_r)
+        method = getattr(po, method_name)
+        method(state, nterm, tor_R=4.0, tor_r=1.0, tor_th=0.1, sigma=2.0,
+               pmi_restraint=pmi_r)
         self.assign_entity_asym_ids(po.system)
         d = ihm.dumper._GeometricObjectDumper()
         d.finalize(po.system)
@@ -1439,9 +1544,9 @@ _ihm_geometric_object_distance_restraint.distance_lower_limit
 _ihm_geometric_object_distance_restraint.distance_upper_limit
 _ihm_geometric_object_distance_restraint.group_conditionality
 _ihm_geometric_object_distance_restraint.dataset_list_id
-1 1 1 other 'upper bound' 0.500 . 0.000 ALL .
+1 1 1 other %s ALL .
 #
-""")
+""" % expected_dist_rsr)
 
     def test_sas_dumper(self):
         """Test SASDumper class"""
