@@ -15,6 +15,7 @@ IMP_SWIG_OBJECT( IMP::core, SubsetMover, SubsetMovers);
 IMP_SWIG_OBJECT( IMP::core, DirectionMover, DirectionMovers);
 IMP_SWIG_OBJECT( IMP::core, SurfaceMover, SurfaceMovers);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, BoundingBox3DSingletonScore, BoundingBox3DSingletonScore, BoundingBox3DSingletonScores);
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, BoundingSphere3DSingletonScore, BoundingSphere3DSingletonScore, BoundingSphere3DSingletonScores);
 #ifdef IMP_CORE_USE_IMP_CGAL
 IMP_SWIG_OBJECT( IMP::core, BoxSweepClosePairsFinder, BoxSweepClosePairsFinders);
 #endif
@@ -243,6 +244,7 @@ IMP_SWIG_OBJECT(IMP::core, MultipleBinormalRestraint, MultipleBinormalRestraints
 %include "IMP/core/DistanceToSingletonScore.h"
 %include "IMP/core/ExcludedVolumeRestraint.h"
 %include "IMP/core/BoundingBox3DSingletonScore.h"
+%include "IMP/core/BoundingSphere3DSingletonScore.h"
 %include "IMP/core/FixedRefiner.h"
 %include "IMP/core/GridClosePairsFinder.h"
 %include "IMP/core/Harmonic.h"
@@ -393,6 +395,7 @@ namespace IMP {
 
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, AttributeSingletonScore, generic_attribute_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingBox3DSingletonScore, bounding_box_3d_singleton_score, UnaryFunction);
+IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingSphere3DSingletonScore, bounding_sphere_3d_singleton_score, UnaryFunction);
 IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, DistanceToSingletonScore, distance_to_singleton_score, UnaryFunction);
 
 %pythoncode %{
