@@ -75,7 +75,7 @@ double GenericBoundingSphere3DSingletonScore<UF>::evaluate_index(
   if (inside) {
     return 0.0;
   }
-  IMP_LOG_VERBOSE("Particle " << Showable(pi) << " is outside sphere: " << d
+  IMP_LOG_VERBOSE("Particle " << Showable(pi) << " is outside sphere: " << xyz
                   << " of " << sphere_ << std::endl);
   if (da) {
     IMP::DerivativePair dp= f_->evaluate_with_derivative(d_from_surface);
