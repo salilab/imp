@@ -16,7 +16,7 @@
 #include <limits>
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
-//! A functor for computing a distance based score for two particles.
+//! A functor for computing a distance based score for D particles.
 struct Score {
   // swig gets confused otherwise
   Score() {}
