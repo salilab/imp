@@ -4,3 +4,7 @@
 [submodule "components/pathway_mapping"]
 	path = components/pathway_mapping
 	url = https://github.com/salilab/pathway_mapping.git
+[submodule "modules/pmi1"]
+	path = modules/pmi1
+	url = https://github.com/salilab/pmi.git
+	branch = legacy-pmi1
