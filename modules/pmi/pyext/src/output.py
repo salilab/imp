@@ -52,15 +52,12 @@ class ProtocolOutput(object):
     pass
 
 def _flatten(seq):
-    l = []
     for elt in seq:
-        t = type(elt)
-        if t is tuple or t is list:
+        if isinstance(elt, (tuple, list)):
             for elt2 in _flatten(elt):
-                l.append(elt2)
+                yield elt2
         else:
-            l.append(elt)
-    return l
+            yield elt
 
 class Output(object):
     """Class for easy writing of PDBs, RMFs, and stat files
@@ -89,6 +86,7 @@ class Output(object):
         self.use_pmi2 = False
 
     def get_pdb_names(self):
+        """Get a list of all PDB files being output by this instance"""
         return list(self.dictionary_pdbs.keys())
 
     def get_rmf_names(self):
@@ -460,8 +458,7 @@ class Output(object):
         self.dictionary_rmfs[name] = (rh,cat,outputkey_rmfkey,listofobjects)
 
     def add_restraints_to_rmf(self, name, objectlist):
-        flatobjectlist=_flatten(objectlist)
-        for o in flatobjectlist:
+        for o in _flatten(objectlist):
             try:
                 rs = o.get_restraint_for_rmf()
             except:

@@ -21,6 +21,14 @@ output1_categories = ['AtomicXLRestraint', 'AtomicXLRestraint_0_BestDist',
         'rmf_file', 'rmf_frame_index']
 
 class Tests(IMP.test.TestCase):
+    def test_flatten(self):
+        """Test _flatten function"""
+        inp = [1,2,3,4]
+        self.assertEqual(list(IMP.pmi.output._flatten(inp)), inp)
+        inp = (1,2,(4,5,6),[3,4,(9,0),5],9)
+        self.assertEqual(list(IMP.pmi.output._flatten(inp)),
+                         [1,2,4,5,6,3,4,9,0,5,9])
+
     def test_multi_chainids(self):
         """Test multi-character chain IDs"""
         output = IMP.pmi.output.Output()
@@ -33,6 +41,20 @@ class Tests(IMP.test.TestCase):
                          ['AY', 'AZ', 'BA', 'BB'])
         self.assertEqual([c[i] for i in range(700,704)],
                          ['ZY', 'ZZ', 'AAA', 'AAB'])
+
+    def test_pdb_names(self):
+        """Test Output.get_pdb_names()"""
+        m = IMP.Model()
+        h1 = IMP.atom.Hierarchy(IMP.Particle(m))
+        h2 = IMP.atom.Hierarchy(IMP.Particle(m))
+        output = IMP.pmi.output.Output()
+        output.init_pdb("test_output.pdb", h1)
+        output.init_pdb("test_output2.pdb", h2)
+        # Names are dict keys so come out unsorted
+        self.assertEqual(sorted(output.get_pdb_names()),
+                         ['test_output.pdb', 'test_output2.pdb'])
+        os.unlink('test_output.pdb')
+        os.unlink('test_output2.pdb')
 
     def test_get_particle_infos(self):
         """Test get_particle_infos_for_pdb_writing with no particles"""
