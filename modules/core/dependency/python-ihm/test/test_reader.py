@@ -778,6 +778,240 @@ _ihm_localization_density_files.seq_id_end
         self.assertEqual(d2._id, '2')
         self.assertEqual(d2.asym_unit.__class__, ihm.AsymUnit)
 
+    def test_em3d_restraint_handler(self):
+        """Test EM3DRestraintHandler"""
+        fh = StringIO("""
+loop_
+_ihm_3dem_restraint.ordinal_id
+_ihm_3dem_restraint.dataset_list_id
+_ihm_3dem_restraint.fitting_method
+_ihm_3dem_restraint.fitting_method_citation_id
+_ihm_3dem_restraint.struct_assembly_id
+_ihm_3dem_restraint.number_of_gaussians
+_ihm_3dem_restraint.model_id
+_ihm_3dem_restraint.cross_correlation_coefficient
+1 26 'Gaussian mixture models' 9 2 400 1 .
+2 26 'Gaussian mixture models' 9 2 400 2 0.9
+""")
+        s, = ihm.reader.read(fh)
+        r, = s.restraints
+        self.assertEqual(r.dataset._id, '26')
+        self.assertEqual(r.fitting_method, 'Gaussian mixture models')
+        self.assertEqual(r.fitting_method_citation._id, '9')
+        self.assertEqual(r.assembly._id, '2')
+        self.assertEqual(r.number_of_gaussians, 400)
+        # Sort fits by model ID
+        fits = sorted(r.fits.items(), key=lambda x:x[0]._id)
+        self.assertEqual(len(fits), 2)
+        self.assertEqual(fits[0][0]._id, '1')
+        self.assertEqual(fits[0][1].cross_correlation_coefficient, None)
+        self.assertEqual(fits[1][0]._id, '2')
+        self.assertAlmostEqual(fits[1][1].cross_correlation_coefficient,
+                               0.9, places=1)
+
+    def test_get_vector3(self):
+        """Test _get_vector3 function"""
+        d = {'tr_vector[1]':4.0, 'tr_vector[2]':6.0, 'tr_vector[3]':9.0}
+        r = ihm.reader._get_vector3(d, 'tr_vector')
+        # Coerce to int so we can compare exactly
+        self.assertEqual([int(x) for x in r], [4,6,9])
+
+        self.assertEqual(ihm.reader._get_vector3(d, 'not_there'), None)
+
+    def test_get_matrix33(self):
+        """Test _get_matrix33 function"""
+        d = {'m[1][1]':4.0, 'm[1][2]':6.0, 'm[1][3]':9.0,
+             'm[2][1]':1.0, 'm[2][2]':2.0, 'm[2][3]':3.0,
+             'm[3][1]':8.0, 'm[3][2]':1.0, 'm[3][3]':7.0}
+        r = ihm.reader._get_matrix33(d, 'm')
+        # Coerce to int so we can compare exactly
+        self.assertEqual([[int(x) for x in row] for row in r],
+                         [[4,6,9],
+                          [1,2,3],
+                          [8,1,7]])
+
+        self.assertEqual(ihm.reader._get_matrix33(d, 'not_there'), None)
+
+    def test_em2d_restraint_handler(self):
+        """Test EM2DRestraintHandler"""
+        fh = StringIO("""
+loop_
+_ihm_2dem_class_average_restraint.id
+_ihm_2dem_class_average_restraint.dataset_list_id
+_ihm_2dem_class_average_restraint.number_raw_micrographs
+_ihm_2dem_class_average_restraint.pixel_size_width
+_ihm_2dem_class_average_restraint.pixel_size_height
+_ihm_2dem_class_average_restraint.image_resolution
+_ihm_2dem_class_average_restraint.image_segment_flag
+_ihm_2dem_class_average_restraint.number_of_projections
+_ihm_2dem_class_average_restraint.struct_assembly_id
+_ihm_2dem_class_average_restraint.details
+1 65 800 2.030 4.030 35.000 NO 10000 42 .
+#
+loop_
+_ihm_2dem_class_average_fitting.ordinal_id
+_ihm_2dem_class_average_fitting.restraint_id
+_ihm_2dem_class_average_fitting.model_id
+_ihm_2dem_class_average_fitting.cross_correlation_coefficient
+_ihm_2dem_class_average_fitting.rot_matrix[1][1]
+_ihm_2dem_class_average_fitting.rot_matrix[2][1]
+_ihm_2dem_class_average_fitting.rot_matrix[3][1]
+_ihm_2dem_class_average_fitting.rot_matrix[1][2]
+_ihm_2dem_class_average_fitting.rot_matrix[2][2]
+_ihm_2dem_class_average_fitting.rot_matrix[3][2]
+_ihm_2dem_class_average_fitting.rot_matrix[1][3]
+_ihm_2dem_class_average_fitting.rot_matrix[2][3]
+_ihm_2dem_class_average_fitting.rot_matrix[3][3]
+_ihm_2dem_class_average_fitting.tr_vector[1]
+_ihm_2dem_class_average_fitting.tr_vector[2]
+_ihm_2dem_class_average_fitting.tr_vector[3]
+1 1 9 0.853 -0.637588 0.089507 0.765160 0.755616 -0.120841 0.643771 0.150085
+0.988628 0.009414 327.161 83.209 -227.800
+""")
+        s, = ihm.reader.read(fh)
+        r, = s.restraints
+        self.assertEqual(r._id, '1')
+        self.assertEqual(r.dataset._id, '65')
+        self.assertEqual(r.number_raw_micrographs, 800)
+        self.assertAlmostEqual(r.pixel_size_width, 2.030, places=2)
+        self.assertAlmostEqual(r.pixel_size_height, 4.030, places=2)
+        self.assertAlmostEqual(r.image_resolution, 35.0, places=1)
+        self.assertEqual(r.segment, False)
+        self.assertEqual(r.number_of_projections, 10000)
+        self.assertEqual(r.assembly._id, '42')
+        fit, = list(r.fits.items())
+        self.assertEqual(fit[0]._id, '9')
+        self.assertAlmostEqual(fit[1].cross_correlation_coefficient, 0.853,
+                               places=2)
+        self.assertAlmostEqual(fit[1].tr_vector[0], 327.161, places=2)
+        self.assertAlmostEqual(fit[1].rot_matrix[1][2], 0.988628, places=2)
+        self.assertEqual([int(x) for x in fit[1].tr_vector], [327, 83, -227])
+
+    def test_sas_restraint_handler(self):
+        """Test SASRestraintHandler"""
+        fh = StringIO("""
+loop_
+_ihm_sas_restraint.ordinal_id
+_ihm_sas_restraint.dataset_list_id
+_ihm_sas_restraint.model_id
+_ihm_sas_restraint.struct_assembly_id
+_ihm_sas_restraint.profile_segment_flag
+_ihm_sas_restraint.fitting_atom_type
+_ihm_sas_restraint.fitting_method
+_ihm_sas_restraint.fitting_state
+_ihm_sas_restraint.radius_of_gyration
+_ihm_sas_restraint.chi_value
+_ihm_sas_restraint.details
+1 27 8 3 NO 'Heavy atoms' FoXS Single 27.9 1.36 .
+""")
+        s, = ihm.reader.read(fh)
+        r, = s.restraints
+        self.assertEqual(r.dataset._id, '27')
+        self.assertEqual(r.assembly._id, '3')
+        self.assertEqual(r.segment, False)
+        self.assertEqual(r.fitting_method, 'FoXS')
+        self.assertEqual(r.fitting_atom_type, 'Heavy atoms')
+        self.assertEqual(r.multi_state, False)
+        self.assertAlmostEqual(r.radius_of_gyration, 27.9, places=1)
+        fit, = list(r.fits.items())
+        self.assertEqual(fit[0]._id, '8')
+        self.assertAlmostEqual(fit[1].chi_value, 1.36, places=2)
+
+    def test_sphere_obj_site_handler(self):
+        """Test SphereObjSiteHandler"""
+        fh = StringIO("""
+loop_
+_ihm_model_list.ordinal_id
+_ihm_model_list.model_id
+_ihm_model_list.model_group_id
+_ihm_model_list.model_name
+_ihm_model_list.model_group_name
+_ihm_model_list.assembly_id
+_ihm_model_list.protocol_id
+_ihm_model_list.representation_id
+1 1 1 . 'Cluster 1' 1 1 1
+#
+loop_
+_ihm_sphere_obj_site.ordinal_id
+_ihm_sphere_obj_site.entity_id
+_ihm_sphere_obj_site.seq_id_begin
+_ihm_sphere_obj_site.seq_id_end
+_ihm_sphere_obj_site.asym_id
+_ihm_sphere_obj_site.Cartn_x
+_ihm_sphere_obj_site.Cartn_y
+_ihm_sphere_obj_site.Cartn_z
+_ihm_sphere_obj_site.object_radius
+_ihm_sphere_obj_site.rmsf
+_ihm_sphere_obj_site.model_id
+1 1 1 6 A 389.993 145.089 134.782 4.931 . 1
+2 1 7 7 B 406.895 142.176 135.653 3.318 1.34 1
+""")
+        s, = ihm.reader.read(fh)
+        m = s.state_groups[0][0][0][0]
+        s1, s2 = m._spheres
+        self.assertEqual(s1.asym_unit._id, 'A')
+        self.assertEqual(s1.seq_id_range, (1,6))
+        self.assertAlmostEqual(s1.x, 389.993, places=2)
+        self.assertAlmostEqual(s1.y, 145.089, places=2)
+        self.assertAlmostEqual(s1.z, 134.782, places=2)
+        self.assertAlmostEqual(s1.radius, 4.931, places=2)
+        self.assertEqual(s1.rmsf, None)
+        self.assertAlmostEqual(s2.rmsf, 1.34, places=1)
+
+    def test_atom_site_handler(self):
+        """Test AtomSiteHandler"""
+        fh = StringIO("""
+loop_
+_ihm_model_list.ordinal_id
+_ihm_model_list.model_id
+_ihm_model_list.model_group_id
+_ihm_model_list.model_name
+_ihm_model_list.model_group_name
+_ihm_model_list.assembly_id
+_ihm_model_list.protocol_id
+_ihm_model_list.representation_id
+1 1 1 . 'Cluster 1' 1 1 1
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_seq_id
+_atom_site.label_asym_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.label_entity_id
+_atom_site.auth_asym_id
+_atom_site.B_iso_or_equiv
+_atom_site.pdbx_PDB_model_num
+_atom_site.ihm_model_id
+ATOM 1 N N . SER 1 A 54.401 -49.984 -35.287 1 A . 1 1
+HETATM 2 C CA . SER 19 B 54.452 -48.492 -35.210 1 A 42.0 1 1
+""")
+        s, = ihm.reader.read(fh)
+        m = s.state_groups[0][0][0][0]
+        a1, a2 = m._atoms
+        self.assertEqual(a1.asym_unit._id, 'A')
+        self.assertEqual(a1.seq_id, 1)
+        self.assertEqual(a1.atom_id, 'N')
+        self.assertEqual(a1.type_symbol, 'N')
+        self.assertAlmostEqual(a1.x, 54.401, places=2)
+        self.assertAlmostEqual(a1.y, -49.984, places=2)
+        self.assertAlmostEqual(a1.z, -35.287, places=2)
+        self.assertEqual(a1.het, False)
+        self.assertEqual(a1.biso, None)
+
+        self.assertEqual(a2.asym_unit._id, 'B')
+        self.assertEqual(a2.seq_id, 19)
+        self.assertEqual(a2.atom_id, 'CA')
+        self.assertEqual(a2.type_symbol, 'C')
+        self.assertEqual(a2.het, True)
+        self.assertAlmostEqual(a2.biso, 42.0, places=0)
+
 
 if __name__ == '__main__':
     unittest.main()

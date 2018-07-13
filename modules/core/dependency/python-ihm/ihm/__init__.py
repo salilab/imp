@@ -443,7 +443,7 @@ class Citation(object):
        :param int year: Year of publication.
        :param authors: All authors in order, as a list of strings (last name
               followed by initials, e.g. "Smith AJ").
-       :param str doi: Digitial Object Identifier of the publication.
+       :param str doi: Digital Object Identifier of the publication.
     """
     def __init__(self, pmid, title, journal, volume, page_range, year, authors,
                  doi):

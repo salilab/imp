@@ -282,6 +282,16 @@ _foo.var3 test3
         self.assertFalse(r.read_file())
         self.assertEqual(h.data, [])
 
+    def test_eof_after_loop_data(self):
+        """Make sure EOF after loop data is handled"""
+        h = GenericHandler()
+        self._read_cif("""
+loop_
+_foo.bar
+_foo.baz
+x y
+#
+""", {'_foo':h})
 
 if __name__ == '__main__':
     unittest.main()

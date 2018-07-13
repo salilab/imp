@@ -432,6 +432,9 @@ class CifReader(object):
                     break
             elif isinstance(token, _LoopToken):
                 self._read_loop()
+                # Did we hit the end of the file?
+                if self._token_index < 0:
+                    break
         for cat, data in self._category_data.items():
             self.category_handler[cat](data)
         # Clear category data for next call to read_file()

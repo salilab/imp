@@ -8,6 +8,7 @@ import ihm.startmodel
 import ihm.protocol
 import ihm.analysis
 import ihm.model
+import ihm.restraint
 import inspect
 
 def _make_new_entity():
@@ -28,6 +29,21 @@ def _get_int(d, key):
 def _get_float(d, key):
     """Return float(d[key]) or None if key is not in d"""
     return float(d[key]) if key in d else None
+
+def _get_vector3(d, key):
+    """Return a 3D vector (as a list) from d[key+[1..3]] or None if key
+       is not in d"""
+    if key+'[1]' in d:
+        # Assume if one element is present, all are
+        return [float(d[key+"[%d]" % k]) for k in (1,2,3)]
+
+def _get_matrix33(d, key):
+    """Return a 3x3 matrix (as a list of lists) from d[key+[1..3][1..3]]
+       or None if key is not in d"""
+    if key+'[1][1]' in d:
+        # Assume if one element is present, all are
+        return [[float(d[key+"[%d][%d]" % (i,j)]) for j in (1,2,3)]
+                for i in (1,2,3)]
 
 _boolmap = {'YES':True, 'NO':False}
 def _get_bool(d, key):
@@ -118,6 +134,37 @@ class _AnalysisIDMapper(_IDMapper):
             return newcls(*self._cls_args, **self._cls_keys)
 
 
+class _DatasetIDMapper(object):
+    """Handle mapping from mmCIF dataset IDs to Python objects.
+
+       This is similar to _IDMapper but is intended for objects like restraints
+       that don't have their own IDs but instead use the dataset ID.
+
+       :param list system_list: The list in :class:`ihm.System` that keeps
+              track of these objects.
+       :param datasets: Mapping from IDs to Dataset objects.
+       :param class cls: The base class for the Python objects. Its constructor
+              is expected to take a Dataset object as the first argument.
+    """
+    def __init__(self, system_list, datasets, cls, *cls_args, **cls_keys):
+        self.system_list = system_list
+        self.datasets = datasets
+        self._obj_by_id = {}
+        self._cls = cls
+        self._cls_args = cls_args
+        self._cls_keys = cls_keys
+
+    def get_by_dataset(self, dataset_id):
+        dataset = self.datasets.get_by_id(dataset_id)
+        if dataset._id not in self._obj_by_id:
+            r = self._cls(dataset, *self._cls_args, **self._cls_keys)
+            self.system_list.append(r)
+            self._obj_by_id[dataset._id] = r
+        else:
+            r = self._obj_by_id[dataset._id]
+        return r
+
+
 class _SystemReader(object):
     """Track global information for a System being read from a file, such
        as the mapping from IDs to objects."""
@@ -159,6 +206,14 @@ class _SystemReader(object):
                                    ihm.model.Ensemble, *(None,)*2)
         self.densities = _IDMapper(None,
                                    ihm.model.LocalizationDensity, *(None,)*2)
+        self.em3d_restraints = _DatasetIDMapper(self.system.restraints,
+                                   self.datasets,
+                                   ihm.restraint.EM3DRestraint, None)
+        self.em2d_restraints = _IDMapper(self.system.restraints,
+                                   ihm.restraint.EM2DRestraint, *(None,)*2)
+        self.sas_restraints = _DatasetIDMapper(self.system.restraints,
+                                   self.datasets,
+                                   ihm.restraint.SASRestraint, None)
 
 
 class _Handler(object):
@@ -627,6 +682,7 @@ class _ModelListHandler(_Handler):
 
     def finalize(self):
         # Put all model groups not assigned to a state in their own state
+        # todo: handle models not in model groups too?
         model_groups_in_states = set()
         for sg in self.system.state_groups:
             for state in sg:
@@ -697,6 +753,109 @@ class _DensityHandler(_Handler):
         ensemble.densities.append(density)
 
 
+class _EM3DRestraintHandler(_Handler):
+    category = '_ihm_3dem_restraint'
+
+    def __call__(self, d):
+        # EM3D restraints don't have their own IDs - they use the dataset id
+        r = self.sysr.em3d_restraints.get_by_dataset(d['dataset_list_id'])
+        r.assembly = self.sysr.assemblies.get_by_id_or_none(
+                                            d, 'struct_assembly_id')
+        r.fitting_method_citation = self.sysr.citations.get_by_id_or_none(
+                                            d, 'fitting_method_citation_id')
+        self._copy_if_present(r, d, keys=('fitting_method',))
+        r.number_of_gaussians = _get_int(d, 'number_of_gaussians')
+
+        model = self.sysr.models.get_by_id(d['model_id'])
+        ccc = _get_float(d, 'cross_correlation_coefficient')
+        r.fits[model] = ihm.restraint.EM3DRestraintFit(ccc)
+
+
+class _EM2DRestraintHandler(_Handler):
+    category = '_ihm_2dem_class_average_restraint'
+
+    def __call__(self, d):
+        r = self.sysr.em2d_restraints.get_by_id(d['id'])
+        r.dataset = self.sysr.datasets.get_by_id(d['dataset_list_id'])
+        r.number_raw_micrographs = _get_int(d, 'number_raw_micrographs')
+        r.pixel_size_width = _get_float(d, 'pixel_size_width')
+        r.pixel_size_height = _get_float(d, 'pixel_size_height')
+        r.image_resolution = _get_float(d, 'image_resolution')
+        r.segment = _get_bool(d, 'image_segment_flag')
+        r.number_of_projections = _get_int(d, 'number_of_projections')
+        r.assembly = self.sysr.assemblies.get_by_id_or_none(
+                                            d, 'struct_assembly_id')
+        self._copy_if_present(r, d, keys=('details',))
+
+
+class _EM2DFittingHandler(_Handler):
+    category = '_ihm_2dem_class_average_fitting'
+
+    def __call__(self, d):
+        r = self.sysr.em2d_restraints.get_by_id(d['restraint_id'])
+        model = self.sysr.models.get_by_id(d['model_id'])
+        ccc = _get_float(d, 'cross_correlation_coefficient')
+        tr_vector = _get_vector3(d, 'tr_vector')
+        rot_matrix = _get_matrix33(d, 'rot_matrix')
+        r.fits[model] = ihm.restraint.EM2DRestraintFit(
+                                  cross_correlation_coefficient=ccc,
+                                  rot_matrix=rot_matrix, tr_vector=tr_vector)
+
+
+class _SASRestraintHandler(_Handler):
+    category = '_ihm_sas_restraint'
+
+    def __call__(self, d):
+        # SAS restraints don't have their own IDs - they use the dataset id
+        r = self.sysr.sas_restraints.get_by_dataset(d['dataset_list_id'])
+        r.assembly = self.sysr.assemblies.get_by_id_or_none(
+                                            d, 'struct_assembly_id')
+        r.segment = _get_bool(d, 'profile_segment_flag')
+        self._copy_if_present(r, d,
+                keys=('fitting_atom_type', 'fitting_method', 'details'))
+        r.multi_state = d.get('fitting_state', 'Single') != 'Single'
+        r.radius_of_gyration = _get_float(d, 'radius_of_gyration')
+        r.number_of_gaussians = _get_int(d, 'number_of_gaussians')
+
+        model = self.sysr.models.get_by_id(d['model_id'])
+        r.fits[model] = ihm.restraint.SASRestraintFit(
+                                 chi_value=_get_float(d, 'chi_value'))
+
+
+class _SphereObjSiteHandler(_Handler):
+    category = '_ihm_sphere_obj_site'
+
+    def __call__(self, d):
+        model = self.sysr.models.get_by_id(d['model_id'])
+        asym = self.sysr.asym_units.get_by_id(d['asym_id'])
+        rmsf = float(d['rmsf']) if 'rmsf' in d else None
+        s = ihm.model.Sphere(asym_unit=asym,
+                seq_id_range=(int(d['seq_id_begin']), int(d['seq_id_end'])),
+                x=float(d['cartn_x']), y=float(d['cartn_y']),
+                z=float(d['cartn_z']), radius=float(d['object_radius']),
+                rmsf=rmsf)
+        model.add_sphere(s)
+
+
+class _AtomSiteHandler(_Handler):
+    category = '_atom_site'
+
+    def __call__(self, d):
+        # todo: handle fields other than those output by us
+        # todo: handle auth_seq_id
+        model = self.sysr.models.get_by_id(d['pdbx_pdb_model_num'])
+        asym = self.sysr.asym_units.get_by_id(d['label_asym_id'])
+        biso = float(d['b_iso_or_equiv']) if 'b_iso_or_equiv' in d else None
+        a = ihm.model.Atom(asym_unit=asym,
+                seq_id=int(d['label_seq_id']),
+                atom_id=d['label_atom_id'],
+                type_symbol=d['type_symbol'],
+                x=float(d['cartn_x']), y=float(d['cartn_y']),
+                z=float(d['cartn_z']), het=d.get('group_pdb', 'ATOM') != 'ATOM',
+                biso=biso)
+        model.add_atom(a)
+
+
 def read(fh):
     """Read data from the mmCIF file handle `fh`.
     
@@ -721,7 +880,10 @@ def read(fh):
                     _StartingComparativeModelsHandler(s),
                     _ProtocolHandler(s), _PostProcessHandler(s),
                     _ModelListHandler(s), _MultiStateHandler(s),
-                    _EnsembleHandler(s), _DensityHandler(s)]
+                    _EnsembleHandler(s), _DensityHandler(s),
+                    _EM3DRestraintHandler(s), _EM2DRestraintHandler(s),
+                    _EM2DFittingHandler(s), _SASRestraintHandler(s),
+                    _SphereObjSiteHandler(s), _AtomSiteHandler(s)]
         r = ihm.format.CifReader(fh, dict((h.category, h) for h in handlers))
         more_data = r.read_file()
         for h in handlers:
