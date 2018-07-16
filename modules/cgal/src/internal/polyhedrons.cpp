@@ -24,8 +24,12 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 #include <CGAL/make_surface_mesh.h>
 #include <CGAL/Implicit_surface_3.h>
 #include <CGAL/Surface_mesh_simplification/HalfedgeGraph_Polyhedron_3.h>
-#include <CGAL/IO/output_surface_facets_to_polyhedron.h>
 #include <CGAL/version.h>
+#if CGAL_VERSION_NR >= 1041201000
+# include <CGAL/IO/facets_in_complex_2_to_triangle_mesh.h>
+#else
+# include <CGAL/IO/output_surface_facets_to_polyhedron.h>
+#endif
 
 namespace {
 typedef CGAL::Exact_predicates_exact_constructions_kernel EKernel;
@@ -377,7 +381,11 @@ std::pair<algebra::Vector3Ds, Ints> get_iso_surface_t(const Grid &grid,
   C2t3 c2t3(tr);  // 2D-complex in 3D-Delaunay triangulation
   cgal_triangulate_surface(grid, iso_level, c2t3);
   CGAL::Polyhedron_3<GT> poly;
+#if CGAL_VERSION_NR >= 1041201000
+  CGAL::facets_in_complex_2_to_triangle_mesh(c2t3, poly);
+#else
   CGAL::output_surface_facets_to_polyhedron(c2t3, poly);
+#endif
   return get_indexed_facets(poly);
 }
 }
