@@ -11,6 +11,53 @@ TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.reader
 
+
+ASYM_ENTITY = """
+loop_
+_entity_poly_seq.entity_id
+_entity_poly_seq.num
+_entity_poly_seq.mon_id
+_entity_poly_seq.hetero
+1 1 MET .
+1 2 CYS .
+1 3 MET .
+1 4 SER .
+#
+loop_
+_struct_asym.id
+_struct_asym.entity_id
+_struct_asym.details
+A 1 foo
+"""
+
+CENTERS_TRANSFORMS = """
+loop_
+_ihm_geometric_object_center.id
+_ihm_geometric_object_center.xcoord
+_ihm_geometric_object_center.ycoord
+_ihm_geometric_object_center.zcoord
+1 1.000 2.000 3.000
+#
+#
+loop_
+_ihm_geometric_object_transformation.id
+_ihm_geometric_object_transformation.rot_matrix[1][1]
+_ihm_geometric_object_transformation.rot_matrix[2][1]
+_ihm_geometric_object_transformation.rot_matrix[3][1]
+_ihm_geometric_object_transformation.rot_matrix[1][2]
+_ihm_geometric_object_transformation.rot_matrix[2][2]
+_ihm_geometric_object_transformation.rot_matrix[3][2]
+_ihm_geometric_object_transformation.rot_matrix[1][3]
+_ihm_geometric_object_transformation.rot_matrix[2][3]
+_ihm_geometric_object_transformation.rot_matrix[3][3]
+_ihm_geometric_object_transformation.tr_vector[1]
+_ihm_geometric_object_transformation.tr_vector[2]
+_ihm_geometric_object_transformation.tr_vector[3]
+1 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000
+1.000000 1.000 2.000 3.000
+#
+"""
+
 class Tests(unittest.TestCase):
     def test_read(self):
         """Test read() function"""
@@ -20,7 +67,7 @@ class Tests(unittest.TestCase):
 
     def test_system_reader(self):
         """Test SystemReader class"""
-        s = ihm.reader._SystemReader()
+        s = ihm.reader._SystemReader(ihm.model.Model)
 
     def test_id_mapper(self):
         """Test IDMapper class"""
@@ -551,8 +598,8 @@ _ihm_starting_comparative_models.alignment_file_id
         self.assertEqual(t1.asym_id, 'C')
         self.assertEqual(t1.seq_id_range, (7,436))
         self.assertEqual(t1.template_seq_id_range, (9,438))
-        self.assertAlmostEqual(t1.sequence_identity, 90.0, places=1)
-        self.assertEqual(t1.sequence_identity_denominator, 1)
+        self.assertAlmostEqual(float(t1.sequence_identity), 90.0, places=1)
+        self.assertEqual(t1.sequence_identity.denominator, 1)
         self.assertEqual(t1.alignment_file._id, '2')
         self.assertEqual(t2.alignment_file, None)
 
@@ -809,6 +856,13 @@ _ihm_3dem_restraint.cross_correlation_coefficient
         self.assertAlmostEqual(fits[1][1].cross_correlation_coefficient,
                                0.9, places=1)
 
+    def test_get_int_or_string(self):
+        """Test _get_int_or_string function"""
+        d = {'strval':'45A', 'intval':'45'}
+        self.assertEqual(ihm.reader._get_int_or_string(d, 'strval'), '45A')
+        self.assertEqual(ihm.reader._get_int_or_string(d, 'intval'), 45)
+        self.assertEqual(ihm.reader._get_int_or_string(d, 'notpresent'), None)
+
     def test_get_vector3(self):
         """Test _get_vector3 function"""
         d = {'tr_vector[1]':4.0, 'tr_vector[2]':6.0, 'tr_vector[3]':9.0}
@@ -919,6 +973,11 @@ _ihm_sas_restraint.details
 
     def test_sphere_obj_site_handler(self):
         """Test SphereObjSiteHandler"""
+        class MyModel(ihm.model.Model):
+            def add_sphere(self, sphere):
+                super(MyModel, self).add_sphere(sphere)
+                self.sphere_count = len(self._spheres)
+
         fh = StringIO("""
 loop_
 _ihm_model_list.ordinal_id
@@ -946,8 +1005,9 @@ _ihm_sphere_obj_site.model_id
 1 1 1 6 A 389.993 145.089 134.782 4.931 . 1
 2 1 7 7 B 406.895 142.176 135.653 3.318 1.34 1
 """)
-        s, = ihm.reader.read(fh)
+        s, = ihm.reader.read(fh, model_class=MyModel)
         m = s.state_groups[0][0][0][0]
+        self.assertEqual(m.sphere_count, 2)
         s1, s2 = m._spheres
         self.assertEqual(s1.asym_unit._id, 'A')
         self.assertEqual(s1.seq_id_range, (1,6))
@@ -1011,6 +1071,643 @@ HETATM 2 C CA . SER 19 B 54.452 -48.492 -35.210 1 A 42.0 1 1
         self.assertEqual(a2.type_symbol, 'C')
         self.assertEqual(a2.het, True)
         self.assertAlmostEqual(a2.biso, 42.0, places=0)
+
+    def test_atom_site_handler_auth_seq_id(self):
+        """Test AtomSiteHandler handling of auth_seq_id"""
+        fh = StringIO(ASYM_ENTITY + """
+loop_
+_ihm_model_list.ordinal_id
+_ihm_model_list.model_id
+_ihm_model_list.model_group_id
+_ihm_model_list.model_name
+_ihm_model_list.model_group_name
+_ihm_model_list.assembly_id
+_ihm_model_list.protocol_id
+_ihm_model_list.representation_id
+1 1 1 . 'Cluster 1' 1 1 1
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_seq_id
+_atom_site.auth_seq_id
+_atom_site.label_asym_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.label_entity_id
+_atom_site.auth_asym_id
+_atom_site.B_iso_or_equiv
+_atom_site.pdbx_PDB_model_num
+_atom_site.ihm_model_id
+ATOM 1 N N . SER 1 2 A 54.401 -49.984 -35.287 1 A . 1 1
+HETATM 2 C CA . SER 2 20A A 54.452 -48.492 -35.210 1 A 42.0 1 1
+ATOM 3 N N . SER 3 3 A 54.401 -49.984 -35.287 1 A . 1 1
+""")
+        s, = ihm.reader.read(fh)
+        asym, = s.asym_units
+        self.assertEqual(asym.auth_seq_id_map, {1: 2, 2: '20A'})
+
+    def test_derived_distance_restraint_handler(self):
+        """Test DerivedDistanceRestraintHandler"""
+        feats = """
+loop_
+_ihm_poly_atom_feature.ordinal_id
+_ihm_poly_atom_feature.feature_id
+_ihm_poly_atom_feature.entity_id
+_ihm_poly_atom_feature.asym_id
+_ihm_poly_atom_feature.seq_id
+_ihm_poly_atom_feature.comp_id
+_ihm_poly_atom_feature.atom_id
+1 1 1 A 1 ALA CA
+#
+loop_
+_ihm_poly_residue_feature.ordinal_id
+_ihm_poly_residue_feature.feature_id
+_ihm_poly_residue_feature.entity_id
+_ihm_poly_residue_feature.asym_id
+_ihm_poly_residue_feature.seq_id_begin
+_ihm_poly_residue_feature.comp_id_begin
+_ihm_poly_residue_feature.seq_id_end
+_ihm_poly_residue_feature.comp_id_end
+1 2 1 B 2 CYS 3 GLY
+"""
+        rsr = """
+loop_
+_ihm_derived_distance_restraint.id
+_ihm_derived_distance_restraint.feature_id_1
+_ihm_derived_distance_restraint.feature_id_2
+_ihm_derived_distance_restraint.restraint_type
+_ihm_derived_distance_restraint.distance_lower_limit
+_ihm_derived_distance_restraint.distance_upper_limit
+_ihm_derived_distance_restraint.probability
+_ihm_derived_distance_restraint.group_conditionality
+_ihm_derived_distance_restraint.dataset_list_id
+1 1 2 'lower bound' 25.000 . 0.800 . 97
+2 1 2 'upper bound' . 45.000 0.800 ALL 98
+3 1 2 'lower and upper bound' 22.000 45.000 0.800 ANY 99
+4 1 2 'harmonic' 35.000 35.000 0.800 ALL .
+"""
+        # Test both ways to make sure features still work if they are
+        # referenced by ID before their type is known
+        for text in (feats+rsr, rsr+feats):
+            fh = StringIO(text)
+            s, = ihm.reader.read(fh)
+            self.assertEqual(len(s.orphan_features), 2)
+            r1, r2, r3, r4 = s.restraints
+            self.assertEqual(r1.dataset._id, '97')
+            self.assertTrue(isinstance(r1.feature1,
+                                       ihm.restraint.PolyAtomFeature))
+            self.assertEqual(len(r1.feature1.atoms), 1)
+            self.assertEqual(r1.feature1.atoms[0].id, 'CA')
+            self.assertEqual(r1.feature1.atoms[0].residue.seq_id, 1)
+            self.assertTrue(isinstance(r1.feature2,
+                                       ihm.restraint.PolyResidueFeature))
+            self.assertEqual(len(r1.feature2.ranges), 1)
+            self.assertEqual(r1.feature2.ranges[0].seq_id_range, (2,3))
+            self.assertTrue(isinstance(r1.distance,
+                                 ihm.restraint.LowerBoundDistanceRestraint))
+            self.assertAlmostEqual(r1.distance.distance, 25.000, places=1)
+            self.assertAlmostEqual(r1.probability, 0.8000, places=1)
+            self.assertEqual(r1.restrain_all, None)
+            self.assertEqual(r2.restrain_all, True)
+            self.assertEqual(r3.restrain_all, False)
+            self.assertTrue(isinstance(r2.distance,
+                                 ihm.restraint.UpperBoundDistanceRestraint))
+            self.assertTrue(isinstance(r3.distance,
+                             ihm.restraint.LowerUpperBoundDistanceRestraint))
+            self.assertTrue(isinstance(r4.distance,
+                                 ihm.restraint.HarmonicDistanceRestraint))
+
+    def test_sphere_handler(self):
+        """Test SphereHandler"""
+        obj_list = CENTERS_TRANSFORMS + """
+loop_
+_ihm_geometric_object_list.object_id
+_ihm_geometric_object_list.object_type
+_ihm_geometric_object_list.object_name
+_ihm_geometric_object_list.object_description
+_ihm_geometric_object_list.other_details
+1 sphere 'my sphere' 'a test sphere' 'some details'
+"""
+        spheres = """
+loop_
+_ihm_geometric_object_sphere.object_id
+_ihm_geometric_object_sphere.center_id
+_ihm_geometric_object_sphere.transformation_id
+_ihm_geometric_object_sphere.radius_r
+1 1 1 2.200
+2 . . 3.200
+"""
+        # Order of categories shouldn't matter
+        for text in (obj_list+spheres, spheres+obj_list):
+            fh = StringIO(text)
+            s, = ihm.reader.read(fh)
+            s1, s2 = s.orphan_geometric_objects
+            self.assertTrue(isinstance(s1, ihm.geometry.Sphere))
+            self.assertTrue(isinstance(s2, ihm.geometry.Sphere))
+            self.assertEqual(s1.name, 'my sphere')
+            self.assertEqual(s1.description, 'a test sphere')
+            self.assertEqual(s1.details, 'some details')
+            self.assertAlmostEqual(s1.center.x, 1.000, places=1)
+            self.assertAlmostEqual(s1.center.y, 2.000, places=1)
+            self.assertAlmostEqual(s1.center.z, 3.000, places=1)
+            self.assertAlmostEqual(s1.transformation.tr_vector[1], 2.000,
+                                   places=1)
+            self.assertEqual(s2.name, None)
+            self.assertEqual(s2.center, None)
+            self.assertEqual(s2.transformation, None)
+
+    def test_torus_handler(self):
+        """Test TorusHandler"""
+        obj_list = CENTERS_TRANSFORMS + """
+loop_
+_ihm_geometric_object_list.object_id
+_ihm_geometric_object_list.object_type
+_ihm_geometric_object_list.object_name
+_ihm_geometric_object_list.object_description
+_ihm_geometric_object_list.other_details
+1 torus . . .
+"""
+        tori = """
+loop_
+_ihm_geometric_object_torus.object_id
+_ihm_geometric_object_torus.center_id
+_ihm_geometric_object_torus.transformation_id
+_ihm_geometric_object_torus.major_radius_R
+_ihm_geometric_object_torus.minor_radius_r
+1 1 1 5.600 1.200
+2 . . 3.600 2.200
+"""
+        # Order of categories shouldn't matter
+        for text in (obj_list+tori, tori+obj_list):
+            fh = StringIO(text)
+            s, = ihm.reader.read(fh)
+            t1, t2 = s.orphan_geometric_objects
+            self.assertTrue(isinstance(t1, ihm.geometry.Torus))
+            self.assertTrue(isinstance(t2, ihm.geometry.Torus))
+            self.assertAlmostEqual(t1.center.x, 1.000, places=1)
+            self.assertAlmostEqual(t1.transformation.tr_vector[1], 2.000,
+                                   places=1)
+            self.assertAlmostEqual(t1.major_radius, 5.600, places=1)
+            self.assertAlmostEqual(t1.minor_radius, 1.200, places=1)
+            self.assertEqual(t2.center, None)
+            self.assertEqual(t2.transformation, None)
+
+    def test_half_torus_handler(self):
+        """Test HalfTorusHandler"""
+        obj_list = CENTERS_TRANSFORMS + """
+loop_
+_ihm_geometric_object_list.object_id
+_ihm_geometric_object_list.object_type
+_ihm_geometric_object_list.object_name
+_ihm_geometric_object_list.object_description
+_ihm_geometric_object_list.other_details
+1 half-torus . . .
+2 half-torus . . .
+3 half-torus . . .
+"""
+        tori = """
+loop_
+_ihm_geometric_object_torus.object_id
+_ihm_geometric_object_torus.center_id
+_ihm_geometric_object_torus.transformation_id
+_ihm_geometric_object_torus.major_radius_R
+_ihm_geometric_object_torus.minor_radius_r
+1 1 1 5.600 1.200
+2 . . 3.600 2.200
+3 . . 3.600 2.200
+"""
+        half_tori = """
+loop_
+_ihm_geometric_object_half_torus.object_id
+_ihm_geometric_object_half_torus.thickness_th
+_ihm_geometric_object_half_torus.section
+1 0.100 'inner half'
+2 0.200 'outer half'
+3 0.200 .
+"""
+
+        # Order of categories shouldn't matter
+        for text in (obj_list+tori+half_tori, tori+half_tori+obj_list,
+                     obj_list+half_tori+tori, half_tori+tori+obj_list):
+            fh = StringIO(text)
+            s, = ihm.reader.read(fh)
+            t1, t2, t3 = s.orphan_geometric_objects
+            self.assertTrue(isinstance(t1, ihm.geometry.HalfTorus))
+            self.assertTrue(isinstance(t2, ihm.geometry.HalfTorus))
+            self.assertTrue(isinstance(t3, ihm.geometry.HalfTorus))
+            self.assertAlmostEqual(t1.center.x, 1.000, places=1)
+            self.assertAlmostEqual(t1.transformation.tr_vector[1], 2.000,
+                                   places=1)
+            self.assertAlmostEqual(t1.major_radius, 5.600, places=1)
+            self.assertAlmostEqual(t1.minor_radius, 1.200, places=1)
+            self.assertAlmostEqual(t1.thickness, 0.100, places=1)
+            self.assertEqual(t1.inner, True)
+            self.assertEqual(t2.center, None)
+            self.assertEqual(t2.transformation, None)
+            self.assertEqual(t2.inner, False)
+            self.assertEqual(t3.inner, None)
+
+    def test_axis_handler(self):
+        """Test AxisHandler"""
+        obj_list = CENTERS_TRANSFORMS + """
+loop_
+_ihm_geometric_object_list.object_id
+_ihm_geometric_object_list.object_type
+_ihm_geometric_object_list.object_name
+_ihm_geometric_object_list.object_description
+_ihm_geometric_object_list.other_details
+1 axis . . .
+2 axis . . .
+"""
+        axes = """
+loop_
+_ihm_geometric_object_axis.object_id
+_ihm_geometric_object_axis.axis_type
+_ihm_geometric_object_axis.transformation_id
+1 x-axis 1
+2 y-axis .
+"""
+        # Order of categories shouldn't matter
+        for text in (obj_list+axes, axes+obj_list):
+            fh = StringIO(text)
+            s, = ihm.reader.read(fh)
+            a1, a2 = s.orphan_geometric_objects
+            self.assertTrue(isinstance(a1, ihm.geometry.XAxis))
+            self.assertTrue(isinstance(a2, ihm.geometry.YAxis))
+            self.assertAlmostEqual(a1.transformation.tr_vector[1], 2.000,
+                                   places=1)
+            self.assertEqual(a2.transformation, None)
+
+    def test_plane_handler(self):
+        """Test PlaneHandler"""
+        obj_list = CENTERS_TRANSFORMS + """
+loop_
+_ihm_geometric_object_list.object_id
+_ihm_geometric_object_list.object_type
+_ihm_geometric_object_list.object_name
+_ihm_geometric_object_list.object_description
+_ihm_geometric_object_list.other_details
+1 plane . . .
+2 plane . . .
+"""
+        planes = """
+loop_
+_ihm_geometric_object_plane.object_id
+_ihm_geometric_object_plane.plane_type
+_ihm_geometric_object_plane.transformation_id
+1 xy-plane 1
+2 yz-plane .
+"""
+        # Order of categories shouldn't matter
+        for text in (obj_list+planes, planes+obj_list):
+            fh = StringIO(text)
+            s, = ihm.reader.read(fh)
+            p1, p2 = s.orphan_geometric_objects
+            self.assertTrue(isinstance(p1, ihm.geometry.XYPlane))
+            self.assertTrue(isinstance(p2, ihm.geometry.YZPlane))
+            self.assertAlmostEqual(p1.transformation.tr_vector[1], 2.000,
+                                   places=1)
+            self.assertEqual(p2.transformation, None)
+
+    def test_geometric_restraint_handler(self):
+        """Test GeometricRestraintHandler"""
+        fh = StringIO("""
+loop_
+_ihm_geometric_object_distance_restraint.id
+_ihm_geometric_object_distance_restraint.object_id
+_ihm_geometric_object_distance_restraint.feature_id
+_ihm_geometric_object_distance_restraint.object_characteristic
+_ihm_geometric_object_distance_restraint.restraint_type
+_ihm_geometric_object_distance_restraint.harmonic_force_constant
+_ihm_geometric_object_distance_restraint.distance_lower_limit
+_ihm_geometric_object_distance_restraint.distance_upper_limit
+_ihm_geometric_object_distance_restraint.group_conditionality
+_ihm_geometric_object_distance_restraint.dataset_list_id
+1 23 44 other 'upper bound' 2.000 . 25.000 ANY 97
+2 23 44 center 'lower bound' 2.000 15.000 . ALL .
+3 23 44 'inner surface' 'lower and upper bound' 2.000 10.000 25.000 . 97
+4 23 44 'outer surface' 'harmonic' 2.000 . 25.000 . 97
+#
+""")
+        s, = ihm.reader.read(fh)
+        r1, r2, r3, r4 = s.restraints
+        self.assertTrue(isinstance(r1,
+                             ihm.restraint.GeometricRestraint))
+        self.assertEqual(r1.dataset._id, '97')
+        self.assertEqual(r1.geometric_object._id, '23')
+        self.assertEqual(r1.feature._id, '44')
+        self.assertTrue(isinstance(r1.distance,
+                             ihm.restraint.UpperBoundDistanceRestraint))
+        self.assertAlmostEqual(r1.distance.distance, 25.000, places=1)
+        self.assertAlmostEqual(r1.harmonic_force_constant, 2.000, places=1)
+        self.assertEqual(r1.restrain_all, False)
+        self.assertEqual(r2.restrain_all, True)
+        self.assertEqual(r3.restrain_all, None)
+
+        self.assertTrue(isinstance(r2,
+                             ihm.restraint.CenterGeometricRestraint))
+        self.assertTrue(isinstance(r3,
+                             ihm.restraint.InnerSurfaceGeometricRestraint))
+        self.assertTrue(isinstance(r4,
+                             ihm.restraint.OuterSurfaceGeometricRestraint))
+
+        self.assertTrue(isinstance(r2.distance,
+                             ihm.restraint.LowerBoundDistanceRestraint))
+        self.assertTrue(isinstance(r3.distance,
+                             ihm.restraint.LowerUpperBoundDistanceRestraint))
+        self.assertTrue(isinstance(r4.distance,
+                             ihm.restraint.HarmonicDistanceRestraint))
+
+    def test_poly_seq_scheme_handler_offset(self):
+        """Test PolySeqSchemeHandler with constant offset"""
+        fh = StringIO(ASYM_ENTITY + """
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.auth_seq_num
+A 1 1 6
+A 1 2 7
+A 1 3 8
+A 1 4 9
+""")
+        s, = ihm.reader.read(fh)
+        asym, = s.asym_units
+        self.assertEqual(asym.auth_seq_id_map, 5)
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
+                         [6,7,8,9])
+
+    def test_poly_seq_scheme_handler_empty(self):
+        """Test PolySeqSchemeHandler with no poly_seq_scheme"""
+        fh = StringIO(ASYM_ENTITY)
+        s, = ihm.reader.read(fh)
+        asym, = s.asym_units
+        self.assertEqual(asym.auth_seq_id_map, 0)
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
+                         [1,2,3,4])
+
+    def test_poly_seq_scheme_handler_nop(self):
+        """Test PolySeqSchemeHandler with a do-nothing poly_seq_scheme"""
+        fh = StringIO(ASYM_ENTITY + """
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.auth_seq_num
+A 1 1 1
+A 1 2 2
+A 1 3 3
+""")
+        s, = ihm.reader.read(fh)
+        asym, = s.asym_units
+        self.assertEqual(asym.auth_seq_id_map, 0)
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
+                         [1,2,3,4])
+
+    def test_poly_seq_scheme_handler_partial(self):
+        """Test PolySeqSchemeHandler with partial information"""
+        fh = StringIO(ASYM_ENTITY + """
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.auth_seq_num
+A 1 1 6
+A 1 2 7
+A 1 3 8
+""")
+        s, = ihm.reader.read(fh)
+        asym, = s.asym_units
+        # No mapping for residue 4
+        self.assertEqual(asym.auth_seq_id_map, {1:6, 2:7, 3:8})
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
+                         [6,7,8,4])
+
+    def test_poly_seq_scheme_handler_incon_off(self):
+        """Test PolySeqSchemeHandler with inconsistent offset"""
+        fh = StringIO(ASYM_ENTITY + """
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.auth_seq_num
+A 1 1 6
+A 1 2 7
+A 1 3 8
+A 1 4 10
+""")
+        s, = ihm.reader.read(fh)
+        asym, = s.asym_units
+        self.assertEqual(asym.auth_seq_id_map, {1:6, 2:7, 3:8, 4:10})
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
+                         [6,7,8,10])
+
+    def test_poly_seq_scheme_handler_str_seq_id(self):
+        """Test PolySeqSchemeHandler with a non-integer auth_seq_num"""
+        fh = StringIO(ASYM_ENTITY + """
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.auth_seq_num
+A 1 1 6
+A 1 2 7
+A 1 3 8
+A 1 4 9A
+""")
+        s, = ihm.reader.read(fh)
+        asym, = s.asym_units
+        self.assertEqual(asym.auth_seq_id_map, {1:6, 2:7, 3:8, 4:'9A'})
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
+                         [6,7,8,'9A'])
+
+    def test_cross_link_list_handler(self):
+        """Test CrossLinkListHandler"""
+        fh = StringIO("""
+loop_
+_ihm_cross_link_list.id
+_ihm_cross_link_list.group_id
+_ihm_cross_link_list.entity_description_1
+_ihm_cross_link_list.entity_id_1
+_ihm_cross_link_list.seq_id_1
+_ihm_cross_link_list.comp_id_1
+_ihm_cross_link_list.entity_description_2
+_ihm_cross_link_list.entity_id_2
+_ihm_cross_link_list.seq_id_2
+_ihm_cross_link_list.comp_id_2
+_ihm_cross_link_list.linker_type
+_ihm_cross_link_list.dataset_list_id
+1 1 foo 1 2 THR foo 1 3 CYS DSS 97
+2 2 foo 1 2 THR bar 2 3 PHE DSS 97
+3 2 foo 1 2 THR bar 2 2 GLU DSS 97
+4 3 foo 1 1 ALA bar 2 1 ASP DSS 97
+5 4 foo 1 1 ALA bar 2 1 ASP EDC 97
+6 5 foo 1 1 ALA bar 2 1 ASP DSS 98
+""")
+        s, = ihm.reader.read(fh)
+        # Check grouping
+        self.assertEqual([[len(g) for g in r.experimental_cross_links]
+                          for r in s.restraints], [[1, 2, 1], [1], [1]])
+        r1, r2, r3 = s.restraints
+        self.assertEqual(r1.dataset._id, '97')
+        self.assertEqual(r1.linker_type, 'DSS')
+        xl = r1.experimental_cross_links[1][0]
+        self.assertEqual(xl.residue1.entity._id, '1')
+        self.assertEqual(xl.residue2.entity._id, '2')
+        self.assertEqual(xl.residue1.seq_id, 2)
+        self.assertEqual(xl.residue2.seq_id, 3)
+
+    def test_cross_link_restraint_handler(self):
+        """Test CrossLinkRestraintHandler"""
+        xl_list = """
+loop_
+_ihm_cross_link_list.id
+_ihm_cross_link_list.group_id
+_ihm_cross_link_list.entity_description_1
+_ihm_cross_link_list.entity_id_1
+_ihm_cross_link_list.seq_id_1
+_ihm_cross_link_list.comp_id_1
+_ihm_cross_link_list.entity_description_2
+_ihm_cross_link_list.entity_id_2
+_ihm_cross_link_list.seq_id_2
+_ihm_cross_link_list.comp_id_2
+_ihm_cross_link_list.linker_type
+_ihm_cross_link_list.dataset_list_id
+1 1 foo 1 2 THR foo 1 3 CYS DSS 97
+2 2 foo 1 2 THR bar 2 3 PHE DSS 97
+"""
+        xl_rsr = """
+loop_
+_ihm_cross_link_restraint.id
+_ihm_cross_link_restraint.group_id
+_ihm_cross_link_restraint.entity_id_1
+_ihm_cross_link_restraint.asym_id_1
+_ihm_cross_link_restraint.seq_id_1
+_ihm_cross_link_restraint.comp_id_1
+_ihm_cross_link_restraint.entity_id_2
+_ihm_cross_link_restraint.asym_id_2
+_ihm_cross_link_restraint.seq_id_2
+_ihm_cross_link_restraint.comp_id_2
+_ihm_cross_link_restraint.atom_id_1
+_ihm_cross_link_restraint.atom_id_2
+_ihm_cross_link_restraint.restraint_type
+_ihm_cross_link_restraint.conditional_crosslink_flag
+_ihm_cross_link_restraint.model_granularity
+_ihm_cross_link_restraint.distance_threshold
+_ihm_cross_link_restraint.psi
+_ihm_cross_link_restraint.sigma_1
+_ihm_cross_link_restraint.sigma_2
+1 1 1 A 2 THR 1 B 3 CYS . . 'upper bound' ALL by-residue 25.000 0.500 1.000
+2.000
+2 2 1 A 2 THR 2 B 2 GLU C N 'lower bound' ANY by-atom 34.000 . . .
+"""
+        # Order of categories shouldn't matter
+        for text in (xl_list+xl_rsr, xl_rsr+xl_list):
+            fh = StringIO(text)
+            s, = ihm.reader.read(fh)
+            r, = s.restraints
+            xl1, xl2 = r.cross_links
+            self.assertTrue(isinstance(xl1, ihm.restraint.ResidueCrossLink))
+            self.assertEqual(xl1.experimental_cross_link.residue1.seq_id, 2)
+            self.assertEqual(xl1.experimental_cross_link.residue2.seq_id, 3)
+            self.assertEqual(xl1.fits, {})
+            self.assertEqual(xl1.asym1._id, 'A')
+            self.assertEqual(xl1.asym2._id, 'B')
+            self.assertTrue(isinstance(xl1.distance,
+                                 ihm.restraint.UpperBoundDistanceRestraint))
+            self.assertAlmostEqual(xl1.distance.distance, 25.000, places=1)
+            self.assertAlmostEqual(xl1.psi, 0.500, places=1)
+            self.assertAlmostEqual(xl1.sigma1, 1.000, places=1)
+            self.assertAlmostEqual(xl1.sigma2, 2.000, places=1)
+
+            self.assertTrue(isinstance(xl2, ihm.restraint.AtomCrossLink))
+            self.assertEqual(xl2.fits, {})
+            self.assertTrue(isinstance(xl2.distance,
+                                 ihm.restraint.LowerBoundDistanceRestraint))
+            self.assertTrue(xl2.atom1, 'C')
+            self.assertTrue(xl2.atom2, 'N')
+            self.assertAlmostEqual(xl2.distance.distance, 34.000, places=1)
+            self.assertEqual(xl2.psi, None)
+            self.assertEqual(xl2.sigma1, None)
+            self.assertEqual(xl2.sigma2, None)
+
+    def test_cross_link_result_handler(self):
+        """Test CrossLinkResultHandler"""
+        xl_list = """
+loop_
+_ihm_cross_link_list.id
+_ihm_cross_link_list.group_id
+_ihm_cross_link_list.entity_description_1
+_ihm_cross_link_list.entity_id_1
+_ihm_cross_link_list.seq_id_1
+_ihm_cross_link_list.comp_id_1
+_ihm_cross_link_list.entity_description_2
+_ihm_cross_link_list.entity_id_2
+_ihm_cross_link_list.seq_id_2
+_ihm_cross_link_list.comp_id_2
+_ihm_cross_link_list.linker_type
+_ihm_cross_link_list.dataset_list_id
+1 1 foo 1 2 THR foo 1 3 CYS DSS 97
+"""
+        xl_rsr = """
+loop_
+_ihm_cross_link_restraint.id
+_ihm_cross_link_restraint.group_id
+_ihm_cross_link_restraint.entity_id_1
+_ihm_cross_link_restraint.asym_id_1
+_ihm_cross_link_restraint.seq_id_1
+_ihm_cross_link_restraint.comp_id_1
+_ihm_cross_link_restraint.entity_id_2
+_ihm_cross_link_restraint.asym_id_2
+_ihm_cross_link_restraint.seq_id_2
+_ihm_cross_link_restraint.comp_id_2
+_ihm_cross_link_restraint.atom_id_1
+_ihm_cross_link_restraint.atom_id_2
+_ihm_cross_link_restraint.restraint_type
+_ihm_cross_link_restraint.conditional_crosslink_flag
+_ihm_cross_link_restraint.model_granularity
+_ihm_cross_link_restraint.distance_threshold
+_ihm_cross_link_restraint.psi
+_ihm_cross_link_restraint.sigma_1
+_ihm_cross_link_restraint.sigma_2
+1 1 1 A 2 THR 1 B 3 CYS . . 'upper bound' ALL by-residue 25.000 0.500 1.000
+2.000
+"""
+        xl_fit = """
+loop_
+_ihm_cross_link_result_parameters.ordinal_id
+_ihm_cross_link_result_parameters.restraint_id
+_ihm_cross_link_result_parameters.model_id
+_ihm_cross_link_result_parameters.psi
+_ihm_cross_link_result_parameters.sigma_1
+_ihm_cross_link_result_parameters.sigma_2
+1 1 201 0.100 4.200 2.100
+2 1 301 . . .
+"""
+        # Order of categories shouldn't matter
+        for text in (xl_list+xl_rsr+xl_fit, xl_fit+xl_rsr+xl_list):
+            fh = StringIO(text)
+            s, = ihm.reader.read(fh)
+            r, = s.restraints
+            xl, = r.cross_links
+            # Sort fits by model ID
+            fits = sorted(xl.fits.items(), key=lambda x:x[0]._id)
+            self.assertEqual(len(fits), 2)
+            self.assertEqual(fits[0][0]._id, '201')
+            self.assertAlmostEqual(fits[0][1].psi, 0.100, places=1)
+            self.assertAlmostEqual(fits[0][1].sigma1, 4.200, places=1)
+            self.assertAlmostEqual(fits[0][1].sigma2, 2.100, places=1)
+
+            self.assertEqual(fits[1][0]._id, '301')
+            self.assertEqual(fits[1][1].psi, None)
+            self.assertEqual(fits[1][1].sigma1, None)
+            self.assertEqual(fits[1][1].sigma2, None)
 
 
 if __name__ == '__main__':

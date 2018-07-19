@@ -270,7 +270,7 @@ class CrossLink(object):
     pass
 
 
-class ResidueCrossLink(object):
+class ResidueCrossLink(CrossLink):
     """A cross-link used in the modeling, applied to residue alpha carbon atoms.
 
        :param experimental_cross_link: The corresponding cross-link identified
@@ -306,7 +306,7 @@ class ResidueCrossLink(object):
         self.fits = {}
 
 
-class FeatureCrossLink(object):
+class FeatureCrossLink(CrossLink):
     """A cross-link used in the modeling, applied to the closest primitive
        object with the highest resolution.
 
@@ -343,7 +343,7 @@ class FeatureCrossLink(object):
         self.fits = {}
 
 
-class AtomCrossLink(object):
+class AtomCrossLink(CrossLink):
     """A cross-link used in the modeling, applied to the specified atoms.
 
        :param experimental_cross_link: The corresponding cross-link identified

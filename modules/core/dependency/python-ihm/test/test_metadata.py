@@ -176,11 +176,15 @@ class Tests(unittest.TestCase):
         self.assertEqual(s1.asym_id, 'C')
         self.assertEqual(s1.seq_id_range, (33,424))
         self.assertEqual(s1.template_seq_id_range, (33,424))
-        self.assertAlmostEqual(s1.sequence_identity, 100.0, places=1)
+        self.assertAlmostEqual(float(s1.sequence_identity), 100.0, places=1)
+        self.assertEqual(s1.sequence_identity.denominator,
+                     ihm.startmodel.SequenceIdentityDenominator.SHORTER_LENGTH)
         self.assertEqual(s2.asym_id, 'G')
         self.assertEqual(s2.seq_id_range, (429,488))
         self.assertEqual(s2.template_seq_id_range, (482,551))
-        self.assertAlmostEqual(s2.sequence_identity, 10.0, places=1)
+        self.assertAlmostEqual(float(s2.sequence_identity), 10.0, places=1)
+        self.assertEqual(s2.sequence_identity.denominator,
+                     ihm.startmodel.SequenceIdentityDenominator.SHORTER_LENGTH)
         self.assertEqual(dataset.data_type, 'Comparative model')
         self.assertEqual(dataset.location.path, pdbname)
         self.assertEqual(dataset.location.repo, None)

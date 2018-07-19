@@ -9,6 +9,7 @@ import ihm.protocol
 import ihm.analysis
 import ihm.model
 import ihm.restraint
+import ihm.geometry
 import inspect
 
 def _make_new_entity():
@@ -25,6 +26,13 @@ def _get_lower(d, key):
 def _get_int(d, key):
     """Return int(d[key]) or None if key is not in d"""
     return int(d[key]) if key in d else None
+
+def _get_int_or_string(d, key):
+    """Return d[key] as an int or str as appropriate,
+       or None if key is not in d"""
+    if key in d:
+        val = d[key]
+        return int(val) if val.isdigit() else val
 
 def _get_float(d, key):
     """Return float(d[key]) or None if key is not in d"""
@@ -68,25 +76,33 @@ class _IDMapper(object):
         self._cls_args = cls_args
         self._cls_keys = cls_keys
 
+    def get_all(self):
+        """Yield all objects seen so far (unordered)"""
+        return self._obj_by_id.values()
+
     def _make_new_object(self, newcls=None):
         if newcls is None:
             newcls = self._cls
         return newcls(*self._cls_args, **self._cls_keys)
+
+    def _update_old_object(self, obj, newcls=None):
+        # If this object was referenced by another table before it was
+        # created, it may have the wrong class - fix that retroactively
+        # (need to be careful that old and new classes are compatible)
+        if newcls:
+            obj.__class__ = newcls
 
     def get_by_id(self, objid, newcls=None):
         """Get the object with given ID, creating it if it doesn't already
            exist."""
         if objid in self._obj_by_id:
             obj = self._obj_by_id[objid]
-            # If this object was referenced by another table before it was
-            # created, it may have the wrong class - fix that retroactively
-            # (need to be careful that old and new classes are compatible)
-            if newcls:
-                obj.__class__ = newcls
+            self._update_old_object(obj, newcls)
             return obj
         else:
             newobj = self._make_new_object(newcls)
-            setattr(newobj, self.id_attr, objid)
+            if self.id_attr is not None:
+                setattr(newobj, self.id_attr, objid)
             self._obj_by_id[objid] = newobj
             if self.system_list is not None:
                 self.system_list.append(newobj)
@@ -134,6 +150,86 @@ class _AnalysisIDMapper(_IDMapper):
             return newcls(*self._cls_args, **self._cls_keys)
 
 
+class _FeatureIDMapper(_IDMapper):
+    """Add extra handling to _IDMapper for restraint features"""
+
+    def _make_new_object(self, newcls=None):
+        if newcls is None:
+            # Make Feature base class (takes no args)
+            return self._cls()
+        else:
+            # Make subclass (takes one ranges/atoms argument)
+            return newcls([])
+
+    def _update_old_object(self, obj, newcls=None):
+        super(_FeatureIDMapper, self)._update_old_object(obj, newcls)
+        # Add missing members if the base class was originally instantianted
+        if newcls is ihm.restraint.PolyResidueFeature \
+           and not hasattr(obj, 'ranges'):
+            obj.ranges = []
+        elif newcls is ihm.restraint.PolyAtomFeature \
+           and not hasattr(obj, 'atoms'):
+            obj.atoms = []
+
+
+class _GeometryIDMapper(_IDMapper):
+    """Add extra handling to _IDMapper for geometric objects"""
+
+    _members = {ihm.geometry.Sphere: ('center', 'radius', 'transformation'),
+                ihm.geometry.Torus: ('center', 'transformation',
+                                     'major_radius', 'minor_radius'),
+                ihm.geometry.HalfTorus: ('center', 'transformation',
+                                         'major_radius', 'minor_radius',
+                                         'thickness'),
+                ihm.geometry.XAxis: ('transformation',),
+                ihm.geometry.YAxis: ('transformation',),
+                ihm.geometry.ZAxis: ('transformation',),
+                ihm.geometry.XYPlane: ('transformation',),
+                ihm.geometry.YZPlane: ('transformation',),
+                ihm.geometry.XZPlane: ('transformation',)}
+
+    def _make_new_object(self, newcls=None):
+        if newcls is None:
+            # Make GeometricObject base class (takes no args)
+            return self._cls()
+        else:
+            # Make subclass (takes variable number of args)
+            len_args = {ihm.geometry.Sphere: 2,
+                        ihm.geometry.Torus: 3,
+                        ihm.geometry.HalfTorus: 4}.get(newcls, 0)
+            return newcls(*(None,)*len_args)
+
+    def _update_old_object(self, obj, newcls=None):
+        # Don't revert a HalfTorus back to a Torus
+        if newcls is ihm.geometry.Torus \
+           and isinstance(obj, ihm.geometry.HalfTorus):
+            return
+        # Don't revert a derived class back to a base class
+        elif newcls and isinstance(obj, newcls):
+            return
+        super(_GeometryIDMapper, self)._update_old_object(obj, newcls)
+        # Add missing members if the base class was originally instantianted
+        for member in self._members.get(newcls, ()):
+           if not hasattr(obj, member):
+               setattr(obj, member, None)
+
+
+class _CrossLinkIDMapper(_IDMapper):
+    """Add extra handling to _IDMapper for cross links"""
+
+    def _make_new_object(self, newcls=None):
+        if newcls is None:
+            # Make base class (takes no args)
+            obj = self._cls()
+            # Need fits in case we never decide on a type
+            obj.fits = {}
+            return obj
+        elif newcls is ihm.restraint.AtomCrossLink:
+            return newcls(*(None,)*6)
+        else:
+            return newcls(*(None,)*4)
+
+
 class _DatasetIDMapper(object):
     """Handle mapping from mmCIF dataset IDs to Python objects.
 
@@ -165,10 +261,33 @@ class _DatasetIDMapper(object):
         return r
 
 
+class _XLRestraintMapper(object):
+    """Map entries to CrossLinkRestraint"""
+
+    def __init__(self, system_list):
+        self.system_list = system_list
+        self._seen_rsrs = {}
+
+    def get_by_attrs(self, dataset, linker_type):
+        """Group all crosslinks with same dataset and linker type in one
+           CrossLinkRestraint object"""
+        k = (dataset._id, linker_type)
+        if k not in self._seen_rsrs:
+            r = ihm.restraint.CrossLinkRestraint(dataset, linker_type)
+            self.system_list.append(r)
+            self._seen_rsrs[k] = r
+        return self._seen_rsrs[k]
+
+    def get_all(self):
+        """Yield all objects seen so far (unordered)"""
+        return self._seen_rsrs.values()
+
+
+
 class _SystemReader(object):
     """Track global information for a System being read from a file, such
        as the mapping from IDs to objects."""
-    def __init__(self):
+    def __init__(self, model_class):
         self.system = ihm.System()
         self.software = _IDMapper(self.system.software, ihm.Software,
                                   *(None,)*4)
@@ -197,7 +316,7 @@ class _SystemReader(object):
         self.analysis_steps = _AnalysisIDMapper(None, ihm.analysis.Step,
                                   *(None,)*3)
         self.analyses = _IDMapper(None, ihm.analysis.Analysis)
-        self.models = _IDMapper(None, ihm.model.Model, *(None,)*3)
+        self.models = _IDMapper(None, model_class, *(None,)*3)
         self.model_groups = _IDMapper(None, ihm.model.ModelGroup)
         self.states = _IDMapper(None, ihm.model.State)
         self.state_groups = _IDMapper(self.system.state_groups,
@@ -214,6 +333,28 @@ class _SystemReader(object):
         self.sas_restraints = _DatasetIDMapper(self.system.restraints,
                                    self.datasets,
                                    ihm.restraint.SASRestraint, None)
+        self.features = _FeatureIDMapper(self.system.orphan_features,
+                                   ihm.restraint.Feature)
+        self.dist_restraints = _IDMapper(self.system.restraints,
+                                   ihm.restraint.DerivedDistanceRestraint,
+                                   *(None,)*4)
+        self.geometries = _GeometryIDMapper(
+                                self.system.orphan_geometric_objects,
+                                ihm.geometry.GeometricObject)
+        self.centers = _IDMapper(None, ihm.geometry.Center, *(None,)*3)
+        self.transformations = _IDMapper(None, ihm.geometry.Transformation,
+                                         *(None,)*2)
+        self.geom_restraints = _IDMapper(self.system.restraints,
+                                   ihm.restraint.GeometricRestraint,
+                                   *(None,)*4)
+        self.xl_restraints = _XLRestraintMapper(self.system.restraints)
+        self.experimental_xl_groups = _IDMapper(None, list)
+        self.experimental_xl_groups.id_attr = None
+        self.experimental_xls = _IDMapper(None,
+                                    ihm.restraint.ExperimentalCrossLink,
+                                    *(None,)*2)
+        self.cross_links = _CrossLinkIDMapper(None,
+                                ihm.restraint.CrossLink)
 
 
 class _Handler(object):
@@ -584,10 +725,11 @@ class _StartingComparativeModelsHandler(_Handler):
                         int(d['starting_model_seq_id_end']))
         template_seq_id_range = (int(d['template_seq_id_begin']),
                                  int(d['template_seq_id_end']))
-        identity = _get_float(d, 'template_sequence_identity')
-        denom = _get_int(d, 'template_sequence_identity_denominator')
+        identity = ihm.startmodel.SequenceIdentity(
+                      _get_float(d, 'template_sequence_identity'),
+                      _get_int(d, 'template_sequence_identity_denominator'))
         t = ihm.startmodel.Template(dataset, asym_id, seq_id_range,
-                        template_seq_id_range, identity, denom, aln)
+                        template_seq_id_range, identity, aln)
         m.templates.append(t)
 
 
@@ -842,12 +984,13 @@ class _AtomSiteHandler(_Handler):
 
     def __call__(self, d):
         # todo: handle fields other than those output by us
-        # todo: handle auth_seq_id
+        # todo: handle insertion codes
         model = self.sysr.models.get_by_id(d['pdbx_pdb_model_num'])
         asym = self.sysr.asym_units.get_by_id(d['label_asym_id'])
         biso = float(d['b_iso_or_equiv']) if 'b_iso_or_equiv' in d else None
+        seq_id = int(d['label_seq_id'])
         a = ihm.model.Atom(asym_unit=asym,
-                seq_id=int(d['label_seq_id']),
+                seq_id=seq_id,
                 atom_id=d['label_atom_id'],
                 type_symbol=d['type_symbol'],
                 x=float(d['cartn_x']), y=float(d['cartn_y']),
@@ -855,17 +998,369 @@ class _AtomSiteHandler(_Handler):
                 biso=biso)
         model.add_atom(a)
 
+        auth_seq_id = _get_int_or_string(d, 'auth_seq_id')
+        # Note any residues that have different seq_id and auth_seq_id
+        if auth_seq_id is not None and seq_id != auth_seq_id:
+            if asym.auth_seq_id_map == 0:
+                asym.auth_seq_id_map = {}
+            asym.auth_seq_id_map[seq_id] = auth_seq_id
 
-def read(fh):
+
+class _PolyResidueFeatureHandler(_Handler):
+    category = '_ihm_poly_residue_feature'
+
+    def __call__(self, d):
+        f = self.sysr.features.get_by_id(
+                           d['feature_id'], ihm.restraint.PolyResidueFeature)
+        asym = self.sysr.asym_units.get_by_id(d['asym_id'])
+        r1 = int(d['seq_id_begin'])
+        r2 = int(d['seq_id_end'])
+        f.ranges.append(asym(r1,r2))
+
+
+class _PolyAtomFeatureHandler(_Handler):
+    category = '_ihm_poly_atom_feature'
+
+    def __call__(self, d):
+        f = self.sysr.features.get_by_id(
+                           d['feature_id'], ihm.restraint.PolyAtomFeature)
+        asym = self.sysr.asym_units.get_by_id(d['asym_id'])
+        seq_id = int(d['seq_id'])
+        atom = asym.residue(seq_id).atom(d['atom_id'])
+        f.atoms.append(atom)
+
+
+def _make_harmonic(d):
+    low = _get_float(d, 'distance_lower_limit')
+    up = _get_float(d, 'distance_upper_limit')
+    return ihm.restraint.HarmonicDistanceRestraint(up if low is None else low)
+
+def _make_upper_bound(d):
+    up = _get_float(d, 'distance_upper_limit')
+    return ihm.restraint.UpperBoundDistanceRestraint(up)
+
+def _make_lower_bound(d):
+    low = _get_float(d, 'distance_lower_limit')
+    return ihm.restraint.LowerBoundDistanceRestraint(low)
+
+def _make_lower_upper_bound(d):
+    low = _get_float(d, 'distance_lower_limit')
+    up = _get_float(d, 'distance_upper_limit')
+    return ihm.restraint.LowerUpperBoundDistanceRestraint(
+                    distance_lower_limit=low, distance_upper_limit=up)
+
+# todo: add a handler for an unknown restraint_type
+_handle_distance = {'harmonic': _make_harmonic,
+                    'upper bound': _make_upper_bound,
+                    'lower bound': _make_lower_bound,
+                    'lower and upper bound': _make_lower_upper_bound}
+
+class _DerivedDistanceRestraintHandler(_Handler):
+    category = '_ihm_derived_distance_restraint'
+    _cond_map = {'ALL': True, 'ANY': False, None: None}
+
+    def __call__(self, d):
+        r = self.sysr.dist_restraints.get_by_id(d['id'])
+        r.dataset = self.sysr.datasets.get_by_id_or_none(d, 'dataset_list_id')
+        r.feature1 = self.sysr.features.get_by_id(d['feature_id_1'])
+        r.feature2 = self.sysr.features.get_by_id(d['feature_id_2'])
+        r.distance = _handle_distance[d['restraint_type']](d)
+        r.restrain_all = self._cond_map[d.get('group_conditionality', None)]
+        r.probability = _get_float(d, 'probability')
+
+
+class _CenterHandler(_Handler):
+    category = '_ihm_geometric_object_center'
+
+    def __call__(self, d):
+        c = self.sysr.centers.get_by_id(d['id'])
+        c.x = _get_float(d, 'xcoord')
+        c.y = _get_float(d, 'ycoord')
+        c.z = _get_float(d, 'zcoord')
+
+
+class _TransformationHandler(_Handler):
+    category = '_ihm_geometric_object_transformation'
+
+    def __call__(self, d):
+        t = self.sysr.transformations.get_by_id(d['id'])
+        t.rot_matrix = _get_matrix33(d, 'rot_matrix')
+        t.tr_vector = _get_vector3(d, 'tr_vector')
+
+
+class _GeometricObjectHandler(_Handler):
+    category = '_ihm_geometric_object_list'
+
+    # Map object_type to corresponding subclass (but not subsubclasses such
+    # as XYPlane)
+    _type_map = dict((x[1].type.lower(), x[1])
+                     for x in inspect.getmembers(ihm.geometry, inspect.isclass)
+                     if issubclass(x[1], ihm.geometry.GeometricObject)
+                        and ihm.geometry.GeometricObject in x[1].__bases__)
+
+    def __call__(self, d):
+        typ = d.get('object_type', 'other').lower()
+        g = self.sysr.geometries.get_by_id(d['object_id'],
+                          self._type_map.get(typ, ihm.geometry.GeometricObject))
+        self._copy_if_present(g, d,
+                              mapkeys={'object_name': 'name',
+                                       'object_description': 'description',
+                                       'other_details': 'details'})
+
+
+class _SphereHandler(_Handler):
+    category = '_ihm_geometric_object_sphere'
+
+    def __call__(self, d):
+        s = self.sysr.geometries.get_by_id(d['object_id'], ihm.geometry.Sphere)
+        s.center = self.sysr.centers.get_by_id_or_none(d, 'center_id')
+        s.transformation = self.sysr.transformations.get_by_id_or_none(
+                                                  d, 'transformation_id')
+        s.radius = _get_float(d, 'radius_r')
+
+
+class _TorusHandler(_Handler):
+    category = '_ihm_geometric_object_torus'
+
+    def __call__(self, d):
+        t = self.sysr.geometries.get_by_id(d['object_id'], ihm.geometry.Torus)
+        t.center = self.sysr.centers.get_by_id_or_none(d, 'center_id')
+        t.transformation = self.sysr.transformations.get_by_id_or_none(
+                                                  d, 'transformation_id')
+        t.major_radius = _get_float(d, 'major_radius_r')
+        t.minor_radius = _get_float(d, 'minor_radius_r')
+
+
+class _HalfTorusHandler(_Handler):
+    category = '_ihm_geometric_object_half_torus'
+
+    _inner_map = {'inner half': True, 'outer half': False}
+
+    def __call__(self, d):
+        t = self.sysr.geometries.get_by_id(d['object_id'],
+                                           ihm.geometry.HalfTorus)
+        t.thickness = _get_float(d, 'thickness_th')
+        t.inner = self._inner_map.get(d.get('section', '').lower(), None)
+
+
+class _AxisHandler(_Handler):
+    category = '_ihm_geometric_object_axis'
+
+    # Map axis_type to corresponding subclass
+    _type_map = dict((x[1].axis_type.lower(), x[1])
+                     for x in inspect.getmembers(ihm.geometry, inspect.isclass)
+                     if issubclass(x[1], ihm.geometry.Axis)
+                        and x[1] is not ihm.geometry.Axis)
+
+    def __call__(self, d):
+        typ = d.get('axis_type', 'other').lower()
+        a = self.sysr.geometries.get_by_id(d['object_id'],
+                          self._type_map.get(typ, ihm.geometry.Axis))
+        a.transformation = self.sysr.transformations.get_by_id_or_none(
+                                                  d, 'transformation_id')
+
+class _PlaneHandler(_Handler):
+    category = '_ihm_geometric_object_plane'
+
+    # Map plane_type to corresponding subclass
+    _type_map = dict((x[1].plane_type.lower(), x[1])
+                     for x in inspect.getmembers(ihm.geometry, inspect.isclass)
+                     if issubclass(x[1], ihm.geometry.Plane)
+                        and x[1] is not ihm.geometry.Plane)
+
+    def __call__(self, d):
+        typ = d.get('plane_type', 'other').lower()
+        a = self.sysr.geometries.get_by_id(d['object_id'],
+                          self._type_map.get(typ, ihm.geometry.Plane))
+        a.transformation = self.sysr.transformations.get_by_id_or_none(
+                                                  d, 'transformation_id')
+
+
+class _GeometricRestraintHandler(_Handler):
+    category = '_ihm_geometric_object_distance_restraint'
+
+    _cond_map = {'ALL': True, 'ANY': False, None: None}
+
+    # Map object_characteristic to corresponding subclass
+    _type_map = dict((x[1].object_characteristic.lower(), x[1])
+                     for x in inspect.getmembers(ihm.restraint, inspect.isclass)
+                     if issubclass(x[1], ihm.restraint.GeometricRestraint))
+
+    def __call__(self, d):
+        typ = d.get('object_characteristic', 'other').lower()
+        r = self.sysr.geom_restraints.get_by_id(d['id'],
+                      self._type_map.get(typ, ihm.restraint.GeometricRestraint))
+        r.dataset = self.sysr.datasets.get_by_id_or_none(d, 'dataset_list_id')
+        r.geometric_object = self.sysr.geometries.get_by_id(d['object_id'])
+        r.feature = self.sysr.features.get_by_id(d['feature_id'])
+        r.distance = _handle_distance[d['restraint_type']](d)
+        r.harmonic_force_constant = _get_float(d, 'harmonic_force_constant')
+        r.restrain_all = self._cond_map[d.get('group_conditionality', None)]
+
+
+class _PolySeqSchemeHandler(_Handler):
+    category = '_pdbx_poly_seq_scheme'
+
+    def __call__(self, d):
+        asym = self.sysr.asym_units.get_by_id(d['asym_id'])
+        seq_id = _get_int(d, 'seq_id')
+        auth_seq_num = _get_int_or_string(d, 'auth_seq_num')
+        # Note any residues that have different seq_id and auth_seq_id
+        if seq_id is not None and auth_seq_num is not None \
+           and seq_id != auth_seq_num:
+            if asym.auth_seq_id_map == 0:
+                asym.auth_seq_id_map = {}
+            asym.auth_seq_id_map[seq_id] = auth_seq_num
+
+    def finalize(self):
+        for asym in self.sysr.system.asym_units:
+            # If every residue in auth_seq_id_map is offset by the same
+            # amount, replace the map with a simple offset
+            offset = self._get_auth_seq_id_offset(asym)
+            if offset is not None:
+                asym.auth_seq_id_map = offset
+
+    def _get_auth_seq_id_offset(self, asym):
+        """Get the offset from seq_id to auth_seq_id. Return None if no
+           consistent offset exists."""
+        # Do nothing if no map exists
+        if asym.auth_seq_id_map == 0:
+            return
+        rng = asym.seq_id_range
+        offset = None
+        for seq_id in range(rng[0], rng[1]+1):
+            # If a residue isn't in the map, it has an effective offset of 0,
+            # which has to be inconsistent (since everything in the map has
+            # a nonzero offset by construction)
+            if seq_id not in asym.auth_seq_id_map:
+                return
+            auth_seq_id = asym.auth_seq_id_map[seq_id]
+            # If auth_seq_id is a string, we can't use any offset
+            if not isinstance(auth_seq_id, int):
+                return
+            this_offset = auth_seq_id - seq_id
+            if offset is None:
+                offset = this_offset
+            elif offset != this_offset:
+                # Offset is inconsistent
+                return
+        return offset
+
+
+class _CrossLinkListHandler(_Handler):
+    category = '_ihm_cross_link_list'
+
+    def __init__(self, *args):
+        super(_CrossLinkListHandler, self).__init__(*args)
+        self._seen_group_ids = set()
+
+    def __call__(self, d):
+        dataset = self.sysr.datasets.get_by_id_or_none(d, 'dataset_list_id')
+        linker_type = d['linker_type'].upper()
+        # Group all crosslinks with same dataset and linker type in one
+        # CrossLinkRestraint object
+        r = self.sysr.xl_restraints.get_by_attrs(dataset, linker_type)
+
+        group_id = d['group_id']
+        xl_group = self.sysr.experimental_xl_groups.get_by_id(group_id)
+        xl = self.sysr.experimental_xls.get_by_id(d['id'])
+
+        if group_id not in self._seen_group_ids:
+            self._seen_group_ids.add(group_id)
+            r.experimental_cross_links.append(xl_group)
+        xl_group.append(xl)
+        xl.residue1 = self._get_entity_residue(d, '_1')
+        xl.residue2 = self._get_entity_residue(d, '_2')
+
+    def _get_entity_residue(self, d, suffix):
+        entity = self.sysr.entities.get_by_id(d['entity_id' + suffix])
+        seq_id = int(d['seq_id' + suffix])
+        return entity.residue(seq_id)
+
+
+class _CrossLinkRestraintHandler(_Handler):
+    category = '_ihm_cross_link_restraint'
+
+    _cond_map = {'ALL': True, 'ANY': False, None: None}
+    _distance_map = {'harmonic': ihm.restraint.HarmonicDistanceRestraint,
+                     'lower bound': ihm.restraint.LowerBoundDistanceRestraint,
+                     'upper bound': ihm.restraint.UpperBoundDistanceRestraint}
+
+    # Map granularity to corresponding subclass
+    _type_map = dict((x[1].granularity.lower(), x[1])
+                     for x in inspect.getmembers(ihm.restraint, inspect.isclass)
+                     if issubclass(x[1], ihm.restraint.CrossLink)
+                     and x[1] is not ihm.restraint.CrossLink)
+
+    def __call__(self, d):
+        typ = d.get('model_granularity', 'other').lower()
+        xl = self.sysr.cross_links.get_by_id(d['id'],
+                      self._type_map.get(typ, ihm.restraint.ResidueCrossLink))
+        ex_xl = self.sysr.experimental_xls.get_by_id(d['group_id'])
+
+        xl.experimental_cross_link = ex_xl
+        xl.asym1 = self.sysr.asym_units.get_by_id(d['asym_id_1'])
+        xl.asym2 = self.sysr.asym_units.get_by_id(d['asym_id_2'])
+        # todo: handle unknown restraint type
+        _distcls = self._distance_map[d['restraint_type'].lower()]
+        xl.distance = _distcls(float(d['distance_threshold']))
+        xl.restrain_all = self._cond_map[d.get('conditional_crosslink_flag',
+                                               None)]
+        if isinstance(xl, ihm.restraint.AtomCrossLink):
+            xl.atom1 = d['atom_id_1']
+            xl.atom2 = d['atom_id_2']
+        xl.psi = _get_float(d, 'psi')
+        xl.sigma1 = _get_float(d, 'sigma_1')
+        xl.sigma2 = _get_float(d, 'sigma_2')
+
+    def finalize(self):
+        # Put each cross link in the restraint that owns its experimental xl
+        rsr_for_ex_xl = {}
+        for r in self.sysr.xl_restraints.get_all():
+            for ex_xl_group in r.experimental_cross_links:
+                for ex_xl in ex_xl_group:
+                    rsr_for_ex_xl[ex_xl] = r
+        for xl in self.sysr.cross_links.get_all():
+            r = rsr_for_ex_xl[xl.experimental_cross_link]
+            r.cross_links.append(xl)
+
+
+class _CrossLinkResultHandler(_Handler):
+    category = '_ihm_cross_link_result_parameters'
+
+    def __call__(self, d):
+        xl = self.sysr.cross_links.get_by_id(d['restraint_id'])
+        model = self.sysr.models.get_by_id(d['model_id'])
+        xl.fits[model] = ihm.restraint.CrossLinkFit(
+                                psi=_get_float(d, 'psi'),
+                                sigma1=_get_float(d, 'sigma_1'),
+                                sigma2=_get_float(d, 'sigma_2'))
+
+
+def read(fh, model_class=ihm.model.Model):
     """Read data from the mmCIF file handle `fh`.
     
+       Note that the reader currently expects to see an mmCIF file compliant
+       with the PDBx and/or IHM dictionaries. It is not particularly tolerant
+       of noncompliant or incomplete files, and will probably throw an
+       exception rather than warning about and trying to handle such files.
+       Please `open an issue <https://github.com/ihmwg/python-ihm/issues>`_
+       if you encounter such a problem.
+
        :param file fh: The file handle to read from.
+       :param model_class: The class to use to store model coordinates.
+              For use with other software, it is recommended to subclass
+              :class:`ihm.model.Model` and override
+              :meth:`~ihm.model.Model.add_sphere` and/or
+              :meth:`~ihm.model.Model.add_atom`, and provide that subclass
+              here. See :meth:`ihm.model.Model.get_spheres` for more
+              information.
        :return: A list of :class:`ihm.System` objects.
     """
     systems = []
 
     while True:
-        s = _SystemReader()
+        s = _SystemReader(model_class)
         handlers = [_StructHandler(s), _SoftwareHandler(s), _CitationHandler(s),
                     _CitationAuthorHandler(s), _ChemCompHandler(s),
                     _EntityHandler(s), _EntityPolySeqHandler(s),
@@ -883,7 +1378,16 @@ def read(fh):
                     _EnsembleHandler(s), _DensityHandler(s),
                     _EM3DRestraintHandler(s), _EM2DRestraintHandler(s),
                     _EM2DFittingHandler(s), _SASRestraintHandler(s),
-                    _SphereObjSiteHandler(s), _AtomSiteHandler(s)]
+                    _SphereObjSiteHandler(s), _AtomSiteHandler(s),
+                    _PolyResidueFeatureHandler(s), _PolyAtomFeatureHandler(s),
+                    _DerivedDistanceRestraintHandler(s),
+                    _CenterHandler(s), _TransformationHandler(s),
+                    _GeometricObjectHandler(s), _SphereHandler(s),
+                    _TorusHandler(s), _HalfTorusHandler(s),
+                    _AxisHandler(s), _PlaneHandler(s),
+                    _GeometricRestraintHandler(s), _PolySeqSchemeHandler(s),
+                    _CrossLinkListHandler(s), _CrossLinkRestraintHandler(s),
+                    _CrossLinkResultHandler(s)]
         r = ihm.format.CifReader(fh, dict((h.category, h) for h in handlers))
         more_data = r.read_file()
         for h in handlers:

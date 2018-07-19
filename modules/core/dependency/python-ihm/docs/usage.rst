@@ -125,3 +125,10 @@ automatically and can be filled in by adding more objects to the hierarchy.
 
 The complete hierarchy can be written out to an mmCIF file using
 the :func:`ihm.dumper.write` function.
+
+Input
+=====
+
+Hierarchies of IHM classes can also be read from mmCIF files. This is done
+using the :func:`ihm.reader.read` function, which returns a list of
+:class:`ihm.System` objects.

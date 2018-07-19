@@ -45,6 +45,21 @@ class Tests(unittest.TestCase):
         dumper.finalize(None)
         dumper.dump(None, None)
 
+    def test_prettyprint_seq(self):
+        """Test _prettyprint_seq() function"""
+        seq = ['x' * 30, 'y' * 20, 'z' * 10]
+        # No line breaks
+        self.assertEqual(list(ihm.dumper._prettyprint_seq(seq, 100)),
+                         ['x' * 30 + 'y' * 20 + 'z' * 10])
+        # Break inserted between sequence items
+        self.assertEqual(list(ihm.dumper._prettyprint_seq(seq, 55)),
+                         ['x' * 30 + 'y' * 20, 'z' * 10])
+        # Items longer than width will exceed line length
+        self.assertEqual(list(ihm.dumper._prettyprint_seq(seq, 25)),
+                         ['x' * 30, 'y' * 20, 'z' * 10])
+        # Empty sequence
+        self.assertEqual(list(ihm.dumper._prettyprint_seq([], 25)), [])
+
     def test_entry_dumper(self):
         """Test EntryDumper"""
         system = ihm.System(id='test_model')

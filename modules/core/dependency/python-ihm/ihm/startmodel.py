@@ -1,6 +1,48 @@
 """Classes to handle starting models."""
 
 from .format import CifWriter
+try:
+    from enum import IntEnum
+except ImportError:
+    IntEnum = object
+
+
+class SequenceIdentityDenominator(IntEnum):
+    """The denominator used while calculating the sequence identity.
+       One of these constants can be passed to :class:`SequenceIdentity`."""
+
+    #: Length of the shorter sequence
+    SHORTER_LENGTH = 1
+
+    #: Number of aligned positions (including gaps)
+    NUM_ALIGNED_WITH_GAPS = 2
+
+    #: Number of aligned residue pairs (not including the gaps)
+    NUM_ALIGNED_WITHOUT_GAPS = 3
+
+    #: Arithmetic mean sequence length
+    MEAN_LENGTH = 4
+
+    #: Another method not covered here
+    OTHER = 5
+
+
+class SequenceIdentity(object):
+    """Describe the identity between template and target sequences.
+       See :class:`Template`.
+
+       :param value: Percentage sequence identity.
+       :param denominator: Way in which sequence identity was calculated -
+              see :class:`SequenceIdentityDenominator`.
+    """
+    def __init__(self, value,
+                 denominator=SequenceIdentityDenominator.SHORTER_LENGTH):
+        self.value = value
+        self.denominator = denominator
+
+    def __float__(self):
+        return self.value
+
 
 class Template(object):
     """A PDB file used as a comparative modeling template for part of a
@@ -18,10 +60,9 @@ class Template(object):
               from the IHM numbering. See `offset` in :class:`StartingModel`.
        :param tuple template_seq_id_range: The sequence range of the template
               that is used in comparative modeling.
-       :param float sequence_identity: Sequence identity between template and
-              the target sequence, as a percentage.
-       :param int sequence_identity_denominator: Way in which sequence identity
-              was calculated.
+       :param sequence_identity: Sequence identity between template and
+              the target sequence.
+       :type sequence_identity: :class:`SequenceIdentity` or `float`
        :param alignment_file: Reference to the external file containing the
               template-target alignment.
        :type alignment_file: :class:`~ihm.location.Location`
@@ -29,13 +70,13 @@ class Template(object):
        # todo: handle sequence_identity_denominator as an enum, not int
 
     def __init__(self, dataset, asym_id, seq_id_range, template_seq_id_range,
-                 sequence_identity, sequence_identity_denominator=1,
-                 alignment_file=None):
+                 sequence_identity, alignment_file=None):
         self.dataset, self.asym_id = dataset, asym_id
         self.seq_id_range = seq_id_range
         self.template_seq_id_range = template_seq_id_range
+        if isinstance(sequence_identity, float):
+            sequence_identity = SequenceIdentity(sequence_identity)
         self.sequence_identity = sequence_identity
-        self.sequence_identity_denominator = sequence_identity_denominator
         self.alignment_file = alignment_file
 
 
