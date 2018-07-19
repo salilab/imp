@@ -1409,7 +1409,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             e = _ReplicaExchangeAnalysisEnsemble(pp, i, group, 1)
             self.system.ensembles.append(e)
             # Add localization density info if available
-            for fname, stuple in density_custom_ranges.items():
+            for fname, stuple in sorted(density_custom_ranges.items()):
                 e.load_localization_density(state, fname, stuple,
                                             self.asym_units)
             for stats in e.load_all_models(self, state):

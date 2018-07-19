@@ -3,7 +3,6 @@ import IMP.atom
 import IMP.pmi
 import IMP.test
 import IMP.isd
-import IMP.pmi.nonmantained
 import IMP.pmi.restraints.proteomics
 import IMP.pmi.representation
 import IMP.pmi.io
@@ -167,34 +166,6 @@ class MembraneRestraint(IMP.test.TestCase):
                     r.unprotected_evaluate(None), r2.unprotected_evaluate(None),
                     delta=1e-4)
 
-class TestOldRestraint(IMP.test.TestCase):
-    def test_membrane_pore_restraint(self):
-        try:
-            from scipy.spatial import Delaunay
-        except ImportError:
-            self.skipTest("no scipy spatial")
-
-        m = IMP.Model()
-
-        r=IMP.pmi.representation.Representation(m)
-
-        smr=IMP.pmi.nonmantained.SetupMembranePoreRestraint(
-            r,
-            selection_tuples_outside=None,
-            selection_tuples_membrane=None,
-            selection_tuples_inside=None,
-            center=(0.0,0.0,0.0),
-            z_tickness=100,
-            radius=300,
-            membrane_tickness=40.0,
-            resolution=1,
-            label="None")
-
-        smr.create_representation()
-        rh = RMF.create_rmf_file("test.rmf3")
-        IMP.rmf.add_hierarchies(rh, [r.prot])
-        IMP.rmf.save_frame(rh)
-        del rh
 
 if __name__ == '__main__':
     IMP.test.main()
