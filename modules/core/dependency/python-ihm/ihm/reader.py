@@ -404,10 +404,10 @@ class _CitationHandler(_Handler):
         s = self.sysr.citations.get_by_id(d['id'])
         self._copy_if_present(s, d,
                 keys=('title', 'year'),
-                mapkeys={'pdbx_database_id_PubMed':'pmid',
+                mapkeys={'pdbx_database_id_pubmed':'pmid',
                          'journal_abbrev':'journal',
                          'journal_volume':'volume',
-                         'pdbx_database_id_DOI':'doi'})
+                         'pdbx_database_id_doi':'doi'})
         if 'page_first' in d:
             if 'page_last' in d:
                 s.page_range = (d['page_first'], d['page_last'])

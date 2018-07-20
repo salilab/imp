@@ -157,9 +157,11 @@ _citation.journal_volume
 _citation.page_first
 _citation.page_last
 _citation.year
-2 'Mol Cell Proteomics' 9 2943 . 2014
-3 'Mol Cell Proteomics' 9 2943 2946 2014
-4 'Mol Cell Proteomics' 9 . . 2014
+_citation.pdbx_database_id_PubMed
+_citation.pdbx_database_id_DOI
+2 'Mol Cell Proteomics' 9 2943 . 2014 1234 .
+3 'Mol Cell Proteomics' 9 2943 2946 2014 1234 1.2.3.4
+4 'Mol Cell Proteomics' 9 . . 2014 1234 1.2.3.4
 #
 #
 loop_
@@ -176,10 +178,13 @@ _citation_author.ordinal
         self.assertEqual(citation1._id, '2')
         self.assertEqual(citation1.page_range, '2943')
         self.assertEqual(citation1.authors, [])
+        self.assertEqual(citation1.pmid, '1234')
+        self.assertEqual(citation1.doi, None)
 
         self.assertEqual(citation2._id, '3')
         self.assertEqual(citation2.page_range, ('2943', '2946'))
         self.assertEqual(citation2.authors, ['Foo A', 'Bar C'])
+        self.assertEqual(citation2.doi, '1.2.3.4')
 
         self.assertEqual(citation3._id, '4')
         self.assertEqual(citation3.authors, [])
