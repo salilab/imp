@@ -1,7 +1,7 @@
 OpenMP {#openmp}
 ======
 
-%IMP supports multithreaded evaluation using [OpenMP](http://www.openmp.org/)
+%IMP supports multithreaded evaluation using [OpenMP](https://www.openmp.org/)
 (version 3.0 or later). This is automatically supported on Linux, but not
 currently on Mac or Windows (the compilers there do not support OpenMP).
 
