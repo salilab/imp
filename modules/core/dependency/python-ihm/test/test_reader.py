@@ -1714,6 +1714,46 @@ _ihm_cross_link_result_parameters.sigma_2
             self.assertEqual(fits[1][1].sigma1, None)
             self.assertEqual(fits[1][1].sigma2, None)
 
+    def test_ordered_ensemble_handler(self):
+        """Test OrderedEnsembleHandler"""
+        fh = StringIO("""
+loop_
+_ihm_ordered_ensemble.process_id
+_ihm_ordered_ensemble.process_description
+_ihm_ordered_ensemble.ordered_by
+_ihm_ordered_ensemble.step_id
+_ihm_ordered_ensemble.step_description
+_ihm_ordered_ensemble.edge_id
+_ihm_ordered_ensemble.edge_description
+_ihm_ordered_ensemble.model_group_id_begin
+_ihm_ordered_ensemble.model_group_id_end
+1 pdesc 'steps in a reaction pathway' 1 'step 1 desc' 1 .  1 2
+1 pdesc 'steps in a reaction pathway' 2 'step 2 desc' 2 'edge 2 desc'  1 3
+1 pdesc 'steps in a reaction pathway' 2 'step 2 desc' 3 .  1 4
+""")
+        s, = ihm.reader.read(fh)
+        op, = s.ordered_processes
+        self.assertEqual(op.description, 'pdesc')
+        self.assertEqual(len(op.steps), 2)
+        s1, s2 = op.steps
+        self.assertEqual(s1.description, 'step 1 desc')
+        self.assertEqual(len(s1), 1)
+        e1 = s1[0]
+        self.assertEqual(e1.description, None)
+        self.assertEqual(e1.group_begin._id, '1')
+        self.assertEqual(e1.group_end._id, '2')
+
+        self.assertEqual(s2.description, 'step 2 desc')
+        self.assertEqual(len(s2), 2)
+        e1 = s2[0]
+        self.assertEqual(e1.description, 'edge 2 desc')
+        self.assertEqual(e1.group_begin._id, '1')
+        self.assertEqual(e1.group_end._id, '3')
+        e2 = s2[1]
+        self.assertEqual(e2.description, None)
+        self.assertEqual(e2.group_begin._id, '1')
+        self.assertEqual(e2.group_end._id, '4')
+
 
 if __name__ == '__main__':
     unittest.main()

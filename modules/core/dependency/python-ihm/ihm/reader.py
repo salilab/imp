@@ -355,6 +355,9 @@ class _SystemReader(object):
                                     *(None,)*2)
         self.cross_links = _CrossLinkIDMapper(None,
                                 ihm.restraint.CrossLink)
+        self.ordered_procs = _IDMapper(self.system.ordered_processes,
+                                    ihm.model.OrderedProcess, None)
+        self.ordered_steps = _IDMapper(None, ihm.model.ProcessStep)
 
 
 class _Handler(object):
@@ -1337,6 +1340,30 @@ class _CrossLinkResultHandler(_Handler):
                                 sigma2=_get_float(d, 'sigma_2'))
 
 
+class _OrderedEnsembleHandler(_Handler):
+    category = '_ihm_ordered_ensemble'
+
+    def __call__(self, d):
+        proc = self.sysr.ordered_procs.get_by_id(d['process_id'])
+        # todo: will this work with multiple processes?
+        step = self.sysr.ordered_steps.get_by_id(d['step_id'])
+        edge = ihm.model.ProcessEdge(
+                   self.sysr.model_groups.get_by_id(d['model_group_id_begin']),
+                   self.sysr.model_groups.get_by_id(d['model_group_id_end']))
+        self._copy_if_present(edge, d,
+                mapkeys={'edge_description':'description'})
+        step.append(edge)
+
+        if d['step_id'] not in [s._id for s in proc.steps]:
+            proc.steps.append(step)
+
+        self._copy_if_present(proc, d,
+                keys=('ordered_by',),
+                mapkeys={'process_description':'description'})
+        self._copy_if_present(step, d,
+                mapkeys={'step_description':'description'})
+
+
 def read(fh, model_class=ihm.model.Model):
     """Read data from the mmCIF file handle `fh`.
     
@@ -1387,7 +1414,8 @@ def read(fh, model_class=ihm.model.Model):
                     _AxisHandler(s), _PlaneHandler(s),
                     _GeometricRestraintHandler(s), _PolySeqSchemeHandler(s),
                     _CrossLinkListHandler(s), _CrossLinkRestraintHandler(s),
-                    _CrossLinkResultHandler(s)]
+                    _CrossLinkResultHandler(s),
+                    _OrderedEnsembleHandler(s)]
         r = ihm.format.CifReader(fh, dict((h.category, h) for h in handlers))
         more_data = r.read_file()
         for h in handlers:
