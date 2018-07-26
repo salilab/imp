@@ -1055,7 +1055,7 @@ _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
 ATOM 1 N N . SER 1 A 54.401 -49.984 -35.287 1 A . 1 1
-HETATM 2 C CA . SER 19 B 54.452 -48.492 -35.210 1 A 42.0 1 1
+HETATM 2 C CA . SER . B 54.452 -48.492 -35.210 1 A 42.0 1 1
 """)
         s, = ihm.reader.read(fh)
         m = s.state_groups[0][0][0][0]
@@ -1071,7 +1071,7 @@ HETATM 2 C CA . SER 19 B 54.452 -48.492 -35.210 1 A 42.0 1 1
         self.assertEqual(a1.biso, None)
 
         self.assertEqual(a2.asym_unit._id, 'B')
-        self.assertEqual(a2.seq_id, 19)
+        self.assertEqual(a2.seq_id, None)
         self.assertEqual(a2.atom_id, 'CA')
         self.assertEqual(a2.type_symbol, 'C')
         self.assertEqual(a2.het, True)

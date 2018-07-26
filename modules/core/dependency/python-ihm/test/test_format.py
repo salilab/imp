@@ -145,9 +145,15 @@ x
         r = ihm.format.CifReader(StringIO(cif), category_handlers)
         self.assertRaises(ihm.format.CifParserError, r.read_file)
 
-    def test_comments_skipped(self):
-        """Make sure that comments are skipped"""
+    def test_comments_start_line_skipped(self):
+        """Make sure that comments at start of line are skipped"""
         self._read_cif("# _exptl.method\n# ;foo\n", {})
+
+    def test_comments_mid_line_skipped(self):
+        """Make sure that comments part way through line are skipped"""
+        h = GenericHandler()
+        self._read_cif('_exptl.method #bar baz\nfoo', {'_exptl':h})
+        self.assertEqual(h.data, [{'method':'foo'}])
 
     def test_missing_semicolon(self):
         """Make sure that missing semicolon is handled in multiline strings"""

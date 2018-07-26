@@ -991,7 +991,8 @@ class _AtomSiteHandler(_Handler):
         model = self.sysr.models.get_by_id(d['pdbx_pdb_model_num'])
         asym = self.sysr.asym_units.get_by_id(d['label_asym_id'])
         biso = float(d['b_iso_or_equiv']) if 'b_iso_or_equiv' in d else None
-        seq_id = int(d['label_seq_id'])
+        # seq_id can be None for non-polymers (HETATM)
+        seq_id = _get_int(d, 'label_seq_id')
         a = ihm.model.Atom(asym_unit=asym,
                 seq_id=seq_id,
                 atom_id=d['label_atom_id'],

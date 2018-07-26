@@ -282,6 +282,9 @@ class CifReader(object):
             return self._handle_quoted_token(line, strlen, start_pos, "Double")
         elif line[start_pos] == "'":
             return self._handle_quoted_token(line, strlen, start_pos, "Single")
+        elif line[start_pos] == "#":
+            # Comment - discard the rest of the line
+            return strlen
         else:
             # Find end of token (whitespace or end of line)
             end_pos = start_pos

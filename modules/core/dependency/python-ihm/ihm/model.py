@@ -35,6 +35,7 @@ class Atom(object):
        :param asym_unit: The asymmetric unit that this sphere represents
        :type asym_unit: :class:`ihm.AsymUnit`
        :param int seq_id: The residue index represented by this atom
+              (can be None for HETATM sites)
        :param str atom_id: The name of the atom in the residue
        :param str type_symbol: Element name
        :param float x: x coordinate of the atom
