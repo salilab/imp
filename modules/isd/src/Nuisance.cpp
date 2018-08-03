@@ -24,17 +24,30 @@ FloatKey Nuisance::get_nuisance_key() {
   return k;
 }
 void Nuisance::set_nuisance(Float d) {
-  Float d_ = d;
   Particle *p = get_particle();
-  if (get_has_lower()) {
-    Float lo = get_lower();
-    if (d < lo) d_ = lo;
+  int trans_type = get_transformation_type();
+  switch(trans_type) {
+    case NONE:
+      break;
+    case LOG_LOWER:
+    {
+      Float lo = get_lower();
+      d = (d < lo) ? lo : d;
+    }
+    case LOG_UPPER:
+    {
+      Float up = get_upper();
+      d = (d > up) ? up : d;
+    }
+    case LOGIT_LOWER_UPPER:
+    {
+      Float lo = get_lower();
+      Float up = get_upper();
+      d = (d > up) ? up : ((d < lo) ? lo : d);
+    }
+    default: {}
   }
-  if (get_has_upper()) {
-    Float up = get_upper();
-    if (d > up) d_ = up;
-  }
-  p->set_value(get_nuisance_key(), d_);
+  p->set_value(get_nuisance_key(), d);
 }
 
 bool Nuisance::get_has_lower() const {
