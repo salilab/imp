@@ -15,6 +15,15 @@
 
 IMPISD_BEGIN_NAMESPACE
 
+//! Store types of nuisance transformations.
+enum TransformationType {
+  NONE,
+  LOG_LOWER,
+  LOG_UPPER,
+  LOGIT_LOWER_UPPER
+};
+
+
 //! Add nuisance parameter to particle
 /** The value of the nuisance parameter may express data
     or theory uncertainty. It can be initialized with or without
@@ -35,10 +44,16 @@ class IMPISDEXPORT Nuisance : public Decorator {
     return m->get_has_attribute(get_nuisance_key(), pi);
   }
 
+  //! Get type of transformation applied to nuisance.
+  int get_transformation_type() const {
+    return get_has_lower() + 2 * get_has_upper();
+  }
+
   static FloatKey get_nuisance_key();
   Float get_nuisance() const {
     return get_particle()->get_value(get_nuisance_key());
   }
+
   void set_nuisance(Float d);
 
   /** set upper and lower bound of nuisance by specifying
