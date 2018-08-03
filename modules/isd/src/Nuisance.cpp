@@ -19,11 +19,11 @@ void Nuisance::do_setup_particle(Model *m, ParticleIndex pi,
   }
 }
 
-FloatKey Nuisance::get_nuisance_key() {
+FloatKey Nuisance::get_transformed_nuisance_key() {
   static FloatKey k("nuisance");
   return k;
 }
-void Nuisance::set_nuisance(Float d) {
+void Nuisance::set_transformed_nuisance(Float d) {
   Particle *p = get_particle();
   int trans_type = get_transformation_type();
   switch(trans_type) {

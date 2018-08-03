@@ -49,12 +49,23 @@ class IMPISDEXPORT Nuisance : public Decorator {
     return get_has_lower() + 2 * get_has_upper();
   }
 
-  static FloatKey get_nuisance_key();
-  Float get_nuisance() const {
+  static FloatKey get_transformed_nuisance_key();
+
+  static FloatKey get_nuisance_key() {
+    return get_transformed_nuisance_key();
+  }
+
+  Float get_transformed_nuisance() const {
     return get_particle()->get_value(get_nuisance_key());
   }
 
-  void set_nuisance(Float d);
+  Float get_nuisance() const {
+    return get_transformed_nuisance();
+  }
+
+  void set_transformed_nuisance(Float d);
+
+  void set_nuisance(Float d) { set_transformed_nuisance(d); }
 
   /** set upper and lower bound of nuisance by specifying
    * either a float or another nuisance. Both can be set at the same
@@ -78,20 +89,36 @@ class IMPISDEXPORT Nuisance : public Decorator {
   void set_upper(Particle *d);
   void remove_upper();
 
-  Float get_nuisance_derivative() const {
+  Float get_transformed_nuisance_derivative() const {
     return get_particle()->get_derivative(get_nuisance_key());
   }
 
-  void add_to_nuisance_derivative(Float d, DerivativeAccumulator &accum) {
+  void add_to_transformed_nuisance_derivative(Float d, DerivativeAccumulator &accum) {
     get_particle()->add_to_derivative(get_nuisance_key(), d, accum);
   }
 
-  bool get_nuisance_is_optimized() const {
+  bool get_transformed_nuisance_is_optimized() const {
     return get_particle()->get_is_optimized(get_nuisance_key());
   }
 
-  void set_nuisance_is_optimized(bool val) {
+  void set_transformed_nuisance_is_optimized(bool val) {
     get_particle()->set_is_optimized(get_nuisance_key(), val);
+  }
+
+  Float get_nuisance_derivative() const {
+    return get_transformed_nuisance_derivative();
+  }
+
+  void add_to_nuisance_derivative(Float d, DerivativeAccumulator &accum) {
+    add_to_transformed_nuisance_derivative(d, accum);
+  }
+
+  bool get_nuisance_is_optimized() const {
+    return get_transformed_nuisance_is_optimized();
+  }
+
+  void set_nuisance_is_optimized(bool val) {
+    set_transformed_nuisance_is_optimized(val);
   }
 
   friend class NuisanceScoreState;
