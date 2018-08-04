@@ -238,7 +238,9 @@ class Tests(IMP.test.TestCase):
         self.p2.set_coordinates_are_optimized(False)
         self.p1.set_coordinates_are_optimized(False)
         self.p0.set_coordinates_are_optimized(False)
-        self.kappa.set_is_optimized(self.kappa.get_scale_key(), True)
+        nuisance.set_scale_is_optimized(isoptimized)
+
+        self.kappa.set_scale_is_optimized(True)
         sf = IMP.core.RestraintsScoringFunction([self.talos])
         cg = IMP.core.ConjugateGradients(self.m)
         cg.set_scoring_function(sf)

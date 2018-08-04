@@ -59,7 +59,7 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
             IMP.Particle(m), initialvalue)
         nuisance.set_lower(minvalue)
         nuisance.set_upper(maxvalue)
-        nuisance.set_is_optimized(nuisance.get_nuisance_key(), isoptimized)
+        nuisance.set_nuisance_is_optimized(isoptimized)
         return nuisance
 
     def setup_weight(self, m, isoptimized=True):

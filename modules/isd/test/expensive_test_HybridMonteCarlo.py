@@ -68,8 +68,7 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
         self.hmc.get_md().set_scoring_function(self.sf)
 
     def get_nuisance_coordinates(self):
-        a = [i.get_value(IMP.isd.Scale.get_scale_key())
-             for i in self.nuisances]
+        a = [Scale(i).get_scale() for i in self.nuisances]
         b = [i.get_value(vel_key_nuisance) for i in self.nuisances]
         return a + b
 
