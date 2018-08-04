@@ -77,6 +77,10 @@ enum TransformationType {
           physical/mathematical constraints on the nuisance (e.g. Scale).
           Prior information regarding realistic values of the nuisance should
           be expressed in a prior restraint, *not* in the use of bounds.
+    \note Bounds may be a double, another Nuisance or both. If both are set,
+          the tighter of the two bounds at a given evaluation is enforced.
+          A change in the value of a particle bound changes the untransformed
+          nuisance but not the transformed nuisance.
 
     \see Scale
     \see Switching
@@ -123,26 +127,46 @@ class IMPISDEXPORT Nuisance : public Decorator {
   //! Set value of transformed nuisance from untransformed nuisance.
   void set_nuisance(Float x);
 
-  /** set upper and lower bound of nuisance by specifying
-   * either a float or another nuisance. Both can be set at the same
-   * time in which case the upper bound is the minimum of the two values.
-   * This constraint is enforced with the help of a ScoreState that will be
-   * created on-the-fly.
-   */
+  //! Get whether nuisance has lower bound.
   bool get_has_lower() const;
+
+  //! Get lower bound of nuisance.
   Float get_lower() const;
+
+  //! Get key for lower bound attribute.
   static FloatKey get_lower_key();
+
+  //! Get key for lower bound Nuisance attribute.
   static ParticleIndexKey get_lower_particle_key();
+
+  //! Set lower bound to value.
   void set_lower(Float d);
+
+  //! Set lower bound to Nuisance.
   void set_lower(Particle *d);
+
+  //! Remove lower bound.
   void remove_lower();
 
+  //! Get whether nuisance has upper bound.
   bool get_has_upper() const;
+
+  //! Get upper bound of nuisance.
   Float get_upper() const;
+
+  //! Get key for upper bound attribute.
   static FloatKey get_upper_key();
+
+  //! Get key for upper bound Nuisance attribute.
   static ParticleIndexKey get_upper_particle_key();
+
+  //! Set upper bound to value.
   void set_upper(Float d);
+
+  //! Set upper bound to Nuisance.
   void set_upper(Particle *d);
+
+  //! Remove upper bound.
   void remove_upper();
 
   Float get_transformed_nuisance_derivative() const {
