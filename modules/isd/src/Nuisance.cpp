@@ -13,7 +13,7 @@ IMPISD_BEGIN_NAMESPACE
 void Nuisance::do_setup_particle(Model *m, ParticleIndex pi,
                                  double nuisance) {
   if (!Nuisance::get_is_setup(m, pi)) {
-    m->add_attribute(get_nuisance_key(), pi, nuisance);
+    m->add_attribute(get_transformed_nuisance_key(), pi, nuisance);
   } else {
     Nuisance(m, pi).set_nuisance(nuisance);
   }
@@ -77,7 +77,7 @@ Float Nuisance::get_nuisance() const {
 
 void Nuisance::set_transformed_nuisance(Float y) {
   Particle *p = get_particle();
-  p->set_value(get_nuisance_key(), y);
+  p->set_value(get_transformed_nuisance_key(), y);
 }
 
 Float Nuisance::get_nuisance_derivative() const {
@@ -136,8 +136,7 @@ Float Nuisance::get_lower() const {
   if (hasfloat) {
     double floatval = p->get_value(lk);
     if (hasparticle) {
-      Particle *d = p->get_value(lp);
-      double particleval = d->get_value(get_nuisance_key());
+      double particleval = Nuisance(p->get_value(lp)).get_nuisance();
       if (floatval > particleval) {
         return floatval;
       } else {
@@ -147,8 +146,7 @@ Float Nuisance::get_lower() const {
       return floatval;
     }
   } else if (hasparticle) {
-    Particle *d = p->get_value(lp);
-    return d->get_value(get_nuisance_key());
+    return Nuisance(p->get_value(lp)).get_nuisance();
   } else {
     return -std::numeric_limits<double>::infinity();
   }
@@ -207,8 +205,7 @@ Float Nuisance::get_upper() const {
   if (hasfloat) {
     double floatval = p->get_value(ku);
     if (hasparticle) {
-      Particle *d = p->get_value(kp);
-      double particleval = d->get_value(get_nuisance_key());
+      double particleval = Nuisance(p->get_value(kp)).get_nuisance();
       if (floatval < particleval) {
         return floatval;
       } else {
@@ -218,8 +215,7 @@ Float Nuisance::get_upper() const {
       return floatval;
     }
   } else if (hasparticle) {
-    Particle *d = p->get_value(kp);
-    return d->get_value(get_nuisance_key());
+    return Nuisance(p->get_value(kp)).get_nuisance();
   } else {
     return std::numeric_limits<double>::infinity();
   }

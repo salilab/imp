@@ -41,7 +41,7 @@ class IMPISDEXPORT Nuisance : public Decorator {
   IMP_DECORATOR_SETUP_1(Nuisance, double, nuisance);
 
   static bool get_is_setup(Model *m, ParticleIndex pi) {
-    return m->get_has_attribute(get_nuisance_key(), pi);
+    return m->get_has_attribute(get_transformed_nuisance_key(), pi);
   }
 
   //! Get type of transformation applied to nuisance.
@@ -56,7 +56,7 @@ class IMPISDEXPORT Nuisance : public Decorator {
   }
 
   Float get_transformed_nuisance() const {
-    return get_particle()->get_value(get_nuisance_key());
+    return get_particle()->get_value(get_transformed_nuisance_key());
   }
 
   Float get_nuisance() const;
@@ -88,19 +88,19 @@ class IMPISDEXPORT Nuisance : public Decorator {
   void remove_upper();
 
   Float get_transformed_nuisance_derivative() const {
-    return get_particle()->get_derivative(get_nuisance_key());
+    return get_particle()->get_derivative(get_transformed_nuisance_key());
   }
 
   void add_to_transformed_nuisance_derivative(Float d, DerivativeAccumulator &accum) {
-    get_particle()->add_to_derivative(get_nuisance_key(), d, accum);
+    get_particle()->add_to_derivative(get_transformed_nuisance_key(), d, accum);
   }
 
   bool get_transformed_nuisance_is_optimized() const {
-    return get_particle()->get_is_optimized(get_nuisance_key());
+    return get_particle()->get_is_optimized(get_transformed_nuisance_key());
   }
 
   void set_transformed_nuisance_is_optimized(bool val) {
-    get_particle()->set_is_optimized(get_nuisance_key(), val);
+    get_particle()->set_is_optimized(get_transformed_nuisance_key(), val);
   }
 
   //! Get derivative of score wrt nuisance
