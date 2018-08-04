@@ -25,11 +25,61 @@ enum TransformationType {
 
 
 //! Add nuisance parameter to particle
-/** The value of the nuisance parameter may express data
-    or theory uncertainty. It can be initialized with or without
-    specifying its value. Default is 1. On construction, the Nuisance is
-    unbounded. It can be bounded with set_upper and set_lower. Setting it
-    to values outside of bounds results in setting it to the bound value.
+/** The value of the nuisance parameter may express data or theory uncertainty.
+    It can be initialized with or without specifying its value. Default is 1.
+    On construction, the Nuisance is unbounded. It can be bounded with
+    set_upper and set_lower.
+
+    The bounds must be non-equal. They are enforced by maintaining an
+    unconstrained transformation \f$y=f(x)\f$ of the nuisance \f$x\f$. To
+    reduce sampling bias, the bounds on \f$x\f$ are enforced by only directly
+    setting and evolving \f$y\f$.
+
+    The transformations, inverse transformations, and Jacobian of the
+    transformations are described below.
+
+    For an unbounded nuisance \f$x \in \mathbb{R}\f$:
+
+    \f[ f(x) = x \\
+        f^{-1}(y) = y \\
+        \frac{d}{dy} f^{-1}(y) = 1
+    \f]
+
+    For a lower-bounded nuisance \f$x > a\f$:
+
+    \f[ f(x) = \log(x - a) \\
+        f^{-1}(y) = a + e^y \\
+        \frac{d}{dy} f^{-1}(y) = e^y
+    \f]
+
+    For an upper-bounded nuisance \f$x < b\f$:
+
+    \f[ f(x) = \log(b - x) \\
+        f^{-1}(y) = b - e^y \\
+        \frac{d}{dy} f^{-1}(y) = -e^y
+    \f]
+
+    For a lower- and upper-bounded nuisance \f$a < x < b\f$:
+
+    \f[ f(x) = \text{logit}\left(\frac{x - a}{b - a}\right)
+             = \log\left(\frac{x - a}{b - x}\right) \\
+        f^{-1}(y) = a + \frac{b - a}{1 + e^{-y}} \\
+        \frac{d}{dy} f^{-1}(y) = \frac{(b - a) e^{-y}}{(1 + e^{-y})^2}
+    \f]
+
+    \note Defining the nuisance in terms of the transformed nuisance requires
+          a change of variables on all prior distributions, including the
+          default uniform distribution. This is handled for the user by adding
+          the negative log absolute value of the Jacobian of the transformation
+          to the score. A score state is used to add the derivative of this
+          term to the transformed nuisance.
+    \note Bounds should only be used when they reflect true
+          physical/mathematical constraints on the nuisance (e.g. Scale).
+          Prior information regarding realistic values of the nuisance should
+          be expressed in a prior restraint, *not* in the use of bounds.
+
+    \see Scale
+    \see Switching
  */
 class IMPISDEXPORT Nuisance : public Decorator {
   static void do_setup_particle(Model *m, ParticleIndex pi,
