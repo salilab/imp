@@ -158,7 +158,7 @@ void Nuisance::set_lower(Float d) {
   FloatKey k(get_lower_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
-  enforce_bounds();
+  setup_score_state();
   set_nuisance(x);
 }
 void Nuisance::set_lower(Particle *d) {
@@ -167,7 +167,7 @@ void Nuisance::set_lower(Particle *d) {
   ParticleKey k(get_lower_particle_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
-  enforce_bounds();
+  setup_score_state();
   set_nuisance(x);
 }
 void Nuisance::remove_lower() {
@@ -177,7 +177,7 @@ void Nuisance::remove_lower() {
   if (p->has_attribute(k)) p->remove_attribute(k);
   FloatKey kp(get_lower_key());
   if (p->has_attribute(kp)) p->remove_attribute(kp);
-  remove_bounds();
+  remove_score_state();
   set_nuisance(x);
 }
 
@@ -226,7 +226,7 @@ void Nuisance::set_upper(Float d) {
   FloatKey k(get_upper_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
-  enforce_bounds();
+  setup_score_state();
   set_nuisance(x);
 }
 void Nuisance::set_upper(Particle *d) {
@@ -235,7 +235,7 @@ void Nuisance::set_upper(Particle *d) {
   ParticleKey k(get_upper_particle_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
-  enforce_bounds();
+  setup_score_state();
   set_nuisance(x);
 }
 void Nuisance::remove_upper() {
@@ -245,7 +245,7 @@ void Nuisance::remove_upper() {
   if (p->has_attribute(k)) p->remove_attribute(k);
   ParticleKey kp(get_upper_particle_key());
   if (p->has_attribute(kp)) p->remove_attribute(kp);
-  remove_bounds();
+  remove_score_state();
   set_nuisance(x);
 }
 
@@ -259,7 +259,7 @@ ObjectKey Nuisance::get_ss_key() {
   static ObjectKey k("nuisance_ss");
   return k;
 }
-void Nuisance::enforce_bounds() {
+void Nuisance::setup_score_state() {
   Pointer<Particle> p = get_particle();
   ObjectKey k(get_ss_key());
   if (p->has_attribute(k)) return;
@@ -267,7 +267,7 @@ void Nuisance::enforce_bounds() {
   ss->set_was_used(true);
   p->add_attribute(k, ss);
 }
-void Nuisance::remove_bounds() {
+void Nuisance::remove_score_state() {
   Pointer<Particle> p = get_particle();
   ObjectKey k(get_ss_key());
   if (!p->has_attribute(k)) return;
