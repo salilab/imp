@@ -170,6 +170,8 @@ void Nuisance::set_lower(Float d) {
   set_nuisance(x);
 }
 void Nuisance::set_lower(Particle *d) {
+  IMP_USAGE_CHECK(Nuisance::get_is_setup(d),
+                  "Lower bound particle must be Nuisance.");
   IMP_USAGE_CHECK(Nuisance(d).get_nuisance() < get_upper(),
                   "Lower bound must be less than upper.");
   double x = get_nuisance();
@@ -239,6 +241,8 @@ void Nuisance::set_upper(Float d) {
   set_nuisance(x);
 }
 void Nuisance::set_upper(Particle *d) {
+  IMP_USAGE_CHECK(Nuisance::get_is_setup(d),
+                  "Upper bound particle must be Nuisance.");
   IMP_USAGE_CHECK(Nuisance(d).get_nuisance() > get_lower(),
                   "Upper bound must be greater than lower.");
   double x = get_nuisance();
