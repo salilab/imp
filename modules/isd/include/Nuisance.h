@@ -49,22 +49,28 @@ class IMPISDEXPORT Nuisance : public Decorator {
     return get_has_lower() + 2 * get_has_upper();
   }
 
+  //! Get key for the transformed nuisance.
   static FloatKey get_transformed_nuisance_key();
 
+  //! Get key for the transformed nuisance.
   IMPISD_DEPRECATED_METHOD_DECL(2.10)
   static FloatKey get_nuisance_key() {
     IMPISD_DEPRECATED_METHOD_DEF(2.10, "Use get_transformed_nuisance_key() instead. See documentation.");
     return get_transformed_nuisance_key();
   }
 
+  //! Get value of transformed nuisance.
   Float get_transformed_nuisance() const {
     return get_particle()->get_value(get_transformed_nuisance_key());
   }
 
+  //! Get value of untransformed nuisance.
   Float get_nuisance() const;
 
+  //! Set value of transformed nuisance.
   void set_transformed_nuisance(Float y);
 
+  //! Set value of transformed nuisance from untransformed nuisance.
   void set_nuisance(Float x);
 
   /** set upper and lower bound of nuisance by specifying
