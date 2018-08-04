@@ -162,6 +162,7 @@ ParticleIndexKey Nuisance::get_lower_particle_key() {
   return k;
 }
 void Nuisance::set_lower(Float d) {
+  IMP_USAGE_CHECK(d < get_upper(), "Lower bound must be less than upper.");
   double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   FloatKey k(get_lower_key());
@@ -171,6 +172,8 @@ void Nuisance::set_lower(Float d) {
   set_nuisance(x);
 }
 void Nuisance::set_lower(Particle *d) {
+  IMP_USAGE_CHECK(Nuisance(d).get_nuisance() < get_upper(),
+                  "Lower bound must be less than upper.");
   double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   ParticleKey k(get_lower_particle_key());
@@ -230,6 +233,7 @@ ParticleIndexKey Nuisance::get_upper_particle_key() {
   return k;
 }
 void Nuisance::set_upper(Float d) {
+  IMP_USAGE_CHECK(d > get_lower(), "Upper bound must be greater than lower.");
   double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   FloatKey k(get_upper_key());
@@ -239,6 +243,8 @@ void Nuisance::set_upper(Float d) {
   set_nuisance(x);
 }
 void Nuisance::set_upper(Particle *d) {
+  IMP_USAGE_CHECK(Nuisance(d).get_nuisance() > get_lower(),
+                  "Upper bound must be greater than lower.");
   double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   ParticleKey k(get_upper_particle_key());
