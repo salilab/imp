@@ -51,7 +51,9 @@ class IMPISDEXPORT Nuisance : public Decorator {
 
   static FloatKey get_transformed_nuisance_key();
 
+  IMPISD_DEPRECATED_METHOD_DECL(2.10)
   static FloatKey get_nuisance_key() {
+    IMPISD_DEPRECATED_METHOD_DEF(2.10, "Use get_transformed_nuisance_key() instead. See documentation.");
     return get_transformed_nuisance_key();
   }
 
