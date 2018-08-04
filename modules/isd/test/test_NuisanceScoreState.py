@@ -24,7 +24,7 @@ class XTransRestraint(IMP.Restraint):
     def unprotected_evaluate(self, accum):
         m = self.get_model()
         e = 0
-        self.values = [m.get_attribute(Nuisance.get_nuisance_key(), p)
+        self.values = [Nuisance(m, p).get_nuisance()
                        for p in m.get_particle_indexes()]
         return e
 
@@ -70,10 +70,9 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         Nuisance.setup_particle(n, 1.0)
         Nuisance(n).set_lower(0.5)
         Nuisance(n).set_upper(1.5)
-        n.set_value(Nuisance.get_nuisance_key(), 10.0)
+        Nuisance(n).set_nuisance(10.0)
         self.rs.evaluate(False)
-        self.assertAlmostEqual(n.get_value(Nuisance.get_nuisance_key()),
-                               1.5, delta=1e-7)
+        self.assertAlmostEqual(Nuisance(n).get_nuisance(), 1.5, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 1.5)
 
     def test_nuisance_down(self):
@@ -81,47 +80,42 @@ class TestNuisanceScoreState(IMP.test.TestCase):
         Nuisance.setup_particle(n, 1.0)
         Nuisance(n).set_lower(0.5)
         Nuisance(n).set_upper(1.5)
-        n.set_value(Nuisance.get_nuisance_key(), 0.1)
+        Nuisance(n).set_nuisance(0.1)
         self.rs.evaluate(False)
-        self.assertAlmostEqual(n.get_value(Nuisance.get_nuisance_key()),
-                               0.5, delta=1e-7)
+        self.assertAlmostEqual(Nuisance(n).get_nuisance(), 0.5, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 0.5)
 
     def test_scale_up(self):
         n = IMP.Particle(self.m)
         Scale.setup_particle(n, 1.0)
         Scale(n).set_upper(1.5)
-        n.set_value(Scale.get_scale_key(), 10.0)
+        Scale(n).set_scale(10.0)
         self.rs.evaluate(False)
-        self.assertAlmostEqual(n.get_value(Scale.get_scale_key()),
-                               1.5, delta=1e-7)
+        self.assertAlmostEqual(Scale(n).get_scale(), 1.5, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 1.5)
 
     def test_scale_down(self):
         n = IMP.Particle(self.m)
         Scale.setup_particle(n, 1.0)
-        n.set_value(Scale.get_scale_key(), -0.1)
+        Scale(n).set_scale(-0.1)
         self.rs.evaluate(False)
-        self.assertAlmostEqual(n.get_value(Scale.get_scale_key()),
-                               0.0, delta=1e-7)
+        self.assertAlmostEqual(Scale(n).get_scale(), 0.0, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 0.0)
 
     def test_switching_up(self):
         n = IMP.Particle(self.m)
         Switching.setup_particle(n, 0.3)
-        n.set_value(Switching.get_switching_key(), 3)
+        Switching(n).set_switching(3)
         self.rs.evaluate(False)
-        self.assertAlmostEqual(n.get_value(Switching.get_switching_key()),
-                               1.0, delta=1e-7)
+        self.assertAlmostEqual(Switching(n).get_switching(), 1.0, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 1.0)
 
     def test_switching_down(self):
         n = IMP.Particle(self.m)
         Switching.setup_particle(n, 0.3)
-        n.set_value(Switching.get_switching_key(), -1)
+        Switching(n).set_switching(-1)
         self.rs.evaluate(False)
-        self.assertAlmostEqual(n.get_value(Switching.get_switching_key()),
-                               0.0, delta=1e-7)
+        self.assertAlmostEqual(Switching(n).get_switching(), 0.0, delta=1e-7)
         self.assertAlmostEqual(self.rs.values[0], 0.0)
 
     def test_NormalMover_MC_ok(self):
