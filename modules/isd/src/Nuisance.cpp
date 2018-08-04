@@ -23,31 +23,61 @@ FloatKey Nuisance::get_transformed_nuisance_key() {
   static FloatKey k("nuisance");
   return k;
 }
-void Nuisance::set_transformed_nuisance(Float d) {
-  Particle *p = get_particle();
+
+void Nuisance::set_nuisance(Float x) {
   int trans_type = get_transformation_type();
   switch(trans_type) {
     case NONE:
+      set_transformed_nuisance(x);
       break;
     case LOG_LOWER:
-    {
-      Float lo = get_lower();
-      d = (d < lo) ? lo : d;
+      {
+        double lo = get_lower();
+        if (x <= lo) {
+          set_transformed_nuisance(std::log(std::numeric_limits<double>::min()));
+        } else {
+          set_transformed_nuisance(std::log(x - lo));
+        }
+        break;
+      }
+    case LOG_UPPER: {
+        double up = get_upper();
+        if (x >= up) {
+          set_transformed_nuisance(std::log(std::numeric_limits<double>::min()));
+        } else {
+          set_transformed_nuisance(std::log(up - x));
+        }
+        break;
     }
-    case LOG_UPPER:
-    {
-      Float up = get_upper();
-      d = (d > up) ? up : d;
+    case LOGIT_LOWER_UPPER: {
+      double lo = get_lower();
+      double up = get_upper();
+      if (x <= lo) {
+        set_transformed_nuisance(std::log(std::numeric_limits<double>::min()));
+      } else if (x >= up) {
+        set_transformed_nuisance(std::log(std::numeric_limits<double>::max()));
+      } else {
+        set_transformed_nuisance(std::log((x - get_lower()) / (get_upper() - x)));
+      }
     }
-    case LOGIT_LOWER_UPPER:
-    {
-      Float lo = get_lower();
-      Float up = get_upper();
-      d = (d > up) ? up : ((d < lo) ? lo : d);
-    }
-    default: {}
   }
-  p->set_value(get_nuisance_key(), d);
+}
+
+Float Nuisance::get_nuisance() const {
+  double y = get_transformed_nuisance();
+  switch(get_transformation_type()) {
+    case NONE: return y;
+    case LOG_LOWER: return get_lower() + std::exp(y);
+    case LOG_UPPER: return get_upper() - std::exp(y);
+    case LOGIT_LOWER_UPPER:
+      double lo = get_lower();
+      return lo + (get_upper() - lo) / (1 + std::exp(-y));
+  }
+}
+
+void Nuisance::set_transformed_nuisance(Float y) {
+  Particle *p = get_particle();
+  p->set_value(get_nuisance_key(), y);
 }
 
 bool Nuisance::get_has_lower() const {
@@ -90,26 +120,32 @@ ParticleIndexKey Nuisance::get_lower_particle_key() {
   return k;
 }
 void Nuisance::set_lower(Float d) {
+  double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   FloatKey k(get_lower_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
   enforce_bounds();
+  set_nuisance(x);
 }
 void Nuisance::set_lower(Particle *d) {
+  double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   ParticleKey k(get_lower_particle_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
   enforce_bounds();
+  set_nuisance(x);
 }
 void Nuisance::remove_lower() {
+  double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   FloatKey k(get_lower_key());
   if (p->has_attribute(k)) p->remove_attribute(k);
   FloatKey kp(get_lower_key());
   if (p->has_attribute(kp)) p->remove_attribute(kp);
   remove_bounds();
+  set_nuisance(x);
 }
 
 bool Nuisance::get_has_upper() const {
@@ -152,26 +188,32 @@ ParticleIndexKey Nuisance::get_upper_particle_key() {
   return k;
 }
 void Nuisance::set_upper(Float d) {
+  double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   FloatKey k(get_upper_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
   enforce_bounds();
+  set_nuisance(x);
 }
 void Nuisance::set_upper(Particle *d) {
+  double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   ParticleKey k(get_upper_particle_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
   enforce_bounds();
+  set_nuisance(x);
 }
 void Nuisance::remove_upper() {
+  double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   FloatKey k(get_upper_key());
   if (p->has_attribute(k)) p->remove_attribute(k);
   ParticleKey kp(get_upper_particle_key());
   if (p->has_attribute(kp)) p->remove_attribute(kp);
   remove_bounds();
+  set_nuisance(x);
 }
 
 void Nuisance::show(std::ostream &out) const {
@@ -202,11 +244,10 @@ void Nuisance::remove_bounds() {
 }
 
 void NuisanceScoreState::do_before_evaluate() {
-  IMP_LOG_TERSE("NSS: do_before_evaluate()" << std::endl);
-  Nuisance nuis(p_);
-  nuis.set_nuisance(nuis.get_nuisance());
 }
+
 void NuisanceScoreState::do_after_evaluate(DerivativeAccumulator *) {}
+
 ModelObjectsTemp NuisanceScoreState::do_get_inputs() const {
   ModelObjectsTemp pt;
   pt.push_back(p_);
@@ -216,6 +257,7 @@ ModelObjectsTemp NuisanceScoreState::do_get_inputs() const {
   if (p_->has_attribute(pd)) pt.push_back(p_->get_value(pd));
   return pt;
 }
+
 ModelObjectsTemp NuisanceScoreState::do_get_outputs() const {
   return ModelObjectsTemp(1, p_);
 }

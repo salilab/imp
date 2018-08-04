@@ -59,13 +59,11 @@ class IMPISDEXPORT Nuisance : public Decorator {
     return get_particle()->get_value(get_nuisance_key());
   }
 
-  Float get_nuisance() const {
-    return get_transformed_nuisance();
-  }
+  Float get_nuisance() const;
 
-  void set_transformed_nuisance(Float d);
+  void set_transformed_nuisance(Float y);
 
-  void set_nuisance(Float d) { set_transformed_nuisance(d); }
+  void set_nuisance(Float x);
 
   /** set upper and lower bound of nuisance by specifying
    * either a float or another nuisance. Both can be set at the same
