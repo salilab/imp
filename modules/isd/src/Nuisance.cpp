@@ -83,23 +83,23 @@ void Nuisance::set_transformed_nuisance(Float y) {
 Float Nuisance::get_nuisance_derivative() const {
   return (
     get_transformed_nuisance_derivative()
-    - get_derivative_of_negative_log_absolute_jacobian_of_transformation()
-    ) * get_jacobian_of_transformation();
+    - get_derivative_of_negative_log_absolute_jacobian_of_inverse_transformation()
+    ) * get_jacobian_of_inverse_transformation();
 }
 
 void Nuisance::add_to_nuisance_derivative(Float d, DerivativeAccumulator &accum) {
-  add_to_transformed_nuisance_derivative(d / get_jacobian_of_transformation(), accum);
+  add_to_transformed_nuisance_derivative(d / get_jacobian_of_inverse_transformation(), accum);
 }
 
-double Nuisance::get_jacobian_of_transformation() const {
+double Nuisance::get_jacobian_of_inverse_transformation() const {
   if (get_transformation_type() == LOG_UPPER) {
     return -std::exp(get_transformed_nuisance());
   } else {
-    return std::exp(-get_negative_log_absolute_jacobian_of_transformation());
+    return std::exp(-get_negative_log_absolute_jacobian_of_inverse_transformation());
   }
 }
 
-double Nuisance::get_negative_log_absolute_jacobian_of_transformation() const {
+double Nuisance::get_negative_log_absolute_jacobian_of_inverse_transformation() const {
   double y = get_transformed_nuisance();
   switch(get_transformation_type()) {
     case NONE: return 0;
@@ -111,7 +111,7 @@ double Nuisance::get_negative_log_absolute_jacobian_of_transformation() const {
   }
 }
 
-double Nuisance::get_derivative_of_negative_log_absolute_jacobian_of_transformation() const {
+double Nuisance::get_derivative_of_negative_log_absolute_jacobian_of_inverse_transformation() const {
   switch(get_transformation_type()) {
     case NONE: return 0;
     case LOG_LOWER: return -1;
@@ -294,7 +294,7 @@ void NuisanceScoreState::do_after_evaluate(DerivativeAccumulator *da) {
   if (da) {
     Nuisance nuis(p_);
     nuis.add_to_transformed_nuisance_derivative(
-      nuis.get_derivative_of_negative_log_absolute_jacobian_of_transformation(),
+      nuis.get_derivative_of_negative_log_absolute_jacobian_of_inverse_transformation(),
       *da);
   }
 }

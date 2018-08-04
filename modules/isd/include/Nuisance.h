@@ -70,9 +70,9 @@ enum TransformationType {
     \note Defining the nuisance in terms of the transformed nuisance requires
           a change of variables on all prior distributions, including the
           default uniform distribution. This is handled for the user by adding
-          the negative log absolute value of the Jacobian of the transformation
-          to the score. A score state is used to add the derivative of this
-          term to the transformed nuisance.
+          the negative log absolute value of the Jacobian of the inverse
+          transformation to the score. A score state is used to add the
+          derivative of this term to the transformed nuisance.
     \note Bounds should only be used when they reflect true
           physical/mathematical constraints on the nuisance (e.g. Scale).
           Prior information regarding realistic values of the nuisance should
@@ -183,22 +183,22 @@ class IMPISDEXPORT Nuisance : public Decorator {
   }
 
   //! Get Jacobian of the transformation.
-  /** The value is  \f$\frac{df^{-1}(y)}{dy} \f$ .*/
-  double get_jacobian_of_transformation() const;
+  /** The value is \f$\frac{df^{-1}(y)}{dy} \f$ .*/
+  double get_jacobian_of_inverse_transformation() const;
 
   //! Get negative log of the absolute value of the Jacobian of the transformation.
   /** The value is \f$-\log \left| \frac{df^{-1}(y)}{dy} \right| \f$. It must
       be added to the score of restraints that represent a probability
       distribution on the Nuisance, due to change of variables.
    */
-  double get_negative_log_absolute_jacobian_of_transformation() const;
+  double get_negative_log_absolute_jacobian_of_inverse_transformation() const;
 
   //! Get derivative of negative log of the absolute value of the Jacobian of the transformation.
   /** The value is \f$ \frac{d}{dy} -\log \left| \frac{df^{-1}(y)}{dy} \right| \f$.
       A score state is used to add it to the derivative of the transformed
       nuisance to account for change of variables.
    */
-  double get_derivative_of_negative_log_absolute_jacobian_of_transformation() const;
+  double get_derivative_of_negative_log_absolute_jacobian_of_inverse_transformation() const;
 
   friend class NuisanceScoreState;
 
