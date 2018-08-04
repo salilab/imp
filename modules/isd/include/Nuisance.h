@@ -103,13 +103,18 @@ class IMPISDEXPORT Nuisance : public Decorator {
     get_particle()->set_is_optimized(get_nuisance_key(), val);
   }
 
-  Float get_nuisance_derivative() const {
-    return get_transformed_nuisance_derivative();
-  }
+  //! Get derivative of score wrt nuisance
+  /** Get derivative of score wrt nuisance as though score was parameterized
+      in terms of the nuisance and not the nuisance transformation.
+      \note this is only guaranteed to be accurate after model update.
+   */
+  Float get_nuisance_derivative() const;
 
-  void add_to_nuisance_derivative(Float d, DerivativeAccumulator &accum) {
-    add_to_transformed_nuisance_derivative(d, accum);
-  }
+  //! Add to derivative of score wrt nuisance
+  /** The derivative is automatically propagated to transformed nuisance with
+      with the necessary modification.
+   */
+  void add_to_nuisance_derivative(Float d, DerivativeAccumulator &accum);
 
   bool get_nuisance_is_optimized() const {
     return get_transformed_nuisance_is_optimized();
