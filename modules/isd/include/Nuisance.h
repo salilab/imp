@@ -119,6 +119,24 @@ class IMPISDEXPORT Nuisance : public Decorator {
     set_transformed_nuisance_is_optimized(val);
   }
 
+  //! Get Jacobian of the transformation.
+  /** The value is  \f$\frac{df^{-1}(y)}{dy} \f$ .*/
+  double get_jacobian_of_transformation() const;
+
+  //! Get negative log of the absolute value of the Jacobian of the transformation.
+  /** The value is \f$-\log \left| \frac{df^{-1}(y)}{dy} \right| \f$. It must
+      be added to the score of restraints that represent a probability
+      distribution on the Nuisance, due to change of variables.
+   */
+  double get_negative_log_absolute_jacobian_of_transformation() const;
+
+  //! Get derivative of negative log of the absolute value of the Jacobian of the transformation.
+  /** The value is \f$ \frac{d}{dy} -\log \left| \frac{df^{-1}(y)}{dy} \right| \f$.
+      A score state is used to add it to the derivative of the transformed
+      nuisance to account for change of variables.
+   */
+  double get_derivative_of_negative_log_absolute_jacobian_of_transformation() const;
+
   friend class NuisanceScoreState;
 
  private:

@@ -80,6 +80,39 @@ void Nuisance::set_transformed_nuisance(Float y) {
   p->set_value(get_nuisance_key(), y);
 }
 
+}
+
+double Nuisance::get_jacobian_of_transformation() const {
+  if (get_transformation_type() == LOG_UPPER) {
+    return -std::exp(get_transformed_nuisance());
+  } else {
+    return std::exp(-get_negative_log_absolute_jacobian_of_transformation());
+  }
+}
+
+double Nuisance::get_negative_log_absolute_jacobian_of_transformation() const {
+  double y = get_transformed_nuisance();
+  switch(get_transformation_type()) {
+    case NONE: return 0;
+    case LOG_LOWER: return -y;
+    case LOG_UPPER: return -y;
+    case LOGIT_LOWER_UPPER:
+      return y + 2 * std::log1p(std::exp(-y))
+               - std::log(get_upper() - get_lower());
+  }
+}
+
+double Nuisance::get_derivative_of_negative_log_absolute_jacobian_of_transformation() const {
+  switch(get_transformation_type()) {
+    case NONE: return 0;
+    case LOG_LOWER: return -1;
+    case LOG_UPPER: return -1;
+    case LOGIT_LOWER_UPPER:
+      double expy = std::exp(-get_transformed_nuisance());
+      return 1 - 2 * expy / (1 + expy);
+  }
+}
+
 bool Nuisance::get_has_lower() const {
   Pointer<Particle> p = get_particle();
   return p->has_attribute(get_lower_key()) ||
@@ -246,7 +279,14 @@ void Nuisance::remove_bounds() {
 void NuisanceScoreState::do_before_evaluate() {
 }
 
-void NuisanceScoreState::do_after_evaluate(DerivativeAccumulator *) {}
+void NuisanceScoreState::do_after_evaluate(DerivativeAccumulator *da) {
+  if (da) {
+    Nuisance nuis(p_);
+    nuis.add_to_transformed_nuisance_derivative(
+      nuis.get_derivative_of_negative_log_absolute_jacobian_of_transformation(),
+      *da);
+  }
+}
 
 ModelObjectsTemp NuisanceScoreState::do_get_inputs() const {
   ModelObjectsTemp pt;
