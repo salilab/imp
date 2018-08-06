@@ -116,9 +116,7 @@ double Nuisance::get_derivative_of_negative_log_absolute_jacobian_of_inverse_tra
     case NONE: return 0;
     case LOG_LOWER: return -1;
     case LOG_UPPER: return -1;
-    case LOGIT_LOWER_UPPER:
-      double expy = std::exp(-get_transformed_nuisance());
-      return 1 - 2 * expy / (1 + expy);
+    case LOGIT_LOWER_UPPER: return std::tanh(.5 * get_transformed_nuisance());
   }
 }
 
