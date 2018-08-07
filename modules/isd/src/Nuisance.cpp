@@ -55,7 +55,7 @@ void Nuisance::set_nuisance(Float x) {
       if (x <= lo) {
         set_transformed_nuisance(std::log(std::numeric_limits<double>::min()));
       } else if (x >= up) {
-        set_transformed_nuisance(std::log(std::numeric_limits<double>::max()));
+        set_transformed_nuisance(-std::log(std::numeric_limits<double>::min()));
       } else {
         set_transformed_nuisance(std::log((x - get_lower()) / (get_upper() - x)));
       }
