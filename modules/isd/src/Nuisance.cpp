@@ -92,10 +92,13 @@ void Nuisance::add_to_nuisance_derivative(Float d, DerivativeAccumulator &accum)
 }
 
 double Nuisance::get_jacobian_of_inverse_transformation() const {
-  if (get_transformation_type() == LOG_UPPER) {
-    return -std::exp(get_transformed_nuisance());
-  } else {
-    return std::exp(-get_negative_log_absolute_jacobian_of_inverse_transformation());
+  double y = get_transformed_nuisance();
+  switch(get_transformation_type()) {
+    case NONE: return 1;
+    case LOG_LOWER: return std::exp(y);
+    case LOG_UPPER: return -std::exp(y);
+    case LOGIT_LOWER_UPPER:
+      return .5 * (get_upper() - get_lower()) / (1 + std::cosh(y));
   }
 }
 
