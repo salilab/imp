@@ -16,7 +16,7 @@
 IMPBENCHMARK_BEGIN_NAMESPACE
 
 /** One can use the
-    [GPerfTools profiler](http://code.google.com/p/gperftools/)
+    [GPerfTools profiler](https://github.com/gperftools/gperftools)
     to profile code. On a Mac, you should
     use the Instruments program instead (part of the Mac OS X Developer Tools).
 */
