@@ -57,7 +57,7 @@ void Nuisance::set_nuisance(Float x) {
       } else if (x >= up) {
         set_transformed_nuisance(-std::log(std::numeric_limits<double>::min()));
       } else {
-        set_transformed_nuisance(std::log((x - get_lower()) / (get_upper() - x)));
+        set_transformed_nuisance(std::log(x - get_lower()) - std::log(get_upper() - x));
       }
     }
   }
@@ -71,7 +71,11 @@ Float Nuisance::get_nuisance() const {
     case LOG_UPPER: return get_upper() - std::exp(y);
     case LOGIT_LOWER_UPPER:
       double lo = get_lower();
-      return lo + (get_upper() - lo) / (1 + std::exp(-y));
+      double inv_logit = (y > 0) ? 1. / (1. + std::exp(-y)) : 1. -  1. / (1. + std::exp(y));
+      if (inv_logit == 1.) {
+        inv_logit = (y > 0) ? 1 - 1e-15 : 1;
+      }
+      return lo + (get_upper() - lo) * inv_logit;
   }
 }
 
@@ -109,8 +113,8 @@ double Nuisance::get_negative_log_absolute_jacobian_of_inverse_transformation() 
     case LOG_LOWER: return -y;
     case LOG_UPPER: return -y;
     case LOGIT_LOWER_UPPER:
-      return y + 2 * std::log1p(std::exp(-y))
-               - std::log(get_upper() - get_lower());
+      double c = (y > 0) ? y + 2 * std::log1p(std::exp(-y)) : -y + 2 * std::log1p(std::exp(y));
+      return c - std::log1p(get_upper() - get_lower());
   }
 }
 
