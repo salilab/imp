@@ -25,6 +25,7 @@ IMP_SWIG_OBJECT(IMP::isd, PenalizedComplexityPrior, PenalizedComplexityPriors);
 IMP_SWIG_DECORATOR(IMP::isd, Nuisance, Nuisances);
 IMP_SWIG_DECORATOR(IMP::isd, Scale, Scales);
 IMP_SWIG_DECORATOR(IMP::isd, Switching, Switchings);
+IMP_SWIG_DECORATOR(IMP::isd, TransformedNuisance, TransformedNuisances);
 IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
 IMP_SWIG_DECORATOR(IMP::isd, Weight, Weights);
 IMP_SWIG_OBJECT(IMP::isd, GaussianRestraint, GaussianRestraints);
@@ -83,6 +84,7 @@ def create_model_and_particles():
 %include "IMP/isd/Nuisance.h"
 %include "IMP/isd/Scale.h"
 %include "IMP/isd/Switching.h"
+%include "IMP/isd/TransformedNuisance.h"
 %include "IMP/isd/Weight.h"
 %include "IMP/isd/JeffreysRestraint.h"
 %include "IMP/isd/NormalSigmaPCRestraint.h"
