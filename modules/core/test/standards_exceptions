@@ -12,4 +12,4 @@ function_name_exceptions=['RigidBody.normalize_rotation',
 
 show_exceptions=['HierarchyVisitor', 'ModifierVisitor']
 
-spelling_exceptions=["provenanced"]
+spelling_exceptions=["jacobians", "provenanced"]
