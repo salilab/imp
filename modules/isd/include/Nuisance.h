@@ -81,11 +81,13 @@ class IMPISDEXPORT Nuisance : public Decorator {
 
   friend class NuisanceScoreState;
 
+ protected:
+  void enforce_bounds();
+  void remove_bounds();
+
  private:
   // scorestate-related bookkeeping
   static ObjectKey get_ss_key();
-  void enforce_bounds();
-  void remove_bounds();
 };
 
 IMP_DECORATORS(Nuisance, Nuisances, ParticlesTemp);
