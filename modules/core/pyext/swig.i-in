@@ -198,6 +198,9 @@ IMP_SWIG_OBJECT(IMP::core, IsCollisionPairPredicate, IsCollisionPairPredicates);
 IMP_SWIG_VALUE(IMP::core, BinormalTerm, BinormalTermList);
 IMP_SWIG_OBJECT(IMP::core, MultipleBinormalRestraint, MultipleBinormalRestraints);
 
+IMP_SWIG_OBJECT(IMP::core, JacobianAdjuster, JacobianAdjusters);
+IMP_SWIG_VALUE(IMP::core, UnivariateJacobian, UnivariateJacobians);
+IMP_SWIG_VALUE(IMP::core, MultivariateJacobian, MultivariateJacobians);
 
 /* Don't wrap internal classes */
 %ignore IMP::core::internal::ChildArrayTraits;
@@ -330,6 +333,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/MCCGSampler.h"
 %include "IMP/core/MinimumRestraint.h"
 %include "IMP/core/Gaussian.h"
+%include "IMP/core/JacobianAdjuster.h"
 
 %include "IMP/core/PairRestraint.h"
 %include "IMP/core/SingletonRestraint.h"
