@@ -15,7 +15,7 @@ def setupnuisance(m, initialvalue, minvalue, maxvalue, isoptimized=True):
     if maxvalue:
         nuisance.set_upper(maxvalue)
 
-    nuisance.set_nuisance_is_optimized(isoptimized)
+    nuisance.set_is_optimized(nuisance.get_nuisance_key(), isoptimized)
 
     return nuisance
 

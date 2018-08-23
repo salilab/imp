@@ -857,8 +857,8 @@ class sfo_common:
 
     def init_simulation_setup_nuisance_mc(self, nuis, temperature=300.0,
                                           mc_restraints=None, nm_stepsize=0.1):
-        """sets up monte carlo on transformed nuisance, at a certain target
-        temperature, optionally using a certain set of restraints only.
+        """sets up monte carlo on nuisance, at a certain target temperature,
+        optionally using a certain set of restraints only.
         - nuis: nuisance particle
         - temperature: target temperature
         - mc_restraints: optional set of restraints from which the energy should
@@ -867,8 +867,8 @@ class sfo_common:
         - nm_stepsize: the stepsize of the normal mover
         Returns: mc instance, nm instance.
         """
-        nm = self._setup_normal_mover(
-            nuis, nuis.get_transformed_nuisance_key(), nm_stepsize)
+        nm = self._setup_normal_mover(nuis, nuis.get_nuisance_key(),
+                                      nm_stepsize)
         mc = self._setup_mc(nm, temperature, mc_restraints)
         return mc, nm
 

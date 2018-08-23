@@ -111,16 +111,5 @@ class Tests(IMP.test.TestCase):
                 est = si
             self.assertAlmostEqual(nuisance.get_nuisance(), est, delta=1e-6)
 
-    def test_get_transformation_type(self):
-        nuisance = Nuisance.setup_particle(IMP.Particle(self.m), 50.0)
-        self.assertEqual(nuisance.get_transformation_type(), 0)
-        nuisance.set_lower(10)
-        self.assertEqual(nuisance.get_transformation_type(), 1)
-        nuisance.set_upper(90)
-        self.assertEqual(nuisance.get_transformation_type(), 3)
-        nuisance.remove_lower()
-        self.assertEqual(nuisance.get_transformation_type(), 2)
-
-
 if __name__ == '__main__':
     IMP.test.main()

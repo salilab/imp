@@ -13,118 +13,28 @@ IMPISD_BEGIN_NAMESPACE
 void Nuisance::do_setup_particle(Model *m, ParticleIndex pi,
                                  double nuisance) {
   if (!Nuisance::get_is_setup(m, pi)) {
-    m->add_attribute(get_transformed_nuisance_key(), pi, nuisance);
+    m->add_attribute(get_nuisance_key(), pi, nuisance);
   } else {
     Nuisance(m, pi).set_nuisance(nuisance);
   }
 }
 
-FloatKey Nuisance::get_transformed_nuisance_key() {
+FloatKey Nuisance::get_nuisance_key() {
   static FloatKey k("nuisance");
   return k;
 }
-
-void Nuisance::set_nuisance(Float x) {
-  int trans_type = get_transformation_type();
-  switch(trans_type) {
-    case NONE:
-      set_transformed_nuisance(x);
-      break;
-    case LOG_LOWER:
-      {
-        double lo = get_lower();
-        if (x <= lo) {
-          set_transformed_nuisance(std::log(std::numeric_limits<double>::min()));
-        } else {
-          set_transformed_nuisance(std::log(x - lo));
-        }
-        break;
-      }
-    case LOG_UPPER: {
-        double up = get_upper();
-        if (x >= up) {
-          set_transformed_nuisance(std::log(std::numeric_limits<double>::min()));
-        } else {
-          set_transformed_nuisance(std::log(up - x));
-        }
-        break;
-    }
-    case LOGIT_LOWER_UPPER: {
-      double lo = get_lower();
-      double up = get_upper();
-      if (x <= lo) {
-        set_transformed_nuisance(std::log(std::numeric_limits<double>::min()));
-      } else if (x >= up) {
-        set_transformed_nuisance(-std::log(std::numeric_limits<double>::min()));
-      } else {
-        set_transformed_nuisance(std::log(x - get_lower()) - std::log(get_upper() - x));
-      }
-    }
-  }
-}
-
-Float Nuisance::get_nuisance() const {
-  double y = get_transformed_nuisance();
-  switch(get_transformation_type()) {
-    case NONE: return y;
-    case LOG_LOWER: return get_lower() + std::exp(y);
-    case LOG_UPPER: return get_upper() - std::exp(y);
-    case LOGIT_LOWER_UPPER:
-      double lo = get_lower();
-      double inv_logit = (y > 0) ? 1. / (1. + std::exp(-y)) : 1. -  1. / (1. + std::exp(y));
-      if (inv_logit == 1.) {
-        inv_logit = (y > 0) ? 1 - 1e-15 : 1;
-      }
-      return lo + (get_upper() - lo) * inv_logit;
-  }
-}
-
-void Nuisance::set_transformed_nuisance(Float y) {
+void Nuisance::set_nuisance(Float d) {
+  Float d_ = d;
   Particle *p = get_particle();
-  p->set_value(get_transformed_nuisance_key(), y);
-}
-
-Float Nuisance::get_nuisance_derivative() const {
-  return (
-    get_transformed_nuisance_derivative()
-    - get_derivative_of_negative_log_absolute_jacobian_of_inverse_transformation()
-    ) / get_jacobian_of_inverse_transformation();
-}
-
-void Nuisance::add_to_nuisance_derivative(Float d, DerivativeAccumulator &accum) {
-  add_to_transformed_nuisance_derivative(d * get_jacobian_of_inverse_transformation(), accum);
-}
-
-double Nuisance::get_jacobian_of_inverse_transformation() const {
-  double y = get_transformed_nuisance();
-  switch(get_transformation_type()) {
-    case NONE: return 1;
-    case LOG_LOWER: return std::exp(y);
-    case LOG_UPPER: return -std::exp(y);
-    case LOGIT_LOWER_UPPER:
-      return .5 * (get_upper() - get_lower()) / (1 + std::cosh(y));
+  if (get_has_lower()) {
+    Float lo = get_lower();
+    if (d < lo) d_ = lo;
   }
-}
-
-double Nuisance::get_negative_log_absolute_jacobian_of_inverse_transformation() const {
-  double y = get_transformed_nuisance();
-  switch(get_transformation_type()) {
-    case NONE: return 0;
-    case LOG_LOWER: return -y;
-    case LOG_UPPER: return -y;
-    case LOGIT_LOWER_UPPER:
-      double c = (y > 0) ? y + 2 * std::log1p(std::exp(-y)) : -y + 2 * std::log1p(std::exp(y));
-      return c - std::log1p(get_upper() - get_lower());
+  if (get_has_upper()) {
+    Float up = get_upper();
+    if (d > up) d_ = up;
   }
-}
-
-double Nuisance::get_derivative_of_negative_log_absolute_jacobian_of_inverse_transformation() const {
-  switch(get_transformation_type()) {
-    case NONE: return 0;
-    case LOG_LOWER: return -1;
-    case LOG_UPPER: return -1;
-    case LOGIT_LOWER_UPPER: return std::tanh(.5 * get_transformed_nuisance());
-  }
+  p->set_value(get_nuisance_key(), d_);
 }
 
 bool Nuisance::get_has_lower() const {
@@ -141,7 +51,8 @@ Float Nuisance::get_lower() const {
   if (hasfloat) {
     double floatval = p->get_value(lk);
     if (hasparticle) {
-      double particleval = Nuisance(p->get_value(lp)).get_nuisance();
+      Particle *d = p->get_value(lp);
+      double particleval = d->get_value(get_nuisance_key());
       if (floatval > particleval) {
         return floatval;
       } else {
@@ -151,7 +62,8 @@ Float Nuisance::get_lower() const {
       return floatval;
     }
   } else if (hasparticle) {
-    return Nuisance(p->get_value(lp)).get_nuisance();
+    Particle *d = p->get_value(lp);
+    return d->get_value(get_nuisance_key());
   } else {
     return -std::numeric_limits<double>::infinity();
   }
@@ -165,37 +77,26 @@ ParticleIndexKey Nuisance::get_lower_particle_key() {
   return k;
 }
 void Nuisance::set_lower(Float d) {
-  IMP_USAGE_CHECK(d < get_upper(), "Lower bound must be less than upper.");
-  double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   FloatKey k(get_lower_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
-  setup_score_state();
-  set_nuisance(x);
+  enforce_bounds();
 }
 void Nuisance::set_lower(Particle *d) {
-  IMP_USAGE_CHECK(Nuisance::get_is_setup(d),
-                  "Lower bound particle must be Nuisance.");
-  IMP_USAGE_CHECK(Nuisance(d).get_nuisance() < get_upper(),
-                  "Lower bound must be less than upper.");
-  double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   ParticleKey k(get_lower_particle_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
-  setup_score_state();
-  set_nuisance(x);
+  enforce_bounds();
 }
 void Nuisance::remove_lower() {
-  double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   FloatKey k(get_lower_key());
   if (p->has_attribute(k)) p->remove_attribute(k);
   FloatKey kp(get_lower_key());
   if (p->has_attribute(kp)) p->remove_attribute(kp);
-  remove_score_state();
-  set_nuisance(x);
+  remove_bounds();
 }
 
 bool Nuisance::get_has_upper() const {
@@ -212,7 +113,8 @@ Float Nuisance::get_upper() const {
   if (hasfloat) {
     double floatval = p->get_value(ku);
     if (hasparticle) {
-      double particleval = Nuisance(p->get_value(kp)).get_nuisance();
+      Particle *d = p->get_value(kp);
+      double particleval = d->get_value(get_nuisance_key());
       if (floatval < particleval) {
         return floatval;
       } else {
@@ -222,7 +124,8 @@ Float Nuisance::get_upper() const {
       return floatval;
     }
   } else if (hasparticle) {
-    return Nuisance(p->get_value(kp)).get_nuisance();
+    Particle *d = p->get_value(kp);
+    return d->get_value(get_nuisance_key());
   } else {
     return std::numeric_limits<double>::infinity();
   }
@@ -236,37 +139,26 @@ ParticleIndexKey Nuisance::get_upper_particle_key() {
   return k;
 }
 void Nuisance::set_upper(Float d) {
-  IMP_USAGE_CHECK(d > get_lower(), "Upper bound must be greater than lower.");
-  double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   FloatKey k(get_upper_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
-  setup_score_state();
-  set_nuisance(x);
+  enforce_bounds();
 }
 void Nuisance::set_upper(Particle *d) {
-  IMP_USAGE_CHECK(Nuisance::get_is_setup(d),
-                  "Upper bound particle must be Nuisance.");
-  IMP_USAGE_CHECK(Nuisance(d).get_nuisance() > get_lower(),
-                  "Upper bound must be greater than lower.");
-  double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   ParticleKey k(get_upper_particle_key());
   if (!p->has_attribute(k)) p->add_attribute(k, d);
   p->set_value(k, d);
-  setup_score_state();
-  set_nuisance(x);
+  enforce_bounds();
 }
 void Nuisance::remove_upper() {
-  double x = get_nuisance();
   Pointer<Particle> p = get_particle();
   FloatKey k(get_upper_key());
   if (p->has_attribute(k)) p->remove_attribute(k);
   ParticleKey kp(get_upper_particle_key());
   if (p->has_attribute(kp)) p->remove_attribute(kp);
-  remove_score_state();
-  set_nuisance(x);
+  remove_bounds();
 }
 
 void Nuisance::show(std::ostream &out) const {
@@ -279,7 +171,7 @@ ObjectKey Nuisance::get_ss_key() {
   static ObjectKey k("nuisance_ss");
   return k;
 }
-void Nuisance::setup_score_state() {
+void Nuisance::enforce_bounds() {
   Pointer<Particle> p = get_particle();
   ObjectKey k(get_ss_key());
   if (p->has_attribute(k)) return;
@@ -287,7 +179,7 @@ void Nuisance::setup_score_state() {
   ss->set_was_used(true);
   p->add_attribute(k, ss);
 }
-void Nuisance::remove_score_state() {
+void Nuisance::remove_bounds() {
   Pointer<Particle> p = get_particle();
   ObjectKey k(get_ss_key());
   if (!p->has_attribute(k)) return;
@@ -297,17 +189,11 @@ void Nuisance::remove_score_state() {
 }
 
 void NuisanceScoreState::do_before_evaluate() {
+  IMP_LOG_TERSE("NSS: do_before_evaluate()" << std::endl);
+  Nuisance nuis(p_);
+  nuis.set_nuisance(nuis.get_nuisance());
 }
-
-void NuisanceScoreState::do_after_evaluate(DerivativeAccumulator *da) {
-  if (da) {
-    Nuisance nuis(p_);
-    nuis.add_to_transformed_nuisance_derivative(
-      nuis.get_derivative_of_negative_log_absolute_jacobian_of_inverse_transformation(),
-      *da);
-  }
-}
-
+void NuisanceScoreState::do_after_evaluate(DerivativeAccumulator *) {}
 ModelObjectsTemp NuisanceScoreState::do_get_inputs() const {
   ModelObjectsTemp pt;
   pt.push_back(p_);
@@ -317,7 +203,6 @@ ModelObjectsTemp NuisanceScoreState::do_get_inputs() const {
   if (p_->has_attribute(pd)) pt.push_back(p_->get_value(pd));
   return pt;
 }
-
 ModelObjectsTemp NuisanceScoreState::do_get_outputs() const {
   return ModelObjectsTemp(1, p_);
 }
