@@ -178,15 +178,24 @@ class System(object):
             if isinstance(loc, location.FileLocation):
                 location.Repository._update_in_repos(loc, repos)
 
-    def _all_model_groups(self):
-        """Iterate over all ModelGroups in the system"""
+    def _all_model_groups(self, only_in_states=True):
+        """Iterate over all ModelGroups in the system.
+           If only_in_states is True, only return ModelGroups referenced
+           by a State object; otherwise, also include ModelGroups referenced
+           by an OrderedProcess or Ensemble."""
         # todo: raise an error if a modelgroup is present in multiple states
-        # note also that we don't pick up groups referred to only by an
-        # OrderedProcess here - should we?
         for state_group in self.state_groups:
             for state in state_group:
                 for model_group in state:
                     yield model_group
+        if not only_in_states:
+            for ensemble in self.ensembles:
+                yield ensemble.model_group
+            for proc in self.ordered_processes:
+                for step in proc.steps:
+                    for edge in step:
+                        yield edge.group_begin
+                        yield edge.group_end
 
     def _all_models(self):
         """Iterate over all Models in the system"""

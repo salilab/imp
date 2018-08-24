@@ -10,6 +10,17 @@ from __future__ import print_function
 import sys
 import textwrap
 import operator
+# getargspec is deprecated in Python 3, but getfullargspec has a very
+# similar interface
+try:
+    from inspect import getfullargspec as getargspec
+except ImportError:
+    from inspect import getargspec
+import re
+try:
+    from . import _format
+except ImportError:
+    _format = None
 
 # Python 3 has no 'long' type, so use 'int' instead
 if sys.version_info[0] >= 3:
@@ -222,18 +233,31 @@ class CifReader(object):
        :param file fh: Open handle to the mmCIF file
        :param dict category_handler: A dict to handle data
               extracted from the file. Keys are category names
-              (e.g. "_entry") and values are callable objects - they will
-              be called with a dict of keywords and values. (mmCIF keywords
-              are case insensitive, so this class always treats them as
-              lowercase regardless of the file contents.)
+              (e.g. "_entry") and values are objects that have a `__call__`
+              method. The names of the arguments to this `__call__` method
+              are mmCIF keywords that are extracted from the file (for the
+              keywords tr_vector[N] and rot_matrix[N][M] simply omit the [
+              and ] characters, since these are not valid for Python
+              identifiers). The object will be called with the data from
+              the file as a set of strings, or None for any keyword that is
+              not present in the file or is the mmCIF omitted value (.).
+              (mmCIF keywords are case insensitive, so this class always treats
+              them as lowercase regardless of the file contents.)
     """
     def __init__(self, fh, category_handler):
+        if _format is not None:
+            c_file = _format.ihm_file_new_from_python(fh)
+            self._c_format = _format.ihm_reader_new(c_file)
         self.category_handler = category_handler
         self._category_data = {}
         self.fh = fh
         self._tokens = []
         self._token_index = 0
         self._linenum = 0
+
+    def __del__(self):
+        if hasattr(self, '_c_format'):
+            _format.ihm_reader_free(self._c_format)
 
     def _read_multiline_token(self, first_line, ignore_multiline):
         """Read a semicolon-delimited (multiline) token"""
@@ -343,8 +367,10 @@ class CifReader(object):
 
     def _read_value(self, vartoken):
         """Read a line that sets a single value, e.g. "_entry.id   1YTI"""
-        # Only read the value if we're interested in this category
-        if vartoken.category in self.category_handler:
+        # Only read the value if we're interested in this category and key
+        if vartoken.category in self.category_handler \
+          and vartoken.keyword \
+          in self.category_handler[vartoken.category]._keys:
             valtoken = self._get_token()
             if isinstance(valtoken, _ValueToken):
                 if vartoken.category not in self._category_data:
@@ -380,14 +406,16 @@ class CifReader(object):
                 raise CifParserError("Was expecting a keyword or value for "
                                      "loop at line %d" % self._linenum)
 
-    def _read_loop_data(self, handler, keywords):
+    def _read_loop_data(self, handler, num_wanted_keys, keyword_indices):
         """Read the data for a loop_ construct"""
+        data = [None] * num_wanted_keys
         while True:
-            values = []
-            for i in range(len(keywords)):
+            for i, index in enumerate(keyword_indices):
                 token = self._get_token()
                 if isinstance(token, _ValueToken):
-                    values.append(token.txt)
+                    if index >= 0:
+                        # Treat omitted values as if they don't exist
+                        data[index] = None if token.txt == '.' else token.txt
                 elif i == 0:
                     # OK, end of the loop
                     self._unget_token()
@@ -396,17 +424,19 @@ class CifReader(object):
                     raise CifParserError("Wrong number of data values in loop "
                               "(should be an exact multiple of the number "
                               "of keys) at line %d" % self._linenum)
-            # Treat omitted values as if they don't exist
-            d = dict((key, val) for (key, val) in zip(keywords, values)
-                     if val is not '.')
-            handler(d)
+            handler(*data)
 
     def _read_loop(self):
         """Handle a loop_ construct"""
         category, keywords = self._read_loop_keywords()
         # Skip data if we don't have a handler for it
         if category in self.category_handler:
-            self._read_loop_data(self.category_handler[category], keywords)
+            ch = self.category_handler[category]
+            wanted_key_index = {}
+            for i, k in enumerate(ch._keys):
+                wanted_key_index[k] = i
+            indices = [wanted_key_index.get(k, -1) for k in keywords]
+            self._read_loop_data(ch, len(ch._keys), indices)
 
     def read_file(self):
         """Read the file and extract data.
@@ -415,10 +445,17 @@ class CifReader(object):
            for categories (e.g. ``_entry.id model``), this will be once
            at the very end of the file.
 
+           If the C-accelerated _format module is available, and the file is
+           a real file (not a Python filelike object), then the C code is used
+           instead of the (much slower) Python tokenizer.
+
            :exc:`CifParserError` will be raised if the file cannot be parsed.
 
            :return: True iff more data blocks are available to be read.
         """
+        self._add_category_keys()
+        if hasattr(self, '_c_format'):
+            return self._read_file_c()
         ndata = 0
         while True:
             token = self._get_token(ignore_multiline=True)
@@ -439,7 +476,35 @@ class CifReader(object):
                 if self._token_index < 0:
                     break
         for cat, data in self._category_data.items():
-            self.category_handler[cat](data)
+            ch = self.category_handler[cat]
+            ch(*[data.get(k, None) for k in ch._keys])
         # Clear category data for next call to read_file()
         self._category_data = {}
         return ndata > 1
+
+    def _add_category_keys(self):
+        """Populate _keys for each category by inspecting its __call__ method"""
+        def python_to_cif(field):
+            # Map valid Python identifiers to mmCIF keywords
+            if field.startswith('tr_vector') or field.startswith('rot_matrix'):
+                return re.sub('(\d)', r'[\1]', field)
+            else:
+                return field
+        for h in self.category_handler.values():
+            if not hasattr(h, '_keys'):
+                h._keys = [python_to_cif(x)
+                           for x in getargspec(h.__call__)[0][1:]]
+
+    def _read_file_c(self):
+        """Read the file using the C parser"""
+        _format.ihm_reader_remove_all_categories(self._c_format)
+        for category, handler in self.category_handler.items():
+            func = getattr(handler, '_add_c_handler', None) \
+                        or _format.add_category_handler
+            func(self._c_format, category, handler._keys, handler)
+        try:
+            eof, more_data = _format.ihm_read_file(self._c_format)
+        except _format.FileFormatError as exc:
+            # Convert to the same exception used by the Python code
+            raise CifParserError(str(exc))
+        return more_data != 0

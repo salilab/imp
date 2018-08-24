@@ -4,11 +4,18 @@ python:
   - 2.6
   - 2.7
   - 3.6
+addons:
+  apt:
+    packages:
+    - swig
 cache:
   pip: true
 install:
   - pip install coverage
 script:
-  - nosetests --with-coverage --cover-branches
+  - nosetests --with-coverage --cover-branches # Test with pure Python tokenizer
+  - CFLAGS="-coverage" python setup.py build_ext --inplace -t build
+  - nosetests --with-coverage --cover-branches # Test with C tokenizer
+  - gcov -o build/src/ src/ihm_format.c
 after_success:
   - bash <(curl -s https://codecov.io/bash)
