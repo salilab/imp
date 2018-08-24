@@ -338,9 +338,14 @@ _ihm_multi_state_modeling.details
                 IMP.algebra.Transformation3D(IMP.algebra.Vector3D(1,2,3)))
 
         d = ihm.dumper._ModelDumper()
-        assembly = ihm.Assembly()
+
+        asym1 = po.asym_units['Nup84']
+        asym2 = po.asym_units['Nup84.2']
+        assembly = ihm.Assembly([asym1, asym2])
         assembly._id = 42
-        representation = ihm.representation.Representation()
+        s1 = ihm.representation.ResidueSegment(asym1, True, 'sphere')
+        s2 = ihm.representation.ResidueSegment(asym2, True, 'sphere')
+        representation = ihm.representation.Representation([s1, s2])
         representation._id = 99
         protocol = ihm.protocol.Protocol()
         protocol._id = 93
@@ -403,9 +408,11 @@ _ihm_sphere_obj_site.model_id
                                      "A", resolutions=[0])
 
         d = ihm.dumper._ModelDumper()
-        assembly = ihm.Assembly()
+        asym = po.asym_units['Nup84']
+        assembly = ihm.Assembly([asym])
         assembly._id = 42
-        representation = ihm.representation.Representation()
+        s = ihm.representation.ResidueSegment(asym, True, 'sphere')
+        representation = ihm.representation.Representation([s])
         representation._id = 99
         protocol = ihm.protocol.Protocol()
         protocol._id = 93
@@ -486,9 +493,11 @@ _ihm_sphere_obj_site.model_id
                                      "A")
 
         d = ihm.dumper._ModelDumper()
-        assembly = ihm.Assembly()
+        asym = po.asym_units['Nup84']
+        assembly = ihm.Assembly([asym])
         assembly._id = 42
-        representation = ihm.representation.Representation()
+        s = ihm.representation.ResidueSegment(asym, True, 'sphere')
+        representation = ihm.representation.Representation([s])
         representation._id = 99
         protocol = ihm.protocol.Protocol()
         protocol._id = 93

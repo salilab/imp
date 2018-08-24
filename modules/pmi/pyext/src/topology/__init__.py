@@ -1,10 +1,10 @@
 """@namespace IMP.pmi.topology
-Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
+ of python classes to create a multi-state, multi-resolution IMP hierarchy.
 * Start by creating a System with `model = IMP.Model(); s = IMP.pmi.topology.System(model)`. The System will store all the states.
-* Then call System.create_state(). You can easily create a multistate system by calling this function multiples times.
+* Then call System.create_state(). You can easily create a multistate system by calling this function multiple times.
 * For each State, call State.create_molecule() to add a Molecule (a uniquely named polymer). This function returns the Molecule object which can be passed to various PMI functions.
 * Some useful functions to help you set up your Molecules:
- * Access the sequence residues with slicing (Molecule[a:b]) or functions like Molecule.get_atomic_residues() and Molecule.get_non_atomic_residues(). These functions all return python sets for easy set arithmetic using & (and), | (or), - (difference)
+ * Access the sequence residues with slicing (Molecule[a:b]) or functions like Molecule.get_atomic_residues() and Molecule.get_non_atomic_residues(). These functions all return Python sets for easy set arithmetic using & (and), | (or), - (difference)
  * Molecule.add_structure() to add structural information from a PDB file.
  * Molecule.add_representation() to create a representation unit - here you can choose bead resolutions as well as alternate representations like densities or ideal helices.
  * Molecule.create_clone() lets you set up a molecule with identical representations, just a different chain ID. Use Molecule.create_copy() if you want a molecule with the same sequence but that allows custom representations.
@@ -41,10 +41,11 @@ def _build_ideal_helix(model, residues, coord_finder):
     # this function creates a CAlpha helix structure (which can be used for coarsening)
     for n, tempres in enumerate(residues):
         if tempres.get_has_structure():
-            raise Exception("You tried to build ideal_helix for a residue "
-                            "that already has structure:",tempres)
-        if n>0 and (not tempres.get_index()==prev_idx+1):
-            raise Exception("Passed non-contiguous segment to build_ideal_helix for",tempres.get_molecule())
+            raise ValueError("You tried to build ideal_helix for a residue "
+                             "that already has structure: %s" % tempres)
+        if n > 0 and tempres.get_index() != prev_idx + 1:
+            raise ValueError("Passed non-contiguous segment to "
+                      "build_ideal_helix for %s" % tempres.get_molecule())
 
         # New residue particle will replace the TempResidue's existing (empty) hierarchy
         rp = IMP.Particle(model)
@@ -202,31 +203,29 @@ class State(_SystemBase):
         are the list of all copies of that molecule in setup order"""
         return self.molecules
 
-    def get_molecule(self,name,copy_num=0):
+    def get_molecule(self, name, copy_num=0):
         """Access a molecule by name and copy number
         @param name The molecule name used during setup
         @param copy_num The copy number based on input order.
         Default: 0. Set to 'all' to get all copies
         """
         if name not in self.molecules:
-            raise Exception("get_molecule() could not find molname",name)
-        if copy_num=='all':
+            raise KeyError("Could not find molname %s" % name)
+        if copy_num == 'all':
             return self.molecules[name]
         else:
-            if copy_num>len(self.molecules[name])-1:
-                raise Exception("get_molecule() copy number is too high:",copy_num)
             return self.molecules[name][copy_num]
 
-    def create_molecule(self,name,sequence='',chain_id='',is_nucleic=None):
+    def create_molecule(self, name, sequence='', chain_id='', is_nucleic=None):
         """Create a new Molecule within this State
-        @param name                the name of the molecule (string) it must not
-                                   be already used
+        @param name                the name of the molecule (string);
+                                   it must not be already used
         @param sequence            sequence (string)
         @param chain_id            Chain id to assign to this molecule
         """
         # check whether the molecule name is already assigned
         if name in self.molecules:
-            raise Exception('Cannot use a molecule name already used')
+            raise ValueError('Cannot use a molecule name already used')
 
         mol = Molecule(self,name,sequence,chain_id,copy_num=0,is_nucleic=is_nucleic)
         self.molecules[name] = [mol]
@@ -240,8 +239,6 @@ class State(_SystemBase):
 
     def _register_copy(self,molecule):
         molname = molecule.get_hierarchy().get_name()
-        if molname not in self.molecules:
-            raise Exception("Trying to add a copy when the original doesn't exist!")
         self.molecules[molname].append(molecule)
 
     def build(self,**kwargs):
@@ -317,7 +314,7 @@ class Molecule(_SystemBase):
         elif isinstance(val,slice):
             return IMP.pmi.tools.OrderedSet(self.residues[val])
         else:
-            print("ERROR: range ends must be int or str. Stride must be int.")
+            raise TypeError("Indexes must be int or str")
 
     def get_hierarchy(self):
         """Return the IMP Hierarchy corresponding to this Molecule"""
@@ -343,7 +340,8 @@ class Molecule(_SystemBase):
         elif isinstance(a,str) and isinstance(b,str) and isinstance(stride,int):
             return IMP.pmi.tools.OrderedSet(self.residues[int(a)-1:int(b):stride])
         else:
-            print("ERROR: range ends must be int or str. Stride must be int.")
+            raise TypeError("Range ends must be int or str. "
+                            "Stride must be int.")
 
     def get_residues(self):
         """ Return all modeled TempResidues as a set"""
@@ -410,7 +408,7 @@ class Molecule(_SystemBase):
         \note If you are adding structure without a FASTA file, set soft_check to True
         """
         if self.mol_to_clone is not None:
-            raise Exception('You cannot call add_structure() for a clone')
+            raise ValueError('You cannot call add_structure() for a clone')
 
         self.pdb_fn = pdb_fn
 
@@ -502,8 +500,8 @@ class Molecule(_SystemBase):
 
         # can't customize clones
         if self.mol_to_clone is not None:
-            raise Exception('You cannot call add_representation() for a clone.'
-                            'Maybe use a copy instead')
+            raise ValueError('You cannot call add_representation() for a clone.'
+                             ' Maybe use a copy instead.')
 
         # format input
         if residues is None:
@@ -924,7 +922,7 @@ def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
     @param pdb_sequences IMP.pmi.topology.PDBSequences object
     @param show boolean default False, if True prints the alignments.
     The input objects should be generated using map_name dictionaries such that fasta_id
-    and pdb_chain_id are mapping to the same protein name. It needs Biopython.
+    and pdb_chain_id are mapping to the same protein name. It needs BioPython.
     Returns a dictionary of offsets, organized by peptide range (group):
     example: offsets={"ProtA":{(1,10):1,(20,30):10}}'''
     from Bio import pairwise2

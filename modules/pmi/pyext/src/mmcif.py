@@ -309,6 +309,9 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
 
     def _set_psi_sigma(self, model):
         old_values = []
+        # Do nothing if given a different state than the restraint applies to
+        if model.m != self.pmi_restraint.m:
+            return
         for resolution in self.pmi_restraint.sigma_dictionary:
             statname = 'ISDCrossLinkMS_Sigma_%s_%s' % (resolution, self.label)
             if model.stats and statname in model.stats:
@@ -578,6 +581,7 @@ class _Model(ihm.model.Model):
         self._is_restrained = True
         o = self.output = IMP.pmi.output.Output(atomistic=True)
         name = 'cif-output'
+        self.m = prot.get_model()
         o.dictionary_pdbs[name] = prot
         o._init_dictchain(name, prot, multichar_chain=True)
         (particle_infos_for_pdb,
