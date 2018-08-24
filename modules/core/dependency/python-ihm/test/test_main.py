@@ -16,6 +16,7 @@ utils.set_search_paths(TOPDIR)
 import ihm
 import ihm.location
 import ihm.representation
+import ihm.model
 
 class Tests(unittest.TestCase):
     def test_system(self):
@@ -277,14 +278,35 @@ class Tests(unittest.TestCase):
         """Test _all_model_groups() method"""
         model_group1 = []
         model_group2 = []
+        model_group3 = []
         state1 = [model_group1, model_group2]
         state2 = [model_group2, model_group2]
         s = ihm.System()
         s.state_groups.append([state1, state2])
+
+        proc = ihm.model.OrderedProcess("time steps")
+        edge = ihm.model.ProcessEdge(model_group1, model_group2)
+        step = ihm.model.ProcessStep([edge], "Linear reaction")
+        proc.steps.append(step)
+        s.ordered_processes.append(proc)
+
+        e1 = ihm.model.Ensemble(model_group=model_group3, num_models=10,
+                                post_process=None, name='cluster1',
+                                clustering_method='Hierarchical',
+                                clustering_feature='RMSD',
+                                precision=4.2)
+        s.ensembles.append(e1)
+
         mg = s._all_model_groups()
-        # List may contain duplicates
+        # List may contain duplicates but only includes states
         self.assertEqual(list(mg), [model_group1, model_group2,
                                     model_group2, model_group2])
+
+        mg = s._all_model_groups(only_in_states=False)
+        # List contains all model groups
+        self.assertEqual(list(mg), [model_group1, model_group2,
+                                    model_group2, model_group2,
+                                    model_group3, model_group1, model_group2])
 
     def test_all_models(self):
         """Test _all_models() method"""

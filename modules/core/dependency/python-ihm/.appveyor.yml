@@ -7,6 +7,8 @@ environment:
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "python.exe -m pip install codecov coverage nose"
+  - choco install -y swig
+  - python.exe setup.py build_ext --inplace
 
 build: off
 

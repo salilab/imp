@@ -1068,9 +1068,9 @@ _ihm_modeling_post_process.script_file_id
         system.state_groups.append(ihm.model.StateGroup([state]))
         protocol = MockObject()
         protocol._id = 42
-        assembly = MockObject()
+        assembly = ihm.Assembly()
         assembly._id = 99
-        representation = MockObject()
+        representation = ihm.representation.Representation()
         representation._id = 32
         model = ihm.model.Model(assembly=assembly, protocol=protocol,
                                 representation=representation,
@@ -1123,9 +1123,10 @@ _ihm_model_list.representation_id
         system.asym_units.append(asym)
         protocol = MockObject()
         protocol._id = 42
-        assembly = MockObject()
+        assembly = ihm.Assembly([asym])
         assembly._id = 99
-        representation = MockObject()
+        s = ihm.representation.ResidueSegment(asym, True, 'sphere')
+        representation = ihm.representation.Representation([s])
         representation._id = 32
         model = ihm.model.Model(assembly=assembly, protocol=protocol,
                                 representation=representation,
@@ -1134,6 +1135,41 @@ _ihm_model_list.representation_id
         group = ihm.model.ModelGroup([model])
         state.append(group)
         return system, model, asym
+
+    def test_check_representation(self):
+        """Test _check_representation()"""
+        system, model, asym = self._make_test_model()
+        asym2 = ihm.AsymUnit(asym.entity, 'bar')
+        asym2._id = 'Y'
+        system.asym_units.append(asym2)
+
+        dumper = ihm.dumper._ModelDumper()
+
+        # OK, since both assembly & representation contain asym
+        dumper._check_representation(model)
+
+        # Not OK, since asym2 is represented but not in assembly
+        s = ihm.representation.ResidueSegment(asym2, True, 'sphere')
+        model.representation.append(s)
+        self.assertRaises(ValueError, dumper._check_representation, model)
+
+    def test_range_checker(self):
+        """Test RangeChecker class"""
+        system, model, asym = self._make_test_model()
+        asym2 = ihm.AsymUnit(asym.entity, 'bar')
+        asym2._id = 'Y'
+        system.asym_units.append(asym2)
+
+        rngcheck = ihm.dumper._RangeChecker(model)
+        # Atom in range (good asym)
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='C',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0)
+        rngcheck(atom, atom.asym_unit)
+
+        # Atom out of range (bad asym)
+        atom = ihm.model.Atom(asym_unit=asym2, seq_id=1, atom_id='C',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0)
+        self.assertRaises(ValueError, rngcheck, atom, atom.asym_unit)
 
     def test_model_dumper_spheres(self):
         """Test ModelDumper with spheres"""
@@ -1380,6 +1416,23 @@ _ihm_multi_state_modeling.details
 4 3 2 0.400 . . 4 . .
 #
 """)
+
+    def test_orphan_model_groups(self):
+        """Test detection of ModelGroups not in States"""
+        system = ihm.System()
+        m1 = ihm.model.Model(assembly='a1', protocol='p1', representation='r1')
+        group = ihm.model.ModelGroup([m1])
+        group._id = 42
+
+        e1 = ihm.model.Ensemble(model_group=group, num_models=10,
+                                post_process=None, name='cluster1',
+                                clustering_method='Hierarchical',
+                                clustering_feature='RMSD',
+                                precision=4.2)
+        system.ensembles.append(e1)
+
+        dumper = ihm.dumper._ModelDumper()
+        self.assertRaises(ValueError, dumper.finalize, system)
 
     def test_ordered(self):
         """Test OrderedDumper"""

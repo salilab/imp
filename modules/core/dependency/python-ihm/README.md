@@ -9,3 +9,26 @@ or later (Python 3 is fully supported).
 
 Please [see the documentation](https://python-ihm.readthedocs.org/)
 or some [worked examples](examples) for more details.
+
+# Installation
+
+To build and install, run
+
+```
+python setup.py build
+python setup.py install
+```
+
+Note that a C extension module is built for faster parsing of mmCIF files.
+This requires that your system has a C compiler
+and [SWIG](http://www.swig.org/). If either of these components are missing, you
+can choose to build without the extension by adding `--without-ext` to both
+`setup.py` command lines above.
+
+# Testing
+
+There are a number of testcases in the `test` directory. Each one can be run
+like a normal Python script to test the library. They can also be all run at
+once using [nose](http://nose.readthedocs.io/en/latest/). They will also test
+the C extension module if it is first built with
+`python setup.py build_ext --inplace`.

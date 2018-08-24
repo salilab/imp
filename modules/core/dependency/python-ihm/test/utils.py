@@ -8,7 +8,7 @@ def set_search_paths(topdir):
     """Set search paths so that we can import Python modules"""
     os.environ['PYTHONPATH'] = topdir + os.pathsep \
                                + os.environ.get('PYTHONPATH', '')
-    sys.path.append(topdir)
+    sys.path.insert(0, topdir)
 
 def get_input_file_name(topdir, fname):
     """Return full path to a test input file"""
