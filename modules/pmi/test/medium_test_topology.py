@@ -376,6 +376,17 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(seqs['Prot2'], 'PEEDILKYVSYTL')
         self.assertEqual(seqs['Prot3'], 'QEALVVKDLL')
 
+    def test_system_base_build(self):
+        """Test SystemBase.build()"""
+        s = IMP.pmi.topology._SystemBase()
+        s.build() # noop
+
+    def test_old_system_attributes(self):
+        """Test old System attributes"""
+        s = IMP.pmi.topology.System()
+        with IMP.allow_deprecated():
+            self.assertEqual(s.mdl, s.model)
+
     def test_create_states(self):
         """Test State-creation from System"""
         s = IMP.pmi.topology.System()
@@ -385,6 +396,8 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(st.get_hierarchy().get_parent(),
                              s.get_hierarchy())
             self.assertEqual(st.model, s.model)
+            with IMP.allow_deprecated():
+                self.assertEqual(st.mdl, s.model)
         self.assertEqual(s.get_number_of_states(), 10)
 
     def test_create_molecules(self):
@@ -399,6 +412,8 @@ class Tests(IMP.test.TestCase):
         # create state 1 with 2 molecules
         st = s.create_state()
         m1 = st.create_molecule("Prot1", sequence=seqs["Prot1"])
+        self.assertRaises(ValueError, st.create_molecule, "Prot1",
+                          sequence=seqs["Prot1"])
         m2 = st.create_molecule("Prot2", sequence=seqs["Prot2"])
         self.assertEqual(m1.get_hierarchy().get_parent(), st.get_hierarchy())
         self.assertEqual(m2.get_hierarchy().get_parent(), st.get_hierarchy())
@@ -500,7 +515,95 @@ class Tests(IMP.test.TestCase):
         inv = m1[:] - m1[1:5]
         self.assertEqual(inv, set([m1.residues[0]] + m1.residues[5:10]))
 
-    def test_build_system(self):
+    def test_system_build(self):
+        """Test System.build()"""
+        s = IMP.pmi.topology.System()
+        st1 = s.create_state()
+        self.assertFalse(s.built)
+        self.assertFalse(st1.built)
+        hier = s.build()
+        self.assertTrue(s.built)
+        self.assertTrue(st1.built)
+        self.assertEqual(hier.get_name(), 'System')
+        # Subsequent calls should do the same thing
+        self.assertEqual(s.build(), hier)
+
+    def test_state_build(self):
+        """Test State.build()"""
+        s = IMP.pmi.topology.System()
+        st1 = s.create_state()
+        self.assertFalse(s.built)
+        self.assertFalse(st1.built)
+        hier = st1.build()
+        self.assertFalse(s.built)
+        self.assertTrue(st1.built)
+        self.assertEqual(hier.get_name(), 'State_0')
+        # Subsequent calls should do the same thing
+        self.assertEqual(st1.build(), hier)
+
+    def test_molecule_model(self):
+        """Test Molecule get model"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        self.assertEqual(m1.model, model)
+        with IMP.allow_deprecated():
+            self.assertEqual(m1.mdl, model)
+
+    def test_molecule_indexing(self):
+        """Test Molecule indexing"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        # Select by index
+        self.assertEqual(str(m1[0]), "0_Prot1_0_A1")
+        # Select by slice
+        self.assertEqual([str(x) for x in m1[1:5:2]],
+                         ['0_Prot1_0_A2', '0_Prot1_0_A4'])
+        # Select by PDB number
+        self.assertEqual(str(m1['1']), "0_Prot1_0_A1")
+        # Select by invalid type (not int or str)
+        self.assertRaises(TypeError, m1.__getitem__, 42.0)
+
+    def test_molecule_residue_range(self):
+        """Test Molecule.residue_range()"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        # Select by index
+        self.assertEqual(len(m1.residue_range(0, 4)), 5)
+        # Select by PDB number
+        self.assertEqual(len(m1.residue_range('1', '4')), 4)
+        self.assertRaises(TypeError, m1.residue_range, '1', 4)
+        self.assertRaises(TypeError, m1.residue_range, 4, '6')
+        self.assertRaises(TypeError, m1.residue_range, 42.0, 56.0)
+
+    def test_molecule_state(self):
+        """Test Molecule.get_state()"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        self.assertEqual(m1.get_state(), st1)
+
+    def test_molecule_ideal_helices(self):
+        """Test Molecule indexing"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        self.assertEqual(m1.get_ideal_helices(), [])
+        m1.add_representation(m1[0:10],
+                              resolutions=[10],
+                              ideal_helix=True)
+        helix, = m1.get_ideal_helices()
+        self.assertEqual(len(helix), 10)
+
+    def test_molecule_build(self):
+        """Test Molecule.build()"""
         s = IMP.pmi.topology.System()
         st1 = s.create_state()
         seqs = IMP.pmi.topology.Sequences(
@@ -513,7 +616,11 @@ class Tests(IMP.test.TestCase):
 
         m1.add_representation(atomic_res, resolutions=[0, 1, 10])
         m1.add_representation(non_atomic_res, resolutions=[10])
+        self.assertFalse(m1.built)
         hier = m1.build()
+        self.assertTrue(m1.built)
+        # Repeated calls to build should return the same thing
+        self.assertEqual(m1.build(), hier)
         frags = hier.get_children()
 
         # check names
@@ -685,7 +792,18 @@ class Tests(IMP.test.TestCase):
         # add structure+mixed representation to original
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
                                       chain_id='A', res_range=(55, 63), offset=-54)
+
+        # Cannot add structure for a clone
+        self.assertRaises(ValueError, m1c.add_structure,
+                          self.get_input_file_name('prot.pdb'),
+                          chain_id='A', res_range=(55, 63), offset=-54)
+
         m1.add_representation(atomic_res, resolutions=[1, 10])
+
+        # Cannot add representation for a clone
+        self.assertRaises(ValueError, m1c.add_representation,
+                          atomic_res, resolutions=[1, 10])
+
         m1.add_representation(m1.get_non_atomic_residues(), resolutions=[10])
         hier = s.build()
 
@@ -839,6 +957,43 @@ class Tests(IMP.test.TestCase):
         ps = IMP.atom.Selection(hier).get_selected_particles()
         built_sequence = [IMP.atom.Residue(p).get_residue_type() for p in ps]
         self.assertEqual(expect_sequence, built_sequence)
+
+    def test_get_molecule(self):
+        """Test State.get_molecule()"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        self.assertEqual(st1.get_molecule("Prot1"), m1)
+        self.assertRaises(KeyError, st1.get_molecule, "foo")
+        self.assertEqual(st1.get_molecule("Prot1", "all"), [m1])
+        self.assertRaises(IndexError, st1.get_molecule, "Prot1", 1)
+
+    def test_ideal_helix_non_contiguous(self):
+        """Test handling of non-contiguous range for build_ideal_helix"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        m1.add_representation(m1[0:10] | m1[11:20],
+                              resolutions=[10],
+                              ideal_helix=True)
+        self.assertRaises(ValueError, s.build)
+
+    def test_ideal_helix_already_structure(self):
+        """build_ideal_helix() should fail if a residue is structured"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(
+                              self.get_input_file_name('seqs.fasta'))
+        m1 = st1.create_molecule("Prot1", sequence=seqs["Protein_1"])
+        atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A',res_range=(55,63),offset=-54)
+        m1.add_representation(m1[0:10] | m1[11:20],
+                              resolutions=[10],
+                              ideal_helix=True)
+        self.assertRaises(ValueError, s.build)
 
     def test_ideal_helix(self):
         """Test you can build an ideal helix"""
