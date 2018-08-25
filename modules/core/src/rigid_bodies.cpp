@@ -195,14 +195,16 @@ void AccumulateRigidBodyDerivatives::apply_index(
   }
   const ParticleIndexes &rbbis = rb.get_body_member_particle_indexes();
   for (unsigned int i = 0; i < rbbis.size(); ++i) {
-    RigidMember d(rb.get_model(), rbbis[i]);
+    RigidBodyMember d(rb.get_model(), rbbis[i]);
+    algebra::Rotation3D rot_memloc_to_loc = d.get_internal_transformation().get_rotation();
     const algebra::Vector3D &deriv = d.get_derivatives();
     if (deriv.get_squared_magnitude() > 0) {
       algebra::Vector3D dv = rot * deriv;
       rb.add_to_derivatives(dv, deriv, d.get_internal_coordinates(), roti, da);
+      rb.add_to_torque(rot_memloc_to_loc * RigidBody(d).get_torque(), da);
     }
   }
-  // ignoring torques on rigid members
+
   IMP_LOG_TERSE("Rigid body derivative is "
                 << m->get_particle(pi)->get_derivative(
                        internal::rigid_body_data().quaternion_[0]) << " "
