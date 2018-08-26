@@ -196,19 +196,22 @@ void AccumulateRigidBodyDerivatives::apply_index(
   const ParticleIndexes &rbbis = rb.get_body_member_particle_indexes();
   for (unsigned int i = 0; i < rbbis.size(); ++i) {
     RigidBodyMember d(rb.get_model(), rbbis[i]);
-    algebra::Rotation3D rot_memloc_to_loc = d.get_internal_transformation().get_rotation();
     const algebra::Vector3D &deriv = d.get_derivatives();
     if (deriv.get_squared_magnitude() > 0) {
       algebra::Vector3D dv = rot * deriv;
       rb.add_to_derivatives(dv, deriv, d.get_internal_coordinates(), roti, da);
-      rb.add_to_torque(rot_memloc_to_loc * RigidBody(d).get_torque(), da);
-      algebra::Vector4D mderiv = RigidBody(d).get_quaternion_derivatives();
-      algebra::Vector4Ds derivs = roti.get_derivatives(rot_memloc_to_loc);
-      IMP_INTERNAL_CHECK(derivs.size() == 4, "There should be 4 quaternion derivatives.");
-      for (unsigned int j = 0; j < 4; ++j) {
-        m->add_to_derivative(internal::rigid_body_data().quaternion_[j],
-                             pi, mderiv * derivs[j], da);
-      }
+    }
+
+    algebra::Rotation3D rot_memloc_to_loc = d.get_internal_transformation().get_rotation();
+    algebra::Vector3D mtorque = RigidBody(d).get_torque();
+    if (mtorque.get_squared_magnitude() > 0) {
+      rb.add_to_torque(rot_memloc_to_loc * mtorque, da);
+    }
+
+    algebra::Vector4D mderiv = RigidBody(d).get_rotational_derivatives();
+    if (mderiv.get_squared_magnitude() > 0) {
+      rb.add_to_rotational_derivatives(RigidBody(d).get_rotational_derivatives(),
+                                       rot_memloc_to_loc, roti, da);
     }
   }
 
@@ -245,7 +248,7 @@ void AccumulateRigidBodyDerivatives::apply_index(
       }
       if (RigidBody::get_is_setup(d)) {
         algebra::Rotation3D mrot = RigidBodyMember(d).get_internal_transformation().get_rotation();
-        algebra::Vector4D mq = RigidBody(d).get_quaternion_derivatives();
+        algebra::Vector4D mq = RigidBody(d).get_rotational_derivatives();
         algebra::Vector4Ds dq = rot.get_derivatives(mrot);
         for (unsigned int k = 0; k < 4; ++k) {
           q[k] += dq[k] * mq;
