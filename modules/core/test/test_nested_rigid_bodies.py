@@ -33,9 +33,6 @@ class Tests(IMP.test.TestCase):
 
     """Tests for RigidBody function"""
 
-    def get_uniform_points_in_vall(self, N, c, radius):
-        pass
-
     def test_nested(self):
         """Test nested rigid bodies and close pairs"""
         m = IMP.Model()
