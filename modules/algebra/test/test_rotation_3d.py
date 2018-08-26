@@ -31,6 +31,27 @@ class TransformFunct:
         return r.get_derivative(self.x, self.qi)[self.xi]
 
 
+class TransformFunct2:
+
+    def __init__(self, p_index, q_index, p_base, q_base):
+        self.pi = p_index
+        self.p = p_base
+        self.qi = q_index
+        self.q = q_base
+
+    def __call__(self, v):
+        self.q[self.qi] = v
+        uv = self.q.get_unit_vector()
+        q = IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
+        qp = (q * self.p).get_quaternion()
+        return qp[self.pi]
+
+    def get_analytic_deriv(self):
+        uv = self.q.get_unit_vector()
+        q = IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
+        return q.get_derivative(self.p, self.qi)[self.pi]
+
+
 class Tests(IMP.test.TestCase):
 
     """Test rotations"""
@@ -118,6 +139,21 @@ class Tests(IMP.test.TestCase):
                 tf = TransformFunct(xi, qi, x, r.get_quaternion())
                 d = IMP.test.numerical_derivative(
                     tf, r.get_quaternion()[qi], .01)
+                print(d)
+                ad = tf.get_analytic_deriv()
+                print(ad)
+                self.assertAlmostEqual(d, ad, delta=.05)
+
+    def test_deriv_quaternion_product(self):
+        """Check the derivative of composed quaternion wrt first quaternion."""
+        q = IMP.algebra.get_random_rotation_3d()
+        p = IMP.algebra.get_random_rotation_3d()
+        for qi in range(0, 4):
+            for pi in range(0, 4):
+                print("qi=" + str(qi) + " and pi= " + str(pi))
+                tf = TransformFunct2(pi, qi, p, q.get_quaternion())
+                d = IMP.test.numerical_derivative(
+                    tf, q.get_quaternion()[qi], .001)
                 print(d)
                 ad = tf.get_analytic_deriv()
                 print(ad)

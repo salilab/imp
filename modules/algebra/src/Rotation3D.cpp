@@ -104,6 +104,58 @@ Rotation3D get_rotation_from_matrix(double m11, double m12, double m13,
   return ret;
 }
 
+const Vector4Ds Rotation3D::get_derivatives(const Rotation3D &rotp) const {
+  Vector4Ds ret;
+  ret.reserve(4);
+  Vector4D P;
+  Vector3D q, p, s, ds_dq, ds_dq0, ds0_dq, p0I3_m_px;
+  double qnorm, q0, p0, s0;
+  P = rotp.get_quaternion();
+  qnorm = v_.get_magnitude();
+  q = Vector3D(v_[1] / qnorm, v_[2] / qnorm, v_[3] / qnorm);
+  p = Vector3D(P[1], P[2], P[3]);
+  p0 = P[0];
+  q0 = v_[0] / qnorm;
+  s0 = q0 * p0 - q * p;
+  if (s0 < 0) {
+    // account for compose() canonicalizing rotation
+    p0 = -p0;
+    p *= -1;
+    s0 = -s0;
+  }
+  s = p0 * q + q0 * p + get_vector_product(q, p);
+
+  ds_dq0 = p - q0 * s;
+  ret.push_back(Vector4D(p0 - q0 * s0, ds_dq0[0], ds_dq0[1], ds_dq0[2]) / qnorm);
+
+  ds0_dq = -p - s0 * q;
+  for (unsigned int i = 1; i < 4; ++i) {
+    switch (i) {
+      case 1:
+        p0I3_m_px = Vector3D(p0, -p[2], p[1]);
+        break;
+      case 2:
+        p0I3_m_px = Vector3D(p[2], p0, -p[0]);
+        break;
+      case 3:
+        p0I3_m_px = Vector3D(-p[1], p[0], p0);
+        break;
+    }
+    ds_dq = p0I3_m_px - q[i - 1] * s;
+    ret.push_back(Vector4D(ds0_dq[i - 1], ds_dq[0], ds_dq[1], ds_dq[2]) / qnorm);
+  }
+
+  return ret;
+}
+
+const Vector4D Rotation3D::get_derivative(const Rotation3D &rotp,
+                                          unsigned int i) const {
+  Vector4Ds derivs = get_derivatives(rotp);
+  IMP_INTERNAL_CHECK(derivs.size() == 4,
+                     "There should be 4 derivatives.");
+  return derivs[i];
+}
+
 const Vector3D Rotation3D::get_derivative(const Vector3D &o,
                                           unsigned int i) const {
   /* The computation was derived in maple. Source code is probably in
