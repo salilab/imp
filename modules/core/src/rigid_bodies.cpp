@@ -202,6 +202,13 @@ void AccumulateRigidBodyDerivatives::apply_index(
       algebra::Vector3D dv = rot * deriv;
       rb.add_to_derivatives(dv, deriv, d.get_internal_coordinates(), roti, da);
       rb.add_to_torque(rot_memloc_to_loc * RigidBody(d).get_torque(), da);
+      algebra::Vector4D mderiv = RigidBody(d).get_quaternion_derivatives();
+      algebra::Vector4Ds derivs = roti.get_derivatives(rot_memloc_to_loc);
+      IMP_INTERNAL_CHECK(derivs.size() == 4, "There should be 4 quaternion derivatives.");
+      for (unsigned int j = 0; j < 4; ++j) {
+        m->add_to_derivative(internal::rigid_body_data().quaternion_[j],
+                             pi, mderiv * derivs[j], da);
+      }
     }
   }
 
@@ -235,6 +242,14 @@ void AccumulateRigidBodyDerivatives::apply_index(
         /*IMP_LOG_VERBOSE( "Adding " << dv*v << " to quaternion deriv " << j
           << std::endl);*/
         q[j] += dv * v;
+      }
+      if (RigidBody::get_is_setup(d)) {
+        algebra::Rotation3D mrot = RigidBodyMember(d).get_internal_transformation().get_rotation();
+        algebra::Vector4D mq = RigidBody(d).get_quaternion_derivatives();
+        algebra::Vector4Ds dq = rot.get_derivatives(mrot);
+        for (unsigned int k = 0; k < 4; ++k) {
+          q[k] += dq[k] * mq;
+        }
       }
     }
     for (unsigned int j = 0; j < 4; ++j) {
