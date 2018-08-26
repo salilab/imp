@@ -147,10 +147,10 @@ class Tests(IMP.test.TestCase):
         sf.evaluate(True)
 
         self.assertGreater(
-            rb_unnested.get_quaternion_derivatives().get_magnitude(), 0)
+            rb_unnested.get_rotational_derivatives().get_magnitude(), 0)
         np.testing.assert_allclose(
-            rb_nested.get_quaternion_derivatives(),
-            rb_unnested.get_quaternion_derivatives(),
+            rb_nested.get_rotational_derivatives(),
+            rb_unnested.get_rotational_derivatives(),
             rtol=1e-6)
 
 

@@ -527,15 +527,9 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
     algebra::Vector3D v = rot_local_to_global.get_derivative(local, j);
     q[j] = deriv_global * v;
   }
-  for (unsigned int j = 0; j < 4; ++j) {
-    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[j],
-                                   get_particle_index(), q[j], da);
-  }
+  add_to_rotational_derivatives(q, da);
   algebra::Vector3D torque = algebra::get_vector_product(local, deriv_local);
-  for (unsigned int i = 0; i < 3; ++i) {
-    get_model()->add_to_derivative(internal::rigid_body_data().torque_[i],
-                                   get_particle_index(), torque[i], da);
-  }
+  add_to_torque(torque, da);
 }
 
 // inline implementation
