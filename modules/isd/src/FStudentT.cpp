@@ -64,7 +64,7 @@ double FStudentT::do_evaluate() const {
   update_cached_values(); // update t2
   return boost::math::lgamma(.5 * nu_) - boost::math::lgamma(.5 * (N_ + nu_)) +
          .5 * N_ * std::log(IMP::PI * nu_) + N_ * std::log(sigma_) +
-         .5 * (N_ + nu_) * std::log(1. + t2_ / nu_) - LogJX_;
+         .5 * (N_ + nu_) * std::log1p(t2_ / nu_) - LogJX_;
 }
 
 double FStudentT::evaluate_derivative_Fx(double Fx) const {
@@ -95,7 +95,7 @@ double FStudentT::evaluate_derivative_sigma() const {
 double FStudentT::evaluate_derivative_nu() const {
   return .5 * (-1 + boost::math::digamma(.5 * nu_) -
                boost::math::digamma(.5 * (N_ + nu_)) +
-               std::log(1 + t2_ / nu_) + (N_ + nu_) / (nu_ + t2_));
+               std::log1p(t2_ / nu_) + (N_ + nu_) / (nu_ + t2_));
 }
 
 IMPISD_END_NAMESPACE
