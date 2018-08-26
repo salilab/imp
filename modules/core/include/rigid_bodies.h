@@ -334,6 +334,36 @@ class IMPCOREEXPORT RigidBody : public XYZ {
                           const algebra::Rotation3D &rot_local_to_global,
                           DerivativeAccumulator &da);
 
+  /** Update the rotational derivatives from another body specified by the
+      rotation from the other body's local coordinates to this body's local
+      coordinates. The provided quaternion derivative on the other body are in
+      the reference frame of the other body.
+
+      Updates only quaternion derivatives.
+
+      @param other_qderiv        The derivative on the quaternion taking the other body's
+                                 local coordinates to global.
+      @param rot_other_to_local  Rotation taking the local coordinates of the other body
+                                 to this body's local coordinates.
+      @param rot_local_to_global Rotation taking this rigid body's local coordinates to
+                                 global coordinates.
+      @param da               Accumulates the output derivatives.
+   */
+  inline void add_to_rotational_derivatives(const algebra::Vector4D &other_qderiv,
+                                            const algebra::Rotation3D &rot_other_to_local,
+                                            const algebra::Rotation3D &rot_local_to_global,
+                                            DerivativeAccumulator &da);
+
+  /** Add to quaternion derivative of this rigid body
+      Note that this method does not update the torque.
+
+      @param qderiv  Derivative wrt to quaternion taking local coordinates to
+                     global.
+      @param da      Object for accumulating derivatives
+  */
+  inline void add_to_rotational_derivatives(const algebra::Vector4D &qderiv,
+                                            DerivativeAccumulator &da);
+
   /** Add torque to derivative table of this rigid body
       Note that this method does not update the quaternion derivatives, so should
       be used by optimizers that rely on torque only (e.g. BrownianDynamics)
@@ -465,6 +495,16 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
 #ifndef IMP_DOXYGEN
 // inline implementation
+void RigidBody::add_to_rotational_derivatives(const algebra::Vector4D &qderiv,
+                                              DerivativeAccumulator &da) {
+  for (unsigned int i = 0; i < 4; ++i) {
+    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[i],
+                                   get_particle_index(), qderiv[i], da);
+  }
+}
+
+
+// inline implementation
 void RigidBody::add_to_torque(const algebra::Vector3D &torque_local,
                                    DerivativeAccumulator &da) {
   for (unsigned int i = 0; i < 3; ++i) {
@@ -507,6 +547,22 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
   const algebra::Vector3D deriv_global = rot_local_to_global * deriv_local;
   add_to_derivatives(deriv_local, deriv_global, local,
 		     rot_local_to_global, da);
+}
+
+// inline implementation
+void RigidBody::add_to_rotational_derivatives(const algebra::Vector4D &other_qderiv,
+                                              const algebra::Rotation3D &rot_other_to_local,
+                                              const algebra::Rotation3D &rot_local_to_global,
+                                              DerivativeAccumulator &da) {
+  algebra::Vector4Ds derivs = rot_local_to_global.get_derivatives(
+    rot_other_to_local);
+  IMP_INTERNAL_CHECK(
+    derivs.size() == 4, "There should be 4 quaternion derivatives.");
+  algebra::Vector4D qderiv;
+  for (unsigned int i = 0; i < 4; ++i) {
+    qderiv[i] = other_qderiv * derivs[i];
+  }
+  add_to_rotational_derivatives(qderiv, da);
 }
 #endif
 
