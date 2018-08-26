@@ -8,6 +8,7 @@
 
 #include <IMP/isd/TransformedNuisance.h>
 #include <IMP/core/JacobianAdjuster.h>
+#include <boost/math/special_functions/log1p.hpp>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -83,7 +84,7 @@ void TransformedNuisance::update_nuisance() const {
       }
       x = a + range * inv_logit;
       J = range * (1 - inv_logit) * inv_logit;
-      nlogJ = -std::log(range) - sign * y + 2 * std::log1p(expy);
+      nlogJ = -std::log(range) - sign * y + 2 * boost::math::log1p(expy);
       dnlogJ = 2 * inv_logit - 1;
     }
   }
