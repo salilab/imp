@@ -106,6 +106,56 @@ class Tests(IMP.test.TestCase):
             rb_nested.get_torque(), rb_unnested.get_torque(),
             rtol=1e-6)
 
+    def test_quaternion_derivatives_from_nested_equal_to_unnested(self):
+        """Test nested rigid bodies have same quaternion derivatives as unnested."""
+        sphere1 = IMP.algebra.Sphere3D([0, 0, 0], 5)
+        sphere2 = IMP.algebra.Sphere3D([0, 0, 10], 10)
+        N1, N2 = 20, 20
+        vs1 = [
+            IMP.algebra.get_random_vector_in(sphere1) for n in range(N1)]
+        vs2 = [
+            IMP.algebra.get_random_vector_in(sphere2) for n in range(N2)]
+
+        m = IMP.Model()
+        ps_unnested = []
+        rb_ps1, rb_ps2 = [], []
+        for v in vs1:
+            xyz = IMP.core.XYZ.setup_particle(IMP.Particle(m), v)
+            ps_unnested.append(xyz)
+            xyz = IMP.core.XYZ.setup_particle(IMP.Particle(m), v)
+            rb_ps1.append(xyz)
+
+        for v in vs2:
+            xyz = IMP.core.XYZ.setup_particle(IMP.Particle(m), v)
+            ps_unnested.append(xyz)
+            xyz = IMP.core.XYZ.setup_particle(IMP.Particle(m), v)
+            rb_ps2.append(xyz)
+
+        ps_nested = rb_ps1 + rb_ps2
+
+        rb_unnested = IMP.core.RigidBody.setup_particle(
+            IMP.Particle(m), ps_unnested)
+        rb_member = IMP.core.RigidBody.setup_particle(
+            IMP.Particle(m), rb_ps2)
+        rb_nested = IMP.core.RigidBody.setup_particle(
+            IMP.Particle(m), rb_unnested.get_reference_frame())
+        for p in rb_ps1 + [rb_member]:
+            rb_nested.add_member(p)
+        rb_unnested.set_coordinates_are_optimized(True)
+        rb_nested.set_coordinates_are_optimized(True)
+        m.update()
+
+        r = DummyRestraint(m, ps_unnested, ps_nested)
+        sf = IMP.core.RestraintsScoringFunction([r])
+        sf.evaluate(True)
+
+        self.assertGreater(
+            rb_unnested.get_quaternion_derivatives().get_magnitude(), 0)
+        np.testing.assert_allclose(
+            rb_nested.get_quaternion_derivatives(),
+            rb_unnested.get_quaternion_derivatives(),
+            rtol=1e-6)
+
 
 if __name__ == '__main__':
     IMP.test.main()
