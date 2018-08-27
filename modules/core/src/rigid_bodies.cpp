@@ -186,7 +186,7 @@ void AccumulateRigidBodyDerivatives::apply_index(
       rb.get_reference_frame().get_transformation_to().get_rotation();
   const ParticleIndexes &rbis = rb.get_member_particle_indexes();
   for (unsigned int i = 0; i < rbis.size(); ++i) {
-    RigidMember d(rb.get_model(), rbis[i]);
+    RigidBodyMember d(rb.get_model(), rbis[i]);
     const algebra::Vector3D &deriv = d.get_derivatives();
     if (deriv.get_squared_magnitude() > 0) {
       algebra::Vector3D dv = rot * deriv;
@@ -235,7 +235,7 @@ void AccumulateRigidBodyDerivatives::apply_index(
     algebra::Vector3D v(0, 0, 0);
     algebra::VectorD<4> q(0, 0, 0, 0);
     for (unsigned int i = 0; i < rb.get_number_of_members(); ++i) {
-      RigidMember d = rb.get_member(i);
+      RigidBodyMember d = rb.get_member(i);
       algebra::Vector3D dv = d.get_derivatives();
       v += dv;
       // IMP_LOG_TERSE( "Adding " << dv << " to derivative" << std::endl);
@@ -798,15 +798,15 @@ void RigidBody::set_coordinates_are_optimized(bool tf) {
   }
 }
 
-RigidMember RigidBody::get_member(unsigned int i) const {
+RigidBodyMember RigidBody::get_member(unsigned int i) const {
   IMP_USAGE_CHECK(i < get_number_of_members(),
                   "Out of range member requested: " << i << " of "
                                                     << get_number_of_members());
   unsigned int sz = get_member_particle_indexes().size();
   if (i < sz) {
-    return RigidMember(get_model(), get_member_particle_indexes()[i]);
+    return RigidBodyMember(get_model(), get_member_particle_indexes()[i]);
   } else {
-    return RigidMember(get_model(), get_body_member_particle_indexes()[i - sz]);
+    return RigidBodyMember(get_model(), get_body_member_particle_indexes()[i - sz]);
   }
 }
 
