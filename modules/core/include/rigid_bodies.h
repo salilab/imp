@@ -548,8 +548,9 @@ void RigidBody::add_to_rotational_derivatives(const algebra::Vector4D &other_qde
                                               const algebra::Rotation3D &rot_other_to_local,
                                               const algebra::Rotation3D &rot_local_to_global,
                                               DerivativeAccumulator &da) {
-  algebra::Vector4Ds derivs = rot_local_to_global.get_derivatives(
-    rot_other_to_local);
+  algebra::Vector4Ds derivs =
+    algebra::get_derivatives_of_composed_with_respect_to_first(
+      rot_local_to_global, rot_other_to_local);
   IMP_INTERNAL_CHECK(
     derivs.size() == 4, "There should be 4 quaternion derivatives.");
   algebra::Vector4D qderiv;
