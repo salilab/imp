@@ -249,7 +249,8 @@ void AccumulateRigidBodyDerivatives::apply_index(
       if (RigidBody::get_is_setup(d)) {
         algebra::Rotation3D mrot = RigidBodyMember(d).get_internal_transformation().get_rotation();
         algebra::Vector4D mq = RigidBody(d).get_rotational_derivatives();
-        algebra::Vector4Ds dq = rot.get_derivatives(mrot);
+        algebra::Vector4Ds dq =
+          algebra::get_derivatives_of_composed_with_respect_to_first(rot, mrot);
         for (unsigned int k = 0; k < 4; ++k) {
           q[k] += dq[k] * mq;
         }

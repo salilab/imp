@@ -222,27 +222,6 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
     return *this;
   }
 
-  //! Get derivatives of quaternion product.
-  /** Given the rotation \f$R(P)\f$ followed by \f$R(Q)\f$, where \f$P\f$ and
-      \f$Q\f$ are quaternions, the quaternion of the composed rotation
-      \f$R(S)=R(Q) R(P)\f$ can be expressed through the Hamilton product of the
-      two quaternions \f$S(Q,P) = Q P\f$. Assuming this rotation is \f$R(Q)\f$,
-      this function returns the 4 quaternion derivatives
-      \f$\frac{d}{d Q_i} S(Q,P)\f$, where \f$Q_i\f$ is the \f$i\f$th element
-      of \f$Q\f$.
-   */
-  const Vector4Ds get_derivatives(const Rotation3D &rotp) const;
-
-  //! Get derivative of quaternion product.
-  /** Given the rotation \f$R(P)\f$ followed by \f$R(Q)\f$, where \f$P\f$ and
-      \f$Q\f$ are quaternions, the quaternion of the composed rotation
-      \f$R(S)=R(Q) R(P)\f$ can be expressed through the Hamilton product of the
-      two quaternions \f$S(Q,P) = Q P\f$. Assuming this rotation is \f$R(Q)\f$,
-      this function returns the derivative \f$\frac{d}{d Q_i} S(Q,P)\f$, where
-      \f$Q_i\f$ is the \f$i\f$th element of \f$Q\f$.
-   */
-  const Vector4D get_derivative(const Rotation3D &rotp, unsigned int i) const;
-
   /** \brief Return the derivative of the local position o with respect to
       the i'th internal quaternion coefficient, for i in [0..3],
       namely (dx/dQi, dy/dQi, dz/dQi)
@@ -259,6 +238,30 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
 };
 
 IMP_VALUES(Rotation3D, Rotation3Ds);
+
+//! Get derivatives of quaternion product with respect to first quaternion.
+/** Given the rotation \f$R(P)\f$ followed by \f$R(Q)\f$, where \f$P\f$ and
+    \f$Q\f$ are quaternions, the quaternion of the composed rotation
+    \f$R(S)=R(Q) R(P)\f$ can be expressed through the Hamilton product of the
+    two quaternions \f$S(Q,P) = Q P\f$. Assuming this rotation is \f$R(Q)\f$,
+    this function returns the 4 quaternion derivatives
+    \f$\frac{d}{d Q_i} S(Q,P)\f$, where \f$Q_i\f$ is the \f$i\f$th element
+    of \f$Q\f$.
+ */
+IMPALGEBRAEXPORT Vector4Ds get_derivatives_of_composed_with_respect_to_first(
+    const Rotation3D &q, const Rotation3D &p);
+
+//! Get derivatives of quaternion product with respect to second quaternion.
+/** Given the rotation \f$R(P)\f$ followed by \f$R(Q)\f$, where \f$P\f$ and
+    \f$Q\f$ are quaternions, the quaternion of the composed rotation
+    \f$R(S)=R(Q) R(P)\f$ can be expressed through the Hamilton product of the
+    two quaternions \f$S(Q,P) = Q P\f$. Assuming this rotation is \f$R(Q)\f$,
+    this function returns the 4 quaternion derivatives
+    \f$\frac{d}{d P_i} S(Q,P)\f$, where \f$P_i\f$ is the \f$i\f$th element
+    of \f$P\f$.
+ */
+IMPALGEBRAEXPORT Vector4Ds get_derivatives_of_composed_with_respect_to_second(
+    const Rotation3D &q, const Rotation3D &p);
 
 //! Return a rotation that does not do anything
 /** \see Rotation3D */
