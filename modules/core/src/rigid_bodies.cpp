@@ -210,8 +210,7 @@ void AccumulateRigidBodyDerivatives::apply_index(
 
     algebra::Vector4D mderiv = RigidBody(d).get_rotational_derivatives();
     if (mderiv.get_squared_magnitude() > 0) {
-      rb.add_to_rotational_derivatives(RigidBody(d).get_rotational_derivatives(),
-                                       rot_memloc_to_loc, roti, da);
+      rb.add_to_rotational_derivatives(mderiv, rot_memloc_to_loc, roti, da);
     }
   }
 
