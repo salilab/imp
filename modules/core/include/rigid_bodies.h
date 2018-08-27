@@ -666,6 +666,10 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
   static FloatKeys get_internal_coordinate_keys() {
     return internal::rigid_body_data().child_keys_;
   }
+
+  static FloatKeys get_internal_rotation_keys() {
+    return internal::rigid_body_data().lquaternion_;
+  }
 };
 
 //! A decorator for a particle that is part of a rigid body, and is
