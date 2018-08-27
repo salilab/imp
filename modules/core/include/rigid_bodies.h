@@ -24,6 +24,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 IMP_DECORATORS_DECL(RigidMember, RigidMembers);
+IMP_DECORATORS_DECL(RigidBodyMember, RigidBodyMembers);
 
 //! A decorator for a rigid body
 /** A rigid body particle describes a set of particles, known
@@ -460,7 +461,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
            get_member_particle_indexes().size();
   }
 
-  RigidMember get_member(unsigned int i) const;
+  RigidBodyMember get_member(unsigned int i) const;
 #endif
   //! Add a proper member that moves rigidly with this rigid body,
   //! properly handling rigid bodies and XYZ particles.
