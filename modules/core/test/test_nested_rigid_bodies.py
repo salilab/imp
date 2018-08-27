@@ -29,6 +29,26 @@ class DummyRestraint(IMP.Restraint):
         return IMP.get_particles(self.get_model(), self.ps1 + self.ps2)
 
 
+class DummyRestraint2(IMP.Restraint):
+
+    """Adds random derivatives to particles."""
+
+    def __init__(self, m, p, name="DummyRestraint2 %1%"):
+        IMP.Restraint.__init__(self, m, name)
+        self.p = p
+
+    def unprotected_evaluate(self, accum):
+        if accum:
+            v = np.random.normal(size=3)
+            IMP.core.XYZ(self.p).add_to_derivatives(v, accum)
+            # q = np.random.normal(size=4)
+            # IMP.core.RigidBody(self.p).add_to_rotational_derivatives(q, accum)
+        return 0.
+
+    def do_get_inputs(self):
+        return [self.p.get_particle()]
+
+
 class Tests(IMP.test.TestCase):
 
     """Tests for RigidBody function"""
@@ -152,6 +172,51 @@ class Tests(IMP.test.TestCase):
             rb_nested.get_rotational_derivatives(),
             rb_unnested.get_rotational_derivatives(),
             rtol=1e-6)
+
+    def test_non_rigid_member_local_derivatives_are_correct(self):
+        """Test global derivatives on non-rigid member propagated to local."""
+
+        rf1 = IMP.algebra.ReferenceFrame3D(
+            IMP.algebra.get_random_local_transformation((0,0,0), 10))
+        rf2 = IMP.algebra.ReferenceFrame3D(
+            IMP.algebra.get_random_local_transformation((0,0,0), 10))
+
+        m = IMP.Model()
+        rb = IMP.core.RigidBody.setup_particle(IMP.Particle(m), rf1)
+        nrb = IMP.core.RigidBody.setup_particle(IMP.Particle(m), rf2)
+        point = IMP.core.XYZ.setup_particle(IMP.Particle(m), (1, 2, 3))
+        nrb.add_member(point)
+        rb.add_non_rigid_member(nrb)
+        m.update()
+
+        self.assertTrue(IMP.core.NonRigidMember.get_is_setup(nrb))
+        self.assertTrue(IMP.core.RigidBodyMember.get_is_setup(nrb))
+        self.assertTrue(IMP.core.RigidBody.get_is_setup(nrb))
+        self.assertFalse(IMP.core.RigidMember.get_is_setup(nrb))
+
+        r = DummyRestraint2(m, point)
+        sf = IMP.core.RestraintsScoringFunction([r])
+        sf.evaluate(True)
+
+        rot_global_to_parent = rb.get_reference_frame(
+            ).get_transformation_to().get_rotation().get_inverse()
+        exp_lderv = rot_global_to_parent * point.get_derivatives()
+        lderv = IMP.core.NonRigidMember(nrb).get_internal_derivatives()
+        self.assertAlmostEqual(
+            (exp_lderv - lderv).get_magnitude(), 0, delta=1e-6)
+
+        lcoord = IMP.core.RigidMember(point).get_internal_coordinates()
+        rot_local_to_parent = IMP.core.NonRigidMember(
+            nrb).get_internal_transformation().get_rotation()
+        exp_lqderv = IMP.algebra.Vector4D()
+        for i in range(4):
+            exp_lqderv[i] = (
+                lderv * rot_local_to_parent.get_derivative(lcoord, i))
+
+        lqderv = IMP.core.NonRigidMember(
+            nrb).get_internal_rotational_derivatives()
+        self.assertAlmostEqual(
+            (exp_lqderv - lqderv).get_magnitude(), 0, delta=1e-6)
 
 
 if __name__ == '__main__':
