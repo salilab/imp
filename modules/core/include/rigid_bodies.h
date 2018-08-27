@@ -714,6 +714,26 @@ class IMPCOREEXPORT NonRigidMember : public RigidBodyMember {
   static bool get_is_setup(Model *m, ParticleIndex p) {
     return internal::get_has_required_attributes_for_non_member(m, p);
   }
+
+  //! Get derivatives wrt translation component of internal transformation.
+  algebra::Vector3D get_internal_derivatives() const {
+    algebra::Vector3D ret;
+    for (unsigned int i = 0; i < 3; ++i) {
+      ret[i] = get_model()->get_derivative(
+        get_internal_coordinate_keys()[i], get_particle_index());
+    }
+    return ret;
+  }
+
+  //! Get derivatives wrt quaternion component of internal transformation.
+  algebra::Vector4D get_internal_rotational_derivatives() const {
+    algebra::Vector4D ret;
+    for (unsigned int i = 0; i < 4; ++i) {
+      ret[i] = get_model()->get_derivative(
+        get_internal_rotation_keys()[i], get_particle_index());
+    }
+    return ret;
+  }
 };
 
 #ifndef IMP_DOXYGEN
