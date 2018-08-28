@@ -19,23 +19,6 @@ import IMP.rmf
 from math import *
 
 class Tests(IMP.test.TestCase):
-    def test_particle_to_sample_filter(self):
-        """Test ParticleToSampleFilter"""
-        class MockRestraint(object):
-            def __init__(self, sos):
-                self.sos = sos
-            def get_particles_to_sample(self):
-                return self.sos
-        r1 = MockRestraint({'Nuisances_Sigma': ('p0', 'p1'),
-                            'Nuisances_Psi': ('p2', 'p3')})
-        r2 = MockRestraint({'Nuisances_Sigma': ('p0', 'p4')})
-        with IMP.allow_deprecated():
-            p = IMP.pmi.tools.ParticleToSampleFilter([r1, r2])
-        p.add_filter('Sigma')
-        ps = p.get_particles_to_sample()
-        self.assertEqual(list(ps.keys()), ['Nuisances_Sigma'])
-        val = ps['Nuisances_Sigma']
-        self.assertEqual(sorted(val), ['p0', 'p0', 'p1', 'p4'])
 
     def test_particle_to_sample_list(self):
         """Test ParticleToSampleList"""

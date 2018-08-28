@@ -256,11 +256,6 @@ def draw_component_composition(DegreesOfFreedom, max=1000, draw_pdb_names=False,
                         continue
 
     elements={}
-    c=IMP.pmi.tools.Colors()
-    colors=c.get_list_distant_colors()
-    colors=["blue", "red", "green", "pink", "cyan", "purple",
-            "magenta", "orange", "grey", "brown", "gold",
-            "khaki", "olive drab", "deep blue sky"]
     rgb_colors=[(240,163,255),(0,117,220),
             (153,63,0),(76,0,92),(25,25,25),
             (0,92,49),(43,206,72),(255,204,153),

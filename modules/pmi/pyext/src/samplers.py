@@ -255,10 +255,6 @@ class MonteCarlo(object):
                     if 0.4 > accept or accept > 0.6:
                         mv.set_radius(mr * 2 * accept)
 
-    @IMP.deprecated_method("2.5", "Use optimize() instead.")
-    def run(self, *args, **kwargs):
-        self.optimize(*args, **kwargs)
-
     def get_nuisance_movers(self, nuisances, maxstep):
         mvs = []
         for nuisance in nuisances:
@@ -488,10 +484,6 @@ class ConjugateGradients(object):
 
     def get_frame_number(self):
         return self.nframe
-
-    @IMP.deprecated_method("2.5", "Use optimize() instead.")
-    def run(self, *args, **kwargs):
-        self.optimize(*args, **kwargs)
 
     def optimize(self, nstep):
         self.nframe += 1

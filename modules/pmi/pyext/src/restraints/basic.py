@@ -166,6 +166,8 @@ class DistanceRestraint(IMP.pmi.restraints.RestraintBase):
                                        particles2[0]))
 
 
+@IMP.deprecated_object(2.10,
+        "If you use this class please let the PMI developers know.")
 class TorqueRestraint(IMP.Restraint):
     import math
     def __init__(self, m, objects, resolution, angular_tolerance,label='None'):
@@ -365,7 +367,7 @@ class DistanceToPointRestraint(IMP.pmi.restraints.RestraintBase):
               add a copy number (PMI2 only)
         """
         if tuple_selection is None:
-            raise Exception("You must pass a tuple_selection")
+            raise ValueError("You must pass a tuple_selection")
 
         if representation and not root_hier:
             model = representation.prot.get_model()
@@ -386,11 +388,9 @@ class DistanceToPointRestraint(IMP.pmi.restraints.RestraintBase):
                                       copy_index=copy_num1)
             ps = sel1.get_selected_particles()
         else:
-            raise Exception("%s: Pass representation or root_hier, not both" %
-                            self.name)
+            raise ValueError("Pass representation or root_hier, not both")
         if len(ps) > 1:
-            raise ValueError("%s: more than one particle selected" %
-                             self.name)
+            raise ValueError("More than one particle selected")
 
         super(DistanceToPointRestraint, self).__init__(model, label=label,
                                                        weight=weight)
@@ -399,12 +399,10 @@ class DistanceToPointRestraint(IMP.pmi.restraints.RestraintBase):
         ub3 = IMP.core.HarmonicUpperBound(self.radius, kappa)
         if anchor_point is None:
             c3 = IMP.algebra.Vector3D(0, 0, 0)
-        elif type(anchor_point) is IMP.algebra.Vector3D:
+        elif isinstance(anchor_point, IMP.algebra.Vector3D):
             c3 = anchor_point
         else:
-            raise Exception(
-                "%s: @param anchor_point must be an algebra.Vector3D object" %
-                self.name)
+            raise TypeError("anchor_point must be an algebra.Vector3D object")
         ss3 = IMP.core.DistanceToSingletonScore(ub3, c3)
 
         lsc = IMP.container.ListSingletonContainer(self.model)

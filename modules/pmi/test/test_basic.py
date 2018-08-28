@@ -74,6 +74,48 @@ class Tests(IMP.test.TestCase):
             p1, p2, dists[0], dists[1], sigmas[0], sigmas[1], weights[0],
             weights[1] + 1e-5)
 
+    def test_distance_to_point(self):
+        """Test DistanceToPointRestraint"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'),
+                         name_map={'Protein_1':'Prot1',
+                                   'Protein_2':'Prot2',
+                                   'Protein_3':'Prot3'})
+        m1 = st1.create_molecule("Prot1",chain_id='A',sequence=seqs["Prot1"])
+        a1 = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                              chain_id='A',res_range=(55,64),offset=-54)
+        m1.add_representation(a1,resolutions=[0,1])
+        hier = s.build()
+
+        # tuple_selection is required
+        self.assertRaises(ValueError,
+                          IMP.pmi.restraints.basic.DistanceToPointRestraint,
+                          root_hier=hier)
+
+        # hier is required
+        self.assertRaises(ValueError,
+                          IMP.pmi.restraints.basic.DistanceToPointRestraint,
+                          tuple_selection=(1,1,"Prot1",0))
+
+        # Invalid anchor point
+        self.assertRaises(TypeError,
+                          IMP.pmi.restraints.basic.DistanceToPointRestraint,
+                          root_hier=hier, tuple_selection=(1,1,"Prot1",0),
+                          anchor_point='foo')
+
+        # anchor point explicitly set to None
+        dr = IMP.pmi.restraints.basic.DistanceToPointRestraint(
+                                   root_hier=hier,
+                                   tuple_selection=(1,1,"Prot1",0),
+                                   anchor_point=None)
+
+        # default anchor point
+        dr = IMP.pmi.restraints.basic.DistanceToPointRestraint(
+                                   root_hier=hier,
+                                   tuple_selection=(1,1,"Prot1",0))
+
 
 if __name__ == '__main__':
     IMP.test.main()
