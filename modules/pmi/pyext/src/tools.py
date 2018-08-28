@@ -149,29 +149,6 @@ class SetupSurface(object):
         return self.surface
 
 
-@IMP.deprecated_object(2.8,
-        "If you use this class please let the PMI developers know.")
-class ParticleToSampleFilter(object):
-    def __init__(self, sampled_objects):
-        self.sampled_objects=sampled_objects
-        self.filters=[]
-
-    def add_filter(self,filter_string):
-        self.filters.append(filter_string)
-
-    def get_particles_to_sample(self):
-        particles_to_sample={}
-        for so in self.sampled_objects:
-            ps_dict=so.get_particles_to_sample()
-            for key in ps_dict:
-                for f in self.filters:
-                    if f in key:
-                        if key not in particles_to_sample:
-                            particles_to_sample[key]=ps_dict[key]
-                        else:
-                            particles_to_sample[key]+=ps_dict[key]
-        return particles_to_sample
-
 class ParticleToSampleList(object):
 
     def __init__(self, label="None"):
@@ -225,6 +202,8 @@ class ParticleToSampleList(object):
         return ps
 
 
+@IMP.deprecated_object(2.10,
+        "If you use this class please let the PMI developers know.")
 class Variance(object):
 
     def __init__(self, model, tau, niter, prot, th_profile, write_data=False):
@@ -462,6 +441,8 @@ def get_cross_link_data(directory, filename, dist, omega, sigma,
     #-------------------------------
 
 
+@IMP.deprecated_function(2.10,
+        "If you use this function please let the PMI developers know.")
 def get_cross_link_data_from_length(length, xxx_todo_changeme3, xxx_todo_changeme4, xxx_todo_changeme5):
     (distmin, distmax, ndist) = xxx_todo_changeme3
     (omegamin, omegamax, nomega) = xxx_todo_changeme4
@@ -543,6 +524,8 @@ def open_file_or_inline_text(filename):
     return fl
 
 
+@IMP.deprecated_function(2.10,
+        "If you use this function please let the PMI developers know.")
 def get_drmsd(prot0, prot1):
     drmsd = 0.
     npairs = 0.
@@ -1096,6 +1079,8 @@ def sort_by_residues(particles):
     return particles
 
 
+@IMP.deprecated_function(2.10,
+        "If you use this function please let the PMI developers know.")
 def get_residue_to_particle_map(particles):
     # this function returns a dictionary that map particles to residue indexes
     particles = sort_by_residues(particles)
@@ -1135,6 +1120,8 @@ def scatter_and_gather(data):
         data = comm.recv(source=0, tag=11)
     return data
 
+@IMP.deprecated_function(2.10,
+        "If you use this function please let the PMI developers know.")
 def scatter_and_gather_dict_append(data):
     """Synchronize data over a parallel run"""
     from mpi4py import MPI
@@ -1295,6 +1282,8 @@ class Segments(object):
 #
 
 
+@IMP.deprecated_function(2.10,
+        "If you use this function please let the PMI developers know.")
 def translate_hierarchy(hierarchy, translation_vector):
     '''
     Apply a translation to a hierarchy along the input vector.
@@ -1320,11 +1309,15 @@ def translate_hierarchy(hierarchy, translation_vector):
         IMP.core.transform(rb, transformation)
 
 
+@IMP.deprecated_function(2.10,
+        "If you use this function please let the PMI developers know.")
 def translate_hierarchies(hierarchies, translation_vector):
     for h in hierarchies:
         IMP.pmi.tools.translate_hierarchy(h, translation_vector)
 
 
+@IMP.deprecated_function(2.10,
+        "If you use this function please let the PMI developers know.")
 def translate_hierarchies_to_reference_frame(hierarchies):
     xc = 0
     yc = 0
@@ -1391,6 +1384,8 @@ def get_random_residue_pairs(representation, resolution,
     return random_residue_pairs
 
 
+@IMP.deprecated_function(2.10,
+        "If you use this function please let the PMI developers know.")
 def get_random_data_point(
     expected_value,
     ntrials,
@@ -2336,6 +2331,8 @@ def color2rgb(colorname):
          'yellow': (1.0, 1.0, 0.0)}
     return d[colorname]
 
+@IMP.deprecated_object(2.10,
+        "If you use this class please let the PMI developers know.")
 class Colors(object):
     def __init__(self):
         self.colors={
