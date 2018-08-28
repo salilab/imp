@@ -9,6 +9,9 @@ class IHMInstallTests(unittest.TestCase):
         import ihm.dataset
         import ihm.restraint
         import ihm.model
+        import ihm.format
+        # We should also have the C-accelerated tokenizer
+        import ihm._format
         s = ihm.System()
 
 if __name__ == '__main__':
