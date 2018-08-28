@@ -1,5 +1,9 @@
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/python-ihm" "ok=True\n")
 
+if(EXISTS ${CMAKE_BINARY_DIR}/lib/ihm
+   AND IS_SYMLINK ${CMAKE_BINARY_DIR}/lib/ihm)
+  file(REMOVE ${CMAKE_BINARY_DIR}/lib/ihm)
+endif()
 execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory
                 ${CMAKE_BINARY_DIR}/lib/ihm
                 RESULT_VARIABLE setup)
