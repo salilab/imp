@@ -202,6 +202,7 @@ class Tests(IMP.test.TestCase):
             ).get_transformation_to().get_rotation().get_inverse()
         exp_lderv = rot_global_to_parent * point.get_derivatives()
         lderv = IMP.core.NonRigidMember(nrb).get_internal_derivatives()
+        self.assertGreater(lderv.get_magnitude(), 0)
         self.assertAlmostEqual(
             (exp_lderv - lderv).get_magnitude(), 0, delta=1e-6)
 
@@ -215,6 +216,7 @@ class Tests(IMP.test.TestCase):
 
         lqderv = IMP.core.NonRigidMember(
             nrb).get_internal_rotational_derivatives()
+        self.assertGreater(lqderv.get_magnitude(), 0)
         self.assertAlmostEqual(
             (exp_lqderv - lqderv).get_magnitude(), 0, delta=1e-6)
 
