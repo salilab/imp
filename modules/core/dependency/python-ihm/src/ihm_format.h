@@ -14,6 +14,8 @@
 #if defined(_MSC_VER)
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
+#else
+#include <unistd.h> /* For ssize_t */
 #endif
 
 #ifdef  __cplusplus
