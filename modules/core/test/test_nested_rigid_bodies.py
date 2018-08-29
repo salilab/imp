@@ -119,9 +119,9 @@ class Tests(IMP.test.TestCase):
 
         self.assertGreater(
             rb_unnested.get_torque().get_magnitude(), 0)
-        np.testing.assert_allclose(
+        self.assertSequenceAlmostEqual(
             rb_nested.get_torque(), rb_unnested.get_torque(),
-            rtol=1e-6)
+            delta=1e-6)
 
     def test_quaternion_derivatives_from_nested_equal_to_unnested(self):
         """Test nested rigid bodies have same quaternion derivatives as unnested."""
@@ -168,10 +168,10 @@ class Tests(IMP.test.TestCase):
 
         self.assertGreater(
             rb_unnested.get_rotational_derivatives().get_magnitude(), 0)
-        np.testing.assert_allclose(
+        self.assertSequenceAlmostEqual(
             rb_nested.get_rotational_derivatives(),
             rb_unnested.get_rotational_derivatives(),
-            rtol=1e-6)
+            delta=1e-6)
 
     def test_non_rigid_member_local_derivatives_are_correct(self):
         """Test global derivatives on non-rigid member propagated to local."""
