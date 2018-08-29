@@ -39,6 +39,13 @@ endif()
 install_deref(${CMAKE_BINARY_DIR}/lib/ihm * ${CMAKE_INSTALL_PYTHONDIR}/ihm)
 
 # Build C extension
+
+# We used add_definitions to add C++11 compiler flags, but that will be applied
+# to C code too, and some compilers treat that as an error, so remove
+if(IMP_CXX11_FLAGS)
+  remove_definitions(${IMP_CXX11_FLAGS})
+endif()
+
 set(swig_i
     "${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/src/ihm_format.i")
 set(ext_c
