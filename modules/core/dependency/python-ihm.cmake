@@ -46,6 +46,13 @@ if(IMP_CXX11_FLAGS)
   remove_definitions(${IMP_CXX11_FLAGS})
 endif()
 
+# Our use of strdup, strerror should be safe - no need for the Windows
+# compiler to warn about it; we want to use the POSIX name for strdup too
+if(WIN32)
+  add_definitions("-D_CRT_SECURE_NO_WARNINGS")
+  add_definitions("-D_CRT_NONSTDC_NO_WARNINGS")
+endif()
+
 set(swig_i
     "${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/src/ihm_format.i")
 set(ext_c
