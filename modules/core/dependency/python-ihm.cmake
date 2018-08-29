@@ -74,6 +74,8 @@ if(APPLE)
                  PROPERTIES LINK_FLAGS "-flat_namespace -undefined suppress")
 endif(APPLE)
 
+target_link_libraries(ihm-python ${IMP_SWIG_LIBRARIES})
+
 set_target_properties(ihm-python PROPERTIES PREFIX ""
                       OUTPUT_NAME _format
                       LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/ihm)
