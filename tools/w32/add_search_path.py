@@ -72,9 +72,9 @@ def add_search_path(filename):
     with open(filename) as fh:
         contents = fh.readlines()
     # An 'import block' is considered to be a set of lines beginning with
-    # 'from' or 'import' statements. Any blank lines or comments are considered
-    # to be part of the block.
-    r = re.compile('(from|import) ')
+    # 'from' or 'import' statements (except 'from .' imports). Any blank
+    # lines or comments are considered to be part of the block.
+    r = re.compile('(from [^.]|import )')
     non_statement = re.compile('(\s*$|\s*#)')
     in_imports = False
     imports_done = False
