@@ -41,8 +41,6 @@ class DummyRestraint2(IMP.Restraint):
         if accum:
             v = np.random.normal(size=3)
             IMP.core.XYZ(self.p).add_to_derivatives(v, accum)
-            # q = np.random.normal(size=4)
-            # IMP.core.RigidBody(self.p).add_to_rotational_derivatives(q, accum)
         return 0.
 
     def do_get_inputs(self):
