@@ -49,6 +49,25 @@ class DummyRestraint2(IMP.Restraint):
         return [self.p.get_particle()]
 
 
+class vonMisesFisherRestraint(IMP.Restraint):
+
+    """Applies von Mises-Fisher distribution to quaternion."""
+
+    def __init__(self, m, p, mu, kappa, name="vonMisesFisherRestraint %1%"):
+        IMP.Restraint.__init__(self, m, name)
+        self.p = p
+        self.c = kappa * IMP.algebra.Vector4D(mu)
+
+    def unprotected_evaluate(self, accum):
+        if accum:
+            IMP.core.RigidBody(self.p).add_to_rotational_derivatives(
+                -self.c, accum)
+        return -self.c * IMP.core.RigidBody(self.p).get_rotation().get_quaternion()
+
+    def do_get_inputs(self):
+        return [self.p.get_particle()]
+
+
 class Tests(IMP.test.TestCase):
 
     """Tests for RigidBody function"""
@@ -219,6 +238,52 @@ class Tests(IMP.test.TestCase):
         self.assertGreater(lqderv.get_magnitude(), 0)
         self.assertAlmostEqual(
             (exp_lqderv - lqderv).get_magnitude(), 0, delta=1e-6)
+
+    def test_identity_internal_rotation_propagates_projected_global_derivative(self):
+        """Ensure propagated derivative is exact derivative projected to tangent."""
+        mu = IMP.algebra.Vector4D(1, 0, 0, 0)
+        kappa = 10
+        rf = IMP.algebra.ReferenceFrame3D(
+            IMP.algebra.get_random_local_transformation((0, 0, 0), 10))
+
+        m = IMP.Model()
+        rb = IMP.core.RigidBody.setup_particle(IMP.Particle(m), rf)
+        rb_nested = IMP.core.RigidBody.setup_particle(IMP.Particle(m), rf)
+        rb.add_member(rb_nested)
+        rb.set_coordinates_are_optimized(True)
+        rb_nested.set_coordinates_are_optimized(True)
+        m.update()
+
+        r = vonMisesFisherRestraint(m, rb_nested, mu, kappa)
+        sf = IMP.core.RestraintsScoringFunction([r])
+        sf.evaluate(True)
+
+        # ensure that internal rotation is identity
+        qinternal = IMP.core.RigidBodyMember(
+            rb_nested).get_internal_transformation().get_rotation(
+        ).get_quaternion()
+        self.assertSequenceAlmostEqual(
+            qinternal,
+            IMP.algebra.get_identity_rotation_3d().get_quaternion(),
+            delta=1e-6
+        )
+
+        # ensure that child global derivative is correct
+        self.assertSequenceAlmostEqual(
+            -kappa * mu,
+            rb_nested.get_rotational_derivatives(),
+            delta=1e-6
+        )
+
+        q = rb.get_rotation().get_quaternion()
+        projection_matrix = np.eye(4) - np.outer(q, q)
+        exp_deriv = projection_matrix.dot(-kappa * mu)
+
+        # ensure that derivative is propagated correctly
+        self.assertSequenceAlmostEqual(
+            list(rb.get_rotational_derivatives()),
+            list(exp_deriv), delta=1e-6
+        )
 
 
 if __name__ == '__main__':
