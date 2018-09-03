@@ -49,8 +49,8 @@ class TransformFunct2:
     def get_analytic_deriv(self):
         uv = self.q.get_unit_vector()
         q = IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
-        return IMP.algebra.get_derivatives_of_composed_with_respect_to_first(
-            q, self.p)[self.qi][self.pi]
+        return IMP.algebra.get_gradient_of_composed_with_respect_to_first(
+            q, self.p)[self.pi][self.qi]
 
 
 class TransformFunct3:
@@ -71,8 +71,8 @@ class TransformFunct3:
     def get_analytic_deriv(self):
         uv = self.p.get_unit_vector()
         p = IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
-        return IMP.algebra.get_derivatives_of_composed_with_respect_to_second(
-            self.q, p)[self.qi][self.pi]
+        return IMP.algebra.get_gradient_of_composed_with_respect_to_second(
+            self.q, p)[self.pi][self.qi]
 
 
 class Tests(IMP.test.TestCase):
