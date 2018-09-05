@@ -1,6 +1,7 @@
 """Utility classes to read in information in mmCIF format"""
 
 import ihm.format
+import ihm.format_bcif
 import ihm.location
 import ihm.dataset
 import ihm.representation
@@ -35,7 +36,7 @@ def _get_int_or_string(val):
     """Return val as an int or str as appropriate,
        or None if val is None"""
     if val is not None:
-        return int(val) if val.isdigit() else val
+        return int(val) if isinstance(val, int) or val.isdigit() else val
 
 def _get_float(val):
     """Return float(val) or None if val is None"""
@@ -1421,7 +1422,7 @@ class _OrderedEnsembleHandler(_Handler):
                 mapkeys={'step_description':'description'})
 
 
-def read(fh, model_class=ihm.model.Model):
+def read(fh, model_class=ihm.model.Model, format='mmCIF'):
     """Read data from the mmCIF file handle `fh`.
     
        Note that the reader currently expects to see an mmCIF file compliant
@@ -1431,10 +1432,13 @@ def read(fh, model_class=ihm.model.Model):
        Please `open an issue <https://github.com/ihmwg/python-ihm/issues>`_
        if you encounter such a problem.
 
-       The reader works by breaking the file into tokens, and using this stream
-       of tokens to populate Python data structures. Two tokenizers are
-       available: a pure Python implementation and a C-accelerated version.
-       The C-accelerated version is much faster and so is used if built.
+       Files can be read in either the text-based mmCIF format or the BinaryCIF
+       format. The mmCIF reader works by breaking the file into tokens, and
+       using this stream of tokens to populate Python data structures.
+       Two tokenizers are available: a pure Python implementation and a
+       C-accelerated version. The C-accelerated version is much faster and
+       so is used if built. The BinaryCIF reader needs the msgpack Python
+       module to function.
 
        :param file fh: The file handle to read from.
        :param model_class: The class to use to store model coordinates.
@@ -1444,11 +1448,16 @@ def read(fh, model_class=ihm.model.Model):
               :meth:`~ihm.model.Model.add_atom`, and provide that subclass
               here. See :meth:`ihm.model.Model.get_spheres` for more
               information.
+       :param str format: The format of the file. This can be 'mmCIF' (the
+              default) for the (text-based) mmCIF format or 'BCIF' for
+              BinaryCIF.
        :return: A list of :class:`ihm.System` objects.
     """
     systems = []
+    reader_map = {'mmCIF': ihm.format.CifReader,
+                  'BCIF': ihm.format_bcif.BinaryCifReader}
 
-    r = ihm.format.CifReader(fh, {})
+    r = reader_map[format](fh, {})
     while True:
         s = _SystemReader(model_class)
         handlers = [_StructHandler(s), _SoftwareHandler(s), _CitationHandler(s),

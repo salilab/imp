@@ -93,7 +93,19 @@ class _CifLoopWriter(object):
             self.writer.fh.write("#\n")
 
 
-class CifWriter(object):
+class _Writer(object):
+    """Base class for all writers"""
+
+    omitted = '.'
+    unknown = '?'
+
+    _boolmap = {False: 'NO', True: 'YES'}
+
+    def __init__(self, fh):
+        self.fh = fh
+
+
+class CifWriter(_Writer):
     """Write information to a CIF file.
        The constructor takes a single argument - a Python filelike object
        to write to - and provides methods to write Python objects to
@@ -103,13 +115,13 @@ class CifWriter(object):
        if a different amount of precision is desired, convert the float to
        a string first."""
 
-    omitted = '.'
-    unknown = '?'
+    def flush(self):
+        # noop - data is written as it is encountered
+        pass
 
-    _boolmap = {False: 'NO', True: 'YES'}
-
-    def __init__(self, fh):
-        self.fh = fh
+    def start_block(self, name):
+        """Start a new data block in the file with the given name."""
+        self.fh.write('data_%s\n' % name)
 
     def category(self, category):
         """Return a context manager to write a CIF category.
@@ -225,7 +237,24 @@ class _LoopToken(_Token):
     pass
 
 
-class CifReader(object):
+class _Reader(object):
+    """Base class for reading a file and extracting some or all of its data."""
+
+    def _add_category_keys(self):
+        """Populate _keys for each category by inspecting its __call__ method"""
+        def python_to_cif(field):
+            # Map valid Python identifiers to mmCIF keywords
+            if field.startswith('tr_vector') or field.startswith('rot_matrix'):
+                return re.sub(r'(\d)', r'[\1]', field)
+            else:
+                return field
+        for h in self.category_handler.values():
+            if not hasattr(h, '_keys'):
+                h._keys = [python_to_cif(x)
+                           for x in getargspec(h.__call__)[0][1:]]
+
+
+class CifReader(_Reader):
     """Class to read an mmCIF file and extract some or all of its data.
 
        Use :meth:`read_file` to actually read the file.
@@ -445,8 +474,7 @@ class CifReader(object):
            for categories (e.g. ``_entry.id model``), this will be once
            at the very end of the file.
 
-           If the C-accelerated _format module is available, and the file is
-           a real file (not a Python filelike object), then the C code is used
+           If the C-accelerated _format module is available, then it is used
            instead of the (much slower) Python tokenizer.
 
            :exc:`CifParserError` will be raised if the file cannot be parsed.
@@ -481,19 +509,6 @@ class CifReader(object):
         # Clear category data for next call to read_file()
         self._category_data = {}
         return ndata > 1
-
-    def _add_category_keys(self):
-        """Populate _keys for each category by inspecting its __call__ method"""
-        def python_to_cif(field):
-            # Map valid Python identifiers to mmCIF keywords
-            if field.startswith('tr_vector') or field.startswith('rot_matrix'):
-                return re.sub('(\d)', r'[\1]', field)
-            else:
-                return field
-        for h in self.category_handler.values():
-            if not hasattr(h, '_keys'):
-                h._keys = [python_to_cif(x)
-                           for x in getargspec(h.__call__)[0][1:]]
 
     def _read_file_c(self):
         """Read the file using the C parser"""

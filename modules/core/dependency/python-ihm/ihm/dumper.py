@@ -4,6 +4,7 @@ import re
 import os
 import operator
 import ihm.format
+import ihm.format_bcif
 from . import util
 from . import location
 from . import restraint
@@ -24,8 +25,7 @@ class _Dumper(object):
 class _EntryDumper(_Dumper):
     def dump(self, system, writer):
         # Write CIF header (so this dumper should always be first)
-        writer.fh.write("data_%s\n" % re.subn('[^0-9a-zA-z_]', '',
-                                              system.id)[0])
+        writer.start_block(re.subn('[^0-9a-zA-z_]', '', system.id)[0])
         with writer.category("_entry") as l:
             l.write(id=system.id)
 
@@ -1545,8 +1545,17 @@ class _SASDumper(_Dumper):
                     ordinal += 1
 
 
-def write(fh, systems):
-    """Write out all `systems` to the mmCIF file handle `fh`"""
+def write(fh, systems, format='mmCIF'):
+    """Write out all `systems` to the file handle `fh`.
+       Files can be written in either the text-based mmCIF format or the
+       BinaryCIF format. The BinaryCIF writer needs the msgpack Python
+       module to function.
+
+       :param file fh: The file handle to write to.
+       :param list systems: The list of :class:`ihm.System` objects to write.
+       :param str format: The format of the file. This can be 'mmCIF' (the
+              default) for the (text-based) mmCIF format or 'BCIF' for
+              BinaryCIF."""
     dumpers = [_EntryDumper(), # must be first
                _StructDumper(), _CommentDumper(),
                _SoftwareDumper(),
@@ -1575,9 +1584,13 @@ def write(fh, systems):
                _EnsembleDumper(),
                _DensityDumper(),
                _MultiStateDumper(), _OrderedDumper()]
-    writer = ihm.format.CifWriter(fh)
+    writer_map = {'mmCIF': ihm.format.CifWriter,
+                  'BCIF': ihm.format_bcif.BinaryCifWriter}
+
+    writer = writer_map[format](fh)
     for system in systems:
         for d in dumpers:
             d.finalize(system)
         for d in dumpers:
             d.dump(system, writer)
+    writer.flush()

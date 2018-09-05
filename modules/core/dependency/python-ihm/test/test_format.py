@@ -170,6 +170,10 @@ x
             self.assertEqual(w._repr('%s_foo' % word), '%s_foo' % word)
             self.assertEqual(w._repr('%s_' % word), "'%s_'" % word)
 
+    def test_reader_base(self):
+        """Test Reader base class"""
+        r = ihm.format._Reader() # noop
+
     def _check_bad_cif(self, cif, real_file, category_handlers={}):
         """Ensure that the given bad cif results in a parser error"""
         if real_file:
