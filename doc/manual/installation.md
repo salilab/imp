@@ -23,7 +23,7 @@ to see if the code is currently stable enough for your purposes.
 In order to build %IMP from source, you will need:
 
 - [CMake](https://cmake.org) (2.8 or later)
-- [Boost](http://www.boost.org) (1.41 or later; Boost.Iostreams must be built
+- [Boost](https://www.boost.org) (1.41 or later; Boost.Iostreams must be built
   with its [zlib filter enabled](https://www.boost.org/doc/libs/1_67_0/libs/iostreams/doc/installation.html))
 - [Eigen](https://eigen.tuxfamily.org/) (3.0 or later)
 - [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later; 1.10 should also
