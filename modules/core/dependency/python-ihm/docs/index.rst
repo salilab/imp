@@ -37,6 +37,7 @@ API Reference:
    analysis
    model
    format
+   format_bcif
    dumper
    reader
 

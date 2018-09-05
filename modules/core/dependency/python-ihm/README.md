@@ -25,6 +25,10 @@ and [SWIG](http://www.swig.org/). If either of these components are missing, you
 can choose to build without the extension by adding `--without-ext` to both
 `setup.py` command lines above.
 
+If you want to read [BinaryCIF](https://github.com/dsehnal/BinaryCIF) files,
+you will also need the
+Python [msgpack](https://github.com/msgpack/msgpack-python) package.
+
 # Testing
 
 There are a number of testcases in the `test` directory. Each one can be run

@@ -907,11 +907,10 @@ _ihm_3dem_restraint.cross_correlation_coefficient
 
     def test_get_int_or_string(self):
         """Test _get_int_or_string function"""
-        Keys = namedtuple('Keys', 'strval intval notpresent')
-        d = Keys(strval='45A', intval='45', notpresent=None)
-        self.assertEqual(ihm.reader._get_int_or_string(d.strval), '45A')
-        self.assertEqual(ihm.reader._get_int_or_string(d.intval), 45)
-        self.assertEqual(ihm.reader._get_int_or_string(d.notpresent), None)
+        self.assertEqual(ihm.reader._get_int_or_string('45A'), '45A')
+        self.assertEqual(ihm.reader._get_int_or_string('45'), 45)
+        self.assertEqual(ihm.reader._get_int_or_string(None), None)
+        self.assertEqual(ihm.reader._get_int_or_string(45), 45)
 
     def test_get_vector3(self):
         """Test _get_vector3 function"""
