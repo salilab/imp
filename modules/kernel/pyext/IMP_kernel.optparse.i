@@ -16,18 +16,7 @@ class OptionParser(optparse.OptionParser):
         # option parser handles those)
         kwargs['add_help_option'] = False
         kwargs['version'] = None
-        # Handle old users of IMP.OptionParser that set imp_module
-        if 'imp_module' in kwargs:
-            del kwargs['imp_module']
-        try:
-            optparse.OptionParser.__init__(self, *args, **kwargs)
-        except TypeError:
-            if 'epilog' in kwargs:
-                # Older optparse doesn't support the epilog keyword
-                del kwargs['epilog']
-                optparse.OptionParser.__init__(self, *args, **kwargs)
-            else:
-                raise
+        optparse.OptionParser.__init__(self, *args, **kwargs)
 
     # Don't complain if invalid options are encountered; pass them through
     # unmodified
