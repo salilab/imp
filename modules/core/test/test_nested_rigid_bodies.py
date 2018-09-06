@@ -275,7 +275,7 @@ class Tests(IMP.test.TestCase):
 
         q = rb.get_rotation().get_quaternion()
         projection_matrix = np.eye(4) - np.outer(q, q)
-        exp_deriv = projection_matrix.dot(-kappa * mu)
+        exp_deriv = np.dot(projection_matrix, -kappa * mu)
 
         # ensure that derivative is propagated correctly
         self.assertSequenceAlmostEqual(
