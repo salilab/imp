@@ -4,27 +4,25 @@ __doc__ = "Generate a Connolly surface for a PDB."
 
 import IMP.atom
 import IMP.multifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 
 def parse_args():
-    usage = """%prog [options] <pdb file name>
-
+    desc = """
 This program generates the Connolly surface for a given PDB file."""
 
-    parser = OptionParser(usage)
-    parser.add_option("--density", dest="density", default=10.0, type="float",
-                      metavar="D",
-                      help="density of probe points, per cubic angstrom "
-                           "(default 10.0)")
-    parser.add_option("--radius", dest="rp", default=1.8, type="float",
-                      metavar="R",
-                      help="probe radius in angstroms (default 1.8)")
+    p = ArgumentParser(description=desc)
+    p.add_argument("--density", dest="density", default=10.0, type=float,
+                   metavar="D",
+                   help="density of probe points, per cubic angstrom "
+                        "(default 10.0)")
+    p.add_argument("--radius", dest="rp", default=1.8, type=float,
+                   metavar="R",
+                   help="probe radius in angstroms (default 1.8)")
+    p.add_argument("pdb", help="input PDB file name")
 
-    opts, args = parser.parse_args()
-    if len(args) != 1:
-        parser.error("incorrect number of arguments")
-    return args[0], opts.density, opts.rp
+    args = p.parse_args()
+    return args.pdb, args.density, args.rp
 
 
 def main():
