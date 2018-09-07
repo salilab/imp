@@ -5,39 +5,55 @@ __doc__ = 'Build initial parameters files.'
 
 import shutil
 import IMP.multifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 
 def parse_args():
-    usage = """%prog [options] <assembly name> <subunits file>
-       <coarse level> <density map> <resolution> <spacing> <density threshold>
-       <origin X> <origin Y> <origin Z>
-
+    desc = """
 Build the parameters files for MultiFit.
 
 Notice: If you have negative numbers as input, add -- as the first parameter,
 so that the numbers are not treated as options."""
 
-    parser = OptionParser(usage)
-    parser.add_option("-i", "--asmb_input", dest="asmb_input",
-                      default="asmb.input",
-                      help="the name of the MultiFit input file. The default "
-                           "filename is asmb.input")
-    parser.add_option("-m", "--model", dest="model", default="asmb.model",
-                      help="the base filename of the solutions output by "
-                           "MultiFit (.X.pdb, where X is the solution number, "
-                           "is suffixed to create each output file name). "
-                           "The default filename is asmb.model")
-    parser.add_option("-a", "--anchor_dir", dest="anchor_dir", default="./",
-                      help="the name of the directory to store anchor points. "
-                           "The default is ./")
-    parser.add_option("-f", "--fit_dir", dest="fit_dir", default="./",
-                      help="the name of the directory to store fitting "
-                           "solutions. The default is ./")
-    (options, args) = parser.parse_args()
-    if len(args) < 10:
-        parser.error("incorrect number of arguments")
-    return options, args
+    p = ArgumentParser(description=desc)
+    p.add_argument("-i", "--asmb_input", dest="asmb_input",
+                   default="asmb.input",
+                   help="the name of the MultiFit input file. The default "
+                        "filename is asmb.input")
+    p.add_argument("-m", "--model", dest="model", default="asmb.model",
+                   help="the base filename of the solutions output by "
+                        "MultiFit (.X.pdb, where X is the solution number, "
+                        "is suffixed to create each output file name). "
+                        "The default filename is asmb.model")
+    p.add_argument("-a", "--anchor_dir", dest="anchor_dir", default="./",
+                   help="the name of the directory to store anchor points. "
+                        "The default is ./")
+    p.add_argument("-f", "--fit_dir", dest="fit_dir", default="./",
+                   help="the name of the directory to store fitting "
+                        "solutions. The default is ./")
+    p.add_argument("asmb_name",
+                   help="name of the assembly (used as the prefix for "
+                        "several MultiFit files)")
+    p.add_argument("subunit_file",
+                   help="file containing a list of subunit PDB file names")
+    p.add_argument("coarse_level", type=int,
+                   help="level of coarse graining (number of residues "
+                        "per anchor)")
+    p.add_argument("density", help="density map file name")
+    p.add_argument("resolution", type=float,
+                   help="density map resolution, in angstroms")
+    p.add_argument("spacing", type=float,
+                   help="density map voxel spacing, in angstroms")
+    p.add_argument("threshold", type=float,
+                   help="the threshold of the density map, used for "
+                        "PCA matching")
+    p.add_argument("origin_x", type=float,
+                   help="density map origin X coordinate")
+    p.add_argument("origin_y", type=float,
+                   help="density map origin Y coordinate")
+    p.add_argument("origin_z", type=float,
+                   help="density map origin Z coordinate")
+    return p.parse_args()
 
 
 def get_density_data(name, density_fn, resolution, spacing, threshold,
@@ -135,26 +151,26 @@ def create_assembly_input_file(
 
 
 def main():
-    options, args = parse_args()
-    asmb_name = args[0]
-    pdb_list = args[1]
-    coarse_level = int(args[2])
-    anchor_dir = options.anchor_dir
-    fit_dir = options.fit_dir
+    args = parse_args()
+    asmb_name = args.asmb_name
+    pdb_list = args.subunit_file
+    coarse_level = args.coarse_level
+    anchor_dir = args.anchor_dir
+    fit_dir = args.fit_dir
     if not anchor_dir[-1] == "/":
         anchor_dir += "/"
     if not fit_dir[-1] == "/":
         fit_dir += "/"
 
-    density_map_fn = args[3]
-    resolution = float(args[4])
-    spacing = args[5]
-    threshold = args[6]
-    origin = [float(args[7]), float(args[8]), float(args[9])]
+    density_map_fn = args.density
+    resolution = args.resolution
+    spacing = args.spacing
+    threshold = args.threshold
+    origin = [args.origin_x, args.origin_y, args.origin_z]
     create_assembly_input_file(
         pdb_list, coarse_level, anchor_dir, fit_dir, asmb_name,
         density_map_fn, resolution, spacing, threshold,
-        origin, options.asmb_input)
+        origin, args.asmb_input)
 
     create_alignment_param_file(asmb_name, coarse_level)
 
