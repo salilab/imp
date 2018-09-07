@@ -56,7 +56,9 @@ class Tests(IMP.test.TestCase):
                          "ancdir/testasmb_em_fine_anchors.txt|"
                          "ancdir/testasmb_em_fine_anchors_FINE.txt|")
         for f in ('testasmb.alignment.param',
-                  'testasmb.input', 'testasmb.subunits'):
+                  'testasmb.input', 'testasmb.subunits',
+                  'testasmb.alignment.param.refined',
+                  'testasmb.input.refined'):
             os.unlink(f)
 
 if __name__ == '__main__':
