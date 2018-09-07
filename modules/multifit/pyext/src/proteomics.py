@@ -7,22 +7,20 @@ __doc__ = "Generate proteomics info from anchor graph and fits."
 # add EV accordinly
 
 import IMP.multifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 
 def parse_args():
-    usage = """%prog [options] <asmb.input> <anchors.txt>
-                                             <output:proteomics>
-
+    desc = """
 Generate a proteomics file automatically from the anchor graph and fitting
 results. No interaction data is entered here, but the file can be modified
 manually afterwards to add additional proteomics information.
 """
-    parser = OptionParser(usage)
-    options, args = parser.parse_args()
-    if len(args) != 3:
-        parser.error("incorrect number of arguments")
-    return args
+    p = ArgumentParser(description=desc)
+    p.add_argument("assembly_file", help="assembly file name")
+    p.add_argument("anchors_file", help="anchors file name")
+    p.add_argument("proteomics_file", help="output proteomics file name")
+    return p.parse_args()
 
 
 def run(asmb_fn, anchors_fn, proteomics_fn):
@@ -75,8 +73,8 @@ def run(asmb_fn, anchors_fn, proteomics_fn):
 
 
 def main():
-    asmb_fn, anchors_fn, proteomics_fn = parse_args()
-    run(asmb_fn, anchors_fn, proteomics_fn)
+    args = parse_args()
+    run(args.assembly_file, args.anchors_file, args.proteomics_file)
 
 if __name__ == "__main__":
     main()

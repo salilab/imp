@@ -2,20 +2,18 @@
 
 from __future__ import print_function
 import IMP.multifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 __doc__ = "Generate indexes of fitting solutions."
 
 def parse_args():
-    usage = """%prog [options] <assembly name> <assembly input> <number of fits> <indexes filename>
-
-Generate indexes of fitting solutions.
-"""
-    parser = OptionParser(usage)
-    options, args = parser.parse_args()
-    if len(args) != 4:
-        parser.error("incorrect number of arguments")
-    return options, args
+    desc = """Generate indexes of fitting solutions."""
+    p = ArgumentParser(description=desc)
+    p.add_argument("assembly_name", help="name of the assembly")
+    p.add_argument("assembly_file", help="assembly file name")
+    p.add_argument("num_fits", type=int, help="number of fits")
+    p.add_argument("indexes_file", help="indexes file name")
+    return p.parse_args()
 
 
 def run(assembly_name, asmb_fn, num_fits, mapping_fn=""):
@@ -43,12 +41,9 @@ def run(assembly_name, asmb_fn, num_fits, mapping_fn=""):
 
 
 def main():
-    options, args = parse_args()
-    asmb_name = args[0]
-    asmb_input = args[1]
-    max_fits = int(args[2])
-    mapping_fn = args[3]
-    run(asmb_name, asmb_input, max_fits, mapping_fn)
+    args = parse_args()
+    run(args.assembly_name, args.assembly_file, args.num_fits,
+        args.indexes_file)
 
 if __name__ == "__main__":
     main()

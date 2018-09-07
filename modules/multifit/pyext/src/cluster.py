@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-from IMP import OptionParser
+from IMP import ArgumentParser
 import itertools
 import math
 import IMP.multifit
@@ -335,51 +335,47 @@ class AlignmentClustering:
 
 
 def usage():
-    usage =  """%prog [options] <asmb> <asmb.proteomics> <asmb.mapping>
-           <alignment.params> <combinations> <output: clustered combinations>
-
+    desc =  """
 Clustering of assembly solutions.
 
 This program uses the Python 'fastcluster' module, which can be obtained from
 http://math.stanford.edu/~muellner/fastcluster.html
 """
-    parser = OptionParser(usage)
-    parser.add_option("-m", "--max", type="int", dest="max", default=999999999,
-                      help="maximum solutions to consider")
-    parser.add_option("-r", "--rmsd", type="float", dest="rmsd", default=5,
-                      help="maximum rmsd within a cluster")
-    options, args = parser.parse_args()
-    if len(args) != 6:
-        parser.error("incorrect number of arguments")
-    return options, args
+    p = ArgumentParser(description=desc)
+    p.add_argument("-m", "--max", type=int, dest="max", default=999999999,
+                   help="maximum solutions to consider")
+    p.add_argument("-r", "--rmsd", type=float, dest="rmsd", default=5,
+                   help="maximum rmsd within a cluster")
+    p.add_argument("assembly_file", help="assembly file name")
+    p.add_argument("proteomics_file", help="proteomics file name")
+    p.add_argument("mapping_file", help="mapping file name")
+    p.add_argument("param_file", help="parameter file name")
+    p.add_argument("combinations_file", help="combinations file name")
+    p.add_argument("cluster_file", help="output clusters file name")
+
+    return p.parse_args()
 
 
 def main():
     IMP.set_log_level(IMP.WARNING)
-    options, args = usage()
-    asmb_fn = args[0]
-    prot_fn = args[1]
-    map_fn = args[2]
-    align_fn = args[3]
-    combs_fn = args[4]
-    output_fn = args[5]
+    args = usage()
 
     clust_engine = AlignmentClustering(
-        asmb_fn,
-        prot_fn,
-        map_fn,
-        align_fn,
-        combs_fn)
-    clusters = clust_engine.do_clustering(options.max, options.rmsd)
+        args.assembly_file,
+        args.proteomics_file,
+        args.mapping_file,
+        args.param_file,
+        args.combinations_file)
+    clusters = clust_engine.do_clustering(args.max, args.rmsd)
     cluster_representatives = []
     print("clustering completed")
     print("start analysis")
-    clust_engine.do_analysis(options.max)
+    clust_engine.do_analysis(args.max)
     repr_combs = []
     for cluster_ind in clust_engine.uniques:
         repr_combs.append(
             clust_engine.get_cluster_representative_combination(cluster_ind))
-    IMP.multifit.write_paths(repr_combs, output_fn)
+    IMP.multifit.write_paths(repr_combs, args.cluster_file)
     # print the clusters data
     for cluster_ind in clust_engine.uniques:
         info = clust_engine.get_cluster_stats(cluster_ind)

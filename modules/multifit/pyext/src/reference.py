@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 import IMP.multifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 __doc__ = "Compare output models to a reference structure."
 
@@ -96,20 +96,19 @@ def get_components_placement_scores(assembly, native_assembly, align=False):
 
 
 def parse_args():
-    usage = """%prog [options] <asmb.input> <proteomics.input>
-           <mapping.input> <combinations>
-
+    desc = """
 Compare output models to a reference structure.
 The reference structure for each subunit is read from the rightmost column
 of the asmb.input file.
 """
-    parser = OptionParser(usage)
-    parser.add_option("-m", "--max", type="int", dest="max", default=None,
-                      help="maximum number of models to compare")
-    (options, args) = parser.parse_args()
-    if len(args) != 4:
-        parser.error("incorrect number of arguments")
-    return options, args
+    p = ArgumentParser(description=desc)
+    p.add_argument("-m", "--max", type=int, dest="max", default=None,
+                   help="maximum number of models to compare")
+    p.add_argument("assembly_file", help="assembly file name")
+    p.add_argument("proteomics_file", help="proteomics file name")
+    p.add_argument("mapping_file", help="mapping file name")
+    p.add_argument("combinations_file", help="combinations file name")
+    return p.parse_args()
 
 
 def run(asmb_fn, proteomics_fn, mapping_fn, combs_fn, max_comb):
@@ -160,8 +159,9 @@ def run(asmb_fn, proteomics_fn, mapping_fn, combs_fn, max_comb):
 
 
 def main():
-    options, args = parse_args()
-    return run(args[0], args[1], args[2], args[3], options.max)
+    args = parse_args()
+    return run(args.assembly_file, args.proteomics_file, args.mapping_file,
+               args.combinations_file, args.max)
 
 if __name__ == "__main__":
     main()

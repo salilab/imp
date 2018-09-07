@@ -2,22 +2,20 @@
 
 from __future__ import print_function
 import IMP.multifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 __doc__ = "Show the DOMINO merge tree to be used in alignment."
 
 def parse_args():
-    usage =  """%prog [options] <asmb> <asmb.proteomics> <asmb.mapping>
-           <alignment.params>
-
+    desc =  """
 Show the DOMINO merge tree to be used in the alignment procedure
 """
-    parser = OptionParser(usage)
-
-    options, args = parser.parse_args()
-    if len(args) != 4:
-        parser.error("incorrect number of arguments")
-    return options, args
+    p = ArgumentParser(description=desc)
+    p.add_argument("assembly_file", help="assembly file name")
+    p.add_argument("proteomics_file", help="proteomics file name")
+    p.add_argument("mapping_file", help="mapping file name")
+    p.add_argument("param_file", help="parameter file name")
+    return p.parse_args()
 
 
 def run(asmb_fn, proteomics_fn, mapping_fn, params_fn):
@@ -53,8 +51,9 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn):
 
 
 def main():
-    options, args = parse_args()
-    run(args[0], args[1], args[2], args[3])
+    args = parse_args()
+    run(args.assembly_file, args.proteomics_file, args.mapping_file,
+        args.param_file)
 
 if __name__ == "__main__":
     main()

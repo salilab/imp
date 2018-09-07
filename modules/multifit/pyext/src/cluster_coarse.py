@@ -3,20 +3,23 @@
 from __future__ import print_function
 import operator
 import IMP.multifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 # analyse the ensemble, first we will do the rmsd stuff
 
 def parse_args():
-    usage = "usage %prog [options] <asmb.input> <proteomics.input> <mapping.input> <alignment params> <combinatins> <diameter> <output combinations>\n"
-    usage += "A script for clustering an ensemble of solutions"
-    parser = OptionParser(usage)
-    parser.add_option("-m", "--max", type="int", dest="max", default=999999999,
-                      help="maximum number of combinations to consider")
-    (options, args) = parser.parse_args()
-    if len(args) != 7:
-        parser.error("incorrect number of arguments")
-    return [options, args]
+    desc = "A script for clustering an ensemble of solutions"
+    p = ArgumentParser(description=desc)
+    p.add_argument("-m", "--max", type=int, dest="max", default=999999999,
+                   help="maximum number of combinations to consider")
+    p.add_argument("assembly_file", help="assembly file name")
+    p.add_argument("proteomics_file", help="proteomics file name")
+    p.add_argument("mapping_file", help="mapping file name")
+    p.add_argument("param_file", help="parameter file name")
+    p.add_argument("combinations_file", help="combinations file name")
+    p.add_argument("diameter", type=float, help="cluster diameter")
+    p.add_argument("cluster_file", help="output clusters file name")
+    return p.parse_args()
 
 
 def run(asmb_fn, proteomics_fn, mapping_fn, align_param_fn,
@@ -88,7 +91,7 @@ def run(asmb_fn, proteomics_fn, mapping_fn, align_param_fn,
     IMP.multifit.write_paths(cluster_reps, output_comb_fn)
 
 if __name__ == "__main__":
-    options, args = parse_args()
-    print(options)
-    run(args[0], args[1], args[2], args[3],
-        args[4], float(args[5]), args[6], options.max)
+    args = parse_args()
+    run(args.assembly_file, args.proteomics_file, args.mapping_file,
+        args.param_file, args.combinations_file, args.diameter,
+        args.cluster_file, args.max)

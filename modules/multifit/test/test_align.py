@@ -18,7 +18,7 @@ class Tests(IMP.test.TestCase):
         r = self.run_python_module("IMP.multifit.align", [])
         out, err = r.communicate()
         self.assertEqual(out, "")
-        self.assertIn("incorrect number of arguments", err)
+        self.assertIn("too few arguments", err)
         self.assertNotEqual(r.returncode, 0)
 
     def test_align_run(self):
