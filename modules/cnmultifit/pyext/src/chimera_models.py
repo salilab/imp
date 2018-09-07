@@ -5,27 +5,26 @@ __doc__ = "Generate complete models from Chimera transformations file."
 import sys
 import IMP
 import IMP.atom
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 
 def parse_args():
-    usage = """%prog [options] <subunit> <symmetry degree>
-          <transformations file> <number of models> <output models>
-
+    desc = """
 This script, given the structure of a single subunit and the Chimera
 transformations file, applies the transformations to generate a number of
-complete models.
+complete models."""
 
-  <subunit>               subunit PDB, the same given to MultiFit.
-  <symmetry degree>       Cn degree.
-  <transformations file>  MultiFit output in chimera output format.
-  <number of models>      number of models to print.
-  <output models>         Solutions are written as output.i.pdb."""
-    parser = OptionParser(usage)
-    opts, args = parser.parse_args()
-    if len(args) != 5:
-        parser.error("incorrect number of arguments")
-    return args
+    p = ArgumentParser(description=desc)
+    p.add_argument('subunit', help="subunit PDB, the same given to MultiFit")
+    p.add_argument('degree', type=int, help="Cn symmetry degree")
+    p.add_argument('transform_file',
+                   help="MultiFit output file in Chimera output format")
+    p.add_argument('num_models', type=int,
+                   help="number of output models")
+    p.add_argument('output',
+                   help="solution filename prefix; solutions are written "
+                        "as <output>.i.pdb")
+    return p.parse_args()
 
 
 def get_transformations(sol):
@@ -72,7 +71,8 @@ def run(subunit_fn, symm_deg, sol_fn, num, output_fn):
 
 def main():
     args = parse_args()
-    run(args[0], int(args[1]), args[2], int(args[3]), args[4])
+    run(args.subunit, args.degree, args.transform_file, args.num_models,
+        args.output)
 
 if __name__ == "__main__":
     main()
