@@ -3,11 +3,11 @@
 __doc__ = "Calculate RMSD between a model and the reference."
 
 import IMP.cnmultifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 
 def parse_args():
-    usage = """%prog [options] <parameter file> <transformations file>
+    desc = """%prog [options] <parameter file> <transformations file>
         <reference PDB>
 
 This program calculates the RMSD between modeled cyclic symmetric complexes and
@@ -16,29 +16,31 @@ written into a file called rmsd.output.
 
 Notice: no structural alignment is performed!"""
 
-    parser = OptionParser(usage)
-    parser.add_option("--vec", dest="vec", default="", metavar="FILE",
-                      help="output the RMSDs as a vector into the named "
-                           "file, if specified")
-    parser.add_option("--start", dest="start", default=0, type="int",
-                      help="first model in transformations file to compare "
-                           "with the reference (by default, model 0)")
-    parser.add_option("--end", dest="end", default=-1, type="int",
-                      help="last model in transformations file to compare "
-                           "with the reference (by default, the final model)")
-    (options, args) = parser.parse_args()
-    if len(args) != 3:
-        parser.error("incorrect number of arguments")
-    return options, args
+    p = ArgumentParser(description=desc)
+    p.add_argument("--vec", dest="vec", default="", metavar="FILE",
+                   help="output the RMSDs as a vector into the named "
+                        "file, if specified")
+    p.add_argument("--start", dest="start", default=0, type=int,
+                   help="first model in transformations file to compare "
+                        "with the reference (by default, model 0)")
+    p.add_argument("--end", dest="end", default=-1, type=int,
+                   help="last model in transformations file to compare "
+                        "with the reference (by default, the final model)")
+    p.add_argument("param_file", help="parameter file name")
+    p.add_argument("trans_file", help="transformations file name")
+    p.add_argument("ref_pdb", help="reference PDB file name")
+
+    return p.parse_args()
 
 
 def main():
-    opts, args = parse_args()
     IMP.set_log_level(IMP.WARNING)
-    rmsds = IMP.cnmultifit.get_rmsd_for_models(args[0], args[1], args[2],
-                                               opts.start, opts.end)
-    if opts.vec:
-        open(opts.vec, 'w').write(" ".join(['%f' % x for x in rmsds]))
+    args = parse_args()
+    rmsds = IMP.cnmultifit.get_rmsd_for_models(args.param_file,
+                                               args.trans_file, args.ref_pdb,
+                                               args.start, args.end)
+    if args.vec:
+        open(args.vec, 'w').write(" ".join(['%f' % x for x in rmsds]))
 
 if __name__ == '__main__':
     main()
