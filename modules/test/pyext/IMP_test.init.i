@@ -718,6 +718,9 @@ class TestCase(unittest.TestCase):
            a subprocess.Popen-like object containing the child stdin,
            stdout and stderr.
         """
+        def mock_setup_from_argv(*args, **kwargs):
+            # do-nothing replacement for boost command line parser
+            pass
         if type(module) == type(os):
             mod = module
         else:
@@ -728,12 +731,15 @@ class TestCase(unittest.TestCase):
         if type(module) == type(os):
             old_sys_argv = sys.argv
             # boost parser doesn't like being called multiple times per process
+            old_setup = IMP.setup_from_argv
+            IMP.setup_from_argv = mock_setup_from_argv
             IMP.OptionParser._use_boost_parser = False
             try:
                 sys.argv = [modpath] + args
                 return module.main()
             finally:
                 IMP.OptionParser._use_boost_parser = True
+                IMP.setup_from_argv = old_setup
                 sys.argv = old_sys_argv
         else:
             return _SubprocessWrapper(sys.executable, [modpath] + args)
