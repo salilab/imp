@@ -3,6 +3,7 @@
 import optparse
 import sys
 
+@deprecated_object("2.10", "Use ArgumentParser instead")
 class OptionParser(optparse.OptionParser):
     """IMP-specific subclass of optparse.OptionParser.
        This adds options common to all IMP applications
