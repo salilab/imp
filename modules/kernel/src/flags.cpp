@@ -138,8 +138,12 @@ bool already_run = false;
 }
 
 void write_help(std::ostream &out) {
-  out << "Usage: " << get_executable_name() << " " << internal::exe_usage
-      << std::endl;
+  /* Suppress usage if the caller already handles it
+     (e.g. IMP.ArgumentParser Python class) */
+  if (internal::exe_usage != "==SUPPRESS==") {
+    out << "Usage: " << get_executable_name() << " " << internal::exe_usage
+        << std::endl;
+  }
   out << internal::exe_description << std::endl;
   out << internal::flags << std::endl;
   if (internal::help_advanced) {
