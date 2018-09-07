@@ -3,33 +3,29 @@
 from __future__ import print_function
 import IMP.multifit
 import IMP.em
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 __doc__ = "Generate anchors for a density map."
 
 def parse_args():
-    usage = """%prog [options] <assembly input> <output anchors prefix>
+    desc = """Generate anchors for a density map."""
+    p = ArgumentParser(description=desc)
+    p.add_argument("-s", "--size", type=int, dest="size", default=-1,
+                   help="number of residues per bead")
+    p.add_argument("assembly_file", help="assembly file name")
+    p.add_argument("anchor_prefix", help="prefix for output anchors file names")
 
-Generate anchors for a density map."""
-    parser = OptionParser(usage)
-    parser.add_option("-s", "--size", type="int", dest="size", default=-1,
-                      help="number of residues per bead")
-    options, args = parser.parse_args()
-
-    if len(args) != 2:
-        parser.error("incorrect number of arguments")
-    return options, args
+    return p.parse_args()
 
 
 def main():
-    options, args = parse_args()
-    asmb_fn = args[0]
-    output = args[1]
-    asmb = IMP.multifit.read_settings(asmb_fn)
+    args = parse_args()
+    output = args.anchor_prefix
+    asmb = IMP.multifit.read_settings(args.assembly_file)
     asmb.set_was_used(True)
     dmap = IMP.em.read_map(asmb.get_assembly_header().get_dens_fn(),
                            IMP.em.MRCReaderWriter())
-    if options.size == -1:
+    if args.size == -1:
         number_of_means = asmb.get_number_of_component_headers()
     else:
         total_num_residues = 0
@@ -43,7 +39,7 @@ def main():
                         ),
                         mdl),
                     IMP.atom.RESIDUE_TYPE))
-            number_of_means = total_num_residues / options.size
+            number_of_means = total_num_residues / args.size
     print("Calculating a segmentation into", number_of_means, "regions")
     density_threshold = asmb.get_assembly_header().get_threshold()
 

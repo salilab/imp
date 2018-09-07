@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 import IMP.multifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 __doc__ = "Score each of a set of combinations."
 
@@ -122,13 +122,16 @@ def usage():
 
 Score each of a set of combinations.
 """
-    parser = OptionParser(usage)
-    parser.add_option("-m", "--max", dest="max", default=999999999,
-                      help="maximum number of fits considered")
-    (options, args) = parser.parse_args()
-    if len(args) != 6:
-        parser.error("incorrect number of arguments")
-    return [options, args]
+    p = ArgumentParser(usage)
+    p.add_argument("-m", "--max", dest="max", type=int, default=999999999,
+                   help="maximum number of fits considered")
+    p.add_argument("assembly_file", help="assembly file name")
+    p.add_argument("proteomics_file", help="proteomics file name")
+    p.add_argument("mapping_file", help="mapping file name")
+    p.add_argument("param_file", help="parameter file name")
+    p.add_argument("combinations_file", help="combinations file name")
+    p.add_argument("scores_file", help="output scores file name")
+    return p.parse_args()
 
 
 def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
@@ -271,8 +274,9 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn, combs_fn,
 
 
 def main():
-    (options, args) = usage()
-    run(args[0], args[1], args[2], args[3], args[4], args[5], int(options.max))
+    args = usage()
+    run(args.assembly_file, args.proteomics_file, args.mapping_file,
+        args.param_file, args.combinations_file, args.scores_file, args.max)
 
 if __name__ == "__main__":
     main()

@@ -5,7 +5,7 @@ import math
 import IMP.multifit
 import IMP.atom
 import IMP.em
-from IMP import OptionParser
+from IMP import ArgumentParser
 import os
 import sys
 
@@ -98,39 +98,36 @@ def do_work(f):
 
 
 def parse_args():
-    usage = """%prog [options] <assembly input> <refined assembly input> <proteomics.input> <mapping.input> <combinations file> <combination index>
-
+    desc = """
 Fit subunits locally around a combination solution with FFT."""
-    parser = OptionParser(usage)
-    parser.add_option("-a", "--angle", dest="angle", type="float",
-                      default=5,
-                      help="angle delta (degrees) for FFT rotational "
-                           "search (default 5)")
+    p = ArgumentParser(description=desc)
+    p.add_argument("-a", "--angle", dest="angle", type=float, default=5,
+                   help="angle delta (degrees) for FFT rotational "
+                        "search (default 5)")
 
-    parser.add_option("-n", "--num", dest="num", type="int",
-                      default=100,
-                      help="Number of fits to report"
-                           "(default 100)")
+    p.add_argument("-n", "--num", dest="num", type=int, default=100,
+                   help="Number of fits to report (default 100)")
 
-    parser.add_option("-v", "--angle_voxel", dest="angle_voxel", type="int",
-                      default=10,
-                      help="Number of angles to keep per voxel"
-                           "(default 10)")
+    p.add_argument("-v", "--angle_voxel", dest="angle_voxel", type=int,
+                   default=10,
+                   help="Number of angles to keep per voxel (default 10)")
 
-    parser.add_option("-t", "--max_trans", dest="max_trans", type="float",
-                      default=10.,
-                      help="maximum translational search in A"
-                      "(default 10)")
+    p.add_argument("-t", "--max_trans", dest="max_trans", type=float,
+                   default=10.,
+                   help="maximum translational search in A (default 10)")
 
-    parser.add_option("-m", "--max_angle", dest="max_angle", type="float",
-                      default=30.,
-                      help="maximum angular search in degrees"
-                      "(default 50)")
-
-    options, args = parser.parse_args()
-    if len(args) != 6:
-        parser.error("incorrect number of arguments")
-    return options, args
+    p.add_argument("-m", "--max_angle", dest="max_angle", type=float,
+                   default=30.,
+                   help="maximum angular search in degrees (default 50)")
+    p.add_argument("assembly_file", help="assembly file name")
+    p.add_argument("ref_assembly_file", help="refined assembly file name")
+    p.add_argument("proteomics_file", help="proteomics file name")
+    p.add_argument("mapping_file", help="mapping file name")
+    p.add_argument("combinations_file", help="combinations file name")
+    p.add_argument("combination_index", type=int,
+                   help="number of the combination to read from the "
+                        "combinations file")
+    return p.parse_args()
 
 
 def run(
@@ -193,15 +190,10 @@ def run(
 
 
 def main():
-    options, args = parse_args()
-    asmb_input = args[0]
-    asmb_refined_input = args[1]
-    proteomics_fn = args[2]
-    mapping_fn = args[3]
-    combinations_fn = args[4]
-    combination_ind = int(args[5])
-    run(asmb_input, asmb_refined_input, proteomics_fn,
-        mapping_fn, combinations_fn, combination_ind, options)
+    args = parse_args()
+    run(args.assembly_file, args.ref_assembly_file, args.proteomics_file,
+        args.mapping_file, args.combinations_file, args.combination_index,
+        args)
 
 if __name__ == "__main__":
     main()
