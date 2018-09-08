@@ -270,11 +270,15 @@ Program parameters
 
     def test_parse_args(self):
         """Test IDock.parse_args()"""
+        def mock_setup_from_argv(*args, **kwargs):
+            # do-nothing replacement for boost command line parser
+            pass
         app = self.import_python_application('idock')
         old_sys_argv = sys.argv
+        old_setup = IMP.setup_from_argv
         try:
             # Boost parser cannot be called multiple times, so skip it
-            IMP.OptionParser._use_boost_parser = False
+            IMP.setup_from_argv = mock_setup_from_argv
             # Instantiate all scorers
             sys.argv = [sys.argv[0], '--cxms', 'cxms.txt',
                         '--em2d', 'em2d_1.pgm', '--em2d', 'em2d_2.pgm',
@@ -290,7 +294,7 @@ Program parameters
             scorers = idock.parse_args()
             self.assertEqual(len(scorers), 6)
         finally:
-            IMP.OptionParser._use_boost_parser = True
+            IMP.setup_from_argv = old_setup
             sys.argv = old_sys_argv
 
     def test_get_scorers(self):

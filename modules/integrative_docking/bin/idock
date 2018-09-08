@@ -10,7 +10,6 @@ import math
 import shutil
 import tempfile
 import subprocess
-import optparse
 import inspect
 
 
@@ -125,12 +124,12 @@ class NMRScorer(ExperimentalScorer):
 
     @classmethod
     def add_parser_options(cls, parser):
-        g = optparse.OptionGroup(parser, "NMR-RTC")
-        g.add_option('--receptor_rtc', metavar='FILE',
-                     help="File name of the receptor NMR residue type content")
-        g.add_option('--ligand_rtc', metavar='FILE',
-                     help="File name of the ligand NMR residue type content")
-        parser.add_option_group(g)
+        g = parser.add_argument_group("NMR-RTC")
+        g.add_argument('--receptor_rtc', metavar='FILE',
+                       help="File name of the receptor NMR residue type "
+                            "content")
+        g.add_argument('--ligand_rtc', metavar='FILE',
+                       help="File name of the ligand NMR residue type content")
 
     @classmethod
     def check_options(cls, idock, parser):
@@ -161,23 +160,22 @@ class SAXSScorer(ExperimentalScorer):
 
     @classmethod
     def add_parser_options(cls, parser):
-        g = optparse.OptionGroup(parser, "SAXS")
-        g.add_option('--saxs', metavar='FILE', dest='saxs_file',
-                     help="File name of the complex SAXS profile")
-        g.add_option('--saxs_receptor_pdb', metavar='FILE',
-                     help='Additional receptor structure for SAXS scoring '
-                     'with modeled missing atoms/residues. '
-                     'This structure should be aligned to the '
-                     'input receptor!')
-        g.add_option('--saxs_ligand_pdb', metavar='FILE',
-                     help='Additional ligand structure for SAXS scoring '
-                     'with modeled missing atoms/residues. '
-                     'This structure should be aligned to the '
-                     'input ligand!')
-        g.add_option('--weighted_saxs_score', action="store_true",
-                     help='If specified, weighted scoring that accounts '
-                          'for monomers contributions is used')
-        parser.add_option_group(g)
+        g = parser.add_argument_group("SAXS")
+        g.add_argument('--saxs', metavar='FILE', dest='saxs_file',
+                       help="File name of the complex SAXS profile")
+        g.add_argument('--saxs_receptor_pdb', metavar='FILE',
+                       help='Additional receptor structure for SAXS scoring '
+                       'with modeled missing atoms/residues. '
+                       'This structure should be aligned to the '
+                       'input receptor!')
+        g.add_argument('--saxs_ligand_pdb', metavar='FILE',
+                       help='Additional ligand structure for SAXS scoring '
+                       'with modeled missing atoms/residues. '
+                       'This structure should be aligned to the '
+                       'input ligand!')
+        g.add_argument('--weighted_saxs_score', action="store_true",
+                       help='If specified, weighted scoring that accounts '
+                            'for monomers contributions is used')
 
     @classmethod
     def check_options(cls, idock, parser):
@@ -234,15 +232,14 @@ class EM2DScorer(ExperimentalScorer):
 
     @classmethod
     def add_parser_options(cls, parser):
-        g = optparse.OptionGroup(parser, "EM2D")
-        g.add_option('--em2d', metavar='FILE', action='append', default=[],
-                     dest='class_averages',
-                     help="File name of a complex 2D class average in PGM "
-                          "format. This option can be repeated to use "
-                          "multiple class averages (up to 5 in total)")
-        g.add_option('--pixel_size', type='float', default=0.,
-                     help='Pixel size for EM2D images')
-        parser.add_option_group(g)
+        g = parser.add_argument_group("EM2D")
+        g.add_argument('--em2d', metavar='FILE', action='append', default=[],
+                       dest='class_averages',
+                       help="File name of a complex 2D class average in PGM "
+                            "format. This option can be repeated to use "
+                            "multiple class averages (up to 5 in total)")
+        g.add_argument('--pixel_size', type=float, default=0.,
+                       help='Pixel size for EM2D images')
 
     @classmethod
     def check_options(cls, idock, parser):
@@ -278,10 +275,10 @@ class EM3DScorer(ExperimentalScorer):
 
     @classmethod
     def add_parser_options(cls, parser):
-        g = optparse.OptionGroup(parser, "EM3D")
-        g.add_option('--em3d', metavar='FILE', dest='map_file',
-                     help="File name of the complex density map in mrc format")
-        parser.add_option_group(g)
+        g = parser.add_argument_group("EM3D")
+        g.add_argument('--em3d', metavar='FILE', dest='map_file',
+                       help="File name of the complex density map in "
+                            "mrc format")
 
     @classmethod
     def check_options(cls, idock, parser):
@@ -310,10 +307,9 @@ class CXMSScorer(ExperimentalScorer):
 
     @classmethod
     def add_parser_options(cls, parser):
-        g = optparse.OptionGroup(parser, "CXMS")
-        g.add_option('--cxms', metavar='FILE', dest='cross_links_file',
-                     help="File name of the cross links file")
-        parser.add_option_group(g)
+        g = parser.add_argument_group("CXMS")
+        g.add_argument('--cxms', metavar='FILE', dest='cross_links_file',
+                       help="File name of the cross links file")
 
     @classmethod
     def check_options(cls, idock, parser):
@@ -358,47 +354,43 @@ class IDock(object):
 have PatchDock (available from http://bioinfo3d.cs.tau.ac.il/PatchDock/)
 installed. See the --patch_dock parameter to tell idock
 where the PatchDock program is installed."""
-        parser = IMP.OptionParser(usage="%prog [options] <receptor_pdb> "
-                                        "<ligand_pdb>",
-                                  description="Integrative pairwise docking "
-                                              "using %s data" % data_types,
-                                  epilog=epilog,
-                                  imp_module=IMP.saxs)
+        p = IMP.ArgumentParser(description="Integrative pairwise docking "
+                                           "using %s data" % data_types,
+                               epilog=epilog)
         choices = ['EI', 'AA', 'other']
-        parser.add_option('--complex_type', metavar='TYPE', type='choice',
-                          dest="type", choices=choices, default='other',
-                          help='/'.join(choices) + '; use this order for '
-                               'receptor-ligand: '
-                               'antibody-antigen, enzyme-inhibitor')
-        parser.add_option('--patch_dock', metavar='DIR',
-                          default=os.environ.get('PATCH_DOCK_HOME', None),
-                          help='Directory where PatchDock tools are installed. '
-                               'If not specified, the value of the '
-                               'PATCH_DOCK_HOME environment variable is used '
-                               'if set, otherwise the tools are assumed to be '
-                               'in the default path.')
-        parser.add_option('--prefix', default='',
-                          help='Add prefix string (separated by an underscore) '
-                               'to filenames generated by the current run')
-        parser.add_option(
-            '--precision', type='choice', choices=['1', '2', '3'],
+        p.add_argument('--complex_type', metavar='TYPE',
+                       dest="type", choices=choices, default='other',
+                       help='/'.join(choices) + '; use this order for '
+                            'receptor-ligand: '
+                            'antibody-antigen, enzyme-inhibitor')
+        p.add_argument('--patch_dock', metavar='DIR',
+                       default=os.environ.get('PATCH_DOCK_HOME', None),
+                       help='Directory where PatchDock tools are installed. '
+                            'If not specified, the value of the '
+                            'PATCH_DOCK_HOME environment variable is used '
+                            'if set, otherwise the tools are assumed to be '
+                            'in the default path.')
+        p.add_argument('--prefix', default='',
+                       help='Add prefix string (separated by an underscore) '
+                            'to filenames generated by the current run')
+        p.add_argument(
+            '--precision', type=int, choices=[1, 2, 3],
             default='1',
             help='Sampling precision for rigid docking: '
             '1-normal, 2-medium, 3-high. The higher the '
             'precision, the higher are the run times')
         for s in self._all_scorers:
-            s.add_parser_options(parser)
+            s.add_parser_options(p)
 
-        opts, args = parser.parse_args()
-        if len(args) != 2:
-            parser.error("incorrect number of arguments")
-        opts.precision = int(opts.precision)
-        if opts.prefix:
-            opts.prefix += '_'
+        p.add_argument("receptor", help="receptor PDB file")
+        p.add_argument("ligand", help="ligand PDB file")
+        args = p.parse_args()
+        if args.prefix:
+            args.prefix += '_'
 
-        self.opts = opts
-        self.receptor, self.ligand = args
-        scorers = self.get_scorers(parser)
+        self.opts = args
+        self.receptor, self.ligand = args.receptor, args.ligand
+        scorers = self.get_scorers(p)
 
         if len(scorers) == len(self._all_scorers) \
                             - len(self._all_experimental_scorers):
