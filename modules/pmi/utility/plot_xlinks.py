@@ -5,7 +5,10 @@ import IMP.rmf
 import IMP.pmi
 import IMP.pmi.tools
 import IMP.pmi.analysis
-import argparse
+try:
+    import argparse
+except ImportError:
+    from IMP._compat_argparse import argparse
 import os
 from collections import defaultdict
 
