@@ -733,12 +733,10 @@ class TestCase(unittest.TestCase):
             # boost parser doesn't like being called multiple times per process
             old_setup = IMP.setup_from_argv
             IMP.setup_from_argv = mock_setup_from_argv
-            IMP.OptionParser._use_boost_parser = False
             try:
                 sys.argv = [modpath] + args
                 return module.main()
             finally:
-                IMP.OptionParser._use_boost_parser = True
                 IMP.setup_from_argv = old_setup
                 sys.argv = old_sys_argv
         else:
