@@ -30,7 +30,7 @@ IMP::Strings _get_all_flags(unsigned ntokens) {
 try:
     import argparse
 except ImportError:
-    import _compat_argparse as argparse
+    from . import _compat_argparse as argparse
 import sys
 
 class _PassThroughAction(argparse.Action):
