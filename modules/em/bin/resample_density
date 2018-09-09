@@ -6,16 +6,16 @@ import IMP.em
 def main():
     IMP.set_log_level(IMP.SILENT)
     usage = """%prog [options] <em map> <resample level 2/3/4...>
-             <output: resample_density.mrc>
-
-Resample a density map."""
-    parser = IMP.OptionParser(usage=usage, imp_module=IMP.em)
-    (options, args) = parser.parse_args()
-    if len(args) != 3:
-        parser.error("incorrect number of arguments")
-    in_map_fn = args[0]
-    resample_level = int(args[1])
-    output_map_fn = args[2]
+             <output: resample_density.mrc>"""
+    desc = """Resample a density map."""
+    p = IMP.ArgumentParser(description=desc)
+    p.add_argument("density", help="input EM density map file name")
+    p.add_argument("resample_level", type=int, help="resample level 2/3/4...")
+    p.add_argument("output", help="output resampled EM density map file name")
+    args = p.parse_args()
+    in_map_fn = args.density
+    resample_level = args.resample_level
+    output_map_fn = args.output
     # read the protein
     dmap = IMP.em.read_map(in_map_fn)
     r_dmap = IMP.em.get_resampled(dmap, resample_level)

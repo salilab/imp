@@ -397,87 +397,82 @@ def create_dockings_from_xlinks(params):
 if __name__ == "__main__":
     cparser = ConfigParser()
 
-    parser = IMP.OptionParser(description="Domino grid sampling")
-    parser.add_option("--o",
-                      dest="fn_database",
-                      default=False,
-                      help="SQLite file. This file is an output when modeling. "
-                      " It is an input parameter when querying the database.")
-    parser.add_option("--exp",
-                      dest="fn_params",
-                      default=None,
-                      help="Experiment file. This should be a Python file "
-                      "containing a class called Experiment containing "
-                      "all parameters required to do the modeling.")
-    parser.add_option("--w",
-                      type=int,
-                      dest="write",
-                      default=None,
-                      help="write the best scored solutions to PDB files.")
-    parser.add_option("--wcl",
-                      dest="write_cluster",
-                      metavar="fn_db_clusters position",
-                      nargs=2,
-                      default=None,
-                      help="Write the n-th largest cluster. This option has "
-                      "two arguments. The first one is the database file "
-                      "containing the clusters. The second one is the "
-                      "number (position) of the cluster to write. "
-                      "The index of the first cluster is 1.")
-    parser.add_option("--orderby",
-                      dest="orderby",
-                      default=None,
-                      help="Measure used to sort solutions when saving them "
-                      "to PDB")
-    parser.add_option("--monte_carlo", dest="monte_carlo",
-                      metavar="number",
-                      type=int,
-                      default=False,
-                      help="Run a MonteCarlo optimization. There is one "
-                      "parameter passed to the option. When using this "
-                      "script in a cluster and sending a lot of them at the "
-                      "same time, the effective random number obtained by "
-                      "seeding using the time is the same for all scripts. "
-                      "To avoid that situation, you can pass an integer. "
-                      "If the number is -1, the time is "
-                      "used as the seed (useful for one core)")
-    parser.add_option("--dock", dest="dock",
-                      action="store_true",
-                      default=False,
-                      help="Perform docking of the components of the assembly "
-                      "guided by cross-linking restraints")
-    parser.add_option("--merge", dest="merge",
-                      action="callback",
-                      callback=utility.vararg_callback,
-                      help="Merge the database files")
-    parser.add_option("--gather", dest="gather",
-                      action="callback",
-                      callback=utility.vararg_callback,
-                      help="Gather database files and store then in a single "
-                      "file. The arguments are the names of the databases "
-                      "to gather.")
-    parser.add_option("--log",
-                      dest="log",
-                      default=None,
-                      help="File for logging.")
-    parser.add_option("--cdrms",
-                      dest="cdrms",
-                      type=int,
-                      default=False,
-                      metavar="number",
-                      help="Align the best solutions to the "
-                      "native using the DRMS of the centroids.")
+    p = IMP.ArgumentParser(description="Domino grid sampling")
+    p.add_argument("--o",
+                  dest="fn_database",
+                  default=False,
+                  help="SQLite file. This file is an output when modeling. "
+                       " It is an input parameter when querying the database.")
+    p.add_argument("--exp",
+                  dest="fn_params",
+                  default=None,
+                  help="Experiment file. This should be a Python file "
+                       "containing a class called Experiment containing "
+                       "all parameters required to do the modeling.")
+    p.add_argument("--w",
+                   type=int,
+                   dest="write",
+                   default=None,
+                   help="write the best scored solutions to PDB files.")
+    p.add_argument("--wcl",
+                   dest="write_cluster",
+                   metavar="WCL",
+                   nargs=2,
+                   default=None,
+                   help="Write the n-th largest cluster. This option has "
+                        "two arguments. The first one is the database file "
+                        "containing the clusters. The second one is the "
+                        "number (position) of the cluster to write. "
+                        "The index of the first cluster is 1.")
+    p.add_argument("--orderby",
+                   dest="orderby",
+                   default=None,
+                   help="Measure used to sort solutions when saving them "
+                        "to PDB")
+    p.add_argument("--monte_carlo", dest="monte_carlo",
+                   metavar="SEED",
+                   type=int,
+                   default=False,
+                   help="Run a MonteCarlo optimization. There is one "
+                        "parameter passed to the option. When using this "
+                        "script in a cluster and sending a lot of them at the "
+                        "same time, the effective random number obtained by "
+                        "seeding using the time is the same for all scripts. "
+                        "To avoid that situation, you can pass an integer. "
+                        "If the number is -1, the time is "
+                        "used as the seed (useful for one core)")
+    p.add_argument("--dock", dest="dock",
+                   action="store_true",
+                   default=False,
+                   help="Perform docking of the components of the assembly "
+                        "guided by cross-linking restraints")
+    p.add_argument("--merge", dest="merge", nargs='*',
+                   help="Merge the database files")
+    p.add_argument("--gather", dest="gather", nargs='*',
+                   help="Gather database files and store then in a single "
+                        "file. The arguments are the names of the databases "
+                        "to gather.")
+    p.add_argument("--log",
+                   dest="log",
+                   default=None,
+                   help="File for logging.")
+    p.add_argument("--cdrms",
+                   dest="cdrms",
+                   type=int,
+                   default=False,
+                   metavar="number",
+                   help="Align the best solutions to the "
+                        "native using the DRMS of the centroids.")
 
-    parser.add_option("--pr",
-                      action="store_true",
-                      dest="pr_rest",
-                      default=False,
-                      help="Print restraints of model and native")
+    p.add_argument("--pr",
+                   action="store_true",
+                   dest="pr_rest",
+                   default=False,
+                   help="Print restraints of model and native")
 
-    args = parser.parse_args()
-    args = args[0]
+    args = p.parse_args()
     if len(sys.argv) == 1:
-        parser.print_help()
+        p.print_help()
         quit()
     if args.log:
         logging.basicConfig(filename=args.log, filemode="w")

@@ -5,18 +5,17 @@ import IMP.em
 
 def main():
     IMP.set_log_level(IMP.SILENT)
-    usage = """%prog [options] <complex.pdb>
-           <output: density.mrc> <resolution> <a/pix>
-
-Samples a protein into a simulated 3D density map."""
-    parser = IMP.OptionParser(usage=usage, imp_module=IMP.em)
-    (options, args) = parser.parse_args()
-    if len(args) != 4:
-        parser.error("incorrect number of arguments")
-    pdb_fn = args[0]
-    mrc_fn = args[1]
-    resolution = float(args[2])
-    apix = float(args[3])
+    desc = """Samples a protein into a simulated 3D density map."""
+    p = IMP.ArgumentParser(description=desc)
+    p.add_argument("pdb", help="input PDB file name")
+    p.add_argument("density", help="output EM density file name")
+    p.add_argument("resolution", type=float, help="resolution")
+    p.add_argument("voxel_size", type=float, help="voxel size")
+    args = p.parse_args()
+    pdb_fn = args.pdb
+    mrc_fn = args.density
+    resolution = args.resolution
+    apix = args.voxel_size
     # read the protein
     mdl = IMP.Model()
     mh = IMP.atom.read_pdb(
