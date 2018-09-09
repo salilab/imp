@@ -7,7 +7,7 @@ void get_flag_subset(const boost::program_options::options_description &f,
        boost::program_options::option_description> >::const_iterator
        it = f.options().begin(); it != f.options().end(); ++it) {
     if (it->get()->semantic()->min_tokens() == ntokens) {
-      s.push_back(it->get()->canonical_display_name());
+      s.push_back(it->get()->long_name());
     }
   }
 }
