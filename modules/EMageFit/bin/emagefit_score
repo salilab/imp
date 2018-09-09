@@ -103,31 +103,31 @@ def score_model(complete_fn_model,
 
 
 def parse_args():
-    parser = IMP.OptionParser(usage="""%prog model selfile pxsize nproj res nimg
-
-model:   PDB file of the model to score
-selfile: Selection file containing the images used for scoring
-pxsize:  Pixel size of the images in Angstrom/pixel
-nproj:   Number of projections of the model used for start registering
-res:     Resolution to generate the projections
-nimg:    Images per batch used when scoring a lot of images (to avoid memory
-         problems)
-""",
-                              description="EMageFit scoring")
-    opts, args = parser.parse_args()
-    if len(args) != 6:
-        parser.error("wrong number of arguments")
-    return args
+    p = IMP.ArgumentParser(description="EMageFit scoring")
+    p.add_argument("model", help="PDB file of the model to score")
+    p.add_argument("selfile", help="Selection file containing the images "
+                                   "used for scoring")
+    p.add_argument("pxsize", type=float,
+                   help="Pixel size of the images in Angstrom/pixel")
+    p.add_argument("nproj", type=int,
+                   help="Number of projections of the model used for start "
+                        "registering")
+    p.add_argument("res", type=float,
+                   help="Resolution to generate the projections")
+    p.add_argument("nimg", type=int,
+                   help="Images per batch used when scoring a lot of images "
+                        "(to avoid memory problems)")
+    return p.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_args()
-    complete_fn_model = args[0]
-    images_sel_file = args[1]
-    pixel_size = float(args[2])
-    n_projections = int(args[3])
-    resolution = float(args[4])
-    images_per_batch = int(args[5])
+    complete_fn_model = args.model
+    images_sel_file = args.selfile
+    pixel_size = args.pxsize
+    n_projections = args.nproj
+    resolution = args.res
+    images_per_batch = args.nimg
 
     all_regs = score_model(complete_fn_model,
                            images_sel_file,

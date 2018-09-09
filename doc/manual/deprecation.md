@@ -124,7 +124,7 @@ functionality. This includes tests, examples, and benchmarks.
 
 All examples run as part of the %IMP test suite get passed the
 `--deprecation_exceptions` command line flag. Thus, any example that calls
-IMP.setup_from_argv() or uses IMP.OptionParser will fail if it tries to
+IMP.setup_from_argv() or uses IMP.ArgumentParser will fail if it tries to
 call deprecated code. It is highly recommended that all examples do this.
 
 All unit tests that call IMP.test.main() will also trigger exceptions if they

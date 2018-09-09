@@ -3,23 +3,27 @@ import sys
 import os
 import string
 import IMP.multifit
-import IMP.multifit2
-from optparse import OptionParser
+try:
+    from argparse import ArgumentParser
+except ImportError:
+    from IMP._compat_argparse import ArgumentParser
 
 
 def usage():
-    usage = "usage %prog [options] <mol to fit> <transformations> <start trans (default is first)> <end trans (default is last)>\n"
-    usage += "A script for getting fits with best RMSD to the reference"
-    parser = OptionParser(usage)
-    parser.add_option("-d", action="store_true", dest="use_dock",
-                      help="if set the docking transformation is used (and not the fitting transformation)")
-    parser.add_option("-m", dest="dir", default="./",
-                      help="output models directory")
-    (options, args) = parser.parse_args()
-    if len(args) < 2:
-        parser.error("incorrect number of arguments")
-    return [options, args]
-
+    desc = "A script for getting fits with best RMSD to the reference"
+    parser = ArgumentParser(description=desc)
+    parser.add_argument("-d", action="store_true", dest="use_dock",
+                        help="if set the docking transformation is used "
+                             "(and not the fitting transformation)")
+    parser.add_argument("-m", dest="dir", default="./",
+                        help="output models directory")
+    parser.add_argument("mol_file", help="molecule file name")
+    parser.add_argument("transformations", help="transformations file name")
+    parser.add_argument("start", nargs='?', type=int, default=0,
+                        help="first transformation index (default is first)")
+    parser.add_argument("end", nargs='?', type=int, default=99999999,
+                        help="last transformation index (default is last)")
+    return parser.parse_args()
 
 def run(mol_fn, trans_fn, first, last, dock_trans, out_dir):
     IMP.set_log_level(IMP.SILENT)
@@ -41,13 +45,8 @@ def run(mol_fn, trans_fn, first, last, dock_trans, out_dir):
         IMP.atom.write_pdb(mh, out_dir + name + "." + str(i) + ".pdb")
         IMP.core.transform(rb, fit_t.get_inverse())
     print "=======3"
+
 if __name__ == "__main__":
-    (options, args) = usage()
-    first = 0
-    last = 99999999
-    if len(args) == 3 or len(args) == 4:
-        args[2]
-        first = int(args[2])
-    if len(args) == 4:
-        last = int(args[3])
-    run(args[0], args[1], first, last, options.use_dock, options.dir)
+    args = usage()
+    run(args.mol_file, args.transformations, first, last, args.use_dock,
+        args.dir)
