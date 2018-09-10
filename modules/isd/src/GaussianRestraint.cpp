@@ -8,7 +8,6 @@
  */
 
 #include <IMP/isd/GaussianRestraint.h>
-#include <IMP/isd/FNormal.h>
 #include <IMP/isd/Nuisance.h>
 #include <IMP/isd/Scale.h>
 
@@ -24,6 +23,7 @@ GaussianRestraint::GaussianRestraint(Particle *x, Particle *mu,
       ismu_(true),
       issigma_(true) {
   check_particles();
+  create_normal();
 }
 
 GaussianRestraint::GaussianRestraint(double x, Particle *mu,
@@ -36,6 +36,7 @@ GaussianRestraint::GaussianRestraint(double x, Particle *mu,
       ismu_(true),
       issigma_(true) {
   check_particles();
+  create_normal();
 }
 
 GaussianRestraint::GaussianRestraint(Particle *x, double mu,
@@ -48,6 +49,7 @@ GaussianRestraint::GaussianRestraint(Particle *x, double mu,
       ismu_(false),
       issigma_(true) {
   check_particles();
+  create_normal();
 }
 
 GaussianRestraint::GaussianRestraint(Particle *x, Particle *mu,
@@ -60,6 +62,7 @@ GaussianRestraint::GaussianRestraint(Particle *x, Particle *mu,
       ismu_(true),
       issigma_(false) {
   check_particles();
+  create_normal();
 }
 
 GaussianRestraint::GaussianRestraint(Particle *x, double mu,
@@ -72,6 +75,7 @@ GaussianRestraint::GaussianRestraint(Particle *x, double mu,
       ismu_(false),
       issigma_(false) {
   check_particles();
+  create_normal();
 }
 
 GaussianRestraint::GaussianRestraint(double x, double mu,
@@ -84,6 +88,7 @@ GaussianRestraint::GaussianRestraint(double x, double mu,
       ismu_(false),
       issigma_(true) {
   check_particles();
+  create_normal();
 }
 
 GaussianRestraint::GaussianRestraint(double x, Particle *mu,
@@ -96,6 +101,7 @@ GaussianRestraint::GaussianRestraint(double x, Particle *mu,
       ismu_(true),
       issigma_(false) {
   check_particles();
+  create_normal();
 }
 
 void GaussianRestraint::check_particles() {
@@ -115,6 +121,15 @@ void GaussianRestraint::check_particles() {
   }
 }
 
+void GaussianRestraint::create_normal() {
+  double x, mu, sigma;
+  x = (isx_) ? Nuisance(px_).get_nuisance() : x_;
+  mu = (ismu_) ? Nuisance(pmu_).get_nuisance() : mu_;
+  sigma = (issigma_) ? Scale(psigma_).get_scale() : sigma_;
+  IMP_NEW(FNormal, normal, (x, 1., mu, sigma));
+  normal_ = normal.release();
+}
+
 /* Apply the restraint to two atoms, two Scales, one experimental value.
  */
 double GaussianRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
@@ -124,22 +139,22 @@ double GaussianRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   mu = (ismu_) ? Nuisance(pmu_).get_nuisance() : mu_;
   sigma = (issigma_) ? Scale(psigma_).get_scale() : sigma_;
   /* compute all arguments to FNormal */
-  double JA = 1.0;
-  IMP_NEW(FNormal, normal, (x, JA, mu, sigma));
-  normal->set_was_used(true);
+  normal_->set_FA(x);
+  normal_->set_FM(mu);
+  normal_->set_sigma(sigma);    
   /* get score */
-  double score = normal->evaluate();
+  double score = normal_->evaluate();
   const_cast<GaussianRestraint *>(this)->set_chi(x - mu);
 
   if (accum) {
     if (isx_ || ismu_) {
-      double DFM = normal->evaluate_derivative_FM();
+      double DFM = normal_->evaluate_derivative_FM();
       if (isx_) Nuisance(px_).add_to_nuisance_derivative(-DFM, *accum);
       if (ismu_) Nuisance(pmu_).add_to_nuisance_derivative(DFM, *accum);
     }
     if (issigma_)
       Scale(psigma_)
-          .add_to_scale_derivative(normal->evaluate_derivative_sigma(), *accum);
+          .add_to_scale_derivative(normal_->evaluate_derivative_sigma(), *accum);
   }
   return score;
 }
