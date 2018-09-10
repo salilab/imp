@@ -11,6 +11,7 @@
 #define IMPISD_LOGNORMAL_RESTRAINT_H
 
 #include <IMP/isd/isd_config.h>
+#include <IMP/isd/FNormal.h>
 #include <IMP/Particle.h>
 #include <IMP/Restraint.h>
 
@@ -19,6 +20,7 @@ IMPISD_BEGIN_NAMESPACE
 //! Normal probability distribution as a restraint
 class IMPISDEXPORT LognormalRestraint : public Restraint {
  private:
+  PointerMember<FNormal> normal_;
   Pointer<Particle> px_;
   double x_;
   Pointer<Particle> pmu_;
@@ -31,6 +33,7 @@ class IMPISDEXPORT LognormalRestraint : public Restraint {
  private:
   void set_chi(double chi) { chi_ = chi; }
   void check_particles();
+  void create_normal();
 
  public:
   //! Gaussian restraint
