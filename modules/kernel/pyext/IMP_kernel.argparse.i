@@ -1,5 +1,12 @@
 %{
 #include <IMP/internal/base_static.h>
+namespace IMP {
+namespace internal {
+extern IMPKERNELEXPORT std::string exe_usage;
+extern IMPKERNELEXPORT std::string exe_description;
+extern IMPKERNELEXPORT Flag<bool> help_advanced;
+}
+}
 
 void get_flag_subset(const boost::program_options::options_description &f,
                      unsigned ntokens, Strings &s) {
@@ -21,6 +28,15 @@ IMP::Strings _get_all_flags(unsigned ntokens) {
   get_flag_subset(internal::flags, ntokens, s);
   get_flag_subset(internal::advanced_flags, ntokens, s);
   return s;
+}
+
+// Print help message of internal Boost-based command line parser
+void _print_internal_help(std::ostream &out, std::string description) {
+  // Python already handles the usage message
+  internal::exe_usage = "==SUPPRESS==";
+  internal::exe_description = description;
+  internal::help_advanced = false;
+  write_help(out);
 }
 
 %}
@@ -79,9 +95,15 @@ class ArgumentParser(argparse.ArgumentParser):
             self._handle_boost()
         return ret
 
+    def _get_description(self):
+        return self.format_help() + "\nOptions common to all IMP applications:"
+
+    def print_help(self, file=None):
+        _print_internal_help(file if file else sys.stdout,
+                             self._get_description())
+
     def _handle_boost(self):
         setup_from_argv(self._boost_command_line,
-                        self.format_help() \
-                        + "\nOptions common to all IMP applications:",
+                        self._get_description(),
                         '==SUPPRESS==', 0)
 %}

@@ -1,6 +1,10 @@
 from __future__ import print_function
 import IMP.test
 import sys
+if sys.version_info[0] >= 3:
+    from io import StringIO
+else:
+    from io import BytesIO as StringIO
 
 # argparse processing terminates early for --help or --version
 class HelpTermination(Exception): pass
@@ -87,6 +91,16 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(args.opt, 'bar')
         self.assertEqual(args.pos, 'baz')
         self.assertEqual(boost, ['--show_seed', '--random_seed', '5'])
+
+    def test_print_help(self):
+        """Test ArgumentParser.print_help()"""
+        p = get_test_argparse()
+        p.print_help() # to stdout
+        sio = StringIO()
+        p.print_help(sio)
+        # Make sure that IMP help is included
+        self.assertIn('--help_advanced', sio.getvalue())
+        self.assertIn('This program is part of IMP', sio.getvalue())
 
 
 if __name__ == '__main__':
