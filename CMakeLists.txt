@@ -255,7 +255,7 @@ else()
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Graph" "ok=False")
 endif()
 
-include_directories(${Boost_INCLUDE_DIR})
+include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
 set(BOOST.FILESYSTEM_LIBRARIES ${Boost_FILESYSTEM_LIBRARY_RELEASE})
