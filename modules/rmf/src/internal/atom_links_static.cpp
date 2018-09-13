@@ -154,8 +154,10 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
                   << " with " << hp.get_number_of_children() << " children"
                   << " to an RMF node with " << nh.get_children().size()
                   << " children, with decorations: " << std::endl);
-  IMP_IF_LOG(IMP::VERBOSE && hp.get_number_of_children()>=8){
-    RMF::show_hierarchy_with_decorators(nh);
+  IMP_IF_LOG(IMP::VERBOSE) {
+    if (hp.get_number_of_children() >= 8) {
+      RMF::show_hierarchy_with_decorators(nh);
+    }
   }
   if (nh.get_has_value(radius_key_)) {
     IMP_LOG_VERBOSE("xyzr " << std::endl);
