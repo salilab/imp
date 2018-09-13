@@ -4,6 +4,10 @@ ChangeLog {#changelog}
 # HEAD
 - The deprecated IMP::isd::FNormal::density() method has been removed.
   Use IMP::isd::FNormal::get_density() instead.
+- IMP::mpi now includes a workaround for an OpenMPI failure when used
+  with Python, so previous hacks (building OpenMPI with the
+  `--disable-dlopen` flag, or using `sys.setdlopenflags` in Python)
+  should no longer be necessary.
 
 # 2.9.0 - 2018-07-02 # {#changelog_2_9_0}
 - [Eigen](https://eigen.tuxfamily.org/) is now required to build IMP.
