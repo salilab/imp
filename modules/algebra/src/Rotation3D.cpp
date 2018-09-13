@@ -108,7 +108,7 @@ Rotation3D get_rotation_from_matrix(double m11, double m12, double m13,
 Vector3D Rotation3D::get_derivative(const Vector3D &v,
                                     unsigned int i,
                                     bool projected) const {
-  IMP_USAGE_CHECK(i >= 0 && i < 4, "Invalid derivative component.");
+  IMP_USAGE_CHECK(i < 4, "Invalid derivative component.");
   Eigen::Vector4d q(v_.get_data());
   Eigen::Vector3d V(v.get_data());
   Eigen::Matrix<double,3,4> dRv_dq = internal::get_gradient_of_rotated(
