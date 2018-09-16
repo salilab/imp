@@ -68,6 +68,11 @@ IMP_NAMED_TUPLE_3(MultivariateJacobian, MultivariateJacobians,
     \note This class should not be created directly. Instead,
           get_jacobian_adjuster() should be used so that only one is
           associated with each module.
+    \note Optimizers that divide the score and its gradient by a
+          pseudo-temperature to smooth the distribution should also set the
+          temperature here. This ensures that at high temperatures the
+          sampling distribution of the untransformed variable approaches
+          the default uniform prior.
  */
 class IMPCOREEXPORT JacobianAdjuster : public IMP::ModelObject {
   typedef IMP::FloatIndex FloatIndex;
@@ -81,6 +86,7 @@ class IMPCOREEXPORT JacobianAdjuster : public IMP::ModelObject {
       MultivariateJacobianMap;
   UnivariateJacobianMap uni_map_;
   MultivariateJacobianMap multi_map_;
+  double temp_;
 
  public:
   JacobianAdjuster(Model* m, const std::string name = "JacobianAdjuster%1%");
@@ -108,6 +114,12 @@ class IMPCOREEXPORT JacobianAdjuster : public IMP::ModelObject {
   //! Get stored Jacobian for multivariate transformation.
   const MultivariateJacobian& get_jacobian(FloatKeys ks,
                                            ParticleIndex pi) const;
+
+  //! Set temperature applied to score and its gradient.
+  void set_temperature(double temperature);
+
+  //! Get temperature applied to score and its gradient.
+  double get_temperature() const;
 
 #ifndef SWIG
   UnivariateJacobian& access_jacobian(FloatKey k, ParticleIndex pi);

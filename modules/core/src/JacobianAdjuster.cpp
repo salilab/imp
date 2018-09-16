@@ -12,7 +12,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 JacobianAdjuster::JacobianAdjuster(Model* m, const std::string name) 
-  : ModelObject(m, name) {}
+  : ModelObject(m, name), temp_(1) {}
 
 void JacobianAdjuster::set_jacobian(FloatKey k, ParticleIndex pi,
                                     const UnivariateJacobian& j) {
@@ -91,6 +91,13 @@ MultivariateJacobian& JacobianAdjuster::access_jacobian(FloatKeys ks, ParticleIn
   return it->second;
 }
 
+void JacobianAdjuster::set_temperature(double temperature) {
+  IMP_INTERNAL_CHECK(temperature > 0, "Temperature must be positive.");
+  temp_ = temperature;
+}
+
+double JacobianAdjuster::get_temperature() const { return temp_; }
+
 double JacobianAdjuster::get_score_adjustment() const {
   double adj = 0;
   Model *m = get_model();
@@ -111,12 +118,12 @@ double JacobianAdjuster::get_score_adjustment() const {
     }
   }
 
-  return adj;
+  return adj * temp_;
 }
 
 void JacobianAdjuster::apply_gradient_adjustment() {
   Model *m = get_model();
-  DerivativeAccumulator da = DerivativeAccumulator();
+  DerivativeAccumulator da = DerivativeAccumulator(temp_);
 
   FloatIndex fi;
   IMP_FOREACH(UP up, uni_map_) {

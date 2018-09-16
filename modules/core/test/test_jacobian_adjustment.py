@@ -111,6 +111,13 @@ class Tests(IMP.test.TestCase):
         ja2 = IMP.core.get_jacobian_adjuster(m)
         self.assertEqual(ja1, ja2)
 
+    def test_get_set_temperature(self):
+        m = IMP.Model()
+        ja = IMP.core.get_jacobian_adjuster(m)
+        self.assertAlmostEqual(ja.get_temperature(), 1)
+        ja.set_temperature(10)
+        self.assertAlmostEqual(ja.get_temperature(), 10)
+
     def test_univariate_jacobian_roundtrip(self):
         m = IMP.Model()
         p = IMP.Particle(m)
@@ -370,6 +377,44 @@ class Tests(IMP.test.TestCase):
                 ps[0].get_derivative(k), grad_adj[0][i], delta=1e-6
             )
             self.assertAlmostEqual(ps[1].get_derivative(k), 0, delta=1e-6)
+
+    def test_get_tempered_score_adjustment(self):
+        m = IMP.Model()
+        ps = [IMP.Particle(m) for i in range(2)]
+        vs = [np.random.normal(size=3) for _ in ps]
+        ja = IMP.core.get_jacobian_adjuster(m)
+        ja.set_temperature(100)
+        for p, v in zip(ps, vs):
+            k = IMP.FloatKey("dummy")
+            p.add_attribute(k, 10.)
+            j = IMP.core.UnivariateJacobian(*v)
+            ja.set_jacobian(k, p.get_index(), j)
+
+        self.assertAlmostEqual(ja.get_score_adjustment(), 0, delta=1e-6)
+
+        ps[0].set_is_optimized(k, True)
+        self.assertAlmostEqual(
+            ja.get_score_adjustment(), 100 * vs[0][1], delta=1e-6)
+
+    def test_apply_tempered_gradient_adjustment(self):
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        k = IMP.FloatKey("dummy")
+        p.add_attribute(k, 10.)
+        vs = np.random.normal(size=3)
+        j = IMP.core.UnivariateJacobian(*vs)
+        ja = IMP.core.get_jacobian_adjuster(m)
+        ja.set_temperature(100)
+        ja.set_jacobian(k, p.get_index(), j)
+
+        self.assertAlmostEqual(p.get_derivative(k), 0., delta=1e-6)
+
+        ja.apply_gradient_adjustment()
+        self.assertAlmostEqual(p.get_derivative(k), 0., delta=1e-6)
+
+        p.set_is_optimized(k, True)
+        ja.apply_gradient_adjustment()
+        self.assertAlmostEqual(p.get_derivative(k), 100 * vs[2], delta=1e-6)
 
 
 if __name__ == "__main__":
