@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-from distutils.core import setup, Extension
+try:
+    from setuptools import setup, Extension
+except ImportError:
+    from distutils.core import setup, Extension
 import sys
 
 copy_args = sys.argv[1:]
@@ -21,17 +24,34 @@ else:
 if build_ext:
     mod = [Extension("ihm._format",
                      sources=["src/ihm_format.c", "src/ihm_format.i"],
+                     include_dirs=['src'],
                      extra_compile_args=cargs,
                      swig_opts=['-keyword', '-nodefaultctor',
                                 '-nodefaultdtor', '-noproxy'])]
 else:
     mod = []
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(name='ihm',
+      version='0.2',
       script_args=copy_args,
-      description='Package for handling IHM mmCIF files',
+      description='Package for handling IHM mmCIF and BinaryCIF files',
+      long_description=long_description,
+      long_description_content_type="text/markdown",
       author='Ben Webb',
       author_email='ben@salilab.org',
       url='https://github.com/ihmwg/python-ihm',
       ext_modules=mod,
-      packages=['ihm'])
+      packages=['ihm'],
+      install_requires=['msgpack'],
+      classifiers=[
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Intended Audience :: Science/Research",
+        "Topic :: Scientific/Engineering",
+      ])

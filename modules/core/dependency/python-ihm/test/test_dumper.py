@@ -21,11 +21,21 @@ import ihm.model
 import ihm.restraint
 import ihm.geometry
 
+from test_format_bcif import MockFh, MockMsgPack
+
 def _get_dumper_output(dumper, system):
     fh = StringIO()
     writer = ihm.format.CifWriter(fh)
     dumper.dump(system, writer)
     return fh.getvalue()
+
+def _get_dumper_bcif_output(dumper, system):
+    fh = MockFh()
+    writer = ihm.format_bcif.BinaryCifWriter(fh)
+    sys.modules['msgpack'] = MockMsgPack
+    dumper.dump(system, writer)
+    writer.flush()
+    return fh.data
 
 class Tests(unittest.TestCase):
     def test_write(self):
@@ -85,6 +95,9 @@ _struct.title 'test model'
         self.assertEqual(out, """# Comment 1
 # Comment 2
 """)
+        # Comments should be ignored in BinaryCIF output
+        out = _get_dumper_bcif_output(dumper, system)
+        self.assertEqual(out[b'dataBlocks'], [])
 
     def test_software(self):
         """Test SoftwareDumper"""
