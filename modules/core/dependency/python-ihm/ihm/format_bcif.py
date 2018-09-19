@@ -516,6 +516,10 @@ class BinaryCifWriter(ihm.format._Writer):
         """See :meth:`ihm.format.CifWriter.loop`."""
         return _LoopWriter(self, category, keys)
 
+    def write_comment(self, comment):
+        # BinaryCIF does not support comments, so this is a noop
+        pass
+
     def _encode_data(self, data):
         mask, typ = _get_mask_and_type(data)
         enc = self._masked_encoder[typ]
@@ -548,8 +552,9 @@ class BinaryCifWriter(ihm.format._Writer):
                                  b'columns': cols, b'rowCount': row_count})
 
     def flush(self):
-        data = {b'version': b'0.1', b'encoder':b'python-ihm library',
-                b'dataBlocks':self._blocks}
+        data = {b'version': _encode_str(ihm.__version__),
+                b'encoder': b'python-ihm library',
+                b'dataBlocks': self._blocks}
         self._write_msgpack(data)
 
     def _write_msgpack(self, data):

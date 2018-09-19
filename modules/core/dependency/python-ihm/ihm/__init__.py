@@ -19,6 +19,8 @@ except ImportError:
     import urllib2
 import json
 
+__version__ = '0.2'
+
 #: A value that isn't known. Note that this is distinct from a value that
 #: is deliberately omitted, which is represented by Python None.
 unknown = CifWriter.unknown
