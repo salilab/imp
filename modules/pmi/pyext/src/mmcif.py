@@ -310,7 +310,7 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
     def _set_psi_sigma(self, model):
         old_values = []
         # Do nothing if given a different state than the restraint applies to
-        if model.m != self.pmi_restraint.m:
+        if model.m != self.pmi_restraint.model:
             return
         for resolution in self.pmi_restraint.sigma_dictionary:
             statname = 'ISDCrossLinkMS_Sigma_%s_%s' % (resolution, self.label)
@@ -609,7 +609,12 @@ class _Model(ihm.model.Model):
         comp_for_chain = {}
         correct_asym = {}
         for protname, chain_id in o.dictchain[name].items():
-            entity_for_chain[chain_id] = simo.entities[protname]
+            if protname in simo.entities:
+                entity_for_chain[chain_id] = simo.entities[protname]
+            else:
+                # Remove copy number
+                pn = protname.split('.')[0]
+                entity_for_chain[chain_id] = simo.entities[pn]
             comp_for_chain[chain_id] = protname
             # When doing multi-state modeling, the chain ID returned here
             # (assigned sequentially) might not be correct (states may have
@@ -922,7 +927,7 @@ class _SimpleEnsemble(ihm.model.Ensemble):
 
 
 class _EntityMapper(dict):
-    """Handle mapping from IMP components to CIF entities.
+    """Handle mapping from IMP components (without copy number) to CIF entities.
        Multiple components may map to the same entity if they share sequence."""
     def __init__(self, system):
         super(_EntityMapper, self).__init__()
@@ -1200,16 +1205,21 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.all_representations.copy_component(state, name, original,
                                                 self.asym_units[name])
 
-    def create_component(self, state, name, modeled):
+    def create_component(self, state, name, modeled, asym_name=None):
+        if asym_name is None:
+            asym_name = name
         new_comp = name not in self._all_components
         self._all_components[name] = None
         if modeled:
             state.all_modeled_components.append(name)
             if new_comp:
-                self.asym_units[name] = None # assign asym once we get sequence
+                # assign asym once we get sequence
+                self.asym_units[asym_name] = None
                 self.all_modeled_components.append(name)
 
-    def add_component_sequence(self, state, name, seq):
+    def add_component_sequence(self, state, name, seq, asym_name=None):
+        if asym_name is None:
+            asym_name = name
         def get_offset(seq):
             # Count length of gaps at start of sequence
             for i in range(len(seq)):
@@ -1222,14 +1232,14 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         else:
             self.sequence_dict[name] = seq
             self.entities.add(name, seq, offset)
-        if name in self.asym_units:
-            if self.asym_units[name] is None:
+        if asym_name in self.asym_units:
+            if self.asym_units[asym_name] is None:
                 # Set up a new asymmetric unit for this component
                 entity = self.entities[name]
-                asym = AsymUnit(entity, details=name)
+                asym = AsymUnit(entity, details=asym_name)
                 self.system.asym_units.append(asym)
-                self.asym_units[name] = asym
-            state.modeled_assembly.append(self.asym_units[name])
+                self.asym_units[asym_name] = asym
+            state.modeled_assembly.append(self.asym_units[asym_name])
 
     def _add_restraint_model_fits(self):
         """Add fits to restraints for all known models"""
@@ -1239,9 +1249,12 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                     if hasattr(r, 'add_fits_from_model_statfile'):
                         r.add_fits_from_model_statfile(m)
 
-    def flush(self):
+    def flush(self, format='mmCIF'):
+        """Write out all information to the file.
+           Information can be written in any format supported by
+           the ihm library (typically this is 'mmCIF' or 'BCIF')."""
         self.finalize()
-        ihm.dumper.write(self.fh, [self.system])
+        ihm.dumper.write(self.fh, [self.system], format)
 
     def finalize(self):
         """Do any final processing on the class hierarchy.

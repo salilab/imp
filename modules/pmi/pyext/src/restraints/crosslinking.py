@@ -106,9 +106,9 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
         restraints = []
 
-        if representations:
-            xl_groups = [p.get_cross_link_group(self)
-                         for p, state in representations[0]._protocol_output]
+        xl_groups = [p.get_cross_link_group(self)
+                     for p, state in IMP.pmi.tools._all_protocol_outputs(
+                                             representations, root_hier)]
 
         # if PMI2, first add all the molecule copies as clones to the database
         if use_pmi2:
@@ -152,12 +152,12 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                 c2 = xl[self.CrossLinkDataBase.protein2_key]
 
                 # todo: check that offset is handled correctly
-                if representations:
-                    ex_xls = [(p[0].add_experimental_cross_link(r1, c1, r2, c2,
-                                                                group), group)
-                              for p, group in
-                                     zip(representations[0]._protocol_output,
-                                         xl_groups)]
+                ex_xls = [(p[0].add_experimental_cross_link(r1, c1, r2, c2,
+                                                            group), group)
+                          for p, group in
+                                 zip(IMP.pmi.tools._all_protocol_outputs(
+                                             representations, root_hier),
+                                     xl_groups)]
 
                 if use_pmi2:
                     iterlist = range(len(IMP.atom.get_by_type(root_hier,IMP.atom.STATE_TYPE)))
@@ -280,11 +280,11 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                     print("CrossLinkingMassSpectrometryRestraint: with sigma1 %s sigma2 %s psi %s" % (sigma1name, sigma2name, psiname))
                     print("CrossLinkingMassSpectrometryRestraint: between particles %s and %s" % (p1.get_name(), p2.get_name()))
                     print("==========================================\n")
-                    if representations:
-                        for p, ex_xl in zip(representations[0]._protocol_output,
-                                            ex_xls):
-                            p[0].add_cross_link(p[1], ex_xl[0], p1, p2, length,
-                                                sigma1, sigma2, psi, ex_xl[1])
+                    for p, ex_xl in zip(IMP.pmi.tools._all_protocol_outputs(
+                                                representations, root_hier),
+                                        ex_xls):
+                        p[0].add_cross_link(p[1], ex_xl[0], p1, p2, length,
+                                            sigma1, sigma2, psi, ex_xl[1])
 
                     # check if the two residues belong to the same rigid body
                     if(IMP.core.RigidMember.get_is_setup(p1) and

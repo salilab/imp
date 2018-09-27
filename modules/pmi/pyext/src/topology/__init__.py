@@ -30,6 +30,7 @@ from . import system_tools
 from bisect import bisect_left
 from math import pi,cos,sin
 from operator import itemgetter
+import weakref
 
 def _build_ideal_helix(model, residues, coord_finder):
     """Creates an ideal helix from the specified residue range
@@ -119,6 +120,7 @@ class System(_SystemBase):
         # the root hierarchy node
         self.hier=self._create_hierarchy()
         self.hier.set_name(name)
+        self.hier._pmi2_system = weakref.ref(self)
 
     def get_states(self):
         return self.states
@@ -288,6 +290,7 @@ class Molecule(_SystemBase):
         self.hier = self._create_child(self.state.get_hierarchy())
         self.hier.set_name(name)
         IMP.atom.Copy.setup_particle(self.hier,copy_num)
+        self._name_with_copy = "%s.%d" % (name, copy_num)
         # store the sequence
         self.chain=IMP.atom.Chain.setup_particle(self.hier,chain_id)
         self.chain.set_sequence(self.sequence)
@@ -605,10 +608,12 @@ class Molecule(_SystemBase):
         """
         if not self.built:
             # Add molecule name and sequence to any ProtocolOutput objects
-            name = self.hier.get_name()
+            name=self.hier.get_name()
             for po, state in self._all_protocol_output():
-                po.create_component(state, name, True)
-                po.add_component_sequence(state, name, self.sequence)
+                po.create_component(state, name, True,
+                                    asym_name=self._name_with_copy)
+                po.add_component_sequence(state, name, self.sequence,
+                                          asym_name=self._name_with_copy)
             # if requested, clone structure and representations BEFORE building original
             if self.mol_to_clone is not None:
                 for nr,r in enumerate(self.mol_to_clone.residues):
@@ -646,7 +651,7 @@ class Molecule(_SystemBase):
             for rhs, offset, pdb_fn, chain_id in self._pdb_elements:
                 for po, state in self._all_protocol_output():
                     # todo handle last argument properly
-                    po.add_pdb_element(state, self.hier.get_name(),
+                    po.add_pdb_element(state, self._name_with_copy,
                             rhs[0].get_index(), rhs[1].get_index(), offset,
                             pdb_fn, chain_id, rhs[0].get_parent())
 
@@ -659,7 +664,7 @@ class Molecule(_SystemBase):
             built_reps = []
             for rep in self.representations:
                 built_reps += system_tools.build_representation(
-                            self.hier, rep, self.coord_finder,
+                            self, rep, self.coord_finder,
                             self._all_protocol_output())
 
             # sort them before adding as children

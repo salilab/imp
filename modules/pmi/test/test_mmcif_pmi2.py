@@ -11,6 +11,16 @@ if sys.version_info[0] >= 3:
 else:
     from io import BytesIO as StringIO
 
+class MockMsgPack(object):
+    @staticmethod
+    def pack(data, fh):
+        fh.data = data
+
+
+class MockFh(object):
+    pass
+
+
 class DummyPO(IMP.pmi.mmcif.ProtocolOutput):
     def flush(self):
         pass
@@ -23,6 +33,63 @@ class Tests(IMP.test.TestCase):
         d.finalize(system)
         d = ihm.dumper._StructAsymDumper()
         d.finalize(system)
+
+    def test_component_mapper(self):
+        """Test ComponentMapper with PMI2 topology"""
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        po = DummyPO(None)
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_representation(resolutions=[1])
+        hier = s.build()
+        c = IMP.pmi.mmcif._ComponentMapper(hier)
+        r = IMP.atom.get_by_type(hier, IMP.atom.RESIDUE_TYPE)[1]
+        self.assertEqual(c[r], 'Nup84.0')
+
+    def test_hier_system_mapping(self):
+        """Test mapping from Hierarchy back to System"""
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        po = DummyPO(None)
+        s.add_protocol_output(po)
+        state = s.create_state()
+        hier = s.build()
+
+        # Check mapping from Hierarchy back to System
+        self.assertEqual(IMP.pmi.tools._get_system_for_hier(hier), s)
+        self.assertEqual(IMP.pmi.tools._get_system_for_hier(None), None)
+        # Check mapping from Hierarchy to ProtocolOutput
+        pos = list(IMP.pmi.tools._all_protocol_outputs([], hier))
+        # Should be a list of (ProtocolOuput, State) tuples
+        self.assertEqual(len(pos), 1)
+        self.assertEqual(len(pos[0]), 2)
+        self.assertEqual(pos[0][0], po)
+
+    def test_finalize_flush_mmcif(self):
+        """Test ProtocolOutput.finalize() and .flush() with mmCIF output"""
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        fh = StringIO()
+        po = IMP.pmi.mmcif.ProtocolOutput(fh)
+        s.add_protocol_output(po)
+        po.flush()
+        self.assertEqual(fh.getvalue().split('\n')[:4],
+                         ['data_model', '_entry.id model',
+                          '_struct.entry_id model', '_struct.title .'])
+
+    def test_finalize_flush_bcif(self):
+        """Test ProtocolOutput.finalize() and .flush() with BinaryCIF output"""
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        fh = MockFh()
+        sys.modules['msgpack'] = MockMsgPack
+        po = IMP.pmi.mmcif.ProtocolOutput(fh)
+        s.add_protocol_output(po)
+        po.flush(format='BCIF')
+        self.assertEqual(fh.data[b'dataBlocks'][0][b'categories'][0][b'name'],
+                         b'_entry')
 
     def test_entity(self):
         """Test EntityDump with PMI2-style init"""

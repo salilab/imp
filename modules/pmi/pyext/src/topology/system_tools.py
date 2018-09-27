@@ -200,7 +200,7 @@ def build_representation(parent, rep, coord_finder, protocol_output):
     built_reps = []
     atomic_res = 0
     ca_res = 1
-    model = parent.get_model()
+    model = parent.hier.get_model()
     if rep.color is not None:
         if type(rep.color) is float:
             color = IMP.display.get_rgb_color(rep.color)
@@ -339,7 +339,8 @@ def build_representation(parent, rep, coord_finder, protocol_output):
                                        input_coord)
                 for po, state in protocol_output:
                     po.add_bead_element(
-                            state, parent.get_name(), frag_res[0].get_index(),
+                            state, parent._name_with_copy,
+                            frag_res[0].get_index(),
                             frag_res[-1].get_index(), len(frag_res), beads[0])
                 for bead in beads:
                     this_resolution.add_child(bead)
