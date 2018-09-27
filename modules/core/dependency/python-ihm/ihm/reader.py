@@ -138,7 +138,21 @@ class _ChemCompIDMapper(_IDMapper):
         if objid in self._standard_by_id:
             return self._standard_by_id[objid]
         else:
+            # Assign nonpolymer class based on the ID
+            if newcls is ihm.NonPolymerChemComp or newcls is ihm.WaterChemComp:
+                newcls = ihm.WaterChemComp if objid=='HOH' \
+                                           else ihm.NonPolymerChemComp
             return super(_ChemCompIDMapper, self).get_by_id(objid, newcls)
+
+    def _make_new_object(self, newcls=None):
+        if newcls is None:
+            newcls = self._cls
+        if newcls is ihm.NonPolymerChemComp:
+            return newcls(None)
+        elif newcls is ihm.WaterChemComp:
+            return newcls()
+        else:
+            return newcls(*self._cls_args, **self._cls_keys)
 
 
 class _AnalysisIDMapper(_IDMapper):
@@ -167,10 +181,10 @@ class _FeatureIDMapper(_IDMapper):
     def _update_old_object(self, obj, newcls=None):
         super(_FeatureIDMapper, self)._update_old_object(obj, newcls)
         # Add missing members if the base class was originally instantianted
-        if newcls is ihm.restraint.PolyResidueFeature \
+        if newcls is ihm.restraint.ResidueFeature \
            and not hasattr(obj, 'ranges'):
             obj.ranges = []
-        elif newcls is ihm.restraint.PolyAtomFeature \
+        elif newcls is ihm.restraint.AtomFeature \
            and not hasattr(obj, 'atoms'):
             obj.atoms = []
 
@@ -445,10 +459,11 @@ class _ChemCompHandler(_Handler):
                              for x in inspect.getmembers(ihm, inspect.isclass)
                              if issubclass(x[1], ihm.ChemComp))
 
-    def __call__(self, type, id):
+    def __call__(self, type, id, name):
         typ = 'other' if type is None else type.lower()
         s = self.sysr.chem_comps.get_by_id(id,
                                            self.type_map.get(typ, ihm.ChemComp))
+        self._copy_if_present(s, locals(), keys=('name',))
 
 
 class _EntityHandler(_Handler):
@@ -458,7 +473,7 @@ class _EntityHandler(_Handler):
                  pdbx_description, pdbx_number_of_molecules):
         s = self.sysr.entities.get_by_id(id)
         self._copy_if_present(s, locals(),
-                keys=('details', 'type', 'src_method', 'formula_weight'),
+                keys=('details', 'src_method', 'formula_weight'),
                 mapkeys={'pdbx_description':'description',
                          'pdbx_number_of_molecules':'number_of_molecules'})
 
@@ -472,6 +487,14 @@ class _EntityPolySeqHandler(_Handler):
         if seq_id > len(s.sequence):
             s.sequence.extend([None]*(seq_id-len(s.sequence)))
         s.sequence[seq_id-1] = self.sysr.chem_comps.get_by_id(mon_id)
+
+
+class _EntityNonPolyHandler(_Handler):
+    category = '_pdbx_entity_nonpoly'
+
+    def __call__(self, entity_id, comp_id):
+        s = self.sysr.entities.get_by_id(entity_id)
+        s.sequence = (self.sysr.chem_comps.get_by_id(comp_id),)
 
 
 class _StructAsymHandler(_Handler):
@@ -1053,7 +1076,7 @@ class _PolyResidueFeatureHandler(_Handler):
 
     def __call__(self, feature_id, asym_id, seq_id_begin, seq_id_end):
         f = self.sysr.features.get_by_id(
-                           feature_id, ihm.restraint.PolyResidueFeature)
+                           feature_id, ihm.restraint.ResidueFeature)
         asym = self.sysr.asym_units.get_by_id(asym_id)
         r1 = int(seq_id_begin)
         r2 = int(seq_id_end)
@@ -1065,10 +1088,22 @@ class _PolyAtomFeatureHandler(_Handler):
 
     def __call__(self, feature_id, asym_id, seq_id, atom_id):
         f = self.sysr.features.get_by_id(
-                           feature_id, ihm.restraint.PolyAtomFeature)
+                           feature_id, ihm.restraint.AtomFeature)
         asym = self.sysr.asym_units.get_by_id(asym_id)
         seq_id = int(seq_id)
         atom = asym.residue(seq_id).atom(atom_id)
+        f.atoms.append(atom)
+
+
+class _NonPolyAtomFeatureHandler(_Handler):
+    category = '_ihm_non_poly_atom_feature'
+
+    def __call__(self, feature_id, asym_id, atom_id):
+        f = self.sysr.features.get_by_id(
+                           feature_id, ihm.restraint.AtomFeature)
+        asym = self.sysr.asym_units.get_by_id(asym_id)
+        # todo: handle multiple copies, e.g. waters?
+        atom = asym.residue(1).atom(atom_id)
         f.atoms.append(atom)
 
 
@@ -1306,6 +1341,17 @@ class _PolySeqSchemeHandler(_Handler):
         return offset
 
 
+class _NonPolySchemeHandler(_Handler):
+    category = '_pdbx_nonpoly_scheme'
+
+    def __call__(self, asym_id, auth_seq_num):
+        asym = self.sysr.asym_units.get_by_id(asym_id)
+        # todo: handle multiple instances (e.g. water)
+        auth_seq_num = _get_int_or_string(auth_seq_num)
+        if auth_seq_num != 1:
+            asym.auth_seq_id_map = {1:auth_seq_num}
+
+
 class _CrossLinkListHandler(_Handler):
     category = '_ihm_cross_link_list'
 
@@ -1463,6 +1509,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF'):
         handlers = [_StructHandler(s), _SoftwareHandler(s), _CitationHandler(s),
                     _CitationAuthorHandler(s), _ChemCompHandler(s),
                     _EntityHandler(s), _EntityPolySeqHandler(s),
+                    _EntityNonPolyHandler(s),
                     _StructAsymHandler(s), _AssemblyDetailsHandler(s),
                     _AssemblyHandler(s), _ExtRefHandler(s), _ExtFileHandler(s),
                     _DatasetListHandler(s), _DatasetGroupHandler(s),
@@ -1479,12 +1526,14 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF'):
                     _EM2DFittingHandler(s), _SASRestraintHandler(s),
                     _SphereObjSiteHandler(s), _AtomSiteHandler(s),
                     _PolyResidueFeatureHandler(s), _PolyAtomFeatureHandler(s),
+                    _NonPolyAtomFeatureHandler(s),
                     _DerivedDistanceRestraintHandler(s),
                     _CenterHandler(s), _TransformationHandler(s),
                     _GeometricObjectHandler(s), _SphereHandler(s),
                     _TorusHandler(s), _HalfTorusHandler(s),
                     _AxisHandler(s), _PlaneHandler(s),
                     _GeometricRestraintHandler(s), _PolySeqSchemeHandler(s),
+                    _NonPolySchemeHandler(s),
                     _CrossLinkListHandler(s), _CrossLinkRestraintHandler(s),
                     _CrossLinkResultHandler(s),
                     _OrderedEnsembleHandler(s)]

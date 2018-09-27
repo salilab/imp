@@ -61,10 +61,10 @@ The :mod:`ihm.restraint` Python module
 .. autoclass:: Feature
    :members:
 
-.. autoclass:: PolyResidueFeature
+.. autoclass:: ResidueFeature
    :members:
 
-.. autoclass:: PolyAtomFeature
+.. autoclass:: AtomFeature
    :members:
 
 .. autoclass:: GeometricRestraint

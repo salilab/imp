@@ -47,6 +47,8 @@ class _SoftwareDumper(_Dumper):
         seen_software = {}
         self._software_by_id = []
         for s in system._all_software():
+            util._remove_id(s)
+        for s in system._all_software():
             util._assign_id(s, seen_software, self._software_by_id)
 
     def dump(self, system, writer):
@@ -122,12 +124,12 @@ class _ChemCompDumper(_Dumper):
     def dump(self, system, writer):
         seen = {}
 
-        with writer.loop("_chem_comp", ["id", "type"]) as l:
+        with writer.loop("_chem_comp", ["id", "type", "name"]) as l:
             for entity in system.entities:
                 for comp in entity.sequence:
                     if comp not in seen:
                         seen[comp] = None
-                        l.write(id=comp.id, type=comp.type)
+                        l.write(id=comp.id, type=comp.type, name=comp.name)
 
 
 class _EntityDumper(_Dumper):
@@ -221,6 +223,8 @@ class _EntityPolyDumper(_Dumper):
                           "pdbx_seq_one_letter_code",
                           "pdbx_seq_one_letter_code_can"]) as l:
             for entity in system.entities:
+                if not entity.is_polymeric():
+                    continue
                 l.write(entity_id=entity._id, type=self._get_seq_type(entity),
                         nstd_linkage='no', nstd_monomer='no',
                         pdbx_strand_id=strand.get(entity._id, None),
@@ -228,11 +232,24 @@ class _EntityPolyDumper(_Dumper):
                         pdbx_seq_one_letter_code_can=self._get_canon(entity))
 
 
+class _EntityNonPolyDumper(_Dumper):
+    def dump(self, system, writer):
+        with writer.loop("_pdbx_entity_nonpoly",
+                         ["entity_id", "name", "comp_id"]) as l:
+            for entity in system.entities:
+                if entity.is_polymeric():
+                    continue
+                l.write(entity_id=entity._id, name=entity.description,
+                        comp_id=entity.sequence[0].id)
+
+
 class _EntityPolySeqDumper(_Dumper):
     def dump(self, system, writer):
         with writer.loop("_entity_poly_seq",
                          ["entity_id", "num", "mon_id", "hetero"]) as l:
             for entity in system.entities:
+                if not entity.is_polymeric():
+                    continue
                 for num, comp in enumerate(entity.sequence):
                     l.write(entity_id=entity._id, num=num + 1, mon_id=comp.id)
 
@@ -248,11 +265,36 @@ class _PolySeqSchemeDumper(_Dumper):
                           "auth_mon_id", "pdb_strand_id"]) as l:
             for asym in system.asym_units:
                 entity = asym.entity
+                if not entity.is_polymeric():
+                    continue
                 for num, comp in enumerate(entity.sequence):
                     auth_seq_num = asym._get_auth_seq_id(num+1)
                     l.write(asym_id=asym._id, pdb_strand_id=asym._id,
                             entity_id=entity._id,
                             seq_id=num+1, pdb_seq_num=auth_seq_num,
+                            auth_seq_num=auth_seq_num,
+                            mon_id=comp.id, pdb_mon_id=comp.id,
+                            auth_mon_id=comp.id)
+
+
+class _NonPolySchemeDumper(_Dumper):
+    """Output the _pdbx_nonpoly_scheme table.
+       For now we assume we're using auth_seq_num==pdb_seq_num."""
+    def dump(self, system, writer):
+        with writer.loop("_pdbx_nonpoly_scheme",
+                         ["asym_id", "entity_id", "mon_id",
+                          "pdb_seq_num", "auth_seq_num", "pdb_mon_id",
+                          "auth_mon_id", "pdb_strand_id"]) as l:
+            for asym in system.asym_units:
+                entity = asym.entity
+                if entity.is_polymeric():
+                    continue
+                # todo: handle multiple waters
+                for num, comp in enumerate(entity.sequence):
+                    auth_seq_num = asym._get_auth_seq_id(num+1)
+                    l.write(asym_id=asym._id, pdb_strand_id=asym._id,
+                            entity_id=entity._id,
+                            pdb_seq_num=auth_seq_num,
                             auth_seq_num=auth_seq_num,
                             mon_id=comp.id, pdb_mon_id=comp.id,
                             auth_mon_id=comp.id)
@@ -411,6 +453,10 @@ class _ExternalReferenceDumper(_Dumper):
         # Special dummy repo for repo=None (local files)
         self._local_files = self._LocalFiles(os.getcwd())
         for r in self._refs:
+            util._remove_id(r)
+            if r.repo:
+                util._remove_id(r.repo)
+        for r in self._refs:
             # Assign a unique ID to the reference
             util._assign_id(r, seen_refs, self._ref_by_id)
             # Assign a unique ID to the repository
@@ -458,6 +504,8 @@ class _DatasetDumper(_Dumper):
         seen_datasets = {}
         # Assign IDs to all datasets
         self._dataset_by_id = []
+        for d in system._all_datasets():
+            util._remove_id(d)
         for d in system._all_datasets():
             util._assign_id(d, seen_datasets, self._dataset_by_id)
 
@@ -1054,6 +1102,13 @@ class _GeometricObjectDumper(_Dumper):
         self._objects_by_id = []
 
         for o in system._all_geometric_objects():
+            util._remove_id(o)
+            if hasattr(o, 'center'):
+                util._remove_id(o.center)
+            if hasattr(o, 'transformation') and o.transformation:
+                util._remove_id(o.transformation)
+
+        for o in system._all_geometric_objects():
             util._assign_id(o, seen_objects, self._objects_by_id)
             if hasattr(o, 'center'):
                 util._assign_id(o.center, seen_centers, self._centers_by_id)
@@ -1167,19 +1222,22 @@ class _FeatureDumper(_Dumper):
         seen_features = {}
         self._features_by_id = []
         for f in system._all_features():
+            util._remove_id(f)
+        for f in system._all_features():
             util._assign_id(f, seen_features, self._features_by_id)
 
     def dump(self, system, writer):
         self.dump_list(writer)
         self.dump_poly_residue(writer)
         self.dump_poly_atom(writer)
+        self.dump_non_poly_atom(writer)
 
     def dump_list(self, writer):
         with writer.loop("_ihm_feature_list",
                          ["feature_id", "feature_type", "entity_type"]) as l:
             for f in self._features_by_id:
                 l.write(feature_id=f._id, feature_type=f.type,
-                        entity_type=f.entity.type if f.entity else None)
+                        entity_type=f._get_entity_type())
 
     def dump_poly_residue(self, writer):
         ordinal = 1
@@ -1188,7 +1246,7 @@ class _FeatureDumper(_Dumper):
                           "seq_id_begin", "comp_id_begin", "seq_id_end",
                           "comp_id_end"]) as l:
             for f in self._features_by_id:
-                if not isinstance(f, restraint.PolyResidueFeature):
+                if not isinstance(f, restraint.ResidueFeature):
                     continue
                 for r in f.ranges:
                     seq = r.entity.sequence
@@ -1206,16 +1264,34 @@ class _FeatureDumper(_Dumper):
                          ["ordinal_id", "feature_id", "entity_id", "asym_id",
                           "seq_id", "comp_id", "atom_id"]) as l:
             for f in self._features_by_id:
-                if not isinstance(f, restraint.PolyAtomFeature):
+                if not isinstance(f, restraint.AtomFeature):
                     continue
                 for a in f.atoms:
                     r = a.residue
-                    seq = r.asym.entity.sequence
-                    l.write(ordinal_id=ordinal, feature_id=f._id,
-                            entity_id=r.asym.entity._id, asym_id=r.asym._id,
-                            seq_id=r.seq_id, comp_id=seq[r.seq_id-1].id,
-                            atom_id=a.id)
-                    ordinal += 1
+                    if r.asym.entity.is_polymeric():
+                        seq = r.asym.entity.sequence
+                        l.write(ordinal_id=ordinal, feature_id=f._id,
+                                entity_id=r.asym.entity._id, asym_id=r.asym._id,
+                                seq_id=r.seq_id, comp_id=seq[r.seq_id-1].id,
+                                atom_id=a.id)
+                        ordinal += 1
+
+    def dump_non_poly_atom(self, writer):
+        ordinal = 1
+        with writer.loop("_ihm_non_poly_atom_feature",
+                         ["ordinal_id", "feature_id", "entity_id", "asym_id",
+                          "comp_id", "atom_id"]) as l:
+            for f in self._features_by_id:
+                if not isinstance(f, restraint.AtomFeature):
+                    continue
+                for a in f.atoms:
+                    r = a.residue
+                    if not r.asym.entity.is_polymeric():
+                        seq = r.asym.entity.sequence
+                        l.write(ordinal_id=ordinal, feature_id=f._id,
+                                entity_id=r.asym.entity._id, asym_id=r.asym._id,
+                                comp_id=seq[r.seq_id-1].id, atom_id=a.id)
+                        ordinal += 1
 
 
 class _CrossLinkDumper(_Dumper):
@@ -1564,8 +1640,10 @@ def write(fh, systems, format='mmCIF'):
                _ChemCompDumper(),
                _EntityDumper(),
                _EntityPolyDumper(),
+               _EntityNonPolyDumper(),
                _EntityPolySeqDumper(),
                _PolySeqSchemeDumper(),
+               _NonPolySchemeDumper(),
                _StructAsymDumper(),
                _AssemblyDumper(),
                _ExternalReferenceDumper(),
