@@ -116,6 +116,10 @@ _struct.title 'test model'
                           description='y', location='z'))
         dumper = ihm.dumper._SoftwareDumper()
         dumper.finalize(system)
+        self.assertEqual(len(dumper._software_by_id), 2)
+        # Repeated calls to finalize() should yield identical results
+        dumper.finalize(system)
+        self.assertEqual(len(dumper._software_by_id), 2)
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -260,15 +264,16 @@ _entity.details
 loop_
 _chem_comp.id
 _chem_comp.type
-ALA 'L-peptide linking'
-CYS 'L-peptide linking'
-GLY 'Peptide linking'
-THR 'L-peptide linking'
-A 'RNA linking'
-C 'RNA linking'
-G 'RNA linking'
-DA 'DNA linking'
-DC 'DNA linking'
+_chem_comp.name
+ALA 'L-peptide linking' ALANINE
+CYS 'L-peptide linking' CYSTEINE
+GLY 'Peptide linking' GLYCINE
+THR 'L-peptide linking' THREONINE
+A 'RNA linking' "ADENOSINE-5'-MONOPHOSPHATE"
+C 'RNA linking' "CYTIDINE-5'-MONOPHOSPHATE"
+G 'RNA linking' "GUANOSINE-5'-MONOPHOSPHATE"
+DA 'DNA linking' "2'-DEOXYADENOSINE-5'-MONOPHOSPHATE"
+DC 'DNA linking' "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE"
 #
 """)
 
@@ -284,7 +289,9 @@ DC 'DNA linking'
         # Mix of L- and D-peptides
         dpep_al = ihm.DPeptideAlphabet()
         e5 = ihm.Entity(('A', dpep_al['DCY'], 'G'))
-        system.entities.extend((e1, e2, e3, e4, e5))
+        # Non-polymeric entity
+        e6 = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
+        system.entities.extend((e1, e2, e3, e4, e5, e6))
         # One protein entity is modeled (with an asym unit) the other not;
         # this should be reflected in pdbx_strand_id
         system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
@@ -315,9 +322,33 @@ _entity_poly.pdbx_seq_one_letter_code_can
 3 polypeptide(D) no no . (DAL)(DCY)G ACG
 4 polypeptide(D) no no . (DAL)(DCY) AC
 5 polypeptide(L) no no . A(DCY)G ACG
-6 polyribonucleotide no no . AC AC
-7 polydeoxyribonucleotide no no . (DA)(DC) AC
-8 'polydeoxyribonucleotide/polyribonucleotide hybrid' no no . AC(DA)(DC) ACAC
+7 polyribonucleotide no no . AC AC
+8 polydeoxyribonucleotide no no . (DA)(DC) AC
+9 'polydeoxyribonucleotide/polyribonucleotide hybrid' no no . AC(DA)(DC) ACAC
+#
+""")
+
+    def test_entity_nonpoly_dumper(self):
+        """Test EntityNonPolyDumper"""
+        system = ihm.System()
+        # Polymeric entity
+        e1 = ihm.Entity('ACGT')
+        # Non-polymeric entity
+        e2 = ihm.Entity([ihm.NonPolymerChemComp('HEM')], description='heme')
+        e3 = ihm.Entity([ihm.WaterChemComp()])
+        system.entities.extend((e1, e2, e3))
+
+        ed = ihm.dumper._EntityDumper()
+        ed.finalize(system) # Assign entity IDs
+        dumper = ihm.dumper._EntityNonPolyDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_pdbx_entity_nonpoly.entity_id
+_pdbx_entity_nonpoly.name
+_pdbx_entity_nonpoly.comp_id
+2 heme HEM
+3 . HOH
 #
 """)
 
@@ -329,6 +360,8 @@ _entity_poly.pdbx_seq_one_letter_code_can
         system.entities.append(ihm.Entity('AC', alphabet=ihm.RNAAlphabet))
         system.entities.append(ihm.Entity(('DA', 'DC'),
                                           alphabet=ihm.DNAAlphabet))
+        # Non-polymeric entity
+        system.entities.append(ihm.Entity([ihm.NonPolymerChemComp('HEM')]))
         ed = ihm.dumper._EntityDumper()
         ed.finalize(system) # Assign IDs
         dumper = ihm.dumper._EntityPolySeqDumper()
@@ -360,11 +393,14 @@ _entity_poly_seq.hetero
         e2 = ihm.Entity('ACC')
         e3 = ihm.Entity('AC', alphabet=ihm.RNAAlphabet)
         e4 = ihm.Entity(('DA', 'DC'), alphabet=ihm.DNAAlphabet)
-        system.entities.extend((e1, e2, e3, e4))
+        # Non-polymeric entity
+        e5 = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
+        system.entities.extend((e1, e2, e3, e4, e5))
         system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
         system.asym_units.append(ihm.AsymUnit(e2, 'bar', auth_seq_id_map=5))
         system.asym_units.append(ihm.AsymUnit(e3, 'baz'))
         system.asym_units.append(ihm.AsymUnit(e4, 'test'))
+        system.asym_units.append(ihm.AsymUnit(e5, 'heme'))
         ihm.dumper._EntityDumper().finalize(system)
         ihm.dumper._StructAsymDumper().finalize(system)
         dumper = ihm.dumper._PolySeqSchemeDumper()
@@ -391,6 +427,35 @@ C 3 1 A 1 1 A A C
 C 3 2 C 2 2 C C C
 D 4 1 DA 1 1 DA DA D
 D 4 2 DC 2 2 DC DC D
+#
+""")
+
+    def test_nonpoly_scheme_dumper(self):
+        """Test NonPolySchemeDumper"""
+        system = ihm.System()
+        e1 = ihm.Entity('ACGT')
+        e2 = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
+        e3 = ihm.Entity([ihm.NonPolymerChemComp('ZN')])
+        system.entities.extend((e1, e2, e3))
+        system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
+        system.asym_units.append(ihm.AsymUnit(e2, 'baz'))
+        system.asym_units.append(ihm.AsymUnit(e3, 'bar', auth_seq_id_map=5))
+        ihm.dumper._EntityDumper().finalize(system)
+        ihm.dumper._StructAsymDumper().finalize(system)
+        dumper = ihm.dumper._NonPolySchemeDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_pdbx_nonpoly_scheme.asym_id
+_pdbx_nonpoly_scheme.entity_id
+_pdbx_nonpoly_scheme.mon_id
+_pdbx_nonpoly_scheme.pdb_seq_num
+_pdbx_nonpoly_scheme.auth_seq_num
+_pdbx_nonpoly_scheme.pdb_mon_id
+_pdbx_nonpoly_scheme.auth_mon_id
+_pdbx_nonpoly_scheme.pdb_strand_id
+B 2 HEM 1 1 HEM HEM B
+C 3 ZN 6 6 ZN ZN C
 #
 """)
 
@@ -572,6 +637,12 @@ _ihm_struct_assembly.seq_id_end
 
             d = ihm.dumper._ExternalReferenceDumper()
             d.finalize(system)
+            self.assertEqual(len(d._ref_by_id), 5)
+            self.assertEqual(len(d._repo_by_id), 4)
+            # Repeated calls to finalize() should yield identical results
+            d.finalize(system)
+            self.assertEqual(len(d._ref_by_id), 5)
+            self.assertEqual(len(d._repo_by_id), 4)
             out = _get_dumper_output(d, system)
             self.assertEqual(out, """#
 loop_
@@ -692,6 +763,11 @@ _ihm_external_files.details
 
         d = ihm.dumper._DatasetDumper()
         d.finalize(system) # Assign IDs
+        self.assertEqual(len(d._dataset_by_id), 1)
+        self.assertEqual(len(d._dataset_group_by_id), 1)
+
+        # Repeated calls to finalize should yield identical results
+        d.finalize(system)
         self.assertEqual(len(d._dataset_by_id), 1)
         self.assertEqual(len(d._dataset_group_by_id), 1)
 
@@ -1794,6 +1870,14 @@ _ihm_cross_link_result_parameters.sigma_2
 
         dumper = ihm.dumper._GeometricObjectDumper()
         dumper.finalize(system) # assign IDs
+        self.assertEqual(len(dumper._objects_by_id), 5)
+        self.assertEqual(len(dumper._centers_by_id), 1)
+        self.assertEqual(len(dumper._transformations_by_id), 1)
+        # Repeated calls to finalize should yield identical results
+        dumper.finalize(system)
+        self.assertEqual(len(dumper._objects_by_id), 5)
+        self.assertEqual(len(dumper._centers_by_id), 1)
+        self.assertEqual(len(dumper._transformations_by_id), 1)
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -1879,23 +1963,40 @@ _ihm_geometric_object_plane.transformation_id
         """Test FeatureDumper"""
         system = ihm.System()
         e1 = ihm.Entity('ACGT')
-        system.entities.append(e1)
+        e2 = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
+        system.entities.extend((e1, e2))
         a1 = ihm.AsymUnit(e1, 'foo')
         a2 = ihm.AsymUnit(e1, 'baz')
-        system.asym_units.extend((a1, a2))
+        a3 = ihm.AsymUnit(e2, 'heme')
+        system.asym_units.extend((a1, a2, a3))
 
-        f = ihm.restraint.PolyResidueFeature([a1, a2(2,3)])
+        f = ihm.restraint.ResidueFeature([a1, a2(2,3)])
         system.orphan_features.append(f)
+        # Cannot make a ResidueFeature that includes a non-polymer 'residue'
+        self.assertRaises(ValueError, ihm.restraint.ResidueFeature, [a1, a3])
 
-        f = ihm.restraint.PolyAtomFeature([a1.residue(1).atom('CA'),
-                                           a2.residue(2).atom('N')])
+        # Polymeric atom feature
+        f = ihm.restraint.AtomFeature([a1.residue(1).atom('CA'),
+                                       a2.residue(2).atom('N')])
         system.orphan_features.append(f)
+        # Nonpolymeric atom feature
+        f = ihm.restraint.AtomFeature([a3.residue(1).atom('FE')])
+        system.orphan_features.append(f)
+        # Cannot make one feature that selects both polymer and nonpolymer
+        self.assertRaises(ValueError, ihm.restraint.AtomFeature,
+                                      [a1.residue(1).atom('CA'),
+                                       a2.residue(2).atom('N'),
+                                       a3.residue(1).atom('FE')])
 
         ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
         ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
 
         dumper = ihm.dumper._FeatureDumper()
         dumper.finalize(system) # assign IDs
+        self.assertEqual(len(dumper._features_by_id), 3)
+        # Repeated calls to finalize should yield identical results
+        dumper.finalize(system)
+        self.assertEqual(len(dumper._features_by_id), 3)
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -1904,6 +2005,7 @@ _ihm_feature_list.feature_type
 _ihm_feature_list.entity_type
 1 'residue range' polymer
 2 atom polymer
+3 atom non-polymer
 #
 #
 loop_
@@ -1929,6 +2031,16 @@ _ihm_poly_atom_feature.comp_id
 _ihm_poly_atom_feature.atom_id
 1 2 1 A 1 ALA CA
 2 2 1 B 2 CYS N
+#
+#
+loop_
+_ihm_non_poly_atom_feature.ordinal_id
+_ihm_non_poly_atom_feature.feature_id
+_ihm_non_poly_atom_feature.entity_id
+_ihm_non_poly_atom_feature.asym_id
+_ihm_non_poly_atom_feature.comp_id
+_ihm_non_poly_atom_feature.atom_id
+1 3 2 C HEM FE
 #
 """)
 

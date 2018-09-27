@@ -58,6 +58,16 @@ class Tests(unittest.TestCase):
         cc1 = ihm.DNAChemComp(id='DG', code='DG', code_canonical='G')
         self.assertEqual(cc1.type, 'DNA linking')
 
+    def test_non_polymer_chem_comp(self):
+        """Test NonPolymerChemComp class"""
+        cc1 = ihm.NonPolymerChemComp('HEM')
+        self.assertEqual(cc1.type, 'non-polymer')
+
+    def test_water_chem_comp(self):
+        """Test WaterChemComp class"""
+        cc1 = ihm.WaterChemComp()
+        self.assertEqual(cc1.type, 'non-polymer')
+
     def test_l_peptide_alphabet(self):
         """Test LPeptideAlphabet class"""
         a = ihm.LPeptideAlphabet
@@ -111,6 +121,18 @@ class Tests(unittest.TestCase):
         self.assertNotEqual(e1, e3)
         self.assertEqual(e1.seq_id_range, (1,4))
         self.assertEqual(e3.seq_id_range, (1,5))
+
+    def test_entity_type(self):
+        """Test Entity.type"""
+        protein = ihm.Entity('AHCD')
+        heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
+        water = ihm.Entity([ihm.WaterChemComp()])
+        self.assertEqual(protein.type, 'polymer')
+        self.assertTrue(protein.is_polymeric())
+        self.assertEqual(heme.type, 'non-polymer')
+        self.assertFalse(heme.is_polymeric())
+        self.assertEqual(water.type, 'water')
+        self.assertFalse(water.is_polymeric())
 
     def test_software(self):
         """Test Software class"""

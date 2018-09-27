@@ -220,9 +220,10 @@ _citation_author.ordinal
 loop_
 _chem_comp.id
 _chem_comp.type
-MET 'L-peptide linking'
-CYS 'D-peptide linking'
-MYTYPE 'D-PEPTIDE LINKING'
+_chem_comp.name
+MET 'L-peptide linking' .
+CYS 'D-peptide linking' CYSTEINE
+MYTYPE 'D-PEPTIDE LINKING' 'MY CUSTOM COMPONENT'
 """
         entity_poly_cat = """
 loop_
@@ -248,13 +249,50 @@ _entity_poly_seq.hetero
                 self.assertEqual(id(s[0]), id(lpeptide['M']))
                 self.assertEqual(id(s[1]), id(lpeptide['M']))
                 self.assertEqual(id(s[4]), id(lpeptide['C']))
+                self.assertEqual(s[0].name, 'METHIONINE')
                 self.assertEqual(s[2], None)
                 self.assertEqual(s[3].id, 'MYTYPE')
                 self.assertEqual(s[3].type, 'D-peptide linking')
+                self.assertEqual(s[3].name, 'MY CUSTOM COMPONENT')
                 self.assertEqual(s[3].__class__, ihm.DPeptideChemComp)
                 # Class of standard type shouldn't be changed
                 self.assertEqual(s[4].type, 'L-peptide linking')
                 self.assertEqual(s[4].__class__, ihm.LPeptideChemComp)
+
+    def test_chem_comp_nonpoly_handler(self):
+        """Test ChemCompHandler and EntityNonPolyHandler"""
+        chem_comp_cat = """
+loop_
+_chem_comp.id
+_chem_comp.type
+HEM non-polymer
+HOH non-polymer
+"""
+        entity_nonpoly_cat = """
+loop_
+_pdbx_entity_nonpoly.entity_id
+_pdbx_entity_nonpoly.name
+_pdbx_entity_nonpoly.comp_id
+1 Heme HEM
+2 Water HOH
+"""
+        cif1 = chem_comp_cat + entity_nonpoly_cat
+        cif2 = entity_nonpoly_cat + chem_comp_cat
+        # Order of the two categories shouldn't matter
+        for cif in cif1, cif2:
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                e1, e2 = s.entities
+                s = e1.sequence
+                self.assertEqual(len(s), 1)
+                self.assertEqual(s[0].id, 'HEM')
+                self.assertEqual(s[0].type, 'non-polymer')
+                self.assertEqual(s[0].__class__, ihm.NonPolymerChemComp)
+                s = e2.sequence
+                self.assertEqual(len(s), 1)
+                self.assertEqual(s[0].id, 'HOH')
+                self.assertEqual(s[0].type, 'non-polymer')
+                self.assertEqual(s[0].__class__, ihm.WaterChemComp)
 
     def test_entity_handler(self):
         """Test EntityHandler"""
@@ -1185,6 +1223,16 @@ _ihm_poly_residue_feature.comp_id_begin
 _ihm_poly_residue_feature.seq_id_end
 _ihm_poly_residue_feature.comp_id_end
 1 2 1 B 2 CYS 3 GLY
+#
+loop_
+_ihm_non_poly_atom_feature.ordinal_id
+_ihm_non_poly_atom_feature.feature_id
+_ihm_non_poly_atom_feature.entity_id
+_ihm_non_poly_atom_feature.asym_id
+_ihm_non_poly_atom_feature.comp_id
+_ihm_non_poly_atom_feature.atom_id
+1 3 3 C HEM FE
+#
 """
         rsr = """
 loop_
@@ -1200,23 +1248,23 @@ _ihm_derived_distance_restraint.dataset_list_id
 1 1 2 'lower bound' 25.000 . 0.800 . 97
 2 1 2 'upper bound' . 45.000 0.800 ALL 98
 3 1 2 'lower and upper bound' 22.000 45.000 0.800 ANY 99
-4 1 2 'harmonic' 35.000 35.000 0.800 ALL .
+4 2 3 'harmonic' 35.000 35.000 0.800 ALL .
 """
         # Test both ways to make sure features still work if they are
         # referenced by ID before their type is known
         for text in (feats+rsr, rsr+feats):
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
-            self.assertEqual(len(s.orphan_features), 2)
+            self.assertEqual(len(s.orphan_features), 3)
             r1, r2, r3, r4 = s.restraints
             self.assertEqual(r1.dataset._id, '97')
             self.assertTrue(isinstance(r1.feature1,
-                                       ihm.restraint.PolyAtomFeature))
+                                       ihm.restraint.AtomFeature))
             self.assertEqual(len(r1.feature1.atoms), 1)
             self.assertEqual(r1.feature1.atoms[0].id, 'CA')
             self.assertEqual(r1.feature1.atoms[0].residue.seq_id, 1)
             self.assertTrue(isinstance(r1.feature2,
-                                       ihm.restraint.PolyResidueFeature))
+                                       ihm.restraint.ResidueFeature))
             self.assertEqual(len(r1.feature2.ranges), 1)
             self.assertEqual(r1.feature2.ranges[0].seq_id_range, (2,3))
             self.assertTrue(isinstance(r1.distance,
@@ -1232,6 +1280,8 @@ _ihm_derived_distance_restraint.dataset_list_id
                              ihm.restraint.LowerUpperBoundDistanceRestraint))
             self.assertTrue(isinstance(r4.distance,
                                  ihm.restraint.HarmonicDistanceRestraint))
+            self.assertTrue(isinstance(r4.feature2,
+                                       ihm.restraint.AtomFeature))
 
     def test_sphere_handler(self):
         """Test SphereHandler"""
@@ -1576,6 +1626,21 @@ A 1 4 9A
         self.assertEqual(asym.auth_seq_id_map, {1:6, 2:7, 3:8, 4:'9A'})
         self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
                          [6,7,8,'9A'])
+
+    def test_nonpoly_scheme_handler(self):
+        """Test NonPolySchemeHandler"""
+        fh = StringIO(ASYM_ENTITY + """
+loop_
+_pdbx_nonpoly_scheme.asym_id
+_pdbx_nonpoly_scheme.entity_id
+_pdbx_nonpoly_scheme.auth_seq_num
+A 1 1
+A 1 101
+""")
+        s, = ihm.reader.read(fh)
+        asym, = s.asym_units
+        self.assertEqual(asym.auth_seq_id_map, {1:101})
+        self.assertEqual(asym.residue(1).auth_seq_id, 101)
 
     def test_cross_link_list_handler(self):
         """Test CrossLinkListHandler"""

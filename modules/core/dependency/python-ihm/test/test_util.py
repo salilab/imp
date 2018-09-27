@@ -19,6 +19,16 @@ class Tests(unittest.TestCase):
         self.assertEqual([c[i] for i in range(700,704)],
                          ['ZY', 'ZZ', 'AAA', 'AAB'])
 
+    def test_remove_id(self):
+        """Test _remove_id utility function"""
+        class DummyObj(object):
+            pass
+        o = DummyObj()
+        ihm.util._remove_id(o)
+        o._id = 42
+        ihm.util._remove_id(o)
+        self.assertFalse(hasattr(o, '_id'))
+
     def test_assign_id(self):
         """Test _assign_id utility function"""
         class DummyObj(object):

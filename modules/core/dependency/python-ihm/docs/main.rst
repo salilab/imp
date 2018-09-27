@@ -36,6 +36,12 @@ The :mod:`ihm` Python module
 .. autoclass:: DNAChemComp
    :members:
 
+.. autoclass:: NonPolymerChemComp
+   :members:
+
+.. autoclass:: WaterChemComp
+   :members:
+
 .. autoclass:: Alphabet
    :members:
 

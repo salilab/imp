@@ -19,6 +19,11 @@ class _AsymIDs(object):
         return "".join(reversed(ids))
 
 
+def _remove_id(obj):
+    """Remove any unique ID from obj"""
+    if hasattr(obj, '_id'):
+        del obj._id
+
 def _assign_id(obj, seen_objs, obj_by_id):
     """Assign a unique ID to obj, and track all ids in obj_by_id."""
     if obj not in seen_objs:
