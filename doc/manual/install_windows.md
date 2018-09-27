@@ -66,7 +66,7 @@ we employed is as follows:
        `set INCLUDE=C:\Program Files\GnuWin32\include`
      - Run `bjam link=shared runtime-link=shared -sNO_ZLIB=0 -sZLIB_SOURCE=C:\zlib\1.2.3\zlib-1.2.3`
   - Get and install [SWIG for Windows](http://www.swig.org)
-  - Get the [HDF5 source code](http://www.hdfgroup.org)
+  - Get the [HDF5 source code](https://www.hdfgroup.org/downloads/hdf5/)
      - Make a 'build' subdirectory, then run from a command prompt in
        that subdirectory something similar to
        `cmake.exe -G "Visual Studio 10" -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=OFF -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DHDF5_BUILD_HL_LIB:BOOL=ON -DZLIB_INCLUDE_DIR="C:\Program Files\GnuWin32\include" -DZLIB_LIBRARY="C:\Program Files\GnuWin32\lib\zlib.lib" -DBUILD_SHARED_LIBS:BOOL=ON ..`
