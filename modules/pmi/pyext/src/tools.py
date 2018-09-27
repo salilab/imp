@@ -25,6 +25,25 @@ try:
 except ImportError:
     from IMP.pmi._compat_collections import OrderedDict
 
+def _get_system_for_hier(hier):
+    """Given a top-level hierarchy, return the System that created it,
+       or None"""
+    if hasattr(hier, '_pmi2_system'):
+        return hier._pmi2_system()
+
+def _all_protocol_outputs(representations, root_hier):
+    """Iterate over all (ProtocolOutput, State) pairs for the given
+       representations (PMI1) or root hier (PMI2)"""
+    if root_hier:
+        system = _get_system_for_hier(root_hier)
+        if system:
+            for state in system.states:
+                for p in state._protocol_output:
+                    yield p
+    else:
+        for p in representations[0]._protocol_output:
+            yield p
+
 def _add_pmi_provenance(p):
     """Tag the given particle as being created by the current version of PMI."""
     IMP.core.add_imp_provenance(p)
