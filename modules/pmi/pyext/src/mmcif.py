@@ -111,7 +111,7 @@ class _AsymMapper(object):
         if hrngs in self._seen_ranges:
             return self._seen_ranges[hrngs]
         else:
-            feat = ihm.restraint.PolyResidueFeature(rngs)
+            feat = ihm.restraint.ResidueFeature(rngs)
             self._seen_ranges[hrngs] = feat
             return feat
 

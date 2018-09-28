@@ -1519,7 +1519,7 @@ loop_
 _ihm_feature_list.feature_id
 _ihm_feature_list.feature_type
 _ihm_feature_list.entity_type
-1 'residue range' polymer
+1 residue polymer
 #
 #
 loop_
