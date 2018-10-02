@@ -191,6 +191,12 @@ class TestCase(unittest.TestCase):
        individual test from the commane line) and use IMP::test::main()
        as their main function."""
 
+    # Provide assert(Not)Regex for Python 2 users (assertRegexMatches is
+    # deprecated in Python 3)
+    if not hasattr(unittest.TestCase, 'assertRegex'):
+        assertRegex = unittest.TestCase.assertRegexpMatches
+        assertNotRegex = unittest.TestCase.assertNotRegexpMatches
+
     def __init__(self, *args, **keys):
         unittest.TestCase.__init__(self, *args, **keys)
         self._progname = os.path.abspath(sys.argv[0])
