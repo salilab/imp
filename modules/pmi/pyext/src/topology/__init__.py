@@ -25,7 +25,7 @@ import IMP.pmi
 import IMP.pmi.tools
 import csv
 import os
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from . import system_tools
 from bisect import bisect_left
 from math import pi,cos,sin
@@ -252,6 +252,68 @@ class State(_SystemBase):
             self.built=True
         return self.hier
 
+
+# Track residues read from PDB files
+_PDBElement = namedtuple('PDBElement', ['offset', 'filename', 'chain_id'])
+
+class _RepresentationHandler(object):
+    """Handle PMI representation and use it to populate that of any attached
+       ProtocolOutput objects"""
+    def __init__(self, name, pos, pdb_elements):
+        self.name = name
+        self.pos = pos
+        self.last_index = None
+        self.last_pdb_index = None
+        self.pdb_for_residue = {}
+        for residues, pdb in pdb_elements:
+            for r in residues:
+                self.pdb_for_residue[r.get_index()] = pdb
+
+    def _get_pdb(self, h):
+        """Return a PDBElement if the given hierarchy was read from a
+           PDB file"""
+        if IMP.atom.Residue.get_is_setup(h):
+            rind = IMP.atom.Residue(h).get_index()
+            return self.pdb_for_residue.get(rind, None)
+
+    def __call__(self, res):
+        """Handle a single residue"""
+        if len(self.pos) == 0:
+            return
+        h = res.hier
+        pi = h.get_particle_index()
+        # Do nothing if we already saw this hierarchy
+        if self.last_index is None or pi != self.last_index:
+            pdb = self._get_pdb(h)
+            self.last_index = pi
+            if pdb:
+                assert(IMP.atom.Fragment.get_is_setup(h.get_parent()))
+                frag = IMP.atom.Fragment(h.get_parent())
+                fragi = frag.get_particle_index()
+                # Do nothing if we already saw this PDB fragment
+                if self.last_pdb_index is not None \
+                   and self.last_pdb_index == fragi:
+                    return
+                self.last_pdb_index = fragi
+                indices = frag.get_residue_indexes()
+                for p, state in self.pos:
+                    p.add_pdb_element(state, self.name,
+                            indices[0], indices[-1], pdb.offset,
+                            pdb.filename, pdb.chain_id, frag)
+            elif IMP.atom.Fragment.get_is_setup(h):
+                frag = IMP.atom.Fragment(h)
+                indices = frag.get_residue_indexes()
+                for p, state in self.pos:
+                    p.add_bead_element(state, self.name,
+                            indices[0], indices[-1], 1, h)
+            elif IMP.atom.Residue.get_is_setup(h):
+                resind = IMP.atom.Residue(h).get_index()
+                for p, state in self.pos:
+                    p.add_bead_element(state, self.name, resind, resind, 1, h)
+            else:
+                raise TypeError("Unhandled hierarchy %s" % str(h))
+
+
 #------------------------
 
 class Molecule(_SystemBase):
@@ -423,7 +485,8 @@ class Molecule(_SystemBase):
             print("WARNING: Substituting PDB residue type with FASTA residue type. Potentially dangerous.")
 
         # Store info for ProtocolOutput usage later
-        self._pdb_elements.append((rhs, offset, pdb_fn, chain_id))
+        self._pdb_elements.append((rhs,
+               _PDBElement(offset=offset, filename=pdb_fn, chain_id=chain_id)))
 
         # load those into TempResidue object
         atomic_res = IMP.pmi.tools.OrderedSet() # collect integer indexes of atomic residues to return
@@ -647,14 +710,6 @@ class Molecule(_SystemBase):
                 print('WARNING: Residues without representation in molecule',
                       self.get_name(),':',system_tools.resnums2str(no_rep))
 
-            # Tell ProtocolOutput about any PDBs we read in
-            for rhs, offset, pdb_fn, chain_id in self._pdb_elements:
-                for po, state in self._all_protocol_output():
-                    # todo handle last argument properly
-                    po.add_pdb_element(state, self._name_with_copy,
-                            rhs[0].get_index(), rhs[1].get_index(), offset,
-                            pdb_fn, chain_id, rhs[0].get_parent())
-
             # first build any ideal helices (fills in structure for the TempResidues)
             for rep in self.representations:
                 if rep.ideal_helix:
@@ -664,8 +719,7 @@ class Molecule(_SystemBase):
             built_reps = []
             for rep in self.representations:
                 built_reps += system_tools.build_representation(
-                            self, rep, self.coord_finder,
-                            self._all_protocol_output())
+                            self, rep, self.coord_finder)
 
             # sort them before adding as children
             built_reps.sort(key=lambda r: IMP.atom.Fragment(r).get_residue_indexes()[0])
@@ -674,6 +728,9 @@ class Molecule(_SystemBase):
                 br.update_parents()
             self.built = True
 
+            rephandler = _RepresentationHandler(self._name_with_copy,
+                                     list(self._all_protocol_output()),
+                                     self._pdb_elements)
             for res in self.residues:
                 idx = res.get_index()
 
@@ -691,6 +748,7 @@ class Molecule(_SystemBase):
                         # otherwise just store what you found
                         new_hier = IMP.atom.Hierarchy(new_p)
                     res.hier = new_hier
+                    rephandler(res)
                 else:
                     res.hier = None
             self._represented = IMP.pmi.tools.OrderedSet([a for a in self._represented])
