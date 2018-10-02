@@ -187,7 +187,7 @@ def show_representation(node):
     else:
         return False
 
-def build_representation(parent, rep, coord_finder, protocol_output):
+def build_representation(parent, rep, coord_finder):
     """Create requested representation.
     For beads, identifies continuous segments and sets up as Representation.
     If any volume-based representations (e.g.,densities) are requested,
@@ -337,11 +337,6 @@ def build_representation(parent, rep, coord_finder, protocol_output):
                                        frag_res,
                                        resolution,
                                        input_coord)
-                for po, state in protocol_output:
-                    po.add_bead_element(
-                            state, parent._name_with_copy,
-                            frag_res[0].get_index(),
-                            frag_res[-1].get_index(), len(frag_res), beads[0])
                 for bead in beads:
                     this_resolution.add_child(bead)
 
