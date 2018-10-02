@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         r = self.run_python_module("IMP.multifit.score", [])
         out, err = r.communicate()
         self.assertEqual(out, "")
-        self.assertIn("too few arguments", err)
+        self.assertRegex(err, "(too few arguments|arguments are required)")
         self.assertNotEqual(r.returncode, 0)
 
     def test_score_run(self):
