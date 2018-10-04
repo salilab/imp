@@ -48,34 +48,47 @@ class IMPALGEBRAEXPORT ReferenceFrame3D {
   explicit ReferenceFrame3D(const Transformation3D &tr)
       : tr_(tr), has_inverse_(false) {}
   ~ReferenceFrame3D();
-  //! Get the transformation that brings the origin of the global reference
-  //! frame to the origin of this frame (both in global coordinates).
+  //! Return transformation from local to global coordinates
+
+  /**
+     Get the transformation that brings the origin of the global reference
+     frame to the origin of this frame (both in global coordinates).
+  */
   const Transformation3D &get_transformation_to() const { return tr_; }
-  //! Get the transformation from the origin of this reference frame
-  //! to the origin of the global frame (both in global coordinates).
+
+  //! Return the transformation from global to local coordinates
+  /**
+     Get the transformation from the origin of this reference frame
+     to the origin of the global frame (both in global coordinates).
+  */
   const Transformation3D &get_transformation_from() const {
     return get_inverse();
   }
-  //! Assume the input vector is in local coordinates and transform
-  //! it to global ones.
+
+  //! Convert the vector v from local to global coordinates
+  //! (i.e., v is specified in this reference frame)
   Vector3D get_global_coordinates(const Vector3D &v) const {
     return tr_.get_transformed(v);
   }
-  //! Assume the input vector is in global coordinates and get the local
-  //! coordinates.
+
+  //! Convert the vector v from global to local coordinates
+  //! (i.e., the returned vector is specified in this reference frame)
   Vector3D get_local_coordinates(const Vector3D &v) const {
     return get_inverse().get_transformed(v);
   }
-  //! Assume the input vector is in local coordinates and transform
-  //! it to global ones.
+
+  //! Convert reference frame v from local to global
+  //! (i.e., v is specified in this reference frame)
   ReferenceFrame3D get_global_reference_frame(const ReferenceFrame3D &v) const {
     return ReferenceFrame3D(tr_ * v.tr_);
   }
-  //! Assume the input vector is in global coordinates and get the local
-  //! coordinates.
+
+  //! Convert reference frame v from global to local
+  //! (i.e. the returned reference frame is speficied in this reference frame)
   ReferenceFrame3D get_local_reference_frame(const ReferenceFrame3D &v) const {
     return ReferenceFrame3D(get_inverse() * v.tr_);
   }
+
   IMP_SHOWABLE_INLINE(ReferenceFrame3D, { out << tr_; });
 };
 
