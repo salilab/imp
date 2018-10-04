@@ -180,9 +180,9 @@ void AccumulateRigidBodyDerivatives::apply_index(
         internal::rigid_body_data().quaternion_[j]);
   }
 #endif
-  algebra::Rotation3D rot =
+  algebra::Rotation3D rot = //! from global to internal
       rb.get_reference_frame().get_transformation_from().get_rotation();
-  algebra::Rotation3D roti =
+  algebra::Rotation3D roti = //! from internal to global
       rb.get_reference_frame().get_transformation_to().get_rotation();
   const ParticleIndexes &rbis = rb.get_member_particle_indexes();
   for (unsigned int i = 0; i < rbis.size(); ++i) {
