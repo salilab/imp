@@ -7,6 +7,16 @@ IMP_SWIG_OBJECT(IMP::pmi, TransformMover, TransformMovers);
 IMP_SWIG_OBJECT(IMP::pmi, MembraneRestraint, MembraneRestraints);
 IMP_SWIG_OBJECT(IMP::pmi, InternalCoordinatesConstraint, InternalCoordinatesConstraints);
 
+%pythoncode %{
+def deprecated_pmi1_object(version, help_message):
+    """Mark a PMI1 class as deprecated. Point to its replacement or IMP.pmi1"""
+    return IMP.deprecated_object(version,
+               "This is a PMI1 class. New applications of PMI should use PMI2 "
+               "classes. In this case, %s. If you need to use PMI1 classes, "
+               "for example to maintain a published protocol, use the legacy "
+               "IMP.pmi1 module instead of IMP.pmi." % help_message)
+%}
+
 %include "IMP/pmi/MembraneRestraint.h"
 %include "IMP/pmi/CompositeRestraint.h"
 %include "IMP/pmi/Uncertainty.h"
