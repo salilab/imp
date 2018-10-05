@@ -256,12 +256,6 @@ class Representation(object):
         for p, state in self._protocol_output:
             p.create_component(state, name, False)
 
-    # Deprecation warning
-
-    @IMP.deprecated_method("2.5", "Use create_component() instead.")
-    def add_component_name(self, *args, **kwargs):
-        self.create_component(*args, **kwargs)
-
     def get_component_names(self):
         return list(self.hier_dict.keys())
 
@@ -381,13 +375,6 @@ class Representation(object):
                                                         first+offset, last+offset, missingbeadsize, incoord=xyznter)
 
         return outhiers
-
-    # Deprecation warning
-
-    @IMP.deprecated_method("2.5", "Use autobuild_model() instead.")
-    def autobuild_pdb_and_intervening_beads(self, *args, **kwargs):
-        r = self.autobuild_model(*args, **kwargs)
-        return r
 
     def add_component_pdb(self, name, pdbname, chain, resolutions, color=None,
                           resrange=None, offset=0, cacenters=True, show=False,

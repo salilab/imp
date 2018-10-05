@@ -467,7 +467,7 @@ class SimplifiedPEMAP(object):
             #hub= IMP.core.TruncatedHarmonicBound(17.0,self.strength,upperdist+15,limit)
 
             df = IMP.core.SphereDistancePairScore(hub)
-            dr = IMP.core.PairRestraint(df, (p1, p2))
+            dr = IMP.core.PairRestraint(self.m, df, (p1, p2))
             self.rs.add_restraint(dr)
             self.pairs.append((p1, p2, dr, r1, c1, r2, c2))
 
