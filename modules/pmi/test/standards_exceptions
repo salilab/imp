@@ -1,4 +1,5 @@
 value_object_exceptions=[]
-function_name_exceptions=['SigmoidRestraintSphere.increment_amplitude']
+function_name_exceptions=['SigmoidRestraintSphere.increment_amplitude',
+                          'deprecated_pmi1_object']
 show_exceptions=[]
 spelling_exceptions=[]
