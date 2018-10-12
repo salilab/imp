@@ -238,8 +238,8 @@ _entity.pdbx_description
 _entity.formula_weight
 _entity.pdbx_number_of_molecules
 _entity.details
-1 polymer man foo ? 1 .
-2 polymer man baz ? 1 .
+1 polymer man foo 366.413 1 .
+2 polymer man baz 499.516 1 .
 #
 """)
 
@@ -265,15 +265,17 @@ loop_
 _chem_comp.id
 _chem_comp.type
 _chem_comp.name
-ALA 'L-peptide linking' ALANINE
-CYS 'L-peptide linking' CYSTEINE
-GLY 'Peptide linking' GLYCINE
-THR 'L-peptide linking' THREONINE
-A 'RNA linking' "ADENOSINE-5'-MONOPHOSPHATE"
-C 'RNA linking' "CYTIDINE-5'-MONOPHOSPHATE"
-G 'RNA linking' "GUANOSINE-5'-MONOPHOSPHATE"
-DA 'DNA linking' "2'-DEOXYADENOSINE-5'-MONOPHOSPHATE"
-DC 'DNA linking' "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE"
+_chem_comp.formula
+_chem_comp.formula_weight
+ALA 'L-peptide linking' ALANINE 'C3 H7 N O2' 89.094
+CYS 'L-peptide linking' CYSTEINE 'C3 H7 N O2 S' 121.154
+GLY 'Peptide linking' GLYCINE 'C2 H5 N O2' 75.067
+THR 'L-peptide linking' THREONINE 'C4 H9 N O3' 119.120
+A 'RNA linking' "ADENOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O7 P' 347.224
+C 'RNA linking' "CYTIDINE-5'-MONOPHOSPHATE" 'C9 H14 N3 O8 P' 323.198
+G 'RNA linking' "GUANOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O8 P' 363.223
+DA 'DNA linking' "2'-DEOXYADENOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O6 P' 331.225
+DC 'DNA linking' "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE" 'C9 H14 N3 O7 P' 307.199
 #
 """)
 
