@@ -13,7 +13,8 @@ class Tests(IMP.test.TestCase):
         representations = []
 
         m = IMP.Model()
-        r = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            r = IMP.pmi.representation.Representation(m)
 
         r.create_component("particle1", color=0.1)
         p11 = r.add_component_beads("particle1", [(1, 10)])
@@ -24,7 +25,8 @@ class Tests(IMP.test.TestCase):
 
         representations.append(r)
 
-        r = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            r = IMP.pmi.representation.Representation(m)
 
         representations[0].floppy_bodies.pop(0)
         representations[0].floppy_bodies.pop(0)

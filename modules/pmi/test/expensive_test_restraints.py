@@ -33,7 +33,8 @@ class Tests(IMP.test.TestCase):
         fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
 
         m = IMP.Model()
-        simo = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            simo = IMP.pmi.representation.Representation(m)
 
         hierarchies = {}
 

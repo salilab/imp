@@ -157,20 +157,10 @@ class Output(object):
         nbonds=len(indexes_pairs)
         flpsf.write(str(nbonds)+" !NBOND: bonds"+"\n")
 
-        sublists=[indexes_pairs[i:i+4] for i in range(0,len(indexes_pairs),4)]
-
-        # save bonds in fized column format
-        for ip in sublists:
-            if len(ip)==4:
-                flpsf.write('{0:8d}{1:8d}{2:8d}{3:8d}{4:8d}{5:8d}{6:8d}{7:8d}'.format(ip[0][0],ip[0][1],
-                             ip[1][0],ip[1][1],ip[2][0],ip[2][1],ip[3][0],ip[3][1]))
-            elif len(ip)==3:
-                flpsf.write('{0:8d}{1:8d}{2:8d}{3:8d}{4:8d}{5:8d}'.format(ip[0][0],ip[0][1],ip[1][0],
-                             ip[1][1],ip[2][0],ip[2][1]))
-            elif len(ip)==2:
-                flpsf.write('{0:8d}{1:8d}{2:8d}{3:8d}'.format(ip[0][0],ip[0][1],ip[1][0],ip[1][1]))
-            elif len(ip)==1:
-                flpsf.write('{0:8d}{1:8d}'.format(ip[0][0],ip[0][1]))
+        # save bonds in fixed column format
+        for i in range(0,len(indexes_pairs),4):
+            for bond in indexes_pairs[i:i+4]:
+                flpsf.write('{0:8d}{1:8d}'.format(*bond))
             flpsf.write('\n')
 
         del particle_infos_for_pdb

@@ -1,3 +1,4 @@
+
 ==== Secondary Structure Definition by the program DSSP, updated CMBI version by ElmK / April 1,2000 ==== DATE=10-FEB-2014     .
 REFERENCE W. KABSCH AND C.SANDER, BIOPOLYMERS 22 (1983) 2577-2637                                                              .
  3175 23  0  0  0 TOTAL NUMBER OF RESIDUES, NUMBER OF CHAINS, NUMBER OF SS-BRIDGES(TOTAL,INTRACHAIN,INTERCHAIN)                .
@@ -3217,5 +3218,3 @@ REFERENCE W. KABSCH AND C.SANDER, BIOPOLYMERS 22 (1983) 2577-2637               
  3193  442 I Q  S X  S-     0   0   79     -3,-1.3     3,-1.5    -4,-0.4   -95,-0.3  -0.523  82.9-119.6-103.0 167.2  -99.0  -85.9   44.0
  3194  443 I D  G >  S+     0   0  116      1,-0.3     3,-1.0    -2,-0.2    -1,-0.1   0.802 109.6  66.9 -61.0 -36.2  -99.9  -86.5   40.4
  3195  444 I S  G 3   +     0   0   84      1,-0.3    -1,-0.3    -5,-0.0    -4,-0.1   0.430  68.7 100.7 -70.7  -0.3 -103.6  -86.3   41.3
- 3196  445 I Y  G <         0   0   27     -3,-1.5    -1,-0.3    -6,-0.2    -2,-0.1   0.927 360.0 360.0 -57.3 -43.5 -103.3  -82.7   42.2
- 3197  446 I L    <         0   0  121     -3,-1.0    -1,-0.0    -4,-0.2     0, 0.0  -0.804 360.0 360.0 -92.9 360.0 -104.8  -81.9   38.9

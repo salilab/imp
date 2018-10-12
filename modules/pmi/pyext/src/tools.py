@@ -1232,6 +1232,8 @@ class Segments(object):
             self.segs=[[index[0]]]
             for i in index[1:]:
                 self.add(i)
+        else:
+            raise TypeError("index must be an int or list of ints")
 
     def add(self,index):
         '''index can be a integer or a list of integers '''
@@ -1264,6 +1266,8 @@ class Segments(object):
         elif type(index) is list:
             for i in index:
                 self.add(i)
+        else:
+            raise TypeError("index must be an int or list of ints")
 
     def remove(self,index):
         '''index can be a integer'''
@@ -1602,7 +1606,11 @@ class OrderedDefaultDict(OrderedDict):
 
     def __reduce__(self):  # optional, for pickle support
         args = (self.default_factory,) if self.default_factory else ()
-        return self.__class__, args, None, None, self.iteritems()
+        if sys.version_info[0] >= 3:
+            return self.__class__, args, None, None, self.items()
+        else:
+            return self.__class__, args, None, None, self.iteritems()
+
 
 # -------------- PMI2 Tools --------------- #
 
@@ -1635,10 +1643,11 @@ def input_adaptor(stuff,
     @param pmi_resolution For selecting, only does it if you pass PMI objects. Set it to "all"
           if you want all resolutions!
     @param flatten Set to True if you just want all hierarchies in one list.
-    @param warn_about_slices Print a warning if you are requesting only part of a bead.
-           Sometimes you just don't care!
-    \note since this relies on IMP::atom::Selection, this will not return any objects if they weren't built!
-    But there should be no problem if you request unbuilt residues, they should be ignored.
+    @param warn_about_slices Print a warning if you are requesting only part
+           of a bead. Sometimes you just don't care!
+    @note since this relies on IMP::atom::Selection, this will not return
+          any objects if they weren't built! But there should be no problem
+          if you request unbuilt residues - they should be ignored.
     """
 
     if stuff is None:
@@ -1693,7 +1702,7 @@ def input_adaptor(stuff,
         elif is_molecule:
             for molecule in stuff:
                 indexes_per_mol[molecule] += [r.get_index() for r in molecule.get_residues()]
-        elif is_temp_residue:
+        else: # is_temp_residue
             for tempres in stuff:
                 indexes_per_mol[tempres.get_molecule()].append(tempres.get_index())
         for mol in indexes_per_mol:
@@ -1715,7 +1724,6 @@ def input_adaptor(stuff,
                     if IMP.atom.Fragment.get_is_setup(p):
                         fset = set(IMP.atom.Fragment(p).get_residue_indexes())
                         if not fset <= rset:
-                            print('BAD')
                             minset = min(fset)
                             maxset = max(fset)
                             found = fset&rset
@@ -1757,25 +1765,24 @@ def get_sorted_segments(mol):
     from operator import itemgetter
     hiers=IMP.pmi.tools.input_adaptor(mol)
     if len(hiers)>1:
-        raise Exception("IMP.pmi.tools.get_sorted_segments: only pass stuff from one Molecule, please")
+        raise ValueError("only pass stuff from one Molecule, please")
     hiers = hiers[0]
-    SortedSegments = []
+    segs = []
     for h in hiers:
         try:
             start = IMP.atom.Hierarchy(h).get_children()[0]
-        except:
+        except IndexError:
             start = IMP.atom.Hierarchy(h)
 
         try:
             end = IMP.atom.Hierarchy(h).get_children()[-1]
-        except:
+        except IndexError:
             end = IMP.atom.Hierarchy(h)
 
         startres = IMP.pmi.tools.get_residue_indexes(start)[0]
         endres = IMP.pmi.tools.get_residue_indexes(end)[-1]
-        SortedSegments.append((start, end, startres))
-    SortedSegments = sorted(SortedSegments, key=itemgetter(2))
-    return SortedSegments
+        segs.append((start, end, startres))
+    return sorted(segs, key=itemgetter(2))
 
 def display_bonds(mol):
     """Decorate the sequence-consecutive particles from a PMI2 molecule with a bond,

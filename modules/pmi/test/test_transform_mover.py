@@ -261,7 +261,8 @@ class Tests(IMP.test.TestCase):
 
         # setting up topology
         m=IMP.Model()
-        simo = IMP.pmi.representation.Representation(m,upperharmonic=True,disorderedlength=True)
+        with IMP.allow_deprecated():
+            simo = IMP.pmi.representation.Representation(m,upperharmonic=True,disorderedlength=True)
 
         pdbfile = self.get_input_file_name("1WCM.pdb")
         fastafile = self.get_input_file_name("1WCM.fasta.txt")
@@ -334,7 +335,8 @@ class Tests(IMP.test.TestCase):
 
         # setting up topology
         m=IMP.Model()
-        simo = IMP.pmi.representation.Representation(m,upperharmonic=True,disorderedlength=True)
+        with IMP.allow_deprecated():
+            simo = IMP.pmi.representation.Representation(m,upperharmonic=True,disorderedlength=True)
 
         pdbfile = self.get_input_file_name("1WCM.pdb")
         fastafile = self.get_input_file_name("1WCM.fasta.txt")

@@ -2,9 +2,7 @@ import os
 import IMP
 import IMP.test
 
-import IMP.pmi.restraints.stereochemistry
-import IMP.pmi.representation
-import IMP.pmi.tools
+import IMP.pmi.topology
 import IMP.pmi.output
 
 class Tests(IMP.test.TestCase):
@@ -14,36 +12,31 @@ class Tests(IMP.test.TestCase):
         # input parameter
         pdbfile = self.get_input_file_name("mini.pdb")
         fastafile = self.get_input_file_name("mini.fasta")
+        seqs = IMP.pmi.topology.Sequences(fastafile)
 
         components = ["Rpb1", "Rpb2" ]
 
         chains = "AB"
 
-        colors = [0., 1.0]
-
         beadsize = 1
 
-        fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
-
-
         m = IMP.Model()
-        simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
+        st = s.create_state()
 
+        rpb1 = st.create_molecule("Rpb1", seqs[0], chain_id='A')
+        sres = rpb1.add_structure(pdbfile, 'A', soft_check=True)
+        rpb1.add_representation(sres, [1])
+        rpb1.add_representation(rpb1[:] - sres, [beadsize])
 
-        simo.create_component("Rpb1", color=colors[0])
-        simo.add_component_sequence("Rpb1", fastafile, id=fastids[0])
-        simo.autobuild_model("Rpb1", pdbfile, "A",
-                             resolutions=[1], missingbeadsize=beadsize)
-        simo.setup_component_sequence_connectivity("Rpb1", 1)
+        rpb2 = st.create_molecule("Rpb2", seqs[1], chain_id='B')
+        sres = rpb2.add_structure(pdbfile, 'B', soft_check=True)
+        rpb2.add_representation(sres, [1])
+        rpb2.add_representation(rpb2[:] - sres, [beadsize])
 
-        simo.create_component("Rpb2", color=colors[1])
-        simo.add_component_sequence("Rpb2", fastafile, id=fastids[1])
-        simo.autobuild_model("Rpb2", pdbfile, "B",
-                             resolutions=[1], missingbeadsize=beadsize)
-        simo.setup_component_sequence_connectivity("Rpb2", 1)
-
-        output = IMP.pmi.output.Output()
-        output.init_pdb("test_psf_writing.pdb", simo.prot)
+        root_hier = s.build()
+        output = IMP.pmi.output.Output(atomistic=True)
+        output.init_pdb("test_psf_writing.pdb", root_hier)
         output.write_pdb("test_psf_writing.pdb")
         output.write_psf("test_psf_writing.psf","test_psf_writing.pdb")
         psf_content='''PSF CMAP CHEQ

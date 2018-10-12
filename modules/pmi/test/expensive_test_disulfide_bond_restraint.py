@@ -77,7 +77,8 @@ class Tests(IMP.test.TestCase):
 
     def test_restraint_probability_beads(self):
         m = IMP.Model()
-        r = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            r = IMP.pmi.representation.Representation(m)
         r.create_component("ProtA",color=1.0)
         r.add_component_beads("ProtA", [(1,10)],incoord=(0,0,0))
         r.create_component("ProtB",color=1.0)

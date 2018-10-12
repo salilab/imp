@@ -102,17 +102,6 @@ class Tests(IMP.test.TestCase):
 
         self.assertEqual(cr.get_num_restraints(), 8)
 
-
-    def test_parse_dssp(self):
-        """Test reading DSSP files"""
-        sses = IMP.pmi.io.parse_dssp(self.get_input_file_name('chainA.dssp'),'A')
-        self.assertEqual(sorted(sses.keys()),sorted(['helix','beta','loop']))
-        self.assertEqual(sses['helix'][1][0],[100,126,'A'])
-        self.assertEqual(sses['beta'][0],[[76,78,'A'],[91,93,'A']])
-        self.assertEqual(len(sses['helix']),20)
-        self.assertEqual(len(sses['beta']),3)
-        self.assertEqual(len(sses['loop']),32)
-
     def test_elastic_network(self):
         """ test PMI setup of elastic nets """
         mdl = IMP.Model()
@@ -154,7 +143,8 @@ class Tests(IMP.test.TestCase):
         fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
 
         m = IMP.Model()
-        simo = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            simo = IMP.pmi.representation.Representation(m)
 
         simo.create_component(comps[0], color=colors[0])
         simo.add_component_sequence(comps[0], fastafile, id=fastids[0])

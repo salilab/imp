@@ -45,7 +45,8 @@ class Tests(IMP.test.TestCase):
         log_objects.append(sw)
 
         m = IMP.Model()
-        r = representation.Representation(m)
+        with IMP.allow_deprecated():
+            r = representation.Representation(m)
 
         hierarchies = {}
 

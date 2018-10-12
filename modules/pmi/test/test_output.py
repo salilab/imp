@@ -59,7 +59,8 @@ class Tests(IMP.test.TestCase):
     def test_get_particle_infos(self):
         """Test get_particle_infos_for_pdb_writing with no particles"""
         m = IMP.Model()
-        simo = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            simo = IMP.pmi.representation.Representation(m)
         output = IMP.pmi.output.Output()
         output.init_pdb("test_output.pdb", simo.prot)
         info, center = output.get_particle_infos_for_pdb_writing(
