@@ -116,7 +116,7 @@ _entity.pdbx_description
 _entity.formula_weight
 _entity.pdbx_number_of_molecules
 _entity.details
-1 polymer man Nup84 ? 1 .
+1 polymer man Nup84 532.606 1 .
 #
 """)
 
