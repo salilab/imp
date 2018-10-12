@@ -221,9 +221,10 @@ loop_
 _chem_comp.id
 _chem_comp.type
 _chem_comp.name
-MET 'L-peptide linking' .
-CYS 'D-peptide linking' CYSTEINE
-MYTYPE 'D-PEPTIDE LINKING' 'MY CUSTOM COMPONENT'
+_chem_comp.formula
+MET 'L-peptide linking' . .
+CYS 'D-peptide linking' CYSTEINE .
+MYTYPE 'D-PEPTIDE LINKING' 'MY CUSTOM COMPONENT' 'C6 H12'
 """
         entity_poly_cat = """
 loop_
@@ -254,6 +255,7 @@ _entity_poly_seq.hetero
                 self.assertEqual(s[3].id, 'MYTYPE')
                 self.assertEqual(s[3].type, 'D-peptide linking')
                 self.assertEqual(s[3].name, 'MY CUSTOM COMPONENT')
+                self.assertAlmostEqual(s[3].formula_weight, 84.162, places=1)
                 self.assertEqual(s[3].__class__, ihm.DPeptideChemComp)
                 # Class of standard type shouldn't be changed
                 self.assertEqual(s[4].type, 'L-peptide linking')

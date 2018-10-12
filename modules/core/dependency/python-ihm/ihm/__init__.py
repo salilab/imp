@@ -10,6 +10,7 @@
 """
 
 import itertools
+import re
 from .format import CifWriter
 import sys
 # Handle different naming of urllib in Python 2/3
@@ -523,6 +524,14 @@ class ChemComp(object):
        :param str code_canonical: Canonical version of `code` (which need not
               be unique).
        :param str name: A longer human-readable name for the component.
+       :param str formula: The chemical formula. This is a spaced-separated
+              list of the element symbols in the component, each followed
+              by an optional count (if omitted, 1 is assumed). The formula
+              is terminated with the formal charge (if not zero). The element
+              list should be sorted alphabetically, unless carbon is present,
+              in which case C and H precede the rest of the elements. For
+              example, water would be "H2 O" and arginine (with +1 formal
+              charge) "C6 H15 N4 O2 1".
 
        For example, glycine would have
        ``id='GLY', code='G', code_canonical='G'`` while selenomethionine would
@@ -533,9 +542,37 @@ class ChemComp(object):
 
     type = 'other'
 
-    def __init__(self, id, code, code_canonical, name=None):
+    _element_mass = {'H':1.008, 'C':12.011, 'N':14.007, 'O':15.999,
+                     'P':30.974, 'S':32.060, 'Se':78.971}
+
+    def __init__(self, id, code, code_canonical, name=None, formula=None):
         self.id = id
         self.code, self.code_canonical, self.name = code, code_canonical, name
+        self.formula = formula
+
+    def __get_weight(self):
+        # Calculate weight from formula
+        if self.formula is None:
+            return
+        spl = self.formula.split()
+        # Remove formal charge if present
+        if len(spl) > 0 and spl[-1].isdigit():
+            del spl[-1]
+        r = re.compile('(\D+)(\d*)$')
+        weight = 0.
+        for s in spl:
+            m = r.match(s)
+            if m is None:
+                raise ValueError("Bad formula fragment: %s" % s)
+            emass = self._element_mass.get(m.group(1), None)
+            if emass:
+                weight += emass * (int(m.group(2)) if m.group(2) else 1)
+            else:
+                # If element is unknown, weight is unknown too
+                return None
+        return weight
+
+    formula_weight = property(__get_weight, doc="Formula weight")
 
     # Equal if all identifiers are the same
     def __eq__(self, other):
@@ -582,18 +619,22 @@ class NonPolymerChemComp(ChemComp):
 
        :param str id: A globally unique identifier for this component.
        :param str name: A longer human-readable name for the component.
+       :param str formula: The chemical formula. See :class:`ChemComp` for
+              more details.
     """
     type = "non-polymer"
 
-    def __init__(self, id, name=None):
-        super(NonPolymerChemComp, self).__init__(id, id, id, name=name)
+    def __init__(self, id, name=None, formula=None):
+        super(NonPolymerChemComp, self).__init__(id, id, id, name=name,
+                                                 formula=formula)
 
 
 class WaterChemComp(NonPolymerChemComp):
     """The chemical component for crystal water.
     """
     def __init__(self):
-        super(WaterChemComp, self).__init__('HOH', name='WATER')
+        super(WaterChemComp, self).__init__('HOH', name='WATER',
+                                            formula="H2 O")
 
 
 class Alphabet(object):
@@ -628,26 +669,36 @@ class LPeptideAlphabet(Alphabet):
        modified residues are also included (e.g. MSE). For these their full name
        rather than a one-letter code is used.
     """
-    _comps = dict([code, LPeptideChemComp(id, code, code, name)]
-                 for code, id, name in
-                    [('A', 'ALA', 'ALANINE'), ('C', 'CYS', 'CYSTEINE'),
-                     ('D', 'ASP', 'ASPARTIC ACID'),
-                     ('E', 'GLU', 'GLUTAMIC ACID'),
-                     ('F', 'PHE', 'PHENYLALANINE'), ('H', 'HIS', 'HISTIDINE'),
-                     ('I', 'ILE', 'ISOLEUCINE'), ('K', 'LYS', 'LYSINE'),
-                     ('L', 'LEU', 'LEUCINE'), ('M', 'MET', 'METHIONINE'),
-                     ('N', 'ASN', 'ASPARAGINE'), ('P', 'PRO', 'PROLINE'),
-                     ('Q', 'GLN', 'GLUTAMINE'), ('R', 'ARG', 'ARGININE'),
-                     ('S', 'SER', 'SERINE'), ('T', 'THR', 'THREONINE'),
-                     ('V', 'VAL', 'VALINE'), ('W', 'TRP', 'TRYPTOPHAN'),
-                     ('Y', 'TYR', 'TYROSINE')])
-    _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE')
+    _comps = dict([code, LPeptideChemComp(id, code, code, name,
+                                          formula)]
+                 for code, id, name, formula in
+                    [('A', 'ALA', 'ALANINE', 'C3 H7 N O2'),
+                     ('C', 'CYS', 'CYSTEINE', 'C3 H7 N O2 S'),
+                     ('D', 'ASP', 'ASPARTIC ACID', 'C4 H7 N O4'),
+                     ('E', 'GLU', 'GLUTAMIC ACID', 'C5 H9 N O4'),
+                     ('F', 'PHE', 'PHENYLALANINE', 'C9 H11 N O2'),
+                     ('H', 'HIS', 'HISTIDINE', 'C6 H10 N3 O2 1'),
+                     ('I', 'ILE', 'ISOLEUCINE', 'C6 H13 N O2'),
+                     ('K', 'LYS', 'LYSINE', 'C6 H15 N2 O2 1'),
+                     ('L', 'LEU', 'LEUCINE', 'C6 H13 N O2'),
+                     ('M', 'MET', 'METHIONINE', 'C5 H11 N O2 S'),
+                     ('N', 'ASN', 'ASPARAGINE', 'C4 H8 N2 O3'),
+                     ('P', 'PRO', 'PROLINE', 'C5 H9 N O2'),
+                     ('Q', 'GLN', 'GLUTAMINE', 'C5 H10 N2 O3'),
+                     ('R', 'ARG', 'ARGININE', 'C6 H15 N4 O2 1'),
+                     ('S', 'SER', 'SERINE', 'C3 H7 N O3'),
+                     ('T', 'THR', 'THREONINE', 'C4 H9 N O3'),
+                     ('V', 'VAL', 'VALINE', 'C5 H11 N O2'),
+                     ('W', 'TRP', 'TRYPTOPHAN', 'C11 H12 N2 O2'),
+                     ('Y', 'TYR', 'TYROSINE', 'C9 H11 N O3')])
+    _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE',
+                                  formula="C2 H5 N O2")
 
     # common non-standard L-amino acids
-    _comps.update([id, LPeptideChemComp(id, id, canon, name)]
-                  for id, canon, name in
-                     [('MSE', 'M', 'SELENOMETHIONINE'),
-                      ('UNK', 'X', 'UNKNOWN')])
+    _comps.update([id, LPeptideChemComp(id, id, canon, name, formula)]
+                  for id, canon, name, formula in
+                     [('MSE', 'M', 'SELENOMETHIONINE', 'C5 H11 N O2 Se'),
+                      ('UNK', 'X', 'UNKNOWN', 'C4 H9 N O2')])
 
 
 class DPeptideAlphabet(Alphabet):
@@ -656,42 +707,55 @@ class DPeptideAlphabet(Alphabet):
        glycine which maps to :class:`PeptideChemComp`). See
        :class:`LPeptideAlphabet` for more details.
     """
-    _comps = dict([code, DPeptideChemComp(code, code, canon, name)]
-                  for canon, code, name in
-                    [('A', 'DAL', 'D-ALANINE'), ('C', 'DCY', 'D-CYSTEINE'),
-                     ('D', 'DAS', 'D-ASPARTIC ACID'),
-                     ('E', 'DGL', 'D-GLUTAMIC ACID'),
-                     ('F', 'DPN', 'D-PHENYLALANINE'),
-                     ('H', 'DHI', 'D-HISTIDINE'),
-                     ('I', 'DIL', 'D-ISOLEUCINE'), ('K', 'DLY', 'D-LYSINE'),
-                     ('L', 'DLE', 'D-LEUCINE'), ('M', 'MED', 'D-METHIONINE'),
-                     ('N', 'DSG', 'D-ASPARAGINE'), ('P', 'DPR', 'D-PROLINE'),
-                     ('Q', 'DGN', 'D-GLUTAMINE'), ('R', 'DAR', 'D-ARGININE'),
-                     ('S', 'DSN', 'D-SERINE'), ('T', 'DTH', 'D-THREONINE'),
-                     ('V', 'DVA', 'D-VALINE'), ('W', 'DTR', 'D-TRYPTOPHAN'),
-                     ('Y', 'DTY', 'D-TYROSINE')])
-    _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE')
+    _comps = dict([code, DPeptideChemComp(code, code, canon, name, formula)]
+                  for canon, code, name, formula in
+                    [('A', 'DAL', 'D-ALANINE', 'C3 H7 N O2'),
+                     ('C', 'DCY', 'D-CYSTEINE', 'C3 H7 N O2 S'),
+                     ('D', 'DAS', 'D-ASPARTIC ACID', 'C4 H7 N O4'),
+                     ('E', 'DGL', 'D-GLUTAMIC ACID', 'C5 H9 N O4'),
+                     ('F', 'DPN', 'D-PHENYLALANINE', 'C9 H11 N O2'),
+                     ('H', 'DHI', 'D-HISTIDINE', 'C6 H10 N3 O2 1'),
+                     ('I', 'DIL', 'D-ISOLEUCINE', 'C6 H13 N O2'),
+                     ('K', 'DLY', 'D-LYSINE', 'C6 H14 N2 O2'),
+                     ('L', 'DLE', 'D-LEUCINE', 'C6 H13 N O2'),
+                     ('M', 'MED', 'D-METHIONINE', 'C5 H11 N O2 S'),
+                     ('N', 'DSG', 'D-ASPARAGINE', 'C4 H8 N2 O3'),
+                     ('P', 'DPR', 'D-PROLINE', 'C5 H9 N O2'),
+                     ('Q', 'DGN', 'D-GLUTAMINE', 'C5 H10 N2 O3'),
+                     ('R', 'DAR', 'D-ARGININE', 'C6 H15 N4 O2 1'),
+                     ('S', 'DSN', 'D-SERINE', 'C3 H7 N O3'),
+                     ('T', 'DTH', 'D-THREONINE', 'C4 H9 N O3'),
+                     ('V', 'DVA', 'D-VALINE', 'C5 H11 N O2'),
+                     ('W', 'DTR', 'D-TRYPTOPHAN', 'C11 H12 N2 O2'),
+                     ('Y', 'DTY', 'D-TYROSINE', 'C9 H11 N O3')])
+    _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE',
+                                  formula="C2 H5 N O2")
 
 
 class RNAAlphabet(Alphabet):
     """A mapping from one-letter nucleic acid codes (e.g. A) to
        RNA (as :class:`RNAChemComp` objects)."""
-    _comps = dict([id, RNAChemComp(id, id, id, name)] for id, name in
-                    [('A', "ADENOSINE-5'-MONOPHOSPHATE"),
-                     ('C', "CYTIDINE-5'-MONOPHOSPHATE"),
-                     ('G', "GUANOSINE-5'-MONOPHOSPHATE"),
-                     ('U', "URIDINE-5'-MONOPHOSPHATE")])
+    _comps = dict([id, RNAChemComp(id, id, id, name, formula)]
+                  for id, name, formula in
+                    [('A', "ADENOSINE-5'-MONOPHOSPHATE", 'C10 H14 N5 O7 P'),
+                     ('C', "CYTIDINE-5'-MONOPHOSPHATE", 'C9 H14 N3 O8 P'),
+                     ('G', "GUANOSINE-5'-MONOPHOSPHATE", 'C10 H14 N5 O8 P'),
+                     ('U', "URIDINE-5'-MONOPHOSPHATE", 'C9 H13 N2 O9 P')])
 
 
 class DNAAlphabet(Alphabet):
     """A mapping from two-letter nucleic acid codes (e.g. DA) to
        DNA (as :class:`DNAChemComp` objects)."""
-    _comps = dict([code, DNAChemComp(code, code, canon, name)]
-                  for code, canon, name in
-                    [('DA', 'A', "2'-DEOXYADENOSINE-5'-MONOPHOSPHATE"),
-                     ('DC', 'C', "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE"),
-                     ('DG', 'G', "2'-DEOXYGUANOSINE-5'-MONOPHOSPHATE"),
-                     ('DT', 'T', "THYMIDINE-5'-MONOPHOSPHATE")])
+    _comps = dict([code, DNAChemComp(code, code, canon, name, formula)]
+                  for code, canon, name, formula in
+                    [('DA', 'A', "2'-DEOXYADENOSINE-5'-MONOPHOSPHATE",
+                      'C10 H14 N5 O6 P'),
+                     ('DC', 'C', "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE",
+                      'C9 H14 N3 O7 P'),
+                     ('DG', 'G', "2'-DEOXYGUANOSINE-5'-MONOPHOSPHATE",
+                      'C10 H14 N5 O7 P'),
+                     ('DT', 'T', "THYMIDINE-5'-MONOPHOSPHATE",
+                      'C10 H15 N2 O8 P')])
 
 
 class EntityRange(object):
@@ -703,6 +767,8 @@ class EntityRange(object):
            rng = entity(4,7)
     """
     def __init__(self, entity, seq_id_begin, seq_id_end):
+        if not entity.is_polymeric():
+            raise TypeError("Can only create ranges for polymeric entities")
         self.entity = entity
         # todo: check range for validity (at property read time)
         self.seq_id_range = (seq_id_begin, seq_id_end)
@@ -790,7 +856,6 @@ class Entity(object):
 
     src_method = 'man'
     number_of_molecules = 1
-    formula_weight = unknown
 
     def __get_type(self):
         if self.is_polymeric():
@@ -798,6 +863,18 @@ class Entity(object):
         else:
             return 'water' if self.sequence[0].code == 'HOH' else 'non-polymer'
     type = property(__get_type)
+
+    def __get_weight(self):
+        weight = 0.
+        for s in self.sequence:
+            w = s.formula_weight
+            # If any component's weight is unknown, the total is too
+            if w:
+                weight += w
+            else:
+                return None
+        return weight
+    formula_weight = property(__get_weight, doc="Formula weight")
 
     def __init__(self, sequence, alphabet=LPeptideAlphabet,
                  description=None, details=None):
@@ -828,8 +905,13 @@ class Entity(object):
     def __call__(self, seq_id_begin, seq_id_end):
         return EntityRange(self, seq_id_begin, seq_id_end)
 
-    seq_id_range = property(lambda self: (1, len(self.sequence)),
-                            doc="Sequence range")
+    def __get_seq_id_range(self):
+        if self.is_polymeric():
+            return (1, len(self.sequence))
+        else:
+            # Nonpolymers don't have the concept of seq_id
+            return (None, None)
+    seq_id_range = property(__get_seq_id_range, doc="Sequence range")
 
 
 class AsymUnitRange(object):
@@ -841,6 +923,8 @@ class AsymUnitRange(object):
            rng = asym(4,7)
     """
     def __init__(self, asym, seq_id_begin, seq_id_end):
+        if asym.entity is not None and not asym.entity.is_polymeric():
+            raise TypeError("Can only create ranges for polymeric entities")
         self.asym = asym
         # todo: check range for validity (at property read time)
         self.seq_id_range = (seq_id_begin, seq_id_end)
@@ -906,7 +990,7 @@ class AsymUnit(object):
         """Get a :class:`Residue` at the given sequence position"""
         return Residue(asym=self, seq_id=seq_id)
 
-    seq_id_range = property(lambda self: (1, len(self.entity.sequence)),
+    seq_id_range = property(lambda self: self.entity.seq_id_range,
                             doc="Sequence range")
 
 
