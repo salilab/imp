@@ -132,7 +132,9 @@ class TestPMI(IMP.test.TestCase):
         # setting up topology
 
         m = IMP.Model()
-        simo = IMP.pmi.representation.Representation(m,upperharmonic=True,disorderedlength=False)
+        with IMP.allow_deprecated():
+            simo = IMP.pmi.representation.Representation(
+                            m,upperharmonic=True,disorderedlength=False)
 
         fastadirectory = self.get_input_file_name("mediator/")
         pdbdirectory=self.get_input_file_name("mediator/")

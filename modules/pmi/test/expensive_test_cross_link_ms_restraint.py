@@ -72,7 +72,8 @@ def log_evaluate(restraints):
     return score
 
 def init_representation_beads(m):
-    r = IMP.pmi.representation.Representation(m)
+    with IMP.allow_deprecated():
+        r = IMP.pmi.representation.Representation(m)
     r.create_component("ProtA",color=1.0)
     r.add_component_beads("ProtA", [(1,10)],incoord=(0,0,0))
     r.add_component_beads("ProtA", [(11,20)],incoord=(10,0,0))
@@ -159,7 +160,8 @@ class Tests(IMP.test.TestCase):
         beadsize = 20
         fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
 
-        r = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            r = IMP.pmi.representation.Representation(m)
         hierarchies = {}
         for n in range(len(components)):
             r.create_component(components[n], color=colors[n])
@@ -221,7 +223,8 @@ class Tests(IMP.test.TestCase):
 
     def test_restraint_ambiguity(self):
         m=IMP.Model()
-        r = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            r = IMP.pmi.representation.Representation(m)
         r.create_component("ProtA",color=1.0)
         r.add_component_beads("ProtA", [(1,10)],incoord=(0,0,0))
         r.create_component("ProtB",color=1.0)

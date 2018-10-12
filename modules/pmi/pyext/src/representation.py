@@ -36,6 +36,8 @@ class _StateInfo(object):
     short_name = None
     long_name = None
 
+@IMP.pmi.deprecated_pmi1_object("2.10",
+                                "use IMP.pmi.topology.System instead")
 class Representation(object):
     # Authors: Peter Cimermancic, Riccardo Pellarin, Charles Greenberg
 

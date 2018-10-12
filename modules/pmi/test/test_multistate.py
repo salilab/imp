@@ -23,7 +23,8 @@ class Tests(IMP.test.TestCase):
 
 
         m = IMP.Model()
-        r = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            r = IMP.pmi.representation.Representation(m)
 
         r.create_component("particle1", color=0.1)
         p11 = r.add_component_beads("particle1", [(1, 10)])
@@ -36,7 +37,8 @@ class Tests(IMP.test.TestCase):
 
         # define the particles in state 2
 
-        r = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            r = IMP.pmi.representation.Representation(m)
 
         r.create_component("particle1", color=0.1)
         p12 = r.add_component_beads("particle1", [(1, 10)])

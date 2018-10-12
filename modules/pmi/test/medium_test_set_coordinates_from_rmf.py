@@ -27,7 +27,8 @@ class Tests(IMP.test.TestCase):
         fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
 
         m = IMP.Model()
-        simo = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            simo = IMP.pmi.representation.Representation(m)
 
 
         simo.create_component("Rpb1", color=colors[0])
@@ -56,7 +57,8 @@ class Tests(IMP.test.TestCase):
         pdbfile = self.get_input_file_name("1WCM.pdb")
         fastafile = self.get_input_file_name("1WCM.fasta.txt")
         m = IMP.Model()
-        simo = IMP.pmi.representation.Representation(m,upperharmonic=True,disorderedlength=False)
+        with IMP.allow_deprecated():
+            simo = IMP.pmi.representation.Representation(m,upperharmonic=True,disorderedlength=False)
 
         domains=[("Rpb8",   "Rpb8",        0.0,   fastafile, "1WCM:I",  "BEADS", None, (1,-1),      "BEADSONLY", 20,       0,     None, 0, None, None, None),
                  ("Rpb9",   "Rpb9",        0.0,   fastafile, "1WCM:I",  "BEADS", None, (1,-1),      None, 20,              1,     None, 0, None, None, None),

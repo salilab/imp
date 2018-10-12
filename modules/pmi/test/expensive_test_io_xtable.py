@@ -38,7 +38,8 @@ class Tests(IMP.test.TestCase):
         beadsize = 20
         fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
 
-        r = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            r = IMP.pmi.representation.Representation(m)
         hierarchies = {}
         for n in range(len(components)):
             r.create_component(components[n], color=colors[n])
@@ -59,7 +60,8 @@ class Tests(IMP.test.TestCase):
             self.skipTest("no matplotlib module")
         cldb=self.init_crosslink_db()
         self.init_representation_complex()
-        xlt=IMP.pmi.io.xltable.XLTable(35)
+        with IMP.allow_deprecated():
+            xlt=IMP.pmi.io.xltable.XLTable(35)
         prots = ["Rpb1","Rpb2","Rpb3","Rpb4"]
         chains = "ABCD"
         for n,prot in enumerate(prots):

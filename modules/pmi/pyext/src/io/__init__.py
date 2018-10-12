@@ -27,17 +27,17 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
            (name_map should be a dictionary with chain IDs as keys and
            molecule names as values).
 
-    @return a dictionary with keys 'helix', 'beta', 'loop'
-    Each contains a list of SSEs.
-    Each SSE is a list of elements (e.g. strands in a sheet)
-    Each element is a tuple (residue start, residue end, chain)
+    @return a dictionary with keys 'helix', 'beta', 'loop'.
+            Each contains a list of SSEs.
+            Each SSE is a list of elements (e.g. strands in a sheet).
+            Each element is a tuple (residue start, residue end, chain).
 
     Example for a structure with helix A:5-7 and Beta strands A:1-3,A:9-11:
 
     @code{.py}
-    ret = { 'helix' : [ [ (5,7,'A') ],... ]
+    ret = { 'helix' : [ [ (5,7,'A') ], ...]
             'beta'  : [ [ (1,3,'A'),
-                          (9,11,'A'),...],...]
+                          (9,11,'A'), ...], ...]
             'loop'  : same format as helix
           }
     @endcode
@@ -47,10 +47,7 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
         if name_map is None:
             return ch
         else:
-            try:
-                return name_map[ch]
-            except:
-                return ch
+            return name_map.get(ch, ch)
 
     # setup
     helix_classes = 'GHI'
@@ -106,7 +103,7 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
                 # add cur_sse to the right place
                 if prev_sstype in ['helix', 'loop']:
                     sses[prev_sstype].append([cur_sse])
-                elif prev_sstype == 'beta':
+                else: # prev_sstype == 'beta'
                     beta_dict[prev_beta_id].append(cur_sse)
                 cur_sse = [pdb_res_num,pdb_res_num,convert_chain(chain)]
             else:
@@ -119,11 +116,10 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
                 prev_beta_id = beta_id
 
     # final SSE processing
-    if not prev_sstype is None:
-        if prev_sstype in ['helix', 'loop']:
-            sses[prev_sstype].append([cur_sse])
-        elif prev_sstype == 'beta':
-            beta_dict[prev_beta_id].append(cur_sse)
+    if prev_sstype in ['helix', 'loop']:
+        sses[prev_sstype].append([cur_sse])
+    elif prev_sstype == 'beta':
+        beta_dict[prev_beta_id].append(cur_sse)
     # gather betas
     for beta_sheet in beta_dict:
         sses['beta'].append(beta_dict[beta_sheet])
@@ -571,6 +567,8 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
 
     return rmsd_bead_size_dict
 
+@IMP.deprecated_object(2.10,
+        "If you use this class please let the PMI developers know.")
 class RMSDOutput(object):
     """A helper output based on dist to initial coordinates"""
     def __init__(self,ps,label,init_coords=None):

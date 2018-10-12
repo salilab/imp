@@ -12,8 +12,9 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         self.model = IMP.Model()
-        self.simo1 = IMP.pmi.representation.Representation(
-            self.model, upperharmonic=True, disorderedlength=False)
+        with IMP.allow_deprecated():
+            self.simo1 = IMP.pmi.representation.Representation(
+                self.model, upperharmonic=True, disorderedlength=False)
 
     def test_GaussianEMRestraint_rigid_body(self):
         """Test rigid body movement of target EM map"""

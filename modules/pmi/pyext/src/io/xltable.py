@@ -26,7 +26,7 @@ import IMP.pmi.analysis
 import operator
 
 @IMP.deprecated_object("2.8", "Use PMI2, IMP.pmi.macros.AnalysisReplicaExchange,  instead")
-class XLTable():
+class XLTable(object):
     """ class to read, analyze, and plot xlink data on contact maps
     Canonical way to read the data:
     1) load sequences and name them

@@ -1,16 +1,6 @@
 """@namespace IMP.pmi.dof
-   Create movers and setup constraints for PMI objects.
-* Start by creating the DegreesOfFreedom class with `dof = IMP::pmi::dof::DegreesOfFreedom(model)`
-* The various "create X" functions make movers for system components as well as setup necessary constraints.
-For each of these functions, you can generally pass PMI objects like [Molecule](@ref IMP::pmi::topology::Molecule) or slices thereof.
- * DegreesOfFreedom.create_rigid_body() lets you rigidify a molecule (but allows you to also pass "nonrigid" components which move with the body and also independently).
- * DegreesOfFreedom.create_super_rigid_body() sets up a special "Super Rigid Body" which moves
-rigidly but is not always constrained to be rigid (so you can later move the parts separately). Good for speeding up sampling.
- * DegreesOfFreedom.create_flexible_beads() sets up particles to move individually.
- * DegreesOfFreedom.setup_md() sets up particles to move with molecular dynamics. Note that this is not (yet) compatible with rigid bodies, and only some restraints.
- * DegreesOfFreedom.constrain_symmetry() makes a symmetry constraint so that clones automatically move with their references. If instead you want a softer restraint, check out the [SymmetryRestraint](@ref IMP::pmi::restraints::stereochemistry::SymmetryRestraint).
-* When you are done you can access all movers with DegreesOfFreedom.get_movers(). If you have set up rigid, super rigid, or flexible beads, pass the movers to the `monte_carlo_sample_objects` argument of [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0).
-* If you are running MD, you have to separately pass the particles (also returned from DegreesOfFreedom.setup_md()) to the `molecular_dynamics_sample_objects` argument of [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0). Check out an [MD example here](pmi_2atomistic_8py-example.html).
+   Create movers and set up constraints for PMI objects.
+   See the documentation of the DegreesOfFreedom class for more information.
 """
 
 from __future__ import print_function
@@ -33,9 +23,38 @@ def create_rigid_body_movers(dof,maxtrans,maxrot):
     return mvs
 
 class DegreesOfFreedom(object):
-    """A class to simplify create of constraints and movers for an IMP Hierarchy.
-    Call the various create() functions to get started.
-    Can get all enabled movers with get_movers(). Pass this to ReplicaExchange0.
+    """Simplify creation of constraints and movers for an IMP Hierarchy.
+
+       * The various "create X" functions make movers for system components
+         as well as set up necessary constraints. For each of these functions,
+         you can generally pass PMI objects like
+         [Molecule](@ref IMP::pmi::topology::Molecule) or slices thereof.
+       * DegreesOfFreedom.create_rigid_body() lets you rigidify a molecule
+         (but allows you to also pass "nonrigid" components which move with
+         the body and also independently).
+       * DegreesOfFreedom.create_super_rigid_body() sets up a special
+         "Super Rigid Body" which moves rigidly but is not always constrained
+         to be rigid (so you can later move the parts separately). This is
+         good for speeding up sampling.
+       * DegreesOfFreedom.create_flexible_beads() sets up particles to move
+         individually.
+       * DegreesOfFreedom.setup_md() sets up particles to move with molecular
+         dynamics. Note that this is not (yet) compatible with rigid bodies,
+         and only works with some restraints.
+       * DegreesOfFreedom.constrain_symmetry() makes a symmetry constraint so
+         that clones automatically move with their references. If instead you
+         want a softer restraint, check out the
+         [SymmetryRestraint](@ref IMP::pmi::restraints::stereochemistry::SymmetryRestraint).
+       * When you are done you can access all movers with
+         DegreesOfFreedom.get_movers(). If you have set up rigid, super rigid,
+         or flexible beads, pass the movers to the `monte_carlo_sample_objects`
+         argument of
+         [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0).
+       * If you are running MD, you have to separately pass the particles
+         (also returned from DegreesOfFreedom.setup_md()) to the
+         `molecular_dynamics_sample_objects` argument of
+         [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0). Check
+         out an [MD example here](pmi_2atomistic_8py-example.html).
     """
     def __init__(self,model):
         self.model = model
@@ -60,6 +79,23 @@ class DegreesOfFreedom(object):
     def mdl(self):
         return self.model
 
+    def _get_nonrigid_hiers(self, nonrigid_parts, rigid_hiers, resolution):
+        """Get Hierarchy objects for nonrigid parts. Make sure that they are
+           a subset of the rigid body Hierarchies."""
+        if not nonrigid_parts:
+            return
+        nr_hiers = IMP.pmi.tools.input_adaptor(nonrigid_parts, resolution,
+                                               flatten=True)
+        if nr_hiers:
+            rb_idxs = set(h.get_particle_index() for h in rigid_hiers)
+            for h in nr_hiers:
+                p = h.get_particle()
+                if p.get_index() not in rb_idxs:
+                    raise ValueError(
+                                "You tried to create nonrigid members from "
+                                "particles that aren't in the RigidBody!")
+        return nr_hiers
+
     def create_rigid_body(self,
                           rigid_parts,
                           nonrigid_parts=None,
@@ -70,19 +106,21 @@ class DegreesOfFreedom(object):
                           name=None):
         """Create rigid body constraint and mover
         @param rigid_parts Can be one of the following inputs:
-           IMP Hierarchy, PMI System/State/Molecule/TempResidue, a list/set (of list/set) of them
-           or a RigidBody object.
-           Must be uniform input, however. No mixing object types.
+               IMP Hierarchy, PMI System/State/Molecule/TempResidue, a list/set
+               (of list/set) of them or a RigidBody object.
+               Must be uniform input, however. No mixing object types.
         @param nonrigid_parts Same input format as rigid_parts.
                Must be a subset of rigid_parts particles.
         @param max_trans Maximum rigid body translation
         @param max_rot Maximum rigid body rotation
         @param nonrigid_max_trans Maximum step for the nonrigid (bead) particles
-        @param resolution Only used if you pass PMI objects. Probably you want 'all'.
+        @param resolution Only used if you pass PMI objects. Probably you
+               want 'all'.
         @param name Rigid body name (if None, use IMP default)
-        \note If you want all resolutions, pass PMI objects because this function will get them all.
-        Alternatively you can do your selection elsewhere and just pass hierarchies.
-        Returns tuple (rb_movers,rb_object)
+        @eturn (rb_movers,rb_object)
+        @note If you want all resolutions, pass PMI objects because this
+              function will get them all. Alternatively you can do your
+              selection elsewhere and just pass hierarchies.
         """
 
         rb_movers = []
@@ -94,7 +132,7 @@ class DegreesOfFreedom(object):
             print("WARNING: Rigid Body Already Setup")
             rb = rigid_parts
             model=rb.get_model()
-            if name is not None:
+            if name is None:
                 name = rb.get_name()
             hiers= [IMP.atom.get_leaves(IMP.atom.Hierarchy(m.get_particle(i)))[0] for i in rb.get_member_particle_indexes()]
         else:
@@ -103,10 +141,16 @@ class DegreesOfFreedom(object):
                                                 resolution,
                                                 flatten=True)
 
-            model=hiers[0].get_model()
             if not hiers:
                 print("WARNING: No hierarchies were passed to create_rigid_body()")
                 return []
+
+        # Need to do this before rigid body is set up so that we leave the
+        # system in a consistent state if a sanity check fails
+        nr_hiers = self._get_nonrigid_hiers(nonrigid_parts, hiers, resolution)
+
+        if type(rigid_parts) is not IMP.core.RigidBody:
+            model=hiers[0].get_model()
 
             #we need to use the following constructor because the IMP.core.create_rigid_body seems
             #to construct an arbitrary reference frame, which will be different for all copies.
@@ -135,31 +179,22 @@ class DegreesOfFreedom(object):
         for h in hiers:
             self.movers_particles_map[rb_mover]+=IMP.atom.get_leaves(h)
         ### setup nonrigid parts
-        if nonrigid_parts:
-            nr_hiers = IMP.pmi.tools.input_adaptor(nonrigid_parts,
-                                                   resolution,
-                                                   flatten=True)
-            if nr_hiers:
-                floatkeys = [IMP.FloatKey(4), IMP.FloatKey(5), IMP.FloatKey(6)]
-                rb_idxs = set(rb.get_member_indexes())
-                for h in nr_hiers:
-                    self.flexible_beads.append(h)
-                    p = h.get_particle()
-                    if not p.get_index() in rb_idxs:
-                        raise Exception("You tried to create nonrigid members from "
-                                         "particles that aren't in the RigidBody!")
-
-                    rb.set_is_rigid_member(p.get_index(),False)
-                    for fk in floatkeys:
-                        p.set_is_optimized(fk,True)
-                    fbmv=IMP.core.BallMover(p.get_model(), p,
-                                            IMP.FloatKeys(floatkeys),
-                                            nonrigid_max_trans)
-                    self.fb_movers.append(fbmv)
-                    self.movers_particles_map[fbmv]=IMP.atom.get_leaves(h)
-                    self.movers_xyz_map[fbmv]=IMP.atom.get_leaves(h)
-                    fbmv.set_was_used(True)
-                    rb_movers.append(fbmv)
+        if nr_hiers:
+            floatkeys = [IMP.FloatKey(4), IMP.FloatKey(5), IMP.FloatKey(6)]
+            for h in nr_hiers:
+                self.flexible_beads.append(h)
+                p = h.get_particle()
+                rb.set_is_rigid_member(p.get_index(),False)
+                for fk in floatkeys:
+                    p.set_is_optimized(fk,True)
+                fbmv=IMP.core.BallMover(p.get_model(), p,
+                                        IMP.FloatKeys(floatkeys),
+                                        nonrigid_max_trans)
+                self.fb_movers.append(fbmv)
+                self.movers_particles_map[fbmv]=IMP.atom.get_leaves(h)
+                self.movers_xyz_map[fbmv]=IMP.atom.get_leaves(h)
+                fbmv.set_was_used(True)
+                rb_movers.append(fbmv)
 
         self.movers += rb_movers # probably need to store more info
         self._rb2mov[rb] = rb_movers #dictionary relating rb to movers
@@ -194,23 +229,32 @@ class DegreesOfFreedom(object):
                                 resolution='all',
                                 name=None,
                                 axis=None):
-        """Create SUPER rigid body mover from one or more hierarchies. Can also create chain of SRBs.
-        If you don't pass chain min/max, it'll treat everything you pass as ONE rigid body.
-        If you DO pass chain min/max, it'll expect srb_parts is a list and break it into bits.
-        @param srb_parts Can be one of the following inputs:
-               IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.
-               Must be uniform input, however. No mixing object types.
-        @param max_trans Maximum super rigid body translation
-        @param max_rot Maximum super rigid body rotation
-        @param chain_min_length Create a CHAIN of super rigid bodies - must provide list
-               This parameter is the minimum chain length.
-        @param chain_max_length Maximum chain length
-        @param resolution Only used if you pass PMI objects. Probably you want 'all'.
-        @param name The name of the SRB (hard to assign a good one automatically)
-        @param axis A tuple containing two particles which are used to compute
-                    the rotation axis of the SRB. The default is None, meaning that the rotation axis is random.
-        \note If you set the chain parameters, will NOT create an SRB from all of them together,
-        but rather in groups made from the outermost list.
+        """Create SUPER rigid body mover from one or more hierarchies.
+
+           Can also create chain of SRBs. If you don't pass chain min/max,
+           it'll treat everything you pass as ONE rigid body.
+           If you DO pass chain min/max, it'll expect srb_parts is a list
+           and break it into bits.
+           @param srb_parts Can be one of the following inputs:
+                  IMP Hierarchy, PMI System/State/Molecule/TempResidue,
+                  or a list/set (of list/set) of them.
+                  Must be uniform input, however. No mixing object types.
+           @param max_trans Maximum super rigid body translation
+           @param max_rot Maximum super rigid body rotation
+           @param chain_min_length Create a CHAIN of super rigid bodies -
+                  must provide list; this parameter is the minimum chain length.
+           @param chain_max_length Maximum chain length
+           @param resolution Only used if you pass PMI objects. Probably you
+                  want 'all'.
+           @param name The name of the SRB (hard to assign a good one
+                  automatically)
+           @param axis A tuple containing two particles which are used to
+                  compute the rotation axis of the SRB. The default is None,
+                  meaning that the rotation axis is random.
+
+           @note If you set the chain parameters, will NOT create an SRB from
+                 all of them together, but rather in groups made from the
+                 outermost list.
         """
 
         srb_movers = []
@@ -279,11 +323,14 @@ class DegreesOfFreedom(object):
                               max_trans=3.0,
                               resolution='all'):
         """Create a chain of flexible beads
-        @param flex_parts Can be one of the following inputs:
-               IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set (of list/set) of them.
-               Must be uniform input, however. No mixing object types.
-        @param max_trans Maximum flexible bead translation
-        @param resolution Only used if you pass PMI objects. Probably you want 'all'.
+
+           @param flex_parts Can be one of the following inputs:
+                  IMP Hierarchy, PMI System/State/Molecule/TempResidue,
+                  or a list/set (of list/set) of them.
+                  Must be uniform input, however. No mixing object types.
+           @param max_trans Maximum flexible bead translation
+           @param resolution Only used if you pass PMI objects. Probably
+                  you want 'all'.
         """
 
         fb_movers = []

@@ -1,5 +1,5 @@
 """@namespace IMP.pmi.topology
- of python classes to create a multi-state, multi-resolution IMP hierarchy.
+ Set of Python classes to create a multi-state, multi-resolution IMP hierarchy.
 * Start by creating a System with `model = IMP.Model(); s = IMP.pmi.topology.System(model)`. The System will store all the states.
 * Then call System.create_state(). You can easily create a multistate system by calling this function multiple times.
 * For each State, call State.create_molecule() to add a Molecule (a uniquely named polymer). This function returns the Molecule object which can be passed to various PMI functions.
@@ -126,7 +126,7 @@ class System(_SystemBase):
         return self.states
 
     def create_state(self):
-        """returns a new IMP.pmi.representation_new.State(), increment the state index"""
+        """Makes and returns a new IMP.pmi.topology.State in this system"""
         self._number_of_states+=1
         state = State(self,self._number_of_states-1)
         self.states.append(state)
@@ -136,14 +136,14 @@ class System(_SystemBase):
         return self.hier.get_name()
 
     def get_number_of_states(self):
-        """returns the total number of states generated"""
+        """Returns the total number of states generated"""
         return self._number_of_states
 
     def get_hierarchy(self):
         return self.hier
 
     def build(self,**kwargs):
-        """call build on all states"""
+        """Build all states"""
         if not self.built:
             for state in self.states:
                 state.build(**kwargs)
@@ -223,7 +223,7 @@ class State(_SystemBase):
         @param name                the name of the molecule (string);
                                    it must not be already used
         @param sequence            sequence (string)
-        @param chain_id            Chain id to assign to this molecule
+        @param chain_id            Chain ID to assign to this molecule
         """
         # check whether the molecule name is already assigned
         if name in self.molecules:
@@ -319,9 +319,10 @@ class _RepresentationHandler(object):
 class Molecule(_SystemBase):
     """Stores a named protein chain.
     This class is constructed from within the State class.
-    It wraps an IMP.atom.Molecule and IMP.atom.Copy
-    Structure is read using this class
-    Resolutions and copies can be registered, but are only created when build() is called
+    It wraps an IMP.atom.Molecule and IMP.atom.Copy.
+    Structure is read using this class.
+    Resolutions and copies can be registered, but are only created
+    when build() is called
     """
 
     def __init__(self,state,name,sequence,chain_id,copy_num,mol_to_clone=None,is_nucleic=None):
@@ -458,19 +459,23 @@ class Molecule(_SystemBase):
                       offset=0,model_num=None,ca_only=False,
                       soft_check=False):
         """Read a structure and store the coordinates.
-        Returns the atomic residues (as a set)
-        @param pdb_fn    The file to read
-        @param chain_id  Chain ID to read
-        @param res_range Add only a specific set of residues from the PDB file.
-                         res_range[0] is the starting and res_range[1] is the ending residue index.
-        @param offset    Apply an offset to the residue indexes of the PDB file.
-                         This number is added to the PDB sequence.
-        @param model_num Read multi-model PDB and return that model
-        @param ca_only   Only read the CA positions from the PDB file
-        @param soft_check If True, it only warns if there are sequence mismatches between the pdb and
-               the Molecules sequence. Actually replaces the fasta values.
-                          If False (Default), it raises and exit when there are sequence mismatches.
-        \note If you are adding structure without a FASTA file, set soft_check to True
+        @eturn the atomic residues (as a set)
+        @param pdb_fn     The file to read
+        @param chain_id   Chain ID to read
+        @param res_range  Add only a specific set of residues from the PDB file.
+                          res_range[0] is the starting and res_range[1] is the
+                          ending residue index.
+        @param offset     Apply an offset to the residue indexes of the PDB
+                          file. This number is added to the PDB sequence.
+        @param model_num  Read multi-model PDB and return that model
+        @param ca_only    Only read the CA positions from the PDB file
+        @param soft_check If True, it only warns if there are sequence
+                          mismatches between the PDB and the Molecule (FASTA)
+                          sequence, and uses the sequence from the PDB.
+                          If False (Default), it raises an error when there
+                          are sequence mismatches.
+        @note If you are adding structure without a FASTA file, set soft_check
+              to True.
         """
         if self.mol_to_clone is not None:
             raise ValueError('You cannot call add_structure() for a clone')
@@ -561,7 +566,8 @@ class Molecule(_SystemBase):
                or float (from 0 to 1, a map from Blue to Green to Red)
                or IMP.display.Color object
 
-        \note You cannot call add_representation multiple times for the same residues.
+        @note You cannot call add_representation multiple times for the
+              same residues.
         """
 
         # can't customize clones
@@ -663,11 +669,12 @@ class Molecule(_SystemBase):
 
     def build(self):
         """Create all parts of the IMP hierarchy
-        including Atoms, Residues, and Fragments/Representations and, finally, Copies
+        including Atoms, Residues, and Fragments/Representations and,
+        finally, Copies.
         Will only build requested representations.
-        /note Any residues assigned a resolution must have an IMP.atom.Residue hierarchy
-              containing at least a CAlpha. For missing residues, these can be constructed
-              from the PDB file
+        @note Any residues assigned a resolution must have an IMP.atom.Residue
+              hierarchy containing at least a CAlpha. For missing residues,
+              these can be constructed from the PDB file.
         """
         if not self.built:
             # Add molecule name and sequence to any ProtocolOutput objects
