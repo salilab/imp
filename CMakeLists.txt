@@ -269,6 +269,7 @@ set(BOOST.RANDOM_LIBRARIES ${Boost_RANDOM_LIBRARY_RELEASE})
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.FileSystem" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.ProgramOptions" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Thread" "ok=True")
 
 if(NOT IMP_STATIC)
   # Automatically enable OpenMP if available and at least version 3
