@@ -51,8 +51,8 @@ struct FileBufferCopyIn : public BufferCopyIn {
 #ifdef _WIN32
   HANDLE h_;
   FileBufferCopyIn(const char* filename)
-      : h_(::CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_ALWAYS,
-                        FILE_ATTRIBUTE_NORMAL, NULL)) {
+      : h_(::CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL,
+                        OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL)) {
     if (h_ == INVALID_HANDLE_VALUE) {
       throw Exception(boost::format("Cannot open file: %1%") %
                       ::GetLastError());
