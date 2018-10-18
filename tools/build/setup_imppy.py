@@ -125,7 +125,7 @@ class FileGenerator(object):
                             val[0], val[1], val[2], sep))
             else:
                 contents.append(line)
-        tools.rewrite(outfile, "\n".join(contents))
+        tools.rewrite(outfile, "\n".join(contents), verbose=False)
         os.chmod(outfile, stat.S_IRWXU)
 
 
