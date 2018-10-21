@@ -43,7 +43,7 @@ void UniformBackboneSampler::apply(const DOFValues& values) {
 
 void UniformBackboneSampler::apply_floats(const Floats& values) {
    DOFValues dof_values;
-   dof_values.reserve(get_number_of_dofs())
+   dof_values.reserve(get_number_of_dofs());
    for (unsigned int i = 0; i < joints_.size(); i++) 
      dof_values.push_back(values[i]);
    apply(dof_values);

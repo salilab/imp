@@ -34,7 +34,6 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
        flexible_side_chains);
 }
 
-
 ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      const atom::Residues& flexible_residues,
                                      const ParticleIndexQuads custom_dihedral_angles,
@@ -274,6 +273,9 @@ void ProteinKinematics::add_edges_to_rb_graph(
 void ProteinKinematics::build_topology_graph() {
   // map graph nodes (=atoms) to ParticleIndex
   for (unsigned int i = 0; i < atom_particles_.size(); i++) {
+    //for all atom_particles_, get the ParticleIndex and put that in 
+    // particle_index_to_node_map_ (pindex :: i)
+    // Append pindex to node_to_particle_index_map_
     ParticleIndex pindex = atom_particles_[i]->get_index();
     particle_index_to_node_map_[pindex] = i;
     node_to_particle_index_map_.push_back(pindex);
@@ -281,17 +283,20 @@ void ProteinKinematics::build_topology_graph() {
 
   // add edges to graph_
   atom::Bonds bonds = atom::get_internal_bonds(mhd_);
+  //std::cout << "# Bonds = " << bonds.size() << std::endl;
   for (unsigned int i = 0; i < bonds.size(); i++) {
     atom::Bonded p1 = atom::Bond(bonds[i]).get_bonded(0);
     atom::Bonded p2 = atom::Bond(bonds[i]).get_bonded(1);
     int atom_index1 = particle_index_to_node_map_[p1->get_index()];
     int atom_index2 = particle_index_to_node_map_[p2->get_index()];
     boost::add_edge(atom_index1, atom_index2, graph_);
+    //std::cout << "Bond added between atom " << atom::Atom(p1) << " " << atom::Atom(p2) << std::endl;
   }
 
   // TODO: add IMP_CHECK on this code
   std::vector<int> component(boost::num_vertices(graph_));
   unsigned int num = boost::connected_components(graph_, &component[0]);
+  //std::cout << "Num Connected Components = " << num << std::endl;
 }
 
 void ProteinKinematics::mark_rotatable_angles(
