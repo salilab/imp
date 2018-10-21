@@ -31,13 +31,15 @@ class IMPKINEMATICSEXPORT DirectionalDOF : public IMP::Object {
     // IMP_CHECK...
 
     // determine step size based on each DOF
+    // Total number of steps between endpoint1 and endpoint2
+    // determined by the number of steps between the largest DOF
     step_number_ = 0;
     for (unsigned int i = 0; i < dofs_.size(); i++) {
       int dof_step_number =
           dofs_[i]->get_number_of_steps(endpoint1_[i], endpoint2_[i]);
       if (dof_step_number > step_number_) step_number_ = dof_step_number;
     }
-
+    // current_delta_ is the delta in values of q between start and endpoints
     for (unsigned int i = 0; i < dofs_.size(); i++) {
       current_delta_[i] = (endpoint2_[i] - endpoint1_[i]) / step_number_;
     }
