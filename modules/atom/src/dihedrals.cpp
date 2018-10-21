@@ -342,7 +342,6 @@ std::vector<Atoms> get_chi_dihedral_atoms(Residue rd) {
     return {}; 
 
   } else {
-    std::cout << " " << rd << " " << std::endl;
 
     std::vector<Atoms> das;
 
@@ -351,11 +350,9 @@ std::vector<Atoms> get_chi_dihedral_atoms(Residue rd) {
       AtomTypes atypes = dats[i];
 
       for( unsigned int j=0; j<4; j++) {
-          std::cout << i << ":" << j << " " << atypes[j] << std::endl;
           da.push_back(IMP::atom::get_atom(rd, atypes[j]));
       }  
       das.push_back(da);
-      std::cout << " ATYPES " << atypes << " " << da  << std::endl;;
     }
 
     return das;
