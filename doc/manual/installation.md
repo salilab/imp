@@ -137,7 +137,8 @@ like:
     make -j8
 
 There are a number of ways in which %IMP can be configured.
-See [the configuration options page](@ref cmake_config) for more details.
+See [the configuration options page](@ref cmake_config) for more details
+and for help with CMake problems.
 
 ## Testing {#installation_testing}
 Once the compilation is complete, you can optionally run the test suite.
