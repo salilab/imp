@@ -83,17 +83,6 @@ can be resolved by telling CMake where the Homebrew Python headers and library
 are, by addinng to your CMake invocation something like
 `-DPYTHON_LIBRARY=/usr/local/opt/python@2/Frameworks/Python.framework/Versions/Current/lib/libpython2.7.dylib -DPYTHON_INCLUDE_DIR=/usr/local/opt/python@2/Frameworks/Python.framework/Versions/Current/Headers`
 
-## Failure to find CGAL {#cmake_cgal}
-
-To build with [CGAL](https://www.cgal.org/), CMake will look for the file
-`CGALConfig.cmake` that was installed with CGAL and that contains information
-on the install. If it can't find this file in the usual locations, you can
-help it out by setting the `CGAL_DIR` CGAL variable. For example, on a Mac
-with Homebrew add to your CMake invocation
-`-DCGAL_DIR=/usr/local/lib/cmake/CGAL`, while on a recent Fedora Linux system
-use
-`-DCGAL_DIR=/usr/lib64/cmake/CGAL`
-
 ## CMake reports that it found a dependency but then reports failed {#cmake_compile}
 
 For each dependency CMake will first try to find the header and library
