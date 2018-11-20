@@ -472,9 +472,7 @@ inline PDBSelector *get_default_pdb_selector() {
   return new NonWaterPDBSelector();
 }
 
-/** Read a all the molecules in the first model of the
-    PDB file.
- */
+//! Read all the molecules in the first model of the PDB file.
 IMPATOMEXPORT Hierarchy
     read_pdb(TextInput input, Model *model,
              PDBSelector *selector = get_default_pdb_selector(),
