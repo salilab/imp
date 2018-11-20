@@ -1,5 +1,7 @@
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/python-ihm" "ok=True\n")
 
+set(PYTHON-IHM_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/src/ CACHE INTERNAL "" FORCE)
+
 if(EXISTS ${CMAKE_BINARY_DIR}/lib/ihm
    AND IS_SYMLINK ${CMAKE_BINARY_DIR}/lib/ihm)
   file(REMOVE ${CMAKE_BINARY_DIR}/lib/ihm)
