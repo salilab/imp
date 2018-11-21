@@ -5,10 +5,17 @@ import os
 import operator
 import ihm.format
 import ihm.format_bcif
+import ihm.model
+import ihm.representation
 from . import util
 from . import location
 from . import restraint
 from . import geometry
+
+def _range_in(subrange, ranges):
+    """Return True iff subrange (a 2 element int tuple) is fully
+       enclosed with at least one of the given ranges"""
+    return any(subrange[0] >= r[0] and subrange[1] <= r[1] for r in ranges)
 
 class _Dumper(object):
     """Base class for helpers to dump output to mmCIF"""
@@ -28,6 +35,17 @@ class _EntryDumper(_Dumper):
         writer.start_block(re.subn('[^0-9a-zA-z_]', '', system.id)[0])
         with writer.category("_entry") as l:
             l.write(id=system.id)
+
+
+class _AuditConformDumper(_Dumper):
+    URL = ("https://raw.githubusercontent.com/" +
+           "ihmwg/IHM-dictionary/%s/ihm-extension.dic")
+
+    def dump(self, system, writer):
+        with writer.category("_audit_conform") as l:
+            # Update to match the version of the IHM dictionary we support:
+            l.write(dict_name="ihm-extension.dic", dict_version="0.137",
+                    dict_location=self.URL % "7ea672a")
 
 
 class _StructDumper(_Dumper):
@@ -184,7 +202,7 @@ class _EntityPolyDumper(_Dumper):
         self._seq_type_map = {
             frozenset(('D-peptide linking',)): 'polypeptide(D)',
             frozenset(('D-peptide linking',
-                       'Peptide linking')): 'polypeptide(D)',
+                       'peptide linking')): 'polypeptide(D)',
             frozenset(('RNA linking',)): 'polyribonucleotide',
             frozenset(('DNA linking',)): 'polydeoxyribonucleotide',
             frozenset(('DNA linking', 'RNA linking')):
@@ -841,14 +859,82 @@ class _RangeChecker(object):
        Representation"""
     def __init__(self, model):
         r = model.representation if model.representation else []
-        self.asym_ids = frozenset(s.asym_unit._id for s in r)
+        # Make map from asym_id to representation segments for that ID
+        self.asym_ids = {}
+        for segment in r:
+            asym_id = segment.asym_unit._id
+            if asym_id not in self.asym_ids:
+                self.asym_ids[asym_id] = []
+            self.asym_ids[asym_id].append(segment)
+        self._last_segment_matched = None
 
-    def __call__(self, obj, asym):
+    def _type_check_atom(self, obj, segment):
+        """Check an Atom object against a representation segment."""
+        # Atom objects can only match an AtomicSegment
+        return isinstance(segment, ihm.representation.AtomicSegment)
+
+    def _type_check_sphere(self, obj, segment):
+        """Check a Sphere object against a representation segment."""
+        if isinstance(segment, ihm.representation.ResidueSegment):
+            # Only 1-residue Spheres are OK for by-residue segments
+            return obj.seq_id_range[0] == obj.seq_id_range[1]
+        elif isinstance(segment, ihm.representation.MultiResidueSegment):
+            # Sphere must cover the entire range for multi-residue segments
+            return (obj.seq_id_range[0] == segment.asym_unit.seq_id_range[0]
+                and obj.seq_id_range[1] == segment.asym_unit.seq_id_range[1])
+        elif isinstance(segment, ihm.representation.FeatureSegment):
+            # Sphere can cover any set of residues but must fall within the
+            # segment range for by-feature (already checked)
+            return True
+        else:
+            # Spheres can never be used to represent a by-atom segment
+            return False
+
+    def __call__(self, obj):
+        """Check the given Atom or Sphere object"""
+        asym = obj.asym_unit
+        if isinstance(obj, ihm.model.Sphere):
+            type_check = self._type_check_sphere
+            seq_id_range = obj.seq_id_range
+        else:
+            type_check = self._type_check_atom
+            seq_id_range = (obj.seq_id, obj.seq_id)
+        # Check last match first
+        last_seg = self._last_segment_matched
+        if last_seg and asym._id == last_seg.asym_unit._id \
+           and seq_id_range[0] >= last_seg.asym_unit.seq_id_range[0] \
+           and seq_id_range[1] <= last_seg.asym_unit.seq_id_range[1] \
+           and type_check(obj, last_seg):
+            return
+        # Check asym_id
         if asym._id not in self.asym_ids:
             raise ValueError("%s refers to an asym ID (%s) that is not in this "
                  "model's representation (which includes the following asym "
                  "IDs: %s)"
                  % (obj, asym._id, ", ".join(sorted(a for a in self.asym_ids))))
+        # Check range
+        bad_type_segments = []
+        for segment in self.asym_ids[asym._id]:
+            rng = segment.asym_unit.seq_id_range
+            if seq_id_range[0] >= rng[0] and seq_id_range[1] <= rng[1]:
+                if type_check(obj, segment):
+                    self._last_segment_matched = segment
+                    return
+                else:
+                    bad_type_segments.append(segment)
+        if bad_type_segments:
+            raise ValueError("%s does not match the type of any representation "
+                    "segment in the seq_id_range (%d-%d) for asym ID %s. "
+                    "Representation segments are: %s"
+                    % (obj, seq_id_range[0], seq_id_range[1], asym._id,
+                       ", ".join(str(s) for s in bad_type_segments)))
+        else:
+            raise ValueError("%s seq_id range (%d-%d) does not match any range "
+                    "in the representation for asym ID %s (representation "
+                    "ranges are %s)"
+                    % (obj, seq_id_range[0], seq_id_range[1], asym._id,
+                       ", ".join("%d-%d" % x.asym_unit.seq_id_range
+                                 for x in self.asym_ids[asym._id])))
 
 
 class _ModelDumper(_Dumper):
@@ -884,10 +970,18 @@ class _ModelDumper(_Dumper):
 
     def _check_representation(self, model):
         """Check the Representation of the given Model for sanity."""
-        # Representation should only reference asyms that are in Assembly
+        # Representation should only reference asyms and seq_id ranges
+        # that are in Assembly
         a = model.assembly if model.assembly else []
-        # Get IDs of all asym units and ranges (not entities)
-        asym_ids = frozenset(x._id for x in a if hasattr(x, 'entity'))
+        # Get mapping from IDs to list of ranges for all asym units
+        # and ranges (not entities)
+        asym_ids= {}
+        for obj in a:
+            if hasattr(obj, 'entity'):
+                asym_id = obj._id
+                if asym_id not in asym_ids:
+                    asym_ids[asym_id] = []
+                asym_ids[asym_id].append(obj.seq_id_range)
         r = model.representation if model.representation else []
         for segment in r:
             if segment.asym_unit._id not in asym_ids:
@@ -896,6 +990,15 @@ class _ModelDumper(_Dumper):
                          "asym IDs: %s)"
                          % (segment, segment.asym_unit._id,
                             ", ".join(sorted(a for a in asym_ids))))
+            asmb_ranges = asym_ids[segment.asym_unit._id]
+            repr_range = segment.asym_unit.seq_id_range
+            if not _range_in(repr_range, asmb_ranges):
+                raise ValueError("%s seq_id range (%d-%d) is not part of any "
+                         "assembly range for asym ID %s (valid ranges in the "
+                         "assembly are %s)"
+                         % (segment, repr_range[0], repr_range[1],
+                            segment.asym_unit._id,
+                            ", ".join("%d-%d" % x for x in asmb_ranges)))
 
     def dump_model_list(self, system, writer):
         ordinal = 1
@@ -940,7 +1043,7 @@ class _ModelDumper(_Dumper):
             for group, model in system._all_models():
                 rngcheck = _RangeChecker(model)
                 for atom in model.get_atoms():
-                    rngcheck(atom, atom.asym_unit)
+                    rngcheck(atom)
                     comp = atom.asym_unit.entity.sequence[atom.seq_id-1]
                     seen_types[atom.type_symbol] = None
                     l.write(id=ordinal,
@@ -969,7 +1072,7 @@ class _ModelDumper(_Dumper):
             for group, model in system._all_models():
                 rngcheck = _RangeChecker(model)
                 for sphere in model.get_spheres():
-                    rngcheck(sphere, sphere.asym_unit)
+                    rngcheck(sphere)
                     l.write(ordinal_id=ordinal,
                             entity_id=sphere.asym_unit.entity._id,
                             seq_id_begin=sphere.seq_id_range[0],
@@ -1233,7 +1336,7 @@ class _FeatureDumper(_Dumper):
         self.dump_list(writer)
         self.dump_poly_residue(writer)
         self.dump_poly_atom(writer)
-        self.dump_non_poly_atom(writer)
+        self.dump_non_poly(writer)
 
     def dump_list(self, writer):
         with writer.loop("_ihm_feature_list",
@@ -1279,21 +1382,30 @@ class _FeatureDumper(_Dumper):
                                 atom_id=a.id)
                         ordinal += 1
 
-    def dump_non_poly_atom(self, writer):
+    def dump_non_poly(self, writer):
         ordinal = 1
-        with writer.loop("_ihm_non_poly_atom_feature",
+        with writer.loop("_ihm_non_poly_feature",
                          ["ordinal_id", "feature_id", "entity_id", "asym_id",
                           "comp_id", "atom_id"]) as l:
             for f in self._features_by_id:
-                if not isinstance(f, restraint.AtomFeature):
-                    continue
-                for a in f.atoms:
-                    r = a.residue
-                    if not r.asym.entity.is_polymeric():
-                        seq = r.asym.entity.sequence
+                if isinstance(f, restraint.AtomFeature):
+                    for a in f.atoms:
+                        r = a.residue
+                        if not r.asym.entity.is_polymeric():
+                            seq = r.asym.entity.sequence
+                            l.write(ordinal_id=ordinal, feature_id=f._id,
+                                    entity_id=r.asym.entity._id,
+                                    asym_id=r.asym._id,
+                                    comp_id=seq[r.seq_id-1].id, atom_id=a.id)
+                            ordinal += 1
+                elif isinstance(f, restraint.NonPolyFeature):
+                    _ = f._get_entity_type() # trigger check for poly/nonpoly
+                    for a in f.asyms:
+                        seq = a.entity.sequence
                         l.write(ordinal_id=ordinal, feature_id=f._id,
-                                entity_id=r.asym.entity._id, asym_id=r.asym._id,
-                                comp_id=seq[r.seq_id-1].id, atom_id=a.id)
+                                entity_id=a.entity._id,
+                                asym_id=a._id, comp_id=seq[0].id,
+                                atom_id=None)
                         ordinal += 1
 
 
@@ -1637,7 +1749,7 @@ def write(fh, systems, format='mmCIF'):
               BinaryCIF."""
     dumpers = [_EntryDumper(), # must be first
                _StructDumper(), _CommentDumper(),
-               _SoftwareDumper(),
+               _AuditConformDumper(), _SoftwareDumper(),
                _CitationDumper(),
                _AuditAuthorDumper(),
                _ChemCompDumper(),

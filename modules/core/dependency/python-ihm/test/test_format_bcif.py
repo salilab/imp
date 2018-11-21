@@ -24,6 +24,9 @@ class MockFh(object):
 
 class GenericHandler(object):
     """Capture BinaryCIF data as a simple list of dicts"""
+    not_in_file = None
+    omitted = None
+    unknown = "?"
 
     _keys = ('method', 'foo', 'bar', 'baz', 'pdbx_keywords', 'var1',
              'var2', 'var3')
@@ -255,14 +258,30 @@ class Tests(unittest.TestCase):
             self._read_bcif([Block([cat])], {'_exptl':h})
         self.assertEqual(h.data, [{'method':'foo'}])
 
-    def test_omitted_missing(self):
-        """Test handling of omitted/missing data"""
+    def test_omitted_unknown(self):
+        """Test handling of omitted/unknown data"""
         cat = Category('_foo', {'var1':['test1', '?', 'test2', None, 'test3']})
         h = GenericHandler()
         self._read_bcif([Block([cat])], {'_foo':h})
         self.assertEqual(h.data,
                          [{'var1': 'test1'}, {'var1': '?'}, {'var1': 'test2'},
                           {}, {'var1': 'test3'}])
+
+    def test_omitted_unknown_not_in_file_explicit(self):
+        """Test explicit handling of omitted/unknown/not in file data"""
+        cat = Category('_foo', {'var1':['test1', '?', 'test2', None, 'test3']})
+        h = GenericHandler()
+        h.omitted = 'OMIT'
+        h.unknown = 'UNK'
+        h.not_in_file = 'NOT'
+        h._keys = ('var1', 'var2')
+        self._read_bcif([Block([cat])], {'_foo':h})
+        self.assertEqual(h.data,
+                         [{'var1': 'test1', 'var2': 'NOT'},
+                          {'var1': 'UNK', 'var2': 'NOT'},
+                          {'var1': 'test2', 'var2': 'NOT'},
+                          {'var1': 'OMIT', 'var2': 'NOT'},
+                          {'var1': 'test3', 'var2': 'NOT'}])
 
     def test_extra_categories_ignored(self):
         """Check that extra categories in the file are ignored"""

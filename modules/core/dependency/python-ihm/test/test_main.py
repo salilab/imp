@@ -61,7 +61,7 @@ class Tests(unittest.TestCase):
     def test_peptide_chem_comp(self):
         """Test PeptideChemComp class"""
         cc1 = ihm.PeptideChemComp(id='GLY', code='G', code_canonical='G')
-        self.assertEqual(cc1.type, 'Peptide linking')
+        self.assertEqual(cc1.type, 'peptide linking')
 
     def test_l_peptide_chem_comp(self):
         """Test LPeptideChemComp class"""
@@ -91,7 +91,7 @@ class Tests(unittest.TestCase):
     def test_l_peptide_alphabet(self):
         """Test LPeptideAlphabet class"""
         a = ihm.LPeptideAlphabet
-        self.assertEqual(a._comps['G'].type, 'Peptide linking')
+        self.assertEqual(a._comps['G'].type, 'peptide linking')
 
         self.assertEqual(a._comps['M'].id, 'MET')
         self.assertEqual(a._comps['M'].code, 'M')

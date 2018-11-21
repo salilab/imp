@@ -399,7 +399,8 @@ class CrossLinkFit(object):
 
 class Feature(object):
     """Base class for selecting parts of the system that a restraint acts on.
-       See :class:`ResidueFeature` and :class:`AtomFeature`.
+       See :class:`ResidueFeature`, :class:`AtomFeature`, and
+       :class:`NonPolyFeature`.
 
        Features are typically assigned to one or more
        :class:`~ihm.restraint.GeometricRestraint` objects.
@@ -436,6 +437,10 @@ class ResidueFeature(Feature):
 
 class AtomFeature(Feature):
     """Selection of one or more atoms from the system.
+       Atoms can be selected from polymers or non-polymers (but not both).
+       For selecting an entire polymer or residue(s),
+       see :class:`ResidueFeature`. For selecting an entire non-polymer,
+       see :class:`NonPolyFeature`.
 
        :param sequence atoms: A list of :class:`ihm.Atom` objects.
     """
@@ -452,6 +457,26 @@ class AtomFeature(Feature):
                              "non-polymeric entities" % self)
         elif types:
             return self.atoms[0].residue.asym.entity.type
+
+
+class NonPolyFeature(Feature):
+    """Selection of one or more non-polymers from the system.
+       To select individual atoms from a non-polymer, see :class:`AtomFeature`.
+
+       :param sequence asyms: A list of :class:`AsymUnit` objects.
+    """
+
+    type = 'ligand'
+
+    def __init__(self, asyms):
+        self.asyms = asyms
+        _ = self._get_entity_type()
+
+    def _get_entity_type(self):
+        if any(r.entity.is_polymeric() for r in self.asyms):
+            raise ValueError("%s can only select non-polymeric entities" % self)
+        else:
+            return self.asyms[0].entity.type if self.asyms else None
 
 
 class GeometricRestraint(object):

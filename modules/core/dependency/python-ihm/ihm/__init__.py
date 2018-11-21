@@ -586,7 +586,7 @@ class PeptideChemComp(ChemComp):
     """A single peptide component. Usually :class:`LPeptideChemComp` is used
        instead (except for glycine) to specify chirality.
        See :class:`ChemComp` for a description of the parameters."""
-    type = 'Peptide linking'
+    type = 'peptide linking'
 
 
 class LPeptideChemComp(PeptideChemComp):

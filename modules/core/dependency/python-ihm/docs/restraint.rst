@@ -67,6 +67,9 @@ The :mod:`ihm.restraint` Python module
 .. autoclass:: AtomFeature
    :members:
 
+.. autoclass:: NonPolyFeature
+   :members:
+
 .. autoclass:: GeometricRestraint
    :members:
 

@@ -1,6 +1,6 @@
 .. highlight:: rest
 
-.. _format_module:
+.. _format_bcif_module:
 
 The :mod:`ihm.format_bcif` Python module
 ========================================

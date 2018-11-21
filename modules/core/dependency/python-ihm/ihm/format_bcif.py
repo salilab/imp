@@ -221,10 +221,10 @@ class BinaryCifReader(ihm.format._Reader):
             ki = key_index.get(_decode_bytes(c[b'name']).lower(), None)
             if ki is not None:
                 column_indices.append(ki)
-                r = self._read_column(c)
+                r = self._read_column(c, handler)
                 num_rows = len(r)
                 category_data[ki] = r
-        row_data = [None] * num_cols
+        row_data = [handler.not_in_file] * num_cols
         for row in range(num_rows):
             # Only update data for columns that we read (others will
             # remain None)
@@ -232,15 +232,15 @@ class BinaryCifReader(ihm.format._Reader):
                 row_data[i] = category_data[i][row]
             handler(*row_data)
 
-    def _read_column(self, column):
+    def _read_column(self, column, handler):
         """Read a single category column data"""
         data = _decode(column[b'data'][b'data'], column[b'data'][b'encoding'])
         # Handle 'unknown' values (mask==2) or 'omitted' (mask==1)
         if column[b'mask'] is not None:
             mask = _decode(column[b'mask'][b'data'],
                            column[b'mask'][b'encoding'])
-            data = ['?' if m == 2 else None if m == 1 else d
-                    for d, m in zip(data, mask)]
+            data = [handler.unknown if m == 2 else handler.omitted if m == 1
+                    else d for d, m in zip(data, mask)]
         return list(data)
 
     def _read_msgpack(self):

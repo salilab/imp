@@ -187,6 +187,9 @@ class _FeatureIDMapper(_IDMapper):
         elif newcls is ihm.restraint.AtomFeature \
            and not hasattr(obj, 'atoms'):
             obj.atoms = []
+        elif newcls is ihm.restraint.NonPolyFeature \
+           and not hasattr(obj, 'asyms'):
+            obj.asyms = []
 
 
 class _GeometryIDMapper(_IDMapper):
@@ -379,10 +382,25 @@ class _SystemReader(object):
 
 class _Handler(object):
     """Base class for all handlers of mmCIF data."""
+
+    #: Value passed to __call__ for keywords not in the file
+    not_in_file = None
+
+    #: Value passed to __call__ for data marked as omitted ('.')
+    omitted = None
+
+    #: Value passed to __call__ for data marked as unknown ('?')
+    unknown = '?'
+
     def __init__(self, sysr):
         self.sysr = sysr
 
     def finalize(self):
+        """Called at the end of each data block."""
+        pass
+
+    def end_save_frame(self):
+        """Called at the end of each save frame."""
         pass
 
     def _copy_if_present(self, obj, data, keys=[], mapkeys={}):
@@ -1095,16 +1113,21 @@ class _PolyAtomFeatureHandler(_Handler):
         f.atoms.append(atom)
 
 
-class _NonPolyAtomFeatureHandler(_Handler):
-    category = '_ihm_non_poly_atom_feature'
+class _NonPolyFeatureHandler(_Handler):
+    category = '_ihm_non_poly_feature'
 
     def __call__(self, feature_id, asym_id, atom_id):
-        f = self.sysr.features.get_by_id(
-                           feature_id, ihm.restraint.AtomFeature)
         asym = self.sysr.asym_units.get_by_id(asym_id)
-        # todo: handle multiple copies, e.g. waters?
-        atom = asym.residue(1).atom(atom_id)
-        f.atoms.append(atom)
+        if atom_id is None:
+            f = self.sysr.features.get_by_id(
+                               feature_id, ihm.restraint.NonPolyFeature)
+            f.asyms.append(asym)
+        else:
+            f = self.sysr.features.get_by_id(
+                               feature_id, ihm.restraint.AtomFeature)
+            # todo: handle multiple copies, e.g. waters?
+            atom = asym.residue(1).atom(atom_id)
+            f.atoms.append(atom)
 
 
 def _make_harmonic(low, up):
@@ -1526,7 +1549,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF'):
                     _EM2DFittingHandler(s), _SASRestraintHandler(s),
                     _SphereObjSiteHandler(s), _AtomSiteHandler(s),
                     _PolyResidueFeatureHandler(s), _PolyAtomFeatureHandler(s),
-                    _NonPolyAtomFeatureHandler(s),
+                    _NonPolyFeatureHandler(s),
                     _DerivedDistanceRestraintHandler(s),
                     _CenterHandler(s), _TransformationHandler(s),
                     _GeometricObjectHandler(s), _SphereHandler(s),

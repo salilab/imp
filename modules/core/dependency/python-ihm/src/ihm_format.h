@@ -2,9 +2,9 @@
  *
  *  The file is read sequentially. All values for desired keywords in
  *  desired categories are collected (other parts of the file are ignored)
- *  At the end of the file a callback function for each category is called
- *  to process the data. In the case of mmCIF loops, this callback will be
- *  called multiple times, one for each entry in the loop.
+ *  At the end of the file and each save frame a callback function for
+ *  each category is called to process the data. In the case of mmCIF loops,
+ *  this callback will be called multiple times, one for each entry in the loop.
  */
 
 #ifndef IHM_FORMAT_H
@@ -43,7 +43,7 @@ void ihm_error_free(struct ihm_error *err);
 
 /* Set the error indicator */
 void ihm_error_set(struct ihm_error **err, IHMErrorCode code,
-                   char *format, ...);
+                   const char *format, ...);
 
 /* A keyword in an mmCIF file. Holds a description of its format and any
    value read from the file. */
@@ -76,6 +76,7 @@ typedef void (*ihm_free_callback)(void *data);
 struct ihm_category *ihm_category_new(struct ihm_reader *reader,
                                       const char *name,
                                       ihm_category_callback data_callback,
+                                      ihm_category_callback end_frame_callback,
                                       ihm_category_callback finalize_callback,
                                       void *data, ihm_free_callback free_func);
 
