@@ -420,9 +420,10 @@ _ihm_sphere_obj_site.model_id
         asym = po.asym_units['Nup84']
         assembly = ihm.Assembly([asym])
         assembly._id = 42
-        s = ihm.representation.ResidueSegment(asym, True, 'sphere')
-        with IMP.allow_deprecated():
-            representation = ihm.representation.Representation([s])
+        s1 = ihm.representation.AtomicSegment(asym(1,2), True)
+        s2 = ihm.representation.FeatureSegment(asym(3,4), True,
+                                               primitive='sphere', count=1)
+        representation = ihm.representation.Representation([s1, s2])
         representation._id = 99
         protocol = ihm.protocol.Protocol()
         protocol._id = 93
@@ -507,9 +508,8 @@ _ihm_sphere_obj_site.model_id
         asym = po.asym_units['Nup84']
         assembly = ihm.Assembly([asym])
         assembly._id = 42
-        s = ihm.representation.ResidueSegment(asym, True, 'sphere')
-        with IMP.allow_deprecated():
-            representation = ihm.representation.Representation([s])
+        s = ihm.representation.FeatureSegment(asym, True, 'sphere', count=3)
+        representation = ihm.representation.Representation([s])
         representation._id = 99
         protocol = ihm.protocol.Protocol()
         protocol._id = 93
