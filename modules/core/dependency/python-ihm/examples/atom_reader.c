@@ -43,7 +43,7 @@ static void add_atom_site_handler(struct ihm_reader *reader)
   /* Register a callback for the atom_site category. 'data' will be passed
      to it (and 'data' will be freed with 'free' when we're done) */
   struct ihm_category *c = ihm_category_new(reader, "_atom_site",
-                                            atom_site_handler, NULL, data,
+                                            atom_site_handler, NULL, NULL, data,
                                             free);
 
   /* Ask the reader to extract a set of keywords from the atom_site
@@ -76,6 +76,7 @@ static void read_mmcif_filedesc(int fd)
   if (!ihm_read_file(reader, &more_data, &err)) {
     fprintf(stderr, "IHM error: %s\n", err->msg);
     ihm_error_free(err);
+    ihm_reader_free(reader);
     exit(1);
   }
   ihm_reader_free(reader);

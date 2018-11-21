@@ -40,6 +40,7 @@ API Reference:
    format_bcif
    dumper
    reader
+   dictionary
 
 
 Indices and tables
