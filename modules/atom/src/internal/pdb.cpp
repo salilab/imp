@@ -12,8 +12,100 @@
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Fragment.h>
 #include <IMP/atom/pdb.h>
+#include <IMP/atom/Molecule.h>
+#include <IMP/core/provenance.h>
+#include <boost/algorithm/string.hpp>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
+
+Particle* atom_particle(Model* m, const std::string& atom_type,
+                        Element element, bool is_hetatm,
+                        int atom_index, int residue_index,
+                        double x, double y, double z,
+                        double occupancy, double temp_factor) {
+  AtomType atom_name;
+  std::string string_name = atom_type;
+  // determine AtomType
+  if (is_hetatm) {
+    string_name = "HET:" + string_name;
+    if (!get_atom_type_exists(string_name)) {
+      atom_name = add_atom_type(string_name, element);
+    } else {
+      atom_name = AtomType(string_name);
+    }
+  } else {  // ATOM line
+    boost::trim(string_name);
+    if (string_name.empty()) {
+      string_name = "UNK";
+    }
+    if (!AtomType::get_key_exists(string_name)) {
+      IMP_LOG_VERBOSE("ATOM record type not found: \""
+                      << string_name << "\" in PDB file " << std::endl);
+      atom_name = add_atom_type(string_name, element);
+    } else {
+      atom_name = AtomType(string_name);
+    }
+  }
+  // new particle
+  Particle* p = new Particle(m);
+  p->add_attribute(get_pdb_index_key(), atom_index);
+  algebra::Vector3D v(x, y, z);
+  // atom decorator
+  Atom d = Atom::setup_particle(p, atom_name);
+  std::ostringstream oss;
+  oss << "Atom " + atom_name.get_string() << " of residue " << residue_index;
+  p->set_name(oss.str());
+  core::XYZ::setup_particle(p, v).set_coordinates_are_optimized(true);
+  d.set_input_index(atom_index);
+  d.set_occupancy(occupancy);
+  d.set_temperature_factor(temp_factor);
+  d.set_element(element);
+  // check if the element matches
+  Element e2 = get_element_for_atom_type(atom_name);
+  if (element != e2) {
+    IMP_LOG_VERBOSE(
+        "AtomType element and PDB line elements don't match. AtomType "
+        << e2 << " vs. determined from PDB " << element << std::endl);
+  }
+  return p;
+}
+
+IntKey get_pdb_index_key() {
+  static IntKey pdb_index_key("pdb index");
+  return pdb_index_key;
+}
+
+Particle *residue_particle(Model *m, int residue_index, char ins_code,
+                           const std::string &residue_type) {
+  Particle* p = new Particle(m);
+
+  std::string rn = residue_type;
+  boost::trim(rn);
+  if (rn.empty()) {
+    rn = "UNK";
+  }
+  ResidueType residue_name = ResidueType(rn);
+
+  // residue decorator
+  Residue::setup_particle(p, residue_name, residue_index, (int)ins_code);
+  p->set_name(residue_name.get_string());
+  return p;
+}
+
+Particle* chain_particle(Model* m, std::string chain_id, std::string filename) {
+  Particle* p = new Particle(m);
+  Chain::setup_particle(p, chain_id);
+  p->set_name(std::string("Chain " + chain_id));
+  Molecule::setup_particle(p);
+
+  // Set provenance of this chain
+  core::StructureProvenance sp
+          = core::StructureProvenance::setup_particle(new Particle(m),
+                                                      filename, chain_id);
+  core::add_provenance(m, p->get_index(), sp);
+
+  return p;
+}
 
 bool is_ATOM_rec(const String& pdb_line) {
   return (pdb_line[0] == 'A' && pdb_line[1] == 'T' && pdb_line[2] == 'O' &&

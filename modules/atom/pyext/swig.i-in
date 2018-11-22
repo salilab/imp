@@ -287,6 +287,7 @@ namespace IMP {
 %include "IMP/atom/BerendsenThermostatOptimizerState.h"
 %include "IMP/atom/LangevinThermostatOptimizerState.h"
 %include "IMP/atom/pdb.h"
+%include "IMP/atom/mmcif.h"
 %include "IMP/atom/constants.h"
 %include "IMP/atom/CAAngleRestraint.h"
 %include "IMP/atom/CADihedralRestraint.h"
