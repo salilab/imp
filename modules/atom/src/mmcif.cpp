@@ -160,7 +160,7 @@ public:
 };
 
 
-std::string nicename(std::string name) {
+std::string cif_nicename(std::string name) {
   boost::filesystem::path path(name);
 #if BOOST_VERSION >= 105000
   return path.string();
@@ -209,7 +209,7 @@ Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
 
 Hierarchy read_mmcif(TextInput in, Model *model)
 {
-  Hierarchies ret = read_mmcif(in, nicename(in.get_name()), in.get_name(),
+  Hierarchies ret = read_mmcif(in, cif_nicename(in.get_name()), in.get_name(),
                                model);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
