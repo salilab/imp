@@ -30,4 +30,4 @@ spelling_exceptions=['lennard', 'charmm', "jones",
                      "rmsd", "pdb", "multimodel", "conect",
                      'rescale',
                      'berendsen', 'langevin', 'runge', 'kutta', "drms", "drmsd",
-                     "psipred", "femto", "xor"]
+                     "psipred", "femto", "xor", "mmcif"]
