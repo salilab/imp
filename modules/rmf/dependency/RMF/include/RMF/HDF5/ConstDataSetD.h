@@ -36,7 +36,7 @@ typedef std::vector<ConstDataSetAttributes> ConstDataSetAttributesList;
    named as
     RMF::HDF5IndexDataSet2D (or RMF.HDF5IndexDataSet2).
    See
-   \external{https://www.hdfgroup.org/HDF5/doc/RM/RM_H5D.html,
+   \external{https://support.hdfgroup.org/HDF5/doc/RM/RM_H5D.html,
    the HDF5 manual} for more information.
  */
 template <class TypeTraits, unsigned int D>
