@@ -36,7 +36,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
       }
     }
     /** See
-       \external{http://www.hdfgroup.org/HDF5/doc/RM/RM_H5P.html#Property-SetChunk,
+       \external{https://support.hdfgroup.org/HDF5/doc/RM/RM_H5P.html#Property-SetChunk,
        H5Pset_chunk}
      */
     void set_chunk_size(DataSetIndexD<D> chunk_size) {
