@@ -87,6 +87,7 @@ class AtomSiteCategory : public Category {
   int curr_seq_id_;
   std::string curr_residue_icode_;
   std::string hetatm_;
+  std::map<std::string, Particle *> chain_map_;
 
   static void callback(struct ihm_reader *, void *data, struct ihm_error **) {
     ((AtomSiteCategory *)data)->handle();
@@ -117,6 +118,21 @@ public:
     hetatm_ = "HETATM";
   }
 
+  void get_chain_particle(const std::string &chain) {
+    if (cp_ == nullptr || chain != curr_chain_) {
+      curr_chain_ = chain;
+      // Check if new chain
+      if (chain_map_.find(chain) == chain_map_.end()) {
+        cp_ = internal::chain_particle(model_, chain, filename_);
+        Hierarchy(root_p_).add_child(Chain(cp_));
+	chain_map_[chain] = cp_;
+      } else {
+        cp_ = chain_map_[chain];
+      }
+      rp_ = nullptr; // make sure we get a new residue
+    }
+  }
+
   void handle() {
     Element e = get_element_table().get_element(element_.as_str());
     int seq_id = seq_id_.as_int(1);
@@ -133,14 +149,7 @@ public:
       root_p_ = new Particle(model_);
       hiers_->push_back(Hierarchy::setup_particle(root_p_));
     }
-    // Check if new chain
-    std::string chain = chain_.as_str();
-    if (cp_ == nullptr || chain != curr_chain_) {
-      curr_chain_ = chain;
-      cp_ = internal::chain_particle(model_, chain, filename_);
-      Hierarchy(root_p_).add_child(Chain(cp_));
-      rp_ = nullptr; // make sure we get a new residue
-    }
+    get_chain_particle(chain_.as_str());
     // Check if new residue
     // todo: also read auth_seq_id
     if (rp_ == nullptr || seq_id != curr_seq_id_

@@ -25,7 +25,10 @@ class Tests(IMP.test.TestCase):
 
         #! read PDB
         mp = IMP.atom.read_mmcif(self.open_input_file("input.cif"), m)
-        self.assertEqual(len(m.get_particle_indexes()), 430)
+        chain_ids = [IMP.atom.Chain(x).get_id()
+                     for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual(chain_ids, ['', 'B', 'A'])
+        self.assertEqual(len(m.get_particle_indexes()), 435)
 
 
 if __name__ == '__main__':
