@@ -14,6 +14,9 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+//! Read all models from the mmCIF file.
+IMPATOMEXPORT Hierarchies read_multimodel_mmcif(TextInput input, Model *model);
+
 //! Read all the molecules in the first model of the mmCIF file.
 IMPATOMEXPORT Hierarchy read_mmcif(TextInput input, Model *model);
 
