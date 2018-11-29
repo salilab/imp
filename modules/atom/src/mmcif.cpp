@@ -77,27 +77,32 @@ public:
 
 
 class AtomSiteCategory : public Category {
-  std::string filename_;
+  std::string name_, filename_;
   Model *model_;
+  bool select_first_model_;
   Keyword atom_name_, residue_name_, chain_, element_, seq_id_, group_, id_,
-          occupancy_, temp_factor_, ins_code_, x_, y_, z_;
+          occupancy_, temp_factor_, ins_code_, x_, y_, z_, model_num_;
   Particle *cp_, *rp_, *root_p_;
   Hierarchies *hiers_;
   std::string curr_chain_;
   int curr_seq_id_;
+  int curr_model_num_;
   std::string curr_residue_icode_;
   std::string hetatm_;
-  std::map<std::string, Particle *> chain_map_;
+  std::map<std::pair<Particle *, std::string>, Particle *> chain_map_;
+  std::map<int, Particle *> root_map_;
 
   static void callback(struct ihm_reader *, void *data, struct ihm_error **) {
     ((AtomSiteCategory *)data)->handle();
   }
 
 public:
-  AtomSiteCategory(struct ihm_reader *reader, std::string filename,
-                   Model *model, Hierarchies *hiers) :
+  AtomSiteCategory(struct ihm_reader *reader, std::string name,
+                   std::string filename, Model *model, Hierarchies *hiers,
+                   bool select_first_model) :
         Category(reader, "_atom_site", callback),
-        filename_(filename), model_(model),
+        name_(name), filename_(filename), model_(model),
+        select_first_model_(select_first_model),
         atom_name_(c_, "label_atom_id"),
         residue_name_(c_, "label_comp_id"),
         chain_(c_, "label_asym_id"),
@@ -110,30 +115,67 @@ public:
         ins_code_(c_, "pdbx_pdb_ins_code"),
         x_(c_, "cartn_x"),
         y_(c_, "cartn_y"),
-        z_(c_, "cartn_z"), cp_(nullptr), rp_(nullptr), root_p_(nullptr),
+        z_(c_, "cartn_z"),
+        model_num_(c_, "pdbx_pdb_model_num"),
+        cp_(nullptr), rp_(nullptr), root_p_(nullptr),
         hiers_(hiers) {
     curr_chain_ = "";
     curr_seq_id_ = 0;
     curr_residue_icode_ = "";
+    curr_model_num_ = 0;
     hetatm_ = "HETATM";
+  }
+
+  void set_root_particle_name(int model_num) {
+    std::ostringstream oss;
+    oss << model_num;
+    std::string root_name = oss.str();
+    root_p_->set_name(name_ + ": " + root_name);
+  }
+
+  // Get the particle for the top of this model's hierarchy.
+  // Return false if this model should be skipped.
+  bool get_root_particle(int model_num) {
+    if (root_p_ == nullptr || model_num != curr_model_num_) {
+      if (select_first_model_ && root_p_ != nullptr) {
+        return false;
+      }
+      curr_model_num_ = model_num;
+      // Check if new model
+      if (root_map_.find(model_num) == root_map_.end()) {
+        root_p_ = new Particle(model_);
+        set_root_particle_name(model_num);
+        hiers_->push_back(Hierarchy::setup_particle(root_p_));
+        root_map_[model_num] = root_p_;
+      } else {
+        root_p_ = root_map_[model_num];
+      }
+      cp_ = nullptr; // make sure we get a new chain
+    }
+    return true;
   }
 
   void get_chain_particle(const std::string &chain) {
     if (cp_ == nullptr || chain != curr_chain_) {
       curr_chain_ = chain;
-      // Check if new chain
-      if (chain_map_.find(chain) == chain_map_.end()) {
+      std::pair<Particle *, std::string> root_chain(root_p_, chain);
+      // Check if new chain (for this root)
+      if (chain_map_.find(root_chain) == chain_map_.end()) {
         cp_ = internal::chain_particle(model_, chain, filename_);
         Hierarchy(root_p_).add_child(Chain(cp_));
-	chain_map_[chain] = cp_;
+        chain_map_[root_chain] = cp_;
       } else {
-        cp_ = chain_map_[chain];
+        cp_ = chain_map_[root_chain];
       }
       rp_ = nullptr; // make sure we get a new residue
     }
   }
 
   void handle() {
+    if (!get_root_particle(model_num_.as_int())) {
+      return;
+    }
+
     Element e = get_element_table().get_element(element_.as_str());
     int seq_id = seq_id_.as_int(1);
     std::string residue_icode = ins_code_.as_str();
@@ -144,11 +186,6 @@ public:
                        seq_id, x_.as_float(), y_.as_float(),
                        z_.as_float(), occupancy_.as_float(),
                        temp_factor_.as_float());
-    // Make new hierarchy if first atom
-    if (root_p_ == nullptr) {
-      root_p_ = new Particle(model_);
-      hiers_->push_back(Hierarchy::setup_particle(root_p_));
-    }
     get_chain_particle(chain_.as_str());
     // Check if new residue
     // todo: also read auth_seq_id
@@ -192,7 +229,7 @@ ssize_t read_callback(char *buffer, size_t buffer_len,
 }
 
 Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
-                       Model* model)
+                       Model* model, bool select_first_model)
 {
   struct ihm_error *err = nullptr;
   struct ihm_file *fh = ihm_file_new(read_callback, &in, nullptr);
@@ -200,7 +237,7 @@ Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
   struct ihm_reader *r = ihm_reader_new(fh);
   Hierarchies ret;
 
-  AtomSiteCategory asc(r, filename, model, &ret);
+  AtomSiteCategory asc(r, name, filename, model, &ret, select_first_model);
 
   int more_data;
   if (!ihm_read_file(r, &more_data, &err)) {
@@ -215,11 +252,20 @@ Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
 
 } // anonymous namespace
 
+Hierarchies read_multimodel_mmcif(TextInput in, Model *model)
+{
+  Hierarchies ret = read_mmcif(in, cif_nicename(in.get_name()), in.get_name(),
+                               model, false);
+  if (ret.empty()) {
+    IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
+  }
+  return ret;
+}
 
 Hierarchy read_mmcif(TextInput in, Model *model)
 {
   Hierarchies ret = read_mmcif(in, cif_nicename(in.get_name()), in.get_name(),
-                               model);
+                               model, true);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
   }
