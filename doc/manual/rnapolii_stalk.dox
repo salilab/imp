@@ -44,8 +44,8 @@ the packages using the distribution's package manager, such as `yum` or
 `apt-get`.)
 
 Then download the input files, either by 
-[cloning the GitHub repository](https://github.com/salilab/imp_tutorial/)
-or by [downloading the zip file](https://github.com/salilab/imp_tutorial/archive/master.zip).
+[cloning the GitHub repository](https://github.com/salilab/imp_tutorial/tree/pmi2)
+or by [downloading the zip file](https://github.com/salilab/imp_tutorial/archive/pmi2.zip).
 
 The rnapolii example contains three directories: `analysis`, `data` and
 `modeling`.
@@ -86,7 +86,7 @@ The first three modeling stages are all contained within one script, `modeling.p
 python modeling.py
 \endcode
 
-It will take a very long time to complete the sampling; to get an idea of what's going on you can run it with only 50 output frames by adding the `--test` option:
+It will take a very long time to complete the sampling; to get an idea of what's going on you can run it with only 100 output frames by adding the `--test` option:
 
 \code{.sh}
 python modeling.py --test
