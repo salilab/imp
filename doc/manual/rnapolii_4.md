@@ -88,7 +88,7 @@ Run the clustering script by changing into the `rnapolii/analysis` directory and
 python clustering.py
 \endcode
 
-If you ran `modeling.py` with the `--test` option, it is a good idea to give the `--test` option to `clustering.py` as well (this increases the prefilter value; none of the 50 test models generated may be good enough to satisfy the default prefilter value). With such minimal sampling, the quality of the results is unlikely to be high; you can download [the precalculated results](ftp://salilab.org/tutorials/imp/rnapolii/results.tar.gz) and the [resulting clusters](ftp://salilab.org/tutorials/imp/rnapolii/analysis.tar.gz) from our website.
+If you ran `modeling.py` with the `--test` option, it is a good idea to give the `--test` option to `clustering.py` as well (this increases the prefilter value; none of the 100 test models generated may be good enough to satisfy the default prefilter value). With such minimal sampling, the quality of the results is unlikely to be high; you can download [the precalculated results](ftp://salilab.org/tutorials/imp/rnapolii/results.tar.gz) and the [resulting clusters](ftp://salilab.org/tutorials/imp/rnapolii/analysis.tar.gz) from our website.
 
 First we can look through the cluster results directory to see the output (see example below). The clustering directory contains the distance matrix plot (described below) and a folder for each cluster. Within the cluster folder are PDB and RMF files containing members of each cluster, localization densities for requested components (the `.mrc` files), and a stat file output (with one entry for each cluster member). All RMF, PDB, and MRC files should be viewable in Chimera. 
 
