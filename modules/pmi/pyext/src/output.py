@@ -62,7 +62,7 @@ def _flatten(seq):
 class Output(object):
     """Class for easy writing of PDBs, RMFs, and stat files
 
-    \note Model should be updated prior to writing outputs.
+    @note Model should be updated prior to writing outputs.
     """
     def __init__(self, ascii=True,atomistic=False):
         self.dictionary_pdbs = {}
@@ -115,7 +115,7 @@ class Output(object):
         """Init PDB Writing.
         @param name The PDB filename
         @param prot The hierarchy to write to this pdb file
-        \note if the PDB name is 'System' then will use Selection to get molecules
+        @note if the PDB name is 'System' then will use Selection to get molecules
         """
         flpdb = open(name, 'w')
         flpdb.close()

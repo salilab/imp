@@ -587,7 +587,7 @@ class BuildSystem(object):
     IMP.atom.show_molecular_hierarchy(bs.get_hierarchy())
     ### now you have a two state system, you add restraints etc
     @endcode
-    \note The "domain name" entry of the topology reader is not used.
+    @note The "domain name" entry of the topology reader is not used.
     All molecules are set up by the component name, but split into rigid bodies
     as requested.
     """

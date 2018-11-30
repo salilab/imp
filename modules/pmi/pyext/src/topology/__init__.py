@@ -171,7 +171,7 @@ class State(_SystemBase):
         """Define a new state
         @param system        the PMI System
         @param state_index   the index of the new state
-        \note It's expected that you will not use this constructor directly,
+        @note It's expected that you will not use this constructor directly,
         but rather create it with pmi::System::create_state()
         """
         self.model = system.get_hierarchy().get_model()
@@ -333,7 +333,7 @@ class Molecule(_SystemBase):
         @param chain_id        The chain of this molecule
         @param copy_num        Store the copy number
         @param mol_to_clone    The original molecule (for cloning ONLY)
-        \note It's expected that you will not use this constructor directly,
+        @note It's expected that you will not use this constructor directly,
         but rather create a Molecule with pmi::State::create_molecule()
         """
         # internal data storage
@@ -447,7 +447,7 @@ class Molecule(_SystemBase):
     def create_clone(self,chain_id):
         """Create a Molecule clone (automatically builds same structure and representation)
         @param chain_id If you want to set the chain ID of the copy to something
-        \note You cannot add structure or representations to a clone!
+        @note You cannot add structure or representations to a clone!
         """
         mol = Molecule(self.state,self.get_name(),self.sequence,chain_id,
                        copy_num=self.state.get_number_of_copies(self.get_name()),
@@ -1156,7 +1156,7 @@ class TopologyReader(object):
     - `super_rigid_body`: Like a rigid_body, except things are only occasionally rigid
     - `chain_of_super_rigid_bodies` For a polymer, create SRBs from groups.
     - `flags` additional flags for advanced options
-    \note All filenames are relative to the paths specified in the constructor.
+    @note All filenames are relative to the paths specified in the constructor.
 
     """
     def __init__(self,

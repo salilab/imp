@@ -163,7 +163,7 @@ class XLTable(object):
         @param pdbfile             file for reading coords
         @param chain_to_name_map   correspond chain ID with protein name (will ONLY read these chains)
                                    Key: PDB chain ID. Value: Protein name (set in sequence reading)
-        \note This function returns an error if the sequence for each chain has NOT been read
+        @note This function returns an error if the sequence for each chain has NOT been read
         """
         mh = IMP.atom.read_pdb(pdbfile,self.model,IMP.atom.CAlphaPDBSelector())
         total_len = sum(len(self.sequence_dict[s]) for s in self.sequence_dict)
