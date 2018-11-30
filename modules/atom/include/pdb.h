@@ -29,7 +29,7 @@ IMPATOM_BEGIN_NAMESPACE
 //! Select which atoms to read from a PDB file
 /** Selector is a general purpose class used to select records from a PDB
     file. Using descendants of this class one may implement arbitrary
-    selection functions with operator() and pass them to PDB reading functions
+    selection functions and pass them to PDB reading functions
     for object selection. Simple selectors can be used to build more complicated
     ones. Inheritance means "AND" unless otherwise noted (that is, the
     CAlphaPDBSelector takes all non-alternate C-alphas since it inherits from
