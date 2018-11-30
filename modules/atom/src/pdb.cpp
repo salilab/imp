@@ -80,38 +80,7 @@ std::string nicename(std::string name) {
 
 PDBSelector::~PDBSelector() {}
 
-struct IndexCompare {
-  bool operator()(Particle* a, Particle* b) const {
-    return Residue(a).get_index() < Residue(b).get_index();
-  }
-};
-
-struct TypeCompare {
-  bool operator()(Particle* a, Particle* b) const {
-    return Atom(a).get_atom_type() < Atom(b).get_atom_type();
-  }
-};
-
 namespace {
-
-void sort_residues(Chain c) {
-  Hierarchies dchildren = c.get_children();
-  ParticlesTemp children(dchildren.begin(), dchildren.end());
-  std::sort(children.begin(), children.end(), IndexCompare());
-  c.clear_children();
-  for (unsigned int i = 0; i < children.size(); ++i) {
-    c.add_child(Hierarchy(children[i]));
-  }
-}
-
-void canonicalize(Hierarchy h) {
-  for (unsigned int i = 0; i < h.get_number_of_children(); ++i) {
-    canonicalize(h.get_child(i));
-  }
-  if (Chain::get_is_setup(h)) {
-    sort_residues(Chain(h));
-  }
-}
 
 Element get_element_from_pdb_line(const std::string& pdb_line) {
   // 1. determine element from element column
@@ -191,32 +160,6 @@ Particle* residue_particle(Model* m, const std::string& pdb_line) {
 }
 
 namespace {
-
-struct RemoveCHARMMTypeVisitor {
-  StringKey ctk;
-  RemoveCHARMMTypeVisitor() { ctk = CHARMMAtom::get_charmm_type_key(); }
-  bool operator()(Hierarchy h) {
-    if (CHARMMAtom::get_is_setup(h)) {
-      h.get_particle()->remove_attribute(ctk);
-    }
-    return true;
-  }
-};
-
-// Add radii to the newly-created hierarchy from the PDB file
-void add_pdb_radii(Hierarchy d) {
-  Pointer<CHARMMParameters> ff = get_all_atom_CHARMM_parameters();
-  Pointer<CHARMMTopology> top = ff->create_topology(d);
-  top->apply_default_patches();
-  top->add_atom_types(d);
-  ff->add_radii(d);
-
-  // We added CHARMM atom types (above) to determine radii, so remove
-  // them again to avoid pollution of the Particles with unrequested
-  // attributes
-  RemoveCHARMMTypeVisitor visitor;
-  IMP::core::visit_depth_first(d, visitor);
-}
 
 Hierarchies read_pdb(std::istream& in, std::string name, std::string filename,
                      Model* model, PDBSelector* selector,
@@ -321,20 +264,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, std::string filename,
     return Hierarchies();
   }
   if (!noradii) {
-    for (unsigned int i = 0; i < ret.size(); ++i) {
-      add_pdb_radii(ret[i]);
-      canonicalize(ret[i]);
-    }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      for (unsigned int i = 0; i < ret.size(); ++i) {
-        if (!ret[i].get_is_valid(true)) {
-          IMP_ERROR("Invalid hierarchy produced ");
-          IMP_ERROR_WRITE(IMP::core::show<Hierarchy>(ret[i], IMP_STREAM));
-          throw InternalException("Bad hierarchy");
-          // should clean up
-        }
-      }
-    }
+    internal::add_pdb_radii(ret);
   }
   return ret;
 }

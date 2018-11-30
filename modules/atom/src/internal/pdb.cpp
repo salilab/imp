@@ -13,6 +13,9 @@
 #include <IMP/atom/Fragment.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/Molecule.h>
+#include <IMP/atom/CHARMMAtom.h>
+#include <IMP/atom/CHARMMParameters.h>
+#include <IMP/atom/charmm_segment_topology.h>
 #include <IMP/core/provenance.h>
 #include <boost/algorithm/string.hpp>
 
@@ -289,6 +292,78 @@ void write_pdb(const ParticlesTemp& ps, TextOutput out) {
                               IMP::atom::AT_CA, IMP::atom::UNK, chain,
                               (int)resindex, ' ',
                               1.0, IMP::core::XYZR(ps[i]).get_radius());
+    }
+  }
+}
+
+namespace {
+
+struct IndexCompare {
+  bool operator()(Particle* a, Particle* b) const {
+    return Residue(a).get_index() < Residue(b).get_index();
+  }
+};
+
+void sort_residues(Chain c) {
+  Hierarchies dchildren = c.get_children();
+  ParticlesTemp children(dchildren.begin(), dchildren.end());
+  std::sort(children.begin(), children.end(), IndexCompare());
+  c.clear_children();
+  for (unsigned int i = 0; i < children.size(); ++i) {
+    c.add_child(Hierarchy(children[i]));
+  }
+}
+
+void canonicalize(Hierarchy h) {
+  for (unsigned int i = 0; i < h.get_number_of_children(); ++i) {
+    canonicalize(h.get_child(i));
+  }
+  if (Chain::get_is_setup(h)) {
+    sort_residues(Chain(h));
+  }
+}
+
+struct RemoveCHARMMTypeVisitor {
+  StringKey ctk;
+  RemoveCHARMMTypeVisitor() { ctk = CHARMMAtom::get_charmm_type_key(); }
+  bool operator()(Hierarchy h) {
+    if (CHARMMAtom::get_is_setup(h)) {
+      h.get_particle()->remove_attribute(ctk);
+    }
+    return true;
+  }
+};
+
+// Add radii to the newly-created hierarchy from the PDB file
+void add_pdb_radii(Hierarchy d) {
+  Pointer<CHARMMParameters> ff = get_all_atom_CHARMM_parameters();
+  Pointer<CHARMMTopology> top = ff->create_topology(d);
+  top->apply_default_patches();
+  top->add_atom_types(d);
+  ff->add_radii(d);
+
+  // We added CHARMM atom types (above) to determine radii, so remove
+  // them again to avoid pollution of the Particles with unrequested
+  // attributes
+  RemoveCHARMMTypeVisitor visitor;
+  IMP::core::visit_depth_first(d, visitor);
+}
+
+} // anon namespace
+
+void add_pdb_radii(Hierarchies hs) {
+  for (unsigned int i = 0; i < hs.size(); ++i) {
+    add_pdb_radii(hs[i]);
+    canonicalize(hs[i]);
+  }
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i = 0; i < hs.size(); ++i) {
+      if (!hs[i].get_is_valid(true)) {
+        IMP_ERROR("Invalid hierarchy produced ");
+        IMP_ERROR_WRITE(IMP::core::show<Hierarchy>(hs[i], IMP_STREAM));
+        throw InternalException("Bad hierarchy");
+        // should clean up
+      }
     }
   }
 }
