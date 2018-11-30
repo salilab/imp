@@ -25,7 +25,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
     """Setup cross-link distance restraints from mass spectrometry data.
     The noise in the data and the structural uncertainty of cross-linked amino-acids
     is inferred using Bayes theory of probability
-    \note Wraps an IMP::isd::CrossLinkMSRestraint
+    @note Wraps an IMP::isd::CrossLinkMSRestraint
     """
     def __init__(self, representation=None,
                  root_hier=None,
@@ -497,7 +497,7 @@ class AtomicCrossLinkMSRestraint(IMP.pmi.restraints.RestraintBase):
     The "atomic" aspect is that it models the particle uncertainty with a Gaussian
     The noise in the data and the structural uncertainty of cross-linked amino-acids
     is inferred using Bayes' theory of probability
-    \note Wraps an IMP::isd::AtomicCrossLinkMSRestraint
+    @note Wraps an IMP::isd::AtomicCrossLinkMSRestraint
     """
     def __init__(self,
                  root_hier,
@@ -516,7 +516,7 @@ class AtomicCrossLinkMSRestraint(IMP.pmi.restraints.RestraintBase):
         """Constructor.
         Automatically creates one "sigma" per crosslinked residue and one "psis" per pair.
         Other nuisance options are available.
-        \note Will return an error if the data+extra_sel don't specify two particles per XL pair.
+        @note Will return an error if the data+extra_sel don't specify two particles per XL pair.
         @param root_hier  The root hierarchy on which you'll do selection
         @param xldb       CrossLinkDataBase object
         @param atom_type  Can either be "NZ" or "CA"

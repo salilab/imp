@@ -21,7 +21,7 @@ import ihm.dataset
 class GaussianEMRestraint(object):
     """Fit Gaussian-decorated particles to an EM map
     (also represented with a set of Gaussians)
-    \note This class wraps an isd::GaussianEMRestraint
+    @note This class wraps an isd::GaussianEMRestraint
     """
     def __init__(self, densities,
                  target_fn='',
@@ -396,7 +396,7 @@ class GaussianEMRestraint(object):
 
 class CrossCorrelationRestraint(object):
     """Fit particles to an EM map. This creates a simulate density map and updates them every eval.
-    \note Wraps an em::FitRestraint
+    @note Wraps an em::FitRestraint
     """
     def __init__(self,
                  ps,

@@ -103,7 +103,7 @@ class DistanceRestraint(IMP.pmi.restraints.RestraintBase):
         @param label A unique label to be used in outputs and
                      particle/restraint names
         @param weight Weight of restraint
-        \note Pass the same resnum twice to each tuple_selection. Optionally
+        @note Pass the same resnum twice to each tuple_selection. Optionally
               add a copy number (PMI2 only)
         """
         if tuple_selection1 is None or tuple_selection2 is None:
@@ -363,7 +363,7 @@ class DistanceToPointRestraint(IMP.pmi.restraints.RestraintBase):
                representation)
         @param label A unique label to be used in outputs and
                      particle/restraint names
-        \note Pass the same resnum twice to each tuple_selection. Optionally
+        @note Pass the same resnum twice to each tuple_selection. Optionally
               add a copy number (PMI2 only)
         """
         if tuple_selection is None:

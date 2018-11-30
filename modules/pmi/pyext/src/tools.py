@@ -2018,7 +2018,7 @@ def shuffle_configuration(objects,
     @param hierarchies_excluded_from_collision Don't count collision with these bodies
     @param hierarchies_included_in_collision Hierarchies that are not shuffled, but should be included in collision calculation (for fixed regions)
     @param verbose Give more output
-    \note Best to only call this function after you've set up degrees of freedom
+    @note Best to only call this function after you've set up degrees of freedom
     For debugging purposes, returns: <shuffled indexes>, <collision avoided indexes>
     """
 

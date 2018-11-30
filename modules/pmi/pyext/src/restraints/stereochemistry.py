@@ -1192,7 +1192,7 @@ class PseudoAtomicRestraint(object):
 
 class SymmetryRestraint(object):
     """Create harmonic restraints between the reference and (transformed) clones.
-    \note Wraps IMP::core::TransformedDistancePairScore with an IMP::core::Harmonic
+    @note Wraps IMP::core::TransformedDistancePairScore with an IMP::core::Harmonic
     """
     def __init__(self,
                  references,
@@ -1357,7 +1357,7 @@ class PlaneDihedralRestraint(IMP.pmi.restraints.RestraintBase):
         @param k Strength of restraint
         @param label Label for output
         @param weight Weight of restraint
-        \note Particles defining planes should be rigid and more or less
+        @note Particles defining planes should be rigid and more or less
               parallel for proper behavior
         """
         model = particle_triplets[0][0].get_model()
