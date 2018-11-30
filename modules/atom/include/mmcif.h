@@ -17,11 +17,19 @@ IMPATOM_BEGIN_NAMESPACE
 
 //! Read all models from the mmCIF file.
 IMPATOMEXPORT Hierarchies read_multimodel_mmcif(TextInput input, Model *model,
-                         PDBSelector *selector = get_default_pdb_selector());
+                         PDBSelector *selector = get_default_pdb_selector()
+#ifndef IMP_DOXYGEN
+                         , bool noradii = false
+#endif
+                        );
 
 //! Read all the molecules in the first model of the mmCIF file.
 IMPATOMEXPORT Hierarchy read_mmcif(TextInput input, Model *model,
-                         PDBSelector *selector = get_default_pdb_selector());
+                         PDBSelector *selector = get_default_pdb_selector()
+#ifndef IMP_DOXYGEN
+                         , bool noradii = false
+#endif
+                        );
 
 IMPATOM_END_NAMESPACE
 

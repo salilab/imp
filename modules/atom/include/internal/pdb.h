@@ -11,6 +11,7 @@
 
 #include <IMP/atom/atom_config.h>
 #include <IMP/atom/element.h>
+#include <IMP/atom/Hierarchy.h>
 
 #include <IMP/base_types.h>
 
@@ -113,6 +114,9 @@ IMPATOMEXPORT Vector<unsigned short> connected_atoms(
 //! write particles as ATOMs to PDB (assumes Particles are valid Atoms)
 IMPATOMEXPORT void write_pdb(const ParticlesTemp& ps,
                              TextOutput out);
+
+//! Assign radii to all particles just read from a PDB file
+IMPATOMEXPORT void add_pdb_radii(Hierarchies hs);
 
 /** ATOM Record Format (from PDB)
     COLUMNS        DATA TYPE       CONTENTS

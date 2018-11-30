@@ -297,7 +297,7 @@ ssize_t read_callback(char *buffer, size_t buffer_len,
 
 Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
                        Model* model, PDBSelector *selector,
-                       bool select_first_model)
+                       bool select_first_model, bool noradii)
 {
   IMP::PointerMember<PDBSelector> sp(selector);
   struct ihm_error *err = nullptr;
@@ -317,28 +317,34 @@ Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
     IMP_THROW(errmsg, IOException);
   }
   ihm_reader_free(r);
+
+  if (!noradii) {
+    internal::add_pdb_radii(ret);
+  }
+
   return ret;
 }
 
 } // anonymous namespace
 
 Hierarchies read_multimodel_mmcif(TextInput in, Model *model,
-                                  PDBSelector* selector)
+                                  PDBSelector* selector, bool noradii)
 {
   IMP::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_mmcif(in, cif_nicename(in.get_name()), in.get_name(),
-                               model, selector, false);
+                               model, selector, false, noradii);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
   }
   return ret;
 }
 
-Hierarchy read_mmcif(TextInput in, Model *model, PDBSelector* selector)
+Hierarchy read_mmcif(TextInput in, Model *model, PDBSelector* selector,
+                     bool noradii)
 {
   IMP::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_mmcif(in, cif_nicename(in.get_name()), in.get_name(),
-                               model, selector, true);
+                               model, selector, true, noradii);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
   }
