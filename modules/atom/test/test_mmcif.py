@@ -57,6 +57,30 @@ class Tests(IMP.test.TestCase):
                             chains2[0].get_particle_index())
         self.assertEqual(len(m.get_particle_indexes()), 444)
 
+    def test_select_backbone(self):
+        """Check reading an mmCIF file, only backbone"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_mmcif(self.open_input_file("input.cif"), m,
+                                 IMP.atom.BackbonePDBSelector())
+        self.assertEqual(len(m.get_particle_indexes()), 278)
+        # Only backbone atom types should have been read
+        ats = frozenset(IMP.atom.Atom(x).get_atom_type().get_string()
+                        for x in IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE))
+        self.assertEqual(ats, frozenset(['CA', 'C', 'O', 'N']))
+
+    def test_select_nitrogen(self):
+        """Check reading an mmCIF file, only nitrogen atoms"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_mmcif(self.open_input_file("input.cif"), m,
+                                 IMP.atom.NPDBSelector())
+        self.assertEqual(len(m.get_particle_indexes()), 115)
+        # Only nitrogens should have been read
+        ats = frozenset(IMP.atom.Atom(x).get_atom_type().get_string()
+                        for x in IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE))
+        self.assertEqual(ats, frozenset(['N']))
+
 
 if __name__ == '__main__':
     IMP.test.main()

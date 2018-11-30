@@ -11,14 +11,17 @@
 
 #include <IMP/atom/atom_config.h>
 #include <IMP/atom/Hierarchy.h>
+#include <IMP/atom/pdb.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
 //! Read all models from the mmCIF file.
-IMPATOMEXPORT Hierarchies read_multimodel_mmcif(TextInput input, Model *model);
+IMPATOMEXPORT Hierarchies read_multimodel_mmcif(TextInput input, Model *model,
+                         PDBSelector *selector = get_default_pdb_selector());
 
 //! Read all the molecules in the first model of the mmCIF file.
-IMPATOMEXPORT Hierarchy read_mmcif(TextInput input, Model *model);
+IMPATOMEXPORT Hierarchy read_mmcif(TextInput input, Model *model,
+                         PDBSelector *selector = get_default_pdb_selector());
 
 IMPATOM_END_NAMESPACE
 
