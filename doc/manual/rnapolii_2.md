@@ -69,22 +69,6 @@ bs = IMP.pmi.macros.BuildSystem(m)
 bs.add_state(topology)
 \endcode
 
-# Initialize model
-m = IMP.Model()
-
-# Create list of components from topology file
-topology = IMP.pmi.topology.TopologyReader(topology_file)
-domains = topology.component_list
-
-bm = IMP.pmi.macros.BuildModel(m,
-                    component_topologies=domains,
-                    list_of_rigid_bodies=rigid_bodies,
-                    list_of_super_rigid_bodies=super_rigid_bodies,
-                    chain_of_super_rigid_bodies=chain_of_super_rigid_bodies)
-
-representation = bm.get_representation()
-\endcode
-
 **Building the System Representation and Degrees of Freedom**
 
 Here we can set the **Degrees of Freedom** parameters, which should be
@@ -97,8 +81,6 @@ move).
 of the Rigid Body mover, `max_srb_trans` and `max_srb_rot` are the maximum
 translation and rotation of the Super Rigid Body mover and `max_bead_trans`
 is the maximum translation of the Bead Mover.
-
-\code{.py}
 
 The excecution of the macro will return the root hierarchy (`root_hier`)
 and the degrees of freedom (`dof`) objects, both of which are used later on.
@@ -149,13 +131,6 @@ IMP.pmi.tools.shuffle_configuration(root_hier,
                                     cutoff=5.0,
                                     niterations=100)
 \endcode
-
-# Randomize the initial configuration before sampling
-representation.shuffle_configuration(50)
-\endcode
-
-This line randomizes the initial configuration to remove any bias from the initial starting configuration read from input files. Since each subunit is composed of rigid bodies (i.e., beads constrained in a structure) and flexible beads, the configuration of the system is initialized by placing each rigid body and each randomly in a box with a side of 50 Angstroms, and far enough from each other to prevent any steric clashes. The rigid bodies are also randomly rotated.  
-
 
 ### Set up Restraints
 
