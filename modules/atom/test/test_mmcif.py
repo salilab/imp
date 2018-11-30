@@ -25,10 +25,18 @@ class Tests(IMP.test.TestCase):
 
         #! read PDB
         mp = IMP.atom.read_mmcif(self.open_input_file("input.cif"), m)
-        chain_ids = [IMP.atom.Chain(x).get_id()
-                     for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
-        self.assertEqual(chain_ids, ['', 'B', 'A'])
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual([c.get_id() for c in chains], ['', 'B', 'A'])
         self.assertEqual(len(m.get_particle_indexes()), 435)
+        # Check residue indices and insertion codes (should use
+        # author-provided values if available)
+        rs = [IMP.atom.Residue(x)
+              for x in IMP.atom.get_by_type(chains[0], IMP.atom.RESIDUE_TYPE)]
+        indices = [r.get_index() for r in rs[:4]]
+        self.assertEqual(indices, [-1, 0, 0, 4])
+        inscodes = [r.get_insertion_code() for r in rs[:4]]
+        self.assertEqual(inscodes, [' ', ' ', 'A', ' '])
 
     def test_read_multimodel(self):
         """Check reading a multimodel mmCIF file"""

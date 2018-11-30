@@ -81,11 +81,13 @@ class AtomSiteCategory : public Category {
   Model *model_;
   bool select_first_model_;
   Keyword atom_name_, residue_name_, chain_, element_, seq_id_, group_, id_,
-          occupancy_, temp_factor_, ins_code_, x_, y_, z_, model_num_;
+          occupancy_, temp_factor_, ins_code_, x_, y_, z_, model_num_,
+          auth_seq_id_;
   Particle *cp_, *rp_, *root_p_;
   Hierarchies *hiers_;
   std::string curr_chain_;
   int curr_seq_id_;
+  int curr_auth_seq_id_;
   int curr_model_num_;
   std::string curr_residue_icode_;
   std::string hetatm_;
@@ -117,10 +119,12 @@ public:
         y_(c_, "cartn_y"),
         z_(c_, "cartn_z"),
         model_num_(c_, "pdbx_pdb_model_num"),
+        auth_seq_id_(c_, "auth_seq_id"),
         cp_(nullptr), rp_(nullptr), root_p_(nullptr),
         hiers_(hiers) {
     curr_chain_ = "";
     curr_seq_id_ = 0;
+    curr_auth_seq_id_ = 0;
     curr_residue_icode_ = "";
     curr_model_num_ = 0;
     hetatm_ = "HETATM";
@@ -180,27 +184,36 @@ public:
     int seq_id = seq_id_.as_int(1);
     std::string residue_icode = ins_code_.as_str();
 
-    Particle *ap = internal::atom_particle(
-                       model_, atom_name_.as_str(), e,
-                       group_.as_str() == hetatm_, id_.as_int(),
-                       seq_id, x_.as_float(), y_.as_float(),
-                       z_.as_float(), occupancy_.as_float(),
-                       temp_factor_.as_float());
     get_chain_particle(chain_.as_str());
     // Check if new residue
-    // todo: also read auth_seq_id
     if (rp_ == nullptr || seq_id != curr_seq_id_
         || residue_icode != curr_residue_icode_) {
       curr_seq_id_ = seq_id;
       curr_residue_icode_ = residue_icode;
+      // use author-provided seq_id and insertion code if available
+      std::string si = auth_seq_id_.as_str();
+      const char *start = si.c_str();
+      char *endptr;
+      int auth_seq_id = strtol(start, &endptr, 10);
+      // if auth_seq_id is blank, use seq_id instead
+      if (endptr == start) auth_seq_id = seq_id;
       char one_icode = 32; // default insertion code (space)
-      if (!residue_icode.empty()) {
-        one_icode = residue_icode[0];
+      // if auth_seq_id is not blank and contains something after the number,
+      // use the first character of that as the insertion code
+      if (endptr != start && *endptr) {
+        one_icode = *endptr;
       }
-      rp_ = internal::residue_particle(model_, seq_id, one_icode,
+      curr_auth_seq_id_ = auth_seq_id;
+      rp_ = internal::residue_particle(model_, auth_seq_id, one_icode,
                                        residue_name_.as_str());
       Chain(cp_).add_child(Residue(rp_));
     }
+    Particle *ap = internal::atom_particle(
+                       model_, atom_name_.as_str(), e,
+                       group_.as_str() == hetatm_, id_.as_int(),
+                       curr_auth_seq_id_, x_.as_float(), y_.as_float(),
+                       z_.as_float(), occupancy_.as_float(),
+                       temp_factor_.as_float());
     Residue(rp_).add_child(Atom(ap));
   }
 };
