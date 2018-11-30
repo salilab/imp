@@ -79,10 +79,11 @@ public:
 class AtomSiteCategory : public Category {
   std::string name_, filename_;
   Model *model_;
+  IMP::PointerMember<PDBSelector> selector_;
   bool select_first_model_;
   Keyword atom_name_, residue_name_, chain_, element_, seq_id_, group_, id_,
           occupancy_, temp_factor_, ins_code_, x_, y_, z_, model_num_,
-          auth_seq_id_;
+          auth_seq_id_, alt_loc_id_;
   Particle *cp_, *rp_, *root_p_;
   Hierarchies *hiers_;
   std::string curr_chain_;
@@ -93,6 +94,7 @@ class AtomSiteCategory : public Category {
   std::string hetatm_;
   std::map<std::pair<Particle *, std::string>, Particle *> chain_map_;
   std::map<int, Particle *> root_map_;
+  std::string pdb_line_;
 
   static void callback(struct ihm_reader *, void *data, struct ihm_error **) {
     ((AtomSiteCategory *)data)->handle();
@@ -101,9 +103,10 @@ class AtomSiteCategory : public Category {
 public:
   AtomSiteCategory(struct ihm_reader *reader, std::string name,
                    std::string filename, Model *model, Hierarchies *hiers,
-                   bool select_first_model) :
+                   PDBSelector *selector, bool select_first_model) :
         Category(reader, "_atom_site", callback),
         name_(name), filename_(filename), model_(model),
+        selector_(selector),
         select_first_model_(select_first_model),
         atom_name_(c_, "label_atom_id"),
         residue_name_(c_, "label_comp_id"),
@@ -120,6 +123,7 @@ public:
         z_(c_, "cartn_z"),
         model_num_(c_, "pdbx_pdb_model_num"),
         auth_seq_id_(c_, "auth_seq_id"),
+        alt_loc_id_(c_, "label_alt_id"),
         cp_(nullptr), rp_(nullptr), root_p_(nullptr),
         hiers_(hiers) {
     curr_chain_ = "";
@@ -175,7 +179,57 @@ public:
     }
   }
 
+  // Replace at most maxlen chars in dest, starting at pos, with repl
+  void replace(std::string &dest, size_t pos, size_t maxlen, const char *repl) {
+    size_t len = std::min(maxlen, strlen(repl));
+    if (len > 0) {
+      dest.replace(pos, len, repl, len);
+    }
+  }
+
+  // Return true iff the current atom passes the PDBSelector check
+  bool get_is_selected() {
+    // PDBSelectors currently take a PDB atom line string, so hack one.
+    // Note that this limits us to what can currently be stored in PDB,
+    // e.g. single character chain IDs and alternate locations
+
+    // First blank any previous line
+    pdb_line_.assign(80, ' ');
+    // ATOM/HETATM indicator
+    replace(pdb_line_, internal::atom_entry_type_field_, 6, group_.as_str());
+    // Atom name; need to pad appropriately (left align those with 2-character
+    // element names to distinguish calcium with C-alpha; otherwise pad with
+    // a space)
+    if (strlen(atom_name_.as_str()) >= 4 || strlen(element_.as_str()) == 2) {
+      replace(pdb_line_, internal::atom_type_field_, 4, atom_name_.as_str());
+    } else {
+      replace(pdb_line_, internal::atom_type_field_ + 1, 3,
+              atom_name_.as_str());
+    }
+    // Alternate location indicator
+    replace(pdb_line_, internal::atom_alt_loc_field_, 1, alt_loc_id_.as_str());
+    // Residue name
+    replace(pdb_line_, internal::atom_res_name_field_, 3,
+                      residue_name_.as_str());
+    // Chain ID
+    replace(pdb_line_, internal::atom_chain_id_field_, 1, chain_.as_str());
+    // Insertion code
+    // Extract this from the author-provided residue number
+    const char *start = auth_seq_id_.as_str();
+    char *endptr;
+    strtol(start, &endptr, 10); // ignore return value
+    // Insertion code is first non-digit (if any, otherwise blank)
+    pdb_line_[internal::atom_res_insertion_field_] = *endptr || ' ';
+    // Element
+    replace(pdb_line_, internal::atom_element_field_, 2, element_.as_str());
+
+    return selector_->get_is_selected(pdb_line_);
+  }
+
   void handle() {
+    if (!get_is_selected()) {
+      return;
+    }
     if (!get_root_particle(model_num_.as_int())) {
       return;
     }
@@ -242,15 +296,18 @@ ssize_t read_callback(char *buffer, size_t buffer_len,
 }
 
 Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
-                       Model* model, bool select_first_model)
+                       Model* model, PDBSelector *selector,
+                       bool select_first_model)
 {
+  IMP::PointerMember<PDBSelector> sp(selector);
   struct ihm_error *err = nullptr;
   struct ihm_file *fh = ihm_file_new(read_callback, &in, nullptr);
 
   struct ihm_reader *r = ihm_reader_new(fh);
   Hierarchies ret;
 
-  AtomSiteCategory asc(r, name, filename, model, &ret, select_first_model);
+  AtomSiteCategory asc(r, name, filename, model, &ret, selector,
+                       select_first_model);
 
   int more_data;
   if (!ihm_read_file(r, &more_data, &err)) {
@@ -265,20 +322,23 @@ Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
 
 } // anonymous namespace
 
-Hierarchies read_multimodel_mmcif(TextInput in, Model *model)
+Hierarchies read_multimodel_mmcif(TextInput in, Model *model,
+                                  PDBSelector* selector)
 {
+  IMP::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_mmcif(in, cif_nicename(in.get_name()), in.get_name(),
-                               model, false);
+                               model, selector, false);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
   }
   return ret;
 }
 
-Hierarchy read_mmcif(TextInput in, Model *model)
+Hierarchy read_mmcif(TextInput in, Model *model, PDBSelector* selector)
 {
+  IMP::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_mmcif(in, cif_nicename(in.get_name()), in.get_name(),
-                               model, true);
+                               model, selector, true);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
   }

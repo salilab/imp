@@ -35,7 +35,7 @@ IMPATOM_BEGIN_NAMESPACE
     CAlphaPDBSelector takes all non-alternate C-alphas since it inherits from
     NonAlternativePDBSelector).
 
-    \see read_pdb
+    \see read_pdb, read_mmcif
 */
 class IMPATOMEXPORT PDBSelector : public IMP::Object {
  public:
@@ -199,6 +199,8 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
   }
   IMP_OBJECT_METHODS(ChainPDBSelector);
   //! The chain id can be any character in chains
+  /** \note This limits the selection to single-character chain IDs
+            (mmCIF files support multiple-character chain names) */
   ChainPDBSelector(const std::string &chains,
                    std::string name = "ChainPDBSelector%1%")
       : NonAlternativePDBSelector(name), chains_(chains) {}
