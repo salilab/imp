@@ -19,6 +19,7 @@ Contents
    usage
    provenance
    design
+   changes
 
 API Reference:
 

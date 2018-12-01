@@ -1411,7 +1411,7 @@ class _FeatureDumper(_Dumper):
 
 class _CrossLinkDumper(_Dumper):
     def _all_restraints(self, system):
-        return [r for r in system.restraints
+        return [r for r in system._all_restraints()
                 if isinstance(r, restraint.CrossLinkRestraint)]
 
     def finalize(self, system):
@@ -1538,7 +1538,7 @@ class _CrossLinkDumper(_Dumper):
 
 class _GeometricRestraintDumper(_Dumper):
     def _all_restraints(self, system):
-        return [r for r in system.restraints
+        return [r for r in system._all_restraints()
                 if isinstance(r, restraint.GeometricRestraint)]
 
     def finalize(self, system):
@@ -1568,23 +1568,41 @@ class _GeometricRestraintDumper(_Dumper):
 
 class _DerivedDistanceRestraintDumper(_Dumper):
     def _all_restraints(self, system):
-        return [r for r in system.restraints
+        return [r for r in system._all_restraints()
                 if isinstance(r, restraint.DerivedDistanceRestraint)]
 
+    def _all_restraint_groups(self, system):
+        return [rg for rg in system.restraint_groups
+                if all(isinstance(r, restraint.DerivedDistanceRestraint)
+                       for r in rg) and len(rg) > 0]
+
     def finalize(self, system):
-        for nr, r in enumerate(self._all_restraints(system)):
-            r._id = nr + 1
+        self._restraints_by_id = []
+        seen_restraints = {}
+        for r in self._all_restraints(system):
+            util._remove_id(r)
+        for r in self._all_restraints(system):
+            util._assign_id(r, seen_restraints, self._restraints_by_id)
+
+        self._group_for_id = {}
+        for nrg, rg in enumerate(self._all_restraint_groups(system)):
+            rg._id = nrg + 1
+            for r in rg:
+                if r._id in self._group_for_id:
+                    raise ValueError("%s cannot be in more than one group" % r)
+                self._group_for_id[r._id] = rg._id
 
     def dump(self, system, writer):
         condmap = {True: 'ALL', False: 'ANY', None: None}
         ordinal = 1
         with writer.loop("_ihm_derived_distance_restraint",
-                         ["id", "feature_id_1", "feature_id_2",
+                         ["id", "group_id", "feature_id_1", "feature_id_2",
                           "restraint_type", "distance_lower_limit",
                           "distance_upper_limit", "probability",
                           "group_conditionality", "dataset_list_id"]) as l:
-            for r in self._all_restraints(system):
+            for r in self._restraints_by_id:
                 l.write(id=r._id, feature_id_1=r.feature1._id,
+                        group_id=self._group_for_id.get(r._id, None),
                         feature_id_2=r.feature2._id,
                         restraint_type=r.distance.restraint_type,
                         distance_lower_limit=r.distance.distance_lower_limit,
@@ -1596,7 +1614,7 @@ class _DerivedDistanceRestraintDumper(_Dumper):
 
 class _EM3DDumper(_Dumper):
     def _all_restraints(self, system):
-        return [r for r in system.restraints
+        return [r for r in system._all_restraints()
                 if isinstance(r, restraint.EM3DRestraint)]
 
     def finalize(self, system):
@@ -1633,7 +1651,7 @@ class _EM3DDumper(_Dumper):
 
 class _EM2DDumper(_Dumper):
     def _all_restraints(self, system):
-        return [r for r in system.restraints
+        return [r for r in system._all_restraints()
                 if isinstance(r, restraint.EM2DRestraint)]
 
     def finalize(self, system):
@@ -1702,7 +1720,7 @@ class _EM2DDumper(_Dumper):
 
 class _SASDumper(_Dumper):
     def _all_restraints(self, system):
-        return [r for r in system.restraints
+        return [r for r in system._all_restraints()
                 if isinstance(r, restraint.SASRestraint)]
 
     def finalize(self, system):
@@ -1735,6 +1753,21 @@ class _SASDumper(_Dumper):
                             details=r.details)
                     ordinal += 1
 
+def _init_restraint_groups(system):
+    """Initialize all RestraintGroups by removing any assigned ID"""
+    for g in system.restraint_groups:
+        util._remove_id(g)
+
+def _check_restraint_groups(system):
+    """Check that all RestraintGroups were successfully dumped"""
+    for g in system.restraint_groups:
+        if len(g) > 0 and not hasattr(g, '_id'):
+            raise TypeError(
+                "RestraintGroup(%s) contains an unsupported combination of "
+                "Restraints. Due to limitations of the underlying dictionary, "
+                "all objects in a RestraintGroup must be of the same type, "
+                "and only certain types (currently only "
+                "DerivedDistanceRestraint) can be grouped." % g)
 
 def write(fh, systems, format='mmCIF'):
     """Write out all `systems` to the file handle `fh`.
@@ -1782,8 +1815,10 @@ def write(fh, systems, format='mmCIF'):
 
     writer = writer_map[format](fh)
     for system in systems:
+        _init_restraint_groups(system)
         for d in dumpers:
             d.finalize(system)
+        _check_restraint_groups(system)
         for d in dumpers:
             d.dump(system, writer)
     writer.flush()

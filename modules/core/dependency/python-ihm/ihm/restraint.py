@@ -8,6 +8,25 @@ class Restraint(object):
     pass
 
 
+class RestraintGroup(list):
+    """A set of related :class:`Restraint` objects.
+       This is implemented as a simple list.
+
+       Note that due to limitations of the underlying dictionary, only
+       certain combinations of restraints can be placed in groups.
+       In particular, all objects in a group must be of the same type, and
+       only certain types (currently only :class:`DerivedDistanceRestraint`)
+       can be grouped.
+
+       Empty groups can be created, but will be ignored on output as the
+       dictionary does not support them.
+
+       Restraint groups should be stored in the system by adding them to
+       :attr:`ihm.System.restraint_groups`.
+    """
+    pass
+
+
 class EM3DRestraint(Restraint):
     """Restrain part of the system to match an electron microscopy density map.
 

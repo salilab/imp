@@ -358,6 +358,8 @@ class _SystemReader(object):
         self.dist_restraints = _IDMapper(self.system.restraints,
                                    ihm.restraint.DerivedDistanceRestraint,
                                    *(None,)*4)
+        self.dist_restraint_groups = _IDMapper(self.system.restraint_groups,
+                                   ihm.restraint.RestraintGroup)
         self.geometries = _GeometryIDMapper(
                                 self.system.orphan_geometric_objects,
                                 ihm.geometry.GeometricObject)
@@ -491,7 +493,7 @@ class _EntityHandler(_Handler):
                  pdbx_description, pdbx_number_of_molecules):
         s = self.sysr.entities.get_by_id(id)
         self._copy_if_present(s, locals(),
-                keys=('details', 'src_method', 'formula_weight'),
+                keys=('details', 'src_method'),
                 mapkeys={'pdbx_description':'description',
                          'pdbx_number_of_molecules':'number_of_molecules'})
 
@@ -1159,10 +1161,13 @@ class _DerivedDistanceRestraintHandler(_Handler):
     category = '_ihm_derived_distance_restraint'
     _cond_map = {'ALL': True, 'ANY': False, None: None}
 
-    def __call__(self, id, dataset_list_id, feature_id_1, feature_id_2,
-                 restraint_type, group_conditionality, probability,
-                 distance_lower_limit, distance_upper_limit):
+    def __call__(self, id, group_id, dataset_list_id, feature_id_1,
+                 feature_id_2, restraint_type, group_conditionality,
+                 probability, distance_lower_limit, distance_upper_limit):
         r = self.sysr.dist_restraints.get_by_id(id)
+        if group_id is not None:
+            rg = self.sysr.dist_restraint_groups.get_by_id(group_id)
+            rg.append(r)
         r.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
         r.feature1 = self.sysr.features.get_by_id(feature_id_1)
         r.feature2 = self.sysr.features.get_by_id(feature_id_2)
