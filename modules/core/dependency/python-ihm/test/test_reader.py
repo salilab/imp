@@ -304,9 +304,10 @@ _entity.id
 _entity.type
 _entity.pdbx_description
 _entity.pdbx_number_of_molecules
+_entity.formula_weight
 _entity.details
-1 polymer Nup84 2 .
-2 polymer Nup85 3 .
+1 polymer Nup84 2 100.0 .
+2 polymer Nup85 3 200.0 .
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
@@ -1240,6 +1241,7 @@ _ihm_non_poly_feature.atom_id
         rsr = """
 loop_
 _ihm_derived_distance_restraint.id
+_ihm_derived_distance_restraint.group_id
 _ihm_derived_distance_restraint.feature_id_1
 _ihm_derived_distance_restraint.feature_id_2
 _ihm_derived_distance_restraint.restraint_type
@@ -1248,10 +1250,10 @@ _ihm_derived_distance_restraint.distance_upper_limit
 _ihm_derived_distance_restraint.probability
 _ihm_derived_distance_restraint.group_conditionality
 _ihm_derived_distance_restraint.dataset_list_id
-1 1 2 'lower bound' 25.000 . 0.800 . 97
-2 1 4 'upper bound' . 45.000 0.800 ALL 98
-3 1 2 'lower and upper bound' 22.000 45.000 0.800 ANY 99
-4 2 3 'harmonic' 35.000 35.000 0.800 ALL .
+1 . 1 2 'lower bound' 25.000 . 0.800 . 97
+2 . 1 4 'upper bound' . 45.000 0.800 ALL 98
+3 1 1 2 'lower and upper bound' 22.000 45.000 0.800 ANY 99
+4 1 2 3 'harmonic' 35.000 35.000 0.800 ALL .
 """
         # Test both ways to make sure features still work if they are
         # referenced by ID before their type is known
@@ -1260,6 +1262,8 @@ _ihm_derived_distance_restraint.dataset_list_id
             s, = ihm.reader.read(fh)
             self.assertEqual(len(s.orphan_features), 4)
             r1, r2, r3, r4 = s.restraints
+            rg1, = s.restraint_groups
+            self.assertEqual([r for r in rg1], [r3, r4])
             self.assertEqual(r1.dataset._id, '97')
             self.assertTrue(isinstance(r1.feature1,
                                        ihm.restraint.AtomFeature))

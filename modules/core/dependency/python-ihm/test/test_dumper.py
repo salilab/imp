@@ -2301,10 +2301,18 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
         dataset._id = 97
 
         dist = ihm.restraint.LowerBoundDistanceRestraint(25.0)
-        r = ihm.restraint.DerivedDistanceRestraint(dataset=dataset,
-                feature1=feat1, feature2=feat2, distance=dist,
-                probability=0.8)
-        system.restraints.append(r)
+        r1 = ihm.restraint.DerivedDistanceRestraint(dataset=dataset,
+                 feature1=feat1, feature2=feat2, distance=dist,
+                 probability=0.8)
+        r2 = ihm.restraint.DerivedDistanceRestraint(dataset=dataset,
+                 feature1=feat1, feature2=feat2, distance=dist,
+                 probability=0.4)
+        r3 = ihm.restraint.DerivedDistanceRestraint(dataset=dataset,
+                 feature1=feat1, feature2=feat2, distance=dist,
+                 probability=0.6)
+        rg = ihm.restraint.RestraintGroup((r2, r3))
+        system.restraints.extend((r1, r2)) # r2 is in restraints and groups
+        system.restraint_groups.append(rg)
 
         dumper = ihm.dumper._DerivedDistanceRestraintDumper()
         dumper.finalize(system) # assign IDs
@@ -2313,6 +2321,7 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
         self.assertEqual(out, """#
 loop_
 _ihm_derived_distance_restraint.id
+_ihm_derived_distance_restraint.group_id
 _ihm_derived_distance_restraint.feature_id_1
 _ihm_derived_distance_restraint.feature_id_2
 _ihm_derived_distance_restraint.restraint_type
@@ -2321,9 +2330,61 @@ _ihm_derived_distance_restraint.distance_upper_limit
 _ihm_derived_distance_restraint.probability
 _ihm_derived_distance_restraint.group_conditionality
 _ihm_derived_distance_restraint.dataset_list_id
-1 44 84 'lower bound' 25.000 . 0.800 . 97
+1 . 44 84 'lower bound' 25.000 . 0.800 . 97
+2 1 44 84 'lower bound' 25.000 . 0.400 . 97
+3 1 44 84 'lower bound' 25.000 . 0.600 . 97
 #
 """)
+
+    def test_derived_distance_restraint_dumper_fail(self):
+        """Test DerivedDistanceRestraintDumper multi-group failure"""
+        class MockObject(object):
+            pass
+        system = ihm.System()
+
+        feat1 = MockObject()
+        feat2 = MockObject()
+        dataset = MockObject()
+
+        dist = ihm.restraint.LowerBoundDistanceRestraint(25.0)
+        r1 = ihm.restraint.DerivedDistanceRestraint(dataset=dataset,
+                 feature1=feat1, feature2=feat2, distance=dist,
+                 probability=0.8)
+        rg1 = ihm.restraint.RestraintGroup([r1])
+        rg2 = ihm.restraint.RestraintGroup([r1])
+        system.restraint_groups.extend((rg1, rg2))
+
+        dumper = ihm.dumper._DerivedDistanceRestraintDumper()
+        # r1 cannot be in multiple groups (rg1 and rg2)
+        self.assertRaises(ValueError, dumper.finalize, system)
+
+    def test_bad_restraint_groups(self):
+        """Test RestraintGroups containing unsupported restraints"""
+        class MockObject(object):
+            pass
+
+        s = ihm.System()
+        dataset = MockObject()
+        assembly = MockObject()
+
+        # Empty restraint groups are OK (even though they don't get IDs)
+        rg = ihm.restraint.RestraintGroup([])
+        s.restraint_groups.append(rg)
+        fh = StringIO()
+        ihm.dumper.write(fh, [s])
+
+        r = ihm.restraint.SASRestraint(dataset=dataset, assembly=assembly,
+                       segment=False, fitting_method='FoXS',
+                       fitting_atom_type='Heavy atoms',
+                       multi_state=False,
+                       radius_of_gyration=21.07, details='FoXS fitting')
+
+        rg = ihm.restraint.RestraintGroup([r])
+        s.restraint_groups.append(rg)
+
+        fh = StringIO()
+        # SASRestraint is an unsupported type in RestraintGroup
+        self.assertRaises(TypeError, ihm.dumper.write, fh, [s])
 
 
 if __name__ == '__main__':

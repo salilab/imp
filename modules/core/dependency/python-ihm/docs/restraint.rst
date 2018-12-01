@@ -10,6 +10,9 @@ The :mod:`ihm.restraint` Python module
 .. autoclass:: Restraint
    :members:
 
+.. autoclass:: RestraintGroup
+   :members:
+
 .. autoclass:: EM3DRestraint
    :members:
 
