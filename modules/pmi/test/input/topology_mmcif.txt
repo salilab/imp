@@ -1,0 +1,2 @@
+|molecule_name | color | fasta_fn | fasta_id | pdb_fn | chain | residue_range | pdb_offset | bead_size | em_residues_per_gaussian | rigid_body | super_rigid_body | chain_of_super_rigid_bodies | 
+|Prot1   |blue  |seqs.fasta|Protein_1|prot.cif   |A|55,65  |-54 |5|10|1|1,2| |

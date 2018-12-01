@@ -921,7 +921,10 @@ class PDBSequences(object):
         return self.model
 
     def read_sequences(self,pdb_fn,name_map):
-        t = IMP.atom.read_pdb(pdb_fn, self.model, IMP.atom.ATOMPDBSelector())
+        read_file = IMP.atom.read_pdb
+        if pdb_fn.endswith('.cif'):
+            read_file = IMP.atom.read_mmcif
+        t = read_file(pdb_fn, self.model, IMP.atom.ATOMPDBSelector())
         cs=IMP.atom.get_by_type(t,IMP.atom.CHAIN_TYPE)
         for c in cs:
             id=IMP.atom.Chain(c).get_id()
@@ -1136,7 +1139,7 @@ class TopologyReader(object):
       be treated as RNA or DNA, add an ',RNA' or ',DNA' suffix. For example,
       a `fasta_id` of 'myseq,RNA' will read the sequence 'myseq' from the
       FASTA file and treat it as RNA.
-    - `pdb_fn`: Name of PDB file with coordinates (if available).
+    - `pdb_fn`: Name of PDB or mmCIF file with coordinates (if available).
        If left empty, will set up as BEADS (you can also specify "BEADS")
        Can also write "IDEAL_HELIX".
     - `chain`: Chain ID of this domain in the PDB file.
