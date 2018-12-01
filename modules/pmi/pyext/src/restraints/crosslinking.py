@@ -2006,6 +2006,9 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
         lw = IMP.isd.LogWrapper(restraints, self.weight)
         self.rs.add_restraint(lw)
 
+    # Provide self.model for compatibility with newer code
+    model = property(lambda s: s.m)
+
     def set_weight(self, weight):
         self.weight = weight
         self.rs.set_weight(weight)

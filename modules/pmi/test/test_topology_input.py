@@ -225,6 +225,25 @@ class Tests(IMP.test.TestCase):
         #                         Prot1x2 Prot3
         self.assertEqual(len(fbs), 4   +  2)
 
+    def test_build_system_mmcif(self):
+        """Test BuildSystem macro with mmCIF input files"""
+        mdl = IMP.Model()
+        tfile = self.get_input_file_name('topology_mmcif.txt')
+        input_dir = os.path.dirname(tfile)
+        t = IMP.pmi.topology.TopologyReader(tfile,
+                                            pdb_dir=input_dir,
+                                            fasta_dir=input_dir,
+                                            gmm_dir=input_dir)
+        bs = IMP.pmi.macros.BuildSystem(mdl)
+        bs.add_state(t)
+        root_hier, dof = bs.execute_macro()
+
+        # check a few selections
+        sel1 = IMP.atom.Selection(root_hier,molecule="Prot1",
+                                  resolution=1,
+                                  copy_index=0).get_selected_particles()
+        self.assertEqual(len(sel1), 7  + 2 )
+
 
 
 if __name__=="__main__":
