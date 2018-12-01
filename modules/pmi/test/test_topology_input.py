@@ -227,6 +227,10 @@ class Tests(IMP.test.TestCase):
 
     def test_build_system_mmcif(self):
         """Test BuildSystem macro with mmCIF input files"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
         mdl = IMP.Model()
         tfile = self.get_input_file_name('topology_mmcif.txt')
         input_dir = os.path.dirname(tfile)
