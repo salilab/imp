@@ -89,6 +89,8 @@ class Tests(unittest.TestCase):
         l = ihm.location.Location(details='foo')
         l._allow_duplicates = True
         self.assertEqual(l._eq_vals(), id(l))
+        # Locations should never compare equal to None
+        self.assertNotEqual(l, None)
 
     def test_file_location_local(self):
         """Test InputFileLocation with a local file"""
