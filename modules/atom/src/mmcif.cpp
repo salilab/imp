@@ -81,9 +81,9 @@ class AtomSiteCategory : public Category {
   Model *model_;
   IMP::PointerMember<PDBSelector> selector_;
   bool select_first_model_;
-  Keyword atom_name_, residue_name_, chain_, element_, seq_id_, group_, id_,
-          occupancy_, temp_factor_, ins_code_, x_, y_, z_, model_num_,
-          auth_seq_id_, alt_loc_id_;
+  Keyword atom_name_, residue_name_, chain_, auth_chain_, element_, seq_id_,
+          group_, id_, occupancy_, temp_factor_, ins_code_, x_, y_, z_,
+          model_num_, auth_seq_id_, alt_loc_id_;
   Particle *cp_, *rp_, *root_p_;
   Hierarchies *hiers_;
   std::string curr_chain_;
@@ -111,6 +111,7 @@ public:
         atom_name_(c_, "label_atom_id"),
         residue_name_(c_, "label_comp_id"),
         chain_(c_, "label_asym_id"),
+        auth_chain_(c_, "auth_asym_id"),
         element_(c_, "type_symbol"),
         seq_id_(c_, "label_seq_id"),
         group_(c_, "group_pdb"),
@@ -238,7 +239,12 @@ public:
     int seq_id = seq_id_.as_int(1);
     std::string residue_icode = ins_code_.as_str();
 
-    get_chain_particle(chain_.as_str());
+    // Use author-provided chain ID if available
+    if (strlen(auth_chain_.as_str()) > 0) {
+      get_chain_particle(auth_chain_.as_str());
+    } else {
+      get_chain_particle(chain_.as_str());
+    }
     // Check if new residue
     if (rp_ == nullptr || seq_id != curr_seq_id_
         || residue_icode != curr_residue_icode_) {

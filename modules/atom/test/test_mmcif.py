@@ -27,10 +27,10 @@ class Tests(IMP.test.TestCase):
         mp = IMP.atom.read_mmcif(self.open_input_file("input.cif"), m)
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
-        self.assertEqual([c.get_id() for c in chains], ['', 'B', 'A'])
         self.assertEqual(len(m.get_particle_indexes()), 435)
-        # Check residue indices and insertion codes (should use
+        # Check chain IDs, residue indices and insertion codes (should use
         # author-provided values if available)
+        self.assertEqual([c.get_id() for c in chains], ['', 'X', 'A'])
         rs = [IMP.atom.Residue(x)
               for x in IMP.atom.get_by_type(chains[0], IMP.atom.RESIDUE_TYPE)]
         indices = [r.get_index() for r in rs[:4]]
@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
         mp1, mp2 = mps
         chains1 = [IMP.atom.Chain(x)
                    for x in IMP.atom.get_by_type(mp1, IMP.atom.CHAIN_TYPE)]
-        self.assertEqual([c.get_id() for c in chains1], ['', 'B', 'A'])
+        self.assertEqual([c.get_id() for c in chains1], ['', 'X', 'A'])
         chains2 = [IMP.atom.Chain(x)
                    for x in IMP.atom.get_by_type(mp2, IMP.atom.CHAIN_TYPE)]
         self.assertEqual([c.get_id() for c in chains2], [''])
