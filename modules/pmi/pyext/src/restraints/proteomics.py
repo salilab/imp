@@ -701,7 +701,8 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
     def do_get_inputs(self):
         return self.particle_list
 
-
+@IMP.pmi.deprecated_pmi1_object("2.10",
+                                "use IMP.restraints.basic.MembraneRestraint instead")
 class SetupMembraneRestraint(object):
 
     '''
