@@ -12,11 +12,6 @@ from . import location
 from . import restraint
 from . import geometry
 
-def _range_in(subrange, ranges):
-    """Return True iff subrange (a 2 element int tuple) is fully
-       enclosed with at least one of the given ranges"""
-    return any(subrange[0] >= r[0] and subrange[1] <= r[1] for r in ranges)
-
 class _Dumper(object):
     """Base class for helpers to dump output to mmCIF"""
     def __init__(self):
@@ -856,17 +851,34 @@ class _PostProcessDumper(_Dumper):
 
 class _RangeChecker(object):
     """Check Atom or Sphere objects to make sure they match the
-       Representation"""
+       Representation and Assembly"""
     def __init__(self, model):
+        self._setup_representation(model)
+        self._setup_assembly(model)
+
+    def _setup_representation(self, model):
+        """Make map from asym_id to representation segments for that ID"""
         r = model.representation if model.representation else []
-        # Make map from asym_id to representation segments for that ID
-        self.asym_ids = {}
+        self.repr_asym_ids = {}
         for segment in r:
             asym_id = segment.asym_unit._id
-            if asym_id not in self.asym_ids:
-                self.asym_ids[asym_id] = []
-            self.asym_ids[asym_id].append(segment)
-        self._last_segment_matched = None
+            if asym_id not in self.repr_asym_ids:
+                self.repr_asym_ids[asym_id] = []
+            self.repr_asym_ids[asym_id].append(segment)
+        self._last_repr_segment_matched = None
+
+    def _setup_assembly(self, model):
+        """Make map from asym_id to assembly seq_id ranges for that ID"""
+        a = model.assembly if model.assembly else []
+        self.asmb_asym_ids = {}
+        for obj in a:
+            if hasattr(obj, 'entity'):
+                asym_id = obj._id
+                if asym_id not in self.asmb_asym_ids:
+                    self.asmb_asym_ids[asym_id] = []
+                self.asmb_asym_ids[asym_id].append(obj.seq_id_range)
+        self._last_asmb_range_matched = None
+        self._last_asmb_asym_matched = None
 
     def _type_check_atom(self, obj, segment):
         """Check an Atom object against a representation segment."""
@@ -899,26 +911,56 @@ class _RangeChecker(object):
         else:
             type_check = self._type_check_atom
             seq_id_range = (obj.seq_id, obj.seq_id)
+        self._check_assembly(obj, asym, seq_id_range)
+        self._check_representation(obj, asym, type_check, seq_id_range)
+
+    def _check_assembly(self, obj, asym, seq_id_range):
         # Check last match first
-        last_seg = self._last_segment_matched
+        last_rng = self._last_asmb_range_matched
+        if last_rng and asym._id == self._last_asmb_asym_matched \
+           and seq_id_range[0] >= last_rng[0] \
+           and seq_id_range[1] <= last_rng[1]:
+            return
+        # Check asym_id
+        if asym._id not in self.asmb_asym_ids:
+            raise ValueError("%s refers to an asym ID (%s) that is not in this "
+                 "model's assembly (which includes the following asym IDs: %s)"
+                 % (obj, asym._id,
+                    ", ".join(sorted(a for a in self.asmb_asym_ids))))
+        # Check range
+        for rng in self.asmb_asym_ids[asym._id]:
+            if seq_id_range[0] >= rng[0] and seq_id_range[1] <= rng[1]:
+                self._last_asmb_asym_matched = asym._id
+                self._last_asmb_range_matched = rng
+                return
+        raise ValueError("%s seq_id range (%d-%d) does not match any range "
+                    "in the assembly for asym ID %s (ranges are %s)"
+                    % (obj, seq_id_range[0], seq_id_range[1], asym._id,
+                       ", ".join("%d-%d" % x
+                                 for x in self.asmb_asym_ids[asym._id])))
+
+    def _check_representation(self, obj, asym, type_check, seq_id_range):
+        # Check last match first
+        last_seg = self._last_repr_segment_matched
         if last_seg and asym._id == last_seg.asym_unit._id \
            and seq_id_range[0] >= last_seg.asym_unit.seq_id_range[0] \
            and seq_id_range[1] <= last_seg.asym_unit.seq_id_range[1] \
            and type_check(obj, last_seg):
             return
         # Check asym_id
-        if asym._id not in self.asym_ids:
+        if asym._id not in self.repr_asym_ids:
             raise ValueError("%s refers to an asym ID (%s) that is not in this "
                  "model's representation (which includes the following asym "
                  "IDs: %s)"
-                 % (obj, asym._id, ", ".join(sorted(a for a in self.asym_ids))))
+                 % (obj, asym._id,
+                    ", ".join(sorted(a for a in self.repr_asym_ids))))
         # Check range
         bad_type_segments = []
-        for segment in self.asym_ids[asym._id]:
+        for segment in self.repr_asym_ids[asym._id]:
             rng = segment.asym_unit.seq_id_range
             if seq_id_range[0] >= rng[0] and seq_id_range[1] <= rng[1]:
                 if type_check(obj, segment):
-                    self._last_segment_matched = segment
+                    self._last_repr_segment_matched = segment
                     return
                 else:
                     bad_type_segments.append(segment)
@@ -934,7 +976,7 @@ class _RangeChecker(object):
                     "ranges are %s)"
                     % (obj, seq_id_range[0], seq_id_range[1], asym._id,
                        ", ".join("%d-%d" % x.asym_unit.seq_id_range
-                                 for x in self.asym_ids[asym._id])))
+                                 for x in self.repr_asym_ids[asym._id])))
 
 
 class _ModelDumper(_Dumper):
@@ -968,38 +1010,6 @@ class _ModelDumper(_Dumper):
         self.dump_spheres(system, writer)
         self.dump_atom_type(seen_types, system, writer)
 
-    def _check_representation(self, model):
-        """Check the Representation of the given Model for sanity."""
-        # Representation should only reference asyms and seq_id ranges
-        # that are in Assembly
-        a = model.assembly if model.assembly else []
-        # Get mapping from IDs to list of ranges for all asym units
-        # and ranges (not entities)
-        asym_ids= {}
-        for obj in a:
-            if hasattr(obj, 'entity'):
-                asym_id = obj._id
-                if asym_id not in asym_ids:
-                    asym_ids[asym_id] = []
-                asym_ids[asym_id].append(obj.seq_id_range)
-        r = model.representation if model.representation else []
-        for segment in r:
-            if segment.asym_unit._id not in asym_ids:
-                raise ValueError("%s refers to an asym ID (%s) that is not in "
-                         "this model's assembly (which includes the following "
-                         "asym IDs: %s)"
-                         % (segment, segment.asym_unit._id,
-                            ", ".join(sorted(a for a in asym_ids))))
-            asmb_ranges = asym_ids[segment.asym_unit._id]
-            repr_range = segment.asym_unit.seq_id_range
-            if not _range_in(repr_range, asmb_ranges):
-                raise ValueError("%s seq_id range (%d-%d) is not part of any "
-                         "assembly range for asym ID %s (valid ranges in the "
-                         "assembly are %s)"
-                         % (segment, repr_range[0], repr_range[1],
-                            segment.asym_unit._id,
-                            ", ".join("%d-%d" % x for x in asmb_ranges)))
-
     def dump_model_list(self, system, writer):
         ordinal = 1
         with writer.loop("_ihm_model_list",
@@ -1007,7 +1017,6 @@ class _ModelDumper(_Dumper):
                           "model_name", "model_group_name", "assembly_id",
                           "protocol_id", "representation_id"]) as l:
             for group, model in system._all_models():
-                self._check_representation(model)
                 l.write(ordinal_id=ordinal, model_id=model._id,
                         model_group_id=group._id,
                         model_name=model.name,
@@ -1790,9 +1799,9 @@ def write(fh, systems, format='mmCIF'):
                _EntityPolyDumper(),
                _EntityNonPolyDumper(),
                _EntityPolySeqDumper(),
+               _StructAsymDumper(),
                _PolySeqSchemeDumper(),
                _NonPolySchemeDumper(),
-               _StructAsymDumper(),
                _AssemblyDumper(),
                _ExternalReferenceDumper(),
                _DatasetDumper(),
