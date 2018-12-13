@@ -11,6 +11,7 @@
 
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/scores2D.h"
+#include <IMP/em2d/internal/clustering_helper.h>
 #include "IMP/base_types.h"
 #include <IMP/log.h>
 #include <vector>
@@ -20,20 +21,6 @@
 #include <functional>
 
 IMPEM2D_BEGIN_NAMESPACE
-
-typedef std::pair<unsigned int, double> pair_cluster_id_distance;
-typedef std::list<pair_cluster_id_distance> list_cluster_id_distance;
-typedef FloatsList VectorOfFloats;
-typedef IntsList VectorOfInts;
-
-class ListHasDistance {
-  unsigned l1_, l2_;
-public:
-  ListHasDistance(unsigned l1, unsigned l2) : l1_(l1), l2_(l2) {}
-  bool operator()(const pair_cluster_id_distance& cid) {
-    return cid.first == l1_ || cid.first == l2_;
-  }
-};
 
 template <class T>
 void print_vector(const std::vector<T> &v) {
@@ -201,7 +188,7 @@ ClusterSet do_hierarchical_agglomerative_clustering(
   unsigned int N = distances.size();  // number of elements
                                       // Lists of distances between elements
   // List n has members (i,distance_n_i).
-  std::vector<list_cluster_id_distance> lists(N);
+  std::vector<internal::list_cluster_id_distance> lists(N);
   // id of the cluster associated with each list
   Ints cluster_id(N);
   // All list active at the beginning
@@ -214,7 +201,7 @@ ClusterSet do_hierarchical_agglomerative_clustering(
         lists[n].push_back(std::make_pair(i, distances[n][i]));
       }
     }
-    lists[n].sort(LessPairBySecond<pair_cluster_id_distance>());
+    lists[n].sort(LessPairBySecond<internal::pair_cluster_id_distance>());
     // At the beginning each list is associated with a cluster of one element
     cluster_id[n] = n;
   }
@@ -257,9 +244,8 @@ ClusterSet do_hierarchical_agglomerative_clustering(
       if (active_list[i] == true && i != l1) {
         IMP_LOG_TERSE("List " << i << " is active " << std::endl);
         // Delete list elements that store distances to the merged clusters
-        list_cluster_id_distance::iterator it;
         lists[i].erase(std::remove_if(lists[i].begin(), lists[i].end(),
-                                      ListHasDistance(l1, l2)),
+                                      internal::ListHasDistance(l1, l2)),
                        lists[i].end());
         // Update distances to the merged cluster
         double dist = linkage_function(cluster_id[l1], cluster_id[i],
@@ -272,7 +258,7 @@ ClusterSet do_hierarchical_agglomerative_clustering(
     // Sort lists
     for (unsigned int i = 0; i < N; ++i) {
       if (active_list[i] == true) {
-        lists[i].sort(LessPairBySecond<pair_cluster_id_distance>());
+        lists[i].sort(LessPairBySecond<internal::pair_cluster_id_distance>());
       }
     }
   }
