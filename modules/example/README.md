@@ -5,8 +5,8 @@ so it can be used to see how to write a new class, export it to Python,
 document it, and provide tests and examples.
 
 The overview section of the module page can contain any
-[MarkDown](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html) or
-[doxygen](http://www.stack.nl/~dimitri/doxygen/manual/docblocks.html)
+[MarkDown](http://www.doxygen.nl/manual/markdown.html) or
+[doxygen](http://www.doxygen.nl/manual/docblocks.html)
 markup as well as references to IMP classes such as IMP::Model.
 
 # imp_example_app {#imp_example_app_bin}
