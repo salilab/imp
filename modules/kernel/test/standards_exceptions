@@ -42,6 +42,8 @@ function_name_exceptions=[
     'ArgumentParser.print_usage',
     'ArgumentParser.print_version',
     'ArgumentParser.register',
+    'ArgumentParser.parse_intermixed_args',
+    'ArgumentParser.parse_known_intermixed_args',
     ]
 
 value_object_exceptions=['Exception', 'TypeException',
