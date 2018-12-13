@@ -538,13 +538,14 @@ class MembraneRestraint(IMP.pmi.restraints.RestraintBase):
         
         offset = 5.0*self.thickness
         apix = 3.0
-        
+        resolution = 5.0       
+ 
         # Create a density header of the requested size
         bbox = IMP.algebra.BoundingBox3D(
             IMP.algebra.Vector3D(-self.center - offset, -self.center - offset, -self.center - offset,),
             IMP.algebra.Vector3D(self.center + offset, self.center + offset, self.center + offset))
         dheader = IMP.em.create_density_header(bbox, apix)
-        #dheader.set_resolution(resolution)
+        dheader.set_resolution(resolution)
         dmap = IMP.em.SampledDensityMap(dheader)
 
         for vox in range(dmap.get_header().get_number_of_voxels()):
