@@ -90,11 +90,12 @@ IMP::ModelObjectsTemp MembraneRestraint::do_get_inputs() const {
   ps.insert(ps.end(), particles_above.begin(), particles_above.end());
   ps.insert(ps.end(), particles_inside.begin(), particles_inside.end());
   ParticlesTemp ret;
-  ret.reserve(ps.size());
+  ret.reserve(ps.size() + 1);
   IMP::Model *m = get_model();
   for (size_t i(0); i < ps.size(); ++i) {
     ret.push_back(m->get_particle(ps[i]));
   }
+  ret.push_back(m->get_particle(z_nuisance));
   return ret;
 }
 

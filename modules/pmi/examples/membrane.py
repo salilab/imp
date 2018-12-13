@@ -1,8 +1,8 @@
 ## \example pmi/membrane.py
 """
 This script shows how to simulate an a protein using a
-Membrane restraint. This example show 3 ideal helices 
-that have different segments inside the membrane 
+Membrane restraint. This example show 3 ideal helices
+that have different segments inside the membrane
 """
 
 import IMP
@@ -17,6 +17,9 @@ import IMP.pmi.restraints.basic
 import IMP.pmi.restraints.stereochemistry
 import IMP.pmi.restraints.basic
 import sys
+
+IMP.setup_from_argv(sys.argv,
+                    "Simulation of a protein using a membrane restraint")
 
 model = IMP.Model()
 s = IMP.pmi.topology.System(model)
@@ -42,7 +45,7 @@ for mol in mols:
 ##############################
 # Connectivity
 ##############################
-output_objects = []  
+output_objects = []
 sample_objects = []
 rmf_restraints = []
 
@@ -98,6 +101,7 @@ print(dof.get_movers())
 # Sampling
 ##############################
 
+frames = 10 if IMP.get_is_quick_test() else 2000
 rex = IMP.pmi.macros.ReplicaExchange0(model,
                                       root_hier=hier,
                                       crosslink_restraints=rmf_restraints,
@@ -106,7 +110,7 @@ rex = IMP.pmi.macros.ReplicaExchange0(model,
                                       global_output_directory="output/",
                                       output_objects=output_objects,
                                       monte_carlo_steps=10,
-                                      number_of_frames=2000,
+                                      number_of_frames=frames,
                                       number_of_best_scoring_models=0)
 
 rex.execute_macro()
