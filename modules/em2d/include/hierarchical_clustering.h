@@ -26,6 +26,15 @@ typedef std::list<pair_cluster_id_distance> list_cluster_id_distance;
 typedef FloatsList VectorOfFloats;
 typedef IntsList VectorOfInts;
 
+class ListHasDistance {
+  unsigned l1_, l2_;
+public:
+  ListHasDistance(unsigned l1, unsigned l2) : l1_(l1), l2_(l2) {}
+  bool operator()(const pair_cluster_id_distance& cid) {
+    return cid.first == l1_ || cid.first == l2_;
+  }
+};
+
 template <class T>
 void print_vector(const std::vector<T> &v) {
   for (unsigned int i = 0; i < v.size(); ++i) {
@@ -249,12 +258,9 @@ ClusterSet do_hierarchical_agglomerative_clustering(
         IMP_LOG_TERSE("List " << i << " is active " << std::endl);
         // Delete list elements that store distances to the merged clusters
         list_cluster_id_distance::iterator it;
-        for (it = lists[i].begin(); it != lists[i].end(); ++it) {
-          if ((*it).first == l1 || (*it).first == l2) {
-            lists[i].erase(it);
-            --it;
-          }
-        }
+        lists[i].erase(std::remove_if(lists[i].begin(), lists[i].end(),
+                                      ListHasDistance(l1, l2)),
+                       lists[i].end());
         // Update distances to the merged cluster
         double dist = linkage_function(cluster_id[l1], cluster_id[i],
                                        cluster_set, distances);
