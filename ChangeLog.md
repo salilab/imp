@@ -3,6 +3,7 @@ ChangeLog {#changelog}
 
 # HEAD
 
+# 2.10.0 - 2019-01-08 # {#changelog_2_10_0}
 - Applications using IMP::pmi should now use the IMP::pmi::topology::System
   class to set up the system (sometimes referred to as "PMI2"), rather than
   the older IMP::pmi::representation::Representation class ("PMI1").
