@@ -210,9 +210,8 @@ class DockOrder (object):
         docking_pairs = []
         degs = self.G.degree(self.G.nodes())
         log.debug("Degrees: %s", degs)
-        sorted_degrees = sorted([(v, k)
-                                for v, k in zip(degs.values(), degs.keys())])
-        sorted_degrees.reverse()  # descending order
+        sorted_degrees = sorted(((v,k) for (k,v) in dict(degs).items()),
+                                reverse=True)
 
         receptors_considered = []
         for degree, node in sorted_degrees:
