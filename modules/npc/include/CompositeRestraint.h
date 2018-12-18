@@ -21,7 +21,7 @@ IMPNPC_BEGIN_NAMESPACE
     of Particles remains connected, but allows how they are connected to change
     (for example, A-B-C would score as well as B-A-C). However, unlike that
     restraint, it acts on Particle type (in the case where there are several
-    distinct Particles of the same type) and allows the stoichoimetry to change
+    distinct Particles of the same type) and allows the stoichiometry to change
     (For example, A1-B1-C1 would score similarly to A1-B2-C2 or A1-B1-B2-C1).
 
     To use, first create the restraint and then call add_type() for each
