@@ -374,7 +374,9 @@ if(IMP_DOXYGEN_FOUND)
 
   add_custom_target(IMP-doc-install
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/manual" "${CMAKE_INSTALL_FULL_DOCDIR}/manual"
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/doxygen/manual-tags.xml" "${CMAKE_INSTALL_FULL_DOCDIR}"
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/doc/ref" "${CMAKE_INSTALL_FULL_DOCDIR}/ref"
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/doxygen/ref-tags.xml" "${CMAKE_INSTALL_FULL_DOCDIR}"
     DEPENDS "IMP-doc"
     COMMENT "Installing documentation to ${CMAKE_INSTALL_FULL_DOCDIR}")
 else()
