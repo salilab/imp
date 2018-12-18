@@ -3,10 +3,11 @@ import IMP.atom
 import IMP.pmi
 import IMP.test
 import IMP.isd
-import IMP.pmi.nonmantained
 import IMP.pmi.restraints.proteomics
 import IMP.pmi.representation
 import IMP.pmi.io
+import IMP.pmi.restraints
+import IMP.pmi.restraints.basic
 import IMP.rmf
 import RMF
 import math
@@ -14,7 +15,13 @@ import sys
 
 class MembraneRestraintPrototype(IMP.Restraint):
 
-    def __init__(self, m, z_nuisance, thickness=30.0, softness=3.0, plateau=0.0000000001, linear=0.02):
+    def __init__(self,
+                 m,
+                 z_nuisance,
+                 thickness=30.0,
+                 softness=3.0,
+                 plateau=0.0000000001,
+                 linear=0.02):
         '''
         input a list of particles, the slope and theta of the sigmoid potential
         theta is the cutoff distance for a protein-protein contact
@@ -167,34 +174,30 @@ class MembraneRestraint(IMP.test.TestCase):
                     r.unprotected_evaluate(None), r2.unprotected_evaluate(None),
                     delta=1e-4)
 
-class TestOldRestraint(IMP.test.TestCase):
-    def test_membrane_pore_restraint(self):
-        try:
-            from scipy.spatial import Delaunay
-        except ImportError:
-            self.skipTest("no scipy spatial")
-
+    def test_pmi_selection(self):
         m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        st = s.create_state()
+        len_helix = 40
+        mol = st.create_molecule("helix",sequence='A'*len_helix, chain_id='A')
+        mol.add_representation(mol,
+                           resolutions=[1],
+                           ideal_helix=True)
+        hier = s.build()
 
-        r=IMP.pmi.representation.Representation(m)
+        mr = IMP.pmi.restraints.basic.MembraneRestraint(hier,
+                                                     objects_inside=[(11,30,'helix')],
+                                                     objects_above=[(1,10,'helix')],
+                                                     objects_below = [(31,40,'helix')])
 
-        smr=IMP.pmi.nonmantained.SetupMembranePoreRestraint(
-            r,
-            selection_tuples_outside=None,
-            selection_tuples_membrane=None,
-            selection_tuples_inside=None,
-            center=(0.0,0.0,0.0),
-            z_tickness=100,
-            radius=300,
-            membrane_tickness=40.0,
-            resolution=1,
-            label="None")
-
-        smr.create_representation()
-        rh = RMF.create_rmf_file("test.rmf3")
-        IMP.rmf.add_hierarchies(rh, [r.prot])
-        IMP.rmf.save_frame(rh)
-        del rh
-
+        p_inside = mr.get_particles_inside()
+        self.assertEqual(len(p_inside), 20)
+        
+        p_above = mr.get_particles_above()
+        self.assertEqual(len(p_above), 10)
+        
+        p_below = mr.get_particles_below()
+        self.assertEqual(len(p_below), 10)
+         
 if __name__ == '__main__':
     IMP.test.main()

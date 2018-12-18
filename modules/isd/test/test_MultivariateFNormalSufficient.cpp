@@ -151,7 +151,7 @@ bool test_degenerate() {
   {
     // density
     double observed = mv->density();
-    double expected = fn->density();
+    double expected = fn->get_density();
     if (naeq(observed, expected)) FAIL("density");
   }
 
@@ -213,7 +213,7 @@ bool test_degenerate_N2M1() {
   {
     // density
     double observed = mv->density();
-    double expected = fn->density() * fn2->density();
+    double expected = fn->get_density() * fn2->get_density();
     if (naeq(observed, expected)) FAIL("evaluate");
   }
 
@@ -277,7 +277,7 @@ bool test_degenerate_N1M2() {
   {
     // density
     double observed = mv->density();
-    double expected = fn->density() * fn2->density();
+    double expected = fn->get_density() * fn2->get_density();
     if (naeq(observed, expected)) FAIL("evaluate");
   }
 

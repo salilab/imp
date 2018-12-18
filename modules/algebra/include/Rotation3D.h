@@ -222,11 +222,36 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
     return *this;
   }
 
-  /** \brief Return the derivative of the local position o with respect to
-      the i'th internal quaternion coefficient, for i in [0..3],
-      namely (dx/dQi, dy/dQi, dz/dQi)
+  //! Return the derivative of rotated vector wrt the ith quaternion element.
+  /** Given the rotation \f$x = R(q) v\f$, where \f$v\f$ is a vector,
+      \f$q=(q_0,q_1,q_2,q_3)\f$ is the quaternion of the rotation with
+      elements \f$q_i\f$, and \f$R(q)\f$ is the corresponding rotation matrix,
+      the function returns the derivative \f$\frac{d x}{d q_i}\f$.
+
+      This function just returns a single column from get_gradient(), so it is
+      more efficient to call that function if all columns are needed.
+
+      \param[in] v vector to be rotated by rotation \f$R(q)\f$
+      \param[in] projected project derivative onto tangent space to \f$q\f$.
+                           Equivalent to differentiating wrt
+                           \f$\frac{q_i}{\|q\|}\f$ instead of \f$q_i\f$.
   */
-  const Vector3D get_derivative(const Vector3D &o, unsigned int i) const;
+  Vector3D get_derivative(const Vector3D &v, unsigned int i,
+                          bool projected = true) const;
+
+  //! Return the gradient of rotated vector wrt the quaternion.
+  /** Given the rotation \f$x = R(q) v\f$, where \f$v\f$ is a vector,
+      \f$q\f$ is the quaternion of the rotation, and \f$R(q)\f$ is the
+      corresponding rotation matrix, the function returns the 3x4 matrix
+      \f$M = \nabla_q x\f$ with elements \f$M_{ij}=\frac{d x_i}{d q_j}\f$.
+      
+      \param[in] v vector to be rotated by rotation \f$R(q)\f$
+      \param[in] projected project gradient onto tangent space to \f$q\f$.
+                           Equivalent to differentiating wrt
+                           \f$\frac{q_i}{\|q\|}\f$ instead of \f$q_i\f$.
+   */
+  Eigen::MatrixXd get_gradient(
+    const Eigen::Vector3d &v, bool projected = true) const;
 
   /** Return true is the rotation is valid, false if
       invalid or not initialized (e.g., only initialized by
@@ -238,6 +263,39 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
 };
 
 IMP_VALUES(Rotation3D, Rotation3Ds);
+
+
+//! Get gradient of quaternion product with respect to first quaternion.
+/** Given the rotation \f$R(p)\f$ followed by \f$R(q)\f$, where \f$p\f$ and
+    \f$q\f$ are quaternions, the quaternion of the composed rotation
+    \f$R(s)=R(q) R(p)\f$ can be expressed through the Hamilton product of the
+    two quaternions \f$s(q,p) = q p\f$. This function returns the matrix
+    \f$M = \nabla_q s(q, p)\f$ with elements \f$M_{ij}=\frac{d s_i}{d q_j}\f$.
+
+    \param[in] q rotation corresponding to first quaternion
+    \param[in] p rotation corresponding to second quaternion
+    \param[in] projected project derivative onto tangent space to \f$q\f$.
+                         Equivalent to differentiating wrt
+                         \f$\frac{q_i}{\|q\|}\f$ instead of \f$q_i\f$.
+ */
+IMPALGEBRAEXPORT Eigen::MatrixXd get_gradient_of_composed_with_respect_to_first(
+  const Rotation3D &q, const Rotation3D &p, bool projected = true);
+
+//! Get gradient of quaternion product with respect to second quaternion.
+/** Given the rotation \f$R(p)\f$ followed by \f$R(q)\f$, where \f$p\f$ and
+    \f$q\f$ are quaternions, the quaternion of the composed rotation
+    \f$R(s)=R(q) R(p)\f$ can be expressed through the Hamilton product of the
+    two quaternions \f$s(q,p) = q p\f$. This function returns the matrix
+    \f$\nabla_p s(q, p)\f$ with elements \f$M_{ij}=\frac{d s_i}{d p_j}\f$.
+
+    \param[in] q rotation corresponding to first quaternion
+    \param[in] p rotation corresponding to second quaternion
+    \param[in] projected project derivative onto tangent space to \f$p\f$.
+                         Equivalent to differentiating wrt
+                         \f$\frac{p_i}{\|p\|}\f$ instead of \f$p_i\f$.
+ */
+IMPALGEBRAEXPORT Eigen::MatrixXd get_gradient_of_composed_with_respect_to_second(
+  const Rotation3D &q, const Rotation3D &p, bool projected = true);
 
 //! Return a rotation that does not do anything
 /** \see Rotation3D */

@@ -10,12 +10,33 @@
 #define IMPATOM_INTERNAL_PDB_H
 
 #include <IMP/atom/atom_config.h>
+#include <IMP/atom/element.h>
+#include <IMP/atom/Hierarchy.h>
 
 #include <IMP/base_types.h>
 
 #include <vector>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
+
+//! Make an Atom Particle given information extracted from a PDB file
+IMPATOMEXPORT
+Particle* atom_particle(Model* m, const std::string& atom_type,
+                        Element element, bool is_hetatm,
+                        int atom_index, int residue_index,
+                        double x, double y, double z,
+                        double occupancy, double temp_factor);
+
+//! Make a Residue Particle given information extracted from a PDB file
+IMPATOMEXPORT
+Particle *residue_particle(Model *m, int residue_index, char ins_code,
+                           const std::string &residue_type);
+
+//! Make a Chain Particle given information extracted from a PDB file
+IMPATOMEXPORT
+Particle* chain_particle(Model* m, std::string chain_id, std::string filename);
+
+IMPATOMEXPORT IntKey get_pdb_index_key();
 
 //! Returns true if the given record is an ATOM record.
 IMPATOMEXPORT bool is_ATOM_rec(const String& pdb_line);
@@ -93,6 +114,9 @@ IMPATOMEXPORT Vector<unsigned short> connected_atoms(
 //! write particles as ATOMs to PDB (assumes Particles are valid Atoms)
 IMPATOMEXPORT void write_pdb(const ParticlesTemp& ps,
                              TextOutput out);
+
+//! Assign radii to all particles just read from a PDB file
+IMPATOMEXPORT void add_pdb_radii(Hierarchies hs);
 
 /** ATOM Record Format (from PDB)
     COLUMNS        DATA TYPE       CONTENTS

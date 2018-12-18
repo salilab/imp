@@ -20,10 +20,12 @@
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/display/particle_geometry.h>
+#include <Eigen/Dense>
 
 IMPCORE_BEGIN_NAMESPACE
 
 IMP_DECORATORS_DECL(RigidMember, RigidMembers);
+IMP_DECORATORS_DECL(RigidBodyMember, RigidBodyMembers);
 
 //! A decorator for a rigid body
 /** A rigid body particle describes a set of particles, known
@@ -334,6 +336,36 @@ class IMPCOREEXPORT RigidBody : public XYZ {
                           const algebra::Rotation3D &rot_local_to_global,
                           DerivativeAccumulator &da);
 
+  /** Update the rotational derivatives from another body specified by the
+      rotation from the other body's local coordinates to this body's local
+      coordinates. The provided quaternion derivative on the other body are in
+      the reference frame of the other body.
+
+      Updates only quaternion derivatives.
+
+      @param other_qderiv        The derivative on the quaternion taking the other body's
+                                 local coordinates to global.
+      @param rot_other_to_local  Rotation taking the local coordinates of the other body
+                                 to this body's local coordinates.
+      @param rot_local_to_global Rotation taking this rigid body's local coordinates to
+                                 global coordinates.
+      @param da               Accumulates the output derivatives.
+   */
+  inline void add_to_rotational_derivatives(const algebra::Vector4D &other_qderiv,
+                                            const algebra::Rotation3D &rot_other_to_local,
+                                            const algebra::Rotation3D &rot_local_to_global,
+                                            DerivativeAccumulator &da);
+
+  /** Add to quaternion derivative of this rigid body
+      Note that this method does not update the torque.
+
+      @param qderiv  Derivative wrt to quaternion taking local coordinates to
+                     global.
+      @param da      Object for accumulating derivatives
+  */
+  inline void add_to_rotational_derivatives(const algebra::Vector4D &qderiv,
+                                            DerivativeAccumulator &da);
+
   /** Add torque to derivative table of this rigid body
       Note that this method does not update the quaternion derivatives, so should
       be used by optimizers that rely on torque only (e.g. BrownianDynamics)
@@ -430,7 +462,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
            get_member_particle_indexes().size();
   }
 
-  RigidMember get_member(unsigned int i) const;
+  RigidBodyMember get_member(unsigned int i) const;
 #endif
   //! Add a proper member that moves rigidly with this rigid body,
   //! properly handling rigid bodies and XYZ particles.
@@ -465,6 +497,16 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
 #ifndef IMP_DOXYGEN
 // inline implementation
+void RigidBody::add_to_rotational_derivatives(const algebra::Vector4D &qderiv,
+                                              DerivativeAccumulator &da) {
+  for (unsigned int i = 0; i < 4; ++i) {
+    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[i],
+                                   get_particle_index(), qderiv[i], da);
+  }
+}
+
+
+// inline implementation
 void RigidBody::add_to_torque(const algebra::Vector3D &torque_local,
                                    DerivativeAccumulator &da) {
   for (unsigned int i = 0; i < 3; ++i) {
@@ -482,20 +524,17 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    DerivativeAccumulator &da) {
   // IMP_LOG_TERSE( "Accumulating rigid body derivatives" << std::endl);
   XYZ::add_to_derivatives(deriv_global, da);
-  algebra::VectorD<4> q(0, 0, 0, 0);
-  for (unsigned int j = 0; j < 4; ++j) {
-    algebra::Vector3D v = rot_local_to_global.get_derivative(local, j);
-    q[j] = deriv_global * v;
-  }
-  for (unsigned int j = 0; j < 4; ++j) {
-    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[j],
-                                   get_particle_index(), q[j], da);
+
+  Eigen::RowVector4d q =
+    Eigen::RowVector3d(deriv_global.get_data()) *
+    rot_local_to_global.get_gradient(Eigen::Vector3d(local.get_data()));
+
+  for (unsigned int i = 0; i < 4; ++i) {
+    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[i],
+                                   get_particle_index(), q[i], da);
   }
   algebra::Vector3D torque = algebra::get_vector_product(local, deriv_local);
-  for (unsigned int i = 0; i < 3; ++i) {
-    get_model()->add_to_derivative(internal::rigid_body_data().torque_[i],
-                                   get_particle_index(), torque[i], da);
-  }
+  add_to_torque(torque, da);
 }
 
 // inline implementation
@@ -507,6 +546,21 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
   const algebra::Vector3D deriv_global = rot_local_to_global * deriv_local;
   add_to_derivatives(deriv_local, deriv_global, local,
 		     rot_local_to_global, da);
+}
+
+// inline implementation
+void RigidBody::add_to_rotational_derivatives(const algebra::Vector4D &other_qderiv,
+                                              const algebra::Rotation3D &rot_other_to_local,
+                                              const algebra::Rotation3D &rot_local_to_global,
+                                              DerivativeAccumulator &da) {
+  Eigen::MatrixXd derivs =
+    algebra::get_gradient_of_composed_with_respect_to_first(
+      rot_local_to_global, rot_other_to_local);
+  Eigen::RowVector4d qderiv = Eigen::RowVector4d(other_qderiv.get_data()) * derivs;
+  for (unsigned int i = 0; i < 4; ++i) {
+    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[i],
+                                   get_particle_index(), qderiv[i], da);
+  }
 }
 #endif
 
@@ -614,6 +668,10 @@ class IMPCOREEXPORT RigidBodyMember : public XYZ {
   static FloatKeys get_internal_coordinate_keys() {
     return internal::rigid_body_data().child_keys_;
   }
+
+  static FloatKeys get_internal_rotation_keys() {
+    return internal::rigid_body_data().lquaternion_;
+  }
 };
 
 //! A decorator for a particle that is part of a rigid body, and is
@@ -657,6 +715,85 @@ class IMPCOREEXPORT NonRigidMember : public RigidBodyMember {
   //! return true if it is a rigid member
   static bool get_is_setup(Model *m, ParticleIndex p) {
     return internal::get_has_required_attributes_for_non_member(m, p);
+  }
+
+  //! Add to derivatives of local coordinates.
+  /** @param deriv_parent   The derivative vector in local coordinates of the
+                            parent rigid body.
+      @param da             Accumulates the derivative over the local translation.
+  */
+  void add_to_internal_derivatives(const algebra::Vector3D &deriv_parent,
+                                   DerivativeAccumulator &da) {
+    for (unsigned int i = 0; i < 3; ++i) {
+      get_model()->add_to_derivative(get_internal_coordinate_keys()[i],
+                                     get_particle_index(), deriv_parent[i], da);
+    }
+  }
+
+  /** Update the rotational derivatives of the internal transformation.
+
+      Updates only local quaternion derivatives.
+
+      @param local_qderiv        The derivative on the quaternion taking this non-rigid
+                                 body's local coordinates to global.
+      @param rot_local_to_parent  Rotation taking the local coordinates of the non-rigid
+                                  body to its parent's.
+      @param rot_parent_to_global Rotation taking the parent rigid body's local coordinates
+                                  to global coordinates.
+      @param da               Accumulates the output derivatives.
+   */
+  void add_to_internal_rotational_derivatives(const algebra::Vector4D &local_qderiv,
+                                              const algebra::Rotation3D &rot_local_to_parent,
+                                              const algebra::Rotation3D &rot_parent_to_global,
+                                              DerivativeAccumulator &da) {
+    Eigen::MatrixXd derivs =
+      algebra::get_gradient_of_composed_with_respect_to_second(
+        rot_parent_to_global, rot_local_to_parent);
+    Eigen::RowVector4d qderiv = Eigen::RowVector4d(local_qderiv.get_data()) * derivs;
+    for (unsigned int i = 0; i < 4; ++i) {
+      get_model()->add_to_derivative(get_internal_rotation_keys()[i],
+                                     get_particle_index(), qderiv[i], da);
+    }
+  }
+
+  /** Add to internal quaternion derivatives of this non-rigid body
+
+      @param qderiv  Derivative wrt to quaternion taking local coordinates to
+                     parent.
+      @param da      Object for accumulating derivatives
+  */
+  void add_to_internal_rotational_derivatives(const algebra::Vector4D &qderiv,
+                                              DerivativeAccumulator &da) {
+    IMP_USAGE_CHECK(
+        get_model()->get_has_attribute(
+            get_internal_rotation_keys()[0], get_particle_index()),
+        "Can only set derivatives of internal rotation if member is a "
+            << "rigid body itself.");
+    for (unsigned int i = 0; i < 4; ++i) {
+      get_model()->add_to_derivative(get_internal_rotation_keys()[i],
+                                     get_particle_index(), qderiv[i], da);
+    }
+  }
+
+
+  //! Get derivatives wrt translation component of internal transformation.
+  algebra::Vector3D get_internal_derivatives() const {
+    algebra::Vector3D ret;
+    for (unsigned int i = 0; i < 3; ++i) {
+      ret[i] = get_model()->get_derivative(
+        get_internal_coordinate_keys()[i], get_particle_index());
+    }
+    return ret;
+  }
+
+  //! Get derivatives wrt quaternion component of internal transformation.
+  algebra::Vector4D get_internal_rotational_derivatives() const {
+    algebra::Vector4D ret;
+    for (unsigned int i = 0; i < 4; ++i) {
+      ret[i] = get_model()->get_derivative(
+        get_internal_rotation_keys()[i], get_particle_index());
+    }
+    return ret;
   }
 };
 

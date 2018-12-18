@@ -49,7 +49,8 @@ class Location(object):
             return tuple([self.__class__]
                          + [getattr(self, x) for x in self._eq_keys])
     def __eq__(self, other):
-        return self._eq_vals() == other._eq_vals()
+        # We can never be equal to None
+        return other is not None and self._eq_vals() == other._eq_vals()
     def __hash__(self):
         return hash(self._eq_vals())
 

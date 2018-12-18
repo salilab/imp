@@ -64,14 +64,23 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public Restraint {
                           double slack = 10);
 
  public:
-  /** The SingletonContainer contains a set of XYZR particles and RigidMembers.
+  //! Construct an excluded volume restraint over a container of particles
+  /** Construct an excluded volume restraint over a container of XYZR
+      and/or RigidMember particles with a lower-harmonic score on
+      overlapping spheres. Formally, every two overlapping spheres
+      contrinute k*D^2/2 to the restraint score (repulsion force of
+      k*D), where D is the depth of the overlap between the two
+      spheres. Non-overlapping spheres do not contribute to the score.
 
-      The slack is how far the particles must move before the list of close
-      pairs is computed. It does not matter for correctness, just running
-      time. You may want to fiddle with it or use the
-      IMP::container::get_slack_estimate() function.
-
-      The spring constant used is k.*/
+      @param sc a SingletonContainer contains a set of XYZR particles and RigidMembers.
+      @param slack how far in A the particles must move before the
+      internal list of close pairs is computed (this list is used to
+      efficiently detect clashing particles). It does not matter for
+      correctness, just running time. You may want to fiddle with it
+      or use the IMP::container::get_slack_estimate() function.
+      @param k the spring constant used for the lower-harmonic score, in kcal/mol/A^2.
+      @param name the object name
+*/
   ExcludedVolumeRestraint(SingletonContainerAdaptor sc, double k = 1,
                           double slack = 10,
                           std::string name = "ExcludedVolumeRestraint%1%");

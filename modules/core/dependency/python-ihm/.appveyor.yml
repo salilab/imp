@@ -2,10 +2,13 @@ environment:
   matrix:
     - PYTHON: "C:\\Python27"
     - PYTHON: "C:\\Python36"
+    - PYTHON: "C:\\Python37"
 
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "python.exe -m pip install codecov coverage nose"
+  - choco install -y swig
+  - python.exe setup.py build_ext --inplace
 
 build: off
 

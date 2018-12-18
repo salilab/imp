@@ -20,7 +20,6 @@ import IMP.pmi.representation
 import IMP.pmi.tools
 from IMP.pmi.tools import OrderedDict
 import IMP.pmi.output
-import IMP.pmi.metadata
 import IMP.mmcif.data
 import re
 import ast
@@ -77,6 +76,7 @@ class _AsymMapper(object):
     def __init__(self, simo, prot):
         self.simo = simo
         self._cm = _ComponentMapper(prot)
+        self._seen_ranges = {}
 
     def __getitem__(self, p):
         protname = self._cm[p]
@@ -88,36 +88,51 @@ class _AsymMapper(object):
         rngs = []
         for p in ps:
             asym = self[p]
-            # todo: handle overlapping or adjoining ranges
+            # todo: handle overlapping ranges
             if IMP.atom.Residue.get_is_setup(p):
                 rind = IMP.atom.Residue(p).get_index()
-                rngs.append(asym(rind, rind))
+                rng = asym(rind, rind)
             elif IMP.atom.Fragment.get_is_setup(p):
                 # PMI Fragments always contain contiguous residues
                 rinds = IMP.atom.Fragment(p).get_residue_indexes()
-                rngs.append(asym(rinds[0], rinds[-1]))
+                rng = asym(rinds[0], rinds[-1])
             else:
                 raise ValueError("Unsupported particle type %s" % str(p))
-        return ihm.restraint.PolyResidueFeature(rngs)
+            # Join contiguous ranges
+            if len(rngs) > 0 and rngs[-1].asym == asym \
+               and rngs[-1].seq_id_range[1] == rng.seq_id_range[0] - 1:
+                rngs[-1].seq_id_range = (rngs[-1].seq_id_range[0],
+                                         rng.seq_id_range[1])
+            else:
+                rngs.append(rng)
+        # If an identical feature already exists, return that
+        # todo: python-ihm should handle this automatically for us
+        hrngs = tuple(rngs)
+        if hrngs in self._seen_ranges:
+            return self._seen_ranges[hrngs]
+        else:
+            feat = ihm.restraint.ResidueFeature(rngs)
+            self._seen_ranges[hrngs] = feat
+            return feat
 
 
 class _AllSoftware(object):
     def __init__(self, system):
         self.system = system
         self.modeller_used = self.phyre2_used = False
-        self.system.software.extend([
-           ihm.Software(
-                 name="Integrative Modeling Platform (IMP)",
-                 version=IMP.__version__,
-                 classification="integrative model building",
-                 description="integrative model building",
-                 location='https://integrativemodeling.org'),
-           ihm.Software(
+        self.pmi = ihm.Software(
                 name="IMP PMI module",
                 version=IMP.pmi.__version__,
                 classification="integrative model building",
                 description="integrative model building",
-                location='https://integrativemodeling.org')])
+                location='https://integrativemodeling.org')
+        self.imp = ihm.Software(
+                 name="Integrative Modeling Platform (IMP)",
+                 version=IMP.__version__,
+                 classification="integrative model building",
+                 description="integrative model building",
+                 location='https://integrativemodeling.org')
+        self.system.software.extend([self.pmi, self.imp])
 
     def set_modeller_used(self, version, date):
         if self.modeller_used:
@@ -161,7 +176,7 @@ class _PDBFragment(ihm.representation.ResidueSegment):
         self.state, self.chain, self.hier = state, chain, hier
         sel = IMP.atom.NonWaterNonHydrogenPDBSelector() \
               & IMP.atom.ChainPDBSelector(chain)
-        self.starting_hier = IMP.atom.read_pdb(pdbname, state.m, sel)
+        self.starting_hier = IMP.atom.read_pdb(pdbname, state.model, sel)
 
     rigid = property(lambda self: _get_fragment_is_rigid(self),
                      lambda self, val: None)
@@ -294,6 +309,9 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
 
     def _set_psi_sigma(self, model):
         old_values = []
+        # Do nothing if given a different state than the restraint applies to
+        if model.m != self.pmi_restraint.model:
+            return
         for resolution in self.pmi_restraint.sigma_dictionary:
             statname = 'ISDCrossLinkMS_Sigma_%s_%s' % (resolution, self.label)
             if model.stats and statname in model.stats:
@@ -563,6 +581,7 @@ class _Model(ihm.model.Model):
         self._is_restrained = True
         o = self.output = IMP.pmi.output.Output(atomistic=True)
         name = 'cif-output'
+        self.m = prot.get_model()
         o.dictionary_pdbs[name] = prot
         o._init_dictchain(name, prot, multichar_chain=True)
         (particle_infos_for_pdb,
@@ -590,7 +609,12 @@ class _Model(ihm.model.Model):
         comp_for_chain = {}
         correct_asym = {}
         for protname, chain_id in o.dictchain[name].items():
-            entity_for_chain[chain_id] = simo.entities[protname]
+            if protname in simo.entities:
+                entity_for_chain[chain_id] = simo.entities[protname]
+            else:
+                # Remove copy number
+                pn = protname.split('.')[0]
+                entity_for_chain[chain_id] = simo.entities[pn]
             comp_for_chain[chain_id] = protname
             # When doing multi-state modeling, the chain ID returned here
             # (assigned sequentially) might not be correct (states may have
@@ -903,7 +927,7 @@ class _SimpleEnsemble(ihm.model.Ensemble):
 
 
 class _EntityMapper(dict):
-    """Handle mapping from IMP components to CIF entities.
+    """Handle mapping from IMP components (without copy number) to CIF entities.
        Multiple components may map to the same entity if they share sequence."""
     def __init__(self, system):
         super(_EntityMapper, self).__init__()
@@ -934,6 +958,14 @@ class _TransformedComponent(object):
         self.name, self.original, self.transform = name, original, transform
 
 
+class _SimpleRef(object):
+    """Class with similar interface to weakref.ref, but keeps a strong ref"""
+    def __init__(self, ref):
+        self.ref = ref
+    def __call__(self):
+        return self.ref
+
+
 class _State(ihm.model.State):
     """Representation of a single state in the system."""
 
@@ -941,9 +973,14 @@ class _State(ihm.model.State):
         # Point to the PMI object for this state. Use a weak reference
         # since the state object typically points to us too, so we need
         # to break the reference cycle. In PMI1 this will be a
-        # Representation object.
+        # Representation object; in PMI2 it is the PMI2 State object itself.
         self._pmi_object = weakref.proxy(pmi_object)
-        self._pmi_state = pmi_object.state
+        if hasattr(pmi_object, 'state'):
+            # Need a strong ref to pmi_object.state to prevent it from being
+            # cleaned up when doing PMI1 multistate modeling
+            self._pmi_state = _SimpleRef(pmi_object.state)
+        else:
+            self._pmi_state = weakref.ref(pmi_object)
         # Preserve PMI state name
         old_name = self.name
         super(_State, self).__init__(experiment_type='Fraction of bulk')
@@ -960,9 +997,9 @@ class _State(ihm.model.State):
         self.all_modeled_components = []
 
     def __hash__(self):
-        return hash(self._pmi_state)
+        return hash(self._pmi_state())
     def __eq__(self, other):
-        return self._pmi_state == other._pmi_state
+        return self._pmi_state() == other._pmi_state()
 
     def add_model_group(self, group):
         self.append(group)
@@ -984,12 +1021,12 @@ class _State(ihm.model.State):
         else:
             return name
 
-    short_name = property(lambda self: self._pmi_state.short_name)
-    long_name = property(lambda self: self._pmi_state.long_name)
+    short_name = property(lambda self: self._pmi_state().short_name)
+    long_name = property(lambda self: self._pmi_state().long_name)
     def __get_name(self):
-        return self._pmi_state.long_name
+        return self._pmi_state().long_name
     def __set_name(self, val):
-        self._pmi_state.long_name = val
+        self._pmi_state().long_name = val
     name = property(__get_name, __set_name)
 
 
@@ -1080,6 +1117,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
         # Common geometric objects used in PMI systems
         self._xy_plane = ihm.geometry.XYPlane()
+        self._xz_plane = ihm.geometry.XZPlane()
+        self._z_axis = ihm.geometry.ZAxis()
         self._center_origin = ihm.geometry.Center(0,0,0)
         self._identity_transform = ihm.geometry.Transformation.identity()
 
@@ -1166,16 +1205,21 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self.all_representations.copy_component(state, name, original,
                                                 self.asym_units[name])
 
-    def create_component(self, state, name, modeled):
+    def create_component(self, state, name, modeled, asym_name=None):
+        if asym_name is None:
+            asym_name = name
         new_comp = name not in self._all_components
         self._all_components[name] = None
         if modeled:
             state.all_modeled_components.append(name)
             if new_comp:
-                self.asym_units[name] = None # assign asym once we get sequence
+                # assign asym once we get sequence
+                self.asym_units[asym_name] = None
                 self.all_modeled_components.append(name)
 
-    def add_component_sequence(self, state, name, seq):
+    def add_component_sequence(self, state, name, seq, asym_name=None):
+        if asym_name is None:
+            asym_name = name
         def get_offset(seq):
             # Count length of gaps at start of sequence
             for i in range(len(seq)):
@@ -1188,14 +1232,14 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         else:
             self.sequence_dict[name] = seq
             self.entities.add(name, seq, offset)
-        if name in self.asym_units:
-            if self.asym_units[name] is None:
+        if asym_name in self.asym_units:
+            if self.asym_units[asym_name] is None:
                 # Set up a new asymmetric unit for this component
                 entity = self.entities[name]
-                asym = AsymUnit(entity, details=name)
+                asym = AsymUnit(entity, details=asym_name)
                 self.system.asym_units.append(asym)
-                self.asym_units[name] = asym
-            state.modeled_assembly.append(self.asym_units[name])
+                self.asym_units[asym_name] = asym
+            state.modeled_assembly.append(self.asym_units[asym_name])
 
     def _add_restraint_model_fits(self):
         """Add fits to restraints for all known models"""
@@ -1205,22 +1249,12 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                     if hasattr(r, 'add_fits_from_model_statfile'):
                         r.add_fits_from_model_statfile(m)
 
-    def _add_em2d_raw_micrographs(self):
-        """If the deprecated metadata.EMMicrographsDataset class was used,
-           transfer its data to the EM2D restraint."""
-        for r in self.system.restraints:
-            if isinstance(r, _EM2DRestraint):
-                for d in r.dataset.parents:
-                    if isinstance(d, IMP.pmi.metadata.EMMicrographsDataset):
-                        r.number_raw_micrographs = d.number
-                        if isinstance(d.location,
-                                      IMP.pmi.metadata.FileLocation):
-                            d.location.content_type = \
-                                   ihm.location.InputFileLocation.content_type
-
-    def flush(self):
+    def flush(self, format='mmCIF'):
+        """Write out all information to the file.
+           Information can be written in any format supported by
+           the ihm library (typically this is 'mmCIF' or 'BCIF')."""
         self.finalize()
-        ihm.dumper.write(self.fh, [self.system])
+        ihm.dumper.write(self.fh, [self.system], format)
 
     def finalize(self):
         """Do any final processing on the class hierarchy.
@@ -1229,8 +1263,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
            can be written out to an mmCIF file with `ihm.dumper.write`,
            and/or modified using the ihm API."""
         self._add_restraint_model_fits()
-
-        self._add_em2d_raw_micrographs()
 
         # Add metadata to ihm.System
         self.system.software.extend(m for m in self._metadata
@@ -1310,8 +1342,9 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         # actual experiment, and how many independent runs were carried out
         # (use these as multipliers to get the correct total number of
         # output models)
-        self.all_protocols.add_step(_ReplicaExchangeProtocolStep(state, rex),
-                                    state)
+        step = _ReplicaExchangeProtocolStep(state, rex)
+        step.software = self.all_software.pmi
+        self.all_protocols.add_step(step, state)
 
     def _add_simple_dynamics(self, num_models_end, method):
         # Always assumed that we're dealing with the last state
@@ -1355,10 +1388,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         group = ihm.model.ModelGroup(name=state.get_postfixed_name(name))
         state.add_model_group(group)
         if ensemble_file:
-            # Deprecated Location class does not state input vs output
-            if isinstance(ensemble_file, IMP.pmi.metadata.FileLocation):
-                ensemble_file.content_type = \
-                        ihm.location.OutputFileLocation.content_type
             self.system.locations.append(ensemble_file)
         e = _SimpleEnsemble(pp, group, num_models, drmsd, num_models_deposited,
                             ensemble_file)
@@ -1366,10 +1395,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         for c in state.all_modeled_components:
             den = localization_densities.get(c, None)
             if den:
-                # Deprecated Location class does not state input vs output
-                if isinstance(den, IMP.pmi.metadata.FileLocation):
-                    den.content_type = \
-                            ihm.location.OutputFileLocation.content_type
                 e.load_localization_density(state, c, self.asym_units[c], den)
         return e
 
@@ -1377,9 +1402,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         """Point a previously-created ensemble to an 'all-models' file.
            This could be a trajectory such as DCD, an RMF, or a multimodel
            PDB file."""
-        # Deprecated Location class does not state input vs output
-        if isinstance(location, IMP.pmi.metadata.FileLocation):
-            location.content_type = ihm.location.OutputFileLocation.content_type
         self.system.locations.append(location)
         # Ensure that we point to an ensemble related to the current state
         ind = i + self._state_ensemble_offset
@@ -1394,6 +1416,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         protocol = self.all_protocols.get_last_protocol(state)
         num_models = protocol.steps[-1].num_models_end
         pp = _ReplicaExchangeAnalysisPostProcess(rex, num_models)
+        pp.software = self.all_software.pmi
         self.all_protocols.add_postproc(pp, state)
         for i in range(rex._number_of_clusters):
             group = ihm.model.ModelGroup(name=state.get_prefixed_name(
@@ -1403,7 +1426,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
             e = _ReplicaExchangeAnalysisEnsemble(pp, i, group, 1)
             self.system.ensembles.append(e)
             # Add localization density info if available
-            for fname, stuple in density_custom_ranges.items():
+            for fname, stuple in sorted(density_custom_ranges.items()):
                 e.load_localization_density(state, fname, stuple,
                                             self.asym_units)
             for stats in e.load_all_models(self, state):
@@ -1460,8 +1483,23 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
     def add_zaxial_restraint(self, state, ps, lower_bound, upper_bound,
                              sigma, pmi_restraint):
+        self._add_geometric_restraint(state, ps, lower_bound, upper_bound,
+                                      sigma, pmi_restraint, self._xy_plane)
+
+    def add_yaxial_restraint(self, state, ps, lower_bound, upper_bound,
+                             sigma, pmi_restraint):
+        self._add_geometric_restraint(state, ps, lower_bound, upper_bound,
+                                      sigma, pmi_restraint, self._xz_plane)
+
+    def add_xyradial_restraint(self, state, ps, lower_bound, upper_bound,
+                               sigma, pmi_restraint):
+        self._add_geometric_restraint(state, ps, lower_bound, upper_bound,
+                                      sigma, pmi_restraint, self._z_axis)
+
+    def _add_geometric_restraint(self, state, ps, lower_bound, upper_bound,
+                                 sigma, pmi_restraint, geom):
         asym = get_asym_mapper_for_state(self, state, self.__asym_states)
-        r = _GeometricRestraint(self, state, pmi_restraint, self._xy_plane,
+        r = _GeometricRestraint(self, state, pmi_restraint, geom,
                              asym.get_feature(ps),
                              ihm.restraint.LowerUpperBoundDistanceRestraint(
                                                     lower_bound, upper_bound),
@@ -1486,12 +1524,20 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
     def add_membrane_surface_location_restraint(
             self, state, ps, tor_R, tor_r, tor_th, sigma, pmi_restraint):
+        self._add_membrane_restraint(state, ps, tor_R, tor_r, tor_th, sigma,
+                  pmi_restraint, ihm.restraint.UpperBoundDistanceRestraint(0.))
+
+    def add_membrane_exclusion_restraint(
+            self, state, ps, tor_R, tor_r, tor_th, sigma, pmi_restraint):
+        self._add_membrane_restraint(state, ps, tor_R, tor_r, tor_th, sigma,
+                  pmi_restraint, ihm.restraint.LowerBoundDistanceRestraint(0.))
+
+    def _add_membrane_restraint(self, state, ps, tor_R, tor_r, tor_th,
+                                sigma, pmi_restraint, rsr):
         asym = get_asym_mapper_for_state(self, state, self.__asym_states)
         r = _GeometricRestraint(self, state, pmi_restraint,
                              self._get_membrane(tor_R, tor_r, tor_th),
-                             asym.get_feature(ps),
-                             ihm.restraint.UpperBoundDistanceRestraint(0.),
-                             sigma)
+                             asym.get_feature(ps), rsr, sigma)
         self.system.restraints.append(r)
         self._add_restraint_dataset(r) # so that all-dataset group works
 

@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         r = self.run_python_module("IMP.multifit.param", [])
         out, err = r.communicate()
         self.assertEqual(out, "")
-        self.assertIn("incorrect number of arguments", err)
+        self.assertRegex(err, "(too few arguments|arguments are required)")
         self.assertNotEqual(r.returncode, 0)
 
     def test_param_run(self):
@@ -50,13 +50,15 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(spl[9], '')
 
         self.assertEqual(lines[4].rstrip('\r\n'),
-                         "testasmb.mrc|15.0|2|300|30.0|4.0|-96.0|"
+                         "testasmb.mrc|15.0|2.0|300.0|30.0|4.0|-96.0|"
                          "ancdir/testasmb_em_coarse_anchors.txt|"
                          "ancdir/testasmb_em_coarse_anchors_FINE.txt|"
                          "ancdir/testasmb_em_fine_anchors.txt|"
                          "ancdir/testasmb_em_fine_anchors_FINE.txt|")
         for f in ('testasmb.alignment.param',
-                  'testasmb.input', 'testasmb.subunits'):
+                  'testasmb.input', 'testasmb.subunits',
+                  'testasmb.alignment.param.refined',
+                  'testasmb.input.refined'):
             os.unlink(f)
 
 if __name__ == '__main__':

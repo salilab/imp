@@ -25,8 +25,8 @@ def get_atomic_residue_list(residues):
 
 class MultiscaleTopologyTest(IMP.test.TestCase):
 
-    def initialize_system(self, mdl):
-        s = IMP.pmi.topology.System(mdl)
+    def initialize_system(self, model):
+        s = IMP.pmi.topology.System(model)
         st1 = s.create_state()
 
         # Read sequences and create Molecules
@@ -66,8 +66,8 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         the model build. The current behaviour does not make the test pass.
         '''
 
-        mdl = IMP.Model()
-        s = IMP.pmi.topology.System(mdl)
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
         st1 = s.create_state()
 
         # Read sequences and create Molecules
@@ -133,8 +133,8 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         the model build. The current behaviour does not make the test pass.
         '''
 
-        mdl = IMP.Model()
-        s = IMP.pmi.topology.System(mdl)
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
         st1 = s.create_state()
 
         # Read sequences and create Molecules
@@ -207,8 +207,8 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
     def test_num_residues(self):
         """ Test different ways of accessing residues"""
-        mdl = IMP.Model()
-        (a1, hier, mol) = self.initialize_system(mdl)
+        model = IMP.Model()
+        (a1, hier, mol) = self.initialize_system(model)
         #print(a1, mol.get_atomic_residues())
 
         self.assertEqual(37, len(a1))                # now these are duplicated
@@ -225,8 +225,8 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         except ImportError:
             self.skipTest("no sklearn package")
 
-        mdl = IMP.Model()
-        (a1, hier, mol) = self.initialize_system(mdl)
+        model = IMP.Model()
+        (a1, hier, mol) = self.initialize_system(model)
 
         struct_res = 0
         unstruct_res = 0
@@ -250,8 +250,8 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         except ImportError:
             self.skipTest("no sklearn package")
 
-        mdl = IMP.Model()
-        (a1, hier, mol) = self.initialize_system(mdl)
+        model = IMP.Model()
+        (a1, hier, mol) = self.initialize_system(model)
         res = mol.residues[0]
         try:
             print(res)
@@ -269,9 +269,9 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         except ImportError:
             self.skipTest("no sklearn package")
 
-        mdl = IMP.Model()
-        (a1, hier, mol) = self.initialize_system(mdl)
-        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        model = IMP.Model()
+        (a1, hier, mol) = self.initialize_system(model)
+        dof = IMP.pmi.dof.DegreesOfFreedom(model)
         dof.create_rigid_body(mol,
                               nonrigid_parts=mol.get_non_atomic_residues())
         rb = IMP.core.RigidBodyMember(
@@ -295,9 +295,9 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         except ImportError:
             self.skipTest("no sklearn package")
 
-        mdl = IMP.Model()
-        (a1, hier, mol) = self.initialize_system(mdl)
-        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        model = IMP.Model()
+        (a1, hier, mol) = self.initialize_system(model)
+        dof = IMP.pmi.dof.DegreesOfFreedom(model)
 
         # Create rigid body
         dof.create_rigid_body(mol,
@@ -328,9 +328,9 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
         except ImportError:
             self.skipTest("no sklearn package")
 
-        mdl = IMP.Model()
-        (a1, hier, mol) = self.initialize_system(mdl)
-        dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        model = IMP.Model()
+        (a1, hier, mol) = self.initialize_system(model)
+        dof = IMP.pmi.dof.DegreesOfFreedom(model)
 
         # Create rigid body
         dof.create_rigid_body(mol)
@@ -376,6 +376,17 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(seqs['Prot2'], 'PEEDILKYVSYTL')
         self.assertEqual(seqs['Prot3'], 'QEALVVKDLL')
 
+    def test_system_base_build(self):
+        """Test SystemBase.build()"""
+        s = IMP.pmi.topology._SystemBase()
+        s.build() # noop
+
+    def test_old_system_attributes(self):
+        """Test old System attributes"""
+        s = IMP.pmi.topology.System()
+        with IMP.allow_deprecated():
+            self.assertEqual(s.mdl, s.model)
+
     def test_create_states(self):
         """Test State-creation from System"""
         s = IMP.pmi.topology.System()
@@ -384,7 +395,9 @@ class Tests(IMP.test.TestCase):
             st = s.create_state()
             self.assertEqual(st.get_hierarchy().get_parent(),
                              s.get_hierarchy())
-            self.assertEqual(st.mdl, s.mdl)
+            self.assertEqual(st.model, s.model)
+            with IMP.allow_deprecated():
+                self.assertEqual(st.mdl, s.model)
         self.assertEqual(s.get_number_of_states(), 10)
 
     def test_create_molecules(self):
@@ -399,11 +412,13 @@ class Tests(IMP.test.TestCase):
         # create state 1 with 2 molecules
         st = s.create_state()
         m1 = st.create_molecule("Prot1", sequence=seqs["Prot1"])
+        self.assertRaises(ValueError, st.create_molecule, "Prot1",
+                          sequence=seqs["Prot1"])
         m2 = st.create_molecule("Prot2", sequence=seqs["Prot2"])
         self.assertEqual(m1.get_hierarchy().get_parent(), st.get_hierarchy())
         self.assertEqual(m2.get_hierarchy().get_parent(), st.get_hierarchy())
-        self.assertEqual(m1.mdl, st.mdl)
-        self.assertEqual(m2.mdl, st.mdl)
+        self.assertEqual(m1.model, st.model)
+        self.assertEqual(m2.model, st.model)
         self.assertEqual(m1.get_name(), "Prot1")
         self.assertEqual(m2.get_name(), "Prot2")
         self.assertEqual(len(st.get_hierarchy().get_children()), 2)
@@ -412,7 +427,7 @@ class Tests(IMP.test.TestCase):
         st2 = s.create_state()
         m3 = st2.create_molecule("Prot3", sequence=seqs["Prot3"])
         self.assertEqual(m3.get_hierarchy().get_parent(), st2.get_hierarchy())
-        self.assertEqual(m3.mdl, st2.mdl)
+        self.assertEqual(m3.model, st2.model)
         self.assertEqual(m3.get_name(), "Prot3")
         self.assertEqual(len(st2.get_hierarchy().get_children()), 1)
 
@@ -500,7 +515,95 @@ class Tests(IMP.test.TestCase):
         inv = m1[:] - m1[1:5]
         self.assertEqual(inv, set([m1.residues[0]] + m1.residues[5:10]))
 
-    def test_build_system(self):
+    def test_system_build(self):
+        """Test System.build()"""
+        s = IMP.pmi.topology.System()
+        st1 = s.create_state()
+        self.assertFalse(s.built)
+        self.assertFalse(st1.built)
+        hier = s.build()
+        self.assertTrue(s.built)
+        self.assertTrue(st1.built)
+        self.assertEqual(hier.get_name(), 'System')
+        # Subsequent calls should do the same thing
+        self.assertEqual(s.build(), hier)
+
+    def test_state_build(self):
+        """Test State.build()"""
+        s = IMP.pmi.topology.System()
+        st1 = s.create_state()
+        self.assertFalse(s.built)
+        self.assertFalse(st1.built)
+        hier = st1.build()
+        self.assertFalse(s.built)
+        self.assertTrue(st1.built)
+        self.assertEqual(hier.get_name(), 'State_0')
+        # Subsequent calls should do the same thing
+        self.assertEqual(st1.build(), hier)
+
+    def test_molecule_model(self):
+        """Test Molecule get model"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        self.assertEqual(m1.model, model)
+        with IMP.allow_deprecated():
+            self.assertEqual(m1.mdl, model)
+
+    def test_molecule_indexing(self):
+        """Test Molecule indexing"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        # Select by index
+        self.assertEqual(str(m1[0]), "0_Prot1_0_A1")
+        # Select by slice
+        self.assertEqual([str(x) for x in m1[1:5:2]],
+                         ['0_Prot1_0_A2', '0_Prot1_0_A4'])
+        # Select by PDB number
+        self.assertEqual(str(m1['1']), "0_Prot1_0_A1")
+        # Select by invalid type (not int or str)
+        self.assertRaises(TypeError, m1.__getitem__, 42.0)
+
+    def test_molecule_residue_range(self):
+        """Test Molecule.residue_range()"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        # Select by index
+        self.assertEqual(len(m1.residue_range(0, 4)), 5)
+        # Select by PDB number
+        self.assertEqual(len(m1.residue_range('1', '4')), 4)
+        self.assertRaises(TypeError, m1.residue_range, '1', 4)
+        self.assertRaises(TypeError, m1.residue_range, 4, '6')
+        self.assertRaises(TypeError, m1.residue_range, 42.0, 56.0)
+
+    def test_molecule_state(self):
+        """Test Molecule.get_state()"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        self.assertEqual(m1.get_state(), st1)
+
+    def test_molecule_ideal_helices(self):
+        """Test Molecule indexing"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        self.assertEqual(m1.get_ideal_helices(), [])
+        m1.add_representation(m1[0:10],
+                              resolutions=[10],
+                              ideal_helix=True)
+        helix, = m1.get_ideal_helices()
+        self.assertEqual(len(helix), 10)
+
+    def test_molecule_build(self):
+        """Test Molecule.build()"""
         s = IMP.pmi.topology.System()
         st1 = s.create_state()
         seqs = IMP.pmi.topology.Sequences(
@@ -513,7 +616,11 @@ class Tests(IMP.test.TestCase):
 
         m1.add_representation(atomic_res, resolutions=[0, 1, 10])
         m1.add_representation(non_atomic_res, resolutions=[10])
+        self.assertFalse(m1.built)
         hier = m1.build()
+        self.assertTrue(m1.built)
+        # Repeated calls to build should return the same thing
+        self.assertEqual(m1.build(), hier)
         frags = hier.get_children()
 
         # check names
@@ -685,7 +792,18 @@ class Tests(IMP.test.TestCase):
         # add structure+mixed representation to original
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
                                       chain_id='A', res_range=(55, 63), offset=-54)
+
+        # Cannot add structure for a clone
+        self.assertRaises(ValueError, m1c.add_structure,
+                          self.get_input_file_name('prot.pdb'),
+                          chain_id='A', res_range=(55, 63), offset=-54)
+
         m1.add_representation(atomic_res, resolutions=[1, 10])
+
+        # Cannot add representation for a clone
+        self.assertRaises(ValueError, m1c.add_representation,
+                          atomic_res, resolutions=[1, 10])
+
         m1.add_representation(m1.get_non_atomic_residues(), resolutions=[10])
         hier = s.build()
 
@@ -715,8 +833,8 @@ class Tests(IMP.test.TestCase):
             return [int(c.get_red() * 255), int(c.get_green() * 255), int(c.get_blue() * 255)]
         base_res = 0
         bead_res = 1
-        mdl = IMP.Model()
-        s = IMP.pmi.topology.System(mdl)
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
         st1 = s.create_state()
         seqs = IMP.pmi.topology.Sequences(
             self.get_input_file_name('seqs.fasta'))
@@ -738,7 +856,7 @@ class Tests(IMP.test.TestCase):
         del rh
 
         rh2 = RMF.open_rmf_file_read_only(fname)
-        h2 = IMP.rmf.create_hierarchies(rh2, mdl)[0]
+        h2 = IMP.rmf.create_hierarchies(rh2, model)[0]
         IMP.rmf.load_frame(rh2, 0)
 
         self.assertEqual(len(IMP.atom.get_leaves(orig_hier)),
@@ -777,8 +895,8 @@ class Tests(IMP.test.TestCase):
         except ImportError:
             self.skipTest("no sklearn package")
 
-        mdl = IMP.Model()
-        s = IMP.pmi.topology.System(mdl)
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
         st1 = s.create_state()
         seqs = IMP.pmi.topology.Sequences(
             self.get_input_file_name('seqs.fasta'))
@@ -804,8 +922,8 @@ class Tests(IMP.test.TestCase):
         """Test setup of individual density particles.
         This is mainly for flexible beads or all-atom simulations
         """
-        mdl = IMP.Model()
-        s = IMP.pmi.topology.System(mdl)
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
         st1 = s.create_state()
         seqs = IMP.pmi.topology.Sequences(
             self.get_input_file_name('seqs.fasta'))
@@ -824,8 +942,8 @@ class Tests(IMP.test.TestCase):
 
     def test_no_sequence(self):
         """Test automatic poly-A sequence when you add structure"""
-        mdl = IMP.Model()
-        s = IMP.pmi.topology.System(mdl)
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
         st1 = s.create_state()
         m1 = st1.create_molecule("Prot1")
         atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
@@ -840,6 +958,43 @@ class Tests(IMP.test.TestCase):
         built_sequence = [IMP.atom.Residue(p).get_residue_type() for p in ps]
         self.assertEqual(expect_sequence, built_sequence)
 
+    def test_get_molecule(self):
+        """Test State.get_molecule()"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        self.assertEqual(st1.get_molecule("Prot1"), m1)
+        self.assertRaises(KeyError, st1.get_molecule, "foo")
+        self.assertEqual(st1.get_molecule("Prot1", "all"), [m1])
+        self.assertRaises(IndexError, st1.get_molecule, "Prot1", 1)
+
+    def test_ideal_helix_non_contiguous(self):
+        """Test handling of non-contiguous range for build_ideal_helix"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1", sequence='A' *25)
+        m1.add_representation(m1[0:10] | m1[11:20],
+                              resolutions=[10],
+                              ideal_helix=True)
+        self.assertRaises(ValueError, s.build)
+
+    def test_ideal_helix_already_structure(self):
+        """build_ideal_helix() should fail if a residue is structured"""
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
+        st1 = s.create_state()
+        seqs = IMP.pmi.topology.Sequences(
+                              self.get_input_file_name('seqs.fasta'))
+        m1 = st1.create_molecule("Prot1", sequence=seqs["Protein_1"])
+        atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A',res_range=(55,63),offset=-54)
+        m1.add_representation(m1[0:10] | m1[11:20],
+                              resolutions=[10],
+                              ideal_helix=True)
+        self.assertRaises(ValueError, s.build)
+
     def test_ideal_helix(self):
         """Test you can build an ideal helix"""
         try:
@@ -847,8 +1002,8 @@ class Tests(IMP.test.TestCase):
         except ImportError:
             self.skipTest("no sklearn package")
 
-        mdl = IMP.Model()
-        s = IMP.pmi.topology.System(mdl)
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
         st1 = s.create_state()
         m1 = st1.create_molecule("Prot1", sequence='A' *25)
         m1.add_representation(m1[0:20],
@@ -872,8 +1027,8 @@ class Tests(IMP.test.TestCase):
 
     def test_write_multistate(self):
         """Test you write multistate system with correct hierarchy"""
-        mdl = IMP.Model()
-        s = IMP.pmi.topology.System(mdl)
+        model = IMP.Model()
+        s = IMP.pmi.topology.System(model)
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
 
         st1 = s.create_state()
@@ -888,7 +1043,7 @@ class Tests(IMP.test.TestCase):
         m2.add_representation(atomic_res,resolutions=0)
         root_hier = s.build()
 
-        rex = IMP.pmi.macros.ReplicaExchange0(mdl,
+        rex = IMP.pmi.macros.ReplicaExchange0(model,
                                               root_hier=root_hier,
                                               number_of_frames=0,
                                               number_of_best_scoring_models=0,
@@ -896,17 +1051,17 @@ class Tests(IMP.test.TestCase):
         rex.execute_macro()
 
         rh2 = RMF.open_rmf_file_read_only('multistate_test/initial.0.rmf3')
-        hs = IMP.rmf.create_hierarchies(rh2,mdl)
+        hs = IMP.rmf.create_hierarchies(rh2,model)
         self.assertEqual(len(hs),1)
         states = IMP.atom.get_by_type(hs[0],IMP.atom.STATE_TYPE)
         self.assertEqual(len(states),2)
 
     def test_pmi_molecule_hierarchy(self):
-        mdl=IMP.Model()
+        model=IMP.Model()
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name('seqs.fasta'))
-        state=IMP.atom.State.setup_particle(IMP.Particle(mdl),0)
+        state=IMP.atom.State.setup_particle(IMP.Particle(model),0)
         for seq in seqs:
-            mol=IMP.atom.Molecule.setup_particle(IMP.Particle(mdl))
+            mol=IMP.atom.Molecule.setup_particle(IMP.Particle(model))
             ch=IMP.atom.Chain.setup_particle(mol,"A")
             ch.set_sequence(seqs[seq])
             state.add_child(mol)

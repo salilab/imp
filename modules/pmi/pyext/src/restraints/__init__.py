@@ -26,7 +26,7 @@ class RestraintBase(object):
                      particle/restraint names.
         @param weight The weight to apply to all internal restraints.
         """
-        self.m = m
+        self.model = m
         self.restraint_sets = []
         self._label_is_set = False
         self.weight = weight
@@ -40,6 +40,16 @@ class RestraintBase(object):
             self.name = str(name)
 
         self.rs = self._create_restraint_set(name=None)
+
+    @property
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
+    def m(self):
+        return self.model
+
+    @property
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
 
     def set_label(self, label):
         """Set the unique label used in outputs and particle/restraint names.
@@ -71,7 +81,7 @@ class RestraintBase(object):
         """Add the restraint to the model."""
         self._label_is_set = True
         for rs in self.restraint_sets:
-            IMP.pmi.tools.add_restraint_to_model(self.m, rs)
+            IMP.pmi.tools.add_restraint_to_model(self.model, rs)
 
     def evaluate(self):
         """Evaluate the score of the restraint."""
@@ -100,7 +110,6 @@ class RestraintBase(object):
     def get_output(self):
         """Get outputs to write to stat files."""
         output = {}
-        self.m.update()
         score = self.evaluate()
         output["_TotalScore"] = str(score)
 
@@ -117,7 +126,7 @@ class RestraintBase(object):
             name = self.name
         else:
             name = self.name + "_" + str(name)
-        rs = IMP.RestraintSet(self.m, name)
+        rs = IMP.RestraintSet(self.model, name)
         rs.set_weight(self.weight)
         self.restraint_sets.append(rs)
         rs.set_was_used(True)
@@ -149,7 +158,7 @@ class _RestraintNuisanceMixin(object):
         \see IMP.pmi.tools.SetupNuisance
         """
         nuis = IMP.pmi.tools.SetupNuisance(
-            self.m, init_val, min_val, max_val,
+            self.model, init_val, min_val, max_val,
             isoptimized=is_sampled).get_particle()
         nuis_name = self.name + "_" + name
         nuis.set_name(nuis_name)

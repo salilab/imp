@@ -52,18 +52,18 @@ class ProtocolOutput(object):
     pass
 
 def _flatten(seq):
-    l = []
     for elt in seq:
-        t = type(elt)
-        if t is tuple or t is list:
+        if isinstance(elt, (tuple, list)):
             for elt2 in _flatten(elt):
-                l.append(elt2)
+                yield elt2
         else:
-            l.append(elt)
-    return l
+            yield elt
 
 class Output(object):
-    """Class for easy writing of PDBs, RMFs, and stat files"""
+    """Class for easy writing of PDBs, RMFs, and stat files
+
+    @note Model should be updated prior to writing outputs.
+    """
     def __init__(self, ascii=True,atomistic=False):
         self.dictionary_pdbs = {}
         self.dictionary_rmfs = {}
@@ -86,6 +86,7 @@ class Output(object):
         self.use_pmi2 = False
 
     def get_pdb_names(self):
+        """Get a list of all PDB files being output by this instance"""
         return list(self.dictionary_pdbs.keys())
 
     def get_rmf_names(self):
@@ -114,7 +115,7 @@ class Output(object):
         """Init PDB Writing.
         @param name The PDB filename
         @param prot The hierarchy to write to this pdb file
-        \note if the PDB name is 'System' then will use Selection to get molecules
+        @note if the PDB name is 'System' then will use Selection to get molecules
         """
         flpdb = open(name, 'w')
         flpdb.close()
@@ -156,20 +157,10 @@ class Output(object):
         nbonds=len(indexes_pairs)
         flpsf.write(str(nbonds)+" !NBOND: bonds"+"\n")
 
-        sublists=[indexes_pairs[i:i+4] for i in range(0,len(indexes_pairs),4)]
-
-        # save bonds in fized column format
-        for ip in sublists:
-            if len(ip)==4:
-                flpsf.write('{0:8d}{1:8d}{2:8d}{3:8d}{4:8d}{5:8d}{6:8d}{7:8d}'.format(ip[0][0],ip[0][1],
-                             ip[1][0],ip[1][1],ip[2][0],ip[2][1],ip[3][0],ip[3][1]))
-            elif len(ip)==3:
-                flpsf.write('{0:8d}{1:8d}{2:8d}{3:8d}{4:8d}{5:8d}'.format(ip[0][0],ip[0][1],ip[1][0],
-                             ip[1][1],ip[2][0],ip[2][1]))
-            elif len(ip)==2:
-                flpsf.write('{0:8d}{1:8d}{2:8d}{3:8d}'.format(ip[0][0],ip[0][1],ip[1][0],ip[1][1]))
-            elif len(ip)==1:
-                flpsf.write('{0:8d}{1:8d}'.format(ip[0][0],ip[0][1]))
+        # save bonds in fixed column format
+        for i in range(0,len(indexes_pairs),4):
+            for bond in indexes_pairs[i:i+4]:
+                flpsf.write('{0:8d}{1:8d}'.format(*bond))
             flpsf.write('\n')
 
         del particle_infos_for_pdb
@@ -350,14 +341,13 @@ class Output(object):
             # initialize the array of scores internally
             self.best_score_list = []
         else:
-            # otherwise the replicas must cominucate
+            # otherwise the replicas must communicate
             # through a common file to know what are the best scores
             self.best_score_file_name = "best.scores.rex.py"
             self.best_score_list = []
-            best_score_file = open(self.best_score_file_name, "w")
-            best_score_file.write(
-                "self.best_score_list=" + str(self.best_score_list))
-            best_score_file.close()
+            with open(self.best_score_file_name, "w") as best_score_file:
+                best_score_file.write(
+                    "self.best_score_list=" + str(self.best_score_list) + "\n")
 
         self.nbestscoring = nbestscoring
         for i in range(self.nbestscoring):
@@ -410,10 +400,9 @@ class Output(object):
 
         if self.replica_exchange:
             # write the self.best_score_list to the file
-            best_score_file = open(self.best_score_file_name, "w")
-            best_score_file.write(
-                "self.best_score_list=" + str(self.best_score_list))
-            best_score_file.close()
+            with open(self.best_score_file_name, "w") as best_score_file:
+                best_score_file.write(
+                    "self.best_score_list=" + str(self.best_score_list) + '\n')
 
     def init_rmf(self, name, hierarchies, rs=None, geometries=None, listofobjects=None):
         """
@@ -459,8 +448,7 @@ class Output(object):
         self.dictionary_rmfs[name] = (rh,cat,outputkey_rmfkey,listofobjects)
 
     def add_restraints_to_rmf(self, name, objectlist):
-        flatobjectlist=_flatten(objectlist)
-        for o in flatobjectlist:
+        for o in _flatten(objectlist):
             try:
                 rs = o.get_restraint_for_rmf()
             except:
@@ -790,10 +778,7 @@ class ProcessOutput(object):
         self.isstat2 = False
         self.isrmf = False
 
-        # open the file
-        if not self.filename is None:
-            f = open(self.filename, "r")
-        else:
+        if self.filename is None:
             raise ValueError("No file name provided. Use -h for help")
 
         try:
@@ -806,6 +791,7 @@ class ProcessOutput(object):
             del rh
 
         except IOError:
+            f = open(self.filename, "r")
             # try with an ascii stat file
             # get the keys from the first line
             for line in f.readlines():
@@ -1174,7 +1160,7 @@ class StatHierarchyHandler(RMFHierarchyHandler):
             '''alternatively read the ascii stat files'''
             try:
                 scores,rmf_files,rmf_frame_indexes,features = self.get_info_from_stat_file(stat_file, self.score_threshold)
-            except KeyError:
+            except (KeyError, SyntaxError):
                 # in this case check that is it an rmf file, probably without stat stored in
                 try:
                     # let's see if that is an rmf file
@@ -1220,16 +1206,16 @@ class StatHierarchyHandler(RMFHierarchyHandler):
             import cPickle as pickle
         except ImportError:
             import pickle
-        fl=open(filename,'wb')
-        pickle.dump(self.data,fl)
+        with open(filename, 'wb') as fl:
+            pickle.dump(self.data, fl)
 
     def load_data(self,filename='data.pkl'):
         try:
             import cPickle as pickle
         except ImportError:
             import pickle
-        fl=open(filename,'rb')
-        data_structure=pickle.load(fl)
+        with open(filename, 'rb') as fl:
+            data_structure=pickle.load(fl)
         #first check that it is a list
         if not type(data_structure) is list:
             raise TypeError("%filename should contain a list of IMP.pmi.output.DataEntry or IMP.pmi.output.Cluster" % filename)

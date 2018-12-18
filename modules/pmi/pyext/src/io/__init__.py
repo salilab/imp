@@ -27,17 +27,17 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
            (name_map should be a dictionary with chain IDs as keys and
            molecule names as values).
 
-    @return a dictionary with keys 'helix', 'beta', 'loop'
-    Each contains a list of SSEs.
-    Each SSE is a list of elements (e.g. strands in a sheet)
-    Each element is a tuple (residue start, residue end, chain)
+    @return a dictionary with keys 'helix', 'beta', 'loop'.
+            Each contains a list of SSEs.
+            Each SSE is a list of elements (e.g. strands in a sheet).
+            Each element is a tuple (residue start, residue end, chain).
 
     Example for a structure with helix A:5-7 and Beta strands A:1-3,A:9-11:
 
     @code{.py}
-    ret = { 'helix' : [ [ (5,7,'A') ],... ]
+    ret = { 'helix' : [ [ (5,7,'A') ], ...]
             'beta'  : [ [ (1,3,'A'),
-                          (9,11,'A'),...],...]
+                          (9,11,'A'), ...], ...]
             'loop'  : same format as helix
           }
     @endcode
@@ -47,10 +47,7 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
         if name_map is None:
             return ch
         else:
-            try:
-                return name_map[ch]
-            except:
-                return ch
+            return name_map.get(ch, ch)
 
     # setup
     helix_classes = 'GHI'
@@ -106,7 +103,7 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
                 # add cur_sse to the right place
                 if prev_sstype in ['helix', 'loop']:
                     sses[prev_sstype].append([cur_sse])
-                elif prev_sstype == 'beta':
+                else: # prev_sstype == 'beta'
                     beta_dict[prev_beta_id].append(cur_sse)
                 cur_sse = [pdb_res_num,pdb_res_num,convert_chain(chain)]
             else:
@@ -119,17 +116,16 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
                 prev_beta_id = beta_id
 
     # final SSE processing
-    if not prev_sstype is None:
-        if prev_sstype in ['helix', 'loop']:
-            sses[prev_sstype].append([cur_sse])
-        elif prev_sstype == 'beta':
-            beta_dict[prev_beta_id].append(cur_sse)
+    if prev_sstype in ['helix', 'loop']:
+        sses[prev_sstype].append([cur_sse])
+    elif prev_sstype == 'beta':
+        beta_dict[prev_beta_id].append(cur_sse)
     # gather betas
     for beta_sheet in beta_dict:
         sses['beta'].append(beta_dict[beta_sheet])
     return sses
 
-def save_best_models(mdl,
+def save_best_models(model,
                      out_dir,
                      stat_files,
                      number_of_best_scoring_models=10,
@@ -141,7 +137,7 @@ def save_best_models(mdl,
                      override_rmf_dir=None):
     """Given a list of stat files, read them all and find the best models.
     Save to a single RMF along with a stat file.
-    @param mdl The IMP Model
+    @param model The IMP Model
     @param out_dir The output directory. Will save 3 files (RMF, stat, summary)
     @param stat_files List of all stat files to collect
     @param number_of_best_scoring_models Num best models to gather
@@ -227,7 +223,7 @@ def save_best_models(mdl,
         stat = open(out_stat_fn,'w')
         rh0 = RMF.open_rmf_file_read_only(
             os.path.join(root_directory_of_stat_file,all_fields[rmf_file_key][0]))
-        prots = IMP.rmf.create_hierarchies(rh0,mdl)
+        prots = IMP.rmf.create_hierarchies(rh0,model)
         del rh0
         outf = RMF.create_rmf_file(out_rmf_fn)
         IMP.rmf.add_hierarchies(outf,prots)
@@ -571,18 +567,25 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
 
     return rmsd_bead_size_dict
 
+@IMP.deprecated_object(2.10,
+        "If you use this class please let the PMI developers know.")
 class RMSDOutput(object):
     """A helper output based on dist to initial coordinates"""
     def __init__(self,ps,label,init_coords=None):
-        self.mdl = ps[0].get_model()
+        self.model = ps[0].get_model()
         self.ps = ps
         if init_coords is None:
             self.init_coords = [IMP.core.XYZ(p).get_coordinates() for p in self.ps]
         else:
             self.init_coords = init_coords
         self.label = label
+
+    @property
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
+
     def get_output(self):
-        self.mdl.update()
         output = {}
         coords = [IMP.core.XYZ(p).get_coordinates() for p in self.ps]
         rmsd = IMP.algebra.get_rmsd(coords,self.init_coords)
@@ -591,11 +594,16 @@ class RMSDOutput(object):
 
 class TotalScoreOutput(object):
     """A helper output for model evaluation"""
-    def __init__(self,mdl):
-        self.mdl = mdl
-        self.rs = IMP.pmi.tools.get_restraint_set(self.mdl)
+    def __init__(self,model):
+        self.model = model
+        self.rs = IMP.pmi.tools.get_restraint_set(self.model)
+
+    @property
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
+
     def get_output(self):
-        self.mdl.update()
         score = self.rs.evaluate(False)
         output = {}
         output["Total_Score"] = str(score)

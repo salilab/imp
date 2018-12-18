@@ -115,7 +115,6 @@ class ElectronMicroscopy2D(object):
         self.rs.set_weight(self.weight)
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight*self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -236,7 +235,6 @@ class ElectronMicroscopy2D_FFT(object):
         self.rs.set_weight(self.weight)
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight*self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)

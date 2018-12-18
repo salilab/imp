@@ -5,23 +5,22 @@ import IMP.em
 
 def main():
     IMP.set_log_level(IMP.SILENT)
-    usage = """%prog [options] <in_density> <density threshold> <out_pca.cmm>
-
+    desc = """
 Calculates the map principal components and writes them in cmm format.
 The 3D points participating in the PCA calculation are the centers of voxels
 with density above the input threshold."""
-    parser = IMP.OptionParser(usage=usage, imp_module=IMP.em)
-    parser.add_option("-p", "--apix", dest="apix",
-                      help="voxel size")
-    (options, args) = parser.parse_args()
-    if len(args) != 3:
-        parser.error("incorrect number of arguments")
-    in_map_fn = args[0]
-    threshold = float(args[1])
-    out_pca_fn = args[2]
+    p = IMP.ArgumentParser(description=desc)
+    p.add_argument("-p", "--apix", type=float, dest="apix", help="voxel size")
+    p.add_argument("density", help="EM density file name")
+    p.add_argument("threshold", type=float, help="EM density threshold")
+    p.add_argument("pca", help="Output PCA file name")
+    args = p.parse_args()
+    in_map_fn = args.density
+    threshold = args.threshold
+    out_pca_fn = args.pca
     dmap = IMP.em.read_map(in_map_fn)
-    if options.apix:
-        dmap.update_voxel_size(float(options.apix))
+    if args.apix:
+        dmap.update_voxel_size(args.apix)
     dens_vecs = IMP.em.density2vectors(dmap, threshold)
     dens_pca = IMP.algebra.get_principal_components(dens_vecs)
     f = open(out_pca_fn, "w")

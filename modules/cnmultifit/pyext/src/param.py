@@ -3,43 +3,51 @@
 __doc__ = "Generate a suitable parameter file for build_models."
 
 import IMP.multifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 
-def usage():
-    usage = """%prog [options] <cyclic symmetry degree>
-       <monomer PDB file> <density map> <resolution> <spacing>
-       <density threshold> <origin X> <origin Y> <origin Z>
-
+def parse_args():
+    desc = """
 A script that builds the parameters file for symmetric MultiFit.
 
 Notice: If you have negative numbers as input, add -- as the first parameter,
 so that the numbers are not treated as options."""
 
-    parser = OptionParser(usage)
-    parser.add_option("-o", "--out", dest="out", default="multifit.output",
-                      metavar="FILE",
-                      help="the name of the MultiFit output file. The default "
-                           "filename is multifit.output")
-    parser.add_option("-i", "--med", dest="med", metavar="FILE", default="",
-                      help="Print intermediate results to the named file.")
-    parser.add_option(
-        "-p", "--params", dest="params", default="multifit.param",
-        help="the name of the MultiFit parameters file. The "
-        "default filename is multifit.params")
-    parser.add_option("-m", "--model", dest="model", default="asmb.model",
-                      help="the base filename of the solutions output by "
-                           "MultiFit (.X.pdb, where X is the solution number, "
-                           "is suffixed to create each output file name). "
-                           "The default filename is asmb.model")
-    parser.add_option(
-        "-n", "--numsols", dest="numsols", default=10, type="int",
-        help="the number of solutions(fits) to report; "
-        "default 10")
-    (options, args) = parser.parse_args()
-    if len(args) != 9:
-        parser.error("incorrect number of arguments")
-    return options, args
+    p = ArgumentParser(description=desc)
+    p.add_argument("-o", "--out", dest="out", default="multifit.output",
+                   metavar="FILE",
+                   help="the name of the MultiFit output file. The default "
+                        "filename is multifit.output")
+    p.add_argument("-i", "--med", dest="med", metavar="FILE", default="",
+                   help="Print intermediate results to the named file.")
+    p.add_argument("-p", "--params", dest="params", default="multifit.param",
+                   help="the name of the MultiFit parameters file. The "
+                        "default filename is multifit.param")
+    p.add_argument("-m", "--model", dest="model", default="asmb.model",
+                   help="the base filename of the solutions output by "
+                        "MultiFit (.X.pdb, where X is the solution number, "
+                        "is suffixed to create each output file name). "
+                        "The default filename is asmb.model")
+    p.add_argument("-n", "--numsols", dest="numsols", default=10, type=int,
+                   help="the number of solutions(fits) to report; "
+                        "default 10")
+    p.add_argument("degree", type=int, help="cyclic symmetry degree")
+    p.add_argument("monomer", help="monomer PDB file name")
+    p.add_argument("density", help="density map file name")
+    p.add_argument("resolution", type=float,
+                   help="density map resolution, in angstroms")
+    p.add_argument("spacing", type=float,
+                   help="density map voxel spacing, in angstroms")
+    p.add_argument("threshold", type=float,
+                   help="the threshold of the density map, used for "
+                        "PCA matching")
+    p.add_argument("origin_x", type=float,
+                   help="density map origin X coordinate")
+    p.add_argument("origin_y", type=float,
+                   help="density map origin Y coordinate")
+    p.add_argument("origin_z", type=float,
+                   help="density map origin Z coordinate")
+    return p.parse_args()
 
 
 def get_files_data(monomer_fn, intermediate_fn, output_fn, model_fn):
@@ -163,26 +171,26 @@ solutions = %d
 
 
 def main():
-    options, args = usage()
-    cn_units = int(args[0])
+    args = parse_args()
+    cn_units = args.degree
     dn_units = 1
 
     liberal = False  # TODO - make a parameter
-    unit_pdb_fn = args[1]
-    density_map_fn = args[2]
-    resolution = float(args[3])
-    spacing = args[4]
-    threshold = args[5]
-    origin = args[6:]
+    unit_pdb_fn = args.monomer
+    density_map_fn = args.density
+    resolution = args.resolution
+    spacing = args.spacing
+    threshold = args.threshold
+    origin = [args.origin_x, args.origin_y, args.origin_z]
     if resolution > 15:
         pca_matching_thr = 15
     else:
         pca_matching_thr = resolution * 0.75
-    params_fn = options.params
-    intermediate_fn = options.med
+    params_fn = args.params
+    intermediate_fn = args.med
     log_fn = "multifit.log"
-    output_fn = options.out
-    model_fn = options.model
+    output_fn = args.out
+    model_fn = args.model
     f = open(params_fn, "w")
     f.write(get_files_data(unit_pdb_fn, intermediate_fn, output_fn, model_fn))
     f.write(get_symmetry_data(cn_units, dn_units))
@@ -194,7 +202,7 @@ def main():
     f.write(get_base_data())
     f.write(get_grid_data())
     f.write(get_surface_data())
-    f.write(get_fitting_data(options.numsols))
+    f.write(get_fitting_data(args.numsols))
     f.close()
 
 if __name__ == "__main__":

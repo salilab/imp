@@ -1519,11 +1519,11 @@ class CrossLinkDataBaseFromStructure(object):
             #PMI 1.0 mode
             self.mode="pmi1"
             self.representation=representation
-            self.model=self.representation.m
+            self.model=self.representation.model
         elif system is not None:
             #PMI 2.0 mode
             self.system=system
-            self.model=self.system.mdl
+            self.model=self.system.model
             self.mode="pmi2"
         else:
             print("Argument error: please provide either a representation object or a IMP.Hierarchy")

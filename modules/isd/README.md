@@ -1,4 +1,4 @@
-\brief Inferential scoring building on methods developed as part of the [Inferential Structure Determination](http://www.isd.bio.cam.ac.uk/) software (ISD).
+\brief Inferential scoring building on methods developed as part of the [Inferential Structure Determination](https://www.ncbi.nlm.nih.gov/pubmed/18310055) software (ISD).
 
 # Info
 
@@ -6,7 +6,7 @@ _Author(s)_: Yannick Spill, Riccardo Pellarin, Charles Greenberg, Ben Webb, Dani
 
 _Maintainer_: `yannickspill`
 
-_License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
+_License_: [LGPL](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either

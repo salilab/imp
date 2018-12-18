@@ -261,37 +261,60 @@ def fit_gmm_to_points(points,
     """
 
 
-    import sklearn.mixture
+    new_sklearn = False
+    try:
+        from sklearn.mixture import GMM
+    except ImportError:
+        from sklearn.mixture import GaussianMixture
+        new_sklearn = True
 
-    params='m'
-    init_params='m'
-    if force_radii==-1.0:
-        params+='c'
-        init_params+='c'
+    print('creating GMM with n_components',n_components,'n_iter',num_iter,'covar type',covariance_type)
+    if new_sklearn:
+        # aic() calls size() on points, so it needs to a numpy array, not a list
+        points = np.array(points)
+        weights_init = precisions_init = None
+        if force_radii != -1.0:
+            print('warning: radii can no longer be forced, but setting '
+                  'initial values to ', force_radii)
+            precisions_init = np.array([[1./force_radii]*3
+                                       for i in range(n_components)])
+        if force_weight != -1.0:
+            print('warning: weights can no longer be forced, but setting '
+                  'initial values to ', force_weight)
+            weights_init = np.array([force_weight]*n_components)
+
+        gmm = GaussianMixture(n_components=n_components,
+                              max_iter=num_iter,
+                              covariance_type=covariance_type,
+                              weights_init=weights_init,
+                              precisions_init=precisions_init,
+                              means_init=None if init_centers==[]
+                                              else init_centers)
     else:
-        covariance_type='spherical'
-        print('forcing spherical with radii',force_radii)
+        params='m'
+        init_params='m'
+        if force_radii==-1.0:
+            params+='c'
+            init_params+='c'
+        else:
+            covariance_type='spherical'
+            print('forcing spherical with radii',force_radii)
 
-    if force_weight==-1.0:
-        params+='w'
-        init_params+='w'
-    else:
-        print('forcing weights to be',force_weight)
+        if force_weight==-1.0:
+            params+='w'
+            init_params+='w'
+        else:
+            print('forcing weights to be',force_weight)
 
-    print('creating GMM with params',params,'init params',init_params,'n_components',n_components,'n_iter',num_iter,'covar type',covariance_type)
-    gmm=sklearn.mixture.GMM(n_components=n_components,
-                          n_iter=num_iter,
-                          covariance_type=covariance_type,
-                          min_covar=min_covar,
-                          params=params,
-                          init_params=init_params)
-
-    if force_weight!=-1.0:
-        gmm.weights_=np.array([force_weight]*n_components)
-    if force_radii!=-1.0:
-        gmm.covars_=np.array([[force_radii]*3 for i in range(n_components)])
-    if init_centers!=[]:
-        gmm.means_=init_centers
+        gmm = GMM(n_components=n_components, n_iter=num_iter,
+                  covariance_type=covariance_type, min_covar=min_covar,
+                  params=params, init_params=init_params)
+        if force_weight!=-1.0:
+            gmm.weights_=np.array([force_weight]*n_components)
+        if force_radii!=-1.0:
+            gmm.covars_=np.array([[force_radii]*3 for i in range(n_components)])
+        if init_centers!=[]:
+            gmm.means_=init_centers
     print('fitting')
     model=gmm.fit(points)
     score=gmm.score(points)
@@ -299,8 +322,12 @@ def fit_gmm_to_points(points,
     #print('>>> GMM score',gmm.score(points))
 
     ### convert format to core::Gaussian
+    if new_sklearn:
+        covars = gmm.covariances_
+    else:
+        covars = gmm.covars_
     for ng in range(n_components):
-        covar=gmm.covars_[ng]
+        covar=covars[ng]
         if covar.size==3:
             covar=np.diag(covar).tolist()
         else:

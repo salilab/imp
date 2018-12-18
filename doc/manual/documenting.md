@@ -2,10 +2,10 @@ Documenting your code {#documenting}
 =====================
 
 %IMP is documented using `doxygen`. See
-[Documenting your code in doxygen](http://www.doxygen.nl/docblocks.html)
+[Documenting your code in doxygen](http://www.doxygen.nl/manual/docblocks.html)
 to get started. We use `//!` and `/**` ... `*/` blocks for documentation.
 You are encouraged to use Doxygen's
-[markdown support](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html) as much as possible.
+[markdown support](http://www.doxygen.nl/manual/markdown.html) as much as possible.
 
 Python code should provide Python doc strings. We automatically convert these
 into a form Doxygen can parse, so you can use Doxygen commands in them.

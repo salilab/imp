@@ -8,6 +8,25 @@ class Restraint(object):
     pass
 
 
+class RestraintGroup(list):
+    """A set of related :class:`Restraint` objects.
+       This is implemented as a simple list.
+
+       Note that due to limitations of the underlying dictionary, only
+       certain combinations of restraints can be placed in groups.
+       In particular, all objects in a group must be of the same type, and
+       only certain types (currently only :class:`DerivedDistanceRestraint`)
+       can be grouped.
+
+       Empty groups can be created, but will be ignored on output as the
+       dictionary does not support them.
+
+       Restraint groups should be stored in the system by adding them to
+       :attr:`ihm.System.restraint_groups`.
+    """
+    pass
+
+
 class EM3DRestraint(Restraint):
     """Restrain part of the system to match an electron microscopy density map.
 
@@ -270,7 +289,7 @@ class CrossLink(object):
     pass
 
 
-class ResidueCrossLink(object):
+class ResidueCrossLink(CrossLink):
     """A cross-link used in the modeling, applied to residue alpha carbon atoms.
 
        :param experimental_cross_link: The corresponding cross-link identified
@@ -306,7 +325,7 @@ class ResidueCrossLink(object):
         self.fits = {}
 
 
-class FeatureCrossLink(object):
+class FeatureCrossLink(CrossLink):
     """A cross-link used in the modeling, applied to the closest primitive
        object with the highest resolution.
 
@@ -343,7 +362,7 @@ class FeatureCrossLink(object):
         self.fits = {}
 
 
-class AtomCrossLink(object):
+class AtomCrossLink(CrossLink):
     """A cross-link used in the modeling, applied to the specified atoms.
 
        :param experimental_cross_link: The corresponding cross-link identified
@@ -399,7 +418,8 @@ class CrossLinkFit(object):
 
 class Feature(object):
     """Base class for selecting parts of the system that a restraint acts on.
-       See :class:`PolyResidueFeature` and :class:`PolyAtomFeature`.
+       See :class:`ResidueFeature`, :class:`AtomFeature`, and
+       :class:`NonPolyFeature`.
 
        Features are typically assigned to one or more
        :class:`~ihm.restraint.GeometricRestraint` objects.
@@ -407,24 +427,39 @@ class Feature(object):
     pass
 
 
-class PolyResidueFeature(Feature):
+class ResidueFeature(Feature):
     """Selection of one or more residues from the system.
 
        :param sequence ranges: A list of :class:`AsymUnitRange` and/or
               :class:`AsymUnit` objects.
     """
-    type = 'residue range'
+
+    # Type is 'residue' if each range selects a single residue, otherwise
+    # it is 'residue range'
+    def __get_type(self):
+        for r in self.ranges:
+            if r.seq_id_range[0] != r.seq_id_range[1]:
+                return 'residue range'
+        return 'residue'
+    type = property(__get_type)
 
     def __init__(self, ranges):
         self.ranges = ranges
+        _ = self._get_entity_type()
 
-    # todo: handle case where ranges span multiple entities?
-    entity = property(lambda self: self.ranges[0].entity
-                                   if self.ranges else None)
+    def _get_entity_type(self):
+        if any(not r.entity.is_polymeric() for r in self.ranges):
+            raise ValueError("%s cannot select non-polymeric entities" % self)
+        else:
+            return self.ranges[0].entity.type if self.ranges else None
 
 
-class PolyAtomFeature(Feature):
+class AtomFeature(Feature):
     """Selection of one or more atoms from the system.
+       Atoms can be selected from polymers or non-polymers (but not both).
+       For selecting an entire polymer or residue(s),
+       see :class:`ResidueFeature`. For selecting an entire non-polymer,
+       see :class:`NonPolyFeature`.
 
        :param sequence atoms: A list of :class:`ihm.Atom` objects.
     """
@@ -432,10 +467,35 @@ class PolyAtomFeature(Feature):
 
     def __init__(self, atoms):
         self.atoms = atoms
+        _ = self._get_entity_type()
 
-    # todo: handle case where atoms span multiple entities?
-    entity = property(lambda self: self.atoms[0].residue.asym.entity
-                                   if self.atoms else None)
+    def _get_entity_type(self):
+        types = frozenset(a.residue.asym.entity.type for a in self.atoms)
+        if len(types) > 1:
+            raise ValueError("%s cannot span both polymeric and "
+                             "non-polymeric entities" % self)
+        elif types:
+            return self.atoms[0].residue.asym.entity.type
+
+
+class NonPolyFeature(Feature):
+    """Selection of one or more non-polymers from the system.
+       To select individual atoms from a non-polymer, see :class:`AtomFeature`.
+
+       :param sequence asyms: A list of :class:`AsymUnit` objects.
+    """
+
+    type = 'ligand'
+
+    def __init__(self, asyms):
+        self.asyms = asyms
+        _ = self._get_entity_type()
+
+    def _get_entity_type(self):
+        if any(r.entity.is_polymeric() for r in self.asyms):
+            raise ValueError("%s can only select non-polymeric entities" % self)
+        else:
+            return self.asyms[0].entity.type if self.asyms else None
 
 
 class GeometricRestraint(object):

@@ -24,7 +24,7 @@ RMF_ENABLE_WARNINGS namespace RMF {
 #endif
 
   /** Wrap an HDF5 Group. See
-      \external{https://www.hdfgroup.org/HDF5/doc/RM/RM_H5G.html,
+      \external{https://support.hdfgroup.org/HDF5/doc/RM/RM_H5G.html,
       the HDF5 manual} for more information.
    */
   class RMFEXPORT ConstGroup : public ConstAttributes<Object> {

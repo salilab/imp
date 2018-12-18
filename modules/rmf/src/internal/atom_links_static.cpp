@@ -22,6 +22,7 @@
 #include <IMP/display/Colored.h>
 #include <RMF/SetCurrentFrame.h>
 #include <RMF/NodeHandle.h>
+#include <RMF/show_hierarchy.h>
 #include <boost/range/iterator_range.hpp>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
@@ -149,7 +150,15 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
   IMP_FUNCTION_LOG;
   atom::Hierarchy hp(m, p);
 
-  IMP_LOG_VERBOSE("Particle " << hp << " is " << std::endl);
+  IMP_LOG_VERBOSE("Linking hierarchy particle " << hp
+                  << " with " << hp.get_number_of_children() << " children"
+                  << " to an RMF node with " << nh.get_children().size()
+                  << " children, with decorations: " << std::endl);
+  IMP_IF_LOG(IMP::VERBOSE) {
+    if (hp.get_number_of_children() >= 8) {
+      RMF::show_hierarchy_with_decorators(nh);
+    }
+  }
   if (nh.get_has_value(radius_key_)) {
     IMP_LOG_VERBOSE("xyzr " << std::endl);
     double r = nh.get_value(radius_key_);
@@ -194,7 +203,12 @@ void HierarchyLoadStatic::link_particle(RMF::NodeConstHandle nh,
   if (colored_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("colored " << std::endl);
     RMF::Vector3 c = colored_factory_.get(nh).get_rgb_color();
-    display::Colored(m, p).set_color(display::Color(c[0], c[1], c[2]));
+    if(display::Colored::get_is_setup(m, p)){
+      display::Colored(m, p).set_color(display::Color(c[0], c[1], c[2]));
+    }else{
+      IMP_WARN("Colored RMF node cannot be linked to a non-colored particle"
+               << std::endl); // Color is not sufficiently important to abort
+    }
   }
   if (chain_factory_.get_is_static(nh)) {
     IMP_LOG_VERBOSE("chain " << std::endl);

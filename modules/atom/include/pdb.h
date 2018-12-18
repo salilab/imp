@@ -29,13 +29,13 @@ IMPATOM_BEGIN_NAMESPACE
 //! Select which atoms to read from a PDB file
 /** Selector is a general purpose class used to select records from a PDB
     file. Using descendants of this class one may implement arbitrary
-    selection functions with operator() and pass them to PDB reading functions
+    selection functions and pass them to PDB reading functions
     for object selection. Simple selectors can be used to build more complicated
     ones. Inheritance means "AND" unless otherwise noted (that is, the
     CAlphaPDBSelector takes all non-alternate C-alphas since it inherits from
     NonAlternativePDBSelector).
 
-    \see read_pdb
+    \see read_pdb, read_mmcif
 */
 class IMPATOMEXPORT PDBSelector : public IMP::Object {
  public:
@@ -199,6 +199,8 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
   }
   IMP_OBJECT_METHODS(ChainPDBSelector);
   //! The chain id can be any character in chains
+  /** \note This limits the selection to single-character chain IDs
+            (mmCIF files support multiple-character chain names) */
   ChainPDBSelector(const std::string &chains,
                    std::string name = "ChainPDBSelector%1%")
       : NonAlternativePDBSelector(name), chains_(chains) {}
@@ -472,9 +474,7 @@ inline PDBSelector *get_default_pdb_selector() {
   return new NonWaterPDBSelector();
 }
 
-/** Read a all the molecules in the first model of the
-    PDB file.
- */
+//! Read all the molecules in the first model of the PDB file.
 IMPATOMEXPORT Hierarchy
     read_pdb(TextInput input, Model *model,
              PDBSelector *selector = get_default_pdb_selector(),

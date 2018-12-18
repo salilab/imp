@@ -93,9 +93,9 @@ Ints ClusterSet::get_cluster_elements(unsigned int id) const {
   return get_cluster_formed_at_step(get_step_from_id(id));
 }
 
-VectorOfFloats ClusterSet::get_linkage_matrix() const {
+FloatsList ClusterSet::get_linkage_matrix() const {
   IMP_LOG_VERBOSE("ClusterSet: Building linkage  matrix" << std::endl);
-  VectorOfFloats mat(steps_);
+  FloatsList mat(steps_);
   for (unsigned int i = 0; i < steps_; ++i) {
     mat[i].resize(3);
     mat[i][0] = static_cast<double>(joined_ids1_[i]);
@@ -105,9 +105,9 @@ VectorOfFloats ClusterSet::get_linkage_matrix() const {
   return mat;
 }
 
-VectorOfFloats ClusterSet::get_linkage_matrix_in_matlab_format() const {
-  VectorOfFloats mat = get_linkage_matrix();
-  VectorOfFloats::iterator it;
+FloatsList ClusterSet::get_linkage_matrix_in_matlab_format() const {
+  FloatsList mat = get_linkage_matrix();
+  FloatsList::iterator it;
   for (it = mat.begin(); it != mat.end(); ++it) {
     (*it)[0] += 1;  // +1 for matlab compatibility (indices start at 1)
     (*it)[1] += 1;
@@ -125,7 +125,7 @@ void ClusterSet::show(std::ostream &out) const {
 
 double CompleteLinkage::operator()(unsigned int id1, unsigned int id2,
                                    const ClusterSet &cluster_set,
-                                   const VectorOfFloats &distances) {
+                                   const FloatsList &distances) {
   IMP_LOG_VERBOSE("Evaluating CompleteLinkage " << std::endl);
   Ints members1 = cluster_set.get_cluster_elements(id1);
   Ints members2 = cluster_set.get_cluster_elements(id2);
@@ -144,7 +144,7 @@ double CompleteLinkage::operator()(unsigned int id1, unsigned int id2,
 
 double AverageDistanceLinkage::operator()(unsigned int id1, unsigned int id2,
                                           const ClusterSet &cluster_set,
-                                          const VectorOfFloats &distances) {
+                                          const FloatsList &distances) {
   IMP_LOG_VERBOSE("Evaluating AverageDistanceLinkage " << std::endl);
 
   Ints members1 = cluster_set.get_cluster_elements(id1);
@@ -163,7 +163,7 @@ double AverageDistanceLinkage::operator()(unsigned int id1, unsigned int id2,
 
 double SingleLinkage::operator()(unsigned int id1, unsigned int id2,
                                  const ClusterSet &cluster_set,
-                                 const VectorOfFloats &distances) const {
+                                 const FloatsList &distances) const {
   IMP_LOG_VERBOSE("Evaluating SingleLinkage " << std::endl);
   Ints members1 = cluster_set.get_cluster_elements(id1);
   Ints members2 = cluster_set.get_cluster_elements(id2);

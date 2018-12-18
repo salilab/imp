@@ -3,7 +3,10 @@
 from __future__ import print_function, division
 import sys
 import os
-import optparse
+try:
+    import argparse
+except ImportError:
+    import IMP._compat_argparse as argparse
 from random import sample
 from numpy import *
 import copy
@@ -644,28 +647,11 @@ class SAXSProfile:
         return self.filename
 
 
-class _RawEpilogFormatter(optparse.IndentedHelpFormatter):
-
-    """Output the epilog help text as-is"""
-
-    def format_epilog(self, epilog):
-        return epilog
-
-
 def parse_args():
-    parser = IMP.OptionParser(
-        description="Perform a statistical merge of the given SAXS curves. "
-        "file is a 3-column file that contains SAXS data. "
-        "To specify the number of repetitions of this experiment, "
-        "use the syntax file.txt=20 indicating that data "
-        "in file.txt is an average of 20 experiments. Default is "
-        "10. Note that in the case of different number of "
-        "repetitions, the minimum is taken for the final "
-        "fitting step (Step 5).",
-        formatter=_RawEpilogFormatter(),
-        usage="%prog [options] file [file ...]",
-        version='%prog 0.3',
-            epilog="""Output file legend:\n
+    p = IMP.ArgumentParser(
+        description="Perform a statistical merge of the given SAXS curves.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""Output file legend:\n
 Cleanup
     agood     (bool)   : True if SNR is high enough
     apvalue   (float)  : p-value of the student t test
@@ -679,7 +665,7 @@ Classification
     dgood     (bool)   : True if this point is compatible with the reference and
                          False otherwise. Undefined if 'agood' is False for that
                          point.
-    dselfref  (bool)   : True if this curve was it's own reference, in which
+    dselfref  (bool)   : True if this curve was its own reference, in which
                          case dgood is also True
     dpvalue   (float)  : p-value for the classification test
 Merging
@@ -687,161 +673,160 @@ Merging
     eoriname  (string) : associated filename
     eextrapol (bool)   : True if mean function is being extrapolated.
 """)
-    parser.add_option('--verbose', '-v', action="count",
+    p.add_argument('--verbose', '-v', action="count",
                       dest='verbose', default=0,
                       help="Increase verbosity. Can be repeated up to 3 times "
                       "for more output.")
     # general
-    group = optparse.OptionGroup(parser, title="general")
-    parser.add_option_group(group)
-    group.add_option('--auto', help="Fully automatic merge. Will try to find"
+    group = p.add_argument_group(title="general")
+    group.add_argument('--auto', help="Fully automatic merge. Will try to find"
                      " correct order for input files (default is off)",
                      default=False, action='store_true')
-    group.add_option('--remove_noisy', help="Remove data points that have"
+    group.add_argument('--remove_noisy', help="Remove data points that have"
                      " too large error bars, such as data at very low q (default is not "
                      " to perform this cleanup) ", default=False, action='store_true')
-    group.add_option('--remove_redundant', help="Remove high noise data if it "
+    group.add_argument('--remove_redundant', help="Remove high noise data if it "
                      " is surrounded by low noise data (default is not to remove it)",
                      default=False, action='store_true')
-    group.add_option('--mergename', help="filename suffix for output "
+    group.add_argument('--mergename', help="filename suffix for output "
                      "(default is merged.dat)", default='merged.dat', metavar='SUFFIX')
-    group.add_option('--sumname', metavar='NAME', default='summary.txt',
+    group.add_argument('--sumname', metavar='NAME', default='summary.txt',
                      help="File to which the merge summary will be written."
                      " Default is summary.txt")
-    group.add_option('--destdir', default="./", metavar='DIR',
+    group.add_argument('--destdir', default="./", metavar='DIR',
                      help="Destination folder in which files will be written")
-    group.add_option('--header', default=False, action='store_true',
+    group.add_argument('--header', default=False, action='store_true',
                      help="First line of output files is a header (default False)")
-    group.add_option('--outlevel', default='normal', help="Set the output "
+    group.add_argument('--outlevel', default='normal', help="Set the output "
                      "level, 'sparse' is for q,I,err columns only, 'normal' adds "
                      "eorigin, eoriname and eextrapol (default), and 'full' outputs "
-                     "all flags.", type="choice", choices=['normal', 'sparse', 'full'])
-    group.add_option('--allfiles', default=False, action='store_true',
+                     "all flags.", choices=['normal', 'sparse', 'full'])
+    group.add_argument('--allfiles', default=False, action='store_true',
                      help="Output data files for parsed input files as well (default "
                      "is only to output merge and summary files).")
-    group.add_option('--stop', type='choice', help="stop after the given step, "
+    group.add_argument('--stop', help="stop after the given step, "
                      "one of cleanup, fitting, rescaling, classification, merging "
                      "(default: merging)", choices=["cleanup", "fitting", "rescaling",
                                                     "classification", "merging"], default="merging")
-    group.add_option('--postpone_cleanup', action='store_true', default=False,
+    group.add_argument('--postpone_cleanup', action='store_true', default=False,
                      help="Cleanup step comes after rescaling step (default is False)")
-    group.add_option('--npoints', type="int", default=200, metavar="NUM",
+    group.add_argument('--npoints', type=int, default=200, metavar="NUM",
                      help="Number of points to output for the mean function. Negative "
                      "values signify to take the same q values as the first data file. "
                      "In that case extrapolation flags are ignored, and extrapolation "
                      "is performed when the data file's q values fall outside of the "
                      "range of accepted data points. Default is NUM=200 points.")
     # cleanup
-    group = optparse.OptionGroup(parser, title="Cleanup (Step 1)",
+    group = p.add_argument_group(title="Cleanup (Step 1)",
                                  description="Discard or keep SAXS curves' "
-                                 "points based on their SNR. Points with an error"
+                                 "points based on their SNR.\nPoints with an error"
                                  " of zero are discarded as well")
-    parser.add_option_group(group)
 
-    group.add_option('--aalpha', help='type I error (default 0.05 before '
-                     'Bonferroni correction)', type="float", default=0.05,
+    group.add_argument('--aalpha', help='type I error (default 0.05 before '
+                     'Bonferroni correction)', type=float, default=0.05,
                      metavar='ALPHA')
-    group.add_option('--acutoff', help='when a value after CUT is discarded,'
+    group.add_argument('--acutoff', help='when a value after CUT is discarded,'
                      ' the rest of the curve is discarded as well (default is 0.1)',
-                     type="float", default=0.1, metavar='CUT')
+                     type=float, default=0.1, metavar='CUT')
     # fitting
-    group = optparse.OptionGroup(parser, title="Fitting (Step 2)",
+    group = p.add_argument_group(title="Fitting (Step 2)",
                                  description="Estimate the mean function and the noise level "
                                  "of each SAXS curve.")
-    parser.add_option_group(group)
-    group.add_option('--bmean', help='Defines the most complex mean '
+    group.add_argument('--bmean', help='Defines the most complex mean '
                      'function that will be tried during model comparison.'
                      " One of Flat (the offset parameter A is optimized), "
                      "Simple (optimizes A, G and Rg), "
                      "Generalized (optimizes G, Rg and d), "
                      "Full (default, optimizes G, Rg, d and s) "
                      "If --bnocomp is given, will try to fit only with this model",
-                     type="choice", default="Full",
+                     default="Full",
                      choices=['Flat', 'Simple', 'Generalized', 'Full'])
-    group.add_option('--bnocomp', help='Don\'t perform model comparison. '
+    group.add_argument('--bnocomp', help='Don\'t perform model comparison. '
                      "Default: perform it.",
                      action='store_true', default=False)
-    group.add_option('--baverage', help='Average over all possible parameters '
+    group.add_argument('--baverage', help='Average over all possible parameters '
                      'instead of just taking the most probable set of parameters. '
                      'Default is not to perform the averaging.',
                      action='store_true', default=False)
-    group.add_option('--blimit_fitting', metavar='NUM', default=-1, type='int',
+    group.add_argument('--blimit_fitting', metavar='NUM', default=-1, type=int,
                      help='To save resources, set the maximum number of points used in'
                      'the fitting step. Dataset will be subsampled if it is bigger than'
                      ' NUM. If NUM=-1 (default), all points will be used.')
-    group.add_option('--blimit_hessian', metavar='NUM', default=-1, type='int',
+    group.add_argument('--blimit_hessian', metavar='NUM', default=-1, type=int,
                      help='To save resources, set the maximum number of points used in'
                      ' the Hessian calculation (model comparison, options --baverage, '
                      'and --berror ). Dataset will be subsampled if it is bigger than'
                      'NUM. If NUM=-1 (default), all points will be used.')
-    group.add_option('--berror', action='store_true', default=False,
+    group.add_argument('--berror', action='store_true', default=False,
                      help="Compute error bars on all parameters even in case where "
                      "model comparison was disabled. Involves the computation of a "
                      "Hessian. Default: no extra computation.")
     # rescaling
-    group = optparse.OptionGroup(parser, title="Rescaling (Step 3)",
+    group = p.add_argument_group(title="Rescaling (Step 3)",
                                  description="Find the most probable scaling factor of all "
                                  "curves wrt the first curve.")
-    parser.add_option_group(group)
-    group.add_option('--creference', default='last', help="Define which "
+    group.add_argument('--creference', default='last', help="Define which "
                      "input curve the other curves will be rescaled to. Options are "
-                     "first or last (default is last)", type="choice",
+                     "first or last (default is last)",
                      choices=['first', 'last'])
-    group.add_option('--cmodel', default='normal',
+    group.add_argument('--cmodel', default='normal',
                      help="Which rescaling model to use to calculate gamma. "
                      "'normal-offset' for a normal model with offset, "
                      "'normal' (default) for a normal model with zero offset "
                      "and 'lognormal' for a lognormal model.",
-                     choices=['normal', 'normal-offset', 'lognormal'], type='choice')
-    group.add_option('--cnpoints', type="int", default=200, metavar="NUM",
+                     choices=['normal', 'normal-offset', 'lognormal'])
+    group.add_argument('--cnpoints', type=int, default=200, metavar="NUM",
                      help="Number of points to use to compute gamma (default 200)")
     # classification
-    group = optparse.OptionGroup(parser, title="Classification (Step 4)",
+    group = p.add_argument_group(title="Classification (Step 4)",
                                  description="Classify the mean curves by comparing them using "
-                                 "a two-sided two-sample student t test")
-    parser.add_option_group(group)
-    group.add_option('--dalpha', help='type I error (default 0.05)',
-                     type="float", default=0.05, metavar='ALPHA')
+                                 "a two-sided two-sample\nstudent t test")
+    group.add_argument('--dalpha', help='type I error (default 0.05)',
+                     type=float, default=0.05, metavar='ALPHA')
     # merging
-    group = optparse.OptionGroup(parser, title="Merging (Step 5)",
+    group = p.add_argument_group(title="Merging (Step 5)",
                                  description="Collect compatible data and produce best estimate "
                                  "of mean function")
-    parser.add_option_group(group)
-    group.add_option('--eextrapolate', metavar="NUM", help='Extrapolate '
+    group.add_argument('--eextrapolate', metavar="NUM", help='Extrapolate '
                      "NUM percent outside of the curve's bounds. Example: if NUM=50 "
                      "and the highest acceptable data point is at q=0.3, the mean will "
                      "be estimated up to q=0.45. Default is 0 (just extrapolate at low "
-                     "angle).", type="int", default=0)
-    group.add_option('--enoextrapolate', action='store_true', default=False,
+                     "angle).", type=int, default=0)
+    group.add_argument('--enoextrapolate', action='store_true', default=False,
                      help="Don't extrapolate at all, even at low angle (default False)")
-    group.add_option('--emean', help='Which most complex mean function '
+    group.add_argument('--emean', help='Which most complex mean function '
                      'to try for model comparison.'
-                     ' See --bmean. Default is Full', type="choice",
+                     ' See --bmean. Default is Full',
                      default="Full", choices=['Simple', 'Generalized', 'Full', 'Flat'])
-    group.add_option('--enocomp', help='Don\'t perform model comparison, '
+    group.add_argument('--enocomp', help='Don\'t perform model comparison, '
                      'see --bnocomp. Default is not to perform it.',
                      action='store_true', default=False)
-    group.add_option('--eaverage', help="Average over all possible parameters "
+    group.add_argument('--eaverage', help="Average over all possible parameters "
                      "instead of just taking the most probable set of parameters. "
                      "Default is not to perform the averaging.",
                      action='store_true', default=False)
-    group.add_option('--elimit_fitting', metavar='NUM', default=-1, type='int',
+    group.add_argument('--elimit_fitting', metavar='NUM', default=-1, type=int,
                      help='To save resources, set the maximum number of points used in'
-                     'the fitting step. Dataset will be subsampled if it is bigger than'
+                     ' the fitting step. Dataset will be subsampled if it is bigger than'
                      ' NUM. If NUM=-1 (default), all points will be used.')
-    group.add_option('--elimit_hessian', metavar='NUM', default=-1, type='int',
+    group.add_argument('--elimit_hessian', metavar='NUM', default=-1, type=int,
                      help='To save resources, set the maximum number of points used in'
                      ' the Hessian calculation (model comparison, options --eaverage, '
                      'and --eerror ). Dataset will be subsampled if it is bigger than'
                      'NUM. If NUM=-1 (default), all points will be used.')
-    group.add_option('--eerror', action='store_true', default=False,
+    group.add_argument('--eerror', action='store_true', default=False,
                      help="Compute error bars on all parameters even in case where "
                      "model comparison was disabled. Involves the computation of a "
                      "Hessian. Default: no extra computation.")
-    (args, files) = parser.parse_args()
-    if len(files) == 0:
-        parser.error("No files specified")
-    return (args, files)
+    p.add_argument("file", nargs="+",
+                   help="""
+file names to merge. Each file is a 3-column file that contains SAXS data.
+To specify the number of repetitions of this experiment, use the syntax
+file.txt=20 indicating that data in file.txt is an average of 20 experiments.
+Default is 10. Note that in the case of different number of repetitions,
+the minimum is taken for the final fitting step (Step 5).""")
+    args = p.parse_args()
+    return (args, args.file)
 
 
 def parse_filenames(fnames, defaultvalue=10):
@@ -2224,7 +2209,7 @@ def classification(profiles, args):
         dgood : True if this point is compatible with the reference
                 and False otherwise. Undefined if 'agood' is False for
                 that point.
-        dselfref : True if this curve was it's own reference, in which case
+        dselfref : True if this curve was its own reference, in which case
                 dgood is also True
         dpvalue : p-value for the classification test
     """

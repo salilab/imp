@@ -1,6 +1,39 @@
 ChangeLog {#changelog}
 =========
 
+# 2.10.0 - 2019-01-08 # {#changelog_2_10_0}
+- Applications using IMP::pmi should now use the IMP::pmi::topology::System
+  class to set up the system (sometimes referred to as "PMI2"), rather than
+  the older IMP::pmi::representation::Representation class ("PMI1").
+  This new class is faster and produces standard IMP Hierarchy objects. The
+  old PMI1-style classes are deprecated in this release and will be removed
+  in the next one. For support of published studies using "PMI1", a legacy
+  IMP::pmi1 module is provided (to use it, simply replace all imports of
+  "IMP.pmi" with "IMP.pmi1"). This module will receive only minor bug fixes,
+  and no new features.
+- All IMP Python command line tools now use
+  [argparse](https://docs.python.org/2/library/argparse.html) rather than
+  [optparse](https://docs.python.org/2/library/optparse.html) for handling
+  options, as optparse is deprecated in modern Python versions. The
+  IMP::OptionParser class, which extends optparse to add standard IMP options,
+  is now deprecated. Use the similar IMP::ArgumentParser class instead.
+- The bundled copy of [python-ihm](https://github.com/ihmwg/python-ihm) is
+  updated to the latest release. This supports faster (C-accelerated) reading
+  of mmCIF files, read and write support for BinaryCIF files, and support
+  for output of PMI2-style models. The new IMP::atom::read_mmcif function
+  allows reading a PDB file in mmCIF format, similarly to the existing
+  IMP::atom::read_pdb function.
+- A new application of IMP is now available:
+  - [Architecture of Pol II(G) and molecular mechanism of transcription regulation by Gdown1](https://salilab.org/pol_ii_g/)
+- The deprecated IMP::isd::FNormal::density() method has been removed.
+  Use IMP::isd::FNormal::get_density() instead.
+- Handling of quaternions (for example in the calculation of rotational
+  derivatives) is now faster and more numerically stable.
+- IMP::mpi now includes a workaround for an OpenMPI failure when used
+  with Python, so previous hacks (building OpenMPI with the
+  `--disable-dlopen` flag, or using `sys.setdlopenflags` in Python)
+  should no longer be necessary.
+
 # 2.9.0 - 2018-07-02 # {#changelog_2_9_0}
 - [Eigen](https://eigen.tuxfamily.org/) is now required to build IMP.
 - The Windows .exe IMP installer no longer supports Python 2.6. Python 2.7,

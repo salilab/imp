@@ -54,31 +54,31 @@ if __name__ == '__main__':
 
     import sys
 
-    P = IMP.OptionParser()
-    P.add_option('--input_pdb', '-i', action='store', type='string',
-                 help='input PDB file (required)')
-    P.add_option('--input_lib', '-l', action='store', type='string',
-                 help='input rotamer library file (required)')
-    P.add_option('--output_pdb', '-o', action='store', type='string',
-                 help='output PDB file (required)')
-    P.add_option('--verbose', '-v', action='store_true',
-                 help='show more messages')
-    opts, args = P.parse_args()
+    P = IMP.ArgumentParser()
+    P.add_argument('--input_pdb', '-i', action='store',
+                   help='input PDB file (required)')
+    P.add_argument('--input_lib', '-l', action='store',
+                   help='input rotamer library file (required)')
+    P.add_argument('--output_pdb', '-o', action='store',
+                   help='output PDB file (required)')
+    P.add_argument('--verbose', '-v', action='store_true',
+                   help='show more messages')
+    args = P.parse_args()
     if IMP.get_bool_flag('run_quick_test') or \
-       not (opts.input_pdb or opts.input_lib or opts.output_pdb):
+       not (args.input_pdb or args.input_lib or args.output_pdb):
         quick_test()
         sys.exit(0)
-    if not opts.input_pdb:
+    if not args.input_pdb:
         print('--input_pdb is required')
         sys.exit(1)
-    if not opts.output_pdb:
+    if not args.output_pdb:
         print('--output_pdb is required')
         sys.exit(1)
-    if not opts.input_lib:
+    if not args.input_lib:
         print('--input_lib is required')
         sys.exit(1)
-    if opts.verbose:
+    if args.verbose:
         IMP.set_log_level(IMP.VERBOSE)
     else:
         IMP.set_log_level(IMP.SILENT)
-    transform(opts.input_pdb, opts.input_lib, opts.output_pdb)
+    transform(args.input_pdb, args.input_lib, args.output_pdb)

@@ -180,29 +180,51 @@ void AccumulateRigidBodyDerivatives::apply_index(
         internal::rigid_body_data().quaternion_[j]);
   }
 #endif
-  algebra::Rotation3D rot =
+  algebra::Rotation3D rot = //! from global to internal
       rb.get_reference_frame().get_transformation_from().get_rotation();
-  algebra::Rotation3D roti =
+  algebra::Rotation3D roti = //! from internal to global
       rb.get_reference_frame().get_transformation_to().get_rotation();
   const ParticleIndexes &rbis = rb.get_member_particle_indexes();
   for (unsigned int i = 0; i < rbis.size(); ++i) {
-    RigidMember d(rb.get_model(), rbis[i]);
+    RigidBodyMember d(rb.get_model(), rbis[i]);
     const algebra::Vector3D &deriv = d.get_derivatives();
     if (deriv.get_squared_magnitude() > 0) {
       algebra::Vector3D dv = rot * deriv;
       rb.add_to_derivatives(dv, deriv, d.get_internal_coordinates(), roti, da);
+      if (NonRigidMember::get_is_setup(d)) {
+        NonRigidMember(d).add_to_internal_derivatives(dv, da);
+      }
     }
   }
   const ParticleIndexes &rbbis = rb.get_body_member_particle_indexes();
   for (unsigned int i = 0; i < rbbis.size(); ++i) {
-    RigidMember d(rb.get_model(), rbbis[i]);
+    RigidBodyMember d(rb.get_model(), rbbis[i]);
+    bool is_nonrigid = NonRigidMember::get_is_setup(d);
     const algebra::Vector3D &deriv = d.get_derivatives();
     if (deriv.get_squared_magnitude() > 0) {
       algebra::Vector3D dv = rot * deriv;
       rb.add_to_derivatives(dv, deriv, d.get_internal_coordinates(), roti, da);
+      if (is_nonrigid) {
+        NonRigidMember(d).add_to_internal_derivatives(dv, da);
+      }
+    }
+
+    algebra::Rotation3D rot_memloc_to_loc = d.get_internal_transformation().get_rotation();
+    algebra::Vector3D mtorque = RigidBody(d).get_torque();
+    if (mtorque.get_squared_magnitude() > 0) {
+      rb.add_to_torque(rot_memloc_to_loc * mtorque, da);
+    }
+
+    algebra::Vector4D mderiv = RigidBody(d).get_rotational_derivatives();
+    if (mderiv.get_squared_magnitude() > 0) {
+      rb.add_to_rotational_derivatives(mderiv, rot_memloc_to_loc, roti, da);
+      if (is_nonrigid) {
+        NonRigidMember(d).add_to_internal_rotational_derivatives(
+          mderiv, rot_memloc_to_loc, roti, da);
+      }
     }
   }
-  // ignoring torques on rigid members
+
   IMP_LOG_TERSE("Rigid body derivative is "
                 << m->get_particle(pi)->get_derivative(
                        internal::rigid_body_data().quaternion_[0]) << " "
@@ -221,18 +243,22 @@ void AccumulateRigidBodyDerivatives::apply_index(
         rb.get_reference_frame().get_transformation_to().get_rotation();
     // IMP_LOG_TERSE( "Accumulating rigid body derivatives" << std::endl);
     algebra::Vector3D v(0, 0, 0);
-    algebra::VectorD<4> q(0, 0, 0, 0);
+    Eigen::Vector4d q = Eigen::Vector4d::Zero();
     for (unsigned int i = 0; i < rb.get_number_of_members(); ++i) {
-      RigidMember d = rb.get_member(i);
+      RigidBodyMember d = rb.get_member(i);
       algebra::Vector3D dv = d.get_derivatives();
       v += dv;
       // IMP_LOG_TERSE( "Adding " << dv << " to derivative" << std::endl);
-      for (unsigned int j = 0; j < 4; ++j) {
-        algebra::Vector3D v =
-            rot.get_derivative(d.get_internal_coordinates(), j);
-        /*IMP_LOG_VERBOSE( "Adding " << dv*v << " to quaternion deriv " << j
-          << std::endl);*/
-        q[j] += dv * v;
+      q += rot.get_gradient(Eigen::Vector3d(
+        d.get_internal_coordinates().get_data())).transpose() *
+        Eigen::Vector3d(dv.get_data());
+
+      if (RigidBody::get_is_setup(d)) {
+        algebra::Rotation3D mrot = RigidBodyMember(d).get_internal_transformation().get_rotation();
+        Eigen::Vector4d mq(RigidBody(d).get_rotational_derivatives().get_data());
+        Eigen::MatrixXd dq =
+          algebra::get_gradient_of_composed_with_respect_to_first(rot, mrot).transpose();
+        q += dq * mq;
       }
     }
     for (unsigned int j = 0; j < 4; ++j) {
@@ -777,15 +803,15 @@ void RigidBody::set_coordinates_are_optimized(bool tf) {
   }
 }
 
-RigidMember RigidBody::get_member(unsigned int i) const {
+RigidBodyMember RigidBody::get_member(unsigned int i) const {
   IMP_USAGE_CHECK(i < get_number_of_members(),
                   "Out of range member requested: " << i << " of "
                                                     << get_number_of_members());
   unsigned int sz = get_member_particle_indexes().size();
   if (i < sz) {
-    return RigidMember(get_model(), get_member_particle_indexes()[i]);
+    return RigidBodyMember(get_model(), get_member_particle_indexes()[i]);
   } else {
-    return RigidMember(get_model(), get_body_member_particle_indexes()[i - sz]);
+    return RigidBodyMember(get_model(), get_body_member_particle_indexes()[i - sz]);
   }
 }
 

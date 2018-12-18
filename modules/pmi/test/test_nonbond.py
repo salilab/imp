@@ -12,7 +12,8 @@ class Tests(IMP.test.TestCase):
         fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
 
         m = IMP.Model()
-        r = IMP.pmi.representation.Representation(m)
+        with IMP.allow_deprecated():
+            r = IMP.pmi.representation.Representation(m)
 
         r.create_component("A", color=0.)
         r.add_component_sequence("A", fastafile, id=fastids[0])

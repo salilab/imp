@@ -398,6 +398,11 @@ class ReplicaExchange0(object):
         output = IMP.pmi.output.Output(atomistic=self.vars["atomistic"])
         low_temp_stat_file = globaldir + \
             self.vars["stat_file_name_suffix"] + "." + str(myindex) + ".out"
+
+        # Ensure model is updated before saving init files
+        if not self.test_mode:
+            self.model.update()
+
         if not self.test_mode:
             if self.output_objects is not None:
                 output.init_stat2(low_temp_stat_file,
@@ -526,6 +531,10 @@ class ReplicaExchange0(object):
                 score_perc=mpivs.get_percentile("score")
                 save_frame=(score_perc*100.0<=75.0)
 
+            # Ensure model is updated before saving output files
+            if save_frame or not self.test_mode:
+                self.model.update()
+
             if save_frame:
                 print("--- frame %s score %s " % (str(i), str(score)))
 
@@ -548,9 +557,10 @@ class ReplicaExchange0(object):
                 output.write_stat2(replica_stat_file)
             if self.vars["replica_exchange_swap"]:
                 rex.swap_temp(i, score)
-        if self.representation:
-            for p, state in self.representation._protocol_output:
-                p.add_replica_exchange(state, self)
+        for p, state in IMP.pmi.tools._all_protocol_outputs(
+                            [self.representation],
+                            self.root_hier if self.pmi2 else None):
+            p.add_replica_exchange(state, self)
 
         if not self.test_mode:
             print("closing production rmf files")
@@ -567,41 +577,46 @@ class BuildSystem(object):
     as a dictionary with key = (molecule name), value = IMP.pmi.topology.Molecule
     Quick multi-state system:
     @code{.python}
-    mdl = IMP.Model()
+    model = IMP.Model()
     reader1 = IMP.pmi.topology.TopologyReader(tfile1)
     reader2 = IMP.pmi.topology.TopologyReader(tfile2)
-    bs = IMP.pmi.macros.BuildSystem(mdl)
+    bs = IMP.pmi.macros.BuildSystem(model)
     bs.add_state(reader1)
     bs.add_state(reader2)
     bs.execute_macro() # build everything including degrees of freedom
     IMP.atom.show_molecular_hierarchy(bs.get_hierarchy())
     ### now you have a two state system, you add restraints etc
     @endcode
-    \note The "domain name" entry of the topology reader is not used.
+    @note The "domain name" entry of the topology reader is not used.
     All molecules are set up by the component name, but split into rigid bodies
     as requested.
     """
     def __init__(self,
-                 mdl,
+                 model,
                  sequence_connectivity_scale=4.0,
                  force_create_gmm_files=False,
                  resolutions=[1,10]):
         """Constructor
-        @param mdl An IMP Model
+        @param model An IMP Model
         @param sequence_connectivity_scale For scaling the connectivity restraint
         @param force_create_gmm_files If True, will sample and create GMMs
-                  no matter what. If False, will only only sample if the
+                  no matter what. If False, will only sample if the
                   files don't exist. If number of Gaussians is zero, won't
                   do anything.
         @param resolutions The resolutions to build for structured regions
         """
-        self.mdl = mdl
-        self.system = IMP.pmi.topology.System(self.mdl)
+        self.model = model
+        self.system = IMP.pmi.topology.System(self.model)
         self._readers = []    # the TopologyReaders (one per state)
         self._domain_res = [] # TempResidues for each domain key=unique name, value=(atomic_res,non_atomic_res).
         self._domains = []    # key = domain unique name, value = Component
         self.force_create_gmm_files = force_create_gmm_files
         self.resolutions = resolutions
+
+    @property
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
 
     def add_state(self,
                   reader,
@@ -732,7 +747,7 @@ class BuildSystem(object):
         self.root_hier = self.system.build()
 
         print("BuildSystem.execute_macro: setting up degrees of freedom")
-        self.dof = IMP.pmi.dof.DegreesOfFreedom(self.mdl)
+        self.dof = IMP.pmi.dof.DegreesOfFreedom(self.model)
         for nstate,reader in enumerate(self._readers):
             rbs = reader.get_rigid_bodies()
             srbs = reader.get_super_rigid_bodies()
@@ -794,7 +809,8 @@ creating super rigid body with max_trans %s max_rot %s " \
                 self.dof.create_main_chain_mover(all_res)
         return self.root_hier,self.dof
 
-@IMP.deprecated_object("2.5", "Use BuildSystem instead")
+@IMP.pmi.deprecated_pmi1_object("2.5",
+                                "use IMP.pmi.macros.BuildSystem instead")
 class BuildModel(object):
     """A macro to build a Representation based on a Topology and lists of movers
     DEPRECATED - Use BuildSystem instead.
@@ -826,12 +842,12 @@ class BuildModel(object):
            @param add_each_domain_as_rigid_body That way you don't have to
                   put all of them in the list
            @param force_create_gmm_files If True, will sample and create GMMs
-                  no matter what. If False, will only only sample if the
+                  no matter what. If False, will only sample if the
                   files don't exist. If number of Gaussians is zero, won't
                   do anything.
         """
-        self.m = model
-        self.simo = IMP.pmi.representation.Representation(self.m,
+        self.model = model
+        self.simo = IMP.pmi.representation.Representation(self.model,
                                                           upperharmonic=True,
                                                           disorderedlength=False)
 
@@ -929,6 +945,11 @@ class BuildModel(object):
 
         self.simo.set_floppy_bodies()
         self.simo.setup_bonds()
+
+    @property
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
+    def m(self):
+        return self.model
 
     def get_representation(self):
         '''Return the Representation object'''
@@ -1406,90 +1427,12 @@ class BuildModel1(object):
     def save_rmf(self,rmfname):
 
         o=IMP.pmi.output.Output()
+        self.simo.model.update()
         o.init_rmf(rmfname,[self.simo.prot])
         o.write_rmf(rmfname)
         o.close_rmf(rmfname)
 # -----------------------------------------------------------------------
 
-@IMP.deprecated_object("2.5", "Use BuildSystem instead")
-def BuildModel0(
-    m,
-    data,
-    resolutions=[1,
-                 10],
-    missing_bead_size=20,
-        residue_per_gaussian=None):
-    '''
-    Construct a component for each subunit (no splitting, nothing fancy).
-    You can pass the resolutions and the bead size for the missing residue regions.
-    To use this macro, you must provide the following data structure:
-    Component  pdbfile    chainid  rgb color     fastafile     sequence id
-                                                                      in fastafile
-data = [("Rpb1",     pdbfile,   "A",     0.00000000,  (fastafile,    0)),
-      ("Rpb2",     pdbfile,   "B",     0.09090909,  (fastafile,    1)),
-      ("Rpb3",     pdbfile,   "C",     0.18181818,  (fastafile,    2)),
-      ("Rpb4",     pdbfile,   "D",     0.27272727,  (fastafile,    3)),
-      ("Rpb5",     pdbfile,   "E",     0.36363636,  (fastafile,    4)),
-      ("Rpb6",     pdbfile,   "F",     0.45454545,  (fastafile,    5)),
-      ("Rpb7",     pdbfile,   "G",     0.54545455,  (fastafile,    6)),
-      ("Rpb8",     pdbfile,   "H",     0.63636364,  (fastafile,    7)),
-      ("Rpb9",     pdbfile,   "I",     0.72727273,  (fastafile,    8)),
-      ("Rpb10",    pdbfile,   "L",     0.81818182,  (fastafile,    9)),
-      ("Rpb11",    pdbfile,   "J",     0.90909091,  (fastafile,   10)),
-      ("Rpb12",    pdbfile,   "K",     1.00000000,  (fastafile,   11))]
-    '''
-
-    r = IMP.pmi.representation.Representation(m)
-
-    # the dictionary for the hierarchies,
-    hierarchies = {}
-
-    for d in data:
-        # retrieve the information from the data structure
-        component_name = d[0]
-        pdb_file = d[1]
-        chain_id = d[2]
-        color_id = d[3]
-        fasta_file = d[4][0]
-        # this function
-        fastids = IMP.pmi.tools.get_ids_from_fasta_file(fasta_file)
-        fasta_file_id = d[4][1]
-        # avoid to add a component with the same name
-        r.create_component(component_name,
-                           color=color_id)
-
-        r.add_component_sequence(component_name,
-                                 fasta_file,
-                                 id=fastids[fasta_file_id])
-
-        hierarchies = r.autobuild_model(component_name,
-                                        pdb_file,
-                                        chain_id,
-                                        resolutions=resolutions,
-                                        missingbeadsize=missing_bead_size)
-
-        r.show_component_table(component_name)
-
-        r.set_rigid_bodies([component_name])
-
-        r.set_chain_of_super_rigid_bodies(
-            hierarchies,
-            min_length=2,
-            max_length=2)
-
-        r.setup_component_sequence_connectivity(component_name, resolution=1)
-        r.setup_component_geometry(component_name)
-
-    r.setup_bonds()
-    # put it at the end of rigid bodies
-    r.set_floppy_bodies()
-
-    # set current coordinates as reference for RMSD calculation
-    r.set_current_coordinates_as_reference_for_rmsd("Reference")
-
-    return r
-
-# ----------------------------------------------------------------------
 
 @IMP.deprecated_object("2.8", "Use AnalysisReplicaExchange instead")
 class AnalysisReplicaExchange0(object):
@@ -1907,6 +1850,7 @@ class AnalysisReplicaExchange0(object):
                             IMP.core.transform(rb,transformation)
 
                     o=IMP.pmi.output.Output()
+                    self.model.update()
                     out_pdb_fn=os.path.join(dircluster,str(cnt)+"."+str(self.rank)+".pdb")
                     out_rmf_fn=os.path.join(dircluster,str(cnt)+"."+str(self.rank)+".rmf3")
                     o.init_pdb(out_pdb_fn,prot)
@@ -2112,6 +2056,7 @@ class AnalysisReplicaExchange0(object):
 
                     # pdb writing should be optimized!
                     o = IMP.pmi.output.Output()
+                    self.model.update()
                     o.init_pdb(dircluster + str(k) + ".pdb", prot)
                     o.write_pdb(dircluster + str(k) + ".pdb")
 
@@ -2396,6 +2341,7 @@ class AnalysisReplicaExchange(object):
             rmf_name=prefix+'/'+str(cluster.cluster_id)+".rmf3"
 
         d1=self.stath1[cluster.members[0]]
+        self.model.update()
         o.init_rmf(rmf_name, [self.stath1])
         for n1 in cluster.members:
             d1=self.stath1[n1]

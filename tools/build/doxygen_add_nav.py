@@ -125,6 +125,9 @@ class Page(object):
         if sp[:2] == ['modules', 'pmi']:
             root = 'https://github.com/salilab/pmi/blob/develop/'
             del sp[:2]
+        elif sp[:2] == ['modules', 'pmi1']:
+            root = 'https://github.com/salilab/pmi/blob/legacy-pmi1/'
+            del sp[:2]
         elif sp[:2] == ['modules', 'npctransport']:
             root = 'https://github.com/salilab/npctransport/blob/develop/'
             del sp[:2]

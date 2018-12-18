@@ -1,12 +1,24 @@
 Stage 3 - Sampling {#rnapolii_3}
 ==================
 
-With the system representation built and data restraints entered, the system is now ready to sample configurations.  A replica exchange run can be set up using the [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0) macro:
+With the system representation built and data restraints entered, the system is now ready to sample configurations. First, sampling parameters are set:
+
+\code{.py}
+#--------------------------
+# Set MC Sampling Parameters
+#--------------------------
+num_frames = 20000
+num_mc_steps = 10
+\endcode
+
+MC sampling parameters define the number of frames (model structures) which will be output during sampling. `num_mc_steps` defines the number of Monte Carlo steps between output frames.  This setup would therefore encompass 200000 MC steps in total. 
+
+Next, a replica exchange run can be set up using the [ReplicaExchange0](@ref IMP::pmi::macros::ReplicaExchange0) macro:
 
 \code{.py}
 mc1=IMP.pmi.macros.ReplicaExchange0(m,
-                                    representation,
-                                    monte_carlo_sample_objects=sampleobjects,
+                                    root_hier=root_hier,
+                                    monte_carlo_sample_objects=dof.get_movers(),
                                     output_objects=outputobjects,
                                     crosslink_restraints=[xl1,xl2],
                                     monte_carlo_temperature=1.0,

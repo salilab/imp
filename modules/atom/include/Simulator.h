@@ -79,6 +79,15 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   double get_temperature() const { return temperature_; }
 
   //! Set the temperature of the simulator to d in kelvin units
+  /**
+     Sets the temperature of the simulator. Note that some simulators
+     (e.g. BrownianDynamics) may rely on other temeprature-dependent
+     constants (e.g. diffusion coefficients via Diffusion decorator)
+     that will need to be updated independently to reflect the new
+     temeprature.
+
+     @param d temeprature in K
+   */
   void set_temperature(double d) { temperature_ = d; }
 
   /** \name Time steps

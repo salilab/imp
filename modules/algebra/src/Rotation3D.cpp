@@ -6,6 +6,7 @@
  */
 
 #include "IMP/algebra/Rotation3D.h"
+#include <IMP/algebra/internal/quaternion_derivatives.h>
 #include "IMP/algebra/VectorD.h"
 #include "IMP/algebra/vector_generators.h"
 #include "IMP/algebra/utility.h"
@@ -104,82 +105,45 @@ Rotation3D get_rotation_from_matrix(double m11, double m12, double m13,
   return ret;
 }
 
-const Vector3D Rotation3D::get_derivative(const Vector3D &o,
-                                          unsigned int i) const {
-  /* The computation was derived in maple. Source code is probably in
-     modules/algebra/tools
-  */
-  double t4 = v_[0] * o[0] - v_[3] * o[1] + v_[2] * o[2];
-  double t5 = get_squared(v_[0]);
-  double t6 = get_squared(v_[1]);
-  double t7 = get_squared(v_[2]);
-  double t8 = get_squared(v_[3]);
-  double t9 = t5 + t6 + t7 + t8;
-  double t10 = 1.0 / t9;
-  double t11 = 2 * t4 * t10;
-  double t14 = v_[1] * v_[2];
-  double t15 = v_[0] * v_[3];
+Vector3D Rotation3D::get_derivative(const Vector3D &v,
+                                    unsigned int i,
+                                    bool projected) const {
+  IMP_USAGE_CHECK(i < 4, "Invalid derivative component.");
+  Eigen::Vector4d q(v_.get_data());
+  Eigen::Vector3d V(v.get_data());
+  Eigen::Matrix<double,3,4> dRv_dq = internal::get_gradient_of_rotated(
+    q, V, projected);
+  Vector3D dRv_dqi;
+  Eigen::VectorXd::Map(&dRv_dqi[0], 3) = dRv_dq.col(i);
+  return dRv_dqi;
+}
 
-  double t19 = v_[1] * v_[3];
-  double t20 = v_[0] * v_[2];
-  double t25 = get_squared(t9);
-  double t26 = 1.0 / t25;
+Eigen::MatrixXd Rotation3D::get_gradient(
+    const Eigen::Vector3d &v, bool projected) const {
+  Eigen::Vector4d q(v_.get_data());
+  return internal::get_gradient_of_rotated(q, v, projected);
+}
 
-  double t27 = ((t5 + t6 - t7 - t8) * o[0] + 2 * (t14 - t15) * o[1] +
-                2 * (t19 + t20) * o[2]) *
-               t26;
+Eigen::MatrixXd get_gradient_of_composed_with_respect_to_first(
+    const Rotation3D &q, const Rotation3D &p, bool projected) {
+  Eigen::Vector4d Q(q.get_quaternion().get_data());
+  Eigen::Vector4d P(p.get_quaternion().get_data());
+  if (Q[0] * P[0] - Q.tail(3).dot(P.tail(3)) < 0) {
+    // account for compose() canonicalizing rotation
+    P *= -1;
+  }
+  return internal::get_gradient_of_composed_wrt_first(Q, P, projected);
+}
 
-  double t34 = v_[3] * o[0] + v_[0] * o[1] - v_[1] * o[2];
-  double t35 = 2 * t34 * t10;
-  double t41 = v_[2] * v_[3];
-  double t42 = v_[0] * v_[1];
-
-  double t47 = (2 * (t14 + t15) * o[0] + (t5 - t6 + t7 - t8) * o[1] +
-                2 * (t41 - t42) * o[2]) *
-               t26;
-
-  double t54 = -v_[2] * o[0] + v_[1] * o[1] + v_[0] * o[2];
-  double t55 = 2 * t54 * t10;
-
-  double t65 = (2 * (t19 - t20) * o[0] + 2 * (t41 + t42) * o[1] +
-                (t5 - t6 - t7 + t8) * o[2]) *
-               t26;
-
-  double t73 = 2 * (v_[1] * o[0] + v_[2] * o[1] + v_[3] * o[2]) * t10;
-
-  /*all[1, 1] = t11 - 2*t27*v_[0];
-      all[1, 2] = t35 - 2*t47*v_[0];
-      all[1, 3] = t55 - 2*t65*v_[0];
-
-      all[2, 1] = t73 - 2*t27*v_[1];
-      all[2, 2] = -2*t54 t10 - 2*t47*v_[1];
-      all[2, 3] = t35 - 2*t65*v_[1];
-
-      all[3, 1] = t55 - 2*t27*v_[2];
-      all[3, 2] = t73 - 2*t47*v_[2];
-      all[3, 3] = -2*t4 t10 - 2*t65*v_[2];
-
-      all[4, 1] = -2*t34 t10 - 2*t27*v_[3];
-      all[4, 2] = t11 - 2*t47*v_[3];
-      all[4, 3] = t73 - 2*t65*v_[3];
-    */
-
-  switch (i) {
-    case 0:
-      return Vector3D(t11 - 2 * t27 * v_[0], t35 - 2 * t47 * v_[0],
-                      t55 - 2 * t65 * v_[0]);
-    case 1:
-      return Vector3D(t73 - 2 * t27 * v_[1], -2 * t54 * t10 - 2 * t47 * v_[1],
-                      t35 - 2 * t65 * v_[1]);
-    case 2:
-      return Vector3D(t55 - 2 * t27 * v_[2], t73 - 2 * t47 * v_[2],
-                      -2 * t4 * t10 - 2 * t65 * v_[2]);
-    case 3:
-      return Vector3D(-2 * t34 * t10 - 2 * t27 * v_[3], t11 - 2 * t47 * v_[3],
-                      t73 - 2 * t65 * v_[3]);
-    default:
-      IMP_THROW("Invalid derivative component", IndexException);
-  };
+Eigen::MatrixXd get_gradient_of_composed_with_respect_to_second(
+    const Rotation3D &q, const Rotation3D &p, bool projected) {
+  Eigen::Vector4d Q(q.get_quaternion().get_data());
+  Eigen::Vector4d P(p.get_quaternion().get_data());
+  if (Q[0] * P[0] - Q.tail(3).dot(P.tail(3)) < 0) {
+    // account for compose() canonicalizing rotation
+    Q *= -1;
+  }
+  return internal::get_gradient_of_composed_wrt_second(Q, P, projected);
 }
 
 Rotation3D get_random_rotation_3d() {

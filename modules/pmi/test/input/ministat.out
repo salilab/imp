@@ -1,0 +1,4 @@
+{0: 'SimplifiedModel_Total_Score_None', 1: 'ISDCrossLinkMS_Distance_interrb', 2: 'rmf_file', 3: 'rmf_frame_index', 'STAT2HEADER': 'STAT2HEADER'}
+{0: 10.0, 1: 42.0, 2: 'input/mini1.rmf', 3: 0}
+{0: 20.0, 1: 44.0, 2: 'input/mini2.rmf', 3: 0}
+{0: 999.0, 1: 45.0, 2: 'input/mini3.rmf', 3: 0}

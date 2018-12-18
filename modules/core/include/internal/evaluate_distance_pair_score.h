@@ -20,6 +20,23 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
+/**
+   Compute score and derivatives (if d is not null) using unary function
+   f on shifterd distance sd(|delta|)
+
+   Template:
+   SD - function that shifts (or transforms) distance
+   D - vector dimension
+   UF - a class with kernel::UnaryFunction like interface
+
+   @param delta The delta vector from which to compute the raw distance
+   @param f     Pointer to an an unary function for computing the score and the
+                derivatives vector
+   @param d     Pointer to a D-dimensional output vector for score derivatives
+                (if d is null, ignore)
+   @param sd    A function that transforms/shifts d
+   @param deriv_multiplier Scaling factor for derivative vector
+ */
 template <class SD, int D, class UF>
 inline double compute_distance_pair_score(const algebra::VectorD<D> &delta,
                                           const UF *f, algebra::VectorD<D> *d,

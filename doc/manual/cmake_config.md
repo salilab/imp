@@ -5,7 +5,7 @@ CMake configuration options {#cmake_config}
 
 # Building with CMake {#cmake_building}
 
-We use [CMake](http://www.cmake.org) to configure the %IMP build when
+We use [CMake](https://cmake.org) to configure the %IMP build when
 [building from source](@ref installation_compilation).
 
 There are two different ways to configure with `cmake`; one is to run `cmake`
@@ -13,10 +13,6 @@ in a fresh directory passing some options on the command line, and the other
 is to run `ccmake` and use its editor to change options. For both, assume you
 are in a directory called `debug` and the %IMP source is in a directory at
 `../imp`. We are using the default of makefiles for the actual building.
-
-Note that we need CMake 2.8 or later; on RHEL/CentOS systems this is provided
-by the `cmake28` package in EPEL (and type `cmake28` rather than `cmake` on
-the command line).
 
 # Configuring with cmake command line options {#cmake_cmdline}
 
@@ -56,7 +52,8 @@ Various aspects of %IMP build behavior can be controlled via variables. These ca
 - `IMP_PER_CPP_COMPILATION`: A colon-separated list of modules to build one .cpp at a time.
 - `CMAKE_BUILD_TYPE`: one of `Debug` or `Release`.
 
-There also are a [variety of standard cmake options](http://www.cmake.org/Wiki/CMake_Useful_Variables) which control the build. For example:
+There also are a [variety of standard cmake options](https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/Useful-Variables)
+which control the build. For example:
 - `CMAKE_INCLUDE_PATH` and `CMAKE_LIBRARY_PATH` control the paths CMake searches
   in to locate %IMP prerequisite libraries. If your libraries are installed in
   non-standard locations, you can set these variables to help CMake find them.
@@ -67,6 +64,41 @@ There also are a [variety of standard cmake options](http://www.cmake.org/Wiki/C
 
 - `CMAKE_INSTALL_PREFIX` should be set if you want to install %IMP in a
   non-standard location.
+
+# Workarounds for common CMake issues {#cmake_issues}
+
+## Python binary/header mismatch {#cmake_python}
+
+In order to build %IMP Python extensions, CMake needs to find the Python header
+and library files that match the `python` binary. If you have multiple versions
+of Python installed (for example on a Mac with [Homebrew](https://brew.sh/)),
+it might find headers for one version and the binary for another. This can
+be worked around by explicitly telling CMake where your Python library and
+headers are by setting the `PYTHON_LIBRARY` and `PYTHON_INCLUDE_DIR` CMake
+variables.
+
+For example, on a Mac with Homebrew, where `python` is Homebrew's
+`/usr/local/bin/python`, CMake will often find Apple's Python headers. This
+can be resolved by telling CMake where the Homebrew Python headers and library
+are, by addinng to your CMake invocation something like
+`-DPYTHON_LIBRARY=/usr/local/opt/python@2/Frameworks/Python.framework/Versions/Current/lib/libpython2.7.dylib -DPYTHON_INCLUDE_DIR=/usr/local/opt/python@2/Frameworks/Python.framework/Versions/Current/Headers`
+
+## CMake reports that it found a dependency but then reports failed {#cmake_compile}
+
+For each dependency CMake will first try to find the header and library
+files for that dependency, reporting success if it finds them. Next, it will
+often try to build a small C or C++ test program that uses those headers
+and libraries. If this fails the dependency cannot be used (and CMake will,
+somewhat confusing, report that the dependency was first found and then not
+found). To fix issues like this, check the CMake error log in
+`CMakeFiles/CMakeError.log` to see what failed. In some cases this can be
+fixed by modifying the flags passed to the C or C++ compiler. For example,
+recent versions of [Protobuf](https://developers.google.com/protocol-buffers/)
+fail on some systems because they require C++11 support, and this can be
+fixed by adding to your CMake invocation
+`-DCMAKE_CXX_FLAGS="-std=c++11"`
+
+## Wrong version of helper binaries found {#cmake_path}
 
 Note also that CMake searches in the system path (`PATH` environment variable)
 for command line tools such as `python` and `swig`. Thus, if you have multiple

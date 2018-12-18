@@ -16,7 +16,7 @@ class Tests(IMP.test.TestCase):
         r = self.run_python_module("IMP.cnmultifit.param", [])
         out, err = r.communicate()
         self.assertEqual(out, "")
-        self.assertIn("incorrect number of arguments", err)
+        self.assertRegex(err, "(too few arguments|arguments are required)")
         self.assertNotEqual(r.returncode, 0)
 
     def test_param_run(self):

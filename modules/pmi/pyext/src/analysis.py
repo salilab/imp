@@ -1592,7 +1592,7 @@ def get_particles_at_resolution_one(prot):
     No Representation is needed. This is mainly used when the hierarchy
     is read from an RMF file.
     @return a dictionary of component names and their particles
-    \note If the root node is named "System" or is a "State", do proper selection.
+    @note If the root node is named "System" or is a "State", do proper selection.
     """
     particle_dict = {}
 
@@ -1623,7 +1623,7 @@ def get_particles_at_resolution_ten(prot):
     No Representation is needed.
     This is mainly used when the hierarchy is read from an RMF file.
     @return a dictionary of component names and their particles
-    \note If the root node is named "System" or is a "State", do proper selection.
+    @note If the root node is named "System" or is a "State", do proper selection.
     """
     particle_dict = {}
     # attempt to give good results for PMI2

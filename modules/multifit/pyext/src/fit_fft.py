@@ -5,7 +5,7 @@ import math
 import IMP.multifit
 import IMP.atom
 import IMP.em
-from IMP import OptionParser
+from IMP import ArgumentParser
 import os
 import sys
 
@@ -99,36 +99,29 @@ def do_work(f):
 
 
 def parse_args():
-    usage = """%prog [options] <assembly input>
+    desc = """Fit subunits into a density map with FFT."""
+    p = ArgumentParser(description=desc)
+    p.add_argument("-c", "--cpu", dest="cpus", type=int, default=1,
+                   help="number of cpus to use (default 1)")
+    p.add_argument("-a", "--angle", dest="angle", type=float, default=30,
+                   help="angle delta (degrees) for FFT rotational "
+                        "search (default 30)")
 
-Fit subunits into a density map with FFT."""
-    parser = OptionParser(usage)
-    parser.add_option("-c", "--cpu", dest="cpus", type="int", default=1,
-                      help="number of cpus to use (default 1)")
-    parser.add_option("-a", "--angle", dest="angle", type="float",
-                      default=30,
-                      help="angle delta (degrees) for FFT rotational "
-                           "search (default 30)")
+    p.add_argument("-n", "--num", dest="num", type=int,
+                   default=100, help="Number of fits to report (default 100)")
 
-    parser.add_option("-n", "--num", dest="num", type="int",
-                      default=100,
-                      help="Number of fits to report"
-                           "(default 100)")
+    p.add_argument("-v", "--angle_voxel", dest="angle_voxel", type=int,
+                   default=10,
+                   help="Number of angles to keep per voxel (default 10)")
 
-    parser.add_option("-v", "--angle_voxel", dest="angle_voxel", type="int",
-                      default=10,
-                      help="Number of angles to keep per voxel"
-                           "(default 10)")
+    p.add_argument("assembly_file", help="assembly file name")
 
-    # parser.add_option("-n", "--num", dest="num", type="int",
+    # p.add_argument("-n", "--num", dest="num", type="int",
     #                  default=100,
     #                  help="Number of fits to report"
     #                      "(default 100)")
 
-    options, args = parser.parse_args()
-    if len(args) != 1:
-        parser.error("incorrect number of arguments")
-    return options, args
+    return p.parse_args()
 
 
 def run(asmb_fn, options):
@@ -173,9 +166,8 @@ Running on a single processor.""" % multiproc_exception, file=sys.stderr)
 
 
 def main():
-    options, args = parse_args()
-    asmb_input = args[0]
-    run(asmb_input, options)
+    args = parse_args()
+    run(args.assembly_file, args)
 
 if __name__ == "__main__":
     main()

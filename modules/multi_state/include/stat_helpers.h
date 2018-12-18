@@ -10,6 +10,7 @@
 #ifndef IMPMULTI_STATE_STAT_HELPERS_H
 #define IMPMULTI_STATE_STAT_HELPERS_H
 
+#include <IMP/multi_state/multi_state_config.h>
 #include <vector>
 #include <utility>
 

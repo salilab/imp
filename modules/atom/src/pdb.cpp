@@ -80,38 +80,7 @@ std::string nicename(std::string name) {
 
 PDBSelector::~PDBSelector() {}
 
-struct IndexCompare {
-  bool operator()(Particle* a, Particle* b) const {
-    return Residue(a).get_index() < Residue(b).get_index();
-  }
-};
-
-struct TypeCompare {
-  bool operator()(Particle* a, Particle* b) const {
-    return Atom(a).get_atom_type() < Atom(b).get_atom_type();
-  }
-};
-
 namespace {
-
-void sort_residues(Chain c) {
-  Hierarchies dchildren = c.get_children();
-  ParticlesTemp children(dchildren.begin(), dchildren.end());
-  std::sort(children.begin(), children.end(), IndexCompare());
-  c.clear_children();
-  for (unsigned int i = 0; i < children.size(); ++i) {
-    c.add_child(Hierarchy(children[i]));
-  }
-}
-
-void canonicalize(Hierarchy h) {
-  for (unsigned int i = 0; i < h.get_number_of_children(); ++i) {
-    canonicalize(h.get_child(i));
-  }
-  if (Chain::get_is_setup(h)) {
-    sort_residues(Chain(h));
-  }
-}
 
 Element get_element_from_pdb_line(const std::string& pdb_line) {
   // 1. determine element from element column
@@ -167,128 +136,30 @@ Element get_element_from_pdb_line(const std::string& pdb_line) {
   return UNKNOWN_ELEMENT;
 }
 
-IntKey get_pdb_index_key() {
-  static IntKey pdb_index_key("pdb index");
-  return pdb_index_key;
-}
-
 Particle* atom_particle(Model* m, const std::string& pdb_line) {
-  AtomType atom_name;
-  std::string string_name = internal::atom_type(pdb_line);
   // determine element
   Element e = get_element_from_pdb_line(pdb_line);
-  // determine AtomType
-  if (internal::is_HETATM_rec(pdb_line)) {
-    string_name = "HET:" + string_name;
-    if (!get_atom_type_exists(string_name)) {
-      atom_name = add_atom_type(string_name, e);
-    } else {
-      atom_name = AtomType(string_name);
-    }
-  } else {  // ATOM line
-    boost::trim(string_name);
-    if (string_name.empty()) {
-      string_name = "UNK";
-    }
-    if (!AtomType::get_key_exists(string_name)) {
-      IMP_LOG_VERBOSE("ATOM record type not found: \""
-                      << string_name << "\" from " << pdb_line << std::endl);
-      atom_name = add_atom_type(string_name, e);
-    } else {
-      atom_name = AtomType(string_name);
-    }
-  }
-  // new particle
-  Particle* p = new Particle(m);
-  int index = internal::atom_number(pdb_line);
-  p->add_attribute(get_pdb_index_key(), index);
-  algebra::Vector3D v(internal::atom_xcoord(pdb_line),
-                      internal::atom_ycoord(pdb_line),
-                      internal::atom_zcoord(pdb_line));
-  // atom decorator
-  Atom d = Atom::setup_particle(p, atom_name);
-  int residue_index = internal::atom_residue_number(pdb_line);
-  std::ostringstream oss;
-  oss << "Atom " + atom_name.get_string() << " of residue " << residue_index;
-  p->set_name(oss.str());
-  core::XYZ::setup_particle(p, v).set_coordinates_are_optimized(true);
-  d.set_input_index(internal::atom_number(pdb_line));
-  d.set_occupancy(internal::atom_occupancy(pdb_line));
-  d.set_temperature_factor(internal::atom_temp_factor(pdb_line));
-  d.set_element(e);
-  // check if the element matches
-  Element e2 = get_element_for_atom_type(atom_name);
-  if (e != e2) {
-    IMP_LOG_VERBOSE(
-        "AtomType element and PDB line elements don't match. AtomType "
-        << e2 << " determined from PDB line " << e << " line " << pdb_line
-        << std::endl);
-  }
-  return p;
+  return internal::atom_particle(
+                     m, internal::atom_type(pdb_line), e,
+                     internal::is_HETATM_rec(pdb_line),
+                     internal::atom_number(pdb_line),
+                     internal::atom_residue_number(pdb_line),
+                     internal::atom_xcoord(pdb_line),
+                     internal::atom_ycoord(pdb_line),
+                     internal::atom_zcoord(pdb_line),
+                     internal::atom_occupancy(pdb_line),
+                     internal::atom_temp_factor(pdb_line));
 }
 
 Particle* residue_particle(Model* m, const std::string& pdb_line) {
-  Particle* p = new Particle(m);
-
-  int residue_index = internal::atom_residue_number(pdb_line);
-  char residue_icode = internal::atom_residue_icode(pdb_line);
-  std::string rn = internal::atom_residue_name(pdb_line);
-  boost::trim(rn);
-  if (rn.empty()) {
-    rn = "UNK";
-  }
-  ResidueType residue_name = ResidueType(rn);
-
-  // residue decorator
-  Residue::setup_particle(p, residue_name, residue_index, (int)residue_icode);
-  p->set_name(residue_name.get_string());
-  return p;
-}
-
-Particle* chain_particle(Model* m, char chain_id, std::string filename) {
-  Particle* p = new Particle(m);
-  Chain::setup_particle(p, chain_id);
-  p->set_name(std::string("Chain " + std::string(1, chain_id)));
-  Molecule::setup_particle(p);
-
-  // Set provenance of this chain
-  core::StructureProvenance sp
-          = core::StructureProvenance::setup_particle(new Particle(m),
-                                          filename, std::string(1, chain_id));
-  core::add_provenance(m, p->get_index(), sp);
-
-  return p;
+  return internal::residue_particle(m, internal::atom_residue_number(pdb_line),
+                   internal::atom_residue_icode(pdb_line),
+                   internal::atom_residue_name(pdb_line));
 }
 
 }
 
 namespace {
-
-struct RemoveCHARMMTypeVisitor {
-  StringKey ctk;
-  RemoveCHARMMTypeVisitor() { ctk = CHARMMAtom::get_charmm_type_key(); }
-  bool operator()(Hierarchy h) {
-    if (CHARMMAtom::get_is_setup(h)) {
-      h.get_particle()->remove_attribute(ctk);
-    }
-    return true;
-  }
-};
-
-// Add radii to the newly-created hierarchy from the PDB file
-void add_pdb_radii(Hierarchy d) {
-  Pointer<CHARMMParameters> ff = get_all_atom_CHARMM_parameters();
-  Pointer<CHARMMTopology> top = ff->create_topology(d);
-  top->apply_default_patches();
-  top->add_atom_types(d);
-  ff->add_radii(d);
-
-  // We added CHARMM atom types (above) to determine radii, so remove
-  // them again to avoid pollution of the Particles with unrequested
-  // attributes
-  RemoveCHARMMTypeVisitor visitor;
-  IMP::core::visit_depth_first(d, visitor);
-}
 
 Hierarchies read_pdb(std::istream& in, std::string name, std::string filename,
                      Model* model, PDBSelector* selector,
@@ -359,7 +230,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, std::string filename,
         if (cp == nullptr || chain != curr_chain) {
           curr_chain = chain;
           // create new chain particle
-          cp = chain_particle(model, chain, filename);
+          cp = internal::chain_particle(model, std::string(1, chain), filename);
           chain_name_set = false;
           Hierarchy(root_p).add_child(Chain(cp));
           rp = nullptr;  // make sure we get a new residue
@@ -393,20 +264,7 @@ Hierarchies read_pdb(std::istream& in, std::string name, std::string filename,
     return Hierarchies();
   }
   if (!noradii) {
-    for (unsigned int i = 0; i < ret.size(); ++i) {
-      add_pdb_radii(ret[i]);
-      canonicalize(ret[i]);
-    }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      for (unsigned int i = 0; i < ret.size(); ++i) {
-        if (!ret[i].get_is_valid(true)) {
-          IMP_ERROR("Invalid hierarchy produced ");
-          IMP_ERROR_WRITE(IMP::core::show<Hierarchy>(ret[i], IMP_STREAM));
-          throw InternalException("Bad hierarchy");
-          // should clean up
-        }
-      }
-    }
+    internal::add_pdb_radii(ret);
   }
   return ret;
 }
@@ -417,7 +275,7 @@ void read_pdb(TextInput in, int model, Hierarchy h) {
   atom::Hierarchies atoms = get_by_type(h, ATOM_TYPE);
   boost::unordered_map<core::RigidBody, ParticleIndexes> rigid_bodies;
   for (unsigned int i = 0; i < atoms.size(); ++i) {
-    atoms_map[atoms[i]->get_value(get_pdb_index_key())] = atoms[i];
+    atoms_map[atoms[i]->get_value(internal::get_pdb_index_key())] = atoms[i];
     if (core::RigidMember::get_is_setup(atoms[i])) {
       rigid_bodies[core::RigidMember(atoms[i]).get_rigid_body()]
           .push_back(atoms[i]->get_index());

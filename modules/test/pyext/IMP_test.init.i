@@ -15,8 +15,11 @@ import IMP
 import time
 import types
 import shutil
+import difflib
+import pprint
 from . import _compat_python
 from ._compat_python import unittest2
+from ._compat_python.unittest2.util import safe_repr
 import datetime
 import pickle
 import contextlib
@@ -188,6 +191,12 @@ class TestCase(unittest.TestCase):
        individual test from the commane line) and use IMP::test::main()
        as their main function."""
 
+    # Provide assert(Not)Regex for Python 2 users (assertRegexMatches is
+    # deprecated in Python 3)
+    if not hasattr(unittest.TestCase, 'assertRegex'):
+        assertRegex = unittest.TestCase.assertRegexpMatches
+        assertNotRegex = unittest.TestCase.assertNotRegexpMatches
+
     def __init__(self, *args, **keys):
         unittest.TestCase.__init__(self, *args, **keys)
         self._progname = os.path.abspath(sys.argv[0])
@@ -277,6 +286,78 @@ class TestCase(unittest.TestCase):
                                delta=max(tolerance, abs(derivs[1]) * pct))
         self.assertAlmostEqual(derivs[2], num_derivs[2],
                                delta=max(tolerance, abs(derivs[2]) * pct))
+
+    def assertSequenceAlmostEqual(self, first, second, places=None, msg=None,
+                                  delta=None):
+        """Fail if the difference between any two items in the two sequences
+           are exceed the specified number of places or delta. See
+           `assertAlmostEqual`.
+        """
+        if delta is not None and places is not None:
+            raise TypeError("specify delta or places not both")
+
+        ftype = type(first)
+        ftypename = ftype.__name__
+        stype = type(second)
+        stypename = stype.__name__
+        if ftype != stype:
+            raise self.failureException(
+                'Sequences are of different types: %s != %s' % (
+                    ftypename, stypename))
+
+        try:
+            flen = len(first)
+        except (NotImplementedError, TypeError):
+            raise self.failureException(
+                'First %s has no length' % (ftypename))
+        try:
+            slen = len(second)
+        except (NotImplementedError, TypeError):
+            raise self.failureException(
+                'Second %s has no length' % (stypename))
+
+        if flen != slen:
+            raise self.failureException(
+                'Sequences have non equal lengths: %d != %d' % (flen, slen))
+
+        differing = None
+        for i in range(min(flen, slen)):
+            differing = '%ss differ: %s != %s\n' % (
+                    ftypename.capitalize(), safe_repr(first),
+                    safe_repr(second))
+
+            try:
+                f = first[i]
+            except (TypeError, IndexError, NotImplementedError):
+                differing += ('\nUnable to index element %d of first %s\n' %
+                              (i, ftypename))
+                break
+
+            try:
+                s = second[i]
+            except (TypeError, IndexError, NotImplementedError):
+                differing += ('\nUnable to index element %d of second %s\n' %
+                              (i, stypename))
+                break
+
+            try:
+                self.assertAlmostEqual(
+                    f, s, places=places, msg=msg, delta=delta)
+            except (TypeError, ValueError, NotImplementedError, AssertionError):
+                differing += (
+                    "\nFirst differing element "
+                    "%d:\n%s\n%s\n") % (i, safe_repr(f), safe_repr(s))
+                break
+        else:
+            return
+
+        standardMsg = differing
+        diffMsg = '\n' + '\n'.join(
+            difflib.ndiff(pprint.pformat(first).splitlines(),
+                          pprint.pformat(second).splitlines()))
+        standardMsg = self._truncateMessage(standardMsg, diffMsg)
+        msg = self._formatMessage(msg, standardMsg)
+        raise self.failureException(msg)
 
     def create_point_particle(self, model, x, y, z):
         """Make a particle with optimizable x, y and z attributes, and
@@ -643,6 +724,9 @@ class TestCase(unittest.TestCase):
            a subprocess.Popen-like object containing the child stdin,
            stdout and stderr.
         """
+        def mock_setup_from_argv(*args, **kwargs):
+            # do-nothing replacement for boost command line parser
+            pass
         if type(module) == type(os):
             mod = module
         else:
@@ -653,12 +737,13 @@ class TestCase(unittest.TestCase):
         if type(module) == type(os):
             old_sys_argv = sys.argv
             # boost parser doesn't like being called multiple times per process
-            IMP.OptionParser._use_boost_parser = False
+            old_setup = IMP.setup_from_argv
+            IMP.setup_from_argv = mock_setup_from_argv
             try:
                 sys.argv = [modpath] + args
                 return module.main()
             finally:
-                IMP.OptionParser._use_boost_parser = True
+                IMP.setup_from_argv = old_setup
                 sys.argv = old_sys_argv
         else:
             return _SubprocessWrapper(sys.executable, [modpath] + args)

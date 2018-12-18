@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Patch IMP and RMF SWIG wrappers to search for Python extensions and DLLs
+"""Patch IMP, ihm and RMF SWIG wrappers to search for Python extensions and DLLs
    in Python version-specific directories. These directories are created by
    the .exe Windows installers, and are not in the standard Python search
    path, so need to be added. We need to patch IMP/__init__.py so we add
@@ -12,7 +12,7 @@
    Instead, we look for import lines, and add our code after the first block
    of imports (which import standard Python modules such as 'sys').
    This ensures that the search path is properly set up before we try to
-   import IMP/RMF extensions, but doesn't come before the comment header
+   import IMP/ihm/RMF extensions, but doesn't come before the comment header
    or any __future__ imports (which must come first).
 """
 
@@ -66,12 +66,15 @@ _add_pyext_to_path()
 
 def add_search_path(filename):
     patch = RMF_PATCH if 'RMF' in filename else IMP_PATCH
+    if 'ihm' in filename:
+        # Note that this works because "IMP" and "ihm" are both 3 letters long
+        patch = patch.replace('IMP', 'ihm')
     with open(filename) as fh:
         contents = fh.readlines()
     # An 'import block' is considered to be a set of lines beginning with
-    # 'from' or 'import' statements. Any blank lines or comments are considered
-    # to be part of the block.
-    r = re.compile('(from|import) ')
+    # 'from' or 'import' statements (except 'from .' imports). Any blank
+    # lines or comments are considered to be part of the block.
+    r = re.compile('(from [^.]|import )')
     non_statement = re.compile('(\s*$|\s*#)')
     in_imports = False
     imports_done = False

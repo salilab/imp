@@ -6,14 +6,12 @@ import os
 from math import *
 import re
 
-parser = IMP.OptionParser(usage="""%prog [options] selfile
+p = IMP.ArgumentParser()
+p.add_argument("selfile",
+               help="selection file with the names of the EM images")
+args = p.parse_args()
 
-selfile is the selection file with the names of the the EM images""")
-opts, args = parser.parse_args()
-if len(args) != 1:
-    parser.error("wrong number of arguments")
-
-fn_images_names = args[0]
+fn_images_names = args.selfile
 images_names = em2d.read_selection_file(fn_images_names)
 srw = em2d.SpiderImageReaderWriter()
 images = em2d.read_images(images_names, srw)

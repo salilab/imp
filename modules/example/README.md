@@ -5,8 +5,8 @@ so it can be used to see how to write a new class, export it to Python,
 document it, and provide tests and examples.
 
 The overview section of the module page can contain any
-[MarkDown](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html) or
-[doxygen](http://www.stack.nl/~dimitri/doxygen/manual/docblocks.html)
+[MarkDown](http://www.doxygen.nl/manual/markdown.html) or
+[doxygen](http://www.doxygen.nl/manual/docblocks.html)
 markup as well as references to IMP classes such as IMP::Model.
 
 # imp_example_app {#imp_example_app_bin}
@@ -19,7 +19,7 @@ _Author(s)_: Daniel Russel
 
 _Maintainer_: `benmwebb`
 
-_License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
+_License_: [LGPL](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either

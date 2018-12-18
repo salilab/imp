@@ -10,6 +10,7 @@
 """
 
 import itertools
+import re
 from .format import CifWriter
 import sys
 # Handle different naming of urllib in Python 2/3
@@ -18,6 +19,8 @@ try:
 except ImportError:
     import urllib2
 import json
+
+__version__ = '0.3'
 
 #: A value that isn't known. Note that this is distinct from a value that
 #: is deliberately omitted, which is represented by Python None.
@@ -116,6 +119,10 @@ class System(object):
         #: See :class:`~ihm.restraint.Restraint`.
         self.restraints = []
 
+        #: All restraint groups.
+        #: See :class:`~ihm.restraint.RestraintGroup`.
+        self.restraint_groups = []
+
         #: All orphaned modeling protocols.
         #: This can be used to keep track of all protocols that are not
         #: otherwise used - normally a protocol is assigned to a
@@ -178,15 +185,33 @@ class System(object):
             if isinstance(loc, location.FileLocation):
                 location.Repository._update_in_repos(loc, repos)
 
-    def _all_model_groups(self):
-        """Iterate over all ModelGroups in the system"""
+    def _all_restraints(self):
+        """Iterate over all Restraints in the system.
+           Duplicates may be present."""
+        def _all_restraints_in_groups():
+            for rg in self.restraint_groups:
+                for r in rg:
+                    yield r
+        return itertools.chain(self.restraints, _all_restraints_in_groups())
+
+    def _all_model_groups(self, only_in_states=True):
+        """Iterate over all ModelGroups in the system.
+           If only_in_states is True, only return ModelGroups referenced
+           by a State object; otherwise, also include ModelGroups referenced
+           by an OrderedProcess or Ensemble."""
         # todo: raise an error if a modelgroup is present in multiple states
-        # note also that we don't pick up groups referred to only by an
-        # OrderedProcess here - should we?
         for state_group in self.state_groups:
             for state in state_group:
                 for model_group in state:
                     yield model_group
+        if not only_in_states:
+            for ensemble in self.ensembles:
+                yield ensemble.model_group
+            for proc in self.ordered_processes:
+                for step in proc.steps:
+                    for edge in step:
+                        yield edge.group_begin
+                        yield edge.group_end
 
     def _all_models(self):
         """Iterate over all Models in the system"""
@@ -443,7 +468,7 @@ class Citation(object):
        :param int year: Year of publication.
        :param authors: All authors in order, as a list of strings (last name
               followed by initials, e.g. "Smith AJ").
-       :param str doi: Digitial Object Identifier of the publication.
+       :param str doi: Digital Object Identifier of the publication.
     """
     def __init__(self, pmid, title, journal, volume, page_range, year, authors,
                  doi):
@@ -505,11 +530,21 @@ class ChemComp(object):
        a :class:`Alphabet` and refer to the components with their one-letter
        (amino acids, RNA) or two-letter (DNA) codes.
 
-       :param str id: A globally unique identifier for this component.
+       :param str id: A globally unique identifier for this component (usually
+              three letters).
        :param str code: A shorter identifier (usually one letter) that only
               needs to be unique in the entity.
        :param str code_canonical: Canonical version of `code` (which need not
               be unique).
+       :param str name: A longer human-readable name for the component.
+       :param str formula: The chemical formula. This is a spaced-separated
+              list of the element symbols in the component, each followed
+              by an optional count (if omitted, 1 is assumed). The formula
+              is terminated with the formal charge (if not zero). The element
+              list should be sorted alphabetically, unless carbon is present,
+              in which case C and H precede the rest of the elements. For
+              example, water would be "H2 O" and arginine (with +1 formal
+              charge) "C6 H15 N4 O2 1".
 
        For example, glycine would have
        ``id='GLY', code='G', code_canonical='G'`` while selenomethionine would
@@ -520,9 +555,37 @@ class ChemComp(object):
 
     type = 'other'
 
-    def __init__(self, id, code, code_canonical):
+    _element_mass = {'H':1.008, 'C':12.011, 'N':14.007, 'O':15.999,
+                     'P':30.974, 'S':32.060, 'Se':78.971}
+
+    def __init__(self, id, code, code_canonical, name=None, formula=None):
         self.id = id
-        self.code, self.code_canonical = code, code_canonical
+        self.code, self.code_canonical, self.name = code, code_canonical, name
+        self.formula = formula
+
+    def __get_weight(self):
+        # Calculate weight from formula
+        if self.formula is None:
+            return
+        spl = self.formula.split()
+        # Remove formal charge if present
+        if len(spl) > 0 and spl[-1].isdigit():
+            del spl[-1]
+        r = re.compile('(\D+)(\d*)$')
+        weight = 0.
+        for s in spl:
+            m = r.match(s)
+            if m is None:
+                raise ValueError("Bad formula fragment: %s" % s)
+            emass = self._element_mass.get(m.group(1), None)
+            if emass:
+                weight += emass * (int(m.group(2)) if m.group(2) else 1)
+            else:
+                # If element is unknown, weight is unknown too
+                return None
+        return weight
+
+    formula_weight = property(__get_weight, doc="Formula weight")
 
     # Equal if all identifiers are the same
     def __eq__(self, other):
@@ -536,7 +599,7 @@ class PeptideChemComp(ChemComp):
     """A single peptide component. Usually :class:`LPeptideChemComp` is used
        instead (except for glycine) to specify chirality.
        See :class:`ChemComp` for a description of the parameters."""
-    type = 'Peptide linking'
+    type = 'peptide linking'
 
 
 class LPeptideChemComp(PeptideChemComp):
@@ -561,6 +624,30 @@ class RNAChemComp(ChemComp):
     """A single RNA component.
        See :class:`ChemComp` for a description of the parameters."""
     type = 'RNA linking'
+
+
+class NonPolymerChemComp(ChemComp):
+    """A non-polymer chemical component, such as a ligand
+       (for crystal waters, use :class:`WaterChemComp`).
+
+       :param str id: A globally unique identifier for this component.
+       :param str name: A longer human-readable name for the component.
+       :param str formula: The chemical formula. See :class:`ChemComp` for
+              more details.
+    """
+    type = "non-polymer"
+
+    def __init__(self, id, name=None, formula=None):
+        super(NonPolymerChemComp, self).__init__(id, id, id, name=name,
+                                                 formula=formula)
+
+
+class WaterChemComp(NonPolymerChemComp):
+    """The chemical component for crystal water.
+    """
+    def __init__(self):
+        super(WaterChemComp, self).__init__('HOH', name='WATER',
+                                            formula="H2 O")
 
 
 class Alphabet(object):
@@ -595,17 +682,36 @@ class LPeptideAlphabet(Alphabet):
        modified residues are also included (e.g. MSE). For these their full name
        rather than a one-letter code is used.
     """
-    _comps = dict([code, LPeptideChemComp(id, code, code)] for code, id in
-                    [('A', 'ALA'), ('C', 'CYS'), ('D', 'ASP'), ('E', 'GLU'),
-                     ('F', 'PHE'), ('H', 'HIS'), ('I', 'ILE'), ('K', 'LYS'),
-                     ('L', 'LEU'), ('M', 'MET'), ('N', 'ASN'), ('P', 'PRO'),
-                     ('Q', 'GLN'), ('R', 'ARG'), ('S', 'SER'), ('T', 'THR'),
-                     ('V', 'VAL'), ('W', 'TRP'), ('Y', 'TYR')])
-    _comps['G'] = PeptideChemComp('GLY', 'G', 'G')
+    _comps = dict([code, LPeptideChemComp(id, code, code, name,
+                                          formula)]
+                 for code, id, name, formula in
+                    [('A', 'ALA', 'ALANINE', 'C3 H7 N O2'),
+                     ('C', 'CYS', 'CYSTEINE', 'C3 H7 N O2 S'),
+                     ('D', 'ASP', 'ASPARTIC ACID', 'C4 H7 N O4'),
+                     ('E', 'GLU', 'GLUTAMIC ACID', 'C5 H9 N O4'),
+                     ('F', 'PHE', 'PHENYLALANINE', 'C9 H11 N O2'),
+                     ('H', 'HIS', 'HISTIDINE', 'C6 H10 N3 O2 1'),
+                     ('I', 'ILE', 'ISOLEUCINE', 'C6 H13 N O2'),
+                     ('K', 'LYS', 'LYSINE', 'C6 H15 N2 O2 1'),
+                     ('L', 'LEU', 'LEUCINE', 'C6 H13 N O2'),
+                     ('M', 'MET', 'METHIONINE', 'C5 H11 N O2 S'),
+                     ('N', 'ASN', 'ASPARAGINE', 'C4 H8 N2 O3'),
+                     ('P', 'PRO', 'PROLINE', 'C5 H9 N O2'),
+                     ('Q', 'GLN', 'GLUTAMINE', 'C5 H10 N2 O3'),
+                     ('R', 'ARG', 'ARGININE', 'C6 H15 N4 O2 1'),
+                     ('S', 'SER', 'SERINE', 'C3 H7 N O3'),
+                     ('T', 'THR', 'THREONINE', 'C4 H9 N O3'),
+                     ('V', 'VAL', 'VALINE', 'C5 H11 N O2'),
+                     ('W', 'TRP', 'TRYPTOPHAN', 'C11 H12 N2 O2'),
+                     ('Y', 'TYR', 'TYROSINE', 'C9 H11 N O3')])
+    _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE',
+                                  formula="C2 H5 N O2")
 
     # common non-standard L-amino acids
-    _comps.update([id, LPeptideChemComp(id, id, canon)] for id, canon in
-                     [('MSE', 'M'), ('UNK', 'X')])
+    _comps.update([id, LPeptideChemComp(id, id, canon, name, formula)]
+                  for id, canon, name, formula in
+                     [('MSE', 'M', 'SELENOMETHIONINE', 'C5 H11 N O2 Se'),
+                      ('UNK', 'X', 'UNKNOWN', 'C4 H9 N O2')])
 
 
 class DPeptideAlphabet(Alphabet):
@@ -614,26 +720,55 @@ class DPeptideAlphabet(Alphabet):
        glycine which maps to :class:`PeptideChemComp`). See
        :class:`LPeptideAlphabet` for more details.
     """
-    _comps = dict([code, DPeptideChemComp(code, code, canon)] for canon, code in
-                    [('A', 'DAL'), ('C', 'DCY'), ('D', 'DAS'), ('E', 'DGL'),
-                     ('F', 'DPN'), ('H', 'DHI'), ('I', 'DIL'), ('K', 'DLY'),
-                     ('L', 'DLE'), ('M', 'MED'), ('N', 'DSG'), ('P', 'DPR'),
-                     ('Q', 'DGN'), ('R', 'DAR'), ('S', 'DSN'), ('T', 'DTH'),
-                     ('V', 'DVA'), ('W', 'DTR'), ('Y', 'DTY')])
-    _comps['G'] = PeptideChemComp('GLY', 'G', 'G')
+    _comps = dict([code, DPeptideChemComp(code, code, canon, name, formula)]
+                  for canon, code, name, formula in
+                    [('A', 'DAL', 'D-ALANINE', 'C3 H7 N O2'),
+                     ('C', 'DCY', 'D-CYSTEINE', 'C3 H7 N O2 S'),
+                     ('D', 'DAS', 'D-ASPARTIC ACID', 'C4 H7 N O4'),
+                     ('E', 'DGL', 'D-GLUTAMIC ACID', 'C5 H9 N O4'),
+                     ('F', 'DPN', 'D-PHENYLALANINE', 'C9 H11 N O2'),
+                     ('H', 'DHI', 'D-HISTIDINE', 'C6 H10 N3 O2 1'),
+                     ('I', 'DIL', 'D-ISOLEUCINE', 'C6 H13 N O2'),
+                     ('K', 'DLY', 'D-LYSINE', 'C6 H14 N2 O2'),
+                     ('L', 'DLE', 'D-LEUCINE', 'C6 H13 N O2'),
+                     ('M', 'MED', 'D-METHIONINE', 'C5 H11 N O2 S'),
+                     ('N', 'DSG', 'D-ASPARAGINE', 'C4 H8 N2 O3'),
+                     ('P', 'DPR', 'D-PROLINE', 'C5 H9 N O2'),
+                     ('Q', 'DGN', 'D-GLUTAMINE', 'C5 H10 N2 O3'),
+                     ('R', 'DAR', 'D-ARGININE', 'C6 H15 N4 O2 1'),
+                     ('S', 'DSN', 'D-SERINE', 'C3 H7 N O3'),
+                     ('T', 'DTH', 'D-THREONINE', 'C4 H9 N O3'),
+                     ('V', 'DVA', 'D-VALINE', 'C5 H11 N O2'),
+                     ('W', 'DTR', 'D-TRYPTOPHAN', 'C11 H12 N2 O2'),
+                     ('Y', 'DTY', 'D-TYROSINE', 'C9 H11 N O3')])
+    _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE',
+                                  formula="C2 H5 N O2")
 
 
 class RNAAlphabet(Alphabet):
     """A mapping from one-letter nucleic acid codes (e.g. A) to
        RNA (as :class:`RNAChemComp` objects)."""
-    _comps = dict([id, RNAChemComp(id, id, id)] for id in 'ACGU')
+    _comps = dict([id, RNAChemComp(id, id, id, name, formula)]
+                  for id, name, formula in
+                    [('A', "ADENOSINE-5'-MONOPHOSPHATE", 'C10 H14 N5 O7 P'),
+                     ('C', "CYTIDINE-5'-MONOPHOSPHATE", 'C9 H14 N3 O8 P'),
+                     ('G', "GUANOSINE-5'-MONOPHOSPHATE", 'C10 H14 N5 O8 P'),
+                     ('U', "URIDINE-5'-MONOPHOSPHATE", 'C9 H13 N2 O9 P')])
 
 
 class DNAAlphabet(Alphabet):
     """A mapping from two-letter nucleic acid codes (e.g. DA) to
        DNA (as :class:`DNAChemComp` objects)."""
-    _comps = dict([code, DNAChemComp(code, code, canon)] for code, canon in
-                    [('DA', 'A'), ('DC', 'C'), ('DG', 'G'), ('DT', 'T')])
+    _comps = dict([code, DNAChemComp(code, code, canon, name, formula)]
+                  for code, canon, name, formula in
+                    [('DA', 'A', "2'-DEOXYADENOSINE-5'-MONOPHOSPHATE",
+                      'C10 H14 N5 O6 P'),
+                     ('DC', 'C', "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE",
+                      'C9 H14 N3 O7 P'),
+                     ('DG', 'G', "2'-DEOXYGUANOSINE-5'-MONOPHOSPHATE",
+                      'C10 H14 N5 O7 P'),
+                     ('DT', 'T', "THYMIDINE-5'-MONOPHOSPHATE",
+                      'C10 H15 N2 O8 P')])
 
 
 class EntityRange(object):
@@ -645,6 +780,8 @@ class EntityRange(object):
            rng = entity(4,7)
     """
     def __init__(self, entity, seq_id_begin, seq_id_end):
+        if not entity.is_polymeric():
+            raise TypeError("Can only create ranges for polymeric entities")
         self.entity = entity
         # todo: check range for validity (at property read time)
         self.seq_id_range = (seq_id_begin, seq_id_end)
@@ -730,10 +867,27 @@ class Entity(object):
        see :attr:`System.entities`.
     """
 
-    type = 'polymer'
     src_method = 'man'
     number_of_molecules = 1
-    formula_weight = unknown
+
+    def __get_type(self):
+        if self.is_polymeric():
+            return 'polymer'
+        else:
+            return 'water' if self.sequence[0].code == 'HOH' else 'non-polymer'
+    type = property(__get_type)
+
+    def __get_weight(self):
+        weight = 0.
+        for s in self.sequence:
+            w = s.formula_weight
+            # If any component's weight is unknown, the total is too
+            if w:
+                weight += w
+            else:
+                return None
+        return weight
+    formula_weight = property(__get_weight, doc="Formula weight")
 
     def __init__(self, sequence, alphabet=LPeptideAlphabet,
                  description=None, details=None):
@@ -744,6 +898,12 @@ class Entity(object):
                 return alphabet._comps[s]
         self.sequence = tuple(get_chem_comp(s) for s in sequence)
         self.description, self.details = description, details
+
+    def is_polymeric(self):
+        """Return True iff this entity represents a polymer, such as an
+           amino acid sequence or DNA/RNA chain (and not a ligand or water)"""
+        return len(self.sequence) != 1 or not isinstance(self.sequence[0],
+                                                         NonPolymerChemComp)
 
     def residue(self, seq_id):
         """Get a :class:`Residue` at the given sequence position"""
@@ -758,8 +918,13 @@ class Entity(object):
     def __call__(self, seq_id_begin, seq_id_end):
         return EntityRange(self, seq_id_begin, seq_id_end)
 
-    seq_id_range = property(lambda self: (1, len(self.sequence)),
-                            doc="Sequence range")
+    def __get_seq_id_range(self):
+        if self.is_polymeric():
+            return (1, len(self.sequence))
+        else:
+            # Nonpolymers don't have the concept of seq_id
+            return (None, None)
+    seq_id_range = property(__get_seq_id_range, doc="Sequence range")
 
 
 class AsymUnitRange(object):
@@ -771,6 +936,8 @@ class AsymUnitRange(object):
            rng = asym(4,7)
     """
     def __init__(self, asym, seq_id_begin, seq_id_end):
+        if asym.entity is not None and not asym.entity.is_polymeric():
+            raise TypeError("Can only create ranges for polymeric entities")
         self.asym = asym
         # todo: check range for validity (at property read time)
         self.seq_id_range = (seq_id_begin, seq_id_end)
@@ -836,7 +1003,7 @@ class AsymUnit(object):
         """Get a :class:`Residue` at the given sequence position"""
         return Residue(asym=self, seq_id=seq_id)
 
-    seq_id_range = property(lambda self: (1, len(self.entity.sequence)),
+    seq_id_range = property(lambda self: self.entity.seq_id_range,
                             doc="Sequence range")
 
 

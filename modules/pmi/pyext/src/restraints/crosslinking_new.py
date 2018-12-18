@@ -159,8 +159,6 @@ class DisulfideCrossLinkRestraint(object):
 
 
     def get_output(self):
-        self.m.update()
-
         output = {}
         score = self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)

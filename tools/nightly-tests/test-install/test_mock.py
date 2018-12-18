@@ -21,9 +21,11 @@ class IMPMockTests(unittest.TestCase):
         # Make sure that npctransport is included and that the underlying
         # protobuf stuff also works
         import IMP.npctransport
-        # Ubuntu only supports protobuf with Python 3 in 18.04 or later
-        old_ubuntu = frozenset(('ubuntu-trusty', 'ubuntu-xenial'))
-        if sys.version_info[0] == 2 or mock_config not in old_ubuntu:
+        # Ubuntu only supports protobuf with Python 3 in 18.04 or later;
+        # our Windows protobuf install also is Python 2 only
+        py2_protobuf = frozenset(('ubuntu-trusty', 'ubuntu-xenial',
+                                  'w32', 'w64'))
+        if sys.version_info[0] == 2 or mock_config not in py2_protobuf:
             x = IMP.npctransport.Configuration
         # Check that most other modules (particularly those with many
         # dependencies) are present

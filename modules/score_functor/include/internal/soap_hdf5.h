@@ -13,6 +13,7 @@
 
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
 
+#include <IMP/types.h>
 #include <boost/noncopyable.hpp>
 #include <hdf5.h>
 

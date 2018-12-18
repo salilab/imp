@@ -16,26 +16,42 @@ import IMP.pmi.restraints.crosslinking
 import IMP.pmi.macros
 import RMF
 import IMP.rmf
+import sys
 from math import *
 
+class MockCommunicator(object):
+    def __init__(self, numproc, rank):
+        self.size, self.rank = numproc, rank
+        # Data in transit from rank x to rank y; key is (x,y), value is data
+        self.sent_data = {}
+
+    def Get_rank(self):
+        return self.rank
+
+    def Barrier(self):
+        pass
+
+    def send(self, data, dest, tag):
+        k = (self.rank, dest)
+        if k not in self.sent_data:
+            self.sent_data[k] = []
+        self.sent_data[k].append(data)
+
+    def recv(self, source, tag):
+        return self.sent_data[(source, self.rank)].pop(0)
+
+
+class MockMPI(object):
+    def __init__(self, numproc, rank):
+        self.COMM_WORLD = MockCommunicator(numproc, rank)
+
+
+class MockMPI4Py(object):
+    def __init__(self, numproc, rank):
+        self.MPI = MockMPI(numproc, rank)
+
+
 class Tests(IMP.test.TestCase):
-    def test_particle_to_sample_filter(self):
-        """Test ParticleToSampleFilter"""
-        class MockRestraint(object):
-            def __init__(self, sos):
-                self.sos = sos
-            def get_particles_to_sample(self):
-                return self.sos
-        r1 = MockRestraint({'Nuisances_Sigma': ('p0', 'p1'),
-                            'Nuisances_Psi': ('p2', 'p3')})
-        r2 = MockRestraint({'Nuisances_Sigma': ('p0', 'p4')})
-        with IMP.allow_deprecated():
-            p = IMP.pmi.tools.ParticleToSampleFilter([r1, r2])
-        p.add_filter('Sigma')
-        ps = p.get_particles_to_sample()
-        self.assertEqual(list(ps.keys()), ['Nuisances_Sigma'])
-        val = ps['Nuisances_Sigma']
-        self.assertEqual(sorted(val), ['p0', 'p0', 'p1', 'p4'])
 
     def test_particle_to_sample_list(self):
         """Test ParticleToSampleList"""
@@ -393,6 +409,36 @@ class Tests(IMP.test.TestCase):
         densities = IMP.pmi.tools.get_densities(IMP.atom.get_leaves(hier))
         self.assertEqual(densities,densities_test)
 
+    def test_get_sorted_segments(self):
+        """Test get_sorted_segments()"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+
+        m1 = st1.create_molecule("Prot1", sequence='ACGHAC')
+        m1.add_representation(m1[:],resolutions=[1])
+        m2 = st1.create_molecule("Prot2", sequence='ACGHAC')
+        m2.add_representation(m2[:],resolutions=[10])
+        hier = s.build()
+        self.assertRaises(ValueError, IMP.pmi.tools.get_sorted_segments,
+                          [m1[1:2], m2[:]])
+        s = IMP.pmi.tools.get_sorted_segments([m1[1:2], m1[3:5]])
+        s = [(x[0].get_name(), x[1].get_name(), x[2]) for x in s]
+        self.assertEqual(s, [('2_bead', '2_bead', 2),
+                             ('4_bead', '4_bead', 4),
+                             ('5_bead', '5_bead', 5)])
+
+    def test_input_adaptor_warn_slices(self):
+        """Test that input adaptor warn_about_slices behavior"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        st1 = s.create_state()
+
+        m1 = st1.create_molecule("Prot1", sequence='ACGH')
+        m1.add_representation(m1[:],resolutions=[10])
+        hier = s.build()
+        t = IMP.pmi.tools.input_adaptor(m1[0:2], pmi_resolution=1)
+
     def test_input_adaptor_pmi(self):
         """Test that input adaptor correctly performs selection"""
         mdl = IMP.Model()
@@ -568,6 +614,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual([IMP.atom.get_leaves(root)],hs)
 
     def test_Segments(self):
+        self.assertRaises(TypeError, IMP.pmi.tools.Segments, 42.0)
         s=IMP.pmi.tools.Segments(1)
         self.assertEqual(s.segs,[[1]])
         s=IMP.pmi.tools.Segments([1])
@@ -581,6 +628,7 @@ class Tests(IMP.test.TestCase):
         s=IMP.pmi.tools.Segments([1,2,3,5])
         self.assertEqual(s.segs,[[1,2,3],[5]])
         s.add(6)
+        self.assertRaises(TypeError, s.add, 42.0)
         self.assertEqual(s.segs,[[1,2,3],[5,6]])
         s.add(0)
         self.assertEqual(s.segs,[[0,1,2,3],[5,6]])
@@ -598,6 +646,14 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(s.segs,[[-4,-3],[0,1],[3,4],[6]])
         s.add(-1)
         self.assertEqual(s.segs,[[-4,-3],[-1,0,1],[3,4],[6]])
+        s.remove(-4)
+        self.assertEqual(s.segs,[[-3],[-1,0,1],[3,4],[6]])
+        s.remove(1)
+        self.assertEqual(s.segs,[[-3],[-1,0],[3,4],[6]])
+        s.remove(6)
+        self.assertEqual(s.segs,[[-3],[-1,0],[3,4]])
+        self.assertEqual(s.get_flatten(), [-3,-1,0,3,4])
+        self.assertEqual(repr(s), '[-3--3,-1-0,3-4]')
 
     def assertEqualUnordered(self, a, b):
         """Compare two unordered lists; i.e. each list must have the
@@ -720,6 +776,165 @@ class Tests(IMP.test.TestCase):
 
         rs = IMP.pmi.tools.get_restraint_set(m, rmf=True)
         self.assertEqual(rs.get_number_of_restraints(), 1)
+
+    def test_scatter_and_gather_no_mpi_list_rank_0(self):
+        """Test scatter_and_gather of lists without using MPI, rank==0"""
+        mpi4py = MockMPI4Py(3, 0)
+        sys.modules['mpi4py'] = mpi4py
+        try:
+            # Simulate data from the other two processes
+            mpi4py.MPI.COMM_WORLD.sent_data[1, 0] = [[1,2]]
+            mpi4py.MPI.COMM_WORLD.sent_data[2, 0] = [[3,4]]
+            data = IMP.pmi.tools.scatter_and_gather([9,10])
+            self.assertEqual(data, [9,10,1,2,3,4])
+            self.assertEqual(mpi4py.MPI.COMM_WORLD.sent_data[0, 1], [data])
+            self.assertEqual(mpi4py.MPI.COMM_WORLD.sent_data[0, 2], [data])
+        finally:
+            del sys.modules['mpi4py']
+
+    def test_scatter_and_gather_no_mpi_bad_type_rank_0(self):
+        """Test scatter_and_gather of unsupported type without using MPI"""
+        mpi4py = MockMPI4Py(3, 0)
+        sys.modules['mpi4py'] = mpi4py
+        try:
+            # Simulate data from the other two processes
+            mpi4py.MPI.COMM_WORLD.sent_data[1, 0] = [[1,2]]
+            mpi4py.MPI.COMM_WORLD.sent_data[2, 0] = [[3,4]]
+            self.assertRaises(TypeError, IMP.pmi.tools.scatter_and_gather, 42.0)
+        finally:
+            del sys.modules['mpi4py']
+
+    def test_scatter_and_gather_no_mpi_dict_rank_0(self):
+        """Test scatter_and_gather of dicts without using MPI, rank==0"""
+        mpi4py = MockMPI4Py(3, 0)
+        sys.modules['mpi4py'] = mpi4py
+        try:
+            # Simulate data from the other two processes
+            mpi4py.MPI.COMM_WORLD.sent_data[1, 0] = [{'a':'b'}]
+            mpi4py.MPI.COMM_WORLD.sent_data[2, 0] = [{'c':'d'}]
+            data = IMP.pmi.tools.scatter_and_gather({'e':'f'})
+            self.assertEqual(data, {'a':'b', 'c':'d', 'e':'f'})
+            self.assertEqual(mpi4py.MPI.COMM_WORLD.sent_data[0, 1], [data])
+            self.assertEqual(mpi4py.MPI.COMM_WORLD.sent_data[0, 2], [data])
+        finally:
+            del sys.modules['mpi4py']
+
+    def test_scatter_and_gather_no_mpi_list_rank_1(self):
+        """Test scatter_and_gather of lists without using MPI, rank!=0"""
+        mpi4py = MockMPI4Py(3, 1)
+        sys.modules['mpi4py'] = mpi4py
+        try:
+            # Simulate data from rank==0
+            mpi4py.MPI.COMM_WORLD.sent_data[0, 1] = [[9,10,1,2,3,4]]
+            data = IMP.pmi.tools.scatter_and_gather([1,2])
+            self.assertEqual(data, [9,10,1,2,3,4])
+            self.assertEqual(mpi4py.MPI.COMM_WORLD.sent_data[1, 0], [[1,2]])
+        finally:
+            del sys.modules['mpi4py']
+
+    def test_scatter_and_gather_mpi(self):
+        """Test scatter_and_gather using MPI"""
+        try:
+            from mpi4py import MPI
+        except ImportError:
+            self.skipTest("No MPI support")
+        comm = MPI.COMM_WORLD
+        numproc = comm.size
+        rank = comm.Get_rank()
+        data = IMP.pmi.tools.scatter_and_gather([rank])
+        self.assertEqual(data, list(range(numproc)))
+        data = IMP.pmi.tools.scatter_and_gather({rank:'x'})
+        self.assertEqual(data, dict.fromkeys(range(numproc), 'x'))
+
+    def test_sublist_iterator(self):
+        """Test sublist_iterator()"""
+        inp = ['a', 'b', 'c']
+        out = IMP.pmi.tools.sublist_iterator(inp)
+        self.assertEqual(list(out),
+                         [['a'], ['a', 'b'], ['a', 'b', 'c'],
+                          ['b'], ['b', 'c'], ['c']])
+
+        out = IMP.pmi.tools.sublist_iterator(inp, lmin=2)
+        self.assertEqual(list(out), [['a', 'b'], ['a', 'b', 'c'], ['b', 'c']])
+
+        out = IMP.pmi.tools.sublist_iterator(inp, lmax=2)
+        self.assertEqual(list(out),
+                         [['a'], ['a', 'b'], ['b'], ['b', 'c'], ['c']])
+
+    def test_flatten_list(self):
+        """Test flatten_list()"""
+        inp = [['a', 'b', 'c'], ['d', 'e']]
+        self.assertEqual(IMP.pmi.tools.flatten_list(inp),
+                         ['a', 'b', 'c', 'd', 'e'])
+
+    def test_color_change(self):
+        """Test ColorChange class"""
+        cc = IMP.pmi.tools.ColorChange()
+        self.assertEqual(cc.triplet((1,20,200), 'x'), '0114c8')
+        self.assertEqual(cc.triplet((1,20,200)), '0114c8')
+        self.assertEqual(cc.triplet((1,20,200), 'X'), '0114C8')
+        self.assertEqual([int(x) for x in cc.rgb('0114C8')], [1,20,200])
+        self.assertEqual([int(x) for x in cc.rgb('0114c8')], [1,20,200])
+
+    def test_ordered_set(self):
+        """Test OrderedSet class"""
+        s = IMP.pmi.tools.OrderedSet((8,1,2,10,1,8))
+        self.assertEqual(list(s), [8, 1, 2, 10])
+        self.assertEqual(len(s), 4)
+        self.assertIn(8, s)
+        self.assertNotIn(80, s)
+        s.add(4)
+        self.assertIn(4, s)
+        self.assertEqual(len(s), 5)
+        self.assertEqual(list(s), [8, 1, 2, 10, 4])
+        s.add(8)
+        self.assertEqual(len(s), 5)
+        s.discard(8)
+        self.assertEqual(len(s), 4)
+        s.discard(8)
+        self.assertEqual(len(s), 4)
+        self.assertEqual(list(reversed(s)), [4, 10, 2, 1])
+        self.assertEqual(s, IMP.pmi.tools.OrderedSet((1,2,10,4)))
+        self.assertNotEqual(s, IMP.pmi.tools.OrderedSet((1,2,4,10)))
+        self.assertEqual(s.pop(False), 1)
+        self.assertEqual(s.pop(True), 4)
+        self.assertEqual(s.pop(), 10)
+        self.assertEqual(s.pop(), 2)
+        self.assertRaises(KeyError, s.pop)
+        self.assertEqual(len(s), 0)
+
+    def test_ordered_default_dict_none(self):
+        """Test OrderedDefaultDict class with None"""
+        self.assertRaises(TypeError, IMP.pmi.tools.OrderedDefaultDict, 42.0)
+        d = IMP.pmi.tools.OrderedDefaultDict(None)
+        self.assertNotIn('a', d)
+        d['a'] = 'b'
+        self.assertIn('a', d)
+        self.assertEqual(d['a'], 'b')
+        self.assertRaises(KeyError, lambda x: x['b'], d)
+        d['6'] = None
+        d['4'] = None
+        d['3'] = None
+        # Keys should be ordered
+        self.assertEqual(list(d.keys()), ['a', '6', '4', '3'])
+
+    def test_ordered_default_dict_list(self):
+        """Test OrderedDefaultDict class with list"""
+        d = IMP.pmi.tools.OrderedDefaultDict(list)
+        self.assertNotIn('a', d)
+        d['a'] = 'b'
+        self.assertIn('a', d)
+        self.assertEqual(d['a'], 'b')
+        self.assertNotIn('b', d)
+        # Test default value
+        self.assertEqual(d['b'], [])
+        cls, args, n1, n2, items = d.__reduce__()
+        self.assertEqual(list(items), [('a', 'b'), ('b', [])])
+        d['6'] = None
+        d['4'] = None
+        d['3'] = None
+        # Keys should be ordered
+        self.assertEqual(list(d.keys()), ['a', 'b', '6', '4', '3'])
 
 
 if __name__ == '__main__':

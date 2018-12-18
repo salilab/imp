@@ -32,7 +32,7 @@ The first part of the script defines the files used in model building and restra
 
 \code{.py}
 #---------------------------
-# Set up Input Files
+# Define Input Files
 #---------------------------
 datadirectory = "../data/"
 topology_file = datadirectory+"topology.txt"
@@ -40,115 +40,126 @@ target_gmm_file = datadirectory+'emd_1883.map.mrc.gmm.50.txt'
 \endcode
 
 The first section defines where input files are located.  The
-[topology file](@ref IMP::pmi::topology::TopologyReader)
+[topology file](https://github.com/salilab/imp_tutorial/blob/pmi2/rnapolii/data/topology.txt)
 defines how the system components are structurally represented. `target_gmm_file` stores the EM map for the entire complex, which has already been converted into a Gaussian mixture model.
 
-\code{.py}
-#--------------------------
-# Set MC Sampling Parameters
-#--------------------------
-num_frames = 20000
-num_mc_steps = 10
-\endcode
-
-MC sampling parameters define the number of frames (model structures) which will be output during sampling. `num_mc_steps` defines the number of Monte Carlo steps between output frames.  This setup would therefore encompass 200000 MC steps in total. 
-
-\code{.py}
-#--------------------------
-# Create movers
-#--------------------------
-
-# rigid body movement params
-rb_max_trans = 2.00
-rb_max_rot = 0.04
-
-# flexible bead movement
-bead_max_trans = 3.00
-
-rigid_bodies = [["Rpb4"],
-                ["Rpb7"]]
-super_rigid_bodies = [["Rpb4","Rpb7"]]
-chain_of_super_rigid_bodies = [["Rpb4"],
-                               ["Rpb7"]]
-\endcode
-
-The movers section defines movement parameters and hierarchies of movers.  `rb_max_trans` and `bead_max_trans` set the maximum translation (in angstroms) allowed per MC step. `rb_max_rot` is the maximum rotation for rigid bodies in radians.
-
-`rigid_bodies` is a Python list defining the components that will be moved as rigid bodies.  Components must be identified by the _domain name_ (as given in the topology file).
-
-`super_rigid_bodies` defines sets of rigid bodies and beads that will move together in an additional Monte Carlo move.
-
-`chain_of_super_rigid_bodies` sets additional Monte Carlo movers along the connectivity chain of a subunit. It groups sequence-connected rigid domains and/or beads into overlapping pairs and triplets. Each of these groups will be moved rigidly. This mover helps to sample more efficiently complex topologies, made of several rigid bodies, connected by flexible linkers.
-
-**Build the Model Representation**
-The next bit of code takes the input files and creates an
-[IMP hierarchy](@ref IMP::atom::Hierarchy) based on the given
-topology, rigid body lists and data files:
+**Build the Model Representation Using a Topology File**
+Using the topology file we define the overall topology: we introduce the
+molecules with their sequence and their known structure, and define the movers.
+Each line in the file is a user-defined molecular **Domain**, and each column
+contains the specifics needed to build the system.
+See the [TopologyReader](@ref IMP::pmi::topology::TopologyReader) documentation
+for a full description of the topology file format.
 
 \code{.py}
 # Initialize model
 m = IMP.Model()
 
-# Create list of components from topology file
-topology = IMP.pmi.topology.TopologyReader(topology_file)
-domains = topology.component_list
+# Read in the topology file.
+# Specify the directory wheere the PDB files, fasta files and GMM files are
+topology = IMP.pmi.topology.TopologyReader(topology_file,
+                                  pdb_dir=datadirectory,
+                                  fasta_dir=datadirectory,
+                                  gmm_dir=datadirectory)
 
-bm = IMP.pmi.macros.BuildModel(m,
-                    component_topologies=domains,
-                    list_of_rigid_bodies=rigid_bodies,
-                    list_of_super_rigid_bodies=super_rigid_bodies,
-                    chain_of_super_rigid_bodies=chain_of_super_rigid_bodies)
+# Use the BuildSystem macro to build states from the topology file
+bs = IMP.pmi.macros.BuildSystem(m)
 
-representation = bm.get_representation()
+# Each state can be specified by a topology file.
+bs.add_state(topology)
 \endcode
 
-The [representation](@ref IMP::pmi::representation::Representation)
-object returned holds a list of molecular hierarchies that define the model, that are passed to subsequent functions.
+**Building the System Representation and Degrees of Freedom**
+
+Here we can set the **Degrees of Freedom** parameters, which should be
+optimized according to MC acceptance ratios. There are three kind of movers:
+Rigid Body, Bead, and Super Rigid Body (super rigid bodies are sets of
+rigid bodies and beads that will move together in an additional Monte Carlo
+move). 
+
+`max_rb_trans` and `max_rb_rot` are the maximum translation and rotation
+of the Rigid Body mover, `max_srb_trans` and `max_srb_rot` are the maximum
+translation and rotation of the Super Rigid Body mover and `max_bead_trans`
+is the maximum translation of the Bead Mover.
+
+The excecution of the macro will return the root hierarchy (`root_hier`)
+and the degrees of freedom (`dof`) objects, both of which are used later on.
 
 \code{.py}
-# Randomize the initial configuration before sampling
-representation.shuffle_configuration(50)
+root_hier, dof = bs.execute_macro(max_rb_trans=4.0,
+                                  max_rb_rot=0.3,
+                                  max_bead_trans=4.0,
+                                  max_srb_trans=4.0,
+                                  max_srb_rot=0.3)
 \endcode
 
-This line randomizes the initial configuration to remove any bias from the initial starting configuration read from input files. Since each subunit is composed of rigid bodies (i.e., beads constrained in a structure) and flexible beads, the configuration of the system is initialized by placing each rigid body and each randomly in a box with a side of 50 Angstroms, and far enough from each other to prevent any steric clashes. The rigid bodies are also randomly rotated.  
-
-
-**Additional parameters and lists**
-\code{.py}
-# Add default mover parameters to simulation
-representation.set_rigid_bodies_max_rot(rb_max_rot)
-representation.set_floppy_bodies_max_trans(bead_max_trans)
-representation.set_rigid_bodies_max_trans(rb_max_trans)
-\endcode
-
-Here, we set the maximum rotation and translation for rigid bodies and "floppy bodies" (which are our flexible strings of beads).
+Since we're interested in modeling the stalk, we will fix all subunits
+except Rpb4 and Rpb7. Note that we are using IMP.atom.Selection to get the
+particles that correspond to the fixed Molecules.
 
 \code{.py}
-outputobjects = [] # reporter objects (for stat files)
-sampleobjects = [] # sampling objects
+# Fix all rigid bodies but not Rpb4 and Rpb7 (the stalk)
+# First select and gather all particles to fix.
+fixed_particles=[]
+for prot in ["Rpb1","Rpb2","Rpb3","Rpb5","Rpb6","Rpb8","Rpb9","Rpb10","Rpb11","Rpb12"]:
+    fixed_particles+=IMP.atom.Selection(root_hier,molecule=prot).get_selected_particles()
 
-# Add the movers to the sample and representation lists
-outputobjects.append(representation)
-sampleobjects.append(representation)
+# Fix the Corresponding Rigid movers and Super Rigid Body movers using dof
+# The flexible beads will still be flexible (fixed_beads is an empty list)!
+fixed_beads,fixed_rbs=dof.disable_movers(fixed_particles,
+                                         [IMP.core.RigidBodyMover,
+                                          IMP.pmi.TransformMover])
 \endcode
 
-We would like to both sample, and output the information about the structural model.  Therefore, they must be added to both the output and sample lists. 
+Finally we randomize the initial configuration to remove any bias from the
+initial starting configuration read from input files. Since each subunit is
+composed of rigid bodies (i.e., beads constrained in a structure) and flexible
+beads, the configuration of the system is initialized by displacing each
+mobile rigid body and each bead randomly by 50 Angstroms, and rotate them
+randomly, and far enough from each other to prevent any steric clashes. 
 
----
+The `excluded_rigid_bodies=fixed_rbs` will exclude from the randomization
+everything that was fixed above.
+
+\code{.py}
+# Randomize the initial configuration before sampling, of only the molecules
+# we are interested in (Rpb4 and Rpb7)
+IMP.pmi.tools.shuffle_configuration(root_hier,
+                                    excluded_rigid_bodies=fixed_rbs,
+                                    max_translation=50,
+                                    verbose=False,
+                                    cutoff=5.0,
+                                    niterations=100)
+\endcode
 
 ### Set up Restraints
 
 After defining the representation of the model, we build the restraints by which the individual structural models will be scored based on the input data.
 
+**Connectivity Restraint**
+\code{.py}
+# Connectivity keeps things connected along the backbone (ignores if inside
+# same rigid body)
+mols = IMP.pmi.tools.get_molecules(root_hier)
+for mol in mols:
+    molname=mol.get_name()
+    IMP.pmi.tools.display_bonds(mol)
+    cr = IMP.pmi.restraints.stereochemistry.ConnectivityRestraint(mol,scale=2.0)
+    cr.add_to_model()
+    cr.set_label(molname)
+    outputobjects.append(cr)
+\endcode
+
 **Excluded Volume Restraint**
 \code{.py}
 ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(
-                                         representation, resolution=20)
+                                         included_objects=root_hier,
+                                         resolution=10)
 ev.add_to_model()
 outputobjects.append(ev)
 \endcode
 
-The excluded volume restraint is calculated at resolution 20 (20 residues per bead).
+The excluded volume restraint is calculated at resolution 10 (20 residues per bead).
 
 
 **Crosslinks**
@@ -156,53 +167,43 @@ The excluded volume restraint is calculated at resolution 20 (20 residues per be
 A crosslinking restraint is implemented as a distance restraint between two residues.  The two residues are each defined by the protein (component) name and the residue number.  The script here extracts the correct four columns that provide this information from the [input data file](@ref rnapolii_1).
 
 \code{.py}
-columnmap={}
-columnmap["Protein1"]="pep1.accession"
-columnmap["Protein2"]="pep2.accession"
-columnmap["Residue1"]="pep1.xlinked_aa"
-columnmap["Residue2"]="pep2.xlinked_aa"
-columnmap["IDScore"]=None
-...
-xl1 = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(representation,
-                                   datadirectory+'polii_xlinks.csv',
-                                   length=21.0,            
+xldbkwc = IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+xldbkwc.set_protein1_key("pep1.accession")
+xldbkwc.set_protein2_key("pep2.accession")
+xldbkwc.set_residue1_key("pep1.xlinked_aa")
+xldbkwc.set_residue2_key("pep2.xlinked_aa")
+
+xl1db = IMP.pmi.io.crosslink.CrossLinkDataBase(xldbkwc)
+xl1db.create_set_from_file(datadirectory+'polii_xlinks.csv')
+
+xl1 = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
+                                   root_hier=root_hier,
+                                   CrossLinkDataBase=xl1db,
+                                   length=21.0,
                                    slope=0.01,
-                                   columnmapping=columnmap,
-                                   resolution=1.0,          
+                                   resolution=1.0,
                                    label="Trnka",
-                                   csvfile=True)
+                                   weight=1.)
 
-xl1.add_to_model()   
-
-# Since we are sampling psi, crosslink restraint must be added to sampleobjects
-sampleobjects.append(xl1)
-outputobjects.append(xl1)
+xl1.add_to_model()
 \endcode
 
 An object `xl1` for this crosslinking restraint is created and then added to the model.
 * `length`: The maximum length of the crosslink
 * `slope`: Slope of linear energy function added to sigmoidal restraint
-* `columnmapping`: Defining the structure of the input file
 * `resolution`: The resolution at which the restraint is evaluated. 1 = residue level
 * `label`: A label for this set of cross links - helpful to identify them later in the stat file
-
-\code{.py}
-# optimize a bit before adding the EM restraint
-representation.optimize_floppy_bodies(10)
-\endcode
-
-All flexible beads are initially optimized for 10 Monte Carlo steps, keeping the rigid body fixed in space.
-
 
 **EM Restraint**
 
 \code{.py}
-em_components = bm.get_density_hierarchies([t.domain_name for t in domains])
+em_components = IMP.pmi.tools.get_densities(root_hier)
+
 gemt = IMP.pmi.restraints.em.GaussianEMRestraint(em_components,
                                                  target_gmm_file,
                                                  scale_target_to_mass=True,
                                                  slope=0.000001,
-                                                 weight=100.0)
+                                                 weight=80.0)
 gemt.add_to_model()
 outputobjects.append(gemt)
 \endcode
@@ -212,7 +213,7 @@ The GaussianEMRestraint uses a density overlap function to compare model to data
 * `slope`: nudge model closer to map when far away
 * `weight`: heuristic, needed to calibrate the EM restraint with the other terms. 
 
-and then add it to the output object.  Nothing is being sampled, so it does not need to be added to sample objects.
+and then add it to the output object.
 
 ---
 

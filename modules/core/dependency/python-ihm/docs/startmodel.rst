@@ -7,6 +7,12 @@ The :mod:`ihm.startmodel` Python module
 
 .. automodule:: ihm.startmodel
 
+.. autoclass:: SequenceIdentityDenominator
+   :members:
+
+.. autoclass:: SequenceIdentity
+   :members:
+
 .. autoclass:: Template
    :members:
 

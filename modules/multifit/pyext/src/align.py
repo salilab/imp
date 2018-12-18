@@ -3,7 +3,7 @@
 from __future__ import print_function, division
 import sys
 import IMP.multifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 __doc__ = "Align proteomics graph with the EM map."
 
@@ -57,20 +57,18 @@ class progressBar:
 
 
 def parse_args():
-    usage =  """%prog [options] <asmb> <asmb.proteomics> <asmb.mapping>
-           <alignment.params> <combinations[output]>
-           <Fitting scores[output]>
+    desc =  """Align proteomics graph with the EM map."""
+    p = ArgumentParser(description=desc)
+    p.add_argument("-m", "--max", type=int, dest="max", default=999999999,
+                   help="maximum number of fits considered")
+    p.add_argument("assembly_file", help="assembly file name")
+    p.add_argument("proteomics_file", help="proteomics file name")
+    p.add_argument("mapping_file", help="mapping file name")
+    p.add_argument("param_file", help="parameter file name")
+    p.add_argument("combinations_file", help="combinations file name (output)")
+    p.add_argument("scores_file", help="fitting scores file name (output)")
 
-Align proteomics graph with the EM map.
-"""
-    parser = OptionParser(usage)
-    parser.add_option("-m", "--max", type="int", dest="max", default=999999999,
-                      help="maximum number of fits considered")
-
-    options, args = parser.parse_args()
-    if len(args) != 6:
-        parser.error("incorrect number of arguments")
-    return options, args
+    return p.parse_args()
 
 
 def report_solutions(asmb, mdl, mhs, restraint_set, dmap, mapping_data, combs,
@@ -170,8 +168,9 @@ def run(asmb_fn, proteomics_fn, mapping_fn, params_fn,
 
 
 def main():
-    options, args = parse_args()
-    run(args[0], args[1], args[2], args[3], args[4], args[5],
-        options.max)
+    args = parse_args()
+    run(args.assembly_file, args.proteomics_file, args.mapping_file,
+        args.param_file, args.combinations_file, args.scores_file, args.max)
+
 if __name__ == "__main__":
     main()

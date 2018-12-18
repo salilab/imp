@@ -21,7 +21,7 @@ import ihm.dataset
 class GaussianEMRestraint(object):
     """Fit Gaussian-decorated particles to an EM map
     (also represented with a set of Gaussians)
-    \note This class wraps an isd::GaussianEMRestraint
+    @note This class wraps an isd::GaussianEMRestraint
     """
     def __init__(self, densities,
                  target_fn='',
@@ -369,7 +369,6 @@ class GaussianEMRestraint(object):
         return self.rs
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         ccc = self.gaussianEM_restraint.get_cross_correlation_coefficient()
@@ -397,7 +396,7 @@ class GaussianEMRestraint(object):
 
 class CrossCorrelationRestraint(object):
     """Fit particles to an EM map. This creates a simulate density map and updates them every eval.
-    \note Wraps an em::FitRestraint
+    @note Wraps an em::FitRestraint
     """
     def __init__(self,
                  ps,
@@ -458,7 +457,6 @@ class CrossCorrelationRestraint(object):
         return self.rs
 
     def get_output(self):
-        self.mdl.update()
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)
@@ -506,7 +504,6 @@ class ElectronMicroscopy2D(object):
         self.rs.set_weigth(self.weight)
 
     def get_output(self):
-        self.m.update()
         output = {}
         score = self.weight*self.rs.unprotected_evaluate(None)
         output["_TotalScore"] = str(score)

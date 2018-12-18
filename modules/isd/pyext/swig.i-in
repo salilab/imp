@@ -11,6 +11,7 @@ IMP_SWIG_OBJECT(IMP::isd, CrossLinkMSRestraint, CrossLinkMSRestraints);
 IMP_SWIG_OBJECT(IMP::isd, LogWrapper, LogWrappers);
 IMP_SWIG_OBJECT(IMP::isd, UniformPrior, UniformPriors);
 IMP_SWIG_OBJECT(IMP::isd, JeffreysRestraint, JeffreysRestraints);
+IMP_SWIG_OBJECT(IMP::isd, NormalSigmaPCRestraint, NormalSigmaPCRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaJeffreysRestraint, vonMisesKappaJeffreysRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaConjugateRestraint, vonMisesKappaConjugateRestraints);
 IMP_SWIG_BASE_OBJECT(IMP::isd, Distribution, Distributions);
@@ -20,6 +21,7 @@ IMP_SWIG_OBJECT(IMP::isd, FNormal, FNormals);
 IMP_SWIG_OBJECT(IMP::isd, FStudentT, FStudentTs);
 IMP_SWIG_OBJECT(IMP::isd, vonMises, vonMisess);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesSufficient, vonMisesSufficients);
+IMP_SWIG_OBJECT(IMP::isd, PenalizedComplexityPrior, PenalizedComplexityPriors);
 IMP_SWIG_DECORATOR(IMP::isd, Nuisance, Nuisances);
 IMP_SWIG_DECORATOR(IMP::isd, Scale, Scales);
 IMP_SWIG_DECORATOR(IMP::isd, Switching, Switchings);
@@ -83,11 +85,13 @@ def create_model_and_particles():
 %include "IMP/isd/Switching.h"
 %include "IMP/isd/Weight.h"
 %include "IMP/isd/JeffreysRestraint.h"
+%include "IMP/isd/NormalSigmaPCRestraint.h"
 %include "IMP/isd/distribution.h"
 %include "IMP/isd/FNormal.h"
 %include "IMP/isd/FStudentT.h"
 %include "IMP/isd/vonMises.h"
 %include "IMP/isd/vonMisesSufficient.h"
+%include "IMP/isd/PenalizedComplexityPrior.h"
 %include "IMP/isd/vonMisesKappaJeffreysRestraint.h"
 %include "IMP/isd/vonMisesKappaConjugateRestraint.h"
 %include "IMP/isd/NOERestraint.h"

@@ -6,12 +6,11 @@ import IMP.em
 def main():
     IMP.set_log_level(IMP.SILENT)
     usage = "%prog [options] <em map> "
-    parser = IMP.OptionParser(usage=usage, imp_module=IMP.em)
-    (options, args) = parser.parse_args()
-    if len(args) != 1:
-        parser.error("incorrect number of arguments")
-    map_fn = args[0]
-    dmap = IMP.em.read_map(map_fn)
+    p = IMP.ArgumentParser()
+    p.add_argument("em_map", help="EM density map file name")
+
+    args = p.parse_args()
+    dmap = IMP.em.read_map(args.em_map)
     dmap.get_header().show()
 
 if __name__ == "__main__":

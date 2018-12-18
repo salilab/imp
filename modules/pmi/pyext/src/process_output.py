@@ -1,155 +1,52 @@
 #! /usr/bin/env python
 
-# This application works with either argparse (python 2.7) or optparse
-# (python 2.6)
-
-
 from __future__ import print_function
-argparse = None
 try:
     import argparse
 except ImportError:
-    from optparse import OptionParser
-    from optparse import Option, OptionValueError
+    from IMP._compat_argparse import argparse
 
 
 import difflib
 
-if argparse:
-    parser = argparse.ArgumentParser(
-        description='Process output data file saved as dictionaries. It has two modality: print selected fields for all lines or print a particular line where a filed has a given value. Example of usage: process_output.py --soft -s To E S -f log.3.native-2-no-red. process_output.py --soft --search_field EV0 --search_value 5.67750116023 -f log.3.native-2-no-red')
-    parser.add_argument(
-        '-f',
-        action="store",
-        dest="filename",
-        help="file name to process")
-    parser.add_argument(
-        '-s',
-        dest="fields",
-        nargs="+",
-        help="Specify all fields to be printed. Multiple flags will append a list of fields to be printed")
-    parser.add_argument(
-        '-t',
-        dest="single_column_field",
-        help="Specify a single column field to be printed. It will be printed as a column. If the field name is not complete, it will print all fields whose name contain the queried string.")
-    parser.add_argument(
-        '-p',
-        action="store_true",
-        dest="print_fields",
-        default=False,
-        help="print the fields contained in the file")
-    parser.add_argument(
-        '--head',
-        action="store_true",
-        dest="print_header",
-        default=False,
-        help="print the fields contained in the file (only stat2)")
-    parser.add_argument(
-        '-n',
-        action="store",
-        dest="print_raw_number",
-        help="print the selected raw")
-    parser.add_argument(
-        '--soft',
-        action="store_true",
-        dest="soft_match",
-        default=False,
-        help="Soft match. Closest matching field will be printed, e.g. S will give Step_Number, En will give energy, etc. ")
-    parser.add_argument(
-        '--search_field',
-        dest="search_field",
-        help="Search a line from the file. Specify the field to be searched for. ")
-    parser.add_argument(
-        '--search_value',
-        dest="search_value",
-        help="Search a line from the file. Specify the value to be searched for. ")
-    parser.add_argument(
-        '--nframe',
-        action="store_true",
-        dest="nframe",
-        default=False,
-        help="Print the frame number as initial column")
+p = argparse.ArgumentParser(
+            description="Process output data file saved as dictionaries. "
+                        "It has two modalities: print selected fields for all "
+                        "lines or print a particular line where a field has a "
+                        "given value. Example of usage: process_output.py "
+                        "--soft -s To E S -f log.3.native-2-no-red. "
+                        "process_output.py --soft --search_field EV0 "
+                        "--search_value 5.67750116023 -f log.3.native-2-no-red")
+p.add_argument('-f', action="store", dest="filename",
+               help="file name to process")
+p.add_argument('-s', dest="fields", nargs="+",
+               help="Specify all fields to be printed. Multiple flags "
+                    "will append a list of fields to be printed")
+p.add_argument('-t', dest="single_column_field",
+               help="Specify a single column field to be printed. It "
+                    "will be printed as a column. If the field name is "
+                    "not complete, it will print all fields whose name "
+                    "contain the queried string.")
+p.add_argument('-p', action="store_true", dest="print_fields",
+               default=False, help="print the fields contained in the file")
+p.add_argument('--head', action="store_true", dest="print_header",
+               default=False,
+               help="print the fields contained in the file (only stat2)")
+p.add_argument('-n', action="store", dest="print_raw_number",
+               help="print the selected raw")
+p.add_argument('--soft', action="store_true", dest="soft_match", default=False,
+               help="Soft match. Closest matching field will be printed, "
+                    "e.g. S will give Step_Number, En will give energy, etc. ")
+p.add_argument('--search_field', dest="search_field",
+               help="Search a line from the file. Specify the field to "
+                    "be searched for. ")
+p.add_argument('--search_value', dest="search_value",
+               help="Search a line from the file. Specify the value to "
+                    "be searched for. ")
+p.add_argument('--nframe', action="store_true", dest="nframe", default=False,
+               help="Print the frame number as initial column")
 
-    result = parser.parse_args()
-
-else:
-    class MultipleOption(Option):
-        ACTIONS = Option.ACTIONS + ("extend",)
-        STORE_ACTIONS = Option.STORE_ACTIONS + ("extend",)
-        TYPED_ACTIONS = Option.TYPED_ACTIONS + ("extend",)
-        ALWAYS_TYPED_ACTIONS = Option.ALWAYS_TYPED_ACTIONS + ("extend",)
-
-        def take_action(self, action, dest, opt, value, values, parser):
-            if action == "extend":
-                values.ensure_value(dest, []).append(value)
-            else:
-                Option.take_action(
-                    self,
-                    action,
-                    dest,
-                    opt,
-                    value,
-                    values,
-                    parser)
-
-    parser = OptionParser(
-        option_class=MultipleOption,
-        usage='Process output data file saved as dictionaries. It has two modality: print selected fields for all lines or print a particular line where a filed has a given value. Example of usage: process_output.py --soft -s To -s E -s S -f log.3.native-2-no-red. process_output.py --soft --search_field EV0 --search_value 5.67750116023 -f log.3.native-2-no-red')
-    parser.add_option(
-        '-f',
-        action="store",
-        dest="filename",
-        help="file name to process")
-    parser.add_option(
-        '-s',
-        dest="fields",
-        action="extend",
-        type="string",
-        help="Specify all fields to be printed. Multiple flags will append a list of fields to be printed")
-    parser.add_option(
-        '-t',
-        dest="single_column_field",
-        help="Specify a single column field to be printed. It will be printed as a column. If the field name is not complete, it will print all fields whose name contain the queried string.")
-    parser.add_option(
-        '-p',
-        action="store_true",
-        dest="print_fields",
-        default=False,
-        help="print the fields contained in the file")
-    parser.add_option(
-        '--head',
-        action="store_true",
-        dest="print_header",
-        default=False,
-        help="print the fields contained in the file (only stat2)")
-    parser.add_option(
-        '-n',
-        action="store",
-        dest="print_raw_number",
-        help="print the selected raw")
-    parser.add_option(
-        '--soft',
-        action="store_true",
-        dest="soft_match",
-        default=False,
-        help="Soft match. Closest matching field will be printed, e.g. S will give Step_Number, En will give energy, etc. ")
-    parser.add_option(
-        '--search_field',
-        dest="search_field",
-        help="Search a line from the file. Specify the field to be searched for. ")
-    parser.add_option(
-        '--search_value',
-        dest="search_value",
-        help="Search a line from the file. Specify the value to be searched for. ")
-    parser.add_option(
-        '--nframe',
-        dest="nframe",
-        action="store_true",
-        default=False,
-        help="Print the frame number as initial column")
-
-    (result, args) = parser.parse_args()
-
+result = p.parse_args()
 
 isstat1 = False
 isstat2 = False

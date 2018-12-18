@@ -24,12 +24,12 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 #include <CGAL/make_surface_mesh.h>
 #include <CGAL/Implicit_surface_3.h>
 #include <CGAL/Surface_mesh_simplification/HalfedgeGraph_Polyhedron_3.h>
-/*#include <CGAL/Surface_mesh_simplification/edge_collapse.h>
-#include <CGAL/Surface_mesh_simplification/Policies/
-Edge_collapse/Count_stop_predicate.h>
-*/
-#include <CGAL/IO/output_surface_facets_to_polyhedron.h>
 #include <CGAL/version.h>
+#if CGAL_VERSION_NR >= 1041201000
+# include <CGAL/IO/facets_in_complex_2_to_triangle_mesh.h>
+#else
+# include <CGAL/IO/output_surface_facets_to_polyhedron.h>
+#endif
 
 namespace {
 typedef CGAL::Exact_predicates_exact_constructions_kernel EKernel;
@@ -136,12 +136,10 @@ IMP::Vector<algebra::Vector3Ds> get_facets(CGAL::Nef_polyhedron_3<K> &np) {
 template <class K>
 std::pair<algebra::Vector3Ds, Ints> get_indexed_facets(
     CGAL::Polyhedron_3<K> &p) {
-  // CGAL_precondition( p.is_valid(true));
   Ints faces;
   algebra::Vector3Ds coords;
   typename std::map<typename CGAL::Polyhedron_3<K>::Vertex_handle, int,
                     AddressLess> vertices;
-  // std::map<Polyhedron::Vertex_handle, int> vertices;
   for (typename CGAL::Polyhedron_3<K>::Face_iterator it = p.facets_begin();
        it != p.facets_end(); ++it) {
     typename CGAL::Polyhedron_3<K>::Facet::Halfedge_around_facet_circulator c =
@@ -376,92 +374,18 @@ const typename Tr::Vertex_handle get_vertex(const Tr &tr, const F &f,
   return f->first->vertex(tr.vertex_triple_index(f->second, i));
 }
 
-/*template <class HDS, class C2T3>
-  class Build_triangle : public CGAL::Modifier_base<HDS> {
-    C2T3 &c2t3_;
-  public:
-    Build_triangle( C2T3 &c2t3): c2t3_(c2t3) {}
-    void operator()( HDS& hds) {
-      // Postcondition: `hds' is a valid polyhedral surface.
-      CGAL::Polyhedron_incremental_builder_3<HDS> B( hds, true);
-      B.begin_surface( std::distance(c2t3_.vertices_begin(),
-                                     c2t3_.vertices_end()),
-                       c2t3_.number_of_facets());
-      typedef typename HDS::Vertex   Vertex;
-      typedef typename Vertex::Point Point;
-
-      std::map<C2t3::Vertex_handle, int> map;
-      for (C2t3::Vertex_iterator it= c2t3_.vertices_begin();
-           it != c2t3_.vertices_end(); ++it) {
-        int sz= map.size();
-        Point pt(it->point()[0],
-                 it->point()[1],
-                 it->point()[2]);
-        map[it]=sz;
-        B.add_vertex(pt);
-      }
-      for (C2t3::Facet_iterator it= c2t3_.facets_begin();
-           it != c2t3_.facets_end(); ++it) {
-        //B.begin_facet();
-        Ints facet;
-        for (unsigned int i=0; i< 3; ++i) {
-          facet.push_back(map.find(get_vertex(c2t3_.triangulation(),
-                                                    it, i))->second);
-        }
-        if (B.test_facet(facet.begin(), facet.end())) {
-          B.add_facet(facet.begin(), facet.end());
-        } else {
-          B.add_facet(facet.rbegin(), facet.rend());
-        }
-        //B.end_facet();
-      }
-      B.end_surface();
-    }
-    };*/
-
 template <class Grid>
 std::pair<algebra::Vector3Ds, Ints> get_iso_surface_t(const Grid &grid,
                                                       double iso_level) {
   Tr tr;          // 3D-Delaunay triangulation
   C2t3 c2t3(tr);  // 2D-complex in 3D-Delaunay triangulation
   cgal_triangulate_surface(grid, iso_level, c2t3);
-  /*std::pair<algebra::Vector3Ds,Ints > ret;
-  std::map<C2t3::Vertex_handle, int> map;
-  for (C2t3::Vertex_iterator it= c2t3.vertices_begin();
-       it != c2t3.vertices_end(); ++it) {
-    int sz= map.size();
-    map[it]=sz;
-    ret.first.push_back(trp(it->point()));
-  }
-  for (C2t3::Facet_iterator it= c2t3.facets_begin();
-       it != c2t3.facets_end(); ++it) {
-    //B.begin_facet();
-    Ints facet;
-    for (unsigned int i=0; i< 3; ++i) {
-      facet.push_back(map.find(get_vertex(c2t3.triangulation(),
-                                          it, i))->second);
-    }
-    algebra::Vector3D n=
-      algebra::get_vector_product(ret.first[facet[1]]- ret.first[facet[0]],
-                            ret.first[facet[2]]- ret.first[facet[0]]);
-    double gc=algebra::get_trilinearly_interpolated(grid,
-                                ret.first[facet[0]]+n.get_unit_vector());
-    if (gc < iso_level) {
-      ret.second.insert(ret.second.end(), facet.begin(), facet.end());
-    } else {
-      ret.second.insert(ret.second.end(), facet.rbegin(), facet.rend());
-    }
-    ret.second.push_back(-1);
-  }*/
   CGAL::Polyhedron_3<GT> poly;
+#if CGAL_VERSION_NR >= 1041201000
+  CGAL::facets_in_complex_2_to_triangle_mesh(c2t3, poly);
+#else
   CGAL::output_surface_facets_to_polyhedron(c2t3, poly);
-  /*typedef CGAL::Polyhedron_3<IKernel>         Polyhedron;
-  typedef Polyhedron::HalfedgeDS             HalfedgeDS;
-  Polyhedron p;
-  Build_triangle<HalfedgeDS, C2t3> triangle(c2t3);
-  std::cout << "building polyhedron" << std::endl;
-  p.delegate( triangle);
-  std::cout << "returning facets" << std::endl;*/
+#endif
   return get_indexed_facets(poly);
 }
 }

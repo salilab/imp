@@ -35,6 +35,7 @@ class Atom(object):
        :param asym_unit: The asymmetric unit that this sphere represents
        :type asym_unit: :class:`ihm.AsymUnit`
        :param int seq_id: The residue index represented by this atom
+              (can be None for HETATM sites)
        :param str atom_id: The name of the atom in the residue
        :param str type_symbol: Element name
        :param float x: x coordinate of the atom
@@ -93,13 +94,12 @@ class Model(object):
         for s in self._spheres:
             yield s
 
-    def set_spheres(self, spheregen):
-        """Populate the model's set of :class:`Sphere` objects from the
-           given Python generator.
+    def add_sphere(self, sphere):
+        """Add to the model's set of :class:`Sphere` objects.
 
            See :meth:`get_spheres` for more details.
         """
-        self._spheres = [s for s in spheregen]
+        self._spheres.append(sphere)
 
     def get_atoms(self):
         """Yield :class:`Atom` objects that represent this model.
@@ -109,13 +109,12 @@ class Model(object):
         for a in self._atoms:
             yield a
 
-    def set_atoms(self, atomgen):
-        """Populate the model's set of :class:`Atom` objects from the
-           given Python generator.
+    def add_atom(self, atom):
+        """Add to the model's set of :class:`Atom` objects.
 
            See :meth:`get_spheres` for more details.
         """
-        self._atoms = [a for a in atomgen]
+        self._atoms.append(atom)
 
 
 class ModelGroup(list):

@@ -117,13 +117,13 @@ else()
   SET(IMP_LIB_TYPE SHARED)
 endif()
 
-string(REGEX MATCHALL "[a-zA-Z]+" percpplist "${IMP_PER_CPP_COMPILATION}")
+string(REGEX MATCHALL "[a-zA-Z0-9_]+" percpplist "${IMP_PER_CPP_COMPILATION}")
 foreach(m ${percpplist})
   message(STATUS ${m} " is percpp")
   set(IMP_${m}_IS_PER_CPP 1)
 endforeach(m)
 
-string(REGEX MATCHALL "[a-zA-Z0-9]+" cudalist "${IMP_CUDA}")
+string(REGEX MATCHALL "[a-zA-Z0-9_]+" cudalist "${IMP_CUDA}")
 foreach(m ${cudalist})
   string(TOUPPER ${m} M)
   message(STATUS ${m} " is cuda lib")
@@ -255,7 +255,7 @@ else()
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Graph" "ok=False")
 endif()
 
-include_directories(${Boost_INCLUDE_DIR})
+include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
 set(BOOST.FILESYSTEM_LIBRARIES ${Boost_FILESYSTEM_LIBRARY_RELEASE})
@@ -269,6 +269,7 @@ set(BOOST.RANDOM_LIBRARIES ${Boost_RANDOM_LIBRARY_RELEASE})
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.FileSystem" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.ProgramOptions" "ok=True")
 file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Thread" "ok=True")
 
 if(NOT IMP_STATIC)
   # Automatically enable OpenMP if available and at least version 3

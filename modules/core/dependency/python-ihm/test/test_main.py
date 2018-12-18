@@ -16,6 +16,7 @@ utils.set_search_paths(TOPDIR)
 import ihm
 import ihm.location
 import ihm.representation
+import ihm.model
 
 class Tests(unittest.TestCase):
     def test_system(self):
@@ -31,16 +32,36 @@ class Tests(unittest.TestCase):
         self.assertEqual(cc1.code, 'G')
         self.assertEqual(cc1.code_canonical, 'G')
         self.assertEqual(cc1.type, 'other')
+        self.assertEqual(cc1.formula, None)
+        self.assertEqual(cc1.formula_weight, None)
         cc2 = ihm.ChemComp(id='GLY', code='G', code_canonical='G')
         cc3 = ihm.ChemComp(id='G', code='G', code_canonical='G')
         self.assertEqual(cc1, cc2)
         self.assertEqual(hash(cc1), hash(cc2))
         self.assertNotEqual(cc1, cc3)
 
+    def test_chem_comp_weight(self):
+        """Test ChemComp.formula_weight"""
+        # No formula
+        cc = ihm.ChemComp('X', 'X', 'X', formula=None)
+        self.assertEqual(cc.formula_weight, None)
+        # Bad formula
+        cc = ihm.ChemComp('X', 'X', 'X', formula='C90H')
+        self.assertRaises(ValueError, lambda x: x.formula_weight, cc)
+        # Formula with unknown element
+        cc = ihm.ChemComp('X', 'X', 'X', formula='C5 Y')
+        self.assertEqual(cc.formula_weight, None)
+        # Formula with known elements and no charge
+        cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P')
+        self.assertAlmostEqual(cc.formula_weight, 115.136, places=2)
+        # Formula with known elements and formal charge
+        cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P 1')
+        self.assertAlmostEqual(cc.formula_weight, 115.136, places=2)
+
     def test_peptide_chem_comp(self):
         """Test PeptideChemComp class"""
         cc1 = ihm.PeptideChemComp(id='GLY', code='G', code_canonical='G')
-        self.assertEqual(cc1.type, 'Peptide linking')
+        self.assertEqual(cc1.type, 'peptide linking')
 
     def test_l_peptide_chem_comp(self):
         """Test LPeptideChemComp class"""
@@ -57,15 +78,28 @@ class Tests(unittest.TestCase):
         cc1 = ihm.DNAChemComp(id='DG', code='DG', code_canonical='G')
         self.assertEqual(cc1.type, 'DNA linking')
 
+    def test_non_polymer_chem_comp(self):
+        """Test NonPolymerChemComp class"""
+        cc1 = ihm.NonPolymerChemComp('HEM')
+        self.assertEqual(cc1.type, 'non-polymer')
+
+    def test_water_chem_comp(self):
+        """Test WaterChemComp class"""
+        cc1 = ihm.WaterChemComp()
+        self.assertEqual(cc1.type, 'non-polymer')
+
     def test_l_peptide_alphabet(self):
         """Test LPeptideAlphabet class"""
         a = ihm.LPeptideAlphabet
-        self.assertEqual(a._comps['G'].type, 'Peptide linking')
+        self.assertEqual(a._comps['G'].type, 'peptide linking')
 
         self.assertEqual(a._comps['M'].id, 'MET')
         self.assertEqual(a._comps['M'].code, 'M')
         self.assertEqual(a._comps['M'].code_canonical, 'M')
         self.assertEqual(a._comps['M'].type, 'L-peptide linking')
+        self.assertEqual(a._comps['M'].name, "METHIONINE")
+        self.assertEqual(a._comps['M'].formula, 'C5 H11 N O2 S')
+        self.assertAlmostEqual(a._comps['M'].formula_weight, 149.211, places=2)
 
         a = ihm.LPeptideAlphabet()
         self.assertTrue('MSE' in a)
@@ -85,6 +119,25 @@ class Tests(unittest.TestCase):
         self.assertEqual(a['UNK'].code, 'UNK')
         self.assertEqual(a['UNK'].code_canonical, 'X')
         self.assertEqual(a['UNK'].type, 'L-peptide linking')
+
+    def test_d_peptide_alphabet(self):
+        """Test DPeptideAlphabet class"""
+        dcode_from_canon =  {'A': 'DAL', 'C': 'DCY', 'D': 'DAS', 'E': 'DGL',
+                             'F': 'DPN', 'H': 'DHI', 'I': 'DIL', 'K': 'DLY',
+                             'L': 'DLE', 'M': 'MED', 'N': 'DSG', 'P': 'DPR',
+                             'Q': 'DGN', 'R': 'DAR', 'S': 'DSN', 'T': 'DTH',
+                             'V': 'DVA', 'W': 'DTR', 'Y': 'DTY', 'G': 'G'}
+        d = ihm.DPeptideAlphabet
+        l = ihm.LPeptideAlphabet
+        # Weights and formulae of all standard amino acids should be identical
+        # between L- and D- forms (except for lysine, where the formal charge
+        # differs between the two forms)
+        for canon in 'ACDEFGHILMNPQRSTVWY':
+            lcode = canon
+            dcode = dcode_from_canon[canon]
+            self.assertEqual(d._comps[dcode].formula, l._comps[lcode].formula)
+            self.assertAlmostEqual(d._comps[dcode].formula_weight,
+                                   l._comps[lcode].formula_weight, places=2)
 
     def test_rna_alphabet(self):
         """Test RNAAlphabet class"""
@@ -106,10 +159,33 @@ class Tests(unittest.TestCase):
         # Should compare identical if sequences are the same
         e2 = ihm.Entity('AHCD', description='bar')
         e3 = ihm.Entity('AHCDE', description='foo')
+        heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
         self.assertEqual(e1, e2)
         self.assertNotEqual(e1, e3)
         self.assertEqual(e1.seq_id_range, (1,4))
         self.assertEqual(e3.seq_id_range, (1,5))
+        # seq_id does not exist for nonpolymers
+        self.assertEqual(heme.seq_id_range, (None,None))
+
+    def test_entity_weight(self):
+        """Test Entity.formula_weight"""
+        e1 = ihm.Entity('AHCD')
+        self.assertAlmostEqual(e1.formula_weight, 499.516, places=1)
+        # Entity containing a component with unknown weight
+        heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
+        self.assertEqual(heme.formula_weight, None)
+
+    def test_entity_type(self):
+        """Test Entity.type"""
+        protein = ihm.Entity('AHCD')
+        heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
+        water = ihm.Entity([ihm.WaterChemComp()])
+        self.assertEqual(protein.type, 'polymer')
+        self.assertTrue(protein.is_polymeric())
+        self.assertEqual(heme.type, 'non-polymer')
+        self.assertFalse(heme.is_polymeric())
+        self.assertEqual(water.type, 'water')
+        self.assertFalse(water.is_polymeric())
 
     def test_software(self):
         """Test Software class"""
@@ -204,11 +280,14 @@ class Tests(unittest.TestCase):
     def test_entity_range(self):
         """Test EntityRange class"""
         e = ihm.Entity('AHCDAH')
+        heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
         e._id = 42
         self.assertEqual(e.seq_id_range, (1,6))
         r = e(3,4)
         self.assertEqual(r.seq_id_range, (3,4))
         self.assertEqual(r._id, 42)
+        # Cannot create ranges for nonpolymeric entities
+        self.assertRaises(TypeError, heme.__call__, (1,1))
         samer = e(3,4)
         otherr = e(2,4)
         self.assertEqual(r, samer)
@@ -219,13 +298,19 @@ class Tests(unittest.TestCase):
     def test_asym_range(self):
         """Test AsymUnitRange class"""
         e = ihm.Entity('AHCDAH')
+        heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
         a = ihm.AsymUnit(e)
+        aheme = ihm.AsymUnit(heme)
         a._id = 42
         self.assertEqual(a.seq_id_range, (1,6))
+        # seq_id is not defined for nonpolymers
+        self.assertEqual(aheme.seq_id_range, (None,None))
         r = a(3,4)
         self.assertEqual(r.seq_id_range, (3,4))
         self.assertEqual(r._id, 42)
         self.assertEqual(r.entity, e)
+        # Cannot create ranges for nonpolymeric entities
+        self.assertRaises(TypeError, aheme.__call__, (1,1))
         samer = a(3,4)
         otherr = a(2,4)
         self.assertEqual(r, samer)
@@ -277,14 +362,35 @@ class Tests(unittest.TestCase):
         """Test _all_model_groups() method"""
         model_group1 = []
         model_group2 = []
+        model_group3 = []
         state1 = [model_group1, model_group2]
         state2 = [model_group2, model_group2]
         s = ihm.System()
         s.state_groups.append([state1, state2])
+
+        proc = ihm.model.OrderedProcess("time steps")
+        edge = ihm.model.ProcessEdge(model_group1, model_group2)
+        step = ihm.model.ProcessStep([edge], "Linear reaction")
+        proc.steps.append(step)
+        s.ordered_processes.append(proc)
+
+        e1 = ihm.model.Ensemble(model_group=model_group3, num_models=10,
+                                post_process=None, name='cluster1',
+                                clustering_method='Hierarchical',
+                                clustering_feature='RMSD',
+                                precision=4.2)
+        s.ensembles.append(e1)
+
         mg = s._all_model_groups()
-        # List may contain duplicates
+        # List may contain duplicates but only includes states
         self.assertEqual(list(mg), [model_group1, model_group2,
                                     model_group2, model_group2])
+
+        mg = s._all_model_groups(only_in_states=False)
+        # List contains all model groups
+        self.assertEqual(list(mg), [model_group1, model_group2,
+                                    model_group2, model_group2,
+                                    model_group3, model_group1, model_group2])
 
     def test_all_models(self):
         """Test _all_models() method"""

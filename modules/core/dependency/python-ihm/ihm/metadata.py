@@ -330,7 +330,9 @@ class PDBParser(Parser):
         template_asym_id = info.group(3)
         seq_id_range = (int(info.group(5)), int(info.group(7)))
         target_asym_id = info.group(6)
-        sequence_identity = float(info.group(8))
+        sequence_identity = startmodel.SequenceIdentity(
+                          float(info.group(8)),
+                          startmodel.SequenceIdentityDenominator.SHORTER_LENGTH)
 
         # Assume a code of 1abc, 1abc_N, 1abcX, or 1abcX_N refers
         # to a real PDB structure

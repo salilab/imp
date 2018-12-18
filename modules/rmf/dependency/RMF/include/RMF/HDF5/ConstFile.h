@@ -18,7 +18,7 @@ namespace RMF {
 namespace HDF5 {
 
 /** Store a handle to a non-writable HDF5 file. See
-   \external{https://www.hdfgroup.org/HDF5/doc/RM/RM_H5F.html,
+   \external{https://support.hdfgroup.org/HDF5/doc/RM/RM_H5F.html,
    the HDF5 manual} for more information.
 
    \note At the moment, a given file can only be opened once within a

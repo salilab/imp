@@ -1,10 +1,10 @@
 """@namespace IMP.pmi.topology
-Set of python classes to create a multi-state, multi-resolution IMP hierarchy.
-* Start by creating a System with `mdl = IMP.Model(); s = IMP.pmi.topology.System(mdl)`. The System will store all the states.
-* Then call System.create_state(). You can easily create a multistate system by calling this function multiples times.
+ Set of Python classes to create a multi-state, multi-resolution IMP hierarchy.
+* Start by creating a System with `model = IMP.Model(); s = IMP.pmi.topology.System(model)`. The System will store all the states.
+* Then call System.create_state(). You can easily create a multistate system by calling this function multiple times.
 * For each State, call State.create_molecule() to add a Molecule (a uniquely named polymer). This function returns the Molecule object which can be passed to various PMI functions.
 * Some useful functions to help you set up your Molecules:
- * Access the sequence residues with slicing (Molecule[a:b]) or functions like Molecule.get_atomic_residues() and Molecule.get_non_atomic_residues(). These functions all return python sets for easy set arithmetic using & (and), | (or), - (difference)
+ * Access the sequence residues with slicing (Molecule[a:b]) or functions like Molecule.get_atomic_residues() and Molecule.get_non_atomic_residues(). These functions all return Python sets for easy set arithmetic using & (and), | (or), - (difference)
  * Molecule.add_structure() to add structural information from a PDB file.
  * Molecule.add_representation() to create a representation unit - here you can choose bead resolutions as well as alternate representations like densities or ideal helices.
  * Molecule.create_clone() lets you set up a molecule with identical representations, just a different chain ID. Use Molecule.create_copy() if you want a molecule with the same sequence but that allows custom representations.
@@ -25,13 +25,14 @@ import IMP.pmi
 import IMP.pmi.tools
 import csv
 import os
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from . import system_tools
 from bisect import bisect_left
 from math import pi,cos,sin
 from operator import itemgetter
+import weakref
 
-def _build_ideal_helix(mdl, residues, coord_finder):
+def _build_ideal_helix(model, residues, coord_finder):
     """Creates an ideal helix from the specified residue range
     Residues MUST be contiguous.
     This function actually adds them to the TempResidue hierarchy
@@ -41,20 +42,21 @@ def _build_ideal_helix(mdl, residues, coord_finder):
     # this function creates a CAlpha helix structure (which can be used for coarsening)
     for n, tempres in enumerate(residues):
         if tempres.get_has_structure():
-            raise Exception("You tried to build ideal_helix for a residue "
-                            "that already has structure:",tempres)
-        if n>0 and (not tempres.get_index()==prev_idx+1):
-            raise Exception("Passed non-contiguous segment to build_ideal_helix for",tempres.get_molecule())
+            raise ValueError("You tried to build ideal_helix for a residue "
+                             "that already has structure: %s" % tempres)
+        if n > 0 and tempres.get_index() != prev_idx + 1:
+            raise ValueError("Passed non-contiguous segment to "
+                      "build_ideal_helix for %s" % tempres.get_molecule())
 
         # New residue particle will replace the TempResidue's existing (empty) hierarchy
-        rp = IMP.Particle(mdl)
+        rp = IMP.Particle(model)
         rp.set_name("Residue_%i" % tempres.get_index())
 
         # Copy the original residue type and index
         this_res = IMP.atom.Residue.setup_particle(rp,tempres.get_hierarchy())
 
         # Create the CAlpha
-        ap = IMP.Particle(mdl)
+        ap = IMP.Particle(model)
         d = IMP.core.XYZR.setup_particle(ap)
         x = 2.3 * cos(n * 2 * pi / 3.6)
         y = 2.3 * sin(n * 2 * pi / 3.6)
@@ -76,15 +78,20 @@ class _SystemBase(object):
     classes. It contains shared functions in common to these classes
     """
 
-    def __init__(self,mdl=None):
-        if mdl is None:
-            self.mdl=IMP.Model()
+    def __init__(self,model=None):
+        if model is None:
+            self.model=IMP.Model()
         else:
-            self.mdl=mdl
+            self.model=model
+
+    @property
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
 
     def _create_hierarchy(self):
         """create a new hierarchy"""
-        tmp_part=IMP.Particle(self.mdl)
+        tmp_part=IMP.Particle(self.model)
         return IMP.atom.Hierarchy.setup_particle(tmp_part)
 
     def _create_child(self,parent_hierarchy):
@@ -103,21 +110,23 @@ class _SystemBase(object):
 
 class System(_SystemBase):
     """This class initializes the root node of the global IMP.atom.Hierarchy."""
-    def __init__(self,mdl=None,name="System"):
-        _SystemBase.__init__(self,mdl)
+    def __init__(self,model=None,name="System"):
+        _SystemBase.__init__(self,model)
         self._number_of_states = 0
+        self._protocol_output = []
         self.states = []
         self.built=False
 
         # the root hierarchy node
         self.hier=self._create_hierarchy()
         self.hier.set_name(name)
+        self.hier._pmi2_system = weakref.ref(self)
 
     def get_states(self):
         return self.states
 
     def create_state(self):
-        """returns a new IMP.pmi.representation_new.State(), increment the state index"""
+        """Makes and returns a new IMP.pmi.topology.State in this system"""
         self._number_of_states+=1
         state = State(self,self._number_of_states-1)
         self.states.append(state)
@@ -127,19 +136,30 @@ class System(_SystemBase):
         return self.hier.get_name()
 
     def get_number_of_states(self):
-        """returns the total number of states generated"""
+        """Returns the total number of states generated"""
         return self._number_of_states
 
     def get_hierarchy(self):
         return self.hier
 
     def build(self,**kwargs):
-        """call build on all states"""
+        """Build all states"""
         if not self.built:
             for state in self.states:
                 state.build(**kwargs)
             self.built=True
         return self.hier
+
+    def add_protocol_output(self, p):
+        """Capture details of the modeling protocol.
+           @param p an instance of IMP.pmi.output.ProtocolOutput or a subclass.
+        """
+        self._protocol_output.append(p)
+#       p._each_metadata.append(self._metadata)
+#       p._file_datasets.append(self._file_dataset)
+        for state in self.states:
+            state._add_protocol_output(p, self)
+
 
 #------------------------
 
@@ -151,53 +171,66 @@ class State(_SystemBase):
         """Define a new state
         @param system        the PMI System
         @param state_index   the index of the new state
-        \note It's expected that you will not use this constructor directly,
-        but rather create it with pmi::System::create_molecule()
+        @note It's expected that you will not use this constructor directly,
+        but rather create it with pmi::System::create_state()
         """
-        self.mdl = system.get_hierarchy().get_model()
+        self.model = system.get_hierarchy().get_model()
         self.system = system
         self.hier = self._create_child(system.get_hierarchy())
-        self.hier.set_name("State_"+str(state_index))
-        self.molecules = defaultdict(list) # key is molecule name. value are the molecule copies!
+        self.short_name = self.long_name = "State_"+str(state_index)
+        self.hier.set_name(self.short_name)
+        self.molecules = IMP.pmi.tools.OrderedDict() # key is molecule name. value are the molecule copies!
         IMP.atom.State.setup_particle(self.hier,state_index)
         self.built = False
+        self._protocol_output = []
+        for p in system._protocol_output:
+            self._add_protocol_output(p, system)
+
+    @property
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
 
     def __repr__(self):
         return self.system.__repr__()+'.'+self.hier.get_name()
+
+    def _add_protocol_output(self, p, system):
+        state = p._add_state(self)
+        self._protocol_output.append((p, state))
+        state.model = system.model
+        state.prot = self.hier
 
     def get_molecules(self):
         """Return a dictionary where key is molecule name and value
         are the list of all copies of that molecule in setup order"""
         return self.molecules
 
-    def get_molecule(self,name,copy_num=0):
+    def get_molecule(self, name, copy_num=0):
         """Access a molecule by name and copy number
         @param name The molecule name used during setup
         @param copy_num The copy number based on input order.
         Default: 0. Set to 'all' to get all copies
         """
         if name not in self.molecules:
-            raise Exception("get_molecule() could not find molname",name)
-        if copy_num=='all':
+            raise KeyError("Could not find molname %s" % name)
+        if copy_num == 'all':
             return self.molecules[name]
         else:
-            if copy_num>len(self.molecules[name])-1:
-                raise Exception("get_molecule() copy number is too high:",copy_num)
             return self.molecules[name][copy_num]
 
-    def create_molecule(self,name,sequence='',chain_id='',is_nucleic=None):
+    def create_molecule(self, name, sequence='', chain_id='', is_nucleic=None):
         """Create a new Molecule within this State
-        @param name                the name of the molecule (string) it must not
-                                   be already used
+        @param name                the name of the molecule (string);
+                                   it must not be already used
         @param sequence            sequence (string)
-        @param chain_id            Chain id to assign to this molecule
+        @param chain_id            Chain ID to assign to this molecule
         """
         # check whether the molecule name is already assigned
         if name in self.molecules:
-            raise Exception('Cannot use a molecule name already used')
+            raise ValueError('Cannot use a molecule name already used')
 
         mol = Molecule(self,name,sequence,chain_id,copy_num=0,is_nucleic=is_nucleic)
-        self.molecules[name].append(mol)
+        self.molecules[name] = [mol]
         return mol
 
     def get_hierarchy(self):
@@ -208,8 +241,6 @@ class State(_SystemBase):
 
     def _register_copy(self,molecule):
         molname = molecule.get_hierarchy().get_name()
-        if molname not in self.molecules:
-            raise Exception("Trying to add a copy when the original doesn't exist!")
         self.molecules[molname].append(molecule)
 
     def build(self,**kwargs):
@@ -221,14 +252,77 @@ class State(_SystemBase):
             self.built=True
         return self.hier
 
+
+# Track residues read from PDB files
+_PDBElement = namedtuple('PDBElement', ['offset', 'filename', 'chain_id'])
+
+class _RepresentationHandler(object):
+    """Handle PMI representation and use it to populate that of any attached
+       ProtocolOutput objects"""
+    def __init__(self, name, pos, pdb_elements):
+        self.name = name
+        self.pos = pos
+        self.last_index = None
+        self.last_pdb_index = None
+        self.pdb_for_residue = {}
+        for residues, pdb in pdb_elements:
+            for r in residues:
+                self.pdb_for_residue[r.get_index()] = pdb
+
+    def _get_pdb(self, h):
+        """Return a PDBElement if the given hierarchy was read from a
+           PDB file"""
+        if IMP.atom.Residue.get_is_setup(h):
+            rind = IMP.atom.Residue(h).get_index()
+            return self.pdb_for_residue.get(rind, None)
+
+    def __call__(self, res):
+        """Handle a single residue"""
+        if len(self.pos) == 0:
+            return
+        h = res.hier
+        pi = h.get_particle_index()
+        # Do nothing if we already saw this hierarchy
+        if self.last_index is None or pi != self.last_index:
+            pdb = self._get_pdb(h)
+            self.last_index = pi
+            if pdb:
+                assert(IMP.atom.Fragment.get_is_setup(h.get_parent()))
+                frag = IMP.atom.Fragment(h.get_parent())
+                fragi = frag.get_particle_index()
+                # Do nothing if we already saw this PDB fragment
+                if self.last_pdb_index is not None \
+                   and self.last_pdb_index == fragi:
+                    return
+                self.last_pdb_index = fragi
+                indices = frag.get_residue_indexes()
+                for p, state in self.pos:
+                    p.add_pdb_element(state, self.name,
+                            indices[0], indices[-1], pdb.offset,
+                            pdb.filename, pdb.chain_id, frag)
+            elif IMP.atom.Fragment.get_is_setup(h):
+                frag = IMP.atom.Fragment(h)
+                indices = frag.get_residue_indexes()
+                for p, state in self.pos:
+                    p.add_bead_element(state, self.name,
+                            indices[0], indices[-1], 1, h)
+            elif IMP.atom.Residue.get_is_setup(h):
+                resind = IMP.atom.Residue(h).get_index()
+                for p, state in self.pos:
+                    p.add_bead_element(state, self.name, resind, resind, 1, h)
+            else:
+                raise TypeError("Unhandled hierarchy %s" % str(h))
+
+
 #------------------------
 
 class Molecule(_SystemBase):
     """Stores a named protein chain.
     This class is constructed from within the State class.
-    It wraps an IMP.atom.Molecule and IMP.atom.Copy
-    Structure is read using this class
-    Resolutions and copies can be registered, but are only created when build() is called
+    It wraps an IMP.atom.Molecule and IMP.atom.Copy.
+    Structure is read using this class.
+    Resolutions and copies can be registered, but are only created
+    when build() is called
     """
 
     def __init__(self,state,name,sequence,chain_id,copy_num,mol_to_clone=None,is_nucleic=None):
@@ -239,17 +333,18 @@ class Molecule(_SystemBase):
         @param chain_id        The chain of this molecule
         @param copy_num        Store the copy number
         @param mol_to_clone    The original molecule (for cloning ONLY)
-        \note It's expected that you will not use this constructor directly,
+        @note It's expected that you will not use this constructor directly,
         but rather create a Molecule with pmi::State::create_molecule()
         """
         # internal data storage
-        self.mdl = state.get_hierarchy().get_model()
+        self.model = state.get_hierarchy().get_model()
         self.state = state
         self.sequence = sequence
         self.built = False
         self.mol_to_clone = mol_to_clone
         self.is_nucleic=is_nucleic
         self.representations = []  # list of stuff to build
+        self._pdb_elements = []
         self._represented = IMP.pmi.tools.OrderedSet()   # residues with representation
         self.coord_finder = _FindCloseStructure() # helps you place beads by storing structure
         self._ideal_helices = [] # list of OrderedSets of tempresidues set to ideal helix
@@ -258,6 +353,7 @@ class Molecule(_SystemBase):
         self.hier = self._create_child(self.state.get_hierarchy())
         self.hier.set_name(name)
         IMP.atom.Copy.setup_particle(self.hier,copy_num)
+        self._name_with_copy = "%s.%d" % (name, copy_num)
         # store the sequence
         self.chain=IMP.atom.Chain.setup_particle(self.hier,chain_id)
         self.chain.set_sequence(self.sequence)
@@ -266,6 +362,11 @@ class Molecule(_SystemBase):
         for ns,s in enumerate(sequence):
             r = TempResidue(self,s,ns+1,ns,is_nucleic)
             self.residues.append(r)
+
+    @property
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
 
     def __repr__(self):
         return self.state.__repr__()+'.'+self.get_name()+'.'+ \
@@ -279,7 +380,7 @@ class Molecule(_SystemBase):
         elif isinstance(val,slice):
             return IMP.pmi.tools.OrderedSet(self.residues[val])
         else:
-            print("ERROR: range ends must be int or str. Stride must be int.")
+            raise TypeError("Indexes must be int or str")
 
     def get_hierarchy(self):
         """Return the IMP Hierarchy corresponding to this Molecule"""
@@ -305,7 +406,8 @@ class Molecule(_SystemBase):
         elif isinstance(a,str) and isinstance(b,str) and isinstance(stride,int):
             return IMP.pmi.tools.OrderedSet(self.residues[int(a)-1:int(b):stride])
         else:
-            print("ERROR: range ends must be int or str. Stride must be int.")
+            raise TypeError("Range ends must be int or str. "
+                            "Stride must be int.")
 
     def get_residues(self):
         """ Return all modeled TempResidues as a set"""
@@ -345,7 +447,7 @@ class Molecule(_SystemBase):
     def create_clone(self,chain_id):
         """Create a Molecule clone (automatically builds same structure and representation)
         @param chain_id If you want to set the chain ID of the copy to something
-        \note You cannot add structure or representations to a clone!
+        @note You cannot add structure or representations to a clone!
         """
         mol = Molecule(self.state,self.get_name(),self.sequence,chain_id,
                        copy_num=self.state.get_number_of_copies(self.get_name()),
@@ -357,31 +459,39 @@ class Molecule(_SystemBase):
                       offset=0,model_num=None,ca_only=False,
                       soft_check=False):
         """Read a structure and store the coordinates.
-        Returns the atomic residues (as a set)
-        @param pdb_fn    The file to read
-        @param chain_id  Chain ID to read
-        @param res_range Add only a specific set of residues from the PDB file.
-                         res_range[0] is the starting and res_range[1] is the ending residue index.
-        @param offset    Apply an offset to the residue indexes of the PDB file.
-                         This number is added to the PDB sequence.
-        @param model_num Read multi-model PDB and return that model
-        @param ca_only   Only read the CA positions from the PDB file
-        @param soft_check If True, it only warns if there are sequence mismatches between the pdb and
-               the Molecules sequence. Actually replaces the fasta values.
-                          If False (Default), it raises and exit when there are sequence mismatches.
-        \note If you are adding structure without a FASTA file, set soft_check to True
+        @eturn the atomic residues (as a set)
+        @param pdb_fn     The file to read
+        @param chain_id   Chain ID to read
+        @param res_range  Add only a specific set of residues from the PDB file.
+                          res_range[0] is the starting and res_range[1] is the
+                          ending residue index.
+        @param offset     Apply an offset to the residue indexes of the PDB
+                          file. This number is added to the PDB sequence.
+        @param model_num  Read multi-model PDB and return that model
+        @param ca_only    Only read the CA positions from the PDB file
+        @param soft_check If True, it only warns if there are sequence
+                          mismatches between the PDB and the Molecule (FASTA)
+                          sequence, and uses the sequence from the PDB.
+                          If False (Default), it raises an error when there
+                          are sequence mismatches.
+        @note If you are adding structure without a FASTA file, set soft_check
+              to True.
         """
         if self.mol_to_clone is not None:
-            raise Exception('You cannot call add_structure() for a clone')
+            raise ValueError('You cannot call add_structure() for a clone')
 
         self.pdb_fn = pdb_fn
 
         # get IMP.atom.Residues from the pdb file
-        rhs = system_tools.get_structure(self.mdl,pdb_fn,chain_id,res_range,offset,ca_only=ca_only)
+        rhs = system_tools.get_structure(self.model,pdb_fn,chain_id,res_range,offset,ca_only=ca_only)
         self.coord_finder.add_residues(rhs)
 
         if len(self.residues)==0:
             print("WARNING: Substituting PDB residue type with FASTA residue type. Potentially dangerous.")
+
+        # Store info for ProtocolOutput usage later
+        self._pdb_elements.append((rhs,
+               _PDBElement(offset=offset, filename=pdb_fn, chain_id=chain_id)))
 
         # load those into TempResidue object
         atomic_res = IMP.pmi.tools.OrderedSet() # collect integer indexes of atomic residues to return
@@ -456,13 +566,14 @@ class Molecule(_SystemBase):
                or float (from 0 to 1, a map from Blue to Green to Red)
                or IMP.display.Color object
 
-        \note You cannot call add_representation multiple times for the same residues.
+        @note You cannot call add_representation multiple times for the
+              same residues.
         """
 
         # can't customize clones
         if self.mol_to_clone is not None:
-            raise Exception('You cannot call add_representation() for a clone.'
-                            'Maybe use a copy instead')
+            raise ValueError('You cannot call add_representation() for a clone.'
+                             ' Maybe use a copy instead.')
 
         # format input
         if residues is None:
@@ -553,15 +664,26 @@ class Molecule(_SystemBase):
                                                     ideal_helix,
                                                     color))
 
+    def _all_protocol_output(self):
+        return self.state._protocol_output
+
     def build(self):
         """Create all parts of the IMP hierarchy
-        including Atoms, Residues, and Fragments/Representations and, finally, Copies
+        including Atoms, Residues, and Fragments/Representations and,
+        finally, Copies.
         Will only build requested representations.
-        /note Any residues assigned a resolution must have an IMP.atom.Residue hierarchy
-              containing at least a CAlpha. For missing residues, these can be constructed
-              from the PDB file
+        @note Any residues assigned a resolution must have an IMP.atom.Residue
+              hierarchy containing at least a CAlpha. For missing residues,
+              these can be constructed from the PDB file.
         """
         if not self.built:
+            # Add molecule name and sequence to any ProtocolOutput objects
+            name=self.hier.get_name()
+            for po, state in self._all_protocol_output():
+                po.create_component(state, name, True,
+                                    asym_name=self._name_with_copy)
+                po.add_component_sequence(state, name, self.sequence,
+                                          asym_name=self._name_with_copy)
             # if requested, clone structure and representations BEFORE building original
             if self.mol_to_clone is not None:
                 for nr,r in enumerate(self.mol_to_clone.residues):
@@ -598,12 +720,13 @@ class Molecule(_SystemBase):
             # first build any ideal helices (fills in structure for the TempResidues)
             for rep in self.representations:
                 if rep.ideal_helix:
-                    _build_ideal_helix(self.mdl,rep.residues,self.coord_finder)
+                    _build_ideal_helix(self.model,rep.residues,self.coord_finder)
 
             # build all the representations
             built_reps = []
             for rep in self.representations:
-                built_reps += system_tools.build_representation(self.hier,rep,self.coord_finder)
+                built_reps += system_tools.build_representation(
+                            self, rep, self.coord_finder)
 
             # sort them before adding as children
             built_reps.sort(key=lambda r: IMP.atom.Fragment(r).get_residue_indexes()[0])
@@ -612,6 +735,9 @@ class Molecule(_SystemBase):
                 br.update_parents()
             self.built = True
 
+            rephandler = _RepresentationHandler(self._name_with_copy,
+                                     list(self._all_protocol_output()),
+                                     self._pdb_elements)
             for res in self.residues:
                 idx = res.get_index()
 
@@ -629,6 +755,7 @@ class Molecule(_SystemBase):
                         # otherwise just store what you found
                         new_hier = IMP.atom.Hierarchy(new_p)
                     res.hier = new_hier
+                    rephandler(res)
                 else:
                     res.hier = None
             self._represented = IMP.pmi.tools.OrderedSet([a for a in self._represented])
@@ -775,7 +902,7 @@ class PDBSequences(object):
         @param pdb_fn  file
         @param name_map dictionary mapping the pdb chain id to final stored name
         """
-        self.m=model
+        self.model=model
         # self.sequences data-structure: (two-key dictionary)
         # it contains all contiguous fragments:
         # chain_id, tuples indicating first and last residue, sequence
@@ -788,9 +915,16 @@ class PDBSequences(object):
         self.sequences = IMP.pmi.tools.OrderedDict()
         self.read_sequences(pdb_fn,name_map)
 
+    @property
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
+    def m(self):
+        return self.model
 
     def read_sequences(self,pdb_fn,name_map):
-        t = IMP.atom.read_pdb(pdb_fn, self.m, IMP.atom.ATOMPDBSelector())
+        read_file = IMP.atom.read_pdb
+        if pdb_fn.endswith('.cif'):
+            read_file = IMP.atom.read_mmcif
+        t = read_file(pdb_fn, self.model, IMP.atom.ATOMPDBSelector())
         cs=IMP.atom.get_by_type(t,IMP.atom.CHAIN_TYPE)
         for c in cs:
             id=IMP.atom.Chain(c).get_id()
@@ -861,7 +995,7 @@ def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
     @param pdb_sequences IMP.pmi.topology.PDBSequences object
     @param show boolean default False, if True prints the alignments.
     The input objects should be generated using map_name dictionaries such that fasta_id
-    and pdb_chain_id are mapping to the same protein name. It needs Biopython.
+    and pdb_chain_id are mapping to the same protein name. It needs BioPython.
     Returns a dictionary of offsets, organized by peptide range (group):
     example: offsets={"ProtA":{(1,10):1,(20,30):10}}'''
     from Bio import pairwise2
@@ -931,7 +1065,7 @@ class TempResidue(object):
         self.state_index = IMP.atom.State(self.molecule.state.hier).get_state_index()
         #these are expected to change
         self._structured = False
-        self.hier = IMP.atom.Residue.setup_particle(IMP.Particle(molecule.mdl),
+        self.hier = IMP.atom.Residue.setup_particle(IMP.Particle(molecule.model),
                                                     self.rtype,
                                                     index)
     def __str__(self):
@@ -1005,7 +1139,7 @@ class TopologyReader(object):
       be treated as RNA or DNA, add an ',RNA' or ',DNA' suffix. For example,
       a `fasta_id` of 'myseq,RNA' will read the sequence 'myseq' from the
       FASTA file and treat it as RNA.
-    - `pdb_fn`: Name of PDB file with coordinates (if available).
+    - `pdb_fn`: Name of PDB or mmCIF file with coordinates (if available).
        If left empty, will set up as BEADS (you can also specify "BEADS")
        Can also write "IDEAL_HELIX".
     - `chain`: Chain ID of this domain in the PDB file.
@@ -1025,7 +1159,7 @@ class TopologyReader(object):
     - `super_rigid_body`: Like a rigid_body, except things are only occasionally rigid
     - `chain_of_super_rigid_bodies` For a polymer, create SRBs from groups.
     - `flags` additional flags for advanced options
-    \note All filenames are relative to the paths specified in the constructor.
+    @note All filenames are relative to the paths specified in the constructor.
 
     """
     def __init__(self,
@@ -1040,7 +1174,7 @@ class TopologyReader(object):
         @param gmm_dir Relative path to the GMM directory
         """
         self.topology_file = topology_file
-        self.molecules = {} # key=molname, value=TempMolecule
+        self.molecules = IMP.pmi.tools.OrderedDict() # key=molname, value=TempMolecule
         self.pdb_dir = pdb_dir
         self.fasta_dir = fasta_dir
         self.gmm_dir = gmm_dir

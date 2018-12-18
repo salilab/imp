@@ -3,7 +3,7 @@
 from __future__ import print_function
 import IMP
 import IMP.multifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 __doc__ = "Write assembly transformation file in other formats."
 
@@ -63,22 +63,21 @@ formatters = {'chimera': ChimeraFormatter,
 
 
 def parse_args():
-    usage = """%prog [options] <asmb.input> <scores> <output file>
-
+    desc = """
 Write assembly transformation file in other formats.
 
 """ + "\n\n".join(x.__doc__ for x in formatters.values())
 
-    parser = OptionParser(usage)
-    parser.add_option("-f", "--format", default='chimera', type="choice",
+    p = ArgumentParser(description=desc)
+    p.add_argument("-f", "--format", default='chimera',
                       choices=list(formatters.keys()),
                       help="type of output to generate ("
                            + ", ".join(formatters.keys())
                            + "; default: chimera)")
-    options, args = parser.parse_args()
-    if len(args) != 3:
-        parser.error("incorrect number of arguments")
-    return options, args
+    p.add_argument("assembly_file", help="assembly file name")
+    p.add_argument("combinations_file", help="combinations file name")
+    p.add_argument("output_file", help="output file name")
+    return p.parse_args()
 
 
 def run(asmb_fn, combs_fn, fmt):
@@ -100,9 +99,9 @@ def run(asmb_fn, combs_fn, fmt):
 
 
 def main():
-    options, args = parse_args()
-    fmt = formatters[options.format](open(args[2], 'w'))
-    run(args[0], args[1], fmt)
+    args = parse_args()
+    fmt = formatters[args.format](open(args.output_file, 'w'))
+    run(args.assembly_file, args.combinations_file, fmt)
 
 if __name__ == "__main__":
     main()

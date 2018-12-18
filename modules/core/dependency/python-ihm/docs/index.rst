@@ -19,6 +19,7 @@ Contents
    usage
    provenance
    design
+   changes
 
 API Reference:
 
@@ -37,8 +38,10 @@ API Reference:
    analysis
    model
    format
+   format_bcif
    dumper
    reader
+   dictionary
 
 
 Indices and tables

@@ -3,27 +3,24 @@
 __doc__ = "Build cyclic symmetric complexes in their density map."
 
 import IMP.cnmultifit
-from IMP import OptionParser
+from IMP import ArgumentParser
 
 
 def parse_args():
-    usage = """%prog [options] <parameter file>
+    desc = """
+    This program builds cyclic symmetric complexes in their density maps."""
 
-This program builds cyclic symmetric complexes in their density maps."""
-
-    parser = OptionParser(usage)
-    parser.add_option("--chimera", dest="chimera", default="", metavar="FILE",
+    parser = ArgumentParser(description=desc)
+    parser.add_argument("--chimera", dest="chimera", default="", metavar="FILE",
                       help="the name of the Chimera output file, if desired")
-    (options, args) = parser.parse_args()
-    if len(args) != 1:
-        parser.error("incorrect number of arguments")
-    return args[0], options.chimera
+    parser.add_argument("param_file", help="parameter file name")
+    return parser.parse_args()
 
 
 def main():
-    param_file, chimera_file = parse_args()
     IMP.set_log_level(IMP.WARNING)
-    IMP.cnmultifit.do_all_fitting(param_file, chimera_file)
+    args = parse_args()
+    IMP.cnmultifit.do_all_fitting(args.param_file, args.chimera)
 
 if __name__ == '__main__':
     main()

@@ -37,6 +37,8 @@ class Tests(IMP.test.TestCase):
         """Test basic reading"""
         topology_file = self.get_input_file_name("topology_new.txt")
         t = IMP.pmi.topology.TopologyReader(topology_file)
+        self.assertEqual(list(t.molecules.keys()),
+                         ['Prot1', 'Prot2', 'Prot3', 'Prot4', 'Prot5'])
         c1 = t.get_components()
         with IMP.allow_deprecated():
             # Test deprecated interface
@@ -222,6 +224,29 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(rbs),3)
         #                         Prot1x2 Prot3
         self.assertEqual(len(fbs), 4   +  2)
+
+    def test_build_system_mmcif(self):
+        """Test BuildSystem macro with mmCIF input files"""
+        try:
+            import sklearn
+        except ImportError:
+            self.skipTest("no sklearn package")
+        mdl = IMP.Model()
+        tfile = self.get_input_file_name('topology_mmcif.txt')
+        input_dir = os.path.dirname(tfile)
+        t = IMP.pmi.topology.TopologyReader(tfile,
+                                            pdb_dir=input_dir,
+                                            fasta_dir=input_dir,
+                                            gmm_dir=input_dir)
+        bs = IMP.pmi.macros.BuildSystem(mdl)
+        bs.add_state(t)
+        root_hier, dof = bs.execute_macro()
+
+        # check a few selections
+        sel1 = IMP.atom.Selection(root_hier,molecule="Prot1",
+                                  resolution=1,
+                                  copy_index=0).get_selected_particles()
+        self.assertEqual(len(sel1), 7  + 2 )
 
 
 

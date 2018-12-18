@@ -11,7 +11,7 @@
 # make DESTDIR=`pwd`/w32-inst install
 #
 # Where $w32py is the path containing Python headers and libraries.
-# Repeat for all desired Python versions (2.7, 3.4, 3.5, and 3.6 for us)
+# Repeat for all desired Python versions (2.7, 3.4, 3.5, 3.6, and 3.7 for us)
 #
 # Then run (still in the binary directory)
 # <source_dir>/tools/w32/make-package.sh <version> <bits>
@@ -49,12 +49,14 @@ cp ${TOOLDIR}/pkg-README.txt ${ROOT}/README.txt || exit 1
 
 # Move pure Python code to Windows location
 mkdir ${ROOT}/python || exit 1
-mv ${ROOT}/pylib/2.7/*.py ${ROOT}/pylib/2.7/{IMP,ihm} ${ROOT}/python || exit 1
-rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/{IMP,ihm} || exit 1
+mkdir ${ROOT}/python/ihm || exit 1
+mv ${ROOT}/pylib/2.7/*.py ${ROOT}/pylib/2.7/IMP ${ROOT}/python || exit 1
+mv ${ROOT}/pylib/2.7/ihm/*.py ${ROOT}/python/ihm || exit 1
+rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/ihm/*.py ${ROOT}/pylib/*/IMP || exit 1
 
-# Patch IMP/__init__.py and RMF.py so they can find Python version-specific
-# extensions and the IMP/RMF DLLs
-${TOOLDIR}/add_search_path.py ${ROOT}/python/IMP/__init__.py ${ROOT}/python/RMF.py || exit 1
+# Patch IMP/__init__.py, ihm/__init__.py, and RMF.py so they can find Python
+# version-specific extensions and the IMP/RMF DLLs
+${TOOLDIR}/add_search_path.py ${ROOT}/python/IMP/__init__.py ${ROOT}/python/RMF.py ${ROOT}/python/ihm/__init__.py || exit 1
 
 # If there are any Python applications that don't have a file extension,
 # add .py extension and drop in wrapper so users can run them without an
@@ -73,13 +75,21 @@ for app in ${ROOT}/bin/*; do
 done
 
 # Make Python version-specific directories for extensions (.pyd)
-PYVERS="2.7 3.4 3.5 3.6"
+PYVERS="2.7 3.4 3.5 3.6 3.7"
 for PYVER in ${PYVERS}; do
   mkdir ${ROOT}/python/python${PYVER} || exit 1
+  mkdir ${ROOT}/python/python${PYVER}/_ihm_pyd || exit 1
+  echo "pass" > ${ROOT}/python/python${PYVER}/_ihm_pyd/__init__.py || exit 1
   mv ${ROOT}/pylib/${PYVER}/*.pyd ${ROOT}/python/python${PYVER} || exit 1
+  mv ${ROOT}/pylib/${PYVER}/ihm/*.pyd ${ROOT}/python/python${PYVER}/_ihm_pyd || exit 1
+  rmdir ${ROOT}/pylib/${PYVER}/ihm || exit 1
   rmdir ${ROOT}/pylib/${PYVER} || exit 1
 done
 rmdir ${ROOT}/pylib || exit 1
+
+# Patch ihm to find _format.pyd
+perl -pi -e 's/from \. import _format/from _ihm_pyd import _format/' \
+     ${ROOT}/python/ihm/format.py || exit 1
 
 # Remove scratch module and example application/system/dependency
 # (if installed)
@@ -96,7 +106,7 @@ rm -rf ${ROOT}/bin/example \
 rm -rf `find ${ROOT} -name .svn`
 
 if [ "${BITS}" = "32" ]; then
-  PYVERS="27 34 35 36"
+  PYVERS="27 34 35 36 37"
   MAKENSIS="makensis"
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w32comp/windows/system
@@ -123,7 +133,7 @@ if [ "${BITS}" = "32" ]; then
      ${DLLSRC}/opencv_ffmpeg220.dll \
      ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/bin || exit 1
 else
-  PYVERS="27 34 35 36"
+  PYVERS="27 34 35 36 37"
   MAKENSIS="makensis -DIMP_64BIT"
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w64comp/windows/system32

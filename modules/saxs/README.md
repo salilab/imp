@@ -38,7 +38,7 @@ _Author(s)_: Dina Schneidman, Seung Joong Kim, Yannick Spill
 
 _Maintainer_: `duhovka`
 
-_License_: [LGPL](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
+_License_: [LGPL](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either

@@ -10,6 +10,9 @@ The :mod:`ihm.restraint` Python module
 .. autoclass:: Restraint
    :members:
 
+.. autoclass:: RestraintGroup
+   :members:
+
 .. autoclass:: EM3DRestraint
    :members:
 
@@ -61,10 +64,13 @@ The :mod:`ihm.restraint` Python module
 .. autoclass:: Feature
    :members:
 
-.. autoclass:: PolyResidueFeature
+.. autoclass:: ResidueFeature
    :members:
 
-.. autoclass:: PolyAtomFeature
+.. autoclass:: AtomFeature
+   :members:
+
+.. autoclass:: NonPolyFeature
    :members:
 
 .. autoclass:: GeometricRestraint

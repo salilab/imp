@@ -151,9 +151,13 @@ class Tests(IMP.test.TestCase):
         mdl = IMP.Model()
         s,molecule = self.init_topology1(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        # Test do-nothing if no rigid parts were passed
+        self.assertEqual(dof.create_rigid_body([], [], name='test RB'), [])
         rb_movers,rb = dof.create_rigid_body(molecule,
                                              nonrigid_parts = molecule.get_non_atomic_residues(),
                                              name="test RB")
+        self.assertEqual(rb.get_name(), "test RB")
+        self.assertEqual(rb_movers[0].get_name(), "test RB")
         mvs = dof.get_movers()
         self.assertEqual(len(rb_movers),4)
         all_members = rb.get_member_indexes()
@@ -256,6 +260,9 @@ class Tests(IMP.test.TestCase):
         mdl = IMP.Model()
         s,mols = self.init_topology3(mdl)
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+        # Nonrigid parts must be part of the rigid parts
+        self.assertRaises(ValueError, dof.create_rigid_body,
+                          mols[0], nonrigid_parts=mols[1])
         mvs,rb = dof.create_rigid_body([mols[0][:4],mols[1][:]],
                                     nonrigid_parts=mols[0][2:4])
         self.assertEqual(len(mvs),3)
@@ -549,7 +556,7 @@ class Tests(IMP.test.TestCase):
             c3 = inverse_sym_trans*IMP.core.XYZ(p3).get_coordinates()
             for i in range(3):
                 self.assertAlmostEqual(c1[i],c3[i])
-        
+
         #srb = dof.create_super_rigid_body([m1,m2])   # should be OK
         #srb = dof.create_super_rigid_body([m3,m4])   # should raise exception
 
@@ -595,12 +602,16 @@ class Tests(IMP.test.TestCase):
         em_rb.set_coordinates_are_optimized(False)
 
         dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
-        dof.create_rigid_body(em_rb)
+        movers, rb = dof.create_rigid_body(em_rb)
+        # Check assigning of names to existing rigid bodies
+        self.assertEqual(movers[0].get_name(), 'created rigid body')
+        movers, rb = dof.create_rigid_body(em_rb, name='foo')
+        self.assertEqual(movers[0].get_name(), 'foo')
 
         self.assertTrue(em_rb in dof.get_rigid_bodies())
-        self.assertEqual(len(dof.get_rigid_bodies()), 1)
+        self.assertEqual(len(dof.get_rigid_bodies()), 2)
         self.assertTrue(em_rb.get_coordinates_are_optimized())
-        self.assertEqual(len(dof.get_movers()), 1)
+        self.assertEqual(len(dof.get_movers()), 2)
 
     def test_rex_multistate(self):
         """Test you can do multi-state replica exchange"""

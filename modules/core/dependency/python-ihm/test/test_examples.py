@@ -25,7 +25,7 @@ class Tests(unittest.TestCase):
             # Make sure that a complete output file was produced
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 contents = fh.readlines()
-            self.assertEqual(len(contents), 265)
+            self.assertEqual(len(contents), 271)
 
     def test_locations_example(self):
         """Test locations example"""
@@ -36,7 +36,31 @@ class Tests(unittest.TestCase):
         # Make sure that a complete output file was produced
         with open(out) as fh:
             contents = fh.readlines()
-        self.assertEqual(len(contents), 63)
+        self.assertEqual(len(contents), 66)
+        os.unlink(out)
+
+    def test_ligands_water_example(self):
+        """Test ligands_water example"""
+        subprocess.check_call([sys.executable, "ligands_water.py"],
+                              cwd=get_example_dir())
+        out = get_example_path("output.cif")
+
+        # Make sure that a complete output file was produced
+        with open(out) as fh:
+            contents = fh.readlines()
+        self.assertEqual(len(contents), 147)
+        os.unlink(out)
+
+    def test_non_standard_residues_example(self):
+        """Test non_standard_residues example"""
+        subprocess.check_call([sys.executable, "non_standard_residues.py"],
+                              cwd=get_example_dir())
+        out = get_example_path("output.cif")
+
+        # Make sure that a complete output file was produced
+        with open(out) as fh:
+            contents = fh.readlines()
+        self.assertEqual(len(contents), 77)
         os.unlink(out)
 
 

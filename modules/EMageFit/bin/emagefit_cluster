@@ -121,45 +121,27 @@ class AlignmentClustering:
 
 if __name__ == "__main__":
 
-    parser = IMP.OptionParser(description=
-                              "Clusters the best solutions contained in the database, and writes a "
-                              " new table in the database containing the clusters ids and members")
-    parser.add_option("--exp",
-                      dest="experiment",
-                      default=None,
-                      help="File describing an experiment ")
-    parser.add_option("--db",
-                      dest="fn_database",
-                      help="Database of results")
-    parser.add_option("--o",
-                      dest="fn_output_db",
-                      default="clusters.db",
-                      help="Database file to store the clusters obtained. It "
-                           "can be the same one containing the solutions")
-    parser.add_option("--n",
-                      dest="n_solutions",
-                      type=int,
-                      default=10,
-                      help="Number of solutions to cluster")
-    parser.add_option("--orderby",
-                      dest="orderby",
-                      default=None,
-                      help="Sor the solutions according to this measure before "
-                      "clustering")
-    parser.add_option("--log",
-                      dest="log",
-                      default=None,
-                      help="File for logging")
-    parser.add_option("--rmsd",
-                      type=float,
-                      dest="max_rmsd",
-                      default=10,
-                      help="Maximum rmsd centroids to define clusters")
+    p = IMP.ArgumentParser(description="Clusters the best solutions contained "
+                           "in the database, and writes a new table in the "
+                           "database containing the clusters ids and members")
+    p.add_argument("--exp", dest="experiment", default=None,
+                   help="File describing an experiment ")
+    p.add_argument("--db", dest="fn_database", help="Database of results")
+    p.add_argument("--o", dest="fn_output_db", default="clusters.db",
+                   help="Database file to store the clusters obtained. It "
+                        "can be the same one containing the solutions")
+    p.add_argument("--n", dest="n_solutions", type=int, default=10,
+                   help="Number of solutions to cluster")
+    p.add_argument("--orderby", dest="orderby", default=None,
+                   help="Sort the solutions according to this measure before "
+                        "clustering")
+    p.add_argument("--log", dest="log", default=None, help="File for logging")
+    p.add_argument("--rmsd", type=float, dest="max_rmsd", default=10,
+                   help="Maximum rmsd centroids to define clusters")
 
-    args = parser.parse_args()
-    args = args[0]
+    args = p.parse_args()
     if(len(sys.argv) == 1):
-        parser.print_help()
+        p.print_help()
         sys.exit()
     if(args.log):
         logging.basicConfig(filename=args.log, filemode="w")

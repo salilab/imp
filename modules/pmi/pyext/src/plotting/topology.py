@@ -29,7 +29,7 @@ class TopologyPlot(object):
         """
         import itertools\
 
-        self.mdl = model
+        self.model = model
         self.selections = selections
         self.contact_counts={}
         self.edges=defaultdict(int)
@@ -47,17 +47,22 @@ class TopologyPlot(object):
         self.quantitative_proteomic_data=quantitative_proteomic_data
         self.num_rmf=0
 
+    @property
+    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
+    def mdl(self):
+        return self.model
+
     def add_rmf(self,rmf_fn,nframe):
         """Add selections from an RMF file"""
         print('reading from RMF file',rmf_fn)
         rh = RMF.open_rmf_file_read_only(rmf_fn)
-        prots = IMP.rmf.create_hierarchies(rh, self.mdl)
+        prots = IMP.rmf.create_hierarchies(rh, self.model)
         hier = prots[0]
         IMP.rmf.load_frame(rh, RMF.FrameID(0))
         ps_per_component=defaultdict(list)
         if self.num_rmf==0:
             self.size_per_component=defaultdict(int)
-        self.mdl.update()
+        self.model.update()
 
         #gathers particles for all components
         part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(hier)
@@ -81,7 +86,7 @@ class TopologyPlot(object):
 
         for n1,name1 in enumerate(self.names):
             for name2 in self.names[n1+1:]:
-                ncontacts = len(self.gcpf.get_close_pairs(self.mdl,
+                ncontacts = len(self.gcpf.get_close_pairs(self.model,
                                                      ps_per_component[name1],
                                                      ps_per_component[name2]))
                 if ncontacts>0:
@@ -251,11 +256,6 @@ def draw_component_composition(DegreesOfFreedom, max=1000, draw_pdb_names=False,
                         continue
 
     elements={}
-    c=IMP.pmi.tools.Colors()
-    colors=c.get_list_distant_colors()
-    colors=["blue", "red", "green", "pink", "cyan", "purple",
-            "magenta", "orange", "grey", "brown", "gold",
-            "khaki", "olive drab", "deep blue sky"]
     rgb_colors=[(240,163,255),(0,117,220),
             (153,63,0),(76,0,92),(25,25,25),
             (0,92,49),(43,206,72),(255,204,153),

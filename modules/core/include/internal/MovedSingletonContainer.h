@@ -91,9 +91,13 @@ class IMPCOREEXPORT MovedSingletonContainer
 #endif
 };
 
-//! track the movement of particles whose centers moved by more
-//! than some threshold. Provides a conservative estimate
-//! (= might include particles that moved by less than threshold)
+//! track the movement of spherical particles whose surface points
+//! moved by more than some threshold. If the sphere radius increased
+//! or decreased, it is considered as positive or negative surface
+//! movement, respectively.
+//!
+//! Provides a conservative estimate (= might include particles that
+//! moved by less than threshold)
 class IMPCOREEXPORT XYZRMovedSingletonContainer
     : public MovedSingletonContainer {
   Vector<algebra::Sphere3D> backup_;
