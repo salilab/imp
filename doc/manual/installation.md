@@ -89,7 +89,7 @@ such as
   to install everything %IMP finds useful (or that you will want for installing various useful Python libs that %IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
 - [Macports](http://www.macports.org/) If you use MacPorts, you must verify `/opt/local/bin` is in your path (this may be taken care of by MacPorts automatically, and can be done manually either by modifying your shell's config file or by making an `environment.plist` file), and then do
 
-        sudo port install boost cgal cmake doxygen fftw gmp gperftools graphviz gsl eigen hdf5 mpfr opencv ninja swig swig-python  
+        sudo port install boost cgal cmake doxygen fftw gmp gperftools graphviz gsl eigen hdf5 mpfr ninja opencv protobuf-cpp swig swig-python  
   (as in brew, some of these packages may be optional)
 
 - or [Fink](http://www.finkproject.org/) (not supported)
