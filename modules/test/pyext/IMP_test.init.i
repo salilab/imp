@@ -188,7 +188,7 @@ class TestCase(unittest.TestCase):
        the standard Python `unittest.TestCase` class.
        Test scripts should generally contain a subclass of this class,
        conventionally called `Tests` (this makes it easier to run an
-       individual test from the commane line) and use IMP::test::main()
+       individual test from the command line) and use IMP::test::main()
        as their main function."""
 
     # Provide assert(Not)Regex for Python 2 users (assertRegexMatches is
