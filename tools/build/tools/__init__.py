@@ -281,10 +281,12 @@ def get_dependency_description(path):
     else:
         cmake = ""
     if d['pkg_config_name'] is None:
-        d['pkg_config_name'] = d['name'].lower()
+        pkgconfigs = (d['name'].lower(),)
+    else:
+        pkgconfigs = split(d['pkg_config_name'])
     return {"name": d['name'],
             "full_name": d.get('full_name', d['name']),
-            "pkg_config_name": d['pkg_config_name'],
+            "pkg_config_name": pkgconfigs,
             "headers": passheaders,
             "libraries": passlibs,
             "extra_libraries": extra_libs,
