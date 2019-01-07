@@ -111,7 +111,7 @@ inline double get_kd
 
     @param particle radius in angstroms
     @param temp  temperature in Kelvin
-                 (negative = default IMP temperature of 273.15K)
+                 (negative = default IMP temperature of 297.15K)
 
     See
     \external{http://en.wikipedia.org/wiki/Einstein_relation_(kinetic_theory),
@@ -127,7 +127,7 @@ IMPATOMEXPORT double get_einstein_diffusion_coefficient
 
     @param particle radius in angstroms
     @param temp  temperature in Kelvin
-                 (negative = default IMP temperature of 273.15K)
+                 (negative = default IMP temperature of 297.15K)
 
 */
 IMPATOMEXPORT double get_einstein_rotational_diffusion_coefficient
@@ -146,7 +146,7 @@ IMPATOMEXPORT double get_diffusion_length
     @param force applied force in kcal/mol/A
     @param t     time step in femtoseconds
     @param temp  temperature in Kelvin
-                 (negative = default IMP temperature of 273.15K)
+                 (negative = default IMP temperature of 297.15K)
 */
 IMPATOMEXPORT double get_diffusion_length
 ( double D,
