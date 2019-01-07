@@ -94,7 +94,11 @@ class JPGImageReaderWriter : public ImageReaderWriter {
     data.convertTo(jpg_data, CV_8UC1, alpha, beta);
     // write image
     std::vector<int> flags;
+#if CV_VERSION_MAJOR >= 3
+    flags.push_back(cv::IMWRITE_JPEG_QUALITY);
+#else
     flags.push_back(CV_IMWRITE_JPEG_QUALITY);
+#endif
     flags.push_back(100);  // 100% quality image
     cv::imwrite(filename, jpg_data, flags);
   }
