@@ -34,6 +34,7 @@ API Reference:
    representation
    geometry
    restraint
+   cross_linkers
    protocol
    analysis
    model

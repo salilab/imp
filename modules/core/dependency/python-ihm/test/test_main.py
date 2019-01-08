@@ -153,6 +153,19 @@ class Tests(unittest.TestCase):
         self.assertEqual(a._comps['DA'].code, 'DA')
         self.assertEqual(a._comps['DA'].code_canonical, 'A')
 
+    def test_chem_descriptor(self):
+        """Test ChemDescriptor class"""
+        d1 = ihm.ChemDescriptor('EDC', chemical_name='test-EDC',
+                chem_comp_id='test-chem-comp',
+                common_name='test-common-EDC', smiles='CCN=C=NCCCN(C)C')
+        self.assertEqual(d1.auth_name, 'EDC')
+        self.assertEqual(d1.chem_comp_id, 'test-chem-comp')
+        self.assertEqual(d1.chemical_name, 'test-EDC')
+        self.assertEqual(d1.common_name, 'test-common-EDC')
+        self.assertEqual(d1.smiles, 'CCN=C=NCCCN(C)C')
+        self.assertEqual(d1.inchi, None)
+        self.assertEqual(d1.inchi_key, None)
+
     def test_entity(self):
         """Test Entity class"""
         e1 = ihm.Entity('AHCD', description='foo')
@@ -731,6 +744,29 @@ class Tests(unittest.TestCase):
 
         # duplicates should not be filtered
         self.assertEqual(list(s._all_features()), [f1, f2, f1])
+
+    def test_all_chem_descriptors(self):
+        """Test _all_chem_descriptors() method"""
+        class MockObject(object):
+            pass
+
+        d1 = ihm.ChemDescriptor("d1")
+        d2 = ihm.ChemDescriptor("d2")
+        d3 = ihm.ChemDescriptor("d3")
+
+        s = ihm.System()
+        r1 = MockObject()
+        r2 = MockObject()
+        r2.linker = None
+        r3 = MockObject()
+        r2.linker = d3
+        s.restraints.extend((r1, r2))
+
+        r2.feature = None
+        s.orphan_chem_descriptors.extend((d1, d2, d1))
+
+        # duplicates should not be filtered
+        self.assertEqual(list(s._all_chem_descriptors()), [d1, d2, d1, d3])
 
     def test_update_locations_in_repositories(self):
         """Test update_locations_in_repositories() method"""

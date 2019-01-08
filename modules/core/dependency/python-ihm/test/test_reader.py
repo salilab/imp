@@ -296,6 +296,32 @@ _pdbx_entity_nonpoly.comp_id
                 self.assertEqual(s[0].type, 'non-polymer')
                 self.assertEqual(s[0].__class__, ihm.WaterChemComp)
 
+    def test_chem_descriptor_handler(self):
+        """Test ChemDescriptorHandler"""
+        cif = """
+loop_
+_ihm_chemical_descriptor.id
+_ihm_chemical_descriptor.auth_name
+_ihm_chemical_descriptor.chem_comp_id
+_ihm_chemical_descriptor.chemical_name
+_ihm_chemical_descriptor.common_name
+_ihm_chemical_descriptor.smiles
+_ihm_chemical_descriptor.smiles_canonical
+_ihm_chemical_descriptor.inchi
+_ihm_chemical_descriptor.inchi_key
+1 EDC UNK "test-chem-EDC" . "CCN=C=NCCCN(C)C" . test-inchi test-inchi-key
+"""
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh)
+            d1, = s.orphan_chem_descriptors
+            self.assertEqual(d1.auth_name, 'EDC')
+            self.assertEqual(d1.chem_comp_id, 'UNK')
+            self.assertEqual(d1.chemical_name, 'test-chem-EDC')
+            self.assertEqual(d1.smiles, 'CCN=C=NCCCN(C)C')
+            self.assertEqual(d1.smiles_canonical, None)
+            self.assertEqual(d1.inchi, 'test-inchi')
+            self.assertEqual(d1.inchi_key, 'test-inchi-key')
+
     def test_entity_handler(self):
         """Test EntityHandler"""
         cif = """
@@ -1237,6 +1263,14 @@ _ihm_non_poly_feature.atom_id
 1 3 3 C HEM FE
 2 4 3 C HEM .
 #
+loop_
+_ihm_pseudo_site_feature.feature_id
+_ihm_pseudo_site_feature.Cartn_x
+_ihm_pseudo_site_feature.Cartn_y
+_ihm_pseudo_site_feature.Cartn_z
+_ihm_pseudo_site_feature.radius
+_ihm_pseudo_site_feature.description
+5 10.000 20.000 30.000 4.0 'centroid'
 """
         rsr = """
 loop_
@@ -1253,14 +1287,14 @@ _ihm_derived_distance_restraint.dataset_list_id
 1 . 1 2 'lower bound' 25.000 . 0.800 . 97
 2 . 1 4 'upper bound' . 45.000 0.800 ALL 98
 3 1 1 2 'lower and upper bound' 22.000 45.000 0.800 ANY 99
-4 1 2 3 'harmonic' 35.000 35.000 0.800 ALL .
+4 1 5 3 'harmonic' 35.000 35.000 0.800 ALL .
 """
         # Test both ways to make sure features still work if they are
         # referenced by ID before their type is known
         for text in (feats+rsr, rsr+feats):
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
-            self.assertEqual(len(s.orphan_features), 4)
+            self.assertEqual(len(s.orphan_features), 5)
             r1, r2, r3, r4 = s.restraints
             rg1, = s.restraint_groups
             self.assertEqual([r for r in rg1], [r3, r4])
@@ -1293,6 +1327,13 @@ _ihm_derived_distance_restraint.dataset_list_id
                                  ihm.restraint.HarmonicDistanceRestraint))
             self.assertTrue(isinstance(r4.feature2,
                                        ihm.restraint.AtomFeature))
+            self.assertTrue(isinstance(r4.feature1,
+                                       ihm.restraint.PseudoSiteFeature))
+            self.assertAlmostEqual(r4.feature1.x, 10.0, places=1)
+            self.assertAlmostEqual(r4.feature1.y, 20.0, places=1)
+            self.assertAlmostEqual(r4.feature1.z, 30.0, places=1)
+            self.assertAlmostEqual(r4.feature1.radius, 4.0, places=1)
+            self.assertEqual(r4.feature1.description, 'centroid')
 
     def test_sphere_handler(self):
         """Test SphereHandler"""
@@ -1667,14 +1708,14 @@ _ihm_cross_link_list.entity_description_2
 _ihm_cross_link_list.entity_id_2
 _ihm_cross_link_list.seq_id_2
 _ihm_cross_link_list.comp_id_2
-_ihm_cross_link_list.linker_type
+_ihm_cross_link_list.linker_descriptor_id
 _ihm_cross_link_list.dataset_list_id
-1 1 foo 1 2 THR foo 1 3 CYS DSS 97
-2 2 foo 1 2 THR bar 2 3 PHE DSS 97
-3 2 foo 1 2 THR bar 2 2 GLU DSS 97
-4 3 foo 1 1 ALA bar 2 1 ASP DSS 97
-5 4 foo 1 1 ALA bar 2 1 ASP EDC 97
-6 5 foo 1 1 ALA bar 2 1 ASP DSS 98
+1 1 foo 1 2 THR foo 1 3 CYS 44 97
+2 2 foo 1 2 THR bar 2 3 PHE 44 97
+3 2 foo 1 2 THR bar 2 2 GLU 44 97
+4 3 foo 1 1 ALA bar 2 1 ASP 44 97
+5 4 foo 1 1 ALA bar 2 1 ASP 88 97
+6 5 foo 1 1 ALA bar 2 1 ASP 44 98
 """)
         s, = ihm.reader.read(fh)
         # Check grouping
@@ -1682,7 +1723,7 @@ _ihm_cross_link_list.dataset_list_id
                           for r in s.restraints], [[1, 2, 1], [1], [1]])
         r1, r2, r3 = s.restraints
         self.assertEqual(r1.dataset._id, '97')
-        self.assertEqual(r1.linker_type, 'DSS')
+        self.assertEqual(r1.linker._id, '44')
         xl = r1.experimental_cross_links[1][0]
         self.assertEqual(xl.residue1.entity._id, '1')
         self.assertEqual(xl.residue2.entity._id, '2')

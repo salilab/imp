@@ -290,6 +290,30 @@ DC 'DNA linking' "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE" 'C9 H14 N3 O7 P' 307.199
 #
 """)
 
+    def test_chem_descriptor_dumper(self):
+        """Test ChemDescriptorDumper"""
+        system = ihm.System()
+        d1 = ihm.ChemDescriptor('EDC', smiles='CCN=C=NCCCN(C)C',
+                                inchi_key='LMDZBCPBFSXMTL-UHFFFAOYSA-N')
+        system.orphan_chem_descriptors.append(d1)
+        dumper = ihm.dumper._ChemDescriptorDumper()
+        dumper.finalize(system) # Assign descriptor IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_chemical_descriptor.id
+_ihm_chemical_descriptor.auth_name
+_ihm_chemical_descriptor.chem_comp_id
+_ihm_chemical_descriptor.chemical_name
+_ihm_chemical_descriptor.common_name
+_ihm_chemical_descriptor.smiles
+_ihm_chemical_descriptor.smiles_canonical
+_ihm_chemical_descriptor.inchi
+_ihm_chemical_descriptor.inchi_key
+1 EDC . . . CCN=C=NCCCN(C)C . . LMDZBCPBFSXMTL-UHFFFAOYSA-N
+#
+""")
+
     def test_entity_poly_dumper(self):
         """Test EntityPolyDumper"""
         system = ihm.System()
@@ -1995,7 +2019,8 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
 
         dataset = MockObject()
         dataset._id = 97
-        r = ihm.restraint.CrossLinkRestraint(dataset=dataset, linker_type='DSS')
+        dss = ihm.ChemDescriptor('DSS')
+        r = ihm.restraint.CrossLinkRestraint(dataset=dataset, linker=dss)
         # intra, unambiguous
         xxl1 = ihm.restraint.ExperimentalCrossLink(e1.residue(2), e1.residue(3))
         # inter, ambiguous
@@ -2027,6 +2052,7 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
 
         ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
         ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
+        ihm.dumper._ChemDescriptorDumper().finalize(system) # descriptor IDs
         dumper = ihm.dumper._CrossLinkDumper()
         dumper.finalize(system) # assign IDs
 
@@ -2043,12 +2069,13 @@ _ihm_cross_link_list.entity_description_2
 _ihm_cross_link_list.entity_id_2
 _ihm_cross_link_list.seq_id_2
 _ihm_cross_link_list.comp_id_2
+_ihm_cross_link_list.linker_descriptor_id
 _ihm_cross_link_list.linker_type
 _ihm_cross_link_list.dataset_list_id
-1 1 foo 1 2 THR foo 1 3 CYS DSS 97
-2 2 foo 1 2 THR bar 2 3 PHE DSS 97
-3 2 foo 1 2 THR bar 2 2 GLU DSS 97
-4 3 foo 1 1 ALA bar 2 1 ASP DSS 97
+1 1 foo 1 2 THR foo 1 3 CYS 1 DSS 97
+2 2 foo 1 2 THR bar 2 3 PHE 1 DSS 97
+3 2 foo 1 2 THR bar 2 2 GLU 1 DSS 97
+4 3 foo 1 1 ALA bar 2 1 ASP 1 DSS 97
 #
 #
 loop_
@@ -2234,15 +2261,19 @@ _ihm_geometric_object_plane.transformation_id
         # Cannot make a NonPolyFeature that includes a polymer 'residue'
         self.assertRaises(ValueError, ihm.restraint.NonPolyFeature, [a1, a3])
 
+        # Pseudo site feature
+        f = ihm.restraint.PseudoSiteFeature(x=10., y=20., z=30.)
+        system.orphan_features.append(f)
+
         ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
         ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
 
         dumper = ihm.dumper._FeatureDumper()
         dumper.finalize(system) # assign IDs
-        self.assertEqual(len(dumper._features_by_id), 4)
+        self.assertEqual(len(dumper._features_by_id), 5)
         # Repeated calls to finalize should yield identical results
         dumper.finalize(system)
-        self.assertEqual(len(dumper._features_by_id), 4)
+        self.assertEqual(len(dumper._features_by_id), 5)
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -2253,6 +2284,7 @@ _ihm_feature_list.entity_type
 2 atom polymer
 3 atom non-polymer
 4 ligand non-polymer
+5 'pseudo site' other
 #
 #
 loop_
@@ -2289,6 +2321,16 @@ _ihm_non_poly_feature.comp_id
 _ihm_non_poly_feature.atom_id
 1 3 2 C HEM FE
 2 4 2 C HEM .
+#
+#
+loop_
+_ihm_pseudo_site_feature.feature_id
+_ihm_pseudo_site_feature.Cartn_x
+_ihm_pseudo_site_feature.Cartn_y
+_ihm_pseudo_site_feature.Cartn_z
+_ihm_pseudo_site_feature.radius
+_ihm_pseudo_site_feature.description
+5 10.000 20.000 30.000 . .
 #
 """)
 

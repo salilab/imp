@@ -148,6 +148,30 @@ class _ChemCompDumper(_Dumper):
                                 formula_weight=comp.formula_weight)
 
 
+class _ChemDescriptorDumper(_Dumper):
+    def finalize(self, system):
+        seen_desc = {}
+        # Assign IDs to all descriptors
+        self._descriptor_by_id = []
+        for d in system._all_chem_descriptors():
+            util._remove_id(d)
+        for d in system._all_chem_descriptors():
+            util._assign_id(d, seen_desc, self._descriptor_by_id)
+
+    def dump(self, system, writer):
+        with writer.loop("_ihm_chemical_descriptor",
+                ["id", "auth_name", "chem_comp_id", "chemical_name",
+                 "common_name", "smiles", "smiles_canonical", "inchi",
+                 "inchi_key"]) as l:
+            for d in self._descriptor_by_id:
+                l.write(id=d._id, auth_name=d.auth_name,
+                        chem_comp_id=d.chem_comp_id,
+                        chemical_name=d.chemical_name,
+                        common_name=d.common_name, smiles=d.smiles,
+                        smiles_canonical=d.smiles_canonical, inchi=d.inchi,
+                        inchi_key=d.inchi_key)
+
+
 class _EntityDumper(_Dumper):
     def finalize(self, system):
         # Assign IDs and check for duplicates
@@ -1346,6 +1370,7 @@ class _FeatureDumper(_Dumper):
         self.dump_poly_residue(writer)
         self.dump_poly_atom(writer)
         self.dump_non_poly(writer)
+        self.dump_pseudo_site(writer)
 
     def dump_list(self, writer):
         with writer.loop("_ihm_feature_list",
@@ -1417,6 +1442,16 @@ class _FeatureDumper(_Dumper):
                                 atom_id=None)
                         ordinal += 1
 
+    def dump_pseudo_site(self, writer):
+        with writer.loop("_ihm_pseudo_site_feature",
+                         ["feature_id", "Cartn_x", "Cartn_y",
+                          "Cartn_z", "radius", "description"]) as l:
+            for f in self._features_by_id:
+                if not isinstance(f, restraint.PseudoSiteFeature):
+                    continue
+                l.write(feature_id=f._id, Cartn_x=f.x, Cartn_y=f.y,
+                        Cartn_z=f.z, radius=f.radius, description=f.description)
+
 
 class _CrossLinkDumper(_Dumper):
     def _all_restraints(self, system):
@@ -1438,7 +1473,7 @@ class _CrossLinkDumper(_Dumper):
                     # Assign identical cross-links the same ID and group ID
                     sig = (xl.residue1.entity, xl.residue1.seq_id,
                            xl.residue2.entity, xl.residue2.seq_id,
-                           r.linker_type)
+                           r.linker)
                     if sig in seen_cross_links:
                         xl._id, xl._group_id = seen_cross_links[sig]
                     else:
@@ -1461,7 +1496,7 @@ class _CrossLinkDumper(_Dumper):
                 ex_xl = xl.experimental_cross_link
                 sig = (xl.asym1._id, ex_xl.residue1.seq_id, xl.atom1,
                        xl.asym2._id, ex_xl.residue2.seq_id, xl.atom2,
-                       r.linker_type)
+                       r.linker)
                 if sig in seen_cross_links:
                     xl._id = seen_cross_links[sig]
                 else:
@@ -1481,7 +1516,8 @@ class _CrossLinkDumper(_Dumper):
                           "entity_id_1", "seq_id_1", "comp_id_1",
                           "entity_description_2",
                           "entity_id_2", "seq_id_2", "comp_id_2",
-                          "linker_type", "dataset_list_id"]) as l:
+                          "linker_descriptor_id", "linker_type",
+                          "dataset_list_id"]) as l:
             for r, xl in self._ex_xls_by_id:
                 entity1 = xl.residue1.entity
                 entity2 = xl.residue2.entity
@@ -1496,7 +1532,8 @@ class _CrossLinkDumper(_Dumper):
                         entity_id_2=entity2._id,
                         seq_id_2=xl.residue2.seq_id,
                         comp_id_2=seq2[xl.residue2.seq_id-1].id,
-                        linker_type=r.linker_type,
+                        linker_descriptor_id=r.linker._id,
+                        linker_type=r.linker.auth_name,
                         dataset_list_id=r.dataset._id)
 
     def dump_restraint(self, system, writer):
@@ -1794,7 +1831,7 @@ def write(fh, systems, format='mmCIF'):
                _AuditConformDumper(), _SoftwareDumper(),
                _CitationDumper(),
                _AuditAuthorDumper(),
-               _ChemCompDumper(),
+               _ChemCompDumper(), _ChemDescriptorDumper(),
                _EntityDumper(),
                _EntityPolyDumper(),
                _EntityNonPolyDumper(),
