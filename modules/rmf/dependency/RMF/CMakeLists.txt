@@ -26,6 +26,11 @@ if(POLICY CMP0058)
   cmake_policy(SET CMP0058 NEW)
 endif(POLICY CMP0058)
 
+# Use consistent SWIG target names across all supported cmake versions
+if(POLICY CMP0078)
+  cmake_policy(SET CMP0078 OLD)
+endif(POLICY CMP0078)
+
 # C++11 can use the boost version
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost COMPONENTS system filesystem thread program_options iostreams
