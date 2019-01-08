@@ -77,3 +77,6 @@ The :mod:`ihm` Python module
 
 .. autoclass:: Assembly
    :members:
+
+.. autoclass:: ChemDescriptor
+   :members:

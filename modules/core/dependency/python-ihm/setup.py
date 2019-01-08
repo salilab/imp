@@ -35,7 +35,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='ihm',
-      version='0.3',
+      version='0.4',
       script_args=copy_args,
       description='Package for handling IHM mmCIF and BinaryCIF files',
       long_description=long_description,

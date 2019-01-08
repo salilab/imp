@@ -174,6 +174,9 @@ class _FeatureIDMapper(_IDMapper):
         if newcls is None:
             # Make Feature base class (takes no args)
             return self._cls()
+        elif newcls is ihm.restraint.PseudoSiteFeature:
+            # Pseudo site constructor needs x, y, z coordinates
+            return newcls(None, None, None)
         else:
             # Make subclass (takes one ranges/atoms argument)
             return newcls([])
@@ -190,6 +193,10 @@ class _FeatureIDMapper(_IDMapper):
         elif newcls is ihm.restraint.NonPolyFeature \
            and not hasattr(obj, 'asyms'):
             obj.asyms = []
+        elif newcls is ihm.restraint.PseudoSiteFeature \
+           and not hasattr(obj, 'x'):
+            obj.x = obj.y = obj.z = None
+            obj.radius = obj.description = None
 
 
 class _GeometryIDMapper(_IDMapper):
@@ -288,12 +295,12 @@ class _XLRestraintMapper(object):
         self.system_list = system_list
         self._seen_rsrs = {}
 
-    def get_by_attrs(self, dataset, linker_type):
-        """Group all crosslinks with same dataset and linker type in one
+    def get_by_attrs(self, dataset, linker):
+        """Group all crosslinks with same dataset and linker in one
            CrossLinkRestraint object"""
-        k = (dataset._id, linker_type)
+        k = (dataset._id, linker)
         if k not in self._seen_rsrs:
-            r = ihm.restraint.CrossLinkRestraint(dataset, linker_type)
+            r = ihm.restraint.CrossLinkRestraint(dataset, linker)
             self.system_list.append(r)
             self._seen_rsrs[k] = r
         return self._seen_rsrs[k]
@@ -314,6 +321,8 @@ class _SystemReader(object):
         self.citations = _IDMapper(self.system.citations, ihm.Citation,
                                    *(None,)*8)
         self.entities = _IDMapper(self.system.entities, _make_new_entity)
+        self.chem_descriptors = _IDMapper(self.system.orphan_chem_descriptors,
+                                          ihm.ChemDescriptor, None)
         self.asym_units = _IDMapper(self.system.asym_units, ihm.AsymUnit, None)
         self.chem_comps = _ChemCompIDMapper(None, ihm.ChemComp, *(None,)*3)
         self.assemblies = _IDMapper(self.system.orphan_assemblies, ihm.Assembly)
@@ -484,6 +493,18 @@ class _ChemCompHandler(_Handler):
         s = self.sysr.chem_comps.get_by_id(id,
                                            self.type_map.get(typ, ihm.ChemComp))
         self._copy_if_present(s, locals(), keys=('name', 'formula'))
+
+
+class _ChemDescriptorHandler(_Handler):
+    category = '_ihm_chemical_descriptor'
+
+    def __call__(self, id, auth_name, chem_comp_id, chemical_name, common_name,
+                 smiles, smiles_canonical, inchi, inchi_key):
+        d = self.sysr.chem_descriptors.get_by_id(id)
+        self._copy_if_present(d, locals(),
+                keys=('auth_name', 'chem_comp_id', 'chemical_name',
+                      'common_name', 'smiles', 'smiles_canonical', 'inchi',
+                      'inchi_key'))
 
 
 class _EntityHandler(_Handler):
@@ -1132,6 +1153,20 @@ class _NonPolyFeatureHandler(_Handler):
             f.atoms.append(atom)
 
 
+class _PseudoSiteFeatureHandler(_Handler):
+    category = '_ihm_pseudo_site_feature'
+
+    def __call__(self, feature_id, cartn_x, cartn_y, cartn_z, radius,
+                 description):
+        f = self.sysr.features.get_by_id(feature_id,
+                                         ihm.restraint.PseudoSiteFeature)
+        f.x = _get_float(cartn_x)
+        f.y = _get_float(cartn_y)
+        f.z = _get_float(cartn_z)
+        f.radius = _get_float(radius)
+        f.description = description
+
+
 def _make_harmonic(low, up):
     low = _get_float(low)
     up = _get_float(up)
@@ -1387,13 +1422,13 @@ class _CrossLinkListHandler(_Handler):
         super(_CrossLinkListHandler, self).__init__(*args)
         self._seen_group_ids = set()
 
-    def __call__(self, dataset_list_id, linker_type, group_id, id,
+    def __call__(self, dataset_list_id, linker_descriptor_id, group_id, id,
                  entity_id_1, entity_id_2, seq_id_1, seq_id_2):
         dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
-        linker_type = linker_type.upper()
-        # Group all crosslinks with same dataset and linker type in one
+        linker = self.sysr.chem_descriptors.get_by_id(linker_descriptor_id)
+        # Group all crosslinks with same dataset and linker in one
         # CrossLinkRestraint object
-        r = self.sysr.xl_restraints.get_by_attrs(dataset, linker_type)
+        r = self.sysr.xl_restraints.get_by_attrs(dataset, linker)
 
         xl_group = self.sysr.experimental_xl_groups.get_by_id(group_id)
         xl = self.sysr.experimental_xls.get_by_id(id)
@@ -1536,6 +1571,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF'):
         s = _SystemReader(model_class)
         handlers = [_StructHandler(s), _SoftwareHandler(s), _CitationHandler(s),
                     _CitationAuthorHandler(s), _ChemCompHandler(s),
+                    _ChemDescriptorHandler(s),
                     _EntityHandler(s), _EntityPolySeqHandler(s),
                     _EntityNonPolyHandler(s),
                     _StructAsymHandler(s), _AssemblyDetailsHandler(s),
@@ -1555,6 +1591,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF'):
                     _SphereObjSiteHandler(s), _AtomSiteHandler(s),
                     _PolyResidueFeatureHandler(s), _PolyAtomFeatureHandler(s),
                     _NonPolyFeatureHandler(s),
+                    _PseudoSiteFeatureHandler(s),
                     _DerivedDistanceRestraintHandler(s),
                     _CenterHandler(s), _TransformationHandler(s),
                     _GeometricObjectHandler(s), _SphereHandler(s),

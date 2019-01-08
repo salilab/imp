@@ -88,9 +88,10 @@ class Tests(unittest.TestCase):
 
     def test_cross_link_restraint(self):
         """Test CrossLinkRestraint class"""
-        f = ihm.restraint.CrossLinkRestraint(dataset='foo', linker_type='DSS')
+        dss = ihm.ChemDescriptor('DSS')
+        f = ihm.restraint.CrossLinkRestraint(dataset='foo', linker=dss)
         self.assertEqual(f.dataset, 'foo')
-        self.assertEqual(f.linker_type, 'DSS')
+        self.assertEqual(f.linker, dss)
         self.assertEqual(f.experimental_cross_links, [])
 
     def test_experimental_cross_link(self):

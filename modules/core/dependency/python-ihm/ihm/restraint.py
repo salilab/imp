@@ -188,13 +188,14 @@ class CrossLinkRestraint(Restraint):
        :param dataset: Reference to the cross-link data (usually
               a :class:`~ihm.dataset.CXMSDataset`).
        :type dataset: :class:`~ihm.dataset.Dataset`
-       :param str linker_type: The type of chemical linker used.
+       :param linker: The type of chemical linker used.
+       :type linker: :class:`ihm.ChemDescriptor`
     """
 
     assembly = None # no struct_assembly_id for XL restraints
 
-    def __init__(self, dataset, linker_type):
-        self.dataset, self.linker_type = dataset, linker_type
+    def __init__(self, dataset, linker):
+        self.dataset, self.linker = dataset, linker
 
         #: All cross-links identified in the experiment, as a simple list
         #: of lists of :class:`ExperimentalCrossLink` objects. All cross-links
@@ -418,8 +419,8 @@ class CrossLinkFit(object):
 
 class Feature(object):
     """Base class for selecting parts of the system that a restraint acts on.
-       See :class:`ResidueFeature`, :class:`AtomFeature`, and
-       :class:`NonPolyFeature`.
+       See :class:`ResidueFeature`, :class:`AtomFeature`,
+       :class:`NonPolyFeature`, and :class:`PseudoSiteFeature`.
 
        Features are typically assigned to one or more
        :class:`~ihm.restraint.GeometricRestraint` objects.
@@ -496,6 +497,27 @@ class NonPolyFeature(Feature):
             raise ValueError("%s can only select non-polymeric entities" % self)
         else:
             return self.asyms[0].entity.type if self.asyms else None
+
+
+class PseudoSiteFeature(Feature):
+    """Selection of a pseudo position in the system.
+
+       :param float x: Cartesian X coordinate of this site.
+       :param float y: Cartesian Y coordinate of this site.
+       :param float z: Cartesian Z coordinate of this site.
+       :param float radius: Radius of the site, if applicable.
+       :param str description: Textual description of this site.
+    """
+
+    type = 'pseudo site'
+
+    def __init__(self, x, y, z, radius=None, description=None):
+        self.x, self.y, self.z = x, y, z
+        self.radius = radius
+        self.description = description
+
+    def _get_entity_type(self):
+        return 'other'
 
 
 class GeometricRestraint(object):

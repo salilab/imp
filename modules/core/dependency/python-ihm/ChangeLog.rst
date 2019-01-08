@@ -1,11 +1,31 @@
 HEAD
 ====
+ - :class:`ihm.restraint.CrossLinkRestraint` now takes an
+   :class:`ihm.ChemDescriptor` object rather than the name of the cross-linker
+   used. This allows the use of novel cross-linkers (beyond those currently
+   listed in a fixed enumeration in the IHM dictionary).
+   :class:`ihm.ChemDescriptor` allows for the chemical structure of the
+   cross-linker to be uniquely specified, as a SMILES or INCHI string.
+   The :mod:`ihm.cross_linkers` module provides chemical descriptors for
+   some commonly-used cross-linkers.
+ - Pseudo sites are now supported. :class:`ihm.restraint.PseudoSiteFeature`
+   allows points or spheres with arbitrary coordinates to be designated as
+   features, which can then be used in
+   :class:`ihm.restraint.DerivedDistanceRestraint`.
 
+0.4 - 2018-12-17
+================
  - Certain restraints can now be grouped using the
    :class:`ihm.restraint.RestraintGroup` class. Due to limitations of the
    underlying dictionary, this only works for some restraint types (currently
    only :class:`ihm.restraint.DerivedDistanceRestraint`) and all restraints
    in the group must be of the same type.
+ - Bugfix: the the model's representation (see :mod:`ihm.representation`)
+   need not be a strict subset of the model's :class:`ihm.Assembly`. However,
+   any :class:`ihm.model.Atom` or :class:`ihm.model.Sphere` objects must be
+   covered by both the representation and the model's :class:`ihm.Assembly`.
+ - Bugfix: the reader no longer fails to read files that contain
+   _entity.formula_weight.
 
 0.3 - 2018-11-21
 ================
