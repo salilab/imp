@@ -1,9 +1,14 @@
 sudo: false
 language: python
+dist: xenial
 python:
-  - "2.6"
-  - "2.7"
-  - "3.6"
+  - 2.7
+  - 3.6
+  - 3.7
+matrix:
+  include:
+    - dist: trusty
+      python: 2.6
 cache: pip
 install: pip install coverage
 script: nosetests --with-coverage --cover-branches
