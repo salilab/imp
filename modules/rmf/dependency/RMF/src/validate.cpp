@@ -2,7 +2,7 @@
  *  \file RMF/validate.h
  *  \brief Support for validating the data in a file.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
