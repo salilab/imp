@@ -2,6 +2,7 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- The IMP::OptionParser class has been removed. Use IMP::ArgumentParser instead.
 
 # 2.10.0 - 2019-01-08 # {#changelog_2_10_0}
 - Applications using IMP::pmi should now use the IMP::pmi::topology::System
