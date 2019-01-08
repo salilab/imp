@@ -2,7 +2,7 @@
  *  \file ClosePairContainer.cpp
  *  \brief internal implementation of close pair container
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

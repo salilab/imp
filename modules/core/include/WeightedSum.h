@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/WeightedSum.h    \brief Weighted sum of unary functions.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_WEIGHTED_SUM_H

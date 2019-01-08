@@ -2,7 +2,7 @@
  *  \file IMP/misc/CommonEndpointPairFilter.h
  *  \brief Return true for any pair of bonds sharing an endpoint
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMISC_COMMON_ENDPOINT_PAIR_FILTER_H

@@ -2,7 +2,7 @@
  *  \file EzRestraint.cpp \brief
  *  \brief Ez potential. A statistical scoring function for atom proteins
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

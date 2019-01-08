@@ -2,7 +2,7 @@
  *  \file isd/HybridMonteCarlo.cpp
  *  \brief The hybrid monte carlo algorithm
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

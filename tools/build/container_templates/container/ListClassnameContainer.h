@@ -2,7 +2,7 @@
  *  \file IMP/container/ListClassnameContainer.h
  *  \brief Store a list of PLURALINDEXTYPE.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_LIST_CLASSNAME_CONTAINER_H

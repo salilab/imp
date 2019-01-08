@@ -2,7 +2,7 @@
  *  \file IMP/spb/spb_sampler.h
  *  \brief SPB Sampler
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

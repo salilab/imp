@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/PolarResamplingParameters.h
  *  \brief Functions related with rotations in em2d
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_POLAR_RESAMPLING_PARAMETERS_H

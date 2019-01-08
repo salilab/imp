@@ -1,7 +1,7 @@
 /**
  *  \file IMP/isd/CrossLinkData.h    \brief Normal distribution of Function
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_CROSS_LINK_DATA_H

@@ -2,7 +2,7 @@
  *  \file IMP/em/DensityMap.h
  *  \brief Class for handling density maps.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

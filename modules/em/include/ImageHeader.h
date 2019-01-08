@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em/ImageHeader.h
  *  \brief Header for EM images. Compatible with Spider and Xmipp formats
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
 **/
 
 #ifndef IMPEM_IMAGE_HEADER_H

@@ -2,7 +2,7 @@
  *  \file SurfaceShellDensityMap.cpp
  *  \brief Represent a molecule as shells of distance from the surface
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

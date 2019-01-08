@@ -2,7 +2,7 @@
  *  \file container_helpers.h
  *  \brief Internal helpers for container classes.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

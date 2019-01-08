@@ -1,7 +1,7 @@
 /**
  * \file IMP/saxs/ChiFreeScore.h \brief Chi free score implementation
  *
- * Copyright 2007-2018 IMP Inventors. All rights reserved.
+ * Copyright 2007-2019 IMP Inventors. All rights reserved.
  * TODO: add reference
  */
 

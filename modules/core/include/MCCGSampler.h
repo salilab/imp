@@ -2,7 +2,7 @@
  *  \file IMP/core/MCCGSampler.h
  *  \brief A Monte Carlo/Conjugate Gradients based sampler.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

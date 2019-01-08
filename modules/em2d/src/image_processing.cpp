@@ -1,7 +1,7 @@
 /**
  *  \file image_processing.cpp
  *  \brief image processing for EM
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/image_processing.h"

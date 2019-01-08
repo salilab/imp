@@ -3,7 +3,7 @@
  *  \brief Maintains temperature during molecular dynamics using a
  *         Berendsen thermostat.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

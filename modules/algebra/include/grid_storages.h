@@ -2,7 +2,7 @@
  *  \file IMP/algebra/grid_storages.h
  *  \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
