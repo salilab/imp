@@ -2,7 +2,7 @@
  *  \file IMP/display/PymolWriter.h
  *  \brief Write a CGO file with the geometry.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_PYMOL_WRITER_H

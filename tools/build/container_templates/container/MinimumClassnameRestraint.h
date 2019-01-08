@@ -2,7 +2,7 @@
  *  \file IMP/container/MinimumClassnameRestraint.h
  *  \brief Score based on the minimum score over a set of Classnames
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_MINIMUM_CLASSNAME_RESTRAINT_H

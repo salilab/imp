@@ -2,7 +2,7 @@
  *  \file VQClustering.cpp
  *  \brief Vector quantization clustering. Based on Wriggers et at, JMB 1998
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

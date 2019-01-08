@@ -2,7 +2,7 @@
  *  \file soap_score.cpp \brief A program for scoring of docking models
  *  with SOAP statistical potentials
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

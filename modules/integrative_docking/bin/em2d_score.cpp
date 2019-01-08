@@ -2,7 +2,7 @@
  * \file em2d_score.cpp \brief A program to score docking models given a list
  * of transformations for a ligand
  *
- * Copyright 2007-2018 IMP Inventors. All rights reserved.
+ * Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

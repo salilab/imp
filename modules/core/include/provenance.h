@@ -2,7 +2,7 @@
  *  \file IMP/core/provenance.h
  *  \brief Classes to track how the model was created.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_PROVENANCE_H

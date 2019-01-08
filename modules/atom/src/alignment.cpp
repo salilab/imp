@@ -2,7 +2,7 @@
  *  \file alignment.cpp
  *  \brief Alignment of structures
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

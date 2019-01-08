@@ -2,7 +2,7 @@
  * \file em2d_single_score.cpp \brief A program to score a single
  * docking model in PDB file
  *
- * Copyright 2007-2018 IMP Inventors. All rights reserved.
+ * Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

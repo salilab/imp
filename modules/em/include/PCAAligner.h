@@ -2,7 +2,7 @@
  * \file IMP/em/PCAAligner.h
  * \brief Fast alignment of points to a density map using principal components
  *
- * Copyright 2007-2018 IMP Inventors. All rights reserved.
+ * Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

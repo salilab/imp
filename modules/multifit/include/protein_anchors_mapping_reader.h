@@ -2,7 +2,7 @@
  *  \file IMP/multifit/protein_anchors_mapping_reader.h
  *  \brief handles reading matches between a protein and its anchors
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

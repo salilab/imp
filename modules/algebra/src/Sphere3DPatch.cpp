@@ -1,7 +1,7 @@
 /**
  *  \file SpherePatch3D.cpp   \brief Simple 3D sphere patch class.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

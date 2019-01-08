@@ -4,7 +4,7 @@
  *         increase as particles are exiting the sphere boundaries, and must
  *         be zero within the sphere and positive outside of it.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_BOUNDING_SPHERE_3D_SINGLETON_SCORE_H

@@ -2,7 +2,7 @@
  *  \file pca_based_rigid_fitting.cpp
  *  \brief Fast Rigid fitting functionalities
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

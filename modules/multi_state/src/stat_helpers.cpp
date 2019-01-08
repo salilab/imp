@@ -1,7 +1,7 @@
 /**
  *  \file IMP/multi_state/stat_helpers.cpp
  *  \brief basic stat functions
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
 */
 
 #include <IMP/multi_state/stat_helpers.h>

@@ -2,7 +2,7 @@
  *  \file PbcBoxedMover.cpp
  *  \brief A mover that keeps a particle in a box
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/algebra.h>

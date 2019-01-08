@@ -1,7 +1,7 @@
 /**
  * \file DerivativeCalculator \brief A class for computing SAXS derivatives
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file direction.cpp
  *  \brief Decorators for directions and the angle between them.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/core/direction.h>

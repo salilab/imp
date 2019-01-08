@@ -2,7 +2,7 @@
  *  \file single_prot_fft_fit.cpp
  *  \brief Fit a single protein to a density map
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
 **/
 #include <IMP/em/KernelParameters.h>
 #include <IMP/multifit/fitting_solutions_reader_writer.h>

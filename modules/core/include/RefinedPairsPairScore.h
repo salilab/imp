@@ -2,7 +2,7 @@
  *  \file IMP/core/RefinedPairsPairScore.h
  *  \brief Generate pairs by applying a Refiner to the particles.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_REFINED_PAIRS_PAIR_SCORE_H

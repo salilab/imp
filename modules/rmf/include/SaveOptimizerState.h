@@ -2,7 +2,7 @@
  *  \file IMP/rmf/SaveOptimizerState.h
  *  \brief Dump the state of all associated objects into the RMF file.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
