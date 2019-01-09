@@ -1138,6 +1138,8 @@ _ihm_localization_density_files.seq_id_end
 
         fh = StringIO()
         self.assign_entity_asym_ids(po.system)
+        d = ihm.dumper._ChemDescriptorDumper()
+        d.finalize(po.system) # Assign chemical descriptor IDs
         w = ihm.format.CifWriter(fh)
         d = ihm.dumper._CrossLinkDumper()
         d.finalize(po.system)
@@ -1155,10 +1157,11 @@ _ihm_cross_link_list.entity_description_2
 _ihm_cross_link_list.entity_id_2
 _ihm_cross_link_list.seq_id_2
 _ihm_cross_link_list.comp_id_2
+_ihm_cross_link_list.linker_descriptor_id
 _ihm_cross_link_list.linker_type
 _ihm_cross_link_list.dataset_list_id
-1 1 Nup84 1 1 MET Nup84 1 2 GLU foo 42
-2 2 Nup84 1 1 MET Nup84 1 3 LEU foo 42
+1 1 Nup84 1 1 MET Nup84 1 2 GLU 1 foo 42
+2 2 Nup84 1 1 MET Nup84 1 3 LEU 1 foo 42
 #
 #
 loop_

@@ -613,11 +613,6 @@ class BuildSystem(object):
         self.force_create_gmm_files = force_create_gmm_files
         self.resolutions = resolutions
 
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def mdl(self):
-        return self.model
-
     def add_state(self,
                   reader,
                   keep_chain_id=False, fasta_name_map=None):
@@ -945,11 +940,6 @@ class BuildModel(object):
 
         self.simo.set_floppy_bodies()
         self.simo.setup_bonds()
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
 
     def get_representation(self):
         '''Return the Representation object'''

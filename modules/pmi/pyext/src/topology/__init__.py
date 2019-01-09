@@ -84,11 +84,6 @@ class _SystemBase(object):
         else:
             self.model=model
 
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def mdl(self):
-        return self.model
-
     def _create_hierarchy(self):
         """create a new hierarchy"""
         tmp_part=IMP.Particle(self.model)
@@ -185,11 +180,6 @@ class State(_SystemBase):
         self._protocol_output = []
         for p in system._protocol_output:
             self._add_protocol_output(p, system)
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def mdl(self):
-        return self.model
 
     def __repr__(self):
         return self.system.__repr__()+'.'+self.hier.get_name()
@@ -362,11 +352,6 @@ class Molecule(_SystemBase):
         for ns,s in enumerate(sequence):
             r = TempResidue(self,s,ns+1,ns,is_nucleic)
             self.residues.append(r)
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def mdl(self):
-        return self.model
 
     def __repr__(self):
         return self.state.__repr__()+'.'+self.get_name()+'.'+ \
@@ -914,11 +899,6 @@ class PDBSequences(object):
         # B (192, 443) TQLLEIYALEIQMYTAQKNNKKLKALYEQSLHIKSAIPHPL
         self.sequences = IMP.pmi.tools.OrderedDict()
         self.read_sequences(pdb_fn,name_map)
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
 
     def read_sequences(self,pdb_fn,name_map):
         read_file = IMP.atom.read_pdb
