@@ -39,6 +39,7 @@ import ihm.protocol
 import ihm.analysis
 import ihm.representation
 import ihm.geometry
+import ihm.cross_linkers
 
 def _assign_id(obj, seen_objs, obj_by_id):
     """Assign a unique ID to obj, and track all ids in obj_by_id."""
@@ -296,6 +297,8 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
 
     assembly = None
     _label_map = {'wtDSS':'DSS', 'scDSS':'DSS', 'scEDC':'EDC'}
+    _descriptor_map = {'DSS': ihm.cross_linkers.dss,
+                       'EDC': ihm.cross_linkers.edc}
 
     def __init__(self, pmi_restraint):
         self.pmi_restraint = pmi_restraint
@@ -305,7 +308,17 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
         self.label = label
         super(_CrossLinkRestraint, self).__init__(
                 dataset=self.pmi_restraint.dataset,
-                linker_type=label)
+                linker=self._get_chem_descriptor(label))
+
+    @classmethod
+    def _get_chem_descriptor(cls, label):
+        if label not in cls._descriptor_map:
+            # If label is not a standard linker type, make a new chemical
+            # descriptor containing just the name. We don't know the chemistry
+            # so cannot specify a SMILES or INCHI string for it at this point
+            d = ihm.ChemDescriptor(label)
+            cls._descriptor_map[label] = d
+        return cls._descriptor_map[label]
 
     def _set_psi_sigma(self, model):
         old_values = []

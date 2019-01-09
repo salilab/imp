@@ -381,12 +381,6 @@ class Tests(IMP.test.TestCase):
         s = IMP.pmi.topology._SystemBase()
         s.build() # noop
 
-    def test_old_system_attributes(self):
-        """Test old System attributes"""
-        s = IMP.pmi.topology.System()
-        with IMP.allow_deprecated():
-            self.assertEqual(s.mdl, s.model)
-
     def test_create_states(self):
         """Test State-creation from System"""
         s = IMP.pmi.topology.System()
@@ -396,8 +390,6 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(st.get_hierarchy().get_parent(),
                              s.get_hierarchy())
             self.assertEqual(st.model, s.model)
-            with IMP.allow_deprecated():
-                self.assertEqual(st.mdl, s.model)
         self.assertEqual(s.get_number_of_states(), 10)
 
     def test_create_molecules(self):
@@ -548,8 +540,6 @@ class Tests(IMP.test.TestCase):
         st1 = s.create_state()
         m1 = st1.create_molecule("Prot1", sequence='A' *25)
         self.assertEqual(m1.model, model)
-        with IMP.allow_deprecated():
-            self.assertEqual(m1.mdl, model)
 
     def test_molecule_indexing(self):
         """Test Molecule indexing"""

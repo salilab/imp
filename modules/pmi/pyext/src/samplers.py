@@ -148,11 +148,6 @@ class MonteCarlo(object):
         self.mc.set_kt(self.temp)
         self.mc.add_mover(self.smv)
 
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
-
     def set_kt(self, temp):
         self.temp = temp
         self.mc.set_kt(temp)
@@ -423,11 +418,6 @@ class MolecularDynamics(object):
         self.simulated_annealing = False
         self.nframe = -1
 
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
-
     def set_kt(self,kt):
         temp=kt/0.0019872041
         self.ltstate.set_temperature(temp)
@@ -473,11 +463,6 @@ class ConjugateGradients(object):
         self.nframe = -1
         self.cg = IMP.core.ConjugateGradients(self.model)
         self.cg.set_scoring_function(get_restraint_set(self.model))
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
 
     def set_label(self, label):
         self.label = label
@@ -566,11 +551,6 @@ class ReplicaExchange(object):
         self.nmintemp = 0
         self.nmaxtemp = 0
         self.nsuccess = 0
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
 
     def get_temperatures(self):
         return self.temperatures
@@ -719,11 +699,6 @@ class PyMC(object):
         self.restraints = None
         self.first_call = True
         self.nframe = -1
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
 
     def add_mover(self, mv):
         self.mv = mv
