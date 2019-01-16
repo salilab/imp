@@ -9,21 +9,18 @@ import IMP.pmi.representation
 import math
 
 class Tests(IMP.test.TestCase):
-    def setUp(self):
-        IMP.test.TestCase.setUp(self)
-        self.model = IMP.Model()
-        with IMP.allow_deprecated():
-            self.simo1 = IMP.pmi.representation.Representation(
-                self.model, upperharmonic=True, disorderedlength=False)
 
     def test_GaussianEMRestraint_rigid_body(self):
         """Test rigid body movement of target EM map"""
+        model = IMP.Model()
+        empty_hier = IMP.atom.Hierarchy.setup_particle(IMP.Particle(model))
+
         fname = self.get_input_file_name('2A73.pdb50.txt')
         target_ps = []
         IMP.isd.gmm_tools.decorate_gmm_from_text(
             fname,
             target_ps,
-            self.model,
+            model,
             radius_scale=3.0,
             mass_scale=1.0)
         gemh = IMP.pmi.restraints.em.GaussianEMRestraint(target_ps, fname,
@@ -32,7 +29,7 @@ class Tests(IMP.test.TestCase):
                                                          target_radii_scale=3.0,
                                                          target_is_rigid_body=True)
         gemh.set_label("Mobile")
-        gemh.add_target_density_to_hierarchy(self.simo1.prot)
+        gemh.add_target_density_to_hierarchy(empty_hier)
         gemh.add_to_model()
         gemh.set_weight(100.0)
 

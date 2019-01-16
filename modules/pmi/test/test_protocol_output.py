@@ -14,10 +14,9 @@ class Tests(IMP.test.TestCase):
     def test_prot_add(self):
         """Test Representation.add_protocol_output()"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            r = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = TestPO()
-        r.add_protocol_output(po)
+        s.add_protocol_output(po)
 
 if __name__ == '__main__':
     IMP.test.main()

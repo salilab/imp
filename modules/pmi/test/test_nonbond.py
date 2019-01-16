@@ -2,41 +2,38 @@ import IMP
 import IMP.test
 
 import IMP.pmi.restraints.stereochemistry
-import IMP.pmi.representation
+import IMP.pmi.topology
+import IMP.pmi.dof
 import IMP.pmi.tools
 
 class Tests(IMP.test.TestCase):
     def make_representation(self):
         pdbfile = self.get_input_file_name("nonbond.pdb")
-        fastafile = self.get_input_file_name("nonbond.fasta")
-        fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
 
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            r = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
+        state = s.create_state()
 
-        r.create_component("A", color=0.)
-        r.add_component_sequence("A", fastafile, id=fastids[0])
-        r.autobuild_model("A", pdbfile, "A",
-                          resolutions=[1, 10], missingbeadsize=1)
-        return m, r
+        c = state.create_molecule("A", sequence='KF')
+        struc = c.add_structure(pdbfile, chain_id="A", offset=-10)
+        c.add_representation(struc, resolutions=[1, 10])
+        root_hier = s.build()
+        return m, root_hier
 
     def test_nonbond_check(self):
         """Test nonbond score.
            This test causes an internal check failure (see issue #853)"""
         m, r = self.make_representation()
 
-        r.set_floppy_bodies()
-
         listofexcludedpairs = []
-
-        rbr = IMP.pmi.restraints.stereochemistry.ResidueBondRestraint(r,
-                                                          (1, 2, "A"))
+        chainA = IMP.atom.get_by_type(r, IMP.atom.CHAIN_TYPE)[0]
+        rbr = IMP.pmi.restraints.stereochemistry.ResidueBondRestraint(
+                                                            objects=chainA)
         rbr.add_to_model()
         listofexcludedpairs += rbr.get_excluded_pairs()
 
-        ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(r,
-                                                    resolution=10.0)
+        ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(
+                                         included_objects=r, resolution=10.0)
         ev.add_excluded_particle_pairs(listofexcludedpairs)
         ev.add_to_model()
         sf = IMP.core.RestraintsScoringFunction(
@@ -48,10 +45,12 @@ class Tests(IMP.test.TestCase):
            This test causes an internal check failure (see issue #853)"""
         m, r = self.make_representation()
 
-        r.set_rigid_bodies(["A"])
+        chainA = IMP.atom.get_by_type(r, IMP.atom.CHAIN_TYPE)[0]
+        dof = IMP.pmi.dof.DegreesOfFreedom(m)
+        rb1 = dof.create_rigid_body(chainA)
 
         ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(
-                                  r, resolution=10.0)
+                                  included_objects=r, resolution=10.0)
         ev.add_to_model()
         sf = IMP.core.RestraintsScoringFunction(
                                    IMP.pmi.tools.get_restraint_set(m))

@@ -1160,12 +1160,6 @@ class TopologyReader(object):
         self.gmm_dir = gmm_dir
         self._components = self.read(topology_file)
 
-    # Preserve old self.component_list for backwards compatibility
-    @IMP.deprecated_method("2.7",
-                       "Use 'get_components()' instead of 'component_list'.")
-    def __get_component_list(self): return self._components
-    component_list = property(__get_component_list)
-
     def write_topology_file(self,outfile):
         with open(outfile, "w") as f:
             f.write("|molecule_name|color|fasta_fn|fasta_id|pdb_fn|chain|"
@@ -1534,17 +1528,6 @@ class _Component(object):
                              self._l2s(self.super_rigid_bodies),
                              self._l2s(self.chain_of_super_rigid_bodies)])+'|'
         return a
-
-    # Preserve old self.name for backwards compatibility
-    @IMP.deprecated_method("2.7", "Use 'molname' instead of 'name'.")
-    def __get_name(self): return self.molname
-    name = property(__get_name)
-
-    # Preserve old self.domain_name for backwards compatibility
-    @IMP.deprecated_method("2.7",
-                           "Use 'get_unique_name()' instead of 'domain_name'.")
-    def __get_domain_name(self): return self._domain_name
-    domain_name = property(__get_domain_name)
 
 
 class PMIMoleculeHierarchy(IMP.atom.Molecule):

@@ -169,10 +169,3 @@ class DisulfideCrossLinkRestraint(object):
 
     def get_particles_to_sample(self):
         raise NotImplementedError(" ")
-
-
-@IMP.deprecated_object("2.5", "Use IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint instead.")
-class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint):
-
-    def __init__(self, *args, **kwargs):
-        IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint.__init__(self, *args, **kwargs)
