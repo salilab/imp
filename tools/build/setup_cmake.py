@@ -245,9 +245,6 @@ def main():
     main = []
     ordered = tools.compute_sorted_order(".", "")
     for m in ordered:
-        """if m not in ["base", "kernel", "algebra", "cgal", "test", "statistics", "display", "core", "kmeans", "score_functor",
-           "container", "atom", "rmf", "domino", "example"]:
-            continue"""
         p = os.path.join("modules", m)
         main.append(setup_module(m, p, ordered))
 
