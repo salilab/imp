@@ -118,48 +118,6 @@ class Tests(IMP.test.TestCase):
         pm.add_to_model()
         print(pm.get_output())
 
-
-        restraints = '''#
-        Rpb3 Rpb4 100 150
-        Rpb4 Rpb4 50 150 '''
-
-        xl1 = IMP.pmi.restraints.crosslinking.ConnectivityCrossLinkMS(
-            simo,
-            restraints,
-            20,
-            1,
-            resolution=1)
-        xl1.add_to_model()
-        print(xl1.get_output())
-
-        restraints = '''#
-        Rpb3 Rpb4 100 150
-        Rpb4 Rpb4 50 150 '''
-
-        xl2 = IMP.pmi.restraints.crosslinking.SimplifiedCrossLinkMS(
-            simo,
-            restraints,
-            25,
-            1,
-            resolution=1)
-        xl2.add_to_model()
-        print(xl2.get_output())
-
-        restraints = '''#
-        Rpb3 Rpb4 100 150
-        Rpb4 Rpb4 50 150 '''
-
-        xl3 = IMP.pmi.restraints.crosslinking.SigmoidalCrossLinkMS(
-            simo,
-            restraints,
-            25,
-            1,
-            5,
-            0.02,
-            resolution=1)
-        xl3.add_to_model()
-        print(xl3.get_output())
-
         restraints = '''#
         Rpb3 Rpb4 100 150 1
         Rpb4 Rpb4 50 150 1'''

@@ -74,11 +74,6 @@ class DegreesOfFreedom(object):
         # internal mover  = [mover obj, list of particles, enabled?] ?
         # mover map = {particles/rbs : movers}
 
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def mdl(self):
-        return self.model
-
     def _get_nonrigid_hiers(self, nonrigid_parts, rigid_hiers, resolution):
         """Get Hierarchy objects for nonrigid parts. Make sure that they are
            a subset of the rigid body Hierarchies."""

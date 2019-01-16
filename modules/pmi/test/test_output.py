@@ -59,10 +59,9 @@ class Tests(IMP.test.TestCase):
     def test_get_particle_infos(self):
         """Test get_particle_infos_for_pdb_writing with no particles"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        empty_hier = IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
         output = IMP.pmi.output.Output()
-        output.init_pdb("test_output.pdb", simo.prot)
+        output.init_pdb("test_output.pdb", empty_hier)
         info, center = output.get_particle_infos_for_pdb_writing(
                                               "test_output.pdb")
         self.assertEqual(len(info), 0)
