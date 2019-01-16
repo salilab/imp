@@ -15,41 +15,43 @@ import tools
 import subprocess
 from optparse import OptionParser
 
-check_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+TOPDIR = os.path.abspath(os.path.dirname(__file__))
+
+check_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                        "cmake_templates",
                                                        "Check.cmake"))
 
-dep_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+dep_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                      "cmake_templates",
                                                      "Dependency.cmake"))
 
-lib_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+lib_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                      "cmake_templates",
                                                      "ModuleLib.cmake"))
 
-test_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+test_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                       "cmake_templates",
                                                       "ModuleTest.cmake"))
 
-examples_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+examples_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                    "cmake_templates", "ModuleExamples.cmake"))
 
-swig_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+swig_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                       "cmake_templates",
                                                       "ModuleSwig.cmake"))
 
-util_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+util_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                       "cmake_templates",
                                                       "ModuleUtil.cmake"))
 
-bin_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+bin_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                      "cmake_templates",
                                                      "ModuleBin.cmake"))
 
-module_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+module_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                              "cmake_templates", "Module.cmake"))
 
-benchmark_template = tools.CMakeFileGenerator(os.path.join("tools", "build",
+benchmark_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                     "cmake_templates", "ModuleBenchmark.cmake"))
 
 def make_check(path, module, module_path):
@@ -228,7 +230,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/modules/%s/utility)""" % ((module,) * 6)
 
     # at end so directories exist
     subprocess.check_call(["python",
-                          os.path.join(os.getcwd(), "tools",
+                          os.path.join(TOPDIR, "..",
                                        "dev_tools", "setup_cmake.py")],
                           cwd=path, universal_newlines=True)
 
