@@ -213,12 +213,13 @@ def setup_module(finder, module):
     benchmark_template.write(benchmark, values)
     examples_template.write(examples, values)
     values["tests"] = "\n".join(contents)
-    values["subdirs"] = """add_subdirectory(${CMAKE_SOURCE_DIR}/%s/src)
-add_subdirectory(${CMAKE_SOURCE_DIR}/%s/test)
-add_subdirectory(${CMAKE_SOURCE_DIR}/%s/examples)
-add_subdirectory(${CMAKE_SOURCE_DIR}/%s/benchmark)
-add_subdirectory(${CMAKE_SOURCE_DIR}/%s/bin)
-add_subdirectory(${CMAKE_SOURCE_DIR}/%s/utility)""" % ((module.path,) * 6)
+    topdir = '/' + module.path if module.path else ''
+    values["subdirs"] = """add_subdirectory(${CMAKE_SOURCE_DIR}%s/src)
+add_subdirectory(${CMAKE_SOURCE_DIR}%s/test)
+add_subdirectory(${CMAKE_SOURCE_DIR}%s/examples)
+add_subdirectory(${CMAKE_SOURCE_DIR}%s/benchmark)
+add_subdirectory(${CMAKE_SOURCE_DIR}%s/bin)
+add_subdirectory(${CMAKE_SOURCE_DIR}%s/utility)""" % ((topdir,) * 6)
 
     out = os.path.join(module.path, "CMakeLists.txt")
     module_template.write(out, values)
@@ -233,12 +234,15 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/%s/utility)""" % ((module.path,) * 6)
 
 
 parser = OptionParser()
+parser.add_option("--build_dir", help="IMP build directory", default=None)
 
 
 def main():
     (options, args) = parser.parse_args()
     main = []
-    mf = tools.ModulesFinder(source_dir='')
+    mf = tools.ModulesFinder(source_dir='', external_dir=options.build_dir,
+                             one_module=options.build_dir
+                                        and os.path.exists('dependencies.py'))
     for m in mf.get_ordered():
         if isinstance(m, tools.SourceModule):
             main.append(setup_module(mf, m))
