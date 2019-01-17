@@ -241,9 +241,7 @@ parser.add_option("--build_dir", help="IMP build directory", default=None)
 def main():
     (options, args) = parser.parse_args()
     main = []
-    mf = tools.ModulesFinder(source_dir='', external_dir=options.build_dir,
-                             one_module=options.build_dir
-                                        and os.path.exists('dependencies.py'))
+    mf = tools.ModulesFinder(source_dir='', external_dir=options.build_dir)
     for m in mf.get_ordered():
         if isinstance(m, tools.SourceModule):
             main.append(setup_module(mf, m))

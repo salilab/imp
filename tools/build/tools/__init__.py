@@ -355,14 +355,17 @@ class ModulesFinder(object):
 
        `source_dir`, if given, is the relative path to search for source
                      modules
-       `one_module` if False, search for modules in subdirectories under
-                     `source_dir`; if True, `source_dir` is a single module
        `external_dir`, if given, is the relative path to search for external
                      modules
     """
-    def __init__(self, source_dir=None, one_module=False, external_dir=None):
-        self.source_dir, self.one_module = source_dir, one_module
+    def __init__(self, source_dir=None, external_dir=None):
+        self.source_dir = source_dir
         self.external_dir = external_dir
+        # If False, search for modules in subdirectories under
+        # `source_dir`; if True, `source_dir` is a single module
+        self.one_module = (external_dir and source_dir
+                           and os.path.exists(os.path.join(source_dir,
+                                                           'dependencies.py')))
         self._mod_by_name = None
         self._ordered = None
 
