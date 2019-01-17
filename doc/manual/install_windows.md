@@ -77,7 +77,7 @@ we employed is as follows:
     [FFTW DLLs](http://www.fftw.org/install/windows.html) and follow the
     instructions at that website to make .lib import libraries needed for
     Visual Studio.
-     - Copy `libfftw3-3.lib` to `fftw3.lib` to help cmake find it
+     - Copy `libfftw3-3.lib` to `fftw3.lib` and `libfftw3-3.dll` to `fftw3.dll` to help cmake find it
   - (Optional) Get the
     [GSL source code](http://gnuwin32.sourceforge.net/packages/gsl.htm)
     and build it:
