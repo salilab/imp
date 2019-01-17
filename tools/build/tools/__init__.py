@@ -2,11 +2,13 @@ import glob
 import os
 import os.path
 import copy
+import itertools
 import shutil
 import sys
 import difflib
 import subprocess
 import signal
+import weakref
 
 # cmake paths are always /-separated; on platforms where the path is not /
 # (e.g. Windows) convert a path to or from a form cmake will like
@@ -255,6 +257,186 @@ def link_dir(source_dir, target_dir, match=["*"], exclude=[],
         for ln in existing_links:
             if ln not in targets:
                 os.unlink(ln)
+
+class Module(object):
+    """An IMP module"""
+    _info = None
+
+    def __init__(self, name, path, finder):
+        self.name, self.path = name, path
+        # finder holds a reference to us, so we need a weak
+        # reference here to break cycles
+        self._finder = weakref.proxy(finder)
+
+    def get_all_modules(self):
+        """Get a list of all other Modules this one depends on.
+           The list is sorted, the most derived Modules last."""
+        ret = []
+        stack = [self]
+        while len(stack) > 0:
+            cur = stack.pop()
+            for m in cur.required_modules + cur.optional_modules:
+                if m not in ret:
+                    ret.append(m)
+                    stack.append(m)
+        return self._finder.get_ordered(ret)
+
+    def _modules_split(self, s):
+        """Split the given string into a list of Module objects"""
+        return [self._finder[x] for x in split(s)]
+
+
+class ExternalModule(Module):
+    """An IMP module that has already been built (no source code)"""
+    build_info_file = property(lambda self: os.path.join(self.path,
+                                                         "IMP.%s" % self.name))
+    def _read_bi_file(self, attr):
+        """Read the build_info file if necessary and return the given
+           attribute"""
+        if self._info is not None:
+            return self._info[attr]
+        d = {'modules': "", 'unfound_modules': "",
+             'dependencies': "", 'unfound_dependencies': "",
+             'swig_wrapper_includes': "", 'swig_includes': "",
+             'swig_path': "", 'include_path': "", 'lib_path': "", 'ok': False}
+        exec(open(self.build_info_file).read(), d)
+        self._info = {"ok": d['ok'],
+               "modules": self._modules_split(d['modules']),
+               "unfound_modules": self._modules_split(d['unfound_modules']),
+               "dependencies": split(d['dependencies']),
+               "unfound_dependencies": split(d['unfound_dependencies']),
+               "swig_includes": split(d['swig_includes']),
+               "swig_wrapper_includes": split(d['swig_wrapper_includes'])}
+        return self._info[attr]
+
+    modules = property(lambda self: self._read_bi_file('modules'))
+    required_modules = modules
+    dependencies = property(lambda self: self._read_bi_file('dependencies'))
+    required_dependencies = dependencies
+    optional_modules = []
+    optional_dependencies = []
+
+
+class SourceModule(Module):
+    """An IMP module that exists in an IMP source checkout"""
+    depends_file = property(lambda self: os.path.join(self.path,
+                                                      "dependencies.py"))
+    def _read_dep_file(self, attr):
+        """Read the depends file if necessary and return the given
+           attribute"""
+        if self._info is not None:
+            return self._info[attr]
+        d = {'required_modules': "", 'optional_modules': "",
+             'required_dependencies': "", 'optional_dependencies': ""}
+        exec(open(self.depends_file).read(), d)
+        self._info = {"required_modules":
+                             self._modules_split(d['required_modules']),
+                      "optional_modules":
+                             self._modules_split(d['optional_modules']),
+                      "required_dependencies":
+                             split(d['required_dependencies']),
+                      "optional_dependencies":
+                             split(d['optional_dependencies'])}
+        return self._info[attr]
+
+    required_modules = property(
+                        lambda self: self._read_dep_file('required_modules'))
+    optional_modules = property(
+                        lambda self: self._read_dep_file('optional_modules'))
+    required_dependencies = property(
+                      lambda self: self._read_dep_file('required_dependencies'))
+    optional_dependencies = property(
+                      lambda self: self._read_dep_file('optional_dependencies'))
+
+
+class ModulesFinder(object):
+    """Class for finding IMP modules.
+       Acts like a dict with module names as keys and Module objects as values.
+
+       `source_dir`, if given, is the relative path to search for source
+                     modules
+       `one_module` if False, search for modules in subdirectories under
+                     `source_dir`; if True, `source_dir` is a single module
+       `external_dir`, if given, is the relative path to search for external
+                     modules
+    """
+    def __init__(self, source_dir=None, one_module=False, external_dir=None):
+        self.source_dir, self.one_module = source_dir, one_module
+        self.external_dir = external_dir
+        self._mod_by_name = None
+        self._ordered = None
+
+    def get_all_dependencies(self, modules):
+        """Return the dependencies of the given modules (plus any modules
+           they in turn depend on)"""
+        seen_deps = set()
+        for m in modules:
+            for d in m.required_dependencies + m.optional_dependencies:
+                if d not in seen_deps:
+                    seen_deps.add(d)
+                    yield d
+
+    def __getitem__(self, name):
+        self.__get_all()
+        return self._mod_by_name[name]
+
+    def keys(self):
+        self.__get_all()
+        return self._mod_by_name.keys()
+
+    def values(self):
+        self.__get_all()
+        return self._mod_by_name.values()
+
+    def items(self):
+        self.__get_all()
+        return self._mod_by_name.items()
+
+    def get_ordered(self, modules=None):
+        """Get Modules sorted by dependencies. Any Module x that depends on
+           another Module y will be sorted after y in the list.
+           If modules is None, sort all known modules."""
+        if self._ordered is None:
+            data = {}
+            for m in self.values():
+                data[m.name] = [x.name for x in m.required_modules
+                                                + m.optional_modules]
+            self._ordered = [self._mod_by_name[name]
+                             for name in toposort2(data)]
+        if modules is None:
+            return self._ordered
+        else:
+            return sorted(modules, key=lambda x: self._ordered.index(x))
+
+    def __get_all(self):
+        """Get all modules, as Module objects"""
+        if self._mod_by_name is not None:
+            return
+        self._mod_by_name = {}
+        for m in itertools.chain(self._get_all_source(),
+                                 self._get_all_external()):
+            self._mod_by_name[m.name] = m
+
+    def _get_all_external(self):
+        """Get all external modules"""
+        if self.external_dir is None:
+            return
+        for g in glob.glob(os.path.join(self.external_dir, "IMP.*")):
+            yield ExternalModule(os.path.split(g)[1][4:], self.external_dir,
+                                 self)
+
+    def _get_all_source(self):
+        """Get all source modules"""
+        if self.source_dir is None:
+            return
+        if self.one_module:
+            modname = os.path.split(os.path.abspath(self.source_dir))[1]
+            yield SourceModule(modname, self.source_dir, self)
+        else:
+            for g in glob.glob(os.path.join(self.source_dir, "modules", "*")):
+                if (os.path.isdir(g)
+                    and os.path.exists(os.path.join(g, "dependencies.py"))):
+                    yield SourceModule(os.path.split(g)[1], g, self)
 
 
 def get_modules(source):
