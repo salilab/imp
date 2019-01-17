@@ -264,8 +264,7 @@ def main():
     tools.mkdir(os.path.join("cmake_tests"))
     tools.rewrite(os.path.join("data", "build_info", "disabled"),
                   options.disabled.replace(":", "\n"))
-    tools.setup_sorted_order(options.source,
-                             options.datapath)
+    tools.set_sorted_order([m.name for m in mf.get_ordered()])
     link_headers(all_modules)
     link_examples(all_modules)
     link_swig(all_modules)
