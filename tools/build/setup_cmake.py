@@ -221,7 +221,8 @@ add_subdirectory(${CMAKE_SOURCE_DIR}%s/benchmark)
 add_subdirectory(${CMAKE_SOURCE_DIR}%s/bin)
 add_subdirectory(${CMAKE_SOURCE_DIR}%s/utility)""" % ((topdir,) * 6)
 
-    out = os.path.join(module.path, "CMakeLists.txt")
+    out = os.path.join(module.path,
+                "ModuleBuild.cmake" if finder.one_module else "CMakeLists.txt")
     module_template.write(out, values)
 
     # at end so directories exist
