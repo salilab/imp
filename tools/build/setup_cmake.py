@@ -228,7 +228,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}%s/utility)""" % ((topdir,) * 6)
     subprocess.check_call(["python",
                           os.path.join(TOPDIR, "..",
                                        "dev_tools", "setup_cmake.py")],
-                          cwd=module.path, universal_newlines=True)
+                          cwd=module.path or '.', universal_newlines=True)
 
     return out
 
