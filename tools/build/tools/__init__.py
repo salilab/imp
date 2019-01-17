@@ -363,7 +363,7 @@ class ModulesFinder(object):
         self.external_dir = external_dir
         # If False, search for modules in subdirectories under
         # `source_dir`; if True, `source_dir` is a single module
-        self.one_module = (external_dir and source_dir
+        self.one_module = (external_dir is not None and source_dir is not None
                            and os.path.exists(os.path.join(source_dir,
                                                            'dependencies.py')))
         self._mod_by_name = None
