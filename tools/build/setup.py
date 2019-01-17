@@ -30,93 +30,78 @@ from optparse import OptionParser
 
 # link all the headers from the module/include directories into the
 # correct place in the build dir
-def link_headers(source):
+def link_headers(modules):
     target = os.path.join("include")
     tools.mkdir(target)
     root = os.path.join(target, "IMP")
     tools.mkdir(root)
-    for (module, g) in tools.get_modules(source):
-        # print g, module
-        modroot = os.path.join(root, '' if module == 'kernel' else module)
-        if module == "SConscript":
-            continue
-        tools.link_dir(os.path.join(g, "include"), modroot, match=["*.h"])
-        tools.link_dir(os.path.join(g, "include", "internal"),
+    for module in modules:
+        modroot = os.path.join(root, '' if module.name == 'kernel'
+                                        else module.name)
+        tools.link_dir(os.path.join(module.path, "include"),
+                       modroot, match=["*.h"])
+        tools.link_dir(os.path.join(module.path, "include", "internal"),
                        os.path.join(modroot, "internal"), match=["*.h"])
         # ick
-        if os.path.exists(os.path.join(g, "include", "eigen3")):
-            tools.link_dir(os.path.join(g, "include", "eigen3"),
+        if os.path.exists(os.path.join(module.path, "include", "eigen3")):
+            tools.link_dir(os.path.join(module.path, "include", "eigen3"),
                            os.path.join(modroot, "eigen3"),
                            match=["*"])
 
 # link example scripts and data from the source dirs into the build tree
 
 
-def link_examples(source):
+def link_examples(modules):
     target = os.path.join("doc", "examples")
     tools.mkdir(target)
-    for module, g in tools.get_modules(source):
-        tools.link_dir(
-            os.path.join(g, "examples"), os.path.join(target, module))
+    for module in modules:
+        tools.link_dir(os.path.join(module.path, "examples"),
+                       os.path.join(target, module.name))
 
 # link files from the module/data directries from the source into the
 # build tree
 
 
-def link_data(source):
+def link_data(modules):
     target = os.path.join("data")
     tools.mkdir(target)
-    for module, g in tools.get_modules(source):
-        tools.link_dir(os.path.join(g, "data"), os.path.join(target, module))
+    for module in modules:
+        tools.link_dir(os.path.join(module.path, "data"),
+                       os.path.join(target, module.name))
 
 # link swig .i files from the source into the build tree
 
 
-def link_swig(source):
+def link_swig(modules):
     target = os.path.join("swig")
     tools.mkdir(target)
-    for module, g in tools.get_modules(source):
+    for module in modules:
         # they all go in the same dir, so don't remove old links
-        tools.link_dir(
-            os.path.join(g,
-                         "pyext"),
-            target,
-            match=["*.i"],
-            clean=False)
-        if os.path.exists(os.path.join(g, "pyext", "include")):
-            tools.link_dir(
-                os.path.join(g,
-                             "pyext",
-                             "include"),
-                target,
-                match=["*.i"],
-                clean=False)
-        tools.link(
-            os.path.join(
-                g,
-                "pyext",
-                "swig.i-in"),
-            os.path.join(
-                target,
-                "IMP_%s.impl.i" %
-                module))
+        tools.link_dir(os.path.join(module.path, "pyext"), target,
+                       match=["*.i"], clean=False)
+        if os.path.exists(os.path.join(module.path, "pyext", "include")):
+            tools.link_dir(os.path.join(module.path, "pyext", "include"),
+                           target, match=["*.i"], clean=False)
+        tools.link(os.path.join(module.path, "pyext", "swig.i-in"),
+                   os.path.join(target, "IMP_%s.impl.i" % module.name))
 
 # link python source files from pyext/src into the build tree
 
 
-def link_python(source):
+def link_python(modules):
     target = os.path.join("lib")
     tools.mkdir(target, clean=False)
-    for module, g in tools.get_modules(source):
-        path = os.path.join(target, "IMP", '' if module == 'kernel' else module)
+    for module in modules:
+        path = os.path.join(target, "IMP", '' if module.name == 'kernel'
+                                              else module.name)
         tools.mkdir(path, clean=False)
         for old in tools.get_glob([os.path.join(path, "*.py")]):
             # don't unlink the generated file
             if os.path.split(old)[1] != "__init__.py" and os.path.split(old)[1] != "_version_check.py":
                 os.unlink(old)
                 # print "linking", path
-        tools.link_dir(os.path.join(g, "pyext", "src"), path, clean=False,
-                       make_subdirs=True)
+        tools.link_dir(os.path.join(module.path, "pyext", "src"), path,
+                       clean=False, make_subdirs=True)
 
 
 def _make_test_driver(outf, cpps):
@@ -157,7 +142,7 @@ if __name__ == '__main__':
 """)
 
 
-def generate_tests(source, scons):
+def generate_tests(modules, scons):
     template = """import IMP
 import IMP.test
 import %(module)s
@@ -189,10 +174,10 @@ if __name__ == '__main__':
     """
     target = os.path.join("test")
     tools.mkdir(target)
-    for module, g in tools.get_modules(source):
-        targetdir = os.path.join(target, module)
+    for module in modules:
+        targetdir = os.path.join(target, module.name)
         tools.mkdir(targetdir)
-        exceptions = os.path.join(g, "test", "standards_exceptions")
+        exceptions = os.path.join(module.path, "test", "standards_exceptions")
         d = {'plural_exceptions': [],
              'show_exceptions': [],
              'function_name_exceptions': [],
@@ -203,7 +188,7 @@ if __name__ == '__main__':
             exec(open(exceptions, "r").read(), d)
         except IOError:
             pass
-        impmodule = "IMP" if module == 'kernel' else "IMP." + module
+        impmodule = "IMP" if module.name == 'kernel' else "IMP." + module.name
         test = template % ({'module': impmodule,
                             'plural_exceptions': str(d['plural_exceptions']),
                             'show_exceptions': str(d['show_exceptions']),
@@ -216,13 +201,15 @@ if __name__ == '__main__':
                             'spelling_exceptions':
                                 str(d['spelling_exceptions'])})
         gen = tools.PythonFileGenerator()
-        gen.write(os.path.join("test", module, "medium_test_standards.py"),
+        gen.write(os.path.join("test", module.name, "medium_test_standards.py"),
                   test, show_diff=False)
 
-        cpptests = tools.get_glob([os.path.join(g, "test", "test_*.cpp")])
+        cpptests = tools.get_glob([os.path.join(module.path, "test",
+                                                "test_*.cpp")])
         ecpptests = tools.get_glob(
-            [os.path.join(g, "test", "expensive_test_*.cpp")])
-        cppexamples = tools.get_glob([os.path.join(g, "examples", "*.cpp")])
+            [os.path.join(module.path, "test", "expensive_test_*.cpp")])
+        cppexamples = tools.get_glob([os.path.join(module.path, "examples",
+                                                   "*.cpp")])
 
         if len(cpptests) > 0 and scons:
             _make_test_driver(
@@ -249,13 +236,14 @@ def clean_pyc(dir):
                 os.unlink(f)
 
 
-def generate_src_dirs(source):
+def generate_src_dirs(modules):
     """Make src directories for each module. This way we don't have to worry about whether
     it exists later."""
-    for module, g in tools.get_modules(source):
-        tools.mkdir(os.path.join("src", module), clean=False)
+    for module in modules:
+        tools.mkdir(os.path.join("src", module.name), clean=False)
 
 parser = OptionParser()
+parser.add_option("--build_dir", help="IMP build directory", default=None)
 parser.add_option("-s", "--source", dest="source",
                   help="IMP source directory.")
 parser.add_option("-d", "--datapath", dest="datapath",
@@ -268,6 +256,9 @@ parser.add_option("--scons", default=False, action="store_true",
 
 def main():
     (options, args) = parser.parse_args()
+    mf = tools.ModulesFinder(source_dir=options.source,
+                             external_dir=options.build_dir)
+    all_modules = [x for x in mf.values() if isinstance(x, tools.SourceModule)]
     clean_pyc(options.source)
     tools.mkdir(os.path.join("data", "build_info"))
     tools.mkdir(os.path.join("cmake_tests"))
@@ -275,13 +266,13 @@ def main():
                   options.disabled.replace(":", "\n"))
     tools.setup_sorted_order(options.source,
                              options.datapath)
-    link_headers(options.source)
-    link_examples(options.source)
-    link_swig(options.source)
-    link_python(options.source)
-    link_data(options.source)
-    generate_tests(options.source, options.scons)
-    generate_src_dirs(options.source)
+    link_headers(all_modules)
+    link_examples(all_modules)
+    link_swig(all_modules)
+    link_python(all_modules)
+    link_data(all_modules)
+    generate_tests(all_modules, options.scons)
+    generate_src_dirs(all_modules)
 
 if __name__ == '__main__':
     main()
