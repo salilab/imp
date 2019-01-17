@@ -122,7 +122,7 @@ def get_dep_merged(all_deps, name):
     return "\n        ".join(sorted(set("${%s_%s}" % (d.upper(), name.upper())
                                     for d in all_deps)))
 
-def setup_module(finder, module):
+def setup_module(finder, module, tools_dir):
     checks = []
     deps = []
     contents = []
@@ -157,7 +157,11 @@ def setup_module(finder, module):
         contents.append("include(${CMAKE_SOURCE_DIR}/%s)"
                         % tools.to_cmake_path(local))
 
-    values = {"name": module.name}
+    values = {"name": module.name,
+              "module_dir": tools.to_cmake_path(module.path) + '/'
+                            if module.path else '',
+              "tools_dir": tools.to_cmake_path(tools_dir) + '/'
+                           if tools_dir else ''}
     if module.name == 'kernel':
         values['subdir'] = 'IMP'
         values['pymod'] = 'IMP'
@@ -236,15 +240,18 @@ add_subdirectory(${CMAKE_SOURCE_DIR}%s/utility)""" % ((topdir,) * 6)
 
 parser = OptionParser()
 parser.add_option("--build_dir", help="IMP build directory", default=None)
+parser.add_option("--tools_dir", help="IMP tools directory", default=None)
 
 
 def main():
     (options, args) = parser.parse_args()
     main = []
     mf = tools.ModulesFinder(source_dir='', external_dir=options.build_dir)
+    tools_dir = options.tools_dir if options.tools_dir \
+                                  else '${CMAKE_SOURCE_DIR}/tools'
     for m in mf.get_ordered():
         if isinstance(m, tools.SourceModule):
-            main.append(setup_module(mf, m))
+            main.append(setup_module(mf, m, tools_dir))
 
 if __name__ == '__main__':
     main()
