@@ -8,6 +8,7 @@ import os
 
 def main():
     parser = OptionParser()
+    parser.add_option("--build_dir", help="IMP build directory", default=None)
     parser.add_option("-s", "--source", dest="source",
                       help="IMP source directory.")
     options, args = parser.parse_args()
@@ -16,9 +17,12 @@ def main():
     make_version(options.source, '.')
 
     # Submodule versions
-    for module, module_source in tools.get_modules(options.source):
-        if os.path.exists(os.path.join(module_source, ".git")):
-            make_version(module_source, os.path.join("modules", module))
+    mf = tools.ModulesFinder(source_dir=options.source,
+                             external_dir=options.build_dir)
+    all_modules = [x for x in mf.values() if isinstance(x, tools.SourceModule)]
+    for module in all_modules:
+        if os.path.exists(os.path.join(module.path, ".git")):
+            make_version(module.path, os.path.join("modules", module.name))
 
 
 def get_short_rev(source):
