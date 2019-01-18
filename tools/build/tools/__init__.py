@@ -266,7 +266,7 @@ class Module(object):
         self.name, self.path = name, path
         # finder holds a reference to us, so we need a weak
         # reference here to break cycles
-        self._finder = weakref.proxy(finder)
+        self._finder = weakref.ref(finder)
 
     def get_all_modules(self):
         """Get a list of all other Modules this one depends on.
@@ -279,17 +279,20 @@ class Module(object):
                 if m not in ret:
                     ret.append(m)
                     stack.append(m)
-        return self._finder.get_ordered(ret)
+        return self._finder().get_ordered(ret)
 
     def _modules_split(self, s):
         """Split the given string into a list of Module objects"""
-        return [self._finder[x] for x in split(s)]
+        return [self._finder()[x] for x in split(s)]
 
 
 class ExternalModule(Module):
     """An IMP module that has already been built (no source code)"""
     build_info_file = property(lambda self: os.path.join(self.path,
                                                          "IMP.%s" % self.name))
+    # Already configured
+    configured = property(lambda self: self)
+
     def _read_bi_file(self, attr):
         """Read the build_info file if necessary and return the given
            attribute"""
@@ -309,9 +312,14 @@ class ExternalModule(Module):
                "swig_wrapper_includes": split(d['swig_wrapper_includes'])}
         return self._info[attr]
 
+    ok = property(lambda self: self._read_bi_file('ok'))
     modules = property(lambda self: self._read_bi_file('modules'))
+    unfound_modules = property(lambda self:
+                                  self._read_bi_file('unfound_modules'))
     required_modules = modules
     dependencies = property(lambda self: self._read_bi_file('dependencies'))
+    unfound_dependencies = property(lambda self:
+                                 self._read_bi_file('unfound_dependencies'))
     required_dependencies = dependencies
     optional_modules = []
     optional_dependencies = []
@@ -321,16 +329,30 @@ class SourceModule(Module):
     """An IMP module that exists in an IMP source checkout"""
     depends_file = property(lambda self: os.path.join(self.path,
                                                       "dependencies.py"))
+
+    def __get_configured_module(self):
+        if not hasattr(self, '_configured'):
+            self._configured = ExternalModule(self.name,
+                                      os.path.join('data', 'build_info'),
+                                      self._finder())
+        return self._configured
+
+    configured = property(__get_configured_module,
+                          doc="Configured version of this module")
+
     def _read_dep_file(self, attr):
         """Read the depends file if necessary and return the given
            attribute"""
         if self._info is not None:
             return self._info[attr]
         d = {'required_modules': "", 'optional_modules': "",
-             'required_dependencies': "", 'optional_dependencies': ""}
+             'required_dependencies': "", 'optional_dependencies': "",
+             'lib_only_required_modules': ""}
         exec(open(self.depends_file).read(), d)
         self._info = {"required_modules":
                              self._modules_split(d['required_modules']),
+                      "lib_only_required_modules":
+                           self._modules_split(d['lib_only_required_modules']),
                       "optional_modules":
                              self._modules_split(d['optional_modules']),
                       "required_dependencies":
@@ -341,6 +363,8 @@ class SourceModule(Module):
 
     required_modules = property(
                         lambda self: self._read_dep_file('required_modules'))
+    lib_only_required_modules = property(
+                lambda self: self._read_dep_file('lib_only_required_modules'))
     optional_modules = property(
                         lambda self: self._read_dep_file('optional_modules'))
     required_dependencies = property(
@@ -378,6 +402,28 @@ class ModulesFinder(object):
                 if d not in seen_deps:
                     seen_deps.add(d)
                     yield d
+
+    def get_dependent_modules(self, modules, root='.'):
+        """Get the the given modules plus any modules they depend on,
+           sorted by dependency (most derived modules first)"""
+        sorted_order = get_sorted_order(root)
+        new_modules = modules[:]
+        all_modules = modules[:]
+        while len(new_modules) > 0:
+            m = new_modules.pop()
+            cur_modules = [x for x in m.configured.modules
+                           if x not in all_modules]
+            all_modules += cur_modules
+            new_modules += cur_modules
+        return sorted(all_modules, key=lambda x: sorted_order.index(x.name),
+                      reverse=True)
+
+    def get_dependent_dependencies(self, modules, dependencies):
+        """Get the given dependencies plus those of all given modules"""
+        ret_names = []
+        for m in modules:
+            ret_names.extend(m.configured.dependencies)
+        return list(set(ret_names + dependencies))
 
     def __getitem__(self, name):
         self.__get_all()

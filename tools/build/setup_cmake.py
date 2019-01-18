@@ -218,6 +218,10 @@ def setup_module(finder, module, tools_dir):
     examples_template.write(examples, values)
     values["tests"] = "\n".join(contents)
     topdir = '/' + module.path if module.path else ''
+    if finder.external_dir:
+        values["build_dir"] = "--build_dir=%s " % finder.external_dir
+    else:
+        values["build_dir"] = ""
     values["subdirs"] = """add_subdirectory(${CMAKE_SOURCE_DIR}%s/src)
 add_subdirectory(${CMAKE_SOURCE_DIR}%s/test)
 add_subdirectory(${CMAKE_SOURCE_DIR}%s/examples)

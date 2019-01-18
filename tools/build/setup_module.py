@@ -18,7 +18,10 @@ import glob
 import pickle
 import re
 
+TOPDIR = os.path.abspath(os.path.dirname(__file__))
+
 parser = OptionParser()
+parser.add_option("--build_dir", help="IMP build directory", default=None)
 parser.add_option("-D", "--defines", dest="defines", default="",
                   help="Colon separated list of defines.")
 parser.add_option("-n", "--name",
@@ -38,14 +41,14 @@ def add_list_to_defines(cppdefines, data, sym, val, names):
                           % (data["name"].upper(), nn, val))
 
 
-def make_header(options):
-    if options.name == 'kernel':
+def make_header(options, module):
+    if module.name == 'kernel':
         dir = os.path.join("include", "IMP")
     else:
-        dir = os.path.join("include", "IMP", options.name)
-    file = os.path.join(dir, "%s_config.h" % options.name)
-    header_template = tools.CPPFileGenerator(os.path.join(options.source,
-                            "tools", "build", "config_templates", "header.h"))
+        dir = os.path.join("include", "IMP", module.name)
+    file = os.path.join(dir, "%s_config.h" % module.name)
+    header_template = tools.CPPFileGenerator(os.path.join(TOPDIR,
+                                         "config_templates", "header.h"))
     try:
         os.makedirs(dir)
     except:
@@ -53,18 +56,18 @@ def make_header(options):
         pass
 
     data = {}
-    data["name"] = options.name
-    if options.name == 'kernel':
+    data["name"] = module.name
+    if module.name == 'kernel':
         data["namespace"] = "IMP"
         data["begin_ns"] = "namespace IMP{"
         data["end_ns"] = "}"
-        data["filename"] = "IMP/%s_config.h" % options.name
+        data["filename"] = "IMP/%s_config.h" % module.name
     else:
-        data["namespace"] = "IMP::%s" % options.name
-        data["begin_ns"] = "namespace IMP{ namespace %s {" % options.name
+        data["namespace"] = "IMP::%s" % module.name
+        data["begin_ns"] = "namespace IMP{ namespace %s {" % module.name
         data["end_ns"] = "} }"
-        data["filename"] = "IMP/%s/%s_config.h" % (options.name, options.name)
-    data["cppprefix"] = "IMP%s" % options.name.upper().replace("_", "")
+        data["filename"] = "IMP/%s/%s_config.h" % (module.name, module.name)
+    data["cppprefix"] = "IMP%s" % module.name.upper().replace("_", "")
     if data["name"] != "kernel":
         data["showable"] = """#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 
@@ -95,50 +98,44 @@ using ::IMP::hash_value;
             else:
                 cppdefines.append("#define %s" % parts[0])
 
-    d = {'required_modules': "", 'lib_only_required_modules': "",
-         'required_dependencies': "", 'optional_dependencies': ""}
-    exec(open(os.path.join(options.source, "modules", data["name"],
-                           "dependencies.py"), "r").read(), d)
+    cf = module.configured
 
-    info = tools.get_module_info(data["name"], options.datapath)
-
-    optional_modules = [x for x in info["modules"]
-                        if x not in tools.split(d['required_modules'])
-                             and x != ""]
-    unfound_modules = [x for x in info["unfound_modules"] if x != ""]
-    optional_dependencies = [x for x in info["dependencies"]
-                             if x not in tools.split(d['required_dependencies'])
-                                  and x != ""]
-    unfound_dependencies = [x for x in info["unfound_dependencies"] if x != ""]
+    optional_modules = [x for x in cf.modules
+                        if x not in module.required_modules]
+    optional_dependencies = [x for x in cf.dependencies
+                             if x not in module.required_dependencies]
     add_list_to_defines(cppdefines, data, "USE", 1,
-                        ["imp_" + x for x in optional_modules])
+                        ["imp_" + x.name for x in optional_modules])
     add_list_to_defines(cppdefines, data, "NO", 0,
-                        ["imp_" + x for x in unfound_modules])
+                        ["imp_" + x.name for x in cf.unfound_modules])
     add_list_to_defines(cppdefines, data, "USE", 1, optional_dependencies)
-    add_list_to_defines(cppdefines, data, "NO", 0, info["unfound_dependencies"])
+    add_list_to_defines(cppdefines, data, "NO", 0, cf.unfound_dependencies)
     data["cppdefines"] = "\n".join(cppdefines)
     header_template.write(file, data)
 
 class ModuleDoxFileGenerator(tools.FileGenerator):
-    def __init__(self, template_file, modules):
+    def __init__(self, template_file, module, modules, finder):
+        self.module = module
         self.modules = modules
+        self.finder = finder
         tools.FileGenerator.__init__(self, template_file, '#')
 
     def get_output_file_contents(self, options):
         template = self.template
-        name = options.name
+        module = self.module
         modules = self.modules
         template = template.replace("@IMP_SOURCE_PATH@", options.source)
         template = template.replace("@VERSION@", "NONE")
-        template = template.replace("@NAME@", name)
+        template = template.replace("@NAME@", module.name)
         template = template.replace("@PROJECT_BRIEF@",
                                     '"The Integrative Modeling Platform"')
         template = template.replace("@RECURSIVE@", "YES")
         template = template.replace("@EXCLUDE_PATTERNS@", "*/tutorial/*")
         template = template.replace("@IS_HTML@", "NO")
         template = template.replace("@IS_XML@", "YES")
-        template = template.replace("@PROJECT_NAME@", "IMP." + name)
-        template = template.replace("@HTML_OUTPUT@", "../../doc/html/" + name)
+        template = template.replace("@PROJECT_NAME@", "IMP." + module.name)
+        template = template.replace("@HTML_OUTPUT@", "../../doc/html/"
+                                    + module.name)
         template = template.replace("@XML_OUTPUT@", "xml")
         template = template.replace("@TREEVIEW@", "NO")
         template = template.replace("@GENERATE_TAGFILE@", "tags")
@@ -151,48 +148,48 @@ class ModuleDoxFileGenerator(tools.FileGenerator):
         template = template.replace("@WARNINGS@", "warnings.txt")
         # include lib and doxygen in input
         inputs = []
-        if options.name == "kernel":
+        if module.name == "kernel":
             inputs.append("lib/IMP/")
             inputs.append("include/IMP/")
-            exclude = ["include/IMP/%s include/IMP/%s.h lib/IMP/%s" % (m, m, m)
-                       for m, g in tools.get_modules(options.source)]
+            exclude = ["include/IMP/%s include/IMP/%s.h lib/IMP/%s"
+                       % (m, m, m) for m in sorted(self.finder.keys())]
             exclude.append("include/IMP/base include/IMP/base.h lib/IMP/base")
             template = template.replace("@EXCLUDE@",
                                " \\\n                         ".join(exclude))
         else:
             template = template.replace("@EXCLUDE@", "")
-            inputs.append("include/IMP/" + options.name)
-            inputs.append("lib/IMP/" + options.name)
-        inputs.append("examples/" + options.name)
+            inputs.append("include/IMP/" + module.name)
+            inputs.append("lib/IMP/" + module.name)
+        inputs.append("examples/" + module.name)
         # suppress a warning since git removes empty dirs and doxygen
         # gets confused if the input path doesn't exist
-        docpath = os.path.join(options.source, "modules", options.name, "doc")
+        docpath = os.path.join(module.path, "doc")
         if os.path.exists(docpath):
             inputs.append(docpath)
         # overview for module
-        inputs.append("../generated/IMP_%s.dox" % options.name)
+        inputs.append("../generated/IMP_%s.dox" % module.name)
         template = template.replace("@INPUT_PATH@",
                                 " \\\n                         ".join(inputs))
         tags = [os.path.join(options.source, 'doc', 'doxygen',
                              'dummy_module_tags.xml')]
         for m in modules:
-            tags.append(os.path.join("../", m, "tags") + "=" + "../" + m)
+            tags.append(os.path.join("../", m.name, "tags")
+                        + "=" + "../" + m.name)
         template = template.replace("@TAGS@",
                                  " \\\n                         ".join(tags))
-        if options.name == "example":
+        if module.name == "example":
             template = template.replace("@EXAMPLE_PATH@",
                          "examples/example %s/modules/example" % options.source)
         else:
             template = template.replace("@EXAMPLE_PATH@",
-                                       "examples/" + options.name)
+                                       "examples/" + module.name)
         return template
 
-def make_doxygen(options, modules):
-    file = os.path.join("doxygen", options.name, "Doxyfile")
-    name = options.name
-    g = ModuleDoxFileGenerator(os.path.join(options.source, "tools", "build",
+def make_doxygen(options, module, modules, finder):
+    file = os.path.join("doxygen", module.name, "Doxyfile")
+    g = ModuleDoxFileGenerator(os.path.join(TOPDIR,
                                             "doxygen_templates", "Doxyfile.in"),
-                               modules)
+                               module, modules, finder)
     g.write(file, options)
 
 def write_no_ok(module):
@@ -205,6 +202,8 @@ def write_ok(module, modules, unfound_modules, dependencies,
              unfound_dependencies, swig_includes, swig_wrapper_includes):
     print("yes")
     config = ["ok=True"]
+    modules = [x.name for x in modules]
+    unfound_modules = [x.name for x in unfound_modules]
     vardict = locals()
     for varname in ("modules", "unfound_modules", "dependencies",
                     "unfound_dependencies", "swig_includes",
@@ -212,41 +211,40 @@ def write_ok(module, modules, unfound_modules, dependencies,
         var = vardict[varname]
         if len(var) > 0:
             config.append("%s = %s" % (varname, repr(":".join(var))))
-    tools.rewrite(os.path.join("data", "build_info", "IMP." + module),
+    tools.rewrite(os.path.join("data", "build_info", "IMP." + module.name),
                    "\n".join(config))
 
-def setup_module(module, source, datapath):
-    sys.stdout.write("Configuring module %s ..." % module)
-    data = tools.get_module_description(source, module, datapath)
-    for d in data["required_dependencies"]:
-        if not tools.get_dependency_info(d, datapath)["ok"]:
+def setup_module(module, finder):
+    sys.stdout.write("Configuring module %s ..." % module.name)
+    for d in module.required_dependencies:
+        if not tools.get_dependency_info(d, "")["ok"]:
             print("Required dependency %s not found" % d)
-            write_no_ok(module)
+            write_no_ok(module.name)
             return False, []
-    dependencies = data["required_dependencies"]
+    dependencies = module.required_dependencies[:]
     unfound_dependencies = []
-    for d in data["optional_dependencies"]:
-        if tools.get_dependency_info(d, datapath)["ok"]:
+    for d in module.optional_dependencies:
+        if tools.get_dependency_info(d, '')["ok"]:
             dependencies.append(d)
         else:
             unfound_dependencies.append(d)
-    for d in data["required_modules"]:
-        if not tools.get_module_info(d, datapath)["ok"]:
-            print("Required module IMP.%s not available" % d)
-            write_no_ok(module)
+    for d in module.required_modules:
+        if not d.configured.ok:
+            print("Required module IMP.%s not available" % d.name)
+            write_no_ok(module.name)
             return False, []
-    modules = data["required_modules"]
+    modules = module.required_modules[:]
     unfound_modules = []
-    for d in data["optional_modules"]:
-        if tools.get_module_info(d, datapath)["ok"]:
+    for d in module.optional_modules:
+        if d.configured.ok:
             modules.append(d)
         else:
             unfound_modules.append(d)
-    all_modules = tools.get_dependent_modules(modules, datapath)
-    moddir = os.path.join('IMP', '' if module == 'kernel' else module)
+    all_modules = finder.get_dependent_modules(modules)
+    moddir = os.path.join('IMP', '' if module.name == 'kernel' else module.name)
     swig_includes = [os.path.split(x)[1]
                      for x in tools.get_glob(
-                         [os.path.join(source, "modules", module, "pyext",
+                         [os.path.join(module.path, "pyext",
                                        "include", "*.i")])] \
                     + [os.path.join(moddir, os.path.split(x)[1])
                        for x in tools.get_glob(
@@ -254,14 +252,13 @@ def setup_module(module, source, datapath):
     swig_wrapper_includes = [os.path.join(moddir, "internal",
                                           os.path.split(x)[1])
                              for x in tools.get_glob(
-                                 [os.path.join(source, "modules", module,
+                                 [os.path.join(module.path,
                                                "include", "internal",
                                                "swig*.h")])]
-    tools.mkdir(os.path.join("src", module))
-    tools.mkdir(os.path.join("src", module + "_swig"))
+    tools.mkdir(os.path.join("src", module.name))
+    tools.mkdir(os.path.join("src", module.name + "_swig"))
     write_ok(module, all_modules, unfound_modules,
-             tools.get_dependent_dependencies(all_modules, dependencies,
-                                              datapath),
+             finder.get_dependent_dependencies(all_modules, dependencies),
              unfound_dependencies, swig_includes, swig_wrapper_includes)
     return True, all_modules
 
@@ -363,22 +360,20 @@ in Markdown.
         sys.exit(1)
     return links
 
-def make_overview(options, cmdline_tools):
-    docdir = os.path.join(options.source, "modules", options.name)
-    cmdline_links = find_cmdline_links(options.name, docdir, cmdline_tools)
+def make_overview(module, cmdline_tools):
+    cmdline_links = find_cmdline_links(module.name, module.path, cmdline_tools)
     pickle.dump(cmdline_links,
                 open(os.path.join("data", "build_info",
-                                  "IMP_%s.pck" % options.name), 'wb'), -1)
-    rmd = tools.open_utf8(os.path.join(options.source, "modules", options.name,
-                                       "README.md"), "r").read()
+                                  "IMP_%s.pck" % module.name), 'wb'), -1)
+    rmd = tools.open_utf8(os.path.join(module.path, "README.md"), "r").read()
     tools.rewrite(
-        os.path.join("doxygen", "generated", "IMP_%s.dox" % options.name),
+        os.path.join("doxygen", "generated", "IMP_%s.dox" % module.name),
                   """/** \\namespace %s
 \\tableofcontents
 
 %s
 */
-""" % ('IMP' if options.name == 'kernel' else 'IMP::' + options.name, rmd))
+""" % ('IMP' if module.name == 'kernel' else 'IMP::' + module.name, rmd))
 
 
 def main():
@@ -391,12 +386,14 @@ def main():
         tools.rmdir(os.path.join("benchmark", options.name))
         tools.rmdir(os.path.join("lib", "IMP", options.name))
         sys.exit(1)
-    success, modules = setup_module(options.name, options.source,
-                                    options.datapath)
+    mf = tools.ModulesFinder(source_dir=options.source,
+                             external_dir=options.build_dir)
+    module = mf[options.name]
+    success, modules = setup_module(module, mf)
     if success:
-        make_header(options)
-        make_doxygen(options, modules)
-        make_overview(options, apps)
+        make_header(options, module)
+        make_doxygen(options, module, modules, mf)
+        make_overview(module, apps)
         link_bin(options)
         link_py_apps(options)
         link_benchmark(options)
