@@ -84,7 +84,7 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   /** add attribute name to the attributes table of this particle
 
       @param name attribute key
-      @param inital_value initial value for the attribute
+      @param initial_value initial value for the attribute
       @param optimized whether to flag this attribute as optimized
   */
   void add_attribute(FloatKey name, const Float initial_value, bool optimized);
