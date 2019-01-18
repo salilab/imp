@@ -320,6 +320,9 @@ class ExternalModule(Module):
     dependencies = property(lambda self: self._read_bi_file('dependencies'))
     unfound_dependencies = property(lambda self:
                                  self._read_bi_file('unfound_dependencies'))
+    swig_wrapper_includes = property(lambda self:
+                                 self._read_bi_file('swig_wrapper_includes'))
+    swig_includes = property(lambda self: self._read_bi_file('swig_includes'))
     required_dependencies = dependencies
     optional_modules = []
     optional_dependencies = []

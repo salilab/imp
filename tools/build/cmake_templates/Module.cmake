@@ -13,7 +13,7 @@ imp_get_process_exit_code("Setting up module %(name)s" status ${CMAKE_BINARY_DIR
 if(${status} EQUAL 0)
   imp_execute_process("setup_swig_wrappers %(name)s" ${CMAKE_BINARY_DIR}
     COMMAND %(tools_dir)sbuild/setup_swig_wrappers.py
-    --module=%(name)s
+    %(build_dir)s --module=%(name)s
     --datapath=${IMP_DATAPATH}
     --source=${CMAKE_SOURCE_DIR})
 
