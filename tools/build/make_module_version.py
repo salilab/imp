@@ -15,6 +15,8 @@ import os.path
 import tools
 import glob
 
+TOPDIR = os.path.abspath(os.path.dirname(__file__))
+
 parser = OptionParser()
 parser.add_option("-n", "--name",
                   dest="name", help="The name of the module.")
@@ -27,8 +29,8 @@ parser.add_option("-d", "--datapath",
 def make_cpp(options):
     dir = os.path.join("src")
     file = os.path.join(dir, "%s_config.cpp" % options.name)
-    cpp_template = tools.CPPFileGenerator(os.path.join(options.source,
-                             "tools", "build", "config_templates", "src.cpp"))
+    cpp_template = tools.CPPFileGenerator(os.path.join(TOPDIR,
+                                               "config_templates", "src.cpp"))
     try:
         os.makedirs(dir)
     except:
