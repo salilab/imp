@@ -4,7 +4,7 @@ project(IMP.%(name)s)
 
 imp_get_process_exit_code("Setting up module %(name)s" status ${CMAKE_BINARY_DIR}
                           COMMAND %(tools_dir)sbuild/setup_module.py
-                          --name=%(name)s
+			  %(build_dir)s --name=%(name)s
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_%(name)s_CONFIG}:%(defines)s
                           --source=${CMAKE_SOURCE_DIR}
