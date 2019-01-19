@@ -122,7 +122,7 @@ def get_dep_merged(all_deps, name):
     return "\n        ".join(sorted(set("${%s_%s}" % (d.upper(), name.upper())
                                     for d in all_deps)))
 
-def setup_module(finder, module, tools_dir):
+def setup_module(finder, module, tools_dir, extra_include, extra_swig):
     checks = []
     deps = []
     contents = []
@@ -157,7 +157,8 @@ def setup_module(finder, module, tools_dir):
         contents.append("include(${CMAKE_SOURCE_DIR}/%s)"
                         % tools.to_cmake_path(local))
 
-    values = {"name": module.name,
+    values = {"name": module.name, "extra_include": extra_include,
+              "extra_swig": extra_swig,
               "module_dir": tools.to_cmake_path(module.path) + '/'
                             if module.path else '',
               "tools_dir": tools.to_cmake_path(tools_dir) + '/'
@@ -243,6 +244,9 @@ add_subdirectory(${CMAKE_SOURCE_DIR}%s/utility)""" % ((topdir,) * 6)
 
 
 parser = OptionParser()
+parser.add_option("--include", help="Extra header include path", default=None)
+parser.add_option("--swig_include", help="Extra SWIG include path",
+                  default=None)
 parser.add_option("--build_dir", help="IMP build directory", default=None)
 parser.add_option("--tools_dir", help="IMP tools directory", default=None)
 
@@ -253,9 +257,14 @@ def main():
     mf = tools.ModulesFinder(source_dir='', external_dir=options.build_dir)
     tools_dir = options.tools_dir if options.tools_dir \
                                   else '${CMAKE_SOURCE_DIR}/tools'
+    extra_include = ' "--include=%s"' % options.include \
+                    if options.include else ""
+    extra_swig = ' "--swig_include=%s"' % options.swig_include \
+                    if options.swig_include else ""
     for m in mf.get_ordered():
         if isinstance(m, tools.SourceModule):
-            main.append(setup_module(mf, m, tools_dir))
+            main.append(setup_module(mf, m, tools_dir, extra_include,
+                                     extra_swig))
 
 if __name__ == '__main__':
     main()
