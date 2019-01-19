@@ -11,6 +11,8 @@ import tools.thread_pool
 
 
 parser = OptionParser()
+parser.add_option("--build_dir", help="IMP build directory", default=None)
+parser.add_option("--include", help="Extra header include path", default=None)
 parser.add_option("-s", "--swig",
                   dest="swig", default="swig", help="The name of the swig command.")
 parser.add_option("-b", "--build_system",
@@ -26,11 +28,11 @@ def _fix(name, bs):
         return os.path.join(os.getcwd(), "%s") % name
 
 
-def get_dep_merged(modules, name, ordered):
+def get_dep_merged(finder, modules, name, extra_data_path):
     ret = []
-    alldeps = tools.get_all_dependencies(".", modules, "", ordered)
+    alldeps = finder.get_all_dependencies(modules)
     for d in alldeps:
-        info = tools.get_dependency_info(d, ".")
+        info = tools.get_dependency_info(d, extra_data_path)
         # cmake lists are semicolon-separated
         lst = tools.split(info[name], ';')
         ret.extend(lst)
@@ -38,18 +40,19 @@ def get_dep_merged(modules, name, ordered):
     return ret
 
 
-def setup_one(module, ordered, build_system, swig):
-    info = tools.get_module_info(module, "/")
-    if not info["ok"]:
-        tools.rewrite("src/%s_swig.deps" % module, "", False)
-        return
-    includepath = get_dep_merged([module], "includepath", ordered)
-    swigpath = get_dep_merged([module], "swigpath", ordered)
+def setup_one(finder, module, build_system, swig, extra_data_path, include):
+    includepath = get_dep_merged(finder, [module], "includepath",
+                                 extra_data_path)
+    swigpath = get_dep_merged(finder, [module], "swigpath", extra_data_path)
 
-    depf = open("src/%s_swig.deps.in" % module, "w")
-    cmd = [swig, "-MM", "-Iinclude", "-Iswig", "-ignoremissing"]\
+    depf = open("src/%s_swig.deps.in" % module.name, "w")
+    baseincludes = []
+    if include:
+        baseincludes.append(include)
+    baseincludes.extend(('include', 'swig'))
+    cmd = [swig, "-MM"] + ["-I" + x for x in baseincludes] + ["-ignoremissing"]\
         + ["-I" + x for x in swigpath] + ["-I" + x for x in includepath]\
-        + ["swig/IMP_%s.i" % module]
+        + ["swig/IMP_%s.i" % module.name]
 
     lines = tools.run_subprocess(cmd).split("\n")
     names = []
@@ -63,21 +66,18 @@ def setup_one(module, ordered, build_system, swig):
 
     final_names = [_fix(x, build_system) for x in names]
     final_list = "\n".join(final_names)
-    tools.rewrite("src/%s_swig.deps" % module, final_list)
+    tools.rewrite("src/%s_swig.deps" % module.name, final_list)
 
 
 def main():
     (options, args) = parser.parse_args()
+    mf = tools.ModulesFinder(configured_dir=os.path.join("data", "build_info"),
+                             external_dir=options.build_dir)
     pool = tools.thread_pool.ThreadPool()
-    ordered = tools.get_sorted_order()
-    for m in ordered:
-        #setup_one(m, ordered, options.build_system, options.swig)
-        pool.add_task(
-            setup_one,
-            m,
-            ordered,
-            options.build_system,
-            options.swig)
+    for m in [x for x in mf.values()
+              if not isinstance(x, tools.ExternalModule) and x.ok]:
+        pool.add_task(setup_one, mf, m, options.build_system, options.swig,
+                      options.build_dir, options.include)
     err = pool.wait_completion()
     if err:
         sys.stderr.write(err + '\n')

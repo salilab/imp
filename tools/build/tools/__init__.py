@@ -286,8 +286,8 @@ class Module(object):
         return [self._finder()[x] for x in split(s)]
 
 
-class ExternalModule(Module):
-    """An IMP module that has already been built (no source code)"""
+class ConfiguredModule(Module):
+    """An IMP module that has already been configured (no source code)"""
     build_info_file = property(lambda self: os.path.join(self.path,
                                                          "IMP.%s" % self.name))
     # Already configured
@@ -328,6 +328,13 @@ class ExternalModule(Module):
     optional_dependencies = []
 
 
+class ExternalModule(ConfiguredModule):
+    """A configured module that has been built externally.
+       These are usually used to refer to core IMP modules from
+       code being built outside of the IMP tree."""
+    pass
+
+
 class SourceModule(Module):
     """An IMP module that exists in an IMP source checkout"""
     depends_file = property(lambda self: os.path.join(self.path,
@@ -335,7 +342,7 @@ class SourceModule(Module):
 
     def __get_configured_module(self):
         if not hasattr(self, '_configured'):
-            self._configured = ExternalModule(self.name,
+            self._configured = ConfiguredModule(self.name,
                                       os.path.join('data', 'build_info'),
                                       self._finder())
         return self._configured
@@ -382,11 +389,14 @@ class ModulesFinder(object):
 
        `source_dir`, if given, is the relative path to search for source
                      modules
+       `configured_dir`, if given, is the relative path to search for configured
+                     modules
        `external_dir`, if given, is the relative path to search for external
                      modules
     """
-    def __init__(self, source_dir=None, external_dir=None):
+    def __init__(self, source_dir=None, configured_dir=None, external_dir=None):
         self.source_dir = source_dir
+        self.configured_dir = configured_dir
         self.external_dir = external_dir
         # If False, search for modules in subdirectories under
         # `source_dir`; if True, `source_dir` is a single module
@@ -466,6 +476,7 @@ class ModulesFinder(object):
             return
         self._mod_by_name = {}
         for m in itertools.chain(self._get_all_source(),
+                                 self._get_all_configured(),
                                  self._get_all_external()):
             self._mod_by_name[m.name] = m
 
@@ -476,6 +487,14 @@ class ModulesFinder(object):
         for g in glob.glob(os.path.join(self.external_dir, "IMP.*")):
             yield ExternalModule(os.path.split(g)[1][4:], self.external_dir,
                                  self)
+
+    def _get_all_configured(self):
+        """Get all configured modules"""
+        if self.configured_dir is None:
+            return
+        for g in glob.glob(os.path.join(self.configured_dir, "IMP.*")):
+            yield ConfiguredModule(os.path.split(g)[1][4:], self.configured_dir,
+                                   self)
 
     def _get_all_source(self):
         """Get all source modules"""
@@ -591,7 +610,7 @@ def get_dependency_info(dependency, extra_data_path, root="."):
         return dependency_info_cache[dependency]
     df = os.path.join(root, "data", "build_info", dependency)
     if not os.path.exists(df) and extra_data_path != "":
-        df = os.path.join(extra_data_path, "build_info", dependency)
+        df = os.path.join(extra_data_path, dependency)
     d = {'libraries': "", 'version': "", 'includepath': "",
          'libpath': "", 'swigpath': "", 'ok': False}
     # try:
