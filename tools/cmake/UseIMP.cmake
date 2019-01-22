@@ -17,6 +17,11 @@ if(NOT USE_IMP_FILE_INCLUDED)
 
   set(IMP_PYTHON python CACHE INTERNAL "The Python executable that IMP itself will use at runtime (the build system scripts will always use 'python')")
 
+endif()
+
+function(imp_build_module sourcedir)
+  set(sourcedir ${ARGV0})
+
   if(NOT DEFINED PYTHON_INCLUDE_DIRS)
     execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print(sys.executable)"
                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -46,4 +51,41 @@ if(NOT USE_IMP_FILE_INCLUDED)
     set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${python_version}/site-packages" CACHE PATH "Python modules")
   endif()
 
-endif()
+  add_custom_target("IMP-version"
+                    COMMAND ${IMP_TOOLS_DIR}/build/make_version.py
+                    --source=${sourcedir}
+                    --build_dir="${IMP_BUILD_INFO_DIR}"
+                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                    COMMENT "Computing version number")
+
+  imp_execute_process("setup_cmake" ${sourcedir}
+                      COMMAND ${IMP_TOOLS_DIR}/build/setup_cmake.py
+                      "--build_dir=${IMP_BUILD_INFO_DIR}"
+                      "--tools_dir=${IMP_TOOLS_DIR}"
+                      --swig_include=${IMP_SWIG_DIR}
+                      --include=${IMP_INCLUDE_DIR})
+
+  imp_execute_process("setup" ${CMAKE_BINARY_DIR}
+                      COMMAND ${IMP_TOOLS_DIR}/build/setup.py
+                      "--build_dir=${IMP_BUILD_INFO_DIR}"
+                      --source=${sourcedir}
+                      --disabled=${IMP_DISABLED_MODULES}
+                      --datapath=${IMP_DATAPATH})
+
+  imp_execute_process("setup_all" ${CMAKE_BINARY_DIR}
+                      COMMAND ${IMP_TOOLS_DIR}/build/setup_all.py
+                      "--build_dir=${IMP_BUILD_INFO_DIR}"
+                      --source=${sourcedir})
+
+  # todo: fail if foo wasn't configured
+
+  include(${sourcedir}/ModuleBuild.cmake)
+
+  imp_execute_process("setup_swig_dependencies" ${CMAKE_BINARY_DIR}
+                      COMMAND ${IMP_TOOLS_DIR}/build/setup_swig_deps.py
+                      --include=${IMP_INCLUDE_DIR}
+                      "--build_dir=${IMP_BUILD_INFO_DIR}"
+                      "--swig=${SWIG_EXECUTABLE}")
+  add_subdirectory("${sourcedir}/pyext")
+
+endfunction()
