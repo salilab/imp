@@ -393,7 +393,19 @@ file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(IMP_LIB_DIR \"${CMAKE_BINARY_DIR}/lib\" )\n"
      "set(IMP_SWIG_DIR \"${CMAKE_BINARY_DIR}/swig\" )\n"
      "set(RMF_MODULES_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules\" )\n"
+     "set(IMP_LIB_TYPE \"${IMP_LIB_TYPE}\" )\n"
      "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
+# todo: add Windows support
+foreach(mod ${enabled_modules})
+  get_target_property(modver "IMP.${mod}-lib" VERSION)
+  if (APPLE)
+    file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
+  else()
+    file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.so.${modver}\" )\n")
+  endif()
+endforeach()
 
 # Install headers
 install(FILES ${CMAKE_BINARY_DIR}/include/IMP.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
