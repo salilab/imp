@@ -174,12 +174,19 @@ else()
 endif()
 
 include(GNUInstallDirs)
-# Add extra installation locations for SWIG .i files and Python code
+# Add extra installation locations for SWIG .i files, build tools,
+# cmake files, and Python code
 if(NOT DEFINED CMAKE_INSTALL_SWIGDIR)
   set(CMAKE_INSTALL_SWIGDIR "share/IMP/swig" CACHE PATH "SWIG interface files")
 endif()
+if(NOT DEFINED CMAKE_INSTALL_TOOLSDIR)
+  set(CMAKE_INSTALL_TOOLSDIR "share/IMP/tools" CACHE PATH "IMP build tools")
+endif()
 if(NOT DEFINED CMAKE_INSTALL_PYTHONDIR)
   set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${python_version}/site-packages" CACHE PATH "Python modules")
+endif()
+if(NOT DEFINED CMAKE_INSTALL_CMAKEDIR)
+  set(CMAKE_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/IMP" CACHE PATH "cmake modules")
 endif()
 
 include(InstallDeref)
@@ -397,14 +404,32 @@ file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(RMF_MODULES_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules\" )\n"
      "set(IMP_LIB_TYPE \"${IMP_LIB_TYPE}\" )\n"
      "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
+# Installed locations
+file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
+     "set(IMP_INSTALL_PREFIX \"${CMAKE_INSTALL_PREFIX}\" )\n"
+     "set(IMP_TOOLS_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_TOOLSDIR}/tools\" )\n"
+     "set(IMP_MODULES_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_CMAKEDIR}\" )\n"
+     "set(IMP_BUILD_INFO_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/build_info\" )\n"
+     "set(IMP_INCLUDE_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/IMP\" )\n"
+     "set(IMP_LIB_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/lib\" )\n"
+     "set(IMP_PYTHON_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_PYTHONDIR}/IMP\" )\n"
+     "set(IMP_DATA_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/IMP\" )\n"
+     "set(IMP_SWIG_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SWIGDIR}\" )\n"
+     "set(RMF_MODULES_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_CMAKEDIR}\" )\n"
+     "set(IMP_LIB_TYPE \"${IMP_LIB_TYPE}\" )\n"
+     "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
 # todo: add Windows support
 foreach(mod ${enabled_modules})
   get_target_property(modver "IMP.${mod}-lib" VERSION)
   if (APPLE)
     file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
          "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
+    file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
+         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
   else()
     file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.so.${modver}\" )\n")
+    file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
          "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.so.${modver}\" )\n")
   endif()
 endforeach()
@@ -421,6 +446,16 @@ install_deref(${CMAKE_BINARY_DIR}/data * ${CMAKE_INSTALL_DATADIR}/IMP)
 
 # Install SWIG .i files
 install_deref(${CMAKE_BINARY_DIR}/swig *.i ${CMAKE_INSTALL_SWIGDIR})
+
+# Install build tools
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/tools/dev_tools
+        ${CMAKE_SOURCE_DIR}/tools/build DESTINATION ${CMAKE_INSTALL_TOOLSDIR})
+
+# Install cmake scripts and configuration
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/
+                  ${CMAKE_SOURCE_DIR}/tools/cmake/
+                  ${CMAKE_BINARY_DIR}/cmake/
+        DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
 
 # Install examples
 install_deref(${CMAKE_BINARY_DIR}/doc/examples *
