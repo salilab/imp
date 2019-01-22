@@ -383,6 +383,18 @@ else()
   message(STATUS "Documentation disabled as doxygen not found")
 endif(IMP_DOXYGEN_FOUND)
 
+# Write configuration to a cmake file so that we can use IMP in other projects
+file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+     "set(IMP_INSTALL_PREFIX \"${CMAKE_BINARY_DIR}\" )\n"
+     "set(IMP_TOOLS_DIR \"${CMAKE_SOURCE_DIR}/tools\" )\n"
+     "set(IMP_MODULES_DIR \"${CMAKE_SOURCE_DIR}/tools/cmake\" )\n"
+     "set(IMP_BUILD_INFO_DIR \"${CMAKE_BINARY_DIR}/data/build_info\" )\n"
+     "set(IMP_INCLUDE_DIR \"${CMAKE_BINARY_DIR}/include\" )\n"
+     "set(IMP_LIB_DIR \"${CMAKE_BINARY_DIR}/lib\" )\n"
+     "set(IMP_SWIG_DIR \"${CMAKE_BINARY_DIR}/swig\" )\n"
+     "set(RMF_MODULES_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules\" )\n"
+     "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
+
 # Install headers
 install(FILES ${CMAKE_BINARY_DIR}/include/IMP.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install_deref(${CMAKE_BINARY_DIR}/include/IMP * ${CMAKE_INSTALL_INCLUDEDIR}/IMP)
