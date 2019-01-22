@@ -391,6 +391,8 @@ file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(IMP_BUILD_INFO_DIR \"${CMAKE_BINARY_DIR}/data/build_info\" )\n"
      "set(IMP_INCLUDE_DIR \"${CMAKE_BINARY_DIR}/include\" )\n"
      "set(IMP_LIB_DIR \"${CMAKE_BINARY_DIR}/lib\" )\n"
+     "set(IMP_PYTHON_DIR \"${CMAKE_BINARY_DIR}/lib\" )\n"
+     "set(IMP_DATA_DIR \"${CMAKE_BINARY_DIR}/data\" )\n"
      "set(IMP_SWIG_DIR \"${CMAKE_BINARY_DIR}/swig\" )\n"
      "set(RMF_MODULES_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules\" )\n"
      "set(IMP_LIB_TYPE \"${IMP_LIB_TYPE}\" )\n"

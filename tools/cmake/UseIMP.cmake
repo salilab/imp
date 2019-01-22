@@ -51,6 +51,36 @@ function(imp_build_module sourcedir)
     set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${python_version}/site-packages" CACHE PATH "Python modules")
   endif()
 
+  # Visual Studio always adds Release or Debug to binary directories
+  if (${CMAKE_GENERATOR} MATCHES "Visual Studio")
+    SET(IMP_BINARY_PATH_SUFFIX ${CMAKE_BUILD_TYPE})
+  else()
+    SET(IMP_BINARY_PATH_SUFFIX )
+  endif()
+
+  if(NOT DEFINED PATH_SEP)
+    if(WIN32)
+      Set(PATH_SEP ";")
+    else()
+      Set(PATH_SEP ":")
+    endif()
+  endif()
+  if(NOT DEFINED SETUP_EXT)
+    if(WIN32)
+      Set(SETUP_EXT "bat")
+    else()
+      Set(SETUP_EXT "sh")
+    endif()
+  endif()
+
+  if("${SETUP_EXT}" STREQUAL "sh")
+    set(IMP_TEST_SETUP "${CMAKE_BINARY_DIR}/setup_environment.sh")
+  else()
+    # On Windows the batch file is run once to set up the test environment, not
+    # per test
+    set(IMP_TEST_SETUP )
+  endif()
+
   add_custom_target("IMP-version"
                     COMMAND ${IMP_TOOLS_DIR}/build/make_version.py
                     --source=${sourcedir}
@@ -87,6 +117,32 @@ function(imp_build_module sourcedir)
                       "--build_dir=${IMP_BUILD_INFO_DIR}"
                       "--swig=${SWIG_EXECUTABLE}")
   add_subdirectory("${sourcedir}/pyext")
+
+  list(INSERT IMP_PYTHONPATH 0 "${IMP_PYTHON_DIR}")
+
+  list(INSERT IMP_PYTHONPATH 0 "${CMAKE_BINARY_DIR}/lib")
+  list(INSERT IMP_LDPATH 0 "${CMAKE_BINARY_DIR}/lib")
+  list(INSERT IMP_PATH 0 "${CMAKE_BINARY_DIR}/bin")
+  set(PATH_ARGS )
+  foreach(path ${IMP_PYTHONPATH})
+    list(APPEND PATH_ARGS "--python_path=${path}")
+  endforeach(path)
+  foreach(path ${IMP_LDPATH})
+    list(APPEND PATH_ARGS "--ld_path=${path}")
+  endforeach(path)
+  foreach(path ${IMP_PATH})
+    list(APPEND PATH_ARGS "--path=${path}")
+  endforeach(path)
+
+  imp_execute_process("setup_imppy" ${CMAKE_BINARY_DIR}
+                      COMMAND ${IMP_TOOLS_DIR}/build/setup_imppy.py
+                      "--python=${IMP_PYTHON}"
+                      "--external_data=${IMP_DATA_DIR}"
+                      "--precommand="
+                      "--propagate=yes"
+                      "--suffix=${IMP_BINARY_PATH_SUFFIX}"
+                      "--output=setup_environment.${SETUP_EXT}"
+                      ${PATH_ARGS})
 
   # Make a suitable top-level IMP package file so that both
   # 'import IMP.<our module>' and regular 'import IMP.algebra' will
