@@ -88,4 +88,25 @@ function(imp_build_module sourcedir)
                       "--swig=${SWIG_EXECUTABLE}")
   add_subdirectory("${sourcedir}/pyext")
 
+  # Make a suitable top-level IMP package file so that both
+  # 'import IMP.<our module>' and regular 'import IMP.algebra' will
+  # work, searching both our build directory and the IMP Python path
+  file(WRITE "${CMAKE_BINARY_DIR}/lib/IMP/__init__.py"
+       "import os\n"
+       "from pkgutil import extend_path\n\n"
+       "# extend_path ensures that 'import IMP.foo' will search for the "
+       "module 'foo'\n"
+       "# both in our build directory and in the regular IMP path\n"
+       "__oldpathlen = len(__path__)\n"
+       "__path__ = extend_path(__path__, __name__)\n\n"
+       "# If 'import IMP' pulls in *this* __init__.py, make sure we also do "
+       "everything\n"
+       "# in the main IMP/__init__.py (should be the next element in the "
+       "path) so that\n"
+       "# top-level stuff like IMP.deprecated_function is available.\n"
+       "with open(os.path.join(__path__[__oldpathlen], '__init__.py')) as fh:\n"
+       "    exec(fh)\n"
+       "del __oldpathlen, extend_path\n")
+
+
 endfunction()
