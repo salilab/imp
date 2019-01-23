@@ -477,7 +477,10 @@ class ModulesFinder(object):
         for m in itertools.chain(self._get_all_source(),
                                  self._get_all_configured(),
                                  self._get_all_external()):
-            self._mod_by_name[m.name] = m
+            # Ignore duplicated modules (a source module should take
+            # precedence over an external one)
+            if m.name not in self._mod_by_name:
+                self._mod_by_name[m.name] = m
 
     def _get_all_external(self):
         """Get all external modules"""
