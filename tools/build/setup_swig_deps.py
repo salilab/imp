@@ -71,7 +71,7 @@ def setup_one(finder, module, build_system, swig, extra_data_path, include):
 
 def main():
     (options, args) = parser.parse_args()
-    mf = tools.ModulesFinder(configured_dir=os.path.join("data", "build_info"),
+    mf = tools.ModulesFinder(configured_dir="build_info",
                              external_dir=options.build_dir)
     pool = tools.thread_pool.ThreadPool()
     for m in [x for x in mf.values()

@@ -179,6 +179,9 @@ include(GNUInstallDirs)
 if(NOT DEFINED CMAKE_INSTALL_SWIGDIR)
   set(CMAKE_INSTALL_SWIGDIR "share/IMP/swig" CACHE PATH "SWIG interface files")
 endif()
+if(NOT DEFINED CMAKE_INSTALL_BUILDINFODIR)
+  set(CMAKE_INSTALL_BUILDINFODIR "${CMAKE_INSTALL_DATADIR}/IMP/build_info}" CACHE PATH "Build info files")
+endif()
 if(NOT DEFINED CMAKE_INSTALL_TOOLSDIR)
   set(CMAKE_INSTALL_TOOLSDIR "share/IMP/tools" CACHE PATH "IMP build tools")
 endif()
@@ -235,31 +238,31 @@ find_package(Boost 1.41.0 QUIET COMPONENTS random regex graph)
 if("${Boost_RANDOM_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
 set(Boost_RANDOM_LIBRARY_RELEASE "" CACHE INTERNAL "" FORCE)
 set(Boost_RANDOM_LIBRARY_DEBUG "" CACHE INTERNAL "" FORCE)
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Random" "ok=False")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.Random" "ok=False")
 elseif(NOT "${Boost_RANDOM_LIBRARY_RELEASE}" STREQUAL "")
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Random" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.Random" "ok=True")
 else()
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Random" "ok=False")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.Random" "ok=False")
 endif()
 
 if("${Boost_REGEX_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
 set(Boost_REGEX_LIBRARY_RELEASE "" CACHE INTERNAL "" FORCE)
 set(Boost_REGEX_LIBRARY_DEBUG "" CACHE INTERNAL "" FORCE)
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Regex" "ok=False")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.Regex" "ok=False")
 elseif(NOT "${Boost_REGEX_LIBRARY_RELEASE}" STREQUAL "")
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Regex" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.Regex" "ok=True")
 else()
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Regex" "ok=False")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.Regex" "ok=False")
 endif()
 
 if("${Boost_GRAPH_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
 set(Boost_GRAPH_LIBRARY_RELEASE "" CACHE INTERNAL "" FORCE)
 set(Boost_GRAPH_LIBRARY_DEBUG "" CACHE INTERNAL "" FORCE)
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Graph" "ok=False")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.Graph" "ok=False")
 elseif(NOT "${Boost_GRAPH_LIBRARY_RELEASE}" STREQUAL "")
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Graph" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.Graph" "ok=True")
 else()
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Graph" "ok=False")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.Graph" "ok=False")
 endif()
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
@@ -273,10 +276,10 @@ set(BOOST.REGEX_LIBRARIES ${Boost_REGEX_LIBRARY_RELEASE})
 set(BOOST.GRAPH_LIBRARIES ${Boost_GRAPH_LIBRARY_RELEASE})
 set(BOOST.RANDOM_LIBRARIES ${Boost_RANDOM_LIBRARY_RELEASE})
 
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.FileSystem" "ok=True")
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.ProgramOptions" "ok=True")
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.System" "ok=True")
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/Boost.Thread" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.FileSystem" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.ProgramOptions" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.System" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/Boost.Thread" "ok=True")
 
 if(NOT IMP_STATIC)
   # Automatically enable OpenMP if available and at least version 3
@@ -296,14 +299,14 @@ add_custom_target("IMP-version"
 
 
 # configure modules
-file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/sorted_modules" modules)
+file(STRINGS "${CMAKE_BINARY_DIR}/build_info/sorted_modules" modules)
 
 foreach(mod ${modules})
   add_subdirectory("${CMAKE_SOURCE_DIR}/modules/${mod}/")
 endforeach(mod)
 
 # build modules
-file(STRINGS "${CMAKE_BINARY_DIR}/data/build_info/sorted_modules" enabled_modules)
+file(STRINGS "${CMAKE_BINARY_DIR}/build_info/sorted_modules" enabled_modules)
 
 if(NOT DEFINED IMP_NO_SWIG_DEPENDENCIES)
 # the make_containers.py call is needed to let swig find all headers it needs
@@ -395,7 +398,7 @@ file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(IMP_INSTALL_PREFIX \"${CMAKE_BINARY_DIR}\" )\n"
      "set(IMP_TOOLS_DIR \"${CMAKE_SOURCE_DIR}/tools\" )\n"
      "set(IMP_MODULES_DIR \"${CMAKE_SOURCE_DIR}/tools/cmake\" )\n"
-     "set(IMP_BUILD_INFO_DIR \"${CMAKE_BINARY_DIR}/data/build_info\" )\n"
+     "set(IMP_BUILD_INFO_DIR \"${CMAKE_BINARY_DIR}/build_info\" )\n"
      "set(IMP_INCLUDE_DIR \"${CMAKE_BINARY_DIR}/include\" )\n"
      "set(IMP_LIB_DIR \"${CMAKE_BINARY_DIR}/lib\" )\n"
      "set(IMP_PYTHON_DIR \"${CMAKE_BINARY_DIR}/lib\" )\n"
@@ -408,7 +411,7 @@ file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(IMP_INSTALL_PREFIX \"${CMAKE_INSTALL_PREFIX}\" )\n"
      "set(IMP_TOOLS_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_TOOLSDIR}\" )\n"
      "set(IMP_MODULES_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_CMAKEDIR}\" )\n"
-     "set(IMP_BUILD_INFO_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/IMP/build_info\" )\n"
+     "set(IMP_BUILD_INFO_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BUILDINFODIR}\" )\n"
      "set(IMP_INCLUDE_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}\" )\n"
      "set(IMP_LIB_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}\" )\n"
      "set(IMP_PYTHON_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_PYTHONDIR}\" )\n"
@@ -449,6 +452,10 @@ install_deref(${CMAKE_BINARY_DIR}/lib/IMP * ${CMAKE_INSTALL_PYTHONDIR}/IMP)
 
 # Install data
 install_deref(${CMAKE_BINARY_DIR}/data * ${CMAKE_INSTALL_DATADIR}/IMP)
+
+# Install build_info
+install(DIRECTORY ${CMAKE_BINARY_DIR}/build_info/
+        DESTINATION ${CMAKE_INSTALL_BUILDINFODIR})
 
 # Install SWIG .i files
 install_deref(${CMAKE_BINARY_DIR}/swig *.i ${CMAKE_INSTALL_SWIGDIR})

@@ -195,7 +195,7 @@ def make_doxygen(options, module, modules, finder):
 def write_no_ok(module):
     new_order = [x for x in tools.get_sorted_order() if x != module]
     tools.set_sorted_order(new_order)
-    tools.rewrite(os.path.join("data", "build_info", "IMP." + module),
+    tools.rewrite(os.path.join("build_info", "IMP." + module),
                   "ok=False\n", verbose=False)
 
 def write_ok(module, modules, unfound_modules, dependencies,
@@ -211,8 +211,8 @@ def write_ok(module, modules, unfound_modules, dependencies,
         var = vardict[varname]
         if len(var) > 0:
             config.append("%s = %s" % (varname, repr(":".join(var))))
-    tools.rewrite(os.path.join("data", "build_info", "IMP." + module.name),
-                   "\n".join(config))
+    tools.rewrite(os.path.join("build_info", "IMP." + module.name),
+                  "\n".join(config))
 
 def setup_module(module, finder):
     sys.stdout.write("Configuring module %s ..." % module.name)
@@ -363,7 +363,7 @@ in Markdown.
 def make_overview(module, cmdline_tools):
     cmdline_links = find_cmdline_links(module.name, module.path, cmdline_tools)
     pickle.dump(cmdline_links,
-                open(os.path.join("data", "build_info",
+                open(os.path.join("build_info",
                                   "IMP_%s.pck" % module.name), 'wb'), -1)
     rmd = tools.open_utf8(os.path.join(module.path, "README.md"), "r").read()
     tools.rewrite(
@@ -378,7 +378,7 @@ def make_overview(module, cmdline_tools):
 
 def main():
     options, apps = parser.parse_args()
-    disabled = tools.split(open("data/build_info/disabled", "r").read(), "\n")
+    disabled = tools.split(open("build_info/disabled", "r").read(), "\n")
     if options.name in disabled:
         print("%s is disabled" % options.name)
         write_no_ok(options.name)

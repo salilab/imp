@@ -260,9 +260,9 @@ def main():
                              external_dir=options.build_dir)
     all_modules = [x for x in mf.values() if isinstance(x, tools.SourceModule)]
     clean_pyc(options.source)
-    tools.mkdir(os.path.join("data", "build_info"))
+    tools.mkdir(os.path.join("build_info"))
     tools.mkdir(os.path.join("cmake_tests"))
-    tools.rewrite(os.path.join("data", "build_info", "disabled"),
+    tools.rewrite(os.path.join("build_info", "disabled"),
                   options.disabled.replace(":", "\n"))
     tools.set_sorted_order([m.name for m in mf.get_ordered()])
     link_headers(all_modules)

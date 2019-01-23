@@ -100,7 +100,7 @@ def make_dependency_check(descr_path, module):
 %(cmake)s
 endif(DEFINED %(PKGNAME)s_INTERNAL)""" % descr
         else:
-            descr["on_failure"] = """message("%s not found")\nfile(WRITE "${CMAKE_BINARY_DIR}/data/build_info/%s" "ok=False")""" % (
+            descr["on_failure"] = """message("%s not found")\nfile(WRITE "${CMAKE_BINARY_DIR}/build_info/%s" "ok=False")""" % (
                 descr['full_name'], name)
             descr["on_setup"] = ""
         dep_template.write(filename, descr)
