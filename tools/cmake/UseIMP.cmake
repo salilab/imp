@@ -119,6 +119,7 @@ function(imp_build_module sourcedir)
   add_subdirectory("${sourcedir}/pyext")
 
   list(INSERT IMP_PYTHONPATH 0 "${IMP_PYTHON_DIR}")
+  list(INSERT IMP_LDPATH 0 "${IMP_LIB_DIR}")
 
   list(INSERT IMP_PYTHONPATH 0 "${CMAKE_BINARY_DIR}/lib")
   list(INSERT IMP_LDPATH 0 "${CMAKE_BINARY_DIR}/lib")
