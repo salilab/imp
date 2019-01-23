@@ -16,7 +16,7 @@ int main(int,char*[]) {
     foreach(l ${link_libs})
       set(${ucpkgname}_LIBRARIES ${${ucpkgname}_LIBRARIES} ${l} CACHE INTERNAL "" FORCE)
     endforeach()
-    file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/${pkgname}" "ok=True
+    file(WRITE "${CMAKE_BINARY_DIR}/build_info/${pkgname}" "ok=True
 includepath=\"${${pkgname}_INCLUDE_PATH}\"
 swigpath=\"${${pkgname}_SWIG_PATH}\"
 libpath=\"${${pkgname}_LIB_PATH}\"
