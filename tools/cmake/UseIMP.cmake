@@ -22,6 +22,10 @@ endif()
 function(imp_build_module sourcedir)
   set(sourcedir ${ARGV0})
 
+  # Add include directories of mandatory IMP dependencies
+  include_directories(SYSTEM ${Boost_INCLUDE_DIR})
+  include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
+
   if(NOT DEFINED PYTHON_INCLUDE_DIRS)
     execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print(sys.executable)"
                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}

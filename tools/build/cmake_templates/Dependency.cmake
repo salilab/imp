@@ -47,6 +47,7 @@ else()
   check_compiles("_found" "%(pkgname)s" "%(PKGNAME)s" "%(includes)s" "${%(PKGNAME)s_INCLUDE_DIR}" "${%(PKGNAME)s_LIBRARIES}" %(PKGNAME)s_ok_ok)
   if(${%(PKGNAME)s_ok_ok} MATCHES "1")
     message(STATUS "Found %(full_name)s")
+    set(IMP_ALL_DEPENDS_VARS ${IMP_ALL_DEPENDS_VARS} "%(PKGNAME)s_INCLUDE_PATH" CACHE INTERNAL "" FORCE)
   else()
     %(on_failure)s
   endif()
