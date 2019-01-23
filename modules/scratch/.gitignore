@@ -8,7 +8,7 @@
 *.gcda
 test/CMakeLists.txt
 src/CMakeLists.txt
-CMakeLists.txt
+ModuleBuild.cmake
 CMakeModules/
 benchmark/CMakeLists.txt
 bin/CMakeLists.txt
