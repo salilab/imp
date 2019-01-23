@@ -97,7 +97,7 @@ else()
   set(IMP_%(name)s "" CACHE INTERNAL "" FORCE)
 
   if(${status} EQUAL 1)
-    message("Module IMP.%(name)s disabled")
+    message(%(disabled_status)s "Module IMP.%(name)s disabled")
   else()
     message(FATAL_ERROR "setup_module returned ${status}")
   endif()

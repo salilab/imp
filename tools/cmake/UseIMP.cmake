@@ -97,7 +97,8 @@ function(imp_build_module sourcedir)
                       "--build_dir=${IMP_BUILD_INFO_DIR}"
                       "--tools_dir=${IMP_TOOLS_DIR}"
                       --swig_include=${IMP_SWIG_DIR}
-                      --include=${IMP_INCLUDE_DIR})
+                      --include=${IMP_INCLUDE_DIR}
+		      --required)
 
   imp_execute_process("setup" ${CMAKE_BINARY_DIR}
                       COMMAND ${IMP_TOOLS_DIR}/build/setup.py
