@@ -402,7 +402,6 @@ file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(IMP_DATA_DIR \"${CMAKE_BINARY_DIR}/data\" )\n"
      "set(IMP_SWIG_DIR \"${CMAKE_BINARY_DIR}/swig\" )\n"
      "set(RMF_MODULES_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules\" )\n"
-     "set(IMP_LIB_TYPE \"${IMP_LIB_TYPE}\" )\n"
      "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
 # Installed locations
 file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
@@ -416,8 +415,15 @@ file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(IMP_DATA_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/IMP\" )\n"
      "set(IMP_SWIG_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SWIGDIR}\" )\n"
      "set(RMF_MODULES_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_CMAKEDIR}\" )\n"
-     "set(IMP_LIB_TYPE \"${IMP_LIB_TYPE}\" )\n"
      "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
+foreach(cmakefile ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+                  ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake)
+  foreach(var IMP_LIB_TYPE IMP_NO_SWIG_DEPENDENCIES IMP_STATIC IMP_MAX_CHECKS
+         IMP_MAX_LOG IMP_SWIG_LIBRARIES)
+    file(APPEND "${cmakefile}"
+         "SET(${var} \"${${var}}\" CACHE INTERNAL \"\" FORCE)\n")
+  endforeach()
+endforeach()
 # todo: add Windows support
 foreach(mod ${enabled_modules})
   get_target_property(modver "IMP.${mod}-lib" VERSION)
