@@ -342,9 +342,8 @@ class SourceModule(Module):
 
     def __get_configured_module(self):
         if not hasattr(self, '_configured'):
-            self._configured = ConfiguredModule(self.name,
-                                      os.path.join('data', 'build_info'),
-                                      self._finder())
+            self._configured = ConfiguredModule(self.name, 'build_info',
+                                                self._finder())
         return self._configured
 
     configured = property(__get_configured_module,
@@ -608,7 +607,7 @@ def get_dependency_info(dependency, extra_data_path, root="."):
     global dependency_info_cache
     if dependency in dependency_info_cache:
         return dependency_info_cache[dependency]
-    df = os.path.join(root, "data", "build_info", dependency)
+    df = os.path.join(root, "build_info", dependency)
     if not os.path.exists(df) and extra_data_path != "":
         df = os.path.join(extra_data_path, dependency)
     d = {'libraries': "", 'version': "", 'includepath': "",
@@ -635,7 +634,7 @@ def get_module_info(module, extra_data_path, root="."):
         return module_info_cache[module]
     if module.find("/") != -1:
         raise ValueError("module name invalid: " + module)
-    df = os.path.join(root, "data", "build_info", "IMP." + module)
+    df = os.path.join(root, "build_info", "IMP." + module)
     external = False
     if not os.path.exists(df) and extra_data_path != "":
         external = True
@@ -689,26 +688,14 @@ def get_sorted_order(root="."):
     global order_cache
     if order_cache:
         return order_cache
-    order = split(
-        open(
-            os.path.join(
-                root,
-                "data",
-                "build_info",
-                "sorted_modules"),
-            "r").read(
-        ),
-        "\n")
+    order = split(open(os.path.join(root, "build_info",
+                                    "sorted_modules"), "r").read(), "\n")
     order_cache = order
     return order
 
 
-def set_sorted_order(
-    sorted,
-    outpath=os.path.join(
-        "data",
-        "build_info",
-        "sorted_modules")):
+def set_sorted_order(sorted,
+                     outpath=os.path.join("build_info", "sorted_modules")):
     global order_cache
     order_cache = sorted
     rewrite(outpath,
@@ -742,7 +729,7 @@ def compute_sorted_order(source, extra_data_path):
 
 
 def setup_sorted_order(source, extra_data_path,
-                       outpath=os.path.join("data", "build_info", "sorted_modules")):
+                       outpath=os.path.join("build_info", "sorted_modules")):
     sorted = compute_sorted_order(source, extra_data_path)
     set_sorted_order(sorted, outpath)
     # return sorted
@@ -796,7 +783,7 @@ def get_module_version(module, source_dir):
 
 
 def get_disabled_modules(extra_data_path, root="."):
-    all = get_glob([os.path.join(root, "data", "build_info", "IMP.*")])
+    all = get_glob([os.path.join(root, "build_info", "IMP.*")])
     modules = [os.path.splitext(a)[1][1:] for a in all]
     return (
         [x for x in modules if not get_module_info(

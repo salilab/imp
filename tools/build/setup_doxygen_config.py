@@ -121,8 +121,7 @@ IMP modules provide a number of command line tools.
 These are listed below under their parent module:""")
     for bs, g in tools.get_modules(source):
         if tools.get_module_info(bs, '')['ok']:
-            p = pickle.load(open(os.path.join("data", "build_info",
-                                              "IMP_%s.pck" % bs)))
+            p = pickle.load(open(os.path.join("build_info", "IMP_%s.pck" % bs)))
             if len(p) > 0:
                 contents.append("- IMP::%s" % bs)
             apps = sorted([[k]+list(v) for k,v in p.iteritems() if v],
