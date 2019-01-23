@@ -203,13 +203,10 @@ _ihm_multi_state_modeling.details
     def test_entity_creation(self):
         """Test creation of Entity objects"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        simo = IMP.pmi.topology.System(m)
+        st = simo.create_state()
         po = DummyPO(None)
         simo.add_protocol_output(po)
-        simo.create_component('foo.1@12')
-        simo.create_component('bar')
-        simo.create_component('baz')
         po.add_component_sequence(po._last_state, 'foo.1@12', 'ACGT')
         po.add_component_sequence(po._last_state, 'bar', 'ACGT')
         po.add_component_sequence(po._last_state, 'baz', 'ACCX')
