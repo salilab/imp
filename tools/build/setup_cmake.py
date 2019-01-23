@@ -122,7 +122,8 @@ def get_dep_merged(all_deps, name):
     return "\n        ".join(sorted(set("${%s_%s}" % (d.upper(), name.upper())
                                     for d in all_deps)))
 
-def setup_module(finder, module, tools_dir, extra_include, extra_swig):
+def setup_module(finder, module, tools_dir, extra_include, extra_swig,
+                 required):
     checks = []
     deps = []
     contents = []
@@ -223,6 +224,7 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig):
         values["build_dir"] = "--build_dir=%s " % finder.external_dir
     else:
         values["build_dir"] = ""
+    values["disabled_status"] = "FATAL_ERROR" if required else "STATUS"
     values["subdirs"] = """add_subdirectory(${CMAKE_SOURCE_DIR}%s/src)
 add_subdirectory(${CMAKE_SOURCE_DIR}%s/test)
 add_subdirectory(${CMAKE_SOURCE_DIR}%s/examples)
@@ -249,6 +251,9 @@ parser.add_option("--swig_include", help="Extra SWIG include path",
                   default=None)
 parser.add_option("--build_dir", help="IMP build directory", default=None)
 parser.add_option("--tools_dir", help="IMP tools directory", default=None)
+parser.add_option("--required", action="store_true", default=False,
+                  help="Whether to fail the build if a module cannot "
+                       "be configured")
 
 
 def main():
@@ -264,7 +269,7 @@ def main():
     for m in mf.get_ordered():
         if isinstance(m, tools.SourceModule):
             main.append(setup_module(mf, m, tools_dir, extra_include,
-                                     extra_swig))
+                                     extra_swig, options.required))
 
 if __name__ == '__main__':
     main()
