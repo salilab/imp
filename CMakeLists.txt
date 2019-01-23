@@ -198,6 +198,9 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 include_directories("${CMAKE_BINARY_DIR}/include")
 
+# Keep track of all variables relating to dependencies
+set(IMP_ALL_DEPENDS_VARS "" CACHE INTERNAL "" FORCE)
+
 imp_execute_process("setup" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup.py
                     --source=${CMAKE_SOURCE_DIR}
                     --disabled=${IMP_DISABLED_MODULES}
@@ -422,7 +425,8 @@ file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
 foreach(cmakefile ${CMAKE_BINARY_DIR}/IMPConfig.cmake
                   ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake)
   foreach(var IMP_LIB_TYPE IMP_NO_SWIG_DEPENDENCIES IMP_STATIC IMP_MAX_CHECKS
-         IMP_MAX_LOG IMP_SWIG_LIBRARIES)
+              IMP_MAX_LOG IMP_SWIG_LIBRARIES EIGEN3_INCLUDE_DIR
+              Boost_INCLUDE_DIR ${IMP_ALL_DEPENDS_VARS})
     file(APPEND "${cmakefile}"
          "SET(${var} \"${${var}}\" CACHE INTERNAL \"\" FORCE)\n")
   endforeach()
