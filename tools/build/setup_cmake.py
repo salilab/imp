@@ -122,6 +122,18 @@ def get_dep_merged(all_deps, name):
     return "\n        ".join(sorted(set("${%s_%s}" % (d.upper(), name.upper())
                                     for d in all_deps)))
 
+def standalone_cmake(cmake_file):
+    """Return True iff the given cmake file is set up to work standalone.
+       Such a file can have cmake run directly on it (usually used for
+       out-of-tree module builds).
+       If the file is standalone capable, we won't overwrite it but instead
+       will generate a ModuleBuild.cmake file. The cmake file is supposed to
+       include ModuleBuild.cmake if it detects it is not running standalone.
+    """
+    if os.path.exists(cmake_file):
+        with open(cmake_file) as fh:
+            return 'ModuleBuild.cmake' in fh.read()
+
 def setup_module(finder, module, tools_dir, extra_include, extra_swig,
                  required):
     checks = []
@@ -232,8 +244,11 @@ add_subdirectory(${CMAKE_SOURCE_DIR}%s/benchmark)
 add_subdirectory(${CMAKE_SOURCE_DIR}%s/bin)
 add_subdirectory(${CMAKE_SOURCE_DIR}%s/utility)""" % ((topdir,) * 6)
 
-    out = os.path.join(module.path,
-                "ModuleBuild.cmake" if finder.one_module else "CMakeLists.txt")
+    cmakelists = os.path.join(module.path, "CMakeLists.txt")
+    if finder.one_module or standalone_cmake(cmakelists):
+        out = os.path.join(module.path, "ModuleBuild.cmake")
+    else:
+        out = cmakelists
     module_template.write(out, values)
 
     # at end so directories exist
