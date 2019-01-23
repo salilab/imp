@@ -454,7 +454,10 @@ install_deref(${CMAKE_BINARY_DIR}/data * ${CMAKE_INSTALL_DATADIR}/IMP)
 install_deref(${CMAKE_BINARY_DIR}/swig *.i ${CMAKE_INSTALL_SWIGDIR})
 
 # Install build tools
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/tools/dev_tools
+# dev_tools is a symlink, so we need to deref it first
+get_filename_component(dev_tools_dir "${CMAKE_SOURCE_DIR}/tools/dev_tools"
+                       REALPATH)
+install(DIRECTORY ${dev_tools_dir}
         ${CMAKE_SOURCE_DIR}/tools/build DESTINATION ${CMAKE_INSTALL_TOOLSDIR})
 
 # Install cmake scripts and configuration
