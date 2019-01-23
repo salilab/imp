@@ -370,6 +370,7 @@ perl -pi -e 's^#!.*python.*^#!/usr/bin/python^' ${RPM_BUILD_ROOT}%{_prefix}/bin/
 %defattr(-,root,root)
 %doc %{_prefix}/share/doc/%{name}-%{version}
 %{_prefix}/share/IMP
+%exclude %{_prefix}/share/IMP/tools
 %{_prefix}/bin/*
 %{_libdir}/libimp*.so.*
 %{_libdir}/libRMF*.so
@@ -435,10 +436,12 @@ perl -pi -e 's^#!.*python.*^#!/usr/bin/python^' ${RPM_BUILD_ROOT}%{_prefix}/bin/
 
 %files devel
 %defattr(-,root,root)
+%{_prefix}/share/IMP/tools
 %{_prefix}/include/IMP
 %{_prefix}/include/IMP.h
 %{_prefix}/include/RMF
 %{_libdir}/libimp*.so
+%{_libdir}/cmake/IMP
 %if 0%{?with_mpich}
 %exclude %{_prefix}/include/IMP/mpi
 %exclude %{_prefix}/include/IMP/spb
