@@ -31,6 +31,7 @@ TOOLDIR=`dirname $0`
 
 # Put things in more w32-like arrangement
 mv ${ROOT}/usr/local/include ${ROOT}/usr/local/bin ${ROOT} || exit 1
+mv ${ROOT}/usr/local/cmake ${ROOT}/cmake || exit 1
 mv ${ROOT}/usr/local/lib/* ${ROOT}/bin || exit 1
 rmdir ${ROOT}/usr/local/lib || exit 1
 
