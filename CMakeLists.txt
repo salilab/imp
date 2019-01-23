@@ -67,9 +67,8 @@ endif(POLICY CMP0017)
 set(CMAKE_MACOSX_RPATH 0)
 
 # Stop cmake warning about files in the build directory it didn't create
-# (see issue #909)
 if(POLICY CMP0058)
-cmake_policy(SET CMP0058 OLD)
+  cmake_policy(SET CMP0058 NEW)
 endif(POLICY CMP0058)
 
 set(timeout_factor 1)
