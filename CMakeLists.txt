@@ -422,6 +422,10 @@ file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(IMP_SWIG_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SWIGDIR}\" )\n"
      "set(RMF_MODULES_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_CMAKEDIR}\" )\n"
      "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
+list(LENGTH IMP_ALL_DEPENDS_VARS depvarlen)
+if(${depvarlen} GREATER 0)
+  list(REMOVE_DUPLICATES IMP_ALL_DEPENDS_VARS)
+endif()
 foreach(cmakefile ${CMAKE_BINARY_DIR}/IMPConfig.cmake
                   ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake)
   foreach(var IMP_LIB_TYPE IMP_NO_SWIG_DEPENDENCIES IMP_STATIC IMP_MAX_CHECKS
