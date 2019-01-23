@@ -458,7 +458,10 @@ install_deref(${CMAKE_BINARY_DIR}/swig *.i ${CMAKE_INSTALL_SWIGDIR})
 get_filename_component(dev_tools_dir "${CMAKE_SOURCE_DIR}/tools/dev_tools"
                        REALPATH)
 install(DIRECTORY ${dev_tools_dir}
-        ${CMAKE_SOURCE_DIR}/tools/build DESTINATION ${CMAKE_INSTALL_TOOLSDIR})
+        ${CMAKE_SOURCE_DIR}/tools/build DESTINATION ${CMAKE_INSTALL_TOOLSDIR}
+        PATTERN "*.py" PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE
+                                   OWNER_READ GROUP_READ WORLD_READ
+                                   OWNER_WRITE)
 
 # Install cmake scripts and configuration
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/
