@@ -15,3 +15,5 @@ bin/CMakeLists.txt
 dependency/CMakeLists.txt
 examples/CMakeLists.txt
 pyext/CMakeLists.txt
+utility/CMakeLists.txt
+*/Files.cmake
