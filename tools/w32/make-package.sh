@@ -36,6 +36,8 @@ mv ${ROOT}/usr/local/lib/* ${ROOT}/bin || exit 1
 rmdir ${ROOT}/usr/local/lib || exit 1
 
 mv ${ROOT}/usr/local/share/IMP ${ROOT}/data || exit 1
+mv ${ROOT}/usr/local/build_info/* ${ROOT}/data/build_info || exit 1
+rmdir ${ROOT}/usr/local/build_info || exit 1
 mv ${ROOT}/usr/local/share/doc/IMP/examples ${ROOT} || exit 1
 
 rm -rf ${ROOT}/usr/local/share/doc/IMP/html
