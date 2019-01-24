@@ -48,11 +48,16 @@ function(imp_build_module sourcedir)
 
   include(GNUInstallDirs)
   # Add extra installation locations for SWIG .i files and Python code
+  # As per GNUInstallDirs.cmake, set empty values in the cache and store
+  # defaults in local variables for locations defined relative to existing
+  # CMAKE_INSTALL_*. This auto-updates the defaults when the existing
+  # CMAKE_INSTALL_* changes.
   if(NOT DEFINED CMAKE_INSTALL_SWIGDIR)
     set(CMAKE_INSTALL_SWIGDIR "share/IMP/swig" CACHE PATH "SWIG interface files")
   endif()
-  if(NOT DEFINED CMAKE_INSTALL_PYTHONDIR)
-    set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${python_version}/site-packages" CACHE PATH "Python modules")
+  if(NOT CMAKE_INSTALL_PYTHONDIR)
+    set(CMAKE_INSTALL_PYTHONDIR "" CACHE PATH "Python modules")
+    set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${python_version}/site-packages")
   endif()
 
   # Visual Studio always adds Release or Debug to binary directories

@@ -175,21 +175,35 @@ endif()
 include(GNUInstallDirs)
 # Add extra installation locations for SWIG .i files, build tools,
 # cmake files, and Python code
+# As per GNUInstallDirs.cmake, set empty values in the cache and store defaults
+# in local variables for locations defined relative to existing CMAKE_INSTALL_*.
+# This auto-updates the defaults when the existing CMAKE_INSTALL_* changes.
 if(NOT DEFINED CMAKE_INSTALL_SWIGDIR)
   set(CMAKE_INSTALL_SWIGDIR "share/IMP/swig" CACHE PATH "SWIG interface files")
 endif()
-if(NOT DEFINED CMAKE_INSTALL_BUILDINFODIR)
-  set(CMAKE_INSTALL_BUILDINFODIR "${CMAKE_INSTALL_DATADIR}/IMP/build_info" CACHE PATH "Build info files")
+if(NOT CMAKE_INSTALL_BUILDINFODIR)
+  set(CMAKE_INSTALL_BUILDINFODIR "" CACHE PATH "Build info files")
+  set(CMAKE_INSTALL_BUILDINFODIR "${CMAKE_INSTALL_DATADIR}/IMP/build_info")
 endif()
 if(NOT DEFINED CMAKE_INSTALL_TOOLSDIR)
   set(CMAKE_INSTALL_TOOLSDIR "share/IMP/tools" CACHE PATH "IMP build tools")
 endif()
-if(NOT DEFINED CMAKE_INSTALL_PYTHONDIR)
-  set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${python_version}/site-packages" CACHE PATH "Python modules")
+if(NOT CMAKE_INSTALL_PYTHONDIR)
+  set(CMAKE_INSTALL_PYTHONDIR "" CACHE PATH "Python modules")
+  set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${python_version}/site-packages")
 endif()
-if(NOT DEFINED CMAKE_INSTALL_CMAKEDIR)
-  set(CMAKE_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/IMP" CACHE PATH "cmake modules")
+if(NOT CMAKE_INSTALL_CMAKEDIR)
+  set(CMAKE_INSTALL_CMAKEDIR "" CACHE PATH "cmake modules")
+  set(CMAKE_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/IMP")
 endif()
+
+foreach(dir SWIGDIR BUILDINFODIR TOOLSDIR PYTHONDIR CMAKEDIR)
+  if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_${dir}})
+    set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_${dir}}")
+  else()
+    set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_${dir}}")
+  endif()
+endforeach()
 
 include(InstallDeref)
 
@@ -411,15 +425,15 @@ file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
 # Installed locations
 file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(IMP_INSTALL_PREFIX \"${CMAKE_INSTALL_PREFIX}\" )\n"
-     "set(IMP_TOOLS_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_TOOLSDIR}\" )\n"
-     "set(IMP_MODULES_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_CMAKEDIR}\" )\n"
-     "set(IMP_BUILD_INFO_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BUILDINFODIR}\" )\n"
-     "set(IMP_INCLUDE_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}\" )\n"
-     "set(IMP_LIB_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}\" )\n"
-     "set(IMP_PYTHON_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_PYTHONDIR}\" )\n"
-     "set(IMP_DATA_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/IMP\" )\n"
-     "set(IMP_SWIG_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SWIGDIR}\" )\n"
-     "set(RMF_MODULES_DIR \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_CMAKEDIR}\" )\n"
+     "set(IMP_TOOLS_DIR \"${CMAKE_INSTALL_FULL_TOOLSDIR}\" )\n"
+     "set(IMP_MODULES_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
+     "set(IMP_BUILD_INFO_DIR \"${CMAKE_INSTALL_FULL_BUILDINFODIR}\" )\n"
+     "set(IMP_INCLUDE_DIR \"${CMAKE_INSTALL_FULL_INCLUDEDIR}\" )\n"
+     "set(IMP_LIB_DIR \"${CMAKE_INSTALL_FULL_LIBDIR}\" )\n"
+     "set(IMP_PYTHON_DIR \"${CMAKE_INSTALL_FULL_PYTHONDIR}\" )\n"
+     "set(IMP_DATA_DIR \"${CMAKE_INSTALL_FULL_DATADIR}/IMP\" )\n"
+     "set(IMP_SWIG_DIR \"${CMAKE_INSTALL_FULL_SWIGDIR}\" )\n"
+     "set(RMF_MODULES_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
      "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
 list(LENGTH IMP_ALL_DEPENDS_VARS depvarlen)
 if(${depvarlen} GREATER 0)
