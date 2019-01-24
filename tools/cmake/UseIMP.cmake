@@ -172,7 +172,7 @@ function(imp_build_module sourcedir)
        "path) so that\n"
        "# top-level stuff like IMP.deprecated_function is available.\n"
        "with open(os.path.join(__path__[__oldpathlen], '__init__.py')) as fh:\n"
-       "    exec(fh)\n"
+       "    exec(fh.read())\n"
        "del __oldpathlen, extend_path\n")
 
 
