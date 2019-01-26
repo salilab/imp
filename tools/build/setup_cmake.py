@@ -152,14 +152,14 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
 
     g = tools.CMakeFileGenerator()
     if len(checks) > 0:
-        g.write("%s/compiler/CMakeLists.txt" % module.path,
+        g.write(os.path.join(module.path, 'compiler', 'CMakeLists.txt'),
                 "\n".join(["include(${CMAKE_SOURCE_DIR}/%s)\n" %
                                tools.to_cmake_path(x) for x in checks]))
         contents.append(
             "add_subdirectory(${CMAKE_SOURCE_DIR}/%s/compiler)" %
             module.path)
     if len(deps) > 0:
-        g.write("%s/dependency/CMakeLists.txt" % module.path,
+        g.write(os.path.join(module.path, 'dependency', 'CMakeLists.txt'),
                 "\n".join(["include(${CMAKE_SOURCE_DIR}/%s)" %
                                tools.to_cmake_path(x) for x in deps]))
         contents.append(
