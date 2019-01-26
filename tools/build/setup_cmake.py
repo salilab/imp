@@ -262,8 +262,8 @@ add_subdirectory(${CMAKE_SOURCE_DIR}%s/utility)""" % ((topdir,) * 6)
 
 parser = OptionParser()
 parser.add_option("--include", help="Extra header include path", default=None)
-parser.add_option("--swig_include", help="Extra SWIG include path",
-                  default=None)
+parser.add_option("--swig_include", help="Extra SWIG include path(s)",
+                  default=[], action="append")
 parser.add_option("--build_dir", help="IMP build directory", default=None)
 parser.add_option("--tools_dir", help="IMP tools directory", default=None)
 parser.add_option("--required", action="store_true", default=False,
@@ -279,8 +279,9 @@ def main():
                                   else '${CMAKE_SOURCE_DIR}/tools'
     extra_include = ' "--include=%s"' % options.include \
                     if options.include else ""
-    extra_swig = ' "--swig_include=%s"' % options.swig_include \
-                    if options.swig_include else ""
+    extra_swig = ''.join(' "--swig_include=%s"' % s
+                         for s in options.swig_include) \
+                 if options.swig_include else ""
     for m in mf.get_ordered():
         if isinstance(m, tools.SourceModule):
             main.append(setup_module(mf, m, tools_dir, extra_include,

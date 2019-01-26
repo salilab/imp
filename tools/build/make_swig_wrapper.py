@@ -11,7 +11,7 @@ import subprocess
 parser = OptionParser()
 parser.add_option("--include", help="Extra header include path", default=None)
 parser.add_option("--swig_include", help="Extra SWIG include path",
-                  default=None)
+                  default=[], action="append")
 parser.add_option("-s", "--swig", dest="swig", default="swig",
                   help="Swig command to use.")
 parser.add_option("-m", "--module",
@@ -42,8 +42,8 @@ def run_swig(outputdir, options):
     args.append("-I" + os.path.join("..", "..", "swig"))
     if options.include:
         args.append("-I" + options.include)
-    if options.swig_include:
-        args.append("-I" + options.swig_include)
+    for p in options.swig_include:
+        args.append("-I%s" % tools.from_cmake_path(p))
     args.extend(["-oh", "wrap.h-in"])
     args.extend(["-o", "wrap.cpp-in"])
     if options.module == "kernel":
