@@ -217,14 +217,14 @@ def write_ok(module, modules, unfound_modules, dependencies,
 def setup_module(module, finder):
     sys.stdout.write("Configuring module %s ..." % module.name)
     for d in module.required_dependencies:
-        if not tools.get_dependency_info(d, "")["ok"]:
+        if not finder.get_dependency_info(d)["ok"]:
             print("Required dependency %s not found" % d)
             write_no_ok(module.name)
             return False, []
     dependencies = module.required_dependencies[:]
     unfound_dependencies = []
     for d in module.optional_dependencies:
-        if tools.get_dependency_info(d, '')["ok"]:
+        if finder.get_dependency_info(d)["ok"]:
             dependencies.append(d)
         else:
             unfound_dependencies.append(d)

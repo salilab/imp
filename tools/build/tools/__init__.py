@@ -405,6 +405,10 @@ class ModulesFinder(object):
         self._mod_by_name = None
         self._ordered = None
 
+    def get_dependency_info(self, dependency):
+        """Get a dict describing the named third-party dependency"""
+        return get_dependency_info(dependency, self.external_dir or '')
+
     def get_all_dependencies(self, modules):
         """Return the dependencies of the given modules (plus any modules
            they in turn depend on)"""
