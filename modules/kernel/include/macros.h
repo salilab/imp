@@ -9,10 +9,10 @@
 #define IMPKERNEL_MACROS_H
 #include <IMP/kernel_config.h>
 #include <IMP/base_macros.h>
-#include "decorator_macros.h"
-#include "singleton_macros.h"
-#include "pair_macros.h"
-#include "triplet_macros.h"
-#include "quad_macros.h"
+#include <IMP/decorator_macros.h>
+#include <IMP/singleton_macros.h>
+#include <IMP/pair_macros.h>
+#include <IMP/triplet_macros.h>
+#include <IMP/quad_macros.h>
 
 #endif /* IMPKERNEL_MACROS_H */
