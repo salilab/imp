@@ -11,6 +11,8 @@
 if(NOT USE_IMP_FILE_INCLUDED)
   set(USE_IMP_FILE_INCLUDED 1)
 
+  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${RMF_MODULES_DIR})
+
   include(${RMF_MODULES_DIR}/IMPExecuteProcess.cmake)
   include(${RMF_MODULES_DIR}/IMPAddTests.cmake)
   include(${RMF_MODULES_DIR}/CheckCompiles.cmake)
