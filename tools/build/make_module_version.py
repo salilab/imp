@@ -62,7 +62,7 @@ def make_version_check(options):
   _check_one('%s', version, myversion)
   """
     g = tools.PythonFileGenerator()
-    g.write(outf, template % (version, version))
+    g.write(outf, template % (version, options.name))
 
 
 def main():
