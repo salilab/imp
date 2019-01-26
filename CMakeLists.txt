@@ -420,6 +420,7 @@ file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(IMP_PYTHON_DIR \"${CMAKE_BINARY_DIR}/lib\" )\n"
      "set(IMP_DATA_DIR \"${CMAKE_BINARY_DIR}/data\" )\n"
      "set(IMP_SWIG_DIR \"${CMAKE_BINARY_DIR}/swig\" )\n"
+     "set(RMF_SWIG_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/swig\" )\n"
      "set(RMF_MODULES_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules\" )\n"
      "set(RMF_INCLUDE_PATH \"${RMF_INCLUDE_PATH}\" )\n"
      "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
@@ -434,6 +435,7 @@ file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(IMP_PYTHON_DIR \"${CMAKE_INSTALL_FULL_PYTHONDIR}\" )\n"
      "set(IMP_DATA_DIR \"${CMAKE_INSTALL_FULL_DATADIR}/IMP\" )\n"
      "set(IMP_SWIG_DIR \"${CMAKE_INSTALL_FULL_SWIGDIR}\" )\n"
+     "set(RMF_SWIG_DIR \"${CMAKE_INSTALL_FULL_SWIGDIR}\" )\n"
      "set(RMF_MODULES_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
      "set(RMF_INCLUDE_PATH \"${CMAKE_INSTALL_FULL_INCLUDEDIR}\" )\n"
      "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
