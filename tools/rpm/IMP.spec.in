@@ -440,6 +440,7 @@ perl -pi -e 's^#!.*python.*^#!/usr/bin/python^' ${RPM_BUILD_ROOT}%{_prefix}/bin/
 %{_prefix}/include/IMP
 %{_prefix}/include/IMP.h
 %{_prefix}/include/RMF
+%{_prefix}/include/RMF.h
 %{_libdir}/libimp*.so
 %{_libdir}/cmake/IMP
 %if 0%{?with_mpich}
