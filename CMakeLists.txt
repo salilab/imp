@@ -455,7 +455,7 @@ endforeach()
 file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(RMF_LIBRARIES \"\${IMP_LIB_DIR}/libRMF${CMAKE_SHARED_LIBRARY_SUFFIX}\" )\n")
 file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
-     "set(RMF_LIBRARIES \"\${IMP_LIB_DIR}/libRMF.${CMAKE_SHARED_LIBRARY_SUFFIX}\" )\n")
+     "set(RMF_LIBRARIES \"\${IMP_LIB_DIR}/libRMF${CMAKE_SHARED_LIBRARY_SUFFIX}\" )\n")
 foreach(mod ${enabled_modules})
   get_target_property(modver "IMP.${mod}-lib" VERSION)
   if (APPLE)
