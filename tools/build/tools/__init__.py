@@ -555,60 +555,7 @@ def get_dependency_description(path):
             "cmake": cmake,
             "python_module": d['python_module']}
 
-
-def get_module_description(source, module, extra_data_path, root="."):
-    df = os.path.join(root, source, "modules", module, "dependencies.py")
-    if os.path.exists(df):
-        d = {'required_modules': "",
-             'optional_modules': "",
-             'required_dependencies': "",
-             'optional_dependencies': ""}
-        exec(open(df, "r").read(), d)
-        return {"required_modules": split(d['required_modules']),
-                "optional_modules": split(d['optional_modules']),
-                "required_dependencies": split(d['required_dependencies']),
-                "optional_dependencies": split(d['optional_dependencies'])}
-    else:
-        info = get_module_info(module, extra_data_path)
-        return {"required_modules": info["modules"],
-                "optional_modules": [],
-                "required_dependencies": info["dependencies"],
-                "optional_dependencies": []}
-
-
-def get_all_modules(source, modules, extra_data_path, ordered, root="."):
-    ret = []
-    stack = modules
-    while len(stack) > 0:
-        cur = stack[-1]
-        stack = stack[:-1]
-        descr = get_module_description(source, cur, extra_data_path)
-        for m in descr["required_modules"] + descr["optional_modules"]:
-            if m not in ret:
-                ret.append(m)
-                stack.append(m)
-    ret.sort(key=lambda x: ordered.index(x))
-    return ret
-
-
-def get_all_dependencies(source, modules, extra_data_path, ordered, root="."):
-    mods = modules + get_all_modules(
-        source,
-        modules,
-        extra_data_path,
-        ordered,
-        root)
-    ret = []
-    for m in mods:
-        descr = get_module_description(source, m, extra_data_path)
-        for d in descr["required_dependencies"] + descr["optional_dependencies"]:
-            if d not in ret:
-                ret.append(d)
-    return ret
-
-
 dependency_info_cache = {}
-
 
 def get_dependency_info(dependency, extra_data_path, root="."):
     global dependency_info_cache
@@ -707,72 +654,6 @@ def set_sorted_order(sorted,
     order_cache = sorted
     rewrite(outpath,
             "\n".join(sorted), verbose=False)
-
-
-def compute_sorted_order(source, extra_data_path):
-    data = {}
-    for m, path in get_modules(source):
-        df = os.path.join(path, "dependencies.py")
-        if not os.path.exists(df):
-            continue
-        info = get_module_description(source, m, extra_data_path)
-        data[m] = info["required_modules"] + info["optional_modules"]
-        # toposort is destructive
-        # get external modules, a bit sloppy for now
-    while True:
-        to_add = {}
-        for mk in data.keys():
-            for m in data[mk]:
-                if m not in data:
-                    print('adding', m)
-                    info = get_module_info(m, extra_data_path)
-                    to_add[m] = info["modules"]
-        for m in to_add.keys():
-            data[m] = to_add[m]
-        if len(to_add.keys()) == 0:
-            break
-    sorted = toposort2(data)
-    return sorted
-
-
-def setup_sorted_order(source, extra_data_path,
-                       outpath=os.path.join("build_info", "sorted_modules")):
-    sorted = compute_sorted_order(source, extra_data_path)
-    set_sorted_order(sorted, outpath)
-    # return sorted
-
-
-def get_dependent_modules(modules, extra_data_path, root="."):
-    for x in modules:
-        if x.find("/") != -1:
-            raise value_error("bad module name: " + x)
-    sorted_order = get_sorted_order(root)
-    new_modules = modules
-    all_modules = new_modules
-    while len(new_modules) > 0:
-        m = new_modules[-1]
-        new_modules = new_modules[:-1]
-        cur_modules = [x for x in get_module_info(m, extra_data_path, root)["modules"]
-                       if x not in all_modules]
-        all_modules += cur_modules
-        new_modules += cur_modules
-    all_modules.sort(key=lambda x: sorted_order.index(x), reverse=True)
-    return all_modules
-
-
-def get_dependent_dependencies(modules, dependencies, extra_data_path,
-                               root="."):
-    for x in modules:
-        if x.find("/") != -1:
-            raise value_error("bad module name: " + x)
-    sorted_order = get_sorted_order(root)
-    ret_names = []
-    for m in modules:
-        info = get_module_info(m, extra_data_path, root)
-        ret_names.extend(info["dependencies"])
-    ret = list(set(ret_names + dependencies))
-    return ret
-
 
 def get_module_version(module, source_dir):
     in_module_source = os.path.join(source_dir, "modules", module, "VERSION")
