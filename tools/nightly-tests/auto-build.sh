@@ -114,12 +114,9 @@ import sys
 sys.path.insert(0, 'imp/tools/build')
 import tools
 
-f = open('$compfile', 'w')
-for m in tools.compute_sorted_order('imp', ''):
-    print >> f, "module\t" + m
-if hasattr(tools, 'get_applications'):
-    for a in tools.get_applications('imp'):
-        print >> f, "application\t" + a[0]
+mf = tools.ModulesFinder(source_dir='imp')
+with open('$compfile', 'w') as fh:
+    fh.write('\n'.join('module\t' + m.name for m in mf.get_ordered()))
 END
 
 # Write out a tarball:
