@@ -26,14 +26,13 @@ IMPKERNEL_END_NAMESPACE
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-/**
-   base class for defining traits of attributes in the attribute table
-   to be stored in a Model object. The traits define the type of attribute values,
-   the attributate key, a container for the list of values etc.
+/** Base class for defining traits of attributes in the attribute table
+    to be stored in a Model object. The traits define the type of attribute
+    values, the attribute key, a container for the list of values etc.
 
-   Template params:
-   T - the attribute type
-   K - the attribute key type
+    Template params:
+    T - the attribute type
+    K - the attribute key type
 */
 template <class T, class K>
 struct DefaultTraits {
@@ -211,11 +210,11 @@ struct StringAttributeTableTraits : public DefaultTraits<String, StringKey> {
     actual entries or use perfect hashing.
     http://burtleburtle.net/bob/hash/perfect.html
 
-    Actuall Cuckoo hashing is probably a better bet as that gets
+    Actually Cuckoo hashing is probably a better bet as that gets
     high occupancy without large tables for the hash function.
 
     \note This version of the table uses certain values of the data
-    to singal that the entry is invalid. Setting an entry to these
+    to signal that the entry is invalid. Setting an entry to these
     values is a checked error. The values are specified by the
     Traits::invalid entry.
  */

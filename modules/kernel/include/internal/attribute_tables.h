@@ -690,7 +690,7 @@ class FloatAttributeTable {
     return optimizeds_.access_data()[k.get_index()];
   }
   //! to verify that an attribute actually exists in the model
-  //! before its table is being accesed
+  //! before its table is being accessed
   bool get_has_attribute(FloatKey k) const{
     int ki=k.get_index()-7;
     if(ki<0) {
@@ -699,7 +699,7 @@ class FloatAttributeTable {
     return ki < int((data_.access_data()).size());
   }
   //! to verify that an attribute derivative actually exists
-  //! in the modelbefore its table is being accesed
+  //! in the model before its table is being accessed
   bool get_has_attribute_derivative(FloatKey k) const{
     int ki=k.get_index()-7;
     if(ki<0) {
@@ -708,7 +708,7 @@ class FloatAttributeTable {
     return ki < int((derivatives_.access_data()).size());
   }
   //! to verify that an attribute optimizeds actually exists in the model
-  //! before its table is being accesed
+  //! before its table is being accessed
   bool get_has_attribute_optimizeds(FloatKey k) const{
     int ki=k.get_index()-7;
     if(ki<0) {
