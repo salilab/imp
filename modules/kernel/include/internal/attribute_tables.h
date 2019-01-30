@@ -696,7 +696,8 @@ class FloatAttributeTable {
     if(ki<0) {
       return true; // coordinate or radius are special and always exist in the model
     }
-    return ki < int((data_.access_data()).size());
+    return ki < int((data_.access_data()).size())
+           && (data_.access_data())[ki].size() > 0;
   }
   //! to verify that an attribute derivative actually exists
   //! in the model before its table is being accessed
@@ -705,7 +706,8 @@ class FloatAttributeTable {
     if(ki<0) {
       return true; // coordinate or radius are special and always exist in the model
     }
-    return ki < int((derivatives_.access_data()).size());
+    return ki < int((derivatives_.access_data()).size())
+           && (data_.access_data())[ki].size() > 0;
   }
   //! to verify that an attribute optimizeds actually exists in the model
   //! before its table is being accessed
@@ -714,7 +716,8 @@ class FloatAttributeTable {
     if(ki<0) {
       return true; // coordinate or radius are special and always exist in the model
     }
-    return ki < int((optimizeds_.access_data()).size());
+    return ki < int((optimizeds_.access_data()).size())
+           && (data_.access_data())[ki].size() > 0;
   }
   /** @} */
 
