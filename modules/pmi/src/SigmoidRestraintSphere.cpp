@@ -21,7 +21,10 @@ SigmoidRestraintSphere::SigmoidRestraintSphere(IMP::Model *m,
                           double amplitude, double line_slope, std::string name):                  
                           Restraint(m, name), 
                           p1_(p1),p2_(p2),inflection_(inflection),
-                          slope_(slope),amplitude_(amplitude),line_slope_(line_slope) {  }                       
+                          slope_(slope),amplitude_(amplitude),line_slope_(line_slope) {
+  IMPPMI_DEPRECATED_OBJECT_DEF(2.11,
+                        "Use CrossLinkingMassSpectrometryRestraint instead");
+}
 
 
 double SigmoidRestraintSphere::
