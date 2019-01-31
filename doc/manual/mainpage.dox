@@ -40,11 +40,6 @@ complex might want to skip ahead to
    - [SAXSMerge: merging multiple SAXS profiles](@ref saxs_merge)
 
  - [Modeling of complexes using IMP::pmi](@ref rnapolii_stalk)
-   - [Stage 1: Gathering of data](@ref rnapolii_1)
-   - [Stage 2: Representation of the system](@ref rnapolii_2)
-   - [Stage 3: Sampling](@ref rnapolii_3)
-   - [Stage 4a: Analysis part 1](@ref rnapolii_4)
-   - [Stage 4b: Analysis part 2](@ref rnapolii_4_2)
 
  - [The IMP C++/Python library](@ref library_intro)
    - [Overview](@ref library_overview)
