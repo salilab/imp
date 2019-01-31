@@ -31,6 +31,7 @@ public:
 
 
   //! Create the restraint.
+  IMPPMI_DEPRECATED_OBJECT_DECL(2.11)
   SigmoidRestraintSphere(IMP::Model *m, 
                           IMP::ParticleIndexAdaptor p1,
                           IMP::ParticleIndexAdaptor p2,
