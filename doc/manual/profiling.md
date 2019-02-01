@@ -1,6 +1,9 @@
 Profiling your code {#profiling}
 ===================
 
+See also the [profiling tutorial](https://integrativemodeling.org/tutorials/profiling/)
+for a walkthrough of profiling a simple %IMP application.
+
 # Linux
 
 On linux you can use [gperftools](https://github.com/gperftools/gperftools)
