@@ -26,6 +26,7 @@ def generate_all_cpp(modules):
 
 parser = OptionParser()
 parser.add_option("--build_dir", help="IMP build directory", default=None)
+parser.add_option("--module_name", help="Module name", default=None)
 parser.add_option("-s", "--source", dest="source",
                   help="IMP source directory.")
 
@@ -33,7 +34,8 @@ parser.add_option("-s", "--source", dest="source",
 def main():
     (options, args) = parser.parse_args()
     mf = tools.ModulesFinder(source_dir=options.source,
-                             external_dir=options.build_dir)
+                             external_dir=options.build_dir,
+                             module_name=options.module_name)
     generate_all_cpp([x for x in mf.values()
                       if isinstance(x, tools.SourceModule)])
 

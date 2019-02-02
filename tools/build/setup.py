@@ -244,6 +244,7 @@ def generate_src_dirs(modules):
 
 parser = OptionParser()
 parser.add_option("--build_dir", help="IMP build directory", default=None)
+parser.add_option("--module_name", help="Module name", default=None)
 parser.add_option("-s", "--source", dest="source",
                   help="IMP source directory.")
 parser.add_option("-d", "--datapath", dest="datapath",
@@ -257,7 +258,8 @@ parser.add_option("--scons", default=False, action="store_true",
 def main():
     (options, args) = parser.parse_args()
     mf = tools.ModulesFinder(source_dir=options.source,
-                             external_dir=options.build_dir)
+                             external_dir=options.build_dir,
+                             module_name=options.module_name)
     all_modules = [x for x in mf.values() if isinstance(x, tools.SourceModule)]
     clean_pyc(options.source)
     tools.mkdir(os.path.join("build_info"))

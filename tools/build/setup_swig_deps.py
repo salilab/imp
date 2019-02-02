@@ -12,6 +12,7 @@ import tools.thread_pool
 
 parser = OptionParser()
 parser.add_option("--build_dir", help="IMP build directory", default=None)
+parser.add_option("--module_name", help="Module name", default=None)
 parser.add_option("--include", help="Extra header include path", default=None)
 parser.add_option("-s", "--swig",
                   dest="swig", default="swig", help="The name of the swig command.")
@@ -72,7 +73,8 @@ def setup_one(finder, module, build_system, swig, extra_data_path, include):
 def main():
     (options, args) = parser.parse_args()
     mf = tools.ModulesFinder(configured_dir="build_info",
-                             external_dir=options.build_dir)
+                             external_dir=options.build_dir,
+                             module_name=options.module_name)
     pool = tools.thread_pool.ThreadPool()
     for m in [x for x in mf.values()
               if not isinstance(x, tools.ExternalModule) and x.ok]:

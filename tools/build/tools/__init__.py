@@ -392,11 +392,16 @@ class ModulesFinder(object):
                      modules
        `external_dir`, if given, is the relative path to search for external
                      modules
+       `module_name`, if given, overrides the automatically-determined name
+                     of the single module in `source_dir` when `external_dir`
+                     is set
     """
-    def __init__(self, source_dir=None, configured_dir=None, external_dir=None):
+    def __init__(self, source_dir=None, configured_dir=None, external_dir=None,
+                 module_name=None):
         self.source_dir = source_dir
         self.configured_dir = configured_dir
         self.external_dir = external_dir
+        self.module_name = module_name
         # If False, search for modules in subdirectories under
         # `source_dir`; if True, `source_dir` is a single module
         self.one_module = (external_dir is not None and source_dir is not None
@@ -507,8 +512,9 @@ class ModulesFinder(object):
         if self.source_dir is None:
             return
         if self.one_module:
-            modname = os.path.split(os.path.abspath(self.source_dir))[1]
-            yield SourceModule(modname, self.source_dir, self)
+            yield SourceModule(self.module_name
+                         or os.path.split(os.path.abspath(self.source_dir))[1],
+                         self.source_dir, self)
         else:
             for g in glob.glob(os.path.join(self.source_dir, "modules", "*")):
                 if (os.path.isdir(g)

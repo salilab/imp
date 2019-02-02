@@ -21,8 +21,18 @@ if(NOT USE_IMP_FILE_INCLUDED)
 
 endif()
 
+# Build IMP module(s) from sources in sourcedir. This can be either a
+# top-level directory containing a 'modules' subdirectory under which one
+# or more modules exist in subdirectories, or sourcedir can be the module
+# directory itself. In the latter case, the module name is taken to be the
+# last component of the sourcedir name, but this can be overridden by
+# providing the module name as an optional second argument.
 function(imp_build_module sourcedir)
-  set(sourcedir ${ARGV0})
+  if(${ARGC} GREATER 1)
+    set(modname "--module_name=${ARGV1}")
+  else()
+    set(modname "")
+  endif()
 
   # Add include directories of mandatory IMP dependencies
   include_directories(SYSTEM ${Boost_INCLUDE_DIR})
@@ -95,21 +105,24 @@ function(imp_build_module sourcedir)
   add_custom_target("IMP-version"
                     COMMAND ${IMP_TOOLS_DIR}/build/make_version.py
                     --source=${sourcedir}
+                    ${modname}
                     --build_dir="${IMP_BUILD_INFO_DIR}"
                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                     COMMENT "Computing version number")
 
   imp_execute_process("setup_cmake" ${sourcedir}
                       COMMAND ${IMP_TOOLS_DIR}/build/setup_cmake.py
+                      ${modname}
                       "--build_dir=${IMP_BUILD_INFO_DIR}"
                       "--tools_dir=${IMP_TOOLS_DIR}"
                       --swig_include=${IMP_SWIG_DIR}
                       --swig_include=${RMF_SWIG_DIR}
                       --include=${IMP_INCLUDE_DIR}
-		      --required)
+                      --required)
 
   imp_execute_process("setup" ${CMAKE_BINARY_DIR}
                       COMMAND ${IMP_TOOLS_DIR}/build/setup.py
+                      ${modname}
                       "--build_dir=${IMP_BUILD_INFO_DIR}"
                       --source=${sourcedir}
                       --disabled=${IMP_DISABLED_MODULES}
@@ -117,6 +130,7 @@ function(imp_build_module sourcedir)
 
   imp_execute_process("setup_all" ${CMAKE_BINARY_DIR}
                       COMMAND ${IMP_TOOLS_DIR}/build/setup_all.py
+                      ${modname}
                       "--build_dir=${IMP_BUILD_INFO_DIR}"
                       --source=${sourcedir})
 
@@ -126,6 +140,7 @@ function(imp_build_module sourcedir)
 
   imp_execute_process("setup_swig_dependencies" ${CMAKE_BINARY_DIR}
                       COMMAND ${IMP_TOOLS_DIR}/build/setup_swig_deps.py
+                      ${modname}
                       --include=${IMP_INCLUDE_DIR}
                       "--build_dir=${IMP_BUILD_INFO_DIR}"
                       "--swig=${SWIG_EXECUTABLE}")
