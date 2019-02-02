@@ -387,7 +387,8 @@ def main():
         tools.rmdir(os.path.join("lib", "IMP", options.name))
         sys.exit(1)
     mf = tools.ModulesFinder(source_dir=options.source,
-                             external_dir=options.build_dir)
+                             external_dir=options.build_dir,
+                             module_name=options.name)
     module = mf[options.name]
     success, modules = setup_module(module, mf)
     if success:

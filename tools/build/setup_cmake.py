@@ -265,6 +265,7 @@ parser.add_option("--include", help="Extra header include path", default=None)
 parser.add_option("--swig_include", help="Extra SWIG include path(s)",
                   default=[], action="append")
 parser.add_option("--build_dir", help="IMP build directory", default=None)
+parser.add_option("--module_name", help="Module name", default=None)
 parser.add_option("--tools_dir", help="IMP tools directory", default=None)
 parser.add_option("--required", action="store_true", default=False,
                   help="Whether to fail the build if a module cannot "
@@ -274,7 +275,8 @@ parser.add_option("--required", action="store_true", default=False,
 def main():
     (options, args) = parser.parse_args()
     main = []
-    mf = tools.ModulesFinder(source_dir='', external_dir=options.build_dir)
+    mf = tools.ModulesFinder(source_dir='', external_dir=options.build_dir,
+                             module_name=options.module_name)
     tools_dir = options.tools_dir if options.tools_dir \
                                   else '${CMAKE_SOURCE_DIR}/tools'
     extra_include = ' "--include=%s"' % options.include \

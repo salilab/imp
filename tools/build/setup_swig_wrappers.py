@@ -153,7 +153,8 @@ def main():
 
     if options.module != "":
         mf = tools.ModulesFinder(source_dir=options.source,
-                                 external_dir=options.build_dir)
+                                 external_dir=options.build_dir,
+                                 module_name=options.module)
         module = mf[options.module]
         build_wrapper(module, mf, sorted_order,
                       os.path.join("swig", "IMP_" + module.name + ".i"))
