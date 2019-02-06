@@ -50,6 +50,7 @@ complex might want to skip ahead to
    - [Units](@ref units)
    - [Naming and interface conventions](@ref conventions)
    - [Parallelization](@ref parallel)
+   - [Using the library in other projects](@ref uselibrary)
 
  - [Frequently asked questions (FAQ)](@ref faq)
 
