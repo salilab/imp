@@ -96,6 +96,9 @@ for bin in ../bin/*; do
   fi
 done
 
+# Make sure all Python applications use the system Python in /usr/bin
+perl -pi -e 's@^#!.*python.*$@#!/usr/bin/python@' ../bin/*
+
 for lib in *.dylib; do
   # Make sure library is correct
   install_name_tool -id ${PREFIX}/lib/$lib $lib || exit 1
