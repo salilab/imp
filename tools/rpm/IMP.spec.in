@@ -5,6 +5,8 @@
 %endif
 
 %define with_mpich 1
+# Not yet functional
+%define with_openmpi 0
 
 # Change '#' to '%' in the line below if you want to build to install
 # somewhere other than the default /usr
@@ -191,6 +193,32 @@ Requires:      mpich
 Development files for IMP.mpi module (and dependents) with mpich.
 %endif
 
+%if 0%{?with_openmpi}
+%package openmpi
+Group:         Applications/Engineering
+Summary:       MPI module and dependents, for openmpi
+Requires:      %{name} = %{version}-%{release}
+Requires:      openmpi
+%if 0%{?fedora}
+Requires:      python2-openmpi
+%endif
+BuildRequires: openmpi-devel
+
+%description openmpi
+This package contains an IMP.mpi module to add MPI support,
+using the openmpi library. It also includes all IMP modules that depend
+on IMP.mpi (IMP.spb).
+
+%package openmpi-devel
+Group:         Applications/Engineering
+Summary:       MPI module and dependents development files, for openmpi
+Requires:      %{name}-openmpi = %{version}-%{release}
+Requires:      openmpi
+
+%description openmpi-devel
+Development files for IMP.mpi module (and dependents) with openmpi.
+%endif
+
 %prep
 %setup -n imp-%{version}
 
@@ -199,7 +227,7 @@ Development files for IMP.mpi module (and dependents) with mpich.
 # In newer Fedora, the old script-based dependency generation doesn't play
 # nicely with the new mechanism for adding MPI dependencies
 # (rpm-mpi-hooks package)
-%if 0%{?with_mpich}
+%if 0%{?with_mpich} || 0%{?with_openmpi}
 %global __provides_exclude ^libTAU\\.so.*|libimp_mpi\\.so.*|libimp_spb\\.so.*$
 %global __requires_exclude ^libTAU\\.so.*|libmpi\\.so.*|libmpicxx\\.so.*|libimp_mpi\\.so.*|libimp_spb\\.so.*$
 %else
