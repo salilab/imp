@@ -399,6 +399,8 @@ perl -pi -e 's^#!.*python.*^#!/usr/bin/python^' ${RPM_BUILD_ROOT}%{_prefix}/bin/
 %doc %{_prefix}/share/doc/%{name}-%{version}
 %{_prefix}/share/IMP
 %exclude %{_prefix}/share/IMP/tools
+%exclude %{_prefix}/share/IMP/swig
+%exclude %{_prefix}/share/IMP/build_info
 %{_prefix}/bin/*
 %{_libdir}/libimp*.so.*
 %{_libdir}/libRMF*.so
@@ -410,13 +412,6 @@ perl -pi -e 's^#!.*python.*^#!/usr/bin/python^' ${RPM_BUILD_ROOT}%{_prefix}/bin/
 %{_libdir}/python2*/site-packages/ihm
 %if 0%{?with_mpich}
 %exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
-%exclude %{_prefix}/share/IMP/swig/IMP_mpi.*
-%exclude %{_prefix}/share/IMP/swig/IMP_spb.*
-%exclude %{_prefix}/share/IMP/build_info/MPI
-%exclude %{_prefix}/share/IMP/build_info/IMP.mpi
-%exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
-%exclude %{_prefix}/share/IMP/build_info/IMP.spb
-%exclude %{_prefix}/share/IMP/build_info/IMP_spb.pck
 %exclude %{_libdir}/python2*/site-packages/IMP/mpi
 %exclude %{_libdir}/python2*/site-packages/IMP/spb
 %endif
@@ -465,6 +460,17 @@ perl -pi -e 's^#!.*python.*^#!/usr/bin/python^' ${RPM_BUILD_ROOT}%{_prefix}/bin/
 %files devel
 %defattr(-,root,root)
 %{_prefix}/share/IMP/tools
+%{_prefix}/share/IMP/swig
+%{_prefix}/share/IMP/build_info
+%if 0%{?with_mpich}
+%exclude %{_prefix}/share/IMP/swig/IMP_mpi.*
+%exclude %{_prefix}/share/IMP/swig/IMP_spb.*
+%exclude %{_prefix}/share/IMP/build_info/MPI
+%exclude %{_prefix}/share/IMP/build_info/IMP.mpi
+%exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
+%exclude %{_prefix}/share/IMP/build_info/IMP.spb
+%exclude %{_prefix}/share/IMP/build_info/IMP_spb.pck
+%endif
 %{_prefix}/include/IMP
 %{_prefix}/include/IMP.h
 %{_prefix}/include/RMF
