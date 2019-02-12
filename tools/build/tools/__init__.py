@@ -283,7 +283,14 @@ class Module(object):
 
     def _modules_split(self, s):
         """Split the given string into a list of Module objects"""
-        return [self._finder()[x] for x in split(s)]
+        finder = self._finder()
+        def get_module(name):
+            try:
+                return finder[name]
+            except KeyError:
+                raise KeyError("module %s depends on module %s, which "
+                               "does not exist" % (self.name, name))
+        return [get_module(x) for x in split(s)]
 
 
 class ConfiguredModule(Module):
