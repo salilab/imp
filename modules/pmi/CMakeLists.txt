@@ -23,7 +23,7 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   include_directories(SYSTEM ${IMP_INCLUDE_DIR})
   include_directories("${CMAKE_BINARY_DIR}/include")
 
-  imp_build_module(${CMAKE_SOURCE_DIR})
+  imp_build_module(${CMAKE_SOURCE_DIR} pmi)
 
 else()
   include(ModuleBuild.cmake)

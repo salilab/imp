@@ -1292,7 +1292,7 @@ class TopologyReader(object):
             self.molecules[c.molname] = _TempMolecule(c)
         else:
             # COPY OR DOMAIN
-            c._orig_fasta_file = self.molecules[c.molname].orig_component.fasta_file
+            c._orig_fasta_file = self.molecules[c.molname].orig_component._orig_fasta_file
             c.fasta_id = self.molecules[c.molname].orig_component.fasta_id
             self.molecules[c.molname].add_component(c,c.copyname)
 

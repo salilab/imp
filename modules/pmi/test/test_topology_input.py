@@ -46,18 +46,18 @@ class Tests(IMP.test.TestCase):
 
     def test_round_trip(self):
         """Test reading and writing"""
-        topology_file=self.get_input_file_name("topology_new.txt")
-        outfile = self.get_tmp_file_name("ttest.txt")
-        t=IMP.pmi.topology.TopologyReader(topology_file)
-        t.write_topology_file(outfile)
+        topology_file = self.get_input_file_name("topology_new.txt")
+        t = IMP.pmi.topology.TopologyReader(topology_file)
+        components_original = t.get_components()
 
-        tnew = IMP.pmi.topology.TopologyReader(outfile)
-        c = tnew.get_components()
-        self.assertEqual(len(c),9)
-        self.assertEqual(c[0].molname,"Prot1")
-        self.assertEqual(c[1].molname,"Prot1")
-        self.assertEqual(c[1].copyname,"1")
-        self.assertEqual(c[5].get_unique_name(),"Prot2.1.1")
+        outfile = self.get_tmp_file_name("ttest.txt")
+        t.write_topology_file(outfile)
+        t_new = IMP.pmi.topology.TopologyReader(outfile)
+        components_written = t_new.get_components()
+
+        for original, written in zip(components_original, components_written):
+            for key in original.__dict__:
+                self.assertEqual(original.__dict__[key], written.__dict__[key])
 
     def test_beads(self):
         try:
