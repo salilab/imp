@@ -5,7 +5,6 @@ import IMP.isd
 import IMP.isd.gmm_tools
 from IMP import ArgumentParser
 
-import numpy as np
 import sys,os
 
 def parse_args():
