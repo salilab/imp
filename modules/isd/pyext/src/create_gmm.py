@@ -3,12 +3,11 @@ import IMP
 import IMP.em
 import IMP.isd
 import IMP.isd.gmm_tools
+from IMP import ArgumentParser
+
 import numpy as np
-try:
-    from argparse import ArgumentParser
-except ImportError:
-    from IMP._compat_argparse import ArgumentParser
 import sys,os
+
 def parse_args():
     desc = """
     Create a GMM from either density file (.mrc), a pdb file (.pdb)
