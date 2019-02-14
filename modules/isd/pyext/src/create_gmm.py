@@ -89,8 +89,7 @@ def run(args):
         print('sampling points')
         pts = IMP.isd.sample_points_from_density(dmap,args.num_samples,args.threshold)
     else:
-        print('ERROR: data_fn extension must be pdb, mrc, or npy')
-        sys.exit()
+        raise ValueError("data_fn extension must be pdb or mrc")
 
     ### Do fitting to points
     if not args.use_cpp:

@@ -24,13 +24,19 @@ class Tests(IMP.test.TestCase):
         self.assertRegex(err, "(too few arguments|arguments are required)")
         self.assertNotEqual(r.returncode, 0)
 
-    def test_bad_input_file(self):
-        """Test create_gmm given bad input file"""
+    def test_missing_input_file(self):
+        """Test create_gmm given missing input file"""
         args = MockArgs()
         args.data_file = '/not/exist/foo'
         args.n_centers = 100
         args.out_file = 'outfile'
         self.assertRaises(Exception, create_gmm.run, args)
+
+    def test_badext_input_file(self):
+        """Test create_gmm given input file with bad extension"""
+        self.assertRaises(ValueError, self.run_python_module, create_gmm,
+                [self.get_input_file_name('sequence.dat'), '4',
+                 'create_gmm_pdb.txt'])
 
     def test_from_pdb(self):
         """Test create_gmm from a PDB file"""
