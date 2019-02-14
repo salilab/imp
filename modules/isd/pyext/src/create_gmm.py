@@ -40,10 +40,6 @@ def parse_args():
                    action="store_true", default=False,
                    help="force weight to be 1.0/(num centers). "
                         "Takes precedence over -w")
-    p.add_argument("-o","--out_anchors_txt",dest="out_anchors_txt",default='',
-                      help="write final GMM as anchor points (txt)")
-    p.add_argument("-q","--out_anchors_cmm",dest="out_anchors_cmm",default='',
-                      help="write final GMM as anchor points (cmm)")
     p.add_argument("-d","--use_dirichlet",dest="use_dirichlet",default=False,
                       action="store_true",
                       help="use dirichlet process for fit")
@@ -143,11 +139,6 @@ def run(args):
     if args.out_map != '':
         IMP.isd.gmm_tools.write_gmm_to_map(density_ps, args.out_map,
                                            args.apix, bbox)
-
-    if args.out_anchors_txt!='':
-        IMP.isd.gmm_tools.write_gmm_to_anchors(density_ps,args.out_anchors_txt,
-                                               args.out_anchors_cmm)
-
 
 
 if __name__=="__main__":
