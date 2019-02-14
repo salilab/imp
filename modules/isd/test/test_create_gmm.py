@@ -49,6 +49,25 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(lines[2], "# ncenters: 4\n")
         os.unlink('create_gmm_pdb.txt')
 
+    def test_from_mrc(self):
+        """Test create_gmm from an MRC file"""
+        r = self.run_python_module("IMP.isd.create_gmm",
+                ['--out_map', 'create_gmm_mrc.mrc',
+                 self.get_input_file_name('twoblobs-4.0.mrc'), '4',
+                 'create_gmm_mrc.txt'])
+        out, err = r.communicate()
+        sys.stdout.write(out)
+        sys.stderr.write(err)
+        self.assertEqual(r.returncode, 0)
+        with open('create_gmm_mrc.txt') as fh:
+            lines = fh.readlines()
+        self.assertEqual(len(lines), 19)
+        self.assertEqual(lines[0][:44],
+                '# Created by create_gmm.py, IMP.isd version ')
+        self.assertEqual(lines[2], "# ncenters: 4\n")
+        os.unlink('create_gmm_mrc.txt')
+        os.unlink('create_gmm_mrc.mrc')
+
 
 if __name__ == '__main__':
     IMP.test.main()
