@@ -36,8 +36,10 @@ def parse_args():
     p.add_argument("-w","--force_weight",dest="force_weight",default=-1.0,
                       type=float,
                       help="force weight to be this value (spherical) -1 means deactivated ")
-    p.add_argument("-e","--force_weight_frac",dest="force_weight_frac",action="store_true",default=False,
-                      help="force weight to be 1.0/(num anchors). takes precedence over -w ")
+    p.add_argument("-e", "--force_weight_frac", dest="force_weight_frac",
+                   action="store_true", default=False,
+                   help="force weight to be 1.0/(num centers). "
+                        "Takes precedence over -w")
     p.add_argument("-o","--out_anchors_txt",dest="out_anchors_txt",default='',
                       help="write final GMM as anchor points (txt)")
     p.add_argument("-q","--out_anchors_cmm",dest="out_anchors_cmm",default='',
