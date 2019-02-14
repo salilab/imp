@@ -34,6 +34,10 @@ class Tests(IMP.test.TestCase):
 
     def test_from_pdb(self):
         """Test create_gmm from a PDB file"""
+        try:
+            import sklearn.mixture
+        except ImportError:
+            self.skipTest("this test requires the sklearn Python module")
         r = self.run_python_module("IMP.isd.create_gmm",
                 [self.get_input_file_name('twoblobsA.pdb'), '4',
                  'create_gmm_pdb.txt'])
@@ -51,6 +55,10 @@ class Tests(IMP.test.TestCase):
 
     def test_from_mrc(self):
         """Test create_gmm from an MRC file"""
+        try:
+            import sklearn.mixture
+        except ImportError:
+            self.skipTest("this test requires the sklearn Python module")
         r = self.run_python_module("IMP.isd.create_gmm",
                 ['--out_map', 'create_gmm_mrc.mrc',
                  self.get_input_file_name('twoblobs-4.0.mrc'), '4',
