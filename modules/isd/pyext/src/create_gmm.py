@@ -77,12 +77,12 @@ def run():
     mass_multiplier = 1.0
     if ext=='pdb':
         mh = IMP.atom.read_pdb(data_fn,mdl,IMP.atom.NonWaterNonHydrogenPDBSelector())
-        if options.chain:
-            mps = IMP.atom.Selection(mh,chain=options.chain).get_selected_particles()
+        if args.chain:
+            mps = IMP.atom.Selection(mh,chain=args.chain).get_selected_particles()
         else:
             mps = IMP.core.get_leaves(mh)
 
-        if options.multiply_by_mass:
+        if args.multiply_by_mass:
             mass_multiplier=sum(IMP.atom.Mass(p).get_mass() for p in mps)
 
         pts = [IMP.core.XYZ(p).get_coordinates() for p in mps]
@@ -91,32 +91,32 @@ def run():
         dmap = IMP.em.read_map(data_fn,IMP.em.MRCReaderWriter())
         bbox = IMP.em.get_bounding_box(dmap)
         print('sampling points')
-        pts = IMP.isd.sample_points_from_density(dmap,options.num_samples,options.threshold)
+        pts = IMP.isd.sample_points_from_density(dmap,args.num_samples,args.threshold)
     else:
         print('ERROR: data_fn extension must be pdb, mrc, or npy')
         sys.exit()
 
     ### Do fitting to points
-    if not options.use_cpp:
+    if not args.use_cpp:
         density_ps = []
         print('fitting gmm')
         #IMP.isd_emxl.gmm_tools.draw_points(pts,'test_points.bild')
 
-        if options.force_weight_frac:
+        if args.force_weight_frac:
             force_weight = 1.0/ncenters
         else:
-            force_weight=options.force_weight
+            force_weight=args.force_weight
         if force_weight != -1:
             print('weight forced to',force_weight)
-        if not options.use_dirichlet:
+        if not args.use_dirichlet:
             gmm = IMP.isd.gmm_tools.fit_gmm_to_points(pts,ncenters,mdl,density_ps,
-                                                      options.num_iter,options.covar_type,
-                                                      force_radii=options.force_radii,
-                                                      force_weight=options.force_weight,
+                                                      args.num_iter,args.covar_type,
+                                                      force_radii=args.force_radii,
+                                                      force_weight=args.force_weight,
                                                       mass_multiplier=mass_multiplier)
         else:
             gmm = IMP.isd.gmm_tools.fit_dirichlet_gmm_to_points(pts,ncenters,mdl,density_ps,
-                                                                options.num_iter,options.covar_type,
+                                                                args.num_iter,args.covar_type,
                                                                 mass_multiplier=mass_multiplier)
 
     else:
@@ -125,9 +125,9 @@ def run():
         except ImportError:
             print("This option is experimental, only works if you have isd_emxl")
         gmm_threshold = 0.01
-        density_ps = IMP.isd_emxl.fit_gaussians_to_density(mdl,dmap,options.num_samples,
-                                                         ncenters,options.num_iter,
-                                                         options.threshold,
+        density_ps = IMP.isd_emxl.fit_gaussians_to_density(mdl,dmap,args.num_samples,
+                                                         ncenters,args.num_iter,
+                                                         args.threshold,
                                                          gmm_threshold)
 
     ### Write to files
@@ -139,16 +139,15 @@ def run():
                 'threshold', 'force_radii', 'force_weight',
                 'force_weight_frac', 'use_dirichlet', 'multiply_by_mass',
                 'chain'):
-        comments.append('%s: %s' % (key, repr(getattr(options, key))))
+        comments.append('%s: %s' % (key, repr(getattr(args, key))))
     IMP.isd.gmm_tools.write_gmm_to_text(density_ps, out_txt_fn, comments)
-    if options.out_map!='':
-        IMP.isd.gmm_tools.write_gmm_to_map(density_ps,options.out_map,
-                                           options.apix,
-                                           bbox)
+    if args.out_map != '':
+        IMP.isd.gmm_tools.write_gmm_to_map(density_ps, args.out_map,
+                                           args.apix, bbox)
 
-    if options.out_anchors_txt!='':
-        IMP.isd.gmm_tools.write_gmm_to_anchors(density_ps,options.out_anchors_txt,
-                                               options.out_anchors_cmm)
+    if args.out_anchors_txt!='':
+        IMP.isd.gmm_tools.write_gmm_to_anchors(density_ps,args.out_anchors_txt,
+                                               args.out_anchors_cmm)
 
 
 
