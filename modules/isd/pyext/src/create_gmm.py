@@ -60,8 +60,7 @@ def parse_args():
     p.add_argument("out_file", help="output file name")
     return p.parse_args()
 
-def run():
-    args = parse_args()
+def run(args):
     data_fn = args.data_file
     ncenters = args.n_centers
     out_txt_fn = args.out_file
@@ -151,4 +150,5 @@ def run():
 
 
 if __name__=="__main__":
-    run()
+    args = parse_args()
+    run(args)
