@@ -4,6 +4,13 @@ ChangeLog {#changelog}
 # HEAD
 - The IMP::OptionParser class has been removed. Use IMP::ArgumentParser instead.
 
+# 2.10.1 - 2019-02-26 # {#changelog_2_10_1}
+- Add support for OpenCV 4.
+- Fix IMP::isd `create_gmm.py` script to handle command line options correctly. 
+- Command line tools in the Mac and Ubuntu packages should now use system
+  Python (/usr/bin/python), not the first Python (e.g. Anaconda Python)
+  found in PATH (which might not be compatible with IMP's Python libraries).
+
 # 2.10.0 - 2019-01-08 # {#changelog_2_10_0}
 - Applications using IMP::pmi should now use the IMP::pmi::topology::System
   class to set up the system (sometimes referred to as "PMI2"), rather than
