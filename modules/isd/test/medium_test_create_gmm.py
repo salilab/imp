@@ -38,13 +38,9 @@ class Tests(IMP.test.TestCase):
             import sklearn.mixture
         except ImportError:
             self.skipTest("this test requires the sklearn Python module")
-        r = self.run_python_module("IMP.isd.create_gmm",
+        self.run_python_module(create_gmm,
                 [self.get_input_file_name('twoblobsA.pdb'), '4',
                  'create_gmm_pdb.txt'])
-        out, err = r.communicate()
-        sys.stdout.write(out)
-        sys.stderr.write(err)
-        self.assertEqual(r.returncode, 0)
         with open('create_gmm_pdb.txt') as fh:
             lines = fh.readlines()
         self.assertEqual(len(lines), 19)
@@ -59,14 +55,10 @@ class Tests(IMP.test.TestCase):
             import sklearn.mixture
         except ImportError:
             self.skipTest("this test requires the sklearn Python module")
-        r = self.run_python_module("IMP.isd.create_gmm",
+        self.run_python_module(create_gmm,
                 ['--out_map', 'create_gmm_mrc.mrc',
                  self.get_input_file_name('twoblobs-4.0.mrc'), '4',
                  'create_gmm_mrc.txt'])
-        out, err = r.communicate()
-        sys.stdout.write(out)
-        sys.stderr.write(err)
-        self.assertEqual(r.returncode, 0)
         with open('create_gmm_mrc.txt') as fh:
             lines = fh.readlines()
         self.assertEqual(len(lines), 19)

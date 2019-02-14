@@ -141,7 +141,9 @@ def run(args):
         IMP.isd.gmm_tools.write_gmm_to_map(density_ps, args.out_map,
                                            args.apix, bbox)
 
-
-if __name__=="__main__":
+def main():
     args = parse_args()
     run(args)
+
+if __name__=="__main__":
+    main()
