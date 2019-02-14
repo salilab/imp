@@ -90,6 +90,7 @@ def run():
     elif ext=='mrc':
         dmap = IMP.em.read_map(data_fn,IMP.em.MRCReaderWriter())
         bbox = IMP.em.get_bounding_box(dmap)
+        dmap.set_was_used(True)
         print('sampling points')
         pts = IMP.isd.sample_points_from_density(dmap,args.num_samples,args.threshold)
     else:
