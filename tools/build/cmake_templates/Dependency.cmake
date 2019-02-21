@@ -6,7 +6,14 @@ set(CHECK_COMPILES_BODY "%(body)s")
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules("%(PKGNAME)s_PKGCONF" "%(pkg_config_name)s")
+# If there are multiple .pc files to try, try each one in turn until
+# we get a result
+foreach (pkg %(pkgconfigs)s)
+  libfind_pkg_check_modules("%(PKGNAME)s_PKGCONF" ${pkg})
+  if (NOT "${%(PKGNAME)s_PKGCONF_INCLUDE_DIRS}" STREQUAL "")
+    break()
+  endif()
+endforeach(pkg)
 
 # Include dir
 find_path("%(PKGNAME)s_INCLUDE_DIR"

@@ -4,6 +4,7 @@
   <navindex>
     <tab type="user" visible="yes" title="IMP Manual" url="../manual/"/>
     <tab type="mainpage" visible="yes" title="Reference Guide"/>
+    <tab type="user" visible="yes" title="Tutorial Index" url="https://integrativemodeling.org/tutorials/"/>
     <tab type="namespaces" visible="yes" title="Modules">
       <tab type="namespacelist" visible="yes" title="Module/Namespace List" intro="Here is a list of all IMP modules - each is also a C++ namespace and a Python package:"/>
       <tab type="namespacemembers" visible="yes" title="Module/Namespace Members" intro=""/>

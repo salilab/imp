@@ -83,6 +83,7 @@ def make_dependency_check(descr_path, module, module_path):
         # and it makes cross compilation easier
         return None
     else:
+        descr["pkgconfigs"] = ";".join(descr["pkg_config_name"])
         descr["includes"] = "\n".join(["#include <%s>" % h
                                        for h in descr["headers"]])
         descr["headers"] = ";".join(descr["headers"])

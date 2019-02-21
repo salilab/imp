@@ -654,7 +654,11 @@ MatchTemplateResults get_best_template_matches(const cv::Mat &m,
   m.convertTo(aux_m, CV_32FC1);          // float, matchTemplate
   templ.convertTo(aux_templ, CV_32FC1);  // float, matchTemplate
 
+#if CV_VERSION_MAJOR >= 3
+  cv::matchTemplate(aux_m, aux_templ, result, cv::TM_CCORR_NORMED);
+#else
   cv::matchTemplate(aux_m, aux_templ, result, CV_TM_CCORR_NORMED);
+#endif
   /* Write the image with the correlations
   IMP_NEW(Image, img, ());
   cv::Mat temp;

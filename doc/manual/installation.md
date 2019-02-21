@@ -87,13 +87,11 @@ such as
         brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr opencv libtau eigen
 
   to install everything %IMP finds useful (or that you will want for installing various useful Python libs that %IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
-- [Macports](http://www.macports.org/) If you use MacPorts, you must add `/opt/local/bin` to your path (either by modifying your shell's
-  config file or by making an `environment.plist` file) and then do
+- [Macports](http://www.macports.org/) If you use MacPorts, you must verify `/opt/local/bin` is in your path (this may be taken care of by MacPorts automatically, and can be done manually either by modifying your shell's config file or by making an `environment.plist` file), and then do
 
-        sudo port install boost cmake swig-python
+        sudo port install boost cgal cmake doxygen fftw gmp gperftools graphviz gsl eigen hdf5 mpfr ninja opencv protobuf-cpp swig swig-python  
+  (as in brew, some of these packages may be optional)
 
-  to install the needed libraries and tools. When installing HDF5 with MacPorts, be sure to install `hdf5-18`
-  (version 1.8), rather than the older `hdf5` (version 1.6.9).
 - or [Fink](http://www.finkproject.org/) (not supported)
 
 ### Getting prerequisites on Windows {#installation_prereqs_windows}

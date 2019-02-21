@@ -61,6 +61,8 @@ override_dh_install:
 	 && find dist-packages -name '*.py' \
 	      -exec ln -sf $(CURDIR)/debian/tmp/usr/lib/python2.7/\{\} \{\} \; \
 	 && symlinks -rc .)
+	# Make sure all Python applications use the system Python in /usr/bin
+	perl -pi -e 's@^#!.*python.*$$@#!/usr/bin/python2@' debian/tmp/usr/bin/*
 	# Don't distribute example application, dependency, or system
 	rm -rf debian/tmp/usr/bin/example \
 	       debian/tmp/usr/lib/*/libimp_example_system* \

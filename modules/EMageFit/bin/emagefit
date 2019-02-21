@@ -8,7 +8,18 @@ import sys
 import os
 import time
 import logging
-import imp
+try:
+    # Python 3
+    from importlib.machinery import SourceFileLoader
+except ImportError:
+    # Python 2
+    class SourceFileLoader(object):
+        def __init__(self, name, path):
+            self.name, self.path = name, path
+        def load_module(self):
+            import imp
+            return imp.load_source(self.name, self.path)
+
 log = logging.getLogger("domino_model")
 
 import IMP
@@ -307,9 +318,9 @@ def create_dockings_from_xlinks(params):
         @param params Class with the parameters for the experiment
     """
     log.info("Creating initial assembly from xlinks and docking")
-    dock = imp.load_source("emagefit_dock",
-                           os.path.join(os.path.dirname(sys.argv[0]),
-                                        "emagefit_dock"))
+    dock = SourceFileLoader("emagefit_dock",
+                            os.path.join(os.path.dirname(sys.argv[0]),
+                                         "emagefit_dock")).load_module()
     import emagefit_dock as dock
     import IMP.EMageFit.buildxlinks as bx
     m = domino_model.DominoModel()
