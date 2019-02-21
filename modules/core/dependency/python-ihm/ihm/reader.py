@@ -20,7 +20,7 @@ except ImportError:
 def _make_new_entity():
     """Make a new Entity object"""
     e = ihm.Entity([])
-    # make sequence mutable
+    # make sequence mutable (see also _SystemReader.finalize)
     e.sequence = list(e.sequence)
     return e
 
@@ -390,6 +390,11 @@ class _SystemReader(object):
                                     ihm.model.OrderedProcess, None)
         self.ordered_steps = _IDMapper(None, ihm.model.ProcessStep)
 
+    def finalize(self):
+        # make sequence immutable (see also _make_new_entity)
+        for e in self.system.entities:
+            e.sequence = tuple(e.sequence)
+
 
 class _Handler(object):
     """Base class for all handlers of mmCIF data."""
@@ -576,6 +581,22 @@ class _AssemblyHandler(_Handler):
         else:
             entity = self.sysr.entities.get_by_id(entity_id)
             a.append(entity(*seqrng))
+
+    def finalize(self):
+        # Any EntityRange or AsymUnitRange which covers an entire entity,
+        # replace with Entity or AsymUnit object
+        for a in self.system.orphan_assemblies:
+            a[:] = [self._handle_component(x) for x in a]
+
+    def _handle_component(self, comp):
+        if isinstance(comp, ihm.EntityRange) \
+           and comp.seq_id_range == comp.entity.seq_id_range:
+            return comp.entity
+        if isinstance(comp, ihm.AsymUnitRange) \
+           and comp.seq_id_range == comp.asym.seq_id_range:
+            return comp.asym
+        else:
+            return comp
 
 
 class _LocalFiles(ihm.location.Repository):
@@ -1606,6 +1627,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF'):
         more_data = r.read_file()
         for h in handlers:
             h.finalize()
+        s.finalize()
         systems.append(s.system)
         if not more_data:
             break

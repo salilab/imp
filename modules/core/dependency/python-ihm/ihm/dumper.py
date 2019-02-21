@@ -418,7 +418,10 @@ class _AssemblyDumper(_Dumper):
             else:
                 a._id = seen_assemblies[hasha]
             if a.description and id(a) not in seen_assembly_ids:
-                description_by_id[a._id].append(a.description)
+                descs = description_by_id[a._id]
+                # Don't duplicate descriptions
+                if len(descs) == 0 or descs[-1] != a.description:
+                    descs.append(a.description)
             seen_assembly_ids[id(a)] = None
 
         # If multiple assemblies map to the same ID, give them all the same
