@@ -553,6 +553,9 @@ C 2 tmp
         # merged in)
         a = ihm.Assembly((a2, a3), description='desc2')
         system.orphan_assemblies.append(a)
+        # Another duplicate with duplicate description (should be ignored)
+        a = ihm.Assembly((a2, a3), description='desc2')
+        system.orphan_assemblies.append(a)
 
         # Duplicate (identical) assembly (should be ignored, including
         # description)
@@ -565,7 +568,7 @@ C 2 tmp
         d = ihm.dumper._AssemblyDumper()
         d.finalize(system)
         self.assertEqual(system.complete_assembly._id, 1)
-        self.assertEqual([a._id for a in system.orphan_assemblies], [2,3,3,3])
+        self.assertEqual([a._id for a in system.orphan_assemblies], [2,3,3,3,3])
         out = _get_dumper_output(d, system)
         self.assertEqual(out, """#
 loop_

@@ -1,5 +1,5 @@
-HEAD
-====
+0.5 - 2019-01-17
+================
  - :class:`ihm.restraint.CrossLinkRestraint` now takes an
    :class:`ihm.ChemDescriptor` object rather than the name of the cross-linker
    used. This allows the use of novel cross-linkers (beyond those currently

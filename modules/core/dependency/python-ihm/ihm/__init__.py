@@ -20,7 +20,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.4'
+__version__ = '0.5'
 
 #: A value that isn't known. Note that this is distinct from a value that
 #: is deliberately omitted, which is represented by Python None.
@@ -585,7 +585,7 @@ class ChemComp(object):
         # Remove formal charge if present
         if len(spl) > 0 and spl[-1].isdigit():
             del spl[-1]
-        r = re.compile('(\D+)(\d*)$')
+        r = re.compile(r'(\D+)(\d*)$')
         weight = 0.
         for s in spl:
             m = r.match(s)
