@@ -49,9 +49,23 @@ class Tests(unittest.TestCase):
         self.assertEqual(lines[14:16],
                          ["data_system23", "_entry.id 'system 2+3'"])
 
+    def test_write_custom_dumper(self):
+        """Test write() function with custom dumper"""
+        class MyDumper(ihm.dumper.Dumper):
+            def dump(self, system, writer):
+                with writer.category("_custom_category") as l:
+                    l.write(myfield="foo", field2="bar")
+        sys1 = ihm.System(id='system1')
+        fh = StringIO()
+        ihm.dumper.write(fh, [sys1], dumpers=[MyDumper])
+        lines = fh.getvalue().split('\n')
+        self.assertEqual(sorted(lines[-3:-1]),
+                         ['_custom_category.field2 bar',
+                          '_custom_category.myfield foo'])
+
     def test_dumper(self):
         """Test Dumper base class"""
-        dumper = ihm.dumper._Dumper()
+        dumper = ihm.dumper.Dumper()
         dumper.finalize(None)
         dumper.dump(None, None)
 

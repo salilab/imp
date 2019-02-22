@@ -6,7 +6,7 @@ import ihm.format_bcif
 import re
 import itertools
 
-from ihm.reader import _Handler, _get_bool
+from ihm.reader import Handler, _get_bool
 
 # Handle special values for CIF data items ('.', '?', or missing entirely)
 class _CifSpecialValue(object):
@@ -50,7 +50,7 @@ class ValidatorError(Exception):
     pass
 
 
-class _ValidatorCategoryHandler(_Handler):
+class _ValidatorCategoryHandler(Handler):
     # Handle special values for CIF data items ('.', '?', or missing entirely)
     # explicitly, rather the default behavior (mapping to None or '?')
     not_in_file = _NotInFileCif()
@@ -285,7 +285,7 @@ class _DictionaryReader(object):
             self._reset_category()
 
 
-class _CategoryHandler(_Handler):
+class _CategoryHandler(Handler):
     category = '_category'
 
     def __call__(self, id, description, mandatory_code):
@@ -298,7 +298,7 @@ class _CategoryHandler(_Handler):
         self.sysr.end_save_frame()
 
 
-class _ItemHandler(_Handler):
+class _ItemHandler(Handler):
     category = '_item'
 
     def __call__(self, name, category_id, mandatory_code):
@@ -312,7 +312,7 @@ class _ItemHandler(_Handler):
         self.sysr.keyword_good = True
 
 
-class _ItemEnumerationHandler(_Handler):
+class _ItemEnumerationHandler(Handler):
     category = '_item_enumeration'
 
     def __call__(self, value):
@@ -321,7 +321,7 @@ class _ItemEnumerationHandler(_Handler):
         self.sysr._keyword_enumeration.add(value)
 
 
-class _ItemTypeListHandler(_Handler):
+class _ItemTypeListHandler(Handler):
     category = '_item_type_list'
 
     def __call__(self, code, primitive_code, construct):
@@ -329,7 +329,7 @@ class _ItemTypeListHandler(_Handler):
         self.sysr.item_types[it.name] = it
 
 
-class _ItemTypeHandler(_Handler):
+class _ItemTypeHandler(Handler):
     category = '_item_type'
 
     def __call__(self, code):
@@ -348,7 +348,7 @@ class _ItemTypeHandler(_Handler):
                     k.enumeration.case_sensitive = k.item_type.case_sensitive
 
 
-class _ItemLinkedHandler(_Handler):
+class _ItemLinkedHandler(Handler):
     category = '_item_linked'
 
     def __call__(self, child_name, parent_name):

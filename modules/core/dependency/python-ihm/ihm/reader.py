@@ -396,19 +396,38 @@ class _SystemReader(object):
             e.sequence = tuple(e.sequence)
 
 
-class _Handler(object):
-    """Base class for all handlers of mmCIF data."""
+class Handler(object):
+    """Base class for all handlers of mmCIF data.
+       Each class handles a single category in the mmCIF or BinaryCIF file.
+       To add a new handler, make a subclass and set the class attribute
+       `category` to the mmCIF category name (e.g. `_struct`). Provide
+       a `__call__` method. This will be called for each category (multiple
+       times for loop constructs) with the parameters to `__call__` filled in
+       with the same-named mmCIF keywords. For example the class::
 
-    #: Value passed to __call__ for keywords not in the file
+           class CustomHandler(Handler):
+               category = "_custom"
+               def __call__(self, key1, key2):
+                   pass
+
+       will be called with arguments `"x", "y"` when given the mmCIF input::
+
+           _custom.key1 x
+           _custom.key2 y
+
+       """
+
+    #: Value passed to `__call__` for keywords not in the file
     not_in_file = None
 
-    #: Value passed to __call__ for data marked as omitted ('.')
+    #: Value passed to `__call__` for data marked as omitted ('.') in the file
     omitted = None
 
-    #: Value passed to __call__ for data marked as unknown ('?')
+    #: Value passed to `__call__` for data marked as unknown ('?') in the file
     unknown = '?'
 
     def __init__(self, sysr):
+        #: Utility class to map IDs to Python objects.
         self.sysr = sysr
 
     def finalize(self):
@@ -432,10 +451,11 @@ class _Handler(object):
             if d is not None:
                 setattr(obj, val, d)
 
-    system = property(lambda self: self.sysr.system)
+    system = property(lambda self: self.sysr.system,
+                      doc="The :class:`ihm.System` object to read into")
 
 
-class _StructHandler(_Handler):
+class _StructHandler(Handler):
     category = '_struct'
 
     def __call__(self, title, entry_id):
@@ -443,7 +463,7 @@ class _StructHandler(_Handler):
                               mapkeys={'entry_id': 'id'})
 
 
-class _SoftwareHandler(_Handler):
+class _SoftwareHandler(Handler):
     category = '_software'
 
     def __call__(self, pdbx_ordinal, name, classification, description,
@@ -454,7 +474,7 @@ class _SoftwareHandler(_Handler):
                       'type', 'location'))
 
 
-class _CitationHandler(_Handler):
+class _CitationHandler(Handler):
     category = '_citation'
 
     def __call__(self, id, title, year, pdbx_database_id_pubmed,
@@ -474,7 +494,7 @@ class _CitationHandler(_Handler):
                 s.page_range = page_first
 
 
-class _CitationAuthorHandler(_Handler):
+class _CitationAuthorHandler(Handler):
     category = '_citation_author'
 
     def __call__(self, citation_id, name):
@@ -483,7 +503,7 @@ class _CitationAuthorHandler(_Handler):
             s.authors.append(name)
 
 
-class _ChemCompHandler(_Handler):
+class _ChemCompHandler(Handler):
     category = '_chem_comp'
 
     def __init__(self, *args):
@@ -500,7 +520,7 @@ class _ChemCompHandler(_Handler):
         self._copy_if_present(s, locals(), keys=('name', 'formula'))
 
 
-class _ChemDescriptorHandler(_Handler):
+class _ChemDescriptorHandler(Handler):
     category = '_ihm_chemical_descriptor'
 
     def __call__(self, id, auth_name, chem_comp_id, chemical_name, common_name,
@@ -512,7 +532,7 @@ class _ChemDescriptorHandler(_Handler):
                       'inchi_key'))
 
 
-class _EntityHandler(_Handler):
+class _EntityHandler(Handler):
     category = '_entity'
 
     def __call__(self, id, details, type, src_method, formula_weight,
@@ -524,7 +544,7 @@ class _EntityHandler(_Handler):
                          'pdbx_number_of_molecules':'number_of_molecules'})
 
 
-class _EntityPolySeqHandler(_Handler):
+class _EntityPolySeqHandler(Handler):
     category = '_entity_poly_seq'
 
     def __call__(self, entity_id, num, mon_id):
@@ -535,7 +555,7 @@ class _EntityPolySeqHandler(_Handler):
         s.sequence[seq_id-1] = self.sysr.chem_comps.get_by_id(mon_id)
 
 
-class _EntityNonPolyHandler(_Handler):
+class _EntityNonPolyHandler(Handler):
     category = '_pdbx_entity_nonpoly'
 
     def __call__(self, entity_id, comp_id):
@@ -543,7 +563,7 @@ class _EntityNonPolyHandler(_Handler):
         s.sequence = (self.sysr.chem_comps.get_by_id(comp_id),)
 
 
-class _StructAsymHandler(_Handler):
+class _StructAsymHandler(Handler):
     category = '_struct_asym'
 
     def __call__(self, id, entity_id, details):
@@ -552,7 +572,7 @@ class _StructAsymHandler(_Handler):
         self._copy_if_present(s, locals(), keys=('details',))
 
 
-class _AssemblyDetailsHandler(_Handler):
+class _AssemblyDetailsHandler(Handler):
     category = '_ihm_struct_assembly_details'
 
     def __call__(self, assembly_id, assembly_name, assembly_description):
@@ -562,7 +582,7 @@ class _AssemblyDetailsHandler(_Handler):
                          'assembly_description':'description'})
 
 
-class _AssemblyHandler(_Handler):
+class _AssemblyHandler(Handler):
     # todo: figure out how to populate System.complete_assembly
     category = '_ihm_struct_assembly'
 
@@ -608,7 +628,7 @@ class _LocalFiles(ihm.location.Repository):
     url = None
 
 
-class _ExtRefHandler(_Handler):
+class _ExtRefHandler(Handler):
     category = '_ihm_external_reference_info'
 
     def __init__(self, *args):
@@ -632,7 +652,7 @@ class _ExtRefHandler(_Handler):
                 location.repo = None
 
 
-class _ExtFileHandler(_Handler):
+class _ExtFileHandler(Handler):
     category = '_ihm_external_files'
 
     def __init__(self, *args):
@@ -658,7 +678,7 @@ class _ExtFileHandler(_Handler):
             f.path = '.'
 
 
-class _DatasetListHandler(_Handler):
+class _DatasetListHandler(Handler):
     category = '_ihm_dataset_list'
 
     def __init__(self, *args):
@@ -676,7 +696,7 @@ class _DatasetListHandler(_Handler):
                              self.type_map.get(typ, ihm.dataset.Dataset))
 
 
-class _DatasetGroupHandler(_Handler):
+class _DatasetGroupHandler(Handler):
     category = '_ihm_dataset_group'
 
     def __call__(self, group_id, dataset_list_id):
@@ -685,7 +705,7 @@ class _DatasetGroupHandler(_Handler):
         g.append(ds)
 
 
-class _DatasetExtRefHandler(_Handler):
+class _DatasetExtRefHandler(Handler):
     category = '_ihm_dataset_external_reference'
 
     def __call__(self, file_id, dataset_list_id):
@@ -694,7 +714,7 @@ class _DatasetExtRefHandler(_Handler):
         ds.location = f
 
 
-class _DatasetDBRefHandler(_Handler):
+class _DatasetDBRefHandler(Handler):
     category = '_ihm_dataset_related_db_reference'
 
     def __init__(self, *args):
@@ -719,7 +739,7 @@ class _DatasetDBRefHandler(_Handler):
                     mapkeys={'accession_code':'access_code'})
 
 
-class _RelatedDatasetsHandler(_Handler):
+class _RelatedDatasetsHandler(Handler):
     category = '_ihm_related_datasets'
 
     def __call__(self, dataset_list_id_derived, dataset_list_id_primary):
@@ -747,7 +767,7 @@ def _make_feature_segment(asym, rigid, primitive, count, smodel):
                 asym_unit=asym, rigid=rigid, primitive=primitive,
                 count=count, starting_model=smodel)
 
-class _ModelRepresentationHandler(_Handler):
+class _ModelRepresentationHandler(Handler):
     category = '_ihm_model_representation'
 
     _rigid_map = {'rigid': True, 'flexible': False, None: None}
@@ -776,7 +796,7 @@ class _ModelRepresentationHandler(_Handler):
 
 
 # todo: support user subclass of StartingModel, pass it coordinates, seqdif
-class _StartingModelDetailsHandler(_Handler):
+class _StartingModelDetailsHandler(Handler):
     category = '_ihm_starting_model_details'
 
     def __call__(self, starting_model_id, asym_id, seq_id_begin, seq_id_end,
@@ -794,7 +814,7 @@ class _StartingModelDetailsHandler(_Handler):
             m.offset = int(starting_model_sequence_offset)
 
 
-class _StartingComputationalModelsHandler(_Handler):
+class _StartingComputationalModelsHandler(Handler):
     category = '_ihm_starting_computational_models'
 
     def __call__(self, starting_model_id, script_file_id, software_id):
@@ -806,7 +826,7 @@ class _StartingComputationalModelsHandler(_Handler):
             m.software = self.sysr.software.get_by_id(software_id)
 
 
-class _StartingComparativeModelsHandler(_Handler):
+class _StartingComparativeModelsHandler(Handler):
     category = '_ihm_starting_comparative_models'
 
     def __call__(self, starting_model_id, template_dataset_list_id,
@@ -831,7 +851,7 @@ class _StartingComparativeModelsHandler(_Handler):
         m.templates.append(t)
 
 
-class _ProtocolHandler(_Handler):
+class _ProtocolHandler(Handler):
     category = '_ihm_modeling_protocol'
 
     def __call__(self, protocol_id, protocol_name, num_models_begin,
@@ -860,7 +880,7 @@ class _ProtocolHandler(_Handler):
         p.steps.append(s)
 
 
-class _PostProcessHandler(_Handler):
+class _PostProcessHandler(Handler):
     category = '_ihm_modeling_post_process'
 
     def __init__(self, *args):
@@ -904,7 +924,7 @@ class _PostProcessHandler(_Handler):
             self._copy_if_present(step, locals(), keys=['feature'])
 
 
-class _ModelListHandler(_Handler):
+class _ModelListHandler(Handler):
     category = '_ihm_model_list'
 
     def __call__(self, model_group_id, model_group_name, model_id, model_name,
@@ -941,7 +961,7 @@ class _ModelListHandler(_Handler):
             self.system.state_groups.append(ihm.model.StateGroup([s]))
 
 
-class _MultiStateHandler(_Handler):
+class _MultiStateHandler(Handler):
     category = '_ihm_multi_state_modeling'
 
     def __call__(self, state_group_id, state_id, model_group_id,
@@ -962,7 +982,7 @@ class _MultiStateHandler(_Handler):
                 mapkeys={'state_name':'name', 'state_type':'type'})
 
 
-class _EnsembleHandler(_Handler):
+class _EnsembleHandler(Handler):
     category = '_ihm_ensemble_info'
 
     def __call__(self, ensemble_id, model_group_id, post_process_id,
@@ -987,7 +1007,7 @@ class _EnsembleHandler(_Handler):
                          'ensemble_clustering_feature':'clustering_feature'})
 
 
-class _DensityHandler(_Handler):
+class _DensityHandler(Handler):
     category = '_ihm_localization_density_files'
 
     def __call__(self, id, ensemble_id, file_id, asym_id, seq_id_begin,
@@ -1005,7 +1025,7 @@ class _DensityHandler(_Handler):
         ensemble.densities.append(density)
 
 
-class _EM3DRestraintHandler(_Handler):
+class _EM3DRestraintHandler(Handler):
     category = '_ihm_3dem_restraint'
 
     def __call__(self, dataset_list_id, struct_assembly_id,
@@ -1025,7 +1045,7 @@ class _EM3DRestraintHandler(_Handler):
         r.fits[model] = ihm.restraint.EM3DRestraintFit(ccc)
 
 
-class _EM2DRestraintHandler(_Handler):
+class _EM2DRestraintHandler(Handler):
     category = '_ihm_2dem_class_average_restraint'
 
     def __call__(self, id, dataset_list_id, number_raw_micrographs,
@@ -1045,7 +1065,7 @@ class _EM2DRestraintHandler(_Handler):
         self._copy_if_present(r, locals(), keys=('details',))
 
 
-class _EM2DFittingHandler(_Handler):
+class _EM2DFittingHandler(Handler):
     category = '_ihm_2dem_class_average_fitting'
 
     def __call__(self, restraint_id, model_id, cross_correlation_coefficient,
@@ -1062,7 +1082,7 @@ class _EM2DFittingHandler(_Handler):
                                   rot_matrix=rot_matrix, tr_vector=tr_vector)
 
 
-class _SASRestraintHandler(_Handler):
+class _SASRestraintHandler(Handler):
     category = '_ihm_sas_restraint'
 
     def __call__(self, dataset_list_id, struct_assembly_id,
@@ -1086,7 +1106,7 @@ class _SASRestraintHandler(_Handler):
                                  chi_value=_get_float(chi_value))
 
 
-class _SphereObjSiteHandler(_Handler):
+class _SphereObjSiteHandler(Handler):
     category = '_ihm_sphere_obj_site'
 
     def __call__(self, model_id, asym_id, rmsf, seq_id_begin, seq_id_end,
@@ -1102,7 +1122,7 @@ class _SphereObjSiteHandler(_Handler):
         model.add_sphere(s)
 
 
-class _AtomSiteHandler(_Handler):
+class _AtomSiteHandler(Handler):
     category = '_atom_site'
 
     def __call__(self, pdbx_pdb_model_num, label_asym_id, b_iso_or_equiv,
@@ -1133,7 +1153,7 @@ class _AtomSiteHandler(_Handler):
             asym.auth_seq_id_map[seq_id] = auth_seq_id
 
 
-class _PolyResidueFeatureHandler(_Handler):
+class _PolyResidueFeatureHandler(Handler):
     category = '_ihm_poly_residue_feature'
 
     def __call__(self, feature_id, asym_id, seq_id_begin, seq_id_end):
@@ -1145,7 +1165,7 @@ class _PolyResidueFeatureHandler(_Handler):
         f.ranges.append(asym(r1,r2))
 
 
-class _PolyAtomFeatureHandler(_Handler):
+class _PolyAtomFeatureHandler(Handler):
     category = '_ihm_poly_atom_feature'
 
     def __call__(self, feature_id, asym_id, seq_id, atom_id):
@@ -1157,7 +1177,7 @@ class _PolyAtomFeatureHandler(_Handler):
         f.atoms.append(atom)
 
 
-class _NonPolyFeatureHandler(_Handler):
+class _NonPolyFeatureHandler(Handler):
     category = '_ihm_non_poly_feature'
 
     def __call__(self, feature_id, asym_id, atom_id):
@@ -1174,7 +1194,7 @@ class _NonPolyFeatureHandler(_Handler):
             f.atoms.append(atom)
 
 
-class _PseudoSiteFeatureHandler(_Handler):
+class _PseudoSiteFeatureHandler(Handler):
     category = '_ihm_pseudo_site_feature'
 
     def __call__(self, feature_id, cartn_x, cartn_y, cartn_z, radius,
@@ -1213,7 +1233,7 @@ _handle_distance = {'harmonic': _make_harmonic,
                     'lower bound': _make_lower_bound,
                     'lower and upper bound': _make_lower_upper_bound}
 
-class _DerivedDistanceRestraintHandler(_Handler):
+class _DerivedDistanceRestraintHandler(Handler):
     category = '_ihm_derived_distance_restraint'
     _cond_map = {'ALL': True, 'ANY': False, None: None}
 
@@ -1233,7 +1253,7 @@ class _DerivedDistanceRestraintHandler(_Handler):
         r.probability = _get_float(probability)
 
 
-class _CenterHandler(_Handler):
+class _CenterHandler(Handler):
     category = '_ihm_geometric_object_center'
 
     def __call__(self, id, xcoord, ycoord, zcoord):
@@ -1243,7 +1263,7 @@ class _CenterHandler(_Handler):
         c.z = _get_float(zcoord)
 
 
-class _TransformationHandler(_Handler):
+class _TransformationHandler(Handler):
     category = '_ihm_geometric_object_transformation'
 
     def __call__(self, id, tr_vector1, tr_vector2, tr_vector3, rot_matrix11,
@@ -1254,7 +1274,7 @@ class _TransformationHandler(_Handler):
         t.tr_vector = _get_vector3(locals(), 'tr_vector')
 
 
-class _GeometricObjectHandler(_Handler):
+class _GeometricObjectHandler(Handler):
     category = '_ihm_geometric_object_list'
 
     # Map object_type to corresponding subclass (but not subsubclasses such
@@ -1275,7 +1295,7 @@ class _GeometricObjectHandler(_Handler):
                                        'other_details': 'details'})
 
 
-class _SphereHandler(_Handler):
+class _SphereHandler(Handler):
     category = '_ihm_geometric_object_sphere'
 
     def __call__(self, object_id, center_id, transformation_id, radius_r):
@@ -1286,7 +1306,7 @@ class _SphereHandler(_Handler):
         s.radius = _get_float(radius_r)
 
 
-class _TorusHandler(_Handler):
+class _TorusHandler(Handler):
     category = '_ihm_geometric_object_torus'
 
     def __call__(self, object_id, center_id, transformation_id,
@@ -1299,7 +1319,7 @@ class _TorusHandler(_Handler):
         t.minor_radius = _get_float(minor_radius_r)
 
 
-class _HalfTorusHandler(_Handler):
+class _HalfTorusHandler(Handler):
     category = '_ihm_geometric_object_half_torus'
 
     _inner_map = {'inner half': True, 'outer half': False}
@@ -1312,7 +1332,7 @@ class _HalfTorusHandler(_Handler):
         t.inner = self._inner_map.get(section, None)
 
 
-class _AxisHandler(_Handler):
+class _AxisHandler(Handler):
     category = '_ihm_geometric_object_axis'
 
     # Map axis_type to corresponding subclass
@@ -1328,7 +1348,7 @@ class _AxisHandler(_Handler):
         a.transformation = self.sysr.transformations.get_by_id_or_none(
                                                   transformation_id)
 
-class _PlaneHandler(_Handler):
+class _PlaneHandler(Handler):
     category = '_ihm_geometric_object_plane'
 
     # Map plane_type to corresponding subclass
@@ -1345,7 +1365,7 @@ class _PlaneHandler(_Handler):
                                                   transformation_id)
 
 
-class _GeometricRestraintHandler(_Handler):
+class _GeometricRestraintHandler(Handler):
     category = '_ihm_geometric_object_distance_restraint'
 
     _cond_map = {'ALL': True, 'ANY': False, None: None}
@@ -1371,7 +1391,7 @@ class _GeometricRestraintHandler(_Handler):
         r.restrain_all = self._cond_map[group_conditionality]
 
 
-class _PolySeqSchemeHandler(_Handler):
+class _PolySeqSchemeHandler(Handler):
     category = '_pdbx_poly_seq_scheme'
 
     if _format is not None:
@@ -1425,7 +1445,7 @@ class _PolySeqSchemeHandler(_Handler):
         return offset
 
 
-class _NonPolySchemeHandler(_Handler):
+class _NonPolySchemeHandler(Handler):
     category = '_pdbx_nonpoly_scheme'
 
     def __call__(self, asym_id, auth_seq_num):
@@ -1436,7 +1456,7 @@ class _NonPolySchemeHandler(_Handler):
             asym.auth_seq_id_map = {1:auth_seq_num}
 
 
-class _CrossLinkListHandler(_Handler):
+class _CrossLinkListHandler(Handler):
     category = '_ihm_cross_link_list'
 
     def __init__(self, *args):
@@ -1466,7 +1486,7 @@ class _CrossLinkListHandler(_Handler):
         return entity.residue(int(seq_id))
 
 
-class _CrossLinkRestraintHandler(_Handler):
+class _CrossLinkRestraintHandler(Handler):
     category = '_ihm_cross_link_restraint'
 
     _cond_map = {'ALL': True, 'ANY': False, None: None}
@@ -1514,7 +1534,7 @@ class _CrossLinkRestraintHandler(_Handler):
             r.cross_links.append(xl)
 
 
-class _CrossLinkResultHandler(_Handler):
+class _CrossLinkResultHandler(Handler):
     category = '_ihm_cross_link_result_parameters'
 
     def __call__(self, restraint_id, model_id, psi, sigma_1, sigma_2):
@@ -1526,7 +1546,7 @@ class _CrossLinkResultHandler(_Handler):
                                 sigma2=_get_float(sigma_2))
 
 
-class _OrderedEnsembleHandler(_Handler):
+class _OrderedEnsembleHandler(Handler):
     category = '_ihm_ordered_ensemble'
 
     def __call__(self, process_id, step_id, model_group_id_begin,
@@ -1552,9 +1572,9 @@ class _OrderedEnsembleHandler(_Handler):
                 mapkeys={'step_description':'description'})
 
 
-def read(fh, model_class=ihm.model.Model, format='mmCIF'):
+def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):
     """Read data from the mmCIF file handle `fh`.
-    
+
        Note that the reader currently expects to see an mmCIF file compliant
        with the PDBx and/or IHM dictionaries. It is not particularly tolerant
        of noncompliant or incomplete files, and will probably throw an
@@ -1581,6 +1601,8 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF'):
        :param str format: The format of the file. This can be 'mmCIF' (the
               default) for the (text-based) mmCIF format or 'BCIF' for
               BinaryCIF.
+       :param list handlers: A list of :class:`Handler` classes (not objects).
+              These can be used to read extra categories from the file.
        :return: A list of :class:`ihm.System` objects.
     """
     systems = []
@@ -1590,42 +1612,36 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF'):
     r = reader_map[format](fh, {})
     while True:
         s = _SystemReader(model_class)
-        handlers = [_StructHandler(s), _SoftwareHandler(s), _CitationHandler(s),
-                    _CitationAuthorHandler(s), _ChemCompHandler(s),
-                    _ChemDescriptorHandler(s),
-                    _EntityHandler(s), _EntityPolySeqHandler(s),
-                    _EntityNonPolyHandler(s),
-                    _StructAsymHandler(s), _AssemblyDetailsHandler(s),
-                    _AssemblyHandler(s), _ExtRefHandler(s), _ExtFileHandler(s),
-                    _DatasetListHandler(s), _DatasetGroupHandler(s),
-                    _DatasetExtRefHandler(s), _DatasetDBRefHandler(s),
-                    _RelatedDatasetsHandler(s),
-                    _ModelRepresentationHandler(s),
-                    _StartingModelDetailsHandler(s),
-                    _StartingComputationalModelsHandler(s),
-                    _StartingComparativeModelsHandler(s),
-                    _ProtocolHandler(s), _PostProcessHandler(s),
-                    _ModelListHandler(s), _MultiStateHandler(s),
-                    _EnsembleHandler(s), _DensityHandler(s),
-                    _EM3DRestraintHandler(s), _EM2DRestraintHandler(s),
-                    _EM2DFittingHandler(s), _SASRestraintHandler(s),
-                    _SphereObjSiteHandler(s), _AtomSiteHandler(s),
-                    _PolyResidueFeatureHandler(s), _PolyAtomFeatureHandler(s),
-                    _NonPolyFeatureHandler(s),
-                    _PseudoSiteFeatureHandler(s),
-                    _DerivedDistanceRestraintHandler(s),
-                    _CenterHandler(s), _TransformationHandler(s),
-                    _GeometricObjectHandler(s), _SphereHandler(s),
-                    _TorusHandler(s), _HalfTorusHandler(s),
-                    _AxisHandler(s), _PlaneHandler(s),
-                    _GeometricRestraintHandler(s), _PolySeqSchemeHandler(s),
-                    _NonPolySchemeHandler(s),
-                    _CrossLinkListHandler(s), _CrossLinkRestraintHandler(s),
-                    _CrossLinkResultHandler(s),
-                    _OrderedEnsembleHandler(s)]
-        r.category_handler = dict((h.category, h) for h in handlers)
+        hs = [_StructHandler(s), _SoftwareHandler(s), _CitationHandler(s),
+              _CitationAuthorHandler(s), _ChemCompHandler(s),
+              _ChemDescriptorHandler(s), _EntityHandler(s),
+              _EntityPolySeqHandler(s), _EntityNonPolyHandler(s),
+              _StructAsymHandler(s), _AssemblyDetailsHandler(s),
+              _AssemblyHandler(s), _ExtRefHandler(s), _ExtFileHandler(s),
+              _DatasetListHandler(s), _DatasetGroupHandler(s),
+              _DatasetExtRefHandler(s), _DatasetDBRefHandler(s),
+              _RelatedDatasetsHandler(s), _ModelRepresentationHandler(s),
+              _StartingModelDetailsHandler(s),
+              _StartingComputationalModelsHandler(s),
+              _StartingComparativeModelsHandler(s),
+              _ProtocolHandler(s), _PostProcessHandler(s), _ModelListHandler(s),
+              _MultiStateHandler(s), _EnsembleHandler(s), _DensityHandler(s),
+              _EM3DRestraintHandler(s), _EM2DRestraintHandler(s),
+              _EM2DFittingHandler(s), _SASRestraintHandler(s),
+              _SphereObjSiteHandler(s), _AtomSiteHandler(s),
+              _PolyResidueFeatureHandler(s), _PolyAtomFeatureHandler(s),
+              _NonPolyFeatureHandler(s), _PseudoSiteFeatureHandler(s),
+              _DerivedDistanceRestraintHandler(s), _CenterHandler(s),
+              _TransformationHandler(s), _GeometricObjectHandler(s),
+              _SphereHandler(s), _TorusHandler(s), _HalfTorusHandler(s),
+              _AxisHandler(s), _PlaneHandler(s), _GeometricRestraintHandler(s),
+              _PolySeqSchemeHandler(s), _NonPolySchemeHandler(s),
+              _CrossLinkListHandler(s), _CrossLinkRestraintHandler(s),
+              _CrossLinkResultHandler(s),
+              _OrderedEnsembleHandler(s)] + [h(s) for h in handlers]
+        r.category_handler = dict((h.category, h) for h in hs)
         more_data = r.read_file()
-        for h in handlers:
+        for h in hs:
             h.finalize()
         s.finalize()
         systems.append(s.system)
