@@ -78,6 +78,20 @@ class Tests(unittest.TestCase):
             s, = ihm.reader.read(fh)
             self.assertEqual(s.id, 'testid')
 
+    def test_read_custom_handler(self):
+        """Test read() function with custom Handler"""
+        class MyHandler(ihm.reader.Handler):
+            category = "_custom_category"
+            def __call__(self, field1, myfield):
+                self.system.custom_data = (field1, myfield)
+
+        cif = "data_model\n_struct.entry_id testid\n" \
+              "_custom_category.field1 foo\n_custom_category.myfield bar\n"
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh, handlers=[MyHandler])
+            self.assertEqual(s.id, 'testid')
+            self.assertEqual(s.custom_data, ('foo', 'bar'))
+
     def test_system_reader(self):
         """Test SystemReader class"""
         s = ihm.reader._SystemReader(ihm.model.Model)
@@ -103,7 +117,7 @@ class Tests(unittest.TestCase):
             pass
         o = MockObject()
         o.system = 'foo'
-        h = ihm.reader._Handler(o)
+        h = ihm.reader.Handler(o)
         self.assertEqual(h.system, 'foo')
 
     def test_handler_copy_if_present(self):
@@ -112,7 +126,7 @@ class Tests(unittest.TestCase):
             pass
         Keys = namedtuple('Keys', 'foo bar t test x')
         o = MockObject()
-        h = ihm.reader._Handler(None)
+        h = ihm.reader.Handler(None)
         h._copy_if_present(o, {'foo':'bar', 'bar':'baz', 't':'u'},
                            keys=['test', 'foo'],
                            mapkeys={'bar':'baro', 'x':'y'})

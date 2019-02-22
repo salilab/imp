@@ -179,7 +179,7 @@ def _decode(data, encoding):
 
 
 class BinaryCifReader(ihm.format._Reader):
-    """Class to read an mmCIF file and extract some or all of its data.
+    """Class to read a BinaryCIF file and extract some or all of its data.
 
        Use :meth:`read_file` to actually read the file.
        See :class:`ihm.format.CifReader` for a description of the parameters.
@@ -500,7 +500,9 @@ def _get_mask_and_type(data):
 
 
 class BinaryCifWriter(ihm.format._Writer):
-    """Write information to a BinaryCIF file."""
+    """Write information to a BinaryCIF file. See :class:`ihm.format.CifWriter`
+       for more information. The constructor takes a single argument - a Python
+       filelike object, open for writing in binary mode."""
 
     _mask_encoders = [_DeltaEncoder(), _RunLengthEncoder(),
                       _ByteArrayEncoder()]
@@ -521,7 +523,8 @@ class BinaryCifWriter(ihm.format._Writer):
         return _LoopWriter(self, category, keys)
 
     def write_comment(self, comment):
-        # BinaryCIF does not support comments, so this is a noop
+        """See :meth:`ihm.format.CifWriter.write_comment`.
+           @note BinaryCIF does not support comments, so this is a noop"""
         pass
 
     def _encode_data(self, data):
@@ -539,6 +542,7 @@ class BinaryCifWriter(ihm.format._Writer):
                 b'data': {b'data': encdata, b'encoding': encs}}
 
     def start_block(self, name):
+        """See :meth:`ihm.format.CifWriter.start_block`."""
         block = {b'header':_encode_str(name), b'categories': []}
         self._categories = block[b'categories']
         self._blocks.append(block)

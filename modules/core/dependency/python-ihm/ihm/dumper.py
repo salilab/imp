@@ -12,19 +12,31 @@ from . import location
 from . import restraint
 from . import geometry
 
-class _Dumper(object):
-    """Base class for helpers to dump output to mmCIF"""
+class Dumper(object):
+    """Base class for helpers to dump output to mmCIF or BinaryCIF.
+       See :func:`write`."""
     def __init__(self):
         pass
     def finalize(self, system):
-        """Called for all dumpers prior to `dump` - can assign IDs, etc"""
+        """Called for all dumpers prior to :meth:`dump`.
+           This can be used to assign numeric IDs to objects, check for
+           sanity, etc."""
         pass
     def dump(self, system, writer):
-        """Use `writer` to write information about `system` to mmCIF"""
+        """Use `writer` to write information about `system` to
+           mmCIF or BinaryCIF.
+
+           :param system: The :class:`ihm.System` object containing all
+                  information about the system.
+           :type system: :class:`ihm.System`
+           :param writer: Utility class to write data to the output file.
+           :type writer: :class:`ihm.format.CifWriter` or
+                 :class:`ihm.format_bcif.BinaryCifWriter`.
+        """
         pass
 
 
-class _EntryDumper(_Dumper):
+class _EntryDumper(Dumper):
     def dump(self, system, writer):
         # Write CIF header (so this dumper should always be first)
         writer.start_block(re.subn('[^0-9a-zA-z_]', '', system.id)[0])
@@ -32,7 +44,7 @@ class _EntryDumper(_Dumper):
             l.write(id=system.id)
 
 
-class _AuditConformDumper(_Dumper):
+class _AuditConformDumper(Dumper):
     URL = ("https://raw.githubusercontent.com/" +
            "ihmwg/IHM-dictionary/%s/ihm-extension.dic")
 
@@ -43,19 +55,19 @@ class _AuditConformDumper(_Dumper):
                     dict_location=self.URL % "7ea672a")
 
 
-class _StructDumper(_Dumper):
+class _StructDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_struct") as l:
             l.write(title=system.title, entry_id=system.id)
 
 
-class _CommentDumper(_Dumper):
+class _CommentDumper(Dumper):
     def dump(self, system, writer):
         for comment in system.comments:
             writer.write_comment(comment)
 
 
-class _SoftwareDumper(_Dumper):
+class _SoftwareDumper(Dumper):
     def finalize(self, system):
         seen_software = {}
         self._software_by_id = []
@@ -77,7 +89,7 @@ class _SoftwareDumper(_Dumper):
                         type=s.type, location=s.location)
 
 
-class _CitationDumper(_Dumper):
+class _CitationDumper(Dumper):
     def finalize(self, system):
         for nc, c in enumerate(system._all_citations()):
             c._id = nc + 1
@@ -115,7 +127,7 @@ class _CitationDumper(_Dumper):
                     ordinal += 1
 
 
-class _AuditAuthorDumper(_Dumper):
+class _AuditAuthorDumper(Dumper):
     """Populate the mmCIF audit_author category (a list of the people that
        authored this mmCIF file; here we assume that's just the authors of
        any associated publications)"""
@@ -133,7 +145,7 @@ class _AuditAuthorDumper(_Dumper):
                         ordinal += 1
 
 
-class _ChemCompDumper(_Dumper):
+class _ChemCompDumper(Dumper):
     def dump(self, system, writer):
         seen = {}
 
@@ -148,7 +160,7 @@ class _ChemCompDumper(_Dumper):
                                 formula_weight=comp.formula_weight)
 
 
-class _ChemDescriptorDumper(_Dumper):
+class _ChemDescriptorDumper(Dumper):
     def finalize(self, system):
         seen_desc = {}
         # Assign IDs to all descriptors
@@ -172,7 +184,7 @@ class _ChemDescriptorDumper(_Dumper):
                         inchi_key=d.inchi_key)
 
 
-class _EntityDumper(_Dumper):
+class _EntityDumper(Dumper):
     def finalize(self, system):
         # Assign IDs and check for duplicates
         seen = {}
@@ -212,7 +224,7 @@ def _prettyprint_seq(seq, width):
         yield ''.join(line)
 
 
-class _EntityPolyDumper(_Dumper):
+class _EntityPolyDumper(Dumper):
     def __init__(self):
         super(_EntityPolyDumper, self).__init__()
 
@@ -272,7 +284,7 @@ class _EntityPolyDumper(_Dumper):
                         pdbx_seq_one_letter_code_can=self._get_canon(entity))
 
 
-class _EntityNonPolyDumper(_Dumper):
+class _EntityNonPolyDumper(Dumper):
     def dump(self, system, writer):
         with writer.loop("_pdbx_entity_nonpoly",
                          ["entity_id", "name", "comp_id"]) as l:
@@ -283,7 +295,7 @@ class _EntityNonPolyDumper(_Dumper):
                         comp_id=entity.sequence[0].id)
 
 
-class _EntityPolySeqDumper(_Dumper):
+class _EntityPolySeqDumper(Dumper):
     def dump(self, system, writer):
         with writer.loop("_entity_poly_seq",
                          ["entity_id", "num", "mon_id", "hetero"]) as l:
@@ -294,7 +306,7 @@ class _EntityPolySeqDumper(_Dumper):
                     l.write(entity_id=entity._id, num=num + 1, mon_id=comp.id)
 
 
-class _PolySeqSchemeDumper(_Dumper):
+class _PolySeqSchemeDumper(Dumper):
     """Output the _pdbx_poly_seq_scheme table.
        This is needed because it is a parent category of atom_site.
        For now we assume we're using auth_seq_num==pdb_seq_num."""
@@ -317,7 +329,7 @@ class _PolySeqSchemeDumper(_Dumper):
                             auth_mon_id=comp.id)
 
 
-class _NonPolySchemeDumper(_Dumper):
+class _NonPolySchemeDumper(Dumper):
     """Output the _pdbx_nonpoly_scheme table.
        For now we assume we're using auth_seq_num==pdb_seq_num."""
     def dump(self, system, writer):
@@ -357,7 +369,7 @@ class _AsymIDProvider(object):
         return self.ids[self.index]
 
 
-class _StructAsymDumper(_Dumper):
+class _StructAsymDumper(Dumper):
     def finalize(self, system):
         # Handle user-assigned IDs first
         seen_asym_ids = set()
@@ -388,7 +400,7 @@ class _StructAsymDumper(_Dumper):
                         details=asym.details)
 
 
-class _AssemblyDumper(_Dumper):
+class _AssemblyDumper(Dumper):
     def finalize(self, system):
         # Fill in complete assembly
         system._make_complete_assembly()
@@ -464,7 +476,7 @@ class _AssemblyDumper(_Dumper):
                             seq_id_end=seqrange[1])
                     ordinal += 1
 
-class _ExternalReferenceDumper(_Dumper):
+class _ExternalReferenceDumper(Dumper):
     """Output information on externally referenced files
        (i.e. anything that refers to a Location that isn't
        a DatabaseLocation)."""
@@ -542,7 +554,7 @@ class _ExternalReferenceDumper(_Dumper):
             return path.replace(os.sep, '/')
 
 
-class _DatasetDumper(_Dumper):
+class _DatasetDumper(Dumper):
     def finalize(self, system):
         seen_datasets = {}
         # Assign IDs to all datasets
@@ -628,7 +640,7 @@ class _DatasetDumper(_Dumper):
                             dataset_list_id_primary=parent_id)
                     ordinal += 1
 
-class _ModelRepresentationDumper(_Dumper):
+class _ModelRepresentationDumper(Dumper):
     def finalize(self, system):
         # Assign IDs to representations and segments
         for nr, r in enumerate(system._all_representations()):
@@ -665,7 +677,7 @@ class _ModelRepresentationDumper(_Dumper):
                     ordinal_id += 1
 
 
-class _StartingModelDumper(_Dumper):
+class _StartingModelDumper(Dumper):
     def finalize(self, system):
         # Assign IDs to starting models
         for nm, m in enumerate(system._all_starting_models()):
@@ -797,7 +809,7 @@ class _StartingModelDumper(_Dumper):
                     ordinal += 1
 
 
-class _ProtocolDumper(_Dumper):
+class _ProtocolDumper(Dumper):
     def finalize(self, system):
         # Assign IDs to protocols and steps
         for np, p in enumerate(system._all_protocols()):
@@ -836,7 +848,7 @@ class _ProtocolDumper(_Dumper):
                     ordinal += 1
 
 
-class _PostProcessDumper(_Dumper):
+class _PostProcessDumper(Dumper):
     def finalize(self, system):
         pp_id = 1
         # Assign IDs to analyses and steps
@@ -1006,7 +1018,7 @@ class _RangeChecker(object):
                                  for x in self.repr_asym_ids[asym._id])))
 
 
-class _ModelDumper(_Dumper):
+class _ModelDumper(Dumper):
 
     def finalize(self, system):
         # Remove any existing ID
@@ -1120,7 +1132,7 @@ class _ModelDumper(_Dumper):
                     ordinal += 1
 
 
-class _EnsembleDumper(_Dumper):
+class _EnsembleDumper(Dumper):
     def finalize(self, system):
         # Assign IDs
         for ne, e in enumerate(system.ensembles):
@@ -1148,7 +1160,7 @@ class _EnsembleDumper(_Dumper):
                         ensemble_file_id=e.file._id if e.file else None)
 
 
-class _DensityDumper(_Dumper):
+class _DensityDumper(Dumper):
     def finalize(self, system):
         # Assign globally unique IDs
         did = 1
@@ -1171,7 +1183,7 @@ class _DensityDumper(_Dumper):
                             seq_id_end=density.asym_unit.seq_id_range[1])
 
 
-class _MultiStateDumper(_Dumper):
+class _MultiStateDumper(Dumper):
     def finalize(self, system):
         state_id = 1
         # Assign IDs
@@ -1204,7 +1216,7 @@ class _MultiStateDumper(_Dumper):
                         ordinal += 1
 
 
-class _OrderedDumper(_Dumper):
+class _OrderedDumper(Dumper):
     def finalize(self, system):
         for nproc, proc in enumerate(system.ordered_processes):
             proc._id = nproc + 1
@@ -1234,7 +1246,7 @@ class _OrderedDumper(_Dumper):
                                 model_group_id_end=edge.group_end._id)
 
 
-class _GeometricObjectDumper(_Dumper):
+class _GeometricObjectDumper(Dumper):
     def finalize(self, system):
         seen_objects = {}
         seen_centers = {}
@@ -1359,7 +1371,7 @@ class _GeometricObjectDumper(_Dumper):
                                           if o.transformation else None)
 
 
-class _FeatureDumper(_Dumper):
+class _FeatureDumper(Dumper):
     def finalize(self, system):
         seen_features = {}
         self._features_by_id = []
@@ -1456,7 +1468,7 @@ class _FeatureDumper(_Dumper):
                         Cartn_z=f.z, radius=f.radius, description=f.description)
 
 
-class _CrossLinkDumper(_Dumper):
+class _CrossLinkDumper(Dumper):
     def _all_restraints(self, system):
         return [r for r in system._all_restraints()
                 if isinstance(r, restraint.CrossLinkRestraint)]
@@ -1585,7 +1597,7 @@ class _CrossLinkDumper(_Dumper):
                         ordinal += 1
 
 
-class _GeometricRestraintDumper(_Dumper):
+class _GeometricRestraintDumper(Dumper):
     def _all_restraints(self, system):
         return [r for r in system._all_restraints()
                 if isinstance(r, restraint.GeometricRestraint)]
@@ -1615,7 +1627,7 @@ class _GeometricRestraintDumper(_Dumper):
                         dataset_list_id=r.dataset._id if r.dataset else None)
 
 
-class _DerivedDistanceRestraintDumper(_Dumper):
+class _DerivedDistanceRestraintDumper(Dumper):
     def _all_restraints(self, system):
         return [r for r in system._all_restraints()
                 if isinstance(r, restraint.DerivedDistanceRestraint)]
@@ -1661,7 +1673,7 @@ class _DerivedDistanceRestraintDumper(_Dumper):
                         dataset_list_id=r.dataset._id if r.dataset else None)
 
 
-class _EM3DDumper(_Dumper):
+class _EM3DDumper(Dumper):
     def _all_restraints(self, system):
         return [r for r in system._all_restraints()
                 if isinstance(r, restraint.EM3DRestraint)]
@@ -1698,7 +1710,7 @@ class _EM3DDumper(_Dumper):
                     ordinal += 1
 
 
-class _EM2DDumper(_Dumper):
+class _EM2DDumper(Dumper):
     def _all_restraints(self, system):
         return [r for r in system._all_restraints()
                 if isinstance(r, restraint.EM2DRestraint)]
@@ -1767,7 +1779,7 @@ class _EM2DDumper(_Dumper):
                     ordinal += 1
 
 
-class _SASDumper(_Dumper):
+class _SASDumper(Dumper):
     def _all_restraints(self, system):
         return [r for r in system._all_restraints()
                 if isinstance(r, restraint.SASRestraint)]
@@ -1818,7 +1830,7 @@ def _check_restraint_groups(system):
                 "and only certain types (currently only "
                 "DerivedDistanceRestraint) can be grouped." % g)
 
-def write(fh, systems, format='mmCIF'):
+def write(fh, systems, format='mmCIF', dumpers=[]):
     """Write out all `systems` to the file handle `fh`.
        Files can be written in either the text-based mmCIF format or the
        BinaryCIF format. The BinaryCIF writer needs the msgpack Python
@@ -1828,7 +1840,9 @@ def write(fh, systems, format='mmCIF'):
        :param list systems: The list of :class:`ihm.System` objects to write.
        :param str format: The format of the file. This can be 'mmCIF' (the
               default) for the (text-based) mmCIF format or 'BCIF' for
-              BinaryCIF."""
+              BinaryCIF.
+       :param list dumpers: A list of :class:`Dumper` classes (not objects).
+              These can be used to add extra categories to the file."""
     dumpers = [_EntryDumper(), # must be first
                _StructDumper(), _CommentDumper(),
                _AuditConformDumper(), _SoftwareDumper(),
@@ -1858,7 +1872,7 @@ def write(fh, systems, format='mmCIF'):
                _ModelDumper(),
                _EnsembleDumper(),
                _DensityDumper(),
-               _MultiStateDumper(), _OrderedDumper()]
+               _MultiStateDumper(), _OrderedDumper()] + [d() for d in dumpers]
     writer_map = {'mmCIF': ihm.format.CifWriter,
                   'BCIF': ihm.format_bcif.BinaryCifWriter}
 
