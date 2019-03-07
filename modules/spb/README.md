@@ -1,4 +1,4 @@
-\brief Classes, functions and executables for modeling of the Spindle Pole Body
+Classes, functions and executables for modeling of the Spindle Pole Body
 
 # Integrative Modeling of the Spindle Pole Body Core
 
