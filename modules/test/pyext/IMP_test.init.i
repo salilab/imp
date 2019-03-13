@@ -65,21 +65,6 @@ skip = unittest.skip
 skipIf = unittest.skipIf
 skipUnless = unittest.skipUnless
 
-@IMP.deprecated_object("2.7", "Use temporary_working_directory() instead.")
-class RunInTempDir(object):
-    """Simple RAII-style class to run in a temporary directory.
-       When the object is created, the temporary directory is created
-       and becomes the current working directory. When the object goes out
-       of scope, the working directory is reset and the temporary directory
-       deleted."""
-    def __init__(self):
-        self.origdir = os.getcwd()
-        self.tmpdir = tempfile.mkdtemp()
-        os.chdir(self.tmpdir)
-    def __del__(self):
-        os.chdir(self.origdir)
-        shutil.rmtree(self.tmpdir, ignore_errors=True)
-
 @contextlib.contextmanager
 def temporary_working_directory():
     """Simple context manager to run in a temporary directory.
@@ -93,22 +78,6 @@ def temporary_working_directory():
     yield tmpdir
     os.chdir(origdir)
     shutil.rmtree(tmpdir, ignore_errors=True)
-
-@IMP.deprecated_object("2.7", "Use temporary_directory() instead.")
-class TempDir(object):
-    """Simple RAII-style class to make a temporary directory. When the object
-       is created, the temporary directory is created. When the object goes
-       out of scope, the temporary directory is deleted."""
-    def __init__(self, dir=None):
-        self.tmpdir = tempfile.mkdtemp(dir=dir)
-    def __del__(self):
-        shutil.rmtree(self.tmpdir, ignore_errors=True)
-
-class _TempDir(object):
-    def __init__(self, dir=None):
-        self.tmpdir = tempfile.mkdtemp(dir=dir)
-    def __del__(self):
-        shutil.rmtree(self.tmpdir, ignore_errors=True)
 
 @contextlib.contextmanager
 def temporary_directory(dir=None):
