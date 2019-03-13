@@ -3,6 +3,9 @@ ChangeLog {#changelog}
 
 # HEAD
 - The IMP::OptionParser class has been removed. Use IMP::ArgumentParser instead.
+- The IMP::test::TempDir and IMP::test::RunInTempDir utility classes have been
+  removed. Use the IMP::test::temporary_directory and
+  IMP::temporary_working_directory context managers instead.
 
 # 2.10.1 - 2019-02-26 # {#changelog_2_10_1}
 - Add support for OpenCV 4.
