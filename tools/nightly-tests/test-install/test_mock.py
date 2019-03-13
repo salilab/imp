@@ -44,6 +44,7 @@ class IMPMockTests(unittest.TestCase):
         import IMP.statistics
         import IMP.symmetry
         import IMP.test
+        import IMP.pmi1
 
     def test_applications_installed(self):
         """Check install of a fairly comprehensive list of applications"""
