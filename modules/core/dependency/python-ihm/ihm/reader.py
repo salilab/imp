@@ -20,27 +20,9 @@ except ImportError:
 def _make_new_entity():
     """Make a new Entity object"""
     e = ihm.Entity([])
-    # make sequence mutable (see also _SystemReader.finalize)
+    # make sequence mutable (see also SystemReader.finalize)
     e.sequence = list(e.sequence)
     return e
-
-def _get_lower(val):
-    """Return lowercase val or None if val is None"""
-    return val.lower() if val is not None else None
-
-def _get_int(val):
-    """Return int(val) or None if val is None"""
-    return int(val) if val is not None else None
-
-def _get_int_or_string(val):
-    """Return val as an int or str as appropriate,
-       or None if val is None"""
-    if val is not None:
-        return int(val) if isinstance(val, int) or val.isdigit() else val
-
-def _get_float(val):
-    """Return float(val) or None if val is None"""
-    return float(val) if val is not None else None
 
 def _get_vector3(d, key):
     """Return a 3D vector (as a list) from d[key+[1..3]] or None"""
@@ -56,13 +38,8 @@ def _get_matrix33(d, key):
         return [[float(d[key+"%d%d" % (i,j)]) for j in (1,2,3)]
                 for i in (1,2,3)]
 
-_boolmap = {'YES':True, 'NO':False}
-def _get_bool(val):
-    """Convert val to bool and return, or None if val is None"""
-    return _boolmap.get(val.upper(), None) if val is not None else None
-
-class _IDMapper(object):
-    """Handle mapping from mmCIF IDs to Python objects.
+class IDMapper(object):
+    """Utility class to handle mapping from mmCIF IDs to Python objects.
 
        :param list system_list: The list in :class:`ihm.System` that keeps
               track of these objects.
@@ -97,7 +74,10 @@ class _IDMapper(object):
 
     def get_by_id(self, objid, newcls=None):
         """Get the object with given ID, creating it if it doesn't already
-           exist."""
+           exist. If `newcls` is specified, the object will be an instance
+           of that class (this is commonly used when different subclasses
+           are employed depending on a type specified in the mmCIF file, such
+           as the various subclasses of :class:`ihm.dataset.Dataset`)."""
         if objid in self._obj_by_id:
             obj = self._obj_by_id[objid]
             self._update_old_object(obj, newcls)
@@ -117,8 +97,8 @@ class _IDMapper(object):
         return self.get_by_id(objid, newcls) if objid is not None else None
 
 
-class _ChemCompIDMapper(_IDMapper):
-    """Add extra handling to _IDMapper for the chem_comp category"""
+class _ChemCompIDMapper(IDMapper):
+    """Add extra handling to IDMapper for the chem_comp category"""
 
     id_attr = 'id'
 
@@ -155,8 +135,8 @@ class _ChemCompIDMapper(_IDMapper):
             return newcls(*self._cls_args, **self._cls_keys)
 
 
-class _AnalysisIDMapper(_IDMapper):
-    """Add extra handling to _IDMapper for the post processing category"""
+class _AnalysisIDMapper(IDMapper):
+    """Add extra handling to IDMapper for the post processing category"""
 
     def _make_new_object(self, newcls=None):
         if newcls is None:
@@ -167,8 +147,8 @@ class _AnalysisIDMapper(_IDMapper):
             return newcls(*self._cls_args, **self._cls_keys)
 
 
-class _FeatureIDMapper(_IDMapper):
-    """Add extra handling to _IDMapper for restraint features"""
+class _FeatureIDMapper(IDMapper):
+    """Add extra handling to IDMapper for restraint features"""
 
     def _make_new_object(self, newcls=None):
         if newcls is None:
@@ -199,8 +179,8 @@ class _FeatureIDMapper(_IDMapper):
             obj.radius = obj.description = None
 
 
-class _GeometryIDMapper(_IDMapper):
-    """Add extra handling to _IDMapper for geometric objects"""
+class _GeometryIDMapper(IDMapper):
+    """Add extra handling to IDMapper for geometric objects"""
 
     _members = {ihm.geometry.Sphere: ('center', 'radius', 'transformation'),
                 ihm.geometry.Torus: ('center', 'transformation',
@@ -241,8 +221,8 @@ class _GeometryIDMapper(_IDMapper):
                setattr(obj, member, None)
 
 
-class _CrossLinkIDMapper(_IDMapper):
-    """Add extra handling to _IDMapper for cross links"""
+class _CrossLinkIDMapper(IDMapper):
+    """Add extra handling to IDMapper for cross links"""
 
     def _make_new_object(self, newcls=None):
         if newcls is None:
@@ -260,7 +240,7 @@ class _CrossLinkIDMapper(_IDMapper):
 class _DatasetIDMapper(object):
     """Handle mapping from mmCIF dataset IDs to Python objects.
 
-       This is similar to _IDMapper but is intended for objects like restraints
+       This is similar to IDMapper but is intended for objects like restraints
        that don't have their own IDs but instead use the dataset ID.
 
        :param list system_list: The list in :class:`ihm.System` that keeps
@@ -311,84 +291,168 @@ class _XLRestraintMapper(object):
 
 
 
-class _SystemReader(object):
-    """Track global information for a System being read from a file, such
-       as the mapping from IDs to objects."""
+class SystemReader(object):
+    """Utility class to track global information for a :class:`ihm.System`
+       being read from a file, such as the mapping from IDs to objects
+       (as :class:`IDMapper` objects). This can be used by :class:`Handler`
+       subclasses."""
     def __init__(self, model_class):
+        #: The :class:`ihm.System` object being read in
         self.system = ihm.System()
-        self.software = _IDMapper(self.system.software, ihm.Software,
-                                  *(None,)*4)
-        self.citations = _IDMapper(self.system.citations, ihm.Citation,
-                                   *(None,)*8)
-        self.entities = _IDMapper(self.system.entities, _make_new_entity)
-        self.chem_descriptors = _IDMapper(self.system.orphan_chem_descriptors,
-                                          ihm.ChemDescriptor, None)
-        self.asym_units = _IDMapper(self.system.asym_units, ihm.AsymUnit, None)
+
+        #: Mapping from ID to :class:`ihm.Software` objects
+        self.software = IDMapper(self.system.software, ihm.Software,
+                                 *(None,)*4)
+
+        #: Mapping from ID to :class:`ihm.Citation` objects
+        self.citations = IDMapper(self.system.citations, ihm.Citation,
+                                  *(None,)*8)
+
+        #: Mapping from ID to :class:`ihm.Entity` objects
+        self.entities = IDMapper(self.system.entities, _make_new_entity)
+
+        #: Mapping from ID to :class:`ihm.ChemDescriptor` objects
+        self.chem_descriptors = IDMapper(self.system.orphan_chem_descriptors,
+                                         ihm.ChemDescriptor, None)
+
+        #: Mapping from ID to :class:`ihm.AsymUnit` objects
+        self.asym_units = IDMapper(self.system.asym_units, ihm.AsymUnit, None)
+
+        #: Mapping from ID to :class:`ihm.ChemComp` objects
         self.chem_comps = _ChemCompIDMapper(None, ihm.ChemComp, *(None,)*3)
-        self.assemblies = _IDMapper(self.system.orphan_assemblies, ihm.Assembly)
-        self.repos = _IDMapper(None, ihm.location.Repository, None)
-        self.external_files = _IDMapper(self.system.locations,
+
+        #: Mapping from ID to :class:`ihm.Assembly` objects
+        self.assemblies = IDMapper(self.system.orphan_assemblies, ihm.Assembly)
+
+        #: Mapping from ID to :class:`ihm.location.Repository` objects
+        self.repos = IDMapper(None, ihm.location.Repository, None)
+
+        #: Mapping from ID to :class:`ihm.location.FileLocation` objects
+        self.external_files = IDMapper(self.system.locations,
                                  ihm.location.FileLocation,
                                  '/') # should always exist?
-        self.db_locations = _IDMapper(self.system.locations,
+
+        #: Mapping from ID to :class:`ihm.location.DatabaseLocation` objects
+        self.db_locations = IDMapper(self.system.locations,
                                  ihm.location.DatabaseLocation, None, None)
-        self.datasets = _IDMapper(self.system.orphan_datasets,
-                                  ihm.dataset.Dataset, None)
-        self.dataset_groups = _IDMapper(self.system.orphan_dataset_groups,
+
+        #: Mapping from ID to :class:`ihm.dataset.Dataset` objects
+        self.datasets = IDMapper(self.system.orphan_datasets,
+                                 ihm.dataset.Dataset, None)
+
+        #: Mapping from ID to :class:`ihm.dataset.DatasetGroup` objects
+        self.dataset_groups = IDMapper(self.system.orphan_dataset_groups,
                                   ihm.dataset.DatasetGroup)
-        self.starting_models = _IDMapper(self.system.orphan_starting_models,
+
+        #: Mapping from ID to :class:`ihm.startmodel.StartingModel` objects
+        self.starting_models = IDMapper(self.system.orphan_starting_models,
                                   ihm.startmodel.StartingModel, *(None,)*3)
-        self.representations = _IDMapper(self.system.orphan_representations,
+
+        #: Mapping from ID to :class:`ihm.representation.Representation` objects
+        self.representations = IDMapper(self.system.orphan_representations,
                                   ihm.representation.Representation)
-        self.protocols = _IDMapper(self.system.orphan_protocols,
+
+        #: Mapping from ID to :class:`ihm.protocol.Protocol` objects
+        self.protocols = IDMapper(self.system.orphan_protocols,
                                   ihm.protocol.Protocol)
+
+        #: Mapping from ID to :class:`ihm.analysis.Step` objects
         self.analysis_steps = _AnalysisIDMapper(None, ihm.analysis.Step,
                                   *(None,)*3)
-        self.analyses = _IDMapper(None, ihm.analysis.Analysis)
-        self.models = _IDMapper(None, model_class, *(None,)*3)
-        self.model_groups = _IDMapper(None, ihm.model.ModelGroup)
-        self.states = _IDMapper(None, ihm.model.State)
-        self.state_groups = _IDMapper(self.system.state_groups,
+
+        #: Mapping from ID to :class:`ihm.analysis.Analysis` objects
+        self.analyses = IDMapper(None, ihm.analysis.Analysis)
+
+        #: Mapping from ID to :class:`ihm.model.Model` objects
+        self.models = IDMapper(None, model_class, *(None,)*3)
+
+        #: Mapping from ID to :class:`ihm.model.ModelGroup` objects
+        self.model_groups = IDMapper(None, ihm.model.ModelGroup)
+
+        #: Mapping from ID to :class:`ihm.model.State` objects
+        self.states = IDMapper(None, ihm.model.State)
+
+        #: Mapping from ID to :class:`ihm.model.StateGroup` objects
+        self.state_groups = IDMapper(self.system.state_groups,
                                   ihm.model.StateGroup)
-        self.ensembles = _IDMapper(self.system.ensembles,
-                                   ihm.model.Ensemble, *(None,)*2)
-        self.densities = _IDMapper(None,
-                                   ihm.model.LocalizationDensity, *(None,)*2)
+
+        #: Mapping from ID to :class:`ihm.model.Ensemble` objects
+        self.ensembles = IDMapper(self.system.ensembles,
+                                  ihm.model.Ensemble, *(None,)*2)
+
+        #: Mapping from ID to :class:`ihm.model.LocalizationDensity` objects
+        self.densities = IDMapper(None,
+                                  ihm.model.LocalizationDensity, *(None,)*2)
+
+        #: Mapping from ID to :class:`ihm.restraint.EM3DRestraint` objects
         self.em3d_restraints = _DatasetIDMapper(self.system.restraints,
                                    self.datasets,
                                    ihm.restraint.EM3DRestraint, None)
-        self.em2d_restraints = _IDMapper(self.system.restraints,
+
+        #: Mapping from ID to :class:`ihm.restraint.EM2DRestraint` objects
+        self.em2d_restraints = IDMapper(self.system.restraints,
                                    ihm.restraint.EM2DRestraint, *(None,)*2)
+
+        #: Mapping from ID to :class:`ihm.restraint.SASRestraint` objects
         self.sas_restraints = _DatasetIDMapper(self.system.restraints,
                                    self.datasets,
                                    ihm.restraint.SASRestraint, None)
+
+        #: Mapping from ID to :class:`ihm.restraint.Feature` objects
         self.features = _FeatureIDMapper(self.system.orphan_features,
                                    ihm.restraint.Feature)
-        self.dist_restraints = _IDMapper(self.system.restraints,
+
+        #: Mapping from ID to :class:`ihm.restraint.DerivedDistanceRestraint`
+        #: objects
+        self.dist_restraints = IDMapper(self.system.restraints,
                                    ihm.restraint.DerivedDistanceRestraint,
                                    *(None,)*4)
-        self.dist_restraint_groups = _IDMapper(self.system.restraint_groups,
+
+        #: Mapping from ID to :class:`ihm.restraint.RestraintGroup` objects
+        self.dist_restraint_groups = IDMapper(self.system.restraint_groups,
                                    ihm.restraint.RestraintGroup)
+
+        #: Mapping from ID to :class:`ihm.geometry.GeometricObject` objects
         self.geometries = _GeometryIDMapper(
                                 self.system.orphan_geometric_objects,
                                 ihm.geometry.GeometricObject)
-        self.centers = _IDMapper(None, ihm.geometry.Center, *(None,)*3)
-        self.transformations = _IDMapper(None, ihm.geometry.Transformation,
-                                         *(None,)*2)
-        self.geom_restraints = _IDMapper(self.system.restraints,
+
+        #: Mapping from ID to :class:`ihm.geometry.Center` objects
+        self.centers = IDMapper(None, ihm.geometry.Center, *(None,)*3)
+
+        #: Mapping from ID to :class:`ihm.geometry.Transformation` objects
+        self.transformations = IDMapper(None, ihm.geometry.Transformation,
+                                        *(None,)*2)
+
+        #: Mapping from ID to :class:`ihm.restraint.GeometricRestraint` objects
+        self.geom_restraints = IDMapper(self.system.restraints,
                                    ihm.restraint.GeometricRestraint,
                                    *(None,)*4)
+
+        #: Mapping from ID to :class:`ihm.restraint.CrossLinkRestraint` objects
         self.xl_restraints = _XLRestraintMapper(self.system.restraints)
-        self.experimental_xl_groups = _IDMapper(None, list)
+
+        #: Mapping from ID to groups of
+        #: :class:`ihm.restraint.ExperimentalCrossLink` objects
+        self.experimental_xl_groups = IDMapper(None, list)
         self.experimental_xl_groups.id_attr = None
-        self.experimental_xls = _IDMapper(None,
+
+        #: Mapping from ID to :class:`ihm.restraint.ExperimentalCrossLink`
+        #: objects
+        self.experimental_xls = IDMapper(None,
                                     ihm.restraint.ExperimentalCrossLink,
                                     *(None,)*2)
+
+        #: Mapping from ID to :class:`ihm.restraint.CrossLink`
         self.cross_links = _CrossLinkIDMapper(None,
                                 ihm.restraint.CrossLink)
-        self.ordered_procs = _IDMapper(self.system.ordered_processes,
-                                    ihm.model.OrderedProcess, None)
-        self.ordered_steps = _IDMapper(None, ihm.model.ProcessStep)
+
+        #: Mapping from ID to :class:`ihm.model.OrderedProcess` objects
+        self.ordered_procs = IDMapper(self.system.ordered_processes,
+                                      ihm.model.OrderedProcess, None)
+
+        #: Mapping from ID to :class:`ihm.model.ProcessStep` objects
+        self.ordered_steps = IDMapper(None, ihm.model.ProcessStep)
 
     def finalize(self):
         # make sequence immutable (see also _make_new_entity)
@@ -399,7 +463,8 @@ class _SystemReader(object):
 class Handler(object):
     """Base class for all handlers of mmCIF data.
        Each class handles a single category in the mmCIF or BinaryCIF file.
-       To add a new handler, make a subclass and set the class attribute
+       To add a new handler (for example to handle a custom category)
+       make a subclass and set the class attribute
        `category` to the mmCIF category name (e.g. `_struct`). Provide
        a `__call__` method. This will be called for each category (multiple
        times for loop constructs) with the parameters to `__call__` filled in
@@ -415,6 +480,10 @@ class Handler(object):
            _custom.key1 x
            _custom.key2 y
 
+       Note that the arguments will always be strings when reading an mmCIF
+       file. To convert to integer, floating point, or boolean, use the utility
+       methods :meth:`get_int`, :meth:`get_float` or :meth:`get_bool`
+       respectively.
        """
 
     #: Value passed to `__call__` for keywords not in the file
@@ -430,6 +499,29 @@ class Handler(object):
         #: Utility class to map IDs to Python objects.
         self.sysr = sysr
 
+    def get_int(self, val):
+        """Return int(val) or None if val is None"""
+        return int(val) if val is not None else None
+
+    def get_int_or_string(self, val):
+        """Return val as an int or str as appropriate,
+           or None if val is None"""
+        if val is not None:
+            return int(val) if isinstance(val, int) or val.isdigit() else val
+
+    def get_float(self, val):
+        """Return float(val) or None if val is None"""
+        return float(val) if val is not None else None
+
+    _boolmap = {'YES':True, 'NO':False}
+    def get_bool(self, val):
+        """Convert val to bool and return, or None if val is None"""
+        return self._boolmap.get(val.upper(), None) if val is not None else None
+
+    def get_lower(self, val):
+        """Return lowercase string val or None if val is None"""
+        return val.lower() if val is not None else None
+
     def finalize(self):
         """Called at the end of each data block."""
         pass
@@ -438,7 +530,7 @@ class Handler(object):
         """Called at the end of each save frame."""
         pass
 
-    def _copy_if_present(self, obj, data, keys=[], mapkeys={}):
+    def copy_if_present(self, obj, data, keys=[], mapkeys={}):
         """Set obj.x from data['x'] for each x in keys if present in data.
            The dict mapkeys is handled similarly except that its keys are looked
            up in data and the corresponding value used to set obj."""
@@ -459,7 +551,7 @@ class _StructHandler(Handler):
     category = '_struct'
 
     def __call__(self, title, entry_id):
-        self._copy_if_present(self.system, locals(), keys=('title',),
+        self.copy_if_present(self.system, locals(), keys=('title',),
                               mapkeys={'entry_id': 'id'})
 
 
@@ -469,7 +561,7 @@ class _SoftwareHandler(Handler):
     def __call__(self, pdbx_ordinal, name, classification, description,
                  version, type, location):
         s = self.sysr.software.get_by_id(pdbx_ordinal)
-        self._copy_if_present(s, locals(),
+        self.copy_if_present(s, locals(),
                 keys=('name', 'classification', 'description', 'version',
                       'type', 'location'))
 
@@ -481,7 +573,7 @@ class _CitationHandler(Handler):
                  journal_abbrev, journal_volume, pdbx_database_id_doi,
                  page_first, page_last):
         s = self.sysr.citations.get_by_id(id)
-        self._copy_if_present(s, locals(),
+        self.copy_if_present(s, locals(),
                 keys=('title', 'year'),
                 mapkeys={'pdbx_database_id_pubmed':'pmid',
                          'journal_abbrev':'journal',
@@ -517,7 +609,7 @@ class _ChemCompHandler(Handler):
         typ = 'other' if type is None else type.lower()
         s = self.sysr.chem_comps.get_by_id(id,
                                            self.type_map.get(typ, ihm.ChemComp))
-        self._copy_if_present(s, locals(), keys=('name', 'formula'))
+        self.copy_if_present(s, locals(), keys=('name', 'formula'))
 
 
 class _ChemDescriptorHandler(Handler):
@@ -526,7 +618,7 @@ class _ChemDescriptorHandler(Handler):
     def __call__(self, id, auth_name, chem_comp_id, chemical_name, common_name,
                  smiles, smiles_canonical, inchi, inchi_key):
         d = self.sysr.chem_descriptors.get_by_id(id)
-        self._copy_if_present(d, locals(),
+        self.copy_if_present(d, locals(),
                 keys=('auth_name', 'chem_comp_id', 'chemical_name',
                       'common_name', 'smiles', 'smiles_canonical', 'inchi',
                       'inchi_key'))
@@ -538,7 +630,7 @@ class _EntityHandler(Handler):
     def __call__(self, id, details, type, src_method, formula_weight,
                  pdbx_description, pdbx_number_of_molecules):
         s = self.sysr.entities.get_by_id(id)
-        self._copy_if_present(s, locals(),
+        self.copy_if_present(s, locals(),
                 keys=('details', 'src_method'),
                 mapkeys={'pdbx_description':'description',
                          'pdbx_number_of_molecules':'number_of_molecules'})
@@ -569,7 +661,7 @@ class _StructAsymHandler(Handler):
     def __call__(self, id, entity_id, details):
         s = self.sysr.asym_units.get_by_id(id)
         s.entity = self.sysr.entities.get_by_id(entity_id)
-        self._copy_if_present(s, locals(), keys=('details',))
+        self.copy_if_present(s, locals(), keys=('details',))
 
 
 class _AssemblyDetailsHandler(Handler):
@@ -577,7 +669,7 @@ class _AssemblyDetailsHandler(Handler):
 
     def __call__(self, assembly_id, assembly_name, assembly_description):
         s = self.sysr.assemblies.get_by_id(assembly_id)
-        self._copy_if_present(s, locals(),
+        self.copy_if_present(s, locals(),
                 mapkeys={'assembly_name':'name',
                          'assembly_description':'description'})
 
@@ -641,7 +733,7 @@ class _ExtRefHandler(Handler):
         typ = 'doi' if reference_type is None else reference_type.lower()
         repo = self.sysr.repos.get_by_id(ref_id,
                              self.type_map.get(typ, ihm.location.Repository))
-        self._copy_if_present(repo, locals(),
+        self.copy_if_present(repo, locals(),
                     mapkeys={'reference':'doi', 'associated_url':'url'})
 
     def finalize(self):
@@ -670,7 +762,7 @@ class _ExtFileHandler(Handler):
         f = self.sysr.external_files.get_by_id(id,
                              self.type_map.get(typ, ihm.location.FileLocation))
         f.repo = self.sysr.repos.get_by_id(reference_id)
-        self._copy_if_present(f, locals(),
+        self.copy_if_present(f, locals(),
                     keys=['details'],
                     mapkeys={'file_path':'path'})
         # Handle DOI that is itself a file
@@ -734,7 +826,7 @@ class _DatasetDBRefHandler(Handler):
         dbloc = self.sysr.db_locations.get_by_id(id,
                                                  self.type_map.get(typ, None))
         ds.location = dbloc
-        self._copy_if_present(dbloc, locals(),
+        self.copy_if_present(dbloc, locals(),
                     keys=['version', 'details'],
                     mapkeys={'accession_code':'access_code'})
 
@@ -785,11 +877,11 @@ class _ModelRepresentationHandler(Handler):
         rep = self.sysr.representations.get_by_id(representation_id)
         smodel = self.sysr.starting_models.get_by_id_or_none(
                                             starting_model_id)
-        primitive = _get_lower(model_object_primitive)
-        gran = _get_lower(model_granularity)
-        primitive = _get_lower(model_object_primitive)
-        count = _get_int(model_object_count)
-        rigid = self._rigid_map[_get_lower(model_mode)]
+        primitive = self.get_lower(model_object_primitive)
+        gran = self.get_lower(model_granularity)
+        primitive = self.get_lower(model_object_primitive)
+        count = self.get_int(model_object_count)
+        rigid = self._rigid_map[self.get_lower(model_mode)]
         segment = self._segment_factory[gran](asym, rigid, primitive,
                                               count, smodel)
         rep.append(segment)
@@ -808,7 +900,7 @@ class _StartingModelDetailsHandler(Handler):
             asym = asym(int(seq_id_begin), int(seq_id_end))
         m.asym_unit = asym
         m.dataset = self.sysr.datasets.get_by_id(dataset_list_id)
-        self._copy_if_present(m, locals(),
+        self.copy_if_present(m, locals(),
                     mapkeys={'starting_model_auth_asym_id':'asym_id'})
         if starting_model_sequence_offset is not None:
             m.offset = int(starting_model_sequence_offset)
@@ -844,8 +936,8 @@ class _StartingComparativeModelsHandler(Handler):
         template_seq_id_range = (int(template_seq_id_begin),
                                  int(template_seq_id_end))
         identity = ihm.startmodel.SequenceIdentity(
-                      _get_float(template_sequence_identity),
-                      _get_int(template_sequence_identity_denominator))
+                      self.get_float(template_sequence_identity),
+                      self.get_int(template_sequence_identity_denominator))
         t = ihm.startmodel.Template(dataset, asym_id, seq_id_range,
                         template_seq_id_range, identity, aln)
         m.templates.append(t)
@@ -854,17 +946,17 @@ class _StartingComparativeModelsHandler(Handler):
 class _ProtocolHandler(Handler):
     category = '_ihm_modeling_protocol'
 
-    def __call__(self, protocol_id, protocol_name, num_models_begin,
+    def __call__(self, protocol_id, step_id, protocol_name, num_models_begin,
                  num_models_end, multi_scale_flag, multi_state_flag,
                  ordered_flag, struct_assembly_id, dataset_group_id,
                  software_id, script_file_id, step_name, step_method):
         p = self.sysr.protocols.get_by_id(protocol_id)
-        self._copy_if_present(p, locals(),  mapkeys={'protocol_name':'name'})
-        nbegin = _get_int(num_models_begin)
-        nend = _get_int(num_models_end)
-        mscale = _get_bool(multi_scale_flag)
-        mstate = _get_bool(multi_state_flag)
-        ordered = _get_bool(ordered_flag)
+        self.copy_if_present(p, locals(),  mapkeys={'protocol_name':'name'})
+        nbegin = self.get_int(num_models_begin)
+        nend = self.get_int(num_models_end)
+        mscale = self.get_bool(multi_scale_flag)
+        mstate = self.get_bool(multi_state_flag)
+        ordered = self.get_bool(ordered_flag)
         assembly = self.sysr.assemblies.get_by_id_or_none(
                                             struct_assembly_id)
         dg = self.sysr.dataset_groups.get_by_id_or_none(dataset_group_id)
@@ -875,7 +967,8 @@ class _ProtocolHandler(Handler):
                               num_models_end=nend, multi_scale=mscale,
                               multi_state=mstate, ordered=ordered,
                               software=software, script_file=script)
-        self._copy_if_present(s, locals(),
+        s._id = step_id
+        self.copy_if_present(s, locals(),
                 mapkeys={'step_name':'name', 'step_method':'method'})
         p.steps.append(s)
 
@@ -911,8 +1004,8 @@ class _PostProcessHandler(Handler):
             # to Python None - set it to explicit 'none' instead
             step.feature = 'none'
         else:
-            step.num_models_begin = _get_int(num_models_begin)
-            step.num_models_end = _get_int(num_models_end)
+            step.num_models_begin = self.get_int(num_models_begin)
+            step.num_models_end = self.get_int(num_models_end)
             step.assembly = self.sysr.assemblies.get_by_id_or_none(
                                             struct_assembly_id)
             step.dataset_group = self.sysr.dataset_groups.get_by_id_or_none(
@@ -921,7 +1014,7 @@ class _PostProcessHandler(Handler):
                                             software_id)
             step.script_file = self.sysr.external_files.get_by_id_or_none(
                                             script_file_id)
-            self._copy_if_present(step, locals(), keys=['feature'])
+            self.copy_if_present(step, locals(), keys=['feature'])
 
 
 class _ModelListHandler(Handler):
@@ -930,15 +1023,15 @@ class _ModelListHandler(Handler):
     def __call__(self, model_group_id, model_group_name, model_id, model_name,
                  assembly_id, representation_id, protocol_id):
         model_group = self.sysr.model_groups.get_by_id(model_group_id)
-        self._copy_if_present(model_group, locals(),
-                              mapkeys={'model_group_name':'name'})
+        self.copy_if_present(model_group, locals(),
+                             mapkeys={'model_group_name':'name'})
 
         model = self.sysr.models.get_by_id(model_id)
 
         assert model._id not in (m._id for m in model_group)
         model_group.append(model)
 
-        self._copy_if_present(model, locals(), mapkeys={'model_name':'name'})
+        self.copy_if_present(model, locals(), mapkeys={'model_name':'name'})
         model.assembly = self.sysr.assemblies.get_by_id_or_none(
                                             assembly_id)
         model.representation = self.sysr.representations.get_by_id_or_none(
@@ -976,8 +1069,8 @@ class _MultiStateHandler(Handler):
         model_group = self.sysr.model_groups.get_by_id(model_group_id)
         state.append(model_group)
 
-        state.population_fraction = _get_float(population_fraction)
-        self._copy_if_present(state, locals(),
+        state.population_fraction = self.get_float(population_fraction)
+        self.copy_if_present(state, locals(),
                 keys=['experiment_type', 'details'],
                 mapkeys={'state_name':'name', 'state_type':'type'})
 
@@ -995,13 +1088,13 @@ class _EnsembleHandler(Handler):
         f = self.sysr.external_files.get_by_id_or_none(ensemble_file_id)
 
         ensemble.model_group = mg
-        ensemble.num_models = _get_int(num_ensemble_models)
-        ensemble.precision = _get_float(ensemble_precision_value)
+        ensemble.num_models = self.get_int(num_ensemble_models)
+        ensemble.precision = self.get_float(ensemble_precision_value)
         # note that num_ensemble_models_deposited is ignored (should be size of
         # model group anyway)
         ensemble.post_process = pp
         ensemble.file = f
-        self._copy_if_present(ensemble, locals(),
+        self.copy_if_present(ensemble, locals(),
                 mapkeys={'ensemble_name':'name',
                          'ensemble_clustering_method':'clustering_method',
                          'ensemble_clustering_feature':'clustering_feature'})
@@ -1037,11 +1130,11 @@ class _EM3DRestraintHandler(Handler):
                                             struct_assembly_id)
         r.fitting_method_citation = self.sysr.citations.get_by_id_or_none(
                                             fitting_method_citation_id)
-        self._copy_if_present(r, locals(), keys=('fitting_method',))
-        r.number_of_gaussians = _get_int(number_of_gaussians)
+        self.copy_if_present(r, locals(), keys=('fitting_method',))
+        r.number_of_gaussians = self.get_int(number_of_gaussians)
 
         model = self.sysr.models.get_by_id(model_id)
-        ccc = _get_float(cross_correlation_coefficient)
+        ccc = self.get_float(cross_correlation_coefficient)
         r.fits[model] = ihm.restraint.EM3DRestraintFit(ccc)
 
 
@@ -1054,15 +1147,15 @@ class _EM2DRestraintHandler(Handler):
                  struct_assembly_id, details):
         r = self.sysr.em2d_restraints.get_by_id(id)
         r.dataset = self.sysr.datasets.get_by_id(dataset_list_id)
-        r.number_raw_micrographs = _get_int(number_raw_micrographs)
-        r.pixel_size_width = _get_float(pixel_size_width)
-        r.pixel_size_height = _get_float(pixel_size_height)
-        r.image_resolution = _get_float(image_resolution)
-        r.segment = _get_bool(image_segment_flag)
-        r.number_of_projections = _get_int(number_of_projections)
+        r.number_raw_micrographs = self.get_int(number_raw_micrographs)
+        r.pixel_size_width = self.get_float(pixel_size_width)
+        r.pixel_size_height = self.get_float(pixel_size_height)
+        r.image_resolution = self.get_float(image_resolution)
+        r.segment = self.get_bool(image_segment_flag)
+        r.number_of_projections = self.get_int(number_of_projections)
         r.assembly = self.sysr.assemblies.get_by_id_or_none(
                                             struct_assembly_id)
-        self._copy_if_present(r, locals(), keys=('details',))
+        self.copy_if_present(r, locals(), keys=('details',))
 
 
 class _EM2DFittingHandler(Handler):
@@ -1074,7 +1167,7 @@ class _EM2DFittingHandler(Handler):
                  rot_matrix32, rot_matrix13, rot_matrix23, rot_matrix33):
         r = self.sysr.em2d_restraints.get_by_id(restraint_id)
         model = self.sysr.models.get_by_id(model_id)
-        ccc = _get_float(cross_correlation_coefficient)
+        ccc = self.get_float(cross_correlation_coefficient)
         tr_vector = _get_vector3(locals(), 'tr_vector')
         rot_matrix = _get_matrix33(locals(), 'rot_matrix')
         r.fits[model] = ihm.restraint.EM2DRestraintFit(
@@ -1093,17 +1186,17 @@ class _SASRestraintHandler(Handler):
         r = self.sysr.sas_restraints.get_by_dataset(dataset_list_id)
         r.assembly = self.sysr.assemblies.get_by_id_or_none(
                                             struct_assembly_id)
-        r.segment = _get_bool(profile_segment_flag)
-        self._copy_if_present(r, locals(),
+        r.segment = self.get_bool(profile_segment_flag)
+        self.copy_if_present(r, locals(),
                 keys=('fitting_atom_type', 'fitting_method', 'details'))
         fs = fitting_state if fitting_state is not None else 'Single'
         r.multi_state = fs.lower() != 'single'
-        r.radius_of_gyration = _get_float(radius_of_gyration)
-        r.number_of_gaussians = _get_int(number_of_gaussians)
+        r.radius_of_gyration = self.get_float(radius_of_gyration)
+        r.number_of_gaussians = self.get_int(number_of_gaussians)
 
         model = self.sysr.models.get_by_id(model_id)
         r.fits[model] = ihm.restraint.SASRestraintFit(
-                                 chi_value=_get_float(chi_value))
+                                 chi_value=self.get_float(chi_value))
 
 
 class _SphereObjSiteHandler(Handler):
@@ -1113,7 +1206,7 @@ class _SphereObjSiteHandler(Handler):
                  cartn_x, cartn_y, cartn_z, object_radius):
         model = self.sysr.models.get_by_id(model_id)
         asym = self.sysr.asym_units.get_by_id(asym_id)
-        rmsf = _get_float(rmsf)
+        rmsf = self.get_float(rmsf)
         s = ihm.model.Sphere(asym_unit=asym,
                 seq_id_range=(int(seq_id_begin), int(seq_id_end)),
                 x=float(cartn_x), y=float(cartn_y),
@@ -1132,9 +1225,9 @@ class _AtomSiteHandler(Handler):
         # todo: handle insertion codes
         model = self.sysr.models.get_by_id(pdbx_pdb_model_num)
         asym = self.sysr.asym_units.get_by_id(label_asym_id)
-        biso = _get_float(b_iso_or_equiv)
+        biso = self.get_float(b_iso_or_equiv)
         # seq_id can be None for non-polymers (HETATM)
-        seq_id = _get_int(label_seq_id)
+        seq_id = self.get_int(label_seq_id)
         group = 'ATOM' if group_pdb is None else group_pdb
         a = ihm.model.Atom(asym_unit=asym,
                 seq_id=seq_id,
@@ -1145,7 +1238,7 @@ class _AtomSiteHandler(Handler):
                 biso=biso)
         model.add_atom(a)
 
-        auth_seq_id = _get_int_or_string(auth_seq_id)
+        auth_seq_id = self.get_int_or_string(auth_seq_id)
         # Note any residues that have different seq_id and auth_seq_id
         if auth_seq_id is not None and seq_id != auth_seq_id:
             if asym.auth_seq_id_map == 0:
@@ -1201,27 +1294,27 @@ class _PseudoSiteFeatureHandler(Handler):
                  description):
         f = self.sysr.features.get_by_id(feature_id,
                                          ihm.restraint.PseudoSiteFeature)
-        f.x = _get_float(cartn_x)
-        f.y = _get_float(cartn_y)
-        f.z = _get_float(cartn_z)
-        f.radius = _get_float(radius)
+        f.x = self.get_float(cartn_x)
+        f.y = self.get_float(cartn_y)
+        f.z = self.get_float(cartn_z)
+        f.radius = self.get_float(radius)
         f.description = description
 
 
-def _make_harmonic(low, up):
+def _make_harmonic(low, up, _get_float):
     low = _get_float(low)
     up = _get_float(up)
     return ihm.restraint.HarmonicDistanceRestraint(up if low is None else low)
 
-def _make_upper_bound(low, up):
+def _make_upper_bound(low, up, _get_float):
     up = _get_float(up)
     return ihm.restraint.UpperBoundDistanceRestraint(up)
 
-def _make_lower_bound(low, up):
+def _make_lower_bound(low, up, _get_float):
     low = _get_float(low)
     return ihm.restraint.LowerBoundDistanceRestraint(low)
 
-def _make_lower_upper_bound(low, up):
+def _make_lower_upper_bound(low, up, _get_float):
     low = _get_float(low)
     up = _get_float(up)
     return ihm.restraint.LowerUpperBoundDistanceRestraint(
@@ -1248,9 +1341,10 @@ class _DerivedDistanceRestraintHandler(Handler):
         r.feature1 = self.sysr.features.get_by_id(feature_id_1)
         r.feature2 = self.sysr.features.get_by_id(feature_id_2)
         r.distance = _handle_distance[restraint_type](distance_lower_limit,
-                                                      distance_upper_limit)
+                                                      distance_upper_limit,
+                                                      self.get_float)
         r.restrain_all = self._cond_map[group_conditionality]
-        r.probability = _get_float(probability)
+        r.probability = self.get_float(probability)
 
 
 class _CenterHandler(Handler):
@@ -1258,9 +1352,9 @@ class _CenterHandler(Handler):
 
     def __call__(self, id, xcoord, ycoord, zcoord):
         c = self.sysr.centers.get_by_id(id)
-        c.x = _get_float(xcoord)
-        c.y = _get_float(ycoord)
-        c.z = _get_float(zcoord)
+        c.x = self.get_float(xcoord)
+        c.y = self.get_float(ycoord)
+        c.z = self.get_float(zcoord)
 
 
 class _TransformationHandler(Handler):
@@ -1289,10 +1383,10 @@ class _GeometricObjectHandler(Handler):
         typ = object_type.lower() if object_type is not None else 'other'
         g = self.sysr.geometries.get_by_id(object_id,
                           self._type_map.get(typ, ihm.geometry.GeometricObject))
-        self._copy_if_present(g, locals(),
-                              mapkeys={'object_name': 'name',
-                                       'object_description': 'description',
-                                       'other_details': 'details'})
+        self.copy_if_present(g, locals(),
+                             mapkeys={'object_name': 'name',
+                                      'object_description': 'description',
+                                      'other_details': 'details'})
 
 
 class _SphereHandler(Handler):
@@ -1303,7 +1397,7 @@ class _SphereHandler(Handler):
         s.center = self.sysr.centers.get_by_id_or_none(center_id)
         s.transformation = self.sysr.transformations.get_by_id_or_none(
                                                   transformation_id)
-        s.radius = _get_float(radius_r)
+        s.radius = self.get_float(radius_r)
 
 
 class _TorusHandler(Handler):
@@ -1315,8 +1409,8 @@ class _TorusHandler(Handler):
         t.center = self.sysr.centers.get_by_id_or_none(center_id)
         t.transformation = self.sysr.transformations.get_by_id_or_none(
                                                   transformation_id)
-        t.major_radius = _get_float(major_radius_r)
-        t.minor_radius = _get_float(minor_radius_r)
+        t.major_radius = self.get_float(major_radius_r)
+        t.minor_radius = self.get_float(minor_radius_r)
 
 
 class _HalfTorusHandler(Handler):
@@ -1327,7 +1421,7 @@ class _HalfTorusHandler(Handler):
     def __call__(self, object_id, thickness_th, section):
         t = self.sysr.geometries.get_by_id(object_id,
                                            ihm.geometry.HalfTorus)
-        t.thickness = _get_float(thickness_th)
+        t.thickness = self.get_float(thickness_th)
         section = section.lower() if section is not None else ''
         t.inner = self._inner_map.get(section, None)
 
@@ -1386,8 +1480,9 @@ class _GeometricRestraintHandler(Handler):
         r.geometric_object = self.sysr.geometries.get_by_id(object_id)
         r.feature = self.sysr.features.get_by_id(feature_id)
         r.distance = _handle_distance[restraint_type](distance_lower_limit,
-                                                      distance_upper_limit)
-        r.harmonic_force_constant = _get_float(harmonic_force_constant)
+                                                      distance_upper_limit,
+                                                      self.get_float)
+        r.harmonic_force_constant = self.get_float(harmonic_force_constant)
         r.restrain_all = self._cond_map[group_conditionality]
 
 
@@ -1401,8 +1496,8 @@ class _PolySeqSchemeHandler(Handler):
     # function; the C parser expects them in this order
     def __call__(self, asym_id, seq_id, auth_seq_num):
         asym = self.sysr.asym_units.get_by_id(asym_id)
-        seq_id = _get_int(seq_id)
-        auth_seq_num = _get_int_or_string(auth_seq_num)
+        seq_id = self.get_int(seq_id)
+        auth_seq_num = self.get_int_or_string(auth_seq_num)
         # Note any residues that have different seq_id and auth_seq_id
         if seq_id is not None and auth_seq_num is not None \
            and seq_id != auth_seq_num:
@@ -1421,6 +1516,9 @@ class _PolySeqSchemeHandler(Handler):
     def _get_auth_seq_id_offset(self, asym):
         """Get the offset from seq_id to auth_seq_id. Return None if no
            consistent offset exists."""
+        # Do nothing if the entity is not polymeric
+        if asym.entity is None or not asym.entity.is_polymeric():
+            return
         # Do nothing if no map exists
         if asym.auth_seq_id_map == 0:
             return
@@ -1451,7 +1549,7 @@ class _NonPolySchemeHandler(Handler):
     def __call__(self, asym_id, auth_seq_num):
         asym = self.sysr.asym_units.get_by_id(asym_id)
         # todo: handle multiple instances (e.g. water)
-        auth_seq_num = _get_int_or_string(auth_seq_num)
+        auth_seq_num = self.get_int_or_string(auth_seq_num)
         if auth_seq_num != 1:
             asym.auth_seq_id_map = {1:auth_seq_num}
 
@@ -1518,9 +1616,9 @@ class _CrossLinkRestraintHandler(Handler):
         if isinstance(xl, ihm.restraint.AtomCrossLink):
             xl.atom1 = atom_id_1
             xl.atom2 = atom_id_2
-        xl.psi = _get_float(psi)
-        xl.sigma1 = _get_float(sigma_1)
-        xl.sigma2 = _get_float(sigma_2)
+        xl.psi = self.get_float(psi)
+        xl.sigma1 = self.get_float(sigma_1)
+        xl.sigma2 = self.get_float(sigma_2)
 
     def finalize(self):
         # Put each cross link in the restraint that owns its experimental xl
@@ -1541,9 +1639,9 @@ class _CrossLinkResultHandler(Handler):
         xl = self.sysr.cross_links.get_by_id(restraint_id)
         model = self.sysr.models.get_by_id(model_id)
         xl.fits[model] = ihm.restraint.CrossLinkFit(
-                                psi=_get_float(psi),
-                                sigma1=_get_float(sigma_1),
-                                sigma2=_get_float(sigma_2))
+                                psi=self.get_float(psi),
+                                sigma1=self.get_float(sigma_1),
+                                sigma2=self.get_float(sigma_2))
 
 
 class _OrderedEnsembleHandler(Handler):
@@ -1558,17 +1656,17 @@ class _OrderedEnsembleHandler(Handler):
         edge = ihm.model.ProcessEdge(
                    self.sysr.model_groups.get_by_id(model_group_id_begin),
                    self.sysr.model_groups.get_by_id(model_group_id_end))
-        self._copy_if_present(edge, locals(),
+        self.copy_if_present(edge, locals(),
                 mapkeys={'edge_description':'description'})
         step.append(edge)
 
         if step_id not in [s._id for s in proc.steps]:
             proc.steps.append(step)
 
-        self._copy_if_present(proc, locals(),
+        self.copy_if_present(proc, locals(),
                 keys=('ordered_by',),
                 mapkeys={'process_description':'description'})
-        self._copy_if_present(step, locals(),
+        self.copy_if_present(step, locals(),
                 mapkeys={'step_description':'description'})
 
 
@@ -1611,7 +1709,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):
 
     r = reader_map[format](fh, {})
     while True:
-        s = _SystemReader(model_class)
+        s = SystemReader(model_class)
         hs = [_StructHandler(s), _SoftwareHandler(s), _CitationHandler(s),
               _CitationAuthorHandler(s), _ChemCompHandler(s),
               _ChemDescriptorHandler(s), _EntityHandler(s),
