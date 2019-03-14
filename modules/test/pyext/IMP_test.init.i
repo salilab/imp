@@ -65,6 +65,12 @@ skip = unittest.skip
 skipIf = unittest.skipIf
 skipUnless = unittest.skipUnless
 
+class _TempDir(object):
+    def __init__(self, dir=None):
+        self.tmpdir = tempfile.mkdtemp(dir=dir)
+    def __del__(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
 @contextlib.contextmanager
 def temporary_working_directory():
     """Simple context manager to run in a temporary directory.
