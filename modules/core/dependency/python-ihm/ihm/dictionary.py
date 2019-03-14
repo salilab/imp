@@ -6,7 +6,7 @@ import ihm.format_bcif
 import re
 import itertools
 
-from ihm.reader import Handler, _get_bool
+from ihm.reader import Handler
 
 # Handle special values for CIF data items ('.', '?', or missing entirely)
 class _CifSpecialValue(object):
@@ -291,7 +291,7 @@ class _CategoryHandler(Handler):
     def __call__(self, id, description, mandatory_code):
         c = self.sysr.category
         c.name, c.description = id, description
-        c.mandatory = _get_bool(mandatory_code)
+        c.mandatory = self.get_bool(mandatory_code)
         self.sysr.category_good = True
 
     def end_save_frame(self):
@@ -308,7 +308,7 @@ class _ItemHandler(Handler):
         # own category name and use that instead
         if category_id is None:
             category_id = cat[1:]
-        ki.append((name, category_id, _get_bool(mandatory_code)))
+        ki.append((name, category_id, self.get_bool(mandatory_code)))
         self.sysr.keyword_good = True
 
 

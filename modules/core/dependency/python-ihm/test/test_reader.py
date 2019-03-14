@@ -94,7 +94,7 @@ class Tests(unittest.TestCase):
 
     def test_system_reader(self):
         """Test SystemReader class"""
-        s = ihm.reader._SystemReader(ihm.model.Model)
+        s = ihm.reader.SystemReader(ihm.model.Model)
 
     def test_id_mapper(self):
         """Test IDMapper class"""
@@ -103,7 +103,7 @@ class Tests(unittest.TestCase):
                 self.x, self.y = x, y
 
         testlist = []
-        im = ihm.reader._IDMapper(testlist, MockObject, '1', y='2')
+        im = ihm.reader.IDMapper(testlist, MockObject, '1', y='2')
         a = im.get_by_id('ID1')
         b = im.get_by_id('ID1')
         self.assertEqual(id(a), id(b))
@@ -127,9 +127,9 @@ class Tests(unittest.TestCase):
         Keys = namedtuple('Keys', 'foo bar t test x')
         o = MockObject()
         h = ihm.reader.Handler(None)
-        h._copy_if_present(o, {'foo':'bar', 'bar':'baz', 't':'u'},
-                           keys=['test', 'foo'],
-                           mapkeys={'bar':'baro', 'x':'y'})
+        h.copy_if_present(o, {'foo':'bar', 'bar':'baz', 't':'u'},
+                          keys=['test', 'foo'],
+                          mapkeys={'bar':'baro', 'x':'y'})
         self.assertEqual(o.foo, 'bar')
         self.assertEqual(o.baro, 'baz')
         self.assertFalse(hasattr(o, 't'))
@@ -777,6 +777,7 @@ _ihm_modeling_protocol.script_file_id
             p1, = s.orphan_protocols
             self.assertEqual(p1.name, "Prot1")
             self.assertEqual(len(p1.steps), 2)
+            self.assertEqual(p1.steps[0]._id, '1')
             self.assertEqual(p1.steps[0].assembly._id, '1')
             self.assertEqual(p1.steps[0].dataset_group._id, '1')
             self.assertEqual(p1.steps[0].name, 'Sampling')
@@ -788,6 +789,7 @@ _ihm_modeling_protocol.script_file_id
             self.assertEqual(p1.steps[0].ordered, False)
             self.assertEqual(p1.steps[0].software, None)
             self.assertEqual(p1.steps[0].script_file, None)
+            self.assertEqual(p1.steps[1]._id, '2')
             self.assertEqual(p1.steps[1].multi_scale, True)
             self.assertEqual(p1.steps[1].multi_state, None)
             self.assertEqual(p1.steps[1].ordered, False)
@@ -1009,11 +1011,12 @@ _ihm_3dem_restraint.cross_correlation_coefficient
                                0.9, places=1)
 
     def test_get_int_or_string(self):
-        """Test _get_int_or_string function"""
-        self.assertEqual(ihm.reader._get_int_or_string('45A'), '45A')
-        self.assertEqual(ihm.reader._get_int_or_string('45'), 45)
-        self.assertEqual(ihm.reader._get_int_or_string(None), None)
-        self.assertEqual(ihm.reader._get_int_or_string(45), 45)
+        """Test _get_int_or_string method"""
+        h = ihm.reader.Handler(None)
+        self.assertEqual(h.get_int_or_string('45A'), '45A')
+        self.assertEqual(h.get_int_or_string('45'), 45)
+        self.assertEqual(h.get_int_or_string(None), None)
+        self.assertEqual(h.get_int_or_string(45), 45)
 
     def test_get_vector3(self):
         """Test _get_vector3 function"""
@@ -1717,7 +1720,31 @@ A 1 4 9A
 
     def test_nonpoly_scheme_handler(self):
         """Test NonPolySchemeHandler"""
-        fh = StringIO(ASYM_ENTITY + """
+        fh = StringIO("""
+loop_
+_chem_comp.id
+_chem_comp.type
+_chem_comp.name
+CA non-polymer 'CALCIUM ION'
+#
+loop_
+_entity.id
+_entity.type
+_entity.pdbx_description
+1 non-polymer 'CALCIUM ION'
+#
+loop_
+_pdbx_entity_nonpoly.entity_id
+_pdbx_entity_nonpoly.name
+_pdbx_entity_nonpoly.comp_id
+1 'CALCIUM ION'             CA
+#
+loop_
+_struct_asym.id
+_struct_asym.entity_id
+_struct_asym.details
+A 1 foo
+#
 loop_
 _pdbx_nonpoly_scheme.asym_id
 _pdbx_nonpoly_scheme.entity_id
@@ -1727,6 +1754,8 @@ A 1 101
 """)
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
+        # non-polymers have no seq_id_range
+        self.assertEqual(asym.seq_id_range, (None, None))
         self.assertEqual(asym.auth_seq_id_map, {1:101})
         self.assertEqual(asym.residue(1).auth_seq_id, 101)
 
