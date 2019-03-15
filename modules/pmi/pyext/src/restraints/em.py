@@ -17,6 +17,7 @@ import os
 from math import sqrt
 import ihm.location
 import ihm.dataset
+import ihm.metadata
 
 class GaussianEMRestraint(object):
     """Fit Gaussian-decorated particles to an EM map
@@ -126,10 +127,10 @@ class GaussianEMRestraint(object):
                 ms=IMP.atom.Mass(p).get_mass()
                 IMP.atom.Mass(p).set_mass(ms*scale)
 
-        if representation:
-            for p, state in representation._protocol_output:
-                p.add_em3d_restraint(state, self.target_ps, self.densities,
-                                     self)
+        for p, state in IMP.pmi.tools._all_protocol_outputs([representation],
+                                                            densities[0]):
+            p.add_em3d_restraint(state, self.target_ps, self.densities,
+                                 self)
 
         # setup model GMM
         self.model_ps = []
@@ -195,11 +196,11 @@ class GaussianEMRestraint(object):
                                       "Model (GMM)")
         self.dataset = ihm.dataset.EMDensityDataset(l)
         # If the GMM was derived from an MRC file that exists, add that too
+        # todo: parse the GMM file header for this information instead
         m = re.match('(.*\.mrc)\..*\.txt$', target_fn)
         if m and os.path.exists(m.group(1)):
-            l = ihm.location.InputFileLocation(path=m.group(1),
-                     details='Original MRC file from which the GMM was derived')
-            self.dataset.parents.append(ihm.dataset.EMDensityDataset(l))
+            metadata = ihm.metadata.MRCParser().parse_file(m.group(1))
+            self.dataset.parents.append(metadata['dataset'])
 
     def center_target_density_on_model(self):
         target_com = IMP.algebra.Vector3D(0, 0, 0)

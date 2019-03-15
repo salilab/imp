@@ -105,6 +105,9 @@ class _SystemBase(object):
 
 class System(_SystemBase):
     """This class initializes the root node of the global IMP.atom.Hierarchy."""
+
+    _all_systems = set()
+
     def __init__(self,model=None,name="System"):
         _SystemBase.__init__(self,model)
         self._number_of_states = 0
@@ -112,10 +115,16 @@ class System(_SystemBase):
         self.states = []
         self.built=False
 
+        System._all_systems.add(weakref.ref(self))
+
         # the root hierarchy node
         self.hier=self._create_hierarchy()
         self.hier.set_name(name)
         self.hier._pmi2_system = weakref.ref(self)
+
+    def __del__(self):
+        System._all_systems = set(x for x in System._all_systems
+                                  if x() not in (None, self))
 
     def get_states(self):
         return self.states
@@ -840,11 +849,12 @@ class Sequences(object):
         return x in self.sequences
     def __getitem__(self,key):
         if type(key) is int:
+            allseqs = list(self.sequences.keys())
             try:
-                allseqs = list(self.sequences.keys())
                 return self.sequences[allseqs[key]]
-            except:
-                raise Exception("You tried to access sequence num",key,"but there's only",len(self.sequences.keys()))
+            except IndexError:
+                raise IndexError("You tried to access sequence number %d "
+                                 "but there's only %d" % (key, len(allseqs)))
         else:
             return self.sequences[key]
     def __iter__(self):

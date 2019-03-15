@@ -26,16 +26,32 @@ except ImportError:
     from IMP.pmi._compat_collections import OrderedDict
 
 def _get_system_for_hier(hier):
-    """Given a top-level hierarchy, return the System that created it,
-       or None"""
-    if hasattr(hier, '_pmi2_system'):
-        return hier._pmi2_system()
+    """Given a hierarchy, return the System that created it, or None"""
+    # If we are given the raw particle, get the corresponding Hierarchy
+    # decorator if available
+    if hier and not hasattr(hier, 'get_parent'):
+        if IMP.atom.Hierarchy.get_is_setup(hier):
+            hier = IMP.atom.Hierarchy(hier)
+        else:
+            return None
+    while hier:
+        # See if we labeled the Python object directly with the System
+        if hasattr(hier, '_pmi2_system'):
+            return hier._pmi2_system()
+        # Otherwise (maybe we got a new Python wrapper around the same C++
+        # object), try all extant systems
+        for ws in IMP.pmi.topology.System._all_systems:
+            s = ws()
+            if s and s.hier == hier:
+                return s
+        # Try the next level up in the hierarchy
+        hier = hier.get_parent()
 
-def _all_protocol_outputs(representations, root_hier):
+def _all_protocol_outputs(representations, hier):
     """Iterate over all (ProtocolOutput, State) pairs for the given
-       representations (PMI1) or root hier (PMI2)"""
-    if root_hier:
-        system = _get_system_for_hier(root_hier)
+       representations (PMI1) or hier (PMI2)"""
+    if hier:
+        system = _get_system_for_hier(hier)
         if system:
             for state in system.states:
                 for p in state._protocol_output:
