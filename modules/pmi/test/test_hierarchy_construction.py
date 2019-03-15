@@ -19,31 +19,29 @@ class Tests(IMP.test.TestCase):
         chains = "AB"
         colors = [0.,  1.]
         beadsize = 20
-        fastids = IMP.pmi.tools.get_ids_from_fasta_file(fastafile)
+        sequences = IMP.pmi.topology.Sequences(fastafile)
 
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        simo = IMP.pmi.topology.System(m)
+        st = simo.create_state()
 
         for n in range(len(components)):
-            simo.create_component(components[n], color=colors[n])
-            simo.add_component_sequence(components[n], fastafile, id=fastids[n])
-            simo.autobuild_model(
-                               components[n], pdbfile, chains[n],
-                               resolutions=[1, 10], missingbeadsize=beadsize)
-            simo.setup_component_sequence_connectivity(components[n], 1)
+            mol = st.create_molecule(components[n], sequence=sequences[n])
+            atomic = mol.add_structure(pdbfile, chain_id=chains[n])
+            mol.add_representation(mol.get_atomic_residues(),
+                                   resolutions=[1, 10])
+            mol.add_representation(mol.get_non_atomic_residues(),
+                                   resolutions=[10])
+        hier = simo.build()
 
         ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(
-                                                    simo, resolution=10)
+                                        included_objects=hier, resolution=10)
         ev.add_to_model()
 
         o = IMP.pmi.output.Output()
-        o.init_rmf("conformations.rmf", [simo.prot])
+        o.init_rmf("conformations.rmf", [hier])
         o.write_rmf("conformations.rmf")
 
-        simo.optimize_floppy_bodies(1000)
-
-        o.write_rmf("conformations.rmf")
         o.close_rmf("conformations.rmf")
         os.unlink('conformations.rmf')
 

@@ -55,11 +55,25 @@ class Tests(IMP.test.TestCase):
         po = DummyPO(None)
         s.add_protocol_output(po)
         state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_representation(resolutions=[1])
         hier = s.build()
 
-        # Check mapping from Hierarchy back to System
+        # Check mapping from top-level Hierarchy back to System
         self.assertEqual(IMP.pmi.tools._get_system_for_hier(hier), s)
+        # Invalid particle
         self.assertEqual(IMP.pmi.tools._get_system_for_hier(None), None)
+        # Particle not set up by System
+        p = IMP.Particle(m)
+        self.assertEqual(IMP.pmi.tools._get_system_for_hier(p), None)
+        h = IMP.atom.Hierarchy.setup_particle(p)
+        self.assertEqual(IMP.pmi.tools._get_system_for_hier(h), None)
+        # Child particles should be OK
+        child = hier.get_child(0).get_child(0).get_child(0).get_child(0)
+        self.assertEqual(IMP.pmi.tools._get_system_for_hier(child), s)
+        child = child.get_child(3)
+        self.assertEqual(IMP.pmi.tools._get_system_for_hier(child), s)
+
         # Check mapping from Hierarchy to ProtocolOutput
         pos = list(IMP.pmi.tools._all_protocol_outputs([], hier))
         # Should be a list of (ProtocolOuput, State) tuples

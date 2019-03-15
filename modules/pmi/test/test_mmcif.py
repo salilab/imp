@@ -1,7 +1,10 @@
 from __future__ import print_function
 import IMP.test
 import IMP.pmi.representation
+import IMP.pmi.restraints.em
 import IMP.pmi.mmcif
+import IMP.pmi.dof
+import IMP.pmi.topology
 import IMP.pmi.macros
 import sys
 import os
@@ -221,58 +224,57 @@ _ihm_multi_state_modeling.details
         """Test AsymIDMapper class"""
         m = IMP.Model()
         po = DummyPO(None)
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
-        simo.add_protocol_output(po)
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        simo.create_component("Nup85", True)
-        simo.add_component_sequence("Nup85",
-                                    self.get_input_file_name("test.fasta"))
-        h1 = simo.add_component_beads("Nup84", [(1,2), (3,4)])
-        h2 = simo.add_component_beads("Nup85", [(1,2), (3,4)])
+        s = IMP.pmi.topology.System(m)
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_representation(resolutions=[1])
+        nup85 = st1.create_molecule("Nup85", "SELM", "Y")
+        nup85.add_representation(resolutions=[1])
+
+        st2 = s.create_state()
+        nup85_2 = st2.create_molecule("Nup85", "SELM", "Z")
+        nup85_2.add_representation(resolutions=[1])
+
+        hier = s.build()
 
         self.assertEqual(len(po.system.asym_units), 2)
         po.system.asym_units[0]._id = 'A'
         po.system.asym_units[1]._id = 'B'
 
-        mapper = IMP.pmi.mmcif._AsymMapper(po, simo.prot)
+        mapper = IMP.pmi.mmcif._AsymMapper(po, st1.hier)
+        h1 = IMP.atom.get_by_type(nup84.hier, IMP.atom.RESIDUE_TYPE)
+        h2 = IMP.atom.get_by_type(nup85.hier, IMP.atom.RESIDUE_TYPE)
         self.assertEqual(mapper[h1[0]]._id, 'A')
         self.assertEqual(mapper[h1[1]]._id, 'A')
         self.assertEqual(mapper[h2[0]]._id, 'B')
         self.assertEqual(mapper[h2[1]]._id, 'B')
+
         # Check handling of multiple states
-        with IMP.allow_deprecated():
-            simo2 = IMP.pmi.representation.Representation(m)
-        simo2.add_protocol_output(po)
-        simo2.create_component("Nup85", True)
-        simo2.add_component_sequence("Nup85",
-                                     self.get_input_file_name("test.fasta"))
-        h1 = simo2.add_component_beads("Nup85", [(1,2), (3,4)])
-        mapper = IMP.pmi.mmcif._AsymMapper(po, simo2.prot)
+        mapper = IMP.pmi.mmcif._AsymMapper(po, st2.hier)
         # First chain, but ID isn't "A" since it gets the same chain ID
-        # as the component in the first state (simo)
+        # as the component in the first state (nup85)
+        h1 = IMP.atom.get_by_type(nup85_2.hier, IMP.atom.RESIDUE_TYPE)
         self.assertEqual(mapper[h1[0]]._id, 'B')
 
     def test_component_mapper(self):
         """Test ComponentMapper class"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        simo.create_component("Nup85", True)
-        simo.add_component_sequence("Nup85",
-                                    self.get_input_file_name("test.fasta"))
-        h1 = simo.add_component_beads("Nup84", [(1,2), (3,4)])
-        h2 = simo.add_component_beads("Nup85", [(1,2), (3,4)])
-        mapper = IMP.pmi.mmcif._ComponentMapper(simo.prot)
-        self.assertEqual(mapper[h1[0]], 'Nup84')
-        self.assertEqual(mapper[h1[1]], 'Nup84')
-        self.assertEqual(mapper[h2[0]], 'Nup85')
-        self.assertEqual(mapper[h2[1]], 'Nup85')
+        s = IMP.pmi.topology.System(m)
+        st1 = s.create_state()
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_representation(resolutions=[1])
+        nup85 = st1.create_molecule("Nup85", "SELM", "Y")
+        nup85.add_representation(resolutions=[1])
+        hier = s.build()
+
+        mapper = IMP.pmi.mmcif._ComponentMapper(hier)
+        h1 = IMP.atom.get_by_type(nup84.hier, IMP.atom.RESIDUE_TYPE)
+        h2 = IMP.atom.get_by_type(nup85.hier, IMP.atom.RESIDUE_TYPE)
+        self.assertEqual(mapper[h1[0]], 'Nup84.0')
+        self.assertEqual(mapper[h1[1]], 'Nup84.0')
+        self.assertEqual(mapper[h2[0]], 'Nup85.0')
+        self.assertEqual(mapper[h2[1]], 'Nup85.0')
 
     def test_cif_entities(self):
         """Test _EntityMapper class"""
@@ -349,8 +351,7 @@ _ihm_multi_state_modeling.details
         assembly._id = 42
         s1 = ihm.representation.ResidueSegment(asym1, True, 'sphere')
         s2 = ihm.representation.ResidueSegment(asym2, True, 'sphere')
-        with IMP.allow_deprecated():
-            representation = ihm.representation.Representation([s1, s2])
+        representation = ihm.representation.Representation([s1, s2])
         representation._id = 99
         protocol = ihm.protocol.Protocol()
         protocol._id = 93
@@ -401,20 +402,20 @@ _ihm_sphere_obj_site.model_id
     def test_model_dumper_atom(self):
         """Test ModelDumper atom_site output"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A", resolutions=[0])
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        # Make atomic representation for residues 1-2, beads for 3-4
+        nup84.add_representation(nup84.get_atomic_residues(), resolutions=[0])
+        nup84.add_representation(nup84.get_non_atomic_residues(),
+                                 resolutions=[10])
+        hier = s.build()
 
         d = ihm.dumper._ModelDumper()
-        asym = po.asym_units['Nup84']
+        asym = po.asym_units['Nup84.0']
         assembly = ihm.Assembly([asym])
         assembly._id = 42
         s1 = ihm.representation.AtomicSegment(asym(1,2), True)
@@ -425,8 +426,8 @@ _ihm_sphere_obj_site.model_id
         protocol = ihm.protocol.Protocol()
         protocol._id = 93
         group = ihm.model.ModelGroup(name="all models")
-        state.append(group)
-        model = IMP.pmi.mmcif._Model(simo.prot, po, protocol, assembly,
+        po.system.state_groups[0][0].append(group)
+        model = IMP.pmi.mmcif._Model(hier, po, protocol, assembly,
                                      representation)
         group.append(model)
         self.assertEqual(model.get_rmsf('Nup84', (1,)), None)
@@ -489,20 +490,19 @@ _ihm_sphere_obj_site.model_id
     def test_model_dumper_sphere_rmsf(self):
         """Test ModelDumper sphere_obj output with RMSF"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(nup84.get_atomic_residues(), resolutions=[1])
+        nup84.add_representation(nup84.get_non_atomic_residues(),
+                                 resolutions=[10])
+        hier = s.build()
 
         d = ihm.dumper._ModelDumper()
-        asym = po.asym_units['Nup84']
+        asym = po.asym_units['Nup84.0']
         assembly = ihm.Assembly([asym])
         assembly._id = 42
         s = ihm.representation.FeatureSegment(asym, True, 'sphere', count=3)
@@ -511,15 +511,15 @@ _ihm_sphere_obj_site.model_id
         protocol = ihm.protocol.Protocol()
         protocol._id = 93
         group = ihm.model.ModelGroup(name='all models')
-        state.append(group)
-        model = IMP.pmi.mmcif._Model(simo.prot, po, protocol, assembly,
+        po.system.state_groups[0][0].append(group)
+        model = IMP.pmi.mmcif._Model(hier, po, protocol, assembly,
                                      representation)
         group.append(model)
         model.name = 'foo'
         model.parse_rmsf_file(self.get_input_file_name('test.nup84.rmsf'),
-                              'Nup84')
-        self.assertAlmostEqual(model.get_rmsf('Nup84', (1,)), 4.5, delta=1e-4)
-        self.assertRaises(ValueError, model.get_rmsf, 'Nup84', (1,2))
+                              'Nup84.0')
+        self.assertAlmostEqual(model.get_rmsf('Nup84.0', (1,)), 4.5, delta=1e-4)
+        self.assertRaises(ValueError, model.get_rmsf, 'Nup84.0', (1,2))
         self.assign_entity_asym_ids(po.system)
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
@@ -696,26 +696,25 @@ _ihm_starting_model_coord.ordinal_id
     def test_protocol_dumper(self):
         """Test ModelProtocolDumper output"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        # Need Repository in order to handle PDB file datasets
-        simo.add_metadata(ihm.location.Repository(doi='foo', root='.'))
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
-        mc1 = IMP.pmi.macros.ReplicaExchange0(m, simo,
-                                 monte_carlo_sample_objects=[simo],
-                                 output_objects=[simo],
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(resolutions=[1])
+        hier = s.build()
+        dof = IMP.pmi.dof.DegreesOfFreedom(m)
+        dof.create_rigid_body(nup84)
+
+        mc1 = IMP.pmi.macros.ReplicaExchange0(m, root_hier=hier,
+                                 monte_carlo_sample_objects=dof.get_movers(),
+                                 output_objects=[],
                                  test_mode=True)
         mc1.execute_macro()
-        mc2 = IMP.pmi.macros.ReplicaExchange0(m, simo,
-                                 monte_carlo_sample_objects=[simo],
-                                 output_objects=[simo],
+        mc2 = IMP.pmi.macros.ReplicaExchange0(m, root_hier=hier,
+                                 monte_carlo_sample_objects=dof.get_movers(),
+                                 output_objects=[],
                                  test_mode=True)
         mc2.execute_macro()
         fh = StringIO()
@@ -746,10 +745,52 @@ _ihm_modeling_protocol.multi_state_flag
 _ihm_modeling_protocol.ordered_flag
 _ihm_modeling_protocol.software_id
 _ihm_modeling_protocol.script_file_id
-1 1 1 1 1 'All known components & All components modeled by IMP' . Sampling
-'Replica exchange monte carlo' 0 1000 YES NO NO 1 .
-2 1 2 1 1 'All known components & All components modeled by IMP' . Sampling
-'Replica exchange monte carlo' 1000 1000 YES NO NO 1 .
+1 1 1 1 1
+'All known components & All components modeled by IMP in state State_0' .
+Sampling 'Replica exchange monte carlo' 0 1000 YES NO NO 1 .
+2 1 2 1 1
+'All known components & All components modeled by IMP in state State_0' .
+Sampling 'Replica exchange monte carlo' 1000 1000 YES NO NO 1 .
+#
+""")
+
+    def test_rex_protocol_dumper(self):
+        """Test IMP-specific replica exchange dumper output"""
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        po = DummyPO(None)
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(resolutions=[1])
+        hier = s.build()
+        dof = IMP.pmi.dof.DegreesOfFreedom(m)
+        dof.create_rigid_body(nup84)
+
+        mc1 = IMP.pmi.macros.ReplicaExchange0(m, root_hier=hier,
+                                 monte_carlo_sample_objects=dof.get_movers(),
+                                 output_objects=[],
+                                 test_mode=True,
+                                 monte_carlo_temperature=42.0,
+                                 replica_exchange_minimum_temperature=100.,
+                                 replica_exchange_maximum_temperature=200.)
+        mc1.execute_macro()
+        fh = StringIO()
+        w = ihm.format.CifWriter(fh)
+        self.assign_entity_asym_ids(po.system)
+        ihm.dumper._ProtocolDumper().finalize(po.system) # assign step IDs
+        d = IMP.pmi.mmcif._ReplicaExchangeProtocolDumper()
+        d.dump(po.system, w)
+        out = fh.getvalue()
+        self.assertEqual(out, """#
+loop_
+_imp_replica_exchange_protocol.protocol_id
+_imp_replica_exchange_protocol.step_id
+_imp_replica_exchange_protocol.monte_carlo_temperature
+_imp_replica_exchange_protocol.replica_exchange_minimum_temperature
+_imp_replica_exchange_protocol.replica_exchange_maximum_temperature
+1 1 42.000 100.000 200.000
 #
 """)
 
@@ -1946,18 +1987,18 @@ _ihm_model_representation.model_object_count
     def test_model_repr_dump_rigid(self):
         """Test ModelRepresentationDumper with rigid bodies"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
-        simo.set_rigid_body_from_hierarchies(nup84)
-        simo.set_floppy_bodies()
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(nup84.get_atomic_residues(), resolutions=[1])
+        nup84.add_representation(nup84.get_non_atomic_residues(),
+                                 resolutions=[10])
+        hier = s.build()
+        dof = IMP.pmi.dof.DegreesOfFreedom(m)
+        dof.create_rigid_body(nup84.get_atomic_residues())
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
         self.assign_entity_asym_ids(po.system)
@@ -2024,6 +2065,81 @@ _ihm_model_representation.model_object_count
         r = DummyRepr(None, None)
         state = po._add_state(r)
         self.assertEqual(state.get_postfixed_name('foo'), 'foo')
+
+    def test_read(self):
+        """Test read function"""
+        fh = StringIO("""
+loop_
+_ihm_modeling_protocol.ordinal_id
+_ihm_modeling_protocol.protocol_id
+_ihm_modeling_protocol.step_id
+_ihm_modeling_protocol.struct_assembly_id
+_ihm_modeling_protocol.dataset_group_id
+_ihm_modeling_protocol.struct_assembly_description
+_ihm_modeling_protocol.protocol_name
+_ihm_modeling_protocol.step_name
+_ihm_modeling_protocol.step_method
+_ihm_modeling_protocol.num_models_begin
+_ihm_modeling_protocol.num_models_end
+_ihm_modeling_protocol.multi_scale_flag
+_ihm_modeling_protocol.multi_state_flag
+_ihm_modeling_protocol.ordered_flag
+_ihm_modeling_protocol.software_id
+_ihm_modeling_protocol.script_file_id
+1 1 1 1 1 . Prot1 Sampling 'Monte Carlo' 0 500 YES NO NO . .
+#
+loop_
+_imp_replica_exchange_protocol.protocol_id
+_imp_replica_exchange_protocol.step_id
+_imp_replica_exchange_protocol.monte_carlo_temperature
+_imp_replica_exchange_protocol.replica_exchange_minimum_temperature
+_imp_replica_exchange_protocol.replica_exchange_maximum_temperature
+1 1 1.000 2.000 3.000
+""")
+        s, = IMP.pmi.mmcif.read(fh)
+        p1, = s.orphan_protocols
+        step = p1.steps[0]
+        self.assertIsInstance(step, IMP.pmi.mmcif._ReplicaExchangeProtocolStep)
+        self.assertAlmostEqual(step.monte_carlo_temperature, 1., delta=1e-4)
+        self.assertAlmostEqual(step.replica_exchange_minimum_temperature,
+                               2., delta=1e-4)
+        self.assertAlmostEqual(step.replica_exchange_maximum_temperature,
+                               3., delta=1e-4)
+
+    def test_gaussian_em_restraint(self):
+        """Test adding GaussianEMRestraint"""
+        m = IMP.Model()
+        po = DummyPO(EmptyObject())
+        s = IMP.pmi.topology.System(m)
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        m1 = st1.create_molecule("Prot1",sequence="QEALVVKDLL")
+        atomic_res = m1.add_structure(self.get_input_file_name('prot.pdb'),
+                                      chain_id='A', res_range=(55,63),
+                                      offset=-54)
+        fname = self.get_input_file_name("test_gmm.txt")
+        m1.add_representation(atomic_res,resolutions=[1,10],
+                              density_residues_per_component=2,
+                              density_voxel_size=3.0,
+                              density_prefix=fname[:-4])
+        hier = s.build()
+        densities = IMP.atom.Selection(hier,
+               representation_type=IMP.atom.DENSITIES).get_selected_particles()
+        self.assertEqual(len(densities), 4)
+        gem = IMP.pmi.restraints.em.GaussianEMRestraint(densities,
+                     target_fn=self.get_input_file_name('prot_gmm.mrc.1.txt'))
+        gem.add_to_model()
+
+        em3d, = po.system.restraints
+        self.assertEqual(em3d.number_of_gaussians, 1)
+        d = em3d.dataset
+        self.assertEqual(d.location.path,
+                         self.get_input_file_name('prot_gmm.mrc.1.txt'))
+        self.assertEqual(len(d.parents), 1)
+        d = d.parents[0]
+        self.assertEqual(d.location.path,
+                         self.get_input_file_name('prot_gmm.mrc'))
+
 
 if __name__ == '__main__':
     IMP.test.main()
