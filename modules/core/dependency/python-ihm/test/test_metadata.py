@@ -1,11 +1,14 @@
 import utils
 import os
 import unittest
+import warnings
 import sys
 try:
-    import urllib.request as urllib2
+    import urllib.request as urlrequest
+    import urllib.error as urlerror
 except ImportError:
-    import urllib2
+    import urllib2 as urlrequest
+    urlerror = urlrequest
 if sys.version_info[0] >= 3:
     from io import StringIO
 else:
@@ -38,30 +41,85 @@ class Tests(unittest.TestCase):
                              'Electron microscopy density map')
             self.assertEqual(dataset.location.repo, None)
 
-    def test_mrc_parser_emdb(self):
-        """Test MRCParser pointing to an MRC in EMDB"""
-        def mock_urlopen(url):
+    def test_mrc_parser_emdb_ok(self):
+        """Test MRCParser pointing to an MRC in EMDB, no network errors"""
+        def mock_urlopen(url, timeout=None):
             txt = '{"EMD-1883":[{"deposition":{"map_release_date":"2011-04-21"'\
                   ',"title":"test details"}}]}'
             return StringIO(txt)
         p = ihm.metadata.MRCParser()
         fname = utils.get_input_file_name(TOPDIR, 'emd_1883.map.mrc-header')
-
-        # Need to mock out urllib2 so we don't hit the network (expensive)
-        # every time we test
-        try:
-            orig_urlopen = urllib2.urlopen
-            urllib2.urlopen = mock_urlopen
-            d = p.parse_file(fname)
-        finally:
-            urllib2.urlopen = orig_urlopen
+        d = p.parse_file(fname)
         self.assertEqual(list(d.keys()), ['dataset'])
         dataset = d['dataset']
         self.assertEqual(dataset.data_type, '3DEM volume')
         self.assertEqual(dataset.location.db_name, 'EMDB')
         self.assertEqual(dataset.location.access_code, 'EMD-1883')
-        self.assertEqual(dataset.location.version, '2011-04-21')
-        self.assertEqual(dataset.location.details, 'test details')
+
+        # Need to mock out urllib.request so we don't hit the network
+        # (expensive) every time we test
+        try:
+            orig_urlopen = urlrequest.urlopen
+            urlrequest.urlopen = mock_urlopen
+            self.assertEqual(dataset.location.version, '2011-04-21')
+            self.assertEqual(dataset.location.details, 'test details')
+            dataset.location.version = 'my version'
+            dataset.location.details = 'my details'
+            self.assertEqual(dataset.location.version, 'my version')
+            self.assertEqual(dataset.location.details, 'my details')
+        finally:
+            urlrequest.urlopen = orig_urlopen
+
+    def test_mrc_parser_emdb_bad(self):
+        """Test MRCParser pointing to an MRC in EMDB, with a network error"""
+        def mock_urlopen(url, timeout=None):
+            raise urlerror.URLError("Mock network error")
+        p = ihm.metadata.MRCParser()
+        fname = utils.get_input_file_name(TOPDIR, 'emd_1883.map.mrc-header')
+        d = p.parse_file(fname)
+        self.assertEqual(list(d.keys()), ['dataset'])
+        dataset = d['dataset']
+        self.assertEqual(dataset.data_type, '3DEM volume')
+        self.assertEqual(dataset.location.db_name, 'EMDB')
+        self.assertEqual(dataset.location.access_code, 'EMD-1883')
+
+        # Mock out urllib.request to raise an error
+        try:
+            orig_urlopen = urlrequest.urlopen
+            urlrequest.urlopen = mock_urlopen
+            with warnings.catch_warnings(record=True) as w:
+                warnings.simplefilter("always")
+                self.assertEqual(dataset.location.version, None)
+                self.assertEqual(dataset.location.details,
+                                 'Electron microscopy density map')
+        finally:
+            urlrequest.urlopen = orig_urlopen
+        self.assertEqual(len(w), 1)
+
+    def test_mrc_parser_emdb_override(self):
+        """Test MRCParser pointing to an MRC in EMDB with overridden metadata"""
+        def mock_urlopen(url, timeout=None):
+            raise ValueError("shouldn't be here")
+        p = ihm.metadata.MRCParser()
+        fname = utils.get_input_file_name(TOPDIR, 'emd_1883.map.mrc-header')
+        d = p.parse_file(fname)
+        self.assertEqual(list(d.keys()), ['dataset'])
+        dataset = d['dataset']
+        self.assertEqual(dataset.data_type, '3DEM volume')
+        self.assertEqual(dataset.location.db_name, 'EMDB')
+        self.assertEqual(dataset.location.access_code, 'EMD-1883')
+        # Set version manually; should prevent network access below
+        dataset.location.version = 'foo'
+
+        # Mock out urllib.request to raise an error
+        try:
+            orig_urlopen = urlrequest.urlopen
+            urlrequest.urlopen = mock_urlopen
+            self.assertEqual(dataset.location.version, 'foo')
+            self.assertEqual(dataset.location.details,
+                             'Electron microscopy density map')
+        finally:
+            urlrequest.urlopen = orig_urlopen
 
     def _parse_pdb(self, fname):
         p = ihm.metadata.PDBParser()

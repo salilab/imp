@@ -627,13 +627,25 @@ class _ChemDescriptorHandler(Handler):
 class _EntityHandler(Handler):
     category = '_entity'
 
+    def __init__(self, *args):
+        super(_EntityHandler, self).__init__(*args)
+        self.src_map = dict(
+            (x[1].src_method.lower(), x[1])
+            for x in inspect.getmembers(ihm, inspect.isclass)
+            if issubclass(x[1], ihm.EntitySource)
+            and x[1] is not ihm.EntitySource)
+
     def __call__(self, id, details, type, src_method, formula_weight,
                  pdbx_description, pdbx_number_of_molecules):
         s = self.sysr.entities.get_by_id(id)
         self.copy_if_present(s, locals(),
-                keys=('details', 'src_method'),
+                keys=('details',),
                 mapkeys={'pdbx_description':'description',
                          'pdbx_number_of_molecules':'number_of_molecules'})
+        if src_method:
+            source_cls = self.src_map.get(src_method.lower(), None)
+            if source_cls:
+                s.source = source_cls()
 
 
 class _EntityPolySeqHandler(Handler):
@@ -685,14 +697,17 @@ class _AssemblyHandler(Handler):
         parent_id = parent_assembly_id
         if parent_id and parent_id != a_id and not a.parent:
             a.parent = self.sysr.assemblies.get_by_id(parent_id)
-        seqrng = (int(seq_id_begin), int(seq_id_end))
-        asym_id = asym_id
+        def handle_range(obj):
+            # seq_id_range can be None for assemblies of nonpolymers - treat as
+            # complete entity/asym
+            if seq_id_begin is None or seq_id_end is None:
+                return obj
+            else:
+                return obj(int(seq_id_begin), int(seq_id_end))
         if asym_id:
-            asym = self.sysr.asym_units.get_by_id(asym_id)
-            a.append(asym(*seqrng))
+            a.append(handle_range(self.sysr.asym_units.get_by_id(asym_id)))
         else:
-            entity = self.sysr.entities.get_by_id(entity_id)
-            a.append(entity(*seqrng))
+            a.append(handle_range(self.sysr.entities.get_by_id(entity_id)))
 
     def finalize(self):
         # Any EntityRange or AsymUnitRange which covers an entire entity,
