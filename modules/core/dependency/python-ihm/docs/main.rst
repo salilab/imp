@@ -57,6 +57,18 @@ The :mod:`ihm` Python module
 .. autoclass:: DNAAlphabet
    :members:
 
+.. autoclass:: EntitySource
+   :members:
+
+.. autoclass:: ManipulatedEntitySource
+   :members:
+
+.. autoclass:: NaturalEntitySource
+   :members:
+
+.. autoclass:: SyntheticEntitySource
+   :members:
+
 .. autoclass:: Entity
    :members:
 

@@ -17,14 +17,19 @@ from .format import CifWriter
 import operator
 import struct
 import json
+import warnings
 import sys
 import re
 
 # Handle different naming of urllib in Python 2/3
 try:
-    import urllib.request as urllib2
+    import urllib.request
+    import urllib.error
 except ImportError:
-    import urllib2
+    class MockUrlLib(object):
+        pass
+    urllib = MockUrlLib()
+    urllib.request = urllib.error = __import__('urllib2')
 
 class Parser(object):
     """Base class for all metadata parsers."""
@@ -49,35 +54,16 @@ class MRCParser(Parser):
                     otherwise to the file itself.
 
            If the file turns out to be an EMDB entry, this will also query
-           the EMDB web API to extract version information and details for the
-           dataset.
+           the EMDB web API (if available) to extract version information
+           and details for the dataset.
         """
         emdb = self._get_emdb(filename)
         if emdb:
-            version, details = self._get_emdb_info(emdb)
-            l = location.EMDBLocation(emdb, version=version,
-                                      details=details if details
-                                         else "Electron microscopy density map")
+            l = _ParsedEMDBLocation(emdb)
         else:
             l = location.InputFileLocation(filename,
                                       details="Electron microscopy density map")
         return {'dataset': dataset.EMDensityDataset(l)}
-
-    def _get_emdb_info(self, emdb):
-        """Query EMDB API and return version & details of a given entry"""
-        req = urllib2.Request('https://www.ebi.ac.uk/pdbe/api/emdb/entry/'
-                              'summary/%s' % emdb, None, {})
-        response = urllib2.urlopen(req)
-        contents = json.load(response)
-        keys = list(contents.keys())
-        info = contents[keys[0]][0]['deposition']
-        # JSON values are always Unicode, but on Python 2 we want non-Unicode
-        # strings, so convert to ASCII
-        if sys.version_info[0] < 3:
-            return (info['map_release_date'].encode('ascii'),
-                    info['title'].encode('ascii'))
-        else:
-            return info['map_release_date'], info['title']
 
     def _get_emdb(self, filename):
         """Return the EMDB id of the file, or None."""
@@ -99,6 +85,60 @@ class MRCParser(Parser):
                         return m.group(1)
                     else:
                         return m.group(1).decode('ascii')
+
+
+class _ParsedEMDBLocation(location.EMDBLocation):
+    """Like an EMDBLocation, but looks up version and details from EMDB
+       when they are requested (unless they are set to other values)."""
+    def __init__(self, emdb):
+        self.__emdb_info = None
+        super(_ParsedEMDBLocation, self).__init__(
+                                      db_code=emdb, version=None,
+                                      details=None)
+        self.__emdb_info = None
+
+    def __get_version(self):
+        self._get_emdb_info()
+        return self.__emdb_info[0]
+    def __set_version(self, val):
+        if self.__emdb_info is None:
+            self.__emdb_info = [None, None]
+        self.__emdb_info[0] = val
+    def __get_details(self):
+        self._get_emdb_info()
+        return self.__emdb_info[1] or "Electron microscopy density map"
+    def __set_details(self, val):
+        if self.__emdb_info is None:
+            self.__emdb_info = [None, None]
+        self.__emdb_info[1] = val
+
+    def _get_emdb_info(self):
+        """Query EMDB API and get version & details of a given entry"""
+        if self.__emdb_info is not None:
+            return
+        req = urllib.request.Request(
+                'https://www.ebi.ac.uk/pdbe/api/emdb/entry/summary/%s'
+                % self.access_code, None, {})
+        try:
+            response = urllib.request.urlopen(req, timeout=10)
+        except urllib.error.URLError as err:
+            warnings.warn("EMDB API query failed; using default metadata "
+                          "for MRC file; %s" % str(err))
+            self.__emdb_info = [None, None]
+            return
+        contents = json.load(response)
+        keys = list(contents.keys())
+        info = contents[keys[0]][0]['deposition']
+        # JSON values are always Unicode, but on Python 2 we want non-Unicode
+        # strings, so convert to ASCII
+        if sys.version_info[0] < 3:
+            self.__emdb_info = [info['map_release_date'].encode('ascii'),
+                                info['title'].encode('ascii')]
+        else:
+            self.__emdb_info = [info['map_release_date'], info['title']]
+
+    version = property(__get_version, __set_version)
+    details = property(__get_details, __set_details)
 
 
 class PDBParser(Parser):

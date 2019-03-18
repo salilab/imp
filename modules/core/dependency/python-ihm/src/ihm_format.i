@@ -148,23 +148,17 @@ struct ihm_file *ihm_file_new_from_python(PyObject *pyfile,
 {
   PyObject *read_method;
 
-#if !defined(_WIN32) && !defined(_WIN64)
+#if !defined(_WIN32) && !defined(_WIN64) && PY_VERSION_HEX < 0x03000000
   /* Use the file descriptor directly if the Python file is a real file,
      except on Windows where we can't reliably tell if we and Python are
-     using the same C runtime (if we're not, we can't pass file descriptors)  */
-#if PY_VERSION_HEX >= 0x03000000
-  int fd = PyObject_AsFileDescriptor(pyfile);
-  if (fd == -1) {
-    PyErr_Clear();
-  } else {
-    return ihm_file_new_from_fd(fd);
-  }
-#else
+     using the same C runtime (if we're not, we can't pass file descriptors),
+     or on Python 3 where the file descriptor may not be correct
+     (e.g. PyObject_AsFileDescriptor() returns a valid descriptor for a
+     file opened with gzip.open()) */
   if (PyFile_Check(pyfile)) {
     int fd = fileno(PyFile_AsFile(pyfile));
     return ihm_file_new_from_fd(fd);
   }
-#endif
 #endif
 
   /* Otherwise, look for a read() method and use that */

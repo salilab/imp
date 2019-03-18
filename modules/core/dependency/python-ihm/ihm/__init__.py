@@ -81,7 +81,7 @@ class System(object):
         #: The assembly of the entire system. By convention this is always
         #: the first assembly in the mmCIF file (assembly_id=1). Note that
         #: currently this isn't filled in on output until dumper.write()
-        #: is called. See :class:`Assembly`
+        #: is called. See :class:`Assembly`.
         self.complete_assembly = Assembly((), name='Complete assembly',
                                           description='All known components')
 
@@ -785,6 +785,30 @@ class DNAAlphabet(Alphabet):
                       'C10 H15 N2 O8 P')])
 
 
+class EntitySource(object):
+    """Base class to describe the source of an :class:`Entity`.
+       See :class:`ManipulatedEntitySource`,
+       :class:`NaturalEntitySource` and :class:`SyntheticEntitySource`.
+    """
+    src_method = None
+
+
+class ManipulatedEntitySource(EntitySource):
+    """An entity isolated from a genetically manipulated source.
+       See :class:`Entity`."""
+    src_method = 'man'
+
+
+class NaturalEntitySource(EntitySource):
+    """An entity isolated from a natural source. See :class:`Entity`."""
+    src_method = 'nat'
+
+
+class SyntheticEntitySource(EntitySource):
+    """An entity obtained synthetically. See :class:`Entity`."""
+    src_method = 'syn'
+
+
 class EntityRange(object):
     """Part of an entity. Usually these objects are created from
        an :class:`Entity`, e.g. to get a range covering residues 4 through
@@ -859,6 +883,9 @@ class Entity(object):
        :type alphabet: :class:`Alphabet`
        :param str description: A short text name for the sequence.
        :param str details: Longer text describing the sequence.
+       :param source: The method by which the sample for this entity was
+              produced.
+       :type source: :class:`EntitySource`
 
        The sequence for an entity can be specified explicitly as a set of
        chemical components, or (more usually) as a list or string of codes.
@@ -881,7 +908,6 @@ class Entity(object):
        see :attr:`System.entities`.
     """
 
-    src_method = 'man'
     number_of_molecules = 1
 
     def __get_type(self):
@@ -890,6 +916,18 @@ class Entity(object):
         else:
             return 'water' if self.sequence[0].code == 'HOH' else 'non-polymer'
     type = property(__get_type)
+
+    def __get_src_method(self):
+        if self.source:
+            return self.source.src_method
+        elif self.type == 'water':
+            return 'nat'
+        else:
+            return 'man'
+    def __set_src_method(self, val):
+        raise TypeError("src_method is read-only; assign an appropriate "
+                        "subclass of EntitySource to source instead")
+    src_method = property(__get_src_method, __set_src_method)
 
     def __get_weight(self):
         weight = 0.
@@ -904,7 +942,7 @@ class Entity(object):
     formula_weight = property(__get_weight, doc="Formula weight")
 
     def __init__(self, sequence, alphabet=LPeptideAlphabet,
-                 description=None, details=None):
+                 description=None, details=None, source=None):
         def get_chem_comp(s):
             if isinstance(s, ChemComp):
                 return s
@@ -912,6 +950,7 @@ class Entity(object):
                 return alphabet._comps[s]
         self.sequence = tuple(get_chem_comp(s) for s in sequence)
         self.description, self.details = description, details
+        self.source = source
 
     def is_polymeric(self):
         """Return True iff this entity represents a polymer, such as an

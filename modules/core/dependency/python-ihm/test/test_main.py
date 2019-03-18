@@ -200,6 +200,28 @@ class Tests(unittest.TestCase):
         self.assertEqual(water.type, 'water')
         self.assertFalse(water.is_polymeric())
 
+    def test_entity_src_method_default(self):
+        """Test default values of Entity.src_method"""
+        protein = ihm.Entity('AHCD')
+        water = ihm.Entity([ihm.WaterChemComp()])
+        self.assertEqual(protein.src_method, "man")
+        self.assertEqual(water.src_method, "nat")
+        # src_method is readonly
+        def try_set():
+            protein.src_method = 'foo'
+        self.assertRaises(TypeError, try_set)
+
+    def test_entity_source(self):
+        """Test setting Entity source"""
+        man = ihm.Entity('AHCD', source=ihm.ManipulatedEntitySource())
+        self.assertEqual(man.src_method, "man")
+
+        nat = ihm.Entity('AHCD', source=ihm.NaturalEntitySource())
+        self.assertEqual(nat.src_method, "nat")
+
+        syn = ihm.Entity('AHCD', source=ihm.SyntheticEntitySource())
+        self.assertEqual(syn.src_method, "syn")
+
     def test_software(self):
         """Test Software class"""
         s1 = ihm.Software(name='foo', version='1.0',

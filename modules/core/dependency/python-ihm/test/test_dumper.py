@@ -249,8 +249,12 @@ auth4 4
     def test_entity_dumper(self):
         """Test EntityDumper"""
         system = ihm.System()
-        system.entities.append(ihm.Entity('AHC', description='foo'))
-        system.entities.append(ihm.Entity('AHCD', description='baz'))
+        system.entities.append(ihm.Entity('AHC', description='foo',
+                                          source=ihm.ManipulatedEntitySource()))
+        system.entities.append(ihm.Entity('AHCD', description='baz',
+                                          source=ihm.NaturalEntitySource()))
+        system.entities.append(ihm.Entity('AHD', description='bar',
+                                          source=ihm.SyntheticEntitySource()))
         dumper = ihm.dumper._EntityDumper()
         dumper.finalize(system) # Assign IDs
         out = _get_dumper_output(dumper, system)
@@ -264,7 +268,8 @@ _entity.formula_weight
 _entity.pdbx_number_of_molecules
 _entity.details
 1 polymer man foo 366.413 1 .
-2 polymer man baz 499.516 1 .
+2 polymer nat baz 499.516 1 .
+3 polymer syn bar 378.362 1 .
 #
 """)
 
