@@ -651,6 +651,8 @@ class MPI_values(object):
 
 
 
+@IMP.deprecated_object(2.11,
+        "If you use this class please let the PMI developers know.")
 class PyMCMover(object):
     # only works if the sampled particles are rigid bodies
 
@@ -689,6 +691,8 @@ class PyMCMover(object):
         self.n_mc_steps = nsteps
 
 
+@IMP.deprecated_object(2.11,
+        "If you use this class please let the PMI developers know.")
 class PyMC(object):
 
     def __init__(self, model):
