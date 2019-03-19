@@ -833,6 +833,9 @@ class _AllStartingModels(object):
                 self.simo.system.locations.append(t.alignment_file)
             if t.dataset:
                 self.simo._add_dataset(t.dataset)
+        source = r['entity_source'].get(f.chain)
+        if source:
+            f.asym_unit.entity.source = source
         pmi_offset = f.asym_unit.entity.pmi_offset
         m = _StartingModel(
                     asym_unit=f.asym_unit.asym.pmi_range(f.start + f.offset,
@@ -1632,3 +1635,32 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):
        reads PMI-specific information from the mmCIF or BinaryCIF file."""
     return ihm.reader.read(fh, model_class=model_class, format=format,
                            handlers=[_ReplicaExchangeProtocolHandler]+handlers)
+
+
+class GMMParser(ihm.metadata.Parser):
+    """Extract metadata from an EM density GMM file."""
+
+    def parse_file(self, filename):
+        """Extract metadata from `filename`.
+           @return a dict with key `dataset` pointing to the GMM file and
+           `number_of_gaussians` to the number of GMMs (or None)"""
+        l = ihm.location.InputFileLocation(filename,
+                details="Electron microscopy density map, "
+                        "represented as a Gaussian Mixture Model (GMM)")
+        # A 3DEM restraint's dataset ID uniquely defines the mmCIF restraint, so
+        # we need to allow duplicates
+        l._allow_duplicates = True
+        d = ihm.dataset.EMDensityDataset(l)
+        ret = {'dataset':d, 'number_of_gaussians':None}
+
+        with open(filename) as fh:
+            for line in fh:
+                if line.startswith('# data_fn: '):
+                    p = ihm.metadata.MRCParser()
+                    fn = line[11:].rstrip('\r\n')
+                    dataset = p.parse_file(os.path.join(
+                                     os.path.dirname(filename), fn))['dataset']
+                    ret['dataset'].parents.append(dataset)
+                elif line.startswith('# ncenters: '):
+                    ret['number_of_gaussians'] = int(line[12:])
+        return ret

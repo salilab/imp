@@ -2106,6 +2106,23 @@ _imp_replica_exchange_protocol.replica_exchange_maximum_temperature
         self.assertAlmostEqual(step.replica_exchange_maximum_temperature,
                                3., delta=1e-4)
 
+    def test_gmm_parser_local_mrc(self):
+        """Test GMMParser pointing to a locally-available MRC file"""
+        p = IMP.pmi.mmcif.GMMParser()
+        fname = self.get_input_file_name('prot_gmm.mrc.1.txt')
+        m = p.parse_file(fname)
+        self.assertEqual(m['number_of_gaussians'], 1)
+        self.assertEqual(m['dataset'].data_type, '3DEM volume')
+        self.assertEqual(m['dataset'].location.path, fname)
+        self.assertIs(m['dataset'].location.repo, None)
+        parent, = m['dataset'].parents
+        self.assertEqual(parent.data_type, '3DEM volume')
+        self.assertEqual(parent.location.path,
+                         self.get_input_file_name('prot_gmm.mrc'))
+        self.assertEqual(parent.location.details,
+                         'Electron microscopy density map')
+        self.assertIs(parent.location.repo, None)
+
     def test_gaussian_em_restraint(self):
         """Test adding GaussianEMRestraint"""
         m = IMP.Model()
