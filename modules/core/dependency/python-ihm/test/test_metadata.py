@@ -141,6 +141,15 @@ class Tests(unittest.TestCase):
                          'STRUCTURE OF THE YEAST NUCLEAR EXOSOME COMPONENT, '
                          'RRP6P, REVEALS AN INTERPLAY BETWEEN THE ACTIVE '
                          'SITE AND THE HRDC DOMAIN')
+        es = p['entity_source']
+        self.assertEqual(sorted(es.keys()), ['A', 'B', 'C'])
+        self.assertEqual(es['B'], es['C'])
+        self.assertEqual(es['A'].gene.scientific_name, 'MUS MUSCULUS')
+        self.assertEqual(es['A'].gene.ncbi_taxonomy_id, '10090')
+        self.assertEqual(es['A'].host.scientific_name, 'ESCHERICHIA COLI')
+        self.assertEqual(es['A'].host.ncbi_taxonomy_id, '562')
+        self.assertEqual(es['B'].scientific_name, 'ESCHERICHIA COLI')
+        self.assertEqual(es['B'].ncbi_taxonomy_id, '562')
 
     def test_derived_pdb(self):
         """Test PDBarser when given a file derived from a PDB"""
@@ -148,6 +157,7 @@ class Tests(unittest.TestCase):
         p = self._parse_pdb(pdbname)
         self.assertEqual(p['templates'], {})
         self.assertEqual(p['script'], None)
+        self.assertEqual(p['entity_source'], {})
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Experimental model')
         self.assertEqual(dataset.location.path, pdbname)

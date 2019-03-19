@@ -363,6 +363,74 @@ _entity.details
             self.assertEqual(e3.source, None)
             self.assertEqual(e4.source, None)
 
+    def test_entity_src_gen_handler(self):
+        """Test EntitySrcGenHandler"""
+        entity = """
+loop_
+_entity.id
+_entity.type
+_entity.src_method
+_entity.pdbx_description
+_entity.pdbx_number_of_molecules
+_entity.formula_weight
+_entity.details
+1 polymer man Nup84 2 100.0 .
+"""
+        src_gen = """
+_entity_src_gen.entity_id 1
+_entity_src_gen.pdbx_src_id 42
+_entity_src_gen.pdbx_gene_src_scientific_name 'test latin name'
+_entity_src_gen.pdbx_gene_src_ncbi_taxonomy_id 1234
+_entity_src_gen.pdbx_host_org_scientific_name 'host latin name'
+_entity_src_gen.pdbx_host_org_ncbi_taxonomy_id 5678
+"""
+        # Order of the categories shouldn't matter
+        cif1 = entity + src_gen
+        cif2 = src_gen + entity
+        for cif in cif1, cif2:
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                e, = s.entities
+                self.assertEqual(e.source.src_method, 'man')
+                self.assertEqual(e.source._id, '42')
+                self.assertEqual(e.source.host.ncbi_taxonomy_id, '5678')
+                self.assertEqual(e.source.host.scientific_name,
+                                 'host latin name')
+                self.assertEqual(e.source.gene.ncbi_taxonomy_id, '1234')
+                self.assertEqual(e.source.gene.scientific_name,
+                                 'test latin name')
+
+    def test_entity_src_nat_handler(self):
+        """Test EntitySrcNatHandler"""
+        entity = """
+loop_
+_entity.id
+_entity.type
+_entity.src_method
+_entity.pdbx_description
+_entity.pdbx_number_of_molecules
+_entity.formula_weight
+_entity.details
+1 polymer man Nup84 2 100.0 .
+"""
+        src_nat = """
+_entity_src_nat.entity_id 1
+_entity_src_nat.pdbx_src_id 42
+_entity_src_nat.pdbx_organism_scientific 'test latin name'
+_entity_src_nat.pdbx_ncbi_taxonomy_id 5678
+"""
+        # Order of the categories shouldn't matter
+        cif1 = entity + src_nat
+        cif2 = src_nat + entity
+        for cif in cif1, cif2:
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                e, = s.entities
+                self.assertEqual(e.source.src_method, 'nat')
+                self.assertEqual(e.source._id, '42')
+                self.assertEqual(e.source.ncbi_taxonomy_id, '5678')
+                self.assertEqual(e.source.scientific_name, 'test latin name')
+
     def test_asym_unit_handler(self):
         """Test AsymUnitHandler"""
         cif = """

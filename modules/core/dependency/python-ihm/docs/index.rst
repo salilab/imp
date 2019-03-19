@@ -27,6 +27,7 @@ API Reference:
    :maxdepth: 1
 
    main
+   source
    location
    dataset
    metadata
