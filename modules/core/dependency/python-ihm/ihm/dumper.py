@@ -7,6 +7,7 @@ import ihm.format
 import ihm.format_bcif
 import ihm.model
 import ihm.representation
+import ihm.source
 from . import util
 from . import location
 from . import restraint
@@ -206,6 +207,65 @@ class _EntityDumper(Dumper):
                         formula_weight=entity.formula_weight,
                         pdbx_number_of_molecules=entity.number_of_molecules,
 			details=entity.details)
+
+
+class _EntitySrcGenDumper(Dumper):
+    def finalize(self, system):
+        # Assign IDs
+        seen_src = {}
+        src_by_id = []
+        for e in system.entities:
+            if isinstance(e.source, ihm.source.Manipulated):
+                util._remove_id(e.source)
+        for e in system.entities:
+            if isinstance(e.source, ihm.source.Manipulated):
+                util._assign_id(e.source, seen_src, src_by_id)
+
+    def dump(self, system, writer):
+        with writer.loop("_entity_src_gen",
+                ["entity_id", "pdbx_src_id", "pdbx_gene_src_ncbi_taxonomy_id",
+                 "pdbx_gene_src_scientific_name",
+                 "pdbx_host_org_ncbi_taxonomy_id",
+                 "pdbx_host_org_scientific_name"]) as l:
+            for e in system.entities:
+                if isinstance(e.source, ihm.source.Manipulated):
+                    self._dump_source(l, e)
+
+    def _dump_source(self, l, e):
+        s = e.source
+        l.write(entity_id=e._id, pdbx_src_id=s._id,
+                pdbx_gene_src_ncbi_taxonomy_id=s.gene.ncbi_taxonomy_id
+                                               if s.gene else None,
+                pdbx_gene_src_scientific_name=s.gene.scientific_name
+                                               if s.gene else None,
+                pdbx_host_org_ncbi_taxonomy_id=s.host.ncbi_taxonomy_id
+                                               if s.host else None,
+                pdbx_host_org_scientific_name=s.host.scientific_name
+                                               if s.host else None)
+
+
+class _EntitySrcNatDumper(Dumper):
+    def finalize(self, system):
+        # Assign IDs
+        seen_src = {}
+        src_by_id = []
+        for e in system.entities:
+            if isinstance(e.source, ihm.source.Natural):
+                util._remove_id(e.source)
+        for e in system.entities:
+            if isinstance(e.source, ihm.source.Natural):
+                util._assign_id(e.source, seen_src, src_by_id)
+
+    def dump(self, system, writer):
+        with writer.loop("_entity_src_nat",
+                ["entity_id", "pdbx_src_id", "pdbx_ncbi_taxonomy_id",
+                 "pdbx_organism_scientific"]) as l:
+            for e in system.entities:
+                s = e.source
+                if isinstance(s, ihm.source.Natural):
+                    l.write(entity_id=e._id, pdbx_src_id=s._id,
+                            pdbx_ncbi_taxonomy_id=s.ncbi_taxonomy_id,
+                            pdbx_organism_scientific=s.scientific_name)
 
 
 def _prettyprint_seq(seq, width):
@@ -1849,7 +1909,7 @@ def write(fh, systems, format='mmCIF', dumpers=[]):
                _CitationDumper(),
                _AuditAuthorDumper(),
                _ChemCompDumper(), _ChemDescriptorDumper(),
-               _EntityDumper(),
+               _EntityDumper(), _EntitySrcGenDumper(), _EntitySrcNatDumper(),
                _EntityPolyDumper(),
                _EntityNonPolyDumper(),
                _EntityPolySeqDumper(),

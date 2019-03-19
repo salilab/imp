@@ -17,6 +17,7 @@ import ihm
 import ihm.location
 import ihm.representation
 import ihm.model
+import ihm.source
 
 class Tests(unittest.TestCase):
     def test_system(self):
@@ -213,13 +214,13 @@ class Tests(unittest.TestCase):
 
     def test_entity_source(self):
         """Test setting Entity source"""
-        man = ihm.Entity('AHCD', source=ihm.ManipulatedEntitySource())
+        man = ihm.Entity('AHCD', source=ihm.source.Manipulated())
         self.assertEqual(man.src_method, "man")
 
-        nat = ihm.Entity('AHCD', source=ihm.NaturalEntitySource())
+        nat = ihm.Entity('AHCD', source=ihm.source.Natural())
         self.assertEqual(nat.src_method, "nat")
 
-        syn = ihm.Entity('AHCD', source=ihm.SyntheticEntitySource())
+        syn = ihm.Entity('AHCD', source=ihm.source.Synthetic())
         self.assertEqual(syn.src_method, "syn")
 
     def test_software(self):

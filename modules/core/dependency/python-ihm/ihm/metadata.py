@@ -13,6 +13,7 @@
 import ihm
 from . import location, dataset, startmodel, util
 from .format import CifWriter
+import ihm.source
 
 import operator
 import struct
@@ -157,6 +158,8 @@ class PDBParser(Parser):
                     IDs in the PDB file and values the list of comparative model
                     templates used to model that chain as
                     :class:`ihm.startmodel.Template` objects;
+                    'entity_source' pointing to a dict with keys the asym IDs
+                    and values :class:`ihm.source.Source` objects;
                     'software' pointing to a list of software used to generate
                     the file (as :class:`ihm.Software` objects);
                     'script' pointing to the script used to generate the
@@ -211,7 +214,8 @@ class PDBParser(Parser):
                REMARK   6 TEMPLATE: 3f3fG 482:G - 551:G MODELS 429:A - 488:A AT 10.0%
                REMARK   6 TEMPLATE: custom1 9:A - 352:A MODELS 80:A - 414:A AT 32.0%
         """
-        ret = {'templates':{}, 'software':[], 'metadata':[], 'script':None}
+        ret = {'templates':{}, 'software':[], 'metadata':[], 'script':None,
+               'entity_source':{}}
         with open(filename) as fh:
             first_line = fh.readline()
             local_file = location.InputFileLocation(filename,
@@ -242,8 +246,10 @@ class PDBParser(Parser):
 
     def _parse_official_pdb(self, fh, first_line, ret):
         """Handle a file that's from the official PDB database."""
-        version, details, metadata = self._parse_pdb_records(fh, first_line)
+        version, details, metadata, entity_source \
+                                = self._parse_pdb_records(fh, first_line)
         l = location.PDBLocation(first_line[62:66].strip(), version, details)
+        ret['entity_source'] = entity_source
         ret['metadata'] = metadata
         ret['dataset'] = dataset.PDBDataset(l)
 
@@ -401,13 +407,64 @@ class PDBParser(Parser):
         """Extract information from an official PDB"""
         metadata = []
         details = ''
+        compnd = ''
+        source = ''
         for line in fh:
             if line.startswith('TITLE'):
                 details += line[10:].rstrip()
+            elif line.startswith('COMPND'):
+                compnd += line[10:].rstrip()
+            elif line.startswith('SOURCE'):
+                source += line[10:].rstrip()
             elif line.startswith('HELIX'):
                 metadata.append(startmodel.PDBHelix(line))
         return (first_line[50:59].strip(),
-                details if details else None, metadata)
+                details if details else None, metadata,
+                self._make_entity_source(compnd, source))
+
+    def _make_one_entity_source(self, compnd, source):
+        """Make a single ihm.source.Source object"""
+        engineered = compnd.get('ENGINEERED', None) == 'YES'
+        if engineered:
+            gene = ihm.source.Details(
+                    scientific_name=source.get('ORGANISM_SCIENTIFIC'),
+                    ncbi_taxonomy_id=source.get('ORGANISM_TAXID'))
+            host = ihm.source.Details(
+                    scientific_name=source.get('EXPRESSION_SYSTEM'),
+                    ncbi_taxonomy_id=source.get('EXPRESSION_SYSTEM_TAXID'))
+            return ihm.source.Manipulated(gene=gene, host=host)
+        else:
+            return ihm.source.Natural(
+                    scientific_name=source.get('ORGANISM_SCIENTIFIC'),
+                    ncbi_taxonomy_id=source.get('ORGANISM_TAXID'))
+
+    def _make_entity_source(self, compnd, source):
+        """Make ihm.source.Source objects given PDB COMPND and SOURCE lines"""
+        entity_source = {}
+        # Convert each string into dict of mol_id vs keys
+        compnd = self._parse_pdb_mol_id(compnd)
+        source = self._parse_pdb_mol_id(source)
+        for mol_id, c in compnd.items():
+            if mol_id in source and 'CHAIN' in c:
+                s = self._make_one_entity_source(c, source[mol_id])
+                for chain in c['CHAIN'].split(','):
+                    entity_source[chain.strip()] = s
+        return entity_source
+
+    def _parse_pdb_mol_id(self, txt):
+        """Convert text COMPND or SOURCE records to a dict of mol_id vs keys"""
+        d = {}
+        mol_id = None
+        for pair in txt.split(';'):
+            spl = pair.split(':')
+            if len(spl) == 2:
+                key = spl[0].upper().strip()
+                val = spl[1].upper().strip()
+                if key == 'MOL_ID':
+                    mol_id = d[val] = {}
+                elif mol_id is not None:
+                    mol_id[key] = val
+        return d
 
     def _parse_details(self, fh):
         """Extract TITLE records from a PDB file"""

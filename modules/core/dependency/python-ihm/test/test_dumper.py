@@ -20,6 +20,7 @@ import ihm.analysis
 import ihm.model
 import ihm.restraint
 import ihm.geometry
+import ihm.source
 
 from test_format_bcif import MockFh, MockMsgPack
 
@@ -250,11 +251,11 @@ auth4 4
         """Test EntityDumper"""
         system = ihm.System()
         system.entities.append(ihm.Entity('AHC', description='foo',
-                                          source=ihm.ManipulatedEntitySource()))
+                                          source=ihm.source.Manipulated()))
         system.entities.append(ihm.Entity('AHCD', description='baz',
-                                          source=ihm.NaturalEntitySource()))
+                                          source=ihm.source.Natural()))
         system.entities.append(ihm.Entity('AHD', description='bar',
-                                          source=ihm.SyntheticEntitySource()))
+                                          source=ihm.source.Synthetic()))
         dumper = ihm.dumper._EntityDumper()
         dumper.finalize(system) # Assign IDs
         out = _get_dumper_output(dumper, system)
@@ -280,6 +281,57 @@ _entity.details
         system.entities.append(ihm.Entity('AHC'))
         dumper = ihm.dumper._EntityDumper()
         self.assertRaises(ValueError, dumper.finalize, system)
+
+    def test_entity_src_nat_dumper(self):
+        """Test EntitySrcNatDumper"""
+        system = ihm.System()
+        system.entities.append(ihm.Entity('AHC', description='foo',
+                                          source=ihm.source.Manipulated()))
+        s = ihm.source.Natural(ncbi_taxonomy_id='1234',
+                               scientific_name='Test latin name')
+        system.entities.append(ihm.Entity('AHCD', description='baz',
+                                          source=s))
+        ihm.dumper._EntityDumper().finalize(system)
+        dumper = ihm.dumper._EntitySrcNatDumper()
+        dumper.finalize(system) # Assign IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_entity_src_nat.entity_id
+_entity_src_nat.pdbx_src_id
+_entity_src_nat.pdbx_ncbi_taxonomy_id
+_entity_src_nat.pdbx_organism_scientific
+2 1 1234 'Test latin name'
+#
+""")
+
+    def test_entity_src_gen_dumper(self):
+        """Test EntitySrcGenDumper"""
+        system = ihm.System()
+        system.entities.append(ihm.Entity('AHC', description='foo',
+                                          source=ihm.source.Natural()))
+        gene = ihm.source.Details(ncbi_taxonomy_id='1234',
+                                  scientific_name='Test latin name')
+        host = ihm.source.Details(ncbi_taxonomy_id='5678',
+                                  scientific_name='Other latin name')
+        s = ihm.source.Manipulated(gene=gene, host=host)
+        system.entities.append(ihm.Entity('AHCD', description='baz',
+                                          source=s))
+        ihm.dumper._EntityDumper().finalize(system)
+        dumper = ihm.dumper._EntitySrcGenDumper()
+        dumper.finalize(system) # Assign IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_entity_src_gen.entity_id
+_entity_src_gen.pdbx_src_id
+_entity_src_gen.pdbx_gene_src_ncbi_taxonomy_id
+_entity_src_gen.pdbx_gene_src_scientific_name
+_entity_src_gen.pdbx_host_org_ncbi_taxonomy_id
+_entity_src_gen.pdbx_host_org_scientific_name
+2 1 1234 'Test latin name' 5678 'Other latin name'
+#
+""")
 
     def test_chem_comp_dumper(self):
         """Test ChemCompDumper"""

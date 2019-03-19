@@ -785,30 +785,6 @@ class DNAAlphabet(Alphabet):
                       'C10 H15 N2 O8 P')])
 
 
-class EntitySource(object):
-    """Base class to describe the source of an :class:`Entity`.
-       See :class:`ManipulatedEntitySource`,
-       :class:`NaturalEntitySource` and :class:`SyntheticEntitySource`.
-    """
-    src_method = None
-
-
-class ManipulatedEntitySource(EntitySource):
-    """An entity isolated from a genetically manipulated source.
-       See :class:`Entity`."""
-    src_method = 'man'
-
-
-class NaturalEntitySource(EntitySource):
-    """An entity isolated from a natural source. See :class:`Entity`."""
-    src_method = 'nat'
-
-
-class SyntheticEntitySource(EntitySource):
-    """An entity obtained synthetically. See :class:`Entity`."""
-    src_method = 'syn'
-
-
 class EntityRange(object):
     """Part of an entity. Usually these objects are created from
        an :class:`Entity`, e.g. to get a range covering residues 4 through
@@ -885,7 +861,7 @@ class Entity(object):
        :param str details: Longer text describing the sequence.
        :param source: The method by which the sample for this entity was
               produced.
-       :type source: :class:`EntitySource`
+       :type source: :class:`ihm.source.Source`
 
        The sequence for an entity can be specified explicitly as a set of
        chemical components, or (more usually) as a list or string of codes.
@@ -926,7 +902,7 @@ class Entity(object):
             return 'man'
     def __set_src_method(self, val):
         raise TypeError("src_method is read-only; assign an appropriate "
-                        "subclass of EntitySource to source instead")
+                        "subclass of ihm.source.Source to source instead")
     src_method = property(__get_src_method, __set_src_method)
 
     def __get_weight(self):
