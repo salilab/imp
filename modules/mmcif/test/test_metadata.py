@@ -4,9 +4,11 @@ import IMP.mmcif.metadata
 import IMP.mmcif.data
 import ihm
 try:
-    import urllib.request as urllib2
+    import urllib.request as urlrequest
+    import urllib.error as urlerror
 except ImportError:
-    import urllib2
+    import urllib2 as urlrequest
+    urlerror = urlrequest
 import sys
 if sys.version_info[0] >= 3:
     from io import StringIO
@@ -43,22 +45,14 @@ class Tests(IMP.test.TestCase):
 
     def test_gmm_parser_emdb(self):
         """Test GMMParser pointing to an MRC in EMDB"""
-        def mock_urlopen(url):
+        def mock_urlopen(url, timeout=None):
             txt = '{"EMD-1883":[{"deposition":{"map_release_date":"2011-04-21"'\
                   ',"title":"test details"}}]}'
             return StringIO(txt)
         system = MockSystem()
         p = IMP.mmcif.metadata._GMMParser()
         fname = self.get_input_file_name('emd_1883.map.mrc.gmm.50.txt')
-
-        # Need to mock out urllib2 so we don't hit the network (expensive)
-        # every time we test
-        try:
-            orig_urlopen = urllib2.urlopen
-            urllib2.urlopen = mock_urlopen
-            r = p.parse_file(fname)
-        finally:
-            urllib2.urlopen = orig_urlopen
+        r = p.parse_file(fname)
         self.assertEqual(r['number_of_gaussians'], 50)
         self.assertEqual(r['dataset'].data_type, '3DEM volume')
         self.assertEqual(r['dataset'].location.path, fname)
@@ -67,8 +61,16 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(parent.data_type, '3DEM volume')
         self.assertEqual(parent.location.db_name, 'EMDB')
         self.assertEqual(parent.location.access_code, 'EMD-1883')
-        self.assertEqual(parent.location.version, '2011-04-21')
-        self.assertEqual(parent.location.details, 'test details')
+
+        # Need to mock out urllib.request so we don't hit the network
+        # (expensive) every time we test
+        try:
+            orig_urlopen = urlrequest.urlopen
+            urlrequest.urlopen = mock_urlopen
+            self.assertEqual(parent.location.version, '2011-04-21')
+            self.assertEqual(parent.location.details, 'test details')
+        finally:
+            urlrequest.urlopen = orig_urlopen
 
 if __name__ == '__main__':
     IMP.test.main()
