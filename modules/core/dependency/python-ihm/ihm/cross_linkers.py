@@ -13,7 +13,7 @@ dss = ihm.ChemDescriptor('DSS', chemical_name='disuccinimidyl suberate',
                     '3-1-2-4-6-16(24)26-18-13(21)9-10-14(18)22/h1-10H2',
               inchi_key='ZWIBGKZDAWNIFC-UHFFFAOYSA-N')
 
-bs3 = ihm.ChemDescriptor('B3S', chemical_name='bissulfosuccinimidyl suberate',
+bs3 = ihm.ChemDescriptor('BS3', chemical_name='bissulfosuccinimidyl suberate',
               smiles='C1C(C(=O)N(C1=O)OC(=O)CCCCCCC(=O)ON2C(=O)CC(C2=O)S(=O)'
                      '(=O)O)S(=O)(=O)O',
               inchi='1S/C16H20N2O14S2/c19-11-7-9(33(25,26)27)15(23)17(11)31'

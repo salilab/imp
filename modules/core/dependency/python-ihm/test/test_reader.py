@@ -381,8 +381,12 @@ _entity_src_gen.entity_id 1
 _entity_src_gen.pdbx_src_id 42
 _entity_src_gen.pdbx_gene_src_scientific_name 'test latin name'
 _entity_src_gen.pdbx_gene_src_ncbi_taxonomy_id 1234
+_entity_src_gen.gene_src_common_name 'test common name'
+_entity_src_gen.gene_src_strain 'test strain'
 _entity_src_gen.pdbx_host_org_scientific_name 'host latin name'
 _entity_src_gen.pdbx_host_org_ncbi_taxonomy_id 5678
+_entity_src_gen.host_org_common_name 'other common name'
+_entity_src_gen.pdbx_host_org_strain 'other strain'
 """
         # Order of the categories shouldn't matter
         cif1 = entity + src_gen
@@ -396,9 +400,13 @@ _entity_src_gen.pdbx_host_org_ncbi_taxonomy_id 5678
                 self.assertEqual(e.source.host.ncbi_taxonomy_id, '5678')
                 self.assertEqual(e.source.host.scientific_name,
                                  'host latin name')
+                self.assertEqual(e.source.host.common_name, 'other common name')
+                self.assertEqual(e.source.host.strain, 'other strain')
                 self.assertEqual(e.source.gene.ncbi_taxonomy_id, '1234')
                 self.assertEqual(e.source.gene.scientific_name,
                                  'test latin name')
+                self.assertEqual(e.source.gene.common_name, 'test common name')
+                self.assertEqual(e.source.gene.strain, 'test strain')
 
     def test_entity_src_nat_handler(self):
         """Test EntitySrcNatHandler"""
@@ -418,6 +426,8 @@ _entity_src_nat.entity_id 1
 _entity_src_nat.pdbx_src_id 42
 _entity_src_nat.pdbx_organism_scientific 'test latin name'
 _entity_src_nat.pdbx_ncbi_taxonomy_id 5678
+_entity_src_nat.common_name 'test common name'
+_entity_src_nat.strain 'test strain'
 """
         # Order of the categories shouldn't matter
         cif1 = entity + src_nat
@@ -430,6 +440,44 @@ _entity_src_nat.pdbx_ncbi_taxonomy_id 5678
                 self.assertEqual(e.source._id, '42')
                 self.assertEqual(e.source.ncbi_taxonomy_id, '5678')
                 self.assertEqual(e.source.scientific_name, 'test latin name')
+                self.assertEqual(e.source.common_name, 'test common name')
+                self.assertEqual(e.source.strain, 'test strain')
+
+    def test_entity_src_syn_handler(self):
+        """Test EntitySrcSynHandler"""
+        entity = """
+loop_
+_entity.id
+_entity.type
+_entity.src_method
+_entity.pdbx_description
+_entity.pdbx_number_of_molecules
+_entity.formula_weight
+_entity.details
+1 polymer man Nup84 2 100.0 .
+"""
+        src_syn = """
+_pdbx_entity_src_syn.entity_id 1
+_pdbx_entity_src_syn.pdbx_src_id 42
+_pdbx_entity_src_syn.organism_scientific 'test latin name'
+_pdbx_entity_src_syn.organism_common_name 'test common name'
+_pdbx_entity_src_syn.ncbi_taxonomy_id 5678
+_pdbx_entity_src_syn.strain 'test strain'
+"""
+        # Order of the categories shouldn't matter
+        cif1 = entity + src_syn
+        cif2 = src_syn + entity
+        for cif in cif1, cif2:
+            for fh in cif_file_handles(cif):
+                s, = ihm.reader.read(fh)
+                e, = s.entities
+                self.assertEqual(e.source.src_method, 'syn')
+                self.assertEqual(e.source._id, '42')
+                self.assertEqual(e.source.ncbi_taxonomy_id, '5678')
+                self.assertEqual(e.source.scientific_name, 'test latin name')
+                self.assertEqual(e.source.common_name, 'test common name')
+                # _pdbx_entity_src_syn.strain is not used in current PDB
+                self.assertEqual(e.source.strain, None)
 
     def test_asym_unit_handler(self):
         """Test AsymUnitHandler"""

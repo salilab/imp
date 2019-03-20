@@ -142,14 +142,27 @@ class Tests(unittest.TestCase):
                          'RRP6P, REVEALS AN INTERPLAY BETWEEN THE ACTIVE '
                          'SITE AND THE HRDC DOMAIN')
         es = p['entity_source']
-        self.assertEqual(sorted(es.keys()), ['A', 'B', 'C'])
+        self.assertEqual(sorted(es.keys()), ['A', 'B', 'C', 'D'])
         self.assertEqual(es['B'], es['C'])
+        self.assertEqual(es['A'].src_method, 'man')
         self.assertEqual(es['A'].gene.scientific_name, 'MUS MUSCULUS')
+        self.assertEqual(es['A'].gene.common_name, 'HOUSE MOUSE')
+        self.assertEqual(es['A'].gene.strain, 'TEST STRAIN 1')
         self.assertEqual(es['A'].gene.ncbi_taxonomy_id, '10090')
         self.assertEqual(es['A'].host.scientific_name, 'ESCHERICHIA COLI')
+        self.assertEqual(es['A'].host.common_name, 'TEST COMMON 1')
         self.assertEqual(es['A'].host.ncbi_taxonomy_id, '562')
+        self.assertEqual(es['A'].host.strain, 'TEST STRAIN 2')
+        self.assertEqual(es['B'].src_method, 'nat')
         self.assertEqual(es['B'].scientific_name, 'ESCHERICHIA COLI')
+        self.assertEqual(es['B'].common_name, 'TEST COMMON 2')
         self.assertEqual(es['B'].ncbi_taxonomy_id, '562')
+        self.assertEqual(es['B'].strain, 'TEST STRAIN 3')
+        self.assertEqual(es['D'].src_method, 'syn')
+        self.assertEqual(es['D'].scientific_name, 'HELIANTHUS ANNUUS')
+        self.assertEqual(es['D'].common_name, 'COMMON SUNFLOWER')
+        self.assertEqual(es['D'].ncbi_taxonomy_id, '4232')
+        self.assertEqual(es['D'].strain, 'TEST STRAIN 4')
 
     def test_derived_pdb(self):
         """Test PDBarser when given a file derived from a PDB"""
