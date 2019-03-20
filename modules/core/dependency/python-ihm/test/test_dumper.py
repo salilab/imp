@@ -288,7 +288,9 @@ _entity.details
         system.entities.append(ihm.Entity('AHC', description='foo',
                                           source=ihm.source.Manipulated()))
         s = ihm.source.Natural(ncbi_taxonomy_id='1234',
-                               scientific_name='Test latin name')
+                               scientific_name='Test latin name',
+                               common_name='Test common name',
+                               strain='test strain')
         system.entities.append(ihm.Entity('AHCD', description='baz',
                                           source=s))
         ihm.dumper._EntityDumper().finalize(system)
@@ -301,7 +303,36 @@ _entity_src_nat.entity_id
 _entity_src_nat.pdbx_src_id
 _entity_src_nat.pdbx_ncbi_taxonomy_id
 _entity_src_nat.pdbx_organism_scientific
-2 1 1234 'Test latin name'
+_entity_src_nat.common_name
+_entity_src_nat.strain
+2 1 1234 'Test latin name' 'Test common name' 'test strain'
+#
+""")
+
+    def test_entity_src_syn_dumper(self):
+        """Test EntitySrcSynDumper"""
+        system = ihm.System()
+        system.entities.append(ihm.Entity('AHC', description='foo',
+                                          source=ihm.source.Manipulated()))
+        s = ihm.source.Synthetic(ncbi_taxonomy_id='1234',
+                                 scientific_name='Test latin name',
+                                 common_name='Test common name',
+                                 strain='test strain')
+        system.entities.append(ihm.Entity('AHCD', description='baz',
+                                          source=s))
+        ihm.dumper._EntityDumper().finalize(system)
+        dumper = ihm.dumper._EntitySrcSynDumper()
+        dumper.finalize(system) # Assign IDs
+        out = _get_dumper_output(dumper, system)
+        # _pdbx_entity_src_syn.strain is not used in current PDB entries
+        self.assertEqual(out, """#
+loop_
+_pdbx_entity_src_syn.entity_id
+_pdbx_entity_src_syn.pdbx_src_id
+_pdbx_entity_src_syn.ncbi_taxonomy_id
+_pdbx_entity_src_syn.organism_scientific
+_pdbx_entity_src_syn.organism_common_name
+2 1 1234 'Test latin name' 'Test common name'
 #
 """)
 
@@ -311,9 +342,13 @@ _entity_src_nat.pdbx_organism_scientific
         system.entities.append(ihm.Entity('AHC', description='foo',
                                           source=ihm.source.Natural()))
         gene = ihm.source.Details(ncbi_taxonomy_id='1234',
-                                  scientific_name='Test latin name')
+                                  scientific_name='Test latin name',
+                                  common_name='Test common name',
+                                  strain='test strain')
         host = ihm.source.Details(ncbi_taxonomy_id='5678',
-                                  scientific_name='Other latin name')
+                                  scientific_name='Other latin name',
+                                  common_name='Other common name',
+                                  strain='other strain')
         s = ihm.source.Manipulated(gene=gene, host=host)
         system.entities.append(ihm.Entity('AHCD', description='baz',
                                           source=s))
@@ -327,9 +362,14 @@ _entity_src_gen.entity_id
 _entity_src_gen.pdbx_src_id
 _entity_src_gen.pdbx_gene_src_ncbi_taxonomy_id
 _entity_src_gen.pdbx_gene_src_scientific_name
+_entity_src_gen.gene_src_common_name
+_entity_src_gen.gene_src_strain
 _entity_src_gen.pdbx_host_org_ncbi_taxonomy_id
 _entity_src_gen.pdbx_host_org_scientific_name
-2 1 1234 'Test latin name' 5678 'Other latin name'
+_entity_src_gen.host_org_common_name
+_entity_src_gen.pdbx_host_org_strain
+2 1 1234 'Test latin name' 'Test common name' 'test strain' 5678
+'Other latin name' 'Other common name' 'other strain'
 #
 """)
 
@@ -349,15 +389,15 @@ _chem_comp.type
 _chem_comp.name
 _chem_comp.formula
 _chem_comp.formula_weight
-ALA 'L-peptide linking' ALANINE 'C3 H7 N O2' 89.094
-CYS 'L-peptide linking' CYSTEINE 'C3 H7 N O2 S' 121.154
-GLY 'peptide linking' GLYCINE 'C2 H5 N O2' 75.067
-THR 'L-peptide linking' THREONINE 'C4 H9 N O3' 119.120
 A 'RNA linking' "ADENOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O7 P' 347.224
+ALA 'L-peptide linking' ALANINE 'C3 H7 N O2' 89.094
 C 'RNA linking' "CYTIDINE-5'-MONOPHOSPHATE" 'C9 H14 N3 O8 P' 323.198
-G 'RNA linking' "GUANOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O8 P' 363.223
+CYS 'L-peptide linking' CYSTEINE 'C3 H7 N O2 S' 121.154
 DA 'DNA linking' "2'-DEOXYADENOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O6 P' 331.225
 DC 'DNA linking' "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE" 'C9 H14 N3 O7 P' 307.199
+G 'RNA linking' "GUANOSINE-5'-MONOPHOSPHATE" 'C10 H14 N5 O8 P' 363.223
+GLY 'peptide linking' GLYCINE 'C2 H5 N O2' 75.067
+THR 'L-peptide linking' THREONINE 'C4 H9 N O3' 119.120
 #
 """)
 

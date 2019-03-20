@@ -424,19 +424,25 @@ class PDBParser(Parser):
 
     def _make_one_entity_source(self, compnd, source):
         """Make a single ihm.source.Source object"""
-        engineered = compnd.get('ENGINEERED', None) == 'YES'
-        if engineered:
-            gene = ihm.source.Details(
-                    scientific_name=source.get('ORGANISM_SCIENTIFIC'),
-                    ncbi_taxonomy_id=source.get('ORGANISM_TAXID'))
+        def make_from_source(cls):
+            return cls(scientific_name=source.get('ORGANISM_SCIENTIFIC'),
+                       common_name=source.get('ORGANISM_COMMON'),
+                       strain=source.get('STRAIN'),
+                       ncbi_taxonomy_id=source.get('ORGANISM_TAXID'))
+        if compnd.get('ENGINEERED', None) == 'YES':
+            gene = make_from_source(ihm.source.Details)
             host = ihm.source.Details(
                     scientific_name=source.get('EXPRESSION_SYSTEM'),
+                    common_name=source.get('EXPRESSION_SYSTEM_COMMON'),
+                    strain=source.get('EXPRESSION_SYSTEM_STRAIN'),
                     ncbi_taxonomy_id=source.get('EXPRESSION_SYSTEM_TAXID'))
             return ihm.source.Manipulated(gene=gene, host=host)
         else:
-            return ihm.source.Natural(
-                    scientific_name=source.get('ORGANISM_SCIENTIFIC'),
-                    ncbi_taxonomy_id=source.get('ORGANISM_TAXID'))
+            if source.get('SYNTHETIC', None) == 'YES':
+                cls = ihm.source.Synthetic
+            else:
+                cls = ihm.source.Natural
+            return make_from_source(cls)
 
     def _make_entity_source(self, compnd, source):
         """Make ihm.source.Source objects given PDB COMPND and SOURCE lines"""

@@ -148,17 +148,14 @@ class _AuditAuthorDumper(Dumper):
 
 class _ChemCompDumper(Dumper):
     def dump(self, system, writer):
-        seen = {}
+        comps = frozenset(comp for e in system.entities for comp in e.sequence)
 
         with writer.loop("_chem_comp", ["id", "type", "name",
                                         "formula", "formula_weight"]) as l:
-            for entity in system.entities:
-                for comp in entity.sequence:
-                    if comp not in seen:
-                        seen[comp] = None
-                        l.write(id=comp.id, type=comp.type, name=comp.name,
-                                formula=comp.formula,
-                                formula_weight=comp.formula_weight)
+            for comp in sorted(comps, key=operator.attrgetter('id')):
+                l.write(id=comp.id, type=comp.type, name=comp.name,
+                        formula=comp.formula,
+                        formula_weight=comp.formula_weight)
 
 
 class _ChemDescriptorDumper(Dumper):
@@ -209,24 +206,31 @@ class _EntityDumper(Dumper):
 			details=entity.details)
 
 
+def _assign_src_ids(system, srccls):
+    """Assign IDs to all entity sources of type `srccls`."""
+    # Assign IDs
+    seen_src = {}
+    src_by_id = []
+    for e in system.entities:
+        if isinstance(e.source, srccls):
+            util._remove_id(e.source)
+    for e in system.entities:
+        if isinstance(e.source, srccls):
+            util._assign_id(e.source, seen_src, src_by_id)
+
+
 class _EntitySrcGenDumper(Dumper):
     def finalize(self, system):
-        # Assign IDs
-        seen_src = {}
-        src_by_id = []
-        for e in system.entities:
-            if isinstance(e.source, ihm.source.Manipulated):
-                util._remove_id(e.source)
-        for e in system.entities:
-            if isinstance(e.source, ihm.source.Manipulated):
-                util._assign_id(e.source, seen_src, src_by_id)
+        _assign_src_ids(system, ihm.source.Manipulated)
 
     def dump(self, system, writer):
         with writer.loop("_entity_src_gen",
                 ["entity_id", "pdbx_src_id", "pdbx_gene_src_ncbi_taxonomy_id",
                  "pdbx_gene_src_scientific_name",
+                 "gene_src_common_name", "gene_src_strain",
                  "pdbx_host_org_ncbi_taxonomy_id",
-                 "pdbx_host_org_scientific_name"]) as l:
+                 "pdbx_host_org_scientific_name",
+                 "host_org_common_name", "pdbx_host_org_strain"]) as l:
             for e in system.entities:
                 if isinstance(e.source, ihm.source.Manipulated):
                     self._dump_source(l, e)
@@ -238,34 +242,50 @@ class _EntitySrcGenDumper(Dumper):
                                                if s.gene else None,
                 pdbx_gene_src_scientific_name=s.gene.scientific_name
                                                if s.gene else None,
+                gene_src_strain=s.gene.strain if s.gene else None,
+                gene_src_common_name=s.gene.common_name if s.gene else None,
                 pdbx_host_org_ncbi_taxonomy_id=s.host.ncbi_taxonomy_id
                                                if s.host else None,
                 pdbx_host_org_scientific_name=s.host.scientific_name
-                                               if s.host else None)
+                                               if s.host else None,
+                host_org_common_name=s.host.common_name if s.host else None,
+                pdbx_host_org_strain=s.host.strain if s.host else None)
 
 
 class _EntitySrcNatDumper(Dumper):
     def finalize(self, system):
-        # Assign IDs
-        seen_src = {}
-        src_by_id = []
-        for e in system.entities:
-            if isinstance(e.source, ihm.source.Natural):
-                util._remove_id(e.source)
-        for e in system.entities:
-            if isinstance(e.source, ihm.source.Natural):
-                util._assign_id(e.source, seen_src, src_by_id)
+        _assign_src_ids(system, ihm.source.Natural)
 
     def dump(self, system, writer):
         with writer.loop("_entity_src_nat",
                 ["entity_id", "pdbx_src_id", "pdbx_ncbi_taxonomy_id",
-                 "pdbx_organism_scientific"]) as l:
+                 "pdbx_organism_scientific", "common_name", "strain"]) as l:
             for e in system.entities:
                 s = e.source
                 if isinstance(s, ihm.source.Natural):
                     l.write(entity_id=e._id, pdbx_src_id=s._id,
                             pdbx_ncbi_taxonomy_id=s.ncbi_taxonomy_id,
-                            pdbx_organism_scientific=s.scientific_name)
+                            pdbx_organism_scientific=s.scientific_name,
+                            common_name=s.common_name, strain=s.strain)
+
+
+class _EntitySrcSynDumper(Dumper):
+    def finalize(self, system):
+        _assign_src_ids(system, ihm.source.Synthetic)
+
+    def dump(self, system, writer):
+        # Note that _pdbx_entity_src_syn.strain is not used in current PDB
+        # entries
+        with writer.loop("_pdbx_entity_src_syn",
+                ["entity_id", "pdbx_src_id", "ncbi_taxonomy_id",
+                 "organism_scientific", "organism_common_name"]) as l:
+            for e in system.entities:
+                s = e.source
+                if isinstance(s, ihm.source.Synthetic):
+                    l.write(entity_id=e._id, pdbx_src_id=s._id,
+                            ncbi_taxonomy_id=s.ncbi_taxonomy_id,
+                            organism_scientific=s.scientific_name,
+                            organism_common_name=s.common_name)
 
 
 def _prettyprint_seq(seq, width):
@@ -1910,7 +1930,7 @@ def write(fh, systems, format='mmCIF', dumpers=[]):
                _AuditAuthorDumper(),
                _ChemCompDumper(), _ChemDescriptorDumper(),
                _EntityDumper(), _EntitySrcGenDumper(), _EntitySrcNatDumper(),
-               _EntityPolyDumper(),
+               _EntitySrcSynDumper(), _EntityPolyDumper(),
                _EntityNonPolyDumper(),
                _EntityPolySeqDumper(),
                _StructAsymDumper(),

@@ -13,13 +13,17 @@ class Details(object):
        See :class:`Manipulated` or :class:`Natural`.
 
        :param ncbi_taxonomy_id: NCBI taxonomy identifier, e.g. "469008"
-       :param scientific_name: Scientific name,
-              e.g. "Escherichia coli BL21(DE3)"
+       :param scientific_name: Scientific name, e.g. "Escherichia coli"
+       :param common_name: Common name
+       :param strain: Strain, e.g. "BL21(DE3)PLYSS"
     """
 
-    def __init__(self, ncbi_taxonomy_id=None, scientific_name=None):
+    def __init__(self, ncbi_taxonomy_id=None, scientific_name=None,
+                 common_name=None, strain=None):
         self.ncbi_taxonomy_id = ncbi_taxonomy_id
         self.scientific_name = scientific_name
+        self.common_name = common_name
+        self.strain = strain
 
 
 class Manipulated(Source):
@@ -27,9 +31,9 @@ class Manipulated(Source):
        See :class:`Entity`.
 
        :param gene: Details about the gene source.
-       :type gene: class:`Details`
+       :type gene: :class:`Details`
        :param host: Details about the host organism.
-       :type host: class:`Details`
+       :type host: :class:`Details`
     """
     src_method = 'man'
 
@@ -43,6 +47,7 @@ class Natural(Source, Details):
     src_method = 'nat'
 
 
-class Synthetic(Source):
-    """An entity obtained synthetically. See :class:`Entity`."""
+class Synthetic(Source, Details):
+    """An entity obtained synthetically. See :class:`Entity`.
+       See :class:`Details` for a description of the parameters."""
     src_method = 'syn'
