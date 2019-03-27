@@ -135,8 +135,16 @@ function(imp_build_module sourcedir)
                       --source=${sourcedir})
 
   # todo: fail if foo wasn't configured
-
-  include(${sourcedir}/ModuleBuild.cmake)
+  if(EXISTS "${sourcedir}/modules" AND IS_DIRECTORY "${sourcedir}/modules")
+    file(STRINGS "${CMAKE_BINARY_DIR}/build_info/sorted_modules" modules)
+    foreach(mod ${modules})
+      if(EXISTS "${sourcedir}/modules/${mod}")
+        add_subdirectory("${sourcedir}/modules/${mod}")
+      endif()
+    endforeach()
+  else()
+    include(${sourcedir}/ModuleBuild.cmake)
+  endif()
 
   imp_execute_process("setup_swig_dependencies" ${CMAKE_BINARY_DIR}
                       COMMAND ${IMP_TOOLS_DIR}/build/setup_swig_deps.py
@@ -144,7 +152,15 @@ function(imp_build_module sourcedir)
                       --include=${IMP_INCLUDE_DIR}
                       "--build_dir=${IMP_BUILD_INFO_DIR}"
                       "--swig=${SWIG_EXECUTABLE}")
-  add_subdirectory("${sourcedir}/pyext")
+  if(EXISTS "${sourcedir}/modules" AND IS_DIRECTORY "${sourcedir}/modules")
+    foreach(mod ${modules})
+      if(EXISTS "${sourcedir}/modules/${mod}/pyext")
+        add_subdirectory("${sourcedir}/modules/${mod}/pyext")
+      endif()
+    endforeach()
+  else()
+    add_subdirectory("${sourcedir}/pyext")
+  endif()
 
   list(INSERT IMP_PYTHONPATH 0 "${IMP_PYTHON_DIR}")
   list(INSERT IMP_LDPATH 0 "${IMP_LIB_DIR}")
