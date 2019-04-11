@@ -19,25 +19,25 @@ IMPPMI_BEGIN_NAMESPACE
 
 CompositeRestraint::CompositeRestraint(Model *m,
                           ParticleIndexesAdaptor handle_particle_indexes,
-                          double coffd, double l, bool tabprob, double plateau, std::string name):
-                          Restraint(m, name),
-                          handle_particle_indexes_(handle_particle_indexes),
-                          coffd_(coffd), l_(l), tabprob_(tabprob), plateau_(plateau) {
+                          double coffd, double l, bool tabprob,
+			  double plateau, std::string name):
+      Restraint(m, name),
+      handle_particle_indexes_(handle_particle_indexes),
+      coffd_(coffd), l_(l), plateau_(plateau),
+      tabprob_(tabprob) {
+  pis_.push_back(handle_particle_indexes_);
 
-                          pis_.push_back(handle_particle_indexes_);
-
-                          if (tabprob_){
-                             exparg_grid_size_=1001;
-                             argmax_=100.0;
-                             argmin_=-100.0;
-                             invdx_=double(exparg_grid_size_)/argmax_;
-                             for(int k=-exparg_grid_size_;k<exparg_grid_size_;++k){
-                                double argvalue=double(k)/invdx_;
-                                prob_grid_.push_back((1.0-plateau_)/(1.0+std::exp(-argvalue)));
-                               }
-                             }
-                          }
-
+  if (tabprob_){
+    exparg_grid_size_=1001;
+    argmax_=100.0;
+    argmin_=-100.0;
+    invdx_=double(exparg_grid_size_)/argmax_;
+    for(int k=-exparg_grid_size_;k<exparg_grid_size_;++k){
+      double argvalue=double(k)/invdx_;
+      prob_grid_.push_back((1.0-plateau_)/(1.0+std::exp(-argvalue)));
+    }
+  }
+}
 
 double CompositeRestraint::
                  unprotected_evaluate(DerivativeAccumulator *accum) const

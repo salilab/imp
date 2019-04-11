@@ -44,25 +44,27 @@ class Tests(IMP.test.TestCase):
         xyz21.set_coordinates((40, 0, 0))
         xyz31.set_coordinates((0, 0, 0))
 
-        restraints = '''#
-        particle2 particle3 1 5 1 1
-        particle1 particle3 1 2 1 1 '''
+        tname = self.get_tmp_file_name("test.txt")
+        with open(tname, "w") as fh:
+            fh.write("prot1,prot2,res1,res2,uniq,Sigma1,Sigma2,Psi\n")
+            fh.write("particle2,particle3,1,5,1,1.0,1.0,0.05\n")
+            fh.write("particle1,particle3,1,2,1,1.0,1.0,0.05\n")
+        cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+        cldbkc.set_protein1_key("prot1")
+        cldbkc.set_protein2_key("prot2")
+        cldbkc.set_residue1_key("res1")
+        cldbkc.set_residue2_key("res2")
+        cldbkc.set_unique_id_key("uniq")
+        cldb = IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
+        cldb.create_set_from_file(tname)
+        self.assertEqual(cldb.get_number_of_xlid(), 1)
 
-        with IMP.allow_deprecated():
-            xl = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(representations,
-                                                                restraints,
-                                                                length=21.0,
-                                                                slope=0.0,
-                                                                inner_slope=0.1,
-                                                                resolution=1.0)
-
-        psi = xl.get_psi(0.05)
-
-        psi[0].set_scale(0.1)
-
-        sigma = xl.get_sigma(1.0)
-
-        sigma[0].set_scale(5.0)
+        xl = \
+          IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
+                representations, CrossLinkDataBase=cldb,
+                length=21.0, slope=0.0, resolution=1.0)
+        xl.sigma_dictionary['1.0'][0].set_scale(5.0)
+        xl.psi_dictionary['0.05'][0].set_scale(0.1)
 
         out_dict = xl.get_output()
         sorted_keys = sorted(out_dict.keys())
@@ -73,7 +75,7 @@ class Tests(IMP.test.TestCase):
 
         xl.add_to_model()
         rset = IMP.pmi.tools.get_restraint_set(m)
-        self.assertAlmostEqual(rset.evaluate(False), -2.197418, delta=1e-2)
+        self.assertAlmostEqual(rset.evaluate(False), -2.20827, delta=1e-2)
 
         print(xyz11.get_coordinates())
 
@@ -99,11 +101,11 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(po.get_keys()), 15)
 
         fs = po.get_fields(
-            ['ISDCrossLinkMS_Distance_interrb-State:0-1:particle1_2:particle3-1-1-0.05_None',
-             'ISDCrossLinkMS_Distance_interrb-State:0-1:particle2_5:particle3-1-1-0.05_None',
-             'ISDCrossLinkMS_Data_Score_None',
-             'ISDCrossLinkMS_Linear_Score_None',
-             'ISDCrossLinkMS_Psi_0.05_None'])
+            ['CrossLinkingMassSpectrometryRestraint_Distance_||1.2|particle1|1|particle3|2|0|0.05|',
+             'CrossLinkingMassSpectrometryRestraint_Distance_||1.1|particle2|1|particle3|5|0|0.05|',
+             'CrossLinkingMassSpectrometryRestraint_Data_Score',
+             'CrossLinkingMassSpectrometryRestraint_Linear_Score',
+             'CrossLinkingMassSpectrometryRestraint_Psi_0.05'])
 
         for output in ["excluded.None.xl.db", "included.None.xl.db",
                        "missing.None.xl.db", "modeling.stat"]:

@@ -1040,6 +1040,7 @@ class Precision(object):
         @param alignment_selection: the key containing the selection tuples needed to make the alignment stored in self.selection_dictionary
         @return: for each structure in the structure set, returns the rmsd
         """
+        ret = {}
         if self.reference_structures_dictionary=={}:
             print("Cannot compute until you set a reference structure")
             return
@@ -1059,7 +1060,8 @@ class Precision(object):
                 coordinates1 = [transformations[n].get_transformed(IMP.algebra.Vector3D(c)) for c in sc]
                 distance = IMP.algebra.get_rmsd(coordinates1,coordinates2)
                 distances.append(distance)
-            print(selection_name,"average rmsd",sum(distances)/len(distances),"median",self._get_median(distances),"minimum distance",min(distances))
+            ret[selection_name] = {'all_distances':distances,'average_distance':sum(distances)/len(distances),'minimum_distance':min(distances)}
+        return ret 
 
     def _get_median(self,list_of_values):
         return np.median(np.array(list_of_values))

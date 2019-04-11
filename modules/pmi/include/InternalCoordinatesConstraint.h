@@ -22,8 +22,6 @@ IMPPMI_BEGIN_NAMESPACE
     or IMP::container::SingletonsConstraint to keep a set of particles
     in a box.
 
-    \include range_restrictionExampleSingletonModifier.py
-
     The source code is as follows:
     \include InternalCoordinatesConstraint.h
     \include InternalCoordinatesConstraint.cpp
