@@ -9,5 +9,9 @@ An illustration of the use of PMI by determining the localization of two
 subunits of RNA Polymerase II, utilizing chemical cross-linking coupled with
 mass spectrometry, negative-stain electron microscopy (EM), and x-ray
 crystallography data, can be found in the [PMI RNAPII tutorial](https://integrativemodeling.org/tutorials/rnapolii_stalk/).
+Another such demonstration, using PMI to model the complex of actin and
+tropomodulin-gelsolin chimera using SAXS, EM, crosslinking, crystal structures
+of the individual domains, and physical principles, can be found in the
+[PMI actin tutorial](https://integrativemodeling.org/tutorials/actin/).
 
 */
