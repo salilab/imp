@@ -2,15 +2,19 @@ import IMP.test
 import sys
 import os
 import re
-
+import shutil
+import IMP.multi_state
 
 class Tests(IMP.test.ApplicationTestCase):
 
     def test_multi_foxs_rpa(self):
         """Test multi_foxs with RPA example"""
-        cmds = self.read_shell_commands(
-            '../../../doc/manual/multi_foxs.dox')
+        cmds = ["multi_foxs --help",
+                "multi_foxs weighted.dat 1fguA.pdb 1fguB.pdb 1jmc.pdb"]
+        rpa = IMP.multi_state.get_example_path('rpa')
         with IMP.test.temporary_working_directory():
+            shutil.copytree(rpa, 'rpa')
+            os.chdir('rpa')
             for c in cmds:
                 self.run_shell_command(c)
             expected = ['cluster_representatives.txt',
