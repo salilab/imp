@@ -302,6 +302,11 @@ class IMPKERNELEXPORT Model : public Object
   //! Get all particle indexes
   ParticleIndexes get_particle_indexes();
 
+  //! Get number of particle indexes
+  unsigned get_number_of_particle_indexes() const {
+    return particle_index_.size();
+  }
+
   //! Get all the ModelObjects associated with this Model.
   ModelObjectsTemp get_model_objects() const;
 

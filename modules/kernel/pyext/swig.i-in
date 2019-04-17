@@ -437,3 +437,4 @@ if sys.platform == 'win32' and 'IMP_LD_PATH' in os.environ:
 %include "IMP_kernel.deprecation.i"
 %include "IMP_kernel.argparse.i"
 %include "IMP_kernel.random.i"
+%include "IMP_kernel.numpy.i"
