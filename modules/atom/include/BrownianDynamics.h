@@ -1,6 +1,6 @@
 /**
  *  \file IMP/atom/BrownianDynamics.h
- *  \brief Simple molecular dynamics optimizer.
+ *  \brief Simple Brownian dynamics optimizer.
  *
  *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
