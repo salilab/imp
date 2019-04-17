@@ -149,29 +149,29 @@ if(WIN32)
   set(IMP_SWIG_LIBRARIES ${PYTHON_LIBRARIES})
 endif(WIN32)
 
-if(NOT DEFINED PYTHON_NUMPY_INCLUDE_DIR AND NOT IMP_STATIC)
+if(NOT DEFINED NUMPY_INCLUDE_PATH AND NOT IMP_STATIC)
   execute_process(COMMAND ${IMP_PYTHON} -c
                   "try: import numpy; print(numpy.get_include());\nexcept: pass"
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                   OUTPUT_VARIABLE __numpy_path
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
-  find_path(PYTHON_NUMPY_INCLUDE_DIR numpy/arrayobject.h
+  find_path(NUMPY_INCLUDE_PATH numpy/arrayobject.h
             HINTS "${__numpy_path}" "${PYTHON_INCLUDE_PATH}" NO_DEFAULT_PATH)
-  if(PYTHON_NUMPY_INCLUDE_DIR)
+  if(NUMPY_INCLUDE_PATH)
     set(PYTHON_NUMPY_FOUND 1 CACHE INTERNAL "Python numpy found")
   endif()
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(NumPy
-	                            REQUIRED_VARS PYTHON_NUMPY_INCLUDE_DIR
+                                    REQUIRED_VARS NUMPY_INCLUDE_PATH
                                     VERSION_VAR __numpy_version)
 endif()
 
-if("${PYTHON_NUMPY_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
+if("${NUMPY_INCLUDE_PATH}" MATCHES ".*NOTFOUND.*")
   file(WRITE "${CMAKE_BINARY_DIR}/build_info/NumPy" "ok=False")
 else()
   file(WRITE "${CMAKE_BINARY_DIR}/build_info/NumPy"
        "ok=True\n"
-       "includepath='${PYTHON_NUMPY_INCLUDE_DIR}'")
+       "includepath='${NUMPY_INCLUDE_PATH}'")
 endif()
 
 if(NOT DEFINED PATH_SEP)
