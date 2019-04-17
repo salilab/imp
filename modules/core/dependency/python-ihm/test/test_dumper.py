@@ -220,8 +220,8 @@ _citation_author.ordinal
         out = _get_dumper_output(dumper, system)
         self.assertTrue("'Mol Cell Proteomics' 13 e1637 . 2014 " in out)
 
-    def test_audit_author(self):
-        """Test AuditAuthorDumper"""
+    def test_audit_author_empty(self):
+        """Test AuditAuthorDumper with empty list"""
         system = ihm.System()
 
         c1 = ihm.Citation(pmid='25161197', title='foo',
@@ -244,6 +244,45 @@ auth1 1
 auth2 2
 auth3 3
 auth4 4
+#
+""")
+
+    def test_audit_author(self):
+        """Test AuditAuthorDumper"""
+        system = ihm.System()
+        system.authors.extend(('auth1', 'auth2', 'auth3'))
+
+        dumper = ihm.dumper._AuditAuthorDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_audit_author.name
+_audit_author.pdbx_ordinal
+auth1 1
+auth2 2
+auth3 3
+#
+""")
+
+    def test_grant(self):
+        """Test GrantDumper"""
+        system = ihm.System()
+        g1 = ihm.Grant(funding_organization="NIH", country="United States",
+                       grant_number="foo")
+        g2 = ihm.Grant(funding_organization="NSF", country="United States",
+                       grant_number="bar")
+        system.grants.extend((g1, g2))
+
+        dumper = ihm.dumper._GrantDumper()
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_pdbx_audit_support.funding_organization
+_pdbx_audit_support.country
+_pdbx_audit_support.grant_number
+_pdbx_audit_support.ordinal
+NIH 'United States' foo 1
+NSF 'United States' bar 2
 #
 """)
 

@@ -126,6 +126,10 @@ class Tests(unittest.TestCase):
         r2 = ihm.location.Repository(doi='5.6.7.8')
         l4 = ihm.location.InputFileLocation('foo/bar', repo=r2)
         self.assertNotEqual(l, l4)
+        l5 = ihm.location.InputFileLocation(None, repo=r)
+        self.assertNotEqual(l, l5)
+        l6 = ihm.location.InputFileLocation(None, repo=r2)
+        self.assertNotEqual(l, l6)
 
     def test_repository_equality(self):
         """Test Repository equality"""

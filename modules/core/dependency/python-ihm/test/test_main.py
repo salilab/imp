@@ -323,7 +323,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.seq_id_range, (3,4))
         self.assertEqual(r._id, 42)
         # Cannot create ranges for nonpolymeric entities
-        self.assertRaises(TypeError, heme.__call__, (1,1))
+        self.assertRaises(TypeError, heme.__call__, 1, 1)
         samer = e(3,4)
         otherr = e(2,4)
         self.assertEqual(r, samer)
@@ -346,7 +346,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(r._id, 42)
         self.assertEqual(r.entity, e)
         # Cannot create ranges for nonpolymeric entities
-        self.assertRaises(TypeError, aheme.__call__, (1,1))
+        self.assertRaises(TypeError, aheme.__call__, 1, 1)
         samer = a(3,4)
         otherr = a(2,4)
         self.assertEqual(r, samer)

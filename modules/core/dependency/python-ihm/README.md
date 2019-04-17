@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2603378.svg)](https://doi.org/10.5281/zenodo.2603378)
 [![docs](https://readthedocs.org/projects/python-ihm/badge/)](https://python-ihm.readthedocs.org/)
 [![pypi package](https://badge.fury.io/py/ihm.svg)](https://badge.fury.io/py/ihm)
 [![Linux Build Status](https://travis-ci.org/ihmwg/python-ihm.svg?branch=master)](https://travis-ci.org/ihmwg/python-ihm)
@@ -43,6 +44,7 @@ Python [msgpack](https://github.com/msgpack/msgpack-python) package.
 
 There are a number of testcases in the `test` directory. Each one can be run
 like a normal Python script to test the library. They can also be all run at
-once using [nose](https://nose.readthedocs.io/en/latest/). They will also test
+once using [nose](https://nose.readthedocs.io/en/latest/)
+or [pytest](https://docs.pytest.org/en/latest/). They will also test
 the C extension module if it is first built with
 `python setup.py build_ext --inplace`.

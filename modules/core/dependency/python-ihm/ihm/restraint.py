@@ -221,18 +221,23 @@ class ExperimentalCrossLink(object):
     def __init__(self, residue1, residue2):
         self.residue1, self.residue2 = residue1, residue2
 
+
 class DistanceRestraint(object):
-    """Base class for all distance restraints.
-       See :class:`HarmonicDistanceRestraint`,
+    """Abstract base class for all distance restraints. These are typically
+       used in a :class:`DerivedDistanceRestraint`.
+
+       Do not use this class directly but instead use a derived class
+       such as :class:`HarmonicDistanceRestraint`,
        :class:`UpperBoundDistanceRestraint`,
        :class:`LowerBoundDistanceRestraint`,
-       and :class:`LowerUpperBoundDistanceRestraint`.
+       or :class:`LowerUpperBoundDistanceRestraint`.
     """
     pass
 
 
-class HarmonicDistanceRestraint(object):
+class HarmonicDistanceRestraint(DistanceRestraint):
     """Harmonically restrain two objects to be close to a given distance apart.
+       These objects are typically used in a :class:`DerivedDistanceRestraint`.
 
        :param float distance: Equilibrium distance
     """
@@ -244,8 +249,9 @@ class HarmonicDistanceRestraint(object):
     distance_upper_limit = distance_lower_limit
 
 
-class UpperBoundDistanceRestraint(object):
+class UpperBoundDistanceRestraint(DistanceRestraint):
     """Harmonically restrain two objects to be below a given distance apart.
+       These objects are typically used in a :class:`DerivedDistanceRestraint`.
 
        :param float distance: Distance threshold
     """
@@ -257,8 +263,9 @@ class UpperBoundDistanceRestraint(object):
     distance_lower_limit = None
 
 
-class LowerBoundDistanceRestraint(object):
+class LowerBoundDistanceRestraint(DistanceRestraint):
     """Harmonically restrain two objects to be above a given distance apart.
+       These objects are typically used in a :class:`DerivedDistanceRestraint`.
 
        :param float distance: Distance threshold
     """
@@ -270,9 +277,10 @@ class LowerBoundDistanceRestraint(object):
     distance_upper_limit = None
 
 
-class LowerUpperBoundDistanceRestraint(object):
+class LowerUpperBoundDistanceRestraint(DistanceRestraint):
     """Harmonically restrain two objects to be above a given distance
        and below another distance apart.
+       These objects are typically used in a :class:`DerivedDistanceRestraint`.
 
        :param float distance_lower_limit: Lower bound on the distance.
        :param float distance_upper_limit: Upper bound on the distance.

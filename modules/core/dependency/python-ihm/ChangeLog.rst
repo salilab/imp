@@ -1,9 +1,19 @@
 HEAD
 ====
+ - Authors of the mmCIF file itself (`_audit_author` category) can now be
+   set by manipulating :attr:`ihm.System.authors`. (If this list is empty on
+   output, the set of all citation authors is used instead, as before.)
+ - Any grants that supported the modeling can now be listed in
+   :attr:`ihm.System.grants`.
+
+0.6 - 2019-03-22
+================
  - :class:`Entity` now takes an optional :class:`ihm.source.Source` object to
    describe the method by which the sample for the entity was produced.
    :class:`ihm.metadata.PDBParser` will also extract this information
    from input PDB files.
+ - :func:`ihm.reader.read` and :func:`ihm.dumper.write` now support reading
+   or writing additional user-defined mmCIF categories.
 
 0.5 - 2019-01-17
 ================

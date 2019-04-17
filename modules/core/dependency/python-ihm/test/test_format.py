@@ -51,7 +51,7 @@ class GenericHandler(object):
         self.data.append('SAVE')
 
 
-class TestFinalizeHandler(GenericHandler):
+class _TestFinalizeHandler(GenericHandler):
     if _format is not None:
         _add_c_handler = _format._test_finalize_callback
 
@@ -498,7 +498,7 @@ x y
     def test_finalize_handler(self):
         """Make sure that C parser finalize callback works"""
         for real_file in (True, False):
-            h = TestFinalizeHandler()
+            h = _TestFinalizeHandler()
             self._read_cif("# _exptl.method foo\n", real_file, {'_exptl':h})
 
     @skipIf(_format is None, "No C tokenizer")

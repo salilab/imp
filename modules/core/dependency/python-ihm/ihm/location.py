@@ -146,7 +146,8 @@ class BioGRIDLocation(DatabaseLocation):
 class FileLocation(Location):
     """Base class for an individual file or directory stored externally.
 
-       :param str path: the location of the file or directory
+       :param str path: the location of the file or directory (this can
+              be `None` if `repo` is set, to refer to the entire repository)
        :param repo: object that describes the repository
               containing the file, or `None` if it is stored on the local disk
        :type repo: :class:`Repository`

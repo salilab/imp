@@ -18,6 +18,9 @@ The :mod:`ihm` Python module
 .. autoclass:: Citation
    :members:
 
+.. autoclass:: Grant
+   :members:
+
 .. autoclass:: ChemComp
    :members:
 

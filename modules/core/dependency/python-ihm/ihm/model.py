@@ -118,9 +118,11 @@ class Model(object):
 
 
 class ModelGroup(list):
-    """A set of related models. See :class:`Model` and
-       :attr:`State.model_groups`. It is implemented as a simple
-       list of the models.
+    """A set of related models. See :class:`Model`. It is implemented as
+       a simple list of the models.
+
+       These objects are typically stored in a :class:`State`,
+       :class:`Ensemble`, or :class:`OrderedProcess`.
 
        :param elements: Initial set of models in the group.
        :param str name: Descriptive name for the group.
