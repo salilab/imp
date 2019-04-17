@@ -72,6 +72,9 @@ class SimulationParameters;
     The time step is always equal precisely to Simulater::get_maximum_time_step()
     when using either Simulator::simulate() or Optimizer::optimize()
 
+    For more information and a demonstration of using this class, see the
+    [Brownian dynamics tutorial](https://integrativemodeling.org/tutorials/brownian_dynamics/).
+
     \see Diffusion
     \see RigidBodyDiffusion
   */
