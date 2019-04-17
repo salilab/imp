@@ -58,18 +58,17 @@ class SimulationParameters;
     of the scoring function (force field) at the particle
     coordinates. The translation is proportional to the particle
     diffusion coefficient, the time step size, and the inverse of kT.
-    Note that particles masses are not considered, only their
+    Note that particle masses are not considered, only their
     diffusion coefficients.
 
     Similarly, rigid bodies are rotated by the sum of a random torque and a
     force field torque, proportionally to the rotational diffusion
-    coefficient, the time step size, and inversely proportional kT.
-
-    If the skt (stochastic Runge Kutta) flag is true, the simulation is
-    altered slightly to apply the SKT scheme.
+    coefficient and the time step size, and inversely proportional to kT.
 
     _Time step_
-    The time step is always equal precisely to Simulater::get_maximum_time_step()
+
+    The time step is always equal precisely to
+    Simulator::get_maximum_time_step()
     when using either Simulator::simulate() or Optimizer::optimize()
 
     For more information and a demonstration of using this class, see the
@@ -110,6 +109,8 @@ class IMPATOMEXPORT BrownianDynamics : public Simulator {
                    unsigned int random_pool_size=IMP_ATOM_DEFAULT_BD_RANDOM_POOL_SIZE);
   //! sets the maximum move in A along either x,y or z axes
   void set_maximum_move(double ms_in_A) { max_step_in_A_ = ms_in_A; }
+
+  //! Set whether to use the stochastic Runge Kutta scheme
   void set_use_stochastic_runge_kutta(bool tf) { srk_ = tf; }
 
   IMP_OBJECT_METHODS(BrownianDynamics);
