@@ -21,7 +21,7 @@ static bool import_numpy_module()
 }
 #endif
 
-PyObject *_get_floats_data_numpy(IMP::Model *m, PyObject *m_pyobj, double *data)
+PyObject *_get_floats_data_numpy(PyObject *m_pyobj, unsigned sz, double *data)
 {
 #if IMP_KERNEL_HAS_NUMPY
   if (!import_numpy_module()) {
@@ -29,7 +29,7 @@ PyObject *_get_floats_data_numpy(IMP::Model *m, PyObject *m_pyobj, double *data)
   }
 
   npy_intp dims[1];
-  dims[0] = m->get_number_of_particle_indexes();
+  dims[0] = sz;
 
   /* Note that attribute tables are C-style contiguous so no special strides or
      other flags need to be passed to NumPy */
@@ -52,7 +52,7 @@ PyObject *_get_floats_data_numpy(IMP::Model *m, PyObject *m_pyobj, double *data)
 #endif
 }
 
-PyObject *_get_ints_data_numpy(IMP::Model *m, PyObject *m_pyobj, int *data)
+PyObject *_get_ints_data_numpy(PyObject *m_pyobj, unsigned sz, int *data)
 {
 #if IMP_KERNEL_HAS_NUMPY
   if (!import_numpy_module()) {
@@ -60,7 +60,7 @@ PyObject *_get_ints_data_numpy(IMP::Model *m, PyObject *m_pyobj, int *data)
   }
 
   npy_intp dims[1];
-  dims[0] = m->get_number_of_particle_indexes();
+  dims[0] = sz;
 
   /* Note that attribute tables are C-style contiguous so no special strides or
      other flags need to be passed to NumPy */
@@ -84,7 +84,7 @@ PyObject *_get_ints_data_numpy(IMP::Model *m, PyObject *m_pyobj, int *data)
 }
 
 
-PyObject *_get_spheres_data_numpy(IMP::Model *m, PyObject *m_pyobj,
+PyObject *_get_spheres_data_numpy(PyObject *m_pyobj, unsigned sz,
                                   algebra::Sphere3D *data)
 {
 #if IMP_KERNEL_HAS_NUMPY
@@ -97,7 +97,7 @@ PyObject *_get_spheres_data_numpy(IMP::Model *m, PyObject *m_pyobj,
   BOOST_STATIC_ASSERT(sizeof(algebra::Sphere3D) == 4 * sizeof(double));
 
   npy_intp dims[2];
-  dims[0] = m->get_number_of_particle_indexes();
+  dims[0] = sz;
   dims[1] = 4;
 
   PyObject *obj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL,
@@ -125,30 +125,39 @@ PyObject *_get_spheres_data_numpy(IMP::Model *m, PyObject *m_pyobj,
 PyObject *_get_derivatives_numpy(IMP::Model *m, IMP::FloatKey k,
                                  PyObject *m_pyobj)
 {
-  return _get_floats_data_numpy(m, m_pyobj, m->access_derivative_data(k));
+  unsigned sz = m->get_derivative_size(k);
+  return _get_floats_data_numpy(m_pyobj, sz,
+                             sz == 0 ? nullptr : m->access_derivative_data(k));
 }
 
 PyObject *_get_floats_numpy(IMP::Model *m, IMP::FloatKey k, PyObject *m_pyobj)
 {
-  return _get_floats_data_numpy(m, m_pyobj,
-               m->IMP::internal::FloatAttributeTable::access_attribute_data(k));
+  unsigned sz = m->IMP::internal::FloatAttributeTable::get_attribute_size(k);
+  return _get_floats_data_numpy(m_pyobj, sz,
+           sz == 0 ? nullptr
+             : m->IMP::internal::FloatAttributeTable::access_attribute_data(k));
 }
 
 PyObject *_get_ints_numpy(IMP::Model *m, IMP::IntKey k, PyObject *m_pyobj)
 {
-  return _get_ints_data_numpy(m, m_pyobj,
-               m->IMP::internal::IntAttributeTable::access_attribute_data(k));
+  unsigned sz = m->IMP::internal::IntAttributeTable::get_attribute_size(k);
+  return _get_ints_data_numpy(m_pyobj, sz,
+           sz == 0 ? nullptr
+               : m->IMP::internal::IntAttributeTable::access_attribute_data(k));
 }
 
 PyObject *_get_spheres_numpy(IMP::Model *m, PyObject *m_pyobj)
 {
-  return _get_spheres_data_numpy(m, m_pyobj, m->access_spheres_data());
+  unsigned sz = m->get_spheres_size();
+  return _get_spheres_data_numpy(m_pyobj, sz,
+                   sz == 0 ? nullptr : m->access_spheres_data());
 }
 
 PyObject *_get_sphere_derivatives_numpy(IMP::Model *m, PyObject *m_pyobj)
 {
-  return _get_spheres_data_numpy(m, m_pyobj,
-                                 m->access_sphere_derivatives_data());
+  unsigned sz = m->get_sphere_derivatives_size();
+  return _get_spheres_data_numpy(m_pyobj, sz,
+                  sz == 0 ? nullptr : m->access_sphere_derivatives_data());
 }
 %}
 
