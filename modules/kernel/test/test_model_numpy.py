@@ -22,7 +22,7 @@ class Tests(IMP.test.TestCase):
         else:
             self.assertRaises(NotImplementedError, m._get_derivatives_numpy, k)
 
-    def test_get_sphere_numpy(self):
+    def test_get_spheres_numpy(self):
         """Test _get_spheres_numpy method"""
         m = IMP.Model("score state show")
         p1 = IMP.Particle(m)
@@ -53,7 +53,7 @@ class Tests(IMP.test.TestCase):
             n[1][1] = 24.0
             self.assertAlmostEqual(d2.get_coordinates()[0], 24.0, delta=1e-6)
         else:
-            self.assertRaises(NotImplementedError, m._get_spheres_numpy, k)
+            self.assertRaises(NotImplementedError, m._get_spheres_numpy)
 
     def test_get_sphere_derivatives_numpy(self):
         """Test _get_sphere_derivatives_numpy method"""
