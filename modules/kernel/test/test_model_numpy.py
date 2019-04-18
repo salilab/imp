@@ -55,6 +55,26 @@ class Tests(IMP.test.TestCase):
         else:
             self.assertRaises(NotImplementedError, m._get_spheres_numpy, k)
 
+    def test_get_sphere_derivatives_numpy(self):
+        """Test _get_sphere_derivatives_numpy method"""
+        m = IMP.Model("score state show")
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        p3 = IMP.Particle(m)
+
+        d1 = IMP.core.XYZR.setup_particle(p1)
+        d2 = IMP.core.XYZR.setup_particle(p2)
+
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            n = m._get_sphere_derivatives_numpy()
+            n[0][1] = 42.0
+            n[1][2] = 24.0
+            self.assertAlmostEqual(d1.get_derivatives()[0], 42.0, delta=1e-6)
+            self.assertAlmostEqual(d2.get_derivatives()[1], 24.0, delta=1e-6)
+        else:
+            self.assertRaises(NotImplementedError,
+                              m._get_sphere_derivatives_numpy)
+
 
 if __name__ == '__main__':
     IMP.test.main()
