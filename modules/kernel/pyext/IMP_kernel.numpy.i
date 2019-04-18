@@ -2,7 +2,7 @@
 
 
 %{
-#ifdef IMP_KERNEL_HAS_NUMPY
+#if IMP_KERNEL_HAS_NUMPY
 #include <numpy/arrayobject.h>
 
 static bool import_numpy_module()
@@ -26,7 +26,7 @@ static bool import_numpy_module()
 PyObject *_get_derivatives_numpy(IMP::Model *m, IMP::FloatKey k,
                                  PyObject *m_pyobj)
 {
-#ifdef IMP_KERNEL_HAS_NUMPY
+#if IMP_KERNEL_HAS_NUMPY
   if (!import_numpy_module()) {
     return NULL;
   }
