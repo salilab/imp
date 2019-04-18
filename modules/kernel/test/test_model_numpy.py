@@ -22,6 +22,45 @@ class Tests(IMP.test.TestCase):
         else:
             self.assertRaises(NotImplementedError, m._get_derivatives_numpy, k)
 
+    def test_get_floats_numpy(self):
+        """Test _get_floats_numpy method"""
+        m = IMP.Model("score state show")
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+
+        k = IMP.FloatKey("myf")
+        p1.add_attribute(k, 1.0)
+
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            n = m._get_floats_numpy(k)
+            self.assertAlmostEqual(n[0], 1.0, delta=1e-6)
+            n[0] = 42.0
+            self.assertAlmostEqual(p1.get_value(k), 42.0, delta=1e-6)
+        else:
+            self.assertRaises(NotImplementedError, m._get_floats_numpy, k)
+
+    def test_get_ints_numpy(self):
+        """Test _get_ints_numpy method"""
+        m = IMP.Model("score state show")
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        p3 = IMP.Particle(m)
+
+        k = IMP.IntKey("myf")
+        p1.add_attribute(k, 1)
+        p2.add_attribute(k, 2)
+
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            n = m._get_ints_numpy(k)
+            self.assertEqual(n[0], 1)
+            self.assertEqual(n[1], 2)
+            n[0] = 42
+            n[1] = 24
+            self.assertEqual(p1.get_value(k), 42)
+            self.assertEqual(p2.get_value(k), 24)
+        else:
+            self.assertRaises(NotImplementedError, m._get_ints_numpy, k)
+
     def test_get_spheres_numpy(self):
         """Test _get_spheres_numpy method"""
         m = IMP.Model("score state show")
