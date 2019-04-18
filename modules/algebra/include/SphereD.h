@@ -77,8 +77,8 @@ class SphereD : public GeometricPrimitiveD<D> {
   unsigned int get_dimension() const { return center_.get_dimension(); }
 
  private:
-  VectorD<D> center_;
   double radius_;
+  VectorD<D> center_;
 };
 
 IMP_VOLUME_GEOMETRY_METHODS_D(Sphere, sphere,
