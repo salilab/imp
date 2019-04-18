@@ -59,7 +59,7 @@ PyObject *_get_derivatives_numpy(IMP::Model *m, IMP::FloatKey k,
 
 %extend IMP::Model {
   %pythoncode %{
-    def get_derivatives_numpy(self, k):
+    def _get_derivatives_numpy(self, k):
         return _get_derivatives_numpy(self, k, self)
   %}
 }
