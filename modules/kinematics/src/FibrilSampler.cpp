@@ -54,12 +54,18 @@ void FibrilSampler::apply(const DOFValues& values) {
     //dihedral_joints_[i]->get_owner_kf()->update_all_internal_coordinates();
     //std::cout << i << " joint set to " << values[i] << " " << dihedral_joints_[i]->get_angle() << std::endl;
   }
-
   // Transform fibril principle component to rotation
-
   // Find center of mass and transform to given values.
   algebra::Transformation3D xform(rot, trans);
   trans_joint_[0]->set_transformation_child_to_parent(xform);
 }
 
+
+void FibrilSampler::apply_floats(const Floats& values) {
+   DOFValues dof_values;
+   dof_values.reserve(values.size());
+   for (unsigned int i = 0; i < values.size(); i++)
+     dof_values.push_back(values[i]);
+   apply(dof_values);
+}
 IMPKINEMATICS_END_NAMESPACE
