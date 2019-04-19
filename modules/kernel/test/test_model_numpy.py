@@ -19,12 +19,14 @@ class Tests(IMP.test.TestCase):
 
         if IMP.IMP_KERNEL_HAS_NUMPY:
             n = m1._get_derivatives_numpy(k)
+            self.assertIs(n.base, m1)
             self.assertEqual(len(n), 1) # no derivatives for p2
             self.assertAlmostEqual(n[0], 0.0, delta=1e-6)
             n[0] = 42.0
             self.assertAlmostEqual(p1.get_derivative(k), 42.0, delta=1e-6)
 
             n = m2._get_derivatives_numpy(k)
+            self.assertIs(n.base, m2)
             self.assertEqual(len(n), 0) # no float key for this model
         else:
             self.assertRaises(NotImplementedError, m1._get_derivatives_numpy, k)
@@ -43,12 +45,14 @@ class Tests(IMP.test.TestCase):
 
         if IMP.IMP_KERNEL_HAS_NUMPY:
             n = m1._get_floats_numpy(k)
+            self.assertIs(n.base, m1)
             self.assertEqual(len(n), 1) # no float attribute for p2
             self.assertAlmostEqual(n[0], 1.0, delta=1e-6)
             n[0] = 42.0
             self.assertAlmostEqual(p1.get_value(k), 42.0, delta=1e-6)
 
             n = m2._get_floats_numpy(k)
+            self.assertIs(n.base, m2)
             self.assertEqual(len(n), 0) # no float key for this model
         else:
             self.assertRaises(NotImplementedError, m1._get_floats_numpy, k)
@@ -69,6 +73,7 @@ class Tests(IMP.test.TestCase):
 
         if IMP.IMP_KERNEL_HAS_NUMPY:
             n = m1._get_ints_numpy(k)
+            self.assertIs(n.base, m1)
             self.assertEqual(len(n), 2) # no int attribute for p3
             self.assertEqual(n[0], 1)
             self.assertEqual(n[1], 2)
@@ -78,6 +83,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(p2.get_value(k), 24)
 
             n = m2._get_ints_numpy(k)
+            self.assertIs(n.base, m2)
             self.assertEqual(len(n), 0) # no int key for this model
         else:
             self.assertRaises(NotImplementedError, m1._get_ints_numpy, k)
@@ -102,6 +108,7 @@ class Tests(IMP.test.TestCase):
 
         if IMP.IMP_KERNEL_HAS_NUMPY:
             n = m1._get_spheres_numpy()
+            self.assertIs(n.base, m1)
             self.assertEqual(len(n), 2) # no sphere attribute for p3
             self.assertAlmostEqual(n[0][0], 4.0, delta=1e-4)
             self.assertAlmostEqual(n[0][1], 1.0, delta=1e-4)
@@ -118,6 +125,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(d2.get_coordinates()[0], 24.0, delta=1e-6)
 
             n = m2._get_spheres_numpy()
+            self.assertIs(n.base, m2)
             self.assertEqual(len(n), 0) # no spheres for this model
         else:
             self.assertRaises(NotImplementedError, m1._get_spheres_numpy)
@@ -137,12 +145,14 @@ class Tests(IMP.test.TestCase):
 
         if IMP.IMP_KERNEL_HAS_NUMPY:
             n = m1._get_sphere_derivatives_numpy()
+            self.assertIs(n.base, m1)
             self.assertEqual(len(n), 2) # no sphere attribute for p3
             n[0][1] = 42.0
             n[1][2] = 24.0
             self.assertAlmostEqual(d1.get_derivatives()[0], 42.0, delta=1e-6)
             self.assertAlmostEqual(d2.get_derivatives()[1], 24.0, delta=1e-6)
             n = m2._get_sphere_derivatives_numpy()
+            self.assertIs(n.base, m2)
             self.assertEqual(len(n), 0) # no spheres for this model
         else:
             self.assertRaises(NotImplementedError,
