@@ -36,7 +36,7 @@ class IMPKINEMATICSEXPORT FibrilSampler : public DOFsSampler {
   FibrilSampler(TransformationJoints trans_joint, DihedralAngleRevoluteJoints dihedral_joints, DOFs dofs);
 
   virtual void apply(const DOFValues& values);
-
+  virtual void apply_floats(const Floats& values);
   DihedralAngleRevoluteJoints get_dihedral_joints() { return dihedral_joints_; }
 
   TransformationJoints get_transformation_joint() { return trans_joint_; }
