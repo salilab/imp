@@ -2,6 +2,15 @@ from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.test
+import sys
+
+# Handle alignment of Sphere3D class
+# MSVC packs the Vector3D and radius differently to gcc/clang
+# todo: handle this more intelligently internally
+if hasattr(sys, 'dllhandle'):
+    X, Y, Z, R = 0, 1, 2, 3
+else:
+    R, X, Y, Z = 0, 1, 2, 3
 
 class Tests(IMP.test.TestCase):
 
@@ -110,18 +119,18 @@ class Tests(IMP.test.TestCase):
             n = m1._get_spheres_numpy()
             self.assertIs(n.base, m1)
             self.assertEqual(len(n), 2) # no sphere attribute for p3
-            self.assertAlmostEqual(n[0][0], 4.0, delta=1e-4)
-            self.assertAlmostEqual(n[0][1], 1.0, delta=1e-4)
-            self.assertAlmostEqual(n[0][2], 2.0, delta=1e-4)
-            self.assertAlmostEqual(n[0][3], 3.0, delta=1e-4)
+            self.assertAlmostEqual(n[0][R], 4.0, delta=1e-4)
+            self.assertAlmostEqual(n[0][X], 1.0, delta=1e-4)
+            self.assertAlmostEqual(n[0][Y], 2.0, delta=1e-4)
+            self.assertAlmostEqual(n[0][Z], 3.0, delta=1e-4)
 
-            self.assertAlmostEqual(n[1][0], 8.0, delta=1e-4)
-            self.assertAlmostEqual(n[1][1], 5.0, delta=1e-4)
-            self.assertAlmostEqual(n[1][2], 6.0, delta=1e-4)
-            self.assertAlmostEqual(n[1][3], 7.0, delta=1e-4)
-            n[0][0] = 42.0
+            self.assertAlmostEqual(n[1][R], 8.0, delta=1e-4)
+            self.assertAlmostEqual(n[1][X], 5.0, delta=1e-4)
+            self.assertAlmostEqual(n[1][Y], 6.0, delta=1e-4)
+            self.assertAlmostEqual(n[1][Z], 7.0, delta=1e-4)
+            n[0][R] = 42.0
             self.assertAlmostEqual(d1.get_radius(), 42.0, delta=1e-6)
-            n[1][1] = 24.0
+            n[1][X] = 24.0
             self.assertAlmostEqual(d2.get_coordinates()[0], 24.0, delta=1e-6)
 
             n = m2._get_spheres_numpy()
@@ -147,8 +156,8 @@ class Tests(IMP.test.TestCase):
             n = m1._get_sphere_derivatives_numpy()
             self.assertIs(n.base, m1)
             self.assertEqual(len(n), 2) # no sphere attribute for p3
-            n[0][1] = 42.0
-            n[1][2] = 24.0
+            n[0][X] = 42.0
+            n[1][Y] = 24.0
             self.assertAlmostEqual(d1.get_derivatives()[0], 42.0, delta=1e-6)
             self.assertAlmostEqual(d2.get_derivatives()[1], 24.0, delta=1e-6)
             n = m2._get_sphere_derivatives_numpy()
