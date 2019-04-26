@@ -21,6 +21,11 @@ for more details.
 pip install ihm
 ```
 
+Note that a C extension module is built for faster parsing of mmCIF files.
+This requires that your system has a C compiler. If you don't want to build
+the C extension module, install with
+`pip install ihm --install-option="--without-ext"`.
+
 # Installation from source code
 
 To build and install from a clone of the GitHub repository, run

@@ -90,3 +90,6 @@ The :mod:`ihm.restraint` Python module
 
 .. autoclass:: DerivedDistanceRestraint
    :members:
+
+.. autoclass:: PredictedContactRestraint
+   :members:

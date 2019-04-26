@@ -69,6 +69,19 @@ struct ihm_category;
 typedef void (*ihm_category_callback)(struct ihm_reader *reader,
                                       void *data, struct ihm_error **err);
 
+/* Callback for unknown mmCIF categories. Should set err on failure */
+typedef void (*ihm_unknown_category_callback)(struct ihm_reader *reader,
+                                              const char *category, int linenum,
+                                              void *data,
+                                              struct ihm_error **err);
+
+/* Callback for unknown mmCIF keywords. Should set err on failure */
+typedef void (*ihm_unknown_keyword_callback)(struct ihm_reader *reader,
+                                             const char *category,
+                                             const char *keyword, int linenum,
+                                             void *data,
+                                             struct ihm_error **err);
+
 /* Callback to free arbitrary data */
 typedef void (*ihm_free_callback)(void *data);
 
@@ -80,7 +93,26 @@ struct ihm_category *ihm_category_new(struct ihm_reader *reader,
                                       ihm_category_callback finalize_callback,
                                       void *data, ihm_free_callback free_func);
 
-/* Remove all categories from the reader. */
+/* Set a callback for unknown categories.
+   The given callback is called whenever a category is encountered in the
+   file that is not handled (by ihm_category_new).
+ */
+void ihm_reader_unknown_category_callback_set(struct ihm_reader *reader,
+                                     ihm_unknown_category_callback callback,
+                                     void *data, ihm_free_callback free_func);
+
+/* Set a callback for unknown keywords.
+   The given callback is called whenever a keyword is encountered in the
+   file that is not handled (within a category that is handled by
+   ihm_category_new).
+ */
+void ihm_reader_unknown_keyword_callback_set(struct ihm_reader *reader,
+                                     ihm_unknown_keyword_callback callback,
+                                     void *data, ihm_free_callback free_func);
+
+/* Remove all categories from the reader.
+   This also removes any unknown category or keyword callbacks.
+ */
 void ihm_reader_remove_all_categories(struct ihm_reader *reader);
 
 /* Add a new struct ihm_keyword to a category. */

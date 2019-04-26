@@ -20,7 +20,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.6'
+__version__ = '0.7'
 
 #: A value that isn't known. Note that this is distinct from a value that
 #: is deliberately omitted, which is represented by Python None.
@@ -412,7 +412,9 @@ class System(object):
                         (step.software for step in self._all_protocol_steps()
                                        if step.software),
                         (step.software for step in self._all_analysis_steps()
-                                       if step.software)))
+                                       if step.software),
+                        (r.software for r in self._all_restraints()
+                                   if hasattr(r, 'software') and r.software)))
 
     def _all_citations(self):
         """Iterate over all Citations in the system.
@@ -455,8 +457,9 @@ class Software(object):
 
        Generally these objects are added to :attr:`System.software` or
        passed to :class:`ihm.startmodel.StartingModel`,
-       :class:`ihm.protocol.Step`, or
-       :class:`ihm.analysis.Step` objects.
+       :class:`ihm.protocol.Step`,
+       :class:`ihm.analysis.Step`, or
+       :class:`ihm.restraint.PredictedContactResstraint` objects.
     """
     def __init__(self, name, classification, description, location,
                  type='program', version=None):
@@ -848,6 +851,10 @@ class Atom(object):
 
     def __init__(self, residue, id):
         self.residue, self.id = residue, id
+
+    entity = property(lambda self: self.residue.entity)
+    asym = property(lambda self: self.residue.asym)
+    seq_id = property(lambda self: self.residue.seq_id)
 
 
 class Residue(object):

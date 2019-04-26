@@ -184,8 +184,11 @@ class BinaryCifReader(ihm.format._Reader):
        Use :meth:`read_file` to actually read the file.
        See :class:`ihm.format.CifReader` for a description of the parameters.
     """
-    def __init__(self, fh, category_handler):
+    def __init__(self, fh, category_handler, unknown_category_handler=None,
+                 unknown_keyword_handler=None):
         self.category_handler = category_handler
+        self.unknown_category_handler = unknown_category_handler
+        self.unknown_keyword_handler = unknown_keyword_handler
         self.fh = fh
         self._file_blocks = None
 
@@ -201,11 +204,13 @@ class BinaryCifReader(ihm.format._Reader):
                 cat_name = _decode_bytes(category[b'name']).lower()
                 handler = self.category_handler.get(cat_name, None)
                 if handler:
-                    self._handle_category(handler, category)
+                    self._handle_category(handler, category, cat_name)
+                elif self.unknown_category_handler is not None:
+                    self.unknown_category_handler(cat_name, None)
             del self._file_blocks[0]
         return len(self._file_blocks) > 0
 
-    def _handle_category(self, handler, category):
+    def _handle_category(self, handler, category, cat_name):
         """Extract data for the given category"""
         num_cols = len(handler._keys)
         # Read all data for the category;
@@ -218,12 +223,15 @@ class BinaryCifReader(ihm.format._Reader):
             key_index[key] = i
         column_indices = []
         for c in category[b'columns']:
-            ki = key_index.get(_decode_bytes(c[b'name']).lower(), None)
+            key_name = _decode_bytes(c[b'name']).lower()
+            ki = key_index.get(key_name, None)
             if ki is not None:
                 column_indices.append(ki)
                 r = self._read_column(c, handler)
                 num_rows = len(r)
                 category_data[ki] = r
+            elif self.unknown_keyword_handler is not None:
+                self.unknown_keyword_handler(cat_name, key_name, None)
         row_data = [handler.not_in_file] * num_cols
         for row in range(num_rows):
             # Only update data for columns that we read (others will

@@ -1,10 +1,22 @@
 HEAD
 ====
+ - :func:`ihm.reader.read` can now be asked to warn if it encounters
+   categories or keywords in the mmCIF or BinaryCIF file that it doesn't
+   know about (and will ignore).
+ - Predicted contacts (:class:`ihm.restraint.PredictedContactRestraint`)
+   are now supported.
+
+0.7 - 2019-04-24
+================
  - Authors of the mmCIF file itself (`_audit_author` category) can now be
    set by manipulating :attr:`ihm.System.authors`. (If this list is empty on
    output, the set of all citation authors is used instead, as before.)
  - Any grants that supported the modeling can now be listed in
    :attr:`ihm.System.grants`.
+ - A copy of [SWIG](http://www.swig.org/) is no longer needed to install
+   releases of python-ihm via `pip` as pre-generated SWIG outputs are
+   included in the PyPI package. SWIG is still needed to build directly
+   from source code though.
 
 0.6 - 2019-03-22
 ================

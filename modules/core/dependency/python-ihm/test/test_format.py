@@ -255,17 +255,23 @@ x
             self._check_bad_cif('loop_\n_foo.bar\n_atom_site.id\n',
                                 real_file, {'_foo':h})
 
-    def _read_cif(self, cif, real_file, category_handlers):
+    def _read_cif(self, cif, real_file, category_handlers,
+                  unknown_category_handler=None,
+                  unknown_keyword_handler=None):
         if real_file:
             with utils.temporary_directory() as tmpdir:
                 fname = os.path.join(tmpdir, 'test')
                 with open(fname, 'w') as fh:
                     fh.write(cif)
                 with open(fname) as fh:
-                    r = ihm.format.CifReader(fh, category_handlers)
+                    r = ihm.format.CifReader(fh, category_handlers,
+                                             unknown_category_handler,
+                                             unknown_keyword_handler)
                     r.read_file()
         else:
-            r = ihm.format.CifReader(StringIO(cif), category_handlers)
+            r = ihm.format.CifReader(StringIO(cif), category_handlers,
+                                     unknown_category_handler,
+                                     unknown_keyword_handler)
             r.read_file()
 
     def test_category_case_insensitive(self):
@@ -600,6 +606,104 @@ x y
                            False, {'_struct_keywords':h})
             self.assertEqual(h.data,
                     [{'pdbx_keywords':'COMPLEX \n(HYDROLASE/PEPTIDE)'}])
+
+    def test_unknown_category_ignored(self):
+        """Test that unknown categories are just ignored"""
+        h = GenericHandler()
+        self._read_cif("""
+_cat1.foo baz
+_cat2.bar test
+#
+loop_
+_foo.bar
+_foo.baz
+x y
+""", False, {'_cat1':h})
+        self.assertEqual(h.data, [{'foo':'baz'}])
+
+    def test_unknown_category_handled(self):
+        """Test that unknown categories are handled if requested"""
+        class CatHandler(object):
+            def __init__(self):
+                self.warns = []
+            def __call__(self, cat, line):
+                self.warns.append((cat, line))
+
+        ch = CatHandler()
+        h = GenericHandler()
+        self._read_cif("""
+_cat1.foo baz
+_cat2.bar test
+#
+loop_
+_foo.bar
+_foo.baz
+x y
+""", False, {'_cat1':h}, unknown_category_handler=ch)
+        self.assertEqual(h.data, [{'foo':'baz'}])
+        self.assertEqual(ch.warns, [('_cat2', 3), ('_foo', 6)])
+
+    def test_unknown_keyword_ignored(self):
+        """Test that unknown keywords are just ignored"""
+        h = GenericHandler()
+        self._read_cif("""
+_cat1.foo baz
+_cat1.unknown_keyword1 test
+#
+loop_
+_foo.bar
+_foo.unknown_keyword2
+x y
+""", False, {'_cat1':h, '_foo':h})
+        self.assertEqual(h.data, [{'bar': 'x'}, {'foo': 'baz'}])
+
+    def test_unknown_keyword_handled(self):
+        """Test that unknown keywords are handled if requested"""
+        class KeyHandler(object):
+            def __init__(self):
+                self.warns = []
+            def __call__(self, cat, key, line):
+                self.warns.append((cat, key, line))
+
+        kh = KeyHandler()
+        h = GenericHandler()
+        self._read_cif("""
+_cat1.foo baz
+_cat1.unknown_keyword1 test
+#
+loop_
+_foo.bar
+_foo.unknown_keyword2
+x y
+""", False, {'_cat1':h, '_foo':h}, unknown_keyword_handler=kh)
+        self.assertEqual(h.data, [{'bar': 'x'}, {'foo': 'baz'}])
+        self.assertEqual(kh.warns,
+                         [('_cat1', 'unknown_keyword1', 3),
+                          ('_foo', 'unknown_keyword2', 7)])
+
+    @skipIf(_format is None, "No C tokenizer")
+    def test_multiple_set_unknown_handler(self):
+        """Test setting unknown handler multiple times"""
+        class Handler(object):
+            def __call__(self):
+                pass
+        uc = Handler()
+        fh = StringIO()
+        c_file = _format.ihm_file_new_from_python(fh)
+        reader = _format.ihm_reader_new(c_file)
+        # Handler must be a callable object
+        self.assertRaises(ValueError, _format.add_unknown_category_handler,
+                          reader, None)
+        self.assertRaises(ValueError, _format.add_unknown_keyword_handler,
+                          reader, None)
+        _format.add_unknown_category_handler(reader, uc)
+        _format.add_unknown_category_handler(reader, uc)
+        _format.add_unknown_keyword_handler(reader, uc)
+        _format.add_unknown_keyword_handler(reader, uc)
+        _format.ihm_reader_remove_all_categories(reader)
+        _format.ihm_reader_remove_all_categories(reader)
+        _format.ihm_reader_free(reader)
+        fh.close()
 
 if __name__ == '__main__':
     unittest.main()

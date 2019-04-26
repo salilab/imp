@@ -2625,6 +2625,72 @@ _ihm_derived_distance_restraint.dataset_list_id
         # SASRestraint is an unsupported type in RestraintGroup
         self.assertRaises(TypeError, ihm.dumper.write, fh, [s])
 
+    def test_predicted_contact_restraint_dumper(self):
+        """Test PredictedContactRestraintDumper"""
+        class MockObject(object):
+            pass
+        system = ihm.System()
+        e1 = ihm.Entity('AHC')
+        a1 = ihm.AsymUnit(e1)
+        e2 = ihm.Entity('GWT')
+        a2 = ihm.AsymUnit(e2)
+        system.entities.extend((e1, e2))
+        system.asym_units.extend((a1, a2))
+
+        dataset = MockObject()
+        dataset._id = 97
+        software = MockObject()
+        software._id = 34
+
+        dist = ihm.restraint.LowerBoundDistanceRestraint(25.0)
+        dist2 = ihm.restraint.UpperBoundDistanceRestraint(14.0)
+        r1 = ihm.restraint.PredictedContactRestraint(dataset=dataset,
+                 resatom1=a1.residue(1), resatom2=a2.residue(2), distance=dist,
+                 probability=0.8, by_residue=True, software=software)
+        r2 = ihm.restraint.PredictedContactRestraint(dataset=dataset,
+                 resatom1=a1.residue(1).atom('CA'),
+                 resatom2=a2.residue(2).atom('CB'),
+                 by_residue=True, distance=dist, probability=0.4)
+        r3 = ihm.restraint.PredictedContactRestraint(dataset=dataset,
+                 resatom1=a1.residue(1), resatom2=a2.residue(2), distance=dist2,
+                 probability=0.6, by_residue=False)
+        rg = ihm.restraint.RestraintGroup((r2, r3))
+        system.restraints.extend((r1, r2)) # r2 is in restraints and groups
+        system.restraint_groups.append(rg)
+
+        ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
+        ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
+        dumper = ihm.dumper._PredictedContactRestraintDumper()
+        dumper.finalize(system) # assign IDs
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_predicted_contact_restraint.id
+_ihm_predicted_contact_restraint.group_id
+_ihm_predicted_contact_restraint.entity_id_1
+_ihm_predicted_contact_restraint.asym_id_1
+_ihm_predicted_contact_restraint.comp_id_1
+_ihm_predicted_contact_restraint.seq_id_1
+_ihm_predicted_contact_restraint.rep_atom_1
+_ihm_predicted_contact_restraint.entity_id_2
+_ihm_predicted_contact_restraint.asym_id_2
+_ihm_predicted_contact_restraint.comp_id_2
+_ihm_predicted_contact_restraint.seq_id_2
+_ihm_predicted_contact_restraint.rep_atom_2
+_ihm_predicted_contact_restraint.restraint_type
+_ihm_predicted_contact_restraint.distance_lower_limit
+_ihm_predicted_contact_restraint.distance_upper_limit
+_ihm_predicted_contact_restraint.probability
+_ihm_predicted_contact_restraint.model_granularity
+_ihm_predicted_contact_restraint.dataset_list_id
+_ihm_predicted_contact_restraint.software_id
+1 . 1 A ALA 1 . 2 B TRP 2 . 'lower bound' 25.000 . 0.800 by-residue 97 34
+2 1 1 A ALA 1 CA 2 B TRP 2 CB 'lower bound' 25.000 . 0.400 by-residue 97 .
+3 1 1 A ALA 1 . 2 B TRP 2 . 'upper bound' . 14.000 0.600 by-feature 97 .
+#
+""")
+
 
 if __name__ == '__main__':
     unittest.main()

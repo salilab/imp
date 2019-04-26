@@ -12,7 +12,9 @@ import ihm.model
 import ihm.restraint
 import ihm.geometry
 import ihm.source
+import ihm.cross_linkers
 import inspect
+import warnings
 try:
     from . import _format
 except ImportError:
@@ -418,9 +420,21 @@ class SystemReader(object):
                                    ihm.restraint.DerivedDistanceRestraint,
                                    *(None,)*4)
 
-        #: Mapping from ID to :class:`ihm.restraint.RestraintGroup` objects
+        #: Mapping from ID to :class:`ihm.restraint.PredictedContactRestraint`
+        #: objects
+        self.pred_cont_restraints = IDMapper(self.system.restraints,
+                                   ihm.restraint.PredictedContactRestraint,
+                                   *(None,)*5)
+
+        #: Mapping from ID to :class:`ihm.restraint.RestraintGroup` of
+        #: :class:`ihm.restraint.DerivedDistanceRestraint` objects
         self.dist_restraint_groups = IDMapper(self.system.restraint_groups,
                                    ihm.restraint.RestraintGroup)
+
+        #: Mapping from ID to :class:`ihm.restraint.RestraintGroup` of
+        #: :class:`ihm.restraint.PredictedContactRestraint` objects
+        self.pred_cont_restraint_groups = IDMapper(self.system.restraint_groups,
+                                          ihm.restraint.RestraintGroup)
 
         #: Mapping from ID to :class:`ihm.geometry.GeometricObject` objects
         self.geometries = _GeometryIDMapper(
@@ -1439,6 +1453,37 @@ class _DerivedDistanceRestraintHandler(Handler):
         r.probability = self.get_float(probability)
 
 
+class _PredictedContactRestraintHandler(Handler):
+    category = '_ihm_predicted_contact_restraint'
+
+
+    def _get_resatom(self, asym_id, seq_id, atom_id):
+        asym = self.sysr.asym_units.get_by_id(asym_id)
+        seq_id = self.get_int(seq_id)
+        resatom = asym.residue(seq_id)
+        if atom_id:
+            resatom = resatom.atom(atom_id)
+        return resatom
+
+    def __call__(self, id, group_id, dataset_list_id, asym_id_1,
+                 seq_id_1, rep_atom_1, asym_id_2, seq_id_2, rep_atom_2,
+                 restraint_type, probability, distance_lower_limit,
+                 distance_upper_limit, model_granularity, software_id):
+        r = self.sysr.pred_cont_restraints.get_by_id(id)
+        if group_id is not None:
+            rg = self.sysr.pred_cont_restraint_groups.get_by_id(group_id)
+            rg.append(r)
+        r.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
+        r.resatom1 = self._get_resatom(asym_id_1, seq_id_1, rep_atom_1)
+        r.resatom2 = self._get_resatom(asym_id_2, seq_id_2, rep_atom_2)
+        r.distance = _handle_distance[restraint_type](distance_lower_limit,
+                                                      distance_upper_limit,
+                                                      self.get_float)
+        r.by_residue = self.get_lower(model_granularity) == 'by-residue'
+        r.probability = self.get_float(probability)
+        r.software = self.sysr.software.get_by_id_or_none(software_id)
+
+
 class _CenterHandler(Handler):
     category = '_ihm_geometric_object_center'
 
@@ -1648,15 +1693,29 @@ class _NonPolySchemeHandler(Handler):
 
 class _CrossLinkListHandler(Handler):
     category = '_ihm_cross_link_list'
+    _linkers_by_name = None
 
     def __init__(self, *args):
         super(_CrossLinkListHandler, self).__init__(*args)
         self._seen_group_ids = set()
 
+    def _get_linker_by_name(self, name):
+        """Look up old-style linker, by name rather than descriptor"""
+        if self._linkers_by_name is None:
+            self._linkers_by_name = dict((x[1].auth_name, x[1])
+                                for x in inspect.getmembers(ihm.cross_linkers)
+                                if isinstance(x[1], ihm.ChemDescriptor))
+        if name not in self._linkers_by_name:
+            self._linkers_by_name[name] = ihm.ChemDescriptor(name)
+        return self._linkers_by_name[name]
+
     def __call__(self, dataset_list_id, linker_descriptor_id, group_id, id,
-                 entity_id_1, entity_id_2, seq_id_1, seq_id_2):
+                 entity_id_1, entity_id_2, seq_id_1, seq_id_2, linker_type):
         dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
-        linker = self.sysr.chem_descriptors.get_by_id(linker_descriptor_id)
+        if linker_descriptor_id is None and linker_type is not None:
+            linker = self._get_linker_by_name(linker_type)
+        else:
+            linker = self.sysr.chem_descriptors.get_by_id(linker_descriptor_id)
         # Group all crosslinks with same dataset and linker in one
         # CrossLinkRestraint object
         r = self.sysr.xl_restraints.get_by_attrs(dataset, linker)
@@ -1762,7 +1821,43 @@ class _OrderedEnsembleHandler(Handler):
                 mapkeys={'step_description':'description'})
 
 
-def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):
+class UnknownCategoryWarning(Warning):
+    """Warning for unknown categories encountered in the file by :func:`read`"""
+    pass
+
+
+class UnknownKeywordWarning(Warning):
+    """Warning for unknown keywords encountered in the file by :func:`read`"""
+    pass
+
+
+class _UnknownCategoryHandler(object):
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self._seen_categories = set()
+
+    def __call__(self, catname, line):
+        # Only warn about a given category once
+        if catname in self._seen_categories:
+            return
+        self._seen_categories.add(catname)
+        warnings.warn("Unknown category %s encountered%s - will be ignored"
+                      % (catname, " on line %d" % line if line else ""),
+                      UnknownCategoryWarning, stacklevel=2)
+
+
+class _UnknownKeywordHandler(object):
+    def __call__(self, catname, keyname, line):
+        warnings.warn("Unknown keyword %s.%s encountered%s - will be ignored"
+                      % (catname, keyname,
+                         " on line %d" % line if line else ""),
+                      UnknownKeywordWarning, stacklevel=2)
+
+
+def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
+         warn_unknown_category=False, warn_unknown_keyword=False):
     """Read data from the mmCIF file handle `fh`.
 
        Note that the reader currently expects to see an mmCIF file compliant
@@ -1793,13 +1888,23 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):
               BinaryCIF.
        :param list handlers: A list of :class:`Handler` classes (not objects).
               These can be used to read extra categories from the file.
+       :param bool warn_unknown_category: if set, emit an
+              :exc:`UnknownCategoryWarning` for each unknown category
+              encountered in the file.
+       :param bool warn_unknown_keyword: if set, emit an
+              :exc:`UnknownKeywordWarning` for each unknown keyword
+              (within an otherwise-handled category) encountered in the file.
        :return: A list of :class:`ihm.System` objects.
     """
     systems = []
     reader_map = {'mmCIF': ihm.format.CifReader,
                   'BCIF': ihm.format_bcif.BinaryCifReader}
 
-    r = reader_map[format](fh, {})
+    uchandler = _UnknownCategoryHandler() if warn_unknown_category else None
+    ukhandler = _UnknownKeywordHandler() if warn_unknown_keyword else None
+
+    r = reader_map[format](fh, {}, unknown_category_handler=uchandler,
+                           unknown_keyword_handler=ukhandler)
     while True:
         s = SystemReader(model_class)
         hs = [_StructHandler(s), _SoftwareHandler(s), _CitationHandler(s),
@@ -1824,7 +1929,8 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):
               _SphereObjSiteHandler(s), _AtomSiteHandler(s),
               _PolyResidueFeatureHandler(s), _PolyAtomFeatureHandler(s),
               _NonPolyFeatureHandler(s), _PseudoSiteFeatureHandler(s),
-              _DerivedDistanceRestraintHandler(s), _CenterHandler(s),
+              _DerivedDistanceRestraintHandler(s),
+              _PredictedContactRestraintHandler(s), _CenterHandler(s),
               _TransformationHandler(s), _GeometricObjectHandler(s),
               _SphereHandler(s), _TorusHandler(s), _HalfTorusHandler(s),
               _AxisHandler(s), _PlaneHandler(s), _GeometricRestraintHandler(s),
@@ -1832,6 +1938,8 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):
               _CrossLinkListHandler(s), _CrossLinkRestraintHandler(s),
               _CrossLinkResultHandler(s),
               _OrderedEnsembleHandler(s)] + [h(s) for h in handlers]
+        if uchandler:
+            uchandler.reset()
         r.category_handler = dict((h.category, h) for h in hs)
         more_data = r.read_file()
         for h in hs:

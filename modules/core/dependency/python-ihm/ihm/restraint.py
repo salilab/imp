@@ -15,8 +15,8 @@ class RestraintGroup(list):
        Note that due to limitations of the underlying dictionary, only
        certain combinations of restraints can be placed in groups.
        In particular, all objects in a group must be of the same type, and
-       only certain types (currently only :class:`DerivedDistanceRestraint`)
-       can be grouped.
+       only certain types (currently only :class:`DerivedDistanceRestraint`
+       and :class:`PredictedContactRestraint`) can be grouped.
 
        Empty groups can be created, but will be ignored on output as the
        dictionary does not support them.
@@ -605,3 +605,34 @@ class DerivedDistanceRestraint(object):
         self.feature1, self.feature2 = feature1, feature2
         self.distance, self.restrain_all = distance, restrain_all
         self.probability = probability
+
+
+class PredictedContactRestraint(object):
+    """A predicted contact between two parts of the system, derived from
+       various computational tools.
+
+       :param dataset: Reference to the data from which the restraint is
+              derived.
+       :type dataset: :class:`~ihm.dataset.Dataset`
+       :param resatom1: The first residue or atom to restrain.
+       :type resatom1: :class:`ihm.Residue` or :class:`ihm.Atom`
+       :param resatom2: The second residue or atom to restrain.
+       :type resatom2: :class:`ihm.Residue` or :class:`ihm.Atom`
+       :param distance: Restraint on the distance.
+       :type distance: :class:`DistanceRestraint`
+       :param bool by_residue: If True, the restraint is applied to specific
+              residues; otherwise, it is applied to the closest primitive
+              object with the highest resolution.
+       :param float probability: Likelihood that restraint is correct (0. - 1.)
+       :param software: The software used to generate the contact.
+       :type software: :class:`~ihm.Software`
+
+    """
+    assembly = None # no struct_assembly_id for predicted contact restraints
+
+    def __init__(self, dataset, resatom1, resatom2, distance,
+                 by_residue, probability=None, software=None):
+        self.dataset = dataset
+        self.resatom1, self.resatom2 = resatom1, resatom2
+        self.distance, self.by_residue = distance, by_residue
+        self.probability, self.software = probability, software

@@ -330,9 +330,76 @@ static struct category_handler_data *do_add_handler(
   return hd;
 }
 
+/* Pass unknown category info to a Python callable */
+static void unknown_category_python(struct ihm_reader *reader,
+                                    const char *category, int linenum,
+                                    void *data, struct ihm_error **err)
+{
+  static char fmt[] = "(si)";
+  PyObject *callable = data;
+  PyObject *result = PyObject_CallFunction(callable, fmt, category, linenum);
+  if (!result) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "Python error");
+  } else {
+    Py_DECREF(result);
+  }
+}
+
+/* Pass unknown keyword info to a Python callable */
+static void unknown_keyword_python(struct ihm_reader *reader,
+                                   const char *category, const char *keyword,
+                                   int linenum, void *data,
+                                   struct ihm_error **err)
+{
+  static char fmt[] = "(ssi)";
+  PyObject *callable = data;
+  PyObject *result = PyObject_CallFunction(callable, fmt, category, keyword,
+                                           linenum);
+  if (!result) {
+    ihm_error_set(err, IHM_ERROR_VALUE, "Python error");
+  } else {
+    Py_DECREF(result);
+  }
+}
+
+/* Treat data as a Python object, and decrease its refcount */
+static void free_python_callable(void *data)
+{
+  PyObject *obj = data;
+  Py_DECREF(obj);
+}
+
 %}
 
 %inline %{
+/* Add a handler for unknown categories */
+void add_unknown_category_handler(struct ihm_reader *reader,
+                                  PyObject *callable, struct ihm_error **err)
+{
+  if (!PyCallable_Check(callable)) {
+    ihm_error_set(err, IHM_ERROR_VALUE,
+                  "'callable' should be a callable object");
+    return;
+  }
+  Py_INCREF(callable);
+  ihm_reader_unknown_category_callback_set(reader, unknown_category_python,
+                                           callable, free_python_callable);
+}
+
+/* Add a handler for unknown keywords */
+void add_unknown_keyword_handler(struct ihm_reader *reader,
+                                 PyObject *callable, struct ihm_error **err)
+{
+  if (!PyCallable_Check(callable)) {
+    ihm_error_set(err, IHM_ERROR_VALUE,
+                  "'callable' should be a callable object");
+    return;
+  }
+  Py_INCREF(callable);
+  ihm_reader_unknown_keyword_callback_set(reader, unknown_keyword_python,
+                                          callable, free_python_callable);
+}
+
 /* Add a generic category handler which collects all specified keywords for
    the given category and passes them to a Python callable */
 void add_category_handler(struct ihm_reader *reader, char *name,

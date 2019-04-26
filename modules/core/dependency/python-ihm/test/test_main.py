@@ -305,13 +305,27 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.seq_id, 3)
         self.assertEqual(r.auth_seq_id, 8)
 
-    def test_atom(self):
-        """Test Atom class"""
+    def test_atom_entity(self):
+        """Test Atom class built from an Entity"""
         e = ihm.Entity('AHCDAH')
         a = e.residue(3).atom('CA')
         self.assertEqual(a.id, 'CA')
         self.assertEqual(a.residue.entity, e)
         self.assertEqual(a.residue.seq_id, 3)
+        self.assertEqual(a.entity, e)
+        self.assertEqual(a.asym, None)
+        self.assertEqual(a.seq_id, 3)
+
+    def test_atom_asym(self):
+        """Test Atom class built from an AsymUnit"""
+        e = ihm.Entity('AHCDAH')
+        asym = ihm.AsymUnit(e)
+        a = asym.residue(3).atom('CA')
+        self.assertEqual(a.id, 'CA')
+        self.assertEqual(a.residue.seq_id, 3)
+        self.assertEqual(a.entity, None)
+        self.assertEqual(a.asym, asym)
+        self.assertEqual(a.seq_id, 3)
 
     def test_entity_range(self):
         """Test EntityRange class"""
@@ -579,8 +593,15 @@ class Tests(unittest.TestCase):
         protocol1.analyses = [analysis1]
         s.orphan_protocols.append(protocol1)
 
+        r1 = MockObject()
+        r2 = MockObject()
+        r3 = MockObject()
+        r2.software = None
+        r3.software = s1
+        s.restraints.extend((r1, r2, r3))
+
         # duplicates are kept
-        self.assertEqual(list(s._all_software()), [s2, s2, s1, s2, s2])
+        self.assertEqual(list(s._all_software()), [s2, s2, s1, s2, s2, s1])
 
     def test_all_dataset_groups(self):
         """Test _all_dataset_groups() method"""

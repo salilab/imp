@@ -4,6 +4,7 @@ from collections import namedtuple
 import unittest
 import gzip
 import sys
+import warnings
 if sys.version_info[0] >= 3:
     from io import StringIO
 else:
@@ -1961,6 +1962,39 @@ _ihm_cross_link_list.dataset_list_id
         self.assertEqual(xl.residue1.seq_id, 2)
         self.assertEqual(xl.residue2.seq_id, 3)
 
+    def test_cross_link_list_handler_linker_type(self):
+        """Test CrossLinkListHandler with old-style linker_type"""
+        fh = StringIO("""
+loop_
+_ihm_cross_link_list.id
+_ihm_cross_link_list.group_id
+_ihm_cross_link_list.entity_description_1
+_ihm_cross_link_list.entity_id_1
+_ihm_cross_link_list.seq_id_1
+_ihm_cross_link_list.comp_id_1
+_ihm_cross_link_list.entity_description_2
+_ihm_cross_link_list.entity_id_2
+_ihm_cross_link_list.seq_id_2
+_ihm_cross_link_list.comp_id_2
+_ihm_cross_link_list.linker_type
+_ihm_cross_link_list.dataset_list_id
+1 1 foo 1 2 THR foo 1 3 CYS DSS 97
+2 2 foo 1 2 THR bar 2 3 PHE DSS 97
+3 2 foo 1 2 THR bar 2 2 GLU DSS 97
+4 3 foo 1 1 ALA bar 2 1 ASP DSS 97
+5 4 foo 1 1 ALA bar 2 1 ASP TST 97
+6 5 foo 1 1 ALA bar 2 1 ASP DSS 98
+""")
+        s, = ihm.reader.read(fh)
+        # Check grouping
+        r1, r2, r3 = s.restraints
+        self.assertEqual(r1.linker.auth_name, 'DSS')
+        self.assertEqual(r1.linker.chemical_name, 'disuccinimidyl suberate')
+        self.assertEqual(r2.linker.auth_name, 'TST')
+        self.assertEqual(r2.linker.chemical_name, None)
+        self.assertEqual(r3.linker.auth_name, 'DSS')
+        self.assertEqual(r3.linker.chemical_name, 'disuccinimidyl suberate')
+
     def test_cross_link_restraint_handler(self):
         """Test CrossLinkRestraintHandler"""
         xl_list = """
@@ -2154,6 +2188,115 @@ _ihm_ordered_ensemble.model_group_id_end
         f = gzip.open(fname, 'rt' if sys.version_info[0] >= 3 else 'rb')
         s, = ihm.reader.read(f)
         f.close()
+
+    def test_warn_unknown_category(self):
+        """Test warnings for unknown categories"""
+        cif = """
+_cat1.foo baz
+_cat1.bar baz
+#
+loop_
+_cat2.foo
+_cat2.bar
+x y
+"""
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            # Test with no warnings
+            s, = ihm.reader.read(StringIO(cif))
+            self.assertEqual(len(w), 0)
+            s, = ihm.reader.read(StringIO(cif), warn_unknown_category=True)
+            # Should only warn once per category
+            self.assertEqual(len(w), 2)
+            self.assertEqual(w[0].category, ihm.reader.UnknownCategoryWarning)
+            self.assertTrue('Unknown category _cat1 encountered on line 2'
+                            in str(w[0].message))
+            self.assertEqual(w[1].category, ihm.reader.UnknownCategoryWarning)
+            self.assertTrue('Unknown category _cat2 encountered on line 6'
+                            in str(w[1].message))
+
+    def test_warn_unknown_keyword(self):
+        """Test warnings for unknown keywords"""
+        cif = """
+_cat1.foo baz
+_struct.unknown foo
+#
+loop_
+_struct_asym.id
+_struct_asym.bar
+1 y
+"""
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            # Test with no warnings
+            s, = ihm.reader.read(StringIO(cif))
+            self.assertEqual(len(w), 0)
+            s, = ihm.reader.read(StringIO(cif), warn_unknown_keyword=True)
+            self.assertEqual(len(w), 2)
+            self.assertEqual(w[0].category, ihm.reader.UnknownKeywordWarning)
+            self.assertTrue('keyword _struct.unknown encountered on line 3'
+                            in str(w[0].message))
+            self.assertEqual(w[1].category, ihm.reader.UnknownKeywordWarning)
+            self.assertTrue('keyword _struct_asym.bar encountered on line 7'
+                            in str(w[1].message))
+
+    def test_predicted_contact_restraint_handler(self):
+        """Test PredictedContactRestraintHandler"""
+        fh = StringIO("""
+loop_
+_ihm_predicted_contact_restraint.id
+_ihm_predicted_contact_restraint.group_id
+_ihm_predicted_contact_restraint.entity_id_1
+_ihm_predicted_contact_restraint.asym_id_1
+_ihm_predicted_contact_restraint.comp_id_1
+_ihm_predicted_contact_restraint.seq_id_1
+_ihm_predicted_contact_restraint.rep_atom_1
+_ihm_predicted_contact_restraint.entity_id_2
+_ihm_predicted_contact_restraint.asym_id_2
+_ihm_predicted_contact_restraint.comp_id_2
+_ihm_predicted_contact_restraint.seq_id_2
+_ihm_predicted_contact_restraint.rep_atom_2
+_ihm_predicted_contact_restraint.restraint_type
+_ihm_predicted_contact_restraint.distance_lower_limit
+_ihm_predicted_contact_restraint.distance_upper_limit
+_ihm_predicted_contact_restraint.probability
+_ihm_predicted_contact_restraint.model_granularity
+_ihm_predicted_contact_restraint.dataset_list_id
+_ihm_predicted_contact_restraint.software_id
+1 . 1 A ALA 1 . 2 B TRP 2 . 'lower bound' 25.000 . 0.800 by-residue 97 34
+2 1 1 A ALA 1 CA 2 B TRP 2 CB 'lower bound' 25.000 . 0.400 by-residue 97 .
+3 1 1 A ALA 1 . 2 B TRP 2 . 'upper bound' . 14.000 0.600 by-feature 97 .
+""")
+        s, = ihm.reader.read(fh)
+        r1, r2, r3 = s.restraints
+        rg1, = s.restraint_groups
+        self.assertEqual([r for r in rg1], [r2, r3])
+        self.assertEqual(r1.dataset._id, '97')
+        self.assertTrue(isinstance(r1.resatom1, ihm.Residue))
+        self.assertEqual(r1.resatom1.seq_id, 1)
+        self.assertEqual(r1.resatom1.asym._id, 'A')
+        self.assertTrue(isinstance(r1.resatom2, ihm.Residue))
+        self.assertEqual(r1.resatom2.seq_id, 2)
+        self.assertEqual(r1.resatom2.asym._id, 'B')
+        self.assertTrue(isinstance(r1.distance,
+                                 ihm.restraint.LowerBoundDistanceRestraint))
+        self.assertAlmostEqual(r1.distance.distance, 25.000, places=1)
+        self.assertAlmostEqual(r1.probability, 0.8000, places=1)
+        self.assertEqual(r1.by_residue, True)
+        self.assertEqual(r1.software._id, '34')
+
+        self.assertTrue(isinstance(r2.resatom1, ihm.Atom))
+        self.assertEqual(r2.resatom1.seq_id, 1)
+        self.assertEqual(r2.resatom1.asym._id, 'A')
+        self.assertEqual(r2.resatom1.id, 'CA')
+        self.assertTrue(isinstance(r2.resatom2, ihm.Atom))
+        self.assertEqual(r2.resatom2.seq_id, 2)
+        self.assertEqual(r2.resatom2.asym._id, 'B')
+        self.assertEqual(r2.resatom2.id, 'CB')
+        self.assertTrue(isinstance(r3.distance,
+                                 ihm.restraint.UpperBoundDistanceRestraint))
+        self.assertAlmostEqual(r3.distance.distance, 14.000, places=1)
+        self.assertEqual(r3.software, None)
 
 
 if __name__ == '__main__':

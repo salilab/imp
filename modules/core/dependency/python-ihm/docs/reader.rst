@@ -9,6 +9,10 @@ The :mod:`ihm.reader` Python module
 
 .. autofunction:: read
 
+.. autoexception:: UnknownCategoryWarning
+
+.. autoexception:: UnknownKeywordWarning
+
 .. autoclass:: Handler
    :members:
 

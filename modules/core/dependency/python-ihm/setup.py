@@ -5,6 +5,9 @@ try:
 except ImportError:
     from distutils.core import setup, Extension
 import sys
+import os
+
+VERSION = "0.7"
 
 copy_args = sys.argv[1:]
 
@@ -22,8 +25,13 @@ else:
     cargs = []
 
 if build_ext:
+    # Use pre-built SWIG wrappers for stable releases so that end users
+    # don't need SWIG installed
+    wrap = "src/ihm_format_wrap_%s.c" % VERSION
+    if not os.path.exists(wrap):
+        wrap = "src/ihm_format.i"
     mod = [Extension("ihm._format",
-                     sources=["src/ihm_format.c", "src/ihm_format.i"],
+                     sources=["src/ihm_format.c", wrap],
                      include_dirs=['src'],
                      extra_compile_args=cargs,
                      swig_opts=['-keyword', '-nodefaultctor',
@@ -35,7 +43,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='ihm',
-      version='0.6',
+      version=VERSION,
       script_args=copy_args,
       description='Package for handling IHM mmCIF and BinaryCIF files',
       long_description=long_description,

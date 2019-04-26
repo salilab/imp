@@ -1719,31 +1719,40 @@ class _GeometricRestraintDumper(Dumper):
                         dataset_list_id=r.dataset._id if r.dataset else None)
 
 
-class _DerivedDistanceRestraintDumper(Dumper):
-    def _all_restraints(self, system):
+def _finalize_restraints_and_groups(system, restraint_class):
+    """Assign IDs to all restraints of the given class, and also assign IDs
+       to groups of these restraints."""
+    def _all_restraints():
         return [r for r in system._all_restraints()
-                if isinstance(r, restraint.DerivedDistanceRestraint)]
+                if isinstance(r, restraint_class)]
 
-    def _all_restraint_groups(self, system):
+    def _all_restraint_groups():
         return [rg for rg in system.restraint_groups
-                if all(isinstance(r, restraint.DerivedDistanceRestraint)
+                if all(isinstance(r, restraint_class)
                        for r in rg) and len(rg) > 0]
 
-    def finalize(self, system):
-        self._restraints_by_id = []
-        seen_restraints = {}
-        for r in self._all_restraints(system):
-            util._remove_id(r)
-        for r in self._all_restraints(system):
-            util._assign_id(r, seen_restraints, self._restraints_by_id)
+    restraints_by_id = []
+    seen_restraints = {}
+    for r in _all_restraints():
+        util._remove_id(r)
+    for r in _all_restraints():
+        util._assign_id(r, seen_restraints, restraints_by_id)
 
-        self._group_for_id = {}
-        for nrg, rg in enumerate(self._all_restraint_groups(system)):
-            rg._id = nrg + 1
-            for r in rg:
-                if r._id in self._group_for_id:
-                    raise ValueError("%s cannot be in more than one group" % r)
-                self._group_for_id[r._id] = rg._id
+    group_for_id = {}
+    for nrg, rg in enumerate(_all_restraint_groups()):
+        rg._id = nrg + 1
+        for r in rg:
+            if r._id in group_for_id:
+                raise ValueError("%s cannot be in more than one group" % r)
+            group_for_id[r._id] = rg._id
+    return restraints_by_id, group_for_id
+
+
+class _DerivedDistanceRestraintDumper(Dumper):
+    def finalize(self, system):
+        (self._restraints_by_id,
+         self._group_for_id) = _finalize_restraints_and_groups(system,
+                                         restraint.DerivedDistanceRestraint)
 
     def dump(self, system, writer):
         condmap = {True: 'ALL', False: 'ANY', None: None}
@@ -1763,6 +1772,48 @@ class _DerivedDistanceRestraintDumper(Dumper):
                         probability=r.probability,
                         group_conditionality=condmap[r.restrain_all],
                         dataset_list_id=r.dataset._id if r.dataset else None)
+
+
+class _PredictedContactRestraintDumper(Dumper):
+    def finalize(self, system):
+        (self._restraints_by_id,
+         self._group_for_id) = _finalize_restraints_and_groups(system,
+                                         restraint.PredictedContactRestraint)
+
+    def dump(self, system, writer):
+        with writer.loop("_ihm_predicted_contact_restraint",
+                         ["id", "group_id", "entity_id_1", "asym_id_1",
+                          "comp_id_1", "seq_id_1", "rep_atom_1", "entity_id_2",
+                          "asym_id_2", "comp_id_2", "seq_id_2", "rep_atom_2",
+                          "restraint_type", "distance_lower_limit",
+                          "distance_upper_limit", "probability",
+                          "model_granularity", "dataset_list_id",
+                          "software_id"]) as l:
+            for r in self._restraints_by_id:
+                comp1 = r.resatom1.asym.entity.sequence[r.resatom1.seq_id-1].id
+                comp2 = r.resatom2.asym.entity.sequence[r.resatom2.seq_id-1].id
+                atom1 = atom2 = None
+                if isinstance(r.resatom1, ihm.Atom):
+                    atom1 = r.resatom1.id
+                if isinstance(r.resatom2, ihm.Atom):
+                    atom2 = r.resatom2.id
+                l.write(id=r._id, group_id=self._group_for_id.get(r._id, None),
+                        entity_id_1=r.resatom1.asym.entity._id,
+                        asym_id_1=r.resatom1.asym._id,
+                        comp_id_1=comp1, seq_id_1=r.resatom1.seq_id,
+                        rep_atom_1=atom1,
+                        entity_id_2=r.resatom2.asym.entity._id,
+                        asym_id_2=r.resatom2.asym._id,
+                        comp_id_2=comp2, seq_id_2=r.resatom2.seq_id,
+                        rep_atom_2=atom2,
+                        restraint_type=r.distance.restraint_type,
+                        distance_lower_limit=r.distance.distance_lower_limit,
+                        distance_upper_limit=r.distance.distance_upper_limit,
+                        probability=r.probability,
+                        model_granularity="by-residue" if r.by_residue
+                                          else 'by-feature',
+                        dataset_list_id=r.dataset._id if r.dataset else None,
+                        software_id=r.software._id if r.software else None)
 
 
 class _EM3DDumper(Dumper):
@@ -1958,6 +2009,7 @@ def write(fh, systems, format='mmCIF', dumpers=[]):
                _GeometricObjectDumper(), _FeatureDumper(),
                _CrossLinkDumper(), _GeometricRestraintDumper(),
                _DerivedDistanceRestraintDumper(),
+               _PredictedContactRestraintDumper(),
                _EM3DDumper(),
                _EM2DDumper(),
                _SASDumper(),
