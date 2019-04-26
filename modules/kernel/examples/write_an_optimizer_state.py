@@ -1,6 +1,6 @@
 ## \example kernel/write_an_optimizer_state.py
-# While we do not recomment doing serious work using optimizer states
-# written it python, it is often useful when prototyping or testing code.
+# While we do not recommend doing serious work using optimizer states
+# written in Python, it is often useful when prototyping or testing code.
 # Copy this example and modify as needed.
 
 from __future__ import print_function
@@ -9,10 +9,9 @@ import sys
 
 IMP.setup_from_argv(sys.argv, "Optimizer state")
 
-# an optimizer state which prints out the last scores of some restraints.
-
 
 class MyOptimizerState(IMP.OptimizerState):
+    """An optimizer state which prints out the last scores of some restraints"""
 
     def __init__(self, rs):
         IMP.OptimizerState.__init__(self, rs[0].get_model(),
