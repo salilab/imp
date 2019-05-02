@@ -838,8 +838,7 @@ class _AllStartingModels(object):
             f.asym_unit.entity.source = source
         pmi_offset = f.asym_unit.entity.pmi_offset
         m = _StartingModel(
-                    asym_unit=f.asym_unit.asym.pmi_range(f.start + f.offset,
-                                                         f.end + f.offset),
+                    asym_unit=f.asym_unit.asym.pmi_range(f.start, f.end),
                     dataset=r['dataset'], asym_id=f.chain,
                     templates=templates, offset=f.offset + pmi_offset,
                     metadata=r['metadata'],
