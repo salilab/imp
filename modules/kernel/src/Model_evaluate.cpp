@@ -149,11 +149,13 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
    if we try to explicitly share one. */
 #if defined(__GNUC__) && __GNUC__ >= 9
         IMP_TASK_SHARED((ss, accum), (calc_derivs),
-#else
-        IMP_TASK((ss, accum),
-#endif
                  ss->after_evaluate(calc_derivs ? &accum : nullptr),
                  "after evaluate");
+#else
+        IMP_TASK((ss, accum),
+                 ss->after_evaluate(calc_derivs ? &accum : nullptr),
+                 "after evaluate");
+#endif
       }
     }
     IMP_OMP_PRAGMA(taskwait)
