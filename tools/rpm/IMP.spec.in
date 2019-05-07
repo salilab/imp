@@ -391,8 +391,10 @@ rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/example \
        ${pydir}/IMP/example_system_local \
        ${pydir}/_IMP_example_system_local.so
 
-# Make sure all Python applications use the same Python we built with
+# Make sure all Python applications and build tools use the same Python
+# we built with
 perl -pi -e 's@^#!.*python.*$@#!/usr/bin/python2@' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
+find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 's#/usr/bin/env python\b#/usr/bin/env python2#' \{\} \;
 
 %files
 %defattr(-,root,root)
