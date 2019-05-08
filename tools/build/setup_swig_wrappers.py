@@ -48,7 +48,8 @@ def build_wrapper(module, finder, sorted, target):
     swig_module_name = "IMP" if module.name == 'kernel' \
                              else "IMP." + module.name
 
-    contents.append("""%%module(directors="1", allprotected="1") "%s"
+    contents.append(
+"""%%module(directors="1", allprotected="1", moduleimport="import $module") "%s"
 %%feature("autodoc", 1);
 // Warning 314: 'lambda' is a python keyword, renaming to '_lambda'
 %%warnfilter(321,302,314);
