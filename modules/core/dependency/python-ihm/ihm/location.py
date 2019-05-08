@@ -93,6 +93,16 @@ class PDBLocation(DatabaseLocation):
                                           version, details)
 
 
+class BMRBLocation(DatabaseLocation):
+    """Something stored in the BMRB database.
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
+    _db_name = 'BMRB'
+    def __init__(self, db_code, version=None, details=None):
+        super(BMRBLocation, self).__init__(self._db_name, db_code,
+                                           version, details)
+
+
 class MassIVELocation(DatabaseLocation):
     """Something stored in the MassIVE database.
        See :class:`DatabaseLocation` for a description of the parameters

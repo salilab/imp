@@ -44,7 +44,8 @@ API Reference:
    dumper
    reader
    dictionary
-
+   flr
+   
 
 Indices and tables
 ==================

@@ -13,6 +13,7 @@ import ihm.restraint
 import ihm.geometry
 import ihm.source
 import ihm.cross_linkers
+import ihm.flr
 import inspect
 import warnings
 try:
@@ -28,15 +29,20 @@ def _make_new_entity():
     return e
 
 def _get_vector3(d, key):
-    """Return a 3D vector (as a list) from d[key+[1..3]] or None"""
-    if d[key+'1'] is not None:
+    """Return a 3D vector (as a list) from d[key+[1..3]]
+       or leave as is if None or ihm.unknown"""
+    if d[key+'1'] in (None, ihm.unknown):
+        return d[key+'1']
+    else:
         # Assume if one element is present, all are
         return [float(d[key+"%d" % k]) for k in (1,2,3)]
 
 def _get_matrix33(d, key):
     """Return a 3x3 matrix (as a list of lists) from d[key+[1..3][1..3]]]
-       or None"""
-    if d[key+'11'] is not None:
+       or leave as is if None or ihm.unknown"""
+    if d[key+'11'] in (None, ihm.unknown):
+        return d[key+'11']
+    else:
         # Assume if one element is present, all are
         return [[float(d[key+"%d%d" % (i,j)]) for j in (1,2,3)]
                 for i in (1,2,3)]
@@ -220,8 +226,8 @@ class _GeometryIDMapper(IDMapper):
         super(_GeometryIDMapper, self)._update_old_object(obj, newcls)
         # Add missing members if the base class was originally instantianted
         for member in self._members.get(newcls, ()):
-           if not hasattr(obj, member):
-               setattr(obj, member, None)
+            if not hasattr(obj, member):
+                setattr(obj, member, None)
 
 
 class _CrossLinkIDMapper(IDMapper):
@@ -299,7 +305,7 @@ class SystemReader(object):
        being read from a file, such as the mapping from IDs to objects
        (as :class:`IDMapper` objects). This can be used by :class:`Handler`
        subclasses."""
-    def __init__(self, model_class):
+    def __init__(self, model_class, starting_model_class):
         #: The :class:`ihm.System` object being read in
         self.system = ihm.System()
 
@@ -358,7 +364,7 @@ class SystemReader(object):
 
         #: Mapping from ID to :class:`ihm.startmodel.StartingModel` objects
         self.starting_models = IDMapper(self.system.orphan_starting_models,
-                                  ihm.startmodel.StartingModel, *(None,)*3)
+                                  starting_model_class, *(None,)*3)
 
         #: Mapping from ID to :class:`ihm.representation.Representation` objects
         self.representations = IDMapper(self.system.orphan_representations,
@@ -478,6 +484,65 @@ class SystemReader(object):
         #: Mapping from ID to :class:`ihm.model.ProcessStep` objects
         self.ordered_steps = IDMapper(None, ihm.model.ProcessStep)
 
+        ## FLR part
+        #: Mapping from ID to :class:`ihm.flr.FLRData` objects
+        self.flr_data = IDMapper(self.system.flr_data, ihm.flr.FLRData)
+        #: Mapping from ID to :class:`ihm.flr.ExpSetting` objects
+        self.flr_exp_settings = IDMapper(None, ihm.flr.ExpSetting)
+        #: Mapping from ID to :class:`ihm.flr.Instrument` objects
+        self.flr_instruments = IDMapper(None, ihm.flr.Instrument)
+        #: Mapping from ID to :class:`ihm.flr.EntityAssembly` objects
+        self.flr_entity_assemblies = IDMapper(None, ihm.flr.EntityAssembly)
+        #: Mapping from ID to :class:`ihm.flr.SampleCondition` objects
+        self.flr_sample_conditions = IDMapper(None, ihm.flr.SampleCondition)
+        #: Mapping from ID to :class:`ihm.flr.Sample` objects
+        self.flr_samples = IDMapper(None, ihm.flr.Sample,*(None,)*6)
+        #: Mapping from ID to :class:`ihm.flr.Experiment` objects
+        self.flr_experiments = IDMapper(None, ihm.flr.Experiment)
+        #: Mapping from ID to :class:`ihm.flr.Probe` objects
+        self.flr_probes = IDMapper(None, ihm.flr.Probe)
+        #: Mapping from ID to :class:`ihm.flr.PolyProbePosition` objects
+        self.flr_poly_probe_positions = IDMapper(None,
+                                ihm.flr.PolyProbePosition, None)
+        #: Mapping from ID to :class:`ihm.flr.SampleProbeDetails` objects
+        self.flr_sample_probe_details = IDMapper(None, ihm.flr.SampleProbeDetails, *(None,)*5)
+        #: Mapping from ID to :class:`ihm.flr.PolyProbeConjugate` objects
+        self.flr_poly_probe_conjugates = IDMapper(None, ihm.flr.PolyProbeConjugate, *(None,)*4)
+        #: Mapping from ID to :class:`ihm.flr.FRETForsterRadius` objects
+        self.flr_fret_forster_radius = IDMapper(None, ihm.flr.FRETForsterRadius, *(None,)*4)
+        #: Mapping from ID to :class:`ihm.flr.FRETCalibrationParameters` objects
+        self.flr_fret_calibration_parameters = IDMapper(None, ihm.flr.FRETCalibrationParameters, *(None,)*8)
+        #: Mapping from ID to :class:`ihm.flr.FRETAnalysis` objects
+        self.flr_fret_analyses = IDMapper(None, ihm.flr.FRETAnalysis, *(None,)*10)
+        #: Mapping from ID to :class:`ihm.flr.PeakAssignment` objects
+        self.flr_peak_assignments = IDMapper(None, ihm.flr.PeakAssignment, *(None,)*2)
+        #: Mapping from ID to :class:`ihm.flr.FRETDistanceRestraint` objects
+        self.flr_fret_distance_restraints = IDMapper(None, ihm.flr.FRETDistanceRestraint, *(None,)*10)
+        #: Mapping from ID to :class:`ihm.flr.FRETDistanceRestraintGroup` objects
+        self.flr_fret_distance_restraint_groups = IDMapper(None, ihm.flr.FRETDistanceRestraintGroup)
+        #: Mapping from ID to :class:`ihm.flr.FRETModelQuality` objects
+        self.flr_fret_model_qualities = IDMapper(None, ihm.flr.FRETModelQuality, *(None,)*5)
+        #: Mapping from ID to :class:`ihm.flr.FRETModelDistance` objects
+        self.flr_fret_model_distances = IDMapper(None, ihm.flr.FRETModelDistance, *(None,)*4)
+        #: Mapping from ID to :class:`ihm.flr.ModelingCollection` objects
+        self.flr_modeling_collection = IDMapper(None,ihm.flr.ModelingCollection)
+        #: Mapping from ID to :class:`ihm.flr.FPSModeling` objects
+        self.flr_fps_modeling = IDMapper(None,ihm.flr.FPSModeling, *(None,)*5)
+        #: Mapping from ID to :class:`ihm.flr.FPSGlobalParameters` objects
+        self.flr_fps_global_parameters = IDMapper(None, ihm.flr.FPSGlobalParameters, *(None,)*20)
+        #: Mapping from ID to :class:`ihm.flr.FPSAVParameter` objects
+        self.flr_fps_av_parameters = IDMapper(None, ihm.flr.FPSAVParameter, *(None,)*6)
+        #: Mapping from ID to :class:`ihm.flr.FPSAVModeling` objects
+        self.flr_fps_av_modeling = IDMapper(None, ihm.flr.FPSAVModeling, *(None,)*3)
+        #: Mapping from ID to :class:`ihm.flr.FPSMeanProbePosition` objects
+        self.flr_fps_mean_probe_positions = IDMapper(None, ihm.flr.FPSMeanProbePosition, *(None,)*4)
+        #: Mapping from ID to :class:`ihm.flr.FPSMPPAtomPositionGroup` objects
+        self.flr_fps_mpp_atom_position_groups = IDMapper(None, ihm.flr.FPSMPPAtomPositionGroup)
+        #: Mapping from ID to :class:`ihm.flr.FPSMPPAtomPosition` objects
+        self.flr_fps_mpp_atom_positions = IDMapper(None, ihm.flr.FPSMPPAtomPosition, *(None,)*8)
+        #: Mapping from ID to :class:`ihm.flr.FPSMPPModeling` objects
+        self.flr_fps_mpp_modeling = IDMapper(None, ihm.flr.FPSMPPModeling, *(None,)*3)
+
     def finalize(self):
         # make sequence immutable (see also _make_new_entity)
         for e in self.system.entities:
@@ -517,34 +582,44 @@ class Handler(object):
     omitted = None
 
     #: Value passed to `__call__` for data marked as unknown ('?') in the file
-    unknown = '?'
+    unknown = ihm.unknown
+
+    #: Keywords which are explicitly ignored (read() will not warn about their
+    #: presence in the file). These are usually things like ordinal fields
+    #: which we don't use.
+    ignored_keywords = []
 
     def __init__(self, sysr):
         #: Utility class to map IDs to Python objects.
         self.sysr = sysr
 
     def get_int(self, val):
-        """Return int(val) or None if val is None"""
-        return int(val) if val is not None else None
+        """Return int(val) or leave as is if None or ihm.unknown"""
+        return int(val) if val is not None and val is not ihm.unknown else val
 
     def get_int_or_string(self, val):
         """Return val as an int or str as appropriate,
-           or None if val is None"""
-        if val is not None:
+           or leave as is if None or ihm.unknown"""
+        if val is None or val is ihm.unknown:
+            return val
+        else:
             return int(val) if isinstance(val, int) or val.isdigit() else val
 
     def get_float(self, val):
-        """Return float(val) or None if val is None"""
-        return float(val) if val is not None else None
+        """Return float(val) or leave as is if None or ihm.unknown"""
+        return float(val) if val is not None and val is not ihm.unknown else val
 
     _boolmap = {'YES':True, 'NO':False}
     def get_bool(self, val):
-        """Convert val to bool and return, or None if val is None"""
-        return self._boolmap.get(val.upper(), None) if val is not None else None
+        """Convert val to bool and return, or leave as is if None
+           or ihm.unknown"""
+        return(self._boolmap.get(val.upper(), None)
+               if val is not None and val is not ihm.unknown else val)
 
     def get_lower(self, val):
-        """Return lowercase string val or None if val is None"""
-        return val.lower() if val is not None else None
+        """Return lowercase string val or leave as is if None or ihm.unknown"""
+        return(val.lower()
+               if val is not None and val is not ihm.unknown else val)
 
     def finalize(self):
         """Called at the end of each data block."""
@@ -612,6 +687,7 @@ class _CitationHandler(Handler):
 
 class _AuditAuthorHandler(Handler):
     category = '_audit_author'
+    ignored_keywords = ['pdbx_ordinal']
 
     def __call__(self, name):
         self.system.authors.append(name)
@@ -628,6 +704,7 @@ class _GrantHandler(Handler):
 
 class _CitationAuthorHandler(Handler):
     category = '_citation_author'
+    ignored_keywords = ['ordinal']
 
     def __call__(self, citation_id, name):
         s = self.sysr.citations.get_by_id(citation_id)
@@ -750,6 +827,56 @@ class _EntityPolySeqHandler(Handler):
         s.sequence[seq_id-1] = self.sysr.chem_comps.get_by_id(mon_id)
 
 
+class _EntityPolyHandler(Handler):
+    category = '_entity_poly'
+
+    def __init__(self, *args):
+        super(_EntityPolyHandler, self).__init__(*args)
+        self._entity_info = {}
+
+    def _get_codes(self, codestr):
+        """Convert a one-letter-code string into a sequence of individual
+           codes"""
+        i = 0
+        while i < len(codestr):
+            # Strip out linebreaks
+            if codestr[i] == '\n':
+                pass
+            elif codestr[i] == '(':
+                end = codestr.index(')', i)
+                yield codestr[i+1:end]
+                i = end
+            else:
+                yield codestr[i]
+            i += 1
+
+    def __call__(self, entity_id, type, pdbx_seq_one_letter_code,
+                 pdbx_seq_one_letter_code_can):
+        class EntityInfo(object):
+            pass
+        e = EntityInfo()
+        e.one_letter = tuple(self._get_codes(pdbx_seq_one_letter_code))
+        e.one_letter_can = tuple(self._get_codes(pdbx_seq_one_letter_code_can))
+        e.sequence_type = type
+        self._entity_info[entity_id] = e
+
+    def finalize(self):
+        for e in self.system.entities:
+            ei = self._entity_info.get(e._id, None)
+            if ei is None:
+                continue
+            # Fill in missing information (one-letter codes) for nonstandard
+            # residues
+            # todo: also add info for residues that aren't in entity_poly_seq
+            # at all
+            for i, comp in enumerate(e.sequence):
+                if comp.code is None and i < len(ei.one_letter):
+                    comp.code = ei.one_letter[i]
+                if (comp.code_canonical is None
+                    and i < len(ei.one_letter_can)):
+                    comp.code_canonical = ei.one_letter_can[i]
+
+
 class _EntityNonPolyHandler(Handler):
     category = '_pdbx_entity_nonpoly'
 
@@ -763,6 +890,8 @@ class _StructAsymHandler(Handler):
 
     def __call__(self, id, entity_id, details):
         s = self.sysr.asym_units.get_by_id(id)
+        # Keep this ID (like a user-assigned ID); don't reassign it on output
+        s.id = id
         s.entity = self.sysr.entities.get_by_id(entity_id)
         self.copy_if_present(s, locals(), keys=('details',))
 
@@ -780,6 +909,7 @@ class _AssemblyDetailsHandler(Handler):
 class _AssemblyHandler(Handler):
     # todo: figure out how to populate System.complete_assembly
     category = '_ihm_struct_assembly'
+    ignored_keywords = ['ordinal_id', 'entity_description']
 
     def __call__(self, assembly_id, parent_assembly_id, seq_id_begin,
                  seq_id_end, asym_id, entity_id):
@@ -888,14 +1018,16 @@ class _DatasetListHandler(Handler):
                 for x in inspect.getmembers(ihm.dataset, inspect.isclass)
                 if issubclass(x[1], ihm.dataset.Dataset))
 
-    def __call__(self, data_type, id):
+    def __call__(self, data_type, id, details):
         typ = None if data_type is None else data_type.lower()
         f = self.sysr.datasets.get_by_id(id,
                              self.type_map.get(typ, ihm.dataset.Dataset))
+        f.details = details
 
 
 class _DatasetGroupHandler(Handler):
     category = '_ihm_dataset_group'
+    ignored_keywords = ['ordinal_id']
 
     def __call__(self, group_id, dataset_list_id):
         g = self.sysr.dataset_groups.get_by_id(group_id)
@@ -939,6 +1071,7 @@ class _DatasetDBRefHandler(Handler):
 
 class _RelatedDatasetsHandler(Handler):
     category = '_ihm_related_datasets'
+    ignored_keywords = ['ordinal_id']
 
     def __call__(self, dataset_list_id_derived, dataset_list_id_primary):
         derived = self.sysr.datasets.get_by_id(dataset_list_id_derived)
@@ -967,6 +1100,7 @@ def _make_feature_segment(asym, rigid, primitive, count, smodel):
 
 class _ModelRepresentationHandler(Handler):
     category = '_ihm_model_representation'
+    ignored_keywords = ['entity_description']
 
     _rigid_map = {'rigid': True, 'flexible': False, None: None}
     _segment_factory = {'by-atom': _make_atom_segment,
@@ -996,6 +1130,7 @@ class _ModelRepresentationHandler(Handler):
 # todo: support user subclass of StartingModel, pass it coordinates, seqdif
 class _StartingModelDetailsHandler(Handler):
     category = '_ihm_starting_model_details'
+    ignored_keywords = ['entity_description']
 
     def __call__(self, starting_model_id, asym_id, seq_id_begin, seq_id_end,
                  dataset_list_id, starting_model_auth_asym_id,
@@ -1026,6 +1161,7 @@ class _StartingComputationalModelsHandler(Handler):
 
 class _StartingComparativeModelsHandler(Handler):
     category = '_ihm_starting_comparative_models'
+    ignored_keywords = ['ordinal_id']
 
     def __call__(self, starting_model_id, template_dataset_list_id,
                  alignment_file_id, template_auth_asym_id,
@@ -1051,6 +1187,7 @@ class _StartingComparativeModelsHandler(Handler):
 
 class _ProtocolHandler(Handler):
     category = '_ihm_modeling_protocol'
+    ignored_keywords = ['ordinal_id', 'struct_assembly_description']
 
     def __call__(self, protocol_id, step_id, protocol_name, num_models_begin,
                  num_models_end, multi_scale_flag, multi_state_flag,
@@ -1295,7 +1432,8 @@ class _SASRestraintHandler(Handler):
         r.segment = self.get_bool(profile_segment_flag)
         self.copy_if_present(r, locals(),
                 keys=('fitting_atom_type', 'fitting_method', 'details'))
-        fs = fitting_state if fitting_state is not None else 'Single'
+        fs = (fitting_state if fitting_state not in (None, ihm.unknown)
+                            else 'Single')
         r.multi_state = fs.lower() != 'single'
         r.radius_of_gyration = self.get_float(radius_of_gyration)
         r.number_of_gaussians = self.get_int(number_of_gaussians)
@@ -1307,6 +1445,7 @@ class _SASRestraintHandler(Handler):
 
 class _SphereObjSiteHandler(Handler):
     category = '_ihm_sphere_obj_site'
+    ignored_keywords = ['ordinal_id']
 
     def __call__(self, model_id, asym_id, rmsf, seq_id_begin, seq_id_end,
                  cartn_x, cartn_y, cartn_z, object_radius):
@@ -1350,6 +1489,40 @@ class _AtomSiteHandler(Handler):
             if asym.auth_seq_id_map == 0:
                 asym.auth_seq_id_map = {}
             asym.auth_seq_id_map[seq_id] = auth_seq_id
+
+
+class _StartingModelCoordHandler(Handler):
+    category = '_ihm_starting_model_coord'
+
+    def __call__(self, starting_model_id, group_pdb, type_symbol, atom_id,
+                 asym_id, seq_id, cartn_x, cartn_y, cartn_z, b_iso_or_equiv):
+        model = self.sysr.starting_models.get_by_id(starting_model_id)
+        asym = self.sysr.asym_units.get_by_id(asym_id)
+        biso = self.get_float(b_iso_or_equiv)
+        # seq_id can be None for non-polymers (HETATM)
+        seq_id = self.get_int(seq_id)
+        group = 'ATOM' if group_pdb is None else group_pdb
+        a = ihm.model.Atom(asym_unit=asym,
+                seq_id=seq_id,
+                atom_id=atom_id,
+                type_symbol=type_symbol,
+                x=float(cartn_x), y=float(cartn_y),
+                z=float(cartn_z), het=group != 'ATOM',
+                biso=biso)
+        model.add_atom(a)
+
+
+class _StartingModelSeqDifHandler(Handler):
+    category = '_ihm_starting_model_seq_dif'
+
+    def __call__(self, starting_model_id, db_seq_id, seq_id, db_comp_id,
+                 details):
+        model = self.sysr.starting_models.get_by_id(starting_model_id)
+        sd = ihm.startmodel.SeqDif(db_seq_id=self.get_int(db_seq_id),
+                                   seq_id=self.get_int(seq_id),
+                                   db_comp_id=db_comp_id,
+                                   details=details)
+        model.add_seq_dif(sd)
 
 
 class _PolyResidueFeatureHandler(Handler):
@@ -1466,7 +1639,7 @@ class _PredictedContactRestraintHandler(Handler):
         return resatom
 
     def __call__(self, id, group_id, dataset_list_id, asym_id_1,
-                 seq_id_1, rep_atom_1, asym_id_2, seq_id_2, rep_atom_2,
+                 seq_id_1, atom_id_1, asym_id_2, seq_id_2, atom_id_2,
                  restraint_type, probability, distance_lower_limit,
                  distance_upper_limit, model_granularity, software_id):
         r = self.sysr.pred_cont_restraints.get_by_id(id)
@@ -1474,8 +1647,8 @@ class _PredictedContactRestraintHandler(Handler):
             rg = self.sysr.pred_cont_restraint_groups.get_by_id(group_id)
             rg.append(r)
         r.dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
-        r.resatom1 = self._get_resatom(asym_id_1, seq_id_1, rep_atom_1)
-        r.resatom2 = self._get_resatom(asym_id_2, seq_id_2, rep_atom_2)
+        r.resatom1 = self._get_resatom(asym_id_1, seq_id_1, atom_id_1)
+        r.resatom2 = self._get_resatom(asym_id_2, seq_id_2, atom_id_2)
         r.distance = _handle_distance[restraint_type](distance_lower_limit,
                                                       distance_upper_limit,
                                                       self.get_float)
@@ -1693,6 +1866,8 @@ class _NonPolySchemeHandler(Handler):
 
 class _CrossLinkListHandler(Handler):
     category = '_ihm_cross_link_list'
+    ignored_keywords = ['entity_description_1', 'entity_description_2',
+                        'comp_id_1', 'comp_id_2']
     _linkers_by_name = None
 
     def __init__(self, *args):
@@ -1785,6 +1960,7 @@ class _CrossLinkRestraintHandler(Handler):
 
 class _CrossLinkResultHandler(Handler):
     category = '_ihm_cross_link_result_parameters'
+    ignored_keywords = ['ordinal_id']
 
     def __call__(self, restraint_id, model_id, psi, sigma_1, sigma_2):
         xl = self.sysr.cross_links.get_by_id(restraint_id)
@@ -1849,15 +2025,525 @@ class _UnknownCategoryHandler(object):
 
 
 class _UnknownKeywordHandler(object):
+    def add_category_handlers(self, handlers):
+        self._ignored_keywords = dict((h.category,
+                                       frozenset(h.ignored_keywords))
+                                      for h in handlers)
+
     def __call__(self, catname, keyname, line):
+        if keyname in self._ignored_keywords[catname]:
+            return
         warnings.warn("Unknown keyword %s.%s encountered%s - will be ignored"
                       % (catname, keyname,
                          " on line %d" % line if line else ""),
                       UnknownKeywordWarning, stacklevel=2)
 
 
+## FLR part
+# Note: This Handler is only here, because the category is officially
+# still in the flr dictionary.
+class _FLRChemDescriptorHandler(_ChemDescriptorHandler):
+    category = '_flr_chemical_descriptor'
+
+
+class _FLRExperimentHandler(Handler):
+    category = '_flr_experiment'
+
+    def __call__(self, ordinal_id, id, instrument_id,
+                 exp_setting_id, sample_id, details):
+        # Get the object or create the object
+        experiment = self.sysr.flr_experiments.get_by_id(id)
+        # Fill the object
+        instrument = self.sysr.flr_instruments.get_by_id(instrument_id)
+        exp_setting = self.sysr.flr_exp_settings.get_by_id(exp_setting_id)
+        sample = self.sysr.flr_samples.get_by_id(sample_id)
+        experiment.add_entry(instrument=instrument, exp_setting=exp_setting,
+                             sample=sample, details=details)
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_experiment[id] = experiment
+
+
+class _FLRExpSettingHandler(Handler):
+    category = '_flr_exp_setting'
+
+    def __call__(self, id, details):
+        # Get the object or create the object
+        cur_exp_setting = self.sysr.flr_exp_settings.get_by_id(id)
+        # Set the variables
+        self.copy_if_present(cur_exp_setting, locals(), keys=('details',))
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_exp_setting[id] = cur_exp_setting
+
+
+class _FLRInstrumentHandler(Handler):
+    category = '_flr_instrument'
+
+    def __call__(self, id, details):
+        # Get the object or create the object
+        cur_instrument = self.sysr.flr_instruments.get_by_id(id)
+        # Set the variables
+        self.copy_if_present(cur_instrument, locals(), keys=('details',))
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_instrument[id] = cur_instrument
+
+
+class _FLREntityAssemblyHandler(Handler):
+    category = '_flr_entity_assembly'
+
+    def __call__(self, ordinal_id, assembly_id, entity_id, num_copies):
+        # Get the object or create the object
+        a = self.sysr.flr_entity_assemblies.get_by_id(assembly_id)
+        # Get the entity
+        entity = self.sysr.entities.get_by_id(entity_id)
+        # Add the entity to the entity assembly
+        a.add_entity(entity=entity, num_copies=self.get_int(num_copies))
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_entity_assembly[assembly_id] = a
+
+
+class _FLRSampleConditionHandler(Handler):
+    category = '_flr_sample_condition'
+
+    def __call__(self, id, details):
+        # Get the object or create the object
+        cur_sample_condition = self.sysr.flr_sample_conditions.get_by_id(id)
+        # Set the variables
+        self.copy_if_present(cur_sample_condition, locals(), keys=('details',))
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_sample_condition[id] = cur_sample_condition
+
+
+class _FLRSampleHandler(Handler):
+    category = '_flr_sample'
+
+    def __call__(self, id, entity_assembly_id, num_of_probes,
+                 sample_condition_id, sample_description, sample_details,
+                 solvent_phase):
+        sample = self.sysr.flr_samples.get_by_id(id)
+        sample.entity_assembly \
+              = self.sysr.flr_entity_assemblies.get_by_id(entity_assembly_id)
+        sample.num_of_probes = self.get_int(num_of_probes)
+        sample.condition = cond \
+             = self.sysr.flr_sample_conditions.get_by_id(sample_condition_id)
+        self.copy_if_present(sample, locals(), keys=('solvent_phase',),
+                             mapkeys={'sample_description': 'description',
+                                      'sample_details': 'details'})
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_sample[id] = sample
+
+
+class _FLRProbeListHandler(Handler):
+    category = '_flr_probe_list'
+
+    def __call__(self, probe_id, chromophore_name, reactive_probe_flag,
+                 reactive_probe_name, probe_origin, probe_link_type):
+        cur_probe = self.sysr.flr_probes.get_by_id(probe_id)
+        reactive_probe_flag = self.get_bool(reactive_probe_flag)
+        cur_probe.probe_list_entry = ihm.flr.ProbeList(
+                                chromophore_name=chromophore_name,
+                                reactive_probe_flag=reactive_probe_flag,
+                                reactive_probe_name=reactive_probe_name,
+                                probe_origin=probe_origin,
+                                probe_link_type=probe_link_type)
+
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_probe[probe_id] = cur_probe
+
+
+class _FLRSampleProbeDetailsHandler(Handler):
+    category = '_flr_sample_probe_details'
+
+    def __call__(self, sample_probe_id, sample_id, probe_id, fluorophore_type,
+                 description, poly_probe_position_id):
+        spd = self.sysr.flr_sample_probe_details.get_by_id(sample_probe_id)
+        spd.sample = self.sysr.flr_samples.get_by_id(sample_id)
+        spd.probe = self.sysr.flr_probes.get_by_id(probe_id)
+        spd.poly_probe_position = self.sysr.flr_poly_probe_positions.get_by_id(
+                                      poly_probe_position_id)
+        spd.fluorophore_type = fluorophore_type
+        spd.description = description
+
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_sample_probe_details[sample_probe_id] = spd
+
+
+class _FLRProbeDescriptorHandler(Handler):
+    category = '_flr_probe_descriptor'
+
+    def __call__(self, probe_id, reactive_probe_chem_descriptor_id,
+                 chromophore_chem_descriptor_id, chromophore_center_atom):
+        react_cd = self.sysr.chem_descriptors.get_by_id_or_none(
+                                       reactive_probe_chem_descriptor_id)
+        chrom_cd = self.sysr.chem_descriptors.get_by_id_or_none(
+                                       chromophore_chem_descriptor_id)
+        cur_probe = self.sysr.flr_probes.get_by_id(probe_id)
+        cur_probe.probe_descriptor = ihm.flr.ProbeDescriptor(
+                      reactive_probe_chem_descriptor=react_cd,
+                      chromophore_chem_descriptor=chrom_cd,
+                      chromophore_center_atom=chromophore_center_atom)
+
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_probe[probe_id] = cur_probe
+
+
+class _FLRPolyProbePositionHandler(Handler):
+    category = '_flr_poly_probe_position'
+
+    def _get_resatom(self, entity_id, seq_id, atom_id):
+        entity = self.sysr.entities.get_by_id(entity_id)
+        seq_id = self.get_int(seq_id)
+        resatom = entity.residue(seq_id)
+        if atom_id:
+            resatom = resatom.atom(atom_id)
+        return resatom
+
+    def __call__(self, id, entity_id, seq_id, atom_id, mutation_flag,
+                 modification_flag, auth_name):
+        ppos = self.sysr.flr_poly_probe_positions.get_by_id(id)
+        ppos.resatom = self._get_resatom(entity_id, seq_id, atom_id)
+        ppos.mutation_flag = self.get_bool(mutation_flag)
+        ppos.modification_flag = self.get_bool(modification_flag)
+        ppos.auth_name = auth_name
+
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_poly_probe_position[id] = ppos
+
+
+class _FLRPolyProbePositionModifiedHandler(Handler):
+    category = '_flr_poly_probe_position_modified'
+
+    def __call__(self, id, chem_descriptor_id):
+        ppos = self.sysr.flr_poly_probe_positions.get_by_id(id)
+        ppos.modified_chem_descriptor = \
+                self.sysr.chem_descriptors.get_by_id_or_none(chem_descriptor_id)
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_poly_probe_position[id] = ppos
+
+
+class _FLRPolyProbePositionMutatedHandler(Handler):
+    category = '_flr_poly_probe_position_mutated'
+
+    def __call__(self, id, chem_descriptor_id, atom_id):
+        ppos = self.sysr.flr_poly_probe_positions.get_by_id(id)
+        ppos.mutated_chem_descriptor = \
+                self.sysr.chem_descriptors.get_by_id_or_none(chem_descriptor_id)
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_poly_probe_position[id] = ppos
+
+
+class _FLRPolyProbeConjugateHandler(Handler):
+    category = '_flr_poly_probe_conjugate'
+
+    def __call__(self, id, sample_probe_id, chem_descriptor_id,
+                 ambiguous_stoichiometry_flag, probe_stoichiometry):
+        ppc = self.sysr.flr_poly_probe_conjugates.get_by_id(id)
+        ppc.sample_probe = self.sysr.flr_sample_probe_details.get_by_id(
+                                                     sample_probe_id)
+        ppc.chem_descriptor = self.sysr.chem_descriptors.get_by_id(
+                                                     chem_descriptor_id)
+        ppc.ambiguous_stoichiometry = self.get_bool(
+                                           ambiguous_stoichiometry_flag)
+        ppc.probe_stoichiometry = self.get_float(probe_stoichiometry)
+
+        d = self.sysr.flr_data.get_by_id(1)
+        ## add it to the FLR_data if it is not there yet
+        if ppc not in d.poly_probe_conjugate_list:
+            d.add_poly_probe_conjugate(ppc)
+        d._collection_flr_poly_probe_conjugate[id] = ppc
+
+
+class _FLRFretForsterRadiusHandler(Handler):
+    category = '_flr_fret_forster_radius'
+
+    def __call__(self, id, donor_probe_id, acceptor_probe_id, forster_radius,
+                 reduced_forster_radius):
+        ffr = self.sysr.flr_fret_forster_radius.get_by_id(id)
+        ffr.donor_probe = self.sysr.flr_probes.get_by_id(donor_probe_id)
+        ffr.acceptor_probe = self.sysr.flr_probes.get_by_id(acceptor_probe_id)
+        ffr.forster_radius = self.get_float(forster_radius)
+        ffr.reduced_forster_radius = self.get_float(reduced_forster_radius)
+
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_fret_forster_radius[id] = ffr
+
+
+class _FLRFretCalibrationParametersHandler(Handler):
+    category = '_flr_fret_calibration_parameters'
+
+    def __call__(self, id, phi_acceptor, alpha, alpha_sd, gg_gr_ratio, beta,
+                 gamma, delta, a_b):
+        p = self.sysr.flr_fret_calibration_parameters.get_by_id(id)
+        p.phi_acceptor = self.get_float(phi_acceptor)
+        p.alpha = self.get_float(alpha)
+        p.alpha_sd = self.get_float(alpha_sd)
+        p.gg_gr_ratio = self.get_float(gg_gr_ratio)
+        p.beta = self.get_float(beta)
+        p.gamma = self.get_float(gamma)
+        p.delta = self.get_float(delta)
+        p.a_b = self.get_float(a_b)
+
+        d = self.sysr.flr_data.get_by_id(1)
+        d._collection_flr_fret_calibration_parameters[id] = p
+
+
+class _FLRFretAnalysisHandler(Handler):
+    category = '_flr_fret_analysis'
+
+    def __call__(self, id, experiment_id, sample_probe_id_1, sample_probe_id_2, forster_radius_id,
+                 calibration_parameters_id, method_name, chi_square_reduced, dataset_list_id, external_file_id,
+                 software_id):
+        cur_fret_analysis = self.sysr.flr_fret_analyses.get_by_id(id)
+        cur_experiment = self.sysr.flr_experiments.get_by_id(experiment_id)
+        cur_sample_probe_1 = self.sysr.flr_sample_probe_details.get_by_id(sample_probe_id_1)
+        cur_sample_probe_2 = self.sysr.flr_sample_probe_details.get_by_id(sample_probe_id_2)
+        cur_forster_radius = self.sysr.flr_fret_forster_radius.get_by_id(forster_radius_id)
+        cur_calibration_parameters = self.sysr.flr_fret_calibration_parameters.get_by_id(calibration_parameters_id)
+        cur_dataset_list_id = self.sysr.datasets.get_by_id(dataset_list_id)
+        cur_external_file = self.sysr.external_files.get_by_id_or_none(external_file_id)
+        cur_software = self.sysr.software.get_by_id_or_none(software_id)
+        self.copy_if_present(cur_fret_analysis, locals(),
+                             keys = ('experiment', 'sample_probe_1','sample_probe_2',
+                                     'forster_radius', 'calibration_parameters',
+                                     'method_name', 'chi_square_reduced',
+                                     'dataset_list_id', 'external_file', 'software'),
+                             mapkeys = {'cur_experiment':'experiment',
+                                        'cur_sample_probe_1':'sample_probe_1',
+                                        'cur_sample_probe_2':'sample_probe_2',
+                                        'cur_forster_radius':'forster_radius',
+                                        'cur_calibration_parameters':'calibration_parameters',
+                                        'cur_dataset_list_id':'dataset_list_id',
+                                        'cur_external_file':'external_file',
+                                        'cur_software':'software'})
+        self.sysr.flr_data.get_by_id(1)._collection_flr_fret_analysis[id] = cur_fret_analysis
+
+class _FLRPeakAssignmentHandler(Handler):
+    category = '_flr_peak_assignment'
+    def __call__(self, id, method_name, details):
+        cur_peak_assignment = self.sysr.flr_peak_assignments.get_by_id(id)
+        self.copy_if_present(cur_peak_assignment, locals(),
+                             keys = ('method_name','details'))
+        self.sysr.flr_data.get_by_id(1)._collection_flr_peak_assignment[id] = cur_peak_assignment
+
+class _FLRFretDistanceRestraintHandler(Handler):
+    category = '_flr_fret_distance_restraint'
+    def __call__(self, ordinal_id, id, group_id, sample_probe_id_1, sample_probe_id_2, state_id, analysis_id,
+                 distance, distance_error_plus, distance_error_minus, distance_type, population_fraction,
+                 peak_assignment_id):
+        cur_fret_distance_restraint = self.sysr.flr_fret_distance_restraints.get_by_id(id)
+        cur_sample_probe_1 = self.sysr.flr_sample_probe_details.get_by_id(sample_probe_id_1)
+        cur_sample_probe_2 = self.sysr.flr_sample_probe_details.get_by_id(sample_probe_id_2)
+        cur_state = self.sysr.states.get_by_id_or_none(state_id)
+        cur_analysis = self.sysr.flr_fret_analyses.get_by_id(analysis_id)
+        cur_peak_assignment = self.sysr.flr_peak_assignments.get_by_id(peak_assignment_id)
+        self.copy_if_present(cur_fret_distance_restraint, locals(),
+                             keys = ('sample_probe_1', 'sample_probe_2', 'analysis',
+                                     'distance', 'distance_error_plus', 'distance_error_minus',
+                                     'distance_type', 'state','population_fraction','peak_assignment'),
+                             mapkeys = {'cur_sample_probe_1':'sample_probe_1',
+                                        'cur_sample_probe_2':'sample_probe_2',
+                                        'cur_state':'state',
+                                        'cur_analysis':'analysis',
+                                        'cur_peak_assignment':'peak_assignment'})
+
+        ## also create the fret_distance_restraint_group
+        cur_fret_distance_restraint_group = self.sysr.flr_fret_distance_restraint_groups.get_by_id_or_none(group_id)
+        cur_fret_distance_restraint_group.add_distance_restraint(cur_fret_distance_restraint)
+        ## add it to the flr_data if it is not there yet
+        cur_flr_data = self.sysr.flr_data.get_by_id(1)
+        if cur_fret_distance_restraint_group not in cur_flr_data.distance_restraint_group_list:
+            cur_flr_data.add_distance_restraint_group(cur_fret_distance_restraint_group)
+        cur_flr_data._collection_flr_fret_distance_restraint[id] = cur_fret_distance_restraint
+        cur_flr_data._collection_flr_fret_distance_restraint_group[group_id] = cur_fret_distance_restraint_group
+
+class _FLRFretModelQualityHandler(Handler):
+    category = '_flr_fret_model_quality'
+
+    def __call__(self, model_id, chi_square_reduced, dataset_group_id, method, details):
+        cur_fret_model_quality = self.sysr.flr_fret_model_qualities.get_by_id(model_id)
+        cur_dataset_group = self.sysr.dataset_groups.get_by_id(dataset_group_id)
+        self.copy_if_present(cur_fret_model_quality, locals(),
+                             keys = ('model_id', 'chi_square_reduced','dataset_group_id',
+                                     'method','details'),
+                             mapkeys = {'cur_dataset_group':'dataset_group_id'})
+
+        ## add it to the flr_data if it is not there yet
+        cur_flr_data = self.sysr.flr_data.get_by_id(1)
+        if cur_fret_model_quality not in cur_flr_data.fret_model_quality_list:
+            cur_flr_data.add_fret_model_quality(cur_fret_model_quality)
+        cur_flr_data._collection_flr_fret_model_quality[model_id] = cur_fret_model_quality
+
+class _FLRFretModelDistanceHandler(Handler):
+    category = '_flr_fret_model_distance'
+
+    def __call__(self, id, restraint_id, model_id, distance, distance_deviation):
+        cur_fret_model_distance = self.sysr.flr_fret_model_distances.get_by_id(id)
+        cur_restraint = self.sysr.flr_fret_distance_restraints.get_by_id(restraint_id)
+        cur_model = self.sysr.models.get_by_id(model_id)
+        self.copy_if_present(cur_fret_model_distance, locals(),
+                             keys = ('restraint_id', 'model_id', 'distance', 'distance_deviation'),
+                             mapkeys = {'cur_restraint':'restraint_id',
+                                        'cur_model':'model_id'})
+        cur_fret_model_distance.calculate_deviation()
+
+        ## add it to the flr_data if it is not there yet
+        cur_flr_data = self.sysr.flr_data.get_by_id(1)
+        if cur_fret_model_distance not in cur_flr_data.fret_model_distance_list:
+            cur_flr_data.add_fret_model_distance(cur_fret_model_distance)
+        cur_flr_data._collection_flr_fret_model_distance[id] = cur_fret_model_distance
+
+class _FLRFPSGlobalParameterHandler(Handler):
+    category = '_flr_fps_global_parameter'
+
+    def __call__(self, id, forster_radius_value, conversion_function_polynom_order, repetition,
+                 av_grid_rel, av_min_grid_a, av_allowed_sphere, av_search_nodes, av_e_samples_k,
+                 sim_viscosity_adjustment, sim_dt_adjustment, sim_max_iter_k, sim_max_force,
+                 sim_clash_tolerance_a, sim_reciprocal_kt, sim_clash_potential,
+                 convergence_e, convergence_k, convergence_f, convergence_t):
+        cur_fps_global_parameters = self.sysr.flr_fps_global_parameters.get_by_id(id)
+        self.copy_if_present(cur_fps_global_parameters, locals(),
+                             keys = ('forster_radius',
+                                     'conversion_function_polynom_order',
+                                     'repetition',
+                                     'av_grid_rel',
+                                     'av_min_grid_a',
+                                     'av_allowed_sphere',
+                                     'av_search_nodes',
+                                     'av_e_samples_k',
+                                     'sim_viscosity_adjustment',
+                                     'sim_dt_adjustment',
+                                     'sim_max_iter_k',
+                                     'sim_max_force',
+                                     'sim_clash_tolerance_a',
+                                     'sim_reciprocal_kt',
+                                     'sim_clash_potential',
+                                     'convergence_e',
+                                     'convergence_k',
+                                     'convergence_f',
+                                     'convergence_t'),
+                             mapkeys = {'forster_radius_value':'forster_radius',
+                                        'av_grid_rel':'AV_grid_rel',
+                                        'av_min_grid_a':'AV_min_grid_A',
+                                        'av_allowed_sphere':'AV_allowed_sphere',
+                                        'av_search_nodes':'AV_search_nodes',
+                                        'av_e_samples_k':'AV_E_samples_k',
+                                        'sim_clash_tolerance_a':'sim_clash_tolerance_A',
+                                        'sim_reciprocal_kt':'sim_reciprocal_kT',
+                                        'convergence_e':'convergence_E',
+                                        'convergence_k':'convergence_K',
+                                        'convergence_f':'convergence_F',
+                                        'convergence_t':'convergence_T'})
+        self.sysr.flr_data.get_by_id(1)._collection_flr_fps_global_parameters[id] = cur_fps_global_parameters
+
+class _FLRFPSModelingHandler(Handler):
+    category = '_flr_fps_modeling'
+
+    def __call__(self, id, ihm_modeling_protocol_ordinal_id, restraint_group_id,
+                 global_parameter_id, probe_modeling_method, details):
+        cur_FPS_modeling = self.sysr.flr_fps_modeling.get_by_id(id)
+        cur_ihm_model_protocol = self.sysr.protocols.get_by_id(ihm_modeling_protocol_ordinal_id)
+        cur_restraint_group = self.sysr.flr_fret_distance_restraint_groups.get_by_id(restraint_group_id)
+        cur_global_parameter = self.sysr.flr_fps_global_parameters.get_by_id(global_parameter_id)
+        self.copy_if_present(cur_FPS_modeling, locals(),
+                             keys = ('ihm_modeling_protocol_ordinal_id',
+                                     'restraint_group_id',
+                                     'global_parameter_id',
+                                     'probe_modeling_method',
+                                     'details'),
+                             mapkeys = {'cur_ihm_model_protocol':'ihm_modeling_protocol_ordinal_id',
+                                        'cur_restraint_group':'restraint_group_id',
+                                        'cur_global_parameter':'global_parameter_id'})
+        self.sysr.flr_data.get_by_id(1)._collection_flr_fps_modeling[id] = cur_FPS_modeling
+
+class _FLRFPSAVParameterHandler(Handler):
+    category = '_flr_fps_av_parameter'
+    def __call__(self, id, num_linker_atoms, linker_length, linker_width, probe_radius_1, probe_radius_2, probe_radius_3):
+        cur_FPS_AV_parameter = self.sysr.flr_fps_av_parameters.get_by_id(id)
+        self.copy_if_present(cur_FPS_AV_parameter, locals(),
+                             keys = ('num_linker_atoms','linker_length',
+                                     'linker_width','probe_radius_1',
+                                     'probe_radius_2','probe_radius_3'))
+        self.sysr.flr_data.get_by_id(1)._collection_flr_fps_av_parameter[id] = cur_FPS_AV_parameter
+
+class _FLRFPSAVModelingHandler(Handler):
+    category = '_flr_fps_av_modeling'
+    def __call__(self, id, sample_probe_id, fps_modeling_id, parameter_id):
+        cur_fps_av_modeling = self.sysr.flr_fps_av_modeling.get_by_id(id)
+        cur_sample_probe = self.sysr.flr_sample_probe_details.get_by_id(sample_probe_id)
+        cur_fps_modeling = self.sysr.flr_fps_modeling.get_by_id(fps_modeling_id)
+        cur_parameter = self.sysr.flr_fps_av_parameters.get_by_id(parameter_id)
+        self.copy_if_present(cur_fps_av_modeling, locals(),
+                             keys = ('FPS_modeling_id','sample_probe_id','parameter_id'),
+                             mapkeys = {'cur_fps_modeling':'FPS_modeling_id',
+                                        'cur_sample_probe':'sample_probe_id',
+                                        'cur_parameter':'parameter_id'})
+        self.sysr.flr_data.get_by_id(1)._collection_flr_fps_av_modeling[id] = cur_fps_av_modeling
+
+        ## Add the FPS_AV_modeling to the modeling collection
+        cur_method = 'FPS_AV' if ('AV' in cur_fps_modeling.probe_modeling_method) else 'FPS_MPP'
+        cur_modeling_collection = self.sysr.flr_modeling_collection.get_by_id(1)
+        cur_modeling_collection.add_modeling(cur_fps_av_modeling, cur_method)
+
+        ## add it to the flr_data if it is not there yet
+        cur_flr_data = self.sysr.flr_data.get_by_id(1)
+        if cur_modeling_collection not in cur_flr_data.flr_FPS_modeling_collection_list:
+            cur_flr_data.add_flr_FPS_modeling(cur_modeling_collection)
+
+class _FLRFPSMPPHandler(Handler):
+    category = '_flr_fps_mean_probe_position'
+    def __call__(self, id, sample_probe_id, mpp_xcoord, mpp_ycoord, mpp_zcoord):
+        cur_fps_mean_probe_position = self.sysr.flr_fps_mean_probe_positions.get_by_id(id)
+        cur_sample_probe = self.sysr.flr_sample_probe_details.get_by_id(sample_probe_id)
+        self.copy_if_present(cur_fps_mean_probe_position, locals(),
+                             keys = ('sample_probe_id', 'mpp_xcoord', 'mpp_ycoord', 'mpp_zcoord'),
+                             mapkeys = {'cur_sample_probe':'sample_probe_id'})
+        self.sysr.flr_data.get_by_id(1)._collection_flr_fps_mean_probe_position[id] = cur_fps_mean_probe_position
+
+class _FLRFPSMPPAtomPositionHandler(Handler):
+    category = '_flr_fps_mpp_atom_position'
+    def __call__(self, id, group_id, entity_id, seq_id, comp_id, atom_id, asym_id, xcoord, ycoord, zcoord):
+        cur_fps_mpp_atom_position = self.sysr.flr_fps_mpp_atom_positions.get_by_id(id)
+        cur_entity = self.sysr.entities.get_by_id(entity_id)
+        self.copy_if_present(cur_fps_mpp_atom_position, locals(),
+                             keys = ('entity', 'seq_id', 'comp_id', 'atom_id',
+                                     'asym_id', 'xcoord', 'ycoord', 'zcoord'),
+                             mapkeys = {'cur_entity':'entity'})
+
+        cur_fps_mpp_atom_position_group = self.sysr.flr_fps_mpp_atom_position_groups.get_by_id(group_id)
+        cur_fps_mpp_atom_position_group.add_atom_position(cur_fps_mpp_atom_position)
+
+        self.sysr.flr_data.get_by_id(1)._collection_flr_fps_mpp_atom_position[id] = cur_fps_mpp_atom_position
+
+
+class _FLRFPSMPPModelingHandler(Handler):
+    category = '_flr_fps_mpp_modeling'
+    def __call__(self, ordinal_id, fps_modeling_id, mpp_id, mpp_atom_position_group_id):
+        cur_fps_mpp_modeling = self.sysr.flr_fps_mpp_modeling.get_by_id(ordinal_id)
+        cur_fps_modeling = self.sysr.flr_fps_modeling.get_by_id(fps_modeling_id)
+        cur_mpp = self.sysr.flr_fps_mean_probe_positions.get_by_id(mpp_id)
+        cur_mpp_atom_position_group = self.sysr.flr_fps_mpp_atom_position_groups.get_by_id(mpp_atom_position_group_id)
+        self.copy_if_present(cur_fps_mpp_modeling, locals(),
+                             keys = ('FPS_modeling_id', 'mpp_id', 'mpp_atom_position_group_id'),
+                             mapkeys = {'cur_fps_modeling':'FPS_modeling_id',
+                                        'cur_mpp':'mpp_id',
+                                        'cur_mpp_atom_position_group':'mpp_atom_position_group_id'})
+        self.sysr.flr_data.get_by_id(1)._collection_flr_fps_mpp_modeling[ordinal_id] = cur_fps_mpp_modeling
+
+        ## Add the FPS_AV_modeling to the modeling collection
+        cur_method = 'FPS_AV' if ('AV' in cur_fps_modeling.probe_modeling_method) else 'FPS_MPP'
+        cur_modeling_collection = self.sysr.flr_modeling_collection.get_by_id(1)
+        cur_modeling_collection.add_modeling(cur_fps_mpp_modeling, cur_method)
+
+        ## add it to the flr_data if it is not there yet
+        cur_flr_data = self.sysr.flr_data.get_by_id(1)
+        if cur_modeling_collection not in cur_flr_data.flr_FPS_modeling_collection_list:
+            cur_flr_data.add_flr_FPS_modeling(cur_modeling_collection)
+
+
+
 def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
-         warn_unknown_category=False, warn_unknown_keyword=False):
+         warn_unknown_category=False, warn_unknown_keyword=False,
+         read_starting_model_coord=True,
+         starting_model_class=ihm.startmodel.StartingModel):
     """Read data from the mmCIF file handle `fh`.
 
        Note that the reader currently expects to see an mmCIF file compliant
@@ -1876,9 +2562,9 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
        module to function.
 
        :param file fh: The file handle to read from.
-       :param model_class: The class to use to store model coordinates.
-              For use with other software, it is recommended to subclass
-              :class:`ihm.model.Model` and override
+       :param model_class: The class to use to store model information (such
+              as coordinates). For use with other software, it is recommended
+              to subclass :class:`ihm.model.Model` and override
               :meth:`~ihm.model.Model.add_sphere` and/or
               :meth:`~ihm.model.Model.add_atom`, and provide that subclass
               here. See :meth:`ihm.model.Model.get_spheres` for more
@@ -1894,6 +2580,13 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
        :param bool warn_unknown_keyword: if set, emit an
               :exc:`UnknownKeywordWarning` for each unknown keyword
               (within an otherwise-handled category) encountered in the file.
+       :param bool read_starting_model_coord: if set, read coordinates for
+              starting models, if provided in the file.
+       :param starting_model_class: The class to use to store starting model
+              information. If `read_starting_model_coord` is also set, it
+              is recommended to subclass :class:`ihm.startmodel.StartingModel`
+              and override :meth:`~ihm.startmodel.StartingModel.add_atom`
+              and/or :meth:`~ihm.startmodel.StartingModel.add_seq_dif`.
        :return: A list of :class:`ihm.System` objects.
     """
     systems = []
@@ -1906,13 +2599,13 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
     r = reader_map[format](fh, {}, unknown_category_handler=uchandler,
                            unknown_keyword_handler=ukhandler)
     while True:
-        s = SystemReader(model_class)
+        s = SystemReader(model_class, starting_model_class)
         hs = [_StructHandler(s), _SoftwareHandler(s), _CitationHandler(s),
               _AuditAuthorHandler(s), _GrantHandler(s),
               _CitationAuthorHandler(s), _ChemCompHandler(s),
               _ChemDescriptorHandler(s), _EntityHandler(s),
               _EntitySrcNatHandler(s), _EntitySrcGenHandler(s),
-              _EntitySrcSynHandler(s),
+              _EntitySrcSynHandler(s), _EntityPolyHandler(s),
               _EntityPolySeqHandler(s), _EntityNonPolyHandler(s),
               _StructAsymHandler(s), _AssemblyDetailsHandler(s),
               _AssemblyHandler(s), _ExtRefHandler(s), _ExtFileHandler(s),
@@ -1936,10 +2629,41 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               _AxisHandler(s), _PlaneHandler(s), _GeometricRestraintHandler(s),
               _PolySeqSchemeHandler(s), _NonPolySchemeHandler(s),
               _CrossLinkListHandler(s), _CrossLinkRestraintHandler(s),
-              _CrossLinkResultHandler(s),
-              _OrderedEnsembleHandler(s)] + [h(s) for h in handlers]
+              _CrossLinkResultHandler(s), _StartingModelSeqDifHandler(s),
+              _OrderedEnsembleHandler(s), _FLRChemDescriptorHandler(s),
+              _FLRExpSettingHandler(s),
+              _FLRInstrumentHandler(s),
+              _FLRSampleConditionHandler(s),
+              _FLREntityAssemblyHandler(s),
+              _FLRSampleHandler(s),
+              _FLRExperimentHandler(s),
+              _FLRProbeListHandler(s),
+              _FLRProbeDescriptorHandler(s),
+              _FLRPolyProbePositionHandler(s),
+              _FLRPolyProbePositionModifiedHandler(s),
+              _FLRPolyProbePositionMutatedHandler(s),
+              _FLRSampleProbeDetailsHandler(s),
+              _FLRPolyProbeConjugateHandler(s),
+              _FLRFretForsterRadiusHandler(s),
+              _FLRFretCalibrationParametersHandler(s),
+              _FLRFretAnalysisHandler(s),
+              _FLRPeakAssignmentHandler(s),
+              _FLRFretDistanceRestraintHandler(s),
+              _FLRFretModelQualityHandler(s),
+              _FLRFretModelDistanceHandler(s),
+              _FLRFPSGlobalParameterHandler(s),
+              _FLRFPSModelingHandler(s),
+              _FLRFPSAVParameterHandler(s),
+              _FLRFPSAVModelingHandler(s),
+              _FLRFPSMPPHandler(s),
+              _FLRFPSMPPAtomPositionHandler(s),
+              _FLRFPSMPPModelingHandler(s)] + [h(s) for h in handlers]
+        if read_starting_model_coord:
+            hs.append(_StartingModelCoordHandler(s))
         if uchandler:
             uchandler.reset()
+        if ukhandler:
+            ukhandler.add_category_handlers(hs)
         r.category_handler = dict((h.category, h) for h in hs)
         more_data = r.read_file()
         for h in hs:

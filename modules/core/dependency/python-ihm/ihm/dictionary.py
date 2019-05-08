@@ -352,7 +352,7 @@ class _ItemLinkedHandler(Handler):
     category = '_item_linked'
 
     def __call__(self, child_name, parent_name):
-         self.sysr.dictionary.linked_items[child_name] = parent_name
+        self.sysr.dictionary.linked_items[child_name] = parent_name
 
 
 def read(fh):

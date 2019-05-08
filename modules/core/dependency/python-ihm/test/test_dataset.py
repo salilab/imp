@@ -17,10 +17,12 @@ class Tests(unittest.TestCase):
         """Test Dataset base class"""
         l = ihm.location.PDBLocation('1abc', version='foo', details='bar')
         d = ihm.dataset.Dataset(l)
+        self.assertEqual(d.details, None)
         self.assertEqual(len(d.parents), 0)
 
         l2 = ihm.location.PDBLocation('1xyz', version='foo', details='bar')
-        d2 = ihm.dataset.Dataset(l2)
+        d2 = ihm.dataset.Dataset(l2, details='foo')
+        self.assertEqual(d2.details, 'foo')
         d.parents.append(d2)
         self.assertEqual(len(d.parents), 1)
         self.assertNotEqual(d, d2)
@@ -107,6 +109,24 @@ class Tests(unittest.TestCase):
         d = ihm.dataset.IntegrativeModelDataset(loc)
         self.assertEqual(d.data_type, 'Integrative model')
 
+    def test_de_novo_model_dataset(self):
+        """Test DeNovoModelDataset"""
+        loc = ihm.location.FileLocation(repo='mydoi', path='a')
+        d = ihm.dataset.DeNovoModelDataset(loc)
+        self.assertEqual(d.data_type, 'De Novo model')
+
+    def test_nmr_dataset(self):
+        """Test NMRDataset"""
+        loc = ihm.location.FileLocation(repo='mydoi', path='a')
+        d = ihm.dataset.NMRDataset(loc)
+        self.assertEqual(d.data_type, 'NMR data')
+
+    def test_mutagenesis_dataset(self):
+        """Test MutagenesisDataset"""
+        loc = ihm.location.FileLocation(repo='mydoi', path='a')
+        d = ihm.dataset.MutagenesisDataset(loc)
+        self.assertEqual(d.data_type, 'Mutagenesis data')
+
     def test_em2d_class_dataset(self):
         """Test EM2DClassDataset"""
         loc = ihm.location.FileLocation(repo='mydoi', path='a')
@@ -148,6 +168,8 @@ class Tests(unittest.TestCase):
             l2 = ihm.location.InputFileLocation(fname, details='other details')
             d2 = ihm.dataset.PDBDataset(l2)
             self.assertEqual(l1, l2)
+            d3 = ihm.dataset.PDBDataset(l2, details='other dataset details')
+            self.assertEqual(d2, d3)
 
     def test_duplicate_locations(self):
         """Datasets with same location should be considered duplicates"""

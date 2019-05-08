@@ -22,9 +22,25 @@ import json
 
 __version__ = '0.7'
 
+class __UnknownValue(object):
+    # Represent the mmCIF 'unknown' special value
+
+    def __str__(self):
+        return '?'
+    __repr__ = __str__
+
+    # Unknown value is a singleton and should only compare equal to itself
+    def __eq__(self, other):
+        return self is other
+    def __lt__(self, other):
+        return False
+    __gt__ = __lt__
+    __le__ = __ge__ = __eq__
+
+
 #: A value that isn't known. Note that this is distinct from a value that
 #: is deliberately omitted, which is represented by Python None.
-unknown = CifWriter.unknown
+unknown = __UnknownValue()
 
 def _remove_identical(gen):
     """Return only unique objects from `gen`.
@@ -171,6 +187,10 @@ class System(object):
         #: See :class:`~ihm.restraint.Feature`.
         self.orphan_features = []
 
+        #: Contains the fluorescence (FLR) part.
+        #: See :class:`~ihm.flr.FLRData`.
+        self.flr_data = []
+
     def update_locations_in_repositories(self, repos):
         """Update all :class:`Location` objects in the system that lie within
            a checked-out :class:`Repository` to point to that repository.
@@ -215,7 +235,11 @@ class System(object):
         return itertools.chain(self.orphan_chem_descriptors,
                       (restraint.linker for restraint in self.restraints
                                         if hasattr(restraint, 'linker')
-                                        and restraint.linker))
+                                        and restraint.linker),
+                      (list(itertools.chain.from_iterable
+                          ([entry._all_flr_chemical_descriptors()
+                            for entry in self.flr_data]))
+                       if self.flr_data != [] else []))
 
     def _all_model_groups(self, only_in_states=True):
         """Iterate over all ModelGroups in the system.

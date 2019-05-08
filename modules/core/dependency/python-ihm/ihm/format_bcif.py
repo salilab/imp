@@ -14,6 +14,7 @@ import struct
 import sys
 import inspect
 import ihm.format
+import ihm
 
 # ByteArray types
 _Int8 = 1
@@ -480,7 +481,7 @@ def _get_mask_and_type(data):
     typ = None
     seen_types = set()
     for i, val in enumerate(data):
-        if val is None or val == ihm.format._Writer.unknown:
+        if val is None or val == ihm.unknown:
             if mask is None:
                 mask = [0] * len(data)
             mask[i] = 1 if val is None else 2

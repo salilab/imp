@@ -479,7 +479,7 @@ class Tests(unittest.TestCase):
 
     def test_mask_type_masked_int(self):
         """Test get_mask_and_type with masked int data"""
-        data = [1,2,3,None,'?',4]
+        data = [1,2,3,None,ihm.unknown,4]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
         self.assertEqual(mask, [0,0,0,1,2,0])
         self.assertEqual(typ, int)
@@ -490,14 +490,14 @@ class Tests(unittest.TestCase):
             # long type is only in Python 2
             # Use long(x) rather than xL since the latter will cause a syntax
             # error in Python 3
-            data = [long(1),long(2),long(3),None,'?',long(4)]
+            data = [long(1),long(2),long(3),None,ihm.unknown,long(4)]
             mask, typ = ihm.format_bcif._get_mask_and_type(data)
             self.assertEqual(mask, [0,0,0,1,2,0])
             self.assertEqual(typ, int)
 
     def test_mask_type_masked_float(self):
         """Test get_mask_and_type with masked float data"""
-        data = [1.0,2.0,3.0,None,'?',4.0]
+        data = [1.0,2.0,3.0,None,ihm.unknown,4.0]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
         self.assertEqual(mask, [0,0,0,1,2,0])
         self.assertEqual(typ, float)
@@ -508,16 +508,17 @@ class Tests(unittest.TestCase):
             import numpy
         except ImportError:
             self.skipTest("this test requires numpy")
-        data = [numpy.float64(4.2),None,'?']
+        data = [numpy.float64(4.2),None,ihm.unknown]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
         self.assertEqual(mask, [0,1,2])
         self.assertEqual(typ, float)
 
     def test_mask_type_masked_str(self):
         """Test get_mask_and_type with masked str data"""
-        data = ['a','b',None,'?','c']
+        # Literal . and ? should not be masked
+        data = ['a','b',None,ihm.unknown,'c','.','?']
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
-        self.assertEqual(mask, [0,0,1,2,0])
+        self.assertEqual(mask, [0,0,1,2,0,0,0])
         self.assertEqual(typ, str)
 
     def test_mask_type_mix_int_float(self):
@@ -565,10 +566,12 @@ class Tests(unittest.TestCase):
         """Test StringArray encoder with mask"""
         d = ihm.format_bcif._StringArrayMaskedEncoder()
         # True should be mapped to 'YES'; int 3 to str '3'
-        indices, encs = d(['a', 'AB', True, '?', None, 'a', 3],
-                          [0, 0, 0, 2, 1, 0, 0])
+        # Unmasked literal . and ? should be kept as-is
+        indices, encs = d(['a', 'AB', True, ihm.unknown, None, 'a', 3,
+                           '.', '?'],
+                          [0, 0, 0, 2, 1, 0, 0, 0, 0])
         # \xff is -1 (masked value) as a signed char (Int8)
-        self.assertEqual(indices, b'\x00\x01\x02\xff\xff\x00\x03')
+        self.assertEqual(indices, b'\x00\x01\x02\xff\xff\x00\x03\x04\x05')
         enc, = encs
         self.assertEqual(enc[b'dataEncoding'],
                              [{b'kind':b'ByteArray',
@@ -576,8 +579,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(enc[b'offsetEncoding'],
                              [{b'kind':b'ByteArray',
                                b'type':ihm.format_bcif._Uint8}])
-        self.assertEqual(enc[b'offsets'], b'\x00\x01\x03\x06\x07')
-        self.assertEqual(enc[b'stringData'], b'aABYES3')
+        self.assertEqual(enc[b'offsets'], b'\x00\x01\x03\x06\x07\x08\t')
+        self.assertEqual(enc[b'stringData'], b'aABYES3.?')
 
     def test_int_array_encoder_no_mask(self):
         """Test IntArray encoder with no mask"""
@@ -651,13 +654,20 @@ class Tests(unittest.TestCase):
         with writer.loop('foo', ["bar", "baz"]) as l:
             l.write(bar='x')
             l.write(bar=None, baz='z')
+            l.write(bar=ihm.unknown, baz='z')
+            l.write(bar='.', baz='z')
+            l.write(bar='?', baz='z')
             l.write(baz='y')
         writer.flush()
         block, = fh.data[b'dataBlocks']
         category, = block[b'categories']
         self.assertEqual(category[b'name'], b'foo')
-        self.assertEqual(category[b'rowCount'], 3)
-        col1, col2 = category[b'columns']
+        self.assertEqual(category[b'rowCount'], 6)
+        cols = sorted(category[b'columns'], key=lambda x:x[b'name'])
+        self.assertEqual(len(cols), 2)
+        # Check mask for bar column; literal . and ? should not be masked (=0)
+        self.assertEqual(cols[0][b'mask'][b'data'],
+                         b'\x00\x01\x02\x00\x00\x01')
 
 
 if __name__ == '__main__':

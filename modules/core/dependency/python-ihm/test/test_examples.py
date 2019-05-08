@@ -29,7 +29,7 @@ class Tests(unittest.TestCase):
             # can read it
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 contents = fh.readlines()
-            self.assertEqual(len(contents), 271)
+            self.assertEqual(len(contents), 272)
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 s, = ihm.reader.read(fh)
 
@@ -43,7 +43,7 @@ class Tests(unittest.TestCase):
         # can read it
         with open(out) as fh:
             contents = fh.readlines()
-        self.assertEqual(len(contents), 66)
+        self.assertEqual(len(contents), 67)
         with open(out) as fh:
             s, = ihm.reader.read(fh)
         os.unlink(out)

@@ -114,6 +114,8 @@ class StartingModel(object):
         self.asym_unit = asym_unit
         self.dataset, self.asym_id, self.offset = dataset, asym_id, offset
         self.software, self.script_file = software, script_file
+        self._atoms = []
+        self._seq_difs = []
 
     def get_atoms(self):
         """Yield :class:`~ihm.model.Atom` objects that represent this
@@ -121,8 +123,9 @@ class StartingModel(object):
            be embedded in the mmCIF file, which is useful if the starting
            model is not available elsewhere (or it has been modified).
 
-           The default implementation returns no atoms; it is necessary
-           to subclass and override this method.
+           The default implementation returns an internal list of atoms;
+           it is usually necessary to subclass and override this method.
+           See :meth:`ihm.model.Model.get_spheres` for more details.
 
            Note that the returned atoms should be those used in modeling,
            not those stored in the file. In particular, the numbering scheme
@@ -132,17 +135,34 @@ class StartingModel(object):
            mutated name should be used (MET in this case) and
            :meth:`get_seq_dif` overridden to note the change.
         """
-        return []
+        return self._atoms
 
     def get_seq_dif(self):
         """Yield :class:`SeqDif` objects for any sequence changes between
            the dataset and the starting model. See :meth:`get_atoms`.
 
+           The default implementation returns an internal list of objects;
+           it is usually necessary to subclass and override this method.
+
            Note that this is always called *after* :meth:`get_atoms`.
         """
-        return []
+        return self._seq_difs
 
-    def get_seq_id_range_all_templates(self):
+    def add_atom(self, atom):
+        """Add to the model's set of :class:`~ihm.model.Atom` objects.
+
+           See :meth:`get_atoms` for more details.
+        """
+        self._atoms.append(atom)
+
+    def add_seq_dif(self, seq_dif):
+        """Add to the model's set of :class:`SeqDif` objects.
+
+           See :meth:`get_atoms` for more details.
+        """
+        self._seq_difs.append(seq_dif)
+
+    def _get_seq_id_range_all_templates(self):
         """Get the seq_id range covered by all templates in this starting
            model. Where there are multiple templates, consolidate
            them; template info is given in starting_comparative_models."""

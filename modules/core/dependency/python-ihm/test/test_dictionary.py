@@ -63,24 +63,24 @@ class Tests(unittest.TestCase):
         """Test KeywordEnumeration (case insensitive)"""
         x = ihm.dictionary._KeywordEnumeration()
         x.case_sensitive = False
-        self.assertFalse('foo' in x)
+        self.assertNotIn('foo', x)
         x.add('foo')
-        self.assertFalse('bar' in x)
-        self.assertTrue('foo' in x)
-        self.assertTrue('FOO' in x)
+        self.assertNotIn('bar', x)
+        self.assertIn('foo', x)
+        self.assertIn('FOO', x)
         x.add('bar')
-        self.assertTrue('BAR' in x)
+        self.assertIn('BAR', x)
 
     def test_keyword_enum_case_sen(self):
         """Test KeywordEnumeration (case sensitive)"""
         x = ihm.dictionary._KeywordEnumeration()
-        self.assertFalse('foo' in x)
+        self.assertNotIn('foo', x)
         x.add('foo')
-        self.assertFalse('bar' in x)
-        self.assertTrue('foo' in x)
-        self.assertFalse('FOO' in x)
+        self.assertNotIn('bar', x)
+        self.assertIn('foo', x)
+        self.assertNotIn('FOO', x)
         x.add('bar')
-        self.assertFalse('BAR' in x)
+        self.assertNotIn('BAR', x)
 
     def test_read(self):
         """Test read() function"""

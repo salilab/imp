@@ -103,8 +103,8 @@ class Tests(unittest.TestCase):
         self.assertAlmostEqual(a._comps['M'].formula_weight, 149.211, places=2)
 
         a = ihm.LPeptideAlphabet()
-        self.assertTrue('MSE' in a)
-        self.assertFalse('DG' in a)
+        self.assertIn('MSE', a)
+        self.assertNotIn('DG', a)
         self.assertEqual(len(a.keys), 22)
         self.assertEqual(len(a.values), 22)
         self.assertEqual(sorted(a.keys)[0], 'A')
@@ -819,6 +819,18 @@ class Tests(unittest.TestCase):
         s.locations.append(loc)
         r = ihm.location.Repository(doi='foo', root='..')
         s.update_locations_in_repositories([r])
+
+    def test_unknown(self):
+        """Test the 'unknown' special object"""
+        u = ihm.unknown
+        self.assertEqual(str(u), '?')
+        self.assertEqual(repr(u), '?')
+        # Should only be equal to itself
+        self.assertEqual(u, u)
+        self.assertLessEqual(u, u)
+        self.assertGreaterEqual(u, u)
+        self.assertNotEqual(u, '?')
+        self.assertNotEqual(u, None)
 
 
 if __name__ == '__main__':

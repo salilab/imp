@@ -36,7 +36,7 @@ class Tests(unittest.TestCase):
         e1 = ihm.Entity('AAAA')
         asym = ihm.AsymUnit(e1)
         s = ihm.startmodel.StartingModel(asym, 'mock_dataset', 'A', offset=10)
-        self.assertEqual(s.get_seq_id_range_all_templates(), (1,4))
+        self.assertEqual(s._get_seq_id_range_all_templates(), (1,4))
         self.assertEqual(s.get_atoms(), [])
         self.assertEqual(s.get_seq_dif(), [])
 
@@ -57,7 +57,7 @@ class Tests(unittest.TestCase):
                              sequence_identity=40.)
         s = ihm.startmodel.StartingModel(asym(5,25), 'mock_dataset', 'A',
                                          [s1, s2], offset=1)
-        self.assertEqual(s.get_seq_id_range_all_templates(), (5,20))
+        self.assertEqual(s._get_seq_id_range_all_templates(), (5,20))
 
     def test_seq_dif(self):
         """Test SeqDif class"""
@@ -70,6 +70,26 @@ class Tests(unittest.TestCase):
         self.assertEqual(sd.db_comp_id, 'MSE')
         self.assertEqual(sd.details,
                          'Conversion of modified residue MSE to MET')
+
+    def test_add_atom(self):
+        """Test StartingModel.add_atom()"""
+        atoms = ['atom1', 'atom2']
+        e1 = ihm.Entity('AAAA')
+        asym = ihm.AsymUnit(e1)
+        s = ihm.startmodel.StartingModel(asym, 'mock_dataset', 'A', offset=10)
+        s.add_atom(atoms[0])
+        s.add_atom(atoms[1])
+        self.assertEqual(s._atoms, atoms)
+
+    def test_add_seq_dif(self):
+        """Test StartingModel.add_seq_dif()"""
+        seq_difs = ['sd1', 'sd2']
+        e1 = ihm.Entity('AAAA')
+        asym = ihm.AsymUnit(e1)
+        s = ihm.startmodel.StartingModel(asym, 'mock_dataset', 'A', offset=10)
+        s.add_seq_dif(seq_difs[0])
+        s.add_seq_dif(seq_difs[1])
+        self.assertEqual(s._seq_difs, seq_difs)
 
 
 if __name__ == '__main__':

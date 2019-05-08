@@ -42,7 +42,7 @@ class _LineWriter(object):
             self.writer.fh.write(";\n")
             self.column = 0
             return
-        val = self.writer._repr(val)
+        val = '.' if val is None else self.writer._repr(val)
         if self.column > 0:
             if self.column + len(val) + 1 > self.line_len:
                 self.writer.fh.write("\n")
@@ -83,8 +83,7 @@ class _CifLoopWriter(object):
             self._empty_loop = False
         l = _LineWriter(self.writer)
         for k in self.python_keys:
-            val = kwargs.get(k, None)
-            l.write(self.writer.omitted if val is None else val)
+            l.write(kwargs.get(k, None))
         self.writer.fh.write("\n")
     def __enter__(self):
         return self
@@ -179,7 +178,7 @@ class CifWriter(_Writer):
            and len(obj) > 0 \
            and not obj.startswith('data_') \
            and not obj.startswith('[') \
-           and obj not in ('save_', 'loop_', 'stop_', 'global_'):
+           and obj not in ('save_', 'loop_', 'stop_', 'global_', '?', '.'):
             return obj
         elif isinstance(obj, float):
             return "%.3f" % obj
@@ -208,6 +207,21 @@ class _Token(object):
 
 class _ValueToken(_Token):
     """The value of a variable in mmCIF"""
+    pass
+
+
+class _OmittedValueToken(_ValueToken):
+    """A value that is deliberately omitted (the '.' string in mmCIF)"""
+    pass
+
+
+class _UnknownValueToken(_ValueToken):
+    """A value that is unknown (the '?' string in mmCIF)"""
+    pass
+
+
+class _TextValueToken(_ValueToken):
+    """The value of a variable in mmCIF as a piece of text"""
     __slots__ = ['txt']
 
     def __init__(self, txt):
@@ -320,7 +334,7 @@ class CifReader(_Reader):
             elif nextline.startswith(';'):
                 # Strip last newline
                 lines[-1] = lines[-1].rstrip('\r\n')
-                self._tokens = [_ValueToken("".join(lines))]
+                self._tokens = [_TextValueToken("".join(lines))]
                 return
             elif not ignore_multiline:
                 lines.append(nextline)
@@ -339,7 +353,9 @@ class CifReader(_Reader):
                 raise CifParserError("%s-quoted string not terminated "
                                      "at line %d" % (quote_type, self._linenum))
             elif end == strlen - 1 or line[end + 1] in _WHITESPACE:
-                self._tokens.append(_ValueToken(line[start_pos+1:end]))
+                # A quoted string is always a literal string, even if it is
+                # "?" or ".", not an unknown/omitted value
+                self._tokens.append(_TextValueToken(line[start_pos+1:end]))
                 return end + 1 # Step past the closing quote
 
     def _extract_line_token(self, line, strlen, start_pos):
@@ -371,11 +387,15 @@ class CifReader(_Reader):
                 tok = _SaveToken()
             elif val.startswith('_'):
                 tok = _VariableToken(val, self._linenum)
+            elif val == '.':
+                tok = _OmittedValueToken()
+            elif val == '?':
+                tok = _UnknownValueToken()
             else:
                 # Note that we do no special processing for other reserved words
                 # (global_, save_, stop_). But the probability of them occurring
                 # where we expect a value is pretty small.
-                tok = _ValueToken(val) # don't alter case of values
+                tok = _TextValueToken(val) # don't alter case of values
             self._tokens.append(tok)
             return end_pos
 
@@ -426,9 +446,9 @@ class CifReader(_Reader):
                     ch = self.category_handler[vartoken.category]
                     if vartoken.category not in self._category_data:
                         self._category_data[vartoken.category] = {}
-                    if valtoken.txt == '.':
-                     val = ch.omitted
-                    elif valtoken.txt == '?':
+                    if isinstance(valtoken, _OmittedValueToken):
+                        val = ch.omitted
+                    elif isinstance(valtoken, _UnknownValueToken):
                         val = ch.unknown
                     else:
                         val = valtoken.txt
@@ -479,9 +499,9 @@ class CifReader(_Reader):
                 token = self._get_token()
                 if isinstance(token, _ValueToken):
                     if index >= 0:
-                        if token.txt == '.':
+                        if isinstance(token, _OmittedValueToken):
                             data[index] = handler.omitted
-                        elif token.txt == '?':
+                        elif isinstance(token, _UnknownValueToken):
                             data[index] = handler.unknown
                         else:
                             data[index] = token.txt

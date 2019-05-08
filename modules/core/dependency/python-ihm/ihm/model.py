@@ -223,7 +223,7 @@ class OrderedProcess(object):
 
 class ProcessStep(list):
     """A single step in an :class:`OrderedProcess`.
-    
+
        This is implemented as a simple list of :class:`ProcessEdge` objects,
        each of which orders two :class:`ModelGroup` objects. (To order more
        than two groups, for example to represent a branched reaction step
