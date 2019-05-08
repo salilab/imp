@@ -1005,8 +1005,8 @@ _ihm_modeling_post_process.script_file_id
             self.assertEqual(e.densities[0].file.details,
                          'Localization density for Nup84 dgroup')
             # No precision available
-            self.assertEqual(e._get_precision(), '?')
-            self.assertEqual(e.precision, '?')
+            self.assertEqual(e._get_precision(), ihm.unknown)
+            self.assertEqual(e.precision, ihm.unknown)
             # Make precision available
             with open(os.path.join(tmpdir, 'precision.0.0.out'), 'w') as fh:
                 fh.write("""
