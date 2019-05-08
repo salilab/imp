@@ -51,8 +51,9 @@ def setup_one(finder, module, build_system, swig, extra_data_path, include):
     if include:
         baseincludes.append(include)
     baseincludes.extend(('include', 'swig'))
-    cmd = [swig, "-MM"] + ["-I" + x for x in baseincludes] + ["-ignoremissing"]\
-        + ["-I" + x for x in swigpath] + ["-I" + x for x in includepath]\
+    cmd = [swig, "-python", "-MM"] + ["-I" + x for x in baseincludes] \
+        + ["-ignoremissing"] \
+        + ["-I" + x for x in swigpath] + ["-I" + x for x in includepath] \
         + ["swig/IMP_%s.i" % module.name]
 
     lines = tools.run_subprocess(cmd).split("\n")
