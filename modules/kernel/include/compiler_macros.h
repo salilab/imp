@@ -18,8 +18,6 @@
 #define IMP_FOREACH(v, r) for (v : r)
 #endif
 
-#include <boost/detail/endian.hpp>
-
 #define IMP_STRINGIFY(x) #x
 
 // recommended by http://gcc.gnu.org/gcc/Function-Names.html

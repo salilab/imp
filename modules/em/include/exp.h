@@ -21,6 +21,13 @@
 
 #include <IMP/em/em_config.h>
 #include <math.h>
+#include <boost/version.hpp>
+
+#if BOOST_VERSION < 106900
+#include <boost/detail/endian.hpp>
+#else
+#include <boost/predef/other/endian.h>
+#endif
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -41,7 +48,7 @@ IMPEM_BEGIN_NAMESPACE
 typedef union {
   double d;
   struct {
-#ifdef BOOST_LITTLE_ENDIAN
+#if defined(BOOST_ENDIAN_LITTLE_BYTE) || defined(BOOST_LITTLE_ENDIAN)
     int j, i;
 #else
     int i, j;
