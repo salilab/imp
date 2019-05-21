@@ -84,11 +84,11 @@ PyObject *_get_ints_data_numpy(PyObject *m_pyobj, unsigned sz, int *data)
 }
 
 #if IMP_KERNEL_HAS_NUMPY
-PyObject *_add_spheres_component(void *data, npy_intp *dims,
+PyObject *_add_spheres_component(void *data, int nd, npy_intp *dims,
                                  npy_intp *strides, PyObject *m_pyobj,
                                  PyObject *tuple, Py_ssize_t pos)
 {
-  PyObject *obj = PyArray_New(&PyArray_Type, 1, dims, NPY_DOUBLE, strides,
+  PyObject *obj = PyArray_New(&PyArray_Type, nd, dims, NPY_DOUBLE, strides,
                               data, 0, NPY_WRITEABLE, NULL);
   if (!obj) {
     Py_DECREF(tuple);
@@ -121,11 +121,11 @@ PyObject *_get_spheres_data_numpy(PyObject *m_pyobj, unsigned sz,
   algebra::Sphere3D::_get_struct_size(struct_size, center_offset,
                                       radius_offset);
 
-  npy_intp dims[1], strides[1];
+  npy_intp dims[2], strides[2];
   dims[0] = sz;
   strides[0] = struct_size;
 
-  PyObject *tuple = PyTuple_New(4);
+  PyObject *tuple = PyTuple_New(2);
   if (!tuple) {
     return NULL;
   }
@@ -133,22 +133,16 @@ PyObject *_get_spheres_data_numpy(PyObject *m_pyobj, unsigned sz,
   /* x, y, z */
   char *pt = (char *)data;
   if (data) pt += center_offset;
-  if (!_add_spheres_component(pt, dims, strides, m_pyobj, tuple, 0)) {
-    return NULL;
-  }
-  if (data) pt += sizeof(double);
-  if (!_add_spheres_component(pt, dims, strides, m_pyobj, tuple, 1)) {
-    return NULL;
-  }
-  if (data) pt += sizeof(double);
-  if (!_add_spheres_component(pt, dims, strides, m_pyobj, tuple, 2)) {
+  dims[1] = 3;
+  strides[1] = sizeof(double);
+  if (!_add_spheres_component(pt, 2, dims, strides, m_pyobj, tuple, 0)) {
     return NULL;
   }
 
   /* r */
   pt = (char *)data;
   if (data) pt += radius_offset;
-  if (!_add_spheres_component(pt, dims, strides, m_pyobj, tuple, 3)) {
+  if (!_add_spheres_component(pt, 1, dims, strides, m_pyobj, tuple, 1)) {
     return NULL;
   }
   return tuple;
