@@ -66,22 +66,6 @@ class Image2D : public boost::multi_array<T, 2> {
     }
   }
 
-  Image2D(const Image2D& in)
-      : boost::multi_array<T, 2>(),
-        average_(in.average_),
-        stddev_(in.stddev_),
-        average_computed_(in.average_computed_),
-        stddev_computed_(in.stddev_computed_),
-        pca_(in.pca_),
-	center_x_(in.center_x_),
-	center_y_(in.center_y_),
-        points_(in.points_) {
-    this->resize(boost::extents[in.shape()[0]][in.shape()[1]]);
-    for (unsigned int i = 0; i < in.num_elements(); i++) {
-      *(this->data() + i) = *(in.data() + i);
-    }
-  }
-
   Image2D(int height, int width)
       : average_computed_(false), stddev_computed_(false)
         , center_x_(0), center_y_(0) {
