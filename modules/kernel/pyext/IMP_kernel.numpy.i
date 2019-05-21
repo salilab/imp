@@ -83,6 +83,31 @@ PyObject *_get_ints_data_numpy(PyObject *m_pyobj, unsigned sz, int *data)
 #endif
 }
 
+#if IMP_KERNEL_HAS_NUMPY
+PyObject *_add_spheres_component(void *data, npy_intp *dims,
+                                 npy_intp *strides, PyObject *m_pyobj,
+                                 PyObject *tuple, Py_ssize_t pos)
+{
+  PyObject *obj = PyArray_New(&PyArray_Type, 1, dims, NPY_DOUBLE, strides,
+                              data, 0, NPY_WRITEABLE, NULL);
+  if (!obj) {
+    Py_DECREF(tuple);
+    return NULL;
+  }
+
+  if (PyTuple_SetItem(tuple, pos, obj) == 0) {
+    /* Ensure that the Model is kept around as long as the numpy object
+       is alive. */
+    Py_INCREF(m_pyobj);
+    PyArray_BASE(obj) = m_pyobj;
+    return obj;
+  } else {
+    Py_DECREF(obj);
+    Py_DECREF(tuple);
+    return NULL;
+  }
+}
+#endif
 
 PyObject *_get_spheres_data_numpy(PyObject *m_pyobj, unsigned sz,
                                   algebra::Sphere3D *data)
@@ -92,26 +117,41 @@ PyObject *_get_spheres_data_numpy(PyObject *m_pyobj, unsigned sz,
     return NULL;
   }
 
-  // We treat an array of N spheres as a 4*N 2D array, so make sure the
-  // internal layout of the Sphere3D class matches this assumption
-  BOOST_STATIC_ASSERT(sizeof(algebra::Sphere3D) == 4 * sizeof(double));
+  size_t struct_size, center_offset, radius_offset;
+  algebra::Sphere3D::_get_struct_size(struct_size, center_offset,
+                                      radius_offset);
 
-  npy_intp dims[2];
+  npy_intp dims[1], strides[1];
   dims[0] = sz;
-  dims[1] = 4;
+  strides[0] = struct_size;
 
-  PyObject *obj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL,
-                              data, 0, NPY_WRITEABLE, NULL);
-  if (!obj) {
+  PyObject *tuple = PyTuple_New(4);
+  if (!tuple) {
     return NULL;
   }
 
-  /* Ensure that the Model is kept around as long as the numpy object
-     is alive. */
-  Py_INCREF(m_pyobj);
-  PyArray_BASE(obj) = m_pyobj;
+  /* x, y, z */
+  char *pt = (char *)data;
+  if (data) pt += center_offset;
+  if (!_add_spheres_component(pt, dims, strides, m_pyobj, tuple, 0)) {
+    return NULL;
+  }
+  if (data) pt += sizeof(double);
+  if (!_add_spheres_component(pt, dims, strides, m_pyobj, tuple, 1)) {
+    return NULL;
+  }
+  if (data) pt += sizeof(double);
+  if (!_add_spheres_component(pt, dims, strides, m_pyobj, tuple, 2)) {
+    return NULL;
+  }
 
-  return obj;
+  /* r */
+  pt = (char *)data;
+  if (data) pt += radius_offset;
+  if (!_add_spheres_component(pt, dims, strides, m_pyobj, tuple, 3)) {
+    return NULL;
+  }
+  return tuple;
 #else
   PyErr_SetString(PyExc_NotImplementedError,
                   "IMP was built without NumPy support");

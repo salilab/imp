@@ -4,14 +4,6 @@ import IMP.core
 import IMP.test
 import sys
 
-# Handle alignment of Sphere3D class
-# MSVC packs the Vector3D and radius differently to gcc/clang
-# todo: handle this more intelligently internally
-if hasattr(sys, 'dllhandle'):
-    X, Y, Z, R = 0, 1, 2, 3
-else:
-    R, X, Y, Z = 0, 1, 2, 3
-
 class Tests(IMP.test.TestCase):
 
     def test_get_derivatives_numpy(self):
@@ -116,26 +108,28 @@ class Tests(IMP.test.TestCase):
         d2.set_radius(8)
 
         if IMP.IMP_KERNEL_HAS_NUMPY:
-            n = m1._get_spheres_numpy()
-            self.assertIs(n.base, m1)
-            self.assertEqual(len(n), 2) # no sphere attribute for p3
-            self.assertAlmostEqual(n[0][R], 4.0, delta=1e-4)
-            self.assertAlmostEqual(n[0][X], 1.0, delta=1e-4)
-            self.assertAlmostEqual(n[0][Y], 2.0, delta=1e-4)
-            self.assertAlmostEqual(n[0][Z], 3.0, delta=1e-4)
+            x, y, z, r = m1._get_spheres_numpy()
+            for n in x, y, z, r:
+                self.assertIs(n.base, m1)
+                self.assertEqual(len(n), 2) # no sphere attribute for p3
+            self.assertAlmostEqual(x[0], 1.0, delta=1e-4)
+            self.assertAlmostEqual(y[0], 2.0, delta=1e-4)
+            self.assertAlmostEqual(z[0], 3.0, delta=1e-4)
+            self.assertAlmostEqual(r[0], 4.0, delta=1e-4)
 
-            self.assertAlmostEqual(n[1][R], 8.0, delta=1e-4)
-            self.assertAlmostEqual(n[1][X], 5.0, delta=1e-4)
-            self.assertAlmostEqual(n[1][Y], 6.0, delta=1e-4)
-            self.assertAlmostEqual(n[1][Z], 7.0, delta=1e-4)
-            n[0][R] = 42.0
+            self.assertAlmostEqual(x[1], 5.0, delta=1e-4)
+            self.assertAlmostEqual(y[1], 6.0, delta=1e-4)
+            self.assertAlmostEqual(z[1], 7.0, delta=1e-4)
+            self.assertAlmostEqual(r[1], 8.0, delta=1e-4)
+            r[0] = 42.0
             self.assertAlmostEqual(d1.get_radius(), 42.0, delta=1e-6)
-            n[1][X] = 24.0
+            x[1] = 24.0
             self.assertAlmostEqual(d2.get_coordinates()[0], 24.0, delta=1e-6)
 
-            n = m2._get_spheres_numpy()
-            self.assertIs(n.base, m2)
-            self.assertEqual(len(n), 0) # no spheres for this model
+            x, y, z, r = m2._get_spheres_numpy()
+            for n in x, y, z, r:
+                self.assertIs(n.base, m2)
+                self.assertEqual(len(n), 0) # no spheres for this model
         else:
             self.assertRaises(NotImplementedError, m1._get_spheres_numpy)
 
@@ -153,16 +147,18 @@ class Tests(IMP.test.TestCase):
         d2 = IMP.core.XYZR.setup_particle(p2)
 
         if IMP.IMP_KERNEL_HAS_NUMPY:
-            n = m1._get_sphere_derivatives_numpy()
-            self.assertIs(n.base, m1)
-            self.assertEqual(len(n), 2) # no sphere attribute for p3
-            n[0][X] = 42.0
-            n[1][Y] = 24.0
+            x, y, z, r = m1._get_sphere_derivatives_numpy()
+            for n in x, y, z, r:
+                self.assertIs(n.base, m1)
+                self.assertEqual(len(n), 2) # no sphere attribute for p3
+            x[0] = 42.0
+            y[1] = 24.0
             self.assertAlmostEqual(d1.get_derivatives()[0], 42.0, delta=1e-6)
             self.assertAlmostEqual(d2.get_derivatives()[1], 24.0, delta=1e-6)
-            n = m2._get_sphere_derivatives_numpy()
-            self.assertIs(n.base, m2)
-            self.assertEqual(len(n), 0) # no spheres for this model
+            x, y, z, r = m2._get_sphere_derivatives_numpy()
+            for n in x, y, z, r:
+                self.assertIs(n.base, m2)
+                self.assertEqual(len(n), 0) # no spheres for this model
         else:
             self.assertRaises(NotImplementedError,
                               m1._get_sphere_derivatives_numpy)
