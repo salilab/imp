@@ -1,7 +1,6 @@
 from __future__ import print_function
 import IMP.test
 import IMP.pmi.output
-import IMP.pmi.representation
 
 class TestPO(IMP.pmi.output.ProtocolOutput):
     _file_datasets = []

@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.pmi.restraints.stereochemistry
-import IMP.pmi.representation
 import IMP.pmi.tools
 import IMP.pmi.output
 import IMP.pmi.topology

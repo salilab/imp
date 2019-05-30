@@ -556,10 +556,11 @@ class Molecule(_SystemBase):
                Any other resolutions passed will be coarsened from there.
                Resolution 0 will not work, you may have to use MODELLER to do that (for now).
         @param color the color applied to the hierarchies generated.
-               Format options: tuple (r,g,b) with values 0 to 1
-               or float (from 0 to 1, a map from Blue to Green to Red)
-               or IMP.display.Color object
-
+               Format options: tuple (r,g,b) with values 0 to 1;
+               float (from 0 to 1, a map from Blue to Green to Red);
+               a [Chimera name](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/colortables.html);
+               a hex RGB string (e.g. "0xff0000");
+               an IMP.display.Color object
         @note You cannot call add_representation multiple times for the
               same residues.
         """
@@ -1122,7 +1123,11 @@ class TopologyReader(object):
     These are the fields you can enter:
     - `component_name`: Name of the component (chain). Serves as the parent
       hierarchy for this structure.
-    - `color`: The color used in the output RMF file. Uses chimera names or R,G,B values
+    - `color`: The color used in the output RMF file. Uses
+      [Chimera names](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/colortables.html),
+      (e.g. "red"), or R,G,B values as three comma-separated floating point
+      numbers from 0 to 1 (e.g. "1.0, 0.0, 0.0") or a 6-digit hex string
+      starting with '#' (e.g. 0xff0000).
     - `fasta_fn`: Name of FASTA file containing this component.
     - `fasta_id`: String found in FASTA sequence header line. The sequence read
       from the file is assumed to be a protein sequence. If it should instead

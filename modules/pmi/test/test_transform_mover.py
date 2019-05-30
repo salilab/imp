@@ -3,7 +3,6 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.pmi
-import IMP.pmi.representation
 import IMP.pmi.samplers
 import IMP.pmi.macros
 import IMP.pmi.restraints

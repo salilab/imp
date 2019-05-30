@@ -9,7 +9,6 @@ import IMP.pmi.topology
 import IMP.pmi.dof
 import IMP.pmi.io
 import IMP.pmi.io.crosslink
-import IMP.pmi.representation
 import IMP.pmi.restraints
 import IMP.pmi.restraints.em
 import IMP.pmi.restraints.crosslinking
@@ -875,6 +874,20 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(cc.triplet((1,20,200), 'X'), '0114C8')
         self.assertEqual([int(x) for x in cc.rgb('0114C8')], [1,20,200])
         self.assertEqual([int(x) for x in cc.rgb('0114c8')], [1,20,200])
+
+    def test_color2rgb(self):
+        """Test color2rgb function"""
+        r,g,b = IMP.pmi.tools.color2rgb("tan")
+        self.assertAlmostEqual(r, 0.824, delta=0.01)
+        self.assertAlmostEqual(g, 0.706, delta=0.01)
+        self.assertAlmostEqual(b, 0.549, delta=0.01)
+
+        self.assertRaises(KeyError, IMP.pmi.tools.color2rgb, "bad color")
+
+        r,g,b = IMP.pmi.tools.color2rgb("#6495ed")
+        self.assertAlmostEqual(r, 0.392, delta=0.01)
+        self.assertAlmostEqual(g, 0.584, delta=0.01)
+        self.assertAlmostEqual(b, 0.929, delta=0.01)
 
     def test_ordered_set(self):
         """Test OrderedSet class"""

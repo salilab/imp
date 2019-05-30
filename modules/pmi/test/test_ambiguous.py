@@ -3,39 +3,26 @@ import IMP
 import IMP.test
 import IMP.core
 import os
-import IMP.pmi.representation
+import IMP.pmi.topology
 import IMP.pmi.restraints.crosslinking
-import IMP.pmi.samplers
 import IMP.pmi.output
 
 class Tests(IMP.test.TestCase):
     def test_ambiguous(self):
-        representations = []
-
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            r = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
+        st1 = s.create_state()
+        p11 = st1.create_molecule("particle1", "MELSMELS", "X")
+        p11.add_representation(resolutions=[10])
+        p21 = st1.create_molecule("particle2", "MELSMELS", "Y")
+        p21.add_representation(resolutions=[10])
+        p31 = st1.create_molecule("particle3", "MELSMELS", "Z")
+        p31.add_representation(resolutions=[10])
+        hier = s.build()
 
-        r.create_component("particle1", color=0.1)
-        p11 = r.add_component_beads("particle1", [(1, 10)])
-        r.create_component("particle2", color=0.5)
-        p21 = r.add_component_beads("particle2", [(1, 10)])
-        r.create_component("particle3", color=0.9)
-        p31 = r.add_component_beads("particle3", [(1, 10)])
-
-        representations.append(r)
-
-        with IMP.allow_deprecated():
-            r = IMP.pmi.representation.Representation(m)
-
-        representations[0].floppy_bodies.pop(0)
-        representations[0].floppy_bodies.pop(0)
-
-        print(representations[0].floppy_bodies)
-
-        pp1 = IMP.atom.get_leaves(p11[0])[0]
-        pp2 = IMP.atom.get_leaves(p21[0])[0]
-        pp3 = IMP.atom.get_leaves(p31[0])[0]
+        pp1 = IMP.atom.get_leaves(p11.hier)[0]
+        pp2 = IMP.atom.get_leaves(p21.hier)[0]
+        pp3 = IMP.atom.get_leaves(p31.hier)[0]
         xyz11 = IMP.core.XYZ(pp1.get_particle())
         xyz21 = IMP.core.XYZ(pp2.get_particle())
         xyz31 = IMP.core.XYZ(pp3.get_particle())
@@ -61,7 +48,7 @@ class Tests(IMP.test.TestCase):
 
         xl = \
           IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
-                representations, CrossLinkDataBase=cldb,
+                root_hier=hier, CrossLinkDataBase=cldb,
                 length=21.0, slope=0.0, resolution=1.0)
         xl.sigma_dictionary['1.0'][0].set_scale(5.0)
         xl.psi_dictionary['0.05'][0].set_scale(0.1)
@@ -79,26 +66,13 @@ class Tests(IMP.test.TestCase):
 
         print(xyz11.get_coordinates())
 
-        mc = IMP.pmi.samplers.MonteCarlo(m, representations, 1.0)
-        mc.set_simulated_annealing(min_temp=1.0,
-                                   max_temp=2.0,
-                                   min_temp_time=200,
-                                   max_temp_time=50)
-
-
         o = IMP.pmi.output.Output()
-        o.init_stat2("modeling.stat", [mc, xl] + representations)
-
-        for i in range(0, 100):
-            mc.optimize(10)
-            o.write_stats2()
-            if i % 100 == 0:
-                print(i)
+        o.init_stat2("modeling.stat", [xl])
 
         po = IMP.pmi.output.ProcessOutput("modeling.stat")
 
         print(po.get_keys())
-        self.assertEqual(len(po.get_keys()), 15)
+        self.assertEqual(len(po.get_keys()), 10)
 
         fs = po.get_fields(
             ['CrossLinkingMassSpectrometryRestraint_Distance_||1.2|particle1|1|particle3|2|0|0.05|',

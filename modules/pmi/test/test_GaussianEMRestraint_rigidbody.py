@@ -4,8 +4,6 @@ import IMP.algebra
 import IMP.test
 
 import IMP.pmi.restraints.em
-import IMP.pmi.representation
-
 import math
 
 class Tests(IMP.test.TestCase):

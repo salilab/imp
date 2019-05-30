@@ -1299,7 +1299,7 @@ def input_adaptor(stuff,
     # check that it is a hierarchy homogenously:
     try:
         is_hierarchy=all(IMP.atom.Hierarchy.get_is_setup(s) for s in stuff)
-    except NotImplementedError:
+    except (NotImplementedError, TypeError):
         is_hierarchy=False
     # get the other types homogenously
     is_system=all(isinstance(s, IMP.pmi.topology.System) for s in stuff)
@@ -1922,7 +1922,7 @@ class ColorHierarchy(object):
 
 
 def color2rgb(colorname):
-    """Given a chimera color name, return RGB"""
+    """Given a Chimera color name or hex color value, return RGB"""
     d = {'aquamarine': (0.4980392156862745, 1.0, 0.8313725490196079),
          'black': (0.0, 0.0, 0.0),
          'blue': (0.0, 0.0, 1.0),
@@ -1983,4 +1983,7 @@ def color2rgb(colorname):
          'violet red': (0.8156862745098039, 0.12549019607843137, 0.5647058823529412),
          'white': (1.0, 1.0, 1.0),
          'yellow': (1.0, 1.0, 0.0)}
-    return d[colorname]
+    if colorname.startswith('#'):
+        return tuple(int(colorname[i:i+2], 16) / 255. for i in (1, 3, 5))
+    else:
+        return d[colorname]
