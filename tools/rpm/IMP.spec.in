@@ -270,7 +270,7 @@ export CGAL_DIR=%{_libdir}/cmake/CGAL
 cmake ../imp -DCMAKE_BUILD_TYPE=Release \
              -DCMAKE_INSTALL_PREFIX=%{_prefix} \
              -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
-             -DIMP_TIMEOUT_FACTOR=4 \
+             -DIMP_TIMEOUT_FACTOR=4 -DUSE_PYTHON2=on \
              -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
 
 # Normally make will stop at the first error. Since an RPM cannot be built
@@ -307,7 +307,7 @@ cmake ../imp \
       -DSWIG_PYTHON_LIBRARIES=${py3_lib} \
       -DPYTHON_INCLUDE_DIRS=${py3_inc} \
       -DPYTHON_INCLUDE_PATH=${py3_inc} \
-      -DPYTHON_LIBRARIES=${py3_lib}
+      -DPYTHON_LIBRARIES=${py3_lib} -DUSE_PYTHON2=off
 make DESTDIR=${RPM_BUILD_ROOT} install
 %if 0%{?with_mpich}
 module purge
