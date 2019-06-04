@@ -45,7 +45,7 @@ foreach(path ${swig_path})
   list(APPEND PATH_ARGS "--swigpath=${path}")
 endforeach(path)
 add_custom_command(OUTPUT ${source} ${wrap_py} ${wrap_py_orig}
-   COMMAND  python
+   COMMAND  ${PYTHON_EXECUTABLE}
             "%(tools_dir)sbuild/make_swig_wrapper.py"%(extra_include)s%(extra_swig)s
             "--swig=${SWIG_EXECUTABLE}"
             "--module=%(name)s"

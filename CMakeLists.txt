@@ -8,9 +8,13 @@ if(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
    message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} is ${CMAKE_BINARY_DIR}. If this message seems wrong, make sure to delete the CMakeFiles directory and the CMakeCache.txt file if they exist in the source dir (${CMAKE_SOURCE_DIR}).")
 endif()
 
+include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindPython.cmake)
+imp_find_python()
+
 # Check Python version early so we can use Python >= 2.6 features in other
 # build scripts
-execute_process(COMMAND python "tools/build/check_python_version.py"
+execute_process(COMMAND ${PYTHON_EXECUTABLE}
+                        "tools/build/check_python_version.py"
                 RESULT_VARIABLE setup
                 OUTPUT_VARIABLE toutput
                 ERROR_VARIABLE error
@@ -21,12 +25,13 @@ if(NOT ${setup} EQUAL 0)
 endif()
 
 if(IS_DIRECTORY "${PROJECT_SOURCE_DIR}/.git")
-  execute_process(COMMAND python "tools/dev_tools/git/setup_git.py"
-                    RESULT_VARIABLE setup
-                    OUTPUT_VARIABLE toutput
-                    ERROR_VARIABLE error
-                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND ${PYTHON_EXECUTABLE}
+                          "tools/dev_tools/git/setup_git.py"
+                  RESULT_VARIABLE setup
+                  OUTPUT_VARIABLE toutput
+                  ERROR_VARIABLE error
+                  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
   if(NOT ${setup} EQUAL 0)
      message(FATAL_ERROR " Failed to run setup_git.py: ${setup}; ${error}")
   endif()
@@ -46,11 +51,17 @@ include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPExecuteP
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPAddTests.cmake)
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/CheckCompiles.cmake)
 
-imp_execute_process("check_common_problems" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/check_common_problems.py)
+imp_execute_process("check_common_problems" ${CMAKE_SOURCE_DIR}
+                    COMMAND ${PYTHON_EXECUTABLE}
+                    ${CMAKE_SOURCE_DIR}/tools/build/check_common_problems.py)
 
-imp_execute_process("clean_build_dir" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/clean_build_dir.py)
+imp_execute_process("clean_build_dir" ${CMAKE_BINARY_DIR}
+                    COMMAND ${PYTHON_EXECUTABLE}
+                    ${CMAKE_SOURCE_DIR}/tools/build/clean_build_dir.py)
 
-imp_execute_process("setup_cmake" ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_cmake.py)
+imp_execute_process("setup_cmake" ${CMAKE_SOURCE_DIR}
+                    COMMAND ${PYTHON_EXECUTABLE}
+                    ${CMAKE_SOURCE_DIR}/tools/build/setup_cmake.py)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules)
 
@@ -74,7 +85,6 @@ endif(POLICY CMP0058)
 set(timeout_factor 1)
 set(IMP_SWIG_PATH CACHE STRING "List of places for swig to search")
 set(SWIG_EXECUTABLE swig CACHE STRING "Swig program")
-set(IMP_PYTHON python CACHE INTERNAL "The Python executable that IMP itself will use at runtime (the build system scripts will always use 'python')")
 set(IMP_DISABLED_MODULES CACHE STRING "A colon-separated list of disabled modules")
 set(IMP_STATIC off CACHE BOOL "Link all binaries and libraries statically; currently only supported on Linux systems with gcc.")
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
@@ -98,7 +108,10 @@ include(FindCurrentDoxygen)
 # clear list
 set(IMP_DOC_DEPENDS "" CACHE INTERNAL "")
 if(${IMP_DOXYGEN_FOUND})
-imp_execute_process("setup_doxygen" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen.py "--source=${CMAKE_SOURCE_DIR}")
+imp_execute_process("setup_doxygen" ${CMAKE_BINARY_DIR}
+                    COMMAND ${PYTHON_EXECUTABLE}
+                    ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen.py
+                    "--source=${CMAKE_SOURCE_DIR}")
 endif()
 
 if(IMP_STATIC)
@@ -130,41 +143,9 @@ foreach(m ${cudalist})
   add_definitions( -DIMP_${M}_CUDA_LIB )
 endforeach(m)
 
-if(NOT DEFINED PYTHON_INCLUDE_DIRS AND NOT IMP_STATIC)
-  execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print(sys.executable)"
-                  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-                  OUTPUT_VARIABLE python_full_path
-                  OUTPUT_STRIP_TRAILING_WHITESPACE)
-  execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print('%d.%d.%d' % sys.version_info[:3])"
-                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-                OUTPUT_VARIABLE python_full_version
-                OUTPUT_STRIP_TRAILING_WHITESPACE)
-  string(REGEX REPLACE "^([0-9]+\\.[0-9]+).*" "\\1" python_version
-         ${python_full_version})
-  message(STATUS "Python binary is " ${python_full_path} " (version " ${python_full_version} ")")
-
-  FIND_PACKAGE(PythonLibs ${python_full_version} EXACT REQUIRED)
-endif()
 if(WIN32)
   set(IMP_SWIG_LIBRARIES ${PYTHON_LIBRARIES})
 endif(WIN32)
-
-if(NOT DEFINED PYTHON_NUMPY_INCLUDE_DIR AND NOT IMP_STATIC)
-  execute_process(COMMAND ${IMP_PYTHON} -c
-                  "try: import numpy; print(numpy.get_include());\nexcept: pass"
-                  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-                  OUTPUT_VARIABLE __numpy_path
-                  OUTPUT_STRIP_TRAILING_WHITESPACE)
-  find_path(PYTHON_NUMPY_INCLUDE_DIR numpy/arrayobject.h
-            HINTS "${__numpy_path}" "${PYTHON_INCLUDE_PATH}" NO_DEFAULT_PATH)
-  if(PYTHON_NUMPY_INCLUDE_DIR)
-    set(PYTHON_NUMPY_FOUND 1 CACHE INTERNAL "Python numpy found")
-  endif()
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(NumPy
-                                    REQUIRED_VARS PYTHON_NUMPY_INCLUDE_DIR
-                                    VERSION_VAR __numpy_version)
-endif()
 
 if("${PYTHON_NUMPY_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
   file(WRITE "${CMAKE_BINARY_DIR}/build_info/NumPy" "ok=False")
@@ -242,17 +223,21 @@ set(IMP_ALL_DEPENDS_VARS BOOST.FILESYSTEM_LIBRARIES BOOST.SYSTEM_LIBRARIES
     BOOST.THREAD_LIBRARIES BOOST.PROGRAMOPTIONS_LIBRARIES BOOST.REGEX_LIBRARIES
     BOOST.GRAPH_LIBRARIES BOOST.RANDOM_LIBRARIES CACHE INTERNAL "" FORCE)
 
-imp_execute_process("setup" ${CMAKE_BINARY_DIR} COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup.py
+imp_execute_process("setup" ${CMAKE_BINARY_DIR}
+                    COMMAND ${PYTHON_EXECUTABLE}
+                    ${CMAKE_SOURCE_DIR}/tools/build/setup.py
                     --source=${CMAKE_SOURCE_DIR}
                     --disabled=${IMP_DISABLED_MODULES}
                     --datapath=${IMP_DATAPATH})
 
 imp_execute_process("setup_all" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_all.py
+                    COMMAND ${PYTHON_EXECUTABLE}
+                    ${CMAKE_SOURCE_DIR}/tools/build/setup_all.py
                     --source=${CMAKE_SOURCE_DIR})
 
 imp_execute_process("making containers" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_containers.py)
+                    COMMAND ${PYTHON_EXECUTABLE}
+                    ${CMAKE_SOURCE_DIR}/tools/build/make_containers.py)
 
 include(${PROJECT_SOURCE_DIR}/tools/build/cmake_files/MakeContainers.cmake)
 
@@ -337,7 +322,9 @@ find_package(Eigen3 3.0 REQUIRED)
 include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
 
 add_custom_target("IMP-version"
-                  COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_version.py --source=${CMAKE_SOURCE_DIR}
+                  COMMAND ${PYTHON_EXECUTABLE}
+                          ${CMAKE_SOURCE_DIR}/tools/build/make_version.py
+                          --source=${CMAKE_SOURCE_DIR}
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                   COMMENT "Computing version number")
 
@@ -355,7 +342,8 @@ file(STRINGS "${CMAKE_BINARY_DIR}/build_info/sorted_modules" enabled_modules)
 if(NOT DEFINED IMP_NO_SWIG_DEPENDENCIES)
 # the make_containers.py call is needed to let swig find all headers it needs
 imp_execute_process("setup_swig_dependencies" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_swig_deps.py
+                    COMMAND ${PYTHON_EXECUTABLE}
+                    ${CMAKE_SOURCE_DIR}/tools/build/setup_swig_deps.py
                     "--swig=${SWIG_EXECUTABLE}")
 endif()
 
@@ -393,8 +381,9 @@ foreach(path ${IMP_PATH})
   list(APPEND PATH_ARGS "--path=${path}")
 endforeach(path)
 imp_execute_process("setup_imppy" ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_imppy.py
-                    "--python=${IMP_PYTHON}"
+                    COMMAND ${PYTHON_EXECUTABLE}
+                    ${CMAKE_SOURCE_DIR}/tools/build/setup_imppy.py
+                    "--python_pathsep=${PYTHON_PATH_SEP}"
                     "--precommand="
                     "--propagate=yes"
                     "--suffix=${IMP_BINARY_PATH_SUFFIX}"
@@ -407,21 +396,21 @@ if(IMP_DOXYGEN_FOUND)
    ${CMAKE_SOURCE_DIR}/doc/*/*.md)
 
   add_custom_target(IMP-doc
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${CMAKE_SOURCE_DIR}"
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/setup_doxygen_config.py "--source=${CMAKE_SOURCE_DIR}"
     # Generate manual's tag file so we can link from the refguide to it
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual.xml
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/ref.xml
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/make_cross_refs.py
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/make_cross_refs.py
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/ref.html
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/ref-warnings.txt
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_links.py ${CMAKE_BINARY_DIR}/doc/ref
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_add_ref_nav.py ${CMAKE_SOURCE_DIR}
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/ref-warnings.txt
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_links.py ${CMAKE_BINARY_DIR}/doc/ref
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_add_ref_nav.py ${CMAKE_SOURCE_DIR}
     # Rebuild manual so that it can link to the refguide tags
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual.html
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/manual-warnings.txt
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/manual-warnings.txt
     COMMAND patch -p1 < ${CMAKE_SOURCE_DIR}/doc/doxygen/search.patch
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_add_nav.py ${CMAKE_SOURCE_DIR} . doc/manual tools
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/build/doxygen_spell_check.py doxygen/manual/xml ${CMAKE_SOURCE_DIR}/doc/standards_exceptions
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_add_nav.py ${CMAKE_SOURCE_DIR} . doc/manual tools
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_spell_check.py doxygen/manual/xml ${CMAKE_SOURCE_DIR}/doc/standards_exceptions
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     DEPENDS ${IMP_DOC_DEPENDS} ${docs} ${IMP_DOXYGEN_FETCH} IMP-version
     COMMENT "Building documentation")
