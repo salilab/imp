@@ -2,6 +2,11 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- The build system has been updated to use new CMake functionality
+  (if available) to detect Python. If you have CMake 3.12 or later, this should
+  do a much better job of handling multiple Python installations (e.g. Macs
+  with Homebrew). It will default to using Python 3. To force use of Python 2,
+  pass `-DUSE_PYTHON2=on` to your CMake invocation.
 - The IMP::OptionParser class has been removed. Use IMP::ArgumentParser instead.
 - The IMP::test::TempDir and IMP::test::RunInTempDir utility classes have been
   removed. Use the IMP::test::temporary_directory and
