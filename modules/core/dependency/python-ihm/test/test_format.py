@@ -324,6 +324,23 @@ x
             self._read_cif(cif, real_file, {'_exptl':h})
             self.assertEqual(h.data, [{'method':'bar'}])
 
+    def test_duplicated_key_omitted(self):
+        """If a key is duplicated, we take the final (omitted) value"""
+        cif = "_exptl.method foo\n_exptl.method .\n"
+        for real_file in (True, False):
+            h = GenericHandler()
+            h.omitted = 'OMIT'
+            self._read_cif(cif, real_file, {'_exptl':h})
+            self.assertEqual(h.data, [{'method':'OMIT'}])
+
+    def test_duplicated_key_unknown(self):
+        """If a key is duplicated, we take the final (unknown) value"""
+        cif = "_exptl.method foo\n_exptl.method ?\n"
+        for real_file in (True, False):
+            h = GenericHandler()
+            self._read_cif(cif, real_file, {'_exptl':h})
+            self.assertEqual(h.data, [{'method':ihm.unknown}])
+
     def test_save_frames(self):
         """Category handlers should be called for each save frame"""
         cif = """

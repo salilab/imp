@@ -17,7 +17,7 @@ class Tests(unittest.TestCase):
         """Test Dataset base class"""
         l = ihm.location.PDBLocation('1abc', version='foo', details='bar')
         d = ihm.dataset.Dataset(l)
-        self.assertEqual(d.details, None)
+        self.assertIsNone(d.details)
         self.assertEqual(len(d.parents), 0)
 
         l2 = ihm.location.PDBLocation('1xyz', version='foo', details='bar')

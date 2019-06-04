@@ -18,6 +18,7 @@ import ihm.location
 import ihm.representation
 import ihm.model
 import ihm.source
+import ihm.flr
 
 class Tests(unittest.TestCase):
     def test_system(self):
@@ -33,8 +34,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(cc1.code, 'G')
         self.assertEqual(cc1.code_canonical, 'G')
         self.assertEqual(cc1.type, 'other')
-        self.assertEqual(cc1.formula, None)
-        self.assertEqual(cc1.formula_weight, None)
+        self.assertIsNone(cc1.formula)
+        self.assertIsNone(cc1.formula_weight)
         cc2 = ihm.ChemComp(id='GLY', code='G', code_canonical='G')
         cc3 = ihm.ChemComp(id='G', code='G', code_canonical='G')
         self.assertEqual(cc1, cc2)
@@ -45,13 +46,13 @@ class Tests(unittest.TestCase):
         """Test ChemComp.formula_weight"""
         # No formula
         cc = ihm.ChemComp('X', 'X', 'X', formula=None)
-        self.assertEqual(cc.formula_weight, None)
+        self.assertIsNone(cc.formula_weight)
         # Bad formula
         cc = ihm.ChemComp('X', 'X', 'X', formula='C90H')
         self.assertRaises(ValueError, lambda x: x.formula_weight, cc)
         # Formula with unknown element
         cc = ihm.ChemComp('X', 'X', 'X', formula='C5 Y')
-        self.assertEqual(cc.formula_weight, None)
+        self.assertIsNone(cc.formula_weight)
         # Formula with known elements and no charge
         cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P')
         self.assertAlmostEqual(cc.formula_weight, 115.136, places=2)
@@ -164,8 +165,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(d1.chemical_name, 'test-EDC')
         self.assertEqual(d1.common_name, 'test-common-EDC')
         self.assertEqual(d1.smiles, 'CCN=C=NCCCN(C)C')
-        self.assertEqual(d1.inchi, None)
-        self.assertEqual(d1.inchi_key, None)
+        self.assertIsNone(d1.inchi)
+        self.assertIsNone(d1.inchi_key)
 
     def test_entity(self):
         """Test Entity class"""
@@ -187,7 +188,7 @@ class Tests(unittest.TestCase):
         self.assertAlmostEqual(e1.formula_weight, 499.516, places=1)
         # Entity containing a component with unknown weight
         heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
-        self.assertEqual(heme.formula_weight, None)
+        self.assertIsNone(heme.formula_weight)
 
     def test_entity_type(self):
         """Test Entity.type"""
@@ -283,7 +284,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.title,
                 'Integrative structure and functional anatomy of a nuclear '
                 'pore complex (test of python-ihm lib).')
-        self.assertEqual(c.doi, None)
+        self.assertIsNone(c.doi)
         # Make sure that page range "475-82" is handled as 475,482
         self.assertEqual(c.page_range, ['475','482'])
 
@@ -292,7 +293,7 @@ class Tests(unittest.TestCase):
         e = ihm.Entity('AHCDAH')
         r = e.residue(3)
         self.assertEqual(r.entity, e)
-        self.assertEqual(r.asym, None)
+        self.assertIsNone(r.asym)
         self.assertEqual(r.seq_id, 3)
 
     def test_asym_unit_residue(self):
@@ -300,7 +301,7 @@ class Tests(unittest.TestCase):
         e = ihm.Entity('AHCDAH')
         a = ihm.AsymUnit(e, auth_seq_id_map=5)
         r = a.residue(3)
-        self.assertEqual(r.entity, None)
+        self.assertIsNone(r.entity)
         self.assertEqual(r.asym, a)
         self.assertEqual(r.seq_id, 3)
         self.assertEqual(r.auth_seq_id, 8)
@@ -313,7 +314,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(a.residue.entity, e)
         self.assertEqual(a.residue.seq_id, 3)
         self.assertEqual(a.entity, e)
-        self.assertEqual(a.asym, None)
+        self.assertIsNone(a.asym)
         self.assertEqual(a.seq_id, 3)
 
     def test_atom_asym(self):
@@ -323,7 +324,7 @@ class Tests(unittest.TestCase):
         a = asym.residue(3).atom('CA')
         self.assertEqual(a.id, 'CA')
         self.assertEqual(a.residue.seq_id, 3)
-        self.assertEqual(a.entity, None)
+        self.assertIsNone(a.entity)
         self.assertEqual(a.asym, asym)
         self.assertEqual(a.seq_id, 3)
 
@@ -797,8 +798,11 @@ class Tests(unittest.TestCase):
         d1 = ihm.ChemDescriptor("d1")
         d2 = ihm.ChemDescriptor("d2")
         d3 = ihm.ChemDescriptor("d3")
+        d4 = ihm.ChemDescriptor("d4")
 
         s = ihm.System()
+        f = ihm.flr.FLRData()
+        s.flr_data.append(f)
         r1 = MockObject()
         r2 = MockObject()
         r2.linker = None
@@ -809,8 +813,50 @@ class Tests(unittest.TestCase):
         r2.feature = None
         s.orphan_chem_descriptors.extend((d1, d2, d1))
 
+        # FLR chemical descriptors
+        conj = ihm.flr.PolyProbeConjugate(sample_probe=None, chem_descriptor=d4,
+                                          ambiguous_stoichiometry=False)
+        f.poly_probe_conjugates.append(conj)
+
         # duplicates should not be filtered
-        self.assertEqual(list(s._all_chem_descriptors()), [d1, d2, d1, d3])
+        self.assertEqual(list(s._all_chem_descriptors()), [d1, d2, d1, d3, d4])
+
+    def test_all_entity_ranges(self):
+        """Test _all_entity_ranges() method"""
+        class MockObject(object):
+            pass
+
+        s = ihm.System()
+        e1 = ihm.Entity('AHCD', description='foo')
+        a1 = ihm.AsymUnit(e1)
+        s.entities.append(e1)
+        s.asym_units.append(a1)
+        e1rng = e1(1,3)
+        a1rng = a1(1,2)
+
+        sm1 = MockObject()
+        sm1.asym_unit = e1rng
+        s.orphan_starting_models.append(sm1)
+
+        rep = ihm.representation.Representation()
+        seg1 = ihm.representation.Segment()
+        seg1.starting_model = None
+        seg1.asym_unit = a1
+        rep.append(seg1)
+        s.orphan_representations.append(rep)
+
+        asmb1 = ihm.Assembly([e1, a1])
+        s.orphan_assemblies.append(asmb1)
+
+        ensemble = MockObject()
+        density = MockObject()
+        density.asym_unit = a1rng
+        ensemble.densities = [density]
+        s.ensembles.append(ensemble)
+
+        # duplicates should not be filtered
+        self.assertEqual(list(s._all_entity_ranges()),
+                         [e1rng, a1, e1, a1, a1rng])
 
     def test_update_locations_in_repositories(self):
         """Test update_locations_in_repositories() method"""
@@ -831,6 +877,10 @@ class Tests(unittest.TestCase):
         self.assertGreaterEqual(u, u)
         self.assertNotEqual(u, '?')
         self.assertNotEqual(u, None)
+        self.assertFalse(u < u)
+        self.assertFalse(u > u)
+        # Should act like False
+        self.assertFalse(u)
 
 
 if __name__ == '__main__':

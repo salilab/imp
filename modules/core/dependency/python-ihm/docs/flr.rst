@@ -67,9 +67,6 @@ The :mod:`ihm.flr` Python module
 .. autoclass:: FRETModelDistance
    :members:
 
-.. autoclass:: ModelingCollection
-   :members:
-
 .. autoclass:: FPSModeling
    :members:
 

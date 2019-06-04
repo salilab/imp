@@ -151,16 +151,16 @@ save_
         self.assertEqual(sorted(c1.keywords.keys()),
                 ['bar', 'insensitive_code', 'missing_code', 'unknown_code'])
         self.assertFalse(c1.keywords['bar'].mandatory)
-        self.assertEqual(c1.keywords['bar'].enumeration, None)
+        self.assertIsNone(c1.keywords['bar'].enumeration)
         self.assertEqual(c1.keywords['bar'].item_type.name, "code")
         self.assertTrue(c1.keywords['bar'].item_type.case_sensitive)
-        self.assertEqual(c1.keywords['missing_code'].item_type, None)
-        self.assertEqual(c1.keywords['unknown_code'].item_type, None)
+        self.assertIsNone(c1.keywords['missing_code'].item_type)
+        self.assertIsNone(c1.keywords['unknown_code'].item_type)
         self.assertFalse(
                 c1.keywords['insensitive_code'].item_type.case_sensitive)
 
         c2 = d.categories['test_category2']
-        self.assertEqual(c2.mandatory, None)
+        self.assertIsNone(c2.mandatory)
         self.assertEqual(sorted(c2.keywords.keys()), ["baz"])
         self.assertFalse(c2.keywords['baz'].mandatory)
         self.assertEqual(c2.keywords['baz'].enumeration,
@@ -169,7 +169,7 @@ save_
         self.assertFalse(c2.keywords['baz'].item_type.case_sensitive)
 
         c3 = d.categories['test_category3']
-        self.assertEqual(c3.mandatory, None)
+        self.assertIsNone(c3.mandatory)
         self.assertEqual(sorted(c3.keywords.keys()), ["bar"])
         self.assertTrue(c3.keywords['bar'].mandatory)
 

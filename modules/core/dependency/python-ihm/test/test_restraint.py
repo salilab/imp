@@ -41,8 +41,8 @@ class Tests(unittest.TestCase):
         """Test EM2DRestraintFit class"""
         f = ihm.restraint.EM2DRestraintFit(0.4)
         self.assertAlmostEqual(f.cross_correlation_coefficient, 0.4, places=1)
-        self.assertEqual(f.rot_matrix, None)
-        self.assertEqual(f.tr_vector, None)
+        self.assertIsNone(f.rot_matrix)
+        self.assertIsNone(f.tr_vector)
 
     def test_em2d_restraint(self):
         """Test EM2DRestraint class"""
@@ -67,7 +67,7 @@ class Tests(unittest.TestCase):
         """Test UpperBoundDistanceRestraint class"""
         r = ihm.restraint.UpperBoundDistanceRestraint(42.0)
         self.assertAlmostEqual(r.distance, 42.0, places=1)
-        self.assertEqual(r.distance_lower_limit, None)
+        self.assertIsNone(r.distance_lower_limit)
         self.assertAlmostEqual(r.distance_upper_limit, 42.0, places=1)
         self.assertEqual(r.restraint_type, "upper bound")
 
@@ -76,7 +76,7 @@ class Tests(unittest.TestCase):
         r = ihm.restraint.LowerBoundDistanceRestraint(42.0)
         self.assertAlmostEqual(r.distance, 42.0, places=1)
         self.assertAlmostEqual(r.distance_lower_limit, 42.0, places=1)
-        self.assertEqual(r.distance_upper_limit, None)
+        self.assertIsNone(r.distance_upper_limit)
         self.assertEqual(r.restraint_type, "lower bound")
 
     def test_lower_upper_bound_distance_restraint(self):
@@ -109,8 +109,8 @@ class Tests(unittest.TestCase):
         f = ihm.restraint.ResidueCrossLink(experimental_cross_link='ex',
                 asym1='asym1', asym2='asym2', distance='dist')
         self.assertEqual(f.granularity, 'by-residue')
-        self.assertEqual(f.atom1, None)
-        self.assertEqual(f.atom2, None)
+        self.assertIsNone(f.atom1)
+        self.assertIsNone(f.atom2)
         self.assertEqual(f.asym1, 'asym1')
         self.assertEqual(f.asym2, 'asym2')
 
@@ -119,8 +119,8 @@ class Tests(unittest.TestCase):
         f = ihm.restraint.FeatureCrossLink(experimental_cross_link='ex',
                 asym1='asym1', asym2='asym2', distance='dist')
         self.assertEqual(f.granularity, 'by-feature')
-        self.assertEqual(f.atom1, None)
-        self.assertEqual(f.atom2, None)
+        self.assertIsNone(f.atom1)
+        self.assertIsNone(f.atom2)
         self.assertEqual(f.asym1, 'asym1')
         self.assertEqual(f.asym2, 'asym2')
 
@@ -144,7 +144,7 @@ class Tests(unittest.TestCase):
         e = ihm.Entity('AHCDAH')
         a = ihm.AsymUnit(e)
         f = ihm.restraint.ResidueFeature(ranges=[])
-        self.assertEqual(f._get_entity_type(), None)
+        self.assertIsNone(f._get_entity_type())
 
         # No ranges - type is 'residue'
         self.assertEqual(f.type, 'residue')
@@ -166,7 +166,7 @@ class Tests(unittest.TestCase):
                 distance='dist')
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.object_characteristic, 'other')
-        self.assertEqual(f.assembly, None)
+        self.assertIsNone(f.assembly)
 
     def test_center_geometric_restraint(self):
         """Test CenterGeometricRestraint class"""
@@ -175,7 +175,7 @@ class Tests(unittest.TestCase):
                 distance='dist')
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.object_characteristic, 'center')
-        self.assertEqual(f.assembly, None)
+        self.assertIsNone(f.assembly)
 
     def test_inner_surface_geometric_restraint(self):
         """Test InnerSurfaceGeometricRestraint class"""
@@ -184,7 +184,7 @@ class Tests(unittest.TestCase):
                 distance='dist')
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.object_characteristic, 'inner surface')
-        self.assertEqual(f.assembly, None)
+        self.assertIsNone(f.assembly)
 
     def test_outer_surface_geometric_restraint(self):
         """Test OuterSurfaceGeometricRestraint class"""
@@ -193,7 +193,7 @@ class Tests(unittest.TestCase):
                 distance='dist')
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.object_characteristic, 'outer surface')
-        self.assertEqual(f.assembly, None)
+        self.assertIsNone(f.assembly)
 
     def test_derived_distance_restraint(self):
         """Test DerivedDistanceRestraint class"""
@@ -201,7 +201,7 @@ class Tests(unittest.TestCase):
                 dataset='foo', feature1='feat1', feature2='feat2',
                 distance='dist')
         self.assertEqual(f.dataset, 'foo')
-        self.assertEqual(f.assembly, None)
+        self.assertIsNone(f.assembly)
 
 
 if __name__ == '__main__':

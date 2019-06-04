@@ -268,7 +268,7 @@ class Tests(unittest.TestCase):
                                 exp_setting = 'bar',
                                 sample = 'foo2')
         self.assertEqual(len(e3.details_list),1)
-        self.assertEqual(e3.details_list[0], None)
+        self.assertIsNone(e3.details_list[0])
 
 
     def test_Experiment_Add_entry(self):
@@ -660,6 +660,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(f2.distance_deviation, 10.0)
 
     def test_fret_model_distance_calculate_deviation(self):
+        """Test FRETModelDistance.calculate_deviation()"""
         class Dummy_Restraint():
             def __init__(self,distance):
                 self.distance = distance
@@ -672,6 +673,10 @@ class Tests(unittest.TestCase):
         ## Calculation of the distance deviation should update the deviation
         f1.update_deviation()
         self.assertEqual(f1.distance_deviation, 15.0)
+        # update_deviation() is a noop if restraint is None
+        f2 = ihm.flr.FRETModelDistance(restraint=None, model='foo', distance=30)
+        f2.update_deviation()
+        self.assertIsNone(f2.distance_deviation)
 
     def test_fret_model_distance_eq(self):
         """ Test equality and inequality of FRETModelDistance objects. """
@@ -687,33 +692,6 @@ class Tests(unittest.TestCase):
         self.assertTrue(f_ref == f_equal)
         self.assertFalse(f_ref == f_unequal)
         self.assertTrue(f_ref != f_unequal)
-
-    def test_modeling_collection_init(self):
-        """ Test initialization of ModelingCollection. """
-        m = ihm.flr.ModelingCollection()
-        self.assertEqual(m.flr_modeling_list, [])
-        self.assertEqual(m.flr_modeling_method_list, [])
-
-    def test_modeling_collection_add_modeling(self):
-        """ Test the addition of an entry to the ModelingCollection. """
-        m = ihm.flr.ModelingCollection()
-        m.add_modeling(modeling = 'foo', modeling_method = 'bar')
-        m.add_modeling(modeling = 'foo2', modeling_method = 'bar2')
-        self.assertEqual(m.flr_modeling_list, ['foo','foo2'])
-        self.assertEqual(m.flr_modeling_method_list, ['bar','bar2'])
-
-    def test_modeling_collection_eq(self):
-        """ Test equality and inequality of ModelingCollection objects. """
-        m_ref = ihm.flr.ModelingCollection()
-        m_ref.add_modeling(modeling='foo', modeling_method='bar')
-        m_equal = ihm.flr.ModelingCollection()
-        m_equal.add_modeling(modeling='foo', modeling_method='bar')
-        m_unequal = ihm.flr.ModelingCollection()
-        m_unequal.add_modeling(modeling='foo2',modeling_method='bar2')
-
-        self.assertTrue(m_ref == m_equal)
-        self.assertFalse(m_ref == m_unequal)
-        self.assertTrue(m_ref != m_unequal)
 
     def test_fps_modeling_init(self):
         """ Test initialization of FPSModeling. """
@@ -750,113 +728,114 @@ class Tests(unittest.TestCase):
     def test_fps_global_parameters_init(self):
         """ Test initialization of FPSGlobalParameters. """
         f = ihm.flr.FPSGlobalParameters(
-                forster_radius = 'this_forster_radius',
-                conversion_function_polynom_order = 'this_conversion_function_polynom_order',
-                repetition = 'this_repetition',
-                AV_grid_rel = 'this_AV_grid_rel',
-                AV_min_grid_A = 'this_AV_min_grid_A',
-                AV_allowed_sphere = 'this_AV_allowed_sphere',
-                AV_search_nodes = 'this_AV_search_nodes',
-                AV_E_samples_k = 'this_AV_E_samples_k',
-                sim_viscosity_adjustment = 'this_sim_viscosity_adjustment',
-                sim_dt_adjustment = 'this_sim_dt_adjustment',
-                sim_max_iter_k = 'this_sim_max_iter_k',
-                sim_max_force = 'this_sim_max_force',
-                sim_clash_tolerance_A = 'this_sim_clash_tolerance_A',
-                sim_reciprocal_kT = 'this_sim_reciprocal_kT',
-                sim_clash_potential = 'this_sim_clash_potential',
-                convergence_E = 'this_convergence_E',
-                convergence_K = 'this_convergence_K',
-                convergence_F = 'this_convergence_F',
-                convergence_T = 'this_convergence_T',
-                optimized_distances = 'this_optimized_distances')
+                forster_radius='this_forster_radius',
+                conversion_function_polynom_order='this_cfpo',
+                repetition='this_repetition',
+                av_grid_rel='this_AV_grid_rel',
+                av_min_grid_a='this_AV_min_grid_A',
+                av_allowed_sphere='this_AV_allowed_sphere',
+                av_search_nodes='this_AV_search_nodes',
+                av_e_samples_k='this_AV_E_samples_k',
+                sim_viscosity_adjustment='this_sim_viscosity_adjustment',
+                sim_dt_adjustment='this_sim_dt_adjustment',
+                sim_max_iter_k='this_sim_max_iter_k',
+                sim_max_force='this_sim_max_force',
+                sim_clash_tolerance_a='this_sim_clash_tolerance_A',
+                sim_reciprocal_kt='this_sim_reciprocal_kT',
+                sim_clash_potential='this_sim_clash_potential',
+                convergence_e='this_convergence_E',
+                convergence_k='this_convergence_K',
+                convergence_f='this_convergence_F',
+                convergence_t='this_convergence_T',
+                optimized_distances='this_optimized_distances')
 
         self.assertEqual(f.forster_radius, 'this_forster_radius')
-        self.assertEqual(f.conversion_function_polynom_order, 'this_conversion_function_polynom_order')
+        self.assertEqual(f.conversion_function_polynom_order, 'this_cfpo')
         self.assertEqual(f.repetition, 'this_repetition')
-        self.assertEqual(f.AV_grid_rel, 'this_AV_grid_rel')
-        self.assertEqual(f.AV_min_grid_A, 'this_AV_min_grid_A')
-        self.assertEqual(f.AV_allowed_sphere, 'this_AV_allowed_sphere')
-        self.assertEqual(f.AV_search_nodes, 'this_AV_search_nodes')
-        self.assertEqual(f.AV_E_samples_k, 'this_AV_E_samples_k')
-        self.assertEqual(f.sim_viscosity_adjustment, 'this_sim_viscosity_adjustment')
+        self.assertEqual(f.av_grid_rel, 'this_AV_grid_rel')
+        self.assertEqual(f.av_min_grid_a, 'this_AV_min_grid_A')
+        self.assertEqual(f.av_allowed_sphere, 'this_AV_allowed_sphere')
+        self.assertEqual(f.av_search_nodes, 'this_AV_search_nodes')
+        self.assertEqual(f.av_e_samples_k, 'this_AV_E_samples_k')
+        self.assertEqual(f.sim_viscosity_adjustment,
+                         'this_sim_viscosity_adjustment')
         self.assertEqual(f.sim_dt_adjustment, 'this_sim_dt_adjustment')
         self.assertEqual(f.sim_max_iter_k, 'this_sim_max_iter_k')
         self.assertEqual(f.sim_max_force, 'this_sim_max_force')
-        self.assertEqual(f.sim_clash_tolerance_A,'this_sim_clash_tolerance_A')
-        self.assertEqual(f.sim_reciprocal_kT, 'this_sim_reciprocal_kT')
+        self.assertEqual(f.sim_clash_tolerance_a,'this_sim_clash_tolerance_A')
+        self.assertEqual(f.sim_reciprocal_kt, 'this_sim_reciprocal_kT')
         self.assertEqual(f.sim_clash_potential,'this_sim_clash_potential')
-        self.assertEqual(f.convergence_E, 'this_convergence_E')
-        self.assertEqual(f.convergence_K, 'this_convergence_K')
-        self.assertEqual(f.convergence_F, 'this_convergence_F')
-        self.assertEqual(f.convergence_T, 'this_convergence_T')
+        self.assertEqual(f.convergence_e, 'this_convergence_E')
+        self.assertEqual(f.convergence_k, 'this_convergence_K')
+        self.assertEqual(f.convergence_f, 'this_convergence_F')
+        self.assertEqual(f.convergence_t, 'this_convergence_T')
         self.assertEqual(f.optimized_distances, 'this_optimized_distances')
 
     def test_fps_global_parameters_eq(self):
         """ Test equality and inequality of FPSGlobalParameters objects. """
         f_ref = ihm.flr.FPSGlobalParameters(
-                forster_radius = 'this_forster_radius',
-                conversion_function_polynom_order = 'this_conversion_function_polynom_order',
-                repetition = 'this_repetition',
-                AV_grid_rel = 'this_AV_grid_rel',
-                AV_min_grid_A = 'this_AV_min_grid_A',
-                AV_allowed_sphere = 'this_AV_allowed_sphere',
-                AV_search_nodes = 'this_AV_search_nodes',
-                AV_E_samples_k = 'this_AV_E_samples_k',
-                sim_viscosity_adjustment = 'this_sim_viscosity_adjustment',
-                sim_dt_adjustment = 'this_sim_dt_adjustment',
-                sim_max_iter_k = 'this_sim_max_iter_k',
-                sim_max_force = 'this_sim_max_force',
-                sim_clash_tolerance_A = 'this_sim_clash_tolerance_A',
-                sim_reciprocal_kT = 'this_sim_reciprocal_kT',
-                sim_clash_potential = 'this_sim_clash_potential',
-                convergence_E = 'this_convergence_E',
-                convergence_K = 'this_convergence_K',
-                convergence_F = 'this_convergence_F',
-                convergence_T = 'this_convergence_T',
-                optimized_distances = 'this_optimized_distances')
+                forster_radius='this_forster_radius',
+                conversion_function_polynom_order='this_cfpo',
+                repetition='this_repetition',
+                av_grid_rel='this_AV_grid_rel',
+                av_min_grid_a='this_AV_min_grid_A',
+                av_allowed_sphere='this_AV_allowed_sphere',
+                av_search_nodes='this_AV_search_nodes',
+                av_e_samples_k='this_AV_E_samples_k',
+                sim_viscosity_adjustment='this_sim_viscosity_adjustment',
+                sim_dt_adjustment='this_sim_dt_adjustment',
+                sim_max_iter_k='this_sim_max_iter_k',
+                sim_max_force='this_sim_max_force',
+                sim_clash_tolerance_a='this_sim_clash_tolerance_A',
+                sim_reciprocal_kt='this_sim_reciprocal_kT',
+                sim_clash_potential='this_sim_clash_potential',
+                convergence_e='this_convergence_E',
+                convergence_k='this_convergence_K',
+                convergence_f='this_convergence_F',
+                convergence_t='this_convergence_T',
+                optimized_distances='this_optimized_distances')
         f_equal = ihm.flr.FPSGlobalParameters(
-                forster_radius = 'this_forster_radius',
-                conversion_function_polynom_order = 'this_conversion_function_polynom_order',
-                repetition = 'this_repetition',
-                AV_grid_rel = 'this_AV_grid_rel',
-                AV_min_grid_A = 'this_AV_min_grid_A',
-                AV_allowed_sphere = 'this_AV_allowed_sphere',
-                AV_search_nodes = 'this_AV_search_nodes',
-                AV_E_samples_k = 'this_AV_E_samples_k',
-                sim_viscosity_adjustment = 'this_sim_viscosity_adjustment',
-                sim_dt_adjustment = 'this_sim_dt_adjustment',
-                sim_max_iter_k = 'this_sim_max_iter_k',
-                sim_max_force = 'this_sim_max_force',
-                sim_clash_tolerance_A = 'this_sim_clash_tolerance_A',
-                sim_reciprocal_kT = 'this_sim_reciprocal_kT',
-                sim_clash_potential = 'this_sim_clash_potential',
-                convergence_E = 'this_convergence_E',
-                convergence_K = 'this_convergence_K',
-                convergence_F = 'this_convergence_F',
-                convergence_T = 'this_convergence_T',
-                optimized_distances = 'this_optimized_distances')
+                forster_radius='this_forster_radius',
+                conversion_function_polynom_order='this_cfpo',
+                repetition='this_repetition',
+                av_grid_rel='this_AV_grid_rel',
+                av_min_grid_a='this_AV_min_grid_A',
+                av_allowed_sphere='this_AV_allowed_sphere',
+                av_search_nodes='this_AV_search_nodes',
+                av_e_samples_k='this_AV_E_samples_k',
+                sim_viscosity_adjustment='this_sim_viscosity_adjustment',
+                sim_dt_adjustment='this_sim_dt_adjustment',
+                sim_max_iter_k='this_sim_max_iter_k',
+                sim_max_force='this_sim_max_force',
+                sim_clash_tolerance_a='this_sim_clash_tolerance_A',
+                sim_reciprocal_kt='this_sim_reciprocal_kT',
+                sim_clash_potential='this_sim_clash_potential',
+                convergence_e='this_convergence_E',
+                convergence_k='this_convergence_K',
+                convergence_f='this_convergence_F',
+                convergence_t='this_convergence_T',
+                optimized_distances='this_optimized_distances')
         f_unequal = ihm.flr.FPSGlobalParameters(
-                forster_radius = 'foo',
-                conversion_function_polynom_order = 'this_conversion_function_polynom_order',
-                repetition = 'this_repetition',
-                AV_grid_rel = 'this_AV_grid_rel',
-                AV_min_grid_A = 'this_AV_min_grid_A',
-                AV_allowed_sphere = 'this_AV_allowed_sphere',
-                AV_search_nodes = 'this_AV_search_nodes',
-                AV_E_samples_k = 'this_AV_E_samples_k',
-                sim_viscosity_adjustment = 'this_sim_viscosity_adjustment',
-                sim_dt_adjustment = 'this_sim_dt_adjustment',
-                sim_max_iter_k = 'this_sim_max_iter_k',
-                sim_max_force = 'this_sim_max_force',
-                sim_clash_tolerance_A = 'this_sim_clash_tolerance_A',
-                sim_reciprocal_kT = 'this_sim_reciprocal_kT',
-                sim_clash_potential = 'this_sim_clash_potential',
-                convergence_E = 'this_convergence_E',
-                convergence_K = 'this_convergence_K',
-                convergence_F = 'this_convergence_F',
-                convergence_T = 'this_convergence_T',
-                optimized_distances = 'this_optimized_distances')
+                forster_radius='foo',
+                conversion_function_polynom_order='this_cfpo',
+                repetition='this_repetition',
+                av_grid_rel='this_AV_grid_rel',
+                av_min_grid_a='this_AV_min_grid_A',
+                av_allowed_sphere='this_AV_allowed_sphere',
+                av_search_nodes='this_AV_search_nodes',
+                av_e_samples_k='this_AV_E_samples_k',
+                sim_viscosity_adjustment='this_sim_viscosity_adjustment',
+                sim_dt_adjustment='this_sim_dt_adjustment',
+                sim_max_iter_k='this_sim_max_iter_k',
+                sim_max_force='this_sim_max_force',
+                sim_clash_tolerance_a='this_sim_clash_tolerance_A',
+                sim_reciprocal_kt='this_sim_reciprocal_kT',
+                sim_clash_potential='this_sim_clash_potential',
+                convergence_e='this_convergence_E',
+                convergence_k='this_convergence_K',
+                convergence_f='this_convergence_F',
+                convergence_t='this_convergence_T',
+                optimized_distances='this_optimized_distances')
         self.assertTrue(f_ref == f_equal)
         self.assertFalse(f_ref == f_unequal)
         self.assertTrue(f_ref != f_unequal)
@@ -896,8 +875,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(f1.linker_length, 'this_linker_length_1')
         self.assertEqual(f1.linker_width, 'this_linker_width_1')
         self.assertEqual(f1.probe_radius_1, 'this_probe_radius_1_1')
-        self.assertEqual(f1.probe_radius_2, None)
-        self.assertEqual(f1.probe_radius_3, None)
+        self.assertIsNone(f1.probe_radius_2)
+        self.assertIsNone(f1.probe_radius_3)
         ## Initialization with AV3
         f2 = ihm.flr.FPSAVParameter(num_linker_atoms = 'this_num_linker_atoms_2',
                                       linker_length = 'this_linker_length_2',
@@ -1026,75 +1005,68 @@ class Tests(unittest.TestCase):
     def test_flr_data_init(self):
         """ Test initialization of FLRData. """
         f = ihm.flr.FLRData()
-        self.assertEqual(f.distance_restraint_group_list, [])
-        self.assertEqual(f.poly_probe_conjugate_list, [])
-        self.assertEqual(f.fret_model_quality_list, [])
-        self.assertEqual(f.fret_model_distance_list, [])
-        self.assertEqual(f.flr_FPS_modeling_collection_list, [])
-        self.assertEqual(f.flr_chemical_descriptors_list, [])
+        self.assertEqual(f.distance_restraint_groups, [])
+        self.assertEqual(f.poly_probe_conjugates, [])
+        self.assertEqual(f.fret_model_qualities, [])
+        self.assertEqual(f.fret_model_distances, [])
+        self.assertEqual(f.fps_modeling, [])
 
     def test_flr_data_add_distance_restraint_group(self):
-        """ Test addition of a distance restraint group. """
+        """Test addition of a distance restraint group."""
         f = ihm.flr.FLRData()
-        f.add_distance_restraint_group('foo')
-        f.add_distance_restraint_group('bar')
-        self.assertEqual(f.distance_restraint_group_list, ['foo','bar'])
+        f.distance_restraint_groups.append('foo')
+        f.distance_restraint_groups.append('bar')
+        self.assertEqual(f.distance_restraint_groups, ['foo','bar'])
 
     def test_flr_data_add_poly_probe_conjugate(self):
-        """ Test addition of a poly_probe_conjugate. """
+        """Test addition of a poly_probe_conjugate."""
         f = ihm.flr.FLRData()
-        f.add_poly_probe_conjugate('foo')
-        f.add_poly_probe_conjugate('bar')
-        self.assertEqual(f.poly_probe_conjugate_list, ['foo','bar'])
+        f.poly_probe_conjugates.extend(('foo', 'bar'))
+        self.assertEqual(f.poly_probe_conjugates, ['foo','bar'])
 
     def test_flr_data_add_fret_model_quality(self):
-        """ Test addition of a fret_model_quality. """
+        """Test addition of a fret_model_quality."""
         f = ihm.flr.FLRData()
-        f.add_fret_model_quality('foo')
-        f.add_fret_model_quality('bar')
-        self.assertEqual(f.fret_model_quality_list, ['foo','bar'])
+        f.fret_model_qualities.extend(('foo', 'bar'))
+        self.assertEqual(f.fret_model_qualities, ['foo','bar'])
 
     def test_flr_data_add_fret_model_distance(self):
-        """ Test addition of a fret_model_distance. """
+        """Test addition of a fret_model_distance."""
         f = ihm.flr.FLRData()
-        f.add_fret_model_distance('foo')
-        f.add_fret_model_distance('bar')
-        self.assertEqual(f.fret_model_distance_list, ['foo','bar'])
+        f.fret_model_distances.append('foo')
+        f.fret_model_distances.append('bar')
+        self.assertEqual(f.fret_model_distances, ['foo','bar'])
 
     def test_flr_data_add_flr_fps_modeling(self):
-        """ Test addition of flr_FPS_modeling. """
+        """Test addition of flr_FPS_modeling."""
         f = ihm.flr.FLRData()
-        f.add_flr_FPS_modeling('foo')
-        f.add_flr_FPS_modeling('bar')
-        self.assertEqual(f.flr_FPS_modeling_collection_list, ['foo','bar'])
-
-    def test_flr_data_occurs_in_list(self):
-        """ Test for occurence in list. """
-        class Dummy_object():
-            def __init__(self,value1, value2):
-                self.value1 = value1
-                self.value2 = value2
-
-        f = ihm.flr.FLRData()
-        f.add_distance_restraint_group(Dummy_object('foo','bar'))
-        self.assertTrue(f._occurs_in_list(Dummy_object('foo','bar'),f.distance_restraint_group_list))
-        self.assertFalse(f._occurs_in_list(Dummy_object('foo2','bar'),f.distance_restraint_group_list))
+        f.fps_modeling.append('foo')
+        f.fps_modeling.append('bar')
+        self.assertEqual(f.fps_modeling, ['foo','bar'])
 
     def test_flr_data_all_chemical_descriptors(self):
-        """ Test for collection of all chemical descriptors. """
+        """Test for collection of all chemical descriptors."""
         f = ihm.flr.FLRData()
-        ## Define probe descriptors
-        this_probe_descriptor_1 = ihm.flr.ProbeDescriptor(reactive_probe_chem_descriptor='This_reactive_probe_desc_1',
-                                                           chromophore_chem_descriptor='This_chromophore_desc_1')
-        this_probe_descriptor_2 = ihm.flr.ProbeDescriptor(reactive_probe_chem_descriptor='This_reactive_probe_desc_2',
-                                                           chromophore_chem_descriptor='This_chromophore_desc_2')
-        this_probe_descriptor_3 = ihm.flr.ProbeDescriptor(reactive_probe_chem_descriptor='This_reactive_probe_desc_3',
-                                                           chromophore_chem_descriptor='This_chromophore_desc_3')
-        ## Define probes
-        this_probe_1 = ihm.flr.Probe(probe_list_entry='foo', probe_descriptor = this_probe_descriptor_1)
-        this_probe_2 = ihm.flr.Probe(probe_list_entry='foo', probe_descriptor=this_probe_descriptor_2)
-        this_probe_3 = ihm.flr.Probe(probe_list_entry='foo', probe_descriptor=this_probe_descriptor_3)
-        ## Define poly probe positions
+        # Define probe descriptors
+        this_probe_descriptor_1 = ihm.flr.ProbeDescriptor(
+                reactive_probe_chem_descriptor='This_reactive_probe_desc_1',
+                chromophore_chem_descriptor='This_chromophore_desc_1')
+        this_probe_descriptor_2 = ihm.flr.ProbeDescriptor(
+                reactive_probe_chem_descriptor='This_reactive_probe_desc_2',
+                chromophore_chem_descriptor='This_chromophore_desc_2')
+        this_probe_descriptor_3 = ihm.flr.ProbeDescriptor(
+                reactive_probe_chem_descriptor='This_reactive_probe_desc_3',
+                chromophore_chem_descriptor='This_chromophore_desc_3')
+
+        # Define probes
+        this_probe_1 = ihm.flr.Probe(probe_list_entry='foo',
+                                     probe_descriptor=this_probe_descriptor_1)
+        this_probe_2 = ihm.flr.Probe(probe_list_entry='foo',
+                                     probe_descriptor=this_probe_descriptor_2)
+        this_probe_3 = ihm.flr.Probe(probe_list_entry='foo',
+                                     probe_descriptor=this_probe_descriptor_3)
+
+        # Define poly probe positions
         this_poly_probe_position_1 = ihm.flr.PolyProbePosition(
                             resatom='foo', mutation_flag=True,
                             mutated_chem_descriptor='Mutated_Chem_descriptor_1',
@@ -1106,25 +1078,50 @@ class Tests(unittest.TestCase):
         this_poly_probe_position_3 = ihm.flr.PolyProbePosition(
                          resatom='foo', mutation_flag=False,
                          modification_flag=False)
-        this_sample_probe_1 = ihm.flr.SampleProbeDetails(sample = 'foo', probe = this_probe_1, fluorophore_type='donor',poly_probe_position = this_poly_probe_position_1)
-        this_sample_probe_2 = ihm.flr.SampleProbeDetails(sample = 'foo2', probe = this_probe_2, fluorophore_type='donor',poly_probe_position = this_poly_probe_position_2)
-        this_sample_probe_3 = ihm.flr.SampleProbeDetails(sample='foo3', probe=this_probe_3, fluorophore_type='donor', poly_probe_position=this_poly_probe_position_3)
-        this_distance_restraint_1 = ihm.flr.FRETDistanceRestraint(sample_probe_1 = this_sample_probe_1, sample_probe_2 = this_sample_probe_2,analysis=None,distance=50)
-        this_distance_restraint_2 = ihm.flr.FRETDistanceRestraint(sample_probe_1=this_sample_probe_1,sample_probe_2=this_sample_probe_3,analysis=None,distance=50)
-        this_distance_restraint_group = ihm.flr.FRETDistanceRestraintGroup()
-        this_distance_restraint_group.add_distance_restraint(this_distance_restraint_1)
-        this_distance_restraint_group.add_distance_restraint(this_distance_restraint_2)
-        f.add_distance_restraint_group(this_distance_restraint_group)
 
-        this_list_of_chemical_descriptors = list(f._all_flr_chemical_descriptors())
-        self.assertIn('This_reactive_probe_desc_1',this_list_of_chemical_descriptors)
-        self.assertIn('This_chromophore_desc_1', this_list_of_chemical_descriptors)
-        self.assertIn('This_reactive_probe_desc_2',this_list_of_chemical_descriptors)
-        self.assertIn('This_chromophore_desc_2', this_list_of_chemical_descriptors)
-        self.assertIn('This_reactive_probe_desc_3',this_list_of_chemical_descriptors)
-        self.assertIn('This_chromophore_desc_3', this_list_of_chemical_descriptors)
-        self.assertIn('Mutated_Chem_descriptor_1', this_list_of_chemical_descriptors)
-        self.assertIn('Modified_Chem_descriptor_1', this_list_of_chemical_descriptors)
+        this_sample_probe_1 = ihm.flr.SampleProbeDetails(
+                                sample='foo', probe=this_probe_1,
+                                fluorophore_type='donor',
+                                poly_probe_position=this_poly_probe_position_1)
+        this_sample_probe_2 = ihm.flr.SampleProbeDetails(
+                                sample='foo2', probe=this_probe_2,
+                                fluorophore_type='donor',
+                                poly_probe_position=this_poly_probe_position_2)
+        this_sample_probe_3 = ihm.flr.SampleProbeDetails(
+                                sample='foo3', probe=this_probe_3,
+                                fluorophore_type='donor',
+                                poly_probe_position=this_poly_probe_position_3)
+        this_distance_restraint_1 = ihm.flr.FRETDistanceRestraint(
+                                sample_probe_1=this_sample_probe_1,
+                                sample_probe_2=this_sample_probe_2,
+                                analysis=None, distance=50)
+        this_distance_restraint_2 = ihm.flr.FRETDistanceRestraint(
+                                sample_probe_1=this_sample_probe_1,
+                                sample_probe_2=this_sample_probe_3,
+                                analysis=None, distance=50)
+
+        this_distance_restraint_group = ihm.flr.FRETDistanceRestraintGroup()
+        this_distance_restraint_group.add_distance_restraint(
+                                                this_distance_restraint_1)
+        this_distance_restraint_group.add_distance_restraint(
+                                                this_distance_restraint_2)
+        f.distance_restraint_groups.append(this_distance_restraint_group)
+
+        conj = ihm.flr.PolyProbeConjugate(
+                        sample_probe=this_sample_probe_1,
+                        chem_descriptor='Conjugate_probe_desc',
+                        ambiguous_stoichiometry=False)
+        f.poly_probe_conjugates.append(conj)
+
+        descs = list(f._all_flr_chemical_descriptors())
+        self.assertEqual(descs,
+                ['This_reactive_probe_desc_1', 'This_chromophore_desc_1',
+                 'Mutated_Chem_descriptor_1', 'This_reactive_probe_desc_2',
+                 'This_chromophore_desc_2', 'Modified_Chem_descriptor_1',
+                 'This_reactive_probe_desc_1', 'This_chromophore_desc_1',
+                 'Mutated_Chem_descriptor_1', 'This_reactive_probe_desc_3',
+                 'This_chromophore_desc_3', 'Conjugate_probe_desc'])
+
 
 if __name__ == '__main__':
     unittest.main()

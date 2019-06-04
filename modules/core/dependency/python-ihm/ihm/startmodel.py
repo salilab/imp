@@ -1,5 +1,6 @@
 """Classes to handle starting models."""
 
+import ihm
 from .format import CifWriter
 try:
     from enum import IntEnum
@@ -164,8 +165,9 @@ class StartingModel(object):
 
     def _get_seq_id_range_all_templates(self):
         """Get the seq_id range covered by all templates in this starting
-           model. Where there are multiple templates, consolidate
-           them; template info is given in starting_comparative_models."""
+           model, as an AsymUnit or AsymUnitRange object. Where there are
+           multiple templates, consolidate them; template info is given in
+           starting_comparative_models."""
         def get_seq_id_range(template, full):
             # The template may cover more than the current starting model
             rng = template.seq_id_range
@@ -178,9 +180,9 @@ class StartingModel(object):
             for template in self.templates[1:]:
                 this_rng = get_seq_id_range(template, full)
                 rng = (min(rng[0], this_rng[0]), max(rng[1], this_rng[1]))
-            return rng
+            return ihm.AsymUnit(self.asym_unit.entity)(*rng)
         else:
-            return self.asym_unit.seq_id_range
+            return self.asym_unit
 
 
 class PDBHelix(object):

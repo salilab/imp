@@ -120,7 +120,7 @@ class Tests(unittest.TestCase):
     def test_decoder_base(self):
         """Test Decoder base class"""
         d = ihm.format_bcif._Decoder()
-        self.assertEqual(d._kind, None)
+        self.assertIsNone(d._kind)
         d(enc=None, data=None) # noop
 
     def test_string_array_decoder(self):
@@ -421,7 +421,7 @@ class Tests(unittest.TestCase):
         data = [0, 1, -1]
         encdata, encdict = d(data)
         self.assertEqual(data, encdata)
-        self.assertEqual(encdict, None)
+        self.assertIsNone(encdict)
 
         # large data is encoded
         data = [0, 1, -1] + [-1] * 40
@@ -438,13 +438,13 @@ class Tests(unittest.TestCase):
         data = [0, 1, -1]
         encdata, encdict = d(data)
         self.assertEqual(data, encdata)
-        self.assertEqual(encdict, None)
+        self.assertIsNone(encdict)
 
         # large data that can't be compressed is returned unchanged
         data = list(range(50))
         encdata, encdict = d(data)
         self.assertEqual(data, encdata)
-        self.assertEqual(encdict, None)
+        self.assertIsNone(encdict)
 
         # large data that can be compressed
         data = [0] * 30 + [1] * 40
@@ -474,7 +474,7 @@ class Tests(unittest.TestCase):
         """Test get_mask_and_type with no mask"""
         data = [1,2,3,4]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
-        self.assertEqual(mask, None)
+        self.assertIsNone(mask)
         self.assertEqual(typ, int)
 
     def test_mask_type_masked_int(self):
@@ -525,14 +525,14 @@ class Tests(unittest.TestCase):
         """Test get_mask_and_type with a mix of int and float data"""
         data = [1,2,3,4.0]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
-        self.assertEqual(mask, None)
+        self.assertIsNone(mask)
         self.assertEqual(typ, float) # int/float is coerced to float
 
     def test_mask_type_mix_int_float_str(self):
         """Test get_mask_and_type with a mix of int/float/str data"""
         data = [1,2,3,4.0,'foo']
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
-        self.assertEqual(mask, None)
+        self.assertIsNone(mask)
         self.assertEqual(typ, str) # int/float/str is coerced to str
 
     def test_mask_type_bad_type(self):

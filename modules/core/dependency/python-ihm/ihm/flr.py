@@ -1,3 +1,5 @@
+# coding=utf-8
+
 """Classes to handle fluorescence data.
    The classes roughly correspond to categories in the
    `FLR dictionary <https://github.com/ihmwg/FLR-dictionary/>`_.
@@ -342,13 +344,13 @@ class FRETAnalysis(object):
        :param sample_probe_2: The combination of sample and probe for the
               second probe.
        :type sample_probe_2: :class:`SampleProbeDetails`
-       :param forster_radius: The Forster radius object for this FRET analysis.
+       :param forster_radius: The Förster radius object for this FRET analysis.
        :type forster_radius: :class:`FRETForsterRadius`.
        :param calibration_parameters: The calibration parameters used for
               this analysis.
        :type calibration_parameters: :class:`FRETCalibrationParameters`
-       :param method_name: The method used for the analysis.
-       :param chi_square_reduced: The chi-square reduced as a quality
+       :param str method_name: The method used for the analysis.
+       :param float chi_square_reduced: The chi-square reduced as a quality
               measure for the fit.
        :param dataset: The dataset used.
        :type dataset: :class:`ihm.dataset.Dataset`
@@ -406,26 +408,27 @@ class FRETDistanceRestraint(object):
        :param analysis: The FRET analysis from which the distance
               restraint originated.
        :type analysis: :class:`FRETAnalysis`
-       :param distance: The distance of the restraint.
-       :param distance_error_plus: The (absolute, e.g. in Angstrom) error
+       :param float distance: The distance of the restraint.
+       :param float distance_error_plus: The (absolute, e.g. in Angstrom) error
               in the upper direction, such that
               ``upper boundary = distance + distance_error_plus``.
-       :param distance_error_minus: The (absolute, e.g. in Angstrom) error
+       :param float distance_error_minus: The (absolute, e.g. in Angstrom) error
               in the lower direction, such that
               ``lower boundary = distance + distance_error_minus``.
-       :param distance_type: The type of distance (<R_DA>, <R_DA>_E, or R_mp).
+       :param str distance_type: The type of distance (<R_DA>, <R_DA>_E,
+              or R_mp).
        :param state: The state the distance restraints is connected to.
               Important for multi-state models.
        :type state: :class:`ihm.model.State`
-       :param population_fraction: The population fraction of the state
+       :param float population_fraction: The population fraction of the state
               in case of multi-state models.
        :param peak_assignment: The method how a peak was assigned.
        :type peak_assignment: :class:`PeakAssignment`
     """
 
     def __init__(self, sample_probe_1, sample_probe_2, analysis, distance,
-                 distance_error_plus=0, distance_error_minus=0,
-                 distance_type=None, state=None, population_fraction=0,
+                 distance_error_plus=0., distance_error_minus=0.,
+                 distance_type=None, state=None, population_fraction=0.,
                  peak_assignment=None):
         self.sample_probe_1 = sample_probe_1
         self.sample_probe_2 = sample_probe_2
@@ -443,14 +446,14 @@ class FRETDistanceRestraint(object):
 
 
 class FRETForsterRadius(object):
-    """The FRET Forster radius between two probes.
+    """The FRET Förster radius between two probes.
 
        :param donor_probe: The donor probe.
        :type donor_probe: :class:`Probe`
        :param acceptor_probe: The acceptor probe.
        :type acceptor_probe: :class:`Probe`
-       :param float forster_radius: The Forster radius between the two probes.
-       :param float reduced_forster_radius: The reduced Forster radius between
+       :param float forster_radius: The Förster radius between the two probes.
+       :param float reduced_forster_radius: The reduced Förster radius between
               the two probes.
     """
 
@@ -500,8 +503,8 @@ class PeakAssignment(object):
     """The method of peak assignment in case of multiple peaks,
         e.g. by population.
 
-        :param method_name:
-        :param details: The details of the peak assignment procedure.
+        :param str method_name: The method used for peak assignment.
+        :param str details: The details of the peak assignment procedure.
     """
     def __init__(self, method_name, details=None):
         self.method_name = method_name
@@ -574,37 +577,15 @@ class FRETModelDistance(object):
         return self.__dict__ == other.__dict__
 
 
-class ModelingCollection(object):
-    """Not part of the flr dictionary.
-
-       *In case of FPS, flr_modeling_list contains entries of FPSAVModeling
-       or FPSMPPModeling and flr_modeling_method_list contains "FPS_AV"
-       or "FPS_MPP"*
-    """
-
-    def __init__(self):
-        self.flr_modeling_list = []
-        self.flr_modeling_method_list = []
-
-    def add_modeling(self, modeling, modeling_method):
-        """ Modeling method can be "FPS_AV" or "FPS_MPP"
-        """
-        self.flr_modeling_list.append(modeling)
-        self.flr_modeling_method_list.append(modeling_method)
-
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
-
-
 class FPSModeling(object):
     """Collect the modeling parameters for different steps of FPS,
        e.g. Docking, Refinement, or Error estimation.
-       Members of this class automatically get assigned an id.
 
        :param protocol: The modeling protocol to which the FPS modeling
               step belongs.
        :type protocol: :class:`ihm.protocol.Protocol`
        :param restraint_group: The restraint group used for the modeling.
+       :type restraint_group: :class:`FRETDistanceRestraintGroup`
        :param global_parameter: The global FPS parameters used.
        :type global_parameter: :class:`FPSGlobalParameters`
        :param str probe_modeling_method: either "AV" or "MPP".
@@ -628,60 +609,60 @@ class FPSGlobalParameters(object):
 
        *For a description of the parameters, see also the FPS manual.*
 
-       :param forster_radius: The Forster radius used in the FPS program.
-       :param conversion_function_polynom_order: Order of the polynom for
+       :param float forster_radius: The Förster radius used in the FPS program.
+       :param int conversion_function_polynom_order: Order of the polynom for
               the conversion function between Rmp and <RDA>E.
-       :param repetition: The number of repetitions.
-       :param AV_grid_rel: The AV grid spacing relative to the smallest
+       :param int repetition: The number of repetitions.
+       :param float av_grid_rel: The AV grid spacing relative to the smallest
               dye or linker dimension.
-       :param AV_min_grid_A: The minimal AV grid spacing in Angstrom.
-       :param AV_allowed_sphere: The allowed sphere radius.
-       :param AV_search_nodes: Number of neighboring positions to be
+       :param float av_min_grid_a: The minimal AV grid spacing in Angstrom.
+       :param float av_allowed_sphere: The allowed sphere radius.
+       :param int av_search_nodes: Number of neighboring positions to be
               scanned for clashes.
-       :param AV_E_samples_k: The number of samples for calculation
+       :param float av_e_samples_k: The number of samples for calculation
               of E (in thousand).
-       :param sim_viscosity_adjustment: Daming rate during docking
+       :param float sim_viscosity_adjustment: Daming rate during docking
               and refinement.
-       :param sim_dt_adjustment: Time step during simulation.
-       :param sim_max_iter_k: Maximal number of iterations (in thousand).
-       :param sim_max_force: Maximal force.
-       :param sim_clash_tolerance_A: Clash tolerance in Angstrom.
-       :param sim_reciprocal_kT: reciprocal kT.
-       :param sim_clash_potential: The clash potential.
-       :param convergence_E: Convergence criterion E.
-       :param convergence_K: Convergence criterion K.
-       :param convergence_F: Convergence criterion F.
-       :param convergence_T: Convergence criterion T.
-       :param optimized_distances: Which distances are optimized?
+       :param float sim_dt_adjustment: Time step during simulation.
+       :param float sim_max_iter_k: Maximal number of iterations (in thousand).
+       :param float sim_max_force: Maximal force.
+       :param float sim_clash_tolerance_a: Clash tolerance in Angstrom.
+       :param float sim_reciprocal_kt: reciprocal kT.
+       :param str sim_clash_potential: The clash potential.
+       :param float convergence_e: Convergence criterion E.
+       :param float convergence_k: Convergence criterion K.
+       :param float convergence_f: Convergence criterion F.
+       :param float convergence_t: Convergence criterion T.
+       :param str optimized_distances: Which distances are optimized?
 
     """
     def __init__(self, forster_radius, conversion_function_polynom_order,
-                 repetition, AV_grid_rel, AV_min_grid_A, AV_allowed_sphere,
-                 AV_search_nodes, AV_E_samples_k, sim_viscosity_adjustment,
+                 repetition, av_grid_rel, av_min_grid_a, av_allowed_sphere,
+                 av_search_nodes, av_e_samples_k, sim_viscosity_adjustment,
                  sim_dt_adjustment, sim_max_iter_k, sim_max_force,
-                 sim_clash_tolerance_A, sim_reciprocal_kT, sim_clash_potential,
-                 convergence_E, convergence_K, convergence_F, convergence_T,
+                 sim_clash_tolerance_a, sim_reciprocal_kt, sim_clash_potential,
+                 convergence_e, convergence_k, convergence_f, convergence_t,
                  optimized_distances='All'):
         self.forster_radius = forster_radius
         self.conversion_function_polynom_order \
                 = conversion_function_polynom_order
         self.repetition = repetition
-        self.AV_grid_rel = AV_grid_rel
-        self.AV_min_grid_A = AV_min_grid_A
-        self.AV_allowed_sphere = AV_allowed_sphere
-        self.AV_search_nodes = AV_search_nodes
-        self.AV_E_samples_k = AV_E_samples_k
+        self.av_grid_rel = av_grid_rel
+        self.av_min_grid_a = av_min_grid_a
+        self.av_allowed_sphere = av_allowed_sphere
+        self.av_search_nodes = av_search_nodes
+        self.av_e_samples_k = av_e_samples_k
         self.sim_viscosity_adjustment = sim_viscosity_adjustment
         self.sim_dt_adjustment = sim_dt_adjustment
         self.sim_max_iter_k = sim_max_iter_k
         self.sim_max_force = sim_max_force
-        self.sim_clash_tolerance_A = sim_clash_tolerance_A
-        self.sim_reciprocal_kT = sim_reciprocal_kT
+        self.sim_clash_tolerance_a = sim_clash_tolerance_a
+        self.sim_reciprocal_kt = sim_reciprocal_kt
         self.sim_clash_potential = sim_clash_potential
-        self.convergence_E = convergence_E
-        self.convergence_K = convergence_K
-        self.convergence_F = convergence_F
-        self.convergence_T = convergence_T
+        self.convergence_e = convergence_e
+        self.convergence_k = convergence_k
+        self.convergence_f = convergence_f
+        self.convergence_t = convergence_t
         self.optimized_distances = optimized_distances
 
     def __eq__(self, other):
@@ -716,12 +697,14 @@ class FPSAVModeling(object):
 class FPSAVParameter(object):
     """The AV parameters used for the modeling using FPS.
 
-       :param num_linker_atoms: The number of atoms in the linker.
-       :param linker_length: The length of the linker in Angstrom.
-       :param linker_width: The width of the linker in Angstrom.
-       :param probe_radius_1: The first radius of the probe.
-       :param probe_radius_2: If AV3 is used, the second radius of the probe.
-       :param probe_radius_3: If AV3 is used, the third radius of the probe.
+       :param int num_linker_atoms: The number of atoms in the linker.
+       :param float linker_length: The length of the linker in Angstrom.
+       :param float linker_width: The width of the linker in Angstrom.
+       :param float probe_radius_1: The first radius of the probe.
+       :param float probe_radius_2: If AV3 is used, the second radius
+              of the probe.
+       :param float probe_radius_3: If AV3 is used, the third radius
+              of the probe.
     """
 
     def __init__(self, num_linker_atoms, linker_length, linker_width,
@@ -823,12 +806,26 @@ class FLRData(object):
        :attr:`~ihm.System.flr_data`.
     """
     def __init__(self):
-        self.distance_restraint_group_list = []
-        self.poly_probe_conjugate_list = []
-        self.fret_model_quality_list = []
-        self.fret_model_distance_list = []
-        self.flr_FPS_modeling_collection_list = []
-        self.flr_chemical_descriptors_list = []
+        #: All groups of FRET distance restraints.
+        #: See :class:`FRETDistanceRestraintGroup`.
+        self.distance_restraint_groups = []
+
+        #: All conjugates of polymer residue and probe.
+        #: See :class:`PolyProbeConjugate`.
+        self.poly_probe_conjugates = []
+
+        #: All quality measures for models based on FRET data.
+        #: See :class:`FRETModelQuality`.
+        self.fret_model_qualities = []
+
+        #: All distances in models for distance restraints.
+        #: See :class:`FRETModelDistance`.
+        self.fret_model_distances = []
+
+        #: All modeling objects.
+        #: See :class:`FPSAVModeling` and :class:`FPSMPPModeling`.
+        self.fps_modeling = []
+
         ## The following dictionaries are so far only used when reading data
         self._collection_flr_experiment = {}
         self._collection_flr_exp_setting = {}
@@ -858,63 +855,131 @@ class FLRData(object):
         self._collection_flr_fps_mpp_atom_position = {}
         self._collection_flr_fps_mpp_modeling = {}
 
-    def add_distance_restraint_group(self,entry):
-        self.distance_restraint_group_list.append(entry)
+    def _all_distance_restraints(self):
+        """Yield all FRETDistanceRestraint objects"""
+        for rg in self.distance_restraint_groups:
+            for r in rg.distance_restraint_list:
+                yield r
 
-    def add_poly_probe_conjugate(self,entry):
-        self.poly_probe_conjugate_list.append(entry)
+    def _all_analyses(self):
+        """Yield all FRETAnalysis objects"""
+        for r in self._all_distance_restraints():
+            yield r.analysis
 
-    def add_fret_model_quality(self,entry):
-        self.fret_model_quality_list.append(entry)
+    def _all_peak_assignments(self):
+        """Yield all PeakAssignment objects"""
+        for r in self._all_distance_restraints():
+            yield r.peak_assignment
 
-    def add_fret_model_distance(self,entry):
-        self.fret_model_distance_list.append(entry)
+    def _all_experiments(self):
+        """Yield all Experiment objects"""
+        for a in self._all_analyses():
+            yield a.experiment
 
-    def add_flr_FPS_modeling(self,entry):
-        self.flr_FPS_modeling_collection_list.append(entry)
+    def _all_forster_radii(self):
+        """Yield all FRETForsterRadius objects"""
+        for a in self._all_analyses():
+            yield a.forster_radius
 
-    def _occurs_in_list(self,curobject, list):
-        for entry in list:
-            if curobject.__dict__ == entry.__dict__:
-                return True
-        return False
+    def _all_calibration_parameters(self):
+        """Yield all FRETCalibrationParameters objects"""
+        for a in self._all_analyses():
+            yield a.calibration_parameters
+
+    def _all_sample_probe_details(self):
+        """Yield all SampleProbeDetails objects"""
+        for r in self._all_distance_restraints():
+            yield r.sample_probe_1
+            yield r.sample_probe_2
+
+    def _all_samples(self):
+        """Yield all Sample objects"""
+        for s in self._all_sample_probe_details():
+            yield s.sample
+
+    def _all_probes(self):
+        """Yield all Probe objects"""
+        for s in self._all_sample_probe_details():
+            yield s.probe
+
+    def _all_poly_probe_positions(self):
+        """Yield all PolyProbePosition objects"""
+        for s in self._all_sample_probe_details():
+            yield s.poly_probe_position
+
+    def _all_exp_settings(self):
+        """Yield all ExpSetting objects"""
+        for e in self._all_experiments():
+            for s in e.exp_setting_list:
+                yield s
+
+    def _all_instruments(self):
+        """Yield all Instrument objects"""
+        for e in self._all_experiments():
+            for s in e.instrument_list:
+                yield s
+
+    def _all_fps_modeling(self):
+        """Yield all FPSModeling objects"""
+        for m in self.fps_modeling:
+            yield m.fps_modeling
+
+    def _all_fps_global_parameters(self):
+        """Yield all FPSGlobalParameters objects"""
+        for m in self._all_fps_modeling():
+            yield m.global_parameter
+
+    def _all_fps_av_modeling(self):
+        """Yield all FPSAVModeling objects"""
+        for m in self.fps_modeling:
+            if isinstance(m, FPSAVModeling):
+                yield m
+
+    def _all_fps_av_parameter(self):
+        """Yield all FPSAVParameter objects"""
+        for m in self._all_fps_av_modeling():
+            yield m.parameter
+
+    def _all_fps_mpp_modeling(self):
+        """Yield all FPSMPPModeling objects"""
+        for m in self.fps_modeling:
+            if isinstance(m, FPSMPPModeling):
+                yield m
+
+    def _all_fps_mean_probe_position(self):
+        """Yield all FPSMeanProbePosition objects"""
+        for m in self._all_fps_mpp_modeling():
+            yield m.mpp
+
+    def _all_fps_atom_position_group(self):
+        """Yield all FPSMPPAtomPositionGroup objects"""
+        for m in self._all_fps_mpp_modeling():
+            yield m.mpp_atom_position_group
 
     def _all_flr_chemical_descriptors(self):
         """Collect the chemical descriptors from the flr part.
-           *The list might contain duplicates.*
+           *This might contain duplicates.*
         """
-        self.flr_chemical_descriptors_list = []
-        ## collect from all distance_restraint_groups
-        for drgroup in self.distance_restraint_group_list:
-            ## collect form all distance restraints
+        # collect from all distance_restraint_groups
+        for drgroup in self.distance_restraint_groups:
+            # collect from all distance restraints
             for dr in drgroup.distance_restraint_list:
-                ## collect from both sample_probe_1 and sample_probe_2
-                for this_sample_probe in [dr.sample_probe_1, dr.sample_probe_2]:
-                    ## collect from the probe
+                # collect from both sample_probe_1 and sample_probe_2
+                for this_sample_probe in (dr.sample_probe_1, dr.sample_probe_2):
+                    # collect from the probe
                     probe = this_sample_probe.probe
-                    ## reactive probe
-                    cur_chem_desc \
-                       = probe.probe_descriptor.reactive_probe_chem_descriptor
-                    self.flr_chemical_descriptors_list.append(cur_chem_desc)
-                    ## chromophore
-                    cur_chem_desc \
-                            = probe.probe_descriptor.chromophore_chem_descriptor
-                    self.flr_chemical_descriptors_list.append(cur_chem_desc)
-                    ## collect from the poly_probe_position
-                    this_poly_probe_position \
-                            = this_sample_probe.poly_probe_position
-                    ## mutated chem descriptor
-                    if this_poly_probe_position.mutation_flag:
-                        cur_chem_desc \
-                            = this_poly_probe_position.mutated_chem_descriptor
-                        self.flr_chemical_descriptors_list.append(cur_chem_desc)
-                    ## modified chem descriptor
-                    if this_poly_probe_position.modification_flag:
-                        cur_chem_desc \
-                            = this_poly_probe_position.modified_chem_descriptor
-                        self.flr_chemical_descriptors_list.append(cur_chem_desc)
-        ## and collect from all poly_probe_conjugates
-        for this_poly_probe_conjugate in self.poly_probe_conjugate_list:
-            cur_chem_desc = this_poly_probe_conjugate.chem_descriptor
-            self.flr_chemical_descriptors_list.append(cur_chem_desc)
-        return self.flr_chemical_descriptors_list
+                    # reactive probe
+                    yield probe.probe_descriptor.reactive_probe_chem_descriptor
+                    # chromophore
+                    yield probe.probe_descriptor.chromophore_chem_descriptor
+                    # collect from the poly_probe_position
+                    pos = this_sample_probe.poly_probe_position
+                    # mutated chem descriptor
+                    if pos.mutation_flag:
+                        yield pos.mutated_chem_descriptor
+                    # modified chem descriptor
+                    if pos.modification_flag:
+                        yield pos.modified_chem_descriptor
+        # and collect from all poly_probe_conjugates
+        for c in self.poly_probe_conjugates:
+            yield c.chem_descriptor

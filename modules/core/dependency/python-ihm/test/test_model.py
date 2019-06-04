@@ -27,7 +27,7 @@ class Tests(unittest.TestCase):
         """Test Model class"""
         m = ihm.model.Model(assembly='foo', protocol='bar',
                             representation='baz')
-        self.assertEqual(m.name, None)
+        self.assertIsNone(m.name)
         self.assertEqual(m.protocol, 'bar')
 
     def test_model_get_spheres(self):
@@ -79,7 +79,7 @@ class Tests(unittest.TestCase):
         e = ihm.model.Ensemble(model_group=['m1', 'm2', 'm3'],
                                num_models=10, name='bar')
         self.assertEqual(e.name, 'bar')
-        self.assertEqual(e.precision, None)
+        self.assertIsNone(e.precision)
         self.assertEqual(e.num_models, 10)
         self.assertEqual(e.num_models_deposited, 3)
         self.assertEqual(e.densities, [])
@@ -114,7 +114,7 @@ class Tests(unittest.TestCase):
         s.append(e)
         self.assertEqual(p.steps[0][0].group_begin, 'from')
         self.assertEqual(p.steps[0][0].group_end, 'to')
-        self.assertEqual(p.steps[0][0].description, None)
+        self.assertIsNone(p.steps[0][0].description)
 
     def test_dcd_writer(self):
         """Test DCDWriter class"""

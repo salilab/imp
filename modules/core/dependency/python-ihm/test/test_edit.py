@@ -24,6 +24,14 @@ _entity.pdbx_number_of_molecules
 _entity.formula_weight
 _entity.details
 1 polymer Nup84 2 100.0 .
+#
+loop_
+_entity_poly_seq.entity_id
+_entity_poly_seq.num
+_entity_poly_seq.mon_id
+_entity_poly_seq.hetero
+1 1 ALA .
+1 2 CYS .
 """)
         s, = ihm.reader.read(sin)
         sout = StringIO()

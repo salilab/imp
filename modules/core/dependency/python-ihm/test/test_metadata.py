@@ -39,7 +39,7 @@ class Tests(unittest.TestCase):
             self.assertEqual(dataset.location.path, fname)
             self.assertEqual(dataset.location.details,
                              'Electron microscopy density map')
-            self.assertEqual(dataset.location.repo, None)
+            self.assertIsNone(dataset.location.repo)
 
     def test_mrc_parser_emdb_ok(self):
         """Test MRCParser pointing to an MRC in EMDB, no network errors"""
@@ -89,7 +89,7 @@ class Tests(unittest.TestCase):
             urlrequest.urlopen = mock_urlopen
             with warnings.catch_warnings(record=True) as w:
                 warnings.simplefilter("always")
-                self.assertEqual(dataset.location.version, None)
+                self.assertIsNone(dataset.location.version)
                 self.assertEqual(dataset.location.details,
                                  'Electron microscopy density map')
         finally:
@@ -131,7 +131,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(p['templates'], {})
         self.assertEqual(len(p['metadata']), 1)
         self.assertEqual(p['metadata'][0].helix_id, '10')
-        self.assertEqual(p['script'], None)
+        self.assertIsNone(p['script'])
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Experimental model')
         self.assertEqual(dataset.location.db_name, 'PDB')
@@ -169,12 +169,12 @@ class Tests(unittest.TestCase):
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_pdb.pdb')
         p = self._parse_pdb(pdbname)
         self.assertEqual(p['templates'], {})
-        self.assertEqual(p['script'], None)
+        self.assertIsNone(p['script'])
         self.assertEqual(p['entity_source'], {})
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Experimental model')
         self.assertEqual(dataset.location.path, pdbname)
-        self.assertEqual(dataset.location.repo, None)
+        self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'MED7C AND MED21 STRUCTURES FROM PDB ENTRY 1YKH, '
                          'ROTATED AND TRANSLATED TO ALIGN WITH THE '
@@ -183,19 +183,19 @@ class Tests(unittest.TestCase):
         self.assertEqual(parent.data_type, 'Experimental model')
         self.assertEqual(parent.location.db_name, 'PDB')
         self.assertEqual(parent.location.access_code, '1YKH')
-        self.assertEqual(parent.location.version, None)
-        self.assertEqual(parent.location.details, None)
+        self.assertIsNone(parent.location.version)
+        self.assertIsNone(parent.location.details)
 
     def test_derived_comp_model(self):
         """Test PDBParser when given a file derived from a comparative model"""
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_model.pdb')
         p = self._parse_pdb(pdbname)
         self.assertEqual(p['templates'], {})
-        self.assertEqual(p['script'], None)
+        self.assertIsNone(p['script'])
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Comparative model')
         self.assertEqual(dataset.location.path, pdbname)
-        self.assertEqual(dataset.location.repo, None)
+        self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'MED4 AND MED9 STRUCTURE TAKEN FROM LARIVIERE '
                          'ET AL, NUCLEIC ACIDS RESEARCH. 2013;41:9266-9273. '
@@ -213,11 +213,11 @@ class Tests(unittest.TestCase):
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_int_model.pdb')
         p = self._parse_pdb(pdbname)
         self.assertEqual(p['templates'], {})
-        self.assertEqual(p['script'], None)
+        self.assertIsNone(p['script'])
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Integrative model')
         self.assertEqual(dataset.location.path, pdbname)
-        self.assertEqual(dataset.location.repo, None)
+        self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'POM152 STRUCTURE TAKEN FROM UPLA ET AL, STRUCTURE '
                          '25(3) 434-445. DOI: 10.1016/j.str.2017.01.006.')
@@ -246,7 +246,7 @@ class Tests(unittest.TestCase):
         p = self.check_modeller_model(pdbname)
         for templates in p['templates'].values():
             for t in templates:
-                self.assertEqual(t.alignment_file, None)
+                self.assertIsNone(t.alignment_file)
 
     def check_modeller_model(self, pdbname):
         p = self._parse_pdb(pdbname)
@@ -268,7 +268,7 @@ class Tests(unittest.TestCase):
                      ihm.startmodel.SequenceIdentityDenominator.SHORTER_LENGTH)
         self.assertEqual(dataset.data_type, 'Comparative model')
         self.assertEqual(dataset.location.path, pdbname)
-        self.assertEqual(dataset.location.repo, None)
+        self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'Starting model structure')
         p1, p2, p3 = dataset.parents
@@ -278,8 +278,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(p1.data_type, 'Experimental model')
         self.assertEqual(p1.location.db_name, 'PDB')
         self.assertEqual(p1.location.access_code, '3JRO')
-        self.assertEqual(p1.location.version, None)
-        self.assertEqual(p1.location.details, None)
+        self.assertIsNone(p1.location.version)
+        self.assertIsNone(p1.location.details)
         self.assertEqual(p2.location.access_code, '3F3F')
         self.assertEqual(p3.location.access_code, '1ABC')
         s, = p['software']
@@ -313,15 +313,15 @@ class Tests(unittest.TestCase):
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Comparative model')
         self.assertEqual(dataset.location.path, pdbname)
-        self.assertEqual(dataset.location.repo, None)
+        self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'Starting model structure')
         parent, = dataset.parents
         self.assertEqual(parent.data_type, 'Experimental model')
         self.assertEqual(parent.location.db_name, 'PDB')
         self.assertEqual(parent.location.access_code, '4BZK')
-        self.assertEqual(parent.location.version, None)
-        self.assertEqual(parent.location.details, None)
+        self.assertIsNone(parent.location.version)
+        self.assertIsNone(parent.location.details)
         s, = p['software']
         self.assertEqual(s.name, 'Phyre2')
         self.assertEqual(s.version, '2.0')
@@ -336,7 +336,7 @@ class Tests(unittest.TestCase):
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Comparative model')
         self.assertEqual(dataset.location.path, pdbname)
-        self.assertEqual(dataset.location.repo, None)
+        self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'Starting model structure')
 

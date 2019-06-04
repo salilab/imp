@@ -17,6 +17,12 @@ The :mod:`ihm.cross_linkers` Python module
    BS3 cross-linker that links a primary amine with another primary amine
    (water-soluble).
 
+.. data:: dsso
+
+   DSSO cross-linker that links a primary amine with another primary amine
+   (non-water-soluble). It is similar to DSS but can be cleaved in the gas
+   phase using collision-induced dissociation.
+
 .. data:: edc
 
    EDC cross-linker that links a carboxyl group with a primary amine.

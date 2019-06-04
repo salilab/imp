@@ -21,6 +21,12 @@ bs3 = ihm.ChemDescriptor('BS3', chemical_name='bissulfosuccinimidyl suberate',
                     '34(28,29)30/h9-10H,1-8H2,(H,25,26,27)(H,28,29,30)',
               inchi_key='VYLDEYYOISNGST-UHFFFAOYSA-N')
 
+dsso = ihm.ChemDescriptor('DSSO', chemical_name='disuccinimidyl sulfoxide',
+              smiles='O=C(CCS(CCC(ON1C(CCC1=O)=O)=O)=O)ON2C(CCC2=O)=O',
+              inchi='1S/C14H16N2O9S/c17-9-1-2-10(18)15(9)24-13(21)5-7-'
+                    '26(23)8-6-14(22)25-16-11(19)3-4-12(16)20/h1-8H2',
+              inchi_key='XJSVVHDQSGMHAJ-UHFFFAOYSA-N')
+
 edc = ihm.ChemDescriptor('EDC',
               chemical_name='1-ethyl-3-(3-dimethylaminopropyl)carbodiimide',
               smiles='CCN=C=NCCCN(C)C',

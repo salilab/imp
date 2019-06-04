@@ -26,7 +26,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(dl1.db_name, 'mydb')
         self.assertEqual(dl1.access_code, 'abc')
         self.assertEqual(dl1.version, 1)
-        self.assertEqual(dl1.details, None)
+        self.assertIsNone(dl1.details)
 
     def test_pdb_location(self):
         """Test PDBLocation"""
@@ -110,7 +110,7 @@ class Tests(unittest.TestCase):
             _make_test_file(fname)
             l = ihm.location.InputFileLocation(fname)
             self.assertEqual(l.path, os.path.abspath(fname))
-            self.assertEqual(l.repo, None)
+            self.assertIsNone(l.repo)
             self.assertEqual(l.file_size, 8)
 
     def test_file_location_local_not_exist(self):
@@ -125,7 +125,7 @@ class Tests(unittest.TestCase):
         l = ihm.location.InputFileLocation('foo/bar', repo=r)
         self.assertEqual(l.path, 'foo/bar')
         self.assertEqual(l.repo, r)
-        self.assertEqual(l.file_size, None)
+        self.assertIsNone(l.file_size)
         # locations should only compare equal if path and repo both match
         l2 = ihm.location.InputFileLocation('foo/bar', repo=r)
         self.assertEqual(l, l2)
@@ -169,7 +169,7 @@ class Tests(unittest.TestCase):
 
             loc = ihm.location.InputFileLocation(
                                  os.path.relpath(os.path.join(subdir, 'bar')))
-            self.assertEqual(loc.repo, None)
+            self.assertIsNone(loc.repo)
             ihm.location.Repository._update_in_repos(loc, [s])
             self.assertEqual(loc.repo.doi, '10.5281/zenodo.46266')
             self.assertEqual(loc.path, os.path.join('subdir', 'bar'))

@@ -20,7 +20,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.asym_unit.seq_id_range, (1,10))
         self.assertEqual(s.primitive, 'atomistic')
         self.assertEqual(s.granularity, 'by-atom')
-        self.assertEqual(s.count, None)
+        self.assertIsNone(s.count)
         self.assertEqual(s.rigid, True)
 
     def test_residue_segment(self):
@@ -31,7 +31,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.asym_unit.seq_id_range, (1,4))
         self.assertEqual(s.primitive, 'sphere')
         self.assertEqual(s.granularity, 'by-residue')
-        self.assertEqual(s.count, None)
+        self.assertIsNone(s.count)
         self.assertEqual(s.rigid, True)
 
     def test_multi_residue_segment(self):
@@ -41,7 +41,7 @@ class Tests(unittest.TestCase):
                 asym_unit=asym, rigid=True, primitive='sphere')
         self.assertEqual(s.primitive, 'sphere')
         self.assertEqual(s.granularity, 'multi-residue')
-        self.assertEqual(s.count, None)
+        self.assertIsNone(s.count)
         self.assertEqual(s.rigid, True)
 
     def test_feature_segment(self):

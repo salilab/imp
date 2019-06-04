@@ -36,7 +36,8 @@ class Tests(unittest.TestCase):
         e1 = ihm.Entity('AAAA')
         asym = ihm.AsymUnit(e1)
         s = ihm.startmodel.StartingModel(asym, 'mock_dataset', 'A', offset=10)
-        self.assertEqual(s._get_seq_id_range_all_templates(), (1,4))
+        r = s._get_seq_id_range_all_templates()
+        self.assertEqual(r.seq_id_range, (1,4))
         self.assertEqual(s.get_atoms(), [])
         self.assertEqual(s.get_seq_dif(), [])
 
@@ -57,7 +58,8 @@ class Tests(unittest.TestCase):
                              sequence_identity=40.)
         s = ihm.startmodel.StartingModel(asym(5,25), 'mock_dataset', 'A',
                                          [s1, s2], offset=1)
-        self.assertEqual(s._get_seq_id_range_all_templates(), (5,20))
+        self.assertEqual(s._get_seq_id_range_all_templates().seq_id_range,
+                         (5,20))
 
     def test_seq_dif(self):
         """Test SeqDif class"""

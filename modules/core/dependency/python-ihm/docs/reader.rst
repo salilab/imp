@@ -21,3 +21,6 @@ The :mod:`ihm.reader` Python module
 
 .. autoclass:: IDMapper
    :members:
+
+.. autoclass:: RangeIDMapper
+   :members:
