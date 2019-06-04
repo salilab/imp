@@ -4,7 +4,11 @@ project(RMF)
 # needs to be in main CMakeLists.txt
 enable_testing()
 
-execute_process(COMMAND python setup_git.py
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake_modules)
+include(cmake_modules/IMPFindPython.cmake)
+imp_find_python()
+
+execute_process(COMMAND ${PYTHON_EXECUTABLE} setup_git.py
                   RESULT_VARIABLE setup
                   OUTPUT_VARIABLE toutput
                   ERROR_VARIABLE error
@@ -13,8 +17,6 @@ execute_process(COMMAND python setup_git.py
 if(NOT ${setup} EQUAL 0)
    message(FATAL_ERROR " Failed to run setup_git.py: ${setup}; ${error}")
 endif()
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake_modules)
 
 # Don't deref quoted variables in if()
 if(POLICY CMP0054)
@@ -65,15 +67,21 @@ include(cmake_modules/IMPFindCompilerFlags.cmake)
 
 if(RMF_DEPRECATED_BACKENDS)
 imp_execute_process("Making RMF/HDF5.h" ${PROJECT_SOURCE_DIR}
-  COMMAND "python" "${PROJECT_SOURCE_DIR}/tools/dev_tools/make_all_header.py" ${PROJECT_BINARY_DIR}/include/RMF/HDF5.h RMF/HDF5 ${PROJECT_SOURCE_DIR}/include/RMF/HDF5)
+  COMMAND ${PYTHON_EXECUTABLE}
+  "${PROJECT_SOURCE_DIR}/tools/dev_tools/make_all_header.py"
+  ${PROJECT_BINARY_DIR}/include/RMF/HDF5.h RMF/HDF5
+  ${PROJECT_SOURCE_DIR}/include/RMF/HDF5)
 endif()
 
 imp_execute_process("Making RMF.h" ${PROJECT_SOURCE_DIR}
-  COMMAND "python" "${PROJECT_SOURCE_DIR}/tools/dev_tools/make_all_header.py" ${PROJECT_BINARY_DIR}/include/RMF.h RMF ${PROJECT_SOURCE_DIR}/include/RMF)
-
+  COMMAND ${PYTHON_EXECUTABLE}
+  "${PROJECT_SOURCE_DIR}/tools/dev_tools/make_all_header.py"
+  ${PROJECT_BINARY_DIR}/include/RMF.h RMF ${PROJECT_SOURCE_DIR}/include/RMF)
 
 message(STATUS "Running setup_cmake.py")
-imp_execute_process("Running setup_cmake.py"  ${PROJECT_SOURCE_DIR} COMMAND python ${PROJECT_SOURCE_DIR}/tools/dev_tools/setup_cmake.py)
+imp_execute_process("Running setup_cmake.py" ${PROJECT_SOURCE_DIR}
+  COMMAND ${PYTHON_EXECUTABLE}
+  ${PROJECT_SOURCE_DIR}/tools/dev_tools/setup_cmake.py)
 
 include_directories(BEFORE "${PROJECT_BINARY_DIR}/include"
   "${PROJECT_SOURCE_DIR}/include")
