@@ -1662,7 +1662,7 @@ def shuffle_configuration(objects,
     else:
         raise Exception("Could not find any particles in the hierarchy")
     if len(rigid_bodies) == 0:
-        print("shuffle_configuration: rigid bodies were not intialized")
+        print("shuffle_configuration: rigid bodies were not initialized")
 
     ### gather all particles
     gcpf = IMP.core.GridClosePairsFinder()

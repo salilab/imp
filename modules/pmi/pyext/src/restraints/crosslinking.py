@@ -1107,11 +1107,12 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
         self.psi_is_sampled = True
         self.sigma_is_sampled = True
 
-        self.dataset = representations[0].get_file_dataset(restraints_file)
-        if not self.dataset and os.path.exists(restraints_file):
+        if os.path.exists(restraints_file):
             l = ihm.location.InputFileLocation(restraints_file,
                                                details="Crosslinks")
             self.dataset = ihm.dataset.CXMSDataset(l)
+        else:
+            self.dataset = None
 
         xl_groups = [p.get_cross_link_group(self)
                      for p, state in representations[0]._protocol_output]

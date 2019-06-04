@@ -1230,12 +1230,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self._last_state = s
         return s
 
-    def get_file_dataset(self, fname):
-        for d in self._file_datasets:
-            fd = d.get(os.path.abspath(fname), None)
-            if fd:
-                return fd
-
     def _get_chain_for_component(self, name, output):
         """Get the chain ID for a component, if any."""
         # todo: handle multiple copies

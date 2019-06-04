@@ -99,7 +99,6 @@ class Representation(object):
 
         self.state = _StateInfo()
         self._metadata = []
-        self._file_dataset = {}
         self._protocol_output = []
         self._non_modeled_components = {}
 
@@ -178,25 +177,6 @@ class Representation(object):
         """
         self._metadata.append(m)
 
-    def set_file_dataset(self, fname, dataset):
-        """Associate a dataset with a filename.
-           This can be used to identify how the file was produced (in many
-           cases IMP can determine this automatically from a file header or
-           other metadata, but not always). For example, a manually-produced
-           PDB file (not from the PDB database or Modeller) can be
-           identified this way.
-           @param fname filename
-           @dataset the ihm.dataset.Dataset object to associate.
-        """
-        self._file_dataset[os.path.abspath(fname)] = dataset
-
-    def get_file_dataset(self, fname):
-        """Get the dataset associated with a filename, or None.
-           @param fname filename
-           @return an ihm.dataset.Dataset, or None.
-        """
-        return self._file_dataset.get(os.path.abspath(fname), None)
-
     def add_protocol_output(self, p):
         """Capture details of the modeling protocol.
            @param p an instance of IMP.pmi.output.ProtocolOutput or a subclass.
@@ -204,7 +184,6 @@ class Representation(object):
         state = p._add_state(self)
         self._protocol_output.append((p, state))
         p._each_metadata.append(self._metadata)
-        p._file_datasets.append(self._file_dataset)
         state.model = self.model
         state.prot = self.prot
     protocol_output = property(lambda self:

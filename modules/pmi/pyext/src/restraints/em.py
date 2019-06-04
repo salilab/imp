@@ -184,10 +184,6 @@ class GaussianEMRestraint(object):
 
     def _set_dataset(self, target_fn, representation):
         """Set the dataset to point to the input file"""
-        if representation:
-            self.dataset = representation.get_file_dataset(target_fn)
-            if self.dataset:
-                return
         p = IMP.pmi.mmcif.GMMParser()
         self.dataset = p.parse_file(target_fn)['dataset']
 
