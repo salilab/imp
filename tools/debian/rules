@@ -31,7 +31,7 @@ override_dh_auto_configure:
                 -DCMAKE_INSTALL_PREFIX=/usr \
                 -DIMP_TIMEOUT_FACTOR=2 \
                 -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/imp \
-                -DIMP_DISABLED_MODULES=scratch
+                -DIMP_DISABLED_MODULES=scratch -DUSE_PYTHON2=on
 
 override_dh_auto_build:
 	mkdir build/logs
@@ -51,6 +51,7 @@ override_dh_install:
 	    -DSWIG_PYTHON_LIBRARIES=$${py3_lib} \
 	    -DPYTHON_INCLUDE_DIRS=$${py3_inc} \
 	    -DPYTHON_INCLUDE_PATH=$${py3_inc} -DPYTHON_LIBRARIES=$${py3_lib} \
+	    -DUSE_PYTHON2=off \
 	   && $(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
 	# Bundle libTAU so users don't have to get it separately
 	cp build/libTAU-1.0.1/lib/debian/libTAU.so.1 debian/tmp/usr/lib/*linux*/
