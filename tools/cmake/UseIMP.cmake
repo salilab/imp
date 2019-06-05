@@ -16,8 +16,7 @@ if(NOT USE_IMP_FILE_INCLUDED)
   include(${RMF_MODULES_DIR}/IMPExecuteProcess.cmake)
   include(${RMF_MODULES_DIR}/IMPAddTests.cmake)
   include(${RMF_MODULES_DIR}/CheckCompiles.cmake)
-
-  set(IMP_PYTHON python CACHE INTERNAL "The Python executable that IMP itself will use at runtime (the build system scripts will always use 'python')")
+  include(${RMF_MODULES_DIR}/IMPFindPython.cmake)
 
 endif()
 
@@ -41,21 +40,7 @@ function(imp_build_module sourcedir)
   include_directories(SYSTEM ${Boost_INCLUDE_DIR})
   include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
 
-  if(NOT DEFINED PYTHON_INCLUDE_DIRS)
-    execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print(sys.executable)"
-                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-                    OUTPUT_VARIABLE python_full_path
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
-    execute_process(COMMAND ${IMP_PYTHON} -c "import sys; print('%d.%d.%d' % sys.version_info[:3])"
-                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-                    OUTPUT_VARIABLE python_full_version
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
-    string(REGEX REPLACE "^([0-9]+\\.[0-9]+).*" "\\1" python_version
-           ${python_full_version})
-    message(STATUS "Python binary is " ${python_full_path} " (version " ${python_full_version} ")")
-
-    FIND_PACKAGE(PythonLibs ${python_full_version} EXACT REQUIRED)
-  endif()
+  imp_find_python()
 
   if(WIN32)
     set(IMP_SWIG_LIBRARIES ${PYTHON_LIBRARIES})
@@ -106,7 +91,8 @@ function(imp_build_module sourcedir)
   endif()
 
   add_custom_target("IMP-version"
-                    COMMAND ${IMP_TOOLS_DIR}/build/make_version.py
+                    COMMAND ${PYTHON_EXECUTABLE}
+                    ${IMP_TOOLS_DIR}/build/make_version.py
                     --source=${sourcedir}
                     ${modname}
                     --build_dir="${IMP_BUILD_INFO_DIR}"
@@ -114,7 +100,8 @@ function(imp_build_module sourcedir)
                     COMMENT "Computing version number")
 
   imp_execute_process("setup_cmake" ${sourcedir}
-                      COMMAND ${IMP_TOOLS_DIR}/build/setup_cmake.py
+                      COMMAND ${PYTHON_EXECUTABLE}
+                      ${IMP_TOOLS_DIR}/build/setup_cmake.py
                       ${modname}
                       "--build_dir=${IMP_BUILD_INFO_DIR}"
                       "--tools_dir=${IMP_TOOLS_DIR}"
@@ -124,7 +111,8 @@ function(imp_build_module sourcedir)
                       --required)
 
   imp_execute_process("setup" ${CMAKE_BINARY_DIR}
-                      COMMAND ${IMP_TOOLS_DIR}/build/setup.py
+                      COMMAND ${PYTHON_EXECUTABLE}
+                      ${IMP_TOOLS_DIR}/build/setup.py
                       ${modname}
                       "--build_dir=${IMP_BUILD_INFO_DIR}"
                       --source=${sourcedir}
@@ -132,7 +120,8 @@ function(imp_build_module sourcedir)
                       --datapath=${IMP_DATAPATH})
 
   imp_execute_process("setup_all" ${CMAKE_BINARY_DIR}
-                      COMMAND ${IMP_TOOLS_DIR}/build/setup_all.py
+                      COMMAND ${PYTHON_EXECUTABLE}
+                      ${IMP_TOOLS_DIR}/build/setup_all.py
                       ${modname}
                       "--build_dir=${IMP_BUILD_INFO_DIR}"
                       --source=${sourcedir})
@@ -150,7 +139,8 @@ function(imp_build_module sourcedir)
   endif()
 
   imp_execute_process("setup_swig_dependencies" ${CMAKE_BINARY_DIR}
-                      COMMAND ${IMP_TOOLS_DIR}/build/setup_swig_deps.py
+                      COMMAND ${PYTHON_EXECUTABLE}
+                      ${IMP_TOOLS_DIR}/build/setup_swig_deps.py
                       ${modname}
                       --include=${IMP_INCLUDE_DIR}
                       "--build_dir=${IMP_BUILD_INFO_DIR}"
@@ -183,8 +173,9 @@ function(imp_build_module sourcedir)
   endforeach(path)
 
   imp_execute_process("setup_imppy" ${CMAKE_BINARY_DIR}
-                      COMMAND ${IMP_TOOLS_DIR}/build/setup_imppy.py
-                      "--python=${IMP_PYTHON}"
+                      COMMAND ${PYTHON_EXECUTABLE}
+                      ${IMP_TOOLS_DIR}/build/setup_imppy.py
+                      "--python_pathsep=${PYTHON_PATH_SEP}"
                       "--external_data=${IMP_DATA_DIR}"
                       "--precommand="
                       "--propagate=yes"
