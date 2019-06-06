@@ -18,7 +18,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
   endif()
 endif()
 
-include_directories(%(includepath)s)
+include_directories(%(python_includepath)s)
 link_directories(%(libpath)s)
 
 GET_DIRECTORY_PROPERTY(includes INCLUDE_DIRECTORIES)

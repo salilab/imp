@@ -197,7 +197,14 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
          m.name for m in all_modules])
     values["dependencies"] = ";".join(dependencies)
     values["headers"] = get_sources(module, "include", "*.h")
-    values["includepath"] = get_dep_merged(all_dependencies, "include_path")
+    # Don't add NumPy include directory except for when we build SWIG
+    # extensions; this prevents unnecessary rebuilds of C++ code when we
+    # change Python version
+    all_non_python_dependencies = [x for x in all_dependencies if x != 'NumPy']
+    values["includepath"] = get_dep_merged(all_non_python_dependencies,
+                                           "include_path")
+    values["python_includepath"] = get_dep_merged(all_dependencies,
+                                                  "include_path")
     values["libpath"] = get_dep_merged(all_dependencies, "link_path")
     values["swigpath"] = get_dep_merged(all_dependencies, "swig_path")
     values["defines"] = ":".join(defines)
