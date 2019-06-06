@@ -67,7 +67,8 @@ class Tests(IMP.test.ApplicationTestCase):
     def test_count_lines(self):
         """Test _count_lines()"""
         app = self.import_python_application('idock')
-        open('foo', 'w').write('foo\nbar\nbaz\n')
+        with open('foo', 'w') as fh:
+            fh.write('foo\nbar\nbaz\n')
         self.assertEqual(app._count_lines('foo'), 3)
         os.unlink('foo')
 
@@ -127,12 +128,14 @@ class Tests(IMP.test.ApplicationTestCase):
             dock.opts.precision = 1
             dock.make_patch_dock_parameters()
             self.assertEqual(dock.run_binary_args, ('pd_dir', 'buildParams.pl',
-                                                    ['testrecep', 'testlig', '4.0', 'AA']))
+                                                    ['testrecep', 'testlig',
+                                                     '4.0', 'AA']))
 
             dock.opts.precision = 2
             dock.make_patch_dock_parameters()
             self.assertEqual(dock.run_binary_args, ('pd_dir', 'buildParams.pl',
-                                                    ['testrecep', 'testlig', '2.0', 'AA']))
+                                                    ['testrecep', 'testlig',
+                                                     '2.0', 'AA']))
 
             dock.opts.precision = 3
             dock.make_patch_dock_parameters()
@@ -173,7 +176,8 @@ class Tests(IMP.test.ApplicationTestCase):
             app._run_binary = old_run_binary
 
         # Recovery should be skipped if results file is too short
-        open('foodocking.res', 'w').write('foo\n' * 36)
+        with open('foodocking.res', 'w') as fh:
+            fh.write('foo\n' * 36)
         app, old_run_binary, dock = do_dock()
         try:
             self.assertEqual(dock.run_binary_args,
@@ -182,7 +186,8 @@ class Tests(IMP.test.ApplicationTestCase):
         finally:
             app._run_binary = old_run_binary
 
-        open('foodocking.res', 'w').write('foo\n' * 37)
+        with open('foodocking.res', 'w') as fh:
+            fh.write('foo\n' * 37)
         app, old_run_binary, dock = do_dock()
         try:
             self.assertFalse(hasattr(dock, 'run_binary_args'))
@@ -199,7 +204,8 @@ class Tests(IMP.test.ApplicationTestCase):
         dock = app.IDock()
         dock.opts = Opts()
         dock.opts.prefix = 'foo'
-        open('foodocking.res', 'w').write("""
+        with open('foodocking.res', 'w') as fh:
+            fh.write("""
 Program parameters
 ******
    # | score | pen.  | Area    | as1   | as2   | as12  | ACE     | hydroph | Energy  |cluster| dist. || Ligand Transformation
@@ -207,7 +213,8 @@ Program parameters
 
         dock.opts.precision = 1
         n = dock.make_transformation_file()
-        lines = open('trans_pd').readlines()
+        with open('trans_pd') as fh:
+            lines = fh.readlines()
         self.assertEqual(n, 5000)
         self.assertEqual(len(lines), 5000)
         self.assertEqual(lines[0].rstrip('\r\n'),
@@ -215,7 +222,8 @@ Program parameters
 
         dock.opts.precision = 2
         n = dock.make_transformation_file()
-        lines = open('trans_pd').readlines()
+        with open('trans_pd') as fh:
+            lines = fh.readlines()
         self.assertEqual(n, 6000)
         self.assertEqual(len(lines), 6000)
         os.unlink('trans_pd')
@@ -344,7 +352,8 @@ Program parameters
         s.score(10)
         self.assertEqual(s.run_score, True)
 
-        open('testoutput.res', 'w').write('foo\n' * 8)
+        with open('testoutput.res', 'w') as fh:
+            fh.write('foo\n' * 8)
         # Also if the file contains fewer transforms than input
         s = MyScorer(MockIDock(), 'testoutput')
         s.score(10)
@@ -366,7 +375,8 @@ Program parameters
             def __init__(self, idock):
                 app.Scorer.__init__(self, idock, "my_score")
         s = MyScorer(idock)
-        open('my_score.res', 'w').write("""
+        with open('my_score.res', 'w') as fh:
+            fh.write("""
 receptorPdb (str) 2p4e.pdb
 ligandPdb (str) antibody_cut.pdb
      # | 1-CC   |filter| Zscore | Transformation
@@ -377,21 +387,24 @@ ligandPdb (str) antibody_cut.pdb
      5 |  0.208 |  +   |   2.82 | 2.722 0.3805 -0.8429 33.87 -5.112 29.73
      6 |  0.211 |  +   |    2.9 | 2.496 -0.04911 -0.258 37.57 -10.18 47.23
 """)
-        open('transforms', 'w').write("""
+        with open('transforms', 'w') as fh:
+            fh.write("""
 2 2.674 0.4152 -0.7746 33.23 -4.204 31.47
 3 2.622 0.5735 -0.7227 34.3 -2.353 32.4
 1 2.423 0.1092 -0.2944 36.17 -8.459 49.66
 6 2.496 -0.04911 -0.258 37.57 -10.18 47.23
 """)
         s.recompute_zscore("transforms")
-        lines = open('my_scoref.res').readlines()
+        with open('my_scoref.res') as fh:
+            lines = fh.readlines()
         self.assertEqual(len(lines), 5)
         self.assertEqual(lines[1].strip(' \r\n'),
                          '2 |  0.221 |  +  | 0.424 |  2.674 0.4152 -0.7746 33.23 -4.204 31.47')
 
         s.reverse_zscores = True
         s.recompute_zscore("transforms")
-        lines = open('my_scoref.res').readlines()
+        with open('my_scoref.res') as fh:
+            lines = fh.readlines()
         self.assertEqual(len(lines), 5)
         self.assertEqual(lines[1].strip(' \r\n'),
                          '2 |  0.221 |  +  | -0.424 |  2.674 0.4152 -0.7746 33.23 -4.204 31.47')
@@ -576,14 +589,16 @@ ligandPdb (str) antibody_cut.pdb
         app, idock = self.get_dummy_idock_for_scorer()
         idock.opts.cross_links_file = 'test.cxms'
         s = app.CXMSScorer(idock)
-        open(s.output_file, 'w').write("""
+        with open(s.output_file, 'w') as fh:
+            fh.write("""
      # | 1-CC   |filter| Zscore | Transformation
      1 |  0.196 |  +   |   2.45 | 2.423 0.1092 -0.2944 36.17 -8.459 49.66
      2 |  0.221 |  -   |   3.19 | 2.674 0.4152 -0.7746 33.23 -4.204 31.47
      3 |  0.233 |  +   |   3.53 | 2.622 0.5735 -0.7227 34.3 -2.353 32.4
 """)
         idock.get_filtered_scores([s])
-        lines = open('trans_for_cluster').readlines()
+        with open('trans_for_cluster') as fh:
+            lines = fh.readlines()
         self.assertEqual(len(lines), 2)
         nums = [line.split()[0] for line in lines]
         self.assertEqual(nums, ['1', '3'])
@@ -599,20 +614,23 @@ ligandPdb (str) antibody_cut.pdb
         idock.opts.map_file = 'test.mrc'
         s1 = app.CXMSScorer(idock)
         s2 = app.EM3DScorer(idock)
-        open(s1.output_file, 'w').write("""
+        with open(s1.output_file, 'w') as fh:
+            fh.write("""
      # | 1-CC   |filter| Zscore | Transformation
      1 |  0.196 |  -   |   2.45 | 2.423 0.1092 -0.2944 36.17 -8.459 49.66
      2 |  0.221 |  +   |   3.19 | 2.674 0.4152 -0.7746 33.23 -4.204 31.47
      3 |  0.233 |  +   |   3.53 | 2.622 0.5735 -0.7227 34.3 -2.353 32.4
 """)
-        open(s2.output_file, 'w').write("""
+        with open(s2.output_file, 'w') as fh:
+            fh.write("""
      # | Score    |filter| Zscore |  CC    | Escore   | Map transformation                          | Ligand Transformation
      1 |    0.000 |  +   |  0.000 |  0.000 |    0.000 | 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 | 2.4228 0.1092 -0.2944 36.1673 -8.4593 49.6622
      2 |    0.000 |  +   |  0.000 |  0.000 |    0.000 | 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 | 2.6739 0.4152 -0.7746 33.2264 -4.2045 31.4729
      3 |    0.000 |  +   |  0.000 |  0.000 |    0.000 | 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 | 2.6217 0.5735 -0.7227 34.2971 -2.3534 32.4020
 """)
         idock.get_filtered_scores([s1, s2])
-        lines = open('trans_for_cluster').readlines()
+        with open('trans_for_cluster') as fh:
+            lines = fh.readlines()
         self.assertEqual(len(lines), 2)
         nums = [line.split()[0] for line in lines]
         # Only 2 and 3 are OK in both methods
@@ -650,14 +668,16 @@ ligandPdb (str) antibody_cut.pdb
         idock.opts.prefix = ''
         idock.opts.map_file = 'test.mrc'
         s = app.EM3DScorer(idock)
-        open('em3d_scoref.res', 'w').write("""
+        with open('em3d_scoref.res', 'w') as fh:
+            fh.write("""
      # | 1-CC   |filter| Zscore | Transformation
      1 |  0.196 |  -   |   2.45 | 2.423 0.1092 -0.2944 36.17 -8.459 49.66
      2 |  0.221 |  +   |   3.19 | 2.674 0.4152 -0.7746 33.23 -4.204 31.47
      3 |  0.233 |  +   |   3.53 | 2.622 0.5735 -0.7227 34.3 -2.353 32.4
 """)
         fn = idock.combine_final_scores([s])
-        lines = open('combined_final.res').readlines()
+        with open('combined_final.res') as fh:
+            lines = fh.readlines()
         self.assertEqual(len(lines), 3)
         self.assertEqual(lines[1].strip(' \r\n'),
                          '2 |  3.190 |  +  | -1.000 |  0.221 |  3.190 | '
@@ -673,7 +693,8 @@ ligandPdb (str) antibody_cut.pdb
 
         class MockScorer(object):
             short_name = 'mock'
-        open('comb_final', 'w').write("""
+        with open('comb_final', 'w') as fh:
+            fh.write("""
      # |  Score | filt| ZScore | Score0 | Zscore0 |Score1 | Zscore1 |Transformation
  18901 | -5.225 |  +  | -3.318 | 16.304 | -1.454 |  0.685 | -1.829 |   2.4462 0.7439 2.0137 32.0310 36.5010 74.9757
  25924 | -3.976 |  +  | -4.525 | 15.486 | -2.746 |  0.670 | -1.029 |   0.9110 0.6830 -0.1227 15.1862 66.0876 62.1971
@@ -681,7 +702,8 @@ ligandPdb (str) antibody_cut.pdb
 """)
         fn = idock.write_results([MockScorer()], 'comb_final')
         self.assertEqual(fn, 'results_mock.txt')
-        lines = open('results_mock.txt').readlines()
+        with open('results_mock.txt') as fh:
+            lines = fh.readlines()
         self.assertEqual(len(lines), 6)
         self.assertEqual(lines[3].strip(' \r\n'),
                          "1 |  -3.976 |  +  | -4.525 | 15.486 | -2.746 |  0.670 | -1.029 "
@@ -716,7 +738,8 @@ ligandPdb (str) antibody_cut.pdb
                             self.get_input_file_name('testcxms.txt')]
                 dock = MockDock()
                 dock.main()
-                lines = open('results_cxms_soap.txt').readlines()
+                with open('results_cxms_soap.txt') as fh:
+                    lines = fh.readlines()
                 self.assertEqual(len(lines), 10)
                 self.assertEqual(lines[3].strip(' \r\n'),
                              '1 |  -2.873 |  +  | -1.837 |  0.016 | -0.990 | '
