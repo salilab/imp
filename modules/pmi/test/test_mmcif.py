@@ -907,18 +907,17 @@ _ihm_modeling_post_process.script_file_id
     def test_simple_ensemble(self):
         """Test add_simple_ensemble"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        simo.create_component("Nup85", True)
-        simo.add_component_sequence("Nup85",
-                                    self.get_input_file_name("test.fasta"))
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_representation(resolutions=[1])
+        nup85 = st1.create_molecule("Nup85", "SELM", "Y")
+        nup85.add_representation(resolutions=[1])
+        hier = s.build()
 
-        densities = {'Nup84': "foo.mrc"}
+        densities = {'Nup84.0': "foo.mrc"}
         pp = None
         e = po._add_simple_ensemble(pp, 'Ensemble 1', 5, 0.1, 1, densities,
                                     None)
@@ -1058,10 +1057,10 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
         class DummyPostProcess(object):
             pass
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
+        s.add_protocol_output(po)
+        st1 = s.create_state()
 
         pp = DummyPostProcess()
         pp._id = 99
@@ -1091,8 +1090,8 @@ _ihm_ensemble_info.num_ensemble_models
 _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
-1 'Ensemble 1' 99 1 . dRMSD 5 1 0.100 .
-2 'Ensemble 2' 99 2 . dRMSD 5 1 0.100 42
+1 'Ensemble 1 in state State_0' 99 1 . dRMSD 5 1 0.100 .
+2 'Ensemble 2 in state State_0' 99 2 . dRMSD 5 1 0.100 42
 #
 """)
 
@@ -1102,20 +1101,20 @@ _ihm_ensemble_info.ensemble_file_id
             pass
 
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_representation(resolutions=[1])
+        hier = s.build()
 
         ensemble = DummyEnsemble()
         ensemble._id = 42
         loc = ihm.location.OutputFileLocation(repo='foo', path='bar')
         loc._id = 97
         den = ihm.model.LocalizationDensity(file=loc,
-                                asym_unit=po.asym_units['Nup84'])
+                                asym_unit=po.asym_units['Nup84.0'])
         ensemble.densities = [den]
         po.system.ensembles.append(ensemble)
 
@@ -1237,17 +1236,14 @@ _ihm_cross_link_restraint.sigma_2
     def test_add_em2d_restraint(self):
         """Test add_em2d_restraint method"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        state = st1._protocol_output[0][1]
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_representation(resolutions=[1])
+        hier = s.build()
 
         class DummyRestraint(object):
             label = 'foo'
@@ -1270,7 +1266,7 @@ _ihm_cross_link_restraint.sigma_2
         p = DummyProtocolStep()
         p.assembly = None
         po.all_protocols.add_step(p, po._last_state)
-        group = get_all_models_group(simo, po)
+        group = get_all_models_group(st1, po)
         m = po.add_model(group)
         m._id = 9
         prefix = 'ElectronMicroscopy2D_foo_Image1_'
@@ -1634,21 +1630,21 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
         class DummyModel(object):
             pass
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        state = st1._protocol_output[0][1]
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_representation(resolutions=[1])
+        hier = s.build()
 
         lp = ihm.location.InputFileLocation(repo='foo', path='baz')
         d = ihm.dataset.SASDataset(lp)
         d._id = 4
         model = DummyModel()
         model._id = 42
-        po._add_foxs_restraint(model, 'Nup84', (2,3), d, 3.4, 1.2, 'test')
+        po._add_foxs_restraint(model, 'Nup84.0', (2,3), d, 3.4, 1.2, 'test')
 
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
@@ -1678,19 +1674,16 @@ _ihm_sas_restraint.details
     def test_add_em3d_restraint(self):
         """Test add_em3d_restraint method"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
-        p = IMP.atom.get_by_type(simo.hier_dict['Nup84'],
-                                 IMP.atom.FRAGMENT_TYPE)[0]
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        state = st1._protocol_output[0][1]
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_representation(resolutions=[1])
+        hier = s.build()
+
+        p = IMP.atom.get_by_type(hier, IMP.atom.FRAGMENT_TYPE)[0]
         class DummyRestraint(object):
             label = 'foo'
         class DummyProtocolStep(object):
@@ -1707,7 +1700,7 @@ _ihm_sas_restraint.details
 
         p = DummyProtocolStep()
         po.all_protocols.add_step(p, po._last_state)
-        group = get_all_models_group(simo, po)
+        group = get_all_models_group(st1, po)
         m = po.add_model(group)
         m._id = 5
         m.stats = {'GaussianEMRestraint_foo_CCC': 0.1}
@@ -1741,6 +1734,8 @@ _ihm_3dem_restraint.cross_correlation_coefficient
 
     def test_metadata(self):
         """Test adding metadata to ihm.System"""
+        # todo: remove this test; modern usage would add Software to
+        # po.system.software and Citations to po.system.citations instead
         m = IMP.Model()
         po = DummyPO(None)
         with IMP.allow_deprecated():
@@ -1771,6 +1766,8 @@ _ihm_3dem_restraint.cross_correlation_coefficient
 
     def test_update_locations(self):
         """Test update_locations() method"""
+        # todo: remove this test; modern usage would call
+        # po.system.update_locations_in_repositories() instead
         m = IMP.Model()
         with IMP.allow_deprecated():
             simo = IMP.pmi.representation.Representation(m)

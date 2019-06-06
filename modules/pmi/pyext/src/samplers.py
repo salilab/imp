@@ -193,7 +193,7 @@ class MonteCarlo(object):
     def get_number_of_movers(self):
         return len(self.smv.get_movers())
 
-    def get_particle_types():
+    def get_particle_types(self):
         return self.losp
 
     def optimize(self, nstep):
@@ -221,31 +221,31 @@ class MonteCarlo(object):
                 if accept < 0.05: accept = 0.05
                 if accept > 1.0: accept = 1.0
 
-                if type(mv) is IMP.core.NormalMover:
+                if isinstance(mv, IMP.core.NormalMover):
                     stepsize = mv.get_sigma()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_sigma(stepsize * 2 * accept)
 
-                if type(mv) is IMP.isd.WeightMover:
+                if isinstance(mv, MP.isd.WeightMover):
                     stepsize = mv.get_radius()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_radius(stepsize * 2 * accept)
 
-                if type(mv) is IMP.core.RigidBodyMover:
+                if isinstance(mv, IMP.core.RigidBodyMover):
                     mr=mv.get_maximum_rotation()
                     mt=mv.get_maximum_translation()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_maximum_rotation(mr * 2 * accept)
                         mv.set_maximum_translation(mt * 2 * accept)
 
-                if type(mv) is IMP.pmi.TransformMover:
+                if isinstance(mv, IMP.pmi.TransformMover):
                     mr=mv.get_maximum_rotation()
                     mt=mv.get_maximum_translation()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_maximum_rotation(mr * 2 * accept)
                         mv.set_maximum_translation(mt * 2 * accept)
 
-                if type(mv) is IMP.core.BallMover:
+                if isinstance(mv, IMP.core.BallMover):
                     mr=mv.get_radius()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_radius(mr * 2 * accept)
@@ -274,9 +274,10 @@ class MonteCarlo(object):
                 # normal Super Rigid Body
                 srbm = IMP.pmi.TransformMover(self.model, maxtrans, maxrot)
             elif len(rb) == 3:
-                if type(rb[2]) == tuple and type(rb[2][0]) == float \
-                    and type(rb[2][1]) == float and type(rb[2][2]) == float \
-                    and len(rb[2])== 3:
+                if isinstance(rb[2], tuple) and len(rb[2]) == 3 \
+                    and isinstance(rb[2][0], float) \
+                    and isinstance(rb[2][1], float) \
+                    and isinstance(rb[2][2], float):
                     # super rigid body with 2D rotation, rb[2] is the axis
                     srbm = IMP.pmi.TransformMover(
                       self.model,

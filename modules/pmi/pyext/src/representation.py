@@ -404,7 +404,7 @@ class Representation(object):
                 IMP.atom.CAlphaPDBSelector(),
                 IMP.atom.CBetaPDBSelector())
             sel = IMP.atom.AndPDBSelector(cacbsel, sel)
-        if type(chain) == str:
+        if isinstance(chain, str):
             sel = IMP.atom.AndPDBSelector(
                 IMP.atom.ChainPDBSelector(chain),
                 sel)
@@ -1927,7 +1927,7 @@ class Representation(object):
 
         rigid_parts = set()
         for s in subunits:
-            if type(s) == type(tuple()) and len(s) == 2:
+            if isinstance(s, tuple) and len(s) == 2:
                 sel = IMP.atom.Selection(
                     self.prot,
                     molecule=s[0],
@@ -1947,7 +1947,7 @@ class Representation(object):
                     else:
                         rigid_parts.add(p)
 
-            elif type(s) == type(str()):
+            elif isinstance(s, str):
                 sel = IMP.atom.Selection(self.prot, molecule=s)
                 if len(sel.get_selected_particles()) == 0:
                     print("set_rigid_bodies: selected particle does not exist")
@@ -2023,7 +2023,7 @@ class Representation(object):
         super_rigid_rbs = set()
 
         for s in subunits:
-            if type(s) == type(tuple()) and len(s) == 3:
+            if isinstance(s, tuple) and len(s) == 3:
                 sel = IMP.atom.Selection(
                     self.prot,
                     molecule=s[2],
@@ -2037,7 +2037,7 @@ class Representation(object):
                         super_rigid_rbs.add(rb)
                     else:
                         super_rigid_xyzs.add(p)
-            elif type(s) == type(str()):
+            elif isinstance(s, str):
                 sel = IMP.atom.Selection(self.prot, molecule=s)
                 if len(sel.get_selected_particles()) == 0:
                     print("set_rigid_bodies: selected particle does not exist")

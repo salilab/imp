@@ -417,9 +417,9 @@ class CrossCorrelationRestraint(object):
         if voxel_size:
             self.dmap.update_voxel_size(voxel_size)
         if origin is not None:
-            if type(origin)==IMP.algebra.Vector3D:
+            if isinstance(origin, IMP.algebra.Vector3D):
                 self.dmap.set_origin(origin)
-            elif type(origin)==list:
+            elif isinstance(origin, list):
                 self.dmap.set_origin(*origin)
             else:
                 print('FitRestraint did not recognize format of origin')

@@ -432,11 +432,11 @@ class Output(object):
                 output=l.get_output()
                 for outputkey in output:
                     rmftag=RMF.string_tag
-                    if type(output[outputkey]) is float:
-                        rmftag=RMF.float_tag
-                    elif type(output[outputkey]) is int:
-                        rmftag=RMF.int_tag
-                    elif type(output[outputkey]) is str:
+                    if isinstance(output[outputkey], float):
+                        rmftag = RMF.float_tag
+                    elif isinstance(output[outputkey], int):
+                        rmftag = RMF.int_tag
+                    elif isinstance(output[outputkey], str):
                         rmftag = RMF.string_tag
                     else:
                         rmftag = RMF.string_tag
@@ -640,11 +640,7 @@ class Output(object):
         import IMP
         versions = {}
         versions["IMP_VERSION"] = IMP.get_module_version()
-        try:
-            import IMP.pmi
-            versions["PMI_VERSION"] = IMP.pmi.get_module_version()
-        except (ImportError):
-            pass
+        versions["PMI_VERSION"] = IMP.pmi.get_module_version()
         try:
             import IMP.isd2
             versions["ISD2_VERSION"] = IMP.isd2.get_module_version()
@@ -1004,10 +1000,10 @@ class RMFHierarchyHandler(IMP.atom.Hierarchy):
         return self.rh_ref.get_number_of_frames()
 
     def __getitem__(self,int_slice_adaptor):
-        if type(int_slice_adaptor) is int:
+        if isinstance(int_slice_adaptor, int):
             self.set_frame(int_slice_adaptor)
             return int_slice_adaptor
-        elif type(int_slice_adaptor) is slice:
+        elif isinstance(int_slice_adaptor, slice):
             return self.__iter__(int_slice_adaptor)
         else:
             raise TypeError("Unknown Type")
@@ -1071,11 +1067,8 @@ class CacheHierarchyCoordinates(object):
         return len(self.rb_trans.keys())
 
     def __getitem__(self,index):
-        if type(index) is int:
-            if index in self.rb_trans.keys():
-                return True
-            else:
-                return False
+        if isinstance(index, int):
+            return index in self.rb_trans.keys()
         else:
             raise TypeError("Unknown Type")
 
@@ -1135,18 +1128,13 @@ class StatHierarchyHandler(RMFHierarchyHandler):
             self.current_index=None
             self.score_threshold=None
 
-            if type(stat_file) is str:
+            if isinstance(stat_file, str):
                 self.add_stat_file(stat_file)
-            elif type(stat_file) is list:
+            elif isinstance(stat_file, list):
                 for f in stat_file:
                     self.add_stat_file(f)
 
     def add_stat_file(self,stat_file):
-        try:
-            import cPickle as pickle
-        except ImportError:
-            import pickle
-
         try:
             '''check that it is not a pickle file with saved data from a previous calculation'''
             self.load_data(stat_file)
@@ -1202,22 +1190,14 @@ class StatHierarchyHandler(RMFHierarchyHandler):
         self.set_frame(0)
 
     def save_data(self,filename='data.pkl'):
-        try:
-            import cPickle as pickle
-        except ImportError:
-            import pickle
         with open(filename, 'wb') as fl:
             pickle.dump(self.data, fl)
 
     def load_data(self,filename='data.pkl'):
-        try:
-            import cPickle as pickle
-        except ImportError:
-            import pickle
         with open(filename, 'rb') as fl:
             data_structure=pickle.load(fl)
         #first check that it is a list
-        if not type(data_structure) is list:
+        if not isinstance(data_structure, list):
             raise TypeError("%filename should contain a list of IMP.pmi.output.DataEntry or IMP.pmi.output.Cluster" % filename)
         # second check the types
         if all(isinstance(item, IMP.pmi.output.DataEntry) for item in data_structure):
@@ -1253,10 +1233,10 @@ class StatHierarchyHandler(RMFHierarchyHandler):
         self.current_index = index
 
     def __getitem__(self,int_slice_adaptor):
-        if type(int_slice_adaptor) is int:
+        if isinstance(int_slice_adaptor, int):
             self.set_frame(int_slice_adaptor)
             return self.data[int_slice_adaptor]
-        elif type(int_slice_adaptor) is slice:
+        elif isinstance(int_slice_adaptor, slice):
             return self.__iter__(int_slice_adaptor)
         else:
             raise TypeError("Unknown Type")
@@ -1367,10 +1347,10 @@ class Cluster(object):
         return s
 
     def __getitem__(self,int_slice_adaptor):
-        if type(int_slice_adaptor) is int:
+        if isinstance(int_slice_adaptor, int):
             index=self.members[int_slice_adaptor]
             return self.members_data[index]
-        elif type(int_slice_adaptor) is slice:
+        elif isinstance(int_slice_adaptor, slice):
             return self.__iter__(int_slice_adaptor)
         else:
             raise TypeError("Unknown Type")
@@ -1534,12 +1514,10 @@ class CrossLinkIdentifierDatabase(object):
         return self.clidb[key][feature_name]
 
     def write(self,filename):
-        import pickle
         with open(filename, 'wb') as handle:
             pickle.dump(self.clidb,handle)
 
     def load(self,filename):
-        import pickle
         with open(filename, 'rb') as handle:
             self.clidb=pickle.load(handle)
 
@@ -1823,7 +1801,7 @@ def draw_graph(graph, labels_dict=None, graph_layout='spring',
     G = nx.Graph()
 
     # add edges
-    if type(edge_thickness) is list:
+    if isinstance(edge_thickness, list):
         for edge,weight in zip(graph,edge_thickness):
             G.add_edge(edge[0], edge[1], weight=weight)
     else:
@@ -1845,7 +1823,7 @@ def draw_graph(graph, labels_dict=None, graph_layout='spring',
         node_color_hex=tmpcolor_hex
 
     # get node sizes if dictionary
-    if type(node_size) is dict:
+    if isinstance(node_size, dict):
         tmpsize=[]
         for node in G.nodes():
             size=sqrt(node_size[node])/pi*10.0

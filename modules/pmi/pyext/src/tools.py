@@ -206,21 +206,27 @@ class ParticleToSampleList(object):
         else:
             self.dictionary_particle_type[particle] = particle_type
             if particle_type == "Rigid_Bodies":
-                if type(particle_transformation) == tuple and len(particle_transformation) == 2 and type(particle_transformation[0]) == float and type(particle_transformation[1]) == float:
+                if (isinstance(particle_transformation, tuple)
+                    and len(particle_transformation) == 2
+                    and all(isinstance(x, float)
+                            for x in particle_transformation)):
                     self.dictionary_particle_transformation[
                         particle] = particle_transformation
                     self.dictionary_particle_name[particle] = name
                 else:
                     raise TypeError("ParticleToSampleList: not the right transformation format for Rigid_Bodies, should be a tuple of floats")
             elif particle_type == "Surfaces":
-                if type(particle_transformation) == tuple and len(particle_transformation) == 3 and all(isinstance(x, float) for x in particle_transformation):
+                if (isinstance(particle_transformation, tuple)
+                    and len(particle_transformation) == 3
+                    and all(isinstance(x, float)
+                            for x in particle_transformation)):
                     self.dictionary_particle_transformation[
                         particle] = particle_transformation
                     self.dictionary_particle_name[particle] = name
                 else:
                     raise TypeError("ParticleToSampleList: not the right transformation format for Surfaces, should be a tuple of floats")
             else:
-                if type(particle_transformation) == float:
+                if isinstance(particle_transformation, float):
                     self.dictionary_particle_transformation[
                         particle] = particle_transformation
                     self.dictionary_particle_name[particle] = name
@@ -516,7 +522,7 @@ class map(object):
         self.map[xvalue] = yvalue
 
     def get_map_element(self, invalue):
-        if type(invalue) == float:
+        if isinstance(invalue, float):
             n = 0
             mindist = 1
             for x in self.map:
@@ -530,7 +536,7 @@ class map(object):
                     minx = x
                 n += 1
             return self.map[minx]
-        elif type(invalue) == str:
+        elif isinstance(invalue, str):
             return self.map[invalue]
         else:
             raise TypeError("wrong type for map")
@@ -663,9 +669,9 @@ def select_by_tuple_2(hier,tuple_selection,resolution):
     """
     kwds = {} # going to accumulate keywords
     kwds['resolution'] = resolution
-    if type(tuple_selection) is str:
+    if isinstance(tuple_selection, str):
         kwds['molecule'] = tuple_selection
-    elif type(tuple_selection) is tuple:
+    elif isinstance(tuple_selection, tuple):
         rbegin = tuple_selection[0]
         rend = tuple_selection[1]
         kwds['molecule'] = tuple_selection[2]
@@ -928,9 +934,9 @@ def scatter_and_gather(data):
     elif rank == 0:
         for i in range(1, number_of_processes):
             data_tmp = comm.recv(source=i, tag=11)
-            if type(data) == list:
+            if isinstance(data, list):
                 data += data_tmp
-            elif type(data) == dict:
+            elif isinstance(data, dict):
                 data.update(data_tmp)
             else:
                 raise TypeError("data not supported, use list or dictionaries")
@@ -1004,9 +1010,9 @@ class Segments(object):
 
     def __init__(self,index):
         '''index can be a integer or a list of integers '''
-        if type(index) is int:
+        if isinstance(index, int):
             self.segs=[[index]]
-        elif type(index) is list:
+        elif isinstance(index, list):
             self.segs=[[index[0]]]
             for i in index[1:]:
                 self.add(i)
@@ -1015,7 +1021,7 @@ class Segments(object):
 
     def add(self,index):
         '''index can be a integer or a list of integers '''
-        if type(index) is int:
+        if isinstance(index, int):
             mergeleft=None
             mergeright=None
             for n,s in enumerate(self.segs):
@@ -1041,7 +1047,7 @@ class Segments(object):
 
             self.segs.sort(key=lambda tup: tup[0])
 
-        elif type(index) is list:
+        elif isinstance(index, list):
             for i in index:
                 self.add(i)
         else:

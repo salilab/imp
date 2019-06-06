@@ -166,7 +166,7 @@ class ReplicaExchange0(object):
         self.rmf_output_objects=rmf_output_objects
         self.representation = representation
         if representation:
-            if type(representation) == list:
+            if isinstance(representation, list):
                 self.is_multi_state = True
                 self.root_hiers = [r.prot for r in representation]
                 self.vars["number_of_states"] = len(representation)
@@ -174,7 +174,8 @@ class ReplicaExchange0(object):
                 self.is_multi_state = False
                 self.root_hier = representation.prot
                 self.vars["number_of_states"] = 1
-        elif root_hier and type(root_hier) == IMP.atom.Hierarchy and root_hier.get_name()=='System':
+        elif root_hier and isinstance(root_hier, IMP.atom.Hierarchy) \
+             and root_hier.get_name() == 'System':
             self.pmi2 = True
             if self.output_objects is not None:
                 self.output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
@@ -931,11 +932,11 @@ class AnalysisReplicaExchange0(object):
         newdict = {}
         for key in d:
             val = d[key]
-            if '..' in key or (type(val) is tuple and len(val)>=3):
+            if '..' in key or (isinstance(val, tuple) and len(val) >= 3):
                 newdict[key] = val
                 continue
             states = IMP.atom.get_by_type(prot,IMP.atom.STATE_TYPE)
-            if type(val) is tuple:
+            if isinstance(val, tuple):
                 start = val[0]
                 stop = val[1]
                 name = val[2]
@@ -1086,7 +1087,7 @@ class AnalysisReplicaExchange0(object):
 
             if density_custom_ranges:
                 for k in density_custom_ranges:
-                    if type(density_custom_ranges[k]) is not list:
+                    if not isinstance(density_custom_ranges[k], list):
                         raise Exception("Density custom ranges: values must be lists of tuples")
 
             # keep subset of frames if requested
@@ -2426,9 +2427,9 @@ class AnalysisReplicaExchange(object):
         return s
 
     def __getitem__(self,int_slice_adaptor):
-        if type(int_slice_adaptor) is int:
+        if isinstance(int_slice_adaptor, int):
             return self.clusters[int_slice_adaptor]
-        elif type(int_slice_adaptor) is slice:
+        elif isinstance(int_slice_adaptor, slice):
             return self.__iter__(int_slice_adaptor)
         else:
             raise TypeError("Unknown Type")
