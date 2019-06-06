@@ -5,8 +5,12 @@
    - doxygen adds broken links from Python source pages (to namespace*.html)
      if function names match the name of another Python file:
        https://bugzilla.gnome.org/show_bug.cgi?id=709779
+     This script simply removes such links.
+   - doxygen doesn't handle inline image markdown of the form
+     ![alt text](img url)
+     This script replaces this with an img tag.
 
-   The script simply removes such links. Call it with a single argument - the
+   Call this script with a single argument - the
    directory containing the documentation HTML files.
 """
 
@@ -15,17 +19,19 @@ import os
 import glob
 import sys
 
-r = re.compile("""<a [^>]*href="(namespacelink|
-                                 namespacecustom__hierarchy|
-                                 namespacesetup|
-                                 namespacelog|
-                                 namespaceBallMover)
-                  \.html">([^<]*)</a>""", re.VERBOSE)
+r1 = re.compile("""<a [^>]*href="(namespacelink|
+                                  namespacecustom__hierarchy|
+                                  namespacesetup|
+                                  namespacelog|
+                                  namespaceBallMover)
+                   \.html">([^<]*)</a>""", re.VERBOSE)
+r2 = re.compile("!\[([^]]+)\]\(([^)]+)\)", re.VERBOSE)
 
 for f in glob.glob('%s/*.html' % sys.argv[1]):
     outf = open(f + '.out', 'w')
     for line in open(f):
-        m = r.search(line)
-        outf.write(r.sub(r'\2', line))
+        out = r1.sub(r'\2', line)
+        out = r2.sub(r'<img src="\2" alt="\1">', out)
+        outf.write(out)
     outf.close()
     os.rename(f + '.out', f)
