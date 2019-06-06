@@ -12,7 +12,7 @@ import IMP.container
 import IMP.pmi.tools
 import IMP.pmi.restraints
 import IMP.saxs
-
+import warnings
 
 class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
 
@@ -60,7 +60,9 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
             if maxq < 0.01 or maxq > 4.0:
                 raise Exception("SAXSRestraint: maxq must be set between 0.01 and 4.0")
             if (ff_type == IMP.saxs.CA_ATOMS or ff_type == IMP.saxs.RESIDUES) and maxq > 0.15:
-                print("SAXSRestraint: WARNING> for residue-resolved form factors, a maxq > 0.15 is not recommended!")
+                warnings.warn("SAXSRestraint: for residue-resolved form "
+                              "factors, a maxq > 0.15 is not recommended!",
+                              IMP.pmi.ParameterWarning)
         else:
             raise Exception("SAXSRestraint: maxq must be set to a number between 0.01 and 4.0")
 

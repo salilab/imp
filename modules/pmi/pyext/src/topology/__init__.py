@@ -31,6 +31,7 @@ from bisect import bisect_left
 from math import pi,cos,sin
 from operator import itemgetter
 import weakref
+import warnings
 
 def _build_ideal_helix(model, residues, coord_finder):
     """Creates an ideal helix from the specified residue range
@@ -481,7 +482,9 @@ class Molecule(_SystemBase):
         self.coord_finder.add_residues(rhs)
 
         if len(self.residues)==0:
-            print("WARNING: Substituting PDB residue type with FASTA residue type. Potentially dangerous.")
+            warnings.warn(
+                "Substituting PDB residue type with FASTA residue type. "
+                "Potentially dangerous.", IMP.pmi.StructureWarning)
 
         # Store info for ProtocolOutput usage later
         self._pdb_elements.append((rhs,
@@ -709,8 +712,10 @@ class Molecule(_SystemBase):
             # give a warning for all residues that don't have representation
             no_rep = [r for r in self.residues if r not in self._represented]
             if len(no_rep)>0:
-                print('WARNING: Residues without representation in molecule',
-                      self.get_name(),':',system_tools.resnums2str(no_rep))
+                warnings.warn(
+                    'Residues without representation in molecule %s: %s'
+                    % (self.get_name(), system_tools.resnums2str(no_rep)),
+                    IMP.pmi.StructureWarning)
 
             # first build any ideal helices (fills in structure for the TempResidues)
             for rep in self.representations:
@@ -1088,9 +1093,12 @@ class TempResidue(object):
         if res.get_residue_type()!=self.get_residue_type():
             if soft_check:
                 # note from commit a2c13eaa1 we give priority to the FASTA and not the PDB
-                print('WARNING: Inconsistency between FASTA sequence and PDB sequence. FASTA type',\
-                      self.get_index(),self.hier.get_residue_type(),
-                      'and PDB type',res.get_residue_type())
+                warnings.warn(
+                    'Inconsistency between FASTA sequence and PDB sequence. '
+                    'FASTA type %s %s and PDB type %s'
+                    % (self.get_index(), self.hier.get_residue_type(),
+                       res.get_residue_type()),
+                    IMP.pmi.StructureWarning)
                 self.hier.set_residue_type((self.get_residue_type()))
                 self.rtype = self.get_residue_type()
             else:

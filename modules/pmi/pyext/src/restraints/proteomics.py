@@ -15,6 +15,7 @@ import numpy
 import math
 import math
 import sys
+import warnings
 
 
 class ConnectivityRestraint(object):
@@ -227,9 +228,9 @@ class AmbiguousCompositeRestraint(object):
                          for p in ps1nosym]
 
             if len(ps1) == 0:
-                print(
-                    "AmbiguousCompositeRestraint: WARNING> residue %d of chain %s is not there" %
-                    (r1, c1))
+                warnings.warn(
+                    "AmbiguousCompositeRestraint: residue %d of chain %s "
+                    "is not there" % (r1, c1), IMP.pmi.StructureWarning)
                 continue
 
             ps2 = IMP.pmi.tools.select(
@@ -247,9 +248,9 @@ class AmbiguousCompositeRestraint(object):
                          for p in ps2nosym]
 
             if len(ps2) == 0:
-                print(
-                    "AmbiguousCompositeRestraint: WARNING> residue %d of chain %s is not there" %
-                    (r2, c2))
+                warnings.warn(
+                    "AmbiguousCompositeRestraint: residue %d of chain %s "
+                    "is not there" % (r2, c2), IMP.pmi.StructureWarning)
                 continue
 
             cr = IMP.pmi.CompositeRestraint(
@@ -423,14 +424,14 @@ class SimplifiedPEMAP(object):
                 name_is_ambiguous=False,
                 residue=r1)
             if len(ps1) == 0:
-                print(
-                    "SimplifiedPEMAP: WARNING> residue %d of chain %s is not there (w/ %d %s)" %
-                    (r1, c1, r2, c2))
+                warnings.warn(
+                    "SimplifiedPEMAP: residue %d of chain %s is not there "
+                    "(w/ %d %s)" % (r1, c1, r2, c2), IMP.pmi.StructureWarning)
                 continue
             if len(ps1) > 1:
-                print(
-                    "SimplifiedPEMAP: WARNING> residue %d of chain %s selected multiple particles" %
-                    (r1, c1))
+                warnings.warn(
+                    "SimplifiedPEMAP: residue %d of chain %s selected "
+                    "multiple particles" % (r1, c1), IMP.pmi.StructureWarning)
                 continue
 
             ps2 = IMP.pmi.tools.select(
@@ -440,14 +441,14 @@ class SimplifiedPEMAP(object):
                 name_is_ambiguous=False,
                 residue=r2)
             if len(ps2) == 0:
-                print(
-                    "SimplifiedPEMAP: WARNING> residue %d of chain %s is not there (w/ %d %s)" %
-                    (r1, c1, r2, c2))
+                warnings.warn(
+                    "SimplifiedPEMAP: residue %d of chain %s is not there "
+                    "(w/ %d %s)" % (r1, c1, r2, c2), IMP.pmi.StructureWarning)
                 continue
             if len(ps2) > 1:
-                print(
-                    "SimplifiedPEMAP: WARNING> residue %d of chain %s selected multiple particles" %
-                    (r2, c2))
+                warnings.warn(
+                    "SimplifiedPEMAP: residue %d of chain %s selected "
+                    "multiple particles" % (r2, c2), IMP.pmi.StructureWarning)
                 continue
 
             p1 = ps1[0]

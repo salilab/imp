@@ -3,6 +3,7 @@ import IMP.pmi
 import IMP.pmi.topology
 import IMP.pmi.macros
 import os
+import warnings
 import IMP.test
 import IMP.rmf
 import IMP.pmi.plotting
@@ -90,6 +91,30 @@ class Tests(IMP.test.TestCase):
         fbs = dof.get_flexible_beads()
         self.assertEqual(len(rbs),2)
         self.assertEqual(len(fbs),7)
+
+    def test_flexible(self):
+        """Check that movers are created for flexible regions"""
+        mdl = IMP.Model()
+        tfile = self.get_input_file_name('topology_flexible.txt')
+        input_dir = os.path.dirname(tfile)
+        t = IMP.pmi.topology.TopologyReader(tfile,
+                                            pdb_dir=input_dir,
+                                            fasta_dir=input_dir,
+                                            gmm_dir=input_dir)
+        bs = IMP.pmi.macros.BuildSystem(mdl)
+        bs.add_state(t)
+        with warnings.catch_warnings(record=True) as cw:
+            warnings.simplefilter("always")
+            root_hier, dof = bs.execute_macro()
+        # Both domains (one a PDB, one beads) should be flexible
+        self.assertEqual(len(dof.get_movers()), 2)
+        self.assertEqual(len(dof.get_rigid_bodies()), 0)
+        self.assertEqual(len(dof.get_flexible_beads()), 2)
+        # One warning should be emitted, for the PDB domain
+        w, = cw
+        self.assertIn("Making Prot1..0 flexible. This may distort",
+                      str(w.message))
+        self.assertIs(w.category, IMP.pmi.StructureWarning)
 
     def test_draw_molecular_composition(self):
         try:

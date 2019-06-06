@@ -8,6 +8,23 @@ IMP_SWIG_OBJECT(IMP::pmi, MembraneRestraint, MembraneRestraints);
 IMP_SWIG_OBJECT(IMP::pmi, InternalCoordinatesConstraint, InternalCoordinatesConstraints);
 
 %pythoncode %{
+class StructureWarning(UserWarning):
+    """Warning related to handling of structures"""
+    pass
+
+
+class ParameterWarning(UserWarning):
+    """Warning for probably incorrect input parameters"""
+    pass
+
+
+class MissingFileWarning(UserWarning):
+    """Warning for an expected, but missing, file"""
+    pass
+%}
+
+
+%pythoncode %{
 def deprecated_pmi1_object(version, help_message):
     """Mark a PMI1 class as deprecated. Point to its replacement or IMP.pmi1"""
     return IMP.deprecated_object(version,

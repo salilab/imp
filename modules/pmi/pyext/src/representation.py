@@ -20,6 +20,7 @@ import RMF
 from math import pi, sqrt
 from operator import itemgetter
 import os
+import warnings
 import weakref
 
 class _Repo(object):
@@ -1041,9 +1042,10 @@ class Representation(object):
                 if "%s_%s_%s" % (component_name, rmfname, s) == reprname:
                     return True
         if rmfname != reprname and not match_any_suffix():
-            print("set_coordinates_from_rmf: WARNING rmf particle and "
+            warnings.warn(
+                  "set_coordinates_from_rmf: rmf particle and "
                   "representation particle names don't match %s %s"
-                  % (rmfname, reprname))
+                  % (rmfname, reprname), IMP.pmi.StructureWarning)
 
     def set_coordinates_from_rmf(self, component_name, rmf_file_name,
                                  rmf_frame_number,
@@ -1162,7 +1164,12 @@ class Representation(object):
                                              "rigid bodies yet")
                         rb.set_reference_frame_lazy(tr)
                 else:
-                    print("set_coordinates_from_rmf: WARNING particles are not XYZ decorated %s %s " % (str(IMP.core.XYZ.get_is_setup(prmf)), str(IMP.core.XYZ.get_is_setup(psrepr[n]))))
+                    warnings.warn(
+                       "set_coordinates_from_rmf: particles are not XYZ "
+                       "decorated %s %s "
+                       % (str(IMP.core.XYZ.get_is_setup(prmf)),
+                          str(IMP.core.XYZ.get_is_setup(psrepr[n]))),
+                       IMP.pmi.StructureWarning)
 
                 if IMP.core.Gaussian.get_is_setup(prmf) and IMP.core.Gaussian.get_is_setup(psrepr[n]):
                     gprmf=IMP.core.Gaussian(prmf)
@@ -1182,7 +1189,10 @@ class Representation(object):
                 try:
                     prmf=rmf_name_particle_map[representation_name_to_rmf_name_map[prepr.get_name()]]
                 except KeyError:
-                    print("set_coordinates_from_rmf: WARNING missing particle name in representation_name_to_rmf_name_map, skipping...")
+                    warnings.warn(
+                        "set_coordinates_from_rmf: missing particle name in "
+                        "representation_name_to_rmf_name_map, skipping...",
+                        IMP.pmi.StructureWarning)
                     continue
                 xyz = IMP.core.XYZ(prmf).get_coordinates()
                 IMP.core.XYZ(prepr).set_coordinates(xyz)
@@ -1878,7 +1888,11 @@ class Representation(object):
             for p in ps:
                 if IMP.core.RigidMember.get_is_setup(p):
                     rb = IMP.core.RigidMember(p).get_rigid_body()
-                    print("set_rigid_body_from_hierarchies> WARNING particle %s already belongs to rigid body %s" % (p.get_name(), rb.get_name()))
+                    warnings.warn(
+                            "set_rigid_body_from_hierarchies> particle %s "
+                            "already belongs to rigid body %s"
+                            % (p.get_name(), rb.get_name()),
+                            IMP.pmi.StructureWarning)
                 else:
                     rigid_parts.add(p)
             name += hier.get_name() + "-"
@@ -1925,7 +1939,11 @@ class Representation(object):
                     # if not p in self.floppy_bodies:
                     if IMP.core.RigidMember.get_is_setup(p):
                         rb = IMP.core.RigidMember(p).get_rigid_body()
-                        print("set_rigid_body_from_hierarchies> WARNING particle %s already belongs to rigid body %s" % (p.get_name(), rb.get_name()))
+                        warnings.warn(
+                            "set_rigid_body_from_hierarchies> particle %s "
+                            "already belongs to rigid body %s"
+                            % (p.get_name(), rb.get_name()),
+                            IMP.pmi.StructureWarning)
                     else:
                         rigid_parts.add(p)
 
@@ -1937,7 +1955,11 @@ class Representation(object):
                     # if not p in self.floppy_bodies:
                     if IMP.core.RigidMember.get_is_setup(p):
                         rb = IMP.core.RigidMember(p).get_rigid_body()
-                        print("set_rigid_body_from_hierarchies> WARNING particle %s already belongs to rigid body %s" % (p.get_name(), rb.get_name()))
+                        warnings.warn(
+                            "set_rigid_body_from_hierarchies> particle %s "
+                            "already belongs to rigid body %s"
+                            % (p.get_name(), rb.get_name()),
+                            IMP.pmi.StructureWarning)
                     else:
                         rigid_parts.add(p)
 

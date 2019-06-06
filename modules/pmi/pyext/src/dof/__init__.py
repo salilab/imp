@@ -13,7 +13,7 @@ import IMP.pmi.samplers
 import IMP.pmi.tools
 import itertools
 import IMP.pmi.samplers
-
+import warnings
 
 def create_rigid_body_movers(dof,maxtrans,maxrot):
     mvs = []
@@ -124,7 +124,7 @@ class DegreesOfFreedom(object):
 
         # First, is this already a rigid body?
         if type(rigid_parts) is IMP.core.RigidBody:
-            print("WARNING: Rigid Body Already Setup")
+            warnings.warn("Rigid Body Already Setup", IMP.pmi.ParameterWarning)
             rb = rigid_parts
             model=rb.get_model()
             if name is None:
@@ -137,7 +137,9 @@ class DegreesOfFreedom(object):
                                                 flatten=True)
 
             if not hiers:
-                print("WARNING: No hierarchies were passed to create_rigid_body()")
+                warnings.warn(
+                        "No hierarchies were passed to create_rigid_body()",
+                        IMP.pmi.ParameterWarning)
                 return []
 
         # Need to do this before rigid body is set up so that we leave the
@@ -259,7 +261,9 @@ class DegreesOfFreedom(object):
             # the "chain" is just everything together
             h = IMP.pmi.tools.input_adaptor(srb_parts,resolution,flatten=True)
             if len(h)==0:
-                print('WARNING: No hierarchies were passed to create_super_rigid_body()')
+                warnings.warn(
+                    'No hierarchies were passed to create_super_rigid_body()',
+                    IMP.pmi.ParameterWarning)
                 return srb_movers
             srb_groups = [h]
         else:
@@ -333,7 +337,9 @@ class DegreesOfFreedom(object):
                                             resolution,
                                             flatten=True)
         if not hiers or len(hiers)==0:
-            print('WARNING: No hierarchies were passed to create_flexible_beads()')
+            warnings.warn(
+                'No hierarchies were passed to create_flexible_beads()',
+                IMP.pmi.ParameterWarning)
             return fb_movers
         for h in hiers:
             p = h.get_particle()

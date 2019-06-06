@@ -7,6 +7,7 @@ import IMP.pmi.tools
 from collections import defaultdict
 from math import pi
 import os
+import warnings
 
 def resnums2str(res):
     """Take iterable of TempResidues and return compatified string"""
@@ -85,8 +86,9 @@ def get_structure(model,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,c
         res.set_index(res.get_index() + offset)
         ret.append(res)
     if len(ret) == 0:
-        print("WARNING: no residues selected from %s in range %s"
-              % (pdb_fn, res_range))
+        warnings.warn(
+            "no residues selected from %s in range %s" % (pdb_fn, res_range),
+            IMP.pmi.StructureWarning)
     return ret
 
 def build_bead(model,residues,input_coord=None):

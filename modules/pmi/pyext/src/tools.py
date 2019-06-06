@@ -24,6 +24,7 @@ try:
     from collections import OrderedDict
 except ImportError:
     from IMP.pmi._compat_collections import OrderedDict
+import warnings
 
 def _get_system_for_hier(hier):
     """Given a hierarchy, return the System that created it, or None"""
@@ -107,7 +108,8 @@ def get_restraint_set(model, rmf=False):
        should be written out to RMF files."""
     mk, mk_rmf = _get_restraint_set_keys()
     if not model.get_has_data(mk):
-        print("WARNING: no restraints added to model yet")
+        warnings.warn("no restraints added to model yet",
+                      IMP.pmi.ParameterWarning)
         _add_restraint_sets(model, mk, mk_rmf)
     if rmf:
         return IMP.RestraintSet.get_from(model.get_data(mk_rmf))
@@ -1358,12 +1360,16 @@ def input_adaptor(stuff,
                             minf = min(found)
                             maxf = max(found)
                             resbreak = maxf if minf==minset else minset-1
-                            print('WARNING: You are trying to select only part of the bead %s:%i-%i.\n'
-                                  'The residues you requested are %i-%i. You can fix this by:\n'
-                                  '1) requesting the whole bead/none of it or\n'
-                                  '2) break the bead up by passing bead_extra_breaks=[\'%i\'] in '
-                                  'molecule.add_representation()'
-                                            %(mol.get_name(),minset,maxset,minf,maxf,resbreak))
+                            warnings.warn(
+                                'You are trying to select only part of the '
+                                'bead %s:%i-%i. The residues you requested '
+                                'are %i-%i. You can fix this by: '
+                                '1) requesting the whole bead/none of it; or'
+                                '2) break the bead up by passing '
+                                'bead_extra_breaks=[\'%i\'] in '
+                                'molecule.add_representation()'
+                                %(mol.get_name(), minset, maxset, minf, maxf,
+                                  resbreak), IMP.pmi.ParameterWarning)
             hier_list.append([IMP.atom.Hierarchy(p) for p in ps])
     elif is_hierarchy:
         #check
@@ -1479,7 +1485,8 @@ def select_at_all_resolutions(hier=None,
     if hier is not None:
         hiers.append(hier)
     if len(hiers)==0:
-        print("WARNING: You passed nothing to select_at_all_resolutions()")
+        warnings.warn("You passed nothing to select_at_all_resolutions()",
+                      IMP.pmi.ParameterWarning)
         return []
     ret = OrderedSet()
     for hsel in hiers:

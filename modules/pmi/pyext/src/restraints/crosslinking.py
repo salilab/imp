@@ -20,6 +20,7 @@ import operator
 import os
 import ihm.location
 import ihm.dataset
+import warnings
 
 class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
     """Setup cross-link distance restraints from mass spectrometry data.
@@ -209,14 +210,20 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                     if len(ps1) > 1:
                         raise ValueError("residue %d of chain %s selects multiple particles %s" % (r1, c1, str(ps1)))
                     elif len(ps1) == 0:
-                        print("CrossLinkingMassSpectrometryRestraint: WARNING> residue %d of chain %s is not there" % (r1, c1))
+                        warnings.warn(
+                            "CrossLinkingMassSpectrometryRestraint: "
+                            "residue %d of chain %s is not there" % (r1, c1),
+                            IMP.pmi.StructureWarning)
                         midb.write(str(xl) + "\n")
                         continue
 
                     if len(ps2) > 1:
                         raise ValueError("residue %d of chain %s selects multiple particles %s" % (r2, c2, str(ps2)))
                     elif len(ps2) == 0:
-                        print("CrossLinkingMassSpectrometryRestraint: WARNING> residue %d of chain %s is not there" % (r2, c2))
+                        warnings.warn(
+                            "CrossLinkingMassSpectrometryRestraint: "
+                            "residue %d of chain %s is not there" % (r2, c2),
+                            IMP.pmi.StructureWarning)
                         midb.write(str(xl) + "\n")
                         continue
 
@@ -224,7 +231,10 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                     p2 = ps2[0]
 
                     if p1 == p2 and r1 == r2:
-                        print("CrossLinkingMassSpectrometryRestraint: WARNING> same particle and same residue, skipping cross-link")
+                        warnings.warn(
+                            "CrossLinkingMassSpectrometryRestraint: "
+                            "same particle and same residue, skipping "
+                            "cross-link", IMP.pmi.StructureWarning)
                         continue
 
                     if new_contribution:
@@ -636,13 +646,17 @@ class AtomicCrossLinkMSRestraint(IMP.pmi.restraints.RestraintBase):
                                              molecule=c2,
                                              residue_index=r2).get_selected_particles()
                     if len(ps1) == 0:
-                        print("AtomicXLRestraint: WARNING> residue %d of chain %s is not there" % (r1, c1))
+                        warnings.warn("AtomicXLRestraint: residue %d of "
+                                      "chain %s is not there" % (r1, c1),
+                                      IMP.pmi.StructureWarning)
                         if filelabel is not None:
                             midb.write(str(xl) + "\n")
                         continue
 
                     if len(ps2) == 0:
-                        print("AtomicXLRestraint: WARNING> residue %d of chain %s is not there" % (r2, c2))
+                        warnings.warn("AtomicXLRestraint: residue %d of "
+                                      "chain %s is not there" % (r2, c2),
+                                      IMP.pmi.StructureWarning)
                         if filelabel is not None:
                             midb.write(str(xl) + "\n")
                         continue
@@ -1277,14 +1291,18 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
                 if len(ps1) > 1:
                     raise ValueError("residue %d of chain %s selects multiple particles %s" % (r1, c1, str(ps1)))
                 elif len(ps1) == 0:
-                    print("ISDCrossLinkMS: WARNING> residue %d of chain %s is not there" % (r1, c1))
+                    warnings.warn("ISDCrossLinkMS: residue %d of chain %s "
+                                  "is not there" % (r1, c1),
+                                  IMP.pmi.StructureWarning)
                     midb.write(str(entry) + "\n")
                     continue
 
                 if len(ps2) > 1:
                     raise ValueError("residue %d of chain %s selects multiple particles %s" % (r2, c2, str(ps2)))
                 elif len(ps2) == 0:
-                    print("ISDCrossLinkMS: WARNING> residue %d of chain %s is not there" % (r2, c2))
+                    warnings.warn("ISDCrossLinkMS: residue %d of chain %s "
+                                  "is not there" % (r2, c2),
+                                  IMP.pmi.StructureWarning)
                     midb.write(str(entry) + "\n")
                     continue
 
@@ -1292,7 +1310,10 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
                 p2 = ps2[0]
 
                 if (p1 == p2) and (r1 == r2) :
-                    print("ISDCrossLinkMS Restraint: WARNING> on the identical bead particles and the identical residues, thus skipping this cross-link.")
+                    warnings.warn("ISDCrossLinkMS Restraint: on the identical "
+                                  "bead particles and the identical residues, "
+                                  "thus skipping this cross-link.",
+                                  IMP.pmi.StructureWarning)
                     continue
 
                 if xlid in uniqueid_restraints_map:
