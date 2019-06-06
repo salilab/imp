@@ -216,7 +216,7 @@ class TestCase(unittest.TestCase):
            The directory containing this file will be automatically
            cleaned up when the test completes."""
         if not hasattr(self, '_tmpdir'):
-            self._tmpdir = _TempDir(os.environ['IMP_TMP_DIR'])
+            self._tmpdir = _TempDir(os.environ.get('IMP_TMP_DIR'))
         tmpdir = self._tmpdir.tmpdir
         return os.path.join(tmpdir, filename)
 
