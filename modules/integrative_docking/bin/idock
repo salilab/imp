@@ -11,17 +11,13 @@ import shutil
 import tempfile
 import subprocess
 import inspect
+import contextlib
 
-
-class TempDir(object):
-
-    """Make a temporary directory, and delete it when the object is destroyed"""
-
-    def __init__(self):
-        self.tmpdir = tempfile.mkdtemp()
-
-    def __del__(self):
-        shutil.rmtree(self.tmpdir, ignore_errors=True)
+@contextlib.contextmanager
+def temporary_directory(dir=None):
+    _tmpdir = tempfile.mkdtemp(dir=dir)
+    yield _tmpdir
+    shutil.rmtree(_tmpdir, ignore_errors=True)
 
 
 def _count_lines(filename):
@@ -89,8 +85,6 @@ class Scorer(object):
     def recompute_zscore(self, transforms_file):
         """Recompute z-scores for the new set of transformations
            in transforms_file"""
-        d = TempDir()
-        tmp_tf = os.path.join(d.tmpdir, 'tmp')
         solutions = []
         num_re = re.compile('\d')
         # Read all solutions
@@ -98,19 +92,21 @@ class Scorer(object):
             spl = line.split('|')
             if len(spl) > 1 and num_re.search(spl[0]):
                 solutions.append(line)
-        # Extract only the solutions that are mentioned in transforms_file
-        fh = open(tmp_tf, 'w')
-        for line in open(transforms_file):
-            spl = line.split()
-            if len(spl) > 1 and num_re.search(spl[0]):
-                fh.write(solutions[int(spl[0]) - 1])
-        fh.close()
-        # Recompute z-scores for the new set
-        args = [tmp_tf]
-        if self.reverse_zscores:
-            args.append('1')
-        _run_binary(None, 'recompute_zscore', args,
-                    out_file=self.zscore_output_file)
+        with temporary_directory() as tmpdir:
+            tmp_tf = os.path.join(tmpdir, 'tmp')
+            # Extract only the solutions that are mentioned in transforms_file
+            fh = open(tmp_tf, 'w')
+            for line in open(transforms_file):
+                spl = line.split()
+                if len(spl) > 1 and num_re.search(spl[0]):
+                    fh.write(solutions[int(spl[0]) - 1])
+            fh.close()
+            # Recompute z-scores for the new set
+            args = [tmp_tf]
+            if self.reverse_zscores:
+                args.append('1')
+            _run_binary(None, 'recompute_zscore', args,
+                        out_file=self.zscore_output_file)
 
 
 class ExperimentalScorer(Scorer):
