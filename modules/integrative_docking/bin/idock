@@ -89,7 +89,7 @@ class Scorer(object):
         """Recompute z-scores for the new set of transformations
            in transforms_file"""
         solutions = []
-        num_re = re.compile('\d')
+        num_re = re.compile(r'\d')
         # Read all solutions
         with open(self.output_file) as fh:
             for line in fh:
@@ -447,7 +447,7 @@ where the PatchDock program is installed."""
     def make_transformation_file(self):
         """Extract transformation image from PatchDock output file"""
         out_file = self.get_filename('docking.res')
-        num_re = re.compile('\d')
+        num_re = re.compile(r'\d')
         num_transforms = 0
         with open('trans_pd', 'w') as fout:
             with open(out_file) as fin:
