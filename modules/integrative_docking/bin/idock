@@ -394,7 +394,7 @@ where the PatchDock program is installed."""
 
         if len(scorers) == len(self._all_scorers) \
                             - len(self._all_experimental_scorers):
-            parser.error("please provide %s experimental data" % data_types)
+            p.error("please provide %s experimental data" % data_types)
         return scorers
 
     def get_scorers(self, parser):

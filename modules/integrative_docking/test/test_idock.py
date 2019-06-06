@@ -26,6 +26,7 @@ class Tests(IMP.test.ApplicationTestCase):
         p = self.run_python_application('idock',
                                         ['file1', 'file2'])
         out, err = p.communicate()
+        self.assertNotIn('Traceback', err)
         self.assertIn('please provide', err)
         self.assertNotEqual(p.returncode, 0)
 
