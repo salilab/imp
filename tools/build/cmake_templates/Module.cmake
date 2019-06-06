@@ -3,8 +3,9 @@ project(IMP.%(name)s)
 %(tests)s
 
 imp_get_process_exit_code("Setting up module %(name)s" status ${CMAKE_BINARY_DIR}
-                          COMMAND %(tools_dir)sbuild/setup_module.py
-			  %(build_dir)s --name=%(name)s
+                          COMMAND ${PYTHON_EXECUTABLE}
+                          %(tools_dir)sbuild/setup_module.py
+                          %(build_dir)s --name=%(name)s
                           --datapath=${IMP_DATAPATH}
                           --defines=${IMP_%(name)s_CONFIG}:%(defines)s
                           --source=${CMAKE_SOURCE_DIR}
@@ -20,7 +21,7 @@ if(${status} EQUAL 0)
   # for warning control
   add_definitions(-DIMP%(NAME)s_COMPILATION)
 
-  set(allh_command  "python" "%(tools_dir)sdev_tools/make_all_header.py" "${CMAKE_BINARY_DIR}/include/%(allh_header)s" "%(subdir)s" "${PROJECT_SOURCE_DIR}/include/" ${IMP_%(name)s_EXTRA_HEADERS})
+  set(allh_command  "${PYTHON_EXECUTABLE}" "%(tools_dir)sdev_tools/make_all_header.py" "${CMAKE_BINARY_DIR}/include/%(allh_header)s" "%(subdir)s" "${PROJECT_SOURCE_DIR}/include/" ${IMP_%(name)s_EXTRA_HEADERS})
   # for swig
   imp_execute_process("IMP.%(name)s making all header" ${PROJECT_BINARY_DIR}
                    COMMAND ${allh_command})
