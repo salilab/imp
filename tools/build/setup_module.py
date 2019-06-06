@@ -266,8 +266,18 @@ def setup_module(module, finder):
 def link_py_apps(options):
     path = os.path.join(options.source, "modules", options.name, "bin")
     tools.mkdir("bin", clean=False)
-    tools.link_dir(path, "bin", clean=False, match=["*"],
-                   filt=tools.filter_pyapps)
+    bins = [b for b in glob.glob(os.path.join(path, '*'))
+            if tools.filter_pyapps(b)]
+    # rewrite Python shebang to use current version of Python (2 or 3)
+    for source_bin in bins:
+        contents = """#!%s
+fname = '%s'
+with open(fname) as fh:
+    exec(compile(fh.read(), fname, 'exec'))
+""" % (sys.executable, source_bin)
+        dest_bin = os.path.join("bin", os.path.basename(source_bin))
+        tools.rewrite(dest_bin, contents, verbose=False)
+        os.chmod(dest_bin, 493) # 493 = 0755, i.e. executable
 
 def link_bin(options):
     path = os.path.join("module_bin", options.name)
