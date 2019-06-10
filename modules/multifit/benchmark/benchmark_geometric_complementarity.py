@@ -53,7 +53,7 @@ def perform_benchmark(model, tr_list, r1, r2, rb1, rb2, maxiter):
     rest.set_complementarity_thickness(1)
     rest.set_interior_layer_thickness(1)
     maxiter = min(maxiter, len(tr_list))
-    for i in xrange(maxiter):
+    for i in range(maxiter):
         start = time.time()
         IMP.core.transform(rb2, tr_list[i][0])
         score = 8 * rest.evaluate(False)
