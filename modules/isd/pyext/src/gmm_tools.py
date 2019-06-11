@@ -367,13 +367,23 @@ def fit_dirichlet_gmm_to_points(points,
     """
 
 
-    import sklearn.mixture
+    new_sklearn = True
+    try:
+        from sklearn.mixture import BayesianGaussianMixture
+    except ImportError:
+        from sklearn.mixture import DPGMM
+        new_sklearn = False
 
     ### create and fit GMM
     print('using dirichlet prior')
-    gmm=sklearn.mixture.DPGMM(n_components=n_components,
-                              n_iter=num_iter,
-                              covariance_type=covariance_type)
+    if new_sklearn:
+        gmm = BayesianGaussianMixture(
+                weight_concentration_prior_type='dirichlet_process',
+                n_components=n_components, max_iter=num_iter,
+                covariance_type=covariance_type)
+    else:
+        gmm = DPGMM(n_components=n_components, n_iter=num_iter,
+                    covariance_type=covariance_type)
 
     gmm.fit(points)
 
@@ -383,8 +393,10 @@ def fit_dirichlet_gmm_to_points(points,
     #print gmm.weights_
     #print gmm.means_
     ### convert format to core::Gaussian
+    if not new_sklearn:
+        gmm.precisions_ = gmm.precs_
     for ng in range(n_components):
-        invcovar=gmm.precs_[ng]
+        invcovar=gmm.precisions_[ng]
         covar=np.linalg.inv(invcovar)
         if covar.size==3:
             covar=np.diag(covar).tolist()
