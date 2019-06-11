@@ -270,7 +270,8 @@ def fit_gmm_to_points(points,
 
     print('creating GMM with n_components',n_components,'n_iter',num_iter,'covar type',covariance_type)
     if new_sklearn:
-        # aic() calls size() on points, so it needs to a numpy array, not a list
+        # aic() calls size() on points, so it needs to be
+        # a numpy array, not a list
         points = np.array(points)
         weights_init = precisions_init = None
         if force_radii != -1.0:
