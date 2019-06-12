@@ -46,11 +46,11 @@ instead if it is available by passing `-G Ninja` to the `(c)cmake` call.
 That is highly recommended when it is available.
 
 Various aspects of %IMP build behavior can be controlled via variables. These can be set interactively using `ccmake` (eg `ccmake ../imp`) or by passing them with `-D` in a call to `cmake`. Key ones include:
+- `CMAKE_BUILD_TYPE`: one of `Debug` or `Release`.
 - `IMP_DISABLED_MODULES`: A colon-separated list of disabled modules.
-- `IMP_MAX_CHECKS`: One of `NONE`, `USAGE`, `INTERNAL` to control what check levels will be supported.
+- `IMP_MAX_CHECKS`: One of `NONE`, `USAGE`, `INTERNAL` to control what check levels will be supported. The default is `USAGE` for Release builds and `INTERNAL` for debug builds (setting this to `INTERNAL` will impact performance; `NONE` is not recommended as all sanity checks will be skipped).
 - `IMP_MAX_LOG`: One of `SILENT`, `PROGRESS`, `TERSE`, `VERBOSE` to control what log levels are supported.
 - `IMP_PER_CPP_COMPILATION`: A colon-separated list of modules to build one .cpp at a time.
-- `CMAKE_BUILD_TYPE`: one of `Debug` or `Release`.
 - `USE_PYTHON2`: Set to `on` to have CMake build %IMP with Python 2 (by default it will use Python 3 if available).
 
 There also are a [variety of standard cmake options](https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/Useful-Variables)
