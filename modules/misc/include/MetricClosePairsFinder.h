@@ -36,7 +36,7 @@ IMPMISC_BEGIN_NAMESPACE
     be close enough.
 
     If we need something more involved, we can try
-    [this paper](http://pubs.acs.org/doi/abs/10.1021/ci034150f)
+    [this paper](https://pubs.acs.org/doi/abs/10.1021/ci034150f)
  */
 template <class LowerBound, class UpperBound>
 class MetricClosePairsFinder : public core::ClosePairsFinder {
