@@ -134,8 +134,8 @@ class Page(object):
             del sp[:2]
         else:
             root = 'https://github.com/salilab/imp/blob/develop/'
-        return('<li><a href="%s%s"><i class="fab fa-github">'
-               '</i> Edit on GitHub </a></li>' % (root, os.path.sep.join(sp)))
+        return('      <li><a href="%s%s"><i class="fab fa-github">'
+               '</i> Edit on GitHub</a></li>\n' % (root, os.path.sep.join(sp)))
 
 
 class Docs(object):
