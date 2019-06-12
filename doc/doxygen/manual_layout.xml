@@ -5,7 +5,7 @@
     <tab type="mainpage" visible="yes" title="IMP Manual"/>
     <tab type="user" visible="yes" title="Reference Guide" url="../ref/"/>
     <tab type="user" visible="yes" title="Tutorial Index" url="https://integrativemodeling.org/tutorials/"/>
-    <tab type="pages" visible="yes" title="" intro=""/>
+    <tab type="pages" visible="no" title="" intro=""/>
     <tab type="modules" visible="yes" title="" intro=""/>
     <tab type="namespaces" visible="yes" title="">
       <tab type="namespacelist" visible="yes" title="" intro=""/>
