@@ -63,7 +63,7 @@ class PythonDirectedGraph {
     and finally view the pdf.
 */
 void show_altgraph(Graph g);
-/** Export an IMP graph to a \external{http://networkx.lanl.gov/,networkx}
+/** Export an IMP graph to a \external{https://networkx.github.io/,networkx}
 graph.
     The resulting graph can be analyzed and displayed, although the graph
     layout algorithms in networkx seem to be quite poor compared to
