@@ -88,8 +88,11 @@ class SpellChecker(object):
                 print("  File " + fname, file=sys.stderr)
                 self.fname = fname
             print("    %s:" % location, file=sys.stderr)
-            print("       " + ", ".join(misspelled).encode('utf8'),
-                  file=sys.stderr)
+            joined = ", ".join(misspelled)
+            # Need to convert from Unicode to plain string for Python 2
+            if sys.version_info[0] == 2:
+                joined = joined.encode('utf8')
+            print("       " + joined, file=sys.stderr)
 
 def extract_text(node):
     """Extract all human-readable text from a node and its children. This
