@@ -1,6 +1,6 @@
 /** \page foxs_nup133 FoXS: fitting structures against SAXS data
 
-Many protein structures can be characterized with small tangle X-ray (SAXS).
+Many protein structures can be characterized with small angle X-ray (SAXS).
 SAXS differs from X-ray crystallography in that it is applied to proteins in
 solution rather than crystals; thus, it can be applied to a much wider range
 of proteins in states more closely resembling their functional forms than
