@@ -1,8 +1,7 @@
 ChangeLog {#changelog}
 =========
 
-# HEAD
-
+# 2.11.0 - 2019-06-25 # {#changelog_2_11_0}
 - A number of new tutorials are now available covering a variety of topics
   from modeling complexes with IMP::pmi to writing new C++ code. See
   the [tutorial index](https://integrativemodeling.org/tutorials/) for
