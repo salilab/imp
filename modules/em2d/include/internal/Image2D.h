@@ -3,7 +3,7 @@
  *  \brief A basic image class
  *
  *  \authors Dina Schneidman
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
@@ -66,20 +66,13 @@ class Image2D : public boost::multi_array<T, 2> {
     }
   }
 
-  Image2D(const Image2D& in)
-      : boost::multi_array<T, 2>(),
-        average_(in.average_),
-        stddev_(in.stddev_),
-        average_computed_(in.average_computed_),
-        stddev_computed_(in.stddev_computed_),
-        pca_(in.pca_),
-	center_x_(in.center_x_),
-	center_y_(in.center_y_),
-        points_(in.points_) {
-    this->resize(boost::extents[in.shape()[0]][in.shape()[1]]);
-    for (unsigned int i = 0; i < in.num_elements(); i++) {
-      *(this->data() + i) = *(in.data() + i);
-    }
+  Image2D(const Image2D& in) : boost::multi_array<T, 2>() {
+    copy_from_other(in);
+  }
+
+  Image2D& operator=(const Image2D& in) {
+    copy_from_other(in);
+    return *this;
   }
 
   Image2D(int height, int width)
@@ -153,6 +146,21 @@ class Image2D : public boost::multi_array<T, 2> {
   std::vector<IMP::algebra::Vector2D> points_;  // segmented area
 
  private:
+  void copy_from_other(const Image2D& in) {
+    average_ = in.average_;
+    stddev_ = in.stddev_;
+    average_computed_ = in.average_computed_;
+    stddev_computed_ = in.stddev_computed_;
+    pca_ = in.pca_;
+    center_x_ = in.center_x_;
+    center_y_ = in.center_y_;
+    points_ = in.points_;
+    this->resize(boost::extents[in.shape()[0]][in.shape()[1]]);
+    for (unsigned int i = 0; i < in.num_elements(); i++) {
+      *(this->data() + i) = *(in.data() + i);
+    }
+  }
+
   // Read a PGM file in text format
   void read_text_pgm(std::ifstream &infile, int width, int height);
   // Read a PGM file in binary format; each pixel is represented by 1 byte

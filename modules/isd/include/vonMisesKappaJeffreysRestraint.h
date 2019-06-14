@@ -2,7 +2,7 @@
  *  \file IMP/isd/vonMisesKappaJeffreysRestraint.h
  *  \brief Jeffreys prior for \f$\kappa\f$ in the von Mises distribution.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

@@ -9,6 +9,9 @@ import os.path
 import subprocess
 
 parser = OptionParser()
+parser.add_option("--include", help="Extra header include path", default=None)
+parser.add_option("--swig_include", help="Extra SWIG include path",
+                  default=[], action="append")
 parser.add_option("-s", "--swig", dest="swig", default="swig",
                   help="Swig command to use.")
 parser.add_option("-m", "--module",
@@ -37,6 +40,10 @@ def run_swig(outputdir, options):
     args.append("-Wextra")
     args.append("-I" + os.path.join("..", "..", "include"))
     args.append("-I" + os.path.join("..", "..", "swig"))
+    if options.include:
+        args.append("-I" + options.include)
+    for p in options.swig_include:
+        args.append("-I%s" % tools.from_cmake_path(p))
     args.extend(["-oh", "wrap.h-in"])
     args.extend(["-o", "wrap.cpp-in"])
     if options.module == "kernel":
@@ -67,7 +74,7 @@ def patch_py_wrapper(infile, outfile, module):
     outfh = open(outfile, "w")
     in_initial_comment = True
     header = """# This wrapper is part of IMP,
-# Copyright 2007-2018 IMP Inventors. All rights reserved.
+# Copyright 2007-2019 IMP Inventors. All rights reserved.
 
 from __future__ import print_function, division, absolute_import
 """

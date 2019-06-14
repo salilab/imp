@@ -20,6 +20,7 @@ import RMF
 from math import pi, sqrt
 from operator import itemgetter
 import os
+import warnings
 import weakref
 
 class _Repo(object):
@@ -99,7 +100,6 @@ class Representation(object):
 
         self.state = _StateInfo()
         self._metadata = []
-        self._file_dataset = {}
         self._protocol_output = []
         self._non_modeled_components = {}
 
@@ -171,36 +171,12 @@ class Representation(object):
 
         self.residuenamekey = IMP.StringKey("ResidueName")
 
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
-
     def add_metadata(self, m):
         """Associate some metadata with this modeling.
            @param m an instance of an ihm metadata class, such as
                     ihm.Software, ihm.Citation, or ihm.location.Repository.
         """
         self._metadata.append(m)
-
-    def set_file_dataset(self, fname, dataset):
-        """Associate a dataset with a filename.
-           This can be used to identify how the file was produced (in many
-           cases IMP can determine this automatically from a file header or
-           other metadata, but not always). For example, a manually-produced
-           PDB file (not from the PDB database or Modeller) can be
-           identified this way.
-           @param fname filename
-           @dataset the ihm.dataset.Dataset object to associate.
-        """
-        self._file_dataset[os.path.abspath(fname)] = dataset
-
-    def get_file_dataset(self, fname):
-        """Get the dataset associated with a filename, or None.
-           @param fname filename
-           @return an ihm.dataset.Dataset, or None.
-        """
-        return self._file_dataset.get(os.path.abspath(fname), None)
 
     def add_protocol_output(self, p):
         """Capture details of the modeling protocol.
@@ -209,7 +185,6 @@ class Representation(object):
         state = p._add_state(self)
         self._protocol_output.append((p, state))
         p._each_metadata.append(self._metadata)
-        p._file_datasets.append(self._file_dataset)
         state.model = self.model
         state.prot = self.prot
     protocol_output = property(lambda self:
@@ -429,7 +404,7 @@ class Representation(object):
                 IMP.atom.CAlphaPDBSelector(),
                 IMP.atom.CBetaPDBSelector())
             sel = IMP.atom.AndPDBSelector(cacbsel, sel)
-        if type(chain) == str:
+        if isinstance(chain, str):
             sel = IMP.atom.AndPDBSelector(
                 IMP.atom.ChainPDBSelector(chain),
                 sel)
@@ -1067,9 +1042,10 @@ class Representation(object):
                 if "%s_%s_%s" % (component_name, rmfname, s) == reprname:
                     return True
         if rmfname != reprname and not match_any_suffix():
-            print("set_coordinates_from_rmf: WARNING rmf particle and "
+            warnings.warn(
+                  "set_coordinates_from_rmf: rmf particle and "
                   "representation particle names don't match %s %s"
-                  % (rmfname, reprname))
+                  % (rmfname, reprname), IMP.pmi.StructureWarning)
 
     def set_coordinates_from_rmf(self, component_name, rmf_file_name,
                                  rmf_frame_number,
@@ -1188,7 +1164,12 @@ class Representation(object):
                                              "rigid bodies yet")
                         rb.set_reference_frame_lazy(tr)
                 else:
-                    print("set_coordinates_from_rmf: WARNING particles are not XYZ decorated %s %s " % (str(IMP.core.XYZ.get_is_setup(prmf)), str(IMP.core.XYZ.get_is_setup(psrepr[n]))))
+                    warnings.warn(
+                       "set_coordinates_from_rmf: particles are not XYZ "
+                       "decorated %s %s "
+                       % (str(IMP.core.XYZ.get_is_setup(prmf)),
+                          str(IMP.core.XYZ.get_is_setup(psrepr[n]))),
+                       IMP.pmi.StructureWarning)
 
                 if IMP.core.Gaussian.get_is_setup(prmf) and IMP.core.Gaussian.get_is_setup(psrepr[n]):
                     gprmf=IMP.core.Gaussian(prmf)
@@ -1208,7 +1189,10 @@ class Representation(object):
                 try:
                     prmf=rmf_name_particle_map[representation_name_to_rmf_name_map[prepr.get_name()]]
                 except KeyError:
-                    print("set_coordinates_from_rmf: WARNING missing particle name in representation_name_to_rmf_name_map, skipping...")
+                    warnings.warn(
+                        "set_coordinates_from_rmf: missing particle name in "
+                        "representation_name_to_rmf_name_map, skipping...",
+                        IMP.pmi.StructureWarning)
                     continue
                 xyz = IMP.core.XYZ(prmf).get_coordinates()
                 IMP.core.XYZ(prepr).set_coordinates(xyz)
@@ -1904,7 +1888,11 @@ class Representation(object):
             for p in ps:
                 if IMP.core.RigidMember.get_is_setup(p):
                     rb = IMP.core.RigidMember(p).get_rigid_body()
-                    print("set_rigid_body_from_hierarchies> WARNING particle %s already belongs to rigid body %s" % (p.get_name(), rb.get_name()))
+                    warnings.warn(
+                            "set_rigid_body_from_hierarchies> particle %s "
+                            "already belongs to rigid body %s"
+                            % (p.get_name(), rb.get_name()),
+                            IMP.pmi.StructureWarning)
                 else:
                     rigid_parts.add(p)
             name += hier.get_name() + "-"
@@ -1939,7 +1927,7 @@ class Representation(object):
 
         rigid_parts = set()
         for s in subunits:
-            if type(s) == type(tuple()) and len(s) == 2:
+            if isinstance(s, tuple) and len(s) == 2:
                 sel = IMP.atom.Selection(
                     self.prot,
                     molecule=s[0],
@@ -1951,11 +1939,15 @@ class Representation(object):
                     # if not p in self.floppy_bodies:
                     if IMP.core.RigidMember.get_is_setup(p):
                         rb = IMP.core.RigidMember(p).get_rigid_body()
-                        print("set_rigid_body_from_hierarchies> WARNING particle %s already belongs to rigid body %s" % (p.get_name(), rb.get_name()))
+                        warnings.warn(
+                            "set_rigid_body_from_hierarchies> particle %s "
+                            "already belongs to rigid body %s"
+                            % (p.get_name(), rb.get_name()),
+                            IMP.pmi.StructureWarning)
                     else:
                         rigid_parts.add(p)
 
-            elif type(s) == type(str()):
+            elif isinstance(s, str):
                 sel = IMP.atom.Selection(self.prot, molecule=s)
                 if len(sel.get_selected_particles()) == 0:
                     print("set_rigid_bodies: selected particle does not exist")
@@ -1963,7 +1955,11 @@ class Representation(object):
                     # if not p in self.floppy_bodies:
                     if IMP.core.RigidMember.get_is_setup(p):
                         rb = IMP.core.RigidMember(p).get_rigid_body()
-                        print("set_rigid_body_from_hierarchies> WARNING particle %s already belongs to rigid body %s" % (p.get_name(), rb.get_name()))
+                        warnings.warn(
+                            "set_rigid_body_from_hierarchies> particle %s "
+                            "already belongs to rigid body %s"
+                            % (p.get_name(), rb.get_name()),
+                            IMP.pmi.StructureWarning)
                     else:
                         rigid_parts.add(p)
 
@@ -2027,7 +2023,7 @@ class Representation(object):
         super_rigid_rbs = set()
 
         for s in subunits:
-            if type(s) == type(tuple()) and len(s) == 3:
+            if isinstance(s, tuple) and len(s) == 3:
                 sel = IMP.atom.Selection(
                     self.prot,
                     molecule=s[2],
@@ -2041,7 +2037,7 @@ class Representation(object):
                         super_rigid_rbs.add(rb)
                     else:
                         super_rigid_xyzs.add(p)
-            elif type(s) == type(str()):
+            elif isinstance(s, str):
                 sel = IMP.atom.Selection(self.prot, molecule=s)
                 if len(sel.get_selected_particles()) == 0:
                     print("set_rigid_bodies: selected particle does not exist")

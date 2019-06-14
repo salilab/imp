@@ -1,7 +1,7 @@
 include(FindCGAL)
 
 if (${CGAL_FOUND})
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/CGAL" "ok=True")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/CGAL" "ok=True")
 set(CGAL_DONT_OVERRIDE_CMAKE_FLAGS TRUE CACHE BOOL "Don't override flags")
 # Ignore CGAL_CXX_FLAGS from previous cmake run, if any
 set( CGAL_CXX_FLAGS "" CACHE INTERNAL "" FORCE)
@@ -16,7 +16,7 @@ set( CGAL_CXX_FLAGS "-frounding-math" CACHE INTERNAL "" FORCE)
 endif()
 
 else(${CGAL_FOUND})
-file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/CGAL" "ok=False")
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/CGAL" "ok=False")
 
 endif(${CGAL_FOUND})
 

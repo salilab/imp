@@ -7,6 +7,7 @@ import IMP.pmi.tools
 from collections import defaultdict
 from math import pi
 import os
+import warnings
 
 def resnums2str(res):
     """Take iterable of TempResidues and return compatified string"""
@@ -85,8 +86,9 @@ def get_structure(model,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,c
         res.set_index(res.get_index() + offset)
         ret.append(res)
     if len(ret) == 0:
-        print("WARNING: no residues selected from %s in range %s"
-              % (pdb_fn, res_range))
+        warnings.warn(
+            "no residues selected from %s in range %s" % (pdb_fn, res_range),
+            IMP.pmi.StructureWarning)
     return ret
 
 def build_bead(model,residues,input_coord=None):
@@ -193,6 +195,22 @@ def show_representation(node):
     else:
         return False
 
+def _get_color_for_representation(rep):
+    """Return an IMP.display.Color object (or None) for the given
+       Representation."""
+    if rep.color is not None:
+        if isinstance(rep.color, float):
+            return IMP.display.get_rgb_color(rep.color)
+        elif isinstance(rep.color, str):
+            return IMP.display.Color(*IMP.pmi.tools.color2rgb(rep.color))
+        elif hasattr(rep.color,'__iter__') and len(rep.color)==3:
+            return IMP.display.Color(*rep.color)
+        elif isinstance(rep.color, IMP.display.Color):
+            return rep.color
+        else:
+            raise TypeError("Color must be Chimera color name, a hex "
+                            "string, a float or (r,g,b) tuple")
+
 def build_representation(parent, rep, coord_finder):
     """Create requested representation.
     For beads, identifies continuous segments and sets up as Representation.
@@ -207,19 +225,7 @@ def build_representation(parent, rep, coord_finder):
     atomic_res = 0
     ca_res = 1
     model = parent.hier.get_model()
-    if rep.color is not None:
-        if type(rep.color) is float:
-            color = IMP.display.get_rgb_color(rep.color)
-        elif type(rep.color) is str:
-            color = IMP.display.Color(*IMP.pmi.tools.color2rgb(rep.color))
-        elif hasattr(rep.color,'__iter__') and len(rep.color)==3:
-            color = IMP.display.Color(*rep.color)
-        elif type(rep.color) is IMP.display.Color:
-            color = rep.color
-        else:
-            raise Exception("Color must be float or (r,g,b) tuple")
-    else:
-        color = None
+    color = _get_color_for_representation(rep)
 
     # first get the primary representation (currently, the smallest bead size)
     #  eventually we won't require beads to be present at all

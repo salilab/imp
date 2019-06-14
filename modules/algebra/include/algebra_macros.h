@@ -2,7 +2,7 @@
  *  \file IMP/algebra/algebra_macros.h
  *  \brief Various helper macros.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

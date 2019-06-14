@@ -117,6 +117,9 @@ _software.location
     def _assign_entity_ids(self, system):
         ihm.dumper._EntityDumper().finalize(system.system)
 
+    def _assign_range_ids(self, system):
+        ihm.dumper._EntityPolySegmentDumper().finalize(system.system)
+
     def _assign_asym_ids(self, system):
         ihm.dumper._StructAsymDumper().finalize(system.system)
 
@@ -140,37 +143,53 @@ _software.location
         system.system.orphan_assemblies.append(
                          ihm.Assembly((bar.asym_unit, baz.asym_unit)))
 
+        system.system._make_complete_assembly()
         self._assign_entity_ids(system)
         self._assign_asym_ids(system)
+        d = ihm.dumper._EntityPolySegmentDumper()
+        d.finalize(system.system)
+        out = _get_dumper_output(d, system.system)
+        self.assertEqual(out, """#
+loop_
+_ihm_entity_poly_segment.id
+_ihm_entity_poly_segment.entity_id
+_ihm_entity_poly_segment.seq_id_begin
+_ihm_entity_poly_segment.seq_id_end
+_ihm_entity_poly_segment.comp_id_begin
+_ihm_entity_poly_segment.comp_id_end
+1 1 1 3 ALA ALA
+2 2 1 2 ALA ALA
+#
+""")
+
         d = ihm.dumper._AssemblyDumper()
         d.finalize(system.system)
         out = _get_dumper_output(d, system.system)
         self.assertEqual(out, """#
 loop_
-_ihm_struct_assembly_details.assembly_id
-_ihm_struct_assembly_details.assembly_name
-_ihm_struct_assembly_details.assembly_description
+_ihm_struct_assembly.id
+_ihm_struct_assembly.name
+_ihm_struct_assembly.description
 1 'Complete assembly' 'All known components & All components modeled by IMP'
 2 . .
 3 . .
 #
 #
 loop_
-_ihm_struct_assembly.ordinal_id
-_ihm_struct_assembly.assembly_id
-_ihm_struct_assembly.parent_assembly_id
-_ihm_struct_assembly.entity_description
-_ihm_struct_assembly.entity_id
-_ihm_struct_assembly.asym_id
-_ihm_struct_assembly.seq_id_begin
-_ihm_struct_assembly.seq_id_end
-1 1 1 foo 1 A 1 3
-2 1 1 foo 1 B 1 3
-3 1 1 baz 2 C 1 2
-4 2 2 foo 1 A 1 3
-5 2 2 foo 1 B 1 3
-6 3 3 foo 1 B 1 3
-7 3 3 baz 2 C 1 2
+_ihm_struct_assembly_details.id
+_ihm_struct_assembly_details.assembly_id
+_ihm_struct_assembly_details.parent_assembly_id
+_ihm_struct_assembly_details.entity_description
+_ihm_struct_assembly_details.entity_id
+_ihm_struct_assembly_details.asym_id
+_ihm_struct_assembly_details.entity_poly_segment_id
+1 1 1 foo 1 A 1
+2 1 1 foo 1 B 1
+3 1 1 baz 2 C 2
+4 2 2 foo 1 A 1
+5 2 2 foo 1 B 1
+6 3 3 foo 1 B 1
+7 3 3 baz 2 C 2
 #
 """)
 
@@ -180,32 +199,47 @@ _ihm_struct_assembly.seq_id_end
         h, state = self.make_model(system, (("foo", "AAA", 'A'),))
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         system.add_non_modeled_chain(name="bar", sequence="AA")
+        system.system._make_complete_assembly()
         self._assign_entity_ids(system)
         self._assign_asym_ids(system)
+        d = ihm.dumper._EntityPolySegmentDumper()
+        d.finalize(system.system)
+        out = _get_dumper_output(d, system.system)
+        self.assertEqual(out, """#
+loop_
+_ihm_entity_poly_segment.id
+_ihm_entity_poly_segment.entity_id
+_ihm_entity_poly_segment.seq_id_begin
+_ihm_entity_poly_segment.seq_id_end
+_ihm_entity_poly_segment.comp_id_begin
+_ihm_entity_poly_segment.comp_id_end
+1 1 1 3 ALA ALA
+2 2 1 2 ALA ALA
+#
+""")
         d = ihm.dumper._AssemblyDumper()
         d.finalize(system.system) # assign IDs
         out = _get_dumper_output(d, system.system)
         self.assertEqual(out, """#
 loop_
-_ihm_struct_assembly_details.assembly_id
-_ihm_struct_assembly_details.assembly_name
-_ihm_struct_assembly_details.assembly_description
+_ihm_struct_assembly.id
+_ihm_struct_assembly.name
+_ihm_struct_assembly.description
 1 'Complete assembly' 'All known components'
 2 'Modeled assembly' 'All components modeled by IMP'
 #
 #
 loop_
-_ihm_struct_assembly.ordinal_id
-_ihm_struct_assembly.assembly_id
-_ihm_struct_assembly.parent_assembly_id
-_ihm_struct_assembly.entity_description
-_ihm_struct_assembly.entity_id
-_ihm_struct_assembly.asym_id
-_ihm_struct_assembly.seq_id_begin
-_ihm_struct_assembly.seq_id_end
-1 1 1 foo 1 A 1 3
-2 1 1 bar 2 . 1 2
-3 2 2 foo 1 A 1 3
+_ihm_struct_assembly_details.id
+_ihm_struct_assembly_details.assembly_id
+_ihm_struct_assembly_details.parent_assembly_id
+_ihm_struct_assembly_details.entity_description
+_ihm_struct_assembly_details.entity_id
+_ihm_struct_assembly_details.asym_id
+_ihm_struct_assembly_details.entity_poly_segment_id
+1 1 1 foo 1 A 1
+2 1 1 bar 2 . 2
+3 2 2 foo 1 A 1
 #
 """)
 
@@ -235,6 +269,9 @@ _ihm_struct_assembly.seq_id_end
         IMP.mmcif.Ensemble(state, "cluster 1").add_model([h], [], "model1")
         self._assign_entity_ids(system)
         self._assign_asym_ids(system)
+        self._assign_range_ids(system)
+        r = system.system.ensembles[0].model_group[0].representation
+        self.assertEqual([s.asym_unit.seq_id_range for s in r], [(1,2), (3,4)])
         # Assign starting model IDs
         d = ihm.dumper._StartingModelDumper()
         d.finalize(system.system)
@@ -243,21 +280,26 @@ _ihm_struct_assembly.seq_id_end
         out = _get_dumper_output(d, system.system)
         self.assertEqual(out, """#
 loop_
-_ihm_model_representation.ordinal_id
-_ihm_model_representation.representation_id
-_ihm_model_representation.segment_id
-_ihm_model_representation.entity_id
-_ihm_model_representation.entity_description
-_ihm_model_representation.entity_asym_id
-_ihm_model_representation.seq_id_begin
-_ihm_model_representation.seq_id_end
-_ihm_model_representation.model_object_primitive
-_ihm_model_representation.starting_model_id
-_ihm_model_representation.model_mode
-_ihm_model_representation.model_granularity
-_ihm_model_representation.model_object_count
-1 1 1 1 foo A 1 2 sphere 1 flexible by-residue .
-2 1 2 1 foo A 3 4 sphere . flexible by-feature 1
+_ihm_model_representation.id
+_ihm_model_representation.name
+_ihm_model_representation.details
+1 . .
+#
+#
+loop_
+_ihm_model_representation_details.id
+_ihm_model_representation_details.representation_id
+_ihm_model_representation_details.entity_id
+_ihm_model_representation_details.entity_description
+_ihm_model_representation_details.entity_asym_id
+_ihm_model_representation_details.entity_poly_segment_id
+_ihm_model_representation_details.model_object_primitive
+_ihm_model_representation_details.starting_model_id
+_ihm_model_representation_details.model_mode
+_ihm_model_representation_details.model_granularity
+_ihm_model_representation_details.model_object_count
+1 1 1 foo A 1 sphere 1 flexible by-residue .
+2 1 1 foo A 2 sphere . flexible by-feature 1
 #
 """)
 
@@ -306,6 +348,7 @@ _ihm_model_representation.model_object_count
 
         self._assign_entity_ids(system)
         self._assign_asym_ids(system)
+        self._assign_range_ids(system)
         # Assign dataset IDs (templates=1,2, comparative models=3,4)
         self._assign_dataset_ids(system)
         # assign file IDs (alignment file = 1)
@@ -319,18 +362,17 @@ _ihm_starting_model_details.starting_model_id
 _ihm_starting_model_details.entity_id
 _ihm_starting_model_details.entity_description
 _ihm_starting_model_details.asym_id
-_ihm_starting_model_details.seq_id_begin
-_ihm_starting_model_details.seq_id_end
+_ihm_starting_model_details.entity_poly_segment_id
 _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-1 1 Nup84 A 33 2 'comparative model' A 0 3
-2 2 Nup85 B 33 2 'comparative model' A 0 4
+1 1 Nup84 A 3 'comparative model' A 0 3
+2 2 Nup85 B 4 'comparative model' A 0 4
 #
 #
 loop_
-_ihm_starting_comparative_models.ordinal_id
+_ihm_starting_comparative_models.id
 _ihm_starting_comparative_models.starting_model_id
 _ihm_starting_comparative_models.starting_model_auth_asym_id
 _ihm_starting_comparative_models.starting_model_seq_id_begin
@@ -426,25 +468,32 @@ _ihm_external_files.details
         out = _get_dumper_output(dumper, system.system)
         self.assertEqual(out, """#
 loop_
-_ihm_modeling_protocol.ordinal_id
-_ihm_modeling_protocol.protocol_id
-_ihm_modeling_protocol.step_id
-_ihm_modeling_protocol.struct_assembly_id
-_ihm_modeling_protocol.dataset_group_id
-_ihm_modeling_protocol.struct_assembly_description
+_ihm_modeling_protocol.id
 _ihm_modeling_protocol.protocol_name
-_ihm_modeling_protocol.step_name
-_ihm_modeling_protocol.step_method
-_ihm_modeling_protocol.num_models_begin
-_ihm_modeling_protocol.num_models_end
-_ihm_modeling_protocol.multi_scale_flag
-_ihm_modeling_protocol.multi_state_flag
-_ihm_modeling_protocol.ordered_flag
-_ihm_modeling_protocol.software_id
-_ihm_modeling_protocol.script_file_id
-1 1 1 1 . 'All known components & All components modeled by IMP' . Sampling
-'Monte Carlo' 0 500 YES NO NO . .
-2 2 1 1 . 'All known components & All components modeled by IMP' . Sampling
+_ihm_modeling_protocol.num_steps
+1 . 1
+2 . 1
+#
+#
+loop_
+_ihm_modeling_protocol_details.id
+_ihm_modeling_protocol_details.protocol_id
+_ihm_modeling_protocol_details.step_id
+_ihm_modeling_protocol_details.struct_assembly_id
+_ihm_modeling_protocol_details.dataset_group_id
+_ihm_modeling_protocol_details.struct_assembly_description
+_ihm_modeling_protocol_details.step_name
+_ihm_modeling_protocol_details.step_method
+_ihm_modeling_protocol_details.num_models_begin
+_ihm_modeling_protocol_details.num_models_end
+_ihm_modeling_protocol_details.multi_scale_flag
+_ihm_modeling_protocol_details.multi_state_flag
+_ihm_modeling_protocol_details.ordered_flag
+_ihm_modeling_protocol_details.software_id
+_ihm_modeling_protocol_details.script_file_id
+1 1 1 2 . 'All components modeled by IMP' Sampling 'Monte Carlo' 0 500 YES NO NO
+. .
+2 2 1 2 . 'All components modeled by IMP' Sampling
 'Replica exchange Molecular Dynamics' 400 2000 YES NO NO . .
 #
 """)
@@ -477,8 +526,8 @@ _ihm_modeling_post_process.struct_assembly_id
 _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
-1 1 1 1 filter energy/score 500 400 1 . . .
-2 2 1 1 cluster RMSD 2000 2000 1 . . .
+1 1 1 1 filter energy/score 500 400 2 . . .
+2 2 1 1 cluster RMSD 2000 2000 2 . . .
 #
 """)
 
@@ -527,16 +576,27 @@ _ihm_ensemble_info.ensemble_file_id
         out = _get_dumper_output(dumper, system.system)
         self.assertEqual(out, """#
 loop_
-_ihm_model_list.ordinal_id
 _ihm_model_list.model_id
-_ihm_model_list.model_group_id
 _ihm_model_list.model_name
-_ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
 _ihm_model_list.representation_id
-1 1 1 model1 'cluster 1' 1 . 1
-2 2 1 model2 'cluster 1' 1 . 1
+1 model1 2 . 1
+2 model2 2 . 1
+#
+#
+loop_
+_ihm_model_group.id
+_ihm_model_group.name
+_ihm_model_group.details
+1 'cluster 1' .
+#
+#
+loop_
+_ihm_model_group_link.group_id
+_ihm_model_group_link.model_id
+1 1
+1 2
 #
 """)
 
@@ -561,7 +621,7 @@ _ihm_model_list.representation_id
         out = _get_dumper_output(dumper, system.system)
         self.assertEqual(out, """#
 loop_
-_ihm_3dem_restraint.ordinal_id
+_ihm_3dem_restraint.id
 _ihm_3dem_restraint.dataset_list_id
 _ihm_3dem_restraint.fitting_method
 _ihm_3dem_restraint.fitting_method_citation_id
@@ -569,7 +629,7 @@ _ihm_3dem_restraint.struct_assembly_id
 _ihm_3dem_restraint.number_of_gaussians
 _ihm_3dem_restraint.model_id
 _ihm_3dem_restraint.cross_correlation_coefficient
-1 2 'Gaussian mixture model' . 1 20 1 0.400
+1 2 'Gaussian mixture model' . 2 20 1 0.400
 #
 """)
 
@@ -609,19 +669,29 @@ _ihm_3dem_restraint.cross_correlation_coefficient
         out = _get_dumper_output(dumper, system.system)
         self.assertEqual(out, """#
 loop_
-_ihm_model_list.ordinal_id
 _ihm_model_list.model_id
-_ihm_model_list.model_group_id
 _ihm_model_list.model_name
-_ihm_model_list.model_group_name
 _ihm_model_list.assembly_id
 _ihm_model_list.protocol_id
 _ihm_model_list.representation_id
-1 1 1 model1 'cluster 1' 1 . 1
+1 model1 2 . 1
 #
 #
 loop_
-_ihm_sphere_obj_site.ordinal_id
+_ihm_model_group.id
+_ihm_model_group.name
+_ihm_model_group.details
+1 'cluster 1' .
+#
+#
+loop_
+_ihm_model_group_link.group_id
+_ihm_model_group_link.model_id
+1 1
+#
+#
+loop_
+_ihm_sphere_obj_site.id
 _ihm_sphere_obj_site.entity_id
 _ihm_sphere_obj_site.seq_id_begin
 _ihm_sphere_obj_site.seq_id_end

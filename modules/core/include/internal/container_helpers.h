@@ -2,7 +2,7 @@
  *  \file internal/particle_helpers.h
  *  \brief A container for Singletons.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_CONTAINER_HELPERS_H

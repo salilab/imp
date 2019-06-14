@@ -3,7 +3,7 @@
  *  \brief A harmonic score on the directed distance between a pair of particles,
  *         centered at 0.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_HARMONIC_H

@@ -32,7 +32,7 @@ class GenericHandler(object):
     """Capture mmCIF data as a simple list of dicts"""
     not_in_file = None
     omitted = None
-    unknown = "?"
+    unknown = ihm.unknown
 
     _keys = ('method', 'foo', 'bar', 'baz', 'pdbx_keywords', 'var1',
              'var2', 'var3')
@@ -51,7 +51,7 @@ class GenericHandler(object):
         self.data.append('SAVE')
 
 
-class TestFinalizeHandler(GenericHandler):
+class _TestFinalizeHandler(GenericHandler):
     if _format is not None:
         _add_c_handler = _format._test_finalize_callback
 
@@ -107,6 +107,30 @@ class Tests(unittest.TestCase):
             l.write(bar=None)
         self.assertEqual(fh.getvalue(), "foo.bar .\n")
 
+    def test_category_literal_dot(self):
+        """Test CategoryWriter class with literal value=."""
+        fh = StringIO()
+        writer = ihm.format.CifWriter(fh)
+        with writer.category('foo') as l:
+            l.write(bar='.')
+        self.assertEqual(fh.getvalue(), "foo.bar '.'\n")
+
+    def test_category_unknown(self):
+        """Test CategoryWriter class with value=unknown"""
+        fh = StringIO()
+        writer = ihm.format.CifWriter(fh)
+        with writer.category('foo') as l:
+            l.write(bar=ihm.unknown)
+        self.assertEqual(fh.getvalue(), "foo.bar ?\n")
+
+    def test_category_literal_question(self):
+        """Test CategoryWriter class with literal value=?"""
+        fh = StringIO()
+        writer = ihm.format.CifWriter(fh)
+        with writer.category('foo') as l:
+            l.write(bar='?')
+        self.assertEqual(fh.getvalue(), "foo.bar '?'\n")
+
     def test_empty_loop(self):
         """Test LoopWriter class with no values"""
         fh = StringIO()
@@ -123,6 +147,8 @@ class Tests(unittest.TestCase):
             l.write(bar='x')
             l.write(bar=None, baz='z')
             l.write(baz='y')
+            l.write(bar=ihm.unknown, baz='z')
+            l.write(bar="?", baz=".")
         self.assertEqual(fh.getvalue(), """#
 loop_
 foo.bar
@@ -130,6 +156,8 @@ foo.baz
 x .
 . z
 . y
+? z
+'?' '.'
 #
 """)
 
@@ -177,6 +205,12 @@ x
         for word in ('save', 'loop', 'stop', 'global'):
             self.assertEqual(w._repr('%s_foo' % word), '%s_foo' % word)
             self.assertEqual(w._repr('%s_' % word), "'%s_'" % word)
+        # Literal ? must be quoted to distinguish from the unknown value
+        self.assertEqual(w._repr('?foo'), "?foo")
+        self.assertEqual(w._repr('?'), "'?'")
+        # Literal . must be quoted to distinguish from the omitted value
+        self.assertEqual(w._repr('.foo'), ".foo")
+        self.assertEqual(w._repr('.'), "'.'")
 
     def test_reader_base(self):
         """Test Reader base class"""
@@ -255,17 +289,23 @@ x
             self._check_bad_cif('loop_\n_foo.bar\n_atom_site.id\n',
                                 real_file, {'_foo':h})
 
-    def _read_cif(self, cif, real_file, category_handlers):
+    def _read_cif(self, cif, real_file, category_handlers,
+                  unknown_category_handler=None,
+                  unknown_keyword_handler=None):
         if real_file:
             with utils.temporary_directory() as tmpdir:
                 fname = os.path.join(tmpdir, 'test')
                 with open(fname, 'w') as fh:
                     fh.write(cif)
                 with open(fname) as fh:
-                    r = ihm.format.CifReader(fh, category_handlers)
+                    r = ihm.format.CifReader(fh, category_handlers,
+                                             unknown_category_handler,
+                                             unknown_keyword_handler)
                     r.read_file()
         else:
-            r = ihm.format.CifReader(StringIO(cif), category_handlers)
+            r = ihm.format.CifReader(StringIO(cif), category_handlers,
+                                     unknown_category_handler,
+                                     unknown_keyword_handler)
             r.read_file()
 
     def test_category_case_insensitive(self):
@@ -283,6 +323,23 @@ x
             h = GenericHandler()
             self._read_cif(cif, real_file, {'_exptl':h})
             self.assertEqual(h.data, [{'method':'bar'}])
+
+    def test_duplicated_key_omitted(self):
+        """If a key is duplicated, we take the final (omitted) value"""
+        cif = "_exptl.method foo\n_exptl.method .\n"
+        for real_file in (True, False):
+            h = GenericHandler()
+            h.omitted = 'OMIT'
+            self._read_cif(cif, real_file, {'_exptl':h})
+            self.assertEqual(h.data, [{'method':'OMIT'}])
+
+    def test_duplicated_key_unknown(self):
+        """If a key is duplicated, we take the final (unknown) value"""
+        cif = "_exptl.method foo\n_exptl.method ?\n"
+        for real_file in (True, False):
+            h = GenericHandler()
+            self._read_cif(cif, real_file, {'_exptl':h})
+            self.assertEqual(h.data, [{'method':ihm.unknown}])
 
     def test_save_frames(self):
         """Category handlers should be called for each save frame"""
@@ -305,27 +362,35 @@ save_
         """CIF omitted value ('.') should be ignored"""
         for real_file in (True, False):
             h = GenericHandler()
-            self._read_cif("_foo.bar .1\n_foo.baz .\n", real_file, {'_foo':h})
-            self.assertEqual(h.data, [{'bar':'.1'}])
+            # Omitted value is a literal . - anything else (quoted, or
+            # a longer string) should be reported as a string
+            self._read_cif("_foo.bar .1\n_foo.baz .\n"
+                           "_foo.var1 '.'\n_foo.var2 \".\"\n",
+                           real_file, {'_foo':h})
+            self.assertEqual(h.data, [{'bar':'.1', 'var1': '.', 'var2': '.'}])
 
             h = GenericHandler()
-            self._read_cif("loop_\n_foo.bar\n_foo.baz\n.1 .\n", real_file,
-                           {'_foo':h})
-            self.assertEqual(h.data, [{'bar':'.1'}])
+            self._read_cif("loop_\n_foo.bar\n_foo.baz\n_foo.var1\n_foo.var2\n"
+                           ".1 . '.' \".\"\n", real_file, {'_foo':h})
+            self.assertEqual(h.data, [{'bar':'.1', 'var1': '.', 'var2': '.'}])
 
     def test_omitted_explicit(self):
         """Check explicit handling of CIF omitted value ('.')"""
         for real_file in (True, False):
             h = GenericHandler()
             h.omitted = 'OMIT'
-            self._read_cif("_foo.bar .1\n_foo.baz .\n", real_file, {'_foo':h})
-            self.assertEqual(h.data, [{'baz': 'OMIT', 'bar': '.1'}])
+            self._read_cif("_foo.bar .1\n_foo.baz .\n"
+                           "_foo.var1 '.'\n_foo.var2 \".\"\n",
+                           real_file, {'_foo':h})
+            self.assertEqual(h.data, [{'baz': 'OMIT', 'bar':'.1',
+                                       'var1': '.', 'var2': '.'}])
 
             h = GenericHandler()
             h.omitted = 'OMIT'
-            self._read_cif("loop_\n_foo.bar\n_foo.baz\n.1 .\n", real_file,
-                           {'_foo':h})
-            self.assertEqual(h.data, [{'baz': 'OMIT', 'bar': '.1'}])
+            self._read_cif("loop_\n_foo.bar\n_foo.baz\n_foo.var1\n_foo.var2\n"
+                           ".1 . '.' \".\"\n", real_file, {'_foo':h})
+            self.assertEqual(h.data, [{'baz': 'OMIT', 'bar': '.1',
+                                       'var1': '.', 'var2': '.'}])
 
     def test_not_in_file_explicit(self):
         """Check explicit handling of keywords not in the file"""
@@ -368,27 +433,39 @@ save_
         """CIF unknown value ('?') should be reported as-is"""
         for real_file in (True, False):
             h = GenericHandler()
-            self._read_cif("_foo.bar ?1\n_foo.baz ?\n", real_file, {'_foo':h})
-            self.assertEqual(h.data, [{'bar':'?1', 'baz':ihm.unknown}])
+            # Unknown value is a literal ? - anything else (quoted, or
+            # a longer string) should be reported as a string
+            self._read_cif("_foo.bar ?1\n_foo.baz ?\n"
+                           "_foo.var1 '?'\n_foo.var2 \"?\"\n",
+                           real_file, {'_foo':h})
+            self.assertEqual(h.data, [{'bar':'?1', 'baz':ihm.unknown,
+                                       'var1':'?', 'var2':'?'}])
 
             h = GenericHandler()
-            self._read_cif("loop_\n_foo.bar\n_foo.baz\n?1 ?\n", real_file,
+            self._read_cif("loop_\n_foo.bar\n_foo.baz\n_foo.var1\n_foo.var2\n"
+                           "?1 ? '?' \"?\"\n", real_file,
                            {'_foo':h})
-            self.assertEqual(h.data, [{'bar':'?1', 'baz':ihm.unknown}])
+            self.assertEqual(h.data, [{'bar':'?1', 'baz':ihm.unknown,
+                                       'var1':'?', 'var2':'?'}])
 
     def test_unknown_explicit(self):
         """Check explicit handling of CIF unknown value"""
         for real_file in (True, False):
             h = GenericHandler()
             h.unknown = 'UNK'
-            self._read_cif("_foo.bar ?1\n_foo.baz ?\n", real_file, {'_foo':h})
-            self.assertEqual(h.data, [{'bar':'?1', 'baz':'UNK'}])
+            self._read_cif("_foo.bar ?1\n_foo.baz ?\n"
+                           "_foo.var1 '?'\n_foo.var2 \"?\"\n",
+                           real_file, {'_foo':h})
+            self.assertEqual(h.data, [{'bar':'?1', 'baz':'UNK',
+                                       'var1':'?', 'var2':'?'}])
 
             h = GenericHandler()
             h.unknown = 'UNK'
-            self._read_cif("loop_\n_foo.bar\n_foo.baz\n?1 ?\n", real_file,
+            self._read_cif("loop_\n_foo.bar\n_foo.baz\n_foo.var1\n_foo.var2\n"
+                           "?1 ? '?' \"?\"\n", real_file,
                            {'_foo':h})
-            self.assertEqual(h.data, [{'bar':'?1', 'baz':'UNK'}])
+            self.assertEqual(h.data, [{'bar':'?1', 'baz':'UNK',
+                                       'var1':'?', 'var2':'?'}])
 
     def test_multiline(self):
         """Check that multiline strings are handled correctly"""
@@ -498,7 +575,7 @@ x y
     def test_finalize_handler(self):
         """Make sure that C parser finalize callback works"""
         for real_file in (True, False):
-            h = TestFinalizeHandler()
+            h = _TestFinalizeHandler()
             self._read_cif("# _exptl.method foo\n", real_file, {'_exptl':h})
 
     @skipIf(_format is None, "No C tokenizer")
@@ -600,6 +677,104 @@ x y
                            False, {'_struct_keywords':h})
             self.assertEqual(h.data,
                     [{'pdbx_keywords':'COMPLEX \n(HYDROLASE/PEPTIDE)'}])
+
+    def test_unknown_category_ignored(self):
+        """Test that unknown categories are just ignored"""
+        h = GenericHandler()
+        self._read_cif("""
+_cat1.foo baz
+_cat2.bar test
+#
+loop_
+_foo.bar
+_foo.baz
+x y
+""", False, {'_cat1':h})
+        self.assertEqual(h.data, [{'foo':'baz'}])
+
+    def test_unknown_category_handled(self):
+        """Test that unknown categories are handled if requested"""
+        class CatHandler(object):
+            def __init__(self):
+                self.warns = []
+            def __call__(self, cat, line):
+                self.warns.append((cat, line))
+
+        ch = CatHandler()
+        h = GenericHandler()
+        self._read_cif("""
+_cat1.foo baz
+_cat2.bar test
+#
+loop_
+_foo.bar
+_foo.baz
+x y
+""", False, {'_cat1':h}, unknown_category_handler=ch)
+        self.assertEqual(h.data, [{'foo':'baz'}])
+        self.assertEqual(ch.warns, [('_cat2', 3), ('_foo', 6)])
+
+    def test_unknown_keyword_ignored(self):
+        """Test that unknown keywords are just ignored"""
+        h = GenericHandler()
+        self._read_cif("""
+_cat1.foo baz
+_cat1.unknown_keyword1 test
+#
+loop_
+_foo.bar
+_foo.unknown_keyword2
+x y
+""", False, {'_cat1':h, '_foo':h})
+        self.assertEqual(h.data, [{'bar': 'x'}, {'foo': 'baz'}])
+
+    def test_unknown_keyword_handled(self):
+        """Test that unknown keywords are handled if requested"""
+        class KeyHandler(object):
+            def __init__(self):
+                self.warns = []
+            def __call__(self, cat, key, line):
+                self.warns.append((cat, key, line))
+
+        kh = KeyHandler()
+        h = GenericHandler()
+        self._read_cif("""
+_cat1.foo baz
+_cat1.unknown_keyword1 test
+#
+loop_
+_foo.bar
+_foo.unknown_keyword2
+x y
+""", False, {'_cat1':h, '_foo':h}, unknown_keyword_handler=kh)
+        self.assertEqual(h.data, [{'bar': 'x'}, {'foo': 'baz'}])
+        self.assertEqual(kh.warns,
+                         [('_cat1', 'unknown_keyword1', 3),
+                          ('_foo', 'unknown_keyword2', 7)])
+
+    @skipIf(_format is None, "No C tokenizer")
+    def test_multiple_set_unknown_handler(self):
+        """Test setting unknown handler multiple times"""
+        class Handler(object):
+            def __call__(self):
+                pass
+        uc = Handler()
+        fh = StringIO()
+        c_file = _format.ihm_file_new_from_python(fh)
+        reader = _format.ihm_reader_new(c_file)
+        # Handler must be a callable object
+        self.assertRaises(ValueError, _format.add_unknown_category_handler,
+                          reader, None)
+        self.assertRaises(ValueError, _format.add_unknown_keyword_handler,
+                          reader, None)
+        _format.add_unknown_category_handler(reader, uc)
+        _format.add_unknown_category_handler(reader, uc)
+        _format.add_unknown_keyword_handler(reader, uc)
+        _format.add_unknown_keyword_handler(reader, uc)
+        _format.ihm_reader_remove_all_categories(reader)
+        _format.ihm_reader_remove_all_categories(reader)
+        _format.ihm_reader_free(reader)
+        fh.close()
 
 if __name__ == '__main__':
     unittest.main()

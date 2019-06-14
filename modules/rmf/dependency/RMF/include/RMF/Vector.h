@@ -2,7 +2,7 @@
  *  \file RMF/Vector.h
  *  \brief Represent coordinates.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
@@ -60,7 +60,9 @@ class Vector
   explicit Vector(Range r) {
     Convert<Range>::convert(r, *this);
   }
-  Vector(const Vector<D>& o) : P(o) {};
+
+  RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(Vector);
+
   Vector(float x, float y, float z) {
     BOOST_STATIC_ASSERT(D == 3);
     P::operator[](0) = x;

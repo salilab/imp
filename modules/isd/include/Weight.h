@@ -2,7 +2,7 @@
  *  \file IMP/isd/Weight.h
  *  \brief Add weights for a set of states to a particle.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

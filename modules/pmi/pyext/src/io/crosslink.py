@@ -525,7 +525,6 @@ class FixedFormatParser(_CrossLinkDataBaseStandardKeys):
                 return xl
 
 class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
-    import operator
     '''
     this class handles a cross-link dataset and do filtering
     operations, adding cross-links, merge datasets...

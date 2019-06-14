@@ -1,4 +1,6 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2603378.svg)](https://doi.org/10.5281/zenodo.2603378)
 [![docs](https://readthedocs.org/projects/python-ihm/badge/)](https://python-ihm.readthedocs.org/)
+[![pypi package](https://badge.fury.io/py/ihm.svg)](https://badge.fury.io/py/ihm)
 [![Linux Build Status](https://travis-ci.org/ihmwg/python-ihm.svg?branch=master)](https://travis-ci.org/ihmwg/python-ihm)
 [![Windows Build Status](https://ci.appveyor.com/api/projects/status/5o28oe477ii8ur4h?svg=true)](https://ci.appveyor.com/project/benmwebb/python-ihm)
 [![codecov](https://codecov.io/gh/ihmwg/python-ihm/branch/master/graph/badge.svg)](https://codecov.io/gh/ihmwg/python-ihm)
@@ -18,6 +20,11 @@ for more details.
 ```
 pip install ihm
 ```
+
+Note that a C extension module is built for faster parsing of mmCIF files.
+This requires that your system has a C compiler. If you don't want to build
+the C extension module, install with
+`pip install ihm --install-option="--without-ext"`.
 
 # Installation from source code
 
@@ -42,6 +49,7 @@ Python [msgpack](https://github.com/msgpack/msgpack-python) package.
 
 There are a number of testcases in the `test` directory. Each one can be run
 like a normal Python script to test the library. They can also be all run at
-once using [nose](https://nose.readthedocs.io/en/latest/). They will also test
+once using [nose](https://nose.readthedocs.io/en/latest/)
+or [pytest](https://docs.pytest.org/en/latest/). They will also test
 the C extension module if it is first built with
 `python setup.py build_ext --inplace`.

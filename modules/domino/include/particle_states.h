@@ -2,7 +2,7 @@
  *  \file IMP/domino/particle_states.h
  *  \brief A Bayesian inference-based sampler.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

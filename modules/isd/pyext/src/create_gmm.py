@@ -3,12 +3,10 @@ import IMP
 import IMP.em
 import IMP.isd
 import IMP.isd.gmm_tools
-import numpy as np
-try:
-    from argparse import ArgumentParser
-except ImportError:
-    from IMP._compat_argparse import ArgumentParser
+from IMP import ArgumentParser
+
 import sys,os
+
 def parse_args():
     desc = """
     Create a GMM from either density file (.mrc), a pdb file (.pdb)
@@ -38,12 +36,10 @@ def parse_args():
     p.add_argument("-w","--force_weight",dest="force_weight",default=-1.0,
                       type=float,
                       help="force weight to be this value (spherical) -1 means deactivated ")
-    p.add_argument("-e","--force_weight_frac",dest="force_weight_frac",action="store_true",default=False,
-                      help="force weight to be 1.0/(num anchors). takes precedence over -w ")
-    p.add_argument("-o","--out_anchors_txt",dest="out_anchors_txt",default='',
-                      help="write final GMM as anchor points (txt)")
-    p.add_argument("-q","--out_anchors_cmm",dest="out_anchors_cmm",default='',
-                      help="write final GMM as anchor points (cmm)")
+    p.add_argument("-e", "--force_weight_frac", dest="force_weight_frac",
+                   action="store_true", default=False,
+                   help="force weight to be 1.0/(num centers). "
+                        "Takes precedence over -w")
     p.add_argument("-d","--use_dirichlet",dest="use_dirichlet",default=False,
                       action="store_true",
                       help="use dirichlet process for fit")
@@ -62,8 +58,7 @@ def parse_args():
     p.add_argument("out_file", help="output file name")
     return p.parse_args()
 
-def run():
-    args = parse_args()
+def run(args):
     data_fn = args.data_file
     ncenters = args.n_centers
     out_txt_fn = args.out_file
@@ -94,8 +89,7 @@ def run():
         print('sampling points')
         pts = IMP.isd.sample_points_from_density(dmap,args.num_samples,args.threshold)
     else:
-        print('ERROR: data_fn extension must be pdb, mrc, or npy')
-        sys.exit()
+        raise ValueError("data_fn extension must be pdb or mrc")
 
     ### Do fitting to points
     if not args.use_cpp:
@@ -146,11 +140,9 @@ def run():
         IMP.isd.gmm_tools.write_gmm_to_map(density_ps, args.out_map,
                                            args.apix, bbox)
 
-    if args.out_anchors_txt!='':
-        IMP.isd.gmm_tools.write_gmm_to_anchors(density_ps,args.out_anchors_txt,
-                                               args.out_anchors_cmm)
-
-
+def main():
+    args = parse_args()
+    run(args)
 
 if __name__=="__main__":
-    run()
+    main()

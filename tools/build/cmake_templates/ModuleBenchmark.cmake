@@ -8,7 +8,7 @@ include(Files.cmake)
 
 set(IMP_TEST_ARGUMENTS "--run_quick_test" "--deprecation_exceptions")
 set(IMP_LINK_LIBRARIES IMP.%(name)s-lib
-    %(modules)s IMP.benchmark-lib
+    %(modules)s ${IMP_benchmark_LIBRARY}
     %(dependencies)s)
 
 imp_add_tests("IMP.%(name)s" ${PROJECT_BINARY_DIR}/benchmark/%(name)s IMP_%(name)s_BENCHMARKS benchmark ${pyfiles} ${cppfiles})

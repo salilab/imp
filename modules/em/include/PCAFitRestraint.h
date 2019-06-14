@@ -2,7 +2,7 @@
  *  \file IMP/em/PCAFitRestraint.h
  *  \brief Calculate match between density map PCA and particles PCA.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
@@ -35,14 +35,14 @@ class IMPEMEXPORT PCAFitRestraint : public Restraint {
   /**
     \param[in] ps The particles participating in the fitting score
     \param[in] em_map  The density map used in the fitting score
-    \param[in] threahold consider all voxels above this value for
+    \param[in] threshold consider all voxels above this value for
                PCA calculation
     \param[in] weight_key the name of the weight attribute of the particles
     \param[in] max_pca_size_diff
     \param[in] max_angle_diff
     \param[in] max_centroid_diff
    */
-  PCAFitRestraint(ParticlesTemp ps, DensityMap *em_map, float threahold,
+  PCAFitRestraint(ParticlesTemp ps, DensityMap *em_map, float threshold,
                   float max_pca_size_diff, float max_angle_diff,
                   float max_centroid_diff,
                   FloatKey weight_key = atom::Mass::get_mass_key());

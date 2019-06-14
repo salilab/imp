@@ -11,24 +11,21 @@ import shutil
 import tempfile
 import subprocess
 import inspect
+import contextlib
 
-
-class TempDir(object):
-
-    """Make a temporary directory, and delete it when the object is destroyed"""
-
-    def __init__(self):
-        self.tmpdir = tempfile.mkdtemp()
-
-    def __del__(self):
-        shutil.rmtree(self.tmpdir, ignore_errors=True)
+@contextlib.contextmanager
+def temporary_directory(dir=None):
+    _tmpdir = tempfile.mkdtemp(dir=dir)
+    yield _tmpdir
+    shutil.rmtree(_tmpdir, ignore_errors=True)
 
 
 def _count_lines(filename):
     """Count the number of lines in the file"""
     wc = 0
-    for line in open(filename):
-        wc += 1
+    with open(filename) as fh:
+        for line in fh:
+            wc += 1
     return wc
 
 
@@ -44,6 +41,8 @@ def _run_binary(path, binary, args, out_file=None):
     print(cmd)
     p = subprocess.Popen([binary] + args, stdout=stdout, stderr=sys.stderr)
     ret = p.wait()
+    if out_file:
+        stdout.close()
     if ret != 0:
         raise OSError("subprocess failed with exit code %d" % ret)
 
@@ -89,28 +88,29 @@ class Scorer(object):
     def recompute_zscore(self, transforms_file):
         """Recompute z-scores for the new set of transformations
            in transforms_file"""
-        d = TempDir()
-        tmp_tf = os.path.join(d.tmpdir, 'tmp')
         solutions = []
-        num_re = re.compile('\d')
+        num_re = re.compile(r'\d')
         # Read all solutions
-        for line in open(self.output_file):
-            spl = line.split('|')
-            if len(spl) > 1 and num_re.search(spl[0]):
-                solutions.append(line)
-        # Extract only the solutions that are mentioned in transforms_file
-        fh = open(tmp_tf, 'w')
-        for line in open(transforms_file):
-            spl = line.split()
-            if len(spl) > 1 and num_re.search(spl[0]):
-                fh.write(solutions[int(spl[0]) - 1])
-        fh.close()
-        # Recompute z-scores for the new set
-        args = [tmp_tf]
-        if self.reverse_zscores:
-            args.append('1')
-        _run_binary(None, 'recompute_zscore', args,
-                    out_file=self.zscore_output_file)
+        with open(self.output_file) as fh:
+            for line in fh:
+                spl = line.split('|')
+                if len(spl) > 1 and num_re.search(spl[0]):
+                    solutions.append(line)
+        with temporary_directory() as tmpdir:
+            tmp_tf = os.path.join(tmpdir, 'tmp')
+            # Extract only the solutions that are mentioned in transforms_file
+            with open(tmp_tf, 'w') as fh:
+                with open(transforms_file) as tfh:
+                    for line in tfh:
+                        spl = line.split()
+                        if len(spl) > 1 and num_re.search(spl[0]):
+                            fh.write(solutions[int(spl[0]) - 1])
+            # Recompute z-scores for the new set
+            args = [tmp_tf]
+            if self.reverse_zscores:
+                args.append('1')
+            _run_binary(None, 'recompute_zscore', args,
+                        out_file=self.zscore_output_file)
 
 
 class ExperimentalScorer(Scorer):
@@ -394,7 +394,7 @@ where the PatchDock program is installed."""
 
         if len(scorers) == len(self._all_scorers) \
                             - len(self._all_experimental_scorers):
-            parser.error("please provide %s experimental data" % data_types)
+            p.error("please provide %s experimental data" % data_types)
         return scorers
 
     def get_scorers(self, parser):
@@ -447,16 +447,18 @@ where the PatchDock program is installed."""
     def make_transformation_file(self):
         """Extract transformation image from PatchDock output file"""
         out_file = self.get_filename('docking.res')
-        num_re = re.compile('\d')
+        num_re = re.compile(r'\d')
         num_transforms = 0
-        fout = open('trans_pd', 'w')
-        for line in open(out_file):
-            fields = line.split('|')
-            if len(fields) > 1 and num_re.search(fields[0]):
-                num_transforms += 1
-                print(int(fields[0]), fields[-1].strip(' \r\n'), file=fout)
-                if self.opts.precision == 1 and num_transforms >= 5000:
-                    break
+        with open('trans_pd', 'w') as fout:
+            with open(out_file) as fin:
+                for line in fin:
+                    fields = line.split('|')
+                    if len(fields) > 1 and num_re.search(fields[0]):
+                        num_transforms += 1
+                        print(int(fields[0]), fields[-1].strip(' \r\n'),
+                              file=fout)
+                        if self.opts.precision == 1 and num_transforms >= 5000:
+                            break
         return num_transforms
 
     def run_patch_dock(self):
@@ -477,12 +479,12 @@ where the PatchDock program is installed."""
         # z-score, not the raw score, since the combined score is the weighted
         # sum of z-scores, not raw scores)
         if len(scorers) == 1:
-            out_fh = open('trans_for_cluster', 'w')
-            in_fh = open(scorers[0].output_file)
-            for line in in_fh:
-                spl = line.split('|')
-                if '+' in line and '#' not in line and len(spl) > 1:
-                    out_fh.write("%s %s %s" % (spl[0], spl[3], spl[-1]))
+            with open('trans_for_cluster', 'w') as out_fh:
+                with open(scorers[0].output_file) as in_fh:
+                    for line in in_fh:
+                        spl = line.split('|')
+                        if '+' in line and '#' not in line and len(spl) > 1:
+                            out_fh.write("%s %s %s" % (spl[0], spl[3], spl[-1]))
         else:
             out_file = self.get_all_scores_filename(scorers, 'combined_',
                                                     '.res')
@@ -490,12 +492,12 @@ where the PatchDock program is installed."""
             for s in scorers:
                 args.extend([s.output_file, '1.0'])
             _run_binary(None, 'combine_scores', args, out_file=out_file)
-            out_fh = open('trans_for_cluster', 'w')
-            in_fh = open(out_file)
-            for line in in_fh:
-                spl = line.split('|')
-                if '#' not in line and len(spl) > 1:
-                    out_fh.write("%s %s %s" % (spl[0], spl[1], spl[-1]))
+            with open('trans_for_cluster', 'w') as out_fh:
+                with open(out_file) as in_fh:
+                    for line in in_fh:
+                        spl = line.split('|')
+                        if '#' not in line and len(spl) > 1:
+                            out_fh.write("%s %s %s" % (spl[0], spl[1], spl[-1]))
 
     def get_clustered_transforms(self, scorers):
         """Cluster transformations with PatchDock"""
@@ -519,21 +521,22 @@ where the PatchDock program is installed."""
         out_fname = self.get_all_scores_filename(scorers, 'results_', '.txt')
         # Get all solutions
         solutions = []
-        for line in open(comb_final):
-            spl = line.split('|')
-            if len(spl) > 1 and 'Score' not in line:
-                solutions.append(spl)
+        with open(comb_final) as fh:
+            for line in fh:
+                spl = line.split('|')
+                if len(spl) > 1 and 'Score' not in line:
+                    solutions.append(spl)
         # Sort by z-score
         solutions.sort(key=lambda x: float(x[3]))
         # Write results file
-        fh = open(out_fname, 'w')
-        print("receptorPdb Str " + self.receptor, file=fh)
-        print("ligandPdb Str " + self.ligand, file=fh)
-        print("     # |  Score  | filt| ZScore |" \
-            + "|".join(["%-8s| Zscore " % s.short_name for s in scorers]) \
-            + "| Transformation", file=fh)
-        for i, solution in enumerate(solutions):
-            fh.write("%6d | " % (i + 1) + "|".join(solution[1:]))
+        with open(out_fname, 'w') as fh:
+            print("receptorPdb Str " + self.receptor, file=fh)
+            print("ligandPdb Str " + self.ligand, file=fh)
+            print("     # |  Score  | filt| ZScore |"
+                  + "|".join(["%-8s| Zscore " % s.short_name for s in scorers])
+                  + "| Transformation", file=fh)
+            for i, solution in enumerate(solutions):
+                fh.write("%6d | " % (i + 1) + "|".join(solution[1:]))
         return out_fname
 
     def main(self):

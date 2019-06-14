@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/SphereD.h   \brief Simple 3D sphere class.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
@@ -51,6 +51,14 @@ class SphereD : public GeometricPrimitiveD<D> {
   }
   IMP_SHOWABLE_INLINE(SphereD,
   { out << "(" << spaces_io(center_) << ": " << get_radius() << ")"; });
+#ifdef IMP_SWIG_WRAPPER
+  static void _get_struct_size(size_t &sz, size_t &center_offset,
+                               size_t &radius_offset) {
+    sz = sizeof(SphereD<D>);
+    center_offset = offsetof(SphereD<D>, center_);
+    radius_offset = offsetof(SphereD<D>, radius_);
+  }
+#endif
 #ifndef IMP_DOXYGEN
 #ifndef SWIG
   VectorD<D> &_access_center() { return center_; }

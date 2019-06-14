@@ -370,10 +370,26 @@ struct ihm_reader {
   unsigned token_index;
   /* All categories that we want to extract from the file */
   struct ihm_mapping *category_map;
+
+  /* Handler for unknown categories */
+  ihm_unknown_category_callback unknown_category_callback;
+  /* Data passed to unknown category callback */
+  void *unknown_category_data;
+  /* Function to release unknown category data */
+  ihm_free_callback unknown_category_free_func;
+
+  /* Handler for unknown keywords */
+  ihm_unknown_keyword_callback unknown_keyword_callback;
+  /* Data passed to unknown keyword callback */
+  void *unknown_keyword_data;
+  /* Function to release unknown keyword data */
+  ihm_free_callback unknown_keyword_free_func;
 };
 
 typedef enum {
   MMCIF_TOKEN_VALUE = 1,
+  MMCIF_TOKEN_OMITTED,
+  MMCIF_TOKEN_UNKNOWN,
   MMCIF_TOKEN_LOOP,
   MMCIF_TOKEN_DATA,
   MMCIF_TOKEN_SAVE,
@@ -452,20 +468,43 @@ static void set_value(struct ihm_reader *reader,
     free(key->data);
   }
 
-  key->omitted = str[0] == '.' && str[1] == '\0';
-  key->unknown = str[0] == '?' && str[1] == '\0';
+  key->omitted = key->unknown = FALSE;
 
-  if (key->omitted || key->unknown) {
-    set_keyword_to_default(key);
+  key->own_data = own_data;
+  if (own_data) {
+    key->data = strdup(str);
   } else {
-    key->own_data = own_data;
-    if (own_data) {
-      key->data = strdup(str);
-    } else {
-      key->data = str;
-    }
+    key->data = str;
   }
 
+  key->in_file = TRUE;
+}
+
+/* Set the given keyword to the 'omitted' special value */
+static void set_omitted_value(struct ihm_keyword *key)
+{
+  /* If a key is duplicated, overwrite it with the new value */
+  if (key->in_file && key->own_data) {
+    free(key->data);
+  }
+
+  key->omitted = TRUE;
+  key->unknown = FALSE;
+  set_keyword_to_default(key);
+  key->in_file = TRUE;
+}
+
+/* Set the given keyword to the 'unknown' special value */
+static void set_unknown_value(struct ihm_keyword *key)
+{
+  /* If a key is duplicated, overwrite it with the new value */
+  if (key->in_file && key->own_data) {
+    free(key->data);
+  }
+
+  key->omitted = FALSE;
+  key->unknown = TRUE;
+  set_keyword_to_default(key);
   key->in_file = TRUE;
 }
 
@@ -601,6 +640,14 @@ struct ihm_reader *ihm_reader_new(struct ihm_file *fh)
   reader->tokens = ihm_array_new(sizeof(struct ihm_token));
   reader->token_index = 0;
   reader->category_map = ihm_mapping_new(ihm_category_free);
+
+  reader->unknown_category_callback = NULL;
+  reader->unknown_category_data = NULL;
+  reader->unknown_category_free_func = NULL;
+
+  reader->unknown_keyword_callback = NULL;
+  reader->unknown_keyword_data = NULL;
+  reader->unknown_keyword_free_func = NULL;
   return reader;
 }
 
@@ -611,13 +658,65 @@ void ihm_reader_free(struct ihm_reader *reader)
   ihm_array_free(reader->tokens);
   ihm_mapping_free(reader->category_map);
   ihm_file_free(reader->fh);
+  if (reader->unknown_category_free_func) {
+    (*reader->unknown_category_free_func) (reader->unknown_category_data);
+  }
+  if (reader->unknown_keyword_free_func) {
+    (*reader->unknown_keyword_free_func) (reader->unknown_keyword_data);
+  }
   free(reader);
+}
+
+/* Set a callback for unknown categories.
+   The given callback is called whenever a category is encountered in the
+   file that is not handled (by ihm_category_new).
+ */
+void ihm_reader_unknown_category_callback_set(struct ihm_reader *reader,
+                                     ihm_unknown_category_callback callback,
+                                     void *data, ihm_free_callback free_func)
+{
+  if (reader->unknown_category_free_func) {
+    (*reader->unknown_category_free_func) (reader->unknown_category_data);
+  }
+  reader->unknown_category_callback = callback;
+  reader->unknown_category_data = data;
+  reader->unknown_category_free_func = free_func;
+}
+
+/* Set a callback for unknown keywords.
+   The given callback is called whenever a keyword is encountered in the
+   file that is not handled (within a category that is handled by
+   ihm_category_new).
+ */
+void ihm_reader_unknown_keyword_callback_set(struct ihm_reader *reader,
+                                     ihm_unknown_keyword_callback callback,
+                                     void *data, ihm_free_callback free_func)
+{
+  if (reader->unknown_keyword_free_func) {
+    (*reader->unknown_keyword_free_func) (reader->unknown_keyword_data);
+  }
+  reader->unknown_keyword_callback = callback;
+  reader->unknown_keyword_data = data;
+  reader->unknown_keyword_free_func = free_func;
 }
 
 /* Remove all categories from the reader. */
 void ihm_reader_remove_all_categories(struct ihm_reader *reader)
 {
   ihm_mapping_remove_all(reader->category_map);
+  if (reader->unknown_category_free_func) {
+    (*reader->unknown_category_free_func) (reader->unknown_category_data);
+  }
+  reader->unknown_category_callback = NULL;
+  reader->unknown_category_data = NULL;
+  reader->unknown_category_free_func = NULL;
+
+  if (reader->unknown_keyword_free_func) {
+    (*reader->unknown_keyword_free_func) (reader->unknown_keyword_data);
+  }
+  reader->unknown_keyword_callback = NULL;
+  reader->unknown_keyword_data = NULL;
+  reader->unknown_keyword_free_func = NULL;
 }
 
 /* Given the start of a quoted string, find the end and add a token for it */
@@ -637,6 +736,8 @@ static size_t handle_quoted_token(struct ihm_reader *reader,
   if (end && *end) {
     struct ihm_token t;
     int tok_end = end - pt + start_pos;
+    /* A quoted string is always a literal string, even if it is
+       "?" or ".", not an unknown/omitted value */
     t.type = MMCIF_TOKEN_VALUE;
     t.str = line + start_pos + 1;
     line[tok_end] = '\0';
@@ -681,6 +782,10 @@ static size_t get_next_token(struct ihm_reader *reader, char *line,
       t.type = MMCIF_TOKEN_SAVE;
     } else if (t.str[0] == '_') {
       t.type = MMCIF_TOKEN_VARIABLE;
+    } else if (t.str[0] == '.' && t.str[1] == '\0') {
+      t.type = MMCIF_TOKEN_OMITTED;
+    } else if (t.str[0] == '?' && t.str[1] == '\0') {
+      t.type = MMCIF_TOKEN_UNKNOWN;
     } else {
       /* Note that we do no special processing for other reserved words
          (global_, stop_). But the probability of them occurring
@@ -843,12 +948,24 @@ static void read_value(struct ihm_reader *reader,
       struct ihm_token *val_token = get_token(reader, FALSE, err);
       if (val_token && val_token->type == MMCIF_TOKEN_VALUE) {
         set_value(reader, category, key, val_token->str, TRUE, err);
+      } else if (val_token && val_token->type == MMCIF_TOKEN_OMITTED) {
+        set_omitted_value(key);
+      } else if (val_token && val_token->type == MMCIF_TOKEN_UNKNOWN) {
+        set_unknown_value(key);
       } else if (!*err) {
         ihm_error_set(err, IHM_ERROR_FILE_FORMAT,
                       "No valid value found for %s.%s in file, line %d",
                       category->name, key->name, reader->linenum);
       }
+    } else if (reader->unknown_keyword_callback) {
+      (*reader->unknown_keyword_callback)(reader, category_name, keyword_name,
+                                          reader->linenum,
+                                          reader->unknown_keyword_data, err);
     }
+  } else if (reader->unknown_category_callback) {
+    (*reader->unknown_category_callback)(reader, category_name,
+                                         reader->linenum,
+                                         reader->unknown_category_data, err);
   }
 }
 
@@ -872,6 +989,14 @@ static struct ihm_keyword *handle_loop_index(struct ihm_reader *reader,
                                                        category_name);
   if (first_loop) {
     *catpt = category;
+    if (!category && reader->unknown_category_callback) {
+      (*reader->unknown_category_callback)(reader, category_name,
+                                           reader->linenum,
+                                           reader->unknown_category_data, err);
+      if (*err) {
+        return NULL;
+      }
+    }
   } else if (*catpt != category) {
     ihm_error_set(err, IHM_ERROR_FILE_FORMAT,
                   "mmCIF files cannot contain multiple categories "
@@ -884,6 +1009,13 @@ static struct ihm_keyword *handle_loop_index(struct ihm_reader *reader,
                                                    keyword_name);
     if (key) {
       return key;
+    } else if (reader->unknown_keyword_callback) {
+      (*reader->unknown_keyword_callback)(reader, category_name, keyword_name,
+                                          reader->linenum,
+                                          reader->unknown_keyword_data, err);
+      if (*err) {
+        return NULL;
+      }
     }
   }
   return NULL;
@@ -944,7 +1076,9 @@ static struct ihm_array *read_loop_keywords(struct ihm_reader *reader,
                                                 token, first_loop, err);
       ihm_array_append(keywords, &k);
       first_loop = FALSE;
-    } else if (token->type == MMCIF_TOKEN_VALUE) {
+    } else if (token->type == MMCIF_TOKEN_VALUE
+               || token->type == MMCIF_TOKEN_UNKNOWN
+               || token->type == MMCIF_TOKEN_OMITTED) {
       /* OK, end of keywords; proceed on to values */
       unget_token(reader);
       break;
@@ -979,6 +1113,14 @@ static void read_loop_data(struct ihm_reader *reader,
       } else if (token && token->type == MMCIF_TOKEN_VALUE) {
         if (keywords[i]) {
           set_value(reader, category, keywords[i], token->str, !oneline, err);
+        }
+      } else if (token && token->type == MMCIF_TOKEN_OMITTED) {
+        if (keywords[i]) {
+          set_omitted_value(keywords[i]);
+        }
+      } else if (token && token->type == MMCIF_TOKEN_UNKNOWN) {
+        if (keywords[i]) {
+          set_unknown_value(keywords[i]);
         }
       } else if (i == 0) {
         /* OK, end of the loop */

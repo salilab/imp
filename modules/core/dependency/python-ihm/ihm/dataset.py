@@ -13,6 +13,7 @@ class Dataset(object):
               :class:`~ihm.location.InputFileLocation` if the dataset is stored
               in an external file.
        :type location: :class:`ihm.location.Location`
+       :param str details: Text giving more information about the dataset.
     """
 
     _eq_keys = ['location']
@@ -28,8 +29,8 @@ class Dataset(object):
         return hash(self._eq_vals())
 
     data_type = 'unspecified'
-    def __init__(self, location):
-        self.location = location
+    def __init__(self, location, details=None):
+        self.location, self.details = location, details
 
         #: A list of :class:`Dataset` objects from which this one was derived.
         #: For example, a 3D EM map may be derived from a set of 2D images.
@@ -50,12 +51,25 @@ class DatasetGroup(list):
     """A set of :class:`Dataset` objects that are handled together.
        This is implemented as a simple list.
 
+       :param sequence elements: Initial set of datasets.
+       :param str name: Short text name of this group.
+       :param str application: Text that shows how this group is used.
+       :param str details: Longer text that describes this group.
+
        Normally a group is passed to one or more :class:`~ihm.protocol.Protocol`
        or :class:`~ihm.analysis.Analysis` objects, although unused groups
        can still be included in the file if desired by adding them to
        :attr:`ihm.System.orphan_dataset_groups`.
     """
-    pass
+
+    # For backwards compatibility with earlier versions of this class which
+    # didn't specify name/application/details
+    name = application = details = None
+
+    def __init__(self, elements=(), name=None, application=None, details=None):
+        super(DatasetGroup, self).__init__(elements)
+        self.name, self.application = name, application
+        self.details = details
 
 
 class CXMSDataset(Dataset):
@@ -82,6 +96,21 @@ class ComparativeModelDataset(Dataset):
 class IntegrativeModelDataset(Dataset):
     """A 3D structure determined by integrative modeling"""
     data_type = 'Integrative model'
+
+
+class DeNovoModelDataset(Dataset):
+    """A 3D structure determined by de novo modeling"""
+    data_type = 'De Novo model'
+
+
+class NMRDataset(Dataset):
+    """A nuclear magnetic resonance (NMR) dataset"""
+    data_type = 'NMR data'
+
+
+class MutagenesisDataset(Dataset):
+    """Mutagenesis data"""
+    data_type = 'Mutagenesis data'
 
 
 class EMDensityDataset(Dataset):

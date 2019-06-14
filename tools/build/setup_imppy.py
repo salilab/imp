@@ -14,24 +14,6 @@ import glob
 import subprocess
 
 
-def get_python_pathsep(python):
-    """Get the separator used for PYTHONPATH"""
-    if python == "python":
-        # Use our own path separator
-        return os.pathsep
-    else:
-        # Query the other Python for the path separator it uses
-        args = [python, '-c', 'import os; print(os.pathsep)']
-        p = subprocess.Popen(args, stdout=subprocess.PIPE,
-                             universal_newlines=True)
-        pathsep = p.stdout.read().rstrip('\r\n')
-        ret = p.wait()
-        if ret != 0:
-            raise OSError("subprocess failed with code %d: %s"
-                          % (ret, str(args)))
-        return pathsep
-
-
 class FileGenerator(object):
     body = ["@LDPATH@", "", "@PYTHONPATH@", "",
             "# Where to find data for the various modules",
@@ -67,7 +49,7 @@ class FileGenerator(object):
             + self.native_paths(self.options.path, True)
 
     def write_file(self):
-        pypathsep = get_python_pathsep(self.options.python)
+        pypathsep = ";" if self.options.python_pathsep == 'w32' else os.pathsep
         outfile = self.options.output
         pythonpath = self.native_paths(self.options.python_path, True)
         ldpath = self.native_paths(self.options.ld_path)
@@ -176,8 +158,9 @@ parser.add_option("-c", "--precommand", dest="precommand", default="",
                   help="Command to run before all executables.")
 parser.add_option("-P", "--path", dest="path", default=[],
                   action="append", help="The PATH.")
-parser.add_option("--python", dest="python", default="python",
-                  help="The Python binary that will be used with imppy")
+parser.add_option("--python_pathsep", default="",
+                  help="The Python path separator style "
+                       "to use ('w32' or empty)")
 parser.add_option("-d", "--external_data", dest="external_data", default=[],
                   action="append", help="External data.")
 parser.add_option("-e", "--propagate", dest="propagate", default="no",

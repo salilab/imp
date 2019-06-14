@@ -567,41 +567,12 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
 
     return rmsd_bead_size_dict
 
-@IMP.deprecated_object(2.10,
-        "If you use this class please let the PMI developers know.")
-class RMSDOutput(object):
-    """A helper output based on dist to initial coordinates"""
-    def __init__(self,ps,label,init_coords=None):
-        self.model = ps[0].get_model()
-        self.ps = ps
-        if init_coords is None:
-            self.init_coords = [IMP.core.XYZ(p).get_coordinates() for p in self.ps]
-        else:
-            self.init_coords = init_coords
-        self.label = label
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def mdl(self):
-        return self.model
-
-    def get_output(self):
-        output = {}
-        coords = [IMP.core.XYZ(p).get_coordinates() for p in self.ps]
-        rmsd = IMP.algebra.get_rmsd(coords,self.init_coords)
-        output["RMSD_"+self.label] = str(rmsd)
-        return output
 
 class TotalScoreOutput(object):
     """A helper output for model evaluation"""
     def __init__(self,model):
         self.model = model
         self.rs = IMP.pmi.tools.get_restraint_set(self.model)
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def mdl(self):
-        return self.model
 
     def get_output(self):
         score = self.rs.evaluate(False)

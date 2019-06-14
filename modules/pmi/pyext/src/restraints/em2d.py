@@ -56,11 +56,6 @@ class ElectronMicroscopy2D(object):
 
         self.datasets = []
         for image in images:
-            if representation:
-                d = representation.get_file_dataset(image)
-                if d:
-                    self.datasets.append(d)
-                    continue
             l = ihm.location.InputFileLocation(image,
                                  details="Electron microscopy class average")
             d = ihm.dataset.EM2DClassDataset(l)

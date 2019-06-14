@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 """Parse the manual's XML output to get the contents. Then patch each page
-   in the HTML output to add navigation links (next page, previous page).
+   in the HTML output to add navigation links (next page, previous page,
+   edit on GitHub).
 
    This also applies minor fixes to the HTML to fix places where doxygen
    generates wonky output.
@@ -133,8 +134,8 @@ class Page(object):
             del sp[:2]
         else:
             root = 'https://github.com/salilab/imp/blob/develop/'
-        return('<a href="%s%s" title="Edit on GitHub"><img src="edit.png" '
-               'alt="Edit on GitHub"/></a>' % (root, os.path.sep.join(sp)))
+        return('      <li><a href="%s%s"><i class="fab fa-github">'
+               '</i> Edit on GitHub</a></li>\n' % (root, os.path.sep.join(sp)))
 
 
 class Docs(object):
@@ -266,7 +267,7 @@ class Docs(object):
         doxversion = '<a class="doxversion" ' \
                      + 'href="https://integrativemodeling.org/doc.html">' \
                      + 'version %s</a>' % get_version()
-        toplinks = '<div class="doxnavlinks">' + edit_link + " " + doxversion \
+        toplinks = '<div class="doxnavlinks">' + doxversion \
                    + " ".join(links) + '</div>\n'
         botlinks = '<div class="doxnavlinks">' + " ".join(links) + '</div>\n'
         for fname in self.get_html_pages(page):
@@ -276,6 +277,9 @@ class Docs(object):
                 if line.startswith('</div><!-- top -->'):
                     out.write(line)
                     out.write(toplinks)
+                elif '<span>Other&#160;Versions</span>' in line:
+                    out.write(line)
+                    out.write(edit_link)
                 elif line.startswith('<hr class="footer"') and links:
                     out.write('<hr class="footer"/>')
                     out.write(botlinks)

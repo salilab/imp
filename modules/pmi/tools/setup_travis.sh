@@ -7,7 +7,7 @@ if [ $# -ne 2 ]; then
   exit 1
 fi
 
-pmi_dir=$(pwd)
+cur_dir=$(pwd)
 conda_dir=$1
 python_version=$2
 temp_dir=$(mktemp -d)
@@ -27,25 +27,17 @@ fi
 bash miniconda.sh -b -p ${conda_dir}
 export PATH=${conda_dir}/bin:$PATH
 conda update --yes -q conda
-conda create --yes -q -n python${python_version} -c salilab python=${python_version} pip scipy matplotlib nose imp-nightly
+conda create --yes -q -n python${python_version} -c salilab python=${python_version} pip scipy matplotlib nose imp-nightly gxx_linux-64 eigen swig cmake
 source activate python${python_version}
 pip install coverage
 
-# Replace PMI in IMP with that from git
-IMP_PATH=$(echo "import IMP, sys, os; sys.stdout.write(os.path.dirname(IMP.__file__))" | python)
-cd ${IMP_PATH}
-mv pmi pmi.orig
-cp -sr ${pmi_dir}/pyext/src pmi
-cp pmi.orig/__init__.py pmi.orig/_version_check.py pmi/
-
-# Also replace PMI examples, since some tests use data from them
-EXAMPLE_PATH=$(echo "import IMP.pmi, sys; sys.stdout.write(IMP.pmi.get_example_path('..'))" | python)
-cd ${EXAMPLE_PATH}
-mv pmi pmi.orig
-cp -sr ${pmi_dir}/examples pmi
+source ${CONDA_PREFIX}/etc/conda/activate.d/activate-gcc_linux-64.sh
+source ${CONDA_PREFIX}/etc/conda/activate.d/activate-gxx_linux-64.sh
 
 # IMP tests use sys.argv[0] to determine their location, which won't work if
 # we use nosetests, so add a workaround
-ln -sf $(which nosetests) ${pmi_dir}/test/
+ln -sf $(which nosetests) ${cur_dir}/test/
+
+cd ${cur_dir}
 
 rm -rf ${temp_dir}

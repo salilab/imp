@@ -5,7 +5,7 @@
  *         non-negative directed distances.
  * .
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_HARMONIC_LOWER_BOUND_H

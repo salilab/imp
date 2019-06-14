@@ -2,7 +2,7 @@
  *  \file IMP/em/FitRestraint.h
  *  \brief Calculate score based on fit to EM map.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

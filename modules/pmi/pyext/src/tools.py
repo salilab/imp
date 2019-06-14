@@ -24,18 +24,35 @@ try:
     from collections import OrderedDict
 except ImportError:
     from IMP.pmi._compat_collections import OrderedDict
+import warnings
 
 def _get_system_for_hier(hier):
-    """Given a top-level hierarchy, return the System that created it,
-       or None"""
-    if hasattr(hier, '_pmi2_system'):
-        return hier._pmi2_system()
+    """Given a hierarchy, return the System that created it, or None"""
+    # If we are given the raw particle, get the corresponding Hierarchy
+    # decorator if available
+    if hier and not hasattr(hier, 'get_parent'):
+        if IMP.atom.Hierarchy.get_is_setup(hier):
+            hier = IMP.atom.Hierarchy(hier)
+        else:
+            return None
+    while hier:
+        # See if we labeled the Python object directly with the System
+        if hasattr(hier, '_pmi2_system'):
+            return hier._pmi2_system()
+        # Otherwise (maybe we got a new Python wrapper around the same C++
+        # object), try all extant systems
+        for ws in IMP.pmi.topology.System._all_systems:
+            s = ws()
+            if s and s.hier == hier:
+                return s
+        # Try the next level up in the hierarchy
+        hier = hier.get_parent()
 
-def _all_protocol_outputs(representations, root_hier):
+def _all_protocol_outputs(representations, hier):
     """Iterate over all (ProtocolOutput, State) pairs for the given
-       representations (PMI1) or root hier (PMI2)"""
-    if root_hier:
-        system = _get_system_for_hier(root_hier)
+       representations (PMI1) or hier (PMI2)"""
+    if hier:
+        system = _get_system_for_hier(hier)
         if system:
             for state in system.states:
                 for p in state._protocol_output:
@@ -91,7 +108,8 @@ def get_restraint_set(model, rmf=False):
        should be written out to RMF files."""
     mk, mk_rmf = _get_restraint_set_keys()
     if not model.get_has_data(mk):
-        print("WARNING: no restraints added to model yet")
+        warnings.warn("no restraints added to model yet",
+                      IMP.pmi.ParameterWarning)
         _add_restraint_sets(model, mk, mk_rmf)
     if rmf:
         return IMP.RestraintSet.get_from(model.get_data(mk_rmf))
@@ -188,21 +206,27 @@ class ParticleToSampleList(object):
         else:
             self.dictionary_particle_type[particle] = particle_type
             if particle_type == "Rigid_Bodies":
-                if type(particle_transformation) == tuple and len(particle_transformation) == 2 and type(particle_transformation[0]) == float and type(particle_transformation[1]) == float:
+                if (isinstance(particle_transformation, tuple)
+                    and len(particle_transformation) == 2
+                    and all(isinstance(x, float)
+                            for x in particle_transformation)):
                     self.dictionary_particle_transformation[
                         particle] = particle_transformation
                     self.dictionary_particle_name[particle] = name
                 else:
                     raise TypeError("ParticleToSampleList: not the right transformation format for Rigid_Bodies, should be a tuple of floats")
             elif particle_type == "Surfaces":
-                if type(particle_transformation) == tuple and len(particle_transformation) == 3 and all(isinstance(x, float) for x in particle_transformation):
+                if (isinstance(particle_transformation, tuple)
+                    and len(particle_transformation) == 3
+                    and all(isinstance(x, float)
+                            for x in particle_transformation)):
                     self.dictionary_particle_transformation[
                         particle] = particle_transformation
                     self.dictionary_particle_name[particle] = name
                 else:
                     raise TypeError("ParticleToSampleList: not the right transformation format for Surfaces, should be a tuple of floats")
             else:
-                if type(particle_transformation) == float:
+                if isinstance(particle_transformation, float):
                     self.dictionary_particle_transformation[
                         particle] = particle_transformation
                     self.dictionary_particle_name[particle] = name
@@ -220,176 +244,6 @@ class ParticleToSampleList(object):
             ps[key] = value
         return ps
 
-
-@IMP.deprecated_object(2.10,
-        "If you use this class please let the PMI developers know.")
-class Variance(object):
-
-    def __init__(self, model, tau, niter, prot, th_profile, write_data=False):
-
-        self.model = model
-        self.write_data = write_data
-        self.tau = tau
-        self.niter = niter
-        #! select particles from the model
-        particles = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
-        self.particles = particles
-        # store reference coordinates and theoretical profile
-        self.refpos = [IMP.core.XYZ(p).get_coordinates() for p in particles]
-        self.model_profile = th_profile
-
-    def perturb_particles(self, perturb=True):
-        for i, p in enumerate(self.particles):
-            newpos = array(self.refpos[i])
-            if perturb:
-                newpos += random.normal(0, self.tau, 3)
-            newpos = IMP.algebra.Vector3D(newpos)
-            IMP.core.XYZ(p).set_coordinates(newpos)
-
-    def get_profile(self):
-        model_profile = self.model_profile
-        p = model_profile.calculate_profile(self.particles, IMP.saxs.CA_ATOMS)
-        return array([model_profile.get_intensity(i) for i in
-                      range(model_profile.size())])
-
-    def init_variances(self):
-        # create placeholders
-        N = self.model_profile.size()
-        a = self.profiles[0][:]
-        self.m = matrix(a).T  # Nx1
-        self.V = self.m * self.m.T
-        self.normm = linalg.norm(self.m)
-        self.normV = linalg.norm(self.V)
-
-    def update_variances(self):
-        a = matrix(self.profiles[-1])  # 1xN
-        n = float(len(self.profiles))
-        self.m = a.T / n + (n - 1) / n * self.m
-        self.V = a.T * a + self.V
-        self.oldnormm = self.normm
-        self.oldnormV = self.normV
-        self.normm = linalg.norm(self.m)
-        self.normV = linalg.norm(self.V)
-        self.diffm = (self.oldnormm - self.normm) / self.oldnormm
-        self.diffV = (self.oldnormV - self.normV) / self.oldnormV
-
-    def get_direct_stats(self, a):
-        nq = len(a[0])
-        nprof = len(a)
-        m = [0] * nq
-        for prof in a:
-            for q, I in enumerate(prof):
-                m[q] += I
-        m = array(m) / nprof
-        V = matrix(a)
-        V = V.T * V
-        Sigma = (matrix(a - m))
-        Sigma = Sigma.T * Sigma / (nprof - 1)
-        mi = matrix(diag(1. / m))
-        Sigmarel = mi.T * Sigma * mi
-        return m, V, Sigma, Sigmarel
-
-    def store_data(self):
-        if not os.path.isdir('data'):
-            os.mkdir('data')
-        profiles = matrix(self.profiles)
-        self.directm, self.directV, self.Sigma, self.Sigmarel = \
-            self.get_direct_stats(array(profiles))
-        directV = self.directV
-        # print "V comparison",(linalg.norm(directV-self.V)/self.normV)
-        save('data/profiles', profiles)
-        # absolute profile differences
-        fl = open('data/profiles.dat', 'w')
-        for i, l in enumerate(array(profiles).T):
-            self.model_profile.get_q(i)
-            fl.write('%s ' % i)
-            for k in l:
-                fl.write('%s ' % (k - self.directm[i]))
-            fl.write('\n')
-        # relative profile differences
-        fl = open('data/profiles_rel.dat', 'w')
-        for i, l in enumerate(array(profiles).T):
-            self.model_profile.get_q(i)
-            fl.write('%s ' % i)
-            for k in l:
-                fl.write('%s ' % ((k - self.directm[i]) / self.directm[i]))
-            fl.write('\n')
-        save('data/m', self.directm)
-        save('data/V', self.directV)
-        Sigma = self.Sigma
-        save('data/Sigma', Sigma)
-        # Sigma matrix
-        fl = open('data/Sigma.dat', 'w')
-        model_profile = self.model_profile
-        for i in range(model_profile.size()):
-            qi = model_profile.get_q(i)
-            for j in range(model_profile.size()):
-                qj = model_profile.get_q(j)
-                vij = self.Sigma[i, j]
-                fl.write('%s %s %s\n' % (qi, qj, vij))
-            fl.write('\n')
-        # Sigma eigenvalues
-        fl = open('data/eigenvals', 'w')
-        for i in linalg.eigvalsh(Sigma):
-            fl.write('%s\n' % i)
-        Sigmarel = self.Sigmarel
-        save('data/Sigmarel', Sigmarel)
-        # Sigmarel matrix
-        fl = open('data/Sigmarel.dat', 'w')
-        model_profile = self.model_profile
-        for i in range(model_profile.size()):
-            qi = model_profile.get_q(i)
-            for j in range(model_profile.size()):
-                qj = model_profile.get_q(j)
-                vij = self.Sigmarel[i, j]
-                fl.write('%s %s %s\n' % (qi, qj, vij))
-            fl.write('\n')
-        # Sigma eigenvalues
-        fl = open('data/eigenvals_rel', 'w')
-        for i in linalg.eigvalsh(Sigmarel):
-            fl.write('%s\n' % i)
-        # mean profile
-        fl = open('data/mean.dat', 'w')
-        for i in range(len(self.directm)):
-            qi = self.model_profile.get_q(i)
-            fl.write('%s ' % qi)
-            fl.write('%s ' % self.directm[i])
-            fl.write('%s ' % sqrt(self.Sigma[i, i]))
-            fl.write('\n')
-
-    def try_chol(self, jitter):
-        Sigma = self.Sigma
-        try:
-            linalg.cholesky(Sigma + matrix(eye(len(Sigma))) * jitter)
-        except linalg.LinAlgError:
-            print("Decomposition failed with jitter =", jitter)
-            return
-        print("Successful decomposition with jitter =", jitter)
-
-    def run(self):
-        self.profiles = [self.get_profile()]
-        # self.init_variances()
-        for n in range(self.niter):
-            self.perturb_particles()
-            self.profiles.append(self.get_profile())
-            # self.update_variances()
-            #profiles = matrix(self.profiles)
-            # print n,self.diffm,self.diffV
-        # print
-        #
-        if self.write_data:
-            self.store_data()
-        # self.try_chol(0.)
-        # for i in logspace(-7,0,num=8):
-        #    self.try_chol(i)
-
-    def get_cov(self, relative=True):
-        if not relative:
-            return self.Sigma
-        else:
-            return self.Sigmarel
-
-    #-------------------------------
 
 def get_random_cross_link_dataset(representation,
                                   resolution=1.0,
@@ -457,24 +311,6 @@ def get_cross_link_data(directory, filename, dist, omega, sigma,
             pot)
     return xlmsdata
 
-    #-------------------------------
-
-
-@IMP.deprecated_function(2.10,
-        "If you use this function please let the PMI developers know.")
-def get_cross_link_data_from_length(length, xxx_todo_changeme3, xxx_todo_changeme4, xxx_todo_changeme5):
-    (distmin, distmax, ndist) = xxx_todo_changeme3
-    (omegamin, omegamax, nomega) = xxx_todo_changeme4
-    (sigmamin, sigmamax, nsigma) = xxx_todo_changeme5
-
-    dist_grid = get_grid(distmin, distmax, ndist, False)
-    omega_grid = get_log_grid(omegamin, omegamax, nomega)
-    sigma_grid = get_log_grid(sigmamin, sigmamax, nsigma)
-
-    xlmsdata = IMP.isd.CrossLinkData(dist_grid, omega_grid, sigma_grid, length)
-    return xlmsdata
-
-
 def get_grid(gmin, gmax, ngrid, boundaries):
     grid = []
     dx = (gmax - gmin) / float(ngrid)
@@ -541,23 +377,6 @@ def open_file_or_inline_text(filename):
     except IOError:
         fl = filename.split("\n")
     return fl
-
-
-@IMP.deprecated_function(2.10,
-        "If you use this function please let the PMI developers know.")
-def get_drmsd(prot0, prot1):
-    drmsd = 0.
-    npairs = 0.
-    for i in range(0, len(prot0) - 1):
-        for j in range(i + 1, len(prot0)):
-            dist0 = IMP.core.get_distance(prot0[i], prot0[j])
-            dist1 = IMP.core.get_distance(prot1[i], prot1[j])
-            drmsd += (dist0 - dist1) ** 2
-            npairs += 1.
-    return math.sqrt(drmsd / npairs)
-
-    #-------------------------------
-
 
 def get_ids_from_fasta_file(fastafile):
     ids = []
@@ -703,7 +522,7 @@ class map(object):
         self.map[xvalue] = yvalue
 
     def get_map_element(self, invalue):
-        if type(invalue) == float:
+        if isinstance(invalue, float):
             n = 0
             mindist = 1
             for x in self.map:
@@ -717,7 +536,7 @@ class map(object):
                     minx = x
                 n += 1
             return self.map[minx]
-        elif type(invalue) == str:
+        elif isinstance(invalue, str):
             return self.map[invalue]
         else:
             raise TypeError("wrong type for map")
@@ -850,9 +669,9 @@ def select_by_tuple_2(hier,tuple_selection,resolution):
     """
     kwds = {} # going to accumulate keywords
     kwds['resolution'] = resolution
-    if type(tuple_selection) is str:
+    if isinstance(tuple_selection, str):
         kwds['molecule'] = tuple_selection
-    elif type(tuple_selection) is tuple:
+    elif isinstance(tuple_selection, tuple):
         rbegin = tuple_selection[0]
         rend = tuple_selection[1]
         kwds['molecule'] = tuple_selection[2]
@@ -1097,16 +916,6 @@ def sort_by_residues(particles):
     particles = [p[0] for p in sorted_particles_residues]
     return particles
 
-
-@IMP.deprecated_function(2.10,
-        "If you use this function please let the PMI developers know.")
-def get_residue_to_particle_map(particles):
-    # this function returns a dictionary that map particles to residue indexes
-    particles = sort_by_residues(particles)
-    particles_residues = [(p, IMP.pmi.tools.get_residue_indexes(p))
-                          for p in particles]
-    return dict(zip(particles_residues, particles))
-
 #
 # Parallel Computation
 #
@@ -1125,9 +934,9 @@ def scatter_and_gather(data):
     elif rank == 0:
         for i in range(1, number_of_processes):
             data_tmp = comm.recv(source=i, tag=11)
-            if type(data) == list:
+            if isinstance(data, list):
                 data += data_tmp
-            elif type(data) == dict:
+            elif isinstance(data, dict):
                 data.update(data_tmp)
             else:
                 raise TypeError("data not supported, use list or dictionaries")
@@ -1138,31 +947,6 @@ def scatter_and_gather(data):
     if rank != 0:
         data = comm.recv(source=0, tag=11)
     return data
-
-@IMP.deprecated_function(2.10,
-        "If you use this function please let the PMI developers know.")
-def scatter_and_gather_dict_append(data):
-    """Synchronize data over a parallel run"""
-    from mpi4py import MPI
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    number_of_processes = comm.size
-    comm.Barrier()
-    if rank != 0:
-        comm.send(data, dest=0, tag=11)
-    elif rank == 0:
-        for i in range(1, number_of_processes):
-            data_tmp = comm.recv(source=i, tag=11)
-            for k in data:
-                data[k]+=data_tmp[k]
-
-        for i in range(1, number_of_processes):
-            comm.send(data, dest=i, tag=11)
-
-    if rank != 0:
-        data = comm.recv(source=0, tag=11)
-    return data
-
 
 #
 ### Lists and iterators
@@ -1226,9 +1010,9 @@ class Segments(object):
 
     def __init__(self,index):
         '''index can be a integer or a list of integers '''
-        if type(index) is int:
+        if isinstance(index, int):
             self.segs=[[index]]
-        elif type(index) is list:
+        elif isinstance(index, list):
             self.segs=[[index[0]]]
             for i in index[1:]:
                 self.add(i)
@@ -1237,7 +1021,7 @@ class Segments(object):
 
     def add(self,index):
         '''index can be a integer or a list of integers '''
-        if type(index) is int:
+        if isinstance(index, int):
             mergeleft=None
             mergeright=None
             for n,s in enumerate(self.segs):
@@ -1263,7 +1047,7 @@ class Segments(object):
 
             self.segs.sort(key=lambda tup: tup[0])
 
-        elif type(index) is list:
+        elif isinstance(index, list):
             for i in index:
                 self.add(i)
         else:
@@ -1297,67 +1081,6 @@ class Segments(object):
             ret_tmp+=str(seg[0])+"-"+str(seg[-1])+","
         ret=ret_tmp[:-1]+"]"
         return ret
-
-
-
-#
-# COORDINATE MANIPULATION
-#
-
-
-@IMP.deprecated_function(2.10,
-        "If you use this function please let the PMI developers know.")
-def translate_hierarchy(hierarchy, translation_vector):
-    '''
-    Apply a translation to a hierarchy along the input vector.
-    '''
-    rbs = set()
-    xyzs = set()
-    if type(translation_vector) == list:
-        transformation = IMP.algebra.Transformation3D(
-            IMP.algebra.Vector3D(translation_vector))
-    else:
-        transformation = IMP.algebra.Transformation3D(translation_vector)
-    for p in IMP.atom.get_leaves(hierarchy):
-        if IMP.core.RigidBody.get_is_setup(p):
-            rbs.add(IMP.core.RigidBody(p))
-        elif IMP.core.RigidMember.get_is_setup(p):
-            rb = IMP.core.RigidMember(p).get_rigid_body()
-            rbs.add(rb)
-        else:
-            xyzs.add(p)
-    for xyz in xyzs:
-        IMP.core.transform(IMP.core.XYZ(xyz), transformation)
-    for rb in rbs:
-        IMP.core.transform(rb, transformation)
-
-
-@IMP.deprecated_function(2.10,
-        "If you use this function please let the PMI developers know.")
-def translate_hierarchies(hierarchies, translation_vector):
-    for h in hierarchies:
-        IMP.pmi.tools.translate_hierarchy(h, translation_vector)
-
-
-@IMP.deprecated_function(2.10,
-        "If you use this function please let the PMI developers know.")
-def translate_hierarchies_to_reference_frame(hierarchies):
-    xc = 0
-    yc = 0
-    zc = 0
-    nc = 0
-    for h in hierarchies:
-        for p in IMP.atom.get_leaves(h):
-            coor = IMP.core.XYZ(p).get_coordinates()
-            nc += 1
-            xc += coor[0]
-            yc += coor[1]
-            zc += coor[2]
-    xc = xc / nc
-    yc = yc / nc
-    zc = zc / nc
-    IMP.pmi.tools.translate_hierarchies(hierarchies, (-xc, -yc, -zc))
-
 
 #
 # Tools to simulate data
@@ -1405,93 +1128,6 @@ def get_random_residue_pairs(representation, resolution,
         random_residue_pairs.append((name1, r1, name2, r2))
 
     return random_residue_pairs
-
-
-@IMP.deprecated_function(2.10,
-        "If you use this function please let the PMI developers know.")
-def get_random_data_point(
-    expected_value,
-    ntrials,
-    sensitivity,
-    sigma,
-    outlierprob,
-    begin_end_nbins_tuple,
-    log=False,
-        loggrid=False):
-    import random
-
-    begin = begin_end_nbins_tuple[0]
-    end = begin_end_nbins_tuple[1]
-    nbins = begin_end_nbins_tuple[2]
-
-    if not loggrid:
-        fmod_grid = get_grid(begin, end, nbins, True)
-    else:
-        fmod_grid = get_log_grid(begin, end, nbins)
-
-    norm = 0
-    cumul = []
-    cumul.append(0)
-
-    a = []
-    for i in range(0, ntrials):
-        a.append([random.random(), True])
-
-    if sigma != 0.0:
-        for j in range(1, len(fmod_grid)):
-            fj = fmod_grid[j]
-            fjm1 = fmod_grid[j - 1]
-            df = fj - fjm1
-
-            if not log:
-                pj = normal_density_function(expected_value, sigma, fj)
-                pjm1 = normal_density_function(expected_value, sigma, fjm1)
-            else:
-                pj = log_normal_density_function(expected_value, sigma, fj)
-                pjm1 = log_normal_density_function(expected_value, sigma, fjm1)
-
-            norm += (pj + pjm1) / 2.0 * df
-            cumul.append(norm)
-            # print fj, pj
-
-        random_points = []
-
-        for i in range(len(cumul)):
-            # print i,a, cumul[i], norm
-            for aa in a:
-                if (aa[0] <= cumul[i] / norm and aa[1]):
-                    random_points.append(
-                        int(fmod_grid[i] / sensitivity) * sensitivity)
-                    aa[1] = False
-
-    else:
-        random_points = [expected_value] * ntrials
-
-    for i in range(len(random_points)):
-        if random.random() < outlierprob:
-            a = random.uniform(begin, end)
-            random_points[i] = int(a / sensitivity) * sensitivity
-    print(random_points)
-    '''
-    for i in range(ntrials):
-      if random.random() > OUTLIERPROB_:
-        r=truncnorm.rvs(0.0,1.0,expected_value,BETA_)
-        if r>1.0: print r,expected_value,BETA_
-      else:
-        r=random.random()
-      random_points.append(int(r/sensitivity)*sensitivity)
-    '''
-
-    rmean = 0.
-    rmean2 = 0.
-    for r in random_points:
-        rmean += r
-        rmean2 += r * r
-
-    rmean /= float(ntrials)
-    rmean2 /= float(ntrials)
-    stddev = math.sqrt(max(rmean2 - rmean * rmean, 0.))
-    return rmean, stddev
 
 def print_multicolumn(list_of_strings, ncolumns=2, truncate=40):
 
@@ -1671,7 +1307,7 @@ def input_adaptor(stuff,
     # check that it is a hierarchy homogenously:
     try:
         is_hierarchy=all(IMP.atom.Hierarchy.get_is_setup(s) for s in stuff)
-    except NotImplementedError:
+    except (NotImplementedError, TypeError):
         is_hierarchy=False
     # get the other types homogenously
     is_system=all(isinstance(s, IMP.pmi.topology.System) for s in stuff)
@@ -1730,12 +1366,16 @@ def input_adaptor(stuff,
                             minf = min(found)
                             maxf = max(found)
                             resbreak = maxf if minf==minset else minset-1
-                            print('WARNING: You are trying to select only part of the bead %s:%i-%i.\n'
-                                  'The residues you requested are %i-%i. You can fix this by:\n'
-                                  '1) requesting the whole bead/none of it or\n'
-                                  '2) break the bead up by passing bead_extra_breaks=[\'%i\'] in '
-                                  'molecule.add_representation()'
-                                            %(mol.get_name(),minset,maxset,minf,maxf,resbreak))
+                            warnings.warn(
+                                'You are trying to select only part of the '
+                                'bead %s:%i-%i. The residues you requested '
+                                'are %i-%i. You can fix this by: '
+                                '1) requesting the whole bead/none of it; or'
+                                '2) break the bead up by passing '
+                                'bead_extra_breaks=[\'%i\'] in '
+                                'molecule.add_representation()'
+                                %(mol.get_name(), minset, maxset, minf, maxf,
+                                  resbreak), IMP.pmi.ParameterWarning)
             hier_list.append([IMP.atom.Hierarchy(p) for p in ps])
     elif is_hierarchy:
         #check
@@ -1851,7 +1491,8 @@ def select_at_all_resolutions(hier=None,
     if hier is not None:
         hiers.append(hier)
     if len(hiers)==0:
-        print("WARNING: You passed nothing to select_at_all_resolutions()")
+        warnings.warn("You passed nothing to select_at_all_resolutions()",
+                      IMP.pmi.ParameterWarning)
         return []
     ret = OrderedSet()
     for hsel in hiers:
@@ -2034,7 +1675,7 @@ def shuffle_configuration(objects,
     else:
         raise Exception("Could not find any particles in the hierarchy")
     if len(rigid_bodies) == 0:
-        print("shuffle_configuration: rigid bodies were not intialized")
+        print("shuffle_configuration: rigid bodies were not initialized")
 
     ### gather all particles
     gcpf = IMP.core.GridClosePairsFinder()
@@ -2294,7 +1935,7 @@ class ColorHierarchy(object):
 
 
 def color2rgb(colorname):
-    """Given a chimera color name, return RGB"""
+    """Given a Chimera color name or hex color value, return RGB"""
     d = {'aquamarine': (0.4980392156862745, 1.0, 0.8313725490196079),
          'black': (0.0, 0.0, 0.0),
          'blue': (0.0, 0.0, 1.0),
@@ -2355,113 +1996,7 @@ def color2rgb(colorname):
          'violet red': (0.8156862745098039, 0.12549019607843137, 0.5647058823529412),
          'white': (1.0, 1.0, 1.0),
          'yellow': (1.0, 1.0, 0.0)}
-    return d[colorname]
-
-@IMP.deprecated_object(2.10,
-        "If you use this class please let the PMI developers know.")
-class Colors(object):
-    def __init__(self):
-        self.colors={
-        "reds":[("maroon","#800000",(128,0,0)),("dark red","#8B0000",(139,0,0)),
-        ("brown","#A52A2A",(165,42,42)),("firebrick","#B22222",(178,34,34)),
-        ("crimson","#DC143C",(220,20,60)),("red","#FF0000",(255,0,0)),
-        ("tomato","#FF6347",(255,99,71)),("coral","#FF7F50",(255,127,80)),
-        ("indian red","#CD5C5C",(205,92,92)),("light coral","#F08080",(240,128,128)),
-        ("dark salmon","#E9967A",(233,150,122)),("salmon","#FA8072",(250,128,114)),
-        ("light salmon","#FFA07A",(255,160,122)),("orange red","#FF4500",(255,69,0)),
-        ("dark orange","#FF8C00",(255,140,0))],
-        "yellows":[("orange","#FFA500",(255,165,0)),("gold","#FFD700",(255,215,0)),
-        ("dark golden rod","#B8860B",(184,134,11)),("golden rod","#DAA520",(218,165,32)),
-        ("pale golden rod","#EEE8AA",(238,232,170)),("dark khaki","#BDB76B",(189,183,107)),
-        ("khaki","#F0E68C",(240,230,140)),("olive","#808000",(128,128,0)),
-        ("yellow","#FFFF00",(255,255,0)),("antique white","#FAEBD7",(250,235,215)),
-        ("beige","#F5F5DC",(245,245,220)),("bisque","#FFE4C4",(255,228,196)),
-        ("blanched almond","#FFEBCD",(255,235,205)),("wheat","#F5DEB3",(245,222,179)),
-        ("corn silk","#FFF8DC",(255,248,220)),("lemon chiffon","#FFFACD",(255,250,205)),
-        ("light golden rod yellow","#FAFAD2",(250,250,210)),("light yellow","#FFFFE0",(255,255,224))],
-        "greens":[("yellow green","#9ACD32",(154,205,50)),("dark olive green","#556B2F",(85,107,47)),
-        ("olive drab","#6B8E23",(107,142,35)),("lawn green","#7CFC00",(124,252,0)),
-        ("chart reuse","#7FFF00",(127,255,0)),("green yellow","#ADFF2F",(173,255,47)),
-        ("dark green","#006400",(0,100,0)),("green","#008000",(0,128,0)),
-        ("forest green","#228B22",(34,139,34)),("lime","#00FF00",(0,255,0)),
-        ("lime green","#32CD32",(50,205,50)),("light green","#90EE90",(144,238,144)),
-        ("pale green","#98FB98",(152,251,152)),("dark sea green","#8FBC8F",(143,188,143)),
-        ("medium spring green","#00FA9A",(0,250,154)),("spring green","#00FF7F",(0,255,127)),
-        ("sea green","#2E8B57",(46,139,87)),("medium aqua marine","#66CDAA",(102,205,170)),
-        ("medium sea green","#3CB371",(60,179,113)),("light sea green","#20B2AA",(32,178,170)),
-        ("dark slate gray","#2F4F4F",(47,79,79)),("teal","#008080",(0,128,128)),
-        ("dark cyan","#008B8B",(0,139,139))],
-        "blues":[("dark turquoise","#00CED1",(0,206,209)),
-        ("turquoise","#40E0D0",(64,224,208)),("medium turquoise","#48D1CC",(72,209,204)),
-        ("pale turquoise","#AFEEEE",(175,238,238)),("aqua marine","#7FFFD4",(127,255,212)),
-        ("powder blue","#B0E0E6",(176,224,230)),("cadet blue","#5F9EA0",(95,158,160)),
-        ("steel blue","#4682B4",(70,130,180)),("corn flower blue","#6495ED",(100,149,237)),
-        ("deep sky blue","#00BFFF",(0,191,255)),("dodger blue","#1E90FF",(30,144,255)),
-        ("light blue","#ADD8E6",(173,216,230)),("sky blue","#87CEEB",(135,206,235)),
-        ("light sky blue","#87CEFA",(135,206,250)),("midnight blue","#191970",(25,25,112)),
-        ("navy","#000080",(0,0,128)),("dark blue","#00008B",(0,0,139)),
-        ("medium blue","#0000CD",(0,0,205)),("blue","#0000FF",(0,0,255)),("royal blue","#4169E1",(65,105,225)),
-        ("aqua","#00FFFF",(0,255,255)),("cyan","#00FFFF",(0,255,255)),("light cyan","#E0FFFF",(224,255,255))],
-       "violets":[("blue violet","#8A2BE2",(138,43,226)),("indigo","#4B0082",(75,0,130)),
-        ("dark slate blue","#483D8B",(72,61,139)),("slate blue","#6A5ACD",(106,90,205)),
-        ("medium slate blue","#7B68EE",(123,104,238)),("medium purple","#9370DB",(147,112,219)),
-        ("dark magenta","#8B008B",(139,0,139)),("dark violet","#9400D3",(148,0,211)),
-        ("dark orchid","#9932CC",(153,50,204)),("medium orchid","#BA55D3",(186,85,211)),
-        ("purple","#800080",(128,0,128)),("thistle","#D8BFD8",(216,191,216)),
-        ("plum","#DDA0DD",(221,160,221)),("violet","#EE82EE",(238,130,238)),
-        ("magenta / fuchsia","#FF00FF",(255,0,255)),("orchid","#DA70D6",(218,112,214)),
-        ("medium violet red","#C71585",(199,21,133)),("pale violet red","#DB7093",(219,112,147)),
-        ("deep pink","#FF1493",(255,20,147)),("hot pink","#FF69B4",(255,105,180)),
-        ("light pink","#FFB6C1",(255,182,193)),("pink","#FFC0CB",(255,192,203))],
-       "browns":[("saddle brown","#8B4513",(139,69,19)),("sienna","#A0522D",(160,82,45)),
-        ("chocolate","#D2691E",(210,105,30)),("peru","#CD853F",(205,133,63)),
-        ("sandy brown","#F4A460",(244,164,96)),("burly wood","#DEB887",(222,184,135)),
-        ("tan","#D2B48C",(210,180,140)),("rosy brown","#BC8F8F",(188,143,143)),
-        ("moccasin","#FFE4B5",(255,228,181)),("navajo white","#FFDEAD",(255,222,173)),
-        ("peach puff","#FFDAB9",(255,218,185)),("misty rose","#FFE4E1",(255,228,225)),
-        ("lavender blush","#FFF0F5",(255,240,245)),("linen","#FAF0E6",(250,240,230)),
-        ("old lace","#FDF5E6",(253,245,230)),("papaya whip","#FFEFD5",(255,239,213)),
-        ("sea shell","#FFF5EE",(255,245,238))],
-       "greys":[("black","#000000",(0,0,0)),("dim gray / dim grey","#696969",(105,105,105)),
-        ("gray / grey","#808080",(128,128,128)),("dark gray / dark grey","#A9A9A9",(169,169,169)),
-        ("silver","#C0C0C0",(192,192,192)),("light gray / light grey","#D3D3D3",(211,211,211)),
-        ("gainsboro","#DCDCDC",(220,220,220)),("white smoke","#F5F5F5",(245,245,245)),
-        ("white","#FFFFFF",(255,255,255))]}
-
-    def assign_color_group(self,color_group,representation,component_names):
-        for n,p in enumerate(component_names):
-            s=IMP.atom.Selection(representation.prot,molecule=p)
-            psel=s.get_selected_particles()
-            ctuple=self.colors[color_group][n]
-            print("Assigning "+p+" to color "+ctuple[0])
-            c=ctuple[2]
-            color=IMP.display.Color(float(c[0])/255,float(c[1])/255,float(c[2])/255)
-            for part in psel:
-                if IMP.display.Colored.get_is_setup(part):
-                    IMP.display.Colored(part).set_color(color)
-                else:
-                    IMP.display.Colored.setup_particle(part,color)
-
-    def get_list_distant_colors(self):
-        cnames = ['#F0F8FF', '#FAEBD7', '#00FFFF', '#7FFFD4', '#F0FFFF', '#F5F5DC',
-        '#FFE4C4', '#000000', '#FFEBCD', '#0000FF', '#8A2BE2', '#A52A2A', '#DEB887',
-        '#5F9EA0', '#7FFF00', '#D2691E', '#FF7F50', '#6495ED', '#FFF8DC', '#DC143C',
-        '#00FFFF', '#00008B', '#008B8B', '#B8860B', '#A9A9A9', '#006400', '#BDB76B',
-        '#8B008B', '#556B2F', '#FF8C00', '#9932CC', '#8B0000', '#E9967A', '#8FBC8F',
-        '#483D8B', '#2F4F4F', '#00CED1', '#9400D3', '#FF1493', '#00BFFF', '#696969',
-        '#1E90FF', '#B22222', '#FFFAF0', '#228B22', '#FF00FF', '#DCDCDC', '#F8F8FF',
-        '#FFD700', '#DAA520', '#808080', '#008000', '#ADFF2F', '#F0FFF0', '#FF69B4',
-        '#CD5C5C', '#4B0082', '#FFFFF0', '#F0E68C', '#E6E6FA', '#FFF0F5', '#7CFC00',
-        '#FFFACD', '#ADD8E6', '#F08080', '#E0FFFF', '#FAFAD2', '#90EE90', '#D3D3D3',
-        '#FFB6C1', '#FFA07A', '#20B2AA', '#87CEFA', '#778899', '#B0C4DE', '#FFFFE0',
-        '#00FF00', '#32CD32', '#FAF0E6', '#FF00FF', '#800000', '#66CDAA', '#0000CD',
-        '#BA55D3', '#9370DB', '#3CB371', '#7B68EE', '#00FA9A', '#48D1CC', '#C71585',
-        '#191970', '#F5FFFA', '#FFE4E1', '#FFE4B5', '#FFDEAD', '#000080', '#FDF5E6',
-        '#808000', '#6B8E23', '#FFA500', '#FF4500', '#DA70D6', '#EEE8AA', '#98FB98',
-        '#AFEEEE', '#DB7093', '#FFEFD5', '#FFDAB9', '#CD853F', '#FFC0CB', '#DDA0DD',
-        '#B0E0E6', '#800080', '#FF0000', '#BC8F8F', '#4169E1', '#8B4513', '#FA8072',
-        '#FAA460', '#2E8B57', '#FFF5EE', '#A0522D', '#C0C0C0', '#87CEEB', '#6A5ACD',
-        '#708090', '#FFFAFA', '#00FF7F', '#4682B4', '#D2B48C', '#008080', '#D8BFD8',
-        '#FF6347', '#40E0D0', '#EE82EE', '#F5DEB3', '#FFFFFF', '#F5F5F5', '#FFFF00',
-        '#9ACD32']
-        return cnames
+    if colorname.startswith('#'):
+        return tuple(int(colorname[i:i+2], 16) / 255. for i in (1, 3, 5))
+    else:
+        return d[colorname]

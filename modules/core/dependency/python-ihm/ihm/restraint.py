@@ -15,8 +15,8 @@ class RestraintGroup(list):
        Note that due to limitations of the underlying dictionary, only
        certain combinations of restraints can be placed in groups.
        In particular, all objects in a group must be of the same type, and
-       only certain types (currently only :class:`DerivedDistanceRestraint`)
-       can be grouped.
+       only certain types (currently only :class:`DerivedDistanceRestraint`
+       and :class:`PredictedContactRestraint`) can be grouped.
 
        Empty groups can be created, but will be ignored on output as the
        dictionary does not support them.
@@ -188,13 +188,14 @@ class CrossLinkRestraint(Restraint):
        :param dataset: Reference to the cross-link data (usually
               a :class:`~ihm.dataset.CXMSDataset`).
        :type dataset: :class:`~ihm.dataset.Dataset`
-       :param str linker_type: The type of chemical linker used.
+       :param linker: The type of chemical linker used.
+       :type linker: :class:`ihm.ChemDescriptor`
     """
 
     assembly = None # no struct_assembly_id for XL restraints
 
-    def __init__(self, dataset, linker_type):
-        self.dataset, self.linker_type = dataset, linker_type
+    def __init__(self, dataset, linker):
+        self.dataset, self.linker = dataset, linker
 
         #: All cross-links identified in the experiment, as a simple list
         #: of lists of :class:`ExperimentalCrossLink` objects. All cross-links
@@ -220,18 +221,23 @@ class ExperimentalCrossLink(object):
     def __init__(self, residue1, residue2):
         self.residue1, self.residue2 = residue1, residue2
 
+
 class DistanceRestraint(object):
-    """Base class for all distance restraints.
-       See :class:`HarmonicDistanceRestraint`,
+    """Abstract base class for all distance restraints. These are typically
+       used in a :class:`DerivedDistanceRestraint`.
+
+       Do not use this class directly but instead use a derived class
+       such as :class:`HarmonicDistanceRestraint`,
        :class:`UpperBoundDistanceRestraint`,
        :class:`LowerBoundDistanceRestraint`,
-       and :class:`LowerUpperBoundDistanceRestraint`.
+       or :class:`LowerUpperBoundDistanceRestraint`.
     """
     pass
 
 
-class HarmonicDistanceRestraint(object):
+class HarmonicDistanceRestraint(DistanceRestraint):
     """Harmonically restrain two objects to be close to a given distance apart.
+       These objects are typically used in a :class:`DerivedDistanceRestraint`.
 
        :param float distance: Equilibrium distance
     """
@@ -243,8 +249,9 @@ class HarmonicDistanceRestraint(object):
     distance_upper_limit = distance_lower_limit
 
 
-class UpperBoundDistanceRestraint(object):
+class UpperBoundDistanceRestraint(DistanceRestraint):
     """Harmonically restrain two objects to be below a given distance apart.
+       These objects are typically used in a :class:`DerivedDistanceRestraint`.
 
        :param float distance: Distance threshold
     """
@@ -256,8 +263,9 @@ class UpperBoundDistanceRestraint(object):
     distance_lower_limit = None
 
 
-class LowerBoundDistanceRestraint(object):
+class LowerBoundDistanceRestraint(DistanceRestraint):
     """Harmonically restrain two objects to be above a given distance apart.
+       These objects are typically used in a :class:`DerivedDistanceRestraint`.
 
        :param float distance: Distance threshold
     """
@@ -269,9 +277,10 @@ class LowerBoundDistanceRestraint(object):
     distance_upper_limit = None
 
 
-class LowerUpperBoundDistanceRestraint(object):
+class LowerUpperBoundDistanceRestraint(DistanceRestraint):
     """Harmonically restrain two objects to be above a given distance
        and below another distance apart.
+       These objects are typically used in a :class:`DerivedDistanceRestraint`.
 
        :param float distance_lower_limit: Lower bound on the distance.
        :param float distance_upper_limit: Upper bound on the distance.
@@ -418,8 +427,8 @@ class CrossLinkFit(object):
 
 class Feature(object):
     """Base class for selecting parts of the system that a restraint acts on.
-       See :class:`ResidueFeature`, :class:`AtomFeature`, and
-       :class:`NonPolyFeature`.
+       See :class:`ResidueFeature`, :class:`AtomFeature`,
+       :class:`NonPolyFeature`, and :class:`PseudoSiteFeature`.
 
        Features are typically assigned to one or more
        :class:`~ihm.restraint.GeometricRestraint` objects.
@@ -496,6 +505,27 @@ class NonPolyFeature(Feature):
             raise ValueError("%s can only select non-polymeric entities" % self)
         else:
             return self.asyms[0].entity.type if self.asyms else None
+
+
+class PseudoSiteFeature(Feature):
+    """Selection of a pseudo position in the system.
+
+       :param float x: Cartesian X coordinate of this site.
+       :param float y: Cartesian Y coordinate of this site.
+       :param float z: Cartesian Z coordinate of this site.
+       :param float radius: Radius of the site, if applicable.
+       :param str description: Textual description of this site.
+    """
+
+    type = 'pseudo site'
+
+    def __init__(self, x, y, z, radius=None, description=None):
+        self.x, self.y, self.z = x, y, z
+        self.radius = radius
+        self.description = description
+
+    def _get_entity_type(self):
+        return 'other'
 
 
 class GeometricRestraint(object):
@@ -575,3 +605,34 @@ class DerivedDistanceRestraint(object):
         self.feature1, self.feature2 = feature1, feature2
         self.distance, self.restrain_all = distance, restrain_all
         self.probability = probability
+
+
+class PredictedContactRestraint(object):
+    """A predicted contact between two parts of the system, derived from
+       various computational tools.
+
+       :param dataset: Reference to the data from which the restraint is
+              derived.
+       :type dataset: :class:`~ihm.dataset.Dataset`
+       :param resatom1: The first residue or atom to restrain.
+       :type resatom1: :class:`ihm.Residue` or :class:`ihm.Atom`
+       :param resatom2: The second residue or atom to restrain.
+       :type resatom2: :class:`ihm.Residue` or :class:`ihm.Atom`
+       :param distance: Restraint on the distance.
+       :type distance: :class:`DistanceRestraint`
+       :param bool by_residue: If True, the restraint is applied to specific
+              residues; otherwise, it is applied to the closest primitive
+              object with the highest resolution.
+       :param float probability: Likelihood that restraint is correct (0. - 1.)
+       :param software: The software used to generate the contact.
+       :type software: :class:`~ihm.Software`
+
+    """
+    assembly = None # no struct_assembly_id for predicted contact restraints
+
+    def __init__(self, dataset, resatom1, resatom2, distance,
+                 by_residue, probability=None, software=None):
+        self.dataset = dataset
+        self.resatom1, self.resatom2 = resatom1, resatom2
+        self.distance, self.by_residue = distance, by_residue
+        self.probability, self.software = probability, software

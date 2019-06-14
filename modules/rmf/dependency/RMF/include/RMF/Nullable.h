@@ -2,7 +2,7 @@
  *  \file RMF/Nullable.h
  *  \brief A helper class for allowing nice return of possibly null values.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

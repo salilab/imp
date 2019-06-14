@@ -2,7 +2,7 @@
  *  \file IMP/pmi/MembraneRestraint.h
  *  \brief Favor configurations where target is in the membrane.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,17 +17,17 @@ IMPPMI_BEGIN_NAMESPACE
 /** Favors configurations where target is in the membrane
  */
 class IMPPMIEXPORT MembraneRestraint : public isd::ISDRestraint {
-  ParticleIndex z_nuisance;
-  double thickness;
-  double softness;
-  double plateau;
-  double linear;
-  double max_float;
-  double log_max_float;
+  ParticleIndex z_nuisance_;
+  double thickness_;
+  double softness_;
+  double plateau_;
+  double linear_;
+  double max_float_;
+  double log_max_float_;
 
-  ParticleIndexes particles_below;
-  ParticleIndexes particles_above;
-  ParticleIndexes particles_inside;
+  ParticleIndexes particles_below_;
+  ParticleIndexes particles_above_;
+  ParticleIndexes particles_inside_;
 
 public:
   MembraneRestraint(Model *m, ParticleIndex z_nuisance, double thickness,

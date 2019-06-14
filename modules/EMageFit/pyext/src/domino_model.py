@@ -461,7 +461,7 @@ class DominoModel:
         # Restraint Cache is a centralized container of the restraints and
         # their scores
         self.restraint_cache = domino.RestraintCache(self.rb_states_table)
-        self.restraint_cache.add_restraints(self.restraints.values())
+        self.restraint_cache.add_restraints(list(self.restraints.values()))
         rssft = domino.RestraintScoreSubsetFilterTable(self.restraint_cache)
         rssft.set_name('myRestraintScoreSubsetFilterTable')
         self.sampler.add_subset_filter_table(rssft)
@@ -527,7 +527,7 @@ class DominoModel:
                              "to setup the sampler")
         log.info("Domino sampler")
         self.sampler = domino.DominoSampler(self.model, self.rb_states_table)
-        self.sampler.set_restraints(self.restraints.values())
+        self.sampler.set_restraints(list(self.restraints.values()))
         self.sampler.set_log_level(IMP.TERSE)
         self.sampler.set_merge_tree(self.merge_tree)
         self.add_exclusion_filter_table()
@@ -596,7 +596,7 @@ class DominoModel:
         """
             Creates a merge tree from the restraints that are set already
         """
-        rs = self.restraints.values()
+        rs = list(self.restraints.values())
         ig = domino.get_interaction_graph(rs, self.rb_states_table)
 #        pruned_dep = IMP.get_pruned_dependency_graph(self.model)
 #        IMP.show_graphviz(pruned_dep)
@@ -962,7 +962,8 @@ class DominoModel:
 
     def get_scoring_function(self):
         """Get a ScoringFunction that includes all restraints."""
-        return IMP.core.RestraintsScoringFunction(self.restraints.values())
+        return IMP.core.RestraintsScoringFunction(
+                                  list(self.restraints.values()))
 
     def write_monte_carlo_solution(self, fn_database):
         """

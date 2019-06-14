@@ -14,21 +14,6 @@ function_name_exceptions=[
     'CommandDispatcher.main',
     'CommandDispatcher.unknown_command',
     'check_particle',
-    'OptionParser.check_values',
-    'OptionParser.disable_interspersed_args',
-    'OptionParser.enable_interspersed_args',
-    'OptionParser.error',
-    'OptionParser.exit',
-    'OptionParser.expand_prog_name',
-    'OptionParser.format_description',
-    'OptionParser.format_epilog',
-    'OptionParser.format_help',
-    'OptionParser.format_option_help',
-    'OptionParser.has_option',
-    'OptionParser.parse_args',
-    'OptionParser.print_help',
-    'OptionParser.print_usage',
-    'OptionParser.print_version',
     'ArgumentParser.add_subparsers',
     'ArgumentParser.convert_arg_line_to_args',
     'ArgumentParser.error',
@@ -59,7 +44,8 @@ value_object_exceptions=['Exception', 'TypeException',
                        'Decorator', 'DerivativeAccumulator',
                                            'RestraintBase', 'ScoreStateBase']
 
-spelling_exceptions=["undecorator", "undecorate", "altgraph", "networkx"]
+spelling_exceptions=["undecorator", "undecorate", "altgraph", "networkx",
+                     "numpy"]
 
-doc_spelling_exceptions=["optparse", "OptionParser", "num", "args", "pyext",
+doc_spelling_exceptions=["num", "args", "pyext",
            "src", "py", "docstring", "multifit", "cnmultifit"]

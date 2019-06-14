@@ -5,6 +5,8 @@
 %endif
 
 %define with_mpich 1
+# Not yet functional
+%define with_openmpi 0
 
 # Change '#' to '%' in the line below if you want to build to install
 # somewhere other than the default /usr
@@ -191,6 +193,32 @@ Requires:      mpich
 Development files for IMP.mpi module (and dependents) with mpich.
 %endif
 
+%if 0%{?with_openmpi}
+%package openmpi
+Group:         Applications/Engineering
+Summary:       MPI module and dependents, for openmpi
+Requires:      %{name} = %{version}-%{release}
+Requires:      openmpi
+%if 0%{?fedora}
+Requires:      python2-openmpi
+%endif
+BuildRequires: openmpi-devel
+
+%description openmpi
+This package contains an IMP.mpi module to add MPI support,
+using the openmpi library. It also includes all IMP modules that depend
+on IMP.mpi (IMP.spb).
+
+%package openmpi-devel
+Group:         Applications/Engineering
+Summary:       MPI module and dependents development files, for openmpi
+Requires:      %{name}-openmpi = %{version}-%{release}
+Requires:      openmpi
+
+%description openmpi-devel
+Development files for IMP.mpi module (and dependents) with openmpi.
+%endif
+
 %prep
 %setup -n imp-%{version}
 
@@ -199,7 +227,7 @@ Development files for IMP.mpi module (and dependents) with mpich.
 # In newer Fedora, the old script-based dependency generation doesn't play
 # nicely with the new mechanism for adding MPI dependencies
 # (rpm-mpi-hooks package)
-%if 0%{?with_mpich}
+%if 0%{?with_mpich} || 0%{?with_openmpi}
 %global __provides_exclude ^libTAU\\.so.*|libimp_mpi\\.so.*|libimp_spb\\.so.*$
 %global __requires_exclude ^libTAU\\.so.*|libmpi\\.so.*|libmpicxx\\.so.*|libimp_mpi\\.so.*|libimp_spb\\.so.*$
 %else
@@ -242,7 +270,7 @@ export CGAL_DIR=%{_libdir}/cmake/CGAL
 cmake ../imp -DCMAKE_BUILD_TYPE=Release \
              -DCMAKE_INSTALL_PREFIX=%{_prefix} \
              -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
-             -DIMP_TIMEOUT_FACTOR=4 \
+             -DIMP_TIMEOUT_FACTOR=4 -DUSE_PYTHON2=on \
              -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
 
 # Normally make will stop at the first error. Since an RPM cannot be built
@@ -279,7 +307,7 @@ cmake ../imp \
       -DSWIG_PYTHON_LIBRARIES=${py3_lib} \
       -DPYTHON_INCLUDE_DIRS=${py3_inc} \
       -DPYTHON_INCLUDE_PATH=${py3_inc} \
-      -DPYTHON_LIBRARIES=${py3_lib}
+      -DPYTHON_LIBRARIES=${py3_lib} -DUSE_PYTHON2=off
 make DESTDIR=${RPM_BUILD_ROOT} install
 %if 0%{?with_mpich}
 module purge
@@ -363,13 +391,18 @@ rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/example \
        ${pydir}/IMP/example_system_local \
        ${pydir}/_IMP_example_system_local.so
 
-# Make sure all Python applications use the same Python we built with
+# Make sure all Python applications and build tools use the same Python
+# we built with
 perl -pi -e 's@^#!.*python.*$@#!/usr/bin/python2@' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
+find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 's#/usr/bin/env python\b#/usr/bin/env python2#' \{\} \;
 
 %files
 %defattr(-,root,root)
 %doc %{_prefix}/share/doc/%{name}-%{version}
 %{_prefix}/share/IMP
+%exclude %{_prefix}/share/IMP/tools
+%exclude %{_prefix}/share/IMP/swig
+%exclude %{_prefix}/share/IMP/build_info
 %{_prefix}/bin/*
 %{_libdir}/libimp*.so.*
 %{_libdir}/libRMF*.so
@@ -381,13 +414,6 @@ perl -pi -e 's@^#!.*python.*$@#!/usr/bin/python2@' ${RPM_BUILD_ROOT}%{_prefix}/b
 %{_libdir}/python2*/site-packages/ihm
 %if 0%{?with_mpich}
 %exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
-%exclude %{_prefix}/share/IMP/swig/IMP_mpi.*
-%exclude %{_prefix}/share/IMP/swig/IMP_spb.*
-%exclude %{_prefix}/share/IMP/build_info/MPI
-%exclude %{_prefix}/share/IMP/build_info/IMP.mpi
-%exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
-%exclude %{_prefix}/share/IMP/build_info/IMP.spb
-%exclude %{_prefix}/share/IMP/build_info/IMP_spb.pck
 %exclude %{_libdir}/python2*/site-packages/IMP/mpi
 %exclude %{_libdir}/python2*/site-packages/IMP/spb
 %endif
@@ -435,10 +461,24 @@ perl -pi -e 's@^#!.*python.*$@#!/usr/bin/python2@' ${RPM_BUILD_ROOT}%{_prefix}/b
 
 %files devel
 %defattr(-,root,root)
+%{_prefix}/share/IMP/tools
+%{_prefix}/share/IMP/swig
+%{_prefix}/share/IMP/build_info
+%if 0%{?with_mpich}
+%exclude %{_prefix}/share/IMP/swig/IMP_mpi.*
+%exclude %{_prefix}/share/IMP/swig/IMP_spb.*
+%exclude %{_prefix}/share/IMP/build_info/MPI
+%exclude %{_prefix}/share/IMP/build_info/IMP.mpi
+%exclude %{_prefix}/share/IMP/build_info/IMP_mpi.pck
+%exclude %{_prefix}/share/IMP/build_info/IMP.spb
+%exclude %{_prefix}/share/IMP/build_info/IMP_spb.pck
+%endif
 %{_prefix}/include/IMP
 %{_prefix}/include/IMP.h
 %{_prefix}/include/RMF
+%{_prefix}/include/RMF.h
 %{_libdir}/libimp*.so
+%{_libdir}/cmake/IMP
 %if 0%{?with_mpich}
 %exclude %{_prefix}/include/IMP/mpi
 %exclude %{_prefix}/include/IMP/spb
@@ -447,6 +487,9 @@ perl -pi -e 's@^#!.*python.*$@#!/usr/bin/python2@' ${RPM_BUILD_ROOT}%{_prefix}/b
 %endif
 
 %changelog
+* Tue Jun 25 2019 Ben Webb <ben@salilab.org>   2.11.0-1
+- 2.11.0 release.
+
 * Tue Feb 26 2019 Ben Webb <ben@salilab.org>   2.10.1-1
 - 2.10.1 release.
 

@@ -2,7 +2,7 @@
  *  \file IMP/ClassnameScore.h
  *  \brief Define ClassnameScore.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_CLASSNAME_SCORE_H

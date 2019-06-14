@@ -2,7 +2,7 @@
  *  \file IMP/spb/spb_restraint.h
  *  \brief SPB Restraints
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

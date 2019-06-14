@@ -3,28 +3,43 @@
 import re
 import os
 import operator
+import itertools
 import ihm.format
 import ihm.format_bcif
 import ihm.model
 import ihm.representation
+import ihm.source
+import ihm.flr
 from . import util
 from . import location
 from . import restraint
 from . import geometry
 
-class _Dumper(object):
-    """Base class for helpers to dump output to mmCIF"""
+class Dumper(object):
+    """Base class for helpers to dump output to mmCIF or BinaryCIF.
+       See :func:`write`."""
     def __init__(self):
         pass
     def finalize(self, system):
-        """Called for all dumpers prior to `dump` - can assign IDs, etc"""
+        """Called for all dumpers prior to :meth:`dump`.
+           This can be used to assign numeric IDs to objects, check for
+           sanity, etc."""
         pass
     def dump(self, system, writer):
-        """Use `writer` to write information about `system` to mmCIF"""
+        """Use `writer` to write information about `system` to
+           mmCIF or BinaryCIF.
+
+           :param system: The :class:`ihm.System` object containing all
+                  information about the system.
+           :type system: :class:`ihm.System`
+           :param writer: Utility class to write data to the output file.
+           :type writer: :class:`ihm.format.CifWriter` or
+                 :class:`ihm.format_bcif.BinaryCifWriter`.
+        """
         pass
 
 
-class _EntryDumper(_Dumper):
+class _EntryDumper(Dumper):
     def dump(self, system, writer):
         # Write CIF header (so this dumper should always be first)
         writer.start_block(re.subn('[^0-9a-zA-z_]', '', system.id)[0])
@@ -32,7 +47,7 @@ class _EntryDumper(_Dumper):
             l.write(id=system.id)
 
 
-class _AuditConformDumper(_Dumper):
+class _AuditConformDumper(Dumper):
     URL = ("https://raw.githubusercontent.com/" +
            "ihmwg/IHM-dictionary/%s/ihm-extension.dic")
 
@@ -43,19 +58,19 @@ class _AuditConformDumper(_Dumper):
                     dict_location=self.URL % "7ea672a")
 
 
-class _StructDumper(_Dumper):
+class _StructDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_struct") as l:
             l.write(title=system.title, entry_id=system.id)
 
 
-class _CommentDumper(_Dumper):
+class _CommentDumper(Dumper):
     def dump(self, system, writer):
         for comment in system.comments:
             writer.write_comment(comment)
 
 
-class _SoftwareDumper(_Dumper):
+class _SoftwareDumper(Dumper):
     def finalize(self, system):
         seen_software = {}
         self._software_by_id = []
@@ -77,7 +92,7 @@ class _SoftwareDumper(_Dumper):
                         type=s.type, location=s.location)
 
 
-class _CitationDumper(_Dumper):
+class _CitationDumper(Dumper):
     def finalize(self, system):
         for nc, c in enumerate(system._all_citations()):
             c._id = nc + 1
@@ -115,40 +130,74 @@ class _CitationDumper(_Dumper):
                     ordinal += 1
 
 
-class _AuditAuthorDumper(_Dumper):
-    """Populate the mmCIF audit_author category (a list of the people that
-       authored this mmCIF file; here we assume that's just the authors of
-       any associated publications)"""
+class _AuditAuthorDumper(Dumper):
+    def _get_citation_authors(self, system):
+        # If system.authors is empty, get the set of all citation authors
+        # instead
+        seen_authors = set()
+        for c in system._all_citations():
+            for a in c.authors:
+                if a not in seen_authors:
+                    seen_authors.add(a)
+                    yield a
 
     def dump(self, system, writer):
-        seen_authors = {}
+        authors = system.authors or self._get_citation_authors(system)
         with writer.loop("_audit_author",
                          ["name", "pdbx_ordinal"]) as l:
-            ordinal = 1
-            for c in system._all_citations():
-                for a in c.authors:
-                    if a not in seen_authors:
-                        seen_authors[a] = None
-                        l.write(name=a, pdbx_ordinal=ordinal)
-                        ordinal += 1
+            for n, author in enumerate(authors):
+                l.write(name=author, pdbx_ordinal=n+1)
 
 
-class _ChemCompDumper(_Dumper):
+class _GrantDumper(Dumper):
     def dump(self, system, writer):
-        seen = {}
+        with writer.loop("_pdbx_audit_support",
+                         ["funding_organization", "country", "grant_number",
+                          "ordinal"]) as l:
+            for n, grant in enumerate(system.grants):
+                l.write(funding_organization=grant.funding_organization,
+                        country=grant.country,
+                        grant_number=grant.grant_number, ordinal=n+1)
+
+
+class _ChemCompDumper(Dumper):
+    def dump(self, system, writer):
+        comps = frozenset(comp for e in system.entities for comp in e.sequence)
 
         with writer.loop("_chem_comp", ["id", "type", "name",
                                         "formula", "formula_weight"]) as l:
-            for entity in system.entities:
-                for comp in entity.sequence:
-                    if comp not in seen:
-                        seen[comp] = None
-                        l.write(id=comp.id, type=comp.type, name=comp.name,
-                                formula=comp.formula,
-                                formula_weight=comp.formula_weight)
+            for comp in sorted(comps, key=operator.attrgetter('id')):
+                l.write(id=comp.id, type=comp.type, name=comp.name,
+                        formula=comp.formula,
+                        formula_weight=comp.formula_weight)
 
 
-class _EntityDumper(_Dumper):
+class _ChemDescriptorDumper(Dumper):
+    def finalize(self, system):
+        seen_desc = {}
+        # Assign IDs to all descriptors
+        self._descriptor_by_id = []
+        for d in system._all_chem_descriptors():
+            util._remove_id(d)
+        for d in system._all_chem_descriptors():
+            util._assign_id(d, seen_desc, self._descriptor_by_id)
+
+    def dump(self, system, writer):
+        with writer.loop("_ihm_chemical_component_descriptor",
+                ["id", "auth_name", "chemical_name",
+                 "common_name", "smiles", "smiles_canonical", "inchi",
+                 "inchi_key"]) as l:
+            # note that we don't write out chem_comp_id; this is no longer
+            # present in the dictionary
+            for d in self._descriptor_by_id:
+                l.write(id=d._id, auth_name=d.auth_name,
+                        chemical_name=d.chemical_name,
+                        common_name=d.common_name, smiles=d.smiles,
+                        smiles_canonical=d.smiles_canonical, inchi=d.inchi,
+                        inchi_key=d.inchi_key)
+
+
+class _EntityDumper(Dumper):
     def finalize(self, system):
         # Assign IDs and check for duplicates
         seen = {}
@@ -165,11 +214,93 @@ class _EntityDumper(_Dumper):
                           "details"]) as l:
             for entity in system.entities:
                 l.write(id=entity._id, type=entity.type,
-			src_method=entity.src_method,
+                        src_method=entity.src_method,
                         pdbx_description=entity.description,
                         formula_weight=entity.formula_weight,
                         pdbx_number_of_molecules=entity.number_of_molecules,
-			details=entity.details)
+                        details=entity.details)
+
+
+def _assign_src_ids(system, srccls):
+    """Assign IDs to all entity sources of type `srccls`."""
+    # Assign IDs
+    seen_src = {}
+    src_by_id = []
+    for e in system.entities:
+        if isinstance(e.source, srccls):
+            util._remove_id(e.source)
+    for e in system.entities:
+        if isinstance(e.source, srccls):
+            util._assign_id(e.source, seen_src, src_by_id)
+
+
+class _EntitySrcGenDumper(Dumper):
+    def finalize(self, system):
+        _assign_src_ids(system, ihm.source.Manipulated)
+
+    def dump(self, system, writer):
+        with writer.loop("_entity_src_gen",
+                ["entity_id", "pdbx_src_id", "pdbx_gene_src_ncbi_taxonomy_id",
+                 "pdbx_gene_src_scientific_name",
+                 "gene_src_common_name", "gene_src_strain",
+                 "pdbx_host_org_ncbi_taxonomy_id",
+                 "pdbx_host_org_scientific_name",
+                 "host_org_common_name", "pdbx_host_org_strain"]) as l:
+            for e in system.entities:
+                if isinstance(e.source, ihm.source.Manipulated):
+                    self._dump_source(l, e)
+
+    def _dump_source(self, l, e):
+        s = e.source
+        l.write(entity_id=e._id, pdbx_src_id=s._id,
+                pdbx_gene_src_ncbi_taxonomy_id=s.gene.ncbi_taxonomy_id
+                                               if s.gene else None,
+                pdbx_gene_src_scientific_name=s.gene.scientific_name
+                                               if s.gene else None,
+                gene_src_strain=s.gene.strain if s.gene else None,
+                gene_src_common_name=s.gene.common_name if s.gene else None,
+                pdbx_host_org_ncbi_taxonomy_id=s.host.ncbi_taxonomy_id
+                                               if s.host else None,
+                pdbx_host_org_scientific_name=s.host.scientific_name
+                                               if s.host else None,
+                host_org_common_name=s.host.common_name if s.host else None,
+                pdbx_host_org_strain=s.host.strain if s.host else None)
+
+
+class _EntitySrcNatDumper(Dumper):
+    def finalize(self, system):
+        _assign_src_ids(system, ihm.source.Natural)
+
+    def dump(self, system, writer):
+        with writer.loop("_entity_src_nat",
+                ["entity_id", "pdbx_src_id", "pdbx_ncbi_taxonomy_id",
+                 "pdbx_organism_scientific", "common_name", "strain"]) as l:
+            for e in system.entities:
+                s = e.source
+                if isinstance(s, ihm.source.Natural):
+                    l.write(entity_id=e._id, pdbx_src_id=s._id,
+                            pdbx_ncbi_taxonomy_id=s.ncbi_taxonomy_id,
+                            pdbx_organism_scientific=s.scientific_name,
+                            common_name=s.common_name, strain=s.strain)
+
+
+class _EntitySrcSynDumper(Dumper):
+    def finalize(self, system):
+        _assign_src_ids(system, ihm.source.Synthetic)
+
+    def dump(self, system, writer):
+        # Note that _pdbx_entity_src_syn.strain is not used in current PDB
+        # entries
+        with writer.loop("_pdbx_entity_src_syn",
+                ["entity_id", "pdbx_src_id", "ncbi_taxonomy_id",
+                 "organism_scientific", "organism_common_name"]) as l:
+            for e in system.entities:
+                s = e.source
+                if isinstance(s, ihm.source.Synthetic):
+                    l.write(entity_id=e._id, pdbx_src_id=s._id,
+                            ncbi_taxonomy_id=s.ncbi_taxonomy_id,
+                            organism_scientific=s.scientific_name,
+                            organism_common_name=s.common_name)
 
 
 def _prettyprint_seq(seq, width):
@@ -188,7 +319,7 @@ def _prettyprint_seq(seq, width):
         yield ''.join(line)
 
 
-class _EntityPolyDumper(_Dumper):
+class _EntityPolyDumper(Dumper):
     def __init__(self):
         super(_EntityPolyDumper, self).__init__()
 
@@ -248,7 +379,7 @@ class _EntityPolyDumper(_Dumper):
                         pdbx_seq_one_letter_code_can=self._get_canon(entity))
 
 
-class _EntityNonPolyDumper(_Dumper):
+class _EntityNonPolyDumper(Dumper):
     def dump(self, system, writer):
         with writer.loop("_pdbx_entity_nonpoly",
                          ["entity_id", "name", "comp_id"]) as l:
@@ -259,7 +390,7 @@ class _EntityNonPolyDumper(_Dumper):
                         comp_id=entity.sequence[0].id)
 
 
-class _EntityPolySeqDumper(_Dumper):
+class _EntityPolySeqDumper(Dumper):
     def dump(self, system, writer):
         with writer.loop("_entity_poly_seq",
                          ["entity_id", "num", "mon_id", "hetero"]) as l:
@@ -270,7 +401,46 @@ class _EntityPolySeqDumper(_Dumper):
                     l.write(entity_id=entity._id, num=num + 1, mon_id=comp.id)
 
 
-class _PolySeqSchemeDumper(_Dumper):
+class _EntityPolySegmentDumper(Dumper):
+    def finalize(self, system):
+        seen_ranges = {}
+        self._ranges_by_id = []
+        # Need to assign ranges for all starting models too
+        for sm in system._all_starting_models():
+            rng = sm._get_seq_id_range_all_templates()
+            util._remove_id(rng, attr='_range_id')
+            sm._all_template_rng = rng
+
+        for rng in system._all_entity_ranges():
+            util._remove_id(rng, attr='_range_id')
+        for rng in itertools.chain(system._all_entity_ranges(),
+                                   (sm._all_template_rng
+                                    for sm in system._all_starting_models())):
+            entity = rng.entity if hasattr(rng, 'entity') else rng
+            if entity.is_polymeric():
+                util._assign_id(rng, seen_ranges, self._ranges_by_id,
+                                attr='_range_id',
+                                # Two ranges are considered the same if they
+                                # have the same entity ID and refer to
+                                # the same residue range
+                                seen_obj=(entity._id, rng.seq_id_range))
+            else:
+                rng._range_id = None
+
+    def dump(self, system, writer):
+        with writer.loop("_ihm_entity_poly_segment",
+                         ["id", "entity_id", "seq_id_begin", "seq_id_end",
+                          "comp_id_begin", "comp_id_end"]) as l:
+            for rng in self._ranges_by_id:
+                entity = rng.entity if hasattr(rng, 'entity') else rng
+                l.write(id=rng._range_id, entity_id=entity._id,
+                        seq_id_begin=rng.seq_id_range[0],
+                        seq_id_end=rng.seq_id_range[1],
+                        comp_id_begin=entity.sequence[rng.seq_id_range[0]-1].id,
+                        comp_id_end=entity.sequence[rng.seq_id_range[1]-1].id)
+
+
+class _PolySeqSchemeDumper(Dumper):
     """Output the _pdbx_poly_seq_scheme table.
        This is needed because it is a parent category of atom_site.
        For now we assume we're using auth_seq_num==pdb_seq_num."""
@@ -293,7 +463,7 @@ class _PolySeqSchemeDumper(_Dumper):
                             auth_mon_id=comp.id)
 
 
-class _NonPolySchemeDumper(_Dumper):
+class _NonPolySchemeDumper(Dumper):
     """Output the _pdbx_nonpoly_scheme table.
        For now we assume we're using auth_seq_num==pdb_seq_num."""
     def dump(self, system, writer):
@@ -333,7 +503,7 @@ class _AsymIDProvider(object):
         return self.ids[self.index]
 
 
-class _StructAsymDumper(_Dumper):
+class _StructAsymDumper(Dumper):
     def finalize(self, system):
         # Handle user-assigned IDs first
         seen_asym_ids = set()
@@ -364,11 +534,8 @@ class _StructAsymDumper(_Dumper):
                         details=asym.details)
 
 
-class _AssemblyDumper(_Dumper):
+class _AssemblyDumper(Dumper):
     def finalize(self, system):
-        # Fill in complete assembly
-        system._make_complete_assembly()
-
         # Sort each assembly by entity/asym id/range
         def component_key(comp):
             if hasattr(comp, 'entity'): # asymmetric unit or range
@@ -394,7 +561,10 @@ class _AssemblyDumper(_Dumper):
             else:
                 a._id = seen_assemblies[hasha]
             if a.description and id(a) not in seen_assembly_ids:
-                description_by_id[a._id].append(a.description)
+                descs = description_by_id[a._id]
+                # Don't duplicate descriptions
+                if len(descs) == 0 or descs[-1] != a.description:
+                    descs.append(a.description)
             seen_assembly_ids[id(a)] = None
 
         # If multiple assemblies map to the same ID, give them all the same
@@ -405,27 +575,26 @@ class _AssemblyDumper(_Dumper):
         for a in all_assemblies:
             a.description = description_by_id[a._id]
 
-    def dump_details(self, system, writer):
-        with writer.loop("_ihm_struct_assembly_details",
-                         ["assembly_id", "assembly_name",
-                          "assembly_description"]) as l:
-            for a in self._assembly_by_id:
-                l.write(assembly_id=a._id, assembly_name=a.name,
-                        assembly_description=a.description)
-
     def dump(self, system, writer):
+        self.dump_summary(system, writer)
         self.dump_details(system, writer)
-        ordinal = 1
+
+    def dump_summary(self, system, writer):
         with writer.loop("_ihm_struct_assembly",
-                         ["ordinal_id", "assembly_id", "parent_assembly_id",
-                          "entity_description",
-                          "entity_id", "asym_id", "seq_id_begin",
-                          "seq_id_end"]) as l:
+                         ["id", "name", "description"]) as l:
+            for a in self._assembly_by_id:
+                l.write(id=a._id, name=a.name, description=a.description)
+
+    def dump_details(self, system, writer):
+        ordinal = 1
+        with writer.loop("_ihm_struct_assembly_details",
+                         ["id", "assembly_id", "parent_assembly_id",
+                          "entity_description", "entity_id", "asym_id",
+                          "entity_poly_segment_id"]) as l:
             for a in self._assembly_by_id:
                 for comp in a:
                     entity = comp.entity if hasattr(comp, 'entity') else comp
-                    seqrange = comp.seq_id_range
-                    l.write(ordinal_id=ordinal, assembly_id=a._id,
+                    l.write(id=ordinal, assembly_id=a._id,
                             # if no hierarchy then assembly is self-parent
                             parent_assembly_id=a.parent._id if a.parent
                                                else a._id,
@@ -433,11 +602,10 @@ class _AssemblyDumper(_Dumper):
                             entity_id=entity._id,
                             asym_id=comp._id if hasattr(comp, 'entity')
                                              else None,
-                            seq_id_begin=seqrange[0],
-                            seq_id_end=seqrange[1])
+                            entity_poly_segment_id=comp._range_id)
                     ordinal += 1
 
-class _ExternalReferenceDumper(_Dumper):
+class _ExternalReferenceDumper(Dumper):
     """Output information on externally referenced files
        (i.e. anything that refers to a Location that isn't
        a DatabaseLocation)."""
@@ -515,7 +683,7 @@ class _ExternalReferenceDumper(_Dumper):
             return path.replace(os.sep, '/')
 
 
-class _DatasetDumper(_Dumper):
+class _DatasetDumper(Dumper):
     def finalize(self, system):
         seen_datasets = {}
         # Assign IDs to all datasets
@@ -539,14 +707,16 @@ class _DatasetDumper(_Dumper):
 
     def dump(self, system, writer):
         with writer.loop("_ihm_dataset_list",
-                         ["id", "data_type", "database_hosted"]) as l:
+                         ["id", "data_type", "database_hosted",
+                          "details"]) as l:
             for d in self._dataset_by_id:
-                l.write(id=d._id, data_type=d.data_type,
+                l.write(id=d._id, data_type=d.data_type, details=d.details,
                         database_hosted=isinstance(d.location,
                                                    location.DatabaseLocation))
         self.dump_groups(writer)
         self.dump_other((d for d in self._dataset_by_id
-                         if not isinstance(d.location,
+                         if d.location is not None
+                         and not isinstance(d.location,
                                            location.DatabaseLocation)),
                         writer)
         self.dump_rel_dbs((d for d in self._dataset_by_id
@@ -556,15 +726,23 @@ class _DatasetDumper(_Dumper):
         self.dump_related(system, writer)
 
     def dump_groups(self, writer):
-        ordinal = 1
+        self.dump_group_summary(writer)
+        self.dump_group_links(writer)
+
+    def dump_group_summary(self, writer):
         with writer.loop("_ihm_dataset_group",
-                         ["ordinal_id", "group_id", "dataset_list_id"]) as l:
+                         ["id", "name", "application", "details"]) as l:
+            for g in self._dataset_group_by_id:
+                l.write(id=g._id, name=g.name, application=g.application,
+                        details=g.details)
+
+    def dump_group_links(self, writer):
+        with writer.loop("_ihm_dataset_group_link",
+                         ["group_id", "dataset_list_id"]) as l:
             for g in self._dataset_group_by_id:
                 # Don't duplicate IDs, and output in sorted order
                 for dataset_id in sorted(set(d._id for d in g)):
-                    l.write(ordinal_id=ordinal, group_id=g._id,
-                            dataset_list_id=dataset_id)
-                    ordinal += 1
+                    l.write(group_id=g._id, dataset_list_id=dataset_id)
 
     def dump_other(self, datasets, writer):
         ordinal = 1
@@ -589,19 +767,16 @@ class _DatasetDumper(_Dumper):
                 ordinal += 1
 
     def dump_related(self, system, writer):
-        ordinal = 1
         with writer.loop("_ihm_related_datasets",
-                         ["ordinal_id", "dataset_list_id_derived",
+                         ["dataset_list_id_derived",
                           "dataset_list_id_primary"]) as l:
             for derived in self._dataset_by_id:
                 # Don't duplicate IDs, and output in sorted order
                 for parent_id in sorted(set(d._id for d in derived.parents)):
-                    l.write(ordinal_id=ordinal,
-                            dataset_list_id_derived=derived._id,
+                    l.write(dataset_list_id_derived=derived._id,
                             dataset_list_id_primary=parent_id)
-                    ordinal += 1
 
-class _ModelRepresentationDumper(_Dumper):
+class _ModelRepresentationDumper(Dumper):
     def finalize(self, system):
         # Assign IDs to representations and segments
         for nr, r in enumerate(system._all_representations()):
@@ -610,24 +785,32 @@ class _ModelRepresentationDumper(_Dumper):
                 s._id = ns + 1
 
     def dump(self, system, writer):
-        ordinal_id = 1
+        self.dump_summary(system, writer)
+        self.dump_details(system, writer)
+
+    def dump_summary(self, system, writer):
         with writer.loop("_ihm_model_representation",
-                         ["ordinal_id", "representation_id",
-                          "segment_id", "entity_id", "entity_description",
-                          "entity_asym_id",
-                          "seq_id_begin", "seq_id_end",
+                         ["id", "name", "details"]) as l:
+            for r in system._all_representations():
+                l.write(id=r._id, name=r.name, details=r.details)
+
+    def dump_details(self, system, writer):
+        ordinal_id = 1
+        with writer.loop("_ihm_model_representation_details",
+                         ["id", "representation_id",
+                          "entity_id", "entity_description",
+                          "entity_asym_id", "entity_poly_segment_id",
                           "model_object_primitive", "starting_model_id",
                           "model_mode", "model_granularity",
                           "model_object_count"]) as l:
             for r in system._all_representations():
                 for segment in r:
                     entity = segment.asym_unit.entity
-                    l.write(ordinal_id=ordinal_id, representation_id=r._id,
-                            segment_id=segment._id, entity_id=entity._id,
+                    l.write(id=ordinal_id, representation_id=r._id,
+                            entity_id=entity._id,
                             entity_description=entity.description,
                             entity_asym_id=segment.asym_unit._id,
-                            seq_id_begin=segment.asym_unit.seq_id_range[0],
-                            seq_id_end=segment.asym_unit.seq_id_range[1],
+                            entity_poly_segment_id=segment.asym_unit._range_id,
                             model_object_primitive=segment.primitive,
                             starting_model_id=segment.starting_model._id
                                                   if segment.starting_model
@@ -638,7 +821,7 @@ class _ModelRepresentationDumper(_Dumper):
                     ordinal_id += 1
 
 
-class _StartingModelDumper(_Dumper):
+class _StartingModelDumper(Dumper):
     def finalize(self, system):
         # Assign IDs to starting models
         for nm, m in enumerate(system._all_starting_models()):
@@ -655,22 +838,21 @@ class _StartingModelDumper(_Dumper):
         # Map dataset types to starting model sources
         source_map = {'Comparative model': 'comparative model',
                       'Integrative model': 'integrative model',
-                      'Experimental model': 'experimental model'}
+                      'Experimental model': 'experimental model',
+                      'De Novo model': 'ab initio model'}
         with writer.loop("_ihm_starting_model_details",
                      ["starting_model_id", "entity_id", "entity_description",
-                      "asym_id", "seq_id_begin",
-                      "seq_id_end", "starting_model_source",
+                      "asym_id", "entity_poly_segment_id",
+                      "starting_model_source",
                       "starting_model_auth_asym_id",
                       "starting_model_sequence_offset",
                       "dataset_list_id"]) as l:
-             for sm in system._all_starting_models():
-                seq_id_range = sm.get_seq_id_range_all_templates()
+            for sm in system._all_starting_models():
                 l.write(starting_model_id=sm._id,
                         entity_id=sm.asym_unit.entity._id,
                         entity_description=sm.asym_unit.entity.description,
                         asym_id=sm.asym_unit._id,
-                        seq_id_begin=seq_id_range[0],
-                        seq_id_end=seq_id_range[1],
+                        entity_poly_segment_id=sm._all_template_rng._range_id,
                         starting_model_source=source_map[sm.dataset.data_type],
                         starting_model_auth_asym_id=sm.asym_id,
                         dataset_list_id=sm.dataset._id,
@@ -692,7 +874,7 @@ class _StartingModelDumper(_Dumper):
     def dump_comparative(self, system, writer):
         """Dump details on comparative models."""
         with writer.loop("_ihm_starting_comparative_models",
-                     ["ordinal_id", "starting_model_id",
+                     ["id", "starting_model_id",
                       "starting_model_auth_asym_id",
                       "starting_model_seq_id_begin",
                       "starting_model_seq_id_end",
@@ -705,7 +887,8 @@ class _StartingModelDumper(_Dumper):
             for sm in system._all_starting_models():
                 off = sm.offset
                 for template in sm.templates:
-                    l.write(ordinal_id=ordinal,
+                    denom = template.sequence_identity.denominator
+                    l.write(id=ordinal,
                       starting_model_id=sm._id,
                       starting_model_auth_asym_id=sm.asym_id,
                       starting_model_seq_id_begin=template.seq_id_range[0]+off,
@@ -716,7 +899,7 @@ class _StartingModelDumper(_Dumper):
                       template_sequence_identity=
                                   float(template.sequence_identity),
                       template_sequence_identity_denominator=
-                                  int(template.sequence_identity.denominator),
+                                  None if denom is None else int(denom),
                       template_dataset_list_id=template.dataset._id
                                                if template.dataset else None,
                       alignment_file_id=template.alignment_file._id
@@ -753,14 +936,14 @@ class _StartingModelDumper(_Dumper):
         """Write out sequence difference information"""
         ordinal = 1
         with writer.loop("_ihm_starting_model_seq_dif",
-                     ["ordinal_id", "entity_id", "asym_id",
+                     ["id", "entity_id", "asym_id",
                       "seq_id", "comp_id", "starting_model_id",
                       "db_asym_id", "db_seq_id", "db_comp_id",
                       "details"]) as l:
             for model in system._all_starting_models():
                 for sd in model.get_seq_dif():
                     comp = model.asym_unit.entity.sequence[sd.seq_id-1]
-                    l.write(ordinal_id=ordinal,
+                    l.write(id=ordinal,
                         entity_id=model.asym_unit.entity._id,
                         asym_id=model.asym_unit._id,
                         seq_id=sd.seq_id, comp_id=comp.id,
@@ -770,7 +953,7 @@ class _StartingModelDumper(_Dumper):
                     ordinal += 1
 
 
-class _ProtocolDumper(_Dumper):
+class _ProtocolDumper(Dumper):
     def finalize(self, system):
         # Assign IDs to protocols and steps
         for np, p in enumerate(system._all_protocols()):
@@ -779,24 +962,34 @@ class _ProtocolDumper(_Dumper):
                 s._id = ns + 1
 
     def dump(self, system, writer):
-        ordinal = 1
+        self.dump_summary(system, writer)
+        self.dump_details(system, writer)
+
+    def dump_summary(self, system, writer):
         with writer.loop("_ihm_modeling_protocol",
-                         ["ordinal_id", "protocol_id", "step_id",
+                         ["id", "protocol_name", "num_steps"]) as l:
+            for p in system._all_protocols():
+                l.write(id=p._id,
+                        protocol_name=p.name, num_steps=len(p.steps))
+
+    def dump_details(self, system, writer):
+        ordinal = 1
+        with writer.loop("_ihm_modeling_protocol_details",
+                         ["id", "protocol_id", "step_id",
                           "struct_assembly_id", "dataset_group_id",
-                          "struct_assembly_description", "protocol_name",
+                          "struct_assembly_description",
                           "step_name", "step_method", "num_models_begin",
                           "num_models_end", "multi_scale_flag",
                           "multi_state_flag", "ordered_flag",
                           "software_id", "script_file_id"]) as l:
             for p in system._all_protocols():
                 for s in p.steps:
-                    l.write(ordinal_id=ordinal, protocol_id=p._id,
+                    l.write(id=ordinal, protocol_id=p._id,
                             step_id=s._id,
                             struct_assembly_id=s.assembly._id,
                             dataset_group_id=s.dataset_group._id
                                              if s.dataset_group else None,
                             struct_assembly_description=s.assembly.description,
-                            protocol_name=p.name,
                             step_name=s.name, step_method=s.method,
                             num_models_begin=s.num_models_begin,
                             num_models_end=s.num_models_end,
@@ -809,7 +1002,7 @@ class _ProtocolDumper(_Dumper):
                     ordinal += 1
 
 
-class _PostProcessDumper(_Dumper):
+class _PostProcessDumper(Dumper):
     def finalize(self, system):
         pp_id = 1
         # Assign IDs to analyses and steps
@@ -979,7 +1172,7 @@ class _RangeChecker(object):
                                  for x in self.repr_asym_ids[asym._id])))
 
 
-class _ModelDumper(_Dumper):
+class _ModelDumper(Dumper):
 
     def finalize(self, system):
         # Remove any existing ID
@@ -1006,26 +1199,38 @@ class _ModelDumper(_Dumper):
 
     def dump(self, system, writer):
         self.dump_model_list(system, writer)
+        self.dump_model_groups(system, writer)
         seen_types = self.dump_atoms(system, writer)
         self.dump_spheres(system, writer)
         self.dump_atom_type(seen_types, system, writer)
 
     def dump_model_list(self, system, writer):
-        ordinal = 1
         with writer.loop("_ihm_model_list",
-                         ["ordinal_id", "model_id", "model_group_id",
-                          "model_name", "model_group_name", "assembly_id",
+                         ["model_id", "model_name","assembly_id",
                           "protocol_id", "representation_id"]) as l:
             for group, model in system._all_models():
-                l.write(ordinal_id=ordinal, model_id=model._id,
-                        model_group_id=group._id,
+                l.write(model_id=model._id,
                         model_name=model.name,
-                        model_group_name=group.name,
                         assembly_id=model.assembly._id,
                         protocol_id=model.protocol._id
                                     if model.protocol else None,
                         representation_id=model.representation._id)
-                ordinal += 1
+
+    def dump_model_groups(self, system, writer):
+        self.dump_model_group_summary(system, writer)
+        self.dump_model_group_link(system, writer)
+
+    def dump_model_group_summary(self, system, writer):
+        with writer.loop("_ihm_model_group", ["id", "name", "details"]) as l:
+            for group in system._all_model_groups():
+                l.write(id=group._id, name=group.name)
+
+    def dump_model_group_link(self, system, writer):
+        with writer.loop("_ihm_model_group_link",
+                         ["group_id", "model_id"]) as l:
+            for group in system._all_model_groups():
+                for model_id in sorted(set(model._id for model in group)):
+                    l.write(model_id=model_id, group_id=group._id)
 
     def dump_atom_type(self, seen_types, system, writer):
         """Output the atom_type table with a list of elements used in atom_site.
@@ -1053,7 +1258,8 @@ class _ModelDumper(_Dumper):
                 rngcheck = _RangeChecker(model)
                 for atom in model.get_atoms():
                     rngcheck(atom)
-                    comp = atom.asym_unit.entity.sequence[atom.seq_id-1]
+                    seq_id = 1 if atom.seq_id is None else atom.seq_id
+                    comp = atom.asym_unit.entity.sequence[seq_id-1]
                     seen_types[atom.type_symbol] = None
                     l.write(id=ordinal,
                             type_symbol=atom.type_symbol,
@@ -1074,7 +1280,7 @@ class _ModelDumper(_Dumper):
     def dump_spheres(self, system, writer):
         ordinal = 1
         with writer.loop("_ihm_sphere_obj_site",
-                         ["ordinal_id", "entity_id", "seq_id_begin",
+                         ["id", "entity_id", "seq_id_begin",
                           "seq_id_end", "asym_id", "Cartn_x",
                           "Cartn_y", "Cartn_z", "object_radius", "rmsf",
                           "model_id"]) as l:
@@ -1082,7 +1288,7 @@ class _ModelDumper(_Dumper):
                 rngcheck = _RangeChecker(model)
                 for sphere in model.get_spheres():
                     rngcheck(sphere)
-                    l.write(ordinal_id=ordinal,
+                    l.write(id=ordinal,
                             entity_id=sphere.asym_unit.entity._id,
                             seq_id_begin=sphere.seq_id_range[0],
                             seq_id_end=sphere.seq_id_range[1],
@@ -1093,7 +1299,7 @@ class _ModelDumper(_Dumper):
                     ordinal += 1
 
 
-class _EnsembleDumper(_Dumper):
+class _EnsembleDumper(Dumper):
     def finalize(self, system):
         # Assign IDs
         for ne, e in enumerate(system.ensembles):
@@ -1121,7 +1327,7 @@ class _EnsembleDumper(_Dumper):
                         ensemble_file_id=e.file._id if e.file else None)
 
 
-class _DensityDumper(_Dumper):
+class _DensityDumper(Dumper):
     def finalize(self, system):
         # Assign globally unique IDs
         did = 1
@@ -1133,18 +1339,17 @@ class _DensityDumper(_Dumper):
     def dump(self, system, writer):
         with writer.loop("_ihm_localization_density_files",
                          ["id", "file_id", "ensemble_id", "entity_id",
-                          "asym_id", "seq_id_begin", "seq_id_end"]) as l:
+                          "asym_id", "entity_poly_segment_id"]) as l:
             for ensemble in system.ensembles:
                 for density in ensemble.densities:
                     l.write(id=density._id, file_id=density.file._id,
                             ensemble_id=ensemble._id,
                             entity_id=density.asym_unit.entity._id,
                             asym_id=density.asym_unit._id,
-                            seq_id_begin=density.asym_unit.seq_id_range[0],
-                            seq_id_end=density.asym_unit.seq_id_range[1])
+                            entity_poly_segment_id=density.asym_unit._range_id)
 
 
-class _MultiStateDumper(_Dumper):
+class _MultiStateDumper(Dumper):
     def finalize(self, system):
         state_id = 1
         # Assign IDs
@@ -1158,26 +1363,35 @@ class _MultiStateDumper(_Dumper):
         # Nothing to do for single state modeling
         if len(system.state_groups) == 1 and len(system.state_groups[0]) <= 1:
             return
+        self.dump_summary(system, writer)
+        self.dump_model_groups(system, writer)
+
+    def dump_summary(self, system, writer):
         with writer.loop("_ihm_multi_state_modeling",
-                         ["ordinal_id", "state_id", "state_group_id",
+                         ["state_id", "state_group_id",
                           "population_fraction", "state_type", "state_name",
-                          "model_group_id", "experiment_type", "details"]) as l:
-            ordinal = 1
+                          "experiment_type", "details"]) as l:
+            for state_group in system.state_groups:
+                for state in state_group:
+                    l.write(state_id=state._id,
+                            state_group_id=state_group._id,
+                            population_fraction=state.population_fraction,
+                            state_type=state.type,
+                            state_name=state.name,
+                            experiment_type=state.experiment_type,
+                            details=state.details)
+
+    def dump_model_groups(self, system, writer):
+        with writer.loop("_ihm_multi_state_model_group_link",
+                         ["state_id", "model_group_id"]) as l:
             for state_group in system.state_groups:
                 for state in state_group:
                     for model_group in state:
-                        l.write(ordinal_id=ordinal, state_id=state._id,
-                                state_group_id=state_group._id,
-                                population_fraction=state.population_fraction,
-                                model_group_id=model_group._id,
-                                state_type=state.type,
-                                state_name=state.name,
-                                experiment_type=state.experiment_type,
-                                details=state.details)
-                        ordinal += 1
+                        l.write(state_id=state._id,
+                                model_group_id=model_group._id)
 
 
-class _OrderedDumper(_Dumper):
+class _OrderedDumper(Dumper):
     def finalize(self, system):
         for nproc, proc in enumerate(system.ordered_processes):
             proc._id = nproc + 1
@@ -1207,7 +1421,7 @@ class _OrderedDumper(_Dumper):
                                 model_group_id_end=edge.group_end._id)
 
 
-class _GeometricObjectDumper(_Dumper):
+class _GeometricObjectDumper(Dumper):
     def finalize(self, system):
         seen_objects = {}
         seen_centers = {}
@@ -1332,7 +1546,7 @@ class _GeometricObjectDumper(_Dumper):
                                           if o.transformation else None)
 
 
-class _FeatureDumper(_Dumper):
+class _FeatureDumper(Dumper):
     def finalize(self, system):
         seen_features = {}
         self._features_by_id = []
@@ -1346,6 +1560,7 @@ class _FeatureDumper(_Dumper):
         self.dump_poly_residue(writer)
         self.dump_poly_atom(writer)
         self.dump_non_poly(writer)
+        self.dump_pseudo_site(writer)
 
     def dump_list(self, writer):
         with writer.loop("_ihm_feature_list",
@@ -1417,8 +1632,18 @@ class _FeatureDumper(_Dumper):
                                 atom_id=None)
                         ordinal += 1
 
+    def dump_pseudo_site(self, writer):
+        with writer.loop("_ihm_pseudo_site_feature",
+                         ["feature_id", "Cartn_x", "Cartn_y",
+                          "Cartn_z", "radius", "description"]) as l:
+            for f in self._features_by_id:
+                if not isinstance(f, restraint.PseudoSiteFeature):
+                    continue
+                l.write(feature_id=f._id, Cartn_x=f.x, Cartn_y=f.y,
+                        Cartn_z=f.z, radius=f.radius, description=f.description)
 
-class _CrossLinkDumper(_Dumper):
+
+class _CrossLinkDumper(Dumper):
     def _all_restraints(self, system):
         return [r for r in system._all_restraints()
                 if isinstance(r, restraint.CrossLinkRestraint)]
@@ -1438,7 +1663,7 @@ class _CrossLinkDumper(_Dumper):
                     # Assign identical cross-links the same ID and group ID
                     sig = (xl.residue1.entity, xl.residue1.seq_id,
                            xl.residue2.entity, xl.residue2.seq_id,
-                           r.linker_type)
+                           r.linker)
                     if sig in seen_cross_links:
                         xl._id, xl._group_id = seen_cross_links[sig]
                     else:
@@ -1461,7 +1686,7 @@ class _CrossLinkDumper(_Dumper):
                 ex_xl = xl.experimental_cross_link
                 sig = (xl.asym1._id, ex_xl.residue1.seq_id, xl.atom1,
                        xl.asym2._id, ex_xl.residue2.seq_id, xl.atom2,
-                       r.linker_type)
+                       r.linker)
                 if sig in seen_cross_links:
                     xl._id = seen_cross_links[sig]
                 else:
@@ -1481,7 +1706,8 @@ class _CrossLinkDumper(_Dumper):
                           "entity_id_1", "seq_id_1", "comp_id_1",
                           "entity_description_2",
                           "entity_id_2", "seq_id_2", "comp_id_2",
-                          "linker_type", "dataset_list_id"]) as l:
+                          "linker_chem_comp_descriptor_id", "linker_type",
+                          "dataset_list_id"]) as l:
             for r, xl in self._ex_xls_by_id:
                 entity1 = xl.residue1.entity
                 entity2 = xl.residue2.entity
@@ -1496,7 +1722,8 @@ class _CrossLinkDumper(_Dumper):
                         entity_id_2=entity2._id,
                         seq_id_2=xl.residue2.seq_id,
                         comp_id_2=seq2[xl.residue2.seq_id-1].id,
-                        linker_type=r.linker_type,
+                        linker_chem_comp_descriptor_id=r.linker._id,
+                        linker_type=r.linker.auth_name,
                         dataset_list_id=r.dataset._id)
 
     def dump_restraint(self, system, writer):
@@ -1531,7 +1758,7 @@ class _CrossLinkDumper(_Dumper):
 
     def dump_results(self, system, writer):
         with writer.loop("_ihm_cross_link_result_parameters",
-                         ["ordinal_id", "restraint_id", "model_id",
+                         ["id", "restraint_id", "model_id",
                           "psi", "sigma_1", "sigma_2"]) as l:
             ordinal = 1
             for r in self._all_restraints(system):
@@ -1539,13 +1766,13 @@ class _CrossLinkDumper(_Dumper):
                     # all fits ordered by model ID
                     for model, fit in sorted(xl.fits.items(),
                                              key=lambda i: i[0]._id):
-                        l.write(ordinal_id=ordinal, restraint_id=xl._id,
+                        l.write(id=ordinal, restraint_id=xl._id,
                                 model_id=model._id, psi=fit.psi,
                                 sigma_1=fit.sigma1, sigma_2=fit.sigma2)
                         ordinal += 1
 
 
-class _GeometricRestraintDumper(_Dumper):
+class _GeometricRestraintDumper(Dumper):
     def _all_restraints(self, system):
         return [r for r in system._all_restraints()
                 if isinstance(r, restraint.GeometricRestraint)]
@@ -1575,31 +1802,40 @@ class _GeometricRestraintDumper(_Dumper):
                         dataset_list_id=r.dataset._id if r.dataset else None)
 
 
-class _DerivedDistanceRestraintDumper(_Dumper):
-    def _all_restraints(self, system):
+def _finalize_restraints_and_groups(system, restraint_class):
+    """Assign IDs to all restraints of the given class, and also assign IDs
+       to groups of these restraints."""
+    def _all_restraints():
         return [r for r in system._all_restraints()
-                if isinstance(r, restraint.DerivedDistanceRestraint)]
+                if isinstance(r, restraint_class)]
 
-    def _all_restraint_groups(self, system):
+    def _all_restraint_groups():
         return [rg for rg in system.restraint_groups
-                if all(isinstance(r, restraint.DerivedDistanceRestraint)
+                if all(isinstance(r, restraint_class)
                        for r in rg) and len(rg) > 0]
 
-    def finalize(self, system):
-        self._restraints_by_id = []
-        seen_restraints = {}
-        for r in self._all_restraints(system):
-            util._remove_id(r)
-        for r in self._all_restraints(system):
-            util._assign_id(r, seen_restraints, self._restraints_by_id)
+    restraints_by_id = []
+    seen_restraints = {}
+    for r in _all_restraints():
+        util._remove_id(r)
+    for r in _all_restraints():
+        util._assign_id(r, seen_restraints, restraints_by_id)
 
-        self._group_for_id = {}
-        for nrg, rg in enumerate(self._all_restraint_groups(system)):
-            rg._id = nrg + 1
-            for r in rg:
-                if r._id in self._group_for_id:
-                    raise ValueError("%s cannot be in more than one group" % r)
-                self._group_for_id[r._id] = rg._id
+    group_for_id = {}
+    for nrg, rg in enumerate(_all_restraint_groups()):
+        rg._id = nrg + 1
+        for r in rg:
+            if r._id in group_for_id:
+                raise ValueError("%s cannot be in more than one group" % r)
+            group_for_id[r._id] = rg._id
+    return restraints_by_id, group_for_id
+
+
+class _DerivedDistanceRestraintDumper(Dumper):
+    def finalize(self, system):
+        (self._restraints_by_id,
+         self._group_for_id) = _finalize_restraints_and_groups(system,
+                                         restraint.DerivedDistanceRestraint)
 
     def dump(self, system, writer):
         condmap = {True: 'ALL', False: 'ANY', None: None}
@@ -1621,7 +1857,49 @@ class _DerivedDistanceRestraintDumper(_Dumper):
                         dataset_list_id=r.dataset._id if r.dataset else None)
 
 
-class _EM3DDumper(_Dumper):
+class _PredictedContactRestraintDumper(Dumper):
+    def finalize(self, system):
+        (self._restraints_by_id,
+         self._group_for_id) = _finalize_restraints_and_groups(system,
+                                         restraint.PredictedContactRestraint)
+
+    def dump(self, system, writer):
+        with writer.loop("_ihm_predicted_contact_restraint",
+                         ["id", "group_id", "entity_id_1", "asym_id_1",
+                          "comp_id_1", "seq_id_1", "rep_atom_1", "entity_id_2",
+                          "asym_id_2", "comp_id_2", "seq_id_2", "rep_atom_2",
+                          "restraint_type", "distance_lower_limit",
+                          "distance_upper_limit", "probability",
+                          "model_granularity", "dataset_list_id",
+                          "software_id"]) as l:
+            for r in self._restraints_by_id:
+                comp1 = r.resatom1.asym.entity.sequence[r.resatom1.seq_id-1].id
+                comp2 = r.resatom2.asym.entity.sequence[r.resatom2.seq_id-1].id
+                atom1 = atom2 = None
+                if isinstance(r.resatom1, ihm.Atom):
+                    atom1 = r.resatom1.id
+                if isinstance(r.resatom2, ihm.Atom):
+                    atom2 = r.resatom2.id
+                l.write(id=r._id, group_id=self._group_for_id.get(r._id, None),
+                        entity_id_1=r.resatom1.asym.entity._id,
+                        asym_id_1=r.resatom1.asym._id,
+                        comp_id_1=comp1, seq_id_1=r.resatom1.seq_id,
+                        rep_atom_1=atom1,
+                        entity_id_2=r.resatom2.asym.entity._id,
+                        asym_id_2=r.resatom2.asym._id,
+                        comp_id_2=comp2, seq_id_2=r.resatom2.seq_id,
+                        rep_atom_2=atom2,
+                        restraint_type=r.distance.restraint_type,
+                        distance_lower_limit=r.distance.distance_lower_limit,
+                        distance_upper_limit=r.distance.distance_upper_limit,
+                        probability=r.probability,
+                        model_granularity="by-residue" if r.by_residue
+                                          else 'by-feature',
+                        dataset_list_id=r.dataset._id if r.dataset else None,
+                        software_id=r.software._id if r.software else None)
+
+
+class _EM3DDumper(Dumper):
     def _all_restraints(self, system):
         return [r for r in system._all_restraints()
                 if isinstance(r, restraint.EM3DRestraint)]
@@ -1633,7 +1911,7 @@ class _EM3DDumper(_Dumper):
     def dump(self, system, writer):
         ordinal = 1
         with writer.loop("_ihm_3dem_restraint",
-                         ["ordinal_id", "dataset_list_id", "fitting_method",
+                         ["id", "dataset_list_id", "fitting_method",
                           "fitting_method_citation_id",
                           "struct_assembly_id",
                           "number_of_gaussians", "model_id",
@@ -1647,7 +1925,7 @@ class _EM3DDumper(_Dumper):
                 for model, fit in sorted(r.fits.items(),
                                          key=lambda i: i[0]._id):
                     ccc = fit.cross_correlation_coefficient
-                    l.write(ordinal_id=ordinal,
+                    l.write(id=ordinal,
                             dataset_list_id=r.dataset._id,
                             fitting_method=r.fitting_method,
                             fitting_method_citation_id=citation_id,
@@ -1658,7 +1936,7 @@ class _EM3DDumper(_Dumper):
                     ordinal += 1
 
 
-class _EM2DDumper(_Dumper):
+class _EM2DDumper(Dumper):
     def _all_restraints(self, system):
         return [r for r in system._all_restraints()
                 if isinstance(r, restraint.EM2DRestraint)]
@@ -1692,7 +1970,7 @@ class _EM2DDumper(_Dumper):
     def dump_fitting(self, system, writer):
         ordinal = 1
         with writer.loop("_ihm_2dem_class_average_fitting",
-                ["ordinal_id", "restraint_id", "model_id",
+                ["id", "restraint_id", "model_id",
                  "cross_correlation_coefficient", "rot_matrix[1][1]",
                  "rot_matrix[2][1]", "rot_matrix[3][1]", "rot_matrix[1][2]",
                  "rot_matrix[2][2]", "rot_matrix[3][2]", "rot_matrix[1][3]",
@@ -1715,7 +1993,7 @@ class _EM2DDumper(_Dumper):
                         # matrices
                         rm = [["%.6f" % e for e in fit.rot_matrix[i]]
                               for i in range(3)]
-                    l.write(ordinal_id=ordinal, restraint_id=r._id,
+                    l.write(id=ordinal, restraint_id=r._id,
                             model_id=model._id,
                             cross_correlation_coefficient=ccc,
                             rot_matrix11=rm[0][0], rot_matrix21=rm[1][0],
@@ -1727,7 +2005,7 @@ class _EM2DDumper(_Dumper):
                     ordinal += 1
 
 
-class _SASDumper(_Dumper):
+class _SASDumper(Dumper):
     def _all_restraints(self, system):
         return [r for r in system._all_restraints()
                 if isinstance(r, restraint.SASRestraint)]
@@ -1739,7 +2017,7 @@ class _SASDumper(_Dumper):
     def dump(self, system, writer):
         ordinal = 1
         with writer.loop("_ihm_sas_restraint",
-                         ["ordinal_id", "dataset_list_id", "model_id",
+                         ["id", "dataset_list_id", "model_id",
                           "struct_assembly_id", "profile_segment_flag",
                           "fitting_atom_type", "fitting_method",
                           "fitting_state", "radius_of_gyration",
@@ -1748,7 +2026,7 @@ class _SASDumper(_Dumper):
                 # all fits ordered by model ID
                 for model, fit in sorted(r.fits.items(),
                                          key=lambda i: i[0]._id):
-                    l.write(ordinal_id=ordinal,
+                    l.write(id=ordinal,
                             dataset_list_id=r.dataset._id,
                             fitting_method=r.fitting_method,
                             fitting_atom_type=r.fitting_atom_type,
@@ -1761,6 +2039,587 @@ class _SASDumper(_Dumper):
                             chi_value=fit.chi_value,
                             details=r.details)
                     ordinal += 1
+
+
+def _assign_all_ids(all_objs_func):
+    """Given a function that returns a list of all objects, assign IDs and
+       return a list of objects sorted by ID"""
+    objs_by_id = []
+    next_id = 1
+    for f in all_objs_func():
+        util._remove_id(f)
+    for f in all_objs_func():
+        if not hasattr(f, '_id'):
+            f._id = next_id
+            objs_by_id.append(f)
+            next_id += 1
+    return objs_by_id
+
+
+class _FLRExperimentDumper(Dumper):
+    def finalize(self, system):
+        def all_experiments():
+            return itertools.chain.from_iterable(f._all_experiments()
+                                                 for f in system.flr_data)
+        self._experiments_by_id = _assign_all_ids(all_experiments)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_experiment',
+                   ['ordinal_id', 'id', 'instrument_id', 'exp_setting_id',
+                    'sample_id', 'details']) as l:
+            ordinal = 1
+            for x in self._experiments_by_id:
+                for i in range(len(x.sample_list)):
+                    l.write(ordinal_id=ordinal, id=x._id,
+                            instrument_id=x.instrument_list[i]._id,
+                            exp_setting_id=x.exp_setting_list[i]._id,
+                            sample_id=x.sample_list[i]._id,
+                            details=x.details_list[i])
+                    ordinal +=1
+
+
+class _FLRExpSettingDumper(Dumper):
+    def finalize(self, system):
+        def all_exp_settings():
+            return itertools.chain.from_iterable(f._all_exp_settings()
+                                                 for f in system.flr_data)
+        self._exp_settings_by_id = _assign_all_ids(all_exp_settings)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_exp_setting', ['id', 'details']) as l:
+            for x in self._exp_settings_by_id:
+                l.write(id=x._id, details=x.details)
+
+
+class _FLRInstrumentDumper(Dumper):
+    def finalize(self, system):
+        def all_instruments():
+            return itertools.chain.from_iterable(f._all_instruments()
+                                                 for f in system.flr_data)
+        self._instruments_by_id = _assign_all_ids(all_instruments)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_instrument', ['id', 'details']) as l:
+            for x in self._instruments_by_id:
+                l.write(id=x._id, details=x.details)
+
+
+class _FLREntityAssemblyDumper(Dumper):
+    def finalize(self, system):
+        def all_entity_assemblies():
+            return itertools.chain.from_iterable(
+                                (s.entity_assembly for s in f._all_samples())
+                                for f in system.flr_data)
+        self._entity_assemblies_by_id = _assign_all_ids(all_entity_assemblies)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_entity_assembly',
+                   ['ordinal_id', 'assembly_id', 'entity_id', 'num_copies',
+                    'entity_description']) as l:
+            ordinal = 1
+            for x in self._entity_assemblies_by_id:
+                for i in range(len(x.entity_list)):
+                    l.write(ordinal_id=ordinal,
+                            assembly_id=x._id,
+                            entity_id=x.entity_list[i]._id,
+                            num_copies=x.num_copies_list[i],
+                            entity_description=x.entity_list[i].description)
+                    ordinal += 1
+
+
+class _FLRSampleConditionDumper(Dumper):
+    def finalize(self, system):
+        def all_sample_conditions():
+            return itertools.chain.from_iterable(
+                                (s.condition for s in f._all_samples())
+                                for f in system.flr_data)
+        self._sample_conditions_by_id = _assign_all_ids(all_sample_conditions)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_sample_condition', ['id', 'details']) as l:
+            for x in self._sample_conditions_by_id:
+                l.write(id=x._id, details=x.details)
+
+
+class _FLRSampleDumper(Dumper):
+    def finalize(self, system):
+        def all_samples():
+            return itertools.chain.from_iterable(f._all_samples()
+                                                 for f in system.flr_data)
+        self._samples_by_id = _assign_all_ids(all_samples)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_sample',
+                         ['id','entity_assembly_id', 'num_of_probes',
+                          'sample_condition_id', 'sample_description',
+                          'sample_details', 'solvent_phase']) as l:
+            for x in self._samples_by_id:
+                l.write(id=x._id, entity_assembly_id=x.entity_assembly._id,
+                        num_of_probes=x.num_of_probes,
+                        sample_condition_id=x.condition._id,
+                        sample_description=x.description,
+                        sample_details=x.details, solvent_phase=x.solvent_phase)
+
+
+class _FLRProbeDumper(Dumper):
+    def finalize(self, system):
+        def all_probes():
+            return itertools.chain.from_iterable(f._all_probes()
+                                                 for f in system.flr_data)
+        self._probes_by_id = _assign_all_ids(all_probes)
+
+    def dump(self, system, writer):
+        self.dump_probe_list(system, writer)
+        self.dump_probe_descriptor(system, writer)
+
+    def dump_probe_list(self, system, writer):
+        with writer.loop('_flr_probe_list',
+                         ['probe_id', 'chromophore_name', 'reactive_probe_flag',
+                          'reactive_probe_name', 'probe_origin',
+                          'probe_link_type']) as l:
+            for x in self._probes_by_id:
+                entry = x.probe_list_entry
+                l.write(probe_id=x._id,
+                         chromophore_name=entry.chromophore_name,
+                         reactive_probe_flag=entry.reactive_probe_flag,
+                         reactive_probe_name=entry.reactive_probe_name,
+                         probe_origin=entry.probe_origin,
+                         probe_link_type=entry.probe_link_type)
+
+    def dump_probe_descriptor(self, system, writer):
+        with writer.loop('_flr_probe_descriptor',
+                         ['probe_id', 'reactive_probe_chem_descriptor_id',
+                          'chromophore_chem_descriptor_id',
+                          'chromophore_center_atom']) as l:
+            for x in self._probes_by_id:
+                reactive = x.probe_descriptor.reactive_probe_chem_descriptor
+                chrom = x.probe_descriptor.chromophore_chem_descriptor
+                l.write(probe_id=x._id,
+                        reactive_probe_chem_descriptor_id=
+                                  None if reactive is None else reactive._id,
+                         chromophore_chem_descriptor_id=
+                                  None if chrom is None else chrom._id,
+                         chromophore_center_atom=
+                                   x.probe_descriptor.chromophore_center_atom)
+
+
+class _FLRSampleProbeDetailsDumper(Dumper):
+    def finalize(self, system):
+        def all_sample_probe_details():
+            return itertools.chain.from_iterable(f._all_sample_probe_details()
+                                                 for f in system.flr_data)
+        self._sample_probe_details_by_id = _assign_all_ids(
+                                                all_sample_probe_details)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_sample_probe_details',
+                         ['sample_probe_id', 'sample_id', 'probe_id',
+                          'fluorophore_type', 'description',
+                          'poly_probe_position_id']) as l:
+            for x in self._sample_probe_details_by_id:
+                l.write(sample_probe_id=x._id,
+                         sample_id=x.sample._id,
+                         probe_id=x.probe._id,
+                         fluorophore_type=x.fluorophore_type,
+                         description=x.description,
+                         poly_probe_position_id=x.poly_probe_position._id)
+
+
+class _FLRPolyProbePositionDumper(Dumper):
+    def finalize(self, system):
+        def all_poly_probe_positions():
+            return itertools.chain.from_iterable(f._all_poly_probe_positions()
+                                                 for f in system.flr_data)
+        self._positions_by_id = _assign_all_ids(all_poly_probe_positions)
+
+    def dump(self, system, writer):
+        self.dump_position(system, writer)
+        self.dump_position_mutated(system, writer)
+        self.dump_position_modified(system, writer)
+
+    def dump_position(self, system, writer):
+        with writer.loop('_flr_poly_probe_position',
+                         ['id', 'entity_id', 'entity_description',
+                          'seq_id', 'comp_id', 'atom_id',
+                          'mutation_flag', 'modification_flag',
+                          'auth_name']) as l:
+            for x in self._positions_by_id:
+                comp = x.resatom.entity.sequence[x.resatom.seq_id-1].id
+                atom = None
+                if isinstance(x.resatom, ihm.Atom):
+                    atom = x.resatom.id
+                l.write(id=x._id, entity_id=x.resatom.entity._id,
+                        entity_description=x.resatom.entity.description,
+                        seq_id=x.resatom.seq_id,
+                        comp_id=comp, atom_id=atom,
+                        mutation_flag=x.mutation_flag,
+                        modification_flag=x.modification_flag,
+                        auth_name=x.auth_name)
+
+    def dump_position_mutated(self, system, writer):
+        with writer.loop('_flr_poly_probe_position_mutated',
+                         ['id','chem_descriptor_id','atom_id']) as l:
+            for x in self._positions_by_id:
+                if x.mutation_flag == True:
+                    atom = None
+                    if isinstance(x.resatom, ihm.Atom):
+                        atom = x.resatom.id
+                    l.write(id=x._id,
+                            chem_descriptor_id=x.mutated_chem_descriptor._id,
+                            atom_id=atom)
+
+    def dump_position_modified(self, system, writer):
+        with writer.loop('_flr_poly_probe_position_modified',
+                         ['id', 'chem_descriptor_id', 'atom_id']) as l:
+            for x in self._positions_by_id:
+                if x.modification_flag == True:
+                    atom = None
+                    if isinstance(x.resatom, ihm.Atom):
+                        atom = x.resatom.id
+                    l.write(id=x._id,
+                            chem_descriptor_id=x.modified_chem_descriptor._id,
+                            atom_id=atom)
+
+
+class _FLRConjugateDumper(Dumper):
+    def finalize(self, system):
+        def all_conjugates():
+            return itertools.chain.from_iterable(f.poly_probe_conjugates
+                                                 for f in system.flr_data)
+        self._conjugates_by_id = _assign_all_ids(all_conjugates)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_poly_probe_conjugate',
+                         ['id', 'sample_probe_id', 'chem_descriptor_id',
+                          'ambiguous_stoichiometry_flag',
+                          'probe_stoichiometry']) as l:
+            for x in self._conjugates_by_id:
+                l.write(id=x._id,
+                        sample_probe_id=x.sample_probe._id,
+                        chem_descriptor_id=x.chem_descriptor._id,
+                        ambiguous_stoichiometry_flag=x.ambiguous_stoichiometry,
+                        probe_stoichiometry=x.probe_stoichiometry)
+
+
+class _FLRForsterRadiusDumper(Dumper):
+    def finalize(self, system):
+        def all_forster_radii():
+            return itertools.chain.from_iterable(f._all_forster_radii()
+                                                 for f in system.flr_data)
+        self._radii_by_id = _assign_all_ids(all_forster_radii)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_fret_forster_radius',
+                         ['id', 'donor_probe_id', 'acceptor_probe_id',
+                          'forster_radius', 'reduced_forster_radius']) as l:
+            for x in self._radii_by_id:
+                l.write(id=x._id, donor_probe_id=x.donor_probe._id,
+                        acceptor_probe_id=x.acceptor_probe._id,
+                        forster_radius=x.forster_radius,
+                        reduced_forster_radius=x.reduced_forster_radius)
+
+
+class _FLRCalibrationParametersDumper(Dumper):
+    def finalize(self, system):
+        def all_calibration_parameters():
+            return itertools.chain.from_iterable(f._all_calibration_parameters()
+                                                 for f in system.flr_data)
+        self._parameters_by_id = _assign_all_ids(all_calibration_parameters)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_fret_calibration_parameters',
+                         ['id', 'phi_acceptor', 'alpha', 'alpha_sd',
+                          'gG_gR_ratio', 'beta', 'gamma', 'delta', 'a_b']) as l:
+            for x in self._parameters_by_id:
+                l.write(id=x._id, phi_acceptor=x.phi_acceptor,
+                        alpha=x.alpha, alpha_sd=x.alpha_sd,
+                        gG_gR_ratio=x.gg_gr_ratio, beta=x.beta,
+                        gamma=x.gamma, delta=x.delta, a_b=x.a_b)
+
+
+class _FLRAnalysisDumper(Dumper):
+    def finalize(self, system):
+        def all_analyses():
+            return itertools.chain.from_iterable(f._all_analyses()
+                                                 for f in system.flr_data)
+        self._analyses_by_id = _assign_all_ids(all_analyses)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_fret_analysis',
+                         ['id', 'experiment_id', 'sample_probe_id_1',
+                          'sample_probe_id_2', 'forster_radius_id',
+                          'calibration_parameters_id', 'method_name',
+                          'chi_square_reduced', 'dataset_list_id',
+                          'external_file_id', 'software_id']) as l:
+            for x in self._analyses_by_id:
+                l.write(id=x._id,
+                        experiment_id=x.experiment._id,
+                        sample_probe_id_1=x.sample_probe_1._id,
+                        sample_probe_id_2=x.sample_probe_2._id,
+                        forster_radius_id=x.forster_radius._id,
+                        calibration_parameters_id=x.calibration_parameters._id,
+                        method_name=x.method_name,
+                        chi_square_reduced=x.chi_square_reduced,
+                        dataset_list_id=x.dataset._id,
+                        external_file_id=None if x.external_file is None
+                                              else x.external_file._id,
+                        software_id=None if x.software is None
+                                         else x.software._id)
+
+
+class _FLRPeakAssignmentDumper(Dumper):
+    def finalize(self, system):
+        def all_peak_assignments():
+            return itertools.chain.from_iterable(f._all_peak_assignments()
+                                                 for f in system.flr_data)
+        self._peak_assignments_by_id = _assign_all_ids(all_peak_assignments)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_peak_assignment',
+                         ['id', 'method_name', 'details']) as l:
+            for x in self._peak_assignments_by_id:
+                l.write(id=x._id, method_name=x.method_name,
+                         details=x.details)
+
+
+class _FLRDistanceRestraintDumper(Dumper):
+    def finalize(self, system):
+        def all_restraint_groups():
+            return itertools.chain.from_iterable(f.distance_restraint_groups
+                                                 for f in system.flr_data)
+        self._restraint_groups_by_id = _assign_all_ids(all_restraint_groups)
+        def _all_restraints():
+            return itertools.chain.from_iterable(rg.distance_restraint_list
+                                      for rg in self._restraint_groups_by_id)
+        for i, r in enumerate(_all_restraints()):
+            r._id = i + 1
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_fret_distance_restraint',
+                         ['ordinal_id', 'id', 'group_id', 'sample_probe_id_1',
+                          'sample_probe_id_2', 'state_id', 'analysis_id',
+                          'distance', 'distance_error_plus',
+                          'distance_error_minus', 'distance_type',
+                          'population_fraction', 'peak_assignment_id']) as l:
+            ordinal = 1
+            for rg in self._restraint_groups_by_id:
+                for r in rg.distance_restraint_list:
+                    l.write(ordinal_id=ordinal, id=r._id, group_id=rg._id,
+                            sample_probe_id_1=r.sample_probe_1._id,
+                            sample_probe_id_2=r.sample_probe_2._id,
+                            state_id=None if r.state is None else r.state._id,
+                            analysis_id=r.analysis._id, distance=r.distance,
+                            distance_error_plus=r.distance_error_plus,
+                            distance_error_minus=r.distance_error_minus,
+                            distance_type=r.distance_type,
+                            population_fraction=r.population_fraction,
+                            peak_assignment_id=r.peak_assignment._id)
+                    ordinal += 1
+
+
+class _FLRModelQualityDumper(Dumper):
+    def finalize(self, system):
+        def all_model_qualities():
+            return itertools.chain.from_iterable(f.fret_model_qualities
+                                                 for f in system.flr_data)
+        self._model_qualities_by_id = _assign_all_ids(all_model_qualities)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_fret_model_quality',
+                         ['model_id', 'chi_square_reduced', 'dataset_group_id',
+                          'method', 'details']) as l:
+            for x in self._model_qualities_by_id:
+                l.write(model_id=x._id,
+                        chi_square_reduced=x.chi_square_reduced,
+                        dataset_group_id=x.dataset_group._id,
+                        method=x.method, details=x.details)
+
+
+class _FLRModelDistanceDumper(Dumper):
+    def finalize(self, system):
+        def all_model_distances():
+            return itertools.chain.from_iterable(f.fret_model_distances
+                                                 for f in system.flr_data)
+        self._model_distances_by_id = _assign_all_ids(all_model_distances)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_fret_model_distance',
+                         ['id', 'restraint_id', 'model_id', 'distance',
+                          'distance_deviation']) as l:
+            for x in self._model_distances_by_id:
+                l.write(id=x._id, restraint_id=x.restraint._id,
+                        model_id=x.model._id, distance=x.distance,
+                        distance_deviation=x.distance_deviation)
+
+
+class _FLRFPSModelingDumper(Dumper):
+    def finalize(self, system):
+        def all_fps_modeling():
+            return itertools.chain.from_iterable(f._all_fps_modeling()
+                                                 for f in system.flr_data)
+        self._fps_modeling_by_id = _assign_all_ids(all_fps_modeling)
+        def all_fps_global_parameters():
+            return itertools.chain.from_iterable(f._all_fps_global_parameters()
+                                                 for f in system.flr_data)
+        self._fps_modeling_by_id = _assign_all_ids(all_fps_modeling)
+        self._fps_parameters_by_id = _assign_all_ids(all_fps_global_parameters)
+
+    def dump(self, system, writer):
+        self.dump_fps_modeling(system, writer)
+        self.dump_fps_global_parameters(system, writer)
+
+    def dump_fps_modeling(self, system, writer):
+        with writer.loop('_flr_FPS_modeling',
+                         ['id', 'ihm_modeling_protocol_ordinal_id',
+                          'restraint_group_id', 'global_parameter_id',
+                          'probe_modeling_method', 'details']) as l:
+            for x in self._fps_modeling_by_id:
+                l.write(id=x._id,
+                        ihm_modeling_protocol_ordinal_id=x.protocol._id,
+                        restraint_group_id=x.restraint_group._id,
+                        global_parameter_id=x.global_parameter._id,
+                        probe_modeling_method=x.probe_modeling_method,
+                        details=x.details)
+
+    def dump_fps_global_parameters(self, system, writer):
+        with writer.loop('_flr_FPS_global_parameter',
+                         ['id', 'forster_radius_value',
+                          'conversion_function_polynom_order', 'repetition',
+                          'AV_grid_rel', 'AV_min_grid_A', 'AV_allowed_sphere',
+                          'AV_search_nodes', 'AV_E_samples_k',
+                          'sim_viscosity_adjustment', 'sim_dt_adjustment',
+                          'sim_max_iter_k', 'sim_max_force',
+                          'sim_clash_tolerance_A', 'sim_reciprocal_kT',
+                          'sim_clash_potential', 'convergence_E',
+                          'convergence_K', 'convergence_F',
+                          'convergence_T']) as l:
+            for x in self._fps_parameters_by_id:
+                l.write(id=x._id,
+                        forster_radius_value=x.forster_radius,
+                        conversion_function_polynom_order
+                                   =x.conversion_function_polynom_order,
+                        repetition=x.repetition,
+                        AV_grid_rel=x.av_grid_rel,
+                        AV_min_grid_A=x.av_min_grid_a,
+                        AV_allowed_sphere=x.av_allowed_sphere,
+                        AV_search_nodes=x.av_search_nodes,
+                        AV_E_samples_k=x.av_e_samples_k,
+                        sim_viscosity_adjustment=x.sim_viscosity_adjustment,
+                        sim_dt_adjustment=x.sim_dt_adjustment,
+                        sim_max_iter_k=x.sim_max_iter_k,
+                        sim_max_force=x.sim_max_force,
+                        sim_clash_tolerance_A=x.sim_clash_tolerance_a,
+                        sim_reciprocal_kT=x.sim_reciprocal_kt,
+                        sim_clash_potential=x.sim_clash_potential,
+                        convergence_E=x.convergence_e,
+                        convergence_K=x.convergence_k,
+                        convergence_F=x.convergence_f,
+                        convergence_T=x.convergence_t)
+
+
+class _FLRFPSAVModelingDumper(Dumper):
+    def finalize(self, system):
+        def all_fps_av_modeling():
+            return itertools.chain.from_iterable(f._all_fps_av_modeling()
+                                                 for f in system.flr_data)
+        self._fps_av_modeling_by_id = _assign_all_ids(all_fps_av_modeling)
+        def all_fps_av_parameter():
+            return itertools.chain.from_iterable(f._all_fps_av_parameter()
+                                                 for f in system.flr_data)
+        self._fps_av_modeling_by_id = _assign_all_ids(all_fps_av_modeling)
+        self._fps_av_parameter_by_id = _assign_all_ids(all_fps_av_parameter)
+
+    def dump(self, system, writer):
+        self.dump_parameter(system, writer)
+        self.dump_modeling(system, writer)
+
+    def dump_parameter(self, system, writer):
+        with writer.loop('_flr_FPS_AV_parameter',
+                         ['id', 'num_linker_atoms', 'linker_length',
+                          'linker_width', 'probe_radius_1', 'probe_radius_2',
+                          'probe_radius_3']) as l:
+            for x in self._fps_av_parameter_by_id:
+                l.write(id=x._id,
+                        num_linker_atoms=x.num_linker_atoms,
+                        linker_length=x.linker_length,
+                        linker_width=x.linker_width,
+                        probe_radius_1=x.probe_radius_1,
+                        probe_radius_2=x.probe_radius_2,
+                        probe_radius_3=x.probe_radius_3)
+
+    def dump_modeling(self, system, writer):
+        with writer.loop('_flr_FPS_AV_modeling',
+                         ['id', 'sample_probe_id', 'FPS_modeling_id',
+                          'parameter_id']) as l:
+            for x in self._fps_av_modeling_by_id:
+                l.write(id=x._id,
+                        sample_probe_id=x.sample_probe._id,
+                        FPS_modeling_id=x.fps_modeling._id,
+                        parameter_id=x.parameter._id)
+
+
+class _FLRFPSMPPModelingDumper(Dumper):
+    def finalize(self, system):
+        def all_fps_mpp_modeling():
+            return itertools.chain.from_iterable(f._all_fps_mpp_modeling()
+                                                 for f in system.flr_data)
+        self._fps_mpp_modeling_by_id = _assign_all_ids(all_fps_mpp_modeling)
+        def all_fps_mean_probe_position():
+            return itertools.chain.from_iterable(
+                     f._all_fps_mean_probe_position() for f in system.flr_data)
+        self._fps_mpp_modeling_by_id = _assign_all_ids(all_fps_mpp_modeling)
+        self._fps_mpp_by_id = _assign_all_ids(all_fps_mean_probe_position)
+
+        def all_atom_position_group():
+            return itertools.chain.from_iterable(
+                     f._all_fps_atom_position_group() for f in system.flr_data)
+        self._atom_group_by_id = _assign_all_ids(all_atom_position_group)
+        def _all_atom_positions():
+            return itertools.chain.from_iterable(ag.mpp_atom_position_list
+                                              for ag in self._atom_group_by_id)
+        for i, a in enumerate(_all_atom_positions()):
+            a._id = i + 1
+
+    def dump(self, system, writer):
+        self.dump_mean_probe_position(system, writer)
+        self.dump_mpp_atom_position(system, writer)
+        self.dump_mpp_modeling(system, writer)
+
+    def dump_mean_probe_position(self, system, writer):
+        with writer.loop('_flr_FPS_mean_probe_position',
+                         ['id', 'sample_probe_id', 'mpp_xcoord', 'mpp_ycoord',
+                          'mpp_zcoord']) as l:
+            for x in self._fps_mpp_by_id:
+                l.write(id=x._id, sample_probe_id=x.sample_probe._id,
+                        mpp_xcoord=x.x, mpp_ycoord=x.y, mpp_zcoord=x.z)
+
+    def dump_mpp_atom_position(self, system, writer):
+        with writer.loop('_flr_FPS_MPP_atom_position',
+                         ['id', 'entity_id', 'seq_id', 'comp_id', 'atom_id',
+                          'asym_id', 'xcoord', 'ycoord', 'zcoord',
+                          'group_id']) as l:
+         for group in self._atom_group_by_id:
+             for x in group.mpp_atom_position_list:
+                 comp = x.atom.asym.entity.sequence[x.atom.seq_id-1].id
+                 l.write(id=x._id, entity_id=x.atom.asym.entity._id,
+                         seq_id=x.atom.seq_id, comp_id=comp,
+                         atom_id=x.atom.id, asym_id=x.atom.asym._id,
+                         xcoord=x.x, ycoord=x.y, zcoord=x.z,
+                         group_id=group._id)
+
+    def dump_mpp_modeling(self, system, writer):
+        cur_ordinal_id = 1
+        with writer.loop('_flr_FPS_MPP_modeling',
+                         ['ordinal_id', 'FPS_modeling_id', 'mpp_id',
+                          'mpp_atom_position_group_id']) as l:
+            for x in self._fps_mpp_modeling_by_id:
+                l.write(ordinal_id=cur_ordinal_id,
+                        FPS_modeling_id=x.fps_modeling._id,
+                        mpp_id=x.mpp._id,
+                        mpp_atom_position_group_id=
+                                 x.mpp_atom_position_group._id)
+                cur_ordinal_id += 1
+
 
 def _init_restraint_groups(system):
     """Initialize all RestraintGroups by removing any assigned ID"""
@@ -1778,7 +2637,7 @@ def _check_restraint_groups(system):
                 "and only certain types (currently only "
                 "DerivedDistanceRestraint) can be grouped." % g)
 
-def write(fh, systems, format='mmCIF'):
+def write(fh, systems, format='mmCIF', dumpers=[]):
     """Write out all `systems` to the file handle `fh`.
        Files can be written in either the text-based mmCIF format or the
        BinaryCIF format. The BinaryCIF writer needs the msgpack Python
@@ -1788,17 +2647,19 @@ def write(fh, systems, format='mmCIF'):
        :param list systems: The list of :class:`ihm.System` objects to write.
        :param str format: The format of the file. This can be 'mmCIF' (the
               default) for the (text-based) mmCIF format or 'BCIF' for
-              BinaryCIF."""
+              BinaryCIF.
+       :param list dumpers: A list of :class:`Dumper` classes (not objects).
+              These can be used to add extra categories to the file."""
     dumpers = [_EntryDumper(), # must be first
                _StructDumper(), _CommentDumper(),
                _AuditConformDumper(), _SoftwareDumper(),
                _CitationDumper(),
-               _AuditAuthorDumper(),
-               _ChemCompDumper(),
-               _EntityDumper(),
-               _EntityPolyDumper(),
+               _AuditAuthorDumper(), _GrantDumper(),
+               _ChemCompDumper(), _ChemDescriptorDumper(),
+               _EntityDumper(), _EntitySrcGenDumper(), _EntitySrcNatDumper(),
+               _EntitySrcSynDumper(), _EntityPolyDumper(),
                _EntityNonPolyDumper(),
-               _EntityPolySeqDumper(),
+               _EntityPolySeqDumper(), _EntityPolySegmentDumper(),
                _StructAsymDumper(),
                _PolySeqSchemeDumper(),
                _NonPolySchemeDumper(),
@@ -1812,19 +2673,34 @@ def write(fh, systems, format='mmCIF'):
                _GeometricObjectDumper(), _FeatureDumper(),
                _CrossLinkDumper(), _GeometricRestraintDumper(),
                _DerivedDistanceRestraintDumper(),
+               _PredictedContactRestraintDumper(),
                _EM3DDumper(),
                _EM2DDumper(),
                _SASDumper(),
                _ModelDumper(),
                _EnsembleDumper(),
                _DensityDumper(),
-               _MultiStateDumper(), _OrderedDumper()]
+               _MultiStateDumper(), _OrderedDumper(),
+               _FLRExperimentDumper(), _FLRExpSettingDumper(),
+               _FLRInstrumentDumper(), _FLREntityAssemblyDumper(),
+               _FLRSampleConditionDumper(), _FLRSampleDumper(),
+               _FLRProbeDumper(), _FLRSampleProbeDetailsDumper(),
+               _FLRPolyProbePositionDumper(), _FLRConjugateDumper(),
+               _FLRForsterRadiusDumper(), _FLRCalibrationParametersDumper(),
+               _FLRAnalysisDumper(), _FLRPeakAssignmentDumper(),
+               _FLRDistanceRestraintDumper(), _FLRModelQualityDumper(),
+               _FLRModelDistanceDumper(), _FLRFPSModelingDumper(),
+               _FLRFPSAVModelingDumper(),
+               _FLRFPSMPPModelingDumper()] + [d() for d in dumpers]
     writer_map = {'mmCIF': ihm.format.CifWriter,
                   'BCIF': ihm.format_bcif.BinaryCifWriter}
 
     writer = writer_map[format](fh)
     for system in systems:
         _init_restraint_groups(system)
+        # Fill in complete assembly
+        system._make_complete_assembly()
+
         for d in dumpers:
             d.finalize(system)
         _check_restraint_groups(system)

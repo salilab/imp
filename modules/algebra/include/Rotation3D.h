@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Rotation3D.h   \brief Simple 3D rotation class.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
@@ -71,20 +71,27 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
         Vector3D(2 * (v13 - v02), 2 * (v23 + v01), v0s - v1s - v2s + v3s);
   }
 
- public:
-  //! Rotation3D copy constructor, faster than default copy constructor
-  //! in some cases
-  Rotation3D(const Rotation3D &rot) :
-  v_(rot.v_), has_cache_(rot.has_cache_)
-  {
-    if(has_cache_){
-      matrix_[0]=rot.matrix_[0];
-      matrix_[1]=rot.matrix_[1];
-      matrix_[2]=rot.matrix_[2];
+  // When copying preserve the cached rotation matrix, if present
+  void copy_cache(const Rotation3D &rot) {
+    has_cache_ = rot.has_cache_;
+    if (has_cache_) {
+      matrix_[0] = rot.matrix_[0];
+      matrix_[1] = rot.matrix_[1];
+      matrix_[2] = rot.matrix_[2];
     }
   }
 
-  //!  IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Rotation3D);
+ public:
+  //! Rotation3D copy constructor
+  Rotation3D(const Rotation3D &rot) : v_(rot.v_) {
+    copy_cache(rot);
+  }
+
+  Rotation3D &operator=(const Rotation3D &rot) {
+    v_ = rot.v_;
+    copy_cache(rot);
+    return *this;
+  }
 
   //! Create a rotation from a vector of 4 quaternion coefficients.
   //! @note: use assume_normalized with care - inputting an unnormalized

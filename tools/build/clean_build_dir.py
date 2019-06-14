@@ -27,7 +27,7 @@ def declare_container():
 
 
 def build_info():
-    for f in glob.glob(os.path.join("data", "build_info", "*")):
+    for f in glob.glob(os.path.join("build_info", "*")):
         os.unlink(f)
 
 

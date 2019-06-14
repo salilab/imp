@@ -19,6 +19,9 @@ The :mod:`ihm.location` Python module
 .. autoclass:: PDBLocation
    :members:
 
+.. autoclass:: BMRBLocation
+   :members:
+
 .. autoclass:: MassIVELocation
    :members:
 

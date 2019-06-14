@@ -2,7 +2,7 @@
  *  \file isd/NormalSigmaPCRestraint.cpp
  *  \brief A Penalized Complexity prior on sigma of a normal distribution.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

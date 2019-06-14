@@ -93,6 +93,16 @@ class PDBLocation(DatabaseLocation):
                                           version, details)
 
 
+class BMRBLocation(DatabaseLocation):
+    """Something stored in the BMRB database.
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
+    _db_name = 'BMRB'
+    def __init__(self, db_code, version=None, details=None):
+        super(BMRBLocation, self).__init__(self._db_name, db_code,
+                                           version, details)
+
+
 class MassIVELocation(DatabaseLocation):
     """Something stored in the MassIVE database.
        See :class:`DatabaseLocation` for a description of the parameters
@@ -146,7 +156,8 @@ class BioGRIDLocation(DatabaseLocation):
 class FileLocation(Location):
     """Base class for an individual file or directory stored externally.
 
-       :param str path: the location of the file or directory
+       :param str path: the location of the file or directory (this can
+              be `None` if `repo` is set, to refer to the entire repository)
        :param repo: object that describes the repository
               containing the file, or `None` if it is stored on the local disk
        :type repo: :class:`Repository`

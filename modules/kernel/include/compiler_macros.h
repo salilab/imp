@@ -2,7 +2,7 @@
  *  \file IMP/compiler_macros.h
  *  \brief Various compiler workarounds
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_COMPILER_MACROS_H
@@ -17,8 +17,6 @@
 /** Use C++11 range-based for if available or BOOST_FOREACH if not. */
 #define IMP_FOREACH(v, r) for (v : r)
 #endif
-
-#include <boost/detail/endian.hpp>
 
 #define IMP_STRINGIFY(x) #x
 

@@ -1,7 +1,7 @@
 /**
  *  \file base_types.cpp   \brief Base types.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

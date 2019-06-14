@@ -29,7 +29,7 @@ easily reproducible:
     `conda install conda-build unxutils`
   - Then for each package `foo` you can start a Visual Studio command prompt,
     `cd` to the directory above the `foo` directory containing the
-    [conda build recipe](https://conda.io/docs/building/recipe.html)
+    [conda build recipe](https://conda.io/projects/conda-build/en/latest/source/concepts/recipe.html)
     then build it with
     `conda build --python=2.7 foo`
   - Feel free to refer to
@@ -77,7 +77,7 @@ we employed is as follows:
     [FFTW DLLs](http://www.fftw.org/install/windows.html) and follow the
     instructions at that website to make .lib import libraries needed for
     Visual Studio.
-     - Copy `libfftw3-3.lib` to `fftw3.lib` to help cmake find it
+     - Copy `libfftw3-3.lib` to `fftw3.lib` and `libfftw3-3.dll` to `fftw3.dll` to help cmake find it
   - (Optional) Get the
     [GSL source code](http://gnuwin32.sourceforge.net/packages/gsl.htm)
     and build it:

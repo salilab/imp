@@ -42,7 +42,7 @@ class _LineWriter(object):
             self.writer.fh.write(";\n")
             self.column = 0
             return
-        val = self.writer._repr(val)
+        val = '.' if val is None else self.writer._repr(val)
         if self.column > 0:
             if self.column + len(val) + 1 > self.line_len:
                 self.writer.fh.write("\n")
@@ -83,8 +83,7 @@ class _CifLoopWriter(object):
             self._empty_loop = False
         l = _LineWriter(self.writer)
         for k in self.python_keys:
-            val = kwargs.get(k, None)
-            l.write(self.writer.omitted if val is None else val)
+            l.write(kwargs.get(k, None))
         self.writer.fh.write("\n")
     def __enter__(self):
         return self
@@ -179,7 +178,7 @@ class CifWriter(_Writer):
            and len(obj) > 0 \
            and not obj.startswith('data_') \
            and not obj.startswith('[') \
-           and obj not in ('save_', 'loop_', 'stop_', 'global_'):
+           and obj not in ('save_', 'loop_', 'stop_', 'global_', '?', '.'):
             return obj
         elif isinstance(obj, float):
             return "%.3f" % obj
@@ -208,6 +207,21 @@ class _Token(object):
 
 class _ValueToken(_Token):
     """The value of a variable in mmCIF"""
+    pass
+
+
+class _OmittedValueToken(_ValueToken):
+    """A value that is deliberately omitted (the '.' string in mmCIF)"""
+    pass
+
+
+class _UnknownValueToken(_ValueToken):
+    """A value that is unknown (the '?' string in mmCIF)"""
+    pass
+
+
+class _TextValueToken(_ValueToken):
+    """The value of a variable in mmCIF as a piece of text"""
     __slots__ = ['txt']
 
     def __init__(self, txt):
@@ -278,12 +292,25 @@ class CifReader(_Reader):
               not present in the file or is the mmCIF omitted value (.).
               (mmCIF keywords are case insensitive, so this class always treats
               them as lowercase regardless of the file contents.)
+       :param unknown_category_handler: A callable (or `None`) that is called
+              for each category in the file that isn't handled; it is given
+              two arguments: the name of the category, and the line in the
+              file at which the category was encountered (if known, otherwise
+              None).
+       :param unknown_keyword_handler: A callable (or `None`) that is called
+              for each keyword in the file that isn't handled (within a category
+              that is handled); it is given three arguments: the names of the
+              category and keyword, and the line in the file at which the
+              keyword was encountered (if known, otherwise None).
     """
-    def __init__(self, fh, category_handler):
+    def __init__(self, fh, category_handler, unknown_category_handler=None,
+                 unknown_keyword_handler=None):
         if _format is not None:
             c_file = _format.ihm_file_new_from_python(fh)
             self._c_format = _format.ihm_reader_new(c_file)
         self.category_handler = category_handler
+        self.unknown_category_handler = unknown_category_handler
+        self.unknown_keyword_handler = unknown_keyword_handler
         self._category_data = {}
         self.fh = fh
         self._tokens = []
@@ -307,7 +334,7 @@ class CifReader(_Reader):
             elif nextline.startswith(';'):
                 # Strip last newline
                 lines[-1] = lines[-1].rstrip('\r\n')
-                self._tokens = [_ValueToken("".join(lines))]
+                self._tokens = [_TextValueToken("".join(lines))]
                 return
             elif not ignore_multiline:
                 lines.append(nextline)
@@ -326,7 +353,9 @@ class CifReader(_Reader):
                 raise CifParserError("%s-quoted string not terminated "
                                      "at line %d" % (quote_type, self._linenum))
             elif end == strlen - 1 or line[end + 1] in _WHITESPACE:
-                self._tokens.append(_ValueToken(line[start_pos+1:end]))
+                # A quoted string is always a literal string, even if it is
+                # "?" or ".", not an unknown/omitted value
+                self._tokens.append(_TextValueToken(line[start_pos+1:end]))
                 return end + 1 # Step past the closing quote
 
     def _extract_line_token(self, line, strlen, start_pos):
@@ -358,11 +387,15 @@ class CifReader(_Reader):
                 tok = _SaveToken()
             elif val.startswith('_'):
                 tok = _VariableToken(val, self._linenum)
+            elif val == '.':
+                tok = _OmittedValueToken()
+            elif val == '?':
+                tok = _UnknownValueToken()
             else:
                 # Note that we do no special processing for other reserved words
                 # (global_, save_, stop_). But the probability of them occurring
                 # where we expect a value is pretty small.
-                tok = _ValueToken(val) # don't alter case of values
+                tok = _TextValueToken(val) # don't alter case of values
             self._tokens.append(tok)
             return end_pos
 
@@ -405,44 +438,55 @@ class CifReader(_Reader):
     def _read_value(self, vartoken):
         """Read a line that sets a single value, e.g. "_entry.id   1YTI"""
         # Only read the value if we're interested in this category and key
-        if vartoken.category in self.category_handler \
-          and vartoken.keyword \
-          in self.category_handler[vartoken.category]._keys:
-            valtoken = self._get_token()
-            if isinstance(valtoken, _ValueToken):
-                ch = self.category_handler[vartoken.category]
-                if vartoken.category not in self._category_data:
-                    self._category_data[vartoken.category] = {}
-                if valtoken.txt == '.':
-                    val = ch.omitted
-                elif valtoken.txt == '?':
-                    val = ch.unknown
+        if vartoken.category in self.category_handler:
+            if vartoken.keyword \
+               in self.category_handler[vartoken.category]._keys:
+                valtoken = self._get_token()
+                if isinstance(valtoken, _ValueToken):
+                    ch = self.category_handler[vartoken.category]
+                    if vartoken.category not in self._category_data:
+                        self._category_data[vartoken.category] = {}
+                    if isinstance(valtoken, _OmittedValueToken):
+                        val = ch.omitted
+                    elif isinstance(valtoken, _UnknownValueToken):
+                        val = ch.unknown
+                    else:
+                        val = valtoken.txt
+                    self._category_data[vartoken.category][vartoken.keyword] \
+                                           = val
                 else:
-                    val = valtoken.txt
-                self._category_data[vartoken.category][vartoken.keyword] = val
-            else:
-                raise CifParserError("No valid value found for %s.%s on line %d"
-                              % (vartoken.category, vartoken.keyword,
-                                 self._linenum))
+                    raise CifParserError(
+                               "No valid value found for %s.%s on line %d"
+                               % (vartoken.category, vartoken.keyword,
+                                  self._linenum))
+            elif self.unknown_keyword_handler is not None:
+                self.unknown_keyword_handler(vartoken.category,
+                                             vartoken.keyword, self._linenum)
+        elif self.unknown_category_handler is not None:
+            self.unknown_category_handler(vartoken.category, self._linenum)
 
     def _read_loop_keywords(self):
         """Read the set of keywords for a loop_ construct"""
         category = None
         keywords = []
+        first_line = None
+        keyword_lines = []
         while True:
             token = self._get_token()
             if isinstance(token, _VariableToken):
                 if category is None:
                     category = token.category
+                    first_line = self._linenum
                 elif category != token.category:
                     raise CifParserError("mmCIF files cannot contain multiple "
                                 "categories within a single loop at line %d"
                                 % self._linenum)
                 keywords.append(token.keyword)
+                keyword_lines.append(self._linenum)
             elif isinstance(token, _ValueToken):
                 # OK, end of keywords; proceed on to values
                 self._unget_token()
-                return category, keywords
+                return category, keywords, keyword_lines, first_line
             else:
                 raise CifParserError("Was expecting a keyword or value for "
                                      "loop at line %d" % self._linenum)
@@ -455,9 +499,9 @@ class CifReader(_Reader):
                 token = self._get_token()
                 if isinstance(token, _ValueToken):
                     if index >= 0:
-                        if token.txt == '.':
+                        if isinstance(token, _OmittedValueToken):
                             data[index] = handler.omitted
-                        elif token.txt == '?':
+                        elif isinstance(token, _UnknownValueToken):
                             data[index] = handler.unknown
                         else:
                             data[index] = token.txt
@@ -473,7 +517,8 @@ class CifReader(_Reader):
 
     def _read_loop(self):
         """Handle a loop_ construct"""
-        category, keywords = self._read_loop_keywords()
+        (category, keywords,
+                keyword_lines, first_line) = self._read_loop_keywords()
         # Skip data if we don't have a handler for it
         if category in self.category_handler:
             ch = self.category_handler[category]
@@ -481,7 +526,13 @@ class CifReader(_Reader):
             for i, k in enumerate(ch._keys):
                 wanted_key_index[k] = i
             indices = [wanted_key_index.get(k, -1) for k in keywords]
+            if self.unknown_keyword_handler is not None:
+                for k, i, line in zip(keywords, indices, keyword_lines):
+                    if i == -1:
+                        self.unknown_keyword_handler(category, k, line)
             self._read_loop_data(ch, len(ch._keys), indices)
+        elif self.unknown_category_handler is not None:
+            self.unknown_category_handler(category, first_line)
 
     def read_file(self):
         """Read the file and extract data.
@@ -542,6 +593,12 @@ class CifReader(_Reader):
             func = getattr(handler, '_add_c_handler', None) \
                         or _format.add_category_handler
             func(self._c_format, category, handler._keys, handler)
+        if self.unknown_category_handler is not None:
+            _format.add_unknown_category_handler(self._c_format,
+                                                 self.unknown_category_handler)
+        if self.unknown_keyword_handler is not None:
+            _format.add_unknown_keyword_handler(self._c_format,
+                                                self.unknown_keyword_handler)
         try:
             eof, more_data = _format.ihm_read_file(self._c_format)
         except _format.FileFormatError as exc:

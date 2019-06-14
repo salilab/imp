@@ -2,7 +2,7 @@
  *  \file IMP/pmi/Resolution.h
  *  \brief A decorator for particles with resolution
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPPMI_RESOLUTION_H

@@ -47,11 +47,6 @@ class TopologyPlot(object):
         self.quantitative_proteomic_data=quantitative_proteomic_data
         self.num_rmf=0
 
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def mdl(self):
-        return self.model
-
     def add_rmf(self,rmf_fn,nframe):
         """Add selections from an RMF file"""
         print('reading from RMF file',rmf_fn)

@@ -2,7 +2,7 @@
  *  \file IMP/core/SurfaceTetheredChain.h
  *  \brief Score on surface-to-end distance of chain tethered to impenetrable surface
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_SURFACE_TETHERED_CHAIN_H

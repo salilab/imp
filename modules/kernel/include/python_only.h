@@ -1,7 +1,7 @@
 /**
  *  \file IMP/python_only.h   \brief Build dependency graphs on models.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
@@ -63,7 +63,7 @@ class PythonDirectedGraph {
     and finally view the pdf.
 */
 void show_altgraph(Graph g);
-/** Export an IMP graph to a \external{http://networkx.lanl.gov/,networkx}
+/** Export an IMP graph to a \external{https://networkx.github.io/,networkx}
 graph.
     The resulting graph can be analyzed and displayed, although the graph
     layout algorithms in networkx seem to be quite poor compared to

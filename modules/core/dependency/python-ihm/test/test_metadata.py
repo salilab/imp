@@ -1,11 +1,14 @@
 import utils
 import os
 import unittest
+import warnings
 import sys
 try:
-    import urllib.request as urllib2
+    import urllib.request as urlrequest
+    import urllib.error as urlerror
 except ImportError:
-    import urllib2
+    import urllib2 as urlrequest
+    urlerror = urlrequest
 if sys.version_info[0] >= 3:
     from io import StringIO
 else:
@@ -36,32 +39,87 @@ class Tests(unittest.TestCase):
             self.assertEqual(dataset.location.path, fname)
             self.assertEqual(dataset.location.details,
                              'Electron microscopy density map')
-            self.assertEqual(dataset.location.repo, None)
+            self.assertIsNone(dataset.location.repo)
 
-    def test_mrc_parser_emdb(self):
-        """Test MRCParser pointing to an MRC in EMDB"""
-        def mock_urlopen(url):
+    def test_mrc_parser_emdb_ok(self):
+        """Test MRCParser pointing to an MRC in EMDB, no network errors"""
+        def mock_urlopen(url, timeout=None):
             txt = '{"EMD-1883":[{"deposition":{"map_release_date":"2011-04-21"'\
                   ',"title":"test details"}}]}'
             return StringIO(txt)
         p = ihm.metadata.MRCParser()
         fname = utils.get_input_file_name(TOPDIR, 'emd_1883.map.mrc-header')
-
-        # Need to mock out urllib2 so we don't hit the network (expensive)
-        # every time we test
-        try:
-            orig_urlopen = urllib2.urlopen
-            urllib2.urlopen = mock_urlopen
-            d = p.parse_file(fname)
-        finally:
-            urllib2.urlopen = orig_urlopen
+        d = p.parse_file(fname)
         self.assertEqual(list(d.keys()), ['dataset'])
         dataset = d['dataset']
         self.assertEqual(dataset.data_type, '3DEM volume')
         self.assertEqual(dataset.location.db_name, 'EMDB')
         self.assertEqual(dataset.location.access_code, 'EMD-1883')
-        self.assertEqual(dataset.location.version, '2011-04-21')
-        self.assertEqual(dataset.location.details, 'test details')
+
+        # Need to mock out urllib.request so we don't hit the network
+        # (expensive) every time we test
+        try:
+            orig_urlopen = urlrequest.urlopen
+            urlrequest.urlopen = mock_urlopen
+            self.assertEqual(dataset.location.version, '2011-04-21')
+            self.assertEqual(dataset.location.details, 'test details')
+            dataset.location.version = 'my version'
+            dataset.location.details = 'my details'
+            self.assertEqual(dataset.location.version, 'my version')
+            self.assertEqual(dataset.location.details, 'my details')
+        finally:
+            urlrequest.urlopen = orig_urlopen
+
+    def test_mrc_parser_emdb_bad(self):
+        """Test MRCParser pointing to an MRC in EMDB, with a network error"""
+        def mock_urlopen(url, timeout=None):
+            raise urlerror.URLError("Mock network error")
+        p = ihm.metadata.MRCParser()
+        fname = utils.get_input_file_name(TOPDIR, 'emd_1883.map.mrc-header')
+        d = p.parse_file(fname)
+        self.assertEqual(list(d.keys()), ['dataset'])
+        dataset = d['dataset']
+        self.assertEqual(dataset.data_type, '3DEM volume')
+        self.assertEqual(dataset.location.db_name, 'EMDB')
+        self.assertEqual(dataset.location.access_code, 'EMD-1883')
+
+        # Mock out urllib.request to raise an error
+        try:
+            orig_urlopen = urlrequest.urlopen
+            urlrequest.urlopen = mock_urlopen
+            with warnings.catch_warnings(record=True) as w:
+                warnings.simplefilter("always")
+                self.assertIsNone(dataset.location.version)
+                self.assertEqual(dataset.location.details,
+                                 'Electron microscopy density map')
+        finally:
+            urlrequest.urlopen = orig_urlopen
+        self.assertEqual(len(w), 1)
+
+    def test_mrc_parser_emdb_override(self):
+        """Test MRCParser pointing to an MRC in EMDB with overridden metadata"""
+        def mock_urlopen(url, timeout=None):
+            raise ValueError("shouldn't be here")
+        p = ihm.metadata.MRCParser()
+        fname = utils.get_input_file_name(TOPDIR, 'emd_1883.map.mrc-header')
+        d = p.parse_file(fname)
+        self.assertEqual(list(d.keys()), ['dataset'])
+        dataset = d['dataset']
+        self.assertEqual(dataset.data_type, '3DEM volume')
+        self.assertEqual(dataset.location.db_name, 'EMDB')
+        self.assertEqual(dataset.location.access_code, 'EMD-1883')
+        # Set version manually; should prevent network access below
+        dataset.location.version = 'foo'
+
+        # Mock out urllib.request to raise an error
+        try:
+            orig_urlopen = urlrequest.urlopen
+            urlrequest.urlopen = mock_urlopen
+            self.assertEqual(dataset.location.version, 'foo')
+            self.assertEqual(dataset.location.details,
+                             'Electron microscopy density map')
+        finally:
+            urlrequest.urlopen = orig_urlopen
 
     def _parse_pdb(self, fname):
         p = ihm.metadata.PDBParser()
@@ -73,7 +131,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(p['templates'], {})
         self.assertEqual(len(p['metadata']), 1)
         self.assertEqual(p['metadata'][0].helix_id, '10')
-        self.assertEqual(p['script'], None)
+        self.assertIsNone(p['script'])
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Experimental model')
         self.assertEqual(dataset.location.db_name, 'PDB')
@@ -83,17 +141,40 @@ class Tests(unittest.TestCase):
                          'STRUCTURE OF THE YEAST NUCLEAR EXOSOME COMPONENT, '
                          'RRP6P, REVEALS AN INTERPLAY BETWEEN THE ACTIVE '
                          'SITE AND THE HRDC DOMAIN')
+        es = p['entity_source']
+        self.assertEqual(sorted(es.keys()), ['A', 'B', 'C', 'D'])
+        self.assertEqual(es['B'], es['C'])
+        self.assertEqual(es['A'].src_method, 'man')
+        self.assertEqual(es['A'].gene.scientific_name, 'MUS MUSCULUS')
+        self.assertEqual(es['A'].gene.common_name, 'HOUSE MOUSE')
+        self.assertEqual(es['A'].gene.strain, 'TEST STRAIN 1')
+        self.assertEqual(es['A'].gene.ncbi_taxonomy_id, '10090')
+        self.assertEqual(es['A'].host.scientific_name, 'ESCHERICHIA COLI')
+        self.assertEqual(es['A'].host.common_name, 'TEST COMMON 1')
+        self.assertEqual(es['A'].host.ncbi_taxonomy_id, '562')
+        self.assertEqual(es['A'].host.strain, 'TEST STRAIN 2')
+        self.assertEqual(es['B'].src_method, 'nat')
+        self.assertEqual(es['B'].scientific_name, 'ESCHERICHIA COLI')
+        self.assertEqual(es['B'].common_name, 'TEST COMMON 2')
+        self.assertEqual(es['B'].ncbi_taxonomy_id, '562')
+        self.assertEqual(es['B'].strain, 'TEST STRAIN 3')
+        self.assertEqual(es['D'].src_method, 'syn')
+        self.assertEqual(es['D'].scientific_name, 'HELIANTHUS ANNUUS')
+        self.assertEqual(es['D'].common_name, 'COMMON SUNFLOWER')
+        self.assertEqual(es['D'].ncbi_taxonomy_id, '4232')
+        self.assertEqual(es['D'].strain, 'TEST STRAIN 4')
 
     def test_derived_pdb(self):
         """Test PDBarser when given a file derived from a PDB"""
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_pdb.pdb')
         p = self._parse_pdb(pdbname)
         self.assertEqual(p['templates'], {})
-        self.assertEqual(p['script'], None)
+        self.assertIsNone(p['script'])
+        self.assertEqual(p['entity_source'], {})
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Experimental model')
         self.assertEqual(dataset.location.path, pdbname)
-        self.assertEqual(dataset.location.repo, None)
+        self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'MED7C AND MED21 STRUCTURES FROM PDB ENTRY 1YKH, '
                          'ROTATED AND TRANSLATED TO ALIGN WITH THE '
@@ -102,19 +183,19 @@ class Tests(unittest.TestCase):
         self.assertEqual(parent.data_type, 'Experimental model')
         self.assertEqual(parent.location.db_name, 'PDB')
         self.assertEqual(parent.location.access_code, '1YKH')
-        self.assertEqual(parent.location.version, None)
-        self.assertEqual(parent.location.details, None)
+        self.assertIsNone(parent.location.version)
+        self.assertIsNone(parent.location.details)
 
     def test_derived_comp_model(self):
         """Test PDBParser when given a file derived from a comparative model"""
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_model.pdb')
         p = self._parse_pdb(pdbname)
         self.assertEqual(p['templates'], {})
-        self.assertEqual(p['script'], None)
+        self.assertIsNone(p['script'])
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Comparative model')
         self.assertEqual(dataset.location.path, pdbname)
-        self.assertEqual(dataset.location.repo, None)
+        self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'MED4 AND MED9 STRUCTURE TAKEN FROM LARIVIERE '
                          'ET AL, NUCLEIC ACIDS RESEARCH. 2013;41:9266-9273. '
@@ -132,11 +213,11 @@ class Tests(unittest.TestCase):
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_int_model.pdb')
         p = self._parse_pdb(pdbname)
         self.assertEqual(p['templates'], {})
-        self.assertEqual(p['script'], None)
+        self.assertIsNone(p['script'])
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Integrative model')
         self.assertEqual(dataset.location.path, pdbname)
-        self.assertEqual(dataset.location.repo, None)
+        self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'POM152 STRUCTURE TAKEN FROM UPLA ET AL, STRUCTURE '
                          '25(3) 434-445. DOI: 10.1016/j.str.2017.01.006.')
@@ -165,7 +246,7 @@ class Tests(unittest.TestCase):
         p = self.check_modeller_model(pdbname)
         for templates in p['templates'].values():
             for t in templates:
-                self.assertEqual(t.alignment_file, None)
+                self.assertIsNone(t.alignment_file)
 
     def check_modeller_model(self, pdbname):
         p = self._parse_pdb(pdbname)
@@ -187,7 +268,7 @@ class Tests(unittest.TestCase):
                      ihm.startmodel.SequenceIdentityDenominator.SHORTER_LENGTH)
         self.assertEqual(dataset.data_type, 'Comparative model')
         self.assertEqual(dataset.location.path, pdbname)
-        self.assertEqual(dataset.location.repo, None)
+        self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'Starting model structure')
         p1, p2, p3 = dataset.parents
@@ -197,8 +278,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(p1.data_type, 'Experimental model')
         self.assertEqual(p1.location.db_name, 'PDB')
         self.assertEqual(p1.location.access_code, '3JRO')
-        self.assertEqual(p1.location.version, None)
-        self.assertEqual(p1.location.details, None)
+        self.assertIsNone(p1.location.version)
+        self.assertIsNone(p1.location.details)
         self.assertEqual(p2.location.access_code, '3F3F')
         self.assertEqual(p3.location.access_code, '1ABC')
         s, = p['software']
@@ -232,15 +313,15 @@ class Tests(unittest.TestCase):
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Comparative model')
         self.assertEqual(dataset.location.path, pdbname)
-        self.assertEqual(dataset.location.repo, None)
+        self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'Starting model structure')
         parent, = dataset.parents
         self.assertEqual(parent.data_type, 'Experimental model')
         self.assertEqual(parent.location.db_name, 'PDB')
         self.assertEqual(parent.location.access_code, '4BZK')
-        self.assertEqual(parent.location.version, None)
-        self.assertEqual(parent.location.details, None)
+        self.assertIsNone(parent.location.version)
+        self.assertIsNone(parent.location.details)
         s, = p['software']
         self.assertEqual(s.name, 'Phyre2')
         self.assertEqual(s.version, '2.0')
@@ -255,7 +336,7 @@ class Tests(unittest.TestCase):
         dataset = p['dataset']
         self.assertEqual(dataset.data_type, 'Comparative model')
         self.assertEqual(dataset.location.path, pdbname)
-        self.assertEqual(dataset.location.repo, None)
+        self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'Starting model structure')
 

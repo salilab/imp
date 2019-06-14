@@ -10,13 +10,12 @@ import IMP.atom
 import IMP.container
 import IMP.isd
 import IMP.pmi.tools
+import IMP.pmi.mmcif
 import IMP.isd.gmm_tools
 import sys
 import re
 import os
 from math import sqrt
-import ihm.location
-import ihm.dataset
 
 class GaussianEMRestraint(object):
     """Fit Gaussian-decorated particles to an EM map
@@ -126,10 +125,10 @@ class GaussianEMRestraint(object):
                 ms=IMP.atom.Mass(p).get_mass()
                 IMP.atom.Mass(p).set_mass(ms*scale)
 
-        if representation:
-            for p, state in representation._protocol_output:
-                p.add_em3d_restraint(state, self.target_ps, self.densities,
-                                     self)
+        for p, state in IMP.pmi.tools._all_protocol_outputs([representation],
+                                                            densities[0]):
+            p.add_em3d_restraint(state, self.target_ps, self.densities,
+                                 self)
 
         # setup model GMM
         self.model_ps = []
@@ -185,21 +184,8 @@ class GaussianEMRestraint(object):
 
     def _set_dataset(self, target_fn, representation):
         """Set the dataset to point to the input file"""
-        if representation:
-            self.dataset = representation.get_file_dataset(target_fn)
-            if self.dataset:
-                return
-        l = ihm.location.InputFileLocation(target_fn,
-                              details="Electron microscopy density map, "
-                                      "represented as a Gaussian Mixture "
-                                      "Model (GMM)")
-        self.dataset = ihm.dataset.EMDensityDataset(l)
-        # If the GMM was derived from an MRC file that exists, add that too
-        m = re.match('(.*\.mrc)\..*\.txt$', target_fn)
-        if m and os.path.exists(m.group(1)):
-            l = ihm.location.InputFileLocation(path=m.group(1),
-                     details='Original MRC file from which the GMM was derived')
-            self.dataset.parents.append(ihm.dataset.EMDensityDataset(l))
+        p = IMP.pmi.mmcif.GMMParser()
+        self.dataset = p.parse_file(target_fn)['dataset']
 
     def center_target_density_on_model(self):
         target_com = IMP.algebra.Vector3D(0, 0, 0)
@@ -431,9 +417,9 @@ class CrossCorrelationRestraint(object):
         if voxel_size:
             self.dmap.update_voxel_size(voxel_size)
         if origin is not None:
-            if type(origin)==IMP.algebra.Vector3D:
+            if isinstance(origin, IMP.algebra.Vector3D):
                 self.dmap.set_origin(origin)
-            elif type(origin)==list:
+            elif isinstance(origin, list):
                 self.dmap.set_origin(*origin)
             else:
                 print('FitRestraint did not recognize format of origin')

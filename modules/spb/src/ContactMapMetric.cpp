@@ -2,7 +2,7 @@
  *  \file ContactMapMetric.cpp
  *  \brief Contact Map Metric
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/vector_property_map.h>

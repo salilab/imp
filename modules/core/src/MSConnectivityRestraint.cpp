@@ -4,7 +4,7 @@
  *  Restrict max distance between at least one pair of particles of any
  *  two distinct types. It also handles multiple copies of the same particles.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

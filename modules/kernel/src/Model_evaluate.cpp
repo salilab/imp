@@ -2,7 +2,7 @@
  *  \file Model.cpp \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
@@ -144,9 +144,18 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
           IMP_FAILURE(d.get_message(ss));
         }
       } else {
+/* gcc 9 requires that we make calc_derivs a shared variable so each task
+   can see it. gcc 8 automatically shares const variables and reports an error
+   if we try to explicitly share one. */
+#if defined(__GNUC__) && __GNUC__ >= 9
+        IMP_TASK_SHARED((ss, accum), (calc_derivs),
+                 ss->after_evaluate(calc_derivs ? &accum : nullptr),
+                 "after evaluate");
+#else
         IMP_TASK((ss, accum),
                  ss->after_evaluate(calc_derivs ? &accum : nullptr),
                  "after evaluate");
+#endif
       }
     }
     IMP_OMP_PRAGMA(taskwait)

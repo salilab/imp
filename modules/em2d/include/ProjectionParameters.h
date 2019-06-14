@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/ProjectionParameters.h
  *  \brief Decorator for projection parameters
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PROJECTION_PARAMETERS_H

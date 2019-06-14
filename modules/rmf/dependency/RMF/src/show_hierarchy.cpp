@@ -2,7 +2,7 @@
  *  \file RMF/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
@@ -345,13 +345,19 @@ struct ShowDecorators {
 }
 
 void show_hierarchy(NodeConstHandle root, std::ostream& out) {
-  using std::operator<<;
-  decorator::AlternativesFactory altcf(root.get_file());
   print_tree(out, root, simple_show_node);
+}
+
+void show_hierarchy(NodeConstHandle root) {
+  print_tree(std::cout, root, simple_show_node);
 }
 
 void show_hierarchy_with_values(NodeConstHandle root, std::ostream& out) {
   print_tree(out, root, ShowValues(root.get_file()));
+}
+
+void show_hierarchy_with_values(NodeConstHandle root) {
+  print_tree(std::cout, root, ShowValues(root.get_file()));
 }
 
 void show_hierarchy_with_decorators(NodeConstHandle root, bool,

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/base_types.h    \brief Basic types used by IMP.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

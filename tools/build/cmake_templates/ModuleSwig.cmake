@@ -18,7 +18,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
   endif()
 endif()
 
-include_directories(%(includepath)s)
+include_directories(%(python_includepath)s)
 link_directories(%(libpath)s)
 
 GET_DIRECTORY_PROPERTY(includes INCLUDE_DIRECTORIES)
@@ -45,8 +45,8 @@ foreach(path ${swig_path})
   list(APPEND PATH_ARGS "--swigpath=${path}")
 endforeach(path)
 add_custom_command(OUTPUT ${source} ${wrap_py} ${wrap_py_orig}
-   COMMAND  python
-            "${CMAKE_SOURCE_DIR}/tools/build/make_swig_wrapper.py"
+   COMMAND  ${PYTHON_EXECUTABLE}
+            "%(tools_dir)sbuild/make_swig_wrapper.py"%(extra_include)s%(extra_swig)s
             "--swig=${SWIG_EXECUTABLE}"
             "--module=%(name)s"
             ${PATH_ARGS}

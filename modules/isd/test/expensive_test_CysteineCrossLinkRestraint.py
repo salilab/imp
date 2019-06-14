@@ -2,6 +2,7 @@
 
 # general imports
 import gzip
+import sys
 from math import exp, log
 from random import sample
 import ast
@@ -161,7 +162,8 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
             restdict[fexp] = cystrest
 
         f = gzip.open(
-            self.get_input_file_name('test_CysteineCrosslink.data.gz'), 'rb')
+            self.get_input_file_name('test_CysteineCrosslink.data.gz'),
+            'rt' if sys.version_info[0] >= 3 else 'rb')
 
         testlist = []
 

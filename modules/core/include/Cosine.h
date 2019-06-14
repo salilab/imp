@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/Cosine.h    \brief Cosine function.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_COSINE_H

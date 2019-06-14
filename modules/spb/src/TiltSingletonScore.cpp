@@ -2,7 +2,7 @@
  *  \file TiltSingletonScore.cpp
  *  \brief A Score on the distance to a fixed point.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/UnaryFunction.h>

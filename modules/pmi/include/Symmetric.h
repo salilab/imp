@@ -2,7 +2,7 @@
  *  \file IMP/pmi/Symmetric.h
  *  \brief A decorator for symmetric particles 
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPPMI_SYMMETRIC_H

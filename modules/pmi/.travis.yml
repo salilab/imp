@@ -1,16 +1,22 @@
 sudo: false
 language: python
+dist: xenial
 python:
   - 2.7
-  - 3.6
+  - 3.7
 cache:
   pip: true
 install:
-  - tools/setup_travis.sh $HOME/miniconda $TRAVIS_PYTHON_VERSION
-  - source $HOME/miniconda/bin/activate python$TRAVIS_PYTHON_VERSION
+  - source tools/setup_travis.sh $HOME/miniconda $TRAVIS_PYTHON_VERSION
   - python -V
   - export IMP_TMP_DIR=/tmp
+  - rm -f ${CONDA_PREFIX}/lib/libimp_pmi.so*
 script:
-  - test/nosetests --with-coverage --cover-branches -e 'probabilistic' test/test_*.py test/medium_test_*.py > /dev/null
+  - mkdir build
+  - cd build
+  - PYTHON_INC=$(echo $(dirname $(which python))/../include/python*/)
+  - cmake .. -DIMP_DIR=${CONDA_PREFIX}/lib/cmake/IMP -DPYTHON_INCLUDE_DIR=$PYTHON_INC -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage"
+  - make
+  - ./setup_environment.sh ../test/nosetests --with-coverage --cover-branches -e 'probabilistic' ../test/test_*.py ../test/medium_test_*.py test/*/*.py > /dev/null
 after_script:
   - bash <(curl -s https://codecov.io/bash)

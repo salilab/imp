@@ -50,8 +50,8 @@ class Tests(unittest.TestCase):
         s = ihm.analysis.EmptyStep()
         self.assertEqual(s.type, 'none')
         self.assertEqual(s.feature, 'none')
-        self.assertEqual(s.num_models_begin, None)
-        self.assertEqual(s.num_models_end, None)
+        self.assertIsNone(s.num_models_begin)
+        self.assertIsNone(s.num_models_end)
 
     def test_analysis(self):
         """Test Analysis class"""

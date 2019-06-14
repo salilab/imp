@@ -1,6 +1,6 @@
 if(IMP_STATIC)
   message(STATUS "RMF does not currently support static builds - skipping")
-  file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/RMF" "ok=False")
+  file(WRITE "${CMAKE_BINARY_DIR}/build_info/RMF" "ok=False")
 else(IMP_STATIC)
 
   message(STATUS "Building internal RMF")
@@ -15,5 +15,5 @@ else(IMP_STATIC)
 
   set(RMF_LIBRARIES RMF-lib  CACHE INTERNAL "" FORCE)
 
-  file(WRITE "${CMAKE_BINARY_DIR}/data/build_info/RMF" "ok=True\nincludepath=\"${RMF_INCLUDE_PATH}\"\nswigpath=\"${RMF_SWIG_PATH}\"\n")
+  file(WRITE "${CMAKE_BINARY_DIR}/build_info/RMF" "ok=True\nincludepath=\"${RMF_INCLUDE_PATH}\"\nswigpath=\"${RMF_SWIG_PATH}\"\n")
 endif(IMP_STATIC)

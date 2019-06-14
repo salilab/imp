@@ -148,11 +148,6 @@ class MonteCarlo(object):
         self.mc.set_kt(self.temp)
         self.mc.add_mover(self.smv)
 
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
-
     def set_kt(self, temp):
         self.temp = temp
         self.mc.set_kt(temp)
@@ -198,7 +193,7 @@ class MonteCarlo(object):
     def get_number_of_movers(self):
         return len(self.smv.get_movers())
 
-    def get_particle_types():
+    def get_particle_types(self):
         return self.losp
 
     def optimize(self, nstep):
@@ -226,31 +221,31 @@ class MonteCarlo(object):
                 if accept < 0.05: accept = 0.05
                 if accept > 1.0: accept = 1.0
 
-                if type(mv) is IMP.core.NormalMover:
+                if isinstance(mv, IMP.core.NormalMover):
                     stepsize = mv.get_sigma()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_sigma(stepsize * 2 * accept)
 
-                if type(mv) is IMP.isd.WeightMover:
+                if isinstance(mv, MP.isd.WeightMover):
                     stepsize = mv.get_radius()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_radius(stepsize * 2 * accept)
 
-                if type(mv) is IMP.core.RigidBodyMover:
+                if isinstance(mv, IMP.core.RigidBodyMover):
                     mr=mv.get_maximum_rotation()
                     mt=mv.get_maximum_translation()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_maximum_rotation(mr * 2 * accept)
                         mv.set_maximum_translation(mt * 2 * accept)
 
-                if type(mv) is IMP.pmi.TransformMover:
+                if isinstance(mv, IMP.pmi.TransformMover):
                     mr=mv.get_maximum_rotation()
                     mt=mv.get_maximum_translation()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_maximum_rotation(mr * 2 * accept)
                         mv.set_maximum_translation(mt * 2 * accept)
 
-                if type(mv) is IMP.core.BallMover:
+                if isinstance(mv, IMP.core.BallMover):
                     mr=mv.get_radius()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_radius(mr * 2 * accept)
@@ -279,9 +274,10 @@ class MonteCarlo(object):
                 # normal Super Rigid Body
                 srbm = IMP.pmi.TransformMover(self.model, maxtrans, maxrot)
             elif len(rb) == 3:
-                if type(rb[2]) == tuple and type(rb[2][0]) == float \
-                    and type(rb[2][1]) == float and type(rb[2][2]) == float \
-                    and len(rb[2])== 3:
+                if isinstance(rb[2], tuple) and len(rb[2]) == 3 \
+                    and isinstance(rb[2][0], float) \
+                    and isinstance(rb[2][1], float) \
+                    and isinstance(rb[2][2], float):
                     # super rigid body with 2D rotation, rb[2] is the axis
                     srbm = IMP.pmi.TransformMover(
                       self.model,
@@ -423,11 +419,6 @@ class MolecularDynamics(object):
         self.simulated_annealing = False
         self.nframe = -1
 
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
-
     def set_kt(self,kt):
         temp=kt/0.0019872041
         self.ltstate.set_temperature(temp)
@@ -473,11 +464,6 @@ class ConjugateGradients(object):
         self.nframe = -1
         self.cg = IMP.core.ConjugateGradients(self.model)
         self.cg.set_scoring_function(get_restraint_set(self.model))
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
 
     def set_label(self, label):
         self.label = label
@@ -566,11 +552,6 @@ class ReplicaExchange(object):
         self.nmintemp = 0
         self.nmaxtemp = 0
         self.nsuccess = 0
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
 
     def get_temperatures(self):
         return self.temperatures
@@ -671,6 +652,8 @@ class MPI_values(object):
 
 
 
+@IMP.deprecated_object(2.11,
+        "If you use this class please let the PMI developers know.")
 class PyMCMover(object):
     # only works if the sampled particles are rigid bodies
 
@@ -709,6 +692,8 @@ class PyMCMover(object):
         self.n_mc_steps = nsteps
 
 
+@IMP.deprecated_object(2.11,
+        "If you use this class please let the PMI developers know.")
 class PyMC(object):
 
     def __init__(self, model):
@@ -719,11 +704,6 @@ class PyMC(object):
         self.restraints = None
         self.first_call = True
         self.nframe = -1
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
 
     def add_mover(self, mv):
         self.mv = mv

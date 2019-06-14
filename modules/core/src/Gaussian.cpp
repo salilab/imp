@@ -2,7 +2,7 @@
  *  \file example/Gaussian.cpp
  *  \brief Decorator to hold Gaussian3D
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

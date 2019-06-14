@@ -2,7 +2,7 @@
  *  \file internal/attribute_tables.h
  *  \brief Access to particle attributes.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
@@ -140,6 +140,17 @@ class BasicAttributeTable {
                     "Can't remove attribute if it isn't there");
     data_[k.get_index()][particle] = Traits::get_invalid();
   }
+
+  //! Get the size of the attribute table for the given key.
+  //! 0 is returned if the attribute does not exist in the model.
+  unsigned get_attribute_size(Key k) const {
+    if (data_.size() <= k.get_index()) {
+      return 0;
+    } else {
+      return data_[k.get_index()].size();
+    }
+  }
+
   bool get_has_attribute(Key k, ParticleIndex particle) const {
     if (data_.size() <= k.get_index())
       return false;
@@ -617,11 +628,17 @@ class FloatAttributeTable {
       values.
       @{
   */
+  unsigned get_spheres_size() const {
+    return spheres_.size();
+  }
   algebra::Sphere3D const* access_spheres_data() const{
     return spheres_.data();
   }
   algebra::Sphere3D* access_spheres_data(){
     return spheres_.data();
+  }
+  unsigned get_sphere_derivatives_size() const {
+    return sphere_derivatives_.size();
   }
   algebra::Sphere3D const* access_sphere_derivatives_data() const{
     return sphere_derivatives_.data();
@@ -641,6 +658,18 @@ class FloatAttributeTable {
   algebra::Vector3D * access_internal_coordinates_derivatives_data() {
     return internal_coordinate_derivatives_.data();
   }
+  //! Get the size of the attribute table for the given key.
+  //! 0 is returned if the attribute does not exist in the model.
+  unsigned get_attribute_size(FloatKey k) const {
+    IMP_USAGE_CHECK(k.get_index()>=7,
+		    "coordinates and radius should be accessed by specialized methods");
+    unsigned int ki=k.get_index() - 7;
+    if (data_.access_data().size() <= ki) {
+      return 0;
+    } else {
+      return data_.access_data()[ki].size();
+    }
+  }
   double const* access_attribute_data(FloatKey k) const{
     IMP_USAGE_CHECK(k.get_index()>=7,
 		    "coordinates and radius should be accessed by specialized methods");
@@ -658,6 +687,18 @@ class FloatAttributeTable {
                     "trying to access an attribute that was not added to this model");
     return internal::FloatAttributeTableTraits::access_container_data
       ((data_.access_data())[ki]);
+  }
+  //! Get the size of the derivative table for the given key.
+  //! 0 is returned if the derivative does not exist in the model.
+  unsigned get_derivative_size(FloatKey k) const {
+    IMP_USAGE_CHECK(k.get_index()>=7,
+		    "coordinates and radius should be accessed by specialized methods");
+    unsigned int ki=k.get_index() - 7;
+    if (derivatives_.access_data().size() <= ki) {
+      return 0;
+    } else {
+      return derivatives_.access_data()[ki].size();
+    }
   }
   double const* access_derivative_data(FloatKey k) const{
     IMP_USAGE_CHECK(k.get_index()>=7,
@@ -690,7 +731,7 @@ class FloatAttributeTable {
     return optimizeds_.access_data()[k.get_index()];
   }
   //! to verify that an attribute actually exists in the model
-  //! before its table is being accesed
+  //! before its table is being accessed
   bool get_has_attribute(FloatKey k) const{
     int ki=k.get_index()-7;
     if(ki<0) {
@@ -700,7 +741,7 @@ class FloatAttributeTable {
            && (data_.access_data())[ki].size() > 0;
   }
   //! to verify that an attribute derivative actually exists
-  //! in the modelbefore its table is being accesed
+  //! in the model before its table is being accessed
   bool get_has_attribute_derivative(FloatKey k) const{
     int ki=k.get_index()-7;
     if(ki<0) {
@@ -710,7 +751,7 @@ class FloatAttributeTable {
            && (data_.access_data())[ki].size() > 0;
   }
   //! to verify that an attribute optimizeds actually exists in the model
-  //! before its table is being accesed
+  //! before its table is being accessed
   bool get_has_attribute_optimizeds(FloatKey k) const{
     int ki=k.get_index()-7;
     if(ki<0) {
@@ -830,6 +871,7 @@ IMPKERNEL_END_INTERNAL_NAMESPACE
   using Base::add_attribute;       \
   using Base::add_cache_attribute; \
   using Base::remove_attribute;    \
+  using Base::get_attribute_size;   \
   using Base::get_has_attribute;   \
   using Base::set_attribute;       \
   using Base::get_attribute;       \

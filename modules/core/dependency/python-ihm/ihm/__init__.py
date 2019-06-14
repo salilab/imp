@@ -20,11 +20,32 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.3'
+__version__ = '0.9'
+
+class __UnknownValue(object):
+    # Represent the mmCIF 'unknown' special value
+
+    def __str__(self):
+        return '?'
+    __repr__ = __str__
+
+    def __bool__(self):
+        return False
+    # Python2 compatibility
+    __nonzero__ = __bool__
+
+    # Unknown value is a singleton and should only compare equal to itself
+    def __eq__(self, other):
+        return self is other
+    def __lt__(self, other):
+        return False
+    __gt__ = __lt__
+    __le__ = __ge__ = __eq__
+
 
 #: A value that isn't known. Note that this is distinct from a value that
 #: is deliberately omitted, which is represented by Python None.
-unknown = CifWriter.unknown
+unknown = __UnknownValue()
 
 def _remove_identical(gen):
     """Return only unique objects from `gen`.
@@ -55,6 +76,15 @@ class System(object):
         #: List of all software used in the modeling. See :class:`Software`.
         self.software = []
 
+        #: List of all authors of this system, as a list of strings (last name
+        #: followed by initials, e.g. "Smith AJ"). When writing out a file,
+        #: if this is list is empty, the set of all citation authors (see
+        #: :attr:`Citation.authors`) is used instead.
+        self.authors = []
+
+        #: List of all grants that supported this work. See :class:`Grant`.
+        self.grants = []
+
         #: List of all citations. See :class:`Citation`.
         self.citations = []
 
@@ -63,6 +93,12 @@ class System(object):
 
         #: All asymmetric units used in the system. See :class:`AsymUnit`.
         self.asym_units = []
+
+        #: All orphaned chemical descriptors in the system.
+        #: See :class:`ChemDescriptor`. This can be used to track descriptors
+        #: that are not otherwise used - normally one is assigned to a
+        #: :class:`ihm.restraint.CrossLinkRestraint`.
+        self.orphan_chem_descriptors = []
 
         #: All orphaned assemblies in the system. See :class:`Assembly`.
         #: This can be used to keep track of all assemblies that are not
@@ -75,7 +111,7 @@ class System(object):
         #: The assembly of the entire system. By convention this is always
         #: the first assembly in the mmCIF file (assembly_id=1). Note that
         #: currently this isn't filled in on output until dumper.write()
-        #: is called. See :class:`Assembly`
+        #: is called. See :class:`Assembly`.
         self.complete_assembly = Assembly((), name='Complete assembly',
                                           description='All known components')
 
@@ -156,6 +192,10 @@ class System(object):
         #: See :class:`~ihm.restraint.Feature`.
         self.orphan_features = []
 
+        #: Contains the fluorescence (FLR) part.
+        #: See :class:`~ihm.flr.FLRData`.
+        self.flr_data = []
+
     def update_locations_in_repositories(self, repos):
         """Update all :class:`Location` objects in the system that lie within
            a checked-out :class:`Repository` to point to that repository.
@@ -193,6 +233,17 @@ class System(object):
                 for r in rg:
                     yield r
         return itertools.chain(self.restraints, _all_restraints_in_groups())
+
+    def _all_chem_descriptors(self):
+        """Iterate over all ChemDescriptors in the system.
+           Duplicates may be present."""
+        return itertools.chain(self.orphan_chem_descriptors,
+                      (restraint.linker for restraint in self.restraints
+                                        if hasattr(restraint, 'linker')
+                                        and restraint.linker),
+                      (itertools.chain.from_iterable(
+                          f._all_flr_chemical_descriptors()
+                          for f in self.flr_data)))
 
     def _all_model_groups(self, only_in_states=True):
         """Iterate over all ModelGroups in the system.
@@ -331,21 +382,23 @@ class System(object):
             for alld in _all_datasets_and_parents(d):
                 yield alld
 
+    def _all_densities(self):
+        for ensemble in self.ensembles:
+            for density in ensemble.densities:
+                yield density
+
     def _all_locations(self):
         """Iterate over all Locations in the system.
            This includes all Locations referenced from other objects, plus
            any referenced from the top-level system.
            Duplicates may be present."""
-        def all_densities():
-            for ensemble in self.ensembles:
-                for density in ensemble.densities:
-                    yield density
         return itertools.chain(
                 self.locations,
                 (dataset.location for dataset in self._all_datasets()
                           if hasattr(dataset, 'location') and dataset.location),
                 (ensemble.file for ensemble in self.ensembles if ensemble.file),
-                (density.file for density in all_densities() if density.file),
+                (density.file for density in self._all_densities()
+                              if density.file),
                 (sm.script_file for sm in self._all_starting_models()
                                          if sm.script_file),
                 (template.alignment_file for template in self._all_templates()
@@ -389,7 +442,9 @@ class System(object):
                         (step.software for step in self._all_protocol_steps()
                                        if step.software),
                         (step.software for step in self._all_analysis_steps()
-                                       if step.software)))
+                                       if step.software),
+                        (r.software for r in self._all_restraints()
+                                   if hasattr(r, 'software') and r.software)))
 
     def _all_citations(self):
         """Iterate over all Citations in the system.
@@ -402,6 +457,19 @@ class System(object):
                             for restraint in self.restraints
                             if hasattr(restraint, 'fitting_method_citation_id')
                             and restraint.fitting_method_citation_id)))
+
+    def _all_entity_ranges(self):
+        """Iterate over all Entity ranges in the system (these may be
+           :class:`Entity`, :class:`AsymUnit`, :class:`EntityRange` or
+           :class:`AsymUnitRange` objects).
+           Note that we don't include self.entities or self.asym_units here,
+           as we only want ranges that were actually used.
+           Duplicates may be present."""
+        return (itertools.chain(
+                        (sm.asym_unit for sm in self._all_starting_models()),
+                        (seg.asym_unit for seg in self._all_segments()),
+                        (comp for a in self._all_assemblies() for comp in a),
+                        (d.asym_unit for d in self._all_densities())))
 
     def _make_complete_assembly(self):
         """Fill in the complete assembly with all entities/asym units"""
@@ -432,8 +500,9 @@ class Software(object):
 
        Generally these objects are added to :attr:`System.software` or
        passed to :class:`ihm.startmodel.StartingModel`,
-       :class:`ihm.protocol.Step`, or
-       :class:`ihm.analysis.Step` objects.
+       :class:`ihm.protocol.Step`,
+       :class:`ihm.analysis.Step`, or
+       :class:`ihm.restraint.PredictedContactResstraint` objects.
     """
     def __init__(self, name, classification, description, location,
                  type='program', version=None):
@@ -451,6 +520,23 @@ class Software(object):
         return self._eq_vals() == other._eq_vals()
     def __hash__(self):
         return hash(self._eq_vals())
+
+
+class Grant(object):
+    """Information on funding support for the modeling.
+       See :attr:`System.grants`.
+
+       :param str funding_organization: The name of the organization providing
+              the funding, e.g. "National Institutes of Health".
+       :param str country: The country that hosts the funding organization,
+              e.g. "United States".
+       :param str grant_number: Identifying information for the grant, e.g.
+              "1R01GM072999-01".
+    """
+    def __init__(self, funding_organization, country, grant_number):
+        self.funding_organization = funding_organization
+        self.country = country
+        self.grant_number = grant_number
 
 
 class Citation(object):
@@ -537,7 +623,7 @@ class ChemComp(object):
        :param str code_canonical: Canonical version of `code` (which need not
               be unique).
        :param str name: A longer human-readable name for the component.
-       :param str formula: The chemical formula. This is a spaced-separated
+       :param str formula: The chemical formula. This is a space-separated
               list of the element symbols in the component, each followed
               by an optional count (if omitted, 1 is assumed). The formula
               is terminated with the formal charge (if not zero). The element
@@ -571,7 +657,7 @@ class ChemComp(object):
         # Remove formal charge if present
         if len(spl) > 0 and spl[-1].isdigit():
             del spl[-1]
-        r = re.compile('(\D+)(\d*)$')
+        r = re.compile(r'(\D+)(\d*)$')
         weight = 0.
         for s in spl:
             m = r.match(s)
@@ -809,6 +895,10 @@ class Atom(object):
     def __init__(self, residue, id):
         self.residue, self.id = residue, id
 
+    entity = property(lambda self: self.residue.entity)
+    asym = property(lambda self: self.residue.asym)
+    seq_id = property(lambda self: self.residue.seq_id)
+
 
 class Residue(object):
     """A single residue in an entity or asymmetric unit. Usually these objects
@@ -845,6 +935,9 @@ class Entity(object):
        :type alphabet: :class:`Alphabet`
        :param str description: A short text name for the sequence.
        :param str details: Longer text describing the sequence.
+       :param source: The method by which the sample for this entity was
+              produced.
+       :type source: :class:`ihm.source.Source`
 
        The sequence for an entity can be specified explicitly as a set of
        chemical components, or (more usually) as a list or string of codes.
@@ -867,7 +960,6 @@ class Entity(object):
        see :attr:`System.entities`.
     """
 
-    src_method = 'man'
     number_of_molecules = 1
 
     def __get_type(self):
@@ -876,6 +968,18 @@ class Entity(object):
         else:
             return 'water' if self.sequence[0].code == 'HOH' else 'non-polymer'
     type = property(__get_type)
+
+    def __get_src_method(self):
+        if self.source:
+            return self.source.src_method
+        elif self.type == 'water':
+            return 'nat'
+        else:
+            return 'man'
+    def __set_src_method(self, val):
+        raise TypeError("src_method is read-only; assign an appropriate "
+                        "subclass of ihm.source.Source to source instead")
+    src_method = property(__get_src_method, __set_src_method)
 
     def __get_weight(self):
         weight = 0.
@@ -890,7 +994,7 @@ class Entity(object):
     formula_weight = property(__get_weight, doc="Formula weight")
 
     def __init__(self, sequence, alphabet=LPeptideAlphabet,
-                 description=None, details=None):
+                 description=None, details=None, source=None):
         def get_chem_comp(s):
             if isinstance(s, ChemComp):
                 return s
@@ -898,6 +1002,7 @@ class Entity(object):
                 return alphabet._comps[s]
         self.sequence = tuple(get_chem_comp(s) for s in sequence)
         self.description, self.details = description, details
+        self.source = source
 
     def is_polymeric(self):
         """Return True iff this entity represents a polymer, such as an
@@ -1037,3 +1142,35 @@ class Assembly(list):
     def __init__(self, elements=(), name=None, description=None):
         super(Assembly, self).__init__(elements)
         self.name, self.description = name, description
+
+
+class ChemDescriptor(object):
+    """Description of a non-polymeric chemical component used in the experiment.
+       For example, this might be a fluorescent probe or cross-linking agent.
+       This class describes the chemical structure of the component, for
+       example with a SMILES or INCHI descriptor, so that it is uniquely
+       defined. A descriptor is typically assigned to a
+       :class:`ihm.restraint.CrossLinkRestraint`.
+
+       See :mod:`ihm.cross_linkers` for chemical descriptors of some
+       commonly-used cross-linking agents.
+
+       :param str auth_name: Author-provided name
+       :param str chem_comp_id: If this chemical is listed in the Chemical
+              Component Dictionary, its three-letter identifier
+       :param str chemical_name: The systematic (IUPAC) chemical name
+       :param str common_name: Common name for the component
+       :param str smiles: SMILES string
+       :param str smiles_canonical: Canonical SMILES string
+       :param str inchi: IUPAC INCHI descriptor
+       :param str inchi_key: Hashed INCHI key
+
+       See also :attr:`System.orphan_chem_descriptors`.
+    """
+    def __init__(self, auth_name, chem_comp_id=None, chemical_name=None,
+                 common_name=None, smiles=None, smiles_canonical=None,
+                 inchi=None, inchi_key=None):
+        self.auth_name, self.chem_comp_id = auth_name, chem_comp_id
+        self.chemical_name, self.common_name = chemical_name, common_name
+        self.smiles, self.smiles_canonical = smiles, smiles_canonical
+        self.inchi, self.inchi_key = inchi, inchi_key

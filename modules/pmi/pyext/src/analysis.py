@@ -789,7 +789,7 @@ class Precision(object):
     def _select_coordinates(self,tuple_selections,structure,prot):
         selected_coordinates=[]
         for t in tuple_selections:
-            if type(t)==tuple and len(t)==3:
+            if isinstance(t, tuple) and len(t)==3:
                 if IMP.pmi.get_is_canonical(prot):
                     s = IMP.atom.Selection(prot,molecules=[t[2]],residue_indexes=range(t[0],t[1]+1),
                                            resolution=1)
@@ -800,7 +800,7 @@ class Precision(object):
                 sorted_intersection = IMP.pmi.tools.sort_by_residues(intersection)
                 cc = [tuple(IMP.core.XYZ(p).get_coordinates()) for p in sorted_intersection]
                 selected_coordinates += cc
-            elif type(t)==str:
+            elif isinstance(t, str):
                 if IMP.pmi.get_is_canonical(prot):
                     s = IMP.atom.Selection(prot,molecules=[t],resolution=1)
                 else:
@@ -1040,6 +1040,7 @@ class Precision(object):
         @param alignment_selection: the key containing the selection tuples needed to make the alignment stored in self.selection_dictionary
         @return: for each structure in the structure set, returns the rmsd
         """
+        ret = {}
         if self.reference_structures_dictionary=={}:
             print("Cannot compute until you set a reference structure")
             return
@@ -1059,7 +1060,8 @@ class Precision(object):
                 coordinates1 = [transformations[n].get_transformed(IMP.algebra.Vector3D(c)) for c in sc]
                 distance = IMP.algebra.get_rmsd(coordinates1,coordinates2)
                 distances.append(distance)
-            print(selection_name,"average rmsd",sum(distances)/len(distances),"median",self._get_median(distances),"minimum distance",min(distances))
+            ret[selection_name] = {'all_distances':distances,'average_distance':sum(distances)/len(distances),'minimum_distance':min(distances)}
+        return ret
 
     def _get_median(self,list_of_values):
         return np.median(np.array(list_of_values))
@@ -1162,15 +1164,15 @@ class GetModelDensity(object):
                             if not IMP.atom.Molecule.get_is_setup(h):
                                 IMP.atom.Molecule.setup_particle(h.get_particle())
 
-                    if type(seg) == str:
+                    if isinstance(seg, str):
                         s = IMP.atom.Selection(hierarchy,molecule=seg)
-                    elif type(seg) == tuple and len(seg) == 2:
+                    elif isinstance(seg, tuple) and len(seg) == 2:
                         s = IMP.atom.Selection(
                             hierarchy, molecule=seg[0],copy_index=seg[1])
-                    elif type(seg) == tuple and len(seg) == 3:
+                    elif isinstance(seg, tuple) and len(seg) == 3:
                         s = IMP.atom.Selection(
                             hierarchy, molecule=seg[2],residue_indexes=range(seg[0], seg[1] + 1))
-                    elif type(seg) == tuple and len(seg) == 4:
+                    elif isinstance(seg, tuple) and len(seg) == 4:
                         s = IMP.atom.Selection(
                             hierarchy, molecule=seg[2],residue_indexes=range(seg[0], seg[1] + 1),copy_index=seg[3])
                     else:
@@ -1375,7 +1377,6 @@ class GetContactMap(object):
                                 mtr[i1 - 1, i2 - 1] = r
                             except KeyError:
                                 missing.append((pn1, pn2, i1, i2))
-                                pass
                     Matrices[(pn1, pn2)] = mtr
 
         # add cross-links
@@ -1383,7 +1384,6 @@ class GetContactMap(object):
             if self.XL == {}:
                 raise ValueError("cross-links were not provided, use add_xlinks function!")
             Matrices_xl = {}
-            missing_xl = []
             for p1 in range(len(proteins)):
                 for p2 in range(p1, len(proteins)):
                     pl1, pl2 = max(
@@ -2244,7 +2244,8 @@ class CrossLinkTable(object):
 
         fig.set_size_inches(0.004 * nresx, 0.004 * nresy)
 
-        [i.set_linewidth(2.0) for i in ax.spines.values()]
+        for i in ax.spines.values():
+            i.set_linewidth(2.0)
 
         #plt.tight_layout()
 

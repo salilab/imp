@@ -8,7 +8,7 @@ import ihm.dumper
 system = ihm.System()
 
 # IHM contains definitions for standard amino and nucleic acids, plus
-# a few common non-standard residues such as MSE and UNK. 
+# a few common non-standard residues such as MSE and UNK.
 # To create a new non-standard residue, we first need to create a chemical
 # component for it. In this case, we add a definition for norvaline, an
 # isomer of valine. IHM provides a ChemComp class for this purpose and a

@@ -295,9 +295,17 @@ namespace IMP {
 %include "IMP/atom/HelixRestraint.h"
 %include "IMP/atom/alignment.h"
 
+%inline %{
+  // SWIG 4.0 doesn't like %template here, so provide a little
+  // wrapper function instead
+  std::ostream &show_molecular_hierarchy(
+              IMP::atom::Hierarchy h, std::ostream &out = std::cout) {
+    return IMP::core::show<IMP::atom::Hierarchy>(h, out);
+  }
+%}
+
 namespace IMP {
   namespace atom {
-   %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
    %template(CHARMMBond) CHARMMConnection<2>;
    %template(CHARMMAngle) CHARMMConnection<3>;
    %template(_get_native_overlap_cpp) get_native_overlap<IMP::Vector<algebra::VectorD<3> >, IMP::Vector<algebra::VectorD<3> > >;

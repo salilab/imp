@@ -19,20 +19,22 @@ class _AsymIDs(object):
         return "".join(reversed(ids))
 
 
-def _remove_id(obj):
+def _remove_id(obj, attr='_id'):
     """Remove any unique ID from obj"""
-    if hasattr(obj, '_id'):
-        del obj._id
+    if hasattr(obj, attr):
+        delattr(obj, attr)
 
-def _assign_id(obj, seen_objs, obj_by_id):
+def _assign_id(obj, seen_objs, obj_by_id, attr='_id', seen_obj=None):
     """Assign a unique ID to obj, and track all ids in obj_by_id."""
-    if obj not in seen_objs:
-        if not hasattr(obj, '_id'):
+    if seen_obj is None:
+        seen_obj = obj
+    if seen_obj not in seen_objs:
+        if not hasattr(obj, attr):
             obj_by_id.append(obj)
-            obj._id = len(obj_by_id)
-        seen_objs[obj] = obj._id
+            setattr(obj, attr, len(obj_by_id))
+        seen_objs[seen_obj] = getattr(obj, attr)
     else:
-        obj._id = seen_objs[obj]
+        setattr(obj, attr, seen_objs[seen_obj])
 
 def _get_relative_path(reference, path):
     """Return `path` interpreted relative to `reference`"""

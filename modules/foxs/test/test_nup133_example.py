@@ -1,4 +1,6 @@
 import IMP.test
+import IMP.foxs
+import shutil
 import sys
 import os
 import re
@@ -8,9 +10,14 @@ class Tests(IMP.test.ApplicationTestCase):
 
     def test_nup133(self):
         """Test the Nup133 example"""
-        cmds = self.read_shell_commands(
-            '../../../doc/manual/foxs_nup133.dox')
+        cmds = ["foxs -h",
+                "foxs 3KFO.pdb 23922_merge.dat",
+                "foxs -g 3KFO.pdb 3KFO-fill.B99990005.pdb 23922_merge.dat",
+                "gnuplot fit.plt"]
+        nup133 = IMP.foxs.get_example_path('nup133')
         with IMP.test.temporary_working_directory():
+            shutil.copytree(nup133, 'nup133')
+            os.chdir('nup133')
             # Skip running gnuplot on machines that don't have it
             have_gnuplot = os.path.exists('/usr/bin/gnuplot') \
                            and sys.platform != 'win32'

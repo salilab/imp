@@ -2,7 +2,7 @@
  *  \file IMP/spb/ContactMapMetric.h
  *  \brief Contact Map Metric
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_CONTACT_MAP_METRIC_H

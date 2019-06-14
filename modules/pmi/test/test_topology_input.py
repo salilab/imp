@@ -3,6 +3,7 @@ import IMP.pmi
 import IMP.pmi.topology
 import IMP.pmi.macros
 import os
+import warnings
 import IMP.test
 import IMP.rmf
 import IMP.pmi.plotting
@@ -26,10 +27,6 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(os.path.abspath(c[0].fasta_file),
                          self.get_input_file_name("seqs.fasta"))
         self.assertEqual(c[1].molname, "Prot2")
-        with IMP.allow_deprecated():
-            # Test deprecated interface
-            self.assertEqual(c[1].name, "Prot2")
-            self.assertEqual(c[1].domain_name, "Prot2A")
         self.assertEqual(c[1].get_unique_name(), "Prot2..0")
         self.assertEqual(c[2].get_unique_name(), "Prot2..1")
 
@@ -39,33 +36,29 @@ class Tests(IMP.test.TestCase):
         t = IMP.pmi.topology.TopologyReader(topology_file)
         self.assertEqual(list(t.molecules.keys()),
                          ['Prot1', 'Prot2', 'Prot3', 'Prot4', 'Prot5'])
-        c1 = t.get_components()
-        with IMP.allow_deprecated():
-            # Test deprecated interface
-            c2 = t.component_list
-        for c in (c1, c2):
-            self.assertEqual(len(c),9)
-            self.assertEqual(c[0].molname,"Prot1")
-            self.assertEqual(c[1].molname,"Prot1")
-            self.assertEqual(c[1].copyname,"1")
-            self.assertEqual(c[2].get_unique_name(),"Prot2..0")
-            self.assertEqual(c[3].get_unique_name(),"Prot2..1")
-            self.assertEqual(c[5].get_unique_name(),"Prot2.1.1")
-
-    def test_round_trip(self):
-        """Test reading and writing"""
-        topology_file=self.get_input_file_name("topology_new.txt")
-        outfile = self.get_tmp_file_name("ttest.txt")
-        t=IMP.pmi.topology.TopologyReader(topology_file)
-        t.write_topology_file(outfile)
-
-        tnew = IMP.pmi.topology.TopologyReader(outfile)
-        c = tnew.get_components()
+        c = t.get_components()
         self.assertEqual(len(c),9)
         self.assertEqual(c[0].molname,"Prot1")
         self.assertEqual(c[1].molname,"Prot1")
         self.assertEqual(c[1].copyname,"1")
+        self.assertEqual(c[2].get_unique_name(),"Prot2..0")
+        self.assertEqual(c[3].get_unique_name(),"Prot2..1")
         self.assertEqual(c[5].get_unique_name(),"Prot2.1.1")
+
+    def test_round_trip(self):
+        """Test reading and writing"""
+        topology_file = self.get_input_file_name("topology_new.txt")
+        t = IMP.pmi.topology.TopologyReader(topology_file)
+        components_original = t.get_components()
+
+        outfile = self.get_tmp_file_name("ttest.txt")
+        t.write_topology_file(outfile)
+        t_new = IMP.pmi.topology.TopologyReader(outfile)
+        components_written = t_new.get_components()
+
+        for original, written in zip(components_original, components_written):
+            for key in original.__dict__:
+                self.assertEqual(original.__dict__[key], written.__dict__[key])
 
     def test_beads(self):
         try:
@@ -98,6 +91,30 @@ class Tests(IMP.test.TestCase):
         fbs = dof.get_flexible_beads()
         self.assertEqual(len(rbs),2)
         self.assertEqual(len(fbs),7)
+
+    def test_flexible(self):
+        """Check that movers are created for flexible regions"""
+        mdl = IMP.Model()
+        tfile = self.get_input_file_name('topology_flexible.txt')
+        input_dir = os.path.dirname(tfile)
+        t = IMP.pmi.topology.TopologyReader(tfile,
+                                            pdb_dir=input_dir,
+                                            fasta_dir=input_dir,
+                                            gmm_dir=input_dir)
+        bs = IMP.pmi.macros.BuildSystem(mdl)
+        bs.add_state(t)
+        with warnings.catch_warnings(record=True) as cw:
+            warnings.simplefilter("always")
+            root_hier, dof = bs.execute_macro()
+        # Both domains (one a PDB, one beads) should be flexible
+        self.assertEqual(len(dof.get_movers()), 2)
+        self.assertEqual(len(dof.get_rigid_bodies()), 0)
+        self.assertEqual(len(dof.get_flexible_beads()), 2)
+        # One warning should be emitted, for the PDB domain
+        w, = cw
+        self.assertIn("Making Prot1..0 flexible. This may distort",
+                      str(w.message))
+        self.assertIs(w.category, IMP.pmi.StructureWarning)
 
     def test_draw_molecular_composition(self):
         try:

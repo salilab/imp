@@ -31,6 +31,7 @@ from bisect import bisect_left
 from math import pi,cos,sin
 from operator import itemgetter
 import weakref
+import warnings
 
 def _build_ideal_helix(model, residues, coord_finder):
     """Creates an ideal helix from the specified residue range
@@ -84,11 +85,6 @@ class _SystemBase(object):
         else:
             self.model=model
 
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def mdl(self):
-        return self.model
-
     def _create_hierarchy(self):
         """create a new hierarchy"""
         tmp_part=IMP.Particle(self.model)
@@ -110,6 +106,9 @@ class _SystemBase(object):
 
 class System(_SystemBase):
     """This class initializes the root node of the global IMP.atom.Hierarchy."""
+
+    _all_systems = set()
+
     def __init__(self,model=None,name="System"):
         _SystemBase.__init__(self,model)
         self._number_of_states = 0
@@ -117,10 +116,16 @@ class System(_SystemBase):
         self.states = []
         self.built=False
 
+        System._all_systems.add(weakref.ref(self))
+
         # the root hierarchy node
         self.hier=self._create_hierarchy()
         self.hier.set_name(name)
         self.hier._pmi2_system = weakref.ref(self)
+
+    def __del__(self):
+        System._all_systems = set(x for x in System._all_systems
+                                  if x() not in (None, self))
 
     def get_states(self):
         return self.states
@@ -185,11 +190,6 @@ class State(_SystemBase):
         self._protocol_output = []
         for p in system._protocol_output:
             self._add_protocol_output(p, system)
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def mdl(self):
-        return self.model
 
     def __repr__(self):
         return self.system.__repr__()+'.'+self.hier.get_name()
@@ -363,11 +363,6 @@ class Molecule(_SystemBase):
             r = TempResidue(self,s,ns+1,ns,is_nucleic)
             self.residues.append(r)
 
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def mdl(self):
-        return self.model
-
     def __repr__(self):
         return self.state.__repr__()+'.'+self.get_name()+'.'+ \
             str(IMP.atom.Copy(self.hier).get_copy_index())
@@ -487,7 +482,9 @@ class Molecule(_SystemBase):
         self.coord_finder.add_residues(rhs)
 
         if len(self.residues)==0:
-            print("WARNING: Substituting PDB residue type with FASTA residue type. Potentially dangerous.")
+            warnings.warn(
+                "Substituting PDB residue type with FASTA residue type. "
+                "Potentially dangerous.", IMP.pmi.StructureWarning)
 
         # Store info for ProtocolOutput usage later
         self._pdb_elements.append((rhs,
@@ -562,10 +559,11 @@ class Molecule(_SystemBase):
                Any other resolutions passed will be coarsened from there.
                Resolution 0 will not work, you may have to use MODELLER to do that (for now).
         @param color the color applied to the hierarchies generated.
-               Format options: tuple (r,g,b) with values 0 to 1
-               or float (from 0 to 1, a map from Blue to Green to Red)
-               or IMP.display.Color object
-
+               Format options: tuple (r,g,b) with values 0 to 1;
+               float (from 0 to 1, a map from Blue to Green to Red);
+               a [Chimera name](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/colortables.html);
+               a hex RGB string (e.g. "0xff0000");
+               an IMP.display.Color object
         @note You cannot call add_representation multiple times for the
               same residues.
         """
@@ -714,8 +712,10 @@ class Molecule(_SystemBase):
             # give a warning for all residues that don't have representation
             no_rep = [r for r in self.residues if r not in self._represented]
             if len(no_rep)>0:
-                print('WARNING: Residues without representation in molecule',
-                      self.get_name(),':',system_tools.resnums2str(no_rep))
+                warnings.warn(
+                    'Residues without representation in molecule %s: %s'
+                    % (self.get_name(), system_tools.resnums2str(no_rep)),
+                    IMP.pmi.StructureWarning)
 
             # first build any ideal helices (fills in structure for the TempResidues)
             for rep in self.representations:
@@ -855,11 +855,12 @@ class Sequences(object):
         return x in self.sequences
     def __getitem__(self,key):
         if type(key) is int:
+            allseqs = list(self.sequences.keys())
             try:
-                allseqs = list(self.sequences.keys())
                 return self.sequences[allseqs[key]]
-            except:
-                raise Exception("You tried to access sequence num",key,"but there's only",len(self.sequences.keys()))
+            except IndexError:
+                raise IndexError("You tried to access sequence number %d "
+                                 "but there's only %d" % (key, len(allseqs)))
         else:
             return self.sequences[key]
     def __iter__(self):
@@ -914,11 +915,6 @@ class PDBSequences(object):
         # B (192, 443) TQLLEIYALEIQMYTAQKNNKKLKALYEQSLHIKSAIPHPL
         self.sequences = IMP.pmi.tools.OrderedDict()
         self.read_sequences(pdb_fn,name_map)
-
-    @property
-    @IMP.deprecated_method("2.10", "Model should be accessed with `.model`.")
-    def m(self):
-        return self.model
 
     def read_sequences(self,pdb_fn,name_map):
         read_file = IMP.atom.read_pdb
@@ -1097,9 +1093,12 @@ class TempResidue(object):
         if res.get_residue_type()!=self.get_residue_type():
             if soft_check:
                 # note from commit a2c13eaa1 we give priority to the FASTA and not the PDB
-                print('WARNING: Inconsistency between FASTA sequence and PDB sequence. FASTA type',\
-                      self.get_index(),self.hier.get_residue_type(),
-                      'and PDB type',res.get_residue_type())
+                warnings.warn(
+                    'Inconsistency between FASTA sequence and PDB sequence. '
+                    'FASTA type %s %s and PDB type %s'
+                    % (self.get_index(), self.hier.get_residue_type(),
+                       res.get_residue_type()),
+                    IMP.pmi.StructureWarning)
                 self.hier.set_residue_type((self.get_residue_type()))
                 self.rtype = self.get_residue_type()
             else:
@@ -1132,7 +1131,11 @@ class TopologyReader(object):
     These are the fields you can enter:
     - `component_name`: Name of the component (chain). Serves as the parent
       hierarchy for this structure.
-    - `color`: The color used in the output RMF file. Uses chimera names or R,G,B values
+    - `color`: The color used in the output RMF file. Uses
+      [Chimera names](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/colortables.html),
+      (e.g. "red"), or R,G,B values as three comma-separated floating point
+      numbers from 0 to 1 (e.g. "1.0, 0.0, 0.0") or a 6-digit hex string
+      starting with '#' (e.g. 0xff0000).
     - `fasta_fn`: Name of FASTA file containing this component.
     - `fasta_id`: String found in FASTA sequence header line. The sequence read
       from the file is assumed to be a protein sequence. If it should instead
@@ -1179,12 +1182,6 @@ class TopologyReader(object):
         self.fasta_dir = fasta_dir
         self.gmm_dir = gmm_dir
         self._components = self.read(topology_file)
-
-    # Preserve old self.component_list for backwards compatibility
-    @IMP.deprecated_method("2.7",
-                       "Use 'get_components()' instead of 'component_list'.")
-    def __get_component_list(self): return self._components
-    component_list = property(__get_component_list)
 
     def write_topology_file(self,outfile):
         with open(outfile, "w") as f:
@@ -1318,7 +1315,7 @@ class TopologyReader(object):
             self.molecules[c.molname] = _TempMolecule(c)
         else:
             # COPY OR DOMAIN
-            c._orig_fasta_file = self.molecules[c.molname].orig_component.fasta_file
+            c._orig_fasta_file = self.molecules[c.molname].orig_component._orig_fasta_file
             c.fasta_id = self.molecules[c.molname].orig_component.fasta_id
             self.molecules[c.molname].add_component(c,c.copyname)
 
@@ -1554,17 +1551,6 @@ class _Component(object):
                              self._l2s(self.super_rigid_bodies),
                              self._l2s(self.chain_of_super_rigid_bodies)])+'|'
         return a
-
-    # Preserve old self.name for backwards compatibility
-    @IMP.deprecated_method("2.7", "Use 'molname' instead of 'name'.")
-    def __get_name(self): return self.molname
-    name = property(__get_name)
-
-    # Preserve old self.domain_name for backwards compatibility
-    @IMP.deprecated_method("2.7",
-                           "Use 'get_unique_name()' instead of 'domain_name'.")
-    def __get_domain_name(self): return self._domain_name
-    domain_name = property(__get_domain_name)
 
 
 class PMIMoleculeHierarchy(IMP.atom.Molecule):

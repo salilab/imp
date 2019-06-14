@@ -2,7 +2,7 @@
  *  \file IMP/pmi/InternalCoordinatesConstraint.h
  *  \brief A modifier that enforce identical internal coordinates for NonRigidMembers.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPPMI_INTERNAL_COORDINATES_CONSTRAINT_H
@@ -21,8 +21,6 @@ IMPPMI_BEGIN_NAMESPACE
     Such a class could be coupled with an IMP::core::SingletonConstraint
     or IMP::container::SingletonsConstraint to keep a set of particles
     in a box.
-
-    \include range_restrictionExampleSingletonModifier.py
 
     The source code is as follows:
     \include InternalCoordinatesConstraint.h

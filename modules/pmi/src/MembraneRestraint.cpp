@@ -16,30 +16,30 @@ IMPPMI_BEGIN_NAMESPACE
 MembraneRestraint::MembraneRestraint(Model *m, ParticleIndex z_nuisance,
                                      double thickness, double softness,
                                      double plateau, double linear)
-    : ISDRestraint(m, "MembraneRestraint %1%"), z_nuisance(z_nuisance),
-      thickness(thickness), softness(softness), plateau(plateau),
-      linear(linear), max_float(std::numeric_limits<double>::max()),
-      log_max_float(log(std::numeric_limits<double>::max())) {}
+    : ISDRestraint(m, "MembraneRestraint %1%"), z_nuisance_(z_nuisance),
+      thickness_(thickness), softness_(softness), plateau_(plateau),
+      linear_(linear), max_float_(std::numeric_limits<double>::max()),
+      log_max_float_(log(std::numeric_limits<double>::max())) {}
 
 void MembraneRestraint::add_particles_below(ParticleIndexes const &particles) {
-  particles_below.insert(particles_below.end(), particles.begin(),
-                         particles.end());
+  particles_below_.insert(particles_below_.end(), particles.begin(),
+                          particles.end());
 }
 void MembraneRestraint::add_particles_above(ParticleIndexes const &particles) {
-  particles_above.insert(particles_above.end(), particles.begin(),
-                         particles.end());
+  particles_above_.insert(particles_above_.end(), particles.begin(),
+                          particles.end());
 }
 void MembraneRestraint::add_particles_inside(ParticleIndexes const &particles) {
-  particles_inside.insert(particles_inside.end(), particles.begin(),
-                          particles.end());
+  particles_inside_.insert(particles_inside_.end(), particles.begin(),
+                           particles.end());
 }
 
 double MembraneRestraint::get_score(double prob) const { return -log(prob); }
 
 double MembraneRestraint::get_probability_above(double z,
                                             double z_slope_center_upper) const {
-  double const argvalue((z - z_slope_center_upper) / softness);
-  return (1.0 - plateau) / (1.0 + exp(-argvalue));
+  double const argvalue((z - z_slope_center_upper) / softness_);
+  return (1.0 - plateau_) / (1.0 + exp(-argvalue));
 }
 double MembraneRestraint::get_score_above(double z,
                                       double z_slope_center_upper) const {
@@ -48,8 +48,8 @@ double MembraneRestraint::get_score_above(double z,
 
 double MembraneRestraint::get_probability_below(double z,
                                             double z_slope_center_lower) const {
-  double const argvalue((z - z_slope_center_lower) / softness);
-  return (1.0 - plateau) / (1.0 + exp(argvalue));
+  double const argvalue((z - z_slope_center_lower) / softness_);
+  return (1.0 - plateau_) / (1.0 + exp(argvalue));
 }
 double MembraneRestraint::get_score_below(double z,
                                       double z_slope_center_lower) const {
@@ -64,38 +64,38 @@ double MembraneRestraint::get_score_inside(double z, double z_slope_center_lower
 
 double MembraneRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
   IMP::Model *m = get_model();
-  double const z_center = isd::Nuisance(m, z_nuisance).get_nuisance();
-  double const z_slope_center_lower = z_center - 0.5 * thickness;
-  double const z_slope_center_upper = z_center + 0.5 * thickness;
+  double const z_center = isd::Nuisance(m, z_nuisance_).get_nuisance();
+  double const z_slope_center_lower = z_center - 0.5 * thickness_;
+  double const z_slope_center_upper = z_center + 0.5 * thickness_;
   double sb(0.0);
-  for (size_t i(0); i < particles_below.size(); ++i) {
-    sb += get_score_below(core::XYZ(m, particles_below[i]).get_z(),
+  for (size_t i(0); i < particles_below_.size(); ++i) {
+    sb += get_score_below(core::XYZ(m, particles_below_[i]).get_z(),
                       z_slope_center_lower);
   }
   double sa(0.0);
-  for (size_t i(0); i < particles_above.size(); ++i) {
-    sa += get_score_above(core::XYZ(m, particles_above[i]).get_z(),
+  for (size_t i(0); i < particles_above_.size(); ++i) {
+    sa += get_score_above(core::XYZ(m, particles_above_[i]).get_z(),
                       z_slope_center_upper);
   }
   double si(0.0);
-  for (size_t i(0); i < particles_inside.size(); ++i) {
-    si += get_score_inside(core::XYZ(m, particles_inside[i]).get_z(),
+  for (size_t i(0); i < particles_inside_.size(); ++i) {
+    si += get_score_inside(core::XYZ(m, particles_inside_[i]).get_z(),
                        z_slope_center_lower, z_slope_center_upper);
   }
   return sb + sa + si;
 }
 
 IMP::ModelObjectsTemp MembraneRestraint::do_get_inputs() const {
-  ParticleIndexes ps = particles_below;
-  ps.insert(ps.end(), particles_above.begin(), particles_above.end());
-  ps.insert(ps.end(), particles_inside.begin(), particles_inside.end());
+  ParticleIndexes ps = particles_below_;
+  ps.insert(ps.end(), particles_above_.begin(), particles_above_.end());
+  ps.insert(ps.end(), particles_inside_.begin(), particles_inside_.end());
   ParticlesTemp ret;
   ret.reserve(ps.size() + 1);
   IMP::Model *m = get_model();
   for (size_t i(0); i < ps.size(); ++i) {
     ret.push_back(m->get_particle(ps[i]));
   }
-  ret.push_back(m->get_particle(z_nuisance));
+  ret.push_back(m->get_particle(z_nuisance_));
   return ret;
 }
 

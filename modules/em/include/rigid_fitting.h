@@ -2,7 +2,7 @@
  *  \file IMP/em/rigid_fitting.h
  *  \brief preforms rigid fitting between a set of particles and a density map
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPEM_RIGID_FITTING_H
@@ -112,7 +112,7 @@ IMP_VALUES(FittingSolutions, FittingSolutionsList);
 \note The returned cross-correlation score is 1-cc, as we usually want to
       minimize a scoring function. Thus a score of 1 means no-correlation
       and a score of 0. is perfect correlation.
-\note The input rigid body should be also IMP::atom::Hierarchy
+\note The input rigid body should also be IMP::atom::Hierarchy
 \param[in] p           The rigid body to fit
 \param[in] refiner     Refiner to yield rigid body members
 \param[in] weight_key  The weight key of the particles in the rigid body
@@ -146,7 +146,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
 \note The returned cross-correlation score is 1-cc, as we usually want to
       minimize a scoring function. Thus a score of 1 means no correlation
       and a score of 0 is perfect correlation.
-\note The input rigid body should be also IMP::atom::Hierarchy
+\note The input rigid body should also be IMP::atom::Hierarchy
 \param[in] p           The root of the hierarchy to fit
 \param[in] refiner     The refiner to get the leaves of the particle
 \param[in] weight_key  The weight key of the particles in the rigid body
@@ -185,7 +185,7 @@ inline FittingSolutions local_rigid_fitting(
 /**
 \brief Fit a set of particles to a density map around each of the input points.
        The function apply local_rigid_fitting_around_point around each center.
-\note The input rigid body should be also IMP::atom::Hierarchy
+\note The input rigid body should also be IMP::atom::Hierarchy
 \param[in] p           The rigid body to fit
 \param[in] refiner     Refiner to yield rigid body members
 \param[in] wei_key  The weight key of the particles in the rigid body

@@ -14,6 +14,7 @@ import struct
 import sys
 import inspect
 import ihm.format
+import ihm
 
 # ByteArray types
 _Int8 = 1
@@ -179,13 +180,16 @@ def _decode(data, encoding):
 
 
 class BinaryCifReader(ihm.format._Reader):
-    """Class to read an mmCIF file and extract some or all of its data.
+    """Class to read a BinaryCIF file and extract some or all of its data.
 
        Use :meth:`read_file` to actually read the file.
        See :class:`ihm.format.CifReader` for a description of the parameters.
     """
-    def __init__(self, fh, category_handler):
+    def __init__(self, fh, category_handler, unknown_category_handler=None,
+                 unknown_keyword_handler=None):
         self.category_handler = category_handler
+        self.unknown_category_handler = unknown_category_handler
+        self.unknown_keyword_handler = unknown_keyword_handler
         self.fh = fh
         self._file_blocks = None
 
@@ -201,11 +205,13 @@ class BinaryCifReader(ihm.format._Reader):
                 cat_name = _decode_bytes(category[b'name']).lower()
                 handler = self.category_handler.get(cat_name, None)
                 if handler:
-                    self._handle_category(handler, category)
+                    self._handle_category(handler, category, cat_name)
+                elif self.unknown_category_handler is not None:
+                    self.unknown_category_handler(cat_name, None)
             del self._file_blocks[0]
         return len(self._file_blocks) > 0
 
-    def _handle_category(self, handler, category):
+    def _handle_category(self, handler, category, cat_name):
         """Extract data for the given category"""
         num_cols = len(handler._keys)
         # Read all data for the category;
@@ -218,12 +224,15 @@ class BinaryCifReader(ihm.format._Reader):
             key_index[key] = i
         column_indices = []
         for c in category[b'columns']:
-            ki = key_index.get(_decode_bytes(c[b'name']).lower(), None)
+            key_name = _decode_bytes(c[b'name']).lower()
+            ki = key_index.get(key_name, None)
             if ki is not None:
                 column_indices.append(ki)
                 r = self._read_column(c, handler)
                 num_rows = len(r)
                 category_data[ki] = r
+            elif self.unknown_keyword_handler is not None:
+                self.unknown_keyword_handler(cat_name, key_name, None)
         row_data = [handler.not_in_file] * num_cols
         for row in range(num_rows):
             # Only update data for columns that we read (others will
@@ -472,7 +481,7 @@ def _get_mask_and_type(data):
     typ = None
     seen_types = set()
     for i, val in enumerate(data):
-        if val is None or val == ihm.format._Writer.unknown:
+        if val is None or val == ihm.unknown:
             if mask is None:
                 mask = [0] * len(data)
             mask[i] = 1 if val is None else 2
@@ -500,7 +509,9 @@ def _get_mask_and_type(data):
 
 
 class BinaryCifWriter(ihm.format._Writer):
-    """Write information to a BinaryCIF file."""
+    """Write information to a BinaryCIF file. See :class:`ihm.format.CifWriter`
+       for more information. The constructor takes a single argument - a Python
+       filelike object, open for writing in binary mode."""
 
     _mask_encoders = [_DeltaEncoder(), _RunLengthEncoder(),
                       _ByteArrayEncoder()]
@@ -521,7 +532,8 @@ class BinaryCifWriter(ihm.format._Writer):
         return _LoopWriter(self, category, keys)
 
     def write_comment(self, comment):
-        # BinaryCIF does not support comments, so this is a noop
+        """See :meth:`ihm.format.CifWriter.write_comment`.
+           @note BinaryCIF does not support comments, so this is a noop"""
         pass
 
     def _encode_data(self, data):
@@ -539,6 +551,7 @@ class BinaryCifWriter(ihm.format._Writer):
                 b'data': {b'data': encdata, b'encoding': encs}}
 
     def start_block(self, name):
+        """See :meth:`ihm.format.CifWriter.start_block`."""
         block = {b'header':_encode_str(name), b'categories': []}
         self._categories = block[b'categories']
         self._blocks.append(block)

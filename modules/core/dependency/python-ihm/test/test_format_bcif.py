@@ -120,7 +120,7 @@ class Tests(unittest.TestCase):
     def test_decoder_base(self):
         """Test Decoder base class"""
         d = ihm.format_bcif._Decoder()
-        self.assertEqual(d._kind, None)
+        self.assertIsNone(d._kind)
         d(enc=None, data=None) # noop
 
     def test_string_array_decoder(self):
@@ -243,10 +243,14 @@ class Tests(unittest.TestCase):
         data = ihm.format_bcif._decode(data, [runlen, bytearr])
         self.assertEqual(list(data), [1, 1, 1, 2, 3, 3])
 
-    def _read_bcif(self, blocks, category_handlers):
+    def _read_bcif(self, blocks, category_handlers,
+                   unknown_category_handler=None,
+                   unknown_keyword_handler=None):
         fh = _make_bcif_file(blocks)
         sys.modules['msgpack'] = MockMsgPack
-        r = ihm.format_bcif.BinaryCifReader(fh, category_handlers)
+        r = ihm.format_bcif.BinaryCifReader(fh, category_handlers,
+                                            unknown_category_handler,
+                                            unknown_keyword_handler)
         r.read_file()
 
     def test_category_case_insensitive(self):
@@ -283,20 +287,53 @@ class Tests(unittest.TestCase):
                           {'var1': 'OMIT', 'var2': 'NOT'},
                           {'var1': 'test3', 'var2': 'NOT'}])
 
-    def test_extra_categories_ignored(self):
-        """Check that extra categories in the file are ignored"""
+    def test_unknown_categories_ignored(self):
+        """Check that unknown categories are just ignored"""
         cat1 = Category('_foo', {'var1':['test1']})
         cat2 = Category('_bar', {'var2':['test2']})
         h = GenericHandler()
         self._read_bcif([Block([cat1, cat2])], {'_foo':h})
         self.assertEqual(h.data, [{'var1': 'test1'}])
 
-    def test_extra_keywords_ignored(self):
-        """Check that extra keywords in the file are ignored"""
+    def test_unknown_categories_handled(self):
+        """Check that unknown categories are handled if requested"""
+        class CatHandler(object):
+            def __init__(self):
+                self.warns = []
+            def __call__(self, cat, line):
+                self.warns.append((cat, line))
+
+        ch = CatHandler()
+        cat1 = Category('_foo', {'var1':['test1']})
+        cat2 = Category('_bar', {'var2':['test2']})
+        h = GenericHandler()
+        self._read_bcif([Block([cat1, cat2])], {'_foo':h},
+                        unknown_category_handler=ch)
+        self.assertEqual(h.data, [{'var1': 'test1'}])
+        self.assertEqual(ch.warns, [('_bar', None)])
+
+    def test_unknown_keywords_ignored(self):
+        """Check that unknown keywords are ignored"""
         cat = Category('_foo', {'var1':['test1'], 'othervar':['test2']})
         h = GenericHandler()
         self._read_bcif([Block([cat])], {'_foo':h})
         self.assertEqual(h.data, [{'var1': 'test1'}])
+
+    def test_unknown_keywords_handled(self):
+        """Check that unknown keywords are handled if requested"""
+        class KeyHandler(object):
+            def __init__(self):
+                self.warns = []
+            def __call__(self, cat, key, line):
+                self.warns.append((cat, key, line))
+
+        kh = KeyHandler()
+        cat = Category('_foo', {'var1':['test1'], 'othervar':['test2']})
+        h = GenericHandler()
+        self._read_bcif([Block([cat])], {'_foo':h},
+                        unknown_keyword_handler=kh)
+        self.assertEqual(h.data, [{'var1': 'test1'}])
+        self.assertEqual(kh.warns, [('_foo', 'othervar', None)])
 
     def test_multiple_data_blocks(self):
         """Test handling of multiple data blocks"""
@@ -384,7 +421,7 @@ class Tests(unittest.TestCase):
         data = [0, 1, -1]
         encdata, encdict = d(data)
         self.assertEqual(data, encdata)
-        self.assertEqual(encdict, None)
+        self.assertIsNone(encdict)
 
         # large data is encoded
         data = [0, 1, -1] + [-1] * 40
@@ -401,13 +438,13 @@ class Tests(unittest.TestCase):
         data = [0, 1, -1]
         encdata, encdict = d(data)
         self.assertEqual(data, encdata)
-        self.assertEqual(encdict, None)
+        self.assertIsNone(encdict)
 
         # large data that can't be compressed is returned unchanged
         data = list(range(50))
         encdata, encdict = d(data)
         self.assertEqual(data, encdata)
-        self.assertEqual(encdict, None)
+        self.assertIsNone(encdict)
 
         # large data that can be compressed
         data = [0] * 30 + [1] * 40
@@ -437,12 +474,12 @@ class Tests(unittest.TestCase):
         """Test get_mask_and_type with no mask"""
         data = [1,2,3,4]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
-        self.assertEqual(mask, None)
+        self.assertIsNone(mask)
         self.assertEqual(typ, int)
 
     def test_mask_type_masked_int(self):
         """Test get_mask_and_type with masked int data"""
-        data = [1,2,3,None,'?',4]
+        data = [1,2,3,None,ihm.unknown,4]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
         self.assertEqual(mask, [0,0,0,1,2,0])
         self.assertEqual(typ, int)
@@ -453,14 +490,14 @@ class Tests(unittest.TestCase):
             # long type is only in Python 2
             # Use long(x) rather than xL since the latter will cause a syntax
             # error in Python 3
-            data = [long(1),long(2),long(3),None,'?',long(4)]
+            data = [long(1),long(2),long(3),None,ihm.unknown,long(4)]
             mask, typ = ihm.format_bcif._get_mask_and_type(data)
             self.assertEqual(mask, [0,0,0,1,2,0])
             self.assertEqual(typ, int)
 
     def test_mask_type_masked_float(self):
         """Test get_mask_and_type with masked float data"""
-        data = [1.0,2.0,3.0,None,'?',4.0]
+        data = [1.0,2.0,3.0,None,ihm.unknown,4.0]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
         self.assertEqual(mask, [0,0,0,1,2,0])
         self.assertEqual(typ, float)
@@ -471,30 +508,31 @@ class Tests(unittest.TestCase):
             import numpy
         except ImportError:
             self.skipTest("this test requires numpy")
-        data = [numpy.float64(4.2),None,'?']
+        data = [numpy.float64(4.2),None,ihm.unknown]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
         self.assertEqual(mask, [0,1,2])
         self.assertEqual(typ, float)
 
     def test_mask_type_masked_str(self):
         """Test get_mask_and_type with masked str data"""
-        data = ['a','b',None,'?','c']
+        # Literal . and ? should not be masked
+        data = ['a','b',None,ihm.unknown,'c','.','?']
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
-        self.assertEqual(mask, [0,0,1,2,0])
+        self.assertEqual(mask, [0,0,1,2,0,0,0])
         self.assertEqual(typ, str)
 
     def test_mask_type_mix_int_float(self):
         """Test get_mask_and_type with a mix of int and float data"""
         data = [1,2,3,4.0]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
-        self.assertEqual(mask, None)
+        self.assertIsNone(mask)
         self.assertEqual(typ, float) # int/float is coerced to float
 
     def test_mask_type_mix_int_float_str(self):
         """Test get_mask_and_type with a mix of int/float/str data"""
         data = [1,2,3,4.0,'foo']
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
-        self.assertEqual(mask, None)
+        self.assertIsNone(mask)
         self.assertEqual(typ, str) # int/float/str is coerced to str
 
     def test_mask_type_bad_type(self):
@@ -528,10 +566,12 @@ class Tests(unittest.TestCase):
         """Test StringArray encoder with mask"""
         d = ihm.format_bcif._StringArrayMaskedEncoder()
         # True should be mapped to 'YES'; int 3 to str '3'
-        indices, encs = d(['a', 'AB', True, '?', None, 'a', 3],
-                          [0, 0, 0, 2, 1, 0, 0])
+        # Unmasked literal . and ? should be kept as-is
+        indices, encs = d(['a', 'AB', True, ihm.unknown, None, 'a', 3,
+                           '.', '?'],
+                          [0, 0, 0, 2, 1, 0, 0, 0, 0])
         # \xff is -1 (masked value) as a signed char (Int8)
-        self.assertEqual(indices, b'\x00\x01\x02\xff\xff\x00\x03')
+        self.assertEqual(indices, b'\x00\x01\x02\xff\xff\x00\x03\x04\x05')
         enc, = encs
         self.assertEqual(enc[b'dataEncoding'],
                              [{b'kind':b'ByteArray',
@@ -539,8 +579,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(enc[b'offsetEncoding'],
                              [{b'kind':b'ByteArray',
                                b'type':ihm.format_bcif._Uint8}])
-        self.assertEqual(enc[b'offsets'], b'\x00\x01\x03\x06\x07')
-        self.assertEqual(enc[b'stringData'], b'aABYES3')
+        self.assertEqual(enc[b'offsets'], b'\x00\x01\x03\x06\x07\x08\t')
+        self.assertEqual(enc[b'stringData'], b'aABYES3.?')
 
     def test_int_array_encoder_no_mask(self):
         """Test IntArray encoder with no mask"""
@@ -614,13 +654,20 @@ class Tests(unittest.TestCase):
         with writer.loop('foo', ["bar", "baz"]) as l:
             l.write(bar='x')
             l.write(bar=None, baz='z')
+            l.write(bar=ihm.unknown, baz='z')
+            l.write(bar='.', baz='z')
+            l.write(bar='?', baz='z')
             l.write(baz='y')
         writer.flush()
         block, = fh.data[b'dataBlocks']
         category, = block[b'categories']
         self.assertEqual(category[b'name'], b'foo')
-        self.assertEqual(category[b'rowCount'], 3)
-        col1, col2 = category[b'columns']
+        self.assertEqual(category[b'rowCount'], 6)
+        cols = sorted(category[b'columns'], key=lambda x:x[b'name'])
+        self.assertEqual(len(cols), 2)
+        # Check mask for bar column; literal . and ? should not be masked (=0)
+        self.assertEqual(cols[0][b'mask'][b'data'],
+                         b'\x00\x01\x02\x00\x00\x01')
 
 
 if __name__ == '__main__':

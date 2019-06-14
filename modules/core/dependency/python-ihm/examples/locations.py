@@ -31,6 +31,9 @@ system.locations.append(l)
 # archive.zip from the given DOI or URL, unzipping it, and then looking in the
 # densities directory. Multiple files can share the same repository.
 
+# Note that this URL is for example purposes only (there isn't really an
+# 'archive.zip' at that DOI).
+
 # Datasets are the most common users of external files. For example, to refer
 # to an input PDB file in the current directory:
 l = ihm.location.InputFileLocation("simple.pdb", details="Input PDB file")

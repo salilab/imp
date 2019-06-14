@@ -514,7 +514,7 @@ def make_header(name, infos, deps):
  *  \\file RMF/decorator/%(name)s.h
  *  \\brief Helper functions for manipulating RMF files.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

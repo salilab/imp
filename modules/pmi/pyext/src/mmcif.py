@@ -32,6 +32,7 @@ import itertools
 import ihm.location
 import ihm.dataset
 import ihm.dumper
+import ihm.reader
 import ihm.metadata
 import ihm.startmodel
 import ihm.model
@@ -39,6 +40,7 @@ import ihm.protocol
 import ihm.analysis
 import ihm.representation
 import ihm.geometry
+import ihm.cross_linkers
 
 def _assign_id(obj, seen_objs, obj_by_id):
     """Assign a unique ID to obj, and track all ids in obj_by_id."""
@@ -296,6 +298,8 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
 
     assembly = None
     _label_map = {'wtDSS':'DSS', 'scDSS':'DSS', 'scEDC':'EDC'}
+    _descriptor_map = {'DSS': ihm.cross_linkers.dss,
+                       'EDC': ihm.cross_linkers.edc}
 
     def __init__(self, pmi_restraint):
         self.pmi_restraint = pmi_restraint
@@ -305,7 +309,17 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
         self.label = label
         super(_CrossLinkRestraint, self).__init__(
                 dataset=self.pmi_restraint.dataset,
-                linker_type=label)
+                linker=self._get_chem_descriptor(label))
+
+    @classmethod
+    def _get_chem_descriptor(cls, label):
+        if label not in cls._descriptor_map:
+            # If label is not a standard linker type, make a new chemical
+            # descriptor containing just the name. We don't know the chemistry
+            # so cannot specify a SMILES or INCHI string for it at this point
+            d = ihm.ChemDescriptor(label)
+            cls._descriptor_map[label] = d
+        return cls._descriptor_map[label]
 
     def _set_psi_sigma(self, model):
         old_values = []
@@ -494,6 +508,11 @@ class _ReplicaExchangeProtocolStep(ihm.protocol.Step):
             method = 'Replica exchange monte carlo'
         else:
             method = 'Replica exchange molecular dynamics'
+        self.monte_carlo_temperature = rex.vars['monte_carlo_temperature']
+        self.replica_exchange_minimum_temperature = \
+                         rex.vars['replica_exchange_minimum_temperature']
+        self.replica_exchange_maximum_temperature = \
+                         rex.vars['replica_exchange_maximum_temperature']
         super(_ReplicaExchangeProtocolStep, self).__init__(
                 assembly=state.modeled_assembly,
                 dataset_group=None, # filled in by add_step()
@@ -501,6 +520,49 @@ class _ReplicaExchangeProtocolStep(ihm.protocol.Step):
                 num_models_begin=None, # filled in by add_step()
                 num_models_end=rex.vars["number_of_frames"],
                 multi_scale=True, multi_state=False, ordered=False)
+
+
+class _ReplicaExchangeProtocolDumper(ihm.dumper.Dumper):
+    """Write IMP-specific information about replica exchange to mmCIF.
+       Note that IDs will have already been assigned by python-ihm's
+       standard modeling protocol dumper."""
+    def dump(self, system, writer):
+        with writer.loop("_imp_replica_exchange_protocol",
+                         ["protocol_id", "step_id", "monte_carlo_temperature",
+                          "replica_exchange_minimum_temperature",
+                          "replica_exchange_maximum_temperature"]) as l:
+            for p in system._all_protocols():
+                for s in p.steps:
+                    if isinstance(s, _ReplicaExchangeProtocolStep):
+                        self._dump_step(p, s, l)
+
+    def _dump_step(self, p, s, l):
+        l.write(protocol_id=p._id, step_id=s._id,
+                monte_carlo_temperature=s.monte_carlo_temperature,
+                replica_exchange_minimum_temperature= \
+                         s.replica_exchange_minimum_temperature,
+                replica_exchange_maximum_temperature= \
+                         s.replica_exchange_maximum_temperature)
+
+
+class _ReplicaExchangeProtocolHandler(ihm.reader.Handler):
+    category = '_imp_replica_exchange_protocol'
+
+    """Read IMP-specific information about replica exchange from mmCIF."""
+    def __call__(self, protocol_id, step_id, monte_carlo_temperature,
+                 replica_exchange_minimum_temperature,
+                 replica_exchange_maximum_temperature):
+        p = self.sysr.protocols.get_by_id(protocol_id)
+        # todo: match step_id properly (don't assume contiguous)
+        s = p.steps[int(step_id)-1]
+        # Upgrade from plain ihm Step to IMP subclass
+        s.__class__ = _ReplicaExchangeProtocolStep
+        s.monte_carlo_temperature = \
+                 self.get_float(monte_carlo_temperature)
+        s.replica_exchange_minimum_temperature = \
+                 self.get_float(replica_exchange_minimum_temperature)
+        s.replica_exchange_maximum_temperature = \
+                 self.get_float(replica_exchange_maximum_temperature)
 
 
 class _SimpleProtocolStep(ihm.protocol.Step):
@@ -771,10 +833,12 @@ class _AllStartingModels(object):
                 self.simo.system.locations.append(t.alignment_file)
             if t.dataset:
                 self.simo._add_dataset(t.dataset)
+        source = r['entity_source'].get(f.chain)
+        if source:
+            f.asym_unit.entity.source = source
         pmi_offset = f.asym_unit.entity.pmi_offset
         m = _StartingModel(
-                    asym_unit=f.asym_unit.asym.pmi_range(f.start + f.offset,
-                                                         f.end + f.offset),
+                    asym_unit=f.asym_unit.asym.pmi_range(f.start, f.end),
                     dataset=r['dataset'], asym_id=f.chain,
                     templates=templates, offset=f.offset + pmi_offset,
                     metadata=r['metadata'],
@@ -1166,12 +1230,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self._last_state = s
         return s
 
-    def get_file_dataset(self, fname):
-        for d in self._file_datasets:
-            fd = d.get(os.path.abspath(fname), None)
-            if fd:
-                return fd
-
     def _get_chain_for_component(self, name, output):
         """Get the chain ID for a component, if any."""
         # todo: handle multiple copies
@@ -1254,7 +1312,8 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
            Information can be written in any format supported by
            the ihm library (typically this is 'mmCIF' or 'BCIF')."""
         self.finalize()
-        ihm.dumper.write(self.fh, [self.system], format)
+        ihm.dumper.write(self.fh, [self.system], format,
+                         dumpers=[_ReplicaExchangeProtocolDumper])
 
     def finalize(self):
         """Do any final processing on the class hierarchy.
@@ -1561,3 +1620,40 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
     _metadata = property(lambda self:
                          itertools.chain.from_iterable(self._each_metadata))
+
+
+def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):
+    """Read data from the mmCIF file handle `fh`.
+       This is a simple wrapper around `ihm.reader.read()`, which also
+       reads PMI-specific information from the mmCIF or BinaryCIF file."""
+    return ihm.reader.read(fh, model_class=model_class, format=format,
+                           handlers=[_ReplicaExchangeProtocolHandler]+handlers)
+
+
+class GMMParser(ihm.metadata.Parser):
+    """Extract metadata from an EM density GMM file."""
+
+    def parse_file(self, filename):
+        """Extract metadata from `filename`.
+           @return a dict with key `dataset` pointing to the GMM file and
+           `number_of_gaussians` to the number of GMMs (or None)"""
+        l = ihm.location.InputFileLocation(filename,
+                details="Electron microscopy density map, "
+                        "represented as a Gaussian Mixture Model (GMM)")
+        # A 3DEM restraint's dataset ID uniquely defines the mmCIF restraint, so
+        # we need to allow duplicates
+        l._allow_duplicates = True
+        d = ihm.dataset.EMDensityDataset(l)
+        ret = {'dataset':d, 'number_of_gaussians':None}
+
+        with open(filename) as fh:
+            for line in fh:
+                if line.startswith('# data_fn: '):
+                    p = ihm.metadata.MRCParser()
+                    fn = line[11:].rstrip('\r\n')
+                    dataset = p.parse_file(os.path.join(
+                                     os.path.dirname(filename), fn))['dataset']
+                    ret['dataset'].parents.append(dataset)
+                elif line.startswith('# ncenters: '):
+                    ret['number_of_gaussians'] = int(line[12:])
+        return ret

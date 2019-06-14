@@ -3,7 +3,7 @@
  *  \brief A restraint for ambiguous cross-linking MS data and multiple
  *         state approach.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 
@@ -41,9 +41,9 @@ class IMPPMIEXPORT CompositeRestraint : public Restraint
     double invdx_;
     double argmax_;
     double argmin_;
-    bool tabprob_;
     double plateau_;
     int exparg_grid_size_;
+    bool tabprob_;
 
     inline double calc_prob (double dist) const{
       double argvalue=(dist-coffd_)/l_;

@@ -12,7 +12,7 @@ class Tests(unittest.TestCase):
     def test_step(self):
         """Test protocol Step class"""
         s = ihm.protocol.Step(assembly='foo', dataset_group='bar', method='baz')
-        self.assertEqual(s.name, None)
+        self.assertIsNone(s.name)
         self.assertEqual(s.method, 'baz')
 
     def test_protocol(self):

@@ -1,4 +1,8 @@
-"""Classes for handling geometry."""
+"""Classes for handling geometry.
+
+   Geometric objects (see :class:`GeometricObject`) are usually
+   used in :class:`~ihm.restraint.GeometricRestraint` objects.
+"""
 
 class Center(object):
     """Define the center of a geometric object in Cartesian space.

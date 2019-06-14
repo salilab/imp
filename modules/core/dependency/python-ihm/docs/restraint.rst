@@ -73,6 +73,9 @@ The :mod:`ihm.restraint` Python module
 .. autoclass:: NonPolyFeature
    :members:
 
+.. autoclass:: PseudoSiteFeature
+   :members:
+
 .. autoclass:: GeometricRestraint
    :members:
 
@@ -86,4 +89,7 @@ The :mod:`ihm.restraint` Python module
    :members:
 
 .. autoclass:: DerivedDistanceRestraint
+   :members:
+
+.. autoclass:: PredictedContactRestraint
    :members:

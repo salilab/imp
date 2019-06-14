@@ -2,7 +2,7 @@
  *  \file IMP/core/RigidBodyAnglePairScore.h
  *  \brief A Score on the crossing angle between two rigid bodies
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_BODY_ANGLE_PAIR_SCORE_H

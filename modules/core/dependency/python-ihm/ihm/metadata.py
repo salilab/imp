@@ -13,18 +13,24 @@
 import ihm
 from . import location, dataset, startmodel, util
 from .format import CifWriter
+import ihm.source
 
 import operator
 import struct
 import json
+import warnings
 import sys
 import re
 
 # Handle different naming of urllib in Python 2/3
 try:
-    import urllib.request as urllib2
+    import urllib.request
+    import urllib.error
 except ImportError:
-    import urllib2
+    class MockUrlLib(object):
+        pass
+    urllib = MockUrlLib()
+    urllib.request = urllib.error = __import__('urllib2')
 
 class Parser(object):
     """Base class for all metadata parsers."""
@@ -49,35 +55,16 @@ class MRCParser(Parser):
                     otherwise to the file itself.
 
            If the file turns out to be an EMDB entry, this will also query
-           the EMDB web API to extract version information and details for the
-           dataset.
+           the EMDB web API (if available) to extract version information
+           and details for the dataset.
         """
         emdb = self._get_emdb(filename)
         if emdb:
-            version, details = self._get_emdb_info(emdb)
-            l = location.EMDBLocation(emdb, version=version,
-                                      details=details if details
-                                         else "Electron microscopy density map")
+            l = _ParsedEMDBLocation(emdb)
         else:
             l = location.InputFileLocation(filename,
                                       details="Electron microscopy density map")
         return {'dataset': dataset.EMDensityDataset(l)}
-
-    def _get_emdb_info(self, emdb):
-        """Query EMDB API and return version & details of a given entry"""
-        req = urllib2.Request('https://www.ebi.ac.uk/pdbe/api/emdb/entry/'
-                              'summary/%s' % emdb, None, {})
-        response = urllib2.urlopen(req)
-        contents = json.load(response)
-        keys = list(contents.keys())
-        info = contents[keys[0]][0]['deposition']
-        # JSON values are always Unicode, but on Python 2 we want non-Unicode
-        # strings, so convert to ASCII
-        if sys.version_info[0] < 3:
-            return (info['map_release_date'].encode('ascii'),
-                    info['title'].encode('ascii'))
-        else:
-            return info['map_release_date'], info['title']
 
     def _get_emdb(self, filename):
         """Return the EMDB id of the file, or None."""
@@ -101,6 +88,60 @@ class MRCParser(Parser):
                         return m.group(1).decode('ascii')
 
 
+class _ParsedEMDBLocation(location.EMDBLocation):
+    """Like an EMDBLocation, but looks up version and details from EMDB
+       when they are requested (unless they are set to other values)."""
+    def __init__(self, emdb):
+        self.__emdb_info = None
+        super(_ParsedEMDBLocation, self).__init__(
+                                      db_code=emdb, version=None,
+                                      details=None)
+        self.__emdb_info = None
+
+    def __get_version(self):
+        self._get_emdb_info()
+        return self.__emdb_info[0]
+    def __set_version(self, val):
+        if self.__emdb_info is None:
+            self.__emdb_info = [None, None]
+        self.__emdb_info[0] = val
+    def __get_details(self):
+        self._get_emdb_info()
+        return self.__emdb_info[1] or "Electron microscopy density map"
+    def __set_details(self, val):
+        if self.__emdb_info is None:
+            self.__emdb_info = [None, None]
+        self.__emdb_info[1] = val
+
+    def _get_emdb_info(self):
+        """Query EMDB API and get version & details of a given entry"""
+        if self.__emdb_info is not None:
+            return
+        req = urllib.request.Request(
+                'https://www.ebi.ac.uk/pdbe/api/emdb/entry/summary/%s'
+                % self.access_code, None, {})
+        try:
+            response = urllib.request.urlopen(req, timeout=10)
+        except urllib.error.URLError as err:
+            warnings.warn("EMDB API query failed; using default metadata "
+                          "for MRC file; %s" % str(err))
+            self.__emdb_info = [None, None]
+            return
+        contents = json.load(response)
+        keys = list(contents.keys())
+        info = contents[keys[0]][0]['deposition']
+        # JSON values are always Unicode, but on Python 2 we want non-Unicode
+        # strings, so convert to ASCII
+        if sys.version_info[0] < 3:
+            self.__emdb_info = [info['map_release_date'].encode('ascii'),
+                                info['title'].encode('ascii')]
+        else:
+            self.__emdb_info = [info['map_release_date'], info['title']]
+
+    version = property(__get_version, __set_version)
+    details = property(__get_details, __set_details)
+
+
 class PDBParser(Parser):
     """Extract metadata (e.g. PDB ID, comparative modeling templates) from a
        PDB file. This handles PDB headers added by the PDB database itself,
@@ -117,6 +158,8 @@ class PDBParser(Parser):
                     IDs in the PDB file and values the list of comparative model
                     templates used to model that chain as
                     :class:`ihm.startmodel.Template` objects;
+                    'entity_source' pointing to a dict with keys the asym IDs
+                    and values :class:`ihm.source.Source` objects;
                     'software' pointing to a list of software used to generate
                     the file (as :class:`ihm.Software` objects);
                     'script' pointing to the script used to generate the
@@ -171,7 +214,8 @@ class PDBParser(Parser):
                REMARK   6 TEMPLATE: 3f3fG 482:G - 551:G MODELS 429:A - 488:A AT 10.0%
                REMARK   6 TEMPLATE: custom1 9:A - 352:A MODELS 80:A - 414:A AT 32.0%
         """
-        ret = {'templates':{}, 'software':[], 'metadata':[], 'script':None}
+        ret = {'templates':{}, 'software':[], 'metadata':[], 'script':None,
+               'entity_source':{}}
         with open(filename) as fh:
             first_line = fh.readline()
             local_file = location.InputFileLocation(filename,
@@ -202,8 +246,10 @@ class PDBParser(Parser):
 
     def _parse_official_pdb(self, fh, first_line, ret):
         """Handle a file that's from the official PDB database."""
-        version, details, metadata = self._parse_pdb_records(fh, first_line)
+        version, details, metadata, entity_source \
+                                = self._parse_pdb_records(fh, first_line)
         l = location.PDBLocation(first_line[62:66].strip(), version, details)
+        ret['entity_source'] = entity_source
         ret['metadata'] = metadata
         ret['dataset'] = dataset.PDBDataset(l)
 
@@ -361,13 +407,70 @@ class PDBParser(Parser):
         """Extract information from an official PDB"""
         metadata = []
         details = ''
+        compnd = ''
+        source = ''
         for line in fh:
             if line.startswith('TITLE'):
                 details += line[10:].rstrip()
+            elif line.startswith('COMPND'):
+                compnd += line[10:].rstrip()
+            elif line.startswith('SOURCE'):
+                source += line[10:].rstrip()
             elif line.startswith('HELIX'):
                 metadata.append(startmodel.PDBHelix(line))
         return (first_line[50:59].strip(),
-                details if details else None, metadata)
+                details if details else None, metadata,
+                self._make_entity_source(compnd, source))
+
+    def _make_one_entity_source(self, compnd, source):
+        """Make a single ihm.source.Source object"""
+        def make_from_source(cls):
+            return cls(scientific_name=source.get('ORGANISM_SCIENTIFIC'),
+                       common_name=source.get('ORGANISM_COMMON'),
+                       strain=source.get('STRAIN'),
+                       ncbi_taxonomy_id=source.get('ORGANISM_TAXID'))
+        if compnd.get('ENGINEERED', None) == 'YES':
+            gene = make_from_source(ihm.source.Details)
+            host = ihm.source.Details(
+                    scientific_name=source.get('EXPRESSION_SYSTEM'),
+                    common_name=source.get('EXPRESSION_SYSTEM_COMMON'),
+                    strain=source.get('EXPRESSION_SYSTEM_STRAIN'),
+                    ncbi_taxonomy_id=source.get('EXPRESSION_SYSTEM_TAXID'))
+            return ihm.source.Manipulated(gene=gene, host=host)
+        else:
+            if source.get('SYNTHETIC', None) == 'YES':
+                cls = ihm.source.Synthetic
+            else:
+                cls = ihm.source.Natural
+            return make_from_source(cls)
+
+    def _make_entity_source(self, compnd, source):
+        """Make ihm.source.Source objects given PDB COMPND and SOURCE lines"""
+        entity_source = {}
+        # Convert each string into dict of mol_id vs keys
+        compnd = self._parse_pdb_mol_id(compnd)
+        source = self._parse_pdb_mol_id(source)
+        for mol_id, c in compnd.items():
+            if mol_id in source and 'CHAIN' in c:
+                s = self._make_one_entity_source(c, source[mol_id])
+                for chain in c['CHAIN'].split(','):
+                    entity_source[chain.strip()] = s
+        return entity_source
+
+    def _parse_pdb_mol_id(self, txt):
+        """Convert text COMPND or SOURCE records to a dict of mol_id vs keys"""
+        d = {}
+        mol_id = None
+        for pair in txt.split(';'):
+            spl = pair.split(':')
+            if len(spl) == 2:
+                key = spl[0].upper().strip()
+                val = spl[1].upper().strip()
+                if key == 'MOL_ID':
+                    mol_id = d[val] = {}
+                elif mol_id is not None:
+                    mol_id[key] = val
+        return d
 
     def _parse_details(self, fh):
         """Extract TITLE records from a PDB file"""

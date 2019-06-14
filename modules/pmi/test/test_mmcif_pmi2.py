@@ -34,6 +34,11 @@ class Tests(IMP.test.TestCase):
         d = ihm.dumper._StructAsymDumper()
         d.finalize(system)
 
+    def assign_range_ids(self, system):
+        """Assign IDs to all Entity/AsymUnit segments in the system"""
+        d = ihm.dumper._EntityPolySegmentDumper()
+        d.finalize(system)
+
     def test_component_mapper(self):
         """Test ComponentMapper with PMI2 topology"""
         m = IMP.Model()
@@ -55,11 +60,25 @@ class Tests(IMP.test.TestCase):
         po = DummyPO(None)
         s.add_protocol_output(po)
         state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_representation(resolutions=[1])
         hier = s.build()
 
-        # Check mapping from Hierarchy back to System
+        # Check mapping from top-level Hierarchy back to System
         self.assertEqual(IMP.pmi.tools._get_system_for_hier(hier), s)
+        # Invalid particle
         self.assertEqual(IMP.pmi.tools._get_system_for_hier(None), None)
+        # Particle not set up by System
+        p = IMP.Particle(m)
+        self.assertEqual(IMP.pmi.tools._get_system_for_hier(p), None)
+        h = IMP.atom.Hierarchy.setup_particle(p)
+        self.assertEqual(IMP.pmi.tools._get_system_for_hier(h), None)
+        # Child particles should be OK
+        child = hier.get_child(0).get_child(0).get_child(0).get_child(0)
+        self.assertEqual(IMP.pmi.tools._get_system_for_hier(child), s)
+        child = child.get_child(3)
+        self.assertEqual(IMP.pmi.tools._get_system_for_hier(child), s)
+
         # Check mapping from Hierarchy to ProtocolOutput
         pos = list(IMP.pmi.tools._all_protocol_outputs([], hier))
         # Should be a list of (ProtocolOuput, State) tuples
@@ -134,30 +153,38 @@ _entity.details
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
         self.assign_entity_asym_ids(po.system)
+        self.assign_range_ids(po.system)
         # Assign starting model IDs
         d = ihm.dumper._StartingModelDumper()
         d.finalize(po.system)
         d = ihm.dumper._ModelRepresentationDumper()
         d.finalize(po.system)
         d.dump(po.system, w)
+        r, = po.system.orphan_representations
+        self.assertEqual([f.asym_unit.seq_id_range for f in r], [(1,2), (3,4)])
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
-_ihm_model_representation.ordinal_id
-_ihm_model_representation.representation_id
-_ihm_model_representation.segment_id
-_ihm_model_representation.entity_id
-_ihm_model_representation.entity_description
-_ihm_model_representation.entity_asym_id
-_ihm_model_representation.seq_id_begin
-_ihm_model_representation.seq_id_end
-_ihm_model_representation.model_object_primitive
-_ihm_model_representation.starting_model_id
-_ihm_model_representation.model_mode
-_ihm_model_representation.model_granularity
-_ihm_model_representation.model_object_count
-1 1 1 1 Nup84 A 1 2 sphere 1 flexible by-residue .
-2 1 2 1 Nup84 A 3 4 sphere . flexible by-feature 2
+_ihm_model_representation.id
+_ihm_model_representation.name
+_ihm_model_representation.details
+1 . .
+#
+#
+loop_
+_ihm_model_representation_details.id
+_ihm_model_representation_details.representation_id
+_ihm_model_representation_details.entity_id
+_ihm_model_representation_details.entity_description
+_ihm_model_representation_details.entity_asym_id
+_ihm_model_representation_details.entity_poly_segment_id
+_ihm_model_representation_details.model_object_primitive
+_ihm_model_representation_details.starting_model_id
+_ihm_model_representation_details.model_mode
+_ihm_model_representation_details.model_granularity
+_ihm_model_representation_details.model_object_count
+1 1 1 Nup84 A 1 sphere 1 flexible by-residue .
+2 1 1 Nup84 A 2 sphere . flexible by-feature 2
 #
 """)
 

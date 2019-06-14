@@ -166,59 +166,6 @@ class DistanceRestraint(IMP.pmi.restraints.RestraintBase):
                                        particles2[0]))
 
 
-@IMP.deprecated_object(2.10,
-        "If you use this class please let the PMI developers know.")
-class TorqueRestraint(IMP.Restraint):
-    import math
-    def __init__(self, m, objects, resolution, angular_tolerance,label='None'):
-        IMP.Restraint.__init__(self, m, "TorqueRestraint %1%")
-        self.softness_angle = 0.5
-        self.plateau = 1e-10
-        self.weight = 1.0
-        self.m=m
-        hierarchies = IMP.pmi.tools.input_adaptor(objects,
-                                            resolution,
-                                            flatten=True)
-        self.particles = [h.get_particle() for h in hierarchies]
-        self.ds=[IMP.core.XYZ(p) for p in self.particles]
-        self.label=label
-        self.at=angular_tolerance
-
-    def get_angle_probability(self,xyz,angle_center):
-        maxtheta=angle_center+self.at
-        mintheta=angle_center-self.at
-        angle=self.math.atan2(xyz.get_y(),xyz.get_x() )*180.0/self.math.pi
-        anglediff = (angle - maxtheta + 180 + 360) % 360 - 180
-        argvalue1=anglediff / self.softness_angle
-        anglediff = (angle - mintheta + 180 + 360) % 360 - 180
-        argvalue2=-anglediff / self.softness_angle
-        prob = (1.0-self.plateau) / (1.0 + self.math.exp(-max(argvalue1,argvalue2)))
-        return prob
-
-    def unprotected_evaluate(self, da):
-        s=0.0
-        center=IMP.core.get_centroid(self.ds)
-        angle_center=self.math.atan2(center[1],center[0])*180.0/self.math.pi
-        for xyz in self.ds:
-            s+=-self.math.log(1.0-self.get_angle_probability(xyz,angle_center))
-        return s
-
-    def do_get_inputs(self):
-        return self.particles
-
-    def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self)
-
-    def get_output(self):
-        output = {}
-        score = self.weight * self.unprotected_evaluate(None)
-        output["_TotalScore"] = str(score)
-        output["TorqueRestraint_" + self.label] = str(score)
-        return output
-
-
-
-
 class CylinderRestraint(IMP.Restraint):
     '''
     PMI2 python restraint. Restrains particles within a

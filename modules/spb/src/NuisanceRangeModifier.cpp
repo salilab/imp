@@ -2,7 +2,7 @@
  *  \file spb/NuisanceRangeModifier.cpp
  *  \brief Ensure that a Nuisance stays within its set range.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/atom/internal/SelectionPredicate.h
  *  \brief Predicates for selecting a subset of a hierarchy.
  *
- *  Copyright 2007-2018 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_SELECTION_PREDICATE_H
