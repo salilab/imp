@@ -25,6 +25,10 @@ class IMPATOMEXPORT Mass : public Decorator {
                                 double mass) {
     m->add_attribute(get_mass_key(), pi, mass);
   }
+  static void do_setup_particle(Model *m, ParticleIndex pi,
+                                Mass o) {
+    do_setup_particle(m, pi, o.get_mass());
+  }
 
  public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
@@ -42,6 +46,7 @@ class IMPATOMEXPORT Mass : public Decorator {
   IMP_DECORATOR_METHODS(Mass, Decorator);
   /** Add the specified mass to the particle. */
   IMP_DECORATOR_SETUP_1(Mass, Float, mass);
+  IMP_DECORATOR_SETUP_1(Mass, Mass, other);
 
   /** Get the key used to store the mass. */
   static FloatKey get_mass_key();
