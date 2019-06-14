@@ -21,6 +21,18 @@ class Tests(IMP.test.TestCase):
         mh = None
         self.assertEqual(0, len(m.get_particle_indexes()))
 
+    def test_clone_mass(self):
+        """Test clone of particles that have mass but are not atoms"""
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        h1 = IMP.atom.Hierarchy.setup_particle(p1)
+        m1 = IMP.atom.Mass.setup_particle(p1, 4.0)
+
+        h2 = IMP.atom.create_clone(h1)
+        self.assertTrue(IMP.atom.Mass.get_is_setup(h2))
+        m2 = IMP.atom.Mass(h2)
+        self.assertAlmostEqual(m2.get_mass(), 4.0, delta=1e-4)
+
     def test_destroy_child(self):
         """Destroy of a child should update the parent"""
         m = IMP.Model()

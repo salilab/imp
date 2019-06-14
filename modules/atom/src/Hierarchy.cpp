@@ -438,6 +438,11 @@ Hierarchy clone_internal(Hierarchy d,
   if (Representation::get_is_setup(d.get_particle())) {
     nd = Representation::setup_particle(p, Representation(d.get_particle()));
   }
+  // If a particle has mass but is not an atom (e.g. a PMI bead), copy the mass
+  if (Mass::get_is_setup(d.get_particle()) &&
+      !Mass::get_is_setup(p)) {
+    Mass::setup_particle(p, Mass(d.get_particle()));
+  }
   if (core::Provenanced::get_is_setup(d.get_particle())) {
     core::Provenanced pd(d.get_particle());
     core::Provenance prov = core::create_clone(pd.get_provenance());
