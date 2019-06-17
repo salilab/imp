@@ -72,7 +72,7 @@ which control the build. For example:
 
 In order to build %IMP Python extensions, CMake needs to find the Python header
 and library files that match the `python3` or `python` binary. If using a
-recent version of CMake (3.12 or later) it should have no issues in doing so.
+recent version of CMake (3.14 or later) it should have no issues in doing so.
 However, old versions of CMake might get confused if you have multiple versions
 of Python installed (for example on a Mac with [Homebrew](https://brew.sh/)),
 and find the headers for one version and the binary for another. This can
@@ -82,7 +82,7 @@ variables.
 
 For example, on a Mac with Homebrew, where `python` is Homebrew's
 `/usr/local/bin/python`, old versions of CMake will often find Apple's Python
-headers. This can be resolved (if you cannot upgrade CMake to 3.12 or later)
+headers. This can be resolved (if you cannot upgrade CMake to 3.14 or later)
 by telling CMake where the Homebrew Python headers and library
 are, by addinng to your CMake invocation something like
 `-DPYTHON_LIBRARY=/usr/local/opt/python@2/Frameworks/Python.framework/Versions/Current/lib/libpython2.7.dylib -DPYTHON_INCLUDE_DIR=/usr/local/opt/python@2/Frameworks/Python.framework/Versions/Current/Headers`
