@@ -7,7 +7,7 @@ ChangeLog {#changelog}
   the [tutorial index](https://integrativemodeling.org/tutorials/) for
   more details.
 - The build system has been updated to use new CMake functionality
-  (if available) to detect Python. If you have CMake 3.12 or later, this should
+  (if available) to detect Python. If you have CMake 3.14 or later, this should
   do a much better job of handling multiple Python installations (e.g. Macs
   with Homebrew). It will default to using Python 3. To force use of Python 2,
   pass `-DUSE_PYTHON2=on` to your CMake invocation.
