@@ -13,7 +13,7 @@ ChangeLog {#changelog}
   pass `-DUSE_PYTHON2=on` to your CMake invocation.
 - CMake files are now provided to make it straightforward to use IMP as
   a library in other programs. See
-  [the tutorial](https://integrativemodeling.org/tutorials/using_cpp/develop/)
+  [the tutorial](https://integrativemodeling.org/tutorials/using_cpp/)
   for more details.
 - CMake files are now provided to build new IMP modules outside of the IMP
   build tree (i.e. a module can be built against an IMP binary).
