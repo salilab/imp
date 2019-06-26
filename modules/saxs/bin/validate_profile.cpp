@@ -58,7 +58,7 @@ Each profile is read and written back, with simulated error added if necessary")
     return 0;
   }
 
-  IMP::Vector<IMP::saxs::Profile *> exp_profiles;
+  IMP::saxs::Profiles exp_profiles;
   for (unsigned int i = 0; i < files.size(); i++) {
     // check if file exists
     std::ifstream in_file(files[i].c_str());
@@ -67,7 +67,7 @@ Each profile is read and written back, with simulated error added if necessary")
       exit(1);
     }
 
-    IMP::saxs::Profile *profile = new IMP::saxs::Profile(files[i]);
+    IMP_NEW(IMP::saxs::Profile, profile, (files[i]));
     if (profile->size() == 0) {
       std::cerr << "can't parse input file " << files[i] << std::endl;
       return 1;
