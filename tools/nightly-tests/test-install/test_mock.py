@@ -61,7 +61,7 @@ class IMPMockTests(unittest.TestCase):
                 'estimate_threshold_from_molecular_mass', 'foxs',
                 'imp_example_app', 'ligand_score', 'map2pca', 'mol2pca',
                 'multifit', 'pdb_check', 'pdb_rmf', 'resample_density',
-                'rg', 'rmf3_dump', 'rmf_cat', 'rmf_display',
+                'compute_rg', 'rmf3_dump', 'rmf_cat', 'rmf_display',
                 'rmf_frames', 'rmf_info', 'rmf_interpolate', 'rmf_pdb',
                 'rmf_show', 'rmf_signature', 'rmf_simplify', 'rmf_slice',
                 'rmf_transform', 'rmf_update',

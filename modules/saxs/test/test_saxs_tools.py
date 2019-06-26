@@ -8,11 +8,11 @@ import shutil
 
 class SAXSToolsTest(IMP.test.ApplicationTestCase):
 
-    def test_rg(self):
+    def test_compute_rg(self):
         """Simple test of Rg calculation"""
         print(self.get_input_file_name('6lyz.pdb'))
         print(self.get_input_file_name('lyzexp.dat'))
-        p = self.run_application('rg',
+        p = self.run_application('compute_rg',
                                  [self.get_input_file_name('6lyz.pdb'),
                                   self.get_input_file_name('lyzexp.dat')])
         out, err = p.communicate()

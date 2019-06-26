@@ -1,6 +1,11 @@
 ChangeLog {#changelog}
 =========
 
+# HEAD
+- The `rg` tool (part of the IMP::saxs module, used to compute radius of
+  gyration from a SAXS profile) is now called `compute_rg` for consistency
+  with other SAXS tools and to avoid conflicts with other packages.
+
 # 2.11.0 - 2019-06-25 # {#changelog_2_11_0}
 - A number of new tutorials are now available covering a variety of topics
   from modeling complexes with IMP::pmi to writing new C++ code. See
