@@ -847,7 +847,7 @@ def main(*args, **keys):
 
 import subprocess
 class _SubprocessWrapper(subprocess.Popen):
-    def __init__(self, app, args):
+    def __init__(self, app, args, cwd=None):
         # For (non-Python) applications to work on Windows, the
         # PATH must include the directory containing built DLLs
         if sys.platform == 'win32' and app != sys.executable:
@@ -860,7 +860,7 @@ class _SubprocessWrapper(subprocess.Popen):
         subprocess.Popen.__init__(self, [app]+list(args),
                                   stdin=subprocess.PIPE,
                                   stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE, env=env,
+                                  stderr=subprocess.PIPE, env=env, cwd=cwd,
                                   universal_newlines=True)
 
 
@@ -876,7 +876,7 @@ class ApplicationTestCase(TestCase):
         #    return os.path.join(testdir, "build", "bin", filename)
         return filename
 
-    def run_application(self, app, args):
+    def run_application(self, app, args, cwd=None):
         """Run an application with the given list of arguments.
            @return a subprocess.Popen-like object containing the child stdin,
                    stdout and stderr.
@@ -885,9 +885,9 @@ class ApplicationTestCase(TestCase):
         if sys.platform == 'win32':
             # Cannot rely on PATH on wine builds, so use full pathname
             return _SubprocessWrapper(os.path.join(os.environ['IMP_BIN_DIR'],
-                                                   filename), args)
+                                                   filename), args, cwd=cwd)
         else:
-            return _SubprocessWrapper(filename, args)
+            return _SubprocessWrapper(filename, args, cwd=cwd)
 
     def run_python_application(self, app, args):
         """Run a Python application with the given list of arguments.
