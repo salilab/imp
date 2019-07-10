@@ -51,6 +51,7 @@ complex might want to skip ahead to
    - [Naming and interface conventions](@ref conventions)
    - [Parallelization](@ref parallel)
    - [Using the library in other projects](@ref uselibrary)
+   - [Building modules out of tree](@ref outoftree)
 
  - [Frequently asked questions (FAQ)](@ref faq)
 
