@@ -64,7 +64,7 @@ size_t count_path_components(boost::filesystem::path p) {
 // Remove extraneous . and .. entries from the path
 boost::filesystem::path normalize(const boost::filesystem::path& p) {
   size_t comp = count_path_components(p);
-  std::vector<bool> keep(true, comp);
+  std::vector<bool> keep(comp, true);
 
   size_t i = 0;
   for (boost::filesystem::path::iterator it(p.begin()), it_end(p.end());
