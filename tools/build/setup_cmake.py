@@ -157,14 +157,14 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
                                tools.to_cmake_path(x) for x in checks]))
         contents.append(
             "add_subdirectory(${CMAKE_SOURCE_DIR}/%s/compiler)" %
-            module.path)
+            tools.to_cmake_path(module.path))
     if len(deps) > 0:
         g.write(os.path.join(module.path, 'dependency', 'CMakeLists.txt'),
                 "\n".join(["include(${CMAKE_SOURCE_DIR}/%s)" %
                                tools.to_cmake_path(x) for x in deps]))
         contents.append(
             "add_subdirectory(${CMAKE_SOURCE_DIR}/%s/dependency)" %
-            module.path)
+            tools.to_cmake_path(module.path))
     local = os.path.join(module.path, "Setup.cmake")
     if os.path.exists(local):
         contents.append("include(${CMAKE_SOURCE_DIR}/%s)"
@@ -238,7 +238,7 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
     benchmark_template.write(benchmark, values)
     examples_template.write(examples, values)
     values["tests"] = "\n".join(contents)
-    topdir = '/' + module.path if module.path else ''
+    topdir = '/' + tools.to_cmake_path(module.path) if module.path else ''
     if finder.external_dir:
         values["build_dir"] = "--build_dir=%s " % finder.external_dir
     else:

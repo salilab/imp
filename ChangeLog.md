@@ -1,26 +1,33 @@
 ChangeLog {#changelog}
 =========
 
+# 2.11.1 - 2019-07-18 # {#changelog_2_11_1}
+- Bugfix: fix build system failures with CMake 3.12 and 3.13, and on Windows.
+- Bugfix: IMP::atom::create_clone() now always copies mass, even of particles
+  that are not atoms.
+- Bugfix: IMP::rmf::create_hierarchies() should no longer fail with
+  "The filename cannot be empty".
+
 # 2.11.0 - 2019-06-25 # {#changelog_2_11_0}
 - A number of new tutorials are now available covering a variety of topics
   from modeling complexes with IMP::pmi to writing new C++ code. See
   the [tutorial index](https://integrativemodeling.org/tutorials/) for
   more details.
 - The build system has been updated to use new CMake functionality
-  (if available) to detect Python. If you have CMake 3.12 or later, this should
+  (if available) to detect Python. If you have CMake 3.14 or later, this should
   do a much better job of handling multiple Python installations (e.g. Macs
   with Homebrew). It will default to using Python 3. To force use of Python 2,
   pass `-DUSE_PYTHON2=on` to your CMake invocation.
 - CMake files are now provided to make it straightforward to use IMP as
   a library in other programs. See
-  [the tutorial](https://integrativemodeling.org/tutorials/using_cpp/develop/)
+  [the tutorial](https://integrativemodeling.org/tutorials/using_cpp/)
   for more details.
 - CMake files are now provided to build new IMP modules outside of the IMP
   build tree (i.e. a module can be built against an IMP binary).
 - The IMP::OptionParser class has been removed. Use IMP::ArgumentParser instead.
 - The IMP::test::TempDir and IMP::test::RunInTempDir utility classes have been
   removed. Use the IMP::test::temporary_directory and
-  IMP::temporary_working_directory context managers instead.
+  IMP::test::temporary_working_directory context managers instead.
 
 # 2.10.1 - 2019-02-26 # {#changelog_2_10_1}
 - Add support for OpenCV 4.

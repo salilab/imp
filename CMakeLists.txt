@@ -147,13 +147,13 @@ if(WIN32)
   set(IMP_SWIG_LIBRARIES ${PYTHON_LIBRARIES})
 endif(WIN32)
 
-if("${PYTHON_NUMPY_INCLUDE_DIR}" MATCHES ".*NOTFOUND.*")
-  file(WRITE "${CMAKE_BINARY_DIR}/build_info/NumPy" "ok=False")
-else()
+if(${PYTHON_NUMPY_FOUND})
   set(NUMPY_INCLUDE_PATH ${PYTHON_NUMPY_INCLUDE_DIR} CACHE INTERNAL "" FORCE)
   file(WRITE "${CMAKE_BINARY_DIR}/build_info/NumPy"
        "ok=True\n"
        "includepath='${NUMPY_INCLUDE_PATH}'")
+else()
+  file(WRITE "${CMAKE_BINARY_DIR}/build_info/NumPy" "ok=False")
 endif()
 
 if(NOT DEFINED PATH_SEP)

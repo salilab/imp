@@ -32,5 +32,10 @@ file is provided to help CMake find this %IMP configuration (using the
 command), and can be used in other CMake projects. 
 
 See also the tutorial on
-[using IMP as a C++ library](https://integrativemodeling.org/tutorials/using_cpp/develop/)
+[using IMP as a C++ library](https://integrativemodeling.org/tutorials/using_cpp/)
 for a worked example of using %IMP in a CMake project.
+
+This functionality can also be used to build an %IMP module "out of tree",
+that is to build the module by itself and link to an existing pre-built
+%IMP installation. See the [out of tree](@ref outoftree) page for more
+information.

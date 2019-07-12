@@ -1,8 +1,8 @@
 # Like cmake's FindPython but allows the user to override; should also
 # work (to some degree) with older cmake
 function(imp_find_python)
-  if (${CMAKE_VERSION} VERSION_LESS "3.12.0")
-    message(WARNING "Using old Python detection logic. Recommended to upgrade to cmake 3.12.0 or later")
+  if (${CMAKE_VERSION} VERSION_LESS "3.14.0")
+    message(WARNING "Using old Python detection logic. Recommended to upgrade to cmake 3.14.0 or later")
     if(NOT DEFINED PYTHON_INCLUDE_DIRS)
       execute_process(COMMAND python -c "import sys; print(sys.executable)"
                       WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
