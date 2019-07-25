@@ -1976,7 +1976,7 @@ loop_
 _ihm_model_representation.id
 _ihm_model_representation.name
 _ihm_model_representation.details
-1 . .
+1 'Default representation' .
 #
 #
 loop_
@@ -2028,7 +2028,7 @@ loop_
 _ihm_model_representation.id
 _ihm_model_representation.name
 _ihm_model_representation.details
-1 . .
+1 'Default representation' .
 #
 #
 loop_

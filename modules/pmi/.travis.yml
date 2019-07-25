@@ -14,8 +14,8 @@ install:
 script:
   - mkdir build
   - cd build
-  - PYTHON_INC=$(echo $(dirname $(which python))/../include/python*/)
-  - cmake .. -DIMP_DIR=${CONDA_PREFIX}/lib/cmake/IMP -DPYTHON_INCLUDE_DIR=$PYTHON_INC -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage"
+  - if test "${TRAVIS_PYTHON_VERSION}" = "2.7" ; then PY2=on; else PY2=off; fi
+  - cmake .. -DIMP_DIR=${CONDA_PREFIX}/lib/cmake/IMP -DUSE_PYTHON2=${PY2} -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage"
   - make
   - ./setup_environment.sh ../test/nosetests --with-coverage --cover-branches -e 'probabilistic' ../test/test_*.py ../test/medium_test_*.py test/*/*.py > /dev/null
 after_script:

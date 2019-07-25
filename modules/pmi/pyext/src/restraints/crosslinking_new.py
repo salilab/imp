@@ -9,12 +9,13 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.container
+import IMP.pmi.representation
 import IMP.pmi.tools
 import IMP.pmi.restraints.crosslinking
 import pdb
 
 class DisulfideCrossLinkRestraint(object):
-    def __init__(self, representation,
+    def __init__(self, representation_or_hier,
                  selection_tuple1,
                  selection_tuple2,
                  length=6.5,
@@ -22,7 +23,26 @@ class DisulfideCrossLinkRestraint(object):
                  slope=0.01,
                  label="None"):
 
-        self.m = representation.prot.get_model()
+        if isinstance(representation_or_hier,
+                      IMP.pmi.representation.Representation):
+            use_pmi2 = False
+            self.m = representation_or_hier.prot.get_model()
+            ps1 = IMP.pmi.tools.select_by_tuple(representation_or_hier,
+                                                selection_tuple1,
+                                                resolution=resolution)
+            ps2 = IMP.pmi.tools.select_by_tuple(representation_or_hier,
+                                                selection_tuple2,
+                                                resolution=resolution)
+        else:
+            use_pmi2 = True
+            self.m = representation_or_hier.get_model()
+            ps1 = IMP.pmi.tools.select_by_tuple_2(representation_or_hier,
+                                                  selection_tuple1,
+                                                  resolution=resolution)
+            ps2 = IMP.pmi.tools.select_by_tuple_2(representation_or_hier,
+                                                  selection_tuple2,
+                                                  resolution=resolution)
+
         self.rs = IMP.RestraintSet(self.m, 'likelihood')
         self.rslin = IMP.RestraintSet(self.m, 'linear_dummy_restraints')
 
@@ -38,16 +58,6 @@ class DisulfideCrossLinkRestraint(object):
         self.sigma_is_sampled = False
         self.xl={}
 
-        ps1 = IMP.pmi.tools.select_by_tuple(
-                representation,
-                selection_tuple1,
-                resolution=resolution)
-
-        ps2 = IMP.pmi.tools.select_by_tuple(
-                representation,
-                selection_tuple2,
-                resolution=resolution)
-
         if len(ps1) > 1 or len(ps1) == 0:
             raise ValueError("DisulfideBondRestraint: ERROR> first selection pattern selects multiple particles or sero particles")
 
@@ -56,14 +66,16 @@ class DisulfideCrossLinkRestraint(object):
 
         p1 = ps1[0]
         p2 = ps2[0]
-
-
+        # PMI1 returns Hierarchies, not Particles
+        if not use_pmi2:
+            p1 = p1.get_particle()
+            p2 = p2.get_particle()
 
         sigma=self.create_sigma("SIGMA_DISULFIDE_BOND")
         psi=self.create_psi("PSI_DISULFIDE_BOND")
 
-        p1i = p1.get_particle_index()
-        p2i = p2.get_particle_index()
+        p1i = p1.get_index()
+        p2i = p2.get_index()
         si = sigma.get_particle().get_index()
         psii = psi.get_particle().get_index()
 

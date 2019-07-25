@@ -6,7 +6,6 @@ import IMP.container
 import IMP.pmi
 import IMP.pmi.io
 import IMP.pmi.io.crosslink
-import IMP.pmi.representation
 import IMP.pmi.restraints
 import IMP.pmi.restraints.crosslinking_new
 from math import *
@@ -77,16 +76,16 @@ class Tests(IMP.test.TestCase):
 
     def test_restraint_probability_beads(self):
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            r = IMP.pmi.representation.Representation(m)
-        r.create_component("ProtA",color=1.0)
-        r.add_component_beads("ProtA", [(1,10)],incoord=(0,0,0))
-        r.create_component("ProtB",color=1.0)
-        r.add_component_beads("ProtB", [(1,10)],incoord=(0,10,0))
-        r.set_floppy_bodies()
+        simo = IMP.pmi.topology.System(m)
+        st1 = simo.create_state()
+        for molname in ("ProtA", "ProtB"):
+            mol = st1.create_molecule(molname, "A" * 10)
+            mol.add_representation(mol.get_non_atomic_residues(),
+                                   resolutions=[10])
+        root_hier = simo.build()
 
         xl = IMP.pmi.restraints.crosslinking_new.DisulfideCrossLinkRestraint(
-            r,
+            root_hier,
             (1,1,"ProtA"),
             (1,1,"ProtB"),
             label="DisulfideBond1",

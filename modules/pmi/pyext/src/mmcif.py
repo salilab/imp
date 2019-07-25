@@ -1199,7 +1199,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def create_representation(self, name):
         """Create a new Representation and return it. This can be
            passed to add_model(), add_bead_element() or add_pdb_element()."""
-        r = ihm.representation.Representation()
+        r = ihm.representation.Representation(name=name)
         self.system.orphan_representations.append(r)
         return r
 
