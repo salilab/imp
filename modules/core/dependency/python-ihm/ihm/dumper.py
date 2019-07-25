@@ -536,12 +536,9 @@ class _StructAsymDumper(Dumper):
 
 class _AssemblyDumper(Dumper):
     def finalize(self, system):
-        # Sort each assembly by entity/asym id/range
+        # Sort each assembly by entity id/asym id/range
         def component_key(comp):
-            if hasattr(comp, 'entity'): # asymmetric unit or range
-                return (comp.entity._id, comp._ordinal, comp.seq_id_range)
-            else: # entity or range
-                return (comp._id, 0, comp.seq_id_range)
+            return (comp.entity._id, comp._ordinal, comp.seq_id_range)
         for a in system._all_assemblies():
             a.sort(key=component_key)
 
@@ -1570,6 +1567,11 @@ class _FeatureDumper(Dumper):
                         entity_type=f._get_entity_type())
 
     def dump_poly_residue(self, writer):
+        def _get_entity(x):
+            return x if isinstance(x, ihm.Entity) else x.entity
+        def _get_asym_id(x):
+            return (x._id if isinstance(x, (ihm.AsymUnit, ihm.AsymUnitRange))
+                    else None)
         ordinal = 1
         with writer.loop("_ihm_poly_residue_feature",
                          ["ordinal_id", "feature_id", "entity_id", "asym_id",
@@ -1579,9 +1581,10 @@ class _FeatureDumper(Dumper):
                 if not isinstance(f, restraint.ResidueFeature):
                     continue
                 for r in f.ranges:
-                    seq = r.entity.sequence
+                    entity = _get_entity(r)
+                    seq = entity.sequence
                     l.write(ordinal_id=ordinal, feature_id=f._id,
-                            entity_id=r.entity._id, asym_id=r._id,
+                            entity_id=entity._id, asym_id=_get_asym_id(r),
                             seq_id_begin=r.seq_id_range[0],
                             comp_id_begin=seq[r.seq_id_range[0]-1].id,
                             seq_id_end=r.seq_id_range[1],
@@ -1598,10 +1601,12 @@ class _FeatureDumper(Dumper):
                     continue
                 for a in f.atoms:
                     r = a.residue
-                    if r.asym.entity.is_polymeric():
-                        seq = r.asym.entity.sequence
+                    entity = r.entity if r.entity else r.asym.entity
+                    if entity.is_polymeric():
+                        seq = entity.sequence
                         l.write(ordinal_id=ordinal, feature_id=f._id,
-                                entity_id=r.asym.entity._id, asym_id=r.asym._id,
+                                entity_id=entity._id,
+                                asym_id=r.asym._id if r.asym else None,
                                 seq_id=r.seq_id, comp_id=seq[r.seq_id-1].id,
                                 atom_id=a.id)
                         ordinal += 1
@@ -1615,20 +1620,23 @@ class _FeatureDumper(Dumper):
                 if isinstance(f, restraint.AtomFeature):
                     for a in f.atoms:
                         r = a.residue
-                        if not r.asym.entity.is_polymeric():
-                            seq = r.asym.entity.sequence
+                        entity = r.entity if r.entity else r.asym.entity
+                        if not entity.is_polymeric():
+                            seq = entity.sequence
                             l.write(ordinal_id=ordinal, feature_id=f._id,
-                                    entity_id=r.asym.entity._id,
-                                    asym_id=r.asym._id,
+                                    entity_id=entity._id,
+                                    asym_id=r.asym._id if r.asym else None,
                                     comp_id=seq[r.seq_id-1].id, atom_id=a.id)
                             ordinal += 1
                 elif isinstance(f, restraint.NonPolyFeature):
                     _ = f._get_entity_type() # trigger check for poly/nonpoly
-                    for a in f.asyms:
-                        seq = a.entity.sequence
+                    for a in f.objs:
+                        entity = a if isinstance(a, ihm.Entity) else a.entity
+                        asym_id = a._id if isinstance(a, ihm.AsymUnit) else None
+                        seq = entity.sequence
                         l.write(ordinal_id=ordinal, feature_id=f._id,
-                                entity_id=a.entity._id,
-                                asym_id=a._id, comp_id=seq[0].id,
+                                entity_id=entity._id,
+                                asym_id=asym_id, comp_id=seq[0].id,
                                 atom_id=None)
                         ordinal += 1
 

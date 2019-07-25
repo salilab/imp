@@ -1,6 +1,9 @@
 """Classes for handling restraints on the system.
 """
 
+import ihm
+
+
 class Restraint(object):
     """Base class for all restraints.
        See :attr:`ihm.System.restraints`.
@@ -433,14 +436,21 @@ class Feature(object):
        Features are typically assigned to one or more
        :class:`~ihm.restraint.GeometricRestraint` objects.
     """
-    pass
+    def _all_entities_or_asyms(self):
+        # Get all Entities or AsymUnits referenced by this object
+        return []
 
 
 class ResidueFeature(Feature):
     """Selection of one or more residues from the system.
 
-       :param sequence ranges: A list of :class:`AsymUnitRange` and/or
-              :class:`AsymUnit` objects.
+       Residues can be selected from both :class:`AsymUnit` and
+       :class:`Entity` (the latter implies that it selects residues
+       in all instances of that entity).
+
+       :param sequence ranges: A list of :class:`AsymUnitRange`,
+              :class:`AsymUnit`, :class:`EntityRange`, and/or :class:`Entity`
+              objects.
     """
 
     # Type is 'residue' if each range selects a single residue, otherwise
@@ -456,16 +466,24 @@ class ResidueFeature(Feature):
         self.ranges = ranges
         _ = self._get_entity_type()
 
+    def _all_entities_or_asyms(self):
+        return self.ranges
+
     def _get_entity_type(self):
-        if any(not r.entity.is_polymeric() for r in self.ranges):
+        def _get_entity(x):
+            return x if isinstance(x, ihm.Entity) else x.entity
+        if any(not _get_entity(r).is_polymeric() for r in self.ranges):
             raise ValueError("%s cannot select non-polymeric entities" % self)
         else:
-            return self.ranges[0].entity.type if self.ranges else None
+            return _get_entity(self.ranges[0]).type if self.ranges else None
 
 
 class AtomFeature(Feature):
     """Selection of one or more atoms from the system.
        Atoms can be selected from polymers or non-polymers (but not both).
+       Atoms can also be selected from both :class:`AsymUnit` and
+       :class:`Entity` (the latter implies that it selects atoms
+       in all instances of that entity).
        For selecting an entire polymer or residue(s),
        see :class:`ResidueFeature`. For selecting an entire non-polymer,
        see :class:`NonPolyFeature`.
@@ -479,32 +497,44 @@ class AtomFeature(Feature):
         _ = self._get_entity_type()
 
     def _get_entity_type(self):
-        types = frozenset(a.residue.asym.entity.type for a in self.atoms)
+        def _get_entity(residue):
+            return residue.entity if residue.entity else residue.asym.entity
+        types = frozenset(_get_entity(a.residue).type for a in self.atoms)
         if len(types) > 1:
             raise ValueError("%s cannot span both polymeric and "
                              "non-polymeric entities" % self)
         elif types:
-            return self.atoms[0].residue.asym.entity.type
+            return tuple(types)[0]
 
 
 class NonPolyFeature(Feature):
     """Selection of one or more non-polymers from the system.
        To select individual atoms from a non-polymer, see :class:`AtomFeature`.
 
-       :param sequence asyms: A list of :class:`AsymUnit` objects.
+       Features can include both :class:`AsymUnit` and
+       :class:`Entity` (the latter implies that it selects non-polymers
+       in all instances of that entity).
+
+       :param sequence objs: A list of :class:`AsymUnit` and/or
+              :class:`Entity` objects.
     """
 
     type = 'ligand'
 
-    def __init__(self, asyms):
-        self.asyms = asyms
+    def __init__(self, objs):
+        self.objs = objs
         _ = self._get_entity_type()
 
+    def _all_entities_or_asyms(self):
+        return self.objs
+
     def _get_entity_type(self):
-        if any(r.entity.is_polymeric() for r in self.asyms):
+        def _get_entity(x):
+            return x if isinstance(x, ihm.Entity) else x.entity
+        if any(_get_entity(r).is_polymeric() for r in self.objs):
             raise ValueError("%s can only select non-polymeric entities" % self)
         else:
-            return self.asyms[0].entity.type if self.asyms else None
+            return _get_entity(self.objs[0]).type if self.objs else None
 
 
 class PseudoSiteFeature(Feature):

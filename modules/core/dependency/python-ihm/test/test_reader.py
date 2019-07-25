@@ -1669,6 +1669,7 @@ _ihm_poly_atom_feature.seq_id
 _ihm_poly_atom_feature.comp_id
 _ihm_poly_atom_feature.atom_id
 1 1 1 A 1 ALA CA
+2 1 1 . 1 ALA CB
 #
 loop_
 _ihm_poly_residue_feature.ordinal_id
@@ -1680,6 +1681,7 @@ _ihm_poly_residue_feature.comp_id_begin
 _ihm_poly_residue_feature.seq_id_end
 _ihm_poly_residue_feature.comp_id_end
 1 2 1 B 2 CYS 3 GLY
+2 2 1 . 2 CYS 3 GLY
 #
 loop_
 _ihm_non_poly_feature.ordinal_id
@@ -1689,7 +1691,9 @@ _ihm_non_poly_feature.asym_id
 _ihm_non_poly_feature.comp_id
 _ihm_non_poly_feature.atom_id
 1 3 3 C HEM FE
-2 4 3 C HEM .
+2 3 3 . HEM FE
+3 4 3 C HEM .
+4 4 3 . HEM .
 #
 loop_
 _ihm_pseudo_site_feature.feature_id
@@ -1729,13 +1733,20 @@ _ihm_derived_distance_restraint.dataset_list_id
             self.assertEqual(r1.dataset._id, '97')
             self.assertIsInstance(r1.feature1,
                                   ihm.restraint.AtomFeature)
-            self.assertEqual(len(r1.feature1.atoms), 1)
+            self.assertEqual(len(r1.feature1.atoms), 2)
             self.assertEqual(r1.feature1.atoms[0].id, 'CA')
             self.assertEqual(r1.feature1.atoms[0].residue.seq_id, 1)
+            self.assertIsNone(r1.feature1.atoms[0].residue.entity)
+            self.assertEqual(r1.feature1.atoms[1].id, 'CB')
+            self.assertEqual(r1.feature1.atoms[1].residue.seq_id, 1)
+            self.assertIsNone(r1.feature1.atoms[1].residue.asym)
             self.assertIsInstance(r1.feature2,
                                   ihm.restraint.ResidueFeature)
-            self.assertEqual(len(r1.feature2.ranges), 1)
+            self.assertEqual(len(r1.feature2.ranges), 2)
             self.assertEqual(r1.feature2.ranges[0].seq_id_range, (2,3))
+            self.assertIsInstance(r1.feature2.ranges[0], ihm.AsymUnitRange)
+            self.assertEqual(r1.feature2.ranges[1].seq_id_range, (2,3))
+            self.assertIsInstance(r1.feature2.ranges[1], ihm.EntityRange)
             self.assertIsInstance(r1.distance,
                                   ihm.restraint.LowerBoundDistanceRestraint)
             self.assertAlmostEqual(r1.distance.distance, 25.000, places=1)
@@ -1745,8 +1756,10 @@ _ihm_derived_distance_restraint.dataset_list_id
             self.assertEqual(r3.restrain_all, False)
             self.assertIsInstance(r2.feature2,
                                   ihm.restraint.NonPolyFeature)
-            self.assertEqual(len(r2.feature2.asyms), 1)
-            self.assertEqual(r2.feature2.asyms[0]._id, 'C')
+            self.assertEqual(len(r2.feature2.objs), 2)
+            self.assertIsInstance(r2.feature2.objs[0], ihm.AsymUnit)
+            self.assertEqual(r2.feature2.objs[0]._id, 'C')
+            self.assertIsInstance(r2.feature2.objs[1], ihm.Entity)
             self.assertIsInstance(r2.distance,
                                   ihm.restraint.UpperBoundDistanceRestraint)
             self.assertIsInstance(r3.distance,
@@ -1755,6 +1768,8 @@ _ihm_derived_distance_restraint.dataset_list_id
                                  ihm.restraint.HarmonicDistanceRestraint)
             self.assertIsInstance(r4.feature2,
                                   ihm.restraint.AtomFeature)
+            self.assertIsNone(r4.feature2.atoms[0].residue.entity)
+            self.assertIsNone(r4.feature2.atoms[1].residue.asym)
             self.assertIsInstance(r4.feature1,
                                   ihm.restraint.PseudoSiteFeature)
             self.assertAlmostEqual(r4.feature1.x, 10.0, places=1)

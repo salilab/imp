@@ -215,8 +215,8 @@ class _FeatureIDMapper(IDMapper):
            and not hasattr(obj, 'atoms'):
             obj.atoms = []
         elif newcls is ihm.restraint.NonPolyFeature \
-           and not hasattr(obj, 'asyms'):
-            obj.asyms = []
+           and not hasattr(obj, 'objs'):
+            obj.objs = []
         elif newcls is ihm.restraint.PseudoSiteFeature \
            and not hasattr(obj, 'x'):
             obj.x = obj.y = obj.z = None
@@ -783,6 +783,12 @@ class Handler(object):
     def end_save_frame(self):
         """Called at the end of each save frame."""
         pass
+
+    def _get_asym_or_entity(self, asym_id, entity_id):
+        """Return an :class:`AsymUnit`, or an :class:`Entity`
+           if asym_id is omitted"""
+        asym = self.sysr.asym_units.get_by_id_or_none(asym_id)
+        return asym if asym else self.sysr.entities.get_by_id(entity_id)
 
     def copy_if_present(self, obj, data, keys=[], mapkeys={}):
         """Set obj.x from data['x'] for each x in keys if present in data.
@@ -1723,41 +1729,42 @@ class _StartingModelSeqDifHandler(Handler):
 class _PolyResidueFeatureHandler(Handler):
     category = '_ihm_poly_residue_feature'
 
-    def __call__(self, feature_id, asym_id, seq_id_begin, seq_id_end):
+    def __call__(self, feature_id, entity_id, asym_id, seq_id_begin,
+                 seq_id_end):
         f = self.sysr.features.get_by_id(
                            feature_id, ihm.restraint.ResidueFeature)
-        asym = self.sysr.asym_units.get_by_id(asym_id)
+        asym_or_entity = self._get_asym_or_entity(asym_id, entity_id)
         r1 = int(seq_id_begin)
         r2 = int(seq_id_end)
-        f.ranges.append(asym(r1,r2))
+        f.ranges.append(asym_or_entity(r1,r2))
 
 
 class _PolyAtomFeatureHandler(Handler):
     category = '_ihm_poly_atom_feature'
 
-    def __call__(self, feature_id, asym_id, seq_id, atom_id):
+    def __call__(self, feature_id, entity_id, asym_id, seq_id, atom_id):
         f = self.sysr.features.get_by_id(
                            feature_id, ihm.restraint.AtomFeature)
-        asym = self.sysr.asym_units.get_by_id(asym_id)
+        asym_or_entity = self._get_asym_or_entity(asym_id, entity_id)
         seq_id = int(seq_id)
-        atom = asym.residue(seq_id).atom(atom_id)
+        atom = asym_or_entity.residue(seq_id).atom(atom_id)
         f.atoms.append(atom)
 
 
 class _NonPolyFeatureHandler(Handler):
     category = '_ihm_non_poly_feature'
 
-    def __call__(self, feature_id, asym_id, atom_id):
-        asym = self.sysr.asym_units.get_by_id(asym_id)
+    def __call__(self, feature_id, entity_id, asym_id, atom_id):
+        asym_or_entity = self._get_asym_or_entity(asym_id, entity_id)
         if atom_id is None:
             f = self.sysr.features.get_by_id(
                                feature_id, ihm.restraint.NonPolyFeature)
-            f.asyms.append(asym)
+            f.objs.append(asym_or_entity)
         else:
             f = self.sysr.features.get_by_id(
                                feature_id, ihm.restraint.AtomFeature)
             # todo: handle multiple copies, e.g. waters?
-            atom = asym.residue(1).atom(atom_id)
+            atom = asym_or_entity.residue(1).atom(atom_id)
             f.atoms.append(atom)
 
 

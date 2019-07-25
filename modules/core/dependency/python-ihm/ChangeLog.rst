@@ -1,3 +1,18 @@
+HEAD
+====
+ - :class:`ihm.Assembly` objects can now only contain :class:`AsymUnit`
+   and :class:`AsymUnitRange` objects (not :class:`Entity` or
+   :class:`EntityRange`).
+
+0.10 - 2019-07-09
+=================
+ - Features (:class:`ihm.restraint.AtomFeature`,
+   :class:`ihm.restraint.ResidueFeature`, and
+   :class:`ihm.restraint.NonPolyFeature`), which previously could select part
+   or all of an :class:`ihm.AsymUnit`, can now also select parts of an
+   :class:`Entity`. A restraint acting on an entity-feature is assumed
+   to apply to all instances of that entity.
+
 0.9 - 2019-05-31
 ================
  - Add support for the latest version of the IHM dictionary.

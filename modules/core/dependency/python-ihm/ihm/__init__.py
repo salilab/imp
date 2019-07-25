@@ -20,7 +20,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.9'
+__version__ = '0.10'
 
 class __UnknownValue(object):
     # Represent the mmCIF 'unknown' special value
@@ -469,22 +469,18 @@ class System(object):
                         (sm.asym_unit for sm in self._all_starting_models()),
                         (seg.asym_unit for seg in self._all_segments()),
                         (comp for a in self._all_assemblies() for comp in a),
+                        (comp for f in self._all_features()
+                         for comp in f._all_entities_or_asyms()),
                         (d.asym_unit for d in self._all_densities())))
 
     def _make_complete_assembly(self):
-        """Fill in the complete assembly with all entities/asym units"""
+        """Fill in the complete assembly with all asym units"""
         # Clear out any existing components
         self.complete_assembly[:] = []
 
         # Include all asym units
-        seen_entities = {}
         for asym in self.asym_units:
             self.complete_assembly.append(asym)
-            seen_entities[asym.entity] = None
-        # Add all entities without structure
-        for entity in self.entities:
-            if entity not in seen_entities:
-                self.complete_assembly.append(entity)
 
 
 class Software(object):
@@ -1121,10 +1117,8 @@ class Assembly(list):
        :param str description: Longer text that describes this assembly.
 
        This is implemented as a simple list of asymmetric units (or parts of
-       them) and/or entities (or parts of them), i.e. a list of
-       :class:`AsymUnit`, :class:`AsymUnitRange`,
-       :class:`Entity`, and :class:`EntityRange` objects. An Assembly is
-       typically assigned to one or more of
+       them), i.e. a list of :class:`AsymUnit`, and/or :class:`AsymUnitRange`
+       objects. An Assembly is typically assigned to one or more of
 
          - :class:`~ihm.model.Model`
          - :class:`ihm.protocol.Step`
