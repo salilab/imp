@@ -202,6 +202,21 @@ _ihm_struct_assembly_details.entity_poly_segment_id
         system.system._make_complete_assembly()
         self._assign_entity_ids(system)
         self._assign_asym_ids(system)
+        d = ihm.dumper._EntityDumper()
+        out = _get_dumper_output(d, system.system)
+        self.assertEqual(out, """#
+loop_
+_entity.id
+_entity.type
+_entity.src_method
+_entity.pdbx_description
+_entity.formula_weight
+_entity.pdbx_number_of_molecules
+_entity.details
+1 polymer man foo 267.282 1 .
+2 polymer man bar 178.188 1 .
+#
+""")
         d = ihm.dumper._EntityPolySegmentDumper()
         d.finalize(system.system)
         out = _get_dumper_output(d, system.system)
@@ -214,7 +229,6 @@ _ihm_entity_poly_segment.seq_id_end
 _ihm_entity_poly_segment.comp_id_begin
 _ihm_entity_poly_segment.comp_id_end
 1 1 1 3 ALA ALA
-2 2 1 2 ALA ALA
 #
 """)
         d = ihm.dumper._AssemblyDumper()
@@ -225,8 +239,7 @@ loop_
 _ihm_struct_assembly.id
 _ihm_struct_assembly.name
 _ihm_struct_assembly.description
-1 'Complete assembly' 'All known components'
-2 'Modeled assembly' 'All components modeled by IMP'
+1 'Complete assembly' 'All known components & All components modeled by IMP'
 #
 #
 loop_
@@ -238,8 +251,6 @@ _ihm_struct_assembly_details.entity_id
 _ihm_struct_assembly_details.asym_id
 _ihm_struct_assembly_details.entity_poly_segment_id
 1 1 1 foo 1 A 1
-2 1 1 bar 2 . 2
-3 2 2 foo 1 A 1
 #
 """)
 
