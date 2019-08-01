@@ -68,7 +68,8 @@ void Gnuplot::print_canvas_script(const std::vector<std::string>& pdbs,
   plt_file << "set terminal canvas solid butt size 400,350 fsize 10 lw 1.5 "
            << "fontscale 1 name \"jsoutput_1\" jsdir \".\"" << std::endl;
   plt_file << "set output 'jsoutput.1.js'" << std::endl;
-  plt_file << "set xlabel 'q';set ylabel 'log intensity';set format y '';"
+  plt_file << "set xlabel 'q [Å^{-1}]';set ylabel 'log intensity'; "
+	   << "set format y '10^{%L}'; set logscale y\n"
            << "set xtics nomirror;set ytics nomirror; set border 3\n"
            << "set style line 11 lc rgb '#808080' lt 1;unset key;"
            << "set border 3 back ls 11;" << std::endl;
@@ -77,7 +78,7 @@ void Gnuplot::print_canvas_script(const std::vector<std::string>& pdbs,
   for (int i = 0; i < (int)pdbs.size() && i < max_num; i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string profile_file_name = pdbs[i] + ".dat";
-    plt_file << "'" << profile_file_name << "' u 1:(log($2)) "
+    plt_file << "'" << profile_file_name << "' u 1:2 "
              << "w lines lw 2.5 lc rgb '#" << hex_color << "'";
     if (i == static_cast<int>(pdbs.size()) - 1 || i == max_num - 1)
       plt_file << std::endl;
@@ -226,8 +227,9 @@ void Gnuplot::print_canvas_script(
   plt_file << "set output 'jsoutput.1.js'" << std::endl;
 
   plt_file << "set multiplot\n";
+  plt_file << "set lmargin 7\n";
   plt_file << "set origin 0,0;set size 1,0.3; set tmargin 0;"
-           << "set xlabel 'q';set ylabel ' ';set format y '';"
+           << "set xlabel 'q [Å^{-1}]';set ylabel 'Residual';set format y '';"
            << "set xtics nomirror;set ytics nomirror;unset key;"
            << "set border 3; set style line 11 lc rgb '#808080' lt 1;"
            << "set border 3 back ls 11" << std::endl;
@@ -245,8 +247,9 @@ void Gnuplot::print_canvas_script(
   }
   plt_file << std::endl;
   // actual plots
-  plt_file << "set origin 0,0.3;set size 1,0.69; set bmargin 0;"
-           << "set xlabel ''; set format x ''; set ylabel 'log intensity';\n";
+  plt_file << "set origin 0,0.3;set size 1,0.69; set bmargin 0; set tmargin 1; "
+           << "set xlabel ''; set format x ''; set ylabel 'log intensity'; "
+	   << "set format y '10^{%L}'; set logscale y\n";
   for (int i = 0; i < (int)fps.size() && i < max_num; i++) {
     ColorCoder::html_hex_color(hex_color, i);
     std::string pdb_name = saxs::trim_extension(fps[i].get_pdb_file_name());
@@ -255,9 +258,9 @@ void Gnuplot::print_canvas_script(
     std::string fit_file_name = pdb_name + "_" + profile_name + ".fit";
     if (i == 0) {
       plt_file << "plot '" << fit_file_name
-               << "' u 1:(log($2)) lc rgb '#333333' pt 6 ps 0.8 ";
+               << "' u 1:2 lc rgb '#333333' pt 6 ps 0.8 ";
     }
-    plt_file << ", '" << fit_file_name << "' u 1:(log($4)) "
+    plt_file << ", '" << fit_file_name << "' u 1:4 "
              << "w lines lw 2.5 lc rgb '#" << hex_color << "'";
   }
   plt_file << std::endl;
