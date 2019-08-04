@@ -37,11 +37,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                  label=None,
                  filelabel="None",
                  attributes_for_label=None,
-                 weight=1.,
-                 sigma_form="Uniform",
-                 sigma_kappa=1.4,
-                 sigma_theta=2.0,
-                 sigma_init=2.0):
+                 weight=1.):
         """Constructor.
         @param representation DEPRECATED The IMP.pmi.representation.Representation
                 object that contain the molecular system
@@ -61,7 +57,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         @param attributes_for_label
         @param weight Weight of restraint
         """
-        self.sigma_init=sigma_init
+
         use_pmi2 = True
         if representation is not None:
             use_pmi2 = False
@@ -104,9 +100,6 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
         self.psi_is_sampled = True
         self.sigma_is_sampled = True
-        self.sigma_form = sigma_form
-        self.sigma_kappa = sigma_kappa
-        self.sigma_theta = sigma_theta
         self.psi_dictionary={}
         self.sigma_dictionary={}
         self.xl_list=[]
@@ -255,14 +248,14 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
 
                     if self.CrossLinkDataBase.sigma1_key not in xl.keys():
-                        sigma1name="SIGMA"+str(r1)
+                        sigma1name="SIGMA"
                         xl[self.CrossLinkDataBase.sigma1_key]=sigma1name
                     else:
                         sigma1name=xl[self.CrossLinkDataBase.sigma1_key]
                     sigma1=self.create_sigma(sigma1name)
 
                     if self.CrossLinkDataBase.sigma2_key not in xl.keys():
-                        sigma2name="SIGMA"+str(r2)
+                        sigma2name="SIGMA"
                         xl[self.CrossLinkDataBase.sigma2_key]=sigma2name
                     else:
                         sigma2name=xl[self.CrossLinkDataBase.sigma2_key]
@@ -379,8 +372,8 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         on the structural uncertainty """
         if name in self.sigma_dictionary:
             return self.sigma_dictionary[name][0]
-        print("SIGMA", name, self.sigma_is_sampled)
-        sigmainit = self.sigma_init
+
+        sigmainit = 2.0
         sigmaminnuis = 0.0000001
         sigmamaxnuis = 1000.0
         sigmamin = 0.01
@@ -392,21 +385,13 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
             sigma,
             sigmatrans,
             self.sigma_is_sampled)
-        if self.sigma_form == "Uniform":
-            self.rssig.add_restraint(
-                IMP.isd.UniformPrior(
-                    self.model,
-                    sigma,
-                    1000000000.0,
-                    sigmamax,
-                    sigmamin))
-        elif self.sigma_form == "Gamma":
-            self.rssig.add_restraint(
-                IMP.isd.GammaPrior(
-                    self.model,
-                    sigma,
-                    self.sigma_kappa,
-                    self.sigma_theta))
+        self.rssig.add_restraint(
+            IMP.isd.UniformPrior(
+                self.model,
+                sigma,
+                1000000000.0,
+                sigmamax,
+                sigmamin))
         return sigma
 
     def create_psi(self, name):
@@ -460,20 +445,15 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
 
         for psiname in self.psi_dictionary:
-            psi=self.psi_dictionary[psiname][0].get_scale()
             output["CrossLinkingMassSpectrometryRestraint_Psi_" +
-                    str(psiname) + self._label_suffix] = str(psi)
-            #output["CrossLinkingMassSpectrometryRestraint_PsiScore_" +
-            #        str(psiname) + self._label_suffix] = str(
-            #            self.rspsi.get_restraint(0).evaluate_at(psi))
+                    str(psiname) + self._label_suffix] = str(
+                        self.psi_dictionary[psiname][0].get_scale())
+
         for sigmaname in self.sigma_dictionary:
-            sigma=self.sigma_dictionary[sigmaname][0].get_scale()
-            #print(type(self.rssig.get_restraint(0)), sigma)
             output["CrossLinkingMassSpectrometryRestraint_Sigma_" +
-                   str(sigmaname) + self._label_suffix] = str(sigma)
-            #output["CrossLinkingMassSpectrometryRestraint_SigmaScore_" +
-            #       str(sigmaname) + self._label_suffix] = str(
-            #            self.psi_dictionary[psiname][0].get_score())
+                   str(sigmaname) + self._label_suffix] = str(
+                    self.sigma_dictionary[sigmaname][0].get_scale())
+
 
         return output
 

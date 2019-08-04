@@ -660,23 +660,20 @@ class BuildSystem(object):
                     numchain+=1
 
                 for domainnumber,domain in enumerate(copy):
-                    print("YYYY--- BuildSystem.add_state: ---- setting up domain %s of molecule %s" % (domainnumber,molname))
+                    print("BuildSystem.add_state: ---- setting up domain %s of molecule %s" % (domainnumber,molname))
                     # we build everything in the residue range, even if it
                     #  extends beyond what's in the actual PDB file
                     these_domains[domain.get_unique_name()] = domain
-                    domain_res = set()
                     if domain.residue_range==[] or domain.residue_range is None:
                         domain_res = mol.get_residues()
                     else:
-                        for rr in domain.residue_range:
-                            print("XXX---", rr)
-                            start = rr[0]+domain.pdb_offset
-                            if rr[1]=='END':
-                                end = len(mol.sequence)
-                            else:
-                                end = rr[1]+domain.pdb_offset
-                            domain_res += mol.residue_range(start-1,end-1)
-                            print("BuildSystem.add_state: -------- domain %s of molecule %s extends from residue %s to residue %s " % (domainnumber,molname,start,end))
+                        start = domain.residue_range[0]+domain.pdb_offset
+                        if domain.residue_range[1]=='END':
+                            end = len(mol.sequence)
+                        else:
+                            end = domain.residue_range[1]+domain.pdb_offset
+                        domain_res = mol.residue_range(start-1,end-1)
+                        print("BuildSystem.add_state: -------- domain %s of molecule %s extends from residue %s to residue %s " % (domainnumber,molname,start,end))
                     if domain.pdb_file=="BEADS":
                         print("BuildSystem.add_state: -------- domain %s of molecule %s represented by BEADS " % (domainnumber,molname))
                         mol.add_representation(

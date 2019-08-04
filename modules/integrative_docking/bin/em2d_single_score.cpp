@@ -118,6 +118,6 @@ to be considered for the EM image \
                                    pixel_size, resolution, projection_number,
                                    residue_level, n_components);
   double score  = r->unprotected_evaluate(NULL);
-  std::cout << "Total score = " << score << std::endl;
+  std::cerr << "Total score = " << score << std::endl;
   r->write_best_projections("best_projections.pgm");
 }

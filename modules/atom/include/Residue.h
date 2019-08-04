@@ -119,8 +119,6 @@ IMPATOMEXPORT extern const ResidueType DTHY;
 IMPATOMEXPORT extern const ResidueType HOH;
 //! heme
 IMPATOMEXPORT extern const ResidueType HEME;
-//! Phosphitidyl Choline
-IMPATOMEXPORT extern const ResidueType POP;
 #endif
 /*@}*/
 

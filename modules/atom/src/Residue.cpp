@@ -73,7 +73,6 @@ RNAME_ALIAS(DTHY, DADE_T, "DTHY");
 
 RNAME_DEF(HOH);
 RNAME_DEF(HEME);
-RNAME_DEF(POP);
 RNAME_ALIAS(HEME, HEME_OLD, "HEM");
 
 void Residue::show(std::ostream &out) const {
@@ -180,7 +179,6 @@ double get_mass(ResidueType c) {
     residue_type_to_mass[atom::DTHY] = 482.2;
     residue_type_to_mass[atom::DCYT] = 467.2;
     residue_type_to_mass[atom::DGUA] = 507.2;
-    residue_type_to_mass[atom::POP] = 686.97;
   }
   return residue_type_to_mass[c];
 }

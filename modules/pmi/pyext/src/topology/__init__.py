@@ -1339,26 +1339,21 @@ class TopologyReader(object):
                               "|%s| was given." % (c.molname,linenum,tmp_chain))
 
         ### Optional fields
-        # Residue Ranges
-
-        # All or nothing in the field returns None, which signifies the entire molecule
+        # Residue Range
         if rr.strip()=='all' or str(rr)=="":
             c.residue_range = None
-
+        elif len(rr.split(','))==2 and self._is_int(rr.split(',')[0]) and (self._is_int(rr.split(',')[1]) or rr.split(',')[1] == 'END'):
+            # Make sure that is residue range is given, there are only two values and they are integers
+            c.residue_range = (int(rr.split(',')[0]), rr.split(',')[1])
+            if c.residue_range[1] != 'END':
+                c.residue_range = (c.residue_range[0], int(c.residue_range[1]))
+            # Old format used -1 for the last residue
+            if old_format and c.residue_range[1] == -1:
+                c.residue_range = (c.residue_range[0], 'END')
         else:
-            these_ranges = []
-            ranges = rr.split(";")
-            for r in ranges:
-                if len(r.split(','))==2 and self._is_int(r.split(',')[0]) and (self._is_int(r.split(',')[1]) or r.split(',')[1] == 'END'):
-                    print(r.split(","))
-                    these_ranges.append((int(r.split(',')[0]), r.split(',')[1]))
-                    if these_ranges[-1][1] != 'END':
-                        these_ranges[-1] = (these_ranges[-1][0], int(these_ranges[-1][1]))
-
-                else:
-                    errors.append("Residue Range format for component %s line %d is not correct" % (c.molname, linenum))
-                    errors.append("Correct syntax is two comma separated integers with multiple fields separated by semicolons:  |start_res1, end_res1;start_res2, end_res2|. end_res can also be END to select the last residue in the chain. |%s| was given." % rr)
-                    errors.append("To select all residues, indicate |\"all\"|")
+            errors.append("Residue Range format for component %s line %d is not correct" % (c.molname, linenum))
+            errors.append("Correct syntax is two comma separated integers:  |start_res, end_res|. end_res can also be END to select the last residue in the chain. |%s| was given." % rr)
+            errors.append("To select all residues, indicate |\"all\"|")
 
         # PDB Offset
         if self._is_int(offset):
