@@ -211,6 +211,7 @@ void FormFactorTable::init_residue_type_form_factor_map() {
   residue_type_form_factor_map_[atom::TRP] = FormFactor(14.945, 98.979, 84.034);
   residue_type_form_factor_map_[atom::VAL] = FormFactor(7.173, 53.9896, 46.817);
   residue_type_form_factor_map_[atom::UNK] = FormFactor(9.037, 37.991, 28.954);
+  residue_type_form_factor_map_[atom::POP] = FormFactor(45.616, 365.99, 320.41);
 }
 
 int FormFactorTable::read_form_factor_table(const std::string& table_name) {

@@ -39,6 +39,20 @@ UniformPrior::unprotected_evaluate(DerivativeAccumulator *accum) const
   return score;
 }
 
+
+double
+UniformPrior::evaluate_at(Float val) const
+{
+  double score=0.0;
+  if (val <= lowerb_) {
+     score=0.5*k_*(val-lowerb_)*(val-lowerb_);
+  }
+  else if (val >= upperb_){
+     score=0.5*k_*(val-upperb_)*(val-upperb_);
+  }
+
+  return score;  
+}
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ModelObjectsTemp UniformPrior::do_get_inputs() const
