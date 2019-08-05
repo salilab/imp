@@ -8,6 +8,7 @@
 
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/GammaPrior.h>
+#include <boost/math/special_functions/gamma.hpp>
 #include <math.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -25,7 +26,7 @@ GammaPrior::unprotected_evaluate(DerivativeAccumulator *accum) const
   IMP::isd::Scale sig(p_);
   double prob=0.0;
   double s=sig.get_scale()/10;
-  double gam = tgamma (k_)*std::pow(theta_,k_);
+  double gam = boost::math::tgamma(k_) * std::pow(theta_, k_);
   prob = std::pow(s, k_-1) * std::exp(-s/theta_)/gam;
     
   if (accum) {
@@ -39,7 +40,7 @@ double
 GammaPrior::evaluate_at(Float val) const
 {
   double prob=0.0;
-  double gam = tgamma (k_)*std::pow(theta_,k_);
+  double gam = boost::math::tgamma(k_) * std::pow(theta_, k_);
   prob = std::pow(val, k_-1) * std::exp(-val/theta_)/gam;
     
   double score = -1*log (prob);
