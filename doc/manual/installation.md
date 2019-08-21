@@ -114,7 +114,7 @@ procedure we use.
   with something like:
 
         git clone -b master https://github.com/salilab/imp.git
-        (cd imp && ./setup_git.py)
+        (cd imp && git submodule update --init && ./setup_git.py)
 
   (the `master` branch tracks the most recent stable
   release; alternatively you can use `develop` to get the most recent code,
