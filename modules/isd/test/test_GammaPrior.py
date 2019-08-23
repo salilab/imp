@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-import scipy
 import numpy
-from scipy.stats import gamma
 import random
 import IMP
 from IMP.isd import GammaPrior
@@ -18,6 +16,10 @@ class Tests(IMP.test.TestCase):
         return m, p
 
     def test_evaluate_at(self):
+        try:
+            from scipy.stats import gamma
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         theta = 2.0
         kappa = 1.4
 
@@ -30,6 +32,10 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(gp.evaluate_at(randnum), -1*numpy.log(gamma.pdf(randnum, kappa, 0.0, theta)))
 
     def test_unprotected_evaluate(self):
+        try:
+            from scipy.stats import gamma
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         theta = 2.0
         kappa = 1.6
 
