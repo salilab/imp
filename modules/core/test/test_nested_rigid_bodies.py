@@ -229,7 +229,7 @@ class Tests(IMP.test.TestCase):
         exp_lqderv = IMP.algebra.Vector4D()
         for i in range(4):
             exp_lqderv[i] = (
-                lderv * rot_local_to_parent.get_derivative(lcoord, i))
+                lderv * rot_local_to_parent.get_derivative(lcoord, i, False))
 
         lqderv = IMP.core.NonRigidMember(
             nrb).get_internal_rotational_derivatives()
@@ -273,9 +273,7 @@ class Tests(IMP.test.TestCase):
             delta=1e-6
         )
 
-        q = rb.get_rotation().get_quaternion()
-        projection_matrix = np.eye(4) - np.outer(q, q)
-        exp_deriv = np.dot(projection_matrix, -kappa * mu)
+        exp_deriv = -kappa * mu
 
         # ensure that derivative is propagated correctly
         self.assertSequenceAlmostEqual(
