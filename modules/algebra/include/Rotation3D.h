@@ -229,36 +229,52 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
     return *this;
   }
 
-  //! Return the derivative of rotated vector wrt the ith quaternion element.
+  //! Return the gradient of rotated vector wrt the ith quaternion element.
   /** Given the rotation \f$x = R(q) v\f$, where \f$v\f$ is a vector,
       \f$q=(q_0,q_1,q_2,q_3)\f$ is the quaternion of the rotation with
       elements \f$q_i\f$, and \f$R(q)\f$ is the corresponding rotation matrix,
-      the function returns the derivative \f$\frac{d x}{d q_i}\f$.
+      the function returns the gradient \f$\nabla_{q_i} x\f$.
 
-      This function just returns a single column from get_gradient(), so it is
+      This function just returns a single column from `get_jacobian()`, so it is
       more efficient to call that function if all columns are needed.
 
       \param[in] v vector to be rotated by rotation \f$R(q)\f$
-      \param[in] projected project derivative onto tangent space to \f$q\f$.
-                           Equivalent to differentiating wrt
-                           \f$\frac{q_i}{\|q\|}\f$ instead of \f$q_i\f$.
+      \param[in] wrt_unnorm Gradient is computed wrt unnormalized quaternion.
+                            Rotation includes a normalization operation, and
+                            the gradient is projected to the tangent space at
+                            \f$q\f$.
   */
-  Vector3D get_derivative(const Vector3D &v, unsigned int i,
-                          bool projected = true) const;
+  Vector3D get_gradient_of_rotated(const Vector3D &v, unsigned int i,
+                                   bool wrt_unnorm = false) const;
 
-  //! Return the gradient of rotated vector wrt the quaternion.
+  IMPALGEBRA_DEPRECATED_METHOD_DECL(2.12);
+  Vector3D get_derivative(const Vector3D &v, unsigned int i,
+                          bool wrt_unnorm = true) {
+    IMPALGEBRA_DEPRECATED_METHOD_DEF(2.12, "Use get_gradient_of_rotated(args) instead.");
+    return get_gradient_of_rotated(v, i, wrt_unnorm);
+  }
+
+  //! Return the Jacobian of rotated vector wrt the quaternion.
   /** Given the rotation \f$x = R(q) v\f$, where \f$v\f$ is a vector,
       \f$q\f$ is the quaternion of the rotation, and \f$R(q)\f$ is the
       corresponding rotation matrix, the function returns the 3x4 matrix
-      \f$M = \nabla_q x\f$ with elements \f$M_{ij}=\frac{d x_i}{d q_j}\f$.
+      \f$J\f$ with elements \f$J_{ij}=\frac{\partial x_i}{\partial q_j}\f$.
       
       \param[in] v vector to be rotated by rotation \f$R(q)\f$
-      \param[in] projected project gradient onto tangent space to \f$q\f$.
-                           Equivalent to differentiating wrt
-                           \f$\frac{q_i}{\|q\|}\f$ instead of \f$q_i\f$.
+      \param[in] wrt_unnorm Jacobian is computed wrt unnormalized quaternion.
+                            Rotation includes a normalization operation, and
+                            the columns are projected to the tangent space at
+                            \f$q\f$.
    */
+  Eigen::MatrixXd get_jacobian_of_rotated(
+    const Eigen::Vector3d &v, bool wrt_unnorm = false) const;
+
+  IMPALGEBRA_DEPRECATED_METHOD_DECL(2.12);
   Eigen::MatrixXd get_gradient(
-    const Eigen::Vector3d &v, bool projected = true) const;
+    const Eigen::Vector3d &v, bool wrt_unnorm = true) const {
+    IMPALGEBRA_DEPRECATED_METHOD_DEF(2.12, "Use get_jacobian_of_rotated(args) instead.");
+    return get_jacobian_of_rotated(v, wrt_unnorm);
+  }
 
   /** Return true is the rotation is valid, false if
       invalid or not initialized (e.g., only initialized by
@@ -277,32 +293,46 @@ IMP_VALUES(Rotation3D, Rotation3Ds);
     \f$q\f$ are quaternions, the quaternion of the composed rotation
     \f$R(s)=R(q) R(p)\f$ can be expressed through the Hamilton product of the
     two quaternions \f$s(q,p) = q p\f$. This function returns the matrix
-    \f$M = \nabla_q s(q, p)\f$ with elements \f$M_{ij}=\frac{d s_i}{d q_j}\f$.
+    \f$J\f$ with elements \f$J_{ij}=\frac{\partial s_i}{\partial q_j}\f$.
 
     \param[in] q rotation corresponding to first quaternion
     \param[in] p rotation corresponding to second quaternion
-    \param[in] projected project derivative onto tangent space to \f$q\f$.
-                         Equivalent to differentiating wrt
-                         \f$\frac{q_i}{\|q\|}\f$ instead of \f$q_i\f$.
+    \param[in] wrt_unnorm Jacobian is computed wrt unnormalized quaternion.
+                          Rotation includes a normalization operation, and
+                          the columns are projected to the tangent space at
+                          \f$q\f$.
  */
-IMPALGEBRAEXPORT Eigen::MatrixXd get_gradient_of_composed_with_respect_to_first(
-  const Rotation3D &q, const Rotation3D &p, bool projected = true);
+IMPALGEBRAEXPORT Eigen::MatrixXd get_jacobian_of_composed_wrt_first(
+  const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm = false);
 
-//! Get gradient of quaternion product with respect to second quaternion.
+IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.12);
+IMPALGEBRAEXPORT Eigen::MatrixXd
+  get_gradient_of_composed_with_respect_to_first(
+    const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm = true);
+
+
+//! Get Jacobian of quaternion product with respect to second quaternion.
 /** Given the rotation \f$R(p)\f$ followed by \f$R(q)\f$, where \f$p\f$ and
     \f$q\f$ are quaternions, the quaternion of the composed rotation
     \f$R(s)=R(q) R(p)\f$ can be expressed through the Hamilton product of the
     two quaternions \f$s(q,p) = q p\f$. This function returns the matrix
-    \f$\nabla_p s(q, p)\f$ with elements \f$M_{ij}=\frac{d s_i}{d p_j}\f$.
+    \f$J\f$ with elements \f$J_{ij}=\frac{\partial s_i}{\partial p_j}\f$.
 
     \param[in] q rotation corresponding to first quaternion
     \param[in] p rotation corresponding to second quaternion
-    \param[in] projected project derivative onto tangent space to \f$p\f$.
-                         Equivalent to differentiating wrt
-                         \f$\frac{p_i}{\|p\|}\f$ instead of \f$p_i\f$.
+    \param[in] wrt_unnorm Jacobian is computed wrt unnormalized quaternion.
+                          Rotation includes a normalization operation, and
+                          the columns are projected to the tangent space at
+                          \f$p\f$.
  */
-IMPALGEBRAEXPORT Eigen::MatrixXd get_gradient_of_composed_with_respect_to_second(
-  const Rotation3D &q, const Rotation3D &p, bool projected = true);
+IMPALGEBRAEXPORT Eigen::MatrixXd get_jacobian_of_composed_wrt_second(
+  const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm = false);
+
+IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.12);
+IMPALGEBRAEXPORT Eigen::MatrixXd
+  get_gradient_of_composed_with_respect_to_second(
+    const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm = true);
+
 
 //! Return a rotation that does not do anything
 /** \see Rotation3D */

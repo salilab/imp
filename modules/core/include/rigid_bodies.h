@@ -527,7 +527,8 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
 
   Eigen::RowVector4d q =
     Eigen::RowVector3d(deriv_global.get_data()) *
-    rot_local_to_global.get_gradient(Eigen::Vector3d(local.get_data()), false);
+    rot_local_to_global.get_jacobian_of_rotated(Eigen::Vector3d(local.get_data()),
+                                                false);
 
   for (unsigned int i = 0; i < 4; ++i) {
     get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[i],
@@ -554,7 +555,7 @@ void RigidBody::add_to_rotational_derivatives(const algebra::Vector4D &other_qde
                                               const algebra::Rotation3D &rot_local_to_global,
                                               DerivativeAccumulator &da) {
   Eigen::MatrixXd derivs =
-    algebra::get_gradient_of_composed_with_respect_to_first(
+    algebra::get_jacobian_of_composed_wrt_first(
       rot_local_to_global, rot_other_to_local, false);
   Eigen::RowVector4d qderiv = Eigen::RowVector4d(other_qderiv.get_data()) * derivs;
   for (unsigned int i = 0; i < 4; ++i) {
@@ -747,7 +748,7 @@ class IMPCOREEXPORT NonRigidMember : public RigidBodyMember {
                                               const algebra::Rotation3D &rot_parent_to_global,
                                               DerivativeAccumulator &da) {
     Eigen::MatrixXd derivs =
-      algebra::get_gradient_of_composed_with_respect_to_second(
+      algebra::get_jacobian_of_composed_wrt_second(
         rot_parent_to_global, rot_local_to_parent, false);
     Eigen::RowVector4d qderiv = Eigen::RowVector4d(local_qderiv.get_data()) * derivs;
     for (unsigned int i = 0; i < 4; ++i) {

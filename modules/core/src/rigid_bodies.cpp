@@ -249,7 +249,7 @@ void AccumulateRigidBodyDerivatives::apply_index(
       algebra::Vector3D dv = d.get_derivatives();
       v += dv;
       // IMP_LOG_TERSE( "Adding " << dv << " to derivative" << std::endl);
-      q += rot.get_gradient(Eigen::Vector3d(
+      q += rot.get_jacobian_of_rotated(Eigen::Vector3d(
         d.get_internal_coordinates().get_data()), false).transpose() *
         Eigen::Vector3d(dv.get_data());
 
@@ -257,7 +257,7 @@ void AccumulateRigidBodyDerivatives::apply_index(
         algebra::Rotation3D mrot = RigidBodyMember(d).get_internal_transformation().get_rotation();
         Eigen::Vector4d mq(RigidBody(d).get_rotational_derivatives().get_data());
         Eigen::MatrixXd dq =
-          algebra::get_gradient_of_composed_with_respect_to_first(rot, mrot, false).transpose();
+          algebra::get_jacobian_of_composed_wrt_first(rot, mrot, false).transpose();
         q += dq * mq;
       }
     }

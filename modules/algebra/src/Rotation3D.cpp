@@ -105,45 +105,57 @@ Rotation3D get_rotation_from_matrix(double m11, double m12, double m13,
   return ret;
 }
 
-Vector3D Rotation3D::get_derivative(const Vector3D &v,
-                                    unsigned int i,
-                                    bool projected) const {
+Vector3D Rotation3D::get_gradient_of_rotated(const Vector3D &v,
+                                             unsigned int i,
+                                             bool wrt_unnorm) const {
   IMP_USAGE_CHECK(i < 4, "Invalid derivative component.");
   Eigen::Vector4d q(v_.get_data());
   Eigen::Vector3d V(v.get_data());
-  Eigen::Matrix<double,3,4> dRv_dq = internal::get_gradient_of_rotated(
-    q, V, projected);
+  Eigen::Matrix<double,3,4> dRv_dq = internal::get_jacobian_of_rotated(
+    q, V, wrt_unnorm);
   Vector3D dRv_dqi;
   Eigen::VectorXd::Map(&dRv_dqi[0], 3) = dRv_dq.col(i);
   return dRv_dqi;
 }
 
-Eigen::MatrixXd Rotation3D::get_gradient(
-    const Eigen::Vector3d &v, bool projected) const {
+Eigen::MatrixXd Rotation3D::get_jacobian_of_rotated(
+    const Eigen::Vector3d &v, bool wrt_unnorm) const {
   Eigen::Vector4d q(v_.get_data());
-  return internal::get_gradient_of_rotated(q, v, projected);
+  return internal::get_jacobian_of_rotated(q, v, wrt_unnorm);
 }
 
-Eigen::MatrixXd get_gradient_of_composed_with_respect_to_first(
-    const Rotation3D &q, const Rotation3D &p, bool projected) {
+Eigen::MatrixXd get_jacobian_of_composed_wrt_first(
+    const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm) {
   Eigen::Vector4d Q(q.get_quaternion().get_data());
   Eigen::Vector4d P(p.get_quaternion().get_data());
   if (Q[0] * P[0] - Q.tail(3).dot(P.tail(3)) < 0) {
     // account for compose() canonicalizing rotation
     P *= -1;
   }
-  return internal::get_gradient_of_composed_wrt_first(Q, P, projected);
+  return internal::get_jacobian_of_composed_wrt_first(Q, P, wrt_unnorm);
 }
 
-Eigen::MatrixXd get_gradient_of_composed_with_respect_to_second(
-    const Rotation3D &q, const Rotation3D &p, bool projected) {
+Eigen::MatrixXd get_gradient_of_composed_with_respect_to_first(
+  const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm) {
+  IMPALGEBRA_DEPRECATED_FUNCTION_DEF(2.12, "Use get_jacobian_of_composed_wrt_first(args) instead.");
+  return get_jacobian_of_composed_wrt_first(q, p, wrt_unnorm);
+}
+
+Eigen::MatrixXd get_jacobian_of_composed_wrt_second(
+    const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm) {
   Eigen::Vector4d Q(q.get_quaternion().get_data());
   Eigen::Vector4d P(p.get_quaternion().get_data());
   if (Q[0] * P[0] - Q.tail(3).dot(P.tail(3)) < 0) {
     // account for compose() canonicalizing rotation
     Q *= -1;
   }
-  return internal::get_gradient_of_composed_wrt_second(Q, P, projected);
+  return internal::get_jacobian_of_composed_wrt_second(Q, P, wrt_unnorm);
+}
+
+Eigen::MatrixXd get_gradient_of_composed_with_respect_to_second(
+  const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm) {
+  IMPALGEBRA_DEPRECATED_FUNCTION_DEF(2.12, "Use get_jacobian_of_composed_with_respect_to_second(args) instead.");
+  return get_jacobian_of_composed_wrt_second(q, p, wrt_unnorm);
 }
 
 Rotation3D get_random_rotation_3d() {
