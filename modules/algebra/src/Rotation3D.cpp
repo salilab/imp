@@ -118,10 +118,29 @@ Vector3D Rotation3D::get_gradient_of_rotated(const Vector3D &v,
   return dRv_dqi;
 }
 
+Vector3D Rotation3D::get_derivative(const Vector3D &v,
+                                    unsigned int i,
+                                    bool wrt_unnorm) const {
+  IMPALGEBRA_DEPRECATED_METHOD_DEF(
+    2.12,
+    "Use get_gradient_of_rotated(args) instead."
+  );
+  return get_gradient_of_rotated(v, i, wrt_unnorm);
+}
+
 Eigen::MatrixXd Rotation3D::get_jacobian_of_rotated(
     const Eigen::Vector3d &v, bool wrt_unnorm) const {
   Eigen::Vector4d q(v_.get_data());
   return internal::get_jacobian_of_rotated(q, v, wrt_unnorm);
+}
+
+Eigen::MatrixXd Rotation3D::get_gradient(
+  const Eigen::Vector3d &v, bool wrt_unnorm) const {
+  IMPALGEBRA_DEPRECATED_METHOD_DEF(
+    2.12,
+    "Use get_jacobian_of_rotated(args) instead."
+  );
+  return get_jacobian_of_rotated(v, wrt_unnorm);
 }
 
 Eigen::MatrixXd get_jacobian_of_composed_wrt_first(

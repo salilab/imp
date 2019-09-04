@@ -249,10 +249,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
 
   IMPALGEBRA_DEPRECATED_METHOD_DECL(2.12);
   Vector3D get_derivative(const Vector3D &v, unsigned int i,
-                          bool wrt_unnorm = true) {
-    IMPALGEBRA_DEPRECATED_METHOD_DEF(2.12, "Use get_gradient_of_rotated(args) instead.");
-    return get_gradient_of_rotated(v, i, wrt_unnorm);
-  }
+                          bool wrt_unnorm = true) const;
 
   //! Return the Jacobian of rotated vector wrt the quaternion.
   /** Given the rotation \f$x = R(q) v\f$, where \f$v\f$ is a vector,
@@ -271,10 +268,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
 
   IMPALGEBRA_DEPRECATED_METHOD_DECL(2.12);
   Eigen::MatrixXd get_gradient(
-    const Eigen::Vector3d &v, bool wrt_unnorm = true) const {
-    IMPALGEBRA_DEPRECATED_METHOD_DEF(2.12, "Use get_jacobian_of_rotated(args) instead.");
-    return get_jacobian_of_rotated(v, wrt_unnorm);
-  }
+    const Eigen::Vector3d &v, bool wrt_unnorm = true) const;
 
   /** Return true is the rotation is valid, false if
       invalid or not initialized (e.g., only initialized by
