@@ -400,6 +400,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
       @param da               Accumulates the output derivative over the rigid body
                               center of mass (translation and rotation torque, quaternion)
    */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.12)
   inline void add_to_derivatives(const algebra::Vector3D &local_derivative,
                           const algebra::Vector3D &local_location,
                           DerivativeAccumulator &da);
@@ -415,6 +416,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
       @param da                  Accumulates the output derivative over the rigid body
                                  center of mass (translation and rotation torque, quaternion)
   */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.12)
   inline void add_to_derivatives(const algebra::Vector3D &local_derivative,
                           const algebra::Vector3D &global_derivative,
                           const algebra::Vector3D &local_location,
@@ -436,6 +438,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
                                  global coordinates.
       @param da               Accumulates the output derivatives.
    */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.12)
   inline void add_to_rotational_derivatives(const algebra::Vector4D &other_qderiv,
                                             const algebra::Rotation3D &rot_other_to_local,
                                             const algebra::Rotation3D &rot_local_to_global,
@@ -607,6 +610,7 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &local,
                                    const algebra::Rotation3D &rot_local_to_global,
                                    DerivativeAccumulator &da) {
+  IMPCORE_DEPRECATED_FUNCTION_DEF(2.12, "Updating of derivatives is now handled after evaluation by RigidBody::pull_back_members_adjoints.");
   // IMP_LOG_TERSE( "Accumulating rigid body derivatives" << std::endl);
   XYZ::add_to_derivatives(deriv_global, da);
 
@@ -627,6 +631,7 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
 void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &local,
                                    DerivativeAccumulator &da) {
+  IMPCORE_DEPRECATED_FUNCTION_DEF(2.12, "Updating of derivatives is now handled after evaluation by RigidBody::pull_back_members_adjoints.");
   algebra::Rotation3D rot_local_to_global =
       get_reference_frame().get_transformation_to().get_rotation();
   const algebra::Vector3D deriv_global = rot_local_to_global * deriv_local;
@@ -639,6 +644,7 @@ void RigidBody::add_to_rotational_derivatives(const algebra::Vector4D &other_qde
                                               const algebra::Rotation3D &rot_other_to_local,
                                               const algebra::Rotation3D &rot_local_to_global,
                                               DerivativeAccumulator &da) {
+  IMPCORE_DEPRECATED_FUNCTION_DEF(2.12, "Updating of derivatives is now handled after evaluation by RigidBody::pull_back_members_adjoints.");
   Eigen::MatrixXd derivs =
     algebra::get_jacobian_of_composed_wrt_first(
       rot_local_to_global, rot_other_to_local, false);
@@ -828,10 +834,12 @@ class IMPCOREEXPORT NonRigidMember : public RigidBodyMember {
                                   to global coordinates.
       @param da               Accumulates the output derivatives.
    */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.12)
   void add_to_internal_rotational_derivatives(const algebra::Vector4D &local_qderiv,
                                               const algebra::Rotation3D &rot_local_to_parent,
                                               const algebra::Rotation3D &rot_parent_to_global,
                                               DerivativeAccumulator &da) {
+    IMPCORE_DEPRECATED_FUNCTION_DEF(2.12, "Updating of derivatives is now handled after evaluation by RigidBody::pull_back_members_adjoints.");
     Eigen::MatrixXd derivs =
       algebra::get_jacobian_of_composed_wrt_second(
         rot_parent_to_global, rot_local_to_parent, false);
