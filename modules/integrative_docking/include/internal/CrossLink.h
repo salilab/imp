@@ -28,8 +28,9 @@ class CrossLink {
         weight_(1.0) {}
 
   CrossLink(int residue_number1, std::string chain_id1, int residue_number2,
-            std::string chain_id2, float min_dist, float max_dist, float weight = 1.0,
-            float actual_distance = 0.0, float actual_cb_distance = 0.0)
+            std::string chain_id2, float min_dist, float max_dist,
+            float actual_distance = 0.0, float actual_cb_distance = 0.0,
+            float weight = 1.0)
       : residue_number1_(residue_number1),
         chain_id1_(chain_id1),
         residue_number2_(residue_number2),
