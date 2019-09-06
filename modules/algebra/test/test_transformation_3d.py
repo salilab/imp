@@ -2,6 +2,7 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
+import numpy as np
 import math
 import random
 
@@ -41,6 +42,50 @@ class Tests(IMP.test.TestCase):
         v1 = t3d.get_transformed(v)
         print("V1: " + str(v1))
         self.assertAlmostEqual(v1[2], 0.0, delta=.01)
+
+    def test_get_transformed_adjoint(self):
+        r = IMP.algebra.get_random_rotation_3d()
+        t = np.random.normal(size=3)
+        T = IMP.algebra.Transformation3D(r, t)
+        x = np.random.normal(size=3)
+        Dy = np.random.normal(size=3)
+
+        rot_adjoints = r.get_rotated_adjoint(x, Dy)
+        Dx = rot_adjoints[0]
+        Dr = rot_adjoints[1]
+        adjoints = T.get_transformed_adjoint(x, Dy)
+
+        self.assertSequenceAlmostEqual(list(adjoints[0]), list(Dx))
+        self.assertSequenceAlmostEqual(list(adjoints[1][0]), list(Dr))
+        self.assertSequenceAlmostEqual(list(adjoints[1][1]), list(Dy))
+
+    def test_compose_adjoint(self):
+        A = IMP.algebra.get_random_rotation_3d()
+        B = IMP.algebra.get_random_rotation_3d()
+        a = np.random.normal(size=3)
+        b = np.random.normal(size=3)
+        TA = IMP.algebra.Transformation3D(A, a)
+        TB = IMP.algebra.Transformation3D(B, b)
+        DC = np.random.normal(size=4)
+        Dc = np.random.normal(size=3)
+        DTC = IMP.algebra._Transformation3DAdjoint(DC, Dc)
+
+        DADB = IMP.algebra.compose_adjoint(A, B, DC)
+        DA = np.array(DADB[0])
+        DB = DADB[1]
+        DbDTA = TA.get_transformed_adjoint(b, Dc)
+        Db = DbDTA[0]
+        DTA = DbDTA[1]
+        DA += np.array(DTA[0])
+        Da = DTA[1]
+
+        adjoints = IMP.algebra.compose_adjoint(TA, TB, DTC)
+        TAadjoints = adjoints[0]
+        TBadjoints = adjoints[1]
+        self.assertSequenceAlmostEqual(list(TAadjoints[0]), list(DA))
+        self.assertSequenceAlmostEqual(list(TAadjoints[1]), list(Da))
+        self.assertSequenceAlmostEqual(list(TBadjoints[0]), list(DB))
+        self.assertSequenceAlmostEqual(list(TBadjoints[1]), list(Db))
 
     def test_transformation_between_two_reference_frames(self):
         """Check calculating a transformation between two reference frames"""

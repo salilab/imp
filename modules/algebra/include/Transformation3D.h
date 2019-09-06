@@ -23,6 +23,11 @@ class Transformation3D;
 Transformation3D compose(const Transformation3D &a, const Transformation3D &b);
 #endif
 
+typedef std::pair<Vector4D, Vector3D> Transformation3DAdjoint;
+typedef std::pair<Vector3D, Transformation3DAdjoint> TransformedVector3DAdjoint;
+typedef std::pair<Transformation3DAdjoint, Transformation3DAdjoint>
+    ComposeTransformation3DAdjoint;
+
 //! Simple 3D transformation class
 /** The rotation is applied first, and then the point is translated.
     \see IMP::core::Transform
@@ -44,6 +49,25 @@ class IMPALGEBRAEXPORT Transformation3D : public GeometricPrimitiveD<3> {
   Vector3D get_transformed(const Vector3D &o) const {
     return rot_.get_rotated(o) + trans_;
   }
+
+#ifndef SWIG
+  //! Get adjoint of inputs to `get_transformed` from adjoint of output
+  /** Compute the adjoint (reverse-mode sensitivity) of input vector
+      to `get_transformed` and this transformation from the adjoint of the
+      output vector.
+   */
+  void get_transformed_adjoint(const Vector3D &v, const Vector3D &Dw,
+                               Vector3D *Dv, Transformation3DAdjoint *DT) const;
+#endif
+
+  //! Get adjoint of inputs to `get_transformed` from adjoint of output
+  /** Compute the adjoint (reverse-mode sensitivity) of input vector
+      to `get_transformed` and this transformation from the adjoint of the
+      output vector.
+   */
+  TransformedVector3DAdjoint
+  get_transformed_adjoint(const Vector3D &v, const Vector3D &Dw) const;
+
   //! Apply transformation (rotate and then translate)
   Vector3D operator*(const Vector3D &v) const { return get_transformed(v); }
   /** Compose two rigid transformation such that for any vector v
@@ -126,6 +150,25 @@ inline Transformation3D compose(const Transformation3D &a,
   return Transformation3D(compose(a.get_rotation(), b.get_rotation()),
                           a.get_transformed(b.get_translation()));
 }
+
+#ifndef SWIG
+//! Get adjoint of inputs to `compose` from adjoint of output
+/** Compute the adjoint (reverse-mode sensitivity) of input transformations
+    to `compose` from the adjoint of the output transformation.
+ */
+IMPALGEBRAEXPORT void
+compose_adjoint(const Transformation3D &TA, const Transformation3D &TB,
+                const Transformation3DAdjoint &DTC,
+                Transformation3DAdjoint *DTA, Transformation3DAdjoint *DTB);
+#endif
+
+//! Get adjoint of inputs to `compose` from adjoint of output
+/** Compute the adjoint (reverse-mode sensitivity) of input transformations
+    to `compose` from the adjoint of the output transformation.
+ */
+ComposeTransformation3DAdjoint
+compose_adjoint(const Transformation3D &TA, const Transformation3D &TB,
+                const Transformation3DAdjoint &DTC);
 
 class Transformation2D;
 

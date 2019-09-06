@@ -22,6 +22,11 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+typedef Vector4D Rotation3DAdjoint;
+typedef std::pair<Vector3D, Rotation3DAdjoint> RotatedVector3DAdjoint;
+typedef std::pair<Rotation3DAdjoint, Rotation3DAdjoint>
+    ComposeRotation3DAdjoint;
+
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 class Rotation3D;
 Rotation3D compose(const Rotation3D &a, const Rotation3D &b);
@@ -174,6 +179,24 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
     if (!has_cache_) fill_cache();
     return Vector3D(o * matrix_[0], o * matrix_[1], o * matrix_[2]);
   }
+
+#ifndef SWIG
+  //! Get adjoint of inputs to `get_rotated` from adjoint of output
+  /** Compute the adjoint (reverse-mode sensitivity) of input vector
+      to `get_rotated` and this rotation from the adjoint of the
+      output vector.
+   */
+  void get_rotated_adjoint(const Vector3D &v, const Vector3D &Dw,
+                           Vector3D *Dv, Rotation3DAdjoint *Dr) const;
+#endif
+
+  //! Get adjoint of inputs to `get_rotated` from adjoint of output
+  /** Compute the adjoint (reverse-mode sensitivity) of input vector
+      to `get_rotated` and this rotation from the adjoint of the
+      output vector.
+   */
+  RotatedVector3DAdjoint
+  get_rotated_adjoint(const Vector3D &v, const Vector3D &Dw) const;
 
   //! Get only the requested rotation coordinate of the vector
   double get_rotated_one_coordinate(const Vector3D &o,
@@ -479,6 +502,23 @@ inline Rotation3D compose(const Rotation3D &a, const Rotation3D &b) {
                     a.v_[0] * b.v_[3] + a.v_[1] * b.v_[2] - a.v_[2] * b.v_[1] +
                         a.v_[3] * b.v_[0]);
 }
+
+#ifndef SWIG
+//! Get adjoint of inputs to `compose` from adjoint of output
+/** Compute the adjoint (reverse-mode sensitivity) of input rotations
+    to `compose` from the adjoint of the output rotation.
+ */
+IMPALGEBRAEXPORT void
+compose_adjoint(const Rotation3D &A, const Rotation3D &B, Vector4D DC,
+                Rotation3DAdjoint *DA, Rotation3DAdjoint *DB);
+#endif
+
+//! Get adjoint of inputs to `compose` from adjoint of output
+/** Compute the adjoint (reverse-mode sensitivity) of input rotations
+    to `compose` from the adjoint of the output rotation.
+ */
+IMPALGEBRAEXPORT ComposeRotation3DAdjoint
+compose_adjoint(const Rotation3D &A, const Rotation3D &B, const Rotation3DAdjoint &DC);
 
 /** \name Euler Angles
     There are many conventions for how to define Euler angles, based on choices
