@@ -180,50 +180,8 @@ void AccumulateRigidBodyDerivatives::apply_index(
         internal::rigid_body_data().quaternion_[j]);
   }
 #endif
-  algebra::Rotation3D rot = //! from global to internal
-      rb.get_reference_frame().get_transformation_from().get_rotation();
-  algebra::Rotation3D roti = //! from internal to global
-      rb.get_reference_frame().get_transformation_to().get_rotation();
-  const ParticleIndexes &rbis = rb.get_member_particle_indexes();
-  for (unsigned int i = 0; i < rbis.size(); ++i) {
-    RigidBodyMember d(rb.get_model(), rbis[i]);
-    const algebra::Vector3D &deriv = d.get_derivatives();
-    if (deriv.get_squared_magnitude() > 0) {
-      algebra::Vector3D dv = rot * deriv;
-      rb.add_to_derivatives(dv, deriv, d.get_internal_coordinates(), roti, da);
-      if (NonRigidMember::get_is_setup(d)) {
-        NonRigidMember(d).add_to_internal_derivatives(dv, da);
-      }
-    }
-  }
-  const ParticleIndexes &rbbis = rb.get_body_member_particle_indexes();
-  for (unsigned int i = 0; i < rbbis.size(); ++i) {
-    RigidBodyMember d(rb.get_model(), rbbis[i]);
-    bool is_nonrigid = NonRigidMember::get_is_setup(d);
-    const algebra::Vector3D &deriv = d.get_derivatives();
-    if (deriv.get_squared_magnitude() > 0) {
-      algebra::Vector3D dv = rot * deriv;
-      rb.add_to_derivatives(dv, deriv, d.get_internal_coordinates(), roti, da);
-      if (is_nonrigid) {
-        NonRigidMember(d).add_to_internal_derivatives(dv, da);
-      }
-    }
 
-    algebra::Rotation3D rot_memloc_to_loc = d.get_internal_transformation().get_rotation();
-    algebra::Vector3D mtorque = RigidBody(d).get_torque();
-    if (mtorque.get_squared_magnitude() > 0) {
-      rb.add_to_torque(rot_memloc_to_loc * mtorque, da);
-    }
-
-    algebra::Vector4D mderiv = RigidBody(d).get_rotational_derivatives();
-    if (mderiv.get_squared_magnitude() > 0) {
-      rb.add_to_rotational_derivatives(mderiv, rot_memloc_to_loc, roti, da);
-      if (is_nonrigid) {
-        NonRigidMember(d).add_to_internal_rotational_derivatives(
-          mderiv, rot_memloc_to_loc, roti, da);
-      }
-    }
-  }
+  rb.pull_back_members_adjoints(da);
 
   IMP_LOG_TERSE("Rigid body derivative is "
                 << m->get_particle(pi)->get_derivative(
@@ -656,6 +614,124 @@ void RigidBody::update_members() {
       rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(tr * itr));
     }
   }
+}
+
+void RigidBody::pull_back_members_adjoints(DerivativeAccumulator &da) {
+  algebra::Transformation3D TA = get_reference_frame().get_transformation_to();
+  algebra::Transformation3D TB;
+  algebra::Transformation3DAdjoint DTA, DTB, DTC;
+  algebra::Vector3D beta, betatorque;
+
+  const ParticleIndexes &mis = get_member_particle_indexes();
+  for (unsigned int i = 0; i < mis.size(); ++i) {
+    // y = T(A, alpha) * beta = A * beta + alpha
+    pull_back_member_adjoints(mis[i], TA, beta,
+                              DTC.second, DTB.second, DTA, betatorque, da);
+  }
+
+  const ParticleIndexes &bmis = get_body_member_particle_indexes();
+  for (unsigned int i = 0; i < bmis.size(); ++i) {
+    // TC = T(A, alpha) * T(B, beta) = T(A B, A * beta + alpha)
+    pull_back_body_member_adjoints(
+      bmis[i], TA, TB, DTC, DTA, DTB, betatorque, da
+    );
+  }
+}
+
+void RigidBody::pull_back_member_adjoints(ParticleIndex pi,
+                                          const algebra::Transformation3D &T,
+                                          algebra::Vector3D &x,
+                                          algebra::Vector3D &Dy,
+                                          algebra::Vector3D &Dx,
+                                          algebra::Transformation3DAdjoint &DT,
+                                          algebra::Vector3D &xtorque,
+                                          DerivativeAccumulator &da) {
+  IMP_INTERNAL_CHECK(RigidBodyMember::get_is_setup(get_model(), pi),
+                     "Particle must be a rigid body member.");
+  RigidBodyMember rbm(get_model(), pi);
+  IMP_INTERNAL_CHECK(
+    rbm.get_rigid_body().get_particle_index() == get_particle_index(),
+    "Rigid body member must be a member of this rigid body."
+  );
+
+  x = rbm.get_internal_coordinates();
+  Dy = rbm.get_derivatives();
+
+  bool is_nonrigid = get_model()->get_attribute(
+                         internal::rigid_body_data().is_rigid_key_, pi) != 1;
+
+  T.get_transformed_adjoint(x, Dy, &Dx, &DT);
+
+  if (is_nonrigid)
+    NonRigidMember(get_model(), pi).add_to_internal_derivatives(Dx, da);
+
+  add_to_rotational_derivatives(DT.first, da);
+  XYZ::add_to_derivatives(DT.second, da);
+
+  xtorque = algebra::get_vector_product(x, Dx);
+  add_to_torque(xtorque, da);
+}
+
+void RigidBody::pull_back_member_adjoints(ParticleIndex pi,
+                                          DerivativeAccumulator &da) {
+  algebra::Transformation3D T = get_reference_frame().get_transformation_to();
+  algebra::Vector3D x, Dx, Dy, xtorque;
+  algebra::Transformation3DAdjoint DT;
+
+  pull_back_member_adjoints(pi, T, x, Dy, Dx, DT, xtorque, da);
+}
+
+void RigidBody::pull_back_body_member_adjoints(ParticleIndex pi,
+                                               const algebra::Transformation3D &TA,
+                                               algebra::Transformation3D &TB,
+                                               algebra::Transformation3DAdjoint &DTC,
+                                               algebra::Transformation3DAdjoint &DTA,
+                                               algebra::Transformation3DAdjoint &DTB,
+                                               algebra::Vector3D &betatorque,
+                                               DerivativeAccumulator &da) {
+  IMP_INTERNAL_CHECK(RigidBodyMember::get_is_setup(get_model(), pi),
+                     "Particle must be a rigid body member.");
+  IMP_INTERNAL_CHECK(RigidBody::get_is_setup(get_model(), pi),
+                     "Particle must be a rigid body.");
+  RigidBodyMember rbm(get_model(), pi);
+  IMP_INTERNAL_CHECK(
+    rbm.get_rigid_body().get_particle_index() == get_particle_index(),
+    "Rigid body member must be a member of this rigid body."
+  );
+  RigidBody rb(get_model(), pi);
+
+  TB = rbm.get_internal_transformation();
+  DTC.first = rb.get_rotational_derivatives();
+  DTC.second = rb.get_derivatives();
+
+  bool is_nonrigid = get_model()->get_attribute(
+                         internal::rigid_body_data().is_rigid_key_, pi) != 1;
+
+  algebra::compose_adjoint(TA, TB, DTC, &DTA, &DTB);
+
+  if (is_nonrigid) {
+    algebra::compose_adjoint(TA, TB, DTC, &DTA, &DTB);
+    NonRigidMember rm(get_model(), pi);
+    rm.add_to_internal_derivatives(DTB.second, da);
+    rm.add_to_internal_rotational_derivatives(DTB.first, da);
+  }
+
+  add_to_rotational_derivatives(DTA.first, da);
+  XYZ::add_to_derivatives(DTA.second, da);
+
+  betatorque = algebra::get_vector_product(TB.get_translation(), DTB.second)
+                   + TB.get_rotation() * rb.get_torque();
+  add_to_torque(betatorque, da);
+}
+
+void RigidBody::pull_back_body_member_adjoints(ParticleIndex pi,
+                                               DerivativeAccumulator &da) {
+  algebra::Transformation3D TA = get_reference_frame().get_transformation_to();
+  algebra::Transformation3D TB;
+  algebra::Transformation3DAdjoint DTA, DTB, DTC;
+  algebra::Vector3D betatorque;
+
+  pull_back_body_member_adjoints(pi, TA, TB, DTC, DTA, DTB, betatorque, da);
 }
 
 RigidMembers RigidBody::get_rigid_members() const {

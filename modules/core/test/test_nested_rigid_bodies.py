@@ -6,6 +6,40 @@ import IMP.algebra
 import numpy as np
 
 
+class GradientCalculator:
+
+    def __init__(self, sf, pis, fks):
+        self.sf = sf
+        self.m = sf.get_model()
+        self.pis = pis
+        self.fks = fks
+
+    def get_approximate_gradient(self, eps=1e-6):
+        """Approximate gradient with central differences"""
+        grad = []
+        for pi, fk in zip(self.pis, self.fks):
+            if not self.m.get_particle(pi).get_is_optimized(fk):
+                grad.append(0.0)
+                continue
+            v0 = self.m.get_attribute(fk, pi)
+            self.m.set_attribute(fk, pi, v0 - eps / 2)
+            Sminus = self.sf.evaluate(True)
+            self.m.set_attribute(fk, pi, v0 + eps / 2)
+            Splus = self.sf.evaluate(True)
+            self.m.set_attribute(fk, pi, v0)
+            self.m.update()
+            grad.append((Splus - Sminus) / eps)
+        return np.array(grad)
+
+    def get_exact_gradient(self):
+        """Get IMP's computed gradient"""
+        self.sf.evaluate(True)
+        return np.array(
+            [self.m.get_particle(pi).get_derivative(fk)
+             for pi, fk in zip(self.pis, self.fks)]
+        )
+
+
 class DummyRestraint(IMP.Restraint):
 
     """Adds random derivatives to particles."""
@@ -140,6 +174,97 @@ class Tests(IMP.test.TestCase):
             rb_nested.get_torque(), rb_unnested.get_torque(),
             delta=1e-6)
 
+    def _make_beads(self, m, nbeads, center=[0, 0, 0], radius=10):
+        sphere = IMP.algebra.Sphere3D(center, radius)
+        xyzs = []
+        for n in range(nbeads):
+            v = IMP.algebra.get_random_vector_in(sphere)
+            xyz = IMP.core.XYZ.setup_particle(IMP.Particle(m), v)
+            xyzs.append(xyz)
+        return xyzs
+
+    def test_all_derivatives_correct(self):
+        m = IMP.Model()
+
+        nlevels = 4
+        nbeads = 10
+        prob_nonrigid = 0.5
+        tf = IMP.algebra.get_random_local_transformation((0, 0, 0), 10)
+        rf = IMP.algebra.ReferenceFrame3D(tf)
+        rb = IMP.core.RigidBody.setup_particle(IMP.Particle(m), rf)
+        rb.set_coordinates_are_optimized(True)
+        all_beads = []
+        all_rbs = [rb]
+        for level in range(nlevels):
+            center = tf.get_translation()
+            ps = self._make_beads(m, nbeads, center=center, radius=10)
+            all_beads += ps
+            for p in ps:
+                if np.random.uniform() < prob_nonrigid:
+                    rb.add_non_rigid_member(p)
+                    nrm = IMP.core.NonRigidMember(p)
+                    for k in nrm.get_internal_coordinate_keys():
+                        nrm.get_particle().set_is_optimized(k, True)
+                else:
+                    rb.add_member(p)
+
+            tf = IMP.algebra.get_random_local_transformation((0, 0, 0), 10)
+            rf = IMP.algebra.ReferenceFrame3D(tf)
+            rb_nested = IMP.core.RigidBody.setup_particle(IMP.Particle(m), rf)
+            if np.random.uniform() < prob_nonrigid:
+                rb.add_non_rigid_member(rb_nested)
+                nrm = IMP.core.NonRigidMember(rb_nested)
+                for k in nrm.get_internal_coordinate_keys() + nrm.get_internal_rotation_keys():
+                    nrm.get_particle().set_is_optimized(k, True)
+            else:
+                rb.add_member(rb_nested)
+            rb = rb_nested
+            all_rbs.append(rb)
+
+        m.update()
+        ss = IMP.core.DistanceToSingletonScore(
+            IMP.core.Harmonic(0, 1), (0, 0, 0)
+        )
+        rs = [IMP.core.SingletonRestraint(m, ss, p.get_particle_index())
+              for p in all_beads]
+        sf = IMP.core.RestraintsScoringFunction(rs)
+
+        pis, fks = list(
+            zip(*[(p.get_particle_index(), fk)
+                  for p in all_beads + all_rbs[1:]
+                  for fk in IMP.core.RigidBodyMember(p).get_internal_coordinate_keys()
+                 ]
+               )
+        )
+
+        gc = GradientCalculator(sf, pis, fks)
+        grad_approx = gc.get_approximate_gradient(eps=1e-6)
+        grad_exact = gc.get_exact_gradient()
+        self.assertSequenceAlmostEqual(
+            list(grad_exact), list(grad_approx), delta=1e-3
+        )
+
+        for rb in all_rbs[1:]:
+            pi = rb.get_particle_index()
+            nrm = IMP.core.RigidBodyMember(rb)
+            fks = nrm.get_internal_rotation_keys()
+            gc = GradientCalculator(sf, [pi] * 4, fks)
+            grad_approx = gc.get_approximate_gradient(eps=1e-6)
+            grad_exact = gc.get_exact_gradient()
+            self.assertSequenceAlmostEqual(
+                list(grad_exact), list(grad_approx), delta=1e-3
+            )
+
+        rb = all_rbs[0]
+        pi = rb.get_particle_index()
+        fks = rb.get_rotation_keys()
+        gc = GradientCalculator(sf, [pi] * 4, fks)
+        grad_approx = gc.get_approximate_gradient(eps=1e-6)
+        grad_exact = gc.get_exact_gradient()
+        self.assertSequenceAlmostEqual(
+            list(grad_exact), list(grad_approx), delta=1e-3
+        )
+
     def test_quaternion_derivatives_from_nested_equal_to_unnested(self):
         """Test nested rigid bodies have same quaternion derivatives as unnested."""
         sphere1 = IMP.algebra.Sphere3D([0, 0, 0], 5)
@@ -229,7 +354,10 @@ class Tests(IMP.test.TestCase):
         exp_lqderv = IMP.algebra.Vector4D()
         for i in range(4):
             exp_lqderv[i] = (
-                lderv * rot_local_to_parent.get_derivative(lcoord, i, False))
+                lderv * rot_local_to_parent.get_gradient_of_rotated(
+                    lcoord, i, False
+                )
+            )
 
         lqderv = IMP.core.NonRigidMember(
             nrb).get_internal_rotational_derivatives()

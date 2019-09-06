@@ -307,6 +307,86 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   */
   void set_reference_frame_from_members(const ParticleIndexes &members);
 
+  //! Pull back global adjoints from members.
+  /** Adjoints (reverse-mode sensitivities) are partial derivatives of the
+      score with respect to intermediate values in the scoring function
+      computation, such as the global coordinates of a bead within a rigid
+      body or the global reference frame of a nested rigid body.
+
+      This function pulls back (back-propagates) global adjoints and local
+      torque on all members to the global rotation, global coordinates, and
+      local torque on this rigid body and the internal coordinates and
+      rotation of any non-rigid members.
+
+      This is called by an internal score state after scoring function
+      evaluation and is not meant to be called by the user.
+   */
+  void pull_back_members_adjoints(DerivativeAccumulator &da);
+
+  //! Pull back global adjoints from member that is a point.
+  /** 
+      @param pi index of member particle
+      @param da accumulator for the adjoints
+   */
+  void pull_back_member_adjoints(ParticleIndex pi,
+                                 DerivativeAccumulator &da);
+
+#ifndef SWIG
+  /** Same as above, but uses fewer allocations.
+
+      @param pi      index of member particle        
+      @param T       transformation from this body's local coordinates to global
+      @param x       local coordinates of the member
+      @param Dy      adjoint on the member's global coordinates
+      @param Dx      adjoint on the member's local coordinates
+      @param DT      adjoint on the transformation
+      @param xtorque torque contribution from Dy in local coordinates
+      @param da      accumulator for the adjoints
+   */
+  void pull_back_member_adjoints(ParticleIndex pi,
+                                 const algebra::Transformation3D &T,
+                                 algebra::Vector3D &x,
+                                 algebra::Vector3D &Dy,
+                                 algebra::Vector3D &Dx,
+                                 algebra::Transformation3DAdjoint &DT,
+                                 algebra::Vector3D &xtorque,
+                                 DerivativeAccumulator &da);
+#endif
+
+  //! Pull back global adjoints from member that is also a rigid body.
+  /** 
+      @param pi index of member particle
+      @param da accumulator for the adjoints
+   */
+  void pull_back_body_member_adjoints(ParticleIndex pi,
+                                      DerivativeAccumulator &da);
+
+#ifndef SWIG
+  /** Same as above, but uses fewer allocations.
+
+      @param pi         index of member particle        
+      @param TA         transformation from this body's local coordinates to global
+      @param TB         transformation from member's local coordinates to this
+                        body's local coordinates
+      @param DTC        adjoint on composition of TA and TB, which is the
+                        transformation from the member's local coordinates to
+                        global
+      @param DTA        adjoint on TA
+      @param DTB        adjoint on TB
+      @param betatorque torque contribution from DTC in local coordinates at
+                        beta, the position of the member in local coordinates.
+      @param da         accumulator for the adjoints
+   */
+  void pull_back_body_member_adjoints(ParticleIndex pi,
+                                      const algebra::Transformation3D &TA,
+                                      algebra::Transformation3D &TB,
+                                      algebra::Transformation3DAdjoint &DTC,
+                                      algebra::Transformation3DAdjoint &DTA,
+                                      algebra::Transformation3DAdjoint &DTB,
+                                      algebra::Vector3D &betatorque,
+                                      DerivativeAccumulator &da);
+#endif
+
   /**  Update the translational and rotational derivatives
        on the rigid body center of mass, using the Cartesian derivative
        vector at a speicified location (the point where the force is
