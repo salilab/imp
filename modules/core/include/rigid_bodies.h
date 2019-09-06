@@ -102,10 +102,6 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
   static ObjectKey get_constraint_key_1();
 
-  static FloatKeys get_rotation_keys() {
-    return internal::rigid_body_data().quaternion_;
-  }
-
   // setup rigid body attributes with particles in ps, using their
   // center of mass, inertia tensor  to initialize the reference frame
   static void do_setup_particle(Model *m, ParticleIndex pi,
@@ -126,6 +122,11 @@ class IMPCOREEXPORT RigidBody : public XYZ {
 
  public:
   RigidMembers get_rigid_members() const;
+
+  //! Get keys for rotation quaternion.
+  static FloatKeys get_rotation_keys() {
+    return internal::rigid_body_data().quaternion_;
+  }
 
   //! Returns a list of all members that are not themselves decorated as
   //! rigid bodies, in the form of particle indexes.
