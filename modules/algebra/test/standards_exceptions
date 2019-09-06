@@ -11,7 +11,7 @@ plural_exceptions=['FixedXYZ', 'FixedZYZ', 'Matrix2D',
                    'UnboundedGridStorage3D',
                    'AxisAnglePair']
 show_exceptions=[]
-function_name_exceptions=['compose', 'reversed_read', 'reversed_write']+\
+function_name_exceptions=['compose', 'compose_adjoint', 'reversed_read', 'reversed_write']+\
     matrix_function_name_exceptions
 value_object_exceptions=['DenseDoubleGrid3D',
                          'DenseFloatGrid3D',
