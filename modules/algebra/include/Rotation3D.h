@@ -270,7 +270,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   Vector3D get_gradient_of_rotated(const Vector3D &v, unsigned int i,
                                    bool wrt_unnorm = false) const;
 
-  IMPALGEBRA_DEPRECATED_METHOD_DECL(2.12);
+  IMPALGEBRA_DEPRECATED_METHOD_DECL(2.12)
   Vector3D get_derivative(const Vector3D &v, unsigned int i,
                           bool wrt_unnorm = true) const;
 
@@ -289,7 +289,7 @@ class IMPALGEBRAEXPORT Rotation3D : public GeometricPrimitiveD<3> {
   Eigen::MatrixXd get_jacobian_of_rotated(
     const Eigen::Vector3d &v, bool wrt_unnorm = false) const;
 
-  IMPALGEBRA_DEPRECATED_METHOD_DECL(2.12);
+  IMPALGEBRA_DEPRECATED_METHOD_DECL(2.12)
   Eigen::MatrixXd get_gradient(
     const Eigen::Vector3d &v, bool wrt_unnorm = true) const;
 
@@ -322,7 +322,7 @@ IMP_VALUES(Rotation3D, Rotation3Ds);
 IMPALGEBRAEXPORT Eigen::MatrixXd get_jacobian_of_composed_wrt_first(
   const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm = false);
 
-IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.12);
+IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.12)
 IMPALGEBRAEXPORT Eigen::MatrixXd
   get_gradient_of_composed_with_respect_to_first(
     const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm = true);
@@ -345,7 +345,7 @@ IMPALGEBRAEXPORT Eigen::MatrixXd
 IMPALGEBRAEXPORT Eigen::MatrixXd get_jacobian_of_composed_wrt_second(
   const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm = false);
 
-IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.12);
+IMPALGEBRA_DEPRECATED_FUNCTION_DECL(2.12)
 IMPALGEBRAEXPORT Eigen::MatrixXd
   get_gradient_of_composed_with_respect_to_second(
     const Rotation3D &q, const Rotation3D &p, bool wrt_unnorm = true);
