@@ -277,10 +277,10 @@ void AccumulateRigidBodyDerivatives::apply_index(
                                     internal::rigid_body_data().quaternion_[1])
                              << " "
                              << rb.get_particle()->get_derivative(
-                                    internal::rigid_body_data().quaternion_[1])
+                                    internal::rigid_body_data().quaternion_[2])
                              << " "
                              << rb.get_particle()->get_derivative(
-                                    internal::rigid_body_data().quaternion_[2])
+                                    internal::rigid_body_data().quaternion_[3])
                              << ": " << q);
     }
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
