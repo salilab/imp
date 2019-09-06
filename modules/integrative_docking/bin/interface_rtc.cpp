@@ -117,7 +117,7 @@ defined by two molecules.")(
   ligand_pdb = files[1];
 
   // read pdb  files, prepare particles
-  IMP::Model* model = new IMP::Model();
+  IMP_NEW(IMP::Model, model, ());
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       receptor_pdb, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
       true, true);
