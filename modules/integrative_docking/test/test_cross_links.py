@@ -19,9 +19,8 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
         self.assertApplicationExitedCleanly(p.returncode, err)
 
         # count the number of lines in output file
-        fin = open('cross_links.dat', 'r')
-        text = fin.read()
-        fin.close()
+        with open('cross_links.dat', 'r') as fin:
+            text = fin.read()
         number_of_lines = text.count('\n')
         self.assertEqual(number_of_lines, 4)
         os.unlink('cross_links.dat')
@@ -29,13 +28,13 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
         os.unlink('cxms_all.dat')
 
     def test_simple_single_structure_score(self):
-        """Simple test of interface cross links single structure score application"""
-        destination = open('complex.pdb', 'w')
-        file1 = open(self.get_input_file_name('static.pdb'), 'r')
-        file2 = open(self.get_input_file_name('transformed.pdb'), 'r')
-        destination.write(file1.read())
-        destination.write(file2.read())
-        destination.close()
+        """Simple test of interface cross links single structure score
+           application"""
+        with open('complex.pdb', 'w') as destination:
+            with open(self.get_input_file_name('static.pdb'), 'r') as fh:
+                destination.write(fh.read())
+            with open(self.get_input_file_name('transformed.pdb'), 'r') as fh:
+                destination.write(fh.read())
         p = self.run_application('cross_links_single_score',
                                  ['complex.pdb',
                                   self.get_input_file_name('cxms.dat')])
@@ -62,9 +61,8 @@ class CrossLinksApplicationTest(IMP.test.ApplicationTestCase):
         self.assertApplicationExitedCleanly(p.returncode, err)
 
         # count the number of lines in output file
-        fin = open('cxms_score.res', 'r')
-        text = fin.read()
-        fin.close()
+        with open('cxms_score.res', 'r') as fin:
+            text = fin.read()
         number_of_lines = text.count('\n')
         self.assertEqual(number_of_lines, 15)
         os.unlink('cxms_score.res')
