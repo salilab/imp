@@ -21,11 +21,11 @@ class DirectionRestraint(IMP.Restraint):
         angle = math.acos(d.get_direction() * self.u)
         self.uf.evaluate(angle)
         if sa.get_derivative_accumulator():
-            score, derv = self.uf.evaluate_with_derivative(angle)
+            score, aderv = self.uf.evaluate_with_derivative(angle)
             if angle == 0:
                 derv = IMP.algebra.Vector3D(0, 0, 0)
             else:
-                derv = derv * -self.u / math.sin(angle)
+                derv = aderv * -self.u / math.sin(angle)
             d.add_to_direction_derivatives(derv,
                                            sa.get_derivative_accumulator())
         else:
@@ -88,16 +88,17 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual((IMP.algebra.Vector3D(0, 1, 0) -
                                 d.get_direction()).get_magnitude(), 0.)
 
-    def test_direction_tangent_enforced(self):
-        """Test derivative is tangent after score evaluate."""
+    def test_direction_derivative(self):
         m = IMP.Model()
         p = IMP.Particle(m)
         d = IMP.core.Direction.setup_particle(
-                p, IMP.algebra.Vector3D(0, 0, 1))
-        r = DirectionRestraint(m, p.get_index(),
-                               IMP.algebra.Vector3D(1, 1, 1), 10.)
+            p, IMP.algebra.Vector3D(0, 0, 1)
+        )
+        k = 10
+        v = IMP.algebra.Vector3D(1, 1, 1).get_unit_vector()
+        r = DirectionRestraint(m, p.get_index(), v, k)
         r.evaluate(True)
-        exp_derv = -10 * IMP.algebra.Vector3D(1, 1, 0) / 3**.5
+        exp_derv = -k * v
         self.assertAlmostEqual(
             (exp_derv -
              d.get_direction_derivatives()).get_magnitude(), 0., delta=1e-6)
@@ -120,7 +121,9 @@ class Tests(IMP.test.TestCase):
             self.assertGreater(sf.evaluate(False), 1.)
             opt = IMP.core.ConjugateGradients(m)
             opt.set_scoring_function(sf)
-            self.assertLess(opt.optimize(50), 1e-6)
+            for i in range(50):
+                opt.optimize(1)
+            self.assertLess(opt.optimize(1), 1e-6)
             self.assertAlmostEqual(math.acos(d.get_direction() * v), 0.,
                                    delta=1e-6)
 

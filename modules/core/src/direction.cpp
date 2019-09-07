@@ -188,15 +188,7 @@ void DirectionUnitConstraint::do_update_attributes() {
   d.set_direction(d.get_direction());
 }
 
-void DirectionUnitConstraint::do_update_derivatives(DerivativeAccumulator *da) {
-  // project derivative onto tangent plane
-  Direction d(get_model(), pi_);
-  algebra::Vector3D derv, rad, correction;
-  derv = d.get_direction_derivatives();
-  rad = d.get_direction();
-  correction = -(derv * rad) * rad;
-  d.add_to_direction_derivatives(correction, *da);
-}
+void DirectionUnitConstraint::do_update_derivatives(DerivativeAccumulator *da) {}
 
 ModelObjectsTemp DirectionUnitConstraint::do_get_inputs() const {
   return ModelObjectsTemp(1, get_model()->get_particle(pi_));

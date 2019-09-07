@@ -89,7 +89,6 @@ class Tests(IMP.test.TestCase):
         ds[1].set_direction(rot.get_rotated(ds[0].get_direction()))
         r.evaluate(True)
         exp_derv = 2**.5 * math.pi / 4. * ds[1].get_direction()
-        exp_derv -= (exp_derv * ds[0].get_direction()) * ds[0].get_direction()
         self.assertAlmostEqual(
             (exp_derv - ds[0].get_direction_derivatives()).get_magnitude(),
             0., delta=1e-6)
