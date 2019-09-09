@@ -35,12 +35,23 @@ namespace IMP {
 }
 
 %extend IMP::algebra::VectorD<D> {
-  double __getitem__(unsigned int index) const {
-    if (index >= D) throw IMP::IndexException("");
-    return self->operator[](index);
+  double __getitem__(int index) const {
+    if (index >= 0 && index < D) {
+      return self->operator[](index);
+    } else if (index <= -1 && index >= -(D)) {
+      return self->operator[](index + D);
+    } else {
+      throw IMP::IndexException("VectorD index out of range");
+    }
   }
-  void __setitem__(unsigned int index, double val) {
-    self->operator[](index) = val;
+  void __setitem__(int index, double val) {
+    if (index >= 0 && index < D) {
+      self->operator[](index) = val;
+    } else if (index <= -1 && index >= -(D)) {
+      self->operator[](index + D) = val;
+    } else {
+      throw IMP::IndexException("VectorD assignment index out of range");
+    }
   }
   /* Ignore C++ return value from inplace operators, so that SWIG does not
      generate a new SWIG wrapper for the return value (see above). */
