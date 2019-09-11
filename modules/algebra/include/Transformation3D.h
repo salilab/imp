@@ -166,7 +166,7 @@ compose_adjoint(const Transformation3D &TA, const Transformation3D &TB,
 /** Compute the adjoint (reverse-mode sensitivity) of input transformations
     to `compose` from the adjoint of the output transformation.
  */
-ComposeTransformation3DAdjoint
+IMPALGEBRAEXPORT ComposeTransformation3DAdjoint
 compose_adjoint(const Transformation3D &TA, const Transformation3D &TB,
                 const Transformation3DAdjoint &DTC);
 
