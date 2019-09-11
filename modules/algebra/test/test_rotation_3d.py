@@ -2,6 +2,7 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.algebra
+import numpy as np
 import random
 import math
 
@@ -28,7 +29,7 @@ class TransformFunct:
     def get_analytic_deriv(self):
         uv = self.q.get_unit_vector()
         r = IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
-        return r.get_derivative(self.x, self.qi)[self.xi]
+        return r.get_jacobian_of_rotated(self.x, True)[self.xi][self.qi]
 
 
 class TransformFunct2:
@@ -49,8 +50,8 @@ class TransformFunct2:
     def get_analytic_deriv(self):
         uv = self.q.get_unit_vector()
         q = IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
-        return IMP.algebra.get_gradient_of_composed_with_respect_to_first(
-            q, self.p)[self.pi][self.qi]
+        return IMP.algebra.get_jacobian_of_composed_wrt_first(
+            q, self.p, True)[self.pi][self.qi]
 
 
 class TransformFunct3:
@@ -71,8 +72,8 @@ class TransformFunct3:
     def get_analytic_deriv(self):
         uv = self.p.get_unit_vector()
         p = IMP.algebra.Rotation3D(uv[0], uv[1], uv[2], uv[3])
-        return IMP.algebra.get_gradient_of_composed_with_respect_to_second(
-            self.q, p)[self.pi][self.qi]
+        return IMP.algebra.get_jacobian_of_composed_wrt_second(
+            self.q, p, True)[self.pi][self.qi]
 
 
 class Tests(IMP.test.TestCase):
@@ -196,6 +197,29 @@ class Tests(IMP.test.TestCase):
                 ad = tf.get_analytic_deriv()
                 print(ad)
                 self.assertAlmostEqual(d, ad, delta=.05)
+
+    def test_get_rotated_adjoint(self):
+        rot = IMP.algebra.get_random_rotation_3d()
+        x = np.random.normal(size=3)
+        Dy = np.random.normal(size=3)
+        J = rot.get_jacobian_of_rotated(x)
+        Dq = np.array(J).T.dot(Dy)
+        Dx = rot.get_inverse() * Dy
+        adjoints = rot.get_rotated_adjoint(x, Dy)
+        self.assertSequenceAlmostEqual(list(adjoints[0]), list(Dx))
+        self.assertSequenceAlmostEqual(list(adjoints[1]), Dq.tolist())
+
+    def test_compose_adjoint(self):
+        p = IMP.algebra.get_random_rotation_3d()
+        q = IMP.algebra.get_random_rotation_3d()
+        Dr = np.random.normal(size=4)
+        Jp = IMP.algebra.get_jacobian_of_composed_wrt_first(p, q)
+        Jq = IMP.algebra.get_jacobian_of_composed_wrt_second(p, q)
+        Dp = np.array(Jp).T.dot(Dr)
+        Dq = np.array(Jq).T.dot(Dr)
+        adjoints = IMP.algebra.compose_adjoint(p, q, Dr)
+        self.assertSequenceAlmostEqual(list(adjoints[0]), Dp.tolist())
+        self.assertSequenceAlmostEqual(list(adjoints[1]), Dq.tolist())
 
     def test_rotation_between_vectors(self):
         """Check that the rotation between two vectors is correct"""
