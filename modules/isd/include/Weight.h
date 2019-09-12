@@ -31,7 +31,7 @@ class IMPISDEXPORT Weight : public Decorator {
   IMPISD_DEPRECATED_METHOD_DECL(2.12)
   static void do_setup_particle(Model *m, ParticleIndex pi);
 
-  static void do_setup_particle(Model *m, ParticleIndex pi, Int dim);
+  static void do_setup_particle(Model *m, ParticleIndex pi, Int nweights);
 
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 const algebra::VectorKD& w);
@@ -43,7 +43,7 @@ class IMPISDEXPORT Weight : public Decorator {
  public:
   IMP_DECORATOR_METHODS(Weight, Decorator);
   IMP_DECORATOR_SETUP_0(Weight);
-  IMP_DECORATOR_SETUP_1(Weight, Int, dim);
+  IMP_DECORATOR_SETUP_1(Weight, Int, nweights);
   IMP_DECORATOR_SETUP_1(Weight, const algebra::VectorKD&, w);
 
   IMPISD_DEPRECATED_METHOD_DECL(2.12)
