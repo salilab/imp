@@ -31,7 +31,7 @@ double WeightRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   // retrieve weights
   Weight w(w_);
   algebra::VectorKD weight = w.get_weights();
-  Int dim = w.get_dimension();
+  Int dim = w.get_number_of_weights();
 
   Float dw = 0.;
 

@@ -50,7 +50,7 @@ class IMPISDEXPORT Weight : public Decorator {
   static IntKey get_nstates_key();
 
   //! Get number of weights key
-  static IntKey get_dimension_key();
+  static IntKey get_number_of_weights_key();
 
   //! Get ith weight key
   static FloatKey get_weight_key(int i);
@@ -97,7 +97,7 @@ class IMPISDEXPORT Weight : public Decorator {
   Int get_number_of_states() const;
 
   //! Get number of weights.
-  Int get_dimension() const;
+  Int get_number_of_weights() const;
 
   static bool get_is_setup(Model *m, ParticleIndex pi);
 };

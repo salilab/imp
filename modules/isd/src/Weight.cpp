@@ -19,14 +19,14 @@ void Weight::do_setup_particle(Model *m, ParticleIndex pi) {
     "Use do_setup_particle(m, pi, dim) or do_setup_particle(m, pi, w) instead."
   );
 
-  m->add_attribute(get_dimension_key(), pi, 0);
+  m->add_attribute(get_number_of_weights_key(), pi, 0);
 
   add_constraint(m, pi);
 }
 
 void Weight::do_setup_particle(Model *m, ParticleIndex pi, Int dim) {
   IMP_USAGE_CHECK(dim > 0, "Number of weights must be greater than zero.");
-  m->add_attribute(get_dimension_key(), pi, dim);
+  m->add_attribute(get_number_of_weights_key(), pi, dim);
 
   Float wi = 1.0 / static_cast<Float>(dim);
   for (int i = 0; i < dim; ++i)
@@ -39,7 +39,7 @@ void Weight::do_setup_particle(Model *m, ParticleIndex pi,
                                const algebra::VectorKD &w) {
   Int dim = w.get_dimension();
   IMP_USAGE_CHECK(dim > 0, "Number of weights must be greater than zero.");
-  m->add_attribute(get_dimension_key(), pi, dim);
+  m->add_attribute(get_number_of_weights_key(), pi, dim);
 
   m->add_attribute(get_weight_key(0), pi, w[0]);
   for (int i = 1; i < dim; ++i)
@@ -61,19 +61,19 @@ void Weight::add_constraint(Model *m, ParticleIndex pi) {
 }
 
 bool Weight::get_is_setup(Model *m, ParticleIndex pi) {
-  if (!m->get_has_attribute(get_dimension_key(), pi)) return false;
+  if (!m->get_has_attribute(get_number_of_weights_key(), pi)) return false;
   if (!m->get_has_attribute(get_constraint_key(), pi)) return false;
-  Int dim = m->get_attribute(get_dimension_key(), pi);
+  Int dim = m->get_attribute(get_number_of_weights_key(), pi);
   for (unsigned int i = 0; i < dim; ++i)
     if (!m->get_has_attribute(get_weight_key(i), pi)) return false;
   return true;
 }
 
 IntKey Weight::get_nstates_key() {
-  return get_dimension_key();
+  return get_number_of_weights_key();
 }
 
-IntKey Weight::get_dimension_key() {
+IntKey Weight::get_number_of_weights_key() {
   static IntKey k("nweights");
   return k;
 }
@@ -96,12 +96,12 @@ ObjectKey Weight::get_constraint_key() {
 }
 
 Float Weight::get_weight(int i) const {
-  IMP_USAGE_CHECK(i < get_dimension(), "Out of range");
+  IMP_USAGE_CHECK(i < get_number_of_weights(), "Out of range");
   return get_particle()->get_value(get_weight_key(i));
 }
 
 algebra::VectorKD Weight::get_weights() const {
-  Int dim = get_dimension();
+  Int dim = get_number_of_weights();
   algebra::VectorKD w = algebra::get_zero_vector_kd(dim);
   for (int i = 0; i < dim; ++i)
     w[i] = get_particle()->get_value(get_weight_key(i));
@@ -109,14 +109,14 @@ algebra::VectorKD Weight::get_weights() const {
 }
 
 void Weight::set_weight_lazy(int i, Float wi) {
-  IMP_USAGE_CHECK(static_cast<int>(i) < get_dimension(),
+  IMP_USAGE_CHECK(static_cast<int>(i) < get_number_of_weights(),
                   "Out of range");
   get_particle()->set_value(get_weight_key(i), wi);
 }
 
 void Weight::set_weights_lazy(const algebra::VectorKD& w) {
   Int dim = w.get_dimension();
-  IMP_USAGE_CHECK(static_cast<int>(dim) == get_dimension(),
+  IMP_USAGE_CHECK(static_cast<int>(dim) == get_number_of_weights(),
                   "Out of range");
   for (unsigned int i = 0; i < dim; ++i)
     get_particle()->set_value(get_weight_key(i), w[i]);
@@ -124,7 +124,7 @@ void Weight::set_weights_lazy(const algebra::VectorKD& w) {
 
 void Weight::set_weights(const algebra::VectorKD& w) {
   Int dim = w.get_dimension();
-  IMP_USAGE_CHECK(static_cast<int>(dim) == get_dimension(),
+  IMP_USAGE_CHECK(static_cast<int>(dim) == get_number_of_weights(),
                   "Out of range");
 
   bool project = false;
@@ -186,18 +186,18 @@ void Weight::set_weights(const algebra::VectorKD& w) {
 }
 
 void Weight::set_weights_are_optimized(bool tf) {
-  for (unsigned int i = 0; i < get_dimension(); ++i)
+  for (unsigned int i = 0; i < get_number_of_weights(); ++i)
     get_particle()->set_is_optimized(get_weight_key(i), tf);
 }
 
 Float Weight::get_weight_derivative(int i) const {
-  int dim = get_dimension();
+  int dim = get_number_of_weights();
   IMP_USAGE_CHECK(i < dim, "Out of bounds.");
   return get_particle()->get_derivative(get_weight_key(i));
 }
 
 algebra::VectorKD Weight::get_weights_derivatives() const {
-  int dim = get_dimension();
+  int dim = get_number_of_weights();
   algebra::VectorKD dw = algebra::get_zero_vector_kd(dim);
   for (int i = 0; i < dim; ++i)
     dw[i] = get_particle()->get_derivative(get_weight_key(i));
@@ -206,7 +206,7 @@ algebra::VectorKD Weight::get_weights_derivatives() const {
 
 void Weight::add_to_weight_derivative(int i, Float dwi,
                                       const DerivativeAccumulator &da) {
-  int dim = get_dimension();
+  int dim = get_number_of_weights();
   IMP_USAGE_CHECK(i < dim, "Out of bounds.");
   get_particle()->add_to_derivative(get_weight_key(i), dwi, da);
 }
@@ -214,7 +214,7 @@ void Weight::add_to_weight_derivative(int i, Float dwi,
 void Weight::add_to_weights_derivatives(const algebra::VectorKD& dw,
                                         const DerivativeAccumulator &da) {
   int dim = dw.get_dimension();
-  IMP_USAGE_CHECK(static_cast<int>(dim) == get_dimension(),
+  IMP_USAGE_CHECK(static_cast<int>(dim) == get_number_of_weights(),
                   "Out of range");
   for (unsigned int i = 0; i < dim; ++i)
     get_particle()->add_to_derivative(get_weight_key(i), dw[i], da);
@@ -223,11 +223,11 @@ void Weight::add_to_weights_derivatives(const algebra::VectorKD& dw,
 void Weight::add_weight() {
   IMPISD_DEPRECATED_METHOD_DEF(
     2.12,
-    "Set up the Weight with a fixed dimension instead."
+    "Set up the Weight with a fixed number of weights instead."
   );
-  Int dim = get_dimension() + 1;
+  Int dim = get_number_of_weights() + 1;
   IMP_USAGE_CHECK(dim <= IMPISD_MAX_WEIGHTS, "Out of range");
-  get_particle()->set_value(get_dimension_key(), dim);
+  get_particle()->set_value(get_number_of_weights_key(), dim);
   Float w = 1.0 / static_cast<Float>(dim);
   for (int i = 0; i < dim; ++i)
     get_particle()->set_value(get_weight_key(i), w);
@@ -236,13 +236,13 @@ void Weight::add_weight() {
 Int Weight::get_number_of_states() const {
   IMPISD_DEPRECATED_METHOD_DEF(
     2.12,
-    "Use get_dimension() instead."
+    "Use get_number_of_weights() instead."
   );
-  return get_dimension();
+  return get_number_of_weights();
 }
 
-Int Weight::get_dimension() const {
-  return get_particle()->get_value(get_dimension_key());
+Int Weight::get_number_of_weights() const {
+  return get_particle()->get_value(get_number_of_weights_key());
 }
 
 void Weight::show(std::ostream &out) const {

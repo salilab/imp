@@ -43,13 +43,13 @@ class TestWeightParam(IMP.test.TestCase):
             list(wshift), list(wshift[0] * np.ones_like(wshift))
         )
 
-    def test_setup_dimension(self):
-        "Test setup weight with dimension"
+    def test_setup_number_of_weights(self):
+        "Test setup weight with number of weights"
         for n in range(1, 20):
             p = IMP.Particle(self.m)
             w = Weight.setup_particle(p, n)
             self.assertTrue(Weight.get_is_setup(p))
-            self.assertEqual(w.get_dimension(), n)
+            self.assertEqual(w.get_number_of_weights(), n)
             for k in range(n):
                 self.assertAlmostEqual(w.get_weight(k), 1.0 / n, delta=1e-6)
 
@@ -60,7 +60,7 @@ class TestWeightParam(IMP.test.TestCase):
             ws = np.random.uniform(size=n)
             w = Weight.setup_particle(p, ws)
             self.assertTrue(Weight.get_is_setup(p))
-            self.assertEqual(w.get_dimension(), n)
+            self.assertEqual(w.get_number_of_weights(), n)
             self._test_projected_weights(ws, w.get_weights())
 
     def test_set_weights(self):
