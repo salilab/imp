@@ -70,6 +70,10 @@ bool Weight::get_is_setup(Model *m, ParticleIndex pi) {
 }
 
 IntKey Weight::get_nstates_key() {
+  IMPISD_DEPRECATED_METHOD_DEF(
+    2.12,
+    "Use get_number_of_weights_key() instead."
+  );
   return get_number_of_weights_key();
 }
 
