@@ -123,6 +123,11 @@ class IMPCOREEXPORT RigidBody : public XYZ {
  public:
   RigidMembers get_rigid_members() const;
 
+  //! Get keys for rotation quaternion.
+  static FloatKeys get_rotation_keys() {
+    return internal::rigid_body_data().quaternion_;
+  }
+
   //! Returns a list of all members that are not themselves decorated as
   //! rigid bodies, in the form of particle indexes.
   const ParticleIndexes &get_member_particle_indexes() const {
@@ -302,6 +307,86 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   */
   void set_reference_frame_from_members(const ParticleIndexes &members);
 
+  //! Pull back global adjoints from members.
+  /** Adjoints (reverse-mode sensitivities) are partial derivatives of the
+      score with respect to intermediate values in the scoring function
+      computation, such as the global coordinates of a bead within a rigid
+      body or the global reference frame of a nested rigid body.
+
+      This function pulls back (back-propagates) global adjoints and local
+      torque on all members to the global rotation, global coordinates, and
+      local torque on this rigid body and the internal coordinates and
+      rotation of any non-rigid members.
+
+      This is called by an internal score state after scoring function
+      evaluation and is not meant to be called by the user.
+   */
+  void pull_back_members_adjoints(DerivativeAccumulator &da);
+
+  //! Pull back global adjoints from member that is a point.
+  /** 
+      @param pi index of member particle
+      @param da accumulator for the adjoints
+   */
+  void pull_back_member_adjoints(ParticleIndex pi,
+                                 DerivativeAccumulator &da);
+
+#ifndef SWIG
+  /** Same as above, but uses fewer allocations.
+
+      @param pi      index of member particle        
+      @param T       transformation from this body's local coordinates to global
+      @param x       local coordinates of the member
+      @param Dy      adjoint on the member's global coordinates
+      @param Dx      adjoint on the member's local coordinates
+      @param DT      adjoint on the transformation
+      @param xtorque torque contribution from Dy in local coordinates
+      @param da      accumulator for the adjoints
+   */
+  void pull_back_member_adjoints(ParticleIndex pi,
+                                 const algebra::Transformation3D &T,
+                                 algebra::Vector3D &x,
+                                 algebra::Vector3D &Dy,
+                                 algebra::Vector3D &Dx,
+                                 algebra::Transformation3DAdjoint &DT,
+                                 algebra::Vector3D &xtorque,
+                                 DerivativeAccumulator &da);
+#endif
+
+  //! Pull back global adjoints from member that is also a rigid body.
+  /** 
+      @param pi index of member particle
+      @param da accumulator for the adjoints
+   */
+  void pull_back_body_member_adjoints(ParticleIndex pi,
+                                      DerivativeAccumulator &da);
+
+#ifndef SWIG
+  /** Same as above, but uses fewer allocations.
+
+      @param pi         index of member particle        
+      @param TA         transformation from this body's local coordinates to global
+      @param TB         transformation from member's local coordinates to this
+                        body's local coordinates
+      @param DTC        adjoint on composition of TA and TB, which is the
+                        transformation from the member's local coordinates to
+                        global
+      @param DTA        adjoint on TA
+      @param DTB        adjoint on TB
+      @param betatorque torque contribution from DTC in local coordinates at
+                        beta, the position of the member in local coordinates.
+      @param da         accumulator for the adjoints
+   */
+  void pull_back_body_member_adjoints(ParticleIndex pi,
+                                      const algebra::Transformation3D &TA,
+                                      algebra::Transformation3D &TB,
+                                      algebra::Transformation3DAdjoint &DTC,
+                                      algebra::Transformation3DAdjoint &DTA,
+                                      algebra::Transformation3DAdjoint &DTB,
+                                      algebra::Vector3D &betatorque,
+                                      DerivativeAccumulator &da);
+#endif
+
   /**  Update the translational and rotational derivatives
        on the rigid body center of mass, using the Cartesian derivative
        vector at a speicified location (the point where the force is
@@ -315,6 +400,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
       @param da               Accumulates the output derivative over the rigid body
                               center of mass (translation and rotation torque, quaternion)
    */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.12)
   inline void add_to_derivatives(const algebra::Vector3D &local_derivative,
                           const algebra::Vector3D &local_location,
                           DerivativeAccumulator &da);
@@ -330,6 +416,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
       @param da                  Accumulates the output derivative over the rigid body
                                  center of mass (translation and rotation torque, quaternion)
   */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.12)
   inline void add_to_derivatives(const algebra::Vector3D &local_derivative,
                           const algebra::Vector3D &global_derivative,
                           const algebra::Vector3D &local_location,
@@ -351,6 +438,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
                                  global coordinates.
       @param da               Accumulates the output derivatives.
    */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.12)
   inline void add_to_rotational_derivatives(const algebra::Vector4D &other_qderiv,
                                             const algebra::Rotation3D &rot_other_to_local,
                                             const algebra::Rotation3D &rot_local_to_global,
@@ -522,12 +610,14 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &local,
                                    const algebra::Rotation3D &rot_local_to_global,
                                    DerivativeAccumulator &da) {
+  IMPCORE_DEPRECATED_FUNCTION_DEF(2.12, "Updating of derivatives is now handled after evaluation by RigidBody::pull_back_members_adjoints.");
   // IMP_LOG_TERSE( "Accumulating rigid body derivatives" << std::endl);
   XYZ::add_to_derivatives(deriv_global, da);
 
   Eigen::RowVector4d q =
     Eigen::RowVector3d(deriv_global.get_data()) *
-    rot_local_to_global.get_gradient(Eigen::Vector3d(local.get_data()));
+    rot_local_to_global.get_jacobian_of_rotated(Eigen::Vector3d(local.get_data()),
+                                                false);
 
   for (unsigned int i = 0; i < 4; ++i) {
     get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[i],
@@ -541,6 +631,7 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
 void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &local,
                                    DerivativeAccumulator &da) {
+  IMPCORE_DEPRECATED_FUNCTION_DEF(2.12, "Updating of derivatives is now handled after evaluation by RigidBody::pull_back_members_adjoints.");
   algebra::Rotation3D rot_local_to_global =
       get_reference_frame().get_transformation_to().get_rotation();
   const algebra::Vector3D deriv_global = rot_local_to_global * deriv_local;
@@ -553,9 +644,10 @@ void RigidBody::add_to_rotational_derivatives(const algebra::Vector4D &other_qde
                                               const algebra::Rotation3D &rot_other_to_local,
                                               const algebra::Rotation3D &rot_local_to_global,
                                               DerivativeAccumulator &da) {
+  IMPCORE_DEPRECATED_FUNCTION_DEF(2.12, "Updating of derivatives is now handled after evaluation by RigidBody::pull_back_members_adjoints.");
   Eigen::MatrixXd derivs =
-    algebra::get_gradient_of_composed_with_respect_to_first(
-      rot_local_to_global, rot_other_to_local);
+    algebra::get_jacobian_of_composed_wrt_first(
+      rot_local_to_global, rot_other_to_local, false);
   Eigen::RowVector4d qderiv = Eigen::RowVector4d(other_qderiv.get_data()) * derivs;
   for (unsigned int i = 0; i < 4; ++i) {
     get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[i],
@@ -742,13 +834,15 @@ class IMPCOREEXPORT NonRigidMember : public RigidBodyMember {
                                   to global coordinates.
       @param da               Accumulates the output derivatives.
    */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.12)
   void add_to_internal_rotational_derivatives(const algebra::Vector4D &local_qderiv,
                                               const algebra::Rotation3D &rot_local_to_parent,
                                               const algebra::Rotation3D &rot_parent_to_global,
                                               DerivativeAccumulator &da) {
+    IMPCORE_DEPRECATED_FUNCTION_DEF(2.12, "Updating of derivatives is now handled after evaluation by RigidBody::pull_back_members_adjoints.");
     Eigen::MatrixXd derivs =
-      algebra::get_gradient_of_composed_with_respect_to_second(
-        rot_parent_to_global, rot_local_to_parent);
+      algebra::get_jacobian_of_composed_wrt_second(
+        rot_parent_to_global, rot_local_to_parent, false);
     Eigen::RowVector4d qderiv = Eigen::RowVector4d(local_qderiv.get_data()) * derivs;
     for (unsigned int i = 0; i < 4; ++i) {
       get_model()->add_to_derivative(get_internal_rotation_keys()[i],

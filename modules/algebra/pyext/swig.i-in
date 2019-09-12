@@ -221,6 +221,13 @@ namespace IMP {
 
    %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<IMP::Vector<IMP::algebra::VectorD<3> >, IMP::Vector<IMP::algebra::VectorD<3> > >;
    // rotation operations
+
+   %template(_RotatedVector3DAdjoint) ::std::pair<IMP::algebra::VectorD<3>,IMP::algebra::VectorD<4> >;
+   %template(_ComposeRotation3DAdjoint) ::std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<4> >;
+
+   %template(_Transformation3DAdjoint) ::std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<3> >;
+   %template(_TransformedVector3DAdjoint) ::std::pair<IMP::algebra::VectorD<3>,std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<3> > >;
+   %template(_ComposeTransformation3DAdjoint) ::std::pair<std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<3> >,std::pair<IMP::algebra::VectorD<4>,IMP::algebra::VectorD<3> > >;
  }
 }
 

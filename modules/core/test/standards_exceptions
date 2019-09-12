@@ -1,10 +1,16 @@
 value_object_exceptions=['HierarchyVisitor', 'ModifierVisitor']
 
 function_name_exceptions=['RigidBody.normalize_rotation',
+        'RigidBody.pull_back_body_member_adjoints',
+        'RigidBody.pull_back_member_adjoints',
+        'RigidBody.pull_back_members_adjoints',
         'transform',
         'ExperimentalTree.connect',
         'ExperimentalTree.finalize',
         'Gaussian.normalize_rotation',
+        'Gaussian.pull_back_body_member_adjoints',
+        'Gaussian.pull_back_member_adjoints',
+        'Gaussian.pull_back_members_adjoints',
         'assign_blame',
         'Surface.reflect',
         'Direction.reflect',

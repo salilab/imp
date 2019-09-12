@@ -35,13 +35,6 @@ namespace IMP {
 }
 
 %extend IMP::algebra::VectorD<D> {
-  double __getitem__(unsigned int index) const {
-    if (index >= D) throw IMP::IndexException("");
-    return self->operator[](index);
-  }
-  void __setitem__(unsigned int index, double val) {
-    self->operator[](index) = val;
-  }
   /* Ignore C++ return value from inplace operators, so that SWIG does not
      generate a new SWIG wrapper for the return value (see above). */
   void __iadd__(const IMP::algebra::VectorD<D> &o) { self->operator+=(o); }
@@ -70,11 +63,59 @@ namespace IMP {
 };
 %enddef
 
+%define IMP_ALGEBRA_FIXED_SIZE_VECTOR(D)
+IMP_ALGEBRA_VECTOR(D);
+
+%extend IMP::algebra::VectorD<D> {
+  double __getitem__(int index) const {
+    if (index >= 0 && index < D) {
+      return self->operator[](index);
+    } else if (index <= -1 && index >= -(D)) {
+      return self->operator[](index + D);
+    } else {
+      throw IMP::IndexException("VectorD index out of range");
+    }
+  }
+  void __setitem__(int index, double val) {
+    if (index >= 0 && index < D) {
+      self->operator[](index) = val;
+    } else if (index <= -1 && index >= -(D)) {
+      self->operator[](index + D) = val;
+    } else {
+      throw IMP::IndexException("VectorD assignment index out of range");
+    }
+  }
+}
+%enddef
+
 IMP_ALGEBRA_VECTOR(-1);
-IMP_ALGEBRA_VECTOR(1);
-IMP_ALGEBRA_VECTOR(2);
-IMP_ALGEBRA_VECTOR(3);
-IMP_ALGEBRA_VECTOR(4);
-IMP_ALGEBRA_VECTOR(5);
-IMP_ALGEBRA_VECTOR(6);
+IMP_ALGEBRA_FIXED_SIZE_VECTOR(1);
+IMP_ALGEBRA_FIXED_SIZE_VECTOR(2);
+IMP_ALGEBRA_FIXED_SIZE_VECTOR(3);
+IMP_ALGEBRA_FIXED_SIZE_VECTOR(4);
+IMP_ALGEBRA_FIXED_SIZE_VECTOR(5);
+IMP_ALGEBRA_FIXED_SIZE_VECTOR(6);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  Vector);
+
+%extend IMP::algebra::VectorD<-1> {
+  double __getitem__(int index) const {
+    int D = self->get_dimension();
+    if (index >= 0 && index < D) {
+      return self->operator[](index);
+    } else if (index <= -1 && index >= -(D)) {
+      return self->operator[](index + D);
+    } else {
+      throw IMP::IndexException("VectorD index out of range");
+    }
+  }
+  void __setitem__(int index, double val) {
+    int D = self->get_dimension();
+    if (index >= 0 && index < D) {
+      self->operator[](index) = val;
+    } else if (index <= -1 && index >= -(D)) {
+      self->operator[](index + D) = val;
+    } else {
+      throw IMP::IndexException("VectorD assignment index out of range");
+    }
+  }
+}

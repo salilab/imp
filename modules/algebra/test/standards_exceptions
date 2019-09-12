@@ -11,7 +11,7 @@ plural_exceptions=['FixedXYZ', 'FixedZYZ', 'Matrix2D',
                    'UnboundedGridStorage3D',
                    'AxisAnglePair']
 show_exceptions=[]
-function_name_exceptions=['compose', 'reversed_read', 'reversed_write']+\
+function_name_exceptions=['compose', 'compose_adjoint', 'reversed_read', 'reversed_write']+\
     matrix_function_name_exceptions
 value_object_exceptions=['DenseDoubleGrid3D',
                          'DenseFloatGrid3D',
@@ -24,4 +24,4 @@ value_object_exceptions=['DenseDoubleGrid3D',
                          'SparseUnboundedIntGridKD',
                          'Matrix2D', 'Matrix3D',
                          'LinearFit', 'ParabolicFit']
-spelling_exceptions=["xyz", "zyz", "zxz", "kd", "connolly", "rasterized", "rmsd"]
+spelling_exceptions=["xyz", "zyz", "zxz", "kd", "connolly", "rasterized", "rmsd", "wrt"]
