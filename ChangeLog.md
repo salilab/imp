@@ -5,6 +5,15 @@ ChangeLog {#changelog}
 - The `rg` tool (part of the IMP::saxs module, used to compute radius of
   gyration from a SAXS profile) is now called `compute_rg` for consistency
   with other SAXS tools and to avoid conflicts with other packages.
+- IMP::isd::Weight is now constrained to the unit simplex, and methods were
+  added for adding to its derivatives. IMP::isd::Weight::do_setup_particle()
+  for no arguments is now deprecated, along with
+  IMP::isd::Weight::add_weight(). In the future, IMP::isd::Weight will be
+  set up with a fixed number of weights.
+  IMP::isd::Weight::get_number_of_states() and
+  IMP::isd::Weight::get_nstates_key() were deprecated and superseded by
+  IMP::isd::Weight::get_number_of_weights() and
+  IMP::isd::Weight::get_number_of_weights_key(), respectively.
 
 # 2.11.1 - 2019-07-18 # {#changelog_2_11_1}
 - Bugfix: fix build system failures with CMake 3.12 and 3.13, and on Windows.
