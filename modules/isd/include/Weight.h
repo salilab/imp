@@ -42,8 +42,15 @@ class IMPISDEXPORT Weight : public Decorator {
 
  public:
   IMP_DECORATOR_METHODS(Weight, Decorator);
+  //! Set up an empty Weight.
+  /** \deprecated_at{2.12}. Use the versions with a fixed number of weights.*/
   IMP_DECORATOR_SETUP_0(Weight);
+
+  //! Set up Weight with a fixed number of weights.
+  /** All weights are initialized with the same value. */
   IMP_DECORATOR_SETUP_1(Weight, Int, nweights);
+
+  //! Set up Weight from the provided weight vector.
   IMP_DECORATOR_SETUP_1(Weight, const algebra::VectorKD&, w);
 
   IMPISD_DEPRECATED_METHOD_DECL(2.12)
@@ -70,7 +77,11 @@ class IMPISDEXPORT Weight : public Decorator {
   void set_weights_lazy(const algebra::VectorKD& w);
 
   //! Set all weights, enforcing the simplex constraint
-  /** Any negative weights are set to 0, and the unit l1-norm is enforced.*/
+  /** Any negative weights are set to 0, and the unit l1-norm is enforced. The
+      algorithm used to project to the simplex is described in
+      arXiv:1309.1541. It finds a threshold below which all weights are set to
+      0 and above which all weights shifted by the threshold sum to 1.
+  */
   void set_weights(const algebra::VectorKD& w);
 
   //! Set weights are optimized
