@@ -401,7 +401,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
                               center of mass (translation and rotation torque, quaternion)
    */
   IMPCORE_DEPRECATED_METHOD_DECL(2.12)
-  inline void add_to_derivatives(const algebra::Vector3D &local_derivative,
+  void add_to_derivatives(const algebra::Vector3D &local_derivative,
                           const algebra::Vector3D &local_location,
                           DerivativeAccumulator &da);
 
@@ -417,7 +417,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
                                  center of mass (translation and rotation torque, quaternion)
   */
   IMPCORE_DEPRECATED_METHOD_DECL(2.12)
-  inline void add_to_derivatives(const algebra::Vector3D &local_derivative,
+  void add_to_derivatives(const algebra::Vector3D &local_derivative,
                           const algebra::Vector3D &global_derivative,
                           const algebra::Vector3D &local_location,
                           const algebra::Rotation3D &rot_local_to_global,
@@ -439,7 +439,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
       @param da               Accumulates the output derivatives.
    */
   IMPCORE_DEPRECATED_METHOD_DECL(2.12)
-  inline void add_to_rotational_derivatives(const algebra::Vector4D &other_qderiv,
+  void add_to_rotational_derivatives(const algebra::Vector4D &other_qderiv,
                                             const algebra::Rotation3D &rot_other_to_local,
                                             const algebra::Rotation3D &rot_local_to_global,
                                             DerivativeAccumulator &da);
@@ -603,57 +603,6 @@ void RigidBody::add_to_torque(const algebra::Vector3D &torque_local,
   }
 }
 
-
-// inline implementation
-void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
-                                   const algebra::Vector3D &deriv_global,
-                                   const algebra::Vector3D &local,
-                                   const algebra::Rotation3D &rot_local_to_global,
-                                   DerivativeAccumulator &da) {
-  IMPCORE_DEPRECATED_FUNCTION_DEF(2.12, "Updating of derivatives is now handled after evaluation by RigidBody::pull_back_members_adjoints.");
-  // IMP_LOG_TERSE( "Accumulating rigid body derivatives" << std::endl);
-  XYZ::add_to_derivatives(deriv_global, da);
-
-  Eigen::RowVector4d q =
-    Eigen::RowVector3d(deriv_global.get_data()) *
-    rot_local_to_global.get_jacobian_of_rotated(Eigen::Vector3d(local.get_data()),
-                                                false);
-
-  for (unsigned int i = 0; i < 4; ++i) {
-    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[i],
-                                   get_particle_index(), q[i], da);
-  }
-  algebra::Vector3D torque = algebra::get_vector_product(local, deriv_local);
-  add_to_torque(torque, da);
-}
-
-// inline implementation
-void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
-                                   const algebra::Vector3D &local,
-                                   DerivativeAccumulator &da) {
-  IMPCORE_DEPRECATED_FUNCTION_DEF(2.12, "Updating of derivatives is now handled after evaluation by RigidBody::pull_back_members_adjoints.");
-  algebra::Rotation3D rot_local_to_global =
-      get_reference_frame().get_transformation_to().get_rotation();
-  const algebra::Vector3D deriv_global = rot_local_to_global * deriv_local;
-  add_to_derivatives(deriv_local, deriv_global, local,
-		     rot_local_to_global, da);
-}
-
-// inline implementation
-void RigidBody::add_to_rotational_derivatives(const algebra::Vector4D &other_qderiv,
-                                              const algebra::Rotation3D &rot_other_to_local,
-                                              const algebra::Rotation3D &rot_local_to_global,
-                                              DerivativeAccumulator &da) {
-  IMPCORE_DEPRECATED_FUNCTION_DEF(2.12, "Updating of derivatives is now handled after evaluation by RigidBody::pull_back_members_adjoints.");
-  Eigen::MatrixXd derivs =
-    algebra::get_jacobian_of_composed_wrt_first(
-      rot_local_to_global, rot_other_to_local, false);
-  Eigen::RowVector4d qderiv = Eigen::RowVector4d(other_qderiv.get_data()) * derivs;
-  for (unsigned int i = 0; i < 4; ++i) {
-    get_model()->add_to_derivative(internal::rigid_body_data().quaternion_[i],
-                                   get_particle_index(), qderiv[i], da);
-  }
-}
 #endif
 
 
@@ -835,20 +784,11 @@ class IMPCOREEXPORT NonRigidMember : public RigidBodyMember {
       @param da               Accumulates the output derivatives.
    */
   IMPCORE_DEPRECATED_METHOD_DECL(2.12)
-  void add_to_internal_rotational_derivatives(const algebra::Vector4D &local_qderiv,
-                                              const algebra::Rotation3D &rot_local_to_parent,
-                                              const algebra::Rotation3D &rot_parent_to_global,
-                                              DerivativeAccumulator &da) {
-    IMPCORE_DEPRECATED_FUNCTION_DEF(2.12, "Updating of derivatives is now handled after evaluation by RigidBody::pull_back_members_adjoints.");
-    Eigen::MatrixXd derivs =
-      algebra::get_jacobian_of_composed_wrt_second(
-        rot_parent_to_global, rot_local_to_parent, false);
-    Eigen::RowVector4d qderiv = Eigen::RowVector4d(local_qderiv.get_data()) * derivs;
-    for (unsigned int i = 0; i < 4; ++i) {
-      get_model()->add_to_derivative(get_internal_rotation_keys()[i],
-                                     get_particle_index(), qderiv[i], da);
-    }
-  }
+  void add_to_internal_rotational_derivatives(
+             const algebra::Vector4D &local_qderiv,
+             const algebra::Rotation3D &rot_local_to_parent,
+             const algebra::Rotation3D &rot_parent_to_global,
+             DerivativeAccumulator &da);
 
   /** Add to internal quaternion derivatives of this non-rigid body
 
