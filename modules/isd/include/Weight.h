@@ -117,7 +117,7 @@ IMP_DECORATORS(Weight, Weights, Decorators);
 
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-class IMPCOREEXPORT WeightSimplexConstraint : public IMP::Constraint {
+class IMPISDEXPORT WeightSimplexConstraint : public IMP::Constraint {
   private:
     ParticleIndex pi_;
 
