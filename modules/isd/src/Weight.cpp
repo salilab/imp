@@ -94,6 +94,13 @@ FloatKey Weight::get_weight_key(int j) {
   return kk[j];
 }
 
+FloatKeys Weight::get_weight_keys() const {
+  FloatKeys fks;
+  for (unsigned int i = 0; i < get_number_of_weights(); ++i)
+    fks.push_back(get_weight_key(i));
+  return fks;
+}
+
 ObjectKey Weight::get_constraint_key() {
   static ObjectKey k("weight_const");
   return k;
@@ -187,6 +194,14 @@ void Weight::set_weights(const algebra::VectorKD& w) {
     Float wi = w[i] + lam;
     get_particle()->set_value(get_weight_key(i), wi > 0 ? wi : 0.0);
   }
+}
+
+bool Weight::get_weights_are_optimized() const {
+  for (unsigned int i = 0; i < get_number_of_weights(); ++i){
+    if (!get_particle()->get_is_optimized(get_weight_key(i)))
+      return false;
+  }
+  return true;
 }
 
 void Weight::set_weights_are_optimized(bool tf) {

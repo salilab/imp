@@ -62,6 +62,9 @@ class IMPISDEXPORT Weight : public Decorator {
   //! Get ith weight key
   static FloatKey get_weight_key(int i);
 
+  //! Get all weight keys
+  FloatKeys get_weight_keys() const;
+
   //! Get the ith weight
   Float get_weight(int i) const;
 
@@ -83,6 +86,9 @@ class IMPISDEXPORT Weight : public Decorator {
       0 and above which all weights shifted by the threshold sum to 1.
   */
   void set_weights(const algebra::VectorKD& w);
+
+  //! Get weights are optimized
+  bool get_weights_are_optimized() const;
 
   //! Set weights are optimized
   void set_weights_are_optimized(bool tf);

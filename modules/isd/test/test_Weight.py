@@ -135,14 +135,23 @@ class TestWeightParam(IMP.test.TestCase):
         "Test weights_optimized"
         for n in range(1, 20):
             w = Weight.setup_particle(IMP.Particle(self.m), n)
+            self.assertFalse(w.get_weights_are_optimized())
             w.set_weights_are_optimized(True)
             for k in range(n):
                 b = w.get_is_optimized(w.get_weight_key(k))
                 self.assertEqual(b, True)
+            self.assertTrue(w.get_weights_are_optimized())
             w.set_weights_are_optimized(False)
             for k in range(n):
                 b = w.get_is_optimized(w.get_weight_key(k))
                 self.assertEqual(b, False)
+            self.assertFalse(w.get_weights_are_optimized())
+
+    def test_get_weight_keys(self):
+        for n in range(1, 20):
+            w = Weight.setup_particle(IMP.Particle(self.m), n)
+            wks = [w.get_weight_key(i) for i in range(n)]
+            self.assertSequenceEqual(wks, list(w.get_weight_keys()))
 
 
 if __name__ == '__main__':
