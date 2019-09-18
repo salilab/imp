@@ -102,7 +102,7 @@ class TestWeightParam(IMP.test.TestCase):
         ws = np.zeros(n)
         w.set_weights(ws)
         for k in range(n):
-            self.assertAlmostEqual(w.get_weight(k), 1 / n, delta=1e-6)
+            self.assertAlmostEqual(w.get_weight(k), 1.0 / n, delta=1e-6)
 
     def test_add_to_weight_derivative(self):
         for n in range(1, 20):
