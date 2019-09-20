@@ -18,7 +18,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-static const int IMPISD_MAX_WEIGHTS = 20;
+static const int IMPISD_MAX_WEIGHTS = 1000;
 
 //! Add weights to a particle.
 /** Weights are constrained to the unit simplex.

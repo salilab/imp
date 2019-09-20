@@ -21,6 +21,9 @@ void Weight::do_setup_particle(Model *m, ParticleIndex pi) {
 
 void Weight::do_setup_particle(Model *m, ParticleIndex pi, Int nweights) {
   IMP_USAGE_CHECK(nweights > 0, "Number of weights must be greater than zero.");
+  IMP_USAGE_CHECK(nweights <= IMPISD_MAX_WEIGHTS,
+                  "Number of weights exceeds the maximum allowed number of "
+                  << IMPISD_MAX_WEIGHTS << ".");
   m->add_attribute(get_number_of_weights_key(), pi, nweights);
 
   Float wi = 1.0 / static_cast<Float>(nweights);
@@ -34,6 +37,9 @@ void Weight::do_setup_particle(Model *m, ParticleIndex pi,
                                const algebra::VectorKD &w) {
   Int nweights = w.get_dimension();
   IMP_USAGE_CHECK(nweights > 0, "Number of weights must be greater than zero.");
+  IMP_USAGE_CHECK(nweights <= IMPISD_MAX_WEIGHTS,
+                  "Number of weights exceeds the maximum allowed number of "
+                  << IMPISD_MAX_WEIGHTS << ".");
   m->add_attribute(get_number_of_weights_key(), pi, nweights);
 
   m->add_attribute(get_weight_key(0), pi, w[0]);
@@ -178,7 +184,9 @@ void Weight::add_to_weights_derivatives(const algebra::VectorKD& dw,
 
 void Weight::add_weight() {
   Int nweights = get_number_of_weights() + 1;
-  IMP_USAGE_CHECK(nweights <= IMPISD_MAX_WEIGHTS, "Out of range");
+  IMP_USAGE_CHECK(nweights <= IMPISD_MAX_WEIGHTS,
+                  "Number of weights exceeds the maximum allowed number of "
+                  << IMPISD_MAX_WEIGHTS << ".");
   get_particle()->set_value(get_number_of_weights_key(), nweights);
   set_weights_lazy(get_unit_simplex().get_barycenter());
 }
