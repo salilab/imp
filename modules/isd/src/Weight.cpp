@@ -186,8 +186,15 @@ void Weight::add_weight() {
   Int nweights = get_number_of_weights() + 1;
   IMP_USAGE_CHECK(nweights <= IMPISD_MAX_WEIGHTS,
                   "Number of weights exceeds the maximum allowed number of "
-                  << IMPISD_MAX_WEIGHTS << ".");
+                      << IMPISD_MAX_WEIGHTS << ".");
+
   get_particle()->set_value(get_number_of_weights_key(), nweights);
+
+  if (!get_model()->get_has_attribute(get_weight_key(nweights - 1),
+                                      get_particle_index())) {
+    get_model()->add_attribute(get_weight_key(nweights - 1),
+                               get_particle_index(), 0);
+  }
   set_weights_lazy(get_unit_simplex().get_barycenter());
 }
 
