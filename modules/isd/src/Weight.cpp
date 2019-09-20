@@ -26,9 +26,9 @@ void Weight::do_setup_particle(Model *m, ParticleIndex pi, Int nweights) {
                   << IMPISD_MAX_WEIGHTS << ".");
   m->add_attribute(get_number_of_weights_key(), pi, nweights);
 
-  Float wi = 1.0 / static_cast<Float>(nweights);
+  algebra::VectorKD w = algebra::UnitSimplexKD(nweights).get_barycenter();
   for (int i = 0; i < nweights; ++i)
-    m->add_attribute(get_weight_key(i), pi, wi);
+    m->add_attribute(get_weight_key(i), pi, w[i]);
 
   add_constraint(m, pi);
 }
