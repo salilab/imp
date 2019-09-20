@@ -182,7 +182,7 @@ void Weight::add_to_weights_derivatives(const algebra::VectorKD& dw,
     get_particle()->add_to_derivative(get_weight_key(i), dw[i], da);
 }
 
-void Weight::add_weight() {
+void Weight::add_weight(Float wi) {
   Int nweights = get_number_of_weights() + 1;
   IMP_USAGE_CHECK(nweights <= IMPISD_MAX_WEIGHTS,
                   "Number of weights exceeds the maximum allowed number of "
@@ -193,9 +193,12 @@ void Weight::add_weight() {
   if (!get_model()->get_has_attribute(get_weight_key(nweights - 1),
                                       get_particle_index())) {
     get_model()->add_attribute(get_weight_key(nweights - 1),
-                               get_particle_index(), 0);
+                               get_particle_index(), wi);
+  } else {
+    get_particle()->set_value(get_weight_key(nweights - 1), wi);
   }
-  set_weights_lazy(get_unit_simplex().get_barycenter());
+
+  set_weights(get_weights());
 }
 
 Int Weight::get_number_of_states() const {

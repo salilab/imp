@@ -26,11 +26,12 @@ class TestWeightParam(IMP.test.TestCase):
     def test_setup_empty_add_weight(self):
         "Test setup weight as empty and add weights"
         w = Weight.setup_particle(IMP.Particle(self.m))
-        w.add_weight()
-        for n in range(19):
-            for k in range(n + 1):
-                self.assertEqual(w.get_weight(k), 1.0 / (n + 1))
+        for n in range(1, 20):
             w.add_weight()
+            self.assertEqual(w.get_number_of_weights(), n)
+            self.assertSequenceAlmostEqual(
+                list(w.get_weights()), [1] + [0] * (n - 1)
+            )
 
     def test_setup_number_of_weights(self):
         "Test setup weight with number of weights"
@@ -139,6 +140,20 @@ class TestWeightParam(IMP.test.TestCase):
             dw2 = w.get_weights_derivatives()
             dw2 = [dw2[i] for i in range(n)]
             self.assertSequenceAlmostEqual(list(dw), dw2, delta=1e-6)
+
+    def test_add_weight(self):
+        "Test add_weight"
+        w = Weight.setup_particle(IMP.Particle(self.m), 1)
+        for n in range(2, 20):
+            ws = list(w.get_weights())
+            wi = np.random.uniform()
+            w.add_weight(wi)
+            ws.append(wi)
+            self.assertEqual(w.get_number_of_weights(), n)
+            ws = list(IMP.algebra.get_projected(w.get_unit_simplex(), ws))
+            self.assertSequenceAlmostEqual(
+                list(w.get_weights()), ws
+            )
 
     def test_set_optimized(self):
         "Test weights_optimized"

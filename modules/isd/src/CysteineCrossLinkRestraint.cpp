@@ -66,9 +66,11 @@ void CysteineCrossLinkRestraint::add_contribution(ParticleIndexAdaptor p1,
   Model *m = get_model();
   ps1_.push_back(p1);
   ps2_.push_back(p2);
-  if (Weight(m, weight_).get_number_of_weights() <
+  Weight w(m, weight_);
+  if (w.get_number_of_weights() <
       static_cast<int>(get_number_of_contributions())) {
-    Weight(m, weight_).add_weight();
+    w.add_weight();
+    w.set_weights_lazy(w.get_unit_simplex().get_barycenter());
   }
 }
 
@@ -85,9 +87,11 @@ void CysteineCrossLinkRestraint::add_contribution(ParticleIndexes p1,
   pslist1_.push_back(p1);
   pslist2_.push_back(p2);
   Model *m = get_model();
-  if (Weight(m, weight_).get_number_of_weights() <
+  Weight w(m, weight_);
+  if (w.get_number_of_weights() <
       static_cast<int>(get_number_of_contributions())) {
-    Weight(m, weight_).add_weight();
+    w.add_weight();
+    w.set_weights_lazy(w.get_unit_simplex().get_barycenter());
   }
 }
 

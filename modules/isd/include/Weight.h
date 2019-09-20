@@ -104,8 +104,7 @@ class IMPISDEXPORT Weight : public Decorator {
                                   const DerivativeAccumulator &da);
 
   //! Extend the weight vector by one element.
-  /** All weights are reset to the same value. */
-  void add_weight();
+  void add_weight(Float wi = 0);
 
   IMPISD_DEPRECATED_METHOD_DECL(2.12)
   Int get_number_of_states() const;
