@@ -32,7 +32,9 @@ ChangeLog {#changelog}
   Pullback functionality is now handled by
   IMP::core::RigidBody::pull_back_members_adjoints().
 - IMP::isd::Weight is now constrained to the unit simplex, and methods were
-  added for adding to its derivatives. IMP::isd::Weight::get_number_of_states()
+  added for adding to its derivatives. IMP::isd::Weight::add_weight() no longer
+  resets all the weights to the barycenter of the unit simplex and instead
+  initializes the new weight to 0. IMP::isd::Weight::get_number_of_states()
   and IMP::isd::Weight::get_nstates_key() were deprecated and superseded by
   IMP::isd::Weight::get_number_of_weights() and
   IMP::isd::Weight::get_number_of_weights_key(), respectively.
