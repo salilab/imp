@@ -231,7 +231,16 @@ inline VectorD<D> get_basis_vector_d(unsigned int coordinate) {
   return VectorD<D>(vs, vs + D);
 }
 
+//! Return the basis vector for the given coordinate
+template <int D>
+inline VectorD<D> get_basis_vector_kd(int Di, unsigned int coordinate) {
+  IMP_USAGE_CHECK(D == Di, "D must be equal");
+  IMP_UNUSED(Di);
+  return get_basis_vector_d<D>(coordinate);
+}
+
 //! Return a dynamically sized basis vector
+template <>
 inline VectorD<-1> get_basis_vector_kd(int D, unsigned int coordinate) {
   IMP_USAGE_CHECK(D > 0, "D must be positive");
   IMP_USAGE_CHECK(coordinate < static_cast<unsigned int>(D),
@@ -244,6 +253,11 @@ inline VectorD<-1> get_basis_vector_kd(int D, unsigned int coordinate) {
       vs[i] = 0;
   }
   return VectorD<-1>(vs.get(), vs.get() + D);
+}
+
+//! Return a dynamically sized basis vector
+inline VectorD<-1> get_basis_vector_kd(int D, unsigned int coordinate) {
+  return get_basis_vector_kd<-1>(D, coordinate);
 }
 
 //! Return a vector of zeros
@@ -260,16 +274,22 @@ inline VectorD<D> get_zero_vector_d() {
 //! Return a dynamically sized vector of zeros
 template <int D>
 inline VectorD<D> get_zero_vector_kd(int Di) {
-  IMP_USAGE_CHECK(D == Di, "D must be positive");
+  IMP_USAGE_CHECK(D == Di, "D must be equal");
   IMP_UNUSED(Di);
   return get_zero_vector_d<D>();
 }
 
 //! Return a dynamically sized vector of zeros
+template<>
 inline VectorD<-1> get_zero_vector_kd(int D) {
   IMP_USAGE_CHECK(D > 0, "D must be positive");
   Floats vs(D, 0);
   return VectorD<-1>(vs.begin(), vs.end());
+}
+
+//! Return a dynamically sized vector of zeros
+inline VectorD<-1> get_zero_vector_kd(int D) {
+  return get_zero_vector_kd<-1>(D);
 }
 
 //! Return a vector of ones (or another constant)
@@ -293,13 +313,19 @@ inline VectorD<D> get_ones_vector_kd(unsigned int Di, double v = 1) {
 }
 
 //! Return a vector of ones (or another constant)
-inline VectorD<-1> get_ones_vector_kd(unsigned int D, double v = 1) {
+template <>
+inline VectorD<-1> get_ones_vector_kd(unsigned int D, double v) {
   IMP_USAGE_CHECK(D > 0, "D must be positive");
   boost::scoped_array<double> vv(new double[D]);
   for (unsigned int i = 0; i < D; ++i) {
     vv[i] = v;
   }
   return VectorD<-1>(vv.get(), vv.get() + D);
+}
+
+//! Return a dynamically sized vector of zeros
+inline VectorD<-1> get_ones_vector_kd(unsigned int D, double v = 1) {
+  return get_ones_vector_kd<-1>(D, v);
 }
 
 #ifndef SWIG
