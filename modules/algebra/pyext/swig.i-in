@@ -49,6 +49,7 @@ IMP_SWIG_VALUE(IMP::algebra,  ConnollySurfacePoint, ConnollySurfacePoints);
 
 // we seem to need the non-typedefed name, at least for the first argument
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  Sphere);
+IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  UnitSimplex);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  BoundingBox);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  PrincipalComponentAnalysis);
 IMP_SWIG_ALGEBRA_OBJECT_D(IMP::algebra,  NearestNeighbor);
@@ -106,6 +107,7 @@ namespace IMP {
    %template(_VectorBase6D) VectorBaseD<6>;
  }
 }
+
 %include "IMP/algebra/VectorD.h"
 %include "IMP/algebra/Vector2D.h"
 %include "IMP/algebra/Vector3D.h"
@@ -117,10 +119,23 @@ namespace IMP {
 %include "IMP/algebra/Transformation2D.h"
 %include "IMP/algebra/SphereD.h"
 %include "IMP/algebra/Sphere3D.h"
+%include "IMP/algebra/UnitSimplexD.h"
+namespace IMP {
+ namespace algebra {
+   %template(_UnitSimplexBaseKD) UnitSimplexBaseD<-1>;
+   %template(_UnitSimplexBase1D) UnitSimplexBaseD<1>;
+   %template(_UnitSimplexBase2D) UnitSimplexBaseD<2>;
+   %template(_UnitSimplexBase3D) UnitSimplexBaseD<3>;
+   %template(_UnitSimplexBase4D) UnitSimplexBaseD<4>;
+   %template(_UnitSimplexBase5D) UnitSimplexBaseD<5>;
+   %template(_UnitSimplexBase6D) UnitSimplexBaseD<6>;
+ }
+}
 
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Vector);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, BoundingBox);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
+IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, UnitSimplex);
 
 
 %include "IMP/algebra/ReferenceFrame3D.h"
@@ -206,6 +221,7 @@ IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_unit_sphere);
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(bool, get_interiors_intersect, Sphere, Sphere);
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(bool, get_interiors_intersect, BoundingBox, BoundingBox);
 IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_on, Sphere);
+IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_on, UnitSimplex);
 IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_on, BoundingBox);
 IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_in, Sphere);
 IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_in, BoundingBox);
@@ -214,6 +230,10 @@ IMP_SWIG_ALGEBRA_FUNCTION_D_DD(BoundingBox, get_union, BoundingBox, BoundingBox)
 IMP_SWIG_ALGEBRA_FUNCTION_D_D(BoundingBox, get_bounding_box, Sphere);
 IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_uniform_surface_cover, Sphere, unsigned int);
 IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_grid_interior_cover_by_spacing, BoundingBox, double);
+IMP_SWIG_ALGEBRA_FUNCTION_D_DD(Vector, get_projected, UnitSimplex, Vector);
+IMP_SWIG_ALGEBRA_FUNCTION_DS_D(Vector, get_vertices, UnitSimplex);
+IMP_SWIG_ALGEBRA_FUNCTION_D_DD(Vector, get_increasing_from_embedded, UnitSimplex, Vector);
+IMP_SWIG_ALGEBRA_FUNCTION_D_DD(Vector, get_embedded_from_increasing, UnitSimplex, Vector);
 
 namespace IMP {
  namespace algebra {
