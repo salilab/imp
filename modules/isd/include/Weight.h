@@ -35,12 +35,14 @@ class IMPISDEXPORT Weight : public Decorator {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 const algebra::VectorKD& w);
 
+  //! Add unit simplex constraint.
   static void add_constraint(Model *m, ParticleIndex pi);
 
   static ObjectKey get_constraint_key();
 
  public:
   IMP_DECORATOR_METHODS(Weight, Decorator);
+
   //! Set up an empty Weight.
   /** Weights must be added with add_weight() before use. */
   IMP_DECORATOR_SETUP_0(Weight);
