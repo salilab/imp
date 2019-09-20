@@ -79,8 +79,7 @@ class IMPISDEXPORT Weight : public Decorator {
   void set_weights_lazy(const algebra::VectorKD& w);
 
   //! Set all weights, enforcing the simplex constraint
-  /** \see algebra::get_projected
-  */
+  /** \see algebra::get_projected */
   void set_weights(const algebra::VectorKD& w);
 
   //! Get weights are optimized
@@ -103,7 +102,18 @@ class IMPISDEXPORT Weight : public Decorator {
   void add_to_weights_derivatives(const algebra::VectorKD& dw,
                                   const DerivativeAccumulator &da);
 
+  //! Extend the weight vector by one element lazily.
+  /** This should only be called during set-up and cannot be called
+      for an optimized Weight.
+      This version delays enforcing the simplex constraint until
+      Model::update().
+   */
+  void add_weight_lazy(Float wi = 0);
+
   //! Extend the weight vector by one element.
+  /** This should only be called during set-up and cannot be called
+      for an optimized Weight.
+   */
   void add_weight(Float wi = 0);
 
   IMPISD_DEPRECATED_METHOD_DECL(2.12)
@@ -114,6 +124,20 @@ class IMPISDEXPORT Weight : public Decorator {
 
   //! Get unit simplex on which weight vector lies.
   algebra::UnitSimplexKD get_unit_simplex() const;
+
+  //! Set number of weights lazily
+  /** This should only be called during set-up and cannot be called
+      for an optimized Weight. New weights are initialized to 0.
+      This version delays enforcing the simplex constraint until
+      Model::update().
+   */
+  void set_number_of_weights_lazy(Int nweights);
+
+  //! Set number of weights.
+  /** This should only be called during set-up and cannot be called
+      for an optimized Weight. New weights are initialized to 0.
+   */
+  void set_number_of_weights(Int nweights);
 
   static bool get_is_setup(Model *m, ParticleIndex pi);
 };

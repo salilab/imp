@@ -151,9 +151,7 @@ class TestWeightParam(IMP.test.TestCase):
             ws.append(wi)
             self.assertEqual(w.get_number_of_weights(), n)
             ws = list(IMP.algebra.get_projected(w.get_unit_simplex(), ws))
-            self.assertSequenceAlmostEqual(
-                list(w.get_weights()), ws
-            )
+            self.assertSequenceAlmostEqual(list(w.get_weights()), ws)
 
     def test_set_optimized(self):
         "Test weights_optimized"
@@ -170,6 +168,54 @@ class TestWeightParam(IMP.test.TestCase):
                 b = w.get_is_optimized(w.get_weight_key(k))
                 self.assertEqual(b, False)
             self.assertFalse(w.get_weights_are_optimized())
+
+    def test_change_nweights_for_optimized_raises_error(self):
+        for n in range(1, 20):
+            w = Weight.setup_particle(IMP.Particle(self.m), n)
+            self.assertFalse(w.get_weights_are_optimized())
+            w.set_number_of_weights(n + 1)
+            w.set_number_of_weights(n)
+            w.set_weights_are_optimized(True)
+            self.assertRaisesUsageException(w.set_number_of_weights, n + 1)
+
+    def test_set_nweights_lazy(self):
+        for n in range(1, 20):
+            w = Weight.setup_particle(IMP.Particle(self.m), n)
+            ws = IMP.algebra.get_random_vector_on(w.get_unit_simplex())
+            w.set_weights(ws)
+
+            w.set_number_of_weights_lazy(n + 1)
+            self.assertEqual(w.get_number_of_weights(), n + 1)
+            self.assertSequenceAlmostEqual(
+                list(w.get_weights()), list(ws) + [0]
+            )
+
+            w.set_number_of_weights_lazy(n)
+            self.assertEqual(w.get_number_of_weights(), n)
+            self.assertSequenceAlmostEqual(list(w.get_weights()), list(ws))
+
+    def test_set_nweights(self):
+        for n in range(2, 20):
+            w = Weight.setup_particle(IMP.Particle(self.m), n)
+            ws = IMP.algebra.get_random_vector_on(w.get_unit_simplex())
+            w.set_weights(ws)
+
+            w.set_number_of_weights(n + 1)
+            self.assertEqual(w.get_number_of_weights(), n + 1)
+            self.assertSequenceAlmostEqual(
+                list(w.get_weights()), list(ws) + [0]
+            )
+
+            w.set_number_of_weights(n - 1)
+            self.assertEqual(w.get_number_of_weights(), n - 1)
+            self.assertSequenceAlmostEqual(
+                list(w.get_weights()),
+                list(
+                    IMP.algebra.get_projected(
+                        w.get_unit_simplex(), list(ws)[:-1]
+                    )
+                ),
+            )
 
     def test_get_weight_keys(self):
         for n in range(1, 20):

@@ -15,41 +15,20 @@ IMPISD_BEGIN_NAMESPACE
 
 void Weight::do_setup_particle(Model *m, ParticleIndex pi) {
   m->add_attribute(get_number_of_weights_key(), pi, 0);
-
   add_constraint(m, pi);
 }
 
 void Weight::do_setup_particle(Model *m, ParticleIndex pi, Int nweights) {
-  IMP_USAGE_CHECK(nweights > 0, "Number of weights must be greater than zero.");
-  IMP_USAGE_CHECK(nweights <= IMPISD_MAX_WEIGHTS,
-                  "Number of weights exceeds the maximum allowed number of "
-                  << IMPISD_MAX_WEIGHTS << ".");
-  m->add_attribute(get_number_of_weights_key(), pi, nweights);
-
-  algebra::VectorKD w = algebra::UnitSimplexKD(nweights).get_barycenter();
-  for (int i = 0; i < nweights; ++i)
-    m->add_attribute(get_weight_key(i), pi, w[i]);
-
-  add_constraint(m, pi);
+  Weight pw = setup_particle(m, pi);
+  pw.set_number_of_weights_lazy(nweights);
+  pw.set_weights_lazy(pw.get_unit_simplex().get_barycenter());
 }
 
 void Weight::do_setup_particle(Model *m, ParticleIndex pi,
                                const algebra::VectorKD &w) {
-  Int nweights = w.get_dimension();
-  IMP_USAGE_CHECK(nweights > 0, "Number of weights must be greater than zero.");
-  IMP_USAGE_CHECK(nweights <= IMPISD_MAX_WEIGHTS,
-                  "Number of weights exceeds the maximum allowed number of "
-                  << IMPISD_MAX_WEIGHTS << ".");
-  m->add_attribute(get_number_of_weights_key(), pi, nweights);
-
-  m->add_attribute(get_weight_key(0), pi, w[0]);
-  for (int i = 1; i < nweights; ++i)
-    m->add_attribute(get_weight_key(i), pi, w[i]);
-
-  add_constraint(m, pi);
-
-  Weight pw(m, pi);
-  pw.set_weights(pw.get_weights());
+  Weight pw = setup_particle(m, pi);
+  pw.set_number_of_weights_lazy(w.get_dimension());
+  pw.set_weights(w);
 }
 
 void Weight::add_constraint(Model *m, ParticleIndex pi) {
@@ -135,11 +114,12 @@ void Weight::set_weights_lazy(const algebra::VectorKD& w) {
 }
 
 void Weight::set_weights(const algebra::VectorKD& w) {
-
   set_weights_lazy(algebra::get_projected(get_unit_simplex(), w));
 }
 
 bool Weight::get_weights_are_optimized() const {
+  Int nweights = get_number_of_weights();
+  if (nweights == 0) return false;
   for (unsigned int i = 0; i < get_number_of_weights(); ++i){
     if (!get_particle()->get_is_optimized(get_weight_key(i)))
       return false;
@@ -182,22 +162,46 @@ void Weight::add_to_weights_derivatives(const algebra::VectorKD& dw,
     get_particle()->add_to_derivative(get_weight_key(i), dw[i], da);
 }
 
-void Weight::add_weight(Float wi) {
-  Int nweights = get_number_of_weights() + 1;
+void Weight::set_number_of_weights_lazy(Int nweights) {
+  IMP_USAGE_CHECK(nweights > 0, "Number of weights must be greater than zero.");
   IMP_USAGE_CHECK(nweights <= IMPISD_MAX_WEIGHTS,
                   "Number of weights exceeds the maximum allowed number of "
-                      << IMPISD_MAX_WEIGHTS << ".");
+                  << IMPISD_MAX_WEIGHTS << ".");
 
-  get_particle()->set_value(get_number_of_weights_key(), nweights);
-
-  if (!get_model()->get_has_attribute(get_weight_key(nweights - 1),
-                                      get_particle_index())) {
-    get_model()->add_attribute(get_weight_key(nweights - 1),
-                               get_particle_index(), wi);
-  } else {
-    get_particle()->set_value(get_weight_key(nweights - 1), wi);
+  Int old_nweights = get_number_of_weights();
+  if (nweights > old_nweights) {
+    IMP_USAGE_CHECK(!get_weights_are_optimized(),
+                    "Number of weights cannot be changed for optimized Weight");
+    for (int i = old_nweights; i < nweights; ++i) {
+      if (!get_model()->get_has_attribute(get_weight_key(i),
+                                          get_particle_index())) {
+        get_model()->add_attribute(get_weight_key(i),
+                                   get_particle_index(), 0);
+      } else {
+        get_particle()->set_value(get_weight_key(i), 0);
+      }
+    }
+    get_particle()->set_value(get_number_of_weights_key(), nweights);
+  } else if (nweights < old_nweights) {
+    IMP_USAGE_CHECK(!get_weights_are_optimized(),
+                    "Number of weights cannot be changed for optimized Weight");
+    get_particle()->set_value(get_number_of_weights_key(), nweights);
   }
+}
 
+void Weight::set_number_of_weights(Int nweights) {
+  set_number_of_weights_lazy(nweights);
+  set_weights(get_weights());
+}
+
+void Weight::add_weight_lazy(Float wi) {
+  Int old_nweights = get_number_of_weights();
+  set_number_of_weights_lazy(old_nweights + 1);
+  get_particle()->set_value(get_weight_key(old_nweights), wi);
+}
+
+void Weight::add_weight(Float wi) {
+  add_weight_lazy(wi);
   set_weights(get_weights());
 }
 
