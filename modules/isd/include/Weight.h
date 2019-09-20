@@ -10,6 +10,7 @@
 #define IMPISD_WEIGHT_H
 
 #include "isd_config.h"
+#include <IMP/algebra/UnitSimplexD.h>
 #include <IMP/Particle.h>
 #include <IMP/decorator_macros.h>
 #include <IMP/Model.h>
@@ -20,10 +21,9 @@ IMPISD_BEGIN_NAMESPACE
 static const int IMPISD_MAX_WEIGHTS = 20;
 
 //! Add weights to a particle.
-/** Weights are constrained to the unit simplex. That is, each weight is
-    constrained to be positive, and the sum of all of the weights is
-    constrained to be 1.
+/** Weights are constrained to the unit simplex.
 
+    \see algebra::UnitSimplexD
     \ingroup decorators
 */
 class IMPISDEXPORT Weight : public Decorator {
@@ -80,10 +80,7 @@ class IMPISDEXPORT Weight : public Decorator {
   void set_weights_lazy(const algebra::VectorKD& w);
 
   //! Set all weights, enforcing the simplex constraint
-  /** Any negative weights are set to 0, and the unit l1-norm is enforced. The
-      algorithm used to project to the simplex is described in
-      arXiv:1309.1541. It finds a threshold below which all weights are set to
-      0 and above which all weights shifted by the threshold sum to 1.
+  /** \see algebra::get_projected
   */
   void set_weights(const algebra::VectorKD& w);
 
@@ -115,6 +112,9 @@ class IMPISDEXPORT Weight : public Decorator {
 
   //! Get number of weights.
   Int get_number_of_weights() const;
+
+  //! Get unit simplex on which weight vector lies.
+  algebra::UnitSimplexKD get_unit_simplex() const;
 
   static bool get_is_setup(Model *m, ParticleIndex pi);
 };

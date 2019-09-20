@@ -134,66 +134,8 @@ void Weight::set_weights_lazy(const algebra::VectorKD& w) {
 }
 
 void Weight::set_weights(const algebra::VectorKD& w) {
-  Int nweights = w.get_dimension();
-  IMP_USAGE_CHECK(static_cast<int>(nweights) == get_number_of_weights(),
-                  "Out of range");
 
-  bool project = false;
-  Float wsum = 0.0;
-  for (unsigned int i = 0; i < nweights; ++i) {
-    if (w[i] < 0) {
-      project = true;
-      break;
-    }
-    wsum += w[i];
-    if (wsum > 1) {
-      project = true;
-      break;
-    }
-  }
-
-  if (!project) {
-    if (std::abs(wsum - 1.0) < std::numeric_limits<double>::epsilon()) {
-      for (unsigned int i = 0; i < nweights; ++i)
-        get_particle()->set_value(get_weight_key(i), w[i]);
-      return;
-    } else if (wsum == 0.0) {
-      Float wi = 1.0 / static_cast<Float>(nweights);
-      for (unsigned int i = 0; i < nweights; ++i)
-        get_particle()->set_value(get_weight_key(i), wi);
-      return;
-    }
-  }
-
-  // Weights are not on the simplex.
-  // Perform O(n log(n)) Euclidean projection from arxiv:1309.1541.
-  IMP_LOG_VERBOSE("Weight particle " << get_particle()->get_name()
-                                     << " has weights " << w
-                                     << " with l1 norm " << get_l1_norm(w)
-                                     << " and will be projected");
-
-  Floats u(nweights);
-  std::copy(w.begin(), w.end(), u.begin());
-  std::sort(u.begin(), u.end(), std::greater<double>());
-  
-  Floats u_cumsum(nweights);
-  Float usum = 0.0;
-  for (unsigned int i = 0; i < nweights; ++i) {
-    usum += u[i];
-    u_cumsum[i] = usum;
-  }
-  int rho = 1;
-  while (rho < nweights) {
-    if (u[rho] + (1 - u_cumsum[rho]) / (rho + 1) < 0)
-      break;
-    rho += 1;
-  }
-  Float lam = (1 - u_cumsum[rho - 1]) / rho;
-
-  for (unsigned int i = 0; i < nweights; ++i) {
-    Float wi = w[i] + lam;
-    get_particle()->set_value(get_weight_key(i), wi > 0 ? wi : 0.0);
-  }
+  set_weights_lazy(algebra::get_projected(get_unit_simplex(), w));
 }
 
 bool Weight::get_weights_are_optimized() const {
@@ -247,9 +189,7 @@ void Weight::add_weight() {
   Int nweights = get_number_of_weights() + 1;
   IMP_USAGE_CHECK(nweights <= IMPISD_MAX_WEIGHTS, "Out of range");
   get_particle()->set_value(get_number_of_weights_key(), nweights);
-  Float w = 1.0 / static_cast<Float>(nweights);
-  for (int i = 0; i < nweights; ++i)
-    get_particle()->set_value(get_weight_key(i), w);
+  set_weights_lazy(get_unit_simplex().get_barycenter());
 }
 
 Int Weight::get_number_of_states() const {
@@ -262,6 +202,10 @@ Int Weight::get_number_of_states() const {
 
 Int Weight::get_number_of_weights() const {
   return get_particle()->get_value(get_number_of_weights_key());
+}
+
+algebra::UnitSimplexKD Weight::get_unit_simplex() const {
+  return algebra::UnitSimplexKD(get_number_of_weights());
 }
 
 void Weight::show(std::ostream &out) const {

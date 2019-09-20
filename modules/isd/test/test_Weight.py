@@ -23,26 +23,6 @@ class TestWeightParam(IMP.test.TestCase):
         IMP.set_log_level(0)
         self.m = IMP.Model()
 
-    def _test_projected_weights(self, ws, ws_proj):
-        ws = np.array([ws[i] for i in range(len(ws))])
-        ws_proj = np.array([ws_proj[i] for i in range(len(ws_proj))])
-        pos_inds = ws_proj != 0.0
-        wshift = ws[pos_inds] - ws_proj[pos_inds]
-
-        self.assertTrue(np.all(ws_proj >= 0))
-        self.assertAlmostEqual(np.sum(ws_proj), 1)
-
-        # projection has cut point
-        if len(ws[~pos_inds]) > 0:
-            min_pos = np.amin(ws[pos_inds])
-            max_zero = np.amax(ws[~pos_inds])
-            self.assertGreater(min_pos, max_zero)
-
-        # projection is rigid shift
-        self.assertSequenceAlmostEqual(
-            list(wshift), list(wshift[0] * np.ones_like(wshift))
-        )
-
     def test_setup_number_of_weights(self):
         "Test setup weight with number of weights"
         for n in range(1, 20):
@@ -61,7 +41,12 @@ class TestWeightParam(IMP.test.TestCase):
             w = Weight.setup_particle(p, ws)
             self.assertTrue(Weight.get_is_setup(p))
             self.assertEqual(w.get_number_of_weights(), n)
-            self._test_projected_weights(ws, w.get_weights())
+            self.assertSequenceAlmostEqual(
+                w.get_weights(),
+                IMP.algebra.get_projected(
+                    w.get_unit_simplex(), IMP.algebra.VectorKD(ws)
+                ),
+            )
 
     def test_set_weights(self):
         for n in range(1, 20):
@@ -69,7 +54,12 @@ class TestWeightParam(IMP.test.TestCase):
             w = Weight.setup_particle(p, n)
             ws = np.random.uniform(size=n)
             w.set_weights(ws)
-            self._test_projected_weights(ws, w.get_weights())
+            self.assertSequenceAlmostEqual(
+                w.get_weights(),
+                IMP.algebra.get_projected(
+                    w.get_unit_simplex(), IMP.algebra.VectorKD(ws)
+                ),
+            )
 
     def test_set_weights_lazy(self):
         for n in range(1, 20):
@@ -81,7 +71,12 @@ class TestWeightParam(IMP.test.TestCase):
                 self.assertAlmostEqual(w.get_weight(k), ws[k], delta=1e-6)
 
             self.m.update()
-            self._test_projected_weights(ws, w.get_weights())
+            self.assertSequenceAlmostEqual(
+                w.get_weights(),
+                IMP.algebra.get_projected(
+                    w.get_unit_simplex(), IMP.algebra.VectorKD(ws)
+                ),
+            )
 
     def test_set_weight_lazy(self):
         for n in range(1, 20):
@@ -93,7 +88,12 @@ class TestWeightParam(IMP.test.TestCase):
                 self.assertAlmostEqual(w.get_weight(k), ws[k], delta=1e-6)
 
             self.m.update()
-            self._test_projected_weights(ws, w.get_weights())
+            self.assertSequenceAlmostEqual(
+                w.get_weights(),
+                IMP.algebra.get_projected(
+                    w.get_unit_simplex(), IMP.algebra.VectorKD(ws)
+                ),
+            )
 
     def test_set_weights_zero(self):
         p = IMP.Particle(self.m)
@@ -153,6 +153,15 @@ class TestWeightParam(IMP.test.TestCase):
             wks = [w.get_weight_key(i) for i in range(n)]
             self.assertSequenceEqual(wks, list(w.get_weight_keys()))
 
+    def test_get_unit_simplex(self):
+        for n in range(1, 20):
+            p = IMP.Particle(self.m)
+            ws = np.random.uniform(size=n)
+            w = Weight.setup_particle(p, ws)
+            s = w.get_unit_simplex()
+            self.assertIsInstance(s, IMP.algebra.UnitSimplexKD)
+            self.assertEqual(s.get_dimension(), n)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     IMP.test.main()
