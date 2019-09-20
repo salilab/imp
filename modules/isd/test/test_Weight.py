@@ -23,6 +23,15 @@ class TestWeightParam(IMP.test.TestCase):
         IMP.set_log_level(0)
         self.m = IMP.Model()
 
+    def test_setup_empty_add_weight(self):
+        "Test setup weight as empty and add weights"
+        w = Weight.setup_particle(IMP.Particle(self.m))
+        w.add_weight()
+        for n in range(19):
+            for k in range(n + 1):
+                self.assertEqual(w.get_weight(k), 1.0 / (n + 1))
+            w.add_weight()
+
     def test_setup_number_of_weights(self):
         "Test setup weight with number of weights"
         for n in range(1, 20):

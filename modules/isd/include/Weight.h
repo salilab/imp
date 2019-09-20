@@ -28,7 +28,6 @@ static const int IMPISD_MAX_WEIGHTS = 20;
 */
 class IMPISDEXPORT Weight : public Decorator {
 
-  IMPISD_DEPRECATED_METHOD_DECL(2.12)
   static void do_setup_particle(Model *m, ParticleIndex pi);
 
   static void do_setup_particle(Model *m, ParticleIndex pi, Int nweights);
@@ -43,7 +42,7 @@ class IMPISDEXPORT Weight : public Decorator {
  public:
   IMP_DECORATOR_METHODS(Weight, Decorator);
   //! Set up an empty Weight.
-  /** \deprecated_at{2.12}. Use the versions with a fixed number of weights.*/
+  /** Weights must be added with add_weight() before use. */
   IMP_DECORATOR_SETUP_0(Weight);
 
   //! Set up Weight with a fixed number of weights.
@@ -104,7 +103,8 @@ class IMPISDEXPORT Weight : public Decorator {
   void add_to_weights_derivatives(const algebra::VectorKD& dw,
                                   const DerivativeAccumulator &da);
 
-  IMPISD_DEPRECATED_METHOD_DECL(2.12)
+  //! Extend the weight vector by one element.
+  /** All weights are reset to the same value. */
   void add_weight();
 
   IMPISD_DEPRECATED_METHOD_DECL(2.12)

@@ -14,11 +14,6 @@
 IMPISD_BEGIN_NAMESPACE
 
 void Weight::do_setup_particle(Model *m, ParticleIndex pi) {
-  IMPISD_DEPRECATED_METHOD_DEF(
-    2.12,
-    "Use do_setup_particle(m, pi, nweights) or do_setup_particle(m, pi, w) instead."
-  );
-
   m->add_attribute(get_number_of_weights_key(), pi, 0);
 
   add_constraint(m, pi);
@@ -182,10 +177,6 @@ void Weight::add_to_weights_derivatives(const algebra::VectorKD& dw,
 }
 
 void Weight::add_weight() {
-  IMPISD_DEPRECATED_METHOD_DEF(
-    2.12,
-    "Set up the Weight with a fixed number of weights instead."
-  );
   Int nweights = get_number_of_weights() + 1;
   IMP_USAGE_CHECK(nweights <= IMPISD_MAX_WEIGHTS, "Out of range");
   get_particle()->set_value(get_number_of_weights_key(), nweights);

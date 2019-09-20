@@ -32,12 +32,8 @@ ChangeLog {#changelog}
   Pullback functionality is now handled by
   IMP::core::RigidBody::pull_back_members_adjoints().
 - IMP::isd::Weight is now constrained to the unit simplex, and methods were
-  added for adding to its derivatives. IMP::isd::Weight::do_setup_particle()
-  for no arguments is now deprecated, along with
-  IMP::isd::Weight::add_weight(). In the future, IMP::isd::Weight will be
-  set up with a fixed number of weights.
-  IMP::isd::Weight::get_number_of_states() and
-  IMP::isd::Weight::get_nstates_key() were deprecated and superseded by
+  added for adding to its derivatives. IMP::isd::Weight::get_number_of_states()
+  and IMP::isd::Weight::get_nstates_key() were deprecated and superseded by
   IMP::isd::Weight::get_number_of_weights() and
   IMP::isd::Weight::get_number_of_weights_key(), respectively.
 
@@ -71,7 +67,7 @@ ChangeLog {#changelog}
 
 # 2.10.1 - 2019-02-26 # {#changelog_2_10_1}
 - Add support for OpenCV 4.
-- Fix IMP::isd `create_gmm.py` script to handle command line options correctly. 
+- Fix IMP::isd `create_gmm.py` script to handle command line options correctly.
 - Command line tools in the Mac and Ubuntu packages should now use system
   Python (/usr/bin/python), not the first Python (e.g. Anaconda Python)
   found in PATH (which might not be compatible with IMP's Python libraries).
