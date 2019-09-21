@@ -3,7 +3,10 @@
 # First, do
 # - Update ChangeLog.rst with the release number
 # - Update release number in ihm/__init__.py, MANIFEST.in, and setup.py
-# - Commit and tag
+# - Commit, tag, and push
+# - Make release on GitHub
+# - Upload the release tarball from
+#   https://github.com/ihmwg/python-ihm/releases to Zenodo as a new release
 
 # Make SWIG wrapper so users don't need SWIG
 rm -rf build src/ihm_format_wrap.c

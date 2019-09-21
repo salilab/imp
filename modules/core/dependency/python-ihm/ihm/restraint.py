@@ -434,7 +434,8 @@ class Feature(object):
        :class:`NonPolyFeature`, and :class:`PseudoSiteFeature`.
 
        Features are typically assigned to one or more
-       :class:`~ihm.restraint.GeometricRestraint` objects.
+       :class:`~ihm.restraint.GeometricRestraint` or
+       :class:`~ihm.restraint.DerivedDistanceRestraint` objects.
     """
     def _all_entities_or_asyms(self):
         # Get all Entities or AsymUnits referenced by this object
@@ -446,11 +447,12 @@ class ResidueFeature(Feature):
 
        Residues can be selected from both :class:`AsymUnit` and
        :class:`Entity` (the latter implies that it selects residues
-       in all instances of that entity).
+       in all instances of that entity). Individual residues can
+       also be selected by passing :class:`Residue` objects.
 
        :param sequence ranges: A list of :class:`AsymUnitRange`,
-              :class:`AsymUnit`, :class:`EntityRange`, and/or :class:`Entity`
-              objects.
+              :class:`AsymUnit`, :class:`EntityRange`, :class:`Residue`,
+              and/or :class:`Entity` objects.
     """
 
     # Type is 'residue' if each range selects a single residue, otherwise
@@ -585,6 +587,7 @@ class GeometricRestraint(object):
         self.geometric_object, self.feature = geometric_object, feature
         self.distance, self.restrain_all = distance, restrain_all
         self.harmonic_force_constant = harmonic_force_constant
+    _all_features = property(lambda self: (self.feature,))
 
 
 class CenterGeometricRestraint(GeometricRestraint):
@@ -635,6 +638,7 @@ class DerivedDistanceRestraint(object):
         self.feature1, self.feature2 = feature1, feature2
         self.distance, self.restrain_all = distance, restrain_all
         self.probability = probability
+    _all_features = property(lambda self: (self.feature1, self.feature2))
 
 
 class PredictedContactRestraint(object):

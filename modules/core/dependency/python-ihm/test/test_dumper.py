@@ -2009,7 +2009,10 @@ _ihm_localization_density_files.entity_poly_segment_id
         a1._id = 'X'
         system.entities.extend((e1, e2, e3))
         system.asym_units.append(a1)
+        res1 = e2.residue(1)
+        res2 = e2.residue(2)
         system.orphan_features.append(ihm.restraint.ResidueFeature([e2]))
+        system.orphan_features.append(ihm.restraint.ResidueFeature([res2]))
         system.orphan_features.append(ihm.restraint.NonPolyFeature([e3]))
 
         system._make_complete_assembly()
@@ -2027,6 +2030,9 @@ _ihm_localization_density_files.entity_poly_segment_id
         self.assertEqual(e2._range_id, 2)
         # non-polymers don't have ranges
         self.assertEqual(e3._range_id, None)
+        # res2 should have been assigned a range, but not res1
+        self.assertFalse(hasattr(res1, '_range_id'))
+        self.assertEqual(res2._range_id, 3)
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -2039,6 +2045,7 @@ _ihm_entity_poly_segment.comp_id_begin
 _ihm_entity_poly_segment.comp_id_end
 1 1 1 4 ALA ASP
 2 2 1 3 ALA GLY
+3 2 2 2 CYS CYS
 #
 """)
 

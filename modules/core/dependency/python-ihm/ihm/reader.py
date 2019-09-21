@@ -1528,7 +1528,7 @@ class _EnsembleHandler(Handler):
                  ensemble_precision_value, ensemble_name,
                  ensemble_clustering_method, ensemble_clustering_feature):
         ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
-        mg = self.sysr.model_groups.get_by_id(model_group_id)
+        mg = self.sysr.model_groups.get_by_id_or_none(model_group_id)
         pp = self.sysr.analysis_steps.get_by_id_or_none(post_process_id)
         f = self.sysr.external_files.get_by_id_or_none(ensemble_file_id)
 

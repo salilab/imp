@@ -20,7 +20,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.10'
+__version__ = '0.11'
 
 class __UnknownValue(object):
     # Represent the mmCIF 'unknown' special value
@@ -238,7 +238,7 @@ class System(object):
         """Iterate over all ChemDescriptors in the system.
            Duplicates may be present."""
         return itertools.chain(self.orphan_chem_descriptors,
-                      (restraint.linker for restraint in self.restraints
+                      (restraint.linker for restraint in self._all_restraints()
                                         if hasattr(restraint, 'linker')
                                         and restraint.linker),
                       (itertools.chain.from_iterable(
@@ -332,8 +332,9 @@ class System(object):
                                        if step.assembly),
                         (step.assembly for step in self._all_analysis_steps()
                                        if step.assembly),
-                        (restraint.assembly for restraint in self.restraints
-                                            if restraint.assembly))
+                        (restraint.assembly
+                         for restraint in self._all_restraints()
+                         if restraint.assembly))
 
     def _all_dataset_groups(self):
         """Iterate over all DatasetGroups in the system.
@@ -364,7 +365,7 @@ class System(object):
                   _all_datasets_in_groups(),
                   (sm.dataset for sm in self._all_starting_models()
                               if sm.dataset),
-                  (restraint.dataset for restraint in self.restraints
+                  (restraint.dataset for restraint in self._all_restraints()
                                      if restraint.dataset),
                   (template.dataset for template in self._all_templates()
                                     if template.dataset))
@@ -415,20 +416,23 @@ class System(object):
            Duplicates may be present."""
         return itertools.chain(
                 self.orphan_geometric_objects,
-                (restraint.geometric_object for restraint in self.restraints
-                          if hasattr(restraint, 'geometric_object')
-                          and restraint.geometric_object))
+                (restraint.geometric_object
+                 for restraint in self._all_restraints()
+                 if hasattr(restraint, 'geometric_object')
+                 and restraint.geometric_object))
 
     def _all_features(self):
         """Iterate over all Features in the system.
            This includes all Features referenced from other objects,
            plus any referenced from the top-level system.
            Duplicates may be present."""
-        return itertools.chain(
-                self.orphan_features,
-                (restraint.feature for restraint in self.restraints
-                          if hasattr(restraint, 'feature')
-                          and restraint.feature))
+        def _all_restraint_features():
+            for r in self._all_restraints():
+                if hasattr(r, '_all_features'):
+                    for feature in r._all_features:
+                        if feature:
+                            yield feature
+        return itertools.chain(self.orphan_features, _all_restraint_features())
 
     def _all_software(self):
         """Iterate over all Software in the system.
@@ -454,7 +458,7 @@ class System(object):
         return _remove_identical(itertools.chain(
                         self.citations,
                         (restraint.fitting_method_citation_id
-                            for restraint in self.restraints
+                            for restraint in self._all_restraints()
                             if hasattr(restraint, 'fitting_method_citation_id')
                             and restraint.fitting_method_citation_id)))
 
@@ -902,7 +906,7 @@ class Residue(object):
        :meth:`AsymUnit.residue`.
     """
 
-    __slots__ = ['entity', 'asym', 'seq_id']
+    __slots__ = ['entity', 'asym', 'seq_id', '_range_id']
 
     def __init__(self, seq_id, entity=None, asym=None):
         self.entity = entity
@@ -919,6 +923,8 @@ class Residue(object):
     auth_seq_id = property(_get_auth_seq_id,
                            doc="Author-provided seq_id; only makes sense "
                                "for asymmetric units")
+    # Allow passing residues where a range is requested (e.g. to ResidueFeature)
+    seq_id_range = property(lambda self: (self.seq_id, self.seq_id))
 
 
 class Entity(object):

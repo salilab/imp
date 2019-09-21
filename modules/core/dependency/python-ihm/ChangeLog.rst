@@ -1,8 +1,16 @@
 HEAD
 ====
+ - :class:`ihm.restraint.ResidueFeature` objects can now act on one or
+   more :class:`Residue` objects, which act equivalently to
+   1-residue ranges (:class:`AsymUnitRange` or :class:`EntityRange`).
+
+0.11 - 2019-09-05
+=================
  - :class:`ihm.Assembly` objects can now only contain :class:`AsymUnit`
    and :class:`AsymUnitRange` objects (not :class:`Entity` or
    :class:`EntityRange`).
+ - Bugfix: ensembles that don't reference a :class:`ihm.model.ModelGroup`
+   no longer cause the reader to create bogus empty model groups.
 
 0.10 - 2019-07-09
 =================
