@@ -456,13 +456,9 @@ class SimplifiedPEMAP(object):
 
             # This is harmonic potential for the pE-MAP data
             upperdist = self.get_upper_bond(pcc)
-            limit = self.strength * (upperdist + 15) ** 2 + 10.0
+            limit = 0.5 * self.strength * 15.0 ** 2 + 10.0
             hub = IMP.core.TruncatedHarmonicUpperBound(
-                upperdist,
-                self.strength,
-                upperdist +
-                15,
-                limit)
+                upperdist, self.strength, 15, limit)
 
             # This is harmonic for the X-link
             #hub= IMP.core.TruncatedHarmonicBound(17.0,self.strength,upperdist+15,limit)
@@ -474,19 +470,15 @@ class SimplifiedPEMAP(object):
 
             # Lower-bound restraint
             lowerdist = self.get_lower_bond(pcc)
-            limit = self.strength * (lowerdist - 15) ** 2 + 10.0
+            limit = 0.5 * self.strength * 15.0 ** 2 + 10.0
             hub2 = IMP.core.TruncatedHarmonicLowerBound(
-                lowerdist,
-                self.strength,
-                lowerdist +
-                15,
-                limit)
+                lowerdist, self.strength, 15, limit)
 
             # This is harmonic for the X-link
             #hub2= IMP.core.TruncatedHarmonicBound(17.0,self.strength,upperdist+15,limit)
 
             df2 = IMP.core.SphereDistancePairScore(hub2)
-            dr2 = IMP.core.PairRestraint(df2, (p1, p2))
+            dr2 = IMP.core.PairRestraint(self.m, df2, (p1, p2))
             self.rs.add_restraint(dr2)
             self.pairs.append((p1, p2, dr2, r1, c1, r2, c2))
 

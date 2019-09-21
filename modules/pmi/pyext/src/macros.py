@@ -2197,14 +2197,17 @@ class AnalysisReplicaExchange(object):
 
 
     def align(self):
-        print("alignment")
         tr = IMP.atom.get_transformation_aligning_first_to_second(self.sel1_alignment, self.sel0_alignment)
 
         for rb in self.rbs1:
             IMP.core.transform(rb, tr)
 
         for bead in self.beads1:
-            IMP.core.transform(IMP.core.XYZ(bead), tr)
+            try:
+                IMP.core.transform(IMP.core.XYZ(bead), tr)
+            except:
+                continue
+
 
         self.model.update()
 

@@ -20,6 +20,7 @@ import sys
 import ihm.location
 import ihm.dataset
 from collections import defaultdict
+import numpy
 
 # json default serializations
 def set_json_default(obj):
@@ -911,6 +912,8 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         if name1 == name2:
             name1=id(self)
             name2=id(CrossLinkDataBase2)
+            self.set_name(name1)
+            CrossLinkDataBase2.set_name(name2)
 
         #rename first database:
         new_data_base={}
@@ -995,6 +998,28 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             if protein_to_rename == "both" or protein_to_rename == "protein2":
                 fo2=FilterOperator(self.protein2_key,operator.eq,old_name)
                 self.set_value(self.protein2_key,new_name,fo2)
+
+    def classify_crosslinks_by_score(self,number_of_classes):
+        '''
+        This function creates as many classes as in the input (number_of_classes: integer)
+        and partition crosslinks according to their identification scores. Classes are defined in the psi key.
+        '''
+
+        if self.id_score_key is not None:
+            scores=self.get_values(self.id_score_key)
+        else:
+            raise ValueError('The crosslink database does not contain score values')
+        minscore=min(scores)
+        maxscore=max(scores)
+        scoreclasses=numpy.linspace(minscore, maxscore, number_of_classes+1)
+        if self.psi_key is None:
+            self.create_new_keyword(self.psi_key,values_from_keyword=None)
+        for xl in self:
+            score=xl[self.id_score_key]
+            for n,classmin in enumerate(scoreclasses[0:-1]):
+                if score>=classmin and score<=scoreclasses[n+1]:
+                    xl[self.psi_key]=str("CLASS_"+str(n))
+        self._update()
 
     def clone_protein(self,protein_name,new_protein_name):
         new_xl_dict={}

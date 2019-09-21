@@ -15,7 +15,6 @@ except ImportError:
     no_isd_emxl = True
 
 class Tests(IMP.test.TestCase):
-    @IMP.test.expectedFailure
     def test_restraints(self):
         """Test PMI restraints"""
         # input parameter
@@ -119,14 +118,12 @@ class Tests(IMP.test.TestCase):
         print(pm.get_output())
 
         restraints = '''#
-        Rpb3 Rpb4 100 150 1
-        Rpb4 Rpb4 50 150 1'''
+        Rpb3 Rpb4 100 150 1 1
+        Rpb4 Rpb4 50 150 1 2'''
 
-        xl4 = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(
-            simo,
-            restraints,
-            25,
-            resolution=1)
+        with IMP.allow_deprecated():
+            xl4 = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(
+                simo, restraints, 25, resolution=1)
         xl4.add_to_model()
         print(xl4.get_output())
 

@@ -165,10 +165,21 @@ class SetupNuisance(object):
 
 class SetupWeight(object):
 
-    def __init__(self, m, isoptimized=True):
+    def __init__(self, m, isoptimized=True, nweights_or_weights=None):
         pw = IMP.Particle(m)
-        self.weight = IMP.isd.Weight.setup_particle(pw)
-        self.weight.set_weights_are_optimized(True)
+        if isinstance(nweights_or_weights, int):
+            self.weight = IMP.isd.Weight.setup_particle(
+                pw, nweights_or_weights
+            )
+        else:
+            try:
+                nweights_or_weights = list(nweights_or_weights)
+                self.weight = IMP.isd.Weight.setup_particle(
+                    pw, nweights_or_weights
+                )
+            except (TypeError, IMP.UsageException):
+                self.weight = IMP.isd.Weight.setup_particle(pw)
+            self.weight.set_weights_are_optimized(isoptimized)
 
     def get_particle(self):
         return self.weight
