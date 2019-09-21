@@ -44,7 +44,7 @@ bool Weight::get_is_setup(Model *m, ParticleIndex pi) {
   if (!m->get_has_attribute(get_number_of_weights_key(), pi)) return false;
   if (!m->get_has_attribute(get_constraint_key(), pi)) return false;
   Int nweights = m->get_attribute(get_number_of_weights_key(), pi);
-  for (unsigned int i = 0; i < nweights; ++i)
+  for (int i = 0; i < nweights; ++i)
     if (!m->get_has_attribute(get_weight_key(i), pi)) return false;
   return true;
 }
@@ -76,7 +76,7 @@ FloatKey Weight::get_weight_key(int j) {
 
 FloatKeys Weight::get_weight_keys() const {
   FloatKeys fks;
-  for (unsigned int i = 0; i < get_number_of_weights(); ++i)
+  for (int i = 0; i < get_number_of_weights(); ++i)
     fks.push_back(get_weight_key(i));
   return fks;
 }
@@ -100,16 +100,16 @@ algebra::VectorKD Weight::get_weights() const {
 }
 
 void Weight::set_weight_lazy(int i, Float wi) {
-  IMP_USAGE_CHECK(static_cast<int>(i) < get_number_of_weights(),
+  IMP_USAGE_CHECK(i < get_number_of_weights(),
                   "Out of range");
   get_particle()->set_value(get_weight_key(i), wi);
 }
 
 void Weight::set_weights_lazy(const algebra::VectorKD& w) {
   Int nweights = w.get_dimension();
-  IMP_USAGE_CHECK(static_cast<int>(nweights) == get_number_of_weights(),
+  IMP_USAGE_CHECK(nweights == get_number_of_weights(),
                   "Out of range");
-  for (unsigned int i = 0; i < nweights; ++i)
+  for (int i = 0; i < nweights; ++i)
     get_particle()->set_value(get_weight_key(i), w[i]);
 }
 
@@ -120,7 +120,7 @@ void Weight::set_weights(const algebra::VectorKD& w) {
 bool Weight::get_weights_are_optimized() const {
   Int nweights = get_number_of_weights();
   if (nweights == 0) return false;
-  for (unsigned int i = 0; i < get_number_of_weights(); ++i){
+  for (int i = 0; i < get_number_of_weights(); ++i){
     if (!get_particle()->get_is_optimized(get_weight_key(i)))
       return false;
   }
@@ -128,7 +128,7 @@ bool Weight::get_weights_are_optimized() const {
 }
 
 void Weight::set_weights_are_optimized(bool tf) {
-  for (unsigned int i = 0; i < get_number_of_weights(); ++i)
+  for (int i = 0; i < get_number_of_weights(); ++i)
     get_particle()->set_is_optimized(get_weight_key(i), tf);
 }
 
@@ -156,9 +156,8 @@ void Weight::add_to_weight_derivative(int i, Float dwi,
 void Weight::add_to_weights_derivatives(const algebra::VectorKD& dw,
                                         const DerivativeAccumulator &da) {
   int nweights = dw.get_dimension();
-  IMP_USAGE_CHECK(static_cast<int>(nweights) == get_number_of_weights(),
-                  "Out of range");
-  for (unsigned int i = 0; i < nweights; ++i)
+  IMP_USAGE_CHECK(nweights == get_number_of_weights(), "Out of range");
+  for (int i = 0; i < nweights; ++i)
     get_particle()->add_to_derivative(get_weight_key(i), dw[i], da);
 }
 

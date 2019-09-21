@@ -94,7 +94,7 @@ inline VectorD<D> get_random_vector_on(const UnitSimplexD<D> &s) {
   int d = s.get_dimension();
   VectorD<D> p = get_zero_vector_kd<D>(d);
   double psum = 0;
-  for (unsigned int i = 0; i < d; ++i) {
+  for (int i = 0; i < d; ++i) {
     p[i] = randexp(random_number_generator);
     psum += p[i];
   }

@@ -47,7 +47,7 @@ class UnitSimplexBaseD : public GeometricPrimitiveD<D> {
     int d = p.get_dimension();
     if (d != get_dimension()) return false;
     double nrm = 0;
-    for (unsigned int i = 0; i < d; ++i) {
+    for (int i = 0; i < d; ++i) {
       if (p[i] < 0) return false;
       nrm += p[i];
     }
@@ -117,7 +117,7 @@ template <int D>
 inline Vector<VectorD<D> > get_vertices(const UnitSimplexD<D> &s) {
   Vector<VectorD<D> > ret;
   int d = s.get_dimension();
-  for (unsigned int i = 0; i < d; ++i)
+  for (int i = 0; i < d; ++i)
     ret.push_back(get_basis_vector_kd<D>(d, i));
   return ret;
 }
@@ -135,7 +135,7 @@ template <int D>
 inline VectorD<D> get_increasing_from_embedded(const UnitSimplexD<D> &s,
                                                const VectorD<D> &p) {
   int d = s.get_dimension();
-  IMP_USAGE_CHECK(p.get_dimension() == d,
+  IMP_USAGE_CHECK(static_cast<int>(p.get_dimension()) == d,
                   "Dimension of point must match dimension of simplex.");
   IMP_INTERNAL_CHECK(s.get_contains(p), "Input point is not on simplex");
   VectorD<D> q = get_zero_vector_kd(d);
@@ -149,7 +149,7 @@ template <int D>
 inline VectorD<D> get_embedded_from_increasing(const UnitSimplexD<D> &s,
                                                const VectorD<D> &p) {
   int d = s.get_dimension();
-  IMP_USAGE_CHECK(p.get_dimension() == d,
+  IMP_USAGE_CHECK(static_cast<int>(p.get_dimension()) == d,
                   "Dimension of point must match dimension of simplex.");
   VectorD<D> q = get_zero_vector_kd(d);
   std::adjacent_difference(p.begin(), p.end(), q.begin());
@@ -167,7 +167,7 @@ inline VectorD<D> get_embedded_from_increasing(const UnitSimplexD<D> &s,
 template <int D>
 inline VectorD<D> get_projected(const UnitSimplexD<D> &s, const VectorD<D> &p) {
   int d = s.get_dimension();
-  IMP_USAGE_CHECK(d == p.get_dimension(),
+  IMP_USAGE_CHECK(d == static_cast<int>(p.get_dimension()),
                   "Dimension of point must match dimension of simplex.");
 
   if (s.get_contains(p)) return p;
@@ -185,7 +185,7 @@ inline VectorD<D> get_projected(const UnitSimplexD<D> &s, const VectorD<D> &p) {
   }
   double lam = (1 - u_cumsum[rho - 1]) / rho;
 
-  for (unsigned int i = 0; i < d; ++i) {
+  for (int i = 0; i < d; ++i) {
     double ui = p[i] + lam;
     u[i] = ui > 0 ? ui : 0.0;
   }

@@ -38,7 +38,7 @@ double WeightRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
   if (accum) {
     Float deltaw;
     algebra::VectorKD wderiv = algebra::get_zero_vector_kd(dim);
-    for (unsigned i = 0; i < dim; ++i) {
+    for (int i = 0; i < dim; ++i) {
       if (weight[i] > wmax_) {
         deltaw = weight[i] - wmax_;
         dw += deltaw * deltaw;
@@ -51,7 +51,7 @@ double WeightRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     }
     w.add_to_weights_derivatives(wderiv, *accum);
   } else {
-    for (unsigned i = 0; i < dim; ++i) {
+    for (int i = 0; i < dim; ++i) {
       if (weight[i] > wmax_)
         dw += (weight[i] - wmax_) * (weight[i] - wmax_);
       else if (weight[i] < wmin_)
