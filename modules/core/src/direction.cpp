@@ -188,7 +188,7 @@ void DirectionUnitConstraint::do_update_attributes() {
   d.set_direction(d.get_direction());
 }
 
-void DirectionUnitConstraint::do_update_derivatives(DerivativeAccumulator *da) {}
+void DirectionUnitConstraint::do_update_derivatives(DerivativeAccumulator *) {}
 
 ModelObjectsTemp DirectionUnitConstraint::do_get_inputs() const {
   return ModelObjectsTemp(1, get_model()->get_particle(pi_));

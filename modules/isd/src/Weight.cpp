@@ -232,7 +232,7 @@ void WeightSimplexConstraint::do_update_attributes() {
 }
 
 void WeightSimplexConstraint::do_update_derivatives(
-  DerivativeAccumulator *da) {}
+  DerivativeAccumulator *) {}
 
 ModelObjectsTemp WeightSimplexConstraint::do_get_inputs() const {
   return ModelObjectsTemp(1, get_model()->get_particle(pi_));
