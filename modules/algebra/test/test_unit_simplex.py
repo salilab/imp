@@ -142,7 +142,7 @@ class UnitSimplexDTests(IMP.test.TestCase):
         """
         n = 1000
         fail_prob = 1e-3  # Probability of all tests failing.
-        each_fail_prob = 1 - (1 - fail_prob) ** (1 / len(self.types))
+        each_fail_prob = 1 - (1 - fail_prob) ** (1.0 / len(self.types))
 
         for d, st, args, vt in self.types:
             s = st(*args)
