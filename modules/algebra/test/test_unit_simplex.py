@@ -158,7 +158,8 @@ class UnitSimplexDTests(IMP.test.TestCase):
                 mean_thresh = self._get_normal_thresh(
                     each_fail_prob, dim=d, sigma=mcse
                 )
-                self.assertTrue(np.all(mean_bary_vs <= mean_thresh))
+                for i in range(d):
+                    self.assertLessEqual(mean_bary_vs[i], mean_thresh)
 
 
 if __name__ == "__main__":
