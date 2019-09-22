@@ -131,6 +131,8 @@ class UnitSimplexDTests(IMP.test.TestCase):
                 v = IMP.algebra.get_random_vector_on(s)
                 self.assertIsInstance(v, vt)
                 self.assertEqual(v.get_dimension(), d)
+                print(v)
+                print(np.sum(list(v)))
                 self.assertAlmostEqual(np.sum(v), 1)
 
     @IMP.test.skipIf(scipy is None, "Requires SciPy")
