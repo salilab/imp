@@ -25,7 +25,8 @@ endforeach()
 endif()
 
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/src/generated/embed_jsons.h" "${PROJECT_BINARY_DIR}/src/generated/embed_jsons.cpp"
-   COMMAND python "${PROJECT_SOURCE_DIR}/tools/build/make-embed.py"
+   COMMAND ${PYTHON_EXECUTABLE}
+              "${PROJECT_SOURCE_DIR}/tools/build/make-embed.py"
               "${PROJECT_BINARY_DIR}/src/generated/" ${jsonfiles_expanded}
    DEPENDS ${jsonfiles} "${PROJECT_SOURCE_DIR}/tools/build/make-embed.py"
    COMMENT "Embedding json files" VERBATIM  )

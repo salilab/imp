@@ -8,7 +8,7 @@ set(decorators "${PROJECT_BINARY_DIR}/include/RMF/decorator/physics.h"
   "${PROJECT_BINARY_DIR}/include/RMF/decorator/publication.h")
 
 add_custom_command(OUTPUT ${decorators}
-  COMMAND "python" "${PROJECT_SOURCE_DIR}/tools/build/make_decorators.py"
+  COMMAND ${PYTHON_EXECUTABLE} "${PROJECT_SOURCE_DIR}/tools/build/make_decorators.py"
   DEPENDS "${PROJECT_SOURCE_DIR}/tools/build/make_decorators.py" "${PROJECT_SOURCE_DIR}/tools/build/_decorators.py"
   WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
   COMMENT "Making decorator headers")
