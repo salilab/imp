@@ -13,7 +13,7 @@ imp_get_process_exit_code("Setting up module %(name)s" status ${CMAKE_BINARY_DIR
 
 if(${status} EQUAL 0)
   imp_execute_process("setup_swig_wrappers %(name)s" ${CMAKE_BINARY_DIR}
-    COMMAND %(tools_dir)sbuild/setup_swig_wrappers.py
+    COMMAND ${PYTHON_EXECUTABLE} %(tools_dir)sbuild/setup_swig_wrappers.py
     %(build_dir)s --module=%(name)s
     --datapath=${IMP_DATAPATH}
     --source=${CMAKE_SOURCE_DIR})
@@ -51,9 +51,9 @@ if(${status} EQUAL 0)
       COMMAND ln -s -f ../../doc/examples
       COMMAND ln -s -f ../../lib
       COMMAND ${IMP_DOXYGEN_EXECUTABLE} ../../doxygen/%(name)s/Doxyfile 2>&1 /dev/null
-      COMMAND %(tools_dir)sbuild/doxygen_patch_tags.py --module=%(name)s --file=../../doxygen/%(name)s/tags
-      COMMAND %(tools_dir)sbuild/doxygen_show_warnings.py --warn=../../doxygen/%(name)s/warnings.txt
-      COMMAND %(tools_dir)sbuild/doxygen_spell_check.py xml ${CMAKE_SOURCE_DIR}/%(module_dir)stest/standards_exceptions
+      COMMAND ${PYTHON_EXECUTABLE} %(tools_dir)sbuild/doxygen_patch_tags.py --module=%(name)s --file=../../doxygen/%(name)s/tags
+      COMMAND ${PYTHON_EXECUTABLE} %(tools_dir)sbuild/doxygen_show_warnings.py --warn=../../doxygen/%(name)s/warnings.txt
+      COMMAND ${PYTHON_EXECUTABLE} %(tools_dir)sbuild/doxygen_spell_check.py xml ${CMAKE_SOURCE_DIR}/%(module_dir)stest/standards_exceptions
       DEPENDS %(tags)s ${headers} ${docs} ${examples} ${CMAKE_SOURCE_DIR}/%(module_dir)sREADME.md ${IMP_%(name)s_TAG_DEPENDS}
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/doxygen/%(name)s/
       COMMENT "Running doxygen on %(name)s")
@@ -77,7 +77,7 @@ if(${status} EQUAL 0)
 
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/lib/%(subdir)s/_version_check.py
                             ${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp
-    COMMAND %(tools_dir)sbuild/make_module_version.py --name=%(name)s --datapath=${IMP_DATAPATH} --source=${CMAKE_SOURCE_DIR}
+    COMMAND ${PYTHON_EXECUTABLE} %(tools_dir)sbuild/make_module_version.py --name=%(name)s --datapath=${IMP_DATAPATH} --source=${CMAKE_SOURCE_DIR}
     DEPENDS IMP-version
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/
     COMMENT "Building module version info")
