@@ -1,4 +1,4 @@
-execute_process(COMMAND python setup_git.py
+execute_process(COMMAND ${PYTHON_EXECUTABLE} setup_git.py
                   RESULT_VARIABLE setup
                   OUTPUT_VARIABLE toutput
                   ERROR_VARIABLE error
