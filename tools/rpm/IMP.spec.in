@@ -4,6 +4,13 @@
 %define with_python3 0
 %endif
 
+# Old RHEL only has a python-devel package, but RHEL8 only has python2-devel
+%if 0%{?fedora} || 0%{?rhel} >= 8
+%define PYTHON2 python2
+%else
+%define PYTHON2 python
+%endif
+
 %define with_mpich 1
 # Not yet functional
 %define with_openmpi 0
@@ -24,7 +31,7 @@ Source0:       imp-%{version}.tar.gz
 %if 0%{?with_python3}
 BuildRequires: python3-devel, symlinks
 %endif
-BuildRequires: python-devel >= 2.6
+BuildRequires: %{PYTHON2}-devel >= 2.6
 # /usr/bin/python is provided by a separate package in recent Fedora
 %if 0%{?fedora} >= 29
 BuildRequires: python-unversioned-command
@@ -32,8 +39,10 @@ BuildRequires: python-unversioned-command
 BuildRequires: hdf5-devel >= 1.8
 BuildRequires: swig >= 1.3.40
 BuildRequires: gsl-devel, fftw-devel
-BuildRequires: zlib-devel, perl
-BuildRequires: ann-devel, eigen3-devel
+BuildRequires: zlib-devel, perl, eigen3-devel
+%if 0%{?fedora} || 0%{?rhel} <= 7
+BuildRequires: ann-devel
+%endif
 # Needed to build the cnmultifit module; obtain
 # from https://integrativemodeling.org/libTAU.html
 # (Or, if you don't need cnmultifit, you can comment out this line)
@@ -82,8 +91,13 @@ BuildRequires: CGAL-nogui-devel
 
 # Many modules use Python's numpy and scipy modules, so pull those in
 # (at build time for tests; at install time for using the modules).
+%if 0%{?rhel} >= 8
+BuildRequires: python2-numpy, python2-scipy
+Requires: python2-numpy, python2-scipy
+%else
 BuildRequires: numpy, scipy
 Requires: numpy, scipy
+%endif
 
 # RHEL 6 ships with Python 2.6, which doesn't have the argparse module,
 # so pull in the extra package that provides it
@@ -136,9 +150,11 @@ as well as easy addition of new functionality.
 Group:         Applications/Engineering
 Summary:       Development package for IMP developers.
 Requires:      %{name} = %{version}-%{release}
-Requires:      gsl-devel, fftw-devel, zlib-devel
-Requires:      ann-devel, eigen3-devel
-Requires:      boost-devel, python-devel, hdf5-devel, protobuf-devel
+Requires:      gsl-devel, fftw-devel, zlib-devel, eigen3-devel
+%if 0%{?fedora} || 0%{?rhel} <= 7
+Requires:      ann-devel
+%endif
+Requires:      boost-devel, %{PYTHON2}-devel, hdf5-devel, protobuf-devel
 %if 0%{?fedora}
 Requires:      CGAL-devel, opencv-devel
 %endif
