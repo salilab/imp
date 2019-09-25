@@ -50,7 +50,7 @@ BuildRequires: libTAU-devel
 
 # Need for npctransport module
 BuildRequires: protobuf-devel
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?rhel} >= 8
 Requires: python2-protobuf
 %else
 Requires: protobuf-python
@@ -172,7 +172,7 @@ Group:         Applications/Engineering
 Summary:       Python wrappers for Python 3
 Requires:      %{name} = %{version}-%{release}
 Requires:      python3
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?rhel} >= 8
 Requires: python3-protobuf
 %endif
 
