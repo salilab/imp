@@ -22,6 +22,8 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+//! Base class for a unit simplex embedded in D-dimensional real space.
+/** See UnitSimplexD for more information. */
 template <int D>
 class UnitSimplexBaseD : public GeometricPrimitiveD<D> {
  public:
