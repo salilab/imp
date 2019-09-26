@@ -2,8 +2,15 @@ find_package(MPI)
 
 if("${MPI_CXX_FOUND}")
   message(STATUS "MPI found")
-  set(MPI_CXX_FLAGS ${MPI_CXX_COMPILE_FLAGS} CACHE INTERNAL "" FORCE)
-  #set(CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS} ${MPI_CXX_LINK_FLAGS})
+  # Workaround for CMake bug #18349, RHEL8 bug #1749463
+  # (MPI_CXX_COMPILE_FLAGS is supposed to be a string but actually comes out
+  # as a ;-separated list, which results in literal semicolons in the compiler
+  # command line)
+  set(MPI_CXX_FLAGS)
+  foreach(_MPI_FLAG ${MPI_CXX_COMPILE_FLAGS})
+    set(MPI_CXX_FLAGS "${MPI_CXX_FLAGS} ${_MPI_FLAG}")
+  endforeach()
+  set(MPI_CXX_FLAGS ${MPI_CXX_FLAGS} CACHE INTERNAL "" FORCE)
   set(MPI_LIBRARIES ${MPI_CXX_LIBRARIES} CACHE INTERNAL "" FORCE)
   set(MPI_INCLUDE_PATH ${MPI_CXX_INCLUDE_PATH} CACHE INTERNAL "" FORCE)
   # Run tests of IMP.mpi module on 2 processors, if we found a working mpiexec
