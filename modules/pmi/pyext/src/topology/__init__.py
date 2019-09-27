@@ -724,9 +724,14 @@ class Molecule(_SystemBase):
 
             # build all the representations
             built_reps = []
+
+            rephandler = _RepresentationHandler(self._name_with_copy,
+                                     list(self._all_protocol_output()),
+                                     self._pdb_elements)
+
             for rep in self.representations:
                 built_reps += system_tools.build_representation(
-                            self, rep, self.coord_finder)
+                            self, rep, self.coord_finder, rephandler)
 
             # sort them before adding as children
             built_reps.sort(key=lambda r: IMP.atom.Fragment(r).get_residue_indexes()[0])
@@ -735,9 +740,6 @@ class Molecule(_SystemBase):
                 br.update_parents()
             self.built = True
 
-            rephandler = _RepresentationHandler(self._name_with_copy,
-                                     list(self._all_protocol_output()),
-                                     self._pdb_elements)
             for res in self.residues:
                 idx = res.get_index()
 

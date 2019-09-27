@@ -1145,17 +1145,18 @@ _ihm_localization_density_files.entity_poly_segment_id
         class DummyRestraint(object):
             label = 'foo'
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
+        s.add_protocol_output(po)
+        state = s.create_state()
+        po_state = state._protocol_output[0][1]
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(nup84.get_atomic_residues(), resolutions=[1])
+        nup84.add_representation(nup84.get_non_atomic_residues(),
+                                 resolutions=[10])
+        hier = s.build()
+
         r = DummyRestraint()
         r.dataset = DummyDataset()
         r.dataset._id = 42
@@ -1170,14 +1171,16 @@ _ihm_localization_density_files.entity_poly_segment_id
         nm_ex_xl = po.add_experimental_cross_link(1, 'Nup85',
                                                   2, 'Nup84', xl_group)
         self.assertEqual(nm_ex_xl, None)
-        rs = nup84[0].get_children()
+        sel = IMP.atom.Selection(hier, molecule='Nup84',
+                                 resolution=1)
+        rs = sel.get_selected_particles()
         sigma1 = IMP.isd.Scale.setup_particle(IMP.Particle(m), 1.0)
         sigma2 = IMP.isd.Scale.setup_particle(IMP.Particle(m), 0.5)
         psi = IMP.isd.Scale.setup_particle(IMP.Particle(m), 0.8)
-        po.add_cross_link(state, ex_xl, rs[0], rs[1], 42.0, sigma1, sigma2,
+        po.add_cross_link(po_state, ex_xl, rs[0], rs[1], 42.0, sigma1, sigma2,
                           psi, xl_group)
         # Duplicates should be ignored
-        po.add_cross_link(state, ex_xl, rs[0], rs[1], 42.0, sigma1, sigma2,
+        po.add_cross_link(po_state, ex_xl, rs[0], rs[1], 42.0, sigma1, sigma2,
                           psi, xl_group)
 
         fh = StringIO()
