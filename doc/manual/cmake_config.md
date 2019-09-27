@@ -71,7 +71,7 @@ which control the build. For example:
 ## Python binary/header mismatch {#cmake_python}
 
 In order to build %IMP Python extensions, CMake needs to find the Python header
-and library files that match the `python3` or `python` binary. If using a
+and library files that match the `python3`, `python2` or `python` binary. If using a
 recent version of CMake (3.14 or later) it should have no issues in doing so.
 However, old versions of CMake might get confused if you have multiple versions
 of Python installed (for example on a Mac with [Homebrew](https://brew.sh/)),
