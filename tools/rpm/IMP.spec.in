@@ -395,7 +395,11 @@ for cvlib in cv cxcore highgui; do
   cp /usr/%{_lib}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 done
 %endif
+%if 0%{?rhel} == 8
+cp /usr/%{_lib}/libCGAL.so.13 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+%else
 cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
+%endif
 %endif
 
 # Don't distribute example application, dependency, or system
