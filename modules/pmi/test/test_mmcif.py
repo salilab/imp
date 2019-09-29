@@ -301,39 +301,33 @@ _ihm_multi_state_model_group_link.model_group_id
     def test_model_dumper_sphere(self):
         """Test ModelDumper sphere_obj output"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
-        po.exclude_coordinates('Nup84', (3,4))
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
-        simo.create_transformed_component("Nup84.2", "Nup84",
-                IMP.algebra.Transformation3D(IMP.algebra.Vector3D(1,2,3)))
+        s = IMP.pmi.topology.System(m)
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(resolutions=[1])
+        hier = s.build()
+
+        state = po._last_state
 
         d = ihm.dumper._ModelDumper()
 
-        asym1 = po.asym_units['Nup84']
-        asym2 = po.asym_units['Nup84.2']
-        assembly = ihm.Assembly([asym1, asym2])
+        asym1 = po.asym_units['Nup84.0']
+        assembly = ihm.Assembly([asym1])
         assembly._id = 42
         s1 = ihm.representation.ResidueSegment(asym1, True, 'sphere')
-        s2 = ihm.representation.ResidueSegment(asym2, True, 'sphere')
-        representation = ihm.representation.Representation([s1, s2])
+        representation = ihm.representation.Representation([s1])
         representation._id = 99
         protocol = ihm.protocol.Protocol()
         protocol._id = 93
         group = ihm.model.ModelGroup(name="all models")
         state.append(group)
-        model = IMP.pmi.mmcif._Model(simo.prot, po, protocol, assembly,
+        model = IMP.pmi.mmcif._Model(hier, po, protocol, assembly,
                                      representation)
         group.append(model)
-        self.assertEqual(model.get_rmsf('Nup84', (1,)), None)
+        self.assertEqual(model.get_rmsf('Nup84.0', (1,)), None)
         fh = StringIO()
         self.assign_entity_asym_ids(po.system)
         w = ihm.format.CifWriter(fh)
@@ -377,8 +371,8 @@ _ihm_sphere_obj_site.rmsf
 _ihm_sphere_obj_site.model_id
 1 1 1 1 A -8.986 11.688 -5.817 3.068 . 1
 2 1 2 2 A -8.986 11.688 -5.817 2.997 . 1
-3 1 1 1 B -7.986 13.688 -2.817 3.068 . 1
-4 1 2 2 B -7.986 13.688 -2.817 2.997 . 1
+3 1 3 3 A -8.986 11.688 -5.817 3.052 . 1
+4 1 4 4 A -8.986 11.688 -5.817 2.609 . 1
 #
 """)
 
@@ -1392,29 +1386,28 @@ _ihm_geometric_object_axis.transformation_id
         class MockObject(object):
             pass
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(nup84, resolutions=[1])
+        hier = s.build()
+        po_state = po._last_state
 
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
-        residues = IMP.pmi.tools.select_by_tuple(simo, "Nup84", resolution=1)
+        residues = IMP.atom.Selection(hier, molecule='Nup84',
+                                      resolution=1).get_selected_particles()
         pmi_r = MockObject()
         pmi_r.dataset = None
         method = getattr(po, method_name)
-        method(state, residues, lower_bound=4.0,
+        method(po_state, residues, lower_bound=4.0,
                upper_bound=8.0, sigma=2.0, pmi_restraint=pmi_r)
         # duplicate restraint should use the same feature
-        method(state, residues, lower_bound=4.0,
+        method(po_state, residues, lower_bound=4.0,
                upper_bound=8.0, sigma=2.0, pmi_restraint=pmi_r)
         self.assertRaises(ValueError, method,
-                          state, [simo.hier_dict['Nup84']], lower_bound=4.0,
+                          po_state, [hier], lower_bound=4.0,
                           upper_bound=8.0, sigma=2.0, pmi_restraint=pmi_r)
         self.assign_entity_asym_ids(po.system)
         d = ihm.dumper._GeometricObjectDumper()
