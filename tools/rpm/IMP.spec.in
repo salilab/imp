@@ -32,10 +32,6 @@ Source0:       imp-%{version}.tar.gz
 BuildRequires: python3-devel, symlinks
 %endif
 BuildRequires: %{PYTHON2}-devel >= 2.6
-# /usr/bin/python is provided by a separate package in recent Fedora
-%if 0%{?fedora} >= 29
-BuildRequires: python-unversioned-command
-%endif
 BuildRequires: hdf5-devel >= 1.8
 BuildRequires: swig >= 1.3.40
 BuildRequires: gsl-devel, fftw-devel
