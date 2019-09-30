@@ -116,7 +116,7 @@ Requires: python-argparse
 
 # Don't build debug source packages; they cause the build to fail with
 # error: Empty %files file [...]/debugsourcefiles.list
-%if 0%{?fedora} > 26
+%if 0%{?fedora} > 26 || 0%{?rhel} >= 8
 %undefine _debugsource_packages
 %endif
 
