@@ -16,7 +16,10 @@ from math import log,pi,sqrt,exp
 import sys,os
 import random
 import ast
-import time
+try:
+    from time import process_time  # needs python 3.3 or later
+except ImportError:
+    from time import clock as process_time
 import RMF
 import IMP.rmf
 from collections import defaultdict
@@ -125,7 +128,7 @@ class Stopwatch(object):
         """Constructor.
            @param isdelta if True (the default) then report the time since the
                   last use of this class; if False, report cumulative time."""
-        self.starttime = time.clock()
+        self.starttime = process_time()
         self.label = "None"
         self.isdelta = isdelta
 
@@ -135,13 +138,13 @@ class Stopwatch(object):
     def get_output(self):
         output = {}
         if self.isdelta:
-            newtime = time.clock()
+            newtime = process_time()
             output["Stopwatch_" + self.label + "_delta_seconds"] \
                     = str(newtime - self.starttime)
             self.starttime = newtime
         else:
             output["Stopwatch_" + self.label + "_elapsed_seconds"] \
-                    = str(time.clock() - self.starttime)
+                    = str(process_time() - self.starttime)
         return output
 
 

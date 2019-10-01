@@ -5,6 +5,8 @@ import IMP.pmi.representation
 import IMP.pmi.restraints.basic
 import IMP.pmi.macros
 import IMP.pmi.output
+import IMP.pmi.topology
+import IMP.pmi.dof
 import RMF
 import glob
 import time
@@ -14,22 +16,29 @@ class Tests(IMP.test.TestCase):
 
     def test_macro(self):
         """setting up the representation
-        PMI 1.0 representation. Creates two particles and
-        an harmonic distance restraints between them"""
+        PMI 2 representation. Creates two particles and
+        a harmonic distance restraint between them"""
         import shutil
         import itertools
         m=IMP.Model()
-        with IMP.allow_deprecated():
-            r=IMP.pmi.representation.Representation(m)
-        r.create_component("A")
-        r.add_component_beads("A",[(1,1),(2,2)])
-        ps=IMP.atom.get_leaves(r.prot)
-        dr=IMP.pmi.restraints.basic.DistanceRestraint(r,(1,1,"A"),(2,2,"A"),10,10)
+        s = IMP.pmi.topology.System(m)
+        st1 = s.create_state()
+        mol = st1.create_molecule("A", "GG", "A")
+        mol.add_representation(resolutions=[1])
+        hier = s.build()
+
+        dof = IMP.pmi.dof.DegreesOfFreedom(mol)
+        dof.create_flexible_beads(mol, max_trans=3.0, resolution=1)
+
+        ps=IMP.atom.get_leaves(hier)
+        dr=IMP.pmi.restraints.basic.DistanceRestraint(
+            root_hier=hier, tuple_selection1=(1,1,"A"),
+            tuple_selection2=(2,2,"A"), distancemin=10, distancemax=10)
         dr.add_to_model()
         rex=IMP.pmi.macros.ReplicaExchange0(m,
-                      r,
-                      monte_carlo_sample_objects=[r],
-                      output_objects=[r,dr],
+                      root_hier=hier,
+                      monte_carlo_sample_objects=dof.get_movers(),
+                      output_objects=[dr],
                       monte_carlo_temperature=1.0,
                       replica_exchange_minimum_temperature=1.0,
                       replica_exchange_maximum_temperature=2.5,
@@ -116,7 +125,7 @@ class Tests(IMP.test.TestCase):
         rex_max_temp_key="ReplicaExchange_MaxTempFrequency"
         rex_min_temp_key="ReplicaExchange_MinTempFrequency"
         rex_swap_key="ReplicaExchange_SwapSuccessRatio"
-        rex_score_key="SimplifiedModel_Total_Score_None"
+        rex_score_key="Total_Score"
         rmf_file_key="rmf_file"
         rmf_file_index="rmf_frame_index"
         o=IMP.pmi.output.ProcessOutput(rex_out_file)
@@ -152,23 +161,31 @@ class Tests(IMP.test.TestCase):
 
     def test_macro_rmf_stat(self):
         """setting up the representation
-        PMI 1.0 representation. Creates two particles and
-        an harmonic distance restraints between them"""
+        PMI 2.0 representation. Creates two particles and
+        a harmonic distance restraint between them"""
         import shutil
         import itertools
         m=IMP.Model()
-        with IMP.allow_deprecated():
-            r=IMP.pmi.representation.Representation(m)
-        r.create_component("A")
-        r.add_component_beads("A",[(1,1),(2,2)])
-        ps=IMP.atom.get_leaves(r.prot)
-        dr=IMP.pmi.restraints.basic.DistanceRestraint(r,(1,1,"A"),(2,2,"A"),10,10)
+        s = IMP.pmi.topology.System(m)
+        st1 = s.create_state()
+        mol = st1.create_molecule("A", "GG", "A")
+        mol.add_representation(resolutions=[1])
+        hier = s.build()
+
+        dof = IMP.pmi.dof.DegreesOfFreedom(mol)
+        dof.create_flexible_beads(mol, max_trans=3.0, resolution=1)
+
+        ps=IMP.atom.get_leaves(hier)
+        dr=IMP.pmi.restraints.basic.DistanceRestraint(
+            root_hier=hier, tuple_selection1=(1,1,"A"),
+            tuple_selection2=(2,2,"A"), distancemin=10, distancemax=10)
+
         dr.add_to_model()
         rex=IMP.pmi.macros.ReplicaExchange0(m,
-                      r,
-                      monte_carlo_sample_objects=[r],
+                      root_hier=hier,
+                      monte_carlo_sample_objects=dof.get_movers(),
                       output_objects=None,
-                      rmf_output_objects=[r,dr],
+                      rmf_output_objects=[dr],
                       monte_carlo_temperature=1.0,
                       replica_exchange_minimum_temperature=1.0,
                       replica_exchange_maximum_temperature=2.5,
@@ -255,7 +272,7 @@ class Tests(IMP.test.TestCase):
         rex_max_temp_key="ReplicaExchange_MaxTempFrequency"
         rex_min_temp_key="ReplicaExchange_MinTempFrequency"
         rex_swap_key="ReplicaExchange_SwapSuccessRatio"
-        rex_score_key="SimplifiedModel_Total_Score_None"
+        rex_score_key="Total_Score"
         rmf_file_key="rmf_file"
         rmf_file_index="rmf_frame_index"
         o=IMP.pmi.output.ProcessOutput(rex_out_file)

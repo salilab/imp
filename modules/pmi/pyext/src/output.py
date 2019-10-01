@@ -364,7 +364,8 @@ class Output(object):
         # update the score list
         if self.replica_exchange:
             # read the self.best_score_list from the file
-            exec(open(self.best_score_file_name).read())
+            with open(self.best_score_file_name) as fh:
+                exec(fh.read())
 
         if len(self.best_score_list) < self.nbestscoring:
             self.best_score_list.append(score)

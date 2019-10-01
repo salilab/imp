@@ -11,6 +11,7 @@
 
 from __future__ import print_function
 import copy
+import RMF
 import IMP.core
 import IMP.algebra
 import IMP.atom
@@ -943,10 +944,12 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
             # Correct path
             rmf_file = os.path.join(os.path.dirname(stat_fname),
                                     "%d.rmf3" % model_num)
-            for c in state.all_modeled_components:
-                # todo: this only works with PMI 1
-                state._pmi_object.set_coordinates_from_rmf(c, rmf_file, 0,
-                                                       force_rigid_update=True)
+            # todo: test with real PMI2 systems
+            if os.path.exists(rmf_file):
+                rh = RMF.open_rmf_file_read_only(rmf_file)
+                system = state._pmi_object.system
+                IMP.rmf.link_hierarchies(rh, [system.hier])
+                IMP.rmf.load_frame(fh, RMF.FrameID(0))
             # todo: fill in other data from stat file, e.g. crosslink phi/psi
             yield stats
             model_num += 1
