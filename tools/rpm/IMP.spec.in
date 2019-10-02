@@ -1,4 +1,4 @@
-%if 0%{?fedora} > 12
+%if 0%{?fedora} > 12 || 0%{?rhel} >= 8
 %define with_python3 1
 %else
 %define with_python3 0
