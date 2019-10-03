@@ -9,7 +9,6 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.container
-import IMP.pmi.representation
 import IMP.pmi.tools
 import IMP.pmi.restraints.crosslinking
 import pdb
@@ -23,25 +22,13 @@ class DisulfideCrossLinkRestraint(object):
                  slope=0.01,
                  label="None"):
 
-        if isinstance(representation_or_hier,
-                      IMP.pmi.representation.Representation):
-            use_pmi2 = False
-            self.m = representation_or_hier.prot.get_model()
-            ps1 = IMP.pmi.tools.select_by_tuple(representation_or_hier,
-                                                selection_tuple1,
-                                                resolution=resolution)
-            ps2 = IMP.pmi.tools.select_by_tuple(representation_or_hier,
-                                                selection_tuple2,
-                                                resolution=resolution)
-        else:
-            use_pmi2 = True
-            self.m = representation_or_hier.get_model()
-            ps1 = IMP.pmi.tools.select_by_tuple_2(representation_or_hier,
-                                                  selection_tuple1,
-                                                  resolution=resolution)
-            ps2 = IMP.pmi.tools.select_by_tuple_2(representation_or_hier,
-                                                  selection_tuple2,
-                                                  resolution=resolution)
+        self.m = representation_or_hier.get_model()
+        ps1 = IMP.pmi.tools.select_by_tuple_2(representation_or_hier,
+                                              selection_tuple1,
+                                              resolution=resolution)
+        ps2 = IMP.pmi.tools.select_by_tuple_2(representation_or_hier,
+                                              selection_tuple2,
+                                              resolution=resolution)
 
         self.rs = IMP.RestraintSet(self.m, 'likelihood')
         self.rslin = IMP.RestraintSet(self.m, 'linear_dummy_restraints')
@@ -66,10 +53,6 @@ class DisulfideCrossLinkRestraint(object):
 
         p1 = ps1[0]
         p2 = ps2[0]
-        # PMI1 returns Hierarchies, not Particles
-        if not use_pmi2:
-            p1 = p1.get_particle()
-            p2 = p2.get_particle()
 
         sigma=self.create_sigma("SIGMA_DISULFIDE_BOND")
         psi=self.create_psi("PSI_DISULFIDE_BOND")

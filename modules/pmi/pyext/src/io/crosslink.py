@@ -1524,12 +1524,8 @@ class CrossLinkDataBaseFromStructure(object):
     '''
     This class generates a CrossLinkDataBase from a given structure
     '''
-    def __init__(self,representation=None,
-                      system=None,
-                      residue_types_1=["K"],
-                      residue_types_2=["K"],
-                      reactivity_range=[0,1],
-                      kt=1.0):
+    def __init__(self, system, residue_types_1=["K"],
+                 residue_types_2=["K"], reactivity_range=[0,1], kt=1.0):
 
         import numpy.random
         import math
@@ -1539,19 +1535,8 @@ class CrossLinkDataBaseFromStructure(object):
         cldbkc.set_residue1_key("Residue1")
         cldbkc.set_residue2_key("Residue2")
         self.cldb=CrossLinkDataBase(cldbkc)
-        if representation is not None:
-            #PMI 1.0 mode
-            self.mode="pmi1"
-            self.representation=representation
-            self.model=self.representation.model
-        elif system is not None:
-            #PMI 2.0 mode
-            self.system=system
-            self.model=self.system.model
-            self.mode="pmi2"
-        else:
-            print("Argument error: please provide either a representation object or a IMP.Hierarchy")
-            raise
+        self.system=system
+        self.model=self.system.model
         self.residue_types_1=residue_types_1
         self.residue_types_2=residue_types_2
         self.kt=kt
@@ -1563,68 +1548,37 @@ class CrossLinkDataBaseFromStructure(object):
         self.xwalk_interacting_pairs=None
         import random
 
-        if self.mode=="pmi1":
-            for protein in self.representation.sequence_dict.keys():
+        for state in self.system.get_states():
+            for moleculename,molecules in state.get_molecules().items():
+                for molecule in molecules:
             # we are saving a dictionary with protein name, residue number and random reactivity of the residue
-                seq=self.representation.sequence_dict[protein]
-                residues=[i for i in range(1,len(seq)+1) if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2))]
+                    seq=molecule.sequence
+                    residues=[i for i in range(1,len(seq)+1) if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2))]
 
-                for r in residues:
-                    # uniform random reactivities
-                    #self.reactivity_dictionary[(protein,r)]=random.uniform(reactivity_range[0],reactivity_range[1])
-                    # getting reactivities from the CDF of an exponential distribution
-                    rexp=numpy.random.exponential(0.1)
-                    prob=1.0-math.exp(-rexp)
-                    self.reactivity_dictionary[(protein,r)]=prob
+                    for r in residues:
+                        # uniform random reactivities
+                        #self.reactivity_dictionary[(protein,r)]=random.uniform(reactivity_range[0],reactivity_range[1])
+                        # getting reactivities from the CDF of an exponential distribution
+                        rexp=numpy.random.exponential(0.00000001)
+                        prob=1.0-math.exp(-rexp)
+                        self.reactivity_dictionary[(molecule,r)]=prob
 
-
-                residues1=[i for i in range(1,len(seq)+1) if seq[i-1] in self.residue_types_1]
-                residues2=[i for i in range(1,len(seq)+1) if seq[i-1] in self.residue_types_2]
-                for r in residues1:
-                    h=IMP.pmi.tools.select_by_tuple(self.representation,(r,r,protein),resolution=1)[0]
-                    p=h.get_particle()
-                    index=p.get_index()
-                    self.indexes_dict1[index]=(protein,r)
-                    self.protein_residue_dict[(protein,r)]=index
-                for r in residues2:
-                    h=IMP.pmi.tools.select_by_tuple(self.representation,(r,r,protein),resolution=1)[0]
-                    p=h.get_particle()
-                    index=p.get_index()
-                    self.indexes_dict2[index]=(protein,r)
-                    self.protein_residue_dict[(protein,r)]=index
-
-        if self.mode=="pmi2":
-            for state in self.system.get_states():
-                for moleculename,molecules in state.get_molecules().items():
-                    for molecule in molecules:
-                # we are saving a dictionary with protein name, residue number and random reactivity of the residue
-                        seq=molecule.sequence
-                        residues=[i for i in range(1,len(seq)+1) if ((seq[i-1] in self.residue_types_1) or (seq[i-1] in self.residue_types_2))]
-
-                        for r in residues:
-                            # uniform random reactivities
-                            #self.reactivity_dictionary[(protein,r)]=random.uniform(reactivity_range[0],reactivity_range[1])
-                            # getting reactivities from the CDF of an exponential distribution
-                            rexp=numpy.random.exponential(0.00000001)
-                            prob=1.0-math.exp(-rexp)
-                            self.reactivity_dictionary[(molecule,r)]=prob
-
-                        residues1=[i for i in range(1,len(seq)+1) if seq[i-1] in self.residue_types_1]
-                        residues2=[i for i in range(1,len(seq)+1) if seq[i-1] in self.residue_types_2]
-                        for r in residues1:
-                            s=IMP.atom.Selection(molecule.hier,residue_index=r,resolution=1)
-                            ps=s.get_selected_particles()
-                            for p in ps:
-                                index=p.get_index()
-                                self.indexes_dict1[index]=(molecule,r)
-                                self.protein_residue_dict[(molecule,r)]=index
-                        for r in residues2:
-                            s=IMP.atom.Selection(molecule.hier,residue_index=r,resolution=1)
-                            ps=s.get_selected_particles()
-                            for p in ps:
-                                index=p.get_index()
-                                self.indexes_dict2[index]=(molecule,r)
-                                self.protein_residue_dict[(molecule,r)]=index
+                    residues1=[i for i in range(1,len(seq)+1) if seq[i-1] in self.residue_types_1]
+                    residues2=[i for i in range(1,len(seq)+1) if seq[i-1] in self.residue_types_2]
+                    for r in residues1:
+                        s=IMP.atom.Selection(molecule.hier,residue_index=r,resolution=1)
+                        ps=s.get_selected_particles()
+                        for p in ps:
+                            index=p.get_index()
+                            self.indexes_dict1[index]=(molecule,r)
+                            self.protein_residue_dict[(molecule,r)]=index
+                    for r in residues2:
+                        s=IMP.atom.Selection(molecule.hier,residue_index=r,resolution=1)
+                        ps=s.get_selected_particles()
+                        for p in ps:
+                            index=p.get_index()
+                            self.indexes_dict2[index]=(molecule,r)
+                            self.protein_residue_dict[(molecule,r)]=index
 
 
     def get_all_possible_pairs(self):
@@ -1643,14 +1597,10 @@ class CrossLinkDataBaseFromStructure(object):
             particle_distance=IMP.core.get_distance(IMP.core.XYZ(IMP.get_particles(self.model,[index1])[0]),IMP.core.XYZ(IMP.get_particles(self.model,[index2])[0]))
             if particle_distance <= distance:
                 particle_index_pairs.append((index1,index2))
-                if self.mode=="pmi1":
-                    new_xl[self.cldb.protein1_key]=a[0]
-                    new_xl[self.cldb.protein2_key]=b[0]
-                elif self.mode=="pmi2":
-                    new_xl[self.cldb.protein1_key]=a[0].get_name()
-                    new_xl[self.cldb.protein2_key]=b[0].get_name()
-                    new_xl["molecule_object1"]=a[0]
-                    new_xl["molecule_object2"]=b[0]
+                new_xl[self.cldb.protein1_key]=a[0].get_name()
+                new_xl[self.cldb.protein2_key]=b[0].get_name()
+                new_xl["molecule_object1"]=a[0]
+                new_xl["molecule_object2"]=b[0]
                 new_xl[self.cldb.residue1_key]=a[1]
                 new_xl[self.cldb.residue2_key]=b[1]
                 self.cldb.data_base[str(nxl)]=[new_xl]
@@ -1694,14 +1644,10 @@ class CrossLinkDataBaseFromStructure(object):
                 noisy=True
 
             new_xl={}
-            if self.mode=="pmi1":
-                new_xl[self.cldb.protein1_key]=pra[0]
-                new_xl[self.cldb.protein2_key]=pra[1]
-            elif self.mode=="pmi2":
-                new_xl[self.cldb.protein1_key]=pra[0].get_name()
-                new_xl[self.cldb.protein2_key]=pra[1].get_name()
-                new_xl["molecule_object1"]=pra[0]
-                new_xl["molecule_object2"]=pra[1]
+            new_xl[self.cldb.protein1_key]=pra[0].get_name()
+            new_xl[self.cldb.protein2_key]=pra[1].get_name()
+            new_xl["molecule_object1"]=pra[0]
+            new_xl["molecule_object2"]=pra[1]
             new_xl[self.cldb.residue1_key]=pra[2]
             new_xl[self.cldb.residue2_key]=pra[3]
             new_xl["Noisy"]=noisy
@@ -1750,26 +1696,13 @@ class CrossLinkDataBaseFromStructure(object):
         if distance is None:
         # get a random pair
             while True:
-                if self.mode=="pmi1":
-                    protein1=choice(self.representation.sequence_dict.keys())
-                    protein2=choice(self.representation.sequence_dict.keys())
-                    seq1=self.representation.sequence_dict[protein1]
-                    seq2=self.representation.sequence_dict[protein2]
-                    residue1=choice([i for i in range(1,len(seq1)+1) if seq1[i-1] in self.residue_types_1])
-                    residue2=choice([i for i in range(1,len(seq2)+1) if seq2[i-1] in self.residue_types_2])
-                    h1=IMP.pmi.tools.select_by_tuple(self.representation,(residue1,residue1,protein1),resolution=1)[0]
-                    h2=IMP.pmi.tools.select_by_tuple(self.representation,(residue2,residue2,protein2),resolution=1)[0]
-                    particle_distance=IMP.core.get_distance(IMP.core.XYZ(h1.get_particle()),IMP.core.XYZ(h2.get_particle()))
-                    if (protein1,residue1) != (protein2,residue2):
-                        break
-                elif self.mode=="pmi2":
-                    (protein1,residue1)=choice(self.protein_residue_dict.keys())
-                    (protein2,residue2)=choice(self.protein_residue_dict.keys())
-                    index1=self.protein_residue_dict[(protein1,residue1)]
-                    index2=self.protein_residue_dict[(protein2,residue2)]
-                    particle_distance=IMP.core.get_distance(IMP.core.XYZ(IMP.get_particles(self.model,[index1])[0]),IMP.core.XYZ(IMP.get_particles(self.model,[index2])[0]))
-                    if (protein1,residue1) != (protein2,residue2):
-                        break
+                (protein1,residue1)=choice(self.protein_residue_dict.keys())
+                (protein2,residue2)=choice(self.protein_residue_dict.keys())
+                index1=self.protein_residue_dict[(protein1,residue1)]
+                index2=self.protein_residue_dict[(protein2,residue2)]
+                particle_distance=IMP.core.get_distance(IMP.core.XYZ(IMP.get_particles(self.model,[index1])[0]),IMP.core.XYZ(IMP.get_particles(self.model,[index2])[0]))
+                if (protein1,residue1) != (protein2,residue2):
+                    break
         else:
             # get a pair of residues whose distance is below the threshold
             if not xwalk_bin_path:

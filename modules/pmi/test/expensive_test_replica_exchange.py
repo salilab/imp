@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.pmi.samplers
-import IMP.pmi.representation
 import IMP.pmi.restraints.basic
 import IMP.pmi.macros
 import IMP.pmi.output
