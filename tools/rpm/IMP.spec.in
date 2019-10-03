@@ -79,12 +79,12 @@ BuildRequires: opencv-nogui-devel
 %endif
 BuildRequires: CGAL-nogui-devel
 %if 0%{?rhel} < 7
-%define bundled 'libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so'
+%define bundled libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so
 %else
-%define bundled 'libTAU\\.so\\|libCGAL\\.so'
+%define bundled libTAU\\.so\\|libCGAL\\.so
 %endif
 %else
-%define bundled 'libTAU\\.so'
+%define bundled libTAU\\.so
 %endif
 
 # Many modules use Python's numpy and scipy modules, so pull those in
@@ -255,12 +255,16 @@ Development files for IMP.mpi module (and dependents) with openmpi.
 
 cat <<EOF > %{reqprog}
 #!/bin/bash
-%{__find_requires} $@ | grep -v %{bundled}
+%if 0%{?rhel} >= 8 && (0%{?with_mpich} || 0%{?with_openmpi})
+%{__find_requires} $@ | grep -v '%{bundled}\\|libmpi\\|libimp_mpi\\|libimp_spb'
+%else
+%{__find_requires} $@ | grep -v '%{bundled}'
+%endif
 exit $?
 EOF
 cat <<EOF > %{proprog}
 #!/bin/bash
-%{__find_provides} $@ | grep -v %{bundled}
+%{__find_provides} $@ | grep -v '%{bundled}'
 exit $?
 EOF
 chmod a+x %{reqprog}
