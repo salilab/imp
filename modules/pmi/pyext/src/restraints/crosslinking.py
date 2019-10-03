@@ -1563,7 +1563,7 @@ class ISDCrossLinkMS(IMP.pmi.restraints._NuisancesBase):
 
 #
 class CysteineCrossLinkRestraint(object):
-    def __init__(self, representations, filename, cbeta=False,
+    def __init__(self, root_hier, filename, cbeta=False,
                  betatuple=(0.03, 0.1),
                  disttuple=(0.0, 25.0, 1000),
                  omegatuple=(1.0, 1000.0, 50),
@@ -1578,8 +1578,7 @@ class CysteineCrossLinkRestraint(object):
     # residue pair, eg, "Epsilon-Intra-Solvent", or
     # "Epsilon-Solvent-Membrane", etc.
 
-        self.representations = representations
-        self.m = self.representations[0].prot.get_model()
+        self.m = root_hier.get_model()
         self.rs = IMP.RestraintSet(self.m, 'Cysteine_Crosslink')
         self.cbeta = cbeta
         self.epsilonmaxtrans = 0.01
@@ -1687,78 +1686,80 @@ class CysteineCrossLinkRestraint(object):
                 ccldata)
 
             failed = False
-            for i, representation in enumerate(self.representations):
+            if not self.cbeta:
+                p1 = None
+                p2 = None
 
-                if not self.cbeta:
-                    p1 = None
-                    p2 = None
-
-                    p1 = IMP.pmi.tools.select(representation,
-                                              resolution=1, name=chain1,
-                                              name_is_ambiguous=False, residue=resid1)[0]
-
-                    if p1 is None:
-                        failed = True
-
-                    p2 = IMP.pmi.tools.select(representation,
-                                              resolution=1, name=chain2,
-                                              name_is_ambiguous=False, residue=resid2)[0]
-
-                    if p2 is None:
-                        failed = True
-
+                p1 = IMP.atom.Selection(root_hier, resolution=1,
+                                        molecule=chain1, residue_index=resid1,
+                                        copy_index=0)
+                p1 = p1.get_selected_particles()
+                if len(p1) > 0:
+                    p1 = p1[0]
                 else:
-                    # use cbetas
-                    p1 = []
-                    p2 = []
-                    for t in range(-1, 2):
-                        p = IMP.pmi.tools.select(representation,
-                                                 resolution=1, name=chain1,
-                                                 name_is_ambiguous=False, residue=resid1 + t)
+                    failed = True
 
-                        if len(p) == 1:
-                            p1 += p
-                        else:
-                            failed = True
-                            print("\033[93m CysteineCrossLink: missing representation for residue %d of chain %s \033[0m" % (resid1 + t, chain1))
-
-                        p = IMP.pmi.tools.select(representation,
-                                                 resolution=1, name=chain2,
-                                                 name_is_ambiguous=False, residue=resid2 + t)
-
-                        if len(p) == 1:
-                            p2 += p
-                        else:
-                            failed = True
-                            print("\033[93m CysteineCrossLink: missing representation for residue %d of chain %s \033[0m" % (resid2 + t, chain2))
-
-                if not self.cbeta:
-                    if (p1 is not None and p2 is not None):
-                        ccl.add_contribution(p1, p2)
-                        d1 = IMP.core.XYZ(p1)
-                        d2 = IMP.core.XYZ(p2)
-
-                        print("Distance_" + str(resid1) + "_" + chain1 + ":" + str(resid2) + "_" + chain2, IMP.core.get_distance(d1, d2))
-
+                p2 = IMP.atom.Selection(root_hier, resolution=1,
+                                        molecule=chain2, residue_index=resid2,
+                                        copy_index=0)
+                p2 = p2.get_selected_particles()
+                if len(p2) > 0:
+                    p2 = p2[0]
                 else:
-                    if (len(p1) == 3 and len(p2) == 3):
-                        p11n = p1[0].get_name()
-                        p12n = p1[1].get_name()
-                        p13n = p1[2].get_name()
-                        p21n = p2[0].get_name()
-                        p22n = p2[1].get_name()
-                        p23n = p2[2].get_name()
+                    failed = True
 
-                        print("CysteineCrossLink: generating CB cysteine cross-link restraint between")
-                        print("CysteineCrossLink: residue %d of chain %s and residue %d of chain %s" % (resid1, chain1, resid2, chain2))
-                        print("CysteineCrossLink: between particles %s %s %s and %s %s %s" % (p11n, p12n, p13n, p21n, p22n, p23n))
+            else:
+                # use cbetas
+                p1 = []
+                p2 = []
+                for t in range(-1, 2):
+                    p = IMP.atom.Selection(root_hier, resolution=1,
+                                           molecule=chain1, copy_index=0,
+                                           residue_index=resid1 + t)
+                    p = p.get_selected_particles()
+                    if len(p) == 1:
+                        p1 += p
+                    else:
+                        failed = True
+                        print("\033[93m CysteineCrossLink: missing representation for residue %d of chain %s \033[0m" % (resid1 + t, chain1))
 
-                        ccl.add_contribution(p1, p2)
+                    p = IMP.atom.Selection(root_hier, resolution=1,
+                                           molecule=chain2, copy_index=0,
+                                           residue_index=resid2 + t)
+                    p = p.get_selected_particles()
+                    if len(p) == 1:
+                        p2 += p
+                    else:
+                        failed = True
+                        print("\033[93m CysteineCrossLink: missing representation for residue %d of chain %s \033[0m" % (resid2 + t, chain2))
 
-            if not failed:
-                self.rs.add_restraint(ccl)
-                ccl.set_name("CysteineCrossLink_" + str(resid1)
-                             + "_" + chain1 + ":" + str(resid2) + "_" + chain2)
+            if not self.cbeta:
+                if (p1 is not None and p2 is not None):
+                    ccl.add_contribution(p1, p2)
+                    d1 = IMP.core.XYZ(p1)
+                    d2 = IMP.core.XYZ(p2)
+
+                    print("Distance_" + str(resid1) + "_" + chain1 + ":" + str(resid2) + "_" + chain2, IMP.core.get_distance(d1, d2))
+
+            else:
+                if (len(p1) == 3 and len(p2) == 3):
+                    p11n = p1[0].get_name()
+                    p12n = p1[1].get_name()
+                    p13n = p1[2].get_name()
+                    p21n = p2[0].get_name()
+                    p22n = p2[1].get_name()
+                    p23n = p2[2].get_name()
+
+                    print("CysteineCrossLink: generating CB cysteine cross-link restraint between")
+                    print("CysteineCrossLink: residue %d of chain %s and residue %d of chain %s" % (resid1, chain1, resid2, chain2))
+                    print("CysteineCrossLink: between particles %s %s %s and %s %s %s" % (p11n, p12n, p13n, p21n, p22n, p23n))
+
+                    ccl.add_contribution(p1, p2)
+
+        if not failed:
+            self.rs.add_restraint(ccl)
+            ccl.set_name("CysteineCrossLink_" + str(resid1)
+                         + "_" + chain1 + ":" + str(resid2) + "_" + chain2)
 
         IMP.isd.Weight(
             self.weight.get_particle()
@@ -1823,10 +1824,4 @@ class CysteineCrossLinkRestraint(object):
                            rst).get_name(
                        ) + "_"
                        + self.label] = IMP.isd.CysteineCrossLinkRestraint.get_from(rst).get_standard_error()
-                if len(self.representations) > 1:
-                    for i in range(len(self.prots)):
-                        output["CysteineCrossLinkRestraint_Frequency_Contribution_" +
-                               IMP.isd.CysteineCrossLinkRestraint.get_from(rst).get_name() +
-                               "_State_" + str(i) + "_" + self.label] = IMP.isd.CysteineCrossLinkRestraint.get_from(rst).get_frequencies()[i]
-
         return output

@@ -24,42 +24,25 @@ class ConnectivityRestraint(object):
     generate a connectivity restraint between domains
     setting up the restraint
     example:
-    cr=restraints.ConnectivityRestraint(simo,["CCC",(1,100,"TTT"),(100,150,"AAA")])
+    sel1 = IMP.atom.Selection(root_hier, molecule="Rpb3",
+                              residue_indexes=range(1,100))
+    sel2 = IMP.atom.Selection(root_hier, molecule="Rpb4",
+                              residue_indexes=range(1,100))
+    cr=restraints.ConnectivityRestraint((sel1, sel2), label='CR1')
     cr.add_to_model()
-    cr.set_label("CR1")
     Multistate support =No
-    Selection type=selection tuple
     Resolution=Yes
     '''
 
-    def __init__(
-        self,
-        representation,
-        selection_tuples,
-        kappa=10.0,
-        resolution=None,
-            label="None"):
-
+    def __init__(self, domains, kappa=10.0, resolution=None, label="None"):
         self.weight = 1.0
         self.kappa = kappa
         self.label = label
-        if self.label == "None":
-            self.label = str(selection_tuples)
-        self.m = representation.prot.get_model()
-        self.rs = IMP.RestraintSet(self.m, label)
-
-        sels = []
-
-        for s in selection_tuples:
-            particles = IMP.pmi.tools.select_by_tuple(representation, s,
-                                                      resolution=resolution, name_is_ambiguous=True)
-            sel = IMP.atom.Selection(particles)
-            sels.append(sel)
 
         cr = IMP.atom.create_connectivity_restraint(
-            sels,
-            self.kappa,
-            self.label)
+            domains, self.kappa, self.label)
+        self.m = cr.get_model()
+        self.rs = IMP.RestraintSet(self.m, label)
         self.rs.add_restraint(cr)
 
     def set_label(self, label):
@@ -97,49 +80,31 @@ class ConnectivityRestraint(object):
 class CompositeRestraint(object):
 
     '''
-    handleparticles is a selection tuple
-    compositeparticles is a list of selection tuples
+    handleparticles a list of particles
+    compositeparticles is a list of list of particles
     '''
 
-    def __init__(
-        self,
-        representation,
-        handleparticles_tuples,
-        compositeparticles_tuple_list,
-        cut_off=5.0,
-        lam=1.0,
-        plateau=0.0,
-        resolution=None,
-            label="None"):
-
+    def __init__(self, handle_particles, composite_particles, cut_off=5.0,
+                 lam=1.0, plateau=0.0, resolution=None, label="None"):
         # composite particles: all particles beside the handle
         self.label = label
-        self.m = representation.prot.get_model()
+
+        hs = IMP.pmi.tools.input_adaptor(handle_particles, resolution,
+                                         flatten=True)
+        self.handleparticles = [h.get_particle() for h in hs]
+        self.m = self.handleparticles[0].get_model()
         self.rs = IMP.RestraintSet(self.m, 'cr')
 
-        self.handleparticles = []
-        for s in handleparticles_tuples:
-            self.handleparticles += IMP.pmi.tools.select_by_tuple(
-                representation, s,
-                resolution=resolution, name_is_ambiguous=True)
         self.compositeparticles = []
         compositeparticle_list = []
-        for list in compositeparticles_tuple_list:
-            tmplist = []
-            for s in list:
-                tmplist += IMP.pmi.tools.select_by_tuple(
-                    representation, s,
-                    resolution=resolution, name_is_ambiguous=True)
+        for cp in composite_particles:
+            hs = IMP.pmi.tools.input_adaptor(cp, resolution, flatten=True)
+            tmplist = [h.get_particle() for h in hs]
             compositeparticle_list.append(tmplist)
             self.compositeparticles += tmplist
 
-        ln = IMP.pmi.CompositeRestraint(
-            self.m,
-            self.handleparticles,
-            cut_off,
-            lam,
-            True,
-            plateau)
+        ln = IMP.pmi.CompositeRestraint(self.m, self.handleparticles, cut_off,
+            lam, True, plateau)
 
         for ps in compositeparticle_list:
             # composite particles is a list of list of particles
@@ -179,18 +144,10 @@ class AmbiguousCompositeRestraint(object):
     It allows name ambiguity
     '''
 
-    def __init__(
-        self,
-        representation,
-        restraints_file,
-        cut_off=5.0,
-        lam=1.0,
-        plateau=0.01,
-        resolution=None,
-            label="None"):
-
+    def __init__(self, root_hier, restraints_file, cut_off=5.0, lam=1.0,
+                 plateau=0.01, resolution=None, label="None"):
         self.weight = 1.0
-        self.m = representation.prot.get_model()
+        self.m = root_hier.get_model()
         self.rs = IMP.RestraintSet(self.m, 'data')
         self.label = "None"
         self.pairs = []
@@ -213,19 +170,15 @@ class AmbiguousCompositeRestraint(object):
             r2 = int(tokens[3])
             c2 = tokens[1]
 
-            ps1 = IMP.pmi.tools.select(
-                representation,
-                resolution=resolution,
-                name=c1,
-                name_is_ambiguous=True,
-                residue=r1)
-            hrc1 = [representation.hier_db.particle_to_name[p] for p in ps1]
-            ps1nosym = [
-                p for p in ps1 if IMP.pmi.Symmetric(
-                    p).get_symmetric(
-                ) == 0]
-            hrc1nosym = [representation.hier_db.particle_to_name[p]
-                         for p in ps1nosym]
+            ps1 = IMP.atom.Selection(root_hier, resolution=resolution,
+                                     molecule=c1, residue_index=r1)
+            ps1 = ps1.get_selected_particles()
+            hrc1 = [p.get_name() for p in ps1]
+            def nosym_subset(ps):
+                return [p for p in ps if not IMP.pmi.Symmetric.get_is_setup(p)
+                        or IMP.pmi.Symmetric(p).get_symmetric() == 0]
+            ps1nosym = nosym_subset(ps1)
+            hrc1nosym = [p.get_name() for p in ps1nosym]
 
             if len(ps1) == 0:
                 warnings.warn(
@@ -233,19 +186,12 @@ class AmbiguousCompositeRestraint(object):
                     "is not there" % (r1, c1), IMP.pmi.StructureWarning)
                 continue
 
-            ps2 = IMP.pmi.tools.select(
-                representation,
-                resolution=resolution,
-                name=c2,
-                name_is_ambiguous=True,
-                residue=r2)
-            hrc2 = [representation.hier_db.particle_to_name[p] for p in ps2]
-            ps2nosym = [
-                p for p in ps2 if IMP.pmi.Symmetric(
-                    p).get_symmetric(
-                ) == 0]
-            hrc2nosym = [representation.hier_db.particle_to_name[p]
-                         for p in ps2nosym]
+            ps2 = IMP.atom.Selection(root_hier, resolution=resolution,
+                                     molecule=c2, residue_index=r2)
+            ps2 = ps2.get_selected_particles()
+            hrc2 = [p.get_name() for p in ps2]
+            ps2nosym = nosym_subset(ps2)
+            hrc2nosym = [p.get_name() for p in ps2nosym]
 
             if len(ps2) == 0:
                 warnings.warn(
@@ -254,12 +200,7 @@ class AmbiguousCompositeRestraint(object):
                 continue
 
             cr = IMP.pmi.CompositeRestraint(
-                self.m,
-                ps1nosym,
-                self.cut_off,
-                self.lam,
-                True,
-                self.plateau)
+                self.m, ps1nosym, self.cut_off, self.lam, True, self.plateau)
             cr.add_composite_particle(ps2)
 
             self.rs.add_restraint(cr)
@@ -275,12 +216,7 @@ class AmbiguousCompositeRestraint(object):
                  cr))
 
             cr = IMP.pmi.CompositeRestraint(
-                self.m,
-                ps1,
-                self.cut_off,
-                self.lam,
-                True,
-                self.plateau)
+                self.m, ps1, self.cut_off, self.lam, True, self.plateau)
             cr.add_composite_particle(ps2nosym)
 
             self.rs.add_restraint(cr)
@@ -386,15 +322,9 @@ class AmbiguousCompositeRestraint(object):
 #
 class SimplifiedPEMAP(object):
 
-    def __init__(
-        self,
-        representation,
-        restraints_file,
-        expdistance,
-        strength,
-            resolution=None):
-
-        self.m = representation.prot.get_model()
+    def __init__(self, root_hier, restraints_file, expdistance, strength,
+                 resolution=None):
+        self.m = root_hier.get_model()
         self.rs = IMP.RestraintSet(self.m, 'data')
         self.label = "None"
         self.pairs = []
@@ -417,12 +347,10 @@ class SimplifiedPEMAP(object):
             c2 = tokens[1]
             pcc = float(tokens[4])
 
-            ps1 = IMP.pmi.tools.select(
-                representation,
-                resolution=resolution,
-                name=c1,
-                name_is_ambiguous=False,
-                residue=r1)
+            ps1 = IMP.atom.Selection(root_hier, resolution=resolution,
+                                     molecule=c1, residue_index=r1,
+                                     copy_index=0)
+            ps1 = ps1.get_selected_particles()
             if len(ps1) == 0:
                 warnings.warn(
                     "SimplifiedPEMAP: residue %d of chain %s is not there "
@@ -434,12 +362,10 @@ class SimplifiedPEMAP(object):
                     "multiple particles" % (r1, c1), IMP.pmi.StructureWarning)
                 continue
 
-            ps2 = IMP.pmi.tools.select(
-                representation,
-                resolution=resolution,
-                name=c2,
-                name_is_ambiguous=False,
-                residue=r2)
+            ps2 = IMP.atom.Selection(root_hier, resolution=resolution,
+                                     molecule=c2, residue_index=r2,
+                                     copy_index=0)
+            ps2 = ps2.get_selected_particles()
             if len(ps2) == 0:
                 warnings.warn(
                     "SimplifiedPEMAP: residue %d of chain %s is not there "
