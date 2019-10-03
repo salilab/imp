@@ -22,10 +22,12 @@ class IMPMockTests(unittest.TestCase):
         # protobuf stuff also works
         import IMP.npctransport
         # Ubuntu only supports protobuf with Python 3 in 18.04 or later;
-        # our Windows protobuf install also is Python 2 only
-        py2_protobuf = frozenset(('ubuntu-trusty', 'ubuntu-xenial',
-                                  'w32', 'w64'))
-        if sys.version_info[0] == 2 or mock_config not in py2_protobuf:
+        # our Windows protobuf install is Python 2 only;
+        # for RHEL8 we only have Python 3 protobuf wrappers.
+        py2only_pb = frozenset(('ubuntu-trusty', 'ubuntu-xenial', 'w32', 'w64'))
+        py3only_pb = frozenset(('epel-8-x86_64',))
+        if ((sys.version_info[0] == 3 and mock_config not in py2only_pb)
+            or (sys.version_info[0] == 2 and mock_config not in py3only_pb)):
             x = IMP.npctransport.Configuration
         # Check that most other modules (particularly those with many
         # dependencies) are present
