@@ -1,7 +1,13 @@
+# On modern Fedora/RHEL, use Python 3 by default (and provide an IMP-python2
+# subpackage). On older systems, the IMP package uses Python 2 only.
 %if 0%{?fedora} > 12 || 0%{?rhel} >= 8
 %define with_python3 1
+%define cmake_use_python2 off
+%define default_python python3
 %else
 %define with_python3 0
+%define cmake_use_python2 on
+%define default_python python2
 %endif
 
 # Old RHEL only has a python-devel package, but RHEL8 only has python2-devel
@@ -47,7 +53,7 @@ BuildRequires: libTAU-devel
 # Need for npctransport module
 BuildRequires: protobuf-devel
 %if 0%{?fedora}
-Requires: python2-protobuf
+Requires: python3-protobuf
 %endif
 # No Python protobuf package in RHEL8
 %if 0%{?rhel} >= 6 && 0%{?rhel} <= 7
@@ -89,9 +95,9 @@ BuildRequires: CGAL-nogui-devel
 
 # Many modules use Python's numpy and scipy modules, so pull those in
 # (at build time for tests; at install time for using the modules).
-%if 0%{?rhel} >= 8
-BuildRequires: python2-numpy, python2-scipy
-Requires: python2-numpy, python2-scipy
+%if 0%{?with_python3}
+BuildRequires: python3-numpy, python3-scipy
+Requires: python3-numpy, python3-scipy
 %else
 BuildRequires: numpy, scipy
 Requires: numpy, scipy
@@ -154,10 +160,15 @@ Group:         Applications/Engineering
 Summary:       Development package for IMP developers.
 Requires:      %{name} = %{version}-%{release}
 Requires:      gsl-devel, fftw-devel, zlib-devel, eigen3-devel
+Requires:      boost-devel, hdf5-devel, protobuf-devel
 %if 0%{?fedora} || 0%{?rhel} <= 7
 Requires:      ann-devel
 %endif
-Requires:      boost-devel, %{PYTHON2}-devel, hdf5-devel, protobuf-devel
+%if 0%{?with_python3}
+Requires:      python3-devel
+%else
+Requires:      %{PYTHON2}-devel
+%endif
 %if 0%{?fedora}
 Requires:      CGAL-devel, opencv-devel
 %endif
@@ -170,19 +181,19 @@ This package contains the include files for building applications that link
 against IMP.
 
 %if 0%{?with_python3}
-%package python3
+%package python2
 Group:         Applications/Engineering
-Summary:       Python wrappers for Python 3
+Summary:       Python wrappers for Python 2
 Requires:      %{name} = %{version}-%{release}
-Requires:      python3
+Requires:      python2
 # No Python protobuf package in RHEL8
 %if 0%{?fedora}
-Requires: python3-protobuf
+Requires: python2-protobuf
 %endif
 
-%description python3
-This package contains wrappers for Python 3 (the base package already
-includes Python 2 wrappers).
+%description python2
+This package contains wrappers for Python 2 (the base package already
+includes Python 3 wrappers).
 %endif
 
 %define MPI_MODULES mpi spb
@@ -193,8 +204,8 @@ Group:         Applications/Engineering
 Summary:       MPI module and dependents, for mpich
 Requires:      %{name} = %{version}-%{release}
 Requires:      mpich
-%if 0%{?fedora}
-Requires:      python2-mpich
+%if 0%{?fedora} || 0%{?rhel} >= 8
+Requires:      python3-mpich
 %endif
 BuildRequires: mpich-devel
 
@@ -219,8 +230,8 @@ Group:         Applications/Engineering
 Summary:       MPI module and dependents, for openmpi
 Requires:      %{name} = %{version}-%{release}
 Requires:      openmpi
-%if 0%{?fedora}
-Requires:      python2-openmpi
+%if 0%{?fedora} || 0%{?rhel} >= 8
+Requires:      python3-openmpi
 %endif
 BuildRequires: openmpi-devel
 
@@ -294,7 +305,7 @@ export CGAL_DIR=%{_libdir}/cmake/CGAL
 cmake ../imp -DCMAKE_BUILD_TYPE=Release \
              -DCMAKE_INSTALL_PREFIX=%{_prefix} \
              -DCMAKE_INSTALL_DOCDIR=%{_prefix}/share/doc/%{name}-%{version} \
-             -DIMP_TIMEOUT_FACTOR=4 -DUSE_PYTHON2=on \
+             -DIMP_TIMEOUT_FACTOR=4 -DUSE_PYTHON2=%{cmake_use_python2} \
              -DIMP_DISABLED_MODULES=scratch %{cmake_opts}
 
 # Normally make will stop at the first error. Since an RPM cannot be built
@@ -304,7 +315,7 @@ cmake ../imp -DCMAKE_BUILD_TYPE=Release \
 # not just the first one.
 %if 0%{?keep_going}
 mkdir logs
-python2 ../imp/tools/nightly-tests/build_all.py --run-tests=fast --ctest="ctest --output-on-failure" --outdir=logs --summary=logs/summary.pck "make -k"
+%{default_python} ../imp/tools/nightly-tests/build_all.py --run-tests=fast --ctest="ctest --output-on-failure" --outdir=logs --summary=logs/summary.pck "make -k"
 %else
 make
 %endif
@@ -317,46 +328,46 @@ cd build
 make DESTDIR=${RPM_BUILD_ROOT} install
 
 %if 0%{?with_python3}
-# Build Python 3 wrappers
+# Build Python 2 wrappers
 py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
 py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"`
-py3_lib=`echo %{_libdir}/libpython3.*.so`
-py3_inc=`echo /usr/include/python3.*`
+py2_lib=`echo %{_libdir}/libpython2.*.so`
+py2_inc=`echo /usr/include/python2.*`
 %if 0%{?with_mpich}
 module load %{mpiprefix}mpich-%{_arch}
 %endif
 cmake ../imp \
       -DCMAKE_INSTALL_PREFIX=%{_prefix} \
-      -DCMAKE_INSTALL_PYTHONDIR=%{_libdir}/python${py3_ver}/site-packages \
-      -DSWIG_PYTHON_LIBRARIES=${py3_lib} \
-      -DPYTHON_INCLUDE_DIRS=${py3_inc} \
-      -DPYTHON_INCLUDE_PATH=${py3_inc} \
-      -DPYTHON_LIBRARIES=${py3_lib} -DUSE_PYTHON2=off
+      -DCMAKE_INSTALL_PYTHONDIR=%{_libdir}/python${py2_ver}/site-packages \
+      -DSWIG_PYTHON_LIBRARIES=${py2_lib} \
+      -DPYTHON_INCLUDE_DIRS=${py2_inc} \
+      -DPYTHON_INCLUDE_PATH=${py2_inc} \
+      -DPYTHON_LIBRARIES=${py2_lib} -DUSE_PYTHON2=on
 make DESTDIR=${RPM_BUILD_ROOT} install
 %if 0%{?with_mpich}
 module purge
 %endif
 
-# Don't build Python 3 MPI for now
+# Don't build Python 2 MPI for now
 for mod in %{MPI_MODULES}; do
-  rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/IMP/${mod}
-  rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/site-packages/_IMP_${mod}.so
+  rm -rf ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver}/site-packages/IMP/${mod}
+  rm -f ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver}/site-packages/_IMP_${mod}.so
 done
 
-# Replace .py files with symlinks to Python 2 files (since they are the same)
-(cd ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver} \
+# Replace .py files with symlinks to Python 3 files (since they are the same)
+(cd ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver} \
  && find site-packages -name '*.py' \
-      -exec ln -sf ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver}/\{\} \{\} \; \
+      -exec ln -sf ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/\{\} \{\} \; \
  && symlinks -rc .)
 %endif
 
 # Put MPI-dependent libraries and binaries in mpich directories
 %if 0%{?with_mpich}
-(cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/ && mkdir mpich)
+(cd ${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages/ && mkdir mpich)
 (cd ${RPM_BUILD_ROOT}%{_libdir} && mkdir -p mpich/bin mpich/lib)
 (cd ${RPM_BUILD_ROOT}%{_bindir} && mv spb* ${RPM_BUILD_ROOT}%{_libdir}/mpich/bin)
 for mod in %{MPI_MODULES}; do
-  (cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages/ \
+  (cd ${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages/ \
    && mv _IMP_${mod}.so mpich/)
   (cd ${RPM_BUILD_ROOT}%{_libdir} && mv libimp_${mod}.so.* mpich/lib/)
   (cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_${mod}.so \
@@ -365,9 +376,9 @@ done
 
 # Add MPI-dependent directory to Python search path
 %if 0%{?rhel} == 6
-(cd ${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages && cat > imp-mpi.pth <<END)
+(cd ${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages && cat > imp-mpi.pth <<END)
 # Set MPI implementation-specific Python search path, for IMP.
-# On Fedora this is handled by the python2-mpich package, while in RHEL7
+# On Fedora this is handled by the python3-mpich package, while in RHEL7
 # the mpich modulefile sets PYTHONPATH, but nothing appears to handle it
 # in RHEL6, so we'll do it ourselves.
 import sys, os; s = os.getenv('MPI_PYTHON_SITEARCH'); s and (s in sys.path or sys.path.append(s))
@@ -411,7 +422,7 @@ cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 %endif
 
 # Don't distribute example application, dependency, or system
-pydir=${RPM_BUILD_ROOT}%{_libdir}/python2*/site-packages
+pydir=${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages
 rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/example \
        ${RPM_BUILD_ROOT}%{_libdir}/libimp_example_system* \
        ${RPM_BUILD_ROOT}%{_libdir}/libexample* \
@@ -421,8 +432,8 @@ rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/example \
 
 # Make sure all Python applications and build tools use the same Python
 # we built with
-perl -pi -e 's@^#!.*python.*$@#!/usr/bin/python2@' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
-find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 's#/usr/bin/env python\b#/usr/bin/env python2#' \{\} \;
+perl -pi -e 's@^#!.*python.*$@#!/usr/bin/%{default_python}@' ${RPM_BUILD_ROOT}%{_prefix}/bin/*
+find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 's#/usr/bin/env python\b#/usr/bin/env %{default_python}#' \{\} \;
 
 %files
 %defattr(-,root,root)
@@ -435,26 +446,28 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %{_libdir}/libimp*.so.*
 %{_libdir}/libRMF*.so
 %{_libdir}/IMP
+%{_libdir}/%{default_python}*/site-packages/IMP
+%{_libdir}/%{default_python}*/site-packages/_IMP*so
+%{_libdir}/%{default_python}*/site-packages/RMF*
+%{_libdir}/%{default_python}*/site-packages/_RMF*so
+%{_libdir}/%{default_python}*/site-packages/ihm
+%if 0%{?with_python3}
+%{_libdir}/python3*/site-packages/__pycache__
+%endif
+%if 0%{?with_mpich}
+%exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
+%exclude %{_libdir}/%{default_python}*/site-packages/IMP/mpi
+%exclude %{_libdir}/%{default_python}*/site-packages/IMP/spb
+%endif
+
+%if 0%{?with_python3}
+%files python2
+%defattr(-,root,root)
 %{_libdir}/python2*/site-packages/IMP
 %{_libdir}/python2*/site-packages/_IMP*so
 %{_libdir}/python2*/site-packages/RMF*
 %{_libdir}/python2*/site-packages/_RMF*so
 %{_libdir}/python2*/site-packages/ihm
-%if 0%{?with_mpich}
-%exclude %{_prefix}/share/doc/%{name}-%{version}/examples/mpi
-%exclude %{_libdir}/python2*/site-packages/IMP/mpi
-%exclude %{_libdir}/python2*/site-packages/IMP/spb
-%endif
-
-%if 0%{?with_python3}
-%files python3
-%defattr(-,root,root)
-%{_libdir}/python3*/site-packages/IMP
-%{_libdir}/python3*/site-packages/_IMP*so
-%{_libdir}/python3*/site-packages/RMF*
-%{_libdir}/python3*/site-packages/_RMF*so
-%{_libdir}/python3*/site-packages/ihm
-%{_libdir}/python3*/site-packages/__pycache__
 %endif
 
 %if 0%{?with_mpich}
@@ -468,13 +481,13 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %{_prefix}/share/IMP/build_info/IMP_mpi.pck
 %{_prefix}/share/IMP/build_info/IMP.spb
 %{_prefix}/share/IMP/build_info/IMP_spb.pck
-%{_libdir}/python2*/site-packages/IMP/mpi
-%{_libdir}/python2*/site-packages/IMP/spb
+%{_libdir}/%{default_python}*/site-packages/IMP/mpi
+%{_libdir}/%{default_python}*/site-packages/IMP/spb
 %if 0%{?rhel} == 6
-%{_libdir}/python2*/site-packages/imp-mpi.pth
+%{_libdir}/%{default_python}*/site-packages/imp-mpi.pth
 %endif
-%{_libdir}/python2*/site-packages/mpich/_IMP_mpi.so
-%{_libdir}/python2*/site-packages/mpich/_IMP_spb.so
+%{_libdir}/%{default_python}*/site-packages/mpich/_IMP_mpi.so
+%{_libdir}/%{default_python}*/site-packages/mpich/_IMP_spb.so
 %{_libdir}/mpich/lib/libimp_mpi.so.*
 %{_libdir}/mpich/lib/libimp_spb.so.*
 %{_libdir}/mpich/bin/spb*
