@@ -45,13 +45,10 @@ class GeometricObject(object):
 
        :param str name: A short user-provided name.
        :param str description: A brief description of the object.
-       :param str details: Additional details about the object (particularly
-              useful for generic objects).
     """
     type = 'other'
-    def __init__(self, name=None, description=None, details=None):
+    def __init__(self, name=None, description=None):
         self.name, self.description = name, description
-        self.details = details
 
 
 class Sphere(GeometricObject):
@@ -65,14 +62,13 @@ class Sphere(GeometricObject):
        :type transformation: :class:`Transformation`
        :param str name: A short user-provided name.
        :param str description: A brief description of the object.
-       :param str details: Additional details about the object.
     """
 
     type = 'sphere'
 
     def __init__(self, center, radius, transformation=None,
-                 name=None, description=None, details=None):
-        super(Sphere, self).__init__(name, description, details)
+                 name=None, description=None):
+        super(Sphere, self).__init__(name, description)
         self.center, self.transformation = center, transformation
         self.radius = radius
 
@@ -91,13 +87,12 @@ class Torus(GeometricObject):
        :type transformation: :class:`Transformation`
        :param str name: A short user-provided name.
        :param str description: A brief description of the object.
-       :param str details: Additional details about the object.
     """
     type = 'torus'
 
     def __init__(self, center, major_radius, minor_radius, transformation=None,
-                 name=None, description=None, details=None):
-        super(Torus, self).__init__(name, description, details)
+                 name=None, description=None):
+        super(Torus, self).__init__(name, description)
         self.center, self.transformation = center, transformation
         self.major_radius, self.minor_radius = major_radius, minor_radius
 
@@ -110,16 +105,15 @@ class HalfTorus(GeometricObject):
        :param thickness: The thickness of the surface.
        :param inner: True if the surface is the 'inner' half of the torus
               (i.e. closer to the center), False for the outer surface, or
-              None for some other section (described in `details`).
+              None for some other section (described in `description`).
 
        See :class:`Torus` for a description of the other parameters.
     """
     type = 'half-torus'
 
     def __init__(self, center, major_radius, minor_radius, thickness,
-                 transformation=None, inner=None, name=None, description=None,
-                 details=None):
-        super(HalfTorus, self).__init__(name, description, details)
+                 transformation=None, inner=None, name=None, description=None):
+        super(HalfTorus, self).__init__(name, description)
         self.center, self.transformation = center, transformation
         self.major_radius, self.minor_radius = major_radius, minor_radius
         self.thickness, self.inner = thickness, inner
@@ -134,13 +128,11 @@ class Axis(GeometricObject):
        :type transformation: :class:`Transformation`
        :param str name: A short user-provided name.
        :param str description: A brief description of the object.
-       :param str details: Additional details about the object.
     """
     type = 'axis'
 
-    def __init__(self, transformation=None, name=None, description=None,
-                 details=None):
-        super(Axis, self).__init__(name, description, details)
+    def __init__(self, transformation=None, name=None, description=None):
+        super(Axis, self).__init__(name, description)
         self.transformation = transformation
 
 
@@ -177,13 +169,11 @@ class Plane(GeometricObject):
        :type transformation: :class:`Transformation`
        :param str name: A short user-provided name.
        :param str description: A brief description of the object.
-       :param str details: Additional details about the object.
     """
     type = 'plane'
 
-    def __init__(self, transformation=None, name=None, description=None,
-                 details=None):
-        super(Plane, self).__init__(name, description, details)
+    def __init__(self, transformation=None, name=None, description=None):
+        super(Plane, self).__init__(name, description)
         self.transformation = transformation
 
 

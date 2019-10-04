@@ -23,17 +23,19 @@ class Step(object):
               script used in this step (usually a
               :class:`~ihm.location.WorkflowFileLocation`).
        :type script_file: :class:`~ihm.location.Location`
+       :param str details: Additional text describing this step
     """
     type = 'other'
 
     def __init__(self, feature, num_models_begin, num_models_end,
                  assembly=None, dataset_group=None, software=None,
-                 script_file=None):
+                 script_file=None, details=None):
         self.assembly, self.dataset_group = assembly, dataset_group
         self.feature, self.software = feature, software
         self.num_models_begin = num_models_begin
         self.num_models_end = num_models_end
         self.script_file = script_file
+        self.details = details
 
 
 class FilterStep(Step):

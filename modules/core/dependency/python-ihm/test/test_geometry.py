@@ -34,7 +34,6 @@ class Tests(unittest.TestCase):
         g = ihm.geometry.GeometricObject(name='foo', description='bar')
         self.assertEqual(g.name, 'foo')
         self.assertEqual(g.description, 'bar')
-        self.assertIsNone(g.details)
         self.assertEqual(g.type, 'other')
 
     def test_sphere(self):

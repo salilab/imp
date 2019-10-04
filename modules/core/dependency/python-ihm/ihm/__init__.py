@@ -170,7 +170,7 @@ class System(object):
         #: See :class:`~ihm.model.Ensemble`.
         self.ensembles = []
 
-        #: All ordered processes
+        #: All ordered processes.
         #: See :class:`~ihm.model.OrderedProcess`.
         self.ordered_processes = []
 
@@ -566,7 +566,7 @@ class Citation(object):
     @classmethod
     def from_pubmed_id(cls, pubmed_id):
         """Create a Citation from just a PubMed ID.
-           This is done by querying NCBI's web api, so requires network access.
+           This is done by querying NCBI's web API, so requires network access.
 
            :param int pubmed_id: The PubMed identifier.
            :return: A new Citation for the given identifier.
@@ -671,7 +671,9 @@ class ChemComp(object):
                 return None
         return weight
 
-    formula_weight = property(__get_weight, doc="Formula weight")
+    formula_weight = property(__get_weight,
+        doc="Formula weight (dalton). This is calculated automatically from "
+            "the chemical formula and known atomic masses.")
 
     # Equal if all identifiers are the same
     def __eq__(self, other):
@@ -993,7 +995,9 @@ class Entity(object):
             else:
                 return None
         return weight
-    formula_weight = property(__get_weight, doc="Formula weight")
+    formula_weight = property(__get_weight,
+        doc="Formula weight (dalton). This is calculated automatically "
+            "from that of the chemical components.")
 
     def __init__(self, sequence, alphabet=LPeptideAlphabet,
                  description=None, details=None, source=None):
@@ -1123,7 +1127,7 @@ class Assembly(list):
        :param str description: Longer text that describes this assembly.
 
        This is implemented as a simple list of asymmetric units (or parts of
-       them), i.e. a list of :class:`AsymUnit`, and/or :class:`AsymUnitRange`
+       them), i.e. a list of :class:`AsymUnit` and/or :class:`AsymUnitRange`
        objects. An Assembly is typically assigned to one or more of
 
          - :class:`~ihm.model.Model`

@@ -12,6 +12,11 @@ The :mod:`ihm.cross_linkers` Python module
    DSS cross-linker that links a primary amine with another primary amine
    (non-water-soluble).
 
+.. data:: dsg
+
+   DSG cross-linker that links a primary amine with another primary amine
+   (non-water-soluble).
+
 .. data:: bs3
 
    BS3 cross-linker that links a primary amine with another primary amine

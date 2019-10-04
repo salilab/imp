@@ -1,4 +1,4 @@
-"""Utility classes to dump out information in mmCIF format"""
+"""Utility classes to dump out information in mmCIF or BinaryCIF format"""
 
 import re
 import os
@@ -613,6 +613,7 @@ class _ExternalReferenceDumper(Dumper):
         reference = None
         refers_to = 'Other'
         url = None
+        details = None
 
         def __init__(self, top_directory):
             self.top_directory = top_directory
@@ -652,13 +653,13 @@ class _ExternalReferenceDumper(Dumper):
         with writer.loop("_ihm_external_reference_info",
                          ["reference_id", "reference_provider",
                           "reference_type", "reference", "refers_to",
-                          "associated_url"]) as l:
+                          "associated_url", "details"]) as l:
             for repo in self._repo_by_id:
                 l.write(reference_id=repo._id,
                         reference_provider=repo.reference_provider,
                         reference_type=repo.reference_type,
                         reference=repo.reference, refers_to=repo.refers_to,
-                        associated_url=repo.url)
+                        associated_url=repo.url, details=repo.details)
 
     def dump_refs(self, writer):
         with writer.loop("_ihm_external_files",
@@ -799,7 +800,7 @@ class _ModelRepresentationDumper(Dumper):
                           "entity_asym_id", "entity_poly_segment_id",
                           "model_object_primitive", "starting_model_id",
                           "model_mode", "model_granularity",
-                          "model_object_count"]) as l:
+                          "model_object_count", "description"]) as l:
             for r in system._all_representations():
                 for segment in r:
                     entity = segment.asym_unit.entity
@@ -814,7 +815,8 @@ class _ModelRepresentationDumper(Dumper):
                                                   else None,
                             model_mode='rigid' if segment.rigid else 'flexible',
                             model_granularity=segment.granularity,
-                            model_object_count=segment.count)
+                            model_object_count=segment.count,
+                            description=segment.description)
                     ordinal_id += 1
 
 
@@ -843,7 +845,7 @@ class _StartingModelDumper(Dumper):
                       "starting_model_source",
                       "starting_model_auth_asym_id",
                       "starting_model_sequence_offset",
-                      "dataset_list_id"]) as l:
+                      "dataset_list_id", "description"]) as l:
             for sm in system._all_starting_models():
                 l.write(starting_model_id=sm._id,
                         entity_id=sm.asym_unit.entity._id,
@@ -853,7 +855,8 @@ class _StartingModelDumper(Dumper):
                         starting_model_source=source_map[sm.dataset.data_type],
                         starting_model_auth_asym_id=sm.asym_id,
                         dataset_list_id=sm.dataset._id,
-                        starting_model_sequence_offset=sm.offset)
+                        starting_model_sequence_offset=sm.offset,
+                        description=sm.description)
 
     def dump_computational(self, system, writer):
         """Dump details on computational models."""
@@ -978,7 +981,8 @@ class _ProtocolDumper(Dumper):
                           "step_name", "step_method", "num_models_begin",
                           "num_models_end", "multi_scale_flag",
                           "multi_state_flag", "ordered_flag",
-                          "software_id", "script_file_id"]) as l:
+                          "software_id", "script_file_id",
+                          "description"]) as l:
             for p in system._all_protocols():
                 for s in p.steps:
                     l.write(id=ordinal, protocol_id=p._id,
@@ -995,7 +999,8 @@ class _ProtocolDumper(Dumper):
                             multi_scale_flag=s.multi_scale,
                             software_id=s.software._id if s.software else None,
                             script_file_id=s.script_file._id
-                                           if s.script_file else None)
+                                           if s.script_file else None,
+                            description=s.description)
                     ordinal += 1
 
 
@@ -1020,7 +1025,7 @@ class _PostProcessDumper(Dumper):
                           "type", "feature", "num_models_begin",
                           "num_models_end", "struct_assembly_id",
                           "dataset_group_id", "software_id",
-                          "script_file_id"]) as l:
+                          "script_file_id", "details"]) as l:
             for p in system._all_protocols():
                 for a in p.analyses:
                     for s in a.steps:
@@ -1036,7 +1041,8 @@ class _PostProcessDumper(Dumper):
                                 software_id=s.software._id if s.software
                                                            else None,
                                 script_file_id=s.script_file._id
-                                               if s.script_file else None)
+                                               if s.script_file else None,
+                                details=s.details)
 
 
 class _RangeChecker(object):
@@ -1247,7 +1253,7 @@ class _ModelDumper(Dumper):
                           "label_atom_id", "label_alt_id", "label_comp_id",
                           "label_seq_id",
                           "label_asym_id", "Cartn_x",
-                          "Cartn_y", "Cartn_z", "label_entity_id",
+                          "Cartn_y", "Cartn_z", "occupancy", "label_entity_id",
                           "auth_asym_id",
                           "B_iso_or_equiv", "pdbx_PDB_model_num",
                           "ihm_model_id"]) as l:
@@ -1269,6 +1275,7 @@ class _ModelDumper(Dumper):
                             auth_asym_id=atom.asym_unit._id,
                             Cartn_x=atom.x, Cartn_y=atom.y, Cartn_z=atom.z,
                             B_iso_or_equiv=atom.biso,
+                            occupancy=atom.occupancy,
                             pdbx_PDB_model_num=model._id,
                             ihm_model_id=model._id)
                     ordinal += 1
@@ -1310,7 +1317,7 @@ class _EnsembleDumper(Dumper):
                           "num_ensemble_models",
                           "num_ensemble_models_deposited",
                           "ensemble_precision_value",
-                          "ensemble_file_id"]) as l:
+                          "ensemble_file_id", "details"]) as l:
             for e in system.ensembles:
                 l.write(ensemble_id=e._id, ensemble_name=e.name,
                         post_process_id=e.post_process._id if e.post_process
@@ -1321,7 +1328,8 @@ class _EnsembleDumper(Dumper):
                         num_ensemble_models=e.num_models,
                         num_ensemble_models_deposited=e.num_models_deposited,
                         ensemble_precision_value=e.precision,
-                        ensemble_file_id=e.file._id if e.file else None)
+                        ensemble_file_id=e.file._id if e.file else None,
+                        details=e.details)
 
 
 class _DensityDumper(Dumper):
@@ -1481,11 +1489,10 @@ class _GeometricObjectDumper(Dumper):
     def dump_generic(self, writer):
         with writer.loop("_ihm_geometric_object_list",
                          ["object_id", "object_type", "object_name",
-                          "object_description", "other_details"]) as l:
+                          "object_description"]) as l:
             for o in self._objects_by_id:
                 l.write(object_id=o._id, object_type=o.type, object_name=o.name,
-                        object_description=o.description,
-                        other_details=o.details)
+                        object_description=o.description)
 
     def dump_sphere(self, writer):
         with writer.loop("_ihm_geometric_object_sphere",
@@ -1561,10 +1568,12 @@ class _FeatureDumper(Dumper):
 
     def dump_list(self, writer):
         with writer.loop("_ihm_feature_list",
-                         ["feature_id", "feature_type", "entity_type"]) as l:
+                         ["feature_id", "feature_type", "entity_type",
+                          "details"]) as l:
             for f in self._features_by_id:
                 l.write(feature_id=f._id, feature_type=f.type,
-                        entity_type=f._get_entity_type())
+                        entity_type=f._get_entity_type(),
+                        details=f.details)
 
     def dump_poly_residue(self, writer):
         def _get_entity(x):
@@ -1643,12 +1652,12 @@ class _FeatureDumper(Dumper):
     def dump_pseudo_site(self, writer):
         with writer.loop("_ihm_pseudo_site_feature",
                          ["feature_id", "Cartn_x", "Cartn_y",
-                          "Cartn_z", "radius", "description"]) as l:
+                          "Cartn_z", "radius"]) as l:
             for f in self._features_by_id:
                 if not isinstance(f, restraint.PseudoSiteFeature):
                     continue
                 l.write(feature_id=f._id, Cartn_x=f.x, Cartn_y=f.y,
-                        Cartn_z=f.z, radius=f.radius, description=f.description)
+                        Cartn_z=f.z, radius=f.radius)
 
 
 class _CrossLinkDumper(Dumper):
@@ -1715,7 +1724,7 @@ class _CrossLinkDumper(Dumper):
                           "entity_description_2",
                           "entity_id_2", "seq_id_2", "comp_id_2",
                           "linker_chem_comp_descriptor_id", "linker_type",
-                          "dataset_list_id"]) as l:
+                          "dataset_list_id", "details"]) as l:
             for r, xl in self._ex_xls_by_id:
                 entity1 = xl.residue1.entity
                 entity2 = xl.residue2.entity
@@ -1732,7 +1741,8 @@ class _CrossLinkDumper(Dumper):
                         comp_id_2=seq2[xl.residue2.seq_id-1].id,
                         linker_chem_comp_descriptor_id=r.linker._id,
                         linker_type=r.linker.auth_name,
-                        dataset_list_id=r.dataset._id)
+                        dataset_list_id=r.dataset._id,
+                        details=xl.details)
 
     def dump_restraint(self, system, writer):
         with writer.loop("_ihm_cross_link_restraint",
@@ -2643,7 +2653,8 @@ def _check_restraint_groups(system):
                 "Restraints. Due to limitations of the underlying dictionary, "
                 "all objects in a RestraintGroup must be of the same type, "
                 "and only certain types (currently only "
-                "DerivedDistanceRestraint) can be grouped." % g)
+                "DerivedDistanceRestraint or PredictedContactRestraint) "
+                "can be grouped." % g)
 
 def write(fh, systems, format='mmCIF', dumpers=[]):
     """Write out all `systems` to the file handle `fh`.

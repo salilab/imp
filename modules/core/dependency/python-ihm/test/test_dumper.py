@@ -843,7 +843,7 @@ _ihm_struct_assembly_details.entity_poly_segment_id
     def test_external_reference_dumper(self):
         """Test ExternalReferenceDumper"""
         system = ihm.System()
-        repo1 = ihm.location.Repository(doi="foo")
+        repo1 = ihm.location.Repository(doi="foo", details='test repo')
         repo2 = ihm.location.Repository(doi="10.5281/zenodo.46266",
                                         url='nup84-v1.0.zip',
                                         top_directory=os.path.join('foo',
@@ -893,10 +893,11 @@ _ihm_external_reference_info.reference_type
 _ihm_external_reference_info.reference
 _ihm_external_reference_info.refers_to
 _ihm_external_reference_info.associated_url
-1 . DOI foo Other .
-2 Zenodo DOI 10.5281/zenodo.46266 Archive nup84-v1.0.zip
-3 Zenodo DOI 10.5281/zenodo.58025 File foo.spd
-4 . 'Supplementary Files' . Other .
+_ihm_external_reference_info.details
+1 . DOI foo Other . 'test repo'
+2 Zenodo DOI 10.5281/zenodo.46266 Archive nup84-v1.0.zip .
+3 Zenodo DOI 10.5281/zenodo.58025 File foo.spd .
+4 . 'Supplementary Files' . Other . .
 #
 #
 loop_
@@ -1121,7 +1122,8 @@ _ihm_related_datasets.dataset_list_id_primary
                     rigid=False, primitive='gaussian')
         s4 = ihm.representation.FeatureSegment(
                     asym(3,4), starting_model=None,
-                    rigid=True, primitive='other', count=3)
+                    rigid=True, primitive='other', count=3,
+                    description='test segment')
         r1 = ihm.representation.Representation((s1, s2), name='foo',
                                                details='foo details')
         r2 = ihm.representation.Representation((s3, s4), name='bar')
@@ -1157,10 +1159,11 @@ _ihm_model_representation_details.starting_model_id
 _ihm_model_representation_details.model_mode
 _ihm_model_representation_details.model_granularity
 _ihm_model_representation_details.model_object_count
-1 1 42 bar X 1 atomistic . rigid by-atom .
-2 1 42 bar X 2 sphere . flexible by-residue .
-3 2 42 bar X 1 gaussian . flexible multi-residue .
-4 2 42 bar X 2 other . rigid by-feature 3
+_ihm_model_representation_details.description
+1 1 42 bar X 1 atomistic . rigid by-atom . .
+2 1 42 bar X 2 sphere . flexible by-residue . .
+3 2 42 bar X 1 gaussian . flexible multi-residue . .
+4 2 42 bar X 2 other . rigid by-feature 3 'test segment'
 #
 """)
 
@@ -1208,7 +1211,8 @@ _ihm_model_representation_details.model_object_count
                                script_file=script, software=software)
         system.orphan_starting_models.append(sm)
 
-        sm = TestStartingModel(asym(1,15), dstarget, 'A', [])
+        sm = TestStartingModel(asym(1,15), dstarget, 'A', [],
+                               description="test desc")
         system.orphan_starting_models.append(sm)
 
         e1._id = 42
@@ -1249,8 +1253,9 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-1 42 foo 99 2 'experimental model' A 10 102
-2 42 foo 99 1 'experimental model' A 0 102
+_ihm_starting_model_details.description
+1 42 foo 99 2 'experimental model' A 10 102 .
+2 42 foo 99 1 'experimental model' A 0 102 'test desc'
 #
 #
 loop_
@@ -1342,7 +1347,8 @@ _ihm_starting_model_seq_dif.details
         p2.steps.append(ihm.protocol.Step(assembly=assembly, dataset_group=dsg2,
                                method='Replica exchange', num_models_begin=2000,
                                num_models_end=1000, multi_scale=True,
-                               software=software, script_file=script))
+                               software=software, script_file=script,
+                               description='test step'))
         system.orphan_protocols.append(p2)
 
         dumper = ihm.dumper._ProtocolDumper()
@@ -1373,9 +1379,10 @@ _ihm_modeling_protocol_details.multi_state_flag
 _ihm_modeling_protocol_details.ordered_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
-1 1 1 42 99 foo s1 'Monte Carlo' 0 500 YES NO NO . .
-2 1 2 42 99 foo . 'Replica exchange' 500 2000 YES NO NO . .
-3 2 1 42 101 foo . 'Replica exchange' 2000 1000 YES NO NO 80 90
+_ihm_modeling_protocol_details.description
+1 1 1 42 99 foo s1 'Monte Carlo' 0 500 YES NO NO . . .
+2 1 2 42 99 foo . 'Replica exchange' 500 2000 YES NO NO . . .
+3 2 1 42 101 foo . 'Replica exchange' 2000 1000 YES NO NO 80 90 'test step'
 #
 """)
 
@@ -1408,7 +1415,8 @@ _ihm_modeling_protocol_details.script_file_id
                              feature='energy/score', num_models_begin=42,
                              num_models_end=42,
                              assembly=asmb1, dataset_group=dg1,
-                             software=software, script_file=script))
+                             software=software, script_file=script,
+                             details='test step'))
         p1.analyses.extend((a1, a2))
 
         dumper = ihm.dumper._ProtocolDumper()
@@ -1432,10 +1440,11 @@ _ihm_modeling_post_process.struct_assembly_id
 _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
-1 1 1 1 none none . . . . . .
-2 1 2 1 filter energy/score 1000 200 . . . .
-3 1 2 2 cluster RMSD 200 42 . . . .
-4 1 2 3 validation energy/score 42 42 101 301 401 501
+_ihm_modeling_post_process.details
+1 1 1 1 none none . . . . . . .
+2 1 2 1 filter energy/score 1000 200 . . . . .
+3 1 2 2 cluster RMSD 200 42 . . . . .
+4 1 2 3 validation energy/score 42 42 101 301 401 501 'test step'
 #
 """)
 
@@ -1856,7 +1865,7 @@ _ihm_sphere_obj_site.model_id
                                        het=True),
                         ihm.model.Atom(asym_unit=asym, seq_id=2, atom_id='N',
                                        type_symbol='N', x=4.0, y=5.0, z=6.0,
-                                       biso=42.0)]
+                                       biso=42.0, occupancy=0.2)]
 
         dumper = ihm.dumper._ModelDumper()
         dumper.finalize(system) # assign model/group IDs
@@ -1897,14 +1906,15 @@ _atom_site.label_asym_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.occupancy
 _atom_site.label_entity_id
 _atom_site.auth_asym_id
 _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
-ATOM 1 C C . ALA 1 X 1.000 2.000 3.000 9 X . 1 1
-HETATM 2 C CA . ALA 1 X 10.000 20.000 30.000 9 X . 1 1
-ATOM 3 N N . CYS 2 X 4.000 5.000 6.000 9 X 42.000 1 1
+ATOM 1 C C . ALA 1 X 1.000 2.000 3.000 . 9 X . 1 1
+HETATM 2 C CA . ALA 1 X 10.000 20.000 30.000 . 9 X . 1 1
+ATOM 3 N N . CYS 2 X 4.000 5.000 6.000 0.200 9 X 42.000 1 1
 #
 #
 loop_
@@ -1934,7 +1944,7 @@ N
         loc = ihm.location.OutputFileLocation(repo='foo', path='bar')
         loc._id = 3
         e2 = ihm.model.Ensemble(model_group=group, num_models=10,
-                                file=loc)
+                                file=loc, details='test details')
         system.ensembles.extend((e1, e2))
 
         dumper = ihm.dumper._EnsembleDumper()
@@ -1953,8 +1963,9 @@ _ihm_ensemble_info.num_ensemble_models
 _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
-1 cluster1 99 42 Hierarchical RMSD 10 2 4.200 .
-2 . . 42 . . 10 2 . 3
+_ihm_ensemble_info.details
+1 cluster1 99 42 Hierarchical RMSD 10 2 4.200 . .
+2 . . 42 . . 10 2 . 3 'test details'
 #
 """)
 
@@ -2374,7 +2385,8 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
         # duplicate crosslink, should be combined with the original (xxl2)
         xxl4 = ihm.restraint.ExperimentalCrossLink(e1.residue(2), e2.residue(3))
         # should end up in own group, not with xxl4 (since xxl4==xxl2)
-        xxl5 = ihm.restraint.ExperimentalCrossLink(e1.residue(1), e2.residue(1))
+        xxl5 = ihm.restraint.ExperimentalCrossLink(e1.residue(1), e2.residue(1),
+                                                   details='test xl')
         r.experimental_cross_links.extend(([xxl1], [xxl2, xxl3], [xxl4, xxl5]))
         system.restraints.extend((r, MockObject()))
 
@@ -2417,10 +2429,11 @@ _ihm_cross_link_list.comp_id_2
 _ihm_cross_link_list.linker_chem_comp_descriptor_id
 _ihm_cross_link_list.linker_type
 _ihm_cross_link_list.dataset_list_id
-1 1 foo 1 2 THR foo 1 3 CYS 1 DSS 97
-2 2 foo 1 2 THR bar 2 3 PHE 1 DSS 97
-3 2 foo 1 2 THR bar 2 2 GLU 1 DSS 97
-4 3 foo 1 1 ALA bar 2 1 ASP 1 DSS 97
+_ihm_cross_link_list.details
+1 1 foo 1 2 THR foo 1 3 CYS 1 DSS 97 .
+2 2 foo 1 2 THR bar 2 3 PHE 1 DSS 97 .
+3 2 foo 1 2 THR bar 2 2 GLU 1 DSS 97 .
+4 3 foo 1 1 ALA bar 2 1 ASP 1 DSS 97 'test xl'
 #
 #
 loop_
@@ -2468,8 +2481,7 @@ _ihm_cross_link_result_parameters.sigma_2
 
         sphere = ihm.geometry.Sphere(center=center, transformation=trans,
                                      radius=2.2, name='my sphere',
-                                     description='a test sphere',
-                                     details='some details')
+                                     description='a test sphere')
         torus = ihm.geometry.Torus(center=center, transformation=trans,
                                    major_radius=5.6, minor_radius=1.2)
         half_torus = ihm.geometry.HalfTorus(center=center, transformation=trans,
@@ -2524,12 +2536,11 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 sphere 'my sphere' 'a test sphere' 'some details'
-2 torus . . .
-3 half-torus . . .
-4 axis . . .
-5 plane . . .
+1 sphere 'my sphere' 'a test sphere'
+2 torus . .
+3 half-torus . .
+4 axis . .
+5 plane . .
 #
 #
 loop_
@@ -2583,7 +2594,8 @@ _ihm_geometric_object_plane.transformation_id
         a3 = ihm.AsymUnit(e2, 'heme')
         system.asym_units.extend((a1, a2, a3))
 
-        f = ihm.restraint.ResidueFeature([a1, a2(2,3), e1, e1(2,3)])
+        f = ihm.restraint.ResidueFeature([a1, a2(2,3), e1, e1(2,3)],
+                                         details='test feature')
         system.orphan_features.append(f)
         # Cannot make a ResidueFeature that includes a non-polymer 'residue'
         self.assertRaises(ValueError, ihm.restraint.ResidueFeature, [a1, a3])
@@ -2627,11 +2639,12 @@ loop_
 _ihm_feature_list.feature_id
 _ihm_feature_list.feature_type
 _ihm_feature_list.entity_type
-1 'residue range' polymer
-2 atom polymer
-3 atom non-polymer
-4 ligand non-polymer
-5 'pseudo site' other
+_ihm_feature_list.details
+1 'residue range' polymer 'test feature'
+2 atom polymer .
+3 atom non-polymer .
+4 ligand non-polymer .
+5 'pseudo site' other .
 #
 #
 loop_
@@ -2681,8 +2694,7 @@ _ihm_pseudo_site_feature.Cartn_x
 _ihm_pseudo_site_feature.Cartn_y
 _ihm_pseudo_site_feature.Cartn_z
 _ihm_pseudo_site_feature.radius
-_ihm_pseudo_site_feature.description
-5 10.000 20.000 30.000 . .
+5 10.000 20.000 30.000 .
 #
 """)
 
@@ -2803,7 +2815,8 @@ _ihm_derived_distance_restraint.dataset_list_id
 
         s = ihm.System()
         dataset = MockObject()
-        assembly = MockObject()
+        dataset.parents = []
+        assembly = ihm.Assembly()
 
         # Empty restraint groups are OK (even though they don't get IDs)
         rg = ihm.restraint.RestraintGroup([])

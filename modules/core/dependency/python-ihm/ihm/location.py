@@ -257,6 +257,7 @@ class Repository(object):
               at the URL or DOI (for example, GitHub repositories
               archived at Zenodo get placed in a subdirectory named
               for the repository and git hash).
+       :param str details: Additional text describing this repository
     """
 
     reference_type = 'DOI'
@@ -267,10 +268,12 @@ class Repository(object):
     def __hash__(self):
         return hash((self.doi, self.url))
 
-    def __init__(self, doi, root=None, url=None, top_directory=None):
+    def __init__(self, doi, root=None, url=None, top_directory=None,
+                 details=None):
         # todo: DOI should be optional (could also use URL, local path)
         self.doi = doi
         self.url, self.top_directory = url, top_directory
+        self.details = details
         if root is not None:
             # Store absolute path in case the working directory changes later
             self._root = os.path.abspath(root)

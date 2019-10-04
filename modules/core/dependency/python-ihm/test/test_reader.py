@@ -679,9 +679,11 @@ _ihm_external_reference_info.reference_type
 _ihm_external_reference_info.reference
 _ihm_external_reference_info.refers_to
 _ihm_external_reference_info.associated_url
+_ihm_external_reference_info.details
 1 Zenodo DOI 10.5281/zenodo.1218053 Archive https://example.com/foo.zip
-2 . 'Supplementary Files' . Other .
-3 Zenodo DOI 10.5281/zenodo.1218058 File https://example.com/foo.dcd
+'test repo'
+2 . 'Supplementary Files' . Other . .
+3 Zenodo DOI 10.5281/zenodo.1218058 File https://example.com/foo.dcd .
 """
         ext_file_cat = """
 loop_
@@ -705,6 +707,7 @@ _ihm_external_files.details
                 self.assertEqual(l1.path, 'scripts/test.py')
                 self.assertEqual(l1.details, 'Test script')
                 self.assertEqual(l1.repo.doi, '10.5281/zenodo.1218053')
+                self.assertEqual(l1.repo.details, 'test repo')
                 self.assertEqual(l1.__class__,
                                  ihm.location.WorkflowFileLocation)
 
@@ -895,10 +898,11 @@ _ihm_model_representation_details.starting_model_id
 _ihm_model_representation_details.model_mode
 _ihm_model_representation_details.model_granularity
 _ihm_model_representation_details.model_object_count
-1 1 1 Nup84 A 1 sphere . flexible by-feature 1
-2 1 1 Nup84 A 2 sphere 1 rigid by-residue .
-3 2 1 Nup84 A . atomistic . flexible by-atom .
-4 3 2 Nup85 B . sphere . . multi-residue .
+_ihm_model_representation_details.description
+1 1 1 Nup84 A 1 sphere . flexible by-feature 1 'test segment'
+2 1 1 Nup84 A 2 sphere 1 rigid by-residue . .
+3 2 1 Nup84 A . atomistic . flexible by-atom . .
+4 3 2 Nup85 B . sphere . . multi-residue . .
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
@@ -911,6 +915,7 @@ _ihm_model_representation_details.model_object_count
             self.assertEqual(s1.rigid, False)
             self.assertIsNone(s1.starting_model)
             self.assertEqual(s1.asym_unit.seq_id_range, (1,6))
+            self.assertEqual(s1.description, 'test segment')
 
             self.assertEqual(s2.__class__, ihm.representation.ResidueSegment)
             self.assertEqual(s2.primitive, 'sphere')
@@ -918,6 +923,7 @@ _ihm_model_representation_details.model_object_count
             self.assertEqual(s2.rigid, True)
             self.assertEqual(s2.starting_model._id, '1')
             self.assertEqual(s2.asym_unit.seq_id_range, (7,20))
+            self.assertIsNone(s2.description)
 
             self.assertEqual(len(r2), 1)
             s1, = r2
@@ -948,8 +954,9 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-1 1 Nup84 A 1 'comparative model' Q 8 4
-2 1 Nup84 A . 'comparative model' X . 6
+_ihm_starting_model_details.description
+1 1 Nup84 A 1 'comparative model' Q 8 4 .
+2 1 Nup84 A . 'comparative model' X . 6 'test desc'
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
@@ -959,11 +966,13 @@ _ihm_starting_model_details.dataset_list_id
             self.assertEqual(m1.asym_id, 'Q')
             self.assertEqual(m1.offset, 8)
             self.assertEqual(m1.dataset._id, '4')
+            self.assertIsNone(m1.description)
 
             self.assertEqual(m2.asym_unit._id, 'A')
             self.assertEqual(m2.asym_id, 'X')
             self.assertEqual(m2.offset, 0)
             self.assertEqual(m2.dataset._id, '6')
+            self.assertEqual(m2.description, 'test desc')
 
     def test_starting_computational_models_handler(self):
         """Test StartingComputationModelsHandler"""
@@ -1050,8 +1059,9 @@ _ihm_modeling_protocol_details.multi_state_flag
 _ihm_modeling_protocol_details.ordered_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
-1 1 1 1 1 . Sampling 'Monte Carlo' 0 500 YES NO NO . .
-2 1 2 1 2 . Sampling 'Monte Carlo' 500 5000 YES . NO 401 501
+_ihm_modeling_protocol_details.description
+1 1 1 1 1 . Sampling 'Monte Carlo' 0 500 YES NO NO . . .
+2 1 2 1 2 . Sampling 'Monte Carlo' 500 5000 YES . NO 401 501 'test step'
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
@@ -1069,12 +1079,14 @@ _ihm_modeling_protocol_details.script_file_id
             self.assertEqual(p1.steps[0].ordered, False)
             self.assertIsNone(p1.steps[0].software)
             self.assertIsNone(p1.steps[0].script_file)
+            self.assertIsNone(p1.steps[0].description)
             self.assertEqual(p1.steps[1]._id, '2')
             self.assertEqual(p1.steps[1].multi_scale, True)
             self.assertIsNone(p1.steps[1].multi_state)
             self.assertEqual(p1.steps[1].ordered, False)
             self.assertEqual(p1.steps[1].software._id, '401')
             self.assertEqual(p1.steps[1].script_file._id, '501')
+            self.assertEqual(p1.steps[1].description, 'test step')
 
     def test_post_process_handler(self):
         """Test PostProcessHandler"""
@@ -1092,12 +1104,13 @@ _ihm_modeling_post_process.struct_assembly_id
 _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
-1  1   1   1   'filter'  'energy/score'  15000   6520 . . 401 501
-2  1   1   2   'cluster' 'dRMSD'         6520    6520 . . . .
-3  1   2   1   'filter'  'energy/score'  15000   6520 . . . .
-4  1   2   2   'filter'  'composition'   6520    6520 . . . .
-5  1   2   3   'cluster' 'dRMSD'         6520    6520 . . . .
-6  2   3   1   'none' .         .    . . . . .
+_ihm_modeling_post_process.details
+1  1   1   1   'filter'  'energy/score'  15000   6520 . . 401 501 .
+2  1   1   2   'cluster' 'dRMSD'         6520    6520 . . . . .
+3  1   2   1   'filter'  'energy/score'  15000   6520 . . . . .
+4  1   2   2   'filter'  'composition'   6520    6520 . . . . .
+5  1   2   3   'cluster' 'dRMSD'         6520    6520 . . . . .
+6  2   3   1   'none' .         .    . . . . . 'empty step'
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
@@ -1115,6 +1128,7 @@ _ihm_modeling_post_process.script_file_id
             self.assertEqual(a1.steps[1].__class__, ihm.analysis.ClusterStep)
             self.assertIsNone(a1.steps[1].software)
             self.assertIsNone(a1.steps[1].script_file)
+            self.assertIsNone(a1.steps[1].details)
             self.assertEqual(len(a2.steps), 3)
 
             a1, = p2.analyses
@@ -1123,6 +1137,7 @@ _ihm_modeling_post_process.script_file_id
             self.assertEqual(a1.steps[0].feature, 'none')
             self.assertIsNone(a1.steps[0].num_models_begin)
             self.assertIsNone(a1.steps[0].num_models_end)
+            self.assertEqual(a1.steps[0].details, 'empty step')
 
     def test_model_list_handler(self):
         """Test ModelListHandler and ModelGroupHandler"""
@@ -1241,8 +1256,9 @@ _ihm_ensemble_info.num_ensemble_models
 _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
-1 'Cluster 1' 2 3 . dRMSD 1257 1 15.400 9
-2 'Cluster 2' 2 . . dRMSD 1257 1 15.400 9
+_ihm_ensemble_info.details
+1 'Cluster 1' 2 3 . dRMSD 1257 1 15.400 9 .
+2 'Cluster 2' 2 . . dRMSD 1257 1 15.400 9 'cluster details'
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
@@ -1253,9 +1269,11 @@ _ihm_ensemble_info.ensemble_file_id
             self.assertIsNone(e.clustering_method)
             self.assertEqual(e.clustering_feature, 'dRMSD')
             self.assertEqual(e.name, 'Cluster 1')
+            self.assertIsNone(e.details)
             self.assertAlmostEqual(e.precision, 15.4, places=1)
             self.assertEqual(e.file._id, '9')
             self.assertIsNone(e2.model_group)
+            self.assertEqual(e2.details, 'cluster details')
 
     def test_density_handler(self):
         """Test DensityHandler"""
@@ -1583,13 +1601,14 @@ _atom_site.label_asym_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.occupancy
 _atom_site.label_entity_id
 _atom_site.auth_asym_id
 _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
-ATOM 1 N N . SER 1 A 54.401 -49.984 -35.287 1 A . 1 1
-HETATM 2 C CA . SER . B 54.452 -48.492 -35.210 1 A 42.0 1 1
+ATOM 1 N N . SER 1 A 54.401 -49.984 -35.287 . 1 A . 1 1
+HETATM 2 C CA . SER . B 54.452 -48.492 -35.210 0.200 1 A 42.0 1 1
 """)
         s, = ihm.reader.read(fh)
         m = s.state_groups[0][0][0][0]
@@ -1603,6 +1622,7 @@ HETATM 2 C CA . SER . B 54.452 -48.492 -35.210 1 A 42.0 1 1
         self.assertAlmostEqual(a1.z, -35.287, places=2)
         self.assertEqual(a1.het, False)
         self.assertIsNone(a1.biso)
+        self.assertIsNone(a1.occupancy)
 
         self.assertEqual(a2.asym_unit._id, 'B')
         self.assertIsNone(a2.seq_id)
@@ -1610,6 +1630,7 @@ HETATM 2 C CA . SER . B 54.452 -48.492 -35.210 1 A 42.0 1 1
         self.assertEqual(a2.type_symbol, 'C')
         self.assertEqual(a2.het, True)
         self.assertAlmostEqual(a2.biso, 42.0, places=0)
+        self.assertAlmostEqual(a2.occupancy, 0.2, places=1)
 
     def test_atom_site_handler_auth_seq_id(self):
         """Test AtomSiteHandler handling of auth_seq_id"""
@@ -1708,6 +1729,17 @@ _ihm_pseudo_site_feature.description
 """
         rsr = """
 loop_
+_ihm_feature_list.feature_id
+_ihm_feature_list.feature_type
+_ihm_feature_list.entity_type
+_ihm_feature_list.details
+1 atom polymer 'test feature'
+2 'residue range' polymer .
+3 atom non-polymer .
+4 atom non-polymer .
+5 'pseudo site' other .
+#
+loop_
 _ihm_derived_distance_restraint.id
 _ihm_derived_distance_restraint.group_id
 _ihm_derived_distance_restraint.feature_id_1
@@ -1742,6 +1774,7 @@ _ihm_derived_distance_restraint.dataset_list_id
             self.assertEqual(r1.feature1.atoms[1].id, 'CB')
             self.assertEqual(r1.feature1.atoms[1].residue.seq_id, 1)
             self.assertIsNone(r1.feature1.atoms[1].residue.asym)
+            self.assertEqual(r1.feature1.details, 'test feature')
             self.assertIsInstance(r1.feature2,
                                   ihm.restraint.ResidueFeature)
             self.assertEqual(len(r1.feature2.ranges), 2)
@@ -1788,8 +1821,7 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 sphere 'my sphere' 'a test sphere' 'some details'
+1 sphere 'my sphere' 'a test sphere'
 """
         spheres = """
 loop_
@@ -1809,7 +1841,6 @@ _ihm_geometric_object_sphere.radius_r
             self.assertIsInstance(s2, ihm.geometry.Sphere)
             self.assertEqual(s1.name, 'my sphere')
             self.assertEqual(s1.description, 'a test sphere')
-            self.assertEqual(s1.details, 'some details')
             self.assertAlmostEqual(s1.center.x, 1.000, places=1)
             self.assertAlmostEqual(s1.center.y, 2.000, places=1)
             self.assertAlmostEqual(s1.center.z, 3.000, places=1)
@@ -1827,8 +1858,7 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 torus . . .
+1 torus . .
 """
         tori = """
 loop_
@@ -1863,10 +1893,9 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 half-torus . . .
-2 half-torus . . .
-3 half-torus . . .
+1 half-torus . .
+2 half-torus . .
+3 half-torus . .
 """
         tori = """
 loop_
@@ -1918,9 +1947,8 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 axis . . .
-2 axis . . .
+1 axis . .
+2 axis . .
 """
         axes = """
 loop_
@@ -1949,9 +1977,8 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 plane . . .
-2 plane . . .
+1 plane . .
+2 plane . .
 """
         planes = """
 loop_
@@ -2177,12 +2204,13 @@ _ihm_cross_link_list.seq_id_2
 _ihm_cross_link_list.comp_id_2
 _ihm_cross_link_list.linker_chem_comp_descriptor_id
 _ihm_cross_link_list.dataset_list_id
-1 1 foo 1 2 THR foo 1 3 CYS 44 97
-2 2 foo 1 2 THR bar 2 3 PHE 44 97
-3 2 foo 1 2 THR bar 2 2 GLU 44 97
-4 3 foo 1 1 ALA bar 2 1 ASP 44 97
-5 4 foo 1 1 ALA bar 2 1 ASP 88 97
-6 5 foo 1 1 ALA bar 2 1 ASP 44 98
+_ihm_cross_link_list.details
+1 1 foo 1 2 THR foo 1 3 CYS 44 97 .
+2 2 foo 1 2 THR bar 2 3 PHE 44 97 'test xl'
+3 2 foo 1 2 THR bar 2 2 GLU 44 97 .
+4 3 foo 1 1 ALA bar 2 1 ASP 44 97 .
+5 4 foo 1 1 ALA bar 2 1 ASP 88 97 .
+6 5 foo 1 1 ALA bar 2 1 ASP 44 98 .
 """)
         s, = ihm.reader.read(fh)
         # Check grouping
@@ -2196,6 +2224,7 @@ _ihm_cross_link_list.dataset_list_id
         self.assertEqual(xl.residue2.entity._id, '2')
         self.assertEqual(xl.residue1.seq_id, 2)
         self.assertEqual(xl.residue2.seq_id, 3)
+        self.assertEqual(xl.details, 'test xl')
 
     def test_cross_link_list_handler_linker_type(self):
         """Test CrossLinkListHandler with old-style linker_type"""

@@ -1,4 +1,4 @@
-"""Utility classes to read in information in mmCIF format"""
+"""Utility classes to read in information in mmCIF or BinaryCIF format"""
 
 import ihm.format
 import ihm.format_bcif
@@ -1127,12 +1127,14 @@ class _ExtRefHandler(Handler):
         self.type_map = {'doi':ihm.location.Repository,
                          'supplementary files':_LocalFiles}
 
-    def __call__(self, reference_id, reference_type, reference, associated_url):
+    def __call__(self, reference_id, reference_type, reference, associated_url,
+                 details):
         ref_id = reference_id
         typ = 'doi' if reference_type is None else reference_type.lower()
         repo = self.sysr.repos.get_by_id(ref_id,
                              self.type_map.get(typ, ihm.location.Repository))
         self.copy_if_present(repo, locals(),
+                    keys=('details',),
                     mapkeys={'reference':'doi', 'associated_url':'url'})
 
     def finalize(self):
@@ -1259,24 +1261,26 @@ class _ModelRepresentationHandler(Handler):
         self.copy_if_present(rep, locals(), keys=('name', 'details'))
 
 
-def _make_atom_segment(asym, rigid, primitive, count, smodel):
+def _make_atom_segment(asym, rigid, primitive, count, smodel, description):
     return ihm.representation.AtomicSegment(
-                asym_unit=asym, rigid=rigid, starting_model=smodel)
+                asym_unit=asym, rigid=rigid, starting_model=smodel,
+                description=description)
 
-def _make_residue_segment(asym, rigid, primitive, count, smodel):
+def _make_residue_segment(asym, rigid, primitive, count, smodel, description):
     return ihm.representation.ResidueSegment(
                 asym_unit=asym, rigid=rigid, primitive=primitive,
-                starting_model=smodel)
+                starting_model=smodel, description=description)
 
-def _make_multi_residue_segment(asym, rigid, primitive, count, smodel):
+def _make_multi_residue_segment(asym, rigid, primitive, count, smodel,
+                                description):
     return ihm.representation.MultiResidueSegment(
                 asym_unit=asym, rigid=rigid, primitive=primitive,
-                starting_model=smodel)
+                starting_model=smodel, description=description)
 
-def _make_feature_segment(asym, rigid, primitive, count, smodel):
+def _make_feature_segment(asym, rigid, primitive, count, smodel, description):
     return ihm.representation.FeatureSegment(
                 asym_unit=asym, rigid=rigid, primitive=primitive,
-                count=count, starting_model=smodel)
+                count=count, starting_model=smodel, description=description)
 
 
 class _ModelRepresentationDetailsHandler(Handler):
@@ -1291,7 +1295,8 @@ class _ModelRepresentationDetailsHandler(Handler):
 
     def __call__(self, entity_asym_id, entity_poly_segment_id,
                  representation_id, starting_model_id, model_object_primitive,
-                 model_granularity, model_object_count, model_mode):
+                 model_granularity, model_object_count, model_mode,
+                 description):
         asym = self.sysr.ranges.get(
                        self.sysr.asym_units.get_by_id(entity_asym_id),
                        entity_poly_segment_id)
@@ -1304,7 +1309,7 @@ class _ModelRepresentationDetailsHandler(Handler):
         count = self.get_int(model_object_count)
         rigid = self._rigid_map[self.get_lower(model_mode)]
         segment = self._segment_factory[gran](asym, rigid, primitive,
-                                              count, smodel)
+                                              count, smodel, description)
         rep.append(segment)
 
 
@@ -1315,7 +1320,7 @@ class _StartingModelDetailsHandler(Handler):
 
     def __call__(self, starting_model_id, asym_id, entity_poly_segment_id,
                  dataset_list_id, starting_model_auth_asym_id,
-                 starting_model_sequence_offset):
+                 starting_model_sequence_offset, description):
         m = self.sysr.starting_models.get_by_id(starting_model_id)
         asym = self.sysr.ranges.get(
                        self.sysr.asym_units.get_by_id(asym_id),
@@ -1323,6 +1328,7 @@ class _StartingModelDetailsHandler(Handler):
         m.asym_unit = asym
         m.dataset = self.sysr.datasets.get_by_id(dataset_list_id)
         self.copy_if_present(m, locals(),
+                    keys=('description',),
                     mapkeys={'starting_model_auth_asym_id':'asym_id'})
         if starting_model_sequence_offset is not None:
             m.offset = int(starting_model_sequence_offset)
@@ -1381,7 +1387,8 @@ class _ProtocolDetailsHandler(Handler):
     def __call__(self, protocol_id, step_id, num_models_begin,
                  num_models_end, multi_scale_flag, multi_state_flag,
                  ordered_flag, struct_assembly_id, dataset_group_id,
-                 software_id, script_file_id, step_name, step_method):
+                 software_id, script_file_id, step_name, step_method,
+                 description):
         p = self.sysr.protocols.get_by_id(protocol_id)
         nbegin = self.get_int(num_models_begin)
         nend = self.get_int(num_models_end)
@@ -1397,7 +1404,8 @@ class _ProtocolDetailsHandler(Handler):
                               method=None, num_models_begin=nbegin,
                               num_models_end=nend, multi_scale=mscale,
                               multi_state=mstate, ordered=ordered,
-                              software=software, script_file=script)
+                              software=software, script_file=script,
+                              description=description)
         s._id = step_id
         self.copy_if_present(s, locals(),
                 mapkeys={'step_name':'name', 'step_method':'method'})
@@ -1419,7 +1427,7 @@ class _PostProcessHandler(Handler):
 
     def __call__(self, protocol_id, analysis_id, type, id, num_models_begin,
                  num_models_end, struct_assembly_id, dataset_group_id,
-                 software_id, script_file_id, feature):
+                 software_id, script_file_id, feature, details):
         protocol = self.sysr.protocols.get_by_id(protocol_id)
         analysis = self.sysr.analyses.get_by_id(analysis_id)
         if analysis._id not in [a._id for a in protocol.analyses]:
@@ -1429,6 +1437,7 @@ class _PostProcessHandler(Handler):
         step = self.sysr.analysis_steps.get_by_id(id,
                                 self.type_map.get(typ, ihm.analysis.Step))
         analysis.steps.append(step)
+        step.details = details
 
         if typ == 'none':
             # If this step was forward referenced, feature will have been set
@@ -1526,7 +1535,8 @@ class _EnsembleHandler(Handler):
     def __call__(self, ensemble_id, model_group_id, post_process_id,
                  ensemble_file_id, num_ensemble_models,
                  ensemble_precision_value, ensemble_name,
-                 ensemble_clustering_method, ensemble_clustering_feature):
+                 ensemble_clustering_method, ensemble_clustering_feature,
+                 details):
         ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
         mg = self.sysr.model_groups.get_by_id_or_none(model_group_id)
         pp = self.sysr.analysis_steps.get_by_id_or_none(post_process_id)
@@ -1539,6 +1549,7 @@ class _EnsembleHandler(Handler):
         # model group anyway)
         ensemble.post_process = pp
         ensemble.file = f
+        ensemble.details = details
         self.copy_if_present(ensemble, locals(),
                 mapkeys={'ensemble_name':'name',
                          'ensemble_clustering_method':'clustering_method',
@@ -1666,12 +1677,13 @@ class _AtomSiteHandler(Handler):
 
     def __call__(self, pdbx_pdb_model_num, label_asym_id, b_iso_or_equiv,
                  label_seq_id, label_atom_id, type_symbol, cartn_x, cartn_y,
-                 cartn_z, group_pdb, auth_seq_id):
+                 cartn_z, occupancy, group_pdb, auth_seq_id):
         # todo: handle fields other than those output by us
         # todo: handle insertion codes
         model = self.sysr.models.get_by_id(pdbx_pdb_model_num)
         asym = self.sysr.asym_units.get_by_id(label_asym_id)
         biso = self.get_float(b_iso_or_equiv)
+        occupancy = self.get_float(occupancy)
         # seq_id can be None for non-polymers (HETATM)
         seq_id = self.get_int(label_seq_id)
         group = 'ATOM' if group_pdb is None else group_pdb
@@ -1681,7 +1693,7 @@ class _AtomSiteHandler(Handler):
                 type_symbol=type_symbol,
                 x=float(cartn_x), y=float(cartn_y),
                 z=float(cartn_z), het=group != 'ATOM',
-                biso=biso)
+                biso=biso, occupancy=occupancy)
         model.add_atom(a)
 
         auth_seq_id = self.get_int_or_string(auth_seq_id)
@@ -1737,6 +1749,15 @@ class _PolyResidueFeatureHandler(Handler):
         r1 = int(seq_id_begin)
         r2 = int(seq_id_end)
         f.ranges.append(asym_or_entity(r1,r2))
+
+
+class _FeatureListHandler(Handler):
+    category = '_ihm_feature_list'
+
+    def __call__(self, feature_id, details):
+        if details:
+            f = self.sysr.features.get_by_id(feature_id)
+            f.details = details
 
 
 class _PolyAtomFeatureHandler(Handler):
@@ -1890,15 +1911,13 @@ class _GeometricObjectHandler(Handler):
                      if issubclass(x[1], ihm.geometry.GeometricObject)
                         and ihm.geometry.GeometricObject in x[1].__bases__)
 
-    def __call__(self, object_type, object_id, object_name, object_description,
-                 other_details):
+    def __call__(self, object_type, object_id, object_name, object_description):
         typ = object_type.lower() if object_type is not None else 'other'
         g = self.sysr.geometries.get_by_id(object_id,
                           self._type_map.get(typ, ihm.geometry.GeometricObject))
         self.copy_if_present(g, locals(),
                              mapkeys={'object_name': 'name',
-                                      'object_description': 'description',
-                                      'other_details': 'details'})
+                                      'object_description': 'description'})
 
 
 class _SphereHandler(Handler):
@@ -2088,7 +2107,7 @@ class _CrossLinkListHandler(Handler):
 
     def __call__(self, dataset_list_id, linker_chem_comp_descriptor_id,
                  group_id, id, entity_id_1, entity_id_2, seq_id_1, seq_id_2,
-                 linker_type):
+                 linker_type, details):
         dataset = self.sysr.datasets.get_by_id_or_none(dataset_list_id)
         if linker_chem_comp_descriptor_id is None and linker_type is not None:
             linker = self._get_linker_by_name(linker_type)
@@ -2108,6 +2127,7 @@ class _CrossLinkListHandler(Handler):
         xl_group.append(xl)
         xl.residue1 = self._get_entity_residue(entity_id_1, seq_id_1)
         xl.residue2 = self._get_entity_residue(entity_id_2, seq_id_2)
+        xl.details = details
 
     def _get_entity_residue(self, entity_id, seq_id):
         entity = self.sysr.entities.get_by_id(entity_id)
@@ -2660,9 +2680,9 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
          warn_unknown_category=False, warn_unknown_keyword=False,
          read_starting_model_coord=True,
          starting_model_class=ihm.startmodel.StartingModel):
-    """Read data from the mmCIF file handle `fh`.
+    """Read data from the file handle `fh`.
 
-       Note that the reader currently expects to see an mmCIF file compliant
+       Note that the reader currently expects to see a file compliant
        with the PDBx and/or IHM dictionaries. It is not particularly tolerant
        of noncompliant or incomplete files, and will probably throw an
        exception rather than warning about and trying to handle such files.
@@ -2677,7 +2697,8 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
        so is used if built. The BinaryCIF reader needs the msgpack Python
        module to function.
 
-       :param file fh: The file handle to read from.
+       :param file fh: The file handle to read from. (For BinaryCIF files,
+              the file should be opened in binary mode.)
        :param model_class: The class to use to store model information (such
               as coordinates). For use with other software, it is recommended
               to subclass :class:`ihm.model.Model` and override
@@ -2742,6 +2763,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               _EM3DRestraintHandler(s), _EM2DRestraintHandler(s),
               _EM2DFittingHandler(s), _SASRestraintHandler(s),
               _SphereObjSiteHandler(s), _AtomSiteHandler(s),
+              _FeatureListHandler(s),
               _PolyResidueFeatureHandler(s), _PolyAtomFeatureHandler(s),
               _NonPolyFeatureHandler(s), _PseudoSiteFeatureHandler(s),
               _DerivedDistanceRestraintHandler(s),

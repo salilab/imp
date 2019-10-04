@@ -138,6 +138,7 @@ class Tests(unittest.TestCase):
     def test_feature(self):
         """Test Feature base class"""
         f = ihm.restraint.Feature() # does nothing
+        self.assertEqual(f._all_entities_or_asyms(), [])
 
     def test_residue_feature(self):
         """Test ResidueFeature class"""

@@ -13,6 +13,12 @@ dss = ihm.ChemDescriptor('DSS', chemical_name='disuccinimidyl suberate',
                     '3-1-2-4-6-16(24)26-18-13(21)9-10-14(18)22/h1-10H2',
               inchi_key='ZWIBGKZDAWNIFC-UHFFFAOYSA-N')
 
+dsg = ihm.ChemDescriptor('DSG', chemical_name='disuccinimidyl glutarate',
+              smiles='C1CC(=O)N(C1=O)OC(=O)CCCC(=O)ON2C(=O)CCC2=O',
+              inchi='1S/C13H14N2O8/c16-8-4-5-9(17)14(8)22-12(20)2-1-3-'
+                    '13(21)23-15-10(18)6-7-11(15)19/h1-7H2',
+              inchi_key='LNQHREYHFRFJAU-UHFFFAOYSA-N')
+
 bs3 = ihm.ChemDescriptor('BS3', chemical_name='bissulfosuccinimidyl suberate',
               smiles='C1C(C(=O)N(C1=O)OC(=O)CCCCCCC(=O)ON2C(=O)CC(C2=O)S(=O)'
                      '(=O)O)S(=O)(=O)O',
