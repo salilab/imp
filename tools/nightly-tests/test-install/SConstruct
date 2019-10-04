@@ -80,6 +80,7 @@ if mock:
 
 # Add MPI-specific tests if requested
 if mpi:
+    env['ENV']['MOCK_CONFIG'] = mock
     runpy_mpi = env.Command('mpi.out', 'test_mpi.py',
                              "source /etc/profile && module load %s "
                              "&& %s $SOURCES -v > $TARGET" % (mpi, python))
