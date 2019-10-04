@@ -309,8 +309,9 @@ _ihm_model_representation_details.starting_model_id
 _ihm_model_representation_details.model_mode
 _ihm_model_representation_details.model_granularity
 _ihm_model_representation_details.model_object_count
-1 1 1 foo A 1 sphere 1 flexible by-residue .
-2 1 1 foo A 2 sphere . flexible by-feature 1
+_ihm_model_representation_details.description
+1 1 1 foo A 1 sphere 1 flexible by-residue . .
+2 1 1 foo A 2 sphere . flexible by-feature 1 .
 #
 """)
 
@@ -378,8 +379,9 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-1 1 Nup84 A 3 'comparative model' A 0 3
-2 2 Nup85 B 4 'comparative model' A 0 4
+_ihm_starting_model_details.description
+1 1 Nup84 A 3 'comparative model' A 0 3 .
+2 2 Nup85 B 4 'comparative model' A 0 4 .
 #
 #
 loop_
@@ -448,7 +450,8 @@ _ihm_external_reference_info.reference_type
 _ihm_external_reference_info.reference
 _ihm_external_reference_info.refers_to
 _ihm_external_reference_info.associated_url
-1 . DOI foo Other .
+_ihm_external_reference_info.details
+1 . DOI foo Other . .
 #
 #
 loop_
@@ -502,10 +505,11 @@ _ihm_modeling_protocol_details.multi_state_flag
 _ihm_modeling_protocol_details.ordered_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
+_ihm_modeling_protocol_details.description
 1 1 1 2 . 'All components modeled by IMP' Sampling 'Monte Carlo' 0 500 YES NO NO
-. .
+. . .
 2 2 1 2 . 'All components modeled by IMP' Sampling
-'Replica exchange Molecular Dynamics' 400 2000 YES NO NO . .
+'Replica exchange Molecular Dynamics' 400 2000 YES NO NO . . .
 #
 """)
 
@@ -537,8 +541,9 @@ _ihm_modeling_post_process.struct_assembly_id
 _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
-1 1 1 1 filter energy/score 500 400 2 . . .
-2 2 1 1 cluster RMSD 2000 2000 2 . . .
+_ihm_modeling_post_process.details
+1 1 1 1 filter energy/score 500 400 2 . . . .
+2 2 1 1 cluster RMSD 2000 2000 2 . . . .
 #
 """)
 
@@ -565,7 +570,8 @@ _ihm_ensemble_info.num_ensemble_models
 _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
-1 'cluster 1' . 1 . . 1 1 . .
+_ihm_ensemble_info.details
+1 'cluster 1' . 1 . . 1 1 . . .
 #
 """)
 
