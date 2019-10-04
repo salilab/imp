@@ -448,13 +448,14 @@ _atom_site.label_asym_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.occupancy
 _atom_site.label_entity_id
 _atom_site.auth_asym_id
 _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
-ATOM 1 . CA . MET 1 A -8.986 11.688 -5.817 1 A . 1 1
-ATOM 2 . CA . GLU 2 A -8.986 11.688 -5.817 1 A . 1 1
+ATOM 1 . CA . MET 1 A -8.986 11.688 -5.817 . 1 A . 1 1
+ATOM 2 . CA . GLU 2 A -8.986 11.688 -5.817 . 1 A . 1 1
 #
 #
 loop_
@@ -622,8 +623,9 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-1 1 Nup84 A 7 'comparative model' A 0 3
-2 2 Nup85 B 8 'comparative model' A -7 4
+_ihm_starting_model_details.description
+1 1 Nup84 A 7 'comparative model' A 0 3 .
+2 2 Nup85 B 8 'comparative model' A -7 4 .
 #
 #
 loop_
@@ -733,10 +735,11 @@ _ihm_modeling_protocol_details.multi_state_flag
 _ihm_modeling_protocol_details.ordered_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
+_ihm_modeling_protocol_details.description
 1 1 1 2 1 'All components modeled by IMP in state State_0' Sampling
-'Replica exchange monte carlo' 0 1000 YES NO NO 1 .
+'Replica exchange monte carlo' 0 1000 YES NO NO 1 . .
 2 1 2 2 1 'All components modeled by IMP in state State_0' Sampling
-'Replica exchange monte carlo' 1000 1000 YES NO NO 1 .
+'Replica exchange monte carlo' 1000 1000 YES NO NO 1 . .
 #
 """)
 
@@ -835,10 +838,11 @@ _ihm_modeling_post_process.struct_assembly_id
 _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
-1 1 1 1 cluster RMSD 10 90 . . . .
-2 1 1 2 cluster RMSD 12 90 . . . .
-3 2 1 1 cluster RMSD 34 56 . . . .
-4 3 1 1 cluster RMSD 20 80 . . . .
+_ihm_modeling_post_process.details
+1 1 1 1 cluster RMSD 10 90 . . . . .
+2 1 1 2 cluster RMSD 12 90 . . . . .
+3 2 1 1 cluster RMSD 34 56 . . . . .
+4 3 1 1 cluster RMSD 20 80 . . . . .
 #
 """)
 
@@ -879,7 +883,8 @@ _ihm_modeling_post_process.struct_assembly_id
 _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
-1 1 1 1 none none 10 10 . . . .
+_ihm_modeling_post_process.details
+1 1 1 1 none none 10 10 . . . . .
 #
 """)
 
@@ -1073,8 +1078,9 @@ _ihm_ensemble_info.num_ensemble_models
 _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
-1 'Ensemble 1 in state State_0' 99 1 . dRMSD 5 1 0.100 .
-2 'Ensemble 2 in state State_0' 99 2 . dRMSD 5 1 0.100 42
+_ihm_ensemble_info.details
+1 'Ensemble 1 in state State_0' 99 1 . dRMSD 5 1 0.100 . .
+2 'Ensemble 2 in state State_0' 99 2 . dRMSD 5 1 0.100 42 .
 #
 """)
 
@@ -1190,8 +1196,9 @@ _ihm_cross_link_list.comp_id_2
 _ihm_cross_link_list.linker_chem_comp_descriptor_id
 _ihm_cross_link_list.linker_type
 _ihm_cross_link_list.dataset_list_id
-1 1 Nup84 1 1 MET Nup84 1 2 GLU 1 foo 42
-2 2 Nup84 1 1 MET Nup84 1 3 LEU 1 foo 42
+_ihm_cross_link_list.details
+1 1 Nup84 1 1 MET Nup84 1 2 GLU 1 foo 42 .
+2 2 Nup84 1 1 MET Nup84 1 3 LEU 1 foo 42 .
 #
 #
 loop_
@@ -1319,8 +1326,7 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 plane . . .
+1 plane . .
 #
 #
 loop_
@@ -1339,8 +1345,7 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 plane . . .
+1 plane . .
 #
 #
 loop_
@@ -1359,8 +1364,7 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 axis . . .
+1 axis . .
 #
 #
 loop_
@@ -1417,7 +1421,8 @@ loop_
 _ihm_feature_list.feature_id
 _ihm_feature_list.feature_type
 _ihm_feature_list.entity_type
-1 'residue range' polymer
+_ihm_feature_list.details
+1 'residue range' polymer .
 #
 #
 loop_
@@ -1539,8 +1544,7 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 half-torus Membrane . .
+1 half-torus Membrane .
 #
 #
 loop_
@@ -1571,7 +1575,8 @@ loop_
 _ihm_feature_list.feature_id
 _ihm_feature_list.feature_type
 _ihm_feature_list.entity_type
-1 residue polymer
+_ihm_feature_list.details
+1 residue polymer .
 #
 #
 loop_
@@ -1904,7 +1909,8 @@ _ihm_model_representation_details.starting_model_id
 _ihm_model_representation_details.model_mode
 _ihm_model_representation_details.model_granularity
 _ihm_model_representation_details.model_object_count
-1 1 1 Nup84 A 1 sphere 1 flexible by-residue .
+_ihm_model_representation_details.description
+1 1 1 Nup84 A 1 sphere 1 flexible by-residue . .
 #
 """)
 
@@ -1955,8 +1961,9 @@ _ihm_model_representation_details.starting_model_id
 _ihm_model_representation_details.model_mode
 _ihm_model_representation_details.model_granularity
 _ihm_model_representation_details.model_object_count
-1 1 1 Nup84 A 1 sphere 1 rigid by-residue .
-2 1 1 Nup84 A 2 sphere . flexible by-feature 1
+_ihm_model_representation_details.description
+1 1 1 Nup84 A 1 sphere 1 rigid by-residue . .
+2 1 1 Nup84 A 2 sphere . flexible by-feature 1 .
 #
 """)
 

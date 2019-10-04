@@ -183,8 +183,9 @@ _ihm_model_representation_details.starting_model_id
 _ihm_model_representation_details.model_mode
 _ihm_model_representation_details.model_granularity
 _ihm_model_representation_details.model_object_count
-1 1 1 Nup84 A 1 sphere 1 flexible by-residue .
-2 1 1 Nup84 A 2 sphere . flexible by-feature 2
+_ihm_model_representation_details.description
+1 1 1 Nup84 A 1 sphere 1 flexible by-residue . .
+2 1 1 Nup84 A 2 sphere . flexible by-feature 2 .
 #
 """)
 

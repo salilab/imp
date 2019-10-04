@@ -7,9 +7,14 @@ import IMP.benchmark
 import time
 import sys
 import os
+try:
+    from time import process_time  # needs python 3.3 or later
+except ImportError:
+    from time import clock as process_time
 
 import IMP.pmi.restraints.stereochemistry
-import IMP.pmi.representation as representation
+import IMP.pmi.topology
+import IMP.pmi.dof
 import IMP.pmi.tools as tools
 import IMP.pmi.samplers as samplers
 import IMP.pmi.output as output
@@ -22,6 +27,8 @@ IMP.set_log_level(IMP.SILENT)
 old_stdout = sys.stdout
 
 class DummyFile(object):
+    def flush(self):
+        pass
     def write(self, txt):
         pass
 sys.stdout = DummyFile()
@@ -30,15 +37,7 @@ sys.stdout = DummyFile()
 
 pdbfile = IMP.pmi.get_data_path("benchmark_starting_structure.pdb")
 fastafile = IMP.pmi.get_data_path("benchmark_sequence.fasta")
-fastids = tools.get_ids_from_fasta_file(fastafile)
-missing_bead_size = 1
-
-
-#         Component  pdbfile    chainid  rgb color     fastafile     sequence id
-# in fastafile
-data = [("chainA", pdbfile, "A", 0.00000000, (fastafile, 0)),
-        ("chainB", pdbfile, "B", 0.50000000, (fastafile, 0))]
-
+sequences = IMP.pmi.topology.Sequences(fastafile)
 
 # create the representation
 log_objects = []
@@ -48,62 +47,48 @@ sw = tools.Stopwatch()
 log_objects.append(sw)
 
 m = IMP.Model()
-with IMP.allow_deprecated():
-    r = representation.Representation(m)
+s = IMP.pmi.topology.System(m)
+st = s.create_state()
 
-hierarchies = {}
+cA = st.create_molecule("chainA", sequence=sequences[0])
+atomic = cA.add_structure(pdbfile, chain_id='A')
+cA.add_representation(atomic, resolutions=[1, 10], color=0.)
+cA.add_representation(cA.get_non_atomic_residues(),
+                      resolutions=[1], color=0.)
 
-for d in data:
-    component_name = d[0]
-    pdb_file = d[1]
-    chain_id = d[2]
-    color_id = d[3]
-    fasta_file = d[4][0]
-    fasta_file_id = d[4][1]
-    # avoid to add a component with the same name
-    r.create_component(component_name,
-                       color=color_id)
+cB = st.create_molecule("chainB", sequence=sequences[0])
+atomic = cB.add_structure(pdbfile, chain_id='B')
+cB.add_representation(atomic, resolutions=[1, 10], color=0.5)
+cB.add_representation(cB.get_non_atomic_residues(),
+                      resolutions=[1], color=0.)
+root_hier = s.build()
 
-    r.add_component_sequence(component_name,
-                             fasta_file,
-                             id=fastids[fasta_file_id])
+dof = IMP.pmi.dof.DegreesOfFreedom(m)
+dof.create_rigid_body(cA)
+dof.create_rigid_body(cB)
 
-    hierarchies = r.autobuild_model(component_name,
-                                    pdb_file,
-                                    chain_id,
-                                    resolutions=[1, 10],
-                                    missingbeadsize=missing_bead_size)
-
-    r.show_component_table(component_name)
-
-rbAB = r.set_rigid_bodies(["chainA", "chainB"])
-
-r.set_floppy_bodies()
-r.fix_rigid_bodies([rbAB])
-r.setup_bonds()
-
-
-log_objects.append(r)
+cr = IMP.pmi.restraints.stereochemistry.ConnectivityRestraint(root_hier)
+cr.add_to_model()
+log_objects.append(cr)
 
 listofexcludedpairs = []
 
-lof = [(1, 12, "chainA"), (1, 12, "chainB"),
-       (294, 339, "chainA"), (294, 339, "chainB"),
-       (686, 701, "chainA"), (686, 701, "chainB"),
-       (454, 464, "chainA"), (454, 464, "chainB"),
-       (472, 486, "chainA"), (472, 486, "chainB"),
-       (814, 859, "chainA"), (814, 859, "chainB")]
-
+lof = [cA[:12], cB[:12],
+       cA[293:339], cB[293:339],
+       cA[685:701], cB[685:701],
+       cA[453:464], cB[453:464],
+       cA[471:486], cB[471:486],
+       cA[813:859], cB[813:859]]
 
 # add bonds and angles
 for l in lof:
 
-    rbr = IMP.pmi.restraints.stereochemistry.ResidueBondRestraint(r, l)
+    rbr = IMP.pmi.restraints.stereochemistry.ResidueBondRestraint(objects=l)
     rbr.add_to_model()
     listofexcludedpairs += rbr.get_excluded_pairs()
     log_objects.append(rbr)
 
-    rar = IMP.pmi.restraints.stereochemistry.ResidueAngleRestraint(r, l)
+    rar = IMP.pmi.restraints.stereochemistry.ResidueAngleRestraint(objects=l)
     rar.add_to_model()
     listofexcludedpairs += rar.get_excluded_pairs()
     log_objects.append(rar)
@@ -111,24 +96,23 @@ for l in lof:
 # add excluded volume
 
 ev = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(
-    r,
-    resolution=10.0)
+    included_objects=root_hier, resolution=10.0)
 ev.add_excluded_particle_pairs(listofexcludedpairs)
 ev.add_to_model()
 log_objects.append(ev)
 
-mc = samplers.MonteCarlo(m, [r], 1.0)
+mc = samplers.MonteCarlo(m, dof.get_movers(), 1.0)
 log_objects.append(mc)
 
 
-start_time = time.clock()
+start_time = process_time()
 # In debug mode things are way too slow to actually run MC
 if IMP.get_check_level() < IMP.USAGE_AND_INTERNAL:
     o = output.Output()
-    rmf = o.init_rmf("conformations.rmf3", [r.prot])
+    rmf = o.init_rmf("conformations.rmf3", [root_hier])
     o.init_stat2("modeling.stat", log_objects)
     o.write_rmf("conformations.rmf3")
-    o.init_pdb("conformations.pdb", r.prot)
+    o.init_pdb("conformations.pdb", root_hier)
 
     for i in range(0, 10):
 #       print("Running job, frame number ", i)
@@ -140,7 +124,7 @@ if IMP.get_check_level() < IMP.USAGE_AND_INTERNAL:
     o.close_rmf("conformations.rmf3")
 
 sys.stdout = old_stdout
-IMP.benchmark.report("pmi loop", time.clock() - start_time, 3*10+5)
+IMP.benchmark.report("pmi loop", process_time() - start_time, 3*10+5)
 
 if IMP.get_check_level() < IMP.USAGE_AND_INTERNAL:
     for output in ["conformations.pdb", "conformations.rmf3", "modeling.stat"]:
