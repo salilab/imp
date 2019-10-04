@@ -93,10 +93,11 @@ BuildRequires: CGAL-nogui-devel
 %define bundled libTAU\\.so
 %endif
 
-# Many modules use Python's numpy and scipy modules, so pull those in
+# The IMP kernel (both with Python 2 and Python3) links with numpy, so
+# pull that in. Many modules also use Python's scipy module, so pull that in
 # (at build time for tests; at install time for using the modules).
 %if 0%{?with_python3}
-BuildRequires: python3-numpy, python3-scipy
+BuildRequires: python3-numpy, python3-scipy, python2-numpy
 Requires: python3-numpy, python3-scipy
 %else
 BuildRequires: numpy, scipy
