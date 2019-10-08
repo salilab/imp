@@ -35,7 +35,7 @@ override_dh_auto_configure:
 
 override_dh_auto_build:
 	mkdir build/logs
-	cd build && ../tools/nightly-tests/build_all.py --run-tests=fast --outdir=logs --summary=logs/summary.pck "make -k -j2"
+	cd build && ../tools/nightly-tests/build_all.py --run-tests=fast --outdir=logs --summary=logs/summary.pck "make -k -j4"
 
 override_dh_install:
 	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install
@@ -52,7 +52,7 @@ override_dh_install:
 	    -DPYTHON_INCLUDE_DIRS=$${py3_inc} \
 	    -DPYTHON_INCLUDE_PATH=$${py3_inc} -DPYTHON_LIBRARIES=$${py3_lib} \
 	    -DUSE_PYTHON2=off \
-	   && $(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
+	   && $(MAKE) -j4 DESTDIR=$(CURDIR)/debian/tmp install
 	# Bundle libTAU so users don't have to get it separately
 	cp build/libTAU-1.0.1/lib/debian/libTAU.so.1 debian/tmp/usr/lib/*linux*/
 	(cd debian/tmp/usr/lib/*linux*/ && ln -sf libTAU.so.1 libTAU.so)
