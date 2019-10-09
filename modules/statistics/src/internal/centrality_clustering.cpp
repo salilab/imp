@@ -34,7 +34,7 @@ using graph::has_no_edges;
 // (Note that this may not be the right #if condition; we have only seen
 // the issue with Boost 1.71 on Macs with Homebrew, but other systems may
 // be affected.)
-#if BOOST_VERSION == 107100
+#if defined(__clang__) && BOOST_VERSION == 107100
 # include "our_bc_clustering.hpp"
 #else
 # include <boost/graph/bc_clustering.hpp>

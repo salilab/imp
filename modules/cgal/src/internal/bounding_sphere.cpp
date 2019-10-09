@@ -9,7 +9,9 @@
 /* Workaround for a Clang parser bug;
    https://bugs.llvm.org/show_bug.cgi?id=43266
  */
-#include <boost/multiprecision/gmp.hpp>
+#ifdef __clang__
+# include <boost/multiprecision/gmp.hpp>
+#endif
 
 IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
 #include <CGAL/Cartesian.h>
