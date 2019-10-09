@@ -7,7 +7,7 @@ import IMP.pmi
 import IMP.pmi.io
 import IMP.pmi.io.crosslink
 import IMP.pmi.restraints
-import IMP.pmi.restraints.crosslinking_new
+import IMP.pmi.restraints.crosslinking
 from math import *
 
 def sphere_cap(r1, r2, d):
@@ -84,7 +84,7 @@ class Tests(IMP.test.TestCase):
                                    resolutions=[10])
         root_hier = simo.build()
 
-        xl = IMP.pmi.restraints.crosslinking_new.DisulfideCrossLinkRestraint(
+        xl = IMP.pmi.restraints.crosslinking.DisulfideCrossLinkRestraint(
             root_hier,
             (1,1,"ProtA"),
             (1,1,"ProtB"),
