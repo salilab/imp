@@ -2,6 +2,12 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- The old IMP::pmi::representation::Representation class has been removed
+  from IMP.pmi. New applications should use IMP::pmi::topology::System instead.
+- The IMP::pmi::restraints::crosslinking::ISDCrossLinkMS class for handling
+  crosslinking has been removed. Use
+  IMP::pmi::restraints::crosslinking::CrossLinkingMassSpectrometryRestraint
+  instead.
 - The `rg` tool (part of the IMP::saxs module, used to compute radius of
   gyration from a SAXS profile) is now called `compute_rg` for consistency
   with other SAXS tools and to avoid conflicts with other packages.
