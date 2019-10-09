@@ -30,7 +30,15 @@ using graph::has_no_edges;
 }
 #endif
 
-#include <boost/graph/bc_clustering.hpp>
+// Add workaround for https://github.com/boostorg/graph/issues/175
+// (Note that this may not be the right #if condition; we have only seen
+// the issue with Boost 1.71 on Macs with Homebrew, but other systems may
+// be affected.)
+#if BOOST_VERSION == 107100
+# include "our_bc_clustering.hpp"
+#else
+# include <boost/graph/bc_clustering.hpp>
+#endif
 
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
