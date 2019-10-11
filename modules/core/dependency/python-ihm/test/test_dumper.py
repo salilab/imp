@@ -2759,7 +2759,7 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
                  probability=0.4)
         r3 = ihm.restraint.DerivedDistanceRestraint(dataset=dataset,
                  feature1=feat1, feature2=feat2, distance=dist,
-                 probability=0.6)
+                 probability=0.6, mic_value=0.4)
         rg = ihm.restraint.RestraintGroup((r2, r3))
         system.restraints.extend((r1, r2)) # r2 is in restraints and groups
         system.restraint_groups.append(rg)
@@ -2778,11 +2778,12 @@ _ihm_derived_distance_restraint.restraint_type
 _ihm_derived_distance_restraint.distance_lower_limit
 _ihm_derived_distance_restraint.distance_upper_limit
 _ihm_derived_distance_restraint.probability
+_ihm_derived_distance_restraint.mic_value
 _ihm_derived_distance_restraint.group_conditionality
 _ihm_derived_distance_restraint.dataset_list_id
-1 . 44 84 'lower bound' 25.000 . 0.800 . 97
-2 1 44 84 'lower bound' 25.000 . 0.400 . 97
-3 1 44 84 'lower bound' 25.000 . 0.600 . 97
+1 . 44 84 'lower bound' 25.000 . 0.800 . . 97
+2 1 44 84 'lower bound' 25.000 . 0.400 . . 97
+3 1 44 84 'lower bound' 25.000 . 0.600 0.400 . 97
 #
 """)
 

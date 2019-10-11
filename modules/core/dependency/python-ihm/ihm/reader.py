@@ -1834,7 +1834,8 @@ class _DerivedDistanceRestraintHandler(Handler):
 
     def __call__(self, id, group_id, dataset_list_id, feature_id_1,
                  feature_id_2, restraint_type, group_conditionality,
-                 probability, distance_lower_limit, distance_upper_limit):
+                 probability, mic_value, distance_lower_limit,
+                 distance_upper_limit):
         r = self.sysr.dist_restraints.get_by_id(id)
         if group_id is not None:
             rg = self.sysr.dist_restraint_groups.get_by_id(group_id)
@@ -1847,6 +1848,7 @@ class _DerivedDistanceRestraintHandler(Handler):
                                                       self.get_float)
         r.restrain_all = self._cond_map[group_conditionality]
         r.probability = self.get_float(probability)
+        r.mic_value = self.get_float(mic_value)
 
 
 class _PredictedContactRestraintHandler(Handler):

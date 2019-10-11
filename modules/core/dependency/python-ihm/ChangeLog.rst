@@ -3,6 +3,10 @@ HEAD
  - :class:`ihm.restraint.ResidueFeature` objects can now act on one or
    more :class:`Residue` objects, which act equivalently to
    1-residue ranges (:class:`AsymUnitRange` or :class:`EntityRange`).
+ - The new :class:`ihm.dataset.GeneticInteractionsDataset` class and the
+   ``mic_value`` argument to :class:`ihm.restraint.DerivedDistanceRestraint`
+   can be used to represent restraints from genetic interactions, such as
+   point-mutant epistatic miniarray profile (pE-MAP) data.
 
 0.11 - 2019-09-05
 =================

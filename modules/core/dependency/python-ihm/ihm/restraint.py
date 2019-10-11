@@ -637,15 +637,18 @@ class DerivedDistanceRestraint(object):
        :type distance: :class:`DistanceRestraint`
        :param float probability: Likelihood that restraint is correct (0. - 1.)
        :param bool restrain_all: If True, all distances are restrained.
+       :param float mic_value: Value of the Maximal Information Coefficient
+              (MIC) for this interaction, if applicable.
     """
     assembly = None # no struct_assembly_id for derived distance restraints
 
     def __init__(self, dataset, feature1, feature2, distance,
-                 probability=None, restrain_all=None):
+                 probability=None, restrain_all=None, mic_value=None):
         self.dataset = dataset
         self.feature1, self.feature2 = feature1, feature2
         self.distance, self.restrain_all = distance, restrain_all
         self.probability = probability
+        self.mic_value = mic_value
     _all_features = property(lambda self: (self.feature1, self.feature2))
 
 

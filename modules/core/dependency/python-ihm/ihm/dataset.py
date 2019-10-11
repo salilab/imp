@@ -141,3 +141,8 @@ class FRETDataset(Dataset):
 class YeastTwoHybridDataset(Dataset):
     """Yeast two-hybrid data"""
     data_type = 'Yeast two-hybrid screening data'
+
+
+class GeneticInteractionsDataset(Dataset):
+    """Quantitative measurements of genetic interactions"""
+    data_type = 'Quantitative measurements of genetic interactions'
