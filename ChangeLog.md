@@ -11,6 +11,11 @@ ChangeLog {#changelog}
 - The `rg` tool (part of the IMP::saxs module, used to compute radius of
   gyration from a SAXS profile) is now called `compute_rg` for consistency
   with other SAXS tools and to avoid conflicts with other packages.
+- We now provide RPM packages for RedHat Enterprise Linux 8 (or compatible
+  operating systems such as CentOS 8).
+- The RPM packages for RedHat Enterprise Linux 8 and for Fedora now use
+  Python 3 by default. If you need Python 2, install the IMP-python2 package
+  as well.
 - IMP::algebra::Rotation3D::get_derivative(),
   IMP::algebra::Rotation3D::get_gradient(),
   IMP::algebra::get_gradient_of_composed_with_respect_to_first(), and
