@@ -143,7 +143,8 @@ def main():
 
         out = """
 add_custom_command(OUTPUT %s
-  COMMAND "python" "${PROJECT_SOURCE_DIR}/tools/build/make_containers.py"
+  COMMAND "${PYTHON_EXECUTABLE}"
+          "${PROJECT_SOURCE_DIR}/tools/build/make_containers.py"
   DEPENDS "${PROJECT_SOURCE_DIR}/tools/build/make_containers.py" %s
   WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
   COMMENT "Making decorator headers")
