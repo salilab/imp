@@ -2,8 +2,8 @@
 
 git submodule update --recursive --init --rebase
 
-"$(git rev-parse --show-toplevel)/tools/dev_tools/cleanup_pycs.py"
-"$(git rev-parse --show-toplevel)/tools/dev_tools/setup_cmake.py" > /dev/null
+"@PYTHON@" "$(git rev-parse --show-toplevel)/tools/dev_tools/cleanup_pycs.py"
+"@PYTHON@" "$(git rev-parse --show-toplevel)/tools/dev_tools/setup_cmake.py" > /dev/null
 
 # Delete top-level VERSION file if untracked
 if git status --porcelain |grep -q '?? VERSION'; then
