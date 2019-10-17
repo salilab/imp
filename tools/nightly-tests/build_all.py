@@ -235,7 +235,7 @@ class Builder(object):
         if self.coverage:
             setup = os.path.join(os.path.dirname(sys.argv[0]), '..',
                                  'coverage', 'setup.py')
-            ret = subprocess.call([setup])
+            ret = subprocess.call([sys.executable, setup])
             if ret != 0:
                 raise OSError("coverage setup.py failed: %d" % ret)
 
