@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Patch IMP, ihm and RMF SWIG wrappers to search for Python extensions and DLLs
    in Python version-specific directories. These directories are created by
