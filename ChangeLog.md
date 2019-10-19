@@ -2,6 +2,8 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- The Windows .exe installer now supports Python 3.8, and has dropped support
+  for Python 3.4.
 - The old IMP::pmi::representation::Representation class has been removed
   from IMP.pmi. New applications should use IMP::pmi::topology::System instead.
 - The IMP::pmi::restraints::crosslinking::ISDCrossLinkMS class for handling
