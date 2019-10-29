@@ -514,15 +514,15 @@ class FixedFormatParser(_CrossLinkDataBaseStandardKeys):
 
     def get_data(self,input_string):
         if self.format is "PROXL":
-            tockens=input_string.split("\t")
+            tokens=input_string.split("\t")
             xl={}
-            if tockens[0]=="SEARCH ID(S)":
+            if tokens[0]=="SEARCH ID(S)":
                 return None
             else:
-                xl[self.protein1_key]=tockens[2]
-                xl[self.protein2_key]=tockens[4]
-                xl[self.residue1_key]=int(tockens[3])
-                xl[self.residue2_key]=int(tockens[5])
+                xl[self.protein1_key]=tokens[2]
+                xl[self.protein2_key]=tokens[4]
+                xl[self.residue1_key]=int(tokens[3])
+                xl[self.residue2_key]=int(tokens[5])
                 return xl
 
 class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
@@ -1820,10 +1820,10 @@ class CrossLinkDataBaseFromStructure(object):
 
         output_list_of_distance=[]
         for line in xwalkout.split("\n")[0:-2]:
-            tockens=line.split()
-            first=tockens[2]
-            second=tockens[3]
-            distance=float(tockens[6])
+            tokens=line.split()
+            first=tokens[2]
+            second=tokens[3]
+            distance=float(tokens[6])
             fs=first.split("-")
             ss=second.split("-")
             chainid1=fs[2]

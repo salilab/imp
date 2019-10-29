@@ -1159,8 +1159,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
         self.fh = fh
         self._state_ensemble_offset = 0
-        self._each_metadata = [] # list of metadata for each representation
-        self._file_datasets = []
         self._main_script = os.path.abspath(sys.argv[0])
 
         # Point to the main modeling script
@@ -1324,19 +1322,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
            can be written out to an mmCIF file with `ihm.dumper.write`,
            and/or modified using the ihm API."""
         self._add_restraint_model_fits()
-
-        # Add metadata to ihm.System
-        self.system.software.extend(m for m in self._metadata
-                                    if isinstance(m, ihm.Software))
-        self.system.citations.extend(m for m in self._metadata
-                                     if isinstance(m, ihm.Citation))
-        self.system.locations.extend(m for m in self._metadata
-                                   if isinstance(m, ihm.location.FileLocation))
-
-        # Point all locations to repos, if applicable
-        all_repos = [m for m in self._metadata
-                     if isinstance(m, ihm.location.Repository)]
-        self.system.update_locations_in_repositories(all_repos)
 
     def add_pdb_element(self, state, name, start, end, offset, pdbname,
                         chain, hier, representation=None):
@@ -1612,16 +1597,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                    representation)
         group.append(m)
         return m
-
-    def _update_locations(self, filelocs):
-        """Update FileLocation to point to a parent repository, if any"""
-        all_repos = [m for m in self._metadata
-                     if isinstance(m, ihm.location.Repository)]
-        for fileloc in filelocs:
-            ihm.location.Repository._update_in_repos(fileloc, all_repos)
-
-    _metadata = property(lambda self:
-                         itertools.chain.from_iterable(self._each_metadata))
 
 
 def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):

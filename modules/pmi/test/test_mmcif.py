@@ -1973,15 +1973,11 @@ _ihm_model_representation_details.description
             def __init__(self):
                 super(MockSystem, self).__init__()
                 self.actions = []
-            def update_locations_in_repositories(self, all_repos):
-                super(MockSystem, self).update_locations_in_repositories(
-                                                                all_repos)
-                self.actions.append('ul')
         fh = StringIO()
         po = IMP.pmi.mmcif.ProtocolOutput(fh)
         po.system = MockSystem()
         po.flush()
-        self.assertEqual(po.system.actions, ['ul'])
+        self.assertEqual(po.system.actions, [])
 
     def test_state_prefix(self):
         """Test _State.get_prefixed_name()"""
