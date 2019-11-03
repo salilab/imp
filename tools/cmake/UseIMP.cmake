@@ -34,6 +34,7 @@ function(imp_build_module sourcedir)
   endif()
 
   # Use same compiler flags as IMP itself
+  include(${RMF_MODULES_DIR}/IMPFindC++11.cmake)
   include(${RMF_MODULES_DIR}/IMPFindCompilerFlags.cmake)
 
   # Add include directories of mandatory IMP dependencies
