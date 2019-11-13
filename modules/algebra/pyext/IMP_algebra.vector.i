@@ -34,6 +34,8 @@ namespace IMP {
  }
 }
 
+%feature("python:maybecall", "0") IMP::algebra::VectorD<D>::__cmp__;
+%feature("python:maybecall", "0") IMP::algebra::VectorD<D>::__eq__;
 %extend IMP::algebra::VectorD<D> {
   /* Ignore C++ return value from inplace operators, so that SWIG does not
      generate a new SWIG wrapper for the return value (see above). */
