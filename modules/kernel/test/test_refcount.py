@@ -60,7 +60,6 @@ class Tests(IMP.test.TestCase):
         print("adding")
         rs.add_restraint(r)
         print(r)
-        print(r.__del__)
         # Now create new Python particle p from a C++ vector accessor
         # (front(), back(), [], etc.)
         # (not the Python IMP.Particle() constructor)
@@ -90,7 +89,6 @@ class Tests(IMP.test.TestCase):
         print("deleting p")
         #del p
         # p.__del__
-        print(p.__del__)
         del p
         # Python reference m, r, rp
         print("checking p")
