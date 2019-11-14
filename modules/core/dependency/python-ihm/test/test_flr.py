@@ -249,93 +249,100 @@ class Tests(unittest.TestCase):
         ## Initialization with only one parameter given should not add an entry
         e1 = ihm.flr.Experiment(instrument = 'foo')
         self.assertEqual(len(e1.instrument_list), 0)
-        self.assertEqual(len(e1.exp_setting_list),0)
+        self.assertEqual(len(e1.inst_setting_list),0)
+        self.assertEqual(len(e1.exp_condition_list),0)
         self.assertEqual(len(e1.sample_list),0)
 
         ## Correct initialization should fill the lists
         e2 = ihm.flr.Experiment(instrument = 'foo',
-                               exp_setting = 'bar',
-                               sample = 'foo2',
+                               inst_setting = 'bar',
+                               exp_condition='foo2',
+                               sample = 'foo3',
                                details = 'bar2')
         self.assertEqual(len(e2.instrument_list), 1)
         self.assertEqual(e2.instrument_list[0], 'foo')
-        self.assertEqual(e2.exp_setting_list[0], 'bar')
-        self.assertEqual(e2.sample_list[0], 'foo2')
+        self.assertEqual(e2.inst_setting_list[0], 'bar')
+        self.assertEqual(e2.exp_condition_list[0],'foo2')
+        self.assertEqual(e2.sample_list[0], 'foo3')
         self.assertEqual(e2.details_list[0], 'bar2')
 
         ## Initialization without details given should still have an entry in the list
         e3 = ihm.flr.Experiment(instrument = 'foo',
-                                exp_setting = 'bar',
+                                inst_setting = 'bar',
+                                exp_condition = 'bar2',
                                 sample = 'foo2')
         self.assertEqual(len(e3.details_list),1)
         self.assertIsNone(e3.details_list[0])
-
 
     def test_Experiment_Add_entry(self):
         """ Test addition of an entry to the experiment. """
         ## Adding to an empty Experiment
         e1 = ihm.flr.Experiment()
         e1.add_entry(instrument = 'foo',
-                     exp_setting = 'bar',
-                     sample = 'foo2',
+                     inst_setting = 'bar',
+                     exp_condition = 'foo2',
+                     sample = 'foo3',
                      details = 'bar2')
         self.assertEqual(e1.instrument_list[0],'foo')
-        self.assertEqual(e1.exp_setting_list[0], 'bar')
-        self.assertEqual(e1.sample_list[0],'foo2')
+        self.assertEqual(e1.inst_setting_list[0], 'bar')
+        self.assertEqual(e1.exp_condition_list[0],'foo2')
+        self.assertEqual(e1.sample_list[0],'foo3')
         self.assertEqual(e1.details_list[0], 'bar2')
 
         ## adding to an existing Experiment
         e2 = ihm.flr.Experiment(instrument = 'foo',
-                               exp_setting = 'foo2',
-                               sample = 'foo3',
-                               details = 'foo4')
+                               inst_setting = 'foo2',
+                               exp_condition='foo3',
+                               sample = 'foo4',
+                               details = 'foo5')
         e2.add_entry(instrument = 'bar',
-                     exp_setting = 'bar2',
-                     sample = 'bar3',
-                     details = 'bar4')
+                     inst_setting = 'bar2',
+                     exp_condition= 'bar3',
+                     sample = 'bar4',
+                     details = 'bar5')
         self.assertEqual(e2.instrument_list, ['foo','bar'])
-        self.assertEqual(e2.exp_setting_list, ['foo2','bar2'])
-        self.assertEqual(e2.sample_list, ['foo3','bar3'])
-        self.assertEqual(e2.details_list, ['foo4','bar4'])
+        self.assertEqual(e2.inst_setting_list, ['foo2','bar2'])
+        self.assertEqual(e2.exp_condition_list, ['foo3', 'bar3'])
+        self.assertEqual(e2.sample_list, ['foo4','bar4'])
+        self.assertEqual(e2.details_list, ['foo5','bar5'])
 
     def test_Experiment_Get_entry_by_index(self):
         """ Test access to entries by index. """
         e = ihm.flr.Experiment()
-        e.add_entry(instrument = 'foo', exp_setting = 'foo2', sample = 'foo3', details = 'foo4')
-        e.add_entry(instrument = 'bar', exp_setting = 'bar2', sample = 'bar3', details = 'bar4')
-        e.add_entry(instrument = 'foobar', exp_setting = 'foobar2', sample = 'foobar3', details = 'foobar4')
+        e.add_entry(instrument = 'foo', inst_setting = 'foo2', exp_condition='foo3', sample = 'foo4', details = 'foo5')
+        e.add_entry(instrument = 'bar', inst_setting = 'bar2', exp_condition='bar3', sample = 'bar4', details = 'bar5')
+        e.add_entry(instrument = 'foobar', inst_setting = 'foobar2', exp_condition='foobar3', sample = 'foobar4', details = 'foobar5')
         return_value_index0 = e.get_entry_by_index(0)
         return_value_index1 = e.get_entry_by_index(1)
         return_value_index2 = e.get_entry_by_index(2)
-        self.assertEqual(return_value_index0, ('foo','foo2','foo3','foo4'))
-        self.assertEqual(return_value_index1, ('bar','bar2','bar3','bar4'))
-        self.assertEqual(return_value_index2, ('foobar','foobar2','foobar3','foobar4'))
+        self.assertEqual(return_value_index0, ('foo','foo2','foo3','foo4','foo5'))
+        self.assertEqual(return_value_index1, ('bar','bar2','bar3','bar4','bar5'))
+        self.assertEqual(return_value_index2, ('foobar','foobar2','foobar3','foobar4','foobar5'))
 
     def test_Experiment_Contains(self):
         """ Test whether experiment contains a combination of instrument, exp_setting, and sample. """
         ## An empty experiment should not contain anything
         e1 = ihm.flr.Experiment()
-        self.assertFalse(e1.contains('foo','foo2','foo3'))
+        self.assertFalse(e1.contains('foo','foo2','foo3','foo4'))
         ## After addition, the entry should be contained
-        e1.add_entry(instrument = 'foo', exp_setting='foo2',sample = 'foo3')
-        e1.add_entry(instrument = 'bar', exp_setting='bar2',sample = 'bar3')
-        self.assertTrue(e1.contains('foo','foo2','foo3'))
+        e1.add_entry(instrument = 'foo', inst_setting='foo2', exp_condition='foo3', sample = 'foo4')
+        e1.add_entry(instrument = 'bar', inst_setting='bar2', exp_condition='bar3', sample = 'bar4')
+        self.assertTrue(e1.contains('foo','foo2','foo3','foo4'))
         ## If one of the entries is not contained, then False
-        self.assertFalse(e1.contains('foo2','foo2','foo4'))
-        self.assertFalse(e1.contains('foobar','foobar2','foobar3'))
+        self.assertFalse(e1.contains('foo2','foo2','foo4','foo5'))
+        self.assertFalse(e1.contains('foobar','foobar2','foobar3','foobar4'))
 
     def test_Experiment_Eq(self):
         """ Test equality and inequality of Experiment objects. """
         e_ref = ihm.flr.Experiment()
-        e_ref.add_entry(instrument = 'foo', exp_setting='foo2',sample = 'foo3')
+        e_ref.add_entry(instrument = 'foo', inst_setting='foo2', exp_condition = 'foo3', sample = 'foo4')
         e_equal = ihm.flr.Experiment()
-        e_equal.add_entry(instrument = 'foo', exp_setting='foo2',sample = 'foo3')
+        e_equal.add_entry(instrument = 'foo', inst_setting='foo2', exp_condition = 'foo3', sample = 'foo4')
         e_unequal = ihm.flr.Experiment()
-        e_unequal.add_entry(instrument = 'bar', exp_setting='bar2',sample = 'bar3')
+        e_unequal.add_entry(instrument = 'bar', inst_setting='bar2', exp_condition = 'bar3', sample = 'bar4')
         self.assertTrue(e_ref == e_equal)
         self.assertFalse(e_ref == e_unequal)
         self.assertTrue(e_ref != e_unequal)
-
 
     def test_Instrument_Init(self):
         """ Test initialization of Instrument. """
@@ -351,16 +358,30 @@ class Tests(unittest.TestCase):
         self.assertFalse(i_ref == i_unequal)
         self.assertTrue(i_ref != i_unequal)
 
-    def test_exp_setting_init(self):
-        """ Test initialization of ExpSetting."""
-        e = ihm.flr.ExpSetting(details = 'foo')
+    def test_inst_setting_init(self):
+        """ Test initialization of InstSetting."""
+        e = ihm.flr.InstSetting(details = 'foo')
         self.assertEqual(e.details, 'foo')
 
-    def test_exp_setting_eq(self):
-        """ Test equality and inequality of ExpSetting objects."""
-        e_ref = ihm.flr.ExpSetting(details = 'foo')
-        e_equal = ihm.flr.ExpSetting(details = 'foo')
-        e_unequal = ihm.flr.ExpSetting(details = 'bar')
+    def test_inst_setting_eq(self):
+        """ Test equality and inequality of InstSetting objects."""
+        e_ref = ihm.flr.InstSetting(details = 'foo')
+        e_equal = ihm.flr.InstSetting(details = 'foo')
+        e_unequal = ihm.flr.InstSetting(details = 'bar')
+        self.assertTrue(e_ref == e_equal)
+        self.assertFalse(e_ref == e_unequal)
+        self.assertTrue(e_ref != e_unequal)
+
+    def test_exp_condition_init(self):
+        """ Test initialization of ExpCondition."""
+        e = ihm.flr.ExpCondition(details = 'foo')
+        self.assertEqual(e.details, 'foo')
+
+    def test_exp_condition_eq(self):
+        """ Test equality and inequality of ExpCondition objects."""
+        e_ref = ihm.flr.ExpCondition(details = 'foo')
+        e_equal = ihm.flr.ExpCondition(details = 'foo')
+        e_unequal = ihm.flr.ExpCondition(details = 'bar')
         self.assertTrue(e_ref == e_equal)
         self.assertFalse(e_ref == e_unequal)
         self.assertTrue(e_ref != e_unequal)
@@ -371,9 +392,13 @@ class Tests(unittest.TestCase):
                                   sample_probe_1 = 'this_sample_probe_1',
                                   sample_probe_2 = 'this_sample_probe_2',
                                   forster_radius = 'this_forster_radius',
+                                  type = 'intensity-based',
                                   calibration_parameters = 'this_calibration_parameters',
+                                  lifetime_fit_model = 'this_lifetime_fit_model',
+                                  ref_measurement_group = 'this_ref_measurement_group',
                                   method_name = 'this_method_name',
                                   chi_square_reduced = 'this_chi_square_reduced',
+                                  donor_only_fraction='this_donly_fraction',
                                   dataset='this_dataset_list_id',
                                   external_file = 'this_external_file',
                                   software = 'this_software')
@@ -381,12 +406,22 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.sample_probe_1, 'this_sample_probe_1')
         self.assertEqual(f.sample_probe_2, 'this_sample_probe_2')
         self.assertEqual(f.forster_radius, 'this_forster_radius')
+        self.assertEqual(f.type, 'intensity-based')
         self.assertEqual(f.calibration_parameters, 'this_calibration_parameters')
+        self.assertEqual(f.lifetime_fit_model, 'this_lifetime_fit_model')
+        self.assertEqual(f.ref_measurement_group,'this_ref_measurement_group')
         self.assertEqual(f.method_name, 'this_method_name')
         self.assertEqual(f.chi_square_reduced, 'this_chi_square_reduced')
+        self.assertEqual(f.donor_only_fraction, 'this_donly_fraction')
         self.assertEqual(f.dataset, 'this_dataset_list_id')
         self.assertEqual(f.external_file, 'this_external_file')
         self.assertEqual(f.software, 'this_software')
+
+        self.assertRaises(ValueError,
+            ihm.flr.FRETAnalysis, experiment='this_experiment',
+            sample_probe_1='this_sample_probe_1',
+            sample_probe_2='this_sample_probe_2',
+            forster_radius='this_forster_radius', type='garbage')
 
     def test_fret_analysis_eq(self):
         """ Test equality and inequality of FRETAnalysis objects. """
@@ -394,9 +429,11 @@ class Tests(unittest.TestCase):
                                   sample_probe_1 = 'this_sample_probe_1',
                                   sample_probe_2 = 'this_sample_probe_2',
                                   forster_radius = 'this_forster_radius',
+                                  type = 'intensity-based',
                                   calibration_parameters = 'this_calibration_parameters',
                                   method_name = 'this_method_name',
                                   chi_square_reduced = 'this_chi_square_reduced',
+                                  donor_only_fraction='this_donly_fraction',
                                   dataset='this_dataset_list_id',
                                   external_file = 'this_external_file',
                                   software = 'this_software')
@@ -404,9 +441,11 @@ class Tests(unittest.TestCase):
                                   sample_probe_1 = 'this_sample_probe_1',
                                   sample_probe_2 = 'this_sample_probe_2',
                                   forster_radius = 'this_forster_radius',
+                                  type='intensity-based',
                                   calibration_parameters = 'this_calibration_parameters',
                                   method_name = 'this_method_name',
                                   chi_square_reduced = 'this_chi_square_reduced',
+                                  donor_only_fraction='this_donly_fraction',
                                   dataset='this_dataset_list_id',
                                   external_file = 'this_external_file',
                                   software = 'this_software')
@@ -414,12 +453,141 @@ class Tests(unittest.TestCase):
                               sample_probe_1='foo',
                               sample_probe_2='this_sample_probe_2',
                               forster_radius='this_forster_radius',
+                              type='intensity-based',
                               calibration_parameters='this_calibration_parameters',
                               method_name='this_method_name',
                               chi_square_reduced='this_chi_square_reduced',
+                              donor_only_fraction='this_donly_fraction',
                               dataset='this_dataset_list_id',
                               external_file='this_external_file',
                               software='this_software')
+        f_unequal_type = ihm.flr.FRETAnalysis(experiment = 'this_experiment',
+                                  sample_probe_1 = 'this_sample_probe_1',
+                                  sample_probe_2 = 'this_sample_probe_2',
+                                  forster_radius = 'this_forster_radius',
+                                  type = 'lifetime-based',
+                                  calibration_parameters = 'this_calibration_parameters',
+                                  method_name = 'this_method_name',
+                                  chi_square_reduced = 'this_chi_square_reduced',
+                                  donor_only_fraction='this_donly',
+                                  dataset='this_dataset_list_id',
+                                  external_file = 'this_external_file',
+                                  software = 'this_software')
+        self.assertTrue(f_ref == f_equal)
+        self.assertFalse(f_ref == f_unequal)
+        self.assertTrue(f_ref != f_unequal)
+        self.assertFalse(f_ref == f_unequal_type)
+        self.assertTrue(f_ref != f_unequal_type)
+
+    def test_lifetime_fit_model_init(self):
+        """ Test initialization of LifetimeFitModel."""
+        f = ihm.flr.LifetimeFitModel(name = 'this_name',
+                                     description = 'this_description',
+                                     external_file = 'this_ext_file',
+                                     citation = 'this_citation')
+        self.assertEqual(f.name, 'this_name')
+        self.assertEqual(f.description, 'this_description')
+        self.assertEqual(f.external_file, 'this_ext_file')
+        self.assertEqual(f.citation, 'this_citation')
+
+    def test_lifetime_fit_model_eq(self):
+        """ Test equality and inequality of LifeTimeFitModel objects."""
+        f_ref = ihm.flr.LifetimeFitModel(name = 'this_name', description = 'this_desc')
+        f_equal = ihm.flr.LifetimeFitModel(name = 'this_name', description = 'this_desc')
+        f_unequal = ihm.flr.LifetimeFitModel(name = 'other_name', description = 'this_desc')
+        self.assertTrue(f_ref == f_equal)
+        self.assertFalse(f_ref == f_unequal)
+        self.assertTrue(f_ref != f_unequal)
+
+    def test_ref_measurement_group_init(self):
+        """ Test initialization of RefMeasurementGroup."""
+        r = ihm.flr.RefMeasurementGroup()
+        self.assertEqual(r.ref_measurement_list, [])
+
+    def test_ref_measurement_group_add_ref_measurement(self):
+        """ Test the addition of a RefMeasurement to the group."""
+        r = ihm.flr.RefMeasurementGroup()
+        r.add_ref_measurement('foo')
+        r.add_ref_measurement('bar')
+        self.assertEqual(r.ref_measurement_list, ['foo','bar'])
+
+    def test_ref_measurement_group_get_info(self):
+        """ Test the retrieval of the ref_measurement_list."""
+        r = ihm.flr.RefMeasurementGroup()
+        r.add_ref_measurement('foo')
+        r.add_ref_measurement('bar')
+        return_value = r.get_info()
+        self.assertEqual(return_value, ['foo', 'bar'])
+
+    def test_ref_measurement_group_eq(self):
+        """ Test equality and inequality of RefMeasurementGroup objects."""
+        r_ref = ihm.flr.RefMeasurementGroup()
+        r_ref.add_ref_measurement('foo')
+        r_equal = ihm.flr.RefMeasurementGroup()
+        r_equal.add_ref_measurement('foo')
+        r_unequal = ihm.flr.RefMeasurementGroup()
+        r_unequal.add_ref_measurement('foo2')
+        self.assertTrue(r_ref == r_equal)
+        self.assertFalse(r_ref == r_unequal)
+        self.assertTrue(r_ref != r_unequal)
+
+    def test_ref_measurement_init(self):
+        """ Test initialization of RefMeasurement."""
+        r1 = ihm.flr.RefMeasurement(ref_sample_probe = 'this_ref_sample_probe',
+                                   details = 'this_details')
+        self.assertEqual(r1.ref_sample_probe, 'this_ref_sample_probe')
+        self.assertEqual(r1.details, 'this_details')
+        self.assertEqual(r1.list_of_lifetimes, [])
+
+        r2 = ihm.flr.RefMeasurement(ref_sample_probe = 'this_ref_sample_probe_2',
+                                   details = 'this_details_2',
+                                   list_of_lifetimes = ['foo','bar'])
+        self.assertEqual(r2.ref_sample_probe, 'this_ref_sample_probe_2')
+        self.assertEqual(r2.details, 'this_details_2')
+        self.assertEqual(r2.list_of_lifetimes, ['foo','bar'])
+
+    def test_ref_measurement_add_lifetime(self):
+        """ Test addition of to the list_of_lifetimes."""
+        r = ihm.flr.RefMeasurement(ref_sample_probe = 'this_ref_sample_probe',
+                                    details = 'this_details')
+        r.add_lifetime('foo')
+        r.add_lifetime('bar')
+        self.assertEqual(r.list_of_lifetimes, ['foo','bar'])
+
+    def test_ref_measurement_eq(self):
+        """ Test equality and inequality of RefMeasurement objects."""
+        r_ref = ihm.flr.RefMeasurement(ref_sample_probe = 'this_ref_sample_probe_1',
+                                    details = 'this_details_1')
+        r_equal = ihm.flr.RefMeasurement(ref_sample_probe='this_ref_sample_probe_1',
+                                    details='this_details_1')
+        r_unequal = ihm.flr.RefMeasurement(ref_sample_probe='this_ref_sample_probe_2',
+                                    details='this_details_2')
+        r_unequal_list = ihm.flr.RefMeasurement(ref_sample_probe = 'this_ref_sample_probe_1',
+                                    details = 'this_details_1',
+                                    list_of_lifetimes = ['foo'])
+        self.assertTrue(r_ref == r_equal)
+        self.assertTrue(r_ref != r_unequal)
+        self.assertTrue(r_ref != r_unequal_list)
+        self.assertFalse(r_ref == r_unequal)
+        self.assertFalse(r_ref == r_unequal_list)
+
+    def test_ref_measurement_lifetime_init(self):
+        """ Test initialization of RefMeasuremenLifetime objects."""
+        f = ihm.flr.RefMeasurementLifetime(species_fraction='this_frac',
+                                           lifetime='this_lifetime',
+                                           species_name='foo')
+        self.assertEqual(f.species_fraction, 'this_frac')
+        self.assertEqual(f.lifetime, 'this_lifetime')
+        self.assertEqual(f.species_name, 'foo')
+
+    def test_ref_measurement_lifetime_eq(self):
+        """ Test equality and inequality of RefMeasurementLifetime objects."""
+        f_ref = ihm.flr.RefMeasurementLifetime(species_fraction = 'this_frac_1',
+                                               lifetime = 'this_lifetime_1')
+        f_equal = ihm.flr.RefMeasurementLifetime(species_fraction = 'this_frac_1',
+                                               lifetime = 'this_lifetime_1')
+        f_unequal = ihm.flr.RefMeasurementLifetime(species_fraction = 'this_frac_2',
+                                               lifetime = 'this_lifetime_1')
         self.assertTrue(f_ref == f_equal)
         self.assertFalse(f_ref == f_unequal)
         self.assertTrue(f_ref != f_unequal)

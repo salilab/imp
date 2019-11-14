@@ -2942,8 +2942,10 @@ _ihm_predicted_contact_restraint.software_id
         cur_entity_assembly.add_entity(entity=cur_entity_2, num_copies=2)
 
         cur_instrument = ihm.flr.Instrument(details='My_Instrument')
-        cur_exp_setting_1 = ihm.flr.ExpSetting(details='My_Exp_setting_1')
-        cur_exp_setting_2 = ihm.flr.ExpSetting(details='My_Exp_setting_2')
+        cur_inst_setting_1 = ihm.flr.InstSetting(details='My_Inst_setting_1')
+        cur_inst_setting_2 = ihm.flr.InstSetting(details='My_Inst_setting_2')
+        cur_exp_condition_1 = ihm.flr.ExpCondition(details='My_Exp_condition_1')
+        cur_exp_condition_2 = ihm.flr.ExpCondition(details='My_Exp_condition_2')
 
         cur_sample_condition_1 = ihm.flr.SampleCondition(
                                      details='My_Sample_condition_1')
@@ -2962,13 +2964,27 @@ _ihm_predicted_contact_restraint.software_id
                                       description='Sample_2',
                                       details='Details sample 2',
                                       solvent_phase='liquid')
+        ## Reference sample
+        cur_sample_3 = ihm.flr.Sample(entity_assembly=cur_entity_assembly,
+                                      num_of_probes=1,
+                                      condition=cur_sample_condition_1,
+                                      description='Reference Sample',
+                                      details='Details Reference Sample',
+                                      solvent_phase='liquid')
+
         cur_experiment = ihm.flr.Experiment()
         cur_experiment.add_entry(instrument=cur_instrument,
-                                 exp_setting=cur_exp_setting_1,
+                                 inst_setting=cur_inst_setting_1,
+                                 exp_condition=cur_exp_condition_1,
                                  sample=cur_sample_1)
         cur_experiment.add_entry(instrument=cur_instrument,
-                                 exp_setting=cur_exp_setting_2,
+                                 inst_setting=cur_inst_setting_2,
+                                 exp_condition=cur_exp_condition_2,
                                  sample=cur_sample_2)
+        cur_experiment.add_entry(instrument=cur_instrument,
+                                 inst_setting=cur_inst_setting_1,
+                                 exp_condition=cur_exp_condition_1,
+                                 sample=cur_sample_3)
         ## Probes
         cur_probe_1 = ihm.flr.Probe()
         cur_probe_2 = ihm.flr.Probe()
@@ -3055,6 +3071,11 @@ _ihm_predicted_contact_restraint.software_id
                                                                   fluorophore_type='acceptor',
                                                                   poly_probe_position=cur_poly_probe_position_3,
                                                                   description='Acceptor in position2-position3')
+        cur_sample_probe_details_5 = ihm.flr.SampleProbeDetails(sample=cur_sample_3 ,
+                                                               probe=cur_probe_1,
+                                                               fluorophore_type='donor',
+                                                               poly_probe_position=cur_poly_probe_position_1,
+                                                               description='Donor-only on reference sample')
         ## Poly_probe_conjugate
         ## Chem Descriptor ID 5
         cur_poly_probe_conjugate_chem_descriptor = ihm.ChemDescriptor(auth_name='Conjugate',
@@ -3072,9 +3093,13 @@ _ihm_predicted_contact_restraint.software_id
         cur_poly_probe_conjugate_4 = ihm.flr.PolyProbeConjugate(sample_probe=cur_sample_probe_details_4,
                                                                   chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
                                                                   ambiguous_stoichiometry=False)
+        cur_poly_probe_conjugate_5 = ihm.flr.PolyProbeConjugate(sample_probe=cur_sample_probe_details_5,
+                                                                chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
+                                                                ambiguous_stoichiometry=False)
         cur_flr_data.poly_probe_conjugates.extend(
                 (cur_poly_probe_conjugate_1, cur_poly_probe_conjugate_2,
-                 cur_poly_probe_conjugate_3, cur_poly_probe_conjugate_4))
+                 cur_poly_probe_conjugate_3, cur_poly_probe_conjugate_4,
+                 cur_poly_probe_conjugate_5))
 
         ## Forster_radius
         cur_forster_radius = ihm.flr.FRETForsterRadius(donor_probe=cur_probe_1,
@@ -3087,11 +3112,31 @@ _ihm_predicted_contact_restraint.software_id
                         phi_acceptor=0.35, alpha=2.4, gg_gr_ratio=0.4, a_b=0.8)
         cur_fret_calibration_parameters_2 = ihm.flr.FRETCalibrationParameters(
                         phi_acceptor=0.35, alpha=2.4, gg_gr_ratio=0.38, a_b=0.8)
-        ## Fret_analysis
+
+        ## LifetimeFitModel
+        cur_lifetime_fit_model = ihm.flr.LifetimeFitModel(name='Lifetime fit model 1',
+                                                          description='Description of model')
+
+        ## RefMeasurementLifetime
+        cur_lifetime_1 = ihm.flr.RefMeasurementLifetime(species_fraction=0.6,
+                                                        lifetime=3.2)
+        cur_lifetime_2 = ihm.flr.RefMeasurementLifetime(species_fraction=0.4,
+                                                        lifetime=1.4)
+        ## RefMeasurement
+        cur_ref_measurement_1 = ihm.flr.RefMeasurement(ref_sample_probe=cur_sample_probe_details_5,
+                                                       details='Reference Measurement 1')
+        cur_ref_measurement_1.add_lifetime(cur_lifetime_1)
+        cur_ref_measurement_1.add_lifetime(cur_lifetime_2)
+        ## RefMeasurementGroup
+        cur_lifetime_ref_measurement_group = ihm.flr.RefMeasurementGroup(details='Reference measurement group 1')
+        cur_lifetime_ref_measurement_group.add_ref_measurement(cur_ref_measurement_1)
+
+        ## FretAnalysis
         cur_fret_analysis_1 = ihm.flr.FRETAnalysis(experiment=cur_experiment,
                                                     sample_probe_1=cur_sample_probe_details_1,
                                                     sample_probe_2=cur_sample_probe_details_2,
                                                     forster_radius=cur_forster_radius,
+                                                    type='intensity-based',
                                                     calibration_parameters=cur_fret_calibration_parameters_1,
                                                     method_name='PDA',
                                                     chi_square_reduced=1.5,
@@ -3100,10 +3145,23 @@ _ihm_predicted_contact_restraint.software_id
                                                     sample_probe_1=cur_sample_probe_details_3,
                                                     sample_probe_2=cur_sample_probe_details_4,
                                                     forster_radius=cur_forster_radius,
+                                                    type='intensity-based',
                                                     calibration_parameters=cur_fret_calibration_parameters_2,
                                                     method_name='PDA',
                                                     chi_square_reduced=1.8,
                                                     dataset=dataset_1)
+        ## lifetime-based FRETAnalysis
+        cur_fret_analysis_3 = ihm.flr.FRETAnalysis(experiment=cur_experiment,
+                                                   sample_probe_1=cur_sample_probe_details_1,
+                                                   sample_probe_2=cur_sample_probe_details_2,
+                                                   forster_radius=cur_forster_radius,
+                                                   type='lifetime-based',
+                                                   lifetime_fit_model=cur_lifetime_fit_model,
+                                                   ref_measurement_group=cur_lifetime_ref_measurement_group,
+                                                   method_name='Lifetime fit',
+                                                   chi_square_reduced=1.6,
+                                                   dataset=dataset_1)
+
         ## Peak_assignment
         cur_peak_assignment = ihm.flr.PeakAssignment(method_name='Population', details='Peaks were assigned by population fractions.')
 
@@ -3128,10 +3186,21 @@ _ihm_predicted_contact_restraint.software_id
                                                                         state=cur_state,
                                                                         population_fraction=0.80,
                                                                         peak_assignment=cur_peak_assignment)
+        cur_fret_distance_restraint_3 = ihm.flr.FRETDistanceRestraint(sample_probe_1=cur_sample_probe_details_1,
+                                                                        sample_probe_2=cur_sample_probe_details_2,
+                                                                        analysis=cur_fret_analysis_3,
+                                                                        distance=53.5,
+                                                                        distance_error_plus=2.5,
+                                                                        distance_error_minus=2.3,
+                                                                        distance_type='<R_DA>_E',
+                                                                        state=cur_state,
+                                                                        population_fraction=0.80,
+                                                                        peak_assignment=cur_peak_assignment)
 
         cur_fret_distance_restraint_group = ihm.flr.FRETDistanceRestraintGroup()
         cur_fret_distance_restraint_group.add_distance_restraint(cur_fret_distance_restraint_1)
         cur_fret_distance_restraint_group.add_distance_restraint(cur_fret_distance_restraint_2)
+        cur_fret_distance_restraint_group.add_distance_restraint(cur_fret_distance_restraint_3)
 
         cur_flr_data.distance_restraint_groups.append(
                                 cur_fret_distance_restraint_group)
@@ -3232,8 +3301,11 @@ _ihm_predicted_contact_restraint.software_id
         experiment_dumper = ihm.dumper._FLRExperimentDumper()
         experiment_dumper.finalize(system)
 
-        exp_setting_dumper = ihm.dumper._FLRExpSettingDumper()
-        exp_setting_dumper.finalize(system)
+        inst_setting_dumper = ihm.dumper._FLRInstSettingDumper()
+        inst_setting_dumper.finalize(system)
+
+        exp_condition_dumper = ihm.dumper._FLR_ExpConditionDumper()
+        exp_condition_dumper.finalize(system)
 
         instrument_dumper = ihm.dumper._FLRInstrumentDumper()
         instrument_dumper.finalize(system)
@@ -3265,6 +3337,12 @@ _ihm_predicted_contact_restraint.software_id
         parameters_dumper = ihm.dumper._FLRCalibrationParametersDumper()
         parameters_dumper.finalize(system)
 
+        lifetime_fit_model_dumper = ihm.dumper._FLRLifetimeFitModelDumper()
+        lifetime_fit_model_dumper.finalize(system)
+
+        ref_measurement_dumper = ihm.dumper._FLRRefMeasurementDumper()
+        ref_measurement_dumper.finalize(system)
+
         analysis_dumper = ihm.dumper._FLRAnalysisDumper()
         analysis_dumper.finalize(system)
 
@@ -3295,21 +3373,33 @@ loop_
 _flr_experiment.ordinal_id
 _flr_experiment.id
 _flr_experiment.instrument_id
-_flr_experiment.exp_setting_id
+_flr_experiment.inst_setting_id
+_flr_experiment.exp_condition_id
 _flr_experiment.sample_id
 _flr_experiment.details
-1 1 1 1 1 .
-2 1 1 2 2 .
+1 1 1 1 1 1 .
+2 1 1 2 2 2 .
+3 1 1 1 1 3 .
 #
 """)
 
-        out = _get_dumper_output(exp_setting_dumper, system)
+        out = _get_dumper_output(inst_setting_dumper, system)
         self.assertEqual(out, """#
 loop_
-_flr_exp_setting.id
-_flr_exp_setting.details
-1 My_Exp_setting_1
-2 My_Exp_setting_2
+_flr_inst_setting.id
+_flr_inst_setting.details
+1 My_Inst_setting_1
+2 My_Inst_setting_2
+#
+""")
+
+        out = _get_dumper_output(exp_condition_dumper, system)
+        self.assertEqual(out, """#
+loop_
+_flr_exp_condition.id
+_flr_exp_condition.details
+1 My_Exp_condition_1
+2 My_Exp_condition_2
 #
 """)
 
@@ -3357,6 +3447,7 @@ _flr_sample.sample_details
 _flr_sample.solvent_phase
 1 1 2 1 Sample_1 'Details sample 1' liquid
 2 1 2 2 Sample_2 'Details sample 2' liquid
+3 1 1 1 'Reference Sample' 'Details Reference Sample' liquid
 #
 """)
 
@@ -3396,6 +3487,7 @@ _flr_sample_probe_details.poly_probe_position_id
 2 1 2 acceptor 'Acceptor in position1-position3' 2
 3 2 1 donor 'Donor in position2-position3' 3
 4 2 2 acceptor 'Acceptor in position2-position3' 2
+5 3 1 donor 'Donor-only on reference sample' 1
 #
 """)
 
@@ -3445,6 +3537,7 @@ _flr_poly_probe_conjugate.probe_stoichiometry
 2 2 5 NO .
 3 3 5 NO .
 4 4 5 NO .
+5 5 5 NO .
 #
 """)
 
@@ -3477,22 +3570,91 @@ _flr_fret_calibration_parameters.a_b
 #
 """)
 
+        out = _get_dumper_output(ref_measurement_dumper, system)
+        self.assertEqual(out, """#
+loop_
+_flr_reference_measurement_group.id
+_flr_reference_measurement_group.num_measurements
+_flr_reference_measurement_group.details
+1 1 'Reference measurement group 1'
+#
+#
+loop_
+_flr_reference_measurement_group_link.group_id
+_flr_reference_measurement_group_link.reference_measurement_id
+1 1
+#
+#
+loop_
+_flr_reference_measurement.id
+_flr_reference_measurement.reference_sample_probe_id
+_flr_reference_measurement.num_species
+_flr_reference_measurement.details
+1 5 2 'Reference Measurement 1'
+#
+#
+loop_
+_flr_reference_measurement_lifetime.ordinal_id
+_flr_reference_measurement_lifetime.reference_measurement_id
+_flr_reference_measurement_lifetime.species_name
+_flr_reference_measurement_lifetime.species_fraction
+_flr_reference_measurement_lifetime.lifetime
+1 1 . 0.600 3.200
+2 1 . 0.400 1.400
+#
+""")
+
+        out = _get_dumper_output(lifetime_fit_model_dumper, system)
+        self.assertEqual(out, """#
+loop_
+_flr_lifetime_fit_model.id
+_flr_lifetime_fit_model.name
+_flr_lifetime_fit_model.description
+_flr_lifetime_fit_model.external_file_id
+_flr_lifetime_fit_model.citation_id
+1 'Lifetime fit model 1' 'Description of model' . .
+#
+""")
+
         out = _get_dumper_output(analysis_dumper, system)
         self.assertEqual(out, """#
 loop_
 _flr_fret_analysis.id
 _flr_fret_analysis.experiment_id
+_flr_fret_analysis.type
 _flr_fret_analysis.sample_probe_id_1
 _flr_fret_analysis.sample_probe_id_2
 _flr_fret_analysis.forster_radius_id
-_flr_fret_analysis.calibration_parameters_id
-_flr_fret_analysis.method_name
-_flr_fret_analysis.chi_square_reduced
 _flr_fret_analysis.dataset_list_id
 _flr_fret_analysis.external_file_id
 _flr_fret_analysis.software_id
-1 1 1 2 1 1 PDA 1.500 1 . .
-2 1 3 4 1 2 PDA 1.800 1 . .
+1 1 intensity-based 1 2 1 1 . .
+2 1 intensity-based 3 4 1 1 . .
+3 1 lifetime-based 1 2 1 1 . .
+#
+#
+loop_
+_flr_fret_analysis_intensity.ordinal_id
+_flr_fret_analysis_intensity.analysis_id
+_flr_fret_analysis_intensity.calibration_parameters_id
+_flr_fret_analysis_intensity.donor_only_fraction
+_flr_fret_analysis_intensity.chi_square_reduced
+_flr_fret_analysis_intensity.method_name
+_flr_fret_analysis_intensity.details
+1 1 1 . 1.500 PDA .
+2 2 2 . 1.800 PDA .
+#
+#
+loop_
+_flr_fret_analysis_lifetime.ordinal_id
+_flr_fret_analysis_lifetime.analysis_id
+_flr_fret_analysis_lifetime.reference_measurement_group_id
+_flr_fret_analysis_lifetime.lifetime_fit_model_id
+_flr_fret_analysis_lifetime.donor_only_fraction
+_flr_fret_analysis_lifetime.chi_square_reduced
+_flr_fret_analysis_lifetime.method_name
+_flr_fret_analysis_lifetime.details
+1 3 1 1 . 1.600 'Lifetime fit' .
 #
 """)
 
@@ -3524,6 +3686,7 @@ _flr_fret_distance_restraint.population_fraction
 _flr_fret_distance_restraint.peak_assignment_id
 1 1 1 1 2 1 1 53.500 2.500 2.300 <R_DA>_E 0.800 1
 2 2 1 3 4 1 2 49.000 2.000 2.100 <R_DA>_E 0.800 1
+3 3 1 1 2 1 3 53.500 2.500 2.300 <R_DA>_E 0.800 1
 #
 """)
 

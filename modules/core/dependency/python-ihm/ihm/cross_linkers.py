@@ -38,3 +38,18 @@ edc = ihm.ChemDescriptor('EDC',
               smiles='CCN=C=NCCCN(C)C',
               inchi='1S/C8H17N3/c1-4-9-8-10-6-5-7-11(2)3/h4-7H2,1-3H3',
               inchi_key='LMDZBCPBFSXMTL-UHFFFAOYSA-N')
+
+dhso = ihm.ChemDescriptor('DHSO',
+              chemical_name='dihydrazide sulfoxide',
+              smiles='NNC(=O)CC[S](=O)CCC(=O)NN',
+              inchi='1S/C6H14N4O3S/c7-9-5(11)1-3-14(13)4-2-6(12)10-8'
+                    '/h1-4,7-8H2,(H,9,11)(H,10,12)',
+              inchi_key='XTCXQISMAWBOOT-UHFFFAOYSA-N')
+
+bmso = ihm.ChemDescriptor('BMSO',
+              chemical_name='bismaleimide sulfoxide',
+              smiles='O=C(CC[S](=O)CCC(=O)NCCN1C(=O)C=CC1=O)NCCN2C(=O)C=CC2=O',
+              inchi='1S/C18H22N4O7S/c23-13(19-7-9-21-15(25)1-2-16(21)26)5-'
+                    '11-30(29)12-6-14(24)20-8-10-22-17(27)3-4-18(22)28/h1-'
+                    '4H,5-12H2,(H,19,23)(H,20,24)',
+              inchi_key='PUNDHDZIOGBGHG-UHFFFAOYSA-N')

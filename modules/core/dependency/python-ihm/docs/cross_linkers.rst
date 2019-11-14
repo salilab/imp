@@ -31,3 +31,15 @@ The :mod:`ihm.cross_linkers` Python module
 .. data:: edc
 
    EDC cross-linker that links a carboxyl group with a primary amine.
+
+.. data:: dhso
+
+   DHSO (dihydrazide sulfoxide) MS-cleavable cross-linker that links
+   carboxyl groups, described in
+   `Gutierrez et al, 2016 <https://dx.doi.org/10.1021/acs.analchem.6b02240>`_.
+
+.. data:: bmso
+
+   BMSO (bismaleimide sulfoxide) MS-cleavable cross-linker that links
+   cysteines, described in
+   `Gutierrez et al, 2018 <https://dx.doi.org/10.1021/acs.analchem.8b01287>`_.

@@ -40,12 +40,27 @@ The :mod:`ihm.flr` Python module
 .. autoclass:: Instrument
    :members:
 
-.. autoclass:: ExpSetting
+.. autoclass:: InstSetting
    :members:
 
+.. autoclass:: ExpCondition
+   :members:   
+   
 .. autoclass:: FRETAnalysis
    :members:
 
+.. autoclass:: LifetimeFitModel
+   :members:
+
+.. autoclass:: RefMeasurementGroup
+   :members:
+
+.. autoclass:: RefMeasurement
+   :members:
+   
+.. autoclass:: RefMeasurementLifetime
+   :members:
+   
 .. autoclass:: FRETDistanceRestraintGroup
    :members:
 

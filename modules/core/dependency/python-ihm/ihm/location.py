@@ -6,6 +6,7 @@ import os
 class Location(object):
     """Identifies the location where a resource can be found.
 
+       Do not use this class itself, but one of its subclasses.
        Typically the resource may be found in a file (either on the local
        disk or at a DOI) - for this use one of the subclasses of
        :class:`FileLocation`. Alternatively the resource may be found in

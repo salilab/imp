@@ -21,6 +21,13 @@ try:
 except ImportError:
     _format = None
 
+
+class OldFileError(Exception):
+    """Exception raised if a file conforms to too old a version of the
+       IHM extension dictionary. See :func:`read`."""
+    pass
+
+
 def _make_new_entity():
     """Make a new Entity object"""
     e = ihm.Entity([])
@@ -560,10 +567,15 @@ class SystemReader(object):
         #: Mapping from ID to :class:`ihm.flr.FLRData` objects
         self.flr_data = IDMapper(self.system.flr_data, ihm.flr.FLRData)
 
-        #: Mapping from ID to :class:`ihm.flr.ExpSetting` objects
-        self.flr_exp_settings = _FLRIDMapper('_collection_flr_exp_setting',
+        #: Mapping from ID to :class:`ihm.flr.InstSetting` objects
+        self.flr_inst_settings = _FLRIDMapper('_collection_flr_inst_setting',
                                              None, self.flr_data,
-                                             ihm.flr.ExpSetting)
+                                             ihm.flr.InstSetting)
+
+        #: Mapping from ID to :class:`ihm.flr.ExpCondition` objects
+        self.flr_exp_conditions = _FLRIDMapper('_collection_flr_exp_condition',
+                                               None, self.flr_data,
+                                               ihm.flr.ExpCondition)
 
         #: Mapping from ID to :class:`ihm.flr.Instrument` objects
         self.flr_instruments = _FLRIDMapper('_collection_flr_instrument',
@@ -625,7 +637,31 @@ class SystemReader(object):
         #: Mapping from ID to :class:`ihm.flr.FRETAnalysis` objects
         self.flr_fret_analyses = _FLRIDMapper('_collection_flr_fret_analysis',
                             None, self.flr_data, ihm.flr.FRETAnalysis,
-                            *(None,)*10)
+                            *(None,)*9)
+
+        #: Mapping from ID to :class:`ihm.flr.LifetimeFitModel` objects
+        self.flr_lifetime_fit_models = _FLRIDMapper(
+                            '_collection_flr_lifetime_fit_model',
+                            None, self.flr_data, ihm.flr.LifetimeFitModel,
+                            *(None,)*4)
+
+        #: Mapping from ID to :class:`ihm.flr.RefMeasurementGroup` objects
+        self.flr_ref_measurement_groups = _FLRIDMapper(
+                            '_collection_flr_ref_measurement_group',
+                            None, self.flr_data, ihm.flr.RefMeasurementGroup,
+                            *(None,))
+
+        #: Mapping from ID to :class:`ihm.flr.RefMeasurement` objects
+        self.flr_ref_measurements = _FLRIDMapper(
+                            '_collection_flr_ref_measurement',
+                            None, self.flr_data, ihm.flr.RefMeasurement,
+                            *(None,)*3)
+
+        #: Mapping from ID to :class:`ihm.flr.RefMeasurementLifetime` objects
+        self.flr_ref_measurement_lifetimes = _FLRIDMapper(
+                            '_collection_flr_ref_measurement_lifetime',
+                            None, self.flr_data, ihm.flr.RefMeasurementLifetime,
+                            *(None,)*3)
 
         #: Mapping from ID to :class:`ihm.flr.PeakAssignment` objects
         self.flr_peak_assignments = _FLRIDMapper(
@@ -813,6 +849,24 @@ class _StructHandler(Handler):
     def __call__(self, title, entry_id):
         self.copy_if_present(self.system, locals(), keys=('title',),
                               mapkeys={'entry_id': 'id'})
+
+
+class _AuditConformHandler(Handler):
+    category = '_audit_conform'
+
+    def __call__(self, dict_name, dict_version):
+        # Reject old file versions if we can parse the version
+        if dict_name == 'ihm-extension.dic':
+            try:
+                major, minor = [int(x) for x in dict_version.split('.')]
+                if (major, minor) < (1, 0):
+                    raise OldFileError(
+                        "This version of python-ihm only supports reading "
+                        "files that conform to version 1.0 or later of the "
+                        "IHM extension dictionary. This file conforms to "
+                        "version %s." % dict_version)
+            except ValueError:
+                pass
 
 
 class _SoftwareHandler(Handler):
@@ -2276,25 +2330,37 @@ class _FLRExperimentHandler(Handler):
     category = '_flr_experiment'
 
     def __call__(self, ordinal_id, id, instrument_id,
-                 exp_setting_id, sample_id, details):
+                 inst_setting_id, exp_condition_id,
+                 sample_id, details):
         # Get the object or create the object
         experiment = self.sysr.flr_experiments.get_by_id(id)
         # Fill the object
         instrument = self.sysr.flr_instruments.get_by_id(instrument_id)
-        exp_setting = self.sysr.flr_exp_settings.get_by_id(exp_setting_id)
+        inst_setting = self.sysr.flr_inst_settings.get_by_id(inst_setting_id)
+        exp_condition = self.sysr.flr_exp_conditions.get_by_id(exp_condition_id)
         sample = self.sysr.flr_samples.get_by_id(sample_id)
-        experiment.add_entry(instrument=instrument, exp_setting=exp_setting,
-                             sample=sample, details=details)
+        experiment.add_entry(instrument=instrument, inst_setting=inst_setting,
+                             exp_condition=exp_condition, sample=sample, details=details)
 
 
-class _FLRExpSettingHandler(Handler):
-    category = '_flr_exp_setting'
+class _FLRInstSettingHandler(Handler):
+    category = '_flr_inst_setting'
 
     def __call__(self, id, details):
         # Get the object or create the object
-        cur_exp_setting = self.sysr.flr_exp_settings.get_by_id(id)
+        cur_inst_setting = self.sysr.flr_inst_settings.get_by_id(id)
         # Set the variables
-        self.copy_if_present(cur_exp_setting, locals(), keys=('details',))
+        self.copy_if_present(cur_inst_setting, locals(), keys=('details',))
+
+
+class _FLRExpConditionHandler(Handler):
+    category = '_flr_exp_condition'
+
+    def __call__(self, id, details):
+        # Get the object or create the object
+        cur_exp_condition = self.sysr.flr_exp_conditions.get_by_id(id)
+        # Set the variables
+        self.copy_if_present(cur_exp_condition, locals(), keys=('details',))
 
 
 class _FLRInstrumentHandler(Handler):
@@ -2475,27 +2541,111 @@ class _FLRFretCalibrationParametersHandler(Handler):
 class _FLRFretAnalysisHandler(Handler):
     category = '_flr_fret_analysis'
 
-    def __call__(self, id, experiment_id, sample_probe_id_1, sample_probe_id_2,
-                 forster_radius_id, calibration_parameters_id, method_name,
-                 chi_square_reduced, dataset_list_id, external_file_id,
-                 software_id):
+    def __call__(self, id, experiment_id, type,
+                 sample_probe_id_1, sample_probe_id_2,
+                 forster_radius_id, dataset_list_id,
+                 external_file_id, software_id):
         f = self.sysr.flr_fret_analyses.get_by_id(id)
         f.experiment = self.sysr.flr_experiments.get_by_id(experiment_id)
+        f.type = type
         f.sample_probe_1 = self.sysr.flr_sample_probe_details.get_by_id(
                                                          sample_probe_id_1)
         f.sample_probe_2 = self.sysr.flr_sample_probe_details.get_by_id(
                                                          sample_probe_id_2)
         f.forster_radius = self.sysr.flr_fret_forster_radius.get_by_id(
                                                          forster_radius_id)
-        f.calibration_parameters \
-                = self.sysr.flr_fret_calibration_parameters.get_by_id(
-                                                calibration_parameters_id)
         f.dataset = self.sysr.datasets.get_by_id(dataset_list_id)
         f.external_file = self.sysr.external_files.get_by_id_or_none(
                                                  external_file_id)
         f.software = self.sysr.software.get_by_id_or_none(software_id)
-        f.method_name = method_name
+
+
+class _FLRFretAnalysisIntensityHandler(Handler):
+    category = '_flr_fret_analysis_intensity'
+
+    def __call__(self, ordinal_id, analysis_id,
+                 calibration_parameters_id, donor_only_fraction,
+                 chi_square_reduced, method_name, details):
+        f = self.sysr.flr_fret_analyses.get_by_id(analysis_id)
+        f.type = 'intensity-based'
+        f.calibration_parameters = \
+            self.sysr.flr_fret_calibration_parameters.get_by_id(calibration_parameters_id)
+        f.donor_only_fraction = self.get_float(donor_only_fraction)
         f.chi_square_reduced = self.get_float(chi_square_reduced)
+        f.method_name = method_name
+        f.details = details
+
+
+class _FLRFretAnalysisLifetimeHandler(Handler):
+    category = '_flr_fret_analysis_lifetime'
+
+    def __call__(self, ordinal_id, analysis_id,
+                 reference_measurement_group_id, lifetime_fit_model_id,
+                 donor_only_fraction, chi_square_reduced, method_name, details):
+        f = self.sysr.flr_fret_analyses.get_by_id(analysis_id)
+        f.type = 'lifetime-based'
+        f.reference_measurement_group = self.sysr.flr_ref_measurement_groups.get_by_id(reference_measurement_group_id)
+        f.lifetime_fit_model = self.sysr.flr_lifetime_fit_models.get_by_id(lifetime_fit_model_id)
+        f.donor_only_fraction = self.get_float(donor_only_fraction)
+        f.chi_square_reduced = self.get_float(chi_square_reduced)
+        f.method_name = method_name
+        f.details = details
+
+
+class _FLRLifetimeFitModelHandler(Handler):
+    category = '_flr_lifetime_fit_model'
+
+    def __call__(self, id, name, description,
+                 external_file_id, citation_id):
+        f = self.sysr.flr_lifetime_fit_models.get_by_id(id)
+        f.name = name
+        f.description = description
+        f.external_file = \
+            self.sysr.external_files.get_by_id_or_none(external_file_id)
+        f.citation = \
+            self.sysr.citations.get_by_id_or_none(citation_id)
+
+
+class _FLRRefMeasurementHandler(Handler):
+    category = '_flr_reference_measurement'
+
+    def __call__(self, id, reference_sample_probe_id,
+                 num_species, details):
+        r = self.sysr.flr_ref_measurements.get_by_id(id)
+        r.ref_sample_probe = self.sysr.flr_sample_probe_details.get_by_id(reference_sample_probe_id)
+        r.details = details
+
+
+class _FLRRefMeasurementGroupHandler(Handler):
+    category = '_flr_reference_measurement_group'
+
+    def __call__(self, id, num_measurements, details):
+        g = self.sysr.flr_ref_measurement_groups.get_by_id(id)
+        g.details = details
+
+
+class _FLRRefMeasurementGroupLinkHandler(Handler):
+    category = '_flr_reference_measurement_group_link'
+
+    def __call__(self, group_id, reference_measurement_id):
+        g = self.sysr.flr_ref_measurement_groups.get_by_id(group_id)
+        r = self.sysr.flr_ref_measurements.get_by_id(reference_measurement_id)
+        g.add_ref_measurement(r)
+
+
+class _FLRRefMeasurementLifetimeHandler(Handler):
+    category = '_flr_reference_measurement_lifetime'
+
+    def __call__(self, ordinal_id, reference_measurement_id,
+                 species_name, species_fraction, lifetime):
+        l = self.sysr.flr_ref_measurement_lifetimes.get_by_id(ordinal_id)
+        l.species_name = species_name
+        l.species_fraction = self.get_float(species_fraction)
+        l.lifetime = self.get_float(lifetime)
+
+        ## Add the lifetime to the reference measurement
+        r = self.sysr.flr_ref_measurements.get_by_id(reference_measurement_id)
+        r.add_lifetime(l)
 
 
 class _FLRPeakAssignmentHandler(Handler):
@@ -2681,7 +2831,8 @@ class _FLRFPSMPPModelingHandler(Handler):
 def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
          warn_unknown_category=False, warn_unknown_keyword=False,
          read_starting_model_coord=True,
-         starting_model_class=ihm.startmodel.StartingModel):
+         starting_model_class=ihm.startmodel.StartingModel,
+         reject_old_file=False):
     """Read data from the file handle `fh`.
 
        Note that the reader currently expects to see a file compliant
@@ -2726,6 +2877,10 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               is recommended to subclass :class:`ihm.startmodel.StartingModel`
               and override :meth:`~ihm.startmodel.StartingModel.add_atom`
               and/or :meth:`~ihm.startmodel.StartingModel.add_seq_dif`.
+       :param bool reject_old_file: If True, raise an
+              :exc:`ihm.reader.OldFileError` if the file conforms to an
+              older version of the dictionary than this library supports
+              (by default the library will read what it can from the file).
        :return: A list of :class:`ihm.System` objects.
     """
     systems = []
@@ -2777,7 +2932,8 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               _CrossLinkListHandler(s), _CrossLinkRestraintHandler(s),
               _CrossLinkResultHandler(s), _StartingModelSeqDifHandler(s),
               _OrderedEnsembleHandler(s), _FLRChemDescriptorHandler(s),
-              _FLRExpSettingHandler(s),
+              _FLRInstSettingHandler(s),
+              _FLRExpConditionHandler(s),
               _FLRInstrumentHandler(s),
               _FLRSampleConditionHandler(s),
               _FLREntityAssemblyHandler(s),
@@ -2793,6 +2949,13 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               _FLRFretForsterRadiusHandler(s),
               _FLRFretCalibrationParametersHandler(s),
               _FLRFretAnalysisHandler(s),
+              _FLRFretAnalysisIntensityHandler(s),
+              _FLRFretAnalysisLifetimeHandler(s),
+              _FLRLifetimeFitModelHandler(s),
+              _FLRRefMeasurementHandler(s),
+              _FLRRefMeasurementGroupHandler(s),
+              _FLRRefMeasurementGroupLinkHandler(s),
+              _FLRRefMeasurementLifetimeHandler(s),
               _FLRPeakAssignmentHandler(s),
               _FLRFretDistanceRestraintHandler(s),
               _FLRFretModelQualityHandler(s),
@@ -2804,6 +2967,8 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               _FLRFPSMPPHandler(s),
               _FLRFPSMPPAtomPositionHandler(s),
               _FLRFPSMPPModelingHandler(s)] + [h(s) for h in handlers]
+        if reject_old_file:
+            hs.append(_AuditConformHandler(s))
         if read_starting_model_coord:
             hs.append(_StartingModelCoordHandler(s))
         if uchandler:

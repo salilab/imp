@@ -244,59 +244,66 @@ class Experiment(object):
 
        :param instrument: The instrument.
        :type instrument: :class:`Instrument`
-       :param exp_setting: The experimental setting.
-       :type exp_setting: :class:`ExpSetting`
+       :param inst_setting: The instrument setting.
+       :type inst_setting: :class:`InstSetting`
+       :param exp_condition: The experimental conditions.
+       :type exp_condition: :class:`ExpCondition`
        :param sample: The sample.
        :type sample: :class:`Sample`
        :param details: Details on the experiment.
     """
 
-    def __init__(self, instrument=None, exp_setting=None, sample=None,
-                 details=None):
+    def __init__(self, instrument=None, inst_setting=None, exp_condition=None,
+                 sample=None, details=None):
         """The Experiment object can either be initiated with empty lists,
            or with an entry for each of them. In this way, an experiment
            object is created and filled with one entry.
         """
         self.instrument_list = []
-        self.exp_setting_list = []
+        self.inst_setting_list = []
+        self.exp_condition_list = []
         self.sample_list = []
         self.details_list = []
-        if instrument != None and exp_setting != None and sample != None:
-            self.add_entry(instrument=instrument, exp_setting=exp_setting,
+        if instrument != None and inst_setting != None and exp_condition != None and sample != None:
+            self.add_entry(instrument=instrument, inst_setting=inst_setting, exp_condition=exp_condition,
                            sample=sample, details=details)
 
-    def add_entry(self, instrument, exp_setting, sample,details=None):
+    def add_entry(self, instrument, inst_setting, exp_condition, sample,details=None):
         """Entries to the experiment object can also be added one by one.
         """
         self.instrument_list.append(instrument)
-        self.exp_setting_list.append(exp_setting)
+        self.inst_setting_list.append(inst_setting)
+        self.exp_condition_list.append(exp_condition)
         self.sample_list.append(sample)
         self.details_list.append(details)
 
     def get_entry_by_index(self, index):
-        """Returns the combination of :class:`Instrument`, :class:`ExpSetting`,
-           :class:`Sample`, and details for a given index.
+        """Returns the combination of :class:`Instrument`, :class:`InstSetting`,
+           :class:`ExpCondition`, :class:`Sample`, and details for a given index.
         """
         return (self.instrument_list[index],
-                self.exp_setting_list[index], self.sample_list[index],
+                self.inst_setting_list[index],
+                self.exp_condition_list[index],
+                self.sample_list[index],
                 self.details_list[index])
 
     def __eq__(self, other):
-#        return self.__dict__ == other.__dict__
         return ((self.instrument_list == other.instrument_list)
-                and (self.exp_setting_list == other.exp_setting_list)
+                and (self.inst_setting_list == other.inst_setting_list)
+                and (self.exp_condition_list == other.exp_condition_list)
                 and (self.sample_list == other.sample_list)
                 and (self.details_list == other.details_list))
 
-    def contains(self, instrument, exp_setting, sample):
+    def contains(self, instrument, inst_setting, exp_condition, sample):
         """Checks whether a combination of :class:`Instrument`,
-           :class:`ExpSetting`, :class:`Sample` is already included in
-           the experiment object.
+           :class:`InstSetting`, :class:`ExpCondition`,
+           :class:`Sample` is already included in the experiment object.
         """
         ## TODO: possibly extend this by the details_list?
         for i in range(len(self.instrument_list)):
             if ((instrument == self.instrument_list[i])
-                and (exp_setting == self.exp_setting_list[i])
+                and (inst_setting == self.inst_setting_list[i])
+                and (exp_condition == self.exp_condition_list[i])
                 and (sample == self.sample_list[i])):
                 return True
         return False
@@ -316,20 +323,33 @@ class Instrument(object):
         return self.__dict__ == other.__dict__
 
 
-class ExpSetting(object):
-    """Description of the experimental settings.
+class InstSetting(object):
+    """Description of the instrument settings.
 
        *Currently this is only text, but will be extended in the future.*
 
-       :param str details: Description of the experimental settings used for
-              the measurement (e.g. temperature, or size of observation
+       :param str details: Description of the instrument settings used for
+              the measurement (e.g. laser power or size of observation
               volume in case of confocal measurements).
     """
-
     def __init__(self, details=None):
         self.details = details
 
     def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+class ExpCondition(object):
+    """Description of the experimental conditions.
+
+    * Currently this is only text, but will be extended in the future.*
+
+    :param str details: Description of the experimental conditions (e.g.
+        the temperature at which the experiment was carried out).
+    """
+    def __init__(self, details=None):
+        self.details = details
+
+    def __eq__(self,other):
         return self.__dict__ == other.__dict__
 
 
@@ -346,12 +366,19 @@ class FRETAnalysis(object):
        :type sample_probe_2: :class:`SampleProbeDetails`
        :param forster_radius: The Förster radius object for this FRET analysis.
        :type forster_radius: :class:`FRETForsterRadius`.
+       :param str type: The type of the FRET analysis (intensity-based or lifetime-based).
        :param calibration_parameters: The calibration parameters used for
-              this analysis.
+              this analysis (only in case of intensity-based analyses).
        :type calibration_parameters: :class:`FRETCalibrationParameters`
+       :param lifetime_fit_model: The fit model used in case of lifetime-based analyses.
+       :type lifetime_fit_model: :class:`LifetimeFitModel`
+       :param ref_measurement_group: The group of reference measurements
+             in case of lifetime-based analyses.
+       :type ref_measurement_group: :class:`LifetimeRefMeasurementGroup`
        :param str method_name: The method used for the analysis.
        :param float chi_square_reduced: The chi-square reduced as a quality
               measure for the fit.
+       :param float donor_only_fraction: The donor-only fraction.
        :param dataset: The dataset used.
        :type dataset: :class:`ihm.dataset.Dataset`
        :param external_file: The external file that contains (results of)
@@ -361,19 +388,109 @@ class FRETAnalysis(object):
     """
 
     def __init__(self, experiment, sample_probe_1, sample_probe_2,
-                 forster_radius, calibration_parameters, method_name=None,
-                 chi_square_reduced=None, dataset=None,
-                 external_file=None, software=None):
+                 forster_radius, type, calibration_parameters=None,
+                 lifetime_fit_model = None,
+                 ref_measurement_group = None,
+                 method_name=None, details = None,
+                 chi_square_reduced=None, donor_only_fraction=None,
+                 dataset=None, external_file=None, software=None):
+        if type not in ['lifetime-based', 'intensity-based', None]:
+            raise ValueError('FRETAnalysis.type can be \'lifetime-based\' or \'intensity-based\'. The value is %s'%(type))
         self.experiment = experiment
         self.sample_probe_1 = sample_probe_1
         self.sample_probe_2 = sample_probe_2
         self.forster_radius = forster_radius
+        self.type = type
         self.calibration_parameters = calibration_parameters
+        self.lifetime_fit_model = lifetime_fit_model
+        self.ref_measurement_group = ref_measurement_group
         self.method_name = method_name
+        self.details = details
         self.chi_square_reduced = chi_square_reduced
+        self.donor_only_fraction = donor_only_fraction
         self.dataset = dataset
         self.external_file = external_file
         self.software = software
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+
+class LifetimeFitModel(object):
+    """A lifetime-fit model used for lifetime-based analysis.
+
+        :param str name: The name of the fit model.
+        :param str description: A description of the fit model.
+        :param external_file: An external file that contains additional information on the fit model.
+        :param citation: A citation for the fit model.
+        :type citation: :class:`ihm.Citation`
+    """
+    def __init__(self, name, description, external_file=None, citation=None):
+        self.name = name
+        self.description = description
+        self.external_file = external_file
+        self.citation = citation
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+
+class RefMeasurementGroup(object):
+    """A Group containing reference measurements for lifetime-based analysis.
+
+        :param str details: Details on the Group of reference measurements.
+    """
+    def __init__(self, details=None):
+        self.details = details
+        self.ref_measurement_list = []
+        self.num_measurements = len(self.ref_measurement_list)
+
+    def add_ref_measurement(self, ref_measurement):
+        """Add a lifetime reference measurement to a ref_measurement_group."""
+        self.ref_measurement_list.append(ref_measurement)
+        self.num_measurements = len(self.ref_measurement_list)
+
+    def get_info(self):
+        return self.ref_measurement_list
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+
+class RefMeasurement(object):
+    """A reference measurement for lifetime-based analysis.
+
+        :param ref_sample_probe: The combination of sample and probe used for the reference measurement.
+        :type ref_sample_probe: :class:`SampleProbeDetails`
+        :param str details: Details on the measurement.
+        :param list_of_lifetimes: A list of the results from the reference measurement.
+        :type list_of_lifetimes: List of :class:`RefMeasurementLifetime`
+    """
+    def __init__(self, ref_sample_probe, details=None, list_of_lifetimes=None):
+        self.ref_sample_probe = ref_sample_probe
+        self.details = details
+        self.list_of_lifetimes = list_of_lifetimes if list_of_lifetimes is not None else []
+        self.num_species = len(self.list_of_lifetimes)
+
+    def add_lifetime(self, lifetime):
+        """Add a lifetime to the list_of_lifetimes."""
+        self.list_of_lifetimes.append(lifetime)
+        self.num_species = len(self.list_of_lifetimes)
+
+    def __eq__(self,other):
+        return self.__dict__ == other.__dict__
+
+
+class RefMeasurementLifetime(object):
+    """Lifetime for a species in a reference measurement.
+        :param float species_fraction: The species-fraction for the respective lifetime.
+        :param float lifetime: The lifetime (in ns).
+        :param str species_name: A name for the species.
+    """
+    def __init__(self, species_fraction, lifetime, species_name=None):
+        self.species_fraction = species_fraction
+        self.lifetime = lifetime
+        self.species_name = species_name
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -828,7 +945,8 @@ class FLRData(object):
 
         ## The following dictionaries are so far only used when reading data
         self._collection_flr_experiment = {}
-        self._collection_flr_exp_setting = {}
+        self._collection_flr_inst_setting = {}
+        self._collection_flr_exp_condition = {}
         self._collection_flr_instrument = {}
         self._collection_flr_entity_assembly = {}
         self._collection_flr_sample_condition = {}
@@ -842,6 +960,10 @@ class FLRData(object):
         self._collection_flr_fret_forster_radius = {}
         self._collection_flr_fret_calibration_parameters = {}
         self._collection_flr_fret_analysis = {}
+        self._collection_flr_lifetime_fit_model = {}
+        self._collection_flr_ref_measurement_group =  {}
+        self._collection_flr_ref_measurement = {}
+        self._collection_flr_ref_measurement_lifetime = {}
         self._collection_flr_peak_assignment = {}
         self._collection_flr_fret_distance_restraint = {}
         self._collection_flr_fret_distance_restraint_group = {}
@@ -884,13 +1006,40 @@ class FLRData(object):
     def _all_calibration_parameters(self):
         """Yield all FRETCalibrationParameters objects"""
         for a in self._all_analyses():
-            yield a.calibration_parameters
+            if a.type == 'intensity-based':
+                yield a.calibration_parameters
+
+    def _all_lifetime_fit_models(self):
+        """Yield all LifetimeFitModel objects"""
+        for a in self._all_analyses():
+            if a.type == 'lifetime-based':
+                yield a.lifetime_fit_model
+
+    def _all_ref_measurement_groups(self):
+        """Yield all RefMeasurementGroup objects"""
+        for a in self._all_analyses():
+            if a.type == 'lifetime-based':
+                yield a.ref_measurement_group
+
+    def _all_ref_measurements(self):
+        """Yield all RefMeasurement objects"""
+        for rg in self._all_ref_measurement_groups():
+            for x in rg.ref_measurement_list:
+                yield x
+
+    def _all_ref_measurement_lifetimes(self):
+        """Yield all RefMeasurementLifetime objects"""
+        for r in self._all_ref_measurements():
+            for x in r.list_of_lifetimes:
+                yield x
 
     def _all_sample_probe_details(self):
         """Yield all SampleProbeDetails objects"""
         for r in self._all_distance_restraints():
             yield r.sample_probe_1
             yield r.sample_probe_2
+        for r in self._all_ref_measurements():
+            yield r.ref_sample_probe
 
     def _all_samples(self):
         """Yield all Sample objects"""
@@ -907,10 +1056,16 @@ class FLRData(object):
         for s in self._all_sample_probe_details():
             yield s.poly_probe_position
 
-    def _all_exp_settings(self):
-        """Yield all ExpSetting objects"""
+    def _all_inst_settings(self):
+        """Yield all InstSetting objects"""
         for e in self._all_experiments():
-            for s in e.exp_setting_list:
+            for s in e.inst_setting_list:
+                yield s
+
+    def _all_exp_conditions(self):
+        """Yield all ExpCondition objects"""
+        for e in self._all_experiments():
+            for s in e.exp_condition_list:
                 yield s
 
     def _all_instruments(self):

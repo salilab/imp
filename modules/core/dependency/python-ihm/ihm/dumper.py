@@ -54,8 +54,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as l:
             # Update to match the version of the IHM dictionary we support:
-            l.write(dict_name="ihm-extension.dic", dict_version="0.137",
-                    dict_location=self.URL % "7ea672a")
+            l.write(dict_name="ihm-extension.dic", dict_version="1.04",
+                    dict_location=self.URL % "3a8e0b9")
 
 
 class _StructDumper(Dumper):
@@ -2083,29 +2083,42 @@ class _FLRExperimentDumper(Dumper):
 
     def dump(self, system, writer):
         with writer.loop('_flr_experiment',
-                   ['ordinal_id', 'id', 'instrument_id', 'exp_setting_id',
-                    'sample_id', 'details']) as l:
+                   ['ordinal_id', 'id', 'instrument_id', 'inst_setting_id',
+                    'exp_condition_id','sample_id', 'details']) as l:
             ordinal = 1
             for x in self._experiments_by_id:
                 for i in range(len(x.sample_list)):
                     l.write(ordinal_id=ordinal, id=x._id,
                             instrument_id=x.instrument_list[i]._id,
-                            exp_setting_id=x.exp_setting_list[i]._id,
+                            inst_setting_id=x.inst_setting_list[i]._id,
+                            exp_condition_id=x.exp_condition_list[i]._id,
                             sample_id=x.sample_list[i]._id,
                             details=x.details_list[i])
                     ordinal +=1
 
 
-class _FLRExpSettingDumper(Dumper):
+class _FLRInstSettingDumper(Dumper):
     def finalize(self, system):
-        def all_exp_settings():
-            return itertools.chain.from_iterable(f._all_exp_settings()
+        def all_inst_settings():
+            return itertools.chain.from_iterable(f._all_inst_settings()
                                                  for f in system.flr_data)
-        self._exp_settings_by_id = _assign_all_ids(all_exp_settings)
+        self._inst_settings_by_id = _assign_all_ids(all_inst_settings)
 
     def dump(self, system, writer):
-        with writer.loop('_flr_exp_setting', ['id', 'details']) as l:
-            for x in self._exp_settings_by_id:
+        with writer.loop('_flr_inst_setting', ['id', 'details']) as l:
+            for x in self._inst_settings_by_id:
+                l.write(id=x._id, details=x.details)
+
+class _FLR_ExpConditionDumper(Dumper):
+    def finalize(self, system):
+        def all_exp_conditions():
+            return itertools.chain.from_iterable(f._all_exp_conditions()
+                                                 for f in system.flr_data)
+        self._exp_conditions_by_id = _assign_all_ids(all_exp_conditions)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_exp_condition', ['id', 'details']) as l:
+            for x in self._exp_conditions_by_id:
                 l.write(id=x._id, details=x.details)
 
 
@@ -2355,6 +2368,90 @@ class _FLRCalibrationParametersDumper(Dumper):
                         gamma=x.gamma, delta=x.delta, a_b=x.a_b)
 
 
+class _FLRLifetimeFitModelDumper(Dumper):
+    def finalize(self, system):
+        def all_lifetime_fit_models():
+            return itertools.chain.from_iterable(f._all_lifetime_fit_models()
+                                                 for f in system.flr_data)
+        self._lifetime_fit_models_by_id = _assign_all_ids(all_lifetime_fit_models)
+
+    def dump(self, system, writer):
+        with writer.loop('_flr_lifetime_fit_model',
+                         ['id', 'name', 'description',
+                          'external_file_id', 'citation_id']) as l:
+            for x in self._lifetime_fit_models_by_id:
+                l.write(id = x._id, name = x.name,
+                        description = x.description,
+                        external_file_id = None if x.external_file is None
+                                        else x.external_file._id,
+                        citation_id = None if x.citation is None
+                                      else x.citation._id)
+
+
+class _FLRRefMeasurementDumper(Dumper):
+    def finalize(self, system):
+        def all_ref_measurement_groups():
+            return itertools.chain.from_iterable(f._all_ref_measurement_groups()
+                                                 for f in system.flr_data)
+        self._ref_measurement_groups_by_id = _assign_all_ids(all_ref_measurement_groups)
+
+        def _all_ref_measurements():
+            return itertools.chain.from_iterable(f._all_ref_measurements()
+                                                 for f in system.flr_data)
+        self._ref_measurements_by_id = _assign_all_ids(_all_ref_measurements)
+
+        def _all_ref_measurement_lifetimes():
+            return itertools.chain.from_iterable(f._all_ref_measurement_lifetimes()
+                                                 for f in system.flr_data)
+        self._ref_measurement_lifetimes_by_id = _assign_all_ids(_all_ref_measurement_lifetimes)
+
+    def dump(self, system, writer):
+        self.dump_ref_measurement_group(system, writer)
+        self.dump_ref_measurement_group_link(system, writer)
+        self.dump_ref_measurement(system, writer)
+        self.dump_ref_measurement_lifetimes(system, writer)
+
+    def dump_ref_measurement_group(self, system, writer):
+        with writer.loop('_flr_reference_measurement_group',
+                         ['id', 'num_measurements','details']) as l:
+            for x in self._ref_measurement_groups_by_id:
+                l.write(id = x._id,
+                        num_measurements = len(x.ref_measurement_list),
+                        details = x.details)
+
+    def dump_ref_measurement_group_link(self, system, writer):
+        with writer.loop('_flr_reference_measurement_group_link',
+                         ['group_id', 'reference_measurement_id']) as l:
+            for x in self._ref_measurement_groups_by_id:
+                for m in x.ref_measurement_list:
+                    l.write(group_id=x._id,
+                            reference_measurement_id = m._id)
+
+    def dump_ref_measurement(self, system, writer):
+        with writer.loop('_flr_reference_measurement',
+                         ['id', 'reference_sample_probe_id',
+                          'num_species', 'details']) as l:
+            for x in self._ref_measurements_by_id:
+                l.write(id = x._id,
+                        reference_sample_probe_id = x.ref_sample_probe._id,
+                        num_species = len(x.list_of_lifetimes),
+                        details = x.details)
+
+    def dump_ref_measurement_lifetimes(self, system, writer):
+        with writer.loop('_flr_reference_measurement_lifetime',
+                         ['ordinal_id', 'reference_measurement_id',
+                         'species_name', 'species_fraction', 'lifetime']) as l:
+            ordinal = 1
+            for x in self._ref_measurements_by_id:
+                for m in x.list_of_lifetimes:
+                    l.write(ordinal_id = ordinal,
+                            reference_measurement_id = x._id,
+                            species_name = m.species_name,
+                            species_fraction = m.species_fraction,
+                            lifetime = m.lifetime)
+                    ordinal += 1
+
+
 class _FLRAnalysisDumper(Dumper):
     def finalize(self, system):
         def all_analyses():
@@ -2363,26 +2460,66 @@ class _FLRAnalysisDumper(Dumper):
         self._analyses_by_id = _assign_all_ids(all_analyses)
 
     def dump(self, system, writer):
+        self.dump_fret_analysis_general(system, writer)
+        self.dump_fret_analysis_intensity(system, writer)
+        self.dump_fret_analysis_lifetime(system, writer)
+
+    def dump_fret_analysis_general(self, system, writer):
         with writer.loop('_flr_fret_analysis',
-                         ['id', 'experiment_id', 'sample_probe_id_1',
-                          'sample_probe_id_2', 'forster_radius_id',
-                          'calibration_parameters_id', 'method_name',
-                          'chi_square_reduced', 'dataset_list_id',
+                         ['id', 'experiment_id', 'type',
+                          'sample_probe_id_1', 'sample_probe_id_2',
+                          'forster_radius_id', 'dataset_list_id',
                           'external_file_id', 'software_id']) as l:
             for x in self._analyses_by_id:
                 l.write(id=x._id,
                         experiment_id=x.experiment._id,
+                        type = x.type,
                         sample_probe_id_1=x.sample_probe_1._id,
                         sample_probe_id_2=x.sample_probe_2._id,
                         forster_radius_id=x.forster_radius._id,
-                        calibration_parameters_id=x.calibration_parameters._id,
-                        method_name=x.method_name,
-                        chi_square_reduced=x.chi_square_reduced,
                         dataset_list_id=x.dataset._id,
                         external_file_id=None if x.external_file is None
                                               else x.external_file._id,
                         software_id=None if x.software is None
                                          else x.software._id)
+
+    def dump_fret_analysis_intensity(self, system, writer):
+        with writer.loop('_flr_fret_analysis_intensity',
+                         ['ordinal_id', 'analysis_id',
+                          'calibration_parameters_id', 'donor_only_fraction',
+                          'chi_square_reduced', 'method_name', 'details']) as l:
+            ordinal = 1
+            for x in self._analyses_by_id:
+                ## if it is an intensity-based analysis.
+                if 'intensity' in x.type:
+                    l.write(ordinal_id = ordinal,
+                            analysis_id = x._id,
+                            calibration_parameters_id = None if x.calibration_parameters is None else x.calibration_parameters._id,
+                            donor_only_fraction = x.donor_only_fraction,
+                            chi_square_reduced = x.chi_square_reduced,
+                            method_name = x.method_name,
+                            details = x.details)
+                    ordinal += 1
+
+    def dump_fret_analysis_lifetime(self, system, writer):
+        with writer.loop('_flr_fret_analysis_lifetime',
+                         ['ordinal_id', 'analysis_id',
+                          'reference_measurement_group_id', 'lifetime_fit_model_id',
+                          'donor_only_fraction', 'chi_square_reduced',
+                          'method_name', 'details']) as l:
+            ordinal = 1
+            for x in self._analyses_by_id:
+                ## if it is a lifetime-based analysis
+                if 'lifetime' in x.type:
+                    l.write(ordinal_id = ordinal,
+                            analysis_id = x._id,
+                            reference_measurement_group_id = x.ref_measurement_group._id,
+                            lifetime_fit_model_id = x.lifetime_fit_model._id,
+                            donor_only_fraction = x.donor_only_fraction,
+                            chi_square_reduced = x.chi_square_reduced,
+                            method_name = x.method_name,
+                            details = x.details)
+                    ordinal += 1
 
 
 class _FLRPeakAssignmentDumper(Dumper):
@@ -2700,12 +2837,14 @@ def write(fh, systems, format='mmCIF', dumpers=[]):
                _EnsembleDumper(),
                _DensityDumper(),
                _MultiStateDumper(), _OrderedDumper(),
-               _FLRExperimentDumper(), _FLRExpSettingDumper(),
+               _FLRExperimentDumper(), _FLRInstSettingDumper(),
+               _FLR_ExpConditionDumper(),
                _FLRInstrumentDumper(), _FLREntityAssemblyDumper(),
                _FLRSampleConditionDumper(), _FLRSampleDumper(),
                _FLRProbeDumper(), _FLRSampleProbeDetailsDumper(),
                _FLRPolyProbePositionDumper(), _FLRConjugateDumper(),
                _FLRForsterRadiusDumper(), _FLRCalibrationParametersDumper(),
+               _FLRLifetimeFitModelDumper(), _FLRRefMeasurementDumper(),
                _FLRAnalysisDumper(), _FLRPeakAssignmentDumper(),
                _FLRDistanceRestraintDumper(), _FLRModelQualityDumper(),
                _FLRModelDistanceDumper(), _FLRFPSModelingDumper(),

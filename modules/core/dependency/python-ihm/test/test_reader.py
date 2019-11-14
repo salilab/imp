@@ -2456,6 +2456,43 @@ _ihm_ordered_ensemble.model_group_id_end
         s, = ihm.reader.read(f)
         f.close()
 
+    def test_old_file_read_default(self):
+        """Test default handling of old files"""
+        cif = """
+loop_
+_audit_conform.dict_name
+_audit_conform.dict_version
+mmcif_pdbx.dic     5.311
+ihm-extension.dic  0.14
+"""
+        s, = ihm.reader.read(StringIO(cif))
+
+    def test_old_file_read_fail(self):
+        """Test failure reading old files"""
+        cif = """
+loop_
+_audit_conform.dict_name
+_audit_conform.dict_version
+mmcif_pdbx.dic     5.311
+ihm-extension.dic  0.14
+"""
+        self.assertRaises(ihm.reader.OldFileError,
+                          ihm.reader.read, StringIO(cif), reject_old_file=True)
+
+    def test_new_file_read_ok(self):
+        """Test success reading not-old files"""
+        # File read is OK if version is new enough, or version cannot be parsed
+        # because it is non-int or has too many elements
+        for ver in ('1.0', '0.0.4', '0.0a'):
+            cif = """
+loop_
+_audit_conform.dict_name
+_audit_conform.dict_version
+mmcif_pdbx.dic     5.311
+ihm-extension.dic  %s
+""" % ver
+            s, = ihm.reader.read(StringIO(cif), reject_old_file=True)
+
     def test_warn_unknown_category(self):
         """Test warnings for unknown categories"""
         cif = """
@@ -2653,47 +2690,72 @@ loop_
 _flr_experiment.ordinal_id
 _flr_experiment.id
 _flr_experiment.instrument_id
-_flr_experiment.exp_setting_id
+_flr_experiment.inst_setting_id
+_flr_experiment.exp_condition_id
 _flr_experiment.sample_id
 _flr_experiment.details
-1 1 1 22 42 "exp 1"
-2 1 1 2 2 .
+1 1 1 12 22 42 "exp 1"
+2 1 1 2 2 2 .
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
         experiment, = list(flr._collection_flr_experiment.values())
         self.assertIsInstance(experiment, ihm.flr.Experiment)
         self.assertIsInstance(experiment.instrument_list[0], ihm.flr.Instrument)
-        self.assertIsInstance(experiment.exp_setting_list[0],
-                              ihm.flr.ExpSetting)
+        self.assertIsInstance(experiment.inst_setting_list[0],
+                              ihm.flr.InstSetting)
+        self.assertIsInstance(experiment.exp_condition_list[0],
+                              ihm.flr.ExpCondition)
         self.assertIsInstance(experiment.sample_list[0], ihm.flr.Sample)
         self.assertEqual([i._id for i in experiment.instrument_list],
                          ['1', '1'])
-        self.assertEqual([i._id for i in experiment.exp_setting_list],
+        self.assertEqual([i._id for i in experiment.inst_setting_list],
+                         ['12', '2'])
+        self.assertEqual([i._id for i in experiment.exp_condition_list],
                          ['22', '2'])
         self.assertEqual([i._id for i in experiment.sample_list],
                          ['42', '2'])
         self.assertEqual(experiment.details_list, ["exp 1", None])
 
-    def test_flr_exp_setting_handler(self):
-        """Test FLRExpSettingHandler"""
+    def test_flr_inst_setting_handler(self):
+        """Test FLRInstSettingHandler"""
         fh = StringIO("""
 loop_
-_flr_exp_setting.id
-_flr_exp_setting.details
-1 My_Exp_setting_1
+_flr_inst_setting.id
+_flr_inst_setting.details
+1 My_Inst_setting_1
 2 .
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
-        self.assertEqual(sorted(flr._collection_flr_exp_setting.keys()),
+        self.assertEqual(sorted(flr._collection_flr_inst_setting.keys()),
                          ['1', '2'])
-        es1 = flr._collection_flr_exp_setting['1']
-        self.assertIsInstance(es1, ihm.flr.ExpSetting)
-        self.assertEqual(es1.details, 'My_Exp_setting_1')
-        es2 = flr._collection_flr_exp_setting['2']
-        self.assertIsInstance(es2, ihm.flr.ExpSetting)
-        self.assertIsNone(es2.details)
+        is1 = flr._collection_flr_inst_setting['1']
+        self.assertIsInstance(is1, ihm.flr.InstSetting)
+        self.assertEqual(is1.details, 'My_Inst_setting_1')
+        is2 = flr._collection_flr_inst_setting['2']
+        self.assertIsInstance(is2, ihm.flr.InstSetting)
+        self.assertIsNone(is2.details)
+
+    def test_flr_exp_condition_handler(self):
+        """Test FLRExpConditionHandler"""
+        fh = StringIO("""
+loop_
+_flr_exp_condition.id
+_flr_exp_condition.details
+1 My_Exp_condition_1
+2 .
+""")
+        s, = ihm.reader.read(fh)
+        flr, = s.flr_data
+        self.assertEqual(sorted(flr._collection_flr_exp_condition.keys()),
+                         ['1', '2'])
+        ec1 = flr._collection_flr_exp_condition['1']
+        self.assertIsInstance(ec1, ihm.flr.ExpCondition)
+        self.assertEqual(ec1.details, 'My_Exp_condition_1')
+        ec2 = flr._collection_flr_exp_condition['2']
+        self.assertIsInstance(ec2, ihm.flr.ExpCondition)
+        self.assertIsNone(ec2.details)
 
     def test_flr_instrument_handler(self):
         """Test FLRInstrumentHandler"""
@@ -3040,7 +3102,7 @@ _flr_fret_calibration_parameters.a_b
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
         p1 = flr._collection_flr_fret_calibration_parameters['1']
-        self.assertAlmostEqual(p1.phi_acceptor, 0.350, places=1)
+        self.assertAlmostEqual(p1.phi_acceptor, 0.350, places=2)
         self.assertAlmostEqual(p1.alpha, 2.400, places=1)
         self.assertAlmostEqual(p1.alpha_sd, 0.1, places=1)
         self.assertAlmostEqual(p1.gg_gr_ratio, 0.4, places=1)
@@ -3055,16 +3117,15 @@ _flr_fret_calibration_parameters.a_b
 loop_
 _flr_fret_analysis.id
 _flr_fret_analysis.experiment_id
+_flr_fret_analysis.type
 _flr_fret_analysis.sample_probe_id_1
 _flr_fret_analysis.sample_probe_id_2
 _flr_fret_analysis.forster_radius_id
-_flr_fret_analysis.calibration_parameters_id
-_flr_fret_analysis.method_name
-_flr_fret_analysis.chi_square_reduced
 _flr_fret_analysis.dataset_list_id
 _flr_fret_analysis.external_file_id
 _flr_fret_analysis.software_id
-1 8 9 2 11 12 PDA 1.500 18 42 99
+1 8 intensity-based 9 2 11 18 42 99
+2 13 lifetime-based 24 5 19 32 81 98
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
@@ -3077,17 +3138,210 @@ _flr_fret_analysis.software_id
         self.assertEqual(a.sample_probe_2._id, '2')
         self.assertIsInstance(a.forster_radius, ihm.flr.FRETForsterRadius)
         self.assertEqual(a.forster_radius._id, '11')
-        self.assertIsInstance(a.calibration_parameters,
-                              ihm.flr.FRETCalibrationParameters)
-        self.assertEqual(a.calibration_parameters._id, '12')
-        self.assertEqual(a.method_name, 'PDA')
-        self.assertAlmostEqual(a.chi_square_reduced, 1.500, places=1)
+        self.assertEqual(a.type, 'intensity-based')
         self.assertIsInstance(a.dataset, ihm.dataset.Dataset)
         self.assertEqual(a.dataset._id, '18')
         self.assertIsInstance(a.external_file, ihm.location.Location)
         self.assertEqual(a.external_file._id, '42')
         self.assertIsInstance(a.software, ihm.Software)
         self.assertEqual(a.software._id, '99')
+        b = flr._collection_flr_fret_analysis['2']
+        self.assertIsInstance(b.experiment, ihm.flr.Experiment)
+        self.assertEqual(b.experiment._id, '13')
+        self.assertIsInstance(b.sample_probe_1, ihm.flr.SampleProbeDetails)
+        self.assertEqual(b.sample_probe_1._id, '24')
+        self.assertIsInstance(b.sample_probe_2, ihm.flr.SampleProbeDetails)
+        self.assertEqual(b.sample_probe_2._id, '5')
+        self.assertIsInstance(b.forster_radius, ihm.flr.FRETForsterRadius)
+        self.assertEqual(b.forster_radius._id, '19')
+        self.assertEqual(b.type, 'lifetime-based')
+        self.assertIsInstance(b.dataset, ihm.dataset.Dataset)
+        self.assertEqual(b.dataset._id, '32')
+        self.assertIsInstance(b.external_file, ihm.location.Location)
+        self.assertEqual(b.external_file._id, '81')
+        self.assertIsInstance(b.software, ihm.Software)
+        self.assertEqual(b.software._id, '98')
+
+    def test_flr_fret_analysis_intensity_handler(self):
+        """Test FLRFretAnalysisIntensityHandler"""
+        fh = StringIO("""
+loop_
+_flr_fret_analysis_intensity.ordinal_id
+_flr_fret_analysis_intensity.analysis_id
+_flr_fret_analysis_intensity.calibration_parameters_id
+_flr_fret_analysis_intensity.donor_only_fraction
+_flr_fret_analysis_intensity.chi_square_reduced
+_flr_fret_analysis_intensity.method_name
+_flr_fret_analysis_intensity.details
+2 5 3 0.200 1.400 PDA Details
+""")
+        s, = ihm.reader.read(fh)
+        flr, = s.flr_data
+        a = flr._collection_flr_fret_analysis['5']
+        self.assertEqual(a.type, 'intensity-based')
+        self.assertIsInstance(a.calibration_parameters, ihm.flr.FRETCalibrationParameters)
+        self.assertEqual(a.calibration_parameters._id, '3')
+        self.assertAlmostEqual(a.donor_only_fraction, 0.2, places=1)
+        self.assertAlmostEqual(a.chi_square_reduced, 1.4, places=1)
+        self.assertEqual(a.method_name, 'PDA')
+        self.assertEqual(a.details, 'Details')
+
+    def test_flr_fret_analysis_lifetime_handler(self):
+        """Test FLRFretAnalysisLifetimeHandler"""
+        fh = StringIO("""
+loop_
+_flr_fret_analysis_lifetime.ordinal_id
+_flr_fret_analysis_lifetime.analysis_id
+_flr_fret_analysis_lifetime.reference_measurement_group_id
+_flr_fret_analysis_lifetime.lifetime_fit_model_id
+_flr_fret_analysis_lifetime.donor_only_fraction
+_flr_fret_analysis_lifetime.chi_square_reduced
+_flr_fret_analysis_lifetime.method_name
+_flr_fret_analysis_lifetime.details
+4 2 19 23 0.300 1.500 'Lifetime fit' 'Details on lifetime fit'
+""")
+        s, = ihm.reader.read(fh)
+        flr, = s.flr_data
+        a = flr._collection_flr_fret_analysis['2']
+        self.assertEqual(a.type, 'lifetime-based')
+        self.assertIsInstance(a.reference_measurement_group, ihm.flr.RefMeasurementGroup)
+        self.assertEqual(a.reference_measurement_group._id, '19')
+        self.assertIsInstance(a.lifetime_fit_model, ihm.flr.LifetimeFitModel)
+        self.assertEqual(a.lifetime_fit_model._id, '23')
+        self.assertAlmostEqual(a.donor_only_fraction, 0.3, places=1)
+        self.assertAlmostEqual(a.chi_square_reduced, 1.5, places=1)
+        self.assertEqual(a.method_name, 'Lifetime fit')
+        self.assertEqual(a.details, 'Details on lifetime fit')
+
+    def test_flr_lifetime_fit_model_handler(self):
+        """Test FLRLifetimeFitModelHandler"""
+        fh = StringIO("""
+loop_
+_flr_lifetime_fit_model.id
+_flr_lifetime_fit_model.name
+_flr_lifetime_fit_model.description
+_flr_lifetime_fit_model.external_file_id
+_flr_lifetime_fit_model.citation_id
+1 'FitModel 15' 'Description of the fit model' 3 8
+""")
+        s, = ihm.reader.read(fh)
+        flr, = s.flr_data
+        f = flr._collection_flr_lifetime_fit_model['1']
+        self.assertEqual(f.name, 'FitModel 15')
+        self.assertEqual(f.description, 'Description of the fit model')
+        self.assertIsInstance(f.external_file, ihm.location.Location)
+        self.assertEqual(f.external_file._id, '3')
+        self.assertIsInstance(f.citation, ihm.Citation)
+        self.assertEqual(f.citation._id, '8')
+
+    def test_flr_ref_measurement_handler(self):
+        """Test FLRRefMeasurementHandler"""
+        fh = StringIO("""
+loop_
+_flr_reference_measurement.id
+_flr_reference_measurement.reference_sample_probe_id
+_flr_reference_measurement.num_species
+_flr_reference_measurement.details
+4 9 2 Details1
+""")
+        s, = ihm.reader.read(fh)
+        flr, = s.flr_data
+        r = flr._collection_flr_ref_measurement['4']
+        self.assertIsInstance(r.ref_sample_probe, ihm.flr.SampleProbeDetails)
+        self.assertEqual(r.ref_sample_probe._id, '9')
+        self.assertEqual(r.details, 'Details1')
+        ## num_species is set automatically when adding lifetimes to the object
+        self.assertEqual(r.num_species, 0)
+        r.add_lifetime('1')
+        r.add_lifetime('2')
+        self.assertEqual(r.num_species, 2)
+
+    def test_flr_ref_measurement_group_handler(self):
+        """Test FLRRefMeasurementGroupHandler"""
+        fh = StringIO("""
+loop_
+_flr_reference_measurement_group.id
+_flr_reference_measurement_group.num_measurements
+_flr_reference_measurement_group.details
+5 3 Details
+""")
+        s, = ihm.reader.read(fh)
+        flr, = s.flr_data
+        r = flr._collection_flr_ref_measurement_group['5']
+        self.assertEqual(r.details, 'Details')
+        ## num_measurements is set automatically when adding measurements to the object
+        self.assertEqual(r.num_measurements, 0)
+        r.add_ref_measurement('1')
+        self.assertEqual(r.num_measurements, 1)
+        r.add_ref_measurement('2')
+        self.assertEqual(r.num_measurements, 2)
+
+    def test_flr_ref_measurement_group_link_handler(self):
+        """Test FLRRefMeasurementGroupLinkHandler"""
+        fh = StringIO("""
+loop_
+_flr_reference_measurement_group_link.group_id
+_flr_reference_measurement_group_link.reference_measurement_id
+3 12
+3 25
+5 19
+""")
+        s, = ihm.reader.read(fh)
+        flr, = s.flr_data
+        g1 = flr._collection_flr_ref_measurement_group['3']
+        self.assertEqual(g1.num_measurements, 2)
+        self.assertIsInstance(g1.ref_measurement_list[0], ihm.flr.RefMeasurement)
+        self.assertEqual(g1.ref_measurement_list[0]._id, '12')
+        self.assertIsInstance(g1.ref_measurement_list[1], ihm.flr.RefMeasurement)
+        self.assertEqual(g1.ref_measurement_list[1]._id, '25')
+        g2 = flr._collection_flr_ref_measurement_group['5']
+        self.assertEqual(g2.num_measurements, 1)
+        self.assertIsInstance(g2.ref_measurement_list[0], ihm.flr.RefMeasurement)
+        self.assertEqual(g2.ref_measurement_list[0]._id, '19')
+
+    def test_flr_ref_measurement_lifetime_handler(self):
+        """Test FLRRefMeasurementLifetimeHandler"""
+        fh = StringIO("""
+loop_
+_flr_reference_measurement_lifetime.ordinal_id
+_flr_reference_measurement_lifetime.reference_measurement_id
+_flr_reference_measurement_lifetime.species_name
+_flr_reference_measurement_lifetime.species_fraction
+_flr_reference_measurement_lifetime.lifetime
+1 15 species1 0.300 4.100
+2 15 species2 0.700 2.100
+3 12 species1 1.000 3.800
+""")
+        s, = ihm.reader.read(fh)
+        flr, = s.flr_data
+        ## Check the lifetime objects themselves
+        f1 = flr._collection_flr_ref_measurement_lifetime['1']
+        self.assertEqual(f1.species_name, 'species1')
+        self.assertAlmostEqual(f1.species_fraction, 0.3, places=1)
+        self.assertAlmostEqual(f1.lifetime, 4.1, places=1)
+        f2 = flr._collection_flr_ref_measurement_lifetime['2']
+        self.assertEqual(f2.species_name, 'species2')
+        self.assertAlmostEqual(f2.species_fraction, 0.7, places=1)
+        self.assertAlmostEqual(f2.lifetime, 2.1, places=1)
+        f3 = flr._collection_flr_ref_measurement_lifetime['3']
+        self.assertEqual(f3.species_name, 'species1')
+        self.assertAlmostEqual(f3.species_fraction, 1.0, places=1)
+        self.assertAlmostEqual(f3.lifetime, 3.8, places=1)
+        ## And check the respective reference measurement objects
+        r1 = flr._collection_flr_ref_measurement['15']
+        self.assertIsInstance(r1.list_of_lifetimes[0], ihm.flr.RefMeasurementLifetime)
+        self.assertEqual(r1.list_of_lifetimes[0].species_name, 'species1')
+        self.assertAlmostEqual(r1.list_of_lifetimes[0].species_fraction, 0.3, places=1)
+        self.assertAlmostEqual(r1.list_of_lifetimes[0].lifetime, 4.1, places=1)
+        self.assertIsInstance(r1.list_of_lifetimes[1], ihm.flr.RefMeasurementLifetime)
+        self.assertEqual(r1.list_of_lifetimes[1].species_name, 'species2')
+        self.assertAlmostEqual(r1.list_of_lifetimes[1].species_fraction, 0.7, places=1)
+        self.assertAlmostEqual(r1.list_of_lifetimes[1].lifetime, 2.1, places=1)
+        r2 = flr._collection_flr_ref_measurement['12']
+        self.assertIsInstance(r2.list_of_lifetimes[0], ihm.flr.RefMeasurementLifetime)
+        self.assertEqual(r2.list_of_lifetimes[0].species_name, 'species1')
+        self.assertAlmostEqual(r2.list_of_lifetimes[0].species_fraction, 1.0, places=1)
+        self.assertAlmostEqual(r2.list_of_lifetimes[0].lifetime, 3.8, places=1)
 
     def test_flr_peak_assignment_handler(self):
         """Test FLRPeakAssignmentHandler"""
