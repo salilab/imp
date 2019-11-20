@@ -8,3 +8,6 @@
 	path = modules/pmi1
 	url = https://github.com/salilab/pmi.git
 	branch = legacy-pmi1
+[submodule "modules/bayesianem"]
+	path = modules/bayesianem
+	url = https://gitlab.pasteur.fr/rpellari/bayesianem.git
