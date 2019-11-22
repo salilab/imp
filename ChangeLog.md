@@ -6,6 +6,10 @@ ChangeLog {#changelog}
   for Python 3.4.
 - Packages are no longer provided for Ubuntu 14.04 (Trusty Tahr) since
   it has reached end of life.
+- The IMP distribution now includes the IMP::bayesianem module developed at
+  Institut Pasteur, Paris, for Bayesian handling of cryo-electron microscopy
+  density map data. See Bonomi et al. at https://doi.org/10.1101/113951 for
+  more information.
 - The old IMP::pmi::representation::Representation class has been removed
   from IMP.pmi. New applications should use IMP::pmi::topology::System instead.
 - The IMP::pmi::restraints::crosslinking::ISDCrossLinkMS class for handling
