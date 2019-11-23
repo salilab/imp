@@ -1,5 +1,4 @@
 import IMP.npc
-import IMP.pmi.representation
 
 class XYRadialPositionRestraint(object):
     """Create XYRadial Position Restraint
