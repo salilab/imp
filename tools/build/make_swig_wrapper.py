@@ -102,6 +102,8 @@ from __future__ import print_function, division, absolute_import
 #    as of 1.3.36 (Python imports incorrectly come out as 'import foo'
 # rather than 'import IMP.foo'). See also IMP bug #41 at
 #    https://salilab.org/imp/bugs/show_bug.cgi?id=41
+# 3. Handle our custom %ifdelete directive
+#    (see modules/kernel/pyext/include/IMP_kernel.exceptions.i)
 def patch_file(infile, out, options):
     lines = open(infile, 'r').readlines()
     preproc = "IMP_%s" % options.module.upper()
@@ -121,6 +123,12 @@ def patch_file(infile, out, options):
         line = line.replace("(VersionInfo ", "(IMP::VersionInfo ")
         line = line.replace("<VersionInfo ", "<IMP::VersionInfo ")
         line = line.replace("<:", "< :")  # swig generates bad C++ code
+        if line.startswith('#ifdelete'):
+            preproc, symname = line.split()
+            if symname.startswith('delete_'):
+                line = '#if 1\n'
+            else:
+                line = '#if 0\n'
         lines[i] = line
     tools.rewrite(out, "".join(lines), verbose=False)
 

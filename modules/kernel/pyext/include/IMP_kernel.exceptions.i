@@ -179,6 +179,17 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
     }
     SWIG_fail;
   }
+// If we're doing cleanup as a result of a previous Python exception
+// (e.g. StopIteration), don't return a value (otherwise we'll get a
+// SystemError "returned a result with an error set").
+// SWIG doesn't appear to allow us to do this only for delete_* wrappers,
+// and the C preprocessor isn't up to the job, so #ifdelete is mapped to
+// #if 0 or #if 1 by tools/build/make_swig_wrapper.py
+%#ifdelete $symname
+  if (PyErr_Occurred()) {
+    SWIG_fail;
+  }
+%#endif
 }
 
 // If Python exceptions are raised in a director method, temporarily reraise
