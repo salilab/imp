@@ -1,4 +1,6 @@
 import IMP.npc
+import IMP.pmi1.tools
+
 
 class XYRadialPositionRestraint(object):
     """Create XYRadial Position Restraint
@@ -29,8 +31,8 @@ class XYRadialPositionRestraint(object):
         self.label = "None"
 
         xyr = IMP.npc.XYRadialPositionRestraint(self.m, lower_bound, upper_bound, consider_radius, sigma)
-        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        #terminal_residue = IMP.pmi1.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi1.tools.select_by_tuple(representation, protein, resolution=1)
         if (term == 'C'):
             terminal = residues[-1]
             #print (terminal, type(terminal))
@@ -56,7 +58,7 @@ class XYRadialPositionRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi1.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -103,8 +105,8 @@ class XYRadialPositionLowerRestraint(object):
         self.label = "None"
 
         xyr = IMP.npc.XYRadialPositionLowerRestraint(self.m, lower_bound, consider_radius, sigma)
-        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        #terminal_residue = IMP.pmi1.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi1.tools.select_by_tuple(representation, protein, resolution=1)
         cterminal = residues[-1]        #nterminal = residues[0]
         #print (cterminal, type(cterminal))
 
@@ -115,7 +117,7 @@ class XYRadialPositionLowerRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi1.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -162,8 +164,8 @@ class XYRadialPositionUpperRestraint(object):
         self.label = "None"
 
         xyr = IMP.npc.XYRadialPositionUpperRestraint(self.m, upper_bound, consider_radius, sigma)
-        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        #terminal_residue = IMP.pmi1.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi1.tools.select_by_tuple(representation, protein, resolution=1)
         cterminal = residues[-1]        #nterminal = residues[0]
         #print (cterminal, type(cterminal))
 
@@ -174,7 +176,7 @@ class XYRadialPositionUpperRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi1.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -224,8 +226,8 @@ class ZAxialPositionRestraint(object):
         self.label = "None"
 
         zax = IMP.npc.ZAxialPositionRestraint(self.m, lower_bound, upper_bound, consider_radius, sigma)
-        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        #terminal_residue = IMP.pmi1.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi1.tools.select_by_tuple(representation, protein, resolution=1)
         if term == 'C':
             residues = residues[-1:]
         elif term == 'N':
@@ -245,7 +247,7 @@ class ZAxialPositionRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi1.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -292,8 +294,8 @@ class ZAxialPositionLowerRestraint(object):
         self.label = "None"
 
         zax = IMP.npc.ZAxialPositionLowerRestraint(self.m, lower_bound, consider_radius, sigma)
-        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        #terminal_residue = IMP.pmi1.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi1.tools.select_by_tuple(representation, protein, resolution=1)
         cterminal = residues[-1]        #nterminal = residues[0]
         #print (cterminal, type(cterminal))
 
@@ -304,7 +306,7 @@ class ZAxialPositionLowerRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi1.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -351,8 +353,8 @@ class ZAxialPositionUpperRestraint(object):
         self.label = "None"
 
         zax = IMP.npc.ZAxialPositionUpperRestraint(self.m, upper_bound, consider_radius, sigma)
-        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        #terminal_residue = IMP.pmi1.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi1.tools.select_by_tuple(representation, protein, resolution=1)
         cterminal = residues[-1]        #nterminal = residues[0]
         #print (cterminal, type(cterminal))
 
@@ -363,7 +365,7 @@ class ZAxialPositionUpperRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi1.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -413,8 +415,8 @@ class YAxialPositionRestraint(object):
         self.label = "None"
 
         yax = IMP.npc.YAxialPositionRestraint(self.m, lower_bound, upper_bound, consider_radius, sigma)
-        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        #terminal_residue = IMP.pmi1.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi1.tools.select_by_tuple(representation, protein, resolution=1)
         if (term == 'C'):
             terminal = residues[-1]
             #print (terminal, type(terminal))
@@ -440,7 +442,7 @@ class YAxialPositionRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi1.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -487,8 +489,8 @@ class YAxialPositionLowerRestraint(object):
         self.label = "None"
 
         yax = IMP.npc.YAxialPositionLowerRestraint(self.m, lower_bound, consider_radius, sigma)
-        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        #terminal_residue = IMP.pmi1.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi1.tools.select_by_tuple(representation, protein, resolution=1)
         cterminal = residues[-1]        #nterminal = residues[0]
         #print (cterminal, type(cterminal))
 
@@ -499,7 +501,7 @@ class YAxialPositionLowerRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi1.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -546,8 +548,8 @@ class YAxialPositionUpperRestraint(object):
         self.label = "None"
 
         yax = IMP.npc.YAxialPositionUpperRestraint(self.m, upper_bound, consider_radius, sigma)
-        #terminal_residue = IMP.pmi.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
-        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=1)
+        #terminal_residue = IMP.pmi1.tools.get_terminal_residue(representation, representation.hier_dict[protein], terminus="C")
+        residues = IMP.pmi1.tools.select_by_tuple(representation, protein, resolution=1)
         cterminal = residues[-1]        #nterminal = residues[0]
         #print (cterminal, type(cterminal))
 
@@ -558,7 +560,7 @@ class YAxialPositionUpperRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi1.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -608,7 +610,7 @@ class MembraneSurfaceLocationRestraint(object):
         self.label = "None"
 
         msl = IMP.npc.MembraneSurfaceLocationRestraint(self.m, tor_R, tor_r, tor_th, sigma)
-        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=resolution)
+        residues = IMP.pmi1.tools.select_by_tuple(representation, protein, resolution=resolution)
         for residue in residues:
             #print (residue, type(residue))
             msl.add_particle(residue)
@@ -625,7 +627,7 @@ class MembraneSurfaceLocationRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi1.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -678,11 +680,11 @@ class MembraneSurfaceLocationConditionalRestraint(object):
         self.label = "None"
 
         msl = IMP.npc.MembraneSurfaceLocationConditionalRestraint(self.m, tor_R, tor_r, tor_th, sigma)
-        residues1 = IMP.pmi.tools.select_by_tuple(representation, protein1, resolution=resolution)
+        residues1 = IMP.pmi1.tools.select_by_tuple(representation, protein1, resolution=resolution)
         for residue in residues1:
             #print (residue, type(residue))
             msl.add_particle1(residue)
-        residues2 = IMP.pmi.tools.select_by_tuple(representation, protein2, resolution=resolution)
+        residues2 = IMP.pmi1.tools.select_by_tuple(representation, protein2, resolution=resolution)
         for residue in residues2:
             #print (residue, type(residue))
             msl.add_particle2(residue)
@@ -701,7 +703,7 @@ class MembraneSurfaceLocationConditionalRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi1.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
@@ -751,7 +753,7 @@ class MembraneExclusionRestraint(object):
         self.label = "None"
 
         mex = IMP.npc.MembraneExclusionRestraint(self.m, tor_R, tor_r, tor_th, sigma)
-        residues = IMP.pmi.tools.select_by_tuple(representation, protein, resolution=resolution)
+        residues = IMP.pmi1.tools.select_by_tuple(representation, protein, resolution=resolution)
         for residue in residues:
             #print (residue, type(residue))
             mex.add_particle(residue)
@@ -768,7 +770,7 @@ class MembraneExclusionRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi1.tools.add_restraint_to_model(self.m, self.rs)
 
     def get_restraint(self):
         return self.rs
