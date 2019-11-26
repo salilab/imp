@@ -1,7 +1,7 @@
 ChangeLog {#changelog}
 =========
 
-# HEAD
+# 2.12.0 - 2019-12-06 # {#changelog_2_12_0}
 - The Windows .exe installer now supports Python 3.8, and has dropped support
   for Python 3.4.
 - Packages are no longer provided for Ubuntu 14.04 (Trusty Tahr) since
