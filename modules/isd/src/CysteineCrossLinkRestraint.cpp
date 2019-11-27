@@ -66,9 +66,11 @@ void CysteineCrossLinkRestraint::add_contribution(ParticleIndexAdaptor p1,
   Model *m = get_model();
   ps1_.push_back(p1);
   ps2_.push_back(p2);
-  if (Weight(m, weight_).get_number_of_states() <
+  Weight w(m, weight_);
+  if (w.get_number_of_weights() <
       static_cast<int>(get_number_of_contributions())) {
-    Weight(m, weight_).add_weight();
+    w.add_weight();
+    w.set_weights_lazy(w.get_unit_simplex().get_barycenter());
   }
 }
 
@@ -85,9 +87,11 @@ void CysteineCrossLinkRestraint::add_contribution(ParticleIndexes p1,
   pslist1_.push_back(p1);
   pslist2_.push_back(p2);
   Model *m = get_model();
-  if (Weight(m, weight_).get_number_of_states() <
+  Weight w(m, weight_);
+  if (w.get_number_of_weights() <
       static_cast<int>(get_number_of_contributions())) {
-    Weight(m, weight_).add_weight();
+    w.add_weight();
+    w.set_weights_lazy(w.get_unit_simplex().get_barycenter());
   }
 }
 
@@ -187,9 +191,14 @@ Floats CysteineCrossLinkRestraint::get_frequencies() const {
 
   Floats frequencies;
 
+  Weight w(m, weight_);
+  IMP_INTERNAL_CHECK(
+    get_number_of_contributions() == w.get_number_of_weights(),
+    "Number of contributions does not equal weights dimension."
+  );
   for (unsigned i = 0; i < get_number_of_contributions(); ++i) {
 
-    double ww = Weight(m, weight_).get_weight(i);
+    double ww = w.get_weight(i);
 
     double fi = (1.0 - pow(epsilon, nus[i] / numax)) * ww;
     frequencies.push_back(fi);

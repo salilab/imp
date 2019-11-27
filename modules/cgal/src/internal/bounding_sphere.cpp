@@ -5,6 +5,14 @@
  *  Copyright 2007-2019 IMP Inventors. All rights reserved.
  */
 #include <IMP/compiler_macros.h>
+
+/* Workaround for a Clang parser bug;
+   https://bugs.llvm.org/show_bug.cgi?id=43266
+ */
+#ifdef __clang__
+# include <boost/multiprecision/gmp.hpp>
+#endif
+
 IMP_CLANG_PRAGMA(diagnostic ignored "-Wc++11-extensions")
 #include <CGAL/Cartesian.h>
 #include <CGAL/Min_sphere_of_spheres_d.h>

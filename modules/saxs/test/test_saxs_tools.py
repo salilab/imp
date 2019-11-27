@@ -3,15 +3,16 @@ import IMP.test
 import sys
 import os
 import re
+import shutil
 
 
 class SAXSToolsTest(IMP.test.ApplicationTestCase):
 
-    def test_rg(self):
+    def test_compute_rg(self):
         """Simple test of Rg calculation"""
         print(self.get_input_file_name('6lyz.pdb'))
         print(self.get_input_file_name('lyzexp.dat'))
-        p = self.run_application('rg',
+        p = self.run_application('compute_rg',
                                  [self.get_input_file_name('6lyz.pdb'),
                                   self.get_input_file_name('lyzexp.dat')])
         out, err = p.communicate()
@@ -55,6 +56,34 @@ class SAXSToolsTest(IMP.test.ApplicationTestCase):
             m,
             msg="vr value output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 5.78, delta=0.1)
+
+    def test_validate_profile(self):
+        """Simple test of validate_profile tool"""
+        with IMP.test.temporary_directory() as tmpdir:
+            shutil.copy(self.get_input_file_name('weighted.dat'), tmpdir)
+            p = self.run_application('validate_profile', ['weighted.dat'],
+                                     cwd=tmpdir)
+            out, err = p.communicate()
+            sys.stderr.write(err)
+            self.assertApplicationExitedCleanly(p.returncode, err)
+            with open(os.path.join(tmpdir, 'weighted_v.dat')) as fh:
+                wc = len(fh.readlines())
+            self.assertEqual(wc, 503)
+
+    def test_validate_profile_max_q(self):
+        """Simple test of validate_profile tool with maxq set"""
+        with IMP.test.temporary_directory() as tmpdir:
+            shutil.copy(self.get_input_file_name('weighted.dat'), tmpdir)
+            p = self.run_application('validate_profile',
+                                     ['-q', '0.4', 'weighted.dat'],
+                                     cwd=tmpdir)
+            out, err = p.communicate()
+            sys.stderr.write(err)
+            self.assertApplicationExitedCleanly(p.returncode, err)
+            with open(os.path.join(tmpdir, 'weighted_v.dat')) as fh:
+                wc = len(fh.readlines())
+            self.assertEqual(wc, 402)
+
 
 if __name__ == '__main__':
     IMP.test.main()

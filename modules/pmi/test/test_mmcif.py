@@ -1,6 +1,5 @@
 from __future__ import print_function
 import IMP.test
-import IMP.pmi.representation
 import IMP.pmi.restraints.em
 import IMP.pmi.mmcif
 import IMP.pmi.dof
@@ -301,39 +300,33 @@ _ihm_multi_state_model_group_link.model_group_id
     def test_model_dumper_sphere(self):
         """Test ModelDumper sphere_obj output"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
-        po.exclude_coordinates('Nup84', (3,4))
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
-        simo.create_transformed_component("Nup84.2", "Nup84",
-                IMP.algebra.Transformation3D(IMP.algebra.Vector3D(1,2,3)))
+        s = IMP.pmi.topology.System(m)
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(resolutions=[1])
+        hier = s.build()
+
+        state = po._last_state
 
         d = ihm.dumper._ModelDumper()
 
-        asym1 = po.asym_units['Nup84']
-        asym2 = po.asym_units['Nup84.2']
-        assembly = ihm.Assembly([asym1, asym2])
+        asym1 = po.asym_units['Nup84.0']
+        assembly = ihm.Assembly([asym1])
         assembly._id = 42
         s1 = ihm.representation.ResidueSegment(asym1, True, 'sphere')
-        s2 = ihm.representation.ResidueSegment(asym2, True, 'sphere')
-        representation = ihm.representation.Representation([s1, s2])
+        representation = ihm.representation.Representation([s1])
         representation._id = 99
         protocol = ihm.protocol.Protocol()
         protocol._id = 93
         group = ihm.model.ModelGroup(name="all models")
         state.append(group)
-        model = IMP.pmi.mmcif._Model(simo.prot, po, protocol, assembly,
+        model = IMP.pmi.mmcif._Model(hier, po, protocol, assembly,
                                      representation)
         group.append(model)
-        self.assertEqual(model.get_rmsf('Nup84', (1,)), None)
+        self.assertEqual(model.get_rmsf('Nup84.0', (1,)), None)
         fh = StringIO()
         self.assign_entity_asym_ids(po.system)
         w = ihm.format.CifWriter(fh)
@@ -377,8 +370,8 @@ _ihm_sphere_obj_site.rmsf
 _ihm_sphere_obj_site.model_id
 1 1 1 1 A -8.986 11.688 -5.817 3.068 . 1
 2 1 2 2 A -8.986 11.688 -5.817 2.997 . 1
-3 1 1 1 B -7.986 13.688 -2.817 3.068 . 1
-4 1 2 2 B -7.986 13.688 -2.817 2.997 . 1
+3 1 3 3 A -8.986 11.688 -5.817 3.052 . 1
+4 1 4 4 A -8.986 11.688 -5.817 2.609 . 1
 #
 """)
 
@@ -455,13 +448,14 @@ _atom_site.label_asym_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.occupancy
 _atom_site.label_entity_id
 _atom_site.auth_asym_id
 _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
-ATOM 1 . CA . MET 1 A -8.986 11.688 -5.817 1 A . 1 1
-ATOM 2 . CA . GLU 2 A -8.986 11.688 -5.817 1 A . 1 1
+ATOM 1 . CA . MET 1 A -8.986 11.688 -5.817 . 1 A . 1 1
+ATOM 2 . CA . GLU 2 A -8.986 11.688 -5.817 . 1 A . 1 1
 #
 #
 loop_
@@ -629,8 +623,9 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-1 1 Nup84 A 7 'comparative model' A 0 3
-2 2 Nup85 B 8 'comparative model' A -7 4
+_ihm_starting_model_details.description
+1 1 Nup84 A 7 'comparative model' A 0 3 .
+2 2 Nup85 B 8 'comparative model' A -7 4 .
 #
 #
 loop_
@@ -681,20 +676,6 @@ _ihm_starting_model_coord.ordinal_id
 2 ATOM 2 C CA GLU 2 B 2 -7.986 18.688 -5.817 91.820 4
 #
 """)
-
-    def get_dumper_sources(self, pdbname):
-        m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
-        po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
-        chain = 'A'
-        fragment = IMP.pmi.mmcif._PDBFragment(state, "mypdb", 1, 10, 0,
-                                              pdbname, chain, None)
-        model = IMP.pmi.mmcif._StartingModel(fragment)
-        sources = po.starting_model_dump.get_sources(model, pdbname, chain)
-        return m, model, sources
 
     def test_protocol_dumper(self):
         """Test ModelProtocolDumper output"""
@@ -754,10 +735,11 @@ _ihm_modeling_protocol_details.multi_state_flag
 _ihm_modeling_protocol_details.ordered_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
+_ihm_modeling_protocol_details.description
 1 1 1 2 1 'All components modeled by IMP in state State_0' Sampling
-'Replica exchange monte carlo' 0 1000 YES NO NO 1 .
+'Replica exchange monte carlo' 0 1000 YES NO NO 1 . .
 2 1 2 2 1 'All components modeled by IMP in state State_0' Sampling
-'Replica exchange monte carlo' 1000 1000 YES NO NO 1 .
+'Replica exchange monte carlo' 1000 1000 YES NO NO 1 . .
 #
 """)
 
@@ -856,10 +838,11 @@ _ihm_modeling_post_process.struct_assembly_id
 _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
-1 1 1 1 cluster RMSD 10 90 . . . .
-2 1 1 2 cluster RMSD 12 90 . . . .
-3 2 1 1 cluster RMSD 34 56 . . . .
-4 3 1 1 cluster RMSD 20 80 . . . .
+_ihm_modeling_post_process.details
+1 1 1 1 cluster RMSD 10 90 . . . . .
+2 1 1 2 cluster RMSD 12 90 . . . . .
+3 2 1 1 cluster RMSD 34 56 . . . . .
+4 3 1 1 cluster RMSD 20 80 . . . . .
 #
 """)
 
@@ -900,7 +883,8 @@ _ihm_modeling_post_process.struct_assembly_id
 _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
-1 1 1 1 none none 10 10 . . . .
+_ihm_modeling_post_process.details
+1 1 1 1 none none 10 10 . . . . .
 #
 """)
 
@@ -1033,10 +1017,15 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
         class DummyRex(object):
             _number_of_clusters = 1
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
+        st = s.create_state()
+        nup84 = st.create_molecule("Nup84", "MELS", "X")
+        nup84.add_representation(resolutions=[1])
         po = DummyPO(None)
-        simo.add_protocol_output(po)
+        s.add_protocol_output(po)
+        po_state = st._protocol_output[0][1]
+        hier = s.build()
+
         with IMP.test.temporary_directory() as tmpdir:
             rex = DummyRex()
             rex._outputdir = tmpdir
@@ -1048,9 +1037,8 @@ All kmeans_weight_500_2/cluster.0/ centroid index 49
                 fh.write("{'modelnum': 1}\n")
             prot = DummyProtocolStep()
             prot.num_models_end = 10
-            po.all_protocols.add_step(prot, po._last_state)
-            po.add_replica_exchange_analysis(simo._protocol_output[0][1],
-                                             rex, {})
+            po.all_protocols.add_step(prot, po_state)
+            po.add_replica_exchange_analysis(po_state, rex, {})
 
     def test_ensemble_dumper(self):
         """Test dumping of simple ensembles"""
@@ -1090,8 +1078,9 @@ _ihm_ensemble_info.num_ensemble_models
 _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
-1 'Ensemble 1 in state State_0' 99 1 . dRMSD 5 1 0.100 .
-2 'Ensemble 2 in state State_0' 99 2 . dRMSD 5 1 0.100 42
+_ihm_ensemble_info.details
+1 'Ensemble 1 in state State_0' 99 1 . dRMSD 5 1 0.100 . .
+2 'Ensemble 2 in state State_0' 99 2 . dRMSD 5 1 0.100 42 .
 #
 """)
 
@@ -1145,17 +1134,18 @@ _ihm_localization_density_files.entity_poly_segment_id
         class DummyRestraint(object):
             label = 'foo'
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
+        s.add_protocol_output(po)
+        state = s.create_state()
+        po_state = state._protocol_output[0][1]
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(nup84.get_atomic_residues(), resolutions=[1])
+        nup84.add_representation(nup84.get_non_atomic_residues(),
+                                 resolutions=[10])
+        hier = s.build()
+
         r = DummyRestraint()
         r.dataset = DummyDataset()
         r.dataset._id = 42
@@ -1170,14 +1160,16 @@ _ihm_localization_density_files.entity_poly_segment_id
         nm_ex_xl = po.add_experimental_cross_link(1, 'Nup85',
                                                   2, 'Nup84', xl_group)
         self.assertEqual(nm_ex_xl, None)
-        rs = nup84[0].get_children()
+        sel = IMP.atom.Selection(hier, molecule='Nup84',
+                                 resolution=1)
+        rs = sel.get_selected_particles()
         sigma1 = IMP.isd.Scale.setup_particle(IMP.Particle(m), 1.0)
         sigma2 = IMP.isd.Scale.setup_particle(IMP.Particle(m), 0.5)
         psi = IMP.isd.Scale.setup_particle(IMP.Particle(m), 0.8)
-        po.add_cross_link(state, ex_xl, rs[0], rs[1], 42.0, sigma1, sigma2,
+        po.add_cross_link(po_state, ex_xl, rs[0], rs[1], 42.0, sigma1, sigma2,
                           psi, xl_group)
         # Duplicates should be ignored
-        po.add_cross_link(state, ex_xl, rs[0], rs[1], 42.0, sigma1, sigma2,
+        po.add_cross_link(po_state, ex_xl, rs[0], rs[1], 42.0, sigma1, sigma2,
                           psi, xl_group)
 
         fh = StringIO()
@@ -1204,8 +1196,9 @@ _ihm_cross_link_list.comp_id_2
 _ihm_cross_link_list.linker_chem_comp_descriptor_id
 _ihm_cross_link_list.linker_type
 _ihm_cross_link_list.dataset_list_id
-1 1 Nup84 1 1 MET Nup84 1 2 GLU 1 foo 42
-2 2 Nup84 1 1 MET Nup84 1 3 LEU 1 foo 42
+_ihm_cross_link_list.details
+1 1 Nup84 1 1 MET Nup84 1 2 GLU 1 foo 42 .
+2 2 Nup84 1 1 MET Nup84 1 3 LEU 1 foo 42 .
 #
 #
 loop_
@@ -1333,8 +1326,7 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 plane . . .
+1 plane . .
 #
 #
 loop_
@@ -1353,8 +1345,7 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 plane . . .
+1 plane . .
 #
 #
 loop_
@@ -1373,8 +1364,7 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 axis . . .
+1 axis . .
 #
 #
 loop_
@@ -1389,29 +1379,28 @@ _ihm_geometric_object_axis.transformation_id
         class MockObject(object):
             pass
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(nup84, resolutions=[1])
+        hier = s.build()
+        po_state = po._last_state
 
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
-        residues = IMP.pmi.tools.select_by_tuple(simo, "Nup84", resolution=1)
+        residues = IMP.atom.Selection(hier, molecule='Nup84',
+                                      resolution=1).get_selected_particles()
         pmi_r = MockObject()
         pmi_r.dataset = None
         method = getattr(po, method_name)
-        method(state, residues, lower_bound=4.0,
+        method(po_state, residues, lower_bound=4.0,
                upper_bound=8.0, sigma=2.0, pmi_restraint=pmi_r)
         # duplicate restraint should use the same feature
-        method(state, residues, lower_bound=4.0,
+        method(po_state, residues, lower_bound=4.0,
                upper_bound=8.0, sigma=2.0, pmi_restraint=pmi_r)
         self.assertRaises(ValueError, method,
-                          state, [simo.hier_dict['Nup84']], lower_bound=4.0,
+                          po_state, [hier], lower_bound=4.0,
                           upper_bound=8.0, sigma=2.0, pmi_restraint=pmi_r)
         self.assign_entity_asym_ids(po.system)
         d = ihm.dumper._GeometricObjectDumper()
@@ -1432,7 +1421,8 @@ loop_
 _ihm_feature_list.feature_id
 _ihm_feature_list.feature_type
 _ihm_feature_list.entity_type
-1 'residue range' polymer
+_ihm_feature_list.details
+1 'residue range' polymer .
 #
 #
 loop_
@@ -1497,24 +1487,23 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
         class MockObject(object):
             pass
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        state = simo._protocol_output[0][1]
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(nup84, resolutions=[1])
+        hier = s.build()
+        po_state = po._last_state
 
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
-        residues = IMP.pmi.tools.select_by_tuple(simo, "Nup84", resolution=1)
+        residues = IMP.atom.Selection(hier, molecule='Nup84',
+                                      resolution=1).get_selected_particles()
         nterm = residues[:1]
         pmi_r = MockObject()
         pmi_r.dataset = None
         method = getattr(po, method_name)
-        method(state, nterm, tor_R=4.0, tor_r=1.0, tor_th=0.1, sigma=2.0,
+        method(po_state, nterm, tor_R=4.0, tor_r=1.0, tor_th=0.1, sigma=2.0,
                pmi_restraint=pmi_r)
         self.assign_entity_asym_ids(po.system)
         d = ihm.dumper._GeometricObjectDumper()
@@ -1555,8 +1544,7 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 half-torus Membrane . .
+1 half-torus Membrane .
 #
 #
 loop_
@@ -1587,7 +1575,8 @@ loop_
 _ihm_feature_list.feature_id
 _ihm_feature_list.feature_type
 _ihm_feature_list.entity_type
-1 residue polymer
+_ihm_feature_list.details
+1 residue polymer .
 #
 #
 loop_
@@ -1732,85 +1721,18 @@ _ihm_3dem_restraint.cross_correlation_coefficient
 #
 """)
 
-    def test_metadata(self):
-        """Test adding metadata to ihm.System"""
-        # todo: remove this test; modern usage would add Software to
-        # po.system.software and Citations to po.system.citations instead
-        m = IMP.Model()
-        po = DummyPO(None)
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
-        simo.add_protocol_output(po)
-
-        simo.add_metadata(ihm.Software(name='t', classification='c',
-          description='d', version='2.0.16', location='u'))
-        self.assertEqual(len(po.system.software), 2) # IMP & PMI
-
-        simo.add_metadata(ihm.Citation(pmid='p', title='t',
-          journal="j", volume=13, page_range=(2927,2943), year=2014,
-          authors=['A B'], doi='10.1074/mcp.M114.041673'))
-        self.assertEqual(len(po.system.citations), 0)
-
-        with IMP.test.temporary_directory() as tmpdir:
-            bar = os.path.join(tmpdir, 'bar')
-            with open(bar, 'w') as f:
-                f.write("")
-            local = ihm.location.WorkflowFileLocation(bar)
-            simo.add_metadata(local)
-        self.assertEqual(len(po.system.locations), 1) # This script
-
-        po.finalize()
-        self.assertEqual(len(po.system.software), 3)
-        self.assertEqual(len(po.system.citations), 1)
-        self.assertEqual(len(po.system.locations), 2)
-
-    def test_update_locations(self):
-        """Test update_locations() method"""
-        # todo: remove this test; modern usage would call
-        # po.system.update_locations_in_repositories() instead
-        m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
-        po = DummyPO(None)
-        simo.add_protocol_output(po)
-
-        with IMP.test.temporary_directory() as tmpdir:
-            bar = os.path.join(tmpdir, 'bar')
-            with open(bar, 'w') as f:
-                f.write("")
-            local = ihm.location.InputFileLocation(bar)
-            # No Repository set, so cannot map local to repository location
-            po._update_locations([local])
-            self.assertEqual(local.repo, None)
-
-            simo.add_metadata(ihm.Software(
-                                  name='test', classification='test code',
-                                  description='Some test program',
-                                  version=1, location='http://salilab.org'))
-            simo.add_metadata(ihm.location.Repository(doi='foo',
-                                                      root=tmpdir))
-            loc = ihm.location.InputFileLocation(bar)
-            po._update_locations([loc])
-            self.assertEqual(loc.repo.doi, 'foo')
-            self.assertEqual(loc.path, 'bar')
-            # Further calls shouldn't change things
-            po._update_locations([loc])
-            self.assertEqual(loc.repo.doi, 'foo')
-            self.assertEqual(loc.path, 'bar')
-
     def test_dump_atoms_restype_mismatch(self):
         """Test StartingModelDumper.dump_atoms with residue type mismatch"""
         m = IMP.Model()
         po = DummyPO(None)
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
-        simo.add_protocol_output(po)
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
+        s = IMP.pmi.topology.System(m)
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        nup84 = st1.create_molecule("Nup84", "MELS", "X")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(resolutions=[1])
+        hier = s.build()
+
         # Create sequence mismatch
         po.system.entities[0].sequence = po.system.entities[0].sequence[1:]
         self.assign_entity_asym_ids(po.system)
@@ -1946,19 +1868,15 @@ _ihm_starting_model_seq_dif.details
     def test_model_repr_dump(self):
         """Test ModelRepresentationDumper"""
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            simo = IMP.pmi.representation.Representation(m)
+        s = IMP.pmi.topology.System(m)
         po = DummyPO(None)
-        simo.add_protocol_output(po)
-        po.exclude_coordinates('Nup84', (3,4))
-        simo.create_component("Nup84", True)
-        simo.add_component_sequence("Nup84",
-                                    self.get_input_file_name("test.fasta"))
-        nup84 = simo.autobuild_model("Nup84",
-                                     self.get_input_file_name("test.nup84.pdb"),
-                                     "A")
-        simo.create_transformed_component("Nup84.2", "Nup84",
-                IMP.algebra.Transformation3D(IMP.algebra.Vector3D(1,2,3)))
+        s.add_protocol_output(po)
+        state = s.create_state()
+        nup84 = state.create_molecule("Nup84", "ME", "A")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(nup84, resolutions=[1])
+        hier = s.build()
+
         fh = StringIO()
         w = ihm.format.CifWriter(fh)
         self.assign_entity_asym_ids(po.system)
@@ -1969,14 +1887,14 @@ _ihm_starting_model_seq_dif.details
         d.finalize(po.system)
         d.dump(po.system, w)
         r, = po.system.orphan_representations
-        self.assertEqual([f.asym_unit.seq_id_range for f in r], [(1,2), (1,2)])
+        self.assertEqual([f.asym_unit.seq_id_range for f in r], [(1,2)])
         out = fh.getvalue()
         self.assertEqual(out, """#
 loop_
 _ihm_model_representation.id
 _ihm_model_representation.name
 _ihm_model_representation.details
-1 . .
+1 'Default representation' .
 #
 #
 loop_
@@ -1991,8 +1909,8 @@ _ihm_model_representation_details.starting_model_id
 _ihm_model_representation_details.model_mode
 _ihm_model_representation_details.model_granularity
 _ihm_model_representation_details.model_object_count
-1 1 1 Nup84 A 1 sphere 1 flexible by-residue .
-2 1 1 Nup84 B 1 sphere 1 flexible by-residue .
+_ihm_model_representation_details.description
+1 1 1 Nup84 A 1 sphere 1 flexible by-residue . .
 #
 """)
 
@@ -2028,7 +1946,7 @@ loop_
 _ihm_model_representation.id
 _ihm_model_representation.name
 _ihm_model_representation.details
-1 . .
+1 'Default representation' .
 #
 #
 loop_
@@ -2043,8 +1961,9 @@ _ihm_model_representation_details.starting_model_id
 _ihm_model_representation_details.model_mode
 _ihm_model_representation_details.model_granularity
 _ihm_model_representation_details.model_object_count
-1 1 1 Nup84 A 1 sphere 1 rigid by-residue .
-2 1 1 Nup84 A 2 sphere . flexible by-feature 1
+_ihm_model_representation_details.description
+1 1 1 Nup84 A 1 sphere 1 rigid by-residue . .
+2 1 1 Nup84 A 2 sphere . flexible by-feature 1 .
 #
 """)
 
@@ -2054,15 +1973,11 @@ _ihm_model_representation_details.model_object_count
             def __init__(self):
                 super(MockSystem, self).__init__()
                 self.actions = []
-            def update_locations_in_repositories(self, all_repos):
-                super(MockSystem, self).update_locations_in_repositories(
-                                                                all_repos)
-                self.actions.append('ul')
         fh = StringIO()
         po = IMP.pmi.mmcif.ProtocolOutput(fh)
         po.system = MockSystem()
         po.flush()
-        self.assertEqual(po.system.actions, ['ul'])
+        self.assertEqual(po.system.actions, [])
 
     def test_state_prefix(self):
         """Test _State.get_prefixed_name()"""

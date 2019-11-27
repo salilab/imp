@@ -31,8 +31,8 @@ enum BoundDirection {
  without notice unless someone tells us it is important that it does
  not.
 
- \param[in] DIRECTION Whether to be an upper bound, lower bound, or
- both directions.  It should be one of the BoundDirection enum
+ \param[in] DIRECTION Whether the harmonic is of an upper bound, lower bound, or
+ both directions type.  It should be one of the BoundDirection enum
  values. If it is LOWER, than the function is 0 for all values above
  the passed center.
  \see Harmonic
@@ -42,8 +42,8 @@ enum BoundDirection {
 template <int DIRECTION>
 class TruncatedHarmonic : public UnaryFunction {
  public:
-  /** \param[in] center The center point for the harmonic.
-   \param[in] k The spring constant for the harmonic.
+  /** \param[in] center The center point for the truncated harmonic.
+   \param[in] k The spring constant for the truncated harmonic.
    \param[in] threshold How far the harmonic term extends from the center.
    \param[in] limit The value to which the function converges above the
    threshold.
@@ -54,7 +54,7 @@ class TruncatedHarmonic : public UnaryFunction {
    */
   TruncatedHarmonic(Float center, Float k, Float threshold, Float limit)
       : d_(center, k, threshold, limit) {}
-  /** Set limit to a reasonable value. */
+  /** Same as other constructor, but automatically set limit to a reasonable default value. */
   TruncatedHarmonic(Float center, Float k, Float threshold)
       : d_(center, k, threshold, k * square(threshold)) {}
   virtual DerivativePair evaluate_with_derivative(double feature) const
@@ -77,11 +77,16 @@ class TruncatedHarmonic : public UnaryFunction {
   internal::TruncatedHarmonicData d_;
 };
 
-//! A specialization for the upper bound
+//! A specialization of TruncatedHarmonic that may be non-zero only
+//! above the center value (always zero below it)
 typedef TruncatedHarmonic<UPPER> TruncatedHarmonicUpperBound;
-//! A specialization for the lower bound
+
+//! A specialization of TruncatedHarmonic that may be non-zero only
+//! below the center value (always zero above it)
 typedef TruncatedHarmonic<LOWER> TruncatedHarmonicLowerBound;
-//! A specialization
+
+//! A specialization of TruncatedHarmonic that may be non-zero in both
+//! directions, below or above the center value
 typedef TruncatedHarmonic<BOTH> TruncatedHarmonicBound;
 
 IMPCORE_END_NAMESPACE

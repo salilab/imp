@@ -1,5 +1,7 @@
 [![nightly build](https://integrativemodeling.org/nightly/results/?p=stat)](https://integrativemodeling.org/nightly/results/)
 [![coverity scan](https://img.shields.io/coverity/scan/8505.svg)](https://scan.coverity.com/projects/salilab-imp)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3256565.svg)](https://doi.org/10.5281/zenodo.3256565)
+
 
 For full installation and usage instructions, see the
 [documentation](https://integrativemodeling.org/nightly/doc/manual/).

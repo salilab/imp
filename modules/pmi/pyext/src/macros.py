@@ -4,7 +4,6 @@ Protocols for sampling structures and analyzing them.
 
 from __future__ import print_function, division
 import IMP
-import IMP.pmi.representation
 import IMP.pmi.tools
 import IMP.pmi.samplers
 import IMP.pmi.output
@@ -2197,14 +2196,17 @@ class AnalysisReplicaExchange(object):
 
 
     def align(self):
-        print("alignment")
         tr = IMP.atom.get_transformation_aligning_first_to_second(self.sel1_alignment, self.sel0_alignment)
 
         for rb in self.rbs1:
             IMP.core.transform(rb, tr)
 
         for bead in self.beads1:
-            IMP.core.transform(IMP.core.XYZ(bead), tr)
+            try:
+                IMP.core.transform(IMP.core.XYZ(bead), tr)
+            except:
+                continue
+
 
         self.model.update()
 

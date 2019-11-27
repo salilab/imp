@@ -558,7 +558,7 @@ struct ConvertFloatBase {
     return PyNumber_Check(o);
   }
   template <class SwigData>
-  static PyObject* create_python_object(float f, SwigData, int) {
+  static PyObject* create_python_object(double f, SwigData, int) {
     // these may or may not have a refcount
     return PyFloat_FromDouble(f);
   }

@@ -42,9 +42,7 @@ class ProtocolOutput(object):
        Unlike simple output of model coordinates, a complete
        protocol includes the input data used, details on the restraints,
        sampling, and clustering, as well as output models.
-       Use via IMP.pmi.representation.Representation.add_protocol_output()
-       (for PMI 1) or
-       IMP.pmi.topology.System.add_protocol_output() (for PMI 2).
+       Use via IMP.pmi.topology.System.add_protocol_output().
 
        @see IMP.pmi.mmcif.ProtocolOutput for a concrete subclass that outputs
             mmCIF files.
@@ -364,7 +362,8 @@ class Output(object):
         # update the score list
         if self.replica_exchange:
             # read the self.best_score_list from the file
-            exec(open(self.best_score_file_name).read())
+            with open(self.best_score_file_name) as fh:
+                exec(fh.read())
 
         if len(self.best_score_list) < self.nbestscoring:
             self.best_score_list.append(score)
@@ -406,10 +405,10 @@ class Output(object):
 
     def init_rmf(self, name, hierarchies, rs=None, geometries=None, listofobjects=None):
         """
-        This function initialize an RMF file
+        Initialize an RMF file
 
         @param name          the name of the RMF file
-        @param hierarchies   the hiearchies to be included (it is a list)
+        @param hierarchies   the hierarchies to be included (it is a list)
         @param rs            optional, the restraint sets (it is a list)
         @param geometries    optional, the geometries (it is a list)
         @param listofobjects optional, the list of objects for the stat (it is a list)
@@ -630,6 +629,7 @@ class Output(object):
             else:
                 print("%s from old objects (file %s) not in new objects"
                       % (str(k), str(name)), file=sys.stderr)
+        flstat.close()
         return passed
 
     def get_environment_variables(self):

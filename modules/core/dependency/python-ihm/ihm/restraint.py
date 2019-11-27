@@ -1,6 +1,9 @@
 """Classes for handling restraints on the system.
 """
 
+import ihm
+
+
 class Restraint(object):
     """Base class for all restraints.
        See :attr:`ihm.System.restraints`.
@@ -206,7 +209,8 @@ class CrossLinkRestraint(Restraint):
         #:     restraint.experimental_cross_links.append([xl2, xl3])
         self.experimental_cross_links = []
 
-        #: All cross-links used in the modeling
+        #: All cross-links used in the modeling, as a list of
+        #: :class:`CrossLink` objects.
         self.cross_links = []
 
 
@@ -217,9 +221,11 @@ class ExperimentalCrossLink(object):
        :type residue1: :class:`ihm.Residue`
        :param residue2: The second residue linked by the cross-link.
        :type residue2: :class:`ihm.Residue`
+       :param str details: Additional text describing the cross-link.
     """
-    def __init__(self, residue1, residue2):
+    def __init__(self, residue1, residue2, details=None):
         self.residue1, self.residue2 = residue1, residue2
+        self.details = details
 
 
 class DistanceRestraint(object):
@@ -293,8 +299,9 @@ class LowerUpperBoundDistanceRestraint(DistanceRestraint):
 
 class CrossLink(object):
     """Base class for all cross-links used in the modeling.
-       See :class:`ResidueCrossLink`, :class:`AtomCrossLink`,
-       :class:`FeatureCrossLink`."""
+       Do not use this class directly, but instead use a subclass:
+       :class:`ResidueCrossLink`, :class:`AtomCrossLink`,
+       or :class:`FeatureCrossLink`."""
     pass
 
 
@@ -431,16 +438,27 @@ class Feature(object):
        :class:`NonPolyFeature`, and :class:`PseudoSiteFeature`.
 
        Features are typically assigned to one or more
-       :class:`~ihm.restraint.GeometricRestraint` objects.
+       :class:`~ihm.restraint.GeometricRestraint` or
+       :class:`~ihm.restraint.DerivedDistanceRestraint` objects.
     """
-    pass
+    details = None
+    def _all_entities_or_asyms(self):
+        # Get all Entities or AsymUnits referenced by this object
+        return []
 
 
 class ResidueFeature(Feature):
     """Selection of one or more residues from the system.
 
-       :param sequence ranges: A list of :class:`AsymUnitRange` and/or
-              :class:`AsymUnit` objects.
+       Residues can be selected from both :class:`AsymUnit` and
+       :class:`Entity` (the latter implies that it selects residues
+       in all instances of that entity). Individual residues can
+       also be selected by passing :class:`Residue` objects.
+
+       :param sequence ranges: A list of :class:`AsymUnitRange`,
+              :class:`AsymUnit`, :class:`EntityRange`, :class:`Residue`,
+              and/or :class:`Entity` objects.
+       :param str details: Additional text describing this feature.
     """
 
     # Type is 'residue' if each range selects a single residue, otherwise
@@ -452,59 +470,81 @@ class ResidueFeature(Feature):
         return 'residue'
     type = property(__get_type)
 
-    def __init__(self, ranges):
-        self.ranges = ranges
+    def __init__(self, ranges, details=None):
+        self.ranges, self.details = ranges, details
         _ = self._get_entity_type()
 
+    def _all_entities_or_asyms(self):
+        return self.ranges
+
     def _get_entity_type(self):
-        if any(not r.entity.is_polymeric() for r in self.ranges):
+        def _get_entity(x):
+            return x if isinstance(x, ihm.Entity) else x.entity
+        if any(not _get_entity(r).is_polymeric() for r in self.ranges):
             raise ValueError("%s cannot select non-polymeric entities" % self)
         else:
-            return self.ranges[0].entity.type if self.ranges else None
+            return _get_entity(self.ranges[0]).type if self.ranges else None
 
 
 class AtomFeature(Feature):
     """Selection of one or more atoms from the system.
        Atoms can be selected from polymers or non-polymers (but not both).
+       Atoms can also be selected from both :class:`AsymUnit` and
+       :class:`Entity` (the latter implies that it selects atoms
+       in all instances of that entity).
        For selecting an entire polymer or residue(s),
        see :class:`ResidueFeature`. For selecting an entire non-polymer,
        see :class:`NonPolyFeature`.
 
        :param sequence atoms: A list of :class:`ihm.Atom` objects.
+       :param str details: Additional text describing this feature.
     """
     type = 'atom'
 
-    def __init__(self, atoms):
-        self.atoms = atoms
+    def __init__(self, atoms, details=None):
+        self.atoms, self.details = atoms, details
         _ = self._get_entity_type()
 
     def _get_entity_type(self):
-        types = frozenset(a.residue.asym.entity.type for a in self.atoms)
+        def _get_entity(residue):
+            return residue.entity if residue.entity else residue.asym.entity
+        types = frozenset(_get_entity(a.residue).type for a in self.atoms)
         if len(types) > 1:
             raise ValueError("%s cannot span both polymeric and "
                              "non-polymeric entities" % self)
         elif types:
-            return self.atoms[0].residue.asym.entity.type
+            return tuple(types)[0]
 
 
 class NonPolyFeature(Feature):
     """Selection of one or more non-polymers from the system.
        To select individual atoms from a non-polymer, see :class:`AtomFeature`.
 
-       :param sequence asyms: A list of :class:`AsymUnit` objects.
+       Features can include both :class:`AsymUnit` and
+       :class:`Entity` (the latter implies that it selects non-polymers
+       in all instances of that entity).
+
+       :param sequence objs: A list of :class:`AsymUnit` and/or
+              :class:`Entity` objects.
+       :param str details: Additional text describing this feature.
     """
 
     type = 'ligand'
 
-    def __init__(self, asyms):
-        self.asyms = asyms
+    def __init__(self, objs, details=None):
+        self.objs, self.details = objs, details
         _ = self._get_entity_type()
 
+    def _all_entities_or_asyms(self):
+        return self.objs
+
     def _get_entity_type(self):
-        if any(r.entity.is_polymeric() for r in self.asyms):
+        def _get_entity(x):
+            return x if isinstance(x, ihm.Entity) else x.entity
+        if any(_get_entity(r).is_polymeric() for r in self.objs):
             raise ValueError("%s can only select non-polymeric entities" % self)
         else:
-            return self.asyms[0].entity.type if self.asyms else None
+            return _get_entity(self.objs[0]).type if self.objs else None
 
 
 class PseudoSiteFeature(Feature):
@@ -514,15 +554,15 @@ class PseudoSiteFeature(Feature):
        :param float y: Cartesian Y coordinate of this site.
        :param float z: Cartesian Z coordinate of this site.
        :param float radius: Radius of the site, if applicable.
-       :param str description: Textual description of this site.
+       :param str details: Additional text describing this feature.
     """
 
     type = 'pseudo site'
 
-    def __init__(self, x, y, z, radius=None, description=None):
+    def __init__(self, x, y, z, radius=None, details=None):
         self.x, self.y, self.z = x, y, z
         self.radius = radius
-        self.description = description
+        self.details = details
 
     def _get_entity_type(self):
         return 'other'
@@ -555,6 +595,7 @@ class GeometricRestraint(object):
         self.geometric_object, self.feature = geometric_object, feature
         self.distance, self.restrain_all = distance, restrain_all
         self.harmonic_force_constant = harmonic_force_constant
+    _all_features = property(lambda self: (self.feature,))
 
 
 class CenterGeometricRestraint(GeometricRestraint):
@@ -596,15 +637,19 @@ class DerivedDistanceRestraint(object):
        :type distance: :class:`DistanceRestraint`
        :param float probability: Likelihood that restraint is correct (0. - 1.)
        :param bool restrain_all: If True, all distances are restrained.
+       :param float mic_value: Value of the Maximal Information Coefficient
+              (MIC) for this interaction, if applicable.
     """
     assembly = None # no struct_assembly_id for derived distance restraints
 
     def __init__(self, dataset, feature1, feature2, distance,
-                 probability=None, restrain_all=None):
+                 probability=None, restrain_all=None, mic_value=None):
         self.dataset = dataset
         self.feature1, self.feature2 = feature1, feature2
         self.distance, self.restrain_all = distance, restrain_all
         self.probability = probability
+        self.mic_value = mic_value
+    _all_features = property(lambda self: (self.feature1, self.feature2))
 
 
 class PredictedContactRestraint(object):

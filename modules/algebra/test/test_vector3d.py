@@ -55,8 +55,29 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(v[0], 1.0)
         self.assertEqual(v[1], 2.0)
         self.assertEqual(v[2], 3.0)
+
+        self.assertEqual(v[-3], 1.0)
+        self.assertEqual(v[-2], 2.0)
+        self.assertEqual(v[-1], 3.0)
         v[0] = 10.0
+        v[-1] = 30.0
         self.assertEqual(v[0], 10.0)
+        self.assertEqual(v[2], 30.0)
+        self.assertRaises(IndexError, lambda: v[3])
+        self.assertRaises(IndexError, lambda: v[-4])
+        def test_set(ind):
+            v[ind] = 0.
+        self.assertRaises(IndexError, test_set, 3)
+        self.assertRaises(IndexError, test_set, -4)
+
+    def test_to_list(self):
+        """Check conversion of Vector3D to list"""
+        v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
+        l = list(v)
+        self.assertEqual(len(l), 3)
+        self.assertAlmostEqual(l[0], 1.0, delta=1e-6)
+        self.assertAlmostEqual(l[1], 2.0, delta=1e-6)
+        self.assertAlmostEqual(l[2], 3.0, delta=1e-6)
 
     def test_len(self):
         """Check Vector3D length"""

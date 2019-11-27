@@ -25,7 +25,7 @@ files=$(git diff --cached --name-only --diff-filter=ACM)
 if test -n "$files"
 then
   echo "checking standards on $files"
-  if python "$(git rev-parse --git-dir)/hooks/check_standards.py" $files
+  if @PYTHON@ "$(git rev-parse --git-dir)/hooks/check_standards.py" $files
   then
     echo "Standards checks OK."
   else

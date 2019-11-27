@@ -211,7 +211,21 @@ def _get_color_for_representation(rep):
             raise TypeError("Color must be Chimera color name, a hex "
                             "string, a float or (r,g,b) tuple")
 
-def build_representation(parent, rep, coord_finder):
+
+def _add_fragment_provenance(fragment, first_residue, rephandler):
+    """Track the original source of a fragment's structure.
+       If the residues in the given fragment were extracted from a PDB
+       file, add suitable provenance information to the Model (the name
+       of that file, chain ID, and residue index offset)."""
+    pdb_element = rephandler.pdb_for_residue.get(first_residue.get_index())
+    if pdb_element:
+        m = fragment.get_model()
+        sp = IMP.core.StructureProvenance.setup_particle(IMP.Particle(m),
+            pdb_element.filename, pdb_element.chain_id, pdb_element.offset)
+        IMP.core.add_provenance(m, fragment, sp)
+
+
+def build_representation(parent, rep, coord_finder, rephandler):
     """Create requested representation.
     For beads, identifies continuous segments and sets up as Representation.
     If any volume-based representations (e.g.,densities) are requested,
@@ -323,6 +337,8 @@ def build_representation(parent, rep, coord_finder):
             this_resolution = IMP.atom.Fragment.setup_particle(fp,res_nums)
             this_resolution.set_name("%s: Res %i"%(name,resolution))
             if frag_res[0].get_has_structure():
+                _add_fragment_provenance(this_resolution, frag_res[0],
+                                         rephandler)
                 # if structured, merge particles as needed
                 if resolution==atomic_res:
                     for residue in frag_res:

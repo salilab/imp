@@ -25,7 +25,9 @@ class Tests(IMP.test.TestCase):
                                     number_of_best_scoring_models=3,
                                     score_key=self.score_key,
                                     feature_keys=self.feature_keys)
-        po = IMP.pmi.output.ProcessOutput('top_3.out')
+        # This makes a (deprecated) v1 statfile
+        with IMP.allow_deprecated():
+            po = IMP.pmi.output.ProcessOutput('top_3.out')
         fields = po.get_fields([self.score_key])
         self.assertEqual(len(fields[self.score_key]),3)
         self.assertEqual(float(fields[self.score_key][0]),301.048975729)

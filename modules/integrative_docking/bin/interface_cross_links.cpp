@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
   float distance_threshold = atof(files[2].c_str());
 
   // read pdb  files, prepare particles
-  IMP::Model* model = new IMP::Model();
+  IMP_NEW(IMP::Model, model, ());
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       receptor_pdb, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(),
       true, true);

@@ -34,6 +34,7 @@ function(imp_build_module sourcedir)
   endif()
 
   # Use same compiler flags as IMP itself
+  include(${RMF_MODULES_DIR}/IMPFindC++11.cmake)
   include(${RMF_MODULES_DIR}/IMPFindCompilerFlags.cmake)
 
   # Add include directories of mandatory IMP dependencies
@@ -57,7 +58,11 @@ function(imp_build_module sourcedir)
   endif()
   if(NOT CMAKE_INSTALL_PYTHONDIR)
     set(CMAKE_INSTALL_PYTHONDIR "" CACHE PATH "Python modules")
-    set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${python_version}/site-packages")
+    set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages")
+  endif()
+  if(NOT CMAKE_INSTALL_BUILDINFODIR)
+    set(CMAKE_INSTALL_BUILDINFODIR "" CACHE PATH "Build info files")
+    set(CMAKE_INSTALL_BUILDINFODIR "${CMAKE_INSTALL_DATADIR}/IMP/build_info")
   endif()
 
   # Visual Studio always adds Release or Debug to binary directories
@@ -132,9 +137,16 @@ function(imp_build_module sourcedir)
     foreach(mod ${modules})
       if(EXISTS "${sourcedir}/modules/${mod}")
         add_subdirectory("${sourcedir}/modules/${mod}")
+        list(APPEND all_modules "${mod}")
       endif()
     endforeach()
   else()
+    if(${ARGC} GREATER 1)
+      list(APPEND all_modules "${ARGV1}")
+    else()
+      get_filename_component(sourcedir_name ${sourcedir} NAME)
+      list(APPEND all_modules "${sourcedir_name}")
+    endif()
     include(${sourcedir}/ModuleBuild.cmake)
   endif()
 
@@ -203,5 +215,26 @@ function(imp_build_module sourcedir)
        "    exec(fh.read())\n"
        "del __oldpathlen, extend_path\n")
 
+  include(${RMF_MODULES_DIR}/InstallDeref.cmake)
+
+  # Install headers
+  install_deref(${CMAKE_BINARY_DIR}/include/IMP *
+                ${CMAKE_INSTALL_INCLUDEDIR}/IMP)
+
+  # Install Python modules (but not top-level __init__.py)
+  foreach(mod ${all_modules})
+    install_deref(${CMAKE_BINARY_DIR}/lib/IMP/${mod} *
+                  ${CMAKE_INSTALL_PYTHONDIR}/IMP/${mod})
+  endforeach()
+
+  # Install data
+  install_deref(${CMAKE_BINARY_DIR}/data * ${CMAKE_INSTALL_DATADIR}/IMP)
+
+  # Install build_info
+  install_deref(${CMAKE_BINARY_DIR}/build_info *.pck
+                ${CMAKE_INSTALL_BUILDINFODIR})
+
+  # Install SWIG .i files
+  install_deref(${CMAKE_BINARY_DIR}/swig *.i ${CMAKE_INSTALL_SWIGDIR})
 
 endfunction()

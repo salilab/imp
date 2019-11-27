@@ -57,6 +57,9 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
 
     double get_probability() const;
 
+    //! Get the particle indexes from a contribution
+    ParticleIndexPair get_contribution_particle_indexes(int i) const { return ppis_[i]; }
+
     unsigned int get_number_of_contributions() const { return ppis_.size(); }
 
     virtual double unprotected_evaluate(

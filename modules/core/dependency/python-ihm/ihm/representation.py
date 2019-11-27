@@ -21,15 +21,17 @@ class AtomicSegment(object):
        :param starting_model: initial coordinates used for the segment
               (or None).
        :type starting_model: :class:`~ihm.startmodel.StartingModel`
+       :param str description: Additional text describing this segment.
     """
 
     primitive = 'atomistic'
     count = None
     granularity = 'by-atom'
 
-    def __init__(self, asym_unit, rigid, starting_model=None):
+    def __init__(self, asym_unit, rigid, starting_model=None, description=None):
         self.asym_unit = asym_unit
         self.starting_model, self.rigid = starting_model, rigid
+        self.description = description
 
 
 class ResidueSegment(object):
@@ -46,15 +48,18 @@ class ResidueSegment(object):
        :param starting_model: initial coordinates used for the segment
               (or None).
        :type starting_model: :class:`~ihm.startmodel.StartingModel`
+       :param str description: Additional text describing this segment.
     """
 
     count = None
     granularity = 'by-residue'
 
-    def __init__(self, asym_unit, rigid, primitive, starting_model=None):
+    def __init__(self, asym_unit, rigid, primitive, starting_model=None,
+                 description=None):
         self.asym_unit = asym_unit
         self.primitive = primitive
         self.starting_model, self.rigid = starting_model, rigid
+        self.description = description
 
 
 class MultiResidueSegment(object):
@@ -71,15 +76,18 @@ class MultiResidueSegment(object):
        :param starting_model: initial coordinates used for the segment
               (or None).
        :type starting_model: :class:`~ihm.startmodel.StartingModel`
+       :param str description: Additional text describing this segment.
     """
 
     count = None
     granularity = 'multi-residue'
 
-    def __init__(self, asym_unit, rigid, primitive, starting_model=None):
+    def __init__(self, asym_unit, rigid, primitive, starting_model=None,
+                 description=None):
         self.asym_unit = asym_unit
         self.primitive = primitive
         self.starting_model, self.rigid = starting_model, rigid
+        self.description = description
 
 
 class FeatureSegment(object):
@@ -97,14 +105,17 @@ class FeatureSegment(object):
        :param starting_model: initial coordinates used for the segment
               (or None).
        :type starting_model: :class:`~ihm.startmodel.StartingModel`
+       :param str description: Additional text describing this segment.
     """
 
     granularity = 'by-feature'
 
-    def __init__(self, asym_unit, rigid, primitive, count, starting_model=None):
+    def __init__(self, asym_unit, rigid, primitive, count, starting_model=None,
+                 description=None):
         self.asym_unit = asym_unit
         self.primitive, self.count = primitive, count
         self.starting_model, self.rigid = starting_model, rigid
+        self.description = description
 
 
 class Representation(list):

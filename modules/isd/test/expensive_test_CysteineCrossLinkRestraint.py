@@ -63,9 +63,9 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
         nuisance.set_is_optimized(nuisance.get_nuisance_key(), isoptimized)
         return nuisance
 
-    def setup_weight(self, m, isoptimized=True):
+    def setup_weight(self, m, dim, isoptimized=True):
         pw = IMP.Particle(m)
-        weight = IMP.isd.Weight.setup_particle(pw)
+        weight = IMP.isd.Weight.setup_particle(pw, dim)
         weight.set_weights_are_optimized(True)
         return weight
 
@@ -135,7 +135,7 @@ class TestCysteineCrossLinkRestraint(IMP.test.TestCase):
             sigmatuple[1],
             True)
         # population particle
-        weight = self.setup_weight(m, True)
+        weight = self.setup_weight(m, 2, True)
         # epsilon
         epsilon = self.setup_nuisance(
             m,

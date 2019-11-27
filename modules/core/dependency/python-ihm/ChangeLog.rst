@@ -1,3 +1,38 @@
+HEAD
+====
+ - :func:`ihm.reader.read` has a new optional ``reject_old_file`` argument.
+   If set, it will raise an exception if asked to read a file that conforms
+   to too old a version of the IHM extension dictionary.
+ - Definitions for the DHSO and BMSO cross-linkers are now provided in the
+   :mod:`ihm.cross_linkers` module.
+
+0.12 - 2019-10-16
+=================
+ - :class:`ihm.restraint.ResidueFeature` objects can now act on one or
+   more :class:`Residue` objects, which act equivalently to
+   1-residue ranges (:class:`AsymUnitRange` or :class:`EntityRange`).
+ - The new :class:`ihm.dataset.GeneticInteractionsDataset` class and the
+   ``mic_value`` argument to :class:`ihm.restraint.DerivedDistanceRestraint`
+   can be used to represent restraints from genetic interactions, such as
+   point-mutant epistatic miniarray profile (pE-MAP) data.
+
+0.11 - 2019-09-05
+=================
+ - :class:`ihm.Assembly` objects can now only contain :class:`AsymUnit`
+   and :class:`AsymUnitRange` objects (not :class:`Entity` or
+   :class:`EntityRange`).
+ - Bugfix: ensembles that don't reference a :class:`ihm.model.ModelGroup`
+   no longer cause the reader to create bogus empty model groups.
+
+0.10 - 2019-07-09
+=================
+ - Features (:class:`ihm.restraint.AtomFeature`,
+   :class:`ihm.restraint.ResidueFeature`, and
+   :class:`ihm.restraint.NonPolyFeature`), which previously could select part
+   or all of an :class:`ihm.AsymUnit`, can now also select parts of an
+   :class:`Entity`. A restraint acting on an entity-feature is assumed
+   to apply to all instances of that entity.
+
 0.9 - 2019-05-31
 ================
  - Add support for the latest version of the IHM dictionary.

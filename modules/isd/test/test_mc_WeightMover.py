@@ -20,11 +20,12 @@ class TestWeightMover(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         # IMP.set_log_level(IMP.MEMORY)
         IMP.set_log_level(0)
+        self.setup_system(2)
+
+    def setup_system(self, nweights):
         self.m = IMP.Model()
-        self.w = Weight.setup_particle(IMP.Particle(self.m))
+        self.w = Weight.setup_particle(IMP.Particle(self.m), nweights)
         self.w.set_weights_are_optimized(True)
-        self.w.add_weight()
-        self.w.add_weight()
         self.wm = WeightMover(self.w, 0.1)
         self.mc = IMP.core.MonteCarlo(self.m)
         self.mc.set_scoring_function([])
@@ -34,16 +35,13 @@ class TestWeightMover(IMP.test.TestCase):
 
     def test_run(self):
         "Test weight mover mc run"
-        self.setUp()
         for n in range(5):
+            self.setup_system(n + 2)
             for j in range(10):
                 self.mc.optimize(10)
                 ws = self.w.get_weights()
-                sum = 0
-                for k in range(self.w.get_number_of_states()):
-                    sum += self.w.get_weight(k)
-                self.assertAlmostEqual(sum, 1.0, delta=0.0000001)
-            self.w.add_weight()
+                wsum = sum([ws[i] for i in range(len(ws))])
+                self.assertAlmostEqual(wsum, 1.0, delta=0.0000001)
 
 
 if __name__ == '__main__':

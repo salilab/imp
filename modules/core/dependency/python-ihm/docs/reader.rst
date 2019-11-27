@@ -13,6 +13,8 @@ The :mod:`ihm.reader` Python module
 
 .. autoexception:: UnknownKeywordWarning
 
+.. autoexception:: OldFileError
+
 .. autoclass:: Handler
    :members:
 

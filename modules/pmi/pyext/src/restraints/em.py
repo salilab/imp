@@ -245,12 +245,7 @@ class GaussianEMRestraint(object):
         # IMP.pmi.tools.translate_hierarchies(self.densities,v)
 
     def center_model_on_target_density(self, input_object):
-        if type(input_object) is IMP.pmi.representation.Representation:
-            hier = input_object.prot
-        elif type(input_object) is IMP.pmi.topology.State:
-            hier = input_object.get_hierarchy()
-        else:
-            raise Exception("Input must be a Representation or topology.State object")
+        hier = input_object.get_hierarchy()
         target_com = self.get_center_of_mass()
         print('target com', target_com)
         model_com = self.get_center_of_mass(target=False)

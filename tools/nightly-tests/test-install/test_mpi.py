@@ -1,14 +1,23 @@
 import unittest
 import sys
+import os
 import subprocess
+
+
+mock_config = os.environ['MOCK_CONFIG']
+
 
 class Tests(unittest.TestCase):
 
     def test_modules_installed(self):
         """Check MPI-dependent Python modules"""
-        # No IMP-python3-mpich package currently
-        if sys.version_info[0] >= 3:
-            self.skipTest("No Python3 support for MPI yet")
+        # Fedora and RHEL 8 only have a Python 3 MPI module; other systems
+        # only have Python 2
+        if 'fedora' in mock_config or 'epel-8' in mock_config:
+            if sys.version_info[0] == 2:
+                self.skipTest("No Python2 support for MPI")
+        elif sys.version_info[0] >= 3:
+            self.skipTest("No Python3 support for MPI")
         import IMP.mpi
         import IMP.spb
 

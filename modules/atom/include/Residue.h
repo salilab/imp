@@ -112,13 +112,14 @@ IMPATOMEXPORT extern const ResidueType DCYT;
 IMPATOMEXPORT extern const ResidueType DGUA;
 //! thymine (DNA)
 IMPATOMEXPORT extern const ResidueType DTHY;
-
 // All further residues (including user-added residues) are ligands
 
 //! water molecule
 IMPATOMEXPORT extern const ResidueType HOH;
 //! heme
 IMPATOMEXPORT extern const ResidueType HEME;
+//! Phosphitidyl Choline
+IMPATOMEXPORT extern const ResidueType POP;
 #endif
 /*@}*/
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Patch IMP, ihm and RMF SWIG wrappers to search for Python extensions and DLLs
    in Python version-specific directories. These directories are created by
@@ -39,6 +39,9 @@ def _add_pyext_to_path():
         # Add DLL directory to PATH so Windows can find them
         if dlldir not in os.environ['PATH']:
             os.environ['PATH'] = dlldir + ';' + os.environ['PATH']
+        # Python 3.8 or later don't look in PATH for DLLs
+        if hasattr(os, 'add_dll_directory'):
+            __dll_directory = os.add_dll_directory(dlldir)
 _add_pyext_to_path()
 
 """
@@ -60,6 +63,9 @@ def _add_pyext_to_path():
         # Add DLL directory to PATH so Windows can find them
         if dlldir not in os.environ['PATH']:
             os.environ['PATH'] = dlldir + ';' + os.environ['PATH']
+        # Python 3.8 or later don't look in PATH for DLLs
+        if hasattr(os, 'add_dll_directory'):
+            __dll_directory = os.add_dll_directory(dlldir)
 _add_pyext_to_path()
 
 """

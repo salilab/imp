@@ -67,7 +67,7 @@ Each docked complex will be compared against cross links in cross_links_file.")(
   cross_links_file = files[1];
 
   // read pdb  files, prepare particles
-  IMP::Model *model = new IMP::Model();
+  IMP_NEW(IMP::Model, model, ());
   IMP::atom::Hierarchy mhd = IMP::atom::read_pdb(
       pdb, model, new IMP::atom::NonWaterNonHydrogenPDBSelector(), true, true);
   IMP::Particles residue_particles =

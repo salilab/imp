@@ -792,8 +792,8 @@ _ihm_struct_assembly_details.entity_poly_segment_id
         a1 = ihm.AsymUnit(e1)
         system.entities.extend((e1, e2))
         system.asym_units.append(a1)
-        # Note that no asym unit uses entity e2, so the assembly
-        # should omit the chain ID ('.')
+        # Note that no asym unit uses entity e2, so it won't be included
+        # in the assembly
 
         # Assign entity and asym IDs
         ihm.dumper._EntityDumper().finalize(system)
@@ -814,7 +814,6 @@ _ihm_entity_poly_segment.seq_id_end
 _ihm_entity_poly_segment.comp_id_begin
 _ihm_entity_poly_segment.comp_id_end
 1 1 1 3 ALA GLY
-2 2 1 2 GLU TRP
 #
 """)
 
@@ -838,14 +837,13 @@ _ihm_struct_assembly_details.entity_id
 _ihm_struct_assembly_details.asym_id
 _ihm_struct_assembly_details.entity_poly_segment_id
 1 1 1 foo 1 A 1
-2 1 1 bar 2 . 2
 #
 """)
 
     def test_external_reference_dumper(self):
         """Test ExternalReferenceDumper"""
         system = ihm.System()
-        repo1 = ihm.location.Repository(doi="foo")
+        repo1 = ihm.location.Repository(doi="foo", details='test repo')
         repo2 = ihm.location.Repository(doi="10.5281/zenodo.46266",
                                         url='nup84-v1.0.zip',
                                         top_directory=os.path.join('foo',
@@ -895,10 +893,11 @@ _ihm_external_reference_info.reference_type
 _ihm_external_reference_info.reference
 _ihm_external_reference_info.refers_to
 _ihm_external_reference_info.associated_url
-1 . DOI foo Other .
-2 Zenodo DOI 10.5281/zenodo.46266 Archive nup84-v1.0.zip
-3 Zenodo DOI 10.5281/zenodo.58025 File foo.spd
-4 . 'Supplementary Files' . Other .
+_ihm_external_reference_info.details
+1 . DOI foo Other . 'test repo'
+2 Zenodo DOI 10.5281/zenodo.46266 Archive nup84-v1.0.zip .
+3 Zenodo DOI 10.5281/zenodo.58025 File foo.spd .
+4 . 'Supplementary Files' . Other . .
 #
 #
 loop_
@@ -1123,7 +1122,8 @@ _ihm_related_datasets.dataset_list_id_primary
                     rigid=False, primitive='gaussian')
         s4 = ihm.representation.FeatureSegment(
                     asym(3,4), starting_model=None,
-                    rigid=True, primitive='other', count=3)
+                    rigid=True, primitive='other', count=3,
+                    description='test segment')
         r1 = ihm.representation.Representation((s1, s2), name='foo',
                                                details='foo details')
         r2 = ihm.representation.Representation((s3, s4), name='bar')
@@ -1159,10 +1159,11 @@ _ihm_model_representation_details.starting_model_id
 _ihm_model_representation_details.model_mode
 _ihm_model_representation_details.model_granularity
 _ihm_model_representation_details.model_object_count
-1 1 42 bar X 1 atomistic . rigid by-atom .
-2 1 42 bar X 2 sphere . flexible by-residue .
-3 2 42 bar X 1 gaussian . flexible multi-residue .
-4 2 42 bar X 2 other . rigid by-feature 3
+_ihm_model_representation_details.description
+1 1 42 bar X 1 atomistic . rigid by-atom . .
+2 1 42 bar X 2 sphere . flexible by-residue . .
+3 2 42 bar X 1 gaussian . flexible multi-residue . .
+4 2 42 bar X 2 other . rigid by-feature 3 'test segment'
 #
 """)
 
@@ -1210,7 +1211,8 @@ _ihm_model_representation_details.model_object_count
                                script_file=script, software=software)
         system.orphan_starting_models.append(sm)
 
-        sm = TestStartingModel(asym(1,15), dstarget, 'A', [])
+        sm = TestStartingModel(asym(1,15), dstarget, 'A', [],
+                               description="test desc")
         system.orphan_starting_models.append(sm)
 
         e1._id = 42
@@ -1251,8 +1253,9 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-1 42 foo 99 2 'experimental model' A 10 102
-2 42 foo 99 1 'experimental model' A 0 102
+_ihm_starting_model_details.description
+1 42 foo 99 2 'experimental model' A 10 102 .
+2 42 foo 99 1 'experimental model' A 0 102 'test desc'
 #
 #
 loop_
@@ -1344,7 +1347,8 @@ _ihm_starting_model_seq_dif.details
         p2.steps.append(ihm.protocol.Step(assembly=assembly, dataset_group=dsg2,
                                method='Replica exchange', num_models_begin=2000,
                                num_models_end=1000, multi_scale=True,
-                               software=software, script_file=script))
+                               software=software, script_file=script,
+                               description='test step'))
         system.orphan_protocols.append(p2)
 
         dumper = ihm.dumper._ProtocolDumper()
@@ -1375,9 +1379,10 @@ _ihm_modeling_protocol_details.multi_state_flag
 _ihm_modeling_protocol_details.ordered_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
-1 1 1 42 99 foo s1 'Monte Carlo' 0 500 YES NO NO . .
-2 1 2 42 99 foo . 'Replica exchange' 500 2000 YES NO NO . .
-3 2 1 42 101 foo . 'Replica exchange' 2000 1000 YES NO NO 80 90
+_ihm_modeling_protocol_details.description
+1 1 1 42 99 foo s1 'Monte Carlo' 0 500 YES NO NO . . .
+2 1 2 42 99 foo . 'Replica exchange' 500 2000 YES NO NO . . .
+3 2 1 42 101 foo . 'Replica exchange' 2000 1000 YES NO NO 80 90 'test step'
 #
 """)
 
@@ -1410,7 +1415,8 @@ _ihm_modeling_protocol_details.script_file_id
                              feature='energy/score', num_models_begin=42,
                              num_models_end=42,
                              assembly=asmb1, dataset_group=dg1,
-                             software=software, script_file=script))
+                             software=software, script_file=script,
+                             details='test step'))
         p1.analyses.extend((a1, a2))
 
         dumper = ihm.dumper._ProtocolDumper()
@@ -1434,10 +1440,11 @@ _ihm_modeling_post_process.struct_assembly_id
 _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
-1 1 1 1 none none . . . . . .
-2 1 2 1 filter energy/score 1000 200 . . . .
-3 1 2 2 cluster RMSD 200 42 . . . .
-4 1 2 3 validation energy/score 42 42 101 301 401 501
+_ihm_modeling_post_process.details
+1 1 1 1 none none . . . . . . .
+2 1 2 1 filter energy/score 1000 200 . . . . .
+3 1 2 2 cluster RMSD 200 42 . . . . .
+4 1 2 3 validation energy/score 42 42 101 301 401 501 'test step'
 #
 """)
 
@@ -1858,7 +1865,7 @@ _ihm_sphere_obj_site.model_id
                                        het=True),
                         ihm.model.Atom(asym_unit=asym, seq_id=2, atom_id='N',
                                        type_symbol='N', x=4.0, y=5.0, z=6.0,
-                                       biso=42.0)]
+                                       biso=42.0, occupancy=0.2)]
 
         dumper = ihm.dumper._ModelDumper()
         dumper.finalize(system) # assign model/group IDs
@@ -1899,14 +1906,15 @@ _atom_site.label_asym_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
 _atom_site.Cartn_z
+_atom_site.occupancy
 _atom_site.label_entity_id
 _atom_site.auth_asym_id
 _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
-ATOM 1 C C . ALA 1 X 1.000 2.000 3.000 9 X . 1 1
-HETATM 2 C CA . ALA 1 X 10.000 20.000 30.000 9 X . 1 1
-ATOM 3 N N . CYS 2 X 4.000 5.000 6.000 9 X 42.000 1 1
+ATOM 1 C C . ALA 1 X 1.000 2.000 3.000 . 9 X . 1 1
+HETATM 2 C CA . ALA 1 X 10.000 20.000 30.000 . 9 X . 1 1
+ATOM 3 N N . CYS 2 X 4.000 5.000 6.000 0.200 9 X 42.000 1 1
 #
 #
 loop_
@@ -1936,7 +1944,7 @@ N
         loc = ihm.location.OutputFileLocation(repo='foo', path='bar')
         loc._id = 3
         e2 = ihm.model.Ensemble(model_group=group, num_models=10,
-                                file=loc)
+                                file=loc, details='test details')
         system.ensembles.extend((e1, e2))
 
         dumper = ihm.dumper._EnsembleDumper()
@@ -1955,8 +1963,9 @@ _ihm_ensemble_info.num_ensemble_models
 _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
-1 cluster1 99 42 Hierarchical RMSD 10 2 4.200 .
-2 . . 42 . . 10 2 . 3
+_ihm_ensemble_info.details
+1 cluster1 99 42 Hierarchical RMSD 10 2 4.200 . .
+2 . . 42 . . 10 2 . 3 'test details'
 #
 """)
 
@@ -2011,6 +2020,11 @@ _ihm_localization_density_files.entity_poly_segment_id
         a1._id = 'X'
         system.entities.extend((e1, e2, e3))
         system.asym_units.append(a1)
+        res1 = e2.residue(1)
+        res2 = e2.residue(2)
+        system.orphan_features.append(ihm.restraint.ResidueFeature([e2]))
+        system.orphan_features.append(ihm.restraint.ResidueFeature([res2]))
+        system.orphan_features.append(ihm.restraint.NonPolyFeature([e3]))
 
         system._make_complete_assembly()
 
@@ -2019,13 +2033,17 @@ _ihm_localization_density_files.entity_poly_segment_id
         dumper = ihm.dumper._EntityPolySegmentDumper()
         dumper.finalize(system) # assign IDs
 
-        # e1 isn't directly used in the assembly (a1 is used instead) so
-        # should have no range ID
+        # e1 isn't directly used in anything (a1 is used instead, in the
+        # assembly) so should have no range ID
         self.assertFalse(hasattr(e1, '_range_id'))
         self.assertEqual(a1._range_id, 1)
+        # e2 is use, in a ResidueFeature, so should have a range ID
         self.assertEqual(e2._range_id, 2)
         # non-polymers don't have ranges
         self.assertEqual(e3._range_id, None)
+        # res2 should have been assigned a range, but not res1
+        self.assertFalse(hasattr(res1, '_range_id'))
+        self.assertEqual(res2._range_id, 3)
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -2038,6 +2056,7 @@ _ihm_entity_poly_segment.comp_id_begin
 _ihm_entity_poly_segment.comp_id_end
 1 1 1 4 ALA ASP
 2 2 1 3 ALA GLY
+3 2 2 2 CYS CYS
 #
 """)
 
@@ -2366,7 +2385,8 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
         # duplicate crosslink, should be combined with the original (xxl2)
         xxl4 = ihm.restraint.ExperimentalCrossLink(e1.residue(2), e2.residue(3))
         # should end up in own group, not with xxl4 (since xxl4==xxl2)
-        xxl5 = ihm.restraint.ExperimentalCrossLink(e1.residue(1), e2.residue(1))
+        xxl5 = ihm.restraint.ExperimentalCrossLink(e1.residue(1), e2.residue(1),
+                                                   details='test xl')
         r.experimental_cross_links.extend(([xxl1], [xxl2, xxl3], [xxl4, xxl5]))
         system.restraints.extend((r, MockObject()))
 
@@ -2409,10 +2429,11 @@ _ihm_cross_link_list.comp_id_2
 _ihm_cross_link_list.linker_chem_comp_descriptor_id
 _ihm_cross_link_list.linker_type
 _ihm_cross_link_list.dataset_list_id
-1 1 foo 1 2 THR foo 1 3 CYS 1 DSS 97
-2 2 foo 1 2 THR bar 2 3 PHE 1 DSS 97
-3 2 foo 1 2 THR bar 2 2 GLU 1 DSS 97
-4 3 foo 1 1 ALA bar 2 1 ASP 1 DSS 97
+_ihm_cross_link_list.details
+1 1 foo 1 2 THR foo 1 3 CYS 1 DSS 97 .
+2 2 foo 1 2 THR bar 2 3 PHE 1 DSS 97 .
+3 2 foo 1 2 THR bar 2 2 GLU 1 DSS 97 .
+4 3 foo 1 1 ALA bar 2 1 ASP 1 DSS 97 'test xl'
 #
 #
 loop_
@@ -2460,8 +2481,7 @@ _ihm_cross_link_result_parameters.sigma_2
 
         sphere = ihm.geometry.Sphere(center=center, transformation=trans,
                                      radius=2.2, name='my sphere',
-                                     description='a test sphere',
-                                     details='some details')
+                                     description='a test sphere')
         torus = ihm.geometry.Torus(center=center, transformation=trans,
                                    major_radius=5.6, minor_radius=1.2)
         half_torus = ihm.geometry.HalfTorus(center=center, transformation=trans,
@@ -2516,12 +2536,11 @@ _ihm_geometric_object_list.object_id
 _ihm_geometric_object_list.object_type
 _ihm_geometric_object_list.object_name
 _ihm_geometric_object_list.object_description
-_ihm_geometric_object_list.other_details
-1 sphere 'my sphere' 'a test sphere' 'some details'
-2 torus . . .
-3 half-torus . . .
-4 axis . . .
-5 plane . . .
+1 sphere 'my sphere' 'a test sphere'
+2 torus . .
+3 half-torus . .
+4 axis . .
+5 plane . .
 #
 #
 loop_
@@ -2575,17 +2594,20 @@ _ihm_geometric_object_plane.transformation_id
         a3 = ihm.AsymUnit(e2, 'heme')
         system.asym_units.extend((a1, a2, a3))
 
-        f = ihm.restraint.ResidueFeature([a1, a2(2,3)])
+        f = ihm.restraint.ResidueFeature([a1, a2(2,3), e1, e1(2,3)],
+                                         details='test feature')
         system.orphan_features.append(f)
         # Cannot make a ResidueFeature that includes a non-polymer 'residue'
         self.assertRaises(ValueError, ihm.restraint.ResidueFeature, [a1, a3])
 
         # Polymeric atom feature
         f = ihm.restraint.AtomFeature([a1.residue(1).atom('CA'),
-                                       a2.residue(2).atom('N')])
+                                       a2.residue(2).atom('N'),
+                                       e1.residue(1).atom('CB')])
         system.orphan_features.append(f)
         # Nonpolymeric atom feature
-        f = ihm.restraint.AtomFeature([a3.residue(1).atom('FE')])
+        f = ihm.restraint.AtomFeature([a3.residue(1).atom('FE'),
+                                       e2.residue(1).atom('FE')])
         system.orphan_features.append(f)
         # Cannot make one feature that selects both polymer and nonpolymer
         self.assertRaises(ValueError, ihm.restraint.AtomFeature,
@@ -2593,7 +2615,7 @@ _ihm_geometric_object_plane.transformation_id
                                        a2.residue(2).atom('N'),
                                        a3.residue(1).atom('FE')])
         # Nonpolymeric feature
-        f = ihm.restraint.NonPolyFeature([a3])
+        f = ihm.restraint.NonPolyFeature([a3, e2])
         system.orphan_features.append(f)
         # Cannot make a NonPolyFeature that includes a polymer 'residue'
         self.assertRaises(ValueError, ihm.restraint.NonPolyFeature, [a1, a3])
@@ -2617,11 +2639,12 @@ loop_
 _ihm_feature_list.feature_id
 _ihm_feature_list.feature_type
 _ihm_feature_list.entity_type
-1 'residue range' polymer
-2 atom polymer
-3 atom non-polymer
-4 ligand non-polymer
-5 'pseudo site' other
+_ihm_feature_list.details
+1 'residue range' polymer 'test feature'
+2 atom polymer .
+3 atom non-polymer .
+4 ligand non-polymer .
+5 'pseudo site' other .
 #
 #
 loop_
@@ -2635,6 +2658,8 @@ _ihm_poly_residue_feature.seq_id_end
 _ihm_poly_residue_feature.comp_id_end
 1 1 1 A 1 ALA 4 THR
 2 1 1 B 2 CYS 3 GLY
+3 1 1 . 1 ALA 4 THR
+4 1 1 . 2 CYS 3 GLY
 #
 #
 loop_
@@ -2647,6 +2672,7 @@ _ihm_poly_atom_feature.comp_id
 _ihm_poly_atom_feature.atom_id
 1 2 1 A 1 ALA CA
 2 2 1 B 2 CYS N
+3 2 1 . 1 ALA CB
 #
 #
 loop_
@@ -2657,7 +2683,9 @@ _ihm_non_poly_feature.asym_id
 _ihm_non_poly_feature.comp_id
 _ihm_non_poly_feature.atom_id
 1 3 2 C HEM FE
-2 4 2 C HEM .
+2 3 2 . HEM FE
+3 4 2 C HEM .
+4 4 2 . HEM .
 #
 #
 loop_
@@ -2666,8 +2694,7 @@ _ihm_pseudo_site_feature.Cartn_x
 _ihm_pseudo_site_feature.Cartn_y
 _ihm_pseudo_site_feature.Cartn_z
 _ihm_pseudo_site_feature.radius
-_ihm_pseudo_site_feature.description
-5 10.000 20.000 30.000 . .
+5 10.000 20.000 30.000 .
 #
 """)
 
@@ -2732,7 +2759,7 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
                  probability=0.4)
         r3 = ihm.restraint.DerivedDistanceRestraint(dataset=dataset,
                  feature1=feat1, feature2=feat2, distance=dist,
-                 probability=0.6)
+                 probability=0.6, mic_value=0.4)
         rg = ihm.restraint.RestraintGroup((r2, r3))
         system.restraints.extend((r1, r2)) # r2 is in restraints and groups
         system.restraint_groups.append(rg)
@@ -2751,11 +2778,12 @@ _ihm_derived_distance_restraint.restraint_type
 _ihm_derived_distance_restraint.distance_lower_limit
 _ihm_derived_distance_restraint.distance_upper_limit
 _ihm_derived_distance_restraint.probability
+_ihm_derived_distance_restraint.mic_value
 _ihm_derived_distance_restraint.group_conditionality
 _ihm_derived_distance_restraint.dataset_list_id
-1 . 44 84 'lower bound' 25.000 . 0.800 . 97
-2 1 44 84 'lower bound' 25.000 . 0.400 . 97
-3 1 44 84 'lower bound' 25.000 . 0.600 . 97
+1 . 44 84 'lower bound' 25.000 . 0.800 . . 97
+2 1 44 84 'lower bound' 25.000 . 0.400 . . 97
+3 1 44 84 'lower bound' 25.000 . 0.600 0.400 . 97
 #
 """)
 
@@ -2788,7 +2816,8 @@ _ihm_derived_distance_restraint.dataset_list_id
 
         s = ihm.System()
         dataset = MockObject()
-        assembly = MockObject()
+        dataset.parents = []
+        assembly = ihm.Assembly()
 
         # Empty restraint groups are OK (even though they don't get IDs)
         rg = ihm.restraint.RestraintGroup([])
@@ -2913,8 +2942,10 @@ _ihm_predicted_contact_restraint.software_id
         cur_entity_assembly.add_entity(entity=cur_entity_2, num_copies=2)
 
         cur_instrument = ihm.flr.Instrument(details='My_Instrument')
-        cur_exp_setting_1 = ihm.flr.ExpSetting(details='My_Exp_setting_1')
-        cur_exp_setting_2 = ihm.flr.ExpSetting(details='My_Exp_setting_2')
+        cur_inst_setting_1 = ihm.flr.InstSetting(details='My_Inst_setting_1')
+        cur_inst_setting_2 = ihm.flr.InstSetting(details='My_Inst_setting_2')
+        cur_exp_condition_1 = ihm.flr.ExpCondition(details='My_Exp_condition_1')
+        cur_exp_condition_2 = ihm.flr.ExpCondition(details='My_Exp_condition_2')
 
         cur_sample_condition_1 = ihm.flr.SampleCondition(
                                      details='My_Sample_condition_1')
@@ -2933,13 +2964,27 @@ _ihm_predicted_contact_restraint.software_id
                                       description='Sample_2',
                                       details='Details sample 2',
                                       solvent_phase='liquid')
+        ## Reference sample
+        cur_sample_3 = ihm.flr.Sample(entity_assembly=cur_entity_assembly,
+                                      num_of_probes=1,
+                                      condition=cur_sample_condition_1,
+                                      description='Reference Sample',
+                                      details='Details Reference Sample',
+                                      solvent_phase='liquid')
+
         cur_experiment = ihm.flr.Experiment()
         cur_experiment.add_entry(instrument=cur_instrument,
-                                 exp_setting=cur_exp_setting_1,
+                                 inst_setting=cur_inst_setting_1,
+                                 exp_condition=cur_exp_condition_1,
                                  sample=cur_sample_1)
         cur_experiment.add_entry(instrument=cur_instrument,
-                                 exp_setting=cur_exp_setting_2,
+                                 inst_setting=cur_inst_setting_2,
+                                 exp_condition=cur_exp_condition_2,
                                  sample=cur_sample_2)
+        cur_experiment.add_entry(instrument=cur_instrument,
+                                 inst_setting=cur_inst_setting_1,
+                                 exp_condition=cur_exp_condition_1,
+                                 sample=cur_sample_3)
         ## Probes
         cur_probe_1 = ihm.flr.Probe()
         cur_probe_2 = ihm.flr.Probe()
@@ -3026,6 +3071,11 @@ _ihm_predicted_contact_restraint.software_id
                                                                   fluorophore_type='acceptor',
                                                                   poly_probe_position=cur_poly_probe_position_3,
                                                                   description='Acceptor in position2-position3')
+        cur_sample_probe_details_5 = ihm.flr.SampleProbeDetails(sample=cur_sample_3 ,
+                                                               probe=cur_probe_1,
+                                                               fluorophore_type='donor',
+                                                               poly_probe_position=cur_poly_probe_position_1,
+                                                               description='Donor-only on reference sample')
         ## Poly_probe_conjugate
         ## Chem Descriptor ID 5
         cur_poly_probe_conjugate_chem_descriptor = ihm.ChemDescriptor(auth_name='Conjugate',
@@ -3043,9 +3093,13 @@ _ihm_predicted_contact_restraint.software_id
         cur_poly_probe_conjugate_4 = ihm.flr.PolyProbeConjugate(sample_probe=cur_sample_probe_details_4,
                                                                   chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
                                                                   ambiguous_stoichiometry=False)
+        cur_poly_probe_conjugate_5 = ihm.flr.PolyProbeConjugate(sample_probe=cur_sample_probe_details_5,
+                                                                chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
+                                                                ambiguous_stoichiometry=False)
         cur_flr_data.poly_probe_conjugates.extend(
                 (cur_poly_probe_conjugate_1, cur_poly_probe_conjugate_2,
-                 cur_poly_probe_conjugate_3, cur_poly_probe_conjugate_4))
+                 cur_poly_probe_conjugate_3, cur_poly_probe_conjugate_4,
+                 cur_poly_probe_conjugate_5))
 
         ## Forster_radius
         cur_forster_radius = ihm.flr.FRETForsterRadius(donor_probe=cur_probe_1,
@@ -3058,11 +3112,31 @@ _ihm_predicted_contact_restraint.software_id
                         phi_acceptor=0.35, alpha=2.4, gg_gr_ratio=0.4, a_b=0.8)
         cur_fret_calibration_parameters_2 = ihm.flr.FRETCalibrationParameters(
                         phi_acceptor=0.35, alpha=2.4, gg_gr_ratio=0.38, a_b=0.8)
-        ## Fret_analysis
+
+        ## LifetimeFitModel
+        cur_lifetime_fit_model = ihm.flr.LifetimeFitModel(name='Lifetime fit model 1',
+                                                          description='Description of model')
+
+        ## RefMeasurementLifetime
+        cur_lifetime_1 = ihm.flr.RefMeasurementLifetime(species_fraction=0.6,
+                                                        lifetime=3.2)
+        cur_lifetime_2 = ihm.flr.RefMeasurementLifetime(species_fraction=0.4,
+                                                        lifetime=1.4)
+        ## RefMeasurement
+        cur_ref_measurement_1 = ihm.flr.RefMeasurement(ref_sample_probe=cur_sample_probe_details_5,
+                                                       details='Reference Measurement 1')
+        cur_ref_measurement_1.add_lifetime(cur_lifetime_1)
+        cur_ref_measurement_1.add_lifetime(cur_lifetime_2)
+        ## RefMeasurementGroup
+        cur_lifetime_ref_measurement_group = ihm.flr.RefMeasurementGroup(details='Reference measurement group 1')
+        cur_lifetime_ref_measurement_group.add_ref_measurement(cur_ref_measurement_1)
+
+        ## FretAnalysis
         cur_fret_analysis_1 = ihm.flr.FRETAnalysis(experiment=cur_experiment,
                                                     sample_probe_1=cur_sample_probe_details_1,
                                                     sample_probe_2=cur_sample_probe_details_2,
                                                     forster_radius=cur_forster_radius,
+                                                    type='intensity-based',
                                                     calibration_parameters=cur_fret_calibration_parameters_1,
                                                     method_name='PDA',
                                                     chi_square_reduced=1.5,
@@ -3071,10 +3145,23 @@ _ihm_predicted_contact_restraint.software_id
                                                     sample_probe_1=cur_sample_probe_details_3,
                                                     sample_probe_2=cur_sample_probe_details_4,
                                                     forster_radius=cur_forster_radius,
+                                                    type='intensity-based',
                                                     calibration_parameters=cur_fret_calibration_parameters_2,
                                                     method_name='PDA',
                                                     chi_square_reduced=1.8,
                                                     dataset=dataset_1)
+        ## lifetime-based FRETAnalysis
+        cur_fret_analysis_3 = ihm.flr.FRETAnalysis(experiment=cur_experiment,
+                                                   sample_probe_1=cur_sample_probe_details_1,
+                                                   sample_probe_2=cur_sample_probe_details_2,
+                                                   forster_radius=cur_forster_radius,
+                                                   type='lifetime-based',
+                                                   lifetime_fit_model=cur_lifetime_fit_model,
+                                                   ref_measurement_group=cur_lifetime_ref_measurement_group,
+                                                   method_name='Lifetime fit',
+                                                   chi_square_reduced=1.6,
+                                                   dataset=dataset_1)
+
         ## Peak_assignment
         cur_peak_assignment = ihm.flr.PeakAssignment(method_name='Population', details='Peaks were assigned by population fractions.')
 
@@ -3099,10 +3186,21 @@ _ihm_predicted_contact_restraint.software_id
                                                                         state=cur_state,
                                                                         population_fraction=0.80,
                                                                         peak_assignment=cur_peak_assignment)
+        cur_fret_distance_restraint_3 = ihm.flr.FRETDistanceRestraint(sample_probe_1=cur_sample_probe_details_1,
+                                                                        sample_probe_2=cur_sample_probe_details_2,
+                                                                        analysis=cur_fret_analysis_3,
+                                                                        distance=53.5,
+                                                                        distance_error_plus=2.5,
+                                                                        distance_error_minus=2.3,
+                                                                        distance_type='<R_DA>_E',
+                                                                        state=cur_state,
+                                                                        population_fraction=0.80,
+                                                                        peak_assignment=cur_peak_assignment)
 
         cur_fret_distance_restraint_group = ihm.flr.FRETDistanceRestraintGroup()
         cur_fret_distance_restraint_group.add_distance_restraint(cur_fret_distance_restraint_1)
         cur_fret_distance_restraint_group.add_distance_restraint(cur_fret_distance_restraint_2)
+        cur_fret_distance_restraint_group.add_distance_restraint(cur_fret_distance_restraint_3)
 
         cur_flr_data.distance_restraint_groups.append(
                                 cur_fret_distance_restraint_group)
@@ -3203,8 +3301,11 @@ _ihm_predicted_contact_restraint.software_id
         experiment_dumper = ihm.dumper._FLRExperimentDumper()
         experiment_dumper.finalize(system)
 
-        exp_setting_dumper = ihm.dumper._FLRExpSettingDumper()
-        exp_setting_dumper.finalize(system)
+        inst_setting_dumper = ihm.dumper._FLRInstSettingDumper()
+        inst_setting_dumper.finalize(system)
+
+        exp_condition_dumper = ihm.dumper._FLR_ExpConditionDumper()
+        exp_condition_dumper.finalize(system)
 
         instrument_dumper = ihm.dumper._FLRInstrumentDumper()
         instrument_dumper.finalize(system)
@@ -3236,6 +3337,12 @@ _ihm_predicted_contact_restraint.software_id
         parameters_dumper = ihm.dumper._FLRCalibrationParametersDumper()
         parameters_dumper.finalize(system)
 
+        lifetime_fit_model_dumper = ihm.dumper._FLRLifetimeFitModelDumper()
+        lifetime_fit_model_dumper.finalize(system)
+
+        ref_measurement_dumper = ihm.dumper._FLRRefMeasurementDumper()
+        ref_measurement_dumper.finalize(system)
+
         analysis_dumper = ihm.dumper._FLRAnalysisDumper()
         analysis_dumper.finalize(system)
 
@@ -3266,21 +3373,33 @@ loop_
 _flr_experiment.ordinal_id
 _flr_experiment.id
 _flr_experiment.instrument_id
-_flr_experiment.exp_setting_id
+_flr_experiment.inst_setting_id
+_flr_experiment.exp_condition_id
 _flr_experiment.sample_id
 _flr_experiment.details
-1 1 1 1 1 .
-2 1 1 2 2 .
+1 1 1 1 1 1 .
+2 1 1 2 2 2 .
+3 1 1 1 1 3 .
 #
 """)
 
-        out = _get_dumper_output(exp_setting_dumper, system)
+        out = _get_dumper_output(inst_setting_dumper, system)
         self.assertEqual(out, """#
 loop_
-_flr_exp_setting.id
-_flr_exp_setting.details
-1 My_Exp_setting_1
-2 My_Exp_setting_2
+_flr_inst_setting.id
+_flr_inst_setting.details
+1 My_Inst_setting_1
+2 My_Inst_setting_2
+#
+""")
+
+        out = _get_dumper_output(exp_condition_dumper, system)
+        self.assertEqual(out, """#
+loop_
+_flr_exp_condition.id
+_flr_exp_condition.details
+1 My_Exp_condition_1
+2 My_Exp_condition_2
 #
 """)
 
@@ -3328,6 +3447,7 @@ _flr_sample.sample_details
 _flr_sample.solvent_phase
 1 1 2 1 Sample_1 'Details sample 1' liquid
 2 1 2 2 Sample_2 'Details sample 2' liquid
+3 1 1 1 'Reference Sample' 'Details Reference Sample' liquid
 #
 """)
 
@@ -3367,6 +3487,7 @@ _flr_sample_probe_details.poly_probe_position_id
 2 1 2 acceptor 'Acceptor in position1-position3' 2
 3 2 1 donor 'Donor in position2-position3' 3
 4 2 2 acceptor 'Acceptor in position2-position3' 2
+5 3 1 donor 'Donor-only on reference sample' 1
 #
 """)
 
@@ -3416,6 +3537,7 @@ _flr_poly_probe_conjugate.probe_stoichiometry
 2 2 5 NO .
 3 3 5 NO .
 4 4 5 NO .
+5 5 5 NO .
 #
 """)
 
@@ -3448,22 +3570,91 @@ _flr_fret_calibration_parameters.a_b
 #
 """)
 
+        out = _get_dumper_output(ref_measurement_dumper, system)
+        self.assertEqual(out, """#
+loop_
+_flr_reference_measurement_group.id
+_flr_reference_measurement_group.num_measurements
+_flr_reference_measurement_group.details
+1 1 'Reference measurement group 1'
+#
+#
+loop_
+_flr_reference_measurement_group_link.group_id
+_flr_reference_measurement_group_link.reference_measurement_id
+1 1
+#
+#
+loop_
+_flr_reference_measurement.id
+_flr_reference_measurement.reference_sample_probe_id
+_flr_reference_measurement.num_species
+_flr_reference_measurement.details
+1 5 2 'Reference Measurement 1'
+#
+#
+loop_
+_flr_reference_measurement_lifetime.ordinal_id
+_flr_reference_measurement_lifetime.reference_measurement_id
+_flr_reference_measurement_lifetime.species_name
+_flr_reference_measurement_lifetime.species_fraction
+_flr_reference_measurement_lifetime.lifetime
+1 1 . 0.600 3.200
+2 1 . 0.400 1.400
+#
+""")
+
+        out = _get_dumper_output(lifetime_fit_model_dumper, system)
+        self.assertEqual(out, """#
+loop_
+_flr_lifetime_fit_model.id
+_flr_lifetime_fit_model.name
+_flr_lifetime_fit_model.description
+_flr_lifetime_fit_model.external_file_id
+_flr_lifetime_fit_model.citation_id
+1 'Lifetime fit model 1' 'Description of model' . .
+#
+""")
+
         out = _get_dumper_output(analysis_dumper, system)
         self.assertEqual(out, """#
 loop_
 _flr_fret_analysis.id
 _flr_fret_analysis.experiment_id
+_flr_fret_analysis.type
 _flr_fret_analysis.sample_probe_id_1
 _flr_fret_analysis.sample_probe_id_2
 _flr_fret_analysis.forster_radius_id
-_flr_fret_analysis.calibration_parameters_id
-_flr_fret_analysis.method_name
-_flr_fret_analysis.chi_square_reduced
 _flr_fret_analysis.dataset_list_id
 _flr_fret_analysis.external_file_id
 _flr_fret_analysis.software_id
-1 1 1 2 1 1 PDA 1.500 1 . .
-2 1 3 4 1 2 PDA 1.800 1 . .
+1 1 intensity-based 1 2 1 1 . .
+2 1 intensity-based 3 4 1 1 . .
+3 1 lifetime-based 1 2 1 1 . .
+#
+#
+loop_
+_flr_fret_analysis_intensity.ordinal_id
+_flr_fret_analysis_intensity.analysis_id
+_flr_fret_analysis_intensity.calibration_parameters_id
+_flr_fret_analysis_intensity.donor_only_fraction
+_flr_fret_analysis_intensity.chi_square_reduced
+_flr_fret_analysis_intensity.method_name
+_flr_fret_analysis_intensity.details
+1 1 1 . 1.500 PDA .
+2 2 2 . 1.800 PDA .
+#
+#
+loop_
+_flr_fret_analysis_lifetime.ordinal_id
+_flr_fret_analysis_lifetime.analysis_id
+_flr_fret_analysis_lifetime.reference_measurement_group_id
+_flr_fret_analysis_lifetime.lifetime_fit_model_id
+_flr_fret_analysis_lifetime.donor_only_fraction
+_flr_fret_analysis_lifetime.chi_square_reduced
+_flr_fret_analysis_lifetime.method_name
+_flr_fret_analysis_lifetime.details
+1 3 1 1 . 1.600 'Lifetime fit' .
 #
 """)
 
@@ -3495,6 +3686,7 @@ _flr_fret_distance_restraint.population_fraction
 _flr_fret_distance_restraint.peak_assignment_id
 1 1 1 1 2 1 1 53.500 2.500 2.300 <R_DA>_E 0.800 1
 2 2 1 3 4 1 2 49.000 2.000 2.100 <R_DA>_E 0.800 1
+3 3 1 1 2 1 3 53.500 2.500 2.300 <R_DA>_E 0.800 1
 #
 """)
 

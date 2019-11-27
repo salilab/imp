@@ -10,6 +10,7 @@
 #include "../VectorD.h"
 #include "../SphereD.h"
 #include "../SphericalVector3D.h"
+#include "../UnitSimplexD.h"
 #include "../utility.h"
 #include "utility.h"
 #include <IMP/random_utils.h>
@@ -18,8 +19,9 @@
 #endif
 #include <limits>
 #include <boost/random/uniform_int.hpp>
-#include <boost/random/uniform_01.hpp>
 #include <boost/random/uniform_real.hpp>
+#include <boost/random/exponential_distribution.hpp>
+#include <boost/random/variate_generator.hpp>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 template <int D>
@@ -84,6 +86,24 @@ inline VectorD<3> get_random_vector_on_unit_sphere() {
       return ret;
     }
   } while (true);
+}
+
+//! returns a random vector on a unit simplex
+template <int D>
+inline VectorD<D> get_random_vector_on(const UnitSimplexD<D> &s) {
+  boost::exponential_distribution<> dist(1.0);
+  boost::variate_generator<RandomNumberGenerator&,
+                           boost::exponential_distribution<double> >
+      randexp(random_number_generator, dist);
+  int d = s.get_dimension();
+  VectorD<D> p = get_zero_vector_kd<D>(d);
+  double psum = 0;
+  for (int i = 0; i < d; ++i) {
+    p[i] = randexp();
+    psum += p[i];
+  }
+  p /= psum;
+  return p;
 }
 
 //! returns a random vector on the surface of the sphere s in 3D

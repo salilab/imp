@@ -1,4 +1,4 @@
-One line subject (50 chars or less).
+One line subject (50 chars or less)
 
 More detailed message describing the commit (if needed). Wrap lines
 at about 72 characters.

@@ -20,7 +20,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.9'
+__version__ = '0.12'
 
 class __UnknownValue(object):
     # Represent the mmCIF 'unknown' special value
@@ -170,7 +170,7 @@ class System(object):
         #: See :class:`~ihm.model.Ensemble`.
         self.ensembles = []
 
-        #: All ordered processes
+        #: All ordered processes.
         #: See :class:`~ihm.model.OrderedProcess`.
         self.ordered_processes = []
 
@@ -238,7 +238,7 @@ class System(object):
         """Iterate over all ChemDescriptors in the system.
            Duplicates may be present."""
         return itertools.chain(self.orphan_chem_descriptors,
-                      (restraint.linker for restraint in self.restraints
+                      (restraint.linker for restraint in self._all_restraints()
                                         if hasattr(restraint, 'linker')
                                         and restraint.linker),
                       (itertools.chain.from_iterable(
@@ -332,8 +332,9 @@ class System(object):
                                        if step.assembly),
                         (step.assembly for step in self._all_analysis_steps()
                                        if step.assembly),
-                        (restraint.assembly for restraint in self.restraints
-                                            if restraint.assembly))
+                        (restraint.assembly
+                         for restraint in self._all_restraints()
+                         if restraint.assembly))
 
     def _all_dataset_groups(self):
         """Iterate over all DatasetGroups in the system.
@@ -364,7 +365,7 @@ class System(object):
                   _all_datasets_in_groups(),
                   (sm.dataset for sm in self._all_starting_models()
                               if sm.dataset),
-                  (restraint.dataset for restraint in self.restraints
+                  (restraint.dataset for restraint in self._all_restraints()
                                      if restraint.dataset),
                   (template.dataset for template in self._all_templates()
                                     if template.dataset))
@@ -415,20 +416,23 @@ class System(object):
            Duplicates may be present."""
         return itertools.chain(
                 self.orphan_geometric_objects,
-                (restraint.geometric_object for restraint in self.restraints
-                          if hasattr(restraint, 'geometric_object')
-                          and restraint.geometric_object))
+                (restraint.geometric_object
+                 for restraint in self._all_restraints()
+                 if hasattr(restraint, 'geometric_object')
+                 and restraint.geometric_object))
 
     def _all_features(self):
         """Iterate over all Features in the system.
            This includes all Features referenced from other objects,
            plus any referenced from the top-level system.
            Duplicates may be present."""
-        return itertools.chain(
-                self.orphan_features,
-                (restraint.feature for restraint in self.restraints
-                          if hasattr(restraint, 'feature')
-                          and restraint.feature))
+        def _all_restraint_features():
+            for r in self._all_restraints():
+                if hasattr(r, '_all_features'):
+                    for feature in r._all_features:
+                        if feature:
+                            yield feature
+        return itertools.chain(self.orphan_features, _all_restraint_features())
 
     def _all_software(self):
         """Iterate over all Software in the system.
@@ -454,7 +458,7 @@ class System(object):
         return _remove_identical(itertools.chain(
                         self.citations,
                         (restraint.fitting_method_citation_id
-                            for restraint in self.restraints
+                            for restraint in self._all_restraints()
                             if hasattr(restraint, 'fitting_method_citation_id')
                             and restraint.fitting_method_citation_id)))
 
@@ -469,22 +473,18 @@ class System(object):
                         (sm.asym_unit for sm in self._all_starting_models()),
                         (seg.asym_unit for seg in self._all_segments()),
                         (comp for a in self._all_assemblies() for comp in a),
+                        (comp for f in self._all_features()
+                         for comp in f._all_entities_or_asyms()),
                         (d.asym_unit for d in self._all_densities())))
 
     def _make_complete_assembly(self):
-        """Fill in the complete assembly with all entities/asym units"""
+        """Fill in the complete assembly with all asym units"""
         # Clear out any existing components
         self.complete_assembly[:] = []
 
         # Include all asym units
-        seen_entities = {}
         for asym in self.asym_units:
             self.complete_assembly.append(asym)
-            seen_entities[asym.entity] = None
-        # Add all entities without structure
-        for entity in self.entities:
-            if entity not in seen_entities:
-                self.complete_assembly.append(entity)
 
 
 class Software(object):
@@ -566,7 +566,7 @@ class Citation(object):
     @classmethod
     def from_pubmed_id(cls, pubmed_id):
         """Create a Citation from just a PubMed ID.
-           This is done by querying NCBI's web api, so requires network access.
+           This is done by querying NCBI's web API, so requires network access.
 
            :param int pubmed_id: The PubMed identifier.
            :return: A new Citation for the given identifier.
@@ -671,7 +671,9 @@ class ChemComp(object):
                 return None
         return weight
 
-    formula_weight = property(__get_weight, doc="Formula weight")
+    formula_weight = property(__get_weight,
+        doc="Formula weight (dalton). This is calculated automatically from "
+            "the chemical formula and known atomic masses.")
 
     # Equal if all identifiers are the same
     def __eq__(self, other):
@@ -906,7 +908,7 @@ class Residue(object):
        :meth:`AsymUnit.residue`.
     """
 
-    __slots__ = ['entity', 'asym', 'seq_id']
+    __slots__ = ['entity', 'asym', 'seq_id', '_range_id']
 
     def __init__(self, seq_id, entity=None, asym=None):
         self.entity = entity
@@ -923,6 +925,8 @@ class Residue(object):
     auth_seq_id = property(_get_auth_seq_id,
                            doc="Author-provided seq_id; only makes sense "
                                "for asymmetric units")
+    # Allow passing residues where a range is requested (e.g. to ResidueFeature)
+    seq_id_range = property(lambda self: (self.seq_id, self.seq_id))
 
 
 class Entity(object):
@@ -991,7 +995,9 @@ class Entity(object):
             else:
                 return None
         return weight
-    formula_weight = property(__get_weight, doc="Formula weight")
+    formula_weight = property(__get_weight,
+        doc="Formula weight (dalton). This is calculated automatically "
+            "from that of the chemical components.")
 
     def __init__(self, sequence, alphabet=LPeptideAlphabet,
                  description=None, details=None, source=None):
@@ -1121,10 +1127,8 @@ class Assembly(list):
        :param str description: Longer text that describes this assembly.
 
        This is implemented as a simple list of asymmetric units (or parts of
-       them) and/or entities (or parts of them), i.e. a list of
-       :class:`AsymUnit`, :class:`AsymUnitRange`,
-       :class:`Entity`, and :class:`EntityRange` objects. An Assembly is
-       typically assigned to one or more of
+       them), i.e. a list of :class:`AsymUnit` and/or :class:`AsymUnitRange`
+       objects. An Assembly is typically assigned to one or more of
 
          - :class:`~ihm.model.Model`
          - :class:`ihm.protocol.Step`

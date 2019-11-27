@@ -137,6 +137,15 @@ inline Vector<VectorD<D> > get_uniform_upper_hemisphere_cover(
                                         false);
 }
 
+//! Generate a random vector on a unit simplex with uniform density
+/** \see VectorD
+    \see UnitSimplexD
+ */
+template <int D>
+inline VectorD<D> get_random_vector_on(const UnitSimplexD<D> &s) {
+  return internal::get_random_vector_on(s);
+}
+
 //! Generate a grid of 3d points on a cylinder surface
 /** \see Vector3D
     \see Cylinder3D

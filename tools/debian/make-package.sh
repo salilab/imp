@@ -20,6 +20,8 @@ imp_dir_name=`basename ${TOP_DIR}`
 cd ${TOP_DIR} || exit 1
 rm -rf debian
 cp -r tools/debian/ . || exit 1
+# Add all module data directories to imp.install
+(cd modules && for m in *; do if test -d $m/data; then echo usr/share/IMP/$m; fi; done) >> ${TOP_DIR}/debian/imp.install
 rm debian/make-package.sh || exit 1
 perl -pi -e "s/\@VERSION\@/$VERSION/; s/\@DATE\@/$DATE/; s/\@CODENAME\@/$CODENAME/;" debian/changelog  || exit 1
 if [ "${CODENAME}" = "precise" ]; then

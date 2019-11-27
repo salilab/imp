@@ -31,9 +31,9 @@ Provide a text file with profile filenames:\n\
 exp_profile_file\nfit_file1\nfit_file2\n...\nfit_filen\n");
   desc.add_options()("help",
                      "Clusters input profiles that were previously fitted \
-to exp_profile. Please profile the exp_profile and at least two fit files.\n")(
+to exp_profile. Please provide the exp_profile and at least two fit files.\n")(
       "input-files", po::value<std::vector<std::string> >(),
-      "input profile files")(
+      "input profile-list file")(
       "threshold,t", po::value<double>(&threshold)->default_value(1.0),
       "chi value for profile similarity (default = 1.0)")(
       "reference_profile,r", po::value<std::string>(&reference_profile_file),

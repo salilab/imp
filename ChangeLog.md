@@ -1,6 +1,63 @@
 ChangeLog {#changelog}
 =========
 
+# 2.12.0 - 2019-12-06 # {#changelog_2_12_0}
+- The Windows .exe installer now supports Python 3.8, and has dropped support
+  for Python 3.4.
+- Packages are no longer provided for Ubuntu 14.04 (Trusty Tahr) since
+  it has reached end of life.
+- The IMP distribution now includes the IMP::bayesianem module developed at
+  Institut Pasteur, Paris, for Bayesian handling of cryo-electron microscopy
+  density map data. See Bonomi et al. at https://doi.org/10.1101/113951 for
+  more information.
+- The old IMP::pmi::representation::Representation class has been removed
+  from IMP.pmi. New applications should use IMP::pmi::topology::System instead.
+- The IMP::pmi::restraints::crosslinking::ISDCrossLinkMS class for handling
+  crosslinking has been removed. Use
+  IMP::pmi::restraints::crosslinking::CrossLinkingMassSpectrometryRestraint
+  instead.
+- The `rg` tool (part of the IMP::saxs module, used to compute radius of
+  gyration from a SAXS profile) is now called `compute_rg` for consistency
+  with other SAXS tools and to avoid conflicts with other packages.
+- We now provide RPM packages for RedHat Enterprise Linux 8 (or compatible
+  operating systems such as CentOS 8).
+- The RPM packages for RedHat Enterprise Linux 8 and for Fedora now use
+  Python 3 by default. If you need Python 2, install the IMP-python2 package
+  as well.
+- IMP::algebra::Rotation3D::get_derivative(),
+  IMP::algebra::Rotation3D::get_gradient(),
+  IMP::algebra::get_gradient_of_composed_with_respect_to_first(), and
+  IMP::algebra::get_gradient_of_composed_with_respect_to_second() have been
+  deprecated and are superseded by
+  IMP::algebra::Rotation3D::get_gradient_of_rotated(),
+  IMP::algebra::Rotation3D::get_jacobian_of_rotated(),
+  IMP::algebra::get_jacobian_of_composed_wrt_first(), and
+  IMP::algebra::get_jacobian_of_composed_wrt_second(), respectively. By
+  default, the derivatives are now computed with respect to the unnormalized
+  quaternion and do not include the normalization operation.
+- New methods are added to compute adjoint derivatives (reverse-mode
+  sensitivities) for compositions and actions of IMP::algebra::Rotation3D and
+  IMP::algebra::Transformation3D upon 3D vectors.
+- Fixed a bug in nested rigid body derivative accumulation, where derivatives
+  with respect to quaternions were incorrectly projected to be orthogonal to
+  the quaternion.
+- Reimplemented rigid body derivative accumulation to use the new adjoint
+  methods. The many-argument versions of
+  IMP::core::RigidBody::add_to_derivatives(),
+  IMP::core::RigidBody::add_to_rotational_derivatives(), and
+  IMP::core::NonRigidMember::add_to_internal_rotational_derivatives(), which
+  previously pulled adjoints from member global reference frame to member
+  local reference frame and parent global reference frame are now deprecated.
+  Pullback functionality is now handled by
+  IMP::core::RigidBody::pull_back_members_adjoints().
+- IMP::isd::Weight is now constrained to the unit simplex, and methods were
+  added for adding to its derivatives. IMP::isd::Weight::add_weight() no longer
+  resets all the weights to the barycenter of the unit simplex and instead
+  initializes the new weight to 0. IMP::isd::Weight::get_number_of_states()
+  and IMP::isd::Weight::get_nstates_key() were deprecated and superseded by
+  IMP::isd::Weight::get_number_of_weights() and
+  IMP::isd::Weight::get_number_of_weights_key(), respectively.
+
 # 2.11.1 - 2019-07-18 # {#changelog_2_11_1}
 - Bugfix: fix build system failures with CMake 3.12 and 3.13, and on Windows.
 - Bugfix: IMP::atom::create_clone() now always copies mass, even of particles
@@ -31,7 +88,7 @@ ChangeLog {#changelog}
 
 # 2.10.1 - 2019-02-26 # {#changelog_2_10_1}
 - Add support for OpenCV 4.
-- Fix IMP::isd `create_gmm.py` script to handle command line options correctly. 
+- Fix IMP::isd `create_gmm.py` script to handle command line options correctly.
 - Command line tools in the Mac and Ubuntu packages should now use system
   Python (/usr/bin/python), not the first Python (e.g. Anaconda Python)
   found in PATH (which might not be compatible with IMP's Python libraries).

@@ -157,6 +157,13 @@ class Tests(unittest.TestCase):
         d = ihm.dataset.YeastTwoHybridDataset(loc)
         self.assertEqual(d.data_type, 'Yeast two-hybrid screening data')
 
+    def test_genetic_dataset(self):
+        """Test GeneticInteractionsDataset"""
+        loc = ihm.location.FileLocation(repo='mydoi', path='a')
+        d = ihm.dataset.GeneticInteractionsDataset(loc)
+        self.assertEqual(d.data_type,
+            'Quantitative measurements of genetic interactions')
+
     def test_duplicate_datasets_details(self):
         """Datasets with differing details should be considered duplicates"""
         with utils.temporary_directory() as tmpdir:

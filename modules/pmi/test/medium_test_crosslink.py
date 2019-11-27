@@ -1,33 +1,27 @@
 import IMP
 import IMP.test
-import IMP.pmi.representation
+import IMP.pmi.topology
 import IMP.pmi.restraints.crosslinking
 import os
 
 class Tests(IMP.test.TestCase):
     def test_cysteine_cross_link(self):
         """Test creation of CysteineCrossLinkRestraint"""
-        with open('seq.fasta', 'w') as fh:
-            fh.write('>chainA\nA\n>chainB\nE\n')
         with open('expdata.txt', 'w') as fh:
-            fh.write('962 alpha 691 beta 1 Epsilon-Intra-Solvent\n')
+            fh.write('2 alpha 2 beta 1 Epsilon-Intra-Solvent\n')
 
         m = IMP.Model()
-        with IMP.allow_deprecated():
-            r = IMP.pmi.representation.Representation(m)
-        r.create_component("alpha",color=0.25)
-        r.add_component_sequence("alpha","seq.fasta", id="chainA", offs=962)
-        r.add_component_beads("alpha",[(962,962)])
+        simo = IMP.pmi.topology.System(m)
+        st1 = simo.create_state()
+        alpha = st1.create_molecule("alpha", sequence="AA")
+        alpha.add_representation(alpha, resolutions=[1], color=0.25)
+        beta = st1.create_molecule("beta", sequence="EE")
+        beta.add_representation(beta, resolutions=[1], color=0.5)
+        hier = simo.build()
 
-        r.create_component("beta",color=0.5)
-        r.add_component_sequence("beta","seq.fasta", id="chainB",offs=691)
-        r.add_component_beads("beta",[(691,691)])
-
-
-        xl = IMP.pmi.restraints.crosslinking.CysteineCrossLinkRestraint([r],
+        xl = IMP.pmi.restraints.crosslinking.CysteineCrossLinkRestraint(hier,
                                           filename="expdata.txt", cbeta=True)
         xl.add_to_model()
-        os.unlink('seq.fasta')
         os.unlink('expdata.txt')
 
 if __name__ == '__main__':

@@ -1,13 +1,32 @@
 # Like cmake's FindPython but allows the user to override; should also
 # work (to some degree) with older cmake
 function(imp_find_python)
+  set(USE_PYTHON2 off CACHE BOOL
+      "Force use of Python2 (by default Python3 is used if available)")
+
   if (${CMAKE_VERSION} VERSION_LESS "3.14.0")
     message(WARNING "Using old Python detection logic. Recommended to upgrade to cmake 3.14.0 or later")
     if(NOT DEFINED PYTHON_INCLUDE_DIRS)
-      execute_process(COMMAND python -c "import sys; print(sys.executable)"
-                      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-		      OUTPUT_VARIABLE python_full_path
-                      OUTPUT_STRIP_TRAILING_WHITESPACE)
+      if (USE_PYTHON2)
+        set(_SEARCH_PYTHON_BINARIES python2 python)
+      else()
+        set(_SEARCH_PYTHON_BINARIES python3 python2 python)
+      endif()
+
+      foreach(pybinary ${_SEARCH_PYTHON_BINARIES})
+        execute_process(COMMAND ${pybinary} -c "import sys; print(sys.executable)"
+                        RESULT_VARIABLE retval
+                        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+                        OUTPUT_VARIABLE python_full_path
+                        OUTPUT_STRIP_TRAILING_WHITESPACE)
+        if(${retval} EQUAL 0)
+          break()
+        endif()
+      endforeach()
+
+      if(NOT ${retval} EQUAL 0)
+        message(FATAL_ERROR "Could not find a suitable Python binary - looked for ${_SEARCH_PYTHON_BINARIES}")
+      endif()
       set(PYTHON_EXECUTABLE ${python_full_path} CACHE INTERNAL "" FORCE)
       set(PYTHON_TEST_EXECUTABLE ${python_full_path} CACHE STRING "")
       execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; print('%d.%d.%d' % sys.version_info[:3])"
@@ -50,9 +69,6 @@ function(imp_find_python)
     endif()
 
   else()
-    set(USE_PYTHON2 off CACHE BOOL
-        "Force use of Python2 (by default Python3 is used if available)")
-
     if (NOT USE_PYTHON2)
       find_package(Python3 COMPONENTS Interpreter Development NumPy)
     endif()

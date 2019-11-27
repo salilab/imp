@@ -11,7 +11,6 @@ import IMP.container
 import IMP.isd
 import itertools
 import IMP.pmi.tools
-import IMP.pmi.representation
 from operator import itemgetter
 from math import pi,log,sqrt
 import sys
@@ -217,19 +216,8 @@ class ExcludedVolumeSphere(object):
             included_ps = [h.get_particle() for h in hierarchies]
             if bipartite:
                 other_ps = [h.get_particle() for h in other_hierarchies]
-        elif isinstance(representation, IMP.pmi.representation.Representation):
-            self.mdl = representation.model
-            included_ps = IMP.pmi.tools.select(
-                representation,
-                resolution=resolution,
-                hierarchies=hierarchies)
-            if bipartite:
-                other_ps = IMP.pmi.tools.select(
-                    representation,
-                    resolution=resolution,
-                    hierarchies=other_hierarchies)
         else:
-            raise Exception("Must pass Representation or included_objects")
+            raise Exception("Must pass included_objects")
 
         # setup score
         self.rs = IMP.RestraintSet(self.mdl, 'excluded_volume')
@@ -402,7 +390,7 @@ class ResidueBondRestraint(object):
                 raise ValueError("wrong length of pair")
             for p in ps:
                 if not IMP.atom.Residue.get_is_setup(p):
-                    raise TypeError("not a residue")
+                    raise TypeError("%s is not a residue" % p)
                 else:
                     pair.append(p)
             print("ResidueBondRestraint: adding a restraint between %s %s" % (pair[0].get_name(), pair[1].get_name()))
@@ -477,7 +465,7 @@ class ResidueAngleRestraint(object):
                 raise ValueError("wrong length of triplet")
             for p in ps:
                 if not IMP.atom.Residue.get_is_setup(p):
-                    raise TypeError("not a residue")
+                    raise TypeError("%s is not a residue" % p)
                 else:
                     triplet.append(p)
             print("ResidueAngleRestraint: adding a restraint between %s %s %s" % (triplet[0].get_name(), triplet[1].get_name(), triplet[2].get_name()))
@@ -556,7 +544,7 @@ class ResidueDihedralRestraint(object):
                 raise ValueError("wrong length of quadruplet")
             for p in ps:
                 if not IMP.atom.Residue.get_is_setup(p):
-                    raise TypeError("not a residue")
+                    raise TypeError("%s is not a residue" % p)
                 else:
                     quadruplet.append(p)
             dihedraltype = stringsequence[n]
@@ -875,17 +863,8 @@ class ElasticNetworkRestraint(object):
                                              copy_index=copy_index,
                                              atom_type=IMP.atom.AtomType("CA"))
                 particles+=sel.get_selected_particles()
-        elif representation is not None and type(representation)==IMP.pmi.representation.Representation:
-            self.m = representation.model
-            for st in selection_tuples:
-                print('selecting with',st)
-                for p in IMP.pmi.tools.select_by_tuple(representation,st,resolution=resolution):
-                    if (resolution==0 and ca_only and IMP.atom.Atom(p).get_atom_type()!=IMP.atom.AtomType("CA")):
-                        continue
-                    else:
-                        particles.append(p.get_particle())
         else:
-            raise Exception("must pass representation or hierarchy")
+            raise Exception("must pass hierarchy")
 
         self.weight = 1
         self.label = "None"

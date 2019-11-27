@@ -43,6 +43,8 @@ public:
 
   // get data name
   virtual std::string get_dataset_name() const = 0;
+
+  virtual ~MultiStateModelScore() {}
 };
 
 IMPMULTISTATE_END_NAMESPACE

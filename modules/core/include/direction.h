@@ -139,7 +139,7 @@ IMP_DECORATORS(DirectionAngle, DirectionAngles, Decorators);
 
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-//! Constrain a direction as unit and its derivative as tangent.
+//! Constrain a direction as unit.
 class IMPCOREEXPORT DirectionUnitConstraint : public IMP::Constraint {
   private:
     ParticleIndex pi_;

@@ -1,40 +1,55 @@
 import IMP
 import IMP.benchmark
 import IMP.pmi.samplers
-import IMP.pmi.representation
+import IMP.pmi.topology
+import IMP.pmi.dof
 import IMP.pmi.restraints.basic
 import IMP.pmi.macros
 import IMP.pmi.output
 import time
 import sys
 import shutil
+try:
+    from time import process_time  # needs python 3.3 or later
+except ImportError:
+    from time import clock as process_time
+
 
 IMP.setup_from_argv(sys.argv, "Replica exchange benchmark.")
 IMP.set_log_level(IMP.SILENT)
 old_stdout = sys.stdout
 class DummyFile(object):
+    def flush(self):
+        pass
     def write(self, txt):
         pass
 sys.stdout = DummyFile()
 
 """setting up the representation
-PMI 1.0 representation. Creates two particles and
+PMI 2 representation. Creates two particles and
 an harmonic distance restraints between them"""
 m=IMP.Model()
-with IMP.allow_deprecated():
-    r=IMP.pmi.representation.Representation(m)
-r.create_component("A")
-r.add_component_beads("A",[(1,1),(2,2)])
-ps=IMP.atom.get_leaves(r.prot)
-dr=IMP.pmi.restraints.basic.DistanceRestraint(r,(1,1,"A"),(2,2,"A"),10,10)
+s = IMP.pmi.topology.System(m)
+st1 = s.create_state()
+mol = st1.create_molecule("A", "GG", "A")
+mol.add_representation(resolutions=[1])
+hier = s.build()
+
+dof = IMP.pmi.dof.DegreesOfFreedom(mol)
+dof.create_flexible_beads(mol, max_trans=3.0, resolution=1)
+
+ps=IMP.atom.get_leaves(hier)
+dr=IMP.pmi.restraints.basic.DistanceRestraint(
+    root_hier=hier, tuple_selection1=(1,1,"A"),
+    tuple_selection2=(2,2,"A"), distancemin=10, distancemax=10)
 dr.add_to_model()
 
-start_time = time.clock()
+start_time = process_time()
 
 rex=IMP.pmi.macros.ReplicaExchange0(m,
-                r,
-                monte_carlo_sample_objects=[r],
-                output_objects=[r,dr],
+                root_hier=hier,
+                monte_carlo_sample_objects=dof.get_movers(),
+                output_objects=[dr],
                 monte_carlo_temperature=1.0,
                 replica_exchange_minimum_temperature=1.0,
                 replica_exchange_maximum_temperature=2.5,
@@ -68,4 +83,4 @@ nreplicas=rex.replica_exchange_object.get_number_of_replicas()
 temperatures=rex.replica_exchange_object.get_my_parameter("temp")
 
 sys.stdout = old_stdout
-IMP.benchmark.report("replica "+str(my_index), time.clock() - start_time, 8.5)
+IMP.benchmark.report("replica "+str(my_index), process_time() - start_time, 8.5)

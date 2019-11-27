@@ -47,7 +47,6 @@ git clone -b ${BRANCH} -q ${GIT_TOP}/imp.git
 
 # Update any submodules, etc. if necessary
 (cd imp && git submodule --quiet update --init --recursive) > /dev/null
-(cd imp && ./setup_git.py) > /dev/null || exit 1
 
 if [ -d imp/modules/rmf/dependency/RMF_source ]; then
   # Get submodule revision
@@ -66,7 +65,7 @@ if [ -e imp/VERSION ]; then
   IMPVERSION="`cat imp/VERSION | sed -e 's/[ /-]/./g'`"
 else
   # Make sure VERSION file is reasonable
-  (cd imp && tools/build/make_version.py --source=.)
+  (cd imp && python3 tools/build/make_version.py --source=.)
   if [ ${BRANCH} = "develop" ]; then
     # For nightly builds, prepend the date so the packages are upgradeable
     IMPVERSION="${SORTDATE}.develop.${shortrev}"
@@ -109,7 +108,7 @@ fi
 
 # Write out list of all components
 compfile="${IMPINSTALL}/build/imp-components"
-python <<END
+python3 <<END
 import sys
 sys.path.insert(0, 'imp/tools/build')
 import tools

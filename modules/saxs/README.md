@@ -23,7 +23,7 @@ Calculate chi value for SAXS profiles.
 # compute_vr {#compute_vr_bin}
 Calculate volatility ratio for SAXS profiles.
 
-# rg {#rg_bin}
+# compute_rg {#compute_rg_bin}
 Compute radius of gyration from SAXS profiles.
 
 # validate_profile {#validate_profile_bin}

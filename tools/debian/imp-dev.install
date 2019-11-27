@@ -1,3 +1,7 @@
 usr/lib/*/libTAU.so
 usr/lib/*/libimp*.so
+usr/lib/*/cmake/
 usr/include/*
+usr/share/IMP/build_info
+usr/share/IMP/swig
+usr/share/IMP/tools

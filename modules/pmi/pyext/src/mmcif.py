@@ -11,12 +11,12 @@
 
 from __future__ import print_function
 import copy
+import RMF
 import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.em
 import IMP.isd
-import IMP.pmi.representation
 import IMP.pmi.tools
 from IMP.pmi.tools import OrderedDict
 import IMP.pmi.output
@@ -943,10 +943,12 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
             # Correct path
             rmf_file = os.path.join(os.path.dirname(stat_fname),
                                     "%d.rmf3" % model_num)
-            for c in state.all_modeled_components:
-                # todo: this only works with PMI 1
-                state._pmi_object.set_coordinates_from_rmf(c, rmf_file, 0,
-                                                       force_rigid_update=True)
+            # todo: test with real PMI2 systems
+            if os.path.exists(rmf_file):
+                rh = RMF.open_rmf_file_read_only(rmf_file)
+                system = state._pmi_object.system
+                IMP.rmf.link_hierarchies(rh, [system.hier])
+                IMP.rmf.load_frame(fh, RMF.FrameID(0))
             # todo: fill in other data from stat file, e.g. crosslink phi/psi
             yield stats
             model_num += 1
@@ -1157,8 +1159,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
         self.fh = fh
         self._state_ensemble_offset = 0
-        self._each_metadata = [] # list of metadata for each representation
-        self._file_datasets = []
         self._main_script = os.path.abspath(sys.argv[0])
 
         # Point to the main modeling script
@@ -1199,7 +1199,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def create_representation(self, name):
         """Create a new Representation and return it. This can be
            passed to add_model(), add_bead_element() or add_pdb_element()."""
-        r = ihm.representation.Representation()
+        r = ihm.representation.Representation(name=name)
         self.system.orphan_representations.append(r)
         return r
 
@@ -1322,19 +1322,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
            can be written out to an mmCIF file with `ihm.dumper.write`,
            and/or modified using the ihm API."""
         self._add_restraint_model_fits()
-
-        # Add metadata to ihm.System
-        self.system.software.extend(m for m in self._metadata
-                                    if isinstance(m, ihm.Software))
-        self.system.citations.extend(m for m in self._metadata
-                                     if isinstance(m, ihm.Citation))
-        self.system.locations.extend(m for m in self._metadata
-                                   if isinstance(m, ihm.location.FileLocation))
-
-        # Point all locations to repos, if applicable
-        all_repos = [m for m in self._metadata
-                     if isinstance(m, ihm.location.Repository)]
-        self.system.update_locations_in_repositories(all_repos)
 
     def add_pdb_element(self, state, name, start, end, offset, pdbname,
                         chain, hier, representation=None):
@@ -1610,16 +1597,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                    representation)
         group.append(m)
         return m
-
-    def _update_locations(self, filelocs):
-        """Update FileLocation to point to a parent repository, if any"""
-        all_repos = [m for m in self._metadata
-                     if isinstance(m, ihm.location.Repository)]
-        for fileloc in filelocs:
-            ihm.location.Repository._update_in_repos(fileloc, all_repos)
-
-    _metadata = property(lambda self:
-                         itertools.chain.from_iterable(self._each_metadata))
 
 
 def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):

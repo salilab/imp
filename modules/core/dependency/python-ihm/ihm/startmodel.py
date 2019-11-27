@@ -107,14 +107,17 @@ class StartingModel(object):
               script used to generate the starting model (usually a
               :class:`~ihm.location.WorkflowFileLocation`).
        :type script_file: :class:`~ihm.location.Location`
+       :param str description: Additional text describing the starting model.
     """
     def __init__(self, asym_unit, dataset, asym_id, templates=None, offset=0,
-                 metadata=None, software=None, script_file=None):
+                 metadata=None, software=None, script_file=None,
+                 description=None):
         self.templates = templates if templates is not None else []
         self.metadata = metadata if metadata is not None else []
         self.asym_unit = asym_unit
         self.dataset, self.asym_id, self.offset = dataset, asym_id, offset
         self.software, self.script_file = software, script_file
+        self.description = description
         self._atoms = []
         self._seq_difs = []
 

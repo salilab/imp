@@ -202,6 +202,21 @@ _ihm_struct_assembly_details.entity_poly_segment_id
         system.system._make_complete_assembly()
         self._assign_entity_ids(system)
         self._assign_asym_ids(system)
+        d = ihm.dumper._EntityDumper()
+        out = _get_dumper_output(d, system.system)
+        self.assertEqual(out, """#
+loop_
+_entity.id
+_entity.type
+_entity.src_method
+_entity.pdbx_description
+_entity.formula_weight
+_entity.pdbx_number_of_molecules
+_entity.details
+1 polymer man foo 267.282 1 .
+2 polymer man bar 178.188 1 .
+#
+""")
         d = ihm.dumper._EntityPolySegmentDumper()
         d.finalize(system.system)
         out = _get_dumper_output(d, system.system)
@@ -214,7 +229,6 @@ _ihm_entity_poly_segment.seq_id_end
 _ihm_entity_poly_segment.comp_id_begin
 _ihm_entity_poly_segment.comp_id_end
 1 1 1 3 ALA ALA
-2 2 1 2 ALA ALA
 #
 """)
         d = ihm.dumper._AssemblyDumper()
@@ -225,8 +239,7 @@ loop_
 _ihm_struct_assembly.id
 _ihm_struct_assembly.name
 _ihm_struct_assembly.description
-1 'Complete assembly' 'All known components'
-2 'Modeled assembly' 'All components modeled by IMP'
+1 'Complete assembly' 'All known components & All components modeled by IMP'
 #
 #
 loop_
@@ -238,8 +251,6 @@ _ihm_struct_assembly_details.entity_id
 _ihm_struct_assembly_details.asym_id
 _ihm_struct_assembly_details.entity_poly_segment_id
 1 1 1 foo 1 A 1
-2 1 1 bar 2 . 2
-3 2 2 foo 1 A 1
 #
 """)
 
@@ -298,8 +309,9 @@ _ihm_model_representation_details.starting_model_id
 _ihm_model_representation_details.model_mode
 _ihm_model_representation_details.model_granularity
 _ihm_model_representation_details.model_object_count
-1 1 1 foo A 1 sphere 1 flexible by-residue .
-2 1 1 foo A 2 sphere . flexible by-feature 1
+_ihm_model_representation_details.description
+1 1 1 foo A 1 sphere 1 flexible by-residue . .
+2 1 1 foo A 2 sphere . flexible by-feature 1 .
 #
 """)
 
@@ -367,8 +379,9 @@ _ihm_starting_model_details.starting_model_source
 _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
-1 1 Nup84 A 3 'comparative model' A 0 3
-2 2 Nup85 B 4 'comparative model' A 0 4
+_ihm_starting_model_details.description
+1 1 Nup84 A 3 'comparative model' A 0 3 .
+2 2 Nup85 B 4 'comparative model' A 0 4 .
 #
 #
 loop_
@@ -437,7 +450,8 @@ _ihm_external_reference_info.reference_type
 _ihm_external_reference_info.reference
 _ihm_external_reference_info.refers_to
 _ihm_external_reference_info.associated_url
-1 . DOI foo Other .
+_ihm_external_reference_info.details
+1 . DOI foo Other . .
 #
 #
 loop_
@@ -491,10 +505,11 @@ _ihm_modeling_protocol_details.multi_state_flag
 _ihm_modeling_protocol_details.ordered_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
+_ihm_modeling_protocol_details.description
 1 1 1 2 . 'All components modeled by IMP' Sampling 'Monte Carlo' 0 500 YES NO NO
-. .
+. . .
 2 2 1 2 . 'All components modeled by IMP' Sampling
-'Replica exchange Molecular Dynamics' 400 2000 YES NO NO . .
+'Replica exchange Molecular Dynamics' 400 2000 YES NO NO . . .
 #
 """)
 
@@ -526,8 +541,9 @@ _ihm_modeling_post_process.struct_assembly_id
 _ihm_modeling_post_process.dataset_group_id
 _ihm_modeling_post_process.software_id
 _ihm_modeling_post_process.script_file_id
-1 1 1 1 filter energy/score 500 400 2 . . .
-2 2 1 1 cluster RMSD 2000 2000 2 . . .
+_ihm_modeling_post_process.details
+1 1 1 1 filter energy/score 500 400 2 . . . .
+2 2 1 1 cluster RMSD 2000 2000 2 . . . .
 #
 """)
 
@@ -554,7 +570,8 @@ _ihm_ensemble_info.num_ensemble_models
 _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
-1 'cluster 1' . 1 . . 1 1 . .
+_ihm_ensemble_info.details
+1 'cluster 1' . 1 . . 1 1 . . .
 #
 """)
 

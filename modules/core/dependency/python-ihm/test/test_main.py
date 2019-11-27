@@ -780,9 +780,9 @@ class Tests(unittest.TestCase):
         s = ihm.System()
         r1 = MockObject()
         r2 = MockObject()
-        r2.feature = None
+        r2._all_features = (None,)
         r3 = MockObject()
-        r3.feature = f1
+        r3._all_features = (f1,)
 
         s.orphan_features.extend((f1, f2))
         s.restraints.extend((r1, r2, r3))

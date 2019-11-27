@@ -138,6 +138,7 @@ class Tests(unittest.TestCase):
     def test_feature(self):
         """Test Feature base class"""
         f = ihm.restraint.Feature() # does nothing
+        self.assertEqual(f._all_entities_or_asyms(), [])
 
     def test_residue_feature(self):
         """Test ResidueFeature class"""
@@ -152,6 +153,10 @@ class Tests(unittest.TestCase):
         # All ranges are individual residues
         f.ranges.append(a(1,1))
         f.ranges.append(a(2,2))
+        self.assertEqual(f.type, 'residue')
+
+        # Should work with actual Residue objects too
+        f.ranges.append(a.residue(3))
         self.assertEqual(f.type, 'residue')
 
         # At least one range is a true range
@@ -194,6 +199,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(f.dataset, 'foo')
         self.assertEqual(f.object_characteristic, 'outer surface')
         self.assertIsNone(f.assembly)
+        self.assertEqual(f.feature, 'feat')
+        self.assertEqual(f._all_features, ('feat',))
 
     def test_derived_distance_restraint(self):
         """Test DerivedDistanceRestraint class"""
@@ -202,6 +209,9 @@ class Tests(unittest.TestCase):
                 distance='dist')
         self.assertEqual(f.dataset, 'foo')
         self.assertIsNone(f.assembly)
+        self.assertEqual(f.feature1, 'feat1')
+        self.assertEqual(f.feature2, 'feat2')
+        self.assertEqual(f._all_features, ('feat1', 'feat2'))
 
 
 if __name__ == '__main__':

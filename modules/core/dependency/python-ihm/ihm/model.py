@@ -43,19 +43,21 @@ class Atom(object):
        :param float z: z coordinate of the atom
        :param bool het: True for HETATM sites, False (default) for ATOM
        :param float biso: Temperature factor or equivalent (if applicable)
+       :param float occupancy: Fraction of the atom type present (if applicable)
     """
 
     # Reduce memory usage
     __slots__ = ['asym_unit', 'seq_id', 'atom_id', 'type_symbol',
-                 'x', 'y', 'z', 'het', 'biso']
+                 'x', 'y', 'z', 'het', 'biso', 'occupancy']
 
     def __init__(self, asym_unit, seq_id, atom_id, type_symbol, x, y, z,
-                 het=False, biso=None):
+                 het=False, biso=None, occupancy=None):
         self.asym_unit = asym_unit
         self.seq_id, self.atom_id = seq_id, atom_id
         self.type_symbol = type_symbol
         self.x, self.y, self.z = x, y, z
         self.het, self.biso = het, biso
+        self.occupancy = occupancy
 
 
 class Model(object):
@@ -182,15 +184,17 @@ class Ensemble(object):
               for the entire ensemble, for example as a DCD file
               (see :class:`DCDWriter`).
        :type file: :class:`ihm.location.OutputFileLocation`
+       :param str details: Additional text describing this ensemble
     """
     def __init__(self, model_group, num_models, post_process=None,
                  clustering_method=None, clustering_feature=None, name=None,
-                 precision=None, file=None):
+                 precision=None, file=None, details=None):
         self.model_group, self.num_models = model_group, num_models
         self.post_process = post_process
         self.clustering_method = clustering_method
         self.clustering_feature = clustering_feature
         self.name, self.precision, self.file = name, precision, file
+        self.details = details
 
         #: All localization densities for this ensemble, as
         #: :class:`LocalizationDensity` objects

@@ -54,3 +54,6 @@ The :mod:`ihm.dataset` Python module
 
 .. autoclass:: YeastTwoHybridDataset
    :members:
+
+.. autoclass:: GeneticInteractionsDataset
+   :members:

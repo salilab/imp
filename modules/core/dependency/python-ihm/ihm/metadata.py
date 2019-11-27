@@ -68,7 +68,7 @@ class MRCParser(Parser):
 
     def _get_emdb(self, filename):
         """Return the EMDB id of the file, or None."""
-        r = re.compile(b'EMDATABANK\.org.*(EMD\-\d+)')
+        r = re.compile(b'EMDATABANK\.org.*(EMD\-\\d+)')
         with open(filename, 'rb') as fh:
             fh.seek(220) # Offset of number of labels
             num_labels_raw = fh.read(4)
@@ -321,12 +321,12 @@ class PDBParser(Parser):
         template_path_map = {}
         alnfile = None
         script = None
-        alnfilere = re.compile('REMARK   6 ALIGNMENT: (\S+)')
-        scriptre = re.compile('REMARK   6 SCRIPT: (\S+)')
-        tmppathre = re.compile('REMARK   6 TEMPLATE PATH (\S+) (\S+)')
-        tmpre = re.compile('REMARK   6 TEMPLATE: '
-                           '(\S+) (\S+):(\S+) \- (\S+):\S+ '
-                           'MODELS (\S+):(\S+) \- (\S+):\S+ AT (\S+)%')
+        alnfilere = re.compile(r'REMARK   6 ALIGNMENT: (\S+)')
+        scriptre = re.compile(r'REMARK   6 SCRIPT: (\S+)')
+        tmppathre = re.compile(r'REMARK   6 TEMPLATE PATH (\S+) (\S+)')
+        tmpre = re.compile(r'REMARK   6 TEMPLATE: '
+                           r'(\S+) (\S+):(\S+) \- (\S+):\S+ '
+                           r'MODELS (\S+):(\S+) \- (\S+):\S+ AT (\S+)%')
         template_info = []
 
         with open(pdbname) as fh:
@@ -382,7 +382,7 @@ class PDBParser(Parser):
 
         # Assume a code of 1abc, 1abc_N, 1abcX, or 1abcX_N refers
         # to a real PDB structure
-        m = re.match('(\d[a-zA-Z0-9]{3})[a-zA-Z]?(_.*)?$', template_code)
+        m = re.match(r'(\d[a-zA-Z0-9]{3})[a-zA-Z]?(_.*)?$', template_code)
         if m:
             template_db_code = m.group(1).upper()
             l = location.PDBLocation(template_db_code)

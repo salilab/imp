@@ -46,7 +46,7 @@ The chi value is computed relative to the first profile using its error column")
   }
   if (vm.count("offset")) use_offset = true;
 
-  IMP::Vector<IMP::saxs::Profile *> exp_profiles;
+  IMP::saxs::Profiles exp_profiles;
   for (unsigned int i = 0; i < files.size(); i++) {
     // check if file exists
     std::ifstream in_file(files[i].c_str());
@@ -55,7 +55,7 @@ The chi value is computed relative to the first profile using its error column")
       exit(1);
     }
 
-    IMP::saxs::Profile *profile = new IMP::saxs::Profile(files[i]);
+    IMP_NEW(IMP::saxs::Profile, profile, (files[i]));
     if (profile->size() == 0) {
       std::cerr << "can't parse input file " << files[i] << std::endl;
       return 1;

@@ -300,6 +300,7 @@ class DegreesOfFreedom(object):
             srbm = IMP.pmi.TransformMover(hiers[0][0].get_model(), max_trans, max_rot)
         else:
             srbm = IMP.pmi.TransformMover(hiers[0][0].get_model(),axis[0],axis[1],max_trans, max_rot)
+        srbm.set_was_used(True)
         super_rigid_rbs,super_rigid_xyzs = IMP.pmi.tools.get_rbs_and_beads(hiers)
         ct = 0
         self.movers_particles_map[srbm]=[]

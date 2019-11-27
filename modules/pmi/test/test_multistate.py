@@ -2,7 +2,8 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import os
-import IMP.pmi.representation
+import IMP.pmi.topology
+import IMP.pmi.dof
 import IMP.pmi.restraints.basic
 import IMP.core
 import IMP.pmi.restraints.crosslinking
@@ -17,94 +18,78 @@ class Tests(IMP.test.TestCase):
         length=21
         inputx=70
 
-        representations = []
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
 
         # define the particles in state 1
-
-
-        m = IMP.Model()
-        with IMP.allow_deprecated():
-            r = IMP.pmi.representation.Representation(m)
-
-        r.create_component("particle1", color=0.1)
-        p11 = r.add_component_beads("particle1", [(1, 10)])
-        r.create_component("particle2", color=0.5)
-        p21 = r.add_component_beads("particle2", [(1, 10)])
-        r.create_component("particle3", color=1.0)
-        p31 = r.add_component_beads("particle3", [(1, 10)])
-
-        representations.append(r)
+        st1 = s.create_state()
+        mol1 = []
+        for mn in range(1, 4):
+            mol = st1.create_molecule("particle%d" % mn, "G" * 10, "ABC"[mn-1])
+            mol.add_representation(resolutions=[10])
+            mol1.append(mol)
 
         # define the particles in state 2
+        st2 = s.create_state()
+        mol2 = []
+        for mn in range(1, 4):
+            mol = st2.create_molecule("particle%d" % mn, "G" * 10, "ABC"[mn-1])
+            mol.add_representation(resolutions=[10])
+            mol2.append(mol)
 
-        with IMP.allow_deprecated():
-            r = IMP.pmi.representation.Representation(m)
+        hier = s.build()
 
-        r.create_component("particle1", color=0.1)
-        p12 = r.add_component_beads("particle1", [(1, 10)])
-        r.create_component("particle2", color=0.5)
-        p22 = r.add_component_beads("particle2", [(1, 10)])
-        r.create_component("particle3", color=0.3)
-        p32 = r.add_component_beads("particle3", [(1, 10)])
+        dof = IMP.pmi.dof.DegreesOfFreedom(m)
 
-        representations.append(r)
+        # only allow particle3 in each state to move
+        dof.create_flexible_beads(mol1[2])
+        dof.create_flexible_beads(mol2[2])
 
-        # remove paricles 1 and 2 from the otpmized articles list
+        pp1, pp2, pp3 = IMP.atom.get_leaves(st1.hier)
 
-        representations[0].floppy_bodies.pop(0)
-        representations[0].floppy_bodies.pop(0)
-        representations[1].floppy_bodies.pop(0)
-        representations[1].floppy_bodies.pop(0)
-
-        print(representations[0].floppy_bodies)
-        print(representations[1].floppy_bodies)
-
-        pp1 = IMP.atom.get_leaves(p11[0])[0]
-        pp2 = IMP.atom.get_leaves(p21[0])[0]
-        pp3 = IMP.atom.get_leaves(p31[0])[0]
-        xyz11 = IMP.core.XYZ(pp1.get_particle())
-        xyz21 = IMP.core.XYZ(pp2.get_particle())
-        xyz31 = IMP.core.XYZ(pp3.get_particle())
+        xyz11 = IMP.core.XYZ(pp1)
+        xyz21 = IMP.core.XYZ(pp2)
+        xyz31 = IMP.core.XYZ(pp3)
         xyz11.set_coordinates((0, 0, 0))
         print(xyz11.get_coordinates())
         xyz21.set_coordinates((inputx, 0, 0))
         xyz31.set_coordinates((0, 0, 0))
 
-        pp1 = IMP.atom.get_leaves(p12[0])[0]
-        pp2 = IMP.atom.get_leaves(p22[0])[0]
-        pp3 = IMP.atom.get_leaves(p32[0])[0]
-        xyz12 = IMP.core.XYZ(pp1.get_particle())
-        xyz22 = IMP.core.XYZ(pp2.get_particle())
-        xyz32 = IMP.core.XYZ(pp3.get_particle())
+        pp1, pp2, pp3 = IMP.atom.get_leaves(st2.hier)
+        xyz12 = IMP.core.XYZ(pp1)
+        xyz22 = IMP.core.XYZ(pp2)
+        xyz32 = IMP.core.XYZ(pp3)
         xyz12.set_coordinates((0, 0, 0))
         xyz22.set_coordinates((inputx, 0, 0))
         xyz32.set_coordinates((inputx, 0, 0))
 
-        eb = IMP.pmi.restraints.basic.ExternalBarrier(representations[0], 1000)
+        eb = IMP.pmi.restraints.basic.ExternalBarrier(hierarchies=st1.hier,
+                                                      radius=1000)
         eb.add_to_model()
 
-        eb = IMP.pmi.restraints.basic.ExternalBarrier(representations[1], 1000)
+        eb = IMP.pmi.restraints.basic.ExternalBarrier(hierarchies=st2.hier,
+                                                      radius=1000)
         eb.add_to_model()
 
-        restraints = '''#
-        particle2 particle3 5 5 1 1
-        particle1 particle3 5 5 1 2 '''
+        xldbkwc = IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
+        xldbkwc.set_protein1_key("prot1")
+        xldbkwc.set_protein2_key("prot2")
+        xldbkwc.set_residue1_key("res1")
+        xldbkwc.set_residue2_key("res2")
+        xldbkwc.set_unique_id_key("id")
 
-        with IMP.allow_deprecated():
-            xl = IMP.pmi.restraints.crosslinking.ISDCrossLinkMS(representations,
-                                                                restraints,
-                                                                length=length,
-                                                                slope=0.0,
-                                                                inner_slope=slope,
-                                                                resolution=1.0)
+        cldb = IMP.pmi.io.crosslink.CrossLinkDataBase(xldbkwc)
+        cldb.create_set_from_file(self.get_input_file_name('multistate.csv'))
 
-        psi = xl.get_psi(0.05)
+        xl = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
+            root_hier=hier, CrossLinkDataBase=cldb, length=length, slope=slope,
+            resolution=1.0)
 
-        psi[0].set_scale(psiv)
+        psi = xl.psi_dictionary['PSI'][0]
+        psi.set_scale(psiv)
 
-        sigma = xl.get_sigma(1.0)
-
-        sigma[0].set_scale(sigmav)
+        sigma = xl.sigma_dictionary['SIGMA'][0]
+        sigma.set_scale(sigmav)
 
         xl.set_psi_is_sampled(False)
         xl.set_sigma_is_sampled(False)
@@ -126,18 +111,17 @@ class Tests(IMP.test.TestCase):
         o = IMP.pmi.output.Output()
         o.init_rmf(
             "trajectory.rmf3",
-            [representations[0].prot,
-             representations[1].prot])
+            [st1.hier, st2.hier])
 
         print(o.dictionary_rmfs)
 
-        mc = IMP.pmi.samplers.MonteCarlo(m, representations, 1.0)
+        mc = IMP.pmi.samplers.MonteCarlo(m, dof.get_movers(), 1.0)
         mc.set_simulated_annealing(min_temp=1.0,
                                    max_temp=2.0,
                                    min_temp_time=200,
                                    max_temp_time=50)
 
-        o.init_stat2("modeling.stat", [mc, xl] + representations)
+        o.init_stat2("modeling.stat", [mc, xl])
 
 
         for i in range(1,20):
@@ -149,19 +133,16 @@ class Tests(IMP.test.TestCase):
 
 
         po = IMP.pmi.output.ProcessOutput("modeling.stat")
+        print(po.get_keys())
 
-        self.assertEqual(len(po.get_keys()), 20)
+        self.assertEqual(len(po.get_keys()), 14)
 
         fs = po.get_fields(
-            ['ISDCrossLinkMS_Distance_interrb-State:0-5:particle1_5:particle3-1-1-0.05_None',
-             'ISDCrossLinkMS_Distance_interrb-State:0-5:particle2_5:particle3-1-1-0.05_None',
-             'ISDCrossLinkMS_Distance_interrb-State:1-5:particle1_5:particle3-1-1-0.05_None',
-             'ISDCrossLinkMS_Distance_interrb-State:1-5:particle2_5:particle3-1-1-0.05_None',
-             'SimplifiedModel_Total_Score_None',
-             'ISDCrossLinkMS_Data_Score_None',
-             'ISDCrossLinkMS_Linear_Score_None',
-             'ISDCrossLinkMS_Psi_0.05_None'])
-
+            ['CrossLinkingMassSpectrometryRestraint_Distance_||2.1|particle1|5|particle3|5|1|PSI|',
+             'CrossLinkingMassSpectrometryRestraint_Distance_||1.1|particle2|5|particle3|5|1|PSI|',
+             'CrossLinkingMassSpectrometryRestraint_Data_Score',
+             'CrossLinkingMassSpectrometryRestraint_Linear_Score',
+             'CrossLinkingMassSpectrometryRestraint_Psi_PSI'])
         print(fs.keys())
         o.close_rmf("trajectory.rmf3")
 

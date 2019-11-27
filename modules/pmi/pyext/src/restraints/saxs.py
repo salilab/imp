@@ -136,7 +136,7 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
 
         # weight, optimized
         self.w = IMP.pmi.tools.SetupWeight(self.model).get_particle()
-        IMP.isd.Weight(self.w).set_weights_are_optimized(True)
+        IMP.isd.Weight(self.w).set_weights_are_optimized(False)
 
         # take identity covariance matrix for the start
         self.cov = [[1 if i == j else 0 for j in range(self.prof.size())]
@@ -161,6 +161,10 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
         self.rs2.add_restraint(j2)
         j3 = IMP.isd.JeffreysRestraint(self.model, self.gamma)
         self.rs2.add_restraint(j3)
+
+        pw = IMP.isd.Weight(self.w)
+        pw.set_weights(pw.get_unit_simplex().get_barycenter())
+        pw.set_weights_are_optimized(True)
 
     def optimize_sigma(self):
         """Set sigma to the value that maximizes its conditional likelihood"""
