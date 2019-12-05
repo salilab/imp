@@ -1089,31 +1089,22 @@ def display_bonds(mol):
                 IMP.atom.Bonded(p2),1)
 
 
+@IMP.deprecated_object("2.13", "Use IMP.pmi.alphabets instead")
 class ThreeToOneConverter(defaultdict):
-    """This class converts three to one letter codes, and return X for any unknown codes"""
-    def __init__(self,is_nucleic=False):
-
-        if not is_nucleic:
-            threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
-                              'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
-                              'HIS': 'H', 'ILE': 'I', 'LEU': 'L', 'LYS': 'K',
-                              'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S',
-                              'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'UNK': 'X'}
+    """This class converts three to one letter codes, and return X for
+       any unknown codes"""
+    def __init__(self, is_nucleic=False):
+        if is_nucleic:
+            threetoone = IMP.pmi.alphabets.rna.charmm_to_one
         else:
-            threetoone = {'ADE': 'A', 'URA': 'U', 'CYT': 'C', 'GUA': 'G',
-                              'THY': 'T', 'UNK': 'X'}
-
+            threetoone = IMP.pmi.alphabets.amino_acid.charmm_to_one
         defaultdict.__init__(self,lambda: "X", threetoone)
 
 
-
-
-def get_residue_type_from_one_letter_code(code,is_nucleic=False):
-    threetoone=ThreeToOneConverter(is_nucleic)
-    one_to_three={}
-    for k in threetoone:
-        one_to_three[threetoone[k]] = k
-    return IMP.atom.ResidueType(one_to_three[code])
+@IMP.deprecated_function("2.13", "Use IMP.pmi.alphabets instead")
+def get_residue_type_from_one_letter_code(code, is_nucleic=False):
+    a = IMP.pmi.alphabets.rna if is_nucleic else IMP.pmi.alphabets.amino_acid
+    return a.get_residue_type_from_one_letter_code(code)
 
 
 def get_all_leaves(list_of_hs):

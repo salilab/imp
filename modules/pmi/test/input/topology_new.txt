@@ -8,3 +8,5 @@
 |Prot3   |orange|seqs.fasta|Protein_3|BEADS      | |       |    |5|0 | |1,2|3|
 |Prot4   |magenta|seqs.fasta|Protein_3|IDEAL_HELIX| |       |    | |10|3|1  | |
 |Prot5   |0.1,0.2,0.3|seqs.fasta|Protein_3|IDEAL_HELIX| |       |    | |10|3|1  | |
+|RNA1    |magenta|seqs.fasta|RNA1,RNA|rnadna.pdb|A|       |    | |  | |   | |
+|DNA1    |magenta|seqs.fasta|DNA1,DNA|rnadna.pdb|B|       |    | |  | |   | |

@@ -23,6 +23,7 @@ import IMP.atom
 import IMP.algebra
 import IMP.pmi
 import IMP.pmi.tools
+import IMP.pmi.alphabets
 import csv
 import os
 from collections import defaultdict, namedtuple
@@ -218,18 +219,26 @@ class State(_SystemBase):
         else:
             return self.molecules[name][copy_num]
 
-    def create_molecule(self, name, sequence='', chain_id='', is_nucleic=None):
+    def create_molecule(self, name, sequence='', chain_id='',
+                        alphabet=IMP.pmi.alphabets.amino_acid, is_nucleic=None):
         """Create a new Molecule within this State
         @param name                the name of the molecule (string);
                                    it must not be already used
         @param sequence            sequence (string)
         @param chain_id            Chain ID to assign to this molecule
+        @param alphabet            Mapping from FASTA codes to residue types
         """
         # check whether the molecule name is already assigned
         if name in self.molecules:
             raise ValueError('Cannot use a molecule name already used')
 
-        mol = Molecule(self,name,sequence,chain_id,copy_num=0,is_nucleic=is_nucleic)
+        if is_nucleic:
+            IMP.handle_use_deprecated(
+                "is_nucleic is deprecated. Use alphabet instead.")
+            alphabet = IMP.pmi.alphabets.rna
+
+        mol = Molecule(self, name, sequence, chain_id, copy_num=0,
+                       alphabet=alphabet)
         self.molecules[name] = [mol]
         return mol
 
@@ -325,7 +334,8 @@ class Molecule(_SystemBase):
     when build() is called
     """
 
-    def __init__(self,state,name,sequence,chain_id,copy_num,mol_to_clone=None,is_nucleic=None):
+    def __init__(self, state, name, sequence, chain_id, copy_num,
+                 mol_to_clone=None, alphabet=IMP.pmi.alphabets.amino_acid):
         """The user should not call this directly; instead call State::create_molecule()
         @param state           The parent PMI State
         @param name            The name of the molecule (string)
@@ -342,7 +352,7 @@ class Molecule(_SystemBase):
         self.sequence = sequence
         self.built = False
         self.mol_to_clone = mol_to_clone
-        self.is_nucleic=is_nucleic
+        self.alphabet = alphabet
         self.representations = []  # list of stuff to build
         self._pdb_elements = []
         self._represented = IMP.pmi.tools.OrderedSet()   # residues with representation
@@ -360,7 +370,7 @@ class Molecule(_SystemBase):
         # create TempResidues from the sequence (if passed)
         self.residues=[]
         for ns,s in enumerate(sequence):
-            r = TempResidue(self,s,ns+1,ns,is_nucleic)
+            r = TempResidue(self, s, ns+1, ns, alphabet)
             self.residues.append(r)
 
     def __repr__(self):
@@ -498,7 +508,9 @@ class Molecule(_SystemBase):
 
             # add ALA to fill in gaps
             while len(self.residues)<pdb_idx:
-                r = TempResidue(self,'A',len(self.residues)+1,len(self.residues))
+                r = TempResidue(self, 'A', len(self.residues)+1,
+                                len(self.residues),
+                                IMP.pmi.alphabets.amino_acid)
                 self.residues.append(r)
                 self.sequence += 'A'
 
@@ -562,7 +574,7 @@ class Molecule(_SystemBase):
                Format options: tuple (r,g,b) with values 0 to 1;
                float (from 0 to 1, a map from Blue to Green to Red);
                a [Chimera name](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/colortables.html);
-               a hex RGB string (e.g. "0xff0000");
+               a hex RGB string (e.g. "#ff0000");
                an IMP.display.Color object
         @note You cannot call add_representation multiple times for the
               same residues.
@@ -681,7 +693,8 @@ class Molecule(_SystemBase):
                 po.create_component(state, name, True,
                                     asym_name=self._name_with_copy)
                 po.add_component_sequence(state, name, self.sequence,
-                                          asym_name=self._name_with_copy)
+                                          asym_name=self._name_with_copy,
+                                          alphabet=self.alphabet)
             # if requested, clone structure and representations BEFORE building original
             if self.mol_to_clone is not None:
                 for nr,r in enumerate(self.mol_to_clone.residues):
@@ -1047,7 +1060,7 @@ def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
 class TempResidue(object):
     """Temporarily stores residue information, even without structure available."""
     # Consider implementing __hash__ so you can select.
-    def __init__(self,molecule,code,index,internal_index,is_nucleic=None):
+    def __init__(self, molecule, code, index, internal_index, alphabet):
         """setup a TempResidue
         @param molecule PMI Molecule to which this residue belongs
         @param code     one-letter residue type code
@@ -1056,7 +1069,7 @@ class TempResidue(object):
         """
         #these attributes should be immutable
         self.molecule = molecule
-        self.rtype = IMP.pmi.tools.get_residue_type_from_one_letter_code(code,is_nucleic)
+        self.rtype = alphabet.get_residue_type_from_one_letter_code(code)
         self.pdb_index = index
         self.internal_index = internal_index
         self.copy_index = IMP.atom.Copy(self.molecule.hier).get_copy_index()
@@ -1545,7 +1558,10 @@ class _Component(object):
         color=self.color
         if isinstance(color, list):
             color=','.join([str(x) for x in color])
-        a= '|'+'|'.join([name,color,self._orig_fasta_file,self.fasta_id,
+        fastaid = self.fasta_id
+        if self.fasta_flag:
+            fastaid += "," + self.fasta_flag
+        a= '|'+'|'.join([name,color,self._orig_fasta_file,fastaid,
                          self._orig_pdb_input,chain,self._l2s(list(res_range)),
                              str(self.pdb_offset),str(self.bead_size),
                              str(self.em_residues_per_gaussian),

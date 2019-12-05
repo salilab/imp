@@ -154,18 +154,19 @@ _ihm_multi_state_model_group_link.model_group_id
         self.assertRaises(ValueError, po.add_component_sequence, state,
                           "foo", "AAA")
 
-    def test_asym_units(self):
-        """Test assigning asym units and entities"""
+    def test_asym_units_pmi1(self):
+        """Test assigning asym units and entities, PMI1 style"""
+        # In PMI1 multiple copies have different component names
         po = DummyPO(EmptyObject())
         state1 = po._add_state(EmptyObject())
         state2 = po._add_state(EmptyObject())
-        for state, c, seq in ((state1, "foo", "AAA"), (state2, "bar", "AAA"),
+        for state, c, seq in ((state1, "foo", "AAA"), (state1, "bar", "AAA"),
                               (state2, "foo", "AAA"),
                               (state1, "baz", "AA")):
             po.create_component(state, c, True)
             po.add_component_sequence(state, c, seq)
         self.assertEqual(len(po.system.entities), 2)
-        self.assertEqual(po.system.asym_units[0].details, 'foo')
+        self.assertEqual(po.system.entities[0].description, 'foo')
         self.assertEqual(''.join(x.code for x in
                                  po.system.entities[0].sequence), 'AAA')
         self.assertEqual(''.join(x.code for x in
@@ -174,6 +175,31 @@ _ihm_multi_state_model_group_link.model_group_id
         self.assertEqual(po.system.asym_units[0].details, 'foo')
         self.assertEqual(po.system.asym_units[1].details, 'bar')
         self.assertEqual(po.system.asym_units[2].details, 'baz')
+
+    def test_asym_units_pmi2(self):
+        """Test assigning asym units and entities, PMI2 style"""
+        # In PMI2 multiple copies have the same component name, different asym
+        # names
+        po = DummyPO(EmptyObject())
+        state1 = po._add_state(EmptyObject())
+        state2 = po._add_state(EmptyObject())
+        for state, c, asym, seq in ((state1, "foo", "foo.1", "AAA"),
+                                    (state1, "foo", "foo.2", "AAA"),
+                                    (state2, "foo", "foo.2", "AAA"),
+                                    (state1, "baz", "baz.1", "AA")):
+            po.create_component(state, c, True, asym_name=asym)
+            po.add_component_sequence(state, c, seq, asym_name=asym)
+        self.assertEqual(len(po.system.entities), 2)
+        self.assertEqual(po.system.entities[0].description, 'foo')
+        self.assertEqual(po.system.entities[1].description, 'baz')
+        self.assertEqual(''.join(x.code for x in
+                                 po.system.entities[0].sequence), 'AAA')
+        self.assertEqual(''.join(x.code for x in
+                                 po.system.entities[1].sequence), 'AA')
+        self.assertEqual(len(po.system.asym_units), 3)
+        self.assertEqual(po.system.asym_units[0].details, 'foo.1')
+        self.assertEqual(po.system.asym_units[1].details, 'foo.2')
+        self.assertEqual(po.system.asym_units[2].details, 'baz.1')
 
     def test_entity_creation(self):
         """Test creation of Entity objects"""
@@ -229,6 +255,30 @@ _ihm_multi_state_model_group_link.model_group_id
         h1 = IMP.atom.get_by_type(nup85_2.hier, IMP.atom.RESIDUE_TYPE)
         self.assertEqual(mapper[h1[0]]._id, 'B')
 
+    def test_rna_dna(self):
+        """Test handling of RNA/DNA sequences"""
+        m = IMP.Model()
+        po = DummyPO(None)
+        s = IMP.pmi.topology.System(m)
+        s.add_protocol_output(po)
+        st1 = s.create_state()
+        rna = st1.create_molecule("RNA1", "ACGU", "A",
+                                  alphabet=IMP.pmi.alphabets.rna)
+        rna.add_representation(resolutions=[1])
+        dna = st1.create_molecule("DNA1", "ACGT", "B",
+                                  alphabet=IMP.pmi.alphabets.dna)
+        dna.add_representation(resolutions=[1])
+
+        hier = s.build()
+        self.assertEqual(len(po.system.entities), 2)
+        self.assertEqual(len(po.system.entities[0].sequence), 4)
+        for r in po.system.entities[0].sequence:
+            self.assertIsInstance(r, ihm.RNAChemComp)
+        self.assertEqual(len(po.system.entities[1].sequence), 4)
+        for r in po.system.entities[1].sequence:
+            self.assertIsInstance(r, ihm.DNAChemComp)
+        self.assertEqual(len(po.system.asym_units), 2)
+
     def test_component_mapper(self):
         """Test ComponentMapper class"""
         m = IMP.Model()
@@ -252,9 +302,11 @@ _ihm_multi_state_model_group_link.model_group_id
         """Test _EntityMapper class"""
         system = ihm.System()
         c = IMP.pmi.mmcif._EntityMapper(system)
-        c.add('foo', 'MELS', 0)
-        c.add('bar', 'SELM', 0)
-        c.add('foo_2', 'MELS', 0)
+        c.add('foo', 'MELS', 0, alphabet=None)
+        c.add('bar', 'SELM', 0, alphabet=IMP.pmi.alphabets.amino_acid)
+        c.add('foo_2', 'MELS', 0, alphabet=None)
+        self.assertRaises(TypeError, c.add, 'baz', 'MELSXX', 0,
+                          alphabet='garbage')
         self.assertEqual(len(system.entities), 2)
         self.assertIs(c['foo'], c['foo_2'])
         self.assertIsNot(c['foo'], c['bar'])

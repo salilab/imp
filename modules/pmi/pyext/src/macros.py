@@ -9,6 +9,7 @@ import IMP.pmi.samplers
 import IMP.pmi.output
 import IMP.pmi.analysis
 import IMP.pmi.io
+import IMP.pmi.alphabets
 import IMP.rmf
 import IMP.isd
 import IMP.pmi.dof
@@ -593,6 +594,10 @@ class BuildSystem(object):
     All molecules are set up by the component name, but split into rigid bodies
     as requested.
     """
+
+    _alphabets = {'DNA': IMP.pmi.alphabets.dna,
+                  'RNA': IMP.pmi.alphabets.rna}
+
     def __init__(self,
                  model,
                  sequence_connectivity_scale=4.0,
@@ -643,14 +648,14 @@ class BuildSystem(object):
                 else:
                     chain_id = chain_ids[numchain]
                 if nc==0:
-                    is_nucleic=False
+                    alphabet = IMP.pmi.alphabets.amino_acid
                     fasta_flag=copy[0].fasta_flag
-                    if fasta_flag == "RNA" or fasta_flag == "DNA": is_nucleic=True
+                    if fasta_flag in self._alphabets:
+                        alphabet = self._alphabets[fasta_flag]
                     seq = IMP.pmi.topology.Sequences(copy[0].fasta_file, fasta_name_map)[copy[0].fasta_id]
                     print("BuildSystem.add_state: molecule %s sequence has %s residues" % (molname,len(seq)))
-                    orig_mol = state.create_molecule(molname,
-                                                     seq,
-                                                     chain_id,is_nucleic)
+                    orig_mol = state.create_molecule(molname, seq, chain_id,
+                                                     alphabet=alphabet)
                     mol = orig_mol
                     numchain+=1
                 else:

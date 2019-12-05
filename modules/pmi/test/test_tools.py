@@ -722,7 +722,8 @@ class Tests(IMP.test.TestCase):
                               'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S',
                               'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'UNK': 'X'}
 
-        tto=IMP.pmi.tools.ThreeToOneConverter(is_nucleic=False)
+        with IMP.allow_deprecated():
+            tto=IMP.pmi.tools.ThreeToOneConverter(is_nucleic=False)
 
         for key in threetoone:
             self.assertEqual(threetoone[key],tto[key])
@@ -737,7 +738,8 @@ class Tests(IMP.test.TestCase):
         threetoone = {'ADE': 'A', 'URA': 'U', 'CYT': 'C', 'GUA': 'G',
                       'THY': 'T', 'UNK': 'X'}
 
-        tto = IMP.pmi.tools.ThreeToOneConverter(is_nucleic=True)
+        with IMP.allow_deprecated():
+            tto = IMP.pmi.tools.ThreeToOneConverter(is_nucleic=True)
 
         for key in threetoone:
             self.assertEqual(threetoone[key], tto[key])

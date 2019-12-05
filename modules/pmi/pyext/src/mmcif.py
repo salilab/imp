@@ -18,6 +18,7 @@ import IMP.atom
 import IMP.em
 import IMP.isd
 import IMP.pmi.tools
+import IMP.pmi.alphabets
 from IMP.pmi.tools import OrderedDict
 import IMP.pmi.output
 import IMP.mmcif.data
@@ -992,6 +993,13 @@ class _SimpleEnsemble(ihm.model.Ensemble):
         self.densities.append(den)
 
 
+class _CustomDNAAlphabet(object):
+    """Custom DNA alphabet that maps A,C,G,T (rather than DA,DC,DG,DT
+       as in python-ihm)"""
+    _comps = dict([cc.code_canonical, cc]
+                  for cc in ihm.DNAAlphabet._comps.values())
+
+
 class _EntityMapper(dict):
     """Handle mapping from IMP components (without copy number) to CIF entities.
        Multiple components may map to the same entity if they share sequence."""
@@ -1001,7 +1009,21 @@ class _EntityMapper(dict):
         self._entities = []
         self.system = system
 
-    def add(self, component_name, sequence, offset):
+    def _get_alphabet(self, alphabet):
+        """Map a PMI alphabet to an IHM alphabet"""
+        # todo: we should probably ignore alphabets entirely and use
+        # residue types directly (e.g. we shouldn't compare one-letter
+        # code sequence to determine if an Entity is unique)
+        alphabet_map = {None: ihm.LPeptideAlphabet,
+                        IMP.pmi.alphabets.amino_acid: ihm.LPeptideAlphabet,
+                        IMP.pmi.alphabets.rna: ihm.RNAAlphabet,
+                        IMP.pmi.alphabets.dna: _CustomDNAAlphabet}
+        if alphabet in alphabet_map:
+            return alphabet_map[alphabet]
+        else:
+            raise TypeError("Don't know how to handle %s" % alphabet)
+
+    def add(self, component_name, sequence, offset, alphabet):
         def entity_seq(sequence):
             # Map X to UNK
             if 'X' in sequence:
@@ -1013,7 +1035,8 @@ class _EntityMapper(dict):
             # as the description of the entity
             d = component_name.split("@")[0].split(".")[0]
             entity = Entity(entity_seq(sequence), description=d,
-                            pmi_offset=offset)
+                            pmi_offset=offset,
+                            alphabet=self._get_alphabet(alphabet))
             self.system.entities.append(entity)
             self._sequence_dict[sequence] = entity
         self[component_name] = self._sequence_dict[sequence]
@@ -1270,12 +1293,14 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self._all_components[name] = None
         if modeled:
             state.all_modeled_components.append(name)
-            if new_comp:
+            if asym_name not in self.asym_units:
                 # assign asym once we get sequence
                 self.asym_units[asym_name] = None
+            if new_comp:
                 self.all_modeled_components.append(name)
 
-    def add_component_sequence(self, state, name, seq, asym_name=None):
+    def add_component_sequence(self, state, name, seq, asym_name=None,
+                               alphabet=None):
         if asym_name is None:
             asym_name = name
         def get_offset(seq):
@@ -1289,7 +1314,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                 raise ValueError("Sequence mismatch for component %s" % name)
         else:
             self.sequence_dict[name] = seq
-            self.entities.add(name, seq, offset)
+            self.entities.add(name, seq, offset, alphabet)
         if asym_name in self.asym_units:
             if self.asym_units[asym_name] is None:
                 # Set up a new asymmetric unit for this component

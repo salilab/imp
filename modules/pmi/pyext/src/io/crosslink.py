@@ -8,6 +8,7 @@ from __future__ import print_function
 import IMP
 import IMP.pmi
 import IMP.pmi.output
+import IMP.pmi.alphabets
 import IMP.atom
 import IMP.core
 import IMP.algebra
@@ -807,11 +808,12 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
     def _match_xlinks(self, prot_name, res_index, aa_tuple):
         # returns Boolean whether given aa matches a position in the fasta file
         # cross link files usually start counting at 1 and not 0; therefore subtract -1 to compare with fasta
-        amino_dict = IMP.pmi.tools.ThreeToOneConverter()
+        amino_dict = IMP.pmi.alphabets.amino_acid
         res_index -= 1
         for amino_acid in aa_tuple:
             if len(amino_acid) == 3:
-                amino_acid = amino_dict[amino_acid.upper()]
+                amino_acid = amino_dict.get_one_letter_code_from_residue_type(
+                                                             amino_acid.upper())
             if prot_name in self.fasta_seq.sequences:
                 seq = self.fasta_seq.sequences[prot_name]
                 # if we are looking at the first amino acid in a given sequence always return a match
