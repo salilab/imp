@@ -4,6 +4,9 @@
 // complaining that graph edge iterators aren't ForwardIterators) as per
 // https://github.com/boostorg/graph/issues/175#issuecomment-539235011
 
+// The issue also occurs with boost 1.72, but since the relevant header in
+// Boost didn't change since 1.71, we use the same workaround.
+
 
 // Copyright 2004 The Trustees of Indiana University.
 
