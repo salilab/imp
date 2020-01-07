@@ -19,7 +19,7 @@ IMPEM_BEGIN_NAMESPACE
    The class creates and stores a conversion of density map into
    a distance transform. The envelope voxels (that are determined
    using density_threshold) are zero distance. The rest of the voxels
-   hold the distance to the closest envelop voxel. Positive distance
+   hold the distance to the closest envelope voxel. Positive distance
    means inside the object, negative - outside.
  */
 class IMPEMEXPORT MapDistanceTransform : public IMP::em::DensityMap {
