@@ -43,7 +43,7 @@ EnvelopeScore::EnvelopeScore(const MapDistanceTransform* mdt)
 }
 
 bool EnvelopeScore::is_penetrating(
-    const std::vector<IMP::algebra::Vector3D>& points,
+    const IMP::algebra::Vector3Ds& points,
     float penetration_thr) const {
   for (unsigned int i = 0; i < points.size(); i++) {
     float dist = mdt_->get_distance_from_envelope(points[i]);
@@ -53,7 +53,7 @@ bool EnvelopeScore::is_penetrating(
 }
 
 bool EnvelopeScore::is_penetrating(
-    const std::vector<IMP::algebra::Vector3D>& points,
+    const IMP::algebra::Vector3Ds& points,
     const IMP::algebra::Transformation3D& trans, float penetration_thr) const {
   for (unsigned int i = 0; i < points.size(); i++) {
     float dist = mdt_->get_distance_from_envelope(trans * points[i]);
@@ -62,7 +62,7 @@ bool EnvelopeScore::is_penetrating(
   return false;
 }
 
-double EnvelopeScore::score(const std::vector<IMP::algebra::Vector3D>& points)
+double EnvelopeScore::score(const IMP::algebra::Vector3Ds& points)
     const {
   // count the number of points in each distance shell
   std::vector<int> points_in_ranges(weights_.size(), 0);
@@ -79,9 +79,9 @@ double EnvelopeScore::score(const std::vector<IMP::algebra::Vector3D>& points)
   return (double)score / points.size();
 }
 
-double EnvelopeScore::score(const std::vector<IMP::algebra::Vector3D>& points,
+double EnvelopeScore::score(const IMP::algebra::Vector3Ds& points,
                             const IMP::algebra::Transformation3D& trans) const {
-  std::vector<IMP::algebra::Vector3D> transformed_points(points.size());
+  IMP::algebra::Vector3Ds transformed_points(points.size());
   for (unsigned int i = 0; i < points.size(); i++)
     transformed_points[i] = trans * points[i];
   return score(transformed_points);

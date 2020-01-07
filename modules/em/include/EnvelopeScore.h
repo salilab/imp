@@ -32,7 +32,7 @@ class IMPEMEXPORT EnvelopeScore : public IMP::Object {
       the allowed penetration distance. Recommended value is map
       resolution.
   */
-  bool is_penetrating(const std::vector<IMP::algebra::Vector3D>& points,
+  bool is_penetrating(const IMP::algebra::Vector3Ds& points,
                       float penetration_thr) const;
 
   /** same as above
@@ -41,7 +41,7 @@ class IMPEMEXPORT EnvelopeScore : public IMP::Object {
       checking for penetrations
       \param[in] penetration_thr
   */
-  bool is_penetrating(const std::vector<IMP::algebra::Vector3D>& points,
+  bool is_penetrating(const IMP::algebra::Vector3Ds& points,
                       const IMP::algebra::Transformation3D& trans,
                       float penetration_thr) const;
 
@@ -50,13 +50,13 @@ class IMPEMEXPORT EnvelopeScore : public IMP::Object {
       the score awards points that fall into the envelope
       and penalizes for points outside the envelope
   */
-  double score(const std::vector<IMP::algebra::Vector3D>& points) const;
+  double score(const IMP::algebra::Vector3Ds& points) const;
 
   /** same as above
       \param[in] points
       \param[in] trans apply this transformation on points before scoring
   */
-  double score(const std::vector<IMP::algebra::Vector3D>& points,
+  double score(const IMP::algebra::Vector3Ds& points,
                const IMP::algebra::Transformation3D& trans) const;
 
   // methods required by Object

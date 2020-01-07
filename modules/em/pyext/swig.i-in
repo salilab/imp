@@ -24,6 +24,8 @@ IMP_SWIG_OBJECT(IMP::em, XplorReaderWriter, XplorReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, CoarseCC, CoarseCCs);
 IMP_SWIG_OBJECT(IMP::em, CoarseCCatIntervals, CoarseCCatIntervalsList);
 IMP_SWIG_VALUE(IMP::em, FittingSolutions, FittingSolutionsList);
+IMP_SWIG_OBJECT(IMP::em, MapDistanceTransform, MapDistanceTransforms);
+IMP_SWIG_OBJECT(IMP::em, EnvelopeScore, EnvelopeScores);
 
 /* Since DensityHeaders are not values or Objects, we must ensure that whenever
    pointers to them are returned to Python, the object that manages the header's
@@ -88,6 +90,8 @@ namespace IMP {
 %include "IMP/em/EnvelopePenetrationRestraint.h"
 %include "IMP/em/PCAFitRestraint.h"
 %include "IMP/em/EnvelopeFitRestraint.h"
+%include "IMP/em/MapDistanceTransform.h"
+%include "IMP/em/EnvelopeScore.h"
 
 /* Allow runtime casting of Restraint* objects to FitRestraint* */
 namespace IMP {
