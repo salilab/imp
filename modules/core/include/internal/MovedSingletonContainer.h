@@ -3,7 +3,7 @@
  *  \brief Keep track of the maximum change of a set of attributes
  *         for e.g., incremental updateing of close pair containers.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_INTERNAL_MOVED_SINGLETON_CONTAINER_H

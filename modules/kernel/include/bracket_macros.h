@@ -2,7 +2,7 @@
  *  \file IMP/bracket_macros.h
  *  \brief Macros to handle array indexing.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

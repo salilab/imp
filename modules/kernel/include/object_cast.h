@@ -2,7 +2,7 @@
  *  \file IMP/object_cast.h
  *  \brief A shared base class to help in debugging and things.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

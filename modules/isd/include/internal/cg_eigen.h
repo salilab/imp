@@ -1,6 +1,6 @@
 /** testing of the Eigen CG. tests return true when they succeed.
  *
- * Copyright 2007-2019 IMP Inventors. All rights reserved.
+ * Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_INTERNAL_CG_EIGEN_H

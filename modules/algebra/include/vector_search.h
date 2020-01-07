@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/vector_search.h   \brief Functions to search over vectors.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

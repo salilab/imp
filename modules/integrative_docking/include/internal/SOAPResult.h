@@ -3,7 +3,7 @@
  * \brief store SOAP scores for a docking model
  *
  * \authors Dina Schneidman
- * Copyright 2007-2019 IMP Inventors. All rights reserved.
+ * Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

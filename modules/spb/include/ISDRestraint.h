@@ -3,7 +3,7 @@
  *  \brief A lognormal restraint that uses the ISPA model to model NOE-derived
  *  distance fit.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file writers.h
  *  \brief Base class for writing geometry to a file
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_INTERNAL_WRITERS_H

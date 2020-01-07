@@ -5,7 +5,7 @@
  *         HierarchySaveLink - the name is misleading and may be
  *         changed to atom_hierarchy_links.h in future.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

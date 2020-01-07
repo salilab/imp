@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Line3D.h
  *  \brief Simple implementation of lines in 3D
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_LINE_3D_H

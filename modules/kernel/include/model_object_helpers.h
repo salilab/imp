@@ -2,7 +2,7 @@
  *  \file IMP/model_object_helpers.h
  *  \brief Classes used in the construction of ModelObjects
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_MODEL_OBJECT_HELPERS_H

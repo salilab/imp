@@ -1,7 +1,7 @@
 /**
  *  \file  create_single_particle_images.cpp
  *  \brief Generation of projections from models or density maps or pure noisy images
- *  Copyright 2007-2019 IMP Inventors. All rights reserved. 
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved. 
 */
 
 

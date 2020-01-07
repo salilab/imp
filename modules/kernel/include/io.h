@@ -2,7 +2,7 @@
  *  \file IMP/io.h
  *  \brief Write/read the state of the particles to/from a buffer in memory.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

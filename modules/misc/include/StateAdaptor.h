@@ -2,7 +2,7 @@
  *  \file IMP/misc/StateAdaptor.h
  *  \brief XXXXXXXXXXXXXX
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMISC_STATE_ADAPTOR_H

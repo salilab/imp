@@ -2,7 +2,7 @@
  *  \file IMP/container/ClassnameContainerStatistics.h
  *  \brief A container for Classnames.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLASSNAME_CONTAINER_STATISTICS_H

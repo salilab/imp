@@ -2,7 +2,7 @@
  *  \file IMP/example/ExampleObject.h
  *  \brief An example showing how to make a simple ref counted object
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPEXAMPLE_EXAMPLE_OBJECT_H

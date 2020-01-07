@@ -2,7 +2,7 @@
  *  \file IMP/core/GenericAttributeSingletonScore.h
  *  \brief A score based on the unmodified value of an attribute.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_GENERIC_ATTRIBUTE_SINGLETON_SCORE_H

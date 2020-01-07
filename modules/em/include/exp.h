@@ -2,7 +2,7 @@
  *  \file IMP/em/exp.h
  *  \brief An approximation of the exponential function.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

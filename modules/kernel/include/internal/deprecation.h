@@ -2,7 +2,7 @@
  *  \file internal/deprecation.h
  *  \brief Macros to mark a class as deprecated.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

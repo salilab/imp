@@ -2,7 +2,7 @@ Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: imp
 Source: https://integrativemodeling.org/
 
-Copyright: 2007-2019 IMP Inventors
+Copyright: 2007-2020 IMP Inventors
 License: LGPL-2+
  This package is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by

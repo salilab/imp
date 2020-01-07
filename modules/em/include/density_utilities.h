@@ -2,7 +2,7 @@
  *  \file IMP/em/density_utilities.h
  *  \brief density map manipulations
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

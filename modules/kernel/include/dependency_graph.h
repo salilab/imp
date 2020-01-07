@@ -2,7 +2,7 @@
  *  \file IMP/dependency_graph.h
  *  \brief Build dependency graphs on models.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
