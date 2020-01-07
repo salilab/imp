@@ -30,6 +30,19 @@ def resnums2str(res):
             ret+=', '
     return ret
 
+
+def _select_ca_or_p(hiers, **kwargs):
+    """Select all CA (amino acids) or P (nucleic acids) as appropriate"""
+    sel_p = IMP.atom.Selection(hiers, atom_type=IMP.atom.AT_P, **kwargs)
+    ps = sel_p.get_selected_particles()
+    if ps:
+        # detected nucleotides. Selecting phosphorous instead of CA
+        return ps
+    else:
+        sel = IMP.atom.Selection(hiers, atom_type=IMP.atom.AT_CA, **kwargs)
+        return sel.get_selected_particles()
+
+
 def get_structure(model,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,ca_only=False):
     """read a structure from a PDB file and return a list of residues
     @param model The IMP model
@@ -64,24 +77,17 @@ def get_structure(model,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,c
         mh = IMP.atom.Selection(mhs[model_num],chain=chain_id,with_representation=True)
 
     if res_range==[] or res_range is None:
-        sel = IMP.atom.Selection(mh,chain=chain_id,atom_type=IMP.atom.AtomType('CA'))
-        sel_p = IMP.atom.Selection(mh,chain=chain_id,atom_type=IMP.atom.AT_P)
+        ps = _select_ca_or_p(mh, chain=chain_id)
     else:
         start = res_range[0]
         end = res_range[1]
         if end=="END":
             end = IMP.atom.Residue(mh.get_children()[0].get_children()[-1]).get_index()
-        sel = IMP.atom.Selection(mh,chain=chain_id,residue_indexes=range(start,end+1),
-                                 atom_type=IMP.atom.AtomType('CA'))
-        sel_p = IMP.atom.Selection(mh,chain=chain_id,residue_indexes=range(start,end+1),
-                                 atom_type=IMP.atom.AT_P)
+        ps = _select_ca_or_p(mh, chain=chain_id,
+                             residue_indexes=range(start,end+1))
     ret = []
 
-    if sel_p.get_selected_particles():
-        "WARNING: detected nucleotides. Selecting phosphorous instead of CA"
-        sel=sel_p
-
-    for p in sel.get_selected_particles():
+    for p in ps:
         res = IMP.atom.Residue(IMP.atom.Atom(p).get_parent())
         res.set_index(res.get_index() + offset)
         ret.append(res)
