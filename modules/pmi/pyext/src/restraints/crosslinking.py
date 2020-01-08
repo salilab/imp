@@ -136,9 +136,18 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                 r2 = xl[self.CrossLinkDataBase.residue2_key]
                 c2 = xl[self.CrossLinkDataBase.protein2_key]
 
+                name1 = c1
+                name2 = c2
+                copy1 = 0
+                copy2 = 0
+                if '.' in c1:
+                    name1,copy1 = c1.split('.')
+                if '.' in c2:
+                    name2,copy2 = c2.split('.')
+
                 # todo: check that offset is handled correctly
-                ex_xls = [(p[0].add_experimental_cross_link(r1, c1, r2, c2,
-                                                            group), group)
+                ex_xls = [(p[0].add_experimental_cross_link(
+                                   r1, name1, r2, name2, group), group)
                           for p, group in
                                  zip(IMP.pmi.tools._all_protocol_outputs(
                                              None, root_hier),
@@ -151,14 +160,6 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                     xl[self.CrossLinkDataBase.state_key]=nstate
                     xl[self.CrossLinkDataBase.data_set_name_key]=self.label
 
-                    name1 = c1
-                    name2 = c2
-                    copy1 = 0
-                    copy2 = 0
-                    if '.' in c1:
-                        name1,copy1 = c1.split('.')
-                    if '.' in c2:
-                        name2,copy2 = c2.split('.')
                     ps1 = IMP.atom.Selection(root_hier,
                                              state_index=nstate,
                                              molecule=name1,
