@@ -541,6 +541,11 @@ class IMPCOREEXPORT RigidBody : public XYZ {
   //! their local coordinates and this rigid body's reference frame
   void update_members();
 
+  //! Update radius after making changes to members
+  void update_radius() {
+    on_change();
+  }
+
   //! Get the derivatives of the quaternion
   algebra::VectorD<4> get_rotational_derivatives() const;
 

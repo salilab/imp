@@ -226,7 +226,9 @@ void HierarchyLoadRigidBodies::load(RMF::FileConstHandle fh, Model *m) {
   /* Make sure that the global coordinates of any nested rigid bodies are
      set from their parents */
   IMP_FOREACH(Pair pp, global_) {
-    core::RigidBody(m, pp.second).update_members();
+    core::RigidBody rb(m, pp.second);
+    rb.update_members();
+    rb.update_radius();
   }
 }
 

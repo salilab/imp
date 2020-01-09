@@ -500,6 +500,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(
     IMP_LOG_TERSE("Storing tree at " << mykey << std::endl);
     rb.get_model()->add_cache_attribute(mykey, rb.get_particle_index(),
                                         h.get());
+    add_rigid_body_cache_key(mykey);
   }
   IMP_CHECK_OBJECT(h);
   IMP_IF_CHECK(USAGE_AND_INTERNAL) { h->validate(rb.get_model()); }
