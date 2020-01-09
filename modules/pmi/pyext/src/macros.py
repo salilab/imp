@@ -535,7 +535,7 @@ class ReplicaExchange0(object):
                 save_frame=(score_perc*100.0<=75.0)
 
             # Ensure model is updated before saving output files
-            if save_frame or not self.test_mode:
+            if save_frame and not self.test_mode:
                 self.model.update()
 
             if save_frame:

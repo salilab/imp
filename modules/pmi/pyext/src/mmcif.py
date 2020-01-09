@@ -645,6 +645,8 @@ class _Model(ihm.model.Model):
         o = self.output = IMP.pmi.output.Output(atomistic=True)
         name = 'cif-output'
         self.m = prot.get_model()
+        # Make sure all rigid body members have the correct global coordinates
+        self.m.update()
         o.dictionary_pdbs[name] = prot
         o._init_dictchain(name, prot, multichar_chain=True)
         (particle_infos_for_pdb,
