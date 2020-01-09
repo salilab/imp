@@ -91,7 +91,7 @@ class IMPCOREEXPORT RigidBody : public XYZ {
                            const algebra::ReferenceFrame3D &rf);
 
   //! do updates to rigid body upon changes in its members
-  //! such as udpating the rigid body radius based on the
+  //! such as updating the rigid body radius based on the
   //! point/sphere distance of all of its point/sphere members
   //! from its origin
   void on_change();
