@@ -48,7 +48,7 @@ namespace {
 
   void dlopen_libmpi() {
 #if defined(OMPI_MAJOR_VERSION) && !defined(_MSC_VER)
-#if OMPI_MAJOR_VERSION == 3
+#if OMPI_MAJOR_VERSION == 3 || OMPI_MAJOR_VERSION == 4
     ompi_dlopen("40");
 #elif OMPI_MAJOR_VERSION == 2
     ompi_dlopen("20");
