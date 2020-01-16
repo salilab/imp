@@ -223,17 +223,17 @@ void HierarchyLoadRigidBodies::load(RMF::FileConstHandle fh, Model *m) {
     core::RigidBodyMember(m, pp.second)
         .set_internal_transformation(rf.get_transformation_to());
   }
+}
+
+void HierarchyLoadRigidBodies::update_rigid_bodies(RMF::FileConstHandle,
+                                                   Model *m) {
   /* Make sure that the global coordinates of any nested rigid bodies are
      set from their parents */
   IMP_FOREACH(Pair pp, global_) {
     core::RigidBody rb(m, pp.second);
     rb.update_members();
-    rb.update_radius();
   }
-}
 
-void HierarchyLoadRigidBodies::update_rigid_bodies(RMF::FileConstHandle,
-                                                   Model *m) {
   // backwards compat
   typedef std::pair<const int, RB> P;
   IMP_FOREACH(P & pp, rigid_body_compositions_) {
