@@ -4,6 +4,7 @@ from collections import namedtuple
 import unittest
 import gzip
 import sys
+import operator
 import warnings
 if sys.version_info[0] >= 3:
     from io import StringIO
@@ -1719,13 +1720,18 @@ _ihm_non_poly_feature.atom_id
 4 4 3 . HEM .
 #
 loop_
+_ihm_pseudo_site.id
+_ihm_pseudo_site.Cartn_x
+_ihm_pseudo_site.Cartn_y
+_ihm_pseudo_site.Cartn_z
+_ihm_pseudo_site.radius
+_ihm_pseudo_site.description
+55 10.000 20.000 30.000 4.0 'centroid'
+#
+loop_
 _ihm_pseudo_site_feature.feature_id
-_ihm_pseudo_site_feature.Cartn_x
-_ihm_pseudo_site_feature.Cartn_y
-_ihm_pseudo_site_feature.Cartn_z
-_ihm_pseudo_site_feature.radius
-_ihm_pseudo_site_feature.description
-5 10.000 20.000 30.000 4.0 'centroid'
+_ihm_pseudo_site_feature.pseudo_site_id
+5 55
 """
         rsr = """
 loop_
@@ -1810,11 +1816,11 @@ _ihm_derived_distance_restraint.dataset_list_id
             self.assertIsNone(r4.feature2.atoms[1].residue.asym)
             self.assertIsInstance(r4.feature1,
                                   ihm.restraint.PseudoSiteFeature)
-            self.assertAlmostEqual(r4.feature1.x, 10.0, places=1)
-            self.assertAlmostEqual(r4.feature1.y, 20.0, places=1)
-            self.assertAlmostEqual(r4.feature1.z, 30.0, places=1)
-            self.assertAlmostEqual(r4.feature1.radius, 4.0, places=1)
-            self.assertEqual(r4.feature1.description, 'centroid')
+            self.assertAlmostEqual(r4.feature1.site.x, 10.0, places=1)
+            self.assertAlmostEqual(r4.feature1.site.y, 20.0, places=1)
+            self.assertAlmostEqual(r4.feature1.site.z, 30.0, places=1)
+            self.assertAlmostEqual(r4.feature1.site.radius, 4.0, places=1)
+            self.assertEqual(r4.feature1.site.description, 'centroid')
 
     def test_sphere_handler(self):
         """Test SphereHandler"""
@@ -2280,6 +2286,15 @@ _ihm_cross_link_list.linker_type
 _ihm_cross_link_list.dataset_list_id
 1 1 foo 1 2 THR foo 1 3 CYS DSS 97
 2 2 foo 1 2 THR bar 2 3 PHE DSS 97
+#
+loop_
+_ihm_cross_link_pseudo_site.id
+_ihm_cross_link_pseudo_site.restraint_id
+_ihm_cross_link_pseudo_site.cross_link_partner
+_ihm_cross_link_pseudo_site.pseudo_site_id
+_ihm_cross_link_pseudo_site.model_id
+1 2 1 44 .
+2 2 2 88 99
 """
         xl_rsr = """
 loop_
@@ -2311,7 +2326,7 @@ _ihm_cross_link_restraint.sigma_2
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
             r, = s.restraints
-            xl1, xl2 = r.cross_links
+            xl1, xl2 = sorted(r.cross_links, key=operator.attrgetter('_id'))
             self.assertIsInstance(xl1, ihm.restraint.ResidueCrossLink)
             self.assertEqual(xl1.experimental_cross_link.residue1.seq_id, 2)
             self.assertEqual(xl1.experimental_cross_link.residue2.seq_id, 3)
@@ -2324,6 +2339,8 @@ _ihm_cross_link_restraint.sigma_2
             self.assertAlmostEqual(xl1.psi, 0.500, places=1)
             self.assertAlmostEqual(xl1.sigma1, 1.000, places=1)
             self.assertAlmostEqual(xl1.sigma2, 2.000, places=1)
+            self.assertIsNone(xl1.pseudo1)
+            self.assertIsNone(xl1.pseudo2)
 
             self.assertIsInstance(xl2, ihm.restraint.AtomCrossLink)
             self.assertEqual(xl2.fits, {})
@@ -2335,6 +2352,10 @@ _ihm_cross_link_restraint.sigma_2
             self.assertIsNone(xl2.psi)
             self.assertIsNone(xl2.sigma1)
             self.assertIsNone(xl2.sigma2)
+            self.assertEqual(xl2.pseudo1.site._id, '44')
+            self.assertIsNone(xl2.pseudo1.model)
+            self.assertEqual(xl2.pseudo2.site._id, '88')
+            self.assertEqual(xl2.pseudo2.model._id, '99')
 
     def test_cross_link_result_handler(self):
         """Test CrossLinkResultHandler"""

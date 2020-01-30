@@ -1,5 +1,16 @@
 HEAD
 ====
+ - A cross-link can now use pseudo sites to represent one or both ends of the
+   link. The new :class:`ihm.restraint.CrossLinkPseudoSite` object is used
+   when the end of the cross-link is not represented in the model but its
+   position is known (e.g. it may have been approximated given the position
+   of nearby residues).
+ - :class:`ihm.restraint.PseudoSiteFeature` now references an underlying
+   :class:`ihm.restraint.PseudoSite`, allowing a single pseudo site to be
+   shared between a feature and a cross-link if desired.
+
+0.13 - 2019-11-14
+=================
  - :func:`ihm.reader.read` has a new optional ``reject_old_file`` argument.
    If set, it will raise an exception if asked to read a file that conforms
    to too old a version of the IHM extension dictionary.

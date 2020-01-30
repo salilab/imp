@@ -35,6 +35,7 @@ def _make_new_entity():
     e.sequence = list(e.sequence)
     return e
 
+
 def _get_vector3(d, key):
     """Return a 3D vector (as a list) from d[key+[1..3]]
        or leave as is if None or ihm.unknown"""
@@ -42,7 +43,8 @@ def _get_vector3(d, key):
         return d[key+'1']
     else:
         # Assume if one element is present, all are
-        return [float(d[key+"%d" % k]) for k in (1,2,3)]
+        return [float(d[key+"%d" % k]) for k in (1, 2, 3)]
+
 
 def _get_matrix33(d, key):
     """Return a 3x3 matrix (as a list of lists) from d[key+[1..3][1..3]]]
@@ -51,8 +53,9 @@ def _get_matrix33(d, key):
         return d[key+'11']
     else:
         # Assume if one element is present, all are
-        return [[float(d[key+"%d%d" % (i,j)]) for j in (1,2,3)]
-                for i in (1,2,3)]
+        return [[float(d[key+"%d%d" % (i, j)]) for j in (1, 2, 3)]
+                for i in (1, 2, 3)]
+
 
 class IDMapper(object):
     """Utility class to handle mapping from mmCIF IDs to Python objects.
@@ -136,7 +139,7 @@ class _ChemCompIDMapper(IDMapper):
         else:
             # Assign nonpolymer class based on the ID
             if newcls is ihm.NonPolymerChemComp or newcls is ihm.WaterChemComp:
-                newcls = ihm.WaterChemComp if objid=='HOH' \
+                newcls = ihm.WaterChemComp if objid == 'HOH' \
                                            else ihm.NonPolymerChemComp
             return super(_ChemCompIDMapper, self).get_by_id(objid, newcls)
 
@@ -206,8 +209,8 @@ class _FeatureIDMapper(IDMapper):
             # Make Feature base class (takes no args)
             return self._cls()
         elif newcls is ihm.restraint.PseudoSiteFeature:
-            # Pseudo site constructor needs x, y, z coordinates
-            return newcls(None, None, None)
+            # Pseudo site constructor needs "site" argument
+            return newcls(None)
         else:
             # Make subclass (takes one ranges/atoms argument)
             return newcls([])
@@ -225,9 +228,8 @@ class _FeatureIDMapper(IDMapper):
            and not hasattr(obj, 'objs'):
             obj.objs = []
         elif newcls is ihm.restraint.PseudoSiteFeature \
-           and not hasattr(obj, 'x'):
-            obj.x = obj.y = obj.z = None
-            obj.radius = obj.description = None
+           and not hasattr(obj, 'site'):
+            obj.site = None
 
 
 class _GeometryIDMapper(IDMapper):
@@ -374,7 +376,6 @@ class _XLRestraintMapper(object):
         return self._seen_rsrs.values()
 
 
-
 class SystemReader(object):
     """Utility class to track global information for a :class:`ihm.System`
        being read from a file, such as the mapping from IDs to objects
@@ -426,12 +427,12 @@ class SystemReader(object):
 
         #: Mapping from ID to :class:`ihm.location.FileLocation` objects
         self.external_files = IDMapper(self.system.locations,
-                                 ihm.location.FileLocation,
-                                 '/') # should always exist?
+                                       ihm.location.FileLocation,
+                                       '/')  # should always exist?
 
         #: Mapping from ID to :class:`ihm.location.DatabaseLocation` objects
         self.db_locations = IDMapper(self.system.locations,
-                                 ihm.location.DatabaseLocation, None, None)
+                                     ihm.location.DatabaseLocation, None, None)
 
         #: Mapping from ID to :class:`ihm.dataset.Dataset` objects
         self.datasets = IDMapper(self.system.orphan_datasets,
@@ -439,15 +440,16 @@ class SystemReader(object):
 
         #: Mapping from ID to :class:`ihm.dataset.DatasetGroup` objects
         self.dataset_groups = IDMapper(self.system.orphan_dataset_groups,
-                                  ihm.dataset.DatasetGroup)
+                                       ihm.dataset.DatasetGroup)
 
         #: Mapping from ID to :class:`ihm.startmodel.StartingModel` objects
         self.starting_models = IDMapper(self.system.orphan_starting_models,
-                                  starting_model_class, *(None,)*3)
+                                        starting_model_class, *(None,)*3)
 
-        #: Mapping from ID to :class:`ihm.representation.Representation` objects
+        #: Mapping from ID to :class:`ihm.representation.Representation`
+        #: objects
         self.representations = IDMapper(self.system.orphan_representations,
-                                  ihm.representation.Representation)
+                                        ihm.representation.Representation)
 
         #: Mapping from ID to :class:`ihm.protocol.Protocol` objects
         self.protocols = IDMapper(self.system.orphan_protocols,
@@ -455,7 +457,7 @@ class SystemReader(object):
 
         #: Mapping from ID to :class:`ihm.analysis.Step` objects
         self.analysis_steps = _AnalysisIDMapper(None, ihm.analysis.Step,
-                                  *(None,)*3)
+                                                *(None,)*3)
 
         #: Mapping from ID to :class:`ihm.analysis.Analysis` objects
         self.analyses = IDMapper(None, ihm.analysis.Analysis)
@@ -471,7 +473,7 @@ class SystemReader(object):
 
         #: Mapping from ID to :class:`ihm.model.StateGroup` objects
         self.state_groups = IDMapper(self.system.state_groups,
-                                  ihm.model.StateGroup)
+                                     ihm.model.StateGroup)
 
         #: Mapping from ID to :class:`ihm.model.Ensemble` objects
         self.ensembles = IDMapper(self.system.ensembles,
@@ -483,27 +485,34 @@ class SystemReader(object):
 
         #: Mapping from ID to :class:`ihm.restraint.EM3DRestraint` objects
         self.em3d_restraints = _DatasetIDMapper(self.system.restraints,
-                                   self.datasets,
-                                   ihm.restraint.EM3DRestraint, None)
+                                                self.datasets,
+                                                ihm.restraint.EM3DRestraint,
+                                                None)
 
         #: Mapping from ID to :class:`ihm.restraint.EM2DRestraint` objects
         self.em2d_restraints = IDMapper(self.system.restraints,
-                                   ihm.restraint.EM2DRestraint, *(None,)*2)
+                                        ihm.restraint.EM2DRestraint,
+                                        *(None,)*2)
 
         #: Mapping from ID to :class:`ihm.restraint.SASRestraint` objects
         self.sas_restraints = _DatasetIDMapper(self.system.restraints,
-                                   self.datasets,
-                                   ihm.restraint.SASRestraint, None)
+                                               self.datasets,
+                                               ihm.restraint.SASRestraint,
+                                               None)
 
         #: Mapping from ID to :class:`ihm.restraint.Feature` objects
         self.features = _FeatureIDMapper(self.system.orphan_features,
-                                   ihm.restraint.Feature)
+                                         ihm.restraint.Feature)
+
+        #: Mapping from ID to :class:`ihm.restraint.PseudoSite` objects
+        self.pseudo_sites = IDMapper(self.system.orphan_pseudo_sites,
+                                     ihm.restraint.PseudoSite, *(None,)*3)
 
         #: Mapping from ID to :class:`ihm.restraint.DerivedDistanceRestraint`
         #: objects
         self.dist_restraints = IDMapper(self.system.restraints,
-                                   ihm.restraint.DerivedDistanceRestraint,
-                                   *(None,)*4)
+                                        ihm.restraint.DerivedDistanceRestraint,
+                                        *(None,)*4)
 
         #: Mapping from ID to :class:`ihm.restraint.PredictedContactRestraint`
         #: objects
@@ -514,7 +523,7 @@ class SystemReader(object):
         #: Mapping from ID to :class:`ihm.restraint.RestraintGroup` of
         #: :class:`ihm.restraint.DerivedDistanceRestraint` objects
         self.dist_restraint_groups = IDMapper(self.system.restraint_groups,
-                                   ihm.restraint.RestraintGroup)
+                                              ihm.restraint.RestraintGroup)
 
         #: Mapping from ID to :class:`ihm.restraint.RestraintGroup` of
         #: :class:`ihm.restraint.PredictedContactRestraint` objects
@@ -556,6 +565,10 @@ class SystemReader(object):
         self.cross_links = _CrossLinkIDMapper(None,
                                 ihm.restraint.CrossLink)
 
+        #: Mapping from ID to :class:`ihm.restraint.CrossLinkPseudoSite`
+        self.cross_link_pseudo_sites = IDMapper(None,
+                                    ihm.restraint.CrossLinkPseudoSite, None)
+
         #: Mapping from ID to :class:`ihm.model.OrderedProcess` objects
         self.ordered_procs = IDMapper(self.system.ordered_processes,
                                       ihm.model.OrderedProcess, None)
@@ -563,7 +576,8 @@ class SystemReader(object):
         #: Mapping from ID to :class:`ihm.model.ProcessStep` objects
         self.ordered_steps = IDMapper(None, ihm.model.ProcessStep)
 
-        ## FLR part
+        # FLR part
+
         #: Mapping from ID to :class:`ihm.flr.FLRData` objects
         self.flr_data = IDMapper(self.system.flr_data, ihm.flr.FLRData)
 
@@ -1846,15 +1860,23 @@ class _NonPolyFeatureHandler(Handler):
 class _PseudoSiteFeatureHandler(Handler):
     category = '_ihm_pseudo_site_feature'
 
-    def __call__(self, feature_id, cartn_x, cartn_y, cartn_z, radius,
-                 description):
+    def __call__(self, feature_id, pseudo_site_id):
         f = self.sysr.features.get_by_id(feature_id,
                                          ihm.restraint.PseudoSiteFeature)
-        f.x = self.get_float(cartn_x)
-        f.y = self.get_float(cartn_y)
-        f.z = self.get_float(cartn_z)
-        f.radius = self.get_float(radius)
-        f.description = description
+        p = self.sysr.pseudo_sites.get_by_id(pseudo_site_id)
+        f.site = p
+
+
+class _PseudoSiteHandler(Handler):
+    category = '_ihm_pseudo_site'
+
+    def __call__(self, id, cartn_x, cartn_y, cartn_z, radius, description):
+        p = self.sysr.pseudo_sites.get_by_id(id)
+        p.x = self.get_float(cartn_x)
+        p.y = self.get_float(cartn_y)
+        p.z = self.get_float(cartn_z)
+        p.radius = self.get_float(radius)
+        p.description = description
 
 
 def _make_harmonic(low, up, _get_float):
@@ -2236,6 +2258,23 @@ class _CrossLinkRestraintHandler(Handler):
         for xl in self.sysr.cross_links.get_all():
             r = rsr_for_ex_xl[xl.experimental_cross_link]
             r.cross_links.append(xl)
+
+
+class _CrossLinkPseudoSiteHandler(Handler):
+    category = '_ihm_cross_link_pseudo_site'
+
+    def __call__(self, id, restraint_id, cross_link_partner, pseudo_site_id,
+                 model_id):
+        xlps = self.sysr.cross_link_pseudo_sites.get_by_id(id)
+        xlps.site = self.sysr.pseudo_sites.get_by_id(pseudo_site_id)
+        xlps.model = self.sysr.models.get_by_id_or_none(model_id)
+
+        xl = self.sysr.cross_links.get_by_id(restraint_id)
+        partner = self.get_int(cross_link_partner)
+        if partner == 2:
+            xl.pseudo2 = xlps
+        else:
+            xl.pseudo1 = xlps
 
 
 class _CrossLinkResultHandler(Handler):
@@ -2923,6 +2962,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               _FeatureListHandler(s),
               _PolyResidueFeatureHandler(s), _PolyAtomFeatureHandler(s),
               _NonPolyFeatureHandler(s), _PseudoSiteFeatureHandler(s),
+              _PseudoSiteHandler(s),
               _DerivedDistanceRestraintHandler(s),
               _PredictedContactRestraintHandler(s), _CenterHandler(s),
               _TransformationHandler(s), _GeometricObjectHandler(s),
@@ -2930,6 +2970,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               _AxisHandler(s), _PlaneHandler(s), _GeometricRestraintHandler(s),
               _PolySeqSchemeHandler(s), _NonPolySchemeHandler(s),
               _CrossLinkListHandler(s), _CrossLinkRestraintHandler(s),
+              _CrossLinkPseudoSiteHandler(s),
               _CrossLinkResultHandler(s), _StartingModelSeqDifHandler(s),
               _OrderedEnsembleHandler(s), _FLRChemDescriptorHandler(s),
               _FLRInstSettingHandler(s),

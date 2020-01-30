@@ -2400,7 +2400,20 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
         # Duplicates should be ignored
         xl3 = ihm.restraint.AtomCrossLink(xxl3, asym1, asym2, 'C', 'N', d,
                                 restrain_all=False)
-        r.cross_links.extend((xl1, xl2, xl3))
+        # Restraints on pseudo sites
+        ps = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
+        ps._id = 89
+        psxl = ihm.restraint.CrossLinkPseudoSite(site=ps)
+        xl4 = ihm.restraint.ResidueCrossLink(xxl5, asym1, asym2, d,
+                                psi=0.5, sigma1=1.0, sigma2=2.0,
+                                restrain_all=True, pseudo2=psxl)
+        m = MockObject()
+        m._id = 99
+        psxl = ihm.restraint.CrossLinkPseudoSite(site=ps, model=m)
+        xl5 = ihm.restraint.ResidueCrossLink(xxl2, asym1, asym2, d,
+                                psi=0.5, sigma1=1.0, sigma2=2.0,
+                                restrain_all=True, pseudo2=psxl)
+        r.cross_links.extend((xl1, xl2, xl3, xl4, xl5))
 
         model = MockObject()
         model._id = 201
@@ -2456,9 +2469,24 @@ _ihm_cross_link_restraint.distance_threshold
 _ihm_cross_link_restraint.psi
 _ihm_cross_link_restraint.sigma_1
 _ihm_cross_link_restraint.sigma_2
+_ihm_cross_link_restraint.pseudo_site_flag
 1 1 1 A 2 THR 1 A 3 CYS . . 'upper bound' ALL by-residue 25.000 0.500 1.000
-2.000
-2 3 1 A 2 THR 2 B 2 GLU C N 'lower bound' ANY by-atom 34.000 . . .
+2.000 NO
+2 3 1 A 2 THR 2 B 2 GLU C N 'lower bound' ANY by-atom 34.000 . . . NO
+3 4 1 A 1 ALA 2 B 1 ASP . . 'lower bound' ALL by-residue 34.000 0.500 1.000
+2.000 YES
+4 2 1 A 2 THR 2 B 3 PHE . . 'lower bound' ALL by-residue 34.000 0.500 1.000
+2.000 YES
+#
+#
+loop_
+_ihm_cross_link_pseudo_site.id
+_ihm_cross_link_pseudo_site.restraint_id
+_ihm_cross_link_pseudo_site.cross_link_partner
+_ihm_cross_link_pseudo_site.pseudo_site_id
+_ihm_cross_link_pseudo_site.model_id
+1 3 2 89 .
+2 4 2 89 99
 #
 #
 loop_
@@ -2621,7 +2649,9 @@ _ihm_geometric_object_plane.transformation_id
         self.assertRaises(ValueError, ihm.restraint.NonPolyFeature, [a1, a3])
 
         # Pseudo site feature
-        f = ihm.restraint.PseudoSiteFeature(x=10., y=20., z=30.)
+        ps = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
+        ps._id = 89
+        f = ihm.restraint.PseudoSiteFeature(site=ps)
         system.orphan_features.append(f)
 
         ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
@@ -2690,11 +2720,33 @@ _ihm_non_poly_feature.atom_id
 #
 loop_
 _ihm_pseudo_site_feature.feature_id
-_ihm_pseudo_site_feature.Cartn_x
-_ihm_pseudo_site_feature.Cartn_y
-_ihm_pseudo_site_feature.Cartn_z
-_ihm_pseudo_site_feature.radius
-5 10.000 20.000 30.000 .
+_ihm_pseudo_site_feature.pseudo_site_id
+5 89
+#
+""")
+
+    def test_pseudo_site_dumper(self):
+        """Test PseudoSiteDumper"""
+        system = ihm.System()
+        ps1 = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
+        ps2 = ihm.restraint.PseudoSite(x=10., y=20., z=30.,
+                                       radius=40., description="test pseudo")
+        system.orphan_pseudo_sites.extend((ps1, ps2))
+
+        dumper = ihm.dumper._PseudoSiteDumper()
+        dumper.finalize(system) # assign IDs
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_pseudo_site.id
+_ihm_pseudo_site.Cartn_x
+_ihm_pseudo_site.Cartn_y
+_ihm_pseudo_site.Cartn_z
+_ihm_pseudo_site.radius
+_ihm_pseudo_site.description
+1 10.000 20.000 30.000 . .
+2 10.000 20.000 30.000 40.000 'test pseudo'
 #
 """)
 

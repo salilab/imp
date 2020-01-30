@@ -54,8 +54,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as l:
             # Update to match the version of the IHM dictionary we support:
-            l.write(dict_name="ihm-extension.dic", dict_version="1.04",
-                    dict_location=self.URL % "3a8e0b9")
+            l.write(dict_name="ihm-extension.dic", dict_version="1.06",
+                    dict_location=self.URL % "3216cc8")
 
 
 class _StructDumper(Dumper):
@@ -1651,13 +1651,29 @@ class _FeatureDumper(Dumper):
 
     def dump_pseudo_site(self, writer):
         with writer.loop("_ihm_pseudo_site_feature",
-                         ["feature_id", "Cartn_x", "Cartn_y",
-                          "Cartn_z", "radius"]) as l:
+                         ["feature_id", "pseudo_site_id"]) as l:
             for f in self._features_by_id:
                 if not isinstance(f, restraint.PseudoSiteFeature):
                     continue
-                l.write(feature_id=f._id, Cartn_x=f.x, Cartn_y=f.y,
-                        Cartn_z=f.z, radius=f.radius)
+                l.write(feature_id=f._id, pseudo_site_id=f.site._id)
+
+
+class _PseudoSiteDumper(Dumper):
+    def finalize(self, system):
+        seen_sites = {}
+        self._sites_by_id = []
+        for f in system._all_pseudo_sites():
+            util._remove_id(f)
+        for f in system._all_pseudo_sites():
+            util._assign_id(f, seen_sites, self._sites_by_id)
+
+    def dump(self, system, writer):
+        with writer.loop("_ihm_pseudo_site",
+                         ["id", "Cartn_x", "Cartn_y",
+                          "Cartn_z", "radius", "description"]) as l:
+            for s in self._sites_by_id:
+                l.write(id=s._id, Cartn_x=s.x, Cartn_y=s.y,
+                        Cartn_z=s.z, radius=s.radius, description=s.description)
 
 
 class _CrossLinkDumper(Dumper):
@@ -1694,7 +1710,6 @@ class _CrossLinkDumper(Dumper):
 
     def finalize_modeling(self, system):
         seen_cross_links = {}
-        seen_group_ids = {}
         xl_id = 1
         self._xls_by_id = []
         for r in self._all_restraints(system):
@@ -1714,7 +1729,8 @@ class _CrossLinkDumper(Dumper):
 
     def dump(self, system, writer):
         self.dump_list(system, writer)
-        self.dump_restraint(system, writer)
+        pseudo_xls = self.dump_restraint(system, writer)
+        self.dump_pseudo_sites(system, writer, pseudo_xls)
         self.dump_results(system, writer)
 
     def dump_list(self, system, writer):
@@ -1745,6 +1761,7 @@ class _CrossLinkDumper(Dumper):
                         details=xl.details)
 
     def dump_restraint(self, system, writer):
+        pseudo_xls = []
         with writer.loop("_ihm_cross_link_restraint",
                          ["id", "group_id", "entity_id_1", "asym_id_1",
                           "seq_id_1", "comp_id_1",
@@ -1752,7 +1769,8 @@ class _CrossLinkDumper(Dumper):
                           "atom_id_1", "atom_id_2",
                           "restraint_type", "conditional_crosslink_flag",
                           "model_granularity", "distance_threshold",
-                          "psi", "sigma_1", "sigma_2"]) as l:
+                          "psi", "sigma_1", "sigma_2",
+                          "pseudo_site_flag"]) as l:
             condmap = {True: 'ALL', False: 'ANY', None: None}
             for r, xl in self._xls_by_id:
                 ex_xl = xl.experimental_cross_link
@@ -1760,6 +1778,11 @@ class _CrossLinkDumper(Dumper):
                 entity2 = ex_xl.residue2.entity
                 seq1 = entity1.sequence
                 seq2 = entity2.sequence
+                pseudo = False
+                for np, p in enumerate((xl.pseudo1, xl.pseudo2)):
+                    if p:
+                        pseudo = True
+                        pseudo_xls.append((p, np, xl))
                 l.write(id=xl._id, group_id=ex_xl._id,
                         entity_id_1=entity1._id, asym_id_1=xl.asym1._id,
                         seq_id_1=ex_xl.residue1.seq_id,
@@ -1772,7 +1795,21 @@ class _CrossLinkDumper(Dumper):
                         conditional_crosslink_flag=condmap[xl.restrain_all],
                         model_granularity=xl.granularity,
                         distance_threshold=xl.distance.distance,
-                        psi=xl.psi, sigma_1=xl.sigma1, sigma_2=xl.sigma2)
+                        psi=xl.psi, sigma_1=xl.sigma1, sigma_2=xl.sigma2,
+                        pseudo_site_flag=pseudo)
+        return pseudo_xls
+
+    def dump_pseudo_sites(self, system, writer, pseudo_xls):
+        with writer.loop("_ihm_cross_link_pseudo_site",
+                         ["id", "restraint_id", "cross_link_partner",
+                          "pseudo_site_id", "model_id"]) as l:
+            ordinal = 1
+            for p, partner, restraint in pseudo_xls:
+                l.write(id=ordinal, restraint_id=restraint._id,
+                        cross_link_partner=partner + 1,
+                        pseudo_site_id=p.site._id,
+                        model_id=p.model._id if p.model else None)
+                ordinal += 1
 
     def dump_results(self, system, writer):
         with writer.loop("_ihm_cross_link_result_parameters",
@@ -1801,7 +1838,6 @@ class _GeometricRestraintDumper(Dumper):
 
     def dump(self, system, writer):
         condmap = {True: 'ALL', False: 'ANY', None: None}
-        ordinal = 1
         with writer.loop("_ihm_geometric_object_distance_restraint",
                          ["id", "object_id", "feature_id",
                           "object_characteristic", "restraint_type",
@@ -1857,7 +1893,6 @@ class _DerivedDistanceRestraintDumper(Dumper):
 
     def dump(self, system, writer):
         condmap = {True: 'ALL', False: 'ANY', None: None}
-        ordinal = 1
         with writer.loop("_ihm_derived_distance_restraint",
                          ["id", "group_id", "feature_id_1", "feature_id_2",
                           "restraint_type", "distance_lower_limit",
@@ -2826,6 +2861,7 @@ def write(fh, systems, format='mmCIF', dumpers=[]):
                _StartingModelDumper(),
                _ProtocolDumper(),
                _PostProcessDumper(),
+               _PseudoSiteDumper(),
                _GeometricObjectDumper(), _FeatureDumper(),
                _CrossLinkDumper(), _GeometricRestraintDumper(),
                _DerivedDistanceRestraintDumper(),

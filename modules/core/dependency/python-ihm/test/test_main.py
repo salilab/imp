@@ -790,6 +790,42 @@ class Tests(unittest.TestCase):
         # duplicates should not be filtered
         self.assertEqual(list(s._all_features()), [f1, f2, f1])
 
+    def test_all_pseudo_sites(self):
+        """Test _all_pseudo_sites() method"""
+        class MockObject(object):
+            pass
+
+        s1 = MockObject()
+        s2 = MockObject()
+
+        r1 = MockObject()
+        xl = MockObject()
+        ps = MockObject()
+        ps.site = s2
+        xl.pseudo1 = ps
+        xl.pseudo2 = None
+        r1.cross_links = [xl]
+
+        r2 = MockObject()
+        xl = MockObject()
+        xl.pseudo1 = None
+        ps = MockObject()
+        ps.site = s1
+        xl.pseudo2 = ps
+        r2.cross_links = [xl]
+
+        s = ihm.System()
+        s.orphan_pseudo_sites.extend((s1, s2))
+        s.restraints.extend((r1, r2))
+
+        f1 = MockObject()
+        f1.site = s2
+        s.orphan_features.append(f1)
+
+        # duplicates should not be filtered
+        self.assertEqual(list(s._all_pseudo_sites()), [s1, s2, s2, s1, s2])
+
+
     def test_all_chem_descriptors(self):
         """Test _all_chem_descriptors() method"""
         class MockObject(object):

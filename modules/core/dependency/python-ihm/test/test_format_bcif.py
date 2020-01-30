@@ -7,6 +7,7 @@ TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.format_bcif
 
+
 # Provide dummy implementations of msgpack.unpack() and msgpack.pack() which
 # just return the data unchanged. We can use these to test the BinaryCIF
 # parser with Python objects rather than having to install msgpack and
@@ -15,12 +16,15 @@ class MockMsgPack(object):
     @staticmethod
     def unpack(fh):
         return fh
+
     @staticmethod
     def pack(data, fh):
         fh.data = data
 
+
 class MockFh(object):
     pass
+
 
 class GenericHandler(object):
     """Capture BinaryCIF data as a simple list of dicts"""
@@ -55,7 +59,6 @@ def _encode(rows):
             mask[i] = 2
     if need_mask:
         rows = ['' if r == '?' or r is None else r for r in rows]
-        mask_data = ''.join(chr(i) for i in mask).encode('ascii')
         mask = {b'data': ''.join(chr(i) for i in mask).encode('ascii'),
                 b'encoding': [{b'kind': b'ByteArray',
                                b'type': ihm.format_bcif._Uint8}]}
@@ -78,10 +81,11 @@ def _encode(rows):
          b'stringData': string_data.encode('ascii'),
          b'offsetEncoding': [{b'kind': b'ByteArray',
                               b'type': ihm.format_bcif._Uint8}],
-         b'offsets': offsets }
+         b'offsets': offsets}
     d = {b'data': indices,
          b'encoding': [string_array_encoding]}
     return d, mask
+
 
 class Category(object):
     def __init__(self, name, data):
@@ -105,11 +109,12 @@ class Block(list):
 
 
 def _make_bcif_file(blocks):
-    blocks = [{b'header':'ihm',
-               b'categories':[c.get_bcif() for c in block]}
+    blocks = [{b'header': 'ihm',
+               b'categories': [c.get_bcif() for c in block]}
               for block in blocks]
-    return {b'version':'0.1', b'encoder':'python-ihm test suite',
-            b'dataBlocks':blocks}
+    return {b'version': '0.1', b'encoder': 'python-ihm test suite',
+            b'dataBlocks': blocks}
+
 
 class Tests(unittest.TestCase):
     def test_decode_bytes(self):
@@ -121,7 +126,7 @@ class Tests(unittest.TestCase):
         """Test Decoder base class"""
         d = ihm.format_bcif._Decoder()
         self.assertIsNone(d._kind)
-        d(enc=None, data=None) # noop
+        d(enc=None, data=None)  # noop
 
     def test_string_array_decoder(self):
         """Test StringArray decoder"""
@@ -130,11 +135,11 @@ class Tests(unittest.TestCase):
 
         # Int8 is signed char (so FF is -1)
         enc = {b'stringData': b'aAB',
-               b'dataEncoding': [{b'kind':b'ByteArray',
-                                  b'type':ihm.format_bcif._Int8}],
-               b'offsetEncoding': [{b'kind':b'ByteArray',
-                                    b'type':ihm.format_bcif._Int8}],
-               b'offsets':b'\x00\x01\x03'}
+               b'dataEncoding': [{b'kind': b'ByteArray',
+                                  b'type': ihm.format_bcif._Int8}],
+               b'offsetEncoding': [{b'kind': b'ByteArray',
+                                    b'type': ihm.format_bcif._Int8}],
+               b'offsets': b'\x00\x01\x03'}
         data = b'\x00\x01\x00\xFF'
 
         data = d(enc, data)
@@ -146,36 +151,36 @@ class Tests(unittest.TestCase):
         self.assertEqual(d._kind, b'ByteArray')
 
         # type 1 (signed char)
-        data = d({b'type':ihm.format_bcif._Int8}, b'\x00\x01\xFF')
+        data = d({b'type': ihm.format_bcif._Int8}, b'\x00\x01\xFF')
         self.assertEqual(list(data), [0, 1, -1])
 
         # type 2 (signed short)
-        data = d({b'type':ihm.format_bcif._Int16}, b'\x00\x01\x01\xAC')
+        data = d({b'type': ihm.format_bcif._Int16}, b'\x00\x01\x01\xAC')
         self.assertEqual(list(data), [256, -21503])
 
         # type 3 (signed int)
-        data = d({b'type':ihm.format_bcif._Int32}, b'\x00\x01\x01\x05')
+        data = d({b'type': ihm.format_bcif._Int32}, b'\x00\x01\x01\x05')
         self.assertEqual(list(data), [83951872])
 
         # type 4 (unsigned char)
-        data = d({b'type':ihm.format_bcif._Uint8}, b'\x00\xFF')
+        data = d({b'type': ihm.format_bcif._Uint8}, b'\x00\xFF')
         self.assertEqual(list(data), [0, 255])
 
         # type 5 (unsigned short)
-        data = d({b'type':ihm.format_bcif._Uint16}, b'\x00\x01\x01\xAC')
+        data = d({b'type': ihm.format_bcif._Uint16}, b'\x00\x01\x01\xAC')
         self.assertEqual(list(data), [256, 44033])
 
         # type 6 (unsigned int)
-        data = d({b'type':ihm.format_bcif._Uint32}, b'\x00\x01\x01\xFF')
+        data = d({b'type': ihm.format_bcif._Uint32}, b'\x00\x01\x01\xFF')
         self.assertEqual(list(data), [4278255872])
 
         # type 32 (32-bit float)
-        data = d({b'type':ihm.format_bcif._Float32}, b'\x00\x00(B')
+        data = d({b'type': ihm.format_bcif._Float32}, b'\x00\x00(B')
         self.assertAlmostEqual(list(data)[0], 42.0, places=1)
 
         # type 33 (64-bit float)
-        data = d({b'type':ihm.format_bcif._Float64},
-                  b'\x00\x00\x00\x00\x00\x00E@')
+        data = d({b'type': ihm.format_bcif._Float64},
+                 b'\x00\x00\x00\x00\x00\x00E@')
         self.assertAlmostEqual(list(data)[0], 42.0, places=1)
 
     def test_integer_packing_decoder_signed(self):
@@ -184,12 +189,12 @@ class Tests(unittest.TestCase):
         self.assertEqual(d._kind, b'IntegerPacking')
 
         # 1-byte data
-        data = d({b'isUnsigned':False, b'byteCount':1},
+        data = d({b'isUnsigned': False, b'byteCount': 1},
                  [1, 2, -3, 127, 1, -128, -5])
         self.assertEqual(list(data), [1, 2, -3, 128, -133])
 
         # 2-byte data
-        data = d({b'isUnsigned':False, b'byteCount':2},
+        data = d({b'isUnsigned': False, b'byteCount': 2},
                  [1, 2, -3, 32767, 1, -32768, -5])
         self.assertEqual(list(data), [1, 2, -3, 32768, -32773])
 
@@ -199,12 +204,12 @@ class Tests(unittest.TestCase):
         self.assertEqual(d._kind, b'IntegerPacking')
 
         # 1-byte data
-        data = d({b'isUnsigned':True, b'byteCount':1},
+        data = d({b'isUnsigned': True, b'byteCount': 1},
                  [1, 2, 3, 127, 1, 255, 1])
         self.assertEqual(list(data), [1, 2, 3, 127, 1, 256])
 
         # 2-byte data
-        data = d({b'isUnsigned':True, b'byteCount':2},
+        data = d({b'isUnsigned': True, b'byteCount': 2},
                  [1, 2, 3, 32767, 1, 65535, 5])
         self.assertEqual(list(data), [1, 2, 3, 32767, 1, 65540])
 
@@ -213,7 +218,7 @@ class Tests(unittest.TestCase):
         d = ihm.format_bcif._DeltaDecoder()
         self.assertEqual(d._kind, b'Delta')
 
-        data = d({b'origin':1000}, [0, 3, 2, 1])
+        data = d({b'origin': 1000}, [0, 3, 2, 1])
         self.assertEqual(list(data), [1000, 1003, 1005, 1006])
 
     def test_run_length_decoder(self):
@@ -229,7 +234,7 @@ class Tests(unittest.TestCase):
         d = ihm.format_bcif._FixedPointDecoder()
         self.assertEqual(d._kind, b'FixedPoint')
 
-        data = list(d({b'factor':100}, [120, 123, 12]))
+        data = list(d({b'factor': 100}, [120, 123, 12]))
         self.assertEqual(len(data), 3)
         self.assertAlmostEqual(data[0], 1.20, places=2)
         self.assertAlmostEqual(data[1], 1.23, places=2)
@@ -239,7 +244,7 @@ class Tests(unittest.TestCase):
         """Test _decode function"""
         data = b'\x01\x03\x02\x01\x03\x02'
         runlen = {b'kind': b'RunLength'}
-        bytearr = {b'kind': b'ByteArray', b'type':ihm.format_bcif._Int8}
+        bytearr = {b'kind': b'ByteArray', b'type': ihm.format_bcif._Int8}
         data = ihm.format_bcif._decode(data, [runlen, bytearr])
         self.assertEqual(list(data), [1, 1, 1, 2, 3, 3])
 
@@ -255,31 +260,33 @@ class Tests(unittest.TestCase):
 
     def test_category_case_insensitive(self):
         """Categories and keywords should be case insensitive"""
-        cat1 = Category('_exptl', {'method':['foo']})
-        cat2 = Category('_Exptl', {'METHod':['foo']})
+        cat1 = Category('_exptl', {'method': ['foo']})
+        cat2 = Category('_Exptl', {'METHod': ['foo']})
         for cat in cat1, cat2:
             h = GenericHandler()
-            self._read_bcif([Block([cat])], {'_exptl':h})
-        self.assertEqual(h.data, [{'method':'foo'}])
+            self._read_bcif([Block([cat])], {'_exptl': h})
+        self.assertEqual(h.data, [{'method': 'foo'}])
 
     def test_omitted_unknown(self):
         """Test handling of omitted/unknown data"""
-        cat = Category('_foo', {'var1':['test1', '?', 'test2', None, 'test3']})
+        cat = Category('_foo',
+                       {'var1': ['test1', '?', 'test2', None, 'test3']})
         h = GenericHandler()
-        self._read_bcif([Block([cat])], {'_foo':h})
+        self._read_bcif([Block([cat])], {'_foo': h})
         self.assertEqual(h.data,
                          [{'var1': 'test1'}, {'var1': '?'}, {'var1': 'test2'},
                           {}, {'var1': 'test3'}])
 
     def test_omitted_unknown_not_in_file_explicit(self):
         """Test explicit handling of omitted/unknown/not in file data"""
-        cat = Category('_foo', {'var1':['test1', '?', 'test2', None, 'test3']})
+        cat = Category('_foo',
+                       {'var1': ['test1', '?', 'test2', None, 'test3']})
         h = GenericHandler()
         h.omitted = 'OMIT'
         h.unknown = 'UNK'
         h.not_in_file = 'NOT'
         h._keys = ('var1', 'var2')
-        self._read_bcif([Block([cat])], {'_foo':h})
+        self._read_bcif([Block([cat])], {'_foo': h})
         self.assertEqual(h.data,
                          [{'var1': 'test1', 'var2': 'NOT'},
                           {'var1': 'UNK', 'var2': 'NOT'},
@@ -289,10 +296,10 @@ class Tests(unittest.TestCase):
 
     def test_unknown_categories_ignored(self):
         """Check that unknown categories are just ignored"""
-        cat1 = Category('_foo', {'var1':['test1']})
-        cat2 = Category('_bar', {'var2':['test2']})
+        cat1 = Category('_foo', {'var1': ['test1']})
+        cat2 = Category('_bar', {'var2': ['test2']})
         h = GenericHandler()
-        self._read_bcif([Block([cat1, cat2])], {'_foo':h})
+        self._read_bcif([Block([cat1, cat2])], {'_foo': h})
         self.assertEqual(h.data, [{'var1': 'test1'}])
 
     def test_unknown_categories_handled(self):
@@ -300,23 +307,24 @@ class Tests(unittest.TestCase):
         class CatHandler(object):
             def __init__(self):
                 self.warns = []
+
             def __call__(self, cat, line):
                 self.warns.append((cat, line))
 
         ch = CatHandler()
-        cat1 = Category('_foo', {'var1':['test1']})
-        cat2 = Category('_bar', {'var2':['test2']})
+        cat1 = Category('_foo', {'var1': ['test1']})
+        cat2 = Category('_bar', {'var2': ['test2']})
         h = GenericHandler()
-        self._read_bcif([Block([cat1, cat2])], {'_foo':h},
+        self._read_bcif([Block([cat1, cat2])], {'_foo': h},
                         unknown_category_handler=ch)
         self.assertEqual(h.data, [{'var1': 'test1'}])
         self.assertEqual(ch.warns, [('_bar', None)])
 
     def test_unknown_keywords_ignored(self):
         """Check that unknown keywords are ignored"""
-        cat = Category('_foo', {'var1':['test1'], 'othervar':['test2']})
+        cat = Category('_foo', {'var1': ['test1'], 'othervar': ['test2']})
         h = GenericHandler()
-        self._read_bcif([Block([cat])], {'_foo':h})
+        self._read_bcif([Block([cat])], {'_foo': h})
         self.assertEqual(h.data, [{'var1': 'test1'}])
 
     def test_unknown_keywords_handled(self):
@@ -324,34 +332,36 @@ class Tests(unittest.TestCase):
         class KeyHandler(object):
             def __init__(self):
                 self.warns = []
+
             def __call__(self, cat, key, line):
                 self.warns.append((cat, key, line))
 
         kh = KeyHandler()
-        cat = Category('_foo', {'var1':['test1'], 'othervar':['test2']})
+        cat = Category('_foo', {'var1': ['test1'], 'othervar': ['test2']})
         h = GenericHandler()
-        self._read_bcif([Block([cat])], {'_foo':h},
+        self._read_bcif([Block([cat])], {'_foo': h},
                         unknown_keyword_handler=kh)
         self.assertEqual(h.data, [{'var1': 'test1'}])
         self.assertEqual(kh.warns, [('_foo', 'othervar', None)])
 
     def test_multiple_data_blocks(self):
         """Test handling of multiple data blocks"""
-        block1 = Block([Category('_foo', {'var1':['test1'], 'var2':['test2']})])
-        block2 = Block([Category('_foo', {'var3':['test3']})])
+        block1 = Block([Category('_foo',
+                                 {'var1': ['test1'], 'var2': ['test2']})])
+        block2 = Block([Category('_foo', {'var3': ['test3']})])
         fh = _make_bcif_file([block1, block2])
 
         h = GenericHandler()
-        r = ihm.format_bcif.BinaryCifReader(fh, {'_foo':h})
+        r = ihm.format_bcif.BinaryCifReader(fh, {'_foo': h})
         sys.modules['msgpack'] = MockMsgPack
         # Read first data block
         self.assertTrue(r.read_file())
-        self.assertEqual(h.data, [{'var1':'test1', 'var2':'test2'}])
+        self.assertEqual(h.data, [{'var1': 'test1', 'var2': 'test2'}])
 
         # Read second data block
         h.data = []
         self.assertFalse(r.read_file())
-        self.assertEqual(h.data, [{'var3':'test3'}])
+        self.assertEqual(h.data, [{'var3': 'test3'}])
 
         # No more data blocks
         h.data = []
@@ -361,7 +371,7 @@ class Tests(unittest.TestCase):
     def test_encoder(self):
         """Test _Encoder base class"""
         e = ihm.format_bcif._Encoder()
-        e(None) # noop
+        e(None)  # noop
 
     def test_byte_array_encoder(self):
         """Test ByteArray encoder"""
@@ -472,16 +482,16 @@ class Tests(unittest.TestCase):
 
     def test_mask_type_no_mask(self):
         """Test get_mask_and_type with no mask"""
-        data = [1,2,3,4]
+        data = [1, 2, 3, 4]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
         self.assertIsNone(mask)
         self.assertEqual(typ, int)
 
     def test_mask_type_masked_int(self):
         """Test get_mask_and_type with masked int data"""
-        data = [1,2,3,None,ihm.unknown,4]
+        data = [1, 2, 3, None, ihm.unknown, 4]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
-        self.assertEqual(mask, [0,0,0,1,2,0])
+        self.assertEqual(mask, [0, 0, 0, 1, 2, 0])
         self.assertEqual(typ, int)
 
     def test_mask_type_masked_long(self):
@@ -490,16 +500,16 @@ class Tests(unittest.TestCase):
             # long type is only in Python 2
             # Use long(x) rather than xL since the latter will cause a syntax
             # error in Python 3
-            data = [long(1),long(2),long(3),None,ihm.unknown,long(4)]
+            data = [long(1), long(2), long(3), None, ihm.unknown, long(4)]
             mask, typ = ihm.format_bcif._get_mask_and_type(data)
-            self.assertEqual(mask, [0,0,0,1,2,0])
+            self.assertEqual(mask, [0, 0, 0, 1, 2, 0])
             self.assertEqual(typ, int)
 
     def test_mask_type_masked_float(self):
         """Test get_mask_and_type with masked float data"""
-        data = [1.0,2.0,3.0,None,ihm.unknown,4.0]
+        data = [1.0, 2.0, 3.0, None, ihm.unknown, 4.0]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
-        self.assertEqual(mask, [0,0,0,1,2,0])
+        self.assertEqual(mask, [0, 0, 0, 1, 2, 0])
         self.assertEqual(typ, float)
 
     def test_mask_type_masked_numpy_float(self):
@@ -526,14 +536,14 @@ class Tests(unittest.TestCase):
         data = [1,2,3,4.0]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
         self.assertIsNone(mask)
-        self.assertEqual(typ, float) # int/float is coerced to float
+        self.assertEqual(typ, float)  # int/float is coerced to float
 
     def test_mask_type_mix_int_float_str(self):
         """Test get_mask_and_type with a mix of int/float/str data"""
         data = [1,2,3,4.0,'foo']
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
         self.assertIsNone(mask)
-        self.assertEqual(typ, str) # int/float/str is coerced to str
+        self.assertEqual(typ, str)  # int/float/str is coerced to str
 
     def test_mask_type_bad_type(self):
         """Test get_mask_and_type with unknown type data"""
@@ -545,7 +555,7 @@ class Tests(unittest.TestCase):
     def test_masked_encoder(self):
         """Test MaskedEncoder base class"""
         e = ihm.format_bcif._MaskedEncoder()
-        e(None, None) # noop
+        e(None, None)  # noop
 
     def test_string_array_encoder_no_mask(self):
         """Test StringArray encoder with no mask"""
@@ -554,11 +564,11 @@ class Tests(unittest.TestCase):
         self.assertEqual(indices, b'\x00\x01\x00')
         enc, = encs
         self.assertEqual(enc[b'dataEncoding'],
-                             [{b'kind':b'ByteArray',
-                               b'type':ihm.format_bcif._Uint8}])
+                         [{b'kind': b'ByteArray',
+                           b'type': ihm.format_bcif._Uint8}])
         self.assertEqual(enc[b'offsetEncoding'],
-                             [{b'kind':b'ByteArray',
-                               b'type':ihm.format_bcif._Uint8}])
+                         [{b'kind': b'ByteArray',
+                           b'type': ihm.format_bcif._Uint8}])
         self.assertEqual(enc[b'offsets'], b'\x00\x01\x03')
         self.assertEqual(enc[b'stringData'], b'aAB')
 
@@ -574,11 +584,11 @@ class Tests(unittest.TestCase):
         self.assertEqual(indices, b'\x00\x01\x02\xff\xff\x00\x03\x04\x05')
         enc, = encs
         self.assertEqual(enc[b'dataEncoding'],
-                             [{b'kind':b'ByteArray',
-                               b'type':ihm.format_bcif._Int8}])
+                             [{b'kind': b'ByteArray',
+                               b'type': ihm.format_bcif._Int8}])
         self.assertEqual(enc[b'offsetEncoding'],
-                             [{b'kind':b'ByteArray',
-                               b'type':ihm.format_bcif._Uint8}])
+                             [{b'kind': b'ByteArray',
+                               b'type': ihm.format_bcif._Uint8}])
         self.assertEqual(enc[b'offsets'], b'\x00\x01\x03\x06\x07\x08\t')
         self.assertEqual(enc[b'stringData'], b'aABYES3.?')
 
@@ -632,7 +642,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(category[b'name'], b'foo')
         self.assertEqual(category[b'rowCount'], 1)
         self.assertEqual(column[b'name'], b'bar')
-        self.assertEqual(column[b'data'][b'encoding'][0][b'stringData'], b'baz')
+        self.assertEqual(column[b'data'][b'encoding'][0][b'stringData'],
+                         b'baz')
 
     def test_empty_loop(self):
         """Test LoopWriter class with no values"""
@@ -640,7 +651,7 @@ class Tests(unittest.TestCase):
         sys.modules['msgpack'] = MockMsgPack
         writer = ihm.format_bcif.BinaryCifWriter(fh)
         writer.start_block('ihm')
-        with writer.loop('foo', ["bar", "baz"]) as l:
+        with writer.loop('foo', ["bar", "baz"]):
             pass
         writer.flush()
         self.assertEqual(fh.data[b'dataBlocks'][0][b'categories'], [])
@@ -663,7 +674,7 @@ class Tests(unittest.TestCase):
         category, = block[b'categories']
         self.assertEqual(category[b'name'], b'foo')
         self.assertEqual(category[b'rowCount'], 6)
-        cols = sorted(category[b'columns'], key=lambda x:x[b'name'])
+        cols = sorted(category[b'columns'], key=lambda x: x[b'name'])
         self.assertEqual(len(cols), 2)
         # Check mask for bar column; literal . and ? should not be masked (=0)
         self.assertEqual(cols[0][b'mask'][b'data'],

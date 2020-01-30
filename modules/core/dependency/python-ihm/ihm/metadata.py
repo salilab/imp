@@ -12,7 +12,6 @@
 
 import ihm
 from . import location, dataset, startmodel, util
-from .format import CifWriter
 import ihm.source
 
 import operator

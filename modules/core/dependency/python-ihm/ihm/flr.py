@@ -1135,6 +1135,28 @@ class FLRData(object):
                     # modified chem descriptor
                     if pos.modification_flag:
                         yield pos.modified_chem_descriptor
+                # collect from all analyses if they are lifetime-based
+                a = dr.analysis
+                if a.type == 'lifetime-based':
+                    # RefMeasurementGroup
+                    rg = a.ref_measurement_group
+                    # collect from all RefMeasurements
+                    for rm in rg.ref_measurement_list:
+                        # collect from the ref_sample_probe
+                        this_ref_sample_probe = rm.ref_sample_probe
+                        probe = this_ref_sample_probe.probe
+                        # reactive probe
+                        yield probe.probe_descriptor.reactive_probe_chem_descriptor
+                        # chromophore
+                        yield probe.probe_descriptor.chromophore_chem_descriptor
+                        # collect from the poly_probe_position
+                        pos = this_ref_sample_probe.poly_probe_position
+                        # mutated chem descriptor
+                        if pos.mutation_flag:
+                            yield pos.mutated_chem_descriptor
+                        # modified chem descriptor
+                        if pos.modification_flag:
+                            yield pos.modified_chem_descriptor
         # and collect from all poly_probe_conjugates
         for c in self.poly_probe_conjugates:
             yield c.chem_descriptor

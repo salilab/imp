@@ -1,17 +1,18 @@
 import utils
 import os
 import unittest
-import sys
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.protocol
 
+
 class Tests(unittest.TestCase):
 
     def test_step(self):
         """Test protocol Step class"""
-        s = ihm.protocol.Step(assembly='foo', dataset_group='bar', method='baz')
+        s = ihm.protocol.Step(assembly='foo', dataset_group='bar',
+                              method='baz')
         self.assertIsNone(s.name)
         self.assertEqual(s.method, 'baz')
 
