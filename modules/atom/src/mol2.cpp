@@ -283,12 +283,10 @@ void read_atom_mol2(
         molecule_atoms[ad.get_input_index()] = atom_p;
       }
     }
-    mol2_file.get(c);
+    c = mol2_file.peek();
     if (c == '@') {
-      mol2_file.putback(c);
       break;
     }
-    mol2_file.putback(c);
   } while (!mol2_file.eof());
 }
 
