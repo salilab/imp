@@ -1273,8 +1273,9 @@ _ihm_cross_link_restraint.distance_threshold
 _ihm_cross_link_restraint.psi
 _ihm_cross_link_restraint.sigma_1
 _ihm_cross_link_restraint.sigma_2
+_ihm_cross_link_restraint.pseudo_site_flag
 1 1 1 A 1 MET 1 A 2 GLU . . 'upper bound' ALL by-residue 42.000 0.800 1.000
-0.500
+0.500 NO
 #
 """)
 
