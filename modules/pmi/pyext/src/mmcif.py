@@ -1171,16 +1171,28 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     deposition in [PDB-Dev](https://pdb-dev.wwpdb.org/).
     After creating an instance of this class, attach it to an
     IMP.pmi.representation.Representation object. After this, any
-    generated models and metadata are automatically collected and
-    output as mmCIF.
+    generated models and metadata are automatically collected in the
+    `system` attribute, which is an
+    [ihm.System](https://python-ihm.readthedocs.io/en/latest/main.html#ihm.System) object.
+    Once the protocol is complete, call finalize() to make sure `system`
+    contains everything, then use the
+    [python-ihm API](https://python-ihm.readthedocs.io/en/latest/dumper.html#ihm.dumper.write)
+    to write out files in mmCIF or BinaryCIF format.
+
+    See also get_handlers(), get_dumpers().
     """
-    def __init__(self, fh):
+    def __init__(self, fh=None):
         # Ultimately, collect data in an ihm.System object
         self.system = ihm.System()
         self._state_group = ihm.model.StateGroup()
         self.system.state_groups.append(self._state_group)
 
         self.fh = fh
+        if fh:
+            IMP.handle_use_deprecated(
+                "Passing a file handle to ProtocolOutput is deprecated. "
+                "Create it with no arguments, then use the python-ihm API to "
+                "output files (after calling finalize())")
         self._state_ensemble_offset = 0
         self._main_script = os.path.abspath(sys.argv[0])
 
@@ -1332,13 +1344,14 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                     if hasattr(r, 'add_fits_from_model_statfile'):
                         r.add_fits_from_model_statfile(m)
 
+    @IMP.deprecated_method("2.13",
+                           "Use finalize() then the python-ihm API instead")
     def flush(self, format='mmCIF'):
         """Write out all information to the file.
            Information can be written in any format supported by
            the ihm library (typically this is 'mmCIF' or 'BCIF')."""
         self.finalize()
-        ihm.dumper.write(self.fh, [self.system], format,
-                         dumpers=[_ReplicaExchangeProtocolDumper])
+        ihm.dumper.write(self.fh, [self.system], format, dumpers=get_dumpers())
 
     def finalize(self):
         """Do any final processing on the class hierarchy.
@@ -1624,12 +1637,32 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         return m
 
 
+def get_dumpers():
+    """Get custom python-ihm dumpers for writing PMI to from mmCIF.
+       This returns a list of custom dumpers that can be passed as all or
+       part of the `dumpers` argument to ihm.dumper.write(). They add
+       PMI-specific information to mmCIF or BinaryCIF files written out
+       by python-ihm."""
+    return [_ReplicaExchangeProtocolDumper]
+
+
+def get_handlers():
+    """Get custom python-ihm handlers for reading PMI data from mmCIF.
+       This returns a list of custom handlers that can be passed as all or
+       part of the `handlers` argument to ihm.reader.read(). They read
+       PMI-specific information from mmCIF or BinaryCIF files read in
+       by python-ihm."""
+    return [_ReplicaExchangeProtocolHandler]
+
+
+@IMP.deprecated_function("2.13",
+        "Use ihm.reader.read() instead with handlers=get_handlers()")
 def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):
     """Read data from the mmCIF file handle `fh`.
        This is a simple wrapper around `ihm.reader.read()`, which also
        reads PMI-specific information from the mmCIF or BinaryCIF file."""
     return ihm.reader.read(fh, model_class=model_class, format=format,
-                           handlers=[_ReplicaExchangeProtocolHandler]+handlers)
+                           handlers=get_handlers() + handlers)
 
 
 class GMMParser(ihm.metadata.Parser):
