@@ -264,6 +264,9 @@ class System(object):
         if not only_in_states:
             for ensemble in self.ensembles:
                 yield ensemble.model_group
+                for ss in ensemble.subsamples:
+                    if ss.model_group:
+                        yield ss.model_group
             for proc in self.ordered_processes:
                 for step in proc.steps:
                     for edge in step:
@@ -399,11 +402,18 @@ class System(object):
            This includes all Locations referenced from other objects, plus
            any referenced from the top-level system.
            Duplicates may be present."""
+        def _all_ensemble_locations():
+            for ensemble in self.ensembles:
+                if ensemble.file:
+                    yield ensemble.file
+                for ss in ensemble.subsamples:
+                    if ss.file:
+                        yield ss.file
         return itertools.chain(
                 self.locations,
                 (dataset.location for dataset in self._all_datasets()
                           if hasattr(dataset, 'location') and dataset.location),
-                (ensemble.file for ensemble in self.ensembles if ensemble.file),
+                _all_ensemble_locations(),
                 (density.file for density in self._all_densities()
                               if density.file),
                 (sm.script_file for sm in self._all_starting_models()

@@ -43,11 +43,11 @@ The :mod:`ihm.model` Python module
 .. autoclass:: DCDWriter
    :members:
 
-.. autoclass:: SubSample
+.. autoclass:: Subsample
    :members:
 
-.. autoclass:: RandomSubSample
+.. autoclass:: RandomSubsample
    :members:
 
-.. autoclass:: IndependentSubSample
+.. autoclass:: IndependentSubsample
    :members:

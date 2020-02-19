@@ -182,13 +182,13 @@ class Ensemble(object):
        :param float precision: The precision of the entire ensemble.
        :param file: A reference to an external file containing coordinates
               for the entire ensemble, for example as a DCD file
-              (see :class:`DCDWriter`). See also ``sub_samples``.
+              (see :class:`DCDWriter`). See also :attr:`subsamples`.
        :type file: :class:`ihm.location.OutputFileLocation`
        :param str details: Additional text describing this ensemble
     """
     def __init__(self, model_group, num_models, post_process=None,
                  clustering_method=None, clustering_feature=None, name=None,
-                 precision=None, file=None, details=None, sub_samples=None):
+                 precision=None, file=None, details=None):
         self.model_group, self.num_models = model_group, num_models
         self.post_process = post_process
         self.clustering_method = clustering_method
@@ -284,22 +284,22 @@ class Subsample(object):
        In some cases the models that make up an :class:`Ensemble` may be
        partitioned into subsamples, for example to determine if the
        sampling was exhaustive
-       (see https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/29211988/).
+       (see `Viswanath et al. 2017 <https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/29211988/>`_).
        This base class can be used to describe the set of models in the
        subsample, for example by pointing to an externally-deposited
        set of conformations.
 
        Usually a derived class (:class:`RandomSubsample` or
        :class:`IndependentSubsample`) is used instead of this class.
-       Instances are stored in :attr:`Ensemble.sub_samples`. All of the
+       Instances are stored in :attr:`Ensemble.subsamples`. All of the
        subsamples in a given ensemble must be of the same type.
 
        :param str name: A descriptive name for this sample
        :param int num_models: The total number of models in this sample
-       :param model_group: The set of models in this ensemble, if applicable.
+       :param model_group: The set of models in this sample, if applicable.
        :type model_group: :class:`ModelGroup`
        :param file: A reference to an external file containing coordinates
-              for the entire ensemble, for example as a DCD file
+              for the entire sample, for example as a DCD file
               (see :class:`DCDWriter`).
        :type file: :class:`ihm.location.OutputFileLocation`
     """

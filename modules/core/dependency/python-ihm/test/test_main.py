@@ -411,9 +411,10 @@ class Tests(unittest.TestCase):
 
     def test_all_model_groups(self):
         """Test _all_model_groups() method"""
-        model_group1 = []
-        model_group2 = []
-        model_group3 = []
+        model_group1 = 'mg1'
+        model_group2 = 'mg2'
+        model_group3 = 'mg3'
+        model_group4 = 'mg4'
         state1 = [model_group1, model_group2]
         state2 = [model_group2, model_group2]
         s = ihm.System()
@@ -430,6 +431,10 @@ class Tests(unittest.TestCase):
                                 clustering_method='Hierarchical',
                                 clustering_feature='RMSD',
                                 precision=4.2)
+        ss1 = ihm.model.Subsample(name='foo', num_models=1)
+        ss2 = ihm.model.Subsample(name='foo', num_models=1,
+                                  model_group=model_group4)
+        e1.subsamples.extend((ss1, ss2))
         s.ensembles.append(e1)
 
         mg = s._all_model_groups()
@@ -441,7 +446,8 @@ class Tests(unittest.TestCase):
         # List contains all model groups
         self.assertEqual(list(mg), [model_group1, model_group2,
                                     model_group2, model_group2,
-                                    model_group3, model_group1, model_group2])
+                                    model_group3, model_group4,
+                                    model_group1, model_group2])
 
     def test_all_models(self):
         """Test _all_models() method"""
@@ -638,6 +644,7 @@ class Tests(unittest.TestCase):
         loc1 = MockObject()
         loc2 = MockObject()
         loc3 = MockObject()
+        loc4 = MockObject()
 
         s = ihm.System()
         dataset1 = MockDataset()
@@ -653,7 +660,12 @@ class Tests(unittest.TestCase):
         ensemble.file = loc2
         density = MockObject()
         density.file = loc1
+        ss1 = MockObject()
+        ss1.file = None
+        ss2 = MockObject()
+        ss2.file = loc4
         ensemble.densities = [density]
+        ensemble.subsamples = [ss1, ss2]
         s.ensembles.append(ensemble)
 
         start_model = MockObject()
@@ -682,7 +694,7 @@ class Tests(unittest.TestCase):
         s.orphan_protocols.append(protocol1)
 
         # duplicates should not be filtered
-        self.assertEqual(list(s._all_locations()), [loc1, loc1, loc2,
+        self.assertEqual(list(s._all_locations()), [loc1, loc1, loc2, loc4,
                                                     loc1, loc2, loc3,
                                                     loc2, loc2])
 
