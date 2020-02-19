@@ -571,7 +571,9 @@ _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
 _ihm_ensemble_info.details
-1 'cluster 1' . 1 . . 1 1 . . .
+_ihm_ensemble_info.sub_sample_flag
+_ihm_ensemble_info.sub_sampling_type
+1 'cluster 1' . 1 . . 1 1 . . . NO .
 #
 """)
 
