@@ -54,8 +54,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as l:
             # Update to match the version of the IHM dictionary we support:
-            l.write(dict_name="ihm-extension.dic", dict_version="1.06",
-                    dict_location=self.URL % "3216cc8")
+            l.write(dict_name="ihm-extension.dic", dict_version="1.08",
+                    dict_location=self.URL % "b7b63aa")
 
 
 class _StructDumper(Dumper):
@@ -1310,6 +1310,10 @@ class _EnsembleDumper(Dumper):
             e._id = ne + 1
 
     def dump(self, system, writer):
+        self.dump_info(system, writer)
+        self.dump_subsamples(system, writer)
+
+    def dump_info(self, system, writer):
         with writer.loop("_ihm_ensemble_info",
                          ["ensemble_id", "ensemble_name", "post_process_id",
                           "model_group_id", "ensemble_clustering_method",
@@ -1317,8 +1321,13 @@ class _EnsembleDumper(Dumper):
                           "num_ensemble_models",
                           "num_ensemble_models_deposited",
                           "ensemble_precision_value",
-                          "ensemble_file_id", "details"]) as l:
+                          "ensemble_file_id", "details",
+                          "sub_sample_flag", "sub_sampling_type"]) as l:
             for e in system.ensembles:
+                if e.subsamples:
+                    sstype = e.subsamples[0].sub_sampling_type
+                else:
+                    sstype = None
                 l.write(ensemble_id=e._id, ensemble_name=e.name,
                         post_process_id=e.post_process._id if e.post_process
                                         else None,
@@ -1329,7 +1338,30 @@ class _EnsembleDumper(Dumper):
                         num_ensemble_models_deposited=e.num_models_deposited,
                         ensemble_precision_value=e.precision,
                         ensemble_file_id=e.file._id if e.file else None,
-                        details=e.details)
+                        details=e.details,
+                        sub_sample_flag=len(e.subsamples) > 0,
+                        sub_sampling_type=sstype)
+
+    def dump_subsamples(self, system, writer):
+        ordinal = 1
+        with writer.loop("_ihm_ensemble_sub_sample",
+                         ["id", "name", "ensemble_id", "num_models",
+                          "num_models_deposited", "model_group_id",
+                          "file_id"]) as l:
+            for e in system.ensembles:
+                for s in e.subsamples:
+                    l.write(id=ordinal, name=s.name, ensemble_id=e._id,
+                            num_models=s.num_models,
+                            num_models_deposited=s.num_models_deposited,
+                            model_group_id=s.model_group._id
+                                           if s.model_group else None,
+                            file_id=s.file._id if s.file else None)
+                    if type(s) != type(e.subsamples[0]):
+                        raise TypeError(
+                            "Subsamples are not all of the same type "
+                            "(%s vs %s) for ensemble %s"
+                            % (s, e.subsamples[0], e))
+                    ordinal += 1
 
 
 class _DensityDumper(Dumper):

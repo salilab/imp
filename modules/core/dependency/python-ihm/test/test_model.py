@@ -90,6 +90,30 @@ class Tests(unittest.TestCase):
         self.assertEqual(e.file, 'foo')
         self.assertEqual(e.asym_unit, 'bar')
 
+    def test_subsample(self):
+        """Test Subsample classes"""
+        s = ihm.model.Subsample("foo", num_models=42)
+        self.assertEqual(s.name, 'foo')
+        self.assertEqual(s.sub_sampling_type, 'other')
+        self.assertEqual(s.num_models, 42)
+        self.assertIsNone(s.model_group)
+        self.assertIsNone(s.file)
+        self.assertEqual(s.num_models_deposited, 0)
+
+        mg = ihm.model.ModelGroup(['model1'], name='foo')
+        s = ihm.model.RandomSubsample("foo", num_models=4, model_group=mg)
+        self.assertEqual(s.name, 'foo')
+        self.assertEqual(s.sub_sampling_type, 'random')
+        self.assertEqual(s.num_models, 4)
+        self.assertIs(s.model_group, mg)
+        self.assertIsNone(s.file)
+        self.assertEqual(s.num_models_deposited, 1)
+
+        f = 'foo'
+        s = ihm.model.IndependentSubsample("foo", num_models=4, file=f)
+        self.assertEqual(s.sub_sampling_type, 'independent')
+        self.assertIs(s.file, f)
+
     def test_state(self):
         """Test State class"""
         s = ihm.model.State(name='foo')

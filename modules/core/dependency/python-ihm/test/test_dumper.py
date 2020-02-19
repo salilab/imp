@@ -1945,10 +1945,20 @@ N
         loc._id = 3
         e2 = ihm.model.Ensemble(model_group=group, num_models=10,
                                 file=loc, details='test details')
+
+        ss1 = ihm.model.IndependentSubsample(name='ss1', num_models=5)
+        ss2 = ihm.model.IndependentSubsample(name='ss2', num_models=5,
+                                             model_group=group, file=loc)
+        ss3 = ihm.model.RandomSubsample(name='ss3', num_models=5)
+        e2.subsamples.extend((ss1, ss2, ss3))
         system.ensembles.extend((e1, e2))
 
         dumper = ihm.dumper._EnsembleDumper()
         dumper.finalize(system) # assign IDs
+
+        # Should raise an error since ss3 is not the same type as ss1/ss2
+        self.assertRaises(TypeError, _get_dumper_output, dumper, system)
+        del e2.subsamples[2]
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -1964,8 +1974,22 @@ _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
 _ihm_ensemble_info.details
-1 cluster1 99 42 Hierarchical RMSD 10 2 4.200 . .
-2 . . 42 . . 10 2 . 3 'test details'
+_ihm_ensemble_info.sub_sample_flag
+_ihm_ensemble_info.sub_sampling_type
+1 cluster1 99 42 Hierarchical RMSD 10 2 4.200 . . NO .
+2 . . 42 . . 10 2 . 3 'test details' YES independent
+#
+#
+loop_
+_ihm_ensemble_sub_sample.id
+_ihm_ensemble_sub_sample.name
+_ihm_ensemble_sub_sample.ensemble_id
+_ihm_ensemble_sub_sample.num_models
+_ihm_ensemble_sub_sample.num_models_deposited
+_ihm_ensemble_sub_sample.model_group_id
+_ihm_ensemble_sub_sample.file_id
+1 ss1 2 5 0 . .
+2 ss2 2 5 2 42 3
 #
 """)
 

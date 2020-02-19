@@ -1600,11 +1600,16 @@ class _MultiStateLinkHandler(Handler):
 class _EnsembleHandler(Handler):
     category = '_ihm_ensemble_info'
 
+    # Map subsample type to corresponding subclass
+    _type_map = dict((x[1].sub_sampling_type.lower(), x[1])
+                     for x in inspect.getmembers(ihm.model, inspect.isclass)
+                     if issubclass(x[1], ihm.model.Subsample))
+
     def __call__(self, ensemble_id, model_group_id, post_process_id,
                  ensemble_file_id, num_ensemble_models,
                  ensemble_precision_value, ensemble_name,
                  ensemble_clustering_method, ensemble_clustering_feature,
-                 details):
+                 details, sub_sampling_type):
         ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
         mg = self.sysr.model_groups.get_by_id_or_none(model_group_id)
         pp = self.sysr.analysis_steps.get_by_id_or_none(post_process_id)
@@ -1613,6 +1618,8 @@ class _EnsembleHandler(Handler):
         ensemble.model_group = mg
         ensemble.num_models = self.get_int(num_ensemble_models)
         ensemble.precision = self.get_float(ensemble_precision_value)
+        if sub_sampling_type:
+            ensemble._sub_sampling_type = sub_sampling_type.lower()
         # note that num_ensemble_models_deposited is ignored (should be size of
         # model group anyway)
         ensemble.post_process = pp
@@ -1622,6 +1629,31 @@ class _EnsembleHandler(Handler):
                 mapkeys={'ensemble_name':'name',
                          'ensemble_clustering_method':'clustering_method',
                          'ensemble_clustering_feature':'clustering_feature'})
+
+
+    def finalize(self):
+        for e in self.sysr.system.ensembles:
+            if hasattr(e, '_sub_sampling_type'):
+                t = self._type_map.get(e._sub_sampling_type,
+                                       ihm.model.Subsample)
+                for s in e.subsamples:
+                    s.__class__ = t
+                del e._sub_sampling_type
+
+
+class _SubsampleHandler(Handler):
+    category = '_ihm_ensemble_sub_sample'
+
+    def __call__(self, name, ensemble_id, num_models, model_group_id, file_id):
+        ensemble = self.sysr.ensembles.get_by_id(ensemble_id)
+        mg = self.sysr.model_groups.get_by_id_or_none(model_group_id)
+        f = self.sysr.external_files.get_by_id_or_none(file_id)
+
+        # We don't know the type yet (not until ensemble is read); this
+        # will be corrected by EnsembleHandler.finalize()
+        ss = ihm.model.Subsample(name=name, num_models=self.get_int(num_models),
+                                 model_group=mg, file=f)
+        ensemble.subsamples.append(ss)
 
 
 class _DensityHandler(Handler):
@@ -2956,6 +2988,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               _ModelGroupHandler(s), _ModelGroupLinkHandler(s),
               _MultiStateHandler(s), _MultiStateLinkHandler(s),
               _EnsembleHandler(s), _DensityHandler(s),
+              _SubsampleHandler(s),
               _EM3DRestraintHandler(s), _EM2DRestraintHandler(s),
               _EM2DFittingHandler(s), _SASRestraintHandler(s),
               _SphereObjSiteHandler(s), _AtomSiteHandler(s),

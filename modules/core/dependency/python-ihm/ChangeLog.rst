@@ -8,6 +8,8 @@ HEAD
  - :class:`ihm.restraint.PseudoSiteFeature` now references an underlying
    :class:`ihm.restraint.PseudoSite`, allowing a single pseudo site to be
    shared between a feature and a cross-link if desired.
+ - :class:`ihm.model.Ensemble` now supports describing subsamples from which
+   the ensemble was constructed; see :class:`ihm.model.Subsample`.
 
 0.13 - 2019-11-14
 =================

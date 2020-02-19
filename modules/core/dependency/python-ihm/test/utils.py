@@ -14,6 +14,8 @@ if not hasattr(unittest.TestCase, 'assertIn'):
         return self.assertTrue(member not in container,
                         msg or '%s unexpectedly found in %s'
                         % (member, container))
+    def assertIs(self, a, b, msg=None):
+        return self.assertTrue(a is b, msg or '%s is not %s' % (a, b))
     def assertIsInstance(self, obj, cls, msg=None):
         return self.assertTrue(isinstance(obj, cls),
                         msg or '%s is not an instance of %s' % (obj, cls))
@@ -33,6 +35,7 @@ if not hasattr(unittest.TestCase, 'assertIn'):
         return self.assertTrue(obj is not None, msg or 'unexpectedly None')
     unittest.TestCase.assertIn = assertIn
     unittest.TestCase.assertNotIn = assertNotIn
+    unittest.TestCase.assertIs = assertIs
     unittest.TestCase.assertIsInstance = assertIsInstance
     unittest.TestCase.assertLess = assertLess
     unittest.TestCase.assertGreater = assertGreater

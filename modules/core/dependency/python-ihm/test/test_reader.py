@@ -1258,8 +1258,23 @@ _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
 _ihm_ensemble_info.details
-1 'Cluster 1' 2 3 . dRMSD 1257 1 15.400 9 .
-2 'Cluster 2' 2 . . dRMSD 1257 1 15.400 9 'cluster details'
+_ihm_ensemble_info.sub_sample_flag
+_ihm_ensemble_info.sub_sampling_type
+1 'Cluster 1' 2 3 . dRMSD 1257 1 15.400 9 . . .
+2 'Cluster 2' 2 . . dRMSD 1257 1 15.400 9 'cluster details' YES independent
+#
+#
+loop_
+_ihm_ensemble_sub_sample.id
+_ihm_ensemble_sub_sample.name
+_ihm_ensemble_sub_sample.ensemble_id
+_ihm_ensemble_sub_sample.num_models
+_ihm_ensemble_sub_sample.num_models_deposited
+_ihm_ensemble_sub_sample.model_group_id
+_ihm_ensemble_sub_sample.file_id
+1 ss1 2 5 0 . .
+2 ss2 2 5 2 42 3
+#
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
@@ -1275,6 +1290,17 @@ _ihm_ensemble_info.details
             self.assertEqual(e.file._id, '9')
             self.assertIsNone(e2.model_group)
             self.assertEqual(e2.details, 'cluster details')
+            s1, s2 = e2.subsamples
+            self.assertEqual(s1.name, 'ss1')
+            self.assertEqual(s1.num_models, 5)
+            self.assertIsNone(s1.model_group)
+            self.assertIsNone(s1.file)
+            self.assertIsInstance(s1, ihm.model.IndependentSubsample)
+            self.assertEqual(s2.name, 'ss2')
+            self.assertEqual(s2.num_models, 5)
+            self.assertEqual(s2.model_group._id, '42')
+            self.assertEqual(s2.file._id, '3')
+            self.assertIsInstance(s2, ihm.model.IndependentSubsample)
 
     def test_density_handler(self):
         """Test DensityHandler"""
