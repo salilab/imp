@@ -1127,8 +1127,10 @@ _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
 _ihm_ensemble_info.details
-1 'Ensemble 1 in state State_0' 99 1 . dRMSD 5 1 0.100 . .
-2 'Ensemble 2 in state State_0' 99 2 . dRMSD 5 1 0.100 42 .
+_ihm_ensemble_info.sub_sample_flag
+_ihm_ensemble_info.sub_sampling_type
+1 'Ensemble 1 in state State_0' 99 1 . dRMSD 5 1 0.100 . . NO .
+2 'Ensemble 2 in state State_0' 99 2 . dRMSD 5 1 0.100 42 . NO .
 #
 """)
 
