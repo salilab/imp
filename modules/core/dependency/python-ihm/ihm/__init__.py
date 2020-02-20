@@ -615,6 +615,11 @@ class Citation(object):
             if len(rng) == 2 and len(rng[1]) < len(rng[0]):
                 # map ranges like "2730-43" to 2730,2743 not 2730, 43
                 rng[1] = rng[0][:len(rng[0])-len(rng[1])] + rng[1]
+            # Handle one page or empty page range
+            if len(rng) == 1:
+                rng = rng[0]
+            if rng == '':
+                rng = None
             return rng
         # JSON values are always Unicode, but on Python 2 we want non-Unicode
         # strings, so convert to ASCII
@@ -635,7 +640,8 @@ class Citation(object):
                    if x['authtype'] == 'Author']
 
         return cls(pmid=pubmed_id, title=enc(ref['title']),
-                   journal=enc(ref['source']), volume=enc(ref['volume']),
+                   journal=enc(ref['source']),
+                   volume=enc(ref['volume']) or None,
                    page_range=get_page_range(ref),
                    year=enc(ref['pubdate']).split()[0],
                    authors=authors, doi=get_doi(ref))

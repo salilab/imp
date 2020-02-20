@@ -10,6 +10,9 @@ HEAD
    shared between a feature and a cross-link if desired.
  - :class:`ihm.model.Ensemble` now supports describing subsamples from which
    the ensemble was constructed; see :class:`ihm.model.Subsample`.
+ - Bugfix: :meth:`ihm.Citation.from_pubmed_id` now works correctly when the
+   journal volume or page range are empty, or the page "range" is just a
+   single page.
 
 0.13 - 2019-11-14
 =================

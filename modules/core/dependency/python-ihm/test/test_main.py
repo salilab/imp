@@ -278,6 +278,17 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(c.authors), 32)
         self.assertEqual(c.authors[0], 'Kim SJ')
 
+    def test_citation_from_pubmed_id_one_page(self):
+        """Test Citation.from_pubmed_id() with page rather than range"""
+        c = self._get_from_pubmed_id('pubmed_api_one_page.json')
+        self.assertEqual(c.page_range, '475')
+
+    def test_citation_from_pubmed_id_no_volume_page(self):
+        """Test Citation.from_pubmed_id() with no volume or page info"""
+        c = self._get_from_pubmed_id('pubmed_api_no_pages.json')
+        self.assertIsNone(c.page_range)
+        self.assertIsNone(c.volume)
+
     def test_citation_from_pubmed_id_no_doi(self):
         """Test Citation.from_pubmed_id() with no DOI"""
         c = self._get_from_pubmed_id('pubmed_api_no_doi.json')
@@ -666,7 +677,12 @@ class Tests(unittest.TestCase):
         ss2.file = loc4
         ensemble.densities = [density]
         ensemble.subsamples = [ss1, ss2]
-        s.ensembles.append(ensemble)
+
+        ensemble2 = MockObject()
+        ensemble2.file = None
+        ensemble2.densities = []
+        ensemble2.subsamples = []
+        s.ensembles.extend((ensemble, ensemble2))
 
         start_model = MockObject()
         start_model.dataset = None
