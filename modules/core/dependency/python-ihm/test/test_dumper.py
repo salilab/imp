@@ -3100,18 +3100,18 @@ _ihm_predicted_contact_restraint.software_id
         ## Chem descriptor ID 4
         cur_chem_descriptor_modified_residue = ihm.ChemDescriptor(
                         auth_name='Modified_residue', smiles='Modified')
-        cur_chem_descriptor_mutated_residue = ihm.ChemDescriptor(
-                        auth_name='Mutated_residue', smiles='Mutated')
+        cur_chem_comp_mutated_residue = ihm.ChemComp(
+                        id='Cys',code='C',code_canonical='C')
 
         cur_chem_descriptor_modified_residue._id = 4
-        cur_chem_descriptor_mutated_residue._id = 5
+#        cur_chem_comp_mutated_residue._id = 5
         ## Poly_probe_position
         cur_poly_probe_position_1 = ihm.flr.PolyProbePosition(
                       resatom=cur_entity_1.residue(1), # no atom ID given
                       mutation_flag=True,
                       modification_flag=True, auth_name='Position_1',
-                      mutated_chem_descriptor=
-                                cur_chem_descriptor_mutated_residue,
+                      mutated_chem_comp_id=
+                                cur_chem_comp_mutated_residue,
                       modified_chem_descriptor=
                                 cur_chem_descriptor_modified_residue)
         cur_poly_probe_position_2 = ihm.flr.PolyProbePosition(
@@ -3122,8 +3122,8 @@ _ihm_predicted_contact_restraint.software_id
                       resatom=cur_entity_2.residue(10).atom('CB'),
                       mutation_flag=True,
                       modification_flag=True, auth_name='Position_3',
-                      mutated_chem_descriptor=
-                                cur_chem_descriptor_mutated_residue,
+                      mutated_chem_comp_id=
+                                cur_chem_comp_mutated_residue,
                       modified_chem_descriptor=
                                  cur_chem_descriptor_modified_residue)
         ## Sample_probe_details
@@ -3374,6 +3374,8 @@ _ihm_predicted_contact_restraint.software_id
         ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
         ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
 
+        ihm.dumper._ChemCompDumper().finalize(system)
+
         experiment_dumper = ihm.dumper._FLRExperimentDumper()
         experiment_dumper.finalize(system)
 
@@ -3586,10 +3588,10 @@ _flr_poly_probe_position.auth_name
 #
 loop_
 _flr_poly_probe_position_mutated.id
-_flr_poly_probe_position_mutated.chem_descriptor_id
+_flr_poly_probe_position_mutated.chem_comp_id
 _flr_poly_probe_position_mutated.atom_id
-1 5 .
-2 5 CB
+1 Cys .
+2 Cys CB
 #
 #
 loop_

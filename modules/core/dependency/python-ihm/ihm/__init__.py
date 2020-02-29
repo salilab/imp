@@ -19,7 +19,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.13'
+__version__ = '0.14'
 
 class __UnknownValue(object):
     # Represent the mmCIF 'unknown' special value

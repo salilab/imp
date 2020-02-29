@@ -3051,24 +3051,24 @@ _flr_poly_probe_position_modified.atom_id
         fh = StringIO("""
 loop_
 _flr_poly_probe_position_mutated.id
-_flr_poly_probe_position_mutated.chem_descriptor_id
+_flr_poly_probe_position_mutated.chem_comp_id
 _flr_poly_probe_position_mutated.atom_id
-1 4 .
-2 4 CB
+1 Ala .
+2 Cys CB
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
         self.assertEqual(sorted(flr._collection_flr_poly_probe_position.keys()),
                          ['1', '2'])
         p1 = flr._collection_flr_poly_probe_position['1']
-        self.assertIsInstance(p1.mutated_chem_descriptor,
-                              ihm.ChemDescriptor)
-        self.assertEqual(p1.mutated_chem_descriptor._id, '4')
+        self.assertIsInstance(p1.mutated_chem_comp_id,
+                              ihm.ChemComp)
+        self.assertEqual(p1.mutated_chem_comp_id.id, 'Ala')
 
         p2 = flr._collection_flr_poly_probe_position['2']
-        self.assertIsInstance(p2.mutated_chem_descriptor,
-                              ihm.ChemDescriptor)
-        self.assertEqual(p2.mutated_chem_descriptor._id, '4')
+        self.assertIsInstance(p2.mutated_chem_comp_id,
+                              ihm.ChemComp)
+        self.assertEqual(p2.mutated_chem_comp_id.id, 'Cys')
 
     def test_flr_poly_probe_conjugate_handler(self):
         """Test FLRPolyProbeConjugateHandler"""

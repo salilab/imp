@@ -143,13 +143,13 @@ class Tests(unittest.TestCase):
                                       mutation_flag = True,
                                       modification_flag = True,
                                       auth_name = 'foo3',
-                                      mutated_chem_descriptor = 'foobar',
+                                      mutated_chem_comp_id = 'foobar',
                                       modified_chem_descriptor = 'foobar2')
         self.assertEqual(p.resatom, 'foo')
         self.assertEqual(p.mutation_flag, True)
         self.assertEqual(p.modification_flag, True)
         self.assertEqual(p.auth_name, 'foo3')
-        self.assertEqual(p.mutated_chem_descriptor, 'foobar')
+        self.assertEqual(p.mutated_chem_comp_id, 'foobar')
         self.assertEqual(p.modified_chem_descriptor, 'foobar2')
 
     def test_poly_probe_position_eq(self):
@@ -158,19 +158,19 @@ class Tests(unittest.TestCase):
                                           mutation_flag = True,
                                           modification_flag = True,
                                           auth_name = 'foo3',
-                                          mutated_chem_descriptor = 'foobar',
+                                          mutated_chem_comp_id = 'foobar',
                                           modified_chem_descriptor = 'foobar2')
         p_equal = ihm.flr.PolyProbePosition(resatom='foo',
                                             mutation_flag = True,
                                             modification_flag = True,
                                             auth_name = 'foo3',
-                                            mutated_chem_descriptor = 'foobar',
+                                            mutated_chem_comp_id = 'foobar',
                                             modified_chem_descriptor='foobar2')
         p_unequal = ihm.flr.PolyProbePosition(resatom='bar',
                                         mutation_flag = True,
                                         modification_flag = True,
                                         auth_name = 'foo3',
-                                        mutated_chem_descriptor = 'foobar',
+                                        mutated_chem_comp_id = 'foobar',
                                         modified_chem_descriptor = 'foobar2')
 
         self.assertTrue(p_ref == p_equal)
@@ -1242,7 +1242,7 @@ class Tests(unittest.TestCase):
         # Define poly probe positions
         this_poly_probe_position_1 = ihm.flr.PolyProbePosition(
                             resatom='foo', mutation_flag=True,
-                            mutated_chem_descriptor='Mutated_Chem_descriptor_1',
+                            mutated_chem_comp_id='Mutated_Chem_comp_id_1',
                             modification_flag= False)
         this_poly_probe_position_2 = ihm.flr.PolyProbePosition(
                          resatom='foo', mutation_flag=False,
@@ -1253,7 +1253,7 @@ class Tests(unittest.TestCase):
                          modification_flag=False)
         this_poly_probe_position_4 = ihm.flr.PolyProbePosition(
                             resatom='foo', mutation_flag=True,
-                            mutated_chem_descriptor='Mutated_Chem_descriptor_2')
+                            mutated_chem_comp_id='Mutated_Chem_comp_id_2')
         this_poly_probe_position_5 = ihm.flr.PolyProbePosition(
                             resatom='foo', modification_flag=True,
                             modified_chem_descriptor='Modified_Chem_descriptor_2')
@@ -1322,15 +1322,12 @@ class Tests(unittest.TestCase):
         descs = list(f._all_flr_chemical_descriptors())
         self.assertEqual(descs,
                 ['This_reactive_probe_desc_1', 'This_chromophore_desc_1',
-                 'Mutated_Chem_descriptor_1',
                  'This_reactive_probe_desc_2', 'This_chromophore_desc_2',
                  'Modified_Chem_descriptor_1',
                  'Ref_reactive_probe_desc', 'Ref_chromophore_desc',
-                 'Mutated_Chem_descriptor_2',
                  'Ref_reactive_probe_desc', 'Ref_chromophore_desc',
                  'Modified_Chem_descriptor_2',
                  'This_reactive_probe_desc_1', 'This_chromophore_desc_1',
-                 'Mutated_Chem_descriptor_1',
                  'This_reactive_probe_desc_3', 'This_chromophore_desc_3',
                  'Conjugate_probe_desc'])
 

@@ -2356,14 +2356,14 @@ class _FLRPolyProbePositionDumper(Dumper):
 
     def dump_position_mutated(self, system, writer):
         with writer.loop('_flr_poly_probe_position_mutated',
-                         ['id','chem_descriptor_id','atom_id']) as l:
+                         ['id','chem_comp_id','atom_id']) as l:
             for x in self._positions_by_id:
                 if x.mutation_flag == True:
                     atom = None
                     if isinstance(x.resatom, ihm.Atom):
                         atom = x.resatom.id
                     l.write(id=x._id,
-                            chem_descriptor_id=x.mutated_chem_descriptor._id,
+                            chem_comp_id=x.mutated_chem_comp_id.id,
                             atom_id=atom)
 
     def dump_position_modified(self, system, writer):
@@ -2651,7 +2651,7 @@ class _FLRModelQualityDumper(Dumper):
                          ['model_id', 'chi_square_reduced', 'dataset_group_id',
                           'method', 'details']) as l:
             for x in self._model_qualities_by_id:
-                l.write(model_id=x._id,
+                l.write(model_id=x.model._id,
                         chi_square_reduced=x.chi_square_reduced,
                         dataset_group_id=x.dataset_group._id,
                         method=x.method, details=x.details)

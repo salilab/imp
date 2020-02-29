@@ -2560,10 +2560,10 @@ class _FLRPolyProbePositionModifiedHandler(Handler):
 class _FLRPolyProbePositionMutatedHandler(Handler):
     category = '_flr_poly_probe_position_mutated'
 
-    def __call__(self, id, chem_descriptor_id, atom_id):
+    def __call__(self, id, chem_comp_id, atom_id):
         ppos = self.sysr.flr_poly_probe_positions.get_by_id(id)
-        ppos.mutated_chem_descriptor = \
-                self.sysr.chem_descriptors.get_by_id_or_none(chem_descriptor_id)
+        ppos.mutated_chem_comp_id = \
+                self.sysr.chem_comps.get_by_id(chem_comp_id)
 
 
 class _FLRPolyProbeConjugateHandler(Handler):

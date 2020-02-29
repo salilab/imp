@@ -326,6 +326,67 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.name, 'Phyre2')
         self.assertEqual(s.version, '2.0')
 
+    def test_swiss_model_monomer(self):
+        """Test PDBParser when given a SWISS-MODEL monomer model."""
+        pdbname = utils.get_input_file_name(TOPDIR, 'swiss_model.pdb')
+        p = self._parse_pdb(pdbname)
+        s, = p['software']
+        self.assertEqual(s.name, 'SWISS-MODEL')
+        self.assertIn('using PROMOD3 engine', s.description)
+        self.assertEqual(s.version, '1.3.0')
+        s, = p['templates']['B']
+        self.assertEqual(s.asym_id, 'B')
+        self.assertEqual(s.seq_id_range, (15,244))
+        self.assertEqual(s.template_seq_id_range, (1,229))
+        self.assertAlmostEqual(float(s.sequence_identity), 40.35, places=1)
+        self.assertEqual(s.sequence_identity.denominator,
+            ihm.startmodel.SequenceIdentityDenominator.NUM_ALIGNED_WITHOUT_GAPS)
+        # alignment is also stored in the PDB file
+        self.assertEqual(s.alignment_file.path, pdbname)
+        dataset = p['dataset']
+        self.assertEqual(dataset.data_type, 'Comparative model')
+        self.assertEqual(dataset.location.path, pdbname)
+        self.assertIsNone(dataset.location.repo)
+        self.assertEqual(dataset.location.details,
+                         'Starting model structure')
+        parent, = dataset.parents
+        self.assertEqual(parent.data_type, 'Experimental model')
+        self.assertEqual(parent.location.db_name, 'PDB')
+        self.assertEqual(parent.location.access_code, '3j9w')
+        self.assertIsNone(parent.location.version)
+        self.assertIsNone(parent.location.details)
+
+    def test_swiss_model_multimer(self):
+        """Test PDBParser when given a SWISS-MODEL multimer model."""
+        pdbname = utils.get_input_file_name(TOPDIR, 'swiss_model_multimer.pdb')
+        p = self._parse_pdb(pdbname)
+        s, = p['software']
+        self.assertEqual(s.name, 'SWISS-MODEL')
+        self.assertIn('using PROMOD3 engine', s.description)
+        self.assertEqual(s.version, '2.0.0')
+        self.assertEqual(sorted(p['templates'].keys()), ['A', 'B', 'C', 'D'])
+        s, = p['templates']['C']
+        self.assertEqual(s.asym_id, 'C')
+        self.assertEqual(s.seq_id_range, (14,1356))
+        self.assertEqual(s.template_seq_id_range, (8,1340))
+        self.assertAlmostEqual(float(s.sequence_identity), 40.95, places=1)
+        self.assertEqual(s.sequence_identity.denominator,
+            ihm.startmodel.SequenceIdentityDenominator.NUM_ALIGNED_WITHOUT_GAPS)
+        # alignment is also stored in the PDB file
+        self.assertEqual(s.alignment_file.path, pdbname)
+        dataset = p['dataset']
+        self.assertEqual(dataset.data_type, 'Comparative model')
+        self.assertEqual(dataset.location.path, pdbname)
+        self.assertIsNone(dataset.location.repo)
+        self.assertEqual(dataset.location.details,
+                         'Starting model structure')
+        parent, = dataset.parents
+        self.assertEqual(parent.data_type, 'Experimental model')
+        self.assertEqual(parent.location.db_name, 'PDB')
+        self.assertEqual(parent.location.access_code, '6flq')
+        self.assertIsNone(parent.location.version)
+        self.assertIsNone(parent.location.details)
+
     def test_unknown_model(self):
         """Test PDBParser when given an unknown model."""
         pdbname = utils.get_input_file_name(TOPDIR, 'unknown_model.pdb')
@@ -339,6 +400,11 @@ class Tests(unittest.TestCase):
         self.assertIsNone(dataset.location.repo)
         self.assertEqual(dataset.location.details,
                          'Starting model structure')
+
+    def test_get_aligned_region_empty(self):
+        """Test _get_aligned_region() with empty alignment"""
+        self.assertRaises(ValueError, ihm.metadata._get_aligned_region,
+                          'AAAA', '----')
 
 
 if __name__ == '__main__':

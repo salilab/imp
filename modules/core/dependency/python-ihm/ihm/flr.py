@@ -147,23 +147,23 @@ class PolyProbePosition(object):
               (e.g. replacement of a residue with a labeled residue in
               case of nucleic acids).
        :param str auth_name: An author-given name for the position.
-       :param mutated_chem_descriptor: The chemical descriptor of the
+       :param mutated_chem_comp_id: The chemical component ID of the
               mutated residue.
-       :type mutated_chem_descriptor: :class:`ihm.ChemDescriptor`
+       :type modified_chem_descriptor: :class:`ihm.ChemComp`
        :param modified_chem_descriptor: The chemical descriptor of the
               modified residue.
        :type modified_chem_descriptor: :class:`ihm.ChemDescriptor`
     """
 
     def __init__(self, resatom, mutation_flag=False, modification_flag=False,
-                 auth_name=None, mutated_chem_descriptor=None,
+                 auth_name=None, mutated_chem_comp_id=None,
                  modified_chem_descriptor=None):
         self.resatom = resatom
         self.mutation_flag = mutation_flag
         self.modification_flag = modification_flag
         self.auth_name = auth_name
         if self.mutation_flag:
-            self.mutated_chem_descriptor = mutated_chem_descriptor
+            self.mutated_chem_comp_id = mutated_chem_comp_id
         if self.modification_flag:
             self.modified_chem_descriptor = modified_chem_descriptor
 
@@ -1129,9 +1129,6 @@ class FLRData(object):
                     yield probe.probe_descriptor.chromophore_chem_descriptor
                     # collect from the poly_probe_position
                     pos = this_sample_probe.poly_probe_position
-                    # mutated chem descriptor
-                    if pos.mutation_flag:
-                        yield pos.mutated_chem_descriptor
                     # modified chem descriptor
                     if pos.modification_flag:
                         yield pos.modified_chem_descriptor
@@ -1151,9 +1148,6 @@ class FLRData(object):
                         yield probe.probe_descriptor.chromophore_chem_descriptor
                         # collect from the poly_probe_position
                         pos = this_ref_sample_probe.poly_probe_position
-                        # mutated chem descriptor
-                        if pos.mutation_flag:
-                            yield pos.mutated_chem_descriptor
                         # modified chem descriptor
                         if pos.modification_flag:
                             yield pos.modified_chem_descriptor
