@@ -477,6 +477,11 @@ foreach(mod ${enabled_modules})
          "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
     file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
          "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
+  elseif (WIN32)
+    file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/imp_${mod}.dll\" )\n")
+    file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
+         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/imp_${mod}.dll\" )\n")
   else()
     file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
          "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.so.${modver}\" )\n")
