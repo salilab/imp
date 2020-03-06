@@ -99,6 +99,36 @@ public:
     return floats_[i].second;
   }
 
+  //! Add a list of Int values referenced by the given key
+  void add_ints(std::string key, Ints value);
+
+  //! Get the number of Ints that have been added
+  unsigned get_number_of_ints() const { return ints_.size(); }
+
+  //! Get the key for the ith Ints mapping
+  std::string get_ints_key(unsigned i) const { return ints_[i].first; }
+
+  //! Get the value for the ith Ints mapping
+  Ints get_ints_value(unsigned i) const {
+    return ints_[i].second;
+  }
+
+  //! Add a list of string values referenced by the given key
+  void add_strings(std::string key, Strings value);
+
+  //! Get the number of strings that have been added
+  unsigned get_number_of_strings() const { return strings_.size(); }
+
+  //! Get the key for the ith strings mapping
+  std::string get_strings_key(unsigned i) const {
+    return strings_[i].first;
+  }
+
+  //! Get the value for the ith strings mapping
+  Strings get_strings_value(unsigned i) const {
+    return strings_[i].second;
+  }
+
   //! Add a list of filename values referenced by the given key
   /** Filenames are treated similarly to strings but the caller is expected
       to make them absolute paths before adding them here. When written to
@@ -134,7 +164,11 @@ private:
   typedef std::pair<std::string, Floats> FloatsData;
   std::vector<FloatsData> floats_;
 
+  typedef std::pair<std::string, Ints> IntsData;
+  std::vector<IntsData> ints_;
+
   typedef std::pair<std::string, Strings> StringsData;
+  std::vector<StringsData> strings_;
   std::vector<StringsData> filenames_;
 };
 

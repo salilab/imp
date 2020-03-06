@@ -151,6 +151,8 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   RMF::StringKeys sks_;
   RMF::FloatKeys fks_;
   RMF::FloatsKeys fsks_;
+  RMF::IntsKeys isks_;
+  RMF::StringsKeys ssks_;
   RMF::StringKeys filenameks_;
   RMF::StringsKeys filenamesks_;
 
@@ -244,6 +246,22 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         r->get_info()->add_floats(fh.get_name(k), value);
       }
     }
+    RMF_FOREACH(RMF::IntsKey k, isks_) {
+      if (!nh.get_value(k).get_is_null()) {
+        // No automatic conversion from RMF::Ints to IMP::Ints
+        RMF::Ints rvalue = nh.get_value(k);
+        Ints value(rvalue.begin(), rvalue.end());
+        r->get_info()->add_ints(fh.get_name(k), value);
+      }
+    }
+    RMF_FOREACH(RMF::StringsKey k, ssks_) {
+      if (!nh.get_value(k).get_is_null()) {
+        // No automatic conversion from RMF::Strings to IMP::Strings
+        RMF::Strings rvalue = nh.get_value(k);
+        Strings value(rvalue.begin(), rvalue.end());
+        r->get_info()->add_strings(fh.get_name(k), value);
+      }
+    }
     RMF_FOREACH(RMF::StringsKey k, filenamesks_) {
       if (!nh.get_value(k).get_is_null()) {
         RMF::Strings rvalue = nh.get_value(k);
@@ -271,6 +289,8 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     fks_ = fh.get_keys<RMF::FloatTraits>(imp_restraint_cat_);
     sks_ = fh.get_keys<RMF::StringTraits>(imp_restraint_cat_);
     fsks_ = fh.get_keys<RMF::FloatsTraits>(imp_restraint_cat_);
+    isks_ = fh.get_keys<RMF::IntsTraits>(imp_restraint_cat_);
+    ssks_ = fh.get_keys<RMF::StringsTraits>(imp_restraint_cat_);
     filenameks_ = fh.get_keys<RMF::StringTraits>(imp_restraint_fn_cat_);
     filenamesks_ = fh.get_keys<RMF::StringsTraits>(imp_restraint_fn_cat_);
   }
@@ -420,6 +440,22 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       RMF::Floats rvalue(value.begin(), value.end());
       nh.set_frame_value(key, rvalue);
     }
+    for (i = 0; i < ri->get_number_of_ints(); ++i) {
+      RMF::IntsKey key = fh.get_key<RMF::IntsTraits>(
+                             imp_restraint_cat_, ri->get_ints_key(i));
+      // No automatic conversion from IMP::Ints to RMF::Ints
+      Ints value = ri->get_ints_value(i);
+      RMF::Ints rvalue(value.begin(), value.end());
+      nh.set_frame_value(key, rvalue);
+    }
+    for (i = 0; i < ri->get_number_of_strings(); ++i) {
+      RMF::StringsKey key = fh.get_key<RMF::StringsTraits>(
+                             imp_restraint_cat_, ri->get_strings_key(i));
+      // No automatic conversion from IMP::Strings to RMF::Strings
+      Strings value = ri->get_strings_value(i);
+      RMF::Strings rvalue(value.begin(), value.end());
+      nh.set_frame_value(key, rvalue);
+    }
     for (i = 0; i < ri->get_number_of_filenames(); ++i) {
       RMF::StringsKey key = fh.get_key<RMF::StringsTraits>(
                              imp_restraint_fn_cat_, ri->get_filenames_key(i));
@@ -468,6 +504,22 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       // No automatic conversion from IMP::Floats to RMF::Floats
       Floats value = ri->get_floats_value(i);
       RMF::Floats rvalue(value.begin(), value.end());
+      nh.set_static_value(key, rvalue);
+    }
+    for (i = 0; i < ri->get_number_of_ints(); ++i) {
+      RMF::IntsKey key = fh.get_key<RMF::IntsTraits>(
+                             imp_restraint_cat_, ri->get_ints_key(i));
+      // No automatic conversion from IMP::Ints to RMF::Ints
+      Ints value = ri->get_ints_value(i);
+      RMF::Ints rvalue(value.begin(), value.end());
+      nh.set_static_value(key, rvalue);
+    }
+    for (i = 0; i < ri->get_number_of_strings(); ++i) {
+      RMF::StringsKey key = fh.get_key<RMF::StringsTraits>(
+                             imp_restraint_cat_, ri->get_strings_key(i));
+      // No automatic conversion from IMP::Strings to RMF::Strings
+      Strings value = ri->get_strings_value(i);
+      RMF::Strings rvalue(value.begin(), value.end());
       nh.set_static_value(key, rvalue);
     }
     for (i = 0; i < ri->get_number_of_filenames(); ++i) {
