@@ -258,7 +258,7 @@ IMP_SWIG_OBJECT(IMP,Particle, Particles);
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, IMP::ParticlesTemp, IMP::ParticlesTemps, const&);
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, IMP::ParticlesTemp, IMP::ParticlesTemps,);
 
-IMP_SWIG_OBJECT(IMP,RestraintSet, RestraintSets);
+IMP_SWIG_BASE_OBJECT(IMP,RestraintSet, RestraintSets);
 IMP_SWIG_ARRAY(IMP, ParticlePair, ParticlePairsTemp, IMP::Particle);
 IMP_SWIG_ARRAY(IMP, ParticleTriplet, ParticleTripletsTemp, IMP::Particle);
 IMP_SWIG_ARRAY(IMP, ParticleQuad, ParticleQuadsTemp, IMP::Particle);
