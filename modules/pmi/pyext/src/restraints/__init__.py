@@ -110,13 +110,13 @@ class RestraintBase(object):
                 self.weight * rs.unprotected_evaluate(None))
         return output
 
-    def _create_restraint_set(self, name=None):
+    def _create_restraint_set(self, name=None, cls=IMP.RestraintSet):
         """Create ``IMP.RestraintSet``."""
         if not name:
             name = self.name
         else:
             name = self.name + "_" + str(name)
-        rs = IMP.RestraintSet(self.model, name)
+        rs = cls(self.model, name)
         rs.set_weight(self.weight)
         self.restraint_sets.append(rs)
         rs.set_was_used(True)

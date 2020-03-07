@@ -583,12 +583,11 @@ class Output(object):
     def add_restraints_to_rmf(self, name, objectlist):
         for o in _flatten(objectlist):
             try:
-                rs = o.get_restraint_for_rmf()
+                rs = [o.get_restraint_for_rmf()]
             except:
-                rs = o.get_restraint()
+                rs = o.get_restraint().get_restraints()
             IMP.rmf.add_restraints(
-                self.dictionary_rmfs[name][0],
-                rs.get_restraints())
+                self.dictionary_rmfs[name][0], rs)
 
     def add_geometries_to_rmf(self, name, objectlist):
         for o in objectlist:
