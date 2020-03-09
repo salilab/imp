@@ -99,7 +99,11 @@ bool ConstGroup::get_child_is_group(std::string name) const {
   RMF_HDF5_HANDLE(c,
                   H5Oopen(get_handle(), name.c_str(), H5P_DEFAULT),
                   &H5Oclose);
+#if H5_VERSION_GE(1,12,0)
+  RMF_HDF5_CALL(H5Oget_info(c, &info, H5O_INFO_BASIC));
+#else
   RMF_HDF5_CALL(H5Oget_info(c, &info));
+#endif
   return info.type == H5O_TYPE_GROUP;  // H5O_TYPE_DATASET
 }
 bool ConstGroup::get_child_is_group(unsigned int i) const {
@@ -127,7 +131,11 @@ bool ConstGroup::get_child_is_data_set(unsigned int i) const {
   RMF_HDF5_HANDLE(c,
                   H5Oopen(get_handle(), get_child_name(i).c_str(), H5P_DEFAULT),
                   &H5Oclose);
+#if H5_VERSION_GE(1,12,0)
+  RMF_HDF5_CALL(H5Oget_info(c, &info, H5O_INFO_BASIC));
+#else
   RMF_HDF5_CALL(H5Oget_info(c, &info));
+#endif
   return info.type == H5O_TYPE_DATASET;  // H5O_TYPE_DATASET
 }
 
