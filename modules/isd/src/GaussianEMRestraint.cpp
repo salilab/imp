@@ -251,6 +251,7 @@ RestraintInfo *GaussianEMRestraint::get_static_info() const {
   }
   ri->add_float("model cutoff", model_cutoff_dist_);
   ri->add_float("density cutoff", density_cutoff_dist_);
+  ri->add_float("slope", slope_);
   return ri.release();
 }
 
