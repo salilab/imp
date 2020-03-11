@@ -585,7 +585,7 @@ class Output(object):
             try:
                 rs = [o.get_restraint_for_rmf()]
             except:
-                rs = o.get_restraint().get_restraints()
+                rs = [o.get_restraint()]
             IMP.rmf.add_restraints(
                 self.dictionary_rmfs[name][0], rs)
 
