@@ -29,8 +29,6 @@ if [ "${CODENAME}" = "xenial" -o "${CODENAME}" = "bionic" ]; then
   perl -pi -e "s/libcgal\-dev/libcgal-dev, libcgal-qt5-dev/g" debian/control || exit 1
   # python2-dev is called python-dev on older Ubuntu
   perl -pi -e "s/python2\-dev/python-dev/g" debian/control || exit 1
-  # Help cmake to find CGALConfig.cmake
-  perl -pi -e "s#\-DCMAKE_BUILD_TYPE#-DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/ -DCMAKE_BUILD_TYPE#g" debian/rules || exit 1
 fi
 # Older distributions don't support python3-protobuf
 if [ "${CODENAME}" = "xenial" -o "${CODENAME}" = "trusty" ]; then

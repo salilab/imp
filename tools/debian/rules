@@ -21,6 +21,7 @@ override_dh_auto_configure:
 	cd build/libTAU-1.0.1/lib && ln -sf Fedora23.x86_64 debian
 	cd build/libTAU-1.0.1/lib/debian && ln -sf libTAU.so.1 libTAU.so
 	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release \
+		-DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/ \
 	        -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python2.7/dist-packages \
 	        -DCMAKE_INCLUDE_PATH=`pwd` \
 	        -DCMAKE_LIBRARY_PATH=`pwd`/libTAU-1.0.1/lib/debian \
