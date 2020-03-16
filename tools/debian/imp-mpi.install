@@ -1,0 +1,4 @@
+usr/lib/*/libimp_mpi.so.*
+usr/lib/*/libimp_spb.so.*
+usr/lib/python3*/dist-packages/IMP/mpi
+usr/lib/python3*/dist-packages/IMP/spb
