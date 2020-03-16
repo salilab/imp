@@ -11,14 +11,14 @@ Vcs-Browser: https://github.com/salilab/imp/
 Package: imp-dev
 Section: libdevel
 Architecture: any
-Depends: imp (= ${binary:Version}), ${misc:Depends}, cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python2-dev, libann-dev, libeigen3-dev, libprotobuf-dev
+Depends: imp (= ${binary:Version}), ${misc:Depends}, cmake, swig, libboost-filesystem-dev, libboost-graph-dev, libboost-iostreams-dev, libboost-program-options-dev, libboost-random-dev, libboost-regex-dev, libboost-thread-dev, libcgal-dev, libhdf5-dev, libfftw3-dev, libopencv-dev, libgsl0-dev, python3-dev, libann-dev, libeigen3-dev, libprotobuf-dev
 Description: The Integrative Modeling Platform
  Headers to compile against IMP.
 
 Package: imp
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python-numpy, python-protobuf
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-numpy, python3-protobuf
 Description: The Integrative Modeling Platform
   IMP's broad goal is to contribute to a comprehensive structural
   characterization of biomolecules ranging in size and complexity from small
@@ -45,9 +45,9 @@ Description: The Integrative Modeling Platform
   IMP is designed to allow mixing and matching of existing modeling components
   as well as easy addition of new functionality.
 
-Package: imp-python3
+Package: imp-python2
 Section: libs
 Architecture: any
-Depends: imp (= ${binary:Version}), python3, python3-numpy, python3-protobuf
+Depends: imp (= ${binary:Version}), python-numpy, python-protobuf
 Description: The Integrative Modeling Platform
- Wrappers for Python 3 (the base IMP package contains Python 2 wrappers).
+ Wrappers for Python 2 (the base IMP package contains Python 3 wrappers).

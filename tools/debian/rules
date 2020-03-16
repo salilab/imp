@@ -53,14 +53,14 @@ override_dh_install:
 	# Bundle libTAU so users don't have to get it separately
 	cp build/libTAU-1.0.1/lib/debian/libTAU.so.1 debian/tmp/usr/lib/*linux*/
 	(cd debian/tmp/usr/lib/*linux*/ && ln -sf libTAU.so.1 libTAU.so)
-	# Replace Python 3 .py files with symlinks to Python 2 files
+	# Replace Python 2 .py files with symlinks to Python 3 files
 	# (since they are the same)
-	(cd debian/tmp/usr/lib/python3* \
+	(cd debian/tmp/usr/lib/python2* \
 	 && find dist-packages -name '*.py' \
-	      -exec ln -sf $(CURDIR)/debian/tmp/usr/lib/python2.7/\{\} \{\} \; \
+	      -exec ln -sf $(CURDIR)/debian/tmp/usr/lib/python3*/\{\} \{\} \; \
 	 && symlinks -rc .)
 	# Make sure all Python applications use the system Python in /usr/bin
-	perl -pi -e 's@^#!.*python.*$$@#!/usr/bin/python2@' debian/tmp/usr/bin/*
+	perl -pi -e 's@^#!.*python.*$$@#!/usr/bin/python3@' debian/tmp/usr/bin/*
 	# Don't distribute example application, dependency, or system
 	rm -rf debian/tmp/usr/bin/example \
 	       debian/tmp/usr/lib/*/libimp_example_system* \

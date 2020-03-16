@@ -1,6 +1,6 @@
 usr/lib/*/libTAU.so.*
 usr/lib/*/libimp*.so.*
 usr/lib/*/libRMF*.so
-usr/lib/python2*/dist-packages/*
+usr/lib/python3*/dist-packages/*
 usr/bin/*
 usr/share/doc/imp/*

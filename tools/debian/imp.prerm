@@ -1,4 +1,4 @@
 #!/bin/sh
-find /usr/lib/python2.*/dist-packages/IMP -name '*.pyc' -exec rm \{\} \;
-rm -f /usr/lib/python2.*/dist-packages/RMF.pyc
-rm -f /usr/lib/python2.*/dist-packages/RMF_HDF5.pyc
+find /usr/lib/python3.*/dist-packages/IMP -name __pycache__ -exec rm -rf \{\} \; 2>/dev/null
+rm -f /usr/lib/python3.*/dist-packages/__pycache__/RMF.*.pyc
+rm -f /usr/lib/python3.*/dist-packages/__pycache__/RMF_HDF5.*.pyc
