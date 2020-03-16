@@ -16,7 +16,12 @@ if(IMP_CXX11)
     execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE
                             GCC_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
     message(STATUS "GCC version: ${GCC_VERSION}")
-    if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
+    if (GCC_VERSION VERSION_GREATER 6.1 OR GCC_VERSION VERSION_EQUAL 6.1)
+      # gcc 6.1 and up use C++14 by default, so no explicit switch required
+      # (in fact adding --std=c++11 will break compilation of packages that
+      # require C++14 features, like CGAL 5).
+      message(STATUS "Using g++ C++11 (or later) support")
+    elseif (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
       message(STATUS "Enabling g++ C++11 support")
       set(IMP_CXX11_FLAGS "--std=c++11" CACHE INTERNAL "" FORCE)
     elseif (GCC_VERSION VERSION_GREATER 4.3 OR GCC_VERSION VERSION_EQUAL 4.3)
