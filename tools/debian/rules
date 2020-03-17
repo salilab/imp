@@ -65,7 +65,7 @@ override_dh_install:
 	(cd debian/tmp/usr/lib/python2* \
          && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
 	 && find dist-packages -name '*.py' \
-	      -exec ln -sf $(CURDIR)/debian/tmp/usr/lib/python${py3_ver}/\{\} \{\} \; \
+	      -exec ln -sf $(CURDIR)/debian/tmp/usr/lib/python$${py3_ver}/\{\} \{\} \; \
 	 && symlinks -rc .)
 	# Make sure all Python applications use the system Python in /usr/bin
 	perl -pi -e 's@^#!.*python.*$$@#!/usr/bin/python3@' debian/tmp/usr/bin/*
