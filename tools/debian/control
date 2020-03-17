@@ -19,6 +19,8 @@ Package: imp
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, python3-numpy, python3-protobuf
+Replaces: imp-python3 (<< 2.13.0)
+Breaks: imp-python3 (<< 2.13.0)
 Description: The Integrative Modeling Platform
   IMP's broad goal is to contribute to a comprehensive structural
   characterization of biomolecules ranging in size and complexity from small
