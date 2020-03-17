@@ -41,6 +41,9 @@ public:
     return exp(-unprotected_evaluate(nullptr));
   }
 
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const IMP_OVERRIDE;
+
 };
 
 IMPISD_END_NAMESPACE

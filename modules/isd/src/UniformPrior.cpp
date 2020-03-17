@@ -46,4 +46,13 @@ ModelObjectsTemp UniformPrior::do_get_inputs() const
   return ParticlesTemp(1,p_);
 }
 
+RestraintInfo *UniformPrior::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.isd.UniformPrior");
+  ri->add_float("force constant", k_);
+  ri->add_float("lower bound", lowerb_);
+  ri->add_float("upper bound", upperb_);
+  return ri.release();
+}
+
 IMPISD_END_NAMESPACE
