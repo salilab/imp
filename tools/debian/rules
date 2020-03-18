@@ -29,6 +29,8 @@ override_dh_auto_configure:
                 -DIMP_TIMEOUT_FACTOR=2 \
                 -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/imp \
                 -DIMP_DISABLED_MODULES=scratch -DUSE_PYTHON2=on
+	# Allow mpiexec to work inside a docker/podman container (as root)
+	perl -pi -e 's#^MPI_TEST_SETUP:.*#MPI_TEST_SETUP:INTERNAL=/usr/bin/mpiexec;--allow-run-as-root;-n;2#' build/CMakeCache.txt
 
 override_dh_auto_build:
 	mkdir build/logs
