@@ -304,16 +304,19 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
 
     def __init__(self, pmi_restraint):
         self.pmi_restraint = pmi_restraint
+        # Use ChemDescriptor from PMI restraint if available, otherwise guess
+        # it using the label
+        linker = getattr(self.pmi_restraint, 'linker', None)
         label = self.pmi_restraint.label
-        # Map commonly-used subtypes to more standard labels
-        label = self._label_map.get(label, label)
         self.label = label
         super(_CrossLinkRestraint, self).__init__(
                 dataset=self.pmi_restraint.dataset,
-                linker=self._get_chem_descriptor(label))
+                linker=linker or self._get_chem_descriptor(label))
 
     @classmethod
     def _get_chem_descriptor(cls, label):
+        # Map commonly-used subtypes to more standard labels
+        label = cls._label_map.get(label, label)
         if label not in cls._descriptor_map:
             # If label is not a standard linker type, make a new chemical
             # descriptor containing just the name. We don't know the chemistry

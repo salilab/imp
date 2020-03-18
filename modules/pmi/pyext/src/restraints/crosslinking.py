@@ -31,7 +31,7 @@ class _LinearRestraintSet(IMP.RestraintSet):
         ri.add_string("type", "IMP.pmi.CrossLinkingMassSpectrometryRestraint")
         ri.add_float("linker_length", self.length)
         ri.add_float("slope", self.slope)
-        ri.add_filename("filename", self.filename)
+        ri.add_filename("filename", self.filename or "")
         self._sorted_psi_keys = sorted(self.psi_dictionary.keys())
         self._sorted_sigma_keys = sorted(self.sigma_dictionary.keys())
         ri.add_strings("psi_keys", self._sorted_psi_keys)
@@ -111,6 +111,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         exdb = open("excluded." + filelabel + ".xl.db", "w")
         midb = open("missing." + filelabel + ".xl.db", "w")
 
+        self.linker = linker
         self.rs.set_name(self.rs.get_name() + "_Data")
         self.rspsi = self._create_restraint_set("PriorPsi")
         self.rssig = self._create_restraint_set("PriorSig")

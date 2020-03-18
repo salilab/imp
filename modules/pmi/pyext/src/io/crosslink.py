@@ -408,15 +408,15 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
     def __init__(self,style):
 
         _CrossLinkDataBaseStandardKeys.__init__(self)
-        if style is "MSSTUDIO":
+        if style == "MSSTUDIO":
             self.style=style
             self.compulsory_keys= set([self.protein1_key,
                                   self.protein2_key,
                                   self.site_pairs_key])
-        elif style is "XTRACT" or style is "QUANTITATION":
+        elif style == "XTRACT" or style == "QUANTITATION":
             self.style=style
             self.compulsory_keys= set([self.site_pairs_key])
-        elif style is "LAN_HUANG":
+        elif style == "LAN_HUANG":
             self.style=style
             self.compulsory_keys= set([self.site_pairs_key])
         else:
@@ -449,7 +449,7 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
                     residue_type_1,residue_index_1=m2.group(1,2)
             # at this stage chain_pair_indexes is empty
             return  residue_pair_indexes,chain_pair_indexes
-        if self.style is "XTRACT" or self.style is "QUANTITATION":
+        if self.style == "XTRACT" or self.style == "QUANTITATION":
             if ":x:" in input_string:
                 # if it is a crosslink....
                 input_strings=input_string.split(":x:")
@@ -480,7 +480,7 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
                     residue_indexes.append((residue1,))
                     chain_indexes.append((chain1,))
                 return residue_indexes, chain_indexes
-        if self.style is "LAN_HUANG":
+        if self.style == "LAN_HUANG":
             input_strings=input_string.split("-")
             chain1,first_series=input_strings[0].split(":")
             chain2,second_series=input_strings[1].split(":")
@@ -507,14 +507,14 @@ class FixedFormatParser(_CrossLinkDataBaseStandardKeys):
     def __init__(self,format):
 
         _CrossLinkDataBaseStandardKeys.__init__(self)
-        if format is "PROXL":
+        if format == "PROXL":
             self.format=format
         else:
             raise Error("FixedFormatParser: unknown list format name")
 
 
     def get_data(self,input_string):
-        if self.format is "PROXL":
+        if self.format == "PROXL":
             tokens=input_string.split("\t")
             xl={}
             if tokens[0]=="SEARCH ID(S)":
@@ -564,6 +564,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         self.def_aa_tuple = linkable_aa
         self.fasta_seq = fasta_seq      #type: IMP.pmi.topology.Sequences
         self.dataset = None
+        self.name = None
         self._update()
 
     def _update(self):
@@ -1370,7 +1371,7 @@ class MapCrossLinkDataBaseOnStructure(object):
                 array=_ProteinsResiduesArray(xl)
                 self.array_to_id[array]=key
                 self.id_to_array[key]=array
-                if xl["MinAmbiguousDistance"] is not 'None':
+                if xl["MinAmbiguousDistance"] != 'None':
                     self.distances[key].append(xl["MinAmbiguousDistance"])
 
     def compute_distances(self):
