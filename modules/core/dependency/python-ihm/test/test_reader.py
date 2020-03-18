@@ -848,17 +848,44 @@ _ihm_dataset_related_db_reference.details
         """Test RelatedDatasetsHandler"""
         cif = """
 loop_
+_ihm_related_datasets_transformation.id
+_ihm_related_datasets_transformation.rot_matrix[1][1]
+_ihm_related_datasets_transformation.rot_matrix[2][1]
+_ihm_related_datasets_transformation.rot_matrix[3][1]
+_ihm_related_datasets_transformation.rot_matrix[1][2]
+_ihm_related_datasets_transformation.rot_matrix[2][2]
+_ihm_related_datasets_transformation.rot_matrix[3][2]
+_ihm_related_datasets_transformation.rot_matrix[1][3]
+_ihm_related_datasets_transformation.rot_matrix[2][3]
+_ihm_related_datasets_transformation.rot_matrix[3][3]
+_ihm_related_datasets_transformation.tr_vector[1]
+_ihm_related_datasets_transformation.tr_vector[2]
+_ihm_related_datasets_transformation.tr_vector[3]
+42 -0.637588 0.089507 0.765160 0.755616 -0.120841 0.643771 0.150085
+0.988628 0.009414 327.161 83.209 -227.800
+#
+loop_
 _ihm_related_datasets.dataset_list_id_derived
 _ihm_related_datasets.dataset_list_id_primary
-4 1
+_ihm_related_datasets.transformation_id
+4 1 .
+7 1 42
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
-            d1, d2 = s.orphan_datasets
+            d1, d2, d3 = s.orphan_datasets
             self.assertEqual(d1._id, '4')
             self.assertEqual(d2._id, '1')
+            self.assertEqual(d3._id, '7')
             self.assertEqual(d1.parents, [d2])
             self.assertEqual(d2.parents, [])
+            self.assertEqual(len(d3.parents), 1)
+            self.assertIsInstance(d3.parents[0], ihm.dataset.TransformedDataset)
+            self.assertEqual(d3.parents[0].dataset._id, '1')
+            t = d3.parents[0].transform
+            self.assertEqual(t._id, '42')
+            self.assertAlmostEqual(t.tr_vector[0], 327.161, places=2)
+            self.assertAlmostEqual(t.rot_matrix[1][2], 0.988628, places=2)
 
     def test_model_representation_handler(self):
         """Test ModelRepresentationHandler"""

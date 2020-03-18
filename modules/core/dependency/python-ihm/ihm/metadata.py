@@ -68,7 +68,7 @@ class MRCParser(Parser):
 
     def _get_emdb(self, filename):
         """Return the EMDB id of the file, or None."""
-        r = re.compile(b'EMDATABANK\.org.*(EMD\-\\d+)')
+        r = re.compile(b'EMDATABANK\\.org.*(EMD\\-\\d+)')
         with open(filename, 'rb') as fh:
             fh.seek(220) # Offset of number of labels
             num_labels_raw = fh.read(4)

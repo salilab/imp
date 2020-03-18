@@ -10,6 +10,7 @@ import ihm.model
 import ihm.representation
 import ihm.source
 import ihm.flr
+import ihm.dataset
 from . import util
 from . import location
 from . import restraint
@@ -39,6 +40,22 @@ class Dumper(object):
         pass
 
 
+def _get_transform(rot_matrix, tr_vector):
+    """Return a dict encoding a transform, suitable for passing to
+       loop.write()"""
+    # mmCIF writer usually outputs floats to 3 decimal
+    # places, but we need more precision for rotation
+    # matrices
+    rm = [["%.6f" % e for e in rot_matrix[i]] for i in range(3)]
+
+    return {'rot_matrix11': rm[0][0], 'rot_matrix21': rm[1][0],
+            'rot_matrix31': rm[2][0], 'rot_matrix12': rm[0][1],
+            'rot_matrix22': rm[1][1], 'rot_matrix32': rm[2][1],
+            'rot_matrix13': rm[0][2], 'rot_matrix23': rm[1][2],
+            'rot_matrix33': rm[2][2], 'tr_vector1': tr_vector[0],
+            'tr_vector2': tr_vector[1], 'tr_vector3': tr_vector[2]}
+
+
 class _EntryDumper(Dumper):
     def dump(self, system, writer):
         # Write CIF header (so this dumper should always be first)
@@ -54,8 +71,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as l:
             # Update to match the version of the IHM dictionary we support:
-            l.write(dict_name="ihm-extension.dic", dict_version="1.08",
-                    dict_location=self.URL % "b7b63aa")
+            l.write(dict_name="ihm-extension.dic", dict_version="1.09",
+                    dict_location=self.URL % "b4fe8af")
 
 
 class _StructDumper(Dumper):
@@ -683,13 +700,27 @@ class _ExternalReferenceDumper(Dumper):
 
 class _DatasetDumper(Dumper):
     def finalize(self, system):
+        def _all_transforms(dataset):
+            for p in dataset.parents:
+                if isinstance(p, ihm.dataset.TransformedDataset):
+                    yield p.transform
         seen_datasets = {}
-        # Assign IDs to all datasets
+        seen_transforms = {}
+        # Assign IDs to all datasets and transforms
         self._dataset_by_id = []
+        self._transform_by_id = []
         for d in system._all_datasets():
+            for t in _all_transforms(d):
+                # Can't use default _id attribute here since a given transform
+                # may be used by both a dataset and a geometric object, and
+                # since they live in different tables they need different IDs
+                util._remove_id(t, attr='_dtid')
             util._remove_id(d)
         for d in system._all_datasets():
             util._assign_id(d, seen_datasets, self._dataset_by_id)
+            for t in _all_transforms(d):
+                util._assign_id(t, seen_transforms, self._transform_by_id,
+                                attr='_dtid')
 
         # Assign IDs to all groups and remove duplicates
         seen_group_ids = {}
@@ -722,6 +753,7 @@ class _DatasetDumper(Dumper):
                                          location.DatabaseLocation)),
                           writer)
         self.dump_related(system, writer)
+        self.dump_related_transform(system, writer)
 
     def dump_groups(self, writer):
         self.dump_group_summary(writer)
@@ -767,12 +799,34 @@ class _DatasetDumper(Dumper):
     def dump_related(self, system, writer):
         with writer.loop("_ihm_related_datasets",
                          ["dataset_list_id_derived",
-                          "dataset_list_id_primary"]) as l:
+                          "dataset_list_id_primary",
+                          "transformation_id"]) as l:
             for derived in self._dataset_by_id:
-                # Don't duplicate IDs, and output in sorted order
-                for parent_id in sorted(set(d._id for d in derived.parents)):
+                ids = set()
+                for p in derived.parents:
+                    if isinstance(p, ihm.dataset.TransformedDataset):
+                        ids.add((p.dataset._id, p.transform._dtid))
+                    else:
+                        ids.add((p._id, None))
+                # Don't duplicate IDs, and sort by parent ID (cannot sort
+                # by transform ID because it might be None and we can't
+                # compare None with int)
+                for pid, tid in sorted(ids, key=operator.itemgetter(0)):
                     l.write(dataset_list_id_derived=derived._id,
-                            dataset_list_id_primary=parent_id)
+                            dataset_list_id_primary=pid,
+                            transformation_id=tid)
+
+    def dump_related_transform(self, system, writer):
+        with writer.loop("_ihm_related_datasets_transformation",
+                ["id",
+                 "rot_matrix[1][1]", "rot_matrix[2][1]", "rot_matrix[3][1]",
+                 "rot_matrix[1][2]", "rot_matrix[2][2]", "rot_matrix[3][2]",
+                 "rot_matrix[1][3]", "rot_matrix[2][3]", "rot_matrix[3][3]",
+                 "tr_vector[1]", "tr_vector[2]", "tr_vector[3]"]) as l:
+            for t in self._transform_by_id:
+                l.write(id=t._dtid,
+                        **_get_transform(t.rot_matrix, t.tr_vector))
+
 
 class _ModelRepresentationDumper(Dumper):
     def finalize(self, system):
@@ -1506,17 +1560,7 @@ class _GeometricObjectDumper(Dumper):
                  "rot_matrix[1][3]", "rot_matrix[2][3]", "rot_matrix[3][3]",
                  "tr_vector[1]", "tr_vector[2]", "tr_vector[3]"]) as l:
             for t in self._transformations_by_id:
-                # mmCIF writer usually outputs floats to 3 decimal
-                # places, but we need more precision for rotation
-                # matrices
-                rm = [["%.6f" % e for e in t.rot_matrix[i]]
-                      for i in range(3)]
-                l.write(id=t._id, rot_matrix11=rm[0][0], rot_matrix21=rm[1][0],
-                        rot_matrix31=rm[2][0], rot_matrix12=rm[0][1],
-                        rot_matrix22=rm[1][1], rot_matrix32=rm[2][1],
-                        rot_matrix13=rm[0][2], rot_matrix23=rm[1][2],
-                        rot_matrix33=rm[2][2], tr_vector1=t.tr_vector[0],
-                        tr_vector2=t.tr_vector[1], tr_vector3=t.tr_vector[2])
+                l.write(id=t._id, **_get_transform(t.rot_matrix, t.tr_vector))
 
     def dump_generic(self, writer):
         with writer.loop("_ihm_geometric_object_list",

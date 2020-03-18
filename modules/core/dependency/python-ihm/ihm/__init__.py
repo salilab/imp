@@ -385,7 +385,12 @@ class System(object):
            any orphaned datasets. Duplicates may be present."""
         def _all_datasets_and_parents(d):
             for p in d.parents:
-                for alld in _all_datasets_and_parents(p):
+                # Handle transformed datasets
+                if hasattr(p, 'dataset'):
+                    pd = p.dataset
+                else:
+                    pd = p
+                for alld in _all_datasets_and_parents(pd):
                     yield alld
             yield d
         for d in self._all_datasets_except_parents():

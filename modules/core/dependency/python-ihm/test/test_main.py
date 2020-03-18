@@ -747,7 +747,11 @@ class Tests(unittest.TestCase):
         rsr1 = MockObject()
         rsr1.dataset = d4
         d4.parents = [d2]
-        d2.parents = [d1]
+        # Handle parent being a TransformedDataset
+        trand = MockObject()
+        trand.transform = None
+        trand.dataset = d1
+        d2.parents = [trand]
         d1.parents = d3.parents = []
         s.restraints.append(rsr1)
 

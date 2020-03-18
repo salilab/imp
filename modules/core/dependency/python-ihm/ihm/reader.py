@@ -542,6 +542,13 @@ class SystemReader(object):
         self.transformations = IDMapper(None, ihm.geometry.Transformation,
                                         *(None,)*2)
 
+        #: Mapping from ID to :class:`ihm.geometry.Transformation` objects
+        #: used by :class:`ihm.dataset.TransformedDataset` objects (this is
+        #: distinct from :attr:`transformations` since they are stored in
+        #: separate tables, with different IDs, in the mmCIF file).
+        self.dataset_transformations = IDMapper(
+                None, ihm.geometry.Transformation, *(None,)*2)
+
         #: Mapping from ID to :class:`ihm.restraint.GeometricRestraint` objects
         self.geom_restraints = IDMapper(self.system.restraints,
                                    ihm.restraint.GeometricRestraint,
@@ -1311,13 +1318,30 @@ class _DatasetDBRefHandler(Handler):
                     mapkeys={'accession_code':'access_code'})
 
 
+class _DatasetTransformationHandler(Handler):
+    category = '_ihm_related_datasets_transformation'
+
+    def __call__(self, id, tr_vector1, tr_vector2, tr_vector3, rot_matrix11,
+                 rot_matrix21, rot_matrix31, rot_matrix12, rot_matrix22,
+                 rot_matrix32, rot_matrix13, rot_matrix23, rot_matrix33):
+        t = self.sysr.dataset_transformations.get_by_id(id)
+        t.rot_matrix = _get_matrix33(locals(), 'rot_matrix')
+        t.tr_vector = _get_vector3(locals(), 'tr_vector')
+
+
 class _RelatedDatasetsHandler(Handler):
     category = '_ihm_related_datasets'
     ignored_keywords = ['ordinal_id']
 
-    def __call__(self, dataset_list_id_derived, dataset_list_id_primary):
+    def __call__(self, dataset_list_id_derived, dataset_list_id_primary,
+                 transformation_id):
         derived = self.sysr.datasets.get_by_id(dataset_list_id_derived)
         primary = self.sysr.datasets.get_by_id(dataset_list_id_primary)
+        trans = self.sysr.dataset_transformations.get_by_id_or_none(
+                transformation_id)
+        if trans:
+            primary = ihm.dataset.TransformedDataset(
+                    dataset=primary, transform=trans)
         derived.parents.append(primary)
 
 
@@ -2978,6 +3002,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               _DatasetListHandler(s), _DatasetGroupHandler(s),
               _DatasetGroupLinkHandler(s),
               _DatasetExtRefHandler(s), _DatasetDBRefHandler(s),
+              _DatasetTransformationHandler(s),
               _RelatedDatasetsHandler(s), _ModelRepresentationHandler(s),
               _ModelRepresentationDetailsHandler(s),
               _StartingModelDetailsHandler(s),

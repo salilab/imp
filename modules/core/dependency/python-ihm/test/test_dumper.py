@@ -1043,6 +1043,22 @@ _ihm_external_files.details
         # Ignore duplicates
         ds3.parents.append(ds2)
 
+        # Derived dataset with (shared) transformation
+        l = ihm.location.PDBLocation('1cde', version='foo', details='bar')
+        dst = ihm.dataset.Dataset(l, details='bar')
+        t = ihm.geometry.Transformation(
+            rot_matrix=[[-0.64,0.09,0.77],[0.76,-0.12,0.64],
+                        [0.15,0.99,0.01]],
+            tr_vector=[1.,2.,3.])
+        td = ihm.dataset.TransformedDataset(dst, transform=t)
+        ds3.parents.append(td)
+
+        l = ihm.location.PDBLocation('1cdf', version='foo', details='bar')
+        dst = ihm.dataset.Dataset(l, details='baz')
+        # Same transformation as before
+        td = ihm.dataset.TransformedDataset(dst, transform=t)
+        ds3.parents.append(td)
+
         # Dataset with no location
         ds4 = ihm.dataset.PDBDataset(None)
         system.orphan_datasets.append(ds4)
@@ -1058,8 +1074,10 @@ _ihm_dataset_list.database_hosted
 _ihm_dataset_list.details
 1 'CX-MS data' NO .
 2 'CX-MS data' NO .
-3 'Experimental model' YES 'test dataset details'
-4 'Experimental model' NO .
+3 unspecified YES bar
+4 unspecified YES baz
+5 'Experimental model' YES 'test dataset details'
+6 'Experimental model' NO .
 #
 #
 loop_
@@ -1094,13 +1112,36 @@ _ihm_dataset_related_db_reference.db_name
 _ihm_dataset_related_db_reference.accession_code
 _ihm_dataset_related_db_reference.version
 _ihm_dataset_related_db_reference.details
-1 3 PDB 1abc 1.0 'test details'
+1 3 PDB 1cde foo bar
+2 4 PDB 1cdf foo bar
+3 5 PDB 1abc 1.0 'test details'
 #
 #
 loop_
 _ihm_related_datasets.dataset_list_id_derived
 _ihm_related_datasets.dataset_list_id_primary
-3 2
+_ihm_related_datasets.transformation_id
+5 2 .
+5 3 1
+5 4 1
+#
+#
+loop_
+_ihm_related_datasets_transformation.id
+_ihm_related_datasets_transformation.rot_matrix[1][1]
+_ihm_related_datasets_transformation.rot_matrix[2][1]
+_ihm_related_datasets_transformation.rot_matrix[3][1]
+_ihm_related_datasets_transformation.rot_matrix[1][2]
+_ihm_related_datasets_transformation.rot_matrix[2][2]
+_ihm_related_datasets_transformation.rot_matrix[3][2]
+_ihm_related_datasets_transformation.rot_matrix[1][3]
+_ihm_related_datasets_transformation.rot_matrix[2][3]
+_ihm_related_datasets_transformation.rot_matrix[3][3]
+_ihm_related_datasets_transformation.tr_vector[1]
+_ihm_related_datasets_transformation.tr_vector[2]
+_ihm_related_datasets_transformation.tr_vector[3]
+1 -0.640000 0.760000 0.150000 0.090000 -0.120000 0.990000 0.770000 0.640000
+0.010000 1.000 2.000 3.000
 #
 """)
 
