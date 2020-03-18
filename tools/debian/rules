@@ -54,10 +54,10 @@ override_dh_install:
 	cp build/libTAU-1.0.1/lib/debian/libTAU.so.1 debian/tmp/usr/lib/*linux*/
 	(cd debian/tmp/usr/lib/*linux*/ && ln -sf libTAU.so.1 libTAU.so)
 	# Don't package MPI for Python2 or -dev
-	rm -f debian/tmp/usr/lib/python2*/mpi
-	rm -f debian/tmp/usr/lib/python2*/spb
-	rm -f debian/tmp/usr/lib/python2*/_IMP_mpi*
-	rm -f debian/tmp/usr/lib/python2*/_IMP_spb*
+	rm -rf debian/tmp/usr/lib/python2*/dist-packages/IMP/mpi
+	rm -rf debian/tmp/usr/lib/python2*/dist-packages/IMP/spb
+	rm -f debian/tmp/usr/lib/python2*/dist-packages/_IMP_mpi*
+	rm -f debian/tmp/usr/lib/python2*/dist-packages/_IMP_spb*
 	rm -f debian/tmp/usr/lib/*/libimp_mpi*.so
 	rm -f debian/tmp/usr/lib/*/libimp_spb*.so
 	# Replace Python 2 .py files with symlinks to Python 3 files
