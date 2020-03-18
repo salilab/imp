@@ -50,7 +50,7 @@ Description: The Integrative Modeling Platform
 Package: imp-openmpi
 Section: libs
 Architecture: any
-Depends: imp (= ${binary:Version}), ${openmpi:Depends}
+Depends: imp (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: The Integrative Modeling Platform
  IMP MPI module and dependents, for openmpi.
 
