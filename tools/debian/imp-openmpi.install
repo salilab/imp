@@ -4,3 +4,4 @@ usr/lib/python3*/dist-packages/IMP/mpi
 usr/lib/python3*/dist-packages/_IMP_mpi.so
 usr/lib/python3*/dist-packages/IMP/spb
 usr/lib/python3*/dist-packages/_IMP_spb.so
+usr/bin/spb*
