@@ -42,4 +42,10 @@ void RestraintInfo::add_filenames(std::string key, Strings value) {
   filenames_.push_back(StringsData(key, value));
 }
 
+void RestraintInfo::add_particle_indexes(
+    std::string key, ParticleIndexes value)
+{
+  pis_.push_back(ParticleIndexesData(key, value));
+}
+
 IMPKERNEL_END_NAMESPACE

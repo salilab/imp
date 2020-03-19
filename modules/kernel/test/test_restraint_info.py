@@ -91,5 +91,19 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(ri.get_filenames_key(0), "test filenames")
         self.assertEqual(ri.get_filenames_value(0), ["/foo/bar", "/foo/baz"])
 
+    def test_particle_indexes(self):
+        """Test get/set of ParticleIndexes RestraintInfo"""
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        ri = IMP.RestraintInfo()
+        ri.set_was_used(True)
+        self.assertEqual(ri.get_number_of_particle_indexes(), 0)
+        ri.add_particle_indexes("test pis", [p1, p2])
+        self.assertEqual(ri.get_number_of_particle_indexes(), 1)
+        self.assertEqual(ri.get_particle_indexes_key(0), "test pis")
+        v = ri.get_particle_indexes_value(0)
+        self.assertEqual(v, [p1.get_index(), p2.get_index()])
+
 if __name__ == '__main__':
     IMP.test.main()
