@@ -252,6 +252,8 @@ RestraintInfo *GaussianEMRestraint::get_static_info() const {
   ri->add_float("model cutoff", model_cutoff_dist_);
   ri->add_float("density cutoff", density_cutoff_dist_);
   ri->add_float("slope", slope_);
+  // Typically the density doesn't move during sampling (i.e. static)
+  ri->add_particle_indexes("density", density_ps_);
   return ri.release();
 }
 
