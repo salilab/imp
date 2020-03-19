@@ -1,7 +1,8 @@
 ChangeLog {#changelog}
 =========
 - Ubuntu .deb packages now use Python 3 by default (install the imp-python2
-  package if you want to use Python 2).
+  package if you want to use Python 2) and support MPI (install the
+  imp-openmpi package if you want to use the IMP::mpi or IMP::spb modules).
 
 # 2.12.0 - 2019-12-06 # {#changelog_2_12_0}
 - The Windows .exe installer now supports Python 3.8, and has dropped support
