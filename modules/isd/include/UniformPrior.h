@@ -44,6 +44,9 @@ public:
   //! \return Information for writing to RMF files
   RestraintInfo *get_static_info() const IMP_OVERRIDE;
 
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_dynamic_info() const IMP_OVERRIDE;
+
 };
 
 IMPISD_END_NAMESPACE

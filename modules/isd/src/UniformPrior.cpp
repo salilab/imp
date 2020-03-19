@@ -55,4 +55,10 @@ RestraintInfo *UniformPrior::get_static_info() const {
   return ri.release();
 }
 
+RestraintInfo *UniformPrior::get_dynamic_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_particle_indexes("particle", ParticleIndexes(1, p_->get_index()));
+  return ri.release();
+}
+
 IMPISD_END_NAMESPACE
