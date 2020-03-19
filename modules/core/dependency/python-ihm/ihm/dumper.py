@@ -817,7 +817,7 @@ class _DatasetDumper(Dumper):
                             transformation_id=tid)
 
     def dump_related_transform(self, system, writer):
-        with writer.loop("_ihm_related_datasets_transformation",
+        with writer.loop("_ihm_data_transformation",
                 ["id",
                  "rot_matrix[1][1]", "rot_matrix[2][1]", "rot_matrix[3][1]",
                  "rot_matrix[1][2]", "rot_matrix[2][2]", "rot_matrix[3][2]",

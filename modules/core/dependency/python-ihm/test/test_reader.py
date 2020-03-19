@@ -848,19 +848,19 @@ _ihm_dataset_related_db_reference.details
         """Test RelatedDatasetsHandler"""
         cif = """
 loop_
-_ihm_related_datasets_transformation.id
-_ihm_related_datasets_transformation.rot_matrix[1][1]
-_ihm_related_datasets_transformation.rot_matrix[2][1]
-_ihm_related_datasets_transformation.rot_matrix[3][1]
-_ihm_related_datasets_transformation.rot_matrix[1][2]
-_ihm_related_datasets_transformation.rot_matrix[2][2]
-_ihm_related_datasets_transformation.rot_matrix[3][2]
-_ihm_related_datasets_transformation.rot_matrix[1][3]
-_ihm_related_datasets_transformation.rot_matrix[2][3]
-_ihm_related_datasets_transformation.rot_matrix[3][3]
-_ihm_related_datasets_transformation.tr_vector[1]
-_ihm_related_datasets_transformation.tr_vector[2]
-_ihm_related_datasets_transformation.tr_vector[3]
+_ihm_data_transformation.id
+_ihm_data_transformation.rot_matrix[1][1]
+_ihm_data_transformation.rot_matrix[2][1]
+_ihm_data_transformation.rot_matrix[3][1]
+_ihm_data_transformation.rot_matrix[1][2]
+_ihm_data_transformation.rot_matrix[2][2]
+_ihm_data_transformation.rot_matrix[3][2]
+_ihm_data_transformation.rot_matrix[1][3]
+_ihm_data_transformation.rot_matrix[2][3]
+_ihm_data_transformation.rot_matrix[3][3]
+_ihm_data_transformation.tr_vector[1]
+_ihm_data_transformation.tr_vector[2]
+_ihm_data_transformation.tr_vector[3]
 42 -0.637588 0.089507 0.765160 0.755616 -0.120841 0.643771 0.150085
 0.988628 0.009414 327.161 83.209 -227.800
 #

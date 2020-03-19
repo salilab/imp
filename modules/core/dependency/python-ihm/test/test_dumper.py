@@ -1127,19 +1127,19 @@ _ihm_related_datasets.transformation_id
 #
 #
 loop_
-_ihm_related_datasets_transformation.id
-_ihm_related_datasets_transformation.rot_matrix[1][1]
-_ihm_related_datasets_transformation.rot_matrix[2][1]
-_ihm_related_datasets_transformation.rot_matrix[3][1]
-_ihm_related_datasets_transformation.rot_matrix[1][2]
-_ihm_related_datasets_transformation.rot_matrix[2][2]
-_ihm_related_datasets_transformation.rot_matrix[3][2]
-_ihm_related_datasets_transformation.rot_matrix[1][3]
-_ihm_related_datasets_transformation.rot_matrix[2][3]
-_ihm_related_datasets_transformation.rot_matrix[3][3]
-_ihm_related_datasets_transformation.tr_vector[1]
-_ihm_related_datasets_transformation.tr_vector[2]
-_ihm_related_datasets_transformation.tr_vector[3]
+_ihm_data_transformation.id
+_ihm_data_transformation.rot_matrix[1][1]
+_ihm_data_transformation.rot_matrix[2][1]
+_ihm_data_transformation.rot_matrix[3][1]
+_ihm_data_transformation.rot_matrix[1][2]
+_ihm_data_transformation.rot_matrix[2][2]
+_ihm_data_transformation.rot_matrix[3][2]
+_ihm_data_transformation.rot_matrix[1][3]
+_ihm_data_transformation.rot_matrix[2][3]
+_ihm_data_transformation.rot_matrix[3][3]
+_ihm_data_transformation.tr_vector[1]
+_ihm_data_transformation.tr_vector[2]
+_ihm_data_transformation.tr_vector[3]
 1 -0.640000 0.760000 0.150000 0.090000 -0.120000 0.990000 0.770000 0.640000
 0.010000 1.000 2.000 3.000
 #
