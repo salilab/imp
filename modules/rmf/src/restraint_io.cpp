@@ -97,12 +97,16 @@ class Subset : public ConstVector<WeakPointer<Particle>, Particle *> {
 IMP_VALUES(Subset, Subsets);
 
 template <class C>
-RMF::Ints get_node_ids(RMF::FileConstHandle fh, const C &ps) {
+RMF::Ints get_node_ids(RMF::FileConstHandle fh, const C &ps,
+                       Restraint *o=nullptr) {
   RMF::Ints ret;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     RMF::NodeConstHandle nh = get_node_from_association(fh, ps[i]);
     if (nh != RMF::NodeConstHandle()) {
       ret.push_back(nh.get_id().get_index());
+    } else if (o) {
+      IMP_WARN("Particle " << Showable(ps[i]) << " referenced by restraint "
+               << Showable(o) << " is not in the RMF." << std::endl);
     } else {
       IMP_WARN("Particle " << Showable(ps[i]) << " is not in the RMF."
                            << std::endl);
@@ -347,7 +351,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
           get_input_particles(o->get_inputs());
       std::sort(inputs.begin(), inputs.end());
       inputs.erase(std::unique(inputs.begin(), inputs.end()), inputs.end());
-      RMF::Ints nhs = get_node_ids(nh.get_file(), inputs);
+      RMF::Ints nhs = get_node_ids(nh.get_file(), inputs, o);
       sdnf.set_static_representation(nhs);
     }
     save_dynamic_info(o, nh);
