@@ -48,6 +48,7 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
      \param[in] model_ps particles for the model GMM
      \param[in] density_ps particles for the density GMM
      \param[in] global_sigma Particle to modulate the uncertainty
+                (currently unused)
      \param[in] model_cutoff_dist Cutoff for the model-model interactions
      \param[in] density_cutoff_dist Cutoff for model-density interactions
      \param[in] slope Gentle term to move all particles to the density
@@ -118,7 +119,6 @@ class IMPISDEXPORT GaussianEMRestraint : public Restraint
   double model_cutoff_dist_, density_cutoff_dist_;
   ParticleIndexes model_ps_;
   ParticleIndexes density_ps_;
-  ParticleIndex global_sigma_;
   Float slope_;
   bool update_model_,local_;
   int msize_,dsize_;
