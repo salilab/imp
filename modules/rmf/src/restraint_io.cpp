@@ -7,7 +7,6 @@
  */
 
 #include <IMP/rmf/restraint_io.h>
-#include <IMP/rmf/particle_io.h>
 #include <IMP/rmf/simple_links.h>
 #include <IMP/rmf/link_macros.h>
 #include <RMF/decorator/physics.h>
@@ -145,6 +144,7 @@ RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
 // get_particles
 //
 class RestraintLoadLink : public SimpleLoadLink<Restraint> {
+  typedef std::pair<std::string, ParticleIndexes> ParticleIndexesData;
   typedef SimpleLoadLink<Restraint> P;
   RMF::decorator::ScoreFactory sf_;
   RMF::decorator::RepresentationFactory rf_;
@@ -179,10 +179,13 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     RMF::NodeConstHandles chs = name.get_children();
     Restraints childr;
     ParticlesTemp inputs;
+    std::vector<ParticleIndexesData> static_pis, dynamic_pis;
     IMP_FOREACH(RMF::NodeConstHandle ch, chs) {
       if (ch.get_type() == RMF::FEATURE) {
         childr.push_back(do_create(ch, m));
         add_link(childr.back(), ch);
+      } else if (ch.get_type() == RMF::ORGANIZATIONAL) {
+        create_restraint_particles(ch, m, static_pis, dynamic_pis);
       }
     }
     if (rf_.get_is(name)) {
@@ -211,7 +214,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
       IMP_NEW(RMFRestraint, r, (m, name.get_name()));
       ret = r;
       r->set_particles(inputs);
-      load_restraint_info(r, name);
+      load_restraint_info(r, name, static_pis, dynamic_pis);
     }
     if (name.get_has_value(weight_key_)) {
       ret->set_weight(name.get_value(weight_key_));
@@ -219,7 +222,23 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     return ret.release();
   }
 
-  void load_restraint_info(RMFRestraint *r, RMF::NodeConstHandle nh) {
+  void create_restraint_particles(
+      RMF::NodeConstHandle parent, Model *m,
+      std::vector<ParticleIndexesData> &static_pis,
+      std::vector<ParticleIndexesData> &dynamic_pis) {
+    ParticleIndexes pis;
+    IMP_FOREACH(RMF::NodeConstHandle ch, parent.get_children()) {
+      Pointer<Particle> pi = new IMP::Particle(m, ch.get_name());
+      set_association(ch, pi.get(), true);
+      pis.push_back(pi->get_index());
+    }
+    // todo: distinguish static and dynamic pis
+    static_pis.push_back(ParticleIndexesData(parent.get_name(), pis));
+  }
+
+  void load_restraint_info(RMFRestraint *r, RMF::NodeConstHandle nh,
+                           std::vector<ParticleIndexesData> &static_pis,
+                           std::vector<ParticleIndexesData> &dynamic_pis) {
     RMF::FileConstHandle fh = nh.get_file();
     RMF_FOREACH(RMF::IntKey k, iks_) {
       if (!nh.get_value(k).get_is_null()) {
@@ -278,6 +297,15 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         }
         r->get_info()->add_filenames(fh.get_name(k), value);
       }
+    }
+
+    for (unsigned i = 0; i < static_pis.size(); ++i) {
+      r->get_info()->add_particle_indexes(static_pis[i].first,
+                                          static_pis[i].second);
+    }
+    for (unsigned i = 0; i < dynamic_pis.size(); ++i) {
+      r->get_info()->add_particle_indexes(dynamic_pis[i].first,
+                                          dynamic_pis[i].second);
     }
   }
 
@@ -553,9 +581,27 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
                                      RestraintInfo *ri) {
     unsigned i;
     for (i = 0; i < ri->get_number_of_particle_indexes(); ++i) {
-      add_particles(nh.get_file(),
-                    IMP::get_particles(o->get_model(),
+      RMF::NodeHandle n = nh.add_child(ri->get_particle_indexes_key(i),
+                                       RMF::ORGANIZATIONAL);
+      add_static_particles(n, IMP::get_particles(o->get_model(),
                                        ri->get_particle_indexes_value(i)));
+    }
+  }
+
+  void add_static_particles(RMF::NodeHandle parent, ParticlesTemp ps) {
+    RMF::FileHandle file = parent.get_file();
+    RMF::decorator::AliasFactory af(file);
+    for (ParticlesTemp::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
+      Particle *p = *pit;
+      std::string nicename = RMF::get_as_node_name(p->get_name());
+      if (get_has_associated_node(file, p)) {
+        RMF::NodeHandle c = parent.add_child(nicename, RMF::ALIAS);
+        af.get(c).set_aliased(get_node_from_association(file, p));
+      } else {
+        RMF::NodeHandle c = parent.add_child(nicename, RMF::FEATURE);
+	// add static attributes
+        set_association(c, p, true);
+      }
     }
   }
 

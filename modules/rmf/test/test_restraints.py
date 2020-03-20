@@ -54,22 +54,23 @@ class Tests(IMP.test.TestCase):
         IMP.rmf.add_particles(f, [p])
         # extra_ps are particles referenced by the restraint but not
         # explicitly added to the RMF
-        ps = [p] + [IMP.Particle(m) for i in range(extra_ps)]
+        ps = [p] + [IMP.Particle(m, "extra%d" % i) for i in range(extra_ps)]
         r = cls(1, ps)
         r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
         IMP.rmf.save_frame(f, str(0))
 
-    def _read_restraint(self, name):
+    def _read_restraint(self, name, extra_ps=0):
         IMP.add_to_log(IMP.TERSE, "Starting reading back\n")
         f = RMF.open_rmf_file_read_only(name)
         m = IMP.Model()
         ps = IMP.rmf.create_particles(f, m)
+        self.assertEqual(len(ps), 1)
         r = IMP.rmf.create_restraints(f, m)[0]
         IMP.rmf.load_frame(f, RMF.FrameID(0))
         print([IMP.Particle.get_from(x).get_index() for x in r.get_inputs()])
         print([x.get_index() for x in ps])
-        self.assertEqual(sorted(r.get_inputs()), sorted(ps))
+        self.assertEqual(len(r.get_inputs()), 1 + extra_ps)
         return m, r
 
     def test_0(self):
@@ -222,7 +223,19 @@ class Tests(IMP.test.TestCase):
         for suffix in IMP.rmf.suffixes:
             name = self.get_tmp_file_name("assoc_ps" + suffix)
             self._write_restraint(name, cls=MockRestraint, extra_ps=2)
-            m, r = self._read_restraint(name)
+            m, r = self._read_restraint(name, extra_ps=2)
+            info = r.get_static_info()
+            self.assertEqual(info.get_number_of_particle_indexes(), 2)
+            self.assertEqual(info.get_particle_indexes_key(0),
+                             'static particles')
+            self.assertEqual([m.get_particle_name(i)
+                              for i in info.get_particle_indexes_value(0)],
+                             ['extra0'])
+            self.assertEqual(info.get_particle_indexes_key(1),
+                             'dynamic particles')
+            self.assertEqual([m.get_particle_name(i)
+                              for i in info.get_particle_indexes_value(1)],
+                             ['extra1'])
 
 if __name__ == '__main__':
     IMP.test.main()
