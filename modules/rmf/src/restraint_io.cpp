@@ -7,6 +7,7 @@
  */
 
 #include <IMP/rmf/restraint_io.h>
+#include <IMP/rmf/particle_io.h>
 #include <IMP/rmf/simple_links.h>
 #include <IMP/rmf/link_macros.h>
 #include <RMF/decorator/physics.h>
