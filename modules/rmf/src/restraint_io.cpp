@@ -533,6 +533,25 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       }
       nh.set_static_value(key, rvalue);
     }
+
+    add_restraint_child_particles(o, nh, ri);
+
+    // Need dynamic info too to get the set of particles
+    Pointer<RestraintInfo> dri = o->get_dynamic_info();
+    if (dri) {
+      dri->set_was_used(true);
+      add_restraint_child_particles(o, nh, dri);
+    }
+  }
+
+  void add_restraint_child_particles(Restraint *o, RMF::NodeHandle nh,
+                                     RestraintInfo *ri) {
+    unsigned i;
+    for (i = 0; i < ri->get_number_of_particle_indexes(); ++i) {
+      add_particles(nh.get_file(),
+                    IMP::get_particles(o->get_model(),
+                                       ri->get_particle_indexes_value(i)));
+    }
   }
 
   void do_save(RMF::FileHandle fh) {

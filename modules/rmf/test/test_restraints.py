@@ -24,8 +24,16 @@ class MockRestraint(IMP.Restraint):
     def do_get_inputs(self):
         return self.ps
 
+    def get_static_info(self):
+        i = IMP.RestraintInfo()
+        if len(self.ps) >= 2:
+            i.add_particle_indexes("static particles", [self.ps[1]])
+        return i
+
     def get_dynamic_info(self):
         i = IMP.RestraintInfo()
+        if len(self.ps) >= 3:
+            i.add_particle_indexes("dynamic particles", [self.ps[2]])
         i.add_int("test int", 5)
         i.add_float("test float", 42.4)
         i.add_string("type", "MockRestraint")
@@ -39,12 +47,15 @@ class MockRestraint(IMP.Restraint):
 
 class Tests(IMP.test.TestCase):
 
-    def _write_restraint(self, name, cls=IMP._ConstRestraint):
+    def _write_restraint(self, name, cls=IMP._ConstRestraint, extra_ps=0):
         f = RMF.create_rmf_file(name)
         m = IMP.Model()
         p = IMP.Particle(m)
         IMP.rmf.add_particles(f, [p])
-        r = cls(1, [p])
+        # extra_ps are particles referenced by the restraint but not
+        # explicitly added to the RMF
+        ps = [p] + [IMP.Particle(m) for i in range(extra_ps)]
+        r = cls(1, ps)
         r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
         IMP.rmf.save_frame(f, str(0))
@@ -58,8 +69,8 @@ class Tests(IMP.test.TestCase):
         IMP.rmf.load_frame(f, RMF.FrameID(0))
         print([IMP.Particle.get_from(x).get_index() for x in r.get_inputs()])
         print([x.get_index() for x in ps])
-        self.assertEqual(r.get_inputs(), ps)
-        return r
+        self.assertEqual(sorted(r.get_inputs()), sorted(ps))
+        return m, r
 
     def test_0(self):
         """Test writing restraints rmf"""
@@ -176,7 +187,7 @@ class Tests(IMP.test.TestCase):
         for suffix in IMP.rmf.suffixes:
             name = self.get_tmp_file_name("dynamic_info" + suffix)
             self._write_restraint(name, cls=MockRestraint)
-            r = self._read_restraint(name)
+            m, r = self._read_restraint(name)
             info = r.get_dynamic_info()
             self.assertEqual(info.get_number_of_int(), 1)
             self.assertEqual(info.get_int_key(0), "test int")
@@ -205,6 +216,13 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(info.get_number_of_filenames(), 1)
             self.assertEqual(info.get_filenames_key(0), "test filenames")
             self.assertEqual(len(info.get_filenames_value(0)), 2)
+
+    def test_associated_particles(self):
+        """Test handling of restraint associated particles"""
+        for suffix in IMP.rmf.suffixes:
+            name = self.get_tmp_file_name("assoc_ps" + suffix)
+            self._write_restraint(name, cls=MockRestraint, extra_ps=2)
+            m, r = self._read_restraint(name)
 
 if __name__ == '__main__':
     IMP.test.main()
