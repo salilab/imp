@@ -252,6 +252,9 @@ class Tests(IMP.test.TestCase):
             self.assertTrue(IMP.core.XYZR.get_is_setup(m, ind1))
             self.assertAlmostEqual(IMP.core.XYZR(m, ind1).get_radius(), 4.0,
                                    delta=1e-6)
+            self.assertLess(IMP.algebra.get_distance(
+                IMP.core.XYZR(m, ind1).get_coordinates(),
+                IMP.algebra.Vector3D(1,2,3)), 1e-4)
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -9,6 +9,7 @@
 #include <IMP/rmf/restraint_io.h>
 #include <IMP/rmf/simple_links.h>
 #include <IMP/rmf/link_macros.h>
+#include <IMP/rmf/internal/atom_links_coordinate_helpers.h>
 #include <RMF/decorator/physics.h>
 #include <RMF/decorator/feature.h>
 #include <IMP/core/RestraintsScoringFunction.h>
@@ -152,6 +153,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   RMF::decorator::ScoreFactory sf_;
   RMF::decorator::RepresentationFactory rf_;
   RMF::decorator::GaussianParticleFactory gaussian_factory_;
+  RMF::decorator::IntermediateParticleFactory ipf_;
   RMF::FloatKey radius_key_;
   RMF::FloatKey mass_key_;
   RMF::Category imp_cat_;
@@ -251,6 +253,13 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     if (n.get_has_value(mass_key_)) {
       atom::Mass::setup_particle(m, p, n.get_value(mass_key_));
     }
+    if (ipf_.get_is(n)) {
+      if (core::XYZ::get_is_setup(m, p)) {
+        core::XYZ(m, p).set_coordinates(internal::get_coordinates(n, ipf_));
+      } else {
+        core::XYZ::setup_particle(m, p, internal::get_coordinates(n, ipf_));
+      }
+    }
     if (gaussian_factory_.get_is(n)) {
       if (!core::Gaussian::get_is_setup(m, p)) {
         core::Gaussian::setup_particle(m, p);
@@ -341,6 +350,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         sf_(fh),
         rf_(fh),
         gaussian_factory_(fh),
+        ipf_(fh),
         imp_cat_(fh.get_category("IMP")),
         imp_restraint_cat_(fh.get_category("IMP restraint")),
         imp_restraint_fn_cat_(fh.get_category("IMP restraint files")),
@@ -367,7 +377,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   RMF::decorator::ScoreFactory sf_;
   RMF::decorator::RepresentationFactory rf_;
   RMF::decorator::ParticleFactory particle_factory_;
-  RMF::decorator::IntermediateParticleFactory intermediate_particle_factory_;
+  RMF::decorator::IntermediateParticleFactory ipf_;
   RMF::Category imp_cat_;
   RMF::Category imp_restraint_cat_;
   RMF::Category imp_restraint_fn_cat_;
@@ -632,7 +642,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       } else {
         RMF::NodeHandle c = parent.add_child(nicename, RMF::REPRESENTATION);
         setup_node(p->get_model(), p->get_index(), c);
-	// add static attributes
+        // add static attributes
         set_association(c, p, true);
       }
     }
@@ -641,7 +651,8 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   void setup_node(Model *m, ParticleIndex p, RMF::NodeHandle n) {
     if (core::XYZR::get_is_setup(m, p)) {
       core::XYZR d(m, p);
-      intermediate_particle_factory_.get(n).set_radius(d.get_radius());
+      internal::copy_to_static_particle(d.get_coordinates(), n, ipf_);
+      ipf_.get(n).set_radius(d.get_radius());
     }
     if (atom::Mass::get_is_setup(m, p)) {
       atom::Mass d(m, p);
@@ -661,7 +672,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
         sf_(fh),
         rf_(fh),
         particle_factory_(fh),
-        intermediate_particle_factory_(fh),
+        ipf_(fh),
         imp_cat_(fh.get_category("IMP")),
         imp_restraint_cat_(fh.get_category("IMP restraint")),
         imp_restraint_fn_cat_(fh.get_category("IMP restraint files")),
