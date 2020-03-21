@@ -52,9 +52,16 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         p = IMP.Particle(m)
         IMP.rmf.add_particles(f, [p])
+        ps = [p]
         # extra_ps are particles referenced by the restraint but not
         # explicitly added to the RMF
-        ps = [p] + [IMP.Particle(m, "extra%d" % i) for i in range(extra_ps)]
+        if extra_ps:
+            p1 = IMP.Particle(m, "extra0")
+            IMP.atom.Mass.setup_particle(p1, 42.0)
+            p2 = IMP.Particle(m, "extra1")
+            IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(1,2,3))
+            IMP.core.XYZR.setup_particle(p2, 4)
+            ps.extend([p1, p2])
         r = cls(1, ps)
         r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
@@ -231,11 +238,20 @@ class Tests(IMP.test.TestCase):
             self.assertEqual([m.get_particle_name(i)
                               for i in info.get_particle_indexes_value(0)],
                              ['extra0'])
+            ind0, = info.get_particle_indexes_value(0)
             self.assertEqual(info.get_particle_indexes_key(1),
                              'dynamic particles')
             self.assertEqual([m.get_particle_name(i)
                               for i in info.get_particle_indexes_value(1)],
                              ['extra1'])
+            ind1, = info.get_particle_indexes_value(1)
+            # Make sure that particle attributes survive a round trip
+            self.assertTrue(IMP.atom.Mass.get_is_setup(m, ind0))
+            self.assertAlmostEqual(IMP.atom.Mass(m, ind0).get_mass(), 42.0,
+                                   delta=1e-6)
+            self.assertTrue(IMP.core.XYZR.get_is_setup(m, ind1))
+            self.assertAlmostEqual(IMP.core.XYZR(m, ind1).get_radius(), 4.0,
+                                   delta=1e-6)
 
 if __name__ == '__main__':
     IMP.test.main()
