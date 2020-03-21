@@ -13,6 +13,7 @@
 #include <RMF/decorator/feature.h>
 #include <IMP/core/RestraintsScoringFunction.h>
 #include <IMP/core/XYZR.h>
+#include <IMP/core/Gaussian.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/input_output.h>
 #include <IMP/ConstVector.h>
