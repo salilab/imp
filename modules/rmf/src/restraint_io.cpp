@@ -16,6 +16,7 @@
 #include <IMP/core/RestraintsScoringFunction.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/Gaussian.h>
+#include <IMP/core/rigid_bodies.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/input_output.h>
@@ -157,6 +158,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   RMF::decorator::GaussianParticleFactory gaussian_factory_;
   RMF::decorator::IntermediateParticleFactory ipf_;
   RMF::decorator::ScaleFactory scalef_;
+  RMF::decorator::ReferenceFrameFactory refframef_;
   RMF::FloatKey radius_key_;
   RMF::FloatKey mass_key_;
   RMF::Category imp_cat_;
@@ -277,10 +279,15 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
       if (!core::Gaussian::get_is_setup(m, p)) {
         core::Gaussian::setup_particle(m, p);
       }
-      if (gaussian_factory_.get_is_static(n)) {
-        RMF::Vector3 v = gaussian_factory_.get(n).get_variances();
-        core::Gaussian(m, p).set_variances(algebra::Vector3D(v));
+      RMF::Vector3 v = gaussian_factory_.get(n).get_variances();
+      core::Gaussian(m, p).set_variances(algebra::Vector3D(v));
+    }
+    if (refframef_.get_is(n)) {
+      if (!core::RigidBody::get_is_setup(m, p)) {
+        core::RigidBody::setup_particle(m, p, algebra::ReferenceFrame3D());
       }
+      algebra::ReferenceFrame3D rf(internal::get_transformation(n, refframef_));
+      core::RigidBody(m, p).set_reference_frame_lazy(rf);
     }
   }
 
@@ -365,6 +372,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         gaussian_factory_(fh),
         ipf_(fh),
         scalef_(fh),
+        refframef_(fh),
         imp_cat_(fh.get_category("IMP")),
         imp_restraint_cat_(fh.get_category("IMP restraint")),
         imp_restraint_fn_cat_(fh.get_category("IMP restraint files")),
@@ -391,8 +399,10 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   RMF::decorator::ScoreFactory sf_;
   RMF::decorator::RepresentationFactory rf_;
   RMF::decorator::ParticleFactory particle_factory_;
+  RMF::decorator::GaussianParticleFactory gaussian_factory_;
   RMF::decorator::IntermediateParticleFactory ipf_;
   RMF::decorator::ScaleFactory scalef_;
+  RMF::decorator::ReferenceFrameFactory refframef_;
   RMF::Category imp_cat_;
   RMF::Category imp_restraint_cat_;
   RMF::Category imp_restraint_fn_cat_;
@@ -664,6 +674,11 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   }
 
   void setup_node(Model *m, ParticleIndex p, RMF::NodeHandle n) {
+    if (core::RigidBody::get_is_setup(m, p)) {
+      internal::copy_to_static_reference_frame(
+         core::RigidBody(m, p).get_reference_frame().get_transformation_to(),
+         n, refframef_);
+    }
     if (isd::Scale::get_is_setup(m, p)) {
       isd::Scale scale(m, p);
       RMF::decorator::Scale rscale = scalef_.get(n);
@@ -680,6 +695,10 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       atom::Mass d(m, p);
       particle_factory_.get(n).set_mass(d.get_mass());
     }
+    if (core::Gaussian::get_is_setup(m, p)) {
+      algebra::Vector3D var = core::Gaussian(m, p).get_variances();
+      gaussian_factory_.get(n).set_variances(RMF::Vector3(var));
+    }
   }
 
   void do_save(RMF::FileHandle fh) {
@@ -694,8 +713,10 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
         sf_(fh),
         rf_(fh),
         particle_factory_(fh),
+        gaussian_factory_(fh),
         ipf_(fh),
         scalef_(fh),
+        refframef_(fh),
         imp_cat_(fh.get_category("IMP")),
         imp_restraint_cat_(fh.get_category("IMP restraint")),
         imp_restraint_fn_cat_(fh.get_category("IMP restraint files")),
