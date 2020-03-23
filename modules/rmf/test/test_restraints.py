@@ -2,6 +2,7 @@ from __future__ import print_function
 import unittest
 import IMP.rmf
 import IMP.test
+import IMP.isd
 import IMP.container
 import RMF
 from IMP.algebra import *
@@ -32,8 +33,9 @@ class MockRestraint(IMP.Restraint):
 
     def get_dynamic_info(self):
         i = IMP.RestraintInfo()
-        if len(self.ps) >= 3:
-            i.add_particle_indexes("dynamic particles", [self.ps[2]])
+        if len(self.ps) >= 4:
+            i.add_particle_indexes("dynamic particles",
+                                   [self.ps[2], self.ps[3]])
         i.add_int("test int", 5)
         i.add_float("test float", 42.4)
         i.add_string("type", "MockRestraint")
@@ -61,7 +63,11 @@ class Tests(IMP.test.TestCase):
             p2 = IMP.Particle(m, "extra1")
             IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(1,2,3))
             IMP.core.XYZR.setup_particle(p2, 4)
-            ps.extend([p1, p2])
+            p3 = IMP.Particle(m, "extra2")
+            scale = IMP.isd.Scale.setup_particle(p3, 1.0)
+            scale.set_lower(0.0)
+            scale.set_upper(10.0)
+            ps.extend([p1, p2, p3])
         r = cls(1, ps)
         r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
@@ -229,8 +235,8 @@ class Tests(IMP.test.TestCase):
         """Test handling of restraint associated particles"""
         for suffix in IMP.rmf.suffixes:
             name = self.get_tmp_file_name("assoc_ps" + suffix)
-            self._write_restraint(name, cls=MockRestraint, extra_ps=2)
-            m, r = self._read_restraint(name, extra_ps=2)
+            self._write_restraint(name, cls=MockRestraint, extra_ps=3)
+            m, r = self._read_restraint(name, extra_ps=3)
             info = r.get_static_info()
             self.assertEqual(info.get_number_of_particle_indexes(), 2)
             self.assertEqual(info.get_particle_indexes_key(0),
@@ -243,8 +249,8 @@ class Tests(IMP.test.TestCase):
                              'dynamic particles')
             self.assertEqual([m.get_particle_name(i)
                               for i in info.get_particle_indexes_value(1)],
-                             ['extra1'])
-            ind1, = info.get_particle_indexes_value(1)
+                             ['extra1', 'extra2'])
+            ind1, ind2 = info.get_particle_indexes_value(1)
             # Make sure that particle attributes survive a round trip
             self.assertTrue(IMP.atom.Mass.get_is_setup(m, ind0))
             self.assertAlmostEqual(IMP.atom.Mass(m, ind0).get_mass(), 42.0,
@@ -255,6 +261,13 @@ class Tests(IMP.test.TestCase):
             self.assertLess(IMP.algebra.get_distance(
                 IMP.core.XYZR(m, ind1).get_coordinates(),
                 IMP.algebra.Vector3D(1,2,3)), 1e-4)
+            self.assertTrue(IMP.isd.Scale.get_is_setup(m, ind2))
+            self.assertAlmostEqual(IMP.isd.Scale(m, ind2).get_scale(), 1.0,
+                                   delta=1e-6)
+            self.assertAlmostEqual(IMP.isd.Scale(m, ind2).get_lower(), 0.0,
+                                   delta=1e-6)
+            self.assertAlmostEqual(IMP.isd.Scale(m, ind2).get_upper(), 10.0,
+                                   delta=1e-6)
 
 if __name__ == '__main__':
     IMP.test.main()

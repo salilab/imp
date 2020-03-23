@@ -11,10 +11,12 @@
 #include <IMP/rmf/link_macros.h>
 #include <IMP/rmf/internal/atom_links_coordinate_helpers.h>
 #include <RMF/decorator/physics.h>
+#include <RMF/decorator/uncertainty.h>
 #include <RMF/decorator/feature.h>
 #include <IMP/core/RestraintsScoringFunction.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/Gaussian.h>
+#include <IMP/isd/Scale.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/input_output.h>
 #include <IMP/ConstVector.h>
@@ -154,6 +156,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   RMF::decorator::RepresentationFactory rf_;
   RMF::decorator::GaussianParticleFactory gaussian_factory_;
   RMF::decorator::IntermediateParticleFactory ipf_;
+  RMF::decorator::ScaleFactory scalef_;
   RMF::FloatKey radius_key_;
   RMF::FloatKey mass_key_;
   RMF::Category imp_cat_;
@@ -253,6 +256,16 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     if (n.get_has_value(mass_key_)) {
       atom::Mass::setup_particle(m, p, n.get_value(mass_key_));
     }
+    if (scalef_.get_is(n)) {
+      if (!isd::Scale::get_is_setup(m, p)) {
+        isd::Scale::setup_particle(m, p);
+      }
+      RMF::decorator::ScaleConst rscale = scalef_.get(n);
+      isd::Scale scale(m, p);
+      scale.set_scale(rscale.get_scale());
+      scale.set_upper(rscale.get_upper());
+      scale.set_lower(rscale.get_lower());
+    }
     if (ipf_.get_is(n)) {
       if (core::XYZ::get_is_setup(m, p)) {
         core::XYZ(m, p).set_coordinates(internal::get_coordinates(n, ipf_));
@@ -351,6 +364,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         rf_(fh),
         gaussian_factory_(fh),
         ipf_(fh),
+        scalef_(fh),
         imp_cat_(fh.get_category("IMP")),
         imp_restraint_cat_(fh.get_category("IMP restraint")),
         imp_restraint_fn_cat_(fh.get_category("IMP restraint files")),
@@ -378,6 +392,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   RMF::decorator::RepresentationFactory rf_;
   RMF::decorator::ParticleFactory particle_factory_;
   RMF::decorator::IntermediateParticleFactory ipf_;
+  RMF::decorator::ScaleFactory scalef_;
   RMF::Category imp_cat_;
   RMF::Category imp_restraint_cat_;
   RMF::Category imp_restraint_fn_cat_;
@@ -649,6 +664,13 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   }
 
   void setup_node(Model *m, ParticleIndex p, RMF::NodeHandle n) {
+    if (isd::Scale::get_is_setup(m, p)) {
+      isd::Scale scale(m, p);
+      RMF::decorator::Scale rscale = scalef_.get(n);
+      rscale.set_scale(scale.get_scale());
+      rscale.set_upper(scale.get_upper());
+      rscale.set_lower(scale.get_lower());
+    }
     if (core::XYZR::get_is_setup(m, p)) {
       core::XYZR d(m, p);
       internal::copy_to_static_particle(d.get_coordinates(), n, ipf_);
@@ -673,6 +695,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
         rf_(fh),
         particle_factory_(fh),
         ipf_(fh),
+        scalef_(fh),
         imp_cat_(fh.get_category("IMP")),
         imp_restraint_cat_(fh.get_category("IMP restraint")),
         imp_restraint_fn_cat_(fh.get_category("IMP restraint files")),
