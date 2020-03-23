@@ -19,6 +19,7 @@
 #include "RMF/decorator/shape.h"
 #include "RMF/decorator/reference.h"
 #include "RMF/decorator/provenance.h"
+#include "RMF/decorator/uncertainty.h"
 #include "RMF/enums.h"
 #include "RMF/infrastructure_macros.h"
 #include "RMF/types.h"
@@ -176,6 +177,7 @@ void show_node_decorators(
     decorator::ChainFactory chaincf, decorator::DomainFactory fragcf,
     decorator::CopyFactory copycf, decorator::DiffuserFactory diffusercf,
     decorator::TypedFactory typedcf, decorator::ReferenceFactory refcf,
+    decorator::ScaleFactory scalecf,
     decorator::StructureProvenanceFactory strucpcf,
     decorator::SampleProvenanceFactory samppcf,
     decorator::CombineProvenanceFactory combpcf,
@@ -227,6 +229,8 @@ void show_node_decorators(
   else if (diffusercf.get_is(n)) out << " diffuser";
   if (refcf.get_is_static(n)) out << " reference(s)";
   else if (refcf.get_is(n)) out << " reference";
+  if (scalecf.get_is_static(n)) out << " scale(s)";
+  else if (scalecf.get_is(n)) out << " scale";
   if (strucpcf.get_is_static(n)) out << " structure provenance(s)";
   else if (strucpcf.get_is(n)) out << " structure provenance";
   if (samppcf.get_is_static(n)) out << " sample provenance(s)";
@@ -300,6 +304,7 @@ struct ShowDecorators {
   decorator::DiffuserFactory diffusercf;
   decorator::TypedFactory typedcf;
   decorator::ReferenceFactory refcf;
+  decorator::ScaleFactory scalecf;
   decorator::StructureProvenanceFactory strucpcf;
   decorator::SampleProvenanceFactory samppcf;
   decorator::CombineProvenanceFactory combpcf;
@@ -326,6 +331,7 @@ struct ShowDecorators {
         diffusercf(fh),
         typedcf(fh),
         refcf(fh),
+        scalecf(fh),
         strucpcf(fh),
         samppcf(fh),
         combpcf(fh),
@@ -337,7 +343,7 @@ struct ShowDecorators {
                   std::ostream& out) {
     show_node_decorators(cur, suffix, out, bdf, ccf, pcf, ipcf, rpcf, scf,
                          repcf, bcf, cycf, segcf, rcf, acf, chaincf, fragcf,
-                         copycf, diffusercf, typedcf, refcf, strucpcf,
+                         copycf, diffusercf, typedcf, refcf, scalecf, strucpcf,
                          samppcf, combpcf, filtpcf, clustpcf, scriptpcf,
                          softpcf, prefix + "   ");
   }

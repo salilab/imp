@@ -21,6 +21,7 @@
 #include "RMF/decorator/bond.h"
 #include "RMF/decorator/reference.h"
 #include "RMF/decorator/provenance.h"
+#include "RMF/decorator/uncertainty.h"
 #include "RMF/decorator/shape.h"
 
 RMF_ENABLE_WARNINGS
@@ -38,7 +39,8 @@ std::string get_static_signature(
     decorator::AtomFactory acf, decorator::ChainFactory chaincf,
     decorator::DomainFactory fragcf, decorator::CopyFactory copycf,
     decorator::DiffuserFactory diffusercf, decorator::TypedFactory typedcf,
-    decorator::ReferenceFactory refcf) {
+    decorator::ReferenceFactory refcf,
+    decorator::ScaleFactory scalecf) {
   std::ostringstream ret;
   ret << "hierarchy [\n";
   RMF_FOREACH(NodeID n, file.get_node_ids()) {
@@ -73,6 +75,7 @@ std::string get_static_signature(
     if (typedcf.get_is_static(nh)) ret << " typed";
     if (diffusercf.get_is_static(nh)) ret << " diffuser";
     if (refcf.get_is_static(nh)) ret << " reference";
+    if (scalecf.get_is_static(nh)) ret << " scale";
     ret << "\n";
   }
   ret << "]\n";
@@ -89,7 +92,8 @@ std::string get_frame_signature(
     decorator::AtomFactory acf, decorator::ChainFactory chaincf,
     decorator::DomainFactory fragcf, decorator::CopyFactory copycf,
     decorator::DiffuserFactory diffusercf, decorator::TypedFactory typedcf,
-    decorator::ReferenceFactory refcf) {
+    decorator::ReferenceFactory refcf,
+    decorator::ScaleFactory scalecf) {
   std::ostringstream ret;
   ret << file.get_current_frame() << " [\n";
   RMF_FOREACH(NodeID n, file.get_node_ids()) {
@@ -114,6 +118,7 @@ std::string get_frame_signature(
     if (typedcf.get_is(nh)) ret << " typed";
     if (diffusercf.get_is(nh)) ret << " diffuser";
     if (refcf.get_is(nh)) ret << " reference";
+    if (scalecf.get_is(nh)) ret << " scale";
     ret << "\n";
   }
   ret << "]\n";
@@ -139,18 +144,19 @@ std::string get_signature_string(FileConstHandle file) {
   decorator::DiffuserFactory diffusercf(file);
   decorator::TypedFactory typedcf(file);
   decorator::ReferenceFactory refcf(file);
+  decorator::ScaleFactory scalecf(file);
 
   std::string ret = get_static_signature(file, bdf, ccf, pcf, ipcf, rpcf, scf,
                                          bcf, cycf, segcf, rcf, acf, chaincf,
                                          fragcf, copycf, diffusercf, typedcf,
-                                         refcf);
+                                         refcf, scalecf);
   RMF_FOREACH(FrameID frame, file.get_frames()) {
     file.set_current_frame(frame);
     ret += std::string("\n") + get_frame_signature(file, bdf, ccf, pcf, ipcf,
                                                    rpcf, scf, bcf, cycf, segcf,
                                                    rcf, acf, chaincf, fragcf,
                                                    copycf, diffusercf, typedcf,
-                                                   refcf);
+                                                   refcf, scalecf);
   }
   return ret;
 }

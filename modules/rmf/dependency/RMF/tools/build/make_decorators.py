@@ -217,6 +217,12 @@ make_header(
      expres],
     [])
 
+scale = Decorator(["REPRESENTATION"], "uncertainty",
+                    "Scale",
+                    [Attribute("scale", "Float"),
+                     Attribute("scale lower", "Float", function_name='lower'),
+                     Attribute("scale upper", "Float", function_name='upper')])
+make_header("uncertainty", [scale], [])
 
 salias = Decorator(["ALIAS"], "alias",
                    "Alias",

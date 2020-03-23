@@ -88,6 +88,18 @@ The category name is `sequence` and it includes information about the types and 
 | RMF::decorator::ExplicitResolution | RMF::REPRESENTATION  |  explicit resolution               |
 | RMF::decorator::Reference       | RMF::REPRESENTATION     |  pointer to reference node         |
 
+# Uncertainty # {#uncertainty}
+
+The category name is `uncertainty` and it expresses data or theory uncertainty
+in the model.
+
+## Attributes ## {#uncertaintyattributes}
+
+| Name             | Type      | Description                                        |
+|-----------------:|----------:|:---------------------------------------------------|
+| `scale`          | float     | Bayesian nuisance parameter bounded to be positive |
+| `scale lower`    | float     | Lower bound of scale value                         |
+| `scale upper`    | float     | Upper bound of scale value                         |
 
 # Feature # {#feature}
 
