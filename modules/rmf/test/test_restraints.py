@@ -27,15 +27,16 @@ class MockRestraint(IMP.Restraint):
 
     def get_static_info(self):
         i = IMP.RestraintInfo()
-        if len(self.ps) >= 2:
-            i.add_particle_indexes("static particles", [self.ps[1]])
+        if len(self.ps) >= 5:
+            i.add_particle_indexes("static particles",
+                    [self.ps[1], self.ps[2], self.ps[3]])
         return i
 
     def get_dynamic_info(self):
         i = IMP.RestraintInfo()
         if len(self.ps) >= 5:
             i.add_particle_indexes("dynamic particles",
-                                   [self.ps[2], self.ps[3], self.ps[4]])
+                                   [self.ps[4]])
         i.add_int("test int", 5)
         i.add_float("test float", 42.4)
         i.add_string("type", "MockRestraint")
@@ -64,22 +65,25 @@ class Tests(IMP.test.TestCase):
             IMP.core.XYZ.setup_particle(p2, IMP.algebra.Vector3D(1,2,3))
             IMP.core.XYZR.setup_particle(p2, 4)
             p3 = IMP.Particle(m, "extra2")
-            scale = IMP.isd.Scale.setup_particle(p3, 1.0)
-            scale.set_lower(0.0)
-            scale.set_upper(10.0)
-            p4 = IMP.Particle(m, "extra3")
-            g = IMP.core.Gaussian.setup_particle(p4)
+            g = IMP.core.Gaussian.setup_particle(p3)
             g.set_variances([106.783, 55.2361, 20.0973])
             rot = IMP.algebra.Rotation3D([0.00799897, 0.408664,
                                           -0.845514, -0.343563])
             tran = IMP.algebra.Vector3D(101.442, 157.066, 145.694)
             tr = IMP.algebra.Transformation3D(rot, tran)
             g.set_reference_frame(IMP.algebra.ReferenceFrame3D(tr))
+            p4 = IMP.Particle(m, "extra3")
+            scale = IMP.isd.Scale.setup_particle(p4, 1.0)
+            scale.set_lower(0.0)
+            scale.set_upper(10.0)
             ps.extend([p1, p2, p3, p4])
         r = cls(1, ps)
         r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
         IMP.rmf.save_frame(f, str(0))
+        if extra_ps:
+            scale.set_scale(0.5)
+            IMP.rmf.save_frame(f, str(1))
 
     def _read_restraint(self, name, extra_ps=0):
         IMP.add_to_log(IMP.TERSE, "Starting reading back\n")
@@ -92,7 +96,7 @@ class Tests(IMP.test.TestCase):
         print([IMP.Particle.get_from(x).get_index() for x in r.get_inputs()])
         print([x.get_index() for x in ps])
         self.assertEqual(len(r.get_inputs()), 1 + extra_ps)
-        return m, r
+        return m, r, f
 
     def test_0(self):
         """Test writing restraints rmf"""
@@ -209,7 +213,7 @@ class Tests(IMP.test.TestCase):
         for suffix in IMP.rmf.suffixes:
             name = self.get_tmp_file_name("dynamic_info" + suffix)
             self._write_restraint(name, cls=MockRestraint)
-            m, r = self._read_restraint(name)
+            m, r, rmf = self._read_restraint(name)
             info = r.get_dynamic_info()
             self.assertEqual(info.get_number_of_int(), 1)
             self.assertEqual(info.get_int_key(0), "test int")
@@ -244,21 +248,21 @@ class Tests(IMP.test.TestCase):
         for suffix in IMP.rmf.suffixes:
             name = self.get_tmp_file_name("assoc_ps" + suffix)
             self._write_restraint(name, cls=MockRestraint, extra_ps=4)
-            m, r = self._read_restraint(name, extra_ps=4)
+            m, r, rmf = self._read_restraint(name, extra_ps=4)
             info = r.get_static_info()
             self.assertEqual(info.get_number_of_particle_indexes(), 2)
             self.assertEqual(info.get_particle_indexes_key(0),
                              'static particles')
             self.assertEqual([m.get_particle_name(i)
                               for i in info.get_particle_indexes_value(0)],
-                             ['extra0'])
-            ind0, = info.get_particle_indexes_value(0)
+                             ['extra0', 'extra1', 'extra2'])
+            ind0, ind1, ind2 = info.get_particle_indexes_value(0)
             self.assertEqual(info.get_particle_indexes_key(1),
                              'dynamic particles')
             self.assertEqual([m.get_particle_name(i)
                               for i in info.get_particle_indexes_value(1)],
-                             ['extra1', 'extra2', 'extra3'])
-            ind1, ind2, ind3 = info.get_particle_indexes_value(1)
+                             ['extra3'])
+            ind3, = info.get_particle_indexes_value(1)
             # Make sure that particle attributes survive a round trip
             self.assertTrue(IMP.atom.Mass.get_is_setup(m, ind0))
             self.assertAlmostEqual(IMP.atom.Mass(m, ind0).get_mass(), 42.0,
@@ -269,15 +273,8 @@ class Tests(IMP.test.TestCase):
             self.assertLess(IMP.algebra.get_distance(
                 IMP.core.XYZR(m, ind1).get_coordinates(),
                 IMP.algebra.Vector3D(1,2,3)), 1e-4)
-            self.assertTrue(IMP.isd.Scale.get_is_setup(m, ind2))
-            self.assertAlmostEqual(IMP.isd.Scale(m, ind2).get_scale(), 1.0,
-                                   delta=1e-6)
-            self.assertAlmostEqual(IMP.isd.Scale(m, ind2).get_lower(), 0.0,
-                                   delta=1e-6)
-            self.assertAlmostEqual(IMP.isd.Scale(m, ind2).get_upper(), 10.0,
-                                   delta=1e-6)
-            self.assertTrue(IMP.core.Gaussian.get_is_setup(m, ind3))
-            g = IMP.core.Gaussian(m, ind3)
+            self.assertTrue(IMP.core.Gaussian.get_is_setup(m, ind2))
+            g = IMP.core.Gaussian(m, ind2)
             self.assertLess(IMP.algebra.get_distance(
                 g.get_variances(), [106.783, 55.2361, 20.0973]), 1e-4)
             tr = g.get_reference_frame().get_transformation_to()
@@ -287,6 +284,18 @@ class Tests(IMP.test.TestCase):
                 q, [0.00799897, 0.408664, -0.845514, -0.343563]), 1e-4)
             self.assertLess(IMP.algebra.get_distance(
                 trans, [101.442, 157.066, 145.694]), 1e-4)
+            self.assertTrue(IMP.isd.Scale.get_is_setup(m, ind3))
+            self.assertAlmostEqual(IMP.isd.Scale(m, ind3).get_scale(), 1.0,
+                                   delta=1e-6)
+            self.assertAlmostEqual(IMP.isd.Scale(m, ind3).get_lower(), 0.0,
+                                   delta=1e-6)
+            self.assertAlmostEqual(IMP.isd.Scale(m, ind3).get_upper(), 10.0,
+                                   delta=1e-6)
+
+            # Test per-frame values
+            IMP.rmf.load_frame(rmf, RMF.FrameID(1))
+            self.assertAlmostEqual(IMP.isd.Scale(m, ind3).get_scale(), 0.5,
+                                   delta=1e-6)
 
 if __name__ == '__main__':
     IMP.test.main()

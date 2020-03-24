@@ -175,6 +175,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   RMF::StringsKeys filenamesks_;
 
   void do_load_one(RMF::NodeConstHandle nh, Restraint *oi) {
+    RMF::NodeConstHandles chs = nh.get_children();
     if (sf_.get_is(nh)) {
       RMF::decorator::ScoreConst d = sf_.get(nh);
       IMP_LOG_TERSE("Loading score " << d.get_score() << " into restraint"
@@ -183,7 +184,13 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     } else {
       oi->set_last_score(0);
     }
+    IMP_FOREACH(RMF::NodeConstHandle ch, chs) {
+      if (ch.get_type() == RMF::ORGANIZATIONAL) {
+        load_restraint_particles(ch);
+      }
+    }
   }
+
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::FEATURE;
   }
@@ -235,6 +242,17 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     return ret.release();
   }
 
+  void load_restraint_particles(RMF::NodeConstHandle parent) {
+    IMP_FOREACH(RMF::NodeConstHandle ch, parent.get_children()) {
+      Particle *p = get_association<Particle>(ch);
+      if (p) {
+        load_particle(ch, p->get_model(), p->get_index());
+      } else {
+        IMP_WARN("No IMP particle for node " << ch.get_name() << std::endl);
+      }
+    }
+  }
+
   void create_restraint_particles(
       RMF::NodeConstHandle parent, Model *m,
       std::vector<ParticleIndexesData> &static_pis,
@@ -248,6 +266,16 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     }
     // todo: distinguish static and dynamic pis
     static_pis.push_back(ParticleIndexesData(parent.get_name(), pis));
+  }
+
+  void load_particle(RMF::NodeConstHandle n, Model *m, ParticleIndex p) {
+    if (scalef_.get_is(n)) {
+      RMF::decorator::ScaleConst rscale = scalef_.get(n);
+      isd::Scale scale(m, p);
+      scale.set_scale(rscale.get_scale());
+      scale.set_upper(rscale.get_upper());
+      scale.set_lower(rscale.get_lower());
+    }
   }
 
   void setup_particle(RMF::NodeConstHandle n, Model *m, ParticleIndex p) {
@@ -567,6 +595,8 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       }
       nh.set_frame_value(key, rvalue);
     }
+
+    save_restraint_child_particles(o, nh, ri);
   }
 
   // Save any info from Restraint::get_static_info()
@@ -655,6 +685,24 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
     }
   }
 
+  void save_restraint_child_particles(Restraint *o, RMF::NodeHandle nh,
+                                      RestraintInfo *ri) {
+    unsigned i;
+    RMF::FileHandle file = nh.get_file();
+    for (i = 0; i < ri->get_number_of_particle_indexes(); ++i) {
+      save_dynamic_particles(file, IMP::get_particles(o->get_model(),
+                                       ri->get_particle_indexes_value(i)));
+    }
+  }
+
+  void save_dynamic_particles(RMF::FileHandle file, ParticlesTemp ps) {
+    for (ParticlesTemp::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
+      Particle *p = *pit;
+      RMF::NodeHandle nh = get_node_from_association(file, p);
+      save_node(p->get_model(), p->get_index(), nh);
+    }
+  }
+
   void add_static_particles(RMF::NodeHandle parent, ParticlesTemp ps) {
     RMF::FileHandle file = parent.get_file();
     RMF::decorator::AliasFactory af(file);
@@ -670,6 +718,16 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
         // add static attributes
         set_association(c, p, true);
       }
+    }
+  }
+
+  void save_node(Model *m, ParticleIndex p, RMF::NodeHandle n) {
+    if (isd::Scale::get_is_setup(m, p)) {
+      isd::Scale scale(m, p);
+      RMF::decorator::Scale rscale = scalef_.get(n);
+      rscale.set_scale(scale.get_scale());
+      rscale.set_upper(scale.get_upper());
+      rscale.set_lower(scale.get_lower());
     }
   }
 
