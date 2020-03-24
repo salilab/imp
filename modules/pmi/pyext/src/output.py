@@ -583,7 +583,9 @@ class Output(object):
     def add_restraints_to_rmf(self, name, objectlist):
         for o in _flatten(objectlist):
             try:
-                rs = [o.get_restraint_for_rmf()]
+                rs = o.get_restraint_for_rmf()
+                if not isinstance(rs, (list, tuple)):
+                    rs = [rs]
             except:
                 rs = [o.get_restraint()]
             IMP.rmf.add_restraints(

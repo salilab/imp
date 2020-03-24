@@ -359,7 +359,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
     def get_restraint_for_rmf(self):
         """ get the dummy restraints to be displayed in the rmf file """
-        return self.rslin
+        return self.rslin, self.rssig, self.rspsi
 
     def get_particle_pairs(self):
         """ Get a list of tuples containing the particle pairs """
