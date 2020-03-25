@@ -2,6 +2,7 @@ from __future__ import print_function
 import unittest
 import RMF
 import shutil
+import utils
 
 
 class GenericTest(unittest.TestCase):
@@ -22,7 +23,7 @@ class GenericTest(unittest.TestCase):
         pc = f.get_category("physics")
         pks = f.get_keys(pc)
         print(pks)
-        self.assert_(len(pks) > 3)
+        self.assertGreater(len(pks), 3)
         print(pks)
         tfn = RMF._get_temporary_file_path("test_fileold.rmf")
         shutil.copy(ifn, tfn)
@@ -30,6 +31,6 @@ class GenericTest(unittest.TestCase):
         pc = f.get_category("physics")
         pks = f.get_keys(pc)
         print(pks)
-        self.assert_(len(pks) > 3)
+        self.assertGreater(len(pks), 3)
 if __name__ == '__main__':
     unittest.main()

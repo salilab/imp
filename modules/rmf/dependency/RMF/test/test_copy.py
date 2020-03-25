@@ -2,6 +2,7 @@ from __future__ import print_function
 import unittest
 import RMF
 import shutil
+import utils
 
 
 class GenericTest(unittest.TestCase):
@@ -18,9 +19,9 @@ class GenericTest(unittest.TestCase):
         of = RMF.create_rmf_file(onm)
         RMF.clone_file_info(f, of)
         RMF.clone_hierarchy(f, of)
-        self.assert_(RMF.get_equal_structure(f, of))
+        self.assertTrue(RMF.get_equal_structure(f, of))
         RMF.clone_static_frame(f, of)
-        self.assert_(RMF.get_equal_static_values(f, of))
+        self.assertTrue(RMF.get_equal_static_values(f, of))
         num_frames = f.get_number_of_frames()
         for fr in f.get_frames():
             f.set_current_frame(fr)
@@ -29,22 +30,22 @@ class GenericTest(unittest.TestCase):
 
             self.assertEqual(nfid, fr)
             RMF.clone_loaded_frame(f, of)
-            self.assert_(RMF.get_equal_current_values(f, of))
+            self.assertTrue(RMF.get_equal_current_values(f, of))
             RMF.show_hierarchy_with_values(f.get_root_node())
             RMF.show_hierarchy_with_values(of.get_root_node())
 
             print("number of frames", of.get_number_of_frames(),\
                 fr, f.get_number_of_frames())
-        self.assert_(RMF.get_equal_static_values(f, of))
+        self.assertTrue(RMF.get_equal_static_values(f, of))
         print("deling")
         del of
         print("reopening")
         of = RMF.open_rmf_file_read_only(onm)
-        self.assert_(RMF.get_equal_structure(f, of))
+        self.assertTrue(RMF.get_equal_structure(f, of))
         RMF.show_hierarchy_with_values(f.get_root_node())
         RMF.show_hierarchy_with_values(of.get_root_node())
 
-        self.assert_(RMF.get_equal_static_values(f, of))
+        self.assertTrue(RMF.get_equal_static_values(f, of))
         for i in range(0, num_frames):
             fid = RMF.FrameID(i)
             print(fid)
@@ -52,7 +53,7 @@ class GenericTest(unittest.TestCase):
             of.set_current_frame(fid)
             if suffix != "rmft":
                 # going through a text format perturbs values
-                self.assert_(RMF.get_equal_current_values(f, of))
+                self.assertTrue(RMF.get_equal_current_values(f, of))
 
     def test_perturbed(self):
         """Test copying an rmf file"""
