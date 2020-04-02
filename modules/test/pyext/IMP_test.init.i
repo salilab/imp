@@ -24,14 +24,6 @@ import datetime
 import pickle
 import contextlib
 
-# Fall back to the sets.Set class on older Pythons that don't have
-# the 'set' builtin type.
-try:
-    set = set
-except NameError:
-    import sets
-    set = sets.Set
-
 # Load a new enough unittest package (should have the 'skip' decorator)
 # - On Python 2.7 or 3.2, the standard 'unittest' package will work.
 # - On older Pythons, use the 'unittest2' package if available, otherwise use
