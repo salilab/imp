@@ -111,12 +111,16 @@ RMF::Ints get_node_ids(RMF::FileConstHandle fh, const C &ps,
     RMF::NodeConstHandle nh = get_node_from_association(fh, ps[i]);
     if (nh != RMF::NodeConstHandle()) {
       ret.push_back(nh.get_id().get_index());
-    } else if (o) {
-      IMP_WARN("Particle " << Showable(ps[i]) << " referenced by restraint "
+    } else if (!core::RigidBody::get_is_setup(ps[i])) {
+      /* Don't complain about rigid bodies referenced by restraints, as
+         these don't have their own nodes in RMF */
+      if (o) {
+        IMP_WARN("Particle " << Showable(ps[i]) << " referenced by restraint "
                << Showable(o) << " is not in the RMF." << std::endl);
-    } else {
-      IMP_WARN("Particle " << Showable(ps[i]) << " is not in the RMF."
-                           << std::endl);
+      } else {
+        IMP_WARN("Particle " << Showable(ps[i]) << " is not in the RMF."
+                             << std::endl);
+       }
     }
   }
   return ret;
