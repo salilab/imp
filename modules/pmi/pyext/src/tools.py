@@ -4,7 +4,7 @@
    Miscellaneous utilities.
 """
 
-from __future__ import print_function
+from __future__ import print_function, division
 import IMP
 import IMP.algebra
 import IMP.isd
@@ -781,7 +781,7 @@ def print_multicolumn(list_of_strings, ncolumns=2, truncate=40):
     for i in range(len(l) % cols):
         l.append(" ")
 
-    split = [l[i:i + len(l) / cols] for i in range(0, len(l), len(l) / cols)]
+    split = [l[i:i + len(l) // cols] for i in range(0, len(l), len(l) // cols)]
     for row in zip(*split):
         print("".join(str.ljust(i, truncate) for i in row))
 

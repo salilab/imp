@@ -171,13 +171,11 @@ class ExcludedVolumeSphere(object):
     """
 
     def __init__(self,
-                 representation=None,
-                 included_objects=None,
+                 included_objects,
                  other_objects=None,
                  resolution=1000,
                  kappa=1.0):
         """Constructor.
-        @param representation DEPRECATED - just pass objects
         @param included_objects Can be one of the following inputs:
                IMP Hierarchy, PMI System/State/Molecule/TempResidue, or a list/set of them
         @param other_objects Initializes a bipartite restraint between included_objects and other_objects
@@ -207,17 +205,13 @@ class ExcludedVolumeSphere(object):
                                                             flatten=True)
             other_ps = []
 
-
         # perform selection
-        if representation is None:
-            if hierarchies is None:
-                raise Exception("Must at least pass included objects")
-            self.mdl = hierarchies[0].get_model()
-            included_ps = [h.get_particle() for h in hierarchies]
-            if bipartite:
-                other_ps = [h.get_particle() for h in other_hierarchies]
-        else:
-            raise Exception("Must pass included_objects")
+        if hierarchies is None:
+            raise Exception("Must at least pass included objects")
+        self.mdl = hierarchies[0].get_model()
+        included_ps = [h.get_particle() for h in hierarchies]
+        if bipartite:
+            other_ps = [h.get_particle() for h in other_hierarchies]
 
         # setup score
         self.rs = IMP.RestraintSet(self.mdl, 'excluded_volume')
@@ -255,7 +249,7 @@ class ExcludedVolumeSphere(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.mdl, self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.mdl, self.rs, add_to_rmf=True)
 
     def get_restraint(self):
         return self.rs

@@ -1656,7 +1656,10 @@ class CrossLinkIdentifierDatabase(object):
         with open(filename, 'rb') as handle:
             self.clidb=pickle.load(handle)
 
-def plot_fields(fields, framemin=None, framemax=None):
+def plot_fields(fields, output, framemin=None, framemax=None):
+    """Plot the given fields and save a figure as `output`.
+       The fields generally are extracted from a stat file
+       using ProcessOutput.get_fields()."""
     import matplotlib as mpl
     mpl.use('Agg')
     import matplotlib.pyplot as plt
@@ -1664,7 +1667,7 @@ def plot_fields(fields, framemin=None, framemax=None):
     plt.rc('lines', linewidth=4)
     fig, axs = plt.subplots(nrows=len(fields))
     fig.set_size_inches(10.5, 5.5 * len(fields))
-    plt.rc('axes', color_cycle=['r'])
+    plt.rc('axes')
 
     n = 0
     for key in fields:
@@ -1686,14 +1689,13 @@ def plot_fields(fields, framemin=None, framemax=None):
 
     # Tweak spacing between subplots to prevent labels from overlapping
     plt.subplots_adjust(hspace=0.3)
-    plt.show()
+    plt.savefig(output)
 
 
 def plot_field_histogram(
     name, values_lists, valuename=None, bins=40, colors=None, format="png",
-        reference_xline=None, yplotrange=None, xplotrange=None,normalized=True,
-        leg_names=None):
-
+    reference_xline=None, yplotrange=None, xplotrange=None, normalized=True,
+    leg_names=None):
     '''Plot a list of histograms from a value list.
     @param name the name of the plot
     @param value_lists the list of list of values eg: [[...],[...],[...]]
@@ -1725,7 +1727,7 @@ def plot_field_histogram(
             [float(y) for y in values],
             bins=bins,
             color=col,
-            normed=normalized,histtype='step',lw=4,
+            density=normalized,histtype='step',lw=4,
             label=label)
 
     # plt.title(name,size="xx-large")
@@ -1751,7 +1753,6 @@ def plot_field_histogram(
             linewidth=1)
 
     plt.savefig(name + "." + format, dpi=150, transparent=True)
-    plt.show()
 
 
 def plot_fields_box_plots(name, values, positions, frequencies=None,

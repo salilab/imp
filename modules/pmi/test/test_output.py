@@ -247,6 +247,33 @@ class Tests(IMP.test.TestCase):
         lvs=IMP.atom.get_leaves(stath)
         self.assertEqual(798,len(stath))
 
+    def test_plot_fields(self):
+        """Test the plot_fields function"""
+        try:
+            import matplotlib
+        except ImportError:
+            self.skipTest("no matplotlib package")
+        fs = {'score': [42., 32., 22., 11., 0.],
+              'SwapSuccessRatio': [0.5, 0.4, 0.3, 0.2, 0.5]}
+        IMP.pmi.output.plot_fields(fs, 'plot_fields_test1.png')
+        os.unlink('plot_fields_test1.png')
+
+        fs = {'score': [42., 32., 22., 11., 0.]}
+        IMP.pmi.output.plot_fields(fs, 'plot_fields_test2.png',
+                                   framemin=1, framemax=3)
+        os.unlink('plot_fields_test2.png')
+
+    def test_plot_field_histogram(self):
+        """Test the plot_field_histogram function"""
+        try:
+            import matplotlib
+        except ImportError:
+            self.skipTest("no matplotlib package")
+        scores = [[42., 32., 22., 11., 0.], [10., 20., 30., 40., 50.]]
+        IMP.pmi.output.plot_field_histogram("scores_test", scores,
+                                            yplotrange=[0,80.])
+        os.unlink('scores_test.png')
+
 
 if __name__ == '__main__':
     IMP.test.main()
