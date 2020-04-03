@@ -50,7 +50,7 @@ else:
 class _CrossLinkDataBaseStandardKeys(object):
     '''
     This class setup all the standard keys needed to
-    identify the crosslink features from the data sets
+    identify the cross-link features from the data sets
     '''
     def __init__(self):
         self.type={}
@@ -396,7 +396,7 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
     '''
     A class to handle different styles of site pairs parsers.
     Implemented styles:
-    MSSTUDIO: [Y3-S756;Y3-K759;K4-S756;K4-K759] for crosslinks
+    MSSTUDIO: [Y3-S756;Y3-K759;K4-S756;K4-K759] for cross-links
                   [Y3-;K4-] for dead-ends
     QUANTITATION: sp|P33298|PRS6B_YEAST:280:x:sp|P33298|PRS6B_YEAST:337
     QUANTITATION (with ambiguity separator :|:): Fbw7:107:|:StrepII2x-Fbw7fl:408:x:Nedd8:48
@@ -441,7 +441,7 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
                 m1=self.re.search(r'^(A|C|D|E|F|G|H|I|K|L|M|N|O|P|Q|R|S|T|Y|X|W)(\d+)-(A|C|D|E|F|G|H|I|K|L|M|N|O|P|Q|R|S|T|Y|X|W)(\d+)$',s)
                 m2=self.re.search(r'^(A|C|D|E|F|G|H|I|K|L|M|N|O|P|Q|R|S|T|Y|X|W)(\d+)-$',s)
                 if m1:
-                    # cross link
+                    # cross-link
                     residue_type_1,residue_index_1,residue_type_2,residue_index_2=m1.group(1,2,3,4)
                     residue_pair_indexes.append((residue_index_1,residue_index_2))
                 elif m2:
@@ -451,7 +451,7 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
             return  residue_pair_indexes,chain_pair_indexes
         if self.style == "XTRACT" or self.style == "QUANTITATION":
             if ":x:" in input_string:
-                # if it is a crosslink....
+                # if it is a cross-link....
                 input_strings=input_string.split(":x:")
                 first_peptides=input_strings[0].split(":|:")
                 second_peptides=input_strings[1].split(":|:")
@@ -538,8 +538,8 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         @param converter an instance of CrossLinkDataBaseKeywordsConverter
         @param data_base an instance of CrossLinkDataBase to build the new database on
         @param fasta_seq an instance of IMP.pmi.topology.Sequences containing protein fasta sequences to check
-                crosslink consistency. If not given consistency will not be checked
-        @param linkable_aa a tuple containing one-letter amino acids which are linkable by the crosslinker;
+                cross-link consistency. If not given consistency will not be checked
+        @param linkable_aa a tuple containing one-letter amino acids which are linkable by the cross-linker;
                 only used if the database DOES NOT provide a value for a certain residueX_amino_acid_key
                 and if a fasta_seq is given
         '''
@@ -648,7 +648,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                             new_xl_dict[str(nxl)].append(new_xl)
 
             else:
-                # with a list_parser, a line can be a list of ambiguous crosslinks
+                # with a list_parser, a line can be a list of ambiguous cross-links
                 new_xl_dict={}
                 for nxl,entry in enumerate(xl_list):
 
@@ -664,7 +664,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
                     residue_pair_list,chain_pair_list=self.list_parser.get_list(new_dict[self.site_pairs_key])
 
-                    # then create the crosslinks
+                    # then create the cross-links
                     for n,p in enumerate(residue_pair_list):
                         is_monolink=False
                         if len(p)==1:
@@ -778,7 +778,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                     b_matched = self._match_xlinks(p1, r1, aa_from_file)
                     b_matched_file = b_matched
                 else:
-                    # or pass the possible list of types that can be crosslinked
+                    # or pass the possible list of types that can be cross-linked
                     b_matched = self._match_xlinks(p1, r1, self.def_aa_tuple)
 
                 matched, non_matched = self._update_matched_xlinks(b_matched, p1, r1, matched, non_matched)
@@ -797,9 +797,9 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 percentage_matched = round(100*cnt_matched/len(self),1)
                 percentage_matched_file = round(100 * cnt_matched_file / len(self), 1)
                 #if matched: print "Matched xlinks:", matched
-                if matched or non_matched: print("check_cross_link_consistency: Out of %d crosslinks "
+                if matched or non_matched: print("check_cross_link_consistency: Out of %d cross-links "
                                                  "%d were matched to the fasta sequence (%f %%).\n "
-                                                 "%d were matched by using the crosslink file (%f %%)."%
+                                                 "%d were matched by using the cross-link file (%f %%)."%
                                                  (len(self),cnt_matched,percentage_matched,cnt_matched_file,
                                                   percentage_matched_file) )
                 if non_matched: print("check_cross_link_consistency: Warning: Non matched xlinks:",
@@ -808,7 +808,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
     def _match_xlinks(self, prot_name, res_index, aa_tuple):
         # returns Boolean whether given aa matches a position in the fasta file
-        # cross link files usually start counting at 1 and not 0; therefore subtract -1 to compare with fasta
+        # cross-link files usually start counting at 1 and not 0; therefore subtract -1 to compare with fasta
         amino_dict = IMP.pmi.alphabets.amino_acid
         res_index -= 1
         for amino_acid in aa_tuple:
@@ -819,7 +819,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
                 seq = self.fasta_seq.sequences[prot_name]
                 # if we are looking at the first amino acid in a given sequence always return a match
                 # the first aa should always be the n-terminal aa
-                # which may form a crosslink in any case (for BS3-like crosslinkers)
+                # which may form a cross-link in any case (for BS3-like cross-linkers)
                 # for some data sets the first aa is at position 1; todo: check why this is the case
                 if res_index == 0 or res_index == 1:
                     return True
@@ -893,13 +893,13 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         return cdb
 
     def filter_score(self,score):
-        '''Get all crosslinks with score greater than an input value'''
+        '''Get all cross-links with score greater than an input value'''
         FilterOperator=IMP.pmi.io.crosslink.FilterOperator(self.id_score_key,operator.gt,score)
         return self.filter(FilterOperator)
 
     def merge(self,CrossLinkDataBase1,CrossLinkDataBase2):
         '''
-        This function merges two cross-link datasets so that if two conflicting crosslinks have the same
+        This function merges two cross-link datasets so that if two conflicting cross-links have the same
         cross-link UniqueIDS, the cross-links will be appended under the same UniqueID slots
         with different SubIDs
         '''
@@ -1005,13 +1005,13 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
     def classify_crosslinks_by_score(self,number_of_classes):
         '''
         This function creates as many classes as in the input (number_of_classes: integer)
-        and partition crosslinks according to their identification scores. Classes are defined in the psi key.
+        and partition cross-links according to their identification scores. Classes are defined in the psi key.
         '''
 
         if self.id_score_key is not None:
             scores=self.get_values(self.id_score_key)
         else:
-            raise ValueError('The crosslink database does not contain score values')
+            raise ValueError('The cross-link database does not contain score values')
         minscore=min(scores)
         maxscore=max(scores)
         scoreclasses=numpy.linspace(minscore, maxscore, number_of_classes+1)
@@ -1252,7 +1252,7 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
 
     def get_number_of_unique_crosslinked_sites(self):
         """
-        Returns the number of non redundant crosslink sites
+        Returns the number of non redundant cross-link sites
         """
         praset=set()
         for xl in self:
@@ -1351,7 +1351,7 @@ class JaccardDistanceMatrix(object):
 class MapCrossLinkDataBaseOnStructure(object):
     '''
     This class maps a CrossLinkDataBase on a given structure
-    and save an rmf file with color-coded crosslinks
+    and save an rmf file with color-coded cross-links
     '''
 
 
@@ -1364,7 +1364,7 @@ class MapCrossLinkDataBaseOnStructure(object):
         self.array_to_id={}
         self.id_to_array={}
 
-        print("computing distances fro all crosslinks and all structures")
+        print("computing distances fro all cross-links and all structures")
         for i in self.prots[::10]:
             self.compute_distances()
             for key,xl in enumerate(self.CrossLinkDataBase):
@@ -1639,10 +1639,10 @@ class CrossLinkDataBaseFromStructure(object):
                 self.cldb.data_base[str(number_of_spectra)]=[]
             noisy=False
             if random() > noise:
-                # not noisy crosslink
+                # not noisy cross-link
                 pra,dist=self.get_random_residue_pair(distance,xwalk_bin_path,max_delta_distance)
             else:
-                # noisy crosslink
+                # noisy cross-link
                 pra,dist=self.get_random_residue_pair(None,None,None)
                 noisy=True
 

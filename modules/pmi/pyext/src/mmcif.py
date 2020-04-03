@@ -295,7 +295,7 @@ class _AllDatasets(object):
 
 
 class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
-    """Restrain to a set of cross links"""
+    """Restrain to a set of cross-links"""
 
     assembly = None
     _label_map = {'wtDSS':'DSS', 'scDSS':'DSS', 'scEDC':'EDC'}
@@ -953,7 +953,7 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
                 system = state._pmi_object.system
                 IMP.rmf.link_hierarchies(rh, [system.hier])
                 IMP.rmf.load_frame(fh, RMF.FrameID(0))
-            # todo: fill in other data from stat file, e.g. crosslink phi/psi
+            # todo: fill in other data from stat file, e.g. cross-link phi/psi
             yield stats
             model_num += 1
             if model_num >= self.num_models_deposited:

@@ -150,9 +150,13 @@ class Stopwatch(object):
 
 class SetupNuisance(object):
 
-    def __init__(self, m, initialvalue, minvalue, maxvalue, isoptimized=True):
+    def __init__(self, m, initialvalue, minvalue, maxvalue, isoptimized=True,
+                 name=None):
 
-        nuisance = IMP.isd.Scale.setup_particle(IMP.Particle(m), initialvalue)
+        p = IMP.Particle(m)
+        if name:
+            p.set_name(name)
+        nuisance = IMP.isd.Scale.setup_particle(p, initialvalue)
         if minvalue:
             nuisance.set_lower(minvalue)
         if maxvalue:

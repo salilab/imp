@@ -226,8 +226,9 @@ def _add_fragment_provenance(fragment, first_residue, rephandler):
     pdb_element = rephandler.pdb_for_residue.get(first_residue.get_index())
     if pdb_element:
         m = fragment.get_model()
-        sp = IMP.core.StructureProvenance.setup_particle(IMP.Particle(m),
-            pdb_element.filename, pdb_element.chain_id, pdb_element.offset)
+        p = IMP.Particle(m, "input structure")
+        sp = IMP.core.StructureProvenance.setup_particle(
+            p, pdb_element.filename, pdb_element.chain_id, pdb_element.offset)
         IMP.core.add_provenance(m, fragment, sp)
 
 

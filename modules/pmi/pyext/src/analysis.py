@@ -1420,7 +1420,7 @@ class GetContactMap(object):
                                 xl2 = pl2
                             mtr[xl2 - 1, xl1 - 1] = 100
                     else:
-                        print('No cross links between: ', pn1, pn2)
+                        print('No cross-links between: ', pn1, pn2)
                     Matrices_xl[(pn1, pn2)] = mtr
 
         # expand the matrix to individual residues
@@ -1653,7 +1653,7 @@ def select_by_tuple(first_res_last_res_name_tuple):
     name = first_res_last_res_hier_tuple[2]
 
 class CrossLinkTable(object):
-    """Visualization of crosslinks"""
+    """Visualization of cross-links"""
     def __init__(self):
         self.crosslinks = []
         self.external_csv_data = None
@@ -1739,7 +1739,7 @@ class CrossLinkTable(object):
         # example key ISDCrossLinkMS_Distance_intrarb_937-State:0-108:RPS3_55:RPS30-1-1-0.1_None
         # mapping is a dictionary that maps standard keywords to entry positions in the key string
         # confidence class is a filter that
-        # external datafile is a datafile that contains further information on the crosslinks
+        # external datafile is a datafile that contains further information on the cross-links
         # it will use the unique id to create the dictionary keys
 
         po = IMP.pmi.output.ProcessOutput(data_file)
@@ -1753,19 +1753,19 @@ class CrossLinkTable(object):
         else:
             fs = po.get_fields(xl_keys)
 
-        # this dictionary stores the occurency of given crosslinks
+        # this dictionary stores the occurency of given cross-links
         self.cross_link_frequency = {}
 
-        # this dictionary stores the series of distances for given crosslinked
+        # this dictionary stores the series of distances for given cross-linked
         # residues
         self.cross_link_distances = {}
 
-        # this dictionary stores the series of distances for given crosslinked
+        # this dictionary stores the series of distances for given cross-linked
         # residues
         self.cross_link_distances_unique = {}
 
         if not external_csv_data_file is None:
-            # this dictionary stores the further information on crosslinks
+            # this dictionary stores the further information on cross-links
             # labeled by unique ID
             self.external_csv_data = {}
             xldb = IMP.pmi.tools.get_db_from_csv(external_csv_data_file)
@@ -1775,7 +1775,7 @@ class CrossLinkTable(object):
                     xl[external_csv_data_file_unique_id_key]] = xl
 
         # this list keeps track the tuple of cross-links and sample
-        # so that we don't count twice the same crosslinked residues in the
+        # so that we don't count twice the same cross-linked residues in the
         # same sample
         cross_link_frequency_list = []
 
@@ -1847,7 +1847,7 @@ class CrossLinkTable(object):
             if self.maxdist < mdist:
                 self.maxdist = mdist
 
-            # calculate the frequency of unique crosslinks within the same
+            # calculate the frequency of unique cross-links within the same
             # sample
             if not self.external_csv_data is None:
                 sample = self.external_csv_data[unique_identifier]["Sample"]
@@ -2009,13 +2009,13 @@ class CrossLinkTable(object):
         #                "lowerdiagonal"  print only the lower diagonal plot
         #                "upperdiagonal"  print only the upper diagonal plot
         #                "whole"  print all
-        # crosslinkedonly: plot only components that have crosslinks
+        # crosslinkedonly: plot only components that have cross-links
         # no_dist_info: if True will plot only the cross-links as grey spots
         # filter = tuple the tuple contains a keyword to be search in the database
         #                a relationship ">","==","<"
         #                and a value
         #                example ("ID_Score",">",40)
-        # scale_symbol_size rescale the symbol for the crosslink
+        # scale_symbol_size rescale the symbol for the cross-link
         # rename_protein_map is a dictionary to rename proteins
 
         import matplotlib as mpl
@@ -2161,7 +2161,7 @@ class CrossLinkTable(object):
         ax.set_ylim(0,nresy)
 
 
-        # set the crosslinks
+        # set the cross-links
 
         already_added_xls = []
 
@@ -2492,7 +2492,7 @@ class CrossLinkTable(object):
                 satisfied_models += 1
             print(string)
             print(satstr, all_satisfied)
-        print("models that satisfies the median satisfied crosslinks/total models", satisfied_models, len(matrix))
+        print("models that satisfies the median satisfied cross-links/total models", satisfied_models, len(matrix))
 
     def plot_matrix_cross_link_distances_unique(self, figurename, prot_list,
                                                 prot_list2=None):

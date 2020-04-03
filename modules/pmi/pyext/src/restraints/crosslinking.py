@@ -1,5 +1,5 @@
 """@namespace IMP.pmi.restraints.crosslinking
-Restraints for handling crosslinking data.
+Restraints for handling cross-linking data.
 """
 
 from __future__ import print_function
@@ -22,7 +22,7 @@ import ihm.location
 import ihm.dataset
 import warnings
 
-class _LinearRestraintSet(IMP.RestraintSet):
+class _DataRestraintSet(IMP.RestraintSet):
     """Container for restraints shown in the RMF file and in Chimera"""
 
     def get_static_info(self):
@@ -32,25 +32,10 @@ class _LinearRestraintSet(IMP.RestraintSet):
         ri.add_float("linker_length", self.length)
         ri.add_float("slope", self.slope)
         ri.add_filename("filename", self.filename or "")
-        self._sorted_psi_keys = sorted(self.psi_dictionary.keys())
-        self._sorted_sigma_keys = sorted(self.sigma_dictionary.keys())
-        ri.add_strings("psi_keys", self._sorted_psi_keys)
-        ri.add_strings("sigma_keys", self._sorted_sigma_keys)
         if self.linker:
             ri.add_string("linker_auth_name", self.linker.auth_name)
             if self.linker.smiles:
                 ri.add_string("linker_smiles", self.linker.smiles)
-        return ri
-
-    def get_dynamic_info(self):
-        ri = IMP.RestraintInfo()
-        # Note this requires get_static_info to have been previously called
-        ri.add_floats("psi_values",
-                      [self.psi_dictionary[p][0].get_scale()
-                       for p in self._sorted_psi_keys])
-        ri.add_floats("sigma_values",
-                      [self.sigma_dictionary[p][0].get_scale()
-                       for p in self._sorted_sigma_keys])
         return ri
 
 
@@ -96,7 +81,8 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         model = root_hier.get_model()
 
         super(CrossLinkingMassSpectrometryRestraint, self).__init__(
-            model, weight=weight, label=label)
+            model, weight=weight, label=label,
+            restraint_set_class=_DataRestraintSet)
 
         if CrossLinkDataBase is None:
             raise Exception("You must pass a CrossLinkDataBase")
@@ -115,13 +101,12 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         self.rs.set_name(self.rs.get_name() + "_Data")
         self.rspsi = self._create_restraint_set("PriorPsi")
         self.rssig = self._create_restraint_set("PriorSig")
-        self.rslin = self._create_restraint_set("Linear",
-                                                cls=_LinearRestraintSet)
+        self.rslin = self._create_restraint_set("Linear")
         # Add custom metadata (will be saved in RMF output)
-        self.rslin.filename = self.CrossLinkDataBase.name
-        self.rslin.length = length
-        self.rslin.slope = slope
-        self.rslin.linker = linker
+        self.rs.filename = self.CrossLinkDataBase.name
+        self.rs.length = length
+        self.rs.slope = slope
+        self.rs.linker = linker
 
         # dummy linear restraint used for Chimera display
         self.linear = IMP.core.Linear(0, 0.0)
@@ -132,8 +117,6 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         self.sigma_is_sampled = True
         self.psi_dictionary={}
         self.sigma_dictionary={}
-        self.rslin.psi_dictionary = self.psi_dictionary
-        self.rslin.sigma_dictionary = self.sigma_dictionary
         self.xl_list=[]
         self.outputlevel = "low"
 
@@ -254,7 +237,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                         continue
 
                     if new_contribution:
-                        print("generating a new crosslink restraint")
+                        print("generating a new cross-link restraint")
                         new_contribution=False
                         dr = IMP.isd.CrossLinkMSRestraint(
                             self.model,
@@ -335,7 +318,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                     indb.write(str(xl) + "\n")
 
         if len(self.xl_list) == 0:
-            raise SystemError("CrossLinkingMassSpectrometryRestraint: no crosslink was constructed")
+            raise SystemError("CrossLinkingMassSpectrometryRestraint: no cross-link was constructed")
         self.xl_restraints = restraints
         lw = IMP.isd.LogWrapper(restraints,1.0)
         self.rs.add_restraint(lw)
@@ -359,7 +342,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
 
     def get_restraint_for_rmf(self):
         """ get the dummy restraints to be displayed in the rmf file """
-        return self.rslin, self.rssig, self.rspsi
+        return self.rs, self.rssig, self.rspsi
 
     def get_particle_pairs(self):
         """ Get a list of tuples containing the particle pairs """
@@ -395,8 +378,9 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         sigmamin = 0.01
         sigmamax = 100.0
         sigmatrans = 0.5
-        sigma = IMP.pmi.tools.SetupNuisance(self.model, sigmainit,
-                                                 sigmaminnuis, sigmamaxnuis, self.sigma_is_sampled).get_particle()
+        sigma = IMP.pmi.tools.SetupNuisance(
+            self.model, sigmainit, sigmaminnuis, sigmamaxnuis,
+            self.sigma_is_sampled, name=name).get_particle()
         self.sigma_dictionary[name] = (
             sigma,
             sigmatrans,
@@ -422,9 +406,9 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         psimin = 0.01
         psimax = 0.49
         psitrans = 0.1
-        psi = IMP.pmi.tools.SetupNuisance(self.model, psiinit,
-                                               psiminnuis, psimaxnuis,
-                                               self.psi_is_sampled).get_particle()
+        psi = IMP.pmi.tools.SetupNuisance(
+            self.model, psiinit, psiminnuis, psimaxnuis,
+            self.psi_is_sampled, name=name).get_particle()
         self.psi_dictionary[name] = (
             psi,
             psitrans,
@@ -540,7 +524,7 @@ class AtomicCrossLinkMSRestraint(IMP.pmi.restraints.RestraintBase):
                  filelabel=None,
                  weight=1.):
         """Constructor.
-        Automatically creates one "sigma" per crosslinked residue and one "psis" per pair.
+        Automatically creates one "sigma" per cross-linked residue and one "psis" per pair.
         Other nuisance options are available.
         @note Will return an error if the data+extra_sel don't specify two particles per XL pair.
         @param root_hier  The root hierarchy on which you'll do selection
@@ -857,7 +841,7 @@ class AtomicCrossLinkMSRestraint(IMP.pmi.restraints.RestraintBase):
                         coarsen=False,
                         limit_to_chains=None,
                         exclude_chains=''):
-        """Create CMM files, one for each state, of all crosslinks.
+        """Create CMM files, one for each state, of all cross-links.
         will draw in GREEN if non-violated in all states (or if only one state)
         will draw in PURPLE if non-violated only in a subset of states (draws nothing elsewhere)
         will draw in RED in ALL states if all violated

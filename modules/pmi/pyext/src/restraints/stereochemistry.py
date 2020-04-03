@@ -337,33 +337,17 @@ class ResidueBondRestraint(object):
     """ Add bond restraint between pair of consecutive
     residues/beads to enforce the stereochemistry.
     """
-    def __init__(self,
-                 representation=None,
-                 selection_tuple=None,
-                 objects=None,
-                 distance=3.78,
-                 strength=10.0,
-                 jitter=None):
+    def __init__(self, objects, distance=3.78, strength=10.0, jitter=None):
         """Constructor
-        @param representation (PMI1)
-        @param selection_tuple Requested selection (PMI1)
-        @param objects (PMI2)
+        @param objects  Objects to restrain
         @param distance Resting distance for restraint
         @param strength Bond constant
         @param jitter Defines the +- added to the optimal distance in the harmonic well restraint
                       used to increase the tolerance
         """
 
-        if representation is not None and selection_tuple is not None:
-            self.m = representation.prot.get_model()
-            particles = IMP.pmi.tools.select_by_tuple(
-                representation,
-                selection_tuple,
-                resolution=1)
-
-        elif objects is not None:
-            particles = IMP.pmi.tools.input_adaptor(objects,1,flatten=True)
-            self.m = particles[0].get_model()
+        particles = IMP.pmi.tools.input_adaptor(objects,1,flatten=True)
+        self.m = particles[0].get_model()
 
         self.rs = IMP.RestraintSet(self.m, "Bonds")
         self.weight = 1
@@ -424,24 +408,10 @@ class ResidueAngleRestraint(object):
     """Add angular restraint between triplets of consecutive
     residues/beads to enforce the stereochemistry.
     """
-    def __init__(self,
-                 representation=None,
-                 selection_tuple=None,
-                 objects=None,
-                 anglemin=100.0,
-                 anglemax=140.0,
-                 strength=10.0):
+    def __init__(self, objects, anglemin=100.0, anglemax=140.0, strength=10.0):
 
-        if representation is not None and selection_tuple is not None:
-            self.m = representation.prot.get_model()
-            particles = IMP.pmi.tools.select_by_tuple(
-                representation,
-                selection_tuple,
-                resolution=1)
-
-        elif objects is not None:
-            particles = IMP.pmi.tools.input_adaptor(objects,1,flatten=True)
-            self.m = particles[0].get_model()
+        particles = IMP.pmi.tools.input_adaptor(objects,1,flatten=True)
+        self.m = particles[0].get_model()
 
         self.rs = IMP.RestraintSet(self.m, "Angles")
         self.weight = 1
@@ -505,24 +475,10 @@ class ResidueDihedralRestraint(object):
     dihedral. The length of the string must be \#residue-3.
     Without the string, the dihedral will be assumed trans.
     """
-    def __init__(
-            self,
-            representation=None,
-            selection_tuple=None,
-            objects=None,
-            stringsequence=None,
-            strength=10.0):
+    def __init__(self, objects, stringsequence=None, strength=10.0):
 
-        if representation is not None and selection_tuple is not None:
-            self.m = representation.prot.get_model()
-            particles = IMP.pmi.tools.select_by_tuple(
-                representation,
-                selection_tuple,
-                resolution=1)
-
-        elif objects is not None:
-            particles = IMP.pmi.tools.input_adaptor(objects,1,flatten=True)
-            self.m = particles[0].get_model()
+        particles = IMP.pmi.tools.input_adaptor(objects,1,flatten=True)
+        self.m = particles[0].get_model()
 
         self.rs = IMP.RestraintSet(self.m, "Angles")
         self.weight = 1
@@ -902,14 +858,13 @@ class ElasticNetworkRestraint(object):
 class CharmmForceFieldRestraint(object):
     """ Enable CHARMM force field """
     def __init__(self,
-                 root=None,
+                 root,
                  ff_temp=300.0,
                  zone_ps=None,
                  zone_size=10.0,
                  enable_nonbonded=True,
                  enable_bonded=True,
-                 zone_nonbonded=False,
-                 representation=None):
+                 zone_nonbonded=False):
         """Setup the CHARMM restraint on a selection. Expecting atoms.
         @param root             The node at which to apply the restraint
         @param ff_temp          The temperature of the force field
@@ -919,12 +874,9 @@ class CharmmForceFieldRestraint(object):
         @param enable_nonbonded Allow the repulsive restraint
         @param enable_bonded    Allow the bonded restraint
         @param zone_nonbonded   EXPERIMENTAL: exclude from nonbonded all sidechains that aren't in zone!
-        @param representation Legacy representation object
         """
 
         kB = (1.381 * 6.02214) / 4184.0
-        if representation is not None:
-            root = representation.prot
 
         self.mdl = root.get_model()
         self.bonds_rs = IMP.RestraintSet(self.mdl, 1.0 / (kB * ff_temp), 'BONDED')

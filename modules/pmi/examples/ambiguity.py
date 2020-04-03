@@ -1,6 +1,6 @@
 ## \example pmi/ambiguity.py
 """This script shows how to create a system with multiple copies of the same molecule.
-We also create some crosslinks which take into account the ambiguity.
+We also create some cross-links which take into account the ambiguity.
 The key to ambiguity is using the same molecule name for ambiguous copies.
 That way when you perform Selection it automatically finds all relevant molecules.
 """

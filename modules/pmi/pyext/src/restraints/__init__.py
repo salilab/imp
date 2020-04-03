@@ -3,7 +3,7 @@
 
 PMI restraints generally wrap IMP restraints. Typical features in PMI restraints are:
  - Easy setup: for example, you can usually create one with a PMI [Molecule](@ref IMP::pmi::topology::Molecule) or a slice from one.
- - Fast setup from data files. For example you can set up the [CrossLinkingMassSpectrometryRestraint](@ref IMP::pmi::restraints::crosslinking::CrossLinkingMassSpectrometryRestraint) by reading in a crosslink file into a [database](@ref IMP::pmi::io::crosslink::CrossLinkDataBase).
+ - Fast setup from data files. For example you can set up the [CrossLinkingMassSpectrometryRestraint](@ref IMP::pmi::restraints::crosslinking::CrossLinkingMassSpectrometryRestraint) by reading in a cross-link file into a [database](@ref IMP::pmi::io::crosslink::CrossLinkDataBase).
  - Useful output: reporting functions which are put into log files when running [ReplicaExchange](@ref IMP::pmi::macros::ReplicaExchange0).
 """
 
@@ -16,7 +16,8 @@ class RestraintBase(object):
 
     """Base class for PMI restraints, which wrap `IMP.Restraint`(s)."""
 
-    def __init__(self, m, name=None, label=None, weight=1.):
+    def __init__(self, m, name=None, label=None, weight=1.,
+                 restraint_set_class=IMP.RestraintSet):
         """Constructor.
         @param m The model object
         @param name The name of the primary restraint set that is wrapped.
@@ -25,6 +26,7 @@ class RestraintBase(object):
         @param label A unique label to be used in outputs and
                      particle/restraint names.
         @param weight The weight to apply to all internal restraints.
+        @param restraint_set_class The class to use for the restraint set
         """
         self.model = m
         self.restraint_sets = []
@@ -39,7 +41,7 @@ class RestraintBase(object):
         else:
             self.name = str(name)
 
-        self.rs = self._create_restraint_set(name=None)
+        self.rs = self._create_restraint_set(name=None, cls=restraint_set_class)
 
     def set_label(self, label):
         """Set the unique label used in outputs and particle/restraint names.
