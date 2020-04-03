@@ -11,6 +11,7 @@ import IMP.em
 import numpy as np
 import numpy.linalg
 import sys,os
+import itertools
 
 try:
     import sklearn.mixture
@@ -27,11 +28,12 @@ def decorate_gmm_from_text(in_fn,
                            mass_scale=1.0):
     """ read the output from write_gmm_to_text, decorate as Gaussian and Mass"""
     ncomp=0
+    added_ps = itertools.count(start=1)
     with open(in_fn,'r') as inf:
         for l in inf:
             if l[0]!='#':
                 if ncomp>len(ps)-1:
-                    ps.append(IMP.Particle(mdl))
+                    ps.append(IMP.Particle(mdl, "GMM%d" % next(added_ps)))
                 p = ps[ncomp]
                 fields=l.split('|')
                 weight=float(fields[2])
