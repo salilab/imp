@@ -28,7 +28,7 @@ def decorate_gmm_from_text(in_fn,
                            mass_scale=1.0):
     """ read the output from write_gmm_to_text, decorate as Gaussian and Mass"""
     ncomp=0
-    added_ps = itertools.count(start=1)
+    added_ps = itertools.count(1)
     with open(in_fn,'r') as inf:
         for l in inf:
             if l[0]!='#':
