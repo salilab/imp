@@ -176,12 +176,12 @@ class Tests(unittest.TestCase):
 
         # type 32 (32-bit float)
         data = d({b'type': ihm.format_bcif._Float32}, b'\x00\x00(B')
-        self.assertAlmostEqual(list(data)[0], 42.0, places=1)
+        self.assertAlmostEqual(list(data)[0], 42.0, delta=0.1)
 
         # type 33 (64-bit float)
         data = d({b'type': ihm.format_bcif._Float64},
                  b'\x00\x00\x00\x00\x00\x00E@')
-        self.assertAlmostEqual(list(data)[0], 42.0, places=1)
+        self.assertAlmostEqual(list(data)[0], 42.0, delta=0.1)
 
     def test_integer_packing_decoder_signed(self):
         """Test IntegerPacking decoder with signed data"""
@@ -236,9 +236,9 @@ class Tests(unittest.TestCase):
 
         data = list(d({b'factor': 100}, [120, 123, 12]))
         self.assertEqual(len(data), 3)
-        self.assertAlmostEqual(data[0], 1.20, places=2)
-        self.assertAlmostEqual(data[1], 1.23, places=2)
-        self.assertAlmostEqual(data[2], 0.12, places=2)
+        self.assertAlmostEqual(data[0], 1.20, delta=0.01)
+        self.assertAlmostEqual(data[1], 1.23, delta=0.01)
+        self.assertAlmostEqual(data[2], 0.12, delta=0.01)
 
     def test_decode(self):
         """Test _decode function"""

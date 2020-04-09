@@ -16,7 +16,7 @@ class Tests(unittest.TestCase):
     def test_em3d_restraint_fit(self):
         """Test EM3DRestraintFit class"""
         f = ihm.restraint.EM3DRestraintFit(0.4)
-        self.assertAlmostEqual(f.cross_correlation_coefficient, 0.4, places=1)
+        self.assertAlmostEqual(f.cross_correlation_coefficient, 0.4, delta=0.1)
 
     def test_em3d_restraint(self):
         """Test EM3DRestraint class"""
@@ -28,7 +28,7 @@ class Tests(unittest.TestCase):
     def test_sas_restraint_fit(self):
         """Test SASRestraintFit class"""
         f = ihm.restraint.SASRestraintFit(0.4)
-        self.assertAlmostEqual(f.chi_value, 0.4, places=1)
+        self.assertAlmostEqual(f.chi_value, 0.4, delta=0.1)
 
     def test_sas_restraint(self):
         """Test SASRestraint class"""
@@ -40,7 +40,7 @@ class Tests(unittest.TestCase):
     def test_em2d_restraint_fit(self):
         """Test EM2DRestraintFit class"""
         f = ihm.restraint.EM2DRestraintFit(0.4)
-        self.assertAlmostEqual(f.cross_correlation_coefficient, 0.4, places=1)
+        self.assertAlmostEqual(f.cross_correlation_coefficient, 0.4, delta=0.1)
         self.assertIsNone(f.rot_matrix)
         self.assertIsNone(f.tr_vector)
 
@@ -58,32 +58,32 @@ class Tests(unittest.TestCase):
     def test_harmonic_distance_restraint(self):
         """Test HarmonicDistanceRestraint class"""
         r = ihm.restraint.HarmonicDistanceRestraint(42.0)
-        self.assertAlmostEqual(r.distance, 42.0, places=1)
-        self.assertAlmostEqual(r.distance_lower_limit, 42.0, places=1)
-        self.assertAlmostEqual(r.distance_upper_limit, 42.0, places=1)
+        self.assertAlmostEqual(r.distance, 42.0, delta=0.1)
+        self.assertAlmostEqual(r.distance_lower_limit, 42.0, delta=0.1)
+        self.assertAlmostEqual(r.distance_upper_limit, 42.0, delta=0.1)
         self.assertEqual(r.restraint_type, "harmonic")
 
     def test_upper_bound_distance_restraint(self):
         """Test UpperBoundDistanceRestraint class"""
         r = ihm.restraint.UpperBoundDistanceRestraint(42.0)
-        self.assertAlmostEqual(r.distance, 42.0, places=1)
+        self.assertAlmostEqual(r.distance, 42.0, delta=0.1)
         self.assertIsNone(r.distance_lower_limit)
-        self.assertAlmostEqual(r.distance_upper_limit, 42.0, places=1)
+        self.assertAlmostEqual(r.distance_upper_limit, 42.0, delta=0.1)
         self.assertEqual(r.restraint_type, "upper bound")
 
     def test_lower_bound_distance_restraint(self):
         """Test LowerBoundDistanceRestraint class"""
         r = ihm.restraint.LowerBoundDistanceRestraint(42.0)
-        self.assertAlmostEqual(r.distance, 42.0, places=1)
-        self.assertAlmostEqual(r.distance_lower_limit, 42.0, places=1)
+        self.assertAlmostEqual(r.distance, 42.0, delta=0.1)
+        self.assertAlmostEqual(r.distance_lower_limit, 42.0, delta=0.1)
         self.assertIsNone(r.distance_upper_limit)
         self.assertEqual(r.restraint_type, "lower bound")
 
     def test_lower_upper_bound_distance_restraint(self):
         """Test LowerUpperBoundDistanceRestraint class"""
         r = ihm.restraint.LowerUpperBoundDistanceRestraint(20.0, 30.0)
-        self.assertAlmostEqual(r.distance_lower_limit, 20.0, places=1)
-        self.assertAlmostEqual(r.distance_upper_limit, 30.0, places=1)
+        self.assertAlmostEqual(r.distance_lower_limit, 20.0, delta=0.1)
+        self.assertAlmostEqual(r.distance_upper_limit, 30.0, delta=0.1)
         self.assertEqual(r.restraint_type, "lower and upper bound")
 
     def test_cross_link_restraint(self):

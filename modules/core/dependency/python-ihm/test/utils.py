@@ -33,6 +33,26 @@ if not hasattr(unittest.TestCase, 'assertIn'):
         return self.assertTrue(obj is None, msg or '%s is not None' % obj)
     def assertIsNotNone(self, obj, msg=None):
         return self.assertTrue(obj is not None, msg or 'unexpectedly None')
+    def assertAlmostEqual(self, first, second, places=None, msg=None,
+                          delta=None):
+        if first == second:
+            return
+        if delta is not None and places is not None:
+            raise TypeError("specify delta or places not both")
+        diff = abs(first - second)
+        if delta is not None:
+            if diff <= delta:
+                return
+            standard_msg = ("%s != %s within %s delta (%s difference)"
+                            % (first, second, delta, diff))
+        else:
+            if places is None:
+                places = 7
+            if round(diff, places) == 0:
+                return
+            standard_msg = ("%s != %s within %r places (%s difference)"
+                            % (first, second, places, diff))
+        raise self.failureException(msg or standard_msg)
     unittest.TestCase.assertIn = assertIn
     unittest.TestCase.assertNotIn = assertNotIn
     unittest.TestCase.assertIs = assertIs
@@ -43,6 +63,7 @@ if not hasattr(unittest.TestCase, 'assertIn'):
     unittest.TestCase.assertGreaterEqual = assertGreaterEqual
     unittest.TestCase.assertIsNone = assertIsNone
     unittest.TestCase.assertIsNotNone = assertIsNotNone
+    unittest.TestCase.assertAlmostEqual = assertAlmostEqual
 
 def set_search_paths(topdir):
     """Set search paths so that we can import Python modules"""

@@ -55,10 +55,10 @@ class Tests(unittest.TestCase):
         self.assertIsNone(cc.formula_weight)
         # Formula with known elements and no charge
         cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P')
-        self.assertAlmostEqual(cc.formula_weight, 115.136, places=2)
+        self.assertAlmostEqual(cc.formula_weight, 115.136, delta=0.01)
         # Formula with known elements and formal charge
         cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P 1')
-        self.assertAlmostEqual(cc.formula_weight, 115.136, places=2)
+        self.assertAlmostEqual(cc.formula_weight, 115.136, delta=0.01)
 
     def test_peptide_chem_comp(self):
         """Test PeptideChemComp class"""
@@ -101,7 +101,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(a._comps['M'].type, 'L-peptide linking')
         self.assertEqual(a._comps['M'].name, "METHIONINE")
         self.assertEqual(a._comps['M'].formula, 'C5 H11 N O2 S')
-        self.assertAlmostEqual(a._comps['M'].formula_weight, 149.211, places=2)
+        self.assertAlmostEqual(a._comps['M'].formula_weight, 149.211,
+                               delta=0.01)
 
         a = ihm.LPeptideAlphabet()
         self.assertIn('MSE', a)
@@ -139,7 +140,7 @@ class Tests(unittest.TestCase):
             dcode = dcode_from_canon[canon]
             self.assertEqual(d._comps[dcode].formula, l._comps[lcode].formula)
             self.assertAlmostEqual(d._comps[dcode].formula_weight,
-                                   l._comps[lcode].formula_weight, places=2)
+                                   l._comps[lcode].formula_weight, delta=0.01)
 
     def test_rna_alphabet(self):
         """Test RNAAlphabet class"""
@@ -185,7 +186,7 @@ class Tests(unittest.TestCase):
     def test_entity_weight(self):
         """Test Entity.formula_weight"""
         e1 = ihm.Entity('AHCD')
-        self.assertAlmostEqual(e1.formula_weight, 499.516, places=1)
+        self.assertAlmostEqual(e1.formula_weight, 499.516, delta=0.1)
         # Entity containing a component with unknown weight
         heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
         self.assertIsNone(heme.formula_weight)

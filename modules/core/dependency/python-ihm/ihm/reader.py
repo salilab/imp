@@ -5,6 +5,7 @@ import ihm.format_bcif
 import ihm.location
 import ihm.dataset
 import ihm.representation
+import ihm.reference
 import ihm.startmodel
 import ihm.protocol
 import ihm.analysis
@@ -1027,6 +1028,33 @@ class _EntitySrcSynHandler(Handler):
         s.scientific_name = organism_scientific
         s.common_name = organism_common_name
         e.source = s
+
+
+class _StructRefHandler(Handler):
+    category = '_struct_ref'
+
+    def __init__(self, *args):
+        super(_StructRefHandler, self).__init__(*args)
+        # Map db_name to subclass of ihm.reference.Sequence
+        self.type_map = dict(
+                (x[1]._db_name.lower(), x[1])
+                for x in inspect.getmembers(ihm.reference, inspect.isclass)
+                if issubclass(x[1], ihm.reference.Sequence)
+                and x[1] is not ihm.reference.Sequence)
+
+    def __call__(self, entity_id, db_name, db_code, pdbx_db_accession,
+                 pdbx_align_begin, pdbx_seq_one_letter_code, details):
+        # todo: handle things that aren't sequences, handle _struct_ref_seq
+        e = self.sysr.entities.get_by_id(entity_id)
+        typ = self.type_map.get(db_name.lower())
+        if typ:
+            r = typ(db_code, pdbx_db_accession, pdbx_seq_one_letter_code,
+                    self.get_int(pdbx_align_begin), details)
+        else:
+            r = ihm.reference.Sequence(db_name, db_code, pdbx_db_accession,
+                    pdbx_seq_one_letter_code, self.get_int(pdbx_align_begin),
+                    details)
+        e.references.append(r)
 
 
 class _EntitySrcGenHandler(Handler):
@@ -2994,7 +3022,8 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               _CitationAuthorHandler(s), _ChemCompHandler(s),
               _ChemDescriptorHandler(s), _EntityHandler(s),
               _EntitySrcNatHandler(s), _EntitySrcGenHandler(s),
-              _EntitySrcSynHandler(s), _EntityPolyHandler(s),
+              _EntitySrcSynHandler(s), _StructRefHandler(s),
+              _EntityPolyHandler(s),
               _EntityPolySeqHandler(s), _EntityNonPolyHandler(s),
               _EntityPolySegmentHandler(s),
               _StructAsymHandler(s), _AssemblyDetailsHandler(s),

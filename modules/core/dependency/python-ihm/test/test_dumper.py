@@ -18,6 +18,7 @@ import ihm.dataset
 import ihm.protocol
 import ihm.analysis
 import ihm.model
+import ihm.reference
 import ihm.restraint
 import ihm.geometry
 import ihm.source
@@ -426,6 +427,43 @@ _entity_src_gen.host_org_common_name
 _entity_src_gen.pdbx_host_org_strain
 2 1 1234 'Test latin name' 'Test common name' 'test strain' 5678
 'Other latin name' 'Other common name' 'other strain'
+#
+""")
+
+    def test_struct_ref(self):
+        """Test StructRefDumper"""
+        system = ihm.System()
+        r = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+                align_begin=3, details='test sequence')
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system) # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system) # Assign IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_struct_ref.id
+_struct_ref.entity_id
+_struct_ref.db_name
+_struct_ref.db_code
+_struct_ref.pdbx_db_accession
+_struct_ref.pdbx_align_begin
+_struct_ref.pdbx_seq_one_letter_code
+_struct_ref.details
+1 1 UNP NUP84_YEAST P52891 3 MELSPTYQT 'test sequence'
+#
+#
+loop_
+_struct_ref_seq.align_id
+_struct_ref_seq.ref_id
+_struct_ref_seq.seq_align_beg
+_struct_ref_seq.seq_align_end
+_struct_ref_seq.db_align_beg
+_struct_ref_seq.db_align_end
+1 1 1 4 3 6
 #
 """)
 

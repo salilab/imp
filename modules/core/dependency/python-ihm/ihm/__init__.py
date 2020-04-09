@@ -987,6 +987,9 @@ class Entity(object):
        :param source: The method by which the sample for this entity was
               produced.
        :type source: :class:`ihm.source.Source`
+       :param references: Information about this entity stored in external
+              databases (for example the sequence in UniProt)
+       :type references: sequence of :class:`ihm.reference.Reference` objects
 
        The sequence for an entity can be specified explicitly as a set of
        chemical components, or (more usually) as a list or string of codes.
@@ -1045,7 +1048,7 @@ class Entity(object):
             "from that of the chemical components.")
 
     def __init__(self, sequence, alphabet=LPeptideAlphabet,
-                 description=None, details=None, source=None):
+                 description=None, details=None, source=None, references=[]):
         def get_chem_comp(s):
             if isinstance(s, ChemComp):
                 return s
@@ -1054,6 +1057,8 @@ class Entity(object):
         self.sequence = tuple(get_chem_comp(s) for s in sequence)
         self.description, self.details = description, details
         self.source = source
+        self.references = []
+        self.references.extend(references)
 
     def is_polymeric(self):
         """Return True iff this entity represents a polymer, such as an
