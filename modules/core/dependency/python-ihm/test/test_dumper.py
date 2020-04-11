@@ -433,10 +433,17 @@ _entity_src_gen.pdbx_host_org_strain
     def test_struct_ref(self):
         """Test StructRefDumper"""
         system = ihm.System()
-        r = ihm.reference.UniProtSequence(
-                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
-                align_begin=3, details='test sequence')
-        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        lpep = ihm.LPeptideAlphabet()
+        sd = ihm.reference.SeqDif(seq_id=4, db_monomer=lpep['W'],
+                                  monomer=lpep['S'], details='Test mutation')
+        r1 = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
+                db_align_begin=3, details='test sequence', seq_dif=[sd])
+        r2 = ihm.reference.UniProtSequence(
+                db_code='testcode', accession='testacc', sequence='MELSPTYQT',
+                db_align_begin=4, db_align_end=5,
+                align_begin=2, align_end=3, details='test2')
+        system.entities.append(ihm.Entity('LSPT', references=[r1, r2]))
         dumper = ihm.dumper._EntityDumper()
         dumper.finalize(system) # Assign entity IDs
 
@@ -453,7 +460,8 @@ _struct_ref.pdbx_db_accession
 _struct_ref.pdbx_align_begin
 _struct_ref.pdbx_seq_one_letter_code
 _struct_ref.details
-1 1 UNP NUP84_YEAST P52891 3 MELSPTYQT 'test sequence'
+1 1 UNP NUP84_YEAST P52891 3 MELWPTYQT 'test sequence'
+2 1 UNP testcode testacc 4 MELSPTYQT test2
 #
 #
 loop_
@@ -464,8 +472,121 @@ _struct_ref_seq.seq_align_end
 _struct_ref_seq.db_align_beg
 _struct_ref_seq.db_align_end
 1 1 1 4 3 6
+2 2 2 3 4 5
+#
+#
+loop_
+_struct_ref_seq_dif.pdbx_ordinal
+_struct_ref_seq_dif.align_id
+_struct_ref_seq_dif.seq_num
+_struct_ref_seq_dif.db_mon_id
+_struct_ref_seq_dif.mon_id
+_struct_ref_seq_dif.details
+1 1 4 TRP SER 'Test mutation'
 #
 """)
+
+    def test_struct_ref_bad_align(self):
+        """Test StructRefDumper with bad align"""
+        system = ihm.System()
+        r = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+                align_begin=90, details='test sequence')
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system) # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system) # Assign IDs
+        self.assertRaises(IndexError, _get_dumper_output, dumper, system)
+        # Cannot use assertRaises as a context manager in Python 2.6
+        try:
+            _get_dumper_output(dumper, system)
+        except IndexError as exc:
+            self.assertIn('is (90-4), out of range 1-4', str(exc))
+
+    def test_struct_ref_bad_db_align(self):
+        """Test StructRefDumper with bad db_align"""
+        system = ihm.System()
+        r = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+                db_align_begin=90, details='test sequence')
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system) # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system) # Assign IDs
+        self.assertRaises(IndexError, _get_dumper_output, dumper, system)
+        # Cannot use assertRaises as a context manager in Python 2.6
+        try:
+            _get_dumper_output(dumper, system)
+        except IndexError as exc:
+            self.assertIn('is (90-9), out of range 1-9', str(exc))
+
+    def test_struct_ref_seq_mismatch(self):
+        """Test StructRefDumper with sequence mismatch"""
+        system = ihm.System()
+        r = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+                align_begin=1, details='test sequence')
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system) # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system) # Assign IDs
+        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
+        # Cannot use assertRaises as a context manager in Python 2.6
+        try:
+            _get_dumper_output(dumper, system)
+        except ValueError as exc:
+            self.assertIn('does not match entity canonical sequence', str(exc))
+
+    def test_struct_ref_seq_dif_outrange(self):
+        """Test StructRefDumper with SeqDif out of range"""
+        system = ihm.System()
+        lpep = ihm.LPeptideAlphabet()
+        sd = ihm.reference.SeqDif(seq_id=40, db_monomer=lpep['W'],
+                                  monomer=lpep['S'], details='Test mutation')
+        r = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+                align_begin=1, details='test sequence', seq_dif=[sd])
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system) # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system) # Assign IDs
+        self.assertRaises(IndexError, _get_dumper_output, dumper, system)
+        # Cannot use assertRaises as a context manager in Python 2.6
+        try:
+            _get_dumper_output(dumper, system)
+        except IndexError as exc:
+            self.assertIn('is 40, out of range 1-9', str(exc))
+
+    def test_struct_ref_seq_dif_mismatch(self):
+        """Test StructRefDumper with SeqDif code mismatch"""
+        system = ihm.System()
+        lpep = ihm.LPeptideAlphabet()
+        sd = ihm.reference.SeqDif(seq_id=4, db_monomer=lpep['Y'],
+                                  monomer=lpep['S'], details='Test mutation')
+        r = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
+                align_begin=1, details='test sequence', seq_dif=[sd])
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system) # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system) # Assign IDs
+        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
+        # Cannot use assertRaises as a context manager in Python 2.6
+        try:
+            _get_dumper_output(dumper, system)
+        except ValueError as exc:
+            self.assertIn('one-letter code (Y) does not match', str(exc))
+            self.assertIn('(W at position 4)', str(exc))
 
     def test_chem_comp_dumper(self):
         """Test ChemCompDumper"""

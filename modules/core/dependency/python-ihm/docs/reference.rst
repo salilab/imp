@@ -15,3 +15,6 @@ The :mod:`ihm.reference` Python module
 
 .. autoclass:: UniProtSequence
    :members:
+
+.. autoclass:: SeqDif
+   :members:

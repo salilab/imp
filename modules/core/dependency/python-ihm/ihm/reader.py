@@ -1049,11 +1049,13 @@ class _StructRefHandler(Handler):
         typ = self.type_map.get(db_name.lower())
         if typ:
             r = typ(db_code, pdbx_db_accession, pdbx_seq_one_letter_code,
-                    self.get_int(pdbx_align_begin), details)
+                    db_align_begin=self.get_int(pdbx_align_begin),
+                    details=details)
         else:
             r = ihm.reference.Sequence(db_name, db_code, pdbx_db_accession,
-                    pdbx_seq_one_letter_code, self.get_int(pdbx_align_begin),
-                    details)
+                    pdbx_seq_one_letter_code,
+                    db_align_begin=self.get_int(pdbx_align_begin),
+                    details=details)
         e.references.append(r)
 
 

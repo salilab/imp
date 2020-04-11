@@ -1060,6 +1060,9 @@ class Entity(object):
         self.references = []
         self.references.extend(references)
 
+    def __str__(self):
+        return "<ihm.Entity(%s)>" % self.description
+
     def is_polymeric(self):
         """Return True iff this entity represents a polymer, such as an
            amino acid sequence or DNA/RNA chain (and not a ligand or water)"""
