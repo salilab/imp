@@ -8,6 +8,11 @@ if(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
    message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} is ${CMAKE_BINARY_DIR}. If this message seems wrong, make sure to delete the CMakeFiles directory and the CMakeCache.txt file if they exist in the source dir (${CMAKE_SOURCE_DIR}).")
 endif()
 
+# Default Python3_FIND_STRATEGY to LOCATION
+if(POLICY CMP0094)
+cmake_policy(SET CMP0094 NEW)
+endif(POLICY CMP0094)
+
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindPython.cmake)
 imp_find_python()
 
