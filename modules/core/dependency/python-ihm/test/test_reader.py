@@ -581,6 +581,28 @@ _struct_ref.pdbx_seq_one_letter_code
 _struct_ref.details
 1 1 UNP NUP84_YEAST P52891 3 MELSPTYQT 'test sequence'
 2 1 MyDatabase testcode testacc 1 MEL 'other sequence'
+#
+#
+loop_
+_struct_ref_seq.align_id
+_struct_ref_seq.ref_id
+_struct_ref_seq.seq_align_beg
+_struct_ref_seq.seq_align_end
+_struct_ref_seq.db_align_beg
+_struct_ref_seq.db_align_end
+1 1 1 4 3 6
+2 1 5 5 8 8
+#
+#
+loop_
+_struct_ref_seq_dif.pdbx_ordinal
+_struct_ref_seq_dif.align_id
+_struct_ref_seq_dif.seq_num
+_struct_ref_seq_dif.db_mon_id
+_struct_ref_seq_dif.mon_id
+_struct_ref_seq_dif.details
+1 1 2 TRP SER 'Test mutation'
+#
 """
         # Order of the categories shouldn't matter
         cif1 = entity + struct_ref
@@ -594,16 +616,32 @@ _struct_ref.details
                 self.assertEqual(r1.db_name, 'UNP')
                 self.assertEqual(r1.db_code, 'NUP84_YEAST')
                 self.assertEqual(r1.accession, 'P52891')
-                self.assertEqual(r1.db_align_begin, 3)
                 self.assertEqual(r1.sequence, 'MELSPTYQT')
                 self.assertEqual(r1.details, 'test sequence')
+                a1, a2 = r1.alignments
+                self.assertEqual(a1.db_begin, 3)
+                self.assertEqual(a1.db_end, 6)
+                self.assertEqual(a1.entity_begin, 1)
+                self.assertEqual(a1.entity_end, 4)
+                sd, = a1.seq_dif
+                self.assertEqual(sd.seq_id, 2)
+                self.assertIsInstance(sd.db_monomer, ihm.ChemComp)
+                self.assertIsInstance(sd.monomer, ihm.ChemComp)
+                self.assertEqual(sd.db_monomer.id, 'TRP')
+                self.assertEqual(sd.monomer.id, 'SER')
+                self.assertEqual(sd.details, 'Test mutation')
+                self.assertEqual(a2.db_begin, 8)
+                self.assertEqual(a2.db_end, 8)
+                self.assertEqual(a2.entity_begin, 5)
+                self.assertEqual(a2.entity_end, 5)
+                self.assertEqual(len(a2.seq_dif), 0)
                 self.assertIsInstance(r2, ihm.reference.Sequence)
                 self.assertEqual(r2.db_name, 'MyDatabase')
                 self.assertEqual(r2.db_code, 'testcode')
                 self.assertEqual(r2.accession, 'testacc')
-                self.assertEqual(r2.db_align_begin, 1)
                 self.assertEqual(r2.sequence, 'MEL')
                 self.assertEqual(r2.details, 'other sequence')
+                self.assertEqual(len(r2.alignments), 0)
 
     def test_asym_unit_handler(self):
         """Test AsymUnitHandler"""

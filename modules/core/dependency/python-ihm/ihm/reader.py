@@ -113,8 +113,9 @@ class IDMapper(object):
 
     def get_by_id_or_none(self, objid, newcls=None):
         """Get the object with given ID, creating it if it doesn't already
-           exist. If ID is None, return None instead."""
-        return self.get_by_id(objid, newcls) if objid is not None else None
+           exist. If ID is None or ihm.unknown, return None instead."""
+        return (None if objid in (None, ihm.unknown)
+                else self.get_by_id(objid, newcls))
 
 
 class _ChemCompIDMapper(IDMapper):
@@ -291,6 +292,16 @@ class _CrossLinkIDMapper(IDMapper):
             return newcls(*(None,)*4)
 
 
+class _ReferenceIDMapper(IDMapper):
+    """Add extra handling to IDMapper for ihm.reference.Reference objects"""
+
+    def _make_new_object(self, newcls=None):
+        if newcls is None or newcls is ihm.reference.Sequence:
+            return self._cls(*(None,)*4)
+        else:
+            return newcls(*(None,)*3)
+
+
 class _FLRListAdapter(object):
     """Take objects from IDMapper and place them in objects in FLRData."""
 
@@ -405,6 +416,12 @@ class SystemReader(object):
 
         #: Mapping from ID to :class:`ihm.source.Synthetic` objects
         self.src_syns = IDMapper(None, ihm.source.Synthetic)
+
+        #: Mapping from ID to :class:`ihm.reference.Alignment` objects
+        self.alignments = IDMapper(None, ihm.reference.Alignment)
+
+        #: Mapping from ID to :class:`ihm.reference.Reference` objects
+        self.references = _ReferenceIDMapper(None, ihm.reference.Sequence)
 
         #: Mapping from ID to :class:`ihm.ChemDescriptor` objects
         self.chem_descriptors = IDMapper(self.system.orphan_chem_descriptors,
@@ -1042,21 +1059,43 @@ class _StructRefHandler(Handler):
                 if issubclass(x[1], ihm.reference.Sequence)
                 and x[1] is not ihm.reference.Sequence)
 
-    def __call__(self, entity_id, db_name, db_code, pdbx_db_accession,
-                 pdbx_align_begin, pdbx_seq_one_letter_code, details):
-        # todo: handle things that aren't sequences, handle _struct_ref_seq
+    def __call__(self, id, entity_id, db_name, db_code, pdbx_db_accession,
+                 pdbx_seq_one_letter_code, details):
+        # todo: handle things that aren't sequences
         e = self.sysr.entities.get_by_id(entity_id)
         typ = self.type_map.get(db_name.lower())
-        if typ:
-            r = typ(db_code, pdbx_db_accession, pdbx_seq_one_letter_code,
-                    db_align_begin=self.get_int(pdbx_align_begin),
-                    details=details)
-        else:
-            r = ihm.reference.Sequence(db_name, db_code, pdbx_db_accession,
-                    pdbx_seq_one_letter_code,
-                    db_align_begin=self.get_int(pdbx_align_begin),
-                    details=details)
-        e.references.append(r)
+        ref = self.sysr.references.get_by_id(id, typ)
+        self.copy_if_present(ref, locals(),
+                keys=('db_name', 'db_code', 'details'),
+                mapkeys={'pdbx_db_accession':'accession',
+                         'pdbx_seq_one_letter_code':'sequence'})
+        e.references.append(ref)
+
+
+class _StructRefSeqHandler(Handler):
+    category = '_struct_ref_seq'
+
+    def __call__(self, align_id, ref_id, seq_align_beg, seq_align_end,
+                 db_align_beg, db_align_end):
+        ref = self.sysr.references.get_by_id(ref_id)
+        align = self.sysr.alignments.get_by_id(align_id)
+        align.db_begin = self.get_int(db_align_beg)
+        align.db_end = self.get_int(db_align_end)
+        align.entity_begin = self.get_int(seq_align_beg)
+        align.entity_end = self.get_int(seq_align_end)
+        ref.alignments.append(align)
+
+
+class _StructRefSeqDifHandler(Handler):
+    category = '_struct_ref_seq_dif'
+
+    def __call__(self, align_id, seq_num, db_mon_id, mon_id, details):
+        align = self.sysr.alignments.get_by_id(align_id)
+        db_monomer = self.sysr.chem_comps.get_by_id_or_none(db_mon_id)
+        monomer = self.sysr.chem_comps.get_by_id(mon_id)
+        sd = ihm.reference.SeqDif(self.get_int(seq_num), db_monomer, monomer,
+                                  details)
+        align.seq_dif.append(sd)
 
 
 class _EntitySrcGenHandler(Handler):
@@ -3025,6 +3064,7 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               _ChemDescriptorHandler(s), _EntityHandler(s),
               _EntitySrcNatHandler(s), _EntitySrcGenHandler(s),
               _EntitySrcSynHandler(s), _StructRefHandler(s),
+              _StructRefSeqHandler(s), _StructRefSeqDifHandler(s),
               _EntityPolyHandler(s),
               _EntityPolySeqHandler(s), _EntityNonPolyHandler(s),
               _EntityPolySegmentHandler(s),

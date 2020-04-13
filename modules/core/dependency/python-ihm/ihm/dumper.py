@@ -337,76 +337,77 @@ def _prettyprint_seq(seq, width):
 
 class _StructRefDumper(Dumper):
     def finalize(self, system):
-        ordinal = itertools.count(1)
+        ref_id = itertools.count(1)
+        align_id = itertools.count(1)
         for e in system.entities:
             for r in e.references:
-                r._id = next(ordinal)
+                r._id = next(ref_id)
+                for a in r._get_alignments():
+                    a._id = next(align_id)
 
     def _get_sequence(self, reference):
         """Get the sequence string"""
         # Split into lines to get tidier CIF output
         return "\n".join(_prettyprint_seq(reference.sequence, 70))
 
-    def _check_seq_dif(self, ref):
-        """Check all SeqDif objects for the sequence. Return the mutated
-           sequence."""
-        refseq = list(ref.sequence)
-        for sd in ref.seq_dif:
-            if sd.seq_id < 1 or sd.seq_id > len(refseq):
+    def _check_seq_dif(self, entity, ref, align):
+        """Check all SeqDif objects for the Entity sequence. Return the mutated
+           sequence (to match the reference)."""
+        entseq = [comp.code_canonical for comp in entity.sequence]
+        for sd in align.seq_dif:
+            if sd.seq_id < 1 or sd.seq_id > len(entseq):
                 raise IndexError("SeqDif.seq_id for %s is %d, out of "
                                  "range 1-%d"
-                                 % (ref, sd.seq_id, len(refseq)))
-            if sd.db_monomer.code_canonical != refseq[sd.seq_id-1]:
-                raise ValueError("SeqDif.db_monomer one-letter code (%s) does "
+                                 % (entity, sd.seq_id, len(entseq)))
+            if sd.monomer.code_canonical != entseq[sd.seq_id-1]:
+                raise ValueError("SeqDif.monomer one-letter code (%s) does "
                                  "not match that in %s (%s at position %d)"
-                                 % (sd.db_monomer.code_canonical, ref,
-                                    refseq[sd.seq_id-1], sd.seq_id))
-            refseq[sd.seq_id-1] = sd.monomer.code_canonical
-        return ''.join(refseq)
+                                 % (sd.monomer.code_canonical, entity,
+                                    entseq[sd.seq_id-1], sd.seq_id))
+            entseq[sd.seq_id-1] = sd.db_monomer.code_canonical
+        return ''.join(entseq)
 
-    def _get_ranges(self, entity, ref):
+    def _get_ranges(self, entity, ref, align):
         """Get the sequence ranges for an Entity and Reference"""
-        return ((ref.align_begin,
-                 len(entity.sequence) if ref.align_end is None
-                                      else ref.align_end),
-                (ref.db_align_begin,
-                 len(ref.sequence) if ref.db_align_end is None
-                                   else ref.db_align_end))
+        return ((align.entity_begin,
+                 len(entity.sequence) if align.entity_end is None
+                                      else align.entity_end),
+                (align.db_begin,
+                 len(ref.sequence) if align.db_end is None else align.db_end))
 
     def _check_reference_sequence(self, entity, ref):
         """Make sure that the Entity and Reference sequences match"""
-        align_rng, db_align_rng = self._get_ranges(entity, ref)
-        matchlen = min(align_rng[1] - align_rng[0],
-                       db_align_rng[1] - db_align_rng[0])
-        if (db_align_rng[0] < 1 or db_align_rng[0] > len(ref.sequence)
-            or db_align_rng[1] < 1 or db_align_rng[1] > len(ref.sequence)):
-            raise IndexError("Sequence.db_align_begin,db_align_end for %s "
-                             "is (%d-%d), out of range 1-%d"
-                             % (ref, db_align_rng[0], db_align_rng[1],
-                                len(ref.sequence)))
-        if (align_rng[0] < 1 or align_rng[0] > len(entity.sequence)
-            or align_rng[1] < 1 or align_rng[1] > len(entity.sequence)):
-            raise IndexError("Sequence.align_begin,align_end for %s "
-                             "is (%d-%d), out of range 1-%d"
-                             % (ref, align_rng[0], align_rng[1],
-                                len(entity.sequence)))
-        canon = "".join(comp.code_canonical for comp in
-                        entity.sequence[align_rng[0]-1:align_rng[0]+matchlen-1])
-        refseq = self._check_seq_dif(ref)[db_align_rng[0]-1:
-                                          db_align_rng[0]+matchlen-1]
-        if refseq != canon:
+        for align in ref._get_alignments():
+            self._check_alignment(entity, ref, align)
+
+    def _check_alignment(self, entity, ref, align):
+        """Make sure that an alignment makes sense"""
+        entseq = self._check_seq_dif(entity, ref, align)
+        def check_rng(rng, seq, rngstr, obj):
+            if any(r < 1 or r > len(seq) for r in rng):
+                raise IndexError("Alignment.%s for %s is (%d-%d), "
+                                 "out of range 1-%d"
+                                 % (rngstr, obj, rng[0], rng[1], len(seq)))
+        entity_rng, db_rng = self._get_ranges(entity, ref, align)
+        check_rng(entity_rng, entseq, "entity_begin,entity_end", entity)
+        check_rng(db_rng, ref.sequence, "db_begin,db_end", ref)
+
+        matchlen = min(entity_rng[1] - entity_rng[0], db_rng[1] - db_rng[0])
+        entseq = entseq[entity_rng[0]-1:entity_rng[0]+matchlen-1]
+        refseq = ref.sequence[db_rng[0]-1:db_rng[0]+matchlen-1]
+        if refseq != entseq:
             raise ValueError(
                     "Reference sequence from %s does not match entity canonical"
-                    " sequence for %s - you may need to adjust "
-                    "Sequence.db_align_begin,db_align_end (%d-%d), "
-                    "Sequence.align_begin,align_end (%d-%d), "
-                    "or add to Sequence.seq_dif:\n"
+                    " sequence (after mutations) for %s - you may need to "
+                    "adjust Alignment.db_begin,db_end (%d-%d), "
+                    "Alignment.entity_begin,entity_end (%d-%d), "
+                    "or add to Alignment.seq_dif:\n"
                     "Reference: %s\nEntity:    %s\n"
                     "Match:     %s"
-                    % (ref, entity, db_align_rng[0], db_align_rng[1],
-                       align_rng[0], align_rng[1], refseq, canon,
+                    % (ref, entity, db_rng[0], db_rng[1],
+                       entity_rng[0], entity_rng[1], refseq, entseq,
                        ''.join('*' if a==b else ' '
-                               for (a,b) in zip(refseq, canon))))
+                               for (a,b) in zip(refseq, entseq))))
 
     def dump(self, system, writer):
         with writer.loop("_struct_ref",
@@ -416,29 +417,32 @@ class _StructRefDumper(Dumper):
             for e in system.entities:
                 for r in e.references:
                     self._check_reference_sequence(e, r)
+                    db_begin = min(a.db_begin for a in r._get_alignments())
                     l.write(id=r._id, entity_id=e._id, db_name=r.db_name,
                             db_code=r.db_code, pdbx_db_accession=r.accession,
-                            pdbx_align_begin=r.db_align_begin,
-                            details=r.details,
+                            pdbx_align_begin=db_begin, details=r.details,
                             pdbx_seq_one_letter_code=self._get_sequence(r))
         self.dump_seq(system, writer)
         self.dump_seq_dif(system, writer)
 
     def dump_seq(self, system, writer):
-        # todo: allow multiple alignments per reference
+        def _all_alignments():
+            for e in system.entities:
+                for r in e.references:
+                    for a in r._get_alignments():
+                        yield e, r, a
         with writer.loop("_struct_ref_seq",
                 ["align_id", "ref_id", "seq_align_beg", "seq_align_end",
                  "db_align_beg", "db_align_end"]) as l:
-            for e in system.entities:
-                for r in e.references:
-                    align_rng, db_align_rng = self._get_ranges(e, r)
-                    matchlen = min(align_rng[1] - align_rng[0],
-                                   db_align_rng[1] - db_align_rng[0])
-                    l.write(align_id=r._id, ref_id=r._id,
-                            seq_align_beg=align_rng[0],
-                            seq_align_end=align_rng[0] + matchlen,
-                            db_align_beg=db_align_rng[0],
-                            db_align_end=db_align_rng[0] + matchlen)
+            for e, r, a in _all_alignments():
+                entity_rng, db_rng = self._get_ranges(e, r, a)
+                matchlen = min(entity_rng[1] - entity_rng[0],
+                               db_rng[1] - db_rng[0])
+                l.write(align_id=a._id, ref_id=r._id,
+                        seq_align_beg=entity_rng[0],
+                        seq_align_end=entity_rng[0] + matchlen,
+                        db_align_beg=db_rng[0],
+                        db_align_end=db_rng[0] + matchlen)
 
     def dump_seq_dif(self, system, writer):
         ordinal = itertools.count(1)
@@ -447,10 +451,12 @@ class _StructRefDumper(Dumper):
                  "details"]) as l:
             for e in system.entities:
                 for r in e.references:
-                    for sd in r.seq_dif:
-                        l.write(pdbx_ordinal=next(ordinal), align_id=r._id,
-                                seq_num=sd.seq_id, db_mon_id=sd.db_monomer.id,
-                                mon_id=sd.monomer.id, details=sd.details)
+                    for a in r._get_alignments():
+                        for sd in a.seq_dif:
+                            l.write(pdbx_ordinal=next(ordinal), align_id=a._id,
+                                    seq_num=sd.seq_id,
+                                    db_mon_id=sd.db_monomer.id,
+                                    mon_id=sd.monomer.id, details=sd.details)
 
 
 class _EntityPolyDumper(Dumper):
