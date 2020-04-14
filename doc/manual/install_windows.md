@@ -29,7 +29,7 @@ easily reproducible:
     `conda install conda-build unxutils`
   - Then for each package `foo` you can start a Visual Studio command prompt,
     `cd` to the directory above the `foo` directory containing the
-    [conda build recipe](https://conda.io/projects/conda-build/en/latest/source/concepts/recipe.html)
+    [conda build recipe](https://docs.conda.io/projects/conda-build/en/latest/concepts/recipe.html)
     then build it with
     `conda build --python=2.7 foo`
   - Feel free to refer to
