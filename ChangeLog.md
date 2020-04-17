@@ -3,6 +3,29 @@ ChangeLog {#changelog}
 - Ubuntu .deb packages now use Python 3 by default (install the imp-python2
   package if you want to use Python 2) and support MPI (install the
   imp-openmpi package if you want to use the IMP::mpi or IMP::spb modules).
+- A binary package is now provided for Ubuntu 20.04 LTS, Focal Fossa.
+- RMF files, particularly those output by IMP::pmi, now contain more information
+  on the restraints used, such as restraint parameters, and links to
+  non-Cartesian particles containing restraint information, such as Gaussians
+  used to represent EM densities, or Bayesian nuisances. Much of this
+  information can now be shown in
+  [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) using the
+  [RMF plugin](https://github.com/salilab/rmf_chimerax).
+- IMP.pmi.restraints.CrossLinkingMassSpectrometryRestraint now takes a
+  `linker` argument which can be used to specify the chemistry of the linker.
+- IMP.pmi.output.Output now supports output of pseudo-atomic PDBs in mmCIF
+  format. This can be useful for quick visualization of output models that
+  contain a large number of chains in software that does not understand
+  the mmCIF IHM extension (for integrative models) or RMF.
+- IMP.pmi now has improved support for RNA/DNA (previously all nucleic acid
+  residues were treated as RNA). IMP.pmi.topology.Molecule now takes an
+  `alphabet` argument which can be used to specify any of the alphabets
+  provided in the IMP.pmi.alphabets module (amino acids, RNA, or DNA) or a
+  custom alphabet.
+- 'Object "foo" never used' warnings are now emitted only when IMP is run with
+  internal checks turned on, as these warnings are primarily intended for
+  IMP developers, not end users.
+- Bugfix: fix infinite loop when reading some corrupt mol2 files.
 
 # 2.12.0 - 2019-12-06 # {#changelog_2_12_0}
 - The Windows .exe installer now supports Python 3.8, and has dropped support
