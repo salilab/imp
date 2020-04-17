@@ -781,40 +781,35 @@ class SecondaryStructure(object):
 class ElasticNetworkRestraint(object):
     """Add harmonic restraints between all pairs
     """
-    def __init__(self,representation=None,
-                 selection_tuples=None,
-                 resolution=1,
-                 strength=0.01,
-                 dist_cutoff=10.0,
-                 ca_only=True,
-                 hierarchy=None):
+    def __init__(self, hierarchy, selection_tuples=None, resolution=1,
+                 strength=0.01, dist_cutoff=10.0, ca_only=True):
         """Constructor
-        @param representation Representation object
+        @param hierarchy Root hierarchy to select from
         @param selection_tuples Selecting regions for the restraint [[start,stop,molname,copy_index=0],...]
         @param resolution Resolution for applying restraint
         @param strength Bond strength
         @param dist_cutoff Cutoff for making restraints
         @param ca_only Selects only CAlphas. Only matters if resolution=0.
-        @param hierarchy Root hierarchy to select from, use this instead of representation
         """
 
         particles = []
-        if representation is None and hierarchy is not None:
-            self.m = hierarchy.get_model()
-            for st in selection_tuples:
-                copy_index=0
-                if len(st)>3:
-                    copy_index=st[3]
-                if not ca_only:
-                    sel = IMP.atom.Selection(hierarchy,molecule=st[2],residue_indexes=range(st[0],st[1]+1),
-                                             copy_index=copy_index)
-                else:
-                    sel = IMP.atom.Selection(hierarchy,molecule=st[2],residue_indexes=range(st[0],st[1]+1),
-                                             copy_index=copy_index,
-                                             atom_type=IMP.atom.AtomType("CA"))
-                particles+=sel.get_selected_particles()
-        else:
-            raise Exception("must pass hierarchy")
+        self.m = hierarchy.get_model()
+        for st in selection_tuples:
+            copy_index=0
+            if len(st)>3:
+                copy_index=st[3]
+            if not ca_only:
+                sel = IMP.atom.Selection(
+                        hierarchy, molecule=st[2],
+                        residue_indexes=range(st[0],st[1]+1),
+                        copy_index=copy_index)
+            else:
+                sel = IMP.atom.Selection(
+                        hierarchy, molecule=st[2],
+                        residue_indexes=range(st[0],st[1]+1),
+                        copy_index=copy_index,
+                        atom_type=IMP.atom.AtomType("CA"))
+            particles+=sel.get_selected_particles()
 
         self.weight = 1
         self.label = "None"

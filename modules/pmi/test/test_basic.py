@@ -89,16 +89,6 @@ class Tests(IMP.test.TestCase):
         m1.add_representation(a1,resolutions=[0,1])
         hier = s.build()
 
-        # tuple_selection is required
-        self.assertRaises(ValueError,
-                          IMP.pmi.restraints.basic.DistanceToPointRestraint,
-                          root_hier=hier)
-
-        # hier is required
-        self.assertRaises(ValueError,
-                          IMP.pmi.restraints.basic.DistanceToPointRestraint,
-                          tuple_selection=(1,1,"Prot1",0))
-
         # Invalid anchor point
         self.assertRaises(TypeError,
                           IMP.pmi.restraints.basic.DistanceToPointRestraint,

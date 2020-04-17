@@ -16,16 +16,9 @@ class ExternalBarrier(IMP.pmi.restraints.RestraintBase):
 
     """Restraint to keep all structures inside sphere."""
 
-    def __init__(self,
-                 representation=None,
-                 radius=10.0,
-                 hierarchies=None,
-                 resolution=10,
-                 weight=1.0,
-                 center=None,
-                 label=None):
+    def __init__(self, hierarchies, radius=10.0, resolution=10, weight=1.0,
+                 center=None, label=None):
         """Setup external barrier restraint.
-        @param representation DEPRECATED
         @param radius Size of external barrier
         @param hierarchies Can be one of the following inputs: IMP Hierarchy,
                PMI System/State/Molecule/TempResidue, or a list/set of them
@@ -36,20 +29,10 @@ class ExternalBarrier(IMP.pmi.restraints.RestraintBase):
         @param label A unique label to be used in outputs and
                      particle/restraint names.
         """
-        if representation:
-            model = representation.prot.get_model()
-            particles = IMP.pmi.tools.select(
-                representation,
-                resolution=resolution,
-                hierarchies=hierarchies)
-        elif hierarchies:
-            hiers = IMP.pmi.tools.input_adaptor(hierarchies, resolution,
-                                                flatten=True)
-            model = hiers[0].get_model()
-            particles = [h.get_particle() for h in hiers]
-        else:
-            raise Exception("%s: must pass representation or hierarchies" % (
-                self.name))
+        hiers = IMP.pmi.tools.input_adaptor(hierarchies, resolution,
+                                            flatten=True)
+        model = hiers[0].get_model()
+        particles = [h.get_particle() for h in hiers]
 
         super(ExternalBarrier, self).__init__(model, label=label,
                                               weight=weight)
@@ -77,19 +60,11 @@ class DistanceRestraint(IMP.pmi.restraints.RestraintBase):
 
     """A simple distance restraint"""
 
-    def __init__(self,
-                 representation=None,
-                 tuple_selection1=None,
-                 tuple_selection2=None,
-                 distancemin=0,
-                 distancemax=100,
-                 resolution=1.0,
-                 kappa=1.0,
-                 root_hier=None,
-                 label=None,
-                 weight=1.):
+    def __init__(self, root_hier, tuple_selection1, tuple_selection2,
+                 distancemin=0, distancemax=100, resolution=1.0, kappa=1.0,
+                 label=None, weight=1.):
         """Setup distance restraint.
-        @param representation DEPRECATED
+        @param root_hier The hierarchy to select from
         @param tuple_selection1 (resnum, resnum, molecule name, copy
                number (=0))
         @param tuple_selection2 (resnum, resnum, molecule name, copy
@@ -98,52 +73,35 @@ class DistanceRestraint(IMP.pmi.restraints.RestraintBase):
         @param distancemax The maximum dist
         @param resolution For selecting particles
         @param kappa The harmonic parameter
-        @param root_hier The hierarchy to select from (use this instead of
-               representation)
         @param label A unique label to be used in outputs and
                      particle/restraint names
         @param weight Weight of restraint
         @note Pass the same resnum twice to each tuple_selection. Optionally
               add a copy number (PMI2 only)
         """
-        if tuple_selection1 is None or tuple_selection2 is None:
-            raise Exception("You must pass tuple_selection1/2")
         ts1 = IMP.core.HarmonicUpperBound(distancemax, kappa)
         ts2 = IMP.core.HarmonicLowerBound(distancemin, kappa)
 
-        if representation and not root_hier:
-            model = representation.prot.get_model()
-            particles1 = IMP.pmi.tools.select(representation,
-                                              resolution=resolution,
-                                              name=tuple_selection1[2],
-                                              residue=tuple_selection1[0])
-            particles2 = IMP.pmi.tools.select(representation,
-                                              resolution=resolution,
-                                              name=tuple_selection2[2],
-                                              residue=tuple_selection2[0])
-        elif root_hier and not representation:
-            model = root_hier.get_model()
-            copy_num1 = 0
-            if len(tuple_selection1) > 3:
-                copy_num1 = tuple_selection1[3]
-            copy_num2 = 0
-            if len(tuple_selection2) > 3:
-                copy_num2 = tuple_selection2[3]
+        model = root_hier.get_model()
+        copy_num1 = 0
+        if len(tuple_selection1) > 3:
+            copy_num1 = tuple_selection1[3]
+        copy_num2 = 0
+        if len(tuple_selection2) > 3:
+            copy_num2 = tuple_selection2[3]
 
-            sel1 = IMP.atom.Selection(root_hier,
-                                      resolution=resolution,
-                                      molecule=tuple_selection1[2],
-                                      residue_index=tuple_selection1[0],
-                                      copy_index=copy_num1)
-            particles1 = sel1.get_selected_particles()
-            sel2 = IMP.atom.Selection(root_hier,
-                                      resolution=resolution,
-                                      molecule=tuple_selection2[2],
-                                      residue_index=tuple_selection2[0],
-                                      copy_index=copy_num2)
-            particles2 = sel2.get_selected_particles()
-        else:
-            raise Exception("Pass representation or root_hier, not both")
+        sel1 = IMP.atom.Selection(root_hier,
+                                  resolution=resolution,
+                                  molecule=tuple_selection1[2],
+                                  residue_index=tuple_selection1[0],
+                                  copy_index=copy_num1)
+        particles1 = sel1.get_selected_particles()
+        sel2 = IMP.atom.Selection(root_hier,
+                                  resolution=resolution,
+                                  molecule=tuple_selection2[2],
+                                  residue_index=tuple_selection2[0],
+                                  copy_index=copy_num2)
+        particles2 = sel2.get_selected_particles()
 
         super(DistanceRestraint, self).__init__(model, label=label,
                                                 weight=weight)
@@ -286,18 +244,12 @@ class DistanceToPointRestraint(IMP.pmi.restraints.RestraintBase):
 
     """Restraint for anchoring a particle to a specific coordinate."""
 
-    def __init__(self,
-                 representation=None,
-                 tuple_selection=None,
+    def __init__(self, root_hier, tuple_selection,
                  anchor_point=IMP.algebra.Vector3D(0, 0, 0),
-                 radius=10.0,
-                 kappa=10.0,
-                 resolution=1.0,
-                 weight=1.0,
-                 root_hier=None,
+                 radius=10.0, kappa=10.0, resolution=1.0, weight=1.0,
                  label=None):
         """Setup distance restraint.
-        @param representation DEPRECATED
+        @param root_hier The hierarchy to select from
         @param tuple_selection (resnum, resnum, molecule name,
                copy number (=0))
         @param anchor_point Point to which to restrain particle
@@ -306,36 +258,22 @@ class DistanceToPointRestraint(IMP.pmi.restraints.RestraintBase):
         @param kappa The harmonic parameter
         @param resolution For selecting a particle
         @param weight Weight of restraint
-        @param root_hier The hierarchy to select from (use this instead of
-               representation)
         @param label A unique label to be used in outputs and
                      particle/restraint names
         @note Pass the same resnum twice to each tuple_selection. Optionally
               add a copy number (PMI2 only)
         """
-        if tuple_selection is None:
-            raise ValueError("You must pass a tuple_selection")
+        model = root_hier.get_model()
+        copy_num1 = 0
+        if len(tuple_selection) > 3:
+            copy_num1 = tuple_selection[3]
 
-        if representation and not root_hier:
-            model = representation.prot.get_model()
-            ps = IMP.pmi.tools.select(representation,
-                                      resolution=resolution,
-                                      name=tuple_selection[2],
-                                      residue=tuple_selection[0])
-        elif root_hier and not representation:
-            model = root_hier.get_model()
-            copy_num1 = 0
-            if len(tuple_selection) > 3:
-                copy_num1 = tuple_selection[3]
-
-            sel1 = IMP.atom.Selection(root_hier,
-                                      resolution=resolution,
-                                      molecule=tuple_selection[2],
-                                      residue_index=tuple_selection[0],
-                                      copy_index=copy_num1)
-            ps = sel1.get_selected_particles()
-        else:
-            raise ValueError("Pass representation or root_hier, not both")
+        sel1 = IMP.atom.Selection(root_hier,
+                                  resolution=resolution,
+                                  molecule=tuple_selection[2],
+                                  residue_index=tuple_selection[0],
+                                  copy_index=copy_num1)
+        ps = sel1.get_selected_particles()
         if len(ps) > 1:
             raise ValueError("More than one particle selected")
 

@@ -51,18 +51,13 @@ def _get_system_for_hier(hier):
         # Try the next level up in the hierarchy
         hier = hier.get_parent()
 
-def _all_protocol_outputs(representations, hier):
-    """Iterate over all (ProtocolOutput, State) pairs for the given
-       representations (PMI1) or hier (PMI2)"""
-    if hier:
-        system = _get_system_for_hier(hier)
-        if system:
-            for state in system.states:
-                for p in state._protocol_output:
-                    yield p
-    else:
-        for p in representations[0]._protocol_output:
-            yield p
+def _all_protocol_outputs(hier):
+    """Iterate over all (ProtocolOutput, State) pairs for the given hierarchy"""
+    system = _get_system_for_hier(hier)
+    if system:
+        for state in system.states:
+            for p in state._protocol_output:
+                yield p
 
 def _add_pmi_provenance(p):
     """Tag the given particle as being created by the current version of PMI."""

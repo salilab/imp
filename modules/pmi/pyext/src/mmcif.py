@@ -1173,7 +1173,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     IMP has basic support for writing out files in mmCIF format, for
     deposition in [PDB-Dev](https://pdb-dev.wwpdb.org/).
     After creating an instance of this class, attach it to an
-    IMP.pmi.representation.Representation object. After this, any
+    IMP.pmi.topology.System object. After this, any
     generated models and metadata are automatically collected in the
     `system` attribute, which is an
     [ihm.System](https://python-ihm.readthedocs.io/en/latest/main.html#ihm.System) object.

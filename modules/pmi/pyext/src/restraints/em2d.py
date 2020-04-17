@@ -16,18 +16,11 @@ class ElectronMicroscopy2D(object):
     Compares how well the principal components of the segmented class
     average fit to the principal components of the particles.
     """
-    def __init__(self,
-                 representation=None,
-                 images=None,
-                 pixel_size=None,
-                 image_resolution=None,
-                 projection_number=None,
-                 micrographs_number=None,
-                 resolution=None,
-                 n_components=1,
-                 hier=None):
+    def __init__(self, hier, images=None, pixel_size=None,
+                 image_resolution=None, projection_number=None,
+                 micrographs_number=None, resolution=None, n_components=1):
         """Constructor.
-        @param representation DEPRECATED, pass 'hier' instead
+        @param hier The root hierarchy for applying the restraint
         @param images 2D class average filenames in PGM text format
         @param pixel_size Pixel size in angstroms
         @param image_resolution Estimated resolution of the images
@@ -41,7 +34,6 @@ class ElectronMicroscopy2D(object):
                [model representation](@ref pmi_resolution) to use in the fit
         @param n_components Number of the largest components to be
                considered for the EM image
-        @param hier The root hierarchy for applying the restraint
         """
 
         import IMP.em2d
@@ -61,24 +53,16 @@ class ElectronMicroscopy2D(object):
             d = ihm.dataset.EM2DClassDataset(l)
             self.datasets.append(d)
 
-        if representation:
-            for p, state in representation._protocol_output:
-                for i in range(len(self.datasets)):
-                    p.add_em2d_restraint(state, self, i, resolution, pixel_size,
-                                         image_resolution, projection_number,
-                                         micrographs_number)
+        for p, state in IMP.pmi.tools._all_protocol_outputs(hier):
+            for i in range(len(self.datasets)):
+                p.add_em2d_restraint(state, self, i, resolution, pixel_size,
+                                     image_resolution, projection_number,
+                                     micrographs_number)
 
-        # PMI1/2 selection
-        if representation is None and hier is not None:
-            self.m = hier.get_model()
-            particles = IMP.atom.Selection(hier,resolution=resolution).get_selected_particles()
-        elif hier is None and representation is not None:
-            self.m = representation.prot.get_model()
-            particles = IMP.pmi.tools.select(
-                representation,
-                resolution=resolution)
-        else:
-            raise Exception("EM2D: must pass hier or representation")
+        # PMI2 selection
+        self.m = hier.get_model()
+        particles = IMP.atom.Selection(
+                hier, resolution=resolution).get_selected_particles()
         self.weight = 1.0
         self.rs = IMP.RestraintSet(self.m, 'em2d')
         self.label = "None"
@@ -131,17 +115,11 @@ class ElectronMicroscopy2D(object):
 
 class ElectronMicroscopy2D_FFT(object):
     """FFT based image alignment, developed by Javier Velazquez-Muriel"""
-    def __init__(
-            self,
-            representation=None,
-            images=None,
-            pixel_size=None,
-            image_resolution=None,
-            projection_number=None,
-            resolution=None,
-            hier=None):
+    def __init__(self, hier, images=None, pixel_size=None,
+                 image_resolution=None, projection_number=None,
+                 resolution=None):
         """Constructor.
-        @param representation DEPRECATED, pass 'hier' instead
+        @param hier The root hierarchy for applying the restraint
         @param images SPIDER FORMAT images (format conversion should be done through EM2EM)
         @param pixel_size sampling rate of the available EM images (angstroms)
         @param image_resolution resolution at which you want to generate the projections of the model
@@ -152,7 +130,6 @@ class ElectronMicroscopy2D_FFT(object):
                [model representation](@ref pmi_resolution) to use in the fit
         @param n_components Number of the largest components to be
                considered for the EM image
-        @param hier The root hierarchy for applying the restraint
         """
 
         import IMP.em2d
@@ -167,17 +144,10 @@ class ElectronMicroscopy2D_FFT(object):
         if projection_number is None:
             raise Exception("EM2D_FFT: must pass projection_number")
 
-        # PMI1/2 selection
-        if representation is None and hier is not None:
-            self.m = hier.get_model()
-            particles = IMP.atom.Selection(hier,resolution=resolution).get_selected_particles()
-        elif hier is None and representation is not None:
-            self.m = representation.prot.get_model()
-            particles = IMP.pmi.tools.select(
-                representation,
-                resolution=resolution)
-        else:
-            raise Exception("EM2D: must pass hier or representation")
+        # PMI2 selection
+        self.m = hier.get_model()
+        particles = IMP.atom.Selection(
+                hier, resolution=resolution).get_selected_particles()
 
         self.weight=1.0
         self.rs = IMP.RestraintSet(self.m, 'em2d_FFT')

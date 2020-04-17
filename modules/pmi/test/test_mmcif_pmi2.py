@@ -76,7 +76,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(IMP.pmi.tools._get_system_for_hier(child), s)
 
         # Check mapping from Hierarchy to ProtocolOutput
-        pos = list(IMP.pmi.tools._all_protocol_outputs([], hier))
+        pos = list(IMP.pmi.tools._all_protocol_outputs(hier))
         # Should be a list of (ProtocolOuput, State) tuples
         self.assertEqual(len(pos), 1)
         self.assertEqual(len(pos[0]), 2)
