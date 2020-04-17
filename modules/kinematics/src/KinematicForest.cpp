@@ -72,7 +72,7 @@ void KinematicForest::add_edge(Joint* joint) {
     if (roots_.find(child_kn) != roots_.end()) {
       roots_.erase(child_kn);  // will no longer be a root
     } else {
-      IMP_THROW("IMP currently does not support switching of "
+      IMP_THROW("IMP currently does not support switching of"
                     << " parents in a kinematic tree",
                 IMP::ValueException);
     }
