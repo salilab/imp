@@ -209,7 +209,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         childr.push_back(do_create(ch, m));
         add_link(childr.back(), ch);
       } else if (ch.get_type() == RMF::ORGANIZATIONAL) {
-        create_restraint_particles(ch, m, static_pis, dynamic_pis);
+        setup_restraint_particles(ch, m, static_pis, dynamic_pis);
       }
     }
     if (rf_.get_is(name)) {
@@ -257,16 +257,32 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     }
   }
 
-  void create_restraint_particles(
+  /* Make any IMP Particles referenced by the given RMF restraint node
+     (or its children) */
+  void create_restraint_particles(RMF::NodeConstHandle parent, Model *m) {
+    RMF::NodeConstHandles chs = parent.get_children();
+    IMP_FOREACH(RMF::NodeConstHandle ch, chs) {
+      if (ch.get_type() == RMF::ORGANIZATIONAL) {
+        ParticleIndexes pis;
+        IMP_FOREACH(RMF::NodeConstHandle pch, ch.get_children()) {
+          Pointer<Particle> pi = new IMP::Particle(m, pch.get_name());
+          set_association(pch, pi.get(), true);
+        }
+      } else {
+        create_restraint_particles(ch, m);
+      }
+    }
+  }
+
+  void setup_restraint_particles(
       RMF::NodeConstHandle parent, Model *m,
       std::vector<ParticleIndexesData> &static_pis,
       std::vector<ParticleIndexesData> &dynamic_pis) {
     ParticleIndexes pis;
     IMP_FOREACH(RMF::NodeConstHandle ch, parent.get_children()) {
-      Pointer<Particle> pi = new IMP::Particle(m, ch.get_name());
-      set_association(ch, pi.get(), true);
-      pis.push_back(pi->get_index());
-      setup_particle(ch, m, pi->get_index());
+      Particle *p = get_association<Particle>(ch);
+      pis.push_back(p->get_index());
+      setup_particle(ch, m, p->get_index());
     }
     // todo: distinguish static and dynamic pis
     static_pis.push_back(ParticleIndexesData(parent.get_name(), pis));
@@ -422,6 +438,37 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     mass_key_ = fh.get_key(phy, "mass", RMF::FloatTraits());
   }
   static const char *get_name() { return "restraint load"; }
+
+  /** Create all the entities under the passed root.*/
+  Vector<Pointer<Restraint> > create(RMF::NodeConstHandle rt, Model *m) {
+    IMP_OBJECT_LOG;
+    IMP_LOG_TERSE("Creating Model objects from " << rt << std::endl);
+    RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
+    RMF::NodeConstHandles ch = rt.get_children();
+    Vector<Pointer<Restraint> > ret;
+    // Do a first pass to create any particles referenced by restraints.
+    // We need to do this as sometimes a restraint will use a particle as
+    // a feature before another restraint declares the particle as an input
+    // (e.g. cross-links).
+    // Otherwise, this method functions much as SimpleLoadLink::create().
+    for (unsigned int i = 0; i < ch.size(); ++i) {
+      if (get_is(ch[i])) {
+        create_restraint_particles(ch[i], m);
+      }
+    }
+
+    for (unsigned int i = 0; i < ch.size(); ++i) {
+      IMP_LOG_VERBOSE("Checking " << ch[i] << std::endl);
+      if (get_is(ch[i])) {
+        IMP_LOG_VERBOSE("Adding " << ch[i] << std::endl);
+        Pointer<Restraint> o = do_create(ch[i], m);
+        add_link(o, ch[i]);
+        ret.push_back(o);
+        o->set_was_used(true);
+      }
+    }
+    return ret;
+  }
 
   IMP_OBJECT_METHODS(RestraintLoadLink);
 };
