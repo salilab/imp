@@ -1559,7 +1559,7 @@ def get_hiers_and_restraints_from_rmf(model, frame_number, rmf_file):
     try:
         prots = IMP.rmf.create_hierarchies(rh, model)
         rs = IMP.rmf.create_restraints(rh, model)
-    except:
+    except IOError:
         print("Unable to open rmf file %s" % (rmf_file))
         return None,None
     try:
