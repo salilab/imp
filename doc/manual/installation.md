@@ -82,7 +82,6 @@ such as
 - [Homebrew](http://brew.sh) (_recommended_) Once you installed `homebrew`
   do
 
-        brew tap homebrew/science
         brew tap salilab/salilab
         brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr opencv libtau eigen
 
