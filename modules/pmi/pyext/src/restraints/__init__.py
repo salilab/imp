@@ -13,6 +13,7 @@ import IMP.pmi.tools
 
 
 class RestraintBase(object):
+    _include_in_rmf = False
 
     """Base class for PMI restraints, which wrap `IMP.Restraint`(s)."""
 
@@ -73,7 +74,8 @@ class RestraintBase(object):
         """Add the restraint to the model."""
         self._label_is_set = True
         for rs in self.restraint_sets:
-            IMP.pmi.tools.add_restraint_to_model(self.model, rs)
+            IMP.pmi.tools.add_restraint_to_model(self.model, rs,
+                    add_to_rmf=self._include_in_rmf)
 
     def evaluate(self):
         """Evaluate the score of the restraint."""

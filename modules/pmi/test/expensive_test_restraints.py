@@ -54,21 +54,6 @@ class Tests(IMP.test.TestCase):
         ev2.add_to_model()
         print(ev2.get_output())
 
-        rb = IMP.pmi.restraints.stereochemistry.ResidueBondRestraint(
-            objects=hier_dict["Rpb3"][29:40])
-        rb.add_to_model()
-        print(rb.get_output())
-
-        ra = IMP.pmi.restraints.stereochemistry.ResidueAngleRestraint(
-            objects=hier_dict["Rpb3"][29:40])
-        ra.add_to_model()
-        print(ra.get_output())
-
-        rd = IMP.pmi.restraints.stereochemistry.ResidueDihedralRestraint(
-            objects=hier_dict["Rpb3"][29:40])
-        rd.add_to_model()
-        print(ra.get_output())
-
         if not no_isd_emxl:
             ss = IMP.pmi.restraints.stereochemistry.SecondaryStructure(
                 simo, (30, 40, "Rpb3"), "HHHHHHHHHHH")

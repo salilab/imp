@@ -15,6 +15,7 @@ import IMP.saxs
 import warnings
 
 class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
+    _include_in_rmf = True
 
     """Basic SAXS restraint."""
 
