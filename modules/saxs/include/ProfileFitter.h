@@ -98,6 +98,9 @@ class ProfileFitter : public Object {
                            const Profile* model_profile, const double chi_square,
                            const double c = 1, const double offset = 0) const;
 
+  //! \return the profile used
+  const Profile *get_profile() const { return exp_profile_; }
+
  private:
   FitParameters search_fit_parameters(Profile* partial_profile, double min_c1,
                                       double max_c1, double min_c2, double max_c2,
