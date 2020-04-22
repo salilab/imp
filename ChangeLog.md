@@ -22,6 +22,8 @@ ChangeLog {#changelog}
   `alphabet` argument which can be used to specify any of the alphabets
   provided in the IMP.pmi.alphabets module (amino acids, RNA, or DNA) or a
   custom alphabet.
+- A new application of IMP is now available:
+  - [Structural dynamics of the human COP9 signalosome revealed by cross-linking mass spectrometry and integrative modeling](https://salilab.org/CSN2019/)
 - 'Object "foo" never used' warnings are now emitted only when IMP is run with
   internal checks turned on, as these warnings are primarily intended for
   IMP developers, not end users.
