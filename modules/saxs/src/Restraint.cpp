@@ -85,7 +85,7 @@ namespace {
 RestraintInfo *Restraint::get_static_info() const {
   IMP_NEW(RestraintInfo, ri, ());
   const Profile *p = profile_fitter_->get_profile();
-  ri->add_string("type", "IMP.isd.Restraint");
+  ri->add_string("type", "IMP.saxs.Restraint");
   ri->add_string("form factor type", get_ff_type_string(ff_type_));
   ri->add_filename("filename", p->get_name());
   ri->add_float("min q", p->get_min_q());

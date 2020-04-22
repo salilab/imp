@@ -116,7 +116,7 @@ class Tests(IMP.test.TestCase):
         s.set_was_used(True)
         self.assertEqual(s.get_number_of_string(), 2)
         self.assertEqual(s.get_string_key(0), "type")
-        self.assertEqual(s.get_string_value(0), "IMP.isd.Restraint")
+        self.assertEqual(s.get_string_value(0), "IMP.saxs.Restraint")
         self.assertEqual(s.get_string_key(1), "form factor type")
         self.assertEqual(s.get_string_value(1), "heavy atoms")
 
