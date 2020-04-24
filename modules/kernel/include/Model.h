@@ -188,10 +188,12 @@ class IMPKERNELEXPORT Model : public Object
 
   /** @name States
 
-      ScoreStates can be added to the Model in order to keep them
-      alive as long as the model is alive. Being added does affect
-      their ability to perform their required action. See ScoreState
-      for more information.
+      ScoreStates maintain invariants in the Model (see ScoreState
+      for more information.)
+
+      ScoreStates do not need to be explictly added to the Model, but they
+      can be if desired in order to keep them alive as long as the model is
+      alive.
 
       \advancedmethod
   */
