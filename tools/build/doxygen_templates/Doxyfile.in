@@ -203,7 +203,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "internal{2}=<a href=\"\1\">\2</a>" \
                          "imp=\p %IMP" \
                          "string{1}=<tt>\1</tt>" \
-                         "advancedmethod=\note Familiarity with these methods is not required to use %imp." \
+                         "advancedmethod=\note Familiarity with these methods is not required to use %IMP." \
                          "advanceddoc=\par Advanced:\n" \
                          "usesconstraint=\note The maintenance of the invariant is done by an associated IMP::Constraint. As a result, the state is only guaranteed to be correct either during model evaluation, or immediately following model evaluation before any particles have been changed." \
                          "implementation{3}=\par Implementers\nDevelopers who wish to implement a \1 should inherit from this class and use the \2() macro to help define the needed functions. \3 provides an example to start from." \
