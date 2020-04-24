@@ -45,6 +45,8 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
     is inferred using Bayes theory of probability
     @note Wraps an IMP::isd::CrossLinkMSRestraint
     """
+    _include_in_rmf = True
+
     def __init__(self, root_hier,
                  CrossLinkDataBase=None,
                  length=10.0,
@@ -509,6 +511,9 @@ class AtomicCrossLinkMSRestraint(IMP.pmi.restraints.RestraintBase):
     is inferred using Bayes' theory of probability
     @note Wraps an IMP::isd::AtomicCrossLinkMSRestraint
     """
+
+    _include_in_rmf = True
+
     def __init__(self,
                  root_hier,
                  xldb,
@@ -1260,7 +1265,7 @@ class CysteineCrossLinkRestraint(object):
         self.label = label
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs, add_to_rmf=True)
 
     def get_particles_to_sample(self):
         ps = {}
@@ -1388,8 +1393,9 @@ class DisulfideCrossLinkRestraint(object):
         self.xl["Psi"]=psi
 
     def add_to_model(self):
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs)
-        IMP.pmi.tools.add_restraint_to_model(self.m, self.rslin)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rs, add_to_rmf=True)
+        IMP.pmi.tools.add_restraint_to_model(self.m, self.rslin,
+                add_to_rmf=True)
 
     def get_hierarchies(self):
         return self.prot

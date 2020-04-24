@@ -66,7 +66,7 @@ class ReplicaExchange0(object):
                  molecular_dynamics_sample_objects=None,
                  output_objects=[],
                  rmf_output_objects=None,
-                 crosslink_restraints=None,
+                 crosslink_restraints=None,  # DEPRECATED
                  monte_carlo_temperature=1.0,
                  simulated_annealing=False,
                  simulated_annealing_minimum_temperature=1.0,
@@ -116,8 +116,6 @@ class ReplicaExchange0(object):
            @param rmf_output_objects A list of structural objects and restraints
                   that will be included in rmf. Any object
                   that provides a get_output() method can be used here.
-           @param crosslink_restraints List of cross-link restraints that will
-                  be included in output RMF files (for visualization).
            @param monte_carlo_temperature  MC temp (may need to be optimized
                   based on post-sampling analysis)
            @param simulated_annealing If True, perform simulated annealing
@@ -177,11 +175,19 @@ class ReplicaExchange0(object):
         else:
             raise TypeError("Must provide System hierarchy (root_hier)")
 
-        self._rmf_restraints = _RMFRestraints(model, crosslink_restraints)
+        if crosslink_restraints:
+            IMP.handle_use_deprecated(
+                    "crosslink_restraints is deprecated and is ignored; "
+                    "all cross-link restraints should be automatically "
+                    "added to output RMF files")
+        self._rmf_restraints = _RMFRestraints(model, None)
         self.em_object_for_rmf = em_object_for_rmf
         self.monte_carlo_sample_objects = monte_carlo_sample_objects
         self.vars["self_adaptive"]=self_adaptive
         if sample_objects is not None:
+            IMP.handle_use_deprecated(
+                "sample_objects is deprecated; use monte_carlo_sample_objects "
+                "(or molecular_dynamics_sample_objects) instead")
             self.monte_carlo_sample_objects+=sample_objects
         self.molecular_dynamics_sample_objects=molecular_dynamics_sample_objects
         self.replica_exchange_object = replica_exchange_object
