@@ -36,7 +36,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(ch2.get_children()), 0)
 
         # Failure if no parent-child relationship
-        self.assertRaises(OSError, rn.replace_child, ch2, "rch2",
+        self.assertRaises(IOError, rn.replace_child, ch2, "rch2",
                           RMF.REPRESENTATION)
 
 
