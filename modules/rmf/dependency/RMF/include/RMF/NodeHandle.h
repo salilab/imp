@@ -83,6 +83,12 @@ class RMFEXPORT NodeHandle : public NodeConstHandle {
   /** Add an existing node as a child.*/
   void add_child(NodeConstHandle nh) const;
 
+  /** Create a new node that replaces an existing child of this one.
+      The new node will take the place of the existing child, and the
+      existing child will be moved to become the only child of the new node. */
+  NodeHandle replace_child(NodeHandle child, std::string name,
+		           NodeType t) const;
+
   NodeHandles get_children() const;
 
   /** \name Functions to access attributes

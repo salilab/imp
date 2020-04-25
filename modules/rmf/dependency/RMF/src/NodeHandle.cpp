@@ -38,6 +38,14 @@ void NodeHandle::add_child(NodeConstHandle nh) const {
   RMF_NODE_CATCH();
 }
 
+NodeHandle NodeHandle::replace_child(NodeHandle child, std::string name,
+                                     NodeType t) const {
+  try {
+    return NodeHandle(shared_->replace_child(node_, child, name, t), shared_);
+  }
+  RMF_NODE_CATCH();
+}
+
 FileHandle NodeHandle::get_file() const { return FileHandle(shared_); }
 
 NodeHandles NodeHandle::get_children() const {
