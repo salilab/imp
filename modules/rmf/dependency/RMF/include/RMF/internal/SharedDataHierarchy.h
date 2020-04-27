@@ -43,12 +43,11 @@ class SharedDataHierarchy {
         "Still in list");
   }
 
-  std::vector<NodeID>::iterator find_id(
-      std::vector<NodeID>& list, NodeID to_find) {
+  size_t find_id(std::vector<NodeID>& list, NodeID to_find) {
     std::vector<NodeID>::iterator found;
     found = std::find(list.begin(), list.end(), to_find);
     RMF_USAGE_CHECK(found != list.end(), "Not in list");
-    return found;
+    return found - list.begin();
   }
 
  public:
@@ -97,9 +96,9 @@ class SharedDataHierarchy {
   }
 
   NodeID replace_child(NodeID id, NodeID child, std::string name, NodeType t) {
-    std::vector<NodeID>::iterator parent_child_ptr, child_parent_ptr;
-    parent_child_ptr = find_id(hierarchy_[id.get_index()].children, child);
-    child_parent_ptr = find_id(hierarchy_[child.get_index()].parents, id);
+    size_t child_ind, parent_ind;
+    child_ind = find_id(hierarchy_[id.get_index()].children, child);
+    parent_ind = find_id(hierarchy_[child.get_index()].parents, id);
 
     NodeID newchild = add_node(name, t);
     hierarchy_.resize(
@@ -107,8 +106,9 @@ class SharedDataHierarchy {
 
     hierarchy_[newchild.get_index()].children.push_back(child);
     hierarchy_[newchild.get_index()].parents.push_back(id);
-    *parent_child_ptr = newchild;
-    *child_parent_ptr = newchild;
+
+    hierarchy_[id.get_index()].children[child_ind] = newchild;
+    hierarchy_[child.get_index()].parents[parent_ind] = newchild;
     dirty_ = true;
     return newchild;
   }

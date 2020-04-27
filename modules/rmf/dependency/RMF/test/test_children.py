@@ -19,15 +19,16 @@ class Tests(unittest.TestCase):
         self.assertEqual(chb.get_name(), "ch")
 
         ch2 = rn.add_child("ch2", RMF.REPRESENTATION)
+        ch3 = rn.add_child("ch3", RMF.REPRESENTATION)
 
         self.assertEqual([n.get_name() for n in rn.get_children()],
-                         ['ch', 'ch2'])
+                         ['ch', 'ch2', 'ch3'])
 
         rch = rn.replace_child(ch2, "rch", RMF.REPRESENTATION)
 
         # rch should replace ch2 in root's children
         self.assertEqual([n.get_name() for n in rn.get_children()],
-                         ['ch', 'rch'])
+                         ['ch', 'rch', 'ch3'])
 
         # rch should now be the parent of ch2
         self.assertEqual([n.get_name() for n in rch.get_children()],
