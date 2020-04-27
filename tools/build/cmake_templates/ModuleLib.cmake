@@ -88,7 +88,9 @@ set_property(TARGET "IMP.%(name)s-lib" PROPERTY FOLDER "IMP.%(name)s")
 
 INSTALL(TARGETS IMP.%(name)s-lib DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-add_dependencies(IMP.%(name)s-lib IMP.%(name)s-version)
+if (%(python_only)d EQUAL 0)
+  add_dependencies(IMP.%(name)s-lib IMP.%(name)s-version)
+endif()
 
 if(DEFINED IMP_%(name)s_LIBRARY_EXTRA_DEPENDENCIES)
   add_dependencies(IMP.%(name)s-lib ${IMP_%(name)s_LIBRARY_EXTRA_DEPENDENCIES})

@@ -40,6 +40,9 @@ swig_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                       "cmake_templates",
                                                       "ModuleSwig.cmake"))
 
+python_template = tools.CMakeFileGenerator(
+        os.path.join(TOPDIR, "cmake_templates", "ModulePython.cmake"))
+
 util_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                       "cmake_templates",
                                                       "ModuleUtil.cmake"))
@@ -215,6 +218,7 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
     values["pybins"] = "\n".join(pybins)
     values["bin_names"] = "\n".join([os.path.basename(x) \
                                      for x in pybins + cppbins])
+    values["python_only"] = 1 if module.python_only else 0
 
     local = os.path.join(module.path, "Build.cmake")
     if os.path.exists(local):
@@ -232,7 +236,10 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
     examples = os.path.join(module.path, "examples", "CMakeLists.txt")
     lib_template.write(main, values)
     test_template.write(tests, values)
-    swig_template.write(swig, values)
+    if module.python_only:
+        python_template.write(swig, values)
+    else:
+        swig_template.write(swig, values)
     util_template.write(util, values)
     bin_template.write(bin, values)
     benchmark_template.write(benchmark, values)

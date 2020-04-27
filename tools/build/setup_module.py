@@ -199,7 +199,8 @@ def write_no_ok(module):
                   "ok=False\n", verbose=False)
 
 def write_ok(module, modules, unfound_modules, dependencies,
-             unfound_dependencies, swig_includes, swig_wrapper_includes):
+             unfound_dependencies, swig_includes, swig_wrapper_includes,
+             python_only):
     print("yes")
     config = ["ok=True"]
     modules = [x.name for x in modules]
@@ -211,6 +212,8 @@ def write_ok(module, modules, unfound_modules, dependencies,
         var = vardict[varname]
         if len(var) > 0:
             config.append("%s = %s" % (varname, repr(":".join(var))))
+    if python_only:
+        config.append("python_only = True")
     tools.rewrite(os.path.join("build_info", "IMP." + module.name),
                   "\n".join(config))
 
@@ -259,7 +262,8 @@ def setup_module(module, finder):
     tools.mkdir(os.path.join("src", module.name + "_swig"))
     write_ok(module, all_modules, unfound_modules,
              finder.get_dependent_dependencies(all_modules, dependencies),
-             unfound_dependencies, swig_includes, swig_wrapper_includes)
+             unfound_dependencies, swig_includes, swig_wrapper_includes,
+             module.python_only)
     return True, all_modules
 
 

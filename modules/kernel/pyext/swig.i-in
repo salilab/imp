@@ -112,6 +112,7 @@ LogInit() {IMP::internal::init_logger();}
 
 %{
 #include <IMP/internal/swig.h>
+#include <IMP/internal/directories.h>
 %}
 
 %pythoncode %{
@@ -415,6 +416,16 @@ namespace IMP {
 namespace IMP {
   %template(ScopedSetFloatAttribute) ::IMP::ScopedSetAttribute<FloatKey, Float>;
 }
+
+%inline %{
+  std::string _get_module_data_path(std::string module, std::string file_name) {
+    return IMP::internal::get_data_path(module, file_name);
+  }
+  std::string _get_module_example_path(std::string module,
+                                       std::string file_name)  {
+    return IMP::internal::get_example_path(module, file_name);
+  }
+%}
 
 %pythoncode %{
 #used_modules=[]

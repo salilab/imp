@@ -41,8 +41,8 @@ def write_module_swig(m, contents, skip_import=False):
         contents.append("%%import \"IMP_%(module)s.i\"" % {"module": m.name})
 
 
-def build_wrapper(module, finder, sorted, target):
-    if not module.configured.ok:
+def build_wrapper(module, finder, sorted, target, source):
+    if not module.configured.ok or module.python_only:
         return
     contents = []
     swig_module_name = "IMP" if module.name == 'kernel' \
@@ -51,6 +51,7 @@ def build_wrapper(module, finder, sorted, target):
     contents.append(
 """%%module(directors="1", allprotected="1", moduleimport="import $module") "%s"
 %%feature("autodoc", 1);
+
 // Warning 314: 'lambda' is a python keyword, renaming to '_lambda'
 %%warnfilter(321,302,314);
 
@@ -158,7 +159,8 @@ def main():
                                  module_name=options.module)
         module = mf[options.module]
         build_wrapper(module, mf, sorted_order,
-                      os.path.join("swig", "IMP_" + module.name + ".i"))
+                      os.path.join("swig", "IMP_" + module.name + ".i"),
+                      options.source)
 
 if __name__ == '__main__':
     main()

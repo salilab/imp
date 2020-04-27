@@ -363,7 +363,7 @@ class SourceModule(Module):
             return self._info[attr]
         d = {'required_modules': "", 'optional_modules': "",
              'required_dependencies': "", 'optional_dependencies': "",
-             'lib_only_required_modules': ""}
+             'lib_only_required_modules': "", 'python_only': False}
         exec(open(self.depends_file).read(), d)
         self._info = {"required_modules":
                              self._modules_split(d['required_modules']),
@@ -374,7 +374,8 @@ class SourceModule(Module):
                       "required_dependencies":
                              split(d['required_dependencies']),
                       "optional_dependencies":
-                             split(d['optional_dependencies'])}
+                             split(d['optional_dependencies']),
+                      "python_only": d['python_only']}
         return self._info[attr]
 
     required_modules = property(
@@ -387,6 +388,7 @@ class SourceModule(Module):
                       lambda self: self._read_dep_file('required_dependencies'))
     optional_dependencies = property(
                       lambda self: self._read_dep_file('optional_dependencies'))
+    python_only = property(lambda self: self._read_dep_file('python_only'))
 
 
 class ModulesFinder(object):
@@ -578,7 +580,8 @@ def get_dependency_info(dependency, extra_data_path, root="."):
     if not os.path.exists(df) and extra_data_path != "":
         df = os.path.join(extra_data_path, dependency)
     d = {'libraries': "", 'version': "", 'includepath': "",
-         'libpath': "", 'swigpath': "", 'ok': False}
+         'libpath': "", 'swigpath': "", 'ok': False,
+         'python_only': False}
     # try:
     exec(open(df, "r").read(), d)
     # except:
@@ -588,7 +591,8 @@ def get_dependency_info(dependency, extra_data_path, root="."):
            "version": split(d['version']),
            "includepath": d['includepath'],
            "libpath": d['libpath'],
-           "swigpath": d['swigpath']}
+           "swigpath": d['swigpath'],
+           "python_only": d['python_only']}
     dependency_info_cache[dependency] = ret
     return ret
 

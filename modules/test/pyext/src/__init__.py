@@ -1,5 +1,3 @@
-%pythoncode %{
-
 """@namespace IMP::test
    @brief Methods and classes for testing the IMP kernel and modules.
    @ingroup python
@@ -1035,4 +1033,3 @@ if sys.platform == 'win32' and 'PYTHONPATH' in os.environ \
     path = os.environ['PATH']
     if libdir not in path or bindir not in path:
         os.environ['PATH'] = bindir + ';' + libdir + ';' + path
-%}
