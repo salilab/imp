@@ -1,6 +1,0 @@
-%import "RMF.i"
-%{
-#include "RMF.h"
-%}
-
-/* No .cpp or .h files, so nothing to wrap */

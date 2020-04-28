@@ -12,10 +12,10 @@ ChangeLog {#changelog}
   [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) using the
   [RMF plugin](https://github.com/salilab/rmf_chimerax).
 - IMP modules that contain no C++ code can now be marked as "Python only"
-  in `dependencies.py`. IMP::test, IMP::mmcif, and IMP::parallel are so
-  marked. This speeds up the build since such modules do not need to be
-  run through SWIG or compiled, and saves space by eliminating their
-  shared libraries.
+  in `dependencies.py`. IMP::test, IMP::mmcif, IMP::parallel, IMP::EMageFit,
+  IMP::pepdock, and IMP::saxs\_merge are so marked. This speeds up the build
+  since such modules do not need to be run through SWIG or compiled, and
+  saves space by eliminating their shared libraries.
 - The `crosslink_restraints` argument to IMP.pmi.macros.ReplicaExchange0 
   is now ignored (and deprecated). All cross-link restraints are now
   automatically added to RMF files.
