@@ -49,7 +49,8 @@ def main():
 
     mf = tools.ModulesFinder(source_dir=options.source,
                              external_dir=options.build_dir,
-                             module_name=module)
+                             module_name=module,
+                             configured_dir="build_info")
     module = mf[module]
     build_init(module, options.source,
             os.path.join(module.path, "pyext", "src", "__init__.py"),
