@@ -11,8 +11,9 @@ from optparse import OptionParser
 def build_init(module, source, infname, outfname):
     version = tools.get_module_version(module.name, source)
     with open(outfname, 'w') as outf:
-        with open(infname) as inf:
-            shutil.copyfileobj(inf, outf)
+        if os.path.exists(infname):
+            with open(infname) as inf:
+                shutil.copyfileobj(inf, outf)
 
         # Add standard module functions
         outf.write("""

@@ -226,6 +226,12 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
                                  % tools.to_cmake_path(local)
     else:
         values["custom_build"] = ""
+    ininit = os.path.join(module.path, "pyext", "src", "__init__.py")
+    if os.path.exists(ininit):
+        values["ininit"] = ("${CMAKE_SOURCE_DIR}/%s"
+                            % tools.to_cmake_path(ininit))
+    else:
+        values["ininit"] = ""
 
     main = os.path.join(module.path, "src", "CMakeLists.txt")
     tests = os.path.join(module.path, "test", "CMakeLists.txt")

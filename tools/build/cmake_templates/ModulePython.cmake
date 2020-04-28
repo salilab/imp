@@ -5,7 +5,7 @@ add_custom_command(OUTPUT ${outinit}
             "%(tools_dir)sbuild/make_python_init.py"
             --source=${CMAKE_SOURCE_DIR}
             "%(name)s"
-   DEPENDS ${IMP_%(name)s_PYTHON_EXTRA_DEPENDENCIES} IMP-version
+   DEPENDS ${IMP_%(name)s_PYTHON_EXTRA_DEPENDENCIES} %(ininit)s IMP-version
    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
    COMMENT "Building __init__.py for %(name)s")
 
