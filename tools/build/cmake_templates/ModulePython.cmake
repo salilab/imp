@@ -7,7 +7,7 @@ add_custom_command(OUTPUT ${wrap_py}
             "%(tools_dir)sbuild/make_python_init.py"
             --source=${CMAKE_SOURCE_DIR}
             "%(name)s"
-   DEPENDS ${swigdeps} ${IMP_%(name)s_PYTHON_EXTRA_DEPENDENCIES}
+   DEPENDS ${swigdeps} ${IMP_%(name)s_PYTHON_EXTRA_DEPENDENCIES} IMP-version
    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
    COMMENT "Building __init__.py for %(name)s")
 
