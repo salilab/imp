@@ -28,10 +28,12 @@ def get_module_name():
 
 def get_data_path(fname):
     '''Return the full path to one of this module's data files'''
+    import IMP
     return IMP._get_module_data_path("%s", fname)
 
 def get_example_path(fname):
     '''Return the full path to one of this module's example files'''
+    import IMP
     return IMP._get_module_example_path("%s", fname)
 """ % (version, module.name, module.name, module.name))
 
