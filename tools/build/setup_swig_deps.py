@@ -78,7 +78,8 @@ def main():
                              module_name=options.module_name)
     pool = tools.thread_pool.ThreadPool()
     for m in [x for x in mf.values()
-              if not isinstance(x, tools.ExternalModule) and x.ok]:
+              if not isinstance(x, tools.ExternalModule) and x.ok
+              and not x.python_only]:
         pool.add_task(setup_one, mf, m, options.build_system, options.swig,
                       options.build_dir, options.include)
     err = pool.wait_completion()
