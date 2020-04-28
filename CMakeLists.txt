@@ -480,24 +480,24 @@ foreach(mod ${enabled_modules})
   if (NOT TARGET "IMP.${mod}-lib")
     file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
          "set(IMP_${mod}_LIBRARY \"\")\n")
-    continue()
-  endif()
-  get_target_property(modver "IMP.${mod}-lib" VERSION)
-  if (APPLE)
-    file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
-         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
-    file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
-         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
-  elseif (WIN32)
-    file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
-         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/imp_${mod}.dll\" )\n")
-    file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
-         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/imp_${mod}.dll\" )\n")
   else()
-    file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
-         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.so.${modver}\" )\n")
-    file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
-         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.so.${modver}\" )\n")
+    get_target_property(modver "IMP.${mod}-lib" VERSION)
+    if (APPLE)
+      file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+           "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
+      file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
+           "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
+    elseif (WIN32)
+      file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+           "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/imp_${mod}.dll\" )\n")
+      file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
+           "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/imp_${mod}.dll\" )\n")
+    else()
+      file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+          "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.so.${modver}\" )\n")
+      file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
+           "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.so.${modver}\" )\n")
+    endif()
   endif()
 endforeach()
 
