@@ -22,17 +22,6 @@
 #include <log4cxx/logger.h>
 #endif
 
-#ifndef IMP_DOXYGEN
-#define IMP_LOG_USING        \
-  using IMP::VERBOSE;  \
-  using IMP::TERSE;    \
-  using IMP::SILENT;   \
-  using IMP::WARNING;  \
-  using IMP::PROGRESS; \
-  using IMP::MEMORY
-
-#endif
-
 #if !defined(IMP_HAS_LOG)
 #error "IMP_HAS_LOG is not defined, compilation is broken"
 #endif
@@ -113,23 +102,22 @@
 
 #define IMP_LOG(level, expr)                                                  \
   {                                                                           \
-    IMP_LOG_USING;                                                            \
     switch (level) {                                                          \
-      case SILENT:                                                            \
+      case IMP::SILENT:                                                       \
         break;                                                                \
-      case PROGRESS:                                                          \
+      case IMP::PROGRESS:                                                     \
         IMP_LOG_PROGRESS(expr);                                               \
         break;                                                                \
-      case TERSE:                                                             \
+      case IMP::TERSE:                                                        \
         IMP_LOG_TERSE(expr);                                                  \
         break;                                                                \
-      case WARNING:                                                           \
+      case IMP::WARNING:                                                      \
         IMP_WARN(expr);                                                       \
         break;                                                                \
-      case VERBOSE:                                                           \
+      case IMP::VERBOSE:                                                      \
         IMP_LOG_VERBOSE(expr);                                                \
         break;                                                                \
-      case MEMORY:                                                            \
+      case IMP::MEMORY:                                                       \
         IMP_LOG_MEMORY(expr);                                                 \
         break;                                                                \
       case IMP::DEFAULT:                                                \
@@ -209,7 +197,6 @@
 
 #if IMP_HAS_LOG > IMP_SILENT
 #define IMP_IF_LOG(level) \
-  IMP_LOG_USING;          \
   if (level <= ::IMP::get_log_level())
 #define IMP_LOG_PROGRESS(expr)                             \
   if (IMP::get_log_level() >= IMP::PROGRESS) { \
