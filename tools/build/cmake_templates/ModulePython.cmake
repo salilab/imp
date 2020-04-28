@@ -11,7 +11,7 @@ add_custom_command(OUTPUT ${wrap_py}
    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
    COMMENT "Building __init__.py for %(name)s")
 
-add_custom_target(IMP.%(name)s-python DEPENDS ${wrap_py})
+add_custom_target(IMP.%(name)s-python ALL DEPENDS ${wrap_py})
 
 set(IMP_%(name)s_PYTHON IMP.%(name)s-python ${wrap_py} %(other_pythons)s
                    CACHE INTERNAL "" FORCE)
