@@ -1,13 +1,13 @@
 usr/lib/*/libTAU.so.*
 usr/lib/*/libimp_kernel.so.*
-usr/lib/*/libimp_@NON_MPI_MODULES@*.so.*
+usr/lib/*/libimp_@NON_MPI_CPP_MODULES@*.so.*
 usr/lib/*/libRMF*.so
 usr/lib/python3*/dist-packages/RMF*
 usr/lib/python3*/dist-packages/_RMF*
 usr/lib/python3*/dist-packages/IMP/_*.py
 usr/lib/python3*/dist-packages/IMP/@NON_MPI_MODULES@
 usr/lib/python3*/dist-packages/_IMP_kernel.so
-usr/lib/python3*/dist-packages/_IMP_@NON_MPI_MODULES@.so
+usr/lib/python3*/dist-packages/_IMP_@NON_MPI_CPP_MODULES@.so
 usr/lib/python3*/dist-packages/ihm*
 usr/bin/@NON_MPI_BINARIES@
 usr/share/doc/imp/*
