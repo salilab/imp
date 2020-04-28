@@ -362,7 +362,7 @@ endif()
 
 foreach(mod ${enabled_modules})
   add_custom_target(IMP.${mod} DEPENDS
-  IMP.${mod}-lib
+  ${IMP_${mod}_LIBRARY}
   ${IMP_${mod}_BINS}
   ${IMP_${mod}_UTILS}
   ${IMP_${mod}_TESTS}
@@ -476,6 +476,12 @@ file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
 file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(RMF_LIBRARIES \"\${IMP_LIB_DIR}/libRMF${CMAKE_SHARED_LIBRARY_SUFFIX}\" )\n")
 foreach(mod ${enabled_modules})
+  # No library for python-only modules
+  if (NOT TARGET "IMP.${mod}-lib")
+    file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+         "set(IMP_${mod}_LIBRARY \"\")\n")
+    continue()
+  endif()
   get_target_property(modver "IMP.${mod}-lib" VERSION)
   if (APPLE)
     file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake

@@ -17,3 +17,6 @@ set(IMP_%(name)s_PYTHON IMP.%(name)s-python ${wrap_py} %(other_pythons)s
                    CACHE INTERNAL "" FORCE)
 
 INSTALL(FILES ${wrap_py} DESTINATION ${CMAKE_INSTALL_PYTHONDIR}/%(subdir)s)
+
+# No C++ library target
+set(IMP_%(name)s_LIBRARY "" CACHE INTERNAL "" FORCE)
