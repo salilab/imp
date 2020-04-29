@@ -83,7 +83,7 @@ def log_evaluate(restraints):
 
 class Tests(IMP.test.TestCase):
 
-    def setup_crosslinks_complex(self,representation=None,mode=None,root_hier=None):
+    def setup_crosslinks_complex(self, root_hier, mode=None):
         cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
         cldbkc.set_protein1_key("pep1.accession")
         cldbkc.set_protein2_key("pep2.accession")
@@ -92,24 +92,13 @@ class Tests(IMP.test.TestCase):
         cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
         cldb.create_set_from_file(IMP.pmi.get_data_path("polii_xlinks.csv"))
 
-        if representation is not None:
-            xl = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
-                representation,
-                CrossLinkDataBase=cldb,
-                length=21.0,
-                slope=0.0,
-                resolution=1.0,
-                label="XL")
-        elif root_hier is not None:
-            xl = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
-                root_hier=root_hier,
-                CrossLinkDataBase=cldb,
-                length=21.0,
-                slope=0.0,
-                resolution=1.0,
-                label="XL")
-        else:
-            raise Exception("Oops - pass root_hier or representation")
+        xl = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
+            root_hier=root_hier,
+            database=cldb,
+            length=21.0,
+            slope=0.0,
+            resolution=1.0,
+            label="XL")
         xl.add_to_model()
         psi=xl.psi_dictionary["PSI"][0]
         psi.set_scale(0.05)
@@ -117,8 +106,7 @@ class Tests(IMP.test.TestCase):
         sigma.set_scale(10.0)
         return xl,cldb
 
-    def setup_crosslinks_beads(self,representation=None,mode=None,root_hier=None):
-
+    def setup_crosslinks_beads(self, root_hier, mode=None):
         cldbkc=IMP.pmi.io.crosslink.CrossLinkDataBaseKeywordsConverter()
         cldbkc.set_unique_id_key("Unique ID")
         cldbkc.set_protein1_key("Protein 1")
@@ -129,24 +117,13 @@ class Tests(IMP.test.TestCase):
         cldb=IMP.pmi.io.crosslink.CrossLinkDataBase(cldbkc)
         cldb.create_set_from_file(self.get_input_file_name("expensive_test_new_cross_link_ms_restraint.csv"))
 
-        if representation is not None:
-            xl = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
-                representation,
-                CrossLinkDataBase=cldb,
-                length=21,
-                label="XL",
-                resolution=1,
-                slope=0.01)
-        elif root_hier is not None:
-            xl = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
-                root_hier=root_hier,
-                CrossLinkDataBase=cldb,
-                length=21,
-                label="XL",
-                resolution=1,
-                slope=0.01)
-        else:
-            raise Exception("Oops - pass root_hier or representation")
+        xl = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
+            root_hier=root_hier,
+            database=cldb,
+            length=21,
+            label="XL",
+            resolution=1,
+            slope=0.01)
 
         return xl,cldb
 

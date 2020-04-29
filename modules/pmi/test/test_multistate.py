@@ -82,7 +82,7 @@ class Tests(IMP.test.TestCase):
         cldb.create_set_from_file(self.get_input_file_name('multistate.csv'))
 
         xl = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
-            root_hier=hier, CrossLinkDataBase=cldb, length=length, slope=slope,
+            root_hier=hier, database=cldb, length=length, slope=slope,
             resolution=1.0)
 
         psi = xl.psi_dictionary['PSI'][0]

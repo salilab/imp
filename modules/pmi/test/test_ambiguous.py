@@ -46,7 +46,8 @@ class Tests(IMP.test.TestCase):
         cldb.create_set_from_file(tname)
         self.assertEqual(cldb.get_number_of_xlid(), 1)
 
-        xl = \
+        with IMP.allow_deprecated():
+            xl = \
           IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
                 root_hier=hier, CrossLinkDataBase=cldb,
                 length=21.0, slope=0.0, resolution=1.0)

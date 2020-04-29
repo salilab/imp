@@ -47,8 +47,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
     """
     _include_in_rmf = True
 
-    def __init__(self, root_hier,
-                 CrossLinkDataBase=None,
+    def __init__(self, root_hier, database=None,
                  length=10.0,
                  resolution=None,
                  slope=0.02,
@@ -56,10 +55,11 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                  filelabel="None",
                  attributes_for_label=None,
                  linker=None,
+                 CrossLinkDataBase=None,
                  weight=1.):
         """Constructor.
         @param root_hier The canonical hierarchy containing all the states
-        @param CrossLinkDataBase The IMP.pmi.io.crosslink.CrossLinkDataBase
+        @param database The IMP.pmi.io.crosslink.CrossLinkDataBase
                 object that contains the cross-link dataset
         @param length maximal cross-linker length (including the residue sidechains)
         @param resolution what representation resolution should the cross-link
@@ -86,11 +86,18 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
             model, weight=weight, label=label,
             restraint_set_class=_DataRestraintSet)
 
-        if CrossLinkDataBase is None:
-            raise Exception("You must pass a CrossLinkDataBase")
-        if not isinstance(CrossLinkDataBase,IMP.pmi.io.crosslink.CrossLinkDataBase):
-            raise TypeError("CrossLinkingMassSpectrometryRestraint: CrossLinkDataBase should be an IMP.pmi.io.crosslink.CrossLinkDataBase object")
-        self.CrossLinkDataBase = CrossLinkDataBase
+        if database is None and CrossLinkDataBase is not None:
+            IMP.handle_use_deprecated(
+                    "CrossLinkDataBase is deprecated; use 'database' instead")
+            database = CrossLinkDataBase
+
+        if database is None:
+            raise Exception("You must pass a database")
+        if not isinstance(database, IMP.pmi.io.crosslink.CrossLinkDataBase):
+            raise TypeError(
+                    "CrossLinkingMassSpectrometryRestraint: database should "
+                    "be an IMP.pmi.io.crosslink.CrossLinkDataBase object")
+        self.database = database
 
         if resolution==0 or resolution is None:
             raise Exception("You must pass a resolution and it can't be zero")
@@ -105,7 +112,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         self.rssig = self._create_restraint_set("PriorSig")
         self.rslin = self._create_restraint_set("Linear")
         # Add custom metadata (will be saved in RMF output)
-        self.rs.filename = self.CrossLinkDataBase.name
+        self.rs.filename = self.database.name
         self.rs.length = length
         self.rs.slope = slope
         self.rs.linker = linker
@@ -131,12 +138,12 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         # first add all the molecule copies as clones to the database
         copies_to_add = defaultdict(int)
         print('gathering copies')
-        for xlid in self.CrossLinkDataBase.xlid_iterator():
-            for xl in self.CrossLinkDataBase[xlid]:
-                r1 = xl[self.CrossLinkDataBase.residue1_key]
-                c1 = xl[self.CrossLinkDataBase.protein1_key]
-                r2 = xl[self.CrossLinkDataBase.residue2_key]
-                c2 = xl[self.CrossLinkDataBase.protein2_key]
+        for xlid in self.database.xlid_iterator():
+            for xl in self.database[xlid]:
+                r1 = xl[self.database.residue1_key]
+                c1 = xl[self.database.protein1_key]
+                r2 = xl[self.database.residue2_key]
+                c2 = xl[self.database.protein2_key]
                 for c,r in ((c1,r1),(c2,r2)):
                     if c in copies_to_add:
                         continue
@@ -151,22 +158,27 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         for molname in copies_to_add:
             if copies_to_add[molname]==0:
                 continue
-            fo1 = IMP.pmi.io.crosslink.FilterOperator(self.CrossLinkDataBase.protein1_key,operator.eq,molname)
-            self.CrossLinkDataBase.set_value(self.CrossLinkDataBase.protein1_key,molname+'.0',fo1)
-            fo2 = IMP.pmi.io.crosslink.FilterOperator(self.CrossLinkDataBase.protein2_key,operator.eq,molname)
-            self.CrossLinkDataBase.set_value(self.CrossLinkDataBase.protein2_key,molname+'.0',fo2)
+            fo1 = IMP.pmi.io.crosslink.FilterOperator(
+                    self.database.protein1_key, operator.eq, molname)
+            self.database.set_value(self.database.protein1_key,
+                                    molname + '.0', fo1)
+            fo2 = IMP.pmi.io.crosslink.FilterOperator(
+                    self.database.protein2_key, operator.eq, molname)
+            self.database.set_value(self.database.protein2_key,
+                                    molname + '.0', fo2)
             for ncopy in range(copies_to_add[molname]):
-                self.CrossLinkDataBase.clone_protein('%s.0'%molname,'%s.%i'%(molname,ncopy+1))
+                self.database.clone_protein('%s.0' % molname,
+                                            '%s.%i' % (molname, ncopy + 1))
         print('done pmi2 prelims')
 
-        for xlid in self.CrossLinkDataBase.xlid_iterator():
+        for xlid in self.database.xlid_iterator():
             new_contribution=True
-            for xl in self.CrossLinkDataBase[xlid]:
+            for xl in self.database[xlid]:
 
-                r1 = xl[self.CrossLinkDataBase.residue1_key]
-                c1 = xl[self.CrossLinkDataBase.protein1_key]
-                r2 = xl[self.CrossLinkDataBase.residue2_key]
-                c2 = xl[self.CrossLinkDataBase.protein2_key]
+                r1 = xl[self.database.residue1_key]
+                c1 = xl[self.database.protein1_key]
+                r2 = xl[self.database.residue2_key]
+                c2 = xl[self.database.protein2_key]
 
                 name1 = c1
                 name2 = c2
@@ -189,8 +201,8 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                                                           IMP.atom.STATE_TYPE)))
                 for nstate, r in enumerate(iterlist):
                     # loop over every state
-                    xl[self.CrossLinkDataBase.state_key]=nstate
-                    xl[self.CrossLinkDataBase.data_set_name_key]=self.label
+                    xl[self.database.state_key] = nstate
+                    xl[self.database.data_set_name_key] = self.label
 
                     ps1 = IMP.atom.Selection(root_hier,
                                              state_index=nstate,
@@ -248,25 +260,25 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                         restraints.append(dr)
 
 
-                    if self.CrossLinkDataBase.sigma1_key not in xl.keys():
+                    if self.database.sigma1_key not in xl.keys():
                         sigma1name="SIGMA"
-                        xl[self.CrossLinkDataBase.sigma1_key]=sigma1name
+                        xl[self.database.sigma1_key] = sigma1name
                     else:
-                        sigma1name=xl[self.CrossLinkDataBase.sigma1_key]
+                        sigma1name = xl[self.database.sigma1_key]
                     sigma1=self.create_sigma(sigma1name)
 
-                    if self.CrossLinkDataBase.sigma2_key not in xl.keys():
+                    if self.database.sigma2_key not in xl.keys():
                         sigma2name="SIGMA"
-                        xl[self.CrossLinkDataBase.sigma2_key]=sigma2name
+                        xl[self.database.sigma2_key] = sigma2name
                     else:
-                        sigma2name=xl[self.CrossLinkDataBase.sigma2_key]
+                        sigma2name = xl[self.database.sigma2_key]
                     sigma2=self.create_sigma(sigma2name)
 
-                    if self.CrossLinkDataBase.psi_key not in xl.keys():
+                    if self.database.psi_key not in xl.keys():
                         psiname="PSI"
-                        xl[self.CrossLinkDataBase.psi_key]=psiname
+                        xl[self.database.psi_key] = psiname
                     else:
-                        psiname=xl[self.CrossLinkDataBase.psi_key]
+                        psiname = xl[self.database.psi_key]
 
                     psi=self.create_psi(psiname)
 
@@ -306,7 +318,7 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                     else:
                         xl["IntraRigidBody"]=False
 
-                    xl_label=self.CrossLinkDataBase.get_short_cross_link_string(xl)
+                    xl_label = self.database.get_short_cross_link_string(xl)
                     xl["ShortLabel"]=xl_label
                     dr.set_name(xl_label)
 
@@ -326,9 +338,8 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         self.rs.add_restraint(lw)
 
     def __set_dataset(self, ds):
-        self.CrossLinkDataBase.dataset = ds
-    dataset = property(lambda self: self.CrossLinkDataBase.dataset,
-                       __set_dataset)
+        self.database.dataset = ds
+    dataset = property(lambda self: self.database.dataset, __set_dataset)
 
     def get_hierarchies(self):
         """ get the hierarchy """
