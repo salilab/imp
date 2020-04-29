@@ -267,8 +267,8 @@ def setup_module(module, finder):
     return True, all_modules
 
 
-def link_py_apps(options):
-    path = os.path.join(options.source, "modules", options.name, "bin")
+def link_py_apps(module):
+    path = os.path.join(module.path, "bin")
     tools.mkdir("bin", clean=False)
     bins = [b for b in glob.glob(os.path.join(path, '*'))
             if tools.filter_pyapps(b)]
@@ -283,21 +283,20 @@ with open(fname) as fh:
         tools.rewrite(dest_bin, contents, verbose=False)
         os.chmod(dest_bin, 493) # 493 = 0755, i.e. executable
 
-def link_bin(options):
+def link_bin(options, module):
     path = os.path.join("module_bin", options.name)
     tools.mkdir(path, clean=False)
     for old in tools.get_glob([os.path.join(path, "*.py")]):
         os.unlink(old)
-    tools.link_dir(os.path.join(options.source, "modules", options.name, "bin"),
+    tools.link_dir(os.path.join(module.path, "bin"),
                    path, clean=False, match=["*.py"])
 
-def link_benchmark(options):
+def link_benchmark(options, module):
     path = os.path.join("benchmark", options.name)
     tools.mkdir(path, clean=False)
     for old in tools.get_glob([os.path.join(path, "*.py")]):
         os.unlink(old)
-    tools.link_dir(os.path.join(options.source, "modules", options.name,
-                                "benchmark"),
+    tools.link_dir(os.path.join(module.path, "benchmark"),
                    path, clean=False, match=["*.py"])
 
 def find_cmdline_links(mod, docdir, cmdline_tools):
@@ -409,9 +408,9 @@ def main():
         make_header(options, module)
         make_doxygen(options, module, modules, mf)
         make_overview(module, apps)
-        link_bin(options)
-        link_py_apps(options)
-        link_benchmark(options)
+        link_bin(options, module)
+        link_py_apps(module)
+        link_benchmark(options, module)
         sys.exit(0)
     else:
         tools.rmdir(os.path.join("module_bin", options.name))
