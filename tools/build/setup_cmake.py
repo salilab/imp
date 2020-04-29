@@ -232,6 +232,10 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
                             % tools.to_cmake_path(ininit))
     else:
         values["ininit"] = ""
+    if finder.external_dir:
+        values["build_dir"] = "--build_dir=%s " % finder.external_dir
+    else:
+        values["build_dir"] = ""
 
     main = os.path.join(module.path, "src", "CMakeLists.txt")
     tests = os.path.join(module.path, "test", "CMakeLists.txt")
@@ -252,10 +256,6 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
     examples_template.write(examples, values)
     values["tests"] = "\n".join(contents)
     topdir = '/' + tools.to_cmake_path(module.path) if module.path else ''
-    if finder.external_dir:
-        values["build_dir"] = "--build_dir=%s " % finder.external_dir
-    else:
-        values["build_dir"] = ""
     values["disabled_status"] = "FATAL_ERROR" if required else "STATUS"
     subdirs = ['test', 'examples', 'benchmark', 'bin', 'utility']
     if not module.python_only:
