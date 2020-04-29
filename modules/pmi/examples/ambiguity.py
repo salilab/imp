@@ -87,7 +87,7 @@ os.remove(tf.name)
 # 3) Add the restraint
 xlr = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
     root_hier=root_hier,
-    CrossLinkDataBase=xldb,
+    database=xldb,
     length=21,
     label="XL",
     resolution=1,
