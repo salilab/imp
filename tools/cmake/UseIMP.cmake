@@ -188,6 +188,7 @@ function(imp_build_module sourcedir)
                       COMMAND ${PYTHON_EXECUTABLE}
                       ${IMP_TOOLS_DIR}/build/setup_imppy.py
                       "--python_pathsep=${PYTHON_PATH_SEP}"
+                      "--path=${IMP_BIN_DIR}"
                       "--external_data=${IMP_DATA_DIR}"
                       "--precommand="
                       "--propagate=yes"
