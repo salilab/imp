@@ -11,3 +11,7 @@
 [submodule "modules/bayesianem"]
 	path = modules/bayesianem
 	url = https://gitlab.pasteur.fr/rpellari/bayesianem.git
+[submodule "modules/sampcon"]
+	path = modules/sampcon
+	url = https://github.com/salilab/imp-sampcon.git
+	branch = imp_module

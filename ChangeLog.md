@@ -4,6 +4,10 @@ ChangeLog {#changelog}
   package if you want to use Python 2) and support MPI (install the
   imp-openmpi package if you want to use the IMP::mpi or IMP::spb modules).
 - A binary package is now provided for Ubuntu 20.04 LTS, Focal Fossa.
+- The new IMP::sampcon module implements the protocol described in
+  [Viswanath et al, 2017](https://www.ncbi.nlm.nih.gov/pubmed/29211988). 
+  This can be used in analysis to estimate the highest precision at which
+  the sampling is exhaustive. 
 - RMF files, particularly those output by IMP::pmi, now contain more information
   on the restraints used, such as restraint parameters, and links to
   non-Cartesian particles containing restraint information, such as Gaussians
