@@ -21,16 +21,18 @@ if(${status} EQUAL 0)
   # for warning control
   add_definitions(-DIMP%(NAME)s_COMPILATION)
 
-  set(allh_command  "${PYTHON_EXECUTABLE}" "%(tools_dir)sdev_tools/make_all_header.py" "${CMAKE_BINARY_DIR}/include/%(allh_header)s" "%(subdir)s" "${PROJECT_SOURCE_DIR}/include/" ${IMP_%(name)s_EXTRA_HEADERS})
-  # for swig
-  imp_execute_process("IMP.%(name)s making all header" ${PROJECT_BINARY_DIR}
-                   COMMAND ${allh_command})
+  if(%(python_only)d EQUAL 0)
+    set(allh_command  "${PYTHON_EXECUTABLE}" "%(tools_dir)sdev_tools/make_all_header.py" "${CMAKE_BINARY_DIR}/include/%(allh_header)s" "%(subdir)s" "${PROJECT_SOURCE_DIR}/include/" ${IMP_%(name)s_EXTRA_HEADERS})
+    # for swig
+    imp_execute_process("IMP.%(name)s making all header" ${PROJECT_BINARY_DIR}
+                        COMMAND ${allh_command})
 
-  add_custom_target(IMP.%(name)s-all-header
-    COMMAND ${allh_command}
-    DEPENDS "%(tools_dir)sdev_tools/make_all_header.py")
-  set_property(TARGET "IMP.%(name)s-all-header" PROPERTY FOLDER "IMP.%(name)s")
-  list(APPEND IMP_%(name)s_LIBRARY_EXTRA_DEPENDENCIES IMP.%(name)s-all-header)
+    add_custom_target(IMP.%(name)s-all-header
+      COMMAND ${allh_command}
+      DEPENDS "%(tools_dir)sdev_tools/make_all_header.py")
+    set_property(TARGET "IMP.%(name)s-all-header" PROPERTY FOLDER "IMP.%(name)s")
+    list(APPEND IMP_%(name)s_LIBRARY_EXTRA_DEPENDENCIES IMP.%(name)s-all-header)
+  endif()
 
   %(custom_build)s
   if(IMP_DOXYGEN_FOUND)

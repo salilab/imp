@@ -88,7 +88,8 @@ SWIG_init();
     all_deps = [x for x in finder.get_dependent_modules([module])
                 if x != module]
     for m in reversed(all_deps):
-        write_module_cpp(m, contents)
+        if not m.python_only:
+            write_module_cpp(m, contents)
 
     write_module_cpp(module, contents)
     contents.append("""
@@ -114,7 +115,8 @@ _plural_types=[]
 """)
 
     for m in reversed(all_deps):
-        write_module_swig(m, contents, skip_import=m.python_only)
+        if not m.python_only:
+            write_module_swig(m, contents)
 
     write_module_swig(module, contents, True)
 

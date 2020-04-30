@@ -42,6 +42,8 @@ def add_list_to_defines(cppdefines, data, sym, val, names):
 
 
 def make_header(options, module):
+    if module.python_only:
+        return
     if module.name == 'kernel':
         dir = os.path.join("include", "IMP")
     else:
