@@ -299,9 +299,12 @@ mkdir build && cd build
 %if 0%{?with_mpich}
 module load %{mpiprefix}mpich-%{_arch}
 %endif
-%if 0%{?fedora} >= 29
+%if 0%{?fedora} >= 29 && 0%{?fedora} < 32
 # Help cmake to find CGAL
 export CGAL_DIR=%{_libdir}/cmake/CGAL
+%endif
+%if 0%{?fedora} >= 32
+export CGAL_DIR=/usr/share/CGAL/cmake
 %endif
 cmake ../imp -DCMAKE_BUILD_TYPE=Release \
              -DCMAKE_INSTALL_PREFIX=%{_prefix} \
