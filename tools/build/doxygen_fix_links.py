@@ -23,6 +23,7 @@ r1 = re.compile("""<a [^>]*href="(namespacelink|
                                   namespacecustom__hierarchy|
                                   namespacesetup|
                                   namespacelog|
+                                  namespacestd|
                                   namespaceBallMover)
                    \.html">([^<]*)</a>""", re.VERBOSE)
 r2 = re.compile("!\[([^]]+)\]\(([^)]+)\)", re.VERBOSE)
