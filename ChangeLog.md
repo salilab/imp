@@ -1,5 +1,7 @@
 ChangeLog {#changelog}
 =========
+
+# 2.13.0 - 2020-05-14 # {#changelog_2_13_0}
 - Ubuntu .deb packages now use Python 3 by default (install the imp-python2
   package if you want to use Python 2) and support MPI (install the
   imp-openmpi package if you want to use the IMP::mpi or IMP::spb modules).
