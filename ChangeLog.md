@@ -24,10 +24,11 @@ ChangeLog {#changelog}
   is now ignored (and deprecated). All cross-link restraints are now
   automatically added to RMF files.
 - The `CrossLinkDataBase` argument to
-  IMP.pmi.restraints.CrossLinkingMassSpectrometryRestraint is deprecated.
-  Use `database` instead.
-- IMP.pmi.restraints.CrossLinkingMassSpectrometryRestraint now takes a
-  `linker` argument which can be used to specify the chemistry of the linker.
+  IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint
+  is deprecated.  Use `database` instead.
+- IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint now
+  takes a `linker` argument which can be used to specify the chemistry of
+  the linker.
 - IMP.pmi.output.Output now supports output of pseudo-atomic PDBs in mmCIF
   format. This can be useful for quick visualization of output models that
   contain a large number of chains in software that does not understand
