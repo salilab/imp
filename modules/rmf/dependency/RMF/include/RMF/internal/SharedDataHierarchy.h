@@ -87,22 +87,24 @@ class SharedDataHierarchy {
         parent != NodeID() && parent != NodeID(-1, NodeID::SpecialTag()),
         "Bad parent");
     hierarchy_.resize(
-        std::max<std::size_t>(hierarchy_.size(), parent.get_index()));
+        std::max<std::size_t>(hierarchy_.size(), parent.get_index() + 1));
     hierarchy_.resize(
-        std::max<std::size_t>(hierarchy_.size(), child.get_index()));
+        std::max<std::size_t>(hierarchy_.size(), child.get_index() + 1));
     hierarchy_[parent.get_index()].children.push_back(child);
     hierarchy_[child.get_index()].parents.push_back(parent);
     dirty_ = true;
   }
 
   NodeID replace_child(NodeID id, NodeID child, std::string name, NodeType t) {
+    hierarchy_.resize(
+        std::max<std::size_t>(hierarchy_.size(), id.get_index() + 1));
     size_t child_ind, parent_ind;
     child_ind = find_id(hierarchy_[id.get_index()].children, child);
     parent_ind = find_id(hierarchy_[child.get_index()].parents, id);
 
     NodeID newchild = add_node(name, t);
     hierarchy_.resize(
-        std::max<std::size_t>(hierarchy_.size(), newchild.get_index()));
+        std::max<std::size_t>(hierarchy_.size(), newchild.get_index() + 1));
 
     hierarchy_[newchild.get_index()].children.push_back(child);
     hierarchy_[newchild.get_index()].parents.push_back(id);

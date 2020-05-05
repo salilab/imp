@@ -57,7 +57,9 @@ void clone_hierarchy(SDA* sda, SDB* sdb) {
                      "No root node found.");
   RMF_INTERNAL_CHECK(boost::distance(get_nodes(sdb)) >= 1,
                      "No root node found.");
-  RMF_LARGE_UNORDERED_MAP<NodeID, NodeID> parents;
+  RMF_LARGE_UNORDERED_MAP<NodeID, NodeID> parents, deferred_parents;
+  typedef RMF_LARGE_UNORDERED_MAP<NodeID, NodeID>::value_type NodeIDMapValue;
+
   RMF_FOREACH(NodeID na, get_nodes(sda)) {
     NodeIDs children = sda->get_children(na);
     RMF_FOREACH(NodeID c, children) {
@@ -80,16 +82,30 @@ void clone_hierarchy(SDA* sda, SDB* sdb) {
   RMF_FOREACH(NodeID na, get_nodes(sda)) {
     if (existing.find(na) != existing.end()) continue;
     if (parents.find(na) != parents.end()) {
-      NodeID nid = sdb->add_child(parents.find(na)->second, sda->get_name(na),
-                                  sda->get_type(na));
-      RMF_UNUSED(nid);
-      RMF_INTERNAL_CHECK(nid == na, "Don't match");
+      NodeID parent = parents.find(na)->second;
+      if (parent.get_index() > na.get_index()) {
+        /* If this node refers to a parent which doesn't exist yet, remember
+           the relationship and add it later */
+        deferred_parents[na] = parent;
+        NodeID nid = sdb->add_node(sda->get_name(na), sda->get_type(na));
+        RMF_UNUSED(nid);
+        RMF_INTERNAL_CHECK(nid == na, "Don't match");
+      } else {
+        NodeID nid = sdb->add_child(parent, sda->get_name(na),
+                                    sda->get_type(na));
+        RMF_UNUSED(nid);
+        RMF_INTERNAL_CHECK(nid == na, "Don't match");
+      }
     } else {
       NodeID nid = sdb->add_node(sda->get_name(na), sda->get_type(na));
       RMF_UNUSED(nid);
       RMF_INTERNAL_CHECK(nid == na, "Don't match");
     }
   }
+  RMF_FOREACH(NodeIDMapValue v, deferred_parents) {
+    sdb->add_child(v.second, v.first);
+  }
+
   RMF_FOREACH(NodeID na, get_nodes(sda)) {
     NodeIDs children = sda->get_children(na);
     RMF_FOREACH(NodeID c, children) {
