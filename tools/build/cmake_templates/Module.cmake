@@ -21,16 +21,18 @@ if(${status} EQUAL 0)
   # for warning control
   add_definitions(-DIMP%(NAME)s_COMPILATION)
 
-  set(allh_command  "${PYTHON_EXECUTABLE}" "%(tools_dir)sdev_tools/make_all_header.py" "${CMAKE_BINARY_DIR}/include/%(allh_header)s" "%(subdir)s" "${PROJECT_SOURCE_DIR}/include/" ${IMP_%(name)s_EXTRA_HEADERS})
-  # for swig
-  imp_execute_process("IMP.%(name)s making all header" ${PROJECT_BINARY_DIR}
-                   COMMAND ${allh_command})
+  if(%(python_only)d EQUAL 0)
+    set(allh_command  "${PYTHON_EXECUTABLE}" "%(tools_dir)sdev_tools/make_all_header.py" "${CMAKE_BINARY_DIR}/include/%(allh_header)s" "%(subdir)s" "${PROJECT_SOURCE_DIR}/include/" ${IMP_%(name)s_EXTRA_HEADERS})
+    # for swig
+    imp_execute_process("IMP.%(name)s making all header" ${PROJECT_BINARY_DIR}
+                        COMMAND ${allh_command})
 
-  add_custom_target(IMP.%(name)s-all-header
-    COMMAND ${allh_command}
-    DEPENDS "%(tools_dir)sdev_tools/make_all_header.py")
-  set_property(TARGET "IMP.%(name)s-all-header" PROPERTY FOLDER "IMP.%(name)s")
-  list(APPEND IMP_%(name)s_LIBRARY_EXTRA_DEPENDENCIES IMP.%(name)s-all-header)
+    add_custom_target(IMP.%(name)s-all-header
+      COMMAND ${allh_command}
+      DEPENDS "%(tools_dir)sdev_tools/make_all_header.py")
+    set_property(TARGET "IMP.%(name)s-all-header" PROPERTY FOLDER "IMP.%(name)s")
+    list(APPEND IMP_%(name)s_LIBRARY_EXTRA_DEPENDENCIES IMP.%(name)s-all-header)
+  endif()
 
   %(custom_build)s
   if(IMP_DOXYGEN_FOUND)
@@ -71,22 +73,28 @@ if(${status} EQUAL 0)
     set(IMP_%(name)s_DOC "" CACHE INTERNAL "" FORCE)
   endif(IMP_DOXYGEN_FOUND)
 
-  list(APPEND imp_%(name)s_libs %(modules)s)
-  list(APPEND imp_%(name)s_libs %(dependencies)s)
-  list(REMOVE_DUPLICATES imp_%(name)s_libs)
+  if(%(python_only)d EQUAL 0)
+    list(APPEND imp_%(name)s_libs %(modules)s)
+    list(APPEND imp_%(name)s_libs %(dependencies)s)
+    list(REMOVE_DUPLICATES imp_%(name)s_libs)
 
-  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/lib/%(subdir)s/_version_check.py
-                            ${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp
-    COMMAND ${PYTHON_EXECUTABLE} %(tools_dir)sbuild/make_module_version.py --name=%(name)s --datapath=${IMP_DATAPATH} --source=${CMAKE_SOURCE_DIR}
-    DEPENDS IMP-version
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/
-    COMMENT "Building module version info")
+    add_custom_command(
+	OUTPUT ${CMAKE_BINARY_DIR}/lib/%(subdir)s/_version_check.py
+               ${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp
+        COMMAND ${PYTHON_EXECUTABLE} %(tools_dir)sbuild/make_module_version.py
+	        --name=%(name)s --datapath=${IMP_DATAPATH}
+		--source=${CMAKE_SOURCE_DIR}
+        DEPENDS IMP-version
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/
+        COMMENT "Building module version info")
 
-  add_custom_target("IMP.%(name)s-version" ALL DEPENDS
-                          ${CMAKE_BINARY_DIR}/lib/%(subdir)s/_version_check.py
-                          ${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp)
-  set_property(TARGET "IMP.%(name)s-version" PROPERTY FOLDER "IMP.%(name)s")
-  install(FILES "${CMAKE_BINARY_DIR}/lib/%(subdir)s/_version_check.py" DESTINATION "${CMAKE_INSTALL_PYTHONDIR}/%(subdir)s/")
+    add_custom_target("IMP.%(name)s-version" ALL DEPENDS
+                      ${CMAKE_BINARY_DIR}/lib/%(subdir)s/_version_check.py
+                      ${CMAKE_BINARY_DIR}/src/%(name)s_config.cpp)
+    set_property(TARGET "IMP.%(name)s-version" PROPERTY FOLDER "IMP.%(name)s")
+    install(FILES "${CMAKE_BINARY_DIR}/lib/%(subdir)s/_version_check.py"
+	    DESTINATION "${CMAKE_INSTALL_PYTHONDIR}/%(subdir)s/")
+   endif()
 
   %(subdirs)s
   set(IMP_%(name)s "IMP.%(name)s" CACHE INTERNAL "" FORCE)

@@ -1,6 +1,7 @@
 from __future__ import print_function
 import unittest
 import RMF
+import utils
 
 
 class GenericTest(unittest.TestCase):
@@ -29,7 +30,7 @@ class GenericTest(unittest.TestCase):
         k1 = f.get_key(cat, "k1", RMF.float_tag)
         n0 = f.get_root_node().get_children()[0]
         n1 = f.get_root_node().get_children()[1]
-        self.assert_(not n1.get_has_value(k0))
+        self.assertFalse(n1.get_has_value(k0))
 
 if __name__ == '__main__':
     unittest.main()

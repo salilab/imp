@@ -88,6 +88,14 @@ def link_swig(modules):
 # link python source files from pyext/src into the build tree
 
 
+# Don't link __init__.py from the top-level of any module (it is generated
+# either by SWIG or by make_python_init.py)
+class _ExcludeTopLevelPythonInit(object):
+    def __init__(self, topdir):
+        self.pyinit = os.path.join(topdir, '__init__.py')
+    def __call__(self, fname):
+        return fname != self.pyinit
+
 def link_python(modules):
     target = os.path.join("lib")
     tools.mkdir(target, clean=False)
@@ -100,8 +108,9 @@ def link_python(modules):
             if os.path.split(old)[1] != "__init__.py" and os.path.split(old)[1] != "_version_check.py":
                 os.unlink(old)
                 # print "linking", path
-        tools.link_dir(os.path.join(module.path, "pyext", "src"), path,
-                       clean=False, make_subdirs=True)
+        topdir = os.path.join(module.path, "pyext", "src")
+        tools.link_dir(topdir, path, clean=False, make_subdirs=True,
+                       filt=_ExcludeTopLevelPythonInit(topdir))
 
 
 def _make_test_driver(outf, cpps):
@@ -148,10 +157,13 @@ import IMP.test
 import %(module)s
 
 spelling_exceptions=%(spelling_exceptions)s
+python_only=%(python_only)s
 
 class StandardsTest(IMP.test.TestCase):
     def test_value_objects(self):
         "Test that module classes are either values or objects"
+        if python_only:
+            self.skipTest("this module is Python-only")
         exceptions= %(value_object_exceptions)s
         return self.assertValueObjects(%(module)s,exceptions)
     def test_classes(self):
@@ -192,6 +204,8 @@ if __name__ == '__main__':
         test = template % ({'module': impmodule,
                             'plural_exceptions': str(d['plural_exceptions']),
                             'show_exceptions': str(d['show_exceptions']),
+                            'python_only': 'True' if module.python_only
+                                           else 'False',
                             'function_name_exceptions':
                                 str(d['function_name_exceptions']),
                             'value_object_exceptions':

@@ -2,7 +2,7 @@
  *  \file IMP/core/model_statistics.h
  *  \brief Write the scores of the passed restraints to a file.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_MODEL_STATISTICS_H

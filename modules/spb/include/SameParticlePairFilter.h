@@ -2,7 +2,7 @@
  *  \file IMP/spb/SameParticlePairFilter.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_SAME_PARTICLE_PAIR_FILTER_H

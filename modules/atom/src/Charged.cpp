@@ -2,7 +2,7 @@
  *  \file atom/Charged.cpp
  *  \brief A decorator for a point particle that has an electrostatic charge.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

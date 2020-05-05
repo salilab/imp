@@ -9,6 +9,7 @@ import IMP.pmi.samplers
 import IMP.pmi.output
 import IMP.pmi.analysis
 import IMP.pmi.io
+import IMP.pmi.alphabets
 import IMP.rmf
 import IMP.isd
 import IMP.pmi.dof
@@ -59,15 +60,13 @@ class ReplicaExchange0(object):
     Produces trajectory RMF files, best PDB structures,
     and output stat files.
     """
-    def __init__(self, model,
-                 representation=None,
-                 root_hier=None,
+    def __init__(self, model, root_hier,
                  sample_objects=None, # DEPRECATED
                  monte_carlo_sample_objects=None,
                  molecular_dynamics_sample_objects=None,
                  output_objects=[],
                  rmf_output_objects=None,
-                 crosslink_restraints=None,
+                 crosslink_restraints=None,  # DEPRECATED
                  monte_carlo_temperature=1.0,
                  simulated_annealing=False,
                  simulated_annealing_minimum_temperature=1.0,
@@ -101,10 +100,8 @@ class ReplicaExchange0(object):
                  replica_exchange_object=None,
                  test_mode=False):
         """Constructor.
-           @param model                    The IMP model
-           @param representation PMI.representation.Representation object
-                  (or list of them, for multi-state modeling)
-           @param root_hier Instead of passing Representation, pass the System hierarchy
+           @param model The IMP model
+           @param root_hier Top-level (System)hierarchy
            @param monte_carlo_sample_objects Objects for MC sampling; a list of
                   structural components (generally the representation) that will
                   be moved and restraints with parameters that need to
@@ -119,8 +116,6 @@ class ReplicaExchange0(object):
            @param rmf_output_objects A list of structural objects and restraints
                   that will be included in rmf. Any object
                   that provides a get_output() method can be used here.
-           @param crosslink_restraints List of cross-link restraints that will
-                  be included in output RMF files (for visualization).
            @param monte_carlo_temperature  MC temp (may need to be optimized
                   based on post-sampling analysis)
            @param simulated_annealing If True, perform simulated annealing
@@ -158,24 +153,12 @@ class ReplicaExchange0(object):
         """
         self.model = model
         self.vars = {}
-        self.pmi2 = False
 
         ### add check hierarchy is multistate
         self.output_objects = output_objects
         self.rmf_output_objects=rmf_output_objects
-        self.representation = representation
-        if representation:
-            if isinstance(representation, list):
-                self.is_multi_state = True
-                self.root_hiers = [r.prot for r in representation]
-                self.vars["number_of_states"] = len(representation)
-            else:
-                self.is_multi_state = False
-                self.root_hier = representation.prot
-                self.vars["number_of_states"] = 1
-        elif root_hier and isinstance(root_hier, IMP.atom.Hierarchy) \
-             and root_hier.get_name() == 'System':
-            self.pmi2 = True
+        if (isinstance(root_hier, IMP.atom.Hierarchy)
+                and root_hier.get_name() == 'System'):
             if self.output_objects is not None:
                 self.output_objects.append(IMP.pmi.io.TotalScoreOutput(self.model))
             if self.rmf_output_objects is not None:
@@ -190,13 +173,21 @@ class ReplicaExchange0(object):
                 self.root_hier = root_hier
                 self.is_multi_state = False
         else:
-            raise Exception("Must provide representation or System hierarchy (root_hier)")
+            raise TypeError("Must provide System hierarchy (root_hier)")
 
-        self._rmf_restraints = _RMFRestraints(model, crosslink_restraints)
+        if crosslink_restraints:
+            IMP.handle_use_deprecated(
+                    "crosslink_restraints is deprecated and is ignored; "
+                    "all cross-link restraints should be automatically "
+                    "added to output RMF files")
+        self._rmf_restraints = _RMFRestraints(model, None)
         self.em_object_for_rmf = em_object_for_rmf
         self.monte_carlo_sample_objects = monte_carlo_sample_objects
         self.vars["self_adaptive"]=self_adaptive
         if sample_objects is not None:
+            IMP.handle_use_deprecated(
+                "sample_objects is deprecated; use monte_carlo_sample_objects "
+                "(or molecular_dynamics_sample_objects) instead")
             self.monte_carlo_sample_objects+=sample_objects
         self.molecular_dynamics_sample_objects=molecular_dynamics_sample_objects
         self.replica_exchange_object = replica_exchange_object
@@ -264,11 +255,6 @@ class ReplicaExchange0(object):
 
     def _add_provenance(self, sampler_md, sampler_mc):
         """Record details about the sampling in the IMP Hierarchies"""
-        if not self.is_multi_state or self.pmi2:
-            output_hierarchies = [self.root_hier]
-        else:
-            output_hierarchies = self.root_hiers
-
         iterations = 0
         if sampler_md:
             method = "Molecular Dynamics"
@@ -281,15 +267,14 @@ class ReplicaExchange0(object):
             return
         iterations *= self.vars["num_sample_rounds"]
 
-        for h in output_hierarchies:
-            pi = self.model.add_particle("sampling")
-            p = IMP.core.SampleProvenance.setup_particle(
-                    self.model, pi, method, self.vars["number_of_frames"],
-                    iterations)
-            p.set_number_of_replicas(
-                    self.replica_exchange_object.get_number_of_replicas())
-            IMP.pmi.tools._add_pmi_provenance(h)
-            IMP.core.add_provenance(self.model, h, p)
+        pi = self.model.add_particle("sampling")
+        p = IMP.core.SampleProvenance.setup_particle(
+                self.model, pi, method, self.vars["number_of_frames"],
+                iterations)
+        p.set_number_of_replicas(
+                self.replica_exchange_object.get_number_of_replicas())
+        IMP.pmi.tools._add_pmi_provenance(self.root_hier)
+        IMP.core.add_provenance(self.model, self.root_hier, p)
 
     def execute_macro(self):
         temp_index_factor = 100000.0
@@ -448,20 +433,12 @@ class ReplicaExchange0(object):
 # ---------------------------------------------
 
         if self.em_object_for_rmf is not None:
-            if not self.is_multi_state or self.pmi2:
-                output_hierarchies = [
-                    self.root_hier,
-                    self.em_object_for_rmf.get_density_as_hierarchy(
-                    )]
-            else:
-                output_hierarchies = self.root_hiers
-                output_hierarchies.append(
-                    self.em_object_for_rmf.get_density_as_hierarchy())
+            output_hierarchies = [
+                self.root_hier,
+                self.em_object_for_rmf.get_density_as_hierarchy(
+                )]
         else:
-            if not self.is_multi_state or self.pmi2:
-                output_hierarchies = [self.root_hier]
-            else:
-                output_hierarchies = self.root_hiers
+            output_hierarchies = [self.root_hier]
 
 #----------------------------------------------
         if not self.test_mode:
@@ -534,7 +511,7 @@ class ReplicaExchange0(object):
                 save_frame=(score_perc*100.0<=75.0)
 
             # Ensure model is updated before saving output files
-            if save_frame or not self.test_mode:
+            if save_frame and not self.test_mode:
                 self.model.update()
 
             if save_frame:
@@ -559,9 +536,7 @@ class ReplicaExchange0(object):
                 output.write_stat2(replica_stat_file)
             if self.vars["replica_exchange_swap"]:
                 rex.swap_temp(i, score)
-        for p, state in IMP.pmi.tools._all_protocol_outputs(
-                            [self.representation],
-                            self.root_hier if self.pmi2 else None):
+        for p, state in IMP.pmi.tools._all_protocol_outputs(self.root_hier):
             p.add_replica_exchange(state, self)
 
         if not self.test_mode:
@@ -593,6 +568,10 @@ class BuildSystem(object):
     All molecules are set up by the component name, but split into rigid bodies
     as requested.
     """
+
+    _alphabets = {'DNA': IMP.pmi.alphabets.dna,
+                  'RNA': IMP.pmi.alphabets.rna}
+
     def __init__(self,
                  model,
                  sequence_connectivity_scale=4.0,
@@ -643,14 +622,14 @@ class BuildSystem(object):
                 else:
                     chain_id = chain_ids[numchain]
                 if nc==0:
-                    is_nucleic=False
+                    alphabet = IMP.pmi.alphabets.amino_acid
                     fasta_flag=copy[0].fasta_flag
-                    if fasta_flag == "RNA" or fasta_flag == "DNA": is_nucleic=True
+                    if fasta_flag in self._alphabets:
+                        alphabet = self._alphabets[fasta_flag]
                     seq = IMP.pmi.topology.Sequences(copy[0].fasta_file, fasta_name_map)[copy[0].fasta_id]
                     print("BuildSystem.add_state: molecule %s sequence has %s residues" % (molname,len(seq)))
-                    orig_mol = state.create_molecule(molname,
-                                                     seq,
-                                                     chain_id,is_nucleic)
+                    orig_mol = state.create_molecule(molname, seq, chain_id,
+                                                     alphabet=alphabet)
                     mol = orig_mol
                     numchain+=1
                 else:

@@ -7,7 +7,7 @@ the assignment of the system components to geometric objects (e.g. points,
 spheres, ellipsoids, and 3D Gaussian density functions). It is common to use
 a multiscale representation, where the system is represented using several
 resolution scales simultaneously. The spatial restraints will be applied
-to individual resolution scales as appropriate (for example, a cross link
+to individual resolution scales as appropriate (for example, a cross-link
 may be applied at residue resolution, while an excluded volume restraint
 may act on a more coarse representation of the system, such as a spherical
 bead representing multiple residues).

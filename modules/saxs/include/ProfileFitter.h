@@ -1,7 +1,7 @@
 /**
  * \file IMP/saxs/ProfileFitter.h \brief a class for fitting two profiles
  *
- * Copyright 2007-2019 IMP Inventors. All rights reserved.
+ * Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -97,6 +97,9 @@ class ProfileFitter : public Object {
   void write_SAXS_fit_file(const std::string& file_name,
                            const Profile* model_profile, const double chi_square,
                            const double c = 1, const double offset = 0) const;
+
+  //! \return the profile used
+  const Profile *get_profile() const { return exp_profile_; }
 
  private:
   FitParameters search_fit_parameters(Profile* partial_profile, double min_c1,

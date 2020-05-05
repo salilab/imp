@@ -2,7 +2,7 @@
  *  \file IMP/isd/UniformPrior.h
  *  \brief A restraint on a scale parameter.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -40,6 +40,12 @@ public:
   {
     return exp(-unprotected_evaluate(nullptr));
   }
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const IMP_OVERRIDE;
+
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_dynamic_info() const IMP_OVERRIDE;
 
 };
 

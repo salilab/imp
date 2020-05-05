@@ -32,7 +32,8 @@ class Dataset(object):
     def __init__(self, location, details=None):
         self.location, self.details = location, details
 
-        #: A list of :class:`Dataset` objects from which this one was derived.
+        #: A list of :class:`Dataset` and/or :class:`TransformedDataset`
+        #: objects from which this one was derived.
         #: For example, a 3D EM map may be derived from a set of 2D images.
         self.parents = []
 
@@ -45,6 +46,25 @@ class Dataset(object):
                                  "know which one to add to")
             root = root.parents[0]
         root.parents.append(dataset)
+
+
+class TransformedDataset(object):
+    """A :class:`Dataset` that should be rotated or translated before using.
+       This is typically used for derived datasets
+       (see :attr:`Dataset.parents`) where the derived dataset lies in a
+       different dataset from the parent (for example, it was moved to better
+       align with the model's reference frame or other experimental data).
+       The transformation that places the derived dataset on the parent
+       is recorded here.
+
+       :param dataset: The (parent) dataset.
+       :type dataset: :class:`Dataset`
+       :param transform: The rotation and translation that places a
+              derived dataset on this dataset.
+       :type transform: :class:`ihm.geometry.Transformation`
+    """
+    def __init__(self, dataset, transform):
+        self.dataset, self.transform = dataset, transform
 
 
 class DatasetGroup(list):

@@ -2,7 +2,7 @@
  *  \file IMP/isd/UniformPrior.cpp
  *  \brief Restrain a scale particle with log(scale)
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -44,6 +44,21 @@ UniformPrior::unprotected_evaluate(DerivativeAccumulator *accum) const
 ModelObjectsTemp UniformPrior::do_get_inputs() const
 {
   return ParticlesTemp(1,p_);
+}
+
+RestraintInfo *UniformPrior::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_string("type", "IMP.isd.UniformPrior");
+  ri->add_float("force constant", k_);
+  ri->add_float("lower bound", lowerb_);
+  ri->add_float("upper bound", upperb_);
+  return ri.release();
+}
+
+RestraintInfo *UniformPrior::get_dynamic_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  ri->add_particle_indexes("particle", ParticleIndexes(1, p_->get_index()));
+  return ri.release();
 }
 
 IMPISD_END_NAMESPACE

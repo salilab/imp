@@ -2,7 +2,7 @@
  *  \file IMP/statistics/Metric.h
  *  \brief Cluster sets of points.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

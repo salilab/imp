@@ -2,7 +2,7 @@
  *  \file RMF/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -99,7 +99,11 @@ bool ConstGroup::get_child_is_group(std::string name) const {
   RMF_HDF5_HANDLE(c,
                   H5Oopen(get_handle(), name.c_str(), H5P_DEFAULT),
                   &H5Oclose);
+#if H5_VERS_MAJOR > 1 || (H5_VERS_MAJOR==1 && H5_VERS_MINOR>=12)
+  RMF_HDF5_CALL(H5Oget_info(c, &info, H5O_INFO_BASIC));
+#else
   RMF_HDF5_CALL(H5Oget_info(c, &info));
+#endif
   return info.type == H5O_TYPE_GROUP;  // H5O_TYPE_DATASET
 }
 bool ConstGroup::get_child_is_group(unsigned int i) const {
@@ -127,7 +131,11 @@ bool ConstGroup::get_child_is_data_set(unsigned int i) const {
   RMF_HDF5_HANDLE(c,
                   H5Oopen(get_handle(), get_child_name(i).c_str(), H5P_DEFAULT),
                   &H5Oclose);
+#if H5_VERS_MAJOR > 1 || (H5_VERS_MAJOR==1 && H5_VERS_MINOR>=12)
+  RMF_HDF5_CALL(H5Oget_info(c, &info, H5O_INFO_BASIC));
+#else
   RMF_HDF5_CALL(H5Oget_info(c, &info));
+#endif
   return info.type == H5O_TYPE_DATASET;  // H5O_TYPE_DATASET
 }
 
@@ -136,8 +144,12 @@ hid_t get_parameters() {
   hid_t plist = H5Pcreate(H5P_FILE_ACCESS);
   RMF_HDF5_CALL(H5Pset_sieve_buf_size(plist, 1000000));
   RMF_HDF5_CALL(H5Pset_cache(plist, 0, 10000, 10000000, 0.0));
-#if defined(H5_VERS_MAJOR) && H5_VERS_MAJOR >= 1 && H5_VERS_MINOR >= 8 && \
-    H5_VERS_RELEASE >= 6
+#if defined(H5_VERS_MAJOR) && \
+    ((H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 10  && H5_VERS_RELEASE >= 2) || \
+     (H5_VERS_MAJOR == 1 && H5_VERS_MINOR > 10) || H5_VERS_MAJOR > 1)
+  RMF_HDF5_CALL(H5Pset_libver_bounds(plist, H5F_LIBVER_V18, H5F_LIBVER_LATEST));
+#elif defined(H5_VERS_MAJOR) && \
+    H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8 && H5_VERS_RELEASE >= 6
   RMF_HDF5_CALL(H5Pset_libver_bounds(plist, H5F_LIBVER_18, H5F_LIBVER_LATEST));
 #endif
   return plist;

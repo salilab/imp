@@ -1,7 +1,7 @@
 /**
  *  \file IMP/saxs/utility.cpp
  *  \brief Functions to deal with very common saxs operations
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
 */
 
 #include <IMP/saxs/utility.h>

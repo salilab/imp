@@ -55,10 +55,10 @@ class Tests(unittest.TestCase):
         self.assertIsNone(cc.formula_weight)
         # Formula with known elements and no charge
         cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P')
-        self.assertAlmostEqual(cc.formula_weight, 115.136, places=2)
+        self.assertAlmostEqual(cc.formula_weight, 115.136, delta=0.01)
         # Formula with known elements and formal charge
         cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P 1')
-        self.assertAlmostEqual(cc.formula_weight, 115.136, places=2)
+        self.assertAlmostEqual(cc.formula_weight, 115.136, delta=0.01)
 
     def test_peptide_chem_comp(self):
         """Test PeptideChemComp class"""
@@ -101,7 +101,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(a._comps['M'].type, 'L-peptide linking')
         self.assertEqual(a._comps['M'].name, "METHIONINE")
         self.assertEqual(a._comps['M'].formula, 'C5 H11 N O2 S')
-        self.assertAlmostEqual(a._comps['M'].formula_weight, 149.211, places=2)
+        self.assertAlmostEqual(a._comps['M'].formula_weight, 149.211,
+                               delta=0.01)
 
         a = ihm.LPeptideAlphabet()
         self.assertIn('MSE', a)
@@ -139,7 +140,7 @@ class Tests(unittest.TestCase):
             dcode = dcode_from_canon[canon]
             self.assertEqual(d._comps[dcode].formula, l._comps[lcode].formula)
             self.assertAlmostEqual(d._comps[dcode].formula_weight,
-                                   l._comps[lcode].formula_weight, places=2)
+                                   l._comps[lcode].formula_weight, delta=0.01)
 
     def test_rna_alphabet(self):
         """Test RNAAlphabet class"""
@@ -185,7 +186,7 @@ class Tests(unittest.TestCase):
     def test_entity_weight(self):
         """Test Entity.formula_weight"""
         e1 = ihm.Entity('AHCD')
-        self.assertAlmostEqual(e1.formula_weight, 499.516, places=1)
+        self.assertAlmostEqual(e1.formula_weight, 499.516, delta=0.1)
         # Entity containing a component with unknown weight
         heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
         self.assertIsNone(heme.formula_weight)
@@ -277,6 +278,17 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.doi, '10.1038/nature26003')
         self.assertEqual(len(c.authors), 32)
         self.assertEqual(c.authors[0], 'Kim SJ')
+
+    def test_citation_from_pubmed_id_one_page(self):
+        """Test Citation.from_pubmed_id() with page rather than range"""
+        c = self._get_from_pubmed_id('pubmed_api_one_page.json')
+        self.assertEqual(c.page_range, '475')
+
+    def test_citation_from_pubmed_id_no_volume_page(self):
+        """Test Citation.from_pubmed_id() with no volume or page info"""
+        c = self._get_from_pubmed_id('pubmed_api_no_pages.json')
+        self.assertIsNone(c.page_range)
+        self.assertIsNone(c.volume)
 
     def test_citation_from_pubmed_id_no_doi(self):
         """Test Citation.from_pubmed_id() with no DOI"""
@@ -411,9 +423,10 @@ class Tests(unittest.TestCase):
 
     def test_all_model_groups(self):
         """Test _all_model_groups() method"""
-        model_group1 = []
-        model_group2 = []
-        model_group3 = []
+        model_group1 = 'mg1'
+        model_group2 = 'mg2'
+        model_group3 = 'mg3'
+        model_group4 = 'mg4'
         state1 = [model_group1, model_group2]
         state2 = [model_group2, model_group2]
         s = ihm.System()
@@ -430,6 +443,10 @@ class Tests(unittest.TestCase):
                                 clustering_method='Hierarchical',
                                 clustering_feature='RMSD',
                                 precision=4.2)
+        ss1 = ihm.model.Subsample(name='foo', num_models=1)
+        ss2 = ihm.model.Subsample(name='foo', num_models=1,
+                                  model_group=model_group4)
+        e1.subsamples.extend((ss1, ss2))
         s.ensembles.append(e1)
 
         mg = s._all_model_groups()
@@ -441,7 +458,8 @@ class Tests(unittest.TestCase):
         # List contains all model groups
         self.assertEqual(list(mg), [model_group1, model_group2,
                                     model_group2, model_group2,
-                                    model_group3, model_group1, model_group2])
+                                    model_group3, model_group4,
+                                    model_group1, model_group2])
 
     def test_all_models(self):
         """Test _all_models() method"""
@@ -638,6 +656,7 @@ class Tests(unittest.TestCase):
         loc1 = MockObject()
         loc2 = MockObject()
         loc3 = MockObject()
+        loc4 = MockObject()
 
         s = ihm.System()
         dataset1 = MockDataset()
@@ -653,8 +672,18 @@ class Tests(unittest.TestCase):
         ensemble.file = loc2
         density = MockObject()
         density.file = loc1
+        ss1 = MockObject()
+        ss1.file = None
+        ss2 = MockObject()
+        ss2.file = loc4
         ensemble.densities = [density]
-        s.ensembles.append(ensemble)
+        ensemble.subsamples = [ss1, ss2]
+
+        ensemble2 = MockObject()
+        ensemble2.file = None
+        ensemble2.densities = []
+        ensemble2.subsamples = []
+        s.ensembles.extend((ensemble, ensemble2))
 
         start_model = MockObject()
         start_model.dataset = None
@@ -682,7 +711,7 @@ class Tests(unittest.TestCase):
         s.orphan_protocols.append(protocol1)
 
         # duplicates should not be filtered
-        self.assertEqual(list(s._all_locations()), [loc1, loc1, loc2,
+        self.assertEqual(list(s._all_locations()), [loc1, loc1, loc2, loc4,
                                                     loc1, loc2, loc3,
                                                     loc2, loc2])
 
@@ -719,7 +748,11 @@ class Tests(unittest.TestCase):
         rsr1 = MockObject()
         rsr1.dataset = d4
         d4.parents = [d2]
-        d2.parents = [d1]
+        # Handle parent being a TransformedDataset
+        trand = MockObject()
+        trand.transform = None
+        trand.dataset = d1
+        d2.parents = [trand]
         d1.parents = d3.parents = []
         s.restraints.append(rsr1)
 
@@ -789,6 +822,42 @@ class Tests(unittest.TestCase):
 
         # duplicates should not be filtered
         self.assertEqual(list(s._all_features()), [f1, f2, f1])
+
+    def test_all_pseudo_sites(self):
+        """Test _all_pseudo_sites() method"""
+        class MockObject(object):
+            pass
+
+        s1 = MockObject()
+        s2 = MockObject()
+
+        r1 = MockObject()
+        xl = MockObject()
+        ps = MockObject()
+        ps.site = s2
+        xl.pseudo1 = ps
+        xl.pseudo2 = None
+        r1.cross_links = [xl]
+
+        r2 = MockObject()
+        xl = MockObject()
+        xl.pseudo1 = None
+        ps = MockObject()
+        ps.site = s1
+        xl.pseudo2 = ps
+        r2.cross_links = [xl]
+
+        s = ihm.System()
+        s.orphan_pseudo_sites.extend((s1, s2))
+        s.restraints.extend((r1, r2))
+
+        f1 = MockObject()
+        f1.site = s2
+        s.orphan_features.append(f1)
+
+        # duplicates should not be filtered
+        self.assertEqual(list(s._all_pseudo_sites()), [s1, s2, s2, s1, s2])
+
 
     def test_all_chem_descriptors(self):
         """Test _all_chem_descriptors() method"""

@@ -1,5 +1,3 @@
-%pythoncode %{
-
 import socket
 import time
 import sys
@@ -572,5 +570,3 @@ class Manager(object):
 
         return util._poll_events(self._listen_sock, running,
                                  self.heartbeat_timeout)
-
-%}

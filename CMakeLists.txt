@@ -8,6 +8,11 @@ if(${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
    message(FATAL_ERROR "Building in the source directory not supported: ${CMAKE_SOURCE_DIR} is ${CMAKE_BINARY_DIR}. If this message seems wrong, make sure to delete the CMakeFiles directory and the CMakeCache.txt file if they exist in the source dir (${CMAKE_SOURCE_DIR}).")
 endif()
 
+# Default Python3_FIND_STRATEGY to LOCATION
+if(POLICY CMP0094)
+cmake_policy(SET CMP0094 NEW)
+endif(POLICY CMP0094)
+
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindPython.cmake)
 imp_find_python()
 
@@ -357,7 +362,7 @@ endif()
 
 foreach(mod ${enabled_modules})
   add_custom_target(IMP.${mod} DEPENDS
-  IMP.${mod}-lib
+  ${IMP_${mod}_LIBRARY}
   ${IMP_${mod}_BINS}
   ${IMP_${mod}_UTILS}
   ${IMP_${mod}_TESTS}
@@ -433,6 +438,7 @@ file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(IMP_MODULES_DIR \"${CMAKE_SOURCE_DIR}/tools/cmake\" )\n"
      "set(IMP_BUILD_INFO_DIR \"${CMAKE_BINARY_DIR}/build_info\" )\n"
      "set(IMP_INCLUDE_DIR \"${CMAKE_BINARY_DIR}/include\" )\n"
+     "set(IMP_BIN_DIR \"${CMAKE_BINARY_DIR}/bin\" )\n"
      "set(IMP_LIB_DIR \"${CMAKE_BINARY_DIR}/lib\" )\n"
      "set(IMP_PYTHON_DIR \"${CMAKE_BINARY_DIR}/lib\" )\n"
      "set(IMP_DATA_DIR \"${CMAKE_BINARY_DIR}/data\" )\n"
@@ -448,6 +454,7 @@ file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(IMP_MODULES_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
      "set(IMP_BUILD_INFO_DIR \"${CMAKE_INSTALL_FULL_BUILDINFODIR}\" )\n"
      "set(IMP_INCLUDE_DIR \"${CMAKE_INSTALL_FULL_INCLUDEDIR}\" )\n"
+     "set(IMP_BIN_DIR \"${CMAKE_INSTALL_FULL_BINDIR}\" )\n"
      "set(IMP_LIB_DIR \"${CMAKE_INSTALL_FULL_LIBDIR}\" )\n"
      "set(IMP_PYTHON_DIR \"${CMAKE_INSTALL_FULL_PYTHONDIR}\" )\n"
      "set(IMP_DATA_DIR \"${CMAKE_INSTALL_FULL_DATADIR}/IMP\" )\n"
@@ -471,17 +478,28 @@ file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
 file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(RMF_LIBRARIES \"\${IMP_LIB_DIR}/libRMF${CMAKE_SHARED_LIBRARY_SUFFIX}\" )\n")
 foreach(mod ${enabled_modules})
-  get_target_property(modver "IMP.${mod}-lib" VERSION)
-  if (APPLE)
+  # No library for python-only modules
+  if (NOT TARGET "IMP.${mod}-lib")
     file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
-         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
-    file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
-         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
+         "set(IMP_${mod}_LIBRARY \"\")\n")
   else()
-    file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
-         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.so.${modver}\" )\n")
-    file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
-         "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.so.${modver}\" )\n")
+    get_target_property(modver "IMP.${mod}-lib" VERSION)
+    if (APPLE)
+      file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+           "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
+      file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
+           "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.${modver}.dylib\" )\n")
+    elseif (WIN32)
+      file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+           "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/imp_${mod}.dll\" )\n")
+      file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
+           "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/imp_${mod}.dll\" )\n")
+    else()
+      file(APPEND ${CMAKE_BINARY_DIR}/IMPConfig.cmake
+          "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.so.${modver}\" )\n")
+      file(APPEND ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
+           "set(IMP_${mod}_LIBRARY \"\${IMP_LIB_DIR}/libimp_${mod}.so.${modver}\" )\n")
+    endif()
   endif()
 endforeach()
 

@@ -2,7 +2,7 @@
  *  \file isd/GaussianEMRestraint.cpp
  *  \brief Restrain two sets of Gaussians (model and GMM derived from EM map)
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -65,7 +65,6 @@ GaussianEMRestraint::GaussianEMRestraint(
   density_cutoff_dist_(density_cutoff_dist),
   model_ps_(model_ps),
   density_ps_(density_ps),
-  global_sigma_(global_sigma),
   slope_(slope),
   update_model_(update_model),
   local_(local){
@@ -237,7 +236,6 @@ ModelObjectsTemp GaussianEMRestraint::do_get_inputs() const {
   for (int j=0;j<dsize_;j++){
     ret.push_back(get_model()->get_particle(density_ps_[j]));
   }
-  ret.push_back(get_model()->get_particle(global_sigma_));
   ret.push_back(md_container_);
   ret.push_back(mm_container_);
   return ret;
@@ -251,6 +249,9 @@ RestraintInfo *GaussianEMRestraint::get_static_info() const {
   }
   ri->add_float("model cutoff", model_cutoff_dist_);
   ri->add_float("density cutoff", density_cutoff_dist_);
+  ri->add_float("slope", slope_);
+  // Typically the density doesn't move during sampling (i.e. static)
+  ri->add_particle_indexes("density", density_ps_);
   return ri.release();
 }
 

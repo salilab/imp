@@ -40,6 +40,9 @@ swig_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                       "cmake_templates",
                                                       "ModuleSwig.cmake"))
 
+python_template = tools.CMakeFileGenerator(
+        os.path.join(TOPDIR, "cmake_templates", "ModulePython.cmake"))
+
 util_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                       "cmake_templates",
                                                       "ModuleUtil.cmake"))
@@ -215,6 +218,7 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
     values["pybins"] = "\n".join(pybins)
     values["bin_names"] = "\n".join([os.path.basename(x) \
                                      for x in pybins + cppbins])
+    values["python_only"] = 1 if module.python_only else 0
 
     local = os.path.join(module.path, "Build.cmake")
     if os.path.exists(local):
@@ -222,6 +226,16 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
                                  % tools.to_cmake_path(local)
     else:
         values["custom_build"] = ""
+    ininit = os.path.join(module.path, "pyext", "src", "__init__.py")
+    if os.path.exists(ininit):
+        values["ininit"] = ("${CMAKE_SOURCE_DIR}/%s"
+                            % tools.to_cmake_path(ininit))
+    else:
+        values["ininit"] = ""
+    if finder.external_dir:
+        values["build_dir"] = "--build_dir=%s " % finder.external_dir
+    else:
+        values["build_dir"] = ""
 
     main = os.path.join(module.path, "src", "CMakeLists.txt")
     tests = os.path.join(module.path, "test", "CMakeLists.txt")
@@ -230,26 +244,25 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
     bin = os.path.join(module.path, "bin", "CMakeLists.txt")
     benchmark = os.path.join(module.path, "benchmark", "CMakeLists.txt")
     examples = os.path.join(module.path, "examples", "CMakeLists.txt")
-    lib_template.write(main, values)
     test_template.write(tests, values)
-    swig_template.write(swig, values)
+    if module.python_only:
+        python_template.write(swig, values)
+    else:
+        swig_template.write(swig, values)
+        lib_template.write(main, values)
     util_template.write(util, values)
     bin_template.write(bin, values)
     benchmark_template.write(benchmark, values)
     examples_template.write(examples, values)
     values["tests"] = "\n".join(contents)
     topdir = '/' + tools.to_cmake_path(module.path) if module.path else ''
-    if finder.external_dir:
-        values["build_dir"] = "--build_dir=%s " % finder.external_dir
-    else:
-        values["build_dir"] = ""
     values["disabled_status"] = "FATAL_ERROR" if required else "STATUS"
-    values["subdirs"] = """add_subdirectory(${CMAKE_SOURCE_DIR}%s/src)
-add_subdirectory(${CMAKE_SOURCE_DIR}%s/test)
-add_subdirectory(${CMAKE_SOURCE_DIR}%s/examples)
-add_subdirectory(${CMAKE_SOURCE_DIR}%s/benchmark)
-add_subdirectory(${CMAKE_SOURCE_DIR}%s/bin)
-add_subdirectory(${CMAKE_SOURCE_DIR}%s/utility)""" % ((topdir,) * 6)
+    subdirs = ['test', 'examples', 'benchmark', 'bin', 'utility']
+    if not module.python_only:
+        subdirs.insert(0, 'src')
+    values["subdirs"] = "\n".join(
+            "add_subdirectory(${CMAKE_SOURCE_DIR}%s/%s)" % (topdir, s)
+            for s in subdirs)
 
     cmakelists = os.path.join(module.path, "CMakeLists.txt")
     if finder.one_module or standalone_cmake(cmakelists):

@@ -139,7 +139,7 @@ class CompositeRestraint(object):
 class AmbiguousCompositeRestraint(object):
 
     '''
-    this restraint allows ambiguous crosslinking between multiple copies
+    this restraint allows ambiguous cross-linking between multiple copies
     excluding between symmetric copies
     It allows name ambiguity
     '''
@@ -284,7 +284,7 @@ class AmbiguousCompositeRestraint(object):
         self.rs.set_weight(weight)
 
     def get_output(self):
-        # content of the crosslink database pairs
+        # content of the cross-link database pairs
         # self.pairs.append((p1,p2,dr,r1,c1,r2,c2))
         output = {}
         score = self.weight * self.rs.unprotected_evaluate(None)
@@ -432,7 +432,7 @@ class SimplifiedPEMAP(object):
         self.outputlevel = level
 
     def get_output(self):
-        # content of the crosslink database pairs
+        # content of the cross-link database pairs
         # self.pairs.append((p1,p2,dr,r1,c1,r2,c2))
         output = {}
         score = self.rs.unprotected_evaluate(None)
@@ -476,13 +476,7 @@ class SetupConnectivityNetworkRestraint(object):
     Resolution=Yes
     '''
 
-    def __init__(
-        self,
-        representation=None,
-        objects=None,
-        kappa=10.0,
-        resolution=1.0,
-            label="None"):
+    def __init__(self, objects, kappa=10.0, resolution=1.0, label="None"):
 
         self.weight = 1.0
         self.kappa = kappa
@@ -492,19 +486,11 @@ class SetupConnectivityNetworkRestraint(object):
 
         hiers=[]
 
-        if representation is None:
-            print(objects)
-            for obj in objects:
-                hiers.append(IMP.pmi.tools.input_adaptor(obj,
+        for obj in objects:
+            hiers.append(IMP.pmi.tools.input_adaptor(obj,
                                                 resolution,
                                                 flatten=True))
             self.m=hiers[0][0].get_model()
-        else:
-            self.m = representation.m
-            for s in objects:
-                hiers.append(IMP.pmi.tools.select_by_tuple(representation, s,
-                                                          resolution=resolution,
-                                                          name_is_ambiguous=False))
 
         #particles=[h.get_particle() for h in hiers]
         cr = ConnectivityNetworkRestraint(self.m)

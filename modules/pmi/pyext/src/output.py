@@ -15,7 +15,11 @@ import ast
 import RMF
 import numpy as np
 import operator
+import itertools
+import warnings
 import string
+import ihm.format
+import collections
 try:
     import cPickle as pickle
 except ImportError:
@@ -57,6 +61,140 @@ def _flatten(seq):
         else:
             yield elt
 
+
+def _disambiguate_chain(chid, seen_chains):
+    """Make sure that the chain ID is unique; warn and correct if it isn't"""
+    # Handle null chain IDs
+    if chid == '\0':
+        chid = ' '
+
+    if chid in seen_chains:
+        warnings.warn("Duplicate chain ID '%s' encountered" % chid,
+                      IMP.pmi.StructureWarning)
+
+        for suffix in itertools.count(1):
+            new_chid = chid + "%d" % suffix
+            if new_chid not in seen_chains:
+                seen_chains.add(new_chid)
+                return new_chid
+    seen_chains.add(chid)
+    return chid
+
+
+def _write_pdb_internal(flpdb, particle_infos_for_pdb, geometric_center,
+                        write_all_residues_per_bead):
+    for n,tupl in enumerate(particle_infos_for_pdb):
+        (xyz, atom_type, residue_type,
+         chain_id, residue_index, all_indexes, radius) = tupl
+        if atom_type is None:
+            atom_type = IMP.atom.AT_CA
+        if write_all_residues_per_bead and all_indexes is not None:
+            for residue_number in all_indexes:
+                flpdb.write(
+                    IMP.atom.get_pdb_string((xyz[0] - geometric_center[0],
+                                             xyz[1] - geometric_center[1],
+                                             xyz[2] - geometric_center[2]),
+                                            n+1, atom_type, residue_type,
+                                            chain_id[:1], residue_number, ' ',
+                                            1.00, radius))
+        else:
+            flpdb.write(
+                IMP.atom.get_pdb_string((xyz[0] - geometric_center[0],
+                                         xyz[1] - geometric_center[1],
+                                         xyz[2] - geometric_center[2]),
+                                        n+1, atom_type, residue_type,
+                                        chain_id[:1], residue_index, ' ',
+                                        1.00, radius))
+    flpdb.write("ENDMDL\n")
+
+
+_Entity = collections.namedtuple('_Entity', ('id', 'seq'))
+_ChainInfo = collections.namedtuple('_ChainInfo', ('entity', 'name'))
+
+
+def _get_chain_info(chains, root_hier):
+    chain_info = {}
+    entities = {}
+    all_entities = []
+    for mol in IMP.atom.get_by_type(root_hier, IMP.atom.MOLECULE_TYPE):
+        molname = IMP.pmi.get_molecule_name_and_copy(mol)
+        chain_id = chains[molname]
+        chain = IMP.atom.Chain(mol)
+        seq = chain.get_sequence()
+        if seq not in entities:
+            entities[seq] = e = _Entity(id=len(entities)+1, seq=seq)
+            all_entities.append(e)
+        entity = entities[seq]
+        info = _ChainInfo(entity=entity, name=molname)
+        chain_info[chain_id] = info
+    return chain_info, all_entities
+
+
+def _write_mmcif_internal(flpdb, particle_infos_for_pdb, geometric_center,
+                          write_all_residues_per_bead, chains, root_hier):
+    # get dict with keys=chain IDs, values=chain info
+    chain_info, entities = _get_chain_info(chains, root_hier)
+
+    writer = ihm.format.CifWriter(flpdb)
+    writer.start_block('model')
+    with writer.category("_entry") as l:
+        l.write(id='model')
+
+    with writer.loop("_entity", ["id"]) as l:
+        for e in entities:
+            l.write(id=e.id)
+
+    with writer.loop("_entity_poly",
+                     ["entity_id", "pdbx_seq_one_letter_code"]) as l:
+        for e in entities:
+            l.write(entity_id=e.id, pdbx_seq_one_letter_code=e.seq)
+
+    with writer.loop("_struct_asym", ["id", "entity_id", "details"]) as l:
+        for chid in sorted(chains.values()):
+            ci = chain_info[chid]
+            l.write(id=chid, entity_id=ci.entity.id, details=ci.name)
+
+    with writer.loop("_atom_site",
+                     ["group_PDB", "type_symbol", "label_atom_id",
+                      "label_comp_id", "label_asym_id", "label_seq_id",
+                      "auth_seq_id",
+                      "Cartn_x", "Cartn_y", "Cartn_z", "label_entity_id",
+                      "pdbx_pdb_model_num",
+                      "id"]) as l:
+        ordinal = 1
+        for n,tupl in enumerate(particle_infos_for_pdb):
+            (xyz, atom_type, residue_type,
+             chain_id, residue_index, all_indexes, radius) = tupl
+            ci = chain_info[chain_id]
+            if atom_type is None:
+                atom_type = IMP.atom.AT_CA
+            c = xyz - geometric_center
+            if write_all_residues_per_bead and all_indexes is not None:
+                for residue_number in all_indexes:
+                    l.write(group_PDB='ATOM',
+                            type_symbol='C',
+                            label_atom_id=atom_type.get_string(),
+                            label_comp_id=residue_type.get_string(),
+                            label_asym_id=chain_id,
+                            label_seq_id=residue_index,
+                            auth_seq_id=residue_index, Cartn_x=c[0],
+                            Cartn_y=c[1], Cartn_z=c[2], id=ordinal,
+                            pdbx_pdb_model_num=1,
+                            label_entity_id=ci.entity.id)
+                    ordinal += 1
+            else:
+                l.write(group_PDB='ATOM', type_symbol='C',
+                        label_atom_id=atom_type.get_string(),
+                        label_comp_id=residue_type.get_string(),
+                        label_asym_id=chain_id,
+                        label_seq_id=residue_index,
+                        auth_seq_id=residue_index, Cartn_x=c[0],
+                        Cartn_y=c[1], Cartn_z=c[2], id=ordinal,
+                        pdbx_pdb_model_num=1,
+                        label_entity_id=ci.entity.id)
+                ordinal += 1
+
+
 class Output(object):
     """Class for easy writing of PDBs, RMFs, and stat files
 
@@ -64,6 +202,7 @@ class Output(object):
     """
     def __init__(self, ascii=True,atomistic=False):
         self.dictionary_pdbs = {}
+        self._pdb_mmcif = {}
         self.dictionary_rmfs = {}
         self.dictionary_stats = {}
         self.dictionary_stats2 = {}
@@ -96,28 +235,32 @@ class Output(object):
     def _init_dictchain(self, name, prot, multichar_chain=False):
         self.dictchain[name] = {}
         self.use_pmi2 = False
+        seen_chains = set()
 
         # attempt to find PMI objects.
         if IMP.pmi.get_is_canonical(prot):
             self.use_pmi2 = True
             self.atomistic = True #detects automatically
             for n,mol in enumerate(IMP.atom.get_by_type(prot,IMP.atom.MOLECULE_TYPE)):
-                chid = IMP.atom.Chain(mol).get_id()
+                chid = _disambiguate_chain(IMP.atom.Chain(mol).get_id(),
+                                           seen_chains)
                 self.dictchain[name][IMP.pmi.get_molecule_name_and_copy(mol)] = chid
         else:
             chainids = self.multi_chainids if multichar_chain else self.chainids
             for n, i in enumerate(self.dictionary_pdbs[name].get_children()):
                 self.dictchain[name][i.get_name()] = chainids[n]
 
-    def init_pdb(self, name, prot):
+    def init_pdb(self, name, prot, mmcif=False):
         """Init PDB Writing.
         @param name The PDB filename
         @param prot The hierarchy to write to this pdb file
+        @param mmcif If True, write PDBs in mmCIF format
         @note if the PDB name is 'System' then will use Selection to get molecules
         """
         flpdb = open(name, 'w')
         flpdb.close()
         self.dictionary_pdbs[name] = prot
+        self._pdb_mmcif[name] = mmcif
         self._init_dictchain(name, prot)
 
     def write_psf(self,filename,name):
@@ -168,10 +311,6 @@ class Output(object):
                   appendmode=True,
                   translate_to_geometric_center=False,
                   write_all_residues_per_bead=False):
-        if appendmode:
-            flpdb = open(name, 'a')
-        else:
-            flpdb = open(name, 'w')
 
         (particle_infos_for_pdb,
          geometric_center) = self.get_particle_infos_for_pdb_writing(name)
@@ -179,28 +318,18 @@ class Output(object):
         if not translate_to_geometric_center:
             geometric_center = (0, 0, 0)
 
-        for n,tupl in enumerate(particle_infos_for_pdb):
-            (xyz, atom_type, residue_type,
-             chain_id, residue_index, all_indexes, radius) = tupl
-            if atom_type is None:
-                atom_type = IMP.atom.AT_CA
-            if ( (write_all_residues_per_bead) and (all_indexes is not None) ):
-                for residue_number in all_indexes:
-                    flpdb.write(IMP.atom.get_pdb_string((xyz[0] - geometric_center[0],
-                                                        xyz[1] - geometric_center[1],
-                                                        xyz[2] - geometric_center[2]),
-                                                        n+1, atom_type, residue_type,
-                                                        chain_id, residue_number,' ',1.00,radius))
+        filemode = 'a' if appendmode else 'w'
+        with open(name, filemode) as flpdb:
+            if self._pdb_mmcif[name]:
+                _write_mmcif_internal(flpdb, particle_infos_for_pdb,
+                                      geometric_center,
+                                      write_all_residues_per_bead,
+                                      self.dictchain[name],
+                                      self.dictionary_pdbs[name])
             else:
-                flpdb.write(IMP.atom.get_pdb_string((xyz[0] - geometric_center[0],
-                                                    xyz[1] - geometric_center[1],
-                                                    xyz[2] - geometric_center[2]),
-                                                    n+1, atom_type, residue_type,
-                                                    chain_id, residue_index,' ',1.00,radius))
-        flpdb.write("ENDMDL\n")
-        flpdb.close()
-
-        del particle_infos_for_pdb
+                _write_pdb_internal(flpdb, particle_infos_for_pdb,
+                                    geometric_center,
+                                    write_all_residues_per_bead)
 
     def get_prot_name_from_particle(self, name, p):
         """Get the protein name from the particle.
@@ -319,7 +448,7 @@ class Output(object):
         return (particle_infos_for_pdb, geometric_center)
 
 
-    def write_pdbs(self, appendmode=True):
+    def write_pdbs(self, appendmode=True, mmcif=False):
         for pdb in self.dictionary_pdbs.keys():
             self.write_pdb(pdb, appendmode)
 
@@ -327,10 +456,12 @@ class Output(object):
                               suffix,
                               prot,
                               nbestscoring,
-                              replica_exchange=False):
+                              replica_exchange=False, mmcif=False):
         # save only the nbestscoring conformations
         # create as many pdbs as needed
 
+        self._pdb_best_scoring_mmcif = mmcif
+        fileext = '.cif' if mmcif else '.pdb'
         self.suffixes.append(suffix)
         self.replica_exchange = replica_exchange
         if not self.replica_exchange:
@@ -349,16 +480,19 @@ class Output(object):
 
         self.nbestscoring = nbestscoring
         for i in range(self.nbestscoring):
-            name = suffix + "." + str(i) + ".pdb"
+            name = suffix + "." + str(i) + fileext
             flpdb = open(name, 'w')
             flpdb.close()
             self.dictionary_pdbs[name] = prot
+            self._pdb_mmcif[name] = mmcif
             self._init_dictchain(name, prot)
 
     def write_pdb_best_scoring(self, score):
         if self.nbestscoring is None:
             print("Output.write_pdb_best_scoring: init_pdb_best_scoring not run")
 
+        mmcif = self._pdb_best_scoring_mmcif
+        fileext = '.cif' if mmcif else '.pdb'
         # update the score list
         if self.replica_exchange:
             # read the self.best_score_list from the file
@@ -371,13 +505,13 @@ class Output(object):
             index = self.best_score_list.index(score)
             for suffix in self.suffixes:
                 for i in range(len(self.best_score_list) - 2, index - 1, -1):
-                    oldname = suffix + "." + str(i) + ".pdb"
-                    newname = suffix + "." + str(i + 1) + ".pdb"
+                    oldname = suffix + "." + str(i) + fileext
+                    newname = suffix + "." + str(i + 1) + fileext
                     # rename on Windows fails if newname already exists
                     if os.path.exists(newname):
                         os.unlink(newname)
                     os.rename(oldname, newname)
-                filetoadd = suffix + "." + str(index) + ".pdb"
+                filetoadd = suffix + "." + str(index) + fileext
                 self.write_pdb(filetoadd, appendmode=False)
 
         else:
@@ -388,13 +522,13 @@ class Output(object):
                 index = self.best_score_list.index(score)
                 for suffix in self.suffixes:
                     for i in range(len(self.best_score_list) - 1, index - 1, -1):
-                        oldname = suffix + "." + str(i) + ".pdb"
-                        newname = suffix + "." + str(i + 1) + ".pdb"
+                        oldname = suffix + "." + str(i) + fileext
+                        newname = suffix + "." + str(i + 1) + fileext
                         os.rename(oldname, newname)
                     filenametoremove = suffix + \
-                        "." + str(self.nbestscoring) + ".pdb"
+                        "." + str(self.nbestscoring) + fileext
                     os.remove(filenametoremove)
-                    filetoadd = suffix + "." + str(index) + ".pdb"
+                    filetoadd = suffix + "." + str(index) + fileext
                     self.write_pdb(filetoadd, appendmode=False)
 
         if self.replica_exchange:
@@ -450,11 +584,12 @@ class Output(object):
         for o in _flatten(objectlist):
             try:
                 rs = o.get_restraint_for_rmf()
+                if not isinstance(rs, (list, tuple)):
+                    rs = [rs]
             except:
-                rs = o.get_restraint()
+                rs = [o.get_restraint()]
             IMP.rmf.add_restraints(
-                self.dictionary_rmfs[name][0],
-                rs.get_restraints())
+                self.dictionary_rmfs[name][0], rs)
 
     def add_geometries_to_rmf(self, name, objectlist):
         for o in objectlist:
@@ -1521,7 +1656,10 @@ class CrossLinkIdentifierDatabase(object):
         with open(filename, 'rb') as handle:
             self.clidb=pickle.load(handle)
 
-def plot_fields(fields, framemin=None, framemax=None):
+def plot_fields(fields, output, framemin=None, framemax=None):
+    """Plot the given fields and save a figure as `output`.
+       The fields generally are extracted from a stat file
+       using ProcessOutput.get_fields()."""
     import matplotlib as mpl
     mpl.use('Agg')
     import matplotlib.pyplot as plt
@@ -1529,7 +1667,7 @@ def plot_fields(fields, framemin=None, framemax=None):
     plt.rc('lines', linewidth=4)
     fig, axs = plt.subplots(nrows=len(fields))
     fig.set_size_inches(10.5, 5.5 * len(fields))
-    plt.rc('axes', color_cycle=['r'])
+    plt.rc('axes')
 
     n = 0
     for key in fields:
@@ -1551,14 +1689,13 @@ def plot_fields(fields, framemin=None, framemax=None):
 
     # Tweak spacing between subplots to prevent labels from overlapping
     plt.subplots_adjust(hspace=0.3)
-    plt.show()
+    plt.savefig(output)
 
 
 def plot_field_histogram(
     name, values_lists, valuename=None, bins=40, colors=None, format="png",
-        reference_xline=None, yplotrange=None, xplotrange=None,normalized=True,
-        leg_names=None):
-
+    reference_xline=None, yplotrange=None, xplotrange=None, normalized=True,
+    leg_names=None):
     '''Plot a list of histograms from a value list.
     @param name the name of the plot
     @param value_lists the list of list of values eg: [[...],[...],[...]]
@@ -1590,7 +1727,7 @@ def plot_field_histogram(
             [float(y) for y in values],
             bins=bins,
             color=col,
-            normed=normalized,histtype='step',lw=4,
+            density=normalized,histtype='step',lw=4,
             label=label)
 
     # plt.title(name,size="xx-large")
@@ -1616,7 +1753,6 @@ def plot_field_histogram(
             linewidth=1)
 
     plt.savefig(name + "." + format, dpi=150, transparent=True)
-    plt.show()
 
 
 def plot_fields_box_plots(name, values, positions, frequencies=None,

@@ -1,7 +1,6 @@
 """Classes to handle starting models."""
 
 import ihm
-from .format import CifWriter
 try:
     from enum import IntEnum
 except ImportError:

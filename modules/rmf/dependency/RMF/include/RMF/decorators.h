@@ -2,7 +2,7 @@
  *  \file RMF/decorators.h
  *  \brief Import all the decorators headers.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,6 +17,7 @@
 #include "RMF/decorator/physics.h"
 #include "RMF/decorator/publication.h"
 #include "RMF/decorator/provenance.h"
+#include "RMF/decorator/uncertainty.h"
 #include "RMF/decorator/sequence.h"
 #include "RMF/decorator/shape.h"
 #include "RMF/decorator/bond.h"

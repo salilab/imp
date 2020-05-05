@@ -18,6 +18,7 @@ import ihm.dataset
 import ihm.protocol
 import ihm.analysis
 import ihm.model
+import ihm.reference
 import ihm.restraint
 import ihm.geometry
 import ihm.source
@@ -428,6 +429,173 @@ _entity_src_gen.pdbx_host_org_strain
 'Other latin name' 'Other common name' 'other strain'
 #
 """)
+
+    def test_struct_ref(self):
+        """Test StructRefDumper"""
+        system = ihm.System()
+        lpep = ihm.LPeptideAlphabet()
+        sd = ihm.reference.SeqDif(seq_id=2, db_monomer=lpep['W'],
+                                  monomer=lpep['S'], details='Test mutation')
+        r1 = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
+                details='test sequence')
+        r1.alignments.append(ihm.reference.Alignment(db_begin=3, seq_dif=[sd]))
+        r2 = ihm.reference.UniProtSequence(
+                db_code='testcode', accession='testacc', sequence='MELSPTYQT',
+                details='test2')
+        r2.alignments.append(ihm.reference.Alignment(
+                 db_begin=4, db_end=5, entity_begin=2, entity_end=3))
+        r2.alignments.append(ihm.reference.Alignment(
+                 db_begin=9, db_end=9, entity_begin=4, entity_end=4))
+        system.entities.append(ihm.Entity('LSPT', references=[r1, r2]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system) # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system) # Assign IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_struct_ref.id
+_struct_ref.entity_id
+_struct_ref.db_name
+_struct_ref.db_code
+_struct_ref.pdbx_db_accession
+_struct_ref.pdbx_align_begin
+_struct_ref.pdbx_seq_one_letter_code
+_struct_ref.details
+1 1 UNP NUP84_YEAST P52891 3 MELWPTYQT 'test sequence'
+2 1 UNP testcode testacc 4 MELSPTYQT test2
+#
+#
+loop_
+_struct_ref_seq.align_id
+_struct_ref_seq.ref_id
+_struct_ref_seq.seq_align_beg
+_struct_ref_seq.seq_align_end
+_struct_ref_seq.db_align_beg
+_struct_ref_seq.db_align_end
+1 1 1 4 3 6
+2 2 2 3 4 5
+3 2 4 4 9 9
+#
+#
+loop_
+_struct_ref_seq_dif.pdbx_ordinal
+_struct_ref_seq_dif.align_id
+_struct_ref_seq_dif.seq_num
+_struct_ref_seq_dif.db_mon_id
+_struct_ref_seq_dif.mon_id
+_struct_ref_seq_dif.details
+1 1 2 TRP SER 'Test mutation'
+#
+""")
+
+    def test_struct_ref_bad_align(self):
+        """Test StructRefDumper with bad entity align"""
+        system = ihm.System()
+        r = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+                details='test sequence')
+        r.alignments.append(ihm.reference.Alignment(entity_begin=90))
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system) # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system) # Assign IDs
+        self.assertRaises(IndexError, _get_dumper_output, dumper, system)
+        # Cannot use assertRaises as a context manager in Python 2.6
+        try:
+            _get_dumper_output(dumper, system)
+        except IndexError as exc:
+            self.assertIn('is (90-4), out of range 1-4', str(exc))
+
+    def test_struct_ref_bad_db_align(self):
+        """Test StructRefDumper with bad db align"""
+        system = ihm.System()
+        r = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+                details='test sequence')
+        r.alignments.append(ihm.reference.Alignment(db_begin=90))
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system) # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system) # Assign IDs
+        self.assertRaises(IndexError, _get_dumper_output, dumper, system)
+        # Cannot use assertRaises as a context manager in Python 2.6
+        try:
+            _get_dumper_output(dumper, system)
+        except IndexError as exc:
+            self.assertIn('is (90-9), out of range 1-9', str(exc))
+
+    def test_struct_ref_seq_mismatch(self):
+        """Test StructRefDumper with sequence mismatch"""
+        system = ihm.System()
+        r = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+                details='test sequence')
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system) # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system) # Assign IDs
+        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
+        # Cannot use assertRaises as a context manager in Python 2.6
+        try:
+            _get_dumper_output(dumper, system)
+        except ValueError as exc:
+            self.assertIn('does not match entity canonical sequence', str(exc))
+
+    def test_struct_ref_seq_dif_outrange(self):
+        """Test StructRefDumper with SeqDif out of range"""
+        system = ihm.System()
+        lpep = ihm.LPeptideAlphabet()
+        sd = ihm.reference.SeqDif(seq_id=40, db_monomer=lpep['W'],
+                                  monomer=lpep['S'], details='Test mutation')
+        r = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+                details='test sequence')
+        r.alignments.append(ihm.reference.Alignment(seq_dif=[sd]))
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system) # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system) # Assign IDs
+        self.assertRaises(IndexError, _get_dumper_output, dumper, system)
+        # Cannot use assertRaises as a context manager in Python 2.6
+        try:
+            _get_dumper_output(dumper, system)
+        except IndexError as exc:
+            self.assertIn('is 40, out of range 1-4', str(exc))
+
+    def test_struct_ref_seq_dif_mismatch(self):
+        """Test StructRefDumper with SeqDif code mismatch"""
+        system = ihm.System()
+        lpep = ihm.LPeptideAlphabet()
+        sd = ihm.reference.SeqDif(seq_id=2, db_monomer=lpep['W'],
+                                  monomer=lpep['Y'], details='Test mutation')
+        r = ihm.reference.UniProtSequence(
+                db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
+                details='test sequence')
+        r.alignments.append(ihm.reference.Alignment(seq_dif=[sd]))
+        system.entities.append(ihm.Entity('LSPT', references=[r]))
+        dumper = ihm.dumper._EntityDumper()
+        dumper.finalize(system) # Assign entity IDs
+
+        dumper = ihm.dumper._StructRefDumper()
+        dumper.finalize(system) # Assign IDs
+        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
+        # Cannot use assertRaises as a context manager in Python 2.6
+        try:
+            _get_dumper_output(dumper, system)
+        except ValueError as exc:
+            self.assertIn('one-letter code (Y) does not match', str(exc))
+            self.assertIn('(S at position 2)', str(exc))
 
     def test_chem_comp_dumper(self):
         """Test ChemCompDumper"""
@@ -1043,6 +1211,22 @@ _ihm_external_files.details
         # Ignore duplicates
         ds3.parents.append(ds2)
 
+        # Derived dataset with (shared) transformation
+        l = ihm.location.PDBLocation('1cde', version='foo', details='bar')
+        dst = ihm.dataset.Dataset(l, details='bar')
+        t = ihm.geometry.Transformation(
+            rot_matrix=[[-0.64,0.09,0.77],[0.76,-0.12,0.64],
+                        [0.15,0.99,0.01]],
+            tr_vector=[1.,2.,3.])
+        td = ihm.dataset.TransformedDataset(dst, transform=t)
+        ds3.parents.append(td)
+
+        l = ihm.location.PDBLocation('1cdf', version='foo', details='bar')
+        dst = ihm.dataset.Dataset(l, details='baz')
+        # Same transformation as before
+        td = ihm.dataset.TransformedDataset(dst, transform=t)
+        ds3.parents.append(td)
+
         # Dataset with no location
         ds4 = ihm.dataset.PDBDataset(None)
         system.orphan_datasets.append(ds4)
@@ -1058,8 +1242,10 @@ _ihm_dataset_list.database_hosted
 _ihm_dataset_list.details
 1 'CX-MS data' NO .
 2 'CX-MS data' NO .
-3 'Experimental model' YES 'test dataset details'
-4 'Experimental model' NO .
+3 unspecified YES bar
+4 unspecified YES baz
+5 'Experimental model' YES 'test dataset details'
+6 'Experimental model' NO .
 #
 #
 loop_
@@ -1094,13 +1280,36 @@ _ihm_dataset_related_db_reference.db_name
 _ihm_dataset_related_db_reference.accession_code
 _ihm_dataset_related_db_reference.version
 _ihm_dataset_related_db_reference.details
-1 3 PDB 1abc 1.0 'test details'
+1 3 PDB 1cde foo bar
+2 4 PDB 1cdf foo bar
+3 5 PDB 1abc 1.0 'test details'
 #
 #
 loop_
 _ihm_related_datasets.dataset_list_id_derived
 _ihm_related_datasets.dataset_list_id_primary
-3 2
+_ihm_related_datasets.transformation_id
+5 2 .
+5 3 1
+5 4 1
+#
+#
+loop_
+_ihm_data_transformation.id
+_ihm_data_transformation.rot_matrix[1][1]
+_ihm_data_transformation.rot_matrix[2][1]
+_ihm_data_transformation.rot_matrix[3][1]
+_ihm_data_transformation.rot_matrix[1][2]
+_ihm_data_transformation.rot_matrix[2][2]
+_ihm_data_transformation.rot_matrix[3][2]
+_ihm_data_transformation.rot_matrix[1][3]
+_ihm_data_transformation.rot_matrix[2][3]
+_ihm_data_transformation.rot_matrix[3][3]
+_ihm_data_transformation.tr_vector[1]
+_ihm_data_transformation.tr_vector[2]
+_ihm_data_transformation.tr_vector[3]
+1 -0.640000 0.760000 0.150000 0.090000 -0.120000 0.990000 0.770000 0.640000
+0.010000 1.000 2.000 3.000
 #
 """)
 
@@ -1945,10 +2154,20 @@ N
         loc._id = 3
         e2 = ihm.model.Ensemble(model_group=group, num_models=10,
                                 file=loc, details='test details')
+
+        ss1 = ihm.model.IndependentSubsample(name='ss1', num_models=5)
+        ss2 = ihm.model.IndependentSubsample(name='ss2', num_models=5,
+                                             model_group=group, file=loc)
+        ss3 = ihm.model.RandomSubsample(name='ss3', num_models=5)
+        e2.subsamples.extend((ss1, ss2, ss3))
         system.ensembles.extend((e1, e2))
 
         dumper = ihm.dumper._EnsembleDumper()
         dumper.finalize(system) # assign IDs
+
+        # Should raise an error since ss3 is not the same type as ss1/ss2
+        self.assertRaises(TypeError, _get_dumper_output, dumper, system)
+        del e2.subsamples[2]
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -1964,8 +2183,22 @@ _ihm_ensemble_info.num_ensemble_models_deposited
 _ihm_ensemble_info.ensemble_precision_value
 _ihm_ensemble_info.ensemble_file_id
 _ihm_ensemble_info.details
-1 cluster1 99 42 Hierarchical RMSD 10 2 4.200 . .
-2 . . 42 . . 10 2 . 3 'test details'
+_ihm_ensemble_info.sub_sample_flag
+_ihm_ensemble_info.sub_sampling_type
+1 cluster1 99 42 Hierarchical RMSD 10 2 4.200 . . NO .
+2 . . 42 . . 10 2 . 3 'test details' YES independent
+#
+#
+loop_
+_ihm_ensemble_sub_sample.id
+_ihm_ensemble_sub_sample.name
+_ihm_ensemble_sub_sample.ensemble_id
+_ihm_ensemble_sub_sample.num_models
+_ihm_ensemble_sub_sample.num_models_deposited
+_ihm_ensemble_sub_sample.model_group_id
+_ihm_ensemble_sub_sample.file_id
+1 ss1 2 5 0 . .
+2 ss2 2 5 2 42 3
 #
 """)
 
@@ -2400,7 +2633,20 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
         # Duplicates should be ignored
         xl3 = ihm.restraint.AtomCrossLink(xxl3, asym1, asym2, 'C', 'N', d,
                                 restrain_all=False)
-        r.cross_links.extend((xl1, xl2, xl3))
+        # Restraints on pseudo sites
+        ps = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
+        ps._id = 89
+        psxl = ihm.restraint.CrossLinkPseudoSite(site=ps)
+        xl4 = ihm.restraint.ResidueCrossLink(xxl5, asym1, asym2, d,
+                                psi=0.5, sigma1=1.0, sigma2=2.0,
+                                restrain_all=True, pseudo2=psxl)
+        m = MockObject()
+        m._id = 99
+        psxl = ihm.restraint.CrossLinkPseudoSite(site=ps, model=m)
+        xl5 = ihm.restraint.ResidueCrossLink(xxl2, asym1, asym2, d,
+                                psi=0.5, sigma1=1.0, sigma2=2.0,
+                                restrain_all=True, pseudo2=psxl)
+        r.cross_links.extend((xl1, xl2, xl3, xl4, xl5))
 
         model = MockObject()
         model._id = 201
@@ -2456,9 +2702,24 @@ _ihm_cross_link_restraint.distance_threshold
 _ihm_cross_link_restraint.psi
 _ihm_cross_link_restraint.sigma_1
 _ihm_cross_link_restraint.sigma_2
+_ihm_cross_link_restraint.pseudo_site_flag
 1 1 1 A 2 THR 1 A 3 CYS . . 'upper bound' ALL by-residue 25.000 0.500 1.000
-2.000
-2 3 1 A 2 THR 2 B 2 GLU C N 'lower bound' ANY by-atom 34.000 . . .
+2.000 NO
+2 3 1 A 2 THR 2 B 2 GLU C N 'lower bound' ANY by-atom 34.000 . . . NO
+3 4 1 A 1 ALA 2 B 1 ASP . . 'lower bound' ALL by-residue 34.000 0.500 1.000
+2.000 YES
+4 2 1 A 2 THR 2 B 3 PHE . . 'lower bound' ALL by-residue 34.000 0.500 1.000
+2.000 YES
+#
+#
+loop_
+_ihm_cross_link_pseudo_site.id
+_ihm_cross_link_pseudo_site.restraint_id
+_ihm_cross_link_pseudo_site.cross_link_partner
+_ihm_cross_link_pseudo_site.pseudo_site_id
+_ihm_cross_link_pseudo_site.model_id
+1 3 2 89 .
+2 4 2 89 99
 #
 #
 loop_
@@ -2621,7 +2882,9 @@ _ihm_geometric_object_plane.transformation_id
         self.assertRaises(ValueError, ihm.restraint.NonPolyFeature, [a1, a3])
 
         # Pseudo site feature
-        f = ihm.restraint.PseudoSiteFeature(x=10., y=20., z=30.)
+        ps = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
+        ps._id = 89
+        f = ihm.restraint.PseudoSiteFeature(site=ps)
         system.orphan_features.append(f)
 
         ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
@@ -2690,11 +2953,33 @@ _ihm_non_poly_feature.atom_id
 #
 loop_
 _ihm_pseudo_site_feature.feature_id
-_ihm_pseudo_site_feature.Cartn_x
-_ihm_pseudo_site_feature.Cartn_y
-_ihm_pseudo_site_feature.Cartn_z
-_ihm_pseudo_site_feature.radius
-5 10.000 20.000 30.000 .
+_ihm_pseudo_site_feature.pseudo_site_id
+5 89
+#
+""")
+
+    def test_pseudo_site_dumper(self):
+        """Test PseudoSiteDumper"""
+        system = ihm.System()
+        ps1 = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
+        ps2 = ihm.restraint.PseudoSite(x=10., y=20., z=30.,
+                                       radius=40., description="test pseudo")
+        system.orphan_pseudo_sites.extend((ps1, ps2))
+
+        dumper = ihm.dumper._PseudoSiteDumper()
+        dumper.finalize(system) # assign IDs
+
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_ihm_pseudo_site.id
+_ihm_pseudo_site.Cartn_x
+_ihm_pseudo_site.Cartn_y
+_ihm_pseudo_site.Cartn_z
+_ihm_pseudo_site.radius
+_ihm_pseudo_site.description
+1 10.000 20.000 30.000 . .
+2 10.000 20.000 30.000 40.000 'test pseudo'
 #
 """)
 
@@ -3024,18 +3309,18 @@ _ihm_predicted_contact_restraint.software_id
         ## Chem descriptor ID 4
         cur_chem_descriptor_modified_residue = ihm.ChemDescriptor(
                         auth_name='Modified_residue', smiles='Modified')
-        cur_chem_descriptor_mutated_residue = ihm.ChemDescriptor(
-                        auth_name='Mutated_residue', smiles='Mutated')
+        cur_chem_comp_mutated_residue = ihm.ChemComp(
+                        id='Cys',code='C',code_canonical='C')
 
         cur_chem_descriptor_modified_residue._id = 4
-        cur_chem_descriptor_mutated_residue._id = 5
+#        cur_chem_comp_mutated_residue._id = 5
         ## Poly_probe_position
         cur_poly_probe_position_1 = ihm.flr.PolyProbePosition(
                       resatom=cur_entity_1.residue(1), # no atom ID given
                       mutation_flag=True,
                       modification_flag=True, auth_name='Position_1',
-                      mutated_chem_descriptor=
-                                cur_chem_descriptor_mutated_residue,
+                      mutated_chem_comp_id=
+                                cur_chem_comp_mutated_residue,
                       modified_chem_descriptor=
                                 cur_chem_descriptor_modified_residue)
         cur_poly_probe_position_2 = ihm.flr.PolyProbePosition(
@@ -3046,8 +3331,8 @@ _ihm_predicted_contact_restraint.software_id
                       resatom=cur_entity_2.residue(10).atom('CB'),
                       mutation_flag=True,
                       modification_flag=True, auth_name='Position_3',
-                      mutated_chem_descriptor=
-                                cur_chem_descriptor_mutated_residue,
+                      mutated_chem_comp_id=
+                                cur_chem_comp_mutated_residue,
                       modified_chem_descriptor=
                                  cur_chem_descriptor_modified_residue)
         ## Sample_probe_details
@@ -3298,6 +3583,8 @@ _ihm_predicted_contact_restraint.software_id
         ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
         ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
 
+        ihm.dumper._ChemCompDumper().finalize(system)
+
         experiment_dumper = ihm.dumper._FLRExperimentDumper()
         experiment_dumper.finalize(system)
 
@@ -3510,10 +3797,10 @@ _flr_poly_probe_position.auth_name
 #
 loop_
 _flr_poly_probe_position_mutated.id
-_flr_poly_probe_position_mutated.chem_descriptor_id
+_flr_poly_probe_position_mutated.chem_comp_id
 _flr_poly_probe_position_mutated.atom_id
-1 5 .
-2 5 CB
+1 Cys .
+2 Cys CB
 #
 #
 loop_

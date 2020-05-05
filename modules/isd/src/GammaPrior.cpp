@@ -2,7 +2,7 @@
  *  \file IMP/isd/GammaPrior.cpp
  *  \brief Restrain a scale particle with a gamma distribution
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

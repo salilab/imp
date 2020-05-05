@@ -2,7 +2,7 @@
  *  \file SurfaceMover.cpp
  *  \brief A mover that transforms a Surface
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/core/SurfaceMover.h>

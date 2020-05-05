@@ -14,7 +14,7 @@ from collections import defaultdict
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description = "Draw the crosslinks from an RMF file. You can specify two colors, one for"
+        description = "Draw the cross-links from an RMF file. You can specify two colors, one for"
         "under the threshold and one for over. Also you can change the threshold."
         "Outputs a CMM file, which is readable in chimera."
         "Flag -h for more options")

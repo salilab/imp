@@ -1,6 +1,6 @@
 ## \example pmi/ambiguity.py
 """This script shows how to create a system with multiple copies of the same molecule.
-We also create some crosslinks which take into account the ambiguity.
+We also create some cross-links which take into account the ambiguity.
 The key to ambiguity is using the same molecule name for ambiguous copies.
 That way when you perform Selection it automatically finds all relevant molecules.
 """
@@ -62,7 +62,6 @@ for mol in (m1A,m1B,m1C,m2A,m2C):
 
 ###################### RESTRAINTS #####################
 output_objects = [] # keep a list of functions that need to be reported
-rmf_restraints = [] # display these restraints as springs in the RMF
 
 ### Crosslinks setup
 # 1) Create file. This one XL has 3 ambiguity options: State1 has 2, State2 has 1
@@ -88,14 +87,13 @@ os.remove(tf.name)
 # 3) Add the restraint
 xlr = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(
     root_hier=root_hier,
-    CrossLinkDataBase=xldb,
+    database=xldb,
     length=21,
     label="XL",
     resolution=1,
     slope=0.01)
 xlr.add_to_model()
 output_objects.append(xlr)
-rmf_restraints.append(xlr)
 dof.get_nuisances_from_restraint(xlr) # needed to sample the nuisance particles (noise params)
 
 ### Connectivity keeps things connected along the backbone
@@ -104,7 +102,6 @@ for mol in (m1A,m1B,m1C,m2A,m2C):
     cr = IMP.pmi.restraints.stereochemistry.ConnectivityRestraint(mol)
     cr.add_to_model()
     output_objects.append(cr)
-    rmf_restraints.append(cr)
 
 ### Excluded volume - one for each state (they don't interact)
 evr1 = IMP.pmi.restraints.stereochemistry.ExcludedVolumeSphere(included_objects = (m1A,m1B,m1C))
@@ -129,7 +126,6 @@ for fb in IMP.core.get_leaves(m2A.get_hierarchy())+IMP.core.get_leaves(m2C.get_h
 # Run replica exchange Monte Carlo sampling
 rex=IMP.pmi.macros.ReplicaExchange0(mdl,
                                     root_hier=root_hier,                          # pass the root hierarchy
-                                    crosslink_restraints=rmf_restraints,          # will display as springs
                                     monte_carlo_sample_objects=dof.get_movers(),  # pass MC movers
                                     global_output_directory='ambiguity_output/',
                                     output_objects=output_objects,

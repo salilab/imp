@@ -2,7 +2,7 @@
  *  \file IMP/pmi/InternalCoordinatesConstraint.h
  *  \brief A modifier that enforce identical internal coordinates for NonRigidMembers.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPPMI_INTERNAL_COORDINATES_CONSTRAINT_H

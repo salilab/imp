@@ -3,6 +3,7 @@ import sys
 import RMF
 import unittest
 import os
+import utils
 
 class Tests(unittest.TestCase):
 
@@ -91,7 +92,7 @@ class Tests(unittest.TestCase):
         self.assertTrue(filtpf.get_is(filt_node))
         filt = filtpf.get(filt_node)
         self.assertEqual(filt.get_method(), "Total score")
-        self.assertAlmostEqual(filt.get_threshold(), 250., places=1)
+        self.assertAlmostEqual(filt.get_threshold(), 250., delta=0.1)
         self.assertEqual(filt.get_frames(), 4)
 
         samp_node = filt_node.get_children()[0]

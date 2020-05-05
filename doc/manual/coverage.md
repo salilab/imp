@@ -23,7 +23,7 @@ test suite does not run 'expensive' tests.)
 
 If you have code that for some reason you wish to exclude from coverage,
 you can add specially formatted comments to the code. For Python code,
-[add a "pragma: no cover"](http://nedbatchelder.com/code/coverage/excluding.html)
+[add a "pragma: no cover"](https://coverage.readthedocs.io/en/latest/excluding.html)
 comment to the line to exclude. For C++ code, an individual line can be excluded
 by adding `LCOV_EXCL_LINE` somewhere on that line, or a block can be excluded
 by surrounding it with lines containing `LCOV_EXCL_START` and `LCOV_EXCL_STOP`.

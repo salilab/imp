@@ -1,6 +1,7 @@
 from __future__ import print_function
 import unittest
 import RMF
+import utils
 
 
 class GenericTest(unittest.TestCase):
@@ -39,10 +40,10 @@ class GenericTest(unittest.TestCase):
         print(sd.get_score())
         print(reps)
         print(rd.get_representation())
-        self.assert_(sd.get_score() == 10)
+        self.assertEqual(sd.get_score(), 10)
         for r0, r1 in zip(rd.get_representation(), reps):
             self.assertEqual(r0, r1)
-            #self.assert_(rd.get_representation() == reps)
+            #self.assertEqual(rd.get_representation(), reps)
 
     def test_multiparent(self):
         """Test that feature nodes work right"""

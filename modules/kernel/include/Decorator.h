@@ -1,7 +1,7 @@
 /**
  *  \file IMP/Decorator.h    \brief The base class for decorators.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

@@ -4,7 +4,7 @@
    Miscellaneous utilities.
 """
 
-from __future__ import print_function
+from __future__ import print_function, division
 import IMP
 import IMP.algebra
 import IMP.isd
@@ -51,18 +51,13 @@ def _get_system_for_hier(hier):
         # Try the next level up in the hierarchy
         hier = hier.get_parent()
 
-def _all_protocol_outputs(representations, hier):
-    """Iterate over all (ProtocolOutput, State) pairs for the given
-       representations (PMI1) or hier (PMI2)"""
-    if hier:
-        system = _get_system_for_hier(hier)
-        if system:
-            for state in system.states:
-                for p in state._protocol_output:
-                    yield p
-    else:
-        for p in representations[0]._protocol_output:
-            yield p
+def _all_protocol_outputs(hier):
+    """Iterate over all (ProtocolOutput, State) pairs for the given hierarchy"""
+    system = _get_system_for_hier(hier)
+    if system:
+        for state in system.states:
+            for p in state._protocol_output:
+                yield p
 
 def _add_pmi_provenance(p):
     """Tag the given particle as being created by the current version of PMI."""
@@ -150,9 +145,13 @@ class Stopwatch(object):
 
 class SetupNuisance(object):
 
-    def __init__(self, m, initialvalue, minvalue, maxvalue, isoptimized=True):
+    def __init__(self, m, initialvalue, minvalue, maxvalue, isoptimized=True,
+                 name=None):
 
-        nuisance = IMP.isd.Scale.setup_particle(IMP.Particle(m), initialvalue)
+        p = IMP.Particle(m)
+        if name:
+            p.set_name(name)
+        nuisance = IMP.isd.Scale.setup_particle(p, initialvalue)
         if minvalue:
             nuisance.set_lower(minvalue)
         if maxvalue:
@@ -781,7 +780,7 @@ def print_multicolumn(list_of_strings, ncolumns=2, truncate=40):
     for i in range(len(l) % cols):
         l.append(" ")
 
-    split = [l[i:i + len(l) / cols] for i in range(0, len(l), len(l) / cols)]
+    split = [l[i:i + len(l) // cols] for i in range(0, len(l), len(l) // cols)]
     for row in zip(*split):
         print("".join(str.ljust(i, truncate) for i in row))
 
@@ -1089,31 +1088,22 @@ def display_bonds(mol):
                 IMP.atom.Bonded(p2),1)
 
 
+@IMP.deprecated_object("2.13", "Use IMP.pmi.alphabets instead")
 class ThreeToOneConverter(defaultdict):
-    """This class converts three to one letter codes, and return X for any unknown codes"""
-    def __init__(self,is_nucleic=False):
-
-        if not is_nucleic:
-            threetoone = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D',
-                              'CYS': 'C', 'GLU': 'E', 'GLN': 'Q', 'GLY': 'G',
-                              'HIS': 'H', 'ILE': 'I', 'LEU': 'L', 'LYS': 'K',
-                              'MET': 'M', 'PHE': 'F', 'PRO': 'P', 'SER': 'S',
-                              'THR': 'T', 'TRP': 'W', 'TYR': 'Y', 'VAL': 'V', 'UNK': 'X'}
+    """This class converts three to one letter codes, and return X for
+       any unknown codes"""
+    def __init__(self, is_nucleic=False):
+        if is_nucleic:
+            threetoone = IMP.pmi.alphabets.rna.charmm_to_one
         else:
-            threetoone = {'ADE': 'A', 'URA': 'U', 'CYT': 'C', 'GUA': 'G',
-                              'THY': 'T', 'UNK': 'X'}
-
+            threetoone = IMP.pmi.alphabets.amino_acid.charmm_to_one
         defaultdict.__init__(self,lambda: "X", threetoone)
 
 
-
-
-def get_residue_type_from_one_letter_code(code,is_nucleic=False):
-    threetoone=ThreeToOneConverter(is_nucleic)
-    one_to_three={}
-    for k in threetoone:
-        one_to_three[threetoone[k]] = k
-    return IMP.atom.ResidueType(one_to_three[code])
+@IMP.deprecated_function("2.13", "Use IMP.pmi.alphabets instead")
+def get_residue_type_from_one_letter_code(code, is_nucleic=False):
+    a = IMP.pmi.alphabets.rna if is_nucleic else IMP.pmi.alphabets.amino_acid
+    return a.get_residue_type_from_one_letter_code(code)
 
 
 def get_all_leaves(list_of_hs):

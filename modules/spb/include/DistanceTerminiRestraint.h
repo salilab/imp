@@ -2,7 +2,7 @@
  *  \file IMP/spb/DistanceTerminiRestraint.h
  *  \brief A distance restraint between protein termini.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_DISTANCE_TERMINI_RESTRAINT_H

@@ -4,6 +4,7 @@ import IMP.atom
 import IMP.pmi
 import IMP.pmi.topology
 import IMP.pmi.tools
+import IMP.pmi.alphabets
 import IMP.test
 import RMF
 import IMP.rmf
@@ -360,21 +361,27 @@ class Tests(IMP.test.TestCase):
         # test without name map
         seqs0 = IMP.pmi.topology.Sequences(
             self.get_input_file_name('seqs.fasta'))
-        self.assertEqual(len(seqs0), 3)
+        self.assertEqual(len(seqs0), 5)
         self.assertEqual(seqs0['Protein_1'], 'QEALVVKDLL')
         self.assertEqual(seqs0['Protein_2'], 'PEEDILKYVSYTL')
         self.assertEqual(seqs0['Protein_3'], 'QEALVVKDLL')
+        self.assertEqual(seqs0['RNA1'], 'ACGU')
+        self.assertEqual(seqs0['DNA1'], 'ACGT')
 
         # test with name map
         seqs = IMP.pmi.topology.Sequences(
             self.get_input_file_name('seqs.fasta'),
             name_map={'Protein_1': 'Prot1',
                       'Protein_2': 'Prot2',
-                      'Protein_3': 'Prot3'})
-        self.assertEqual(len(seqs), 3)
+                      'Protein_3': 'Prot3',
+                      'RNA1': 'RNA',
+                      'DNA1': 'DNA'})
+        self.assertEqual(len(seqs), 5)
         self.assertEqual(seqs['Prot1'], 'QEALVVKDLL')
         self.assertEqual(seqs['Prot2'], 'PEEDILKYVSYTL')
         self.assertEqual(seqs['Prot3'], 'QEALVVKDLL')
+        self.assertEqual(seqs['RNA'], 'ACGU')
+        self.assertEqual(seqs['DNA'], 'ACGT')
 
     def test_system_base_build(self):
         """Test SystemBase.build()"""
@@ -430,6 +437,27 @@ class Tests(IMP.test.TestCase):
                          for r in m2.residues), seqs["Prot2"])
         self.assertEqual(''.join(r.get_code()
                          for r in m3.residues), seqs["Prot3"])
+
+    def test_create_rna_dna_mmolecules(self):
+        """Test RNA/DNA Molecule creation from State"""
+        s = IMP.pmi.topology.System()
+        st = s.create_state()
+        m1 = st.create_molecule("RNA", sequence="ACGTU",
+                                alphabet=IMP.pmi.alphabets.rna)
+        m2 = st.create_molecule("DNA", sequence="ACGTU",
+                                alphabet=IMP.pmi.alphabets.dna)
+        # Deprecated mechanism to create RNA
+        with IMP.allow_deprecated():
+            m3 = st.create_molecule("RNA2", sequence="ACGTU", is_nucleic=True)
+        self.assertEqual([r.get_residue_type() for r in m1.residues],
+                         [IMP.atom.ADE, IMP.atom.CYT, IMP.atom.GUA,
+                          IMP.atom.THY, IMP.atom.URA])
+        self.assertEqual([r.get_residue_type() for r in m2.residues],
+                         [IMP.atom.DADE, IMP.atom.DCYT, IMP.atom.DGUA,
+                          IMP.atom.DTHY, IMP.atom.DURA])
+        self.assertEqual([r.get_residue_type() for r in m3.residues],
+                         [IMP.atom.ADE, IMP.atom.CYT, IMP.atom.GUA,
+                          IMP.atom.THY, IMP.atom.URA])
 
     def test_add_structure(self):
         """Test adding partial structure data to a molecule"""
@@ -618,20 +646,21 @@ class Tests(IMP.test.TestCase):
         self.assertEquals(m1.__repr__(), 'System.State_0.Prot1.0')
 
         # check if res0,1 created correctly
+        alpha = IMP.pmi.alphabets.amino_acid
         for rnum, rname, anums in zip((1, 2, 5, 6, 7, 8, 9), 'QEVVKDL', (9, 9, 7, 7, 9, 8, 8)):
             res = IMP.atom.Selection(hier, residue_index=rnum,
                                      resolution=0).get_selected_particles()
 
-            self.assertEquals(len(res), anums)
-            self.assertEquals(
+            self.assertEqual(len(res), anums)
+            self.assertEqual(
                 IMP.atom.Residue(
                     IMP.atom.Atom(res[0]).get_parent()).get_residue_type(),
-                IMP.pmi.tools.get_residue_type_from_one_letter_code(rname))
+                alpha.get_residue_type_from_one_letter_code(rname))
             res1 = IMP.atom.Selection(hier, residue_index=rnum,
                                       resolution=1).get_selected_particles()
-            self.assertEquals(len(res1), 1)
-            self.assertEquals(IMP.atom.Residue(res1[0]).get_residue_type(),
-                              IMP.pmi.tools.get_residue_type_from_one_letter_code(rname))
+            self.assertEqual(len(res1), 1)
+            self.assertEqual(IMP.atom.Residue(res1[0]).get_residue_type(),
+                             alpha.get_residue_type_from_one_letter_code(rname))
 
         # check if res10 created correctly
         sel = IMP.atom.Selection(hier, residue_indexes=[1, 2], resolution=10)
@@ -942,8 +971,9 @@ class Tests(IMP.test.TestCase):
         m1.add_representation(m1,
                               resolutions=[1])
         hier = s.build()
-        expect_sequence = [IMP.pmi.tools.get_residue_type_from_one_letter_code(
-            rname) for rname in 'AAAAAAAAA']
+        alpha = IMP.pmi.alphabets.amino_acid
+        expect_sequence = [alpha.get_residue_type_from_one_letter_code(rname)
+                           for rname in 'AAAAAAAAA']
         ps = IMP.atom.Selection(hier).get_selected_particles()
         built_sequence = [IMP.atom.Residue(p).get_residue_type() for p in ps]
         self.assertEqual(expect_sequence, built_sequence)

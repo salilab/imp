@@ -16,7 +16,10 @@ class Center(object):
 
 
 class Transformation(object):
-    """Rotation and translation applied to a geometric object.
+    """Rotation and translation applied to an object.
+
+       Transformation objects are typically used in subclasses of
+       :class:`GeometricObject`, or by :class:`ihm.dataset.TransformedDataset`.
 
        :param rot_matrix: Rotation matrix (as a 3x3 array of floats) that
               places the object in its final position.

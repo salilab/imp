@@ -140,11 +140,18 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(s.get_string_value(0), "IMP.isd.GaussianEMRestraint")
 
         self.assertEqual(s.get_number_of_int(), 0)
-        self.assertEqual(s.get_number_of_float(), 2)
+        self.assertEqual(s.get_number_of_float(), 3)
         self.assertEqual(s.get_float_key(0), "model cutoff")
         self.assertAlmostEqual(s.get_float_value(0), 1e8, delta=1e-4)
         self.assertEqual(s.get_float_key(1), "density cutoff")
         self.assertAlmostEqual(s.get_float_value(1), 1e8, delta=1e-4)
+        self.assertEqual(s.get_float_key(2), "slope")
+        self.assertAlmostEqual(s.get_float_value(2), 0., delta=1e-4)
+
+        self.assertEqual(s.get_number_of_particle_indexes(), 1)
+        self.assertEqual(s.get_particle_indexes_key(0), "density")
+        self.assertEqual(s.get_particle_indexes_value(0),
+                [p.get_index() for p in self.density_ps])
 
         self.gem.set_density_filename('/foobar')
         s = self.gem.get_static_info()

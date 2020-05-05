@@ -1,7 +1,7 @@
 /**
  *  \file IMP/UnaryFunction.h    \brief Single variable function.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_UNARY_FUNCTION_H

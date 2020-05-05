@@ -2,7 +2,7 @@
  *  \file IMP/rmf/link_macros.h
  *  \brief macros for display classes
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPRMF_LINK_MACROS_H
@@ -62,8 +62,8 @@
   void add_##names(RMF::FileHandle fh, const Types& hs) {               \
     IMP::rmf::internal::add_helper<Name##SaveLink>(fh, hs);             \
   }                                                                     \
-  void add_##names(RMF::NodeHandle fh, const Types& hs) {               \
-    IMP::rmf::internal::add_helper<Name##SaveLink>(fh.get_file(), hs);  \
+  void add_##names(RMF::NodeHandle nh, const Types& hs) {               \
+    IMP::rmf::internal::add_helper<Name##SaveLink>(nh, hs);             \
   }                                                                     \
   void add_##name(RMF::FileHandle fh, Type hs) {                        \
     add_##names(fh, Types(1, hs));                                      \

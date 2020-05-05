@@ -2,7 +2,7 @@
  *  \file Nuisance.cpp
  *  \brief defines a one-dimensional nuisance parameter (sigma, gamma, ...)
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

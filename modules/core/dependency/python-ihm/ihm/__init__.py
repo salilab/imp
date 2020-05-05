@@ -11,7 +11,6 @@
 
 import itertools
 import re
-from .format import CifWriter
 import sys
 # Handle different naming of urllib in Python 2/3
 try:
@@ -20,7 +19,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.12'
+__version__ = '0.14'
 
 class __UnknownValue(object):
     # Represent the mmCIF 'unknown' special value
@@ -192,6 +191,13 @@ class System(object):
         #: See :class:`~ihm.restraint.Feature`.
         self.orphan_features = []
 
+        #: All orphaned pseudo sites.
+        #: This can be used to keep track of all pseudo sites that are not
+        #: otherwise used - normally a site is used in a
+        #: :class:`~ihm.restraint.PseudoSiteFeature` or a
+        #: :class:`~ihm.restraint.CrossLinkPseudoSite`.
+        self.orphan_pseudo_sites = []
+
         #: Contains the fluorescence (FLR) part.
         #: See :class:`~ihm.flr.FLRData`.
         self.flr_data = []
@@ -258,6 +264,9 @@ class System(object):
         if not only_in_states:
             for ensemble in self.ensembles:
                 yield ensemble.model_group
+                for ss in ensemble.subsamples:
+                    if ss.model_group:
+                        yield ss.model_group
             for proc in self.ordered_processes:
                 for step in proc.steps:
                     for edge in step:
@@ -376,7 +385,12 @@ class System(object):
            any orphaned datasets. Duplicates may be present."""
         def _all_datasets_and_parents(d):
             for p in d.parents:
-                for alld in _all_datasets_and_parents(p):
+                # Handle transformed datasets
+                if hasattr(p, 'dataset'):
+                    pd = p.dataset
+                else:
+                    pd = p
+                for alld in _all_datasets_and_parents(pd):
                     yield alld
             yield d
         for d in self._all_datasets_except_parents():
@@ -393,11 +407,18 @@ class System(object):
            This includes all Locations referenced from other objects, plus
            any referenced from the top-level system.
            Duplicates may be present."""
+        def _all_ensemble_locations():
+            for ensemble in self.ensembles:
+                if ensemble.file:
+                    yield ensemble.file
+                for ss in ensemble.subsamples:
+                    if ss.file:
+                        yield ss.file
         return itertools.chain(
                 self.locations,
                 (dataset.location for dataset in self._all_datasets()
                           if hasattr(dataset, 'location') and dataset.location),
-                (ensemble.file for ensemble in self.ensembles if ensemble.file),
+                _all_ensemble_locations(),
                 (density.file for density in self._all_densities()
                               if density.file),
                 (sm.script_file for sm in self._all_starting_models()
@@ -433,6 +454,24 @@ class System(object):
                         if feature:
                             yield feature
         return itertools.chain(self.orphan_features, _all_restraint_features())
+
+    def _all_pseudo_sites(self):
+        """Iterate over all PseudoSites in the system.
+           This includes all PseudoSites referenced from other objects,
+           plus any referenced from the top-level system.
+           Duplicates may be present."""
+        def _all_restraint_sites():
+            for r in self._all_restraints():
+                if hasattr(r, 'cross_links'):
+                    for xl in r.cross_links:
+                        if xl.pseudo1:
+                            yield xl.pseudo1.site
+                        if xl.pseudo2:
+                            yield xl.pseudo2.site
+        return itertools.chain(self.orphan_pseudo_sites,
+                               _all_restraint_sites(),
+                               (f.site for f in self._all_features()
+                                if hasattr(f, 'site') and f.site))
 
     def _all_software(self):
         """Iterate over all Software in the system.
@@ -581,6 +620,11 @@ class Citation(object):
             if len(rng) == 2 and len(rng[1]) < len(rng[0]):
                 # map ranges like "2730-43" to 2730,2743 not 2730, 43
                 rng[1] = rng[0][:len(rng[0])-len(rng[1])] + rng[1]
+            # Handle one page or empty page range
+            if len(rng) == 1:
+                rng = rng[0]
+            if rng == '':
+                rng = None
             return rng
         # JSON values are always Unicode, but on Python 2 we want non-Unicode
         # strings, so convert to ASCII
@@ -601,7 +645,8 @@ class Citation(object):
                    if x['authtype'] == 'Author']
 
         return cls(pmid=pubmed_id, title=enc(ref['title']),
-                   journal=enc(ref['source']), volume=enc(ref['volume']),
+                   journal=enc(ref['source']),
+                   volume=enc(ref['volume']) or None,
                    page_range=get_page_range(ref),
                    year=enc(ref['pubdate']).split()[0],
                    authors=authors, doi=get_doi(ref))
@@ -942,6 +987,9 @@ class Entity(object):
        :param source: The method by which the sample for this entity was
               produced.
        :type source: :class:`ihm.source.Source`
+       :param references: Information about this entity stored in external
+              databases (for example the sequence in UniProt)
+       :type references: sequence of :class:`ihm.reference.Reference` objects
 
        The sequence for an entity can be specified explicitly as a set of
        chemical components, or (more usually) as a list or string of codes.
@@ -1000,7 +1048,7 @@ class Entity(object):
             "from that of the chemical components.")
 
     def __init__(self, sequence, alphabet=LPeptideAlphabet,
-                 description=None, details=None, source=None):
+                 description=None, details=None, source=None, references=[]):
         def get_chem_comp(s):
             if isinstance(s, ChemComp):
                 return s
@@ -1009,6 +1057,11 @@ class Entity(object):
         self.sequence = tuple(get_chem_comp(s) for s in sequence)
         self.description, self.details = description, details
         self.source = source
+        self.references = []
+        self.references.extend(references)
+
+    def __str__(self):
+        return "<ihm.Entity(%s)>" % self.description
 
     def is_polymeric(self):
         """Return True iff this entity represents a polymer, such as an

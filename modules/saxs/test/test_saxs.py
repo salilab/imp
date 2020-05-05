@@ -112,6 +112,24 @@ class Tests(IMP.test.TestCase):
         score = saxs_restraint.evaluate(False)
         self.assertAlmostEqual(score, 0.2916, delta=0.01)
 
+        s = saxs_restraint.get_static_info()
+        s.set_was_used(True)
+        self.assertEqual(s.get_number_of_string(), 2)
+        self.assertEqual(s.get_string_key(0), "type")
+        self.assertEqual(s.get_string_value(0), "IMP.saxs.Restraint")
+        self.assertEqual(s.get_string_key(1), "form factor type")
+        self.assertEqual(s.get_string_value(1), "heavy atoms")
+
+        self.assertEqual(s.get_number_of_filename(), 1)
+        self.assertEqual(s.get_number_of_float(), 3)
+        self.assertEqual(s.get_float_key(0), "min q")
+        self.assertAlmostEqual(s.get_float_value(0), 0.04138, delta=1e-4)
+        self.assertEqual(s.get_float_key(1), "max q")
+        self.assertAlmostEqual(s.get_float_value(1), 0.49836, delta=1e-4)
+        self.assertEqual(s.get_float_key(2), "delta q")
+        self.assertAlmostEqual(s.get_float_value(2), 0.00233152, delta=1e-4)
+        self.assertEqual(s.get_number_of_int(), 0)
+
     def test_saxs_residue_level_restraint(self):
         """Check residue level saxs restraint"""
         m = IMP.Model()

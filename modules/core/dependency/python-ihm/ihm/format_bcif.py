@@ -31,18 +31,21 @@ _Float64 = 33
 if sys.version_info[0] >= 3:
     def _decode_bytes(bs):
         return bs.decode('ascii')
+
     def _encode_str(s):
         return s.encode('ascii')
 else:
     def _decode_bytes(bs):
         return bs
+
     def _encode_str(s):
         return s
+
 
 class _Decoder(object):
     """Base class for all decoders."""
 
-    _kind = None # Encoder kind (in BinaryCIF specification)
+    _kind = None  # Encoder kind (in BinaryCIF specification)
 
     def __call__(self, enc, data):
         """Given encoding information `enc` and raw data `data`, return
@@ -131,7 +134,8 @@ class _IntegerPackingDecoder(_Decoder):
 
 
 class _DeltaDecoder(_Decoder):
-    """Decode an integer array stored as an array of consecutive differences."""
+    """Decode an integer array stored as an array of consecutive
+       differences."""
     _kind = b'Delta'
 
     def __call__(self, enc, data):
@@ -162,15 +166,19 @@ class _FixedPointDecoder(_Decoder):
         for d in data:
             yield float(d) / factor
 
+
 def _get_decoder_map():
     m = {}
     for d in [x[1] for x in inspect.getmembers(sys.modules[__name__],
-                                inspect.isclass) if issubclass(x[1], _Decoder)]:
+                                               inspect.isclass)
+              if issubclass(x[1], _Decoder)]:
         m[d._kind] = d()
     return m
 
+
 # Mapping from BinaryCIF encoding names to _Decoder objects
 _decoder_map = _get_decoder_map()
+
 
 def _decode(data, encoding):
     """Decode the data using the list of encodings, and return it."""
@@ -264,10 +272,13 @@ class _CategoryWriter(object):
         self.writer = writer
         self.category = category
         self._data = {}
+
     def write(self, **kwargs):
         self._data.update(kwargs)
+
     def __enter__(self):
         return self
+
     def __exit__(self, exc_type, exc_value, traceback):
         for k in self._data:
             self._data[k] = [self._data[k]]
@@ -284,12 +295,15 @@ class _LoopWriter(object):
         self._values = []
         for i in range(len(keys)):
             self._values.append([])
+
     def write(self, **kwargs):
         for i, k in enumerate(self.python_keys):
             val = kwargs.get(k, None)
             self._values[i].append(val)
+
     def __enter__(self):
         return self
+
     def __exit__(self, exc_type, exc_value, traceback):
         data = {}
         for key, value in zip(self.keys, self._values):
@@ -304,7 +318,7 @@ class EncodeError(Exception):
 
 class _Encoder(object):
     """Base class for all encoders"""
-    _kind = None # Encoder kind (in BinaryCIF specification)
+    _kind = None  # Encoder kind (in BinaryCIF specification)
 
     def __call__(self, data):
         """Given raw data `data`, return encoded data and a BinaryCIF
@@ -416,7 +430,7 @@ class _StringArrayMaskedEncoder(_MaskedEncoder):
                      _ByteArrayEncoder()]
 
     def __call__(self, data, mask):
-        seen_substrs = {} # keys are substrings, values indices
+        seen_substrs = {}  # keys are substrings, values indices
         sorted_substrs = []
         indices = []
         for i, reals in enumerate(data):
@@ -428,7 +442,7 @@ class _StringArrayMaskedEncoder(_MaskedEncoder):
                 if isinstance(s, bool):
                     s = ihm.format._Writer._boolmap[s]
                 else:
-                    s = str(s) # coerce non-str data to str
+                    s = str(s)  # coerce non-str data to str
                 if s not in seen_substrs:
                     seen_substrs[s] = len(seen_substrs)
                     sorted_substrs.append(s)
@@ -478,7 +492,6 @@ def _get_mask_and_type(data):
     """Detect missing/omitted values in `data` and determine the type of
        the remaining values (str, int, float)"""
     mask = None
-    typ = None
     seen_types = set()
     for i, val in enumerate(data):
         if val is None or val == ihm.unknown:
@@ -552,7 +565,7 @@ class BinaryCifWriter(ihm.format._Writer):
 
     def start_block(self, name):
         """See :meth:`ihm.format.CifWriter.start_block`."""
-        block = {b'header':_encode_str(name), b'categories': []}
+        block = {b'header': _encode_str(name), b'categories': []}
         self._categories = block[b'categories']
         self._blocks.append(block)
 

@@ -5,7 +5,7 @@ Viewing {#viewing}
 
 [TOC]
 
-There are currently two molecular viewers that support RMFs:
+There are currently several molecular viewers that support RMFs:
 
 # Chimera # {#chimera}
 
@@ -19,6 +19,12 @@ While support for RMF was added to the Chimera 1.9 stable release, only the
 nightly builds of Chimera work with the very latest RMF features. So if Chimera
 is unable to read an RMF file, first try updating to the latest nightly build.
 
+# ChimeraX # {#chimerax}
+
+A plugin to add support for RMF to
+[ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) is available as part of
+the [ChimeraX Toolshed](https://cxtoolshed.rbvi.ucsf.edu/apps/chimeraxrmf).
+It requires a recent version of ChimeraX (>= 0.91) or a nightly build.
 
 # VMD # {#vmd}
 

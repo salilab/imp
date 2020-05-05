@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -43,6 +43,13 @@ class SharedDataHierarchy {
         "Still in list");
   }
 
+  size_t find_id(std::vector<NodeID>& list, NodeID to_find) {
+    std::vector<NodeID>::iterator found;
+    found = std::find(list.begin(), list.end(), to_find);
+    RMF_USAGE_CHECK(found != list.end(), "Not in list");
+    return found - list.begin();
+  }
+
  public:
   SharedDataHierarchy() { clear(); }
 
@@ -80,12 +87,32 @@ class SharedDataHierarchy {
         parent != NodeID() && parent != NodeID(-1, NodeID::SpecialTag()),
         "Bad parent");
     hierarchy_.resize(
-        std::max<std::size_t>(hierarchy_.size(), parent.get_index()));
+        std::max<std::size_t>(hierarchy_.size(), parent.get_index() + 1));
     hierarchy_.resize(
-        std::max<std::size_t>(hierarchy_.size(), child.get_index()));
+        std::max<std::size_t>(hierarchy_.size(), child.get_index() + 1));
     hierarchy_[parent.get_index()].children.push_back(child);
     hierarchy_[child.get_index()].parents.push_back(parent);
     dirty_ = true;
+  }
+
+  NodeID replace_child(NodeID id, NodeID child, std::string name, NodeType t) {
+    hierarchy_.resize(
+        std::max<std::size_t>(hierarchy_.size(), id.get_index() + 1));
+    size_t child_ind, parent_ind;
+    child_ind = find_id(hierarchy_[id.get_index()].children, child);
+    parent_ind = find_id(hierarchy_[child.get_index()].parents, id);
+
+    NodeID newchild = add_node(name, t);
+    hierarchy_.resize(
+        std::max<std::size_t>(hierarchy_.size(), newchild.get_index() + 1));
+
+    hierarchy_[newchild.get_index()].children.push_back(child);
+    hierarchy_[newchild.get_index()].parents.push_back(id);
+
+    hierarchy_[id.get_index()].children[child_ind] = newchild;
+    hierarchy_[child.get_index()].parents[parent_ind] = newchild;
+    dirty_ = true;
+    return newchild;
   }
 
   void remove_child(NodeID parent, NodeID child) {

@@ -2,7 +2,7 @@
  *  \file IMP/RestraintInfo.h
  *  \brief Report key:value information on restraints
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,6 +12,7 @@
 #include <IMP/kernel_config.h>
 #include <IMP/Object.h>
 #include <IMP/types.h>
+#include <IMP/base_types.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 
@@ -20,6 +21,16 @@ IMPKERNEL_BEGIN_NAMESPACE
     or Restraint::get_dynamic_info() and are used to report information
     about a Restraint instance as a set of key:value pairs. The primary
     purpose is to allow restraints to be written to files, such as RMF.
+
+    Values can be simple types (int, float, string) or lists of them;
+    filename(s) (treated similarly to strings but paths are made relative
+    to that of the output file); or particles.
+
+    Particle values are used to reference particles that contain restraint
+    information (either static or dynamic) that generally exist
+    outside of the molecular hierarchy, such as Bayesian nuisances
+    or Gaussians for an EM density map. The particles must live in
+    the same model as the restraint.
   */
 class IMPKERNELEXPORT RestraintInfo : public Object {
 public:
@@ -99,6 +110,36 @@ public:
     return floats_[i].second;
   }
 
+  //! Add a list of Int values referenced by the given key
+  void add_ints(std::string key, Ints value);
+
+  //! Get the number of Ints that have been added
+  unsigned get_number_of_ints() const { return ints_.size(); }
+
+  //! Get the key for the ith Ints mapping
+  std::string get_ints_key(unsigned i) const { return ints_[i].first; }
+
+  //! Get the value for the ith Ints mapping
+  Ints get_ints_value(unsigned i) const {
+    return ints_[i].second;
+  }
+
+  //! Add a list of string values referenced by the given key
+  void add_strings(std::string key, Strings value);
+
+  //! Get the number of strings that have been added
+  unsigned get_number_of_strings() const { return strings_.size(); }
+
+  //! Get the key for the ith strings mapping
+  std::string get_strings_key(unsigned i) const {
+    return strings_[i].first;
+  }
+
+  //! Get the value for the ith strings mapping
+  Strings get_strings_value(unsigned i) const {
+    return strings_[i].second;
+  }
+
   //! Add a list of filename values referenced by the given key
   /** Filenames are treated similarly to strings but the caller is expected
       to make them absolute paths before adding them here. When written to
@@ -119,6 +160,22 @@ public:
     return filenames_[i].second;
   }
 
+  //! Add ParticleIndexes referenced by the given key
+  void add_particle_indexes(std::string key, ParticleIndexes value);
+
+  //! Get the number of ParticleIndexes that have been added
+  unsigned get_number_of_particle_indexes() const { return pis_.size(); }
+
+  //! Get the key for the ith ParticleIndexes mapping
+  std::string get_particle_indexes_key(unsigned i) const {
+    return pis_[i].first;
+  }
+
+  //! Get the value for the ith ParticleIndexes mapping
+  ParticleIndexes get_particle_indexes_value(unsigned i) const {
+    return pis_[i].second;
+  }
+
   IMP_OBJECT_METHODS(RestraintInfo);
 
 private:
@@ -134,8 +191,15 @@ private:
   typedef std::pair<std::string, Floats> FloatsData;
   std::vector<FloatsData> floats_;
 
+  typedef std::pair<std::string, Ints> IntsData;
+  std::vector<IntsData> ints_;
+
   typedef std::pair<std::string, Strings> StringsData;
+  std::vector<StringsData> strings_;
   std::vector<StringsData> filenames_;
+
+  typedef std::pair<std::string, ParticleIndexes> ParticleIndexesData;
+  std::vector<ParticleIndexesData> pis_;
 };
 
 IMPKERNEL_END_NAMESPACE

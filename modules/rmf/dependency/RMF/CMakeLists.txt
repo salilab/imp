@@ -4,6 +4,11 @@ project(RMF)
 # needs to be in main CMakeLists.txt
 enable_testing()
 
+# Default Python3_FIND_STRATEGY to LOCATION
+if(POLICY CMP0094)
+cmake_policy(SET CMP0094 NEW)
+endif(POLICY CMP0094)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake_modules)
 include(cmake_modules/IMPFindPython.cmake)
 imp_find_python()

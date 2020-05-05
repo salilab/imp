@@ -2,7 +2,7 @@
  *  \file saxs::Restraint.h
  *  \brief Calculate score based on fit to SAXS profile.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,7 +16,8 @@ IMPSAXS_BEGIN_NAMESPACE
 
 Restraint::Restraint(const Particles& particles,
                      const Profile* exp_profile, FormFactorType ff_type)
-    : IMP::Restraint(IMP::internal::get_model(particles), "SAXS restraint") {
+    : IMP::Restraint(IMP::internal::get_model(particles), "SAXS restraint"),
+      ff_type_(ff_type) {
 
   handler_ = new RigidBodiesProfileHandler(particles, ff_type);
   profile_fitter_ = new ProfileFitter<ChiScore>(exp_profile);
@@ -62,6 +63,35 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator* acc) const {
   IMP_LOG_TERSE("SAXS Restraint::done derivatives, score " << score
                                                                    << "\n");
   return score;
+}
+
+namespace {
+  const char *get_ff_type_string(FormFactorType ff_type) {
+    switch(ff_type) {
+      case ALL_ATOMS:
+        return "all atoms";
+      case HEAVY_ATOMS:
+        return "heavy atoms";
+      case CA_ATOMS:
+        return "Calpha atoms";
+      case RESIDUES:
+        return "residues";
+      default:
+        return "unknown";
+    }
+  }
+}
+
+RestraintInfo *Restraint::get_static_info() const {
+  IMP_NEW(RestraintInfo, ri, ());
+  const Profile *p = profile_fitter_->get_profile();
+  ri->add_string("type", "IMP.saxs.Restraint");
+  ri->add_string("form factor type", get_ff_type_string(ff_type_));
+  ri->add_filename("filename", p->get_name());
+  ri->add_float("min q", p->get_min_q());
+  ri->add_float("max q", p->get_max_q());
+  ri->add_float("delta q", p->get_delta_q());
+  return ri.release();
 }
 
 IMPSAXS_END_NAMESPACE

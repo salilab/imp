@@ -2,16 +2,23 @@
  *  \file IMP/rmf/restraint_io.cpp
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/rmf/restraint_io.h>
 #include <IMP/rmf/simple_links.h>
 #include <IMP/rmf/link_macros.h>
+#include <IMP/rmf/internal/atom_links_coordinate_helpers.h>
 #include <RMF/decorator/physics.h>
+#include <RMF/decorator/uncertainty.h>
 #include <RMF/decorator/feature.h>
 #include <IMP/core/RestraintsScoringFunction.h>
+#include <IMP/core/XYZR.h>
+#include <IMP/core/Gaussian.h>
+#include <IMP/core/rigid_bodies.h>
+#include <IMP/isd/Scale.h>
+#include <IMP/atom/Mass.h>
 #include <IMP/input_output.h>
 #include <IMP/ConstVector.h>
 #include <IMP/WeakPointer.h>
@@ -97,15 +104,23 @@ class Subset : public ConstVector<WeakPointer<Particle>, Particle *> {
 IMP_VALUES(Subset, Subsets);
 
 template <class C>
-RMF::Ints get_node_ids(RMF::FileConstHandle fh, const C &ps) {
+RMF::Ints get_node_ids(RMF::FileConstHandle fh, const C &ps,
+                       Restraint *o=nullptr) {
   RMF::Ints ret;
   for (unsigned int i = 0; i < ps.size(); ++i) {
     RMF::NodeConstHandle nh = get_node_from_association(fh, ps[i]);
     if (nh != RMF::NodeConstHandle()) {
       ret.push_back(nh.get_id().get_index());
-    } else {
-      IMP_WARN("Particle " << Showable(ps[i]) << " is not in the RMF."
-                           << std::endl);
+    } else if (!core::RigidBody::get_is_setup(ps[i])) {
+      /* Don't complain about rigid bodies referenced by restraints, as
+         these don't have their own nodes in RMF */
+      if (o) {
+        IMP_WARN("Particle " << Showable(ps[i]) << " referenced by restraint "
+               << Showable(o) << " is not in the RMF." << std::endl);
+      } else {
+        IMP_WARN("Particle " << Showable(ps[i]) << " is not in the RMF."
+                             << std::endl);
+       }
     }
   }
   return ret;
@@ -140,9 +155,16 @@ RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
 // get_particles
 //
 class RestraintLoadLink : public SimpleLoadLink<Restraint> {
+  typedef std::pair<std::string, ParticleIndexes> ParticleIndexesData;
   typedef SimpleLoadLink<Restraint> P;
   RMF::decorator::ScoreFactory sf_;
   RMF::decorator::RepresentationFactory rf_;
+  RMF::decorator::GaussianParticleFactory gaussian_factory_;
+  RMF::decorator::IntermediateParticleFactory ipf_;
+  RMF::decorator::ScaleFactory scalef_;
+  RMF::decorator::ReferenceFrameFactory refframef_;
+  RMF::FloatKey radius_key_;
+  RMF::FloatKey mass_key_;
   RMF::Category imp_cat_;
   RMF::Category imp_restraint_cat_;
   RMF::Category imp_restraint_fn_cat_;
@@ -151,10 +173,13 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   RMF::StringKeys sks_;
   RMF::FloatKeys fks_;
   RMF::FloatsKeys fsks_;
+  RMF::IntsKeys isks_;
+  RMF::StringsKeys ssks_;
   RMF::StringKeys filenameks_;
   RMF::StringsKeys filenamesks_;
 
   void do_load_one(RMF::NodeConstHandle nh, Restraint *oi) {
+    RMF::NodeConstHandles chs = nh.get_children();
     if (sf_.get_is(nh)) {
       RMF::decorator::ScoreConst d = sf_.get(nh);
       IMP_LOG_TERSE("Loading score " << d.get_score() << " into restraint"
@@ -163,7 +188,13 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     } else {
       oi->set_last_score(0);
     }
+    IMP_FOREACH(RMF::NodeConstHandle ch, chs) {
+      if (ch.get_type() == RMF::ORGANIZATIONAL) {
+        load_restraint_particles(ch);
+      }
+    }
   }
+
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type() == RMF::FEATURE;
   }
@@ -172,10 +203,13 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     RMF::NodeConstHandles chs = name.get_children();
     Restraints childr;
     ParticlesTemp inputs;
+    std::vector<ParticleIndexesData> static_pis, dynamic_pis;
     IMP_FOREACH(RMF::NodeConstHandle ch, chs) {
       if (ch.get_type() == RMF::FEATURE) {
         childr.push_back(do_create(ch, m));
         add_link(childr.back(), ch);
+      } else if (ch.get_type() == RMF::ORGANIZATIONAL) {
+        setup_restraint_particles(ch, m, static_pis, dynamic_pis);
       }
     }
     if (rf_.get_is(name)) {
@@ -204,7 +238,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
       IMP_NEW(RMFRestraint, r, (m, name.get_name()));
       ret = r;
       r->set_particles(inputs);
-      load_restraint_info(r, name);
+      load_restraint_info(r, name, static_pis, dynamic_pis);
     }
     if (name.get_has_value(weight_key_)) {
       ret->set_weight(name.get_value(weight_key_));
@@ -212,7 +246,102 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     return ret.release();
   }
 
-  void load_restraint_info(RMFRestraint *r, RMF::NodeConstHandle nh) {
+  void load_restraint_particles(RMF::NodeConstHandle parent) {
+    IMP_FOREACH(RMF::NodeConstHandle ch, parent.get_children()) {
+      Particle *p = get_association<Particle>(ch);
+      if (p) {
+        load_particle(ch, p->get_model(), p->get_index());
+      } else {
+        IMP_WARN("No IMP particle for node " << ch.get_name() << std::endl);
+      }
+    }
+  }
+
+  /* Make any IMP Particles referenced by the given RMF restraint node
+     (or its children) */
+  void create_restraint_particles(RMF::NodeConstHandle parent, Model *m) {
+    RMF::NodeConstHandles chs = parent.get_children();
+    IMP_FOREACH(RMF::NodeConstHandle ch, chs) {
+      if (ch.get_type() == RMF::ORGANIZATIONAL) {
+        ParticleIndexes pis;
+        IMP_FOREACH(RMF::NodeConstHandle pch, ch.get_children()) {
+          Pointer<Particle> pi = new IMP::Particle(m, pch.get_name());
+          set_association(pch, pi.get(), true);
+        }
+      } else {
+        create_restraint_particles(ch, m);
+      }
+    }
+  }
+
+  void setup_restraint_particles(
+      RMF::NodeConstHandle parent, Model *m,
+      std::vector<ParticleIndexesData> &static_pis,
+      std::vector<ParticleIndexesData> &dynamic_pis) {
+    ParticleIndexes pis;
+    IMP_FOREACH(RMF::NodeConstHandle ch, parent.get_children()) {
+      Particle *p = get_association<Particle>(ch);
+      pis.push_back(p->get_index());
+      setup_particle(ch, m, p->get_index());
+    }
+    // todo: distinguish static and dynamic pis
+    static_pis.push_back(ParticleIndexesData(parent.get_name(), pis));
+  }
+
+  void load_particle(RMF::NodeConstHandle n, Model *m, ParticleIndex p) {
+    if (scalef_.get_is(n)) {
+      RMF::decorator::ScaleConst rscale = scalef_.get(n);
+      isd::Scale scale(m, p);
+      scale.set_scale(rscale.get_scale());
+      scale.set_upper(rscale.get_upper());
+      scale.set_lower(rscale.get_lower());
+    }
+  }
+
+  void setup_particle(RMF::NodeConstHandle n, Model *m, ParticleIndex p) {
+    if (n.get_has_value(radius_key_)) {
+      double r = n.get_value(radius_key_);
+      m->add_attribute(core::XYZR::get_radius_key(), p, r);
+    }
+    if (n.get_has_value(mass_key_)) {
+      atom::Mass::setup_particle(m, p, n.get_value(mass_key_));
+    }
+    if (scalef_.get_is(n)) {
+      if (!isd::Scale::get_is_setup(m, p)) {
+        isd::Scale::setup_particle(m, p);
+      }
+      RMF::decorator::ScaleConst rscale = scalef_.get(n);
+      isd::Scale scale(m, p);
+      scale.set_scale(rscale.get_scale());
+      scale.set_upper(rscale.get_upper());
+      scale.set_lower(rscale.get_lower());
+    }
+    if (ipf_.get_is(n)) {
+      if (core::XYZ::get_is_setup(m, p)) {
+        core::XYZ(m, p).set_coordinates(internal::get_coordinates(n, ipf_));
+      } else {
+        core::XYZ::setup_particle(m, p, internal::get_coordinates(n, ipf_));
+      }
+    }
+    if (gaussian_factory_.get_is(n)) {
+      if (!core::Gaussian::get_is_setup(m, p)) {
+        core::Gaussian::setup_particle(m, p);
+      }
+      RMF::Vector3 v = gaussian_factory_.get(n).get_variances();
+      core::Gaussian(m, p).set_variances(algebra::Vector3D(v));
+    }
+    if (refframef_.get_is(n)) {
+      if (!core::RigidBody::get_is_setup(m, p)) {
+        core::RigidBody::setup_particle(m, p, algebra::ReferenceFrame3D());
+      }
+      algebra::ReferenceFrame3D rf(internal::get_transformation(n, refframef_));
+      core::RigidBody(m, p).set_reference_frame_lazy(rf);
+    }
+  }
+
+  void load_restraint_info(RMFRestraint *r, RMF::NodeConstHandle nh,
+                           std::vector<ParticleIndexesData> &static_pis,
+                           std::vector<ParticleIndexesData> &dynamic_pis) {
     RMF::FileConstHandle fh = nh.get_file();
     RMF_FOREACH(RMF::IntKey k, iks_) {
       if (!nh.get_value(k).get_is_null()) {
@@ -244,6 +373,22 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         r->get_info()->add_floats(fh.get_name(k), value);
       }
     }
+    RMF_FOREACH(RMF::IntsKey k, isks_) {
+      if (!nh.get_value(k).get_is_null()) {
+        // No automatic conversion from RMF::Ints to IMP::Ints
+        RMF::Ints rvalue = nh.get_value(k);
+        Ints value(rvalue.begin(), rvalue.end());
+        r->get_info()->add_ints(fh.get_name(k), value);
+      }
+    }
+    RMF_FOREACH(RMF::StringsKey k, ssks_) {
+      if (!nh.get_value(k).get_is_null()) {
+        // No automatic conversion from RMF::Strings to IMP::Strings
+        RMF::Strings rvalue = nh.get_value(k);
+        Strings value(rvalue.begin(), rvalue.end());
+        r->get_info()->add_strings(fh.get_name(k), value);
+      }
+    }
     RMF_FOREACH(RMF::StringsKey k, filenamesks_) {
       if (!nh.get_value(k).get_is_null()) {
         RMF::Strings rvalue = nh.get_value(k);
@@ -256,6 +401,15 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         r->get_info()->add_filenames(fh.get_name(k), value);
       }
     }
+
+    for (unsigned i = 0; i < static_pis.size(); ++i) {
+      r->get_info()->add_particle_indexes(static_pis[i].first,
+                                          static_pis[i].second);
+    }
+    for (unsigned i = 0; i < dynamic_pis.size(); ++i) {
+      r->get_info()->add_particle_indexes(dynamic_pis[i].first,
+                                          dynamic_pis[i].second);
+    }
   }
 
  public:
@@ -263,6 +417,10 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
       : P("RestraintLoadLink%1%"),
         sf_(fh),
         rf_(fh),
+        gaussian_factory_(fh),
+        ipf_(fh),
+        scalef_(fh),
+        refframef_(fh),
         imp_cat_(fh.get_category("IMP")),
         imp_restraint_cat_(fh.get_category("IMP restraint")),
         imp_restraint_fn_cat_(fh.get_category("IMP restraint files")),
@@ -271,10 +429,46 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     fks_ = fh.get_keys<RMF::FloatTraits>(imp_restraint_cat_);
     sks_ = fh.get_keys<RMF::StringTraits>(imp_restraint_cat_);
     fsks_ = fh.get_keys<RMF::FloatsTraits>(imp_restraint_cat_);
+    isks_ = fh.get_keys<RMF::IntsTraits>(imp_restraint_cat_);
+    ssks_ = fh.get_keys<RMF::StringsTraits>(imp_restraint_cat_);
     filenameks_ = fh.get_keys<RMF::StringTraits>(imp_restraint_fn_cat_);
     filenamesks_ = fh.get_keys<RMF::StringsTraits>(imp_restraint_fn_cat_);
+    RMF::Category phy = fh.get_category("physics");
+    radius_key_ = fh.get_key(phy, "radius", RMF::FloatTraits());
+    mass_key_ = fh.get_key(phy, "mass", RMF::FloatTraits());
   }
   static const char *get_name() { return "restraint load"; }
+
+  /** Create all the entities under the passed root.*/
+  Vector<Pointer<Restraint> > create(RMF::NodeConstHandle rt, Model *m) {
+    IMP_OBJECT_LOG;
+    IMP_LOG_TERSE("Creating Model objects from " << rt << std::endl);
+    RMF::SetCurrentFrame sf(rt.get_file(), RMF::FrameID(0));
+    RMF::NodeConstHandles ch = rt.get_children();
+    Vector<Pointer<Restraint> > ret;
+    // Do a first pass to create any particles referenced by restraints.
+    // We need to do this as sometimes a restraint will use a particle as
+    // a feature before another restraint declares the particle as an input
+    // (e.g. cross-links).
+    // Otherwise, this method functions much as SimpleLoadLink::create().
+    for (unsigned int i = 0; i < ch.size(); ++i) {
+      if (get_is(ch[i])) {
+        create_restraint_particles(ch[i], m);
+      }
+    }
+
+    for (unsigned int i = 0; i < ch.size(); ++i) {
+      IMP_LOG_VERBOSE("Checking " << ch[i] << std::endl);
+      if (get_is(ch[i])) {
+        IMP_LOG_VERBOSE("Adding " << ch[i] << std::endl);
+        Pointer<Restraint> o = do_create(ch[i], m);
+        add_link(o, ch[i]);
+        ret.push_back(o);
+        o->set_was_used(true);
+      }
+    }
+    return ret;
+  }
 
   IMP_OBJECT_METHODS(RestraintLoadLink);
 };
@@ -283,6 +477,11 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   typedef SimpleSaveLink<Restraint> P;
   RMF::decorator::ScoreFactory sf_;
   RMF::decorator::RepresentationFactory rf_;
+  RMF::decorator::ParticleFactory particle_factory_;
+  RMF::decorator::GaussianParticleFactory gaussian_factory_;
+  RMF::decorator::IntermediateParticleFactory ipf_;
+  RMF::decorator::ScaleFactory scalef_;
+  RMF::decorator::ReferenceFrameFactory refframef_;
   RMF::Category imp_cat_;
   RMF::Category imp_restraint_cat_;
   RMF::Category imp_restraint_fn_cat_;
@@ -327,7 +526,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
           get_input_particles(o->get_inputs());
       std::sort(inputs.begin(), inputs.end());
       inputs.erase(std::unique(inputs.begin(), inputs.end()), inputs.end());
-      RMF::Ints nhs = get_node_ids(nh.get_file(), inputs);
+      RMF::Ints nhs = get_node_ids(nh.get_file(), inputs, o);
       sdnf.set_static_representation(nhs);
     }
     save_dynamic_info(o, nh);
@@ -420,6 +619,22 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       RMF::Floats rvalue(value.begin(), value.end());
       nh.set_frame_value(key, rvalue);
     }
+    for (i = 0; i < ri->get_number_of_ints(); ++i) {
+      RMF::IntsKey key = fh.get_key<RMF::IntsTraits>(
+                             imp_restraint_cat_, ri->get_ints_key(i));
+      // No automatic conversion from IMP::Ints to RMF::Ints
+      Ints value = ri->get_ints_value(i);
+      RMF::Ints rvalue(value.begin(), value.end());
+      nh.set_frame_value(key, rvalue);
+    }
+    for (i = 0; i < ri->get_number_of_strings(); ++i) {
+      RMF::StringsKey key = fh.get_key<RMF::StringsTraits>(
+                             imp_restraint_cat_, ri->get_strings_key(i));
+      // No automatic conversion from IMP::Strings to RMF::Strings
+      Strings value = ri->get_strings_value(i);
+      RMF::Strings rvalue(value.begin(), value.end());
+      nh.set_frame_value(key, rvalue);
+    }
     for (i = 0; i < ri->get_number_of_filenames(); ++i) {
       RMF::StringsKey key = fh.get_key<RMF::StringsTraits>(
                              imp_restraint_fn_cat_, ri->get_filenames_key(i));
@@ -431,6 +646,8 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       }
       nh.set_frame_value(key, rvalue);
     }
+
+    save_restraint_child_particles(o, nh, ri);
   }
 
   // Save any info from Restraint::get_static_info()
@@ -470,6 +687,22 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       RMF::Floats rvalue(value.begin(), value.end());
       nh.set_static_value(key, rvalue);
     }
+    for (i = 0; i < ri->get_number_of_ints(); ++i) {
+      RMF::IntsKey key = fh.get_key<RMF::IntsTraits>(
+                             imp_restraint_cat_, ri->get_ints_key(i));
+      // No automatic conversion from IMP::Ints to RMF::Ints
+      Ints value = ri->get_ints_value(i);
+      RMF::Ints rvalue(value.begin(), value.end());
+      nh.set_static_value(key, rvalue);
+    }
+    for (i = 0; i < ri->get_number_of_strings(); ++i) {
+      RMF::StringsKey key = fh.get_key<RMF::StringsTraits>(
+                             imp_restraint_cat_, ri->get_strings_key(i));
+      // No automatic conversion from IMP::Strings to RMF::Strings
+      Strings value = ri->get_strings_value(i);
+      RMF::Strings rvalue(value.begin(), value.end());
+      nh.set_static_value(key, rvalue);
+    }
     for (i = 0; i < ri->get_number_of_filenames(); ++i) {
       RMF::StringsKey key = fh.get_key<RMF::StringsTraits>(
                              imp_restraint_fn_cat_, ri->get_filenames_key(i));
@@ -480,6 +713,100 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
         rvalue.push_back(RMF::internal::get_relative_path(fh.get_path(), *it));
       }
       nh.set_static_value(key, rvalue);
+    }
+
+    add_restraint_child_particles(o, nh, ri);
+
+    // Need dynamic info too to get the set of particles
+    Pointer<RestraintInfo> dri = o->get_dynamic_info();
+    if (dri) {
+      dri->set_was_used(true);
+      add_restraint_child_particles(o, nh, dri);
+    }
+  }
+
+  void add_restraint_child_particles(Restraint *o, RMF::NodeHandle nh,
+                                     RestraintInfo *ri) {
+    unsigned i;
+    for (i = 0; i < ri->get_number_of_particle_indexes(); ++i) {
+      RMF::NodeHandle n = nh.add_child(ri->get_particle_indexes_key(i),
+                                       RMF::ORGANIZATIONAL);
+      add_static_particles(n, IMP::get_particles(o->get_model(),
+                                       ri->get_particle_indexes_value(i)));
+    }
+  }
+
+  void save_restraint_child_particles(Restraint *o, RMF::NodeHandle nh,
+                                      RestraintInfo *ri) {
+    unsigned i;
+    RMF::FileHandle file = nh.get_file();
+    for (i = 0; i < ri->get_number_of_particle_indexes(); ++i) {
+      save_dynamic_particles(file, IMP::get_particles(o->get_model(),
+                                       ri->get_particle_indexes_value(i)));
+    }
+  }
+
+  void save_dynamic_particles(RMF::FileHandle file, ParticlesTemp ps) {
+    for (ParticlesTemp::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
+      Particle *p = *pit;
+      RMF::NodeHandle nh = get_node_from_association(file, p);
+      save_node(p->get_model(), p->get_index(), nh);
+    }
+  }
+
+  void add_static_particles(RMF::NodeHandle parent, ParticlesTemp ps) {
+    RMF::FileHandle file = parent.get_file();
+    RMF::decorator::AliasFactory af(file);
+    for (ParticlesTemp::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
+      Particle *p = *pit;
+      std::string nicename = RMF::get_as_node_name(p->get_name());
+      if (get_has_associated_node(file, p)) {
+        RMF::NodeHandle c = parent.add_child(nicename, RMF::ALIAS);
+        af.get(c).set_aliased(get_node_from_association(file, p));
+      } else {
+        RMF::NodeHandle c = parent.add_child(nicename, RMF::REPRESENTATION);
+        setup_node(p->get_model(), p->get_index(), c);
+        // add static attributes
+        set_association(c, p, true);
+      }
+    }
+  }
+
+  void save_node(Model *m, ParticleIndex p, RMF::NodeHandle n) {
+    if (isd::Scale::get_is_setup(m, p)) {
+      isd::Scale scale(m, p);
+      RMF::decorator::Scale rscale = scalef_.get(n);
+      rscale.set_scale(scale.get_scale());
+      rscale.set_upper(scale.get_upper());
+      rscale.set_lower(scale.get_lower());
+    }
+  }
+
+  void setup_node(Model *m, ParticleIndex p, RMF::NodeHandle n) {
+    if (core::RigidBody::get_is_setup(m, p)) {
+      internal::copy_to_static_reference_frame(
+         core::RigidBody(m, p).get_reference_frame().get_transformation_to(),
+         n, refframef_);
+    }
+    if (isd::Scale::get_is_setup(m, p)) {
+      isd::Scale scale(m, p);
+      RMF::decorator::Scale rscale = scalef_.get(n);
+      rscale.set_scale(scale.get_scale());
+      rscale.set_upper(scale.get_upper());
+      rscale.set_lower(scale.get_lower());
+    }
+    if (core::XYZR::get_is_setup(m, p)) {
+      core::XYZR d(m, p);
+      internal::copy_to_static_particle(d.get_coordinates(), n, ipf_);
+      ipf_.get(n).set_radius(d.get_radius());
+    }
+    if (atom::Mass::get_is_setup(m, p)) {
+      atom::Mass d(m, p);
+      particle_factory_.get(n).set_mass(d.get_mass());
+    }
+    if (core::Gaussian::get_is_setup(m, p)) {
+      algebra::Vector3D var = core::Gaussian(m, p).get_variances();
+      gaussian_factory_.get(n).set_variances(RMF::Vector3(var));
     }
   }
 
@@ -494,6 +821,11 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       : P("RestraintSaveLink%1%"),
         sf_(fh),
         rf_(fh),
+        particle_factory_(fh),
+        gaussian_factory_(fh),
+        ipf_(fh),
+        scalef_(fh),
+        refframef_(fh),
         imp_cat_(fh.get_category("IMP")),
         imp_restraint_cat_(fh.get_category("IMP restraint")),
         imp_restraint_fn_cat_(fh.get_category("IMP restraint files")),

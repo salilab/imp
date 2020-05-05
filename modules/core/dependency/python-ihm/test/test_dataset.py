@@ -6,6 +6,7 @@ TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.dataset
 import ihm.location
+import ihm.geometry
 
 def _make_test_file(fname):
     with open(fname, 'w') as fh:
@@ -26,6 +27,16 @@ class Tests(unittest.TestCase):
         d.parents.append(d2)
         self.assertEqual(len(d.parents), 1)
         self.assertNotEqual(d, d2)
+
+        l3 = ihm.location.PDBLocation('1cde', version='foo', details='bar')
+        d3 = ihm.dataset.Dataset(l3, details='bar')
+        t = ihm.geometry.Transformation(
+            rot_matrix=[[-0.64,0.09,0.77],[0.76,-0.12,0.64],
+                        [0.15,0.99,0.01]],
+            tr_vector=[1.,2.,3.])
+        td = ihm.dataset.TransformedDataset(d3, transform=t)
+        d.parents.append(td)
+        self.assertEqual(len(d.parents), 2)
 
     def test_add_primary_no_parents(self):
         """Test add_primary() method, no parents"""

@@ -35,9 +35,10 @@ class Tests(IMP.test.TestCase):
         topology_file = self.get_input_file_name("topology_new.txt")
         t = IMP.pmi.topology.TopologyReader(topology_file)
         self.assertEqual(list(t.molecules.keys()),
-                         ['Prot1', 'Prot2', 'Prot3', 'Prot4', 'Prot5'])
+                         ['Prot1', 'Prot2', 'Prot3', 'Prot4', 'Prot5',
+                          'RNA1', 'DNA1'])
         c = t.get_components()
-        self.assertEqual(len(c),9)
+        self.assertEqual(len(c),11)
         self.assertEqual(c[0].molname,"Prot1")
         self.assertEqual(c[1].molname,"Prot1")
         self.assertEqual(c[1].copyname,"1")
@@ -226,6 +227,20 @@ class Tests(IMP.test.TestCase):
 
         sel5 = IMP.atom.Selection(root_hier, molecule='Prot5',
                                   resolution=1).get_selected_particles()
+
+        rna = IMP.atom.Selection(root_hier, molecule='RNA1',
+                                  resolution=1).get_selected_particles()
+        self.assertTrue(all(IMP.atom.Residue.get_is_setup(r) for r in rna))
+        self.assertEqual([IMP.atom.Residue(r).get_residue_type() for r in rna],
+                         [IMP.atom.ADE, IMP.atom.CYT, IMP.atom.GUA,
+                          IMP.atom.URA])
+
+        dna = IMP.atom.Selection(root_hier, molecule='DNA1',
+                                  resolution=1).get_selected_particles()
+        self.assertTrue(all(IMP.atom.Residue.get_is_setup(r) for r in dna))
+        self.assertEqual([IMP.atom.Residue(r).get_residue_type() for r in dna],
+                         [IMP.atom.DADE, IMP.atom.DCYT, IMP.atom.DGUA,
+                          IMP.atom.DTHY])
 
         color=IMP.display.Colored(sel5[0]).get_color()
         self.assertAlmostEqual(color.get_red(), 0.1, delta=1e-6)

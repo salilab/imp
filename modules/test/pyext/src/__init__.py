@@ -1,5 +1,3 @@
-%pythoncode %{
-
 """@namespace IMP::test
    @brief Methods and classes for testing the IMP kernel and modules.
    @ingroup python
@@ -23,14 +21,6 @@ from ._compat_python.unittest2.util import safe_repr
 import datetime
 import pickle
 import contextlib
-
-# Fall back to the sets.Set class on older Pythons that don't have
-# the 'set' builtin type.
-try:
-    set = set
-except NameError:
-    import sets
-    set = sets.Set
 
 # Load a new enough unittest package (should have the 'skip' decorator)
 # - On Python 2.7 or 3.2, the standard 'unittest' package will work.
@@ -1043,4 +1033,3 @@ if sys.platform == 'win32' and 'PYTHONPATH' in os.environ \
     path = os.environ['PATH']
     if libdir not in path or bindir not in path:
         os.environ['PATH'] = bindir + ';' + libdir + ';' + path
-%}

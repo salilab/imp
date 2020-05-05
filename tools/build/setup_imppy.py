@@ -14,6 +14,15 @@ import glob
 import subprocess
 
 
+def uniq(l):
+    """Return the list with duplicate items removed"""
+    seen = set()
+    for obj in l:
+        if obj not in seen:
+            seen.add(obj)
+            yield obj
+
+
 class FileGenerator(object):
     body = ["@LDPATH@", "", "@PYTHONPATH@", "",
             "# Where to find data for the various modules",
@@ -45,8 +54,8 @@ class FileGenerator(object):
         modbin = [os.path.abspath(x) for x in tools.get_glob(["module_bin/*"])]
         if self.options.suffix:
             modbin += [os.path.join(x, self.options.suffix) for x in modbin]
-        return modbin + [self.get_abs_binary_path("bin")] \
-            + self.native_paths(self.options.path, True)
+        return (modbin + [self.get_abs_binary_path("bin")]
+                + self.native_paths(self.options.path, True))
 
     def write_file(self):
         pypathsep = ";" if self.options.python_pathsep == 'w32' else os.pathsep
@@ -78,7 +87,7 @@ class FileGenerator(object):
                                       [libdir] + pythonpath), True, True),
                  "@IMP_BIN_DIR@": ("IMP_BIN_DIR", bindir, True, False),
                  "@PATH@":
-                 ("PATH", os.pathsep.join([bindir] + path), True, True),
+                 ("PATH", os.pathsep.join(uniq([bindir] + path)), True, True),
                  "@PRECOMMAND@": ("precommand", precommand, False, False),
                  "@IMP_DATA@": ("IMP_DATA", ":".join([datadir] + externdata),
                                 True, False),

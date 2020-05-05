@@ -2,7 +2,7 @@
  *  \file IMP/saxs/Restraint.h
  *  \brief Calculate score based on fit to SAXS profile.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -58,9 +58,13 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint {
 
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
+  //! \return Information for writing to RMF files
+  RestraintInfo *get_static_info() const IMP_OVERRIDE;
+
   IMP_OBJECT_METHODS(Restraint);
 
  protected:
+  FormFactorType ff_type_;
   Pointer<RigidBodiesProfileHandler> handler_;
   Pointer<ProfileFitter<ChiScore> > profile_fitter_;  // computes profiles
   // computes derivatives

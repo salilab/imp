@@ -42,6 +42,8 @@ def add_list_to_defines(cppdefines, data, sym, val, names):
 
 
 def make_header(options, module):
+    if module.python_only:
+        return
     if module.name == 'kernel':
         dir = os.path.join("include", "IMP")
     else:
@@ -199,7 +201,8 @@ def write_no_ok(module):
                   "ok=False\n", verbose=False)
 
 def write_ok(module, modules, unfound_modules, dependencies,
-             unfound_dependencies, swig_includes, swig_wrapper_includes):
+             unfound_dependencies, swig_includes, swig_wrapper_includes,
+             python_only):
     print("yes")
     config = ["ok=True"]
     modules = [x.name for x in modules]
@@ -211,6 +214,8 @@ def write_ok(module, modules, unfound_modules, dependencies,
         var = vardict[varname]
         if len(var) > 0:
             config.append("%s = %s" % (varname, repr(":".join(var))))
+    if python_only:
+        config.append("python_only = True")
     tools.rewrite(os.path.join("build_info", "IMP." + module.name),
                   "\n".join(config))
 
@@ -259,12 +264,13 @@ def setup_module(module, finder):
     tools.mkdir(os.path.join("src", module.name + "_swig"))
     write_ok(module, all_modules, unfound_modules,
              finder.get_dependent_dependencies(all_modules, dependencies),
-             unfound_dependencies, swig_includes, swig_wrapper_includes)
+             unfound_dependencies, swig_includes, swig_wrapper_includes,
+             module.python_only)
     return True, all_modules
 
 
-def link_py_apps(options):
-    path = os.path.join(options.source, "modules", options.name, "bin")
+def link_py_apps(module):
+    path = os.path.join(module.path, "bin")
     tools.mkdir("bin", clean=False)
     bins = [b for b in glob.glob(os.path.join(path, '*'))
             if tools.filter_pyapps(b)]
@@ -279,21 +285,20 @@ with open(fname) as fh:
         tools.rewrite(dest_bin, contents, verbose=False)
         os.chmod(dest_bin, 493) # 493 = 0755, i.e. executable
 
-def link_bin(options):
+def link_bin(options, module):
     path = os.path.join("module_bin", options.name)
     tools.mkdir(path, clean=False)
     for old in tools.get_glob([os.path.join(path, "*.py")]):
         os.unlink(old)
-    tools.link_dir(os.path.join(options.source, "modules", options.name, "bin"),
+    tools.link_dir(os.path.join(module.path, "bin"),
                    path, clean=False, match=["*.py"])
 
-def link_benchmark(options):
+def link_benchmark(options, module):
     path = os.path.join("benchmark", options.name)
     tools.mkdir(path, clean=False)
     for old in tools.get_glob([os.path.join(path, "*.py")]):
         os.unlink(old)
-    tools.link_dir(os.path.join(options.source, "modules", options.name,
-                                "benchmark"),
+    tools.link_dir(os.path.join(module.path, "benchmark"),
                    path, clean=False, match=["*.py"])
 
 def find_cmdline_links(mod, docdir, cmdline_tools):
@@ -405,9 +410,9 @@ def main():
         make_header(options, module)
         make_doxygen(options, module, modules, mf)
         make_overview(module, apps)
-        link_bin(options)
-        link_py_apps(options)
-        link_benchmark(options)
+        link_bin(options, module)
+        link_py_apps(module)
+        link_benchmark(options, module)
         sys.exit(0)
     else:
         tools.rmdir(os.path.join("module_bin", options.name))

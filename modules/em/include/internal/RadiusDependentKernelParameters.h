@@ -2,7 +2,7 @@
  *  \file IMP/em/internal/RadiusDependentKernelParameters.h
  *  \brief Calculates kernel parameters as a function of a specific radius.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/core/CoverRefined.h
  *  \brief Set the position and radius of a particle to enclose the refined.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_COVER_REFINED_H

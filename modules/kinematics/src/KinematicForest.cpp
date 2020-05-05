@@ -6,7 +6,7 @@
           interconversion between internal and external coordinates.
  *  \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/Model.h>
@@ -72,7 +72,7 @@ void KinematicForest::add_edge(Joint* joint) {
     if (roots_.find(child_kn) != roots_.end()) {
       roots_.erase(child_kn);  // will no longer be a root
     } else {
-      IMP_THROW("IMP currently does not support switching of "
+      IMP_THROW("IMP currently does not support switching of"
                     << " parents in a kinematic tree",
                 IMP::ValueException);
     }

@@ -2,7 +2,7 @@
  *  \file IMP/gsl/Simplex.h
  *  \brief The simplex algorithm from GSL.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPGSL_SIMPLEX_H

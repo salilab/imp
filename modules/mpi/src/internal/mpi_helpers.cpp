@@ -2,7 +2,7 @@
  *  \file mpi_helpers.cpp
  *  \brief Helper functions to set up MPI.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/mpi/internal/mpi_helpers.h>
@@ -48,7 +48,7 @@ namespace {
 
   void dlopen_libmpi() {
 #if defined(OMPI_MAJOR_VERSION) && !defined(_MSC_VER)
-#if OMPI_MAJOR_VERSION == 3
+#if OMPI_MAJOR_VERSION == 3 || OMPI_MAJOR_VERSION == 4
     ompi_dlopen("40");
 #elif OMPI_MAJOR_VERSION == 2
     ompi_dlopen("20");

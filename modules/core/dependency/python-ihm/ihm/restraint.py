@@ -4,6 +4,25 @@
 import ihm
 
 
+class PseudoSite(object):
+    """Selection of a pseudo position in the system.
+       Pseudo positions are typically used to reference a point or sphere
+       that is not explcitly represented, in a :class:`PseudoSiteFeature`
+       or :class:`CrossLinkPseudoSite`.
+
+       :param float x: Cartesian X coordinate of this site.
+       :param float y: Cartesian Y coordinate of this site.
+       :param float z: Cartesian Z coordinate of this site.
+       :param float radius: Radius of the site, if applicable.
+       :param str description: Additional text describing this feature.
+    """
+
+    def __init__(self, x, y, z, radius=None, description=None):
+        self.x, self.y, self.z = x, y, z
+        self.radius = radius
+        self.description = description
+
+
 class Restraint(object):
     """Base class for all restraints.
        See :attr:`ihm.System.restraints`.
@@ -305,6 +324,26 @@ class CrossLink(object):
     pass
 
 
+class CrossLinkPseudoSite(object):
+    """Pseudo site corresponding to one end of a cross-link.
+
+       These objects are used when the end of a cross-link is not represented
+       in the model but its position is known (e.g. it may have been
+       approximated given the position of nearby residues). They are passed
+       as the ``pseudo1`` or ``pseudo2`` arguments to :class:`CrossLink`
+       subclasses.
+
+       :param site: The pseudo site coordinates
+       :type site: :class:`PseudoSite`
+       :param model: The model in whose coordinate system the pseudo site
+              is active (if not specified, the coordinates are assumed to
+              be valid for all models using this cross-link).
+       :type model: :class:`ihm.model.Model`
+    """
+    def __init__(self, site, model=None):
+        self.site, self.model = site, model
+
+
 class ResidueCrossLink(CrossLink):
     """A cross-link used in the modeling, applied to residue alpha carbon atoms.
 
@@ -324,16 +363,24 @@ class ResidueCrossLink(CrossLink):
        :param float sigma2: Initial uncertainty in the position of the second
               residue.
        :param bool restrain_all: If True, all cross-links are restrained.
+       :param pseudo1: Pseudo site representing the position of the
+              first residue (if applicable).
+       :type pseudo1: :class:`CrossLinkPseudoSite`
+       :param pseudo2: Pseudo site representing the position of the
+              second residue (if applicable).
+       :type pseudo2: :class:`CrossLinkPseudoSite`
     """
     granularity = 'by-residue'
     atom1 = atom2 = None
 
     def __init__(self, experimental_cross_link, asym1, asym2, distance,
-                 psi=None, sigma1=None, sigma2=None, restrain_all=None):
+                 psi=None, sigma1=None, sigma2=None, restrain_all=None,
+                 pseudo1=None, pseudo2=None):
         self.experimental_cross_link = experimental_cross_link
         self.asym1, self.asym2 = asym1, asym2
         self.psi, self.sigma1, self.sigma2 = psi, sigma1, sigma2
         self.distance, self.restrain_all = distance, restrain_all
+        self.pseudo1, self.pseudo2 = pseudo1, pseudo2
 
         #: Information about the fit of each model to this cross-link
         #: This is a Python dict where keys are :class:`~ihm.model.Model`
@@ -361,16 +408,24 @@ class FeatureCrossLink(CrossLink):
        :param float sigma2: Initial uncertainty in the position of the second
               residue.
        :param bool restrain_all: If True, all cross-links are restrained.
+       :param pseudo1: Pseudo site representing the position of the
+              first residue (if applicable).
+       :type pseudo1: :class:`CrossLinkPseudoSite`
+       :param pseudo2: Pseudo site representing the position of the
+              second residue (if applicable).
+       :type pseudo2: :class:`CrossLinkPseudoSite`
     """
     granularity = 'by-feature'
     atom1 = atom2 = None
 
     def __init__(self, experimental_cross_link, asym1, asym2, distance,
-                 psi=None, sigma1=None, sigma2=None, restrain_all=None):
+                 psi=None, sigma1=None, sigma2=None, restrain_all=None,
+                 pseudo1=None, pseudo2=None):
         self.experimental_cross_link = experimental_cross_link
         self.asym1, self.asym2 = asym1, asym2
         self.psi, self.sigma1, self.sigma2 = psi, sigma1, sigma2
         self.distance, self.restrain_all = distance, restrain_all
+        self.pseudo1, self.pseudo2 = pseudo1, pseudo2
 
         #: Information about the fit of each model to this cross-link
         #: This is a Python dict where keys are :class:`~ihm.model.Model`
@@ -399,17 +454,24 @@ class AtomCrossLink(CrossLink):
        :param float sigma2: Initial uncertainty in the position of the second
               residue.
        :param bool restrain_all: If True, all cross-links are restrained.
+       :param pseudo1: Pseudo site representing the position of the
+              first residue (if applicable).
+       :type pseudo1: :class:`CrossLinkPseudoSite`
+       :param pseudo2: Pseudo site representing the position of the
+              second residue (if applicable).
+       :type pseudo2: :class:`CrossLinkPseudoSite`
     """
     granularity = 'by-atom'
 
     def __init__(self, experimental_cross_link, asym1, asym2, atom1, atom2,
                  distance, psi=None, sigma1=None, sigma2=None,
-                 restrain_all=None):
+                 restrain_all=None, pseudo1=None, pseudo2=None):
         self.experimental_cross_link = experimental_cross_link
         self.asym1, self.asym2 = asym1, asym2
         self.atom1, self.atom2 = atom1, atom2
         self.psi, self.sigma1, self.sigma2 = psi, sigma1, sigma2
         self.distance, self.restrain_all = distance, restrain_all
+        self.pseudo1, self.pseudo2 = pseudo1, pseudo2
 
         #: Information about the fit of each model to this cross-link
         #: This is a Python dict where keys are :class:`~ihm.model.Model`
@@ -550,19 +612,14 @@ class NonPolyFeature(Feature):
 class PseudoSiteFeature(Feature):
     """Selection of a pseudo position in the system.
 
-       :param float x: Cartesian X coordinate of this site.
-       :param float y: Cartesian Y coordinate of this site.
-       :param float z: Cartesian Z coordinate of this site.
-       :param float radius: Radius of the site, if applicable.
-       :param str details: Additional text describing this feature.
+       :param site: The pseudo site to use for the feature.
+       :type site: :class:`PseudoSite`
     """
 
     type = 'pseudo site'
 
-    def __init__(self, x, y, z, radius=None, details=None):
-        self.x, self.y, self.z = x, y, z
-        self.radius = radius
-        self.details = details
+    def __init__(self, site):
+        self.site = site
 
     def _get_entity_type(self):
         return 'other'
@@ -590,7 +647,8 @@ class GeometricRestraint(object):
     assembly = None # no struct_assembly_id for geometric restraints
 
     def __init__(self, dataset, geometric_object, feature, distance,
-                 harmonic_force_constant=None, restrain_all=None):
+                 harmonic_force_constant=None, restrain_all=None,
+                 pseudo1=None, pseudo2=None):
         self.dataset = dataset
         self.geometric_object, self.feature = geometric_object, feature
         self.distance, self.restrain_all = distance, restrain_all

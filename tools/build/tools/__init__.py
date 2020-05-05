@@ -308,7 +308,8 @@ class ConfiguredModule(Module):
         d = {'modules': "", 'unfound_modules': "",
              'dependencies': "", 'unfound_dependencies': "",
              'swig_wrapper_includes': "", 'swig_includes': "",
-             'swig_path': "", 'include_path': "", 'lib_path': "", 'ok': False}
+             'swig_path': "", 'include_path': "", 'lib_path': "", 'ok': False,
+             'python_only': False}
         exec(open(self.build_info_file).read(), d)
         self._info = {"ok": d['ok'],
                "modules": self._modules_split(d['modules']),
@@ -316,7 +317,8 @@ class ConfiguredModule(Module):
                "dependencies": split(d['dependencies']),
                "unfound_dependencies": split(d['unfound_dependencies']),
                "swig_includes": split(d['swig_includes']),
-               "swig_wrapper_includes": split(d['swig_wrapper_includes'])}
+               "swig_wrapper_includes": split(d['swig_wrapper_includes']),
+               "python_only": d['python_only']}
         return self._info[attr]
 
     ok = property(lambda self: self._read_bi_file('ok'))
@@ -330,6 +332,7 @@ class ConfiguredModule(Module):
     swig_wrapper_includes = property(lambda self:
                                  self._read_bi_file('swig_wrapper_includes'))
     swig_includes = property(lambda self: self._read_bi_file('swig_includes'))
+    python_only = property(lambda self: self._read_bi_file('python_only'))
     required_dependencies = dependencies
     optional_modules = []
     optional_dependencies = []
@@ -363,7 +366,7 @@ class SourceModule(Module):
             return self._info[attr]
         d = {'required_modules': "", 'optional_modules': "",
              'required_dependencies': "", 'optional_dependencies': "",
-             'lib_only_required_modules': ""}
+             'lib_only_required_modules': "", 'python_only': False}
         exec(open(self.depends_file).read(), d)
         self._info = {"required_modules":
                              self._modules_split(d['required_modules']),
@@ -374,7 +377,8 @@ class SourceModule(Module):
                       "required_dependencies":
                              split(d['required_dependencies']),
                       "optional_dependencies":
-                             split(d['optional_dependencies'])}
+                             split(d['optional_dependencies']),
+                      "python_only": d['python_only']}
         return self._info[attr]
 
     required_modules = property(
@@ -387,6 +391,7 @@ class SourceModule(Module):
                       lambda self: self._read_dep_file('required_dependencies'))
     optional_dependencies = property(
                       lambda self: self._read_dep_file('optional_dependencies'))
+    python_only = property(lambda self: self._read_dep_file('python_only'))
 
 
 class ModulesFinder(object):
@@ -578,7 +583,8 @@ def get_dependency_info(dependency, extra_data_path, root="."):
     if not os.path.exists(df) and extra_data_path != "":
         df = os.path.join(extra_data_path, dependency)
     d = {'libraries': "", 'version': "", 'includepath': "",
-         'libpath': "", 'swigpath': "", 'ok': False}
+         'libpath': "", 'swigpath': "", 'ok': False,
+         'python_only': False}
     # try:
     exec(open(df, "r").read(), d)
     # except:
@@ -588,7 +594,8 @@ def get_dependency_info(dependency, extra_data_path, root="."):
            "version": split(d['version']),
            "includepath": d['includepath'],
            "libpath": d['libpath'],
-           "swigpath": d['swigpath']}
+           "swigpath": d['swigpath'],
+           "python_only": d['python_only']}
     dependency_info_cache[dependency] = ret
     return ret
 

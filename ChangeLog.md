@@ -1,6 +1,52 @@
 ChangeLog {#changelog}
 =========
 
+# 2.13.0 - 2020-05-14 # {#changelog_2_13_0}
+- Ubuntu .deb packages now use Python 3 by default (install the imp-python2
+  package if you want to use Python 2) and support MPI (install the
+  imp-openmpi package if you want to use the IMP::mpi or IMP::spb modules).
+- A binary package is now provided for Ubuntu 20.04 LTS, Focal Fossa.
+- The new IMP::sampcon module implements the protocol described in
+  [Viswanath et al, 2017](https://www.ncbi.nlm.nih.gov/pubmed/29211988). 
+  This can be used in analysis to estimate the highest precision at which
+  the sampling is exhaustive. 
+- RMF files, particularly those output by IMP::pmi, now contain more information
+  on the restraints used, such as restraint parameters, and links to
+  non-Cartesian particles containing restraint information, such as Gaussians
+  used to represent EM densities, or Bayesian nuisances. Much of this
+  information can now be shown in
+  [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) using the
+  [RMF plugin](https://github.com/salilab/rmf_chimerax).
+- IMP modules that contain no C++ code can now be marked as "Python only"
+  in `dependencies.py`. IMP::test, IMP::mmcif, IMP::parallel, IMP::EMageFit,
+  IMP::pepdock, and IMP::saxs\_merge are so marked. This speeds up the build
+  since such modules do not need to be run through SWIG or compiled, and
+  saves space by eliminating their shared libraries.
+- The `crosslink_restraints` argument to IMP.pmi.macros.ReplicaExchange0 
+  is now ignored (and deprecated). All cross-link restraints are now
+  automatically added to RMF files.
+- The `CrossLinkDataBase` argument to
+  IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint
+  is deprecated.  Use `database` instead.
+- IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint now
+  takes a `linker` argument which can be used to specify the chemistry of
+  the linker.
+- IMP.pmi.output.Output now supports output of pseudo-atomic PDBs in mmCIF
+  format. This can be useful for quick visualization of output models that
+  contain a large number of chains in software that does not understand
+  the mmCIF IHM extension (for integrative models) or RMF.
+- IMP.pmi now has improved support for RNA/DNA (previously all nucleic acid
+  residues were treated as RNA). IMP.pmi.topology.Molecule now takes an
+  `alphabet` argument which can be used to specify any of the alphabets
+  provided in the IMP.pmi.alphabets module (amino acids, RNA, or DNA) or a
+  custom alphabet.
+- A new application of IMP is now available:
+  - [Structural dynamics of the human COP9 signalosome revealed by cross-linking mass spectrometry and integrative modeling](https://salilab.org/CSN2019/)
+- 'Object "foo" never used' warnings are now emitted only when IMP is run with
+  internal checks turned on, as these warnings are primarily intended for
+  IMP developers, not end users.
+- Bugfix: fix infinite loop when reading some corrupt mol2 files.
+
 # 2.12.0 - 2019-12-06 # {#changelog_2_12_0}
 - The Windows .exe installer now supports Python 3.8, and has dropped support
   for Python 3.4.

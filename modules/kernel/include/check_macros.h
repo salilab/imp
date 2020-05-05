@@ -2,7 +2,7 @@
  *  \file IMP/check_macros.h
  *  \brief Exception definitions and assertions.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -212,9 +212,6 @@
 
 #if IMP_HAS_CHECKS > IMP_NONE
 #define IMP_IF_CHECK(level)            \
-  using IMP::NONE;               \
-  using IMP::USAGE;              \
-  using IMP::USAGE_AND_INTERNAL; \
   if (level <= ::IMP::get_check_level())
 
 #define IMP_CHECK_CODE(expr) expr

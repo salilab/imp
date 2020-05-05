@@ -18,6 +18,7 @@ import IMP.atom
 import IMP.em
 import IMP.isd
 import IMP.pmi.tools
+import IMP.pmi.alphabets
 from IMP.pmi.tools import OrderedDict
 import IMP.pmi.output
 import IMP.mmcif.data
@@ -294,7 +295,7 @@ class _AllDatasets(object):
 
 
 class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
-    """Restrain to a set of cross links"""
+    """Restrain to a set of cross-links"""
 
     assembly = None
     _label_map = {'wtDSS':'DSS', 'scDSS':'DSS', 'scEDC':'EDC'}
@@ -303,16 +304,19 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
 
     def __init__(self, pmi_restraint):
         self.pmi_restraint = pmi_restraint
+        # Use ChemDescriptor from PMI restraint if available, otherwise guess
+        # it using the label
+        linker = getattr(self.pmi_restraint, 'linker', None)
         label = self.pmi_restraint.label
-        # Map commonly-used subtypes to more standard labels
-        label = self._label_map.get(label, label)
         self.label = label
         super(_CrossLinkRestraint, self).__init__(
                 dataset=self.pmi_restraint.dataset,
-                linker=self._get_chem_descriptor(label))
+                linker=linker or self._get_chem_descriptor(label))
 
     @classmethod
     def _get_chem_descriptor(cls, label):
+        # Map commonly-used subtypes to more standard labels
+        label = cls._label_map.get(label, label)
         if label not in cls._descriptor_map:
             # If label is not a standard linker type, make a new chemical
             # descriptor containing just the name. We don't know the chemistry
@@ -949,7 +953,7 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
                 system = state._pmi_object.system
                 IMP.rmf.link_hierarchies(rh, [system.hier])
                 IMP.rmf.load_frame(fh, RMF.FrameID(0))
-            # todo: fill in other data from stat file, e.g. crosslink phi/psi
+            # todo: fill in other data from stat file, e.g. cross-link phi/psi
             yield stats
             model_num += 1
             if model_num >= self.num_models_deposited:
@@ -992,6 +996,13 @@ class _SimpleEnsemble(ihm.model.Ensemble):
         self.densities.append(den)
 
 
+class _CustomDNAAlphabet(object):
+    """Custom DNA alphabet that maps A,C,G,T (rather than DA,DC,DG,DT
+       as in python-ihm)"""
+    _comps = dict([cc.code_canonical, cc]
+                  for cc in ihm.DNAAlphabet._comps.values())
+
+
 class _EntityMapper(dict):
     """Handle mapping from IMP components (without copy number) to CIF entities.
        Multiple components may map to the same entity if they share sequence."""
@@ -1001,7 +1012,21 @@ class _EntityMapper(dict):
         self._entities = []
         self.system = system
 
-    def add(self, component_name, sequence, offset):
+    def _get_alphabet(self, alphabet):
+        """Map a PMI alphabet to an IHM alphabet"""
+        # todo: we should probably ignore alphabets entirely and use
+        # residue types directly (e.g. we shouldn't compare one-letter
+        # code sequence to determine if an Entity is unique)
+        alphabet_map = {None: ihm.LPeptideAlphabet,
+                        IMP.pmi.alphabets.amino_acid: ihm.LPeptideAlphabet,
+                        IMP.pmi.alphabets.rna: ihm.RNAAlphabet,
+                        IMP.pmi.alphabets.dna: _CustomDNAAlphabet}
+        if alphabet in alphabet_map:
+            return alphabet_map[alphabet]
+        else:
+            raise TypeError("Don't know how to handle %s" % alphabet)
+
+    def add(self, component_name, sequence, offset, alphabet):
         def entity_seq(sequence):
             # Map X to UNK
             if 'X' in sequence:
@@ -1013,7 +1038,8 @@ class _EntityMapper(dict):
             # as the description of the entity
             d = component_name.split("@")[0].split(".")[0]
             entity = Entity(entity_seq(sequence), description=d,
-                            pmi_offset=offset)
+                            pmi_offset=offset,
+                            alphabet=self._get_alphabet(alphabet))
             self.system.entities.append(entity)
             self._sequence_dict[sequence] = entity
         self[component_name] = self._sequence_dict[sequence]
@@ -1147,17 +1173,29 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     IMP has basic support for writing out files in mmCIF format, for
     deposition in [PDB-Dev](https://pdb-dev.wwpdb.org/).
     After creating an instance of this class, attach it to an
-    IMP.pmi.representation.Representation object. After this, any
-    generated models and metadata are automatically collected and
-    output as mmCIF.
+    IMP.pmi.topology.System object. After this, any
+    generated models and metadata are automatically collected in the
+    `system` attribute, which is an
+    [ihm.System](https://python-ihm.readthedocs.io/en/latest/main.html#ihm.System) object.
+    Once the protocol is complete, call finalize() to make sure `system`
+    contains everything, then use the
+    [python-ihm API](https://python-ihm.readthedocs.io/en/latest/dumper.html#ihm.dumper.write)
+    to write out files in mmCIF or BinaryCIF format.
+
+    See also get_handlers(), get_dumpers().
     """
-    def __init__(self, fh):
+    def __init__(self, fh=None):
         # Ultimately, collect data in an ihm.System object
         self.system = ihm.System()
         self._state_group = ihm.model.StateGroup()
         self.system.state_groups.append(self._state_group)
 
         self.fh = fh
+        if fh:
+            IMP.handle_use_deprecated(
+                "Passing a file handle to ProtocolOutput is deprecated. "
+                "Create it with no arguments, then use the python-ihm API to "
+                "output files (after calling finalize())")
         self._state_ensemble_offset = 0
         self._main_script = os.path.abspath(sys.argv[0])
 
@@ -1270,12 +1308,14 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self._all_components[name] = None
         if modeled:
             state.all_modeled_components.append(name)
-            if new_comp:
+            if asym_name not in self.asym_units:
                 # assign asym once we get sequence
                 self.asym_units[asym_name] = None
+            if new_comp:
                 self.all_modeled_components.append(name)
 
-    def add_component_sequence(self, state, name, seq, asym_name=None):
+    def add_component_sequence(self, state, name, seq, asym_name=None,
+                               alphabet=None):
         if asym_name is None:
             asym_name = name
         def get_offset(seq):
@@ -1289,7 +1329,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                 raise ValueError("Sequence mismatch for component %s" % name)
         else:
             self.sequence_dict[name] = seq
-            self.entities.add(name, seq, offset)
+            self.entities.add(name, seq, offset, alphabet)
         if asym_name in self.asym_units:
             if self.asym_units[asym_name] is None:
                 # Set up a new asymmetric unit for this component
@@ -1307,13 +1347,14 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                     if hasattr(r, 'add_fits_from_model_statfile'):
                         r.add_fits_from_model_statfile(m)
 
+    @IMP.deprecated_method("2.13",
+                           "Use finalize() then the python-ihm API instead")
     def flush(self, format='mmCIF'):
         """Write out all information to the file.
            Information can be written in any format supported by
            the ihm library (typically this is 'mmCIF' or 'BCIF')."""
         self.finalize()
-        ihm.dumper.write(self.fh, [self.system], format,
-                         dumpers=[_ReplicaExchangeProtocolDumper])
+        ihm.dumper.write(self.fh, [self.system], format, dumpers=get_dumpers())
 
     def finalize(self):
         """Do any final processing on the class hierarchy.
@@ -1599,12 +1640,32 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         return m
 
 
+def get_dumpers():
+    """Get custom python-ihm dumpers for writing PMI to from mmCIF.
+       This returns a list of custom dumpers that can be passed as all or
+       part of the `dumpers` argument to ihm.dumper.write(). They add
+       PMI-specific information to mmCIF or BinaryCIF files written out
+       by python-ihm."""
+    return [_ReplicaExchangeProtocolDumper]
+
+
+def get_handlers():
+    """Get custom python-ihm handlers for reading PMI data from mmCIF.
+       This returns a list of custom handlers that can be passed as all or
+       part of the `handlers` argument to ihm.reader.read(). They read
+       PMI-specific information from mmCIF or BinaryCIF files read in
+       by python-ihm."""
+    return [_ReplicaExchangeProtocolHandler]
+
+
+@IMP.deprecated_function("2.13",
+        "Use ihm.reader.read() instead with handlers=get_handlers()")
 def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):
     """Read data from the mmCIF file handle `fh`.
        This is a simple wrapper around `ihm.reader.read()`, which also
        reads PMI-specific information from the mmCIF or BinaryCIF file."""
     return ihm.reader.read(fh, model_class=model_class, format=format,
-                           handlers=[_ReplicaExchangeProtocolHandler]+handlers)
+                           handlers=get_handlers() + handlers)
 
 
 class GMMParser(ihm.metadata.Parser):

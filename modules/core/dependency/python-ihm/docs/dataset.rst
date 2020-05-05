@@ -10,6 +10,9 @@ The :mod:`ihm.dataset` Python module
 .. autoclass:: Dataset
    :members:
 
+.. autoclass:: TransformedDataset
+   :members:
+
 .. autoclass:: DatasetGroup
    :members:
 

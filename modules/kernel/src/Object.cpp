@@ -2,7 +2,7 @@
  *  \file Object.cpp
  *  \brief A shared base class to help in debugging and things.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -48,7 +48,7 @@ Object::~Object() {
                 << "but something is trying to delete it again. Make sure "
                 << "that all C++ code uses IMP::Pointer objects to"
                 << " store it.");
-#if IMP_HAS_CHECKS >= IMP_USAGE
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
   // if there is no exception currently being handled warn if it was not owned
   if (!was_owned_ && !std::uncaught_exception()) {
     IMP_WARN(

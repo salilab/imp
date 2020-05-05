@@ -1,6 +1,7 @@
 """Classes for handling representation of the system during modeling.
 """
 
+
 class Segment(object):
     """Base class for part of a :class:`Representation`.
        See :class:`AtomicSegment`, :class:`ResidueSegment`,
@@ -28,7 +29,8 @@ class AtomicSegment(object):
     count = None
     granularity = 'by-atom'
 
-    def __init__(self, asym_unit, rigid, starting_model=None, description=None):
+    def __init__(self, asym_unit, rigid, starting_model=None,
+                 description=None):
         self.asym_unit = asym_unit
         self.starting_model, self.rigid = starting_model, rigid
         self.description = description

@@ -7,6 +7,9 @@ The :mod:`ihm.restraint` Python module
 
 .. automodule:: ihm.restraint
 
+.. autoclass:: PseudoSite
+   :members:
+
 .. autoclass:: Restraint
    :members:
 
@@ -44,6 +47,9 @@ The :mod:`ihm.restraint` Python module
    :members:
 
 .. autoclass:: ExperimentalCrossLink
+   :members:
+
+.. autoclass:: CrossLinkPseudoSite
    :members:
 
 .. autoclass:: CrossLink

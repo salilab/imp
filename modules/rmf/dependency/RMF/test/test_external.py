@@ -3,6 +3,7 @@ import RMF
 import os.path
 import unittest
 import sys
+import utils
 
 class GenericTest(unittest.TestCase):
 
@@ -61,9 +62,9 @@ class GenericTest(unittest.TestCase):
         else:
             self.assertEqual(ref0.get_value(key), 'simple.pdb')
 
-        self.assert_(os.path.exists(path0))
+        self.assertTrue(os.path.exists(path0))
         path1 = ref0d.get_path()
-        self.assert_(os.path.exists(path1))
+        self.assertTrue(os.path.exists(path1))
         self.assertEqual(path0, path1)
         simple0 = open(path0, "r").read()
         input = RMF._get_test_input_file_path("simple.pdb")

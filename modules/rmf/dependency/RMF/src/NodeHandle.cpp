@@ -2,7 +2,7 @@
  *  \file RMF/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2019 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
 
@@ -34,6 +34,14 @@ NodeHandle NodeHandle::add_child(std::string name, NodeType t) const {
 void NodeHandle::add_child(NodeConstHandle nh) const {
   try {
     shared_->add_child(node_, nh.get_id());
+  }
+  RMF_NODE_CATCH();
+}
+
+NodeHandle NodeHandle::replace_child(NodeHandle child, std::string name,
+                                     NodeType t) const {
+  try {
+    return NodeHandle(shared_->replace_child(node_, child, name, t), shared_);
   }
   RMF_NODE_CATCH();
 }

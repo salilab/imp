@@ -24,10 +24,10 @@ class Tests(unittest.TestCase):
         """Test identity transformation"""
         t = ihm.geometry.Transformation.identity()
         for i in range(3):
-            self.assertAlmostEqual(t.tr_vector[i], 0., places=1)
+            self.assertAlmostEqual(t.tr_vector[i], 0., delta=0.1)
             for j in range(3):
                 self.assertAlmostEqual(t.rot_matrix[i][j],
-                                       1. if i == j else 0., places=1)
+                                       1. if i == j else 0., delta=0.1)
 
     def test_geometric_object(self):
         """Test GeometricObject bass class"""
