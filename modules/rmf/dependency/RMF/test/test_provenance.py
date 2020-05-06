@@ -26,8 +26,16 @@ class Tests(unittest.TestCase):
         clust_node = rt.add_child("clustering", RMF.PROVENANCE)
         clust = clustpf.get(clust_node)
         clust.set_members(10)
+        clust.set_precision(2.0)
+        clust.set_density(os.path.abspath('foo.mrc'))
 
-        filt_node = clust_node.add_child("filtering", RMF.PROVENANCE)
+        clust_node2 = clust_node.add_child("no-mrc-clustering", RMF.PROVENANCE)
+        clust2 = clustpf.get(clust_node2)
+        clust2.set_members(10)
+        clust2.set_precision(0.0)
+        clust2.set_density('')
+
+        filt_node = clust_node2.add_child("filtering", RMF.PROVENANCE)
         filt = filtpf.get(filt_node)
         filt.set_method("Total score")
         filt.set_threshold(250.)
@@ -87,8 +95,17 @@ class Tests(unittest.TestCase):
         self.assertTrue(clustpf.get_is(prov_root))
         clust = clustpf.get(prov_root)
         self.assertEqual(clust.get_members(), 10)
+        self.assertAlmostEqual(clust.get_precision(), 2.0, delta=1e-5)
+        self.assertEqual(clust.get_density(), os.path.abspath('foo.mrc'))
 
-        filt_node = prov_root.get_children()[0]
+        clust_node = prov_root.get_children()[0]
+        self.assertTrue(clustpf.get_is(clust_node))
+        clust = clustpf.get(clust_node)
+        self.assertEqual(clust.get_members(), 10)
+        self.assertAlmostEqual(clust.get_precision(), 0.0, delta=1e-5)
+        self.assertEqual(clust.get_density(), "")
+
+        filt_node = clust_node.get_children()[0]
         self.assertTrue(filtpf.get_is(filt_node))
         filt = filtpf.get(filt_node)
         self.assertEqual(filt.get_method(), "Total score")

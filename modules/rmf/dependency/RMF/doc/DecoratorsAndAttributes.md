@@ -258,6 +258,6 @@ structure was generated.
 | RMF::decorator::SampleProvenance    |  RMF::PROVENANCE    | sampling method, sampling frames, sampling iterations, sampling replicas |
 | RMF::decorator::CombineProvenance   |  RMF::PROVENANCE    | combined runs, combined frames                        |
 | RMF::decorator::FilterProvenance    |  RMF::PROVENANCE    | filter threshold, filter frames                       |
-| RMF::decorator::ClusterProvenance   |  RMF::PROVENANCE    | cluster members                                       |
+| RMF::decorator::ClusterProvenance   |  RMF::PROVENANCE    | cluster members, cluster precision, cluster density   |
 | RMF::decorator::ScriptProvenance    |  RMF::PROVENANCE    | script filename                                       |
 | RMF::decorator::SoftwareProvenance  |  RMF::PROVENANCE    | software name, software version, software location    |

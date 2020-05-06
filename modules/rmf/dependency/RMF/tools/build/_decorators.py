@@ -175,6 +175,38 @@ class PathAttribute(Attribute):
 """ % self.function_name
 
 
+class OptionalPathAttribute(Attribute):
+    """Like a PathAttribute, but it can be empty."""
+    def __init__(self, name, function_name=None):
+        Attribute.__init__(self, name, "String", function_name)
+        self.get_methods = """
+  String get_%s() const {
+    try {
+      if (!get_node().get_has_value(NAME_)) {
+        return "";
+      } else {
+        String relpath = get_node().GET_BOTH(NAME_);
+        String filename = get_node().get_file().get_path();
+        return internal::get_absolute_path(filename, relpath);
+      }
+    } RMF_DECORATOR_CATCH( );
+  }
+""" % self.function_name
+        self.set_methods = """
+  void set_%s(String path) {
+   try {
+     if (path.empty()) {
+       get_node().SET_BOTH(NAME_, path);
+     } else {
+       String filename = get_node().get_file().get_path();
+       String relpath = internal::get_relative_path(filename, path);
+       get_node().SET_BOTH(NAME_, relpath);
+     }
+   } RMF_DECORATOR_CATCH( );
+  }
+""" % self.function_name
+
+
 class AttributePair(Base):
 
     def __init__(
