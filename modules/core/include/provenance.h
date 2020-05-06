@@ -424,21 +424,33 @@ public:
     in a file (e.g. an RMF file).
   */
 class IMPCOREEXPORT ClusterProvenance : public Provenance {
-  static void do_setup_particle(Model *m, ParticleIndex pi, int members) {
+  static void do_setup_particle(Model *m, ParticleIndex pi, int members,
+                                double precision=0., std::string density="") {
     Provenance::setup_particle(m, pi);
     m->add_attribute(get_members_key(), pi, members);
+    m->add_attribute(get_precision_key(), pi, precision);
+    if (density.empty()) {
+      m->add_attribute(get_density_key(), pi, density);
+    } else {
+      m->add_attribute(get_density_key(), pi, get_absolute_path(density));
+    }
   }
 
   static void do_setup_particle(Model *m, ParticleIndex pi,
                                 ClusterProvenance o) {
-    do_setup_particle(m, pi, o.get_number_of_members());
+    do_setup_particle(m, pi, o.get_number_of_members()), o.get_precision(),
+                      o.get_density();
   }
 
   static IntKey get_members_key();
+  static FloatKey get_precision_key();
+  static StringKey get_density_key();
 
 public:
   static bool get_is_setup(Model *m, ParticleIndex pi) {
-    return m->get_has_attribute(get_members_key(), pi);
+    return m->get_has_attribute(get_members_key(), pi)
+           && m->get_has_attribute(get_precision_key(), pi)
+           && m->get_has_attribute(get_density_key(), pi);
   }
 
   //! Set the number of cluster members
@@ -452,8 +464,42 @@ public:
     return get_model()->get_attribute(get_members_key(), get_particle_index());
   }
 
+  //! Set the cluster precision
+  void set_precision(double precision) const {
+    return get_model()->set_attribute(get_precision_key(), get_particle_index(),
+                                      precision);
+  }
+
+  //! \return the cluster precision
+  double get_precision() const {
+    return get_model()->get_attribute(get_precision_key(),
+                                      get_particle_index());
+  }
+
+  //! Set the path to the localization probability density for this cluster
+  /** Typically, this is used to point to an MRC file, but can be empty if
+      no such density is available. The path can be relative or absolute.
+      Internally, an absolute path will be stored (although generally it will
+      be converted to a relative path when storing in a file, such as RMF).
+    */
+  void set_density(std::string density) const {
+    if (!density.empty()) {
+      density = get_absolute_path(density);
+    }
+    return get_model()->set_attribute(get_density_key(), get_particle_index(),
+                                      density);
+  }
+
+  //! \return the localization probability density filename, as an absolute path
+  std::string get_density() const {
+    return get_model()->get_attribute(get_density_key(), get_particle_index());
+  }
+
   IMP_DECORATOR_METHODS(ClusterProvenance, Provenance);
   IMP_DECORATOR_SETUP_1(ClusterProvenance, int, members);
+  IMP_DECORATOR_SETUP_2(ClusterProvenance, int, members, double, precision);
+  IMP_DECORATOR_SETUP_3(ClusterProvenance, int, members, double, precision,
+                        std::string, density);
   IMP_DECORATOR_SETUP_1(ClusterProvenance, ClusterProvenance, o);
 };
 
