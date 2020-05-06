@@ -8,6 +8,13 @@ import sys
 
 class Tests(IMP.test.TestCase):
 
+    def assertFilenameEqual(self, f1, f2):
+        # Paths are stored internally as absolute paths (except on Windows)
+        if sys.platform == 'win32':
+            self.assertEqual(f1, f2)
+        else:
+            self.assertEqual(f1, os.path.abspath(f2))
+
     def add_provenance(self, h):
         m = h.get_model()
         soft = IMP.core.SoftwareProvenance.setup_particle(
@@ -61,10 +68,7 @@ class Tests(IMP.test.TestCase):
         clus2 = allprov[0]
         self.assertEqual(clus2.get_number_of_members(), 10)
         self.assertAlmostEqual(clus2.get_precision(), 2.0, delta=1e-5)
-        if sys.platform == 'win32':
-            self.assertEqual(clus2.get_density(), "test.mrc")
-        else:
-            self.assertEqual(clus2.get_density(), os.path.abspath("test.mrc"))
+        self.assertFilenameEqual(clus2.get_density(), "test.mrc")
 
         clus = allprov[1]
         # ClusterProvenance with defaults for precision, density
@@ -87,19 +91,13 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(samp.get_number_of_iterations(), 42)
 
         struc = allprov[5]
-        if sys.platform == 'win32':
-            self.assertEqual(struc.get_filename(), "testfile")
-        else:
-            self.assertEqual(struc.get_filename(), os.path.abspath("testfile"))
+        self.assertFilenameEqual(struc.get_filename(), "testfile")
         self.assertEqual(struc.get_chain_id(), "testchain")
         self.assertEqual(struc.get_residue_offset(), 19)
         self.assertEqual(struc.get_name(), "structure provenance")
 
         script = allprov[6]
-        if sys.platform == 'win32':
-            self.assertEqual(script.get_filename(), "test.py")
-        else:
-            self.assertEqual(script.get_filename(), os.path.abspath("test.py"))
+        self.assertFilenameEqual(script.get_filename(), "test.py")
 
         soft = allprov[7]
         self.assertEqual(soft.get_software_name(), "IMP")
