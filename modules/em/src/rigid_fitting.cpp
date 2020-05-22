@@ -7,7 +7,7 @@
  */
 
 #include <IMP/em/rigid_fitting.h>
-#include <IMP/em/CoarseCC.h>
+#include <IMP/em/CoarseL2Norm.h>
 #include <IMP/em/SampledDensityMap.h>
 #include <IMP/core/RigidBodyMover.h>
 #include <IMP/algebra/vector_generators.h>
@@ -43,15 +43,13 @@ RestraintSet *add_restraints(Model *model, DensityMap *dmap,
                                      bool fast = false) {
   IMP_NEW(RestraintSet, rsrs, (model, 1.0, "rigid fitting restraints %1%"));
   // add fitting restraint
-  Pointer<FitRestraint> fit_rs;
+  Pointer<FitRestraintL2Norm> fit_rs;
   FloatPair no_norm_factors(0., 0.);
-  if (fast) {
-    fit_rs = new FitRestraint(leaves_ref->get_refined(p), dmap, no_norm_factors,
-                              wei_key, 1.0);
-  } else {
-    fit_rs = new FitRestraint(leaves_ref->get_refined(p), dmap, no_norm_factors,
-                              wei_key, 1.0, false);
-  }
+  
+  fit_rs = new FitRestraintL2Norm(leaves_ref->get_refined(p),
+				  dmap,
+				  wei_key,
+				  true);
   rsrs->add_restraint(fit_rs);
   return rsrs.release();
 }
