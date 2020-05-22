@@ -15,7 +15,7 @@
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include "DensityMap.h"
-#include "FitRestraint.h"
+#include "FitRestraintL2Norm.h"
 #include <IMP/em/em_config.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/core/rigid_bodies.h>
