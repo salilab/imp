@@ -17,17 +17,17 @@
 IMPEM_BEGIN_NAMESPACE
 
 FitRestraintL2Norm::FitRestraintL2Norm(ParticlesTemp ps,
-				     DensityMap *em_map,
-				     FloatKey weight_key,
-				     bool use_rigid_bodies)
+				       DensityMap *em_map,
+				       FloatKey weight_key,
+				       bool use_rigid_bodies,
+				       double sigma)
   : Restraint(IMP::internal::get_model(ps), "Fit restraint LogCC %1%") {
   use_rigid_bodies_ = use_rigid_bodies;
-
+  
   target_dens_map_ = em_map;
   resolution_ = target_dens_map_->get_header()->get_resolution();
   voxel_size_ = target_dens_map_->get_spacing();
-  std::cerr << "Values: " << resolution_ << " " << voxel_size_ << std::endl;
-  
+  sigma_ = sigma;
   weight_key_ = weight_key;  
   store_particles(ps);
 
@@ -66,9 +66,10 @@ double FitRestraintL2Norm::unprotected_evaluate(DerivativeAccumulator *accum) co
   
   std::pair<double, algebra::Vector3Ds> vals =
     IMP::em::CoarseL2Norm::calc_score_and_derivative(target_dens_map_,
-						    all_ps_,
-						    resolution_,
-						    dv_);
+						     all_ps_,
+						     resolution_,
+						     sigma_,
+						     dv_);
 
   
   const_cast<FitRestraintL2Norm *>(this)->score_ = vals.first;

@@ -31,7 +31,7 @@ class IMPEMEXPORT FitRestraintL2Norm : public Restraint {
   FitRestraintL2Norm(ParticlesTemp ps,
 		    DensityMap *em_map,
 		    FloatKey weight_key = atom::Mass::get_mass_key(),
-		    bool use_rigid_bodies = true);
+		     bool use_rigid_bodies = true, double sigma = .1);
   
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
     const IMP_OVERRIDE;
@@ -51,6 +51,7 @@ class IMPEMEXPORT FitRestraintL2Norm : public Restraint {
   IMP::PointerMember<DensityMap> target_dens_map_;
   double resolution_;
   double voxel_size_;
+  double sigma_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
   core::XYZs xyz_;

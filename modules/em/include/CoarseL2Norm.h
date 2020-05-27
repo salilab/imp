@@ -46,9 +46,10 @@ class IMPEMEXPORT CoarseL2Norm : public IMP::Object {
   static std::pair<double, algebra::Vector3Ds> calc_score_and_derivative(DensityMap *em,
 									 const IMP::ParticlesTemp &ps,
 									 double resolution,
+									 double sigma,
 									 const algebra::Vector3Ds &dv);
   IMP_OBJECT_METHODS(CoarseL2Norm);
 
 };
 IMPEM_END_NAMESPACE
-#endif 
+#endif  /* IMPEM_COARSE_L2_NORM_H */
