@@ -96,7 +96,6 @@ namespace IMP {
 %include "IMP/em/EnvelopeFitRestraint.h"
 %include "IMP/em/MapDistanceTransform.h"
 %include "IMP/em/EnvelopeScore.h"
-%include "IMP/em/estimate_white_noise_variance.h"
 
 /* Allow runtime casting of Restraint* objects to FitRestraint* */
 namespace IMP {
