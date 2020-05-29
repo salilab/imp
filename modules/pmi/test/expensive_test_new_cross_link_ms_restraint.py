@@ -12,6 +12,7 @@ import IMP.pmi.io.crosslink
 import IMP.pmi.restraints
 import IMP.pmi.restraints.crosslinking
 import IMP.pmi.macros
+import ihm.cross_linkers
 from math import *
 try:
     import IMP.mpi
@@ -123,6 +124,7 @@ class Tests(IMP.test.TestCase):
             length=21,
             label="XL",
             resolution=1,
+            linker=ihm.cross_linkers.dss,
             slope=0.01)
 
         return xl,cldb

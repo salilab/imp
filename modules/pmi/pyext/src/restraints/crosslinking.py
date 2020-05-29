@@ -107,6 +107,13 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         midb = open("missing." + filelabel + ".xl.db", "w")
 
         self.linker = linker
+        if linker is None:
+            warnings.warn(
+                "No linker chemistry specified; this will be guessed from the "
+                "label (%s). It is recommended to specify a linker as an "
+                "ihm.ChemDescriptor object (see the "
+                "CrossLinkingMassSpectrometryRestraint documentation)." % label,
+                IMP.pmi.ParameterWarning)
         self.rs.set_name(self.rs.get_name() + "_Data")
         self.rspsi = self._create_restraint_set("PriorPsi")
         self.rssig = self._create_restraint_set("PriorSig")
