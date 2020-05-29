@@ -317,6 +317,19 @@ class CifReader(_Reader):
         self._token_index = 0
         self._linenum = 0
 
+    # Read a line from the file. Treat it as ASCII (not Unicode)
+    # but be tolerant of 8-bit characters by assuming latin-1 encoding
+    if sys.version_info[0] == 2:
+        def _read_line(self):
+            return self.fh.readline()
+    else:
+        def _read_line(self):
+            line = self.fh.readline()
+            if isinstance(line, bytes):
+                return line.decode('latin-1')
+            else:
+                return line
+
     def __del__(self):
         if hasattr(self, '_c_format'):
             _format.ihm_reader_free(self._c_format)
@@ -327,7 +340,7 @@ class CifReader(_Reader):
         start_linenum = self._linenum
         while True:
             self._linenum += 1
-            nextline = self.fh.readline()
+            nextline = self._read_line()
             if nextline == '':
                 raise CifParserError("End of file while reading multiline "
                             "string which started on line %d" % start_linenum)
@@ -424,7 +437,7 @@ class CifReader(_Reader):
         while len(self._tokens) <= self._token_index:
             # No tokens left - read the next non-blank line in
             self._linenum += 1
-            line = self.fh.readline()
+            line = self._read_line()
             if line == '': # End of file
                 return
             if line.startswith(';'):

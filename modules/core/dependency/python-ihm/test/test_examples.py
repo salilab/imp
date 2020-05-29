@@ -18,6 +18,11 @@ def get_example_path(fname):
 
 class Tests(unittest.TestCase):
 
+    def test_validator_example(self):
+        """Test validator example"""
+        subprocess.check_call([sys.executable,
+                               get_example_path("validate_pdb_dev.py")])
+
     def test_simple_docking_example(self):
         """Test simple-docking example"""
         with utils.temporary_directory() as tmpdir:

@@ -65,11 +65,14 @@ static ssize_t pyfile_read_callback(char *buffer, size_t buffer_len,
   Py_ssize_t read_len;
   char *read_str;
   static char fmt[] = "(n)";
-#if PY_VERSION_HEX < 0x03000000
   PyObject *bytes = NULL;
-#endif
   PyObject *read_method = data;
-  PyObject *result = PyObject_CallFunction(read_method, fmt, buffer_len);
+  /* Note that we can read up to `buffer_len` *bytes*, but Python's read()
+     can return Unicode *characters*. One Unicode character can require up to
+     4 bytes to be represented with UTF-8, so limit the read accordingly.
+     (mmCIF files are supposed to be ASCII but we should be liberal in what
+     we accept.) */
+  PyObject *result = PyObject_CallFunction(read_method, fmt, buffer_len / 4);
   if (!result) {
     ihm_error_set(err, IHM_ERROR_VALUE, "read failed");
     return -1;
@@ -102,7 +105,24 @@ static ssize_t pyfile_read_callback(char *buffer, size_t buffer_len,
       return -1;
     }
   } else if (PyBytes_Check(result)) {
-    if (PyBytes_AsStringAndSize(result, &read_str, &read_len) < 0) {
+    char *bytes_buffer;
+    Py_ssize_t bytes_length;
+    bytes = result;
+    /* Convert to Unicode. Since we don't know the encoding, choose something
+       permissive (latin-1). mmCIF files are supposed to be ASCII anyway. */
+    if (PyBytes_AsStringAndSize(bytes, &bytes_buffer, &bytes_length) < 0) {
+      Py_DECREF(bytes);
+      ihm_error_set(err, IHM_ERROR_VALUE, "PyBytes_AsStringAndSize failed");
+      return -1;
+    }
+    result = PyUnicode_DecodeLatin1(bytes_buffer, bytes_length, NULL);
+    Py_DECREF(bytes);
+    if (!result) {
+      ihm_error_set(err, IHM_ERROR_VALUE, "latin1 string creation failed");
+      return -1;
+    }
+    /* This returns const char * on Python 3.7 or later */
+    if (!(read_str = (char *)PyUnicode_AsUTF8AndSize(result, &read_len))) {
       ihm_error_set(err, IHM_ERROR_VALUE, "string creation failed");
       Py_DECREF(result);
       return -1;

@@ -560,7 +560,7 @@ static ssize_t fd_read_callback(char *buffer, size_t buffer_len, void *data,
  */
 static ssize_t expand_buffer(struct ihm_file *fh, struct ihm_error **err)
 {
-  static const size_t READ_SIZE = 1048576; /* Read 1MiB of data at a time */
+  static const size_t READ_SIZE = 4194304; /* Read 4MiB of data at a time */
   size_t current_size;
   ssize_t readlen;
 

@@ -4,7 +4,7 @@ import unittest
 import sys
 
 if sys.version_info[0] >= 3:
-    from io import StringIO
+    from io import StringIO, BytesIO
 else:
     from io import BytesIO as StringIO
 
@@ -176,6 +176,13 @@ save_
         self.assertEqual(d.linked_items,
                          {'_test_category2.baz': '_test_category1.bar'})
 
+        if sys.version_info[0] >= 3:
+            # Make sure that files can be read in binary mode
+            d = ihm.dictionary.read(BytesIO(cif.encode('latin-1')))
+            self.assertEqual(sorted(d.categories.keys()),
+                             ['test_category1', 'test_category2',
+                              'test_category3'])
+
     def test_add(self):
         """Test adding two Dictionaries"""
         d1 = make_test_dictionary()
@@ -304,6 +311,14 @@ _test_mandatory_category.bar 2
                           StringIO(prefix + 'n'))
         self.assertRaises(ihm.dictionary.ValidatorError, d.validate,
                           StringIO(prefix + 't'))
+
+    def test_item_type_bad_regex(self):
+        """Make sure that ItemType handles invalid regex"""
+        # "+" is not a valid Python regex; it should be skipped and will
+        # match any value
+        it = ihm.dictionary.ItemType("test", "text", "+")
+        self.assertTrue(it.regex.match("something"))
+        self.assertTrue(it.regex.match(None))
 
     def test_validate_linked_items(self):
         """Test validation of linked items"""

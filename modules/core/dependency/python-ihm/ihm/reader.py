@@ -1643,7 +1643,6 @@ class _ModelGroupHandler(Handler):
 
     def finalize(self):
         # Put all model groups not assigned to a state in their own state
-        # todo: handle models not in model groups too?
         model_groups_in_states = set()
         for sg in self.system.state_groups:
             for state in sg:
@@ -1653,6 +1652,19 @@ class _ModelGroupHandler(Handler):
                if mgid not in model_groups_in_states]
         if mgs:
             s = ihm.model.State(mgs)
+            self.system.state_groups.append(ihm.model.StateGroup([s]))
+
+        # Put all models not in a group in their own group in its own state
+        # (e.g. this will catch models from a non-IHM file)
+        models_in_groups = set()
+        for mg in self.sysr.model_groups._obj_by_id.values():
+            for m in mg:
+                models_in_groups.add(m._id)
+        ms = [m for mid, m in self.sysr.models._obj_by_id.items()
+              if mid not in models_in_groups]
+        if ms:
+            mg = ihm.model.ModelGroup(ms)
+            s = ihm.model.State([mg])
             self.system.state_groups.append(ihm.model.StateGroup([s]))
 
 
@@ -3015,7 +3027,9 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
        module to function.
 
        :param file fh: The file handle to read from. (For BinaryCIF files,
-              the file should be opened in binary mode.)
+              the file should be opened in binary mode. For mmCIF files,
+              files opened in binary mode with Python 3 will be treated as
+              if they are Latin-1-encoded.)
        :param model_class: The class to use to store model information (such
               as coordinates). For use with other software, it is recommended
               to subclass :class:`ihm.model.Model` and override

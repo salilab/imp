@@ -63,7 +63,11 @@ class Atom(object):
 class Model(object):
     """A single set of coordinates (conformation).
 
-       See :class:`ModelGroup`.
+       Models are added to the system by placing them inside
+       :class:`ModelGroup` objects, which in turn are placed inside
+       :class:`State` objects, which are grouped in
+       :class:`StateGroup` objects, which are finally added to the system
+       via :attr:`ihm.System.state_groups`.
 
        :param assembly: The parts of the system that were modeled.
        :type assembly: :class:`~ihm.Assembly`
@@ -87,7 +91,11 @@ class Model(object):
            list of spheres, but this is not very memory-efficient, particularly
            if the spheres are already stored somewhere else, e.g. in the
            software's own data structures. It is recommended to subclass
-           and provide a more efficient implementation.
+           and provide a more efficient implementation. For example, the
+           `modeling of Nup133 <https://github.com/integrativemodeling/nup133/>`_
+           uses a `custom subclass <https://github.com/integrativemodeling/nup133/blob/master/outputs_foxs_ensemble_new/pdb-dev/pdb.py>`_
+           to pass `BioPython <https://biopython.org/>`_ objects through
+           to python-ihm.
 
            Note that the set of spheres should match the model's
            :class:`~ihm.representation.Representation`. This is not currently

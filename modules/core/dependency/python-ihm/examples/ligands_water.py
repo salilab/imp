@@ -18,8 +18,12 @@ entity_rna = ihm.Entity('ACG', alphabet=ihm.RNAAlphabet,
 entity_dna = ihm.Entity(['DA', 'DC', 'DG'], alphabet=ihm.DNAAlphabet,
                         description='DNA chain')
 
+# Non-polymers such as ligands or water should each live in their own Entity:
+
 # A ligand entity (in this case, heme)
-entity_heme = ihm.Entity([ihm.NonPolymerChemComp("HEM")], description='Heme')
+heme = ihm.NonPolymerChemComp("HEM", name='PROTOPORPHYRIN IX CONTAINING FE',
+                              formula='C34 H32 Fe N4 O4')
+entity_heme = ihm.Entity([heme], description='Heme')
 
 # Water
 entity_h2o = ihm.Entity([ihm.WaterChemComp()], description='Water')

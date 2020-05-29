@@ -34,6 +34,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(cc1.code, 'G')
         self.assertEqual(cc1.code_canonical, 'G')
         self.assertEqual(cc1.type, 'other')
+        self.assertEqual(str(cc1), '<ihm.ChemComp(GLY)>')
         self.assertIsNone(cc1.formula)
         self.assertIsNone(cc1.formula_weight)
         cc2 = ihm.ChemComp(id='GLY', code='G', code_canonical='G')

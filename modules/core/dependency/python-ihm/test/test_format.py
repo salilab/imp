@@ -615,7 +615,7 @@ x y
         """Test that read() returning too many bytes is handled"""
         class MyFileLike(object):
             def read(self, numbytes):
-                return " " * (numbytes + 10)
+                return " " * (numbytes * 4 + 10)
         fh = MyFileLike()
         f = _format.ihm_file_new_from_python(fh)
         reader = _format.ihm_reader_new(f)

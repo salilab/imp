@@ -22,6 +22,9 @@ class Sequence(Reference):
        convenience subclasses are provided for common sequence databases such
        as :class:`UniProtSequence`.
 
+       These objects are typically passed to the :class:`ihm.Entity`
+       constructor.
+
        See also :attr:`alignments` to describe the correspondence between
        the database and entity sequences.
 
@@ -52,6 +55,9 @@ class Sequence(Reference):
 
 class UniProtSequence(Sequence):
     """Point to the sequence of an :class:`ihm.Entity` in UniProt.
+
+       These objects are typically passed to the :class:`ihm.Entity`
+       constructor.
 
        :param str db_code: The UniProt name (e.g. NUP84_YEAST)
        :param str accession: The UniProt accession (e.g. P52891)
@@ -98,7 +104,7 @@ class UniProtSequence(Sequence):
 class Alignment(object):
     """A sequence range that aligns between the database and the entity.
        This describes part of the sequence in the sequence database
-       (:class:`Entity`) and in the :class:`ihm.Entity`. The two ranges
+       (:class:`Sequence`) and in the :class:`ihm.Entity`. The two ranges
        must be the same length and have the same primary sequence (any
        differences must be described with :class:`SeqDif` objects).
 
@@ -133,7 +139,7 @@ class SeqDif(object):
        :type db_monomer: :class:`ihm.ChemComp`
        :param monomer: The monomer type (as a :class:`~ihm.ChemComp` object)
               in the entity sequence.
-       :type db_monomer: :class:`ihm.ChemComp`
+       :type monomer: :class:`ihm.ChemComp`
        :param str details: Descriptive text for the sequence difference.
     """
     def __init__(self, seq_id, db_monomer, monomer, details=None):
