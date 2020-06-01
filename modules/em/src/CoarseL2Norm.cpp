@@ -13,7 +13,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 FloatPair CoarseL2Norm::logabssumexp(double x,  double y,
-				    double sx, double sy)
+				     double sx, double sy)
 {
   if( IMP::isinf(abs(x)) or IMP::isinf(abs(y)) ){
     
@@ -40,7 +40,7 @@ FloatPair CoarseL2Norm::logabssumexp(double x,  double y,
 }
 
 FloatPair CoarseL2Norm::logabssumprodexp(double x,  double y,
-					double wx, double wy)
+					 double wx, double wy)
 {
   double sx = std::copysign(1, wx);
   double sy = std::copysign(1, wy);
@@ -70,17 +70,17 @@ double CoarseL2Norm::logsumexp(double x, double y)
 }
 
 std::vector<double> CoarseL2Norm::get_value(Particle *p,
-					   const algebra::Vector3D &pt,
-					   double mass_ii,
-					   IMP::em::KernelParameters kps_)
+					    const algebra::Vector3D &pt,
+					    double mass_ii,
+					    IMP::em::KernelParameters kps_)
 {
   std::vector<double> results;
   algebra::Vector3D cs = core::XYZ(p).get_coordinates();
-  double rsq = (cs - pt).get_squared_magnitude();
 
-  double tmp = - rsq * kps_.get_inv_rsigsq();
+  double rsq = (cs - pt).get_squared_magnitude();
   double norm = (kps_.get_rnormfac() * mass_ii);
   
+  double tmp = - rsq * kps_.get_inv_rsigsq();
   results.push_back( tmp );
   results.push_back( norm );
 
@@ -92,21 +92,40 @@ std::vector<double> CoarseL2Norm::get_value(Particle *p,
 }
 
 std::vector<double> CoarseL2Norm::get_value_no_deriv(Particle *p,
-						    const algebra::Vector3D &pt,
-						    double mass_ii,
-						    IMP::em::KernelParameters kps_)
+						     const algebra::Vector3D &pt,
+						     double mass_ii,
+						     IMP::em::KernelParameters kps_)
 {
   std::vector<double> results;
   algebra::Vector3D cs = core::XYZ(p).get_coordinates();
-  double rsq = (cs - pt).get_squared_magnitude();
 
-  double tmp = - rsq * kps_.get_inv_rsigsq();
+  double rsq = (cs - pt).get_squared_magnitude();
   double norm = (kps_.get_rnormfac() * mass_ii);
+  
+  double tmp = - rsq * kps_.get_inv_rsigsq();
   results.push_back( tmp );
   results.push_back( norm );
 
   return results;
 
+}
+
+FloatPair CoarseL2Norm::get_square_em_density(DensityMap *em,
+					      long number_of_voxels)
+{
+  FloatPair results;
+
+  const double *em_data = em->get_data();
+  double em_square = 0;
+  double scale = 0;
+
+  for(long jj = 0; jj < number_of_voxels; ++jj){
+    em_square += em_data[jj] * em_data[jj];
+    scale += em_data[jj];
+  }
+  results.first = scale;
+  results.second = em_square;
+  return results;
 }
 
 
@@ -149,17 +168,14 @@ std::pair<double, algebra::Vector3Ds> CoarseL2Norm::calc_score_and_derivative(De
   FloatPair dsdy_sqr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
   FloatPair dsdz_sqr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
 
-  
   int ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
   int nxny = em_header->get_nx() * em_header->get_ny();
   int znxny;
 
   double sum_over_ps_square;
   double sum_model_square = 0.;
-  double sum_over_ps;
 
-  double sum_over_mass = 0;
-  
+  //Compute the model density for derivative of cross-term
   for (unsigned int ii = 0; ii < xyzr.size(); ii++) {
 
     double px = xyzr[ii].get_x();
@@ -167,10 +183,10 @@ std::pair<double, algebra::Vector3Ds> CoarseL2Norm::calc_score_and_derivative(De
     double pz = xyzr[ii].get_z();
     double pr = xyzr[ii].get_radius();
     double mass_ii = IMP::atom::Mass(ps[ii]).get_mass();
-    sum_over_mass += mass_ii;
+    
     calc_local_bounding_box(em,
                             px, py, pz,
-                            pr,
+                            pr + kps.get_rkdist(),
                             iminx, iminy, iminz,
                             imaxx, imaxy, imaxz);
 
@@ -181,28 +197,24 @@ std::pair<double, algebra::Vector3Ds> CoarseL2Norm::calc_score_and_derivative(De
         ivox = znxny + ivoxy * em_header->get_nx() + iminx;
 
         for (ivoxx = iminx; ivoxx <= imaxx; ivoxx++) {
-
+	  
           algebra::Vector3D cur(em->get_location_by_voxel(ivox));
           std::vector<double> value = get_value_no_deriv(xyzr[ii], cur, mass_ii, kps);
-	  double intensity = value[1] * exp(value[0]);;
 
-	  modelct[ivox] += intensity;
-	  ivox++;
-
+          double intensity = value[1] * exp(value[0]);;
+          modelct[ivox] += intensity;
+          ivox++;
 	}
       }
     }
   }
+  
+  //Compute the sum and the sum^2 of the experimental EM denisty map
+  FloatPair em_sums = get_square_em_density(em, nvox);
+  //double scale = 1. / em_sums.first;
+  double scale = 1.;
 
-  double em_square = 0;
-  double scale = 0;
-  for(long jj = 0; jj < nvox; ++jj){
-    em_square += em_data[jj] * em_data[jj];
-    scale += em_data[jj];
-  }
-
-  scale = 1. * sum_over_mass / scale;
-
+  
   for (unsigned int ii = 0; ii < xyzr.size(); ii++) {
     
     double px = xyzr[ii].get_x();
@@ -211,7 +223,7 @@ std::pair<double, algebra::Vector3Ds> CoarseL2Norm::calc_score_and_derivative(De
     double pr = xyzr[ii].get_radius();
     double mass_ii = IMP::atom::Mass(ps[ii]).get_mass();
 
-    //Initialize derivative to 0.
+    //Initialize derivative to 0 for each particles
     dsdx_lnr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
     dsdy_lnr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
     dsdz_lnr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
@@ -222,15 +234,14 @@ std::pair<double, algebra::Vector3Ds> CoarseL2Norm::calc_score_and_derivative(De
 
     //Initialize square sums term to 0.
     sum_over_ps_square = 0.;
-    sum_over_ps = 0.;
     
     // Get Voxel box
     calc_local_bounding_box(em,
 			    px, py, pz,
-                            pr,
+                            pr + kps.get_rkdist(),
 			    iminx, iminy, iminz,
 			    imaxx, imaxy, imaxz);
-    
+
     for (ivoxz = iminz; ivoxz <= imaxz; ivoxz++) {
       znxny = ivoxz * nxny;
       
@@ -243,36 +254,31 @@ std::pair<double, algebra::Vector3Ds> CoarseL2Norm::calc_score_and_derivative(De
 	  std::vector<double> value = get_value(xyzr[ii], cur, mass_ii, kps);
 	  double intensity = value[1] * exp(value[0]);
 
-	  //if ( abs(em_data[ivox]) <= 1e-16 || abs(intensity) <= 1e-16 )
-	  //continue;
-       
 	  //Streaming version of (Sum)^2 term of the scoring function
 	  sum_over_ps_square += intensity * (intensity + 2. * model[ivox]);
-	  sum_over_ps += intensity;
 
-	  //Streaming version of the cc term of the scoring function
+	  //Streaming version of the log[cc] term of the scoring function
 	  cc_out = logabssumprodexp(cc_out.first,
 				    value[0],
 				    cc_out.second,
-				    scale * em_data[ivox] * value[1]);
-
+				    -2. * em_data[ivox] * value[1]);
+	  
 	  //derivative of the cc term
 	  dsdx_lnr = logabssumprodexp(dsdx_lnr.first,
 				      value[0],
 				      dsdx_lnr.second,
-				      2. * (modelct[ivox] - intensity - scale * em_data[ivox]) * value[1] * value[2]);
+				      1. * (modelct[ivox] - intensity - 2. * em_data[ivox]) * value[1] * value[2]);
 	  
 	  dsdy_lnr = logabssumprodexp(dsdy_lnr.first,
 				      value[0],
 				      dsdy_lnr.second,
-				      2. * (modelct[ivox] - intensity - scale * em_data[ivox]) * value[1] * value[3]);
+				      1. * (modelct[ivox] - intensity - 2. * em_data[ivox]) * value[1] * value[3]);
 	  
 	  dsdz_lnr = logabssumprodexp(dsdz_lnr.first,
 				      value[0],
 				      dsdz_lnr.second,
-				      2. * (modelct[ivox] - intensity - scale * em_data[ivox]) * value[1] * value[4]);
+				      1. * (modelct[ivox] - intensity - 2. * em_data[ivox]) * value[1] * value[4]);
 
-	  
 	  //Derivative of the (Sum)^2 term
 	  dsdx_sqr = logabssumprodexp(dsdx_sqr.first,
 				      2. * value[0],
@@ -288,7 +294,7 @@ std::pair<double, algebra::Vector3Ds> CoarseL2Norm::calc_score_and_derivative(De
 				      2. * value[0],
 				      dsdz_sqr.second,
 				      2. * value[1] * value[1] * value[4]);
-	  
+				      
 	  //If we want to write the generated density from particles.
           model[ivox] += intensity;
 	  ivox++;
@@ -307,21 +313,20 @@ std::pair<double, algebra::Vector3Ds> CoarseL2Norm::calc_score_and_derivative(De
         
     sum_model_square += sum_over_ps_square;
   }
-  
-  std::pair<double, algebra::Vector3Ds> results;  
-  
-  results.first = scale * scale * em_square + sum_model_square - 2.0 * exp(cc_out.first);
-  //results.first = sum_model_square - 2.0 * exp(cc_out.first);
-  results.first /= (2 * sigma);
-  //results.first += nvox * log(sqrt(2 * IMP::PI) * sigma);
 
-  //results.first /= nvox;
+  std::pair<double, algebra::Vector3Ds> results;  
+  results.first = em_sums.second + sum_model_square + 1. *  cc_out.second * exp(cc_out.first);
+  results.first /= (2 * sigma);
+  //results.first += nvox * log(sigma);
+
   
   //IMP_NEW(em::MRCReaderWriter, mrw, ());
   //IMP::em::write_map(ret, "testing.mrc", mrw);
   //IMP::em::write_map(retct, "testingct.mrc", mrw);
- 
+  
   results.second = dv_out;
+
+  //std::cerr << "AAA " << results.first << std::endl;
   return results;
 }
 

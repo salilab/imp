@@ -25,6 +25,8 @@ FitRestraintL2Norm::FitRestraintL2Norm(ParticlesTemp ps,
   use_rigid_bodies_ = use_rigid_bodies;
   
   target_dens_map_ = em_map;
+  target_dens_map_->std_normalize();
+  
   resolution_ = target_dens_map_->get_header()->get_resolution();
   voxel_size_ = target_dens_map_->get_spacing();
   sigma_ = sigma;

@@ -26,22 +26,26 @@ class IMPEMEXPORT CoarseL2Norm : public IMP::Object {
  CoarseL2Norm() : Object("CoarseL2Norm%1%") {}
 
   static FloatPair logabssumexp(double x,  double y,
-				double sx, double sy);
+			 double sx, double sy);
 
   static FloatPair logabssumprodexp(double x,  double y,
-				    double wx, double wy);
+			     double wx, double wy);
 
   static double logsumexp(double x, double y);
 
-  static std::vector<double> get_value(Particle *p,
-				       const algebra::Vector3D &pt,
-				       double mass_ii, 
-				       IMP::em::KernelParameters kps_);
 
+  static FloatPair get_square_em_density(DensityMap *em,
+				  long number_of_voxels);
+  
+  static std::vector<double> get_value(Particle *p,
+				const algebra::Vector3D &pt,
+				double mass_ii, 
+				IMP::em::KernelParameters kps_);
+  
   static std::vector<double> get_value_no_deriv(Particle *p,
-						const algebra::Vector3D &pt,
-						double mass_ii,
-						IMP::em::KernelParameters kps_);
+					 const algebra::Vector3D &pt,
+					 double mass_ii,
+					 IMP::em::KernelParameters kps_);
   
   static std::pair<double, algebra::Vector3Ds> calc_score_and_derivative(DensityMap *em,
 									 const IMP::ParticlesTemp &ps,
