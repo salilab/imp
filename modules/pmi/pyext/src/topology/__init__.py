@@ -464,7 +464,7 @@ class Molecule(_SystemBase):
                       offset=0,model_num=None,ca_only=False,
                       soft_check=False):
         """Read a structure and store the coordinates.
-        @eturn the atomic residues (as a set)
+        @return the atomic residues (as a set)
         @param pdb_fn     The file to read
         @param chain_id   Chain ID to read
         @param res_range  Add only a specific set of residues from the PDB file.
