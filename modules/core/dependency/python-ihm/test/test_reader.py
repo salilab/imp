@@ -2496,6 +2496,7 @@ _ihm_cross_link_pseudo_site.pseudo_site_id
 _ihm_cross_link_pseudo_site.model_id
 1 2 1 44 .
 2 2 2 88 99
+3 2 2 880 990
 """
         xl_rsr = """
 loop_
@@ -2553,10 +2554,14 @@ _ihm_cross_link_restraint.sigma_2
             self.assertIsNone(xl2.psi)
             self.assertIsNone(xl2.sigma1)
             self.assertIsNone(xl2.sigma2)
-            self.assertEqual(xl2.pseudo1.site._id, '44')
-            self.assertIsNone(xl2.pseudo1.model)
-            self.assertEqual(xl2.pseudo2.site._id, '88')
-            self.assertEqual(xl2.pseudo2.model._id, '99')
+            ps1, = xl2.pseudo1
+            self.assertEqual(ps1.site._id, '44')
+            self.assertIsNone(ps1.model)
+            ps21, ps22 = xl2.pseudo2
+            self.assertEqual(ps21.site._id, '88')
+            self.assertEqual(ps21.model._id, '99')
+            self.assertEqual(ps22.site._id, '880')
+            self.assertEqual(ps22.model._id, '990')
 
     def test_cross_link_result_handler(self):
         """Test CrossLinkResultHandler"""

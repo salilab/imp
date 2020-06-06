@@ -363,12 +363,12 @@ class ResidueCrossLink(CrossLink):
        :param float sigma2: Initial uncertainty in the position of the second
               residue.
        :param bool restrain_all: If True, all cross-links are restrained.
-       :param pseudo1: Pseudo site representing the position of the
+       :param pseudo1: List of pseudo sites representing the position of the
               first residue (if applicable).
-       :type pseudo1: :class:`CrossLinkPseudoSite`
-       :param pseudo2: Pseudo site representing the position of the
+       :type pseudo1: List of :class:`CrossLinkPseudoSite`
+       :param pseudo2: List of pseudo sites representing the position of the
               second residue (if applicable).
-       :type pseudo2: :class:`CrossLinkPseudoSite`
+       :type pseudo2: List of :class:`CrossLinkPseudoSite`
     """
     granularity = 'by-residue'
     atom1 = atom2 = None
@@ -408,12 +408,12 @@ class FeatureCrossLink(CrossLink):
        :param float sigma2: Initial uncertainty in the position of the second
               residue.
        :param bool restrain_all: If True, all cross-links are restrained.
-       :param pseudo1: Pseudo site representing the position of the
+       :param pseudo1: List of pseudo sites representing the position of the
               first residue (if applicable).
-       :type pseudo1: :class:`CrossLinkPseudoSite`
-       :param pseudo2: Pseudo site representing the position of the
+       :type pseudo1: List of :class:`CrossLinkPseudoSite`
+       :param pseudo2: List of pseudo sites representing the position of the
               second residue (if applicable).
-       :type pseudo2: :class:`CrossLinkPseudoSite`
+       :type pseudo2: List of :class:`CrossLinkPseudoSite`
     """
     granularity = 'by-feature'
     atom1 = atom2 = None
@@ -454,12 +454,12 @@ class AtomCrossLink(CrossLink):
        :param float sigma2: Initial uncertainty in the position of the second
               residue.
        :param bool restrain_all: If True, all cross-links are restrained.
-       :param pseudo1: Pseudo site representing the position of the
+       :param pseudo1: List of pseudo sites representing the position of the
               first residue (if applicable).
-       :type pseudo1: :class:`CrossLinkPseudoSite`
-       :param pseudo2: Pseudo site representing the position of the
+       :type pseudo1: List of :class:`CrossLinkPseudoSite`
+       :param pseudo2: List of pseudo sites representing the position of the
               second residue (if applicable).
-       :type pseudo2: :class:`CrossLinkPseudoSite`
+       :type pseudo2: List of :class:`CrossLinkPseudoSite`
     """
     granularity = 'by-atom'
 

@@ -1,3 +1,8 @@
+HEAD
+====
+  - Multiple :class:`ihm.restraint.CrossLinkPseudoSite` objects can now
+    be assigned to a given :class:`ihm.restraint.CrossLink`.
+
 0.16 - 2020-05-29
 =================
   - :func:`ihm.reader.read` no longer discards models read from non-IHM mmCIF

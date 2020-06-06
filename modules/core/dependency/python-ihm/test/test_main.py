@@ -836,7 +836,7 @@ class Tests(unittest.TestCase):
         xl = MockObject()
         ps = MockObject()
         ps.site = s2
-        xl.pseudo1 = ps
+        xl.pseudo1 = [ps]
         xl.pseudo2 = None
         r1.cross_links = [xl]
 
@@ -845,7 +845,7 @@ class Tests(unittest.TestCase):
         xl.pseudo1 = None
         ps = MockObject()
         ps.site = s1
-        xl.pseudo2 = ps
+        xl.pseudo2 = [ps]
         r2.cross_links = [xl]
 
         s = ihm.System()

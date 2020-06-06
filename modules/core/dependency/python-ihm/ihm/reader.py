@@ -2409,9 +2409,13 @@ class _CrossLinkPseudoSiteHandler(Handler):
         xl = self.sysr.cross_links.get_by_id(restraint_id)
         partner = self.get_int(cross_link_partner)
         if partner == 2:
-            xl.pseudo2 = xlps
+            if getattr(xl, 'pseudo2', None) is None:
+                xl.pseudo2 = []
+            xl.pseudo2.append(xlps)
         else:
-            xl.pseudo1 = xlps
+            if getattr(xl, 'pseudo1', None) is None:
+                xl.pseudo1 = []
+            xl.pseudo1.append(xlps)
 
 
 class _CrossLinkResultHandler(Handler):

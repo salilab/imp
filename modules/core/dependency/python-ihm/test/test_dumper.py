@@ -1033,6 +1033,10 @@ _ihm_struct_assembly_details.entity_poly_segment_id
         l = ihm.location.InputFileLocation(repo=repo3, path='foo.spd',
                                            details='EM micrographs')
         system.locations.append(l)
+        # Path can also be None for Repository containing a single file
+        l = ihm.location.InputFileLocation(repo=repo3, path=None,
+                                           details='EM micrographs')
+        system.locations.append(l)
 
         with utils.temporary_directory('') as tmpdir:
             bar = os.path.join(tmpdir, 'test_mmcif_extref.tmp')
@@ -1046,11 +1050,11 @@ _ihm_struct_assembly_details.entity_poly_segment_id
 
             d = ihm.dumper._ExternalReferenceDumper()
             d.finalize(system)
-            self.assertEqual(len(d._ref_by_id), 5)
+            self.assertEqual(len(d._ref_by_id), 6)
             self.assertEqual(len(d._repo_by_id), 4)
             # Repeated calls to finalize() should yield identical results
             d.finalize(system)
-            self.assertEqual(len(d._ref_by_id), 5)
+            self.assertEqual(len(d._ref_by_id), 6)
             self.assertEqual(len(d._repo_by_id), 4)
             out = _get_dumper_output(d, system)
             self.assertEqual(out, """#
@@ -1079,7 +1083,8 @@ _ihm_external_files.details
 2 1 baz 'Input data or restraints' . .
 3 2 foo/bar/baz 'Modeling or post-processing output' . .
 4 3 foo.spd 'Input data or restraints' . 'EM micrographs'
-5 4 %s 'Modeling workflow or script' 4 .
+5 3 . 'Input data or restraints' . 'EM micrographs'
+6 4 %s 'Modeling workflow or script' 4 .
 #
 """ % bar.replace(os.sep, '/'))
 
@@ -2639,13 +2644,16 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
         psxl = ihm.restraint.CrossLinkPseudoSite(site=ps)
         xl4 = ihm.restraint.ResidueCrossLink(xxl5, asym1, asym2, d,
                                 psi=0.5, sigma1=1.0, sigma2=2.0,
-                                restrain_all=True, pseudo2=psxl)
+                                restrain_all=True, pseudo2=[psxl])
         m = MockObject()
         m._id = 99
         psxl = ihm.restraint.CrossLinkPseudoSite(site=ps, model=m)
+        m = MockObject()
+        m._id = 990
+        psxl2 = ihm.restraint.CrossLinkPseudoSite(site=ps, model=m)
         xl5 = ihm.restraint.ResidueCrossLink(xxl2, asym1, asym2, d,
                                 psi=0.5, sigma1=1.0, sigma2=2.0,
-                                restrain_all=True, pseudo2=psxl)
+                                restrain_all=True, pseudo2=[psxl, psxl2])
         r.cross_links.extend((xl1, xl2, xl3, xl4, xl5))
 
         model = MockObject()
@@ -2720,6 +2728,7 @@ _ihm_cross_link_pseudo_site.pseudo_site_id
 _ihm_cross_link_pseudo_site.model_id
 1 3 2 89 .
 2 4 2 89 99
+3 4 2 89 990
 #
 #
 loop_

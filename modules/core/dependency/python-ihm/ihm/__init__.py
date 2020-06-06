@@ -465,9 +465,11 @@ class System(object):
                 if hasattr(r, 'cross_links'):
                     for xl in r.cross_links:
                         if xl.pseudo1:
-                            yield xl.pseudo1.site
+                            for x in xl.pseudo1:
+                                yield x.site
                         if xl.pseudo2:
-                            yield xl.pseudo2.site
+                            for x in xl.pseudo2:
+                                yield x.site
         return itertools.chain(self.orphan_pseudo_sites,
                                _all_restraint_sites(),
                                (f.site for f in self._all_features()
