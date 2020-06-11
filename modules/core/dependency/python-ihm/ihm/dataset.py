@@ -102,6 +102,11 @@ class MassSpecDataset(Dataset):
     data_type = 'Mass Spectrometry data'
 
 
+class HDXDataset(Dataset):
+    """Data from a hydrogen/deuterium exchange experiment"""
+    data_type = 'H/D exchange data'
+
+
 class PDBDataset(Dataset):
     """An experimentally-determined 3D structure as a set of a coordinates,
        usually in a PDB file"""

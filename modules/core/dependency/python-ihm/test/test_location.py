@@ -36,6 +36,15 @@ class Tests(unittest.TestCase):
         self.assertEqual(l.version, 'foo')
         self.assertEqual(l.details, 'bar')
 
+    def test_pdb_dev_location(self):
+        """Test PDBDevLocation"""
+        l = ihm.location.PDBDevLocation(
+                'PDBDEV_00000029', version='foo', details='bar')
+        self.assertEqual(l.db_name, 'PDB-Dev')
+        self.assertEqual(l.access_code, 'PDBDEV_00000029')
+        self.assertEqual(l.version, 'foo')
+        self.assertEqual(l.details, 'bar')
+
     def test_bmrb_location(self):
         """Test BMRBLocation"""
         l = ihm.location.BMRBLocation('27600', version='foo', details='bar')
