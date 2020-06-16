@@ -22,7 +22,7 @@ First, obtain the input files used in this example and put them in the
 current directory, by typing:
 
 \code{.sh}
-cp <imp_example_path>/kinematics/antibody/* .
+cp "<imp_example_path>"/kinematics/antibody/*.* .
 \endcode
 
 (On a Windows machine, use `copy` rather than `cp`.) Here, `<imp_example_path>`
