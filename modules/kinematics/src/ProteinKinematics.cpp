@@ -559,7 +559,7 @@ std::vector<atom::Atoms> ProteinKinematics::quick_hack_converter
       atom::Atoms cur_atoms_quad;
       for(unsigned int j=0; j<4; j++) {
         IMP_INTERNAL_CHECK(IMP::atom::Atom::get_is_setup(m, piqs[i][j]), 
-                                            "All particle indexes in quads must be decorated with Atom")
+			   "All particle indexes in quads must be decorated with Atom");
         cur_atoms_quad.push_back(IMP::atom::Atom(m, piqs[i][j]));
       } // for j
       ret_value.push_back(cur_atoms_quad);

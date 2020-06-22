@@ -130,7 +130,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
       configurations during the sampling run. */
   bool run(unsigned int number_of_iterations = 0);
 
-  std::vector<DOFValues> get_DOFValues();
+  DOFValuesList get_DOFValuesList();
 
   /* Parameters for controlling RRT stop condition */
 

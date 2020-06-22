@@ -183,11 +183,12 @@ class Test(IMP.test.TestCase):
 
         rrt.run()
 
-        dof_values = rrt.get_DOFValues()
+        dof_values = rrt.get_DOFValuesList()
 
         for j in range(len(joints)):
             print(joints[j].get_angle(), init_angles[j])
         # Apply the DOFs and
+        print("Type dof_values", type(dof_values))
         sampler.apply(dof_values[-1])
         #kf.mark_internal_coordinates_changed()
         #kf.mark_external_coordinates_changed()

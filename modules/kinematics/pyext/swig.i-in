@@ -32,7 +32,7 @@ IMP_SWIG_OBJECT( IMP::kinematics, RRT, RRTs);
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.kinematics.say_hello(). */
 
-%template(DOFValuesVector) std::vector<IMP::kinematics::DOFValues>;
+//%template(DOFValuesVector) std::vector<IMP::kinematics::DOFValues>;
 
 
 /* Wrap our own classes. Each header in the module should be listed here with a

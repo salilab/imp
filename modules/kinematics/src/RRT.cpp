@@ -152,8 +152,8 @@ bool RRT::run(unsigned int number_of_iterations) {
 
 }
 
-std::vector<DOFValues> RRT::get_DOFValues() {
-  std::vector<DOFValues> ret(tree_.size());
+DOFValuesList RRT::get_DOFValuesList() {
+  DOFValuesList ret(tree_.size());
   for (unsigned int i = 0; i < tree_.size(); i++) {
     ret[i] = tree_[i]->get_DOFValues();
   }

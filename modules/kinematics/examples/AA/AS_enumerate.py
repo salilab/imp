@@ -1,4 +1,8 @@
-fom __future__ import print_function
+## \example AA/AS_enumerate.py
+# Examples ported from kinetics branch
+# (details should be added in future)
+
+from __future__ import print_function
 import IMP
 import IMP.core
 import IMP.test
@@ -35,7 +39,7 @@ constant = -10
 scale = 1.0
 pi = -3.14159256
 #outdir = sequence +"_" +str(constant * -1) +"_"+str(div)+ "/"
-outdir = sequence +"_enumerate/"
+outdir = "AA/" + sequence +"_enumerate/"
 #os.mkdir(outdir)
 
 def scale_radii(particles, scale):
@@ -168,14 +172,14 @@ if enum:
             joints[1].set_angle(ang2)
             for k in range(d):
                 ang3 = k*2*pi/d
-                joints[2].set_angle(ang3)               
+                joints[2].set_angle(ang3)
 
                 kf.update_all_external_coordinates()
 
                 f.write(">> " + str(sf.evaluate(False)) + " " + str(ang1) + " " + str(ang2) + " " + str(ang3) + " " + str([r.evaluate(False) for r in rs]) + "\n")
 
 
-if rrt: 
+if rrt:
     # Else do RRT
     sampler = IMP.kinematics.UniformBackboneSampler(joints, dofs)
 
@@ -189,9 +193,9 @@ if rrt:
     rrt.set_scoring_function(sf)
     rrt.set_tree_size(50000)
 
-    sampler.apply(rrt.get_DOFValues()[0])
+    sampler.apply(rrt.get_DOFValuesList()[0])
 
-    print(planner.is_valid(rrt.get_DOFValues()[0], sf))
+    print(planner.is_valid(rrt.get_DOFValuesList()[0], sf))
     filename = outdir + "init.pdb"
     IMP.atom.write_pdb(hier, filename)
 
@@ -199,7 +203,7 @@ if rrt:
     rrt.run()
 
 
-    dof_values = rrt.get_DOFValues()
+    dof_values = rrt.get_DOFValuesList()
     #edges = rrt.get_edges()
 
     exit()
@@ -224,7 +228,3 @@ if rrt:
         print(dd.get_value(), dd.get_number_of_steps(pi), dd.get_step_size())
 
     print(len(dof_values), " nodes built")
-
- 
-
-
