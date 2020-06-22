@@ -46,7 +46,8 @@ enum ProteinAngleType {
 };
 
 
-//! Kinematic structure over a protein, with backbone and side chain dihedrals
+//! Kinematic structure over a protein, with backbone and side chain dihedrals.
+//! Should only be applied one over a given set of particles.
 //!
 //! Note: Particles that are handled by this class should never be decorated
 //! with IMP::core::RigidBody externally, as this could lead to unexpected behavior
