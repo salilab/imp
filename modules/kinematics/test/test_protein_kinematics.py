@@ -120,14 +120,16 @@ class Test(IMP.test.TestCase):
         # A single alanine has zero joints
         m, hier = self.construct_peptide(sequence='A')
         pk = IMP.kinematics.ProteinKinematics(hier, True, True)
-        pk2 = IMP.kinematics.ProteinKinematics(hier, True, False)
+        m2, hier2 = self.construct_peptide(sequence='A')
+        pk2 = IMP.kinematics.ProteinKinematics(hier2, True, False)
         self.assertEqual(0, len(pk.get_joints()))
         self.assertEqual(0, len(pk2.get_joints()))
 
         # Two alanines have two joints
         m, hier = self.construct_peptide(sequence='AA')
         pk = IMP.kinematics.ProteinKinematics(hier, True, True)
-        pk2 = IMP.kinematics.ProteinKinematics(hier, True, False)
+        m2, hier2 = self.construct_peptide(sequence='AA')
+        pk2 = IMP.kinematics.ProteinKinematics(hier2, True, False)
         self.assertEqual(2, len(pk.get_joints()))
         self.assertEqual(2, len(pk2.get_joints()))
 
@@ -135,7 +137,8 @@ class Test(IMP.test.TestCase):
         # and four with flexible side chains
         m, hier = self.construct_peptide(sequence='K')
         pk = IMP.kinematics.ProteinKinematics(hier, True, True)
-        pk2 = IMP.kinematics.ProteinKinematics(hier, True, False)
+        m2, hier2 = self.construct_peptide(sequence='K')
+        pk2 = IMP.kinematics.ProteinKinematics(hier2, True, False)
         self.assertEqual(4, len(pk.get_joints()))
         self.assertEqual(0, len(pk2.get_joints()))
 
@@ -143,7 +146,8 @@ class Test(IMP.test.TestCase):
         # and 8 plus 2*5 = 20 joints with flexible side chains
         m, hier = self.construct_peptide(sequence='DDDDD')
         pk = IMP.kinematics.ProteinKinematics(hier, True, True)
-        pk2 = IMP.kinematics.ProteinKinematics(hier, True, False)
+        m2, hier2 = self.construct_peptide(sequence='DDDDD')
+        pk2 = IMP.kinematics.ProteinKinematics(hier2, True, False)
         self.assertEqual(18, len(pk.get_joints()))
         self.assertEqual(8, len(pk2.get_joints()))
 

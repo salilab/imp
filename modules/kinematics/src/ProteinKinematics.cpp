@@ -334,6 +334,7 @@ void ProteinKinematics::mark_rotatable_angle(
   boost::remove_edge(atom_index1, atom_index2, graph_);
   std::vector<int> component2(boost::num_vertices(graph_));
   unsigned int num1 = boost::connected_components(graph_, &component2[0]);
+  IMP_UNUSED(num1);
   //std::cerr << "CC NUM after removal of rotatable bonds = " << component2[0]
   //          << std::endl;
 }
