@@ -26,7 +26,7 @@ double DihedralSingletonScore::evaluate_index(Model *mod,
   Dihedral ad(mod, pi);
   Float ideal = ad.get_ideal();
   Float s = ad.get_stiffness();
-  if (s <= 0.) {
+  if (std::abs(s) <= 1e-6) {
     return 0.;
   }
   Int m = ad.get_multiplicity();
