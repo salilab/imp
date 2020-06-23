@@ -1,6 +1,6 @@
 /**
  * \file IMP/kinematics/RRT.h
- * \brief simple RRT implementation
+ * \brief Implementation of Randomly-Exploring Random Trees
  *
  *  \authors Dina Schneidman, Barak Raveh
  *
