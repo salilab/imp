@@ -1,0 +1,24 @@
+MODEL        1
+HETATM    1  CL  ALA A   1      -1.875   1.772  -1.797  1.00  0.00          Un  
+HETATM    2  HL1 ALA A   1      -2.018   2.695  -1.194  1.00  0.00          Un  
+HETATM    3  HL2 ALA A   1      -2.663   1.405  -1.105  1.00  0.00          Un  
+HETATM    4  HL3 ALA A   1      -0.811   1.997  -1.570  1.00  0.00          Un  
+HETATM    5  CLP ALA A   1      -1.359   0.411  -1.485  1.00  0.00          Un  
+HETATM    6  OL  ALA A   1      -1.397  -0.483  -2.330  1.00  0.00          Un  
+HETATM    7  NL  ALA A   1      -0.864   0.237  -0.244  1.00  0.00          Un  
+HETATM    8  HL  ALA A   1      -0.850   0.974   0.427  1.00  0.00          Un  
+HETATM    9  CA  ALA A   1      -0.305  -1.013   0.183  1.00  0.00          Un  
+HETATM   10  HA  ALA A   1      -0.968  -1.778  -0.191  1.00  0.00          Un  
+HETATM   11  CB  ALA A   1      -0.243  -1.193   1.715  1.00  0.00          Un  
+HETATM   12  HB1 ALA A   1       0.304  -0.369   2.214  1.00  0.00          Un  
+HETATM   13  HB2 ALA A   1      -1.274  -1.209   2.128  1.00  0.00          Un  
+HETATM   14  HB3 ALA A   1       0.249  -2.156   1.968  1.00  0.00          Un  
+HETATM   15  CRP ALA A   1       1.039  -1.245  -0.466  1.00  0.00          Un  
+HETATM   16  OR  ALA A   1       1.152  -2.193  -1.241  1.00  0.00          Un  
+HETATM   17  NR  ALA A   1       2.110  -0.440  -0.230  1.00  0.00          Un  
+HETATM   18  HR  ALA A   1       2.972  -0.642  -0.687  1.00  0.00          Un  
+HETATM   19  CR  ALA A   1       2.183   0.721   0.615  1.00  0.00          Un  
+HETATM   20  HR1 ALA A   1       2.228   0.418   1.682  1.00  0.00          Un  
+HETATM   21  HR2 ALA A   1       1.319   1.396   0.453  1.00  0.00          Un  
+HETATM   22  HR3 ALA A   1       3.110   1.286   0.378  1.00  0.00          Un  
+ENDMDL
