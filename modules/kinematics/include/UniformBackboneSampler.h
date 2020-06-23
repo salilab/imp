@@ -33,6 +33,9 @@ class IMPKINEMATICSEXPORT UniformBackboneSampler : public DOFsSampler {
   UniformBackboneSampler(DihedralAngleRevoluteJoints joints, DOFs dofs);
 
   virtual void apply(const DOFValues& values);
+  virtual void apply_floats(const Floats& values);
+
+  DihedralAngleRevoluteJoints get_joints() { return joints_; }
 
  protected:
   virtual DOFValues do_get_sample() const;

@@ -17,18 +17,23 @@ IMP_SWIG_OBJECT( IMP::kinematics, KinematicForest, KinematicForests);
 IMP_SWIG_OBJECT( IMP::kinematics, KinematicForestScoreState, KinematicForestScoreStates);
 IMP_SWIG_OBJECT( IMP::kinematics, CompositeJoint, CompositeJoints);
 IMP_SWIG_OBJECT( IMP::kinematics, RevoluteJointMover, RevoluteJointMovers);
+IMP_SWIG_OBJECT( IMP::kinematics, DihedralMover, DihedralMovers);
 IMP_SWIG_OBJECT( IMP::kinematics, DOF, DOFs);
 IMP_SWIG_VALUE( IMP::kinematics, DOFValues, DOFValuesList);
 IMP_SWIG_OBJECT( IMP::kinematics, DirectionalDOF, DirectionalDOFs);
 IMP_SWIG_BASE_OBJECT( IMP::kinematics, DOFsSampler, DOFsSamplers);
 IMP_SWIG_OBJECT( IMP::kinematics, UniformBackboneSampler, UniformBackboneSamplers);
+IMP_SWIG_OBJECT( IMP::kinematics, FibrilSampler, FibrilSamplers);
 IMP_SWIG_OBJECT( IMP::kinematics, ProteinKinematics, ProteinKinematicsList);
 IMP_SWIG_OBJECT( IMP::kinematics, LocalPlanner, LocalPlanners);
 IMP_SWIG_OBJECT( IMP::kinematics, PathLocalPlanner, PathLocalPlanners);
 IMP_SWIG_OBJECT( IMP::kinematics, RRT, RRTs);
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
-   This function can be called as IMP.kinematicss.say_hello(). */
+   This function can be called as IMP.kinematics.say_hello(). */
+
+//%template(DOFValuesVector) std::vector<IMP::kinematics::DOFValues>;
+
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
@@ -39,12 +44,14 @@ IMP_SWIG_OBJECT( IMP::kinematics, RRT, RRTs);
 %include "IMP/kinematics/CompositeJoint.h"
 %include "IMP/kinematics/revolute_joints.h"
 %include "IMP/kinematics/RevoluteJointMover.h"
+%include "IMP/kinematics/DihedralMover.h"
 %include "IMP/kinematics/KinematicForest.h"
 %include "IMP/kinematics/KinematicForestScoreState.h"
 %include "IMP/kinematics/DOF.h"
 %include "IMP/kinematics/DOFValues.h"
 %include "IMP/kinematics/directional_DOFs.h"
 %include "IMP/kinematics/DOFsSampler.h"
+%include "IMP/kinematics/FibrilSampler.h"
 %include "IMP/kinematics/UniformBackboneSampler.h"
 %include "IMP/kinematics/ProteinKinematics.h"
 %include "IMP/kinematics/local_planners.h"

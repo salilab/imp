@@ -55,5 +55,29 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(IMP.atom.get_psi_dihedral_atoms(r)), 0)
 
 
+    def test_chi_dihedral(self):
+        """Test chi dihedrals"""
+        m = IMP.Model()
+        p = IMP.atom.get_data_path("top.lib")
+        f = open(p, "r")
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
+        topology = IMP.atom.CHARMMTopology(ff)
+        topology.add_sequence('ARKGLA')
+        topology.apply_default_patches()
+        h = topology.create_hierarchy(m)
+
+        arg = IMP.atom.Residue(h.get_children()[0].get_children()[1])
+        gly = IMP.atom.Residue(h.get_children()[0].get_children()[3])
+
+        arg_chi_pis = IMP.atom.get_chi_dihedral_particle_indexes(arg)
+
+        # Ensure a couple of the atom assignments are correct
+        self.assertEqual(5, len(arg_chi_pis))
+        self.assertEqual(IMP.atom.AT_CG, IMP.atom.Atom(m, arg_chi_pis[0][3]).get_atom_type())
+        self.assertEqual(IMP.atom.AT_CZ, IMP.atom.Atom(m, arg_chi_pis[3][3]).get_atom_type())
+
+        self.assertEqual(0, len(IMP.atom.get_chi_dihedral_particle_indexes(gly)))
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef IMPKINEMATICS_PROTEIN_KINEMATICS_H
-#define IMPKINEMATICS_PROTEIN_KINEMATICS_H
+#ifndef IMPKINEMATICS_PROTEINKINEMATICS_H
+#define IMPKINEMATICS_PROTEINKINEMATICS_H
 
 #include "kinematics_config.h"
 
@@ -27,22 +27,103 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
-//! Kinematic structure over a protein, with backbone and side chain dihedrals
+// public:
+enum ProteinAngleType {
+  PHI,
+  PSI,
+  CHI,
+  CHI1,
+  CHI2,
+  CHI3,
+  CHI4,
+  CHI5,
+  OTHER,
+  OTHER2,
+  OTHER3,
+  OTHER4,
+  OTHER5,
+  TOTAL
+};
+
+
+//! Kinematic structure over a protein, with backbone and side chain dihedrals.
+//! Should only be applied one over a given set of particles.
 //!
 //! Note: Particles that are handled by this class should never be decorated
 //! with IMP::core::RigidBody externally, as this could lead to unexpected behavior
 //! (e.g., wrong coordinates) and it cannot be detected by IMP at the current time.
 class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
+
+
+  
  public:
 
   //! Constructor with all phi/psi rotatable
+  /**
+     @param mhd hierarchy of a protein, obtained by e.g. reading a Pdb using IMP::Atom::read_pdb()
+     @param flexible_backbone whether all phi/psi angles are flexible
+     @param flexible_side_chains whether all chi angles are flexible      
+               (currently not implemented)
+   */
   ProteinKinematics(atom::Hierarchy mhd, bool flexible_backbone = true,
                     bool flexible_side_chains = false);
 
-  // Constructor; only torsions from dihedral_angles list are rotatable
+  // Constructor; torsions from custom_dihedral_angles list are rotatable
+  /**
+     @param mhd hierarchy of a protein, obtained by e.g. reading a Pdb using IMP::Atom::read_pdb()
+     @param flexible_residues all residues for which non-custom backbone of side-chain dihedrals may
+                              be flexible (side-chains are not implemented as of May 2017)
+     @param custom_dihedral_angles IMP::ParticleIndexQuads - list of four particles that define a 
+                              custom dihedral angle
+     @param flexible_backbone whether all phi/psi angles in flexible_residues are flexible
+     @param flexible_side_chains whether all chi angles in flexible_residues are flexible      
+               (currently not implemented)
+   */
   ProteinKinematics(atom::Hierarchy mhd,
                     const atom::Residues& flexible_residues,
-                    const std::vector<atom::Atoms>& dihedral_angles,
+                    const ParticleIndexQuads custom_dihedral_angles,
+                    atom::Atoms open_loop_bond_atoms = atom::Atoms(),
+                    bool flexible_backbone = true,
+                    bool flexible_side_chains = false);
+
+  // Constructor; torsions from custom_dihedral_angles list are rotatable
+  /**
+     @param mhd hierarchy of a protein, obtained by e.g. reading a Pdb using IMP::Atom::read_pdb()
+     @param flexible_residues all residues for which non-custom backbone of side-chain dihedrals may
+                              be flexible (side-chains are not implemented as of May 2017)
+     @param custom_dihedral_atoms lists of four atoms that define a custom dihedral angle !!Only accessible from C++
+                              use custom_dihedral_angles if constructingi n python.
+     @param open_loop_bond_atoms TODO: document
+     @param flexible_backbone whether all phi/psi angles in flexible_residues are flexible
+     @param flexible_side_chains whether all chi angles in flexible_residues are flexible      
+               (currently not implemented)
+   */
+
+  ProteinKinematics(atom::Hierarchy mhd,
+                    const atom::Residues& flexible_residues,
+                    const std::vector<atom::Atoms>& custom_dihedral_atoms,
+                    atom::Atoms open_loop_bond_atoms = atom::Atoms(),
+                    bool flexible_backbone = true,
+                    bool flexible_side_chains = false);
+
+  // Constructor; torsions from custom_dihedral_angles list are rotatable
+  /**
+     @param mhd hierarchy of a protein, obtained by e.g. reading a Pdb using IMP::Atom::read_pdb()
+     @param flexible_residues all residues for which non-custom backbone of side-chain dihedrals may
+                              be flexible (side-chains are not implemented as of May 2017)
+     @param custom_dihedral_angles IMP::ParticleIndexQuads - list of four particles that define a 
+                              custom dihedral angle
+     @param custom_dihedral_angle_types the types of all custom dihedral angles (a list of the same size)
+     @param open_loop_bond_atoms TODO: document
+     @param flexible_backbone whether all phi/psi angles in flexible_residues are flexible
+     @param flexible_side_chains whether all chi angles in flexible_residues are flexible      
+               (currently not implemented)
+   */
+
+  ProteinKinematics(atom::Hierarchy mhd,
+                    const atom::Residues& flexible_residues,
+                    const ParticleIndexQuads custom_dihedral_angles,
+                    const std::vector<ProteinAngleType>& custom_dihedral_angle_types,    
                     atom::Atoms open_loop_bond_atoms = atom::Atoms(),
                     bool flexible_backbone = true,
                     bool flexible_side_chains = false);
@@ -50,29 +131,54 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
  private:
   //! the actual construction is done here,
   //! see constructors for documentation
+  /**
+     initialize the protein kinematics object
+     @param flexible_residues all reidues whose phi/psi angles are activated
+     @param custom_dihedral_angles IMP::ParticleIndexQuads - list of four particles that define a 
+                              custom dihedral angle
+     @param custom_dihedral_atoms lists of four atoms that define a custom dihedral angle !!Only accessible from C++
+                              use custom_dihedral_angles if constructingi n python.
+     @param custom_dihedral_angle_types the types of all custom dihedral angles (a list of the same size)
+     @param open_loop_bond_atoms TODO: document
+     @param flexible_backbone are dihedral joints defined for the backbone
+     @param flexible_side_chains are dihedral joints defined for the side chains
+   */
   void init( const atom::Residues& flexible_residues,
-             const std::vector<atom::Atoms>& dihedral_angles,
+             const ParticleIndexQuads custom_dihedral_angles,
+             const std::vector<atom::Atoms>& custom_dihedral_atoms,
+             const std::vector<ProteinAngleType>& custom_dihedral_angle_types,     
              atom::Atoms open_loop_bond_atoms,
              bool flexible_backbone,
              bool flexible_side_chains);
 
   void add_edges_to_rb_graph(const std::vector<atom::Atoms>& dihedral_angles);
 
+  std::vector<atom::Atoms> quick_hack_converter(Model* m, const ParticleIndexQuads piqs);
+
  public:
   /* Access methods */
 
+  //! get phi angle associated with residue r
   double get_phi(const atom::Residue r) const {
+    // TODO: what happens if user queries N' residue?
     return get_phi_joint(r)->get_angle();
   }
 
+  //! get psi angle associated with residue r
   double get_psi(const atom::Residue r) const {
+    // TODO: what happens if user queries C' residue?
     return get_psi_joint(r)->get_angle();
   }
 
+  //! returns a list of all joints associated with the ProteinKinematics structure
   DihedralAngleRevoluteJoints get_joints() { return joints_; }
 
-  DihedralAngleRevoluteJoints get_loop_joints() { return loop_joints_; }
+  DihedralAngleRevoluteJoints get_loop_joints() { return loop_joints_;
+    // TODO: what are loop joints?
+  }
 
+  //! return joints sorted by BFS traversal from the
+  //! root(s) of the kinematic structure
   DihedralAngleRevoluteJoints get_ordered_joints() {
     DihedralAngleRevoluteJoints ret;
     IMP_FOREACH(Joint *j, kf_->get_ordered_joints() ){
@@ -81,6 +187,8 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
     return ret;
   }
 
+  //! returns the kinematic forest associated with this ProteinKinematics
+  //! object
   KinematicForest* get_kinematic_forest() { return kf_; }
 
   //! get all rigid bodies that were automatically
@@ -105,31 +213,31 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
 
   IMP_OBJECT_METHODS(ProteinKinematics);
 
- private:
-  enum ProteinAngleType {
-    PHI,
-    PSI,
-    CHI1,
-    CHI2,
-    CHI3,
-    CHI4,
-    OTHER,
-    TOTAL
-  };
-
   void build_topology_graph();
 
   void order_rigid_bodies(const std::vector<atom::Atoms>& dihedral_angles,
                           const std::vector<atom::Atoms>& phi_angles,
                           const std::vector<atom::Atoms>& psi_angles,
+                          const std::vector<atom::Atoms>& chi1_angles,
+                          const std::vector<atom::Atoms>& chi2_angles,
+                          const std::vector<atom::Atoms>& chi3_angles,   
+                          const std::vector<atom::Atoms>& chi4_angles,  
+                          const std::vector<atom::Atoms>& chi5_angles,    
                           atom::Atoms open_loop_bond_atoms);
 
+  //! mark specified dihedral angles as rotatable - remove the edges of the
+  //! rotatable bonds from graph_, and add them to rb_graph
   void mark_rotatable_angles(const std::vector<atom::Atoms>& dihedral_angles);
+
+  //! mark a single dihedral angle as rotatable - remove the edge of the
+  //! rotatable bond from graph_, and add it to rb_graph
+  void mark_rotatable_angle(const std::vector<atom::Atom>& dihedral_angle);
 
   //! automatically build rigid bodies for the protein kinematics structure
   void build_rigid_bodies();
 
-  void add_dihedral_joints(const std::vector<atom::Atoms>& dihedral_angles);
+  //void add_dihedral_joints(const std::vector<atom::Atoms>& dihedral_angles,
+  //       const std::vector<ProteinAngleType>);
 
   void add_dihedral_joints(const std::vector<atom::Residue>& residues,
                            ProteinAngleType angle_type,
@@ -153,6 +261,27 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
   DihedralAngleRevoluteJoint* get_other_joint(const atom::Residue r) const {
     return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, OTHER);
   }
+
+  DihedralAngleRevoluteJoint* get_chi1_joint(const atom::Residue r) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, CHI1);
+  }
+  DihedralAngleRevoluteJoint* get_chi2_joint(const atom::Residue r) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, CHI2);
+  }
+  DihedralAngleRevoluteJoint* get_chi3_joint(const atom::Residue r) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, CHI3);
+  }
+  DihedralAngleRevoluteJoint* get_chi4_joint(const atom::Residue r) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, CHI4);
+  }
+  DihedralAngleRevoluteJoint* get_chi5_joint(const atom::Residue r) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, CHI5);
+  }
+
+  DihedralAngleRevoluteJoint* get_joint(const atom::Residue r, ProteinAngleType angle) const {
+    return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, angle);
+  }
+
 
   //DihedralAngleRevoluteJoints get_joints(const atom::Residue r) const;
 
@@ -178,6 +307,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
   };
 #endif  // IMP_DOXYGEN
 
+
  private:
 
   typedef boost::adjacency_list<
@@ -186,13 +316,14 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
   // protein hierarchy
   atom::Hierarchy mhd_;
 
-  // atom particles
+
+  //! all atom particles in the protein
   ParticlesTemp atom_particles_;
 
-  // topology graph: nodes = atoms, edges = bonds
+  // topology graph: nodes = atoms, edges = bonds - includes all the atoms and non-rotatable bonds from the input protein hierarchy
   Graph graph_;
 
-  // rigid bodies topology graph: node = atoms, edges = joints
+  // rigid bodies topology graph: node = rigid bodies, edges = joints - 
   Graph rb_graph_;
 
   // dfs order of rigid bodies
@@ -200,7 +331,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
 
   int largest_rb_;
 
-  // mapping between atom ParticleIndex and node number in the graph
+  // mapping between atom ParticleIndex and node number in graph_ and rb_graph_
   boost::unordered_map<ParticleIndex, int> particle_index_to_node_map_, rb_particle_index_to_node_map_;
 
   Vector<ParticleIndex> node_to_particle_index_map_;
@@ -213,7 +344,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
 
   PointerMember<kinematics::KinematicForest> kf_;
 
-  // map between residue phi/psi/chis and joints
+    // map between residue phi/psi/chis and joints
   AngleToJointMap joint_map_;
 
   boost::unordered_map<int, boost::unordered_map<int, Pointer<DihedralAngleRevoluteJoint> > > rigid_bodies_2_joint_map_;
@@ -225,4 +356,4 @@ IMP_OBJECTS(ProteinKinematics, ProteinKinematicsList);
 
 IMPKINEMATICS_END_NAMESPACE
 
-#endif /* IMPKINEMATICS_PROTEIN_KINEMATICS_H */
+#endif /* IMPKINEMATICS_PROTEINKINEMATICS_H */

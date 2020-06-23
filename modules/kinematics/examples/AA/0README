@@ -1,0 +1,32 @@
+# Dipeptide Examples
+
+Here, we have two scripts that manipulate dipeptide dihedral angles using ProteinKinematics
+
+## Alanine dipeptide and CHARMM
+`imp_build/setup_environment.py python AA_charmm_test.py`
+
+This example enumerates the two alanine dipeptide dihedrals and computes the CHARMM score after a short minimization.
+Dihedrals are kept fixed by a large harmonic restraint during minimization.
+
+Outputs are found in AA_charmm_out
+
+* ala_dipeptide_grid.rmf - RMF file of dihedral sampling
+* enumerate_phi_psi.dat - output file with dihedral angles and scores
+
+`python plot_AA_pmf.py` creates a 2D heatmap of the PMF created by the above enumeration.
+Note it will NOT look like the true alanine dipetide PMF without significant minimization.
+
+
+## A-S Enumeration
+
+`imp_build/setup_environment.py python AS_enumerate.py`
+
+enumerates along a grid the dihedral angles of dipeptide A-S, so two backbone dihedrals
+and one side-chain dihedral. The CHARMM score for each dihedral configuration is computed.
+
+The output, in AS_enumerate/enumerate_50.dat is of format:
+>> Total_score phi psi chi1 [Bond_score Angle_score Dihedral_score LJ_score NB_score Constant]
+`>> 4.45446899418887 -0.0 -0.0 -0.0 [1.242520272738658, 1.6492662651385117, 5.000540653892964, 6.404827741077816, 0.15731406134092188, -10.0]`
+
+
+

@@ -23,18 +23,20 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      bool flexible_side_chains)
   : Object("ProteinKinematics%1%"), mhd_(mhd),
     atom_particles_(atom::get_by_type(mhd_, atom::ATOM_TYPE)),
-    graph_(atom_particles_.size()) {
+    graph_(atom_particles_.size()) 
+{
   init(atom::get_by_type(mhd, atom::RESIDUE_TYPE),
+       ParticleIndexQuads(),
        std::vector<atom::Atoms>(),
+       std::vector<ProteinAngleType>(),
        atom::Atoms(),
        flexible_backbone,
        flexible_side_chains);
 }
 
-
 ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
                                      const atom::Residues& flexible_residues,
-                                     const std::vector<atom::Atoms>& dihedral_angles,
+                                     const ParticleIndexQuads custom_dihedral_angles,
                                      atom::Atoms open_loop_bond_atoms,
                                      bool flexible_backbone,
                                      bool flexible_side_chains )
@@ -43,26 +45,82 @@ ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
     graph_(atom_particles_.size())
 {
   init(flexible_residues,
-       dihedral_angles, open_loop_bond_atoms,
+       custom_dihedral_angles,
+       std::vector<atom::Atoms>(),
+       std::vector<ProteinAngleType>(),
+       open_loop_bond_atoms,
        flexible_backbone,
        flexible_side_chains);
 }
 
+
+ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
+                    const atom::Residues& flexible_residues,
+                    const std::vector<atom::Atoms>& custom_dihedral_atoms,
+                    atom::Atoms open_loop_bond_atoms,
+                    bool flexible_backbone,
+                    bool flexible_side_chains)
+
+  : Object("ProteinKinematics%1%"), mhd_(mhd),
+    atom_particles_(atom::get_by_type(mhd_, atom::ATOM_TYPE)),
+    graph_(atom_particles_.size())
+{
+  init(flexible_residues,
+       ParticleIndexQuads(),
+       custom_dihedral_atoms,
+       std::vector<ProteinAngleType>(),
+       open_loop_bond_atoms,
+       flexible_backbone,
+       flexible_side_chains);
+}
+
+ProteinKinematics::ProteinKinematics(atom::Hierarchy mhd,
+                                     const atom::Residues& flexible_residues,
+                                     const ParticleIndexQuads custom_dihedral_angles,
+                                     const std::vector<ProteinAngleType>& custom_dihedral_angle_types,
+                                     atom::Atoms open_loop_bond_atoms,
+                                     bool flexible_backbone,
+                                     bool flexible_side_chains )
+  : Object("ProteinKinematics%1%"), mhd_(mhd),
+    atom_particles_(atom::get_by_type(mhd_, atom::ATOM_TYPE)),
+    graph_(atom_particles_.size())
+{
+//  IMP_ALWAYS_CHECK(custom_dihedral_angles.size()>custom_dihedral_angle_types(),
+//       "there should be at least the same number of custom angles as custom angle types");
+  init(flexible_residues,
+       custom_dihedral_angles,
+       std::vector<atom::Atoms>(),
+       custom_dihedral_angle_types,
+       open_loop_bond_atoms,
+       flexible_backbone,
+       flexible_side_chains);
+}
+
+
 void ProteinKinematics::init(const atom::Residues& flexible_residues,
-                             const std::vector<atom::Atoms>& dihedral_angles,
+                             const ParticleIndexQuads custom_dihedral_angles,
+                             const std::vector<atom::Atoms>& custom_dihedral_atoms,
+              const std::vector<ProteinAngleType>& custom_dihedral_angle_types,
                              atom::Atoms open_loop_bond_atoms,
                              bool flexible_backbone,
                              bool flexible_side_chains)
 {
   kf_ = new kinematics::KinematicForest(mhd_.get_model());
 
-  // 1.
+  // 0. Are we given custom_dihedral_atoms or custom_dihedral_angles?
+  // Convert custom_dihedral_angles into atom lists
+  std::vector<atom::Atoms> custom_dihedral_angles_atoms;
+  if (custom_dihedral_atoms.size() == 0) {
+    if (custom_dihedral_angles.size() > 0) {custom_dihedral_angles_atoms = quick_hack_converter(mhd_.get_model(), custom_dihedral_angles);}
+  } else { custom_dihedral_angles_atoms = custom_dihedral_atoms; }
+
+  // 1. update graph_ with the topology from mhd_
   build_topology_graph();
 
-  // 2. define and mark rotatable dihedral angles
-  mark_rotatable_angles(dihedral_angles);
+  // 2. define and mark all custom rotatable dihedral angles
+  mark_rotatable_angles(custom_dihedral_angles_atoms);
 
-  // get the angles
+  // 3. define and mark all phi angles, if flexible_backbone is true
   std::vector<atom::Atoms> phi_angles, psi_angles;
   std::vector<atom::Residue> phi_residues, psi_residues;
   if (flexible_backbone) {
@@ -89,20 +147,71 @@ void ProteinKinematics::init(const atom::Residues& flexible_residues,
 
   open_loop(open_loop_bond_atoms);
 
+  // 4. Mark all chi angles, if flexible_side_chains is true
+
   std::vector<atom::Atoms> chi1_angles, chi2_angles, chi3_angles,
-      chi4_angles;
+      chi4_angles, chi5_angles;
   std::vector<atom::Residue> chi1_residues, chi2_residues, chi3_residues,
-      chi4_residues;
+      chi4_residues, chi5_residues;
+
   if (flexible_side_chains) {
-    // TODO
+  // 4.1 Add chi angles
+    for (unsigned int i = 0; i < flexible_residues.size(); i++) {
+      std::vector< atom::Atoms > chi_atoms_list =
+          atom::get_chi_dihedral_atoms(flexible_residues[i]);
+          // Returns a list of all chi dihedrals for that residue
+          for (unsigned int j = 0; j < chi_atoms_list.size(); j++) {
+            // Chi values come in ascending order.
+            if (j==0) {
+              //std::cout << chi_atoms_list[j] << std::endl;
+              chi1_angles.push_back(chi_atoms_list[j]);
+              chi1_residues.push_back(flexible_residues[i]); 
+            } else if (j==1) {
+              chi2_angles.push_back(chi_atoms_list[j]);
+              chi2_residues.push_back(flexible_residues[i]); 
+            } else if (j==2) {
+              chi3_angles.push_back(chi_atoms_list[j]);
+              chi3_residues.push_back(flexible_residues[i]); 
+            } else if (j==3) {
+              chi4_angles.push_back(chi_atoms_list[j]);
+              chi4_residues.push_back(flexible_residues[i]); 
+            } else {
+              chi5_angles.push_back(chi_atoms_list[j]);
+              chi5_residues.push_back(flexible_residues[i]);
+            }
+          }
+    }
+    mark_rotatable_angles(chi1_angles);
+    mark_rotatable_angles(chi2_angles);
+    mark_rotatable_angles(chi3_angles);
+    mark_rotatable_angles(chi4_angles);
+    mark_rotatable_angles(chi5_angles);
   }
 
   // 3. build rbs and sort them by dfs
   build_rigid_bodies();
-  order_rigid_bodies(dihedral_angles, phi_angles, psi_angles, open_loop_bond_atoms);
+  order_rigid_bodies(custom_dihedral_angles_atoms, phi_angles, psi_angles, 
+    chi1_angles, chi2_angles, chi3_angles, chi4_angles, chi5_angles, open_loop_bond_atoms);
+
 
   // 4. add joints to kf
-  add_dihedral_joints(dihedral_angles);
+
+  //first add the custom_dihedral_angles_atoms
+  for (unsigned int i = 0; i < custom_dihedral_angles_atoms.size(); i++) {
+
+    ProteinAngleType angle_type = OTHER;
+    // Get the angle type (default to OTHER if not specified)
+    if (i < custom_dihedral_angle_types.size()) { angle_type = custom_dihedral_angle_types[i];
+    }
+
+    // Get the residue that we will assign this to
+    atom::Residue res = atom::Residue(custom_dihedral_angles_atoms[i][1].get_parent());
+    add_dihedral_joint(res, angle_type, custom_dihedral_angles_atoms[i]);
+
+  }
+
+
+  //add_dihedral_joints(custom_dihedral_angles_atoms, custom_dihedral_angle_types);
   if (flexible_backbone) {
     add_dihedral_joints(phi_residues, PHI, phi_angles);
     add_dihedral_joints(psi_residues, PSI, psi_angles);
@@ -112,6 +221,7 @@ void ProteinKinematics::init(const atom::Residues& flexible_residues,
     add_dihedral_joints(chi2_residues, CHI2, chi2_angles);
     add_dihedral_joints(chi3_residues, CHI3, chi3_angles);
     add_dihedral_joints(chi4_residues, CHI4, chi4_angles);
+    add_dihedral_joints(chi5_residues, CHI5, chi5_angles);
   }
 
   std::cerr << joints_.size() << " joints were constructed " << std::endl;
@@ -163,52 +273,72 @@ void ProteinKinematics::add_edges_to_rb_graph(
 void ProteinKinematics::build_topology_graph() {
   // map graph nodes (=atoms) to ParticleIndex
   for (unsigned int i = 0; i < atom_particles_.size(); i++) {
+    //for all atom_particles_, get the ParticleIndex and put that in 
+    // particle_index_to_node_map_ (pindex :: i)
+    // Append pindex to node_to_particle_index_map_
     ParticleIndex pindex = atom_particles_[i]->get_index();
     particle_index_to_node_map_[pindex] = i;
     node_to_particle_index_map_.push_back(pindex);
   }
 
-  // add edges to graph
+  // add edges to graph_
   atom::Bonds bonds = atom::get_internal_bonds(mhd_);
+  //std::cout << "# Bonds = " << bonds.size() << std::endl;
   for (unsigned int i = 0; i < bonds.size(); i++) {
     atom::Bonded p1 = atom::Bond(bonds[i]).get_bonded(0);
     atom::Bonded p2 = atom::Bond(bonds[i]).get_bonded(1);
     int atom_index1 = particle_index_to_node_map_[p1->get_index()];
     int atom_index2 = particle_index_to_node_map_[p2->get_index()];
     boost::add_edge(atom_index1, atom_index2, graph_);
+    //std::cout << "Bond added between atom " << atom::Atom(p1) << " " << atom::Atom(p2) << std::endl;
   }
 
   // TODO: add IMP_CHECK on this code
   std::vector<int> component(boost::num_vertices(graph_));
   unsigned int num = boost::connected_components(graph_, &component[0]);
-  std::cerr << "CC NUM before removal of rotatable bonds = " << num
-            << std::endl;
+  //std::cout << "Num Connected Components = " << num << std::endl;
 }
 
 void ProteinKinematics::mark_rotatable_angles(
                              const std::vector<atom::Atoms>& dihedral_angles) {
   for (unsigned int i = 0; i < dihedral_angles.size(); i++) {
-    // get the ParticleIndex and map it to graph node
-    ParticleIndex p1 = dihedral_angles[i][1].get_particle_index();
-    ParticleIndex p2 = dihedral_angles[i][2].get_particle_index();
-    int atom_index1 = 0;
-    int atom_index2 = 0;
-    if (particle_index_to_node_map_.find(p1) !=
-        particle_index_to_node_map_.end()) {
-      atom_index1 = particle_index_to_node_map_[p1];
-    } else {
-      IMP_THROW("cannot find node index for angle", ValueException);
-    }
-    if (particle_index_to_node_map_.find(p2) !=
-        particle_index_to_node_map_.end()) {
-      atom_index2 = particle_index_to_node_map_[p2];
-    } else {
-      IMP_THROW("cannot find node index for angle", ValueException);
-    }
-
-    boost::remove_edge(atom_index1, atom_index2, graph_);
+    mark_rotatable_angle(dihedral_angles[i]);
   }
 }
+
+void ProteinKinematics::mark_rotatable_angle(
+                             const std::vector<atom::Atom>& dihedral_angle) {
+  // get the ParticleIndex and map it to graph node
+  ParticleIndex p1 = dihedral_angle[1].get_particle_index();
+  ParticleIndex p2 = dihedral_angle[2].get_particle_index();
+  int atom_index1 = 0;
+  int atom_index2 = 0;
+
+  if (particle_index_to_node_map_.find(p1) !=
+      particle_index_to_node_map_.end()) {
+    atom_index1 = particle_index_to_node_map_[p1];
+  } else {
+    IMP_THROW("cannot find node index for angle", ValueException);
+  }
+  if (particle_index_to_node_map_.find(p2) !=
+      particle_index_to_node_map_.end()) {
+    atom_index2 = particle_index_to_node_map_[p2];
+  } else {
+    IMP_THROW("cannot find node index for angle", ValueException);
+  }
+  std::vector<int> component(boost::num_vertices(graph_));
+  unsigned int num = boost::connected_components(graph_, &component[0]);
+  //std::cerr << "CC NUM before removal of rotatable bonds = " << component[0]
+  //          << std::endl;
+  //std::cerr << "REMOVE EDGE = " << atom_index1 << atom_index2 << std::endl;
+  boost::remove_edge(atom_index1, atom_index2, graph_);
+  std::vector<int> component2(boost::num_vertices(graph_));
+  unsigned int num1 = boost::connected_components(graph_, &component2[0]);
+  IMP_UNUSED(num1);
+  //std::cerr << "CC NUM after removal of rotatable bonds = " << component2[0]
+  //          << std::endl;
+}
+
 
 void ProteinKinematics::open_loop(atom::Atoms open_loop_bond_atoms) {
   if(open_loop_bond_atoms.size()==2) {
@@ -238,19 +368,17 @@ void ProteinKinematics::build_rigid_bodies() {
   // compute connected components that represent rigid parts
   std::vector<int> component(boost::num_vertices(graph_));
   unsigned int num = boost::connected_components(graph_, &component[0]);
-  std::cerr << "CC NUM = " << num << std::endl;
 
   // store the atoms of each rigid body using node index
   std::vector<std::vector<int> > rigid_bodies_atoms(num);
   for (unsigned int i = 0; i < component.size(); i++) {
     rigid_bodies_atoms[component[i]].push_back(i);
   }
-
   // build the rigid bodies
   Model* m = mhd_->get_model();
   largest_rb_ = 0;
   unsigned int largest_rb_size = 0;
-  for (unsigned int i = 0; i < rigid_bodies_atoms.size(); i++) {
+  for (unsigned int i = 0; i < rigid_bodies_atoms.size(); i++) { // i = connected-componenet number
     Particle* rbp = new Particle(m);
     std::string name = "rb_name";  // TODO: add rb id
     rbp->set_name(name);
@@ -277,9 +405,14 @@ void ProteinKinematics::build_rigid_bodies() {
 }
 
 void ProteinKinematics::order_rigid_bodies(
-                         const std::vector<atom::Atoms>& dihedral_angles,
+                         const std::vector<atom::Atoms>& custom_dihedral_angles,
                          const std::vector<atom::Atoms>& phi_angles,
                          const std::vector<atom::Atoms>& psi_angles,
+                         const std::vector<atom::Atoms>& chi1_angles,
+                         const std::vector<atom::Atoms>& chi2_angles,
+                         const std::vector<atom::Atoms>& chi3_angles,
+                         const std::vector<atom::Atoms>& chi4_angles,
+                         const std::vector<atom::Atoms>& chi5_angles,
                          atom::Atoms open_loop_bond_atoms) {
 
   // build rigid bodies topology graph
@@ -287,9 +420,16 @@ void ProteinKinematics::order_rigid_bodies(
     boost::add_vertex(rb_graph_); // add nodes
 
   // add edges
-  add_edges_to_rb_graph(dihedral_angles);
+  add_edges_to_rb_graph(custom_dihedral_angles);
   add_edges_to_rb_graph(phi_angles);
   add_edges_to_rb_graph(psi_angles);
+
+  add_edges_to_rb_graph(chi1_angles);
+  add_edges_to_rb_graph(chi2_angles);
+  add_edges_to_rb_graph(chi3_angles);
+  add_edges_to_rb_graph(chi4_angles);
+  add_edges_to_rb_graph(chi5_angles);
+
   rb_order_.resize(rbs_.size());
   parents_.resize(rbs_.size());
 
@@ -311,8 +451,6 @@ void ProteinKinematics::order_rigid_bodies(
        rbs_[rb_index2].get_number_of_members()) {
       starting_vertex = rb_index2;
     }
-    std::cerr << "rb1 index = " << rb_index1 << " size = " << rbs_[rb_index1].get_number_of_members() << std::endl;
-    std::cerr << "rb2 index = " << rb_index2 << " size = " << rbs_[rb_index2].get_number_of_members() << std::endl;
   }
 
   boost::depth_first_search(rb_graph_, visitor(vis).root_vertex(starting_vertex));
@@ -322,28 +460,35 @@ void ProteinKinematics::order_rigid_bodies(
               << " parent " << parents_[rb_order_[i]] << std::endl;
   }
 }
-
-void ProteinKinematics::add_dihedral_joints(
-    const std::vector<atom::Atoms>& dihedral_angles) {
+/*
+void ProteinKinematics::add_dihedral_joints
+( const std::vector<atom::Atoms>& dihedral_angles,
+  const std::vector<ProteinAngleType>& dihedral_angle_types)
+{
   for (unsigned int i = 0; i < dihedral_angles.size(); i++) {
-    add_dihedral_joint(atom::get_residue(dihedral_angles[i][1]), OTHER,
-                       dihedral_angles[i]);
+    ProteinAngleType type= OTHER;
+    if(i<dihedral_angle_types.size()){
+      type=dihedral_angle_types[i];
+    }
+    add_dihedral_joint(atom::get_residue(dihedral_angles[i][1]),
+           type,
+           dihedral_angles[i]);
   }
 }
-
+*/
 void ProteinKinematics::add_dihedral_joints(
     const std::vector<atom::Residue>& residues,
     ProteinAngleType angle_type,
     const std::vector<atom::Atoms>& dihedral_angles) {
 
-  for (unsigned int i = 0; i < dihedral_angles.size(); i++)
+  for (unsigned int i = 0; i < dihedral_angles.size(); i++){
     add_dihedral_joint(residues[i], angle_type, dihedral_angles[i]);
+  }
 }
 
 void ProteinKinematics::add_dihedral_joint(const atom::Residue r,
                                            ProteinAngleType angle_type,
                                            const atom::Atoms& atoms) {
-
   Particle* p1 = atoms[1].get_particle();
   Particle* p2 = atoms[2].get_particle();
 
@@ -354,9 +499,7 @@ void ProteinKinematics::add_dihedral_joint(const atom::Residue r,
     core::RigidBody rb2 = core::RigidMember(p2).get_rigid_body();
     int rb_index1 = rb_particle_index_to_node_map_[rb1->get_index()];
     int rb_index2 = rb_particle_index_to_node_map_[rb2->get_index()];
-
     Pointer<DihedralAngleRevoluteJoint> joint;
-
     if(rb_order_[rb_index1] < rb_order_[rb_index2]) {
       joint = new DihedralAngleRevoluteJoint(rb1, rb2,
                                              core::XYZ(atoms[0].get_particle()),
@@ -370,7 +513,6 @@ void ProteinKinematics::add_dihedral_joint(const atom::Residue r,
                                              core::XYZ(atoms[1].get_particle()),
                                              core::XYZ(atoms[0].get_particle()));
     }
-
     joints_.push_back(joint);
     kf_->add_edge(joint);
     joint_map_.add_joint(r, angle_type, joint);
@@ -409,5 +551,21 @@ void ProteinKinematics::AngleToJointMap::add_joint(const atom::Residue r,
     residue_joints[angle_type] = joint;
   }
 }
+
+std::vector<atom::Atoms> ProteinKinematics::quick_hack_converter
+(Model* m, const ParticleIndexQuads piqs)
+{
+   std::vector<atom::Atoms> ret_value;
+   for(unsigned int i=0; i<piqs.size(); i++){
+      atom::Atoms cur_atoms_quad;
+      for(unsigned int j=0; j<4; j++) {
+        IMP_INTERNAL_CHECK(IMP::atom::Atom::get_is_setup(m, piqs[i][j]), 
+			   "All particle indexes in quads must be decorated with Atom");
+        cur_atoms_quad.push_back(IMP::atom::Atom(m, piqs[i][j]));
+      } // for j
+      ret_value.push_back(cur_atoms_quad);
+   } // for i
+   return ret_value;
+} // end of function
 
 IMPKINEMATICS_END_NAMESPACE

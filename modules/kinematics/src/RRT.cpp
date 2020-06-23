@@ -86,18 +86,22 @@ void RRT::add_nodes(RRTNode* q_near, const std::vector<DOFValues>& new_nodes) {
 }
 
 bool RRT::run(unsigned int number_of_iterations) {
+  //std::ofstream myfile;
+  //myfile.open ("AA_m0.4_pio180.dat");
   set_was_used(true);
   if (dofs_sampler_->get_number_of_dofs() == 0) {
     throw IMP::ValueException("No degrees of freedom to sample!");
   }
+
   ScoringFunction *sf = get_scoring_function();
   if(tree_.size() == 1) check_initial_configuration(sf);
   unsigned int iter_counter = 0;
   //Parameters current_counters;
   while (!is_stop_condition(default_parameters_, current_counters_)) {
+    //std::cerr << current_counters_.number_of_iterations_ << std::endl;
     DOFValues q_rand = dofs_sampler_->get_sample();
 
-    // random selection of active dofs
+    // random selection of active dofs; change after every 10.
     if (number_of_sampled_dofs_ > 0 &&
         current_counters_.number_of_iterations_ % 10 == 0) {
       active_dofs_ = select_k_out_of_n_dofs(number_of_sampled_dofs_, q_rand.size());
@@ -114,7 +118,15 @@ bool RRT::run(unsigned int number_of_iterations) {
 
     std::vector<DOFValues> new_nodes =
         local_planner_->plan(q_near_node->get_DOFValues(), q_rand, sf);
+
+    //std::cout << "RRT new nodes: " << new_nodes.size() << std::endl;
     add_nodes(q_near_node, new_nodes);
+    
+    //myfile << "RRT Step | ";
+    
+    for (unsigned int i = 0; i < new_nodes.size(); i++) {
+      //myfile << " " << new_nodes[i];
+    }    
 
     // update counters
     current_counters_.number_of_iterations_++;
@@ -126,7 +138,11 @@ bool RRT::run(unsigned int number_of_iterations) {
       std::cerr << "RRT done iteration, added " << new_nodes.size()
                 << " new nodes " << current_counters_ << " q_near "
                 << q_near_node->get_id() << std::endl;
+
+      //myfile << " | q_near | "
+      //          << q_near_node->get_DOFValues() << " | q_rand | " << q_rand;
     }
+    //myfile << std::endl;
     // try to output
     if(number_of_iterations > 0 && tree_.size() > 1
        && iter_counter == number_of_iterations)
@@ -136,8 +152,8 @@ bool RRT::run(unsigned int number_of_iterations) {
 
 }
 
-std::vector<DOFValues> RRT::get_DOFValues() {
-  std::vector<DOFValues> ret(tree_.size());
+DOFValuesList RRT::get_DOFValuesList() {
+  DOFValuesList ret(tree_.size());
   for (unsigned int i = 0; i < tree_.size(); i++) {
     ret[i] = tree_[i]->get_DOFValues();
   }
