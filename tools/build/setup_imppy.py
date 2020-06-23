@@ -122,7 +122,7 @@ class FileGenerator(object):
 
 class ShellScriptFileGenerator(FileGenerator):
     template = ["#!/usr/bin/env sh", "", ""] + FileGenerator.body \
-        + ["", "", "mkdir -p ${IMP_TMP_DIR}", "",
+        + ["", "", "mkdir -p \"${IMP_TMP_DIR}\"", "",
            "exec ${precommand} \"$@\""]
 
     def _internal_set(self, setstr, varname, export):
