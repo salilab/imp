@@ -338,8 +338,9 @@ std::vector<Atoms> get_chi_dihedral_atoms(Residue rd) {
 
   Vector<AtomTypes> dats = get_chi_dihedral_atom_types(rd.get_residue_type());
   if (dats.size() == 0) { 
+    std::vector<Atoms> das;
     //std::cout << "No chi angles for this residue" << std::endl;
-    return {}; 
+    return das;
 
   } else {
 
@@ -363,8 +364,9 @@ ParticleIndexQuads get_chi_dihedral_particle_indexes(Residue rd) {
 
   Vector<AtomTypes> dats = get_chi_dihedral_atom_types(rd.get_residue_type());
   if (dats.size() == 0) { 
+    ParticleIndexQuads piqs;
     //std::cout << "No chi angles for this residue" << std::endl;
-    return {}; 
+    return piqs;
 
   } else {
 
