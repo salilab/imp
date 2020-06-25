@@ -21,6 +21,7 @@
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
+//! Simultaneous sampling of diheral angles and fibril symmetry operations
 class IMPKINEMATICSEXPORT FibrilSampler : public DOFsSampler {
  public:
   /**
