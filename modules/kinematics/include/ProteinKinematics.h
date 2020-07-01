@@ -249,6 +249,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
 
   void open_loop(atom::Atoms open_loop_bond_atoms);
 
+ public:
   /* Joint access methods */
   DihedralAngleRevoluteJoint* get_phi_joint(const atom::Residue r) const {
     return (DihedralAngleRevoluteJoint*)joint_map_.get_joint(r, PHI);

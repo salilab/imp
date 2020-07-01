@@ -97,7 +97,8 @@ void read_angle_file(const std::string& file_name,
                      const IMP::ParticlesTemp& residues,
                      const IMP::ParticlesTemp& atoms,
                      IMP::atom::Residues& flexible_residues,
-                     std::vector<IMP::atom::Atoms>& dihedral_angles) {
+                     std::vector<IMP::atom::Atoms>& dihedral_angles,
+                     std::vector<double>& range) {
 
   std::ifstream in_file(file_name.c_str());
   if(!in_file) {
@@ -114,21 +115,30 @@ void read_angle_file(const std::string& file_name,
     std::vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of("\t "),
                  boost::token_compress_on);
-    if(split_results.size() <= 2) {
+    double angle_range = IMP::PI;
+    if(split_results.size() <= 3) {
       int res_number = atoi(split_results[0].c_str());
       std::string chain_id = " ";
-      if(split_results.size() == 2) {
+      if(split_results.size() >= 2) {
         chain_id = split_results[1];
       }
       flexible_residues.push_back(find_residue(residues, res_number, chain_id));
+      if(split_results.size() == 3) {
+        angle_range = atof(split_results[2].c_str());
+      }
+      range.push_back(angle_range);
     }
-    if(split_results.size() == 4) {
+    if(split_results.size() == 4 || split_results.size() == 5) {
       IMP::atom::Atoms angle_atoms;
       for(int i=0; i<4; i++) {
         int atom_index = atoi(split_results[i].c_str());
         angle_atoms.push_back(find_atom(atoms, atom_index));
       }
       dihedral_angles.push_back(angle_atoms);
+      if(split_results.size() == 5) {
+        angle_range = atof(split_results[4].c_str());
+      }
+      range.push_back(angle_range);
     }
   }
   std::cerr << flexible_residues.size() << " residues "

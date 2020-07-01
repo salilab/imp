@@ -154,9 +154,10 @@ int main(int argc, char **argv)
   // create phi/psi joints
   IMP::atom::Residues flexible_residues;
   std::vector<IMP::atom::Atoms> dihedral_angles;
+  std::vector<double> range;
   if(angle_file_name.length()>0) {
     read_angle_file(angle_file_name, residues, atoms,
-                    flexible_residues, dihedral_angles);
+                    flexible_residues, dihedral_angles, range);
   } else {
     flexible_residues = residues;
   }

@@ -153,9 +153,10 @@ int rrt_sample(int argc, char **argv)
   // create phi/psi joints
   IMP::atom::Residues flexible_residues;
   std::vector<IMP::atom::Atoms> dihedral_angles;
+  std::vector<double> range;
   if(angle_file_name.length()>0) {
     read_angle_file(angle_file_name, residues, atoms,
-                    flexible_residues, dihedral_angles);
+                    flexible_residues, dihedral_angles, range);
   } else {
     flexible_residues = residues;
   }
@@ -225,7 +226,17 @@ int rrt_sample(int argc, char **argv)
                        IMP::algebra::PI/360));
     */
     double angle = joints[i]->get_angle();
-    IMP_NEW(DOF, dof, (angle, angle-angle_range, angle+angle_range, IMP::algebra::PI/360));
+
+    // find input range
+    double curr_range = angle_range;
+    for (unsigned int j = 0; j < flexible_residues.size(); j++) {
+      if(pk->get_phi_joint(flexible_residues[j]) == joints[i] ||
+         pk->get_psi_joint(flexible_residues[j]) == joints[i]) {
+        std::cerr << "setting range " << range[j] << " res_index " << flexible_residues[j].get_particle_index() << std::endl;
+        curr_range = range[j];
+      }
+    }
+    IMP_NEW(DOF, dof, (angle, angle-curr_range, angle+curr_range, IMP::algebra::PI/360));
     dof->set_was_used(true);
     dofs.push_back(dof);
   }
