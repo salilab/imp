@@ -32,7 +32,7 @@ class Tests(IMP.test.TestCase):
 
         p - reference particle to be tied by spring
         name - particle name
-        T_factor - temeprature factor
+        T_factor - temperature factor
         F_factor - friction factor
         k - spring contant
 
@@ -65,7 +65,7 @@ class Tests(IMP.test.TestCase):
         nlevels - number of levels in the hierarchy, if 1 -
                   return signleton particles
         d - the out degree of each non-leaf node (# of children)
-        T_factors - a list of length nlevels-1 with temeprature at each level
+        T_factors - a list of length nlevels-1 with temperature at each level
                     from top to bottom
         G_factors - a list of length nlevels-1 with friction factor (G for gamma)
                     at each level from top to bottom
