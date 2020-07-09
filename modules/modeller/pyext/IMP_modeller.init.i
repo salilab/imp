@@ -363,7 +363,11 @@ def add_soft_sphere_radii(hierarchy, submodel, scale=1.0, filename=None):
         p = a.get_particle()
         ct = IMP.atom.CHARMMAtom(p).get_charmm_type()
         if ct in radii:
-            IMP.core.XYZR.setup_particle(p, radii[ct] * scale)
+            radius = radii[ct] * scale
+            if IMP.core.XYZR.get_is_setup(p):
+                IMP.core.XYZR(p).set_radius(radius)
+            else:
+                IMP.core.XYZR.setup_particle(p, radius)
 
 
 class ModelLoader(object):
