@@ -43,3 +43,9 @@ The :mod:`ihm.cross_linkers` Python module
    BMSO (bismaleimide sulfoxide) MS-cleavable cross-linker that links
    cysteines, described in
    `Gutierrez et al, 2018 <https://dx.doi.org/10.1021/acs.analchem.8b01287>`_.
+
+.. data:: sda
+
+   SDA (NHS-Diazirine) (succinimidyl 4,4′-azipentanoate) cross-linker that
+   links primary amines with nearly any other functional group via
+   long-wave UV-light activation.

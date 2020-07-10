@@ -1247,8 +1247,8 @@ _ihm_dataset_list.database_hosted
 _ihm_dataset_list.details
 1 'CX-MS data' NO .
 2 'CX-MS data' NO .
-3 unspecified YES bar
-4 unspecified YES baz
+3 Other YES bar
+4 Other YES baz
 5 'Experimental model' YES 'test dataset details'
 6 'Experimental model' NO .
 #

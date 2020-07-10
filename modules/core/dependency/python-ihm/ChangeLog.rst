@@ -1,7 +1,13 @@
-HEAD
-====
+0.17 - 2020-07-10
+=================
+  - Convenience classes are added to describe hydrogen/deuterium exchange
+    data (:class:`ihm.dataset.HDXDataset`) and datasets stored in the
+    PDB-Dev database (:class:`ihm.location.PDBDevLocation`).
   - Multiple :class:`ihm.restraint.CrossLinkPseudoSite` objects can now
     be assigned to a given :class:`ihm.restraint.CrossLink`.
+  - Bugfix: the :class:`ihm.dataset.Dataset` base class now has a type
+    of "Other" rather than "unspecified" to conform with the latest
+    IHM dictionary.
 
 0.16 - 2020-05-29
 =================
