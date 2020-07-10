@@ -283,6 +283,7 @@ def _load_restraints_line(line, atom_particles):
         1 : _DistanceRestraintGenerator,
         2 : _AngleRestraintGenerator,
         3 : _DihedralRestraintGenerator,
+        4 : _DihedralRestraintGenerator,
     }
     restraint_gen = restraint_generators[features[0]]
     return restraint_gen(form, modalities, atoms, parameters)
