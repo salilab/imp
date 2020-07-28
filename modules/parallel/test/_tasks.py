@@ -10,8 +10,8 @@ class SimpleTask(object):
 
 
 def error_task():
-    """Raise an exception on the slave"""
-    raise ValueError("Slave error")
+    """Raise an exception on the worker"""
+    raise ValueError("Worker error")
 
 
 def simple_func(*args):

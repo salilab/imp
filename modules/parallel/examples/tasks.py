@@ -24,7 +24,7 @@ def setup():
 # Note that setup and tasks are Python callables, i.e. functions (like setup
 # above) or classes that implement the __call__ method (like Task below).
 # The latter allows for parameters (Python objects) to be passed from the
-# master to the slaves.
+# manager to the workers.
 
 
 class Task(object):

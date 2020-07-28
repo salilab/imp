@@ -1,5 +1,6 @@
 ChangeLog {#changelog}
 =========
+- All IMP.parallel worker classes are now subclasses of IMP.parallel.Worker.
 
 # 2.13.0 - 2020-05-14 # {#changelog_2_13_0}
 - Ubuntu .deb packages now use Python 3 by default (install the imp-python2

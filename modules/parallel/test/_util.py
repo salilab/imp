@@ -3,7 +3,7 @@ import sys
 import time
 import IMP.parallel
 
-# Set a shorter default heartbeat timeout, so failures to start up slaves
+# Set a shorter default heartbeat timeout, so failures to start up workers
 # don't hang the tests for a very long time
 
 

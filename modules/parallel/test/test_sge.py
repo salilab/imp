@@ -40,7 +40,7 @@ class FakeSGEEnvironment(object):
 
 class Tests(IMP.test.TestCase):
 
-    """Test SGE slaves"""
+    """Test SGE workers"""
 
     def assertSGEOutputEqual(self, sge, command, expected):
         for i in range(20):
@@ -53,31 +53,33 @@ class Tests(IMP.test.TestCase):
             time.sleep(0.05)  # Wait for output files to be created
         self.assertEqual(c, expected)
 
-    def test_pe_slave(self):
-        """Test _SGEPESlave class"""
+    def test_pe_worker(self):
+        """Test _SGEPEWorker class"""
         if sys.platform == 'win32':
             self.skipTest("Cannot test SGE on Windows")
         sge = FakeSGEEnvironment()
-        s = IMP.parallel._SGEPESlave("testnode")
+        s = IMP.parallel._SGEPEWorker("testnode")
         x = repr(s)
         s._start("testpath", "testid", "testoutput")
         self.assertSGEOutputEqual(sge, 'qrsh',
                                   '-inherit -V testnode testpath testid')
         os.unlink('testoutput')
 
-    def test_pe_slave_array(self):
-        """Test SGEPESlaveArray class"""
+    def test_pe_worker_array(self):
+        """Test SGEPEWorkerArray class"""
         hostfile = 'hostfile'
         open(hostfile, 'w').write('node1 1 long.q\nnode2 1 long.q\n'
                                   'node3 2 short.q\n')
         os.environ['PE_HOSTFILE'] = hostfile
 
-        s = IMP.parallel.SGEPESlaveArray()
-        slaves = s._get_slaves()
-        self.assertEqual(len(slaves), 4)
-        self.assertEqual(type(slaves[0]), IMP.parallel.LocalSlave)
-        for host, slave in zip(('node2', 'node3', 'node3'), slaves[1:]):
-            self.assertEqual(slave._host, host)
+        with IMP.allow_deprecated():
+            s = IMP.parallel.SGEPESlaveArray()
+        s = IMP.parallel.SGEPEWorkerArray()
+        workers = s._get_workers()
+        self.assertEqual(len(workers), 4)
+        self.assertEqual(type(workers[0]), IMP.parallel.LocalWorker)
+        for host, worker in zip(('node2', 'node3', 'node3'), workers[1:]):
+            self.assertEqual(worker._host, host)
         os.unlink(hostfile)
 
 

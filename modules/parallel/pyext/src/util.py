@@ -57,11 +57,11 @@ class _HeartBeat(object):
     pass
 
 
-class _SlaveAction(object):
+class _WorkerAction(object):
     pass
 
 
-class _SetPathAction(_SlaveAction):
+class _SetPathAction(_WorkerAction):
 
     def __init__(self, path):
         self.path = path
@@ -71,29 +71,29 @@ class _SetPathAction(_SlaveAction):
 
 
 if hasattr(select, 'poll'):
-    def _poll_events(listen_sock, slaves, timeout):
+    def _poll_events(listen_sock, workers, timeout):
         fileno = listen_sock.fileno()
-        slavemap = {fileno: listen_sock}
+        workermap = {fileno: listen_sock}
 
         p = select.poll()
         p.register(fileno, select.POLLIN)
-        for slave in slaves:
-            fileno = slave._socket.fileno()
-            slavemap[fileno] = slave
+        for worker in workers:
+            fileno = worker._socket.fileno()
+            workermap[fileno] = worker
             p.register(fileno, select.POLLIN)
         ready = p.poll(timeout * 1000)
-        return [slavemap[fd[0]] for fd in ready]
+        return [workermap[fd[0]] for fd in ready]
 
 else:
     # Use select on systems that don't have poll()
-    def _poll_events(listen_sock, slaves, timeout):
+    def _poll_events(listen_sock, workers, timeout):
         fileno = listen_sock.fileno()
-        slavemap = {fileno: listen_sock}
+        workermap = {fileno: listen_sock}
         waitin = [fileno]
 
-        for slave in slaves:
-            fileno = slave._socket.fileno()
-            slavemap[fileno] = slave
+        for worker in workers:
+            fileno = worker._socket.fileno()
+            workermap[fileno] = worker
             waitin.append(fileno)
         (ready, rout, rerr) = select.select(waitin, [], [], timeout)
-        return [slavemap[fd] for fd in ready]
+        return [workermap[fd] for fd in ready]
