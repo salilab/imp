@@ -260,14 +260,14 @@ void JmolWriter::prepare_PDB_file(
 std::string JmolWriter::prepare_gnuplot_init_selection_string(
     unsigned int model_num, bool exp) {
   std::string gnuplot_string = "";
-  for (unsigned int i = 0; i < model_num - 1; i++) {
+  for (unsigned int i = 1; i < model_num; i++) {
     if (exp) {
       gnuplot_string += "<script> gnuplot.hide_plot(\"jsoutput_1_plot_" +
-                        std::string(boost::lexical_cast<std::string>(i + 3)) +
+                        std::string(boost::lexical_cast<std::string>(i + 2)) +
                         "\");</script>";
     } else {
       gnuplot_string += "<script>  gnuplot.hide_plot(\"jsoutput_1_plot_" +
-                        std::string(boost::lexical_cast<std::string>(i + 2)) +
+                        std::string(boost::lexical_cast<std::string>(i + 1)) +
                         "\");</script>";
     }
   }
