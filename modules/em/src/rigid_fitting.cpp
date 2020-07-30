@@ -9,6 +9,7 @@
 #include <IMP/em/rigid_fitting.h>
 #include <IMP/em/CoarseL2Norm.h>
 #include <IMP/em/SampledDensityMap.h>
+#include <IMP/em/CoarseCC.h>
 #include <IMP/core/RigidBodyMover.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/SingletonModifier.h>

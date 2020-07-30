@@ -8,6 +8,7 @@
 
 #include <IMP/em/CoarseL2Norm.h>
 #include <IMP/core/utility.h>
+#include <IMP/atom/Mass.h>
 #include <math.h>
 
 IMPEM_BEGIN_NAMESPACE
