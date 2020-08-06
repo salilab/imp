@@ -851,6 +851,8 @@ typedef BasicAttributeTable<internal::WeakObjectAttributeTableTraits>
     WeakObjectAttributeTable;
 typedef BasicAttributeTable<internal::IntsAttributeTableTraits>
     IntsAttributeTable;
+typedef BasicAttributeTable<internal::FloatsAttributeTableTraits>
+    FloatsAttributeTable;
 typedef BasicAttributeTable<internal::ObjectsAttributeTableTraits>
     ObjectsAttributeTable;
 typedef BasicAttributeTable<internal::ParticleAttributeTableTraits>
