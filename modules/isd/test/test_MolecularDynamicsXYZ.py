@@ -11,7 +11,7 @@ xkey = IMP.FloatKey('x')
 ykey = IMP.FloatKey('y')
 zkey = IMP.FloatKey('z')
 masskey = IMP.FloatKey('mass')
-vxkey = IMP.FloatKey('vx')
+linvelkey = IMP.FloatsKey('linvel')
 
 # Conversion from derivatives (in kcal/mol/A) to acceleration (A/fs/fs)
 kcal2mod = 4.1868e-4
@@ -73,7 +73,7 @@ class WriteTrajState(IMP.OptimizerState):
             else:
                 step.append((m.get_attribute(xkey, p), m.get_attribute(ykey, p),
                              m.get_attribute(zkey, p),
-                             m.get_attribute(vxkey, p)))
+                             m.get_attribute(linvelkey, p)[0]))
         self.traj.append(step)
 
 
@@ -165,10 +165,8 @@ class Tests(IMP.test.TestCase):
         r = IMP.RestraintSet(self.model)
         self.md.set_scoring_function(r)
         self.md.optimize(0)
-        keys = [IMP.FloatKey(x) for x in ("vx", "vy", "vz")]
         for p in self.model.get_particle_indexes():
-            for key in keys:
-                self.assertTrue(self.model.get_has_attribute(key, p))
+            self.assertTrue(self.model.get_has_attribute(linvelkey, p))
 
     def _check_temperature(self, desired, tolerance):
         """Check the temperature of the system"""
@@ -200,9 +198,9 @@ class Tests(IMP.test.TestCase):
         # Make sure that the random number generator is working properly;
         # we should get different particle velocities each time we assign
         # velocities
-        velocity = self.particles[0].get_value(vxkey)
+        velocity = self.particles[0].get_value(linvelkey)[0]
         self.md.assign_velocities(100.0)
-        velocity2 = self.particles[0].get_value(vxkey)
+        velocity2 = self.particles[0].get_value(linvelkey)[0]
         self.assertNotAlmostEqual(velocity, velocity2, delta=1e-6)
         # Kinetic energy, however, should be almost identical
         ekinetic2 = self.md.get_kinetic_energy()

@@ -56,11 +56,7 @@ void MolecularDynamicsMover::save_coordinates() {
       coords.push_back(d.get_coordinate(1));
       coords.push_back(d.get_coordinate(2));
       coordinates_.push_back(coords);
-      std::vector<double> v;
-      v.push_back(ps[i]->get_value(FloatKey("vx")));
-      v.push_back(ps[i]->get_value(FloatKey("vy")));
-      v.push_back(ps[i]->get_value(FloatKey("vz")));
-      velocities_.push_back(v);
+      velocities_.push_back(ps[i]->get_value(FloatsKey("linvel")));
     }
   }
 }
@@ -94,9 +90,8 @@ void MolecularDynamicsMover::do_reject() {
       core::XYZ(ps[i]).set_coordinate(0, coordinates_[i][0]);
       core::XYZ(ps[i]).set_coordinate(1, coordinates_[i][1]);
       core::XYZ(ps[i]).set_coordinate(2, coordinates_[i][2]);
-      ps[i]->set_value(FloatKey("vx"), velocities_[i][0]);
-      ps[i]->set_value(FloatKey("vy"), velocities_[i][1]);
-      ps[i]->set_value(FloatKey("vz"), velocities_[i][2]);
+      Floats fs(velocities_[i]);
+      ps[i]->set_value(FloatsKey("linvel"), fs);
     }
   }
 }

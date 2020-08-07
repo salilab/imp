@@ -8,7 +8,7 @@ xkey = IMP.FloatKey('x')
 ykey = IMP.FloatKey('y')
 zkey = IMP.FloatKey('z')
 masskey = IMP.FloatKey('mass')
-vxkey = IMP.FloatKey('vx')
+linvelkey = IMP.FloatsKey('linvel')
 
 # Conversion from derivatives (in kcal/mol/A) to acceleration (A/fs/fs)
 kcal2mod = 4.1868e-4
@@ -59,7 +59,7 @@ class WriteTrajState(IMP.OptimizerState):
         self.traj.append([(model.get_attribute(xkey, p),
                            model.get_attribute(ykey, p),
                            model.get_attribute(zkey, p),
-                           model.get_attribute(vxkey, p))
+                           model.get_attribute(linvelkey, p))
                           for p in model.get_particle_indexes()])
 
 
@@ -93,8 +93,8 @@ class Tests(IMP.test.TestCase):
             newvx = vxfunc(vx)
             print(num)
             for n in range(len(coor)):
-                self.assertAlmostEqual(vx, step[n][3], delta=1e-3,
-                                       msg=velmsg % (vx, step[n][3],
+                self.assertAlmostEqual(vx, step[n][3][0], delta=1e-3,
+                                       msg=velmsg % (vx, step[n][3][0],
                                                      num, n))
                 for d in range(3):
                     self.assertAlmostEqual(coor[n][d], step[n][d], delta=1e-3,
@@ -110,7 +110,7 @@ class Tests(IMP.test.TestCase):
                   self.model.get_attribute(zkey, p)]
                  for p in self.model.get_particle_indexes()]
         # Add starting (step 0) position to the trajectory, with zero velocity
-        traj = [[x + [0] for x in start]]
+        traj = [[(x[0], x[1], x[2], [0,0,0]) for x in start]]
         state = WriteTrajState(self.model, traj)
         sf = IMP.core.RestraintsScoringFunction(restraints)
         self.md.set_scoring_function(sf)
@@ -156,10 +156,8 @@ class Tests(IMP.test.TestCase):
         r = IMP.RestraintSet(self.model)
         self.md.set_scoring_function(r)
         self.md.optimize(0)
-        keys = [IMP.FloatKey(x) for x in ("vx", "vy", "vz")]
         for p in self.model.get_particle_indexes():
-            for key in keys:
-                self.assertTrue(self.model.get_has_attribute(key, p))
+            self.assertTrue(self.model.get_has_attribute(linvelkey, p))
 
     def _check_temperature(self, desired, tolerance):
         """Check the temperature of the system"""
@@ -191,9 +189,9 @@ class Tests(IMP.test.TestCase):
         # Make sure that the random number generator is working properly;
         # we should get different particle velocities each time we assign
         # velocities (NOT the case with r452 or earlier):
-        velocity = self.particles[0].get_value(vxkey)
+        velocity = self.particles[0].get_value(linvelkey)[0]
         self.md.assign_velocities(100.0)
-        velocity2 = self.particles[0].get_value(vxkey)
+        velocity2 = self.particles[0].get_value(linvelkey)[0]
         self.assertNotAlmostEqual(velocity, velocity2, delta=1e-6)
         # Kinetic energy, however, should be almost identical
         ekinetic2 = self.md.get_kinetic_energy()
