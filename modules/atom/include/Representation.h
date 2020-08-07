@@ -39,7 +39,7 @@ enum RepresentationType {
 class IMPATOMEXPORT Representation : public Hierarchy {
   static IntsKey get_types_key();
   static ParticleIndexesKey get_representations_key();
-  static FloatKey get_resolution_key(unsigned int index);
+  static FloatsKey get_resolutions_key();
   static FloatKey get_base_resolution_key();
 
   static void do_setup_particle(Model *m, ParticleIndex pi,

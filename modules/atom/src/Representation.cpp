@@ -34,14 +34,9 @@ IntsKey Representation::get_types_key() {
   return k;
 }
 
-FloatKey Representation::get_resolution_key(unsigned int index) {
-  static boost::unordered_map<unsigned int, FloatKey> keys;
-  if (keys.find(index) == keys.end()) {
-    std::ostringstream oss;
-    oss << "representation_resolution_" << index;
-    keys[index] = FloatKey(oss.str());
-  }
-  return keys.find(index)->second;
+FloatsKey Representation::get_resolutions_key() {
+  static FloatsKey k("representation_resolutions");
+  return k;
 }
 
 FloatKey Representation::get_base_resolution_key() {
@@ -90,10 +85,11 @@ Hierarchy Representation::get_representation(double resolution,
         get_model()->get_attribute(get_types_key(), get_particle_index());
     IMP_LOG_VERBOSE("Found " << types.size() << " resolution levels"
                              << std::endl);
+    Floats resolutions =
+        get_model()->get_attribute(get_resolutions_key(), get_particle_index());
     for (unsigned int i = 0; i < types.size(); ++i) {
       if (types[i]==type) {
-        double cur_resolution = get_model()->get_attribute(get_resolution_key(i),
-                                                           get_particle_index());
+        double cur_resolution = resolutions[i];
         // force a match if requesting non-BALLS and this is the first match
         if ((closest_index==-1  && type!=BALLS) ||
             (get_resolution_distance(resolution, cur_resolution) <
@@ -169,26 +165,23 @@ void Representation::add_representation(ParticleIndexAdaptor rep,
   }
   if (get_model()->get_has_attribute(get_types_key(), get_particle_index())) {
     // if this particle already has this representation type setup, just add this resolution
-    int index = get_model()
-                    ->get_attribute(get_types_key(), get_particle_index())
-                    .size();
     get_model()
         ->access_attribute(get_types_key(), get_particle_index())
         .push_back(type);
     get_model()
         ->access_attribute(get_representations_key(), get_particle_index())
         .push_back(rep);
-    get_model()->add_attribute(get_resolution_key(index), get_particle_index(),
-                               resolution);
+    get_model()
+        ->access_attribute(get_resolutions_key(), get_particle_index())
+        .push_back(resolution);
   } else {
     // otherwise initiate a new list of resolutions for this type
-    int index = 0;
     get_model()->add_attribute(get_types_key(), get_particle_index(),
                                Ints(1, type));
     get_model()->add_attribute(get_representations_key(), get_particle_index(),
                                ParticleIndexes(1, rep));
-    get_model()->add_attribute(get_resolution_key(index), get_particle_index(),
-                               resolution);
+    get_model()->add_attribute(get_resolutions_key(), get_particle_index(),
+                               Floats(1, resolution));
   }
 }
 
@@ -202,10 +195,11 @@ Floats Representation::get_resolutions(RepresentationType type) const {
   if (get_model()->get_has_attribute(get_types_key(), get_particle_index())) {
     Ints types =
         get_model()->get_attribute(get_types_key(), get_particle_index());
+    Floats resolutions =
+        get_model()->get_attribute(get_resolutions_key(), get_particle_index());
     for (unsigned int i = 0; i < types.size(); ++i) {
       if (types[i] == type) {
-        ret.push_back(get_model()->get_attribute(get_resolution_key(i),
-                                                 get_particle_index()));
+        ret.push_back(resolutions[i]);
       }
     }
   }
