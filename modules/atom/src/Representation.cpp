@@ -206,6 +206,39 @@ Floats Representation::get_resolutions(RepresentationType type) const {
   return ret;
 }
 
+void Representation::remove_representation(ParticleIndexAdaptor rep) {
+  Ints types =
+      get_model()->get_attribute(get_types_key(), get_particle_index());
+  Floats resolutions =
+      get_model()->get_attribute(get_resolutions_key(), get_particle_index());
+  ParticleIndexes reps =
+      get_model()->get_attribute(get_representations_key(),
+                                 get_particle_index());
+  for (unsigned int i = 0; i < reps.size(); i++) {
+    if (reps[i] == rep) {
+      types.erase(types.begin() + i);
+      resolutions.erase(resolutions.begin() + i);
+      reps.erase(reps.begin() + i);
+      if (types.empty()) {
+        get_model()->remove_attribute(get_types_key(), get_particle_index());
+        get_model()->remove_attribute(get_resolutions_key(),
+                                      get_particle_index());
+        get_model()->remove_attribute(get_representations_key(),
+                                     get_particle_index());
+      } else {
+        get_model()->set_attribute(get_types_key(), get_particle_index(),
+                                   types);
+        get_model()->set_attribute(get_resolutions_key(), get_particle_index(),
+                                   resolutions);
+        get_model()->set_attribute(get_representations_key(),
+                                   get_particle_index(), reps);
+      }
+      return;
+    }
+  }
+  IMP_THROW("The requested representation was not found", ValueException);
+}
+
 Representation get_representation(Hierarchy h, bool nothrow){
   Hierarchy mhd(h.get_particle());
   do {
