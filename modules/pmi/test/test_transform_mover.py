@@ -37,6 +37,7 @@ class Tests(IMP.test.TestCase):
             hs.append(h)
 
         srbm = IMP.pmi.TransformMover(m, 1, 0.5)
+        srbm2 = IMP.pmi.TransformMover(m, IMP.algebra.Vector3D(0,0,1), 1, 0.5)
 
         #origin point
         origin=IMP.Particle(m)
@@ -52,7 +53,8 @@ class Tests(IMP.test.TestCase):
 
         for p in ps:
             srbm.add_xyz_particle(IMP.core.XYZ(p))
-        smv = IMP.core.SerialMover([srbm])
+            srbm2.add_xyz_particle(IMP.core.XYZ(p))
+        smv = IMP.core.SerialMover([srbm, srbm2])
         mc = IMP.core.MonteCarlo(m)
         mc.set_scoring_function([dr])
         mc.set_return_best(False)

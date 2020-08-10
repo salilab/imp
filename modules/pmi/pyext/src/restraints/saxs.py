@@ -12,6 +12,11 @@ import IMP.container
 import IMP.pmi.tools
 import IMP.pmi.restraints
 import IMP.saxs
+import IMP.isd
+try:
+    import IMP.isd2
+except ImportError:
+    pass
 import warnings
 
 class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
@@ -97,14 +102,12 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
 
     """Basic SAXS restraint using ISD."""
 
-    import IMP.isd
-    try:
-        import IMP.isd2
-    except:
-        print("Module isd2 not installed. Cannot use SAXSISDRestraint")
-
     def __init__(self, representation, profile, resolution=0, weight=1,
                  ff_type=IMP.saxs.HEAVY_ATOMS, label=None):
+
+        if not hasattr(IMP, 'isd2'):
+            raise ImportError("Module isd2 not installed. "
+                              "Cannot use SAXSISDRestraint")
 
         model = representation.prot.get_model()
         super(SAXSISDRestraint, self).__init__(model, label=label,
