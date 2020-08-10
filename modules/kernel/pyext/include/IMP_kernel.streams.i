@@ -174,13 +174,23 @@
       strcpy(fmat_, "(s#)");
       setp(&buffer_.front(), &buffer_.front() + buffer_.size());
       // to make errors occur earlier
-      PyObject *result = PyObject_CallFunction(write_method_, fmat_, fmat_, 0);
+      PyObject *result = PyObject_CallFunction(write_method_, fmat_, fmat_,
+#if PY_VERSION_HEX >= 0x02050000 && defined(PY_SSIZE_T_CLEAN)
+                          (Py_ssize_t)0);
+#else
+                          (int)0);
+#endif
       if (!result) {
 #if PY_VERSION_HEX >= 0x03000000
         PyErr_Clear();
         // Failed to write string (Unicode); try bytes instead
         fmat_[1] = 'y';
-        result = PyObject_CallFunction(write_method_, fmat_, fmat_, 0);
+        result = PyObject_CallFunction(write_method_, fmat_, fmat_,
+#if PY_VERSION_HEX >= 0x02050000 && defined(PY_SSIZE_T_CLEAN)
+                          (Py_ssize_t)0);
+#else
+                          (int)0);
+#endif
         if (!result) {
           throw std::ostream::failure("Python error on write");
         } else {
@@ -211,8 +221,12 @@
       if (num <= 0) {
         return 0;
       }
-      PyObject *result = PyObject_CallFunction(write_method_, fmat_,
-                                               pbase(), num);
+      PyObject *result = PyObject_CallFunction(write_method_, fmat_, pbase(),
+#if PY_VERSION_HEX >= 0x02050000 && defined(PY_SSIZE_T_CLEAN)
+                                               (Py_ssize_t)num);
+#else
+                                               (int)num);
+#endif
       if (!result) {
         // Python exception will be reraised when SWIG method finishes
         throw std::ostream::failure("Python error on write");
@@ -229,7 +243,12 @@
         // result per call (one here, potentially one in sync) rather than one per
         // buffer_.size() characters via the regular buffering
         sync();
-        PyObject *result = PyObject_CallFunction(write_method_, fmat_, s, n);
+        PyObject *result = PyObject_CallFunction(write_method_, fmat_, s,
+#if PY_VERSION_HEX >= 0x02050000 && defined(PY_SSIZE_T_CLEAN)
+                                                 (Py_ssize_t)n);
+#else
+                                                 (int)n);
+#endif
         if (!result) {
           throw std::ostream::failure("Python error on write");
         } else {
@@ -359,7 +378,12 @@ protected:
   virtual int_type underflow() {
     static char fmt[] = "(i)";
     if (peeked_!= -1) return peeked_;
-    PyObject *result = PyObject_CallFunction(read_method_, fmt, 1);
+    PyObject *result = PyObject_CallFunction(read_method_, fmt,
+#if PY_VERSION_HEX >= 0x02050000 && defined(PY_SSIZE_T_CLEAN)
+                                             (Py_ssize_t)1);
+#else
+                                             (int)1);
+#endif
     if (!result) {
       // Python exception will be reraised when SWIG method finishes
       throw std::ostream::failure("Python error on read");
@@ -384,7 +408,12 @@ protected:
 
   virtual std::streamsize xsgetn(char *s, std::streamsize n) {
     static char fmt[] = "(i)";
-    PyObject *result = PyObject_CallFunction(read_method_, fmt, n);
+    PyObject *result = PyObject_CallFunction(read_method_, fmt,
+#if PY_VERSION_HEX >= 0x02050000 && defined(PY_SSIZE_T_CLEAN)
+                                             (Py_ssize_t)n);
+#else
+                                             (int)n);
+#endif
     if (!result) {
       throw std::ostream::failure("Python error on read");
     } else {
