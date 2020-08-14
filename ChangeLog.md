@@ -3,6 +3,10 @@ ChangeLog {#changelog}
 - All IMP.parallel worker classes are now subclasses of IMP.parallel.Worker;
   the old class names still exist as aliases, but are deprecated.
 - The IMP.kinematics module has had a major overhaul.
+- New applications of IMP are now available:
+  - [Integrative structures of the Nef-CD4-AP2 complex](https://salilab.org/Nef_CD4_AP2/)
+  - [Integrative Modeling of Yeast Exocyst Complex](https://salilab.org/exocyst/)
+  - [Integrative threading of protein structure using secondary structure elements](https://salilab.org/SSEThread/)
 - Bugfix: fix near-infinite loop in FoXS JavaScript output when no models
   are fit.
 
