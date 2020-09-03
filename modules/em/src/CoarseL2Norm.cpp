@@ -13,6 +13,48 @@
 
 IMPEM_BEGIN_NAMESPACE
 
+std::map<double, int> get_distinct_and_counts(DensityMap *em, int size) 
+{
+
+  const DensityHeader *em_header = em->get_header();
+  const double *em_data = em->get_data();  
+  long nvox = em_header->get_number_of_voxels();
+    
+  std::map<double, int> outs;
+  
+  for (int f=0; f < nvox; ++f)
+    outs[em_data[f]]++;
+  
+  return outs;
+}   
+
+double interpolate( std::vector<double> &xData, std::vector<double> &yData, double x, bool extrapolate )
+{
+   int size = xData.size();
+
+   int i = 0;                                                                  // find left end of interval for interpolation
+   if ( x >= xData[size - 2] )                                                 // special case: beyond right end
+   {
+      i = size - 2;
+   }
+   else
+   {
+      while ( x > xData[i+1] ) i++;
+   }
+   double xL = xData[i], yL = yData[i], xR = xData[i+1], yR = yData[i+1];      // points on either side (unless beyond ends)
+   if ( !extrapolate )                                                         // if beyond ends of array and not extrapolating
+   {
+      if ( x < xL ) yR = yL;
+      if ( x > xR ) yL = yR;
+   }
+
+   double dydx = ( yR - yL ) / ( xR - xL );  
+
+   return yL + dydx * ( x - xL );            
+}
+
+
+
 FloatPair CoarseL2Norm::logabssumexp(double x,  double y,
 				     double sx, double sy)
 {
@@ -129,6 +171,60 @@ FloatPair CoarseL2Norm::get_square_em_density(DensityMap *em,
   return results;
 }
 
+DensityMap *CoarseL2Norm::get_density_from_particle(DensityMap *em,
+						    const IMP::ParticlesTemp &ps,
+						    double resolution,
+						    double sigma)
+{
+  const DensityHeader *em_header = em->get_header();
+  const double *em_data = em->get_data();
+  long nvox = em_header->get_number_of_voxels();
+  IMP::algebra::BoundingBox3D density_bb = get_bounding_box(em);
+  IMP::em::KernelParameters kps(resolution);
+
+  core::XYZRs xyzr(ps);
+  IMP_NEW(em::DensityMap, ret, (*(em->get_header())));
+  ret->reset_data(0.);
+  double *model = ret->get_data();
+
+  int ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
+  int nxny = em_header->get_nx() * em_header->get_ny();
+  int znxny;
+  
+  for (unsigned int ii = 0; ii < xyzr.size(); ii++) {
+
+    double px = xyzr[ii].get_x();
+    double py = xyzr[ii].get_y();
+    double pz = xyzr[ii].get_z();
+    double pr = xyzr[ii].get_radius();
+    double mass_ii = IMP::atom::Mass(ps[ii]).get_mass();
+
+    calc_local_bounding_box(em,
+                            px, py, pz,
+                            pr + kps.get_rkdist(),
+                            iminx, iminy, iminz,
+                            imaxx, imaxy, imaxz);
+
+    for (ivoxz = iminz; ivoxz <= imaxz; ivoxz++) {
+      znxny = ivoxz * nxny;
+
+      for (ivoxy = iminy; ivoxy <= imaxy; ivoxy++) {
+        ivox = znxny + ivoxy * em_header->get_nx() + iminx;
+
+        for (ivoxx = iminx; ivoxx <= imaxx; ivoxx++) {
+
+          algebra::Vector3D cur(em->get_location_by_voxel(ivox));
+          std::vector<double> value = get_value_no_deriv(xyzr[ii], cur, mass_ii, kps);
+
+          double intensity = value[1] * exp(value[0]);;
+          model[ivox] += intensity;
+          ivox++;
+	}
+      }
+    }
+  }
+  return ret.release();
+}
 
 std::pair<double, algebra::Vector3Ds> CoarseL2Norm::calc_score_and_derivative(DensityMap *em,
 									      const IMP::ParticlesTemp &ps,
@@ -191,6 +287,11 @@ std::pair<double, algebra::Vector3Ds> CoarseL2Norm::calc_score_and_derivative(De
                             iminx, iminy, iminz,
                             imaxx, imaxy, imaxz);
 
+    //std::cerr << "Local BB:" << " "
+    //<< ps[ii]->get_name() << " with radius "
+    //<< pr + kps.get_rkdist() << " "
+    //<< std::endl;
+    
     for (ivoxz = iminz; ivoxz <= imaxz; ivoxz++) {
       znxny = ivoxz * nxny;
 

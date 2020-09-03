@@ -25,6 +25,15 @@ class IMPEMEXPORT CoarseL2Norm : public IMP::Object {
  public:
  CoarseL2Norm() : Object("CoarseL2Norm%1%") {}
 
+  static std::map<double, int> get_distinct_and_counts(DensityMap *em,
+						       int size);
+
+  static double interpolate( std::vector<double> &xData,
+			     std::vector<double> &yData,
+			     double x,
+			     bool extrapolate );
+
+
   static FloatPair logabssumexp(double x,  double y,
 			 double sx, double sy);
 
@@ -47,6 +56,11 @@ class IMPEMEXPORT CoarseL2Norm : public IMP::Object {
 					 double mass_ii,
 					 IMP::em::KernelParameters kps_);
   
+  static DensityMap *get_density_from_particle(DensityMap *em,
+					       const IMP::ParticlesTemp &ps,
+					       double resolution,
+					       double sigma);
+    
   static std::pair<double, algebra::Vector3Ds> calc_score_and_derivative(DensityMap *em,
 									 const IMP::ParticlesTemp &ps,
 									 double resolution,
