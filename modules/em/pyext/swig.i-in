@@ -6,6 +6,7 @@ namespace IMP {
 }
 %ignore operator<<(std::ostream&, const DensityHeader &);
 
+
 /* Make selected classes extensible in Python */
 IMP_SWIG_OBJECT(IMP::em, DensityMap, DensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SampledDensityMap, SampledDensityMaps);
@@ -154,3 +155,9 @@ def write_pca_cmm(pca, fh):
               % (i, i+1, radius))
     fh.write("</marker_set>\n")
 %}
+
+%include "std_map.i"
+namespace std {
+ 	     %template(map_double_int) map<double, int>;
+	     %template(map_double_int) map<double, double>;
+}

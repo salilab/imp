@@ -13,47 +13,96 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-std::map<double, int> get_distinct_and_counts(DensityMap *em, int size) 
+std::map<double, int> CoarseL2Norm::get_distinct_and_counts(DensityMap *em) 
 {
 
   const DensityHeader *em_header = em->get_header();
   const double *em_data = em->get_data();  
   long nvox = em_header->get_number_of_voxels();
     
-  std::map<double, int> outs;
+  std::map<double, int> values_and_counts;
   
   for (int f=0; f < nvox; ++f)
-    outs[em_data[f]]++;
+    values_and_counts[(int)(em_data[f] * 1000.)]++;
   
-  return outs;
+  return values_and_counts;
 }   
 
-double interpolate( std::vector<double> &xData, std::vector<double> &yData, double x, bool extrapolate )
+Floats CoarseL2Norm::get_cumulative_sum(DensityMap *em)
 {
-   int size = xData.size();
 
-   int i = 0;                                                                  // find left end of interval for interpolation
-   if ( x >= xData[size - 2] )                                                 // special case: beyond right end
-   {
-      i = size - 2;
-   }
-   else
-   {
-      while ( x > xData[i+1] ) i++;
-   }
-   double xL = xData[i], yL = yData[i], xR = xData[i+1], yR = yData[i+1];      // points on either side (unless beyond ends)
-   if ( !extrapolate )                                                         // if beyond ends of array and not extrapolating
-   {
-      if ( x < xL ) yR = yL;
-      if ( x > xR ) yL = yR;
-   }
+  const DensityHeader *em_header = em->get_header();
+  long nvox = em_header->get_number_of_voxels();
 
-   double dydx = ( yR - yL ) / ( xR - xL );  
+  std::map<double, int> values_and_counts = get_distinct_and_counts(em);
+  
+  Floats cumulative_sum;
+  std::map<double, int>::iterator it;
+  double previous = 0.0;
+  double current = 0.0;
+  
 
-   return yL + dydx * ( x - xL );            
+  int count = 0;
+  for ( it = values_and_counts.begin(); it != values_and_counts.end(); it++ )
+    {
+      current = (previous + it->second);
+      cumulative_sum.push_back(current/(1.0 * nvox));
+      previous = current;
+      ++count;
+    }
+  return cumulative_sum;
+}
+
+std::map<double, double> CoarseL2Norm::get_cumulative_sum_with_reference(DensityMap *em)
+{
+
+  const DensityHeader *em_header = em->get_header();
+  long nvox = em_header->get_number_of_voxels();
+  std::map<double, int> values_and_counts = get_distinct_and_counts(em);
+
+  std::map<double, double> cumulative_sum;
+  std::map<double, int>::iterator it;
+  double previous = 0.0;
+  double current = 0.0;
+
+
+  int count = 0;
+  for ( it = values_and_counts.begin(); it != values_and_counts.end(); it++ )
+    {
+      current = (previous + it->second);
+      cumulative_sum[ it->first ]=current;
+      previous = current;
+      ++count;
+    }
+  return cumulative_sum;
 }
 
 
+double CoarseL2Norm::linear_interpolate( const Floats &xData, const Floats &yData, double x, bool extrapolate )
+{
+
+  int size = xData.size();
+
+  int i = 0;                                                                  // find left end of interval for interpolation
+  if ( x >= xData[size - 2] )                                                 // special case: beyond right end
+    {
+      i = size - 2;
+    }
+  else
+    {
+      while ( x > xData[i+1] ) i++;
+    }
+  double xL = xData[i], yL = yData[i], xR = xData[i+1], yR = yData[i+1];      // points on either side (unless beyond ends)
+
+  if ( !extrapolate )                                                         // if beyond ends of array and not extrapolating
+    {
+      if ( x < xL ) yR = yL;
+      if ( x > xR ) yL = yR;
+    }
+  
+  double dydx = ( yR - yL ) / ( xR - xL );  
+  return yL + dydx * ( x - xL );            
+}
 
 FloatPair CoarseL2Norm::logabssumexp(double x,  double y,
 				     double sx, double sy)
@@ -432,4 +481,73 @@ std::pair<double, algebra::Vector3Ds> CoarseL2Norm::calc_score_and_derivative(De
   return results;
 }
 
+
+template <typename M, typename V>
+void CoarseL2Norm::MapFirst2Floats (const M &m, V &v)
+{
+  for( typename M::const_iterator it = m.begin(); it != m.end(); ++it)
+    v.push_back( it->first );
+
+}
+
+
+template <typename M, typename V>
+void CoarseL2Norm::MapSecond2Floats (const M &m, V &v)
+{
+  for( typename M::const_iterator it = m.begin(); it != m.end(); ++it)
+    v.push_back( it->second );
+  
+}
+
+DensityMap *CoarseL2Norm::get_normalized_intensities(DensityMap *em,
+                                                     const IMP::ParticlesTemp &ps,
+                                                     double resolution,
+                                                     double sigma)
+{
+  const DensityHeader *em_header = em->get_header();
+  double *em_data = em->get_data();
+  long nvox = em_header->get_number_of_voxels();
+
+  DensityMap *em_m = get_density_from_particle(em,
+					       ps,
+					       resolution,
+					       sigma);
+  
+  const double *em_model = em_m->get_data();
+  
+  //std::map<double, int> values_and_counts_model = get_distinct_and_counts(em_m, nvox);
+  //std::map<double, int> values_and_counts_em = get_distinct_and_counts(em, nvox);
+
+  std::map<double, double> cumulative_sum_model_with_ref = get_cumulative_sum_with_reference(em_m);
+  std::map<double, double> cumulative_sum_em_with_ref = get_cumulative_sum_with_reference(em);
+
+  Floats model_sorted_unique_intensities;
+  Floats cumulative_sum_em;
+  Floats cumulative_sum_model;
+
+  
+  MapFirst2Floats(cumulative_sum_model_with_ref, model_sorted_unique_intensities);
+  MapSecond2Floats(cumulative_sum_em_with_ref, cumulative_sum_em);
+  MapSecond2Floats(cumulative_sum_model_with_ref, cumulative_sum_model);
+
+  double value = 0.0;
+  double interp = 0.0;
+  
+  for(long ivox = 0; ivox < nvox; ++ivox)
+    {
+
+      value = cumulative_sum_em_with_ref[(int)(em_data[ivox] * 1000.)];
+      interp = linear_interpolate( cumulative_sum_model,
+				   model_sorted_unique_intensities,
+				   value,
+				   false );
+
+      em_data[ivox] = interp;
+    }
+    
+  return em;
+}
+
+
 IMPEM_END_NAMESPACE
+
