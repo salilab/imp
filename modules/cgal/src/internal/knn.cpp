@@ -28,6 +28,8 @@ struct Construct_coord_iterator {
 };
 struct Distance {
   typedef algebra::VectorKD Query_item;
+  typedef algebra::VectorKD Point_d;
+  typedef double FT;
 
   double transformed_distance(const algebra::VectorKD& p1,
                               const algebra::VectorKD& p2) const {
