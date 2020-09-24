@@ -37,7 +37,7 @@ IMPATOMEXPORT Vector<AtomTypes> get_chi_dihedral_atom_types(ResidueType rt);
 //! for residue rd.
 /** An empty list in a list is returned for residues with no chi dihedrals
     \see Residue */
-IMPATOMEXPORT std::vector<Atoms> get_chi_dihedral_atoms(Residue rd);
+IMPATOMEXPORT Vector<Atoms> get_chi_dihedral_atoms(Residue rd);
 
 //! Return a list of lists of ParticleIndexQuads comprising the chi dihedrals
 //! for residue rd.

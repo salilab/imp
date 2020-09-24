@@ -125,6 +125,11 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
   IMP_SWIG_SHOWSTUFF(CHARMMConnection);
  }
 
+// Handle lists of lists returned by
+// get_chi_dihedral_atom_types() and get_chi_dihedral_atoms()
+IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::atom::Atom, IMP::atom::Atoms, IMP::Vector<IMP::atom::Atoms>,);
+IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::atom::AtomType, IMP::atom::AtomTypes, IMP::Vector<IMP::atom::AtomTypes>,);
+
 %extend IMP::atom::PDBSelector {
 %pythoncode %{
   def __and__(self, s):

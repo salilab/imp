@@ -334,17 +334,17 @@ AtomTypesSet get_chi_dihedral_atom_types(ResidueType rt) {
   return chi_dihedral_atom_types[rt];
 }
 */
-std::vector<Atoms> get_chi_dihedral_atoms(Residue rd) {
+Vector<Atoms> get_chi_dihedral_atoms(Residue rd) {
 
   Vector<AtomTypes> dats = get_chi_dihedral_atom_types(rd.get_residue_type());
   if (dats.size() == 0) { 
-    std::vector<Atoms> das;
+    Vector<Atoms> das;
     //std::cout << "No chi angles for this residue" << std::endl;
     return das;
 
   } else {
 
-    std::vector<Atoms> das;
+    Vector<Atoms> das;
 
     for(unsigned int i=0; i<dats.size(); i++) {
       Atoms da;
