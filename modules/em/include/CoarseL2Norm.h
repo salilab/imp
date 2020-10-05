@@ -61,8 +61,7 @@ class IMPEMEXPORT CoarseL2Norm : public IMP::Object {
   
   static DensityMap *get_density_from_particle(DensityMap *em,
 					       const IMP::ParticlesTemp &ps,
-					       double resolution,
-					       double sigma);
+					       double resolution);
     
   static std::pair<double, algebra::Vector3Ds> calc_score_and_derivative(DensityMap *em,
 									 const IMP::ParticlesTemp &ps,
@@ -77,10 +76,10 @@ class IMPEMEXPORT CoarseL2Norm : public IMP::Object {
   template <typename M, typename V>
     static  void MapFirst2Floats (const M &m, V &v);
 
-  static DensityMap *get_normalized_intensities(DensityMap *em,
+  static void get_normalized_intensities(DensityMap *em,
 					 const IMP::ParticlesTemp &ps,
-					 double resolution,
-					 double sigma);
+					 double resolution);
+
   IMP_OBJECT_METHODS(CoarseL2Norm);
 
 };

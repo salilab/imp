@@ -222,8 +222,7 @@ FloatPair CoarseL2Norm::get_square_em_density(DensityMap *em,
 
 DensityMap *CoarseL2Norm::get_density_from_particle(DensityMap *em,
 						    const IMP::ParticlesTemp &ps,
-						    double resolution,
-						    double sigma)
+						    double resolution)
 {
   const DensityHeader *em_header = em->get_header();
   const double *em_data = em->get_data();
@@ -499,22 +498,21 @@ void CoarseL2Norm::MapSecond2Floats (const M &m, V &v)
   
 }
 
-DensityMap *CoarseL2Norm::get_normalized_intensities(DensityMap *em,
-                                                     const IMP::ParticlesTemp &ps,
-                                                     double resolution,
-                                                     double sigma)
+void CoarseL2Norm::get_normalized_intensities(DensityMap *em,
+					      const IMP::ParticlesTemp &ps,
+					      double resolution)
 {
+
   const DensityHeader *em_header = em->get_header();
   double *em_data = em->get_data();
   long nvox = em_header->get_number_of_voxels();
 
   DensityMap *em_m = get_density_from_particle(em,
 					       ps,
-					       resolution,
-					       sigma);
+					       resolution);
   
   const double *em_model = em_m->get_data();
-  
+    
   //std::map<double, int> values_and_counts_model = get_distinct_and_counts(em_m, nvox);
   //std::map<double, int> values_and_counts_em = get_distinct_and_counts(em, nvox);
 
@@ -524,7 +522,6 @@ DensityMap *CoarseL2Norm::get_normalized_intensities(DensityMap *em,
   Floats model_sorted_unique_intensities;
   Floats cumulative_sum_em;
   Floats cumulative_sum_model;
-
   
   MapFirst2Floats(cumulative_sum_model_with_ref, model_sorted_unique_intensities);
   MapSecond2Floats(cumulative_sum_em_with_ref, cumulative_sum_em);
@@ -535,19 +532,17 @@ DensityMap *CoarseL2Norm::get_normalized_intensities(DensityMap *em,
   
   for(long ivox = 0; ivox < nvox; ++ivox)
     {
-
       value = cumulative_sum_em_with_ref[(int)(em_data[ivox] * 1000.)];
       interp = linear_interpolate( cumulative_sum_model,
 				   model_sorted_unique_intensities,
 				   value,
 				   false );
-
-      em_data[ivox] = interp;
+      
+      em_data[ivox] = interp / 1000.;
     }
-    
-  return em;
-}
 
+  //IMP::em::write_map(em, "cpp_normalized.mrc", new IMP::em::MRCReaderWriter());
+}
 
 IMPEM_END_NAMESPACE
 
