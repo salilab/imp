@@ -53,10 +53,10 @@ class Tests(IMP.test.TestCase):
         IMP.atom.destroy(a)
         self.assertEqual(len(IMP.atom.get_phi_dihedral_atoms(r)), 0)
         self.assertEqual(len(IMP.atom.get_psi_dihedral_atoms(r)), 0)
-        
+
         # check omega dihedral atoms functionality
         self.assertEqual(len(IMP.atom.get_omega_dihedral_atoms(first_r)), 4)
-        
+
         # omega should both be +/-pi for extended chain conformation
         omega = IMP.atom.get_omega_dihedral_atoms(first_r)
         d = IMP.core.get_dihedral(*[IMP.core.XYZ(x) for x in omega])
@@ -64,11 +64,11 @@ class Tests(IMP.test.TestCase):
         if d > 0.999 * math.pi:
             d -= math.pi * 2.
         self.assertAlmostEqual(d, -math.pi, delta=1e-4)
-        
+
         # omega cease to be defined if at least one atom is missing
         r = IMP.atom.Residue(res[2])
         self.assertEqual(len(IMP.atom.get_omega_dihedral_atoms(r)), 0)
-        
+
     def test_chi_dihedral(self):
         """Test chi dihedrals"""
         m = IMP.Model()
