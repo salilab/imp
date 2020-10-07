@@ -67,8 +67,6 @@ class Tests(IMP.test.TestCase):
         
         # omega cease to be defined if at least one atom is missing
         r = IMP.atom.Residue(res[2])
-        a = IMP.atom.get_atom(r, IMP.atom.AT_CA)
-        IMP.atom.destroy(a)
         self.assertEqual(len(IMP.atom.get_omega_dihedral_atoms(r)), 0)
         
     def test_chi_dihedral(self):
