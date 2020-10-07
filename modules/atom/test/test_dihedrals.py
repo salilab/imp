@@ -82,8 +82,8 @@ class Tests(IMP.test.TestCase):
         h = topology.create_hierarchy(m)
 
         phe = IMP.atom.Residue(h.get_children()[0].get_children()[0])
-        arg = IMP.atom.Residue(h.get_children()[0].get_children()[1])
-        gly = IMP.atom.Residue(h.get_children()[0].get_children()[3])
+        arg = IMP.atom.Residue(h.get_children()[0].get_children()[2])
+        gly = IMP.atom.Residue(h.get_children()[0].get_children()[4])
 
         phe_chi_atoms = IMP.atom.get_chi_dihedral_atoms(phe)
         arg_chi_pis = IMP.atom.get_chi_dihedral_particle_indexes(arg)
