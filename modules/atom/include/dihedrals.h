@@ -27,6 +27,11 @@ IMPATOMEXPORT Atoms get_phi_dihedral_atoms(Residue rd);
     \see Residue */
 IMPATOMEXPORT Atoms get_psi_dihedral_atoms(Residue rd);
 
+//! Return the atoms comprising the omega dihedral.
+/** If all atoms cannot be found, an empty list is returned.
+    \see Residue */
+IMPATOMEXPORT Atoms get_omega_dihedral_atoms(Residue rd);
+
 //! Return a list of lists of atom types comprising the chi dihedrals
 //! for residue type rd.
 /** An empty list in a list is returned for residues with no chi dihedrals
