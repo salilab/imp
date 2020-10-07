@@ -75,6 +75,14 @@ Atoms get_psi_dihedral_atoms(Residue rd) {
   return get_dihedral_atoms(rd, dihedral);
 }
 
+Atoms get_omega_dihedral_atoms(Residue rd) {
+  static DihedralAtom dihedral[4] = {DihedralAtom(DihedralAtom::THIS, AT_CA),
+                                     DihedralAtom(DihedralAtom::THIS, AT_C),
+                                     DihedralAtom(DihedralAtom::NEXT, AT_N),
+                                     DihedralAtom(DihedralAtom::NEXT, AT_CA)};
+  return get_dihedral_atoms(rd, dihedral);
+}
+
 Vector<AtomTypes> get_chi_dihedral_atom_types(ResidueType rt) {
   /*
   if (rt = "VAL") {
@@ -166,6 +174,12 @@ Vector<AtomTypes> get_chi_dihedral_atom_types(ResidueType rt) {
   chi3_ne.push_back(AT_CG);
   chi3_ne.push_back(AT_CD);
   chi3_ne.push_back(AT_NE);
+  
+  AtomTypes chi3_n;
+  chi3_n.push_back(AT_CB);
+  chi3_n.push_back(AT_CG);
+  chi3_n.push_back(AT_CD);
+  chi3_n.push_back(AT_N);
 
   AtomTypes chi3_oe1;
   chi3_oe1.push_back(AT_CB);
@@ -192,65 +206,87 @@ Vector<AtomTypes> get_chi_dihedral_atom_types(ResidueType rt) {
   chi5_nh1.push_back(AT_NH1);
 
   Vector<AtomTypes> ala;
+
+  Vector<AtomTypes> cys;
+  cys.push_back(chi1_sg);
+
+  Vector<AtomTypes> asp;
+  asp.push_back(chi1_cg);
+  asp.push_back(chi2_od1);
+
+  Vector<AtomTypes> glu;
+  glu.push_back(chi1_cg);
+  glu.push_back(chi2_cd);
+  glu.push_back(chi3_oe1);
+
+  Vector<AtomTypes> phe;
+  phe.push_back(chi1_cg);
+  phe.push_back(chi2_cd1);
+
+  Vector<AtomTypes> gly;
+
+  Vector<AtomTypes> his;
+  his.push_back(chi1_cg);
+  his.push_back(chi2_nd1);
+
+  Vector<AtomTypes> ile;
+  ile.push_back(chi1_cg1);
+  ile.push_back(chi2_cg1_cd1);
+
+  Vector<AtomTypes> lys;
+  lys.push_back(chi1_cg);
+  lys.push_back(chi2_cd);
+  lys.push_back(chi3_ce);
+  lys.push_back(chi4_nz);
+
+  Vector<AtomTypes> leu;
+  leu.push_back(chi1_cg);
+  leu.push_back(chi2_cd1);
+
+  Vector<AtomTypes> met;
+  met.push_back(chi1_cg);
+  met.push_back(chi2_sd);
+  met.push_back(chi3_ce);
+
+  Vector<AtomTypes> asn;
+  asn.push_back(chi1_cg);
+  asn.push_back(chi2_od1);
+
+  Vector<AtomTypes> pro;
+  pro.push_back(chi1_cg);
+  pro.push_back(chi2_cd);
+  pro.push_back(chi3_n);
+
+  Vector<AtomTypes> gln;
+  gln.push_back(chi1_cg);
+  gln.push_back(chi2_cd);                                                                                                                                                                                                                          258,1         55%
+
   Vector<AtomTypes> arg;
   arg.push_back(chi1_cg);
   arg.push_back(chi2_cd);
   arg.push_back(chi3_ne);
   arg.push_back(chi4_cz);
   arg.push_back(chi5_nh1);
-  Vector<AtomTypes> asp;
-  asp.push_back(chi1_cg);
-  asp.push_back(chi2_od1);
-  Vector<AtomTypes> asn;
-  asn.push_back(chi1_cg);
-  asn.push_back(chi2_od1);
-  Vector<AtomTypes> cys;
-  cys.push_back(chi1_sg);
-  Vector<AtomTypes> gln;
-  gln.push_back(chi1_cg);
-  gln.push_back(chi2_cd);
-  gln.push_back(chi3_oe1);
-  Vector<AtomTypes> glu;
-  glu.push_back(chi1_cg);
-  glu.push_back(chi2_cd);
-  glu.push_back(chi3_oe1);
-  Vector<AtomTypes> gly;
-  Vector<AtomTypes> his;
-  his.push_back(chi1_cg);
-  his.push_back(chi2_nd1);
-  Vector<AtomTypes> ile;
-  ile.push_back(chi1_cg1);
-  ile.push_back(chi2_cg1_cd1);
-  Vector<AtomTypes> leu;
-  leu.push_back(chi1_cg);
-  leu.push_back(chi2_cd1);
-  Vector<AtomTypes> lys;
-  lys.push_back(chi1_cg);
-  lys.push_back(chi2_cd);
-  lys.push_back(chi3_ce);
-  lys.push_back(chi4_nz);
-  Vector<AtomTypes> met;
-  met.push_back(chi1_cg);
-  met.push_back(chi2_sd);
-  met.push_back(chi3_ce);
-  Vector<AtomTypes> phe;
-  phe.push_back(chi1_cg);
-  phe.push_back(chi2_cd);
-  Vector<AtomTypes> pro;
+
   Vector<AtomTypes> ser;
   ser.push_back(chi1_og);
+
   Vector<AtomTypes> thr;
   thr.push_back(chi1_og1);
-  Vector<AtomTypes> tyr;
-  tyr.push_back(chi1_cg);
-  tyr.push_back(chi2_cd1);
+
+  Vector<AtomTypes> val;
+  val.push_back(chi1_cg1);
+
   Vector<AtomTypes> trp;
   trp.push_back(chi1_cg);
   trp.push_back(chi2_cd1);
-  Vector<AtomTypes> val;
-  val.push_back(chi1_cg1);
-  Vector<AtomTypes> unk;
 
+  Vector<AtomTypes> tyr;
+  tyr.push_back(chi1_cg);
+  tyr.push_back(chi2_cd1);
+
+  Vector<AtomTypes> unk;
+  
   if(chi_dihedral_atom_types.size() == 0) {          
           chi_dihedral_atom_types[atom::ALA] = ala;
           chi_dihedral_atom_types[atom::ARG] = arg;
