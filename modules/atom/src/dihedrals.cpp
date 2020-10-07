@@ -259,7 +259,7 @@ Vector<AtomTypes> get_chi_dihedral_atom_types(ResidueType rt) {
 
   Vector<AtomTypes> gln;
   gln.push_back(chi1_cg);
-  gln.push_back(chi2_cd);                                                                                                                                                                                                                          258,1         55%
+  gln.push_back(chi2_cd);
 
   Vector<AtomTypes> arg;
   arg.push_back(chi1_cg);
