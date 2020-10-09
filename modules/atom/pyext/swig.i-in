@@ -67,6 +67,7 @@ IMP_SWIG_OBJECT(IMP::atom, CoulombPairScore, CoulombPairScores);
 IMP_SWIG_OBJECT(IMP::atom, CoverBond, CoverBonds);
 IMP_SWIG_OBJECT(IMP::atom, DihedralSingletonScore, DihedralSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, DopePairScore, DopePairScores);
+IMP_SWIG_OBJECT(IMP::atom, LoopStatisticalPairScore, LoopStatisticalPairScores);
 IMP_SWIG_OBJECT(IMP::atom, OrientedSoapPairScore, OrientedSoapPairScores);
 IMP_SWIG_OBJECT(IMP::atom, EzRestraint, EzRestraints);
 IMP_SWIG_OBJECT(IMP::atom, ForceFieldParameters, ForceFieldParametersList);
@@ -247,12 +248,15 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::atom::AtomType, IMP::atom::AtomTypes, IMP:
 
 %template(_ADopeBase) IMP::score_functor::DistancePairScore<IMP::score_functor::Dope>;
 %template(_BDopeBase) IMP::score_functor::DistancePairScore< IMP::score_functor::Statistical< IMP::atom::DopeType,false,true,false > >;
+%template(_ALoopStatisticalBase) IMP::score_functor::DistancePairScore<IMP::score_functor::LoopStatistical>;
+%template(_BLoopStatisticalBase) IMP::score_functor::DistancePairScore< IMP::score_functor::Statistical< IMP::atom::LoopStatisticalType,false,true,false > >;
 %template(_OrientedSoapBase) IMP::score_functor::DistancePairScore<IMP::score_functor::OrientedSoap>;
 namespace IMP {
   namespace atom {
    %template(_SPSFTB) ::IMP::score_functor::DistancePairScore<score_functor::Statistical< IMP::atom::ProteinLigandType, true, false> >;
    %template(_SPSTF) ::IMP::core::StatisticalPairScore< IMP::atom::ProteinLigandType, true, false>;
    %template(_SPSFT) ::IMP::core::StatisticalPairScore< IMP::atom::DopeType, false, true>;
+   %template(_SPSFTL) ::IMP::core::StatisticalPairScore< IMP::atom::LoopStatisticalType, false, true>;
   }
 }
 %include "IMP/atom/protein_ligand_score.h"
@@ -286,6 +290,7 @@ namespace IMP {
 %include "IMP/atom/EzRestraint.h"
 %include "IMP/atom/hierarchy_tools.h"
 %include "IMP/atom/DopePairScore.h"
+%include "IMP/atom/LoopStatisticalPairScore.h"
 %include "IMP/atom/OrientedSoapPairScore.h"
 %include "IMP/atom/SameResiduePairFilter.h"
 %include "IMP/atom/RemoveRigidMotionOptimizerState.h"
