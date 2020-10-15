@@ -99,7 +99,7 @@ called from DominoModel.
 IMP.em2d.sampling - Sets the positions and orientations for the components of
 the assembly before combining them using DOMINO. In the EMageFit benchmark the
 set of Monte Carlo solutions was used as input to DOMINO, but
-any other combination of positions and orientations for the the subunits
+any other combination of positions and orientations for the subunits
 could be used.
 
 IMP.em2d.solutions_io - Contains the class <tt>ResultsDB</tt> for managing

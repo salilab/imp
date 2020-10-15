@@ -468,7 +468,7 @@ void apply_variance_filter(const cv::Mat &input, cv::Mat &filtered,
   cv::boxFilter(input, means, input.depth(), ksize, anchor, true);
   cv::Mat squared_means = means.mul(means);
 
-  // Get the the means of squares
+  // Get the means of squares
   IMP_LOG_VERBOSE("Getting means of the squares" << std::endl);
 
   cv::Mat squares = input.mul(input);

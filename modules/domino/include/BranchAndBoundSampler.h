@@ -20,7 +20,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 //! Sample best solutions using BranchAndBound
 /** Find all good configurations of the model using branch and bound.
-    Searches are truncated when the score is worse than the the thresholds
+    Searches are truncated when the score is worse than the thresholds
     in the Sampler or when two particles with the same ParticlesState
     are assigned the same state.
  */

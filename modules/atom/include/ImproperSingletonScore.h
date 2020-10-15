@@ -28,7 +28,7 @@ IMPATOM_BEGIN_NAMESPACE
     as the angle between the plane in which the first three atoms lie and
     the plane in which the last three atoms lie.
 
-    \note The multiplicity of the the Dihedral is not used.
+    \note The multiplicity of the Dihedral is not used.
 
     \see CHARMMTopology::add_impropers(), Dihedral.
  */
