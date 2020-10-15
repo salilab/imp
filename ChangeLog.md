@@ -3,6 +3,8 @@ ChangeLog {#changelog}
 - All IMP.parallel worker classes are now subclasses of IMP.parallel.Worker;
   the old class names still exist as aliases, but are deprecated.
 - The IMP.kinematics module has had a major overhaul.
+- The Windows .exe installer now supports Python 3.9, and has dropped support
+  for Python 3.5.
 - New applications of IMP are now available:
   - [Integrative structures of the Nef-CD4-AP2 complex](https://salilab.org/Nef_CD4_AP2/)
   - [Integrative Modeling of Yeast Exocyst Complex](https://salilab.org/exocyst/)

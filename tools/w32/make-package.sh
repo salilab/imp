@@ -11,7 +11,7 @@
 # make DESTDIR=`pwd`/w32-inst install
 #
 # Where $w32py is the path containing Python headers and libraries.
-# Repeat for all desired Python versions (2.7, 3.5, 3.6, 3.7, and 3.8 for us)
+# Repeat for all desired Python versions (2.7, 3.6, 3.7, 3.8, and 3.9 for us)
 #
 # Then run (still in the binary directory)
 # <source_dir>/tools/w32/make-package.sh <version> <bits>
@@ -79,7 +79,7 @@ for app in ${ROOT}/bin/*; do
 done
 
 # Make Python version-specific directories for extensions (.pyd)
-PYVERS="2.7 3.5 3.6 3.7 3.8"
+PYVERS="2.7 3.6 3.7 3.8 3.9"
 for PYVER in ${PYVERS}; do
   mkdir ${ROOT}/python/python${PYVER} || exit 1
   mkdir ${ROOT}/python/python${PYVER}/_ihm_pyd || exit 1
@@ -110,7 +110,7 @@ rm -rf ${ROOT}/bin/example \
 rm -rf `find ${ROOT} -name .svn`
 
 if [ "${BITS}" = "32" ]; then
-  PYVERS="27 35 36 37 38"
+  PYVERS="27 36 37 38 39"
   MAKENSIS="makensis"
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w32comp/windows/system
@@ -137,7 +137,7 @@ if [ "${BITS}" = "32" ]; then
      ${DLLSRC}/opencv_ffmpeg220.dll \
      ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/bin || exit 1
 else
-  PYVERS="27 35 36 37 38"
+  PYVERS="27 36 37 38 39"
   MAKENSIS="makensis -DIMP_64BIT"
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w64comp/windows/system32
