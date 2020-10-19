@@ -169,7 +169,7 @@ Vector<AtomTypes> get_chi_dihedral_atom_types(ResidueType rt) {
   chi3_sd_ce.push_back(AT_SD);
   chi3_sd_ce.push_back(AT_CE);
 
-  AtomTypes chi3_cd;
+  AtomTypes chi3_ce;
   chi3_ce.push_back(AT_CB);
   chi3_ce.push_back(AT_CG);
   chi3_ce.push_back(AT_CD);
@@ -239,7 +239,7 @@ Vector<AtomTypes> get_chi_dihedral_atom_types(ResidueType rt) {
   ile.push_back(chi1_cg1);
   ile.push_back(chi2_cg1_cd1);
 
-  Vector<AtomTypes> lys
+  Vector<AtomTypes> lys;
   lys.push_back(chi1_cg);
   lys.push_back(chi2_cd);
   lys.push_back(chi3_ce);
