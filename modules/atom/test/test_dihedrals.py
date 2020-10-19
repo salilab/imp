@@ -90,11 +90,11 @@ class Tests(IMP.test.TestCase):
         arg_chi_atoms = IMP.atom.get_chi_dihedral_atoms(arg)
 
         chi_types = IMP.atom.get_chi_dihedral_atom_types(IMP.atom.ARG)
-        self.assertEqual(5, len(chi_types))
+        self.assertEqual(4, len(chi_types))
         self.assertEqual(chi_types[0][0], IMP.atom.AT_N)
 
         # Ensure a couple of the atom assignments are correct
-        self.assertEqual(5, len(arg_chi_pis))
+        self.assertEqual(4, len(arg_chi_pis))
         self.assertEqual(IMP.atom.AT_CG, IMP.atom.Atom(m, arg_chi_pis[0][3]).get_atom_type())
         self.assertEqual(IMP.atom.AT_CG, arg_chi_atoms[0][3].get_atom_type())
         self.assertEqual(IMP.atom.AT_CZ, IMP.atom.Atom(m, arg_chi_pis[3][3]).get_atom_type())
