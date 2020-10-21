@@ -43,7 +43,7 @@ jobs:
           cmake .. -DUSE_PYTHON2=${{ env.PY2 }} -DCMAKE_CXX_FLAGS="${{ env.CXXFLAGS }}"
           make -k -j 2
       - name: Run tests
-        run: ctest -j 2 --output-on-failure
+        run: ./setup_environment.sh ../test/nosetests --with-coverage --cover-branches -e 'probabilistic' ../test/test_*.py ../test/medium_test_*.py test/*/*.py > /dev/null
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
