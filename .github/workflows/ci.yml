@@ -1,0 +1,47 @@
+name: CI
+on:
+  push:
+    branches: [develop]
+  pull_request:
+
+env:
+  CXXFLAGS: "-fprofile-arcs -ftest-coverage"
+
+jobs:
+  test:
+    name: "Python ${{ matrix.python-version }} / ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: ["2.7", "3.8"]
+        os: [ubuntu-latest]
+        compiler: [gcc]
+    env:
+      CC: ${{ matrix.compiler }}
+      PY2: ${{ startsWith(matrix.python-version, 2) && 'on' || 'off' }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -qq libboost swig libhdf5-serial-dev libeigen3-dev
+      - name: Set-up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: 'x64'
+      - name: Setup git
+        run: ./setup_git.py
+      - name: Build IMP
+        run: |
+          mkdir ../build
+          cd ../build
+          cmake ../imp -DUSE_PYTHON2=${{ PY2 }} -DCMAKE_CXX_FLAGS="${{ CXXFLAGS }}"
+          make -k -j 2
+      - name: Run tests
+        run: ctest -j 2 -R XXX
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: false
+          verbose: true
