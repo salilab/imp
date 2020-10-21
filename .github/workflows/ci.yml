@@ -39,7 +39,7 @@ jobs:
           cmake ../imp -DUSE_PYTHON2=${{ env.PY2 }} -DCMAKE_CXX_FLAGS="${{ env.CXXFLAGS }}"
           make -k -j 2
       - name: Run tests
-        run: ctest -j 2
+        run: ctest -j 2 --output-on-failure
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
