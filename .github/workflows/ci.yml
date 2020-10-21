@@ -25,12 +25,12 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -qq libboost-all-dev swig libhdf5-serial-dev libeigen3-dev
-      - name: Set-up Python
+      - name: Set up python
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
           architecture: 'x64'
-      - name: Setup git
+      - name: Set up git
         run: ./setup_git.py
       - name: Build IMP
         run: |
