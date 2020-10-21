@@ -76,6 +76,11 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
       return sigmass_[i];
     }
 
+    //! Get the psi particle index from a contribution
+    ParticleIndex get_contribution_psi_index(int i) const {
+      return psis_[i];
+    }
+
     //! Get the particle indexes from a contribution
     ParticleIndexPair get_contribution_particle_indexes(int i) const {
       return ppis_[i];

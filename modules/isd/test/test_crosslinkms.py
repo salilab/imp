@@ -119,6 +119,8 @@ class TestXLRestraintSimple(IMP.test.TestCase):
         self.assertEqual(dr.get_number_of_contributions(), 1)
         self.assertEqual(dr.get_contribution_particle_indexes(0),
                          (p1.get_index(), p2.get_index()))
+        self.assertEqual(dr.get_contribution_psi_index(0),
+                         psi.get_particle_index())
         self.assertEqual(dr.get_contribution_sigma_indexes(0),
                          (sigma1.get_particle_index(),
                           sigma2.get_particle_index()))
