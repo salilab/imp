@@ -12,6 +12,7 @@
 #include "isd_config.h"
 #include <IMP/Restraint.h>
 #include <IMP/particle_index.h>
+#include <IMP/isd/Scale.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -57,8 +58,28 @@ class IMPISDEXPORT CrossLinkMSRestraint : public Restraint {
 
     double get_probability() const;
 
+    //! Get the length of this restraint
+    /** Note that if the restraint was constructed with a length Scale,
+        this can change during sampling. */
+    double get_length() const {
+      if (constr_ == 1) {
+        return isd::Scale(get_model(), lengthi_).get_scale();
+      } else {
+        return length_;
+      }
+    }
+
+    double get_slope() const { return slope_; }
+
+    //! Get the sigma particle indexes from a contribution
+    ParticleIndexPair get_contribution_sigma_indexes(int i) const {
+      return sigmass_[i];
+    }
+
     //! Get the particle indexes from a contribution
-    ParticleIndexPair get_contribution_particle_indexes(int i) const { return ppis_[i]; }
+    ParticleIndexPair get_contribution_particle_indexes(int i) const {
+      return ppis_[i];
+    }
 
     unsigned int get_number_of_contributions() const { return ppis_.size(); }
 

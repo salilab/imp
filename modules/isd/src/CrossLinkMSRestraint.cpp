@@ -48,10 +48,7 @@ double CrossLinkMSRestraint::get_probability() const {
 
     double onemprob = 1.0;
 
-    double length = length_;
-    if (constr_ == 1) {
-        length = isd::Scale(get_model(), lengthi_).get_scale();
-    }
+    double length = get_length();
 
     for (unsigned int k = 0; k < get_number_of_contributions(); ++k) {
         IMP::ParticleIndexPair ppi = ppis_[k];
