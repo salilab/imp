@@ -36,7 +36,7 @@ jobs:
         run: |
           mkdir ../build
           cd ../build
-          cmake ../imp -DUSE_PYTHON2=${{ PY2 }} -DCMAKE_CXX_FLAGS="${{ CXXFLAGS }}"
+          cmake ../imp -DUSE_PYTHON2=${{ env.PY2 }} -DCMAKE_CXX_FLAGS="${{ env.CXXFLAGS }}"
           make -k -j 2
       - name: Run tests
         run: ctest -j 2 -R XXX
