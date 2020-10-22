@@ -28,7 +28,10 @@ jobs:
             python-numpy python3-biopython python3-numpy cmake libcgal-dev libcgal-qt5-dev \
             libfftw3-dev libopencv-dev libgsl0-dev python-dev python3-dev libann-dev \
             libprotobuf-dev protobuf-compiler python-protobuf python3-protobuf \
-            libopenmpi-dev
+            libopenmpi-dev python-nose python3-nose
+        # IMP tests use sys.argv[0] to determine their location, which won't work if
+        # we use nosetests, so add a workaround
+          ln -sf $(which nosetests) test/
       - name: Set up python
         uses: actions/setup-python@v2
         with:
