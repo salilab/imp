@@ -11,6 +11,8 @@ ChangeLog {#changelog}
   - [Integrative threading of protein structure using secondary structure elements](https://salilab.org/SSEThread/)
 - Bugfix: fix near-infinite loop in FoXS JavaScript output when no models
   are fit.
+- Bugfix: IMP.saxs.Restraint should now work correctly when some or all
+  particles are members of rigid bodies.
 
 # 2.13.0 - 2020-05-14 # {#changelog_2_13_0}
 - Ubuntu .deb packages now use Python 3 by default (install the imp-python2
