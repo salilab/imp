@@ -20,7 +20,7 @@ system = ihm.System()
 #     (See also https://www3.rcsb.org/ligand/NVA)
 # 'code' is used to populate the primary sequence in the output mmCIF file.
 #     For non-standard residues it should normally match 'id'.
-# 'code_canonical' is the the one-letter code of the closest standard residue.
+# 'code_canonical' is the one-letter code of the closest standard residue.
 #     Here we use 'V', valine.
 norvaline = ihm.LPeptideChemComp(id='NVA', code='NVA', code_canonical='V',
                                  name='NORVALINE', formula='C5 H11 N O2')

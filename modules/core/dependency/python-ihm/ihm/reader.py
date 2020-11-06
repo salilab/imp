@@ -2640,18 +2640,24 @@ class _FLRProbeDescriptorHandler(Handler):
 class _FLRPolyProbePositionHandler(Handler):
     category = '_flr_poly_probe_position'
 
-    def _get_resatom(self, entity_id, seq_id, atom_id):
+    def _get_resatom(self, entity_id, asym_id, seq_id, atom_id):
         entity = self.sysr.entities.get_by_id(entity_id)
+        asym = self.sysr.asym_units.get_by_id_or_none(asym_id)
+        if asym is not None:
+            asym.entity = entity
+            asym.id = asym_id
         seq_id = self.get_int(seq_id)
         resatom = entity.residue(seq_id)
+        if asym is not None:
+            resatom.asym = asym
         if atom_id:
             resatom = resatom.atom(atom_id)
         return resatom
 
-    def __call__(self, id, entity_id, seq_id, atom_id, mutation_flag,
-                 modification_flag, auth_name):
+    def __call__(self, id, entity_id, asym_id, seq_id, atom_id,
+                 mutation_flag, modification_flag, auth_name):
         ppos = self.sysr.flr_poly_probe_positions.get_by_id(id)
-        ppos.resatom = self._get_resatom(entity_id, seq_id, atom_id)
+        ppos.resatom = self._get_resatom(entity_id, asym_id,seq_id, atom_id)
         ppos.mutation_flag = self.get_bool(mutation_flag)
         ppos.modification_flag = self.get_bool(modification_flag)
         ppos.auth_name = auth_name

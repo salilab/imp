@@ -1421,7 +1421,7 @@ _ihm_model_representation_details.description
                                     =ihm.startmodel.SequenceIdentity(40., None),
                              alignment_file=ali)
 
-        sm = TestStartingModel(asym(1,15), dstarget, 'A', [s1, s2], offset=10,
+        sm = TestStartingModel(asym(1,12), dstarget, 'A', [s1, s2], offset=10,
                                script_file=script, software=software)
         system.orphan_starting_models.append(sm)
 
@@ -1448,8 +1448,8 @@ _ihm_entity_poly_segment.seq_id_begin
 _ihm_entity_poly_segment.seq_id_end
 _ihm_entity_poly_segment.comp_id_begin
 _ihm_entity_poly_segment.comp_id_end
-1 42 1 15 ALA ALA
-2 42 1 12 ALA ALA
+1 42 1 12 ALA ALA
+2 42 1 15 ALA ALA
 #
 """)
 
@@ -1468,8 +1468,8 @@ _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
 _ihm_starting_model_details.description
-1 42 foo 99 2 'experimental model' A 10 102 .
-2 42 foo 99 1 'experimental model' A 0 102 'test desc'
+1 42 foo 99 1 'experimental model' A 10 102 .
+2 42 foo 99 2 'experimental model' A 0 102 'test desc'
 #
 #
 loop_
@@ -3227,7 +3227,7 @@ _ihm_predicted_contact_restraint.software_id
 
         system.entities.extend([cur_entity_1, cur_entity_2])
 
-        asym1 = ihm.AsymUnit(cur_entity_1)
+        asym1 = ihm.AsymUnit(cur_entity_1,id='C')
         system.asym_units.append(asym1)
 
         ## FLR
@@ -3333,7 +3333,7 @@ _ihm_predicted_contact_restraint.software_id
                       modified_chem_descriptor=
                                 cur_chem_descriptor_modified_residue)
         cur_poly_probe_position_2 = ihm.flr.PolyProbePosition(
-                      resatom=cur_entity_1.residue(2).atom('CB'),
+                      resatom=asym1.residue(2).atom('CB'), ## using asym instead of only entity
                       mutation_flag=False,
                       modification_flag=False, auth_name='Position_2')
         cur_poly_probe_position_3 = ihm.flr.PolyProbePosition(
@@ -3793,15 +3793,16 @@ loop_
 _flr_poly_probe_position.id
 _flr_poly_probe_position.entity_id
 _flr_poly_probe_position.entity_description
+_flr_poly_probe_position.asym_id
 _flr_poly_probe_position.seq_id
 _flr_poly_probe_position.comp_id
 _flr_poly_probe_position.atom_id
 _flr_poly_probe_position.mutation_flag
 _flr_poly_probe_position.modification_flag
 _flr_poly_probe_position.auth_name
-1 1 Entity_1 1 ALA . YES YES Position_1
-2 2 Entity_2 10 CYS CB YES YES Position_3
-3 1 Entity_1 2 GLY CB NO NO Position_2
+1 1 Entity_1 . 1 ALA . YES YES Position_1
+2 2 Entity_2 . 10 CYS CB YES YES Position_3
+3 1 Entity_1 C 2 GLY CB NO NO Position_2
 #
 #
 loop_
@@ -4098,8 +4099,8 @@ _flr_FPS_MPP_atom_position.xcoord
 _flr_FPS_MPP_atom_position.ycoord
 _flr_FPS_MPP_atom_position.zcoord
 _flr_FPS_MPP_atom_position.group_id
-1 1 1 ALA CA A 1.000 1.000 1.000 1
-2 1 2 GLY CA A 2.000 2.000 2.000 1
+1 1 1 ALA CA C 1.000 1.000 1.000 1
+2 1 2 GLY CA C 2.000 2.000 2.000 1
 #
 #
 loop_

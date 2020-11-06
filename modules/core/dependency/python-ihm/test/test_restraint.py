@@ -148,21 +148,20 @@ class Tests(unittest.TestCase):
         self.assertIsNone(f._get_entity_type())
 
         # No ranges - type is 'residue'
+        f = ihm.restraint.ResidueFeature(ranges=[])
         self.assertEqual(f.type, 'residue')
 
         # All ranges are individual residues
-        f.ranges.append(a(1,1))
-        f.ranges.append(a(2,2))
+        f = ihm.restraint.ResidueFeature(ranges=[a(1,1), a(2,2)])
         self.assertEqual(f.type, 'residue')
 
         # Should work with actual Residue objects too
-        f.ranges.append(a.residue(3))
+        f = ihm.restraint.ResidueFeature(ranges=[a.residue(3)])
         self.assertEqual(f.type, 'residue')
 
         # At least one range is a true range
-        f.ranges.append(a(3,4))
+        f = ihm.restraint.ResidueFeature(ranges=[a(3,4)])
         self.assertEqual(f.type, 'residue range')
-
 
     def test_geometric_restraint(self):
         """Test GeometricRestraint class"""
