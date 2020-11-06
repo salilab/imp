@@ -13,7 +13,11 @@
 #include "IMP/algebra/Vector3D.h"
 
 IMPPMI_BEGIN_NAMESPACE
-InternalCoordinatesConstraint::InternalCoordinatesConstraint() {}
+
+InternalCoordinatesConstraint::InternalCoordinatesConstraint() {
+  IMPPMI_DEPRECATED_OBJECT_DEF(2.14,
+              "If you use this class, please let the PMI developers know");
+}
 
 void InternalCoordinatesConstraint::apply_index(Model *m,
                                            ParticleIndex pi) const {
