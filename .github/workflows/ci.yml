@@ -31,6 +31,7 @@ jobs:
             libopenmpi-dev python-nose python3-nose
           # IMP tests use sys.argv[0] to determine their location, which won't work if
           # we use nosetests, so add a workaround
+          mkdir test
           ln -sf $(which nosetests) test/
       - name: Set up python
         uses: actions/setup-python@v2
