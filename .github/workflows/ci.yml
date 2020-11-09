@@ -29,6 +29,14 @@ jobs:
             libfftw3-dev libopencv-dev libgsl0-dev python-dev python3-dev libann-dev \
             libprotobuf-dev protobuf-compiler python-protobuf python3-protobuf \
             libopenmpi-dev python-nose python3-nose
+          if [ ${{ env.PY2 }} == 2 ]
+          then
+            sudo apt-get install -qq python-dev python-numpy python-protobuf \
+                                     python-nose python-pip
+          else
+            sudo apt-get install -qq python3-dev python3-numpy python3-protobuf \
+                                     python3-nose python3-pip
+          fi
           # IMP tests use sys.argv[0] to determine their location, which won't work if
           # we use nosetests, so add a workaround
           mkdir test
