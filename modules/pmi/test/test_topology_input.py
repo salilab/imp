@@ -107,17 +107,15 @@ class Tests(IMP.test.TestCase):
         with warnings.catch_warnings(record=True) as cw:
             warnings.simplefilter("always")
             root_hier, dof = bs.execute_macro()
-        # Both domains (one a PDB, one beads) should be flexible
-        # There should be 12 flexible beads:
-        # Residues 1, 2, 5, 6 (taken from the PDB file)
+        # Both domains (missing regions from PDB, one beads) should be flexible
+        # There should be 6 flexible beads:
         # Beads 3, 4, 7, 8, 9, 10
-        # Resolution=10 fragments 1-2, 5-6
-        self.assertEqual(len(dof.get_movers()), 12)
+        self.assertEqual(len(dof.get_movers()), 6)
         self.assertEqual(len(dof.get_rigid_bodies()), 0)
-        self.assertEqual(len(dof.get_flexible_beads()), 12)
+        self.assertEqual(len(dof.get_flexible_beads()), 6)
         # One warning should be emitted, for the PDB domain
         w, = cw
-        self.assertIn("Making Prot1..0 flexible. This will likely distort",
+        self.assertIn("No rigid bodies set for Prot1..0.",
                       str(w.message))
         self.assertIs(w.category, IMP.pmi.StructureWarning)
 

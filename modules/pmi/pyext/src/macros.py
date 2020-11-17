@@ -757,15 +757,14 @@ max_rot %s non_rigid_max_trans %s" \
                 if dname not in domains_in_rbs:
                     if domain.pdb_file != "BEADS":
                         warnings.warn(
-                              "Making %s flexible. This will likely distort "
-                              "the structure. It is strongly recommended to "
-                              "make PDB domains rigid, or use BEADS instead "
-                              "of a PDB file for flexible regions." % dname,
-                              IMP.pmi.StructureWarning)
-                    # Make both "atomic" (i.e. initialized from a PDB file)
-                    # and "non-atomic" (i.e. beads) regions flexible
+                            "No rigid bodies set for %s. Residues read from "
+                            "the PDB file will not be sampled - only regions "
+                            "missing from the PDB will be treated flexibly. "
+                            "To sample the entire sequence, use BEADS instead "
+                            "of a PDB file name" % dname,
+                            IMP.pmi.StructureWarning)
                     self.dof.create_flexible_beads(
-                            self._domain_res[nstate][dname],
+                            self._domain_res[nstate][dname][1],
                             max_trans=max_bead_trans)
 
             # add super rigid bodies
