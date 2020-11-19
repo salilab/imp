@@ -1,5 +1,7 @@
 ChangeLog {#changelog}
 =========
+
+# 2.14.0 - 2020-12-02 # {#changelog_2_14_0}
 - All IMP.parallel worker classes are now subclasses of IMP.parallel.Worker;
   the old class names still exist as aliases, but are deprecated.
 - The IMP.kinematics module has had a major overhaul.
