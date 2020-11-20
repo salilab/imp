@@ -124,6 +124,17 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(p.get_number_of_members(), 10)
         p.set_number_of_members(42)
         self.assertEqual(p.get_number_of_members(), 42)
+        self.assertAlmostEqual(p.get_precision(), 0., delta=1e-5)
+        p.set_precision(2.0)
+        self.assertAlmostEqual(p.get_precision(), 2.0, delta=1e-5)
+        self.assertEqual(p.get_density(), "")
+        p.set_density("testfile")
+        self.assertFilenameEqual(p.get_density(), "testfile")
+
+        p2 = IMP.core.ClusterProvenance.setup_particle(m, IMP.Particle(m), 10,
+                4.0, "testfile2")
+        self.assertAlmostEqual(p2.get_precision(), 4.0, delta=1e-5)
+        self.assertFilenameEqual(p2.get_density(), "testfile2")
 
     def test_provenanced(self):
         """Test Provenanced decorator"""

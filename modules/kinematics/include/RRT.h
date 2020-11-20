@@ -1,6 +1,6 @@
 /**
  * \file IMP/kinematics/RRT.h
- * \brief simple RRT implementation
+ * \brief Implementation of Randomly-Exploring Random Trees
  *
  *  \authors Dina Schneidman, Barak Raveh
  *
@@ -125,12 +125,12 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
   }
 
   //! Run the specified number of iterations
-  /** If zero, will run for default iteration number.
+  /** If zero, will run for default iteration number.DOFValuesVector
       This option allows to output the already sampled
       configurations during the sampling run. */
   bool run(unsigned int number_of_iterations = 0);
 
-  std::vector<DOFValues> get_DOFValues();
+  DOFValuesList get_DOFValuesList();
 
   /* Parameters for controlling RRT stop condition */
 
@@ -152,10 +152,12 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
     default_parameters_.number_of_collisions_ = num;
   }
 
+  void check_initial_configuration(ScoringFunction *sf) const;
+
  private:
   RRTNode* get_q_near(const DOFValues& q_rand) const;
 
-  void check_initial_configuration(ScoringFunction *sf) const;
+
 
   void add_nodes(RRTNode* q_near, const std::vector<DOFValues>& new_nodes);
 

@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
         self.v2 = IMP.algebra.Vector3D(-41.472, 8.922, -63.657)
 
     def test_inverse(self):
-        """Check that the the inverse of a transformation works"""
+        """Check that the inverse of a transformation works"""
         rt = IMP.algebra.get_rotation_from_fixed_xyz(0.2, 0.8, -0.4)
         t = IMP.algebra.Transformation3D(
             rt, IMP.algebra.Vector3D(20.0, -12.4, 18.6))

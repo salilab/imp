@@ -1,19 +1,33 @@
 spelling_exceptions=['dofs', 'kfs', 'kf','distance2']
-function_name_exceptions=['DOFValues.append','DOFValues.assign', 'DOFValues.back',
+function_name_exceptions=[
+                     'DOFsSampler.get_dof',
+		     'DOFValues.append',
+		     'DOFValues.assign',
+		     'DOFValues.back',
                      'DOFValues.begin', 'DOFValues.empty', 'DOFValues.end',
                      'DOFValues.erase','DOFValues.capacity', 'DOFValues.front',
                      'DOFValues.insert', 'DOFValues.iterator',
                      'DOFValues.rbegin', 'DOFValues.rend', 'DOFValues.resize',
                      'DOFValues.size', 'DOFsSampler.sample_and_apply',
+		     'FibrilSampler.get_dof',
+		     'FibrilSampler.sample_and_apply',
                      'KinematicForest.mark_external_coordinates_changed',
                      'KinematicForest.mark_internal_coordinates_changed',
-                     'UniformBackboneSampler.sample_and_apply',
-                     'DOFsSampler.get_dof',
+		     'KinematicForest.transform_safe',
                      'UniformBackboneSampler.get_dof',
                      'LocalPlanner.is_valid',
                      'LocalPlanner.plan',
                      'PathLocalPlanner.is_valid',
                      'PathLocalPlanner.plan',
-                     'RRT.get_DOFValues' ]
+		     'ProteinKinematics.build_rigid_bodies',
+		     'ProteinKinematics.build_topology_graph',
+		     'ProteinKinematics.mark_rotatable_angle',
+		     'ProteinKinematics.mark_rotatable_angles',
+		     'ProteinKinematics.open_loop',
+		     'ProteinKinematics.order_rigid_bodies',
+                     'RRT.get_DOFValuesList',
+		     'RRT.check_initial_configuration',
+                     'UniformBackboneSampler.sample_and_apply'
+]
 show_exceptions=[]
 value_object_exceptions=[]

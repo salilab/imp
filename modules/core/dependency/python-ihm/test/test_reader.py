@@ -7,7 +7,7 @@ import sys
 import operator
 import warnings
 if sys.version_info[0] >= 3:
-    from io import StringIO
+    from io import StringIO, BytesIO
 else:
     from io import BytesIO as StringIO
 
@@ -80,6 +80,38 @@ class Tests(unittest.TestCase):
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             self.assertEqual(s.id, 'testid')
+        if sys.version_info[0] >= 3:
+            # Make sure we can read the file in binary mode too
+            s, = ihm.reader.read(BytesIO(cif.encode('latin-1')))
+            self.assertEqual(s.id, 'testid')
+
+    def test_read_unicode(self):
+        """Test that Unicode characters are handled sensibly"""
+        # mmCIF files should technically be ASCII, but try not to fall over
+        # if we're fed a Unicode file
+        cif = "data_model\n_struct.entry_id test\u00dc\U0001f600\n"
+        s, = ihm.reader.read(StringIO(cif))
+        self.assertEqual(s.id, 'test\u00dc\U0001f600')
+        # Full Unicode support requires Python 3
+        if sys.version_info[0] >= 3:
+            s, = ihm.reader.read(BytesIO(cif.encode('utf-8')))
+            # Reading in binary mode should give us the raw text (latin-1)
+            self.assertEqual(s.id, 'test\xc3\x9c\xf0\x9f\x98\x80')
+            with utils.temporary_directory() as tmpdir:
+                fname = os.path.join(tmpdir, 'test')
+                with open(fname, 'w', encoding='utf-8') as fh:
+                    fh.write(cif)
+                # Should get the input back if we use the right UTF-8 encoding
+                with open(fname, encoding='utf-8') as fh:
+                    s, = ihm.reader.read(fh)
+                    self.assertEqual(s.id, 'test\u00dc\U0001f600')
+                # Should get a decode error if we treat it as ASCII:
+                with open(fname, encoding='ascii') as fh:
+                    self.assertRaises(UnicodeDecodeError, ihm.reader.read, fh)
+                # A permissive 8-bit encoding should work but give us garbage
+                with open(fname, encoding='latin-1') as fh:
+                    s, = ihm.reader.read(fh)
+                    self.assertEqual(s.id, 'test\xc3\x9c\xf0\x9f\x98\x80')
 
     def test_read_custom_handler(self):
         """Test read() function with custom Handler"""
@@ -1278,10 +1310,31 @@ _ihm_model_group_link.group_id
 _ihm_model_group_link.model_id
 1 1
 2 2
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_seq_id
+_atom_site.label_asym_id
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.label_entity_id
+_atom_site.auth_asym_id
+_atom_site.B_iso_or_equiv
+_atom_site.pdbx_PDB_model_num
+_atom_site.ihm_model_id
+ATOM 1 N N . MET 1 A 14.326 -2.326 8.122 1.000 1 A 0.000 42 42
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
-            sg, = s.state_groups
+            sg, sg2 = s.state_groups
+            # sg should contain all models in groups but not explicitly
+            # put in a State
             state, = sg
             self.assertIsNone(state.name) # auto-created state
             mg1, mg2 = state
@@ -1297,6 +1350,14 @@ _ihm_model_group_link.model_id
             self.assertEqual(mg2._id, '2')
             m, = mg2
             self.assertEqual(m._id, '2')
+            # sg2 should contain all models referenced by the file but not
+            # put in groups (in this case, model ID 42 from atom_site)
+            state, = sg2
+            self.assertIsNone(state.name) # auto-created state
+            mg1, = state
+            self.assertIsNone(mg1.name) # auto-created group
+            m, = mg1
+            self.assertEqual(m._id, '42')
 
     def test_multi_state_handler(self):
         """Test MultiStateHandler and MultiStateLinkHandler"""
@@ -2435,6 +2496,7 @@ _ihm_cross_link_pseudo_site.pseudo_site_id
 _ihm_cross_link_pseudo_site.model_id
 1 2 1 44 .
 2 2 2 88 99
+3 2 2 880 990
 """
         xl_rsr = """
 loop_
@@ -2492,10 +2554,14 @@ _ihm_cross_link_restraint.sigma_2
             self.assertIsNone(xl2.psi)
             self.assertIsNone(xl2.sigma1)
             self.assertIsNone(xl2.sigma2)
-            self.assertEqual(xl2.pseudo1.site._id, '44')
-            self.assertIsNone(xl2.pseudo1.model)
-            self.assertEqual(xl2.pseudo2.site._id, '88')
-            self.assertEqual(xl2.pseudo2.model._id, '99')
+            ps1, = xl2.pseudo1
+            self.assertEqual(ps1.site._id, '44')
+            self.assertIsNone(ps1.model)
+            ps21, ps22 = xl2.pseudo2
+            self.assertEqual(ps21.site._id, '88')
+            self.assertEqual(ps21.model._id, '99')
+            self.assertEqual(ps22.site._id, '880')
+            self.assertEqual(ps22.model._id, '990')
 
     def test_cross_link_result_handler(self):
         """Test CrossLinkResultHandler"""
@@ -3109,14 +3175,15 @@ loop_
 _flr_poly_probe_position.id
 _flr_poly_probe_position.entity_id
 _flr_poly_probe_position.entity_description
+_flr_poly_probe_position.asym_id
 _flr_poly_probe_position.seq_id
 _flr_poly_probe_position.comp_id
 _flr_poly_probe_position.atom_id
 _flr_poly_probe_position.mutation_flag
 _flr_poly_probe_position.modification_flag
 _flr_poly_probe_position.auth_name
-1 1 Entity_1 1 ALA . NO YES Position_1
-2 2 Entity_2 10 CYS CB NO YES Position_3
+1 1 Entity_1 . 1 ALA . NO YES Position_1
+2 2 Entity_2 C 10 CYS CB NO YES Position_3
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
@@ -3128,13 +3195,17 @@ _flr_poly_probe_position.auth_name
         self.assertIsInstance(p1.resatom, ihm.Residue)
         self.assertEqual(p1.resatom.seq_id, 1)
         self.assertEqual(p1.resatom.entity._id, '1')
+        self.assertIsNone(p1.resatom.asym)
 
         p2 = flr._collection_flr_poly_probe_position['2']
         self.assertIsInstance(p2, ihm.flr.PolyProbePosition)
         self.assertIsInstance(p2.resatom, ihm.Atom)
+        self.assertIsInstance(p2.resatom.asym, ihm.AsymUnit)
         self.assertEqual(p2.resatom.id, 'CB')
         self.assertEqual(p2.resatom.seq_id, 10)
         self.assertEqual(p2.resatom.entity._id, '2')
+        self.assertEqual(p2.resatom.asym.entity._id, '2')
+        self.assertEqual(p2.resatom.asym.id, 'C')
 
     def test_flr_poly_probe_position_modified_handler(self):
         """Test FLRPolyProbePositionModifiedHandler"""

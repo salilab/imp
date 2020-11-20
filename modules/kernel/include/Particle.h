@@ -66,7 +66,9 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   inline UCName##Keys get_##lcname##_keys() const
 
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Float, float, Float);
+  IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Floats, floats, Floats);
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Int, int, Int);
+  IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Ints, ints, Ints);
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(String, string, String);
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(Object, object, Object *);
   IMP_KERNEL_PARTICLE_ATTRIBUTE_TYPE_DECL(WeakObject, weak_object, Object *);
@@ -221,7 +223,9 @@ Particle *Particle::get_value(ParticleIndexKey k) const {
   }
 
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Float, float, Float);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Floats, floats, Floats);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Int, int, Int);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Ints, ints, Ints);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(String, string, String);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Object, object, Object *);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(WeakObject, weak_object, Object *);

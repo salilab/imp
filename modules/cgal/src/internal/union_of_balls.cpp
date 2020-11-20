@@ -1371,7 +1371,7 @@ inline typename SpacefillingVolumetric<Gt>::Point SpacefillingVolumetric<
  * 19. VECTOR STUFF
  */
 /*! computes the solid angle,
- * that is the the surface of the sphere that is swept by the angle
+ * that is the surface of the sphere that is swept by the angle
  * we compute it as a proportion of the whole sphere surface : from 0 to 1
  */
 /*

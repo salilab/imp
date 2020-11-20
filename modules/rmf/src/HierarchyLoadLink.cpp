@@ -175,7 +175,9 @@ core::Provenance HierarchyLoadLink::create_one_provenance(Model *m,
   } else if (clustpf_.get_is(node)) {
     RMF::decorator::ClusterProvenanceConst rp = clustpf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());
-    return core::ClusterProvenance::setup_particle(m, ip, rp.get_members());
+    return core::ClusterProvenance::setup_particle(m, ip, rp.get_members(),
+                                                   rp.get_precision(),
+                                                   rp.get_density());
   } else if (scriptpf_.get_is(node)) {
     RMF::decorator::ScriptProvenanceConst rp = scriptpf_.get(node);
     ParticleIndex ip = m->add_particle(node.get_name());

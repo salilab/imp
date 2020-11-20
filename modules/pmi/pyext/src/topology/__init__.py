@@ -464,7 +464,7 @@ class Molecule(_SystemBase):
                       offset=0,model_num=None,ca_only=False,
                       soft_check=False):
         """Read a structure and store the coordinates.
-        @eturn the atomic residues (as a set)
+        @return the atomic residues (as a set)
         @param pdb_fn     The file to read
         @param chain_id   Chain ID to read
         @param res_range  Add only a specific set of residues from the PDB file.
@@ -1145,7 +1145,10 @@ class TopologyReader(object):
 
     These are the fields you can enter:
     - `component_name`: Name of the component (chain). Serves as the parent
-      hierarchy for this structure.
+      hierarchy for this structure. Multiple copies of the same component
+      can be created by appending a copy number after a period; if none is
+      specified, a copy number of 0 is assumed (e.g. Rpb2.1 is the second copy
+      of Rpb2 or Rpb2.0).
     - `color`: The color used in the output RMF file. Uses
       [Chimera names](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/colortables.html),
       (e.g. "red"), or R,G,B values as three comma-separated floating point
@@ -1166,16 +1169,23 @@ class TopologyReader(object):
        The second item in the pair can be END to select the last residue in the
        PDB chain.
     - `pdb_offset`: Offset to sync PDB residue numbering with FASTA numbering.
+      For example, an offset of -10 would match the first residue in the
+      FASTA file (which is always numbered sequentially starting from 1) with
+      residue 11 in the PDB file.
     - `bead_size`: The size (in residues) of beads used to model areas not
-      covered by PDB coordinates. These will be automatically built.
+      covered by PDB coordinates. These will be built automatically.
     - `em_residues`: The number of Gaussians used to model the electron
       density of this domain. Set to zero if no EM fitting will be done.
-      The GMM files will be written to <gmm_dir>/<component_name>_<em_res>.txt (and .mrc)
+      The GMM files will be written to <gmm_dir>/<component_name>_<em_res>.txt
+      (and .mrc)
     - `rigid_body`: Leave empty if this object is not in a rigid body.
        Otherwise, this is a number corresponding to the rigid body containing
        this object. The number itself is just used for grouping things.
-    - `super_rigid_body`: Like a rigid_body, except things are only occasionally rigid
-    - `chain_of_super_rigid_bodies` For a polymer, create SRBs from groups.
+    - `super_rigid_body`: Add a mover that periodically moves several related
+      domains as if they were a single large rigid body. In between such moves,
+      the domains move independently. This can improve sampling.
+    - `chain_of_super_rigid_bodies`: Do super-rigid-body moves (as above)
+      for all adjacent pairs of domains in the chain.
     - `flags` additional flags for advanced options
     @note All filenames are relative to the paths specified in the constructor.
 

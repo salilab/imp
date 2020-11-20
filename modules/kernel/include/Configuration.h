@@ -22,6 +22,7 @@ class IMPKERNELEXPORT Configuration : public IMP::Object {
   mutable Pointer<Model> model_;
   Pointer<Object> base_;
   internal::FloatAttributeTable floats_;
+  internal::FloatsAttributeTable float_lists_;
   internal::StringAttributeTable strings_;
   internal::IntAttributeTable ints_;
   internal::ObjectAttributeTable objects_;

@@ -23,8 +23,10 @@ IMP_GCC_PRAGMA(diagnostic ignored "-Wuninitialized")
 #include <CGAL/Complex_2_in_triangulation_3.h>
 #include <CGAL/make_surface_mesh.h>
 #include <CGAL/Implicit_surface_3.h>
-#include <CGAL/Surface_mesh_simplification/HalfedgeGraph_Polyhedron_3.h>
 #include <CGAL/version.h>
+#if CGAL_VERSION_NR < 1050101000
+#include <CGAL/Surface_mesh_simplification/HalfedgeGraph_Polyhedron_3.h>
+#endif
 #if CGAL_VERSION_NR >= 1041201000
 # include <CGAL/IO/facets_in_complex_2_to_triangle_mesh.h>
 #else

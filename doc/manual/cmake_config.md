@@ -84,7 +84,7 @@ For example, on a Mac with Homebrew, where `python` is Homebrew's
 `/usr/local/bin/python`, old versions of CMake will often find Apple's Python
 headers. This can be resolved (if you cannot upgrade CMake to 3.14 or later)
 by telling CMake where the Homebrew Python headers and library
-are, by addinng to your CMake invocation something like
+are, by adding to your CMake invocation something like
 `-DPYTHON_LIBRARY=/usr/local/opt/python@2/Frameworks/Python.framework/Versions/Current/lib/libpython2.7.dylib -DPYTHON_INCLUDE_DIR=/usr/local/opt/python@2/Frameworks/Python.framework/Versions/Current/Headers`
 
 ## CMake reports that it found a dependency but then reports failed {#cmake_compile}

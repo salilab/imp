@@ -1033,6 +1033,10 @@ _ihm_struct_assembly_details.entity_poly_segment_id
         l = ihm.location.InputFileLocation(repo=repo3, path='foo.spd',
                                            details='EM micrographs')
         system.locations.append(l)
+        # Path can also be None for Repository containing a single file
+        l = ihm.location.InputFileLocation(repo=repo3, path=None,
+                                           details='EM micrographs')
+        system.locations.append(l)
 
         with utils.temporary_directory('') as tmpdir:
             bar = os.path.join(tmpdir, 'test_mmcif_extref.tmp')
@@ -1046,11 +1050,11 @@ _ihm_struct_assembly_details.entity_poly_segment_id
 
             d = ihm.dumper._ExternalReferenceDumper()
             d.finalize(system)
-            self.assertEqual(len(d._ref_by_id), 5)
+            self.assertEqual(len(d._ref_by_id), 6)
             self.assertEqual(len(d._repo_by_id), 4)
             # Repeated calls to finalize() should yield identical results
             d.finalize(system)
-            self.assertEqual(len(d._ref_by_id), 5)
+            self.assertEqual(len(d._ref_by_id), 6)
             self.assertEqual(len(d._repo_by_id), 4)
             out = _get_dumper_output(d, system)
             self.assertEqual(out, """#
@@ -1079,7 +1083,8 @@ _ihm_external_files.details
 2 1 baz 'Input data or restraints' . .
 3 2 foo/bar/baz 'Modeling or post-processing output' . .
 4 3 foo.spd 'Input data or restraints' . 'EM micrographs'
-5 4 %s 'Modeling workflow or script' 4 .
+5 3 . 'Input data or restraints' . 'EM micrographs'
+6 4 %s 'Modeling workflow or script' 4 .
 #
 """ % bar.replace(os.sep, '/'))
 
@@ -1242,8 +1247,8 @@ _ihm_dataset_list.database_hosted
 _ihm_dataset_list.details
 1 'CX-MS data' NO .
 2 'CX-MS data' NO .
-3 unspecified YES bar
-4 unspecified YES baz
+3 Other YES bar
+4 Other YES baz
 5 'Experimental model' YES 'test dataset details'
 6 'Experimental model' NO .
 #
@@ -1416,7 +1421,7 @@ _ihm_model_representation_details.description
                                     =ihm.startmodel.SequenceIdentity(40., None),
                              alignment_file=ali)
 
-        sm = TestStartingModel(asym(1,15), dstarget, 'A', [s1, s2], offset=10,
+        sm = TestStartingModel(asym(1,12), dstarget, 'A', [s1, s2], offset=10,
                                script_file=script, software=software)
         system.orphan_starting_models.append(sm)
 
@@ -1443,8 +1448,8 @@ _ihm_entity_poly_segment.seq_id_begin
 _ihm_entity_poly_segment.seq_id_end
 _ihm_entity_poly_segment.comp_id_begin
 _ihm_entity_poly_segment.comp_id_end
-1 42 1 15 ALA ALA
-2 42 1 12 ALA ALA
+1 42 1 12 ALA ALA
+2 42 1 15 ALA ALA
 #
 """)
 
@@ -1463,8 +1468,8 @@ _ihm_starting_model_details.starting_model_auth_asym_id
 _ihm_starting_model_details.starting_model_sequence_offset
 _ihm_starting_model_details.dataset_list_id
 _ihm_starting_model_details.description
-1 42 foo 99 2 'experimental model' A 10 102 .
-2 42 foo 99 1 'experimental model' A 0 102 'test desc'
+1 42 foo 99 1 'experimental model' A 10 102 .
+2 42 foo 99 2 'experimental model' A 0 102 'test desc'
 #
 #
 loop_
@@ -2639,13 +2644,16 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
         psxl = ihm.restraint.CrossLinkPseudoSite(site=ps)
         xl4 = ihm.restraint.ResidueCrossLink(xxl5, asym1, asym2, d,
                                 psi=0.5, sigma1=1.0, sigma2=2.0,
-                                restrain_all=True, pseudo2=psxl)
+                                restrain_all=True, pseudo2=[psxl])
         m = MockObject()
         m._id = 99
         psxl = ihm.restraint.CrossLinkPseudoSite(site=ps, model=m)
+        m = MockObject()
+        m._id = 990
+        psxl2 = ihm.restraint.CrossLinkPseudoSite(site=ps, model=m)
         xl5 = ihm.restraint.ResidueCrossLink(xxl2, asym1, asym2, d,
                                 psi=0.5, sigma1=1.0, sigma2=2.0,
-                                restrain_all=True, pseudo2=psxl)
+                                restrain_all=True, pseudo2=[psxl, psxl2])
         r.cross_links.extend((xl1, xl2, xl3, xl4, xl5))
 
         model = MockObject()
@@ -2720,6 +2728,7 @@ _ihm_cross_link_pseudo_site.pseudo_site_id
 _ihm_cross_link_pseudo_site.model_id
 1 3 2 89 .
 2 4 2 89 99
+3 4 2 89 990
 #
 #
 loop_
@@ -3218,7 +3227,7 @@ _ihm_predicted_contact_restraint.software_id
 
         system.entities.extend([cur_entity_1, cur_entity_2])
 
-        asym1 = ihm.AsymUnit(cur_entity_1)
+        asym1 = ihm.AsymUnit(cur_entity_1,id='C')
         system.asym_units.append(asym1)
 
         ## FLR
@@ -3324,7 +3333,7 @@ _ihm_predicted_contact_restraint.software_id
                       modified_chem_descriptor=
                                 cur_chem_descriptor_modified_residue)
         cur_poly_probe_position_2 = ihm.flr.PolyProbePosition(
-                      resatom=cur_entity_1.residue(2).atom('CB'),
+                      resatom=asym1.residue(2).atom('CB'), ## using asym instead of only entity
                       mutation_flag=False,
                       modification_flag=False, auth_name='Position_2')
         cur_poly_probe_position_3 = ihm.flr.PolyProbePosition(
@@ -3784,15 +3793,16 @@ loop_
 _flr_poly_probe_position.id
 _flr_poly_probe_position.entity_id
 _flr_poly_probe_position.entity_description
+_flr_poly_probe_position.asym_id
 _flr_poly_probe_position.seq_id
 _flr_poly_probe_position.comp_id
 _flr_poly_probe_position.atom_id
 _flr_poly_probe_position.mutation_flag
 _flr_poly_probe_position.modification_flag
 _flr_poly_probe_position.auth_name
-1 1 Entity_1 1 ALA . YES YES Position_1
-2 2 Entity_2 10 CYS CB YES YES Position_3
-3 1 Entity_1 2 GLY CB NO NO Position_2
+1 1 Entity_1 . 1 ALA . YES YES Position_1
+2 2 Entity_2 . 10 CYS CB YES YES Position_3
+3 1 Entity_1 C 2 GLY CB NO NO Position_2
 #
 #
 loop_
@@ -4089,8 +4099,8 @@ _flr_FPS_MPP_atom_position.xcoord
 _flr_FPS_MPP_atom_position.ycoord
 _flr_FPS_MPP_atom_position.zcoord
 _flr_FPS_MPP_atom_position.group_id
-1 1 1 ALA CA A 1.000 1.000 1.000 1
-2 1 2 GLY CA A 2.000 2.000 2.000 1
+1 1 1 ALA CA C 1.000 1.000 1.000 1
+2 1 2 GLY CA C 2.000 2.000 2.000 1
 #
 #
 loop_

@@ -138,9 +138,19 @@ IntKey ClusterProvenance::get_members_key() {
   return members;
 }
 
+FloatKey ClusterProvenance::get_precision_key() {
+  static const FloatKey precision("cp_precision");
+  return precision;
+}
+
+StringKey ClusterProvenance::get_density_key() {
+  static const StringKey density("cp_density");
+  return density;
+}
+
 void ClusterProvenance::show(std::ostream &out) const {
   out << "ClusterProvenance with " << get_number_of_members()
-      << " members" << std::endl;
+      << " members, at precision " << get_precision() << std::endl;
 }
 
 std::set<std::string>& FilterProvenance::get_allowed_methods() {

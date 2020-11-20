@@ -22,6 +22,9 @@ The :mod:`ihm.dataset` Python module
 .. autoclass:: MassSpecDataset
    :members:
 
+.. autoclass:: HDXDataset
+   :members:
+
 .. autoclass:: PDBDataset
    :members:
 

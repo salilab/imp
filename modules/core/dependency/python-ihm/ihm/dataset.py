@@ -28,7 +28,7 @@ class Dataset(object):
     def __hash__(self):
         return hash(self._eq_vals())
 
-    data_type = 'unspecified'
+    data_type = 'Other'
     def __init__(self, location, details=None):
         self.location, self.details = location, details
 
@@ -100,6 +100,11 @@ class CXMSDataset(Dataset):
 class MassSpecDataset(Dataset):
     """Raw mass spectrometry files such as peaklists"""
     data_type = 'Mass Spectrometry data'
+
+
+class HDXDataset(Dataset):
+    """Data from a hydrogen/deuterium exchange experiment"""
+    data_type = 'H/D exchange data'
 
 
 class PDBDataset(Dataset):

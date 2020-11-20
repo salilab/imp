@@ -14,7 +14,7 @@ log = logging.getLogger("alignments")
 def get_reference_frames_from_chain_alignment(reference_rbs, reference_index,
                                               rbs_to_align, index_to_align):
     """
-        Align the rigid bodies rbs_to_align to the the reference frames of
+        Align the rigid bodies rbs_to_align to the reference frames of
         reference_rbs. The rb with index_to_align is aligned to the reference rb
         with reference_index. The function returns the reference frames to
         apply to the rbs_to_align.

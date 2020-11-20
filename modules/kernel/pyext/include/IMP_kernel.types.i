@@ -538,6 +538,8 @@ void add_attribute(IMP::FloatKey k, IMP::Float v, bool opt) {
 }
 IMP_SWIG_DECORATOR_ATTRIBUTE(Float, FloatKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(Int, IntKey);
+IMP_SWIG_DECORATOR_ATTRIBUTE(Floats, FloatsKey);
+IMP_SWIG_DECORATOR_ATTRIBUTE(Ints, IntsKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(String, StringKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(Particle*, ParticleIndexKey);
 IMP_SWIG_DECORATOR_ATTRIBUTE(Object*, ObjectKey);

@@ -8,6 +8,13 @@ import sys
 
 class Tests(IMP.test.TestCase):
 
+    def assertFilenameEqual(self, f1, f2):
+        # Paths are stored internally as absolute paths (except on Windows)
+        if sys.platform == 'win32':
+            self.assertEqual(f1, f2)
+        else:
+            self.assertEqual(f1, os.path.abspath(f2))
+
     def add_provenance(self, h):
         m = h.get_model()
         soft = IMP.core.SoftwareProvenance.setup_particle(
@@ -40,6 +47,10 @@ class Tests(IMP.test.TestCase):
         clus = IMP.core.ClusterProvenance.setup_particle(m, IMP.Particle(m), 10)
         IMP.core.add_provenance(m, h, clus)
 
+        clus2 = IMP.core.ClusterProvenance.setup_particle(m, IMP.Particle(m),
+                10, 2.0, "test.mrc")
+        IMP.core.add_provenance(m, h, clus2)
+
     def check_provenance(self, h):
         m = h.get_model()
 
@@ -52,41 +63,43 @@ class Tests(IMP.test.TestCase):
 
         # Check the provenance we added at the top level
         allprov = list(IMP.core.get_all_provenance(h))
-        self.assertEqual(len(allprov), 7)
+        self.assertEqual(len(allprov), 8)
 
-        clus = allprov[0]
+        clus2 = allprov[0]
+        self.assertEqual(clus2.get_number_of_members(), 10)
+        self.assertAlmostEqual(clus2.get_precision(), 2.0, delta=1e-5)
+        self.assertFilenameEqual(clus2.get_density(), "test.mrc")
+
+        clus = allprov[1]
+        # ClusterProvenance with defaults for precision, density
         self.assertEqual(clus.get_number_of_members(), 10)
+        self.assertAlmostEqual(clus.get_precision(), 0.0, delta=1e-5)
+        self.assertEqual(clus.get_density(), "")
 
-        filt = allprov[1]
+        filt = allprov[2]
         self.assertEqual(filt.get_method(), "Total score")
         self.assertAlmostEqual(filt.get_threshold(), 100.5, delta=1e-4)
         self.assertEqual(filt.get_number_of_frames(), 39)
 
-        comb = allprov[2]
+        comb = allprov[3]
         self.assertEqual(comb.get_number_of_runs(), 4)
         self.assertEqual(comb.get_number_of_frames(), 27)
 
-        samp = allprov[3]
+        samp = allprov[4]
         self.assertEqual(samp.get_method(), "Monte Carlo")
         self.assertEqual(samp.get_number_of_frames(), 100)
         self.assertEqual(samp.get_number_of_iterations(), 42)
 
-        struc = allprov[4]
-        if sys.platform == 'win32':
-            self.assertEqual(struc.get_filename(), "testfile")
-        else:
-            self.assertEqual(struc.get_filename(), os.path.abspath("testfile"))
+        struc = allprov[5]
+        self.assertFilenameEqual(struc.get_filename(), "testfile")
         self.assertEqual(struc.get_chain_id(), "testchain")
         self.assertEqual(struc.get_residue_offset(), 19)
         self.assertEqual(struc.get_name(), "structure provenance")
 
-        script = allprov[5]
-        if sys.platform == 'win32':
-            self.assertEqual(script.get_filename(), "test.py")
-        else:
-            self.assertEqual(script.get_filename(), os.path.abspath("test.py"))
+        script = allprov[6]
+        self.assertFilenameEqual(script.get_filename(), "test.py")
 
-        soft = allprov[6]
+        soft = allprov[7]
         self.assertEqual(soft.get_software_name(), "IMP")
         self.assertEqual(soft.get_version(), "1.0")
         self.assertEqual(soft.get_location(), "test.org")

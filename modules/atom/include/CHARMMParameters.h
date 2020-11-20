@@ -227,19 +227,30 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
     CHARMMDihedralParametersList param;
     internal::CHARMMDihedralNames types =
         internal::CHARMMDihedralNames(type1, type2, type3, type4);
-    // Get the first match, using wildcards
+    // Look for matches without wildcards
     DihedralParameters::const_iterator match = find_dihedral(
-        dihedral_parameters_.begin(), dihedral_parameters_.end(), types, true);
+        dihedral_parameters_.begin(), dihedral_parameters_.end(), types, false);
     if (match != dihedral_parameters_.end()) {
-      // If it matched, look for duplicate dihedral terms (this time the
-      // match must be exactly the same as the first match)
       param.push_back(match->second);
       while ((match = find_dihedral(match + 1, dihedral_parameters_.end(),
                                     match->first, false)) !=
              dihedral_parameters_.end()) {
         param.push_back(match->second);
       }
+    } else {
+      // If no matches, try again with wildcards
+      match = find_dihedral(
+        dihedral_parameters_.begin(), dihedral_parameters_.end(), types, true);
+      if (match != dihedral_parameters_.end()) {
+        param.push_back(match->second);
+        while ((match = find_dihedral(match + 1, dihedral_parameters_.end(),
+                                      match->first, true)) !=
+               dihedral_parameters_.end()) {
+          param.push_back(match->second);
+        }
+      }
     }
+
     if (param.size() == 0) {
       IMP_THROW("No CHARMM parameters found for dihedral "
                     << type1 << "-" << type2 << "-" << type3 << "-" << type4,

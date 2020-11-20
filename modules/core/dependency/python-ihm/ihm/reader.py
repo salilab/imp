@@ -1643,7 +1643,6 @@ class _ModelGroupHandler(Handler):
 
     def finalize(self):
         # Put all model groups not assigned to a state in their own state
-        # todo: handle models not in model groups too?
         model_groups_in_states = set()
         for sg in self.system.state_groups:
             for state in sg:
@@ -1653,6 +1652,19 @@ class _ModelGroupHandler(Handler):
                if mgid not in model_groups_in_states]
         if mgs:
             s = ihm.model.State(mgs)
+            self.system.state_groups.append(ihm.model.StateGroup([s]))
+
+        # Put all models not in a group in their own group in its own state
+        # (e.g. this will catch models from a non-IHM file)
+        models_in_groups = set()
+        for mg in self.sysr.model_groups._obj_by_id.values():
+            for m in mg:
+                models_in_groups.add(m._id)
+        ms = [m for mid, m in self.sysr.models._obj_by_id.items()
+              if mid not in models_in_groups]
+        if ms:
+            mg = ihm.model.ModelGroup(ms)
+            s = ihm.model.State([mg])
             self.system.state_groups.append(ihm.model.StateGroup([s]))
 
 
@@ -2397,9 +2409,13 @@ class _CrossLinkPseudoSiteHandler(Handler):
         xl = self.sysr.cross_links.get_by_id(restraint_id)
         partner = self.get_int(cross_link_partner)
         if partner == 2:
-            xl.pseudo2 = xlps
+            if getattr(xl, 'pseudo2', None) is None:
+                xl.pseudo2 = []
+            xl.pseudo2.append(xlps)
         else:
-            xl.pseudo1 = xlps
+            if getattr(xl, 'pseudo1', None) is None:
+                xl.pseudo1 = []
+            xl.pseudo1.append(xlps)
 
 
 class _CrossLinkResultHandler(Handler):
@@ -2624,18 +2640,24 @@ class _FLRProbeDescriptorHandler(Handler):
 class _FLRPolyProbePositionHandler(Handler):
     category = '_flr_poly_probe_position'
 
-    def _get_resatom(self, entity_id, seq_id, atom_id):
+    def _get_resatom(self, entity_id, asym_id, seq_id, atom_id):
         entity = self.sysr.entities.get_by_id(entity_id)
+        asym = self.sysr.asym_units.get_by_id_or_none(asym_id)
+        if asym is not None:
+            asym.entity = entity
+            asym.id = asym_id
         seq_id = self.get_int(seq_id)
         resatom = entity.residue(seq_id)
+        if asym is not None:
+            resatom.asym = asym
         if atom_id:
             resatom = resatom.atom(atom_id)
         return resatom
 
-    def __call__(self, id, entity_id, seq_id, atom_id, mutation_flag,
-                 modification_flag, auth_name):
+    def __call__(self, id, entity_id, asym_id, seq_id, atom_id,
+                 mutation_flag, modification_flag, auth_name):
         ppos = self.sysr.flr_poly_probe_positions.get_by_id(id)
-        ppos.resatom = self._get_resatom(entity_id, seq_id, atom_id)
+        ppos.resatom = self._get_resatom(entity_id, asym_id,seq_id, atom_id)
         ppos.mutation_flag = self.get_bool(mutation_flag)
         ppos.modification_flag = self.get_bool(modification_flag)
         ppos.auth_name = auth_name
@@ -3015,7 +3037,9 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
        module to function.
 
        :param file fh: The file handle to read from. (For BinaryCIF files,
-              the file should be opened in binary mode.)
+              the file should be opened in binary mode. For mmCIF files,
+              files opened in binary mode with Python 3 will be treated as
+              if they are Latin-1-encoded.)
        :param model_class: The class to use to store model information (such
               as coordinates). For use with other software, it is recommended
               to subclass :class:`ihm.model.Model` and override

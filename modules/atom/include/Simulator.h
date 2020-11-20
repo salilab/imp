@@ -75,18 +75,18 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   double simulate_wave(double time_in_fs, double max_time_step_factor = 10.0,
                        double base = 1.5);
 
-  //! Return the simulator temeprature in kelvin
+  //! Return the simulator temperature in kelvin
   double get_temperature() const { return temperature_; }
 
   //! Set the temperature of the simulator to d in kelvin units
   /**
      Sets the temperature of the simulator. Note that some simulators
-     (e.g. BrownianDynamics) may rely on other temeprature-dependent
+     (e.g. BrownianDynamics) may rely on other temperature-dependent
      constants (e.g. diffusion coefficients via Diffusion decorator)
      that will need to be updated independently to reflect the new
-     temeprature.
+     temperature.
 
-     @param d temeprature in K
+     @param d temperature in K
    */
   void set_temperature(double d) { temperature_ = d; }
 
@@ -115,7 +115,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
   void set_time_step(double ts) { set_maximum_time_step(ts); }
 #endif
 
-  // returns kt in units of kCal/mol for temperature get_temeprature() [K]
+  // returns kt in units of kCal/mol for temperature get_temperature() [K]
   double get_kt() const;
 
   /**

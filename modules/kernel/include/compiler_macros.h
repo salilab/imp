@@ -60,9 +60,9 @@
 #define IMP_RESTRICT
 #endif
 
-#ifdef __clang__
+#if defined(__clang__) && __clang_major__ >= 5
 #define IMP_COMPILER_HAS_OVERRIDE 1
-#elif defined(__GNUC__) && __cplusplus >= 201103L
+#elif !defined(__clang__) && defined(__GNUC__) && __cplusplus >= 201103L
 // probably should be finer here
 #define IMP_COMPILER_HAS_OVERRIDE 1
 #else

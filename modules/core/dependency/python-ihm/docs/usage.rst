@@ -11,11 +11,16 @@ For a complete worked example, see the
 The top level of the hierarchy in IHM is the :class:`ihm.System`. All other
 objects are referenced from a System object.
 
+Datasets
+========
+
 Any data used anywhere in the modeling (including in validation) can be
 referenced with an :class:`ihm.dataset.Dataset`. For example,
 electron microscopy data is referenced with
 :class:`ihm.dataset.EMDensityDataset` and small angle scattering data with
-:class:`ihm.dataset.SASDataset`. A dataset uses an
+:class:`ihm.dataset.SASDataset`.
+
+A dataset uses an
 :class:`ihm.location.Location` object to describe where it is stored.
 Typically this is an :class:`ihm.location.DatabaseLocation` for something
 that's deposited in a experiment-specific database such as PDB, EMDB, PRIDE,
@@ -25,6 +30,9 @@ with a DOI such as `Zenodo <https://zenodo.org>`_ or a publication's
 supplementary information. See the
 `locations example <https://github.com/ihmwg/python-ihm/blob/master/examples/locations.py>`_
 for more examples.
+
+System architecture
+===================
 
 The architecture of the system is described with a number of classes:
 
@@ -46,6 +54,9 @@ The architecture of the system is described with a number of classes:
    :class:`as atoms <ihm.representation.AtomicSegment>` or
    :class:`as coarse-grained spheres <ihm.representation.FeatureSegment>`.
 
+Restraints and sampling
+=======================
+
 Restraints, that score or otherwise fit the computational model against
 the input data, can be created as :class:`ihm.restraint.Restraint` objects.
 These generally take as input a :class:`~ihm.dataset.Dataset` pointing to
@@ -63,6 +74,9 @@ These objects generally take an :class:`~ihm.Assembly` to indicate what part
 of the system was considered and a
 :class:`group of datasets <ihm.dataset.DatasetGroup>` to show which data
 guided the modeling or analysis.
+
+Model coordinates
+=================
 
 :class:`ihm.model.Model` objects give the actual coordinates of the final
 generated models. These point to the :class:`~ihm.Assembly` of what was
@@ -82,6 +96,9 @@ compact binary format (e.g. DCD) deposited at a given DOI. Groups of models
 can also be shown as corresponding to different states of the system using
 the :class:`ihm.model.State` class.
 
+Metadata
+========
+
 Metadata can also be added to the system, such as
 
  - :class:`ihm.Citation`: publication(s) that describe this modeling or the
@@ -89,6 +106,9 @@ Metadata can also be added to the system, such as
  - :class:`ihm.Software`: software packages used to process the experimental
    data, generate intermediate inputs, do the modeling itself, and/or
    process the output.
+ - :class:`ihm.Grant`: funding support for the modeling.
+ - :class:`ihm.reference.UniProtSequence`: information on a sequence used
+   in modeling, in UniProt.
 
 Residue numbering
 =================

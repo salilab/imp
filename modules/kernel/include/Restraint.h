@@ -32,7 +32,7 @@ class DerivativeAccumulator;
     - IMP_OBJECT_METHODS()
 
     \note When logging is VERBOSE, restraints should print enough information
-    in evaluate to reproduce the the entire flow of data in evaluate. When
+    in evaluate to reproduce the entire flow of data in evaluate. When
     logging is TERSE the restraint should print out only a constant number of
     lines per evaluate call.
 

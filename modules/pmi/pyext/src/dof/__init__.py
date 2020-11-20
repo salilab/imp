@@ -112,7 +112,7 @@ class DegreesOfFreedom(object):
         @param resolution Only used if you pass PMI objects. Probably you
                want 'all'.
         @param name Rigid body name (if None, use IMP default)
-        @eturn (rb_movers,rb_object)
+        @return (rb_movers,rb_object)
         @note If you want all resolutions, pass PMI objects because this
               function will get them all. Alternatively you can do your
               selection elsewhere and just pass hierarchies.

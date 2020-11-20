@@ -5,8 +5,9 @@ import contextlib
 import shutil
 import unittest
 
-# If we're using Python 2.6, add in more modern unittest convenience methods
-if not hasattr(unittest.TestCase, 'assertIn'):
+# If we're using Python 2.6, 3.0, or 3.1, add in more modern unittest
+# convenience methods
+if not hasattr(unittest.TestCase, 'assertIsInstance'):
     def assertIn(self, member, container, msg=None):
         return self.assertTrue(member in container,
                         msg or '%s not found in %s' % (member, container))

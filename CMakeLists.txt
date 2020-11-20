@@ -13,6 +13,11 @@ if(POLICY CMP0094)
 cmake_policy(SET CMP0094 NEW)
 endif(POLICY CMP0094)
 
+# Use new-style variables/escapes
+if(POLICY CMP0053)
+cmake_policy(SET CMP0053 NEW)
+endif(POLICY CMP0053)
+
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindPython.cmake)
 imp_find_python()
 
@@ -409,11 +414,13 @@ if(IMP_DOXYGEN_FOUND)
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/ref.html
     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/ref-warnings.txt
     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_links.py ${CMAKE_BINARY_DIR}/doc/ref
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_php.py ${CMAKE_BINARY_DIR}/doc/ref
     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_add_ref_nav.py ${CMAKE_SOURCE_DIR}
     # Rebuild manual so that it can link to the refguide tags
     COMMAND ${IMP_DOXYGEN_EXECUTABLE} doxygen/manual.html
     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_show_warnings.py --warn=${CMAKE_BINARY_DIR}/doxygen/manual-warnings.txt
     COMMAND patch -p1 < ${CMAKE_SOURCE_DIR}/doc/doxygen/search.patch
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_fix_php.py ${CMAKE_BINARY_DIR}/doc/manual
     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_add_nav.py ${CMAKE_SOURCE_DIR} . doc/manual tools
     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/build/doxygen_spell_check.py doxygen/manual/xml ${CMAKE_SOURCE_DIR}/doc/standards_exceptions
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}

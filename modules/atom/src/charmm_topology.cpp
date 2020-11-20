@@ -559,8 +559,17 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const {
         }
       } else {
         // Override existing type if present
-        CHARMMAtom(*atit)
-            .set_charmm_type(it->first->get_atom(typ).get_charmm_type());
+        try {
+          CHARMMAtom(*atit)
+              .set_charmm_type(it->first->get_atom(typ).get_charmm_type());
+        } catch (ValueException &) {
+          IMP_WARN_ONCE(typ.get_string() +
+                            Residue(it->second).get_residue_type().get_string(),
+              "Could not determine new CHARMM atom type for atom "
+              << typ << " (was " << CHARMMAtom(*atit).get_charmm_type()
+              << ") in residue " << Residue(it->second) << std::endl,
+              warn_context_);
+        }
       }
     }
   }

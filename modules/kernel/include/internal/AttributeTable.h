@@ -171,6 +171,8 @@ struct ObjectsAttributeTableTraits {
 
 struct IntsAttributeTableTraits : ArrayTraits<int, IntsKey> {};
 
+struct FloatsAttributeTableTraits : ArrayTraits<double, FloatsKey> {};
+
 struct IntAttributeTableTraits : public DefaultTraits<Int, IntKey> {
   static Int get_invalid() { return std::numeric_limits<Int>::max(); }
   static bool get_is_valid(Int f) { return f != get_invalid(); }

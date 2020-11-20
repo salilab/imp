@@ -15,6 +15,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 #define IMP_CONFIG_FOREACH(OPERATION)  \
   OPERATION(floats, Float);            \
+  OPERATION(float_lists, Floats);      \
   OPERATION(strings, String);          \
   OPERATION(ints, Int);                \
   OPERATION(objects, Object);          \

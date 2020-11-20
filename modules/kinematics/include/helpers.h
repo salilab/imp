@@ -40,7 +40,8 @@ void read_angle_file(const std::string& file_name,
                      const IMP::ParticlesTemp& residues,
                      const IMP::ParticlesTemp& atoms,
                      IMP::atom::Residues& flexible_residues,
-                     std::vector<IMP::atom::Atoms>& dihedral_angles);
+                     std::vector<IMP::atom::Atoms>& dihedral_angles,
+                     std::vector<double>& range);
 
 IMPKINEMATICSEXPORT
 IMP::atom::Bond create_bond(IMP::atom::Atoms& as);

@@ -48,10 +48,7 @@ double CrossLinkMSRestraint::get_probability() const {
 
     double onemprob = 1.0;
 
-    double length = length_;
-    if (constr_ == 1) {
-        length = isd::Scale(get_model(), lengthi_).get_scale();
-    }
+    double length = get_length();
 
     for (unsigned int k = 0; k < get_number_of_contributions(); ++k) {
         IMP::ParticleIndexPair ppi = ppis_[k];
@@ -62,9 +59,8 @@ double CrossLinkMSRestraint::get_probability() const {
             (d0.get_coordinates() - d1.get_coordinates()).get_magnitude();
         } else {
             // If the residues are assigned to the same particle-domain
-            // get the distance as if the residue positions
-            // were randomly taken from the
-            // within the sphere representing the domain
+            // get the distance as if the residue positions were randomly
+            // taken from within the sphere representing the domain
             // Lund O, Protein Eng. 1997 Nov;10(11):1241-8.
             double R=core::XYZR(get_model(), ppi[0]).get_radius();
             dist=36.0/35.0*R;

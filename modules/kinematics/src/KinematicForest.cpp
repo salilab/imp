@@ -45,6 +45,7 @@ void KinematicForest::add_edge(Joint* joint) {
     roots_.insert(parent_kn);
   } else {
     parent_kn = KinematicNode(parent_p);
+    // make sure the parent node is also part of this KF
     if (parent_kn.get_owner() != this) {
       IMP_THROW("the parent rigid body "
                     << parent_rb << " in the joint " << joint
@@ -61,6 +62,7 @@ void KinematicForest::add_edge(Joint* joint) {
     nodes_.insert(child_kn);
   } else {
     child_kn = KinematicNode(child_p);
+    // If child is alread set up s a KN, make sure it is in this KF
     if (child_kn.get_owner() != this) {
       IMP_THROW("the child rigid body "
                     << child_rb << " in the joint " << joint
@@ -68,7 +70,6 @@ void KinematicForest::add_edge(Joint* joint) {
                     << " this IMP version does not support such switching",
                 IMP::ValueException);
     }
-
     if (roots_.find(child_kn) != roots_.end()) {
       roots_.erase(child_kn);  // will no longer be a root
     } else {

@@ -34,6 +34,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(cc1.code, 'G')
         self.assertEqual(cc1.code_canonical, 'G')
         self.assertEqual(cc1.type, 'other')
+        self.assertEqual(str(cc1), '<ihm.ChemComp(GLY)>')
         self.assertIsNone(cc1.formula)
         self.assertIsNone(cc1.formula_weight)
         cc2 = ihm.ChemComp(id='GLY', code='G', code_canonical='G')
@@ -835,7 +836,7 @@ class Tests(unittest.TestCase):
         xl = MockObject()
         ps = MockObject()
         ps.site = s2
-        xl.pseudo1 = ps
+        xl.pseudo1 = [ps]
         xl.pseudo2 = None
         r1.cross_links = [xl]
 
@@ -844,7 +845,7 @@ class Tests(unittest.TestCase):
         xl.pseudo1 = None
         ps = MockObject()
         ps.site = s1
-        xl.pseudo2 = ps
+        xl.pseudo2 = [ps]
         r2.cross_links = [xl]
 
         s = ihm.System()

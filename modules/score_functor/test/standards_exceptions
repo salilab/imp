@@ -1,4 +1,5 @@
-value_object_exceptions=["Dope", "Score", "UnaryFunctionEvaluate"]
+value_object_exceptions=["Dope", "Score", "UnaryFunctionEvaluate",
+                         "LoopStatistical"]
 function_name_exceptions=[]
 show_exceptions=[]
 spelling_exceptions=[]

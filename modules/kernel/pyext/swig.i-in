@@ -280,7 +280,9 @@ IMP_SWIG_VALUE(IMP, ScoreAccumulator, ScoreAccumulators);
 IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndex, IMP::Index, ParticleIndexes);
 IMP_SWIG_VALUE(IMP, FloatIndex, FloatIndexes);
 IMP_SWIG_VALUE_INSTANCE(IMP, FloatKey, Key, FloatKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, FloatsKey, Key, FloatsKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, IntKey, Key, IntKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, IntsKey, Key, IntsKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, StringKey, Key, StringKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndexKey, Key, ParticleIndexKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndexesKey, Key, ParticleIndexesKeys);
@@ -316,9 +318,11 @@ namespace IMP {
   %template(StringKey) ::IMP::Key<2>;
   %template(ParticleIndexKey) ::IMP::Key<3>;
   %template(ObjectKey) ::IMP::Key<4>;
+  %template(IntsKey) ::IMP::Key<5>;
   %template(ParticleIndexesKey) ::IMP::Key<6>;
   %template(ModelKey) ::IMP::Key<8>;
   %template(ParticleIndex) ::IMP::Index<IMP::ParticleIndexTag>;
+  %template(FloatsKey) ::IMP::Key<10>;
 }
 
 %inline %{

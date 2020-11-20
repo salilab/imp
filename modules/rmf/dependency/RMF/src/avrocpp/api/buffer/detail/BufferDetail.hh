@@ -30,6 +30,7 @@
 #include <exception>
 #include <cassert>
 #include <deque>
+#include <iterator>
 
 /**
  * \file BufferDetail.hh

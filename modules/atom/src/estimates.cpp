@@ -123,7 +123,7 @@ static MillipascalSecond eta(unit::Kelvin T) {
 }
 
 namespace {
-// returns kt in femtojoules for temeprature t [K]
+// returns kt in femtojoules for temperature t [K]
 unit::Femtojoule kt(unit::Kelvin t) {
   return IMP::unit::Femtojoule(IMP::internal::KB * t);
 }

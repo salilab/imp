@@ -34,7 +34,7 @@ atom::Hierarchy data is stored as RMF::REPRESENTATION nodes in the file.
 
 There is exactly one node in the RMF file per IMP::Particle in the hierarchy.
 The link classes are implemented in terms of a bunch of helper classes,
-each of whichs handle a particular type of data.
+each of which handles a particular type of data.
 
 The main tricky part is handling rigid bodies. In particular, the particles
 defining the rigid body are not always part of the %IMP hierarchy, and

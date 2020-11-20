@@ -30,7 +30,7 @@ RigidBodiesProfileHandler::RigidBodiesProfileHandler(
     }
   }
 
-  if (rigid_bodies_.size() > 0) {
+  if (rigid_bodies.size() > 0) {
     rigid_bodies_profile_ = new Profile();
     for (boost::unordered_map<ParticleIndex,
                               Particles>::iterator it =

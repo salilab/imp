@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
   std::cerr << "Done RRT" << std::endl;
 
   // output PDBs
-  std::vector<DOFValues> dof_values = rrt->get_DOFValues();
+  DOFValuesList dof_values = rrt->get_DOFValuesList();
   for (unsigned int i = 0; i < dof_values.size(); i++) {
     sampler.apply(dof_values[i]);
     kfss->do_before_evaluate();

@@ -23,23 +23,16 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT LinearVelocity : public Decorator {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                      const algebra::Vector3D v = algebra::Vector3D(0, 0, 0)) {
-    m->add_attribute(get_velocity_key(0), pi, v[0]);
-    m->add_attribute(get_velocity_key(1), pi, v[1]);
-    m->add_attribute(get_velocity_key(2), pi, v[2]);
+    m->add_attribute(get_velocities_key(), pi, v.get_coordinates());
+  }
+  static FloatsKey get_velocities_key() {
+    static const FloatsKey key("linvel");
+    return key;
   }
 
 public:
-  static FloatKey get_velocity_key(unsigned int i) {
-    IMP_USAGE_CHECK(i < 3, "Out of range coordinate");
-    static const FloatKey keys[] = {FloatKey("vx"), FloatKey("vy"),
-                                    FloatKey("vz")};
-    return keys[i];
-  }
-
   static bool get_is_setup(Model *m, ParticleIndex pi) {
-    return m->get_has_attribute(get_velocity_key(0), pi)
-           && m->get_has_attribute(get_velocity_key(1), pi)
-           && m->get_has_attribute(get_velocity_key(2), pi);
+    return m->get_has_attribute(get_velocities_key(), pi);
   }
 
   IMP_DECORATOR_METHODS(LinearVelocity, Decorator);
@@ -49,17 +42,13 @@ public:
   void set_velocity(const algebra::Vector3D &v) {
     Model *m = get_model();
     ParticleIndex pi = get_particle_index();
-    m->set_attribute(get_velocity_key(0), pi, v[0]);
-    m->set_attribute(get_velocity_key(1), pi, v[1]);
-    m->set_attribute(get_velocity_key(2), pi, v[2]);
+    m->set_attribute(get_velocities_key(), pi, v.get_coordinates());
   }
 
   algebra::Vector3D get_velocity() const {
     Model *m = get_model();
     ParticleIndex pi = get_particle_index();
-    return algebra::Vector3D(m->get_attribute(get_velocity_key(0), pi),
-                             m->get_attribute(get_velocity_key(1), pi),
-                             m->get_attribute(get_velocity_key(2), pi));
+    return algebra::Vector3D(m->get_attribute(get_velocities_key(), pi));
   }
 };
 
@@ -71,25 +60,17 @@ public:
 class IMPATOMEXPORT AngularVelocity : public Decorator {
   static void do_setup_particle(Model *m, ParticleIndex pi,
                    const algebra::Vector4D v = algebra::Vector4D(0, 0, 0, 0)) {
-    m->add_attribute(get_velocity_key(0), pi, v[0]);
-    m->add_attribute(get_velocity_key(1), pi, v[1]);
-    m->add_attribute(get_velocity_key(2), pi, v[2]);
-    m->add_attribute(get_velocity_key(3), pi, v[3]);
+    m->add_attribute(get_velocities_key(), pi, v.get_coordinates());
+  }
+  static FloatsKey get_velocities_key() {
+    static const FloatsKey key("angvel");
+    return key;
   }
 
 public:
-  static FloatKey get_velocity_key(unsigned int i) {
-    IMP_USAGE_CHECK(i < 4, "Out of range coordinate");
-    static const FloatKey keys[] = {FloatKey("angvel0"), FloatKey("angvel1"),
-                                    FloatKey("angvel2"), FloatKey("angvel3")};
-    return keys[i];
-  }
 
   static bool get_is_setup(Model *m, ParticleIndex pi) {
-    return m->get_has_attribute(get_velocity_key(0), pi)
-           && m->get_has_attribute(get_velocity_key(1), pi)
-           && m->get_has_attribute(get_velocity_key(2), pi)
-           && m->get_has_attribute(get_velocity_key(3), pi);
+    return m->get_has_attribute(get_velocities_key(), pi);
   }
 
   IMP_DECORATOR_METHODS(AngularVelocity, Decorator);
@@ -99,19 +80,13 @@ public:
   void set_velocity(const algebra::Vector4D &v) {
     Model *m = get_model();
     ParticleIndex pi = get_particle_index();
-    m->set_attribute(get_velocity_key(0), pi, v[0]);
-    m->set_attribute(get_velocity_key(1), pi, v[1]);
-    m->set_attribute(get_velocity_key(2), pi, v[2]);
-    m->set_attribute(get_velocity_key(3), pi, v[3]);
+    m->set_attribute(get_velocities_key(), pi, v.get_coordinates());
   }
 
   algebra::Vector4D get_velocity() const {
     Model *m = get_model();
     ParticleIndex pi = get_particle_index();
-    return algebra::Vector4D(m->get_attribute(get_velocity_key(0), pi),
-                             m->get_attribute(get_velocity_key(1), pi),
-                             m->get_attribute(get_velocity_key(2), pi),
-                             m->get_attribute(get_velocity_key(3), pi));
+    return algebra::Vector4D(m->get_attribute(get_velocities_key(), pi));
   }
 };
 

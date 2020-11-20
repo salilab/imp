@@ -154,9 +154,10 @@ int main(int argc, char **argv)
   // create phi/psi joints
   IMP::atom::Residues flexible_residues;
   std::vector<IMP::atom::Atoms> dihedral_angles;
+  std::vector<double> range;
   if(angle_file_name.length()>0) {
     read_angle_file(angle_file_name, residues, atoms,
-                    flexible_residues, dihedral_angles);
+                    flexible_residues, dihedral_angles, range);
   } else {
     flexible_residues = residues;
   }
@@ -295,7 +296,7 @@ int main(int argc, char **argv)
 
   std::cerr << "Start RRT run" << std::endl;
   // rrt->run();
-  // std::cerr << "Done RRT " << rrt->get_DOFValues().size() << std::endl;
+  // std::cerr << "Done RRT " << rrt->get_DOFValuesList().size() << std::endl;
 
   // output PDBs and close loops
   std::ofstream *out = NULL;
@@ -305,7 +306,7 @@ int main(int argc, char **argv)
   int last_model_written = 0;
 
   while(rrt->run(100)) { // output every 100 iterations
-    std::vector<DOFValues> dof_values = rrt->get_DOFValues();
+    DOFValuesList dof_values = rrt->get_DOFValuesList();
     for(unsigned int i = last_model_written; i<dof_values.size(); i++) {
       ub_sampler->apply(dof_values[i]);
       kfss->do_before_evaluate();
@@ -340,7 +341,7 @@ int main(int argc, char **argv)
     last_model_written = dof_values.size() - 1;
   }
 
-  std::vector<DOFValues> dof_values = rrt->get_DOFValues();
+  DOFValuesList dof_values = rrt->get_DOFValuesList();
   std::cerr << "Done RRT " << dof_values.size() << std::endl;
 
   // write remaining nodes

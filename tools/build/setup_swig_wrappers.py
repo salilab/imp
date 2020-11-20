@@ -52,6 +52,13 @@ def build_wrapper(module, finder, sorted, target, source):
 """%%module(directors="1", allprotected="1", moduleimport="import $module") "%s"
 %%feature("autodoc", 1);
 
+/* '#' formats in parsing or building Python values
+   (e.g. in PyObject_CallFunction) use Py_ssize_t, not int, for lengths
+   in Python >= 2.5 */
+%%begin %%{
+#define PY_SSIZE_T_CLEAN
+%%}
+
 // Warning 314: 'lambda' is a python keyword, renaming to '_lambda'
 %%warnfilter(321,302,314);
 

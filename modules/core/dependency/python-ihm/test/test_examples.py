@@ -4,6 +4,15 @@ import unittest
 import sys
 import subprocess
 import pickle
+try:
+    from unittest import skipIf
+except ImportError:
+    # Python 2.6 compatibility
+    def skipIf(condition, reason):
+        if condition:
+            return lambda x: None
+        else:
+            return lambda x: x
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
@@ -17,6 +26,13 @@ def get_example_path(fname):
     return os.path.join(get_example_dir(), fname)
 
 class Tests(unittest.TestCase):
+
+    @skipIf('APPVEYOR' in os.environ,
+            "AppVeyor environments have old SSL certs")
+    def test_validator_example(self):
+        """Test validator example"""
+        subprocess.check_call([sys.executable,
+                               get_example_path("validate_pdb_dev.py")])
 
     def test_simple_docking_example(self):
         """Test simple-docking example"""

@@ -1,5 +1,34 @@
-HEAD
-====
+0.18 - 2020-11-06
+=================
+  - Update to match latest FLR dictionary.
+  - Add a simple utility (util/make-mmcif.py) to make a minimal compliant
+    IHM mmCIF file, given an mmCIF file (potentially just coordinates) as input.
+  - Bugfix: the full residue range spanned by a starting model is now reported,
+    rather than just the subset that is mapped to one or more templates (#55).
+  - Bugfix: handle TrEMBL UniProt sequences (#57).
+
+0.17 - 2020-07-10
+=================
+  - Convenience classes are added to describe hydrogen/deuterium exchange
+    data (:class:`ihm.dataset.HDXDataset`) and datasets stored in the
+    PDB-Dev database (:class:`ihm.location.PDBDevLocation`).
+  - Multiple :class:`ihm.restraint.CrossLinkPseudoSite` objects can now
+    be assigned to a given :class:`ihm.restraint.CrossLink`.
+  - Bugfix: the :class:`ihm.dataset.Dataset` base class now has a type
+    of "Other" rather than "unspecified" to conform with the latest
+    IHM dictionary.
+
+0.16 - 2020-05-29
+=================
+  - :func:`ihm.reader.read` no longer discards models read from non-IHM mmCIF
+    files; they are instead placed in their own :class:`ihm.model.ModelGroup`.
+  - Bugfix: both the pure Python and C-accelerated mmCIF readers are now more
+    robust, able to handle files in binary mode (e.g. from opening a URL)
+    and in Unicode (mmCIF files are supposed to be ASCII but python-ihm should
+    handle any encoding Python supports).
+
+0.15 - 2020-04-14
+=================
   - :class:`ihm.dataset.Dataset` objects that derive from another dataset
     can now record any transformation involved; see
     :class:`ihm.dataset.TransformedDataset`.
@@ -122,7 +151,7 @@ HEAD
    underlying dictionary, this only works for some restraint types (currently
    only :class:`ihm.restraint.DerivedDistanceRestraint`) and all restraints
    in the group must be of the same type.
- - Bugfix: the the model's representation (see :mod:`ihm.representation`)
+ - Bugfix: the model's representation (see :mod:`ihm.representation`)
    need not be a strict subset of the model's :class:`ihm.Assembly`. However,
    any :class:`ihm.model.Atom` or :class:`ihm.model.Sphere` objects must be
    covered by both the representation and the model's :class:`ihm.Assembly`.

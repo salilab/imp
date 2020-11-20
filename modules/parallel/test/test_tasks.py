@@ -13,7 +13,7 @@ class Tests(IMP.test.TestCase):
     def test_pass_exceptions(self):
         """Test that exceptions can be passed to and from tasks"""
         m = _util.Manager(output='passexc%d.out')
-        m.add_slave(IMP.parallel.LocalSlave())
+        m.add_worker(IMP.parallel.LocalWorker())
         c = m.get_context()
         c.add_task(_tasks.SimpleTask(IndexError("test")))
         results = list(c.get_results_unordered())
@@ -23,7 +23,9 @@ class Tests(IMP.test.TestCase):
     def test_raise_exceptions(self):
         """Test that exceptions raised by a task are propagated"""
         m = _util.Manager(output='raiseexc%d.out')
-        m.add_slave(IMP.parallel.LocalSlave())
+        with IMP.allow_deprecated():
+            s = IMP.parallel.LocalSlave()
+        m.add_worker(IMP.parallel.LocalWorker())
         c = m.get_context()
         c.add_task(_tasks.error_task)
         self.assertRaises(IMP.parallel.RemoteError, list,
@@ -37,7 +39,7 @@ class Tests(IMP.test.TestCase):
                 "Cannot reliably handle NaN and Inf on Irix or Alpha")
 
         m = _util.Manager(output='floats%d.out')
-        m.add_slave(IMP.parallel.LocalSlave())
+        m.add_worker(IMP.parallel.LocalWorker())
         c = m.get_context()
 
         try:

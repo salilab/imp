@@ -184,6 +184,8 @@ void HierarchySaveLink::add_provenance(Model *m, ParticleIndex p,
                           RMF::PROVENANCE);
       RMF::decorator::ClusterProvenance rp = clustpf_.get(cur);
       rp.set_members(ip.get_number_of_members());
+      rp.set_precision(ip.get_precision());
+      rp.set_density(ip.get_density());
     } else if (core::ScriptProvenance::get_is_setup(prov)) {
       core::ScriptProvenance ip(prov);
       cur = cur.add_child(m->get_particle_name(prov.get_particle_index()),

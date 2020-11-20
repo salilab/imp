@@ -146,7 +146,18 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
       } else {
 /* gcc 9 requires that we make calc_derivs a shared variable so each task
    can see it. gcc 8 automatically shares const variables and reports an error
-   if we try to explicitly share one. */
+   if we try to explicitly share one. The same is true for clang 10 vs 9. */
+#if defined(__clang__)
+#if __clang_major__ >= 10
+        IMP_TASK_SHARED((ss, accum), (calc_derivs),
+                 ss->after_evaluate(calc_derivs ? &accum : nullptr),
+                 "after evaluate");
+#else
+        IMP_TASK((ss, accum),
+                 ss->after_evaluate(calc_derivs ? &accum : nullptr),
+                 "after evaluate");
+#endif
+#else
 #if defined(__GNUC__) && __GNUC__ >= 9
         IMP_TASK_SHARED((ss, accum), (calc_derivs),
                  ss->after_evaluate(calc_derivs ? &accum : nullptr),
@@ -155,6 +166,7 @@ void Model::after_evaluate(const ScoreStatesTemp &istates,
         IMP_TASK((ss, accum),
                  ss->after_evaluate(calc_derivs ? &accum : nullptr),
                  "after evaluate");
+#endif
 #endif
       }
     }

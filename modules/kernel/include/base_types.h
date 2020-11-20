@@ -56,6 +56,10 @@ IMP_VALUES(WeakObjectKey, WeakObjectKeys);
 typedef Key<5> IntsKey;
 IMP_VALUES(IntsKey, IntsKeys);
 
+//! The type used to identify float vector attributes in the Particles
+typedef Key<10> FloatsKey;
+IMP_VALUES(FloatsKey, FloatsKeys);
+
 //! The type used to identify a particle attribute in the Particles
 typedef Key<6> ParticleIndexesKey;
 IMP_VALUES(ParticleIndexesKey, ParticleIndexesKeys);

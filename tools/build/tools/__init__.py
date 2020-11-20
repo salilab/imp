@@ -437,7 +437,7 @@ class ModulesFinder(object):
                     yield d
 
     def get_dependent_modules(self, modules, root='.'):
-        """Get the the given modules plus any modules they depend on,
+        """Get the given modules plus any modules they depend on,
            sorted by dependency (most derived modules first)"""
         sorted_order = get_sorted_order(root)
         new_modules = modules[:]

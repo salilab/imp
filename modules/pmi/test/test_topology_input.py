@@ -107,13 +107,15 @@ class Tests(IMP.test.TestCase):
         with warnings.catch_warnings(record=True) as cw:
             warnings.simplefilter("always")
             root_hier, dof = bs.execute_macro()
-        # Both domains (one a PDB, one beads) should be flexible
-        self.assertEqual(len(dof.get_movers()), 2)
+        # Both domains (missing regions from PDB, one beads) should be flexible
+        # There should be 6 flexible beads:
+        # Beads 3, 4, 7, 8, 9, 10
+        self.assertEqual(len(dof.get_movers()), 6)
         self.assertEqual(len(dof.get_rigid_bodies()), 0)
-        self.assertEqual(len(dof.get_flexible_beads()), 2)
+        self.assertEqual(len(dof.get_flexible_beads()), 6)
         # One warning should be emitted, for the PDB domain
         w, = cw
-        self.assertIn("Making Prot1..0 flexible. This may distort",
+        self.assertIn("No rigid bodies set for Prot1..0.",
                       str(w.message))
         self.assertIs(w.category, IMP.pmi.StructureWarning)
 
@@ -160,7 +162,8 @@ class Tests(IMP.test.TestCase):
 
         expected_rbs = [['Prot1.1.0','Prot1..0'],
                         ['Prot2..0','Prot2..1','Prot2.1.0','Prot2.1.1'],
-                        ['Prot4..0', 'Prot5..0']]
+                        ['Prot4..0', 'Prot5..0'],
+                        ['DNA1..0'], ['RNA1..0']]
         expected_srbs = [['Prot1.1.0','Prot1..0','Prot2..0','Prot2..1',
                           'Prot2.1.0','Prot2.1.1','Prot4..0','Prot3..0', 'Prot5..0'],
                          ['Prot1.1.0','Prot1..0','Prot3..0']]
@@ -253,7 +256,7 @@ class Tests(IMP.test.TestCase):
         # check rigid bodies
         rbs = dof.get_rigid_bodies()
         fbs = dof.get_flexible_beads()
-        self.assertEqual(len(rbs),3)
+        self.assertEqual(len(rbs),5)
         #                         Prot1x2 Prot3
         self.assertEqual(len(fbs), 4   +  2)
 

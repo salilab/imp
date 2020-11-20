@@ -547,14 +547,13 @@ class _EntityPolySegmentDumper(Dumper):
         self._ranges_by_id = []
         # Need to assign ranges for all starting models too
         for sm in system._all_starting_models():
-            rng = sm._get_seq_id_range_all_templates()
+            rng = sm.asym_unit
             util._remove_id(rng, attr='_range_id')
-            sm._all_template_rng = rng
 
         for rng in system._all_entity_ranges():
             util._remove_id(rng, attr='_range_id')
         for rng in itertools.chain(system._all_entity_ranges(),
-                                   (sm._all_template_rng
+                                   (sm.asym_unit
                                     for sm in system._all_starting_models())):
             entity = rng.entity if hasattr(rng, 'entity') else rng
             if entity.is_polymeric():
@@ -805,7 +804,10 @@ class _ExternalReferenceDumper(Dumper):
                           "file_size_bytes", "details"]) as l:
             for r in self._ref_by_id:
                 repo = r.repo or self._local_files
-                file_path = self._posix_path(repo._get_full_path(r.path))
+                if r.path is None:
+                    file_path = None
+                else:
+                    file_path = self._posix_path(repo._get_full_path(r.path))
                 l.write(id=r._id, reference_id=repo._id,
                         file_path=file_path, content_type=r.content_type,
                         file_size_bytes=r.file_size, details=r.details)
@@ -1023,7 +1025,7 @@ class _StartingModelDumper(Dumper):
                         entity_id=sm.asym_unit.entity._id,
                         entity_description=sm.asym_unit.entity.description,
                         asym_id=sm.asym_unit._id,
-                        entity_poly_segment_id=sm._all_template_rng._range_id,
+                        entity_poly_segment_id=sm.asym_unit._range_id,
                         starting_model_source=source_map[sm.dataset.data_type],
                         starting_model_auth_asym_id=sm.asym_id,
                         dataset_list_id=sm.dataset._id,
@@ -1955,10 +1957,11 @@ class _CrossLinkDumper(Dumper):
                 seq1 = entity1.sequence
                 seq2 = entity2.sequence
                 pseudo = False
-                for np, p in enumerate((xl.pseudo1, xl.pseudo2)):
-                    if p:
+                for np, ps in enumerate((xl.pseudo1, xl.pseudo2)):
+                    if ps:
                         pseudo = True
-                        pseudo_xls.append((p, np, xl))
+                        for p in ps:
+                            pseudo_xls.append((p, np, xl))
                 l.write(id=xl._id, group_id=ex_xl._id,
                         entity_id_1=entity1._id, asym_id_1=xl.asym1._id,
                         seq_id_1=ex_xl.residue1.seq_id,
@@ -2475,16 +2478,21 @@ class _FLRPolyProbePositionDumper(Dumper):
     def dump_position(self, system, writer):
         with writer.loop('_flr_poly_probe_position',
                          ['id', 'entity_id', 'entity_description',
+                          'asym_id',
                           'seq_id', 'comp_id', 'atom_id',
                           'mutation_flag', 'modification_flag',
                           'auth_name']) as l:
             for x in self._positions_by_id:
-                comp = x.resatom.entity.sequence[x.resatom.seq_id-1].id
+                comp = x.resatom.entity.sequence[x.resatom.seq_id-1].id if x.resatom.asym is None else x.resatom.asym.entity.sequence[x.resatom.seq_id-1].id
                 atom = None
                 if isinstance(x.resatom, ihm.Atom):
                     atom = x.resatom.id
-                l.write(id=x._id, entity_id=x.resatom.entity._id,
-                        entity_description=x.resatom.entity.description,
+                a_id = None if (x.resatom.asym is None) else x.resatom.asym._id
+                e_id = x.resatom.entity._id if (x.resatom.asym is None) else x.resatom.asym.entity._id
+                e_desc = x.resatom.entity.description if (x.resatom.asym is None) else x.resatom.asym.entity.description
+                l.write(id=x._id, entity_id=e_id,
+                        entity_description=e_desc,
+                        asym_id=a_id,
                         seq_id=x.resatom.seq_id,
                         comp_id=comp, atom_id=atom,
                         mutation_flag=x.mutation_flag,

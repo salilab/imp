@@ -39,7 +39,7 @@ enum RepresentationType {
 class IMPATOMEXPORT Representation : public Hierarchy {
   static IntsKey get_types_key();
   static ParticleIndexesKey get_representations_key();
-  static FloatKey get_resolution_key(unsigned int index);
+  static FloatsKey get_resolutions_key();
   static FloatKey get_base_resolution_key();
 
   static void do_setup_particle(Model *m, ParticleIndex pi,
@@ -80,6 +80,12 @@ class IMPATOMEXPORT Representation : public Hierarchy {
 
   //! Get all resolutions that are available for a specific RepresentationType.
   Floats get_resolutions(RepresentationType type = BALLS) const;
+
+  //! Remove the given representation.
+  /** The representation is only removed from the Representation
+      decorator; it is not destroyed. For that, use IMP::atom::destroy().
+   */
+  void remove_representation(ParticleIndexAdaptor rep);
 
   //! If you've changed the parent, update all the resolutions
   void update_parents();

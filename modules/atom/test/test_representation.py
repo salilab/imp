@@ -123,18 +123,32 @@ class Tests(IMP.test.TestCase):
 
         res1 = IMP.atom.create_simplified_along_backbone(mh,1)
         res1.set_name('res1')
+        res5 = IMP.atom.create_simplified_along_backbone(mh,5)
+        res5.set_name('res10')
         res10 = IMP.atom.create_simplified_along_backbone(mh,10)
         res10.set_name('res10')
 
         root = IMP.atom.Hierarchy.setup_particle(IMP.Particle(mdl))
         rep = IMP.atom.Representation.setup_particle(root,1)
         root.add_child(res1)
+        rep.add_representation(res5,IMP.atom.BALLS,5)
         rep.add_representation(res10,IMP.atom.BALLS,10)
 
         # should get res1
         sel1 = IMP.atom.Selection(root,resolution=1)
         self.assertEqual(len(sel1.get_selected_particles()),
                          len(IMP.atom.get_by_type(mh,IMP.atom.RESIDUE_TYPE)))
+
+        # Cannot remove the base representation
+        self.assertRaises(ValueError, rep.remove_representation, res1)
+        self.assertEqual(len(rep.get_representations()), 3)
+        rep.remove_representation(res10)
+        self.assertEqual(len(rep.get_representations()), 2)
+        rep.remove_representation(res5)
+        self.assertEqual(len(rep.get_representations()), 1)
+        # Cannot remove a representation twice
+        self.assertRaises(ValueError, rep.remove_representation, res10)
+        self.assertRaises(ValueError, rep.remove_representation, res5)
 
     def test_simple_density(self):
         """Test representing a particle with a Gaussian"""

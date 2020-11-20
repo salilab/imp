@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
                                delta=4 * radius / numpts ** .5)
 
     def test_get_uniform_surface_cover_not_on_000(self):
-        """Check uniform cover when the the center is not on (0,0,0)"""
+        """Check uniform cover when the center is not on (0,0,0)"""
         # IMP.random_number_generator.seed(1)
         center = IMP.algebra.Vector3D(4.0, 5.0, -9.0)
         radius = 5.0

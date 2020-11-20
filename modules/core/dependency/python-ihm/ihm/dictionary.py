@@ -61,7 +61,7 @@ class _ValidatorCategoryHandler(Handler):
         super(_ValidatorCategoryHandler, self).__init__(sysr)
         self.category = '_' + category.name
         self.category_obj = category
-        self._keys = [k for k in category.keywords.keys()]
+        self._keys = [k.lower() for k in category.keywords.keys()]
         self.link_keys = set()
         li = sysr.dictionary.linked_items
         for link in itertools.chain(li.keys(), li.values()):
@@ -155,7 +155,10 @@ class Dictionary(object):
        See :func:`read` to create a Dictionary from a file.
 
        Multiple Dictionaries can be added together to yield a Dictionary
-       that includes all the data in the original Dictionaries."""
+       that includes all the data in the original Dictionaries.
+
+       See the `validator example <https://github.com/ihmwg/python-ihm/blob/master/examples/validate_pdb_dev.py>`_
+       for an example of using this class."""
     def __init__(self):
         #: Mapping from name to :class:`Category` objects
         self.categories = {}
@@ -215,6 +218,12 @@ class Category(object):
         self.mandatory = None
 
 
+class _DoNothingRegEx(object):
+    """A mock regex object which always matches"""
+    def match(self, value):
+        return True
+
+
 class ItemType(object):
     """Represent the type of a data item.
        This keeps the set of valid strings for values of a given
@@ -224,7 +233,11 @@ class ItemType(object):
         self.name, self.construct = name, construct
         self.primitive_code = primitive_code
         # Ensure that regex matches the entire value
-        self.regex = re.compile(construct + '$')
+        try:
+            self.regex = re.compile(construct + '$')
+        except re.error:
+            # Some CIF regexes aren't valid Python regexes; skip these
+            self.regex = _DoNothingRegEx()
 
     case_sensitive = property(lambda x: x.primitive_code != 'uchar',
                               doc='True iff this type is case sensitive')
@@ -265,7 +278,7 @@ class _DictionaryReader(object):
         if self.keyword_good:
             for (name, category, mandatory) in self._keyword_info:
                 k = Keyword()
-                k.name, k.mandatory = name, mandatory
+                k.name, k.mandatory = name.lower(), mandatory
                 k.enumeration = self._keyword_enumeration
                 k.item_type = self._keyword_item_type
                 # If the owning category does not exist, make it; this can

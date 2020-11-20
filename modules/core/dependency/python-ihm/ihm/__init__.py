@@ -19,7 +19,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.14'
+__version__ = '0.18'
 
 class __UnknownValue(object):
     # Represent the mmCIF 'unknown' special value
@@ -465,9 +465,11 @@ class System(object):
                 if hasattr(r, 'cross_links'):
                     for xl in r.cross_links:
                         if xl.pseudo1:
-                            yield xl.pseudo1.site
+                            for x in xl.pseudo1:
+                                yield x.site
                         if xl.pseudo2:
-                            yield xl.pseudo2.site
+                            for x in xl.pseudo2:
+                                yield x.site
         return itertools.chain(self.orphan_pseudo_sites,
                                _all_restraint_sites(),
                                (f.site for f in self._all_features()
@@ -687,12 +689,16 @@ class ChemComp(object):
     type = 'other'
 
     _element_mass = {'H':1.008, 'C':12.011, 'N':14.007, 'O':15.999,
-                     'P':30.974, 'S':32.060, 'Se':78.971}
+                     'P':30.974, 'S':32.060, 'Se':78.971, 'Fe':55.845}
 
     def __init__(self, id, code, code_canonical, name=None, formula=None):
         self.id = id
         self.code, self.code_canonical, self.name = code, code_canonical, name
         self.formula = formula
+
+    def __str__(self):
+        return '<%s.%s(%s)>' % (
+                self.__class__.__module__, self.__class__.__name__, self.id)
 
     def __get_weight(self):
         # Calculate weight from formula
@@ -977,7 +983,7 @@ class Residue(object):
 class Entity(object):
     """Represent a CIF entity (with a unique sequence)
 
-       :param sequence sequence: The primary sequence, as a list of
+       :param sequence sequence: The primary sequence, as a sequence of
               :class:`ChemComp` objects, and/or codes looked up in `alphabet`.
        :param alphabet: The mapping from code to chemical components to use
               (it is not necessary to instantiate this class).
@@ -991,22 +997,34 @@ class Entity(object):
               databases (for example the sequence in UniProt)
        :type references: sequence of :class:`ihm.reference.Reference` objects
 
-       The sequence for an entity can be specified explicitly as a set of
-       chemical components, or (more usually) as a list or string of codes.
+       The sequence for an entity can be specified explicitly as a list of
+       chemical components, or (more usually) as a list or string of codes,
+       or a mixture of both.
        For example::
 
+           # Construct with a string of one-letter amino acid codes
            protein = ihm.Entity('AHMD')
+           # Some less common amino acids (e.g. MSE) have three-letter codes
            protein_with_mse = ihm.Entity(['A', 'H', 'MSE', 'D'])
 
+           # Can use a non-default alphabet to make DNA or RNA sequences
            dna = ihm.Entity(('DA', 'DC'), alphabet=ihm.DNAAlphabet)
            rna = ihm.Entity('AC', alphabet=ihm.RNAAlphabet)
 
+           # Can pass explicit ChemComp objects by looking them up in Alphabets
            dna_al = ihm.DNAAlphabet()
            rna_al = ihm.RNAAlphabet()
            dna_rna_hybrid = ihm.Entity((dna_al['DG'], rna_al['C']))
 
-           psu = ihm.RNAChemComp(id='PSU', code='PSU', code_canonical='U')
+           # For unusual components (e.g. modified residues or ligands),
+           # new ChemComp objects can be constructed
+           psu = ihm.RNAChemComp(id='PSU', code='PSU', code_canonical='U',
+                                 name="PSEUDOURIDINE-5'-MONOPHOSPHATE",
+                                 formula='C9 H13 N2 O9 P')
            rna_with_psu = ihm.Entity(('A', 'C', psu), alphabet=ihm.RNAAlphabet)
+
+       For more examples, see the
+       `ligands and water example <https://github.com/ihmwg/python-ihm/blob/master/examples/ligands_water.py>`_.
 
        All entities should be stored in the top-level System object;
        see :attr:`System.entities`.

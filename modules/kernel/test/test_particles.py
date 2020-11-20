@@ -134,6 +134,8 @@ class Tests(IMP.test.TestCase):
         self._test_add_remove(p, IMP.StringKey("something"), "Hello")
         self._test_add_remove(p, IMP.IntKey("something"), 1)
         self._test_add_remove(p, IMP.ParticleIndexKey("something"), p)
+        self._test_add_remove(p, IMP.IntsKey("something"), [1,2,3])
+        self._test_add_remove(p, IMP.FloatsKey("something"), [1.0,2.0,3.0])
 
     def test_derivatives(self):
         """Test get/set of derivatives"""

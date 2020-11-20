@@ -90,6 +90,12 @@ class Tests(unittest.TestCase):
         d = ihm.dataset.CXMSDataset(loc)
         self.assertEqual(d.data_type, 'CX-MS data')
 
+    def test_hdx_dataset(self):
+        """Test HDXDataset"""
+        loc = ihm.location.FileLocation(repo='mydoi', path='a')
+        d = ihm.dataset.HDXDataset(loc)
+        self.assertEqual(d.data_type, 'H/D exchange data')
+
     def test_mass_spec_dataset(self):
         """Test MassSpecDataset"""
         loc = ihm.location.FileLocation(repo='mydoi', path='a')

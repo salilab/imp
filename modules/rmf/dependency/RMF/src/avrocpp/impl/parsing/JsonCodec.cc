@@ -21,6 +21,7 @@
 #include <string>
 #include <map>
 #include <algorithm>
+#include <iterator>
 #include <ctype.h>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>

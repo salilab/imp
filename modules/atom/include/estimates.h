@@ -123,7 +123,7 @@ IMPATOMEXPORT double get_einstein_diffusion_coefficient
   double temp= -1);
 
 /** Return the predicted diffusion coefficient in radians squared per
-    femtosecond at the specified radius and temeprature.
+    femtosecond at the specified radius and temperature.
 
     @param particle radius in angstroms
     @param temp  temperature in Kelvin

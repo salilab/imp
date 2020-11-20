@@ -53,28 +53,26 @@ def get_structure(model,pdb_fn,chain_id,res_range=None,offset=0,model_num=None,c
            The ending residue can be "END", that will take everything to the end of the sequence.
            None gets you all.
     @param offset    Apply an offset to the residue indexes of the PDB file
-    @param model_num Read multi-model PDB and return that model
+    @param model_num Read multi-model PDB and return that model (0-based index)
     @param ca_only Read only CA atoms (by default, all non-waters are read)
     """
-    sel = IMP.atom.get_default_pdb_selector()
     # Read file in mmCIF format if requested
-    read_file = IMP.atom.read_pdb
-    read_multi_file = IMP.atom.read_multimodel_pdb
     if pdb_fn.endswith('.cif'):
         read_file = IMP.atom.read_mmcif
         read_multi_file = IMP.atom.read_multimodel_mmcif
+    else:
+        read_file = IMP.atom.read_pdb
+        read_multi_file = IMP.atom.read_multimodel_pdb
     if ca_only:
         sel = IMP.atom.CAlphaPDBSelector()
-    if model_num is None:
-        mh = read_file(pdb_fn,model,
-                       IMP.atom.AndPDBSelector(IMP.atom.ChainPDBSelector(chain_id), sel))
-
     else:
-        mhs = read_multi_file(pdb_fn,model,sel)
-        if model_num>=len(mhs):
-            raise Exception("you requested model num "+str(model_num)+\
-                            " but the PDB file only contains "+str(len(mhs))+" models")
-        mh = IMP.atom.Selection(mhs[model_num],chain=chain_id,with_representation=True)
+        sel = IMP.atom.get_default_pdb_selector()
+
+    reader = read_file if model_num is None else read_multi_file
+    mh = reader(pdb_fn, model,
+            IMP.atom.AndPDBSelector(IMP.atom.ChainPDBSelector(chain_id), sel))
+    if model_num is not None:
+        mh = mh[model_num]
 
     if res_range==[] or res_range is None:
         ps = _select_ca_or_p(mh, chain=chain_id)

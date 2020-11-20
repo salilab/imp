@@ -29,6 +29,7 @@ void TransformationJoint::set_transformation_child_to_parent(
     get_owner_kf()->update_all_internal_coordinates();
   }
   Joint::set_transformation_child_to_parent_no_checks(transformation);
+  Joint::update_child_node_reference_frame();
   if (get_owner_kf()) {
     get_owner_kf()->mark_internal_coordinates_changed();
   }

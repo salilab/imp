@@ -81,6 +81,7 @@ class IMPKERNELEXPORT Model : public Object
                               public internal::ObjectAttributeTable,
                               public internal::WeakObjectAttributeTable,
                               public internal::IntsAttributeTable,
+                              public internal::FloatsAttributeTable,
                               public internal::ObjectsAttributeTable,
                               public internal::ParticleAttributeTable,
                               public internal::ParticlesAttributeTable
@@ -170,6 +171,7 @@ class IMPKERNELEXPORT Model : public Object
   IMP_MODEL_IMPORT(internal::ObjectAttributeTable);
   IMP_MODEL_IMPORT(internal::WeakObjectAttributeTable);
   IMP_MODEL_IMPORT(internal::IntsAttributeTable);
+  IMP_MODEL_IMPORT(internal::FloatsAttributeTable);
   IMP_MODEL_IMPORT(internal::ObjectsAttributeTable);
   IMP_MODEL_IMPORT(internal::ParticleAttributeTable);
   IMP_MODEL_IMPORT(internal::ParticlesAttributeTable);
@@ -278,6 +280,7 @@ class IMPKERNELEXPORT Model : public Object
 
   IMP_MODEL_ATTRIBUTE_METHODS(Float, Float);
   IMP_MODEL_ATTRIBUTE_METHODS(Int, Int);
+  IMP_MODEL_ATTRIBUTE_METHODS(Floats, Floats);
   IMP_MODEL_ATTRIBUTE_METHODS(Ints, Ints);
   IMP_MODEL_ATTRIBUTE_METHODS(String, String);
   IMP_MODEL_ATTRIBUTE_METHODS(ParticleIndexes, ParticleIndexes);

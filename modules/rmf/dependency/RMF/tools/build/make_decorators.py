@@ -141,7 +141,11 @@ filterp = Decorator(["PROVENANCE"], "provenance",
 cluster = Decorator(["PROVENANCE"], "provenance",
                     "ClusterProvenance",
                     [Attribute("cluster members", "Int",
-                               function_name='members')])
+                               function_name='members'),
+                     Attribute("cluster precision", "Float",
+                               function_name='precision', default=0.),
+                     OptionalPathAttribute("cluster density",
+                                           function_name='density')])
 
 script = Decorator(["PROVENANCE"], "provenance",
                    "ScriptProvenance",

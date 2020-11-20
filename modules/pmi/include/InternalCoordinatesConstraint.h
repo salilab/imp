@@ -29,6 +29,7 @@ IMPPMI_BEGIN_NAMESPACE
 class IMPPMIEXPORT InternalCoordinatesConstraint : public SingletonModifier {
 
  public:
+  IMPPMI_DEPRECATED_OBJECT_DECL(2.14)
   InternalCoordinatesConstraint();
 
   // note, Doxygen wants a semicolon at the end of macro lines

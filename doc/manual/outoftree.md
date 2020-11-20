@@ -4,7 +4,7 @@ Building modules out of tree {#outoftree}
 Normally to build an %IMP module it is placed in the `modules` subdirectory
 together with the rest of the %IMP source code and then all of %IMP is
 built, as per the [installation instructions](@ref installation_source).
-However, this makes builing a module an expensive process (as the build
+However, this makes building a module an expensive process (as the build
 system needs to check whether any part of %IMP has changed, not just the
 module itself) and it is awkward to build a module against multiple
 versions of %IMP, for example against both the latest stable release and

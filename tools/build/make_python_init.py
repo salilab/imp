@@ -15,8 +15,10 @@ def build_init(module, source, infname, outfname):
             with open(infname) as inf:
                 shutil.copyfileobj(inf, outf)
 
-        # Add standard module functions
+        # Add standard module functions and constants
         outf.write("""
+
+__version__ = "%s"
 
 def get_module_version():
     '''Return the version of this module, as a string'''
@@ -35,7 +37,7 @@ def get_example_path(fname):
     '''Return the full path to one of this module's example files'''
     import IMP
     return IMP._get_module_example_path("%s", fname)
-""" % (version, module.name, module.name, module.name))
+""" % (version, version, module.name, module.name, module.name))
 
 
 def main():
