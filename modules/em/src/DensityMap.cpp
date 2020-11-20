@@ -273,10 +273,6 @@ void write_map(DensityMap *d, std::string filename, MapReaderWriter *writer) {
   writer->write(filename.c_str(), f_data.get(), d->header_);
 }
 
-long DensityMap::get_number_of_voxels() const {
-  return header_.get_number_of_voxels();
-}
-
 float DensityMap::get_location_in_dim_by_voxel(long index, int dim) const {
   IMP_USAGE_CHECK(
       loc_calculated_,
@@ -428,7 +424,8 @@ emreal DensityMap::calcRMS() {
 
 //!  Set the density voxels to zero and reset the management flags.
 void DensityMap::reset_data(float val) {
-  for (long i = 0; i < get_number_of_voxels(); i++) {
+  long nvox = get_number_of_voxels();
+  for (long i = 0; i < nvox; i++) {
     data_[i] = val;
   }
   normalized_ = false;
