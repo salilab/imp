@@ -446,18 +446,12 @@ class Tests(IMP.test.TestCase):
                                 alphabet=IMP.pmi.alphabets.rna)
         m2 = st.create_molecule("DNA", sequence="ACGTU",
                                 alphabet=IMP.pmi.alphabets.dna)
-        # Deprecated mechanism to create RNA
-        with IMP.allow_deprecated():
-            m3 = st.create_molecule("RNA2", sequence="ACGTU", is_nucleic=True)
         self.assertEqual([r.get_residue_type() for r in m1.residues],
                          [IMP.atom.ADE, IMP.atom.CYT, IMP.atom.GUA,
                           IMP.atom.THY, IMP.atom.URA])
         self.assertEqual([r.get_residue_type() for r in m2.residues],
                          [IMP.atom.DADE, IMP.atom.DCYT, IMP.atom.DGUA,
                           IMP.atom.DTHY, IMP.atom.DURA])
-        self.assertEqual([r.get_residue_type() for r in m3.residues],
-                         [IMP.atom.ADE, IMP.atom.CYT, IMP.atom.GUA,
-                          IMP.atom.THY, IMP.atom.URA])
 
     def test_add_structure(self):
         """Test adding partial structure data to a molecule"""

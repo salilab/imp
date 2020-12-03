@@ -1184,18 +1184,12 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
 
     See also get_handlers(), get_dumpers().
     """
-    def __init__(self, fh=None):
+    def __init__(self):
         # Ultimately, collect data in an ihm.System object
         self.system = ihm.System()
         self._state_group = ihm.model.StateGroup()
         self.system.state_groups.append(self._state_group)
 
-        self.fh = fh
-        if fh:
-            IMP.handle_use_deprecated(
-                "Passing a file handle to ProtocolOutput is deprecated. "
-                "Create it with no arguments, then use the python-ihm API to "
-                "output files (after calling finalize())")
         self._state_ensemble_offset = 0
         self._main_script = os.path.abspath(sys.argv[0])
 
@@ -1346,15 +1340,6 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                 for r in self.system.restraints:
                     if hasattr(r, 'add_fits_from_model_statfile'):
                         r.add_fits_from_model_statfile(m)
-
-    @IMP.deprecated_method("2.13",
-                           "Use finalize() then the python-ihm API instead")
-    def flush(self, format='mmCIF'):
-        """Write out all information to the file.
-           Information can be written in any format supported by
-           the ihm library (typically this is 'mmCIF' or 'BCIF')."""
-        self.finalize()
-        ihm.dumper.write(self.fh, [self.system], format, dumpers=get_dumpers())
 
     def finalize(self):
         """Do any final processing on the class hierarchy.
@@ -1656,16 +1641,6 @@ def get_handlers():
        PMI-specific information from mmCIF or BinaryCIF files read in
        by python-ihm."""
     return [_ReplicaExchangeProtocolHandler]
-
-
-@IMP.deprecated_function("2.13",
-        "Use ihm.reader.read() instead with handlers=get_handlers()")
-def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[]):
-    """Read data from the mmCIF file handle `fh`.
-       This is a simple wrapper around `ihm.reader.read()`, which also
-       reads PMI-specific information from the mmCIF or BinaryCIF file."""
-    return ihm.reader.read(fh, model_class=model_class, format=format,
-                           handlers=get_handlers() + handlers)
 
 
 class GMMParser(ihm.metadata.Parser):

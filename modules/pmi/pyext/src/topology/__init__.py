@@ -220,7 +220,7 @@ class State(_SystemBase):
             return self.molecules[name][copy_num]
 
     def create_molecule(self, name, sequence='', chain_id='',
-                        alphabet=IMP.pmi.alphabets.amino_acid, is_nucleic=None):
+            alphabet=IMP.pmi.alphabets.amino_acid):
         """Create a new Molecule within this State
         @param name                the name of the molecule (string);
                                    it must not be already used
@@ -231,11 +231,6 @@ class State(_SystemBase):
         # check whether the molecule name is already assigned
         if name in self.molecules:
             raise ValueError('Cannot use a molecule name already used')
-
-        if is_nucleic:
-            IMP.handle_use_deprecated(
-                "is_nucleic is deprecated. Use alphabet instead.")
-            alphabet = IMP.pmi.alphabets.rna
 
         mol = Molecule(self, name, sequence, chain_id, copy_num=0,
                        alphabet=alphabet)
@@ -1144,8 +1139,8 @@ class TopologyReader(object):
     @endcode
 
     These are the fields you can enter:
-    - `component_name`: Name of the component (chain). Serves as the parent
-      hierarchy for this structure. Multiple copies of the same component
+    - `molecule_name`: Name of the molecule (chain). Serves as the parent
+      hierarchy for this structure. Multiple copies of the same molecule
       can be created by appending a copy number after a period; if none is
       specified, a copy number of 0 is assumed (e.g. Rpb2.1 is the second copy
       of Rpb2 or Rpb2.0).
