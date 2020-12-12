@@ -1104,6 +1104,84 @@ DensityMap *DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
   return cropped_dmap.release();
 }
 
+DensityMap *DensityMap::get_cropped(Particles ps, float distance, bool inverse) {
+  
+  algebra::Vector3Ds coords;
+  algebra::Vector3D vox_cent;
+  float vox_dist; 
+  bool crop;
+  Pointer<DensityMap> cropped_map;
+
+  // Always good to have a list of coordinates
+  for (unsigned int i=0; i<ps.size(); i++){
+    coords.push_back(core::XYZ(ps[i]).get_coordinates());
+  }
+  
+  if(inverse==true) {
+      // For an inverse map, we simply make a clone of the 
+      // current map, since the bounds will be the same
+      cropped_map = create_density_map(this);
+  } else {
+      // If we want a resultant map contining the particles
+      // we create a new map using a bounding box based on 
+      // the particle coordinates and distance threshold
+      algebra::Vector3D mincorner(100000,100000,100000);
+      algebra::Vector3D maxcorner(-100000,-100000,-100000);
+      
+      // Get max/min coordinates of the inputted particle set
+      for(unsigned int i=0;i<coords.size();i++){
+        if(coords[i][0] < mincorner[0]) { mincorner[0]=coords[i][0];}
+        if(coords[i][0] > maxcorner[0]) { maxcorner[0]=coords[i][0];}
+        if(coords[i][1] < mincorner[1]) { mincorner[1]=coords[i][1];}
+        if(coords[i][1] > maxcorner[1]) { maxcorner[1]=coords[i][1];}
+        if(coords[i][2] < mincorner[2]) { mincorner[2]=coords[i][2];}
+        if(coords[i][2] > maxcorner[2]) { maxcorner[2]=coords[i][2];}
+      }
+
+      // build a bounding box and add the distance threshold
+      algebra::BoundingBox3D bb(mincorner, maxcorner); 
+      bb += distance;
+
+      // Create a new cropped map based on this bounding box
+      cropped_map = get_cropped(bb);
+  }
+    
+  // Get number of voxels in the new map
+  long n_vox = cropped_map->get_number_of_voxels();
+  
+  // Loop over all voxels
+  for (long v=0; v<n_vox; v++){
+    vox_cent = cropped_map->get_location_by_voxel(v);    
+    
+    // crop is a bool to decide whther we zero this voxel
+    // Default value of crop is opposite of inverse
+    // So inverse=true defaults to all voxels not cropped
+    // (crop=false)
+    crop=!inverse;
+
+    // Check if any particle is within distance
+    for(unsigned int i=0; i<coords.size(); i++){
+      vox_dist = algebra::get_distance(vox_cent, coords[i]);
+      
+      // If any particle is within distance, 
+      // we reverse our cropping decision and break
+      if(vox_dist < distance){ 
+	crop=inverse;
+        break;
+      } 
+      
+    }
+
+    // If crop=true, we set this voxel value to 0.0
+    // and continue to the next voxel
+    if(crop) {
+      cropped_map->set_value(v, 0.0);
+    }
+  }
+
+  return cropped_map.release();
+}	
+
 DensityMap *DensityMap::get_cropped(float threshold) {
   IMP_USAGE_CHECK(threshold > get_min_value() - EPS,
                   "The input threshold is too small\n");
