@@ -108,7 +108,8 @@ class Tests(IMP.test.TestCase):
         self.assertGreater(cropped_cfs, full_cfs)
 
         # The cropped map should have less density
-        self.assertLess(IMP.em.approximate_molecular_mass(cropped_map, 0.00), IMP.em.approximate_molecular_mass(mrc, 0.00))
+        self.assertLess(IMP.em.approximate_molecular_mass(cropped_map, 0.00), 
+                IMP.em.approximate_molecular_mass(mrc, 0.00))
 
         inv_cropped_map = mrc.get_cropped(ps, 5.0, True)
         inv_c_cent = inv_cropped_map.get_centroid()
