@@ -35,7 +35,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(IMP.algebra.get_distance(
                 scene_bb.get_corner(i),
                 cropped_bb.get_corner(i)), 0, 2)
-        #cropped_scene.get_header().show()
+        cropped_scene.get_header().show()
         mrw = IMP.em.MRCReaderWriter()
         IMP.em.write_map(cropped_scene, "test2.mrc", mrw)
         dmap3 = IMP.em.read_map("test2.mrc", IMP.em.MRCReaderWriter())
