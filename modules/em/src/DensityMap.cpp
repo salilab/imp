@@ -1144,7 +1144,7 @@ DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse,
   for (long v=0; v<n_vox; ++v){
     vox_cent = cropped_map->get_location_by_voxel(v);    
     
-    // crop is a bool to decide whther we zero this voxel
+    // crop is a bool to decide whether we zero this voxel
     // Default value of crop is opposite of inverse
     // So inverse=true defaults to all voxels not cropped
     // (crop=false)
