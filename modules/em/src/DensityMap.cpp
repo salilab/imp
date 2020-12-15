@@ -1125,21 +1125,11 @@ DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse)
       // If we want a resultant map containing the particles
       // we create a new map using a bounding box based on 
       // the particle coordinates and distance threshold
-      algebra::Vector3D mincorner(100000,100000,100000);
-      algebra::Vector3D maxcorner(-100000,-100000,-100000);
       
-      // Get max/min coordinates of the inputted particle set
-      for(unsigned int i=0; i<coords.size(); ++i){
-        if(coords[i][0] < mincorner[0]) { mincorner[0]=coords[i][0];}
-        if(coords[i][0] > maxcorner[0]) { maxcorner[0]=coords[i][0];}
-        if(coords[i][1] < mincorner[1]) { mincorner[1]=coords[i][1];}
-        if(coords[i][1] > maxcorner[1]) { maxcorner[1]=coords[i][1];}
-        if(coords[i][2] < mincorner[2]) { mincorner[2]=coords[i][2];}
-        if(coords[i][2] > maxcorner[2]) { maxcorner[2]=coords[i][2];}
-      }
+      // Build a bounding box based on the input coordiantes
+      algebra::BoundingBox3D bb(coords);
 
-      // build a bounding box and add the distance threshold
-      algebra::BoundingBox3D bb(mincorner, maxcorner); 
+      // Add the distance threshold
       bb += distance;
 
       // Create a new cropped map based on this bounding box
