@@ -1148,7 +1148,7 @@ DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse,
     // Default value of crop is opposite of inverse
     // So inverse=true defaults to all voxels not cropped
     // (crop=false)
-    crop=!inverse;
+    crop = !inverse;
 
     // Check if any particle is within distance
     for(unsigned int i=0; i<coords.size(); ++i){
