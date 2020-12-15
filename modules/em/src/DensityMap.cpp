@@ -1113,7 +1113,7 @@ DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse)
   Pointer<DensityMap> cropped_map;
 
   // Always good to have a list of coordinates
-  for (unsigned int i=0; i<ps.size(); i++){
+  for (unsigned int i=0; i<ps.size(); ++i){
     coords.push_back(core::XYZ(ps[i]).get_coordinates());
   }
   
@@ -1129,7 +1129,7 @@ DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse)
       algebra::Vector3D maxcorner(-100000,-100000,-100000);
       
       // Get max/min coordinates of the inputted particle set
-      for(unsigned int i=0;i<coords.size();i++){
+      for(unsigned int i=0; i<coords.size(); ++i){
         if(coords[i][0] < mincorner[0]) { mincorner[0]=coords[i][0];}
         if(coords[i][0] > maxcorner[0]) { maxcorner[0]=coords[i][0];}
         if(coords[i][1] < mincorner[1]) { mincorner[1]=coords[i][1];}
@@ -1150,7 +1150,7 @@ DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse)
   long n_vox = cropped_map->get_number_of_voxels();
   
   // Loop over all voxels
-  for (long v=0; v<n_vox; v++){
+  for (long v=0; v<n_vox; ++v){
     vox_cent = cropped_map->get_location_by_voxel(v);    
     
     // crop is a bool to decide whther we zero this voxel
@@ -1160,7 +1160,7 @@ DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse)
     crop=!inverse;
 
     // Check if any particle is within distance
-    for(unsigned int i=0; i<coords.size(); i++){
+    for(unsigned int i=0; i<coords.size(); ++i){
       vox_dist = algebra::get_distance(vox_cent, coords[i]);
       
       // If any particle is within distance, 
