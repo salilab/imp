@@ -133,6 +133,11 @@ class Tests(IMP.test.TestCase):
         ccc = IMP.em.CoarseCC.cross_correlation_coefficient(inv_cropped_map, mrc, 0)
         self.assertGreater(ccc, 0.99)
 
+        # Test the keep_em_size flag
+        cropped_map_keep = mrc.get_cropped(ps, 5.0, False, True)
+        
+        self.assertEqual(mrc.get_number_of_voxels(), cropped_map_keep.get_number_of_voxels())
+
     def test_crop_using_smaller_extent(self):
         """Test the cropping functionality works when the input bb is larger than the density"""
         mrw = IMP.em.MRCReaderWriter()

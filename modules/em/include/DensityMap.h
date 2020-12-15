@@ -387,7 +387,7 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
       \param[in] inverse Set to true to crop the particle volume of the map
       \return the new cropped map.
    */
-  DensityMap *get_cropped(Particles ps, double distance, bool inverse = false);
+  DensityMap *get_cropped(Particles ps, double distance, bool inverse = false, bool keep_map_dimensions = false);
 
   //! Create and return a new cropped map with the given bounding box extent
   /** \param[in] bb the bounding box

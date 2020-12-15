@@ -1104,7 +1104,7 @@ DensityMap *DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
   return cropped_dmap.release();
 }
 
-DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse) {
+DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse, bool keep_map_dimensions) {
   
   algebra::Vector3Ds coords;
   algebra::Vector3D vox_cent;
@@ -1118,7 +1118,7 @@ DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse)
     coords.push_back(core::XYZ(ps[i]).get_coordinates());
   }
   
-  if(inverse==true) {
+  if(inverse==true || keep_map_dimensions==true) {
       // For an inverse map, we simply make a clone of the 
       // current map, since the bounds will be the same
       cropped_map = create_density_map(this);
