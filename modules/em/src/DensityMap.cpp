@@ -1109,6 +1109,7 @@ DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse)
   algebra::Vector3Ds coords;
   algebra::Vector3D vox_cent;
   double vox_dist; 
+  double dsq=distance*distance; // square of distance (for comparisons)
   bool crop;
   Pointer<DensityMap> cropped_map;
 
@@ -1151,11 +1152,11 @@ DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse)
 
     // Check if any particle is within distance
     for(unsigned int i=0; i<coords.size(); ++i){
-      vox_dist = algebra::get_distance(vox_cent, coords[i]);
+      vox_dist = algebra::get_squared_distance(vox_cent, coords[i]);
       
       // If any particle is within distance, 
       // we reverse our cropping decision and break
-      if(vox_dist < distance){ 
+      if(vox_dist < dsq){ 
 	crop=inverse;
         break;
       } 
