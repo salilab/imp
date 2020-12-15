@@ -1122,7 +1122,7 @@ DensityMap *DensityMap::get_cropped(Particles ps, float distance, bool inverse) 
       // current map, since the bounds will be the same
       cropped_map = create_density_map(this);
   } else {
-      // If we want a resultant map contining the particles
+      // If we want a resultant map containing the particles
       // we create a new map using a bounding box based on 
       // the particle coordinates and distance threshold
       algebra::Vector3D mincorner(100000,100000,100000);
