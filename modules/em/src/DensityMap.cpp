@@ -1104,11 +1104,11 @@ DensityMap *DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
   return cropped_dmap.release();
 }
 
-DensityMap *DensityMap::get_cropped(Particles ps, float distance, bool inverse) {
+DensityMap *DensityMap::get_cropped(Particles ps, double distance, bool inverse) {
   
   algebra::Vector3Ds coords;
   algebra::Vector3D vox_cent;
-  float vox_dist; 
+  double vox_dist; 
   bool crop;
   Pointer<DensityMap> cropped_map;
 
