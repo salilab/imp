@@ -379,7 +379,7 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
       All voxel centers farther than [distance] away from any
       particle center in [ps] will have their density value set to 0.0.
       
-      setting inverse to true will set all voxel centeres within
+      setting inverse to true will set all voxel centers within
       [distance] of a particle to 0.0.
 
       \param[in] ps List of particles used to crop map
