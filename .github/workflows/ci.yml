@@ -1,0 +1,47 @@
+name: CI
+on: [push, pull_request]
+
+env:
+  CXXFLAGS: "-fprofile-arcs -ftest-coverage"
+
+jobs:
+  test:
+    name: "Python ${{ matrix.python-version }} / ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: ["2.7", "3.6"]
+        os: [ubuntu-18.04]
+        compiler: [gcc]
+    env:
+      CC: ${{ matrix.compiler }}
+      PY2: ${{ startsWith(matrix.python-version, 2) && 'on' || 'off' }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -qq libboost-all-dev swig libhdf5-serial-dev libeigen3-dev \
+            python-numpy python3-biopython python3-numpy cmake libcgal-dev libcgal-qt5-dev \
+            libfftw3-dev libopencv-dev libgsl0-dev python-dev python3-dev libann-dev \
+            libprotobuf-dev protobuf-compiler python-protobuf python3-protobuf \
+            libopenmpi-dev python-nose python3-nose
+          if [ "${{ env.PY2 }}" == "on" ]
+          then
+            sudo apt-get install -qq python-dev python-numpy python-protobuf \
+                                     python-nose python-pip
+            export PIP=pip2
+          else
+            sudo apt-get install -qq python3-dev python3-numpy python3-protobuf \
+                                     python3-nose python3-pip
+            export PIP=pip3
+          fi
+          $PIP install codecov
+      - name: Set up git
+        run: ./setup_git.py
+      - name: Build IMP
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DUSE_PYTHON2=${{ env.PY2 }} -DCMAKE_CXX_FLAGS="${{ env.CXXFLAGS }}" -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/
+          make -k -j 2
