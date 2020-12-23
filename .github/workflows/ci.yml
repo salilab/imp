@@ -29,7 +29,7 @@ jobs:
             libfftw3-dev libopencv-dev libgsl0-dev python-dev python3-dev libann-dev \
             libprotobuf-dev protobuf-compiler python-protobuf python3-protobuf \
             libopenmpi-dev python-nose python3-nose
-          if [ ${{ env.PY2 }} == 2 ]
+          if [ "${{ env.PY2 }}" == "on" ]
           then
             sudo apt-get install -qq python-dev python-numpy python-protobuf \
                                      python-nose python-pip
