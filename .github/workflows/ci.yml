@@ -40,10 +40,6 @@ jobs:
             export PIP=pip3
           fi
           $PIP install codecov
-          # IMP tests use sys.argv[0] to determine their location, which won't work if
-          # we use nosetests, so add a workaround
-          mkdir test
-          ln -sf $(which nosetests) test/
       - name: Set up git
         run: ./setup_git.py
       - name: Build IMP
@@ -54,8 +50,13 @@ jobs:
           make -k -j 2
       - name: Run tests
         run: |
+          if [ "${{ env.PY2 }}" == "on" ]
+            NOSE=nosetests
+          else
+            NOSE=nosetests3
+          fi
           cd build
-          ./setup_environment.sh ../test/nosetests --with-coverage --cover-branches -e 'probabilistic' ../test/test_*.py ../test/medium_test_*.py test/*/*.py > /dev/null
+          ./setup_environment.sh $NOSE --with-coverage --cover-branches ../test/test_*.py ../test/medium_test_*.py test/*/*.py > /dev/null
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
