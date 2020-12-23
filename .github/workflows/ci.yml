@@ -46,7 +46,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -DUSE_PYTHON2=${{ env.PY2 }} -DCMAKE_CXX_FLAGS="${{ env.CXXFLAGS }}"
+          cmake .. -DUSE_PYTHON2=${{ env.PY2 }} -DCMAKE_CXX_FLAGS="${{ env.CXXFLAGS }}" -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/
           make -k -j 2
       - name: Run tests
         run: |
