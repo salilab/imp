@@ -50,7 +50,7 @@ jobs:
           make -k -j 2
       - name: Run tests
         run: |
-          if [ "${{ env.PY2 }}" == "on" ]
+          if [ "${{ env.PY2 }}" == "on" ]; then
             NOSE=nosetests
           else
             NOSE=nosetests3
