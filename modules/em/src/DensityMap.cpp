@@ -11,6 +11,7 @@
 #include <IMP/em/XplorReaderWriter.h>
 #include <IMP/em/EMReaderWriter.h>
 #include <IMP/em/SpiderReaderWriter.h>
+#include <IMP/core/XYZ.h>
 
 IMPEM_BEGIN_NAMESPACE
 namespace {
