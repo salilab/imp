@@ -117,6 +117,10 @@ private:
 
   //! Add CHARMM atom types to the given Hierarchy using this topology.
   /** The primary sequence of the Hierarchy must match that of the topology.
+      A warning will be printed for any atoms that cannot be found in the
+      topology (and no CHARMM atom type will be assigned). Any atoms that
+      already have a CHARMM atom type and that are present in the topology
+      will have that type reassigned.
       \see CHARMMAtom.
    */
   void add_atom_types(Hierarchy hierarchy) const;

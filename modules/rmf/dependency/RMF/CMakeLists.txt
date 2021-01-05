@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(RMF)
 
 # needs to be in main CMakeLists.txt
@@ -8,6 +8,11 @@ enable_testing()
 if(POLICY CMP0094)
 cmake_policy(SET CMP0094 NEW)
 endif(POLICY CMP0094)
+
+# Use new-style variables/escapes
+if(POLICY CMP0053)
+cmake_policy(SET CMP0053 NEW)
+endif(POLICY CMP0053)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake_modules)
 include(cmake_modules/IMPFindPython.cmake)

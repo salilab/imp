@@ -605,6 +605,33 @@ class Tests(IMP.test.TestCase):
         atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(atoms), 7)
 
+    def test_warn_previously_typed(self):
+        """Test warning about previously-typed CHARMM atoms"""
+        m = IMP.Model()
+        pdb = IMP.atom.read_pdb(
+            self.get_input_file_name('charmm_type_test.pdb'), m)
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
+        atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
+        # Set manual CHARMM atom types
+        dum, = [a for a in atoms
+                if IMP.atom.Atom(a).get_atom_type().get_string() == 'DUM']
+        ca1, ca2, = [a for a in atoms
+                if IMP.atom.Atom(a).get_atom_type().get_string() == 'CA']
+        IMP.atom.CHARMMAtom.setup_particle(dum, "OD")
+        IMP.atom.CHARMMAtom.setup_particle(ca1, "N")
+
+        topology = ff.create_topology(pdb)
+        topology.apply_default_patches()
+        topology.add_atom_types(pdb)
+
+        # dum should have kept its original type, OD
+        self.assertEqual(IMP.atom.CHARMMAtom(dum).get_charmm_type(), 'OD')
+        # ca1 should have been assigned the correct type
+        self.assertEqual(IMP.atom.CHARMMAtom(ca1).get_charmm_type(), 'CT1')
+        untyped = IMP.atom.get_charmm_untyped_atoms(pdb)
+        self.assertEqual(len(untyped), 0)
+
     def test_add_missing_atoms(self):
         """Test adding missing atoms"""
         m = IMP.Model()

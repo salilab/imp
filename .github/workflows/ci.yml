@@ -32,11 +32,11 @@ jobs:
           if [ "${{ env.PY2 }}" == "on" ]
           then
             sudo apt-get install -qq python-dev python-numpy python-protobuf \
-                                     python-nose python-pip
+                                     python-nose python-pip python-biopython
             export PIP=pip2
           else
             sudo apt-get install -qq python3-dev python3-numpy python3-protobuf \
-                                     python3-nose python3-pip
+                                     python3-nose python3-pip python3-biopython
             export PIP=pip3
           fi
           $PIP install codecov

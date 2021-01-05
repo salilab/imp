@@ -4,12 +4,18 @@
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/Particle.h>
 #include <boost/timer.hpp>
+#include <boost/version.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/internal/AccumulatorScoreModifier.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/flags.h>
 #include <IMP/container/PairContainerSet.h>
 #include <IMP/container/ListPairContainer.h>
+
+#if BOOST_VERSION >= 107300
+using namespace boost::placeholders;
+#endif
+
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;

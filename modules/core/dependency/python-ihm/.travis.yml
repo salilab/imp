@@ -1,4 +1,4 @@
-sudo: false
+os: linux
 language: python
 dist: xenial
 python:
@@ -6,7 +6,7 @@ python:
   - 3.6
   - 3.7
   - 3.8
-matrix:
+jobs:
   include:
     - dist: trusty
       python: 2.6

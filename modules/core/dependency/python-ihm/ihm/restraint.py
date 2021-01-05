@@ -541,7 +541,9 @@ class ResidueFeature(Feature):
 
     def _get_entity_type(self):
         def _get_entity(x):
-            return x if isinstance(x, ihm.Entity) else x.entity
+            if isinstance(x, ihm.Entity):
+                return x
+            return x.entity if x.entity else x.asym.entity
         if any(not _get_entity(r).is_polymeric() for r in self.ranges):
             raise ValueError("%s cannot select non-polymeric entities" % self)
         else:

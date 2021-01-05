@@ -46,8 +46,7 @@ class MonteCarlo(object):
     def __init__(self, model, objects=None, temp=1.0, filterbyname=None):
         """Setup Monte Carlo sampling
         @param model         The IMP Model
-        @param objects       What to sample. Use flat list of particles or
-               (deprecated) 'MC Sample Objects' from PMI1
+        @param objects       What to sample. Use flat list of particles
         @param temp The MC temperature
         @param filterbyname Not used
         """
@@ -392,7 +391,7 @@ class MolecularDynamics(object):
     def __init__(self,model,objects,kt,gamma=0.01,maximum_time_step=1.0,sf=None):
         """Setup MD
         @param model The IMP Model
-        @param objects What to sample. Use flat list of particles or (deprecated) 'MD Sample Objects' from PMI1
+        @param objects What to sample. Use flat list of particles
         @param kt Temperature
         @param gamma Viscosity parameter
         @param maximum_time_step MD max time step

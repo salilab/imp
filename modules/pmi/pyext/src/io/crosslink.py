@@ -903,45 +903,37 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         cross-link UniqueIDS, the cross-links will be appended under the same UniqueID slots
         with different SubIDs
         '''
-        pass
+        raise NotImplementedError()
 
-    def append_database(self,CrossLinkDataBase2):
-        '''
-        This function append one cross-link dataset to another. Unique ids will be renamed to avoid
-        conflicts.
-        '''
-        name1=self.get_name()
-        name2=CrossLinkDataBase2.get_name()
-        if name1 == name2:
-            name1=id(self)
-            name2=id(CrossLinkDataBase2)
-            self.set_name(name1)
-            CrossLinkDataBase2.set_name(name2)
-
-        #rename first database:
-        new_data_base={}
+    def append_database(self, db):
+        """Append cross-link dataset to this one."""
+        new_data_base = {}
         for k in self.data_base:
-            new_data_base[k]=self.data_base[k]
-        for k in CrossLinkDataBase2.data_base:
-            new_data_base[k]=CrossLinkDataBase2.data_base[k]
-        self.data_base=new_data_base
+            new_data_base[k] = self.data_base[k]
+        for k in db.data_base:
+            new_data_base[k]  = db.data_base[k]
+        self.data_base = new_data_base
         self._update()
 
-    def set_value(self,key,new_value,FilterOperator=None):
+    def __iadd__(self, db):
+        self.append_database(db)
+        return self
+
+    def set_value(self, key, new_value, filter_operator=None):
         '''
         This function changes the value for a given key in the database
         For instance one can change the name of a protein
         @param key: the key in the database that must be changed
         @param new_value: the new value of the key
-        @param FilterOperator: optional FilterOperator to change the value to
+        @param filter_operator: optional FilterOperator to change the value to
                                a subset of the database
 
         example: `cldb1.set_value(cldb1.protein1_key,'FFF',FO(cldb.protein1_key,operator.eq,"AAA"))`
         '''
 
         for xl in self:
-            if FilterOperator is not None:
-                if FilterOperator.evaluate(xl):
+            if filter_operator is not None:
+                if filter_operator.evaluate(xl):
                     xl[key]=new_value
             else:
                 xl[key]=new_value

@@ -92,7 +92,7 @@ class UniProtSequence(Sequence):
         with urllib2.urlopen(url) as fh:
             header = decode(fh.readline())
             spl = header.split('|')
-            if len(spl) < 3 or spl[0] != '>sp':
+            if len(spl) < 3 or spl[0] not in ('>sp', '>tr'):
                 raise ValueError("Cannot parse UniProt header %s" % header)
             cd = spl[2].split(None, 1)
             code = cd[0]

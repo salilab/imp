@@ -117,6 +117,7 @@ class MembraneRestraint(IMP.test.TestCase):
                 self.assertAlmostEqual(
                     r.unprotected_evaluate(None), r2.unprotected_evaluate(None),
                     delta=1e-4)
+        self.assertEqual(r2.get_inputs(), [atom, z_center.get_particle()])
 
     def test_above(self):
         m = IMP.Model()

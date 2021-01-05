@@ -36,30 +36,8 @@ class Tests(unittest.TestCase):
         e1 = ihm.Entity('AAAA')
         asym = ihm.AsymUnit(e1)
         s = ihm.startmodel.StartingModel(asym, 'mock_dataset', 'A', offset=10)
-        r = s._get_seq_id_range_all_templates()
-        self.assertEqual(r.seq_id_range, (1,4))
         self.assertEqual(s.get_atoms(), [])
         self.assertEqual(s.get_seq_dif(), [])
-
-    def test_starting_model_templates(self):
-        """Test StartingModel class, with templates"""
-        e1 = ihm.Entity('A' * 30)
-        asym = ihm.AsymUnit(e1)
-        # This template extends outside the range of the starting model;
-        # should be truncated to start at 5
-        s1 = ihm.startmodel.Template(dataset='1abc', asym_id='C',
-                             seq_id_range=(0,9), # 1,10 in IHM numbering
-                             template_seq_id_range=(101,110),
-                             sequence_identity=30.)
-        # This should extend the range to 20
-        s2 = ihm.startmodel.Template(dataset='2xyz', asym_id='D',
-                             seq_id_range=(14, 19), # 15,20 in IHM numbering
-                             template_seq_id_range=(115,120),
-                             sequence_identity=40.)
-        s = ihm.startmodel.StartingModel(asym(5,25), 'mock_dataset', 'A',
-                                         [s1, s2], offset=1)
-        self.assertEqual(s._get_seq_id_range_all_templates().seq_id_range,
-                         (5,20))
 
     def test_seq_dif(self):
         """Test SeqDif class"""

@@ -5,6 +5,7 @@ import IMP.core
 import IMP.algebra
 import IMP.atom
 import IMP.container
+import os
 
 import IMP.pmi.io.crosslink
 
@@ -344,6 +345,12 @@ class Tests(IMP.test.TestCase):
         nentry=len([xl for xl in cldb if (xl[cldb.protein1_key]=="AAA")])
         self.assertEqual(len(cldb1),nentry)
 
+    def test_filter_score(self):
+        """Test CrossLinkDatabase.filter_score()"""
+        cldb = self.setup_cldb("xl_dataset_test.dat")
+        cldb1 = cldb.filter_score(10)
+        self.assertEqual(len(cldb1), 5)
+
     def test_clone_protein(self):
         cldb=self.setup_cldb("xl_dataset_test.dat")
         expected_crosslinks=[]
@@ -382,9 +389,41 @@ class Tests(IMP.test.TestCase):
             final_list.append(IMP.pmi.io.crosslink._ProteinsResiduesArray(xl))
         self.assertEqual(test_list,final_list)
 
+    def test_str(self):
+        """Test CrossLinkDatabase.__str__"""
+        cldb = self.setup_cldb("xl_dataset_test.dat")
+        self.assertEqual(str(cldb)[:129], """1
+--- XLUniqueID 1
+--- XLUniqueSubIndex 1
+--- XLUniqueSubID 1.1
+--- Protein1 AAA
+--- Protein2 AAA
+--- Residue1 1
+--- Residue2 10
+""")
+
+    def test_dump_load(self):
+        """Test JSON dump/load"""
+        cldb = self.setup_cldb("xl_dataset_test.dat")
+        cldb.dump('test_dump_load.json')
+        cldb = self.setup_cldb("xl_dataset_test.dat")
+        cldb.load('test_dump_load.json')
+        os.unlink('test_dump_load.json')
+
+    def test_save_csv(self):
+        """Test CrossLinkDatabase.save_csv()"""
+        cldb = self.setup_cldb("xl_dataset_test.dat")
+        cldb.save_csv("test_save_csv.csv")
+        os.unlink("test_save_csv.csv")
+
+    def test_get_number_of_unique_crosslinked_sites(self):
+        """Test CrossLinkDatabase.get_number_of_unique_crosslinked_sites()"""
+        cldb = self.setup_cldb("xl_dataset_test.dat")
+        self.assertEqual(cldb.get_number_of_unique_crosslinked_sites(), 18)
 
     def test_jackknife(self):
         cldb=self.setup_cldb("xl_dataset_test.dat")
+        self.assertRaises(ValueError, cldb.jackknife, -1.0)
         # assess size
         cldb100=cldb.jackknife(1.0)
         self.assertEqual(cldb.get_number_of_xlid(),cldb100.get_number_of_xlid())
@@ -416,13 +455,22 @@ class Tests(IMP.test.TestCase):
         pass
 
     def test_merge_cldbkc(self):
-        pass
+        """Test CrossLinkDatabase.merge()"""
+        cldb1=self.setup_cldb("xl_dataset_test.dat")
+        self.assertRaises(NotImplementedError, cldb1.merge, None, None)
 
     def test_append_cldbkc(self):
+        """Test CrossLinkDatabase.append_database()"""
         cldb1=self.setup_cldb("xl_dataset_test.dat")
         cldb2=self.setup_cldb("xl_dataset_test_2.dat")
         cldb1.append_database(cldb2)
-        pass
+        self.assertEqual(len(cldb1.data_base), 10)
+
+        # Test operator
+        cldb3=self.setup_cldb("xl_dataset_test.dat")
+        cldb4=self.setup_cldb("xl_dataset_test_2.dat")
+        cldb3 += cldb4
+        self.assertEqual(cldb1.data_base, cldb3.data_base)
 
     def test_set_value(self):
         import operator
@@ -431,6 +479,7 @@ class Tests(IMP.test.TestCase):
         cldb2=self.setup_cldb("xl_dataset_test.dat")
         cldb1.set_value(cldb1.protein1_key,'FFF',FO(cldb1.protein1_key,operator.eq,"AAA"))
         cldb1.set_value(cldb1.protein2_key,'HHH',FO(cldb1.protein2_key,operator.eq,"AAA"))
+        cldb1.set_value(cldb1.id_score_key, 0)
 
         protein_names_1=[]
         for xl in cldb1:
@@ -453,6 +502,12 @@ class Tests(IMP.test.TestCase):
 
         self.assertEqual(protein_names_1,new_protein_names)
 
+    def test_get_values(self):
+        """Test CrossLinkDatabase.get_values()"""
+        cldb = self.setup_cldb("xl_dataset_test.dat")
+        self.assertEqual(cldb.get_values(cldb.protein1_key),
+                ['AAA', 'BBB', 'CCC'])
+
     def test_offset_residue(self):
         import operator
         from IMP.pmi.io.crosslink import FilterOperator as FO
@@ -474,6 +529,40 @@ class Tests(IMP.test.TestCase):
             if r[1]=='AAA':
                 self.assertEqual(r[3],records_2[n][3]+100)
 
+    def test_create_new_keyword(self):
+        """Test CrossLinkDatabase.create_new_keyword()"""
+        cldb = self.setup_cldb("xl_dataset_test.dat")
+        cldb.create_new_keyword("myp1", cldb.protein1_key)
+        cldb.create_new_keyword("newkey")
+        self.assertEqual(cldb.get_values("myp1"), ['AAA', 'BBB', 'CCC'])
+        self.assertEqual(cldb.get_values("newkey"), [None])
+
+    def test_rename_proteins(self):
+        """Test CrossLinkDatabase.rename_proteins()"""
+        cldb = self.setup_cldb("xl_dataset_test.dat")
+        cldb.rename_proteins({'AAA':'XXX'}, "protein1")
+        self.assertEqual(cldb.get_values(cldb.protein1_key),
+                ['BBB', 'CCC', 'XXX'])
+        self.assertEqual(cldb.get_values(cldb.protein2_key),
+                ['AAA', 'BBB', 'CCC'])
+        cldb.rename_proteins({'BBB':'XXX', 'CCC':'YYY'}, "protein2")
+        self.assertEqual(cldb.get_values(cldb.protein1_key),
+                ['BBB', 'CCC', 'XXX'])
+        self.assertEqual(cldb.get_values(cldb.protein2_key),
+                ['AAA', 'XXX', 'YYY'])
+        cldb.rename_proteins({'XXX':'ZZZ'})
+        self.assertEqual(cldb.get_values(cldb.protein1_key),
+                ['BBB', 'CCC', 'ZZZ'])
+        self.assertEqual(cldb.get_values(cldb.protein2_key),
+                ['AAA', 'YYY', 'ZZZ'])
+
+    def test_classify_crosslinks_by_score(self):
+        """Test CrossLinkDatabase.classify_crosslinks_by_score()"""
+        cldb = self.setup_cldb("xl_dataset_test.dat")
+        cldb.classify_crosslinks_by_score(3)
+        self.assertEqual(cldb.get_values(cldb.psi_key),
+                ['CLASS_0', 'CLASS_1', 'CLASS_2'])
+
     def test_jaccard_distance(self):
         try:
             import scipy.spatial
@@ -489,6 +578,24 @@ class Tests(IMP.test.TestCase):
         jdm=IMP.pmi.io.crosslink.JaccardDistanceMatrix(ddb)
         self.assertAlmostEqual(jdm.get_distance(1,2), 0.0, delta=1e-3)
         self.assertAlmostEqual(jdm.get_distance(1,3), 0.875, delta=1e-3)
+
+    def test_plot_matrix(self):
+        """Test JaccardDistanceMatrix.plot_matrix()"""
+        try:
+            import matplotlib
+            import scipy.spatial
+        except ImportError:
+            self.skipTest("no scipy spatial or matplotlib")
+        cldb1=self.setup_cldb("xl_dataset_test.dat")
+        cldb2=self.setup_cldb("xl_dataset_test.dat")
+        cldb3=self.setup_cldb("xl_dataset_test.dat")
+        cldb3.offset_residue_index('AAA',100)
+
+        ddb={1:cldb1,2:cldb2,3:cldb3}
+        jdm=IMP.pmi.io.crosslink.JaccardDistanceMatrix(ddb)
+        jdm.plot_matrix("test_plot_matrix.pdf")
+        os.unlink("matrix.test_plot_matrix.pdf")
+        os.unlink("dendrogram.test_plot_matrix.pdf")
 
     def test_check_consistency(self):
         seqs = IMP.pmi.topology.Sequences(self.get_input_file_name("proteasome.fasta"))
