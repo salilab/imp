@@ -2,7 +2,7 @@
  *  \file IMP/em2d/domino_filters.h
  *  \brief SubsetFilter for checking overlap between projections and images
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

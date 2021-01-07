@@ -2,7 +2,7 @@
  *  \file spb_ISD_particles.cpp
  *  \brief SPB ISD particles
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/core.h>

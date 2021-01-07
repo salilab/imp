@@ -3,7 +3,7 @@
  *  \brief Use a ClassnameModifier applied to a PLURALVARIABLETYPE to
  *  maintain an invariant
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLASSNAMES_OPTIMIZER_STATE_H

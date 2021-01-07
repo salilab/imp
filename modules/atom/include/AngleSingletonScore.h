@@ -2,7 +2,7 @@
  *  \file IMP/atom/AngleSingletonScore.h
  *  \brief A score on the deviation of an angle from ideality.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_ANGLE_SINGLETON_SCORE_H

@@ -3,7 +3,7 @@
  *  \brief computation of molecular volumetrics :
  *   surface and area of an union of balls
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/cgal/internal/union_of_balls.h>

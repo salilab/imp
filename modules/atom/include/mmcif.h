@@ -2,7 +2,7 @@
  *  \file IMP/atom/mmcif.h
  *  \brief Functions to read PDBs in mmCIF format
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

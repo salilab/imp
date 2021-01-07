@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Rotation2D.h
  *  \brief Represent a rotation in 2D space.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_ROTATION_2D_H

@@ -4,7 +4,7 @@
  *         a pair of particles. The score equals zero for
  *         non-positive directed distances.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_HARMONIC_UPPER_BOUND_H

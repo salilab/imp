@@ -2,7 +2,7 @@
  *  \file EMHeader.cpp
  *  \brief Header information for files in EM format.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

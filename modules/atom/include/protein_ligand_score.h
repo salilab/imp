@@ -2,7 +2,7 @@
  *  \file IMP/atom/protein_ligand_score.h
  *  \brief Functions to read mol2s
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/mpi/ReplicaExchange.h
  *  \brief A class to do replica exchange in a generic Hamiltonian parameter
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMPI_REPLICA_EXCHANGE_H

@@ -1,7 +1,7 @@
 /**
  *  \file IMP/multifit/merge_tree_utils.h
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMULTIFIT_MERGE_TREE_UTILS_H

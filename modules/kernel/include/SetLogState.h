@@ -1,7 +1,7 @@
 /**
  *  \file IMP/SetLogState.h     \brief A class to change and restore log state
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

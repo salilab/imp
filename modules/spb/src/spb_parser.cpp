@@ -2,7 +2,7 @@
  *  \file spb_parser.cpp
  *  \brief SPB parser
  *
-*  Copyright 2007-2020 IMP Inventors. All rights reserved.
+*  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/base_types.h>

@@ -2,7 +2,7 @@
  *  \file IMP/display/geometry.h
  *  \brief Backwards compatibility header.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_GEOMETRY_H

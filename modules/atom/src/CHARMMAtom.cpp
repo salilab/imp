@@ -2,7 +2,7 @@
  *  \file atom/CHARMMAtom.h
  *  \brief A decorator for an atom that has a defined CHARMM type.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

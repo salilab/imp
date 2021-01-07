@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/PointToSphereDistance.h
  *  \brief A Score on the distance between a point and a sphere.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_POINT_TO_SPHERE_DISTANCE_H

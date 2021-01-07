@@ -1,7 +1,7 @@
 /**
  *  \file IMP/algebra/Vector3D.h   \brief Simple 3D vector class.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

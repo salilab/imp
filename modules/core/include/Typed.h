@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/Typed.h     \brief A particle with a user-defined type.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

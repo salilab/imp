@@ -1,7 +1,7 @@
 /**
  *  \file Surface.cpp   \brief Simple surface decorator.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/core/Surface.h>

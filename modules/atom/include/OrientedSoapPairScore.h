@@ -2,7 +2,7 @@
  *  \file IMP/atom/OrientedSoapPairScore.h
  *  \brief Orientation-dependent SOAP scoring
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/RestraintInfo.h
  *  \brief Report key:value information on restraints
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

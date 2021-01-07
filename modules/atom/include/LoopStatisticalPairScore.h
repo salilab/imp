@@ -2,7 +2,7 @@
  *  \file IMP/atom/LoopStatisticalPairScore.h
  *  \brief Fiser/Melo loop modeling statistical potential
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

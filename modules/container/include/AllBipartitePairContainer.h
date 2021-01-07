@@ -2,7 +2,7 @@
  *  \file IMP/container/AllBipartitePairContainer.h
  *  \brief Return all bipartite pairs between two containers
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_ALL_BIPARTITE_PAIR_CONTAINER_H

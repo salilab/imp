@@ -2,7 +2,7 @@
  *  \file IMP/algebra/Cone3D.h
  *  \brief Represent a cone in 3D.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_CONE_3D_H

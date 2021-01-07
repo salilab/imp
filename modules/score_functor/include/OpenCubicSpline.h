@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/OpenCubicSpline.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_OPEN_CUBIC_SPLINE_H

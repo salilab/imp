@@ -2,7 +2,7 @@
  *  \file RigidBodyMover.cpp
  *  \brief A mover that keeps a rigid body in a box
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/symmetry/RigidBodyMover.h>

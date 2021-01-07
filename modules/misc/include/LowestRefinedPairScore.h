@@ -2,7 +2,7 @@
  *  \file IMP/misc/LowestRefinedPairScore.h
  *  \brief Score on the lowest scoring pair of the refined pairs.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMISC_LOWEST_REFINED_PAIR_SCORE_H

@@ -2,7 +2,7 @@
  *  \file  Sphere3D.cpp
  *  \brief simple implementation of spheres in 3D
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 #include "IMP/algebra/Sphere3D.h"
 #include <IMP/Index.h>

@@ -1,7 +1,7 @@
 /**
  *  \file grid_range_D.h   \brief Simple D vector class.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
