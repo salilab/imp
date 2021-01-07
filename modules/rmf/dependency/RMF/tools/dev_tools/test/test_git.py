@@ -2,10 +2,10 @@ import unittest
 import subprocess
 import os
 import utils
-import sys
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 setup_git = os.path.join(TOPDIR, 'git', 'setup_git.py')
+
 
 class Tests(unittest.TestCase):
 
@@ -25,7 +25,7 @@ class Tests(unittest.TestCase):
            in the PATH."""
         git = os.path.join(d, 'git')
         utils.write_file(git, "#!/bin/sh")
-        os.chmod(git, 493) # 493 = 0755
+        os.chmod(git, 493)  # 493 = 0755
         env = os.environ.copy()
         env['PATH'] = d + os.pathsep + env['PATH']
         return env
@@ -68,6 +68,7 @@ class Tests(unittest.TestCase):
             p = subprocess.Popen([setup_git], cwd=tmpdir)
             stdout, stderr = p.communicate()
             self.assertEqual(p.returncode, 0)
+
 
 if __name__ == '__main__':
     unittest.main()

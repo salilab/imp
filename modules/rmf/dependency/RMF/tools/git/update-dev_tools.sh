@@ -6,4 +6,4 @@ SCRIPT_DIR="$(dirname "$0")"
 
 source "${SCRIPT_DIR}/../dev_tools/git/subtree-utils.sh"
 
-pull tools/dev_tools git@github.com:salilab/developer_tools.git master salilab/developer_tools
+pull tools/dev_tools git@github.com:salilab/developer_tools.git main salilab/developer_tools

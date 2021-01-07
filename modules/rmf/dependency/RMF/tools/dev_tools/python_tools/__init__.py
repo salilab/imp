@@ -3,7 +3,6 @@ import glob
 import os
 import ast
 import os.path
-import copy
 import shutil
 import sys
 import difflib
@@ -80,12 +79,12 @@ def rewrite(filename, contents, show_update=True, verbose=False):
             return
         elif verbose:
             print("    Different", filename)
-            for l in difflib.unified_diff(old.split("\n"),
-                                          contents.split("\n")):
-                stl = str(l)
+            for ln in difflib.unified_diff(old.split("\n"),
+                                           contents.split("\n")):
+                stl = str(ln)
                 if stl[0] in ('-', '+') and stl[1] not in ('-', '+'):
                     print("    " + stl)
-    except:
+    except Exception:
         pass
         # print "Missing", filename
     if show_update:
@@ -99,7 +98,7 @@ def rewrite(filename, contents, show_update=True, verbose=False):
 def rmdir(path):
     try:
         shutil.rmtree(path)
-    except:
+    except Exception:
         pass
 
 
@@ -167,7 +166,7 @@ def get_modules(source):
     globs = get_glob([path])
     mods = [(os.path.split(g)[1], g)
             for g in globs if os.path.split(g)[1] != "SConscript"
-                         and os.path.exists(os.path.join(g, "dependencies.py"))]
+            and os.path.exists(os.path.join(g, "dependencies.py"))]
     return mods
 
 
@@ -176,7 +175,8 @@ def get_modules(source):
 
 def split(string, sep=":"):
     return([x.replace("@", ":")
-            for x in string.replace("\:", "@").split(sep) if x != ""])
+            for x in string.replace("\\:", "@").split(sep) if x != ""])
+
 
 def get_project_info(path):
     cp = os.path.join(path, ".imp_info.py")
@@ -187,6 +187,7 @@ def get_project_info(path):
         raise ValueError("no .imp_info.py found")
     else:
         return get_project_info(os.path.split(path)[0])
+
 
 _subprocesses = []
 
@@ -218,8 +219,9 @@ def _sigHandler(signum, frame):
         print("killing", p)
         try:
             os.kill(p.pid, signal.SIGTERM)
-        except:
+        except Exception:
             pass
     sys.exit(1)
+
 
 signal.signal(signal.SIGTERM, _sigHandler)

@@ -4,11 +4,13 @@ import os
 import sys
 import contextlib
 
+
 @contextlib.contextmanager
 def TempDir():
     _tmpdir = tempfile.mkdtemp()
     yield _tmpdir
     shutil.rmtree(_tmpdir, ignore_errors=True)
+
 
 @contextlib.contextmanager
 def RunInTempDir():
@@ -19,6 +21,7 @@ def RunInTempDir():
     os.chdir(_olddir)
     shutil.rmtree(_tmpdir, ignore_errors=True)
 
+
 @contextlib.contextmanager
 def mocked_function(module, funcname, replacement):
     """Temporarily replace module.funcname with replacement."""
@@ -27,13 +30,16 @@ def mocked_function(module, funcname, replacement):
     yield
     setattr(module, funcname, oldfunc)
 
+
 def write_file(fname, content):
     with open(fname, "w") as fh:
         fh.write(content)
 
+
 def read_file(fname):
     with open(fname, "r") as fh:
         return fh.read()
+
 
 if 'coverage' in sys.modules:
     import atexit

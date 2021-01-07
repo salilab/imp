@@ -20,6 +20,7 @@ except ImportError:
 
 from optparse import OptionParser
 
+
 def _check_do_not_commit(line, filename, num, errors):
     marker = 'DO NOT' + ' COMMIT'
     if line.find(marker) >= 0:
@@ -41,8 +42,6 @@ def check_c_file(filename, errors):
     altcppprefix = info["name"].replace(".", "").upper()
     with open(filename, "r") as f:
         fh = f.read().split("\n")
-    srch = re.compile('\s+$')
-    url = re.compile('https?://')
     blank = False
     file_line = False
     exported = filename.find("internal") == - \
@@ -73,7 +72,8 @@ def check_c_file(filename, errors):
                 if onum > num and oline.startswith(fline):
                     found = True
             if not found:
-                errors.append('%s:%d: error: Preprocessor symbols must start with %s or %s'
+                errors.append('%s:%d: error: Preprocessor symbols must start '
+                              'with %s or %s'
                               % (filename, num + 1, cppprefix, altcppprefix))
         blank = (len(line) == 0)
         if blank and num == 0:
@@ -90,9 +90,9 @@ def check_python_file(filename, errors):
     if Reindenter(open(filename)).run():
         errors.append('%s:1: Indentation is inconsistent; please run through '
                       'tools/dev_tools/cleanup_code.py' % filename)
-    temptest = re.compile('\s+def\s+temp_hide_test.*')
+    temptest = re.compile(r'\s+def\s+temp_hide_test.*')
     test = re.compile(
-        '\s+def\s+(test_[abcdefghijklmnopqrstuvwxyz0123456789_]*)\(')
+        r'\s+def\s+(test_[abcdefghijklmnopqrstuvwxyz0123456789_]*)\(')
     import_as = re.compile('[ ]*import [ ]*.* [ ]*as [ ]*.*')
     import_from = re.compile('[ ]*from [ ]*(.*) [ ]*import [ ]*.*')
     tests = []
@@ -101,10 +101,10 @@ def check_python_file(filename, errors):
     for (num, line) in enumerate(open(filename, "r")):
         if num == 0 and is_example:
             if not line.startswith("## "):
-                errors.append('%s:%d: Example does not have doxygen comments at start'
-                              % (filename, num + 1))
+                errors.append('%s:%d: Example does not have doxygen '
+                              'comments at start' % (filename, num + 1))
             if line.find("example") == -1:
-                errors.append('%s:%d: Example \example marker in first line'
+                errors.append('%s:%d: Example \\example marker in first line'
                               % (filename, num + 1))
         _check_do_not_commit(line, filename, num, errors)
         if temptest.match(line):
@@ -118,19 +118,19 @@ def check_python_file(filename, errors):
         if m:
             g = m.group(1)
             if g in tests:
-                errors.append('%s:%d: Test case has multiple tests with the same name %s'
-                              % (filename, num + 1, g))
+                errors.append('%s:%d: Test case has multiple tests with the '
+                              'same name %s' % (filename, num + 1, g))
             tests.append(m.group(1))
         if filename.find("test") == -1 and filename.find("example") != -1:
             if import_as.match(line):
                 errors.append(
-                    '%s:%d: Examples should not rename types on import as that confuses doxygen: ' %
-                    (filename, num + 1) + line)
+                    '%s:%d: Examples should not rename types on import as '
+                    'that confuses doxygen: ' % (filename, num + 1) + line)
             m = import_from.match(line)
             if m and m.group(1) != '__future__':
                 errors.append(
-                    '%s:%d: Examples should not use import from as that confuses doxygen: ' %
-                    (filename, num + 1) + line)
+                    '%s:%d: Examples should not use import from as that '
+                    'confuses doxygen: ' % (filename, num + 1) + line)
 
 
 def get_file(filename):
@@ -150,7 +150,8 @@ def check_modified_file(filename, errors):
        or filename.endswith('.c'):
         check_c_file(filename, errors)
         # don't check header guard in template headers
-        if cpp_format and filename.endswith('.h') and filename.find("templates") == -1:
+        if (cpp_format and filename.endswith('.h')
+                and filename.find("templates") == -1):
             cpp_format.check_header_file(
                 get_file(filename),
                 info["name"],
@@ -201,7 +202,7 @@ def main():
         for filename in expanded:
             try:
                 check_modified_file(filename, errors)
-            except:
+            except Exception:
                 print("Exception processing file " + filename)
                 traceback.print_exc()
     if len(errors) > 0:
@@ -209,6 +210,7 @@ def main():
         sys.stderr.write("\n".join(errors))
         sys.stderr.write("\n")
         sys.exit(1)
+
 
 if __name__ == '__main__':
     main()
