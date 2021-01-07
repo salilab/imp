@@ -119,6 +119,29 @@ class Tests(IMP.test.TestCase):
                       str(w.message))
         self.assertIs(w.category, IMP.pmi.StructureWarning)
 
+    def test_keep_chain_id(self):
+        """Check that keep_chain_id works"""
+        mdl = IMP.Model()
+        tfile = self.get_input_file_name('topology_keep_chain.txt')
+        input_dir = os.path.dirname(tfile)
+        t = IMP.pmi.topology.TopologyReader(tfile,
+                                            pdb_dir=input_dir,
+                                            fasta_dir=input_dir,
+                                            gmm_dir=input_dir)
+        bs = IMP.pmi.macros.BuildSystem(mdl)
+        with warnings.catch_warnings(record=True) as cw:
+            warnings.simplefilter("always")
+            bs.add_state(t, keep_chain_id=True)
+        root_hier, dof = bs.execute_macro()
+        chains = IMP.atom.get_by_type(root_hier, IMP.atom.CHAIN_TYPE)
+        # First chain should be 'B', taken from the PDB file;
+        # second chain should also be 'B', assigned sequentially
+        self.assertEqual([IMP.atom.Chain(c).get_id() for c in chains],
+                         ['B', 'B'])
+        w, = cw
+        self.assertIn("No PDBs specified for Prot3,", str(w.message))
+        self.assertIs(w.category, IMP.pmi.ParameterWarning)
+
     def test_draw_molecular_composition(self):
         try:
             import matplotlib

@@ -4,10 +4,8 @@
    benchmark directory in the subtree."""
 
 import sys
-import glob
 import os
 import os.path
-import difflib
 
 sys.path.append(os.path.split(sys.argv[0])[0])
 import python_tools
@@ -48,6 +46,7 @@ def search_start(d):
             make_files(cp)
         elif not cp.endswith('gitflow'):
             search_start(cp)
+
 
 if __name__ == '__main__':
     search_start(".")

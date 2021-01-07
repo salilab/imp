@@ -6,6 +6,7 @@ import utils
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 header_py = os.path.join(TOPDIR, 'make_all_header.py')
 
+
 class Tests(unittest.TestCase):
 
     def test_header(self):
@@ -31,7 +32,7 @@ class Tests(unittest.TestCase):
  *  \\file test.h
  *  \\brief Include all non-deprecated headers in test.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef TEST_H
@@ -43,6 +44,7 @@ class Tests(unittest.TestCase):
 #endif
 #endif /* TEST_H */
 """)
+
 
 if __name__ == '__main__':
     unittest.main()

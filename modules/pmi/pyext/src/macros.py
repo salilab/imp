@@ -617,8 +617,16 @@ class BuildSystem(object):
                 print("BuildSystem.add_state: setting up molecule %s copy number %s" % (molname,str(nc)))
                 copy = copies[copyname]
                 # option to not rename chains
-                if keep_chain_id == True:
-                    chain_id = copy[0].chain
+                if keep_chain_id:
+                    all_chains = [c for c in copy if c.chain is not None]
+                    if all_chains:
+                        chain_id = all_chains[0].chain
+                    else:
+                        chain_id = chain_ids[numchain]
+                        warnings.warn(
+                            "No PDBs specified for %s, so keep_chain_id has "
+                            "no effect; using default chain ID '%s'"
+                            % (molname, chain_id), IMP.pmi.ParameterWarning)
                 else:
                     chain_id = chain_ids[numchain]
                 if nc==0:

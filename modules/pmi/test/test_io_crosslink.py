@@ -304,6 +304,34 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(xl[cldb.residue2_key],e[5])
             nxl+=1
 
+    def test_align_sequence(self):
+        cldb=self.setup_cldb("xl_dataset_test.dat")
+        cldb.align_sequence(self.get_input_file_name('xl_dataset_test_alignment.dat'))
+
+
+        expected_list=[('1',1,"AAA","AAA",1,6),
+                       ('1',2,"AAA","AAA",12,28),
+                       ('1',3,"BBB","AAA",7,19),
+                       ('10',1,"AAA","AAA",1,6),
+                       ('2',1,"BBB","BBB",6,22),
+                       ('3',1,"AAA","BBB",28,50),
+                       ('4',1,"BBB","AAA",50,48),
+                       ('5',1,"AAA","AAA",6,28),
+                       ('6',1,"CCC","AAA",34,48),
+                       ('7',1,"CCC","CCC",2,5),
+                       ('8',1,"BBB","AAA",50,48),
+                       ('9',1,"AAA","BBB",48,50)]
+
+        nxl=0
+        for xl in cldb:
+            e=expected_list[nxl]
+            self.assertEqual(xl[cldb.unique_id_key],e[0])
+            self.assertEqual(xl[cldb.unique_sub_index_key],e[1])
+            self.assertEqual(xl[cldb.protein1_key],e[2])
+            self.assertEqual(xl[cldb.protein2_key],e[3])
+            self.assertEqual(xl[cldb.residue1_key],e[4])
+            self.assertEqual(xl[cldb.residue2_key],e[5])
+            nxl+=1
 
     def test_FilterOperator(self):
         import operator
