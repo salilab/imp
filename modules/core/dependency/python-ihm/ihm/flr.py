@@ -6,6 +6,7 @@
    See the top level :class:`FLRData` class for more information.
 """
 
+
 class Probe(object):
     """Defines a fluorescent probe.
 
@@ -209,7 +210,7 @@ class EntityAssembly(object):
     def __init__(self, entity=None, num_copies=0):
         self.entity_list = []
         self.num_copies_list = []
-        if entity != None and num_copies != 0:
+        if entity is not None and num_copies != 0:
             self.add_entity(entity, num_copies)
 
     def add_entity(self, entity, num_copies):
@@ -264,11 +265,14 @@ class Experiment(object):
         self.exp_condition_list = []
         self.sample_list = []
         self.details_list = []
-        if instrument != None and inst_setting != None and exp_condition != None and sample != None:
-            self.add_entry(instrument=instrument, inst_setting=inst_setting, exp_condition=exp_condition,
+        if (instrument is not None and inst_setting is not None
+                and exp_condition is not None and sample is not None):
+            self.add_entry(instrument=instrument, inst_setting=inst_setting,
+                           exp_condition=exp_condition,
                            sample=sample, details=details)
 
-    def add_entry(self, instrument, inst_setting, exp_condition, sample,details=None):
+    def add_entry(self, instrument, inst_setting, exp_condition, sample,
+                  details=None):
         """Entries to the experiment object can also be added one by one.
         """
         self.instrument_list.append(instrument)
@@ -279,7 +283,8 @@ class Experiment(object):
 
     def get_entry_by_index(self, index):
         """Returns the combination of :class:`Instrument`, :class:`InstSetting`,
-           :class:`ExpCondition`, :class:`Sample`, and details for a given index.
+           :class:`ExpCondition`, :class:`Sample`, and details for a given
+           index.
         """
         return (self.instrument_list[index],
                 self.inst_setting_list[index],
@@ -299,12 +304,12 @@ class Experiment(object):
            :class:`InstSetting`, :class:`ExpCondition`,
            :class:`Sample` is already included in the experiment object.
         """
-        ## TODO: possibly extend this by the details_list?
+        # TODO: possibly extend this by the details_list?
         for i in range(len(self.instrument_list)):
             if ((instrument == self.instrument_list[i])
-                and (inst_setting == self.inst_setting_list[i])
-                and (exp_condition == self.exp_condition_list[i])
-                and (sample == self.sample_list[i])):
+                    and (inst_setting == self.inst_setting_list[i])
+                    and (exp_condition == self.exp_condition_list[i])
+                    and (sample == self.sample_list[i])):
                 return True
         return False
 
@@ -338,6 +343,7 @@ class InstSetting(object):
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
+
 class ExpCondition(object):
     """Description of the experimental conditions.
 
@@ -349,7 +355,7 @@ class ExpCondition(object):
     def __init__(self, details=None):
         self.details = details
 
-    def __eq__(self,other):
+    def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
 
@@ -366,11 +372,13 @@ class FRETAnalysis(object):
        :type sample_probe_2: :class:`SampleProbeDetails`
        :param forster_radius: The Förster radius object for this FRET analysis.
        :type forster_radius: :class:`FRETForsterRadius`.
-       :param str type: The type of the FRET analysis (intensity-based or lifetime-based).
+       :param str type: The type of the FRET analysis (intensity-based
+              or lifetime-based).
        :param calibration_parameters: The calibration parameters used for
               this analysis (only in case of intensity-based analyses).
        :type calibration_parameters: :class:`FRETCalibrationParameters`
-       :param lifetime_fit_model: The fit model used in case of lifetime-based analyses.
+       :param lifetime_fit_model: The fit model used in case of
+              lifetime-based analyses.
        :type lifetime_fit_model: :class:`LifetimeFitModel`
        :param ref_measurement_group: The group of reference measurements
              in case of lifetime-based analyses.
@@ -389,13 +397,15 @@ class FRETAnalysis(object):
 
     def __init__(self, experiment, sample_probe_1, sample_probe_2,
                  forster_radius, type, calibration_parameters=None,
-                 lifetime_fit_model = None,
-                 ref_measurement_group = None,
-                 method_name=None, details = None,
+                 lifetime_fit_model=None,
+                 ref_measurement_group=None,
+                 method_name=None, details=None,
                  chi_square_reduced=None, donor_only_fraction=None,
                  dataset=None, external_file=None, software=None):
         if type not in ['lifetime-based', 'intensity-based', None]:
-            raise ValueError('FRETAnalysis.type can be \'lifetime-based\' or \'intensity-based\'. The value is %s'%(type))
+            raise ValueError(
+                'FRETAnalysis.type can be \'lifetime-based\' or '
+                '\'intensity-based\'. The value is %s' % type)
         self.experiment = experiment
         self.sample_probe_1 = sample_probe_1
         self.sample_probe_2 = sample_probe_2
@@ -421,7 +431,8 @@ class LifetimeFitModel(object):
 
         :param str name: The name of the fit model.
         :param str description: A description of the fit model.
-        :param external_file: An external file that contains additional information on the fit model.
+        :param external_file: An external file that contains additional
+               information on the fit model.
         :param citation: A citation for the fit model.
         :type citation: :class:`ihm.Citation`
     """
@@ -460,16 +471,19 @@ class RefMeasurementGroup(object):
 class RefMeasurement(object):
     """A reference measurement for lifetime-based analysis.
 
-        :param ref_sample_probe: The combination of sample and probe used for the reference measurement.
+        :param ref_sample_probe: The combination of sample and probe used
+               for the reference measurement.
         :type ref_sample_probe: :class:`SampleProbeDetails`
         :param str details: Details on the measurement.
-        :param list_of_lifetimes: A list of the results from the reference measurement.
+        :param list_of_lifetimes: A list of the results from the reference
+               measurement.
         :type list_of_lifetimes: List of :class:`RefMeasurementLifetime`
     """
     def __init__(self, ref_sample_probe, details=None, list_of_lifetimes=None):
         self.ref_sample_probe = ref_sample_probe
         self.details = details
-        self.list_of_lifetimes = list_of_lifetimes if list_of_lifetimes is not None else []
+        self.list_of_lifetimes = \
+            list_of_lifetimes if list_of_lifetimes is not None else []
         self.num_species = len(self.list_of_lifetimes)
 
     def add_lifetime(self, lifetime):
@@ -477,13 +491,14 @@ class RefMeasurement(object):
         self.list_of_lifetimes.append(lifetime)
         self.num_species = len(self.list_of_lifetimes)
 
-    def __eq__(self,other):
+    def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
 
 class RefMeasurementLifetime(object):
     """Lifetime for a species in a reference measurement.
-        :param float species_fraction: The species-fraction for the respective lifetime.
+        :param float species_fraction: The species-fraction for the
+               respective lifetime.
         :param float lifetime: The lifetime (in ns).
         :param str species_name: A name for the species.
     """
@@ -529,8 +544,8 @@ class FRETDistanceRestraint(object):
        :param float distance_error_plus: The (absolute, e.g. in Angstrom) error
               in the upper direction, such that
               ``upper boundary = distance + distance_error_plus``.
-       :param float distance_error_minus: The (absolute, e.g. in Angstrom) error
-              in the lower direction, such that
+       :param float distance_error_minus: The (absolute, e.g. in Angstrom)
+              error in the lower direction, such that
               ``lower boundary = distance + distance_error_minus``.
        :param str distance_type: The type of distance (<R_DA>, <R_DA>_E,
               or R_mp).
@@ -602,7 +617,8 @@ class FRETCalibrationParameters(object):
     """
 
     def __init__(self, phi_acceptor=None, alpha=None, alpha_sd=None,
-                 gg_gr_ratio=None, beta=None, gamma=None, delta=None, a_b=None):
+                 gg_gr_ratio=None, beta=None, gamma=None, delta=None,
+                 a_b=None):
         self.phi_acceptor = phi_acceptor
         self.alpha = alpha
         self.alpha_sd = alpha_sd
@@ -683,12 +699,12 @@ class FRETModelDistance(object):
     def calculate_deviation(self):
         if self.distance_deviation is None and self.restraint is not None:
             self.distance_deviation = \
-                       float(self.restraint.distance) - float(self.distance)
+                float(self.restraint.distance) - float(self.distance)
 
     def update_deviation(self):
         if self.restraint is not None:
             self.distance_deviation = \
-                       float(self.restraint.distance) - float(self.distance)
+                float(self.restraint.distance) - float(self.distance)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -762,7 +778,7 @@ class FPSGlobalParameters(object):
                  optimized_distances='All'):
         self.forster_radius = forster_radius
         self.conversion_function_polynom_order \
-                = conversion_function_polynom_order
+            = conversion_function_polynom_order
         self.repetition = repetition
         self.av_grid_rel = av_grid_rel
         self.av_min_grid_a = av_min_grid_a
@@ -908,7 +924,7 @@ class FPSMPPAtomPosition(object):
        :param float z: The z-coordinate of the atom.
     """
 
-    ## atoms describing the coordinate system for a mean probe position
+    # atoms describing the coordinate system for a mean probe position
     def __init__(self, atom, x, y, z):
         self.atom, self.x, self.y, self.z = atom, x, y, z
 
@@ -943,7 +959,7 @@ class FLRData(object):
         #: See :class:`FPSAVModeling` and :class:`FPSMPPModeling`.
         self.fps_modeling = []
 
-        ## The following dictionaries are so far only used when reading data
+        # The following dictionaries are so far only used when reading data
         self._collection_flr_experiment = {}
         self._collection_flr_inst_setting = {}
         self._collection_flr_exp_condition = {}
@@ -961,7 +977,7 @@ class FLRData(object):
         self._collection_flr_fret_calibration_parameters = {}
         self._collection_flr_fret_analysis = {}
         self._collection_flr_lifetime_fit_model = {}
-        self._collection_flr_ref_measurement_group =  {}
+        self._collection_flr_ref_measurement_group = {}
         self._collection_flr_ref_measurement = {}
         self._collection_flr_ref_measurement_lifetime = {}
         self._collection_flr_peak_assignment = {}
@@ -1120,7 +1136,8 @@ class FLRData(object):
             # collect from all distance restraints
             for dr in drgroup.distance_restraint_list:
                 # collect from both sample_probe_1 and sample_probe_2
-                for this_sample_probe in (dr.sample_probe_1, dr.sample_probe_2):
+                for this_sample_probe in (dr.sample_probe_1,
+                                          dr.sample_probe_2):
                     # collect from the probe
                     probe = this_sample_probe.probe
                     # reactive probe
@@ -1142,10 +1159,11 @@ class FLRData(object):
                         # collect from the ref_sample_probe
                         this_ref_sample_probe = rm.ref_sample_probe
                         probe = this_ref_sample_probe.probe
+                        pd = probe.probe_descriptor
                         # reactive probe
-                        yield probe.probe_descriptor.reactive_probe_chem_descriptor
+                        yield pd.reactive_probe_chem_descriptor
                         # chromophore
-                        yield probe.probe_descriptor.chromophore_chem_descriptor
+                        yield pd.chromophore_chem_descriptor
                         # collect from the poly_probe_position
                         pos = this_ref_sample_probe.poly_probe_position
                         # modified chem descriptor

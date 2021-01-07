@@ -3,6 +3,7 @@
 
 import os
 
+
 class Location(object):
     """Identifies the location where a resource can be found.
 
@@ -49,9 +50,11 @@ class Location(object):
         else:
             return tuple([self.__class__]
                          + [getattr(self, x) for x in self._eq_keys])
+
     def __eq__(self, other):
         # We can never be equal to None
         return other is not None and self._eq_vals() == other._eq_vals()
+
     def __hash__(self):
         return hash(self._eq_vals())
 
@@ -79,6 +82,7 @@ class EMDBLocation(DatabaseLocation):
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'EMDB'
+
     def __init__(self, db_code, version=None, details=None):
         super(EMDBLocation, self).__init__(self._db_name, db_code,
                                            version, details)
@@ -89,6 +93,7 @@ class PDBLocation(DatabaseLocation):
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'PDB'
+
     def __init__(self, db_code, version=None, details=None):
         super(PDBLocation, self).__init__(self._db_name, db_code,
                                           version, details)
@@ -99,6 +104,7 @@ class PDBDevLocation(DatabaseLocation):
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'PDB-Dev'
+
     def __init__(self, db_code, version=None, details=None):
         super(PDBDevLocation, self).__init__(self._db_name, db_code,
                                              version, details)
@@ -109,6 +115,7 @@ class BMRBLocation(DatabaseLocation):
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'BMRB'
+
     def __init__(self, db_code, version=None, details=None):
         super(BMRBLocation, self).__init__(self._db_name, db_code,
                                            version, details)
@@ -119,6 +126,7 @@ class MassIVELocation(DatabaseLocation):
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'MASSIVE'
+
     def __init__(self, db_code, version=None, details=None):
         super(MassIVELocation, self).__init__(self._db_name, db_code, version,
                                               details)
@@ -129,6 +137,7 @@ class EMPIARLocation(DatabaseLocation):
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'EMPIAR'
+
     def __init__(self, db_code, version=None, details=None):
         super(EMPIARLocation, self).__init__(self._db_name, db_code, version,
                                              details)
@@ -139,6 +148,7 @@ class SASBDBLocation(DatabaseLocation):
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'SASBDB'
+
     def __init__(self, db_code, version=None, details=None):
         super(SASBDBLocation, self).__init__(self._db_name, db_code, version,
                                              details)
@@ -149,6 +159,7 @@ class PRIDELocation(DatabaseLocation):
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'PRIDE'
+
     def __init__(self, db_code, version=None, details=None):
         super(PRIDELocation, self).__init__(self._db_name, db_code, version,
                                             details)
@@ -159,6 +170,7 @@ class BioGRIDLocation(DatabaseLocation):
        See :class:`DatabaseLocation` for a description of the parameters
        and :class:`Location` for discussion of the usage of these objects."""
     _db_name = 'BioGRID'
+
     def __init__(self, db_code, version=None, details=None):
         super(BioGRIDLocation, self).__init__(self._db_name, db_code, version,
                                               details)
@@ -276,6 +288,7 @@ class Repository(object):
     # Two repositories compare equal if their DOIs and URLs are the same
     def __eq__(self, other):
         return self.doi == other.doi and self.url == other.url
+
     def __hash__(self):
         return hash((self.doi, self.url))
 
@@ -295,6 +308,7 @@ class Repository(object):
         if 'zenodo' in self.reference:
             return 'Zenodo'
     reference_provider = property(__get_reference_provider)
+
     def __get_refers_to(self):
         if self.url:
             return 'Archive' if self.url.endswith(".zip") else 'File'

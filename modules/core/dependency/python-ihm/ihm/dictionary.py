@@ -8,9 +8,11 @@ import itertools
 
 from ihm.reader import Handler
 
+
 # Handle special values for CIF data items ('.', '?', or missing entirely)
 class _CifSpecialValue(object):
     pass
+
 
 class _NotInFileCif(_CifSpecialValue):
     pass
@@ -32,7 +34,7 @@ class _KeywordEnumeration(set):
         self._upper_set = None
 
     def add(self, item):
-        self._upper_set = None # Invalidate upper_set
+        self._upper_set = None  # Invalidate upper_set
         super(_KeywordEnumeration, self).add(item)
 
     def __contains__(self, item):
@@ -121,8 +123,9 @@ class _ValidatorReader(object):
                                 if c.mandatory]
         missing = set(mandatory_categories) - self._seen_categories
         if missing:
-            self.errors.append("The following mandatory categories are missing "
-                               "in the file: %s" % ", ".join(sorted(missing)))
+            self.errors.append(
+                "The following mandatory categories are missing "
+                "in the file: %s" % ", ".join(sorted(missing)))
 
     def _check_linked_items(self):
         """Check to make sure any ID referenced by a child item is defined
@@ -139,9 +142,10 @@ class _ValidatorReader(object):
                 if cat in self.dictionary.categories \
                    and not cat.startswith('chem_comp_'):
                     missing = self._seen_ids[child] - self._seen_ids[parent]
-                    self.errors.append("The following IDs referenced by %s "
-                            "were not defined in the parent category (%s): %s"
-                            % (child, parent, ", ".join(missing)))
+                    self.errors.append(
+                        "The following IDs referenced by %s "
+                        "were not defined in the parent category (%s): %s"
+                        % (child, parent, ", ".join(missing)))
 
     def report_errors(self):
         self._check_mandatory_categories()
@@ -260,7 +264,7 @@ class _DictionaryReader(object):
     """Track information for a Dictionary being read from a file."""
     def __init__(self):
         self.dictionary = Dictionary()
-        self.item_types = {} # Mapping from name to ItemType object
+        self.item_types = {}  # Mapping from name to ItemType object
         self._reset_category()
         self._reset_keyword()
 

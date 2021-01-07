@@ -19,11 +19,14 @@ utils.set_search_paths(TOPDIR)
 
 import ihm.reader
 
+
 def get_example_dir():
     return os.path.join(TOPDIR, "examples")
 
+
 def get_example_path(fname):
     return os.path.join(get_example_dir(), fname)
+
 
 class Tests(unittest.TestCase):
 
@@ -82,7 +85,7 @@ class Tests(unittest.TestCase):
         with open(testpck, 'wb') as fh:
             pickle.dump(s, fh, protocol=-1)
         with open(testpck, 'rb') as fh:
-            s2 = pickle.load(fh)
+            _ = pickle.load(fh)
         os.unlink(out)
         os.unlink(testpck)
 

@@ -6,6 +6,7 @@ TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.startmodel
 
+
 class Tests(unittest.TestCase):
 
     def test_template(self):
@@ -13,16 +14,16 @@ class Tests(unittest.TestCase):
         class MockObject(object):
             pass
         dataset = MockObject()
-        p = ihm.startmodel.Template(dataset=dataset, asym_id='G',
-                    seq_id_range=(1,90), template_seq_id_range=(30,90),
-                    sequence_identity=42.)
+        p = ihm.startmodel.Template(
+            dataset=dataset, asym_id='G', seq_id_range=(1, 90),
+            template_seq_id_range=(30, 90), sequence_identity=42.)
         self.assertEqual(p.asym_id, 'G')
 
     def test_pdb_helix(self):
         """Test PDBHelix class"""
         p = ihm.startmodel.PDBHelix(
-              "HELIX   10  10 ASP A  607  GLU A  624  1"
-              "                                  18   ")
+            "HELIX   10  10 ASP A  607  GLU A  624  1"
+            "                                  18   ")
         self.assertEqual(p.helix_id, '10')
         self.assertEqual(p.start_asym, 'A')
         self.assertEqual(p.start_resnum, 607)

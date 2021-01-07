@@ -58,7 +58,8 @@ class EM3DRestraint(Restraint):
        :param assembly: The part of the system that is fit into the map.
        :type assembly: :class:`~ihm.Assembly`
        :param bool segment: True iff the map has been segmented.
-       :param str fitting_method: The method used to fit the model into the map.
+       :param str fitting_method: The method used to fit the model
+              into the map.
        :param fitting_method_citation: The publication describing the fitting
               method.
        :type fitting_method_citation: :class:`~ihm.Citation`
@@ -89,7 +90,7 @@ class EM3DRestraintFit(object):
        :param float cross_correlation_coefficient: The fit between the model
               and the map.
     """
-    __slots__ = ["cross_correlation_coefficient"] # Reduce memory usage
+    __slots__ = ["cross_correlation_coefficient"]  # Reduce memory usage
 
     def __init__(self, cross_correlation_coefficient=None):
         self.cross_correlation_coefficient = cross_correlation_coefficient
@@ -136,7 +137,7 @@ class SASRestraintFit(object):
 
        :param float chi_value: The fit between the model and the SAS data.
     """
-    __slots__ = ["chi_value"] # Reduce memory usage
+    __slots__ = ["chi_value"]  # Reduce memory usage
 
     def __init__(self, chi_value=None):
         self.chi_value = chi_value
@@ -196,7 +197,7 @@ class EM2DRestraintFit(object):
               places the model on the image.
     """
     __slots__ = ["cross_correlation_coefficient",
-                 "rot_matrix", "tr_vector"] # Reduce memory usage
+                 "rot_matrix", "tr_vector"]  # Reduce memory usage
 
     def __init__(self, cross_correlation_coefficient=None,
                  rot_matrix=None, tr_vector=None):
@@ -214,7 +215,7 @@ class CrossLinkRestraint(Restraint):
        :type linker: :class:`ihm.ChemDescriptor`
     """
 
-    assembly = None # no struct_assembly_id for XL restraints
+    assembly = None  # no struct_assembly_id for XL restraints
 
     def __init__(self, dataset, linker):
         self.dataset, self.linker = dataset, linker
@@ -267,6 +268,7 @@ class HarmonicDistanceRestraint(DistanceRestraint):
        :param float distance: Equilibrium distance
     """
     restraint_type = 'harmonic'
+
     def __init__(self, distance):
         self.distance = distance
 
@@ -281,6 +283,7 @@ class UpperBoundDistanceRestraint(DistanceRestraint):
        :param float distance: Distance threshold
     """
     restraint_type = 'upper bound'
+
     def __init__(self, distance):
         self.distance = distance
 
@@ -295,6 +298,7 @@ class LowerBoundDistanceRestraint(DistanceRestraint):
        :param float distance: Distance threshold
     """
     restraint_type = 'lower bound'
+
     def __init__(self, distance):
         self.distance = distance
 
@@ -311,6 +315,7 @@ class LowerUpperBoundDistanceRestraint(DistanceRestraint):
        :param float distance_upper_limit: Upper bound on the distance.
     """
     restraint_type = 'lower and upper bound'
+
     def __init__(self, distance_lower_limit, distance_upper_limit):
         self.distance_lower_limit = distance_lower_limit
         self.distance_upper_limit = distance_upper_limit
@@ -488,7 +493,7 @@ class CrossLinkFit(object):
        :param float sigma1: Uncertainty in the position of the first residue.
        :param float sigma2: Uncertainty in the position of the second residue.
     """
-    __slots__ = ["psi", "sigma1", "sigma2"] # Reduce memory usage
+    __slots__ = ["psi", "sigma1", "sigma2"]  # Reduce memory usage
 
     def __init__(self, psi=None, sigma1=None, sigma2=None):
         self.psi, self.sigma1, self.sigma2 = psi, sigma1, sigma2
@@ -504,6 +509,7 @@ class Feature(object):
        :class:`~ihm.restraint.DerivedDistanceRestraint` objects.
     """
     details = None
+
     def _all_entities_or_asyms(self):
         # Get all Entities or AsymUnits referenced by this object
         return []
@@ -606,7 +612,8 @@ class NonPolyFeature(Feature):
         def _get_entity(x):
             return x if isinstance(x, ihm.Entity) else x.entity
         if any(_get_entity(r).is_polymeric() for r in self.objs):
-            raise ValueError("%s can only select non-polymeric entities" % self)
+            raise ValueError(
+                "%s can only select non-polymeric entities" % self)
         else:
             return _get_entity(self.objs[0]).type if self.objs else None
 
@@ -646,7 +653,7 @@ class GeometricRestraint(object):
        :param bool restrain_all: If True, all distances are restrained.
     """
     object_characteristic = 'other'
-    assembly = None # no struct_assembly_id for geometric restraints
+    assembly = None  # no struct_assembly_id for geometric restraints
 
     def __init__(self, dataset, geometric_object, feature, distance,
                  harmonic_force_constant=None, restrain_all=None,
@@ -700,7 +707,7 @@ class DerivedDistanceRestraint(object):
        :param float mic_value: Value of the Maximal Information Coefficient
               (MIC) for this interaction, if applicable.
     """
-    assembly = None # no struct_assembly_id for derived distance restraints
+    assembly = None  # no struct_assembly_id for derived distance restraints
 
     def __init__(self, dataset, feature1, feature2, distance,
                  probability=None, restrain_all=None, mic_value=None):
@@ -733,7 +740,7 @@ class PredictedContactRestraint(object):
        :type software: :class:`~ihm.Software`
 
     """
-    assembly = None # no struct_assembly_id for predicted contact restraints
+    assembly = None  # no struct_assembly_id for predicted contact restraints
 
     def __init__(self, dataset, resatom1, resatom2, distance,
                  by_residue, probability=None, software=None):

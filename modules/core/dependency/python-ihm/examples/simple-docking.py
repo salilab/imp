@@ -22,8 +22,8 @@ system = ihm.System()
 # Each source of data has a location, such as a file on disk or a database
 # entry, and a type. In this example we used EM density data, which we'll
 # say lives in the EMDB database:
-l = ihm.location.EMDBLocation('EMDB-1234')
-em_dataset = ihm.dataset.EMDensityDataset(l)
+loc = ihm.location.EMDBLocation('EMDB-1234')
+em_dataset = ihm.dataset.EMDensityDataset(loc)
 # We also used two SAXS profiles, which we'll say live in SASBDB:
 saxsA_dataset = ihm.dataset.SASDataset(ihm.location.SASBDBLocation('SASDB123'))
 saxsB_dataset = ihm.dataset.SASDataset(ihm.location.SASBDBLocation('SASDB456'))
@@ -61,22 +61,22 @@ assemblyB = ihm.Assembly((asymB,), name='Subunit B')
 # system are possible, and can overlap. Here we'll say we represent A
 # atomically as a rigid body and B as 3 flexible coarse-grained spheres:
 rep = ihm.representation.Representation(
-        [ihm.representation.AtomicSegment(asymA, rigid=True),
-         ihm.representation.FeatureSegment(asymB, rigid=False,
-                                           primitive='sphere', count=3)])
+    [ihm.representation.AtomicSegment(asymA, rigid=True),
+     ihm.representation.FeatureSegment(asymB, rigid=False,
+                                       primitive='sphere', count=3)])
 
 # Set up restraints on the system. First, two on the subunits that use
 # the SAXS data; we'll say we used the FoXS software to do this fit:
 saxsA_rsr = ihm.restraint.SASRestraint(
-                    dataset=saxsA_dataset, assembly=assemblyA,
-                    fitting_method='FoXS', fitting_atom_type='Heavy atoms')
+    dataset=saxsA_dataset, assembly=assemblyA,
+    fitting_method='FoXS', fitting_atom_type='Heavy atoms')
 saxsB_rsr = ihm.restraint.SASRestraint(
-                    dataset=saxsB_dataset, assembly=assemblyB,
-                    fitting_method='FoXS', fitting_atom_type='Heavy atoms')
+    dataset=saxsB_dataset, assembly=assemblyB,
+    fitting_method='FoXS', fitting_atom_type='Heavy atoms')
 system.restraints.extend((saxsA_rsr, saxsB_rsr))
 # Next, the EM restraint applied to the entire system:
 em_rsr = ihm.restraint.EM3DRestraint(
-                    dataset=em_dataset, assembly=modeled_assembly)
+    dataset=em_dataset, assembly=modeled_assembly)
 system.restraints.append(em_rsr)
 
 # Now we add information about how the modeling was done by defining one
@@ -86,12 +86,9 @@ all_datasets = ihm.dataset.DatasetGroup((em_dataset, saxsA_dataset,
                                          saxsB_dataset))
 protocol = ihm.protocol.Protocol(name='Modeling')
 protocol.steps.append(ihm.protocol.Step(
-                        assembly=modeled_assembly,
-                        dataset_group=all_datasets,
-                        method='Monte Carlo',
-                        name='Production sampling',
-                        num_models_begin=0,
-                        num_models_end=1000, multi_scale=True))
+    assembly=modeled_assembly, dataset_group=all_datasets,
+    method='Monte Carlo', name='Production sampling',
+    num_models_begin=0, num_models_end=1000, multi_scale=True))
 
 # Finally we can add coordinates for the deposited models. Typically these
 # will be stored in our own software's data structures somewhere (for this
@@ -103,12 +100,12 @@ spheres = [('B', 1, 2, 1., 2., 3., 1.2),
            ('B', 3, 4, 4., 5., 6., 1.2),
            ('B', 5, 6, 7., 8., 9., 1.2)]
 
+
 # Rather than storing another copy of the coordinates in the IHM library
 # (which could use a lot of memory), we need to provide a mechanism to
 # translate them into the IHM data model. We do this straighforwardly by
 # subclassing the IHM Model class and overriding the get_atoms
 # and get_spheres methods:
-
 class MyModel(ihm.model.Model):
     # Map our asym unit names A and B to IHM asym_unit objects:
     asym_unit_map = {'A': asymA, 'B': asymB}
@@ -118,11 +115,13 @@ class MyModel(ihm.model.Model):
             yield ihm.model.Atom(asym_unit=self.asym_unit_map[asym],
                                  type_symbol=type_symbol, seq_id=seq_id,
                                  atom_id=atom_id, x=x, y=y, z=z)
+
     def get_spheres(self):
         for asym, seq_id_start, seq_id_end, x, y, z, radius in spheres:
             yield ihm.model.Sphere(asym_unit=self.asym_unit_map[asym],
-                                  seq_id_range=(seq_id_start, seq_id_end),
-                                  x=x, y=y, z=z, radius=radius)
+                                   seq_id_range=(seq_id_start, seq_id_end),
+                                   x=x, y=y, z=z, radius=radius)
+
 
 model = MyModel(assembly=modeled_assembly, protocol=protocol,
                 representation=rep, name='Best scoring model')
@@ -131,7 +130,7 @@ model = MyModel(assembly=modeled_assembly, protocol=protocol,
 saxsA_rsr.fits[model] = ihm.restraint.SASRestraintFit(chi_value=1.4)
 saxsB_rsr.fits[model] = ihm.restraint.SASRestraintFit(chi_value=2.1)
 em_rsr.fits[model] = ihm.restraint.EM3DRestraintFit(
-                                   cross_correlation_coefficient=0.9)
+    cross_correlation_coefficient=0.9)
 
 # Similar models can be grouped together. Here we only have a single model
 # in the group

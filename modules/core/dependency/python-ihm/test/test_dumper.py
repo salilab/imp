@@ -25,11 +25,13 @@ import ihm.source
 import ihm.flr
 from test_format_bcif import MockFh, MockMsgPack
 
+
 def _get_dumper_output(dumper, system):
     fh = StringIO()
     writer = ihm.format.CifWriter(fh)
     dumper.dump(system, writer)
     return fh.getvalue()
+
 
 def _get_dumper_bcif_output(dumper, system):
     fh = MockFh()
@@ -38,6 +40,7 @@ def _get_dumper_bcif_output(dumper, system):
     dumper.dump(system, writer)
     writer.flush()
     return fh.data
+
 
 class Tests(unittest.TestCase):
     def test_write(self):
@@ -55,8 +58,8 @@ class Tests(unittest.TestCase):
         """Test write() function with custom dumper"""
         class MyDumper(ihm.dumper.Dumper):
             def dump(self, system, writer):
-                with writer.category("_custom_category") as l:
-                    l.write(myfield="foo", field2="bar")
+                with writer.category("_custom_category") as loc:
+                    loc.write(myfield="foo", field2="bar")
         sys1 = ihm.System(id='system1')
         fh = StringIO()
         ihm.dumper.write(fh, [sys1], dumpers=[MyDumper])
@@ -130,17 +133,15 @@ _struct.title 'test model'
         """Test SoftwareDumper"""
         system = ihm.System()
         system.software.append(ihm.Software(
-                         name='test', classification='test code',
-                         description='Some test program',
-                         version=1, location='http://test.org'))
+            name='test', classification='test code',
+            description='Some test program',
+            version=1, location='http://test.org'))
         system.software.append(ihm.Software(
-                          name='foo', classification='test code',
-                          description='Other test program',
-                          location='http://test2.org'))
+            name='foo', classification='test code',
+            description='Other test program', location='http://test2.org'))
         # Duplicate should be removed
         system.software.append(ihm.Software(
-                          name='foo', classification='x',
-                          description='y', location='z'))
+            name='foo', classification='x', description='y', location='z'))
         dumper = ihm.dumper._SoftwareDumper()
         dumper.finalize(system)
         self.assertEqual(len(dumper._software_by_id), 2)
@@ -166,19 +167,19 @@ _software.location
         """Test CitationDumper"""
         system = ihm.System()
         c1 = ihm.Citation(
-              pmid='25161197',
-              title="Structural characterization by cross-linking reveals the\n"
-                    "detailed architecture of a coatomer-related heptameric\n"
-                    "module from the nuclear pore complex.",
-              journal="Mol Cell Proteomics", volume=13, page_range=(2927,2943),
-              year=2014,
-              authors=['Shi Y', 'Fernandez-Martinez J', 'Tjioe E', 'Pellarin R',
-                       'Kim SJ', 'Williams R', 'Schneidman-Duhovny D', 'Sali A',
-                       'Rout MP', 'Chait BT'],
-              doi='10.1074/mcp.M114.041673')
-        system.citations.extend((c1, c1)) # duplicates should be removed
+            pmid='25161197',
+            title="Structural characterization by cross-linking reveals the\n"
+                  "detailed architecture of a coatomer-related heptameric\n"
+                  "module from the nuclear pore complex.",
+            journal="Mol Cell Proteomics", volume=13, page_range=(2927, 2943),
+            year=2014,
+            authors=['Shi Y', 'Fernandez-Martinez J', 'Tjioe E', 'Pellarin R',
+                     'Kim SJ', 'Williams R', 'Schneidman-Duhovny D', 'Sali A',
+                     'Rout MP', 'Chait BT'],
+            doi='10.1074/mcp.M114.041673')
+        system.citations.extend((c1, c1))  # duplicates should be removed
         dumper = ihm.dumper._CitationDumper()
-        dumper.finalize(system) # Assign IDs
+        dumper.finalize(system)  # Assign IDs
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -225,12 +226,14 @@ _citation_author.ordinal
         """Test AuditAuthorDumper with empty list"""
         system = ihm.System()
 
-        c1 = ihm.Citation(pmid='25161197', title='foo',
-              journal="Mol Cell Proteomics", volume=13, page_range=(2927,2943),
-              year=2014, authors=['auth1', 'auth2', 'auth3'], doi='doi1')
-        c2 = ihm.Citation(pmid='45161197', title='bar',
-              journal="Mol Cell Proteomics", volume=13, page_range=(2927,2943),
-              year=2014, authors=['auth2', 'auth4'], doi='doi2')
+        c1 = ihm.Citation(
+            pmid='25161197', title='foo',
+            journal="Mol Cell Proteomics", volume=13, page_range=(2927, 2943),
+            year=2014, authors=['auth1', 'auth2', 'auth3'], doi='doi1')
+        c2 = ihm.Citation(
+            pmid='45161197', title='bar',
+            journal="Mol Cell Proteomics", volume=13, page_range=(2927, 2943),
+            year=2014, authors=['auth2', 'auth4'], doi='doi2')
         system.citations.extend((c1, c2))
 
         dumper = ihm.dumper._AuditAuthorDumper()
@@ -314,7 +317,7 @@ NSF 'United States' bar 2
         system.entities.append(ihm.Entity('AHD', description='bar',
                                           source=ihm.source.Synthetic()))
         dumper = ihm.dumper._EntityDumper()
-        dumper.finalize(system) # Assign IDs
+        dumper.finalize(system)  # Assign IDs
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -352,7 +355,7 @@ _entity.details
                                           source=s))
         ihm.dumper._EntityDumper().finalize(system)
         dumper = ihm.dumper._EntitySrcNatDumper()
-        dumper.finalize(system) # Assign IDs
+        dumper.finalize(system)  # Assign IDs
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -379,7 +382,7 @@ _entity_src_nat.strain
                                           source=s))
         ihm.dumper._EntityDumper().finalize(system)
         dumper = ihm.dumper._EntitySrcSynDumper()
-        dumper.finalize(system) # Assign IDs
+        dumper.finalize(system)  # Assign IDs
         out = _get_dumper_output(dumper, system)
         # _pdbx_entity_src_syn.strain is not used in current PDB entries
         self.assertEqual(out, """#
@@ -411,7 +414,7 @@ _pdbx_entity_src_syn.organism_common_name
                                           source=s))
         ihm.dumper._EntityDumper().finalize(system)
         dumper = ihm.dumper._EntitySrcGenDumper()
-        dumper.finalize(system) # Assign IDs
+        dumper.finalize(system)  # Assign IDs
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -437,22 +440,22 @@ _entity_src_gen.pdbx_host_org_strain
         sd = ihm.reference.SeqDif(seq_id=2, db_monomer=lpep['W'],
                                   monomer=lpep['S'], details='Test mutation')
         r1 = ihm.reference.UniProtSequence(
-                db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
-                details='test sequence')
+            db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
+            details='test sequence')
         r1.alignments.append(ihm.reference.Alignment(db_begin=3, seq_dif=[sd]))
         r2 = ihm.reference.UniProtSequence(
-                db_code='testcode', accession='testacc', sequence='MELSPTYQT',
-                details='test2')
+            db_code='testcode', accession='testacc', sequence='MELSPTYQT',
+            details='test2')
         r2.alignments.append(ihm.reference.Alignment(
-                 db_begin=4, db_end=5, entity_begin=2, entity_end=3))
+            db_begin=4, db_end=5, entity_begin=2, entity_end=3))
         r2.alignments.append(ihm.reference.Alignment(
-                 db_begin=9, db_end=9, entity_begin=4, entity_end=4))
+            db_begin=9, db_end=9, entity_begin=4, entity_end=4))
         system.entities.append(ihm.Entity('LSPT', references=[r1, r2]))
         dumper = ihm.dumper._EntityDumper()
-        dumper.finalize(system) # Assign entity IDs
+        dumper.finalize(system)  # Assign entity IDs
 
         dumper = ihm.dumper._StructRefDumper()
-        dumper.finalize(system) # Assign IDs
+        dumper.finalize(system)  # Assign IDs
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -495,15 +498,15 @@ _struct_ref_seq_dif.details
         """Test StructRefDumper with bad entity align"""
         system = ihm.System()
         r = ihm.reference.UniProtSequence(
-                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
-                details='test sequence')
+            db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+            details='test sequence')
         r.alignments.append(ihm.reference.Alignment(entity_begin=90))
         system.entities.append(ihm.Entity('LSPT', references=[r]))
         dumper = ihm.dumper._EntityDumper()
-        dumper.finalize(system) # Assign entity IDs
+        dumper.finalize(system)  # Assign entity IDs
 
         dumper = ihm.dumper._StructRefDumper()
-        dumper.finalize(system) # Assign IDs
+        dumper.finalize(system)  # Assign IDs
         self.assertRaises(IndexError, _get_dumper_output, dumper, system)
         # Cannot use assertRaises as a context manager in Python 2.6
         try:
@@ -515,15 +518,15 @@ _struct_ref_seq_dif.details
         """Test StructRefDumper with bad db align"""
         system = ihm.System()
         r = ihm.reference.UniProtSequence(
-                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
-                details='test sequence')
+            db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+            details='test sequence')
         r.alignments.append(ihm.reference.Alignment(db_begin=90))
         system.entities.append(ihm.Entity('LSPT', references=[r]))
         dumper = ihm.dumper._EntityDumper()
-        dumper.finalize(system) # Assign entity IDs
+        dumper.finalize(system)  # Assign entity IDs
 
         dumper = ihm.dumper._StructRefDumper()
-        dumper.finalize(system) # Assign IDs
+        dumper.finalize(system)  # Assign IDs
         self.assertRaises(IndexError, _get_dumper_output, dumper, system)
         # Cannot use assertRaises as a context manager in Python 2.6
         try:
@@ -535,14 +538,14 @@ _struct_ref_seq_dif.details
         """Test StructRefDumper with sequence mismatch"""
         system = ihm.System()
         r = ihm.reference.UniProtSequence(
-                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
-                details='test sequence')
+            db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+            details='test sequence')
         system.entities.append(ihm.Entity('LSPT', references=[r]))
         dumper = ihm.dumper._EntityDumper()
-        dumper.finalize(system) # Assign entity IDs
+        dumper.finalize(system)  # Assign entity IDs
 
         dumper = ihm.dumper._StructRefDumper()
-        dumper.finalize(system) # Assign IDs
+        dumper.finalize(system)  # Assign IDs
         self.assertRaises(ValueError, _get_dumper_output, dumper, system)
         # Cannot use assertRaises as a context manager in Python 2.6
         try:
@@ -557,15 +560,15 @@ _struct_ref_seq_dif.details
         sd = ihm.reference.SeqDif(seq_id=40, db_monomer=lpep['W'],
                                   monomer=lpep['S'], details='Test mutation')
         r = ihm.reference.UniProtSequence(
-                db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
-                details='test sequence')
+            db_code='NUP84_YEAST', accession='P52891', sequence='MELSPTYQT',
+            details='test sequence')
         r.alignments.append(ihm.reference.Alignment(seq_dif=[sd]))
         system.entities.append(ihm.Entity('LSPT', references=[r]))
         dumper = ihm.dumper._EntityDumper()
-        dumper.finalize(system) # Assign entity IDs
+        dumper.finalize(system)  # Assign entity IDs
 
         dumper = ihm.dumper._StructRefDumper()
-        dumper.finalize(system) # Assign IDs
+        dumper.finalize(system)  # Assign IDs
         self.assertRaises(IndexError, _get_dumper_output, dumper, system)
         # Cannot use assertRaises as a context manager in Python 2.6
         try:
@@ -580,15 +583,15 @@ _struct_ref_seq_dif.details
         sd = ihm.reference.SeqDif(seq_id=2, db_monomer=lpep['W'],
                                   monomer=lpep['Y'], details='Test mutation')
         r = ihm.reference.UniProtSequence(
-                db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
-                details='test sequence')
+            db_code='NUP84_YEAST', accession='P52891', sequence='MELWPTYQT',
+            details='test sequence')
         r.alignments.append(ihm.reference.Alignment(seq_dif=[sd]))
         system.entities.append(ihm.Entity('LSPT', references=[r]))
         dumper = ihm.dumper._EntityDumper()
-        dumper.finalize(system) # Assign entity IDs
+        dumper.finalize(system)  # Assign entity IDs
 
         dumper = ihm.dumper._StructRefDumper()
-        dumper.finalize(system) # Assign IDs
+        dumper.finalize(system)  # Assign IDs
         self.assertRaises(ValueError, _get_dumper_output, dumper, system)
         # Cannot use assertRaises as a context manager in Python 2.6
         try:
@@ -632,7 +635,7 @@ THR 'L-peptide linking' THREONINE 'C4 H9 N O3' 119.120
                                 inchi_key='LMDZBCPBFSXMTL-UHFFFAOYSA-N')
         system.orphan_chem_descriptors.append(d1)
         dumper = ihm.dumper._ChemDescriptorDumper()
-        dumper.finalize(system) # Assign descriptor IDs
+        dumper.finalize(system)  # Assign descriptor IDs
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -651,7 +654,7 @@ _ihm_chemical_component_descriptor.inchi_key
     def test_entity_poly_dumper(self):
         """Test EntityPolyDumper"""
         system = ihm.System()
-        e1 = ihm.Entity('ACGT') # sequence containing glycine
+        e1 = ihm.Entity('ACGT')  # sequence containing glycine
         e2 = ihm.Entity(('A', 'C', 'C', 'MSE'))  # no glycine
         # All D-peptides (with glycine)
         e3 = ihm.Entity(('DAL', 'DCY', 'G'), alphabet=ihm.DPeptideAlphabet)
@@ -674,9 +677,9 @@ _ihm_chemical_component_descriptor.inchi_key
         system.entities.extend((rna, dna, hybrid))
 
         ed = ihm.dumper._EntityDumper()
-        ed.finalize(system) # Assign entity IDs
+        ed.finalize(system)  # Assign entity IDs
         sd = ihm.dumper._StructAsymDumper()
-        sd.finalize(system) # Assign asym IDs
+        sd.finalize(system)  # Assign asym IDs
         dumper = ihm.dumper._EntityPolyDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -710,7 +713,7 @@ _entity_poly.pdbx_seq_one_letter_code_can
         system.entities.extend((e1, e2, e3))
 
         ed = ihm.dumper._EntityDumper()
-        ed.finalize(system) # Assign entity IDs
+        ed.finalize(system)  # Assign entity IDs
         dumper = ihm.dumper._EntityNonPolyDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -734,7 +737,7 @@ _pdbx_entity_nonpoly.comp_id
         # Non-polymeric entity
         system.entities.append(ihm.Entity([ihm.NonPolymerChemComp('HEM')]))
         ed = ihm.dumper._EntityDumper()
-        ed.finalize(system) # Assign IDs
+        ed.finalize(system)  # Assign IDs
         dumper = ihm.dumper._EntityPolySeqDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -843,7 +846,7 @@ C 3 ZN 6 6 ZN ZN C
         system.asym_units.append(ihm.AsymUnit(e2, 'baz', id='A'))
         system.asym_units.append(ihm.AsymUnit(e2, 'tmp'))
         dumper = ihm.dumper._StructAsymDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -879,7 +882,8 @@ C 2 tmp
         system.entities.extend((e1, e2))
         system.asym_units.extend((a1, a2, a3))
 
-        system.orphan_assemblies.append(ihm.Assembly((a1, a2(2,3)), name='foo'))
+        system.orphan_assemblies.append(
+            ihm.Assembly((a1, a2(2, 3)), name='foo'))
         # Out of order assembly (should be ordered on output)
         system.orphan_assemblies.append(ihm.Assembly((a3, a2), name='bar',
                                                      description='desc1'))
@@ -922,7 +926,8 @@ _ihm_entity_poly_segment.comp_id_end
         d = ihm.dumper._AssemblyDumper()
         d.finalize(system)
         self.assertEqual(system.complete_assembly._id, 1)
-        self.assertEqual([a._id for a in system.orphan_assemblies], [2,3,3,3,3])
+        self.assertEqual([asmb._id for asmb in system.orphan_assemblies],
+                         [2, 3, 3, 3, 3])
         out = _get_dumper_output(d, system)
         self.assertEqual(out, """#
 loop_
@@ -1018,25 +1023,25 @@ _ihm_struct_assembly_details.entity_poly_segment_id
                                                                    'bar'))
         repo3 = ihm.location.Repository(doi="10.5281/zenodo.58025",
                                         url='foo.spd')
-        l = ihm.location.InputFileLocation(repo=repo1, path='bar')
-        system.locations.append(l)
+        loc = ihm.location.InputFileLocation(repo=repo1, path='bar')
+        system.locations.append(loc)
         # Duplicates should be ignored
-        l = ihm.location.InputFileLocation(repo=repo1, path='bar')
-        system.locations.append(l)
+        loc = ihm.location.InputFileLocation(repo=repo1, path='bar')
+        system.locations.append(loc)
         # Different file, same repository
-        l = ihm.location.InputFileLocation(repo=repo1, path='baz')
-        system.locations.append(l)
+        loc = ihm.location.InputFileLocation(repo=repo1, path='baz')
+        system.locations.append(loc)
         # Different repository
-        l = ihm.location.OutputFileLocation(repo=repo2, path='baz')
-        system.locations.append(l)
+        loc = ihm.location.OutputFileLocation(repo=repo2, path='baz')
+        system.locations.append(loc)
         # Repository containing a single file (not an archive)
-        l = ihm.location.InputFileLocation(repo=repo3, path='foo.spd',
-                                           details='EM micrographs')
-        system.locations.append(l)
+        loc = ihm.location.InputFileLocation(repo=repo3, path='foo.spd',
+                                             details='EM micrographs')
+        system.locations.append(loc)
         # Path can also be None for Repository containing a single file
-        l = ihm.location.InputFileLocation(repo=repo3, path=None,
-                                           details='EM micrographs')
-        system.locations.append(l)
+        loc = ihm.location.InputFileLocation(repo=repo3, path=None,
+                                             details='EM micrographs')
+        system.locations.append(loc)
 
         with utils.temporary_directory('') as tmpdir:
             bar = os.path.join(tmpdir, 'test_mmcif_extref.tmp')
@@ -1046,7 +1051,7 @@ _ihm_struct_assembly_details.entity_poly_segment_id
             system.locations.append(ihm.location.WorkflowFileLocation(bar))
             # DatabaseLocations should be ignored
             system.locations.append(ihm.location.PDBLocation(
-                                              '1abc', '1.0', 'test details'))
+                '1abc', '1.0', 'test details'))
 
             d = ihm.dumper._ExternalReferenceDumper()
             d.finalize(system)
@@ -1092,16 +1097,16 @@ _ihm_external_files.details
         """DatasetDumper ignores duplicate datasets with differing details"""
         system = ihm.System()
         dump = ihm.dumper._DatasetDumper()
-        l = ihm.location.PDBLocation('1abc', '1.0', 'test details')
-        ds1 = ihm.dataset.PDBDataset(l)
+        loc = ihm.location.PDBLocation('1abc', '1.0', 'test details')
+        ds1 = ihm.dataset.PDBDataset(loc)
         system.orphan_datasets.append(ds1)
         # A duplicate dataset should be ignored even if details differ
-        l = ihm.location.PDBLocation('1abc', '1.0', 'other details')
-        ds2 = ihm.dataset.PDBDataset(l)
+        loc = ihm.location.PDBLocation('1abc', '1.0', 'other details')
+        ds2 = ihm.dataset.PDBDataset(loc)
         system.orphan_datasets.append(ds2)
-        ds3 = ihm.dataset.PDBDataset(l, details='other dataset details')
+        ds3 = ihm.dataset.PDBDataset(loc, details='other dataset details')
         system.orphan_datasets.append(ds3)
-        dump.finalize(system) # Assign IDs
+        dump.finalize(system)  # Assign IDs
         self.assertEqual(ds1._id, 1)
         self.assertEqual(ds2._id, 1)
         self.assertEqual(ds3._id, 1)
@@ -1111,7 +1116,6 @@ _ihm_external_files.details
         """DatasetDumper doesn't duplicate same datasets in same location"""
         system = ihm.System()
         loc1 = ihm.location.DatabaseLocation("mydb", "abc", "1.0", "")
-        loc2 = ihm.location.DatabaseLocation("mydb", "xyz", "1.0", "")
 
         # Identical datasets in the same location aren't duplicated
         cx1 = ihm.dataset.CXMSDataset(loc1)
@@ -1119,7 +1123,7 @@ _ihm_external_files.details
 
         dump = ihm.dumper._DatasetDumper()
         system.orphan_datasets.extend((cx1, cx2))
-        dump.finalize(system) # Assign IDs
+        dump.finalize(system)  # Assign IDs
         self.assertEqual(cx1._id, 1)
         self.assertEqual(cx2._id, 1)
         self.assertEqual(len(dump._dataset_by_id), 1)
@@ -1133,7 +1137,7 @@ _ihm_external_files.details
         cx2 = ihm.dataset.CXMSDataset(loc2)
         dump = ihm.dumper._DatasetDumper()
         system.orphan_datasets.extend((cx1, cx2))
-        dump.finalize(system) # Assign IDs
+        dump.finalize(system)  # Assign IDs
         self.assertEqual(cx1._id, 1)
         self.assertEqual(cx2._id, 2)
         self.assertEqual(len(dump._dataset_by_id), 2)
@@ -1147,7 +1151,7 @@ _ihm_external_files.details
         em3d = ihm.dataset.EMDensityDataset(loc2)
         dump = ihm.dumper._DatasetDumper()
         system.orphan_datasets.extend((cx2, em3d))
-        dump.finalize(system) # Assign IDs
+        dump.finalize(system)  # Assign IDs
         self.assertEqual(cx2._id, 1)
         self.assertEqual(em3d._id, 2)
         self.assertEqual(len(dump._dataset_by_id), 2)
@@ -1162,7 +1166,7 @@ _ihm_external_files.details
         em3d_2 = ihm.dataset.EMDensityDataset(emloc2)
         dump = ihm.dumper._DatasetDumper()
         system.orphan_datasets.extend((em3d_1, em3d_2))
-        dump.finalize(system) # Assign IDs
+        dump.finalize(system)  # Assign IDs
         self.assertEqual(em3d_1._id, 1)
         self.assertEqual(em3d_2._id, 2)
         self.assertEqual(len(dump._dataset_by_id), 2)
@@ -1170,8 +1174,8 @@ _ihm_external_files.details
     def test_dataset_dumper_group_finalize(self):
         """Test DatasetDumper finalize of dataset groups"""
         system = ihm.System()
-        l = ihm.location.InputFileLocation(repo='foo', path='baz')
-        ds1 = ihm.dataset.CXMSDataset(l)
+        loc = ihm.location.InputFileLocation(repo='foo', path='baz')
+        ds1 = ihm.dataset.CXMSDataset(loc)
         group1 = ihm.dataset.DatasetGroup([ds1])
         # Duplicate group
         group2 = ihm.dataset.DatasetGroup([ds1])
@@ -1180,7 +1184,7 @@ _ihm_external_files.details
         system.orphan_dataset_groups.extend((group1, group2))
 
         d = ihm.dumper._DatasetDumper()
-        d.finalize(system) # Assign IDs
+        d.finalize(system)  # Assign IDs
         self.assertEqual(len(d._dataset_by_id), 1)
         self.assertEqual(len(d._dataset_group_by_id), 1)
 
@@ -1192,42 +1196,42 @@ _ihm_external_files.details
     def test_dataset_dumper_dump(self):
         """Test DatasetDumper.dump()"""
         system = ihm.System()
-        l = ihm.location.InputFileLocation(repo='foo', path='bar')
-        l._id = 97
-        ds1 = ihm.dataset.CXMSDataset(l)
+        loc = ihm.location.InputFileLocation(repo='foo', path='bar')
+        loc._id = 97
+        ds1 = ihm.dataset.CXMSDataset(loc)
         system.orphan_datasets.append(ds1)
 
         # group1 contains just the first dataset (but duplicated)
         group1 = ihm.dataset.DatasetGroup([ds1, ds1], name="first")
         system.orphan_dataset_groups.append(group1)
 
-        l = ihm.location.InputFileLocation(repo='foo2', path='bar2')
-        l._id = 98
-        ds2 = ihm.dataset.CXMSDataset(l)
+        loc = ihm.location.InputFileLocation(repo='foo2', path='bar2')
+        loc._id = 98
+        ds2 = ihm.dataset.CXMSDataset(loc)
 
         # group2 contains all datasets so far (ds1 & ds2)
         group2 = ihm.dataset.DatasetGroup([ds1, ds2], name="all so far")
         system.orphan_dataset_groups.append(group2)
 
-        l = ihm.location.PDBLocation('1abc', '1.0', 'test details')
-        ds3 = ihm.dataset.PDBDataset(l, details='test dataset details')
+        loc = ihm.location.PDBLocation('1abc', '1.0', 'test details')
+        ds3 = ihm.dataset.PDBDataset(loc, details='test dataset details')
         system.orphan_datasets.append(ds3)
         ds3.parents.append(ds2)
         # Ignore duplicates
         ds3.parents.append(ds2)
 
         # Derived dataset with (shared) transformation
-        l = ihm.location.PDBLocation('1cde', version='foo', details='bar')
-        dst = ihm.dataset.Dataset(l, details='bar')
+        loc = ihm.location.PDBLocation('1cde', version='foo', details='bar')
+        dst = ihm.dataset.Dataset(loc, details='bar')
         t = ihm.geometry.Transformation(
-            rot_matrix=[[-0.64,0.09,0.77],[0.76,-0.12,0.64],
-                        [0.15,0.99,0.01]],
-            tr_vector=[1.,2.,3.])
+            rot_matrix=[[-0.64, 0.09, 0.77], [0.76, -0.12, 0.64],
+                        [0.15, 0.99, 0.01]],
+            tr_vector=[1., 2., 3.])
         td = ihm.dataset.TransformedDataset(dst, transform=t)
         ds3.parents.append(td)
 
-        l = ihm.location.PDBLocation('1cdf', version='foo', details='bar')
-        dst = ihm.dataset.Dataset(l, details='baz')
+        loc = ihm.location.PDBLocation('1cdf', version='foo', details='bar')
+        dst = ihm.dataset.Dataset(loc, details='baz')
         # Same transformation as before
         td = ihm.dataset.TransformedDataset(dst, transform=t)
         ds3.parents.append(td)
@@ -1237,7 +1241,7 @@ _ihm_external_files.details
         system.orphan_datasets.append(ds4)
 
         d = ihm.dumper._DatasetDumper()
-        d.finalize(system) # Assign IDs
+        d.finalize(system)  # Assign IDs
         out = _get_dumper_output(d, system)
         self.assertEqual(out, """#
 loop_
@@ -1327,17 +1331,17 @@ _ihm_data_transformation.tr_vector[3]
         system.asym_units.append(asym)
 
         s1 = ihm.representation.AtomicSegment(
-                    asym(1,2), starting_model=None, rigid=True)
+            asym(1, 2), starting_model=None, rigid=True)
         s2 = ihm.representation.ResidueSegment(
-                    asym(3,4), starting_model=None,
-                    rigid=False, primitive='sphere')
+            asym(3, 4), starting_model=None,
+            rigid=False, primitive='sphere')
         s3 = ihm.representation.MultiResidueSegment(
-                    asym(1,2), starting_model=None,
-                    rigid=False, primitive='gaussian')
+            asym(1, 2), starting_model=None,
+            rigid=False, primitive='gaussian')
         s4 = ihm.representation.FeatureSegment(
-                    asym(3,4), starting_model=None,
-                    rigid=True, primitive='other', count=3,
-                    description='test segment')
+            asym(3, 4), starting_model=None,
+            rigid=True, primitive='other', count=3,
+            description='test segment')
         r1 = ihm.representation.Representation((s1, s2), name='foo',
                                                details='foo details')
         r2 = ihm.representation.Representation((s3, s4), name='bar')
@@ -1350,7 +1354,7 @@ _ihm_data_transformation.tr_vector[3]
         ihm.dumper._EntityPolySegmentDumper().finalize(system)
 
         dumper = ihm.dumper._ModelRepresentationDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -1389,6 +1393,7 @@ _ihm_model_representation_details.description
                 return [ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
                                        type_symbol='C', x=-8.0, y=-5.0, z=91.0,
                                        biso=42.)]
+
             def get_seq_dif(self):
                 return [ihm.startmodel.MSESeqDif(db_seq_id=5, seq_id=7),
                         ihm.startmodel.SeqDif(db_seq_id=6, seq_id=8,
@@ -1400,32 +1405,33 @@ _ihm_model_representation_details.description
         system.entities.append(e1)
         asym = ihm.AsymUnit(e1, 'bar')
         system.asym_units.append(asym)
-        l = ihm.location.PDBLocation('1abc', '1.0', 'test details')
-        dstemplate = ihm.dataset.PDBDataset(l)
-        l = ihm.location.PDBLocation('2xyz', '1.0', 'test details')
-        dstarget = ihm.dataset.PDBDataset(l)
+        loc = ihm.location.PDBLocation('1abc', '1.0', 'test details')
+        dstemplate = ihm.dataset.PDBDataset(loc)
+        loc = ihm.location.PDBLocation('2xyz', '1.0', 'test details')
+        dstarget = ihm.dataset.PDBDataset(loc)
         ali = ihm.location.InputFileLocation(repo='foo', path='test.ali')
         script = ihm.location.WorkflowFileLocation(repo='foo', path='test.py')
         software = ihm.Software(name='test', classification='test code',
                                 description='Some test program',
                                 version=1, location='http://test.org')
 
-        s1 = ihm.startmodel.Template(dataset=dstemplate, asym_id='C',
-                             seq_id_range=(-9,0), # 1,10 in IHM numbering
-                             template_seq_id_range=(101,110),
-                             sequence_identity=30.)
-        s2 = ihm.startmodel.Template(dataset=dstemplate, asym_id='D',
-                             seq_id_range=(-5,2), # 5,12 in IHM numbering
-                             template_seq_id_range=(201,210),
-                             sequence_identity
-                                    =ihm.startmodel.SequenceIdentity(40., None),
-                             alignment_file=ali)
+        s1 = ihm.startmodel.Template(
+            dataset=dstemplate, asym_id='C',
+            seq_id_range=(-9, 0),  # 1,10 in IHM numbering
+            template_seq_id_range=(101, 110),
+            sequence_identity=30.)
+        s2 = ihm.startmodel.Template(
+            dataset=dstemplate, asym_id='D',
+            seq_id_range=(-5, 2),  # 5,12 in IHM numbering
+            template_seq_id_range=(201, 210),
+            sequence_identity=ihm.startmodel.SequenceIdentity(40., None),
+            alignment_file=ali)
 
-        sm = TestStartingModel(asym(1,12), dstarget, 'A', [s1, s2], offset=10,
+        sm = TestStartingModel(asym(1, 12), dstarget, 'A', [s1, s2], offset=10,
                                script_file=script, software=software)
         system.orphan_starting_models.append(sm)
 
-        sm = TestStartingModel(asym(1,15), dstarget, 'A', [],
+        sm = TestStartingModel(asym(1, 15), dstarget, 'A', [],
                                description="test desc")
         system.orphan_starting_models.append(sm)
 
@@ -1454,7 +1460,7 @@ _ihm_entity_poly_segment.comp_id_end
 """)
 
         dumper = ihm.dumper._StartingModelDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -1549,24 +1555,27 @@ _ihm_starting_model_seq_dif.details
         software._id = 80
         script = MockObject()
         script._id = 90
-        p1.steps.append(ihm.protocol.Step(assembly=assembly, dataset_group=dsg,
-                               method='Monte Carlo', num_models_begin=0,
-                               num_models_end=500, multi_scale=True, name='s1'))
-        p1.steps.append(ihm.protocol.Step(assembly=assembly, dataset_group=dsg,
-                               method='Replica exchange', num_models_begin=500,
-                               num_models_end=2000, multi_scale=True))
+        p1.steps.append(ihm.protocol.Step(
+            assembly=assembly, dataset_group=dsg,
+            method='Monte Carlo', num_models_begin=0,
+            num_models_end=500, multi_scale=True, name='s1'))
+        p1.steps.append(ihm.protocol.Step(
+            assembly=assembly, dataset_group=dsg,
+            method='Replica exchange', num_models_begin=500,
+            num_models_end=2000, multi_scale=True))
         system.orphan_protocols.append(p1)
 
         p2 = ihm.protocol.Protocol('sampling')
-        p2.steps.append(ihm.protocol.Step(assembly=assembly, dataset_group=dsg2,
-                               method='Replica exchange', num_models_begin=2000,
-                               num_models_end=1000, multi_scale=True,
-                               software=software, script_file=script,
-                               description='test step'))
+        p2.steps.append(ihm.protocol.Step(
+            assembly=assembly, dataset_group=dsg2,
+            method='Replica exchange', num_models_begin=2000,
+            num_models_end=1000, multi_scale=True,
+            software=software, script_file=script,
+            description='test step'))
         system.orphan_protocols.append(p2)
 
         dumper = ihm.dumper._ProtocolDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
 loop_
@@ -1612,11 +1621,10 @@ _ihm_modeling_protocol_details.description
         a1.steps.append(ihm.analysis.EmptyStep())
         a2 = ihm.analysis.Analysis()
         a2.steps.append(ihm.analysis.FilterStep(
-                             feature='energy/score', num_models_begin=1000,
-                             num_models_end=200))
+            feature='energy/score', num_models_begin=1000,
+            num_models_end=200))
         a2.steps.append(ihm.analysis.ClusterStep(
-                             feature='RMSD', num_models_begin=200,
-                             num_models_end=42))
+            feature='RMSD', num_models_begin=200, num_models_end=42))
         asmb1 = MockObject()
         asmb1._id = 101
         dg1 = MockObject()
@@ -1626,18 +1634,16 @@ _ihm_modeling_protocol_details.description
         script = MockObject()
         script._id = 501
         a2.steps.append(ihm.analysis.ValidationStep(
-                             feature='energy/score', num_models_begin=42,
-                             num_models_end=42,
-                             assembly=asmb1, dataset_group=dg1,
-                             software=software, script_file=script,
-                             details='test step'))
+            feature='energy/score', num_models_begin=42,
+            num_models_end=42, assembly=asmb1, dataset_group=dg1,
+            software=software, script_file=script, details='test step'))
         p1.analyses.extend((a1, a2))
 
         dumper = ihm.dumper._ProtocolDumper()
-        dumper.finalize(system) # assign protocol IDs
+        dumper.finalize(system)  # assign protocol IDs
 
         dumper = ihm.dumper._PostProcessDumper()
-        dumper.finalize(system) # assign analysis IDs
+        dumper.finalize(system)  # assign analysis IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -1693,7 +1699,7 @@ _ihm_modeling_post_process.details
         state.append(group2)
 
         dumper = ihm.dumper._ModelDumper()
-        dumper.finalize(system) # assign model/group IDs
+        dumper.finalize(system)  # assign model/group IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -1759,7 +1765,7 @@ _ihm_model_group_link.model_id
         asym2._id = 'Y'
         system.asym_units.append(asym2)
         # Handle multiple ranges for a given asym
-        model.assembly.append(asym(1,2))
+        model.assembly.append(asym(1, 2))
         # RangeChecker should ignore entities in the assembly
         model.assembly.append(asym.entity)
 
@@ -1777,7 +1783,7 @@ _ihm_model_group_link.model_id
                               type_symbol='C', x=1.0, y=2.0, z=3.0)
         rngcheck(atom)
         # Sphere is OK (good asym)
-        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1,2),
+        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 2),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         rngcheck(sphere)
 
@@ -1787,7 +1793,7 @@ _ihm_model_group_link.model_id
         self.assertRaises(ValueError, rngcheck, atom)
 
         # Sphere is not OK (bad asym)
-        sphere = ihm.model.Sphere(asym_unit=asym2, seq_id_range=(1,2),
+        sphere = ihm.model.Sphere(asym_unit=asym2, seq_id_range=(1, 2),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         self.assertRaises(ValueError, rngcheck, sphere)
 
@@ -1795,7 +1801,7 @@ _ihm_model_group_link.model_id
         """Test RangeChecker class checking assembly seq_id range"""
         system, model, asym = self._make_test_model()
         # Only part of asym is in the assembly
-        asmb = ihm.Assembly([asym(1,2)])
+        asmb = ihm.Assembly([asym(1, 2)])
         model.assembly = asmb
 
         # Everything is represented
@@ -1813,14 +1819,12 @@ _ihm_model_group_link.model_id
                               type_symbol='C', x=1.0, y=2.0, z=3.0)
         rngcheck(atom)
         # Cache should now be set
-        self.assertEqual(
-                rngcheck._last_asmb_range_matched, (1,2))
-        self.assertEqual(
-                rngcheck._last_asmb_asym_matched, 'X')
+        self.assertEqual(rngcheck._last_asmb_range_matched, (1, 2))
+        self.assertEqual(rngcheck._last_asmb_asym_matched, 'X')
         # 2nd check should use the cache
         rngcheck(atom)
         # Sphere is OK (good range)
-        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1,2),
+        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 2),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         rngcheck(sphere)
 
@@ -1830,7 +1834,7 @@ _ihm_model_group_link.model_id
         self.assertRaises(ValueError, rngcheck, atom)
 
         # Sphere is not OK (bad range)
-        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1,10),
+        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 10),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         self.assertRaises(ValueError, rngcheck, sphere)
 
@@ -1843,7 +1847,7 @@ _ihm_model_group_link.model_id
         model.assembly.append(asym2)
 
         # Add multiple representation segments for asym
-        s = ihm.representation.AtomicSegment(asym(1,2), rigid=True)
+        s = ihm.representation.AtomicSegment(asym(1, 2), rigid=True)
         model.representation.append(s)
         s = ihm.representation.FeatureSegment(asym, rigid=False,
                                               primitive='sphere', count=2)
@@ -1855,7 +1859,7 @@ _ihm_model_group_link.model_id
                               type_symbol='C', x=1.0, y=2.0, z=3.0)
         rngcheck(atom)
         # Sphere is OK (good asym)
-        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1,2),
+        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 2),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         rngcheck(sphere)
 
@@ -1865,7 +1869,7 @@ _ihm_model_group_link.model_id
         self.assertRaises(ValueError, rngcheck, atom)
 
         # Sphere is not OK (bad asym)
-        sphere = ihm.model.Sphere(asym_unit=asym2, seq_id_range=(1,2),
+        sphere = ihm.model.Sphere(asym_unit=asym2, seq_id_range=(1, 2),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         self.assertRaises(ValueError, rngcheck, sphere)
 
@@ -1878,9 +1882,9 @@ _ihm_model_group_link.model_id
         model.assembly.append(asym2)
 
         # Add multiple representation segments for asym2
-        s = ihm.representation.AtomicSegment(asym2(1,2), rigid=True)
+        s = ihm.representation.AtomicSegment(asym2(1, 2), rigid=True)
         model.representation.append(s)
-        s = ihm.representation.FeatureSegment(asym2(1,2), rigid=False,
+        s = ihm.representation.FeatureSegment(asym2(1, 2), rigid=False,
                                               primitive='sphere', count=2)
         model.representation.append(s)
 
@@ -1892,12 +1896,11 @@ _ihm_model_group_link.model_id
         rngcheck(atom)
         # Cache should now be set
         self.assertEqual(
-                rngcheck._last_repr_segment_matched.asym_unit.seq_id_range,
-                (1,2))
+            rngcheck._last_repr_segment_matched.asym_unit.seq_id_range, (1, 2))
         # 2nd check should use the cache
         rngcheck(atom)
         # Sphere is OK (good range)
-        sphere = ihm.model.Sphere(asym_unit=asym2, seq_id_range=(1,2),
+        sphere = ihm.model.Sphere(asym_unit=asym2, seq_id_range=(1, 2),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         rngcheck(sphere)
 
@@ -1907,7 +1910,7 @@ _ihm_model_group_link.model_id
         self.assertRaises(ValueError, rngcheck, atom)
 
         # Sphere is not OK (bad range)
-        sphere = ihm.model.Sphere(asym_unit=asym2, seq_id_range=(1,4),
+        sphere = ihm.model.Sphere(asym_unit=asym2, seq_id_range=(1, 4),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         self.assertRaises(ValueError, rngcheck, sphere)
 
@@ -1926,7 +1929,7 @@ _ihm_model_group_link.model_id
         rngcheck(atom)
 
         # Sphere is not OK
-        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1,1),
+        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 1),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         self.assertRaises(ValueError, rngcheck, sphere)
 
@@ -1943,17 +1946,18 @@ _ihm_model_group_link.model_id
         self.assertRaises(ValueError, rngcheck, atom)
 
         # Multi-residue Sphere is not OK
-        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1,2),
+        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 2),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         self.assertRaises(ValueError, rngcheck, sphere)
 
         # Single-residue Sphere is OK
-        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1,1),
+        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 1),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         rngcheck(sphere)
 
     def test_range_checker_repr_type_multi_residue(self):
-        """Test RangeChecker class type checking against MultiResidueSegments"""
+        """Test RangeChecker class type checking against
+           MultiResidueSegments"""
         system, model, asym = self._make_test_model()
         # Replace test model's residue representation with multi-residue
         s = ihm.representation.MultiResidueSegment(asym, rigid=False,
@@ -1968,11 +1972,11 @@ _ihm_model_group_link.model_id
         self.assertRaises(ValueError, rngcheck, atom)
 
         # Sphere is OK if it matches the asym range exactly
-        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1,4),
+        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 4),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         rngcheck(sphere)
 
-        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1,2),
+        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 2),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         self.assertRaises(ValueError, rngcheck, sphere)
 
@@ -1992,11 +1996,11 @@ _ihm_model_group_link.model_id
         self.assertRaises(ValueError, rngcheck, atom)
 
         # Sphere is OK if it falls entirely within the segment range
-        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1,2),
+        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 2),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         rngcheck(sphere)
 
-        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1,20),
+        sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 20),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         self.assertRaises(ValueError, rngcheck, sphere)
 
@@ -2012,14 +2016,14 @@ _ihm_model_group_link.model_id
         model.representation = r
 
         model._spheres = [ihm.model.Sphere(asym_unit=asym,
-                                           seq_id_range=(1,3), x=1.0,
+                                           seq_id_range=(1, 3), x=1.0,
                                            y=2.0, z=3.0, radius=4.0),
                           ihm.model.Sphere(asym_unit=asym,
-                                           seq_id_range=(4,4), x=4.0,
+                                           seq_id_range=(4, 4), x=4.0,
                                            y=5.0, z=6.0, radius=1.0, rmsf=8.0)]
 
         dumper = ihm.dumper._ModelDumper()
-        dumper.finalize(system) # assign model/group IDs
+        dumper.finalize(system)  # assign model/group IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -2082,7 +2086,7 @@ _ihm_sphere_obj_site.model_id
                                        biso=42.0, occupancy=0.2)]
 
         dumper = ihm.dumper._ModelDumper()
-        dumper.finalize(system) # assign model/group IDs
+        dumper.finalize(system)  # assign model/group IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -2168,7 +2172,7 @@ N
         system.ensembles.extend((e1, e2))
 
         dumper = ihm.dumper._EnsembleDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         # Should raise an error since ss3 is not the same type as ss1/ss2
         self.assertRaises(TypeError, _get_dumper_output, dumper, system)
@@ -2223,7 +2227,7 @@ _ihm_ensemble_sub_sample.file_id
 
         loc = ihm.location.OutputFileLocation(repo='foo', path='bar')
         loc._id = 3
-        ens.densities.append(ihm.model.LocalizationDensity(loc, asym(1,2)))
+        ens.densities.append(ihm.model.LocalizationDensity(loc, asym(1, 2)))
         ens.densities.append(ihm.model.LocalizationDensity(loc, asym))
         ens._id = 5
         system.ensembles.append(ens)
@@ -2232,7 +2236,7 @@ _ihm_ensemble_sub_sample.file_id
         ihm.dumper._EntityPolySegmentDumper().finalize(system)
 
         dumper = ihm.dumper._DensityDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -2266,10 +2270,10 @@ _ihm_localization_density_files.entity_poly_segment_id
 
         system._make_complete_assembly()
 
-        ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
+        ihm.dumper._EntityDumper().finalize(system)  # assign entity IDs
 
         dumper = ihm.dumper._EntityPolySegmentDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         # e1 isn't directly used in anything (a1 is used instead, in the
         # assembly) so should have no range ID
@@ -2305,7 +2309,7 @@ _ihm_entity_poly_segment.comp_id_end
         system.state_groups.append(ihm.model.StateGroup([state]))
 
         dumper = ihm.dumper._MultiStateDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, "")
@@ -2313,7 +2317,6 @@ _ihm_entity_poly_segment.comp_id_end
     def test_multi_state(self):
         """Test MultiStateDumper with multiple states"""
         system = ihm.System()
-        state = ihm.model.State()
         sg1 = ihm.model.StateGroup()
         sg2 = ihm.model.StateGroup()
         system.state_groups.extend((sg1, sg2))
@@ -2335,10 +2338,10 @@ _ihm_entity_poly_segment.comp_id_end
         sg2.append(state3)
 
         dumper = ihm.dumper._ModelDumper()
-        dumper.finalize(system) # assign model group IDs
+        dumper.finalize(system)  # assign model group IDs
 
         dumper = ihm.dumper._MultiStateDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -2440,18 +2443,20 @@ _ihm_ordered_ensemble.model_group_id_end
         assembly._id = 99
         citation = MockObject()
         citation._id = 8
-        r = ihm.restraint.EM3DRestraint(dataset=dataset, assembly=assembly,
-                       segment=False, fitting_method='Gaussian mixture model',
-                       number_of_gaussians=40, details='GMM fitting')
-        r2 = ihm.restraint.EM3DRestraint(dataset=dataset2, assembly=assembly,
-                       segment=False, fitting_method='Gaussian mixture model',
-                       fitting_method_citation=citation,
-                       number_of_gaussians=30, details='GMM fitting')
+        r = ihm.restraint.EM3DRestraint(
+            dataset=dataset, assembly=assembly,
+            segment=False, fitting_method='Gaussian mixture model',
+            number_of_gaussians=40, details='GMM fitting')
+        r2 = ihm.restraint.EM3DRestraint(
+            dataset=dataset2, assembly=assembly,
+            segment=False, fitting_method='Gaussian mixture model',
+            fitting_method_citation=citation,
+            number_of_gaussians=30, details='GMM fitting')
         m = ihm.model.Model(assembly='foo', protocol='bar',
                             representation='baz')
         m._id = 42
         m2 = ihm.model.Model(assembly='foo', protocol='bar',
-                            representation='baz')
+                             representation='baz')
         m2._id = 44
         system.restraints.extend((r, r2, MockObject()))
 
@@ -2460,7 +2465,7 @@ _ihm_ordered_ensemble.model_group_id_end
         r2.fits[m2] = ihm.restraint.EM3DRestraintFit()
 
         dumper = ihm.dumper._EM3DDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -2489,16 +2494,16 @@ _ihm_3dem_restraint.cross_correlation_coefficient
         dataset._id = 97
         assembly = MockObject()
         assembly._id = 99
-        r = ihm.restraint.SASRestraint(dataset=dataset, assembly=assembly,
-                       segment=False, fitting_method='FoXS',
-                       fitting_atom_type='Heavy atoms',
-                       multi_state=False,
-                       radius_of_gyration=21.07, details='FoXS fitting')
+        r = ihm.restraint.SASRestraint(
+            dataset=dataset, assembly=assembly, segment=False,
+            fitting_method='FoXS', fitting_atom_type='Heavy atoms',
+            multi_state=False, radius_of_gyration=21.07,
+            details='FoXS fitting')
         m = ihm.model.Model(assembly='foo', protocol='bar',
                             representation='baz')
         m._id = 42
         m2 = ihm.model.Model(assembly='foo', protocol='bar',
-                            representation='baz')
+                             representation='baz')
         m2._id = 44
         system.restraints.extend((r, MockObject()))
 
@@ -2506,7 +2511,7 @@ _ihm_3dem_restraint.cross_correlation_coefficient
         r.fits[m2] = ihm.restraint.SASRestraintFit()
 
         dumper = ihm.dumper._SASDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -2537,28 +2542,28 @@ _ihm_sas_restraint.details
         dataset._id = 97
         assembly = MockObject()
         assembly._id = 99
-        r = ihm.restraint.EM2DRestraint(dataset=dataset, assembly=assembly,
-                       segment=False, number_raw_micrographs=400,
-                       pixel_size_width=0.6, pixel_size_height=0.5,
-                       image_resolution=30.0, number_of_projections=100,
-                       details='Test fit')
+        r = ihm.restraint.EM2DRestraint(
+            dataset=dataset, assembly=assembly, segment=False,
+            number_raw_micrographs=400, pixel_size_width=0.6,
+            pixel_size_height=0.5, image_resolution=30.0,
+            number_of_projections=100, details='Test fit')
         m = ihm.model.Model(assembly='foo', protocol='bar',
                             representation='baz')
         m._id = 42
         m2 = ihm.model.Model(assembly='foo', protocol='bar',
-                            representation='baz')
+                             representation='baz')
         m2._id = 44
         system.restraints.extend((r, MockObject()))
 
         r.fits[m] = ihm.restraint.EM2DRestraintFit(
-                      cross_correlation_coefficient=0.4,
-                      rot_matrix=[[-0.64,0.09,0.77],[0.76,-0.12,0.64],
-                                  [0.15,0.99,0.01]],
-                      tr_vector=[1.,2.,3.])
+            cross_correlation_coefficient=0.4,
+            rot_matrix=[[-0.64, 0.09, 0.77], [0.76, -0.12, 0.64],
+                        [0.15, 0.99, 0.01]],
+            tr_vector=[1., 2., 3.])
         r.fits[m2] = ihm.restraint.EM2DRestraintFit()
 
         dumper = ihm.dumper._EM2DDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -2616,44 +2621,48 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
         dss = ihm.ChemDescriptor('DSS')
         r = ihm.restraint.CrossLinkRestraint(dataset=dataset, linker=dss)
         # intra, unambiguous
-        xxl1 = ihm.restraint.ExperimentalCrossLink(e1.residue(2), e1.residue(3))
+        xxl1 = ihm.restraint.ExperimentalCrossLink(
+            e1.residue(2), e1.residue(3))
         # inter, ambiguous
-        xxl2 = ihm.restraint.ExperimentalCrossLink(e1.residue(2), e2.residue(3))
-        xxl3 = ihm.restraint.ExperimentalCrossLink(e1.residue(2), e2.residue(2))
+        xxl2 = ihm.restraint.ExperimentalCrossLink(
+            e1.residue(2), e2.residue(3))
+        xxl3 = ihm.restraint.ExperimentalCrossLink(
+            e1.residue(2), e2.residue(2))
         # duplicate crosslink, should be combined with the original (xxl2)
-        xxl4 = ihm.restraint.ExperimentalCrossLink(e1.residue(2), e2.residue(3))
+        xxl4 = ihm.restraint.ExperimentalCrossLink(
+            e1.residue(2), e2.residue(3))
         # should end up in own group, not with xxl4 (since xxl4==xxl2)
-        xxl5 = ihm.restraint.ExperimentalCrossLink(e1.residue(1), e2.residue(1),
-                                                   details='test xl')
+        xxl5 = ihm.restraint.ExperimentalCrossLink(
+            e1.residue(1), e2.residue(1), details='test xl')
         r.experimental_cross_links.extend(([xxl1], [xxl2, xxl3], [xxl4, xxl5]))
         system.restraints.extend((r, MockObject()))
 
         d = ihm.restraint.UpperBoundDistanceRestraint(25.0)
-        xl1 = ihm.restraint.ResidueCrossLink(xxl1, asym1, asym1, d,
-                                psi=0.5, sigma1=1.0, sigma2=2.0,
-                                restrain_all=True)
+        xl1 = ihm.restraint.ResidueCrossLink(
+            xxl1, asym1, asym1, d, psi=0.5, sigma1=1.0, sigma2=2.0,
+            restrain_all=True)
         d = ihm.restraint.LowerBoundDistanceRestraint(34.0)
-        xl2 = ihm.restraint.AtomCrossLink(xxl3, asym1, asym2, 'C', 'N', d,
-                                restrain_all=False)
+        xl2 = ihm.restraint.AtomCrossLink(
+            xxl3, asym1, asym2, 'C', 'N', d, restrain_all=False)
         # Duplicates should be ignored
-        xl3 = ihm.restraint.AtomCrossLink(xxl3, asym1, asym2, 'C', 'N', d,
-                                restrain_all=False)
+        xl3 = ihm.restraint.AtomCrossLink(
+            xxl3, asym1, asym2, 'C', 'N', d, restrain_all=False)
         # Restraints on pseudo sites
         ps = ihm.restraint.PseudoSite(x=10., y=20., z=30.)
         ps._id = 89
         psxl = ihm.restraint.CrossLinkPseudoSite(site=ps)
-        xl4 = ihm.restraint.ResidueCrossLink(xxl5, asym1, asym2, d,
-                                psi=0.5, sigma1=1.0, sigma2=2.0,
-                                restrain_all=True, pseudo2=[psxl])
+        xl4 = ihm.restraint.ResidueCrossLink(
+            xxl5, asym1, asym2, d, psi=0.5, sigma1=1.0, sigma2=2.0,
+            restrain_all=True, pseudo2=[psxl])
         m = MockObject()
         m._id = 99
         psxl = ihm.restraint.CrossLinkPseudoSite(site=ps, model=m)
         m = MockObject()
         m._id = 990
         psxl2 = ihm.restraint.CrossLinkPseudoSite(site=ps, model=m)
-        xl5 = ihm.restraint.ResidueCrossLink(xxl2, asym1, asym2, d,
-                                psi=0.5, sigma1=1.0, sigma2=2.0,
-                                restrain_all=True, pseudo2=[psxl, psxl2])
+        xl5 = ihm.restraint.ResidueCrossLink(
+            xxl2, asym1, asym2, d, psi=0.5, sigma1=1.0, sigma2=2.0,
+            restrain_all=True, pseudo2=[psxl, psxl2])
         r.cross_links.extend((xl1, xl2, xl3, xl4, xl5))
 
         model = MockObject()
@@ -2661,11 +2670,11 @@ _ihm_2dem_class_average_fitting.tr_vector[3]
         xl1.fits[model] = ihm.restraint.CrossLinkFit(psi=0.1, sigma1=4.2,
                                                      sigma2=2.1)
 
-        ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
-        ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
-        ihm.dumper._ChemDescriptorDumper().finalize(system) # descriptor IDs
+        ihm.dumper._EntityDumper().finalize(system)  # assign entity IDs
+        ihm.dumper._StructAsymDumper().finalize(system)  # assign asym IDs
+        ihm.dumper._ChemDescriptorDumper().finalize(system)  # descriptor IDs
         dumper = ihm.dumper._CrossLinkDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -2745,18 +2754,18 @@ _ihm_cross_link_result_parameters.sigma_2
     def test_geometric_object_dumper(self):
         """Test GeometricObjectDumper"""
         system = ihm.System()
-        center = ihm.geometry.Center(1.,2.,3.)
-        trans = ihm.geometry.Transformation([[1,0,0],[0,1,0],[0,0,1]],
-                                            [1.,2.,3.])
+        center = ihm.geometry.Center(1., 2., 3.)
+        trans = ihm.geometry.Transformation([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                                            [1., 2., 3.])
 
         sphere = ihm.geometry.Sphere(center=center, transformation=trans,
                                      radius=2.2, name='my sphere',
                                      description='a test sphere')
         torus = ihm.geometry.Torus(center=center, transformation=trans,
                                    major_radius=5.6, minor_radius=1.2)
-        half_torus = ihm.geometry.HalfTorus(center=center, transformation=trans,
-                                            major_radius=5.6, minor_radius=1.2,
-                                            thickness=0.1, inner=True)
+        half_torus = ihm.geometry.HalfTorus(
+            center=center, transformation=trans, major_radius=5.6,
+            minor_radius=1.2, thickness=0.1, inner=True)
         axis = ihm.geometry.XAxis()
         plane = ihm.geometry.XYPlane()
 
@@ -2764,7 +2773,7 @@ _ihm_cross_link_result_parameters.sigma_2
                                                 axis, plane))
 
         dumper = ihm.dumper._GeometricObjectDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
         self.assertEqual(len(dumper._objects_by_id), 5)
         self.assertEqual(len(dumper._centers_by_id), 1)
         self.assertEqual(len(dumper._transformations_by_id), 1)
@@ -2864,7 +2873,7 @@ _ihm_geometric_object_plane.transformation_id
         a3 = ihm.AsymUnit(e2, 'heme')
         system.asym_units.extend((a1, a2, a3))
 
-        f = ihm.restraint.ResidueFeature([a1, a2(2,3), e1, e1(2,3)],
+        f = ihm.restraint.ResidueFeature([a1, a2(2, 3), e1, e1(2, 3)],
                                          details='test feature')
         system.orphan_features.append(f)
         # Cannot make a ResidueFeature that includes a non-polymer 'residue'
@@ -2881,9 +2890,8 @@ _ihm_geometric_object_plane.transformation_id
         system.orphan_features.append(f)
         # Cannot make one feature that selects both polymer and nonpolymer
         self.assertRaises(ValueError, ihm.restraint.AtomFeature,
-                                      [a1.residue(1).atom('CA'),
-                                       a2.residue(2).atom('N'),
-                                       a3.residue(1).atom('FE')])
+                          [a1.residue(1).atom('CA'), a2.residue(2).atom('N'),
+                           a3.residue(1).atom('FE')])
         # Nonpolymeric feature
         f = ihm.restraint.NonPolyFeature([a3, e2])
         system.orphan_features.append(f)
@@ -2896,11 +2904,11 @@ _ihm_geometric_object_plane.transformation_id
         f = ihm.restraint.PseudoSiteFeature(site=ps)
         system.orphan_features.append(f)
 
-        ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
-        ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
+        ihm.dumper._EntityDumper().finalize(system)  # assign entity IDs
+        ihm.dumper._StructAsymDumper().finalize(system)  # assign asym IDs
 
         dumper = ihm.dumper._FeatureDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
         self.assertEqual(len(dumper._features_by_id), 5)
         # Repeated calls to finalize should yield identical results
         dumper.finalize(system)
@@ -2976,7 +2984,7 @@ _ihm_pseudo_site_feature.pseudo_site_id
         system.orphan_pseudo_sites.extend((ps1, ps2))
 
         dumper = ihm.dumper._PseudoSiteDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -3006,13 +3014,13 @@ _ihm_pseudo_site.description
         dataset._id = 97
 
         dist = ihm.restraint.UpperBoundDistanceRestraint(25.0)
-        r = ihm.restraint.CenterGeometricRestraint(dataset=dataset,
-                geometric_object=geom, feature=feat, distance=dist,
-                harmonic_force_constant=2.0, restrain_all=False)
+        r = ihm.restraint.CenterGeometricRestraint(
+            dataset=dataset, geometric_object=geom, feature=feat,
+            distance=dist, harmonic_force_constant=2.0, restrain_all=False)
         system.restraints.append(r)
 
         dumper = ihm.dumper._GeometricRestraintDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -3045,21 +3053,21 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
         dataset._id = 97
 
         dist = ihm.restraint.LowerBoundDistanceRestraint(25.0)
-        r1 = ihm.restraint.DerivedDistanceRestraint(dataset=dataset,
-                 feature1=feat1, feature2=feat2, distance=dist,
-                 probability=0.8)
-        r2 = ihm.restraint.DerivedDistanceRestraint(dataset=dataset,
-                 feature1=feat1, feature2=feat2, distance=dist,
-                 probability=0.4)
-        r3 = ihm.restraint.DerivedDistanceRestraint(dataset=dataset,
-                 feature1=feat1, feature2=feat2, distance=dist,
-                 probability=0.6, mic_value=0.4)
+        r1 = ihm.restraint.DerivedDistanceRestraint(
+            dataset=dataset, feature1=feat1, feature2=feat2, distance=dist,
+            probability=0.8)
+        r2 = ihm.restraint.DerivedDistanceRestraint(
+            dataset=dataset, feature1=feat1, feature2=feat2, distance=dist,
+            probability=0.4)
+        r3 = ihm.restraint.DerivedDistanceRestraint(
+            dataset=dataset, feature1=feat1, feature2=feat2, distance=dist,
+            probability=0.6, mic_value=0.4)
         rg = ihm.restraint.RestraintGroup((r2, r3))
-        system.restraints.extend((r1, r2)) # r2 is in restraints and groups
+        system.restraints.extend((r1, r2))  # r2 is in restraints and groups
         system.restraint_groups.append(rg)
 
         dumper = ihm.dumper._DerivedDistanceRestraintDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -3092,9 +3100,9 @@ _ihm_derived_distance_restraint.dataset_list_id
         dataset = MockObject()
 
         dist = ihm.restraint.LowerBoundDistanceRestraint(25.0)
-        r1 = ihm.restraint.DerivedDistanceRestraint(dataset=dataset,
-                 feature1=feat1, feature2=feat2, distance=dist,
-                 probability=0.8)
+        r1 = ihm.restraint.DerivedDistanceRestraint(
+            dataset=dataset, feature1=feat1, feature2=feat2, distance=dist,
+            probability=0.8)
         rg1 = ihm.restraint.RestraintGroup([r1])
         rg2 = ihm.restraint.RestraintGroup([r1])
         system.restraint_groups.extend((rg1, rg2))
@@ -3119,11 +3127,11 @@ _ihm_derived_distance_restraint.dataset_list_id
         fh = StringIO()
         ihm.dumper.write(fh, [s])
 
-        r = ihm.restraint.SASRestraint(dataset=dataset, assembly=assembly,
-                       segment=False, fitting_method='FoXS',
-                       fitting_atom_type='Heavy atoms',
-                       multi_state=False,
-                       radius_of_gyration=21.07, details='FoXS fitting')
+        r = ihm.restraint.SASRestraint(
+            dataset=dataset, assembly=assembly, segment=False,
+            fitting_method='FoXS', fitting_atom_type='Heavy atoms',
+            multi_state=False, radius_of_gyration=21.07,
+            details='FoXS fitting')
 
         rg = ihm.restraint.RestraintGroup([r])
         s.restraint_groups.append(rg)
@@ -3151,24 +3159,24 @@ _ihm_derived_distance_restraint.dataset_list_id
 
         dist = ihm.restraint.LowerBoundDistanceRestraint(25.0)
         dist2 = ihm.restraint.UpperBoundDistanceRestraint(14.0)
-        r1 = ihm.restraint.PredictedContactRestraint(dataset=dataset,
-                 resatom1=a1.residue(1), resatom2=a2.residue(2), distance=dist,
-                 probability=0.8, by_residue=True, software=software)
-        r2 = ihm.restraint.PredictedContactRestraint(dataset=dataset,
-                 resatom1=a1.residue(1).atom('CA'),
-                 resatom2=a2.residue(2).atom('CB'),
-                 by_residue=True, distance=dist, probability=0.4)
-        r3 = ihm.restraint.PredictedContactRestraint(dataset=dataset,
-                 resatom1=a1.residue(1), resatom2=a2.residue(2), distance=dist2,
-                 probability=0.6, by_residue=False)
+        r1 = ihm.restraint.PredictedContactRestraint(
+            dataset=dataset, resatom1=a1.residue(1), resatom2=a2.residue(2),
+            distance=dist, probability=0.8, by_residue=True, software=software)
+        r2 = ihm.restraint.PredictedContactRestraint(
+            dataset=dataset, resatom1=a1.residue(1).atom('CA'),
+            resatom2=a2.residue(2).atom('CB'), by_residue=True,
+            distance=dist, probability=0.4)
+        r3 = ihm.restraint.PredictedContactRestraint(
+            dataset=dataset, resatom1=a1.residue(1), resatom2=a2.residue(2),
+            distance=dist2, probability=0.6, by_residue=False)
         rg = ihm.restraint.RestraintGroup((r2, r3))
-        system.restraints.extend((r1, r2)) # r2 is in restraints and groups
+        system.restraints.extend((r1, r2))  # r2 is in restraints and groups
         system.restraint_groups.append(rg)
 
-        ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
-        ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
+        ihm.dumper._EntityDumper().finalize(system)  # assign entity IDs
+        ihm.dumper._StructAsymDumper().finalize(system)  # assign asym IDs
         dumper = ihm.dumper._PredictedContactRestraintDumper()
-        dumper.finalize(system) # assign IDs
+        dumper.finalize(system)  # assign IDs
 
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """#
@@ -3219,7 +3227,7 @@ _ihm_predicted_contact_restraint.software_id
         cur_ihm_modeling_protocol._id = 1
 
         system = ihm.System()
-        ## Fill the system
+        # Fill the system
         cur_flr_data = ihm.flr.FLRData()
 
         cur_entity_1 = ihm.Entity("AG", description='Entity_1')
@@ -3227,10 +3235,10 @@ _ihm_predicted_contact_restraint.software_id
 
         system.entities.extend([cur_entity_1, cur_entity_2])
 
-        asym1 = ihm.AsymUnit(cur_entity_1,id='C')
+        asym1 = ihm.AsymUnit(cur_entity_1, id='C')
         system.asym_units.append(asym1)
 
-        ## FLR
+        # FLR
         cur_entity_assembly = ihm.flr.EntityAssembly()
         cur_entity_assembly.add_entity(entity=cur_entity_1, num_copies=1)
         cur_entity_assembly.add_entity(entity=cur_entity_2, num_copies=2)
@@ -3238,13 +3246,15 @@ _ihm_predicted_contact_restraint.software_id
         cur_instrument = ihm.flr.Instrument(details='My_Instrument')
         cur_inst_setting_1 = ihm.flr.InstSetting(details='My_Inst_setting_1')
         cur_inst_setting_2 = ihm.flr.InstSetting(details='My_Inst_setting_2')
-        cur_exp_condition_1 = ihm.flr.ExpCondition(details='My_Exp_condition_1')
-        cur_exp_condition_2 = ihm.flr.ExpCondition(details='My_Exp_condition_2')
+        cur_exp_condition_1 = ihm.flr.ExpCondition(
+            details='My_Exp_condition_1')
+        cur_exp_condition_2 = ihm.flr.ExpCondition(
+            details='My_Exp_condition_2')
 
         cur_sample_condition_1 = ihm.flr.SampleCondition(
-                                     details='My_Sample_condition_1')
+            details='My_Sample_condition_1')
         cur_sample_condition_2 = ihm.flr.SampleCondition(
-                                     details='My_Sample_condition_2')
+            details='My_Sample_condition_2')
 
         cur_sample_1 = ihm.flr.Sample(entity_assembly=cur_entity_assembly,
                                       num_of_probes=2,
@@ -3258,7 +3268,7 @@ _ihm_predicted_contact_restraint.software_id
                                       description='Sample_2',
                                       details='Details sample 2',
                                       solvent_phase='liquid')
-        ## Reference sample
+        # Reference sample
         cur_sample_3 = ihm.flr.Sample(entity_assembly=cur_entity_assembly,
                                       num_of_probes=1,
                                       condition=cur_sample_condition_1,
@@ -3279,318 +3289,311 @@ _ihm_predicted_contact_restraint.software_id
                                  inst_setting=cur_inst_setting_1,
                                  exp_condition=cur_exp_condition_1,
                                  sample=cur_sample_3)
-        ## Probes
+        # Probes
         cur_probe_1 = ihm.flr.Probe()
         cur_probe_2 = ihm.flr.Probe()
         cur_probe_list_1 = ihm.flr.ProbeList(chromophore_name='Donor1',
-                                              reactive_probe_flag=False,
-                                              probe_origin='extrinsic',
-                                              probe_link_type='covalent')
-        cur_probe_list_2 = ihm.flr.ProbeList(chromophore_name='Acceptor2',
-                                              reactive_probe_flag=True,
-                                              reactive_probe_name='Acceptor1 reactive',
-                                              probe_origin='extrinsic',
-                                              probe_link_type='covalent')
-        ## Chem descriptor ID 1
-        cur_chem_descriptor_probe_1_chromophore = ihm.ChemDescriptor(auth_name='Donor1_chromophore_chem_desc',
-                                                                     chem_comp_id=None,common_name=None,smiles='C1')
-        cur_chem_descriptor_probe_1_chromophore._id = 1
-        ## Chem descriptor ID 2
-        cur_chem_descriptor_probe_2_chromophore = ihm.ChemDescriptor(auth_name='Donor2_chromophore_chem_desc',
-                                                                     chem_comp_id=None,common_name=None,smiles='C2')
-        cur_chem_descriptor_probe_2_chromophore._id = 2
-        ## Chem descriptor ID 3
-        cur_chem_descriptor_probe_2_reactive = ihm.ChemDescriptor(auth_name='Donor1_reactive_chem_desc',
-                                                                  chem_comp_id=None, common_name=None, smiles='R1')
-        cur_chem_descriptor_probe_2_reactive._id = 3
-        cur_probe_descriptor_1 = ihm.flr.ProbeDescriptor(reactive_probe_chem_descriptor=None,
-                                                          chromophore_chem_descriptor=cur_chem_descriptor_probe_1_chromophore,
-                                                          chromophore_center_atom='CB')
-        cur_probe_descriptor_2 = ihm.flr.ProbeDescriptor(reactive_probe_chem_descriptor=cur_chem_descriptor_probe_2_reactive,
-                                                          chromophore_chem_descriptor=cur_chem_descriptor_probe_2_chromophore,
-                                                          chromophore_center_atom='CB')
+                                             reactive_probe_flag=False,
+                                             probe_origin='extrinsic',
+                                             probe_link_type='covalent')
+        cur_probe_list_2 = ihm.flr.ProbeList(
+            chromophore_name='Acceptor2',
+            reactive_probe_flag=True, reactive_probe_name='Acceptor1 reactive',
+            probe_origin='extrinsic', probe_link_type='covalent')
+        # Chem descriptor ID 1
+        cur_chem_desc_probe_1_chromophore = ihm.ChemDescriptor(
+            auth_name='Donor1_chromophore_chem_desc',
+            chem_comp_id=None, common_name=None, smiles='C1')
+        cur_chem_desc_probe_1_chromophore._id = 1
+        # Chem descriptor ID 2
+        cur_chem_desc_probe_2_chromophore = ihm.ChemDescriptor(
+            auth_name='Donor2_chromophore_chem_desc',
+            chem_comp_id=None, common_name=None, smiles='C2')
+        cur_chem_desc_probe_2_chromophore._id = 2
+        # Chem descriptor ID 3
+        cur_chem_desc_probe_2_reactive = ihm.ChemDescriptor(
+            auth_name='Donor1_reactive_chem_desc',
+            chem_comp_id=None, common_name=None, smiles='R1')
+        cur_chem_desc_probe_2_reactive._id = 3
+        cur_probe_descriptor_1 = ihm.flr.ProbeDescriptor(
+            reactive_probe_chem_descriptor=None,
+            chromophore_chem_descriptor=cur_chem_desc_probe_1_chromophore,
+            chromophore_center_atom='CB')
+        cur_probe_descriptor_2 = ihm.flr.ProbeDescriptor(
+            reactive_probe_chem_descriptor=cur_chem_desc_probe_2_reactive,
+            chromophore_chem_descriptor=cur_chem_desc_probe_2_chromophore,
+            chromophore_center_atom='CB')
         cur_probe_1.probe_descriptor = cur_probe_descriptor_1
         cur_probe_1.probe_list_entry = cur_probe_list_1
         cur_probe_2.probe_descriptor = cur_probe_descriptor_2
         cur_probe_2.probe_list_entry = cur_probe_list_2
 
-        ## Modified residue
-        ## Chem descriptor ID 4
+        # Modified residue
+        # Chem descriptor ID 4
         cur_chem_descriptor_modified_residue = ihm.ChemDescriptor(
-                        auth_name='Modified_residue', smiles='Modified')
+            auth_name='Modified_residue', smiles='Modified')
         cur_chem_comp_mutated_residue = ihm.ChemComp(
-                        id='Cys',code='C',code_canonical='C')
+            id='Cys', code='C', code_canonical='C')
 
         cur_chem_descriptor_modified_residue._id = 4
 #        cur_chem_comp_mutated_residue._id = 5
-        ## Poly_probe_position
+        # Poly_probe_position
         cur_poly_probe_position_1 = ihm.flr.PolyProbePosition(
-                      resatom=cur_entity_1.residue(1), # no atom ID given
-                      mutation_flag=True,
-                      modification_flag=True, auth_name='Position_1',
-                      mutated_chem_comp_id=
-                                cur_chem_comp_mutated_residue,
-                      modified_chem_descriptor=
-                                cur_chem_descriptor_modified_residue)
+            resatom=cur_entity_1.residue(1),  # no atom ID given
+            mutation_flag=True,
+            modification_flag=True, auth_name='Position_1',
+            mutated_chem_comp_id=cur_chem_comp_mutated_residue,
+            modified_chem_descriptor=cur_chem_descriptor_modified_residue)
         cur_poly_probe_position_2 = ihm.flr.PolyProbePosition(
-                      resatom=asym1.residue(2).atom('CB'), ## using asym instead of only entity
-                      mutation_flag=False,
-                      modification_flag=False, auth_name='Position_2')
+            # using asym instead of only entity
+            resatom=asym1.residue(2).atom('CB'),
+            mutation_flag=False,
+            modification_flag=False, auth_name='Position_2')
         cur_poly_probe_position_3 = ihm.flr.PolyProbePosition(
-                      resatom=cur_entity_2.residue(10).atom('CB'),
-                      mutation_flag=True,
-                      modification_flag=True, auth_name='Position_3',
-                      mutated_chem_comp_id=
-                                cur_chem_comp_mutated_residue,
-                      modified_chem_descriptor=
-                                 cur_chem_descriptor_modified_residue)
-        ## Sample_probe_details
-        cur_sample_probe_details_1 = ihm.flr.SampleProbeDetails(sample=cur_sample_1,
-                                                                  probe=cur_probe_1,
-                                                                  fluorophore_type='donor',
-                                                                  poly_probe_position=cur_poly_probe_position_1,
-                                                                  description='Donor in position1-position3')
-        cur_sample_probe_details_2 = ihm.flr.SampleProbeDetails(sample=cur_sample_1,
-                                                                  probe=cur_probe_2,
-                                                                  fluorophore_type='acceptor',
-                                                                  poly_probe_position=cur_poly_probe_position_3,
-                                                                  description='Acceptor in position1-position3')
-        cur_sample_probe_details_3 = ihm.flr.SampleProbeDetails(sample=cur_sample_2,
-                                                                  probe=cur_probe_1,
-                                                                  fluorophore_type='donor',
-                                                                  poly_probe_position=cur_poly_probe_position_2,
-                                                                  description='Donor in position2-position3')
-        cur_sample_probe_details_4 = ihm.flr.SampleProbeDetails(sample=cur_sample_2,
-                                                                  probe=cur_probe_2,
-                                                                  fluorophore_type='acceptor',
-                                                                  poly_probe_position=cur_poly_probe_position_3,
-                                                                  description='Acceptor in position2-position3')
-        cur_sample_probe_details_5 = ihm.flr.SampleProbeDetails(sample=cur_sample_3 ,
-                                                               probe=cur_probe_1,
-                                                               fluorophore_type='donor',
-                                                               poly_probe_position=cur_poly_probe_position_1,
-                                                               description='Donor-only on reference sample')
-        ## Poly_probe_conjugate
-        ## Chem Descriptor ID 5
-        cur_poly_probe_conjugate_chem_descriptor = ihm.ChemDescriptor(auth_name='Conjugate',
-                                                                      smiles='Conj1')
+            resatom=cur_entity_2.residue(10).atom('CB'),
+            mutation_flag=True,
+            modification_flag=True, auth_name='Position_3',
+            mutated_chem_comp_id=cur_chem_comp_mutated_residue,
+            modified_chem_descriptor=cur_chem_descriptor_modified_residue)
+        # Sample_probe_details
+        cur_sample_probe_details_1 = ihm.flr.SampleProbeDetails(
+            sample=cur_sample_1, probe=cur_probe_1, fluorophore_type='donor',
+            poly_probe_position=cur_poly_probe_position_1,
+            description='Donor in position1-position3')
+        cur_sample_probe_details_2 = ihm.flr.SampleProbeDetails(
+            sample=cur_sample_1, probe=cur_probe_2,
+            fluorophore_type='acceptor',
+            poly_probe_position=cur_poly_probe_position_3,
+            description='Acceptor in position1-position3')
+        cur_sample_probe_details_3 = ihm.flr.SampleProbeDetails(
+            sample=cur_sample_2, probe=cur_probe_1, fluorophore_type='donor',
+            poly_probe_position=cur_poly_probe_position_2,
+            description='Donor in position2-position3')
+        cur_sample_probe_details_4 = ihm.flr.SampleProbeDetails(
+            sample=cur_sample_2, probe=cur_probe_2,
+            fluorophore_type='acceptor',
+            poly_probe_position=cur_poly_probe_position_3,
+            description='Acceptor in position2-position3')
+        cur_sample_probe_details_5 = ihm.flr.SampleProbeDetails(
+            sample=cur_sample_3, probe=cur_probe_1, fluorophore_type='donor',
+            poly_probe_position=cur_poly_probe_position_1,
+            description='Donor-only on reference sample')
+        # Poly_probe_conjugate
+        # Chem Descriptor ID 5
+        cur_poly_probe_conjugate_chem_descriptor = ihm.ChemDescriptor(
+            auth_name='Conjugate', smiles='Conj1')
         cur_poly_probe_conjugate_chem_descriptor._id = 5
-        cur_poly_probe_conjugate_1 = ihm.flr.PolyProbeConjugate(sample_probe=cur_sample_probe_details_1,
-                                                                  chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
-                                                                  ambiguous_stoichiometry=False)
-        cur_poly_probe_conjugate_2 = ihm.flr.PolyProbeConjugate(sample_probe=cur_sample_probe_details_2,
-                                                                  chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
-                                                                  ambiguous_stoichiometry=False)
-        cur_poly_probe_conjugate_3 = ihm.flr.PolyProbeConjugate(sample_probe=cur_sample_probe_details_3,
-                                                                  chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
-                                                                  ambiguous_stoichiometry=False)
-        cur_poly_probe_conjugate_4 = ihm.flr.PolyProbeConjugate(sample_probe=cur_sample_probe_details_4,
-                                                                  chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
-                                                                  ambiguous_stoichiometry=False)
-        cur_poly_probe_conjugate_5 = ihm.flr.PolyProbeConjugate(sample_probe=cur_sample_probe_details_5,
-                                                                chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
-                                                                ambiguous_stoichiometry=False)
+        cur_poly_probe_conjugate_1 = ihm.flr.PolyProbeConjugate(
+            sample_probe=cur_sample_probe_details_1,
+            chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
+            ambiguous_stoichiometry=False)
+        cur_poly_probe_conjugate_2 = ihm.flr.PolyProbeConjugate(
+            sample_probe=cur_sample_probe_details_2,
+            chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
+            ambiguous_stoichiometry=False)
+        cur_poly_probe_conjugate_3 = ihm.flr.PolyProbeConjugate(
+            sample_probe=cur_sample_probe_details_3,
+            chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
+            ambiguous_stoichiometry=False)
+        cur_poly_probe_conjugate_4 = ihm.flr.PolyProbeConjugate(
+            sample_probe=cur_sample_probe_details_4,
+            chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
+            ambiguous_stoichiometry=False)
+        cur_poly_probe_conjugate_5 = ihm.flr.PolyProbeConjugate(
+            sample_probe=cur_sample_probe_details_5,
+            chem_descriptor=cur_poly_probe_conjugate_chem_descriptor,
+            ambiguous_stoichiometry=False)
         cur_flr_data.poly_probe_conjugates.extend(
-                (cur_poly_probe_conjugate_1, cur_poly_probe_conjugate_2,
-                 cur_poly_probe_conjugate_3, cur_poly_probe_conjugate_4,
-                 cur_poly_probe_conjugate_5))
+            (cur_poly_probe_conjugate_1, cur_poly_probe_conjugate_2,
+             cur_poly_probe_conjugate_3, cur_poly_probe_conjugate_4,
+             cur_poly_probe_conjugate_5))
 
-        ## Forster_radius
-        cur_forster_radius = ihm.flr.FRETForsterRadius(donor_probe=cur_probe_1,
-                                                         acceptor_probe=cur_probe_2,
-                                                         forster_radius=52.0,
-                                                         reduced_forster_radius=53.2)
+        # Forster_radius
+        cur_forster_radius = ihm.flr.FRETForsterRadius(
+            donor_probe=cur_probe_1, acceptor_probe=cur_probe_2,
+            forster_radius=52.0, reduced_forster_radius=53.2)
 
-        ## Fret_calibration_parameters
+        # Fret_calibration_parameters
         cur_fret_calibration_parameters_1 = ihm.flr.FRETCalibrationParameters(
-                        phi_acceptor=0.35, alpha=2.4, gg_gr_ratio=0.4, a_b=0.8)
+            phi_acceptor=0.35, alpha=2.4, gg_gr_ratio=0.4, a_b=0.8)
         cur_fret_calibration_parameters_2 = ihm.flr.FRETCalibrationParameters(
-                        phi_acceptor=0.35, alpha=2.4, gg_gr_ratio=0.38, a_b=0.8)
+            phi_acceptor=0.35, alpha=2.4, gg_gr_ratio=0.38, a_b=0.8)
 
-        ## LifetimeFitModel
-        cur_lifetime_fit_model = ihm.flr.LifetimeFitModel(name='Lifetime fit model 1',
-                                                          description='Description of model')
+        # LifetimeFitModel
+        cur_lifetime_fit_model = ihm.flr.LifetimeFitModel(
+            name='Lifetime fit model 1', description='Description of model')
 
-        ## RefMeasurementLifetime
+        # RefMeasurementLifetime
         cur_lifetime_1 = ihm.flr.RefMeasurementLifetime(species_fraction=0.6,
                                                         lifetime=3.2)
         cur_lifetime_2 = ihm.flr.RefMeasurementLifetime(species_fraction=0.4,
                                                         lifetime=1.4)
-        ## RefMeasurement
-        cur_ref_measurement_1 = ihm.flr.RefMeasurement(ref_sample_probe=cur_sample_probe_details_5,
-                                                       details='Reference Measurement 1')
+        # RefMeasurement
+        cur_ref_measurement_1 = ihm.flr.RefMeasurement(
+            ref_sample_probe=cur_sample_probe_details_5,
+            details='Reference Measurement 1')
         cur_ref_measurement_1.add_lifetime(cur_lifetime_1)
         cur_ref_measurement_1.add_lifetime(cur_lifetime_2)
-        ## RefMeasurementGroup
-        cur_lifetime_ref_measurement_group = ihm.flr.RefMeasurementGroup(details='Reference measurement group 1')
-        cur_lifetime_ref_measurement_group.add_ref_measurement(cur_ref_measurement_1)
+        # RefMeasurementGroup
+        cur_lifetime_ref_measurement_group = ihm.flr.RefMeasurementGroup(
+            details='Reference measurement group 1')
+        cur_lifetime_ref_measurement_group.add_ref_measurement(
+            cur_ref_measurement_1)
 
-        ## FretAnalysis
-        cur_fret_analysis_1 = ihm.flr.FRETAnalysis(experiment=cur_experiment,
-                                                    sample_probe_1=cur_sample_probe_details_1,
-                                                    sample_probe_2=cur_sample_probe_details_2,
-                                                    forster_radius=cur_forster_radius,
-                                                    type='intensity-based',
-                                                    calibration_parameters=cur_fret_calibration_parameters_1,
-                                                    method_name='PDA',
-                                                    chi_square_reduced=1.5,
-                                                    dataset=dataset_1)
-        cur_fret_analysis_2 = ihm.flr.FRETAnalysis(experiment=cur_experiment,
-                                                    sample_probe_1=cur_sample_probe_details_3,
-                                                    sample_probe_2=cur_sample_probe_details_4,
-                                                    forster_radius=cur_forster_radius,
-                                                    type='intensity-based',
-                                                    calibration_parameters=cur_fret_calibration_parameters_2,
-                                                    method_name='PDA',
-                                                    chi_square_reduced=1.8,
-                                                    dataset=dataset_1)
-        ## lifetime-based FRETAnalysis
-        cur_fret_analysis_3 = ihm.flr.FRETAnalysis(experiment=cur_experiment,
-                                                   sample_probe_1=cur_sample_probe_details_1,
-                                                   sample_probe_2=cur_sample_probe_details_2,
-                                                   forster_radius=cur_forster_radius,
-                                                   type='lifetime-based',
-                                                   lifetime_fit_model=cur_lifetime_fit_model,
-                                                   ref_measurement_group=cur_lifetime_ref_measurement_group,
-                                                   method_name='Lifetime fit',
-                                                   chi_square_reduced=1.6,
-                                                   dataset=dataset_1)
+        # FretAnalysis
+        cur_fret_analysis_1 = ihm.flr.FRETAnalysis(
+            experiment=cur_experiment,
+            sample_probe_1=cur_sample_probe_details_1,
+            sample_probe_2=cur_sample_probe_details_2,
+            forster_radius=cur_forster_radius,
+            type='intensity-based',
+            calibration_parameters=cur_fret_calibration_parameters_1,
+            method_name='PDA', chi_square_reduced=1.5, dataset=dataset_1)
+        cur_fret_analysis_2 = ihm.flr.FRETAnalysis(
+            experiment=cur_experiment,
+            sample_probe_1=cur_sample_probe_details_3,
+            sample_probe_2=cur_sample_probe_details_4,
+            forster_radius=cur_forster_radius, type='intensity-based',
+            calibration_parameters=cur_fret_calibration_parameters_2,
+            method_name='PDA', chi_square_reduced=1.8, dataset=dataset_1)
+        # lifetime-based FRETAnalysis
+        cur_fret_analysis_3 = ihm.flr.FRETAnalysis(
+            experiment=cur_experiment,
+            sample_probe_1=cur_sample_probe_details_1,
+            sample_probe_2=cur_sample_probe_details_2,
+            forster_radius=cur_forster_radius, type='lifetime-based',
+            lifetime_fit_model=cur_lifetime_fit_model,
+            ref_measurement_group=cur_lifetime_ref_measurement_group,
+            method_name='Lifetime fit', chi_square_reduced=1.6,
+            dataset=dataset_1)
 
-        ## Peak_assignment
-        cur_peak_assignment = ihm.flr.PeakAssignment(method_name='Population', details='Peaks were assigned by population fractions.')
+        # Peak_assignment
+        cur_peak_assignment = ihm.flr.PeakAssignment(
+            method_name='Population',
+            details='Peaks were assigned by population fractions.')
 
-        ## Fret_distance_restraints
-        cur_fret_distance_restraint_1 = ihm.flr.FRETDistanceRestraint(sample_probe_1=cur_sample_probe_details_1,
-                                                                        sample_probe_2=cur_sample_probe_details_2,
-                                                                        analysis=cur_fret_analysis_1,
-                                                                        distance=53.5,
-                                                                        distance_error_plus=2.5,
-                                                                        distance_error_minus=2.3,
-                                                                        distance_type='<R_DA>_E',
-                                                                        state=cur_state,
-                                                                        population_fraction=0.80,
-                                                                        peak_assignment=cur_peak_assignment)
-        cur_fret_distance_restraint_2 = ihm.flr.FRETDistanceRestraint(sample_probe_1=cur_sample_probe_details_3,
-                                                                        sample_probe_2=cur_sample_probe_details_4,
-                                                                        analysis=cur_fret_analysis_2,
-                                                                        distance=49.0,
-                                                                        distance_error_plus=2.0,
-                                                                        distance_error_minus=2.1,
-                                                                        distance_type='<R_DA>_E',
-                                                                        state=cur_state,
-                                                                        population_fraction=0.80,
-                                                                        peak_assignment=cur_peak_assignment)
-        cur_fret_distance_restraint_3 = ihm.flr.FRETDistanceRestraint(sample_probe_1=cur_sample_probe_details_1,
-                                                                        sample_probe_2=cur_sample_probe_details_2,
-                                                                        analysis=cur_fret_analysis_3,
-                                                                        distance=53.5,
-                                                                        distance_error_plus=2.5,
-                                                                        distance_error_minus=2.3,
-                                                                        distance_type='<R_DA>_E',
-                                                                        state=cur_state,
-                                                                        population_fraction=0.80,
-                                                                        peak_assignment=cur_peak_assignment)
+        # Fret_distance_restraints
+        cur_fret_distance_restraint_1 = ihm.flr.FRETDistanceRestraint(
+            sample_probe_1=cur_sample_probe_details_1,
+            sample_probe_2=cur_sample_probe_details_2,
+            analysis=cur_fret_analysis_1, distance=53.5,
+            distance_error_plus=2.5, distance_error_minus=2.3,
+            distance_type='<R_DA>_E', state=cur_state,
+            population_fraction=0.80, peak_assignment=cur_peak_assignment)
+        cur_fret_distance_restraint_2 = ihm.flr.FRETDistanceRestraint(
+            sample_probe_1=cur_sample_probe_details_3,
+            sample_probe_2=cur_sample_probe_details_4,
+            analysis=cur_fret_analysis_2, distance=49.0,
+            distance_error_plus=2.0, distance_error_minus=2.1,
+            distance_type='<R_DA>_E', state=cur_state,
+            population_fraction=0.80, peak_assignment=cur_peak_assignment)
+        cur_fret_distance_restraint_3 = ihm.flr.FRETDistanceRestraint(
+            sample_probe_1=cur_sample_probe_details_1,
+            sample_probe_2=cur_sample_probe_details_2,
+            analysis=cur_fret_analysis_3, distance=53.5,
+            distance_error_plus=2.5, distance_error_minus=2.3,
+            distance_type='<R_DA>_E', state=cur_state,
+            population_fraction=0.80, peak_assignment=cur_peak_assignment)
 
-        cur_fret_distance_restraint_group = ihm.flr.FRETDistanceRestraintGroup()
-        cur_fret_distance_restraint_group.add_distance_restraint(cur_fret_distance_restraint_1)
-        cur_fret_distance_restraint_group.add_distance_restraint(cur_fret_distance_restraint_2)
-        cur_fret_distance_restraint_group.add_distance_restraint(cur_fret_distance_restraint_3)
+        cur_fret_dist_restraint_group = ihm.flr.FRETDistanceRestraintGroup()
+        cur_fret_dist_restraint_group.add_distance_restraint(
+            cur_fret_distance_restraint_1)
+        cur_fret_dist_restraint_group.add_distance_restraint(
+            cur_fret_distance_restraint_2)
+        cur_fret_dist_restraint_group.add_distance_restraint(
+            cur_fret_distance_restraint_3)
 
         cur_flr_data.distance_restraint_groups.append(
-                                cur_fret_distance_restraint_group)
+            cur_fret_dist_restraint_group)
 
-        ## fret_model_quality
-        cur_fret_model_quality_1 = ihm.flr.FRETModelQuality(model=cur_model_1,
-                                                              chi_square_reduced=1.3,
-                                                              dataset_group=dataset_group_1,
-                                                              method=None)
-        cur_fret_model_quality_2 = ihm.flr.FRETModelQuality(model=cur_model_2,
-                                                              chi_square_reduced=1.9,
-                                                              dataset_group=dataset_group_1,
-                                                              method=None)
+        # fret_model_quality
+        cur_fret_model_quality_1 = ihm.flr.FRETModelQuality(
+            model=cur_model_1, chi_square_reduced=1.3,
+            dataset_group=dataset_group_1, method=None)
+        cur_fret_model_quality_2 = ihm.flr.FRETModelQuality(
+            model=cur_model_2, chi_square_reduced=1.9,
+            dataset_group=dataset_group_1, method=None)
         cur_flr_data.fret_model_qualities.extend(
-                (cur_fret_model_quality_1, cur_fret_model_quality_2))
-        ## fret_model_distance
-        cur_fret_model_distance_1_1 = ihm.flr.FRETModelDistance(restraint=cur_fret_distance_restraint_1,
-                                                                  model=cur_model_1,
-                                                                  distance=52.0)
-        cur_fret_model_distance_1_2 = ihm.flr.FRETModelDistance(restraint=cur_fret_distance_restraint_2,
-                                                                  model=cur_model_1,
-                                                                  distance=50.0)
-        cur_fret_model_distance_2_1 = ihm.flr.FRETModelDistance(restraint=cur_fret_distance_restraint_1,
-                                                                  model=cur_model_2,
-                                                                  distance=53.8)
-        cur_fret_model_distance_2_2 = ihm.flr.FRETModelDistance(restraint=cur_fret_distance_restraint_2,
-                                                                  model=cur_model_2,
-                                                                  distance=49.4)
+            (cur_fret_model_quality_1, cur_fret_model_quality_2))
+        # fret_model_distance
+        cur_fret_model_distance_1_1 = ihm.flr.FRETModelDistance(
+            restraint=cur_fret_distance_restraint_1, model=cur_model_1,
+            distance=52.0)
+        cur_fret_model_distance_1_2 = ihm.flr.FRETModelDistance(
+            restraint=cur_fret_distance_restraint_2, model=cur_model_1,
+            distance=50.0)
+        cur_fret_model_distance_2_1 = ihm.flr.FRETModelDistance(
+            restraint=cur_fret_distance_restraint_1, model=cur_model_2,
+            distance=53.8)
+        cur_fret_model_distance_2_2 = ihm.flr.FRETModelDistance(
+            restraint=cur_fret_distance_restraint_2, model=cur_model_2,
+            distance=49.4)
         cur_flr_data.fret_model_distances.extend(
-                (cur_fret_model_distance_1_1, cur_fret_model_distance_1_2,
-                 cur_fret_model_distance_2_1, cur_fret_model_distance_2_2))
+            (cur_fret_model_distance_1_1, cur_fret_model_distance_1_2,
+             cur_fret_model_distance_2_1, cur_fret_model_distance_2_2))
 
-        ## FPS modeling
+        # FPS modeling
         cur_FPS_global_parameters = ihm.flr.FPSGlobalParameters(
-                             forster_radius=52,
-                             conversion_function_polynom_order=3,
-                             repetition=1000, av_grid_rel=0.2,
-                             av_min_grid_a=0.4, av_allowed_sphere=0.5,
-                             av_search_nodes=3, av_e_samples_k=200,
-                             sim_viscosity_adjustment=1,
-                             sim_dt_adjustment=1, sim_max_iter_k=200,
-                             sim_max_force=400, sim_clash_tolerance_a=1,
-                             sim_reciprocal_kt=10, sim_clash_potential='^2',
-                             convergence_e=100, convergence_k=0.001,
-                             convergence_f=0.001, convergence_t=0.002)
+            forster_radius=52, conversion_function_polynom_order=3,
+            repetition=1000, av_grid_rel=0.2, av_min_grid_a=0.4,
+            av_allowed_sphere=0.5, av_search_nodes=3, av_e_samples_k=200,
+            sim_viscosity_adjustment=1, sim_dt_adjustment=1,
+            sim_max_iter_k=200, sim_max_force=400, sim_clash_tolerance_a=1,
+            sim_reciprocal_kt=10, sim_clash_potential='^2',
+            convergence_e=100, convergence_k=0.001, convergence_f=0.001,
+            convergence_t=0.002)
 
-        cur_FPS_modeling_1 = ihm.flr.FPSModeling(protocol=cur_ihm_modeling_protocol,
-                                                  restraint_group=cur_fret_distance_restraint_group,
-                                                  global_parameter=cur_FPS_global_parameters,
-                                                  probe_modeling_method="AV3")
-        cur_FPS_modeling_2 = ihm.flr.FPSModeling(protocol=cur_ihm_modeling_protocol,
-                                                  restraint_group=cur_fret_distance_restraint_group,
-                                                  global_parameter=cur_FPS_global_parameters,
-                                                  probe_modeling_method="MPP")
-        ## Modeling by AV
-        cur_FPS_AV_parameters_1 = ihm.flr.FPSAVParameter(num_linker_atoms=15,linker_length=20.0,linker_width=3.5,
-                                                           probe_radius_1=10.0,probe_radius_2=5.0,probe_radius_3=3.5)
+        cur_FPS_modeling_1 = ihm.flr.FPSModeling(
+            protocol=cur_ihm_modeling_protocol,
+            restraint_group=cur_fret_dist_restraint_group,
+            global_parameter=cur_FPS_global_parameters,
+            probe_modeling_method="AV3")
+        cur_FPS_modeling_2 = ihm.flr.FPSModeling(
+            protocol=cur_ihm_modeling_protocol,
+            restraint_group=cur_fret_dist_restraint_group,
+            global_parameter=cur_FPS_global_parameters,
+            probe_modeling_method="MPP")
+        # Modeling by AV
+        cur_FPS_AV_parameters_1 = ihm.flr.FPSAVParameter(
+            num_linker_atoms=15, linker_length=20.0, linker_width=3.5,
+            probe_radius_1=10.0, probe_radius_2=5.0, probe_radius_3=3.5)
 
-        cur_FPS_AV_modeling_1 = ihm.flr.FPSAVModeling(fps_modeling=cur_FPS_modeling_1,
-                                                      sample_probe=cur_sample_probe_details_1,
-                                                        parameter=cur_FPS_AV_parameters_1)
-        cur_FPS_AV_modeling_3 = ihm.flr.FPSAVModeling(fps_modeling=cur_FPS_modeling_1,
-                                                      sample_probe=cur_sample_probe_details_3,
-                                                        parameter=cur_FPS_AV_parameters_1)
+        cur_FPS_AV_modeling_1 = ihm.flr.FPSAVModeling(
+            fps_modeling=cur_FPS_modeling_1,
+            sample_probe=cur_sample_probe_details_1,
+            parameter=cur_FPS_AV_parameters_1)
+        cur_FPS_AV_modeling_3 = ihm.flr.FPSAVModeling(
+            fps_modeling=cur_FPS_modeling_1,
+            sample_probe=cur_sample_probe_details_3,
+            parameter=cur_FPS_AV_parameters_1)
         cur_flr_data.fps_modeling.append(cur_FPS_AV_modeling_1)
         cur_flr_data.fps_modeling.append(cur_FPS_AV_modeling_3)
 
-        ## Modeling by mean probe position
+        # Modeling by mean probe position
         cur_mpp_atom_position_1 = ihm.flr.FPSMPPAtomPosition(
-                                        atom=asym1.residue(1).atom('CA'),
-                                        x=1.0, y=1.0, z=1.0)
+            atom=asym1.residue(1).atom('CA'), x=1.0, y=1.0, z=1.0)
         cur_mpp_atom_position_2 = ihm.flr.FPSMPPAtomPosition(
-                                        atom=asym1.residue(2).atom('CA'),
-                                        x=2.0, y=2.0, z=2.0)
+            atom=asym1.residue(2).atom('CA'), x=2.0, y=2.0, z=2.0)
         cur_mpp_atom_position_group = ihm.flr.FPSMPPAtomPositionGroup()
         cur_mpp_atom_position_group.add_atom_position(cur_mpp_atom_position_1)
         cur_mpp_atom_position_group.add_atom_position(cur_mpp_atom_position_2)
         cur_mean_probe_position_2 = ihm.flr.FPSMeanProbePosition(
-                                       sample_probe=cur_sample_probe_details_2,
-                                       x=1.0, y=2.0, z=3.0)
+            sample_probe=cur_sample_probe_details_2, x=1.0, y=2.0, z=3.0)
         cur_mean_probe_position_4 = ihm.flr.FPSMeanProbePosition(
-                                       sample_probe=cur_sample_probe_details_4,
-                                       x=1.0, y=2.0, z=3.0)
-        cur_FPS_MPP_modeling_2 = ihm.flr.FPSMPPModeling(fps_modeling=cur_FPS_modeling_2,
-                                                        mpp=cur_mean_probe_position_2,
-                                                        mpp_atom_position_group=cur_mpp_atom_position_group)
-        cur_FPS_MPP_modeling_4 = ihm.flr.FPSMPPModeling(fps_modeling=cur_FPS_modeling_2,
-                                                        mpp=cur_mean_probe_position_4,
-                                                        mpp_atom_position_group=cur_mpp_atom_position_group)
+            sample_probe=cur_sample_probe_details_4, x=1.0, y=2.0, z=3.0)
+        cur_FPS_MPP_modeling_2 = ihm.flr.FPSMPPModeling(
+            fps_modeling=cur_FPS_modeling_2, mpp=cur_mean_probe_position_2,
+            mpp_atom_position_group=cur_mpp_atom_position_group)
+        cur_FPS_MPP_modeling_4 = ihm.flr.FPSMPPModeling(
+            fps_modeling=cur_FPS_modeling_2, mpp=cur_mean_probe_position_4,
+            mpp_atom_position_group=cur_mpp_atom_position_group)
         cur_flr_data.fps_modeling.append(cur_FPS_MPP_modeling_2)
         cur_flr_data.fps_modeling.append(cur_FPS_MPP_modeling_4)
 
         system.flr_data = [cur_flr_data]
 
-        ihm.dumper._EntityDumper().finalize(system) # assign entity IDs
-        ihm.dumper._StructAsymDumper().finalize(system) # assign asym IDs
+        ihm.dumper._EntityDumper().finalize(system)  # assign entity IDs
+        ihm.dumper._StructAsymDumper().finalize(system)  # assign asym IDs
 
         ihm.dumper._ChemCompDumper().finalize(system)
 
@@ -3661,7 +3664,7 @@ _ihm_predicted_contact_restraint.software_id
         av_dumper.finalize(system)
 
         mpp_dumper = ihm.dumper._FLRFPSMPPModelingDumper()
-        mpp_dumper.finalize(system) # assign IDs
+        mpp_dumper.finalize(system)  # assign IDs
 
         out = _get_dumper_output(experiment_dumper, system)
         self.assertEqual(out, """#

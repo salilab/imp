@@ -13,19 +13,20 @@ system = ihm.System()
 # To point to an external file, we use one of the classes in the ihm.location
 # module. Here we reference this Python script itself on the local disk (output
 # paths in the mmCIF file will be relative to the current working directory):
-l = ihm.location.WorkflowFileLocation("locations.py",
-                       details="The Python script used to generate this "
-                               "mmCIF file")
+loc = ihm.location.WorkflowFileLocation(
+    "locations.py",
+    details="The Python script used to generate this mmCIF file")
 # Add the location to the system, so it gets output to the mmCIF file
-system.locations.append(l)
+system.locations.append(loc)
 
 # For public mmCIF files, external files need to also be in a public location,
 # for example, in an archive file stored at a service such as Zenodo that
 # assigns a DOI. To handle this, we use a Repository object:
-r = ihm.location.Repository(doi='10.5281/zenodo.820724',
-        url='https://zenodo.org/record/820724/files/archive.zip')
-l = ihm.location.OutputFileLocation("densities/subunitA.mrc", repo=r)
-system.locations.append(l)
+r = ihm.location.Repository(
+    doi='10.5281/zenodo.820724',
+    url='https://zenodo.org/record/820724/files/archive.zip')
+loc = ihm.location.OutputFileLocation("densities/subunitA.mrc", repo=r)
+system.locations.append(loc)
 
 # Users of the mmCIF can then obtain the file subunitA.mrc by downloading
 # archive.zip from the given DOI or URL, unzipping it, and then looking in the
@@ -36,8 +37,8 @@ system.locations.append(l)
 
 # Datasets are the most common users of external files. For example, to refer
 # to an input PDB file in the current directory:
-l = ihm.location.InputFileLocation("simple.pdb", details="Input PDB file")
-d = ihm.dataset.PDBDataset(l)
+loc = ihm.location.InputFileLocation("simple.pdb", details="Input PDB file")
+d = ihm.dataset.PDBDataset(loc)
 # Add the dataset to the mmCIF file. (Normally a dataset would be added to the
 # object that uses it, such as a restraint. If we want to include a dataset
 # that isn't referenced from anything else, as in this example, we can add it
@@ -47,8 +48,8 @@ system.orphan_datasets.append(d)
 # Generally, datasets will be deposited in an experiment-specific database.
 # We can point to such a database using a subclass of DatabaseLocation, for
 # example to point to PDB:
-l = ihm.location.PDBLocation('1abc')
-system.orphan_datasets.append(ihm.dataset.PDBDataset(l))
+loc = ihm.location.PDBLocation('1abc')
+system.orphan_datasets.append(ihm.dataset.PDBDataset(loc))
 
 # If the current working directory is itself a checkout of a repository which
 # is archived at a DOI, we can retroactively update all 'local' paths added
@@ -56,9 +57,10 @@ system.orphan_datasets.append(ihm.dataset.PDBDataset(l))
 # all files under the parent directory (..) are assumed to be available in
 # the python-ihm.zip archive. For example, simple.pdb can be found as
 # python-ihm-v0.1/examples/simple.pdb in the archive.
-r = ihm.location.Repository(doi='10.5281/zenodo.802915',
-        url='https://zenodo.org/record/802915/files/python-ihm.zip',
-        top_directory="python-ihm-v0.1", root="..")
+r = ihm.location.Repository(
+    doi='10.5281/zenodo.802915',
+    url='https://zenodo.org/record/802915/files/python-ihm.zip',
+    top_directory="python-ihm-v0.1", root="..")
 system.update_locations_in_repositories([r])
 
 # Write out everything to an mmCIF file

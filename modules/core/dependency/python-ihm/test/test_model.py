@@ -1,20 +1,20 @@
 import utils
 import os
 import unittest
-import sys
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.model
 
+
 class Tests(unittest.TestCase):
 
     def test_sphere(self):
         """Test Sphere class"""
-        s = ihm.model.Sphere(asym_unit='foo', seq_id_range=(1,5), x=1.0,
+        s = ihm.model.Sphere(asym_unit='foo', seq_id_range=(1, 5), x=1.0,
                              y=2.0, z=3.0, radius=4.0)
         self.assertEqual(s.asym_unit, 'foo')
-        self.assertEqual(s.seq_id_range, (1,5))
+        self.assertEqual(s.seq_id_range, (1, 5))
 
     def test_atom(self):
         """Test Atom class"""
@@ -143,8 +143,8 @@ class Tests(unittest.TestCase):
     def test_dcd_writer(self):
         """Test DCDWriter class"""
         m1 = ihm.model.Model(None, None, None)
-        m1._atoms = [ihm.model.Atom(None, None, None, None, x=1,y=2,z=3),
-                     ihm.model.Atom(None, None, None, None, x=4,y=5,z=6)]
+        m1._atoms = [ihm.model.Atom(None, None, None, None, x=1, y=2, z=3),
+                     ihm.model.Atom(None, None, None, None, x=4, y=5, z=6)]
 
         with utils.temporary_directory() as tmpdir:
             dcd = os.path.join(tmpdir, 'out.dcd')
@@ -161,10 +161,10 @@ class Tests(unittest.TestCase):
     def test_dcd_writer_framesize_mismatch(self):
         """Test DCDWriter class with framesize mismatch"""
         m1 = ihm.model.Model(None, None, None)
-        m1._atoms = [ihm.model.Atom(None, None, None, None, x=1,y=2,z=3),
-                     ihm.model.Atom(None, None, None, None, x=4,y=5,z=6)]
+        m1._atoms = [ihm.model.Atom(None, None, None, None, x=1, y=2, z=3),
+                     ihm.model.Atom(None, None, None, None, x=4, y=5, z=6)]
         m2 = ihm.model.Model(None, None, None)
-        m2._atoms = [ihm.model.Atom(None, None, None, None, x=1,y=2,z=3)]
+        m2._atoms = [ihm.model.Atom(None, None, None, None, x=1, y=2, z=3)]
 
         with utils.temporary_directory() as tmpdir:
             dcd = os.path.join(tmpdir, 'out.dcd')

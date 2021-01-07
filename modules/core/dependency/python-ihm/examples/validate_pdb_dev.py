@@ -12,7 +12,7 @@ except ImportError:
 
 # Read in the PDBx dictionary from wwPDB as a Dictionary object
 fh = urllib2.urlopen(
-        'http://mmcif.wwpdb.org/dictionaries/ascii/mmcif_pdbx_v50.dic')
+    'http://mmcif.wwpdb.org/dictionaries/ascii/mmcif_pdbx_v50.dic')
 d_pdbx = ihm.dictionary.read(fh)
 fh.close()
 

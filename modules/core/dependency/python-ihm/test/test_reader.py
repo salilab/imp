@@ -1,6 +1,5 @@
 import utils
 import os
-from collections import namedtuple
 import unittest
 import gzip
 import sys
@@ -15,6 +14,7 @@ TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.reader
 
+
 def cif_file_handles(cif):
     """Yield both in-memory and real-file handles for the given mmCIF text.
        This allows us to test both the pure Python reader and the C-accelerated
@@ -26,6 +26,7 @@ def cif_file_handles(cif):
             fh.write(cif)
         with open(fname) as fh:
             yield fh
+
 
 ASYM_ENTITY = """
 loop_
@@ -73,6 +74,7 @@ _ihm_geometric_object_transformation.tr_vector[3]
 #
 """
 
+
 class Tests(unittest.TestCase):
     def test_read(self):
         """Test read() function"""
@@ -117,6 +119,7 @@ class Tests(unittest.TestCase):
         """Test read() function with custom Handler"""
         class MyHandler(ihm.reader.Handler):
             category = "_custom_category"
+
             def __call__(self, field1, myfield):
                 self.system.custom_data = (field1, myfield)
 
@@ -129,7 +132,7 @@ class Tests(unittest.TestCase):
 
     def test_system_reader(self):
         """Test SystemReader class"""
-        s = ihm.reader.SystemReader(ihm.model.Model,
+        _ = ihm.reader.SystemReader(ihm.model.Model,
                                     ihm.startmodel.StartingModel)
 
     def test_id_mapper(self):
@@ -160,12 +163,12 @@ class Tests(unittest.TestCase):
         """Test copy_if_present method"""
         class MockObject(object):
             pass
-        Keys = namedtuple('Keys', 'foo bar t test x')
+        # Keys = namedtuple('Keys', 'foo bar t test x')
         o = MockObject()
         h = ihm.reader.Handler(None)
-        h.copy_if_present(o, {'foo':'bar', 'bar':'baz', 't':'u'},
+        h.copy_if_present(o, {'foo': 'bar', 'bar': 'baz', 't': 'u'},
                           keys=['test', 'foo'],
-                          mapkeys={'bar':'baro', 'x':'y'})
+                          mapkeys={'bar': 'baro', 'x': 'y'})
         self.assertEqual(o.foo, 'bar')
         self.assertEqual(o.baro, 'baz')
         self.assertFalse(hasattr(o, 't'))
@@ -466,7 +469,8 @@ _entity.details
             s, = ihm.reader.read(fh)
             e1, e2, e3, e4 = s.entities
             self.assertEqual(e1.description, 'Nup84')
-            self.assertEqual(e1.number_of_molecules, '2') # todo: coerce to int
+            self.assertEqual(
+                e1.number_of_molecules, '2')  # todo: coerce to int
             self.assertEqual(e1.source.src_method, 'nat')
             self.assertEqual(e2.source.src_method, 'syn')
             self.assertIsNone(e3.source)
@@ -509,7 +513,8 @@ _entity_src_gen.pdbx_host_org_strain 'other strain'
                 self.assertEqual(e.source.host.ncbi_taxonomy_id, '5678')
                 self.assertEqual(e.source.host.scientific_name,
                                  'host latin name')
-                self.assertEqual(e.source.host.common_name, 'other common name')
+                self.assertEqual(e.source.host.common_name,
+                                 'other common name')
                 self.assertEqual(e.source.host.strain, 'other strain')
                 self.assertEqual(e.source.gene.ncbi_taxonomy_id, '1234')
                 self.assertEqual(e.source.gene.scientific_name,
@@ -768,9 +773,9 @@ _ihm_struct_assembly_details.entity_poly_segment_id
             # AsymUnitRange
             self.assertIsInstance(a1[0], ihm.AsymUnitRange)
             self.assertEqual(a1[0]._id, 'A')
-            self.assertEqual(a1[0].seq_id_range, (1,726))
+            self.assertEqual(a1[0].seq_id_range, (1, 726))
             self.assertEqual(a1[1]._id, 'B')
-            self.assertEqual(a1[1].seq_id_range, (1,744))
+            self.assertEqual(a1[1].seq_id_range, (1, 744))
 
             self.assertEqual(a2._id, '2')
             self.assertEqual(a2.parent, a1)
@@ -780,7 +785,7 @@ _ihm_struct_assembly_details.entity_poly_segment_id
             self.assertEqual(len(a2), 2)
             self.assertIsInstance(a2[0], ihm.EntityRange)
             self.assertEqual(a2[0]._id, '2')
-            self.assertEqual(a2[0].seq_id_range, (1,50))
+            self.assertEqual(a2[0].seq_id_range, (1, 50))
             # Entity
             self.assertIsInstance(a2[1], ihm.Entity)
 
@@ -884,7 +889,7 @@ _ihm_dataset_group.details
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             g1, = s.orphan_dataset_groups
-            self.assertEqual(len(g1), 0) # no datasets read yet
+            self.assertEqual(len(g1), 0)  # no datasets read yet
             self.assertEqual(g1.name, 'foo')
             self.assertEqual(g1.application, 'foo app')
             self.assertEqual(g1.details, 'foo details')
@@ -999,7 +1004,8 @@ _ihm_related_datasets.transformation_id
             self.assertEqual(d1.parents, [d2])
             self.assertEqual(d2.parents, [])
             self.assertEqual(len(d3.parents), 1)
-            self.assertIsInstance(d3.parents[0], ihm.dataset.TransformedDataset)
+            self.assertIsInstance(d3.parents[0],
+                                  ihm.dataset.TransformedDataset)
             self.assertEqual(d3.parents[0].dataset._id, '1')
             t = d3.parents[0].transform
             self.assertEqual(t._id, '42')
@@ -1018,7 +1024,7 @@ _ihm_model_representation.details
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             r1, = s.orphan_representations
-            self.assertEqual(len(r1), 0) # no segments read yet
+            self.assertEqual(len(r1), 0)  # no segments read yet
             self.assertEqual(r1.name, 'rep A')
             self.assertEqual(r1.details, 'rep A details')
 
@@ -1061,7 +1067,7 @@ _ihm_model_representation_details.description
             self.assertEqual(s1.count, 1)
             self.assertEqual(s1.rigid, False)
             self.assertIsNone(s1.starting_model)
-            self.assertEqual(s1.asym_unit.seq_id_range, (1,6))
+            self.assertEqual(s1.asym_unit.seq_id_range, (1, 6))
             self.assertEqual(s1.description, 'test segment')
 
             self.assertEqual(s2.__class__, ihm.representation.ResidueSegment)
@@ -1069,7 +1075,7 @@ _ihm_model_representation_details.description
             self.assertIsNone(s2.count)
             self.assertEqual(s2.rigid, True)
             self.assertEqual(s2.starting_model._id, '1')
-            self.assertEqual(s2.asym_unit.seq_id_range, (7,20))
+            self.assertEqual(s2.asym_unit.seq_id_range, (7, 20))
             self.assertIsNone(s2.description)
 
             self.assertEqual(len(r2), 1)
@@ -1109,7 +1115,7 @@ _ihm_starting_model_details.description
             s, = ihm.reader.read(fh)
             m1, m2 = s.orphan_starting_models
             self.assertEqual(m1.asym_unit._id, 'A')
-            self.assertEqual(m1.asym_unit.seq_id_range, (7,483))
+            self.assertEqual(m1.asym_unit.seq_id_range, (7, 483))
             self.assertEqual(m1.asym_id, 'Q')
             self.assertEqual(m1.offset, 8)
             self.assertEqual(m1.dataset._id, '4')
@@ -1164,9 +1170,10 @@ _ihm_starting_comparative_models.alignment_file_id
             t1, t2 = m1.templates
             self.assertEqual(t1.dataset._id, '3')
             self.assertEqual(t1.asym_id, 'C')
-            self.assertEqual(t1.seq_id_range, (7,436))
-            self.assertEqual(t1.template_seq_id_range, (9,438))
-            self.assertAlmostEqual(float(t1.sequence_identity), 90.0, delta=0.1)
+            self.assertEqual(t1.seq_id_range, (7, 436))
+            self.assertEqual(t1.template_seq_id_range, (9, 438))
+            self.assertAlmostEqual(float(t1.sequence_identity), 90.0,
+                                   delta=0.1)
             self.assertEqual(t1.sequence_identity.denominator, 1)
             self.assertEqual(t1.alignment_file._id, '2')
             self.assertIsNone(t2.alignment_file)
@@ -1336,7 +1343,7 @@ ATOM 1 N N . MET 1 A 14.326 -2.326 8.122 1.000 1 A 0.000 42 42
             # sg should contain all models in groups but not explicitly
             # put in a State
             state, = sg
-            self.assertIsNone(state.name) # auto-created state
+            self.assertIsNone(state.name)  # auto-created state
             mg1, mg2 = state
             self.assertEqual(mg1.name, 'Cluster 1')
             self.assertEqual(mg1._id, '1')
@@ -1353,9 +1360,9 @@ ATOM 1 N N . MET 1 A 14.326 -2.326 8.122 1.000 1 A 0.000 42 42
             # sg2 should contain all models referenced by the file but not
             # put in groups (in this case, model ID 42 from atom_site)
             state, = sg2
-            self.assertIsNone(state.name) # auto-created state
+            self.assertIsNone(state.name)  # auto-created state
             mg1, = state
-            self.assertIsNone(mg1.name) # auto-created group
+            self.assertIsNone(mg1.name)  # auto-created group
             m, = mg1
             self.assertEqual(m._id, '42')
 
@@ -1391,7 +1398,8 @@ _ihm_multi_state_modeling.experiment_type
 _ihm_multi_state_modeling.details
 1 1 0.4 'complex formation' 'unbound' 'Fraction of bulk'  'unbound molecule 1'
 2 1 .  'complex formation' 'unbound' 'Fraction of bulk'  'unbound molecule 2'
-3 1 .  'complex formation' 'bound' 'Fraction of bulk'  'bound molecules 1 and 2'
+3 1 .  'complex formation' 'bound' 'Fraction of bulk'
+'bound molecules 1 and 2'
 #
 loop_
 _ihm_multi_state_model_group_link.state_id
@@ -1505,7 +1513,7 @@ _ihm_localization_density_files.entity_poly_segment_id
             self.assertEqual(d1._id, '1')
             self.assertEqual(d1.file._id, '22')
             self.assertEqual(d1.asym_unit.__class__, ihm.AsymUnitRange)
-            self.assertEqual(d1.asym_unit.seq_id_range, (1,726))
+            self.assertEqual(d1.asym_unit.seq_id_range, (1, 726))
             self.assertEqual(d2._id, '2')
             self.assertEqual(d2.asym_unit.__class__, ihm.AsymUnit)
 
@@ -1532,7 +1540,7 @@ _ihm_3dem_restraint.cross_correlation_coefficient
         self.assertEqual(r.assembly._id, '2')
         self.assertEqual(r.number_of_gaussians, 400)
         # Sort fits by model ID
-        fits = sorted(r.fits.items(), key=lambda x:x[0]._id)
+        fits = sorted(r.fits.items(), key=lambda x: x[0]._id)
         self.assertEqual(len(fits), 2)
         self.assertEqual(fits[0][0]._id, '1')
         self.assertIsNone(fits[0][1].cross_correlation_coefficient)
@@ -1589,27 +1597,27 @@ _ihm_3dem_restraint.cross_correlation_coefficient
 
     def test_get_vector3(self):
         """Test _get_vector3 function"""
-        d = {'tr_vector1':4.0, 'tr_vector2':6.0, 'tr_vector3':9.0,
-             'omitted1': None, 'unknown1':ihm.unknown}
+        d = {'tr_vector1': 4.0, 'tr_vector2': 6.0, 'tr_vector3': 9.0,
+             'omitted1': None, 'unknown1': ihm.unknown}
         r = ihm.reader._get_vector3(d, 'tr_vector')
         # Coerce to int so we can compare exactly
-        self.assertEqual([int(x) for x in r], [4,6,9])
+        self.assertEqual([int(x) for x in r], [4, 6, 9])
 
         self.assertIsNone(ihm.reader._get_vector3(d, 'omitted'))
         self.assertEqual(ihm.reader._get_vector3(d, 'unknown'), ihm.unknown)
 
     def test_get_matrix33(self):
         """Test _get_matrix33 function"""
-        d = {'m11':4.0, 'm12':6.0, 'm13':9.0,
-             'm21':1.0, 'm22':2.0, 'm23':3.0,
-             'm31':8.0, 'm32':1.0, 'm33':7.0,
-             'omitted11':None, 'unknown11':ihm.unknown}
+        d = {'m11': 4.0, 'm12': 6.0, 'm13': 9.0,
+             'm21': 1.0, 'm22': 2.0, 'm23': 3.0,
+             'm31': 8.0, 'm32': 1.0, 'm33': 7.0,
+             'omitted11': None, 'unknown11': ihm.unknown}
         r = ihm.reader._get_matrix33(d, 'm')
         # Coerce to int so we can compare exactly
         self.assertEqual([[int(x) for x in row] for row in r],
-                         [[4,6,9],
-                          [1,2,3],
-                          [8,1,7]])
+                         [[4, 6, 9],
+                          [1, 2, 3],
+                          [8, 1, 7]])
 
         self.assertIsNone(ihm.reader._get_matrix33(d, 'omitted'))
         self.assertEqual(ihm.reader._get_matrix33(d, 'unknown'), ihm.unknown)
@@ -1761,7 +1769,7 @@ _ihm_sphere_obj_site.model_id
         self.assertEqual(m.sphere_count, 2)
         s1, s2 = m._spheres
         self.assertEqual(s1.asym_unit._id, 'A')
-        self.assertEqual(s1.seq_id_range, (1,6))
+        self.assertEqual(s1.seq_id_range, (1, 6))
         self.assertAlmostEqual(s1.x, 389.993, delta=0.01)
         self.assertAlmostEqual(s1.y, 145.089, delta=0.01)
         self.assertAlmostEqual(s1.z, 134.782, delta=0.01)
@@ -1965,7 +1973,7 @@ _ihm_derived_distance_restraint.dataset_list_id
 """
         # Test both ways to make sure features still work if they are
         # referenced by ID before their type is known
-        for text in (feats+rsr, rsr+feats):
+        for text in (feats + rsr, rsr + feats):
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
             self.assertEqual(len(s.orphan_features), 5)
@@ -1986,9 +1994,9 @@ _ihm_derived_distance_restraint.dataset_list_id
             self.assertIsInstance(r1.feature2,
                                   ihm.restraint.ResidueFeature)
             self.assertEqual(len(r1.feature2.ranges), 2)
-            self.assertEqual(r1.feature2.ranges[0].seq_id_range, (2,3))
+            self.assertEqual(r1.feature2.ranges[0].seq_id_range, (2, 3))
             self.assertIsInstance(r1.feature2.ranges[0], ihm.AsymUnitRange)
-            self.assertEqual(r1.feature2.ranges[1].seq_id_range, (2,3))
+            self.assertEqual(r1.feature2.ranges[1].seq_id_range, (2, 3))
             self.assertIsInstance(r1.feature2.ranges[1], ihm.EntityRange)
             self.assertIsInstance(r1.distance,
                                   ihm.restraint.LowerBoundDistanceRestraint)
@@ -2007,10 +2015,10 @@ _ihm_derived_distance_restraint.dataset_list_id
             self.assertIsInstance(r2.distance,
                                   ihm.restraint.UpperBoundDistanceRestraint)
             self.assertIsNone(r2.mic_value)
-            self.assertIsInstance(r3.distance,
-                             ihm.restraint.LowerUpperBoundDistanceRestraint)
+            self.assertIsInstance(
+                r3.distance, ihm.restraint.LowerUpperBoundDistanceRestraint)
             self.assertIsInstance(r4.distance,
-                                 ihm.restraint.HarmonicDistanceRestraint)
+                                  ihm.restraint.HarmonicDistanceRestraint)
             self.assertIsInstance(r4.feature2,
                                   ihm.restraint.AtomFeature)
             self.assertIsNone(r4.feature2.atoms[0].residue.entity)
@@ -2043,7 +2051,7 @@ _ihm_geometric_object_sphere.radius_r
 2 . . 3.200
 """
         # Order of categories shouldn't matter
-        for text in (obj_list+spheres, spheres+obj_list):
+        for text in (obj_list + spheres, spheres + obj_list):
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
             s1, s2 = s.orphan_geometric_objects
@@ -2081,7 +2089,7 @@ _ihm_geometric_object_torus.minor_radius_r
 2 . . 3.600 2.200
 """
         # Order of categories shouldn't matter
-        for text in (obj_list+tori, tori+obj_list):
+        for text in (obj_list + tori, tori + obj_list):
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
             t1, t2 = s.orphan_geometric_objects
@@ -2129,8 +2137,8 @@ _ihm_geometric_object_half_torus.section
 """
 
         # Order of categories shouldn't matter
-        for text in (obj_list+tori+half_tori, tori+half_tori+obj_list,
-                     obj_list+half_tori+tori, half_tori+tori+obj_list):
+        for text in (obj_list + tori + half_tori, tori + half_tori + obj_list,
+                     obj_list + half_tori + tori, half_tori + tori + obj_list):
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
             t1, t2, t3 = s.orphan_geometric_objects
@@ -2169,7 +2177,7 @@ _ihm_geometric_object_axis.transformation_id
 2 y-axis .
 """
         # Order of categories shouldn't matter
-        for text in (obj_list+axes, axes+obj_list):
+        for text in (obj_list + axes, axes + obj_list):
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
             a1, a2 = s.orphan_geometric_objects
@@ -2199,7 +2207,7 @@ _ihm_geometric_object_plane.transformation_id
 2 yz-plane .
 """
         # Order of categories shouldn't matter
-        for text in (obj_list+planes, planes+obj_list):
+        for text in (obj_list + planes, planes + obj_list):
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
             p1, p2 = s.orphan_geometric_objects
@@ -2270,8 +2278,8 @@ A 1 4 9
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
         self.assertEqual(asym.auth_seq_id_map, 5)
-        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
-                         [6,7,8,9])
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
+                         [6, 7, 8, 9])
 
     def test_poly_seq_scheme_handler_empty(self):
         """Test PolySeqSchemeHandler with no poly_seq_scheme"""
@@ -2279,8 +2287,8 @@ A 1 4 9
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
         self.assertEqual(asym.auth_seq_id_map, 0)
-        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
-                         [1,2,3,4])
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
+                         [1, 2, 3, 4])
 
     def test_poly_seq_scheme_handler_nop(self):
         """Test PolySeqSchemeHandler with a do-nothing poly_seq_scheme"""
@@ -2297,8 +2305,8 @@ A 1 3 3
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
         self.assertEqual(asym.auth_seq_id_map, 0)
-        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
-                         [1,2,3,4])
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
+                         [1, 2, 3, 4])
 
     def test_poly_seq_scheme_handler_partial(self):
         """Test PolySeqSchemeHandler with partial information"""
@@ -2315,9 +2323,9 @@ A 1 3 8
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
         # No mapping for residue 4
-        self.assertEqual(asym.auth_seq_id_map, {1:6, 2:7, 3:8})
-        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
-                         [6,7,8,4])
+        self.assertEqual(asym.auth_seq_id_map, {1: 6, 2: 7, 3: 8})
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
+                         [6, 7, 8, 4])
 
     def test_poly_seq_scheme_handler_incon_off(self):
         """Test PolySeqSchemeHandler with inconsistent offset"""
@@ -2334,9 +2342,9 @@ A 1 4 10
 """)
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
-        self.assertEqual(asym.auth_seq_id_map, {1:6, 2:7, 3:8, 4:10})
-        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
-                         [6,7,8,10])
+        self.assertEqual(asym.auth_seq_id_map, {1: 6, 2: 7, 3: 8, 4: 10})
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
+                         [6, 7, 8, 10])
 
     def test_poly_seq_scheme_handler_str_seq_id(self):
         """Test PolySeqSchemeHandler with a non-integer auth_seq_num"""
@@ -2353,9 +2361,9 @@ A 1 4 9A
 """)
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
-        self.assertEqual(asym.auth_seq_id_map, {1:6, 2:7, 3:8, 4:'9A'})
-        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1,5)],
-                         [6,7,8,'9A'])
+        self.assertEqual(asym.auth_seq_id_map, {1: 6, 2: 7, 3: 8, 4: '9A'})
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
+                         [6, 7, 8, '9A'])
 
     def test_nonpoly_scheme_handler(self):
         """Test NonPolySchemeHandler"""
@@ -2395,7 +2403,7 @@ A 1 101
         asym, = s.asym_units
         # non-polymers have no seq_id_range
         self.assertEqual(asym.seq_id_range, (None, None))
-        self.assertEqual(asym.auth_seq_id_map, {1:101})
+        self.assertEqual(asym.auth_seq_id_map, {1: 101})
         self.assertEqual(asym.residue(1).auth_seq_id, 101)
 
     def test_cross_link_list_handler(self):
@@ -2524,7 +2532,7 @@ _ihm_cross_link_restraint.sigma_2
 2 2 1 A 2 THR 2 B 2 GLU C N 'lower bound' ANY by-atom 34.000 . . .
 """
         # Order of categories shouldn't matter
-        for text in (xl_list+xl_rsr, xl_rsr+xl_list):
+        for text in (xl_list + xl_rsr, xl_rsr + xl_list):
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
             r, = s.restraints
@@ -2617,13 +2625,13 @@ _ihm_cross_link_result_parameters.sigma_2
 2 1 301 . . .
 """
         # Order of categories shouldn't matter
-        for text in (xl_list+xl_rsr+xl_fit, xl_fit+xl_rsr+xl_list):
+        for text in (xl_list + xl_rsr + xl_fit, xl_fit + xl_rsr + xl_list):
             fh = StringIO(text)
             s, = ihm.reader.read(fh)
             r, = s.restraints
             xl, = r.cross_links
             # Sort fits by model ID
-            fits = sorted(xl.fits.items(), key=lambda x:x[0]._id)
+            fits = sorted(xl.fits.items(), key=lambda x: x[0]._id)
             self.assertEqual(len(fits), 2)
             self.assertEqual(fits[0][0]._id, '201')
             self.assertAlmostEqual(fits[0][1].psi, 0.100, delta=0.1)
@@ -2928,7 +2936,8 @@ _flr_experiment.details
         flr, = s.flr_data
         experiment, = list(flr._collection_flr_experiment.values())
         self.assertIsInstance(experiment, ihm.flr.Experiment)
-        self.assertIsInstance(experiment.instrument_list[0], ihm.flr.Instrument)
+        self.assertIsInstance(experiment.instrument_list[0],
+                              ihm.flr.Instrument)
         self.assertIsInstance(experiment.inst_setting_list[0],
                               ihm.flr.InstSetting)
         self.assertIsInstance(experiment.exp_condition_list[0],
@@ -3154,9 +3163,9 @@ _flr_sample_probe_details.poly_probe_position_id
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
-        self.assertEqual(sorted(
-                            flr._collection_flr_sample_probe_details.keys()),
-                         ['1', '2'])
+        self.assertEqual(
+            sorted(flr._collection_flr_sample_probe_details.keys()),
+            ['1', '2'])
         p1 = flr._collection_flr_sample_probe_details['1']
         self.assertIsInstance(p1, ihm.flr.SampleProbeDetails)
         self.assertIsInstance(p1.sample, ihm.flr.Sample)
@@ -3165,7 +3174,8 @@ _flr_sample_probe_details.poly_probe_position_id
         self.assertEqual(p1.probe._id, '99')
         self.assertEqual(p1.fluorophore_type, 'donor')
         self.assertEqual(p1.description, 'Donor in position1-position3')
-        self.assertIsInstance(p1.poly_probe_position, ihm.flr.PolyProbePosition)
+        self.assertIsInstance(p1.poly_probe_position,
+                              ihm.flr.PolyProbePosition)
         self.assertEqual(p1.poly_probe_position._id, '34')
 
     def test_flr_poly_probe_position_handler(self):
@@ -3188,8 +3198,8 @@ _flr_poly_probe_position.auth_name
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
         self.assertEqual(len(s.entities), 2)
-        self.assertEqual(sorted(flr._collection_flr_poly_probe_position.keys()),
-                         ['1', '2'])
+        self.assertEqual(
+            sorted(flr._collection_flr_poly_probe_position.keys()), ['1', '2'])
         p1 = flr._collection_flr_poly_probe_position['1']
         self.assertIsInstance(p1, ihm.flr.PolyProbePosition)
         self.assertIsInstance(p1.resatom, ihm.Residue)
@@ -3219,8 +3229,8 @@ _flr_poly_probe_position_modified.atom_id
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
-        self.assertEqual(sorted(flr._collection_flr_poly_probe_position.keys()),
-                         ['1', '2'])
+        self.assertEqual(
+            sorted(flr._collection_flr_poly_probe_position.keys()), ['1', '2'])
         p1 = flr._collection_flr_poly_probe_position['1']
         self.assertIsInstance(p1.modified_chem_descriptor,
                               ihm.ChemDescriptor)
@@ -3243,8 +3253,8 @@ _flr_poly_probe_position_mutated.atom_id
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
-        self.assertEqual(sorted(flr._collection_flr_poly_probe_position.keys()),
-                         ['1', '2'])
+        self.assertEqual(
+            sorted(flr._collection_flr_poly_probe_position.keys()), ['1', '2'])
         p1 = flr._collection_flr_poly_probe_position['1']
         self.assertIsInstance(p1.mutated_chem_comp_id,
                               ihm.ChemComp)
@@ -3269,9 +3279,9 @@ _flr_poly_probe_conjugate.probe_stoichiometry
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
-        self.assertEqual(sorted(
-                            flr._collection_flr_poly_probe_conjugate.keys()),
-                         ['1', '2'])
+        self.assertEqual(
+            sorted(flr._collection_flr_poly_probe_conjugate.keys()),
+            ['1', '2'])
         p1, p2 = s.flr_data[0].poly_probe_conjugates
         self.assertIsInstance(p1.sample_probe,
                               ihm.flr.SampleProbeDetails)
@@ -3303,8 +3313,8 @@ _flr_fret_forster_radius.reduced_forster_radius
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
-        self.assertEqual(sorted(flr._collection_flr_fret_forster_radius.keys()),
-                         ['1', '2'])
+        self.assertEqual(
+            sorted(flr._collection_flr_fret_forster_radius.keys()), ['1', '2'])
         r1 = flr._collection_flr_fret_forster_radius['1']
         self.assertIsInstance(r1.donor_probe, ihm.flr.Probe)
         self.assertEqual(r1.donor_probe._id, '9')
@@ -3411,7 +3421,8 @@ _flr_fret_analysis_intensity.details
         flr, = s.flr_data
         a = flr._collection_flr_fret_analysis['5']
         self.assertEqual(a.type, 'intensity-based')
-        self.assertIsInstance(a.calibration_parameters, ihm.flr.FRETCalibrationParameters)
+        self.assertIsInstance(a.calibration_parameters,
+                              ihm.flr.FRETCalibrationParameters)
         self.assertEqual(a.calibration_parameters._id, '3')
         self.assertAlmostEqual(a.donor_only_fraction, 0.2, delta=0.1)
         self.assertAlmostEqual(a.chi_square_reduced, 1.4, delta=0.1)
@@ -3436,7 +3447,8 @@ _flr_fret_analysis_lifetime.details
         flr, = s.flr_data
         a = flr._collection_flr_fret_analysis['2']
         self.assertEqual(a.type, 'lifetime-based')
-        self.assertIsInstance(a.reference_measurement_group, ihm.flr.RefMeasurementGroup)
+        self.assertIsInstance(a.reference_measurement_group,
+                              ihm.flr.RefMeasurementGroup)
         self.assertEqual(a.reference_measurement_group._id, '19')
         self.assertIsInstance(a.lifetime_fit_model, ihm.flr.LifetimeFitModel)
         self.assertEqual(a.lifetime_fit_model._id, '23')
@@ -3482,7 +3494,7 @@ _flr_reference_measurement.details
         self.assertIsInstance(r.ref_sample_probe, ihm.flr.SampleProbeDetails)
         self.assertEqual(r.ref_sample_probe._id, '9')
         self.assertEqual(r.details, 'Details1')
-        ## num_species is set automatically when adding lifetimes to the object
+        # num_species is set automatically when adding lifetimes to the object
         self.assertEqual(r.num_species, 0)
         r.add_lifetime('1')
         r.add_lifetime('2')
@@ -3501,7 +3513,8 @@ _flr_reference_measurement_group.details
         flr, = s.flr_data
         r = flr._collection_flr_ref_measurement_group['5']
         self.assertEqual(r.details, 'Details')
-        ## num_measurements is set automatically when adding measurements to the object
+        # num_measurements is set automatically when adding measurements
+        # to the object
         self.assertEqual(r.num_measurements, 0)
         r.add_ref_measurement('1')
         self.assertEqual(r.num_measurements, 1)
@@ -3522,13 +3535,16 @@ _flr_reference_measurement_group_link.reference_measurement_id
         flr, = s.flr_data
         g1 = flr._collection_flr_ref_measurement_group['3']
         self.assertEqual(g1.num_measurements, 2)
-        self.assertIsInstance(g1.ref_measurement_list[0], ihm.flr.RefMeasurement)
+        self.assertIsInstance(g1.ref_measurement_list[0],
+                              ihm.flr.RefMeasurement)
         self.assertEqual(g1.ref_measurement_list[0]._id, '12')
-        self.assertIsInstance(g1.ref_measurement_list[1], ihm.flr.RefMeasurement)
+        self.assertIsInstance(g1.ref_measurement_list[1],
+                              ihm.flr.RefMeasurement)
         self.assertEqual(g1.ref_measurement_list[1]._id, '25')
         g2 = flr._collection_flr_ref_measurement_group['5']
         self.assertEqual(g2.num_measurements, 1)
-        self.assertIsInstance(g2.ref_measurement_list[0], ihm.flr.RefMeasurement)
+        self.assertIsInstance(g2.ref_measurement_list[0],
+                              ihm.flr.RefMeasurement)
         self.assertEqual(g2.ref_measurement_list[0]._id, '19')
 
     def test_flr_ref_measurement_lifetime_handler(self):
@@ -3546,7 +3562,7 @@ _flr_reference_measurement_lifetime.lifetime
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
-        ## Check the lifetime objects themselves
+        # Check the lifetime objects themselves
         f1 = flr._collection_flr_ref_measurement_lifetime['1']
         self.assertEqual(f1.species_name, 'species1')
         self.assertAlmostEqual(f1.species_fraction, 0.3, delta=0.1)
@@ -3559,24 +3575,30 @@ _flr_reference_measurement_lifetime.lifetime
         self.assertEqual(f3.species_name, 'species1')
         self.assertAlmostEqual(f3.species_fraction, 1.0, delta=0.1)
         self.assertAlmostEqual(f3.lifetime, 3.8, delta=0.1)
-        ## And check the respective reference measurement objects
+        # And check the respective reference measurement objects
         r1 = flr._collection_flr_ref_measurement['15']
-        self.assertIsInstance(r1.list_of_lifetimes[0], ihm.flr.RefMeasurementLifetime)
+        self.assertIsInstance(r1.list_of_lifetimes[0],
+                              ihm.flr.RefMeasurementLifetime)
         self.assertEqual(r1.list_of_lifetimes[0].species_name, 'species1')
         self.assertAlmostEqual(r1.list_of_lifetimes[0].species_fraction,
                                0.3, delta=0.1)
-        self.assertAlmostEqual(r1.list_of_lifetimes[0].lifetime, 4.1, delta=0.1)
-        self.assertIsInstance(r1.list_of_lifetimes[1], ihm.flr.RefMeasurementLifetime)
+        self.assertAlmostEqual(r1.list_of_lifetimes[0].lifetime, 4.1,
+                               delta=0.1)
+        self.assertIsInstance(r1.list_of_lifetimes[1],
+                              ihm.flr.RefMeasurementLifetime)
         self.assertEqual(r1.list_of_lifetimes[1].species_name, 'species2')
         self.assertAlmostEqual(r1.list_of_lifetimes[1].species_fraction,
                                0.7, delta=0.1)
-        self.assertAlmostEqual(r1.list_of_lifetimes[1].lifetime, 2.1, delta=0.1)
+        self.assertAlmostEqual(r1.list_of_lifetimes[1].lifetime, 2.1,
+                               delta=0.1)
         r2 = flr._collection_flr_ref_measurement['12']
-        self.assertIsInstance(r2.list_of_lifetimes[0], ihm.flr.RefMeasurementLifetime)
+        self.assertIsInstance(r2.list_of_lifetimes[0],
+                              ihm.flr.RefMeasurementLifetime)
         self.assertEqual(r2.list_of_lifetimes[0].species_name, 'species1')
         self.assertAlmostEqual(r2.list_of_lifetimes[0].species_fraction,
                                1.0, delta=0.1)
-        self.assertAlmostEqual(r2.list_of_lifetimes[0].lifetime, 3.8, delta=0.1)
+        self.assertAlmostEqual(r2.list_of_lifetimes[0].lifetime, 3.8,
+                               delta=0.1)
 
     def test_flr_peak_assignment_handler(self):
         """Test FLRPeakAssignmentHandler"""
@@ -3615,12 +3637,12 @@ _flr_fret_distance_restraint.peak_assignment_id
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
-        self.assertEqual(sorted(
-                      flr._collection_flr_fret_distance_restraint_group.keys()),
-                         ['1'])
-        self.assertEqual(sorted(
-                      flr._collection_flr_fret_distance_restraint.keys()),
-                         ['1', '2'])
+        self.assertEqual(
+            sorted(flr._collection_flr_fret_distance_restraint_group.keys()),
+            ['1'])
+        self.assertEqual(
+            sorted(flr._collection_flr_fret_distance_restraint.keys()),
+            ['1', '2'])
         rg1, = flr.distance_restraint_groups
         r1, r2 = rg1.get_info()
         self.assertIsInstance(r1.sample_probe_1, ihm.flr.SampleProbeDetails)
@@ -3678,8 +3700,8 @@ _flr_fret_model_distance.distance_deviation
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
-        self.assertEqual(sorted(flr._collection_flr_fret_model_distance.keys()),
-                         ['1'])
+        self.assertEqual(
+            sorted(flr._collection_flr_fret_model_distance.keys()), ['1'])
         d1, = flr.fret_model_distances
         self.assertIsInstance(d1.restraint, ihm.flr.FRETDistanceRestraint)
         self.assertEqual(d1.restraint._id, '42')
@@ -3716,9 +3738,8 @@ _flr_FPS_global_parameter.convergence_T
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
-        self.assertEqual(sorted(
-                           flr._collection_flr_fps_global_parameters.keys()),
-                         ['1'])
+        self.assertEqual(
+            sorted(flr._collection_flr_fps_global_parameters.keys()), ['1'])
         p1 = flr._collection_flr_fps_global_parameters['1']
         self.assertAlmostEqual(p1.forster_radius, 52.000, delta=0.1)
         self.assertEqual(p1.conversion_function_polynom_order, 3)
@@ -3754,7 +3775,8 @@ _flr_FPS_modeling.details
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
-        self.assertEqual(sorted(flr._collection_flr_fps_modeling.keys()), ['1'])
+        self.assertEqual(sorted(flr._collection_flr_fps_modeling.keys()),
+                         ['1'])
         m1 = flr._collection_flr_fps_modeling['1']
         self.assertIsInstance(m1.protocol, ihm.protocol.Protocol)
         self.assertEqual(m1.protocol._id, '8')
@@ -3836,8 +3858,7 @@ _flr_FPS_mean_probe_position.mpp_zcoord
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
         self.assertEqual(sorted(
-                            flr._collection_flr_fps_mean_probe_position.keys()),
-                         ['1'])
+            flr._collection_flr_fps_mean_probe_position.keys()), ['1'])
         p = flr._collection_flr_fps_mean_probe_position['1']
         self.assertIsInstance(p.sample_probe, ihm.flr.SampleProbeDetails)
         self.assertEqual(p.sample_probe._id, '2')
@@ -3863,9 +3884,8 @@ _flr_FPS_MPP_atom_position.group_id
 """)
         s, = ihm.reader.read(fh)
         flr, = s.flr_data
-        self.assertEqual(sorted(
-                            flr._collection_flr_fps_mpp_atom_position.keys()),
-                         ['1'])
+        self.assertEqual(
+            sorted(flr._collection_flr_fps_mpp_atom_position.keys()), ['1'])
         p = flr._collection_flr_fps_mpp_atom_position['1']
         self.assertIsInstance(p.atom, ihm.Atom)
         self.assertEqual(p.atom.id, 'CA')

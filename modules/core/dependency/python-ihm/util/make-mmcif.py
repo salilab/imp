@@ -23,6 +23,7 @@ import ihm.model
 import ihm.protocol
 import sys
 
+
 def add_ihm_info(s):
     if not s.title:
         s.title = 'Auto-generated system'
@@ -32,8 +33,8 @@ def add_ihm_info(s):
 
     # Simple default atomic representation for everything
     default_representation = ihm.representation.Representation(
-            [ihm.representation.AtomicSegment(asym, rigid=False)
-             for asym in s.asym_units])
+        [ihm.representation.AtomicSegment(asym, rigid=False)
+         for asym in s.asym_units])
 
     # Simple default modeling protocol
     default_protocol = ihm.protocol.Protocol(name='modeling')
@@ -50,6 +51,7 @@ def add_ihm_info(s):
                         model.protocol = default_protocol
     return s
 
+
 if len(sys.argv) != 2:
     print("Usage: %s input.cif" % sys.argv[0], file=sys.stderr)
     sys.exit(1)
@@ -58,5 +60,4 @@ fname = sys.argv[1]
 with open(fname) as fh:
     with open('output.cif', 'w') as fhout:
         ihm.dumper.write(fhout,
-                [add_ihm_info(s) for s in ihm.reader.read(fh)])
-
+                         [add_ihm_info(s) for s in ihm.reader.read(fh)])
