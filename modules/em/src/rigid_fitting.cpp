@@ -2,14 +2,13 @@
  *  \file rigid_fitting.cpp
  *  \brief Rigid fitting functionality
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/em/rigid_fitting.h>
-#include <IMP/em/CoarseL2Norm.h>
-#include <IMP/em/SampledDensityMap.h>
 #include <IMP/em/CoarseCC.h>
+#include <IMP/em/SampledDensityMap.h>
 #include <IMP/core/RigidBodyMover.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/SingletonModifier.h>
@@ -44,13 +43,15 @@ RestraintSet *add_restraints(Model *model, DensityMap *dmap,
                                      bool fast = false) {
   IMP_NEW(RestraintSet, rsrs, (model, 1.0, "rigid fitting restraints %1%"));
   // add fitting restraint
-  Pointer<FitRestraintL2Norm> fit_rs;
+  Pointer<FitRestraint> fit_rs;
   FloatPair no_norm_factors(0., 0.);
-  
-  fit_rs = new FitRestraintL2Norm(leaves_ref->get_refined(p),
-				  dmap,
-				  wei_key,
-				  true);
+  if (fast) {
+    fit_rs = new FitRestraint(leaves_ref->get_refined(p), dmap, no_norm_factors,
+                              wei_key, 1.0);
+  } else {
+    fit_rs = new FitRestraint(leaves_ref->get_refined(p), dmap, no_norm_factors,
+                              wei_key, 1.0, false);
+  }
   rsrs->add_restraint(fit_rs);
   return rsrs.release();
 }
