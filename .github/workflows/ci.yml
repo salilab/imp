@@ -60,7 +60,7 @@ jobs:
             NOSE=nosetests3
           fi
           cd build
-          ./setup_environment.sh $NOSE --with-coverage --cover-branches ../modules/kernel/test/test_*.py ../modules/kernel/test/medium_test_*.py test/*/*.py > /dev/null
+          ./setup_environment.sh $NOSE --with-coverage --cover-branches ../modules/kernel/test/test_*.py ../modules/kernel/test/medium_test_*.py > /dev/null
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
