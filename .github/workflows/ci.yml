@@ -19,6 +19,8 @@ jobs:
     env:
       CC: ${{ matrix.compiler }}
       PY2: ${{ startsWith(matrix.python-version, 2) && 'on' || 'off' }}
+      BUILD: "-j 2 IMP.kernel IMP.test"
+      PERCPP: "kernel"
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
@@ -46,8 +48,10 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -DUSE_PYTHON2=${{ env.PY2 }} -DCMAKE_CXX_FLAGS="${{ env.CXXFLAGS }}" -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/
-          make -k -j 2
+          cmake .. -DUSE_PYTHON2=${{ env.PY2 }} -DCMAKE_CXX_FLAGS="${{ env.CXXFLAGS }}" \
+                   -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/ \
+                   -DIMP_PER_CPP_COMPILATION=${{ env.PERCPP }}
+          make -k ${{ env.BUILD }}
       - name: Run tests
         run: |
           if [ "${{ env.PY2 }}" == "on" ]; then
