@@ -55,7 +55,7 @@ jobs:
       - name: Run tests
         run: |
           cd build
-          ./setup_environment.sh pytest --cov=.. --cov-branch ../modules/kernel/test/test_*.py ../modules/kernel/test/medium_test_*.py
+          ./setup_environment.sh pytest --cov=.. --cov-branch ../modules/kernel/test/test_*.py
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
