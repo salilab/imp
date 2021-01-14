@@ -24,6 +24,8 @@ jobs:
       PERCPP: "kernel"
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
       - name: Install dependencies
         run: |
           sudo apt-get update -qq
