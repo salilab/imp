@@ -34,15 +34,17 @@ jobs:
           then
             sudo apt-get install -qq python-dev python-numpy python-protobuf \
                                      python-coverage python-pip \
-                                     python-biopython
+                                     python-biopython python-pytest-xdist \
+                                     python-pytest-cov
             export PIP=pip2
           else
             sudo apt-get install -qq python3-dev python3-numpy python3-protobuf \
                                      python3-coverage python3-pip \
-                                     python3-biopython
+                                     python3-biopython python3-pytest-xdist \
+                                     python3-pytest-cov
             export PIP=pip3
           fi
-          $PIP install codecov pytest pytest-cov pytest-xdist
+          $PIP install codecov
       - name: Set up git
         run: ./setup_git.py
       - name: Build IMP
@@ -56,7 +58,7 @@ jobs:
       - name: Run tests
         run: |
           cd build
-          ./setup_environment.sh py.test --cov=.. --cov-branch --forked ../modules/kernel/test/test_*.py
+          ./setup_environment.sh pytest --cov=.. --cov-branch --forked ../modules/kernel/test/test_*.py
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
