@@ -20,7 +20,7 @@ jobs:
     env:
       CC: ${{ matrix.compiler }}
       PY2: ${{ startsWith(matrix.python-version, 2) && 'on' || 'off' }}
-      BUILD: "-j 2 IMP.kernel IMP.test IMP.core IMP.algebra"
+      BUILD: "-j 2 IMP.kernel IMP.test IMP.core IMP.algebra IMP.container"
       PERCPP: "kernel"
     steps:
       - uses: actions/checkout@v2
