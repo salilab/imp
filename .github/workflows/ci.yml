@@ -41,7 +41,7 @@ jobs:
                                      python3-biopython
             export PIP=pip3
           fi
-          $PIP install codecov pytest pytest-cov
+          $PIP install codecov pytest pytest-cov pytest-xdist
       - name: Set up git
         run: ./setup_git.py
       - name: Build IMP
@@ -55,7 +55,7 @@ jobs:
       - name: Run tests
         run: |
           cd build
-          ./setup_environment.sh pytest --cov=.. --cov-branch ../modules/kernel/test/test_*.py
+          ./setup_environment.sh pytest --cov=.. --cov-branch --forked ../modules/kernel/test/test_*.py
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
