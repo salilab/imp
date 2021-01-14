@@ -65,7 +65,7 @@ jobs:
             export PYTEST=pytest-3
           fi
           cd build
-          ./setup_environment.sh $PYTEST --cov=.. --cov-branch --forked ../modules/kernel/test/test_*.py
+          ./setup_environment.sh $PYTEST --cov=.. --cov-report=xml --cov-branch --forked ../modules/kernel/test/test_*.py
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
