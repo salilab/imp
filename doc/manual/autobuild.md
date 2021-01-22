@@ -14,7 +14,7 @@ code relatively quickly. See the
 for latest results. This is done for the head of the `develop` branch of the
 code in the [GitHub](https://github.com/salilab/imp) repository. When a new
 stable release is in preparation, this is also done for the corresponding
-`release/x.y.z` branch and also for the `master` branch once the new release
+`release/x.y.z` branch and also for the `main` branch once the new release
 is merged there. Results for these branches can also be viewed at the nightly
 build state page by selecting the branch from the dropdown at the top left
 of the page.

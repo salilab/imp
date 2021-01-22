@@ -112,10 +112,10 @@ procedure we use.
   directly from our [GitHub repository](https://github.com/salilab/imp)
   with something like:
 
-        git clone -b master https://github.com/salilab/imp.git
+        git clone -b main https://github.com/salilab/imp.git
         (cd imp && git submodule update --init && ./setup_git.py)
 
-  (the `master` branch tracks the most recent stable
+  (the `main` branch tracks the most recent stable
   release; alternatively you can use `develop` to get the most recent code,
   but please check out the [nightly builds results page](https://integrativemodeling.org/nightly/results/)
   to see if the code is currently stable enough for your purposes).
