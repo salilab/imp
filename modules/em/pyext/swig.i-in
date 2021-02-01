@@ -12,7 +12,7 @@ IMP_SWIG_OBJECT(IMP::em, DensityMap, DensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SampledDensityMap, SampledDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SurfaceShellDensityMap, SurfaceShellDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, FitRestraint, FitRestraints);
-IMP_SWIG_OBJECT(IMP::em, FitRestraintL2Norm, FitRestraintL2Norms);
+IMP_SWIG_OBJECT(IMP::em, FitRestraintBayesEM3D, FitRestraintBayesEM3Ds);
 IMP_SWIG_OBJECT(IMP::em, PCAFitRestraint, PCAFitRestraints);
 IMP_SWIG_OBJECT(IMP::em, EnvelopePenetrationRestraint, EnvelopePenetrationRestraints);
 IMP_SWIG_OBJECT(IMP::em, EnvelopeFitRestraint, EnvelopeFitRestraints);
@@ -24,7 +24,7 @@ IMP_SWIG_OBJECT(IMP::em, SpiderMapReaderWriter, SpiderMapReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, EMReaderWriter, EMReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, XplorReaderWriter, XplorReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, CoarseCC, CoarseCCs);
-IMP_SWIG_OBJECT(IMP::em, CoarseL2Norm, CoarseL2Norms);
+IMP_SWIG_OBJECT(IMP::em, BayesEM3D, BayesEM3Ds);
 IMP_SWIG_OBJECT(IMP::em, CoarseCCatIntervals, CoarseCCatIntervalsList);
 IMP_SWIG_VALUE(IMP::em, FittingSolutions, FittingSolutionsList);
 IMP_SWIG_OBJECT(IMP::em, MapDistanceTransform, MapDistanceTransforms);
@@ -78,11 +78,11 @@ namespace IMP {
 %include "IMP/em/SampledDensityMap.h"
 %include "IMP/em/SurfaceShellDensityMap.h"
 %include "IMP/em/CoarseCC.h"
-%include "IMP/em/CoarseL2Norm.h"
+%include "IMP/em/BayesEM3D.h"
 %include "IMP/em/CoarseConvolution.h"
 %include "IMP/em/CoarseCCatIntervals.h"
 %include "IMP/em/FitRestraint.h"
-%include "IMP/em/FitRestraintL2Norm.h"	
+%include "IMP/em/FitRestraintBayesEM3D.h"	
 %include "IMP/em/converters.h"
 %include "IMP/em/SpiderHeader.h"
 %include "IMP/em/ImageHeader.h"
@@ -110,17 +110,6 @@ namespace IMP {
   }
 }
 
-/* Allow runtime casting of Restraint* objects to FitRestraintL2Norm* */
-namespace IMP {
-  namespace em {
-    %extend FitRestraintL2Norm {
-      static FitRestraintL2Norm* cast(Restraint *r) {
-        IMPEM_DEPRECATED_FUNCTION_DEF(2.8, "Use get_from() instead");
-        return dynamic_cast<IMP::em::FitRestraintL2Norm *>(r);
-      }
-    }
-  }
-}
 
 %pythoncode %{
 import math

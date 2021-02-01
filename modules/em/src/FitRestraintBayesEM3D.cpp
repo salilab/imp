@@ -1,11 +1,14 @@
 /**
- *  \file FitRestraintL2NormLogCC.cpp
- *  \brief Calculate score based on fit to EM map.
+ *  \file FitRestraintBayesEM3D.cpp
+ *  \brief Calculate the Bayesian score and derivative
+ *   based on fit to an EM density map. This restraint differs from em::FitRestraint
+ *   because it does not use a cross_correlation_coefficient as score but a Bayesian
+ *   similarity measure.
  *
  *  Copyright 2007-2020 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/em/FitRestraintL2Norm.h>
+#include <IMP/em/FitRestraintBayesEM3D.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/em/envelope_penetration.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
@@ -16,16 +19,16 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-FitRestraintL2Norm::FitRestraintL2Norm(ParticlesTemp ps,
-				       DensityMap *em_map,
-				       FloatKey weight_key,
-				       bool use_rigid_bodies,
-				       double sigma)
-  : Restraint(IMP::internal::get_model(ps), "Fit restraint LogCC %1%") {
+FitRestraintBayesEM3D::FitRestraintBayesEM3D(ParticlesTemp ps, 
+  DensityMap *em_map, 
+  FloatKey weight_key,
+  bool use_rigid_bodies, 
+  double sigma) 
+: Restraint(IMP::internal::get_model(ps), "Fit restraint BayesEM3D %1%") {
   use_rigid_bodies_ = use_rigid_bodies;
   
   target_dens_map_ = em_map;
-  target_dens_map_->std_normalize();
+  //target_dens_map_->std_normalize();
   
   resolution_ = target_dens_map_->get_header()->get_resolution();
   voxel_size_ = target_dens_map_->get_spacing();
@@ -34,48 +37,50 @@ FitRestraintL2Norm::FitRestraintL2Norm(ParticlesTemp ps,
   store_particles(ps);
 
   initialize_rigid_body(weight_key);
+
+  bayesem3d_ = new BayesEM3D();
   score_ = 0.;
   dv_.insert(dv_.end(), all_ps_.size(), algebra::Vector3D(0., 0., 0.));
 }
 
-void FitRestraintL2Norm::initialize_rigid_body(FloatKey weight_key) {
+void FitRestraintBayesEM3D::initialize_rigid_body(FloatKey weight_key) {
   if (use_rigid_bodies_) {
     for (core::RigidBodies::iterator it = rbs_.begin(); it != rbs_.end();
-         it++) {
+     it++) {
       core::RigidBody rb = *it;
-      IMP_LOG_VERBOSE("working on rigid body:" << (*it)->get_name()
-		      << std::endl);
-      ParticlesTemp members =
-	get_as<ParticlesTemp>(member_map_[*it]);
-      
-      algebra::Vector3D rb_centroid = core::get_centroid(core::XYZs(members));
-      algebra::Transformation3D move2map_center(
-          algebra::get_identity_rotation_3d(),
-          target_dens_map_->get_centroid() - rb_centroid);
-      core::transform(rb, move2map_center);
-      rbs_orig_rf_.push_back(rb.get_reference_frame());
-      core::transform(rb, move2map_center.get_inverse());
-    }
+    IMP_LOG_VERBOSE("working on rigid body:" << (*it)->get_name()
+      << std::endl);
+    ParticlesTemp members =
+    get_as<ParticlesTemp>(member_map_[*it]);
+
+    algebra::Vector3D rb_centroid = core::get_centroid(core::XYZs(members));
+    algebra::Transformation3D move2map_center(
+      algebra::get_identity_rotation_3d(),
+      target_dens_map_->get_centroid() - rb_centroid);
+    core::transform(rb, move2map_center);
+    rbs_orig_rf_.push_back(rb.get_reference_frame());
+    core::transform(rb, move2map_center.get_inverse());
   }
 }
+}
 
-IMP_LIST_IMPL(FitRestraintL2Norm, Particle, particle, Particle *, Particles);
+IMP_LIST_IMPL(FitRestraintBayesEM3D, Particle, particle, Particle *, Particles);
 
-double FitRestraintL2Norm::unprotected_evaluate(DerivativeAccumulator *accum) const {
+double FitRestraintBayesEM3D::unprotected_evaluate(DerivativeAccumulator *accum) const {
 
   bool calc_deriv = accum ? true : false;
   double score;
   
-  std::pair<double, algebra::Vector3Ds> vals =
-    IMP::em::CoarseL2Norm::calc_score_and_derivative(target_dens_map_,
-						     all_ps_,
-						     resolution_,
-						     sigma_,
-						     dv_);
 
-  
-  const_cast<FitRestraintL2Norm *>(this)->score_ = vals.first;
-  const_cast<FitRestraintL2Norm *>(this)->dv_ = vals.second;
+  std::pair<double, algebra::Vector3Ds> vals =
+  bayesem3d_->calc_score_and_derivative(target_dens_map_,
+   all_ps_,
+   resolution_,
+   sigma_,
+   dv_);
+
+  const_cast<FitRestraintBayesEM3D *>(this)->score_ = vals.first;
+  const_cast<FitRestraintBayesEM3D *>(this)->dv_ = vals.second;
   
   score = score_;
   // now update the derivatives
@@ -92,7 +97,7 @@ double FitRestraintL2Norm::unprotected_evaluate(DerivativeAccumulator *accum) co
   return score;
 }
 
-ModelObjectsTemp FitRestraintL2Norm::do_get_inputs() const {
+ModelObjectsTemp FitRestraintBayesEM3D::do_get_inputs() const {
   ModelObjectsTemp pt(all_ps_.begin(), all_ps_.end());
   for (int i = 0; i < (int)rbs_.size(); i++) {
     pt.push_back(rbs_[i]);
@@ -100,13 +105,13 @@ ModelObjectsTemp FitRestraintL2Norm::do_get_inputs() const {
   return pt;
 }
 
-void FitRestraintL2Norm::store_particles(ParticlesTemp ps) {
+void FitRestraintBayesEM3D::store_particles(ParticlesTemp ps) {
   all_ps_ = get_as<Particles>(ps);
   add_particles(ps);
   // sort to rigid and not rigid members
   if (use_rigid_bodies_) {
     for (Particles::iterator it = all_ps_.begin(); it != all_ps_.end();
-         it++) {
+     it++) {
       if (core::RigidMember::get_is_setup(*it)) {
         core::RigidBody rb = core::RigidMember(*it).get_rigid_body();
         part_of_rb_.push_back(*it);
@@ -123,9 +128,9 @@ void FitRestraintL2Norm::store_particles(ParticlesTemp ps) {
     not_part_of_rb_ = all_ps_;
   }
   IMP_LOG_TERSE(
-      "number of"
-      << " particles that are not rigid bodies is:" << not_part_of_rb_.size()
-      << ", " << part_of_rb_.size() << " particles "
-      << " are part of " << rbs_.size() << " rigid bodies" << std::endl);
+    "number of"
+    << " particles that are not rigid bodies is:" << not_part_of_rb_.size()
+    << ", " << part_of_rb_.size() << " particles "
+    << " are part of " << rbs_.size() << " rigid bodies" << std::endl);
 }
 IMPEM_END_NAMESPACE
