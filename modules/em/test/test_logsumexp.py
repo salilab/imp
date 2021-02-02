@@ -7,7 +7,7 @@ import numpy as np
 
 def add_exp(a, b):
     s = - np.Inf
-    ss = 1
+    ss = -1
     for i in range(len(a)):
         s, ss = IMP.em.BayesEM3D().logabssumprodexp(s, a[i], ss, b[i])
     return s, ss
@@ -25,7 +25,7 @@ class Tests(IMP.test.TestCase):
 
     def test_exp(self):
 
-        sum_0 = np.sum(self.w* np.exp(self.x))
+        sum_0 = np.sum(self.w * np.exp(self.x))
         logsum, sign =  add_exp(self.x, self.w)
         sum_1 = sign * np.exp(logsum)
         self.assertAlmostEqual(sum_0, sum_1, delta=1e-6)

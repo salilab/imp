@@ -14,7 +14,7 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-const double window_size = 2.0;
+const double window_size = 3.0;
 
 BayesEM3D::BayesEM3D() : Object("BayesEM3D%1%") {}
 
@@ -278,8 +278,8 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
   double *modelct = retct->get_data();
 
   // Set up score and derivative variables
-  FloatPair cc_out;
-  cc_out = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
+  FloatPair score_lnr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
+  FloatPair score_sqr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
 
   algebra::Vector3Ds dv_out;
   dv_out.insert(dv_out.end(), dv.size(), algebra::Vector3D(0., 0., 0.));
@@ -297,8 +297,6 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
   int nxny = em_header->get_nx() * em_header->get_ny();
   int znxny;
 
-  double sum_over_ps_square;
-  double sum_model_square = 0.;
 
   // Compute the model density for derivative of cross-term
   for (unsigned int ii = 0; ii < xyzr.size(); ii++) {
@@ -312,11 +310,6 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
 
     calc_local_bounding_box(em, px, py, pz, local_box_size, iminx, iminy,
                             iminz, imaxx, imaxy, imaxz);
-
-     std::cerr << "Local BB:" << " "
-    << ps[ii]->get_name() << " with radius "
-    << local_box_size << " "
-    << std::endl;
 
     for (ivoxz = iminz; ivoxz <= imaxz; ivoxz++) {
       znxny = ivoxz * nxny;
@@ -340,9 +333,9 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
   }
 
   // Compute the sum and the sum^2 of the experimental EM denisty map
-  FloatPair em_sums = get_square_em_density(em, nvox);
+  //FloatPair em_sums = get_square_em_density(em, nvox);
   // double scale = 1. / em_sums.first;
-  double scale = 1.;
+  //double scale = 1.;
 
   for (unsigned int ii = 0; ii < xyzr.size(); ii++) {
 
@@ -362,9 +355,6 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
     dsdy_sqr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
     dsdz_sqr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
 
-    // Initialize square sums term to 0.
-    sum_over_ps_square = 0.;
-
     // Get Voxel box
     calc_local_bounding_box(em, px, py, pz, local_box_size, iminx,
                             iminy, iminz, imaxx, imaxy, imaxz);
@@ -380,42 +370,51 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
           algebra::Vector3D cur(em->get_location_by_voxel(ivox));
           std::vector<double> value = get_value(xyzr[ii], cur, mass_ii, kps);
           double intensity = value[1] * exp(value[0]);
+          double constant_term = modelct[ivox] - intensity - 2. * em_data[ivox];
+          
+          // score when exponent is linear
+          score_lnr = logabssumprodexp(
+            score_lnr.first, value[0], 
+            score_lnr.second, 
+            constant_term * value[1]);
+          
+          // score when exponent is squared
+          score_sqr = logabssumprodexp(
+            score_sqr.first, 2. * value[0], 
+            score_sqr.second, 
+            value[1] * value[1]);
 
-          // Streaming version of (Sum)^2 term of the scoring function
-          sum_over_ps_square += intensity * (intensity + 2. * model[ivox]);
-
-          // Streaming version of the log[cc] term of the scoring function
-          cc_out = logabssumprodexp(cc_out.first, value[0], cc_out.second,
-                                    -2. * em_data[ivox] * value[1]);
-
-          // derivative of the cc term
+          // derivative when exponent is linear
           dsdx_lnr = logabssumprodexp(
-              dsdx_lnr.first, value[0], dsdx_lnr.second,
-              1. * (modelct[ivox] - intensity - 2. * em_data[ivox]) * value[1] *
-                  value[2]);
+              dsdx_lnr.first, value[0], 
+              dsdx_lnr.second,
+              constant_term * value[1] * value[2]);
 
           dsdy_lnr = logabssumprodexp(
-              dsdy_lnr.first, value[0], dsdy_lnr.second,
-              1. * (modelct[ivox] - intensity - 2. * em_data[ivox]) * value[1] *
-                  value[3]);
+              dsdy_lnr.first, value[0], 
+              dsdy_lnr.second,
+              constant_term * value[1] * value[3]);
 
           dsdz_lnr = logabssumprodexp(
-              dsdz_lnr.first, value[0], dsdz_lnr.second,
-              1. * (modelct[ivox] - intensity - 2. * em_data[ivox]) * value[1] *
-                  value[4]);
+              dsdz_lnr.first, value[0], 
+              dsdz_lnr.second,
+              constant_term * value[1] * value[4]);
 
           // Derivative of the (Sum)^2 term
-          dsdx_sqr =
-              logabssumprodexp(dsdx_sqr.first, 2. * value[0], dsdx_sqr.second,
-                               2. * value[1] * value[1] * value[2]);
+          dsdx_sqr = logabssumprodexp(
+            dsdx_sqr.first, 2. * value[0], 
+            dsdx_sqr.second,
+            value[1] * value[1] * 2. * value[2]);
 
-          dsdy_sqr =
-              logabssumprodexp(dsdy_sqr.first, 2. * value[0], dsdy_sqr.second,
-                               2. * value[1] * value[1] * value[3]);
+          dsdy_sqr = logabssumprodexp(
+            dsdy_sqr.first, 2. * value[0], 
+            dsdy_sqr.second,
+            value[1] * value[1] * 2. * value[3]);
 
-          dsdz_sqr =
-              logabssumprodexp(dsdz_sqr.first, 2. * value[0], dsdz_sqr.second,
-                               2. * value[1] * value[1] * value[4]);
+          dsdz_sqr = logabssumprodexp(
+            dsdz_sqr.first, 2. * value[0], 
+            dsdz_sqr.second,
+            value[1] * value[1] * 2. * value[4]);
 
           // If we want to write the generated density from particles.
           model[ivox] += intensity;
@@ -423,6 +422,12 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
         }
       }
     }
+
+    std::cerr << "Particles: " << ii << " Named " << ps[ii]->get_name() 
+              << " " 
+              << score_lnr.first << " " << score_lnr.second << " "
+              << score_sqr.first << " " << score_sqr.second << " "
+              << std::endl; 
 
     dv_out[ii][0] = dsdx_lnr.second * exp(dsdx_lnr.first) +
                     dsdx_sqr.second * exp(dsdx_sqr.first);
@@ -435,22 +440,19 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
     dv_out[ii][1] /= (2 * sigma);
     dv_out[ii][2] /= (2 * sigma);
 
-    sum_model_square += sum_over_ps_square;
   }
-
+  
   std::pair<double, algebra::Vector3Ds> results;
-  results.first = em_sums.second + sum_model_square +
-                  1. * cc_out.second * exp(cc_out.first);
+  results.first = score_lnr.second * exp(score_lnr.first) +
+                  score_sqr.second * exp(score_sqr.first);
   results.first /= (2 * sigma);
   // results.first += nvox * log(sigma);
 
-  // IMP_NEW(em::MRCReaderWriter, mrw, ());
-  // IMP::em::write_map(ret, "testing.mrc", mrw);
-  // IMP::em::write_map(retct, "testingct.mrc", mrw);
+  //IMP_NEW(em::MRCReaderWriter, mrw, ());
+  //IMP::em::write_map(ret, "testing.mrc", mrw);
+  //IMP::em::write_map(retct, "testingct.mrc", mrw);
 
   results.second = dv_out;
-
-  // std::cerr << "AAA " << results.first << std::endl;
   return results;
 }
 

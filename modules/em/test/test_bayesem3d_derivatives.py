@@ -69,6 +69,10 @@ class Tests(IMP.test.TestCase):
         self.m = IMP.Model()
 
         self.mh, self.ps = get_particles(self.m, "input/input_atom0.pdb")
+        for p in self.ps:
+            print(p.get_name())
+
+        ##Read and setup EM
         res = 5.
         voxel_size = 1.5
 
@@ -87,8 +91,11 @@ class Tests(IMP.test.TestCase):
         #Convert fragment to rigid body#
         ################################
         IMP.atom.create_rigid_body(self.mh)
-        self.prot_rb = IMP.core.RigidMember(self.ps[0]).get_rigid_body()
+        self.prot_rb = IMP.core.RigidMember(
+            IMP.core.get_leaves(self.mh)[0]).get_rigid_body()
         self.m.update()
+
+        print(self.prot_rb.get_rigid_members())
 
         #Set up the restraints
         r = EMFitRestraint(self.m, self.ps, self.fmap,
@@ -106,8 +113,8 @@ class Tests(IMP.test.TestCase):
 
         self.m.update()
 
-        for i in np.linspace(0, 10, num=4, endpoint=True):
-
+        #for i in np.linspace(0, 0, num=1, endpoint=True):
+        for i in range(1):
             IMP.core.transform(self.prot_rb, IMP.algebra.Transformation3D(
                 IMP.algebra.get_identity_rotation_3d(), (1.0 * i, 0, 0)))
             self.m.update()
@@ -127,13 +134,16 @@ class Tests(IMP.test.TestCase):
                 self.m.update()
                 return self.rs.evaluate(False)
 
-            deriv_fd = FD.grad(fdm, myfun, *IMP.core.XYZ(self.prot_rb).get_coordinates(), *q)
+            deriv_fd = FD.grad(fdm, myfun,
+                *IMP.core.XYZ(self.prot_rb).get_coordinates(), *q)
 
             ddr = np.array(dr - deriv_fd[:3])
             ddq = np.array(dq - deriv_fd[-4:])
 
             identical_counter += sum(ddr) + sum(ddq)
-
+            print("")
+            print(deriv_fd)
+            print("")
             print("Translation Derivatives")
             print(dr)
             print(deriv_fd[:3])

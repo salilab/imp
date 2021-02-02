@@ -88,6 +88,8 @@ double FitRestraintBayesEM3D::unprotected_evaluate(DerivativeAccumulator *accum)
   if (calc_deriv) {
     for (unsigned int i = 0; i < all_ps_.size(); i++) {
       Particle *p = all_ps_[i];
+      std::cerr << p->get_name() << " " 
+      << dv_[i][0] << " " << dv_[i][1] << " " << dv_[i][2] << std::endl;
       p->add_to_derivative(xyz_keys[0], dv_[i][0], *accum);
       p->add_to_derivative(xyz_keys[1], dv_[i][1], *accum);
       p->add_to_derivative(xyz_keys[2], dv_[i][2], *accum);
