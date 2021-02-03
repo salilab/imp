@@ -11,6 +11,13 @@ import IMP.container
 import modeller.scripts
 import modeller.optimizers
 
+
+# Use Modeller 10 class names
+if not hasattr(modeller.terms, 'EnergyTerm'):
+    modeller.terms.EnergyTerm = modeller.terms.energy_term
+    modeller.Selection = modeller.selection
+
+
 class _TempDir(object):
     """Make a temporary directory that is deleted when the object is."""
 
@@ -21,7 +28,7 @@ class _TempDir(object):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
 
-class IMPRestraints(modeller.terms.energy_term):
+class IMPRestraints(modeller.terms.EnergyTerm):
     """A Modeller restraint which evaluates an IMP scoring function.
        This can be used to incorporate IMP Restraints into an existing
        comparative modeling pipeline, or to use Modeller optimizers or
@@ -41,7 +48,7 @@ class IMPRestraints(modeller.terms.energy_term):
                  Modeller and then use ModelLoader to load it into IMP,
                  since that will preserve the Modeller atom ordering in IMP.
         """
-        modeller.terms.energy_term.__init__(self)
+        modeller.terms.EnergyTerm.__init__(self)
         self._particles = particles
         if scoring_function:
             self._sf = scoring_function
@@ -98,7 +105,7 @@ class ModellerRestraints(IMP.Restraint):
 
     def unprotected_evaluate(self, accum):
         atoms = self._modeller_model.atoms
-        sel = modeller.selection(self._modeller_model)
+        sel = modeller.Selection(self._modeller_model)
         _copy_imp_coords_to_modeller(self._particles, atoms)
         energies = sel.energy()
         if accum:
