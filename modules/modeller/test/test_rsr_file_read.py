@@ -145,9 +145,10 @@ class Tests(IMP.test.TestCase):
         e = self.get_modeller_environ()
         modmodel = modeller.Model(e)
         modmodel.build_sequence('GGCC')
-        open('test.rsr', 'w').write('MODELLER5 VERSION: MODELLER FORMAT\n'
-                                    'R    3   1   1   1   2   2   0     3'
-                                    '     2       1.5380    0.0364')
+        with open('test.rsr', 'w') as fh:
+            fh.write('MODELLER5 VERSION: MODELLER FORMAT\n'
+                     'R    3   1   1   1   2   2   0     3'
+                     '     2       1.5380    0.0364')
         modmodel.restraints.append('test.rsr')
 
         # Need atoms before loading restraints

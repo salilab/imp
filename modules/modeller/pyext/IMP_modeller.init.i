@@ -299,15 +299,15 @@ def _load_restraints_line(line, atom_particles):
 def _load_entire_restraints_file(filename, protein):
     """Yield a set of IMP restraints from a Modeller restraints file."""
     atoms = _get_protein_atom_particles(protein)
-    fh = open(filename, 'r')
-    for line in fh:
-        try:
-            rsr = _load_restraints_line(line, atoms)
-            if rsr is not None:
-                yield rsr
-        except Exception as err:
-            print("Cannot read restraints file line:\n" + line)
-            raise
+    with open(filename, 'r') as fh:
+        for line in fh:
+            try:
+                rsr = _load_restraints_line(line, atoms)
+                if rsr is not None:
+                    yield rsr
+            except Exception as err:
+                print("Cannot read restraints file line:\n" + line)
+                raise
 
 
 def _copy_residue(r, model):
@@ -361,11 +361,12 @@ def add_soft_sphere_radii(hierarchy, submodel, scale=1.0, filename=None):
     if filename is None:
         filename = IMP.atom.get_data_path('radii.lib')
     radii = {}
-    for line in open(filename):
-        if line.startswith('#'): continue
-        spl = line.split()
-        if len(spl) > 11:
-            radii[spl[0]] = float(spl[submodel])
+    with open(filename) as fh:
+        for line in fh:
+            if line.startswith('#'): continue
+            spl = line.split()
+            if len(spl) > 11:
+                radii[spl[0]] = float(spl[submodel])
     atoms = IMP.atom.get_by_type(hierarchy, IMP.atom.ATOM_TYPE)
     for a in atoms:
         p = a.get_particle()
