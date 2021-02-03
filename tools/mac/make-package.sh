@@ -141,7 +141,7 @@ done
 # Bundle non-standard library dependencies (e.g. boost) and make IMP libraries
 # and binaries point to them
 echo "Bundling non-standard library dependencies (e.g. Boost, GSL, HDF5)..."
-if [ "${TARGET_OSX_VER}" = "10.6" ]; then
+if [ "${TARGET_OSX_VER}" != "10.4" ]; then
   # 64-bit builds use homebrew and also include CGAL and protobuf
   BUNDLED_LIBS="/usr/local/lib/libboost_system-mt.dylib \
                 /usr/local/lib/libboost_filesystem-mt.dylib \
@@ -156,25 +156,23 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/libgsl.0.dylib \
                 /usr/local/lib/libgslcblas.0.dylib \
                 /usr/local/lib/libhdf5.103.dylib \
-                /usr/local/lib/libopencv_highgui.2.4.2.dylib \
+                /usr/local/lib/libopencv_highgui.2.4.13.dylib \
                 /usr/local/lib/libopencv_highgui.2.4.dylib \
-                /usr/local/lib/libopencv_core.2.4.2.dylib \
+                /usr/local/lib/libopencv_core.2.4.13.dylib \
                 /usr/local/lib/libopencv_core.2.4.dylib \
-                /usr/local/lib/libopencv_imgproc.2.4.2.dylib \
+                /usr/local/lib/libopencv_imgproc.2.4.13.dylib \
                 /usr/local/lib/libopencv_imgproc.2.4.dylib \
-                /usr/local/lib/libopencv_contrib.2.4.2.dylib \
+                /usr/local/lib/libopencv_contrib.2.4.13.dylib \
                 /usr/local/lib/libopencv_calib3d.2.4.dylib \
                 /usr/local/lib/libopencv_features2d.2.4.dylib \
                 /usr/local/lib/libopencv_flann.2.4.dylib \
                 /usr/local/lib/libopencv_ml.2.4.dylib \
                 /usr/local/lib/libopencv_objdetect.2.4.dylib \
                 /usr/local/lib/libopencv_video.2.4.dylib \
-                /usr/local/lib/libjpeg.8.dylib \
-                /usr/local/lib/libtiff.5.dylib \
                 /usr/local/lib/liblzma.5.dylib \
                 /usr/local/lib/libprotobuf.9.dylib \
                 /usr/local/lib/libTAU.1.dylib \
-                /usr/local/lib/libCGAL.11.0.1.dylib \
+                /usr/local/lib/libCGAL.11.0.0.dylib \
                 /usr/local/lib/libCGAL.11.dylib \
                 /usr/local/lib/libgmp.10.dylib \
                 /usr/local/lib/libgmpxx.4.dylib \
