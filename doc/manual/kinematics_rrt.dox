@@ -33,8 +33,8 @@ print(IMP.kinematics.get_example_path('antibody'))</tt>'.
 \section kinematics_rrt_calc Calculation
 
 The structure of the antibody is available in the
-\external{http://www.pdb.org,RCSB Protein Data Bank (PDB)} as code
-\external{http://www.pdb.org/pdb/explore/explore.do?structureId=1IGT,1igt}
+\external{https://www.rcsb.org/,RCSB Protein Data Bank (PDB)} as code
+\external{https://www.rcsb.org/structure/1IGT,1igt}
 (file <tt>1igt.pdb</tt>). The atomic structure can be sampled by running <tt>rrt_sample</tt>. First, we need to define the linker regions (residues 229-235 in chains B and D). These residues are listed in the input file <tt>linker.txt</tt>. Since the antibody contains four chains (A-D), we would like to connect them into a single rigid body using '-c' connect_chains option. We do that for the antibody structure using the S-S bonds between the chains. Therefore, the file <tt>conect_chains.txt</tt> specifies atom numbers for the two chains we want to connect.
 
 \code{.sh}

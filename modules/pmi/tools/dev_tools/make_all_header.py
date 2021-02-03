@@ -18,10 +18,12 @@ if sys.version_info[0] >= 3:
 else:
     open_utf8 = open
 
+
 def _add_includes(headers, output):
     for g in headers:
         name = os.path.split(g)[1]
         output.append("#include <%s/" % sys.argv[2] + name + ">")
+
 
 includepath = sys.argv[1][sys.argv[1].find("include") + len("include") + 1:]
 
@@ -29,7 +31,7 @@ output = ["""/**
  *  \\file %s
  *  \\brief Include all non-deprecated headers in %s.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 """ % (includepath, includepath[:-2].replace('/', '.'))]
 guard = includepath.replace(

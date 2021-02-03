@@ -1,0 +1,62 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - os: ubuntu-latest
+          python-version: 2.7
+          install: ''
+          flags: '--coverage'
+          tests: RMF
+          build: Debug
+        - os: ubuntu-latest
+          python-version: 3.9
+          install: ''
+          flags: '--coverage'
+          tests: RMF
+          build: Debug
+        - os: ubuntu-latest
+          python-version: 3.9
+          install: ''
+          flags: '--coverage'
+          tests: RMF
+          build: Release
+        - os: ubuntu-latest
+          python-version: 3.9
+          install: 'libhdf5-dev liblog4cxx-dev'
+          flags: '--coverage'
+          tests: RMF
+          build: Debug
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -qq libboost-all-dev swig libc-dbg ${{ matrix.install }}
+        pip install coverage
+    - name: Build and test
+      run: |
+        mkdir build
+        cd build
+        ../tools/coverage/setup.py
+        PYTHONPATH=`pwd`/coverage cmake .. -DCMAKE_BUILD_TYPE="${{ matrix.build }}" -DCMAKE_CXX_FLAGS="${{ matrix.flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.flags }}" -DCMAKE_MODULE_LINKER_FLAGS="${{ matrix.flags }}" -DCMAKE_SHARED_LINKER_FLAGS="${{ matrix.flags }}"
+        make -j 2
+        export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+        ctest -j 2 --output-on-failure -L ${{ matrix.tests }}
+    - name: Upload coverage to codecov
+      run: |
+        cd build
+        (cd coverage && coverage combine && mv .coverage ..)
+        bash <(curl -s https://codecov.io/bash)

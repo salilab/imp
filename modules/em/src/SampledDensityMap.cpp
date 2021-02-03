@@ -2,7 +2,7 @@
  *  \file SampledDensityMap.cpp
  *  \brief Sampled density map.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

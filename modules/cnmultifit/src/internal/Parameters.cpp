@@ -2,7 +2,7 @@
  *  \file Parameters.cpp
  *  \brief Parameters for symmetric MultiFit.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/cnmultifit/internal/Parameters.h>

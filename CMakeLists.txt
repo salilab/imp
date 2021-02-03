@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 2.8.12)
 
 project(IMP)
 
@@ -12,6 +12,11 @@ endif()
 if(POLICY CMP0094)
 cmake_policy(SET CMP0094 NEW)
 endif(POLICY CMP0094)
+
+# Use new-style variables/escapes
+if(POLICY CMP0053)
+cmake_policy(SET CMP0053 NEW)
+endif(POLICY CMP0053)
 
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindPython.cmake)
 imp_find_python()

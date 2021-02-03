@@ -1,3 +1,12 @@
+0.18 - 2020-11-06
+=================
+  - Update to match latest FLR dictionary.
+  - Add a simple utility (util/make-mmcif.py) to make a minimal compliant
+    IHM mmCIF file, given an mmCIF file (potentially just coordinates) as input.
+  - Bugfix: the full residue range spanned by a starting model is now reported,
+    rather than just the subset that is mapped to one or more templates (#55).
+  - Bugfix: handle TrEMBL UniProt sequences (#57).
+
 0.17 - 2020-07-10
 =================
   - Convenience classes are added to describe hydrogen/deuterium exchange
@@ -142,7 +151,7 @@
    underlying dictionary, this only works for some restraint types (currently
    only :class:`ihm.restraint.DerivedDistanceRestraint`) and all restraints
    in the group must be of the same type.
- - Bugfix: the the model's representation (see :mod:`ihm.representation`)
+ - Bugfix: the model's representation (see :mod:`ihm.representation`)
    need not be a strict subset of the model's :class:`ihm.Assembly`. However,
    any :class:`ihm.model.Atom` or :class:`ihm.model.Sphere` objects must be
    covered by both the representation and the model's :class:`ihm.Assembly`.

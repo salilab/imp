@@ -2,7 +2,7 @@
  *  \file IMP/container/ClassnamesRestraint.h
  *  \brief Apply a ClassnameScore to each Classname in a list.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

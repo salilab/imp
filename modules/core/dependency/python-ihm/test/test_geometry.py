@@ -1,24 +1,25 @@
 import utils
 import os
 import unittest
-import sys
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.geometry
 
+
 class Tests(unittest.TestCase):
 
     def test_center(self):
         """Test Center class"""
-        c = ihm.geometry.Center(1,2,3)
+        c = ihm.geometry.Center(1, 2, 3)
         self.assertEqual(c.x, 1)
         self.assertEqual(c.y, 2)
         self.assertEqual(c.z, 3)
 
     def test_transformation(self):
         """Test Transformation class"""
-        t = ihm.geometry.Transformation([[1,0,0],[0,1,0],[0,0,1]], [1,2,3])
+        _ = ihm.geometry.Transformation([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                                        [1, 2, 3])
 
     def test_identity_transformation(self):
         """Test identity transformation"""
@@ -38,8 +39,9 @@ class Tests(unittest.TestCase):
 
     def test_sphere(self):
         """Test Sphere class"""
-        c = ihm.geometry.Center(1,2,3)
-        t = ihm.geometry.Transformation([[1,0,0],[0,1,0],[0,0,1]], [1,2,3])
+        c = ihm.geometry.Center(1, 2, 3)
+        t = ihm.geometry.Transformation([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                                        [1, 2, 3])
         g = ihm.geometry.Sphere(center=c, transformation=t, radius=5)
         self.assertIsNone(g.name)
         self.assertEqual(g.radius, 5)
@@ -49,8 +51,9 @@ class Tests(unittest.TestCase):
 
     def test_torus(self):
         """Test Torus class"""
-        c = ihm.geometry.Center(1,2,3)
-        t = ihm.geometry.Transformation([[1,0,0],[0,1,0],[0,0,1]], [1,2,3])
+        c = ihm.geometry.Center(1, 2, 3)
+        t = ihm.geometry.Transformation([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                                        [1, 2, 3])
         g = ihm.geometry.Torus(center=c, transformation=t, major_radius=5,
                                minor_radius=1)
         self.assertIsNone(g.name)
@@ -62,8 +65,9 @@ class Tests(unittest.TestCase):
 
     def test_half_torus(self):
         """Test HalfTorus class"""
-        c = ihm.geometry.Center(1,2,3)
-        t = ihm.geometry.Transformation([[1,0,0],[0,1,0],[0,0,1]], [1,2,3])
+        c = ihm.geometry.Center(1, 2, 3)
+        t = ihm.geometry.Transformation([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                                        [1, 2, 3])
         g = ihm.geometry.HalfTorus(center=c, transformation=t, major_radius=5,
                                    minor_radius=1, thickness=0.1, inner=True)
         self.assertIsNone(g.name)

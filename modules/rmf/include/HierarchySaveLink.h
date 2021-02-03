@@ -2,7 +2,7 @@
  *  \file IMP/rmf/HierarchySaveLink.h
  *  \brief Manage saving links to an RMF file from an atom::Hierarchy.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

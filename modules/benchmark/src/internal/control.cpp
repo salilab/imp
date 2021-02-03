@@ -1,6 +1,6 @@
 /** \file utility.cpp Benchmarking utilties
  *
- * Copyright 2007-2020 IMP Inventors. All rights reserved.
+ * Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/benchmark/internal/control.h>

@@ -4,7 +4,7 @@
  * \brief A class for profiles clustering
  *
  * Author: Dina Schneidman
- * Copyright 2007-2020 IMP Inventors. All rights reserved.
+ * Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/saxs/ProfileClustering.h>

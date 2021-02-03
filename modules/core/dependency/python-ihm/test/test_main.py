@@ -1,11 +1,6 @@
 import utils
 import os
 import unittest
-import sys
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    from io import BytesIO as StringIO
 try:
     import urllib.request as urllib2
 except ImportError:
@@ -19,6 +14,7 @@ import ihm.representation
 import ihm.model
 import ihm.source
 import ihm.flr
+
 
 class Tests(unittest.TestCase):
     def test_system(self):
@@ -126,22 +122,23 @@ class Tests(unittest.TestCase):
 
     def test_d_peptide_alphabet(self):
         """Test DPeptideAlphabet class"""
-        dcode_from_canon =  {'A': 'DAL', 'C': 'DCY', 'D': 'DAS', 'E': 'DGL',
-                             'F': 'DPN', 'H': 'DHI', 'I': 'DIL', 'K': 'DLY',
-                             'L': 'DLE', 'M': 'MED', 'N': 'DSG', 'P': 'DPR',
-                             'Q': 'DGN', 'R': 'DAR', 'S': 'DSN', 'T': 'DTH',
-                             'V': 'DVA', 'W': 'DTR', 'Y': 'DTY', 'G': 'G'}
-        d = ihm.DPeptideAlphabet
-        l = ihm.LPeptideAlphabet
+        dcode_from_canon = {'A': 'DAL', 'C': 'DCY', 'D': 'DAS', 'E': 'DGL',
+                            'F': 'DPN', 'H': 'DHI', 'I': 'DIL', 'K': 'DLY',
+                            'L': 'DLE', 'M': 'MED', 'N': 'DSG', 'P': 'DPR',
+                            'Q': 'DGN', 'R': 'DAR', 'S': 'DSN', 'T': 'DTH',
+                            'V': 'DVA', 'W': 'DTR', 'Y': 'DTY', 'G': 'G'}
+        da = ihm.DPeptideAlphabet
+        la = ihm.LPeptideAlphabet
         # Weights and formulae of all standard amino acids should be identical
         # between L- and D- forms (except for lysine, where the formal charge
         # differs between the two forms)
         for canon in 'ACDEFGHILMNPQRSTVWY':
             lcode = canon
             dcode = dcode_from_canon[canon]
-            self.assertEqual(d._comps[dcode].formula, l._comps[lcode].formula)
-            self.assertAlmostEqual(d._comps[dcode].formula_weight,
-                                   l._comps[lcode].formula_weight, delta=0.01)
+            self.assertEqual(da._comps[dcode].formula,
+                             la._comps[lcode].formula)
+            self.assertAlmostEqual(da._comps[dcode].formula_weight,
+                                   la._comps[lcode].formula_weight, delta=0.01)
 
     def test_rna_alphabet(self):
         """Test RNAAlphabet class"""
@@ -159,9 +156,10 @@ class Tests(unittest.TestCase):
 
     def test_chem_descriptor(self):
         """Test ChemDescriptor class"""
-        d1 = ihm.ChemDescriptor('EDC', chemical_name='test-EDC',
-                chem_comp_id='test-chem-comp',
-                common_name='test-common-EDC', smiles='CCN=C=NCCCN(C)C')
+        d1 = ihm.ChemDescriptor(
+            'EDC', chemical_name='test-EDC',
+            chem_comp_id='test-chem-comp',
+            common_name='test-common-EDC', smiles='CCN=C=NCCCN(C)C')
         self.assertEqual(d1.auth_name, 'EDC')
         self.assertEqual(d1.chem_comp_id, 'test-chem-comp')
         self.assertEqual(d1.chemical_name, 'test-EDC')
@@ -179,10 +177,10 @@ class Tests(unittest.TestCase):
         heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
         self.assertEqual(e1, e2)
         self.assertNotEqual(e1, e3)
-        self.assertEqual(e1.seq_id_range, (1,4))
-        self.assertEqual(e3.seq_id_range, (1,5))
+        self.assertEqual(e1.seq_id_range, (1, 4))
+        self.assertEqual(e3.seq_id_range, (1, 5))
         # seq_id does not exist for nonpolymers
-        self.assertEqual(heme.seq_id_range, (None,None))
+        self.assertEqual(heme.seq_id_range, (None, None))
 
     def test_entity_weight(self):
         """Test Entity.formula_weight"""
@@ -210,9 +208,11 @@ class Tests(unittest.TestCase):
         water = ihm.Entity([ihm.WaterChemComp()])
         self.assertEqual(protein.src_method, "man")
         self.assertEqual(water.src_method, "nat")
+
         # src_method is readonly
         def try_set():
             protein.src_method = 'foo'
+
         self.assertRaises(TypeError, try_set)
 
     def test_entity_source(self):
@@ -245,7 +245,7 @@ class Tests(unittest.TestCase):
     def test_citation(self):
         """Test Citation class"""
         s = ihm.Citation(title='Test paper', journal='J Mol Biol',
-                         volume=45, page_range=(1,20), year=2016,
+                         volume=45, page_range=(1, 20), year=2016,
                          authors=['Smith A', 'Jones B'],
                          doi='10.2345/S1384107697000225',
                          pmid='1234')
@@ -268,12 +268,13 @@ class Tests(unittest.TestCase):
     def test_citation_from_pubmed_id(self):
         """Test Citation.from_pubmed_id()"""
         c = self._get_from_pubmed_id('pubmed_api.json')
-        self.assertEqual(c.title,
-                'Integrative structure and functional anatomy of a nuclear '
-                'pore complex (test of python-ihm lib).')
+        self.assertEqual(
+            c.title,
+            'Integrative structure and functional anatomy of a nuclear '
+            'pore complex (test of python-ihm lib).')
         self.assertEqual(c.journal, 'Nature')
         self.assertEqual(c.volume, '555')
-        self.assertEqual(c.page_range, ['475','482'])
+        self.assertEqual(c.page_range, ['475', '482'])
         self.assertEqual(c.year, '2018')
         self.assertEqual(c.pmid, 29539637)
         self.assertEqual(c.doi, '10.1038/nature26003')
@@ -294,12 +295,13 @@ class Tests(unittest.TestCase):
     def test_citation_from_pubmed_id_no_doi(self):
         """Test Citation.from_pubmed_id() with no DOI"""
         c = self._get_from_pubmed_id('pubmed_api_no_doi.json')
-        self.assertEqual(c.title,
-                'Integrative structure and functional anatomy of a nuclear '
-                'pore complex (test of python-ihm lib).')
+        self.assertEqual(
+            c.title,
+            'Integrative structure and functional anatomy of a nuclear '
+            'pore complex (test of python-ihm lib).')
         self.assertIsNone(c.doi)
         # Make sure that page range "475-82" is handled as 475,482
-        self.assertEqual(c.page_range, ['475','482'])
+        self.assertEqual(c.page_range, ['475', '482'])
 
     def test_entity_residue(self):
         """Test Residue derived from an Entity"""
@@ -346,18 +348,18 @@ class Tests(unittest.TestCase):
         e = ihm.Entity('AHCDAH')
         heme = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
         e._id = 42
-        self.assertEqual(e.seq_id_range, (1,6))
-        r = e(3,4)
-        self.assertEqual(r.seq_id_range, (3,4))
+        self.assertEqual(e.seq_id_range, (1, 6))
+        r = e(3, 4)
+        self.assertEqual(r.seq_id_range, (3, 4))
         self.assertEqual(r._id, 42)
         # Cannot create ranges for nonpolymeric entities
         self.assertRaises(TypeError, heme.__call__, 1, 1)
-        samer = e(3,4)
-        otherr = e(2,4)
+        samer = e(3, 4)
+        otherr = e(2, 4)
         self.assertEqual(r, samer)
         self.assertEqual(hash(r), hash(samer))
         self.assertNotEqual(r, otherr)
-        self.assertNotEqual(r, e) # entity_range != entity
+        self.assertNotEqual(r, e)  # entity_range != entity
 
     def test_asym_range(self):
         """Test AsymUnitRange class"""
@@ -366,23 +368,23 @@ class Tests(unittest.TestCase):
         a = ihm.AsymUnit(e)
         aheme = ihm.AsymUnit(heme)
         a._id = 42
-        self.assertEqual(a.seq_id_range, (1,6))
+        self.assertEqual(a.seq_id_range, (1, 6))
         # seq_id is not defined for nonpolymers
-        self.assertEqual(aheme.seq_id_range, (None,None))
-        r = a(3,4)
-        self.assertEqual(r.seq_id_range, (3,4))
+        self.assertEqual(aheme.seq_id_range, (None, None))
+        r = a(3, 4)
+        self.assertEqual(r.seq_id_range, (3, 4))
         self.assertEqual(r._id, 42)
         self.assertEqual(r.entity, e)
         # Cannot create ranges for nonpolymeric entities
         self.assertRaises(TypeError, aheme.__call__, 1, 1)
-        samer = a(3,4)
-        otherr = a(2,4)
+        samer = a(3, 4)
+        otherr = a(2, 4)
         self.assertEqual(r, samer)
         self.assertEqual(hash(r), hash(samer))
         self.assertNotEqual(r, otherr)
-        self.assertNotEqual(r, a)      # asym_range != asym
-        self.assertNotEqual(r, e(3,4)) # asym_range != entity_range
-        self.assertNotEqual(r, e)      # asym_range != entity
+        self.assertNotEqual(r, a)        # asym_range != asym
+        self.assertNotEqual(r, e(3, 4))  # asym_range != entity_range
+        self.assertNotEqual(r, e)        # asym_range != entity
 
     def test_auth_seq_id_offset(self):
         """Test auth_seq_id offset from seq_id"""
@@ -393,7 +395,7 @@ class Tests(unittest.TestCase):
     def test_auth_seq_id_dict(self):
         """Test auth_seq_id dict map from seq_id"""
         e = ihm.Entity('AHCDAH')
-        a = ihm.AsymUnit(e, auth_seq_id_map={1:0, 2:4})
+        a = ihm.AsymUnit(e, auth_seq_id_map={1: 0, 2: 4})
         self.assertEqual(a._get_auth_seq_id(1), 0)
         self.assertEqual(a._get_auth_seq_id(2), 4)
         self.assertEqual(a._get_auth_seq_id(3), 3)
@@ -558,17 +560,17 @@ class Tests(unittest.TestCase):
             pass
 
         c1 = ihm.Citation(title='Test paper', journal='J Mol Biol',
-                          volume=45, page_range=(1,20), year=2016,
+                          volume=45, page_range=(1, 20), year=2016,
                           authors=['Smith A', 'Jones B'],
                           doi='10.2345/S1384107697000225',
                           pmid='1234')
         c2 = ihm.Citation(title='Test paper', journal='J Mol Biol',
-                          volume=45, page_range=(1,20), year=2016,
+                          volume=45, page_range=(1, 20), year=2016,
                           authors=['Smith A', 'Jones B'],
                           doi='1.2.3.4',
                           pmid='1234')
-        rsr1 = MockObject() # Not a 3dem restraint
-        rsr2 = MockObject() # 3dem but with no provided citation
+        rsr1 = MockObject()  # Not a 3dem restraint
+        rsr2 = MockObject()  # 3dem but with no provided citation
         rsr2.fitting_method_citation_id = None
         rsr3 = MockObject()
         rsr2.fitting_method_citation_id = c1
@@ -652,6 +654,7 @@ class Tests(unittest.TestCase):
         """Test _all_locations() method"""
         class MockObject(object):
             pass
+
         class MockDataset(object):
             parents = []
         loc1 = MockObject()
@@ -720,6 +723,7 @@ class Tests(unittest.TestCase):
         """Test _all_datasets() method"""
         class MockObject(object):
             pass
+
         class MockDataset(object):
             parents = []
 
@@ -859,7 +863,6 @@ class Tests(unittest.TestCase):
         # duplicates should not be filtered
         self.assertEqual(list(s._all_pseudo_sites()), [s1, s2, s2, s1, s2])
 
-
     def test_all_chem_descriptors(self):
         """Test _all_chem_descriptors() method"""
         class MockObject(object):
@@ -875,8 +878,6 @@ class Tests(unittest.TestCase):
         s.flr_data.append(f)
         r1 = MockObject()
         r2 = MockObject()
-        r2.linker = None
-        r3 = MockObject()
         r2.linker = d3
         s.restraints.extend((r1, r2))
 
@@ -884,8 +885,9 @@ class Tests(unittest.TestCase):
         s.orphan_chem_descriptors.extend((d1, d2, d1))
 
         # FLR chemical descriptors
-        conj = ihm.flr.PolyProbeConjugate(sample_probe=None, chem_descriptor=d4,
-                                          ambiguous_stoichiometry=False)
+        conj = ihm.flr.PolyProbeConjugate(
+            sample_probe=None, chem_descriptor=d4,
+            ambiguous_stoichiometry=False)
         f.poly_probe_conjugates.append(conj)
 
         # duplicates should not be filtered
@@ -901,8 +903,8 @@ class Tests(unittest.TestCase):
         a1 = ihm.AsymUnit(e1)
         s.entities.append(e1)
         s.asym_units.append(a1)
-        e1rng = e1(1,3)
-        a1rng = a1(1,2)
+        e1rng = e1(1, 3)
+        a1rng = a1(1, 2)
 
         sm1 = MockObject()
         sm1.asym_unit = e1rng

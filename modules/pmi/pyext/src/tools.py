@@ -1088,24 +1088,6 @@ def display_bonds(mol):
                 IMP.atom.Bonded(p2),1)
 
 
-@IMP.deprecated_object("2.13", "Use IMP.pmi.alphabets instead")
-class ThreeToOneConverter(defaultdict):
-    """This class converts three to one letter codes, and return X for
-       any unknown codes"""
-    def __init__(self, is_nucleic=False):
-        if is_nucleic:
-            threetoone = IMP.pmi.alphabets.rna.charmm_to_one
-        else:
-            threetoone = IMP.pmi.alphabets.amino_acid.charmm_to_one
-        defaultdict.__init__(self,lambda: "X", threetoone)
-
-
-@IMP.deprecated_function("2.13", "Use IMP.pmi.alphabets instead")
-def get_residue_type_from_one_letter_code(code, is_nucleic=False):
-    a = IMP.pmi.alphabets.rna if is_nucleic else IMP.pmi.alphabets.amino_acid
-    return a.get_residue_type_from_one_letter_code(code)
-
-
 def get_all_leaves(list_of_hs):
     """ Just get the leaves from a list of hierarchies """
     lvs = list(itertools.chain.from_iterable(IMP.atom.get_leaves(item) for item in list_of_hs))

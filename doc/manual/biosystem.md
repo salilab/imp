@@ -67,7 +67,7 @@ for an example):
    This should contain two files:
    - `thumb.png`: a small image used to represent your system on the page.
    - `metadata.yaml`: a file in [YAML](http://yaml.org/) format specifying
-     (see also the [Nup84 example](https://github.com/integrativemodeling/nup84/blob/master/metadata/metadata.yaml)):
+     (see also the [Nup84 example](https://github.com/integrativemodeling/nup84/blob/main/metadata/metadata.yaml)):
      - `title`: a short descriptive name for your system
      - `tags`: a list of tags to group your system with others that use
        similar methods or input data

@@ -3,7 +3,7 @@
  *  \brief computation of molecular volumetrics :
  *   surface and area of an union of balls
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/cgal/internal/union_of_balls.h>
@@ -1371,7 +1371,7 @@ inline typename SpacefillingVolumetric<Gt>::Point SpacefillingVolumetric<
  * 19. VECTOR STUFF
  */
 /*! computes the solid angle,
- * that is the the surface of the sphere that is swept by the angle
+ * that is the surface of the sphere that is swept by the angle
  * we compute it as a proportion of the whole sphere surface : from 0 to 1
  */
 /*

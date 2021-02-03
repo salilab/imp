@@ -10,16 +10,18 @@ TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.reference
 
+
 class Tests(unittest.TestCase):
 
     def test_reference(self):
         """Test Reference base class"""
-        r = ihm.reference.Reference()  # noop
+        _ = ihm.reference.Reference()  # noop
 
     def test_sequence(self):
         """Test Sequence class"""
-        s = ihm.reference.Sequence(db_name='testdb', db_code='testcode',
-                accession='testacc', sequence='CCCG', details='foo')
+        s = ihm.reference.Sequence(
+            db_name='testdb', db_code='testcode', accession='testacc',
+            sequence='CCCG', details='foo')
         s.alignments.append(ihm.reference.Alignment(
             db_begin=10, db_end=30, entity_begin=20, entity_end=40))
         self.assertEqual(s.db_name, 'testdb')
@@ -36,8 +38,9 @@ class Tests(unittest.TestCase):
 
     def test_sequence_default_alignment(self):
         """Test Sequence class with default Alignment"""
-        s = ihm.reference.Sequence(db_name='testdb', db_code='testcode',
-                accession='testacc', sequence='CCCG', details='foo')
+        s = ihm.reference.Sequence(
+            db_name='testdb', db_code='testcode',
+            accession='testacc', sequence='CCCG', details='foo')
         self.assertEqual(s.db_name, 'testdb')
         self.assertEqual(s.db_code, 'testcode')
         self.assertEqual(s.accession, 'testacc')
@@ -58,8 +61,8 @@ class Tests(unittest.TestCase):
         lpep = ihm.LPeptideAlphabet()
         sd = ihm.reference.SeqDif(seq_id=1, db_monomer=lpep['C'],
                                   monomer=lpep['W'], details='Test mutation')
-        s = ihm.reference.UniProtSequence(db_code='testcode',
-                accession='testacc', sequence='CCCG')
+        s = ihm.reference.UniProtSequence(
+            db_code='testcode', accession='testacc', sequence='CCCG')
         s.alignments.append(ihm.reference.Alignment(seq_dif=[sd]))
         self.assertEqual(s.db_name, 'UNP')
         self.assertEqual(s.db_code, 'testcode')
@@ -95,9 +98,10 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.accession, 'testacc')
         self.assertEqual(len(r.sequence), 726)
         self.assertEqual(r.sequence[:20], 'MELSPTYQTERFTKFSDTLK')
-        self.assertEqual(r.details,
-                'Nucleoporin NUP84 OS=Saccharomyces cerevisiae (strain ATCC '
-                '204508 / S288c) OX=559292 GN=NUP84 PE=1 SV=1')
+        self.assertEqual(
+            r.details,
+            'Nucleoporin NUP84 OS=Saccharomyces cerevisiae (strain ATCC '
+            '204508 / S288c) OX=559292 GN=NUP84 PE=1 SV=1')
 
     def test_uniprot_sequence_from_accession_bad_header(self):
         """Test UniProtSequence.from_accession() with bad header"""

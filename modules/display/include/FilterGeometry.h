@@ -2,7 +2,7 @@
  *  \file IMP/display/FilterGeometry.h
  *  \brief Remove geometry which is not above a plane.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_FILTER_GEOMETRY_H

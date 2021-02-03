@@ -2,7 +2,7 @@
  *  \file saxs::RigidBodiesProfileHandler.cpp
  *  \brief Calculate score based on fit to SAXS profile.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -30,7 +30,7 @@ RigidBodiesProfileHandler::RigidBodiesProfileHandler(
     }
   }
 
-  if (rigid_bodies_.size() > 0) {
+  if (rigid_bodies.size() > 0) {
     rigid_bodies_profile_ = new Profile();
     for (boost::unordered_map<ParticleIndex,
                               Particles>::iterator it =

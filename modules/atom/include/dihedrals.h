@@ -2,7 +2,7 @@
  *  \file IMP/atom/dihedrals.h
  *  \brief Helpers to extract dihedral information.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -27,23 +27,26 @@ IMPATOMEXPORT Atoms get_phi_dihedral_atoms(Residue rd);
     \see Residue */
 IMPATOMEXPORT Atoms get_psi_dihedral_atoms(Residue rd);
 
+//! Return the atoms comprising the omega dihedral.
+/** If all atoms cannot be found, an empty list is returned.
+    \see Residue */
+IMPATOMEXPORT Atoms get_omega_dihedral_atoms(Residue rd);
+
 //! Return a list of lists of atom types comprising the chi dihedrals
 //! for residue type rd.
-//! An empty list in a list is returned for residues with no chi dihedrals
-//    \see Residue */
-
+/** An empty list in a list is returned for residues with no chi dihedrals
+    \see Residue */
 IMPATOMEXPORT Vector<AtomTypes> get_chi_dihedral_atom_types(ResidueType rt);
 
 //! Return a list of lists of atoms comprising the chi dihedrals
 //! for residue rd.
-//! An empty list in a list is returned for residues with no chi dihedrals
-//    \see Residue */
-IMPATOMEXPORT std::vector<Atoms> get_chi_dihedral_atoms(Residue rd);
+/** An empty list in a list is returned for residues with no chi dihedrals
+    \see Residue */
+IMPATOMEXPORT Vector<Atoms> get_chi_dihedral_atoms(Residue rd);
 
 //! Return a list of lists of ParticleIndexQuads comprising the chi dihedrals
 //! for residue rd.
 //! This datatype is exportable to Python.
-
 IMPATOMEXPORT ParticleIndexQuads get_chi_dihedral_particle_indexes(Residue rd);
 
 IMPATOM_END_NAMESPACE

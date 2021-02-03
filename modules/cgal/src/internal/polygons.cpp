@@ -1,7 +1,7 @@
 /**
  *  \file internal/cgal_knn.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 // value in Lazy
 #include <IMP/cgal/internal/polygons.h>

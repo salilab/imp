@@ -2,7 +2,7 @@
  *  \file clustering_helper.h
  *  \brief Implementation details for clustering algorithms
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

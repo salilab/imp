@@ -2,7 +2,7 @@
  *  \file IMP/rmf/atom_io.h
  *  \brief Input/output of IMP::atom::Hierarchy information.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

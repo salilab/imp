@@ -18,12 +18,13 @@ TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.metadata
 
+
 class Tests(unittest.TestCase):
 
     def test_parser(self):
         """Test Parser base class"""
         p = ihm.metadata.Parser()
-        p.parse_file(None) # does nothing
+        p.parse_file(None)  # does nothing
 
     def test_mrc_parser_local_mrc(self):
         """Test MRCParser pointing to a locally-available MRC file"""
@@ -44,8 +45,9 @@ class Tests(unittest.TestCase):
     def test_mrc_parser_emdb_ok(self):
         """Test MRCParser pointing to an MRC in EMDB, no network errors"""
         def mock_urlopen(url, timeout=None):
-            txt = '{"EMD-1883":[{"deposition":{"map_release_date":"2011-04-21"'\
-                  ',"title":"test details"}}]}'
+            txt = ('{"EMD-1883":[{"deposition":'
+                   '{"map_release_date":"2011-04-21",'
+                   '"title":"test details"}}]}')
             return StringIO(txt)
         p = ihm.metadata.MRCParser()
         fname = utils.get_input_file_name(TOPDIR, 'emd_1883.map.mrc-header')
@@ -97,7 +99,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(w), 1)
 
     def test_mrc_parser_emdb_override(self):
-        """Test MRCParser pointing to an MRC in EMDB with overridden metadata"""
+        """Test MRCParser pointing to an MRC in EMDB with
+           overridden metadata"""
         def mock_urlopen(url, timeout=None):
             raise ValueError("shouldn't be here")
         p = ihm.metadata.MRCParser()
@@ -209,7 +212,8 @@ class Tests(unittest.TestCase):
                          'Starting comparative model structure')
 
     def test_derived_int_model(self):
-        """Test PDBParser when given a file derived from an integrative model"""
+        """Test PDBParser when given a file derived from an
+           integrative model"""
         pdbname = utils.get_input_file_name(TOPDIR, 'derived_int_model.pdb')
         p = self._parse_pdb(pdbname)
         self.assertEqual(p['templates'], {})
@@ -242,7 +246,8 @@ class Tests(unittest.TestCase):
 
     def test_modeller_model_no_aln(self):
         "Test PDBParser when given a Modeller model with no alignment/script"
-        pdbname = utils.get_input_file_name(TOPDIR, 'modeller_model_no_aln.pdb')
+        pdbname = utils.get_input_file_name(TOPDIR,
+                                            'modeller_model_no_aln.pdb')
         p = self.check_modeller_model(pdbname)
         for templates in p['templates'].values():
             for t in templates:
@@ -255,17 +260,19 @@ class Tests(unittest.TestCase):
         s1, s2 = p['templates']['A']
         s3, = p['templates']['B']
         self.assertEqual(s1.asym_id, 'C')
-        self.assertEqual(s1.seq_id_range, (33,424))
-        self.assertEqual(s1.template_seq_id_range, (33,424))
+        self.assertEqual(s1.seq_id_range, (33, 424))
+        self.assertEqual(s1.template_seq_id_range, (33, 424))
         self.assertAlmostEqual(float(s1.sequence_identity), 100.0, delta=0.1)
-        self.assertEqual(s1.sequence_identity.denominator,
-                     ihm.startmodel.SequenceIdentityDenominator.SHORTER_LENGTH)
+        self.assertEqual(
+            s1.sequence_identity.denominator,
+            ihm.startmodel.SequenceIdentityDenominator.SHORTER_LENGTH)
         self.assertEqual(s2.asym_id, 'G')
-        self.assertEqual(s2.seq_id_range, (429,488))
-        self.assertEqual(s2.template_seq_id_range, (482,551))
+        self.assertEqual(s2.seq_id_range, (429, 488))
+        self.assertEqual(s2.template_seq_id_range, (482, 551))
         self.assertAlmostEqual(float(s2.sequence_identity), 10.0, delta=0.1)
-        self.assertEqual(s2.sequence_identity.denominator,
-                     ihm.startmodel.SequenceIdentityDenominator.SHORTER_LENGTH)
+        self.assertEqual(
+            s2.sequence_identity.denominator,
+            ihm.startmodel.SequenceIdentityDenominator.SHORTER_LENGTH)
         self.assertEqual(dataset.data_type, 'Comparative model')
         self.assertEqual(dataset.location.path, pdbname)
         self.assertIsNone(dataset.location.repo)
@@ -285,9 +292,10 @@ class Tests(unittest.TestCase):
         s, = p['software']
         self.assertEqual(s.name, 'MODELLER')
         self.assertEqual(s.version, '9.18')
-        self.assertEqual(s.description,
-                 'Comparative modeling by satisfaction of spatial restraints, '
-                 'build 2017/02/10 22:21:34')
+        self.assertEqual(
+            s.description,
+            'Comparative modeling by satisfaction of spatial restraints, '
+            'build 2017/02/10 22:21:34')
         return p
 
     def test_modeller_local(self):
@@ -336,11 +344,12 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.version, '1.3.0')
         s, = p['templates']['B']
         self.assertEqual(s.asym_id, 'B')
-        self.assertEqual(s.seq_id_range, (15,244))
-        self.assertEqual(s.template_seq_id_range, (1,229))
+        self.assertEqual(s.seq_id_range, (15, 244))
+        self.assertEqual(s.template_seq_id_range, (1, 229))
         self.assertAlmostEqual(float(s.sequence_identity), 40.35, delta=0.1)
-        self.assertEqual(s.sequence_identity.denominator,
-            ihm.startmodel.SequenceIdentityDenominator.NUM_ALIGNED_WITHOUT_GAPS)
+        denom = ihm.startmodel.SequenceIdentityDenominator
+        self.assertEqual(
+            s.sequence_identity.denominator, denom.NUM_ALIGNED_WITHOUT_GAPS)
         # alignment is also stored in the PDB file
         self.assertEqual(s.alignment_file.path, pdbname)
         dataset = p['dataset']
@@ -367,11 +376,12 @@ class Tests(unittest.TestCase):
         self.assertEqual(sorted(p['templates'].keys()), ['A', 'B', 'C', 'D'])
         s, = p['templates']['C']
         self.assertEqual(s.asym_id, 'C')
-        self.assertEqual(s.seq_id_range, (14,1356))
-        self.assertEqual(s.template_seq_id_range, (8,1340))
+        self.assertEqual(s.seq_id_range, (14, 1356))
+        self.assertEqual(s.template_seq_id_range, (8, 1340))
         self.assertAlmostEqual(float(s.sequence_identity), 40.95, delta=0.1)
-        self.assertEqual(s.sequence_identity.denominator,
-            ihm.startmodel.SequenceIdentityDenominator.NUM_ALIGNED_WITHOUT_GAPS)
+        denom = ihm.startmodel.SequenceIdentityDenominator
+        self.assertEqual(
+            s.sequence_identity.denominator, denom.NUM_ALIGNED_WITHOUT_GAPS)
         # alignment is also stored in the PDB file
         self.assertEqual(s.alignment_file.path, pdbname)
         dataset = p['dataset']

@@ -15,7 +15,7 @@ m = IMP.Model()
 ds0 = IMP.core.create_xyzr_particles(m, 10, 1, 50)
 ds1 = IMP.core.create_xyzr_particles(m, 10, 1, 50)
 
-# first create a table mapping a sentinenal particle to each set
+# first create a table mapping a sentinel particle to each set
 tref = IMP.core.TableRefiner()
 tref.add_particle(ds0[0], ds0)
 tref.add_particle(ds1[0], ds1)
@@ -26,7 +26,7 @@ hps = IMP.core.HarmonicSphereDistancePairScore(0, 1)
 # single closest particle
 ps = IMP.core.KClosePairsPairScore(hps, tref, 1)
 
-# create a restraint by binding the pair score to the sentinal particles
+# create a restraint by binding the pair score to the sentinel particles
 r = IMP.core.PairRestraint(m, ps, (ds0[0].get_particle_index(),
                                    ds1[0].get_particle_index()),
                            "distance")

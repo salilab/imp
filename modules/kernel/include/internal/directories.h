@@ -2,7 +2,7 @@
  *  \file directories.h
  *  \brief Get directories used by IMP.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,7 +18,7 @@ IMPKERNELEXPORT std::string get_concatenated_path(std::string part0,
 
 IMPKERNELEXPORT std::string get_directory_path(std::string fileordirectory);
 
-//! Get the the path to a module data file.
+//! Get the path to a module data file.
 IMPKERNELEXPORT std::string get_data_path(std::string module_name,
                                         std::string file_name);
 

@@ -1,7 +1,7 @@
 Copyright and licenses {#licenses}
 ======================
 
-%IMP is Copyright 2007-2020 %IMP Inventors. The %IMP Inventors are
+%IMP is Copyright 2007-2021 %IMP Inventors. The %IMP Inventors are
 Andrej Sali, Ben Webb, Daniel Russel, Keren Lasker, Dina Schneidman,
 Javier Velázquez-Muriel, Friedrich Förster, Elina Tjioe, Hao Fan,
 Seung Joong Kim, Yannick Spill, Riccardo Pellarin.

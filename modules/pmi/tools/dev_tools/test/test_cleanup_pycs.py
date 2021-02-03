@@ -6,6 +6,7 @@ import utils
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 cleanup_pycs = os.path.join(TOPDIR, 'cleanup_pycs.py')
 
+
 class Tests(unittest.TestCase):
 
     def test_cleanup_pycs(self):
@@ -39,6 +40,7 @@ class Tests(unittest.TestCase):
             self.assertTrue(os.path.exists(ok_pyc))
             self.assertFalse(os.path.exists(to_delete_pyc))
             self.assertFalse(os.path.exists(to_delete2_pyc))
+
 
 if __name__ == '__main__':
     unittest.main()

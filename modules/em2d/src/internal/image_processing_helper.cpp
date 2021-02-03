@@ -2,7 +2,7 @@
  *  \file image_processing_helper.cpp
  *  \brief Helper functions for the image_processing main file
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -162,7 +162,7 @@ void do_flatten_labels(Ints &Labels) {
 
 void do_binary_matrix_scan(const cvIntMat &m, cvIntMat &mat_to_label,
                            Ints &Labels) {
-  // value for the the background and first label
+  // value for the background and first label
   int background = 0;
   Labels.resize(1);
   Labels[0] = background;

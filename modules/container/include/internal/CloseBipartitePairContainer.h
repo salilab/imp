@@ -2,7 +2,7 @@
  *  \file container/include/internal/CloseBipartitePairContainer.h
  *  \brief Internal class of close bipartite pair container
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_INTERNAL_CONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H

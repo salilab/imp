@@ -116,6 +116,17 @@ class TestXLRestraintSimple(IMP.test.TestCase):
 
         dr = IMP.isd.CrossLinkMSRestraint(m, length, slope)
         dr.add_contribution((p1, p2), (sigma1, sigma2), psi)
+        self.assertEqual(dr.get_number_of_contributions(), 1)
+        self.assertEqual(dr.get_contribution_particle_indexes(0),
+                         (p1.get_index(), p2.get_index()))
+        self.assertEqual(dr.get_contribution_psi_index(0),
+                         psi.get_particle_index())
+        self.assertEqual(dr.get_contribution_sigma_indexes(0),
+                         (sigma1.get_particle_index(),
+                          sigma2.get_particle_index()))
+        self.assertAlmostEqual(dr.get_slope(), 0.01, delta=1e-4)
+        self.assertAlmostEqual(dr.get_length(), 10.0, delta=1e-4)
+
         lw = IMP.isd.LogWrapper([dr],1.0)
 
         # initialize also a restraint which output -log(prob)

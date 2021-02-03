@@ -2,7 +2,7 @@
  *  \file KinkPairScore.cpp
  *  \brief A score on the kink angle between two rigid bodies
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/UnaryFunction.h>

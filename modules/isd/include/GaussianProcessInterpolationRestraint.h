@@ -2,7 +2,7 @@
  *  \file IMP/isd/GaussianProcessInterpolationRestraint.h
  *  \brief Restraint and ScoreState for GaussianProcessInterpolation
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_GAUSSIAN_PROCESS_INTERPOLATION_RESTRAINT_H

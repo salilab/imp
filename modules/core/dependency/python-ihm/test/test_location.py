@@ -6,9 +6,11 @@ TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.location
 
+
 def _make_test_file(fname):
     with open(fname, 'w') as fh:
         fh.write('contents')
+
 
 class Tests(unittest.TestCase):
 
@@ -21,7 +23,7 @@ class Tests(unittest.TestCase):
         self.assertNotEqual(dl1, dl3)
         # details can change without affecting equality
         dl4 = ihm.location.DatabaseLocation('mydb', 'abc', version=1,
-                                                details='foo')
+                                            details='foo')
         self.assertEqual(dl1, dl4)
         self.assertEqual(dl1.db_name, 'mydb')
         self.assertEqual(dl1.access_code, 'abc')
@@ -30,36 +32,37 @@ class Tests(unittest.TestCase):
 
     def test_pdb_location(self):
         """Test PDBLocation"""
-        l = ihm.location.PDBLocation('1abc', version='foo', details='bar')
-        self.assertEqual(l.db_name, 'PDB')
-        self.assertEqual(l.access_code, '1abc')
-        self.assertEqual(l.version, 'foo')
-        self.assertEqual(l.details, 'bar')
+        loc = ihm.location.PDBLocation('1abc', version='foo', details='bar')
+        self.assertEqual(loc.db_name, 'PDB')
+        self.assertEqual(loc.access_code, '1abc')
+        self.assertEqual(loc.version, 'foo')
+        self.assertEqual(loc.details, 'bar')
 
     def test_pdb_dev_location(self):
         """Test PDBDevLocation"""
-        l = ihm.location.PDBDevLocation(
-                'PDBDEV_00000029', version='foo', details='bar')
-        self.assertEqual(l.db_name, 'PDB-Dev')
-        self.assertEqual(l.access_code, 'PDBDEV_00000029')
-        self.assertEqual(l.version, 'foo')
-        self.assertEqual(l.details, 'bar')
+        loc = ihm.location.PDBDevLocation(
+            'PDBDEV_00000029', version='foo', details='bar')
+        self.assertEqual(loc.db_name, 'PDB-Dev')
+        self.assertEqual(loc.access_code, 'PDBDEV_00000029')
+        self.assertEqual(loc.version, 'foo')
+        self.assertEqual(loc.details, 'bar')
 
     def test_bmrb_location(self):
         """Test BMRBLocation"""
-        l = ihm.location.BMRBLocation('27600', version='foo', details='bar')
-        self.assertEqual(l.db_name, 'BMRB')
-        self.assertEqual(l.access_code, '27600')
-        self.assertEqual(l.version, 'foo')
-        self.assertEqual(l.details, 'bar')
+        loc = ihm.location.BMRBLocation('27600', version='foo', details='bar')
+        self.assertEqual(loc.db_name, 'BMRB')
+        self.assertEqual(loc.access_code, '27600')
+        self.assertEqual(loc.version, 'foo')
+        self.assertEqual(loc.details, 'bar')
 
     def test_emdb_location(self):
         """Test EMDBLocation"""
-        l = ihm.location.EMDBLocation('EMDB-123', version='foo', details='bar')
-        self.assertEqual(l.db_name, 'EMDB')
-        self.assertEqual(l.access_code, 'EMDB-123')
-        self.assertEqual(l.version, 'foo')
-        self.assertEqual(l.details, 'bar')
+        loc = ihm.location.EMDBLocation('EMDB-123', version='foo',
+                                        details='bar')
+        self.assertEqual(loc.db_name, 'EMDB')
+        self.assertEqual(loc.access_code, 'EMDB-123')
+        self.assertEqual(loc.version, 'foo')
+        self.assertEqual(loc.details, 'bar')
 
     def test_massive_location(self):
         """Test MassIVELocation class"""
@@ -103,11 +106,11 @@ class Tests(unittest.TestCase):
 
     def test_location(self):
         """Test Location base class"""
-        l = ihm.location.Location(details='foo')
-        l._allow_duplicates = True
-        self.assertEqual(l._eq_vals(), id(l))
+        loc = ihm.location.Location(details='foo')
+        loc._allow_duplicates = True
+        self.assertEqual(loc._eq_vals(), id(loc))
         # Locations should never compare equal to None
-        self.assertNotEqual(l, None)
+        self.assertNotEqual(loc, None)
 
     def test_file_location_local(self):
         """Test InputFileLocation with a local file"""
@@ -117,36 +120,37 @@ class Tests(unittest.TestCase):
         with utils.temporary_directory('.') as tmpdir:
             fname = os.path.join(tmpdir, 'test.pdb')
             _make_test_file(fname)
-            l = ihm.location.InputFileLocation(fname)
-            self.assertEqual(l.path, os.path.abspath(fname))
-            self.assertIsNone(l.repo)
-            self.assertEqual(l.file_size, 8)
+            loc = ihm.location.InputFileLocation(fname)
+            self.assertEqual(loc.path, os.path.abspath(fname))
+            self.assertIsNone(loc.repo)
+            self.assertEqual(loc.file_size, 8)
 
     def test_file_location_local_not_exist(self):
         """Test InputFileLocation with a local file that doesn't exist"""
         with utils.temporary_directory() as tmpdir:
             fname = os.path.join(tmpdir, 'test.pdb')
-            self.assertRaises(ValueError, ihm.location.InputFileLocation, fname)
+            self.assertRaises(
+                ValueError, ihm.location.InputFileLocation, fname)
 
     def test_file_location_repo(self):
         """Test InputFileLocation with a file in a repository"""
         r = ihm.location.Repository(doi='1.2.3.4')
-        l = ihm.location.InputFileLocation('foo/bar', repo=r)
-        self.assertEqual(l.path, 'foo/bar')
-        self.assertEqual(l.repo, r)
-        self.assertIsNone(l.file_size)
+        loc = ihm.location.InputFileLocation('foo/bar', repo=r)
+        self.assertEqual(loc.path, 'foo/bar')
+        self.assertEqual(loc.repo, r)
+        self.assertIsNone(loc.file_size)
         # locations should only compare equal if path and repo both match
-        l2 = ihm.location.InputFileLocation('foo/bar', repo=r)
-        self.assertEqual(l, l2)
-        l3 = ihm.location.InputFileLocation('otherpath', repo=r)
-        self.assertNotEqual(l, l3)
+        loc2 = ihm.location.InputFileLocation('foo/bar', repo=r)
+        self.assertEqual(loc, loc2)
+        loc3 = ihm.location.InputFileLocation('otherpath', repo=r)
+        self.assertNotEqual(loc, loc3)
         r2 = ihm.location.Repository(doi='5.6.7.8')
-        l4 = ihm.location.InputFileLocation('foo/bar', repo=r2)
-        self.assertNotEqual(l, l4)
-        l5 = ihm.location.InputFileLocation(None, repo=r)
-        self.assertNotEqual(l, l5)
-        l6 = ihm.location.InputFileLocation(None, repo=r2)
-        self.assertNotEqual(l, l6)
+        loc4 = ihm.location.InputFileLocation('foo/bar', repo=r2)
+        self.assertNotEqual(loc, loc4)
+        loc5 = ihm.location.InputFileLocation(None, repo=r)
+        self.assertNotEqual(loc, loc5)
+        loc6 = ihm.location.InputFileLocation(None, repo=r2)
+        self.assertNotEqual(loc, loc6)
 
     def test_repository_equality(self):
         """Test Repository equality"""
@@ -170,14 +174,14 @@ class Tests(unittest.TestCase):
             os.mkdir(subdir)
             _make_test_file(os.path.join(subdir, 'bar'))
             s = ihm.location.Repository(doi='10.5281/zenodo.46266',
-                                       root=os.path.relpath(tmpdir),
-                                       url='foo', top_directory='baz')
+                                        root=os.path.relpath(tmpdir),
+                                        url='foo', top_directory='baz')
             self.assertEqual(s._root, tmpdir)
             self.assertEqual(s.url, 'foo')
             self.assertEqual(s.top_directory, 'baz')
 
             loc = ihm.location.InputFileLocation(
-                                 os.path.relpath(os.path.join(subdir, 'bar')))
+                os.path.relpath(os.path.join(subdir, 'bar')))
             self.assertIsNone(loc.repo)
             ihm.location.Repository._update_in_repos(loc, [s])
             self.assertEqual(loc.repo.doi, '10.5281/zenodo.46266')
@@ -191,14 +195,14 @@ class Tests(unittest.TestCase):
 
             # Shortest match should win
             loc = ihm.location.InputFileLocation(
-                                os.path.relpath(os.path.join(subdir, 'bar')))
+                os.path.relpath(os.path.join(subdir, 'bar')))
             s2 = ihm.location.Repository(doi='10.5281/zenodo.46280',
-                                        root=os.path.relpath(subdir),
-                                        url='foo', top_directory='baz')
+                                         root=os.path.relpath(subdir),
+                                         url='foo', top_directory='baz')
             # Repositories that aren't above the file shouldn't count
             s3 = ihm.location.Repository(doi='10.5281/zenodo.56280',
-                                        root=os.path.relpath(subdir2),
-                                        url='foo', top_directory='baz')
+                                         root=os.path.relpath(subdir2),
+                                         url='foo', top_directory='baz')
             ihm.location.Repository._update_in_repos(loc, [s2, s3, s])
             self.assertEqual(loc.repo.doi, '10.5281/zenodo.46280')
             self.assertEqual(loc.path, 'bar')
@@ -213,20 +217,21 @@ class Tests(unittest.TestCase):
     def test_repository_get_full_path(self):
         """Test Repository._get_full_path"""
         r = ihm.location.Repository(doi='10.5281/zenodo.46266',
-                                   top_directory='/foo')
+                                    top_directory='/foo')
         self.assertEqual(r._get_full_path('bar'), '/foo%sbar' % os.sep)
 
     def test_file_locations(self):
         """Test FileLocation derived classes"""
         r = ihm.location.Repository(doi='10.5281/zenodo.46266')
-        l = ihm.location.InputFileLocation(repo=r, path='foo')
-        self.assertEqual(l.content_type, 'Input data or restraints')
-        l = ihm.location.OutputFileLocation(repo=r, path='foo')
-        self.assertEqual(l.content_type, 'Modeling or post-processing output')
-        l = ihm.location.WorkflowFileLocation(repo=r, path='foo')
-        self.assertEqual(l.content_type, 'Modeling workflow or script')
-        l = ihm.location.VisualizationFileLocation(repo=r, path='foo')
-        self.assertEqual(l.content_type, 'Visualization script')
+        loc = ihm.location.InputFileLocation(repo=r, path='foo')
+        self.assertEqual(loc.content_type, 'Input data or restraints')
+        loc = ihm.location.OutputFileLocation(repo=r, path='foo')
+        self.assertEqual(loc.content_type,
+                         'Modeling or post-processing output')
+        loc = ihm.location.WorkflowFileLocation(repo=r, path='foo')
+        self.assertEqual(loc.content_type, 'Modeling workflow or script')
+        loc = ihm.location.VisualizationFileLocation(repo=r, path='foo')
+        self.assertEqual(loc.content_type, 'Visualization script')
 
 
 if __name__ == '__main__':

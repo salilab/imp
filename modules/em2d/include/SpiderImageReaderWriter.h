@@ -1,7 +1,7 @@
 /**
  *  \file IMP/em2d/SpiderImageReaderWriter.h
  *  \brief Management of Images in Spider format
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_SPIDER_IMAGE_READER_WRITER_H

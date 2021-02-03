@@ -6,6 +6,7 @@ import utils
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 replace_py = os.path.join(TOPDIR, 'replace.py')
 
+
 class Tests(unittest.TestCase):
 
     def test_replace(self):
@@ -27,6 +28,7 @@ class Tests(unittest.TestCase):
         p = subprocess.Popen([replace_py])
         stdout, stderr = p.communicate()
         self.assertEqual(p.returncode, 1)
+
 
 if __name__ == '__main__':
     unittest.main()

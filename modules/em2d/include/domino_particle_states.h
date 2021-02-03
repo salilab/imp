@@ -3,7 +3,7 @@
  *  \brief Particles states for a rigid body that is going to be
  *projected
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

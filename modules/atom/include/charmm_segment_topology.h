@@ -2,7 +2,7 @@
  * \file IMP/atom/charmm_segment_topology.h
  * \brief Classes for handling CHARMM-style topology of segments.
  *
- * Copyright 2007-2020 IMP Inventors. All rights reserved.
+ * Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -117,6 +117,10 @@ private:
 
   //! Add CHARMM atom types to the given Hierarchy using this topology.
   /** The primary sequence of the Hierarchy must match that of the topology.
+      A warning will be printed for any atoms that cannot be found in the
+      topology (and no CHARMM atom type will be assigned). Any atoms that
+      already have a CHARMM atom type and that are present in the topology
+      will have that type reassigned.
       \see CHARMMAtom.
    */
   void add_atom_types(Hierarchy hierarchy) const;

@@ -54,6 +54,20 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(IMP.atom.get_phi_dihedral_atoms(r)), 0)
         self.assertEqual(len(IMP.atom.get_psi_dihedral_atoms(r)), 0)
 
+        # check omega dihedral atoms functionality
+        self.assertEqual(len(IMP.atom.get_omega_dihedral_atoms(first_r)), 4)
+
+        # omega should both be +/-pi for extended chain conformation
+        omega = IMP.atom.get_omega_dihedral_atoms(first_r)
+        d = IMP.core.get_dihedral(*[IMP.core.XYZ(x) for x in omega])
+        # Wrap +pi round to -pi
+        if d > 0.999 * math.pi:
+            d -= math.pi * 2.
+        self.assertAlmostEqual(d, -math.pi, delta=1e-4)
+
+        # omega cease to be defined if at least one atom is missing
+        r = IMP.atom.Residue(res[2])
+        self.assertEqual(len(IMP.atom.get_omega_dihedral_atoms(r)), 0)
 
     def test_chi_dihedral(self):
         """Test chi dihedrals"""
@@ -63,19 +77,29 @@ class Tests(IMP.test.TestCase):
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = IMP.atom.CHARMMTopology(ff)
-        topology.add_sequence('ARKGLA')
+        topology.add_sequence('FARKGLA')
         topology.apply_default_patches()
         h = topology.create_hierarchy(m)
 
-        arg = IMP.atom.Residue(h.get_children()[0].get_children()[1])
-        gly = IMP.atom.Residue(h.get_children()[0].get_children()[3])
+        phe = IMP.atom.Residue(h.get_children()[0].get_children()[0])
+        arg = IMP.atom.Residue(h.get_children()[0].get_children()[2])
+        gly = IMP.atom.Residue(h.get_children()[0].get_children()[4])
 
+        phe_chi_atoms = IMP.atom.get_chi_dihedral_atoms(phe)
         arg_chi_pis = IMP.atom.get_chi_dihedral_particle_indexes(arg)
+        arg_chi_atoms = IMP.atom.get_chi_dihedral_atoms(arg)
+
+        chi_types = IMP.atom.get_chi_dihedral_atom_types(IMP.atom.ARG)
+        self.assertEqual(4, len(chi_types))
+        self.assertEqual(chi_types[0][0], IMP.atom.AT_N)
 
         # Ensure a couple of the atom assignments are correct
-        self.assertEqual(5, len(arg_chi_pis))
+        self.assertEqual(4, len(arg_chi_pis))
         self.assertEqual(IMP.atom.AT_CG, IMP.atom.Atom(m, arg_chi_pis[0][3]).get_atom_type())
+        self.assertEqual(IMP.atom.AT_CG, arg_chi_atoms[0][3].get_atom_type())
         self.assertEqual(IMP.atom.AT_CZ, IMP.atom.Atom(m, arg_chi_pis[3][3]).get_atom_type())
+        self.assertEqual(IMP.atom.AT_CZ, arg_chi_atoms[3][3].get_atom_type())
+        self.assertEqual(IMP.atom.AT_CD1, phe_chi_atoms[1][3].get_atom_type())
 
         self.assertEqual(0, len(IMP.atom.get_chi_dihedral_particle_indexes(gly)))
 

@@ -6,6 +6,7 @@ import utils
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 cleanup_py = os.path.join(TOPDIR, 'cleanup_code.py')
 
+
 class Tests(unittest.TestCase):
 
     def make_dummy_format(self, name, d, exitval=0):
@@ -14,7 +15,7 @@ class Tests(unittest.TestCase):
            in the PATH."""
         fname = os.path.join(d, name)
         utils.write_file(fname, "#!/bin/sh\necho foo\nexit %d\n" % exitval)
-        os.chmod(fname, 493) # 493 = 0755
+        os.chmod(fname, 493)  # 493 = 0755
         env = os.environ.copy()
         env['PATH'] = d + os.pathsep + env['PATH']
         return env
@@ -39,8 +40,8 @@ class Tests(unittest.TestCase):
                 env = self.make_dummy_format('autopep8', tmpdir)
                 pyfile = os.path.join(tmpdir, 'test.py')
                 utils.write_file(pyfile, 'def foo():\n  bar\n')
-                p = subprocess.Popen([cleanup_py, '-a', '-v', args], cwd=tmpdir,
-                                     env=env)
+                p = subprocess.Popen([cleanup_py, '-a', '-v', args],
+                                     cwd=tmpdir, env=env)
                 stdout, stderr = p.communicate()
                 self.assertEqual(p.returncode, 0)
                 # dummy autopep8 should have written out 'foo'
@@ -91,6 +92,7 @@ class Tests(unittest.TestCase):
             self.assertEqual(p.returncode, 0)
             # file should be unchanged
             self.assertEqual(utils.read_file(pyfile), 'bar')
+
 
 if __name__ == '__main__':
     unittest.main()

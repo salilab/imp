@@ -77,7 +77,7 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
             raising an error. This option is to tolerate some files
             of the databases being broken because the cluster fails,
             fill the disks, etc
-       @param orderby Criterion used to sort the the records
+       @param orderby Criterion used to sort the records
        NOTE:
        Makes sure to reorder all column names if necessary before merging
        The record for the native solution is only added once (from first file).
@@ -588,7 +588,7 @@ class ResultsDB(database.Database2):
 
     def get_nth_largest_cluster(self, position, table_name="clusters"):
         """
-            Recover the the information about the n-th largest cluster
+            Recover the information about the n-th largest cluster
             @param position Cluster position (by size) requested
             (1 is the largest cluster)
             @param table_name Table where the information about the

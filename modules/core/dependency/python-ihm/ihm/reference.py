@@ -37,7 +37,8 @@ class Sequence(Reference):
     """
 
     def __init__(self, db_name, db_code, accession, sequence, details=None):
-        self.db_name, self.db_code, self.accession = db_name, db_code, accession
+        self.db_name, self.db_code = db_name, db_code
+        self.accession = accession
         self.sequence, self.details = sequence, details
 
         #: All alignments between the reference and entity sequences, as
@@ -69,7 +70,7 @@ class UniProtSequence(Sequence):
 
     def __init__(self, db_code, accession, sequence, details=None):
         super(UniProtSequence, self).__init__(
-                self._db_name, db_code, accession, sequence, details)
+            self._db_name, db_code, accession, sequence, details)
 
     def __str__(self):
         return "<ihm.reference.UniProtSequence(%s)>" % self.accession
@@ -87,12 +88,13 @@ class UniProtSequence(Sequence):
             def decode(t):
                 return t.decode('ascii')
         else:
-            decode = lambda t: t
+            def decode(t):
+                return t
         url = 'https://www.uniprot.org/uniprot/%s.fasta' % accession
         with urllib2.urlopen(url) as fh:
             header = decode(fh.readline())
             spl = header.split('|')
-            if len(spl) < 3 or spl[0] != '>sp':
+            if len(spl) < 3 or spl[0] not in ('>sp', '>tr'):
                 raise ValueError("Cannot parse UniProt header %s" % header)
             cd = spl[2].split(None, 1)
             code = cd[0]
@@ -143,5 +145,5 @@ class SeqDif(object):
        :param str details: Descriptive text for the sequence difference.
     """
     def __init__(self, seq_id, db_monomer, monomer, details=None):
-        self.seq_id, self.db_monomer, self.monomer = seq_id, db_monomer, monomer
-        self.details = details
+        self.seq_id, self.db_monomer = seq_id, db_monomer
+        self.monomer, self.details = monomer, details

@@ -3,9 +3,9 @@
 echo "begin pre-commit"
 branch=$(git rev-parse --abbrev-ref HEAD)
 
-if test "$branch" == "master"
+if test "$branch" == "main"
 then
-    echo "$(tput setaf 1)ERROR: Committing directly to master is not allowed. Commit to develop or a feature branch instead.$(tput sgr0)"
+    echo "$(tput setaf 1)ERROR: Committing directly to main is not allowed. Commit to develop or a feature branch instead.$(tput sgr0)"
     exit 1
 fi
 

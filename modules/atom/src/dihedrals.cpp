@@ -1,7 +1,7 @@
 /**
  *  \file dihedrals.cpp   \brief Helpers to extract dihedral information.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -72,6 +72,14 @@ Atoms get_psi_dihedral_atoms(Residue rd) {
                                      DihedralAtom(DihedralAtom::THIS, AT_CA),
                                      DihedralAtom(DihedralAtom::THIS, AT_C),
                                      DihedralAtom(DihedralAtom::NEXT, AT_N)};
+  return get_dihedral_atoms(rd, dihedral);
+}
+
+Atoms get_omega_dihedral_atoms(Residue rd) {
+  static DihedralAtom dihedral[4] = {DihedralAtom(DihedralAtom::THIS, AT_CA),
+                                     DihedralAtom(DihedralAtom::THIS, AT_C),
+                                     DihedralAtom(DihedralAtom::NEXT, AT_N),
+                                     DihedralAtom(DihedralAtom::NEXT, AT_CA)};
   return get_dihedral_atoms(rd, dihedral);
 }
 
@@ -155,17 +163,29 @@ Vector<AtomTypes> get_chi_dihedral_atom_types(ResidueType rt) {
   chi2_sd.push_back(AT_CG);
   chi2_sd.push_back(AT_SD);
 
+  AtomTypes chi3_sd_ce;
+  chi3_sd_ce.push_back(AT_CB);
+  chi3_sd_ce.push_back(AT_CG);
+  chi3_sd_ce.push_back(AT_SD);
+  chi3_sd_ce.push_back(AT_CE);
+
   AtomTypes chi3_ce;
   chi3_ce.push_back(AT_CB);
   chi3_ce.push_back(AT_CG);
   chi3_ce.push_back(AT_CD);
   chi3_ce.push_back(AT_CE);
-
+  
   AtomTypes chi3_ne;
   chi3_ne.push_back(AT_CB);
   chi3_ne.push_back(AT_CG);
   chi3_ne.push_back(AT_CD);
   chi3_ne.push_back(AT_NE);
+  
+  AtomTypes chi3_n;
+  chi3_n.push_back(AT_CB);
+  chi3_n.push_back(AT_CG);
+  chi3_n.push_back(AT_CD);
+  chi3_n.push_back(AT_N);
 
   AtomTypes chi3_oe1;
   chi3_oe1.push_back(AT_CB);
@@ -192,65 +212,87 @@ Vector<AtomTypes> get_chi_dihedral_atom_types(ResidueType rt) {
   chi5_nh1.push_back(AT_NH1);
 
   Vector<AtomTypes> ala;
-  Vector<AtomTypes> arg;
-  arg.push_back(chi1_cg);
-  arg.push_back(chi2_cd);
-  arg.push_back(chi3_ne);
-  arg.push_back(chi4_cz);
-  arg.push_back(chi5_nh1);
+
+  Vector<AtomTypes> cys;
+  cys.push_back(chi1_sg);
+
   Vector<AtomTypes> asp;
   asp.push_back(chi1_cg);
   asp.push_back(chi2_od1);
-  Vector<AtomTypes> asn;
-  asn.push_back(chi1_cg);
-  asn.push_back(chi2_od1);
-  Vector<AtomTypes> cys;
-  cys.push_back(chi1_sg);
-  Vector<AtomTypes> gln;
-  gln.push_back(chi1_cg);
-  gln.push_back(chi2_cd);
-  gln.push_back(chi3_oe1);
+
   Vector<AtomTypes> glu;
   glu.push_back(chi1_cg);
   glu.push_back(chi2_cd);
   glu.push_back(chi3_oe1);
+
+  Vector<AtomTypes> phe;
+  phe.push_back(chi1_cg);
+  phe.push_back(chi2_cd1);
+
   Vector<AtomTypes> gly;
+
   Vector<AtomTypes> his;
   his.push_back(chi1_cg);
   his.push_back(chi2_nd1);
+
   Vector<AtomTypes> ile;
   ile.push_back(chi1_cg1);
   ile.push_back(chi2_cg1_cd1);
-  Vector<AtomTypes> leu;
-  leu.push_back(chi1_cg);
-  leu.push_back(chi2_cd1);
+
   Vector<AtomTypes> lys;
   lys.push_back(chi1_cg);
   lys.push_back(chi2_cd);
   lys.push_back(chi3_ce);
   lys.push_back(chi4_nz);
+
+  Vector<AtomTypes> leu;
+  leu.push_back(chi1_cg);
+  leu.push_back(chi2_cd1);
+
   Vector<AtomTypes> met;
   met.push_back(chi1_cg);
   met.push_back(chi2_sd);
-  met.push_back(chi3_ce);
-  Vector<AtomTypes> phe;
-  phe.push_back(chi1_cg);
-  phe.push_back(chi2_cd);
+  met.push_back(chi3_sd_ce);
+
+  Vector<AtomTypes> asn;
+  asn.push_back(chi1_cg);
+  asn.push_back(chi2_od1);
+
   Vector<AtomTypes> pro;
+  pro.push_back(chi1_cg);
+  pro.push_back(chi2_cd);
+  pro.push_back(chi3_n);
+
+  Vector<AtomTypes> gln;
+  gln.push_back(chi1_cg);
+  gln.push_back(chi2_cd);
+
+  Vector<AtomTypes> arg;
+  arg.push_back(chi1_cg);
+  arg.push_back(chi2_cd);
+  arg.push_back(chi3_ne);
+  arg.push_back(chi4_cz);
+  //arg.push_back(chi5_nh1);
+
   Vector<AtomTypes> ser;
   ser.push_back(chi1_og);
+
   Vector<AtomTypes> thr;
   thr.push_back(chi1_og1);
-  Vector<AtomTypes> tyr;
-  tyr.push_back(chi1_cg);
-  tyr.push_back(chi2_cd1);
+
+  Vector<AtomTypes> val;
+  val.push_back(chi1_cg1);
+
   Vector<AtomTypes> trp;
   trp.push_back(chi1_cg);
   trp.push_back(chi2_cd1);
-  Vector<AtomTypes> val;
-  val.push_back(chi1_cg1);
-  Vector<AtomTypes> unk;
 
+  Vector<AtomTypes> tyr;
+  tyr.push_back(chi1_cg);
+  tyr.push_back(chi2_cd1);
+
+  Vector<AtomTypes> unk;
+  
   if(chi_dihedral_atom_types.size() == 0) {          
           chi_dihedral_atom_types[atom::ALA] = ala;
           chi_dihedral_atom_types[atom::ARG] = arg;
@@ -334,17 +376,17 @@ AtomTypesSet get_chi_dihedral_atom_types(ResidueType rt) {
   return chi_dihedral_atom_types[rt];
 }
 */
-std::vector<Atoms> get_chi_dihedral_atoms(Residue rd) {
+Vector<Atoms> get_chi_dihedral_atoms(Residue rd) {
 
   Vector<AtomTypes> dats = get_chi_dihedral_atom_types(rd.get_residue_type());
   if (dats.size() == 0) { 
-    std::vector<Atoms> das;
+    Vector<Atoms> das;
     //std::cout << "No chi angles for this residue" << std::endl;
     return das;
 
   } else {
 
-    std::vector<Atoms> das;
+    Vector<Atoms> das;
 
     for(unsigned int i=0; i<dats.size(); i++) {
       Atoms da;

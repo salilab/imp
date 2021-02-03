@@ -2,7 +2,7 @@
  *  \file IMP/atom/ImproperSingletonScore.h
  *  \brief A score on the deviation of an improper angle from ideality.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_IMPROPER_SINGLETON_SCORE_H
@@ -28,7 +28,7 @@ IMPATOM_BEGIN_NAMESPACE
     as the angle between the plane in which the first three atoms lie and
     the plane in which the last three atoms lie.
 
-    \note The multiplicity of the the Dihedral is not used.
+    \note The multiplicity of the Dihedral is not used.
 
     \see CHARMMTopology::add_impropers(), Dihedral.
  */

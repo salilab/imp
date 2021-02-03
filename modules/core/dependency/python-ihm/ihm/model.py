@@ -5,6 +5,7 @@
 import struct
 import itertools
 
+
 class Sphere(object):
     """Coordinates of part of the model represented by a sphere.
 
@@ -43,7 +44,8 @@ class Atom(object):
        :param float z: z coordinate of the atom
        :param bool het: True for HETATM sites, False (default) for ATOM
        :param float biso: Temperature factor or equivalent (if applicable)
-       :param float occupancy: Fraction of the atom type present (if applicable)
+       :param float occupancy: Fraction of the atom type present
+              (if applicable)
     """
 
     # Reduce memory usage
@@ -379,20 +381,21 @@ class DCDWriter(object):
         if self.nframes == 1:
             self.ncoord = len(x)
             remarks = [
-              b'Produced by python-ihm, https://github.com/ihmwg/python-ihm',
-              b'This file is designed to be used in combination with an '
-              b'mmCIF file',
-              b'See PDB-Dev at https://pdb-dev.wwpdb.org/ for more details']
+                b'Produced by python-ihm, https://github.com/ihmwg/python-ihm',
+                b'This file is designed to be used in combination with an '
+                b'mmCIF file',
+                b'See PDB-Dev at https://pdb-dev.wwpdb.org/ for more details']
             self._write_header(self.ncoord, remarks)
         else:
             if len(x) != self.ncoord:
-                raise ValueError("Frame size mismatch - frames contain %d "
-                        "coordinates but attempting to write a frame "
-                        "containing %d coordinates" % (self.ncoord, len(x)))
+                raise ValueError(
+                    "Frame size mismatch - frames contain %d "
+                    "coordinates but attempting to write a frame "
+                    "containing %d coordinates" % (self.ncoord, len(x)))
             # Update number of frames
             self.fh.seek(self._pos_nframes)
             self.fh.write(struct.pack('i', self.nframes))
-            self.fh.seek(0, 2) # Move back to end of file
+            self.fh.seek(0, 2)  # Move back to end of file
 
         # Write coordinates
         frame_size = struct.pack('i', struct.calcsize("%df" % self.ncoord))
@@ -405,11 +408,11 @@ class DCDWriter(object):
         self.fh.write(struct.pack('i', 84) + b'CORD')
         self._pos_nframes = self.fh.tell()
         self.fh.write(struct.pack('i', self.nframes))
-        self.fh.write(struct.pack('i', 0)) # istart
-        self.fh.write(struct.pack('i', 0)) # nsavc
+        self.fh.write(struct.pack('i', 0))  # istart
+        self.fh.write(struct.pack('i', 0))  # nsavc
         self.fh.write(struct.pack('5i', 0, 0, 0, 0, 0))
-        self.fh.write(struct.pack('i', 0)) # number of fixed atoms
-        self.fh.write(struct.pack('d', 0.)) # delta
+        self.fh.write(struct.pack('i', 0))  # number of fixed atoms
+        self.fh.write(struct.pack('d', 0.))  # delta
         self.fh.write(struct.pack('10i', 0, 0, 0, 0, 0, 0, 0, 0, 0, 84))
         remark_size = struct.calcsize('i') + 80 * len(remarks)
         self.fh.write(struct.pack('i', remark_size))
@@ -418,5 +421,5 @@ class DCDWriter(object):
             self.fh.write(r.ljust(80)[:80])
         self.fh.write(struct.pack('i', remark_size))
         self.fh.write(struct.pack('i', struct.calcsize('i')))
-        self.fh.write(struct.pack('i', natoms)) # total number of atoms
+        self.fh.write(struct.pack('i', natoms))  # total number of atoms
         self.fh.write(struct.pack('i', struct.calcsize('i')))

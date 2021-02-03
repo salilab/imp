@@ -80,6 +80,64 @@ class Tests(IMP.test.TestCase):
                 scene_bb.get_corner(i),
                 cropped_bb.get_corner(i)), 0, 2)
 
+    def test_crop_by_particle_set(self):
+        """Test the cropping functionality by inputting a particle set"""
+        mrw = IMP.em.MRCReaderWriter()
+        mh = IMP.atom.read_pdb(
+            self.get_input_file_name("1mbn_21-35.pdb"),
+            self.imp_model,
+            IMP.atom.BackbonePDBSelector())
+
+        ps = IMP.atom.get_leaves(mh)
+        ps_cent = IMP.algebra.get_centroid([IMP.core.XYZ(p).get_coordinates() for p in ps])
+
+        mrc = IMP.em.read_map(self.get_input_file_name("1mbn.6.eman.mrc"), mrw)
+        mrc.get_header_writable().set_resolution(6.0)
+
+        cropped_map = mrc.get_cropped(ps, 5.0)
+        c_cent = cropped_map.get_centroid()
+
+        # Centroid of the particle set used to crop and the cropped density
+        # should be about the same
+        self.assertAlmostEqual(IMP.algebra.get_distance(c_cent, ps_cent), 0.0, delta=1.0)
+
+        # The correlation between the ps and map should be better
+        cropped_cfs = 1-IMP.em.compute_fitting_score(ps, cropped_map)
+        full_cfs = 1-IMP.em.compute_fitting_score(ps, mrc)
+
+        self.assertGreater(cropped_cfs, full_cfs)
+
+        # The cropped map should have less density
+        self.assertLess(IMP.em.approximate_molecular_mass(cropped_map, 0.00), 
+                IMP.em.approximate_molecular_mass(mrc, 0.00))
+
+        inv_cropped_map = mrc.get_cropped(ps, 5.0, True)
+        inv_c_cent = inv_cropped_map.get_centroid()
+
+        inv_cropped_cfs = 1-IMP.em.compute_fitting_score(ps, inv_cropped_map)
+
+        # The correlation of the inverse map should be the worst
+        self.assertGreater(cropped_cfs, inv_cropped_cfs)
+
+        # These evaluate to equal - probably a bug in compute_fitting_score
+        # Change to Ilan's EMFitRestraint score when implemented
+        #self.assertGreater(full_cfs, inv_cropped_cfs)
+
+        # Inverse cropped map should have less density
+        self.assertLess(IMP.em.approximate_molecular_mass(inv_cropped_map, 0.00), IMP.em.approximate_molecular_mass(mrc, 0.00))
+
+        # Addition of the two cropped maps should be almost identical to the original
+        inv_cropped_map.add(cropped_map)
+
+        # This evaluates to greater than 1.0 for unknown reasons - bug in CCC?
+        ccc = IMP.em.CoarseCC.cross_correlation_coefficient(inv_cropped_map, mrc, 0)
+        self.assertGreater(ccc, 0.99)
+
+        # Test the keep_em_size flag
+        cropped_map_keep = mrc.get_cropped(ps, 5.0, False, True)
+        
+        self.assertEqual(mrc.get_number_of_voxels(), cropped_map_keep.get_number_of_voxels())
+
     def test_crop_using_smaller_extent(self):
         """Test the cropping functionality works when the input bb is larger than the density"""
         mrw = IMP.em.MRCReaderWriter()

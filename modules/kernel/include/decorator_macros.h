@@ -2,7 +2,7 @@
  *  \file IMP/decorator_macros.h
  *  \brief Various general useful macros for IMP.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -211,6 +211,40 @@
                           decorator.get_particle_index(), first_argument_name, \
                           second_argument_name, third_argument_name,           \
                           fourth_argument_name);                               \
+  }
+
+/** \see IMP_DECORATOR_SETUP_0() */
+#define IMP_DECORATOR_SETUP_5(Name,                                            \
+                              FirstArgumentType, first_argument_name,          \
+                              SecondArgumentType, second_argument_name,        \
+                              ThirdArgumentType, third_argument_name,          \
+                              FourthArgumentType, fourth_argument_name,        \
+                              FifthArgumentType, fifth_argument_name)          \
+  /** Setup the particle so it can be used with this decorator. */             \
+  static Name setup_particle(Model *m, ParticleIndex pi,                       \
+                             FirstArgumentType first_argument_name,            \
+                             SecondArgumentType second_argument_name,          \
+                             ThirdArgumentType third_argument_name,            \
+                             FourthArgumentType fourth_argument_name,          \
+                             FifthArgumentType fifth_argument_name) {         \
+    IMP_USAGE_CHECK(!get_is_setup(m, pi),                                      \
+                    "Particle " << m->get_particle_name(pi)                    \
+                                << " already set up as " << #Name);            \
+    do_setup_particle(m, pi, first_argument_name, second_argument_name,        \
+                      third_argument_name, fourth_argument_name,               \
+                      fifth_argument_name);                                    \
+    return Name(m, pi);                                                        \
+  }                                                                            \
+  static Name setup_particle(IMP::ParticleAdaptor decorator,                   \
+                             FirstArgumentType first_argument_name,            \
+                             SecondArgumentType second_argument_name,          \
+                             ThirdArgumentType third_argument_name,            \
+                             FourthArgumentType fourth_argument_name,          \
+                             FifthArgumentType fifth_argument_name) {         \
+    return setup_particle(decorator.get_model(),                               \
+                          decorator.get_particle_index(), first_argument_name, \
+                          second_argument_name, third_argument_name,           \
+                          fourth_argument_name, fifth_argument_name);          \
   }
 
 /** Decorators need to be able to be set up from Particles, ParticleIndexes

@@ -12,11 +12,11 @@ class Tests(IMP.test.TestCase):
 
     def test_imp_restraints(self):
         """Check using IMP restraints in Modeller"""
-        e = modeller.environ()
+        e = modeller.Environ()
         e.edat.dynamic_sphere = False
         e.libs.topology.read('${LIB}/top_heav.lib')
         e.libs.parameters.read('${LIB}/par.lib')
-        modmodel = modeller.model(e)
+        modmodel = modeller.Model(e)
         modmodel.build_sequence('GGCC')
 
         m = IMP.Model()

@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/salilab/developer_tools.svg?branch=master)](https://travis-ci.org/salilab/developer_tools)
-[![codecov](https://codecov.io/gh/salilab/developer_tools/branch/master/graph/badge.svg)](https://codecov.io/gh/salilab/developer_tools)
+[![Build Status](https://github.com/salilab/developer_tools/workflows/build/badge.svg?branch=main)](https://github.com/salilab/developer_tools/actions?query=workflow%3Abuild)
+[![codecov](https://codecov.io/gh/salilab/developer_tools/branch/main/graph/badge.svg)](https://codecov.io/gh/salilab/developer_tools)
 [![Code Climate](https://codeclimate.com/github/salilab/developer_tools/badges/gpa.svg)](https://codeclimate.com/github/salilab/developer_tools)
 
 # Developer Tools
@@ -18,5 +18,5 @@ In particular it provides tools to deal with
   only modifying files that are changed (sed touches all passed files).
 - git support: see the `git` subdir.
 
-Most of the scripts are Python scripts, and should work with Python 2.6 or
+Most of the scripts are Python scripts, and should work with Python 2.7 or
 later (including Python 3).

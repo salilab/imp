@@ -3,6 +3,7 @@
 """Classes for handling experimental datasets used by mmCIF models.
 """
 
+
 class Dataset(object):
     """A set of input data, for example, a crystal structure or EM map.
 
@@ -23,12 +24,15 @@ class Dataset(object):
     def _eq_vals(self):
         return tuple([self.__class__]
                      + [getattr(self, x) for x in self._eq_keys])
+
     def __eq__(self, other):
         return self._eq_vals() == other._eq_vals()
+
     def __hash__(self):
         return hash(self._eq_vals())
 
     data_type = 'Other'
+
     def __init__(self, location, details=None):
         self.location, self.details = location, details
 
@@ -76,10 +80,10 @@ class DatasetGroup(list):
        :param str application: Text that shows how this group is used.
        :param str details: Longer text that describes this group.
 
-       Normally a group is passed to one or more :class:`~ihm.protocol.Protocol`
-       or :class:`~ihm.analysis.Analysis` objects, although unused groups
-       can still be included in the file if desired by adding them to
-       :attr:`ihm.System.orphan_dataset_groups`.
+       Normally a group is passed to one or more
+       :class:`~ihm.protocol.Protocol` or :class:`~ihm.analysis.Analysis`
+       objects, although unused groups can still be included in the file
+       if desired by adding them to :attr:`ihm.System.orphan_dataset_groups`.
     """
 
     # For backwards compatibility with earlier versions of this class which

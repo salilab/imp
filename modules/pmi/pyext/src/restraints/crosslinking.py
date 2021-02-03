@@ -55,7 +55,6 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
                  filelabel="None",
                  attributes_for_label=None,
                  linker=None,
-                 CrossLinkDataBase=None,
                  weight=1.):
         """Constructor.
         @param root_hier The canonical hierarchy containing all the states
@@ -85,11 +84,6 @@ class CrossLinkingMassSpectrometryRestraint(IMP.pmi.restraints.RestraintBase):
         super(CrossLinkingMassSpectrometryRestraint, self).__init__(
             model, weight=weight, label=label,
             restraint_set_class=_DataRestraintSet)
-
-        if database is None and CrossLinkDataBase is not None:
-            IMP.handle_use_deprecated(
-                    "CrossLinkDataBase is deprecated; use 'database' instead")
-            database = CrossLinkDataBase
 
         if database is None:
             raise Exception("You must pass a database")

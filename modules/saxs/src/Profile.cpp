@@ -1,7 +1,7 @@
 /**
  *  \file Profile.cpp   \brief A class for profile storing and computation
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/saxs/Profile.h>

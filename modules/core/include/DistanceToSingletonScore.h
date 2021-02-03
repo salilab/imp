@@ -2,7 +2,7 @@
  *  \file IMP/core/DistanceToSingletonScore.h
  *  \brief A Score on the distance to a fixed point.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H
@@ -39,8 +39,8 @@ class GenericDistanceToSingletonScore : public SingletonScore {
     StaticD(algebra::Vector3D v) : v_(v) {}
     Float get_coordinate(unsigned int i) { return v_[i]; }
     void add_to_derivatives(algebra::Vector3D v, DerivativeAccumulator) {
+      // The fixed point is not a real particle, so derivatives aren't used
       IMP_UNUSED(v);
-      IMP_WARN("DistanceTo dropped deriv of " << v << std::endl);
     }
   };
 
@@ -98,8 +98,8 @@ class IMPCOREEXPORT SphereDistanceToSingletonScore : public SingletonScore {
     StaticD(algebra::Vector3D v) : v_(v) {}
     Float get_coordinate(unsigned int i) { return v_[i]; }
     void add_to_derivatives(algebra::Vector3D v, DerivativeAccumulator) {
+      // The fixed point is not a real particle, so derivatives aren't used
       IMP_UNUSED(v);
-      IMP_LOG_VERBOSE("DistanceTo dropped deriv of " << v << std::endl);
     }
   };
 

@@ -1,6 +1,5 @@
 """Classes to handle starting models."""
 
-import ihm
 try:
     from enum import IntEnum
 except ImportError:
@@ -66,8 +65,8 @@ class Template(object):
        :param alignment_file: Reference to the external file containing the
               template-target alignment.
        :type alignment_file: :class:`~ihm.location.Location`
-       """
-       # todo: handle sequence_identity_denominator as an enum, not int
+    """
+    # todo: handle sequence_identity_denominator as an enum, not int
 
     def __init__(self, dataset, asym_id, seq_id_range, template_seq_id_range,
                  sequence_identity, alignment_file=None):
@@ -164,27 +163,6 @@ class StartingModel(object):
            See :meth:`get_atoms` for more details.
         """
         self._seq_difs.append(seq_dif)
-
-    def _get_seq_id_range_all_templates(self):
-        """Get the seq_id range covered by all templates in this starting
-           model, as an AsymUnit or AsymUnitRange object. Where there are
-           multiple templates, consolidate them; template info is given in
-           starting_comparative_models."""
-        def get_seq_id_range(template, full):
-            # The template may cover more than the current starting model
-            rng = template.seq_id_range
-            return (max(rng[0]+self.offset, full[0]),
-                    min(rng[1]+self.offset, full[1]))
-
-        if self.templates:
-            full = self.asym_unit.seq_id_range
-            rng = get_seq_id_range(self.templates[0], full)
-            for template in self.templates[1:]:
-                this_rng = get_seq_id_range(template, full)
-                rng = (min(rng[0], this_rng[0]), max(rng[1], this_rng[1]))
-            return ihm.AsymUnit(self.asym_unit.entity)(*rng)
-        else:
-            return self.asym_unit
 
 
 class PDBHelix(object):

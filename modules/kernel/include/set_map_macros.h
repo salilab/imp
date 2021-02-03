@@ -2,7 +2,7 @@
  *  \file IMP/set_map_macros.h
  *  \brief Macros to choose the best set or map for different purposes.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

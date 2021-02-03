@@ -75,13 +75,13 @@ def _encode(rows):
     offsets = ''.join(chr(i) for i in offsets).encode('ascii')
     indices = ''.join(chr(i) for i in range(len(rows))).encode('ascii')
     string_array_encoding = {
-         b'kind': b'StringArray',
-         b'dataEncoding': [{b'kind': b'ByteArray',
-                            b'type': ihm.format_bcif._Uint8}],
-         b'stringData': string_data.encode('ascii'),
-         b'offsetEncoding': [{b'kind': b'ByteArray',
-                              b'type': ihm.format_bcif._Uint8}],
-         b'offsets': offsets}
+        b'kind': b'StringArray',
+        b'dataEncoding': [{b'kind': b'ByteArray',
+                           b'type': ihm.format_bcif._Uint8}],
+        b'stringData': string_data.encode('ascii'),
+        b'offsetEncoding': [{b'kind': b'ByteArray',
+                             b'type': ihm.format_bcif._Uint8}],
+        b'offsets': offsets}
     d = {b'data': indices,
          b'encoding': [string_array_encoding]}
     return d, mask
@@ -500,7 +500,8 @@ class Tests(unittest.TestCase):
             # long type is only in Python 2
             # Use long(x) rather than xL since the latter will cause a syntax
             # error in Python 3
-            data = [long(1), long(2), long(3), None, ihm.unknown, long(4)]
+            data = [long(1), long(2), long(3),    # noqa: F821
+                    None, ihm.unknown, long(4)]   # noqa: F821
             mask, typ = ihm.format_bcif._get_mask_and_type(data)
             self.assertEqual(mask, [0, 0, 0, 1, 2, 0])
             self.assertEqual(typ, int)
@@ -518,29 +519,29 @@ class Tests(unittest.TestCase):
             import numpy
         except ImportError:
             self.skipTest("this test requires numpy")
-        data = [numpy.float64(4.2),None,ihm.unknown]
+        data = [numpy.float64(4.2), None, ihm.unknown]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
-        self.assertEqual(mask, [0,1,2])
+        self.assertEqual(mask, [0, 1, 2])
         self.assertEqual(typ, float)
 
     def test_mask_type_masked_str(self):
         """Test get_mask_and_type with masked str data"""
         # Literal . and ? should not be masked
-        data = ['a','b',None,ihm.unknown,'c','.','?']
+        data = ['a', 'b', None, ihm.unknown, 'c', '.', '?']
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
-        self.assertEqual(mask, [0,0,1,2,0,0,0])
+        self.assertEqual(mask, [0, 0, 1, 2, 0, 0, 0])
         self.assertEqual(typ, str)
 
     def test_mask_type_mix_int_float(self):
         """Test get_mask_and_type with a mix of int and float data"""
-        data = [1,2,3,4.0]
+        data = [1, 2, 3, 4.0]
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
         self.assertIsNone(mask)
         self.assertEqual(typ, float)  # int/float is coerced to float
 
     def test_mask_type_mix_int_float_str(self):
         """Test get_mask_and_type with a mix of int/float/str data"""
-        data = [1,2,3,4.0,'foo']
+        data = [1, 2, 3, 4.0, 'foo']
         mask, typ = ihm.format_bcif._get_mask_and_type(data)
         self.assertIsNone(mask)
         self.assertEqual(typ, str)  # int/float/str is coerced to str
@@ -584,11 +585,11 @@ class Tests(unittest.TestCase):
         self.assertEqual(indices, b'\x00\x01\x02\xff\xff\x00\x03\x04\x05')
         enc, = encs
         self.assertEqual(enc[b'dataEncoding'],
-                             [{b'kind': b'ByteArray',
-                               b'type': ihm.format_bcif._Int8}])
+                         [{b'kind': b'ByteArray',
+                           b'type': ihm.format_bcif._Int8}])
         self.assertEqual(enc[b'offsetEncoding'],
-                             [{b'kind': b'ByteArray',
-                               b'type': ihm.format_bcif._Uint8}])
+                         [{b'kind': b'ByteArray',
+                           b'type': ihm.format_bcif._Uint8}])
         self.assertEqual(enc[b'offsets'], b'\x00\x01\x03\x06\x07\x08\t')
         self.assertEqual(enc[b'stringData'], b'aABYES3.?')
 
@@ -632,8 +633,8 @@ class Tests(unittest.TestCase):
         sys.modules['msgpack'] = MockMsgPack
         writer = ihm.format_bcif.BinaryCifWriter(fh)
         writer.start_block('ihm')
-        with writer.category('foo') as l:
-            l.write(bar='baz')
+        with writer.category('foo') as loc:
+            loc.write(bar='baz')
         writer.flush()
         block, = fh.data[b'dataBlocks']
         category, = block[b'categories']
@@ -662,13 +663,13 @@ class Tests(unittest.TestCase):
         sys.modules['msgpack'] = MockMsgPack
         writer = ihm.format_bcif.BinaryCifWriter(fh)
         writer.start_block('ihm')
-        with writer.loop('foo', ["bar", "baz"]) as l:
-            l.write(bar='x')
-            l.write(bar=None, baz='z')
-            l.write(bar=ihm.unknown, baz='z')
-            l.write(bar='.', baz='z')
-            l.write(bar='?', baz='z')
-            l.write(baz='y')
+        with writer.loop('foo', ["bar", "baz"]) as lp:
+            lp.write(bar='x')
+            lp.write(bar=None, baz='z')
+            lp.write(bar=ihm.unknown, baz='z')
+            lp.write(bar='.', baz='z')
+            lp.write(bar='?', baz='z')
+            lp.write(baz='y')
         writer.flush()
         block, = fh.data[b'dataBlocks']
         category, = block[b'categories']

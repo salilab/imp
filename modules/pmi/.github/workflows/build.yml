@@ -1,0 +1,40 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  schedule:
+  - cron: "19 3 * * 0"  # Run at a random time weekly
+
+jobs:
+  build:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [2.7, 3.8]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Setup conda and dependencies
+      run: |
+        tools/setup_travis.sh ${{ matrix.python-version }}
+    - name: Test
+      run: |
+        export IMP_TMP_DIR=/tmp
+        eval "$(conda shell.bash hook)"
+        conda activate python${{ matrix.python-version }}
+        rm -f ${CONDA_PREFIX}/lib/libimp_pmi.so* ${CONDA_PREFIX}/lib/_IMP_pmi.so
+        # Use same C/C++ compiler as conda
+        source ${CONDA_PREFIX}/etc/conda/activate.d/activate-gcc_linux-64.sh
+        source ${CONDA_PREFIX}/etc/conda/activate.d/activate-gxx_linux-64.sh
+        mkdir build && cd build
+        if test "${{ matrix.python-version }}" = "2.7" ; then PY2=on; else PY2=off; fi
+        cmake .. -DIMP_DIR=${CONDA_PREFIX}/lib/cmake/IMP -DUSE_PYTHON2=${PY2} -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage"
+        make
+        ./setup_environment.sh py.test --cov=.. --cov-branch --cov-report=xml -v ../test/test_*.py ../test/medium_test_*.py test/*/*.py
+    - uses: codecov/codecov-action@v1

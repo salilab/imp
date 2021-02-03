@@ -2,7 +2,7 @@
  *  \file IMP/spb/TransformationSymmetry.h
  *  \brief Implement various types of symmetry
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

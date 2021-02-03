@@ -1,6 +1,7 @@
 """Classes for handling the analysis of a modeling run.
 """
 
+
 class Step(object):
     """A single step in an :class:`Analysis`.
 
@@ -72,9 +73,10 @@ class EmptyStep(Step):
        any kind of analysis.
     """
     type = 'none'
+
     def __init__(self):
         super(EmptyStep, self).__init__(
-                feature='none', num_models_begin=None, num_models_end=None)
+            feature='none', num_models_begin=None, num_models_end=None)
 
 
 class Analysis(object):

@@ -903,45 +903,37 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
         cross-link UniqueIDS, the cross-links will be appended under the same UniqueID slots
         with different SubIDs
         '''
-        pass
+        raise NotImplementedError()
 
-    def append_database(self,CrossLinkDataBase2):
-        '''
-        This function append one cross-link dataset to another. Unique ids will be renamed to avoid
-        conflicts.
-        '''
-        name1=self.get_name()
-        name2=CrossLinkDataBase2.get_name()
-        if name1 == name2:
-            name1=id(self)
-            name2=id(CrossLinkDataBase2)
-            self.set_name(name1)
-            CrossLinkDataBase2.set_name(name2)
-
-        #rename first database:
-        new_data_base={}
+    def append_database(self, db):
+        """Append cross-link dataset to this one."""
+        new_data_base = {}
         for k in self.data_base:
-            new_data_base[k]=self.data_base[k]
-        for k in CrossLinkDataBase2.data_base:
-            new_data_base[k]=CrossLinkDataBase2.data_base[k]
-        self.data_base=new_data_base
+            new_data_base[k] = self.data_base[k]
+        for k in db.data_base:
+            new_data_base[k]  = db.data_base[k]
+        self.data_base = new_data_base
         self._update()
 
-    def set_value(self,key,new_value,FilterOperator=None):
+    def __iadd__(self, db):
+        self.append_database(db)
+        return self
+
+    def set_value(self, key, new_value, filter_operator=None):
         '''
         This function changes the value for a given key in the database
         For instance one can change the name of a protein
         @param key: the key in the database that must be changed
         @param new_value: the new value of the key
-        @param FilterOperator: optional FilterOperator to change the value to
+        @param filter_operator: optional FilterOperator to change the value to
                                a subset of the database
 
         example: `cldb1.set_value(cldb1.protein1_key,'FFF',FO(cldb.protein1_key,operator.eq,"AAA"))`
         '''
 
         for xl in self:
-            if FilterOperator is not None:
-                if FilterOperator.evaluate(xl):
+            if filter_operator is not None:
+                if filter_operator.evaluate(xl):
                     xl[key]=new_value
             else:
                 xl[key]=new_value
@@ -1001,7 +993,124 @@ class CrossLinkDataBase(_CrossLinkDataBaseStandardKeys):
             if protein_to_rename == "both" or protein_to_rename == "protein2":
                 fo2=FilterOperator(self.protein2_key,operator.eq,old_name)
                 self.set_value(self.protein2_key,new_name,fo2)
+                
+    def align_sequence(self,alignfile):
+        """
+        This function parses an alignment file obtained previously, to map crosslink
+        residues onto the sequence of a homolog proteins. It is useful if you want to map
+        the crosslinks onto a known, homolog structure without building a comparative model.
+        The txt file of the alignment should be structured with repeating blocks, as follows:
+        
+        >NAME_CROSSLINKED_PROTEIN
+        >NAME_HOMOLOG_PROTEIN_WITH_KNOWN_STRUCTURE
+        one-letter code sequence for cross-linked protein (one line)
+        one-letter code sequence for homolog protein with known structure (one line)
+        """
+        
+        f=open(alignfile,'r')
+        def _assign_residues(seq1,seq2):
+            d={}
+            resinds1=[]
+            nres=0
+            contiguousgap=0
+            for r1 in seq1:
+                if r1!="-":
+                    nres+=1
+                    resinds1.append(nres)
+                else:
+                    resinds1.append(None)
 
+
+            resinds2=[None for i in resinds1]
+            nres=0
+            lastresind=1
+            for pos,r2 in enumerate(seq2):
+                if r2!="-":
+                    nres+=1
+                    resinds2[pos]=nres
+                    lastresind=nres
+                    if contiguousgap>1:
+                        for i in range(pos-int(contiguousgap/2),pos):
+                            resinds2[i]=nres
+                    contiguousgap=0
+                    
+                else:
+                    contiguousgap+=1
+                    resinds2[pos]=lastresind
+            
+            #print(list(zip(seq1, resinds1)))
+            #print(list(zip(seq2, resinds2)))
+            for n,r in enumerate(resinds1):
+                if r is not None:
+                    d[r]=resinds2[n]
+            return d  
+            
+        aa=True
+        sequences1={}
+        sequences2={}
+        with open(alignfile,'r') as f:
+            while aa:
+                aa=f.readline()
+                bb=f.readline()
+                cc=f.readline()
+                dd=f.readline()
+                protname=aa.replace(">","").replace("\n","")
+                seq1=cc.replace(",","").replace("\n","")
+                seq2=dd.replace(",","").replace("\n","")
+                
+                n1=0
+                n2=0
+                tmpl1=[]
+                tmpl2=[]
+                for i in range(len(seq1)):
+                    if seq1[i]!="-": 
+                        n1+=1
+                        c1=n1
+                    else:
+                        c1=None
+                    if seq2[i]!="-": 
+                        n2+=1
+                        c2=n2
+                    else:
+                        c2=None                    
+                
+                    tmpl1.append([i,c1,seq1[i]])
+                    tmpl2.append([i,c2,seq2[i]])
+                sequences1[protname]=tmpl1
+                sequences2[protname]=tmpl2
+                
+                
+                d=_assign_residues(seq1,seq2)
+                
+                fo11=FilterOperator(self.protein1_key,operator.eq,protname)
+                fo12=FilterOperator(self.protein2_key,operator.eq,protname)
+                
+                for xl in self:
+                    if fo11.evaluate(xl):
+                        t=[item for item in sequences1[protname] if item[1] == xl[self.residue1_key]][0]
+                        sequences1[protname][t[0]]=[t[0],t[1],'\033[91m'+t[2]+'\033[0m']
+                        t=[item for item in sequences2[protname] if item[1] == d[xl[self.residue1_key]]][0]
+                        sequences2[protname][t[0]]=[t[0],t[1],'\033[91m'+t[2]+'\033[0m'] 
+                    
+                        xl[self.residue1_key]=d[xl[self.residue1_key]]
+                                
+                    if fo12.evaluate(xl):
+
+                        t=[item for item in sequences1[protname] if item[1] == xl[self.residue2_key]][0]
+                        sequences1[protname][t[0]]=[t[0],t[1],'\033[91m'+t[2]+'\033[0m']
+                        t=[item for item in sequences2[protname] if item[1] == d[xl[self.residue2_key]]][0]
+                        sequences2[protname][t[0]]=[t[0],t[1],'\033[91m'+t[2]+'\033[0m']
+                        
+                        xl[self.residue2_key]=d[xl[self.residue2_key]]
+                
+                print("")
+                print(aa.replace("\n",""))
+                print("".join([t[2] for t in sequences1[protname]]))
+                print(bb.replace("\n",""))
+                print("".join([t[2] for t in sequences2[protname]]))            
+                
+                
+                
     def classify_crosslinks_by_score(self,number_of_classes):
         '''
         This function creates as many classes as in the input (number_of_classes: integer)

@@ -1,7 +1,7 @@
 /**
  *  \file internal/cgal_knn.h
  *  \brief manipulation of text, and Interconversion between text and numbers
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 #include <IMP/cgal/internal/knn.h>
 #include <CGAL/basic.h>
@@ -28,6 +28,8 @@ struct Construct_coord_iterator {
 };
 struct Distance {
   typedef algebra::VectorKD Query_item;
+  typedef algebra::VectorKD Point_d;
+  typedef double FT;
 
   double transformed_distance(const algebra::VectorKD& p1,
                               const algebra::VectorKD& p2) const {

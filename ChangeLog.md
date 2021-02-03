@@ -1,14 +1,21 @@
 ChangeLog {#changelog}
 =========
+- We no longer provide RPMs for CentOS 6, since it has reached end of life.
+
+# 2.14.0 - 2020-12-02 # {#changelog_2_14_0}
 - All IMP.parallel worker classes are now subclasses of IMP.parallel.Worker;
   the old class names still exist as aliases, but are deprecated.
 - The IMP.kinematics module has had a major overhaul.
+- The Windows .exe installer now supports Python 3.9, and has dropped support
+  for Python 3.5.
 - New applications of IMP are now available:
   - [Integrative structures of the Nef-CD4-AP2 complex](https://salilab.org/Nef_CD4_AP2/)
   - [Integrative Modeling of Yeast Exocyst Complex](https://salilab.org/exocyst/)
   - [Integrative threading of protein structure using secondary structure elements](https://salilab.org/SSEThread/)
 - Bugfix: fix near-infinite loop in FoXS JavaScript output when no models
   are fit.
+- Bugfix: IMP.saxs.Restraint should now work correctly when some or all
+  particles are members of rigid bodies.
 
 # 2.13.0 - 2020-05-14 # {#changelog_2_13_0}
 - Ubuntu .deb packages now use Python 3 by default (install the imp-python2

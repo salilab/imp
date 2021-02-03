@@ -4,7 +4,9 @@
 %include "IMP/score_functor/SurfaceDistancePairScore.h"
 %include "IMP/score_functor/Statistical.h"
 %template(_DopeBase) IMP::score_functor::Statistical<IMP::score_functor::DopeType, false, true>;
+%template(_LoopStatisticalBase) IMP::score_functor::Statistical<IMP::score_functor::LoopStatisticalType, false, true>;
 
 %include "IMP/score_functor/Dope.h"
+%include "IMP/score_functor/LoopStatistical.h"
 %include "IMP/score_functor/ScoreUnaryFunction.h"
 %include "IMP/score_functor/UnaryFunctionEvaluate.h"

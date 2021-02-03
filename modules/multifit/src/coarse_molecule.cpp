@@ -2,7 +2,7 @@
  *  \file coarse_molecule.cpp
  *  \brief coarsen molecule by clustering
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/statistics/internal/VQClustering.h>

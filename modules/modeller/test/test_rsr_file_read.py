@@ -1,5 +1,5 @@
 import os
-from modeller import *
+import modeller
 import IMP
 import IMP.test
 import IMP.core
@@ -9,7 +9,7 @@ import IMP.modeller
 
 def assertSimilarModellerIMPScores(tst, sf, modeller_model, imp_atoms):
     """Assert that Modeller and IMP give the same score and derivatives"""
-    modeller_energy = selection(modeller_model).energy()[0]
+    modeller_energy = modeller.Selection(modeller_model).energy()[0]
     imp_score = sf.evaluate(True)
     tst.assertAlmostEqual(modeller_energy, imp_score, delta=0.001)
     for imp_atom, modeller_atom in zip(IMP.atom.get_leaves(imp_atoms),
@@ -45,7 +45,7 @@ class Tests(IMP.test.TestCase):
     def get_modeller_environ(self):
         # Reading Modeller libraries is expensive, so cache the environ
         if not self._environ:
-            e = Tests._environ = environ()
+            e = Tests._environ = modeller.Environ()
             e.edat.dynamic_sphere = False
             e.libs.topology.read('${LIB}/top_heav.lib')
             e.libs.parameters.read('${LIB}/par.lib')
@@ -54,7 +54,7 @@ class Tests(IMP.test.TestCase):
     def test_read_static_restraints(self):
         """Check loading of Modeller static restraints"""
         e = self.get_modeller_environ()
-        modmodel = model(e)
+        modmodel = modeller.Model(e)
         modmodel.build_sequence('GGCC')
 
         m = IMP.Model()
@@ -64,63 +64,69 @@ class Tests(IMP.test.TestCase):
         at = modmodel.atoms
         restraints = []
         # Typical distance restraints or stereochemical bonds:
-        r = forms.gaussian(feature=features.distance(at[0], at[1]),
-                           mean=1.54, stdev=0.1, group=physical.xy_distance)
+        r = modeller.forms.Gaussian(
+            feature=modeller.features.Distance(at[0], at[1]),
+            mean=1.54, stdev=0.1, group=modeller.physical.xy_distance)
         restraints.append(r)
-        r = forms.lower_bound(feature=features.distance(at[0], at[1]),
-                              mean=10.0, stdev=0.1, group=physical.xy_distance)
+        r = modeller.forms.LowerBound(
+            feature=modeller.features.Distance(at[0], at[1]),
+            mean=10.0, stdev=0.1, group=modeller.physical.xy_distance)
         restraints.append(r)
-        r = forms.upper_bound(feature=features.distance(at[0], at[1]),
-                              mean=10.0, stdev=0.1, group=physical.xy_distance)
+        r = modeller.forms.UpperBound(
+            feature=modeller.features.Distance(at[0], at[1]),
+            mean=10.0, stdev=0.1, group=modeller.physical.xy_distance)
         restraints.append(r)
 
         # Typical stereochemical angle restraint:
-        r = forms.gaussian(feature=features.angle(at[0], at[1], at[2]),
-                           mean=1.92, stdev=0.07, group=physical.xy_distance)
+        r = modeller.forms.Gaussian(
+            feature=modeller.features.Angle(at[0], at[1], at[2]),
+            mean=1.92, stdev=0.07, group=modeller.physical.xy_distance)
         restraints.append(r)
 
         # Typical stereochemical improper dihedral restraint:
-        r = forms.gaussian(feature=features.dihedral(at[0], at[1], at[2],
-                                                     at[3]),
-                           mean=3.14, stdev=0.1, group=physical.xy_distance)
+        r = modeller.forms.Gaussian(
+            feature=modeller.features.Dihedral(at[0], at[1], at[2], at[3]),
+            mean=3.14, stdev=0.1, group=modeller.physical.xy_distance)
         restraints.append(r)
 
         # Typical stereochemical dihedral restraint:
-        r = forms.cosine(feature=features.dihedral(at[0], at[1], at[2],
-                                                   at[3]),
-                         group=physical.xy_distance,
-                         phase=0.0, force=2.5, period=2)
+        r = modeller.forms.Cosine(
+            feature=modeller.features.Dihedral(at[0], at[1], at[2], at[3]),
+            group=modeller.physical.xy_distance, phase=0.0, force=2.5, period=2)
         restraints.append(r)
 
         # Typical splined restraint:
-        r = forms.spline(feature=features.distance(at[0], at[1]), open=True,
-                         low=1.0, high=5.0, delta=1.0,
-                         group=physical.xy_distance,
-                         lowderiv=0.0, highderiv=0.0,
-                         values=[100.0, 200.0, 300.0, 200.0, 100.0])
+        r = modeller.forms.Spline(
+            feature=modeller.features.Distance(at[0], at[1]), open=True,
+            low=1.0, high=5.0, delta=1.0,
+            group=modeller.physical.xy_distance,
+            lowderiv=0.0, highderiv=0.0,
+            values=[100.0, 200.0, 300.0, 200.0, 100.0])
         restraints.append(r)
 
         # Test forms.factor
-        r = forms.factor(feature=features.angle(at[0], at[1], at[2]),
-                         factor=100.0, group=physical.xy_distance)
+        r = modeller.forms.Factor(
+            feature=modeller.features.Angle(at[0], at[1], at[2]),
+            factor=100.0, group=modeller.physical.xy_distance)
         restraints.append(r)
 
         # Test periodic splined restraint:
-        r = forms.spline(feature=features.dihedral(at[0], at[1], at[2], at[3]),
-                         open=False, low=0.0, high=6.2832, delta=1.2566,
-                         group=physical.xy_distance,
-                         lowderiv=0.0, highderiv=0.0,
-                         values=[100.0, 200.0, 300.0, 400.0, 300.0])
+        r = modeller.forms.Spline(
+            feature=modeller.features.Dihedral(at[0], at[1], at[2], at[3]),
+            open=False, low=0.0, high=6.2832, delta=1.2566,
+            group=modeller.physical.xy_distance,
+            lowderiv=0.0, highderiv=0.0,
+            values=[100.0, 200.0, 300.0, 400.0, 300.0])
         restraints.append(r)
 
         # Test multiple binormal restraint
-        r = forms.multi_binormal(features=(features.dihedral(*at[0:4]),
-                                           features.dihedral(*at[4:8])),
-                                 group=physical.xy_distance,
-                                 weights=[0.2, 0.8, 0.3],
-                                 means=[[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]],
-                                 stdevs=[[0.1, 0.2], [0.3, 0.4], [0.1, 0.3]],
-                                 correls=[0.3, 0.6, 0.9])
+        r = modeller.forms.MultiBinormal(
+            features=(modeller.features.Dihedral(*at[0:4]),
+                      modeller.features.Dihedral(*at[4:8])),
+            group=modeller.physical.xy_distance, weights=[0.2, 0.8, 0.3],
+            means=[[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]],
+            stdevs=[[0.1, 0.2], [0.3, 0.4], [0.1, 0.3]],
+            correls=[0.3, 0.6, 0.9])
         restraints.append(r)
 
         for r in restraints:
@@ -137,11 +143,12 @@ class Tests(IMP.test.TestCase):
     def test_rsr_file_read(self):
         """Check reading of arbitrary Modeller restraint files"""
         e = self.get_modeller_environ()
-        modmodel = model(e)
+        modmodel = modeller.Model(e)
         modmodel.build_sequence('GGCC')
-        open('test.rsr', 'w').write('MODELLER5 VERSION: MODELLER FORMAT\n'
-                                    'R    3   1   1   1   2   2   0     3'
-                                    '     2       1.5380    0.0364')
+        with open('test.rsr', 'w') as fh:
+            fh.write('MODELLER5 VERSION: MODELLER FORMAT\n'
+                     'R    3   1   1   1   2   2   0     3'
+                     '     2       1.5380    0.0364')
         modmodel.restraints.append('test.rsr')
 
         # Need atoms before loading restraints
@@ -158,11 +165,11 @@ class Tests(IMP.test.TestCase):
     def test_bond_restraints(self):
         """Check bond restraints against Modeller"""
         e = self.get_modeller_environ()
-        modmodel = model(e)
+        modmodel = modeller.Model(e)
         modmodel.build_sequence('G')
-        modmodel.restraints.make(selection(modmodel), restraint_type='BOND',
-                                 spline_on_site=False,
-                                 residue_span_range=(0, 99999))
+        modmodel.restraints.make(
+            modeller.Selection(modmodel), restraint_type='BOND',
+            spline_on_site=False, residue_span_range=(0, 99999))
 
         m = IMP.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
@@ -184,10 +191,10 @@ class Tests(IMP.test.TestCase):
     def test_improper_restraints(self):
         """Check improper restraints against Modeller"""
         e = self.get_modeller_environ()
-        modmodel = model(e)
+        modmodel = modeller.Model(e)
         modmodel.build_sequence('A')
         modmodel.restraints.make(
-            selection(modmodel), restraint_type='IMPROPER',
+            modeller.Selection(modmodel), restraint_type='IMPROPER',
             spline_on_site=False,
             residue_span_range=(0, 99999))
 
@@ -211,11 +218,11 @@ class Tests(IMP.test.TestCase):
     def test_angle_restraints(self):
         """Check angle restraints against Modeller"""
         e = self.get_modeller_environ()
-        modmodel = model(e)
+        modmodel = modeller.Model(e)
         modmodel.build_sequence('A')
-        modmodel.restraints.make(selection(modmodel), restraint_type='ANGLE',
-                                 spline_on_site=False,
-                                 residue_span_range=(0, 99999))
+        modmodel.restraints.make(
+            modeller.Selection(modmodel), restraint_type='ANGLE',
+            spline_on_site=False, residue_span_range=(0, 99999))
 
         m = IMP.Model()
         loader = IMP.modeller.ModelLoader(modmodel)
@@ -238,10 +245,10 @@ class Tests(IMP.test.TestCase):
     def test_dihedral_restraints(self):
         """Check dihedral restraints against Modeller"""
         e = self.get_modeller_environ()
-        modmodel = model(e)
+        modmodel = modeller.Model(e)
         modmodel.build_sequence('A')
         modmodel.restraints.make(
-            selection(modmodel), restraint_type='DIHEDRAL',
+            modeller.Selection(modmodel), restraint_type='DIHEDRAL',
             spline_on_site=False,
             residue_span_range=(0, 99999))
 

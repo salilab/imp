@@ -22,7 +22,7 @@ to see if the code is currently stable enough for your purposes.
 
 In order to build %IMP from source, you will need:
 
-- [CMake](https://cmake.org) (2.8 or later; 3.14 or later is recommended)
+- [CMake](https://cmake.org) (2.8.12 or later; 3.14 or later is recommended)
 - [Boost](https://www.boost.org) (1.41 or later; Boost.Iostreams must be built
   with its [zlib filter enabled](https://www.boost.org/doc/libs/1_67_0/libs/iostreams/doc/installation.html))
 - [Eigen](https://eigen.tuxfamily.org/) (3.0 or later)
@@ -112,10 +112,10 @@ procedure we use.
   directly from our [GitHub repository](https://github.com/salilab/imp)
   with something like:
 
-        git clone -b master https://github.com/salilab/imp.git
+        git clone -b main https://github.com/salilab/imp.git
         (cd imp && git submodule update --init && ./setup_git.py)
 
-  (the `master` branch tracks the most recent stable
+  (the `main` branch tracks the most recent stable
   release; alternatively you can use `develop` to get the most recent code,
   but please check out the [nightly builds results page](https://integrativemodeling.org/nightly/results/)
   to see if the code is currently stable enough for your purposes).

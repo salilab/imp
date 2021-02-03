@@ -2,7 +2,7 @@
  *  \file container_helpers.h
  *  \brief Internal helpers for container classes.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,7 +15,12 @@
 #include "../Model.h"
 #include "../ModelObject.h"
 #include "utility.h"
+#include <boost/version.hpp>
+#if BOOST_VERSION >= 107300
+#include <boost/bind/bind.hpp>
+#else
 #include <boost/bind.hpp>
+#endif
 #include <boost/bind/placeholders.hpp>
 #include <boost/tuple/tuple.hpp>
 

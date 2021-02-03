@@ -1,0 +1,4 @@
+|molecule_name|color|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|
+|Prot2 |blue  |seqs.fasta|Protein_2|prot.pdb|B|180,187|-179|5|0|1|||
+|Prot2 |green |seqs.fasta|Protein_2|BEADS   | |188,END|-179|1|0| |||
+|Prot3 |green |seqs.fasta|Protein_2|BEADS   | |1,END  |    |1|0| |||

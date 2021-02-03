@@ -30,8 +30,11 @@ case ${TARGET_OSX_VER} in
   10.6):
     PYTHONS="2.6 2.7"
     ;;
+  10.8):
+    PYTHONS="2.7"
+    ;;
   *):
-    echo "This script currently only works on Mac OS X 10.4 or 10.6 machines"
+    echo "This script currently only works on Mac OS X 10.4, 10.6, or 10.8 machines"
     exit 1
     ;;
 esac

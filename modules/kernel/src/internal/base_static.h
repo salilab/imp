@@ -2,7 +2,7 @@
  *  \file internal/static.h
  *  \brief Various useful utilities
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_BASE_STATIC_H

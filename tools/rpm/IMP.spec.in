@@ -303,8 +303,11 @@ module load %{mpiprefix}mpich-%{_arch}
 # Help cmake to find CGAL
 export CGAL_DIR=%{_libdir}/cmake/CGAL
 %endif
-%if 0%{?fedora} >= 32
+%if 0%{?fedora} == 32
 export CGAL_DIR=/usr/share/CGAL/cmake
+%endif
+%if 0%{?fedora} >= 33
+export CGAL_DIR=/usr/share/cmake/CGAL
 %endif
 cmake ../imp -DCMAKE_BUILD_TYPE=Release \
              -DCMAKE_INSTALL_PREFIX=%{_prefix} \
@@ -532,6 +535,9 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %endif
 
 %changelog
+* Wed Dec 02 2020 Ben Webb <ben@salilab.org>   2.14.0-1
+- 2.14.0 release.
+
 * Thu May 14 2020 Ben Webb <ben@salilab.org>   2.13.0-1
 - 2.13.0 release.
 
