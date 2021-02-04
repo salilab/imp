@@ -75,19 +75,21 @@ public:
 
   //Numerically stable logsumexp
   double logsumexp(double x, double y);
-
+  
+  //Numerically stable logsumexpprod
+  double logsumprodexp(double x, double y, double wx,double wy);
   //Compute the sum of the density and the sum of square of the density
   FloatPair get_square_em_density(DensityMap *em, long number_of_voxels);
 
   //Compute the values for score and derivative in pieces
   std::vector<double> get_value(Particle *p, const algebra::Vector3D &pt,
-                                double mass_ii, IMP::em::KernelParameters kps_);
+                                double mass_ii, const IMP::em::KernelParameters &kps);
 
   //Compute the values for the score wihtout its derivative
   std::vector<double> get_value_no_deriv(Particle *p,
                                          const algebra::Vector3D &pt,
                                          double mass_ii,
-                                         IMP::em::KernelParameters kps_);
+                                         const IMP::em::KernelParameters &kps);
 
   //Compute a generated EM density map given particles. 
   // Header and box size is copied from reference EM density map 
@@ -98,9 +100,8 @@ public:
   //Compute the score and the derivative of an EM map and a tested model
   std::pair<double, algebra::Vector3Ds>
   calc_score_and_derivative(DensityMap *em, const IMP::ParticlesTemp &ps,
-                            double resolution, double sigma,
-                            const algebra::Vector3Ds &dv);
-
+                            double resolution, double sigma);
+  
   // Quick function for extracting second element of pair to a vector of floats
   template <typename M, typename V> void MapSecond2Floats(const M &m, V &v);
 

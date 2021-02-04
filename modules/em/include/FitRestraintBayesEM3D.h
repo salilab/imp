@@ -38,33 +38,28 @@ class IMPEMEXPORT FitRestraintBayesEM3D : public Restraint {
       \ingroup exp_restraint
   */
 
- public:
+public:
   //! Constructor
-  FitRestraintBayesEM3D(ParticlesTemp ps,
-		    DensityMap *em_map,
-		    FloatKey weight_key = atom::Mass::get_mass_key(),
-		     bool use_rigid_bodies = true, double sigma = .1);
+  FitRestraintBayesEM3D(
+    Model *m,
+    ParticlesTemp ps,
+    DensityMap *em_map,
+    FloatKey weight_key = atom::Mass::get_mass_key(),
+    bool use_rigid_bodies = true, 
+    double sigma = .1);
   
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-    const IMP_OVERRIDE;
+  const IMP_OVERRIDE;
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(FitRestraintBayesEM3D);
 
-#ifndef SWIG
-  IMP_LIST(private, Particle, particle, Particle *, Particles);
-#endif
- private:
-  //! Store particles
-  void store_particles(ParticlesTemp ps);
-
-  //! Create density maps: one for each rigid body and one for the rest.
-  void initialize_rigid_body(FloatKey weight_key);
+private:
 
   IMP::PointerMember<DensityMap> target_dens_map_;
   double resolution_;
   double voxel_size_;
   double sigma_;
-  algebra::BoundingBoxD<3> target_bounding_box_;
+
   // reference to the IMP environment
   core::XYZs xyz_;
 
@@ -72,19 +67,11 @@ class IMPEMEXPORT FitRestraintBayesEM3D : public Restraint {
   IMP::PointerMember<BayesEM3D> bayesem3d_;
   double score_;
   algebra::Vector3Ds dv_;
-  algebra::ReferenceFrame3Ds rbs_orig_rf_;
-  FloatKey weight_key_;
-  KernelParameters *kernel_params_;
-  bool use_rigid_bodies_;
 
-  // particle handling
-  // map particles to their rigid bodies
-  boost::unordered_map<core::RigidBody, Particles> member_map_;
-  Particles all_ps_;
-  // all particles that are not part of a rigid body
-  Particles not_part_of_rb_;
-  Particles part_of_rb_;
-  core::RigidBodies rbs_;
+  // Particles
+  Particles ps_;
+  FloatKey weight_key_;
+
 };
 
 IMPEM_END_NAMESPACE

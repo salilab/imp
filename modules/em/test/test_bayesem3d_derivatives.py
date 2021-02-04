@@ -34,7 +34,8 @@ class EMFitRestraint(IMP.Restraint):
 
         dh = self.dmap.get_header()
         dh.set_resolution(resolution)
-        fr = IMP.em.FitRestraintBayesEM3D(ps, self.dmap, weight_keys, True, self.sigma)
+        fr = IMP.em.FitRestraintBayesEM3D(self.model,
+            ps, self.dmap, weight_keys, True, self.sigma)
 
         self.rs = IMP.RestraintSet(self.model, "EMFitRestraintBayesEM3D")
         self.rs.add_restraint(fr)
@@ -69,8 +70,6 @@ class Tests(IMP.test.TestCase):
         self.m = IMP.Model()
 
         self.mh, self.ps = get_particles(self.m, "input/input_atom0.pdb")
-        for p in self.ps:
-            print(p.get_name())
 
         ##Read and setup EM
         res = 5.
@@ -137,30 +136,25 @@ class Tests(IMP.test.TestCase):
             deriv_fd = FD.grad(fdm, myfun,
                 *IMP.core.XYZ(self.prot_rb).get_coordinates(), *q)
 
-            ddr = np.array(dr - deriv_fd[:3])
-            ddq = np.array(dq - deriv_fd[-4:])
+            ddr = np.array(dr - deriv_fd[:3]) < 1e-7
+            ddq = np.array(dq - deriv_fd[-4:]) < 1e-7
 
-            identical_counter += sum(ddr) + sum(ddq)
-            print("")
-            print(deriv_fd)
-            print("")
+            identical_counter = sum(ddr) + sum(ddq)
+
             print("Translation Derivatives")
             print(dr)
             print(deriv_fd[:3])
-            print(ddr)
-            print("")
 
             print("Quaternion Derivatives")
             print(dq)
             print(deriv_fd[-4:])
-            print(ddq)
 
             IMP.core.transform(self.prot_rb, IMP.algebra.Transformation3D(
                 IMP.algebra.get_identity_rotation_3d(), (-1.0 * i, 0, 0)))
             self.m.update()
 
             total_counter += 1
-        self.assertEqual(total_counter * 7, identical_counter )
+        self.assertEqual(total_counter * 7, identical_counter)
 
 if __name__ == '__main__':
     IMP.test.main()
