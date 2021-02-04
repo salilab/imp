@@ -235,7 +235,9 @@ done
 (cd ${DESTDIR}/${BUNDLED_LIB_DIR} && rm libCGAL.11.dylib && ln -sf libCGAL.11.0.0.dylib libCGAL.11.dylib)
 
 # Make sure we don't link against any non-standard libraries that aren't bundled
-otool -L *.dylib ${bins} IMP-python/*.so ${DESTDIR}/${BUNDLED_LIB_DIR}/* |grep -Ev '/usr/lib|/usr/local/lib/imp-3rd-party|/usr/local/lib/libimp|/usr/local/lib/libRMF|/System/Library/|:'|sort -u > /tmp/non-standard.$$
+# Note that we don't bundle MPI; users will have to get it themselves if they
+# really want it (or use homebrew/conda)
+otool -L *.dylib ${bins} IMP-python/*.so ${DESTDIR}/${BUNDLED_LIB_DIR}/* |grep -Ev '/usr/lib|/usr/local/lib/imp-3rd-party|/usr/local/lib/libimp|/usr/local/lib/libRMF|/usr/local/lib/libmpi|/System/Library/|:'|sort -u > /tmp/non-standard.$$
 if [ -s /tmp/non-standard.$$ ]; then
   echo "The following non-standard libraries are linked against, and were"
   echo "not bundled:"
