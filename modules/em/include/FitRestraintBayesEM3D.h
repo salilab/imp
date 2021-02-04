@@ -41,7 +41,6 @@ class IMPEMEXPORT FitRestraintBayesEM3D : public Restraint {
 public:
   //! Constructor
   FitRestraintBayesEM3D(
-    Model *m,
     ParticlesTemp ps,
     DensityMap *em_map,
     FloatKey weight_key = atom::Mass::get_mass_key(),

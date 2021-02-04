@@ -315,8 +315,8 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
   int nxny = em_header->get_nx() * em_header->get_ny();
   int znxny;
 
-
-  DensityMap *retct = get_density_from_particle(em, ps, resolution);
+  //IMP_NEW(DensityMap, retct, ());
+  IMP::Pointer<DensityMap> retct = get_density_from_particle(em, ps, resolution);
   double *modelct = retct->get_data();
 
   // Compute the sum and the sum^2 of the experimental EM denisty map
@@ -484,8 +484,7 @@ void BayesEM3D::get_normalized_intensities(DensityMap *em,
   double *em_data = em->get_data();
   long nvox = em_header->get_number_of_voxels();
 
-  DensityMap *em_m = get_density_from_particle(em, ps, resolution);
-
+  IMP::Pointer<DensityMap> em_m = get_density_from_particle(em, ps, resolution);
   const double *em_model = em_m->get_data();
 
   // std::map<double, int> values_and_counts_model =

@@ -20,25 +20,30 @@
 IMPEM_BEGIN_NAMESPACE
 
 FitRestraintBayesEM3D::FitRestraintBayesEM3D(
-  Model *m,
   ParticlesTemp ps, 
   DensityMap *em_map, 
   FloatKey weight_key,
   bool use_rigid_bodies, 
   double sigma) 
-: Restraint(m, "Fit restraint BayesEM3D %1%"),
-ps_(ps),
-target_dens_map_(em_map),
-sigma_(sigma),
-weight_key_(weight_key)
+: Restraint(IMP::internal::get_model(ps), "Fit restraint BayesEM3D %1%")
 {
+
+  target_dens_map_ = em_map;
+  ps_=get_as<Particles>(ps);
+  //add_particles(ps);
 
   resolution_ = target_dens_map_->get_header()->get_resolution();
   voxel_size_ = target_dens_map_->get_spacing();
 
-  bayesem3d_ = new BayesEM3D();
+  weight_key_ = weight_key;
+  sigma_ = sigma;
+
   score_ = 0.;
   dv_.insert(dv_.end(), ps_.size(), algebra::Vector3D(0., 0., 0.));
+
+  IMP_NEW(BayesEM3D, bayesem3d, ());
+  bayesem3d_ = bayesem3d;
+
 }
 
 double FitRestraintBayesEM3D::unprotected_evaluate(DerivativeAccumulator *accum) const {
@@ -48,7 +53,7 @@ double FitRestraintBayesEM3D::unprotected_evaluate(DerivativeAccumulator *accum)
 
   std::pair<double, algebra::Vector3Ds> vals =
   bayesem3d_->calc_score_and_derivative(
-    target_dens_map_,
+    const_cast<DensityMap *> (target_dens_map_.get()),
     ps_,
     resolution_,
     sigma_);
@@ -66,9 +71,9 @@ double FitRestraintBayesEM3D::unprotected_evaluate(DerivativeAccumulator *accum)
       p->add_to_derivative(xyz_keys[0], dv_[i][0], *accum);
       p->add_to_derivative(xyz_keys[1], dv_[i][1], *accum);
       p->add_to_derivative(xyz_keys[2], dv_[i][2], *accum);
-      
     }
   }
+
   return score;
 }
 

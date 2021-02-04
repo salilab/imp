@@ -34,8 +34,7 @@ class EMFitRestraint(IMP.Restraint):
 
         dh = self.dmap.get_header()
         dh.set_resolution(resolution)
-        fr = IMP.em.FitRestraintBayesEM3D(self.model,
-            ps, self.dmap, weight_keys, True, self.sigma)
+        fr = IMP.em.FitRestraintBayesEM3D(self.ps, self.dmap, weight_keys, True, self.sigma)
 
         self.rs = IMP.RestraintSet(self.model, "EMFitRestraintBayesEM3D")
         self.rs.add_restraint(fr)
@@ -78,13 +77,7 @@ class Tests(IMP.test.TestCase):
         dmap = IMP.em.read_map("input/sampled_all.mrc", IMP.em.MRCReaderWriter())
         dmap.get_header_writable().set_resolution(res)
         dmap.update_voxel_size(voxel_size)
-
-        ## Normalize EM map
-        mass = IMP.atom.get_mass_from_number_of_residues(157)
-        t = IMP.em.get_threshold_for_approximate_mass(dmap, mass)
-        self.fmap = IMP.em.get_threshold_map(dmap, t)
-        bayesem3d = IMP.em.BayesEM3D()
-        bayesem3d.get_normalized_intensities(self.fmap, self.ps, res);
+        self.m.update()
 
         ################################
         #Convert fragment to rigid body#
@@ -94,14 +87,21 @@ class Tests(IMP.test.TestCase):
             IMP.core.get_leaves(self.mh)[0]).get_rigid_body()
         self.m.update()
 
-        print(self.prot_rb.get_rigid_members())
+        #print(self.prot_rb.get_rigid_members())
 
         #Set up the restraints
+        ## Normalize EM map
+        mass = IMP.atom.get_mass_from_number_of_residues(157)
+        t = IMP.em.get_threshold_for_approximate_mass(dmap, mass)
+        self.fmap = IMP.em.get_threshold_map(dmap, t)
+        bayesem3d = IMP.em.BayesEM3D()
+        bayesem3d.get_normalized_intensities(self.fmap, self.ps, res);
+
         r = EMFitRestraint(self.m, self.ps, self.fmap,
             IMP.atom.Mass.get_mass_key(), res, 0.5)
 
         self.rs, self.sf = r.get_setup()
-        print("Ilan: ", self.rs.evaluate(True))
+        score = self.rs.evaluate(True)
 
     ##@IMP.test.skipIf(julia is None, "Requires julia")
     def test_derivatives(self):
@@ -111,8 +111,6 @@ class Tests(IMP.test.TestCase):
         identical_counter = 0
 
         self.m.update()
-
-        #for i in np.linspace(0, 0, num=1, endpoint=True):
         for i in range(1):
             IMP.core.transform(self.prot_rb, IMP.algebra.Transformation3D(
                 IMP.algebra.get_identity_rotation_3d(), (1.0 * i, 0, 0)))
@@ -155,6 +153,7 @@ class Tests(IMP.test.TestCase):
 
             total_counter += 1
         self.assertEqual(total_counter * 7, identical_counter)
+
 
 if __name__ == '__main__':
     IMP.test.main()
