@@ -291,7 +291,7 @@ done
 
 echo "Making IMP installer package..."
 mkdir imp-${VER}-package || exit 1
-/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker \
+/Applications/PackageMaker.app/Contents/MacOS/PackageMaker \
        -build -i Info.plist.$$ \
        -d Description.plist.$$ -ds \
        -p "imp-${VER}-package/IMP ${VER} ${TARGET_OSX_VER}.pkg" -f ${DESTDIR} \
