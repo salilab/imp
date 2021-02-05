@@ -14,7 +14,7 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-const double window_size = 3.0;
+const double window_size = 1.0;
 
 BayesEM3D::BayesEM3D() : Object("BayesEM3D%1%") {}
 
@@ -307,10 +307,6 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
   FloatPair dsdy_lcc = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
   FloatPair dsdz_lcc = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
 
-  FloatPair dsdx_sqr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
-  FloatPair dsdy_sqr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
-  FloatPair dsdz_sqr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
-
   int ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
   int nxny = em_header->get_nx() * em_header->get_ny();
   int znxny;
@@ -339,10 +335,6 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
     dsdx_lcc = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
     dsdy_lcc = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
     dsdz_lcc = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
-
-    dsdx_sqr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
-    dsdy_sqr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
-    dsdz_sqr = FloatPair(-std::numeric_limits<double>::infinity(), -1.);
 
     // Get Voxel box
     calc_local_bounding_box(em, px, py, pz, local_box_size, iminx,
@@ -384,17 +376,17 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
           dsdx_lnr = logabssumprodexp(
             dsdx_lnr.first, value[0], 
             dsdx_lnr.second,
-            2. * (modelct[ivox] - intensity) * value[1] * value[2]);
+            2. * modelct[ivox] * value[1] * value[2]);
 
           dsdy_lnr = logabssumprodexp(
             dsdy_lnr.first, value[0], 
             dsdy_lnr.second,
-            2. * (modelct[ivox] - intensity) * value[1] * value[3]);
+            2. * modelct[ivox] * value[1] * value[3]);
 
           dsdz_lnr = logabssumprodexp(
             dsdz_lnr.first, value[0], 
             dsdz_lnr.second,
-            2. * (modelct[ivox] - intensity) * value[1] * value[4]);
+            2. * modelct[ivox] * value[1] * value[4]);
 
           // Derivative of the cross term with em
           dsdx_lcc = logabssumprodexp(
@@ -412,23 +404,7 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
             dsdz_lcc.second,
             -2. * em_data[ivox] * value[1] * value[4]);
 
-          // Derivative of the (Sum)^2 term
-          dsdx_sqr = logabssumprodexp(
-            dsdx_sqr.first, 2. * value[0], 
-            dsdx_sqr.second,
-            value[1] * value[1] * 2. * value[2]);
-
-          dsdy_sqr = logabssumprodexp(
-            dsdy_sqr.first, 2. * value[0], 
-            dsdy_sqr.second,
-            value[1] * value[1] * 2. * value[3]);
-
-          dsdz_sqr = logabssumprodexp(
-            dsdz_sqr.first, 2. * value[0], 
-            dsdz_sqr.second,
-            value[1] * value[1] * 2. * value[4]);
-
-          // If we want to write the generated density from particles.
+           // If we want to write the generated density from particles.
           model[ivox] += intensity;
           ivox++;
         }
@@ -436,16 +412,13 @@ std::pair<double, algebra::Vector3Ds> BayesEM3D::calc_score_and_derivative(
     }
 
     dv_out[ii][0] = dsdx_lnr.second * exp(dsdx_lnr.first) +
-      dsdx_lcc.second * exp(dsdx_lcc.first) +
-      dsdx_sqr.second * exp(dsdx_sqr.first);
+      dsdx_lcc.second * exp(dsdx_lcc.first);
     
     dv_out[ii][1] = dsdy_lnr.second * exp(dsdy_lnr.first) +
-      dsdy_lcc.second * exp(dsdy_lcc.first) +
-      dsdy_sqr.second * exp(dsdy_sqr.first);
+      dsdy_lcc.second * exp(dsdy_lcc.first);
     
     dv_out[ii][2] = dsdz_lnr.second * exp(dsdz_lnr.first) +
-      dsdz_lcc.second * exp(dsdz_lcc.first) +
-      dsdz_sqr.second * exp(dsdz_sqr.first);
+      dsdz_lcc.second * exp(dsdz_lcc.first);
 
     dv_out[ii][0] /= (2 * sigma);
     dv_out[ii][1] /= (2 * sigma);

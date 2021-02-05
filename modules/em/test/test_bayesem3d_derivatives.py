@@ -102,6 +102,7 @@ class Tests(IMP.test.TestCase):
 
         self.rs, self.sf = r.get_setup()
         score = self.rs.evaluate(True)
+        print(score)
 
     ##@IMP.test.skipIf(julia is None, "Requires julia")
     def test_derivatives(self):
@@ -142,10 +143,12 @@ class Tests(IMP.test.TestCase):
             print("Translation Derivatives")
             print(dr)
             print(deriv_fd[:3])
+            print(np.array(dr - deriv_fd[:3]))
 
             print("Quaternion Derivatives")
             print(dq)
             print(deriv_fd[-4:])
+            print(np.array(dq - deriv_fd[-4:]))
 
             IMP.core.transform(self.prot_rb, IMP.algebra.Transformation3D(
                 IMP.algebra.get_identity_rotation_3d(), (-1.0 * i, 0, 0)))
