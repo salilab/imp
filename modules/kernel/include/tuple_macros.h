@@ -1,6 +1,6 @@
 /**
  *  \file IMP/tuple_macros.h
- *  \brief Various general useful macros for IMP.
+ *  \brief Macros to help in defining tuple classes.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *

@@ -27,6 +27,7 @@
 #endif
 
 IMPKERNEL_BEGIN_NAMESPACE
+
 //! A more \imp-like version of the \c std::vector.
 /** Specifically this class adds functionality from \c Python arrays such as
     - hashing

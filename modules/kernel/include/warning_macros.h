@@ -1,6 +1,6 @@
 /**
  *  \file IMP/warning_macros.h
- *  \brief Various general useful macros for IMP.
+ *  \brief Macros to control compiler warnings.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/math.h
- *  \brief Declare an efficient stl-compatible map
+ *  \brief Helper functions to check for NaN or infinity
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */

@@ -1,5 +1,6 @@
 /**
- *  \file IMP/python_only.h   \brief Build dependency graphs on models.
+ *  \file IMP/python_only.h
+ *  \brief Helper functions for Python.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *

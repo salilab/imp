@@ -1,6 +1,6 @@
 /**
  *  \file IMP/Flag.h
- *  \brief Various general useful macros for IMP.
+ *  \brief Utility classes to add command line flags.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *

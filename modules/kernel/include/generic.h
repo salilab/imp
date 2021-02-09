@@ -1,6 +1,6 @@
 /**
- *  \file IMP/generic.h    \brief Various important functionality
- *                                for implementing decorators.
+ *  \file IMP/generic.h
+ *  \brief Compile-time generic restraint and constraint support.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
@@ -17,8 +17,8 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-/** Create a ScoringFunction on a single restraints. This can be faster than
-    using a RestraintsScoringFunction.*/
+//! Create a ScoringFunction on a single restraint.
+/** This can be faster than using a RestraintsScoringFunction. */
 template <class RestraintType>
 inline ScoringFunction *create_scoring_function(RestraintType *rs,
                                                 double weight = 1.0,

@@ -1,6 +1,6 @@
 /**
  *  \file IMP/FloatIndex.h
- *  \brief Various general useful functions for IMP.
+ *  \brief A FloatIndex identifies an optimized attribute in a model.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
@@ -16,8 +16,7 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
-/** A FloatIndex identifies an optimized attribute in a model.
- */
+//! A FloatIndex identifies an optimized attribute in a model.
 IMP_NAMED_TUPLE_2(FloatIndex, FloatIndexes, ParticleIndex, particle, FloatKey,
                   key, );
 

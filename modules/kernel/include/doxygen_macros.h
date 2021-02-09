@@ -1,6 +1,6 @@
 /**
  *  \file IMP/doxygen_macros.h
- *  \brief Various general useful macros for IMP.
+ *  \brief Helper macros for writing doxygen documentation
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *

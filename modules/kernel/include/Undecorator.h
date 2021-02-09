@@ -1,5 +1,5 @@
 /**
- *  \file IMP/Undecorator.h    \brief The base class for decorators.
+ *  \file IMP/Undecorator.h    \brief The base class for undecorators.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *

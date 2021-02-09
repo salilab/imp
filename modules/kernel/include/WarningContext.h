@@ -15,7 +15,8 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 #if IMP_HAS_LOG
-/** Warnings with the same key within the context are only output once.*/
+
+//! Warnings with the same key within the context are only output once.
 struct IMPKERNELEXPORT WarningContext {
   mutable boost::unordered_set<std::string> data_;
 

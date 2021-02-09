@@ -17,7 +17,6 @@
 IMPKERNEL_BEGIN_NAMESPACE
 
 //! A class to store a configuration of a model
-/** */
 class IMPKERNELEXPORT Configuration : public IMP::Object {
   mutable Pointer<Model> model_;
   Pointer<Object> base_;
