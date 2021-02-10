@@ -29,7 +29,6 @@ def add_dope(m, prot):
     dpc.add_pair_filter(f)
     IMP.atom.add_dope_score_data(prot)
     dps = IMP.atom.DopePairScore(15.0)
-#    dps= IMP.membrane.DopePairScore(15.0, IMP.membrane.get_data_path("dope_scorehr.lib"))
     d = IMP.container.PairsRestraint(dps, dpc)
     return d
 
