@@ -23,10 +23,13 @@ def add_dope(m, prot):
         if not IMP.atom.Atom.get_is_setup(p):
             print("Huh?", p)
     dpc = IMP.container.ClosePairContainer(ps, 15.0, 0.0)
-# exclude pairs of atoms belonging to the same residue
-# for consistency with MODELLER DOPE score
-    f = IMP.atom.SameResiduePairFilter()
-    dpc.add_pair_filter(f)
+    # By default the score is evaluated on all nearby pairs of atoms,
+    # even atoms that are bonded (or related by angles or dihedrals).
+    # This is consistent with the behavior of the score in MODELLER.
+    # If you like you can exclude pairs of atoms belonging to the same residue
+    # by adding a pair filter to the container:
+    # f = IMP.atom.SameResiduePairFilter()
+    # dpc.add_pair_filter(f)
     IMP.atom.add_dope_score_data(prot)
     dps = IMP.atom.DopePairScore(15.0)
     d = IMP.container.PairsRestraint(dps, dpc)
