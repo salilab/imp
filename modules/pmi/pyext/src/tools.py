@@ -1425,7 +1425,10 @@ def shuffle_configuration(objects,
                 d =IMP.core.XYZ(fb)
                 if bounding_box:
                     # Translate to origin first
-                    IMP.core.transform(d, -d.get_coordinates())
+                    if IMP.core.RigidBody.get_is_setup(fb.get_particle()):
+                        IMP.core.transform(IMP.core.RigidBody(fb.get_particle()), -d.get_coordinates())
+                    else:
+                        IMP.core.transform(d, -d.get_coordinates())
                     d =IMP.core.XYZ(fb)
                 debug.append([d,other_idxs if avoidcollision_fb else set()])
                 if IMP.core.RigidBody.get_is_setup(fb.get_particle()):

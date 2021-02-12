@@ -26,10 +26,7 @@ import re
 import ast
 import sys
 import os
-import textwrap
 import weakref
-import operator
-import itertools
 import ihm.location
 import ihm.dataset
 import ihm.dumper
@@ -42,6 +39,7 @@ import ihm.analysis
 import ihm.representation
 import ihm.geometry
 import ihm.cross_linkers
+
 
 def _assign_id(obj, seen_objs, obj_by_id):
     """Assign a unique ID to obj, and track all ids in obj_by_id."""
@@ -159,11 +157,13 @@ class _AllSoftware(object):
                    version='2.0',
                    location='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
 
+
 def _get_fragment_is_rigid(fragment):
     """Determine whether a fragment is modeled rigidly"""
     leaves = IMP.atom.get_leaves(fragment.hier)
     # Assume all leaves are set up as rigid/flexible in the same way
     return IMP.core.RigidMember.get_is_setup(leaves[0])
+
 
 class _PDBFragment(ihm.representation.ResidueSegment):
     """Record details about part of a PDB file used as input
@@ -175,10 +175,10 @@ class _PDBFragment(ihm.representation.ResidueSegment):
                    asym_unit=asym_unit.pmi_range(start, end),
                    rigid=None, primitive='sphere')
         self.component, self.start, self.end, self.offset, self.pdbname \
-              = component, start, end, pdb_offset, pdbname
+            = component, start, end, pdb_offset, pdbname
         self.state, self.chain, self.hier = state, chain, hier
         sel = IMP.atom.NonWaterNonHydrogenPDBSelector() \
-              & IMP.atom.ChainPDBSelector(chain)
+            & IMP.atom.ChainPDBSelector(chain)
         self.starting_hier = IMP.atom.read_pdb(pdbname, state.model, sel)
 
     rigid = property(lambda self: _get_fragment_is_rigid(self),
@@ -191,19 +191,21 @@ class _PDBFragment(ihm.representation.ResidueSegment):
 class _BeadsFragment(ihm.representation.FeatureSegment):
     """Record details about beads used to represent part of a component."""
     chain = None
+
     def __init__(self, state, component, start, end, count, hier, asym_unit):
-        super(_BeadsFragment, self).__init__(asym_unit=asym_unit(start, end),
-                    rigid=None, primitive='sphere', count=count)
-        self.state, self.component, self.hier \
-              = state, component, hier
+        super(_BeadsFragment, self).__init__(
+            asym_unit=asym_unit(start, end), rigid=None, primitive='sphere',
+            count=count)
+        self.state, self.component, self.hier = state, component, hier
 
     rigid = property(lambda self: _get_fragment_is_rigid(self),
                      lambda self, val: None)
 
     def combine(self, other):
         # todo: don't combine if one fragment is rigid and the other flexible
-        if type(other) == type(self) and \
-          other.asym_unit.seq_id_range[0] == self.asym_unit.seq_id_range[1] + 1:
+        if (type(other) == type(self) and
+                other.asym_unit.seq_id_range[0]
+                == self.asym_unit.seq_id_range[1] + 1):
             self.asym_unit.seq_id_range = (self.asym_unit.seq_id_range[0],
                                            other.asym_unit.seq_id_range[1])
             self.count += other.count
@@ -228,8 +230,8 @@ class _AllModelRepresentations(object):
             if original in self.fragments[rep]:
                 if name not in self.fragments[rep]:
                     self.fragments[rep][name] = OrderedDict()
-                self.fragments[rep][name][state] = [copy_frag(f)
-                            for f in self.fragments[rep][original][state]]
+                self.fragments[rep][name][state] = [
+                    copy_frag(f) for f in self.fragments[rep][original][state]]
                 # Assume representation for a component is the same in all
                 # states, so only write out the first one
                 first_state = list(self.fragments[rep][name].keys())[0]
@@ -271,9 +273,10 @@ class _AllDatasets(object):
         # Note that if a restraint dataset is replaced after this is called,
         # the group will still contain the old dataset - mark dataset as read
         # only?
-        g = ihm.dataset.DatasetGroup(self._datasets_by_state.get(state, [])
-                + [r.dataset for r in self._restraints_by_state.get(state, [])
-                   if r.dataset])
+        g = ihm.dataset.DatasetGroup(
+            self._datasets_by_state.get(state, [])
+            + [r.dataset for r in self._restraints_by_state.get(state, [])
+               if r.dataset])
         return g
 
     def add(self, state, dataset):
@@ -298,7 +301,7 @@ class _CrossLinkRestraint(ihm.restraint.CrossLinkRestraint):
     """Restrain to a set of cross-links"""
 
     assembly = None
-    _label_map = {'wtDSS':'DSS', 'scDSS':'DSS', 'scEDC':'EDC'}
+    _label_map = {'wtDSS': 'DSS', 'scDSS': 'DSS', 'scEDC': 'EDC'}
     _descriptor_map = {'DSS': ihm.cross_linkers.dss,
                        'EDC': ihm.cross_linkers.edc}
 
@@ -376,6 +379,7 @@ def get_asym_mapper_for_state(simo, state, asym_map):
         asym_map[state] = asym
     return asym
 
+
 class _PMICrossLink(object):
     # Query PMI particles to get psi and sigma values at time of use, not
     # time of construction (since they may be set after creating the restraint)
@@ -401,18 +405,20 @@ class _EM2DRestraint(ihm.restraint.EM2DRestraint):
                  micrographs_number):
         self.pmi_restraint, self.image_number = pmi_restraint, image_number
         super(_EM2DRestraint, self).__init__(
-                dataset=pmi_restraint.datasets[image_number],
-                assembly=state.modeled_assembly,
-                segment=False, number_raw_micrographs=micrographs_number,
-                pixel_size_width=pixel_size, pixel_size_height=pixel_size,
-                image_resolution=image_resolution,
-                number_of_projections=projection_number)
+            dataset=pmi_restraint.datasets[image_number],
+            assembly=state.modeled_assembly,
+            segment=False, number_raw_micrographs=micrographs_number,
+            pixel_size_width=pixel_size, pixel_size_height=pixel_size,
+            image_resolution=image_resolution,
+            number_of_projections=projection_number)
 
     # Have our dataset point to that in the original PMI restraint
     def __get_dataset(self):
         return self.pmi_restraint.datasets[self.image_number]
+
     def __set_dataset(self, val):
         self.pmi_restraint.datasets[self.image_number] = val
+
     dataset = property(__get_dataset, __set_dataset)
 
     def add_fits_from_model_statfile(self, model):
@@ -444,8 +450,8 @@ class _EM2DRestraint(ihm.restraint.EM2DRestraint):
            and the image"""
         stats = model.em2d_stats or model.stats
         return float(stats['ElectronMicroscopy2D_%s_Image%d_CCC'
-                                 % (self.pmi_restraint.label,
-                                    self.image_number + 1)])
+                           % (self.pmi_restraint.label,
+                              self.image_number + 1)])
 
 
 class _EM3DRestraint(ihm.restraint.EM3DRestraint):
@@ -469,10 +475,10 @@ class _EM3DRestraint(ihm.restraint.EM3DRestraint):
         cm = _ComponentMapper(state.prot)
         components = {}
         for d in densities:
-            components[cm[d]] = None # None == all residues in this component
-        a = simo._get_subassembly(components,
-                              name="EM subassembly",
-                              description="All components that fit the EM map")
+            components[cm[d]] = None  # None == all residues in this component
+        a = simo._get_subassembly(
+            components, name="EM subassembly",
+            description="All components that fit the EM map")
         return a
 
     def add_fits_from_model_statfile(self, model):
@@ -496,7 +502,7 @@ class _GeometricRestraint(ihm.restraint.GeometricRestraint):
         super(_GeometricRestraint, self).__init__(
                 dataset=pmi_restraint.dataset,
                 geometric_object=geometric_object, feature=feature,
-                distance=distance, harmonic_force_constant = 1. / sigma,
+                distance=distance, harmonic_force_constant=1. / sigma,
                 restrain_all=True)
 
     # Have our dataset point to that in the original PMI restraint
@@ -514,16 +520,16 @@ class _ReplicaExchangeProtocolStep(ihm.protocol.Step):
             method = 'Replica exchange molecular dynamics'
         self.monte_carlo_temperature = rex.vars['monte_carlo_temperature']
         self.replica_exchange_minimum_temperature = \
-                         rex.vars['replica_exchange_minimum_temperature']
+            rex.vars['replica_exchange_minimum_temperature']
         self.replica_exchange_maximum_temperature = \
-                         rex.vars['replica_exchange_maximum_temperature']
+            rex.vars['replica_exchange_maximum_temperature']
         super(_ReplicaExchangeProtocolStep, self).__init__(
-                assembly=state.modeled_assembly,
-                dataset_group=None, # filled in by add_step()
-                method=method, name='Sampling',
-                num_models_begin=None, # filled in by add_step()
-                num_models_end=rex.vars["number_of_frames"],
-                multi_scale=True, multi_state=False, ordered=False)
+            assembly=state.modeled_assembly,
+            dataset_group=None,  # filled in by add_step()
+            method=method, name='Sampling',
+            num_models_begin=None,  # filled in by add_step()
+            num_models_end=rex.vars["number_of_frames"],
+            multi_scale=True, multi_state=False, ordered=False)
 
 
 class _ReplicaExchangeProtocolDumper(ihm.dumper.Dumper):
@@ -534,19 +540,19 @@ class _ReplicaExchangeProtocolDumper(ihm.dumper.Dumper):
         with writer.loop("_imp_replica_exchange_protocol",
                          ["protocol_id", "step_id", "monte_carlo_temperature",
                           "replica_exchange_minimum_temperature",
-                          "replica_exchange_maximum_temperature"]) as l:
+                          "replica_exchange_maximum_temperature"]) as lp:
             for p in system._all_protocols():
                 for s in p.steps:
                     if isinstance(s, _ReplicaExchangeProtocolStep):
-                        self._dump_step(p, s, l)
+                        self._dump_step(p, s, lp)
 
-    def _dump_step(self, p, s, l):
-        l.write(protocol_id=p._id, step_id=s._id,
-                monte_carlo_temperature=s.monte_carlo_temperature,
-                replica_exchange_minimum_temperature= \
-                         s.replica_exchange_minimum_temperature,
-                replica_exchange_maximum_temperature= \
-                         s.replica_exchange_maximum_temperature)
+    def _dump_step(self, p, s, lp):
+        mintemp = s.replica_exchange_minimum_temperature
+        maxtemp = s.replica_exchange_maximum_temperature
+        lp.write(protocol_id=p._id, step_id=s._id,
+                 monte_carlo_temperature=s.monte_carlo_temperature,
+                 replica_exchange_minimum_temperature=mintemp,
+                 replica_exchange_maximum_temperature=maxtemp)
 
 
 class _ReplicaExchangeProtocolHandler(ihm.reader.Handler):
@@ -562,20 +568,20 @@ class _ReplicaExchangeProtocolHandler(ihm.reader.Handler):
         # Upgrade from plain ihm Step to IMP subclass
         s.__class__ = _ReplicaExchangeProtocolStep
         s.monte_carlo_temperature = \
-                 self.get_float(monte_carlo_temperature)
+            self.get_float(monte_carlo_temperature)
         s.replica_exchange_minimum_temperature = \
-                 self.get_float(replica_exchange_minimum_temperature)
+            self.get_float(replica_exchange_minimum_temperature)
         s.replica_exchange_maximum_temperature = \
-                 self.get_float(replica_exchange_maximum_temperature)
+            self.get_float(replica_exchange_maximum_temperature)
 
 
 class _SimpleProtocolStep(ihm.protocol.Step):
     def __init__(self, state, num_models_end, method):
         super(_SimpleProtocolStep, self).__init__(
                 assembly=state.modeled_assembly,
-                dataset_group=None, # filled in by add_step()
+                dataset_group=None,  # filled in by add_step()
                 method=method, name='Sampling',
-                num_models_begin=None, # filled in by add_step()
+                num_models_begin=None,  # filled in by add_step()
                 num_models_end=num_models_end,
                 multi_scale=True, multi_state=False, ordered=False)
 
@@ -597,6 +603,7 @@ class _Chain(object):
                                all_indexes, radius))
     orig_comp = property(lambda self: self.comp)
 
+
 class _TransformedChain(object):
     """Represent a chain that is a transformed version of another"""
     def __init__(self, orig_chain, asym_unit, transform):
@@ -613,12 +620,13 @@ class _TransformedChain(object):
     def __get_atoms(self):
         for (xyz, atom_type, residue_type, residue_index, all_indexes,
              radius) in self.orig_chain.atoms:
-            yield (self.transform * xyz, atom_type, residue_type, residue_index,
-                   all_indexes, radius)
+            yield (self.transform * xyz, atom_type, residue_type,
+                   residue_index, all_indexes, radius)
     atoms = property(__get_atoms)
 
     entity = property(lambda self: self.orig_chain.entity)
     orig_comp = property(lambda self: self.orig_chain.comp)
+
 
 class _Excluder(object):
     def __init__(self, component, simo):
@@ -730,11 +738,12 @@ class _Model(ihm.model.Model):
                 (xyz, atom_type, residue_type, residue_index,
                  all_indexes, radius) = atom
                 pt = self.transform * xyz
-                yield ihm.model.Atom(asym_unit=chain.asym_unit,
-                        seq_id=residue_index - pmi_offset,
-                        atom_id=atom_type.get_string(),
-                        type_symbol=None, # todo: get element
-                        x=pt[0], y=pt[1], z=pt[2])
+                yield ihm.model.Atom(
+                    asym_unit=chain.asym_unit,
+                    seq_id=residue_index - pmi_offset,
+                    atom_id=atom_type.get_string(),
+                    type_symbol=None,  # todo: get element
+                    x=pt[0], y=pt[1], z=pt[2])
 
     def get_spheres(self):
         for chain in self.all_chains(self.simo):
@@ -745,11 +754,12 @@ class _Model(ihm.model.Model):
                 if all_indexes is None:
                     all_indexes = (residue_index,)
                 pt = self.transform * xyz
-                yield ihm.model.Sphere(asym_unit=chain.asym_unit,
-                        seq_id_range=(all_indexes[0] - pmi_offset,
-                                      all_indexes[-1] - pmi_offset),
-                        x=pt[0], y=pt[1], z=pt[2], radius=radius,
-                        rmsf=self.get_rmsf(chain.orig_comp, all_indexes))
+                yield ihm.model.Sphere(
+                    asym_unit=chain.asym_unit,
+                    seq_id_range=(all_indexes[0] - pmi_offset,
+                                  all_indexes[-1] - pmi_offset),
+                    x=pt[0], y=pt[1], z=pt[2], radius=radius,
+                    rmsf=self.get_rmsf(chain.orig_comp, all_indexes))
 
 
 class _AllProtocols(object):
@@ -861,9 +871,10 @@ class _StartingModel(ihm.startmodel.StartingModel):
         mh = IMP.mmcif.data._StartingModelAtomHandler(self.templates,
                                                       self.asym_unit)
         for f in self.fragments:
-            sel = IMP.atom.Selection(f.starting_hier,
-                            residue_indexes=list(range(f.start - f.offset,
-                                                       f.end - f.offset + 1)))
+            sel = IMP.atom.Selection(
+                f.starting_hier,
+                residue_indexes=list(range(f.start - f.offset,
+                                           f.end - f.offset + 1)))
             for a in mh.get_ihm_atoms(sel.get_selected_particles(),
                                       f.offset - pmi_offset):
                 yield a
@@ -895,7 +906,7 @@ class _ReplicaExchangeAnalysisPostProcess(ihm.analysis.ClusterStep):
 class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
     """Ensemble generated using AnalysisReplicaExchange0 macro"""
 
-    num_models_deposited = None # Override base class property
+    num_models_deposited = None  # Override base class property
 
     def __init__(self, pp, cluster_num, model_group, num_deposit):
         with open(pp.get_stat_file(cluster_num)) as fh:
@@ -923,7 +934,8 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
                             'cluster.%d' % self.cluster_num,
                             '%s.mrc' % fname)
 
-    def load_localization_density(self, state, fname, select_tuple, asym_units):
+    def load_localization_density(self, state, fname, select_tuple,
+                                  asym_units):
         fullpath = self.get_localization_density_file(fname)
         if os.path.exists(fullpath):
             details = "Localization density for %s %s" \
@@ -967,8 +979,9 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
         if not os.path.exists(precfile):
             return ihm.unknown
         # Fail if the precision.x.x.out file doesn't match the cluster
-        r = re.compile('All .*/cluster.%d/ average centroid distance ([\d\.]+)'
-                       % self.cluster_num)
+        r = re.compile(
+            r'All .*/cluster.%d/ average centroid distance ([\d\.]+)'
+            % self.cluster_num)
         with open(precfile) as fh:
             for line in fh:
                 m = r.match(line)
@@ -978,17 +991,18 @@ class _ReplicaExchangeAnalysisEnsemble(ihm.model.Ensemble):
     precision = property(lambda self: self._get_precision(),
                          lambda self, val: None)
 
+
 class _SimpleEnsemble(ihm.model.Ensemble):
     """Simple manually-created ensemble"""
 
-    num_models_deposited = None # Override base class property
+    num_models_deposited = None  # Override base class property
 
     def __init__(self, pp, model_group, num_models, drmsd,
                  num_models_deposited, ensemble_file):
         super(_SimpleEnsemble, self).__init__(
-                model_group=model_group, post_process=pp, num_models=num_models,
-                file=ensemble_file, precision=drmsd, name=model_group.name,
-                clustering_feature='dRMSD')
+            model_group=model_group, post_process=pp, num_models=num_models,
+            file=ensemble_file, precision=drmsd, name=model_group.name,
+            clustering_feature='dRMSD')
         self.num_models_deposited = num_models_deposited
 
     def load_localization_density(self, state, component, asym, local_file):
@@ -1004,8 +1018,9 @@ class _CustomDNAAlphabet(object):
 
 
 class _EntityMapper(dict):
-    """Handle mapping from IMP components (without copy number) to CIF entities.
-       Multiple components may map to the same entity if they share sequence."""
+    """Handle mapping from IMP components (without copy number) to CIF
+       entities. Multiple components may map to the same entity if they
+       share sequence."""
     def __init__(self, system):
         super(_EntityMapper, self).__init__()
         self._sequence_dict = {}
@@ -1054,6 +1069,7 @@ class _SimpleRef(object):
     """Class with similar interface to weakref.ref, but keeps a strong ref"""
     def __init__(self, ref):
         self.ref = ref
+
     def __call__(self):
         return self.ref
 
@@ -1090,6 +1106,7 @@ class _State(ihm.model.State):
 
     def __hash__(self):
         return hash(self._pmi_state())
+
     def __eq__(self, other):
         return self._pmi_state() == other._pmi_state()
 
@@ -1115,10 +1132,13 @@ class _State(ihm.model.State):
 
     short_name = property(lambda self: self._pmi_state().short_name)
     long_name = property(lambda self: self._pmi_state().long_name)
+
     def __get_name(self):
         return self._pmi_state().long_name
+
     def __set_name(self, val):
         self._pmi_state().long_name = val
+
     name = property(__get_name, __set_name)
 
 
@@ -1183,7 +1203,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     to write out files in mmCIF or BinaryCIF format.
 
     See also get_handlers(), get_dumpers().
-    """
+    """  # noqa: E501
     def __init__(self):
         # Ultimately, collect data in an ihm.System object
         self.system = ihm.System()
@@ -1194,8 +1214,9 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self._main_script = os.path.abspath(sys.argv[0])
 
         # Point to the main modeling script
-        loc = ihm.location.WorkflowFileLocation(path=self._main_script,
-                               details="The main integrative modeling script")
+        loc = ihm.location.WorkflowFileLocation(
+            path=self._main_script,
+            details="The main integrative modeling script")
         self.system.locations.append(loc)
 
         self._states = {}
@@ -1215,7 +1236,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         self._xy_plane = ihm.geometry.XYPlane()
         self._xz_plane = ihm.geometry.XZPlane()
         self._z_axis = ihm.geometry.ZAxis()
-        self._center_origin = ihm.geometry.Center(0,0,0)
+        self._center_origin = ihm.geometry.Center(0, 0, 0)
         self._identity_transform = ihm.geometry.Transformation.identity()
 
         # Coordinates to exclude
@@ -1312,6 +1333,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                                alphabet=None):
         if asym_name is None:
             asym_name = name
+
         def get_offset(seq):
             # Count length of gaps at start of sequence
             for i in range(len(seq)):
@@ -1376,7 +1398,7 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def get_cross_link_group(self, pmi_restraint):
         r = _CrossLinkRestraint(pmi_restraint)
         self.system.restraints.append(r)
-        self._add_restraint_dataset(r) # so that all-dataset group works
+        self._add_restraint_dataset(r)  # so that all-dataset group works
         return r
 
     def add_experimental_cross_link(self, r1, c1, r2, c2, rsr):
@@ -1528,15 +1550,17 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                             details):
         """Add a basic FoXS fit. This is largely intended for use from the
            NPC application."""
-        assembly = self._get_subassembly({comp:seqrange},
-                              name="SAXS subassembly",
-                              description="All components that fit SAXS data")
-        r = ihm.restraint.SASRestraint(dataset, assembly, segment=False,
-                fitting_method='FoXS', fitting_atom_type='Heavy atoms',
-                multi_state=False, radius_of_gyration=rg, details=details)
+        assembly = self._get_subassembly(
+            {comp: seqrange},
+            name="SAXS subassembly",
+            description="All components that fit SAXS data")
+        r = ihm.restraint.SASRestraint(
+            dataset, assembly, segment=False,
+            fitting_method='FoXS', fitting_atom_type='Heavy atoms',
+            multi_state=False, radius_of_gyration=rg, details=details)
         r.fits[model] = ihm.restraint.SASRestraintFit(chi_value=chi)
         self.system.restraints.append(r)
-        self._add_restraint_dataset(r) # so that all-dataset group works
+        self._add_restraint_dataset(r)  # so that all-dataset group works
 
     def add_em2d_restraint(self, state, r, i, resolution, pixel_size,
                            image_resolution, projection_number,
@@ -1545,13 +1569,13 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
                            image_resolution, projection_number,
                            micrographs_number)
         self.system.restraints.append(r)
-        self._add_restraint_dataset(r) # so that all-dataset group works
+        self._add_restraint_dataset(r)  # so that all-dataset group works
 
     def add_em3d_restraint(self, state, target_ps, densities, pmi_restraint):
         # todo: need to set allow_duplicates on this dataset?
         r = _EM3DRestraint(self, state, pmi_restraint, target_ps, densities)
         self.system.restraints.append(r)
-        self._add_restraint_dataset(r) # so that all-dataset group works
+        self._add_restraint_dataset(r)  # so that all-dataset group works
 
     def add_zaxial_restraint(self, state, ps, lower_bound, upper_bound,
                              sigma, pmi_restraint):
@@ -1571,13 +1595,13 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
     def _add_geometric_restraint(self, state, ps, lower_bound, upper_bound,
                                  sigma, pmi_restraint, geom):
         asym = get_asym_mapper_for_state(self, state, self.__asym_states)
-        r = _GeometricRestraint(self, state, pmi_restraint, geom,
-                             asym.get_feature(ps),
-                             ihm.restraint.LowerUpperBoundDistanceRestraint(
-                                                    lower_bound, upper_bound),
-                             sigma)
+        r = _GeometricRestraint(
+            self, state, pmi_restraint, geom, asym.get_feature(ps),
+            ihm.restraint.LowerUpperBoundDistanceRestraint(lower_bound,
+                                                           upper_bound),
+            sigma)
         self.system.restraints.append(r)
-        self._add_restraint_dataset(r) # so that all-dataset group works
+        self._add_restraint_dataset(r)  # so that all-dataset group works
 
     def _get_membrane(self, tor_R, tor_r, tor_th):
         """Get an object representing a half-torus membrane"""
@@ -1587,31 +1611,35 @@ class ProtocolOutput(IMP.pmi.output.ProtocolOutput):
         # this one, reuse it
         membrane_id = tuple(int(x * 100.) for x in (tor_R, tor_r, tor_th))
         if membrane_id not in self._seen_membranes:
-            m = ihm.geometry.HalfTorus(center=self._center_origin,
-                    transformation=self._identity_transform,
-                    major_radius=tor_R, minor_radius=tor_r, thickness=tor_th,
-                    inner=True, name='Membrane')
+            m = ihm.geometry.HalfTorus(
+                center=self._center_origin,
+                transformation=self._identity_transform,
+                major_radius=tor_R, minor_radius=tor_r, thickness=tor_th,
+                inner=True, name='Membrane')
             self._seen_membranes[membrane_id] = m
         return self._seen_membranes[membrane_id]
 
     def add_membrane_surface_location_restraint(
             self, state, ps, tor_R, tor_r, tor_th, sigma, pmi_restraint):
-        self._add_membrane_restraint(state, ps, tor_R, tor_r, tor_th, sigma,
-                  pmi_restraint, ihm.restraint.UpperBoundDistanceRestraint(0.))
+        self._add_membrane_restraint(
+            state, ps, tor_R, tor_r, tor_th, sigma, pmi_restraint,
+            ihm.restraint.UpperBoundDistanceRestraint(0.))
 
     def add_membrane_exclusion_restraint(
             self, state, ps, tor_R, tor_r, tor_th, sigma, pmi_restraint):
-        self._add_membrane_restraint(state, ps, tor_R, tor_r, tor_th, sigma,
-                  pmi_restraint, ihm.restraint.LowerBoundDistanceRestraint(0.))
+        self._add_membrane_restraint(
+            state, ps, tor_R, tor_r, tor_th, sigma, pmi_restraint,
+            ihm.restraint.LowerBoundDistanceRestraint(0.))
 
     def _add_membrane_restraint(self, state, ps, tor_R, tor_r, tor_th,
                                 sigma, pmi_restraint, rsr):
         asym = get_asym_mapper_for_state(self, state, self.__asym_states)
-        r = _GeometricRestraint(self, state, pmi_restraint,
-                             self._get_membrane(tor_R, tor_r, tor_th),
-                             asym.get_feature(ps), rsr, sigma)
+        r = _GeometricRestraint(
+            self, state, pmi_restraint,
+            self._get_membrane(tor_R, tor_r, tor_th), asym.get_feature(ps),
+            rsr, sigma)
         self.system.restraints.append(r)
-        self._add_restraint_dataset(r) # so that all-dataset group works
+        self._add_restraint_dataset(r)  # so that all-dataset group works
 
     def add_model(self, group, assembly=None, representation=None):
         state = self._last_state
@@ -1650,14 +1678,15 @@ class GMMParser(ihm.metadata.Parser):
         """Extract metadata from `filename`.
            @return a dict with key `dataset` pointing to the GMM file and
            `number_of_gaussians` to the number of GMMs (or None)"""
-        l = ihm.location.InputFileLocation(filename,
-                details="Electron microscopy density map, "
-                        "represented as a Gaussian Mixture Model (GMM)")
-        # A 3DEM restraint's dataset ID uniquely defines the mmCIF restraint, so
-        # we need to allow duplicates
-        l._allow_duplicates = True
-        d = ihm.dataset.EMDensityDataset(l)
-        ret = {'dataset':d, 'number_of_gaussians':None}
+        loc = ihm.location.InputFileLocation(
+            filename,
+            details="Electron microscopy density map, "
+                    "represented as a Gaussian Mixture Model (GMM)")
+        # A 3DEM restraint's dataset ID uniquely defines the mmCIF
+        # restraint, so we need to allow duplicates
+        loc._allow_duplicates = True
+        d = ihm.dataset.EMDensityDataset(loc)
+        ret = {'dataset': d, 'number_of_gaussians': None}
 
         with open(filename) as fh:
             for line in fh:

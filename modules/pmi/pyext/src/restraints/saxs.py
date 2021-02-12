@@ -20,9 +20,9 @@ except ImportError:
 import warnings
 
 class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
-    _include_in_rmf = True
-
     """Basic SAXS restraint."""
+
+    _include_in_rmf = True
 
     def __init__(self, input_objects, saxs_datafile, weight=1.0,
                  ff_type=IMP.saxs.HEAVY_ATOMS, label=None, maxq="standard"):
