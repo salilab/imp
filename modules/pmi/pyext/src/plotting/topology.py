@@ -258,7 +258,7 @@ def draw_component_composition(DegreesOfFreedom, max=1000,
                 for mv_rb in rb_movers:
                     try:
                         movers_mols_res[mv_rb][mol].remove(i)
-                    except ValueError:
+                    except (ValueError, KeyError):
                         continue
 
     elements = {}

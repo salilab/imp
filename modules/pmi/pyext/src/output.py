@@ -25,6 +25,7 @@ try:
 except ImportError:
     import pickle
 
+
 class _ChainIDs(object):
     """Map indices to multi-character chain IDs.
        We label the first 26 chains A-Z, then we move to two-letter
@@ -52,6 +53,7 @@ class ProtocolOutput(object):
             mmCIF files.
     """
     pass
+
 
 def _flatten(seq):
     for elt in seq:
@@ -83,7 +85,7 @@ def _disambiguate_chain(chid, seen_chains):
 
 def _write_pdb_internal(flpdb, particle_infos_for_pdb, geometric_center,
                         write_all_residues_per_bead):
-    for n,tupl in enumerate(particle_infos_for_pdb):
+    for n, tupl in enumerate(particle_infos_for_pdb):
         (xyz, atom_type, residue_type,
          chain_id, residue_index, all_indexes, radius) = tupl
         if atom_type is None:
@@ -137,22 +139,22 @@ def _write_mmcif_internal(flpdb, particle_infos_for_pdb, geometric_center,
 
     writer = ihm.format.CifWriter(flpdb)
     writer.start_block('model')
-    with writer.category("_entry") as l:
-        l.write(id='model')
+    with writer.category("_entry") as lp:
+        lp.write(id='model')
 
-    with writer.loop("_entity", ["id"]) as l:
+    with writer.loop("_entity", ["id"]) as lp:
         for e in entities:
-            l.write(id=e.id)
+            lp.write(id=e.id)
 
     with writer.loop("_entity_poly",
-                     ["entity_id", "pdbx_seq_one_letter_code"]) as l:
+                     ["entity_id", "pdbx_seq_one_letter_code"]) as lp:
         for e in entities:
-            l.write(entity_id=e.id, pdbx_seq_one_letter_code=e.seq)
+            lp.write(entity_id=e.id, pdbx_seq_one_letter_code=e.seq)
 
-    with writer.loop("_struct_asym", ["id", "entity_id", "details"]) as l:
+    with writer.loop("_struct_asym", ["id", "entity_id", "details"]) as lp:
         for chid in sorted(chains.values()):
             ci = chain_info[chid]
-            l.write(id=chid, entity_id=ci.entity.id, details=ci.name)
+            lp.write(id=chid, entity_id=ci.entity.id, details=ci.name)
 
     with writer.loop("_atom_site",
                      ["group_PDB", "type_symbol", "label_atom_id",
@@ -160,9 +162,9 @@ def _write_mmcif_internal(flpdb, particle_infos_for_pdb, geometric_center,
                       "auth_seq_id",
                       "Cartn_x", "Cartn_y", "Cartn_z", "label_entity_id",
                       "pdbx_pdb_model_num",
-                      "id"]) as l:
+                      "id"]) as lp:
         ordinal = 1
-        for n,tupl in enumerate(particle_infos_for_pdb):
+        for n, tupl in enumerate(particle_infos_for_pdb):
             (xyz, atom_type, residue_type,
              chain_id, residue_index, all_indexes, radius) = tupl
             ci = chain_info[chain_id]
@@ -171,27 +173,27 @@ def _write_mmcif_internal(flpdb, particle_infos_for_pdb, geometric_center,
             c = xyz - geometric_center
             if write_all_residues_per_bead and all_indexes is not None:
                 for residue_number in all_indexes:
-                    l.write(group_PDB='ATOM',
-                            type_symbol='C',
-                            label_atom_id=atom_type.get_string(),
-                            label_comp_id=residue_type.get_string(),
-                            label_asym_id=chain_id,
-                            label_seq_id=residue_index,
-                            auth_seq_id=residue_index, Cartn_x=c[0],
-                            Cartn_y=c[1], Cartn_z=c[2], id=ordinal,
-                            pdbx_pdb_model_num=1,
-                            label_entity_id=ci.entity.id)
+                    lp.write(group_PDB='ATOM',
+                             type_symbol='C',
+                             label_atom_id=atom_type.get_string(),
+                             label_comp_id=residue_type.get_string(),
+                             label_asym_id=chain_id,
+                             label_seq_id=residue_index,
+                             auth_seq_id=residue_index, Cartn_x=c[0],
+                             Cartn_y=c[1], Cartn_z=c[2], id=ordinal,
+                             pdbx_pdb_model_num=1,
+                             label_entity_id=ci.entity.id)
                     ordinal += 1
             else:
-                l.write(group_PDB='ATOM', type_symbol='C',
-                        label_atom_id=atom_type.get_string(),
-                        label_comp_id=residue_type.get_string(),
-                        label_asym_id=chain_id,
-                        label_seq_id=residue_index,
-                        auth_seq_id=residue_index, Cartn_x=c[0],
-                        Cartn_y=c[1], Cartn_z=c[2], id=ordinal,
-                        pdbx_pdb_model_num=1,
-                        label_entity_id=ci.entity.id)
+                lp.write(group_PDB='ATOM', type_symbol='C',
+                         label_atom_id=atom_type.get_string(),
+                         label_comp_id=residue_type.get_string(),
+                         label_asym_id=chain_id,
+                         label_seq_id=residue_index,
+                         auth_seq_id=residue_index, Cartn_x=c[0],
+                         Cartn_y=c[1], Cartn_z=c[2], id=ordinal,
+                         pdbx_pdb_model_num=1,
+                         label_entity_id=ci.entity.id)
                 ordinal += 1
 
 
@@ -200,7 +202,7 @@ class Output(object):
 
     @note Model should be updated prior to writing outputs.
     """
-    def __init__(self, ascii=True,atomistic=False):
+    def __init__(self, ascii=True, atomistic=False):
         self.dictionary_pdbs = {}
         self._pdb_mmcif = {}
         self.dictionary_rmfs = {}
@@ -214,12 +216,13 @@ class Output(object):
         self.initoutput = {}
         self.residuetypekey = IMP.StringKey("ResidueName")
         # 1-character chain IDs, suitable for PDB output
-        self.chainids = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        self.chainids = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" \
+            "abcdefghijklmnopqrstuvwxyz0123456789"
         # Multi-character chain IDs, suitable for mmCIF output
         self.multi_chainids = _ChainIDs()
         self.dictchain = {}  # keys are molecule names, values are chain ids
         self.particle_infos_for_pdb = {}
-        self.atomistic=atomistic
+        self.atomistic = atomistic
         self.use_pmi2 = False
 
     def get_pdb_names(self):
@@ -240,13 +243,16 @@ class Output(object):
         # attempt to find PMI objects.
         if IMP.pmi.get_is_canonical(prot):
             self.use_pmi2 = True
-            self.atomistic = True #detects automatically
-            for n,mol in enumerate(IMP.atom.get_by_type(prot,IMP.atom.MOLECULE_TYPE)):
+            self.atomistic = True  # detects automatically
+            for n, mol in enumerate(IMP.atom.get_by_type(
+                    prot, IMP.atom.MOLECULE_TYPE)):
                 chid = _disambiguate_chain(IMP.atom.Chain(mol).get_id(),
                                            seen_chains)
-                self.dictchain[name][IMP.pmi.get_molecule_name_and_copy(mol)] = chid
+                molname = IMP.pmi.get_molecule_name_and_copy(mol)
+                self.dictchain[name][molname] = chid
         else:
-            chainids = self.multi_chainids if multichar_chain else self.chainids
+            chainids = self.multi_chainids if multichar_chain \
+                else self.chainids
             for n, i in enumerate(self.dictionary_pdbs[name].get_children()):
                 self.dictchain[name][i.get_name()] = chainids[n]
 
@@ -255,7 +261,8 @@ class Output(object):
         @param name The PDB filename
         @param prot The hierarchy to write to this pdb file
         @param mmcif If True, write PDBs in mmCIF format
-        @note if the PDB name is 'System' then will use Selection to get molecules
+        @note if the PDB name is 'System' then will use Selection
+              to get molecules
         """
         flpdb = open(name, 'w')
         flpdb.close()
@@ -263,43 +270,48 @@ class Output(object):
         self._pdb_mmcif[name] = mmcif
         self._init_dictchain(name, prot)
 
-    def write_psf(self,filename,name):
-        flpsf=open(filename,'w')
-        flpsf.write("PSF CMAP CHEQ"+"\n")
-        index_residue_pair_list={}
-        (particle_infos_for_pdb, geometric_center)=self.get_particle_infos_for_pdb_writing(name)
-        nparticles=len(particle_infos_for_pdb)
-        flpsf.write(str(nparticles)+" !NATOM"+"\n")
-        for n,p in enumerate(particle_infos_for_pdb):
-            atom_index=n+1
-            residue_type=p[2]
-            chain=p[3]
-            resid=p[4]
-            flpsf.write('{0:8d}{1:1s}{2:4s}{3:1s}{4:4s}{5:1s}{6:4s}{7:1s}{8:4s}{9:1s}{10:4s}{11:14.6f}{12:14.6f}{13:8d}{14:14.6f}{15:14.6f}'.format(atom_index," ",chain," ",str(resid)," ",'"'+residue_type.get_string()+'"'," ","C"," ","C",1.0,0.0,0,0.0,0.0))
+    def write_psf(self, filename, name):
+        flpsf = open(filename, 'w')
+        flpsf.write("PSF CMAP CHEQ" + "\n")
+        index_residue_pair_list = {}
+        (particle_infos_for_pdb, geometric_center) = \
+            self.get_particle_infos_for_pdb_writing(name)
+        nparticles = len(particle_infos_for_pdb)
+        flpsf.write(str(nparticles) + " !NATOM" + "\n")
+        for n, p in enumerate(particle_infos_for_pdb):
+            atom_index = n+1
+            residue_type = p[2]
+            chain = p[3]
+            resid = p[4]
+            flpsf.write('{0:8d}{1:1s}{2:4s}{3:1s}{4:4s}{5:1s}{6:4s}{7:1s}'
+                        '{8:4s}{9:1s}{10:4s}{11:14.6f}{12:14.6f}{13:8d}'
+                        '{14:14.6f}{15:14.6f}'.format(
+                            atom_index, " ", chain, " ", str(resid), " ",
+                            '"'+residue_type.get_string()+'"', " ", "C",
+                            " ", "C", 1.0, 0.0, 0, 0.0, 0.0))
             flpsf.write('\n')
-            #flpsf.write(str(atom_index)+" "+str(chain)+" "+str(resid)+" "+str(residue_type).replace('"','')+" C C "+"1.0 0.0 0 0.0 0.0\n")
             if chain not in index_residue_pair_list:
-                index_residue_pair_list[chain]=[(atom_index,resid)]
+                index_residue_pair_list[chain] = [(atom_index, resid)]
             else:
-                index_residue_pair_list[chain].append((atom_index,resid))
+                index_residue_pair_list[chain].append((atom_index, resid))
 
-
-        #now write the connectivity
-        indexes_pairs=[]
+        # now write the connectivity
+        indexes_pairs = []
         for chain in sorted(index_residue_pair_list.keys()):
 
-            ls=index_residue_pair_list[chain]
-            #sort by residue
-            ls=sorted(ls, key=lambda tup: tup[1])
-            #get the index list
-            indexes=[x[0] for x in ls]
+            ls = index_residue_pair_list[chain]
+            # sort by residue
+            ls = sorted(ls, key=lambda tup: tup[1])
+            # get the index list
+            indexes = [x[0] for x in ls]
             # get the contiguous pairs
-            indexes_pairs+=list(IMP.pmi.tools.sublist_iterator(indexes,lmin=2,lmax=2))
-        nbonds=len(indexes_pairs)
+            indexes_pairs += list(IMP.pmi.tools.sublist_iterator(
+                indexes, lmin=2, lmax=2))
+        nbonds = len(indexes_pairs)
         flpsf.write(str(nbonds)+" !NBOND: bonds"+"\n")
 
         # save bonds in fixed column format
-        for i in range(0,len(indexes_pairs),4):
+        for i in range(0, len(indexes_pairs), 4):
             for bond in indexes_pairs[i:i+4]:
                 flpsf.write('{0:8d}{1:8d}'.format(*bond))
             flpsf.write('\n')
@@ -307,8 +319,7 @@ class Output(object):
         del particle_infos_for_pdb
         flpsf.close()
 
-    def write_pdb(self,name,
-                  appendmode=True,
+    def write_pdb(self, name, appendmode=True,
                   translate_to_geometric_center=False,
                   write_all_residues_per_bead=False):
 
@@ -338,13 +349,13 @@ class Output(object):
             return IMP.pmi.get_molecule_name_and_copy(p), True
         else:
             return IMP.pmi.tools.get_prot_name_from_particle(
-                                       p, self.dictchain[name])
+                p, self.dictchain[name])
 
     def get_particle_infos_for_pdb_writing(self, name):
         # index_residue_pair_list={}
 
-        # the resindexes dictionary keep track of residues that have been already
-        # added to avoid duplication
+        # the resindexes dictionary keep track of residues that have
+        # been already added to avoid duplication
         # highest resolution have highest priority
         resindexes_dict = {}
 
@@ -354,11 +365,11 @@ class Output(object):
 
         geometric_center = [0, 0, 0]
         atom_count = 0
-        atom_index = 0
 
         if self.use_pmi2:
             # select highest resolution
-            ps = IMP.atom.Selection(self.dictionary_pdbs[name],resolution=0).get_selected_particles()
+            sel = IMP.atom.Selection(self.dictionary_pdbs[name], resolution=0)
+            ps = sel.get_selected_particles()
         else:
             ps = IMP.atom.get_leaves(self.dictionary_pdbs[name])
 
@@ -379,8 +390,9 @@ class Output(object):
                 geometric_center[1] += xyz[1]
                 geometric_center[2] += xyz[2]
                 atom_count += 1
-                particle_infos_for_pdb.append((xyz,
-                                               atomtype, rt, self.dictchain[name][protname], resind, None, radius))
+                particle_infos_for_pdb.append(
+                    (xyz, atomtype, rt, self.dictchain[name][protname],
+                     resind, None, radius))
                 resindexes_dict[protname].append(resind)
 
             elif IMP.atom.Residue.get_is_setup(p):
@@ -400,8 +412,9 @@ class Output(object):
                 geometric_center[1] += xyz[1]
                 geometric_center[2] += xyz[2]
                 atom_count += 1
-                particle_infos_for_pdb.append((xyz, None,
-                                               rt, self.dictchain[name][protname], resind, None, radius))
+                particle_infos_for_pdb.append(
+                    (xyz, None, rt, self.dictchain[name][protname], resind,
+                     None, radius))
 
             elif IMP.atom.Fragment.get_is_setup(p) and not is_a_bead:
                 resindexes = IMP.pmi.tools.get_residue_indexes(p)
@@ -417,8 +430,9 @@ class Output(object):
                 geometric_center[1] += xyz[1]
                 geometric_center[2] += xyz[2]
                 atom_count += 1
-                particle_infos_for_pdb.append((xyz, None,
-                                               rt, self.dictchain[name][protname], resind, resindexes, radius))
+                particle_infos_for_pdb.append(
+                    (xyz, None, rt, self.dictchain[name][protname], resind,
+                     resindexes, radius))
 
             else:
                 if is_a_bead:
@@ -432,8 +446,9 @@ class Output(object):
                         geometric_center[1] += xyz[1]
                         geometric_center[2] += xyz[2]
                         atom_count += 1
-                        particle_infos_for_pdb.append((xyz, None,
-                                                       rt, self.dictchain[name][protname], resind, resindexes, radius))
+                        particle_infos_for_pdb.append(
+                            (xyz, None, rt, self.dictchain[name][protname],
+                             resind, resindexes, radius))
 
         if atom_count > 0:
             geometric_center = (geometric_center[0] / atom_count,
@@ -446,7 +461,6 @@ class Output(object):
                                         key=lambda x: (len(x[3]), x[3], x[4]))
 
         return (particle_infos_for_pdb, geometric_center)
-
 
     def write_pdbs(self, appendmode=True, mmcif=False):
         for pdb in self.dictionary_pdbs.keys():
@@ -489,7 +503,8 @@ class Output(object):
 
     def write_pdb_best_scoring(self, score):
         if self.nbestscoring is None:
-            print("Output.write_pdb_best_scoring: init_pdb_best_scoring not run")
+            print("Output.write_pdb_best_scoring: init_pdb_best_scoring "
+                  "not run")
 
         mmcif = self._pdb_best_scoring_mmcif
         fileext = '.cif' if mmcif else '.pdb'
@@ -521,7 +536,8 @@ class Output(object):
                 self.best_score_list.pop(-1)
                 index = self.best_score_list.index(score)
                 for suffix in self.suffixes:
-                    for i in range(len(self.best_score_list) - 1, index - 1, -1):
+                    for i in range(len(self.best_score_list) - 1,
+                                   index - 1, -1):
                         oldname = suffix + "." + str(i) + fileext
                         newname = suffix + "." + str(i + 1) + fileext
                         os.rename(oldname, newname)
@@ -537,7 +553,8 @@ class Output(object):
                 best_score_file.write(
                     "self.best_score_list=" + str(self.best_score_list) + '\n')
 
-    def init_rmf(self, name, hierarchies, rs=None, geometries=None, listofobjects=None):
+    def init_rmf(self, name, hierarchies, rs=None, geometries=None,
+                 listofobjects=None):
         """
         Initialize an RMF file
 
@@ -545,26 +562,29 @@ class Output(object):
         @param hierarchies   the hierarchies to be included (it is a list)
         @param rs            optional, the restraint sets (it is a list)
         @param geometries    optional, the geometries (it is a list)
-        @param listofobjects optional, the list of objects for the stat (it is a list)
+        @param listofobjects optional, the list of objects for the stat
+               (it is a list)
         """
         rh = RMF.create_rmf_file(name)
         IMP.rmf.add_hierarchies(rh, hierarchies)
-        cat=None
-        outputkey_rmfkey=None
+        cat = None
+        outputkey_rmfkey = None
 
         if rs is not None:
-            IMP.rmf.add_restraints(rh,rs)
+            IMP.rmf.add_restraints(rh, rs)
         if geometries is not None:
-            IMP.rmf.add_geometries(rh,geometries)
+            IMP.rmf.add_geometries(rh, geometries)
         if listofobjects is not None:
             cat = rh.get_category("stat")
-            outputkey_rmfkey={}
-            for l in listofobjects:
-                if not "get_output" in dir(l):
-                    raise ValueError("Output: object %s doesn't have get_output() method" % str(l))
-                output=l.get_output()
+            outputkey_rmfkey = {}
+            for o in listofobjects:
+                if "get_output" not in dir(o):
+                    raise ValueError(
+                        "Output: object %s doesn't have get_output() method"
+                        % str(o))
+                output = o.get_output()
                 for outputkey in output:
-                    rmftag=RMF.string_tag
+                    rmftag = RMF.string_tag
                     if isinstance(output[outputkey], float):
                         rmftag = RMF.float_tag
                     elif isinstance(output[outputkey], int):
@@ -573,12 +593,14 @@ class Output(object):
                         rmftag = RMF.string_tag
                     else:
                         rmftag = RMF.string_tag
-                    rmfkey=rh.get_key(cat, outputkey, rmftag)
-                    outputkey_rmfkey[outputkey]=rmfkey
-            outputkey_rmfkey["rmf_file"]=rh.get_key(cat, "rmf_file", RMF.string_tag)
-            outputkey_rmfkey["rmf_frame_index"]=rh.get_key(cat, "rmf_frame_index", RMF.int_tag)
+                    rmfkey = rh.get_key(cat, outputkey, rmftag)
+                    outputkey_rmfkey[outputkey] = rmfkey
+            outputkey_rmfkey["rmf_file"] = \
+                rh.get_key(cat, "rmf_file", RMF.string_tag)
+            outputkey_rmfkey["rmf_frame_index"] = \
+                rh.get_key(cat, "rmf_frame_index", RMF.int_tag)
 
-        self.dictionary_rmfs[name] = (rh,cat,outputkey_rmfkey,listofobjects)
+        self.dictionary_rmfs[name] = (rh, cat, outputkey_rmfkey, listofobjects)
 
     def add_restraints_to_rmf(self, name, objectlist):
         for o in _flatten(objectlist):
@@ -586,7 +608,7 @@ class Output(object):
                 rs = o.get_restraint_for_rmf()
                 if not isinstance(rs, (list, tuple)):
                     rs = [rs]
-            except:
+            except:  # noqa: E722
                 rs = [o.get_restraint()]
             IMP.rmf.add_restraints(
                 self.dictionary_rmfs[name][0], rs)
@@ -608,22 +630,24 @@ class Output(object):
     def write_rmf(self, name):
         IMP.rmf.save_frame(self.dictionary_rmfs[name][0])
         if self.dictionary_rmfs[name][1] is not None:
-            cat=self.dictionary_rmfs[name][1]
-            outputkey_rmfkey=self.dictionary_rmfs[name][2]
-            listofobjects=self.dictionary_rmfs[name][3]
-            for l in listofobjects:
-                output=l.get_output()
+            outputkey_rmfkey = self.dictionary_rmfs[name][2]
+            listofobjects = self.dictionary_rmfs[name][3]
+            for o in listofobjects:
+                output = o.get_output()
                 for outputkey in output:
-                    rmfkey=outputkey_rmfkey[outputkey]
+                    rmfkey = outputkey_rmfkey[outputkey]
                     try:
-                        self.dictionary_rmfs[name][0].get_root_node().set_value(rmfkey,output[outputkey])
+                        n = self.dictionary_rmfs[name][0].get_root_node()
+                        n.set_value(rmfkey, output[outputkey])
                     except NotImplementedError:
                         continue
             rmfkey = outputkey_rmfkey["rmf_file"]
-            self.dictionary_rmfs[name][0].get_root_node().set_value(rmfkey, name)
+            self.dictionary_rmfs[name][0].get_root_node().set_value(
+                rmfkey, name)
             rmfkey = outputkey_rmfkey["rmf_frame_index"]
-            nframes=self.dictionary_rmfs[name][0].get_number_of_frames()
-            self.dictionary_rmfs[name][0].get_root_node().set_value(rmfkey, nframes-1)
+            nframes = self.dictionary_rmfs[name][0].get_number_of_frames()
+            self.dictionary_rmfs[name][0].get_root_node().set_value(
+                rmfkey, nframes-1)
         self.dictionary_rmfs[name][0].flush()
 
     def close_rmf(self, name):
@@ -644,9 +668,11 @@ class Output(object):
             flstat.close()
 
         # check that all objects in listofobjects have a get_output method
-        for l in listofobjects:
-            if not "get_output" in dir(l):
-                raise ValueError("Output: object %s doesn't have get_output() method" % str(l))
+        for o in listofobjects:
+            if "get_output" not in dir(o):
+                raise ValueError(
+                    "Output: object %s doesn't have get_output() method"
+                    % str(o))
         self.dictionary_stats[name] = listofobjects
 
     def set_output_entry(self, key, value):
@@ -671,7 +697,7 @@ class Output(object):
             flstat.close()
         else:
             flstat = open(name, writeflag + 'b')
-            cPickle.dump(output, flstat, 2)
+            pickle.dump(output, flstat, 2)
             flstat.close()
 
     def write_stats(self):
@@ -685,52 +711,44 @@ class Output(object):
         return output
 
     def write_test(self, name, listofobjects):
-#       write the test:
-#       output=output.Output()
-#       output.write_test("test_modeling11_models.rmf_45492_11Sep13_veena_imp-020713.dat",outputobjects)
-#       run the test:
-#       output=output.Output()
-#       output.test("test_modeling11_models.rmf_45492_11Sep13_veena_imp-020713.dat",outputobjects)
         flstat = open(name, 'w')
         output = self.initoutput
-        for l in listofobjects:
-            if not "get_test_output" in dir(l) and not "get_output" in dir(l):
-                raise ValueError("Output: object %s doesn't have get_output() or get_test_output() method" % str(l))
+        for o in listofobjects:
+            if "get_test_output" not in dir(o) and "get_output" not in dir(o):
+                raise ValueError(
+                    "Output: object %s doesn't have get_output() or "
+                    "get_test_output() method" % str(o))
         self.dictionary_stats[name] = listofobjects
 
         for obj in self.dictionary_stats[name]:
             try:
                 d = obj.get_test_output()
-            except:
+            except:  # noqa: E722
                 d = obj.get_output()
             # remove all entries that begin with _ (private entries)
             dfiltered = dict((k, v) for k, v in d.items() if k[0] != "_")
             output.update(dfiltered)
-        #output.update({"ENVIRONMENT": str(self.get_environment_variables())})
-        #output.update(
-        #    {"IMP_VERSIONS": str(self.get_versions_of_relevant_modules())})
         flstat.write("%s \n" % output)
         flstat.close()
 
     def test(self, name, listofobjects, tolerance=1e-5):
         output = self.initoutput
-        for l in listofobjects:
-            if not "get_test_output" in dir(l) and not "get_output" in dir(l):
-                raise ValueError("Output: object %s doesn't have get_output() or get_test_output() method" % str(l))
+        for o in listofobjects:
+            if "get_test_output" not in dir(o) and "get_output" not in dir(o):
+                raise ValueError(
+                    "Output: object %s doesn't have get_output() or "
+                    "get_test_output() method" % str(o))
         for obj in listofobjects:
             try:
                 output.update(obj.get_test_output())
-            except:
+            except:  # noqa: E722
                 output.update(obj.get_output())
-        #output.update({"ENVIRONMENT": str(self.get_environment_variables())})
-        #output.update(
-        #    {"IMP_VERSIONS": str(self.get_versions_of_relevant_modules())})
 
         flstat = open(name, 'r')
 
-        passed=True
-        for l in flstat:
-            test_dict = ast.literal_eval(l)
+        passed = True
+        for fl in flstat:
+            test_dict = ast.literal_eval(fl)
         for k in test_dict:
             if k in output:
                 old_value = str(test_dict[k])
@@ -750,16 +768,17 @@ class Output(object):
                               "diff %f > %f" % (str(k), str(old_value),
                                                 str(new_value), diff,
                                                 tolerance), file=sys.stderr)
-                        passed=False
+                        passed = False
                 elif test_dict[k] != output[k]:
                     if len(old_value) < 50 and len(new_value) < 50:
                         print("%s: test failed, old value: %s new value %s"
-                              % (str(k), old_value, new_value), file=sys.stderr)
-                        passed=False
+                              % (str(k), old_value, new_value),
+                              file=sys.stderr)
+                        passed = False
                     else:
                         print("%s: test failed, omitting results (too long)"
                               % str(k), file=sys.stderr)
-                        passed=False
+                        passed = False
 
             else:
                 print("%s from old objects (file %s) not in new objects"
@@ -779,25 +798,21 @@ class Output(object):
         try:
             import IMP.isd2
             versions["ISD2_VERSION"] = IMP.isd2.get_module_version()
-        except (ImportError):
+        except ImportError:
             pass
         try:
             import IMP.isd_emxl
             versions["ISD_EMXL_VERSION"] = IMP.isd_emxl.get_module_version()
-        except (ImportError):
+        except ImportError:
             pass
         return versions
 
-#-------------------
-    def init_stat2(
-        self,
-        name,
-        listofobjects,
-        extralabels=None,
-            listofsummedobjects=None):
+    def init_stat2(self, name, listofobjects, extralabels=None,
+                   listofsummedobjects=None):
         # this is a new stat file that should be less
         # space greedy!
-        # listofsummedobjects must be in the form [([obj1,obj2,obj3,obj4...],label)]
+        # listofsummedobjects must be in the form
+        # [([obj1,obj2,obj3,obj4...],label)]
         # extralabels
 
         if listofsummedobjects is None:
@@ -810,29 +825,36 @@ class Output(object):
         stat2_keywords.update(
             {"STAT2HEADER_ENVIRON": str(self.get_environment_variables())})
         stat2_keywords.update(
-            {"STAT2HEADER_IMP_VERSIONS": str(self.get_versions_of_relevant_modules())})
+            {"STAT2HEADER_IMP_VERSIONS":
+             str(self.get_versions_of_relevant_modules())})
         stat2_inverse = {}
 
-        for l in listofobjects:
-            if not "get_output" in dir(l):
-                raise ValueError("Output: object %s doesn't have get_output() method" % str(l))
+        for obj in listofobjects:
+            if "get_output" not in dir(obj):
+                raise ValueError(
+                    "Output: object %s doesn't have get_output() method"
+                    % str(obj))
             else:
-                d = l.get_output()
+                d = obj.get_output()
                 # remove all entries that begin with _ (private entries)
                 dfiltered = dict((k, v)
                                  for k, v in d.items() if k[0] != "_")
                 output.update(dfiltered)
 
         # check for customizable entries
-        for l in listofsummedobjects:
-            for t in l[0]:
-                if not "get_output" in dir(t):
-                    raise ValueError("Output: object %s doesn't have get_output() method" % str(t))
+        for obj in listofsummedobjects:
+            for t in obj[0]:
+                if "get_output" not in dir(t):
+                    raise ValueError(
+                        "Output: object %s doesn't have get_output() method"
+                        % str(t))
                 else:
                     if "_TotalScore" not in t.get_output():
-                        raise ValueError("Output: object %s doesn't have _TotalScore entry to be summed" % str(t))
+                        raise ValueError(
+                            "Output: object %s doesn't have _TotalScore "
+                            "entry to be summed" % str(t))
                     else:
-                        output.update({l[1]: 0.0})
+                        output.update({obj[1]: 0.0})
 
         for k in extralabels:
             output.update({k: 0.0})
@@ -862,12 +884,12 @@ class Output(object):
                 output.update({stat2_inverse[k]: od[k]})
 
         # writing summedobjects
-        for l in listofsummedobjects:
+        for so in listofsummedobjects:
             partial_score = 0.0
-            for t in l[0]:
+            for t in so[0]:
                 d = t.get_output()
                 partial_score += float(d["_TotalScore"])
-            output.update({stat2_inverse[l[1]]: str(partial_score)})
+            output.update({stat2_inverse[so[1]]: str(partial_score)})
 
         # writing extralabels
         for k in extralabels:
@@ -913,12 +935,13 @@ class ProcessOutput(object):
             raise ValueError("No file name provided. Use -h for help")
 
         try:
-            #let's see if that is an rmf file
+            # let's see if that is an rmf file
             rh = RMF.open_rmf_file_read_only(self.filename)
-            self.isrmf=True
-            cat=rh.get_category('stat')
-            rmf_klist=rh.get_keys(cat)
-            self.rmf_names_keys=dict([(rh.get_name(k),k) for k in rmf_klist])
+            self.isrmf = True
+            cat = rh.get_category('stat')
+            rmf_klist = rh.get_keys(cat)
+            self.rmf_names_keys = dict([(rh.get_name(k), k)
+                                       for k in rmf_klist])
             del rh
 
         except IOError:
@@ -938,21 +961,23 @@ class ProcessOutput(object):
                     stat2_dict = d
                     # get the list of keys sorted by value
                     kkeys = [k[0]
-                             for k in sorted(stat2_dict.items(), key=operator.itemgetter(1))]
+                             for k in sorted(stat2_dict.items(),
+                                             key=operator.itemgetter(1))]
                     self.klist = [k[1]
-                                  for k in sorted(stat2_dict.items(), key=operator.itemgetter(1))]
+                                  for k in sorted(stat2_dict.items(),
+                                                  key=operator.itemgetter(1))]
                     self.invstat2_dict = {}
                     for k in kkeys:
                         self.invstat2_dict.update({stat2_dict[k]: k})
                 else:
-                    IMP.handle_use_deprecated("statfile v1 is deprecated. "
-                                              "Please convert to statfile v2.\n")
+                    IMP.handle_use_deprecated(
+                        "statfile v1 is deprecated. "
+                        "Please convert to statfile v2.\n")
                     self.isstat1 = True
                     self.klist.sort()
 
                 break
             f.close()
-
 
     def get_keys(self):
         if self.isrmf:
@@ -967,12 +992,14 @@ class ProcessOutput(object):
                    statistics=None):
         '''
         Get the desired field names, and return a dictionary.
-        Namely, "fields" are the queried keys in the stat file (eg. ["Total_Score",...])
-        The returned data structure is a dictionary, where each key is a field and the value
-        is the time series (ie, frame ordered series)
-        of that field (ie, {"Total_Score":[Score_0,Score_1,Score_2,Score_3,...],....} )
+        Namely, "fields" are the queried keys in the stat file
+        (eg. ["Total_Score",...])
+        The returned data structure is a dictionary, where each key is
+        a field and the value is the time series (ie, frame ordered series)
+        of that field (ie, {"Total_Score":[Score_0,Score_1,Score_2,,...],....})
 
-        @param fields (list of strings) queried keys in the stat file (eg. "Total_Score"....)
+        @param fields (list of strings) queried keys in the stat file
+               (eg. "Total_Score"....)
         @param filterout specify if you want to "grep" out something from
                          the file, so that it is faster
         @param filtertuple a tuple that contains
@@ -992,23 +1019,26 @@ class ProcessOutput(object):
         # print fields values
         if self.isrmf:
             rh = RMF.open_rmf_file_read_only(self.filename)
-            nframes=rh.get_number_of_frames()
+            nframes = rh.get_number_of_frames()
             for i in range(nframes):
                 statistics.total += 1
                 # "get_every" and "filterout" not enforced for RMF
                 statistics.passed_get_every += 1
                 statistics.passed_filterout += 1
                 IMP.rmf.load_frame(rh, RMF.FrameID(i))
-                if not filtertuple is None:
+                if filtertuple is not None:
                     keytobefiltered = filtertuple[0]
                     relationship = filtertuple[1]
                     value = filtertuple[2]
-                    datavalue=rh.get_root_node().get_value(self.rmf_names_keys[keytobefiltered])
-                    if self.isfiltered(datavalue,relationship,value): continue
+                    datavalue = rh.get_root_node().get_value(
+                        self.rmf_names_keys[keytobefiltered])
+                    if self.isfiltered(datavalue, relationship, value):
+                        continue
 
                 statistics.passed_filtertuple += 1
                 for field in fields:
-                    outdict[field].append(rh.get_root_node().get_value(self.rmf_names_keys[field]))
+                    outdict[field].append(rh.get_root_node().get_value(
+                        self.rmf_names_keys[field]))
 
         else:
             f = open(self.filename, "r")
@@ -1016,7 +1046,7 @@ class ProcessOutput(object):
 
             for line in f.readlines():
                 statistics.total += 1
-                if not filterout is None:
+                if filterout is not None:
                     if filterout in line:
                         continue
                 statistics.passed_filterout += 1
@@ -1028,22 +1058,22 @@ class ProcessOutput(object):
                         statistics.passed_filterout -= 1
                     continue
                 statistics.passed_get_every += 1
-                #if line_number % 1000 == 0:
-                #    print "ProcessOutput.get_fields: read line %s from file %s" % (str(line_number), self.filename)
                 try:
                     d = ast.literal_eval(line)
-                except:
-                    print("# Warning: skipped line number " + str(line_number) + " not a valid line")
+                except:  # noqa: E722
+                    print("# Warning: skipped line number " + str(line_number)
+                          + " not a valid line")
                     continue
 
                 if self.isstat1:
 
-                    if not filtertuple is None:
+                    if filtertuple is not None:
                         keytobefiltered = filtertuple[0]
                         relationship = filtertuple[1]
                         value = filtertuple[2]
-                        datavalue=d[keytobefiltered]
-                        if self.isfiltered(datavalue, relationship, value): continue
+                        datavalue = d[keytobefiltered]
+                        if self.isfiltered(datavalue, relationship, value):
+                            continue
 
                     statistics.passed_filtertuple += 1
                     [outdict[field].append(d[field]) for field in fields]
@@ -1055,36 +1085,39 @@ class ProcessOutput(object):
                         statistics.passed_get_every -= 1
                         continue
 
-                    if not filtertuple is None:
+                    if filtertuple is not None:
                         keytobefiltered = filtertuple[0]
                         relationship = filtertuple[1]
                         value = filtertuple[2]
-                        datavalue=d[self.invstat2_dict[keytobefiltered]]
-                        if self.isfiltered(datavalue, relationship, value): continue
+                        datavalue = d[self.invstat2_dict[keytobefiltered]]
+                        if self.isfiltered(datavalue, relationship, value):
+                            continue
 
                     statistics.passed_filtertuple += 1
-                    [outdict[field].append(d[self.invstat2_dict[field]]) for field in fields]
+                    [outdict[field].append(d[self.invstat2_dict[field]])
+                     for field in fields]
 
             f.close()
 
         return outdict
 
-    def isfiltered(self,datavalue,relationship,refvalue):
-        dofilter=False
+    def isfiltered(self, datavalue, relationship, refvalue):
+        dofilter = False
         try:
-            fdatavalue=float(datavalue)
+            _ = float(datavalue)
         except ValueError:
-            raise ValueError("ProcessOutput.filter: datavalue cannot be converted into a float")
+            raise ValueError("ProcessOutput.filter: datavalue cannot be "
+                             "converted into a float")
 
         if relationship == "<":
             if float(datavalue) >= refvalue:
-                dofilter=True
+                dofilter = True
         if relationship == ">":
             if float(datavalue) <= refvalue:
-                dofilter=True
+                dofilter = True
         if relationship == "==":
             if float(datavalue) != refvalue:
-                dofilter=True
+                dofilter = True
         return dofilter
 
 
@@ -1096,25 +1129,25 @@ class RMFHierarchyHandler(IMP.atom.Hierarchy):
      - slice create an iterator
      - can relink to another RMF file
      """
-    def __init__(self,model,rmf_file_name):
+    def __init__(self, model, rmf_file_name):
         """
         @param model: the IMP.Model()
         @param rmf_file_name: str, path of the rmf file
         """
-        self.model=model
+        self.model = model
         try:
             self.rh_ref = RMF.open_rmf_file_read_only(rmf_file_name)
         except TypeError:
-            raise TypeError("Wrong rmf file name or type: %s"% str(rmf_file_name))
+            raise TypeError("Wrong rmf file name or type: %s"
+                            % str(rmf_file_name))
         hs = IMP.rmf.create_hierarchies(self.rh_ref, self.model)
         IMP.rmf.load_frame(self.rh_ref, RMF.FrameID(0))
         self.root_hier_ref = hs[0]
         IMP.atom.Hierarchy.__init__(self, self.root_hier_ref)
         self.model.update()
-        self.ColorHierarchy=None
+        self.ColorHierarchy = None
 
-
-    def link_to_rmf(self,rmf_file_name):
+    def link_to_rmf(self, rmf_file_name):
         """
         Link to another RMF file
         """
@@ -1122,19 +1155,19 @@ class RMFHierarchyHandler(IMP.atom.Hierarchy):
         IMP.rmf.link_hierarchies(self.rh_ref, [self])
         if self.ColorHierarchy:
             self.ColorHierarchy.method()
-        RMFHierarchyHandler.set_frame(self,0)
+        RMFHierarchyHandler.set_frame(self, 0)
 
-    def set_frame(self,index):
+    def set_frame(self, index):
         try:
             IMP.rmf.load_frame(self.rh_ref, RMF.FrameID(index))
-        except:
-            print("skipping frame %s:%d\n"%(self.current_rmf, index))
+        except:  # noqa: E722
+            print("skipping frame %s:%d\n" % (self.current_rmf, index))
         self.model.update()
 
     def get_number_of_frames(self):
         return self.rh_ref.get_number_of_frames()
 
-    def __getitem__(self,int_slice_adaptor):
+    def __getitem__(self, int_slice_adaptor):
         if isinstance(int_slice_adaptor, int):
             self.set_frame(int_slice_adaptor)
             return int_slice_adaptor
@@ -1146,7 +1179,7 @@ class RMFHierarchyHandler(IMP.atom.Hierarchy):
     def __len__(self):
         return self.get_number_of_frames()
 
-    def __iter__(self,slice_key=None):
+    def __iter__(self, slice_key=None):
         if slice_key is None:
             for nframe in range(len(self)):
                 yield self[nframe]
@@ -1154,54 +1187,55 @@ class RMFHierarchyHandler(IMP.atom.Hierarchy):
             for nframe in list(range(len(self)))[slice_key]:
                 yield self[nframe]
 
+
 class CacheHierarchyCoordinates(object):
-    def __init__(self,StatHierarchyHandler):
-        self.xyzs=[]
-        self.nrms=[]
-        self.rbs=[]
-        self.nrm_coors={}
-        self.xyz_coors={}
-        self.rb_trans={}
-        self.current_index=None
-        self.rmfh=StatHierarchyHandler
-        rbs,xyzs=IMP.pmi.tools.get_rbs_and_beads([self.rmfh])
-        self.model=self.rmfh.get_model()
-        self.rbs=rbs
+    def __init__(self, StatHierarchyHandler):
+        self.xyzs = []
+        self.nrms = []
+        self.rbs = []
+        self.nrm_coors = {}
+        self.xyz_coors = {}
+        self.rb_trans = {}
+        self.current_index = None
+        self.rmfh = StatHierarchyHandler
+        rbs, xyzs = IMP.pmi.tools.get_rbs_and_beads([self.rmfh])
+        self.model = self.rmfh.get_model()
+        self.rbs = rbs
         for xyz in xyzs:
             if IMP.core.NonRigidMember.get_is_setup(xyz):
-                nrm=IMP.core.NonRigidMember(xyz)
+                nrm = IMP.core.NonRigidMember(xyz)
                 self.nrms.append(nrm)
             else:
-                fb=IMP.core.XYZ(xyz)
+                fb = IMP.core.XYZ(xyz)
                 self.xyzs.append(fb)
 
-    def do_store(self,index):
-        self.rb_trans[index]={}
-        self.nrm_coors[index]={}
-        self.xyz_coors[index]={}
+    def do_store(self, index):
+        self.rb_trans[index] = {}
+        self.nrm_coors[index] = {}
+        self.xyz_coors[index] = {}
         for rb in self.rbs:
-            self.rb_trans[index][rb]=rb.get_reference_frame()
+            self.rb_trans[index][rb] = rb.get_reference_frame()
         for nrm in self.nrms:
-            self.nrm_coors[index][nrm]=nrm.get_internal_coordinates()
+            self.nrm_coors[index][nrm] = nrm.get_internal_coordinates()
         for xyz in self.xyzs:
-            self.xyz_coors[index][xyz]=xyz.get_coordinates()
-        self.current_index=index
+            self.xyz_coors[index][xyz] = xyz.get_coordinates()
+        self.current_index = index
 
-    def do_update(self,index):
-        if self.current_index!=index:
+    def do_update(self, index):
+        if self.current_index != index:
             for rb in self.rbs:
                 rb.set_reference_frame(self.rb_trans[index][rb])
             for nrm in self.nrms:
                 nrm.set_internal_coordinates(self.nrm_coors[index][nrm])
             for xyz in self.xyzs:
                 xyz.set_coordinates(self.xyz_coors[index][xyz])
-            self.current_index=index
+            self.current_index = index
             self.model.update()
 
     def get_number_of_frames(self):
         return len(self.rb_trans.keys())
 
-    def __getitem__(self,index):
+    def __getitem__(self, index):
         if isinstance(index, int):
             return index in self.rb_trans.keys()
         else:
@@ -1211,57 +1245,62 @@ class CacheHierarchyCoordinates(object):
         return self.get_number_of_frames()
 
 
-
-
 class StatHierarchyHandler(RMFHierarchyHandler):
     """ class to link stat files to several rmf files """
-    def __init__(self,model=None,stat_file=None,number_best_scoring_models=None,score_key=None,StatHierarchyHandler=None,cache=None):
+    def __init__(self, model=None, stat_file=None,
+                 number_best_scoring_models=None, score_key=None,
+                 StatHierarchyHandler=None, cache=None):
         """
 
         @param model: IMP.Model()
-        @param stat_file: either 1) a list or 2) a single stat file names (either rmfs or ascii, or pickled data or pickled cluster), 3) a dictionary containing an rmf/ascii
-            stat file name as key and a list of frames as values
+        @param stat_file: either 1) a list or 2) a single stat file names
+               (either rmfs or ascii, or pickled data or pickled cluster),
+               3) a dictionary containing an rmf/ascii
+               stat file name as key and a list of frames as values
         @param number_best_scoring_models:
         @param StatHierarchyHandler: copy constructor input object
         @param cache: cache coordinates and rigid body transformations.
         """
 
-        if not StatHierarchyHandler is None:
-            #overrides all other arguments
-            #copy constructor: create a copy with different RMFHierarchyHandler
-            self.model=StatHierarchyHandler.model
-            self.data=StatHierarchyHandler.data
-            self.number_best_scoring_models=StatHierarchyHandler.number_best_scoring_models
-            self.is_setup=True
-            self.current_rmf=StatHierarchyHandler.current_rmf
-            self.current_frame=None
-            self.current_index=None
-            self.score_threshold=StatHierarchyHandler.score_threshold
-            self.score_key=StatHierarchyHandler.score_key
-            self.cache=StatHierarchyHandler.cache
-            RMFHierarchyHandler.__init__(self, self.model,self.current_rmf)
+        if StatHierarchyHandler is not None:
+            # overrides all other arguments
+            # copy constructor: create a copy with
+            # different RMFHierarchyHandler
+            self.model = StatHierarchyHandler.model
+            self.data = StatHierarchyHandler.data
+            self.number_best_scoring_models = \
+                StatHierarchyHandler.number_best_scoring_models
+            self.is_setup = True
+            self.current_rmf = StatHierarchyHandler.current_rmf
+            self.current_frame = None
+            self.current_index = None
+            self.score_threshold = StatHierarchyHandler.score_threshold
+            self.score_key = StatHierarchyHandler.score_key
+            self.cache = StatHierarchyHandler.cache
+            RMFHierarchyHandler.__init__(self, self.model,
+                                         self.current_rmf)
             if self.cache:
-                self.cache=CacheHierarchyCoordinates(self)
+                self.cache = CacheHierarchyCoordinates(self)
             else:
-                self.cache=None
+                self.cache = None
             self.set_frame(0)
 
         else:
-            #standard constructor
-            self.model=model
-            self.data=[]
-            self.number_best_scoring_models=number_best_scoring_models
-            self.cache=cache
+            # standard constructor
+            self.model = model
+            self.data = []
+            self.number_best_scoring_models = number_best_scoring_models
+            self.cache = cache
 
             if score_key is None:
-                self.score_key="Total_Score"
+                self.score_key = "Total_Score"
             else:
-                self.score_key=score_key
-            self.is_setup=None
-            self.current_rmf=None
-            self.current_frame=None
-            self.current_index=None
-            self.score_threshold=None
+                self.score_key = score_key
+            self.is_setup = None
+            self.current_rmf = None
+            self.current_frame = None
+            self.current_index = None
+            self.score_threshold = None
 
             if isinstance(stat_file, str):
                 self.add_stat_file(stat_file)
@@ -1269,105 +1308,119 @@ class StatHierarchyHandler(RMFHierarchyHandler):
                 for f in stat_file:
                     self.add_stat_file(f)
 
-    def add_stat_file(self,stat_file):
+    def add_stat_file(self, stat_file):
         try:
-            '''check that it is not a pickle file with saved data from a previous calculation'''
+            '''check that it is not a pickle file with saved data
+               from a previous calculation'''
             self.load_data(stat_file)
 
             if self.number_best_scoring_models:
                 scores = self.get_scores()
-                max_score = sorted(scores)[0:min(len(self), self.number_best_scoring_models)][-1]
+                max_score = sorted(scores)[
+                    0:min(len(self), self.number_best_scoring_models)][-1]
                 self.do_filter_by_score(max_score)
 
         except pickle.UnpicklingError:
             '''alternatively read the ascii stat files'''
             try:
-                scores,rmf_files,rmf_frame_indexes,features = self.get_info_from_stat_file(stat_file, self.score_threshold)
+                scores, rmf_files, rmf_frame_indexes, features = \
+                    self.get_info_from_stat_file(stat_file,
+                                                 self.score_threshold)
             except (KeyError, SyntaxError):
-                # in this case check that is it an rmf file, probably without stat stored in
+                # in this case check that is it an rmf file, probably
+                # without stat stored in
                 try:
                     # let's see if that is an rmf file
                     rh = RMF.open_rmf_file_read_only(stat_file)
                     nframes = rh.get_number_of_frames()
-                    scores=[0.0]*nframes
-                    rmf_files=[stat_file]*nframes
-                    rmf_frame_indexes=range(nframes)
-                    features={}
-                except:
+                    scores = [0.0]*nframes
+                    rmf_files = [stat_file]*nframes
+                    rmf_frame_indexes = range(nframes)
+                    features = {}
+                except:  # noqa: E722
                     return
-
 
             if len(set(rmf_files)) > 1:
                 raise ("Multiple RMF files found")
 
             if not rmf_files:
-                print("StatHierarchyHandler: Error: Trying to set none as rmf_file (probably empty stat file), aborting")
+                print("StatHierarchyHandler: Error: Trying to set none as "
+                      "rmf_file (probably empty stat file), aborting")
                 return
 
-            for n,index in enumerate(rmf_frame_indexes):
-                featn_dict=dict([(k,features[k][n]) for k in features])
-                self.data.append(IMP.pmi.output.DataEntry(stat_file,rmf_files[n],index,scores[n],featn_dict))
+            for n, index in enumerate(rmf_frame_indexes):
+                featn_dict = dict([(k, features[k][n]) for k in features])
+                self.data.append(IMP.pmi.output.DataEntry(
+                    stat_file, rmf_files[n], index, scores[n], featn_dict))
 
             if self.number_best_scoring_models:
-                scores=self.get_scores()
-                max_score=sorted(scores)[0:min(len(self),self.number_best_scoring_models)][-1]
+                scores = self.get_scores()
+                max_score = sorted(scores)[
+                    0:min(len(self), self.number_best_scoring_models)][-1]
                 self.do_filter_by_score(max_score)
 
         if not self.is_setup:
-            RMFHierarchyHandler.__init__(self, self.model,self.get_rmf_names()[0])
+            RMFHierarchyHandler.__init__(
+                self, self.model, self.get_rmf_names()[0])
             if self.cache:
-                self.cache=CacheHierarchyCoordinates(self)
+                self.cache = CacheHierarchyCoordinates(self)
             else:
-                self.cache=None
-            self.is_setup=True
-            self.current_rmf=self.get_rmf_names()[0]
+                self.cache = None
+            self.is_setup = True
+            self.current_rmf = self.get_rmf_names()[0]
 
         self.set_frame(0)
 
-    def save_data(self,filename='data.pkl'):
+    def save_data(self, filename='data.pkl'):
         with open(filename, 'wb') as fl:
             pickle.dump(self.data, fl)
 
-    def load_data(self,filename='data.pkl'):
+    def load_data(self, filename='data.pkl'):
         with open(filename, 'rb') as fl:
-            data_structure=pickle.load(fl)
-        #first check that it is a list
+            data_structure = pickle.load(fl)
+        # first check that it is a list
         if not isinstance(data_structure, list):
-            raise TypeError("%filename should contain a list of IMP.pmi.output.DataEntry or IMP.pmi.output.Cluster" % filename)
+            raise TypeError(
+                "%filename should contain a list of IMP.pmi.output.DataEntry "
+                "or IMP.pmi.output.Cluster" % filename)
         # second check the types
-        if all(isinstance(item, IMP.pmi.output.DataEntry) for item in data_structure):
-            self.data=data_structure
-        elif all(isinstance(item, IMP.pmi.output.Cluster) for item in data_structure):
-            nmodels=0
+        if all(isinstance(item, IMP.pmi.output.DataEntry)
+               for item in data_structure):
+            self.data = data_structure
+        elif all(isinstance(item, IMP.pmi.output.Cluster)
+                 for item in data_structure):
+            nmodels = 0
             for cluster in data_structure:
-                nmodels+=len(cluster)
-            self.data=[None]*nmodels
+                nmodels += len(cluster)
+            self.data = [None]*nmodels
             for cluster in data_structure:
-                for n,data in enumerate(cluster):
-                    index=cluster.members[n]
-                    self.data[index]=data
+                for n, data in enumerate(cluster):
+                    index = cluster.members[n]
+                    self.data[index] = data
         else:
-            raise TypeError("%filename should contain a list of IMP.pmi.output.DataEntry or IMP.pmi.output.Cluster" % filename)
+            raise TypeError(
+                "%filename should contain a list of IMP.pmi.output.DataEntry "
+                "or IMP.pmi.output.Cluster" % filename)
 
-    def set_frame(self,index):
+    def set_frame(self, index):
         if self.cache is not None and self.cache[index]:
             self.cache.do_update(index)
         else:
-            nm=self.data[index].rmf_name
-            fidx=self.data[index].rmf_index
+            nm = self.data[index].rmf_name
+            fidx = self.data[index].rmf_index
             if nm != self.current_rmf:
                 self.link_to_rmf(nm)
-                self.current_rmf=nm
-                self.current_frame=-1
-            if fidx!=self.current_frame:
+                self.current_rmf = nm
+                self.current_frame = -1
+            if fidx != self.current_frame:
                 RMFHierarchyHandler.set_frame(self, fidx)
-                self.current_frame=fidx
+                self.current_frame = fidx
             if self.cache is not None:
                 self.cache.do_store(index)
 
         self.current_index = index
 
-    def __getitem__(self,int_slice_adaptor):
+    def __getitem__(self, int_slice_adaptor):
         if isinstance(int_slice_adaptor, int):
             self.set_frame(int_slice_adaptor)
             return self.data[int_slice_adaptor]
@@ -1379,7 +1432,7 @@ class StatHierarchyHandler(RMFHierarchyHandler):
     def __len__(self):
         return len(self.data)
 
-    def __iter__(self,slice_key=None):
+    def __iter__(self, slice_key=None):
         if slice_key is None:
             for i in range(len(self)):
                 yield self[i]
@@ -1387,13 +1440,13 @@ class StatHierarchyHandler(RMFHierarchyHandler):
             for i in range(len(self))[slice_key]:
                 yield self[i]
 
-    def do_filter_by_score(self,maximum_score):
-        self.data=[d for d in self.data if d.score<=maximum_score]
+    def do_filter_by_score(self, maximum_score):
+        self.data = [d for d in self.data if d.score <= maximum_score]
 
     def get_scores(self):
         return [d.score for d in self.data]
 
-    def get_feature_series(self,feature_name):
+    def get_feature_series(self, feature_name):
         return [d.features[feature_name] for d in self.data]
 
     def get_feature_names(self):
@@ -1409,43 +1462,39 @@ class StatHierarchyHandler(RMFHierarchyHandler):
         return [d.rmf_index for d in self.data]
 
     def get_info_from_stat_file(self, stat_file, score_threshold=None):
-        po=ProcessOutput(stat_file)
-        fs=po.get_keys()
-        models = IMP.pmi.io.get_best_models([stat_file],
-                                            score_key=self.score_key,
-                                            feature_keys=fs,
-                                            rmf_file_key="rmf_file",
-                                            rmf_file_frame_key="rmf_frame_index",
-                                            prefiltervalue=score_threshold,
-                                            get_every=1)
-
-
+        po = ProcessOutput(stat_file)
+        fs = po.get_keys()
+        models = IMP.pmi.io.get_best_models(
+            [stat_file], score_key=self.score_key, feature_keys=fs,
+            rmf_file_key="rmf_file", rmf_file_frame_key="rmf_frame_index",
+            prefiltervalue=score_threshold, get_every=1)
 
         scores = [float(y) for y in models[2]]
         rmf_files = models[0]
         rmf_frame_indexes = models[1]
-        features=models[3]
-        return scores, rmf_files, rmf_frame_indexes,features
+        features = models[3]
+        return scores, rmf_files, rmf_frame_indexes, features
 
 
 class DataEntry(object):
     '''
     A class to store data associated to a model
     '''
-    def __init__(self,stat_file=None,rmf_name=None,rmf_index=None,score=None,features=None):
-        self.rmf_name=rmf_name
-        self.rmf_index=rmf_index
-        self.score=score
-        self.features=features
-        self.stat_file=stat_file
+    def __init__(self, stat_file=None, rmf_name=None, rmf_index=None,
+                 score=None, features=None):
+        self.rmf_name = rmf_name
+        self.rmf_index = rmf_index
+        self.score = score
+        self.features = features
+        self.stat_file = stat_file
 
     def __repr__(self):
-        s= "IMP.pmi.output.DataEntry\n"
-        s+="---- stat file %s \n"%(self.stat_file)
-        s+="---- rmf file %s \n"%(self.rmf_name)
-        s+="---- rmf index %s \n"%(str(self.rmf_index))
-        s+="---- score %s \n"%(str(self.score))
-        s+="---- number of features %s \n"%(str(len(self.features.keys())))
+        s = "IMP.pmi.output.DataEntry\n"
+        s += "---- stat file %s \n" % (self.stat_file)
+        s += "---- rmf file %s \n" % (self.rmf_name)
+        s += "---- rmf index %s \n" % (str(self.rmf_index))
+        s += "---- score %s \n" % (str(self.score))
+        s += "---- number of features %s \n" % (str(len(self.features.keys())))
         return s
 
 
@@ -1453,37 +1502,37 @@ class Cluster(object):
     '''
     A container for models organized into clusters
     '''
-    def __init__(self,cid=None):
-        self.cluster_id=cid
-        self.members=[]
-        self.precision=None
-        self.center_index=None
-        self.members_data={}
+    def __init__(self, cid=None):
+        self.cluster_id = cid
+        self.members = []
+        self.precision = None
+        self.center_index = None
+        self.members_data = {}
 
-    def add_member(self,index,data=None):
+    def add_member(self, index, data=None):
         self.members.append(index)
-        self.members_data[index]=data
-        self.average_score=self.compute_score()
+        self.members_data[index] = data
+        self.average_score = self.compute_score()
 
     def compute_score(self):
         try:
-            score=sum([d.score for d in self])/len(self)
+            score = sum([d.score for d in self])/len(self)
         except AttributeError:
-            score=None
+            score = None
         return score
 
     def __repr__(self):
-        s= "IMP.pmi.output.Cluster\n"
-        s+="---- cluster_id %s \n"%str(self.cluster_id)
-        s+="---- precision %s \n"%str(self.precision)
-        s+="---- average score %s \n"%str(self.average_score)
-        s+="---- number of members %s \n"%str(len(self.members))
-        s+="---- center index %s \n"%str(self.center_index)
+        s = "IMP.pmi.output.Cluster\n"
+        s += "---- cluster_id %s \n" % str(self.cluster_id)
+        s += "---- precision %s \n" % str(self.precision)
+        s += "---- average score %s \n" % str(self.average_score)
+        s += "---- number of members %s \n" % str(len(self.members))
+        s += "---- center index %s \n" % str(self.center_index)
         return s
 
-    def __getitem__(self,int_slice_adaptor):
+    def __getitem__(self, int_slice_adaptor):
         if isinstance(int_slice_adaptor, int):
-            index=self.members[int_slice_adaptor]
+            index = self.members[int_slice_adaptor]
             return self.members_data[index]
         elif isinstance(int_slice_adaptor, slice):
             return self.__iter__(int_slice_adaptor)
@@ -1493,7 +1542,7 @@ class Cluster(object):
     def __len__(self):
         return len(self.members)
 
-    def __iter__(self,slice_key=None):
+    def __iter__(self, slice_key=None):
         if slice_key is None:
             for i in range(len(self)):
                 yield self[i]
@@ -1502,50 +1551,52 @@ class Cluster(object):
                 yield self[i]
 
     def __add__(self, other):
-        self.members+=other.members
+        self.members += other.members
         self.members_data.update(other.members_data)
-        self.average_score=self.compute_score()
-        self.precision=None
-        self.center_index=None
+        self.average_score = self.compute_score()
+        self.precision = None
+        self.center_index = None
         return self
 
 
 def plot_clusters_populations(clusters):
-    indexes=[]
-    populations=[]
+    indexes = []
+    populations = []
     for cluster in clusters:
         indexes.append(cluster.cluster_id)
         populations.append(len(cluster))
 
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots()
-    ax.bar(indexes, populations, 0.5, color='r') #, yerr=men_std)
+    ax.bar(indexes, populations, 0.5, color='r')
     ax.set_ylabel('Population')
     ax.set_xlabel(('Cluster index'))
     plt.show()
 
+
 def plot_clusters_precisions(clusters):
-    indexes=[]
-    precisions=[]
+    indexes = []
+    precisions = []
     for cluster in clusters:
         indexes.append(cluster.cluster_id)
 
-        prec=cluster.precision
-        print(cluster.cluster_id,prec)
+        prec = cluster.precision
+        print(cluster.cluster_id, prec)
         if prec is None:
-            prec=0.0
+            prec = 0.0
         precisions.append(prec)
 
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots()
-    ax.bar(indexes, precisions, 0.5, color='r') #, yerr=men_std)
+    ax.bar(indexes, precisions, 0.5, color='r')
     ax.set_ylabel('Precision [A]')
     ax.set_xlabel(('Cluster index'))
     plt.show()
 
+
 def plot_clusters_scores(clusters):
-    indexes=[]
-    values=[]
+    indexes = []
+    values = []
     for cluster in clusters:
         indexes.append(cluster.cluster_id)
         values.append([])
@@ -1553,108 +1604,111 @@ def plot_clusters_scores(clusters):
             values[-1].append(data.score)
 
     plot_fields_box_plots("scores.pdf", values, indexes, frequencies=None,
-                          valuename="Scores", positionname="Cluster index", xlabels=None,scale_plot_length=1.0)
+                          valuename="Scores", positionname="Cluster index",
+                          xlabels=None, scale_plot_length=1.0)
+
 
 class CrossLinkIdentifierDatabase(object):
     def __init__(self):
-        self.clidb=dict()
+        self.clidb = dict()
 
-    def check_key(self,key):
+    def check_key(self, key):
         if key not in self.clidb:
-            self.clidb[key]={}
+            self.clidb[key] = {}
 
-    def set_unique_id(self,key,value):
+    def set_unique_id(self, key, value):
         self.check_key(key)
-        self.clidb[key]["XLUniqueID"]=str(value)
+        self.clidb[key]["XLUniqueID"] = str(value)
 
-    def set_protein1(self,key,value):
+    def set_protein1(self, key, value):
         self.check_key(key)
-        self.clidb[key]["Protein1"]=str(value)
+        self.clidb[key]["Protein1"] = str(value)
 
-    def set_protein2(self,key,value):
+    def set_protein2(self, key, value):
         self.check_key(key)
-        self.clidb[key]["Protein2"]=str(value)
+        self.clidb[key]["Protein2"] = str(value)
 
-    def set_residue1(self,key,value):
+    def set_residue1(self, key, value):
         self.check_key(key)
-        self.clidb[key]["Residue1"]=int(value)
+        self.clidb[key]["Residue1"] = int(value)
 
-    def set_residue2(self,key,value):
+    def set_residue2(self, key, value):
         self.check_key(key)
-        self.clidb[key]["Residue2"]=int(value)
+        self.clidb[key]["Residue2"] = int(value)
 
-    def set_idscore(self,key,value):
+    def set_idscore(self, key, value):
         self.check_key(key)
-        self.clidb[key]["IDScore"]=float(value)
+        self.clidb[key]["IDScore"] = float(value)
 
-    def set_state(self,key,value):
+    def set_state(self, key, value):
         self.check_key(key)
-        self.clidb[key]["State"]=int(value)
+        self.clidb[key]["State"] = int(value)
 
-    def set_sigma1(self,key,value):
+    def set_sigma1(self, key, value):
         self.check_key(key)
-        self.clidb[key]["Sigma1"]=str(value)
+        self.clidb[key]["Sigma1"] = str(value)
 
-    def set_sigma2(self,key,value):
+    def set_sigma2(self, key, value):
         self.check_key(key)
-        self.clidb[key]["Sigma2"]=str(value)
+        self.clidb[key]["Sigma2"] = str(value)
 
-    def set_psi(self,key,value):
+    def set_psi(self, key, value):
         self.check_key(key)
-        self.clidb[key]["Psi"]=str(value)
+        self.clidb[key]["Psi"] = str(value)
 
-    def get_unique_id(self,key):
+    def get_unique_id(self, key):
         return self.clidb[key]["XLUniqueID"]
 
-    def get_protein1(self,key):
+    def get_protein1(self, key):
         return self.clidb[key]["Protein1"]
 
-    def get_protein2(self,key):
+    def get_protein2(self, key):
         return self.clidb[key]["Protein2"]
 
-    def get_residue1(self,key):
+    def get_residue1(self, key):
         return self.clidb[key]["Residue1"]
 
-    def get_residue2(self,key):
+    def get_residue2(self, key):
         return self.clidb[key]["Residue2"]
 
-    def get_idscore(self,key):
+    def get_idscore(self, key):
         return self.clidb[key]["IDScore"]
 
-    def get_state(self,key):
+    def get_state(self, key):
         return self.clidb[key]["State"]
 
-    def get_sigma1(self,key):
+    def get_sigma1(self, key):
         return self.clidb[key]["Sigma1"]
 
-    def get_sigma2(self,key):
+    def get_sigma2(self, key):
         return self.clidb[key]["Sigma2"]
 
-    def get_psi(self,key):
+    def get_psi(self, key):
         return self.clidb[key]["Psi"]
 
-    def set_float_feature(self,key,value,feature_name):
+    def set_float_feature(self, key, value, feature_name):
         self.check_key(key)
-        self.clidb[key][feature_name]=float(value)
+        self.clidb[key][feature_name] = float(value)
 
-    def set_int_feature(self,key,value,feature_name):
+    def set_int_feature(self, key, value, feature_name):
         self.check_key(key)
-        self.clidb[key][feature_name]=int(value)
+        self.clidb[key][feature_name] = int(value)
 
-    def set_string_feature(self,key,value,feature_name):
+    def set_string_feature(self, key, value, feature_name):
         self.check_key(key)
-        self.clidb[key][feature_name]=str(value)
+        self.clidb[key][feature_name] = str(value)
 
-    def get_feature(self,key,feature_name):
+    def get_feature(self, key, feature_name):
         return self.clidb[key][feature_name]
 
-    def write(self,filename):
+    def write(self, filename):
         with open(filename, 'wb') as handle:
-            pickle.dump(self.clidb,handle)
+            pickle.dump(self.clidb, handle)
 
-    def load(self,filename):
+    def load(self, filename):
         with open(filename, 'rb') as handle:
-            self.clidb=pickle.load(handle)
+            self.clidb = pickle.load(handle)
+
 
 def plot_fields(fields, output, framemin=None, framemax=None):
     """Plot the given fields and save a figure as `output`.
@@ -1692,10 +1746,10 @@ def plot_fields(fields, output, framemin=None, framemax=None):
     plt.savefig(output)
 
 
-def plot_field_histogram(
-    name, values_lists, valuename=None, bins=40, colors=None, format="png",
-    reference_xline=None, yplotrange=None, xplotrange=None, normalized=True,
-    leg_names=None):
+def plot_field_histogram(name, values_lists, valuename=None, bins=40,
+                         colors=None, format="png", reference_xline=None,
+                         yplotrange=None, xplotrange=None, normalized=True,
+                         leg_names=None):
     '''Plot a list of histograms from a value list.
     @param name the name of the plot
     @param value_lists the list of list of values eg: [[...],[...],[...]]
@@ -1713,22 +1767,19 @@ def plot_field_histogram(
     mpl.use('Agg')
     import matplotlib.pyplot as plt
     import matplotlib.cm as cm
-    fig = plt.figure(figsize=(18.0, 9.0))
+    plt.figure(figsize=(18.0, 9.0))
 
     if colors is None:
         colors = cm.rainbow(np.linspace(0, 1, len(values_lists)))
-    for nv,values in enumerate(values_lists):
-        col=colors[nv]
+    for nv, values in enumerate(values_lists):
+        col = colors[nv]
         if leg_names is not None:
-            label=leg_names[nv]
+            label = leg_names[nv]
         else:
-            label=str(nv)
-        h=plt.hist(
-            [float(y) for y in values],
-            bins=bins,
-            color=col,
-            density=normalized,histtype='step',lw=4,
-            label=label)
+            label = str(nv)
+        plt.hist(
+            [float(y) for y in values], bins=bins, color=col,
+            density=normalized, histtype='step', lw=4, label=label)
 
     # plt.title(name,size="xx-large")
     plt.tick_params(labelsize=12, pad=10)
@@ -1738,14 +1789,14 @@ def plot_field_histogram(
         plt.xlabel(valuename, size="xx-large")
     plt.ylabel("Frequency", size="xx-large")
 
-    if not yplotrange is None:
+    if yplotrange is not None:
         plt.ylim()
-    if not xplotrange is None:
+    if xplotrange is not None:
         plt.xlim(xplotrange)
 
     plt.legend(loc=2)
 
-    if not reference_xline is None:
+    if reference_xline is not None:
         plt.axvline(
             reference_xline,
             color='red',
@@ -1756,7 +1807,8 @@ def plot_field_histogram(
 
 
 def plot_fields_box_plots(name, values, positions, frequencies=None,
-                          valuename="None", positionname="None", xlabels=None,scale_plot_length=1.0):
+                          valuename="None", positionname="None",
+                          xlabels=None, scale_plot_length=1.0):
     '''
     Plot time series as boxplots.
     fields is a list of time series, positions are the x-values
@@ -1766,7 +1818,6 @@ def plot_fields_box_plots(name, values, positions, frequencies=None,
     import matplotlib as mpl
     mpl.use('Agg')
     import matplotlib.pyplot as plt
-    from matplotlib.patches import Polygon
 
     bps = []
     fig = plt.figure(figsize=(float(len(positions))*scale_plot_length, 5.0))
@@ -1783,40 +1834,39 @@ def plot_fields_box_plots(name, values, positions, frequencies=None,
     plt.setp(bps[-1]['whiskers'], color='black', ls=":", lw=1.5)
 
     if frequencies is not None:
-        for n,v in enumerate(values):
-            plist=[positions[n]]*len(v)
+        for n, v in enumerate(values):
+            plist = [positions[n]]*len(v)
             ax1.plot(plist, v, 'gx', alpha=0.7, markersize=7)
 
     # print ax1.xaxis.get_majorticklocs()
-    if not xlabels is None:
+    if xlabels is not None:
         ax1.set_xticklabels(xlabels)
     plt.xticks(rotation=90)
     plt.xlabel(positionname)
     plt.ylabel(valuename)
 
-    plt.savefig(name+".pdf",dpi=150)
+    plt.savefig(name + ".pdf", dpi=150)
     plt.show()
 
 
-def plot_xy_data(x,y,title=None,out_fn=None,display=True,set_plot_yaxis_range=None,
-                 xlabel=None,ylabel=None):
+def plot_xy_data(x, y, title=None, out_fn=None, display=True,
+                 set_plot_yaxis_range=None, xlabel=None, ylabel=None):
     import matplotlib as mpl
     mpl.use('Agg')
     import matplotlib.pyplot as plt
     plt.rc('lines', linewidth=2)
 
-    fig, ax  = plt.subplots(nrows=1)
-    fig.set_size_inches(8,4.5)
+    fig, ax = plt.subplots(nrows=1)
+    fig.set_size_inches(8, 4.5)
     if title is not None:
         fig.canvas.set_window_title(title)
 
-    #plt.rc('axes', color='r')
-    ax.plot(x,y,color='r')
+    ax.plot(x, y, color='r')
     if set_plot_yaxis_range is not None:
-        x1,x2,y1,y2=plt.axis()
-        y1=set_plot_yaxis_range[0]
-        y2=set_plot_yaxis_range[1]
-        plt.axis((x1,x2,y1,y2))
+        x1, x2, y1, y2 = plt.axis()
+        y1 = set_plot_yaxis_range[0]
+        y2 = set_plot_yaxis_range[1]
+        plt.axis((x1, x2, y1, y2))
     if title is not None:
         ax.set_title(title)
     if xlabel is not None:
@@ -1824,23 +1874,21 @@ def plot_xy_data(x,y,title=None,out_fn=None,display=True,set_plot_yaxis_range=No
     if ylabel is not None:
         ax.set_ylabel(ylabel)
     if out_fn is not None:
-        plt.savefig(out_fn+".pdf")
+        plt.savefig(out_fn + ".pdf")
     if display:
         plt.show()
     plt.close(fig)
 
-def plot_scatter_xy_data(x,y,labelx="None",labely="None",
-                         xmin=None,xmax=None,ymin=None,ymax=None,
-                         savefile=False,filename="None.eps",alpha=0.75):
+
+def plot_scatter_xy_data(x, y, labelx="None", labely="None",
+                         xmin=None, xmax=None, ymin=None, ymax=None,
+                         savefile=False, filename="None.eps", alpha=0.75):
 
     import matplotlib as mpl
     mpl.use('Agg')
     import matplotlib.pyplot as plt
-    import sys
     from matplotlib import rc
-    #rc('font', **{'family':'serif','serif':['Palatino']})
-    rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-    #rc('text', usetex=True)
+    rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
 
     fig, axs = plt.subplots(1)
 
@@ -1852,7 +1900,8 @@ def plot_scatter_xy_data(x,y,labelx="None",labely="None",
 
     plot2 = []
 
-    plot2.append(axs0.plot(x,  y,   'o', color='k',lw=2, ms=0.1, alpha=alpha,  c="w"))
+    plot2.append(axs0.plot(x, y, 'o', color='k', lw=2, ms=0.1, alpha=alpha,
+                           c="w"))
 
     axs0.legend(
         loc=0,
@@ -1863,12 +1912,11 @@ def plot_scatter_xy_data(x,y,labelx="None",labely="None",
 
     fig.set_size_inches(8.0, 8.0)
     fig.subplots_adjust(left=0.161, right=0.850, top=0.95, bottom=0.11)
-    if (not ymin is None) and (not ymax is None):
-        axs0.set_ylim(ymin,ymax)
-    if (not xmin is None) and (not xmax is None):
-        axs0.set_xlim(xmin,xmax)
+    if (ymin is not None) and (ymax is not None):
+        axs0.set_ylim(ymin, ymax)
+    if (xmin is not None) and (xmax is not None):
+        axs0.set_xlim(xmin, xmax)
 
-    #plt.show()
     if savefile:
         fig.savefig(filename, dpi=300)
 
@@ -1882,9 +1930,7 @@ def get_graph_from_hierarchy(hier):
 
     # filters node labels according to depth_dict
     node_labels_dict = {}
-    node_size_dict = {}
     for key in depth_dict:
-        node_size_dict = 10 / depth_dict[key]
         if depth_dict[key] < 3:
             node_labels_dict[key] = key
         else:
@@ -1938,68 +1984,83 @@ def draw_graph(graph, labels_dict=None, graph_layout='spring',
 
     # add edges
     if isinstance(edge_thickness, list):
-        for edge,weight in zip(graph,edge_thickness):
+        for edge, weight in zip(graph, edge_thickness):
             G.add_edge(edge[0], edge[1], weight=weight)
     else:
         for edge in graph:
             G.add_edge(edge[0], edge[1])
 
-    if node_color==None:
-        node_color_rgb=(0,0,0)
-        node_color_hex="000000"
+    if node_color is None:
+        node_color_rgb = (0, 0, 0)
+        node_color_hex = "000000"
     else:
-        cc=IMP.pmi.tools.ColorChange()
-        tmpcolor_rgb=[]
-        tmpcolor_hex=[]
+        cc = IMP.pmi.tools.ColorChange()
+        tmpcolor_rgb = []
+        tmpcolor_hex = []
         for node in G.nodes():
-            cctuple=cc.rgb(node_color[node])
-            tmpcolor_rgb.append((cctuple[0]/255,cctuple[1]/255,cctuple[2]/255))
+            cctuple = cc.rgb(node_color[node])
+            tmpcolor_rgb.append((cctuple[0]/255,
+                                 cctuple[1]/255,
+                                 cctuple[2]/255))
             tmpcolor_hex.append(node_color[node])
-        node_color_rgb=tmpcolor_rgb
-        node_color_hex=tmpcolor_hex
+        node_color_rgb = tmpcolor_rgb
+        node_color_hex = tmpcolor_hex
 
     # get node sizes if dictionary
     if isinstance(node_size, dict):
-        tmpsize=[]
+        tmpsize = []
         for node in G.nodes():
-            size=sqrt(node_size[node])/pi*10.0
+            size = sqrt(node_size[node])/pi*10.0
             tmpsize.append(size)
-        node_size=tmpsize
+        node_size = tmpsize
 
-    for n,node in enumerate(G.nodes()):
-        color=node_color_hex[n]
-        size=node_size[n]
-        nx.set_node_attributes(G, "graphics", {node : {'type': 'ellipse','w': size, 'h': size,'fill': '#'+color, 'label': node}})
-        nx.set_node_attributes(G, "LabelGraphics", {node : {'type': 'text','text':node, 'color':'#000000', 'visible':'true'}})
+    for n, node in enumerate(G.nodes()):
+        color = node_color_hex[n]
+        size = node_size[n]
+        nx.set_node_attributes(
+            G, "graphics",
+            {node: {'type': 'ellipse', 'w': size, 'h': size,
+                    'fill': '#' + color, 'label': node}})
+        nx.set_node_attributes(
+            G, "LabelGraphics",
+            {node: {'type': 'text', 'text': node, 'color': '#000000',
+                    'visible': 'true'}})
 
     for edge in G.edges():
-        nx.set_edge_attributes(G, "graphics", {edge : {'width': 1,'fill': '#000000'}})
+        nx.set_edge_attributes(
+            G, "graphics",
+            {edge: {'width': 1, 'fill': '#000000'}})
 
     for ve in validation_edges:
         print(ve)
-        if (ve[0],ve[1]) in G.edges():
+        if (ve[0], ve[1]) in G.edges():
             print("found forward")
-            nx.set_edge_attributes(G, "graphics", {ve : {'width': 1,'fill': '#00FF00'}})
-        elif (ve[1],ve[0]) in G.edges():
+            nx.set_edge_attributes(
+                G, "graphics",
+                {ve: {'width': 1, 'fill': '#00FF00'}})
+        elif (ve[1], ve[0]) in G.edges():
             print("found backward")
-            nx.set_edge_attributes(G, "graphics", {(ve[1],ve[0]) : {'width': 1,'fill': '#00FF00'}})
+            nx.set_edge_attributes(
+                G, "graphics",
+                {(ve[1], ve[0]): {'width': 1, 'fill': '#00FF00'}})
         else:
             G.add_edge(ve[0], ve[1])
             print("not found")
-            nx.set_edge_attributes(G, "graphics", {ve : {'width': 1,'fill': '#FF0000'}})
+            nx.set_edge_attributes(
+                G, "graphics",
+                {ve: {'width': 1, 'fill': '#FF0000'}})
 
     # these are different layouts for the network you may try
     # shell seems to work best
     if graph_layout == 'spring':
         print(fixed, pos)
-        graph_pos = nx.spring_layout(G,k=1.0/8.0,fixed=fixed,pos=pos)
+        graph_pos = nx.spring_layout(G, k=1.0/8.0, fixed=fixed, pos=pos)
     elif graph_layout == 'spectral':
         graph_pos = nx.spectral_layout(G)
     elif graph_layout == 'random':
         graph_pos = nx.random_layout(G)
     else:
         graph_pos = nx.shell_layout(G)
-
 
     # draw graph
     nx.draw_networkx_nodes(G, graph_pos, node_size=node_size,
@@ -2012,7 +2073,7 @@ def draw_graph(graph, labels_dict=None, graph_layout='spring',
         font_family=text_font)
     if out_filename:
         plt.savefig(out_filename)
-        nx.write_gml(G,'out.gml')
+        nx.write_gml(G, 'out.gml')
     plt.show()
 
 
@@ -2029,93 +2090,24 @@ def draw_table():
                   number=1,
                   d3=None,
                   title='Example table with d3js',
-                  desc='An example table created created with d3js with data generated with Python.')
-    data = [
-        [1277.0,
-         654.0,
-         288.0,
-         1976.0,
-         3281.0,
-         3089.0,
-         10336.0,
-         4650.0,
-         4441.0,
-         4670.0,
-         944.0,
-         110.0],
-        [1318.0,
-         664.0,
-         418.0,
-         1952.0,
-         3581.0,
-         4574.0,
-         11457.0,
-         6139.0,
-         7078.0,
-         6561.0,
-         2354.0,
-         710.0],
-        [1783.0,
-         774.0,
-         564.0,
-         1470.0,
-         3571.0,
-         3103.0,
-         9392.0,
-         5532.0,
-         5661.0,
-         4991.0,
-         2032.0,
-         680.0],
-        [1301.0,
-         604.0,
-         286.0,
-         2152.0,
-         3282.0,
-         3369.0,
-         10490.0,
-         5406.0,
-         4727.0,
-         3428.0,
-         1559.0,
-         620.0],
-        [1537.0,
-         1714.0,
-         724.0,
-         4824.0,
-         5551.0,
-         8096.0,
-         16589.0,
-         13650.0,
-         9552.0,
-         13709.0,
-         2460.0,
-         720.0],
-        [5691.0,
-         2995.0,
-         1680.0,
-         11741.0,
-         16232.0,
-         14731.0,
-         43522.0,
-         32794.0,
-         26634.0,
-         31400.0,
-         7350.0,
-         3010.0],
-        [1650.0,
-         2096.0,
-         60.0,
-         50.0,
-         1180.0,
-         5602.0,
-         15728.0,
-         6874.0,
-         5115.0,
-         3510.0,
-         1390.0,
-         170.0],
-        [72.0, 60.0, 60.0, 10.0, 120.0, 172.0, 1092.0, 675.0, 408.0, 360.0, 156.0, 100.0]]
+                  desc='An example table created created with d3js with '
+                       'data generated with Python.')
+    data = [[1277.0, 654.0, 288.0, 1976.0, 3281.0, 3089.0, 10336.0, 4650.0,
+             4441.0, 4670.0, 944.0, 110.0],
+            [1318.0, 664.0, 418.0, 1952.0, 3581.0, 4574.0, 11457.0, 6139.0,
+             7078.0, 6561.0, 2354.0, 710.0],
+            [1783.0, 774.0, 564.0, 1470.0, 3571.0, 3103.0, 9392.0, 5532.0,
+             5661.0, 4991.0, 2032.0, 680.0],
+            [1301.0, 604.0, 286.0, 2152.0, 3282.0, 3369.0, 10490.0, 5406.0,
+             4727.0, 3428.0, 1559.0, 620.0],
+            [1537.0, 1714.0, 724.0, 4824.0, 5551.0, 8096.0, 16589.0, 13650.0,
+             9552.0, 13709.0, 2460.0, 720.0],
+            [5691.0, 2995.0, 1680.0, 11741.0, 16232.0, 14731.0, 43522.0,
+             32794.0, 26634.0, 31400.0, 7350.0, 3010.0],
+            [1650.0, 2096.0, 60.0, 50.0, 1180.0, 5602.0, 15728.0, 6874.0,
+             5115.0, 3510.0, 1390.0, 170.0],
+            [72.0, 60.0, 60.0, 10.0, 120.0, 172.0, 1092.0, 675.0, 408.0,
+             360.0, 156.0, 100.0]]
     data = [list(i) for i in zip(*data)]
     sRows = [['January',
               'February',

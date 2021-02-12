@@ -14,8 +14,7 @@ import IMP.rmf
 import RMF
 import IMP.pmi.analysis
 from operator import itemgetter
-from copy import deepcopy
-from math import log,sqrt
+from math import log, sqrt
 import itertools
 import numpy as np
 
@@ -37,7 +36,7 @@ class Alignment(object):
         """
         self.query = query
         self.template = template
-        self.weights=weights
+        self.weights = weights
 
         if len(self.query.keys()) != len(self.template.keys()):
             raise ValueError('''the number of proteins
@@ -56,7 +55,6 @@ class Alignment(object):
         #                          [[A2,A1],[B1,B2]],[[A2,A1],[B2,B1]]]
         P = {}
         for p in prots_uniq:
-            np = prots_uniq.count(p)
             copies = [i for i in self.proteins if i.split('..')[0] == p]
             prmts = list(itertools.permutations(copies, len(copies)))
             P[p] = prmts
@@ -74,7 +72,6 @@ class Alignment(object):
             template_xyz += [IMP.algebra.Vector3D(i) for i in self.template[t]]
             if self.weights is not None:
                 weights += [i for i in self.weights[t]]
-        #template_xyz = np.array(template_xyz)
 
         self.rmsd = 10000000000.
         for comb in self.Product:
@@ -83,18 +80,12 @@ class Alignment(object):
             query_xyz = []
             for p in order:
                 query_xyz += [IMP.algebra.Vector3D(i) for i in self.query[p]]
-            #query_xyz = np.array(query_xyz)
-            #if len(template_xyz) != len(query_xyz):
-            #    print '''Alignment.get_rmsd: ERROR: the number of coordinates
-            #                   in template and query does not match!'''
-            #    exit()
 
             if self.weights is not None:
-                dist=IMP.algebra.get_weighted_rmsd(template_xyz, query_xyz, weights)
+                dist = IMP.algebra.get_weighted_rmsd(
+                    template_xyz, query_xyz, weights)
             else:
-                dist=IMP.algebra.get_rmsd(template_xyz, query_xyz)
-            #dist = sqrt(
-            #    sum(np.diagonal(cdist(template_xyz, query_xyz) ** 2)) / len(template_xyz))
+                dist = IMP.algebra.get_rmsd(template_xyz, query_xyz)
             if dist < self.rmsd:
                 self.rmsd = dist
         return self.rmsd
@@ -120,20 +111,20 @@ class Alignment(object):
             query_xyz = []
             for p in order:
                 query_xyz += [IMP.algebra.Vector3D(i) for i in self.query[p]]
-            #query_xyz = np.array(query_xyz)
 
             if len(template_xyz) != len(query_xyz):
                 raise ValueError('''the number of coordinates
                                in template and query does not match!''')
 
-            transformation = IMP.algebra.get_transformation_aligning_first_to_second(
-                query_xyz,
-                template_xyz)
+            transformation = \
+                IMP.algebra.get_transformation_aligning_first_to_second(
+                    query_xyz, template_xyz)
             query_xyz_tr = [transformation.get_transformed(n)
                             for n in query_xyz]
 
             dist = sqrt(
-                sum(np.diagonal(cdist(template_xyz, query_xyz_tr) ** 2)) / len(template_xyz))
+                sum(np.diagonal(cdist(template_xyz, query_xyz_tr) ** 2))
+                / len(template_xyz))
             if dist < self.rmsd:
                 self.rmsd = dist
                 Transformation = transformation
@@ -190,13 +181,12 @@ class Violations(object):
         return num_violated
 
 
-# ----------------------------------
 class Clustering(object):
     """A class to cluster structures.
     Uses scipy's cdist function to compute distance matrices
     and sklearn's kmeans clustering module.
     """
-    def __init__(self,rmsd_weights=None):
+    def __init__(self, rmsd_weights=None):
         """Constructor.
            @param rmsd_weights Flat list of weights for each particle
                                (if they're coarse)
@@ -212,40 +202,39 @@ class Clustering(object):
         self.all_coords = {}
         self.structure_cluster_ids = None
         self.tmpl_coords = None
-        self.rmsd_weights=rmsd_weights
+        self.rmsd_weights = rmsd_weights
 
     def set_template(self, part_coords):
-
         self.tmpl_coords = part_coords
 
     def fill(self, frame, Coords):
         """Add coordinates for a single model."""
-
         self.all_coords[frame] = Coords
 
     def dist_matrix(self):
-
         self.model_list_names = list(self.all_coords.keys())
         self.model_indexes = list(range(len(self.model_list_names)))
         self.model_indexes_dict = dict(
             list(zip(self.model_list_names, self.model_indexes)))
-        model_indexes_unique_pairs = list(itertools.combinations(self.model_indexes, 2))
+        model_indexes_unique_pairs = \
+            list(itertools.combinations(self.model_indexes, 2))
 
         my_model_indexes_unique_pairs = IMP.pmi.tools.chunk_list_into_segments(
             model_indexes_unique_pairs,
             self.number_of_processes)[self.rank]
 
-        print("process %s assigned with %s pairs" % (str(self.rank), str(len(my_model_indexes_unique_pairs))))
+        print("process %s assigned with %s pairs"
+              % (str(self.rank), str(len(my_model_indexes_unique_pairs))))
 
-        (raw_distance_dict, self.transformation_distance_dict) = self.matrix_calculation(self.all_coords,
-                                                                                         self.tmpl_coords,
-                                                                                         my_model_indexes_unique_pairs)
+        (raw_distance_dict, self.transformation_distance_dict) = \
+            self.matrix_calculation(self.all_coords, self.tmpl_coords,
+                                    my_model_indexes_unique_pairs)
 
         if self.number_of_processes > 1:
             raw_distance_dict = IMP.pmi.tools.scatter_and_gather(
                 raw_distance_dict)
-            pickable_transformations = self.get_pickable_transformation_distance_dict(
-            )
+            pickable_transformations = \
+                self.get_pickable_transformation_distance_dict()
             pickable_transformations = IMP.pmi.tools.scatter_and_gather(
                 pickable_transformations)
             self.set_transformation_distance_dict_from_pickable(
@@ -261,7 +250,7 @@ class Clustering(object):
     def get_dist_matrix(self):
         return self.raw_distance_matrix
 
-    def do_cluster(self, number_of_clusters,seed=None):
+    def do_cluster(self, number_of_clusters, seed=None):
         """Run K-means clustering
         @param number_of_clusters Num means
         @param seed the random seed
@@ -307,8 +296,8 @@ class Clustering(object):
         # you have to save the arrays correposnding to
         # the transformations
 
-        pickable_transformations = self.get_pickable_transformation_distance_dict(
-        )
+        pickable_transformations = \
+            self.get_pickable_transformation_distance_dict()
         pickle.dump(
             (self.structure_cluster_ids,
              self.model_list_names,
@@ -339,7 +328,7 @@ class Clustering(object):
         import matplotlib.pylab as pl
         from scipy.cluster import hierarchy as hrc
 
-        fig = pl.figure(figsize=(10,8))
+        fig = pl.figure(figsize=(10, 8))
         ax = fig.add_subplot(212)
         dendrogram = hrc.dendrogram(
             hrc.linkage(self.raw_distance_matrix),
@@ -424,8 +413,8 @@ class Clustering(object):
 
             if not do_alignment:
                 # here we only get the rmsd,
-                # we need that for instance when you want to cluster conformations
-                # globally, eg the EM map is a reference
+                # we need that for instance when you want to cluster
+                # conformations globally, eg the EM map is a reference
                 transformation = IMP.algebra.get_identity_transformation_3d()
 
                 coords_f1 = dict([(pr, all_coords[model_list_names[f1]][pr])
@@ -450,8 +439,8 @@ class Clustering(object):
                 template_rmsd, transformation = Ali.align()
 
                 # here we calculate the rmsd
-                # we will align two models based n the nuber of subunits provided
-                # and transform coordinates of model 2 to model 1
+                # we will align two models based n the nuber of subunits
+                # provided and transform coordinates of model 2 to model 1
                 coords_f1 = dict([(pr, all_coords[model_list_names[f1]][pr])
                                  for pr in rmsd_protein_names])
                 coords_f2 = {}
@@ -471,123 +460,137 @@ class Clustering(object):
 
 
 class RMSD(object):
-    """Compute the RMSD (without alignment) taking into account the copy ambiguity.
+    """Compute the RMSD (without alignment) taking into account the copy
+       ambiguity.
     To be used with pmi2 hierarchies. Can be used for instance as follows:
 
-    rmsd=IMP.pmi.analysis.RMSD(hier,hier,[mol.get_name() for mol in mols],dynamic0=True,dynamic1=False)
+    rmsd = IMP.pmi.analysis.RMSD(
+        hier, hier, [mol.get_name() for mol in mols],
+        dynamic0=True, dynamic1=False)
     output_objects.append(rmsd)
 
     before shuffling the coordinates
     """
 
-    def __init__(self,hier0,hier1,molnames,label="None",dynamic0=True,dynamic1=True,metric=IMP.algebra.get_rmsd):
+    def __init__(self, hier0, hier1, molnames, label="None", dynamic0=True,
+                 dynamic1=True, metric=IMP.algebra.get_rmsd):
         """
         @param hier0 first input hierarchy
         @param hier1 second input hierarchy
         @param molname the names of the molecules used for the RMSD
-        @dynamic0 if True stores the decorators XYZ and coordinates of hier0 can be update. If false coordinates are static (stored in Vector3Ds)
-        and will never be updated
+        @dynamic0 if True stores the decorators XYZ and coordinates of
+                  hier0 can be update. If false coordinates are static
+                  (stored in Vector3Ds) and will never be updated
         @dynamic1 same as above
         metric what metric should be used
         """
-        self.moldict0,self.molcoords0,self.mol_XYZs0=self.get_moldict_coorddict(hier0,molnames)
-        self.moldict1,self.molcoords1,self.mol_XYZs1=self.get_moldict_coorddict(hier1,molnames)
-        self.dynamic0=dynamic0
-        self.dynamic1=dynamic1
-        self.metric=metric
-        self.label=label
+        self.moldict0, self.molcoords0, self.mol_XYZs0 = \
+            self.get_moldict_coorddict(hier0, molnames)
+        self.moldict1, self.molcoords1, self.mol_XYZs1 = \
+            self.get_moldict_coorddict(hier1, molnames)
+        self.dynamic0 = dynamic0
+        self.dynamic1 = dynamic1
+        self.metric = metric
+        self.label = label
 
-    def get_moldict_coorddict(self,hier,molnames):
+    def get_moldict_coorddict(self, hier, molnames):
         """return data structure for the RMSD calculation"""
-        moldict={}
-        mol_coords={}
-        mol_XYZs={}
+        moldict = {}
+        mol_coords = {}
+        mol_XYZs = {}
         for mol in IMP.pmi.tools.get_molecules(hier):
-            name=mol.get_name()
+            name = mol.get_name()
             if name not in molnames:
                 continue
-            parts=True
-            mol_coords[mol]=[]
-            mol_XYZs[mol]=[]
-            i=1
+            parts = True
+            mol_coords[mol] = []
+            mol_XYZs[mol] = []
+            i = 1
             while parts:
-                sel=IMP.atom.Selection(mol,residue_index=i,representation_type=IMP.atom.BALLS,resolution=1)
-                parts=sel.get_selected_particles()
+                sel = IMP.atom.Selection(
+                    mol, residue_index=i,
+                    representation_type=IMP.atom.BALLS,
+                    resolution=1)
+                parts = sel.get_selected_particles()
                 if parts:
-                    mol_coords[mol].append(IMP.core.XYZ(parts[0]).get_coordinates())
+                    mol_coords[mol].append(
+                        IMP.core.XYZ(parts[0]).get_coordinates())
                     mol_XYZs[mol].append(IMP.core.XYZ(parts[0]))
-                    i=i+1
-            if  name in moldict:
+                    i = i+1
+            if name in moldict:
                 moldict[name].append(mol)
             else:
-                moldict[name]=[mol]
+                moldict[name] = [mol]
         return moldict, mol_coords, mol_XYZs
 
     def get_rmsd_and_assigments(self):
-        best_orders=[]
-        total_rmsd=0
-        total_N=0
-        best_assignments=[]
-        rmsd_dict={}
+        total_rmsd = 0
+        total_N = 0
+        best_assignments = []
+        rmsd_dict = {}
         for molname, ref_mols in self.moldict1.items():
-            ref_coords=[]
+            ref_coords = []
             for ref_mol in ref_mols:
                 if self.dynamic1:
-                    coord1=[XYZ.get_coordinates() for XYZ in self.mol_XYZs1[ref_mol]]
+                    coord1 = [XYZ.get_coordinates()
+                              for XYZ in self.mol_XYZs1[ref_mol]]
                 else:
-                    coord1=self.molcoords1[ref_mol]
-                ref_coords+=coord1
+                    coord1 = self.molcoords1[ref_mol]
+                ref_coords += coord1
 
-            rmsd=[]
-            rmf_mols_list=[]
+            rmsd = []
+            rmf_mols_list = []
             for rmf_mols in itertools.permutations(self.moldict0[molname]):
-                rmf_coords=[]
+                rmf_coords = []
                 for rmf_mol in rmf_mols:
                     if self.dynamic0:
-                        coord0=[XYZ.get_coordinates() for XYZ in self.mol_XYZs0[rmf_mol]]
+                        coord0 = [XYZ.get_coordinates()
+                                  for XYZ in self.mol_XYZs0[rmf_mol]]
                     else:
-                        coord0=self.molcoords0[rmf_mol]
-                    rmf_coords+=coord0
+                        coord0 = self.molcoords0[rmf_mol]
+                    rmf_coords += coord0
 
                 rmsd.append(IMP.algebra.get_rmsd(ref_coords, rmf_coords))
                 rmf_mols_list.append(rmf_mols)
-            m=min(rmsd)
-            rmf_mols_best_order=rmf_mols_list[rmsd.index(m)]
+            m = min(rmsd)
+            rmf_mols_best_order = rmf_mols_list[rmsd.index(m)]
 
-
-            for n, (ref_mol,rmf_mol) in enumerate(zip(ref_mols,rmf_mols_best_order)):
-                best_assignments.append((rmf_mol,ref_mol))
+            for n,  (ref_mol, rmf_mol) in enumerate(
+                    zip(ref_mols, rmf_mols_best_order)):
+                best_assignments.append((rmf_mol, ref_mol))
                 if self.dynamic0:
-                    coord0=[XYZ.get_coordinates() for XYZ in self.mol_XYZs0[rmf_mol]]
+                    coord0 = [XYZ.get_coordinates()
+                              for XYZ in self.mol_XYZs0[rmf_mol]]
                 else:
-                    coord0=self.molcoords0[rmf_mol]
+                    coord0 = self.molcoords0[rmf_mol]
 
                 if self.dynamic1:
-                    coord1=[XYZ.get_coordinates() for XYZ in self.mol_XYZs1[ref_mol]]
+                    coord1 = [XYZ.get_coordinates()
+                              for XYZ in self.mol_XYZs1[ref_mol]]
                 else:
-                    coord1=self.molcoords1[ref_mol]
-                rmsd_pair=self.metric(coord1, coord0)
-                N=len(self.molcoords1[ref_mol])
-                total_N+=N
-                total_rmsd+=rmsd_pair*rmsd_pair*N
-                rmsd_dict[ref_mol]=rmsd_pair
+                    coord1 = self.molcoords1[ref_mol]
+                rmsd_pair = self.metric(coord1, coord0)
+                N = len(self.molcoords1[ref_mol])
+                total_N += N
+                total_rmsd += rmsd_pair*rmsd_pair*N
+                rmsd_dict[ref_mol] = rmsd_pair
         total_rmsd = sqrt(total_rmsd/total_N)
-        return total_rmsd,best_assignments
+        return total_rmsd, best_assignments
 
     def get_output(self):
         """Returns output for IMP.pmi.output.Output object"""
-        total_rmsd,best_assignments=self.get_rmsd_and_assigments()
+        total_rmsd, best_assignments = self.get_rmsd_and_assigments()
 
-        assignments_out=[]
-        for rmf_mol,ref_mol in best_assignments:
-            ref_name=ref_mol.get_name()
-            ref_copy=IMP.atom.Copy(ref_mol).get_copy_index()
-            rmf_name=rmf_mol.get_name()
-            rmf_copy=IMP.atom.Copy(rmf_mol).get_copy_index()
-            assignments_out.append(rmf_name+"."+str(rmf_copy)+"->"+ref_name+"."+str(ref_copy))
-        return {"RMSD_"+self.label:str(total_rmsd),"RMSD_assignments_"+self.label:str(assignments_out)}
-
-
+        assignments_out = []
+        for rmf_mol, ref_mol in best_assignments:
+            ref_name = ref_mol.get_name()
+            ref_copy = IMP.atom.Copy(ref_mol).get_copy_index()
+            rmf_name = rmf_mol.get_name()
+            rmf_copy = IMP.atom.Copy(rmf_mol).get_copy_index()
+            assignments_out.append(rmf_name + "." + str(rmf_copy) + "->" +
+                                   ref_name + "." + str(ref_copy))
+        return {"RMSD_" + self.label: str(total_rmsd),
+                "RMSD_assignments_" + self.label: str(assignments_out)}
 
 
 class Precision(object):
@@ -601,9 +604,7 @@ class Precision(object):
       -# call get_precision() to evaluate inter/intra precision
       -# call get_rmsf() to evaluate within-group fluctuations
     """
-    def __init__(self,model,
-                 resolution=1,
-                 selection_dictionary={}):
+    def __init__(self, model, resolution=1, selection_dictionary={}):
         """Constructor.
            @param model The IMP Model
            @param resolution Use 1 or 10 (kluge: requires that "_Res:X" is
@@ -621,8 +622,8 @@ class Precision(object):
             self.number_of_processes = 1
             self.rank = 0
 
-        self.styles = ['pairwise_rmsd','pairwise_drmsd_k','pairwise_drmsd_Q',
-                       'pairwise_drms_k','pairwise_rmsd','drmsd_from_center']
+        self.styles = ['pairwise_rmsd', 'pairwise_drmsd_k', 'pairwise_drmsd_Q',
+                       'pairwise_drms_k', 'pairwise_rmsd', 'drmsd_from_center']
         self.style = 'pairwise_drmsd_k'
         self.structures_dictionary = {}
         self.reference_structures_dictionary = {}
@@ -638,27 +639,29 @@ class Precision(object):
         self.threshold = 40.0
         self.residue_particle_index_map = None
         self.prots = None
-        if resolution in [1,10]:
+        if resolution in [1, 10]:
             self.resolution = resolution
         else:
             raise KeyError("Currently only allow resolution 1 or 10")
 
-    def _get_structure(self,rmf_frame_index,rmf_name):
+    def _get_structure(self, rmf_frame_index, rmf_name):
         """Read an RMF file and return the particles"""
         rh = RMF.open_rmf_file_read_only(rmf_name)
         if not self.prots:
-            print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
+            print("getting coordinates for frame %i rmf file %s"
+                  % (rmf_frame_index, rmf_name))
             self.prots = IMP.rmf.create_hierarchies(rh, self.model)
             IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
         else:
-            print("linking coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
+            print("linking coordinates for frame %i rmf file %s"
+                  % (rmf_frame_index, rmf_name))
             IMP.rmf.link_hierarchies(rh, self.prots)
             IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
         del rh
 
-        if self.resolution==1:
+        if self.resolution == 1:
             particle_dict = get_particles_at_resolution_one(self.prots[0])
-        elif self.resolution==10:
+        elif self.resolution == 10:
             particle_dict = get_particles_at_resolution_ten(self.prots[0])
 
         protein_names = list(particle_dict.keys())
@@ -666,17 +669,20 @@ class Precision(object):
         for k in particle_dict:
             particles_resolution_one += (particle_dict[k])
 
-        if self.protein_names==None:
+        if self.protein_names is None:
             self.protein_names = protein_names
         else:
-            if self.protein_names!=protein_names:
-                print("Error: the protein names of the new coordinate set is not compatible with the previous one")
+            if self.protein_names != protein_names:
+                print("Error: the protein names of the new coordinate set "
+                      "is not compatible with the previous one")
 
-        if self.len_particles_resolution_one==None:
+        if self.len_particles_resolution_one is None:
             self.len_particles_resolution_one = len(particles_resolution_one)
         else:
-            if self.len_particles_resolution_one!=len(particles_resolution_one):
-                raise ValueError("the new coordinate set is not compatible with the previous one")
+            if self.len_particles_resolution_one != \
+                    len(particles_resolution_one):
+                raise ValueError("the new coordinate set is not compatible "
+                                 "with the previous one")
 
         return particles_resolution_one
 
@@ -699,28 +705,30 @@ class Precision(object):
             cdict = self.structures_dictionary[structure_set_name]
             rmflist = self.rmf_names_frames[structure_set_name]
         else:
-            self.structures_dictionary[structure_set_name]={}
-            self.rmf_names_frames[structure_set_name]=[]
+            self.structures_dictionary[structure_set_name] = {}
+            self.rmf_names_frames[structure_set_name] = []
             cdict = self.structures_dictionary[structure_set_name]
             rmflist = self.rmf_names_frames[structure_set_name]
 
         # read the particles
         try:
-            particles_resolution_one = self._get_structure(rmf_frame_index,rmf_name)
+            particles_resolution_one = self._get_structure(
+                rmf_frame_index, rmf_name)
         except ValueError:
             print("something wrong with the rmf")
             return 0
-        self.selection_dictionary.update({"All":self.protein_names})
+        self.selection_dictionary.update({"All": self.protein_names})
 
         for selection_name in self.selection_dictionary:
             selection_tuple = self.selection_dictionary[selection_name]
-            coords = self._select_coordinates(selection_tuple,particles_resolution_one,self.prots[0])
+            coords = self._select_coordinates(
+                selection_tuple, particles_resolution_one, self.prots[0])
             if selection_name not in cdict:
                 cdict[selection_name] = [coords]
             else:
                 cdict[selection_name].append(coords)
 
-        rmflist.append((rmf_name,rmf_frame_index))
+        rmflist.append((rmf_name, rmf_frame_index))
 
         # if requested, set up a dictionary to help find residue indexes
         if setup_index_map:
@@ -728,23 +736,23 @@ class Precision(object):
             for prot_name in self.protein_names:
                 self.residue_particle_index_map[prot_name] = \
                        self._get_residue_particle_index_map(
-                           prot_name,
-                           particles_resolution_one,self.prots[0])
+                           prot_name, particles_resolution_one, self.prots[0])
 
     def add_structures(self,
                        rmf_name_frame_tuples,
                        structure_set_name):
         """Read a list of RMFs, supports parallel
         @param rmf_name_frame_tuples list of (rmf_file_name,frame_number)
-        @param structure_set_name Name this set of structures (e.g. "cluster.1")
+        @param structure_set_name Name this set of structures
+               (e.g. "cluster.1")
         """
 
         # split up the requested list to read in parallel
-        my_rmf_name_frame_tuples=IMP.pmi.tools.chunk_list_into_segments(
-            rmf_name_frame_tuples,self.number_of_processes)[self.rank]
-        for nfr,tup in enumerate(my_rmf_name_frame_tuples):
-            rmf_name=tup[0]
-            rmf_frame_index=tup[1]
+        my_rmf_name_frame_tuples = IMP.pmi.tools.chunk_list_into_segments(
+            rmf_name_frame_tuples, self.number_of_processes)[self.rank]
+        for nfr, tup in enumerate(my_rmf_name_frame_tuples):
+            rmf_name = tup[0]
+            rmf_frame_index = tup[1]
             # the first frame stores the map between residues and particles
             if self.residue_particle_index_map is None:
                 setup_index_map = True
@@ -757,7 +765,8 @@ class Precision(object):
 
         # synchronize the structures
         if self.number_of_processes > 1:
-            self.rmf_names_frames=IMP.pmi.tools.scatter_and_gather(self.rmf_names_frames)
+            self.rmf_names_frames = IMP.pmi.tools.scatter_and_gather(
+                self.rmf_names_frames)
             if self.rank != 0:
                 self.comm.send(self.structures_dictionary, dest=0, tag=11)
             elif self.rank == 0:
@@ -770,141 +779,153 @@ class Precision(object):
             if self.rank != 0:
                 self.structures_dictionary = self.comm.recv(source=0, tag=11)
 
-    def _get_residue_particle_index_map(self,prot_name,structure,hier):
+    def _get_residue_particle_index_map(self, prot_name, structure, hier):
         # Creates map from all particles to residue numbers
         residue_particle_index_map = []
         if IMP.pmi.get_is_canonical(hier):
-            s = IMP.atom.Selection(hier,molecules=[prot_name],
+            s = IMP.atom.Selection(hier, molecules=[prot_name],
                                    resolution=1)
         else:
-            s = IMP.atom.Selection(hier,molecules=[prot_name])
+            s = IMP.atom.Selection(hier, molecules=[prot_name])
         all_selected_particles = s.get_selected_particles()
         intersection = list(set(all_selected_particles) & set(structure))
         sorted_intersection = IMP.pmi.tools.sort_by_residues(intersection)
         for p in sorted_intersection:
-            residue_particle_index_map.append(IMP.pmi.tools.get_residue_indexes(p))
+            residue_particle_index_map.append(
+                IMP.pmi.tools.get_residue_indexes(p))
         return residue_particle_index_map
 
-
-    def _select_coordinates(self,tuple_selections,structure,prot):
-        selected_coordinates=[]
+    def _select_coordinates(self, tuple_selections, structure, prot):
+        selected_coordinates = []
         for t in tuple_selections:
-            if isinstance(t, tuple) and len(t)==3:
+            if isinstance(t, tuple) and len(t) == 3:
                 if IMP.pmi.get_is_canonical(prot):
-                    s = IMP.atom.Selection(prot,molecules=[t[2]],residue_indexes=range(t[0],t[1]+1),
-                                           resolution=1)
+                    s = IMP.atom.Selection(
+                        prot, molecules=[t[2]],
+                        residue_indexes=range(t[0], t[1]+1), resolution=1)
                 else:
-                    s = IMP.atom.Selection(prot,molecules=[t[2]],residue_indexes=range(t[0],t[1]+1))
+                    s = IMP.atom.Selection(
+                        prot, molecules=[t[2]],
+                        residue_indexes=range(t[0], t[1]+1))
                 all_selected_particles = s.get_selected_particles()
-                intersection = list(set(all_selected_particles) & set(structure))
-                sorted_intersection = IMP.pmi.tools.sort_by_residues(intersection)
-                cc = [tuple(IMP.core.XYZ(p).get_coordinates()) for p in sorted_intersection]
+                intersection = list(set(all_selected_particles)
+                                    & set(structure))
+                sorted_intersection = \
+                    IMP.pmi.tools.sort_by_residues(intersection)
+                cc = [tuple(IMP.core.XYZ(p).get_coordinates())
+                      for p in sorted_intersection]
                 selected_coordinates += cc
             elif isinstance(t, str):
                 if IMP.pmi.get_is_canonical(prot):
-                    s = IMP.atom.Selection(prot,molecules=[t],resolution=1)
+                    s = IMP.atom.Selection(prot, molecules=[t], resolution=1)
                 else:
-                    s = IMP.atom.Selection(prot,molecules=[t])
+                    s = IMP.atom.Selection(prot, molecules=[t])
                 all_selected_particles = s.get_selected_particles()
-                intersection = list(set(all_selected_particles) & set(structure))
-                sorted_intersection = IMP.pmi.tools.sort_by_residues(intersection)
-                cc = [tuple(IMP.core.XYZ(p).get_coordinates()) for p in sorted_intersection]
+                intersection = list(set(all_selected_particles)
+                                    & set(structure))
+                sorted_intersection = \
+                    IMP.pmi.tools.sort_by_residues(intersection)
+                cc = [tuple(IMP.core.XYZ(p).get_coordinates())
+                      for p in sorted_intersection]
                 selected_coordinates += cc
             else:
                 raise ValueError("Selection error")
         return selected_coordinates
 
-    def set_threshold(self,threshold):
+    def set_threshold(self, threshold):
         self.threshold = threshold
 
-    def _get_distance(self,
-                     structure_set_name1,
-                     structure_set_name2,
-                     selection_name,
-                     index1,
-                     index2):
-        """ Compute distance between structures with various metrics """
-        c1 = self.structures_dictionary[structure_set_name1][selection_name][index1]
-        c2 = self.structures_dictionary[structure_set_name2][selection_name][index2]
+    def _get_distance(self, structure_set_name1, structure_set_name2,
+                      selection_name, index1, index2):
+        """Compute distance between structures with various metrics"""
+        c1 = self.structures_dictionary[
+            structure_set_name1][selection_name][index1]
+        c2 = self.structures_dictionary[
+            structure_set_name2][selection_name][index2]
         coordinates1 = [IMP.algebra.Vector3D(c) for c in c1]
         coordinates2 = [IMP.algebra.Vector3D(c) for c in c2]
 
-        if self.style=='pairwise_drmsd_k':
-            distance=IMP.atom.get_drmsd(coordinates1,coordinates2)
-        if self.style=='pairwise_drms_k':
-            distance=IMP.atom.get_drms(coordinates1,coordinates2)
-        if self.style=='pairwise_drmsd_Q':
-            distance=IMP.atom.get_drmsd_Q(coordinates1,coordinates2,self.threshold)
+        if self.style == 'pairwise_drmsd_k':
+            distance = IMP.atom.get_drmsd(coordinates1, coordinates2)
+        if self.style == 'pairwise_drms_k':
+            distance = IMP.atom.get_drms(coordinates1, coordinates2)
+        if self.style == 'pairwise_drmsd_Q':
+            distance = IMP.atom.get_drmsd_Q(coordinates1, coordinates2,
+                                            self.threshold)
 
-        if self.style=='pairwise_rmsd':
-            distance=IMP.algebra.get_rmsd(coordinates1,coordinates2)
+        if self.style == 'pairwise_rmsd':
+            distance = IMP.algebra.get_rmsd(coordinates1, coordinates2)
         return distance
 
-    def _get_particle_distances(self,structure_set_name1,structure_set_name2,
-                               selection_name,index1,index2):
-        c1 = self.structures_dictionary[structure_set_name1][selection_name][index1]
-        c2 = self.structures_dictionary[structure_set_name2][selection_name][index2]
+    def _get_particle_distances(self, structure_set_name1, structure_set_name2,
+                                selection_name, index1, index2):
+        c1 = self.structures_dictionary[
+            structure_set_name1][selection_name][index1]
+        c2 = self.structures_dictionary[
+            structure_set_name2][selection_name][index2]
 
         coordinates1 = [IMP.algebra.Vector3D(c) for c in c1]
         coordinates2 = [IMP.algebra.Vector3D(c) for c in c2]
 
-        distances=[np.linalg.norm(a-b) for (a,b) in zip(coordinates1,coordinates2)]
+        distances = [np.linalg.norm(a-b)
+                     for (a, b) in zip(coordinates1, coordinates2)]
 
         return distances
 
-    def get_precision(self,
-                      structure_set_name1,
-                      structure_set_name2,
-                      outfile=None,
-                      skip=1,
-                      selection_keywords=None):
+    def get_precision(self, structure_set_name1, structure_set_name2,
+                      outfile=None, skip=1, selection_keywords=None):
         """ Evaluate the precision of two named structure groups. Supports MPI.
         When the structure_set_name1 is different from the structure_set_name2,
         this evaluates the cross-precision (average pairwise distances).
         @param outfile Name of the precision output file
         @param structure_set_name1  string name of the first structure set
         @param structure_set_name2  string name of the second structure set
-        @param skip analyze every (skip) structure for the distance matrix calculation
-        @param selection_keywords Specify the selection name you want to calculate on.
-               By default this is computed for everything you provided in the constructor,
-               plus all the subunits together.
+        @param skip analyze every (skip) structure for the distance
+               matrix calculation
+        @param selection_keywords Specify the selection name you want to
+               calculate on. By default this is computed for everything
+               you provided in the constructor, plus all the subunits together.
         """
         if selection_keywords is None:
             sel_keys = list(self.selection_dictionary.keys())
         else:
             for k in selection_keywords:
                 if k not in self.selection_dictionary:
-                    raise KeyError("you are trying to find named selection " \
+                    raise KeyError(
+                        "you are trying to find named selection "
                         + k + " which was not requested in the constructor")
             sel_keys = selection_keywords
 
         if outfile is not None:
-            of = open(outfile,"w")
+            of = open(outfile, "w")
         centroid_index = 0
         for selection_name in sel_keys:
-            number_of_structures_1 = len(self.structures_dictionary[structure_set_name1][selection_name])
-            number_of_structures_2 = len(self.structures_dictionary[structure_set_name2][selection_name])
-            distances={}
-            structure_pointers_1 = list(range(0,number_of_structures_1,skip))
-            structure_pointers_2 = list(range(0,number_of_structures_2,skip))
-            pair_combination_list = list(itertools.product(structure_pointers_1,structure_pointers_2))
-            if len(pair_combination_list)==0:
-                raise ValueError("no structure selected. Check the skip parameter.")
+            number_of_structures_1 = len(self.structures_dictionary[
+                structure_set_name1][selection_name])
+            number_of_structures_2 = len(self.structures_dictionary[
+                structure_set_name2][selection_name])
+            distances = {}
+            structure_pointers_1 = list(range(0, number_of_structures_1, skip))
+            structure_pointers_2 = list(range(0, number_of_structures_2, skip))
+            pair_combination_list = list(
+                itertools.product(structure_pointers_1, structure_pointers_2))
+            if len(pair_combination_list) == 0:
+                raise ValueError("no structure selected. Check the "
+                                 "skip parameter.")
 
             # compute pairwise distances in parallel
             my_pair_combination_list = IMP.pmi.tools.chunk_list_into_segments(
-                pair_combination_list,self.number_of_processes)[self.rank]
-            my_length = len(my_pair_combination_list)
-            for n,pair in enumerate(my_pair_combination_list):
-                progression = int(float(n)/my_length*100.0)
-                distances[pair] = self._get_distance(structure_set_name1,structure_set_name2,
-                                                     selection_name,pair[0],pair[1])
+                pair_combination_list, self.number_of_processes)[self.rank]
+            for n, pair in enumerate(my_pair_combination_list):
+                distances[pair] = self._get_distance(
+                    structure_set_name1, structure_set_name2, selection_name,
+                    pair[0], pair[1])
             if self.number_of_processes > 1:
                 distances = IMP.pmi.tools.scatter_and_gather(distances)
 
             # Finally compute distance to centroid
             if self.rank == 0:
-                if structure_set_name1==structure_set_name2:
+                if structure_set_name1 == structure_set_name2:
                     structure_pointers = structure_pointers_1
                     number_of_structures = number_of_structures_1
 
@@ -916,7 +937,7 @@ class Precision(object):
 
                     for n in structure_pointers:
                         distances_to_structure[n] = 0.0
-                        distances_to_structure_normalization[n]=0
+                        distances_to_structure_normalization[n] = 0
 
                     for k in distances:
                         distance += distances[k]
@@ -926,45 +947,57 @@ class Precision(object):
                         distances_to_structure_normalization[k[1]] += 1
 
                     for n in structure_pointers:
-                        distances_to_structure[n] = distances_to_structure[n]/distances_to_structure_normalization[n]
+                        distances_to_structure[n] = \
+                                distances_to_structure[n] \
+                                / distances_to_structure_normalization[n]
 
-                    min_distance = min([distances_to_structure[n] for n in distances_to_structure])
-                    centroid_index = [k for k, v in distances_to_structure.items() if v == min_distance][0]
-                    centroid_rmf_name = self.rmf_names_frames[structure_set_name1][centroid_index]
+                    min_distance = min([distances_to_structure[n]
+                                       for n in distances_to_structure])
+                    centroid_index = [k for k, v in
+                                      distances_to_structure.items()
+                                      if v == min_distance][0]
+                    centroid_rmf_name = \
+                        self.rmf_names_frames[
+                            structure_set_name1][centroid_index]
 
                     centroid_distance = 0.0
                     distance_list = []
                     for n in range(number_of_structures):
-                        dist = self._get_distance(structure_set_name1,structure_set_name1,
-                                                             selection_name,centroid_index,n)
+                        dist = self._get_distance(
+                            structure_set_name1, structure_set_name1,
+                            selection_name, centroid_index, n)
                         centroid_distance += dist
                         distance_list.append(dist)
 
-                    #pairwise_distance=distance/len(distances.keys())
                     centroid_distance /= number_of_structures
-                    #average_centroid_distance=sum(distances_to_structure)/len(distances_to_structure)
                     if outfile is not None:
-                        of.write(str(selection_name)+" "+structure_set_name1+
-                                        " average centroid distance "+str(centroid_distance)+"\n")
-                        of.write(str(selection_name)+" "+structure_set_name1+
-                                        " centroid index "+str(centroid_index)+"\n")
-                        of.write(str(selection_name)+" "+structure_set_name1+
-                                        " centroid rmf name "+str(centroid_rmf_name)+"\n")
-                        of.write(str(selection_name)+" "+structure_set_name1+
-                                        " median centroid distance  "+str(np.median(distance_list))+"\n")
+                        of.write(str(selection_name) + " " +
+                                 structure_set_name1 +
+                                 " average centroid distance " +
+                                 str(centroid_distance) + "\n")
+                        of.write(str(selection_name) + " " +
+                                 structure_set_name1 + " centroid index " +
+                                 str(centroid_index) + "\n")
+                        of.write(str(selection_name) + " " +
+                                 structure_set_name1 + " centroid rmf name " +
+                                 str(centroid_rmf_name) + "\n")
+                        of.write(str(selection_name) + " " +
+                                 structure_set_name1 +
+                                 " median centroid distance  " +
+                                 str(np.median(distance_list)) + "\n")
 
-                average_pairwise_distances=sum(distances.values())/len(list(distances.values()))
+                average_pairwise_distances = sum(
+                    distances.values())/len(list(distances.values()))
                 if outfile is not None:
-                    of.write(str(selection_name)+" "+structure_set_name1+" "+structure_set_name2+
-                             " average pairwise distance "+str(average_pairwise_distances)+"\n")
+                    of.write(str(selection_name) + " " + structure_set_name1 +
+                             " " + structure_set_name2 +
+                             " average pairwise distance " +
+                             str(average_pairwise_distances) + "\n")
         if outfile is not None:
             of.close()
         return centroid_index
 
-    def get_rmsf(self,
-                 structure_set_name,
-                 outdir="./",
-                 skip=1,
+    def get_rmsf(self, structure_set_name, outdir="./", skip=1,
                  set_plot_yaxis_range=None):
         """ Calculate the residue mean square fluctuations (RMSF).
         Automatically outputs as data file and pdf
@@ -978,31 +1011,34 @@ class Precision(object):
                                             structure_set_name,
                                             outfile=None,
                                             skip=skip)
-        if self.rank==0:
+        if self.rank == 0:
             for sel_name in self.protein_names:
-                self.selection_dictionary.update({sel_name:[sel_name]})
+                self.selection_dictionary.update({sel_name: [sel_name]})
                 try:
-                    number_of_structures = len(self.structures_dictionary[structure_set_name][sel_name])
+                    number_of_structures = \
+                        len(self.structures_dictionary[
+                            structure_set_name][sel_name])
                 except KeyError:
                     # that protein was not included in the selection
                     continue
                 rpim = self.residue_particle_index_map[sel_name]
                 outfile = outdir+"/rmsf."+sel_name+".dat"
-                of = open(outfile,"w")
+                of = open(outfile, "w")
                 residue_distances = {}
                 residue_nblock = {}
                 for index in range(number_of_structures):
-                    distances = self._get_particle_distances(structure_set_name,
-                                                             structure_set_name,
-                                                             sel_name,
-                                                             centroid_index,index)
-                    for nblock,block in enumerate(rpim):
+                    distances = self._get_particle_distances(
+                        structure_set_name, structure_set_name, sel_name,
+                        centroid_index, index)
+                    for nblock, block in enumerate(rpim):
                         for residue_number in block:
                             residue_nblock[residue_number] = nblock
                             if residue_number not in residue_distances:
-                                residue_distances[residue_number] = [distances[nblock]]
+                                residue_distances[residue_number] = \
+                                    [distances[nblock]]
                             else:
-                                residue_distances[residue_number].append(distances[nblock])
+                                residue_distances[
+                                    residue_number].append(distances[nblock])
 
                 residues = []
                 rmsfs = []
@@ -1010,89 +1046,112 @@ class Precision(object):
                     residues.append(rn)
                     rmsf = np.std(residue_distances[rn])
                     rmsfs.append(rmsf)
-                    of.write(str(rn)+" "+str(residue_nblock[rn])+" "+str(rmsf)+"\n")
+                    of.write(str(rn) + " " + str(residue_nblock[rn])
+                             + " " + str(rmsf) + "\n")
 
-                IMP.pmi.output.plot_xy_data(residues,rmsfs,title=sel_name,
-                                            out_fn=outdir+"/rmsf."+sel_name,display=False,
-                                            set_plot_yaxis_range=set_plot_yaxis_range,
-                                            xlabel='Residue Number',ylabel='Standard error')
+                IMP.pmi.output.plot_xy_data(
+                    residues, rmsfs, title=sel_name,
+                    out_fn=outdir+"/rmsf."+sel_name, display=False,
+                    set_plot_yaxis_range=set_plot_yaxis_range,
+                    xlabel='Residue Number', ylabel='Standard error')
                 of.close()
 
-
-    def set_reference_structure(self,rmf_name,rmf_frame_index):
+    def set_reference_structure(self, rmf_name, rmf_frame_index):
         """Read in a structure used for reference computation.
         Needed before calling get_average_distance_wrt_reference_structure()
         @param rmf_name The RMF file to read the reference
         @param rmf_frame_index The index in that file
         """
-        particles_resolution_one = self._get_structure(rmf_frame_index,rmf_name)
-        self.reference_rmf_names_frames = (rmf_name,rmf_frame_index)
+        particles_resolution_one = self._get_structure(rmf_frame_index,
+                                                       rmf_name)
+        self.reference_rmf_names_frames = (rmf_name, rmf_frame_index)
 
         for selection_name in self.selection_dictionary:
             selection_tuple = self.selection_dictionary[selection_name]
-            coords = self._select_coordinates(selection_tuple,
-                                              particles_resolution_one,self.prots[0])
+            coords = self._select_coordinates(
+                selection_tuple, particles_resolution_one, self.prots[0])
             self.reference_structures_dictionary[selection_name] = coords
 
-    def get_rmsd_wrt_reference_structure_with_alignment(self,structure_set_name,alignment_selection_key):
+    def get_rmsd_wrt_reference_structure_with_alignment(
+            self, structure_set_name, alignment_selection_key):
         """First align then calculate RMSD
         @param structure_set_name: the name of the structure set
-        @param alignment_selection: the key containing the selection tuples needed to make the alignment stored in self.selection_dictionary
+        @param alignment_selection: the key containing the selection tuples
+               needed to make the alignment stored in self.selection_dictionary
         @return: for each structure in the structure set, returns the rmsd
         """
         ret = {}
-        if self.reference_structures_dictionary=={}:
+        if self.reference_structures_dictionary == {}:
             print("Cannot compute until you set a reference structure")
             return
 
-        align_reference_coordinates = self.reference_structures_dictionary[alignment_selection_key]
-        align_coordinates = self.structures_dictionary[structure_set_name][alignment_selection_key]
+        align_reference_coordinates = \
+            self.reference_structures_dictionary[alignment_selection_key]
+        align_coordinates = self.structures_dictionary[
+            structure_set_name][alignment_selection_key]
         transformations = []
         for c in align_coordinates:
-            Ali = IMP.pmi.analysis.Alignment({"All":align_reference_coordinates}, {"All":c})
+            Ali = IMP.pmi.analysis.Alignment(
+                {"All": align_reference_coordinates}, {"All": c})
             transformation = Ali.align()[1]
             transformations.append(transformation)
         for selection_name in self.selection_dictionary:
-            reference_coordinates = self.reference_structures_dictionary[selection_name]
-            coordinates2 = [IMP.algebra.Vector3D(c) for c in reference_coordinates]
+            reference_coordinates = \
+                self.reference_structures_dictionary[selection_name]
+            coordinates2 = [IMP.algebra.Vector3D(c)
+                            for c in reference_coordinates]
             distances = []
-            for n,sc in enumerate(self.structures_dictionary[structure_set_name][selection_name]):
-                coordinates1 = [transformations[n].get_transformed(IMP.algebra.Vector3D(c)) for c in sc]
-                distance = IMP.algebra.get_rmsd(coordinates1,coordinates2)
+            for n, sc in enumerate(self.structures_dictionary[
+                    structure_set_name][selection_name]):
+                coordinates1 = [
+                    transformations[n].get_transformed(IMP.algebra.Vector3D(c))
+                    for c in sc]
+                distance = IMP.algebra.get_rmsd(coordinates1, coordinates2)
                 distances.append(distance)
-            ret[selection_name] = {'all_distances':distances,'average_distance':sum(distances)/len(distances),'minimum_distance':min(distances)}
+            ret[selection_name] = {
+                'all_distances': distances,
+                'average_distance': sum(distances)/len(distances),
+                'minimum_distance': min(distances)}
         return ret
 
-    def _get_median(self,list_of_values):
+    def _get_median(self, list_of_values):
         return np.median(np.array(list_of_values))
 
-    def get_average_distance_wrt_reference_structure(self,structure_set_name):
+    def get_average_distance_wrt_reference_structure(self, structure_set_name):
         """Compare the structure set to the reference structure.
         @param structure_set_name The structure set to compute this on
         @note First call set_reference_structure()
         """
         ret = {}
-        if self.reference_structures_dictionary=={}:
+        if self.reference_structures_dictionary == {}:
             print("Cannot compute until you set a reference structure")
             return
         for selection_name in self.selection_dictionary:
-            reference_coordinates = self.reference_structures_dictionary[selection_name]
-            coordinates2 = [IMP.algebra.Vector3D(c) for c in reference_coordinates]
+            reference_coordinates = self.reference_structures_dictionary[
+                selection_name]
+            coordinates2 = [IMP.algebra.Vector3D(c)
+                            for c in reference_coordinates]
             distances = []
-            for sc in self.structures_dictionary[structure_set_name][selection_name]:
+            for sc in self.structures_dictionary[
+                    structure_set_name][selection_name]:
                 coordinates1 = [IMP.algebra.Vector3D(c) for c in sc]
-                if self.style=='pairwise_drmsd_k':
-                    distance = IMP.atom.get_drmsd(coordinates1,coordinates2)
-                if self.style=='pairwise_drms_k':
-                    distance = IMP.atom.get_drms(coordinates1,coordinates2)
-                if self.style=='pairwise_drmsd_Q':
-                    distance = IMP.atom.get_drmsd_Q(coordinates1,coordinates2,self.threshold)
-                if self.style=='pairwise_rmsd':
-                    distance = IMP.algebra.get_rmsd(coordinates1,coordinates2)
+                if self.style == 'pairwise_drmsd_k':
+                    distance = IMP.atom.get_drmsd(coordinates1, coordinates2)
+                if self.style == 'pairwise_drms_k':
+                    distance = IMP.atom.get_drms(coordinates1, coordinates2)
+                if self.style == 'pairwise_drmsd_Q':
+                    distance = IMP.atom.get_drmsd_Q(
+                        coordinates1, coordinates2, self.threshold)
+                if self.style == 'pairwise_rmsd':
+                    distance = IMP.algebra.get_rmsd(coordinates1, coordinates2)
                 distances.append(distance)
 
-            print(selection_name,"average distance",sum(distances)/len(distances),"minimum distance",min(distances),'nframes',len(distances))
-            ret[selection_name] = {'average_distance':sum(distances)/len(distances),'minimum_distance':min(distances)}
+            print(selection_name, "average distance",
+                  sum(distances)/len(distances), "minimum distance",
+                  min(distances), 'nframes', len(distances))
+            ret[selection_name] = {
+                'average_distance': sum(distances)/len(distances),
+                'minimum_distance': min(distances)}
         return ret
 
     def get_coordinates(self):
@@ -1100,7 +1159,7 @@ class Precision(object):
 
     def set_precision_style(self, style):
         if style in self.styles:
-            self.style=style
+            self.style = style
         else:
             raise ValueError("No such style")
 
@@ -1113,7 +1172,8 @@ class GetModelDensity(object):
     particle coordinates to the existing density maps.
     """
 
-    def __init__(self, custom_ranges, representation=None, resolution=20.0, voxel=5.0):
+    def __init__(self, custom_ranges, representation=None, resolution=20.0,
+                 voxel=5.0):
         """Constructor.
            @param custom_ranges  Required. It's a dictionary, keys are the
                   density component names, values are selection tuples
@@ -1123,7 +1183,8 @@ class GetModelDensity(object):
                                                   (143,700,'tfb3d2')],
            @param representation PMI representation, for doing selections.
                           Not needed if you only pass hierarchies
-           @param resolution The MRC resolution of the output map (in Angstrom unit)
+           @param resolution The MRC resolution of the output map (in
+                  Angstrom unit)
            @param voxel The voxel size for the output map (lower is slower)
         """
 
@@ -1154,52 +1215,54 @@ class GetModelDensity(object):
 
             for seg in self.custom_ranges[density_name]:
                 if not hierarchy:
-                    # when you have a IMP.pmi.representation.Representation class
-                    parts += IMP.tools.select_by_tuple(self.representation,
-                                                       seg, resolution=1, name_is_ambiguous=False)
+                    # when you have a IMP.pmi.representation.Representation
+                    # class
+                    parts += IMP.tools.select_by_tuple(
+                        self.representation, seg, resolution=1,
+                        name_is_ambiguous=False)
                 else:
                     # else, when you have a hierarchy, but not a representation
                     if not IMP.pmi.get_is_canonical(hierarchy):
                         for h in hierarchy.get_children():
                             if not IMP.atom.Molecule.get_is_setup(h):
-                                IMP.atom.Molecule.setup_particle(h.get_particle())
+                                IMP.atom.Molecule.setup_particle(
+                                    h.get_particle())
 
                     if isinstance(seg, str):
-                        s = IMP.atom.Selection(hierarchy,molecule=seg)
+                        s = IMP.atom.Selection(hierarchy, molecule=seg)
                     elif isinstance(seg, tuple) and len(seg) == 2:
                         s = IMP.atom.Selection(
-                            hierarchy, molecule=seg[0],copy_index=seg[1])
+                            hierarchy, molecule=seg[0], copy_index=seg[1])
                     elif isinstance(seg, tuple) and len(seg) == 3:
                         s = IMP.atom.Selection(
-                            hierarchy, molecule=seg[2],residue_indexes=range(seg[0], seg[1] + 1))
+                            hierarchy, molecule=seg[2],
+                            residue_indexes=range(seg[0], seg[1] + 1))
                     elif isinstance(seg, tuple) and len(seg) == 4:
                         s = IMP.atom.Selection(
-                            hierarchy, molecule=seg[2],residue_indexes=range(seg[0], seg[1] + 1),copy_index=seg[3])
+                            hierarchy, molecule=seg[2],
+                            residue_indexes=range(seg[0], seg[1] + 1),
+                            copy_index=seg[3])
                     else:
-                        raise Exception('could not understand selection tuple '+str(seg))
+                        raise Exception('could not understand selection tuple '
+                                        + str(seg))
 
                     all_particles_by_segments += s.get_selected_particles()
             if hierarchy:
                 if IMP.pmi.get_is_canonical(hierarchy):
                     parts = all_particles_by_segments
                 else:
-                    parts = list(
-                        set(all_particles_by_segments) & set(all_particles_by_resolution))
+                    parts = list(set(all_particles_by_segments)
+                                 & set(all_particles_by_resolution))
             self._create_density_from_particles(parts, density_name)
 
     def normalize_density(self):
         pass
 
     def _create_density_from_particles(self, ps, name,
-                                      kernel_type='GAUSSIAN'):
+                                       kernel_type='GAUSSIAN'):
         '''Internal function for adding to densities.
         pass XYZR particles with mass and create a density from them.
         kernel type options are GAUSSIAN, BINARIZED_SPHERE, and SPHERE.'''
-        kd = {
-            'GAUSSIAN': IMP.em.GAUSSIAN,
-            'BINARIZED_SPHERE': IMP.em.BINARIZED_SPHERE,
-            'SPHERE': IMP.em.SPHERE}
-
         dmap = IMP.em.SampledDensityMap(ps, self.MRCresolution, self.voxel)
         dmap.calcRMS()
         dmap.set_was_used(True)
@@ -1209,7 +1272,7 @@ class GetModelDensity(object):
             bbox1 = IMP.em.get_bounding_box(self.densities[name])
             bbox2 = IMP.em.get_bounding_box(dmap)
             bbox1 += bbox2
-            dmap3 = IMP.em.create_density_map(bbox1,self.voxel)
+            dmap3 = IMP.em.create_density_map(bbox1, self.voxel)
             dmap3.set_was_used(True)
             dmap3.add(dmap)
             dmap3.add(self.densities[name])
@@ -1218,21 +1281,22 @@ class GetModelDensity(object):
     def get_density_keys(self):
         return list(self.densities.keys())
 
-    def get_density(self,name):
+    def get_density(self, name):
         """Get the current density for some component name"""
         if name not in self.densities:
             return None
         else:
             return self.densities[name]
 
-    def write_mrc(self, path="./",suffix=None):
-        import os, errno
+    def write_mrc(self, path="./", suffix=None):
+        import os
+        import errno
         for density_name in self.densities:
             self.densities[density_name].multiply(1. / self.count_models)
             if suffix is None:
-                name=path + "/" + density_name + ".mrc"
+                name = path + "/" + density_name + ".mrc"
             else:
-                name=path + "/" + density_name + "." + suffix + ".mrc"
+                name = path + "/" + density_name + "." + suffix + ".mrc"
             path, file = os.path.split(name)
             if not os.path.exists(path):
                 try:
@@ -1240,9 +1304,8 @@ class GetModelDensity(object):
                 except OSError as e:
                     if e.errno != errno.EEXIST:
                         raise
-            IMP.em.write_map(
-                self.densities[density_name],name,
-                IMP.em.MRCReaderWriter())
+            IMP.em.write_map(self.densities[density_name], name,
+                             IMP.em.MRCReaderWriter())
 
 
 class GetContactMap(object):
@@ -1257,12 +1320,8 @@ class GetContactMap(object):
         self.resmap = {}
 
     def set_prot(self, prot):
-        from scipy.spatial.distance import cdist
         self.prot = prot
         self.protnames = []
-        coords = []
-        radii = []
-        namelist = []
 
         particles_dictionary = get_particles_at_resolution_one(self.prot)
 
@@ -1280,16 +1339,13 @@ class GetContactMap(object):
         coords = []
         radii = []
         namelist = []
-        test, testr = [], []
         for part in self.prot.get_children():
             SortedSegments = []
             print(part)
             for chl in part.get_children():
                 start = IMP.atom.get_leaves(chl)[0]
-                end = IMP.atom.get_leaves(chl)[-1]
 
                 startres = IMP.atom.Fragment(start).get_residue_indexes()[0]
-                endres = IMP.atom.Fragment(end).get_residue_indexes()[-1]
                 SortedSegments.append((chl, startres))
             SortedSegments = sorted(SortedSegments, key=itemgetter(1))
 
@@ -1301,7 +1357,7 @@ class GetContactMap(object):
                     coords.append(crd)
                     radii.append(p.get_radius())
 
-                    new_name = part.get_name() + '_' + sgmnt[0].get_name() +\
+                    new_name = part.get_name() + '_' + sgmnt[0].get_name() + \
                         '_' + \
                         str(IMP.atom.Fragment(leaf)
                             .get_residue_indexes()[0])
@@ -1323,23 +1379,16 @@ class GetContactMap(object):
         distances = distances <= self.distance
         self.contactmap += distances
 
-    def add_xlinks(
-        self,
-        filname,
-            identification_string='ISDCrossLinkMS_Distance_'):
-        # 'ISDCrossLinkMS_Distance_interrb_6629-State:0-20:RPS30_218:eIF3j-1-1-0.1_None'
+    def add_xlinks(self, filname,
+                   identification_string='ISDCrossLinkMS_Distance_'):
         self.xlinks = 1
-        data = open(filname)
-        D = data.readlines()
-        data.close()
+        with open(filname) as data:
+            D = data.readlines()
 
         for d in D:
             if identification_string in d:
-                d = d.replace(
-                    "_",
-                    " ").replace("-",
-                                 " ").replace(":",
-                                              " ").split()
+                d = d.replace("_", " ").replace("-", " ").replace(
+                    ":", " ").split()
 
                 t1, t2 = (d[0], d[1]), (d[1], d[0])
                 if t1 not in self.XL:
@@ -1353,7 +1402,6 @@ class GetContactMap(object):
         K = self.namelist
         M = self.contactmap
         C, R = [], []
-        L = sum(self.expanded.values())
         proteins = self.protnames
 
         # exp new
@@ -1363,11 +1411,12 @@ class GetContactMap(object):
             missing = []
             for p1 in range(len(proteins)):
                 for p2 in range(p1, len(proteins)):
-                    pl1, pl2 = max(
-                        self.resmap[proteins[p1]].keys()), max(self.resmap[proteins[p2]].keys())
+                    pl1, pl2 = (max(self.resmap[proteins[p1]].keys()),
+                                max(self.resmap[proteins[p2]].keys()))
                     pn1, pn2 = proteins[p1], proteins[p2]
                     mtr = np.zeros((pl1 + 1, pl2 + 1))
-                    print('Creating matrix for: ', p1, p2, pn1, pn2, mtr.shape, pl1, pl2)
+                    print('Creating matrix for: ',
+                          p1, p2, pn1, pn2, mtr.shape, pl1, pl2)
                     for i1 in range(1, pl1 + 1):
                         for i2 in range(1, pl2 + 1):
                             try:
@@ -1382,12 +1431,13 @@ class GetContactMap(object):
         # add cross-links
         if skip_xl == 0:
             if self.XL == {}:
-                raise ValueError("cross-links were not provided, use add_xlinks function!")
+                raise ValueError("cross-links were not provided, use "
+                                 "add_xlinks function!")
             Matrices_xl = {}
             for p1 in range(len(proteins)):
                 for p2 in range(p1, len(proteins)):
-                    pl1, pl2 = max(
-                        self.resmap[proteins[p1]].keys()), max(self.resmap[proteins[p2]].keys())
+                    pl1, pl2 = (max(self.resmap[proteins[p1]].keys()),
+                                max(self.resmap[proteins[p2]].keys()))
                     pn1, pn2 = proteins[p1], proteins[p2]
                     mtr = np.zeros((pl1 + 1, pl2 + 1))
                     flg = 0
@@ -1400,7 +1450,8 @@ class GetContactMap(object):
                         except KeyError:
                             flg = 2
                     if flg == 0:
-                        print('Creating matrix for: ', p1, p2, pn1, pn2, mtr.shape, pl1, pl2)
+                        print('Creating matrix for: ',
+                              p1, p2, pn1, pn2, mtr.shape, pl1, pl2)
                         for xl1, xl2 in xls:
                             if xl1 > pl1:
                                 print('X' * 10, xl1, xl2)
@@ -1410,7 +1461,8 @@ class GetContactMap(object):
                                 xl2 = pl2
                             mtr[xl1 - 1, xl2 - 1] = 100
                     elif flg == 1:
-                        print('Creating matrix for: ', p1, p2, pn1, pn2, mtr.shape, pl1, pl2)
+                        print('Creating matrix for: ',
+                              p1, p2, pn1, pn2, mtr.shape, pl1, pl2)
                         for xl1, xl2 in xls:
                             if xl1 > pl1:
                                 print('X' * 10, xl1, xl2)
@@ -1422,15 +1474,6 @@ class GetContactMap(object):
                     else:
                         print('No cross-links between: ', pn1, pn2)
                     Matrices_xl[(pn1, pn2)] = mtr
-
-        # expand the matrix to individual residues
-        #NewM = []
-        # for x1 in xrange(len(K)):
-        #    lst = []
-        #    for x2 in xrange(len(K)):
-        #        lst += [M[x1,x2]]*self.expanded[K[x2]]
-        #    for i in xrange(self.expanded[K[x1]]): NewM.append(np.array(lst))
-        #NewM = np.array(NewM)
 
         # make list of protein names and create coordinate lists
         C = proteins
@@ -1454,31 +1497,21 @@ class GetContactMap(object):
         import matplotlib.gridspec as gridspec
         import scipy.sparse as sparse
 
-        f = plt.figure()
+        plt.figure()
         gs = gridspec.GridSpec(len(W), len(W),
                                width_ratios=W,
                                height_ratios=W)
 
         cnt = 0
         for x1, r1 in enumerate(R):
-            if x1 == 0:
-                s1 = 0
-            else:
-                s1 = R[x1 - 1]
             for x2, r2 in enumerate(R):
-                if x2 == 0:
-                    s2 = 0
-                else:
-                    s2 = R[x2 - 1]
-
                 ax = plt.subplot(gs[cnt])
                 if skip_cmap == 0:
                     try:
                         mtr = Matrices[(C[x1], C[x2])]
                     except KeyError:
                         mtr = Matrices[(C[x2], C[x1])].T
-                    #cax = ax.imshow(log(NewM[s1:r1,s2:r2] / 1.), interpolation='nearest', vmin=0., vmax=log(NewM.max()))
-                    cax = ax.imshow(
+                    ax.imshow(
                         np.log(mtr),
                         interpolation='nearest',
                         vmin=0.,
@@ -1490,7 +1523,7 @@ class GetContactMap(object):
                         mtr = Matrices_xl[(C[x1], C[x2])]
                     except KeyError:
                         mtr = Matrices_xl[(C[x2], C[x1])].T
-                    cax = ax.spy(
+                    ax.spy(
                         sparse.csr_matrix(mtr),
                         markersize=10,
                         color='white',
@@ -1513,7 +1546,8 @@ class GetContactMap(object):
 
 def get_hiers_from_rmf(model, frame_number, rmf_file):
     # I have to deprecate this function
-    print("getting coordinates for frame %i rmf file %s" % (frame_number, rmf_file))
+    print("getting coordinates for frame %i rmf file %s"
+          % (frame_number, rmf_file))
 
     # load the frame
     rh = RMF.open_rmf_file_read_only(rmf_file)
@@ -1523,7 +1557,6 @@ def get_hiers_from_rmf(model, frame_number, rmf_file):
     except IOError:
         print("Unable to open rmf file %s" % (rmf_file))
         return None
-    #IMP.rmf.link_hierarchies(rh, prots)
 
     try:
         IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
@@ -1535,13 +1568,15 @@ def get_hiers_from_rmf(model, frame_number, rmf_file):
 
     return prots
 
-def link_hiers_to_rmf(model,hiers,frame_number, rmf_file):
-    print("linking hierarchies for frame %i rmf file %s" % (frame_number, rmf_file))
+
+def link_hiers_to_rmf(model, hiers, frame_number, rmf_file):
+    print("linking hierarchies for frame %i rmf file %s"
+          % (frame_number, rmf_file))
     rh = RMF.open_rmf_file_read_only(rmf_file)
     IMP.rmf.link_hierarchies(rh, hiers)
     try:
         IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
-    except:
+    except:  # noqa: E722
         print("Unable to open frame %i of file %s" % (frame_number, rmf_file))
         return False
     model.update()
@@ -1551,7 +1586,8 @@ def link_hiers_to_rmf(model,hiers,frame_number, rmf_file):
 
 def get_hiers_and_restraints_from_rmf(model, frame_number, rmf_file):
     # I have to deprecate this function
-    print("getting coordinates for frame %i rmf file %s" % (frame_number, rmf_file))
+    print("getting coordinates for frame %i rmf file %s"
+          % (frame_number, rmf_file))
 
     # load the frame
     rh = RMF.open_rmf_file_read_only(rmf_file)
@@ -1561,25 +1597,27 @@ def get_hiers_and_restraints_from_rmf(model, frame_number, rmf_file):
         rs = IMP.rmf.create_restraints(rh, model)
     except IOError:
         print("Unable to open rmf file %s" % (rmf_file))
-        return None,None
+        return None, None
     try:
         IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
-    except:
+    except:  # noqa: E722
         print("Unable to open frame %i of file %s" % (frame_number, rmf_file))
-        return None,None
+        return None, None
     model.update()
     del rh
 
-    return prots,rs
+    return prots, rs
 
-def link_hiers_and_restraints_to_rmf(model,hiers,rs, frame_number, rmf_file):
-    print("linking hierarchies for frame %i rmf file %s" % (frame_number, rmf_file))
+
+def link_hiers_and_restraints_to_rmf(model, hiers, rs, frame_number, rmf_file):
+    print("linking hierarchies for frame %i rmf file %s"
+          % (frame_number, rmf_file))
     rh = RMF.open_rmf_file_read_only(rmf_file)
     IMP.rmf.link_hierarchies(rh, hiers)
     IMP.rmf.link_restraints(rh, rs)
     try:
         IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
-    except:
+    except:  # noqa: E722
         print("Unable to open frame %i of file %s" % (frame_number, rmf_file))
         return False
     model.update()
@@ -1591,15 +1629,17 @@ def get_particles_at_resolution_one(prot):
     """Get particles at res 1, or any beads, based on the name.
     No Representation is needed. This is mainly used when the hierarchy
     is read from an RMF file.
+
     @return a dictionary of component names and their particles
-    @note If the root node is named "System" or is a "State", do proper selection.
+    @note If the root node is named "System" or is a "State", do
+          proper selection.
     """
     particle_dict = {}
 
     # attempt to give good results for PMI2
     if IMP.pmi.get_is_canonical(prot):
-        for mol in IMP.atom.get_by_type(prot,IMP.atom.MOLECULE_TYPE):
-            sel = IMP.atom.Selection(mol,resolution=1)
+        for mol in IMP.atom.get_by_type(prot, IMP.atom.MOLECULE_TYPE):
+            sel = IMP.atom.Selection(mol, resolution=1)
             particle_dict[mol.get_name()] = sel.get_selected_particles()
     else:
         allparticles = []
@@ -1612,24 +1652,26 @@ def get_particles_at_resolution_one(prot):
                 if "Beads" in s.get_name():
                     allparticles += IMP.atom.get_leaves(s)
 
-        particle_align = []
         for name in particle_dict:
             particle_dict[name] = IMP.pmi.tools.sort_by_residues(
                 list(set(particle_dict[name]) & set(allparticles)))
     return particle_dict
 
+
 def get_particles_at_resolution_ten(prot):
     """Get particles at res 10, or any beads, based on the name.
     No Representation is needed.
     This is mainly used when the hierarchy is read from an RMF file.
+
     @return a dictionary of component names and their particles
-    @note If the root node is named "System" or is a "State", do proper selection.
+    @note If the root node is named "System" or is a "State", do proper
+          selection.
     """
     particle_dict = {}
     # attempt to give good results for PMI2
     if IMP.pmi.get_is_canonical(prot):
-        for mol in IMP.atom.get_by_type(prot,IMP.atom.MOLECULE_TYPE):
-            sel = IMP.atom.Selection(mol,resolution=10)
+        for mol in IMP.atom.get_by_type(prot, IMP.atom.MOLECULE_TYPE):
+            sel = IMP.atom.Selection(mol, resolution=10)
             particle_dict[mol.get_name()] = sel.get_selected_particles()
     else:
         allparticles = []
@@ -1641,16 +1683,11 @@ def get_particles_at_resolution_ten(prot):
                     allparticles += IMP.atom.get_leaves(s)
                 if "Beads" in s.get_name():
                     allparticles += IMP.atom.get_leaves(s)
-        particle_align = []
         for name in particle_dict:
             particle_dict[name] = IMP.pmi.tools.sort_by_residues(
                 list(set(particle_dict[name]) & set(allparticles)))
     return particle_dict
 
-def select_by_tuple(first_res_last_res_name_tuple):
-    first_res = first_res_last_res_hier_tuple[0]
-    last_res = first_res_last_res_hier_tuple[1]
-    name = first_res_last_res_hier_tuple[2]
 
 class CrossLinkTable(object):
     """Visualization of cross-links"""
@@ -1664,7 +1701,7 @@ class CrossLinkTable(object):
 
     def set_hierarchy(self, prot):
         self.prot_length_dict = {}
-        self.model=prot.get_model()
+        self.model = prot.get_model()
 
         for i in prot.get_children():
             name = i.get_name()
@@ -1675,19 +1712,18 @@ class CrossLinkTable(object):
             if len(residue_indexes) != 0:
                 self.prot_length_dict[name] = max(residue_indexes)
 
-    def set_coordinates_for_contact_map(self, rmf_name,rmf_frame_index):
+    def set_coordinates_for_contact_map(self, rmf_name, rmf_frame_index):
         from scipy.spatial.distance import cdist
 
-        rh= RMF.open_rmf_file_read_only(rmf_name)
-        prots=IMP.rmf.create_hierarchies(rh, self.model)
+        rh = RMF.open_rmf_file_read_only(rmf_name)
+        prots = IMP.rmf.create_hierarchies(rh, self.model)
         IMP.rmf.load_frame(rh, RMF.FrameID(rmf_frame_index))
-        print("getting coordinates for frame %i rmf file %s" % (rmf_frame_index, rmf_name))
+        print("getting coordinates for frame %i rmf file %s"
+              % (rmf_frame_index, rmf_name))
         del rh
-
 
         coords = []
         radii = []
-        namelist = []
 
         particles_dictionary = get_particles_at_resolution_one(prots[0])
 
@@ -1699,11 +1735,11 @@ class CrossLinkTable(object):
             for p in particles_dictionary[name]:
                 print(p.get_name())
                 residue_indexes = IMP.pmi.tools.get_residue_indexes(p)
-                #residue_indexes.add( )
 
                 if len(residue_indexes) != 0:
 
-                    for res in range(min(residue_indexes), max(residue_indexes) + 1):
+                    for res in range(min(residue_indexes),
+                                     max(residue_indexes) + 1):
                         d = IMP.core.XYZR(p)
 
                         crd = np.array([d.get_x(), d.get_y(), d.get_z()])
@@ -1726,20 +1762,22 @@ class CrossLinkTable(object):
             self.contactmap = np.zeros((len(coords), len(coords)))
         self.contactmap += distances
 
-        for prot in prots: IMP.atom.destroy(prot)
+        for prot in prots:
+            IMP.atom.destroy(prot)
 
     def set_crosslinks(
-        self, data_file, search_label='ISDCrossLinkMS_Distance_',
-        mapping=None,
-        filter_label=None,
-        filter_rmf_file_names=None, #provide a list of rmf base names to filter the stat file
-        external_csv_data_file=None,
-        external_csv_data_file_unique_id_key="Unique ID"):
+            self, data_file, search_label='ISDCrossLinkMS_Distance_',
+            mapping=None, filter_label=None,
+            # provide a list of rmf base names to filter the stat file
+            filter_rmf_file_names=None, external_csv_data_file=None,
+            external_csv_data_file_unique_id_key="Unique ID"):
 
-        # example key ISDCrossLinkMS_Distance_intrarb_937-State:0-108:RPS3_55:RPS30-1-1-0.1_None
-        # mapping is a dictionary that maps standard keywords to entry positions in the key string
+        # example key ISDCrossLinkMS_Distance_intrarb_937-State:0-108:RPS3_55:RPS30-1-1-0.1_None   # noqa: E501
+        # mapping is a dictionary that maps standard keywords to entry
+        # positions in the key string
         # confidence class is a filter that
-        # external datafile is a datafile that contains further information on the cross-links
+        # external datafile is a datafile that contains further information
+        # on the cross-links
         # it will use the unique id to create the dictionary keys
 
         po = IMP.pmi.output.ProcessOutput(data_file)
@@ -1748,7 +1786,7 @@ class CrossLinkTable(object):
         xl_keys = [k for k in keys if search_label in k]
 
         if filter_rmf_file_names is not None:
-            rmf_file_key="local_rmf_file_name"
+            rmf_file_key = "local_rmf_file_name"
             fs = po.get_fields(xl_keys+[rmf_file_key])
         else:
             fs = po.get_fields(xl_keys)
@@ -1764,7 +1802,7 @@ class CrossLinkTable(object):
         # residues
         self.cross_link_distances_unique = {}
 
-        if not external_csv_data_file is None:
+        if external_csv_data_file is not None:
             # this dictionary stores the further information on cross-links
             # labeled by unique ID
             self.external_csv_data = {}
@@ -1783,17 +1821,12 @@ class CrossLinkTable(object):
 
         for key in xl_keys:
             print(key)
-            keysplit = key.replace(
-                "_",
-                " ").replace(
-                "-",
-                " ").replace(
-                ":",
-                " ").split(
-            )
+            keysplit = key.replace("_", " ").replace("-", " ").replace(
+                ":", " ").split()
 
-            if filter_label!=None:
-                if filter_label not in keysplit: continue
+            if filter_label is not None:
+                if filter_label not in keysplit:
+                    continue
 
             if mapping is None:
                 r1 = int(keysplit[5])
@@ -1802,11 +1835,11 @@ class CrossLinkTable(object):
                 c2 = keysplit[8]
                 try:
                     confidence = keysplit[12]
-                except:
+                except:  # noqa: E722
                     confidence = '0.0'
                 try:
                     unique_identifier = keysplit[3]
-                except:
+                except:  # noqa: E722
                     unique_identifier = '0'
             else:
                 r1 = int(keysplit[mapping["Residue1"]])
@@ -1815,11 +1848,11 @@ class CrossLinkTable(object):
                 c2 = keysplit[mapping["Protein2"]]
                 try:
                     confidence = keysplit[mapping["Confidence"]]
-                except:
+                except:  # noqa: E722
                     confidence = '0.0'
                 try:
                     unique_identifier = keysplit[mapping["Unique Identifier"]]
-                except:
+                except:  # noqa: E722
                     unique_identifier = '0'
 
             self.crosslinkedprots.add(c1)
@@ -1828,13 +1861,13 @@ class CrossLinkTable(object):
             # construct the list of distances corresponding to the input rmf
             # files
 
-            dists=[]
+            dists = []
             if filter_rmf_file_names is not None:
-                for n,d in enumerate(fs[key]):
+                for n, d in enumerate(fs[key]):
                     if fs[rmf_file_key][n] in filter_rmf_file_names:
                         dists.append(float(d))
             else:
-                dists=[float(f) for f in fs[key]]
+                dists = [float(f) for f in fs[key]]
 
             # check if the input confidence class corresponds to the
             # one of the cross-link
@@ -1849,12 +1882,7 @@ class CrossLinkTable(object):
 
             # calculate the frequency of unique cross-links within the same
             # sample
-            if not self.external_csv_data is None:
-                sample = self.external_csv_data[unique_identifier]["Sample"]
-            else:
-                sample = "None"
-
-            if (r1, c1, r2, c2,mdist) not in cross_link_frequency_list:
+            if (r1, c1, r2, c2, mdist) not in cross_link_frequency_list:
                 if (r1, c1, r2, c2) not in self.cross_link_frequency:
                     self.cross_link_frequency[(r1, c1, r2, c2)] = 1
                     self.cross_link_frequency[(r2, c2, r1, c1)] = 1
@@ -1864,59 +1892,25 @@ class CrossLinkTable(object):
                 cross_link_frequency_list.append((r1, c1, r2, c2))
                 cross_link_frequency_list.append((r2, c2, r1, c1))
                 self.unique_cross_link_list.append(
-                    (r1, c1, r2, c2,mdist))
+                    (r1, c1, r2, c2, mdist))
 
             if (r1, c1, r2, c2) not in self.cross_link_distances:
                 self.cross_link_distances[(
-                    r1,
-                    c1,
-                    r2,
-                    c2,
-                    mdist,
-                    confidence)] = dists
+                    r1, c1, r2, c2, mdist, confidence)] = dists
                 self.cross_link_distances[(
-                    r2,
-                    c2,
-                    r1,
-                    c1,
-                    mdist,
-                    confidence)] = dists
+                    r2, c2, r1, c1, mdist, confidence)] = dists
                 self.cross_link_distances_unique[(r1, c1, r2, c2)] = dists
             else:
                 self.cross_link_distances[(
-                    r2,
-                    c2,
-                    r1,
-                    c1,
-                    mdist,
-                    confidence)] += dists
+                    r2, c2, r1, c1, mdist, confidence)] += dists
                 self.cross_link_distances[(
-                    r1,
-                    c1,
-                    r2,
-                    c2,
-                    mdist,
-                    confidence)] += dists
+                    r1, c1, r2, c2, mdist, confidence)] += dists
 
             self.crosslinks.append(
-                (r1,
-                 c1,
-                 r2,
-                 c2,
-                 mdist,
-                 stdv,
-                 confidence,
-                 unique_identifier,
+                (r1, c1, r2, c2, mdist, stdv, confidence, unique_identifier,
                  'original'))
             self.crosslinks.append(
-                (r2,
-                 c2,
-                 r1,
-                 c1,
-                 mdist,
-                 stdv,
-                 confidence,
-                 unique_identifier,
+                (r2, c2, r1, c1, mdist, stdv, confidence, unique_identifier,
                  'reversed'))
 
         self.cross_link_frequency_inverted = {}
@@ -1942,11 +1936,11 @@ class CrossLinkTable(object):
             return (sorts[length / 2] + sorts[length / 2 - 1]) / 2.0
         return sorts[length / 2]
 
-    def set_threshold(self,threshold):
-        self.threshold=threshold
+    def set_threshold(self, threshold):
+        self.threshold = threshold
 
-    def set_tolerance(self,tolerance):
-        self.tolerance=tolerance
+    def set_tolerance(self, tolerance):
+        self.tolerance = tolerance
 
     def colormap(self, dist):
         if dist < self.threshold - self.tolerance:
@@ -1961,17 +1955,17 @@ class CrossLinkTable(object):
 
         fieldnames = [
             "Unique ID", "Protein1", "Residue1", "Protein2", "Residue2",
-            "Median Distance", "Standard Deviation", "Confidence", "Frequency", "Arrangement"]
+            "Median Distance", "Standard Deviation", "Confidence",
+            "Frequency", "Arrangement"]
 
-        if not self.external_csv_data is None:
+        if self.external_csv_data is not None:
             keys = list(self.external_csv_data.keys())
             innerkeys = list(self.external_csv_data[keys[0]].keys())
             innerkeys.sort()
             fieldnames += innerkeys
 
         dw = csv.DictWriter(
-            open(filename,
-                 "w"),
+            open(filename, "w"),
             delimiter=',',
             fieldnames=fieldnames)
         dw.writeheader()
@@ -1995,15 +1989,15 @@ class CrossLinkTable(object):
                 else:
                     arrangement = "Inter"
                 outdict["Arrangement"] = arrangement
-                if not self.external_csv_data is None:
+                if self.external_csv_data is not None:
                     outdict.update(self.external_csv_data[unique_identifier])
 
                 dw.writerow(outdict)
 
     def plot(self, prot_listx=None, prot_listy=None, no_dist_info=False,
-             no_confidence_info=False, filter=None, layout="whole", crosslinkedonly=False,
-             filename=None, confidence_classes=None, alphablend=0.1, scale_symbol_size=1.0,
-             gap_between_components=0,
+             no_confidence_info=False, filter=None, layout="whole",
+             crosslinkedonly=False, filename=None, confidence_classes=None,
+             alphablend=0.1, scale_symbol_size=1.0, gap_between_components=0,
              rename_protein_map=None):
         # layout can be:
         #                "lowerdiagonal"  print only the lower diagonal plot
@@ -2011,7 +2005,8 @@ class CrossLinkTable(object):
         #                "whole"  print all
         # crosslinkedonly: plot only components that have cross-links
         # no_dist_info: if True will plot only the cross-links as grey spots
-        # filter = tuple the tuple contains a keyword to be search in the database
+        # filter = tuple the tuple contains a keyword to be search
+        # in the database
         #                a relationship ">","==","<"
         #                and a value
         #                example ("ID_Score",">",40)
@@ -2095,7 +2090,7 @@ class CrossLinkTable(object):
             xticks.append((float(res) + float(end)) / 2)
             if rename_protein_map is not None:
                 if prot in rename_protein_map:
-                    prot=rename_protein_map[prot]
+                    prot = rename_protein_map[prot]
             xlabels.append(prot)
 
         yticks = []
@@ -2111,14 +2106,13 @@ class CrossLinkTable(object):
             yticks.append((float(res) + float(end)) / 2)
             if rename_protein_map is not None:
                 if prot in rename_protein_map:
-                    prot=rename_protein_map[prot]
+                    prot = rename_protein_map[prot]
             ylabels.append(prot)
 
         # plot the contact map
         print(prot_listx, prot_listy)
 
-        if not self.contactmap is None:
-            import matplotlib.cm as cm
+        if self.contactmap is not None:
             tmp_array = np.zeros((nresx, nresy))
 
             for px in prot_listx:
@@ -2144,9 +2138,8 @@ class CrossLinkTable(object):
                             resy:lengy] = self.contactmap[
                             minx:maxx,
                             miny:maxy]
-                    except:
+                    except:  # noqa: E722
                         continue
-
 
             ax.imshow(tmp_array,
                       cmap=cm.binary,
@@ -2157,9 +2150,8 @@ class CrossLinkTable(object):
         ax.set_xticklabels(xlabels, rotation=90)
         ax.set_yticks(yticks)
         ax.set_yticklabels(ylabels)
-        ax.set_xlim(0,nresx)
-        ax.set_ylim(0,nresy)
-
+        ax.set_xlim(0, nresx)
+        ax.set_ylim(0, nresy)
 
         # set the cross-links
 
@@ -2176,14 +2168,14 @@ class CrossLinkTable(object):
 
             try:
                 pos1 = r1 + resoffsetx[c1]
-            except:
+            except:  # noqa: E722
                 continue
             try:
                 pos2 = r2 + resoffsety[c2]
-            except:
+            except:  # noqa: E722
                 continue
 
-            if not filter is None:
+            if filter is not None:
                 xldb = self.external_csv_data[unique_identifier]
                 xldb.update({"Distance": mdist})
                 xldb.update({"Distance_stdv": stdv})
@@ -2240,14 +2232,10 @@ class CrossLinkTable(object):
                 alpha=alphablend,
                 markersize=markersize)
 
-
-
         fig.set_size_inches(0.004 * nresx, 0.004 * nresy)
 
         for i in ax.spines.values():
             i.set_linewidth(2.0)
-
-        #plt.tight_layout()
 
         if filename:
             plt.savefig(filename + ".pdf", dpi=300, transparent="False")
@@ -2266,9 +2254,9 @@ class CrossLinkTable(object):
 
             # here we filter by the protein
             if prot_list2 is None:
-                if not c1 in prot_list:
+                if c1 not in prot_list:
                     continue
-                if not c2 in prot_list:
+                if c2 not in prot_list:
                     continue
             else:
                 if c1 in prot_list and c2 in prot_list2:
@@ -2296,7 +2284,7 @@ class CrossLinkTable(object):
 
         print("# satisfied")
 
-        total_number_of_crosslinks=0
+        total_number_of_crosslinks = 0
 
         for i in satisfied_histogram:
             # if i in violated_histogram:
@@ -2306,18 +2294,16 @@ class CrossLinkTable(object):
                 print(i, violated_histogram[i]+satisfied_histogram[i])
             else:
                 print(i, satisfied_histogram[i])
-            total_number_of_crosslinks+=i*satisfied_histogram[i]
+            total_number_of_crosslinks += i*satisfied_histogram[i]
 
         print("# violated")
 
         for i in violated_histogram:
             print(i, violated_histogram[i])
-            total_number_of_crosslinks+=i*violated_histogram[i]
+            total_number_of_crosslinks += i*violated_histogram[i]
 
         print(total_number_of_crosslinks)
 
-
-# ------------
     def print_cross_link_binary_symbols(self, prot_list,
                                         prot_list2=None):
         tmp_matrix = []
@@ -2327,9 +2313,9 @@ class CrossLinkTable(object):
              unique_identifier, descriptor) = xl
 
             if prot_list2 is None:
-                if not c1 in prot_list:
+                if c1 not in prot_list:
                     continue
-                if not c2 in prot_list:
+                if c2 not in prot_list:
                     continue
             else:
                 if c1 in prot_list and c2 in prot_list2:
@@ -2416,9 +2402,9 @@ class CrossLinkTable(object):
              unique_identifier, descriptor) = xl
 
             if prot_list2 is None:
-                if not c1 in prot_list:
+                if c1 not in prot_list:
                     continue
-                if not c2 in prot_list:
+                if c2 not in prot_list:
                     continue
             else:
                 if c1 in prot_list and c2 in prot_list2:
@@ -2458,7 +2444,8 @@ class CrossLinkTable(object):
                     tmp_dist_binary.append(0)
             tmp_matrix.append(tmp_dist_binary)
 
-        print("unique satisfied_high/total_high", satisfied_high, "/", total_high)
+        print("unique satisfied_high/total_high", satisfied_high, "/",
+              total_high)
         print("unique satisfied_mid/total_mid", satisfied_mid, "/", total_mid)
         print("unique satisfied_low/total_low", satisfied_low, "/", total_low)
         print("total", total)
@@ -2492,7 +2479,8 @@ class CrossLinkTable(object):
                 satisfied_models += 1
             print(string)
             print(satstr, all_satisfied)
-        print("models that satisfies the median satisfied cross-links/total models", satisfied_models, len(matrix))
+        print("models that satisfies the median satisfied cross-links/total "
+              "models", satisfied_models, len(matrix))
 
     def plot_matrix_cross_link_distances_unique(self, figurename, prot_list,
                                                 prot_list2=None):
@@ -2507,9 +2495,9 @@ class CrossLinkTable(object):
             dists = self.cross_link_distances_unique[kw]
 
             if prot_list2 is None:
-                if not c1 in prot_list:
+                if c1 not in prot_list:
                     continue
-                if not c2 in prot_list:
+                if c2 not in prot_list:
                     continue
             else:
                 if c1 in prot_list and c2 in prot_list2:
@@ -2537,8 +2525,6 @@ class CrossLinkTable(object):
         ax = fig.add_subplot(211)
 
         cax = ax.imshow(matrix, interpolation='nearest')
-        # ax.set_yticks(range(len(self.model_list_names)))
-        #ax.set_yticklabels( [self.model_list_names[i] for i in leaves_order] )
         fig.colorbar(cax)
         pl.savefig(figurename, dpi=300)
         pl.show()
@@ -2588,10 +2574,11 @@ class CrossLinkTable(object):
         for n, v in enumerate(values_chunks):
             p = positions_chunks[n]
             f = frequencies_chunks[n]
-            l = labels_chunks[n]
             IMP.pmi.output.plot_fields_box_plots(
                 filename + "." + str(n), v, p, f,
-                valuename="Distance (Ang)", positionname="Unique " + arrangement + " Crosslinks", xlabels=l)
+                valuename="Distance (Ang)",
+                positionname="Unique " + arrangement + " Crosslinks",
+                xlabels=labels_chunks[n])
 
     def crosslink_distance_histogram(self, filename,
                                      prot_list=None,
@@ -2610,14 +2597,14 @@ class CrossLinkTable(object):
             (r1, c1, r2, c2, mdist, stdv, confidence,
              unique_identifier, descriptor) = xl
 
-            if not confidence_classes is None:
+            if confidence_classes is not None:
                 if confidence not in confidence_classes:
                     continue
 
             if prot_list2 is None:
-                if not c1 in prot_list:
+                if c1 not in prot_list:
                     continue
-                if not c2 in prot_list:
+                if c2 not in prot_list:
                     continue
             else:
                 if c1 in prot_list and c2 in prot_list2:
@@ -2648,7 +2635,6 @@ class CrossLinkTable(object):
         import matplotlib as mpl
         mpl.use('Agg')
         import matplotlib.pyplot as plt
-        import matplotlib.cm as cm
 
         fig = plt.figure(figsize=(10, 10))
         ax = fig.add_subplot(111)
@@ -2658,9 +2644,9 @@ class CrossLinkTable(object):
              unique_identifier, arrangement) = xl
 
             if prot_list2 is None:
-                if not c1 in prot_list:
+                if c1 not in prot_list:
                     continue
-                if not c2 in prot_list:
+                if c2 not in prot_list:
                     continue
             else:
                 if c1 in prot_list and c2 in prot_list2:
@@ -2684,9 +2670,9 @@ class CrossLinkTable(object):
 
             ax.plot([xvalue], [yvalue], 'o', c=color, alpha=0.1, markersize=7)
 
-        if not yplotrange is None:
+        if yplotrange is not None:
             ax.set_ylim(yplotrange)
-        if not reference_ylines is None:
+        if reference_ylines is not None:
             for rl in reference_ylines:
                 ax.axhline(rl, color='red', linestyle='dashed', linewidth=1)
 
