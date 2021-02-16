@@ -19,6 +19,7 @@ except ImportError:
     pass
 import warnings
 
+
 class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
     """Basic SAXS restraint."""
 
@@ -43,10 +44,11 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
         @param label Label for the restraint in outputs
 
         @param maxq - maximum q value that the restraint will be evaluated at
-                        Default vaules for ff_type = ALL_ATOMS : 0.5. HEAVY_ATOMS : 0.4,
-                        CA_ATOMS and RESIDUES = 0.15. These values were eyeballed
-                        by comparing ALL_ATOM calculated SAXS profiles to those calculated
-                        with the reduced representations, so could be improved.
+               Default vaules for ff_type = ALL_ATOMS : 0.5. HEAVY_ATOMS : 0.4,
+               CA_ATOMS and RESIDUES = 0.15. These values were eyeballed
+               by comparing ALL_ATOM calculated SAXS profiles to those
+               calculated with the reduced representations, so could
+               be improved.
         """
         # Get all hierarchies.
         hiers = IMP.pmi.tools.input_adaptor(input_objects,
@@ -64,13 +66,17 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
                 maxq = 0.5
         elif type(maxq) == float:
             if maxq < 0.01 or maxq > 4.0:
-                raise Exception("SAXSRestraint: maxq must be set between 0.01 and 4.0")
-            if (ff_type == IMP.saxs.CA_ATOMS or ff_type == IMP.saxs.RESIDUES) and maxq > 0.15:
+                raise Exception(
+                    "SAXSRestraint: maxq must be set between 0.01 and 4.0")
+            if (ff_type == IMP.saxs.CA_ATOMS or ff_type == IMP.saxs.RESIDUES) \
+                    and maxq > 0.15:
                 warnings.warn("SAXSRestraint: for residue-resolved form "
                               "factors, a maxq > 0.15 is not recommended!",
                               IMP.pmi.ParameterWarning)
         else:
-            raise Exception("SAXSRestraint: maxq must be set to a number between 0.01 and 4.0")
+            raise Exception(
+                "SAXSRestraint: maxq must be set to a number between 0.01 "
+                "and 4.0")
 
         # Depending on the type of FF used, get the correct particles
         # from the hierarchies list and create an IMP::saxs::Profile()
@@ -88,7 +94,9 @@ class SAXSRestraint(IMP.pmi.restraints.RestraintBase):
                 hiers, resolution=0).get_selected_particles()
             self.profile = IMP.saxs.Profile(saxs_datafile, False, maxq)
         else:
-            raise Exception("SAXSRestraint: Must provide an IMP.saxs atom type: RESIDUES, CA_ATOMS, HEAVY_ATOMS or ALL_ATOMS")
+            raise Exception(
+                "SAXSRestraint: Must provide an IMP.saxs atom type: "
+                "RESIDUES, CA_ATOMS, HEAVY_ATOMS or ALL_ATOMS")
 
         if len(self.particles) == 0:
             raise Exception("SAXSRestraint: There are no selected particles")
@@ -125,8 +133,8 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
             self.model, 1., 0., None, False).get_particle()
 
         # sigma nuisance
-        self.sigma = IMP.pmi.tools.SetupNuisance(self.model, 10.0, 0., None, False
-                                                 ).get_particle()
+        self.sigma = IMP.pmi.tools.SetupNuisance(
+            self.model, 10.0, 0., None, False).get_particle()
 
         # tau nuisance, optimized
         self.tau = IMP.pmi.tools.SetupNuisance(self.model, 1., 0., None, False,
@@ -193,7 +201,7 @@ class SAXSISDRestraint(IMP.pmi.restraints.RestraintBase):
             IMP.isd.Scale(self.tau).set_scale(tauval)
             try:
                 values.append((self.model.evaluate(False), tauval))
-            except:
+            except:  # noqa: E722
                 pass
             fl.write('%G %G\n' % (values[-1][1], values[-1][0]))
         values.sort()
