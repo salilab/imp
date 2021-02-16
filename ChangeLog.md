@@ -1,5 +1,6 @@
 ChangeLog {#changelog}
 =========
+- The [Homebrew](https://brew.sh/) Mac packages now support Apple Silicon.
 - We no longer provide RPMs for CentOS 6, since it has reached end of life.
 
 # 2.14.0 - 2020-12-02 # {#changelog_2_14_0}
