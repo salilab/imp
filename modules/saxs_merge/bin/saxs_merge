@@ -3,10 +3,7 @@
 from __future__ import print_function, division
 import sys
 import os
-try:
-    import argparse
-except ImportError:
-    import IMP._compat_argparse as argparse
+import argparse
 from random import sample
 from numpy import *
 import copy
