@@ -15,39 +15,12 @@ import types
 import shutil
 import difflib
 import pprint
-from . import _compat_python
-from ._compat_python import unittest2
-from ._compat_python.unittest2.util import safe_repr
+import unittest
+from unittest.util import safe_repr
 import datetime
 import pickle
 import contextlib
 
-# Load a new enough unittest package (should have the 'skip' decorator)
-# - On Python 2.7 or 3.2, the standard 'unittest' package will work.
-# - On older Pythons, use the 'unittest2' package if available, otherwise use
-#   our bundled version of this package.
-def __load_unittest_package():
-    errors = []
-    for modname, fromlist in (('unittest', []),
-                              ('unittest2', []),
-                              ):
-        try:
-            u = __import__(modname, {}, {}, fromlist)
-            if hasattr(u, 'skip'):
-                return u
-            else:
-                errors.append("'%s' does not have the 'skip' decorator" \
-                              % modname)
-        except ImportError as e:
-            errors.append(str(e))
-        #u = __import__("_compat_python.unittest2
-        return _compat_python.unittest2
-    raise ImportError("IMP.test requires a newer version of Python's unittest "
-                      "package than is available. Either upgrade to a new "
-                      "enough Python (at least 2.7 or 3.2) or install the "
-                      "unittest2 package. Encountered errors: %s" \
-                      % "; ".join(errors))
-unittest = __load_unittest_package()
 
 # Expose some unittest decorators for convenience
 expectedFailure = unittest.expectedFailure
@@ -189,12 +162,12 @@ class TestCase(unittest.TestCase):
             testdir = os.path.dirname(sys.modules[self.__module__].__file__)
         dirs = testdir.split(os.path.sep)
         for i in range(len(dirs), 0, -1):
-                input = os.path.sep.join(dirs[:i] + ['input'])
-                if os.path.isdir(input):
-                    ret = os.path.join(input, filename)
-                    if not os.path.exists(ret):
-                         raise IOError("Test input file "+ret+" does not exist")
-                    return ret
+            input = os.path.sep.join(dirs[:i] + ['input'])
+            if os.path.isdir(input):
+                ret = os.path.join(input, filename)
+                if not os.path.exists(ret):
+                    raise IOError("Test input file "+ret+" does not exist")
+                return ret
         raise IOError("No test input directory found")
 
     def open_input_file(self, filename, mode='rb'):
