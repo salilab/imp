@@ -28,7 +28,7 @@ In order to build %IMP from source, you will need:
 - [Eigen](https://eigen.tuxfamily.org/) (3.0 or later)
 - [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later; 1.10 should also
   work)
-- [Python](https://www.python.org) (2.6 or later, or any version of Python 3)
+- [Python](https://www.python.org) (2.7 or later, or any version of Python 3)
 - [SWIG](http://www.swig.org) (1.3.40 or later; 2.0.4 or later is needed
   if you want to use Python 3)
 

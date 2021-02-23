@@ -10,9 +10,9 @@ In order to make it more likely that your code works on all the supported platfo
 - avoid `friend` declarations involving templates; use the preprocessor,
   conditionally on the symbols `SWIG` and `IMP_DOXYGEN` to hide code as
   needed instead.
-- don't use Python modules that aren't available in Python 2.6 (the oldest
-  version of Python supported by %IMP). For example, avoid `argparse`
-  (use `optparse` instead).
+- don't use Python modules or functions that aren't available in Python 2.7
+  (the oldest version of Python supported by %IMP). For example, don't use
+  [f strings](https://www.python.org/dev/peps/pep-0498/).
 - try to write Python code that also works in Python 3 (%IMP supports both
   Python 2 and Python 3 in one codebase). Most
   obviously, in Python 3, `print` is a function, not a statement. So write
