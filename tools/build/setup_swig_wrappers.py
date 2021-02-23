@@ -4,11 +4,9 @@
 """
 
 import os.path
-import glob
-import sys
-import copy
 import tools
 from optparse import OptionParser
+
 
 def write_module_cpp(m, contents):
     if m.name == 'kernel':
@@ -46,7 +44,7 @@ def build_wrapper(module, finder, sorted, target, source):
         return
     contents = []
     swig_module_name = "IMP" if module.name == 'kernel' \
-                             else "IMP." + module.name
+        else "IMP." + module.name
 
     contents.append(
 """%%module(directors="1", allprotected="1", moduleimport="import $module") "%s"
@@ -90,8 +88,8 @@ void
 SWIG_init();
 %%}
 """ % swig_module_name)
-        # some of the typemap code ends up before this is swig sees the
-        # typemaps first
+    # some of the typemap code ends up before this is swig sees the
+    # typemaps first
     all_deps = [x for x in finder.get_dependent_modules([module])
                 if x != module]
     for m in reversed(all_deps):
@@ -128,7 +126,6 @@ _plural_types=[]
     write_module_swig(module, contents, True)
 
     contents.append("%%include \"IMP_%s.impl.i\"" % module.name)
-    #contents.append(open(os.path.join(module_path, "pyext", "swig.i-in"), "r").read())
 
     contents.append("""
 namespace IMP { %s
@@ -170,6 +167,7 @@ def main():
         build_wrapper(module, mf, sorted_order,
                       os.path.join("swig", "IMP_" + module.name + ".i"),
                       options.source)
+
 
 if __name__ == '__main__':
     main()

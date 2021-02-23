@@ -63,5 +63,6 @@ def make_version(source, bindir):
 
     tools.rewrite(os.path.join(bindir, "VERSION"), version)
 
+
 if __name__ == '__main__':
     main()

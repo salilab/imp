@@ -1,7 +1,6 @@
 import glob
 import os
 import os.path
-import copy
 import itertools
 import shutil
 import sys
@@ -84,17 +83,20 @@ def rewrite(filename, contents, verbose=True):
             return
         elif verbose:
             print("    Different " + filename)
-            for l in difflib.unified_diff(old.split("\n"), contents.split("\n")):
-                stl = str(l)
-                if (stl[0] == '-' or stl[0] == '+') and stl[1] != '-' and stl[1] != '+':
+            for ld in difflib.unified_diff(old.split("\n"),
+                                           contents.split("\n")):
+                stl = str(ld)
+                if (stl[0] == '-' or stl[0] == '+') \
+                        and stl[1] != '-' and stl[1] != '+':
                     print("    " + stl)
-    except:
+    except OSError:
         pass
         # print "Missing", filename
     dirpath = os.path.split(filename)[0]
     if dirpath != "":
         mkdir(dirpath, False)
     open_utf8(filename, "w").write(contents)
+
 
 class FileGenerator(object):
     """Auto-generate an output file.
@@ -158,17 +160,21 @@ class CMakeFileGenerator(FileGenerator):
     def __init__(self, template_file=None):
         FileGenerator.__init__(self, template_file, '#')
 
+
 class CPPFileGenerator(FileGenerator):
     def __init__(self, template_file=None):
         FileGenerator.__init__(self, template_file, '//')
+
 
 class SWIGFileGenerator(FileGenerator):
     def __init__(self, template_file=None):
         FileGenerator.__init__(self, template_file, '//')
 
+
 class DoxFileGenerator(FileGenerator):
     def __init__(self, template_file=None):
         FileGenerator.__init__(self, template_file, '//')
+
 
 class PythonFileGenerator(FileGenerator):
     def __init__(self, template_file=None):
@@ -178,7 +184,7 @@ class PythonFileGenerator(FileGenerator):
 def rmdir(path):
     try:
         shutil.rmtree(path)
-    except:
+    except OSError:
         pass
 
 
@@ -212,15 +218,18 @@ def link(source, target, verbose=False):
     else:
         shutil.copy(spath, tpath)
 
+
 def has_python_hashbang(fname):
     line = open(fname).readline()
     return line.startswith('#!') and 'python' in line
+
 
 def filter_pyapps(fname):
     """A Python application ends in .py, or starts with #!(something)python;
        exclude dependencies.py."""
     return os.path.isfile(fname) and not fname.endswith('dependencies.py') \
-           and (fname.endswith('.py') or has_python_hashbang(fname))
+        and (fname.endswith('.py') or has_python_hashbang(fname))
+
 
 def link_dir(source_dir, target_dir, match=["*"], exclude=[],
              clean=True, verbose=False, filt=None, make_subdirs=False):
@@ -258,6 +267,7 @@ def link_dir(source_dir, target_dir, match=["*"], exclude=[],
             if ln not in targets:
                 os.unlink(ln)
 
+
 class Module(object):
     """An IMP module"""
     _info = None
@@ -284,6 +294,7 @@ class Module(object):
     def _modules_split(self, s):
         """Split the given string into a list of Module objects"""
         finder = self._finder()
+
         def get_module(name):
             try:
                 return finder[name]
@@ -311,26 +322,27 @@ class ConfiguredModule(Module):
              'swig_path': "", 'include_path': "", 'lib_path': "", 'ok': False,
              'python_only': False}
         exec(open(self.build_info_file).read(), d)
-        self._info = {"ok": d['ok'],
-               "modules": self._modules_split(d['modules']),
-               "unfound_modules": self._modules_split(d['unfound_modules']),
-               "dependencies": split(d['dependencies']),
-               "unfound_dependencies": split(d['unfound_dependencies']),
-               "swig_includes": split(d['swig_includes']),
-               "swig_wrapper_includes": split(d['swig_wrapper_includes']),
-               "python_only": d['python_only']}
+        self._info = {
+            "ok": d['ok'],
+            "modules": self._modules_split(d['modules']),
+            "unfound_modules": self._modules_split(d['unfound_modules']),
+            "dependencies": split(d['dependencies']),
+            "unfound_dependencies": split(d['unfound_dependencies']),
+            "swig_includes": split(d['swig_includes']),
+            "swig_wrapper_includes": split(d['swig_wrapper_includes']),
+            "python_only": d['python_only']}
         return self._info[attr]
 
     ok = property(lambda self: self._read_bi_file('ok'))
     modules = property(lambda self: self._read_bi_file('modules'))
-    unfound_modules = property(lambda self:
-                                  self._read_bi_file('unfound_modules'))
+    unfound_modules = property(
+        lambda self: self._read_bi_file('unfound_modules'))
     required_modules = modules
     dependencies = property(lambda self: self._read_bi_file('dependencies'))
-    unfound_dependencies = property(lambda self:
-                                 self._read_bi_file('unfound_dependencies'))
-    swig_wrapper_includes = property(lambda self:
-                                 self._read_bi_file('swig_wrapper_includes'))
+    unfound_dependencies = property(
+        lambda self: self._read_bi_file('unfound_dependencies'))
+    swig_wrapper_includes = property(
+        lambda self: self._read_bi_file('swig_wrapper_includes'))
     swig_includes = property(lambda self: self._read_bi_file('swig_includes'))
     python_only = property(lambda self: self._read_bi_file('python_only'))
     required_dependencies = dependencies
@@ -369,28 +381,28 @@ class SourceModule(Module):
              'lib_only_required_modules': "", 'python_only': False}
         exec(open(self.depends_file).read(), d)
         self._info = {"required_modules":
-                             self._modules_split(d['required_modules']),
+                      self._modules_split(d['required_modules']),
                       "lib_only_required_modules":
-                           self._modules_split(d['lib_only_required_modules']),
+                      self._modules_split(d['lib_only_required_modules']),
                       "optional_modules":
-                             self._modules_split(d['optional_modules']),
+                      self._modules_split(d['optional_modules']),
                       "required_dependencies":
-                             split(d['required_dependencies']),
+                      split(d['required_dependencies']),
                       "optional_dependencies":
-                             split(d['optional_dependencies']),
+                      split(d['optional_dependencies']),
                       "python_only": d['python_only']}
         return self._info[attr]
 
     required_modules = property(
-                        lambda self: self._read_dep_file('required_modules'))
+        lambda self: self._read_dep_file('required_modules'))
     lib_only_required_modules = property(
-                lambda self: self._read_dep_file('lib_only_required_modules'))
+        lambda self: self._read_dep_file('lib_only_required_modules'))
     optional_modules = property(
-                        lambda self: self._read_dep_file('optional_modules'))
+        lambda self: self._read_dep_file('optional_modules'))
     required_dependencies = property(
-                      lambda self: self._read_dep_file('required_dependencies'))
+        lambda self: self._read_dep_file('required_dependencies'))
     optional_dependencies = property(
-                      lambda self: self._read_dep_file('optional_dependencies'))
+        lambda self: self._read_dep_file('optional_dependencies'))
     python_only = property(lambda self: self._read_dep_file('python_only'))
 
 
@@ -400,8 +412,8 @@ class ModulesFinder(object):
 
        `source_dir`, if given, is the relative path to search for source
                      modules
-       `configured_dir`, if given, is the relative path to search for configured
-                     modules
+       `configured_dir`, if given, is the relative path to search for
+                     configured modules
        `external_dir`, if given, is the relative path to search for external
                      modules
        `module_name`, if given, overrides the automatically-determined name
@@ -481,8 +493,8 @@ class ModulesFinder(object):
         if self._ordered is None:
             data = {}
             for m in self.values():
-                data[m.name] = [x.name for x in m.required_modules
-                                                + m.optional_modules]
+                data[m.name] = [x.name for x in
+                                m.required_modules + m.optional_modules]
             self._ordered = [self._mod_by_name[name]
                              for name in toposort2(data)]
         if modules is None:
@@ -516,28 +528,30 @@ class ModulesFinder(object):
         if self.configured_dir is None:
             return
         for g in glob.glob(os.path.join(self.configured_dir, "IMP.*")):
-            yield ConfiguredModule(os.path.split(g)[1][4:], self.configured_dir,
-                                   self)
+            yield ConfiguredModule(os.path.split(g)[1][4:],
+                                   self.configured_dir, self)
 
     def _get_all_source(self):
         """Get all source modules"""
         if self.source_dir is None:
             return
         if self.one_module:
-            yield SourceModule(self.module_name
-                         or os.path.split(os.path.abspath(self.source_dir))[1],
-                         self.source_dir, self)
+            yield SourceModule(
+                self.module_name
+                or os.path.split(os.path.abspath(self.source_dir))[1],
+                self.source_dir, self)
         else:
             for g in glob.glob(os.path.join(self.source_dir, "modules", "*")):
-                if (os.path.isdir(g)
-                    and os.path.exists(os.path.join(g, "dependencies.py"))):
+                if (os.path.isdir(g) and os.path.exists(
+                        os.path.join(g, "dependencies.py"))):
                     yield SourceModule(os.path.split(g)[1], g, self)
 
 
 def get_modules(source):
     path = os.path.join(source, "modules", "*")
     globs = get_glob([path])
-    mods = [(os.path.split(g)[1], g) for g in globs if (os.path.split(g)[1] != "SConscript")
+    mods = [(os.path.split(g)[1], g)
+            for g in globs if (os.path.split(g)[1] != "SConscript")
             and os.path.exists(os.path.join(g, "dependencies.py"))]
     return mods
 
@@ -573,7 +587,9 @@ def get_dependency_description(path):
             "cmake": cmake,
             "python_module": d['python_module']}
 
+
 dependency_info_cache = {}
+
 
 def get_dependency_info(dependency, extra_data_path, root="."):
     global dependency_info_cache
@@ -598,6 +614,7 @@ def get_dependency_info(dependency, extra_data_path, root="."):
            "python_only": d['python_only']}
     dependency_info_cache[dependency] = ret
     return ret
+
 
 module_info_cache = {}
 
@@ -637,7 +654,7 @@ def get_module_info(module, extra_data_path, root="."):
 def split(string, sep=":"):
     return (
         [x.replace("@", ":")
-         for x in string.replace("\:", "@").split(sep) if x != ""]
+         for x in string.replace(r"\:", "@").split(sep) if x != ""]
     )
 
 
@@ -654,6 +671,7 @@ def toposort2(data):
                 d[item] = [x for x in dep if x not in ordered]
         data = d
     return ret
+
 
 order_cache = None
 
@@ -674,6 +692,7 @@ def set_sorted_order(sorted,
     order_cache = sorted
     rewrite(outpath,
             "\n".join(sorted), verbose=False)
+
 
 def get_module_version(module, source_dir):
     in_module_source = os.path.join(source_dir, "modules", module, "VERSION")
@@ -697,6 +716,7 @@ def get_disabled_modules(extra_data_path, root="."):
         [x for x in modules if not get_module_info(
             x, extra_data_path, root)["ok"]]
     )
+
 
 # Treat an open file as UTF8-encoded, regardless of the locale
 if sys.version_info[0] >= 3:
@@ -735,8 +755,9 @@ def _sigHandler(signum, frame):
         print("killing", p)
         try:
             os.kill(p.pid, signal.SIGTERM)
-        except:
+        except OSError:
             pass
     sys.exit(1)
+
 
 signal.signal(signal.SIGTERM, _sigHandler)

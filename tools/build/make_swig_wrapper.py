@@ -6,7 +6,6 @@
 import tools
 from optparse import OptionParser
 import os.path
-import subprocess
 
 parser = OptionParser()
 parser.add_option("--include", help="Extra header include path", default=None)
@@ -54,14 +53,16 @@ def run_swig(outputdir, options):
         args.append("-I%s" % tools.from_cmake_path(p))
     args.append(os.path.abspath("./swig/IMP_%s.i" % options.module))
 
-    ret = tools.run_subprocess(args, cwd=outputdir)
+    _ = tools.run_subprocess(args, cwd=outputdir)
     patch_py_wrapper("src/%s_swig/IMP.%spy"
                      % (options.module, '' if options.module == 'kernel'
                                         else options.module + '.'),
-                     os.path.join("lib", "IMP",
-                          "" if options.module == 'kernel' else options.module,
-                          "__init__.py"),
+                     os.path.join(
+                        "lib", "IMP",
+                        "" if options.module == 'kernel' else options.module,
+                        "__init__.py"),
                      options.module)
+
 
 def patch_py_wrapper(infile, outfile, module):
     """Patch Python wrappers.
@@ -91,6 +92,7 @@ from __future__ import print_function, division, absolute_import
         if in_initial_comment:
             raise IOError("Empty SWIG wrapper file")
     outfh.close()
+
 
 # 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
 #    (SwigPyIterator in 1.3.38 or later) is renamed with a module-specific
@@ -146,6 +148,7 @@ def main():
                os.path.join(outputdir, "wrap.cpp"), options)
     patch_file(os.path.join(outputdir, "wrap.h-in"),
                os.path.join(outputdir, "wrap.h"), options)
+
 
 if __name__ == '__main__':
     main()

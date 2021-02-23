@@ -13,7 +13,6 @@ import sys
 from optparse import OptionParser
 import os.path
 import tools
-import glob
 
 TOPDIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -29,11 +28,11 @@ parser.add_option("-d", "--datapath",
 def make_cpp(options):
     dir = os.path.join("src")
     file = os.path.join(dir, "%s_config.cpp" % options.name)
-    cpp_template = tools.CPPFileGenerator(os.path.join(TOPDIR,
-                                               "config_templates", "src.cpp"))
+    cpp_template = tools.CPPFileGenerator(
+        os.path.join(TOPDIR, "config_templates", "src.cpp"))
     try:
         os.makedirs(dir)
-    except:
+    except OSError:
         # exists
         pass
     data = {}
@@ -70,6 +69,7 @@ def main():
     make_cpp(options)
     make_version_check(options)
     sys.exit(0)
+
 
 if __name__ == '__main__':
     main()
