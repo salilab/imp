@@ -454,16 +454,16 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
                 input_strings = input_string.split(":x:")
                 first_peptides = input_strings[0].split(":|:")
                 second_peptides = input_strings[1].split(":|:")
-                first_peptides_indentifiers = [
+                first_peptides_identifiers = [
                     (f.split(":")[0],
                      f.split(":")[1]) for f in first_peptides]
-                second_peptides_indentifiers = [
+                second_peptides_identifiers = [
                     (f.split(":")[0],
                      f.split(":")[1]) for f in second_peptides]
                 residue_pair_indexes = []
                 chain_pair_indexes = []
-                for fpi in first_peptides_indentifiers:
-                    for spi in second_peptides_indentifiers:
+                for fpi in first_peptides_identifiers:
+                    for spi in second_peptides_identifiers:
                         chain1 = fpi[0]
                         chain2 = spi[0]
                         residue1 = fpi[1]
@@ -474,11 +474,11 @@ class ResiduePairListParser(_CrossLinkDataBaseStandardKeys):
             else:
                 # if it is a monolink....
                 first_peptides = input_string.split(":|:")
-                first_peptides_indentifiers = [
+                first_peptides_identifiers = [
                     (f.split(":")[0], f.split(":")[1]) for f in first_peptides]
                 residue_indexes = []
                 chain_indexes = []
-                for fpi in first_peptides_indentifiers:
+                for fpi in first_peptides_identifiers:
                     chain1 = fpi[0]
                     residue1 = fpi[1]
                     residue_indexes.append((residue1,))

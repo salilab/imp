@@ -191,7 +191,7 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
         mol_beads_3 = mol[:] - mol.get_represented()
         # when we print the results, there are big inconsistencies
-        # with the expected behaviour. We expect that the sixth column is indentical to the fifth and the second;
+        # with the expected behaviour. We expect that the sixth column is identical to the fifth and the second;
         # and we expect that the first is equal to the first. But this is not obtained :-)
         # The results are not intuitive at this stage, we think that mol has changed after build,
         # and mol.get_represented() is not changed correspondigly.
@@ -636,8 +636,8 @@ class Tests(IMP.test.TestCase):
         frags = hier.get_children()
 
         # check names
-        self.assertEquals(hier.get_name(), 'Prot1')
-        self.assertEquals(m1.__repr__(), 'System.State_0.Prot1.0')
+        self.assertEqual(hier.get_name(), 'Prot1')
+        self.assertEqual(m1.__repr__(), 'System.State_0.Prot1.0')
 
         # check if res0,1 created correctly
         alpha = IMP.pmi.alphabets.amino_acid
@@ -658,27 +658,27 @@ class Tests(IMP.test.TestCase):
 
         # check if res10 created correctly
         sel = IMP.atom.Selection(hier, residue_indexes=[1, 2], resolution=10)
-        self.assertEquals(len(sel.get_selected_particles()), 1)
+        self.assertEqual(len(sel.get_selected_particles()), 1)
 
         sel = IMP.atom.Selection(
             hier, residue_indexes=range(5, 10), resolution=10)
-        self.assertEquals(len(sel.get_selected_particles()), 1)
+        self.assertEqual(len(sel.get_selected_particles()), 1)
 
         sel = IMP.atom.Selection(hier, resolution=10)
-        self.assertEquals(len(sel.get_selected_particles()), 4)
+        self.assertEqual(len(sel.get_selected_particles()), 4)
 
         sel = IMP.atom.Selection(hier, resolution=1)
-        self.assertEquals(len(sel.get_selected_particles()), 9)
+        self.assertEqual(len(sel.get_selected_particles()), 9)
 
         sel1 = IMP.atom.Selection(hier, residue_index=1, resolution=10)
         sel2 = IMP.atom.Selection(hier, residue_index=2, resolution=10)
 
-        self.assertEquals(sel1.get_selected_particles(),
-                          sel2.get_selected_particles())
+        self.assertEqual(sel1.get_selected_particles(),
+                         sel2.get_selected_particles())
         sel1 = IMP.atom.Selection(hier, residue_index=1, resolution=10)
         sel2 = IMP.atom.Selection(hier, residue_index=5, resolution=10)
-        self.assertNotEquals(sel1.get_selected_particles(),
-                             sel2.get_selected_particles())
+        self.assertNotEqual(sel1.get_selected_particles(),
+                            sel2.get_selected_particles())
 
         #check internal Chain decoration
         chain=m1.chain
@@ -715,10 +715,10 @@ class Tests(IMP.test.TestCase):
         hier = s.build()
 
         sel1 = IMP.atom.Selection(hier, resolution=1)
-        self.assertEquals(len(sel1.get_selected_particles()), 9)
+        self.assertEqual(len(sel1.get_selected_particles()), 9)
 
         sel10 = IMP.atom.Selection(hier, resolution=10)
-        self.assertEquals(len(sel10.get_selected_particles()), 4)
+        self.assertEqual(len(sel10.get_selected_particles()), 4)
 
     def test_build_nobeads(self):
         """test if add_representations populates the correct Residues"""
@@ -735,9 +735,9 @@ class Tests(IMP.test.TestCase):
         m1.add_representation(atomic_res, resolutions=[0, 10])
         hier = s.build()
         sel0 = IMP.atom.Selection(hier, resolution=0)
-        self.assertEquals(len(sel0.get_selected_particles()), 57)
+        self.assertEqual(len(sel0.get_selected_particles()), 57)
         sel10 = IMP.atom.Selection(hier, resolution=10)
-        self.assertEquals(len(sel10.get_selected_particles()), 2)
+        self.assertEqual(len(sel10.get_selected_particles()), 2)
 
     def test_extra_breaks(self):
         """test adding extra breaks actually works"""
@@ -754,17 +754,17 @@ class Tests(IMP.test.TestCase):
         m1.add_representation(m1, resolutions=10,bead_extra_breaks=['6'])
         hier = s.build()
         sel10 = IMP.atom.Selection(hier, resolution=10).get_selected_particles()
-        self.assertEquals(len(sel10), 5)
-        self.assertEquals(IMP.atom.Fragment(sel10[0]).get_residue_indexes(),
-                          [1,2])
-        self.assertEquals(IMP.atom.Fragment(sel10[1]).get_residue_indexes(),
-                          [3,4])
-        self.assertEquals(IMP.atom.Fragment(sel10[2]).get_residue_indexes(),
-                          [5,6])
-        self.assertEquals(IMP.atom.Fragment(sel10[3]).get_residue_indexes(),
-                          [7,8,9])
-        self.assertEquals(IMP.atom.Residue(sel10[4]).get_index(),
-                          10)
+        self.assertEqual(len(sel10), 5)
+        self.assertEqual(IMP.atom.Fragment(sel10[0]).get_residue_indexes(),
+                         [1,2])
+        self.assertEqual(IMP.atom.Fragment(sel10[1]).get_residue_indexes(),
+                         [3,4])
+        self.assertEqual(IMP.atom.Fragment(sel10[2]).get_residue_indexes(),
+                         [5,6])
+        self.assertEqual(IMP.atom.Fragment(sel10[3]).get_residue_indexes(),
+                         [7,8,9])
+        self.assertEqual(IMP.atom.Residue(sel10[4]).get_index(),
+                         10)
 
     def test_create_copy(self):
         """Test creation of Copies"""
@@ -779,10 +779,10 @@ class Tests(IMP.test.TestCase):
         st1 = s.create_state()
         m1 = st1.create_molecule("Prot1", sequence=seqs["Prot1"], chain_id='A')
         m2 = m1.create_copy(chain_id='B')
-        self.assertEquals(st1.get_number_of_copies("Prot1"), 2)
-        self.assertEquals(m2.get_name(), "Prot1")
-        self.assertEquals([r.get_code() for r in m1.residues],
-                          [r.get_code() for r in m2.residues])
+        self.assertEqual(st1.get_number_of_copies("Prot1"), 2)
+        self.assertEqual(m2.get_name(), "Prot1")
+        self.assertEqual([r.get_code() for r in m1.residues],
+                         [r.get_code() for r in m2.residues])
 
     def test_create_clone(self):
         """Test creation and building of clone"""
@@ -797,7 +797,7 @@ class Tests(IMP.test.TestCase):
         st1 = s.create_state()
         m1 = st1.create_molecule("Prot1", sequence=seqs["Prot1"], chain_id='A')
         m1c = m1.create_clone(chain_id='G')
-        self.assertEquals(st1.get_number_of_copies("Prot1"), 2)
+        self.assertEqual(st1.get_number_of_copies("Prot1"), 2)
         self.assertEqual(st1.get_molecule("Prot1", 0), m1)
         self.assertEqual(st1.get_molecule("Prot1", 1), m1c)
         self.assertEqual(st1.get_molecule("Prot1", 'all'), [m1, m1c])
@@ -827,8 +827,8 @@ class Tests(IMP.test.TestCase):
             hier, molecule='Prot1', resolution=1, copy_index=1).get_selected_particles()
         sel3 = IMP.atom.Selection(
             hier, molecule='Prot1', resolution=1).get_selected_particles()
-        self.assertEquals(len(sel1), len(sel2))
-        self.assertEquals(set(sel1 + sel2), set(sel3))
+        self.assertEqual(len(sel1), len(sel2))
+        self.assertEqual(set(sel1 + sel2), set(sel3))
 
         sel11 = IMP.atom.Selection(
             hier, molecule='Prot1', resolution=10, copy_index=0).get_selected_particles()
@@ -836,8 +836,8 @@ class Tests(IMP.test.TestCase):
             hier, molecule='Prot1', resolution=10, copy_index=1).get_selected_particles()
         sel31 = IMP.atom.Selection(
             hier, molecule='Prot1', resolution=10).get_selected_particles()
-        self.assertEquals(len(sel11), len(sel21))
-        self.assertEquals(set(sel11 + sel21), set(sel31))
+        self.assertEqual(len(sel11), len(sel21))
+        self.assertEqual(set(sel11 + sel21), set(sel31))
 
     def test_round_trip(self):
         """Test RMF write/read representations"""
