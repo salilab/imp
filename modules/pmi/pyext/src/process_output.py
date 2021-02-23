@@ -1,13 +1,9 @@
 #! /usr/bin/env python
 
 from __future__ import print_function
-try:
-    import argparse
-except ImportError:
-    from IMP._compat_argparse import argparse
-
-
+import argparse
 import difflib
+
 
 p = argparse.ArgumentParser(
             description="Process output data file saved as dictionaries. "

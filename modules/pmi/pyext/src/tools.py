@@ -21,11 +21,7 @@ except ImportError:
     from time import clock as process_time
 import RMF
 import IMP.rmf
-from collections import defaultdict
-try:
-    from collections import OrderedDict
-except ImportError:
-    from IMP.pmi._compat_collections import OrderedDict
+from collections import defaultdict, OrderedDict
 import warnings
 
 

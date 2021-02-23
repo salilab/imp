@@ -37,5 +37,5 @@ jobs:
         cmake .. -DIMP_DIR=${CONDA_PREFIX}/lib/cmake/IMP -DUSE_PYTHON2=${PY2} -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage"
         make
         ./setup_environment.sh py.test --cov=.. --cov-branch --cov-report=xml -v ../test/test_*.py ../test/medium_test_*.py test/*/*.py
-        flake8 ../pyext/src/ --exclude _compat_collections.py
+        flake8 ../pyext/src/
     - uses: codecov/codecov-action@v1
