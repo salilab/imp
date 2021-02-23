@@ -89,7 +89,7 @@ def rewrite(filename, contents, verbose=True):
                 if (stl[0] == '-' or stl[0] == '+') \
                         and stl[1] != '-' and stl[1] != '+':
                     print("    " + stl)
-    except OSError:
+    except (IOError, OSError):
         pass
         # print "Missing", filename
     dirpath = os.path.split(filename)[0]
@@ -184,7 +184,7 @@ class PythonFileGenerator(FileGenerator):
 def rmdir(path):
     try:
         shutil.rmtree(path)
-    except OSError:
+    except (IOError, OSError):
         pass
 
 
