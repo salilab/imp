@@ -198,6 +198,63 @@ FloatPair BayesEM3D::get_square_em_density(DensityMap *em,
   return results;
 }
 
+double BayesEM3D::get_cross_correlation_coefficient(DensityMap *em1, DensityMap *em2){
+
+  const DensityHeader *em1_header = em1->get_header();
+  const double *em1_data = em1->get_data();
+
+  const DensityHeader *em2_header = em2->get_header();
+  const double *em2_data = em2->get_data();
+
+  long nvox1 = em1_header->get_number_of_voxels();
+  long nvox2 = em2_header->get_number_of_voxels();
+
+  if (nvox1 != nvox2)
+    IMP_THROW("Can't compute correlation for different size maps.", ValueException);
+
+  double em1_mean = 0.;
+  double em2_mean = 0.;
+  
+  double em1_sqr = 0.;
+  double em2_sqr = 0.;
+
+  double cross_term = 0.;
+
+  for (long i = 0; i < nvox1; ++i){
+
+    if (em1_data[i] > 0 && em2_data[i] > 0){
+    
+      em1_mean += em1_data[i];
+      em2_mean += em2_data[i];
+      
+      em1_sqr += IMP::square(em1_data[i]);
+      em2_sqr += IMP::square(em2_data[i]);
+    
+      cross_term += em1_data[i] * em2_data[i];
+    }
+    else
+      continue;
+  }
+
+  em1_mean /= nvox1;
+  em2_mean /= nvox2;
+
+  em1_sqr /= nvox1;
+  em2_sqr /= nvox2;
+
+  double sig1 = em1_sqr - IMP::square(em1_mean);
+  sig1 = (sig1 < 0 ? 0 : sqrt(sig1));
+
+  double sig2 = em2_sqr - IMP::square(em2_mean);
+  sig2 = (sig2 < 0 ? 0 : sqrt(sig2));
+  
+  double ccc = cross_term - nvox1 * em1_mean * em2_mean;
+  ccc = ccc < 0 ? 0 : ccc;
+  
+  ccc /= nvox1 * sig1 * sig2;
+  return ccc;
+}
+
 DensityMap *BayesEM3D::get_density_from_particle(DensityMap *em,
                                                  const IMP::ParticlesTemp &ps,
                                                  double resolution) {

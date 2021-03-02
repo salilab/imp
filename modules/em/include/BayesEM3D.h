@@ -97,6 +97,10 @@ public:
                                         const IMP::ParticlesTemp &ps,
                                         double resolution);
 
+
+  //Compute a normalized cross-correlation coefficient
+  double get_cross_correlation_coefficient(DensityMap *em1, DensityMap *em2);
+  
   //Compute the score and the derivative of an EM map and a tested model
   std::pair<double, algebra::Vector3Ds>
   calc_score_and_derivative(DensityMap *em, const IMP::ParticlesTemp &ps,
