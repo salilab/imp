@@ -21,7 +21,7 @@ endif(POLICY CMP0053)
 include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindPython.cmake)
 imp_find_python()
 
-# Check Python version early so we can use Python >= 2.6 features in other
+# Check Python version early so we can use Python >= 2.7 features in other
 # build scripts
 execute_process(COMMAND ${PYTHON_EXECUTABLE}
                         "tools/build/check_python_version.py"
