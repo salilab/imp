@@ -50,7 +50,8 @@ class IMPEMEXPORT EMHeader {
       header.nx = nx;
       header.ny = ny;
       header.nz = nz;
-      strncpy(header.comment, comment, COMMENT_SIZE);
+      memcpy(header.comment, comment, COMMENT_SIZE);
+      // This is safe because header.comment is COMMENT_SIZE+1
       header.comment[COMMENT_SIZE] = '\0';
       header.voltage = (float)emdata[VOLTAGE_OFFSET];
       header.Cs = (float)emdata[CS_OFFSET] / scale;
@@ -79,12 +80,16 @@ class IMPEMEXPORT EMHeader {
       header.lswap = emdata[LSWAP_OFFSET];
     }
     void Init(const EMHeader &header) {
+      // Initialize all unused fields
+      dummy[0] = dummy[1] = 0;
+      memset(&emdata[0], 0, 40 * sizeof(int));
+      memset(&dummy_long[0], 0, 256);
       magic = (unsigned char)header.magic;
       type = (unsigned char)header.type;
       nx = header.nx;
       ny = header.ny;
       nz = header.nz;
-      strncpy(comment, header.comment, COMMENT_SIZE);
+      memcpy(comment, header.comment, COMMENT_SIZE);
       float scale = 1000.0;
       emdata[VOLTAGE_OFFSET] = (int)header.voltage;
       emdata[CS_OFFSET] = (int)(header.Cs * scale);
@@ -116,7 +121,7 @@ class IMPEMEXPORT EMHeader {
     unsigned char dummy[2];
     unsigned char type;
     int nx, ny, nz;
-    char comment[80];
+    char comment[COMMENT_SIZE];
     int emdata[40];
     char dummy_long[256];
   };
@@ -144,7 +149,7 @@ class IMPEMEXPORT EMHeader {
   int magic;
   int type;
   int nx, ny, nz;
-  char comment[81];
+  char comment[EMHeaderParse::COMMENT_SIZE+1];
   float voltage;
   float Cs;
   float Aperture;
