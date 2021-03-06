@@ -1,8 +1,0 @@
-# valgrind suppressions file for SWIG
-{
-   SWIG module static client data
-   Memcheck:Leak
-   match-leak-kinds: definite
-   fun:malloc
-   fun:SwigPyClientData_New
-}
