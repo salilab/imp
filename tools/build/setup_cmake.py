@@ -59,7 +59,8 @@ benchmark_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
 
 def make_check(path, module):
     name = os.path.splitext(os.path.split(path)[1])[0]
-    cppsource = open(path, "r").read()
+    with open(path, "r") as fh:
+        cppsource = fh.read()
     macro = "IMP_COMPILER_%s" % name.upper()
     filename = os.path.join(module.path, "CMakeModules",
                             "Check" + name + ".cmake")

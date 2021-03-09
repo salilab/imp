@@ -197,7 +197,8 @@ if __name__ == '__main__':
              'class_name_exceptions': [],
              'spelling_exceptions': []}
         try:
-            exec(open(exceptions, "r").read(), d)
+            with open(exceptions, "r") as fh:
+                exec(fh.read(), d)
         except IOError:
             pass
         impmodule = "IMP" if module.name == 'kernel' else "IMP." + module.name

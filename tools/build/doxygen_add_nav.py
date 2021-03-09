@@ -21,7 +21,8 @@ def get_version():
     version = "develop"
     versionpath = "VERSION"
     if os.path.exists(versionpath):
-        version = open(versionpath, "r").read().strip()
+        with open(versionpath, "r") as fh:
+            version = fh.read().strip()
     return version
 
 def get_source_file_name(module, subdir, f, example):
@@ -271,22 +272,23 @@ class Docs(object):
                    + " ".join(links) + '</div>\n'
         botlinks = '<div class="doxnavlinks">' + " ".join(links) + '</div>\n'
         for fname in self.get_html_pages(page):
-            content = patch_html(open(fname).readlines())
-            out = open(fname, 'w')
-            for line in content:
-                if line.startswith('</div><!-- top -->'):
-                    out.write(line)
-                    out.write(toplinks)
-                elif '<span>Other&#160;Versions</span>' in line:
-                    out.write(line)
-                    out.write(edit_link)
-                elif line.startswith('<hr class="footer"') and links:
-                    out.write('<hr class="footer"/>')
-                    out.write(botlinks)
-                elif '[SUBPAGES]' in line:
-                    page.write_children(out)
-                else:
-                    out.write(line)
+            with open(fname) as fh:
+                content = patch_html(fh.readlines())
+            with open(fname, 'w') as out:
+                for line in content:
+                    if line.startswith('</div><!-- top -->'):
+                        out.write(line)
+                        out.write(toplinks)
+                    elif '<span>Other&#160;Versions</span>' in line:
+                        out.write(line)
+                        out.write(edit_link)
+                    elif line.startswith('<hr class="footer"') and links:
+                        out.write('<hr class="footer"/>')
+                        out.write(botlinks)
+                    elif '[SUBPAGES]' in line:
+                        page.write_children(out)
+                    else:
+                        out.write(line)
 
     def patch_contents(self):
         """Apply extra patches to index.html"""
@@ -294,13 +296,14 @@ class Docs(object):
         version = '<b>' + get_version() + '</b>'
         if 'develop' in version:
             version += ' (a nightly build)'
-        content = open(index_html).readlines()
-        out = open(index_html, 'w')
-        for line in content:
-            line = line.replace('<div class="title">Contents',
-                                '<div class="title">IMP Manual')
-            line = line.replace('IMPVERSION', version)
-            out.write(line)
+        with open(index_html) as fh:
+            content = fh.readlines()
+        with open(index_html, 'w') as out:
+            for line in content:
+                line = line.replace('<div class="title">Contents',
+                                    '<div class="title">IMP Manual')
+                line = line.replace('IMPVERSION', version)
+                out.write(line)
 
 
 def main():

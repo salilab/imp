@@ -29,7 +29,8 @@ class DoxConfigFileGenerator(tools.FileGenerator):
         version = "develop"
         versionpath = os.path.join("VERSION")
         if os.path.exists(versionpath):
-            version = open(versionpath, "r").read().strip()
+            with open(versionpath, "r") as fh:
+                version = fh.read().strip()
         if manual:
             version = '"for IMP version ' + version + '"'
         doxygen = self.template

@@ -18,7 +18,8 @@ suppress_strings = ["not generated, too many nodes",
 
 def main():
     (options, args) = parser.parse_args()
-    input = open(options.warnings, "r").readlines()
+    with open(options.warnings, "r") as fh:
+        input = fh.readlines()
     found = False
     for l in input:
         # Skip any blank lines that follow a suppressed string

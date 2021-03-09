@@ -109,7 +109,8 @@ class FileGenerator(object):
         self.template_file = template_file
         self.start_comment = start_comment
         if template_file:
-            self.template = open(template_file).read()
+            with open(template_file) as fh:
+                self.template = fh.read()
             self.template_file = os.path.relpath(template_file,
                                                  self.get_imp_top())
 
@@ -220,7 +221,8 @@ def link(source, target, verbose=False):
 
 
 def has_python_hashbang(fname):
-    line = open(fname).readline()
+    with open(fname) as fh:
+        line = fh.readline()
     return line.startswith('#!') and 'python' in line
 
 
@@ -321,7 +323,8 @@ class ConfiguredModule(Module):
              'swig_wrapper_includes': "", 'swig_includes': "",
              'swig_path': "", 'include_path': "", 'lib_path': "", 'ok': False,
              'python_only': False}
-        exec(open(self.build_info_file).read(), d)
+        with open(self.build_info_file) as fh:
+            exec(fh.read(), d)
         self._info = {
             "ok": d['ok'],
             "modules": self._modules_split(d['modules']),
@@ -379,7 +382,8 @@ class SourceModule(Module):
         d = {'required_modules': "", 'optional_modules': "",
              'required_dependencies': "", 'optional_dependencies': "",
              'lib_only_required_modules': "", 'python_only': False}
-        exec(open(self.depends_file).read(), d)
+        with open(self.depends_file) as fh:
+            exec(fh.read(), d)
         self._info = {"required_modules":
                       self._modules_split(d['required_modules']),
                       "lib_only_required_modules":
@@ -561,7 +565,8 @@ def get_dependency_description(path):
          'extra_libraries': "", 'version_cpp': "", 'version_headers': "",
          'body': "", 'python_module': "", 'is_cmake': False,
          'name': os.path.splitext(os.path.split(path)[1])[0]}
-    exec(open(path, "r").read(), d)
+    with open(path, "r") as fh:
+        exec(fh.read(), d)
     passlibs = split(d['libraries'])
     passheaders = split(d['headers'])
     extra_libs = split(d['extra_libraries'])
@@ -602,7 +607,8 @@ def get_dependency_info(dependency, extra_data_path, root="."):
          'libpath': "", 'swigpath': "", 'ok': False,
          'python_only': False}
     # try:
-    exec(open(df, "r").read(), d)
+    with open(df, "r") as fh:
+        exec(fh.read(), d)
     # except:
     #    print >> sys.stderr, "Error reading dependency", dependency, "at", df
     ret = {"ok": d['ok'],
@@ -634,7 +640,8 @@ def get_module_info(module, extra_data_path, root="."):
          'dependencies': "", 'unfound_dependencies': "",
          'swig_wrapper_includes': "", 'swig_includes': "",
          'swig_path': "", 'include_path': "", 'lib_path': "", 'ok': False}
-    exec(open(df, "r").read(), d)
+    with open(df, "r") as fh:
+        exec(fh.read(), d)
     ret = {"ok": d['ok'],
            "modules": split(d['modules']),
            "unfound_modules": split(d['unfound_modules']),
@@ -700,13 +707,17 @@ def get_module_version(module, source_dir):
     in_source = os.path.join(source_dir, "VERSION")
     in_build = "VERSION"
     if os.path.exists(in_module_source):
-        return open(in_module_source, "r").read().strip()
+        with open(in_module_source, "r") as fh:
+            return fh.read().strip()
     elif os.path.exists(in_module_build):
-        return open(in_module_build, "r").read().strip()
+        with open(in_module_build, "r") as fh:
+            return fh.read().strip()
     elif os.path.exists(in_source):
-        return open(in_source, "r").read().strip()
+        with open(in_source, "r") as fh:
+            return fh.read().strip()
     else:
-        return open(in_build, "r").read().strip()
+        with open(in_build, "r") as fh:
+            return fh.read().strip()
 
 
 def get_disabled_modules(extra_data_path, root="."):

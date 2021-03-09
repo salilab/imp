@@ -393,7 +393,8 @@ def make_overview(module, cmdline_tools):
 
 def main():
     options, apps = parser.parse_args()
-    disabled = tools.split(open("build_info/disabled", "r").read(), "\n")
+    with open("build_info/disabled", "r") as fh:
+        disabled = tools.split(fh.read(), "\n")
     if options.name in disabled:
         print("%s is disabled" % options.name)
         write_no_ok(options.name)

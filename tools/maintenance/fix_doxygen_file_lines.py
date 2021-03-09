@@ -7,7 +7,8 @@ import re
 
 
 def fix(filename):
-    contents = open(filename, "r").read()
+    with open(filename, "r") as fh:
+        contents = fh.read()
     contents = re.sub(
         "\\\\file .*\\.h",
         "\\\\file " + filename[len("build/include/"):],

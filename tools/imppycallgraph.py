@@ -356,7 +356,8 @@ def get_dot(stop=True):
 
 def save_dot(filename):
     """Generates a DOT file and writes it into filename."""
-    open(filename, 'w').write(get_dot())
+    with open(filename, 'w') as fh:
+        fh.write(get_dot())
 
 
 def make_graph(filename, format=None, tool=None, stop=None):

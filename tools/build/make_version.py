@@ -38,7 +38,8 @@ def get_short_rev(source):
 def make_version(source, bindir):
     forced = os.path.join(source, "VERSION")
     if os.path.exists(forced):
-        version = open(forced, "r").read()
+        with open(forced, "r") as fh:
+            version = fh.read()
     elif os.path.exists(os.path.join(source, '.git')):
         process = subprocess.Popen(
             ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],

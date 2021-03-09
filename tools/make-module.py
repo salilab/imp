@@ -36,14 +36,16 @@ def copy_dir(source, dest, modname):
         else:
             xdpath = os.path.join(dest, fix_string(x, modname))
             #print("->" + xdpath)
-            input = open(xspath, 'r').read()
+            with open(xspath, 'r') as fh:
+                input = fh.read()
             if xspath.endswith(".cpp") or xspath.endswith(".h") \
                     or xspath.endswith(".i-in") or xspath.endswith(".py") \
                     or xspath.endswith(".md"):
                 output = fix_string(input, modname)
             else:
                 output = input
-            open(xdpath, 'w').write(output)
+            with open(xdpath, 'w') as fh:
+                fh.write(output)
 
 def make_readme(modpath):
     """Overwrite README.md from scratch module with a new one"""

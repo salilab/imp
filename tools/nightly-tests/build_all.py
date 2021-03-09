@@ -265,7 +265,8 @@ class Builder(object):
         ret = self._run_commands(component, commands, typ, env)
         if self.outdir:
             # Copy XML into output directory, and add unittest exception detail
-            subdir = open('Testing/TAG').readline().rstrip('\r\n')
+            with open('Testing/TAG') as fh:
+                subdir = fh.readline().rstrip('\r\n')
             xml = os.path.join(self.outdir,
                                '%s.%s.xml' % (component.name, typ))
             copy_xml('Testing/%s/Test.xml' % subdir, xml, tempdir)

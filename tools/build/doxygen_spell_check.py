@@ -63,7 +63,8 @@ class SpellChecker(object):
     def add_exceptions(self, exceptions_file):
         d = {'spelling_exceptions': [], 'doc_spelling_exceptions': []}
         try:
-            exec(open(exceptions_file, "r").read(), d)
+            with open(exceptions_file, "r") as fh:
+                exec(fh.read(), d)
         except IOError:
             pass
         for word in global_spelling_exceptions:

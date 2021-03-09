@@ -251,10 +251,12 @@ def parse_file(fname):
         return
     # Pass examples through unchanged
     if '/examples/' in fname:
-        for line in open(fname):
-            sys.stdout.write(line)
+        with open(fname) as fh:
+            for line in fh:
+                sys.stdout.write(line)
         return
-    lines = open(fname).readlines()
+    with open(fname) as fh:
+        lines = fh.readlines()
     lines = [x.rstrip('\r\n') for x in lines]
     a = ast.parse(("\n".join(lines)).rstrip() + '\n', fname)
 

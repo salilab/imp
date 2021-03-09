@@ -107,7 +107,8 @@ from __future__ import print_function, division, absolute_import
 # 3. Handle our custom %ifdelete directive
 #    (see modules/kernel/pyext/include/IMP_kernel.exceptions.i)
 def patch_file(infile, out, options):
-    lines = open(infile, 'r').readlines()
+    with open(infile, 'r') as fh:
+        lines = fh.readlines()
     preproc = "IMP_%s" % options.module.upper()
     repl1 = '"swig::%s_PySwigIterator *"' % preproc
     repl2 = '"swig::%s_SwigPyIterator *"' % preproc
