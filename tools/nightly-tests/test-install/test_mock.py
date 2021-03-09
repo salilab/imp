@@ -24,12 +24,13 @@ class IMPMockTests(unittest.TestCase):
         # Ubuntu only supports protobuf with Python 3 in 18.04 or later;
         # our Windows protobuf install is Python 2 only;
         # for RHEL8 and Fedora we only have Python 3 protobuf wrappers.
-        py2only_pb = frozenset(('ubuntu-trusty', 'ubuntu-xenial', 'w32', 'w64'))
+        py2only_pb = frozenset(('ubuntu-trusty', 'ubuntu-xenial',
+                                'w32', 'w64'))
         py3only_pb = frozenset(('epel-8-x86_64',))
         if ((sys.version_info[0] == 3 and mock_config not in py2only_pb)
             or (sys.version_info[0] == 2 and mock_config not in py3only_pb
                 and not mock_config.startswith('fedora'))):
-            x = IMP.npctransport.Configuration
+            _ = IMP.npctransport.Configuration
         # Check that most other modules (particularly those with many
         # dependencies) are present
         import IMP.cnmultifit
@@ -78,7 +79,7 @@ class IMPMockTests(unittest.TestCase):
         for app in apps:
             try:
                 p = subprocess.Popen([app, '--help'], stdout=subprocess.PIPE,
-                                      stderr=subprocess.STDOUT)
+                                     stderr=subprocess.STDOUT)
             except OSError:
                 raise OSError("Could not run %s" % app)
             out = p.stdout.read()
@@ -87,6 +88,7 @@ class IMPMockTests(unittest.TestCase):
             self.assertTrue(ret == 1 or ret == 0,
                             "Return code for %s app is %d, not 0 or 1; "
                             "output is %s" % (app, ret, out))
+
 
 if __name__ == '__main__':
     unittest.main()

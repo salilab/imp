@@ -18,8 +18,8 @@ class Tests(unittest.TestCase):
                 self.skipTest("No Python2 support for MPI")
         elif sys.version_info[0] >= 3:
             self.skipTest("No Python3 support for MPI")
-        import IMP.mpi
-        import IMP.spb
+        import IMP.mpi  # noqa: F401
+        import IMP.spb  # noqa: F401
 
     def test_applications_installed(self):
         """Check install of MPI-dependent binaries"""
@@ -31,6 +31,7 @@ class Tests(unittest.TestCase):
         ret = p.wait()
         self.assertEqual(ret, 0,
                          "spb_test_score exited with %d, %s" % (ret, out))
+
 
 if __name__ == '__main__':
     unittest.main()

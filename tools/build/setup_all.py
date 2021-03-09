@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 
 import os
-import sys
 import os.path
-import shutil
-import platform
 import tools
 from optparse import OptionParser
 
@@ -21,8 +18,10 @@ def generate_all_cpp(modules):
                                                  "internal", "*.cpp")])
         targetf = os.path.join(target, module.name + "_all.cpp")
         sources.sort()
-        gen.write(targetf, "\n".join(["#include <%s>" %
-                                os.path.abspath(s) for s in sources]) + '\n')
+        gen.write(targetf,
+                  "\n".join("#include <%s>"
+                            % os.path.abspath(s) for s in sources) + '\n')
+
 
 parser = OptionParser()
 parser.add_option("--build_dir", help="IMP build directory", default=None)
@@ -38,6 +37,7 @@ def main():
                              module_name=options.module_name)
     generate_all_cpp([x for x in mf.values()
                       if isinstance(x, tools.SourceModule)])
+
 
 if __name__ == '__main__':
     main()

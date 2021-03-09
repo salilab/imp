@@ -1,5 +1,5 @@
 import unittest
-import os
+
 
 class IHMInstallTests(unittest.TestCase):
 
@@ -12,7 +12,8 @@ class IHMInstallTests(unittest.TestCase):
         import ihm.format
         # We should also have the C-accelerated tokenizer
         self.assertTrue(ihm.format._format is not None)
-        s = ihm.System()
+        _ = ihm.System()
+
 
 if __name__ == '__main__':
     unittest.main()

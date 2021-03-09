@@ -11,5 +11,6 @@ class RMFInstallTests(unittest.TestCase):
         del m
         os.unlink("test_py.rmf")
 
+
 if __name__ == '__main__':
     unittest.main()

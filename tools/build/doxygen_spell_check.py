@@ -14,7 +14,6 @@ import xml.etree.ElementTree as ET
 import re
 import glob
 import array
-import tools
 
 try:
     import enchant.checker
@@ -36,13 +35,15 @@ global_spelling_exceptions = [
    'Schneidman', 'Duhovny', 'Implementers', 'Yannick', 'Raveh', 'Barak'
 ]
 
+
 class IMPNameFilter(Filter):
     """Exclude IMP-specific names.
        These are things like CamelCase class names, qualified class names
        (anything containing "::" or starting with "IMP."), or Python filenames.
     """
     _pattern = re.compile(r"^([A-Z]\w+[A-Z]+\w+)")
-    def _skip(self,word):
+
+    def _skip(self, word):
         if isinstance(word, array.array):
             word = word.tostring()
         return "::" in word or word.startswith('IMP.') \
@@ -52,9 +53,8 @@ class IMPNameFilter(Filter):
 
 class SpellChecker(object):
     def __init__(self, exceptions_file):
-        self.chkr = enchant.checker.SpellChecker("en_US",
-                         filters=[EmailFilter, URLFilter,
-                                  IMPNameFilter])
+        self.chkr = enchant.checker.SpellChecker(
+            "en_US", filters=[EmailFilter, URLFilter, IMPNameFilter])
         self.add_exceptions(exceptions_file)
         self.fname = None
         self.xml_filename = None
@@ -95,6 +95,7 @@ class SpellChecker(object):
                 joined = joined.encode('utf8')
             print("       " + joined, file=sys.stderr)
 
+
 def extract_text(node):
     """Extract all human-readable text from a node and its children. This
        is like ElementTree.itertext() but works with Python 2.6 and excludes
@@ -110,14 +111,16 @@ def extract_text(node):
         text.append(node.tail)
     return text
 
+
 def get_description(node):
     """Get all human-readable description text for a node"""
     text = []
-    for n in node.findall("description") + node.findall("briefdescription") \
-             + node.findall("detaileddescription") \
-             + node.findall("inbodydescription"):
+    for n in (node.findall("description") + node.findall("briefdescription")
+              + node.findall("detaileddescription")
+              + node.findall("inbodydescription")):
         text.extend(extract_text(n))
     return " ".join(text)
+
 
 def get_location(node):
     """Get a filename and location string for a node"""
@@ -145,6 +148,7 @@ def get_location(node):
         fname = None
     return fname, text
 
+
 def check_node(node, checker):
     description = get_description(node)
     if description:
@@ -152,6 +156,7 @@ def check_node(node, checker):
 
     for child in node:
         check_node(child, checker)
+
 
 def main():
     if len(sys.argv) != 3:
@@ -168,6 +173,7 @@ def main():
             tree = ET.parse(xml_file)
         root = tree.getroot()
         check_node(root, checker)
+
 
 if __name__ == '__main__':
     main()

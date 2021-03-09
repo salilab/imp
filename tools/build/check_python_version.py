@@ -8,5 +8,5 @@ The 'python' binary (found in your path at %s) is version %d.%d. Please ensure t
     mkdir bin
     ln -sf /usr/local/bin/python26 bin/python
     PATH=`pwd`/bin:$PATH
-""" % (sys.executable, sys.version_info[0], sys.version_info[1]))
+    """ % (sys.executable, sys.version_info[0], sys.version_info[1]))   # noqa: E501
     sys.exit(1)

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 """ Parse the doxygen xml files to create cross-ref files that will be read by
-doxygen to build web pages. These currently link examples to classes and methods
-to classes.
+doxygen to build web pages. These currently link examples to classes
+and methods to classes.
 """
 
 import xml.etree.ElementTree as ET
@@ -38,7 +38,6 @@ def _cleanup_name(n):
         # Workaround for (unqualified) macro
         return "IMP::" + n
     if n.find(".py") != -1 or n.find(".cpp") != -1:
-        m = n.split("/")[0]
         rep = n.replace("/", "_2").replace(".", "_8")
         return ("[%s](%s)" % (n, rep + "-example.html"))
     else:
@@ -107,9 +106,6 @@ def get_example_name(et):
 
 def get_example_2_name(et):
     nm = et.find('.//compoundname').text
-    #st=os.path.join("build", "doc", "examples")
-    #rnm= nm[nm.find(st)+len(st)+1:]
-    # return rnm
     return nm
 
 
@@ -155,7 +151,8 @@ def traverse_param(name, et):
 
 
 def traverse_class(name, et, module):
-    if et.tag in ['listofallmembers', 'collaborationgraph', 'inheritancegraph']:
+    if et.tag in ['listofallmembers', 'collaborationgraph',
+                  'inheritancegraph']:
         return
     if et.tag == 'memberdef' and et.attrib["kind"] == "function":
         membername = get_function_link(name, et, module)
@@ -200,7 +197,7 @@ def create_index(
     out.write(description + "\n\n")
     out.write(
         "See also " + ", ".join(["[%s](@ref %s)" %
-                               (x[0], x[1]) for x in other_indexes]) + "\n")
+                                 (x[0], x[1]) for x in other_indexes]) + "\n")
     keys = sorted(links.keys())
     keys_by_module = {}
     for k in keys:
@@ -208,7 +205,7 @@ def create_index(
         if not kc:
             continue
         split_kc = kc.split("::")
-        if len(split_kc) == 2: # kernel
+        if len(split_kc) == 2:  # kernel
             m = 'kernel'
         else:
             m = split_kc[1]
@@ -232,11 +229,11 @@ def create_index(
             if not cn:
                 continue
             out.write("<tr><td>@ref %s</td>" % cn)
-        # suppress same names as they aren't very useful
+            # suppress same names as they aren't very useful
             seen = []
             entry = []
-            for l in links[k]:
-                cn = _cleanup_name(l)
+            for ln in links[k]:
+                cn = _cleanup_name(ln)
                 if not cn:
                     continue
                 if cn and cn not in seen:
@@ -251,11 +248,9 @@ def main():
     if len(sys.argv) > 1:
         files = sys.argv[1:]
     else:
-        files = tools.get_glob([os.path.join("doxygen", "ref", "xml", "*.xml")])
+        files = tools.get_glob([os.path.join("doxygen", "ref", "xml",
+                                             "*.xml")])
     for f in files:
-    # for f in ["doxygen/xml/classIMP_1_1atom_1_1LennardJones.xml"]:
-        #["doxygen/xml/namespacetiny.xml",
-        #        "doxygen/xml/classIMP_1_1display_1_1Color.xml"]:
         module = os.path.split(os.path.split(os.path.split(f)[0])[0])[1]
         try:
             et = ET.parse(f)
@@ -269,10 +264,6 @@ def main():
                 get_namespace_name(et.getroot()),
                 et.getroot(),
                 module)
-            # elif fname.startswith("namespace"):
-            # if verbose:
-            #    print "example 1", fname
-            #traverse_example(get_example_name(et.getroot()), et.getroot())
         elif fname.endswith("example.xml"):
             if verbose:
                 print("example 2", fname)
@@ -294,10 +285,12 @@ def main():
                ("Function Examples", "function_example_index")]
     create_index(indexes[0][0], indexes[0][1], indexes[1:],
                  "Functions that create objects of a given type:",
-                 creates, "doxygen/generated/factory_index.md", "Class", "Factories")
+                 creates, "doxygen/generated/factory_index.md", "Class",
+                 "Factories")
     create_index(indexes[1][0], indexes[1][1], indexes,
                  "Functions that take objects of a given type as arguments:",
-                 takes, "doxygen/generated/argument_index.md", "Class", "Users")
+                 takes, "doxygen/generated/argument_index.md", "Class",
+                 "Users")
     create_index(indexes[2][0], indexes[2][1], indexes,
                  "Examples that use a given class:",
                  examples_classes, "doxygen/generated/class_example_index.md",
@@ -307,6 +300,7 @@ def main():
                  examples_functions,
                  "doxygen/generated/function_example_index.md",
                  "Function", "Examples")
+
 
 if __name__ == '__main__':
     main()

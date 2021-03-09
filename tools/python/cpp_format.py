@@ -67,7 +67,7 @@ def get_header_guard(filename):
     """Get prefix and suffix for header guard"""
     guard_prefix = "IMP"
     module = 'IMP'
-    m = re.search('modules\/(\w+)\/', filename)
+    m = re.search(r'modules\/(\w+)\/', filename)
     if m:
         module = m.group(1)
         guard_prefix += module.upper()
@@ -103,13 +103,16 @@ def check_header_start_end(scan, filename, errors):
         errors.append('%s:%d: Header guard missing #definer.'
                       % (filename, 1))
         bad = True
-    if not scan[-3][0] == token.Comment.Preproc and not scan[-4][0] == token.Comment.Preproc:
+    if not scan[-3][0] == token.Comment.Preproc \
+            and not scan[-4][0] == token.Comment.Preproc:
         bad = True
-    if not scan[-3][1].startswith('endif') and not scan[-4][1].startswith('endif'):
+    if not scan[-3][1].startswith('endif') \
+            and not scan[-4][1].startswith('endif'):
         errors.append('%s:%d: Header guard missing #endif.'
                       % (filename, 1))
         bad = True
-    if not scan[-2][0] in (token.Comment, token.Comment.Multiline) and not scan[-3][0] in (token.Comment, token.Comment.Multiline):
+    if not scan[-2][0] in (token.Comment, token.Comment.Multiline) \
+            and not scan[-3][0] in (token.Comment, token.Comment.Multiline):
         errors.append('%s:%d: Header guard missing closing comment.'
                       % (filename, 1))
         bad = True
@@ -127,9 +130,11 @@ def check_header_start_end(scan, filename, errors):
         errors.append('%s:%d: Header guard does define "%s".'
                       % (filename, 1, guard))
         bad = True
-    if not scan[-2][1] == '/* %s */' % guard and not scan[-3][1] == '/* %s */' % guard:
-        errors.append('%s:%d: Header guard close does not have a comment of "/* %s */".'
-                      % (filename, 1, guard))
+    if (not scan[-2][1] == '/* %s */' % guard
+            and not scan[-3][1] == '/* %s */' % guard):
+        errors.append(
+            '%s:%d: Header guard close does not have a comment of "/* %s */".'
+            % (filename, 1, guard))
         bad = True
     if bad:
         errors.append('%s:%d: Missing or incomplete header guard.'

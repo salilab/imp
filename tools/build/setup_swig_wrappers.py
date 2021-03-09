@@ -47,7 +47,7 @@ def build_wrapper(module, finder, sorted, target, source):
         else "IMP." + module.name
 
     contents.append(
-"""%%module(directors="1", allprotected="1", moduleimport="import $module") "%s"
+        """%%module(directors="1", allprotected="1", moduleimport="import $module") "%s"
 %%feature("autodoc", 1);
 
 /* '#' formats in parsing or building Python values
@@ -87,7 +87,7 @@ void
 #endif
 SWIG_init();
 %%}
-""" % swig_module_name)
+""" % swig_module_name)  # noqa: E501
     # some of the typemap code ends up before this is swig sees the
     # typemaps first
     all_deps = [x for x in finder.get_dependent_modules([module])

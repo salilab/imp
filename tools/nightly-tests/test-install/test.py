@@ -8,6 +8,7 @@ import subprocess
 import os
 import sys
 
+
 def find_path(exe):
     """Find `exe` in the PATH and return the fully-qualified path to it."""
     path_comps = os.environ['PATH'].split(os.pathsep)
@@ -16,6 +17,7 @@ def find_path(exe):
         if os.path.exists(p):
             return p
     return exe
+
 
 class App(object):
     def __init__(self, name, python=False, can_exit_1=False):
@@ -54,7 +56,7 @@ class IMPInstallTests(unittest.TestCase):
         d0 = IMP.core.XYZ.setup_particle(p0)
         d0.set_coordinates(IMP.algebra.Vector3D(0, 0, 2))
 
-        r0 = IMP.example.ExampleRestraint(m, p0.get_index(), 1)
+        _ = IMP.example.ExampleRestraint(m, p0.get_index(), 1)
 
     def test_data_installed(self):
         """Check install of data files"""
@@ -84,6 +86,7 @@ class IMPInstallTests(unittest.TestCase):
                 self.assertEqual(ret, 0,
                                  "Return code for %s app is %d, not 0; "
                                  "output is %s" % (app.name, ret, out))
+
 
 if __name__ == '__main__':
     unittest.main()

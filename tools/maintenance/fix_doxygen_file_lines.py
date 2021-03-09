@@ -23,6 +23,7 @@ def fix(filename):
     f.truncate()
     f.write(contents)
 
+
 if __name__ == '__main__':
     for f in sys.argv[1:]:
         fix(f)

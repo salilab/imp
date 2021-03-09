@@ -10,8 +10,10 @@ import tools
 import sys
 import os
 
+
 def all_module_docs(modules):
     return [os.path.join('modules', m, 'doc') for m in modules]
+
 
 def get_module_readme(module):
     """Make a Page object for a module's top-level README file"""
@@ -23,6 +25,7 @@ def get_module_readme(module):
         p.out_file_name = 'namespaceIMP_1_1' + modulesub
     p.source_file_name = 'modules/%s/README.md' % module
     return p
+
 
 def main():
     source = sys.argv[1]
@@ -46,6 +49,7 @@ def main():
             docs.add_page_navigation(p)
         else:
             print("Not handling %s: HTML file does not exist" % p.id)
+
 
 if __name__ == '__main__':
     main()

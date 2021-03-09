@@ -7,10 +7,7 @@ from __future__ import print_function
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(sys.argv[0]), '..', 'build'))
-import tools
 import time
-import optparse
 import subprocess
 import shutil
 import tempfile
@@ -21,6 +18,9 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
+sys.path.append(os.path.join(os.path.dirname(sys.argv[0]), '..', 'build'))
+import tools  # noqa: E402
+
 
 # Hack: these are all of the invalid XML characters seen to date in
 # unittest output
@@ -36,8 +36,10 @@ _xml_entities = {
   '\xb8': '[NON-UTF-8-BYTE-0xB8]'
 }
 
+
 def _xml_escape(s):
     return xml.sax.saxutils.escape(s, entities=_xml_entities)
+
 
 class TestXMLHandler(XMLGenerator):
 
@@ -167,7 +169,7 @@ class Component(object):
             elif m.build_result != 0:
                 # Propagate the original failure
                 self.dep_failure = m.dep_failure or m
-                print("%s: skipped due to previous failure to build %s" \
+                print("%s: skipped due to previous failure to build %s"
                       % (self.name, self.dep_failure.name))
                 self.build_result = 'depfail'
                 self.done = True
@@ -186,7 +188,8 @@ class Component(object):
             # We can't test components that were disabled
             return
         elif self.build_result != 0:
-            print("%s: %s skipped due to build failure" % (self.name, test_type))
+            print("%s: %s skipped due to build failure"
+                  % (self.name, test_type))
         else:
             setattr(self, test_type + '_result', 'running')
             summary.write()
@@ -475,7 +478,8 @@ failures are considered to be non-fatal).
                            "component build.")
     parser.add_option("--all", default=None,
                       help="Record information on the entire build in the "
-                           "summary pickle (see --summary) with the given key.")
+                           "summary pickle (see --summary) with the "
+                           "given key.")
     parser.add_option("--outdir",
                       default=None,
                       help="Direct build output to the given directory; one "
@@ -515,6 +519,7 @@ failures are considered to be non-fatal).
 def main():
     opts, args = parse_args()
     build_all(Builder(args[0], opts.ctest, opts.outdir, opts.coverage), opts)
+
 
 if __name__ == '__main__':
     main()

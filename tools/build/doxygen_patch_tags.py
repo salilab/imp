@@ -24,5 +24,6 @@ def main():
     with open(options.file, "w") as fh:
         fh.write(input)
 
+
 if __name__ == '__main__':
     main()

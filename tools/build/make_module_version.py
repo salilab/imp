@@ -54,9 +54,12 @@ def make_version_check(options):
     outf = os.path.join(dir, "_version_check.py")
     template = """def check_version(myversion):
   def _check_one(name, expected, found):
-    if expected != found:
-      message = "Expected version " + expected + " but got " + found + " when loading module " + name + ". Please make sure IMP is properly built and installed and that matching python and C++ libraries are used."
-      raise RuntimeError(message)
+      if expected != found:
+          raise RuntimeError(
+              "Expected version " + expected + " but got " + found
+              + " when loading module " + name
+              + ". Please make sure IMP is properly built and installed "
+                "and that matching python and C++ libraries are used."
   version = '%s'
   _check_one('%s', version, myversion)
   """

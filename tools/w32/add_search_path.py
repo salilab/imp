@@ -1,8 +1,8 @@
 #!/usr/bin/env python2
 
-"""Patch IMP, ihm and RMF SWIG wrappers to search for Python extensions and DLLs
-   in Python version-specific directories. These directories are created by
-   the .exe Windows installers, and are not in the standard Python search
+"""Patch IMP, ihm and RMF SWIG wrappers to search for Python extensions and
+   DLLs in Python version-specific directories. These directories are created
+   by the .exe Windows installers, and are not in the standard Python search
    path, so need to be added. We need to patch IMP/__init__.py so we add
    paths before any usage of any IMP module, and RMF.py too in case RMF
    is imported before IMP.
@@ -46,6 +46,7 @@ _add_pyext_to_path()
 
 """
 
+
 RMF_PATCH = r"""
 def _add_pyext_to_path():
     import os.path
@@ -70,6 +71,7 @@ _add_pyext_to_path()
 
 """
 
+
 def add_search_path(filename):
     patch = RMF_PATCH if 'RMF' in filename else IMP_PATCH
     if 'ihm' in filename:
@@ -82,7 +84,7 @@ def add_search_path(filename):
     # IMP C++ extensions). Any blank lines or comments are considered to
     # be part of the block.
     r = re.compile('(from [^.]|import (?!_IMP_))')
-    non_statement = re.compile('(\s*$|\s*#)')
+    non_statement = re.compile(r'(\s*$|\s*#)')
     in_imports = False
     imports_done = False
     with open(filename, 'w') as fh:
@@ -91,15 +93,17 @@ def add_search_path(filename):
                 if not in_imports and r.match(line):
                     in_imports = True
                 elif in_imports and not r.match(line) \
-                     and not non_statement.match(line):
+                        and not non_statement.match(line):
                     fh.write(patch)
                     in_imports = False
                     imports_done = True
             fh.write(line)
 
+
 def main():
     for fname in sys.argv[1:]:
         add_search_path(fname)
+
 
 if __name__ == '__main__':
     main()

@@ -10,14 +10,12 @@ import os.path
 import os
 import platform
 import stat
-import glob
-import subprocess
 
 
-def uniq(l):
+def uniq(ls):
     """Return the list with duplicate items removed"""
     seen = set()
-    for obj in l:
+    for obj in ls:
         if obj not in seen:
             seen.add(obj)
             yield obj
@@ -67,7 +65,6 @@ class FileGenerator(object):
         externdata = self.native_paths(self.options.external_data)
 
         libdir = self.get_abs_binary_path("lib")
-        impdir = os.path.join(libdir, "IMP")
         bindir = self.get_abs_binary_path("bin")
         datadir = os.path.abspath("data")
         exampledir = os.path.abspath(os.path.join("doc", "examples"))
@@ -173,7 +170,8 @@ parser.add_option("--python_pathsep", default="",
 parser.add_option("-d", "--external_data", dest="external_data", default=[],
                   action="append", help="External data.")
 parser.add_option("-e", "--propagate", dest="propagate", default="no",
-                  help="Whether to pass the relevant environment variables through.")
+                  help="Whether to pass the relevant environment variables "
+                       "through.")
 parser.add_option("-o", "--output", dest="output", default="imppy.sh",
                   help="Name of the file to produce.")
 parser.add_option("--suffix", default="",

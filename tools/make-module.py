@@ -8,10 +8,9 @@ from __future__ import print_function
 import os
 import os.path
 import sys
-import getopt
-import shutil
 import re
 import time
+
 
 def fix_string(input, modname):
     return input.replace("scratch", modname)\
@@ -27,15 +26,12 @@ def copy_dir(source, dest, modname):
         if x.endswith(".old"):
             continue
         xspath = os.path.join(source, x)
-        #print("handling " + xspath, end='')
         if os.path.isdir(xspath):
             xdpath = os.path.join(dest, x)
-            #print("->" + xdpath)
             os.mkdir(xdpath)
             copy_dir(xspath, xdpath, modname)
         else:
             xdpath = os.path.join(dest, fix_string(x, modname))
-            #print("->" + xdpath)
             with open(xspath, 'r') as fh:
                 input = fh.read()
             if xspath.endswith(".cpp") or xspath.endswith(".h") \
@@ -46,6 +42,7 @@ def copy_dir(source, dest, modname):
                 output = input
             with open(xdpath, 'w') as fh:
                 fh.write(output)
+
 
 def make_readme(modpath):
     """Overwrite README.md from scratch module with a new one"""
@@ -67,6 +64,7 @@ _Publications_:
 - None
 """ % time.strftime("%c"))
 
+
 def main():
     impdir = os.path.split(os.path.split(sys.argv[0])[0])[0]
     if len(sys.argv) < 2:
@@ -78,7 +76,8 @@ def main():
     else:
         modpath = os.path.join("modules", modname)
     if not re.match('[a-zA-Z0-9_]+$', modname):
-        print("Module names can only contain letters, numbers, and underscores")
+        print(
+            "Module names can only contain letters, numbers, and underscores")
         return
     if os.path.isdir(modpath):
         print("Module already exists")
