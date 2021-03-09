@@ -93,18 +93,6 @@ namespace IMP {
 %include "IMP/em/MapDistanceTransform.h"
 %include "IMP/em/EnvelopeScore.h"
 
-/* Allow runtime casting of Restraint* objects to FitRestraint* */
-namespace IMP {
-  namespace em {
-    %extend FitRestraint {
-      static FitRestraint* cast(Restraint *r) {
-        IMPEM_DEPRECATED_FUNCTION_DEF(2.8, "Use get_from() instead");
-        return dynamic_cast<IMP::em::FitRestraint *>(r);
-      }
-    }
-  }
-}
-
 %pythoncode %{
 import math
 
