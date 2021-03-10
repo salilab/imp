@@ -87,7 +87,7 @@ def rewrite(filename, contents, verbose=True):
                                            contents.split("\n")):
                 stl = str(ld)
                 if (stl[0] == '-' or stl[0] == '+') \
-                        and stl[1] != '-' and stl[1] != '+':
+                        and len(stl) > 1 and stl[1] != '-' and stl[1] != '+':
                     print("    " + stl)
     except (IOError, OSError):
         pass
