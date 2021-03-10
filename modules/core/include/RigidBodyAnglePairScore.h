@@ -8,7 +8,7 @@
 #ifndef IMPCORE_RIGID_BODY_ANGLE_PAIR_SCORE_H
 #define IMPCORE_RIGID_BODY_ANGLE_PAIR_SCORE_H
 
-#include "core_config.h"
+#include <IMP/core/core_config.h>
 
 #include <IMP/PairScore.h>
 #include <IMP/pair_macros.h>

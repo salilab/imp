@@ -59,7 +59,7 @@ def make_version_check(options):
               "Expected version " + expected + " but got " + found
               + " when loading module " + name
               + ". Please make sure IMP is properly built and installed "
-                "and that matching python and C++ libraries are used."
+              + "and that matching python and C++ libraries are used.")
   version = '%s'
   _check_one('%s', version, myversion)
   """

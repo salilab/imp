@@ -12,7 +12,7 @@
 #include <IMP/container/container_config.h>
 #include <IMP/internal/ContainerRestraint.h>
 #include <IMP/internal/ContainerConstraint.h>
-#include "InContainerPairFilter.h"
+#include <IMP/container/InContainerPairFilter.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
