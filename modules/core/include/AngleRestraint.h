@@ -13,7 +13,7 @@
 #include "AngleTripletScore.h"
 #include "XYZ.h"
 
-#include "TripletRestraint.h"
+#include <IMP/core/TripletRestraint.h>
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE
