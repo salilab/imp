@@ -24,6 +24,11 @@ IMPEM_BEGIN_NAMESPACE
 
 //! Responsible for performing coarse fitting between two density objects.
 /** The pixels involved are derived from the positions of N particles.
+
+    \note Do not use this class as an example for writing new code!
+          The design (a class with no storage, and only static methods)
+	  is not ideal. A better implementation would just be a collection
+	  of free functions, not in a class.
  */
 class IMPEMEXPORT CoarseCC : public IMP::Object {
 
