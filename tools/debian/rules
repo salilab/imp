@@ -28,7 +28,7 @@ override_dh_auto_configure:
 	        -DCMAKE_INCLUDE_PATH=`pwd` \
 	        -DCMAKE_LIBRARY_PATH=`pwd`/libTAU-1.0.1/lib/debian \
                 -DCMAKE_INSTALL_PREFIX=/usr \
-                -DIMP_TIMEOUT_FACTOR=2 \
+                -DIMP_TIMEOUT_FACTOR=4 \
                 -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/imp \
                 -DIMP_DISABLED_MODULES=scratch -DUSE_PYTHON2=on
 

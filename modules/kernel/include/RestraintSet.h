@@ -15,6 +15,7 @@
 #include <string>
 
 IMPKERNEL_BEGIN_NAMESPACE
+
 //! Object used to hold a set of restraints
 /** RestraintSets allow one to define a tree of restraints
     and to weight various restraints. Upon evaluation,

@@ -108,11 +108,4 @@ Note also that CMake searches in the system path (`PATH` environment variable)
 for command line tools such as `python` and `swig`. Thus, if you have multiple
 versions of tools (e.g. `/usr/bin/swig` and `/usr/local/bin/swig`) make sure
 the `PATH` variable is set correctly so that the right tool is found *before*
-you run CMake. You may need to make symlinks or copies to help it out if your
-binaries are named oddly; for example on a RHEL5 system we need to force CMake
-to use `/usr/bin/python2.6` rather than `/usr/bin/python` (which is Python 2.4,
-which is too old to work with %IMP) by doing something like:
-
-    mkdir bin
-    ln -sf /usr/bin/python26 bin/python
-    PATH=`pwd`/bin:$PATH
+you run CMake.

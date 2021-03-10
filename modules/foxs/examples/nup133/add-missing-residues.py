@@ -4,11 +4,11 @@
 # one with the best fit.
 
 # Comparative modeling by the automodel class
-from modeller import *              # Load standard Modeller classes
-from modeller.automodel import *    # Load the automodel class
+from modeller import Environ, log         # Load standard Modeller classes
+from modeller.automodel import AutoModel  # Load the AutoModel class
 
 log.verbose()    # request verbose output
-env = environ()  # create a new MODELLER environment to build this model in
+env = Environ()  # create a new MODELLER environment to build this model in
 
 # script_dir is the directory this script is in
 import sys
@@ -20,7 +20,7 @@ env.io.atom_files_directory = [script_dir, '../atom_files']
 
 # Renumber output model to get correct residue numbers and chain IDs
 # (Modeller default is to not assign a chain ID, and start residue numbers at 1)
-class MyModel(automodel):
+class MyModel(AutoModel):
     def special_patches(self, aln):
         self.rename_segments(segment_ids='A', renumber_residues=944)
 

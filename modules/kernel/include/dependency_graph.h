@@ -22,10 +22,8 @@ IMPKERNEL_BEGIN_NAMESPACE
   Implementations in Model_dependency.cpp
  */
 
-/** \brief A directed graph on the interactions between the various objects in
-    the model.
-
-    The vertices are named by the associated Object*. There
+//! Directed graph on the interactions between the various objects in the model.
+/** The vertices are named by the associated Object*. There
     is an edge from a to b, if a is an input to b. For example, there
     is an edge from a particle to a restraint if the restraint directly
     reads the particle.

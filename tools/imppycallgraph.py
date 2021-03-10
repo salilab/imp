@@ -356,7 +356,8 @@ def get_dot(stop=True):
 
 def save_dot(filename):
     """Generates a DOT file and writes it into filename."""
-    open(filename, 'w').write(get_dot())
+    with open(filename, 'w') as fh:
+        fh.write(get_dot())
 
 
 def make_graph(filename, format=None, tool=None, stop=None):
@@ -380,13 +381,14 @@ def make_dot_graph(filename, format='png', tool='dot', stop=True):
     f.close()
 
     # normalize filename
-    regex_user_expand = re.compile('\A~')
+    regex_user_expand = re.compile(r'\A~')
     if regex_user_expand.match(filename):
         filename = os.path.expanduser(filename)
     else:
         filename = os.path.expandvars(filename)  # expand, just in case
 
-    cmd = '%(tool)s -Grankdir=LR -Glevels=100 -T%(format)s -o%(filename)s %(tempname)s' % locals()
+    cmd = '%(tool)s -Grankdir=LR -Glevels=100 -T%(format)s ' \
+          '-o%(filename)s %(tempname)s' % locals()
     try:
         ret = os.system(cmd)
         if ret:

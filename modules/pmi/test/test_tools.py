@@ -161,6 +161,44 @@ class Tests(IMP.test.TestCase):
             self.assertTrue(1000.0 <coor_fb[1]< 1200.0)
             self.assertTrue(1000.0 <coor_fb[2]< 1200.0)
 
+    def test_shuffle_box_gaussian_beads(self):
+        """Test shuffling Gaussian-decorated beads with bounding box"""
+        mdl = IMP.Model()
+        s = IMP.pmi.topology.System(mdl)
+        seqs = IMP.pmi.topology.Sequences(
+            self.get_input_file_name('chainA.fasta'))
+        st1 = s.create_state()
+        mol = st1.create_molecule(
+            "GCP2_YEAST", sequence=seqs["GCP2_YEAST"][:10], chain_id='A')
+        mol.add_representation(mol.get_non_atomic_residues(), resolutions=[10],
+                               setup_particles_as_densities=True)
+        hier = s.build()
+
+        IMP.pmi.tools.shuffle_configuration(
+            hier, bounding_box=((1000, 1000, 1000), (1200, 1200, 1200)))
+
+    def test_shuffle_one_rigid_body(self):
+        """Test shuffle of a single rigid body"""
+        m = IMP.Model()
+        s = IMP.pmi.topology.System(m)
+        st1 = s.create_state()
+        nup84 = st1.create_molecule("Nup84", "ME", "X")
+        nup84.add_structure(self.get_input_file_name('test.nup84.pdb'), 'A')
+        nup84.add_representation(resolutions=[1])
+        hier = s.build()
+        dof = IMP.pmi.dof.DegreesOfFreedom(m)
+        dof.create_rigid_body(nup84)
+        rbs, fbs = IMP.pmi.tools.get_rbs_and_beads(hier)
+        self.assertEqual(len(rbs), 1)
+        self.assertEqual(len(fbs), 0)
+        old_t = rbs[0].get_reference_frame().get_transformation_from()
+        IMP.pmi.tools.shuffle_configuration(
+            hier, bounding_box=((1000, 1000, 1000), (1200, 1200, 1200)))
+        new_t = rbs[0].get_reference_frame().get_transformation_from()
+        # Rigid body should have been translated from near the origin to
+        # somewhere in the bounding box
+        diff_t = old_t.get_translation() - new_t.get_translation()
+        self.assertGreater(diff_t.get_magnitude(), 10.0)
 
     def test_shuffle_deep(self):
         """Test moving rbs, fbs"""

@@ -19,14 +19,14 @@ import os
 import glob
 import sys
 
-r1 = re.compile("""<a [^>]*href="(namespacelink|
-                                  namespacecustom__hierarchy|
-                                  namespacesetup|
-                                  namespacelog|
-                                  namespacestd|
-                                  namespaceBallMover)
-                   \.html">([^<]*)</a>""", re.VERBOSE)
-r2 = re.compile("!\[([^]]+)\]\(([^)]+)\)", re.VERBOSE)
+r1 = re.compile(r"""<a [^>]*href="(namespacelink|
+                                   namespacecustom__hierarchy|
+                                   namespacesetup|
+                                   namespacelog|
+                                   namespacestd|
+                                   namespaceBallMover)
+                    \.html">([^<]*)</a>""", re.VERBOSE)
+r2 = re.compile(r"!\[([^]]+)\]\(([^)]+)\)", re.VERBOSE)
 
 for f in glob.glob('%s/*.html' % sys.argv[1]):
     outf = open(f + '.out', 'w')

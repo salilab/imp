@@ -1,6 +1,6 @@
 /**
  *  \file IMP/flags.h
- *  \brief Various general useful macros for IMP.
+ *  \brief Support for shared command line flags.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *

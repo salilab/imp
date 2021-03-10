@@ -20,9 +20,9 @@ automatically.
 All Python code should conform to the [Python style
 guide](http://www.python.org/dev/peps/pep-0008/).  In essence this
 translates to 4-space indents, no tabs, and similar class, method and
-variable naming to the C++ code. You can ensure that your Python code
-is correctly indented by using the
-[cleanup_code.py script](\ref dev_tools_cleanup_code).
+variable naming to the C++ code. You can check that your Python code
+is correctly formatted using the [flake8](https://pypi.org/project/flake8/)
+tool.
 
 # Names {#codeconv_names}
 

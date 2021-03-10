@@ -141,7 +141,7 @@ done
 # Bundle non-standard library dependencies (e.g. boost) and make IMP libraries
 # and binaries point to them
 echo "Bundling non-standard library dependencies (e.g. Boost, GSL, HDF5)..."
-if [ "${TARGET_OSX_VER}" = "10.6" ]; then
+if [ "${TARGET_OSX_VER}" != "10.4" ]; then
   # 64-bit builds use homebrew and also include CGAL and protobuf
   BUNDLED_LIBS="/usr/local/lib/libboost_system-mt.dylib \
                 /usr/local/lib/libboost_filesystem-mt.dylib \
@@ -152,29 +152,24 @@ if [ "${TARGET_OSX_VER}" = "10.6" ]; then
                 /usr/local/lib/libboost_regex-mt.dylib \
                 /usr/local/lib/libboost_random-mt.dylib \
                 /usr/local/lib/libboost_graph-mt.dylib \
+                /usr/local/lib/libboost_atomic-mt.dylib \
+                /usr/local/lib/libboost_date_time-mt.dylib \
                 /usr/local/lib/libfftw3.3.dylib \
                 /usr/local/lib/libgsl.0.dylib \
                 /usr/local/lib/libgslcblas.0.dylib \
                 /usr/local/lib/libhdf5.103.dylib \
-                /usr/local/lib/libopencv_highgui.2.4.2.dylib \
+                /usr/local/lib/libopencv_highgui.2.4.13.dylib \
                 /usr/local/lib/libopencv_highgui.2.4.dylib \
-                /usr/local/lib/libopencv_core.2.4.2.dylib \
+                /usr/local/lib/libopencv_core.2.4.13.dylib \
                 /usr/local/lib/libopencv_core.2.4.dylib \
-                /usr/local/lib/libopencv_imgproc.2.4.2.dylib \
+                /usr/local/lib/libopencv_imgproc.2.4.13.dylib \
                 /usr/local/lib/libopencv_imgproc.2.4.dylib \
-                /usr/local/lib/libopencv_contrib.2.4.2.dylib \
-                /usr/local/lib/libopencv_calib3d.2.4.dylib \
-                /usr/local/lib/libopencv_features2d.2.4.dylib \
-                /usr/local/lib/libopencv_flann.2.4.dylib \
-                /usr/local/lib/libopencv_ml.2.4.dylib \
-                /usr/local/lib/libopencv_objdetect.2.4.dylib \
-                /usr/local/lib/libopencv_video.2.4.dylib \
                 /usr/local/lib/libjpeg.8.dylib \
                 /usr/local/lib/libtiff.5.dylib \
                 /usr/local/lib/liblzma.5.dylib \
                 /usr/local/lib/libprotobuf.9.dylib \
                 /usr/local/lib/libTAU.1.dylib \
-                /usr/local/lib/libCGAL.11.0.1.dylib \
+                /usr/local/lib/libCGAL.11.0.0.dylib \
                 /usr/local/lib/libCGAL.11.dylib \
                 /usr/local/lib/libgmp.10.dylib \
                 /usr/local/lib/libgmpxx.4.dylib \
@@ -235,12 +230,14 @@ done
 
 # Save space by replacing duplicates with symlinks
 for lib in highgui core imgproc; do
-  (cd ${DESTDIR}/${BUNDLED_LIB_DIR} && rm libopencv_${lib}.2.4.dylib && ln -sf libopencv_${lib}.2.4.2.dylib libopencv_${lib}.2.4.dylib)
+  (cd ${DESTDIR}/${BUNDLED_LIB_DIR} && rm libopencv_${lib}.2.4.dylib && ln -sf libopencv_${lib}.2.4.13.dylib libopencv_${lib}.2.4.dylib)
 done
-(cd ${DESTDIR}/${BUNDLED_LIB_DIR} && rm libCGAL.11.dylib && ln -sf libCGAL.11.0.1.dylib libCGAL.11.dylib)
+(cd ${DESTDIR}/${BUNDLED_LIB_DIR} && rm libCGAL.11.dylib && ln -sf libCGAL.11.0.0.dylib libCGAL.11.dylib)
 
 # Make sure we don't link against any non-standard libraries that aren't bundled
-otool -L *.dylib ${bins} IMP-python/*.so ${DESTDIR}/${BUNDLED_LIB_DIR}/* |grep -Ev '/usr/lib|/usr/local/lib/imp-3rd-party|/usr/local/lib/libimp|/usr/local/lib/libRMF|/System/Library/|:'|sort -u > /tmp/non-standard.$$
+# Note that we don't bundle MPI; users will have to get it themselves if they
+# really want it (or use homebrew/conda)
+otool -L *.dylib ${bins} IMP-python/*.so ${DESTDIR}/${BUNDLED_LIB_DIR}/* |grep -Ev '/usr/lib|/usr/local/lib/imp-3rd-party|/usr/local/lib/libimp|/usr/local/lib/libRMF|/usr/local/lib/libmpi|/System/Library/|:'|sort -u > /tmp/non-standard.$$
 if [ -s /tmp/non-standard.$$ ]; then
   echo "The following non-standard libraries are linked against, and were"
   echo "not bundled:"
@@ -294,7 +291,7 @@ done
 
 echo "Making IMP installer package..."
 mkdir imp-${VER}-package || exit 1
-/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker \
+/Applications/PackageMaker.app/Contents/MacOS/PackageMaker \
        -build -i Info.plist.$$ \
        -d Description.plist.$$ -ds \
        -p "imp-${VER}-package/IMP ${VER} ${TARGET_OSX_VER}.pkg" -f ${DESTDIR} \

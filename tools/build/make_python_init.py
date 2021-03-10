@@ -3,10 +3,10 @@
 """Create the top_level __init__.py for a Python-only module"""
 
 import os.path
-import sys
 import tools
 import shutil
 from optparse import OptionParser
+
 
 def build_init(module, source, infname, outfname):
     version = tools.get_module_version(module.name, source)
@@ -55,9 +55,11 @@ def main():
                              external_dir=options.build_dir,
                              module_name=module)
     module = mf[module]
-    build_init(module, options.source,
-            os.path.join(module.path, "pyext", "src", "__init__.py"),
-            os.path.join("lib", "IMP", module.name, '__init__.py'))
+    build_init(
+        module, options.source,
+        os.path.join(module.path, "pyext", "src", "__init__.py"),
+        os.path.join("lib", "IMP", module.name, '__init__.py'))
+
 
 if __name__ == '__main__':
     main()

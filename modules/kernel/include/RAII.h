@@ -1,5 +1,6 @@
 /**
  *  \file IMP/RAII.h    \brief Basic types used by IMP.
+ *  \brief Temporarily change something; undo the change when object destroyed
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
@@ -13,6 +14,7 @@
 #include "utility_macros.h"
 
 IMPKERNEL_BEGIN_NAMESPACE
+
 //! Temporarily change something; undo the change when this object is destroyed
 /** An RAII class (Resource Acquisition Is Initialization) provides a way of
     temporarily changing something and undoing the change when the RAII object
@@ -27,6 +29,7 @@ class RAII : public NonCopyable {
  protected:
   RAII() {}
 };
+
 IMPKERNEL_END_NAMESPACE
 
 #endif /* IMPKERNEL_RAI_I_H */

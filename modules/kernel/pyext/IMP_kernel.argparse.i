@@ -43,10 +43,7 @@ void _print_internal_help(std::ostream &out, std::string description) {
 
 %pythoncode %{
 
-try:
-    import argparse
-except ImportError:
-    from . import _compat_argparse as argparse
+import argparse
 import sys
 
 class _PassThroughAction(argparse.Action):

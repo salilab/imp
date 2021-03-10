@@ -1,5 +1,6 @@
 /**
- *  \file IMP/InputAdaptor.h    \brief Basic types used by IMP.
+ *  \file IMP/InputAdaptor.h
+ *  \brief Convenience class to accept multiple input types.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
@@ -13,9 +14,10 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 
+//! Convenience class to accept multiple input types.
 /** An input adaptor is a convenience class that allows functions to accept a
     wider variety of inputs than they would otherwise. The InputAdaptor class
-    itself should not be used directly, it is just provided for purposes of
+    itself should not be used directly; it is just provided for purposes of
     documentation.
 
     Input adaptor classes do not support output, comparisons or hashing.

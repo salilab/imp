@@ -11,7 +11,9 @@ import difflib
 
 
 parser = argparse.ArgumentParser(
-    description='Process output data file saved as rmfs. It has two modality: print selected fields for all lines or print a particular line where a filed has a given value.')
+    description='Process output data file saved as rmfs. It has two modality: '
+    'print selected fields for all lines or print a particular line '
+    'where a filed has a given value.')
 parser.add_argument(
     '-f',
     action="store",
@@ -21,7 +23,8 @@ parser.add_argument(
     '-s',
     dest="fields",
     nargs="+",
-    help="Specify all fields to be printed. Multiple flags will append a list of fields to be printed")
+    help="Specify all fields to be printed. Multiple flags will append a "
+         "list of fields to be printed")
 parser.add_argument(
     '-p',
     action="store_true",
@@ -39,14 +42,14 @@ result = parser.parse_args()
 
 
 # open the file
-if not result.filename is None:
+if result.filename is not None:
     try:
-        #let's see if that is an rmf file
+        # let's see if that is an rmf file
         rh = RMF.open_rmf_file_read_only(result.filename)
-        cat=rh.get_category('stat')
-        rmf_klist=rh.get_keys(cat)
-        rmf_names_keys=dict([(rh.get_name(k),k) for k in rmf_klist])
-        klist=rmf_names_keys.keys()
+        cat = rh.get_category('stat')
+        rmf_klist = rh.get_keys(cat)
+        rmf_names_keys = dict([(rh.get_name(k), k) for k in rmf_klist])
+        klist = rmf_names_keys.keys()
         del rh
     except IOError:
         raise IOError("Not an RMF file")
@@ -65,7 +68,7 @@ if result.print_fields:
 match_strictness = 1.0
 
 # print the queried fields
-if not result.fields is None:
+if result.fields is not None:
     field_list = []
     # check whether the fields exist and convert them to best maching existing
     # field names
@@ -89,23 +92,24 @@ if not result.fields is None:
 
     for frame_number in range(rh.get_number_of_frames()):
         IMP.rmf.load_frame(rh, RMF.FrameID(frame_number))
+        rn = rh.get_root_node()
         for name in klist:
-            s0=' '.join(["%20s" % (str(rh.get_root_node().get_value(rmf_names_keys[name])))
-                          for name in field_list])
+            s0 = ' '.join("%20s" % (str(rn.get_value(rmf_names_keys[name])))
+                          for name in field_list)
 
         if not result.nframe:
             print("> " + s0)
         else:
-            print(str(frame_number)+ " > " + s0)
+            print(str(frame_number) + " > " + s0)
     del rh
 
 # print given frame number
-if not result.nframe is None:
+if result.nframe is not None:
     # print comment line
     # print fields values
     rh = RMF.open_rmf_file_read_only(result.filename)
     IMP.rmf.load_frame(rh, RMF.FrameID(int(result.nframe)))
     for k in klist:
-        s0=str(k)+" "+str(rh.get_root_node().get_value(rmf_names_keys[k]))
+        s0 = str(k)+" "+str(rh.get_root_node().get_value(rmf_names_keys[k]))
         print(s0)
     del rh

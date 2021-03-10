@@ -33,5 +33,6 @@ def main():
     g = tools.CPPFileGenerator()
     g.write(options.output, template % data)
 
+
 if __name__ == '__main__':
     main()

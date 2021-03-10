@@ -1,5 +1,6 @@
 /**
- *  \file IMP/hash.h    \brief IO support.
+ *  \file IMP/hash.h
+ *  \brief Helper functions for implementing hashes.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *

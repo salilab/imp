@@ -17,21 +17,17 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 #ifdef SWIG
 class DopeType;
 #else
-/** The type of atoms for Dope.*/
+//! The type of atoms for Dope.
 typedef Key<6453462> DopeType;
 IMP_VALUES(DopeType, DopeTypes);
 #endif
 
-/**  Score pair of atoms based on DOPE.
+//! Score pair of atoms based on DOPE.
+/** See M.-y. Shen and A. Sali. Statistical potential for assessment and
+    prediction of protein structures. Protein Science 15, 2507-2524, 2006.
 
-  See M.-y. Shen and A. Sali. Statistical potential for assessment and
-  prediction of protein structures. Protein Science 15, 2507-2524, 2006.
-
-  DOPE should not be applied to two atoms from the same residue.
-  You may need to use the SameResiduePairFilter to filter these out.
-
-  You need to use IMP::atom::add_dope_score_data() to add the requisite
-  atom type data to the particles being scored.
+    You need to use IMP::atom::add_dope_score_data() to add the requisite
+    atom type data to the particles being scored.
 */
 class Dope : public Statistical<DopeType, false, true> {
   typedef Statistical<DopeType, false, true> P;

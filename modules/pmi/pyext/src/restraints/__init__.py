@@ -5,7 +5,7 @@ PMI restraints generally wrap IMP restraints. Typical features in PMI restraints
  - Easy setup: for example, you can usually create one with a PMI [Molecule](@ref IMP::pmi::topology::Molecule) or a slice from one.
  - Fast setup from data files. For example you can set up the [CrossLinkingMassSpectrometryRestraint](@ref IMP::pmi::restraints::crosslinking::CrossLinkingMassSpectrometryRestraint) by reading in a cross-link file into a [database](@ref IMP::pmi::io::crosslink::CrossLinkDataBase).
  - Useful output: reporting functions which are put into log files when running [ReplicaExchange](@ref IMP::pmi::macros::ReplicaExchange0).
-"""
+"""   # noqa: E501
 
 import IMP
 import IMP.pmi
@@ -42,7 +42,8 @@ class RestraintBase(object):
         else:
             self.name = str(name)
 
-        self.rs = self._create_restraint_set(name=None, cls=restraint_set_class)
+        self.rs = self._create_restraint_set(name=None,
+                                             cls=restraint_set_class)
 
     def set_label(self, label):
         """Set the unique label used in outputs and particle/restraint names.
@@ -74,8 +75,8 @@ class RestraintBase(object):
         """Add the restraint to the model."""
         self._label_is_set = True
         for rs in self.restraint_sets:
-            IMP.pmi.tools.add_restraint_to_model(self.model, rs,
-                    add_to_rmf=self._include_in_rmf)
+            IMP.pmi.tools.add_restraint_to_model(
+                self.model, rs, add_to_rmf=self._include_in_rmf)
 
     def evaluate(self):
         """Evaluate the score of the restraint."""
@@ -149,7 +150,7 @@ class _RestraintNuisanceMixin(object):
         @param max_trans Maximum move to apply to nuisance
         @param name Name of particle
         @param is_sampled Nuisance is a sampled particle
-        \see IMP.pmi.tools.SetupNuisance
+        @see IMP.pmi.tools.SetupNuisance
         """
         nuis = IMP.pmi.tools.SetupNuisance(
             self.model, init_val, min_val, max_val,
@@ -192,7 +193,6 @@ class _NuisancesBase(object):
         lengthmaxnuis = 1000.0
         lengthmin = 6.0
         lengthmax = 30.0
-        lengthtrans = 0.2
         length = IMP.pmi.tools.SetupNuisance(self.m, lengthinit,
                                              lengthminnuis, lengthmaxnuis,
                                              self.lengthissampled

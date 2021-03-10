@@ -45,9 +45,12 @@ class Tests(IMP.test.TestCase):
         # objects are all cleanup up properly
         w.set_frame(3)
         print("deleted")
-        c0 = open(self.get_tmp_file_name("test.0.dum"), "r").read()
-        c1 = open(self.get_tmp_file_name("test.1.dum"), "r").read()
-        c2 = open(self.get_tmp_file_name("test.2.dum"), "r").read()
+        with open(self.get_tmp_file_name("test.0.dum"), "r") as fh:
+            c0 = fh.read()
+        with open(self.get_tmp_file_name("test.1.dum"), "r") as fh:
+            c1 = fh.read()
+        with open(self.get_tmp_file_name("test.2.dum"), "r") as fh:
+            c2 = fh.read()
         self.assertEqual(c0, c1)
         self.assertEqual(c1, c2)
         self.assertEqual(c0.find("open"), 0)

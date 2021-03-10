@@ -1,21 +1,42 @@
 """@namespace IMP.pmi.topology
  Set of Python classes to create a multi-state, multi-resolution IMP hierarchy.
-* Start by creating a System with `model = IMP.Model(); s = IMP.pmi.topology.System(model)`. The System will store all the states.
-* Then call System.create_state(). You can easily create a multistate system by calling this function multiple times.
-* For each State, call State.create_molecule() to add a Molecule (a uniquely named polymer). This function returns the Molecule object which can be passed to various PMI functions.
+* Start by creating a System with
+  `model = IMP.Model(); s = IMP.pmi.topology.System(model)`. The System
+  will store all the states.
+* Then call System.create_state(). You can easily create a multistate system
+  by calling this function multiple times.
+* For each State, call State.create_molecule() to add a Molecule (a uniquely
+  named polymer). This function returns the Molecule object which can be
+  passed to various PMI functions.
 * Some useful functions to help you set up your Molecules:
- * Access the sequence residues with slicing (Molecule[a:b]) or functions like Molecule.get_atomic_residues() and Molecule.get_non_atomic_residues(). These functions all return Python sets for easy set arithmetic using & (and), | (or), - (difference)
+ * Access the sequence residues with slicing (Molecule[a:b]) or functions
+   like Molecule.get_atomic_residues() and Molecule.get_non_atomic_residues().
+   These functions all return Python sets for easy set arithmetic using
+   & (and), | (or), - (difference)
  * Molecule.add_structure() to add structural information from a PDB file.
- * Molecule.add_representation() to create a representation unit - here you can choose bead resolutions as well as alternate representations like densities or ideal helices.
- * Molecule.create_clone() lets you set up a molecule with identical representations, just a different chain ID. Use Molecule.create_copy() if you want a molecule with the same sequence but that allows custom representations.
-* Once data has been added and representations chosen, call System.build() to create a canonical IMP hierarchy.
-* Following hierarchy construction, setup rigid bodies, flexible beads, etc in IMP::pmi::dof.
-* Check your representation with a nice printout: IMP::atom::show_with_representation()
+ * Molecule.add_representation() to create a representation unit - here you
+   can choose bead resolutions as well as alternate representations like
+   densities or ideal helices.
+ * Molecule.create_clone() lets you set up a molecule with identical
+   representations, just a different chain ID. Use Molecule.create_copy()
+   if you want a molecule with the same sequence but that allows custom
+   representations.
+* Once data has been added and representations chosen, call System.build()
+  to create a canonical IMP hierarchy.
+* Following hierarchy construction, setup rigid bodies, flexible beads, etc
+  in IMP::pmi::dof.
+* Check your representation with a nice printout:
+  IMP::atom::show_with_representation()
+
 See a [comprehensive example](https://integrativemodeling.org/nightly/doc/ref/pmi_2multiscale_8py-example.html) for using these classes.
 
-Alternatively one can construct the entire topology and degrees of freedom via formatted text file with TopologyReader and IMP::pmi::macros::BuildSystem(). This is used in the [PMI tutorial](@ref rnapolii_stalk).
-Note that this only allows a limited set of the full options available to PMI users (rigid bodies only, fixed resolutions).
-"""
+Alternatively one can construct the entire topology and degrees of freedom
+via formatted text file with TopologyReader and
+IMP::pmi::macros::BuildSystem(). This is used in the
+[PMI tutorial](@ref rnapolii_stalk). Note that this only allows a limited
+set of the full options available to PMI users
+(rigid bodies only, fixed resolutions).
+"""  # noqa: E501
 
 from __future__ import print_function
 import IMP
@@ -24,15 +45,15 @@ import IMP.algebra
 import IMP.pmi
 import IMP.pmi.tools
 import IMP.pmi.alphabets
-import csv
 import os
 from collections import defaultdict, namedtuple
 from . import system_tools
 from bisect import bisect_left
-from math import pi,cos,sin
+from math import pi, cos, sin
 from operator import itemgetter
 import weakref
 import warnings
+
 
 def _build_ideal_helix(model, residues, coord_finder):
     """Creates an ideal helix from the specified residue range
@@ -41,21 +62,25 @@ def _build_ideal_helix(model, residues, coord_finder):
     """
     created_hiers = []
 
-    # this function creates a CAlpha helix structure (which can be used for coarsening)
+    # this function creates a CAlpha helix structure (which can be used
+    # for coarsening)
+    prev_idx = -9999
     for n, tempres in enumerate(residues):
         if tempres.get_has_structure():
             raise ValueError("You tried to build ideal_helix for a residue "
                              "that already has structure: %s" % tempres)
         if n > 0 and tempres.get_index() != prev_idx + 1:
-            raise ValueError("Passed non-contiguous segment to "
-                      "build_ideal_helix for %s" % tempres.get_molecule())
+            raise ValueError(
+                "Passed non-contiguous segment to "
+                "build_ideal_helix for %s" % tempres.get_molecule())
 
-        # New residue particle will replace the TempResidue's existing (empty) hierarchy
+        # New residue particle will replace the TempResidue's existing
+        # (empty) hierarchy
         rp = IMP.Particle(model)
         rp.set_name("Residue_%i" % tempres.get_index())
 
         # Copy the original residue type and index
-        this_res = IMP.atom.Residue.setup_particle(rp,tempres.get_hierarchy())
+        this_res = IMP.atom.Residue.setup_particle(rp, tempres.get_hierarchy())
 
         # Create the CAlpha
         ap = IMP.Particle(model)
@@ -65,7 +90,8 @@ def _build_ideal_helix(model, residues, coord_finder):
         z = 6.2 / 3.6 / 2 * n * 2 * pi / 3.6
         d.set_coordinates(IMP.algebra.Vector3D(x, y, z))
         d.set_radius(1.0)
-        a = IMP.atom.Atom.setup_particle(ap, IMP.atom.AT_CA)  # Decorating as Atom also decorates as Mass
+        # Decorating as Atom also decorates as Mass
+        a = IMP.atom.Atom.setup_particle(ap, IMP.atom.AT_CA)
         IMP.atom.Mass(ap).set_mass(110.0)
         this_res.add_child(a)
 
@@ -73,28 +99,30 @@ def _build_ideal_helix(model, residues, coord_finder):
         tempres.set_structure(this_res)
         created_hiers.append(this_res)
         prev_idx = tempres.get_index()
-    coord_finder.add_residues(created_hiers) #the coord finder is for placing beads (later)
+    # the coord finder is for placing beads (later)
+    coord_finder.add_residues(created_hiers)
+
 
 class _SystemBase(object):
     """The base class for System, State and Molecule
     classes. It contains shared functions in common to these classes
     """
 
-    def __init__(self,model=None):
+    def __init__(self, model=None):
         if model is None:
-            self.model=IMP.Model()
+            self.model = IMP.Model()
         else:
-            self.model=model
+            self.model = model
 
     def _create_hierarchy(self):
         """create a new hierarchy"""
-        tmp_part=IMP.Particle(self.model)
+        tmp_part = IMP.Particle(self.model)
         return IMP.atom.Hierarchy.setup_particle(tmp_part)
 
-    def _create_child(self,parent_hierarchy):
+    def _create_child(self, parent_hierarchy):
         """create a new hierarchy, set it as child of the input
         one, and return it"""
-        child_hierarchy=self._create_hierarchy()
+        child_hierarchy = self._create_hierarchy()
         parent_hierarchy.add_child(child_hierarchy)
         return child_hierarchy
 
@@ -103,24 +131,23 @@ class _SystemBase(object):
         Loop through stored(?) hierarchies and set up coordinates!"""
         pass
 
-#------------------------
 
 class System(_SystemBase):
-    """This class initializes the root node of the global IMP.atom.Hierarchy."""
+    """Initializes the root node of the global IMP.atom.Hierarchy."""
 
     _all_systems = set()
 
-    def __init__(self,model=None,name="System"):
-        _SystemBase.__init__(self,model)
+    def __init__(self, model=None, name="System"):
+        _SystemBase.__init__(self, model)
         self._number_of_states = 0
         self._protocol_output = []
         self.states = []
-        self.built=False
+        self.built = False
 
         System._all_systems.add(weakref.ref(self))
 
         # the root hierarchy node
-        self.hier=self._create_hierarchy()
+        self.hier = self._create_hierarchy()
         self.hier.set_name(name)
         self.hier._pmi2_system = weakref.ref(self)
 
@@ -133,8 +160,8 @@ class System(_SystemBase):
 
     def create_state(self):
         """Makes and returns a new IMP.pmi.topology.State in this system"""
-        self._number_of_states+=1
-        state = State(self,self._number_of_states-1)
+        self._number_of_states += 1
+        state = State(self, self._number_of_states-1)
         self.states.append(state)
         return state
 
@@ -148,12 +175,12 @@ class System(_SystemBase):
     def get_hierarchy(self):
         return self.hier
 
-    def build(self,**kwargs):
+    def build(self, **kwargs):
         """Build all states"""
         if not self.built:
             for state in self.states:
                 state.build(**kwargs)
-            self.built=True
+            self.built = True
         return self.hier
 
     def add_protocol_output(self, p):
@@ -167,13 +194,11 @@ class System(_SystemBase):
             state._add_protocol_output(p, self)
 
 
-#------------------------
-
 class State(_SystemBase):
     """Stores a list of Molecules all with the same State index.
     Also stores number of copies of each Molecule for easy Selection.
     """
-    def __init__(self,system,state_index):
+    def __init__(self, system, state_index):
         """Define a new state
         @param system        the PMI System
         @param state_index   the index of the new state
@@ -183,10 +208,11 @@ class State(_SystemBase):
         self.model = system.get_hierarchy().get_model()
         self.system = system
         self.hier = self._create_child(system.get_hierarchy())
-        self.short_name = self.long_name = "State_"+str(state_index)
+        self.short_name = self.long_name = "State_" + str(state_index)
         self.hier.set_name(self.short_name)
-        self.molecules = IMP.pmi.tools.OrderedDict() # key is molecule name. value are the molecule copies!
-        IMP.atom.State.setup_particle(self.hier,state_index)
+        # key is molecule name. value are the molecule copies!
+        self.molecules = IMP.pmi.tools.OrderedDict()
+        IMP.atom.State.setup_particle(self.hier, state_index)
         self.built = False
         self._protocol_output = []
         for p in system._protocol_output:
@@ -220,7 +246,7 @@ class State(_SystemBase):
             return self.molecules[name][copy_num]
 
     def create_molecule(self, name, sequence='', chain_id='',
-            alphabet=IMP.pmi.alphabets.amino_acid):
+                        alphabet=IMP.pmi.alphabets.amino_acid):
         """Create a new Molecule within this State
         @param name                the name of the molecule (string);
                                    it must not be already used
@@ -240,25 +266,26 @@ class State(_SystemBase):
     def get_hierarchy(self):
         return self.hier
 
-    def get_number_of_copies(self,molname):
+    def get_number_of_copies(self, molname):
         return len(self.molecules[molname])
 
-    def _register_copy(self,molecule):
+    def _register_copy(self, molecule):
         molname = molecule.get_hierarchy().get_name()
         self.molecules[molname].append(molecule)
 
-    def build(self,**kwargs):
+    def build(self, **kwargs):
         """call build on all molecules (automatically makes clones)"""
         if not self.built:
             for molname in self.molecules:
                 for mol in reversed(self.molecules[molname]):
                     mol.build(**kwargs)
-            self.built=True
+            self.built = True
         return self.hier
 
 
 # Track residues read from PDB files
 _PDBElement = namedtuple('PDBElement', ['offset', 'filename', 'chain_id'])
+
 
 class _RepresentationHandler(object):
     """Handle PMI representation and use it to populate that of any attached
@@ -302,14 +329,14 @@ class _RepresentationHandler(object):
                 indices = frag.get_residue_indexes()
                 for p, state in self.pos:
                     p.add_pdb_element(state, self.name,
-                            indices[0], indices[-1], pdb.offset,
-                            pdb.filename, pdb.chain_id, frag)
+                                      indices[0], indices[-1], pdb.offset,
+                                      pdb.filename, pdb.chain_id, frag)
             elif IMP.atom.Fragment.get_is_setup(h):
                 frag = IMP.atom.Fragment(h)
                 indices = frag.get_residue_indexes()
                 for p, state in self.pos:
                     p.add_bead_element(state, self.name,
-                            indices[0], indices[-1], 1, h)
+                                       indices[0], indices[-1], 1, h)
             elif IMP.atom.Residue.get_is_setup(h):
                 resind = IMP.atom.Residue(h).get_index()
                 for p, state in self.pos:
@@ -317,8 +344,6 @@ class _RepresentationHandler(object):
             else:
                 raise TypeError("Unhandled hierarchy %s" % str(h))
 
-
-#------------------------
 
 class Molecule(_SystemBase):
     """Stores a named protein chain.
@@ -331,7 +356,9 @@ class Molecule(_SystemBase):
 
     def __init__(self, state, name, sequence, chain_id, copy_num,
                  mol_to_clone=None, alphabet=IMP.pmi.alphabets.amino_acid):
-        """The user should not call this directly; instead call State::create_molecule()
+        """The user should not call this directly; instead call
+           State::create_molecule()
+
         @param state           The parent PMI State
         @param name            The name of the molecule (string)
         @param sequence        Sequence (string)
@@ -350,34 +377,37 @@ class Molecule(_SystemBase):
         self.alphabet = alphabet
         self.representations = []  # list of stuff to build
         self._pdb_elements = []
-        self._represented = IMP.pmi.tools.OrderedSet()   # residues with representation
-        self.coord_finder = _FindCloseStructure() # helps you place beads by storing structure
-        self._ideal_helices = [] # list of OrderedSets of tempresidues set to ideal helix
+        # residues with representation
+        self._represented = IMP.pmi.tools.OrderedSet()
+        # helps you place beads by storing structure
+        self.coord_finder = _FindCloseStructure()
+        # list of OrderedSets of tempresidues set to ideal helix
+        self._ideal_helices = []
 
         # create root node and set it as child to passed parent hierarchy
         self.hier = self._create_child(self.state.get_hierarchy())
         self.hier.set_name(name)
-        IMP.atom.Copy.setup_particle(self.hier,copy_num)
+        IMP.atom.Copy.setup_particle(self.hier, copy_num)
         self._name_with_copy = "%s.%d" % (name, copy_num)
         # store the sequence
-        self.chain=IMP.atom.Chain.setup_particle(self.hier,chain_id)
+        self.chain = IMP.atom.Chain.setup_particle(self.hier, chain_id)
         self.chain.set_sequence(self.sequence)
         # create TempResidues from the sequence (if passed)
-        self.residues=[]
-        for ns,s in enumerate(sequence):
+        self.residues = []
+        for ns, s in enumerate(sequence):
             r = TempResidue(self, s, ns+1, ns, alphabet)
             self.residues.append(r)
 
     def __repr__(self):
-        return self.state.__repr__()+'.'+self.get_name()+'.'+ \
-            str(IMP.atom.Copy(self.hier).get_copy_index())
+        return self.state.__repr__() + '.' + self.get_name() + '.' + \
+               str(IMP.atom.Copy(self.hier).get_copy_index())
 
-    def __getitem__(self,val):
-        if isinstance(val,int):
+    def __getitem__(self, val):
+        if isinstance(val, int):
             return self.residues[val]
-        elif isinstance(val,str):
+        elif isinstance(val, str):
             return self.residues[int(val)-1]
-        elif isinstance(val,slice):
+        elif isinstance(val, slice):
             return IMP.pmi.tools.OrderedSet(self.residues[val])
         else:
             raise TypeError("Indexes must be int or str")
@@ -398,28 +428,32 @@ class Molecule(_SystemBase):
         """Returns list of OrderedSets with requested ideal helices"""
         return self._ideal_helices
 
-    def residue_range(self,a,b,stride=1):
+    def residue_range(self, a, b, stride=1):
         """get residue range from a to b, inclusive.
         Use integers to get 0-indexing, or strings to get PDB-indexing"""
-        if isinstance(a,int) and isinstance(b,int) and isinstance(stride,int):
+        if isinstance(a, int) and isinstance(b, int) \
+                and isinstance(stride, int):
             return IMP.pmi.tools.OrderedSet(self.residues[a:b+1:stride])
-        elif isinstance(a,str) and isinstance(b,str) and isinstance(stride,int):
-            return IMP.pmi.tools.OrderedSet(self.residues[int(a)-1:int(b):stride])
+        elif isinstance(a, str) and isinstance(b, str) \
+                and isinstance(stride, int):
+            return IMP.pmi.tools.OrderedSet(
+                self.residues[int(a)-1:int(b):stride])
         else:
             raise TypeError("Range ends must be int or str. "
                             "Stride must be int.")
 
     def get_residues(self):
-        """ Return all modeled TempResidues as a set"""
+        """Return all modeled TempResidues as a set"""
         all_res = IMP.pmi.tools.OrderedSet(self.residues)
         return all_res
 
     def get_represented(self):
-        """ Return set of TempResidues that have representation"""
+        """Return set of TempResidues that have representation"""
         return self._represented
 
     def get_atomic_residues(self):
-        """ Return a set of TempResidues that have associated structure coordinates """
+        """Return a set of TempResidues that have associated structure
+           coordinates"""
         atomic_res = IMP.pmi.tools.OrderedSet()
         for res in self.residues:
             if res.get_has_structure():
@@ -427,44 +461,52 @@ class Molecule(_SystemBase):
         return atomic_res
 
     def get_non_atomic_residues(self):
-        """ Return a set of TempResidues that don't have associated structure coordinates """
+        """Return a set of TempResidues that don't have associated
+           structure coordinates"""
         non_atomic_res = IMP.pmi.tools.OrderedSet()
         for res in self.residues:
             if not res.get_has_structure():
                 non_atomic_res.add(res)
         return non_atomic_res
 
-    def create_copy(self,chain_id):
-        """Create a new Molecule with the same name and sequence but a higher copy number.
-        Returns the Molecule. No structure or representation will be copied!
+    def create_copy(self, chain_id):
+        """Create a new Molecule with the same name and sequence but a
+        higher copy number. Returns the Molecule. No structure or
+        representation will be copied!
+
         @param chain_id  Chain ID of the new molecule
         """
-        mol = Molecule(self.state,self.get_name(),self.sequence,chain_id,
-                       copy_num=self.state.get_number_of_copies(self.get_name()))
+        mol = Molecule(
+            self.state, self.get_name(), self.sequence, chain_id,
+            copy_num=self.state.get_number_of_copies(self.get_name()))
         self.state._register_copy(mol)
         return mol
 
-    def create_clone(self,chain_id):
-        """Create a Molecule clone (automatically builds same structure and representation)
-        @param chain_id If you want to set the chain ID of the copy to something
+    def create_clone(self, chain_id):
+        """Create a Molecule clone (automatically builds same structure
+        and representation)
+
+        @param chain_id If you want to set the chain ID of the copy
+               to something
         @note You cannot add structure or representations to a clone!
         """
-        mol = Molecule(self.state,self.get_name(),self.sequence,chain_id,
-                       copy_num=self.state.get_number_of_copies(self.get_name()),
-                       mol_to_clone=self)
+        mol = Molecule(
+            self.state, self.get_name(), self.sequence, chain_id,
+            copy_num=self.state.get_number_of_copies(self.get_name()),
+            mol_to_clone=self)
         self.state._register_copy(mol)
         return mol
 
-    def add_structure(self,pdb_fn,chain_id,res_range=[],
-                      offset=0,model_num=None,ca_only=False,
+    def add_structure(self, pdb_fn, chain_id, res_range=[],
+                      offset=0, model_num=None, ca_only=False,
                       soft_check=False):
         """Read a structure and store the coordinates.
         @return the atomic residues (as a set)
         @param pdb_fn     The file to read
         @param chain_id   Chain ID to read
-        @param res_range  Add only a specific set of residues from the PDB file.
-                          res_range[0] is the starting and res_range[1] is the
-                          ending residue index.
+        @param res_range  Add only a specific set of residues from the PDB
+                          file. res_range[0] is the starting and res_range[1]
+                          is the ending residue index.
         @param offset     Apply an offset to the residue indexes of the PDB
                           file. This number is added to the PDB sequence.
         @param model_num  Read multi-model PDB and return that model
@@ -483,26 +525,30 @@ class Molecule(_SystemBase):
         self.pdb_fn = pdb_fn
 
         # get IMP.atom.Residues from the pdb file
-        rhs = system_tools.get_structure(self.model,pdb_fn,chain_id,res_range,offset,ca_only=ca_only)
+        rhs = system_tools.get_structure(self.model, pdb_fn, chain_id,
+                                         res_range, offset,
+                                         ca_only=ca_only)
         self.coord_finder.add_residues(rhs)
 
-        if len(self.residues)==0:
+        if len(self.residues) == 0:
             warnings.warn(
                 "Substituting PDB residue type with FASTA residue type. "
                 "Potentially dangerous.", IMP.pmi.StructureWarning)
 
         # Store info for ProtocolOutput usage later
-        self._pdb_elements.append((rhs,
-               _PDBElement(offset=offset, filename=pdb_fn, chain_id=chain_id)))
+        self._pdb_elements.append(
+            (rhs, _PDBElement(offset=offset, filename=pdb_fn,
+                              chain_id=chain_id)))
 
         # load those into TempResidue object
-        atomic_res = IMP.pmi.tools.OrderedSet() # collect integer indexes of atomic residues to return
-        for nrh,rh in enumerate(rhs):
+        # collect integer indexes of atomic residues to return
+        atomic_res = IMP.pmi.tools.OrderedSet()
+        for nrh, rh in enumerate(rhs):
             pdb_idx = rh.get_index()
             raw_idx = pdb_idx - 1
 
             # add ALA to fill in gaps
-            while len(self.residues)<pdb_idx:
+            while len(self.residues) < pdb_idx:
                 r = TempResidue(self, 'A', len(self.residues)+1,
                                 len(self.residues),
                                 IMP.pmi.alphabets.amino_acid)
@@ -510,9 +556,10 @@ class Molecule(_SystemBase):
                 self.sequence += 'A'
 
             internal_res = self.residues[raw_idx]
-            if len(self.sequence)<raw_idx:
-                self.sequence += IMP.atom.get_one_letter_code(rh.get_residue_type())
-            internal_res.set_structure(rh,soft_check)
+            if len(self.sequence) < raw_idx:
+                self.sequence += IMP.atom.get_one_letter_code(
+                    rh.get_residue_type())
+            internal_res.set_structure(rh, soft_check)
             atomic_res.add(internal_res)
 
         self.chain.set_sequence(self.sequence)
@@ -523,7 +570,7 @@ class Molecule(_SystemBase):
                            resolutions=[],
                            bead_extra_breaks=[],
                            bead_ca_centers=True,
-                           bead_default_coord=[0,0,0],
+                           bead_default_coord=[0, 0, 0],
                            density_residues_per_component=None,
                            density_prefix=None,
                            density_force_compute=False,
@@ -531,40 +578,50 @@ class Molecule(_SystemBase):
                            setup_particles_as_densities=False,
                            ideal_helix=False,
                            color=None):
-        """Set the representation for some residues. Some options (beads, ideal helix)
-        operate along the backbone. Others (density options) are volumetric.
+        """Set the representation for some residues. Some options
+        (beads, ideal helix) operate along the backbone. Others (density
+        options) are volumetric.
         Some of these you can combine e.g., beads+densities or helix+densities
         See @ref pmi_resolution
         @param residues Set of PMI TempResidues for adding the representation.
                Can use Molecule slicing to get these, e.g. mol[a:b]+mol[c:d]
                If None, will select all residues for this Molecule.
         @param resolutions Resolutions for beads representations.
-               If structured, will average along backbone, breaking at sequence breaks.
-               If unstructured, will just create beads.
+               If structured, will average along backbone, breaking at
+               sequence breaks. If unstructured, will just create beads.
                Pass an integer or list of integers
         @param bead_extra_breaks Additional breakpoints for splitting beads.
-               The value can be the 0-ordered position, after which it'll insert the break.
+               The value can be the 0-ordered position, after which it'll
+               insert the break.
                Alternatively pass PDB-style (1-ordered) indices as a string.
                I.e., bead_extra_breaks=[5,25] is the same as ['6','26']
-        @param bead_ca_centers Set to True if you want the resolution=1 beads to be at CA centers
-               (otherwise will average atoms to get center). Defaults to True.
-        @param bead_default_coord Advanced feature. Normally beads are placed at the nearest structure.
-               If no structure provided (like an all bead molecule), the beads go here.
-        @param density_residues_per_component Create density (Gaussian Mixture Model)
-               for these residues. Must also supply density_prefix
-        @param density_prefix Prefix (assuming '.txt') to read components from or write to.
+        @param bead_ca_centers Set to True if you want the resolution=1 beads
+               to be at CA centers (otherwise will average atoms to get
+               center). Defaults to True.
+        @param bead_default_coord Advanced feature. Normally beads are placed
+               at the nearest structure. If no structure provided (like an
+               all bead molecule), the beads go here.
+        @param density_residues_per_component Create density (Gaussian
+               Mixture Model) for these residues. Must also supply
+               density_prefix
+        @param density_prefix Prefix (assuming '.txt') to read components
+               from or write to.
                If exists, will read unless you set density_force_compute=True.
                Will also write map (prefix+'.mrc').
                Must also supply density_residues_per_component.
         @param density_force_compute Set true to force overwrite density file.
-        @param density_voxel_size Advanced feature. Set larger if densities taking too long to rasterize.
+        @param density_voxel_size Advanced feature. Set larger if densities
+               taking too long to rasterize.
                Set to 0 if you don't want to create the MRC file
-        @param setup_particles_as_densities Set to True if you want each particle to be its own density.
+        @param setup_particles_as_densities Set to True if you want each
+               particle to be its own density.
                Useful for all-atom models or flexible beads.
                Mutually exclusive with density_ options
-        @param ideal_helix Create idealized helix structures for these residues at resolution 1.
+        @param ideal_helix Create idealized helix structures for these
+               residues at resolution 1.
                Any other resolutions passed will be coarsened from there.
-               Resolution 0 will not work, you may have to use MODELLER to do that (for now).
+               Resolution 0 will not work; you may have to use MODELLER
+               to do that (for now).
         @param color the color applied to the hierarchies generated.
                Format options: tuple (r,g,b) with values 0 to 1;
                float (from 0 to 1, a map from Blue to Green to Red);
@@ -573,101 +630,112 @@ class Molecule(_SystemBase):
                an IMP.display.Color object
         @note You cannot call add_representation multiple times for the
               same residues.
-        """
+        """  # noqa: E501
 
         # can't customize clones
         if self.mol_to_clone is not None:
-            raise ValueError('You cannot call add_representation() for a clone.'
-                             ' Maybe use a copy instead.')
+            raise ValueError(
+                'You cannot call add_representation() for a clone.'
+                ' Maybe use a copy instead.')
 
         # format input
         if residues is None:
             res = IMP.pmi.tools.OrderedSet(self.residues)
-        elif residues==self:
+        elif residues == self:
             res = IMP.pmi.tools.OrderedSet(self.residues)
         elif type(residues) is IMP.pmi.topology.TempResidue:
             res = IMP.pmi.tools.OrderedSet([residues])
-        elif hasattr(residues,'__iter__'):
-            if len(residues)==0:
-                raise Exception('You passed an empty set to add_representation')
-            if type(residues) is IMP.pmi.tools.OrderedSet and type(next(iter(residues))) is TempResidue:
+        elif hasattr(residues, '__iter__'):
+            if len(residues) == 0:
+                raise Exception(
+                    'You passed an empty set to add_representation')
+            if type(residues) is IMP.pmi.tools.OrderedSet \
+               and type(next(iter(residues))) is TempResidue:
                 res = residues
-            elif type(residues) is set and type(next(iter(residues))) is TempResidue:
+            elif (type(residues) is set
+                  and type(next(iter(residues))) is TempResidue):
                 res = IMP.pmi.tools.OrderedSet(residues)
             elif type(residues) is list and type(residues[0]) is TempResidue:
                 res = IMP.pmi.tools.OrderedSet(residues)
             else:
-                raise Exception("You passed an iteratible of something other than TempResidue",res)
+                raise Exception("You passed an iterable of something other "
+                                "than TempResidue", res)
         else:
-            raise Exception("add_representation: you must pass a set of residues or nothing(=all residues)")
+            raise Exception("add_representation: you must pass a set of "
+                            "residues or nothing(=all residues)")
 
         # check that each residue has not been represented yet
         ov = res & self._represented
         if ov:
-            raise Exception('You have already added representation for '+self.get_hierarchy().get_name()+': '+ov.__repr__())
-        self._represented|=res
+            raise Exception('You have already added representation for ' +
+                            self.get_hierarchy().get_name() + ': ' +
+                            ov.__repr__())
+        self._represented |= res
 
         # check you aren't creating multiple resolutions without structure
-        if not hasattr(resolutions,'__iter__'):
+        if not hasattr(resolutions, '__iter__'):
             if type(resolutions) is int:
                 resolutions = [resolutions]
             else:
-                raise Exception("you tried to pass resolutions that are not int or list-of-int")
-        if len(resolutions)>1 and not ideal_helix:
+                raise Exception("you tried to pass resolutions that are not "
+                                "int or list-of-int")
+        if len(resolutions) > 1 and not ideal_helix:
             for r in res:
                 if not r.get_has_structure():
-                    raise Exception('You are creating multiple resolutions for '
-                                    'unstructured regions. This will have unexpected results.')
+                    raise Exception(
+                        'You are creating multiple resolutions for '
+                        'unstructured regions. This will have unexpected '
+                        'results.')
 
         # check density info is consistent
         if density_residues_per_component or density_prefix:
             if not density_residues_per_component and density_prefix:
-                raise Exception('If requesting density, must provide '
-                                'density_residues_per_component AND density_prefix')
+                raise Exception(
+                    'If requesting density, must provide '
+                    'density_residues_per_component AND density_prefix')
         if density_residues_per_component and setup_particles_as_densities:
-            raise Exception('Cannot create both volumetric density '
-                            '(density_residues_per_component) AND '
-                            'individual densities (setup_particles_as_densities) '
-                            'in the same representation')
-        if len(resolutions)>1 and setup_particles_as_densities:
-            raise Exception('You have multiple bead resolutions but are attempting to '
-                            'set them all up as individual Densities. '
-                            'This could have unexpected results.')
+            raise Exception(
+                'Cannot create both volumetric density '
+                '(density_residues_per_component) AND '
+                'individual densities (setup_particles_as_densities) '
+                'in the same representation')
+        if len(resolutions) > 1 and setup_particles_as_densities:
+            raise Exception(
+                'You have multiple bead resolutions but are attempting to '
+                'set them all up as individual Densities. '
+                'This could have unexpected results.')
 
-        # check helix not accompanied by other resolutions (densities OK though!)
+        # check helix not accompanied by other resolutions
+        # (densities OK though!)
         if ideal_helix:
             if 0 in resolutions:
-                raise Exception("For ideal helices, cannot build resolution 0: "
-                                "you have to do that in MODELLER")
+                raise Exception(
+                    "For ideal helices, cannot build resolution 0: "
+                    "you have to do that in MODELLER")
             if 1 not in resolutions:
                 resolutions = [1] + list(resolutions)
             self._ideal_helices.append(res)
 
         # check residues are all part of this molecule:
         for r in res:
-            if r.get_molecule()!=self:
-                raise Exception('You are adding residues from a different molecule to',self.__repr__())
+            if r.get_molecule() != self:
+                raise Exception(
+                    'You are adding residues from a different molecule to',
+                    self.__repr__())
 
         # unify formatting for extra breaks
         breaks = []
         for b in bead_extra_breaks:
-            if type(b)==str:
+            if type(b) == str:
                 breaks.append(int(b)-1)
             else:
                 breaks.append(b)
         # store the representation group
-        self.representations.append(_Representation(res,
-                                                    resolutions,
-                                                    breaks,
-                                                    bead_ca_centers,
-                                                    bead_default_coord,
-                                                    density_residues_per_component,
-                                                    density_prefix,
-                                                    density_force_compute,
-                                                    density_voxel_size,
-                                                    setup_particles_as_densities,
-                                                    ideal_helix,
-                                                    color))
+        self.representations.append(_Representation(
+            res, resolutions, breaks, bead_ca_centers, bead_default_coord,
+            density_residues_per_component, density_prefix,
+            density_force_compute, density_voxel_size,
+            setup_particles_as_densities, ideal_helix, color))
 
     def _all_protocol_output(self):
         return self.state._protocol_output
@@ -683,80 +751,81 @@ class Molecule(_SystemBase):
         """
         if not self.built:
             # Add molecule name and sequence to any ProtocolOutput objects
-            name=self.hier.get_name()
+            name = self.hier.get_name()
             for po, state in self._all_protocol_output():
                 po.create_component(state, name, True,
                                     asym_name=self._name_with_copy)
                 po.add_component_sequence(state, name, self.sequence,
                                           asym_name=self._name_with_copy,
                                           alphabet=self.alphabet)
-            # if requested, clone structure and representations BEFORE building original
+            # if requested, clone structure and representations
+            # BEFORE building original
             if self.mol_to_clone is not None:
-                for nr,r in enumerate(self.mol_to_clone.residues):
+                for nr, r in enumerate(self.mol_to_clone.residues):
                     if r.get_has_structure():
                         clone = IMP.atom.create_clone(r.get_hierarchy())
                         self.residues[nr].set_structure(
-                            IMP.atom.Residue(clone),soft_check=True)
+                            IMP.atom.Residue(clone), soft_check=True)
                 for old_rep in self.mol_to_clone.representations:
                     new_res = IMP.pmi.tools.OrderedSet()
                     for r in old_rep.residues:
                         new_res.add(self.residues[r.get_internal_index()])
-                        self._represented.add(self.residues[r.get_internal_index()])
-                    new_rep = _Representation(new_res,
-                                              old_rep.bead_resolutions,
-                                              old_rep.bead_extra_breaks,
-                                              old_rep.bead_ca_centers,
-                                              old_rep.bead_default_coord,
-                                              old_rep.density_residues_per_component,
-                                              old_rep.density_prefix,
-                                              False,
-                                              old_rep.density_voxel_size,
-                                              old_rep.setup_particles_as_densities,
-                                              old_rep.ideal_helix,
-                                              old_rep.color)
+                        self._represented.add(
+                            self.residues[r.get_internal_index()])
+                    new_rep = _Representation(
+                        new_res, old_rep.bead_resolutions,
+                        old_rep.bead_extra_breaks, old_rep.bead_ca_centers,
+                        old_rep.bead_default_coord,
+                        old_rep.density_residues_per_component,
+                        old_rep.density_prefix, False,
+                        old_rep.density_voxel_size,
+                        old_rep.setup_particles_as_densities,
+                        old_rep.ideal_helix, old_rep.color)
                     self.representations.append(new_rep)
                 self.coord_finder = self.mol_to_clone.coord_finder
 
             # give a warning for all residues that don't have representation
             no_rep = [r for r in self.residues if r not in self._represented]
-            if len(no_rep)>0:
+            if len(no_rep) > 0:
                 warnings.warn(
                     'Residues without representation in molecule %s: %s'
                     % (self.get_name(), system_tools.resnums2str(no_rep)),
                     IMP.pmi.StructureWarning)
 
-            # first build any ideal helices (fills in structure for the TempResidues)
+            # first build any ideal helices (fills in structure for
+            # the TempResidues)
             for rep in self.representations:
                 if rep.ideal_helix:
-                    _build_ideal_helix(self.model,rep.residues,self.coord_finder)
+                    _build_ideal_helix(self.model, rep.residues,
+                                       self.coord_finder)
 
             # build all the representations
             built_reps = []
 
-            rephandler = _RepresentationHandler(self._name_with_copy,
-                                     list(self._all_protocol_output()),
-                                     self._pdb_elements)
+            rephandler = _RepresentationHandler(
+                self._name_with_copy, list(self._all_protocol_output()),
+                self._pdb_elements)
 
             for rep in self.representations:
                 built_reps += system_tools.build_representation(
-                            self, rep, self.coord_finder, rephandler)
+                    self, rep, self.coord_finder, rephandler)
 
             # sort them before adding as children
-            built_reps.sort(key=lambda r: IMP.atom.Fragment(r).get_residue_indexes()[0])
+            built_reps.sort(
+                key=lambda r: IMP.atom.Fragment(r).get_residue_indexes()[0])
             for br in built_reps:
                 self.hier.add_child(br)
                 br.update_parents()
             self.built = True
 
             for res in self.residues:
-                idx = res.get_index()
-
-                # first off, store the highest resolution available in residue.hier
+                # first off, store the highest resolution available
+                # in residue.hier
                 new_ps = IMP.atom.Selection(
                     self.hier,
                     residue_index=res.get_index(),
                     resolution=1).get_selected_particles()
-                if len(new_ps)>0:
+                if len(new_ps) > 0:
                     new_p = new_ps[0]
                     if IMP.atom.Atom.get_is_setup(new_p):
                         # if only found atomic, store the residue
@@ -768,22 +837,23 @@ class Molecule(_SystemBase):
                     rephandler(res)
                 else:
                     res.hier = None
-            self._represented = IMP.pmi.tools.OrderedSet([a for a in self._represented])
-        print('done building',self.get_hierarchy())
+            self._represented = IMP.pmi.tools.OrderedSet(
+                [a for a in self._represented])
+        print('done building', self.get_hierarchy())
         return self.hier
 
-    def get_particles_at_all_resolutions(self,residue_indexes=None):
-        """Helpful utility for getting particles at all resolutions from this molecule.
-        Can optionally pass a set of residue indexes"""
+    def get_particles_at_all_resolutions(self, residue_indexes=None):
+        """Helpful utility for getting particles at all resolutions from
+           this molecule. Can optionally pass a set of residue indexes"""
         if not self.built:
-            raise Exception("Cannot get all resolutions until you build the Molecule")
+            raise Exception(
+                "Cannot get all resolutions until you build the Molecule")
         if residue_indexes is None:
             residue_indexes = [r.get_index() for r in self.get_residues()]
-        ps = IMP.pmi.tools.select_at_all_resolutions(self.get_hierarchy(),
-                                                      residue_indexes=residue_indexes)
+        ps = IMP.pmi.tools.select_at_all_resolutions(
+            self.get_hierarchy(), residue_indexes=residue_indexes)
         return ps
 
-#------------------------
 
 class _Representation(object):
     """Private class just to store a representation request"""
@@ -813,30 +883,35 @@ class _Representation(object):
         self.ideal_helix = ideal_helix
         self.color = color
 
+
 class _FindCloseStructure(object):
     """Utility to get the nearest observed coordinate"""
     def __init__(self):
-        self.coords=[]
-    def add_residues(self,residues):
+        self.coords = []
+
+    def add_residues(self, residues):
         for r in residues:
             idx = IMP.atom.Residue(r).get_index()
-            ca = IMP.atom.Selection(r,atom_type=IMP.atom.AtomType("CA")).get_selected_particles()
-            p = IMP.atom.Selection(r,atom_type=IMP.atom.AtomType("P")).get_selected_particles()
-            if len(ca)==1:
+            ca = IMP.atom.Selection(
+                r, atom_type=IMP.atom.AtomType("CA")).get_selected_particles()
+            p = IMP.atom.Selection(
+                r, atom_type=IMP.atom.AtomType("P")).get_selected_particles()
+            if len(ca) == 1:
                 xyz = IMP.core.XYZ(ca[0]).get_coordinates()
-                self.coords.append([idx,xyz])
-            elif len(p)==1:
+                self.coords.append([idx, xyz])
+            elif len(p) == 1:
                 xyz = IMP.core.XYZ(p[0]).get_coordinates()
-                self.coords.append([idx,xyz])
+                self.coords.append([idx, xyz])
             else:
                 raise("_FindCloseStructure: wrong selection")
 
         self.coords.sort(key=itemgetter(0))
-    def find_nearest_coord(self,query):
-        if self.coords==[]:
+
+    def find_nearest_coord(self, query):
+        if self.coords == []:
             return None
         keys = [r[0] for r in self.coords]
-        pos = bisect_left(keys,query)
+        pos = bisect_left(keys, query)
         if pos == 0:
             ret = self.coords[0]
         elif pos == len(self.coords):
@@ -850,20 +925,24 @@ class _FindCloseStructure(object):
                 ret = before
         return ret[1]
 
+
 class Sequences(object):
     """A dictionary-like wrapper for reading and storing sequence data"""
-    def __init__(self,fasta_fn,name_map=None):
+    def __init__(self, fasta_fn, name_map=None):
         """read a fasta file and extract all the requested sequences
         @param fasta_fn sequence file
         @param name_map dictionary mapping the fasta name to final stored name
         """
         self.sequences = IMP.pmi.tools.OrderedDict()
-        self.read_sequences(fasta_fn,name_map)
+        self.read_sequences(fasta_fn, name_map)
+
     def __len__(self):
         return len(self.sequences)
-    def __contains__(self,x):
+
+    def __contains__(self, x):
         return x in self.sequences
-    def __getitem__(self,key):
+
+    def __getitem__(self, key):
         if type(key) is int:
             allseqs = list(self.sequences.keys())
             try:
@@ -873,17 +952,20 @@ class Sequences(object):
                                  "but there's only %d" % (key, len(allseqs)))
         else:
             return self.sequences[key]
+
     def __iter__(self):
         return self.sequences.__iter__()
+
     def __repr__(self):
-        ret=''
+        ret = ''
         for s in self.sequences:
-            ret += '%s\t%s\n'%(s,self.sequences[s])
+            ret += '%s\t%s\n' % (s, self.sequences[s])
         return ret
-    def read_sequences(self,fasta_fn,name_map=None):
+
+    def read_sequences(self, fasta_fn, name_map=None):
         code = None
         seq = None
-        with open(fasta_fn,'r') as fh:
+        with open(fasta_fn, 'r') as fh:
             for (num, line) in enumerate(fh):
                 if line.startswith('>'):
                     if seq is not None:
@@ -892,15 +974,16 @@ class Sequences(object):
                     if name_map is not None:
                         try:
                             code = name_map[code]
-                        except:
+                        except KeyError:
                             pass
                     seq = ''
                 else:
                     line = line.rstrip()
-                    if line: # Skip blank lines
+                    if line:  # Skip blank lines
                         if seq is None:
-                            raise Exception( \
-    "Found FASTA sequence before first header at line %d: %s" % (num + 1, line))
+                            raise Exception(
+                                "Found FASTA sequence before first header "
+                                "at line %d: %s" % (num + 1, line))
                         seq += line
         if seq is not None:
             self.sequences[code] = seq.strip('*')
@@ -908,12 +991,14 @@ class Sequences(object):
 
 class PDBSequences(object):
     """Data_structure for reading and storing sequence data from pdb"""
-    def __init__(self,model,pdb_fn,name_map=None):
-        """read a pdb file and returns all sequences for each contiguous fragment
+    def __init__(self, model, pdb_fn, name_map=None):
+        """read a PDB file and returns all sequences for each contiguous
+           fragment
         @param pdb_fn  file
-        @param name_map dictionary mapping the pdb chain id to final stored name
+        @param name_map dictionary mapping the pdb chain id to final
+               stored name
         """
-        self.model=model
+        self.model = model
         # self.sequences data-structure: (two-key dictionary)
         # it contains all contiguous fragments:
         # chain_id, tuples indicating first and last residue, sequence
@@ -924,136 +1009,141 @@ class PDBSequences(object):
         # B (30, 180) VDLENQYYNSKALKEDDPKAALSSFQKVLELEGEKGEWGF...
         # B (192, 443) TQLLEIYALEIQMYTAQKNNKKLKALYEQSLHIKSAIPHPL
         self.sequences = IMP.pmi.tools.OrderedDict()
-        self.read_sequences(pdb_fn,name_map)
+        self.read_sequences(pdb_fn, name_map)
 
-    def read_sequences(self,pdb_fn,name_map):
+    def read_sequences(self, pdb_fn, name_map):
         read_file = IMP.atom.read_pdb
         if pdb_fn.endswith('.cif'):
             read_file = IMP.atom.read_mmcif
         t = read_file(pdb_fn, self.model, IMP.atom.ATOMPDBSelector())
-        cs=IMP.atom.get_by_type(t,IMP.atom.CHAIN_TYPE)
+        cs = IMP.atom.get_by_type(t, IMP.atom.CHAIN_TYPE)
         for c in cs:
-            id=IMP.atom.Chain(c).get_id()
+            id = IMP.atom.Chain(c).get_id()
             print(id)
             if name_map:
                 try:
-                    id=name_map[id]
-                except:
+                    id = name_map[id]
+                except KeyError:
                     print("Chain ID %s not in name_map, skipping" % id)
                     continue
-            rs=IMP.atom.get_by_type(c,IMP.atom.RESIDUE_TYPE)
-            rids=[]
-            rids_olc_dict={}
+            rs = IMP.atom.get_by_type(c, IMP.atom.RESIDUE_TYPE)
+            rids = []
+            rids_olc_dict = {}
             for r in rs:
-                dr=IMP.atom.Residue(r)
-                rid=dr.get_index()
+                dr = IMP.atom.Residue(r)
+                rid = dr.get_index()
 
-                isprotein=dr.get_is_protein()
-                isrna=dr.get_is_rna()
-                isdna=dr.get_is_dna()
+                isprotein = dr.get_is_protein()
+                isrna = dr.get_is_rna()
+                isdna = dr.get_is_dna()
                 if isprotein:
-                    olc=IMP.atom.get_one_letter_code(dr.get_residue_type())
+                    olc = IMP.atom.get_one_letter_code(dr.get_residue_type())
                     rids.append(rid)
-                    rids_olc_dict[rid]=olc
+                    rids_olc_dict[rid] = olc
                 elif isdna:
-                    if dr.get_residue_type() == IMP.atom.DADE: olc="A"
-                    if dr.get_residue_type() == IMP.atom.DURA: olc="U"
-                    if dr.get_residue_type() == IMP.atom.DCYT: olc="C"
-                    if dr.get_residue_type() == IMP.atom.DGUA: olc="G"
-                    if dr.get_residue_type() == IMP.atom.DTHY: olc="T"
+                    if dr.get_residue_type() == IMP.atom.DADE:
+                        olc = "A"
+                    if dr.get_residue_type() == IMP.atom.DURA:
+                        olc = "U"
+                    if dr.get_residue_type() == IMP.atom.DCYT:
+                        olc = "C"
+                    if dr.get_residue_type() == IMP.atom.DGUA:
+                        olc = "G"
+                    if dr.get_residue_type() == IMP.atom.DTHY:
+                        olc = "T"
                     rids.append(rid)
-                    rids_olc_dict[rid]=olc
+                    rids_olc_dict[rid] = olc
                 elif isrna:
-                    if dr.get_residue_type() == IMP.atom.ADE: olc="A"
-                    if dr.get_residue_type() == IMP.atom.URA: olc="U"
-                    if dr.get_residue_type() == IMP.atom.CYT: olc="C"
-                    if dr.get_residue_type() == IMP.atom.GUA: olc="G"
-                    if dr.get_residue_type() == IMP.atom.THY: olc="T"
+                    if dr.get_residue_type() == IMP.atom.ADE:
+                        olc = "A"
+                    if dr.get_residue_type() == IMP.atom.URA:
+                        olc = "U"
+                    if dr.get_residue_type() == IMP.atom.CYT:
+                        olc = "C"
+                    if dr.get_residue_type() == IMP.atom.GUA:
+                        olc = "G"
+                    if dr.get_residue_type() == IMP.atom.THY:
+                        olc = "T"
                     rids.append(rid)
-                    rids_olc_dict[rid]=olc
-            group_rids=self.group_indexes(rids)
-            contiguous_sequences=IMP.pmi.tools.OrderedDict()
+                    rids_olc_dict[rid] = olc
+            group_rids = self.group_indexes(rids)
+            contiguous_sequences = IMP.pmi.tools.OrderedDict()
             for group in group_rids:
-                sequence_fragment=""
-                for i in range(group[0],group[1]+1):
-                    sequence_fragment+=rids_olc_dict[i]
-                contiguous_sequences[group]=sequence_fragment
-            self.sequences[id]=contiguous_sequences
+                sequence_fragment = ""
+                for i in range(group[0], group[1]+1):
+                    sequence_fragment += rids_olc_dict[i]
+                contiguous_sequences[group] = sequence_fragment
+            self.sequences[id] = contiguous_sequences
 
-        #for c in self.sequences:
-        #    for group in self.sequences[c]:
-        #        print(c,group,self.sequences[c][group])
-
-    def group_indexes(self,indexes):
+    def group_indexes(self, indexes):
         from itertools import groupby
         ranges = []
-        for k, g in groupby(enumerate(indexes), lambda x:x[0]-x[1]):
+        for k, g in groupby(enumerate(indexes), lambda x: x[0]-x[1]):
             group = [x[1] for x in g]
             ranges.append((group[0], group[-1]))
         return ranges
 
 
-def fasta_pdb_alignments(fasta_sequences,pdb_sequences,show=False):
+def fasta_pdb_alignments(fasta_sequences, pdb_sequences, show=False):
     '''This function computes and prints the alignment between the
     fasta file and the pdb sequence, computes the offsets for each contiguous
     fragment in the PDB.
     @param fasta_sequences  IMP.pmi.topology.Sequences object
     @param pdb_sequences IMP.pmi.topology.PDBSequences object
     @param show boolean default False, if True prints the alignments.
-    The input objects should be generated using map_name dictionaries such that fasta_id
+    The input objects should be generated using map_name dictionaries
+    such that fasta_id
     and pdb_chain_id are mapping to the same protein name. It needs BioPython.
     Returns a dictionary of offsets, organized by peptide range (group):
     example: offsets={"ProtA":{(1,10):1,(20,30):10}}'''
     from Bio import pairwise2
     from Bio.pairwise2 import format_alignment
-    from Bio.SubsMat import MatrixInfo as matlist
-    matrix = matlist.blosum62
     if type(fasta_sequences) is not IMP.pmi.topology.Sequences:
         raise Exception("Fasta sequences not type IMP.pmi.topology.Sequences")
     if type(pdb_sequences) is not IMP.pmi.topology.PDBSequences:
         raise Exception("pdb sequences not type IMP.pmi.topology.PDBSequences")
-    offsets=IMP.pmi.tools.OrderedDict()
+    offsets = IMP.pmi.tools.OrderedDict()
     for name in fasta_sequences.sequences:
         print(name)
-        seq_fasta=fasta_sequences.sequences[name]
+        seq_fasta = fasta_sequences.sequences[name]
         if name not in pdb_sequences.sequences:
-            print("Fasta id %s not in pdb names, aligning against every pdb chain" % name)
-            pdbnames=pdb_sequences.sequences.keys()
+            print("Fasta id %s not in pdb names, aligning against every "
+                  "pdb chain" % name)
+            pdbnames = pdb_sequences.sequences.keys()
         else:
-            pdbnames=[name]
+            pdbnames = [name]
         for pdbname in pdbnames:
             for group in pdb_sequences.sequences[pdbname]:
-                if group[1]-group[0]+1<7:continue
-                seq_frag_pdb=pdb_sequences.sequences[pdbname][group]
+                if group[1] - group[0] + 1 < 7:
+                    continue
+                seq_frag_pdb = pdb_sequences.sequences[pdbname][group]
                 if show:
                     print("########################")
                     print(" ")
-                    print("protein name",pdbname)
+                    print("protein name", pdbname)
                     print("fasta id", name)
-                    print("pdb fragment",group)
-                align=pairwise2.align.localms(seq_fasta, seq_frag_pdb, 2, -1, -.5, -.1)[0]
+                    print("pdb fragment", group)
+                align = pairwise2.align.localms(seq_fasta, seq_frag_pdb,
+                                                2, -1, -.5, -.1)[0]
                 for a in [align]:
-                    offset=a[3]+1-group[0]
+                    offset = a[3] + 1 - group[0]
                     if show:
-                        print("alignment sequence start-end",(a[3]+1,a[4]+1))
-                        print("offset from pdb to fasta index",offset)
+                        print("alignment sequence start-end",
+                              (a[3] + 1, a[4] + 1))
+                        print("offset from pdb to fasta index", offset)
                         print(format_alignment(*a))
                     if name not in offsets:
-                        offsets[pdbname]={}
+                        offsets[pdbname] = {}
                         if group not in offsets[pdbname]:
-                            offsets[pdbname][group]=offset
+                            offsets[pdbname][group] = offset
                     else:
                         if group not in offsets[pdbname]:
-                            offsets[pdbname][group]=offset
+                            offsets[pdbname][group] = offset
     return offsets
 
 
-
-#------------------------
-
-
 class TempResidue(object):
-    """Temporarily stores residue information, even without structure available."""
+    "Temporarily stores residue information, even without structure available."
     # Consider implementing __hash__ so you can select.
     def __init__(self, molecule, code, index, internal_index, alphabet):
         """setup a TempResidue
@@ -1062,47 +1152,64 @@ class TempResidue(object):
         @param index    PDB index
         @param internal_index The number in the sequence
         """
-        #these attributes should be immutable
+        # these attributes should be immutable
         self.molecule = molecule
         self.rtype = alphabet.get_residue_type_from_one_letter_code(code)
         self.pdb_index = index
         self.internal_index = internal_index
         self.copy_index = IMP.atom.Copy(self.molecule.hier).get_copy_index()
-        self.state_index = IMP.atom.State(self.molecule.state.hier).get_state_index()
-        #these are expected to change
+        self.state_index = \
+            IMP.atom.State(self.molecule.state.hier).get_state_index()
+        # these are expected to change
         self._structured = False
-        self.hier = IMP.atom.Residue.setup_particle(IMP.Particle(molecule.model),
-                                                    self.rtype,
-                                                    index)
+        self.hier = IMP.atom.Residue.setup_particle(
+            IMP.Particle(molecule.model), self.rtype, index)
+
     def __str__(self):
-        return str(self.state_index)+"_"+self.molecule.get_name()+"_"+str(self.copy_index)+"_"+self.get_code()+str(self.get_index())
+        return str(self.state_index) + "_" + self.molecule.get_name() + "_" \
+               + str(self.copy_index) + "_" + self.get_code() \
+               + str(self.get_index())
+
     def __repr__(self):
         return self.__str__()
+
     def __key(self):
-        #this returns the immutable attributes only
-        return (self.state_index, self.molecule, self.copy_index, self.rtype, self.pdb_index, self.internal_index)
-    def __eq__(self,other):
-        return type(other)==type(self) and self.__key() == other.__key()
+        # this returns the immutable attributes only
+        return (self.state_index, self.molecule, self.copy_index, self.rtype,
+                self.pdb_index, self.internal_index)
+
+    def __eq__(self, other):
+        return type(other) == type(self) and self.__key() == other.__key()
+
     def __hash__(self):
         return hash(self.__key())
+
     def get_index(self):
         return self.pdb_index
+
     def get_internal_index(self):
         return self.internal_index
+
     def get_code(self):
         return IMP.atom.get_one_letter_code(self.get_residue_type())
+
     def get_residue_type(self):
         return self.rtype
+
     def get_hierarchy(self):
         return self.hier
+
     def get_molecule(self):
         return self.molecule
+
     def get_has_structure(self):
         return self._structured
-    def set_structure(self,res,soft_check=False):
-        if res.get_residue_type()!=self.get_residue_type():
+
+    def set_structure(self, res, soft_check=False):
+        if res.get_residue_type() != self.get_residue_type():
             if soft_check:
-                # note from commit a2c13eaa1 we give priority to the FASTA and not the PDB
+                # note from commit a2c13eaa1 we give priority to the
+                # FASTA and not the PDB
                 warnings.warn(
                     'Inconsistency between FASTA sequence and PDB sequence. '
                     'FASTA type %s %s and PDB type %s'
@@ -1112,19 +1219,23 @@ class TempResidue(object):
                 self.hier.set_residue_type((self.get_residue_type()))
                 self.rtype = self.get_residue_type()
             else:
-                raise Exception('ERROR: PDB residue index',self.get_index(),'is',
-                                IMP.atom.get_one_letter_code(res.get_residue_type()),
-                                'and sequence residue is',self.get_code())
+                raise Exception(
+                    'ERROR: PDB residue index', self.get_index(), 'is',
+                    IMP.atom.get_one_letter_code(res.get_residue_type()),
+                    'and sequence residue is', self.get_code())
 
         for a in res.get_children():
             self.hier.add_child(a)
             atype = IMP.atom.Atom(a).get_atom_type()
-            a.get_particle().set_name('Atom %s of residue %i'%(atype.__str__().strip('"'),
-                                                               self.hier.get_index()))
+            a.get_particle().set_name(
+                'Atom %s of residue %i' % (atype.__str__().strip('"'),
+                                           self.hier.get_index()))
         self._structured = True
 
+
 class TopologyReader(object):
-    """Automatically setup Sytem and Degrees of Freedom with a formatted text file.
+    """Automatically setup Sytem and Degrees of Freedom with a formatted
+       text file.
     The file is read in and each part of the topology is stored as a
     ComponentTopology object for input into IMP::pmi::macros::BuildSystem.
     The topology file should be in a simple pipe-delimited format:
@@ -1184,11 +1295,8 @@ class TopologyReader(object):
     - `flags` additional flags for advanced options
     @note All filenames are relative to the paths specified in the constructor.
 
-    """
-    def __init__(self,
-                 topology_file,
-                 pdb_dir='./',
-                 fasta_dir='./',
+    """  # noqa: E501
+    def __init__(self, topology_file, pdb_dir='./', fasta_dir='./',
                  gmm_dir='./'):
         """Constructor.
         @param topology_file Pipe-delimited file specifying the topology
@@ -1197,29 +1305,31 @@ class TopologyReader(object):
         @param gmm_dir Relative path to the GMM directory
         """
         self.topology_file = topology_file
-        self.molecules = IMP.pmi.tools.OrderedDict() # key=molname, value=TempMolecule
+        # key=molname, value=TempMolecule
+        self.molecules = IMP.pmi.tools.OrderedDict()
         self.pdb_dir = pdb_dir
         self.fasta_dir = fasta_dir
         self.gmm_dir = gmm_dir
         self._components = self.read(topology_file)
 
-    def write_topology_file(self,outfile):
+    def write_topology_file(self, outfile):
         with open(outfile, "w") as f:
             f.write("|molecule_name|color|fasta_fn|fasta_id|pdb_fn|chain|"
-                    "residue_range|pdb_offset|bead_size|em_residues_per_gaussian|"
-                    "rigid_body|super_rigid_body|chain_of_super_rigid_bodies|\n")
+                    "residue_range|pdb_offset|bead_size|"
+                    "em_residues_per_gaussian|rigid_body|super_rigid_body|"
+                    "chain_of_super_rigid_bodies|\n")
             for c in self._components:
                 output = c.get_str()+'\n'
                 f.write(output)
         return outfile
 
-    def get_components(self, topology_list = "all"):
+    def get_components(self, topology_list="all"):
         """ Return list of ComponentTopologies for selected components
         @param topology_list List of indices to return"""
         if topology_list == "all":
             topologies = self._components
         else:
-            topologies=[]
+            topologies = []
             for i in topology_list:
                 topologies.append(self._components[i])
         return topologies
@@ -1234,15 +1344,15 @@ class TopologyReader(object):
         is_topology = False
         is_directories = False
         linenum = 1
-        if append==False:
-            self._components=[]
+        if not append:
+            self._components = []
 
         with open(topology_file) as infile:
             for line in infile:
-                if line.lstrip()=="" or line[0]=="#":
+                if line.lstrip() == "" or line[0] == "#":
                     continue
                 elif line.split('|')[1].strip() in ("molecule_name"):
-                    is_topology=True
+                    is_topology = True
                     is_directories = False
                     old_format = False
                     continue
@@ -1283,7 +1393,7 @@ class TopologyReader(object):
         values = [s.strip() for s in component_line.split('|')]
         errors = []
 
-        ### Required fields
+        # Required fields
         if old_format:
             c.molname = values[1]
             c.copyname = ''
@@ -1291,29 +1401,30 @@ class TopologyReader(object):
             c.color = 'blue'
         else:
             names = values[1].split('.')
-            if len(names)==1:
+            if len(names) == 1:
                 c.molname = names[0]
                 c.copyname = ''
-            elif len(names)==2:
+            elif len(names) == 2:
                 c.molname = names[0]
                 c.copyname = names[1]
             else:
                 c.molname = names[0]
                 c.copyname = names[1]
                 errors.append("Molecule name should be <molecule.copyID>")
-                errors.append("For component %s line %d " % (c.molname,linenum))
+                errors.append("For component %s line %d "
+                              % (c.molname, linenum))
             c._domain_name = c.molname + '.' + c.copyname
             colorfields = values[2].split(',')
-            if len(colorfields)==3:
+            if len(colorfields) == 3:
                 c.color = [float(x) for x in colorfields]
-                if any([x>1 for x in c.color]):
-                    c.color=[x/255 for x in c.color]
+                if any([x > 1 for x in c.color]):
+                    c.color = [x/255 for x in c.color]
             else:
                 c.color = values[2]
         c._orig_fasta_file = values[3]
         c.fasta_file = values[3]
         fasta_field = values[4].split(",")
-        c.fasta_id  = fasta_field[0]
+        c.fasta_id = fasta_field[0]
         c.fasta_flag = None
         if len(fasta_field) > 1:
             c.fasta_flag = fasta_field[1]
@@ -1335,35 +1446,40 @@ class TopologyReader(object):
             self.molecules[c.molname] = _TempMolecule(c)
         else:
             # COPY OR DOMAIN
-            c._orig_fasta_file = self.molecules[c.molname].orig_component._orig_fasta_file
+            c._orig_fasta_file = \
+                self.molecules[c.molname].orig_component._orig_fasta_file
             c.fasta_id = self.molecules[c.molname].orig_component.fasta_id
-            self.molecules[c.molname].add_component(c,c.copyname)
+            self.molecules[c.molname].add_component(c, c.copyname)
 
         # now cleanup input
-        c.fasta_file = os.path.join(self.fasta_dir,c._orig_fasta_file)
-        if pdb_input=="":
+        c.fasta_file = os.path.join(self.fasta_dir, c._orig_fasta_file)
+        if pdb_input == "":
             errors.append("PDB must have BEADS, IDEAL_HELIX, or filename")
             errors.append("For component %s line %d is not correct"
-                          "|%s| was given." % (c.molname,linenum,pdb_input))
-        elif pdb_input in ("IDEAL_HELIX","BEADS"):
+                          "|%s| was given." % (c.molname, linenum, pdb_input))
+        elif pdb_input in ("IDEAL_HELIX", "BEADS"):
             c.pdb_file = pdb_input
         else:
-            c.pdb_file = os.path.join(self.pdb_dir,pdb_input)
+            c.pdb_file = os.path.join(self.pdb_dir, pdb_input)
 
             # PDB chain must be one or two characters
-            if len(tmp_chain)==1 or len(tmp_chain)==2:
+            if len(tmp_chain) == 1 or len(tmp_chain) == 2:
                 c.chain = tmp_chain
             else:
-                errors.append("PDB Chain identifier must be one or two characters.")
+                errors.append(
+                    "PDB Chain identifier must be one or two characters.")
                 errors.append("For component %s line %d is not correct"
-                              "|%s| was given." % (c.molname,linenum,tmp_chain))
+                              "|%s| was given."
+                              % (c.molname, linenum, tmp_chain))
 
-        ### Optional fields
+        # Optional fields
         # Residue Range
-        if rr.strip()=='all' or str(rr)=="":
+        if rr.strip() == 'all' or str(rr) == "":
             c.residue_range = None
-        elif len(rr.split(','))==2 and self._is_int(rr.split(',')[0]) and (self._is_int(rr.split(',')[1]) or rr.split(',')[1] == 'END'):
-            # Make sure that is residue range is given, there are only two values and they are integers
+        elif (len(rr.split(',')) == 2 and self._is_int(rr.split(',')[0]) and
+              (self._is_int(rr.split(',')[1]) or rr.split(',')[1] == 'END')):
+            # Make sure that is residue range is given, there are only
+            # two values and they are integers
             c.residue_range = (int(rr.split(',')[0]), rr.split(',')[1])
             if c.residue_range[1] != 'END':
                 c.residue_range = (c.residue_range[0], int(c.residue_range[1]))
@@ -1371,103 +1487,121 @@ class TopologyReader(object):
             if old_format and c.residue_range[1] == -1:
                 c.residue_range = (c.residue_range[0], 'END')
         else:
-            errors.append("Residue Range format for component %s line %d is not correct" % (c.molname, linenum))
-            errors.append("Correct syntax is two comma separated integers:  |start_res, end_res|. end_res can also be END to select the last residue in the chain. |%s| was given." % rr)
+            errors.append("Residue Range format for component %s line %d is "
+                          "not correct" % (c.molname, linenum))
+            errors.append(
+                "Correct syntax is two comma separated integers:  "
+                "|start_res, end_res|. end_res can also be END to select the "
+                "last residue in the chain. |%s| was given." % rr)
             errors.append("To select all residues, indicate |\"all\"|")
 
         # PDB Offset
         if self._is_int(offset):
-            c.pdb_offset=int(offset)
-        elif len(offset)==0:
+            c.pdb_offset = int(offset)
+        elif len(offset) == 0:
             c.pdb_offset = 0
         else:
-            errors.append("PDB Offset format for component %s line %d is not correct" % (c.molname, linenum))
-            errors.append("The value must be a single integer. |%s| was given." % offset)
+            errors.append("PDB Offset format for component %s line %d is "
+                          "not correct" % (c.molname, linenum))
+            errors.append("The value must be a single integer. |%s| was given."
+                          % offset)
 
         # Bead Size
         if self._is_int(bead_size):
-            c.bead_size=int(bead_size)
-        elif len(bead_size)==0:
+            c.bead_size = int(bead_size)
+        elif len(bead_size) == 0:
             c.bead_size = 0
         else:
-            errors.append("Bead Size format for component %s line %d is not correct" % (c.molname, linenum))
-            errors.append("The value must be a single integer. |%s| was given." % bead_size)
+            errors.append("Bead Size format for component %s line %d is "
+                          "not correct" % (c.molname, linenum))
+            errors.append("The value must be a single integer. |%s| was given."
+                          % bead_size)
 
         # EM Residues Per Gaussian
         if self._is_int(emg):
             if int(emg) > 0:
-                c.density_prefix = os.path.join(self.gmm_dir,c.get_unique_name())
-                c.gmm_file = c.density_prefix+'.txt'
-                c.mrc_file = c.density_prefix+'.gmm'
+                c.density_prefix = os.path.join(self.gmm_dir,
+                                                c.get_unique_name())
+                c.gmm_file = c.density_prefix + '.txt'
+                c.mrc_file = c.density_prefix + '.gmm'
 
-                c.em_residues_per_gaussian=int(emg)
+                c.em_residues_per_gaussian = int(emg)
             else:
                 c.em_residues_per_gaussian = 0
-        elif len(emg)==0:
+        elif len(emg) == 0:
             c.em_residues_per_gaussian = 0
         else:
             errors.append("em_residues_per_gaussian format for component "
                           "%s line %d is not correct" % (c.molname, linenum))
-            errors.append("The value must be a single integer. |%s| was given." % emg)
+            errors.append("The value must be a single integer. |%s| was given."
+                          % emg)
 
         # rigid bodies
-        if len(rbs)>0:
+        if len(rbs) > 0:
             if not self._is_int(rbs):
-                errors.append("rigid bodies format for component "
-                              "%s line %d is not correct" % (c.molname, linenum))
+                errors.append(
+                    "rigid bodies format for component "
+                    "%s line %d is not correct" % (c.molname, linenum))
                 errors.append("Each RB must be a single integer, or empty. "
                               "|%s| was given." % rbs)
             c.rigid_body = int(rbs)
 
         # super rigid bodies
-        if len(srbs)>0:
+        if len(srbs) > 0:
             srbs = srbs.split(',')
             for i in srbs:
                 if not self._is_int(i):
-                    errors.append("super rigid bodies format for component "
-                                  "%s line %d is not correct" % (c.molname, linenum))
-                    errors.append("Each SRB must be a single integer. |%s| was given." % srbs)
+                    errors.append(
+                        "super rigid bodies format for component "
+                        "%s line %d is not correct" % (c.molname, linenum))
+                    errors.append(
+                        "Each SRB must be a single integer. |%s| was given."
+                        % srbs)
             c.super_rigid_bodies = srbs
 
         # chain of super rigid bodies
-        if len(csrbs)>0:
+        if len(csrbs) > 0:
             if not self._is_int(csrbs):
-                errors.append("em_residues_per_gaussian format for component "
-                              "%s line %d is not correct" % (c.molname, linenum))
-                errors.append("Each CSRB must be a single integer. |%s| was given." % csrbs)
+                errors.append(
+                    "em_residues_per_gaussian format for component "
+                    "%s line %d is not correct" % (c.molname, linenum))
+                errors.append(
+                    "Each CSRB must be a single integer. |%s| was given."
+                    % csrbs)
             c.chain_of_super_rigid_bodies = csrbs
 
         # done
         if errors:
-            raise ValueError("Fix Topology File syntax errors and rerun: " \
+            raise ValueError("Fix Topology File syntax errors and rerun: "
                              + "\n".join(errors))
         else:
             return c
 
-
-    def set_gmm_dir(self,gmm_dir):
+    def set_gmm_dir(self, gmm_dir):
         """Change the GMM dir"""
         self.gmm_dir = gmm_dir
         for c in self._components:
-            c.gmm_file = os.path.join(self.gmm_dir,c.get_unique_name()+".txt")
-            c.mrc_file = os.path.join(self.gmm_dir,c.get_unique_name()+".mrc")
-            print('new gmm',c.gmm_file)
+            c.gmm_file = os.path.join(self.gmm_dir,
+                                      c.get_unique_name() + ".txt")
+            c.mrc_file = os.path.join(self.gmm_dir,
+                                      c.get_unique_name() + ".mrc")
+            print('new gmm', c.gmm_file)
 
-    def set_pdb_dir(self,pdb_dir):
+    def set_pdb_dir(self, pdb_dir):
         """Change the PDB dir"""
         self.pdb_dir = pdb_dir
         for c in self._components:
-            if not c._orig_pdb_input in ("","None","IDEAL_HELIX","BEADS"):
-                c.pdb_file = os.path.join(self.pdb_dir,c._orig_pdb_input)
+            if c._orig_pdb_input not in ("", "None", "IDEAL_HELIX", "BEADS"):
+                c.pdb_file = os.path.join(self.pdb_dir, c._orig_pdb_input)
 
-    def set_fasta_dir(self,fasta_dir):
+    def set_fasta_dir(self, fasta_dir):
         """Change the FASTA dir"""
         self.fasta_dir = fasta_dir
         for c in self._components:
-            c.fasta_file = os.path.join(self.fasta_dir,c._orig_fasta_file)
+            c.fasta_file = os.path.join(self.fasta_dir, c._orig_fasta_file)
 
     def _is_int(self, s):
-       # is this string an integer?
+        # is this string an integer?
         try:
             float(s)
             return float(s).is_integer()
@@ -1491,27 +1625,31 @@ class TopologyReader(object):
         return rbl.values()
 
     def get_chains_of_super_rigid_bodies(self):
-        """Return list of lists of chains of super rigid bodies (as domain name)"""
+        "Return list of lists of chains of super rigid bodies (as domain name)"
         rbl = defaultdict(list)
         for c in self._components:
             for rbnum in c.chain_of_super_rigid_bodies:
                 rbl[rbnum].append(c.get_unique_name())
         return rbl.values()
 
+
 class _TempMolecule(object):
     """Store the Components and any requests for copies"""
-    def __init__(self,init_c):
+    def __init__(self, init_c):
         self.molname = init_c.molname
-         # key=copy ID, value = list of domains
         self.domains = IMP.pmi.tools.OrderedDefaultDict(list)
-        self.add_component(init_c,init_c.copyname)
+        self.add_component(init_c, init_c.copyname)
         self.orig_copyname = init_c.copyname
         self.orig_component = self.domains[init_c.copyname][0]
-    def add_component(self,component,copy_id):
+
+    def add_component(self, component, copy_id):
         self.domains[copy_id].append(component)
         component.domainnum = len(self.domains[copy_id])-1
+
     def __repr__(self):
-        return ','.join('%s:%i'%(k,len(self.domains[k])) for k in self.domains)
+        return ','.join('%s:%i'
+                        % (k, len(self.domains[k])) for k in self.domains)
+
 
 class _Component(object):
     """Stores the components required to build a standard IMP hierarchy
@@ -1540,47 +1678,49 @@ class _Component(object):
         self.super_rigid_bodies = []
         self.chain_of_super_rigid_bodies = []
 
-    def _l2s(self,l):
-        return ",".join("%s" % x for x in l)
+    def _l2s(self, rng):
+        return ",".join("%s" % x for x in rng)
 
     def __repr__(self):
         return self.get_str()
 
     def get_unique_name(self):
-        return "%s.%s.%i"%(self.molname,self.copyname,self.domainnum)
+        return "%s.%s.%i" % (self.molname, self.copyname, self.domainnum)
 
     def get_str(self):
         res_range = self.residue_range
         if self.residue_range is None:
             res_range = []
         name = self.molname
-        if self.copyname!='':
-            name += '.'+self.copyname
+        if self.copyname != '':
+            name += '.' + self.copyname
         if self.chain is None:
             chain = ' '
         else:
             chain = self.chain
-        color=self.color
+        color = self.color
         if isinstance(color, list):
-            color=','.join([str(x) for x in color])
+            color = ','.join([str(x) for x in color])
         fastaid = self.fasta_id
         if self.fasta_flag:
             fastaid += "," + self.fasta_flag
-        a= '|'+'|'.join([name,color,self._orig_fasta_file,fastaid,
-                         self._orig_pdb_input,chain,self._l2s(list(res_range)),
-                             str(self.pdb_offset),str(self.bead_size),
-                             str(self.em_residues_per_gaussian),
-                             str(self.rigid_body) if self.rigid_body else '',
-                             self._l2s(self.super_rigid_bodies),
-                             self._l2s(self.chain_of_super_rigid_bodies)])+'|'
+        a = '|' + '|'.join([name, color, self._orig_fasta_file, fastaid,
+                            self._orig_pdb_input, chain,
+                            self._l2s(list(res_range)),
+                            str(self.pdb_offset),
+                            str(self.bead_size),
+                            str(self.em_residues_per_gaussian),
+                            str(self.rigid_body) if self.rigid_body else '',
+                            self._l2s(self.super_rigid_bodies),
+                            self._l2s(self.chain_of_super_rigid_bodies)]) + '|'
         return a
 
 
 class PMIMoleculeHierarchy(IMP.atom.Molecule):
     '''Extends the functionality of IMP.atom.Molecule'''
 
-    def __init__(self,hierarchy):
-        IMP.atom.Molecule.__init__(self,hierarchy)
+    def __init__(self, hierarchy):
+        IMP.atom.Molecule.__init__(self, hierarchy)
 
     def get_state_index(self):
         state = self.get_parent()
@@ -1590,9 +1730,9 @@ class PMIMoleculeHierarchy(IMP.atom.Molecule):
         return IMP.atom.Copy(self).get_copy_index()
 
     def get_extended_name(self):
-        return self.get_name()+"."+\
-               str(self.get_copy_index())+\
-               "."+str(self.get_state_index())
+        return self.get_name() + "." + \
+               str(self.get_copy_index()) + \
+               "." + str(self.get_state_index())
 
     def get_sequence(self):
         return IMP.atom.Chain(self).get_sequence()
@@ -1607,9 +1747,9 @@ class PMIMoleculeHierarchy(IMP.atom.Molecule):
         return IMP.atom.Chain(self).get_id()
 
     def __repr__(self):
-        s='PMIMoleculeHierarchy '
-        s+=self.get_name()
-        s+=" "+"Copy  "+str(IMP.atom.Copy(self).get_copy_index())
-        s+=" "+"State "+str(self.get_state_index())
-        s+=" "+"N residues "+str(len(self.get_sequence()))
+        s = 'PMIMoleculeHierarchy '
+        s += self.get_name()
+        s += " " + "Copy  " + str(IMP.atom.Copy(self).get_copy_index())
+        s += " " + "State " + str(self.get_state_index())
+        s += " " + "N residues " + str(len(self.get_sequence()))
         return s

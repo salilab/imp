@@ -1,6 +1,6 @@
 /**
  *  \file IMP/swap_macros.h
- *  \brief Various general useful macros for IMP.
+ *  \brief Macros to help with swapping two objects.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *

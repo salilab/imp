@@ -7,29 +7,40 @@ import IMP
 import IMP.core
 from IMP.pmi.tools import get_restraint_set
 
+
 class _SerialReplicaExchange(object):
     """Dummy replica exchange class used in non-MPI builds.
-       It should act similarly to IMP.mpi.ReplicaExchange on a single processor.
+       It should act similarly to IMP.mpi.ReplicaExchange
+       on a single processor.
     """
     def __init__(self):
         self.__params = {}
+
     def get_number_of_replicas(self):
         return 1
+
     def create_temperatures(self, tmin, tmax, nrep):
         return [tmin]
+
     def get_my_index(self):
         return 0
+
     def set_my_parameter(self, key, val):
         self.__params[key] = val
+
     def get_my_parameter(self, key):
         return self.__params[key]
+
     def get_friend_index(self, step):
         return 0
+
     def get_friend_parameter(self, key, findex):
         return self.get_my_parameter(key)
+
     def do_exchange(self, myscore, fscore, findex):
         return False
-    def set_was_used(self,was_used):
+
+    def set_was_used(self, was_used):
         self.was_used = was_used
 
 
@@ -66,14 +77,14 @@ class MonteCarlo(object):
         self.mvslabels = []
         self.label = "None"
         self.model = model
-        self.movers_data={}
+        self.movers_data = {}
 
         # check if using PMI1 or just passed a list of movers
         gather_objects = False
         try:
             objects[0].get_particles_to_sample()
             gather_objects = True
-        except:
+        except:  # noqa: E722
             self.mvs = objects
 
         if gather_objects:
@@ -114,7 +125,8 @@ class MonteCarlo(object):
 
                     if "Nuisances" in k:
                         if not self.isd_available:
-                            raise ValueError("isd module needed to use nuisances")
+                            raise ValueError(
+                                "isd module needed to use nuisances")
                         mvs = self.get_nuisance_movers(pts[k][0], pts[k][1])
                         for mv in mvs:
                             mv.set_name(k)
@@ -122,7 +134,8 @@ class MonteCarlo(object):
 
                     if "Weights" in k:
                         if not self.isd_available:
-                            raise ValueError("isd module needed to use weights")
+                            raise ValueError(
+                                "isd module needed to use weights")
                         mvs = self.get_weight_movers(pts[k][0], pts[k][1])
                         for mv in mvs:
                             mv.set_name(k)
@@ -212,40 +225,42 @@ class MonteCarlo(object):
                 mvprp = mv.get_number_of_proposed()
                 if mv not in self.movers_data:
                     accept = float(mvacc) / float(mvprp)
-                    self.movers_data[mv]=(mvacc,mvprp)
+                    self.movers_data[mv] = (mvacc, mvprp)
                 else:
-                    oldmvacc,oldmvprp=self.movers_data[mv]
+                    oldmvacc, oldmvprp = self.movers_data[mv]
                     accept = float(mvacc-oldmvacc) / float(mvprp-oldmvprp)
-                    self.movers_data[mv]=(mvacc,mvprp)
-                if accept < 0.05: accept = 0.05
-                if accept > 1.0: accept = 1.0
+                    self.movers_data[mv] = (mvacc, mvprp)
+                if accept < 0.05:
+                    accept = 0.05
+                if accept > 1.0:
+                    accept = 1.0
 
                 if isinstance(mv, IMP.core.NormalMover):
                     stepsize = mv.get_sigma()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_sigma(stepsize * 2 * accept)
 
-                if isinstance(mv, MP.isd.WeightMover):
+                if isinstance(mv, IMP.isd.WeightMover):
                     stepsize = mv.get_radius()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_radius(stepsize * 2 * accept)
 
                 if isinstance(mv, IMP.core.RigidBodyMover):
-                    mr=mv.get_maximum_rotation()
-                    mt=mv.get_maximum_translation()
+                    mr = mv.get_maximum_rotation()
+                    mt = mv.get_maximum_translation()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_maximum_rotation(mr * 2 * accept)
                         mv.set_maximum_translation(mt * 2 * accept)
 
                 if isinstance(mv, IMP.pmi.TransformMover):
-                    mr=mv.get_maximum_rotation()
-                    mt=mv.get_maximum_translation()
+                    mr = mv.get_maximum_rotation()
+                    mt = mv.get_maximum_translation()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_maximum_rotation(mr * 2 * accept)
                         mv.set_maximum_translation(mt * 2 * accept)
 
                 if isinstance(mv, IMP.core.BallMover):
-                    mr=mv.get_radius()
+                    mr = mv.get_radius()
                     if 0.4 > accept or accept > 0.6:
                         mv.set_radius(mr * 2 * accept)
 
@@ -274,26 +289,16 @@ class MonteCarlo(object):
                 srbm = IMP.pmi.TransformMover(self.model, maxtrans, maxrot)
             elif len(rb) == 3:
                 if isinstance(rb[2], tuple) and len(rb[2]) == 3 \
-                    and isinstance(rb[2][0], float) \
-                    and isinstance(rb[2][1], float) \
-                    and isinstance(rb[2][2], float):
+                        and isinstance(rb[2][0], float) \
+                        and isinstance(rb[2][1], float) \
+                        and isinstance(rb[2][2], float):
                     # super rigid body with 2D rotation, rb[2] is the axis
                     srbm = IMP.pmi.TransformMover(
-                      self.model,
-                      IMP.algebra.Vector3D(rb[2]),
-                      maxtrans,
-                      maxrot)
-                #elif type(rb[2]) == tuple and type(rb[2][0]) == IMP.Particle \
-                #    and type(rb[2][1]) == IMP.Particle and len(rb[2])== 2:
-                #    # super rigid body with bond rotation
-
-                #    srbm = IMP.pmi.TransformMover(
-                #      self.model,
-                #      rb[2][0],rb[2][1],
-                #      0, #no translation
-                #      maxrot)
+                        self.model, IMP.algebra.Vector3D(rb[2]), maxtrans,
+                        maxrot)
                 else:
-                    print("Setting up a super rigid body with wrong parameters")
+                    print(
+                        "Setting up a super rigid body with wrong parameters")
                     raise
 
             for xyz in rb[0]:
@@ -308,7 +313,7 @@ class MonteCarlo(object):
         for fb in fbs:
             # check is that is a rigid body member:
             if IMP.core.NonRigidMember.get_is_setup(fb):
-            # if so force the particles to move anyway
+                # if so force the particles to move anyway
                 floatkeys = [IMP.FloatKey(4), IMP.FloatKey(5), IMP.FloatKey(6)]
                 for fk in floatkeys:
                     fb.set_is_optimized(fk, True)
@@ -363,23 +368,22 @@ class MonteCarlo(object):
 
     def get_output(self):
         output = {}
-        acceptances = []
         for i, mv in enumerate(self.smv.get_movers()):
             mvname = mv.get_name()
             mvacc = mv.get_number_of_accepted()
             mvprp = mv.get_number_of_proposed()
             try:
                 mvacr = float(mvacc) / float(mvprp)
-            except:
+            except:  # noqa: E722
                 mvacr = 0.0
             output["MonteCarlo_Acceptance_" +
                    mvname + "_" + str(i)] = str(mvacr)
             if "Nuisances" in mvname:
-                output["MonteCarlo_StepSize_" + mvname + "_" +
-                       str(i)] = str(IMP.core.NormalMover.get_from(mv).get_sigma())
+                output["MonteCarlo_StepSize_" + mvname + "_" + str(i)] = \
+                    str(IMP.core.NormalMover.get_from(mv).get_sigma())
             if "Weights" in mvname:
-                output["MonteCarlo_StepSize_" + mvname + "_" +
-                       str(i)] = str(IMP.isd.WeightMover.get_from(mv).get_radius())
+                output["MonteCarlo_StepSize_" + mvname + "_" + str(i)] = \
+                    str(IMP.isd.WeightMover.get_from(mv).get_radius())
         output["MonteCarlo_Temperature"] = str(self.mc.get_kt())
         output["MonteCarlo_Nframe"] = str(self.nframe)
         return output
@@ -388,7 +392,8 @@ class MonteCarlo(object):
 class MolecularDynamics(object):
     """Sample using molecular dynamics"""
 
-    def __init__(self,model,objects,kt,gamma=0.01,maximum_time_step=1.0,sf=None):
+    def __init__(self, model, objects, kt, gamma=0.01, maximum_time_step=1.0,
+                 sf=None):
         """Setup MD
         @param model The IMP Model
         @param objects What to sample. Use flat list of particles
@@ -396,18 +401,18 @@ class MolecularDynamics(object):
         @param gamma Viscosity parameter
         @param maximum_time_step MD max time step
         """
-        self.model=model
+        self.model = model
 
         # check if using PMI1 objects dictionary, or just list of particles
         try:
             for obj in objects:
-                to_sample=obj.get_particles_to_sample()['Floppy_Bodies_SimplifiedModel'][0]
-        except:
+                psamp = obj.get_particles_to_sample()
+                to_sample = psamp['Floppy_Bodies_SimplifiedModel'][0]
+        except:  # noqa: E722
             to_sample = objects
 
-        self.ltstate=IMP.atom.LangevinThermostatOptimizerState(self.model,to_sample,
-                                                               kt/0.0019872041,
-                                                               gamma)
+        self.ltstate = IMP.atom.LangevinThermostatOptimizerState(
+            self.model, to_sample, kt/0.0019872041, gamma)
         self.md = IMP.atom.MolecularDynamics(self.model)
         self.md.set_maximum_time_step(maximum_time_step)
         if sf:
@@ -418,8 +423,8 @@ class MolecularDynamics(object):
         self.simulated_annealing = False
         self.nframe = -1
 
-    def set_kt(self,kt):
-        temp=kt/0.0019872041
+    def set_kt(self, kt):
+        temp = kt/0.0019872041
         self.ltstate.set_temperature(temp)
         self.md.assign_velocities(temp)
 
@@ -439,21 +444,23 @@ class MolecularDynamics(object):
         temp = self.tempmin + (self.tempmax - self.tempmin) * value
         return temp
 
-    def set_gamma(self,gamma):
+    def set_gamma(self, gamma):
         self.ltstate.set_gamma(gamma)
 
-    def optimize(self,nsteps):
+    def optimize(self, nsteps):
         # apply simulated annealing protocol
-        self.nframe+=1
+        self.nframe += 1
         if self.simulated_annealing:
             self.temp = self.temp_simulated_annealing()
             self.set_kt(self.temp)
         self.md.optimize(nsteps)
 
     def get_output(self):
-        output={}
-        output["MolecularDynamics_KineticEnergy"]=str(self.md.get_kinetic_energy())
+        output = {}
+        output["MolecularDynamics_KineticEnergy"] = \
+            str(self.md.get_kinetic_energy())
         return output
+
 
 class ConjugateGradients(object):
     """Sample using conjugate gradients"""
@@ -483,30 +490,18 @@ class ConjugateGradients(object):
 
     def get_output(self):
         output = {}
-        acceptances = []
         output["ConjugatedGradients_Nframe"] = str(self.nframe)
         return output
-
-
-
-
 
 
 class ReplicaExchange(object):
     """Sample using replica exchange"""
 
-    def __init__(
-        self,
-        model,
-        tempmin,
-        tempmax,
-        samplerobjects,
-        test=True,
-            replica_exchange_object=None):
+    def __init__(self, model, tempmin, tempmax, samplerobjects, test=True,
+                 replica_exchange_object=None):
         '''
         samplerobjects can be a list of MonteCarlo or MolecularDynamics
         '''
-
 
         self.model = model
         self.samplerobjects = samplerobjects
@@ -518,10 +513,12 @@ class ReplicaExchange(object):
             # initialize Replica Exchange class
             try:
                 import IMP.mpi
-                print('ReplicaExchange: MPI was found. Using Parallel Replica Exchange')
+                print('ReplicaExchange: MPI was found. '
+                      'Using Parallel Replica Exchange')
                 self.rem = IMP.mpi.ReplicaExchange()
             except ImportError:
-                print('ReplicaExchange: Could not find MPI. Using Serial Replica Exchange')
+                print('ReplicaExchange: Could not find MPI. '
+                      'Using Serial Replica Exchange')
                 self.rem = _SerialReplicaExchange()
 
         else:
@@ -532,8 +529,10 @@ class ReplicaExchange(object):
         # get number of replicas
         nproc = self.rem.get_number_of_replicas()
 
-        if nproc % 2 != 0 and test == False:
-            raise Exception("number of replicas has to be even. set test=True to run with odd number of replicas.")
+        if nproc % 2 != 0 and not test:
+            raise Exception(
+                "number of replicas has to be even. "
+                "set test=True to run with odd number of replicas.")
         # create array of temperatures, in geometric progression
         temp = self.rem.create_temperatures(
             self.TEMPMIN_,
@@ -565,7 +564,7 @@ class ReplicaExchange(object):
         if score is None:
             score = self.model.evaluate(False)
         # get my replica index and temperature
-        myindex = self.rem.get_my_index()
+        _ = self.rem.get_my_index()
         mytemp = self.rem.get_my_parameter("temp")[0]
 
         if mytemp == self.TEMPMIN_:
@@ -595,7 +594,6 @@ class ReplicaExchange(object):
 
     def get_output(self):
         output = {}
-        acceptances = []
         if self.nattempts != 0:
             output["ReplicaExchange_SwapSuccessRatio"] = str(
                 float(self.nsuccess) / self.nattempts)
@@ -611,9 +609,8 @@ class ReplicaExchange(object):
         return output
 
 
-
 class MPI_values(object):
-    def __init__(self,replica_exchange_object=None):
+    def __init__(self, replica_exchange_object=None):
         """Query values (ie score, and others)
         from a set of parallel jobs"""
 
@@ -621,10 +618,12 @@ class MPI_values(object):
             # initialize Replica Exchange class
             try:
                 import IMP.mpi
-                print('MPI_values: MPI was found. Using Parallel Replica Exchange')
+                print('MPI_values: MPI was found. '
+                      'Using Parallel Replica Exchange')
                 self.rem = IMP.mpi.ReplicaExchange()
             except ImportError:
-                print('MPI_values: Could not find MPI. Using Serial Replica Exchange')
+                print('MPI_values: Could not find MPI. '
+                      'Using Serial Replica Exchange')
                 self.rem = _SerialReplicaExchange()
 
         else:
@@ -632,19 +631,19 @@ class MPI_values(object):
             print('got existing rex object')
             self.rem = replica_exchange_object
 
-    def set_value(self,name,value):
-        self.rem.set_my_parameter(name,[value])
+    def set_value(self, name, value):
+        self.rem.set_my_parameter(name, [value])
 
-    def get_values(self,name):
-        values=[]
+    def get_values(self, name):
+        values = []
         for i in range(self.rem.get_number_of_replicas()):
-            v=self.rem.get_friend_parameter(name, i)[0]
+            v = self.rem.get_friend_parameter(name, i)[0]
             values.append(v)
         return values
 
-    def get_percentile(self,name):
-        value=self.rem.get_my_parameter(name)[0]
-        values=sorted(self.get_values(name))
-        ind=values.index(value)
-        percentile=float(ind)/len(values)
+    def get_percentile(self, name):
+        value = self.rem.get_my_parameter(name)[0]
+        values = sorted(self.get_values(name))
+        ind = values.index(value)
+        percentile = float(ind)/len(values)
         return percentile

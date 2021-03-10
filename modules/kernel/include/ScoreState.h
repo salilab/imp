@@ -20,6 +20,7 @@
 #include <iostream>
 
 IMPKERNEL_BEGIN_NAMESPACE
+
 //! ScoreStates maintain invariants in the Model.
 /** ScoreStates allow actions to be taken before and after the restraint
     evaluation process. Such code can be used to, for example:
@@ -69,14 +70,14 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
 #endif
 
  protected:
-  // Update the state given the current state of the model.
-  /* This is also called prior to every calculation of the model score.
+  //! Update the state given the current state of the model.
+  /** This is also called prior to every calculation of the model score.
       It should be implemented by ScoreStates in order to provide functionality.
    */
   virtual void do_before_evaluate() = 0;
 
-  // Do any necessary updates after the model score is calculated.
-  /* \param[in] accpt The object used to scale derivatives in the score
+  //! Do any necessary updates after the model score is calculated.
+  /** \param[in] accpt The object used to scale derivatives in the score
                        calculation, or nullptr if derivatives were not
                        requested.
    */

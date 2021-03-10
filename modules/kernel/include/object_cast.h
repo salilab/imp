@@ -1,6 +1,6 @@
 /**
  *  \file IMP/object_cast.h
- *  \brief A shared base class to help in debugging and things.
+ *  \brief Up (or down) cast an \imp Object-derived class.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *

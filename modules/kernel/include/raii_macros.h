@@ -1,6 +1,6 @@
 /**
  *  \file IMP/raii_macros.h
- *  \brief Various general useful macros for IMP.
+ *  \brief Macros to aid in writing RAII-style classes.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *

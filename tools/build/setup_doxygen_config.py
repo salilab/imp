@@ -9,13 +9,11 @@ No repository directories are changed.
 """
 
 import os
-import sys
 import os.path
-import shutil
-import platform
 import tools
 import pickle
 from optparse import OptionParser
+
 
 class DoxConfigFileGenerator(tools.FileGenerator):
     def __init__(self, template_file):
@@ -29,7 +27,8 @@ class DoxConfigFileGenerator(tools.FileGenerator):
         version = "develop"
         versionpath = os.path.join("VERSION")
         if os.path.exists(versionpath):
-            version = open(versionpath, "r").read().strip()
+            with open(versionpath, "r") as fh:
+                version = fh.read().strip()
         if manual:
             version = '"for IMP version ' + version + '"'
         doxygen = self.template
@@ -39,8 +38,8 @@ class DoxConfigFileGenerator(tools.FileGenerator):
             doxygen = doxygen.replace("@MAINPAGE@", "")
             doxygen = doxygen.replace("@RECURSIVE@", "YES")
             doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/manual/")
-            doxygen = doxygen.replace("@LAYOUT_FILE@",
-                                  "%s/doc/doxygen/manual_layout.xml" % source)
+            doxygen = doxygen.replace(
+                "@LAYOUT_FILE@", "%s/doc/doxygen/manual_layout.xml" % source)
             doxygen = doxygen.replace("@TREEVIEW@", "NO")
             doxygen = doxygen.replace("@GENERATE_TAGFILE@",
                                       "doxygen/manual-tags.xml")
@@ -52,21 +51,22 @@ class DoxConfigFileGenerator(tools.FileGenerator):
             doxygen = doxygen.replace("@XML_OUTPUT@", "doxygen/manual/xml/")
             doxygen = doxygen.replace("@EXCLUDE@", "")
         else:
-            doxygen = doxygen.replace("@PROJECT_NAME@", '"IMP Reference Guide"')
+            doxygen = doxygen.replace(
+                "@PROJECT_NAME@", '"IMP Reference Guide"')
             doxygen = doxygen.replace("@PROJECT_BRIEF@",
                                       '"The Integrative Modeling Platform"')
             doxygen = doxygen.replace("@MAINPAGE@", "mainpage.md")
             doxygen = doxygen.replace("@RECURSIVE@", "YES")
             doxygen = doxygen.replace("@HTML_OUTPUT@", "doc/ref/")
-            doxygen = doxygen.replace("@LAYOUT_FILE@",
-                                      "%s/doc/doxygen/main_layout.xml" % source)
+            doxygen = doxygen.replace(
+                "@LAYOUT_FILE@", "%s/doc/doxygen/main_layout.xml" % source)
             doxygen = doxygen.replace("@TREEVIEW@", "NO")
             doxygen = doxygen.replace("@GENERATE_TAGFILE@",
                                       "doxygen/ref-tags.xml")
             doxygen = doxygen.replace("@WARNINGS@", "doxygen/ref-warnings.txt")
             doxygen = doxygen.replace("@EXCLUDE_PATTERNS@", "")
-            doxygen = doxygen.replace("@EXAMPLE_PATH@",
-                                    "doc/examples %s/modules/example" % source)
+            doxygen = doxygen.replace(
+                "@EXAMPLE_PATH@", "doc/examples %s/modules/example" % source)
             doxygen = doxygen.replace("@TAGS@",
                                       "doxygen/manual-tags.xml=../manual")
             doxygen = doxygen.replace("@XML_OUTPUT@", "doxygen/ref/xml/")
@@ -105,11 +105,13 @@ class DoxConfigFileGenerator(tools.FileGenerator):
 
 def generate_doxyfile(source, target, is_xml=False, is_html=False,
                       manual=False):
-    g = DoxConfigFileGenerator(os.path.join(source, "tools", "build",
-                                            "doxygen_templates", "Doxyfile.in"))
-    g.write(target, {'is_xml':is_xml, 'is_html':is_html, 'manual':manual,
-                     'source':source},
+    g = DoxConfigFileGenerator(
+        os.path.join(source, "tools", "build",
+                     "doxygen_templates", "Doxyfile.in"))
+    g.write(target, {'is_xml': is_xml, 'is_html': is_html, 'manual': manual,
+                     'source': source},
             show_diff=False)
+
 
 def generate_overview_pages(source):
     name = os.path.join("doxygen", "generated", "cmdline_tools.dox")
@@ -126,16 +128,17 @@ These are listed below under their parent module:""")
                 p = pickle.load(fh)
             if len(p) > 0:
                 contents.append("- IMP::%s" % bs)
-            apps = sorted([[k]+list(v) for k,v in p.items() if v],
-                          key=lambda x:x[3])
+            apps = sorted([[k]+list(v) for k, v in p.items() if v],
+                          key=lambda x: x[3])
             for app in apps:
                 contents.append("  - [%s](\\ref %s): %s" % (app[0], app[1],
                                                             app[2]))
     contents.append("""
-See also the [command line tools provided by RMF](https://integrativemodeling.org/rmf/nightly/doc/executables.html).""")
+See also the [command line tools provided by RMF](https://integrativemodeling.org/rmf/nightly/doc/executables.html).""")  # noqa: E501
     contents.append("*/")
     g = tools.DoxFileGenerator()
     g.write(name, "\n".join(contents))
+
 
 parser = OptionParser()
 parser.add_option("-s", "--source", dest="source",
@@ -160,6 +163,7 @@ def main():
                       os.path.join("doxygen", "manual.xml"),
                       is_html=False, is_xml=True,
                       manual=True)
+
 
 if __name__ == '__main__':
     main()

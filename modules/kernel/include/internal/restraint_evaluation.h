@@ -1,6 +1,6 @@
 /**
- *  \file internal/utility.h
- *  \brief Various useful utilities
+ *  \file internal/restraint_evaluation.h
+ *  \brief Utility functions to get restraint scores
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */

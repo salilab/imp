@@ -7,7 +7,8 @@ import re
 
 
 def fix(filename):
-    contents = open(filename, "r").read()
+    with open(filename, "r") as fh:
+        contents = fh.read()
     contents = re.sub(
         "\\\\file .*\\.h",
         "\\\\file " + filename[len("build/include/"):],
@@ -21,6 +22,7 @@ def fix(filename):
     f = open(filename, "wr")
     f.truncate()
     f.write(contents)
+
 
 if __name__ == '__main__':
     for f in sys.argv[1:]:

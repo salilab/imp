@@ -12,13 +12,12 @@ import IMP.pmi.analysis
 import IMP.pmi.output
 import IMP.pmi.tools
 import RMF
-import sys,os
+import os
 import numpy as np
-import re
 from collections import defaultdict
-import itertools
 
-def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
+
+def parse_dssp(dssp_fn, limit_to_chains='', name_map=None):
     """Read a DSSP file, and return secondary structure elements (SSEs).
     Values are all PDB residue numbering.
     @param dssp_fn The file to read
@@ -58,11 +57,9 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
         sse_dict[h] = 'helix'
     for s in strand_classes:
         sse_dict[s] = 'beta'
-    for l in loop_classes:
-        sse_dict[l] = 'loop'
-    sses = {'helix':[],
-            'beta':[],
-            'loop':[]}
+    for lc in loop_classes:
+        sse_dict[lc] = 'loop'
+    sses = {'helix': [], 'beta': [], 'loop': []}
 
     # read file and parse
     start = False
@@ -98,14 +95,14 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
 
             # decide whether to extend or store the SSE
             if prev_sstype is None:
-                cur_sse = [pdb_res_num,pdb_res_num,convert_chain(chain)]
+                cur_sse = [pdb_res_num, pdb_res_num, convert_chain(chain)]
             elif sstype != prev_sstype or chain_break:
                 # add cur_sse to the right place
                 if prev_sstype in ['helix', 'loop']:
                     sses[prev_sstype].append([cur_sse])
-                else: # prev_sstype == 'beta'
+                else:  # prev_sstype == 'beta'
                     beta_dict[prev_beta_id].append(cur_sse)
-                cur_sse = [pdb_res_num,pdb_res_num,convert_chain(chain)]
+                cur_sse = [pdb_res_num, pdb_res_num, convert_chain(chain)]
             else:
                 cur_sse[1] = pdb_res_num
             if chain_break:
@@ -125,14 +122,11 @@ def parse_dssp(dssp_fn, limit_to_chains='',name_map=None):
         sses['beta'].append(beta_dict[beta_sheet])
     return sses
 
-def save_best_models(model,
-                     out_dir,
-                     stat_files,
-                     number_of_best_scoring_models=10,
-                     get_every=1,
+
+def save_best_models(model, out_dir, stat_files,
+                     number_of_best_scoring_models=10, get_every=1,
                      score_key="SimplifiedModel_Total_Score_None",
-                     feature_keys=None,
-                     rmf_file_key="rmf_file",
+                     feature_keys=None, rmf_file_key="rmf_file",
                      rmf_file_frame_key="rmf_frame_index",
                      override_rmf_dir=None):
     """Given a list of stat files, read them all and find the best models.
@@ -146,7 +140,8 @@ def save_best_models(model,
     @param feature_keys Keys to keep around
     @param rmf_file_key The key that says RMF file name
     @param rmf_file_frame_key The key that says RMF frame number
-    @param override_rmf_dir For output, change the name of the RMF directory (experiment)
+    @param override_rmf_dir For output, change the name of the RMF
+           directory (experiment)
     """
 
     # start by splitting into jobs
@@ -158,16 +153,18 @@ def save_best_models(model,
     except ImportError:
         rank = 0
         number_of_processes = 1
-    my_stat_files=IMP.pmi.tools.chunk_list_into_segments(
-        stat_files,number_of_processes)[rank]
+    my_stat_files = IMP.pmi.tools.chunk_list_into_segments(
+        stat_files, number_of_processes)[rank]
 
     # filenames
-    out_stat_fn = os.path.join(out_dir,"top_"+str(number_of_best_scoring_models)+".out")
-    out_rmf_fn = os.path.join(out_dir,"top_"+str(number_of_best_scoring_models)+".rmf3")
+    out_stat_fn = os.path.join(
+        out_dir, "top_" + str(number_of_best_scoring_models) + ".out")
+    out_rmf_fn = os.path.join(
+        out_dir, "top_" + str(number_of_best_scoring_models) + ".rmf3")
 
     # extract all the models
-    all_fields=[]
-    for nsf,sf in enumerate(my_stat_files):
+    all_fields = []
+    for nsf, sf in enumerate(my_stat_files):
 
         # get list of keywords
         root_directory_of_stat_file = os.path.dirname(os.path.dirname(sf))
@@ -193,57 +190,61 @@ def save_best_models(model,
             minlen = min(length_set)
             for f in fields:
                 fields[f] = fields[f][0:minlen]
-        if nsf==0:
-            all_fields=fields
+        if nsf == 0:
+            all_fields = fields
         else:
             for k in fields:
-                all_fields[k]+=fields[k]
+                all_fields[k] += fields[k]
 
         if override_rmf_dir is not None:
             for i in range(minlen):
-                all_fields[rmf_file_key][i]=os.path.join(
-                    override_rmf_dir,os.path.basename(all_fields[rmf_file_key][i]))
+                all_fields[rmf_file_key][i] = os.path.join(
+                    override_rmf_dir,
+                    os.path.basename(all_fields[rmf_file_key][i]))
 
     # gather info, sort, write
-    if number_of_processes!=1:
+    if number_of_processes != 1:
         comm.Barrier()
-    if rank!=0:
+    if rank != 0:
         comm.send(all_fields, dest=0, tag=11)
     else:
-        for i in range(1,number_of_processes):
+        for i in range(1, number_of_processes):
             data_tmp = comm.recv(source=i, tag=11)
             for k in all_fields:
-                all_fields[k]+=data_tmp[k]
+                all_fields[k] += data_tmp[k]
 
         # sort by total score
         order = sorted(range(len(all_fields[score_key])),
                        key=lambda i: float(all_fields[score_key][i]))
 
         # write the stat and RMF files
-        stat = open(out_stat_fn,'w')
+        stat = open(out_stat_fn, 'w')
         rh0 = RMF.open_rmf_file_read_only(
-            os.path.join(root_directory_of_stat_file,all_fields[rmf_file_key][0]))
-        prots = IMP.rmf.create_hierarchies(rh0,model)
+            os.path.join(root_directory_of_stat_file,
+                         all_fields[rmf_file_key][0]))
+        prots = IMP.rmf.create_hierarchies(rh0, model)
         del rh0
         outf = RMF.create_rmf_file(out_rmf_fn)
-        IMP.rmf.add_hierarchies(outf,prots)
-        for nm,i in enumerate(order[:number_of_best_scoring_models]):
-            dline=dict((k,all_fields[k][i]) for k in all_fields)
-            dline['orig_rmf_file']=dline[rmf_file_key]
-            dline['orig_rmf_frame_index']=dline[rmf_file_frame_key]
-            dline[rmf_file_key]=out_rmf_fn
-            dline[rmf_file_frame_key]=nm
+        IMP.rmf.add_hierarchies(outf, prots)
+        for nm, i in enumerate(order[:number_of_best_scoring_models]):
+            dline = dict((k, all_fields[k][i]) for k in all_fields)
+            dline['orig_rmf_file'] = dline[rmf_file_key]
+            dline['orig_rmf_frame_index'] = dline[rmf_file_frame_key]
+            dline[rmf_file_key] = out_rmf_fn
+            dline[rmf_file_frame_key] = nm
             rh = RMF.open_rmf_file_read_only(
-                os.path.join(root_directory_of_stat_file,all_fields[rmf_file_key][i]))
-            IMP.rmf.link_hierarchies(rh,prots)
+                os.path.join(root_directory_of_stat_file,
+                             all_fields[rmf_file_key][i]))
+            IMP.rmf.link_hierarchies(rh, prots)
             IMP.rmf.load_frame(rh,
                                RMF.FrameID(all_fields[rmf_file_frame_key][i]))
             IMP.rmf.save_frame(outf)
             del rh
-            stat.write(str(dline)+'\n')
+            stat.write(str(dline) + '\n')
         stat.close()
-        print('wrote stats to',out_stat_fn)
-        print('wrote rmfs to',out_rmf_fn)
+        print('wrote stats to', out_stat_fn)
+        print('wrote rmfs to', out_rmf_fn)
+
 
 class _TempProvenance(object):
     """Placeholder to track provenance information added to the IMP model.
@@ -291,6 +292,7 @@ def add_provenance(prov, hiers):
         for p in prov:
             IMP.core.add_provenance(m, h, p.get_decorator(m))
 
+
 def get_best_models(stat_files,
                     score_key="SimplifiedModel_Total_Score_None",
                     feature_keys=None,
@@ -299,28 +301,29 @@ def get_best_models(stat_files,
                     prefiltervalue=None,
                     get_every=1, provenance=None):
     """ Given a list of stat files, read them all and find the best models.
-    Returns the best rmf filenames, frame numbers, scores, and values for feature keywords
+    Returns the best rmf filenames, frame numbers, scores, and values
+    for feature keywords
     """
-    rmf_file_list=[]              # best RMF files
-    rmf_file_frame_list=[]        # best RMF frames
-    score_list=[]                 # best scores
-    feature_keyword_list_dict=defaultdict(list)  # best values of the feature keys
+    rmf_file_list = []              # best RMF files
+    rmf_file_frame_list = []        # best RMF frames
+    score_list = []                 # best scores
+    # best values of the feature keys
+    feature_keyword_list_dict = defaultdict(list)
     statistics = IMP.pmi.output.OutputStatistics()
     for sf in stat_files:
         root_directory_of_stat_file = os.path.dirname(os.path.abspath(sf))
-        if sf[-4:]=='rmf3':
-            root_directory_of_stat_file = os.path.dirname(os.path.abspath(root_directory_of_stat_file))
+        if sf[-4:] == 'rmf3':
+            root_directory_of_stat_file = os.path.dirname(
+                os.path.abspath(root_directory_of_stat_file))
         print("getting data from file %s" % sf)
         po = IMP.pmi.output.ProcessOutput(sf)
 
         try:
             file_keywords = po.get_keys()
-        except:
+        except:  # noqa: E722
             continue
 
-        keywords = [score_key,
-                    rmf_file_key,
-                    rmf_file_frame_key]
+        keywords = [score_key, rmf_file_key, rmf_file_frame_key]
 
         # check all requested keys are in the file
         #  this looks weird because searching for "*requested_key*"
@@ -336,10 +339,9 @@ def get_best_models(stat_files,
                                    get_every=get_every,
                                    statistics=statistics)
         else:
-            fields = po.get_fields(keywords,
-                                   filtertuple=(score_key,"<",prefiltervalue),
-                                   get_every=get_every,
-                                   statistics=statistics)
+            fields = po.get_fields(
+                keywords, filtertuple=(score_key, "<", prefiltervalue),
+                get_every=get_every, statistics=statistics)
 
         # check that all lengths are all equal
         length_set = set()
@@ -357,10 +359,12 @@ def get_best_models(stat_files,
         # append to the lists
         score_list += fields[score_key]
         for rmf in fields[rmf_file_key]:
-            rmf=os.path.normpath(rmf)
+            rmf = os.path.normpath(rmf)
             if root_directory_of_stat_file not in rmf:
-                rmf_local_path=os.path.join(os.path.basename(os.path.dirname(rmf)),os.path.basename(rmf))
-                rmf=os.path.join(root_directory_of_stat_file,rmf_local_path)
+                rmf_local_path = os.path.join(
+                    os.path.basename(os.path.dirname(rmf)),
+                    os.path.basename(rmf))
+                rmf = os.path.join(root_directory_of_stat_file, rmf_local_path)
             rmf_file_list.append(rmf)
 
         rmf_file_frame_list += fields[rmf_file_frame_key]
@@ -374,38 +378,38 @@ def get_best_models(stat_files,
             provenance.append(CombineProvenance(len(stat_files),
                                                 statistics.total))
         if get_every != 1:
-            provenance.append(FilterProvenance("Keep fraction",
-                                               0., statistics.passed_get_every))
+            provenance.append(
+                FilterProvenance("Keep fraction", 0.,
+                                 statistics.passed_get_every))
         if prefiltervalue is not None:
             provenance.append(FilterProvenance("Total score",
                                                prefiltervalue,
                                                statistics.passed_filtertuple))
 
-    return rmf_file_list,rmf_file_frame_list,score_list,feature_keyword_list_dict
+    return (rmf_file_list, rmf_file_frame_list, score_list,
+            feature_keyword_list_dict)
+
 
 def get_trajectory_models(stat_files,
                           score_key="SimplifiedModel_Total_Score_None",
                           rmf_file_key="rmf_file",
                           rmf_file_frame_key="rmf_frame_index",
                           get_every=1):
-    """ Given a list of stat files, read them all and find a trajectory of models.
-    Returns the rmf filenames, frame numbers, scores, and values for feature keywords
+    """Given a list of stat files, read them all and find a trajectory
+       of models. Returns the rmf filenames, frame numbers, scores, and
+       values for feature keywords
     """
-    rmf_file_list=[]              # best RMF files
-    rmf_file_frame_list=[]        # best RMF frames
-    score_list=[]                 # best scores
+    rmf_file_list = []              # best RMF files
+    rmf_file_frame_list = []        # best RMF frames
+    score_list = []                 # best scores
     for sf in stat_files:
         root_directory_of_stat_file = os.path.dirname(os.path.dirname(sf))
         print("getting data from file %s" % sf)
         po = IMP.pmi.output.ProcessOutput(sf)
-        keywords = po.get_keys()
 
-        feature_keywords = [score_key,
-                            rmf_file_key,
-                            rmf_file_frame_key]
+        feature_keywords = [score_key, rmf_file_key, rmf_file_frame_key]
 
-        fields = po.get_fields(feature_keywords,
-                                   get_every=get_every)
+        fields = po.get_fields(feature_keywords, get_every=get_every)
 
         # check that all lengths are all equal
         length_set = set()
@@ -423,11 +427,12 @@ def get_trajectory_models(stat_files,
         # append to the lists
         score_list += fields[score_key]
         for rmf in fields[rmf_file_key]:
-            rmf_file_list.append(os.path.join(root_directory_of_stat_file,rmf))
+            rmf_file_list.append(os.path.join(root_directory_of_stat_file,
+                                              rmf))
 
         rmf_file_frame_list += fields[rmf_file_frame_key]
 
-    return rmf_file_list,rmf_file_frame_list,score_list
+    return rmf_file_list, rmf_file_frame_list, score_list
 
 
 def read_coordinates_of_rmfs(model,
@@ -435,34 +440,37 @@ def read_coordinates_of_rmfs(model,
                              alignment_components=None,
                              rmsd_calculation_components=None,
                              state_number=0):
-    """ Read in coordinates of a set of RMF tuples.
-    Returns the coordinates split as requested (all, alignment only, rmsd only) as well as
-    RMF file names (as keys in a dictionary, with values being the rank number) and just a plain list
+    """Read in coordinates of a set of RMF tuples.
+    Returns the coordinates split as requested (all, alignment only, rmsd only)
+    as well as RMF file names (as keys in a dictionary, with values being
+    the rank number) and just a plain list
     @param model      The IMP model
     @param rmf_tuples [score,filename,frame number,original order number, rank]
     @param alignment_components Tuples to specify what you're aligning on
-    @param rmsd_calculation_components Tuples to specify what components are used for RMSD calc
+    @param rmsd_calculation_components Tuples to specify what components
+           are used for RMSD calc
     """
     all_coordinates = []
     rmsd_coordinates = []
     alignment_coordinates = []
     all_rmf_file_names = []
-    rmf_file_name_index_dict = {} # storing the features
+    rmf_file_name_index_dict = {}  # storing the features
 
     for cnt, tpl in enumerate(rmf_tuples):
         rmf_file = tpl[1]
         frame_number = tpl[2]
-        if cnt==0:
+        if cnt == 0:
             prots = IMP.pmi.analysis.get_hiers_from_rmf(model,
                                                         frame_number,
                                                         rmf_file)
         else:
-            IMP.pmi.analysis.link_hiers_to_rmf(model,prots,frame_number,rmf_file)
+            IMP.pmi.analysis.link_hiers_to_rmf(model, prots, frame_number,
+                                               rmf_file)
 
         if not prots:
             continue
         if IMP.pmi.get_is_canonical(prots[0]):
-            states = IMP.atom.get_by_type(prots[0],IMP.atom.STATE_TYPE)
+            states = IMP.atom.get_by_type(prots[0], IMP.atom.STATE_TYPE)
             prot = states[state_number]
         else:
             prot = prots[state_number]
@@ -472,16 +480,18 @@ def read_coordinates_of_rmfs(model,
         all_particles = [pp for key in part_dict for pp in part_dict[key]]
         all_ps_set = set(all_particles)
         model_coordinate_dict = {}
-        template_coordinate_dict={}
-        rmsd_coordinate_dict={}
+        template_coordinate_dict = {}
+        rmsd_coordinate_dict = {}
 
         for pr in part_dict:
             model_coordinate_dict[pr] = np.array(
-                [np.array(IMP.core.XYZ(i).get_coordinates()) for i in part_dict[pr]])
+                [np.array(IMP.core.XYZ(i).get_coordinates())
+                 for i in part_dict[pr]])
         # for each file, get (as floats) a list of all coordinates
         #  of all requested tuples, organized as dictionaries.
-        for tuple_dict,result_dict in zip((alignment_components,rmsd_calculation_components),
-                                          (template_coordinate_dict,rmsd_coordinate_dict)):
+        for tuple_dict, result_dict in zip(
+                (alignment_components, rmsd_calculation_components),
+                (template_coordinate_dict, rmsd_coordinate_dict)):
 
             if tuple_dict is None:
                 continue
@@ -489,23 +499,28 @@ def read_coordinates_of_rmfs(model,
             # PMI2: do selection of resolution and name at the same time
             if IMP.pmi.get_is_canonical(prot):
                 for pr in tuple_dict:
-                    ps = IMP.pmi.tools.select_by_tuple_2(prot,tuple_dict[pr],resolution=1)
-                    result_dict[pr] = [list(map(float,IMP.core.XYZ(p).get_coordinates()))
-                                       for p in ps]
+                    ps = IMP.pmi.tools.select_by_tuple_2(
+                        prot, tuple_dict[pr], resolution=1)
+                    result_dict[pr] = [
+                        list(map(float, IMP.core.XYZ(p).get_coordinates()))
+                        for p in ps]
             else:
                 for pr in tuple_dict:
                     if type(tuple_dict[pr]) is str:
-                        name=tuple_dict[pr]
-                        s=IMP.atom.Selection(prot,molecule=name)
+                        name = tuple_dict[pr]
+                        s = IMP.atom.Selection(prot, molecule=name)
                     elif type(tuple_dict[pr]) is tuple:
-                        name=tuple_dict[pr][2]
-                        rend=tuple_dict[pr][1]
-                        rbegin=tuple_dict[pr][0]
-                        s=IMP.atom.Selection(prot,molecule=name,residue_indexes=range(rbegin,rend+1))
-                    ps=s.get_selected_particles()
-                    filtered_particles=[p for p in ps if p in all_ps_set]
+                        name = tuple_dict[pr][2]
+                        rend = tuple_dict[pr][1]
+                        rbegin = tuple_dict[pr][0]
+                        s = IMP.atom.Selection(
+                            prot, molecule=name,
+                            residue_indexes=range(rbegin, rend+1))
+                    ps = s.get_selected_particles()
+                    filtered_particles = [p for p in ps if p in all_ps_set]
                     result_dict[pr] = \
-                        [list(map(float,IMP.core.XYZ(p).get_coordinates())) for p in filtered_particles]
+                        [list(map(float, IMP.core.XYZ(p).get_coordinates()))
+                         for p in filtered_particles]
 
         all_coordinates.append(model_coordinate_dict)
         alignment_coordinates.append(template_coordinate_dict)
@@ -513,13 +528,17 @@ def read_coordinates_of_rmfs(model,
         frame_name = rmf_file + '|' + str(frame_number)
         all_rmf_file_names.append(frame_name)
         rmf_file_name_index_dict[frame_name] = tpl[4]
-    return all_coordinates,alignment_coordinates,rmsd_coordinates,rmf_file_name_index_dict,all_rmf_file_names
+    return (all_coordinates, alignment_coordinates, rmsd_coordinates,
+            rmf_file_name_index_dict, all_rmf_file_names)
 
-def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number=0):
+
+def get_bead_sizes(model, rmf_tuple, rmsd_calculation_components=None,
+                   state_number=0):
     '''
     @param model      The IMP model
     @param rmf_tuple  score,filename,frame number,original order number, rank
-    @param rmsd_calculation_components Tuples to specify what components are used for RMSD calc
+    @param rmsd_calculation_components Tuples to specify what components
+           are used for RMSD calc
     '''
     if rmsd_calculation_components is None:
         return {}
@@ -531,7 +550,7 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
                                                 rmf_file)
 
     if IMP.pmi.get_is_canonical(prots[0]):
-        states = IMP.atom.get_by_type(prots[0],IMP.atom.STATE_TYPE)
+        states = IMP.atom.get_by_type(prots[0], IMP.atom.STATE_TYPE)
         prot = states[state_number]
     else:
         prot = prots[state_number]
@@ -541,36 +560,39 @@ def get_bead_sizes(model,rmf_tuple,rmsd_calculation_components=None,state_number
     # PMI2: do selection of resolution and name at the same time
     if IMP.pmi.get_is_canonical(prot):
         for pr in rmsd_calculation_components:
-            ps = IMP.pmi.tools.select_by_tuple_2(prot,rmsd_calculation_components[pr],resolution=1)
-            rmsd_bead_size_dict[pr] = [len(IMP.pmi.tools.get_residue_indexes(p))
-                                       for p in ps]
+            ps = IMP.pmi.tools.select_by_tuple_2(
+                prot, rmsd_calculation_components[pr], resolution=1)
+            rmsd_bead_size_dict[pr] = [
+                len(IMP.pmi.tools.get_residue_indexes(p)) for p in ps]
     else:
         # getting the particles
         part_dict = IMP.pmi.analysis.get_particles_at_resolution_one(prot)
-        all_particles=[pp for key in part_dict for pp in part_dict[key]]
-        all_ps_set=set(all_particles)
+        all_particles = [pp for key in part_dict for pp in part_dict[key]]
+        all_ps_set = set(all_particles)
 
         # getting the coordinates
         for pr in rmsd_calculation_components:
             if type(rmsd_calculation_components[pr]) is str:
-                name=rmsd_calculation_components[pr]
-                s=IMP.atom.Selection(prot,molecule=name)
+                name = rmsd_calculation_components[pr]
+                s = IMP.atom.Selection(prot, molecule=name)
             elif type(rmsd_calculation_components[pr]) is tuple:
-                name=rmsd_calculation_components[pr][2]
-                rend=rmsd_calculation_components[pr][1]
-                rbegin=rmsd_calculation_components[pr][0]
-                s=IMP.atom.Selection(prot,molecule=name,residue_indexes=range(rbegin,rend+1))
-            ps=s.get_selected_particles()
-            filtered_particles=[p for p in ps if p in all_ps_set]
+                name = rmsd_calculation_components[pr][2]
+                rend = rmsd_calculation_components[pr][1]
+                rbegin = rmsd_calculation_components[pr][0]
+                s = IMP.atom.Selection(
+                    prot, molecule=name, residue_indexes=range(rbegin, rend+1))
+            ps = s.get_selected_particles()
+            filtered_particles = [p for p in ps if p in all_ps_set]
             rmsd_bead_size_dict[pr] = \
-                [len(IMP.pmi.tools.get_residue_indexes(p)) for p in filtered_particles]
+                [len(IMP.pmi.tools.get_residue_indexes(p))
+                 for p in filtered_particles]
 
     return rmsd_bead_size_dict
 
 
 class TotalScoreOutput(object):
     """A helper output for model evaluation"""
-    def __init__(self,model):
+    def __init__(self, model):
         self.model = model
         self.rs = IMP.pmi.tools.get_restraint_set(self.model)
 

@@ -1,5 +1,6 @@
 /**
- *  \file IMP/ModelObject.h    \brief Single variable function.
+ *  \file IMP/ModelObject.h
+ *  \brief Base class for objects in a Model that depend on other objects.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
@@ -16,6 +17,7 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 class Model;
 
+//! Base class for objects in a Model that depend on other objects.
 /** These objects are associated with a particular Model
     and have a callback that is called whenever the dependencies
     in the model change. This allows them to update internal state

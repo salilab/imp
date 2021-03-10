@@ -3,10 +3,7 @@ import sys
 import os
 import string
 import IMP.multifit
-try:
-    from argparse import ArgumentParser
-except ImportError:
-    from IMP._compat_argparse import ArgumentParser
+from argparse import ArgumentParser
 
 
 def usage():

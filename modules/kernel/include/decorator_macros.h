@@ -1,6 +1,6 @@
 /**
  *  \file IMP/decorator_macros.h
- *  \brief Various general useful macros for IMP.
+ *  \brief Helper macros for implementing Decorators
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
@@ -16,8 +16,6 @@
 #include <IMP/log_macros.h>
 #include <IMP/showable_macros.h>
 #include <IMP/warning_macros.h>
-
-
 
 /** Implement the needed methods for a decorator based on
     - setup_particle()

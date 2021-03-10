@@ -6,12 +6,10 @@ import IMP.rmf
 import IMP.pmi.analysis
 import IMP.pmi.output
 import IMP.pmi.macros
-try:
-    import argparse
-except ImportError:
-    from IMP._compat_argparse import argparse
+import argparse
 import os
 import glob
+
 
 def parse_args():
     epilog = """

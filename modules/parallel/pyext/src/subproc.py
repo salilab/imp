@@ -24,6 +24,7 @@ class _Popen4(subprocess.Popen):
         if r != 0:
             raise IOError("Process failed with exit status %d" % r)
 
+
 if sys.platform == 'win32':
     def _run_background(cmdline, out):
         """Run a process in the background and direct its output to a file"""
@@ -31,11 +32,11 @@ if sys.platform == 'win32':
         try:
             # shell isn't needed on Win32, and may not be found under wine
             # anyway
-            p = subprocess.Popen(cmdline, shell=False, stdout=open(out, 'w'),
+            _ = subprocess.Popen(cmdline, shell=False, stdout=open(out, 'w'),
                                  stderr=subprocess.STDOUT,
                                  universal_newlines=True)
-        # Ignore Windows "file not found" errors, so that behavior is consistent
-        # between Unix and Windows
+        # Ignore Windows "file not found" errors, so that behavior is
+        # consistent between Unix and Windows
         except WindowsError as detail:
             print(("WindowsError: %s (ignored)" % detail))
 

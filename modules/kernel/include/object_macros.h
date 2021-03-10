@@ -1,6 +1,6 @@
 /**
  *  \file IMP/object_macros.h
- *  \brief Various general useful macros for IMP.
+ *  \brief Helper macros for implementing \imp Objects.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *

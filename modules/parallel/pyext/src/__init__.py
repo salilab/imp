@@ -4,7 +4,6 @@ import sys
 import os
 import re
 import random
-import socket
 import xdrlib
 try:
     import cPickle as pickle
@@ -20,6 +19,7 @@ from IMP.parallel.util import _SetPathAction
 # Save sys.path at import time, so that workers can import using the same
 # path that works for the manager imports
 _import_time_path = sys.path[:]
+
 
 class Error(Exception):
     """Base class for all errors specific to the parallel module"""
@@ -57,6 +57,7 @@ class RemoteError(Error):
         return "%s: %s from %s\nRemote traceback:\n%s" \
                % (errstr, str(self.exc), str(self.worker), self.traceback)
 
+
 class _Communicator(object):
     """Simple support for sending Python pickled objects over the network"""
 
@@ -89,7 +90,7 @@ class _Communicator(object):
                 try:
                     data = self._socket.recv(4096)
                 except socket.error as detail:
-                    raise NetworkError("Connection lost to %s: %s" \
+                    raise NetworkError("Connection lost to %s: %s"
                                        % (str(self), str(detail)))
                 if len(data) > 0:
                     self._ibuffer += data
@@ -136,7 +137,8 @@ class Worker(_Communicator):
         return (time.time() - self.last_contact_time) > timeout
 
     def _start_task(self, task, context):
-        if not self._ready_for_task(context) and not self._ready_for_task(None):
+        if not self._ready_for_task(context) \
+                and not self._ready_for_task(None):
             raise TypeError("%s not ready for task" % str(self))
         if self._context != context:
             self._context = context
@@ -200,6 +202,7 @@ class WorkerArray(object):
         """Do any necessary startup after all contained Workers have started"""
         pass
 
+
 @IMP.deprecated_object("2.14", "Use WorkerArray instead")
 class SlaveArray(WorkerArray):
     pass
@@ -247,15 +250,14 @@ class SGEQsubWorkerArray(WorkerArray):
        (every worker has the same SGE job ID, but a different task ID).
     """
 
-
     standard_options = '-j y -cwd -r n -o sge-errors'
 
     def __init__(self, numworker, options):
         """Constructor.
            @param numworker The number of workers, which corresponds to the
-                           number of tasks in the SGE job.
-           @param options  A string of SGE options that are passed on the 'qsub'
-                           command line. This is added to standard_options.
+                  number of tasks in the SGE job.
+           @param options  A string of SGE options that are passed on the
+                  'qsub' command line. This is added to standard_options.
         """
         self._numworker = numworker
         self._options = options
@@ -315,7 +317,8 @@ class _SGEPEWorker(Worker):
 
     def _start(self, command, unique_id, output):
         Worker._start(self, command, unique_id, output)
-        cmdline = "qrsh -inherit -V %s %s %s" % (self._host, command, unique_id)
+        cmdline = "qrsh -inherit -V %s %s %s" % (self._host, command,
+                                                 unique_id)
         _run_background(cmdline, output)
 
     def __repr__(self):
@@ -324,11 +327,12 @@ class _SGEPEWorker(Worker):
 
 class SGEPEWorkerArray(WorkerArray):
     """An array of workers in a Sun Grid Engine system parallel environment.
-       In order to use this class, the manager must be run via Sun Grid Engine's
-       'qsub' command and submitted to a parallel environment using the qsub
-       -pe option. This class will start workers on every node in the parallel
-       environment (including the node running the manager). Each worker is
-       started using the 'qrsh' command with the '-inherit' option."""
+       In order to use this class, the manager must be run via
+       Sun Grid Engine's 'qsub' command and submitted to a parallel
+       environment using the qsub -pe option. This class will start workers
+       on every node in the parallel environment (including the node running
+       the manager). Each worker is started using the 'qrsh' command with
+       the '-inherit' option."""
 
     def _get_workers(self):
         workers = []
@@ -368,9 +372,9 @@ class Context(object):
     def add_task(self, task):
         """Add a task to this context.
            Tasks are any Python callable object that can be pickled (e.g. a
-           function or a class that implements the \_\_call\_\_ method). When
-           the task is run on the worker its arguments are the return value
-           from this context's startup function."""
+           function or a class that implements the \\_\\_call\\_\\_ method).
+           When the task is run on the worker its arguments are the return
+           value from this context's startup function."""
         self._tasks.append(task)
 
     def get_results_unordered(self):
@@ -404,24 +408,24 @@ class Manager(object):
     def __init__(self, python=None, host=None, output='worker%d.output'):
         """Constructor.
            @param python If not None, the command to run to start a Python
-                         interpreter that can import the IMP module. Otherwise,
-                         the same interpreter that the manager is currently
-                         using is used. This is passed to the shell, so a full
-                         command line (including multiple words separated by
-                         spaces) can be used if necessary.
+                  interpreter that can import the IMP module. Otherwise,
+                  the same interpreter that the manager is currently
+                  using is used. This is passed to the shell, so a full
+                  command line (including multiple words separated by
+                  spaces) can be used if necessary.
            @param host   The hostname that workers use to connect back to the
-                         manager. If not specified, the manager machine's
-                         primary IP address is used. On multi-homed machines,
-                         such as compute cluster headnodes, this may need to be
-                         changed to allow all workers to reach the manager
-                         (typically the name of the machine's internal network
-                         address is needed). If only running local workers,
-                         'localhost' can be used to prohibit connections
-                         across the network.
-           @param output A format string used to name worker output files. It is
-                         given the numeric worker id, so for example the default
-                         value 'worker\%d.output' will yield output files called
-                         worker0.output, worker1.output, etc.
+                  manager. If not specified, the manager machine's
+                  primary IP address is used. On multi-homed machines,
+                  such as compute cluster headnodes, this may need to be
+                  changed to allow all workers to reach the manager
+                  (typically the name of the machine's internal network
+                  address is needed). If only running local workers,
+                  'localhost' can be used to prohibit connections
+                  across the network.
+           @param output A format string used to name worker output files.
+                  It is given the numeric worker id, so for example the default
+                  value 'worker\\%d.output' will yield output files called
+                  worker0.output, worker1.output, etc.
         """
         if python is None:
             self._python = sys.executable
@@ -449,11 +453,11 @@ class Manager(object):
     def get_context(self, startup=None):
         """Create and return a new Context in which tasks can be run.
            @param startup If not None, a callable (Python function or class
-                          that implements the \_\_call\_\_ method) that sets up
-                          the worker to run tasks. This method is only called
-                          once per worker. The return values from this method
-                          are passed to the task object when it runs on
-                          the worker.
+                  that implements the \\_\\_call\\_\\_ method) that sets up
+                  the worker to run tasks. This method is only called
+                  once per worker. The return values from this method
+                  are passed to the task object when it runs on
+                  the worker.
            @return A new Context object.
         """
         return Context(self, startup)
@@ -477,9 +481,9 @@ class Manager(object):
         for array in self._worker_arrays:
             self._all_workers.extend(array._get_workers())
 
-        command = ("%s -c \"import IMP.parallel.worker_handler as s; s.main()\""
-                   " %s %d") % (self._python, self._host,
-                                self._listen_sock.port)
+        command = \
+            ("%s -c \"import IMP.parallel.worker_handler as s; s.main()\""
+             " %s %d") % (self._python, self._host, self._listen_sock.port)
 
         for (num, worker) in enumerate(self._all_workers):
             if worker._ready_to_start():
@@ -500,10 +504,9 @@ class Manager(object):
     def _send_tasks_to_workers(self, context):
         self._start_all_workers()
         # Prefer workers that already have the task context
-        available_workers = [a for a in self._all_workers
-                            if a._ready_for_task(context)] + \
-                           [a for a in self._all_workers
-                            if a._ready_for_task(None)]
+        available_workers = \
+            [a for a in self._all_workers if a._ready_for_task(context)] + \
+            [a for a in self._all_workers if a._ready_for_task(None)]
         for worker in available_workers:
             if len(context._tasks) == 0:
                 break
@@ -517,7 +520,7 @@ class Manager(object):
         try:
             worker._start_task(t, context)
             context._tasks.pop(0)
-        except socket.error as detail:
+        except socket.error:
             worker._kill()
 
     def _get_finished_tasks(self, context):
@@ -534,26 +537,26 @@ class Manager(object):
         if event == self._listen_sock:
             # New worker just connected
             (conn, addr) = self._listen_sock.accept()
-            new_worker = self._accept_worker(conn, context)
+            self._accept_worker(conn, context)
         elif event._running_task(context):
             try:
                 task = event._get_finished_task()
                 if task:
                     self._send_task_to_worker(event, context)
                     return task
-                else: # the worker sent back a heartbeat
+                else:  # the worker sent back a heartbeat
                     self._kill_timed_out_workers(context)
             except NetworkError as detail:
                 task = event._kill()
-                print("Worker %s failed (%s): rescheduling task %s" \
+                print("Worker %s failed (%s): rescheduling task %s"
                       % (str(event), str(detail), str(task)))
                 context._tasks.append(task)
                 self._send_tasks_to_workers(context)
         else:
-            pass # Worker not running a task
+            pass  # Worker not running a task
 
     def _kill_timed_out_workers(self, context):
-        timed_out = [a for a in self._all_workers if a._running_task(context) \
+        timed_out = [a for a in self._all_workers if a._running_task(context)
                      and a.get_contact_timed_out(self.heartbeat_timeout)]
         for worker in timed_out:
             task = worker._kill()
@@ -599,7 +602,8 @@ class Manager(object):
                 raise _NoMoreTasksError()
             elif len(self._starting_workers) == 0:
                 raise NoMoreWorkersError("Ran out of workers to run tasks")
-            # Otherwise, wait for starting workers to connect back and get tasks
+            # Otherwise, wait for starting workers to connect back and
+            # get tasks
 
-        return util._poll_events(self._listen_sock, running,
-                                 self.heartbeat_timeout)
+        return IMP.parallel.util._poll_events(
+            self._listen_sock, running, self.heartbeat_timeout)

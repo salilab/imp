@@ -69,8 +69,9 @@ def format_value(val):
     elif isinstance(val, ast.Dict):
         def format_item(key, val):
             return "%s: %s" % (format_value(key), format_value(val))
-        return '{' + ", ".join([format_item(key, val) \
-                             for key, val in zip(val.keys, val.values)]) + '}'
+        return '{' + ", ".join(
+            [format_item(key, val)
+             for key, val in zip(val.keys, val.values)]) + '}'
     elif isinstance(val, ast.BinOp):
         return format_value(val.left) + " " + format_value(val.op) \
             + " " + format_value(val.right)
@@ -84,7 +85,7 @@ def format_value(val):
         if val.kwargs:
             args.append('**' + val.kwargs.id)
         return format_value(val.func) + '(' + ", ".join(args) + ')'
-    raise ValueError("Do not know how to format %s while running %s" \
+    raise ValueError("Do not know how to format %s while running %s"
                      % (str(val), str(sys.argv)))
 
 
@@ -138,6 +139,7 @@ def handle_func(f):
                 return
     return f
 
+
 def get_deprecation_docstring(node):
     """If the node (class, function or method) is decorated with one of IMP's
        deprecation decorators, add the runtime warning to the docstring too."""
@@ -146,6 +148,7 @@ def get_deprecation_docstring(node):
             if hasattr(d, 'func') and d.func.attr.startswith('deprecated_'):
                 return '\n@deprecated_at{%s} %s' % (d.args[0].s, d.args[1].s)
     return ''
+
 
 def get_dump_docstring(node, add_lines=[]):
     lines = []
@@ -227,7 +230,8 @@ class OutputPrinter(object):
         # Make sure multiple comments (e.g. a namespace docstring followed
         # by the first class docstring) have at least one blank line between
         # them so doxygen knows to start a new paragraph
-        if self.last_line_was_comment and lines[0].startswith('#') and pad <= 0:
+        if self.last_line_was_comment and lines[0].startswith('#') \
+                and pad <= 0:
             pad = 1
         if pad > 0:
             sys.stdout.write('\n' * pad)
@@ -247,10 +251,12 @@ def parse_file(fname):
         return
     # Pass examples through unchanged
     if '/examples/' in fname:
-        for line in open(fname):
-            sys.stdout.write(line)
+        with open(fname) as fh:
+            for line in fh:
+                sys.stdout.write(line)
         return
-    lines = open(fname).readlines()
+    with open(fname) as fh:
+        lines = fh.readlines()
     lines = [x.rstrip('\r\n') for x in lines]
     a = ast.parse(("\n".join(lines)).rstrip() + '\n', fname)
 
@@ -269,6 +275,7 @@ def parse_file(fname):
             f = handle_func(n)
             if f:
                 dump_function(f, indent, printer)
+
 
 if __name__ == '__main__':
     parse_file(sys.argv[1])

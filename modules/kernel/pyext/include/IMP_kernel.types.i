@@ -307,6 +307,7 @@ _object_types.append(#Name)
 
 %define IMP_SWIG_VALUE_CHECKS(Namespace, Name, Type)
 %typemap(in) Namespace::Name const& = Type const &;
+%typemap(freearg) Namespace::Name const& = Type const &;
 %typecheck(SWIG_TYPECHECK_POINTER) Namespace::Name const& = Type const &;
 %typemap(in) Namespace::Name & {
   values_like_##Name##_must_be_passed_by_value_or_const_ref_not_non_const_ref;

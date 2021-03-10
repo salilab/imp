@@ -9,15 +9,12 @@ No repository directories are changed.
 """
 
 import os
-import sys
 import os.path
-import shutil
-import platform
 import tools
 from optparse import OptionParser
 
-# link all the dox files and other documentation related files from the source tree
-# into the build tree
+# link all the dox files and other documentation related files from the
+# source tree into the build tree
 
 
 def link_dox(source):
@@ -31,6 +28,7 @@ def link_dox(source):
                    os.path.join("doc", "manual"),
                    match=["*.png", "*.pdf", "*.gif"], clean=False)
 
+
 parser = OptionParser()
 parser.add_option("-s", "--source", dest="source",
                   help="IMP source directory.")
@@ -40,6 +38,7 @@ def main():
     (options, args) = parser.parse_args()
 
     link_dox(options.source)
+
 
 if __name__ == '__main__':
     main()

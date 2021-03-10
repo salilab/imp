@@ -1,6 +1,6 @@
 /**
  *  \file IMP/scoped.h
- *  \brief Various general useful functions for IMP.
+ *  \brief Temporarily set particle attributes.
  *
  *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
@@ -49,7 +49,7 @@ class ScopedAddCacheAttribute : public RAII {
 };
 
 /** Set an attribute to a given value and restore the old
-    value when this goes out of scope..
+    value when this goes out of scope.
 */
 template <class Key, class Value>
 class ScopedSetAttribute : public RAII {

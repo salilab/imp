@@ -13,7 +13,6 @@ import sys
 from optparse import OptionParser
 import os.path
 import tools
-import glob
 
 TOPDIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -29,11 +28,11 @@ parser.add_option("-d", "--datapath",
 def make_cpp(options):
     dir = os.path.join("src")
     file = os.path.join(dir, "%s_config.cpp" % options.name)
-    cpp_template = tools.CPPFileGenerator(os.path.join(TOPDIR,
-                                               "config_templates", "src.cpp"))
+    cpp_template = tools.CPPFileGenerator(
+        os.path.join(TOPDIR, "config_templates", "src.cpp"))
     try:
         os.makedirs(dir)
-    except:
+    except OSError:
         # exists
         pass
     data = {}
@@ -55,9 +54,12 @@ def make_version_check(options):
     outf = os.path.join(dir, "_version_check.py")
     template = """def check_version(myversion):
   def _check_one(name, expected, found):
-    if expected != found:
-      message = "Expected version " + expected + " but got " + found + " when loading module " + name + ". Please make sure IMP is properly built and installed and that matching python and C++ libraries are used."
-      raise RuntimeError(message)
+      if expected != found:
+          raise RuntimeError(
+              "Expected version " + expected + " but got " + found
+              + " when loading module " + name
+              + ". Please make sure IMP is properly built and installed "
+                "and that matching python and C++ libraries are used."
   version = '%s'
   _check_one('%s', version, myversion)
   """
@@ -70,6 +72,7 @@ def main():
     make_cpp(options)
     make_version_check(options)
     sys.exit(0)
+
 
 if __name__ == '__main__':
     main()

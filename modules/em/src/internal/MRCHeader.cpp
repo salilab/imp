@@ -62,13 +62,10 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h) {
   machinestamp = h.machinestamp;
   rms = h.rms;      // RMS deviation of map from mean density
   nlabl = h.nlabl;  // Number of labels being used
+  // Fill empty coments with null character
+  memset(&labels[0][0], 0, IMP_MRC_NUM_LABELS * IMP_MRC_LABEL_SIZE);
   // Copy comments
   for (int i = 0; i < nlabl; i++) strcpy(labels[i], h.comments[i]);
-  // Fill empty coments with null character
-  const char *c = "\0";
-  empty.resize(IMP_MRC_LABEL_SIZE, *c);
-  for (int i = nlabl; i < IMP_MRC_NUM_LABELS; i++)
-    strcpy(labels[i], empty.c_str());
 }
 
 void MRCHeader::ToDensityHeader(DensityHeader &h) {
@@ -117,18 +114,14 @@ void MRCHeader::ToDensityHeader(DensityHeader &h) {
   h.machinestamp = machinestamp;
   h.rms = rms;      // RMS deviation of map from mean density
   h.nlabl = nlabl;  // Number of labels being used
+  // Fill empty coments with null character
+  memset(&h.comments[0][0], 0,
+         DensityHeader::COMMENT_FIELD_NUM_OF
+         * DensityHeader::COMMENT_FIELD_SINGLE_SIZE);
   // Copy comments
   for (int i = 0; i < h.nlabl; i++) {
-    // to make sure there is not memory leak
-    std::string temp;
-    temp.copy(labels[i], DensityHeader::COMMENT_FIELD_SINGLE_SIZE, 0);
-    strcpy(h.comments[i], temp.c_str());
+    strncpy(h.comments[i], labels[i], DensityHeader::COMMENT_FIELD_SINGLE_SIZE);
   }
-  // Fill empty coments with null character
-  const char *c = "\0";
-  empty.resize(IMP_MRC_LABEL_SIZE, *c);
-  for (int i = h.nlabl; i < IMP_MRC_NUM_LABELS; i++)
-    strcpy(h.comments[i], empty.c_str());
 }
 
 IMPEM_END_INTERNAL_NAMESPACE

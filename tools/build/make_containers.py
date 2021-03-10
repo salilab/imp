@@ -9,7 +9,6 @@ build directory.
 import sys
 import os
 import os.path
-import glob
 import tools
 
 all_inputs = []
@@ -18,11 +17,10 @@ all_outputs = []
 
 def filter(xxx_todo_changeme,
            infile, file_name):
-    (function_name, type_name, class_name, variable_type, argument_type, return_type,
-     storage_type,
-     plural_variable_type, plural_argument_type, plural_storage_type,
-     index_type, plural_index_type, pass_index_type) = xxx_todo_changeme
-    header_guard_class_name = class_name.upper()
+    (function_name, type_name, class_name, variable_type, argument_type,
+     return_type, storage_type, plural_variable_type, plural_argument_type,
+     plural_storage_type, index_type, plural_index_type,
+     pass_index_type) = xxx_todo_changeme
     helpername = class_name.lower()
     return infile\
         .replace("HELPERNAME", helpername)\
@@ -44,6 +42,7 @@ def filter(xxx_todo_changeme,
         .replace("STORAGETYPE", storage_type)\
         .replace("FILESOURCE", file_name)
 
+
 class ContainerFileGenerator(tools.FileGenerator):
     def __init__(self, template_file):
         if template_file.endswith('.py'):
@@ -56,12 +55,10 @@ class ContainerFileGenerator(tools.FileGenerator):
 
 
 def make_one(path, params, test=True):
-    (function_name, type_name, class_name, variable_type, argument_type, return_type,
-     storage_type,
-     plural_variable_type, plural_argument_type, plural_storage_type,
-     index_type, plural_index_type, pass_index_type) = params
-    multi = class_name
-    plural_multi = multi + "s"
+    (function_name, type_name, class_name, variable_type, argument_type,
+     return_type, storage_type, plural_variable_type, plural_argument_type,
+     plural_storage_type, index_type, plural_index_type,
+     pass_index_type) = params
     cname = function_name
 
     inputs = tools.get_glob([os.path.join(path, "*", "*.h"),
@@ -98,36 +95,36 @@ def make_one(path, params, test=True):
 
 def main():
     source = os.path.join(os.path.split(sys.argv[0])[0], "container_templates")
-    #(function_name, class_name, variable_type, argument_type,
-    # return_type, storage_type,
-    #        plural_variable_type, plural_argument_type, plural_storage_type)
     tools.mkdir(os.path.join("src", "core"), clean=False)
     tools.mkdir(os.path.join("src", "container"), clean=False)
     tools.mkdir(os.path.join("src", "kernel"), clean=False)
     make_one(
-        source, (
-            "particle", "Particle", "Singleton", "Particle*", "Particle*",
-            "Particle*", "Pointer<Particle>",
-            "ParticlesTemp", "ParticlesTemp", "Particles",
-            "ParticleIndex", "ParticleIndexes", "ParticleIndex"))
+        source,
+        ("particle", "Particle", "Singleton", "Particle*", "Particle*",
+         "Particle*", "Pointer<Particle>",
+         "ParticlesTemp", "ParticlesTemp", "Particles",
+         "ParticleIndex", "ParticleIndexes", "ParticleIndex"))
     make_one(
-        source, (
-            "particle_pair", "ParticlePair", "Pair", "ParticlePair", "const ParticlePair&",
-            "const ParticlePair", "ParticlePair",
-            "ParticlePairsTemp", "ParticlePairsTemp", "ParticlePairs",
-            "ParticleIndexPair", "ParticleIndexPairs", "const ParticleIndexPair&"))
+        source,
+        ("particle_pair", "ParticlePair", "Pair", "ParticlePair",
+         "const ParticlePair&", "const ParticlePair", "ParticlePair",
+         "ParticlePairsTemp", "ParticlePairsTemp", "ParticlePairs",
+         "ParticleIndexPair", "ParticleIndexPairs",
+         "const ParticleIndexPair&"))
     make_one(
-        source, (
-            "particle_triplet", "ParticleTriplet", "Triplet", "ParticleTriplet", "const ParticleTriplet&",
-            "const ParticleTriplet", "ParticleTriplet",
-            "ParticleTripletsTemp", "ParticleTripletsTemp", "ParticleTriplets",
-            "ParticleIndexTriplet", "ParticleIndexTriplets", "const ParticleIndexTriplet&"), test=False)
+        source,
+        ("particle_triplet", "ParticleTriplet", "Triplet", "ParticleTriplet",
+         "const ParticleTriplet&", "const ParticleTriplet", "ParticleTriplet",
+         "ParticleTripletsTemp", "ParticleTripletsTemp", "ParticleTriplets",
+         "ParticleIndexTriplet", "ParticleIndexTriplets",
+         "const ParticleIndexTriplet&"), test=False)
     make_one(
-        source, (
-            "particle_quad", "ParticleQuad", "Quad", "ParticleQuad", "const ParticleQuad&",
-            "const ParticleQuad", "ParticleQuad",
-            "ParticleQuadsTemp", "ParticleQuadsTemp", "ParticleQuads",
-            "ParticleIndexQuad", "ParticleIndexQuads", "const ParticleIndexQuad&"), test=False)
+        source,
+        ("particle_quad", "ParticleQuad", "Quad", "ParticleQuad",
+         "const ParticleQuad&", "const ParticleQuad", "ParticleQuad",
+         "ParticleQuadsTemp", "ParticleQuadsTemp", "ParticleQuads",
+         "ParticleIndexQuad", "ParticleIndexQuads",
+         "const ParticleIndexQuad&"), test=False)
     if True:
         deps = ["${PROJECT_SOURCE_DIR}/tools/build/%s" %
                 x[x.find("container_templates"):] for x in all_inputs]
@@ -136,7 +133,8 @@ def main():
         def get_files(module, suffix, prefix, allh):
             ret = []
             for h in allh:
-                if h.endswith(suffix) and os.path.split(os.path.split(h)[0])[1] == module:
+                if (h.endswith(suffix)
+                        and os.path.split(os.path.split(h)[0])[1] == module):
                     fname = prefix + os.path.split(h)[1]
                     ret.append(tools.to_cmake_path(fname))
             return ret
@@ -167,7 +165,7 @@ set( IMP_kernel_EXTRA_HEADERS ${IMP_kernel_EXTRA_HEADERS} %s)
 set( IMP_core_EXTRA_HEADERS ${IMP_core_EXTRA_HEADERS} %s)
 set( IMP_container_EXTRA_HEADERS ${IMP_container_EXTRA_HEADERS} %s)
 
-""" % ("\n   ".join(targets), "\n   ".join(deps),
+""" % ("\n   ".join(targets), "\n   ".join(deps),  # noqa: E501
             "\n   ".join(targets),
             "\n   ".join(
                 get_files("kernel",
@@ -191,8 +189,6 @@ set( IMP_container_EXTRA_HEADERS ${IMP_container_EXTRA_HEADERS} %s)
         g = tools.CMakeFileGenerator()
         g.write(os.path.join(os.path.split(sys.argv[0])[0],
                              "cmake_files", "MakeContainers.cmake"), out)
-    # make_one("particle tuple", "ParticlesTemp", "const ParticlesTemp&", "Particles",
-    #         "Tuple", "particle tuples", "ParticlesList", "Tuples", test=False)
 
 
 if __name__ == '__main__':

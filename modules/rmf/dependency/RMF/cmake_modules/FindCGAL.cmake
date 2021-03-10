@@ -58,6 +58,7 @@ if ( NOT CGAL_DIR )
     /usr/local/share/CGAL/cmake
     /usr/share/CGAL/cmake
     /usr/share/cmake/CGAL
+    /opt/homebrew/lib/cmake/CGAL
 
     # Read from the CMakeSetup registry entries.  It is likely that
     # CGAL will have been recently built.

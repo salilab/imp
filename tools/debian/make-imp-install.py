@@ -3,6 +3,7 @@
 import sys
 import os
 
+
 def python_only(m):
     depfile = os.path.join(m, 'dependencies.py')
     if not os.path.exists(depfile):
@@ -30,9 +31,11 @@ for m in non_mpi_modules + ['rmf/dependency/RMF']:
             if not fname.startswith('__') and ext in ('', '.cpp', '.py'):
                 non_mpi_binaries.append(fname)
 
+
 def subst_line(line, template, modules):
     for m in modules:
         sys.stdout.write(line.replace(template, m))
+
 
 for line in sys.stdin:
     if "@NON_MPI_MODULES@" in line:
