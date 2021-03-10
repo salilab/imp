@@ -7,7 +7,7 @@
 #ifndef IMPISD_CYSTEINE_CROSS_LINK_DATA_H
 #define IMPISD_CYSTEINE_CROSS_LINK_DATA_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
 #include <IMP/Model.h>
 #include <IMP/constants.h>

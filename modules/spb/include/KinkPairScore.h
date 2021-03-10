@@ -8,7 +8,7 @@
 #ifndef IMPSPB_KINK_PAIR_SCORE_H
 #define IMPSPB_KINK_PAIR_SCORE_H
 
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 #include <IMP/Pointer.h>
 #include <IMP/PairScore.h>

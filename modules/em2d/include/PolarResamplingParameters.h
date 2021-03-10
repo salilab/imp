@@ -7,7 +7,7 @@
 #ifndef IMPEM2D_POLAR_RESAMPLING_PARAMETERS_H
 #define IMPEM2D_POLAR_RESAMPLING_PARAMETERS_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/algebra/constants.h"
 #include "IMP/exception.h"

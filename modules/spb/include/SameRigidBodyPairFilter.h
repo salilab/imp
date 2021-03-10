@@ -10,7 +10,7 @@
 
 #include <IMP/PairPredicate.h>
 #include <IMP/pair_macros.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

@@ -14,7 +14,7 @@
 #include <IMP/spb/spb_main.h>
 #include <map>
 #include <string>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

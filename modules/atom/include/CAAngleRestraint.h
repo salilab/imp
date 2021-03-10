@@ -9,7 +9,7 @@
 #ifndef IMPATOM_CA_ANGLE_RESTRAINT_H
 #define IMPATOM_CA_ANGLE_RESTRAINT_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 
 #include <IMP/Restraint.h>
 #include <IMP/Particle.h>

@@ -12,7 +12,7 @@
 #include <IMP/isd/Scale.h>
 #include <IMP/spb/ISDRestraint.h>
 #include "IMP/Restraint.h"
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 /** A uniform bounded restraint

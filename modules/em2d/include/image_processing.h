@@ -8,7 +8,7 @@
 #ifndef IMPEM2D_IMAGE_PROCESSING_H
 #define IMPEM2D_IMAGE_PROCESSING_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/base_types.h"

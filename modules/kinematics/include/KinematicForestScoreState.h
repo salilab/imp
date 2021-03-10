@@ -9,7 +9,7 @@
 #ifndef IMPKINEMATICS_KINEMATIC_FOREST_SCORE_STATE_H
 #define IMPKINEMATICS_KINEMATIC_FOREST_SCORE_STATE_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/ScoreState.h>
 #include <IMP/warning_macros.h>
 #include <IMP/core/rigid_bodies.h>

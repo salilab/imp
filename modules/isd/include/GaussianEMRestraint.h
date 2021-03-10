@@ -9,7 +9,7 @@
 #ifndef IMPISD_GAUSSIAN_EM_RESTRAINT_H
 #define IMPISD_GAUSSIAN_EM_RESTRAINT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/file.h>
 #include <IMP/PairContainer.h>
 #include <IMP/container/ListSingletonContainer.h>

@@ -9,7 +9,7 @@
 #ifndef IMPISD_LOG_WRAPPER_H
 #define IMPISD_LOG_WRAPPER_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/container_macros.h>
 #include <IMP/RestraintSet.h>
 

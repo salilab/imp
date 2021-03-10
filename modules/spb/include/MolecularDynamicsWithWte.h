@@ -14,7 +14,7 @@
 #include <boost/scoped_array.hpp>
 #include "IMP/atom/Simulator.h"
 #include "IMP/atom/atom_macros.h"
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

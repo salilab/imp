@@ -8,7 +8,7 @@
 #ifndef IMPSPB_MONTE_CARLO_WITH_WTE_H
 #define IMPSPB_MONTE_CARLO_WITH_WTE_H
 
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 #include <IMP/Restraint.h>
 #include <IMP/core.h>

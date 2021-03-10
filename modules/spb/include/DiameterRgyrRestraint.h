@@ -9,7 +9,7 @@
 #define IMPSPB_DIAMETER_RGYR_RESTRAINT_H
 
 #include "IMP/Restraint.h"
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <map>

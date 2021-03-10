@@ -7,7 +7,7 @@
 #ifndef IMPEM2D_SCORES_2D_H
 #define IMPEM2D_SCORES_2D_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/RegistrationResult.h"

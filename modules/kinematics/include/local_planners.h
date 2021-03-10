@@ -9,7 +9,7 @@
 #ifndef IMPKINEMATICS_LOCAL_PLANNERS_H
 #define IMPKINEMATICS_LOCAL_PLANNERS_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include "DOFValues.h"
 #include "directional_DOFs.h"
 #include "DOFsSampler.h"

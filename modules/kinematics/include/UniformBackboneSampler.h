@@ -9,7 +9,7 @@
 #ifndef IMPKINEMATICS_UNIFORM_BACKBONE_SAMPLER_H
 #define IMPKINEMATICS_UNIFORM_BACKBONE_SAMPLER_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include "DOFsSampler.h"
 #include "revolute_joints.h"
 #include <boost/random/uniform_real.hpp>

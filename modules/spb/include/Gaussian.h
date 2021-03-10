@@ -9,7 +9,7 @@
 
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

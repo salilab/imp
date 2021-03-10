@@ -8,7 +8,7 @@
 #ifndef IMPISD_ISD_RESTRAINT_H
 #define IMPISD_ISD_RESTRAINT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/ScoringFunction.h>
 #include <IMP/Restraint.h>
 #include <string>

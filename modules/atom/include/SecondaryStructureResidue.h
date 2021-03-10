@@ -8,9 +8,9 @@
 #ifndef IMPATOM_SECONDARY_STRUCTURE_RESIDUE_H
 #define IMPATOM_SECONDARY_STRUCTURE_RESIDUE_H
 
-#include "atom_config.h"
-#include "atom_macros.h"
-#include "Hierarchy.h"
+#include <IMP/atom/atom_config.h>
+#include <IMP/atom/atom_macros.h>
+#include <IMP/atom/Hierarchy.h>
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>

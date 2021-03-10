@@ -10,7 +10,7 @@
 #ifndef IMPKINEMATICS_PROTEINKINEMATICS_H
 #define IMPKINEMATICS_PROTEINKINEMATICS_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 
 #include <IMP/kinematics/revolute_joints.h>
 #include <IMP/kinematics/KinematicForest.h>

@@ -14,7 +14,7 @@
 #include <IMP/em2d/project.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/spb/ISDRestraint.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 /** A restraint for using EM2D cross-corr in a Bayesian way

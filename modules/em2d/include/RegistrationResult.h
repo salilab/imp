@@ -8,7 +8,7 @@
 #define IMPEM2D_REGISTRATION_RESULT_H
 
 #include "IMP/em2d/internal/rotation_helper.h"
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em/ImageHeader.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Vector2D.h"

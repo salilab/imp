@@ -10,7 +10,7 @@
 #ifndef IMPKINEMATICS_HELPERS_H
 #define IMPKINEMATICS_HELPERS_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>

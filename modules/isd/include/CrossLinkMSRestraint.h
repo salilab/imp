@@ -9,7 +9,7 @@
 
 #ifndef IMPISD_CROSS_LINK_MSRESTRAINT_H
 #define IMPISD_CROSS_LINK_MSRESTRAINT_H
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/particle_index.h>
 #include <IMP/isd/Scale.h>

@@ -9,7 +9,7 @@
 #ifndef IMPKINEMATICS_PRISMATIC_JOINT_H
 #define IMPKINEMATICS_PRISMATIC_JOINT_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/Object.h>

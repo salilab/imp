@@ -11,7 +11,7 @@
 #ifndef IMPKINEMATICS_COMPOSITE_JOINT_H
 #define IMPKINEMATICS_COMPOSITE_JOINT_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/Object.h>

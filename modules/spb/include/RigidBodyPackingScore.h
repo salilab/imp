@@ -8,7 +8,7 @@
 #ifndef IMPSPB_RIGID_BODY_PACKING_SCORE_H
 #define IMPSPB_RIGID_BODY_PACKING_SCORE_H
 
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 #include <IMP/Pointer.h>
 #include <IMP/PairScore.h>
 #include <IMP/core/TableRefiner.h>

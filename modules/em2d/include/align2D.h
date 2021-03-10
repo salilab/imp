@@ -7,7 +7,7 @@
 #ifndef IMPEM2D_ALIGN_2D_H
 #define IMPEM2D_ALIGN_2D_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/algebra/utility.h"
 #include "IMP/algebra/Transformation2D.h"

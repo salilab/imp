@@ -13,7 +13,7 @@
 #ifndef IMPKINEMATICS_REVOLUTE_JOINTS_H
 #define IMPKINEMATICS_REVOLUTE_JOINTS_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/Object.h>

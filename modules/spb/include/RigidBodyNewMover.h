@@ -15,7 +15,7 @@
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/MonteCarloMover.h>
 #include <IMP/core/rigid_bodies.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

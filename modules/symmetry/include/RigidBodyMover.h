@@ -9,7 +9,7 @@
 #ifndef IMPSYMMETRY_RIGID_BODY_MOVER_H
 #define IMPSYMMETRY_RIGID_BODY_MOVER_H
 
-#include "symmetry_config.h"
+#include <IMP/symmetry/symmetry_config.h>
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/MonteCarloMover.h>
 #include <IMP/algebra/Vector3D.h>

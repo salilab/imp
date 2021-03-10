@@ -13,7 +13,7 @@
 #include <IMP/core.h>
 #include <IMP/em2d.h>
 #include <IMP/isd.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

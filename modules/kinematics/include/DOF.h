@@ -10,7 +10,7 @@
 #ifndef IMPKINEMATICS_DO_F_H
 #define IMPKINEMATICS_DO_F_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/Object.h>
 #include <IMP/object_macros.h>
 
