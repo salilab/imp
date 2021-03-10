@@ -11,6 +11,7 @@ import ihm.analysis
 import ihm.protocol
 import ihm.model
 
+
 def get_molecule(h):
     """Given a Hierarchy, walk up and find the parent Molecule"""
     while h:
@@ -22,7 +23,8 @@ def get_molecule(h):
 
 class _EntityMapper(dict):
     """Handle mapping from IMP chains to CIF entities.
-       Multiple components may map to the same entity if they share sequence."""
+       Multiple components may map to the same entity if they
+       share sequence."""
     def __init__(self, system):
         self.system = system
         super(_EntityMapper, self).__init__()
@@ -138,13 +140,14 @@ class _RepSegmentFactory(object):
     def __init__(self, component):
         self.component = component
         self.particles = []
-        self.residue_range = () # inclusive range
+        self.residue_range = ()  # inclusive range
 
     def add(self, particle, starting_model):
         """Add a new particle to the last segment (and return None).
            Iff the particle could not be added, return the segment and start
            a new one."""
         resrange, rigid_body, is_res = self._get_particle_info(particle)
+
         def start_new_segment():
             self.particles = [particle]
             self.residue_range = resrange
@@ -154,11 +157,11 @@ class _RepSegmentFactory(object):
         if not self.particles:
             # First particle in a segment
             start_new_segment()
-        elif type(particle) == type(self.particles[0]) \
-             and is_res == self.is_res \
-             and resrange[0] == self.residue_range[1] + 1 \
-             and starting_model == self.starting_model \
-             and self._same_rigid_body(rigid_body):
+        elif (type(particle) == type(self.particles[0])  # noqa: E721
+              and is_res == self.is_res
+              and resrange[0] == self.residue_range[1] + 1
+              and starting_model == self.starting_model
+              and self._same_rigid_body(rigid_body)):
             # Continue an existing segment
             self.particles.append(particle)
             self.residue_range = (self.residue_range[0], resrange[1])
@@ -280,8 +283,9 @@ class _StartingModel(ihm.startmodel.StartingModel):
     def __init__(self, asym_unit, struc_prov):
         self.filename = struc_prov[0].get_filename()
         super(_StartingModel, self).__init__(
-                asym_unit=asym_unit(0,0), # will update in _add_residue()
-                dataset=None, # will fill in later with _set_sources_datasets()
+                asym_unit=asym_unit(0, 0),  # will update in _add_residue()
+                # will fill in later with _set_sources_datasets()
+                dataset=None,
                 asym_id=struc_prov[0].get_chain_id(),
                 offset=struc_prov[0].get_residue_offset())
 
@@ -295,13 +299,15 @@ class _StartingModel(ihm.startmodel.StartingModel):
 
     # Two starting models with same filename, chain ID, and offset
     # compare identical
-    # note: this results in separate starting models if only the offset differs;
-    # maybe consolidate into one?
+    # note: this results in separate starting models if only the
+    # offset differs; maybe consolidate into one?
     def _eq_vals(self):
         return tuple([self.__class__]
                      + [getattr(self, x) for x in self._eq_keys])
+
     def __eq__(self, other):
         return other is not None and self._eq_vals() == other._eq_vals()
+
     def __hash__(self):
         return hash(self._eq_vals())
 
@@ -327,12 +333,12 @@ class _StartingModel(ihm.startmodel.StartingModel):
         m = IMP.Model()
         # todo: support reading other subsets of the atoms (e.g. CA/CB)
         slt = IMP.atom.ChainPDBSelector(self.asym_id) \
-                   & IMP.atom.NonWaterNonHydrogenPDBSelector()
+            & IMP.atom.NonWaterNonHydrogenPDBSelector()
         hier = IMP.atom.read_pdb(self.filename, m, slt)
         rng = self.asym_unit.seq_id_range
-        sel = IMP.atom.Selection(hier,
-                residue_indexes=list(range(rng[0] - self.offset,
-                                           rng[1] + 1 - self.offset)))
+        sel = IMP.atom.Selection(
+            hier, residue_indexes=list(range(rng[0] - self.offset,
+                                             rng[1] + 1 - self.offset)))
         return m, sel
 
     def get_seq_dif(self):
@@ -426,8 +432,8 @@ class _AllSoftware(object):
 
     def add_hierarchy(self, h):
         # todo: if no SoftwareProvenance available, use RMF producer field
-        for p in IMP.core.get_all_provenance(h,
-                                        types=[IMP.core.SoftwareProvenance]):
+        for p in IMP.core.get_all_provenance(
+                h, types=[IMP.core.SoftwareProvenance]):
             self.system.software.append(
                     ihm.Software(name=p.get_software_name(),
                                  classification='integrative model building',
@@ -450,12 +456,13 @@ class _ExternalFiles(object):
 
     def add_hierarchy(self, h):
         # Add all Python scripts that were used in the modeling
-        for p in IMP.core.get_all_provenance(h,
-                                     types=[IMP.core.ScriptProvenance]):
+        for p in IMP.core.get_all_provenance(
+                h, types=[IMP.core.ScriptProvenance]):
             # todo: set details
-            l = ihm.location.WorkflowFileLocation(path=p.get_filename(),
-                               details='Integrative modeling Python script')
-            self.add(l)
+            loc = ihm.location.WorkflowFileLocation(
+                path=p.get_filename(),
+                details='Integrative modeling Python script')
+            self.add(loc)
 
 
 class _ProtocolStep(ihm.protocol.Step):
@@ -502,14 +509,15 @@ class _Protocol(ihm.protocol.Protocol):
         if not self.analyses:
             self.analyses.append(ihm.analysis.Analysis())
         if isinstance(prov, IMP.core.FilterProvenance):
-            pp = ihm.analysis.FilterStep(feature='energy/score',
-                    assembly=assembly, num_models_begin=num_models,
-                    num_models_end = prov.get_number_of_frames())
+            pp = ihm.analysis.FilterStep(
+                feature='energy/score', assembly=assembly,
+                num_models_begin=num_models,
+                num_models_end=prov.get_number_of_frames())
         elif isinstance(prov, IMP.core.ClusterProvenance):
             # Assume clustering uses all models
-            pp = ihm.analysis.ClusterStep(feature='RMSD',
-                    assembly=assembly, num_models_begin=num_models,
-                    num_models_end=num_models)
+            pp = ihm.analysis.ClusterStep(
+                feature='RMSD', assembly=assembly, num_models_begin=num_models,
+                num_models_end=num_models)
         else:
             raise ValueError("Unhandled provenance", prov)
         self.analyses[-1].steps.append(pp)
@@ -525,7 +533,7 @@ class _Protocols(object):
         self.system.orphan_protocols.append(prot)
 
     def _add_hierarchy(self, h, modeled_assembly):
-        num_models = 0 # assume we always start with no models
+        num_models = 0  # assume we always start with no models
         prot_types = (IMP.core.SampleProvenance, IMP.core.CombineProvenance)
         pp_types = (IMP.core.FilterProvenance, IMP.core.ClusterProvenance)
         in_postproc = False
@@ -549,7 +557,7 @@ class _Protocols(object):
 class _Model(ihm.model.Model):
     def __init__(self, frame, state):
         self._frame = frame
-        self.state = state # state already a weakproxy
+        self.state = state  # state already a weakproxy
         super(_Model, self).__init__(
                 assembly=state.modeled_assembly,
                 # todo: add protocol, support multiple representations
@@ -574,9 +582,10 @@ class _Model(ihm.model.Model):
                 # todo: handle non-contiguous fragments
                 sbegin = resinds[0]
                 send = resinds[-1]
-            else: # residue
+            else:  # residue
                 sbegin = send = p.get_index()
             xyzr = IMP.core.XYZR(p)
             xyz = xyzr.get_coordinates()
-            yield ihm.model.Sphere(asym_unit=asym, seq_id_range=(sbegin, send),
-                    x=xyz[0], y=xyz[1], z=xyz[2], radius=xyzr.get_radius())
+            yield ihm.model.Sphere(
+                asym_unit=asym, seq_id_range=(sbegin, send),
+                x=xyz[0], y=xyz[1], z=xyz[2], radius=xyzr.get_radius())

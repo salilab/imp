@@ -5,6 +5,7 @@
 import IMP.mmcif.metadata
 import ihm.restraint
 
+
 def _parse_restraint_info(info):
     """Convert RestraintInfo object to Python dict"""
     d = {}
@@ -28,7 +29,7 @@ class _GaussianEMRestraint(ihm.restraint.EM3DRestraint):
         r = p.parse_file(info['filename'])
         super(_GaussianEMRestraint, self).__init__(
                 dataset=r['dataset'],
-                assembly=modeled_assembly, # todo: fill in correct assembly
+                assembly=modeled_assembly,  # todo: fill in correct assembly
                 number_of_gaussians=r['number_of_gaussians'],
                 fitting_method='Gaussian mixture model')
 
