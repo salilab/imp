@@ -41,9 +41,6 @@ FitRestraintBayesEM3D::FitRestraintBayesEM3D(
   score_ = 0.;
   dv_.insert(dv_.end(), ps_.size(), algebra::Vector3D(0., 0., 0.));
 
-  IMP_NEW(BayesEM3D, bayesem3d, ());
-  bayesem3d_ = bayesem3d;
-
 }
 
 double FitRestraintBayesEM3D::unprotected_evaluate(DerivativeAccumulator *accum) const {
@@ -52,7 +49,7 @@ double FitRestraintBayesEM3D::unprotected_evaluate(DerivativeAccumulator *accum)
   double score;
 
   std::pair<double, algebra::Vector3Ds> vals =
-  bayesem3d_->calc_score_and_derivative(
+  IMP::em::bayesem3d_calc_score_and_derivative(
     const_cast<DensityMap *> (target_dens_map_.get()),
     ps_,
     resolution_,
@@ -66,7 +63,7 @@ double FitRestraintBayesEM3D::unprotected_evaluate(DerivativeAccumulator *accum)
 
   score = score_;
   if (calc_deriv) {
-    for (unsigned int i = 0; i < ps_.size(); i++) {
+    for (size_t i = 0; i < ps_.size(); i++) {
       Particle *p = ps_[i];
       p->add_to_derivative(xyz_keys[0], dv_[i][0], *accum);
       p->add_to_derivative(xyz_keys[1], dv_[i][1], *accum);
@@ -80,7 +77,7 @@ double FitRestraintBayesEM3D::unprotected_evaluate(DerivativeAccumulator *accum)
 ModelObjectsTemp FitRestraintBayesEM3D::do_get_inputs() const {
 
   ModelObjectsTemp pt;
-  for (int i = 0; i < (int)ps_.size(); i++) {
+  for (size_t i = 0; i < ps_.size(); i++) {
     pt.push_back(ps_[i]);
   }
   return pt;

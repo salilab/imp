@@ -9,14 +9,14 @@ def add_logabssumprodexp(a, b):
     s = - np.Inf
     ss = -1
     for i in range(len(a)):
-        s, ss = IMP.em.BayesEM3D().logabssumprodexp(s, a[i], ss, b[i])
+        s, ss = IMP.em.logabssumprodexp(s, a[i], ss, b[i])
     return s, ss
 
 def add_logsumprodexp(a, b):
     s = 0
     ss = 1
     for i in range(len(a)):
-        s = IMP.em.BayesEM3D().logsumprodexp(s, a[i], 1., b[i])
+        s = IMP.em.logsumprodexp(s, a[i], 1., b[i])
     return s
 
 class Tests(IMP.test.TestCase):

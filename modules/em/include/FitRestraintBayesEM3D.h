@@ -28,15 +28,16 @@
 
 IMPEM_BEGIN_NAMESPACE
 
+//! Calculate score based on fit to EM map
+/** The score is a function of the difference between
+    the normalize EM map and the map simulated from the particles. 
+    This restraint is numerically stable and 
+    incorporate knowledge about the uncertainty in the EM map.
+    Note: This is still in development.
+    \ingroup exp_restraint
+*/
+
 class IMPEMEXPORT FitRestraintBayesEM3D : public Restraint {
-  //! Calculate score based on fit to EM map
-  /** The score is a function of the difference between
-      the normalize EM map and the map simulated from the particles. 
-      This restraint is numerically stable and 
-      incorporate knowledge about the uncertainty in the EM map.
-      Note: This is still in development.
-      \ingroup exp_restraint
-  */
 
 public:
   //! Constructor
@@ -60,10 +61,9 @@ private:
   double sigma_;
 
   // reference to the IMP environment
-  core::XYZs xyz_;
+  core::XYZs xyzs_;
 
   // score and derivatives
-  IMP::PointerMember<BayesEM3D> bayesem3d_;
   double score_;
   algebra::Vector3Ds dv_;
 

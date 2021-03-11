@@ -10,9 +10,6 @@ import random
 import math
 import sys
 
-IMP.set_log_level(IMP.SILENT)
-IMP.set_check_level(IMP.NONE)
-
 #Set up the restraints
 import numpy as np
 
@@ -66,8 +63,13 @@ class Tests(IMP.test.TestCase):
     def setUp(self):
 
         IMP.test.TestCase.setUp(self)
-        self.m = IMP.Model()
 
+
+        IMP.set_log_level(IMP.SILENT)
+        IMP.set_check_level(IMP.NONE)
+
+
+        self.m = IMP.Model()
         self.mh, self.ps = get_particles(self.m, "input/input_atom0.pdb")
 
         ##Read and setup EM
@@ -94,8 +96,7 @@ class Tests(IMP.test.TestCase):
         mass = IMP.atom.get_mass_from_number_of_residues(157)
         t = IMP.em.get_threshold_for_approximate_mass(dmap, mass)
         self.fmap = IMP.em.get_threshold_map(dmap, t)
-        bayesem3d = IMP.em.BayesEM3D()
-        bayesem3d.get_normalized_intensities(self.fmap, self.ps, res);
+        IMP.em.get_normalized_intensities(self.fmap, self.ps, res);
 
         r = EMFitRestraint(self.m, self.ps, self.fmap,
             IMP.atom.Mass.get_mass_key(), res, 0.5)
@@ -104,7 +105,7 @@ class Tests(IMP.test.TestCase):
         score = self.rs.evaluate(True)
         print(score)
 
-    ##@IMP.test.skipIf(julia is None, "Requires julia")
+    @IMP.test.skipIf(julia is None, "Requires julia")
     def test_derivatives(self):
         fdm = FD.central_fdm(5, 1)
 

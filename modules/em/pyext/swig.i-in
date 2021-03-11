@@ -24,7 +24,6 @@ IMP_SWIG_OBJECT(IMP::em, SpiderMapReaderWriter, SpiderMapReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, EMReaderWriter, EMReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, XplorReaderWriter, XplorReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, CoarseCC, CoarseCCs);
-IMP_SWIG_OBJECT(IMP::em, BayesEM3D, BayesEM3Ds);
 IMP_SWIG_OBJECT(IMP::em, CoarseCCatIntervals, CoarseCCatIntervalsList);
 IMP_SWIG_VALUE(IMP::em, FittingSolutions, FittingSolutionsList);
 IMP_SWIG_OBJECT(IMP::em, MapDistanceTransform, MapDistanceTransforms);
