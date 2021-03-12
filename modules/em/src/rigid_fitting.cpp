@@ -267,7 +267,7 @@ FittingSolutions local_rigid_fitting_grid_search(
               algebra::get_identity_rotation_3d(), algebra::Vector3D(x, y, z));
           rotated_sampled_map->set_origin(t.get_transformed(origin));
           float threshold = rotated_sampled_map->get_header()->dmin;
-          score = 1. - IMP::em::CoarseCC::cross_correlation_coefficient(
+          score = 1. - IMP::em::get_coarse_cc_coefficient(
                            dmap, rotated_sampled_map, threshold, true);
           fr.add_solution(IMP::algebra::compose(t, t1), score);
           model_dens_map->set_origin(origin);
@@ -349,10 +349,10 @@ FittingSolutions compute_fitting_scores(
                       << std::endl);
       float threshold = model_dens_map2->get_header()->dmin - EPS;
       if (!local) {
-        score = 1. - CoarseCC::cross_correlation_coefficient(
+        score = 1. - get_coarse_cc_coefficient(
                          em_map, model_dens_map2, threshold, true);
       } else {
-        score = 1. - CoarseCC::local_cross_correlation_coefficient(
+        score = 1. - get_coarse_cc_local_coefficient(
                          em_map, model_dens_map2, threshold);
       }
       IMP_LOG_VERBOSE("adding score:" << score << std::endl);
@@ -380,10 +380,10 @@ FittingSolutions compute_fitting_scores(
                              << std::endl);
       float threshold = transformed_sampled_map->get_header()->dmin;
       if (!local) {
-        score = 1. - CoarseCC::cross_correlation_coefficient(
+        score = 1. - get_coarse_cc_coefficient(
                          em_map, transformed_sampled_map, threshold, true);
       } else {
-        score = 1. - CoarseCC::local_cross_correlation_coefficient(
+        score = 1. - get_coarse_cc_local_coefficient(
                          em_map, transformed_sampled_map, threshold);
       }
       IMP_LOG_VERBOSE("adding score:" << score << std::endl);
@@ -456,8 +456,8 @@ Float compute_fitting_score(const ParticlesTemp &ps, DensityMap *em_map,
   }
   union_map->calcRMS();
   model_dens_map->calcRMS();
-  double score = em::CoarseCC::calc_score(union_map, model_dens_map, 1.0, true,
-                                          false, FloatPair(0., 0.));  //,local);
+  double score = em::get_coarse_cc_score(union_map, model_dens_map, 1.0, true,
+                                         false, FloatPair(0., 0.));  //,local);
   union_map = static_cast<DensityMap *>(nullptr);
   model_dens_map = static_cast<SampledDensityMap *>(nullptr);
   return score;

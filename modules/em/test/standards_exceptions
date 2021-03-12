@@ -1,5 +1,9 @@
 # Many IMP::em functions do not obey the IMP standards
 function_name_exceptions = [
+  'get_coarse_cc_derivatives',
+  'get_coarse_cc_score',
+  'get_coarse_cc_coefficient',
+  'get_coarse_cc_local_coefficient',
   'CoarseCC.calc_derivatives',
   'CoarseCC.calc_derivatives_fast',
   'CoarseCC.calc_score',

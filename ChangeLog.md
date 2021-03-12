@@ -5,6 +5,8 @@ ChangeLog {#changelog}
 - Python 2.6 is no longer supported; Python 2.7 is the oldest version of
   Python that works with IMP (although Python 3 is recommended).
 - IMP::em::FitRestraint::cast() has been removed. Use `get_from()` instead.
+- The IMP::em::CoarseCC class is deprecated. Use similarly-named free
+  functions intead to calculate coarse cross correlation.
 
 # 2.14.0 - 2020-12-02 # {#changelog_2_14_0}
 - All IMP.parallel worker classes are now subclasses of IMP.parallel.Worker;

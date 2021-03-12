@@ -39,7 +39,6 @@ class Tests(IMP.test.TestCase):
         mrw = IMP.em.MRCReaderWriter()
         IMP.em.write_map(cropped_scene, "test2.mrc", mrw)
         dmap3 = IMP.em.read_map("test2.mrc", IMP.em.MRCReaderWriter())
-        coarse_cc = IMP.em.CoarseCC()
         # check that the center stays in the same place
         self.assertAlmostEqual(IMP.algebra.get_distance(
             dmap3.get_centroid(),
@@ -130,7 +129,7 @@ class Tests(IMP.test.TestCase):
         inv_cropped_map.add(cropped_map)
 
         # This evaluates to greater than 1.0 for unknown reasons - bug in CCC?
-        ccc = IMP.em.CoarseCC.cross_correlation_coefficient(inv_cropped_map, mrc, 0)
+        ccc = IMP.em.get_coarse_cc_coefficient(inv_cropped_map, mrc, 0)
         self.assertGreater(ccc, 0.99)
 
         # Test the keep_em_size flag
