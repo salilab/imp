@@ -112,8 +112,8 @@ double get_coarse_cc_local_coefficient(const DensityMap *em_map,
                                        double voxel_data_threshold);
 
 
-/* Responsible for performing coarse fitting between two density objects.
-
+//! Responsible for performing coarse fitting between two density objects.
+/**
     \note Do not use this class as an example for writing new code!
           The design (a class with no storage, and only static methods)
 	  is not ideal. A better implementation would just be a collection
