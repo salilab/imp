@@ -7,6 +7,10 @@ ChangeLog {#changelog}
 - IMP::em::FitRestraint::cast() has been removed. Use `get_from()` instead.
 - The IMP::em::CoarseCC class is deprecated. Use similarly-named free
   functions intead to calculate coarse cross correlation.
+- The IMP::pmi::mmcif::ProtocolOutput constructor no longer takes a file
+  handle argument, and the IMP::pmi::mmcif::ProtocolOutput::flush() method
+  has been removed. Instead, use the python-ihm library to output mmCIF
+  (or BinaryCIF).
 
 # 2.14.0 - 2020-12-02 # {#changelog_2_14_0}
 - All IMP.parallel worker classes are now subclasses of IMP.parallel.Worker;
