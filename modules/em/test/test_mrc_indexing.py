@@ -19,7 +19,7 @@ class Tests(IMP.test.TestCase):
         header = self.dmap.get_header()
 
         # Ensure indexing is non-standard
-        self.assertNotEqual((header.mapc, header.mapr, header.maps), (0, 1, 2))
+        self.assertNotEqual((header.mapc, header.mapr, header.maps), (1, 2, 3))
 
         self.dmap.get_header_writable().resolution = 1.8
 
