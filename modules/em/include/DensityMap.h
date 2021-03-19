@@ -46,7 +46,7 @@ IMPEMEXPORT DensityMap *read_map(std::string filename, MapReaderWriter *reader);
 
 //! Read a density map from a file and return it.
 /** Guess the file type from the file name. The file formats supported are:
-    - .mrc
+    - .mrc/.map
     - .em
     - .vol
     - .xplor
@@ -63,7 +63,7 @@ IMPEMEXPORT void write_map(DensityMap *m, std::string filename,
 //! Write a density map to a file.
 /** Guess the file type from the
     file name. The file formats supported are:
-    - .mrc
+    - .mrc/.map
     - .em
     - .vol
     - .xplor
