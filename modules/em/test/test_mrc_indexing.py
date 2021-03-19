@@ -2,6 +2,7 @@ from __future__ import print_function
 import IMP
 import IMP.test
 import IMP.em
+import os
 
 
 class Tests(IMP.test.TestCase):
@@ -22,6 +23,19 @@ class Tests(IMP.test.TestCase):
         self.assertNotEqual((header.mapc, header.mapr, header.maps), (1, 2, 3))
 
         self.dmap.get_header_writable().resolution = 1.8
+
+        # Make sure that our density map does not get mangled
+        # (e.g. transposed from non-standard to standard indexing again) if we
+        # read it in a second time
+        IMP.em.write_map(self.dmap, 'standard_indexing.mrc')
+        newdmap = IMP.em.read_map('standard_indexing.mrc')
+        self.assertLess(
+            IMP.algebra.get_distance(self.dmap.get_centroid(),
+                                     newdmap.get_centroid()), 5.0)
+        newheader = newdmap.get_header()
+        self.assertEqual((newheader.mapc, newheader.mapr, newheader.maps),
+                         (1, 2, 3))
+        os.unlink('standard_indexing.mrc')
 
         mdl = IMP.Model()
         self.rh = IMP.atom.read_pdb(in_pdb, mdl)
