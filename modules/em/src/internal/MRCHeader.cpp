@@ -13,9 +13,11 @@ IMPEM_BEGIN_INTERNAL_NAMESPACE
 void MRCHeader::FromDensityHeader(const DensityHeader &h) {
   std::string empty;
 
-  nz = h.get_nz();
-  ny = h.get_ny();
-  nx = h.get_nx();  // map size
+  // Assume 1:1 mapping here from DensityMap xyz coordinate system to
+  // MRC crs system
+  ns = h.get_nz();
+  nr = h.get_ny();
+  nc = h.get_nx();  // map size
   // mode
   if (h.get_data_type() == 0)  // data type not initialized
     mode = 2;
@@ -27,9 +29,9 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h) {
     mode = 2;  // 32-bits
 
   // number of first columns in map (default = 0)
-  nxstart = h.nxstart;
-  nystart = h.nystart;
-  nzstart = h.nzstart;
+  ncstart = h.nxstart;
+  nrstart = h.nystart;
+  nsstart = h.nzstart;
 
   mx = h.mx;
   my = h.my;
@@ -68,8 +70,31 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h) {
   for (int i = 0; i < nlabl; i++) strcpy(labels[i], h.comments[i]);
 }
 
+void MRCHeader::convert_crs_to_xyz(int &nx, int &ny, int &nz,
+                                   int &nxstart, int &nystart, int &nzstart) {
+  int nxyz[3] = {0,0,0};
+  nxyz[mapc-1] = nc;
+  nxyz[mapr-1] = nr;
+  nxyz[maps-1] = ns;
+  nx = nxyz[0];
+  ny = nxyz[1];
+  nz = nxyz[2];
+
+  int nxyzstart[3] = {0,0,0};
+  nxyzstart[mapc-1] = ncstart;
+  nxyzstart[mapr-1] = nrstart;
+  nxyzstart[maps-1] = nsstart;
+  nxstart = nxyzstart[0];
+  nystart = nxyzstart[1];
+  nzstart = nxyzstart[2];
+}
+
 void MRCHeader::ToDensityHeader(DensityHeader &h) {
   std::string empty;
+  /* Convert MRC column/row/section data to XYZ coordinate system used by
+     DensityMap */
+  int nx, ny, nz, nxstart, nystart, nzstart;
+  convert_crs_to_xyz(nx, ny, nz, nxstart, nystart, nzstart);
   h.update_map_dimensions(nx, ny, nz);
   h.update_cell_dimensions();
   // mode

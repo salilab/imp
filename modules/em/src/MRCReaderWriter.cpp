@@ -38,10 +38,50 @@ void MRCReaderWriter::read(float **pt) {
   // Read header
   read_header();
   // Allocate memory
-  size_t n = header.nx * header.ny * header.nz;
+  size_t n = header.nc * header.ns * header.ns;
   (*pt) = new float[n];
   read_data(*pt);
   fs.close();
+
+  // Convert data grid from col/row/segment to x/y/z if necessary
+  if (header.mapc != 1 || header.mapr != 2 || header.maps != 3) {
+    transpose_data_to_zyx(pt);
+  }
+}
+
+void MRCReaderWriter::transpose_data_to_zyx(float **pt) {
+  // Check for valid axis indices (should be a permutation of 1,2,3)
+  if (header.mapc < 1 || header.mapc > 3
+      || header.mapr < 1 || header.mapr > 3
+      || header.maps < 1 || header.maps > 3
+      || (header.mapc + header.mapr + header.maps != 6)) {
+    IMP_THROW("Invalid axes in MRC file. Axes must be some "
+              << "permutation of (1,2,3)", IOException);
+  }
+
+  // Get dimensions in xyz coordinate system
+  int nx, ny, nz, nxstart, nystart, nzstart;
+  header.convert_crs_to_xyz(nx, ny, nz, nxstart, nystart, nzstart);
+
+  float *transposed = new float[nx * ny * nz];
+
+  // Transpose data from pt[s,r,c] to transposed[z,y,x]
+  int xyz[3] = {0,0,0}, csrind = 0;
+  for (int s = 0; s < header.ns; ++s) {
+    xyz[header.maps-1] = s;
+    for (int r = 0; r < header.nr; ++r) {
+      xyz[header.mapr-1] = r;
+      for (int c = 0; c < header.nc; ++c, ++csrind) {
+        xyz[header.mapc-1] = c;
+        int xyzind = xyz[2] * ny * nx + xyz[1] * nx + xyz[0];
+        transposed[xyzind] = (*pt)[csrind];
+      }
+    }
+  }
+
+  // Replace original data with transposed
+  delete[] *pt;
+  *pt = transposed;
 }
 
 void MRCReaderWriter::read_data(float *pt) {
@@ -59,7 +99,7 @@ void MRCReaderWriter::read_data(float *pt) {
 /** Read the density data of a 8-bit MRC file */
 void MRCReaderWriter::read_8_data(float *pt) {
   seek_to_data();
-  size_t n = header.nx * header.ny * header.nz;
+  size_t n = header.nc * header.ns * header.nr;
   boost::scoped_array<unsigned char> grid_8bit(new unsigned char[n]);
   read_grid(grid_8bit.get(), sizeof(unsigned char), n);
   // Transfer to floats
@@ -87,7 +127,7 @@ void byte_swap(unsigned char *ch, int n_array) {
 void MRCReaderWriter::read_32_data(float *pt) {
   int needswap;
   seek_to_data();
-  size_t n = header.nx * header.ny * header.nz;  // size of the grid
+  size_t n = header.nc * header.nr * header.ns;  // size of the grid
   read_grid(pt, sizeof(float), n);
   // Check for the necessity of changing the endian
   needswap = 0;
@@ -137,16 +177,6 @@ void MRCReaderWriter::read_header() {
     byte_swap(ch, 56);
     header.machinestamp = machinestamp;
   }
-  if (header.mapc != 1 || header.mapr != 2 || header.maps != 3) {
-    IMP_WARN(
-          "MRCReaderWriter::read_header >> "
-          << filename << "; Non-standard MRC file: column, row, section "
-          << "indices are not (1,2,3) but (" << header.mapc << ","
-          << header.mapr << "," << header.maps << ")."
-          << " Resulting density data may be incorrectly oriented, "
-	  << "as IMP does not swap axes and assigns columns to x, "
-	  << "rows to y, and sections to z.\n");
-  }
 }
 
 void MRCReaderWriter::write(const char *fn, const float *pt) {
@@ -163,13 +193,13 @@ void MRCReaderWriter::write_header(std::ofstream &s) {
   memcpy(header.map, "MAP ", 4);
   //  header.machinestamp = get_machine_stamp();
   int wordsize = 4;
-  s.write((char *)&header.nx, wordsize);
-  s.write((char *)&header.ny, wordsize);
-  s.write((char *)&header.nz, wordsize);
+  s.write((char *)&header.nc, wordsize);
+  s.write((char *)&header.nr, wordsize);
+  s.write((char *)&header.ns, wordsize);
   s.write((char *)&header.mode, wordsize);
-  s.write((char *)&header.nxstart, wordsize);
-  s.write((char *)&header.nystart, wordsize);
-  s.write((char *)&header.nzstart, wordsize);
+  s.write((char *)&header.ncstart, wordsize);
+  s.write((char *)&header.nrstart, wordsize);
+  s.write((char *)&header.nsstart, wordsize);
   s.write((char *)&header.mx, wordsize);
   s.write((char *)&header.my, wordsize);
   s.write((char *)&header.mz, wordsize);
@@ -179,9 +209,13 @@ void MRCReaderWriter::write_header(std::ofstream &s) {
   s.write((char *)&header.alpha, wordsize);
   s.write((char *)&header.beta, wordsize);
   s.write((char *)&header.gamma, wordsize);
-  s.write((char *)&header.mapc, wordsize);
-  s.write((char *)&header.mapr, wordsize);
-  s.write((char *)&header.maps, wordsize);
+  // Since we transpose from s/r/c to z/y/x on input, always output
+  // 1,2,3 here so that we do not transpose the data again next time
+  // we read it (we are using the xyz coordinate system, not crs)
+  int mapc = 1, mapr = 2, maps = 3;
+  s.write((char *)&mapc, wordsize);
+  s.write((char *)&mapr, wordsize);
+  s.write((char *)&maps, wordsize);
   s.write((char *)&header.dmin, wordsize);
   s.write((char *)&header.dmax, wordsize);
   s.write((char *)&header.dmean, wordsize);
@@ -204,11 +238,11 @@ void MRCReaderWriter::write_header(std::ofstream &s) {
 /* Writes the grid of values of an EM map to a MRC file */
 void MRCReaderWriter::write_data(std::ofstream &s, const float *pt) {
 
-  s.write((char *)pt, sizeof(float) * header.nx * header.ny * header.nz);
+  s.write((char *)pt, sizeof(float) * header.nc * header.nr * header.ns);
   IMP_USAGE_CHECK(!s.bad(),
                   "MRCReaderWriter::write_data >> Error writing MRC data.");
-  IMP_LOG_TERSE("MRC file written: grid " << header.nx << "x" << header.ny
-                                          << "x" << header.nz << std::endl);
+  IMP_LOG_TERSE("MRC file written: grid " << header.nc << "x" << header.nr
+                                          << "x" << header.ns << std::endl);
 }
 
 IMPEM_END_NAMESPACE
