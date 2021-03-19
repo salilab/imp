@@ -137,13 +137,16 @@ void MRCReaderWriter::read_header() {
     byte_swap(ch, 56);
     header.machinestamp = machinestamp;
   }
-  IMP_USAGE_CHECK(
-      header.mapc == 1 && header.mapr == 2 && header.maps == 3,
-      "MRCReaderWriter::read_header >> Error reading MRC header of file: "
+  if (header.mapc != 1 || header.mapr != 2 || header.maps != 3) {
+    IMP_WARN(
+          "MRCReaderWriter::read_header >> "
           << filename << "; Non-standard MRC file: column, row, section "
           << "indices are not (1,2,3) but (" << header.mapc << ","
           << header.mapr << "," << header.maps << ")."
-          << " Resulting density data may be incorrectly oriented.");
+          << " Resulting density data may be incorrectly oriented, "
+	  << "as IMP does not swap axes and assigns columns to x, "
+	  << "rows to y, and sections to z.\n");
+  }
 }
 
 void MRCReaderWriter::write(const char *fn, const float *pt) {
