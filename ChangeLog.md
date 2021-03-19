@@ -11,6 +11,8 @@ ChangeLog {#changelog}
   handle argument, and the IMP::pmi::mmcif::ProtocolOutput::flush() method
   has been removed. Instead, use the python-ihm library to output mmCIF
   (or BinaryCIF).
+- New applications of IMP are now available:
+  - [Integrative model of the γTuSC-Spc110 complex](https://salilab.org/gtuscSpc110)
 
 # 2.14.0 - 2020-12-02 # {#changelog_2_14_0}
 - All IMP.parallel worker classes are now subclasses of IMP.parallel.Worker;
