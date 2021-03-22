@@ -18,11 +18,6 @@ class Tests(IMP.test.TestCase):
         mrw = IMP.em.MRCReaderWriter()
         self.dmap = IMP.em.read_map(in_mrc, mrw)
         header = self.dmap.get_header()
-        # Map doesn't set origin correctly; use n*start values instead
-        self.dmap.set_origin(
-            [header.xlen/header.mx * header.nxstart,
-             header.ylen/header.my * header.nystart,
-             header.zlen/header.mz * header.nzstart])
 
         # Ensure indexing is non-standard
         self.assertNotEqual((header.mapc, header.mapr, header.maps), (1, 2, 3))

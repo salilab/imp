@@ -132,9 +132,20 @@ void MRCHeader::ToDensityHeader(DensityHeader &h) {
   for (int i = 0; i < IMP_MRC_USER; i++) h.user[i] = user[i];
   strcpy(h.map, "MAP");  // character string 'MAP\0' to identify file type
   // Origin used for transforms
-  h.set_xorigin(xorigin);
-  h.set_yorigin(yorigin);
-  h.set_zorigin(zorigin);
+  // Modern files are supposed to use xorigin/yorigin/zorigin, but if these
+  // are zero use the old nxstart/nystart/nzstart fields instead
+  // (although only for non-skewed axes, the common case)
+  if (std::abs(xorigin) < 1e-6 && std::abs(yorigin) < 1e-6
+      && std::abs(zorigin) < 1e-6 && std::abs(alpha-90.0) < 1e-6
+      && std::abs(beta-90.0) < 1e-6 && std::abs(gamma-90.0) < 1e-6) {
+    h.set_xorigin(nxstart * xlen/mx);
+    h.set_yorigin(nystart * ylen/my);
+    h.set_zorigin(nzstart * zlen/mz);
+  } else {
+    h.set_xorigin(xorigin);
+    h.set_yorigin(yorigin);
+    h.set_zorigin(zorigin);
+  }
   // machine stamp (0x11110000 bigendian, 0x44440000 little)
   h.machinestamp = machinestamp;
   h.rms = rms;      // RMS deviation of map from mean density
