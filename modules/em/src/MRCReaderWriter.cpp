@@ -38,7 +38,7 @@ void MRCReaderWriter::read(float **pt) {
   // Read header
   read_header();
   // Allocate memory
-  size_t n = header.nc * header.ns * header.ns;
+  size_t n = header.nc * header.nr * header.ns;
   (*pt) = new float[n];
   read_data(*pt);
   fs.close();
