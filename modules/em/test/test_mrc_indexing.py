@@ -9,6 +9,14 @@ class Tests(IMP.test.TestCase):
     """Test that MRC files with non-standard indexing are transposed
        correctly"""
 
+    def test_invalid_axes(self):
+        """Check handling of MRCs with invalid axes"""
+        # axes should be a permutation of (1,2,3). This test file has
+        # (10,11,12) instead, which should raise an error.
+        self.assertRaises(
+            IOError, IMP.em.read_map,
+            self.get_input_file_name('invalid_axes.mrc'))
+
     def test_centroid_similarity(self):
         """The centroids of experimental and model-derived map should
            be similar"""
