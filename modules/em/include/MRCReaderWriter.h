@@ -43,6 +43,8 @@ class IMPEMEXPORT MRCReaderWriter : public MapReaderWriter {
   void read_header();
   //! reads the data
   void read_data(float *pt);
+  //! Transpose data from section/row/col to z/y/x if needed
+  void transpose_data_to_zyx(float **pt);
   //! reads data of size 8-bit
   void read_8_data(float *pt);
   //! reads data of size 32-bit
