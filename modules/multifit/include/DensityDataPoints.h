@@ -17,8 +17,6 @@
 #include <IMP/em/converters.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/algebra/internal/tnt_array2d.h>
-#include <IMP/algebra/internal/tnt_array2d_utils.h>
 #include <IMP/atom/Hierarchy.h>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/multifit/multifit_config.h>
