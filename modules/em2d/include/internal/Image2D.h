@@ -22,6 +22,7 @@
 
 #include <boost/multi_array.hpp>
 #include <boost/random.hpp>
+#include <Eigen/Dense>
 
 #include <stack>
 #include <string>
@@ -417,23 +418,21 @@ void Image2D<T>::compute_PCA() {
   vary /= weights_sum;
 
   // covariance matrix
-  IMP::algebra::internal::TNT::Array2D<double> cov(2, 2);
-  cov[0][0] = varx;
-  cov[0][1] = varxy;
-  cov[1][0] = varxy;
-  cov[1][1] = vary;
+  Eigen::Matrix2d cov;
+  cov(0, 0) = varx;
+  cov(0, 1) = varxy;
+  cov(1, 0) = varxy;
+  cov(1, 1) = vary;
 
-  IMP::algebra::internal::JAMA::SVD<double> svd(cov);
-  IMP::algebra::internal::TNT::Array2D<double> V(2, 2);
-  IMP::algebra::internal::TNT::Array1D<double> SV;
+  Eigen::JacobiSVD<Eigen::Matrix2d> svd = cov.jacobiSvd(Eigen::ComputeFullV);
+  Eigen::Matrix2d V = svd.matrixV();
+  Eigen::Vector2d SV = svd.singularValues();
 
-  svd.getV(V);
-  svd.getSingularValues(SV);
   // the principal components are the columns of V
   // pc1(pc2) is the vector of the largest(smallest) eigenvalue
   IMP::algebra::Vector2Ds pcs;
-  pcs.push_back(IMP::algebra::Vector2D(V[0][0], V[1][0]));
-  pcs.push_back(IMP::algebra::Vector2D(V[0][1], V[1][1]));
+  pcs.push_back(IMP::algebra::Vector2D(V(0, 0), V(1, 0)));
+  pcs.push_back(IMP::algebra::Vector2D(V(0, 1), V(1, 1)));
   pca_ = IMP::algebra::PrincipalComponentAnalysis2D(
       pcs, IMP::algebra::Vector2D(SV[0], SV[1]), m);
 }
