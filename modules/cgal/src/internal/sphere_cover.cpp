@@ -44,9 +44,9 @@ void refine_unit_sphere_cover_d(IMP::Vector<algebra::VectorD<D> > &ret,
       indexes[vh] = i + 1;
       if (!ALL) {
         algebra::VectorD<D> nr = -ret[i];
-        P p(D, nr.begin(), nr.end());
-        VertexHandle vh = ch.insert(p);
-        indexes[vh] = -static_cast<int>(i) - 1;
+        P opp_p(D, nr.begin(), nr.end());
+        VertexHandle opp_vh = ch.insert(opp_p);
+        indexes[opp_vh] = -static_cast<int>(i) - 1;
       }
     }
     IMP::Vector<algebra::VectorD<D> > sums(n, algebra::get_zero_vector_d<D>());

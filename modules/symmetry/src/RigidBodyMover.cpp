@@ -115,8 +115,8 @@ core::MonteCarloMoverResult RigidBodyMover::do_propose() {
     // store old coordinates
     oldcoords_.push_back(oc);
     // apply cell transformation
-    algebra::Vector3D nc = cell_tr.get_transformed(oc);
-    xyz.set_coordinates(nc);
+    algebra::Vector3D transnc = cell_tr.get_transformed(oc);
+    xyz.set_coordinates(transnc);
   }
 
   // set new reference frames for slave rbs

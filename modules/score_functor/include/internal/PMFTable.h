@@ -104,7 +104,6 @@ struct PMFTable : public Object {
     int bins_read = -1;
     unsigned int read_entries = 0;
     while (true) {
-      std::string line;
       std::getline(in, line);
       if (!in) {
         break;

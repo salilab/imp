@@ -322,11 +322,11 @@ NormalizeRotation::apply_indexes
       quaternion_tables[2][pi] = 0;
       quaternion_tables[3][pi] = 0;
     } else if (std::abs(sm - 1.0) > .01) {
-      double m=std::sqrt(sm); // magnitude
-      quaternion_tables[0][pi] = v[0]/m;
-      quaternion_tables[1][pi] = v[1]/m;
-      quaternion_tables[2][pi] = v[2]/m;
-      quaternion_tables[3][pi] = v[3]/m;
+      double magnitude = std::sqrt(sm);
+      quaternion_tables[0][pi] = v[0]/magnitude;
+      quaternion_tables[1][pi] = v[1]/magnitude;
+      quaternion_tables[2][pi] = v[2]/magnitude;
+      quaternion_tables[3][pi] = v[3]/magnitude;
       IMP_LOG_TERSE( "Rotation quaternion normalized to " << v << std::endl);
     }
     IMP_INTERNAL_CHECK

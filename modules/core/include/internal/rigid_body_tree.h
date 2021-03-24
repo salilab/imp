@@ -99,9 +99,9 @@ class IMPCOREEXPORT RigidBodyHierarchy : public IMP::Object {
     return constituents_;
   }
   // for testing
-  ParticleIndexes get_particles(unsigned int i) const {
+  ParticleIndexes get_particles(unsigned int pi) const {
     ParticleIndexes ret;
-    Ints stack(1, i);
+    Ints stack(1, pi);
     do {
       unsigned int i = stack.back();
       stack.pop_back();
@@ -172,9 +172,11 @@ inline void fill_close_pairs(Model *m, const RigidBodyHierarchy *da,
   typedef std::pair<int, int> IP;
   typedef std::pair<double, IP> QP;
   std::priority_queue<QP, Vector<QP>, LessFirst> queue;
-  double d = distance_bound(m, da, 0, db, 0);
-  if (d < dist) {
-    queue.push(QP(d, IP(0, 0)));
+  {
+    double d = distance_bound(m, da, 0, db, 0);
+    if (d < dist) {
+      queue.push(QP(d, IP(0, 0)));
+    }
   }
   while (!queue.empty()) {
     QP v = queue.top();
@@ -257,9 +259,11 @@ inline void fill_close_particles(Model *m, const RigidBodyHierarchy *da,
                                  Sink sink) {
   typedef std::pair<double, int> QP;
   std::priority_queue<QP, Vector<QP>, LessFirst> queue;
-  double d = distance_bound(m, da, 0, pt);
-  if (d > dist) return;
-  queue.push(QP(d, 0));
+  {
+    double d = distance_bound(m, da, 0, pt);
+    if (d > dist) return;
+    queue.push(QP(d, 0));
+  }
   do {
     std::pair<double, int> v = queue.top();
     queue.pop();

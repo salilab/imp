@@ -339,7 +339,7 @@ inline F visit_depth_first(HD d, F &f) {
         else return i+1;
       }
     };
-    \param[in] i The data to be used for d (since it has no relevant parent)
+    \param[in] data The data to be used for d (since it has no relevant parent)
 
     \return A copy of the functor passed in. Use this if you care about
            the functor state.
@@ -348,10 +348,11 @@ inline F visit_depth_first(HD d, F &f) {
     \see Hierarchy
  */
 template <class HD, class F>
-inline F visit_breadth_first_with_data(HD d, F f, typename F::result_type i) {
+inline F visit_breadth_first_with_data(HD d, F f,
+                                       typename F::result_type data) {
   typedef std::pair<typename F::result_type, HD> DP;
   std::deque<DP> stack;
-  stack.push_back(DP(i, d));
+  stack.push_back(DP(data, d));
   // d.show(std::cerr);
   do {
     DP cur = stack.front();
@@ -371,10 +372,10 @@ inline F visit_breadth_first_with_data(HD d, F f, typename F::result_type i) {
     \see Hierarchy
  */
 template <class HD, class F>
-inline F visit_depth_first_with_data(HD d, F f, typename F::result_type i) {
+inline F visit_depth_first_with_data(HD d, F f, typename F::result_type data) {
   typedef std::pair<typename F::result_type, HD> DP;
   Vector<DP> stack;
-  stack.push_back(DP(i, d));
+  stack.push_back(DP(data, d));
   // d.show(std::cerr);
   do {
     DP cur = stack.back();

@@ -325,9 +325,9 @@ recommended q value is 0.2")
       s.setf(std::ios::fixed, std::ios::floatfield);
       s << std::setw(6) << std::setprecision(3) << " Chi^2 = " << fp.get_chi_square()
         << " c1 = " << fp.get_c1() << " c2 = " << fp.get_c2() << std::endl;
-      for(unsigned int i=0; i<clustered_profiles.size(); i++) {
-        s << std::setw(4) << i << " " << clustered_profiles[i]->get_name();
-        s << std::setw(5) << std::setprecision(3) << "(" << fp.get_weights()[i] << ") ";
+      for(unsigned int j=0; j<clustered_profiles.size(); j++) {
+        s << std::setw(4) << j << " " << clustered_profiles[j]->get_name();
+        s << std::setw(5) << std::setprecision(3) << "(" << fp.get_weights()[j] << ") ";
         s << std::endl;
       }
       s.close();
