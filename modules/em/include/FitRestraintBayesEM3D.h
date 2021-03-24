@@ -60,8 +60,8 @@ class IMPEMEXPORT FitRestraintBayesEM3D : public Restraint {
   core::XYZs xyzs_;
 
   // score and derivatives
-  double score_;
-  algebra::Vector3Ds dv_;
+  mutable double score_;
+  mutable algebra::Vector3Ds dv_;
 
   // Particles
   Particles ps_;

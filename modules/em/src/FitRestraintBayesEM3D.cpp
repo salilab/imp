@@ -49,8 +49,8 @@ double FitRestraintBayesEM3D::unprotected_evaluate(
           const_cast<DensityMap *>(target_dens_map_.get()), ps_, resolution_,
           sigma_);
 
-  const_cast<FitRestraintBayesEM3D *>(this)->score_ = vals.first;
-  const_cast<FitRestraintBayesEM3D *>(this)->dv_ = vals.second;
+  score_ = vals.first;
+  dv_ = vals.second;
 
   // now update the derivatives
   FloatKeys xyz_keys = IMP::core::XYZR::get_xyz_keys();
