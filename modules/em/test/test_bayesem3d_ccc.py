@@ -45,9 +45,9 @@ class Tests(IMP.test.TestCase):
         mass = IMP.atom.get_mass_from_number_of_residues(157)
         t = IMP.em.get_threshold_for_approximate_mass(dmap, mass)
         self.fmap = IMP.em.get_threshold_map(dmap, t)
-        IMP.em.get_normalized_intensities(self.fmap, self.ps, self.res);
+        IMP.em.bayesem3d_get_normalized_intensities(self.fmap, self.ps, self.res);
 
-        self.ps_map = IMP.em.get_density_from_particle(self.fmap, self.ps, self.res)
+        self.ps_map = IMP.em.bayesem3d_get_density_from_particle(self.fmap, self.ps, self.res)
         rand_angle = random.uniform(-0.01 / 180 * math.pi, 0.01 / 180 * math.pi)
         axis = IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
         q = IMP.algebra.get_rotation_about_axis(axis, rand_angle)
@@ -61,18 +61,18 @@ class Tests(IMP.test.TestCase):
         trans = IMP.algebra.Transformation3D(rot, tr)
         IMP.core.transform(self.prot_rb, trans)
         self.m.update()
-        self.ps_map2 = IMP.em.get_density_from_particle(self.fmap, self.ps, self.res)
+        self.ps_map2 = IMP.em.bayesem3d_get_density_from_particle(self.fmap, self.ps, self.res)
 
     def test_ccc_mrc_to_mrc(self):
-        cc1 = IMP.em.get_cross_correlation_coefficient(self.fmap, self.fmap)
+        cc1 = IMP.em.bayesem3d_get_cross_correlation_coefficient(self.fmap, self.fmap)
         self.assertAlmostEqual(cc1, 1.0, delta=1e-8)
 
     def test_ccc_ps_to_ps(self):
-        cc2 = IMP.em.get_cross_correlation_coefficient(self.ps_map, self.ps_map)
+        cc2 = IMP.em.bayesem3d_get_cross_correlation_coefficient(self.ps_map, self.ps_map)
         self.assertAlmostEqual(cc2, 1.0, delta=1e-8)
 
     def test_ccc_non_overlapping(self):
-        cc3 = IMP.em.get_cross_correlation_coefficient(self.ps_map, self.ps_map2)
+        cc3 = IMP.em.bayesem3d_get_cross_correlation_coefficient(self.ps_map, self.ps_map2)
         self.assertAlmostEqual(cc3, 0.0, delta=1e-8)
 
 

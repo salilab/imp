@@ -96,7 +96,7 @@ class Tests(IMP.test.TestCase):
         mass = IMP.atom.get_mass_from_number_of_residues(157)
         t = IMP.em.get_threshold_for_approximate_mass(dmap, mass)
         self.fmap = IMP.em.get_threshold_map(dmap, t)
-        IMP.em.get_normalized_intensities(self.fmap, self.ps, res);
+        IMP.em.bayesem3d_get_normalized_intensities(self.fmap, self.ps, res);
 
         r = EMFitRestraint(self.m, self.ps, self.fmap,
             IMP.atom.Mass.get_mass_key(), res, 0.5)

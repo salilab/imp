@@ -16,7 +16,7 @@ IMPEM_BEGIN_NAMESPACE
 
 const double window_size = 1.0;
 
-std::map<double, int> get_distinct_and_counts(DensityMap *em) {
+std::map<double, int> bayesem3d_get_distinct_and_counts(DensityMap *em) {
   const DensityHeader *em_header = em->get_header();
   const double *em_data = em->get_data();
   long nvox = em_header->get_number_of_voxels();
@@ -29,11 +29,11 @@ std::map<double, int> get_distinct_and_counts(DensityMap *em) {
   return values_and_counts;
 }
 
-Floats get_cumulative_sum(DensityMap *em) {
+Floats bayesem3d_get_cumulative_sum(DensityMap *em) {
   const DensityHeader *em_header = em->get_header();
   long nvox = em_header->get_number_of_voxels();
 
-  std::map<double, int> values_and_counts = get_distinct_and_counts(em);
+  std::map<double, int> values_and_counts = bayesem3d_get_distinct_and_counts(em);
 
   Floats cumulative_sum;
   std::map<double, int>::iterator it;
@@ -48,11 +48,11 @@ Floats get_cumulative_sum(DensityMap *em) {
   return cumulative_sum;
 }
 
-std::map<double, double> get_cumulative_sum_with_reference(
+std::map<double, double> bayesem3d_get_cumulative_sum_with_reference(
   DensityMap *em) {
   const DensityHeader *em_header = em->get_header();
   // long nvox = em_header->get_number_of_voxels();
-  std::map<double, int> values_and_counts = get_distinct_and_counts(em);
+  std::map<double, int> values_and_counts = bayesem3d_get_distinct_and_counts(em);
 
   std::map<double, double> cumulative_sum;
   std::map<double, int>::iterator it;
@@ -67,7 +67,7 @@ std::map<double, double> get_cumulative_sum_with_reference(
   return cumulative_sum;
 }
 
-double linear_interpolate(const Floats &x_data, const Floats &y_data,
+double bayesem3d_linear_interpolate(const Floats &x_data, const Floats &y_data,
  double x, bool extrapolate) {
   int size = x_data.size();
 
@@ -97,7 +97,7 @@ double linear_interpolate(const Floats &x_data, const Floats &y_data,
   return yL + dydx * (x - xL);
 }
 
-FloatPair logabssumexp(double x, double y, double sx, double sy) {
+FloatPair bayesem3d_get_logabssumexp(double x, double y, double sx, double sy) {
   if (IMP::isinf(x) || IMP::isinf(y)) {
     if (x >= y){
       return FloatPair(x, sx);
@@ -126,15 +126,15 @@ FloatPair logabssumexp(double x, double y, double sx, double sy) {
   }
 }
 
-FloatPair logabssumprodexp(double x, double y, double wx,
+FloatPair bayesem3d_get_logabssumprodexp(double x, double y, double wx,
   double wy) {
   double sx = std::copysign(1, wx);
   double sy = std::copysign(1, wy);
 
-  return logabssumexp(x + log(wx * sx), y + log(wy * sy), sx, sy);
+  return bayesem3d_get_logabssumexp(x + log(wx * sx), y + log(wy * sy), sx, sy);
 }
 
-double logsumexp(double x, double y) {
+double bayesem3d_get_logsumexp(double x, double y) {
   if (IMP::isinf(x) || IMP::isinf(y)) {
     if (x >= y){
       return x;
@@ -157,11 +157,11 @@ double logsumexp(double x, double y) {
   }
 }
 
-double logsumprodexp(double x, double y, double wx, double wy) {
-  return logsumexp(x + log(wx), y + log(wy));
+double bayesem3d_get_logsumprodexp(double x, double y, double wx, double wy) {
+  return bayesem3d_get_logsumexp(x + log(wx), y + log(wy));
 }
 
-std::vector<double> get_value(Particle *p,
+std::vector<double> bayesem3d_get_value(Particle *p,
  const algebra::Vector3D &pt,
  double mass_ii,
  const IMP::em::KernelParameters &kps) {
@@ -182,7 +182,7 @@ std::vector<double> get_value(Particle *p,
   return results;
 }
 
-std::vector<double> get_value_no_deriv(
+std::vector<double> bayesem3d_get_value_no_deriv(
   Particle *p, const algebra::Vector3D &pt, double mass_ii,
   const IMP::em::KernelParameters &kps) {
   std::vector<double> results;
@@ -198,7 +198,7 @@ std::vector<double> get_value_no_deriv(
   return results;
 }
 
-FloatPair get_square_em_density(DensityMap *em,
+FloatPair bayesem3d_get_em_density_squared(DensityMap *em,
  long number_of_voxels) {
   FloatPair results;
 
@@ -215,7 +215,7 @@ FloatPair get_square_em_density(DensityMap *em,
   return results;
 }
 
-double get_cross_correlation_coefficient(DensityMap *em1, DensityMap *em2){
+double bayesem3d_get_cross_correlation_coefficient(DensityMap *em1, DensityMap *em2){
 
   const DensityHeader *em1_header = em1->get_header();
   const double *em1_data = em1->get_data();
@@ -272,7 +272,7 @@ double get_cross_correlation_coefficient(DensityMap *em1, DensityMap *em2){
   return ccc;
 }
 
-DensityMap *get_density_from_particle(DensityMap *em,
+DensityMap *bayesem3d_get_density_from_particle(DensityMap *em,
  const IMP::ParticlesTemp &ps,
  double resolution) {
   const DensityHeader *em_header = em->get_header();
@@ -313,9 +313,9 @@ DensityMap *get_density_from_particle(DensityMap *em,
         for (ivoxx = iminx; ivoxx <= imaxx; ivoxx++) {
           algebra::Vector3D cur(em->get_location_by_voxel(ivox));
           std::vector<double> value =
-          get_value_no_deriv(xyzr[ii], cur, mass_ii, kps);
+          bayesem3d_get_value_no_deriv(xyzr[ii], cur, mass_ii, kps);
 
-          vals[ivox] = logsumprodexp(vals[ivox], value[0], 1., value[1]);
+          vals[ivox] = bayesem3d_get_logsumprodexp(vals[ivox], value[0], 1., value[1]);
 
           ivox++;
           visited_voxels.insert(ivox);
@@ -331,7 +331,7 @@ DensityMap *get_density_from_particle(DensityMap *em,
   return ret.release();
 }
 
-std::pair<double, algebra::Vector3Ds> bayesem3d_calc_score_and_derivative(
+std::pair<double, algebra::Vector3Ds> bayesem3d_get_score_and_derivative(
   DensityMap *em, const IMP::ParticlesTemp &ps, double resolution,
   double sigma) {
 
@@ -367,7 +367,7 @@ std::pair<double, algebra::Vector3Ds> bayesem3d_calc_score_and_derivative(
 
   // IMP_NEW(DensityMap, retct, ());
   IMP::Pointer<DensityMap> retct =
-  get_density_from_particle(em, ps, resolution);
+  bayesem3d_get_density_from_particle(em, ps, resolution);
   double *modelct = retct->get_data();
 
   // Compute the sum and the sum^2 of the experimental EM denisty map
@@ -402,45 +402,49 @@ std::pair<double, algebra::Vector3Ds> bayesem3d_calc_score_and_derivative(
 
         for (ivoxx = iminx; ivoxx <= imaxx; ivoxx++) {
           algebra::Vector3D cur(em->get_location_by_voxel(ivox));
-          std::vector<double> value = get_value(xyzr[ii], cur, mass_ii, kps);
+          std::vector<double> value = bayesem3d_get_value(xyzr[ii], cur, mass_ii, kps);
 
           double intensity = value[1] * exp(value[0]);
-
+       
           // score when exponent is linear
           score_lnr =
-          logabssumprodexp(score_lnr.first, value[0], score_lnr.second,
+          bayesem3d_get_logabssumprodexp(score_lnr.first, value[0], score_lnr.second,
            (modelct[ivox] - intensity) * value[1]);
 
           // score when cross term with em
           score_lcc =
-          logabssumprodexp(score_lcc.first, value[0], score_lcc.second,
+          bayesem3d_get_logabssumprodexp(score_lcc.first, value[0], score_lcc.second,
            -2. * em_data[ivox] * value[1]);
 
           // score when exponent is squared
-          score_sqr = logabssumprodexp(score_sqr.first, 2. * value[0],
+          score_sqr = 
+          bayesem3d_get_logabssumprodexp(score_sqr.first, 2. * value[0],
            score_sqr.second, value[1] * value[1]);
 
           // derivative when exponent is linear
-          dsdx_lnr = logabssumprodexp(dsdx_lnr.first, value[0], dsdx_lnr.second,
+          dsdx_lnr = 
+          bayesem3d_get_logabssumprodexp(dsdx_lnr.first, value[0], dsdx_lnr.second,
             2. * modelct[ivox] * value[1] * value[2]);
 
-          dsdy_lnr = logabssumprodexp(dsdy_lnr.first, value[0], dsdy_lnr.second,
+          dsdy_lnr = 
+          bayesem3d_get_logabssumprodexp(dsdy_lnr.first, value[0], dsdy_lnr.second,
             2. * modelct[ivox] * value[1] * value[3]);
 
-          dsdz_lnr = logabssumprodexp(dsdz_lnr.first, value[0], dsdz_lnr.second,
+          dsdz_lnr = 
+          bayesem3d_get_logabssumprodexp(dsdz_lnr.first, value[0], dsdz_lnr.second,
             2. * modelct[ivox] * value[1] * value[4]);
 
           // Derivative of the cross term with em
           dsdx_lcc =
-          logabssumprodexp(dsdx_lcc.first, value[0], dsdx_lcc.second,
+          bayesem3d_get_logabssumprodexp(dsdx_lcc.first, value[0], dsdx_lcc.second,
            -2. * em_data[ivox] * value[1] * value[2]);
 
           dsdy_lcc =
-          logabssumprodexp(dsdy_lcc.first, value[0], dsdy_lcc.second,
+          bayesem3d_get_logabssumprodexp(dsdy_lcc.first, value[0], dsdy_lcc.second,
            -2. * em_data[ivox] * value[1] * value[3]);
 
           dsdz_lcc =
-          logabssumprodexp(dsdz_lcc.first, value[0], dsdz_lcc.second,
+          bayesem3d_get_logabssumprodexp(dsdz_lcc.first, value[0], dsdz_lcc.second,
            -2. * em_data[ivox] * value[1] * value[4]);
 
           // If we want to write the generated density from particles.
@@ -485,25 +489,25 @@ std::pair<double, algebra::Vector3Ds> bayesem3d_calc_score_and_derivative(
 }
 
 template <typename M, typename V>
-void map_first_to_floats(const M &m, V &v) {
+void bayesem3d_map_first_to_floats(const M &m, V &v) {
   for (typename M::const_iterator it = m.begin(); it != m.end(); ++it)
     v.push_back(it->first);
 }
 
 template <typename M, typename V>
-void map_second_to_floats(const M &m, V &v) {
+void bayesem3d_map_second_to_floats(const M &m, V &v) {
   for (typename M::const_iterator it = m.begin(); it != m.end(); ++it)
     v.push_back(it->second);
 }
 
-void get_normalized_intensities(DensityMap *em,
+void bayesem3d_get_normalized_intensities(DensityMap *em,
  const IMP::ParticlesTemp &ps,
  double resolution) {
   const DensityHeader *em_header = em->get_header();
   double *em_data = em->get_data();
   long nvox = em_header->get_number_of_voxels();
 
-  IMP::Pointer<DensityMap> em_m = get_density_from_particle(em, ps, resolution);
+  IMP::Pointer<DensityMap> em_m = bayesem3d_get_density_from_particle(em, ps, resolution);
   const double *em_model = em_m->get_data();
 
   // std::map<double, int> values_and_counts_model =
@@ -511,25 +515,25 @@ void get_normalized_intensities(DensityMap *em,
   // values_and_counts_em = get_distinct_and_counts(em, nvox);
 
   std::map<double, double> cumulative_sum_model_with_ref =
-  get_cumulative_sum_with_reference(em_m);
+  bayesem3d_get_cumulative_sum_with_reference(em_m);
   std::map<double, double> cumulative_sum_em_with_ref =
-  get_cumulative_sum_with_reference(em);
+  bayesem3d_get_cumulative_sum_with_reference(em);
 
   Floats model_sorted_unique_intensities;
   Floats cumulative_sum_em;
   Floats cumulative_sum_model;
 
-  map_first_to_floats(cumulative_sum_model_with_ref,
+  bayesem3d_map_first_to_floats(cumulative_sum_model_with_ref,
     model_sorted_unique_intensities);
-  map_second_to_floats(cumulative_sum_em_with_ref, cumulative_sum_em);
-  map_second_to_floats(cumulative_sum_model_with_ref, cumulative_sum_model);
+  bayesem3d_map_second_to_floats(cumulative_sum_em_with_ref, cumulative_sum_em);
+  bayesem3d_map_second_to_floats(cumulative_sum_model_with_ref, cumulative_sum_model);
 
   double value = 0.0;
   double interp = 0.0;
 
   for (long ivox = 0; ivox < nvox; ++ivox) {
     value = cumulative_sum_em_with_ref[(int)(em_data[ivox] * 1000.)];
-    interp = linear_interpolate(cumulative_sum_model,
+    interp = bayesem3d_linear_interpolate(cumulative_sum_model,
       model_sorted_unique_intensities, value, false);
 
     em_data[ivox] = interp / 1000.;

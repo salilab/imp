@@ -46,10 +46,9 @@ FitRestraintBayesEM3D::FitRestraintBayesEM3D(
 double FitRestraintBayesEM3D::unprotected_evaluate(DerivativeAccumulator *accum) const {
 
   bool calc_deriv = accum ? true : false;
-  double score;
 
   std::pair<double, algebra::Vector3Ds> vals =
-  IMP::em::bayesem3d_calc_score_and_derivative(
+  IMP::em::bayesem3d_get_score_and_derivative(
     const_cast<DensityMap *> (target_dens_map_.get()),
     ps_,
     resolution_,
@@ -61,7 +60,6 @@ double FitRestraintBayesEM3D::unprotected_evaluate(DerivativeAccumulator *accum)
   // now update the derivatives
   FloatKeys xyz_keys = IMP::core::XYZR::get_xyz_keys();
 
-  score = score_;
   if (calc_deriv) {
     for (size_t i = 0; i < ps_.size(); i++) {
       Particle *p = ps_[i];
@@ -71,7 +69,7 @@ double FitRestraintBayesEM3D::unprotected_evaluate(DerivativeAccumulator *accum)
     }
   }
 
-  return score;
+  return score_;
 }
 
 ModelObjectsTemp FitRestraintBayesEM3D::do_get_inputs() const {

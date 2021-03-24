@@ -30,7 +30,7 @@ class Tests(IMP.test.TestCase):
     def test_linear_interpolation(self):
 
         vp = np.interp(2.5, self.x, self.y)
-        ip = IMP.em.linear_interpolate(self.x, self.y, 2.5, False)
+        ip = IMP.em.bayesem3d_linear_interpolate(self.x, self.y, 2.5, False)
 
         self.assertAlmostEqual(vp, ip, delta=1e-10)
 
@@ -39,7 +39,7 @@ class Tests(IMP.test.TestCase):
         y = [3, 2, 0]
 
         with self.assertRaises(Exception) as context:
-            ip = IMP.em.linear_interpolate(x, y, 2.5, False)
+            ip = IMP.em.bayesem3d_linear_interpolate(x, y, 2.5, False)
 
         self.assertEqual("The box size cannot be smaller than 2", str(context.exception))
 
@@ -47,7 +47,7 @@ class Tests(IMP.test.TestCase):
         x = [1, 2, 3, 4, 5]
         y = [10, 12, 13, 14, 15]
 
-        ip = IMP.em.linear_interpolate(x, y, 20, False)
+        ip = IMP.em.bayesem3d_linear_interpolate(x, y, 20, False)
 
         self.assertAlmostEqual(ip, 15, delta=1e-10)
 
