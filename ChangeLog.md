@@ -11,8 +11,15 @@ ChangeLog {#changelog}
   handle argument, and the IMP::pmi::mmcif::ProtocolOutput::flush() method
   has been removed. Instead, use the python-ihm library to output mmCIF
   (or BinaryCIF).
+- MRC file handling has been extended; MRC files not aligned with the xyz
+  axes (mapc/mapr/maps not 1,2,3) are now automatically transposed rather than
+  raising an exception, and the origin is now set from the
+  nxstart/nystart/nzstart fields if present and the file origin is zero.
 - New applications of IMP are now available:
   - [Integrative model of the γTuSC-Spc110 complex](https://salilab.org/gtuscSpc110)
+- IMP's copies of the old Template Numerical Toolkit (TNT) and
+  JAMA/C++ library have been removed from IMP::algebra::internal.
+  Use equivalent functionality in the Eigen library instead.
 
 # 2.14.0 - 2020-12-02 # {#changelog_2_14_0}
 - All IMP.parallel worker classes are now subclasses of IMP.parallel.Worker;
