@@ -192,9 +192,9 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
   if (calc_deriv) {
     // calculate the derivatives for non rigid bodies
     IMP_LOG_VERBOSE("Going to calc derivatives for none_rb_model_dens_map_\n");
-    const_cast<FitRestraint *>(this)->dv_ =
-        get_coarse_cc_derivatives(target_dens_map_, model_dens_map_, all_ps_,
-                                  weight_key_, kernel_params_, scalefac_, dv_);
+    dv_ = get_coarse_cc_derivatives(target_dens_map_, model_dens_map_, all_ps_,
+                                    weight_key_, kernel_params_, scalefac_,
+                                    dv_);
 
     IMP_LOG_VERBOSE(
         "Finish calculating derivatives for none_rb_model_dens_map_\n");

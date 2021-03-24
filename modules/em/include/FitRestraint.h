@@ -92,7 +92,7 @@ class IMPEMEXPORT FitRestraint : public Restraint {
   float scalefac_;
   core::XYZs xyz_;
   // derivatives
-  algebra::Vector3Ds dv_;
+  mutable algebra::Vector3Ds dv_;
   algebra::ReferenceFrame3Ds rbs_orig_rf_;
   FloatKey weight_key_;
   KernelParameters *kernel_params_;
