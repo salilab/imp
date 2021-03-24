@@ -1,3 +1,8 @@
+HEAD
+====
+  - A convenience class is added to describe datasets stored in the
+    ProXL database (:class:`ihm.location.ProXLLocation`).
+
 0.18 - 2020-11-06
 =================
   - Update to match latest FLR dictionary.

@@ -162,7 +162,7 @@ class Dictionary(object):
        that includes all the data in the original Dictionaries.
 
        See the `validator example <https://github.com/ihmwg/python-ihm/blob/master/examples/validate_pdb_dev.py>`_
-       for an example of using this class."""
+       for an example of using this class."""  # noqa: E501
     def __init__(self):
         #: Mapping from name to :class:`Category` objects
         self.categories = {}

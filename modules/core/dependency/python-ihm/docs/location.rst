@@ -40,6 +40,9 @@ The :mod:`ihm.location` Python module
 .. autoclass:: BioGRIDLocation
    :members:
 
+.. autoclass:: ProXLLocation
+   :members:
+
 .. autoclass:: FileLocation
    :members:
 

@@ -72,6 +72,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(d.version, 1)
         self.assertEqual(d.details, 'foo')
 
+    def test_proxl_location(self):
+        """Test ProXLLocation class"""
+        d = ihm.location.ProXLLocation('abc', version=1, details='foo')
+        self.assertEqual(d.db_name, 'ProXL')
+        self.assertEqual(d.access_code, 'abc')
+        self.assertEqual(d.version, 1)
+        self.assertEqual(d.details, 'foo')
+
     def test_empiar_location(self):
         """Test EMPIARLocation class"""
         d = ihm.location.EMPIARLocation('abc', version=1, details='foo')

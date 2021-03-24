@@ -102,7 +102,7 @@ class Model(object):
            Note that the set of spheres should match the model's
            :class:`~ihm.representation.Representation`. This is not currently
            enforced.
-        """
+        """  # noqa: E501
         for s in self._spheres:
             yield s
 
@@ -312,7 +312,7 @@ class Subsample(object):
               for the entire sample, for example as a DCD file
               (see :class:`DCDWriter`).
        :type file: :class:`ihm.location.OutputFileLocation`
-    """
+    """  # noqa: E501
 
     sub_sampling_type = 'other'
 

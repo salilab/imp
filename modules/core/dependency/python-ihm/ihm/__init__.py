@@ -290,8 +290,8 @@ class System(object):
 
     def _all_representations(self):
         """Iterate over all Representations in the system.
-           This includes all Representations referenced from other objects, plus
-           any orphaned Representations. Duplicates are filtered out."""
+           This includes all Representations referenced from other objects,
+           plus any orphaned Representations. Duplicates are filtered out."""
         return _remove_identical(itertools.chain(
             self.orphan_representations,
             (model.representation for group, model in self._all_models()
@@ -1040,7 +1040,7 @@ class Entity(object):
 
        All entities should be stored in the top-level System object;
        see :attr:`System.entities`.
-    """
+    """  # noqa: E501
 
     number_of_molecules = 1
 
