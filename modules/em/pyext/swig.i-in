@@ -6,7 +6,6 @@ namespace IMP {
 }
 %ignore operator<<(std::ostream&, const DensityHeader &);
 
-
 /* Make selected classes extensible in Python */
 IMP_SWIG_OBJECT(IMP::em, DensityMap, DensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SampledDensityMap, SampledDensityMaps);
@@ -77,11 +76,11 @@ namespace IMP {
 %include "IMP/em/SampledDensityMap.h"
 %include "IMP/em/SurfaceShellDensityMap.h"
 %include "IMP/em/CoarseCC.h"
-%include "IMP/em/BayesEM3D.h"
 %include "IMP/em/CoarseConvolution.h"
 %include "IMP/em/CoarseCCatIntervals.h"
+%include "IMP/em/BayesEM3D.h"
 %include "IMP/em/FitRestraint.h"
-%include "IMP/em/FitRestraintBayesEM3D.h"	
+%include "IMP/em/FitRestraintBayesEM3D.h"
 %include "IMP/em/converters.h"
 %include "IMP/em/SpiderHeader.h"
 %include "IMP/em/ImageHeader.h"
@@ -96,19 +95,6 @@ namespace IMP {
 %include "IMP/em/EnvelopeFitRestraint.h"
 %include "IMP/em/MapDistanceTransform.h"
 %include "IMP/em/EnvelopeScore.h"
-
-/* Allow runtime casting of Restraint* objects to FitRestraint* */
-namespace IMP {
-  namespace em {
-    %extend FitRestraint {
-      static FitRestraint* cast(Restraint *r) {
-        IMPEM_DEPRECATED_FUNCTION_DEF(2.8, "Use get_from() instead");
-        return dynamic_cast<IMP::em::FitRestraint *>(r);
-      }
-    }
-  }
-}
-
 
 %pythoncode %{
 import math
@@ -143,9 +129,3 @@ def write_pca_cmm(pca, fh):
               % (i, i+1, radius))
     fh.write("</marker_set>\n")
 %}
-
-%include "std_map.i"
-namespace std {
- 	     %template(map_double_int) map<double, int>;
-	     %template(map_double_int) map<double, double>;
-}

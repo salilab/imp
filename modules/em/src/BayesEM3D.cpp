@@ -249,10 +249,10 @@ double bayesem3d_get_cross_correlation_coefficient(DensityMap *em1,
   em2_sqr /= nvox2;
 
   double sig1 = em1_sqr - IMP::square(em1_mean);
-  sig1 = std::max(0., sig1);
+  sig1 = std::max(0., sqrt(sig1));
 
   double sig2 = em2_sqr - IMP::square(em2_mean);
-  sig2 = std::max(0., sig2);
+  sig2 = std::max(0., sqrt(sig2));
 
   double ccc = cross_term - nvox1 * em1_mean * em2_mean;
   ccc = std::max(0., ccc);
