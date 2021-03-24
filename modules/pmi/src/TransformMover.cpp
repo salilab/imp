@@ -87,9 +87,9 @@ core::MonteCarloMoverResult TransformMover::do_propose() {
   ::boost::uniform_real<> rand(-max_angle_, max_angle_);
   Float angle = rand(random_number_generator);
   algebra::Rotation3D r = algebra::get_rotation_about_axis(axis_, angle);
-  algebra::Transformation3D t_(r, translation);
+  algebra::Transformation3D t(r, translation);
 
-  algebra::Transformation3D tt = c_*t_*c_.get_inverse();
+  algebra::Transformation3D tt = c_*t*c_.get_inverse();
   tt_ = tt;
 
   for (unsigned int i=0;i<pixyzs_.size();i++) {
