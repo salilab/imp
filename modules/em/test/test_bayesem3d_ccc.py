@@ -25,7 +25,9 @@ class Tests(IMP.test.TestCase):
         IMP.set_check_level(IMP.NONE)
 
         self.m = IMP.Model()
-        self.mh, self.ps = get_particles(self.m, "input/input_atom.pdb")
+        self.mh, self.ps = get_particles(
+            self.m,
+            self.get_input_file_name("input_atom.pdb"))
         IMP.atom.create_rigid_body(self.mh)
         self.prot_rb = IMP.core.RigidMember(
             IMP.core.get_leaves(self.mh)[0]).get_rigid_body()
@@ -35,7 +37,7 @@ class Tests(IMP.test.TestCase):
         voxel_size = 1.5
 
         dmap = IMP.em.read_map(
-            "input/sampled_all.mrc",
+            self.get_input_file_name("sampled_all.mrc"),
             IMP.em.MRCReaderWriter())
 
         dmap.get_header_writable().set_resolution(self.res)

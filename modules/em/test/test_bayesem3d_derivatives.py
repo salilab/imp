@@ -63,14 +63,16 @@ class Tests(IMP.test.TestCase):
         IMP.set_check_level(IMP.NONE)
 
         self.m = IMP.Model()
-        self.mh, self.ps = get_particles(self.m, "input/input_atom0.pdb")
+        self.mh, self.ps = get_particles(
+            self.m,
+            self.get_input_file_name("input_atom0.pdb"))
 
         # Read and setup EM
         res = 5.
         voxel_size = 1.5
 
         dmap = IMP.em.read_map(
-            "input/sampled_all.mrc",
+            self.get_input_file_name("sampled_all.mrc"),
             IMP.em.MRCReaderWriter())
         dmap.get_header_writable().set_resolution(res)
         dmap.update_voxel_size(voxel_size)
