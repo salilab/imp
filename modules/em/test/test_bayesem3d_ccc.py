@@ -73,16 +73,19 @@ class Tests(IMP.test.TestCase):
             self.fmap, self.ps, self.res)
 
     def test_ccc_mrc_to_mrc(self):
+        """Check ccc of a map with itself"""
         cc1 = IMP.em.bayesem3d_get_cross_correlation_coefficient(
             self.fmap, self.fmap)
         self.assertAlmostEqual(cc1, 1.0, delta=1e-8)
 
     def test_ccc_ps_to_ps(self):
+        """Check ccc of a map generated from a model with itself"""
         cc2 = IMP.em.bayesem3d_get_cross_correlation_coefficient(
             self.ps_map, self.ps_map)
         self.assertAlmostEqual(cc2, 1.0, delta=1e-8)
 
     def test_ccc_non_overlapping(self):
+        """Check ccc of a map with itself when the copy has no overlaping"""
         cc3 = IMP.em.bayesem3d_get_cross_correlation_coefficient(
             self.ps_map, self.ps_map2)
         self.assertAlmostEqual(cc3, 0.0, delta=1e-8)

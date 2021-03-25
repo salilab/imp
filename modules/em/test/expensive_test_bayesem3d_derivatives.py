@@ -104,6 +104,7 @@ class Tests(IMP.test.TestCase):
 
     @IMP.test.skipIf(julia is None, "Requires julia")
     def test_derivatives(self):
+        """Check that analytical and numerical derivatives are equal"""
         fdm = FD.central_fdm(5, 1)
 
         total_counter = 0

@@ -15,7 +15,7 @@ def get_particles(m, input_pdb):
 
 
 class Tests(IMP.test.TestCase):
-    """Derivative score stability Test"""
+    """Linear Interpolation Test"""
 
     def setUp(self):
 
@@ -28,12 +28,13 @@ class Tests(IMP.test.TestCase):
         self.y = [3, 2, 0]
 
     def test_linear_interpolation(self):
-
+        """Compare linear interpolation to numpy implementation"""
         vp = np.interp(2.5, self.x, self.y)
         ip = IMP.em.bayesem3d_linear_interpolate(self.x, self.y, 2.5, False)
         self.assertAlmostEqual(vp, ip, delta=1e-10)
 
     def test_error_on_size_less_than_two(self):
+        """Check that map has to be at least size two"""
         x = [1]
         y = [3, 2, 0]
 
@@ -45,6 +46,7 @@ class Tests(IMP.test.TestCase):
             str(context.exception))
 
     def test_boundaries_on_the_right(self):
+        """Check linear interpolation at the boundaries"""
         x = [1, 2, 3, 4, 5]
         y = [10, 12, 13, 14, 15]
 

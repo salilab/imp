@@ -207,8 +207,8 @@ FloatPair bayesem3d_get_em_density_squared(DensityMap *em,
   return results;
 }
 
-double bayesem3d_get_cross_correlation_coefficient(DensityMap *em1,
-                                                   DensityMap *em2) {
+double bayesem3d_get_cross_correlation_coefficient(const DensityMap *em1,
+                                                   const DensityMap *em2) {
   const DensityHeader *em1_header = em1->get_header();
   const double *em1_data = em1->get_data();
 
@@ -249,10 +249,10 @@ double bayesem3d_get_cross_correlation_coefficient(DensityMap *em1,
   em2_sqr /= nvox2;
 
   double sig1 = em1_sqr - IMP::square(em1_mean);
-  sig1 = std::max(0., sqrt(sig1));
+  sig1 = (sig1 < 0. ? 0. : sqrt(sig1));
 
   double sig2 = em2_sqr - IMP::square(em2_mean);
-  sig2 = std::max(0., sqrt(sig2));
+  sig2 = (sig2 < 0. ? 0. : sqrt(sig2));
 
   double ccc = cross_term - nvox1 * em1_mean * em2_mean;
   ccc = std::max(0., ccc);

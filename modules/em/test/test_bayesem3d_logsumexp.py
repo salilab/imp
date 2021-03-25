@@ -33,12 +33,14 @@ class Tests(IMP.test.TestCase):
         self.w2 = np.random.rand(self.x.size)
 
     def test_logabssumexpprod(self):
+        """Compare logabssumprodexp to naive implementation"""
         sum_0 = np.sum(self.w * np.exp(self.x))
         logsum, sign = add_logabssumprodexp(self.x, self.w)
         sum_1 = sign * np.exp(logsum)
         self.assertAlmostEqual(sum_0, sum_1, delta=1e-6)
 
     def test_logsumexpprod(self):
+        """Compare logsumprodexp to naive implementation"""
         sum_0 = np.sum(self.w2 * np.exp(self.x))
         logsum = add_logsumprodexp(self.x, self.w2)
         self.assertAlmostEqual(sum_0, np.exp(logsum) - 1, delta=1e-6)

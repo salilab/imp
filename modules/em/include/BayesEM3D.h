@@ -74,17 +74,16 @@ IMPEMEXPORT DensityMap *bayesem3d_get_density_from_particle(
     DensityMap *em, const IMP::ParticlesTemp &ps, double resolution);
 
 //! Compute a normalized cross-correlation coefficient
-IMPEMEXPORT double bayesem3d_get_cross_correlation_coefficient(DensityMap *em1,
-                                                               DensityMap *em2);
+IMPEMEXPORT double bayesem3d_get_cross_correlation_coefficient(const DensityMap *em1,
+                                                               const DensityMap *em2);
 
-/** \note The function returns the negative log of the Normal distributed
+/** \brief The function returns the negative log of the Normal distributed
       difference between a normalized EM density map and a tested model.
       To support sampling and optimization, the derivative of the score
-      is also returned. The score and derivative is optimized for numerical
-   stability.
+      is also returned.
 
       \param[in] em DensityMap class containing the EM map.
-      Note: the EM density map must me normalized by
+      Note: the EM density map must be normalized by
       the histogram matching routine.
 
       \param[in] ps ParticlesTemp class containing the particles of the tested
@@ -96,7 +95,7 @@ IMPEMEXPORT double bayesem3d_get_cross_correlation_coefficient(DensityMap *em1,
       \param[in] sigma The expected variance of the difference between
       the normalized EM density map and the tested model.
 
-      \return the value of the score and its derivatives.
+      \return a numerically stable value for the score and its derivatives.
 
 */
 IMPEMEXPORT std::pair<double, algebra::Vector3Ds>
