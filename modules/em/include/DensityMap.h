@@ -325,7 +325,9 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
   void pick_max(const DensityMap *other);
 
   //! Get the number of map voxels
-  long get_number_of_voxels() const;
+  long get_number_of_voxels() const {
+    return header_.get_number_of_voxels();
+  }
 
   //! Set the map dimension and reset all voxels to 0
   /** \param[in] nx x-dimension (voxels)

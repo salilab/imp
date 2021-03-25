@@ -11,6 +11,7 @@ IMP_SWIG_OBJECT(IMP::em, DensityMap, DensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SampledDensityMap, SampledDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SurfaceShellDensityMap, SurfaceShellDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, FitRestraint, FitRestraints);
+IMP_SWIG_OBJECT(IMP::em, FitRestraintBayesEM3D, FitRestraintBayesEM3Ds);
 IMP_SWIG_OBJECT(IMP::em, PCAFitRestraint, PCAFitRestraints);
 IMP_SWIG_OBJECT(IMP::em, EnvelopePenetrationRestraint, EnvelopePenetrationRestraints);
 IMP_SWIG_OBJECT(IMP::em, EnvelopeFitRestraint, EnvelopeFitRestraints);
@@ -77,7 +78,9 @@ namespace IMP {
 %include "IMP/em/CoarseCC.h"
 %include "IMP/em/CoarseConvolution.h"
 %include "IMP/em/CoarseCCatIntervals.h"
+%include "IMP/em/BayesEM3D.h"
 %include "IMP/em/FitRestraint.h"
+%include "IMP/em/FitRestraintBayesEM3D.h"
 %include "IMP/em/converters.h"
 %include "IMP/em/SpiderHeader.h"
 %include "IMP/em/ImageHeader.h"
