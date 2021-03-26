@@ -16,7 +16,24 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-const double window_size = 1.0;
+namespace {
+  //! Quick function for extracting first element of pair to a vector of floats
+  template <typename M, typename V>
+  void bayesem3d_map_first_to_floats(const M &m, V &v) {
+    for (typename M::const_iterator it = m.begin(); it != m.end(); ++it)
+      v.push_back(it->first);
+  }
+
+  //! Quick function for extracting second element of pair to a vector of floats
+  template <typename M, typename V>
+  void bayesem3d_map_second_to_floats(const M &m, V &v) {
+    for (typename M::const_iterator it = m.begin(); it != m.end(); ++it)
+      v.push_back(it->second);
+  }
+
+  const double window_size = 1.0;
+}  // anonymous namespace
+
 
 std::map<double, int> bayesem3d_get_distinct_and_counts(DensityMap *em) {
   const DensityHeader *em_header = em->get_header();
@@ -468,18 +485,6 @@ std::pair<double, algebra::Vector3Ds> bayesem3d_get_score_and_derivative(
   // IMP::em::MRCReaderWriter());
 
   return results;
-}
-
-template <typename M, typename V>
-void bayesem3d_map_first_to_floats(const M &m, V &v) {
-  for (typename M::const_iterator it = m.begin(); it != m.end(); ++it)
-    v.push_back(it->first);
-}
-
-template <typename M, typename V>
-void bayesem3d_map_second_to_floats(const M &m, V &v) {
-  for (typename M::const_iterator it = m.begin(); it != m.end(); ++it)
-    v.push_back(it->second);
 }
 
 void bayesem3d_get_normalized_intensities(DensityMap *em,

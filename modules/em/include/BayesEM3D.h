@@ -102,14 +102,6 @@ IMPEMEXPORT std::pair<double, algebra::Vector3Ds>
 bayesem3d_get_score_and_derivative(DensityMap *em, const IMP::ParticlesTemp &ps,
                                    double resolution, double sigma);
 
-//! Quick function for extracting second element of pair to a vector of floats
-IMPEMEXPORT template <typename M, typename V>
-void bayesem3d_map_second_to_floats(const M &m, V &v);
-
-//! Quick function for extracting first element of pair to a vector of floats
-IMPEMEXPORT template <typename M, typename V>
-void bayesem3d_map_first_to_floats(const M &m, V &v);
-
 //! Normalization of an EM map by histogram matching against
 //! the CDF of the EM map generated from a set of particles.
 IMPEMEXPORT void bayesem3d_get_normalized_intensities(
