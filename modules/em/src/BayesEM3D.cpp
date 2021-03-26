@@ -12,6 +12,7 @@
 #include <IMP/em/BayesEM3D.h>
 #include <math.h>
 #include <boost/math/special_functions/sign.hpp>
+#include <boost/math/special_functions/log1p.hpp>
 #include <boost/unordered_set.hpp>
 
 IMPEM_BEGIN_NAMESPACE
@@ -136,9 +137,9 @@ FloatPair bayesem3d_get_logabssumexp(double x, double y, double sx, double sy) {
   }
 
   if (x > y) {
-    return FloatPair(x + log1p(sx * sy * exp(y - x)), sx);
+    return FloatPair(x + boost::math::log1p(sx * sy * exp(y - x)), sx);
   } else {
-    return FloatPair(y + log1p(sx * sy * exp(x - y)), sy);
+    return FloatPair(y + boost::math::log1p(sx * sy * exp(x - y)), sy);
   }
 }
 
@@ -160,9 +161,9 @@ double bayesem3d_get_logsumexp(double x, double y) {
   }
 
   if (x > y) {
-    return x + log1p(exp(y - x));
+    return x + boost::math::log1p(exp(y - x));
   } else {
-    return y + log1p(exp(x - y));
+    return y + boost::math::log1p(exp(x - y));
   }
 }
 
