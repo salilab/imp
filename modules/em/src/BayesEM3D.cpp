@@ -12,6 +12,7 @@
 #include <IMP/em/BayesEM3D.h>
 #include <math.h>
 #include <boost/math/special_functions/sign.hpp>
+#include <boost/unordered_set.hpp>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -281,7 +282,7 @@ DensityMap *bayesem3d_get_density_from_particle(DensityMap *em,
   int nxny = em_header->get_nx() * em_header->get_ny();
   int znxny;
 
-  std::unordered_set<int> visited_voxels;
+  boost::unordered_set<int> visited_voxels;
 
   for (unsigned int ii = 0; ii < xyzr.size(); ii++) {
     double px = xyzr[ii].get_x();
@@ -315,7 +316,7 @@ DensityMap *bayesem3d_get_density_from_particle(DensityMap *em,
     }
   }
 
-  for (std::unordered_set<int>::iterator vv = visited_voxels.begin();
+  for (boost::unordered_set<int>::iterator vv = visited_voxels.begin();
        vv != visited_voxels.end(); ++vv) {
     vals[*vv] = exp(vals[*vv]) - 1.;
   }
