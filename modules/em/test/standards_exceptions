@@ -162,14 +162,29 @@ function_name_exceptions = [
   'particles2density',
   'particles2surface',
   'interpolate_map',
-  'particles2binarized_density'
+  'particles2binarized_density',
+  'bayesem3d_get_cross_correlation_coefficient',
+  'bayesem3d_get_cumulative_sum',
+  'bayesem3d_get_cumulative_sum_with_reference',
+  'bayesem3d_get_density_from_particle',
+  'bayesem3d_get_distinct_and_counts',
+  'bayesem3d_get_em_density_squared',
+  'bayesem3d_get_logabssumexp',
+  'bayesem3d_get_logabssumprodexp',
+  'bayesem3d_get_logsumexp',
+  'bayesem3d_get_logsumprodexp',
+  'bayesem3d_get_normalized_intensities',
+  'bayesem3d_get_score_and_derivative',
+  'bayesem3d_get_value',
+  'bayesem3d_get_value_no_deriv',
+  'bayesem3d_linear_interpolate'
 ]
 
 spelling_exceptions=['xplor', 'yorigin', 'timessig', 'yz',
                      'rnormfac', 'rsigsq', 'kdist', 'vsigsq', 'normfac',
                      'nx', 'rsig', 'nz', 'xy', 'params', 'sigsq', 'xorigin',
                      'rkdist', 'vsig', 'xz', 'zorigin', 'pca', 'binarized',
-                     'cmm', 'rkdistsq']
+                     'cmm', 'rkdistsq', 'bayes']
 value_object_exceptions=['DensityHeader',
                                            'CoarseConvolution',
                                            'DistanceMask', 'ImageHeader',
