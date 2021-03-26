@@ -11,6 +11,7 @@
 #include <IMP/core/utility.h>
 #include <IMP/em/BayesEM3D.h>
 #include <math.h>
+#include <boost/math/special_functions/sign.hpp>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -127,8 +128,8 @@ FloatPair bayesem3d_get_logabssumexp(double x, double y, double sx, double sy) {
 
 FloatPair bayesem3d_get_logabssumprodexp(double x, double y, double wx,
                                          double wy) {
-  double sx = std::copysign(1, wx);
-  double sy = std::copysign(1, wy);
+  double sx = boost::math::copysign(1, wx);
+  double sy = boost::math::copysign(1, wy);
 
   return bayesem3d_get_logabssumexp(x + log(wx * sx), y + log(wy * sy), sx, sy);
 }
