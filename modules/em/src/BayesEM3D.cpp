@@ -53,8 +53,6 @@ Floats bayesem3d_get_cumulative_sum(DensityMap *em) {
 
 std::map<double, double> bayesem3d_get_cumulative_sum_with_reference(
     DensityMap *em) {
-  const DensityHeader *em_header = em->get_header();
-  // long nvox = em_header->get_number_of_voxels();
   std::map<double, int> values_and_counts =
       bayesem3d_get_distinct_and_counts(em);
 
@@ -268,7 +266,6 @@ DensityMap *bayesem3d_get_density_from_particle(DensityMap *em,
                                                 double resolution) {
   const DensityHeader *em_header = em->get_header();
   const double *em_data = em->get_data();
-  long nvox = em_header->get_number_of_voxels();
   IMP::algebra::BoundingBox3D density_bb = get_bounding_box(em);
   IMP::em::KernelParameters kps(resolution);
 
@@ -329,7 +326,6 @@ std::pair<double, algebra::Vector3Ds> bayesem3d_get_score_and_derivative(
     double sigma) {
   const DensityHeader *em_header = em->get_header();
   const double *em_data = em->get_data();
-  long nvox = em_header->get_number_of_voxels();
 
   IMP::algebra::BoundingBox3D density_bb = get_bounding_box(em);
   IMP::em::KernelParameters kps(resolution);
@@ -495,7 +491,6 @@ void bayesem3d_get_normalized_intensities(DensityMap *em,
 
   IMP::Pointer<DensityMap> em_m =
       bayesem3d_get_density_from_particle(em, ps, resolution);
-  const double *em_model = em_m->get_data();
 
   // std::map<double, int> values_and_counts_model =
   // get_distinct_and_counts(em_m, nvox); std::map<double, int>
