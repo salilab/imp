@@ -283,7 +283,6 @@ DensityMap *bayesem3d_get_density_from_particle(DensityMap *em,
                                                 const IMP::ParticlesTemp &ps,
                                                 double resolution) {
   const DensityHeader *em_header = em->get_header();
-  const double *em_data = em->get_data();
   IMP::algebra::BoundingBox3D density_bb = get_bounding_box(em);
   IMP::em::KernelParameters kps(resolution);
 
