@@ -59,7 +59,8 @@ will not build, and some will not function optimally.
   [scikit-learn](http://scikit-learn.org/stable/install.html),
   and [matplotlib](http://matplotlib.org/downloads.html)
   Python libraries are also recommended.
-- [Chimera](https://www.cgl.ucsf.edu/chimera/download.html) is recommended
+- [Chimera](https://www.cgl.ucsf.edu/chimera/download.html) or
+  [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) are recommended
   for visualization of results.
 
 ### Getting prerequisites on Linux {#installation_prereqs_linux}

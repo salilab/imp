@@ -20,7 +20,7 @@ complex might want to skip ahead to
 
  - [Design of IMP](@ref design)
 
- - [Chimera tools and web services](@ref web_services)
+ - [Chimera(X) tools and web services](@ref web_services)
 
  - [Using command line tools](@ref cmdline)
    - [FoXS: fitting structures against SAXS data](@ref foxs_nup133)
