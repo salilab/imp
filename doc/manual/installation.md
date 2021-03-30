@@ -72,11 +72,14 @@ following should install most of the prerequisites:
 
 ### Getting prerequisites on a Mac {#installation_prereqs_mac}
 
-Mac users must first install Xcode (previously known as Developer Tools)
-which is not installed by default with OS X, but is available from the App store
-(or from the Mac OS install DVD for old versions of Mac OS). They will also
-need the Xcode command line tools (install by going to Xcode Preferences, then
-Downloads, then Components, and select "Command Line Tools").
+Mac users must first install the developer Command Line Tools, which can be
+done from the command line by running
+
+        sudo xcode-select --install
+
+These can also be obtained by installing Xcode from the App store, then trying
+to run a command line tool (such as `clang`) which will prompt to install the
+tools.
 
 Then Mac users should use one of the available collections of Unix tools,
 such as
