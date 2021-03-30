@@ -68,7 +68,7 @@ All of the prerequisites should be available as pre-built packages for
 your Linux distribution of choice. For example, on a Fedora system the
 following should install most of the prerequisites:
 
-        sudo dnf install boost-devel gperftools-devel CGAL-devel graphviz gsl-devel cmake doxygen hdf5-devel swig fftw-devel opencv-devel
+        sudo dnf install boost-devel gperftools-devel CGAL-devel graphviz gsl-devel cmake hdf5-devel swig fftw-devel opencv-devel
 
 ### Getting prerequisites on a Mac {#installation_prereqs_mac}
 
@@ -84,12 +84,12 @@ such as
   do
 
         brew tap salilab/salilab
-        brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr opencv libtau eigen
+        brew install boost gmp google-perftools cgal graphviz gsl cmake hdf5 swig fftw mpfr opencv libtau eigen
 
   to install everything %IMP finds useful (or that you will want for installing various useful Python libs that %IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
 - [Macports](http://www.macports.org/) If you use MacPorts, you must verify `/opt/local/bin` is in your path (this may be taken care of by MacPorts automatically, and can be done manually either by modifying your shell's config file or by making an `environment.plist` file), and then do
 
-        sudo port install boost cgal cmake doxygen fftw gmp gperftools graphviz gsl eigen hdf5 mpfr ninja opencv protobuf-cpp swig swig-python  
+        sudo port install boost cgal cmake fftw gmp gperftools graphviz gsl eigen hdf5 mpfr ninja opencv protobuf-cpp swig swig-python  
   (as in brew, some of these packages may be optional)
 
 - or [Fink](http://www.finkproject.org/) (not supported)
