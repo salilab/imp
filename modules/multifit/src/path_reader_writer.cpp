@@ -8,7 +8,6 @@
 
 #include <IMP/multifit/path_reader_writer.h>
 #include <IMP/multifit/internal/reader_writer_utility.h>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 #include <IMP/log.h>

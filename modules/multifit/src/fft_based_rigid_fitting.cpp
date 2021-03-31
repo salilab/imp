@@ -12,7 +12,6 @@
 #include <IMP/log.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>

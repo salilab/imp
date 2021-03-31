@@ -9,7 +9,6 @@
 #include <IMP/multifit/anchors_reader.h>
 #include <IMP/multifit/internal/reader_writer_utility.h>
 #include <IMP/atom/SecondaryStructureResidue.h>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
