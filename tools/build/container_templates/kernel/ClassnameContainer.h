@@ -48,7 +48,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   /** Get all the indexes that might possibly be contained in the
       container, useful with dynamic containers. For example,
       with a container::ClosePairContainer, this is the list
-      of all pairs taken from input list (those that are far apart
+      of all pairs taken from the input list (those that are far apart
       in addition to those that are close).
   */
   virtual PLURALINDEXTYPE get_range_indexes() const = 0;

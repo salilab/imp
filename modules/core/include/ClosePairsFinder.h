@@ -67,7 +67,7 @@ class IMPCOREEXPORT ClosePairsFinder : public ParticleInputs,
   /** @name Methods to control the set of filters
 
      PairPredicates objects can be used as filters to prevent
-     the addition of pairs to the containeroutput list. Pairs
+     the addition of pairs to the container output list. Pairs
      for which the predicate evaluates to a non-zero value are
      excluded.
   */
