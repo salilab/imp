@@ -46,7 +46,7 @@ inline Restraint *create_chain_restraint(Model *m,
   return r.release();
 }
 
-/** Create an excluded-volume style ClosePairsContainer based score. */
+/** Create an excluded-volume style ClosePairContainer based score. */
 inline Restraint *create_excluded_volume(
     Model *m, const ParticleIndexes &ps, double k, std::string name) {
   IMP_USAGE_CHECK(!ps.empty(), "No ParticleIndexes passed.");
