@@ -22,7 +22,7 @@ def add_dope(m, prot):
     for p in ps:
         if not IMP.atom.Atom.get_is_setup(p):
             print("Huh?", p)
-    dpc = IMP.container.ClosePairContainer(ps, 15.0, 0.0)
+    dpc = IMP.container.ClosePairContainer(ps, 15.0, 1.0)
     # By default the score is evaluated on all nearby pairs of atoms,
     # even atoms that are bonded (or related by angles or dihedrals).
     # This is consistent with the behavior of the score in MODELLER.
