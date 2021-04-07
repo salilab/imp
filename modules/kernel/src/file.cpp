@@ -13,11 +13,7 @@
 //#include <unistd.h>
 #include <boost/version.hpp>
 #if defined(BOOST_FILESYSTEM_VERSION)
-#if BOOST_VERSION >= 104600
 #define BOOST_FILESYSTEM_VERSION 3
-#else
-#define BOOST_FILESYSTEM_VERSION 2
-#endif
 #endif
 #include <boost/scoped_array.hpp>
 #include <boost/filesystem/path.hpp>

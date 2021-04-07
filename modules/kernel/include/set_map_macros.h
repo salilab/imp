@@ -54,7 +54,7 @@
 #define IMP_KERNEL_LARGE_UNORDERED_SET boost::unordered_set
 #define IMP_KERNEL_LARGE_UNORDERED_MAP boost::unordered_map
 
-#if BOOST_VERSION < 104900 || defined(_MSC_VER) && _MSC_VER <= 1500
+#if defined(_MSC_VER) && _MSC_VER <= 1500
 #include <set>                      // IWYU pragma: export
 #include <map>                      // IWYU pragma: export
 #include <boost/unordered_set.hpp>  // IWYU pragma: export

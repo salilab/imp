@@ -23,12 +23,10 @@
 #include <boost/graph/graph_utility.hpp>
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/unordered_map.hpp>
-#if BOOST_VERSION > 103900
 namespace boost {
 // work around bug in bc_clustering
 using graph::has_no_edges;
 }
-#endif
 
 // Add workaround for https://github.com/boostorg/graph/issues/175
 // (Note that this may not be the right #if condition; we have only seen

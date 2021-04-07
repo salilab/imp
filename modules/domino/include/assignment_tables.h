@@ -20,11 +20,7 @@
 #include <IMP/macros.h>
 #include <boost/unordered_map.hpp>
 #include <boost/pending/disjoint_sets.hpp>
-#if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#endif
 
 IMPDOMINO_BEGIN_NAMESPACE
 class DominoSampler;
