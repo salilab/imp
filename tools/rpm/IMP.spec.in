@@ -61,7 +61,7 @@ Requires: protobuf-python
 %endif
 
 BuildRequires: cmake >= 2.8
-BuildRequires: boost-devel >= 1.41
+BuildRequires: boost-devel >= 1.53
 
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
 # doesn't have a new enough OpenCV in the base distribution or in EPEL until

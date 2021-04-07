@@ -268,11 +268,11 @@ else()
 endif()
 
 set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost 1.41.0 COMPONENTS system filesystem thread program_options REQUIRED)
+find_package(Boost 1.53.0 COMPONENTS system filesystem thread program_options REQUIRED)
 if("${Boost_SYSTEM_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
   message(FATAL_ERROR "Boost is required to build IMP.")
 endif()
-find_package(Boost 1.41.0 QUIET COMPONENTS random regex graph)
+find_package(Boost 1.53.0 QUIET COMPONENTS random regex graph)
 
 if("${Boost_RANDOM_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
 set(Boost_RANDOM_LIBRARY_RELEASE "" CACHE INTERNAL "" FORCE)

@@ -4,6 +4,7 @@ ChangeLog {#changelog}
 - We no longer provide RPMs for CentOS 6, since it has reached end of life.
 - Python 2.6 is no longer supported; Python 2.7 is the oldest version of
   Python that works with IMP (although Python 3 is recommended).
+- IMP now requires Boost 1.53 or later; support for Boost 1.41 has been dropped.
 - IMP::em::FitRestraint::cast() has been removed. Use `get_from()` instead.
 - The IMP::em::CoarseCC class is deprecated. Use similarly-named free
   functions intead to calculate coarse cross correlation.
