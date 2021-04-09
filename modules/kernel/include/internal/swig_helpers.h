@@ -10,10 +10,10 @@
 
 // Python.h must be included first
 #include <IMP/kernel_config.h>
-#include "../Particle.h"
-#include "../Restraint.h"
-#include "../SingletonScore.h"
-#include "../macros.h"
+#include <IMP/Particle.h>
+#include <IMP/Restraint.h>
+#include <IMP/SingletonScore.h>
+#include <IMP/macros.h>
 #include <IMP/internal/swig_helpers_base.h>
 
 using namespace IMP;
