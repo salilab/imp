@@ -288,8 +288,12 @@ BrownianDynamics::do_step
   for (unsigned int b = 0; b < ps.size(); b += chunk_size) {
     IMP_TASK_SHARED(
         (dt_fs, ikT, b),
-#if defined(__clang__) && __clang_major__ >= 10
+#if defined(__clang__)
+#if __clang_major__ >= 10
 	(ps, chunk_size),
+#else
+	(ps),
+#endif
 #else
 	(ps),
 #endif
