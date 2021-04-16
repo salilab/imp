@@ -29,9 +29,12 @@ if(IMP_CXX11)
       set(IMP_CXX11_FLAGS "--std=c++0x" CACHE INTERNAL "" FORCE)
     endif()
   elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    # Modern clang uses C++14 by default; don't force older C++11
+    if(APPLE AND DARWIN_VERSION GREATER 18)
+      message(STATUS "Using clang C++11 (or later) support")
     # c++11's std::move (which boost/CGAL use) doesn't work until
     # OS X 10.9 (Darwin version 13)
-    if(APPLE AND DARWIN_VERSION LESS 13)
+    elseif(APPLE AND DARWIN_VERSION LESS 13)
       message(STATUS "Disabling C++11 for mac os < 10.9")
     elseif(BOOST_VERSION LESS 105000)
       message(STATUS "Disabling C++11 due to clang and older boost")
