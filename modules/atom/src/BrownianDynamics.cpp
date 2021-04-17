@@ -286,21 +286,19 @@ BrownianDynamics::do_step
      clang reports an error if we try to do so */
   const unsigned int chunk_size = 5000;
   for (unsigned int b = 0; b < ps.size(); b += chunk_size) {
+#if defined(__clang__) && __clang_major__ >= 10
     IMP_TASK_SHARED(
-        (dt_fs, ikT, b),
-#if defined(__clang__)
-#if __clang_major__ >= 10
-	(ps, chunk_size),
-#else
-	(ps),
-#endif
-#else
-	(ps),
-#endif
+        (dt_fs, ikT, b), (ps, chunk_size),
         do_advance_chunk(dt_fs, ikT, ps, b,
                          std::min<unsigned int>(b + chunk_size, ps.size()));
         , "brownian");
-
+#else
+    IMP_TASK_SHARED(
+        (dt_fs, ikT, b), (ps),
+        do_advance_chunk(dt_fs, ikT, ps, b,
+                         std::min<unsigned int>(b + chunk_size, ps.size()));
+        , "brownian");
+#endif
   }
   IMP_OMP_PRAGMA(taskwait)
   IMP_OMP_PRAGMA(flush)
