@@ -451,7 +451,7 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %exclude %{_prefix}/share/IMP/build_info
 %{_prefix}/bin/*
 %{_libdir}/libimp*.so.*
-%{_libdir}/libRMF*.so
+%{_libdir}/libRMF*.so.*
 %{_libdir}/IMP
 %{_libdir}/%{default_python}*/site-packages/IMP
 %{_libdir}/%{default_python}*/site-packages/_IMP*so
@@ -526,6 +526,7 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %{_prefix}/include/RMF
 %{_prefix}/include/RMF.h
 %{_libdir}/libimp*.so
+%{_libdir}/libRMF*.so
 %{_libdir}/cmake/IMP
 %if 0%{?with_mpich}
 %exclude %{_prefix}/include/IMP/mpi
