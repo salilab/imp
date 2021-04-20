@@ -132,9 +132,11 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
+# Version information
 set (RMF_VERSION_MAJOR 1)
-set (RMF_VERSION_MINOR 1)
+set (RMF_VERSION_MINOR 2)
 
+set(RMF_SOVERSION "${RMF_VERSION_MAJOR}.${RMF_VERSION_MINOR}" CACHE INTERNAL "" FORCE)
 set(RMF_HAS_DEBUG_VECTOR 0 CACHE BOOL "Whether to use a bounds checked vector")
 
 # configure a header file to pass some of the CMake settings

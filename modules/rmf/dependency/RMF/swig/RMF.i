@@ -91,6 +91,17 @@
 
 %include "RMF.nullable.i"
 
+%inline %{
+std::string _get_rmf_version() {
+  std::ostringstream oss;
+  oss << RMF_VERSION_MAJOR << "." << RMF_VERSION_MINOR;
+  return oss.str();
+}
+%}
+
+%pythoncode %{
+   __version__ = _get_rmf_version()
+%}
 
 %include "RMF/Enum.h"
 namespace RMF {

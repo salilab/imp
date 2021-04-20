@@ -42,10 +42,17 @@ void print_help_and_exit(char* argv[]) {
   exit(1);
 }
 
+void print_version_and_exit() {
+  std::cout << "RMF version " << RMF_VERSION_MAJOR << "." << RMF_VERSION_MINOR
+            << std::endl;
+  exit(0);
+}
+
 boost::program_options::variables_map process_options(int argc, char* argv[]) {
   boost::program_options::options_description all;
   std::string log_level("Off");
   options.add_options()("help,h", "Show help on command line arguments.");
+  options.add_options()("version", "Show version information.");
 #if RMF_HAS_DEPRECATED_BACKENDS
   options.add_options()("hdf5-errors", "Show hdf5 errors.");
 #endif
@@ -64,6 +71,8 @@ boost::program_options::variables_map process_options(int argc, char* argv[]) {
   boost::program_options::notify(variables_map);
   if (variables_map.count("help")) {
     print_help_and_exit(argv);
+  } else if (variables_map.count("version")) {
+    print_version_and_exit();
   }
 #if RMF_HAS_DEPRECATED_BACKENDS
   if (variables_map.count("hdf5-errors")) {
