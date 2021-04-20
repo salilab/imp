@@ -451,7 +451,7 @@ file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(IMP_DATA_DIR \"${CMAKE_BINARY_DIR}/data\" )\n"
      "set(IMP_SWIG_DIR \"${CMAKE_BINARY_DIR}/swig\" )\n"
      "set(RMF_SWIG_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/swig\" )\n"
-     "set(RMF_MODULES_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules\" )\n"
+     "set(RMF_MODULES_DIR \"${CMAKE_SOURCE_DIR}/cmake_modules\" )\n"
      "set(RMF_INCLUDE_PATH \"${RMF_INCLUDE_PATH}\" )\n"
      "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
 # Installed locations
@@ -538,7 +538,7 @@ install(DIRECTORY ${dev_tools_dir}
                                    OWNER_WRITE)
 
 # Install cmake scripts and configuration
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/cmake_modules/
                   ${CMAKE_SOURCE_DIR}/tools/cmake/
                   ${CMAKE_BINARY_DIR}/cmake/
         DESTINATION ${CMAKE_INSTALL_CMAKEDIR})
