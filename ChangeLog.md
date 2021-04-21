@@ -483,7 +483,7 @@ ChangeLog {#changelog}
 - Generation of documentation using `doxygen` has been refactored. It is now done on a per-module basis, via targets like `IMP.core-doc`. The main advantage is that changes to the doc for a module can be tested comparatively quickly, just by building that module's docs. On the down side, docs are no longer quite so heavily interconnected, so dependencies only work to things that the module actually depends on.
 - The restraint and score state statistics functions were removed from IMP::Model. They had been broken for quite a while, with no one complaining. Statistics can be added back easily if requested.
 - Added an IMP-specific fork of `git-flow`. It handles things like `README.md` files when you start and finish feature branches and provides a tool to nicely update IMP and display the change log. The main commands of use are `git imp feature start <feature_name>`, `git imp feature finish <feature_name>`, and `git imp update`. You may want to remove the `git-flow` lines from your `.git/config` file as you may accidentally type `git flow` instead of `git imp`. You need to run `setup_git.py` to set things up.
-- [RMF](http://salilab.github.com/rmf) is now included as a git submodule rather than copied into the IMP repository. You should rerun `setup_git.py` to make sure submodule stuff is initialized.
+- [RMF](https://github.com/salilab/rmf) is now included as a git submodule rather than copied into the IMP repository. You should rerun `setup_git.py` to make sure submodule stuff is initialized.
 
 
 # For IMP 2.0 and earlier # {#changelog_2_0}
