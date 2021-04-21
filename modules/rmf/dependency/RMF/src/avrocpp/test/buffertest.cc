@@ -19,7 +19,7 @@
 #include <boost/test/included/unit_test_framework.hpp>
 
 #include <boost/thread.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/scoped_array.hpp>
 
 #ifdef HAVE_BOOST_ASIO

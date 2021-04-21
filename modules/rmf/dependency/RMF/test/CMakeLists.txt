@@ -9,6 +9,5 @@ if (DEFINED ENV{PYTHONPATH})
 else()
   set(IMP_TESTS_PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}/lib" "PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}")
 endif()
-message(set test props ${IMP_TESTS_PROPERTIES})
 
 imp_add_tests("RMF" ${PROJECT_BINARY_DIR}/test RMF_TESTS test ${pyfiles} ${cppfiles})

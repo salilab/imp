@@ -6,8 +6,10 @@
 #include "Data.h"
 #include <RMF/log.h>
 #include <RMF/exceptions.h>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/lambda/construct.hpp>
+
+using namespace boost::placeholders;
 
 namespace {
 molfile_plugin_t plugin;

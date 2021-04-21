@@ -1,0 +1,15 @@
+To make a new release:
+
+- Update ChangeLog.md with release date and features.
+- Add version number as RMF_VERSION_MAJOR and RMF_VERSION_MINOR
+  to CMakeLists.txt.
+- git push origin develop
+- Make sure all CI passes
+- Merge into main:
+  - git checkout main
+  - git merge --no-ff -m "Merge for x.y.z release" develop
+  - git diff develop
+  - git push origin main
+- Tag the new release:
+  - git tag -s -u 22A3BF2B x.y.z; git push origin x.y.z
+- Make new release on GitHub
