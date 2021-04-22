@@ -44,7 +44,7 @@ struct TypeData : RMF_SMALL_UNORDERED_MAP<ID<Traits>, KeyData<Traits> > {
     P::operator=(o);
     return *this;
   }
-  void swap(TypeData<Traits>& o) { std::swap<P>(*this, o); }
+  void swap(TypeData<Traits>& o) { P::swap(o); }
 };
 
 #define RMF_SHARED_DATA_TYPE_PARENT(Traits, UCName) , public TypeData<Traits>

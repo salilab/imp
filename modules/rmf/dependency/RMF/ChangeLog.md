@@ -1,5 +1,7 @@
 Change Log {#changelog}
 ==========
+
+# 1.3 - 2021-04-21 # {#changelog_1_3}
 - All RMF binaries now support the --version flag, and the RMF library itself
   is versioned.
 
