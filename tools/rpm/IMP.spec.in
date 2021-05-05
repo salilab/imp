@@ -94,11 +94,15 @@ BuildRequires: CGAL-nogui-devel
 %endif
 
 # The IMP kernel (both with Python 2 and Python3) links with numpy, so
-# pull that in. Many modules also use Python's scipy module, so pull that in
-# (at build time for tests; at install time for using the modules).
+# pull that in if available (the Python 2 variant is no longer shipped
+# with modern Fedora). Many modules also use Python's scipy module, so
+# pull that in (at build time for tests; at install time for using the modules).
 %if 0%{?with_python3}
-BuildRequires: python3-numpy, python3-scipy, python2-numpy
+BuildRequires: python3-numpy, python3-scipy
 Requires: python3-numpy, python3-scipy
+%if 0%{?fedora} < 34 || 0%{?rhel}
+BuildRequires: python2-numpy
+%endif
 %else
 BuildRequires: numpy, scipy
 Requires: numpy, scipy
