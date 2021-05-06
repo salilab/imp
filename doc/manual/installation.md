@@ -63,6 +63,15 @@ will not build, and some will not function optimally.
   [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) are recommended
   for visualization of results.
 
+The following prerequisites are _bundled_, i.e. they are included with %IMP
+itself and will be built at the same time as %IMP, unless explicitly
+requested otherwise (see [CMake](@ref cmake_config) for more information):
+
+- [RMF](https://integrativemodeling.org/rmf/) (1.3 or later) for handling
+  RMF files, and the IMP.rmf module.
+- [python-ihm](https://github.com/ihmwg/python-ihm) for handling mmCIF and
+  BinaryCIF files.
+
 ### Getting prerequisites on Linux {#installation_prereqs_linux}
 All of the prerequisites should be available as pre-built packages for
 your Linux distribution of choice. For example, on a Fedora system the

@@ -52,6 +52,7 @@ Various aspects of %IMP build behavior can be controlled via variables. These ca
 - `IMP_MAX_LOG`: One of `SILENT`, `PROGRESS`, `TERSE`, `VERBOSE` to control what log levels are supported.
 - `IMP_PER_CPP_COMPILATION`: A colon-separated list of modules to build one .cpp at a time.
 - `USE_PYTHON2`: Set to `on` to have CMake build %IMP with Python 2 (by default it will use Python 3 if available).
+- `IMP_USE_SYSTEM_RMF`: Set to `on` to build %IMP using an external (system) copy of the RMF library, instead of that bundled with IMP itself.
 
 There also are a [variety of standard cmake options](https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/Useful-Variables)
 which control the build. For example:
