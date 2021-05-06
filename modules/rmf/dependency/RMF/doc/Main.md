@@ -10,6 +10,7 @@ It can be built standalone, although it is generally used as part of
 [IMP](http://integrativemodeling.org).
 
 See
+- [Installation](\ref installation) for information on obtaining and installing RMF.
 - [RMF viewers](\ref viewing) for more information about viewing RMF files,
 - [RMF file format](\ref format) for more information about the files,
 - [RMF Library](\ref library) for more information about using the library.
