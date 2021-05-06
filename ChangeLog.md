@@ -12,9 +12,9 @@ ChangeLog {#changelog}
   handle argument, and the IMP::pmi::mmcif::ProtocolOutput::flush() method
   has been removed. Instead, use the python-ihm library to output mmCIF
   (or BinaryCIF).
-- IMP can now be built using an external (system) copy of the RMF library,
-  instead of that bundled with IMP itself; use the `IMP_USE_SYSTEM_RMF`
-  CMake variable.
+- IMP can now be built using external (system) copies of the RMF and/or
+  python-ihm libraries, instead of those bundled with IMP itself; use the
+  `IMP_USE_SYSTEM_RMF` or `IMP_USE_SYSTEM_IHM` CMake variables.
 - MRC file handling has been extended; MRC files not aligned with the xyz
   axes (mapc/mapr/maps not 1,2,3) are now automatically transposed rather than
   raising an exception, and the origin is now set from the
