@@ -37,7 +37,7 @@ Source0:       imp-%{version}.tar.gz
 %if 0%{?with_python3}
 BuildRequires: python3-devel, symlinks
 %endif
-BuildRequires: %{PYTHON2}-devel >= 2.6
+BuildRequires: %{PYTHON2}-devel >= 2.6, gcc-c++
 BuildRequires: hdf5-devel >= 1.8
 BuildRequires: swig >= 1.3.40
 BuildRequires: gsl-devel, fftw-devel
