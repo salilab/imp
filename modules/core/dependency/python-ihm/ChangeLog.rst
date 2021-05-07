@@ -1,5 +1,13 @@
-HEAD
-====
+0.20 - 2021-05-06
+=================
+  - Support for Python 2.6 has been dropped. The library needs Python 2.7
+    or Python 3.
+  - Bugfix: correctly read in multiline reference sequence one-letter codes.
+  - Bugfix: the reader is now more tolerant of omitted or unknown values
+    (. or ?) in input mmCIF files.
+
+0.19 - 2021-04-16
+=================
   - A convenience class is added to describe datasets stored in the
     ProXL database (:class:`ihm.location.ProXLLocation`).
 

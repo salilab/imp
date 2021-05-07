@@ -258,7 +258,14 @@ class DistanceRestraint(object):
        :class:`LowerBoundDistanceRestraint`,
        or :class:`LowerUpperBoundDistanceRestraint`.
     """
-    pass
+
+    #: The minimum distance allowed for this restraint,
+    #: or None if unconstrained
+    distance_lower_limit = None
+
+    #: The maximum distance allowed for this restraint,
+    #: or None if unconstrained
+    distance_upper_limit = None
 
 
 class HarmonicDistanceRestraint(DistanceRestraint):
@@ -272,7 +279,10 @@ class HarmonicDistanceRestraint(DistanceRestraint):
     def __init__(self, distance):
         self.distance = distance
 
+    #: The equilibrium distance
     distance_lower_limit = property(lambda self: self.distance)
+
+    #: The equilibrium distance
     distance_upper_limit = distance_lower_limit
 
 
@@ -287,7 +297,10 @@ class UpperBoundDistanceRestraint(DistanceRestraint):
     def __init__(self, distance):
         self.distance = distance
 
+    #: The maximum distance allowed by this restraint
     distance_upper_limit = property(lambda self: self.distance)
+
+    #: Minimum distance (unconstrained, so always None)
     distance_lower_limit = None
 
 
@@ -302,7 +315,10 @@ class LowerBoundDistanceRestraint(DistanceRestraint):
     def __init__(self, distance):
         self.distance = distance
 
+    #: The minimum distance allowed by this restraint
     distance_lower_limit = property(lambda self: self.distance)
+
+    #: Maximum distance (unconstrained, so always None)
     distance_upper_limit = None
 
 
@@ -317,7 +333,10 @@ class LowerUpperBoundDistanceRestraint(DistanceRestraint):
     restraint_type = 'lower and upper bound'
 
     def __init__(self, distance_lower_limit, distance_upper_limit):
+        #: The minimum distance allowed by this restraint
         self.distance_lower_limit = distance_lower_limit
+
+        #: The maximum distance allowed by this restraint
         self.distance_upper_limit = distance_upper_limit
 
 

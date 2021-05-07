@@ -4,15 +4,6 @@ import unittest
 import sys
 import subprocess
 import pickle
-try:
-    from unittest import skipIf
-except ImportError:
-    # Python 2.6 compatibility
-    def skipIf(condition, reason):
-        if condition:
-            return lambda x: None
-        else:
-            return lambda x: x
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
@@ -30,8 +21,8 @@ def get_example_path(fname):
 
 class Tests(unittest.TestCase):
 
-    @skipIf('APPVEYOR' in os.environ,
-            "AppVeyor environments have old SSL certs")
+    @unittest.skipIf('APPVEYOR' in os.environ,
+                     "AppVeyor environments have old SSL certs")
     def test_validator_example(self):
         """Test validator example"""
         subprocess.check_call([sys.executable,

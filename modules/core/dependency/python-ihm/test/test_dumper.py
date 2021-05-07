@@ -507,12 +507,9 @@ _struct_ref_seq_dif.details
 
         dumper = ihm.dumper._StructRefDumper()
         dumper.finalize(system)  # Assign IDs
-        self.assertRaises(IndexError, _get_dumper_output, dumper, system)
-        # Cannot use assertRaises as a context manager in Python 2.6
-        try:
+        with self.assertRaises(IndexError) as cm:
             _get_dumper_output(dumper, system)
-        except IndexError as exc:
-            self.assertIn('is (90-4), out of range 1-4', str(exc))
+        self.assertIn('is (90-4), out of range 1-4', str(cm.exception))
 
     def test_struct_ref_bad_db_align(self):
         """Test StructRefDumper with bad db align"""
@@ -527,12 +524,9 @@ _struct_ref_seq_dif.details
 
         dumper = ihm.dumper._StructRefDumper()
         dumper.finalize(system)  # Assign IDs
-        self.assertRaises(IndexError, _get_dumper_output, dumper, system)
-        # Cannot use assertRaises as a context manager in Python 2.6
-        try:
+        with self.assertRaises(IndexError) as cm:
             _get_dumper_output(dumper, system)
-        except IndexError as exc:
-            self.assertIn('is (90-9), out of range 1-9', str(exc))
+        self.assertIn('is (90-9), out of range 1-9', str(cm.exception))
 
     def test_struct_ref_seq_mismatch(self):
         """Test StructRefDumper with sequence mismatch"""
@@ -546,12 +540,10 @@ _struct_ref_seq_dif.details
 
         dumper = ihm.dumper._StructRefDumper()
         dumper.finalize(system)  # Assign IDs
-        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
-        # Cannot use assertRaises as a context manager in Python 2.6
-        try:
+        with self.assertRaises(ValueError) as cm:
             _get_dumper_output(dumper, system)
-        except ValueError as exc:
-            self.assertIn('does not match entity canonical sequence', str(exc))
+        self.assertIn('does not match entity canonical sequence',
+                      str(cm.exception))
 
     def test_struct_ref_seq_dif_outrange(self):
         """Test StructRefDumper with SeqDif out of range"""
@@ -569,12 +561,9 @@ _struct_ref_seq_dif.details
 
         dumper = ihm.dumper._StructRefDumper()
         dumper.finalize(system)  # Assign IDs
-        self.assertRaises(IndexError, _get_dumper_output, dumper, system)
-        # Cannot use assertRaises as a context manager in Python 2.6
-        try:
+        with self.assertRaises(IndexError) as cm:
             _get_dumper_output(dumper, system)
-        except IndexError as exc:
-            self.assertIn('is 40, out of range 1-4', str(exc))
+        self.assertIn('is 40, out of range 1-4', str(cm.exception))
 
     def test_struct_ref_seq_dif_mismatch(self):
         """Test StructRefDumper with SeqDif code mismatch"""
@@ -592,13 +581,10 @@ _struct_ref_seq_dif.details
 
         dumper = ihm.dumper._StructRefDumper()
         dumper.finalize(system)  # Assign IDs
-        self.assertRaises(ValueError, _get_dumper_output, dumper, system)
-        # Cannot use assertRaises as a context manager in Python 2.6
-        try:
+        with self.assertRaises(ValueError) as cm:
             _get_dumper_output(dumper, system)
-        except ValueError as exc:
-            self.assertIn('one-letter code (Y) does not match', str(exc))
-            self.assertIn('(S at position 2)', str(exc))
+        self.assertIn('one-letter code (Y) does not match', str(cm.exception))
+        self.assertIn('(S at position 2)', str(cm.exception))
 
     def test_chem_comp_dumper(self):
         """Test ChemCompDumper"""
@@ -1426,9 +1412,17 @@ _ihm_model_representation_details.description
             template_seq_id_range=(201, 210),
             sequence_identity=ihm.startmodel.SequenceIdentity(40., None),
             alignment_file=ali)
+        s3 = ihm.startmodel.Template(
+            dataset=dstemplate, asym_id='D',
+            seq_id_range=(-5, 2),  # 5,12 in IHM numbering
+            template_seq_id_range=(201, 210),
+            sequence_identity=ihm.startmodel.SequenceIdentity(ihm.unknown,
+                                                              ihm.unknown),
+            alignment_file=ali)
 
-        sm = TestStartingModel(asym(1, 12), dstarget, 'A', [s1, s2], offset=10,
-                               script_file=script, software=software)
+        sm = TestStartingModel(asym(1, 12), dstarget, 'A', [s1, s2, s3],
+                               offset=10, script_file=script,
+                               software=software)
         system.orphan_starting_models.append(sm)
 
         sm = TestStartingModel(asym(1, 15), dstarget, 'A', [],
@@ -1500,6 +1494,7 @@ _ihm_starting_comparative_models.template_dataset_list_id
 _ihm_starting_comparative_models.alignment_file_id
 1 1 A 1 10 C 101 110 30.000 1 101 .
 2 1 A 5 12 D 201 210 40.000 . 101 5
+3 1 A 5 12 D 201 210 ? ? 101 5
 #
 #
 loop_
@@ -1881,11 +1876,24 @@ _ihm_model_group_link.model_id
         system.asym_units.append(asym2)
         model.assembly.append(asym2)
 
+        heme = ihm.NonPolymerChemComp("HEM", name='heme',
+                                      formula='C34 H32 Fe N4 O4')
+        entity_heme = ihm.Entity([heme], description='Heme')
+        entity_heme._id = 99
+        system.entities.append(entity_heme)
+        asym_nonpol = ihm.AsymUnit(entity_heme, 'baz')
+        asym_nonpol._id = 'Z'
+        system.asym_units.append(asym_nonpol)
+        model.assembly.append(asym_nonpol)
+
         # Add multiple representation segments for asym2
         s = ihm.representation.AtomicSegment(asym2(1, 2), rigid=True)
         model.representation.append(s)
         s = ihm.representation.FeatureSegment(asym2(1, 2), rigid=False,
                                               primitive='sphere', count=2)
+        model.representation.append(s)
+
+        s = ihm.representation.AtomicSegment(asym_nonpol, rigid=True)
         model.representation.append(s)
 
         rngcheck = ihm.dumper._RangeChecker(model)
@@ -1913,6 +1921,17 @@ _ihm_model_group_link.model_id
         sphere = ihm.model.Sphere(asym_unit=asym2, seq_id_range=(1, 4),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         self.assertRaises(ValueError, rngcheck, sphere)
+
+        # Atom in a nonpolymer must have no seq_id
+        atom = ihm.model.Atom(asym_unit=asym_nonpol, seq_id=None, atom_id='C',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0)
+        rngcheck(atom)
+        atom = ihm.model.Atom(asym_unit=asym2, seq_id=None, atom_id='C',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0)
+        self.assertRaises(ValueError, rngcheck, atom)
+        atom = ihm.model.Atom(asym_unit=asym_nonpol, seq_id=1, atom_id='C',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0)
+        self.assertRaises(ValueError, rngcheck, atom)
 
     def test_range_checker_repr_type_atomic(self):
         """Test RangeChecker class type checking against AtomicSegments"""

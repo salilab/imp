@@ -262,14 +262,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(s1.asym_id, 'C')
         self.assertEqual(s1.seq_id_range, (33, 424))
         self.assertEqual(s1.template_seq_id_range, (33, 424))
-        self.assertAlmostEqual(float(s1.sequence_identity), 100.0, delta=0.1)
+        self.assertAlmostEqual(s1.sequence_identity.value, 100.0, delta=0.1)
         self.assertEqual(
             s1.sequence_identity.denominator,
             ihm.startmodel.SequenceIdentityDenominator.SHORTER_LENGTH)
         self.assertEqual(s2.asym_id, 'G')
         self.assertEqual(s2.seq_id_range, (429, 488))
         self.assertEqual(s2.template_seq_id_range, (482, 551))
-        self.assertAlmostEqual(float(s2.sequence_identity), 10.0, delta=0.1)
+        self.assertAlmostEqual(s2.sequence_identity.value, 10.0, delta=0.1)
         self.assertEqual(
             s2.sequence_identity.denominator,
             ihm.startmodel.SequenceIdentityDenominator.SHORTER_LENGTH)
@@ -346,7 +346,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.asym_id, 'B')
         self.assertEqual(s.seq_id_range, (15, 244))
         self.assertEqual(s.template_seq_id_range, (1, 229))
-        self.assertAlmostEqual(float(s.sequence_identity), 40.35, delta=0.1)
+        self.assertAlmostEqual(s.sequence_identity.value, 40.35, delta=0.1)
         denom = ihm.startmodel.SequenceIdentityDenominator
         self.assertEqual(
             s.sequence_identity.denominator, denom.NUM_ALIGNED_WITHOUT_GAPS)
@@ -378,7 +378,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(s.asym_id, 'C')
         self.assertEqual(s.seq_id_range, (14, 1356))
         self.assertEqual(s.template_seq_id_range, (8, 1340))
-        self.assertAlmostEqual(float(s.sequence_identity), 40.95, delta=0.1)
+        self.assertAlmostEqual(s.sequence_identity.value, 40.95, delta=0.1)
         denom = ihm.startmodel.SequenceIdentityDenominator
         self.assertEqual(
             s.sequence_identity.denominator, denom.NUM_ALIGNED_WITHOUT_GAPS)

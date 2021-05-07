@@ -19,7 +19,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.18'
+__version__ = '0.20'
 
 
 class __UnknownValue(object):
@@ -33,6 +33,11 @@ class __UnknownValue(object):
         return False
     # Python2 compatibility
     __nonzero__ = __bool__
+
+    # Needs to be hashable so that classes like Software (that might
+    # use unknown values as attributes) are hashable
+    def __hash__(self):
+        return 0
 
     # Unknown value is a singleton and should only compare equal to itself
     def __eq__(self, other):
@@ -267,7 +272,8 @@ class System(object):
                     yield model_group
         if not only_in_states:
             for ensemble in self.ensembles:
-                yield ensemble.model_group
+                if ensemble.model_group:
+                    yield ensemble.model_group
                 for ss in ensemble.subsamples:
                     if ss.model_group:
                         yield ss.model_group

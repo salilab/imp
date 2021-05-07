@@ -616,8 +616,13 @@ _struct_ref.pdbx_db_accession
 _struct_ref.pdbx_align_begin
 _struct_ref.pdbx_seq_one_letter_code
 _struct_ref.details
-1 1 UNP NUP84_YEAST P52891 3 MELSPTYQT 'test sequence'
+1 1 UNP NUP84_YEAST P52891 3
+;MELSP
+TYQT
+;
+'test sequence'
 2 1 MyDatabase testcode testacc 1 MEL 'other sequence'
+3 1 MyDatabase testcode2 testacc2 1 . 'other sequence'
 #
 #
 loop_
@@ -648,13 +653,14 @@ _struct_ref_seq_dif.details
             for fh in cif_file_handles(cif):
                 s, = ihm.reader.read(fh)
                 e, = s.entities
-                r1, r2 = e.references
+                r1, r2, r3 = e.references
                 self.assertIsInstance(r1, ihm.reference.UniProtSequence)
                 self.assertEqual(r1.db_name, 'UNP')
                 self.assertEqual(r1.db_code, 'NUP84_YEAST')
                 self.assertEqual(r1.accession, 'P52891')
                 self.assertEqual(r1.sequence, 'MELSPTYQT')
                 self.assertEqual(r1.details, 'test sequence')
+                self.assertIsNone(r3.sequence)
                 a1, a2 = r1.alignments
                 self.assertEqual(a1.db_begin, 3)
                 self.assertEqual(a1.db_end, 6)
@@ -1172,7 +1178,7 @@ _ihm_starting_comparative_models.alignment_file_id
             self.assertEqual(t1.asym_id, 'C')
             self.assertEqual(t1.seq_id_range, (7, 436))
             self.assertEqual(t1.template_seq_id_range, (9, 438))
-            self.assertAlmostEqual(float(t1.sequence_identity), 90.0,
+            self.assertAlmostEqual(t1.sequence_identity.value, 90.0,
                                    delta=0.1)
             self.assertEqual(t1.sequence_identity.denominator, 1)
             self.assertEqual(t1.alignment_file._id, '2')

@@ -236,11 +236,16 @@ class Tests(unittest.TestCase):
                           classification='7', description='8', location='9')
         s4 = ihm.Software(name='bar', version='1.0',
                           classification='a', description='b', location='c')
+        s5 = ihm.Software(name='bar', version=ihm.unknown,
+                          classification='a', description='b', location='c')
         # Should compare equal iff name and version both match
         self.assertEqual(s1, s3)
         self.assertEqual(hash(s1), hash(s3))
         self.assertNotEqual(s1, s2)
         self.assertNotEqual(s1, s4)
+        # Unknown values should not compare equal to known
+        self.assertNotEqual(s4, s5)
+        self.assertNotEqual(hash(s4), hash(s5))
 
     def test_citation(self):
         """Test Citation class"""
@@ -451,6 +456,13 @@ class Tests(unittest.TestCase):
                                   model_group=model_group4)
         e1.subsamples.extend((ss1, ss2))
         s.ensembles.append(e1)
+        # Ensemble without a model_group
+        e2 = ihm.model.Ensemble(model_group=None, num_models=10,
+                                post_process=None, name='cluster1',
+                                clustering_method='Hierarchical',
+                                clustering_feature='RMSD',
+                                precision=4.2)
+        s.ensembles.append(e2)
 
         mg = s._all_model_groups()
         # List may contain duplicates but only includes states

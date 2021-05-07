@@ -27,13 +27,14 @@ _Float32 = 32
 _Float64 = 33
 
 # msgpack data is binary (bytes); need to convert to/from str in Python 3
-# All mmCIF data is ASCII
+# All mmCIF data is supposed to be ASCII, but be tolerant of random 8-bit data
+# on input by using an 8-bit superset of ASCII (latin-1)
 if sys.version_info[0] >= 3:
     def _decode_bytes(bs):
-        return bs.decode('ascii')
+        return bs.decode('latin-1')
 
     def _encode_str(s):
-        return s.encode('ascii')
+        return s.encode('ascii', errors='replace')
 else:
     def _decode_bytes(bs):
         return bs

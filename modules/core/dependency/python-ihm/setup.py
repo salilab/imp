@@ -7,7 +7,7 @@ except ImportError:
 import sys
 import os
 
-VERSION = "0.18"
+VERSION = "0.20"
 
 copy_args = sys.argv[1:]
 
@@ -55,7 +55,6 @@ setup(name='ihm',
       packages=['ihm'],
       install_requires=['msgpack'],
       classifiers=[
-          "Programming Language :: Python :: 2.6",
           "Programming Language :: Python :: 2.7",
           "Programming Language :: Python :: 3",
           "License :: OSI Approved :: MIT License",

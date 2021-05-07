@@ -321,14 +321,14 @@ class PDBParser(Parser):
         loc = location.PDBLocation(first_line[62:66].strip(), version, details)
         ret['entity_source'] = entity_source
         ret['metadata'] = metadata
-        ret['dataset'] = dataset.PDBDataset(loc)
+        ret['dataset'] = dataset.PDBDataset(loc, details=loc.details)
 
     def _parse_derived_from_pdb(self, fh, first_line, local_file, ret):
         # Model derived from a PDB structure; treat as a local experimental
         # model with the official PDB as a parent
         local_file.details = self._parse_details(fh)
         db_code = first_line[27:].strip()
-        d = dataset.PDBDataset(local_file)
+        d = dataset.PDBDataset(local_file, details=local_file.details)
         d.parents.append(dataset.PDBDataset(location.PDBLocation(db_code)))
         ret['dataset'] = d
 
@@ -512,7 +512,7 @@ class PDBParser(Parser):
             fname = template_path_map[template_code]
             loc = location.InputFileLocation(
                 fname, details="Template for comparative modeling")
-        d = dataset.PDBDataset(loc)
+        d = dataset.PDBDataset(loc, details=loc.details)
 
         # Make the comparative model dataset derive from the template's
         target_dataset.parents.append(d)
