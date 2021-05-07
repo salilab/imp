@@ -8,9 +8,7 @@ standalone or as part of [IMP](https://integrativemodeling.org).
 
 Standalone: if you are using [Anaconda Python](https://www.anaconda.com/), install with
 
-```
-conda install -c conda-forge rmf
-```
+    conda install -c conda-forge rmf
 
 IMP: Download an IMP binary (which includes RMF) from the
 [IMP download page](https://integrativemodeling.org/download.html).
