@@ -21,6 +21,7 @@ ChangeLog {#changelog}
   nxstart/nystart/nzstart fields if present and the file origin is zero.
 - New applications of IMP are now available:
   - [Integrative model of the γTuSC-Spc110 complex](https://salilab.org/gtuscSpc110)
+  - [Integrative structure of the Smc5/6-Nse2/5/6 complex](https://integrativemodeling.org/systems/smc56_nse256)
 - IMP's copies of the old Template Numerical Toolkit (TNT) and
   JAMA/C++ library have been removed from IMP::algebra::internal.
   Use equivalent functionality in the Eigen library instead.
