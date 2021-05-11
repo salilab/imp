@@ -46,6 +46,7 @@ import IMP.pmi
 import IMP.pmi.tools
 import IMP.pmi.alphabets
 import os
+import re
 from collections import defaultdict, namedtuple
 from . import system_tools
 from bisect import bisect_left
@@ -264,6 +265,16 @@ class State(_SystemBase):
         # check whether the molecule name is already assigned
         if name in self.molecules:
             raise ValueError('Cannot use a molecule name already used')
+
+        # check for something that looks like a copy number
+        if re.search(r'\.\d+$', name):
+            warnings.warn(
+                "It is recommended not to end the molecule name with "
+                ".(number) as it may be confused with the copy number "
+                "(the copy number for new molecules is always 0, so to "
+                "select this molecule, use '%s.0'). Use create_clone() or "
+                "create_copy() instead if a copy of an existing molecule "
+                "is desired." % name, IMP.pmi.ParameterWarning)
 
         mol = Molecule(self, name, sequence, chain_id, copy_num=0,
                        alphabet=alphabet)
