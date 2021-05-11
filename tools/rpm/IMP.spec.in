@@ -366,8 +366,11 @@ for mod in %{MPI_MODULES}; do
 done
 
 # Replace .py files with symlinks to Python 3 files (since they are the same)
+# but not the SWIG-generated __init__.py files (since these contain config
+# information which might be different; e.g. on Fedora the Python 3 wrappers
+# include numpy support but the Python 2 wrappers do not)
 (cd ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver} \
- && find site-packages -name '*.py' \
+ && find site-packages -name '*.py' -a ! -name __init__.py \
       -exec ln -sf ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/\{\} \{\} \; \
  && symlinks -rc .)
 %endif
