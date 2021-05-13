@@ -7,14 +7,16 @@ if(EXISTS ${CMAKE_BINARY_DIR}/lib/ihm
   file(REMOVE ${CMAKE_BINARY_DIR}/lib/ihm)
 endif()
 
+# We need ihm_format.h to build IMP's mmCIF reader, even if we're using
+# external python-ihm
+set(PYTHON-IHM_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/src/ CACHE INTERNAL "" FORCE)
+
 if(IMP_USE_SYSTEM_IHM)
 # Clean up after a non-system IHM build
 execute_process(COMMAND ${CMAKE_COMMAND} -E rm -rf
                 ${CMAKE_BINARY_DIR}/lib/ihm)
 
 else(IMP_USE_SYSTEM_IHM)
-
-set(PYTHON-IHM_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/src/ CACHE INTERNAL "" FORCE)
 
 execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory
                 ${CMAKE_BINARY_DIR}/lib/ihm
