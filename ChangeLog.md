@@ -8,6 +8,9 @@ ChangeLog {#changelog}
 - IMP::em::FitRestraint::cast() has been removed. Use `get_from()` instead.
 - The IMP::em::CoarseCC class is deprecated. Use similarly-named free
   functions intead to calculate coarse cross correlation.
+- A new numerically stable grid-based Bayesian scoring function,
+  IMP::em::FitRestraintBayesEM3D, has been added for cryo-EM data. Note that
+  this is still in development.
 - The IMP::pmi::mmcif::ProtocolOutput constructor no longer takes a file
   handle argument, and the IMP::pmi::mmcif::ProtocolOutput::flush() method
   has been removed. Instead, use the python-ihm library to output mmCIF
