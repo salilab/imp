@@ -71,9 +71,6 @@ class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
  public:
   OrderedTypeClassnamePredicate(std::string name =
                                     "OrderedTypeClassnamePredicate%1%");
-#ifndef SWIG
-  using ClassnamePredicate::get_value;
-#endif
   //! Compute the predicate for specified types
   int get_value(const core::ParticleTypes &types) {
     return internal::get_ordered_type_hash(types);
