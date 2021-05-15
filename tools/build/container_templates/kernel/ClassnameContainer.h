@@ -112,12 +112,6 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
 
-  /** \deprecated_at{2.1}
-      Use get_contents() instead and consider using the
-      IMP_CONTAINER_FOREACH() macro.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
-
  protected:
   ClassnameContainer(Model *m,
                      std::string name = "ClassnameContainer %1%");

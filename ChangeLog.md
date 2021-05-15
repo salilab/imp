@@ -6,6 +6,11 @@ ChangeLog {#changelog}
   Python that works with IMP (although Python 3 is recommended).
 - IMP now requires Boost 1.53 or later; support for Boost 1.41 has been dropped.
 - IMP::em::FitRestraint::cast() has been removed. Use `get_from()` instead.
+- The deprecated methods IMP::SingletonContainer::get_particle(),
+  IMP::PairContainer::get_particle_pair(),
+  IMP::TripletContainer::get_particle_triplet(), and
+  IMP::QuadContainer::get_particle_quad() have been removed. Use the
+  get_contents() method instead.
 - The IMP::em::CoarseCC class is deprecated. Use similarly-named free
   functions intead to calculate coarse cross correlation.
 - A new numerically stable grid-based Bayesian scoring function,

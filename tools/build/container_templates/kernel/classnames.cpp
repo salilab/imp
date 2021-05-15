@@ -38,11 +38,6 @@ PLURALVARIABLETYPE ClassnameContainer::get_FUNCTIONNAMEs() const {
   return IMP::internal::get_particle(get_model(), get_indexes());
 }
 
-VARIABLETYPE ClassnameContainer::get_FUNCTIONNAME(unsigned int i) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_indexes()");
-  return get(i);
-}
-
 bool ClassnameContainer::get_provides_access() const {
   validate_readable();
   return do_get_provides_access();
