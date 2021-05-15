@@ -109,6 +109,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   /** \deprecated_at{2.1}
       Use get_contents() instead.
    */
+  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
   PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
 
   /** \deprecated_at{2.1}
