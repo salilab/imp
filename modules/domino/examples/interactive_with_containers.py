@@ -23,7 +23,8 @@ ps = IMP.get_indexes([IMP.core.XYZ.setup_particle(IMP.Particle(m))
 s = IMP.core.HarmonicDistancePairScore(1, 1)
 lpc = IMP.container.ListPairContainer(m,
     [(ps[i[0]], ps[i[1]]) for i in [(0, 1), (1, 2)]])
-print([(p[0].get_name(), p[1].get_name()) for p in lpc.get_particle_pairs()])
+print([(m.get_particle_name(p[0]), m.get_particle_name(p[1]))
+       for p in lpc.get_contents()])
 r = IMP.container.PairsRestraint(s, lpc)
 r.set_maximum_score(.1)
 

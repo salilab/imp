@@ -44,9 +44,9 @@ class Tests(IMP.test.TestCase):
         print('eval')
         r.evaluate(False)
         print('done eval')
-        for pr in cpc.get_particle_pairs():
-            dist = IMP.core.get_distance(IMP.core.XYZR(pr[0]),
-                                         IMP.core.XYZR(pr[1]))
+        for pr in cpc.get_contents():
+            dist = IMP.core.get_distance(IMP.core.XYZR(m, pr[0]),
+                                         IMP.core.XYZR(m, pr[1]))
         print('eval2')
         self.assertAlmostEqual(r.evaluate(False), 0, delta=1e-3)
 
@@ -59,7 +59,7 @@ class Tests(IMP.test.TestCase):
             p.set_coordinates_are_optimized(True)
         lsc = IMP.container.ListSingletonContainer(m, ps)
         cpc = IMP.container.ConnectingPairContainer(lsc, .1)
-        for pp in cpc.get_particle_pairs():
+        for pp in cpc.get_contents():
             print(pp)
             # for p0 in ps:
             #     for p1 in ps:
@@ -89,7 +89,7 @@ class Tests(IMP.test.TestCase):
             for p in ps:
                 nudge_particle(p, 1.0)
         print("get")
-        for pp in cpc.get_particle_pairs():
+        for pp in cpc.get_contents():
             print(pp)
             print()
         for p0 in ps:

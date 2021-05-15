@@ -17,9 +17,8 @@ sf = IMP.core.RestraintsScoringFunction([r])
 # we don't want to see lots of log messages about restraint evaluation
 m.set_log_level(IMP.WARNING)
 
-# the container (c) stores a list of particles, which are alse XYZR particles
-# we can construct a list of all the decorated particles
-xyzrs = c.get_particles()
+# the container (c) stores a list of particle indices
+pis = c.get_contents()
 
 s = IMP.core.MCCGSampler(m)
 s.set_scoring_function(sf)
@@ -33,7 +32,7 @@ for i in range(0, configs.get_number_of_configurations()):
     configs.load_configuration(i)
     # print out the sphere containing the point set
     # - Why? - Why not?
-    sphere = IMP.core.get_enclosing_sphere(xyzrs)
+    sphere = IMP.core.get_enclosing_sphere(IMP.get_particles(m, pis))
     print(sphere)
 
 # cluster the solutions based on their coordinates
@@ -45,5 +44,5 @@ clustering = IMP.statistics.create_lloyds_kmeans(e, 3, 1000)
 for i in range(0, clustering.get_number_of_clusters()):
     # load the configuration for a central point
     configs.load_configuration(clustering.get_cluster_representative(i))
-    sphere = IMP.core.get_enclosing_sphere(xyzrs)
+    sphere = IMP.core.get_enclosing_sphere(IMP.get_particles(m, pis))
     print(sphere)

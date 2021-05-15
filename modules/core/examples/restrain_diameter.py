@@ -26,10 +26,10 @@ o = IMP.core.ConjugateGradients(m)
 o.set_scoring_function(sf)
 
 max = 0
-for p0 in lc.get_particles():
-    for p1 in lc.get_particles():
-        d = IMP.core.get_distance(IMP.core.XYZ(p0),
-                                  IMP.core.XYZ(p1))
+for pi0 in lc.get_contents():
+    for pi1 in lc.get_contents():
+        d = IMP.core.get_distance(IMP.core.XYZ(m, pi0),
+                                  IMP.core.XYZ(m, pi1))
         if d > max:
             max = d
 print("The maximum distance is " + str(max))
@@ -38,10 +38,10 @@ IMP.set_log_level(IMP.SILENT)
 o.optimize(100)
 
 max = 0
-for p0 in lc.get_particles():
-    for p1 in lc.get_particles():
-        d = IMP.core.get_distance(IMP.core.XYZ(p0),
-                                  IMP.core.XYZ(p1))
+for pi0 in lc.get_contents():
+    for pi1 in lc.get_contents():
+        d = IMP.core.get_distance(IMP.core.XYZ(m, pi0),
+                                  IMP.core.XYZ(m, pi1))
         if d > max:
             max = d
 print("Afterwards, the maximum distance is " + str(max))
