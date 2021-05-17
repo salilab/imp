@@ -259,7 +259,7 @@ IMP::Pointer<container::MinimumPairRestraint> do_bipartite_mindist(
   }
 
   // if(lpc->get_number_of_particle_pairs()==0) {return NULL;}
-  if ((lpc->get_particle_pairs()).size() == 0) {
+  if ((lpc->get_contents()).size() == 0) {
     return nullptr;
   }
 
@@ -285,7 +285,7 @@ IMP::Pointer<container::MinimumPairRestraint> do_bipartite_mindist(
     }
   }
   // if(lpc->get_number_of_particle_pairs()==0) {return NULL;}
-  if ((lpc->get_particle_pairs()).size() == 0) {
+  if ((lpc->get_contents()).size() == 0) {
     return nullptr;
   }
 
@@ -672,10 +672,11 @@ void add_layer_restraint(RestraintSet *allrs,
 void add_bayesian_layer_restraint(RestraintSet *allrs,
                                   container::ListSingletonContainer *lsc,
                                   Particle *a, Particle *b) {
-  Particles ps = lsc->get_particles();
-  for (unsigned i = 0; i < ps.size(); ++i) {
+  Model *m = lsc->get_model();
+  ParticleIndexes pis = lsc->get_contents();
+  for (unsigned i = 0; i < pis.size(); ++i) {
     IMP_NEW(spb::UniformBoundedRestraint, ubr,
-            (ps[i], FloatKey("z"), a, b));
+            (m->get_particle(pis[i]), FloatKey("z"), a, b));
     // m->add_restraint(ubr);
     allrs->add_restraint(ubr);
   }
