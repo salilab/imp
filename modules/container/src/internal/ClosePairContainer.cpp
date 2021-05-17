@@ -83,9 +83,9 @@ ModelObjectsTemp ClosePairContainer::get_score_state_inputs()
 }
 
 void ClosePairContainer::check_duplicates_input() const {
-  ParticlesTemp ps = c_->get_particles();
-  std::sort(ps.begin(), ps.end());
-  IMP_USAGE_CHECK(std::unique(ps.begin(), ps.end()) == ps.end(),
+  ParticleIndexes pis = c_->get_contents();
+  std::sort(pis.begin(), pis.end());
+  IMP_USAGE_CHECK(std::unique(pis.begin(), pis.end()) == pis.end(),
                   "Duplicates in input");
 }
 
