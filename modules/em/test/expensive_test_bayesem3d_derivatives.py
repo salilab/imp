@@ -135,9 +135,9 @@ class Tests(IMP.test.TestCase):
                 self.m.update()
                 return self.rs.evaluate(False)
 
+            coord = IMP.core.XYZ(self.prot_rb).get_coordinates()
             deriv_fd = FD.grad(
-                fdm, myfun,
-                *IMP.core.XYZ(self.prot_rb).get_coordinates(), *q)
+                fdm, myfun, coord[0], coord[1], coord[2], *q)
 
             ddr = np.array(dr - deriv_fd[:3]) < 1e-7
             ddq = np.array(dq - deriv_fd[-4:]) < 1e-7
