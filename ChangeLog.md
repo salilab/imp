@@ -12,7 +12,7 @@ ChangeLog {#changelog}
   IMP::QuadContainer::get_particle_quad() have been removed. Use the
   get_contents() method instead.
 - The IMP::em::CoarseCC class is deprecated. Use similarly-named free
-  functions intead to calculate coarse cross correlation.
+  functions instead to calculate coarse cross correlation.
 - A new numerically stable grid-based Bayesian scoring function,
   IMP::em::FitRestraintBayesEM3D, has been added for cryo-EM data. Note that
   this is still in development.
