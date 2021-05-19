@@ -1,5 +1,7 @@
 ChangeLog {#changelog}
 =========
+
+# 2.15.0 - 2021-06-02 # {#changelog_2_15_0}
 - The [Homebrew](https://brew.sh/) Mac packages now support Apple Silicon.
 - We no longer provide RPMs for CentOS 6, since it has reached end of life.
 - Python 2.6 is no longer supported; Python 2.7 is the oldest version of
