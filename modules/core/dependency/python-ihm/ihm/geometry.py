@@ -4,6 +4,7 @@
    used in :class:`~ihm.restraint.GeometricRestraint` objects.
 """
 
+
 class Center(object):
     """Define the center of a geometric object in Cartesian space.
 
@@ -36,7 +37,7 @@ class Transformation(object):
     """
     @classmethod
     def identity(cls):
-        return cls([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]], [0.,0.,0.])
+        return cls([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]], [0., 0., 0.])
 
 
 class GeometricObject(object):
@@ -50,6 +51,7 @@ class GeometricObject(object):
        :param str description: A brief description of the object.
     """
     type = 'other'
+
     def __init__(self, name=None, description=None):
         self.name, self.description = name, description
 

@@ -1,13 +1,13 @@
 /**
  *  \file IMP/em2d/ProjectionParameters.h
  *  \brief Decorator for projection parameters
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PROJECTION_PARAMETERS_H
 #define IMPEM2D_PROJECTION_PARAMETERS_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Rotation3D.h"

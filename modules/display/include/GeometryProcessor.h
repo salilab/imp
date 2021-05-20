@@ -2,7 +2,7 @@
  *  \file IMP/display/GeometryProcessor.h
  *  \brief Provide a standard geometry processing framework.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_GEOMETRY_PROCESSOR_H

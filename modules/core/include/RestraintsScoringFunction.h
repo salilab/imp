@@ -1,9 +1,8 @@
 /**
  *  \file IMP/core/RestraintsScoringFunction.h
- *  \brief Storage of a model, its restraints,
- *                         constraints and particles.
+ *  \brief A scoring function on a list of restraints
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,8 +16,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-/** Create a scoring function on a list of restraints.
-*/
+//! Create a scoring function on a list of restraints.
 class RestraintsScoringFunction :
 #if defined(IMP_DOXYGEN) || defined(SWIG)
     public ScoringFunction

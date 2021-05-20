@@ -2,14 +2,14 @@
  *  \file IMP/isd/FretRestraint.h
  *  \brief FRET_R restraint to use in vivo FRET data.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPISD_FRET_RESTRAINT_H
 #define IMPISD_FRET_RESTRAINT_H
 #include <IMP/isd/Scale.h>
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/isd/FretData.h>
 

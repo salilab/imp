@@ -2,7 +2,7 @@
  *  \file eigen_analysis.cpp
  *  \brief Principal component analysis of a set of points
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #include "IMP/algebra/eigen_analysis.h"

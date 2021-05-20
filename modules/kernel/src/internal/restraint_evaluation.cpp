@@ -1,7 +1,8 @@
 /**
- *  \file static.cpp   \brief all static data for module.
+ *  \file internal/restraint_evaluation.cpp
+ *  \brief Utility functions to get restraint scores
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

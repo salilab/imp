@@ -2,7 +2,7 @@
  *  \file IMP/RestraintSet.h
  *  \brief Used to hold a set of related restraints.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,6 +15,7 @@
 #include <string>
 
 IMPKERNEL_BEGIN_NAMESPACE
+
 //! Object used to hold a set of restraints
 /** RestraintSets allow one to define a tree of restraints
     and to weight various restraints. Upon evaluation,

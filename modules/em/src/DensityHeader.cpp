@@ -2,7 +2,7 @@
  *  \file DensityHeader.cpp
  *  \brief Metadata for a density file.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -51,14 +51,16 @@ DensityHeader::DensityHeader() {
   initialize(dmean);
   initialize(ispg);
   initialize(nsymbt);
-  user[0] = 0;
-  map[0] = 0;
+  for (unsigned int i = 0; i < USER_FIELD_SIZE; ++i) {
+    user[i] = 0;
+  }
+  for (unsigned int i = 0; i < MAP_FIELD_SIZE; ++i) {
+    map[i] = 0;
+  }
   initialize(machinestamp);
   initialize(rms);
   initialize(nlabl);
-  for (unsigned int i = 0; i < COMMENT_FIELD_NUM_OF; ++i) {
-    comments[i][0] = 0;
-  }
+  memset(&comments[0][0], 0, COMMENT_FIELD_NUM_OF * COMMENT_FIELD_SINGLE_SIZE);
   initialize(magic);
   initialize(voltage);
   initialize(Cs);                 // Cs of microscope

@@ -2,7 +2,7 @@
  *  \file IMP/rmf/restraint_io.h
  *  \brief Manage read/write of Restraints from/to RMF files.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

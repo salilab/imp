@@ -7,13 +7,13 @@
  *  \authors Dina Schneidman, Barak Raveh
  *
 
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_REVOLUTE_JOINTS_H
 #define IMPKINEMATICS_REVOLUTE_JOINTS_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/Object.h>

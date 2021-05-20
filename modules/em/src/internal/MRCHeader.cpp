@@ -2,7 +2,7 @@
  *  \file MRCHeader.cpp
  *  \brief Header information for an MRC file.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,9 +13,11 @@ IMPEM_BEGIN_INTERNAL_NAMESPACE
 void MRCHeader::FromDensityHeader(const DensityHeader &h) {
   std::string empty;
 
-  nz = h.get_nz();
-  ny = h.get_ny();
-  nx = h.get_nx();  // map size
+  // Assume 1:1 mapping here from DensityMap xyz coordinate system to
+  // MRC crs system
+  ns = h.get_nz();
+  nr = h.get_ny();
+  nc = h.get_nx();  // map size
   // mode
   if (h.get_data_type() == 0)  // data type not initialized
     mode = 2;
@@ -27,9 +29,9 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h) {
     mode = 2;  // 32-bits
 
   // number of first columns in map (default = 0)
-  nxstart = h.nxstart;
-  nystart = h.nystart;
-  nzstart = h.nzstart;
+  ncstart = h.nxstart;
+  nrstart = h.nystart;
+  nsstart = h.nzstart;
 
   mx = h.mx;
   my = h.my;
@@ -62,17 +64,37 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h) {
   machinestamp = h.machinestamp;
   rms = h.rms;      // RMS deviation of map from mean density
   nlabl = h.nlabl;  // Number of labels being used
+  // Fill empty coments with null character
+  memset(&labels[0][0], 0, IMP_MRC_NUM_LABELS * IMP_MRC_LABEL_SIZE);
   // Copy comments
   for (int i = 0; i < nlabl; i++) strcpy(labels[i], h.comments[i]);
-  // Fill empty coments with null character
-  const char *c = "\0";
-  empty.resize(IMP_MRC_LABEL_SIZE, *c);
-  for (int i = nlabl; i < IMP_MRC_NUM_LABELS; i++)
-    strcpy(labels[i], empty.c_str());
+}
+
+void MRCHeader::convert_crs_to_xyz(int &nx, int &ny, int &nz,
+                                   int &nxstart, int &nystart, int &nzstart) {
+  int nxyz[3] = {0,0,0};
+  nxyz[mapc-1] = nc;
+  nxyz[mapr-1] = nr;
+  nxyz[maps-1] = ns;
+  nx = nxyz[0];
+  ny = nxyz[1];
+  nz = nxyz[2];
+
+  int nxyzstart[3] = {0,0,0};
+  nxyzstart[mapc-1] = ncstart;
+  nxyzstart[mapr-1] = nrstart;
+  nxyzstart[maps-1] = nsstart;
+  nxstart = nxyzstart[0];
+  nystart = nxyzstart[1];
+  nzstart = nxyzstart[2];
 }
 
 void MRCHeader::ToDensityHeader(DensityHeader &h) {
   std::string empty;
+  /* Convert MRC column/row/section data to XYZ coordinate system used by
+     DensityMap */
+  int nx, ny, nz, nxstart, nystart, nzstart;
+  convert_crs_to_xyz(nx, ny, nz, nxstart, nystart, nzstart);
   h.update_map_dimensions(nx, ny, nz);
   h.update_cell_dimensions();
   // mode
@@ -110,25 +132,32 @@ void MRCHeader::ToDensityHeader(DensityHeader &h) {
   for (int i = 0; i < IMP_MRC_USER; i++) h.user[i] = user[i];
   strcpy(h.map, "MAP");  // character string 'MAP\0' to identify file type
   // Origin used for transforms
-  h.set_xorigin(xorigin);
-  h.set_yorigin(yorigin);
-  h.set_zorigin(zorigin);
+  // Modern files are supposed to use xorigin/yorigin/zorigin, but if these
+  // are zero use the old nxstart/nystart/nzstart fields instead
+  // (although only for non-skewed axes, the common case)
+  if (std::abs(xorigin) < 1e-6 && std::abs(yorigin) < 1e-6
+      && std::abs(zorigin) < 1e-6 && std::abs(alpha-90.0) < 1e-6
+      && std::abs(beta-90.0) < 1e-6 && std::abs(gamma-90.0) < 1e-6) {
+    h.set_xorigin(nxstart * xlen/mx);
+    h.set_yorigin(nystart * ylen/my);
+    h.set_zorigin(nzstart * zlen/mz);
+  } else {
+    h.set_xorigin(xorigin);
+    h.set_yorigin(yorigin);
+    h.set_zorigin(zorigin);
+  }
   // machine stamp (0x11110000 bigendian, 0x44440000 little)
   h.machinestamp = machinestamp;
   h.rms = rms;      // RMS deviation of map from mean density
   h.nlabl = nlabl;  // Number of labels being used
+  // Fill empty coments with null character
+  memset(&h.comments[0][0], 0,
+         DensityHeader::COMMENT_FIELD_NUM_OF
+         * DensityHeader::COMMENT_FIELD_SINGLE_SIZE);
   // Copy comments
   for (int i = 0; i < h.nlabl; i++) {
-    // to make sure there is not memory leak
-    std::string temp;
-    temp.copy(labels[i], DensityHeader::COMMENT_FIELD_SINGLE_SIZE, 0);
-    strcpy(h.comments[i], temp.c_str());
+    strncpy(h.comments[i], labels[i], DensityHeader::COMMENT_FIELD_SINGLE_SIZE);
   }
-  // Fill empty coments with null character
-  const char *c = "\0";
-  empty.resize(IMP_MRC_LABEL_SIZE, *c);
-  for (int i = h.nlabl; i < IMP_MRC_NUM_LABELS; i++)
-    strcpy(h.comments[i], empty.c_str());
 }
 
 IMPEM_END_INTERNAL_NAMESPACE

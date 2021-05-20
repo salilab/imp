@@ -8,11 +8,7 @@ import IMP.pmi.restraints.proteomics
 import IMP.pmi.restraints.crosslinking
 import IMP.pmi.topology
 import IMP.pmi.tools
-try:
-    import IMP.isd_emxl
-    no_isd_emxl = False
-except ImportError:
-    no_isd_emxl = True
+
 
 class Tests(IMP.test.TestCase):
     def test_restraints(self):
@@ -53,12 +49,6 @@ class Tests(IMP.test.TestCase):
             other_objects=[hier_dict["Rpb4"]])
         ev2.add_to_model()
         print(ev2.get_output())
-
-        if not no_isd_emxl:
-            ss = IMP.pmi.restraints.stereochemistry.SecondaryStructure(
-                simo, (30, 40, "Rpb3"), "HHHHHHHHHHH")
-            ss.add_to_model()
-            print(ss.get_output())
 
         eb1 = IMP.pmi.restraints.basic.ExternalBarrier(
             hierarchies=root_hier, radius=50)

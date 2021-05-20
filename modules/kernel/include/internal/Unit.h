@@ -1,7 +1,7 @@
 /**
  *  \file Unit.h     \brief Classes to help with converting between units.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

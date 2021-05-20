@@ -2,7 +2,7 @@
  *  \file IMP/SetCheckState.h
  *  \brief Checking and error reporting support.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,7 +23,7 @@ class Object;
    To use, create an instance of this class with the check level you
    want. When it goes out of scope, it will restore the old level.
 
-   \note This will not keep objects alive, make sure there is also some
+   \note This will not keep objects alive; make sure there is also some
    other ref-counted pointer to them.
 
    \ingroup checking

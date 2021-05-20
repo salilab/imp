@@ -18,19 +18,21 @@ suppress_strings = ["not generated, too many nodes",
 
 def main():
     (options, args) = parser.parse_args()
-    input = open(options.warnings, "r").readlines()
+    with open(options.warnings, "r") as fh:
+        input = fh.readlines()
     found = False
-    for l in input:
+    for line in input:
         # Skip any blank lines that follow a suppressed string
-        if found and len(l.strip()) == 0:
+        if found and len(line.strip()) == 0:
             continue
         found = False
         for x in suppress_strings:
-            if l.find(x) != -1:
+            if line.find(x) != -1:
                 found = True
                 break
         if not found:
-            sys.stdout.write(l)
+            sys.stdout.write(line)
+
 
 if __name__ == '__main__':
     main()

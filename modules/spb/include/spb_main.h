@@ -2,7 +2,7 @@
  *  \file IMP/spb/spb_main.h
  *  \brief SPB MonteCarlo
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,7 +11,7 @@
 #include <IMP.h>
 #include <map>
 #include <string>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

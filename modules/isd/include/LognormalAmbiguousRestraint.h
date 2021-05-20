@@ -5,7 +5,7 @@
  *  and ambiguous assignment. To be used with
  *  cross-linking mass-spectrometry data.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,7 @@
 #define IMPISD_LOGNORMAL_AMBIGUOUS_RESTRAINT_H
 
 #include <IMP/isd/Scale.h>
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/PairContainer.h>
 

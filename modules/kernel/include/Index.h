@@ -1,7 +1,8 @@
 /**
- *  \file IMP/Index.h    \brief Basic types used by IMP.
+ *  \file IMP/Index.h
+ *  \brief Utility types to refer to various types of indices
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -51,9 +52,7 @@ inline Index<Tag> get_invalid_index() {
   return Index<Tag>(-1);
 }
 
-/** This class implements a vector tied to a particular index
-    of type Index<Tag>.
- */
+//! Implements a vector tied to a particular index of type Index<Tag>.
 template <class Tag, class T>
 class IndexVector : public Vector<T> {
   typedef Vector<T> P;

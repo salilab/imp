@@ -2,7 +2,7 @@
  * \file IMP/kinematics/ProteinKinematics.h
  * \brief functionality for defining a kinematic forest for proteins
  *
- * Copyright 2007-2020 IMP Inventors. All rights reserved.
+ * Copyright 2007-2021 IMP Inventors. All rights reserved.
  *  \authors Dina Schneidman, Barak Raveh
  *
  */
@@ -10,7 +10,7 @@
 #ifndef IMPKINEMATICS_PROTEINKINEMATICS_H
 #define IMPKINEMATICS_PROTEINKINEMATICS_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 
 #include <IMP/kinematics/revolute_joints.h>
 #include <IMP/kinematics/KinematicForest.h>

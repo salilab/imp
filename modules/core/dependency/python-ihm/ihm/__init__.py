@@ -19,7 +19,8 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.18'
+__version__ = '0.20'
+
 
 class __UnknownValue(object):
     # Represent the mmCIF 'unknown' special value
@@ -33,9 +34,15 @@ class __UnknownValue(object):
     # Python2 compatibility
     __nonzero__ = __bool__
 
+    # Needs to be hashable so that classes like Software (that might
+    # use unknown values as attributes) are hashable
+    def __hash__(self):
+        return 0
+
     # Unknown value is a singleton and should only compare equal to itself
     def __eq__(self, other):
         return self is other
+
     def __lt__(self, other):
         return False
     __gt__ = __lt__
@@ -45,6 +52,7 @@ class __UnknownValue(object):
 #: A value that isn't known. Note that this is distinct from a value that
 #: is deliberately omitted, which is represented by Python None.
 unknown = __UnknownValue()
+
 
 def _remove_identical(gen):
     """Return only unique objects from `gen`.
@@ -56,6 +64,7 @@ def _remove_identical(gen):
             continue
         seen_objs[id(obj)] = None
         yield obj
+
 
 class System(object):
     """Top-level class representing a complete modeled system.
@@ -206,11 +215,11 @@ class System(object):
         """Update all :class:`Location` objects in the system that lie within
            a checked-out :class:`Repository` to point to that repository.
 
-           This is intended for the use case where the current working directory
-           is a checkout of a repository which is archived somewhere with a DOI.
-           Locations can then be simply constructed pointing to local files,
-           and retroactively updated with this method to point to the DOI if
-           appropriate.
+           This is intended for the use case where the current working
+           directory is a checkout of a repository which is archived somewhere
+           with a DOI. Locations can then be simply constructed pointing to
+           local files, and retroactively updated with this method to point
+           to the DOI if appropriate.
 
            For each Location, if it points to a local file that is below the
            `root` of one of the `repos`, update it to point to that repository.
@@ -227,9 +236,10 @@ class System(object):
                          top_directory="repo-top", root="..")
                system.update_locations_in_repositories([r])
         """
+        import ihm.location
         for loc in self._all_locations():
-            if isinstance(loc, location.FileLocation):
-                location.Repository._update_in_repos(loc, repos)
+            if isinstance(loc, ihm.location.FileLocation):
+                ihm.location.Repository._update_in_repos(loc, repos)
 
     def _all_restraints(self):
         """Iterate over all Restraints in the system.
@@ -243,13 +253,12 @@ class System(object):
     def _all_chem_descriptors(self):
         """Iterate over all ChemDescriptors in the system.
            Duplicates may be present."""
-        return itertools.chain(self.orphan_chem_descriptors,
-                      (restraint.linker for restraint in self._all_restraints()
-                                        if hasattr(restraint, 'linker')
-                                        and restraint.linker),
-                      (itertools.chain.from_iterable(
-                          f._all_flr_chemical_descriptors()
-                          for f in self.flr_data)))
+        return itertools.chain(
+            self.orphan_chem_descriptors,
+            (restraint.linker for restraint in self._all_restraints()
+                if hasattr(restraint, 'linker') and restraint.linker),
+            (itertools.chain.from_iterable(
+                f._all_flr_chemical_descriptors() for f in self.flr_data)))
 
     def _all_model_groups(self, only_in_states=True):
         """Iterate over all ModelGroups in the system.
@@ -263,7 +272,8 @@ class System(object):
                     yield model_group
         if not only_in_states:
             for ensemble in self.ensembles:
-                yield ensemble.model_group
+                if ensemble.model_group:
+                    yield ensemble.model_group
                 for ss in ensemble.subsamples:
                     if ss.model_group:
                         yield ss.model_group
@@ -286,12 +296,12 @@ class System(object):
 
     def _all_representations(self):
         """Iterate over all Representations in the system.
-           This includes all Representations referenced from other objects, plus
-           any orphaned Representations. Duplicates are filtered out."""
+           This includes all Representations referenced from other objects,
+           plus any orphaned Representations. Duplicates are filtered out."""
         return _remove_identical(itertools.chain(
-                   self.orphan_representations,
-                   (model.representation for group, model in self._all_models()
-                                         if model.representation)))
+            self.orphan_representations,
+            (model.representation for group, model in self._all_models()
+                if model.representation)))
 
     def _all_segments(self):
         for representation in self._all_representations():
@@ -303,18 +313,18 @@ class System(object):
            This includes all StartingModels referenced from other objects, plus
            any orphaned StartingModels. Duplicates are filtered out."""
         return _remove_identical(itertools.chain(
-                   self.orphan_starting_models,
-                   (segment.starting_model for segment in self._all_segments()
-                                           if segment.starting_model)))
+            self.orphan_starting_models,
+            (segment.starting_model for segment in self._all_segments()
+                if segment.starting_model)))
 
     def _all_protocols(self):
         """Iterate over all Protocols in the system.
            This includes all Protocols referenced from other objects, plus
            any orphaned Protocols. Duplicates are filtered out."""
         return _remove_identical(itertools.chain(
-                        self.orphan_protocols,
-                        (model.protocol for group, model in self._all_models()
-                                        if model.protocol)))
+            self.orphan_protocols,
+            (model.protocol for group, model in self._all_models()
+                if model.protocol)))
 
     def _all_protocol_steps(self):
         for protocol in self._all_protocols():
@@ -332,29 +342,28 @@ class System(object):
            This includes all Assemblies referenced from other objects, plus
            any orphaned Assemblies. Duplicates may be present."""
         return itertools.chain(
-                        # Complete assembly is always first
-                        (self.complete_assembly,),
-                        self.orphan_assemblies,
-                        (model.assembly for group, model in self._all_models()
-                                        if model.assembly),
-                        (step.assembly for step in self._all_protocol_steps()
-                                       if step.assembly),
-                        (step.assembly for step in self._all_analysis_steps()
-                                       if step.assembly),
-                        (restraint.assembly
-                         for restraint in self._all_restraints()
-                         if restraint.assembly))
+            # Complete assembly is always first
+            (self.complete_assembly,),
+            self.orphan_assemblies,
+            (model.assembly for group, model in self._all_models()
+             if model.assembly),
+            (step.assembly for step in self._all_protocol_steps()
+             if step.assembly),
+            (step.assembly for step in self._all_analysis_steps()
+             if step.assembly),
+            (restraint.assembly
+             for restraint in self._all_restraints() if restraint.assembly))
 
     def _all_dataset_groups(self):
         """Iterate over all DatasetGroups in the system.
            This includes all DatasetGroups referenced from other objects, plus
            any orphaned groups. Duplicates may be present."""
         return itertools.chain(
-                  self.orphan_dataset_groups,
-                  (step.dataset_group for step in self._all_protocol_steps()
-                                      if step.dataset_group),
-                  (step.dataset_group for step in self._all_analysis_steps()
-                                      if step.dataset_group))
+            self.orphan_dataset_groups,
+            (step.dataset_group for step in self._all_protocol_steps()
+             if step.dataset_group),
+            (step.dataset_group for step in self._all_analysis_steps()
+             if step.dataset_group))
 
     def _all_templates(self):
         """Iterate over all Templates in the system."""
@@ -370,14 +379,14 @@ class System(object):
                 for d in dg:
                     yield d
         return itertools.chain(
-                  self.orphan_datasets,
-                  _all_datasets_in_groups(),
-                  (sm.dataset for sm in self._all_starting_models()
-                              if sm.dataset),
-                  (restraint.dataset for restraint in self._all_restraints()
-                                     if restraint.dataset),
-                  (template.dataset for template in self._all_templates()
-                                    if template.dataset))
+            self.orphan_datasets,
+            _all_datasets_in_groups(),
+            (sm.dataset for sm in self._all_starting_models()
+             if sm.dataset),
+            (restraint.dataset for restraint in self._all_restraints()
+             if restraint.dataset),
+            (template.dataset for template in self._all_templates()
+             if template.dataset))
 
     def _all_datasets(self):
         """Iterate over all Datasets in the system.
@@ -415,20 +424,20 @@ class System(object):
                     if ss.file:
                         yield ss.file
         return itertools.chain(
-                self.locations,
-                (dataset.location for dataset in self._all_datasets()
-                          if hasattr(dataset, 'location') and dataset.location),
-                _all_ensemble_locations(),
-                (density.file for density in self._all_densities()
-                              if density.file),
-                (sm.script_file for sm in self._all_starting_models()
-                                         if sm.script_file),
-                (template.alignment_file for template in self._all_templates()
-                                         if template.alignment_file),
-                (step.script_file for step in self._all_protocol_steps()
-                                           if step.script_file),
-                (step.script_file for step in self._all_analysis_steps()
-                                           if step.script_file))
+            self.locations,
+            (dataset.location for dataset in self._all_datasets()
+                if hasattr(dataset, 'location') and dataset.location),
+            _all_ensemble_locations(),
+            (density.file for density in self._all_densities()
+                if density.file),
+            (sm.script_file for sm in self._all_starting_models()
+                if sm.script_file),
+            (template.alignment_file for template in self._all_templates()
+                if template.alignment_file),
+            (step.script_file for step in self._all_protocol_steps()
+                if step.script_file),
+            (step.script_file for step in self._all_analysis_steps()
+                if step.script_file))
 
     def _all_geometric_objects(self):
         """Iterate over all GeometricObjects in the system.
@@ -436,11 +445,11 @@ class System(object):
            plus any referenced from the top-level system.
            Duplicates may be present."""
         return itertools.chain(
-                self.orphan_geometric_objects,
-                (restraint.geometric_object
-                 for restraint in self._all_restraints()
-                 if hasattr(restraint, 'geometric_object')
-                 and restraint.geometric_object))
+            self.orphan_geometric_objects,
+            (restraint.geometric_object
+             for restraint in self._all_restraints()
+             if hasattr(restraint, 'geometric_object')
+             and restraint.geometric_object))
 
     def _all_features(self):
         """Iterate over all Features in the system.
@@ -481,15 +490,15 @@ class System(object):
            any referenced from the top-level system.
            Duplicates may be present."""
         return (itertools.chain(
-                        self.software,
-                        (sm.software for sm in self._all_starting_models()
-                              if sm.software),
-                        (step.software for step in self._all_protocol_steps()
-                                       if step.software),
-                        (step.software for step in self._all_analysis_steps()
-                                       if step.software),
-                        (r.software for r in self._all_restraints()
-                                   if hasattr(r, 'software') and r.software)))
+            self.software,
+            (sm.software for sm in self._all_starting_models()
+             if sm.software),
+            (step.software for step in self._all_protocol_steps()
+             if step.software),
+            (step.software for step in self._all_analysis_steps()
+             if step.software),
+            (r.software for r in self._all_restraints()
+             if hasattr(r, 'software') and r.software)))
 
     def _all_citations(self):
         """Iterate over all Citations in the system.
@@ -497,11 +506,11 @@ class System(object):
            any referenced from the top-level system.
            Duplicates are filtered out."""
         return _remove_identical(itertools.chain(
-                        self.citations,
-                        (restraint.fitting_method_citation_id
-                            for restraint in self._all_restraints()
-                            if hasattr(restraint, 'fitting_method_citation_id')
-                            and restraint.fitting_method_citation_id)))
+            self.citations,
+            (restraint.fitting_method_citation_id
+             for restraint in self._all_restraints()
+             if hasattr(restraint, 'fitting_method_citation_id')
+             and restraint.fitting_method_citation_id)))
 
     def _all_entity_ranges(self):
         """Iterate over all Entity ranges in the system (these may be
@@ -511,12 +520,12 @@ class System(object):
            as we only want ranges that were actually used.
            Duplicates may be present."""
         return (itertools.chain(
-                        (sm.asym_unit for sm in self._all_starting_models()),
-                        (seg.asym_unit for seg in self._all_segments()),
-                        (comp for a in self._all_assemblies() for comp in a),
-                        (comp for f in self._all_features()
-                         for comp in f._all_entities_or_asyms()),
-                        (d.asym_unit for d in self._all_densities())))
+            (sm.asym_unit for sm in self._all_starting_models()),
+            (seg.asym_unit for seg in self._all_segments()),
+            (comp for a in self._all_assemblies() for comp in a),
+            (comp for f in self._all_features()
+                for comp in f._all_entities_or_asyms()),
+            (d.asym_unit for d in self._all_densities())))
 
     def _make_complete_assembly(self):
         """Fill in the complete assembly with all asym units"""
@@ -533,7 +542,8 @@ class Software(object):
 
        :param str name: The name of the software.
        :param str classification: The major function of the sofware, for
-              example 'model building', 'sample preparation', 'data collection'.
+              example 'model building', 'sample preparation',
+              'data collection'.
        :param str description: A longer text description of the software.
        :param str location: Place where the software can be found (e.g. URL).
        :param str type: Type of software (program/package/library/other).
@@ -557,8 +567,10 @@ class Software(object):
     # Software compares equal if the names and versions are the same
     def _eq_vals(self):
         return (self.name, self.version)
+
     def __eq__(self, other):
         return self._eq_vals() == other._eq_vals()
+
     def __hash__(self):
         return hash(self._eq_vals())
 
@@ -617,11 +629,12 @@ class Citation(object):
             for art_id in ref['articleids']:
                 if art_id['idtype'] == 'doi':
                     return enc(art_id['value'])
+
         def get_page_range(ref):
             rng = enc(ref['pages']).split('-')
             if len(rng) == 2 and len(rng[1]) < len(rng[0]):
                 # map ranges like "2730-43" to 2730,2743 not 2730, 43
-                rng[1] = rng[0][:len(rng[0])-len(rng[1])] + rng[1]
+                rng[1] = rng[0][:len(rng[0]) - len(rng[1])] + rng[1]
             # Handle one page or empty page range
             if len(rng) == 1:
                 rng = rng[0]
@@ -643,7 +656,7 @@ class Citation(object):
         j = json.load(fh)
         fh.close()
         ref = j['result'][str(pubmed_id)]
-        authors = [enc(x['name']) for x in ref['authors'] \
+        authors = [enc(x['name']) for x in ref['authors']
                    if x['authtype'] == 'Author']
 
         return cls(pmid=pubmed_id, title=enc(ref['title']),
@@ -688,8 +701,8 @@ class ChemComp(object):
 
     type = 'other'
 
-    _element_mass = {'H':1.008, 'C':12.011, 'N':14.007, 'O':15.999,
-                     'P':30.974, 'S':32.060, 'Se':78.971, 'Fe':55.845}
+    _element_mass = {'H': 1.008, 'C': 12.011, 'N': 14.007, 'O': 15.999,
+                     'P': 30.974, 'S': 32.060, 'Se': 78.971, 'Fe': 55.845}
 
     def __init__(self, id, code, code_canonical, name=None, formula=None):
         self.id = id
@@ -697,8 +710,9 @@ class ChemComp(object):
         self.formula = formula
 
     def __str__(self):
-        return '<%s.%s(%s)>' % (
-                self.__class__.__module__, self.__class__.__name__, self.id)
+        return ('<%s.%s(%s)>'
+                % (self.__class__.__module__, self.__class__.__name__,
+                   self.id))
 
     def __get_weight(self):
         # Calculate weight from formula
@@ -722,7 +736,8 @@ class ChemComp(object):
                 return None
         return weight
 
-    formula_weight = property(__get_weight,
+    formula_weight = property(
+        __get_weight,
         doc="Formula weight (dalton). This is calculated automatically from "
             "the chemical formula and known atomic masses.")
 
@@ -730,6 +745,7 @@ class ChemComp(object):
     def __eq__(self, other):
         return ((self.code, self.code_canonical, self.id, self.type) ==
                 (other.code, other.code_canonical, other.id, other.type))
+
     def __hash__(self):
         return hash((self.code, self.code_canonical, self.id, self.type))
 
@@ -818,39 +834,39 @@ class LPeptideAlphabet(Alphabet):
     """A mapping from one-letter amino acid codes (e.g. H, M) to
        L-amino acids (as :class:`LPeptideChemComp` objects, except for achiral
        glycine which maps to :class:`PeptideChemComp`). Some other common
-       modified residues are also included (e.g. MSE). For these their full name
-       rather than a one-letter code is used.
+       modified residues are also included (e.g. MSE). For these their full
+       name rather than a one-letter code is used.
     """
     _comps = dict([code, LPeptideChemComp(id, code, code, name,
                                           formula)]
-                 for code, id, name, formula in
-                    [('A', 'ALA', 'ALANINE', 'C3 H7 N O2'),
-                     ('C', 'CYS', 'CYSTEINE', 'C3 H7 N O2 S'),
-                     ('D', 'ASP', 'ASPARTIC ACID', 'C4 H7 N O4'),
-                     ('E', 'GLU', 'GLUTAMIC ACID', 'C5 H9 N O4'),
-                     ('F', 'PHE', 'PHENYLALANINE', 'C9 H11 N O2'),
-                     ('H', 'HIS', 'HISTIDINE', 'C6 H10 N3 O2 1'),
-                     ('I', 'ILE', 'ISOLEUCINE', 'C6 H13 N O2'),
-                     ('K', 'LYS', 'LYSINE', 'C6 H15 N2 O2 1'),
-                     ('L', 'LEU', 'LEUCINE', 'C6 H13 N O2'),
-                     ('M', 'MET', 'METHIONINE', 'C5 H11 N O2 S'),
-                     ('N', 'ASN', 'ASPARAGINE', 'C4 H8 N2 O3'),
-                     ('P', 'PRO', 'PROLINE', 'C5 H9 N O2'),
-                     ('Q', 'GLN', 'GLUTAMINE', 'C5 H10 N2 O3'),
-                     ('R', 'ARG', 'ARGININE', 'C6 H15 N4 O2 1'),
-                     ('S', 'SER', 'SERINE', 'C3 H7 N O3'),
-                     ('T', 'THR', 'THREONINE', 'C4 H9 N O3'),
-                     ('V', 'VAL', 'VALINE', 'C5 H11 N O2'),
-                     ('W', 'TRP', 'TRYPTOPHAN', 'C11 H12 N2 O2'),
-                     ('Y', 'TYR', 'TYROSINE', 'C9 H11 N O3')])
+                  for code, id, name, formula in [
+                  ('A', 'ALA', 'ALANINE', 'C3 H7 N O2'),
+                  ('C', 'CYS', 'CYSTEINE', 'C3 H7 N O2 S'),
+                  ('D', 'ASP', 'ASPARTIC ACID', 'C4 H7 N O4'),
+                  ('E', 'GLU', 'GLUTAMIC ACID', 'C5 H9 N O4'),
+                  ('F', 'PHE', 'PHENYLALANINE', 'C9 H11 N O2'),
+                  ('H', 'HIS', 'HISTIDINE', 'C6 H10 N3 O2 1'),
+                  ('I', 'ILE', 'ISOLEUCINE', 'C6 H13 N O2'),
+                  ('K', 'LYS', 'LYSINE', 'C6 H15 N2 O2 1'),
+                  ('L', 'LEU', 'LEUCINE', 'C6 H13 N O2'),
+                  ('M', 'MET', 'METHIONINE', 'C5 H11 N O2 S'),
+                  ('N', 'ASN', 'ASPARAGINE', 'C4 H8 N2 O3'),
+                  ('P', 'PRO', 'PROLINE', 'C5 H9 N O2'),
+                  ('Q', 'GLN', 'GLUTAMINE', 'C5 H10 N2 O3'),
+                  ('R', 'ARG', 'ARGININE', 'C6 H15 N4 O2 1'),
+                  ('S', 'SER', 'SERINE', 'C3 H7 N O3'),
+                  ('T', 'THR', 'THREONINE', 'C4 H9 N O3'),
+                  ('V', 'VAL', 'VALINE', 'C5 H11 N O2'),
+                  ('W', 'TRP', 'TRYPTOPHAN', 'C11 H12 N2 O2'),
+                  ('Y', 'TYR', 'TYROSINE', 'C9 H11 N O3')])
     _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE',
                                   formula="C2 H5 N O2")
 
     # common non-standard L-amino acids
     _comps.update([id, LPeptideChemComp(id, id, canon, name, formula)]
-                  for id, canon, name, formula in
-                     [('MSE', 'M', 'SELENOMETHIONINE', 'C5 H11 N O2 Se'),
-                      ('UNK', 'X', 'UNKNOWN', 'C4 H9 N O2')])
+                  for id, canon, name, formula in [
+                  ('MSE', 'M', 'SELENOMETHIONINE', 'C5 H11 N O2 Se'),
+                  ('UNK', 'X', 'UNKNOWN', 'C4 H9 N O2')])
 
 
 class DPeptideAlphabet(Alphabet):
@@ -860,26 +876,26 @@ class DPeptideAlphabet(Alphabet):
        :class:`LPeptideAlphabet` for more details.
     """
     _comps = dict([code, DPeptideChemComp(code, code, canon, name, formula)]
-                  for canon, code, name, formula in
-                    [('A', 'DAL', 'D-ALANINE', 'C3 H7 N O2'),
-                     ('C', 'DCY', 'D-CYSTEINE', 'C3 H7 N O2 S'),
-                     ('D', 'DAS', 'D-ASPARTIC ACID', 'C4 H7 N O4'),
-                     ('E', 'DGL', 'D-GLUTAMIC ACID', 'C5 H9 N O4'),
-                     ('F', 'DPN', 'D-PHENYLALANINE', 'C9 H11 N O2'),
-                     ('H', 'DHI', 'D-HISTIDINE', 'C6 H10 N3 O2 1'),
-                     ('I', 'DIL', 'D-ISOLEUCINE', 'C6 H13 N O2'),
-                     ('K', 'DLY', 'D-LYSINE', 'C6 H14 N2 O2'),
-                     ('L', 'DLE', 'D-LEUCINE', 'C6 H13 N O2'),
-                     ('M', 'MED', 'D-METHIONINE', 'C5 H11 N O2 S'),
-                     ('N', 'DSG', 'D-ASPARAGINE', 'C4 H8 N2 O3'),
-                     ('P', 'DPR', 'D-PROLINE', 'C5 H9 N O2'),
-                     ('Q', 'DGN', 'D-GLUTAMINE', 'C5 H10 N2 O3'),
-                     ('R', 'DAR', 'D-ARGININE', 'C6 H15 N4 O2 1'),
-                     ('S', 'DSN', 'D-SERINE', 'C3 H7 N O3'),
-                     ('T', 'DTH', 'D-THREONINE', 'C4 H9 N O3'),
-                     ('V', 'DVA', 'D-VALINE', 'C5 H11 N O2'),
-                     ('W', 'DTR', 'D-TRYPTOPHAN', 'C11 H12 N2 O2'),
-                     ('Y', 'DTY', 'D-TYROSINE', 'C9 H11 N O3')])
+                  for canon, code, name, formula in [
+                  ('A', 'DAL', 'D-ALANINE', 'C3 H7 N O2'),
+                  ('C', 'DCY', 'D-CYSTEINE', 'C3 H7 N O2 S'),
+                  ('D', 'DAS', 'D-ASPARTIC ACID', 'C4 H7 N O4'),
+                  ('E', 'DGL', 'D-GLUTAMIC ACID', 'C5 H9 N O4'),
+                  ('F', 'DPN', 'D-PHENYLALANINE', 'C9 H11 N O2'),
+                  ('H', 'DHI', 'D-HISTIDINE', 'C6 H10 N3 O2 1'),
+                  ('I', 'DIL', 'D-ISOLEUCINE', 'C6 H13 N O2'),
+                  ('K', 'DLY', 'D-LYSINE', 'C6 H14 N2 O2'),
+                  ('L', 'DLE', 'D-LEUCINE', 'C6 H13 N O2'),
+                  ('M', 'MED', 'D-METHIONINE', 'C5 H11 N O2 S'),
+                  ('N', 'DSG', 'D-ASPARAGINE', 'C4 H8 N2 O3'),
+                  ('P', 'DPR', 'D-PROLINE', 'C5 H9 N O2'),
+                  ('Q', 'DGN', 'D-GLUTAMINE', 'C5 H10 N2 O3'),
+                  ('R', 'DAR', 'D-ARGININE', 'C6 H15 N4 O2 1'),
+                  ('S', 'DSN', 'D-SERINE', 'C3 H7 N O3'),
+                  ('T', 'DTH', 'D-THREONINE', 'C4 H9 N O3'),
+                  ('V', 'DVA', 'D-VALINE', 'C5 H11 N O2'),
+                  ('W', 'DTR', 'D-TRYPTOPHAN', 'C11 H12 N2 O2'),
+                  ('Y', 'DTY', 'D-TYROSINE', 'C9 H11 N O3')])
     _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE',
                                   formula="C2 H5 N O2")
 
@@ -888,26 +904,26 @@ class RNAAlphabet(Alphabet):
     """A mapping from one-letter nucleic acid codes (e.g. A) to
        RNA (as :class:`RNAChemComp` objects)."""
     _comps = dict([id, RNAChemComp(id, id, id, name, formula)]
-                  for id, name, formula in
-                    [('A', "ADENOSINE-5'-MONOPHOSPHATE", 'C10 H14 N5 O7 P'),
-                     ('C', "CYTIDINE-5'-MONOPHOSPHATE", 'C9 H14 N3 O8 P'),
-                     ('G', "GUANOSINE-5'-MONOPHOSPHATE", 'C10 H14 N5 O8 P'),
-                     ('U', "URIDINE-5'-MONOPHOSPHATE", 'C9 H13 N2 O9 P')])
+                  for id, name, formula in [
+                  ('A', "ADENOSINE-5'-MONOPHOSPHATE", 'C10 H14 N5 O7 P'),
+                  ('C', "CYTIDINE-5'-MONOPHOSPHATE", 'C9 H14 N3 O8 P'),
+                  ('G', "GUANOSINE-5'-MONOPHOSPHATE", 'C10 H14 N5 O8 P'),
+                  ('U', "URIDINE-5'-MONOPHOSPHATE", 'C9 H13 N2 O9 P')])
 
 
 class DNAAlphabet(Alphabet):
     """A mapping from two-letter nucleic acid codes (e.g. DA) to
        DNA (as :class:`DNAChemComp` objects)."""
     _comps = dict([code, DNAChemComp(code, code, canon, name, formula)]
-                  for code, canon, name, formula in
-                    [('DA', 'A', "2'-DEOXYADENOSINE-5'-MONOPHOSPHATE",
-                      'C10 H14 N5 O6 P'),
-                     ('DC', 'C', "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE",
-                      'C9 H14 N3 O7 P'),
-                     ('DG', 'G', "2'-DEOXYGUANOSINE-5'-MONOPHOSPHATE",
-                      'C10 H14 N5 O7 P'),
-                     ('DT', 'T', "THYMIDINE-5'-MONOPHOSPHATE",
-                      'C10 H15 N2 O8 P')])
+                  for code, canon, name, formula in [
+                      ('DA', 'A', "2'-DEOXYADENOSINE-5'-MONOPHOSPHATE",
+                       'C10 H14 N5 O6 P'),
+                      ('DC', 'C', "2'-DEOXYCYTIDINE-5'-MONOPHOSPHATE",
+                       'C9 H14 N3 O7 P'),
+                      ('DG', 'G', "2'-DEOXYGUANOSINE-5'-MONOPHOSPHATE",
+                       'C10 H14 N5 O7 P'),
+                      ('DT', 'T', "THYMIDINE-5'-MONOPHOSPHATE",
+                       'C10 H15 N2 O8 P')])
 
 
 class EntityRange(object):
@@ -931,6 +947,7 @@ class EntityRange(object):
                     and self.seq_id_range == other.seq_id_range)
         except AttributeError:
             return False
+
     def __hash__(self):
         return hash((id(self.entity), self.seq_id_range))
 
@@ -976,7 +993,8 @@ class Residue(object):
     auth_seq_id = property(_get_auth_seq_id,
                            doc="Author-provided seq_id; only makes sense "
                                "for asymmetric units")
-    # Allow passing residues where a range is requested (e.g. to ResidueFeature)
+    # Allow passing residues where a range is requested
+    # (e.g. to ResidueFeature)
     seq_id_range = property(lambda self: (self.seq_id, self.seq_id))
 
 
@@ -1028,7 +1046,7 @@ class Entity(object):
 
        All entities should be stored in the top-level System object;
        see :attr:`System.entities`.
-    """
+    """  # noqa: E501
 
     number_of_molecules = 1
 
@@ -1046,6 +1064,7 @@ class Entity(object):
             return 'nat'
         else:
             return 'man'
+
     def __set_src_method(self, val):
         raise TypeError("src_method is read-only; assign an appropriate "
                         "subclass of ihm.source.Source to source instead")
@@ -1061,7 +1080,8 @@ class Entity(object):
             else:
                 return None
         return weight
-    formula_weight = property(__get_weight,
+    formula_weight = property(
+        __get_weight,
         doc="Formula weight (dalton). This is calculated automatically "
             "from that of the chemical components.")
 
@@ -1094,6 +1114,7 @@ class Entity(object):
     # Entities are considered identical if they have the same sequence
     def __eq__(self, other):
         return self.sequence == other.sequence
+
     def __hash__(self):
         return hash(self.sequence)
 
@@ -1130,6 +1151,7 @@ class AsymUnitRange(object):
                     and self.seq_id_range == other.seq_id_range)
         except AttributeError:
             return False
+
     def __hash__(self):
         return hash((id(self.asym), self.seq_id_range))
 

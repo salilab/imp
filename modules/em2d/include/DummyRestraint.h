@@ -2,14 +2,14 @@
  *  \file IMP/em2d/DummyRestraint.h
  *  \brief
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPEM2D_DUMMY_RESTRAINT_H
 #define IMPEM2D_DUMMY_RESTRAINT_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/log.h"
 #include <IMP/Restraint.h>
 #include "IMP/Pointer.h"

@@ -3,13 +3,13 @@
  *  \brief functionality for defining nodes on a kinematic chain
  *  \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKINEMATICS_KINEMATIC_NODE_H
 #define IMPKINEMATICS_KINEMATIC_NODE_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/kinematics/Joint.h>
 

@@ -1,14 +1,14 @@
 /**
  *  \file IMP/em/ImageHeader.h
  *  \brief Header for EM images. Compatible with Spider and Xmipp formats
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 **/
 
 #ifndef IMPEM_IMAGE_HEADER_H
 #define IMPEM_IMAGE_HEADER_H
 
-#include "IMP/em/em_config.h"
-#include "IMP/em/SpiderHeader.h"
+#include <IMP/em/em_config.h>
+#include <IMP/em/SpiderHeader.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Vector2D.h>
 #include <IMP/algebra/utility.h>

@@ -2,7 +2,7 @@
  *  \file IMP/spb/spb_restraint.h
  *  \brief SPB Restraints
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,7 @@
 #include <IMP/core.h>
 #include <IMP/em2d.h>
 #include <IMP/isd.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

@@ -4,7 +4,7 @@
  * \brief Multiple states generation for multiple SAXS profiles
  *
  * Author: Dina Schneidman
- * Copyright 2007-2020 IMP Inventors. All rights reserved.
+ * Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multi_state/EnsembleGenerator.h>
@@ -172,7 +172,7 @@ int main(int argc, char* argv[]) {
 The weights are computed to minimize the chi between the first profile \
 and a weighted average of the rest.")
     ("version", "MultiFoXS (IMP applications)\n \
-Copyright 2007-2020 IMP Inventors.\nAll rights reserved. \n \
+Copyright 2007-2021 IMP Inventors.\nAll rights reserved. \n \
 License: GNU LGPL version 2.1 or later<http://gnu.org/licenses/lgpl.html>.\n\
 Written by Dina Schneidman.")
     ("number-of-states,s", po::value<int>(&number_of_states)->default_value(10),
@@ -325,9 +325,9 @@ recommended q value is 0.2")
       s.setf(std::ios::fixed, std::ios::floatfield);
       s << std::setw(6) << std::setprecision(3) << " Chi^2 = " << fp.get_chi_square()
         << " c1 = " << fp.get_c1() << " c2 = " << fp.get_c2() << std::endl;
-      for(unsigned int i=0; i<clustered_profiles.size(); i++) {
-        s << std::setw(4) << i << " " << clustered_profiles[i]->get_name();
-        s << std::setw(5) << std::setprecision(3) << "(" << fp.get_weights()[i] << ") ";
+      for(unsigned int j=0; j<clustered_profiles.size(); j++) {
+        s << std::setw(4) << j << " " << clustered_profiles[j]->get_name();
+        s << std::setw(5) << std::setprecision(3) << "(" << fp.get_weights()[j] << ") ";
         s << std::endl;
       }
       s.close();

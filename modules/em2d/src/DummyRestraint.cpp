@@ -2,7 +2,7 @@
  *  \file DummyRestraint.cpp
  *  \brief Dummy restraint
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -27,7 +27,8 @@ double ParticlesDummyRestraint::unprotected_evaluate(DerivativeAccumulator *)
 }
 
 ModelObjectsTemp ParticlesDummyRestraint::do_get_inputs() const {
-  ModelObjectsTemp ret = container_->get_particles();
+  ModelObjectsTemp ret = IMP::get_particles(
+                           get_model(), container_->get_contents());
   ret.push_back(container_);
   return ret;
 }

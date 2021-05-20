@@ -37,7 +37,7 @@ Source0:       imp-%{version}.tar.gz
 %if 0%{?with_python3}
 BuildRequires: python3-devel, symlinks
 %endif
-BuildRequires: %{PYTHON2}-devel >= 2.6
+BuildRequires: %{PYTHON2}-devel >= 2.6, gcc-c++
 BuildRequires: hdf5-devel >= 1.8
 BuildRequires: swig >= 1.3.40
 BuildRequires: gsl-devel, fftw-devel
@@ -61,7 +61,7 @@ Requires: protobuf-python
 %endif
 
 BuildRequires: cmake >= 2.8
-BuildRequires: boost-devel >= 1.41
+BuildRequires: boost-devel >= 1.53
 
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
 # doesn't have a new enough OpenCV in the base distribution or in EPEL until
@@ -94,11 +94,15 @@ BuildRequires: CGAL-nogui-devel
 %endif
 
 # The IMP kernel (both with Python 2 and Python3) links with numpy, so
-# pull that in. Many modules also use Python's scipy module, so pull that in
-# (at build time for tests; at install time for using the modules).
+# pull that in if available (the Python 2 variant is no longer shipped
+# with modern Fedora). Many modules also use Python's scipy module, so
+# pull that in (at build time for tests; at install time for using the modules).
 %if 0%{?with_python3}
-BuildRequires: python3-numpy, python3-scipy, python2-numpy
+BuildRequires: python3-numpy, python3-scipy
 Requires: python3-numpy, python3-scipy
+%if 0%{?fedora} < 34 || 0%{?rhel}
+BuildRequires: python2-numpy
+%endif
 %else
 BuildRequires: numpy, scipy
 Requires: numpy, scipy
@@ -362,8 +366,11 @@ for mod in %{MPI_MODULES}; do
 done
 
 # Replace .py files with symlinks to Python 3 files (since they are the same)
+# but not the SWIG-generated __init__.py files (since these contain config
+# information which might be different; e.g. on Fedora the Python 3 wrappers
+# include numpy support but the Python 2 wrappers do not)
 (cd ${RPM_BUILD_ROOT}%{_libdir}/python${py2_ver} \
- && find site-packages -name '*.py' \
+ && find site-packages -name '*.py' -a ! -name __init__.py \
       -exec ln -sf ${RPM_BUILD_ROOT}%{_libdir}/python${py3_ver}/\{\} \{\} \; \
  && symlinks -rc .)
 %endif
@@ -451,7 +458,7 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %exclude %{_prefix}/share/IMP/build_info
 %{_prefix}/bin/*
 %{_libdir}/libimp*.so.*
-%{_libdir}/libRMF*.so
+%{_libdir}/libRMF*.so.*
 %{_libdir}/IMP
 %{_libdir}/%{default_python}*/site-packages/IMP
 %{_libdir}/%{default_python}*/site-packages/_IMP*so
@@ -526,6 +533,7 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %{_prefix}/include/RMF
 %{_prefix}/include/RMF.h
 %{_libdir}/libimp*.so
+%{_libdir}/libRMF*.so
 %{_libdir}/cmake/IMP
 %if 0%{?with_mpich}
 %exclude %{_prefix}/include/IMP/mpi
@@ -535,6 +543,9 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %endif
 
 %changelog
+* Wed Jun 02 2021 Ben Webb <ben@salilab.org>   2.15.0-1
+- 2.15.0 release.
+
 * Wed Dec 02 2020 Ben Webb <ben@salilab.org>   2.14.0-1
 - 2.14.0 release.
 

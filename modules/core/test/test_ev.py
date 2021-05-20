@@ -43,8 +43,8 @@ class Tests(IMP.test.TestCase):
         print(r.evaluate(False))
         m.set_log_level(IMP.VERBOSE)
         print(cr.evaluate(False))
-        pp = cpc.get_particle_pairs()
-        print("pairs are", pp)
+        ppi = cpc.get_contents()
+        print("pairs are", ppi)
         self.assertAlmostEqual(r.evaluate(False), cr.evaluate(False),
                                delta=.1)
 if __name__ == '__main__':

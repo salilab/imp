@@ -3,7 +3,6 @@
 from __future__ import print_function
 import coverage
 import os
-import sys
 import subprocess
 import tempfile
 import shutil
@@ -70,6 +69,7 @@ def gather_cpp():
 def main():
     gather_python()
     gather_cpp()
+
 
 if __name__ == '__main__':
     main()

@@ -8,16 +8,18 @@ import ihm.dataset
 import ihm.location
 import ihm.geometry
 
+
 def _make_test_file(fname):
     with open(fname, 'w') as fh:
         fh.write('contents')
+
 
 class Tests(unittest.TestCase):
 
     def test_dataset(self):
         """Test Dataset base class"""
-        l = ihm.location.PDBLocation('1abc', version='foo', details='bar')
-        d = ihm.dataset.Dataset(l)
+        loc = ihm.location.PDBLocation('1abc', version='foo', details='bar')
+        d = ihm.dataset.Dataset(loc)
         self.assertIsNone(d.details)
         self.assertEqual(len(d.parents), 0)
 
@@ -31,9 +33,9 @@ class Tests(unittest.TestCase):
         l3 = ihm.location.PDBLocation('1cde', version='foo', details='bar')
         d3 = ihm.dataset.Dataset(l3, details='bar')
         t = ihm.geometry.Transformation(
-            rot_matrix=[[-0.64,0.09,0.77],[0.76,-0.12,0.64],
-                        [0.15,0.99,0.01]],
-            tr_vector=[1.,2.,3.])
+            rot_matrix=[[-0.64, 0.09, 0.77], [0.76, -0.12, 0.64],
+                        [0.15, 0.99, 0.01]],
+            tr_vector=[1., 2., 3.])
         td = ihm.dataset.TransformedDataset(d3, transform=t)
         d.parents.append(td)
         self.assertEqual(len(d.parents), 2)
@@ -77,7 +79,7 @@ class Tests(unittest.TestCase):
         l3 = ihm.location.PDBLocation('2def', version='foo', details='bar')
         d3 = ihm.dataset.Dataset(l3)
 
-        l4 = ihm.location.PDBLocation('2ghi', version='foo', details='bar')
+        _ = ihm.location.PDBLocation('2ghi', version='foo', details='bar')
         d4 = ihm.dataset.Dataset(l3)
 
         d1.parents.extend((d2, d3))
@@ -178,8 +180,8 @@ class Tests(unittest.TestCase):
         """Test GeneticInteractionsDataset"""
         loc = ihm.location.FileLocation(repo='mydoi', path='a')
         d = ihm.dataset.GeneticInteractionsDataset(loc)
-        self.assertEqual(d.data_type,
-            'Quantitative measurements of genetic interactions')
+        self.assertEqual(
+            d.data_type, 'Quantitative measurements of genetic interactions')
 
     def test_duplicate_datasets_details(self):
         """Datasets with differing details should be considered duplicates"""
@@ -187,7 +189,7 @@ class Tests(unittest.TestCase):
             fname = os.path.join(tmpdir, 'test.pdb')
             _make_test_file(fname)
             l1 = ihm.location.InputFileLocation(fname, details='test details')
-            d1 = ihm.dataset.PDBDataset(l1)
+            _ = ihm.dataset.PDBDataset(l1)
 
             l2 = ihm.location.InputFileLocation(fname, details='other details')
             d2 = ihm.dataset.PDBDataset(l2)

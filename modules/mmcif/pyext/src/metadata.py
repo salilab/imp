@@ -16,14 +16,14 @@ class _GMMParser(ihm.metadata.Parser):
         """Extract metadata from `filename`.
            @return a dict with key `dataset` pointing to the GMM file and
            `number_of_gaussians` to the number of GMMs (or None)"""
-        l = ihm.location.InputFileLocation(filename,
-                details="Electron microscopy density map, "
-                        "represented as a Gaussian Mixture Model (GMM)")
-        # A 3DEM restraint's dataset ID uniquely defines the mmCIF restraint, so
-        # we need to allow duplicates
-        l._allow_duplicates = True
-        d = ihm.dataset.EMDensityDataset(l)
-        ret = {'dataset':d, 'number_of_gaussians':None}
+        loc = ihm.location.InputFileLocation(
+            filename, details="Electron microscopy density map, "
+                              "represented as a Gaussian Mixture Model (GMM)")
+        # A 3DEM restraint's dataset ID uniquely defines the mmCIF restraint,
+        # so we need to allow duplicates
+        loc._allow_duplicates = True
+        d = ihm.dataset.EMDensityDataset(loc)
+        ret = {'dataset': d, 'number_of_gaussians': None}
 
         with open(filename) as fh:
             for line in fh:

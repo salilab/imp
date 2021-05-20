@@ -5,12 +5,9 @@ Set up the cmake build scripts for modules. These are written
 into the repository directories.
 """
 
-import glob
 import os
 import sys
 import os.path
-import shutil
-import platform
 import tools
 import subprocess
 from optparse import OptionParser
@@ -33,8 +30,8 @@ test_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                       "cmake_templates",
                                                       "ModuleTest.cmake"))
 
-examples_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
-                                   "cmake_templates", "ModuleExamples.cmake"))
+examples_template = tools.CMakeFileGenerator(
+    os.path.join(TOPDIR, "cmake_templates", "ModuleExamples.cmake"))
 
 swig_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                       "cmake_templates",
@@ -51,15 +48,17 @@ bin_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
                                                      "cmake_templates",
                                                      "ModuleBin.cmake"))
 
-module_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
-                                             "cmake_templates", "Module.cmake"))
+module_template = tools.CMakeFileGenerator(
+    os.path.join(TOPDIR, "cmake_templates", "Module.cmake"))
 
-benchmark_template = tools.CMakeFileGenerator(os.path.join(TOPDIR,
-                                    "cmake_templates", "ModuleBenchmark.cmake"))
+benchmark_template = tools.CMakeFileGenerator(
+    os.path.join(TOPDIR, "cmake_templates", "ModuleBenchmark.cmake"))
+
 
 def make_check(path, module):
     name = os.path.splitext(os.path.split(path)[1])[0]
-    cppsource = open(path, "r").read()
+    with open(path, "r") as fh:
+        cppsource = fh.read()
     macro = "IMP_COMPILER_%s" % name.upper()
     filename = os.path.join(module.path, "CMakeModules",
                             "Check" + name + ".cmake")
@@ -84,8 +83,8 @@ def make_dependency_check(descr_path, module):
         "CMakeModules",
         "Find" + name + ".cmake")
     if descr["python_module"] != "":
-        # don't bother checking python deps as they aren't needed for compilation
-        # and it makes cross compilation easier
+        # don't bother checking python deps as they aren't needed for
+        # compilation and it makes cross compilation easier
         return None
     else:
         descr["pkgconfigs"] = ";".join(descr["pkg_config_name"])
@@ -103,27 +102,33 @@ def make_dependency_check(descr_path, module):
 %(cmake)s
 endif(DEFINED %(PKGNAME)s_INTERNAL)""" % descr
         else:
-            descr["on_failure"] = """message("%s not found")\nfile(WRITE "${CMAKE_BINARY_DIR}/build_info/%s" "ok=False")""" % (
-                descr['full_name'], name)
+            descr["on_failure"] = \
+                'message("%s not found")\n' \
+                'file(WRITE "${CMAKE_BINARY_DIR}/build_info/%s" "ok=False")' \
+                % (descr['full_name'], name)
             descr["on_setup"] = ""
         dep_template.write(filename, descr)
     return filename
 
 
 def get_sources(module, subdir, pattern):
-    matching = tools.get_glob([os.path.join(module.path, subdir, pattern),
-                               os.path.join(module.path, subdir, "*", pattern)])
+    matching = tools.get_glob(
+        [os.path.join(module.path, subdir, pattern),
+         os.path.join(module.path, subdir, "*", pattern)])
     return "\n".join(["${CMAKE_SOURCE_DIR}/%s"
                      % tools.to_cmake_path(x) for x in matching])
 
-def get_app_sources(path, patterns, filt=lambda x:True):
+
+def get_app_sources(path, patterns, filt=lambda x: True):
     matching = tools.get_glob([os.path.join(path, x) for x in patterns])
-    return ["${CMAKE_SOURCE_DIR}/%s" % tools.to_cmake_path(x) \
+    return ["${CMAKE_SOURCE_DIR}/%s" % tools.to_cmake_path(x)
             for x in matching if filt(x)]
+
 
 def get_dep_merged(all_deps, name):
     return "\n        ".join(sorted(set("${%s_%s}" % (d.upper(), name.upper())
                                     for d in all_deps)))
+
 
 def standalone_cmake(cmake_file):
     """Return True iff the given cmake file is set up to work standalone.
@@ -136,6 +141,7 @@ def standalone_cmake(cmake_file):
     if os.path.exists(cmake_file):
         with open(cmake_file) as fh:
             return 'ModuleBuild.cmake' in fh.read()
+
 
 def setup_module(finder, module, tools_dir, extra_include, extra_swig,
                  required):
@@ -156,18 +162,18 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
     g = tools.CMakeFileGenerator()
     if len(checks) > 0:
         g.write(os.path.join(module.path, 'compiler', 'CMakeLists.txt'),
-                "\n".join(["include(${CMAKE_SOURCE_DIR}/%s)\n" %
-                               tools.to_cmake_path(x) for x in checks]))
+                "\n".join("include(${CMAKE_SOURCE_DIR}/%s)\n"
+                          % tools.to_cmake_path(x) for x in checks))
         contents.append(
-            "add_subdirectory(${CMAKE_SOURCE_DIR}/%s/compiler)" %
-            tools.to_cmake_path(module.path))
+            "add_subdirectory(${CMAKE_SOURCE_DIR}/%s/compiler)"
+            % tools.to_cmake_path(module.path))
     if len(deps) > 0:
         g.write(os.path.join(module.path, 'dependency', 'CMakeLists.txt'),
-                "\n".join(["include(${CMAKE_SOURCE_DIR}/%s)" %
-                               tools.to_cmake_path(x) for x in deps]))
+                "\n".join("include(${CMAKE_SOURCE_DIR}/%s)"
+                          % tools.to_cmake_path(x) for x in deps))
         contents.append(
-            "add_subdirectory(${CMAKE_SOURCE_DIR}/%s/dependency)" %
-            tools.to_cmake_path(module.path))
+            "add_subdirectory(${CMAKE_SOURCE_DIR}/%s/dependency)"
+            % tools.to_cmake_path(module.path))
     local = os.path.join(module.path, "Setup.cmake")
     if os.path.exists(local):
         contents.append("include(${CMAKE_SOURCE_DIR}/%s)"
@@ -176,9 +182,9 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
     values = {"name": module.name, "extra_include": extra_include,
               "extra_swig": extra_swig,
               "module_dir": tools.to_cmake_path(module.path) + '/'
-                            if module.path else '',
+              if module.path else '',
               "tools_dir": tools.to_cmake_path(tools_dir) + '/'
-                           if tools_dir else ''}
+              if tools_dir else ''}
     if module.name == 'kernel':
         values['subdir'] = 'IMP'
         values['pymod'] = 'IMP'
@@ -191,7 +197,8 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
     values["CPPNAME"] = module.name.upper().replace('_', '')
     all_modules = module.get_all_modules()
     modules = ["${IMP_%s_LIBRARY}" % s.name for s in all_modules]
-    all_dependencies = list(finder.get_all_dependencies([module] + all_modules))
+    all_dependencies = list(
+        finder.get_all_dependencies([module] + all_modules))
     dependencies = ["${%s_LIBRARIES}" % s.upper() for s in all_dependencies]
     values["modules"] = ";".join(modules)
     values["tags"] = "\n".join(["${IMP_%s_DOC}" % m.name for m in all_modules])
@@ -216,8 +223,8 @@ def setup_module(finder, module, tools_dir, extra_include, extra_swig,
     pybins = get_app_sources(os.path.join(module.path, "bin"), ["*"],
                              tools.filter_pyapps)
     values["pybins"] = "\n".join(pybins)
-    values["bin_names"] = "\n".join([os.path.basename(x) \
-                                     for x in pybins + cppbins])
+    values["bin_names"] = "\n".join(os.path.basename(x)
+                                    for x in pybins + cppbins)
     values["python_only"] = 1 if module.python_only else 0
 
     local = os.path.join(module.path, "Build.cmake")
@@ -297,8 +304,8 @@ def main():
     main = []
     mf = tools.ModulesFinder(source_dir='', external_dir=options.build_dir,
                              module_name=options.module_name)
-    tools_dir = options.tools_dir if options.tools_dir \
-                                  else '${CMAKE_SOURCE_DIR}/tools'
+    tools_dir = options.tools_dir \
+        if options.tools_dir else '${CMAKE_SOURCE_DIR}/tools'
     extra_include = ' "--include=%s"' % options.include \
                     if options.include else ""
     extra_swig = ''.join(' "--swig_include=%s"' % s
@@ -308,6 +315,7 @@ def main():
         if isinstance(m, tools.SourceModule):
             main.append(setup_module(mf, m, tools_dir, extra_include,
                                      extra_swig, options.required))
+
 
 if __name__ == '__main__':
     main()

@@ -39,7 +39,7 @@ class WorkerHandler(object):
         self._manager_addr = manager_addr
 
     def run(self):
-        print("Connect back to manager at %s:%d with ID %s" \
+        print("Connect back to manager at %s:%d with ID %s"
               % tuple(self._manager_addr))
         lock = threading.Lock()
         manager = ManagerCommunicator(self._manager_addr, lock)
@@ -87,6 +87,7 @@ class WorkerHandler(object):
 def main():
     h = WorkerHandler([sys.argv[-3], int(sys.argv[-2]), sys.argv[-1]])
     h.run()
+
 
 if __name__ == '__main__':
     main()

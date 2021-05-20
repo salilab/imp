@@ -38,11 +38,11 @@ class Tests(IMP.test.TestCase):
             delta=.01)
         self.assertAlmostEqual(
             ed.get_principal_component(1)[0],
-            -0.735179,
+            0.735179,
             delta=.01)
         self.assertAlmostEqual(
             ed.get_principal_component(1)[1],
-            0.677873,
+            -0.677873,
             delta=.01)
         ed.show()
 

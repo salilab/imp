@@ -4,7 +4,7 @@
  *
  *  BLURB
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_DYNAMIC_LIST_CONTAINER_H

@@ -2,7 +2,6 @@
 
 from pygments import token
 from pygments.lexers.compiled import CppLexer
-import re
 import os
 
 
@@ -48,8 +47,8 @@ def check_tokens(scan, filename, project_name, header, errors):
 def check_comment_header(scan, filename, errors):
     if len(scan) < 1 or scan[0][0] not in (token.Comment,
                                            token.Comment.Multiline):
-        errors.append('%s:1: First line should be a comment ' % filename +
-                      'with a copyright notice and a description of the file')
+        errors.append('%s:1: First line should be a comment with a copyright '
+                      'notice and a description of the file' % filename)
 
 
 def have_header_guard(scan):

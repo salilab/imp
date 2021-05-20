@@ -12,11 +12,13 @@ TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
 import ihm.dictionary
 
+
 def add_keyword(name, mandatory, category):
     k = ihm.dictionary.Keyword()
     k.name, k.mandatory = name, mandatory
     category.keywords[k.name] = k
     return k
+
 
 def make_test_dictionary():
     d = ihm.dictionary.Dictionary()
@@ -41,9 +43,10 @@ def make_test_dictionary():
     d.categories[c.name] = c
 
     d.linked_items = {'_test_optional_category.baz':
-                           '_test_mandatory_category.foo',
+                      '_test_mandatory_category.foo',
                       '_test_optional_category.foo': '_entity.id'}
     return d
+
 
 def make_other_test_dictionary():
     d = ihm.dictionary.Dictionary()
@@ -54,9 +57,9 @@ def make_other_test_dictionary():
     add_keyword("foo", False, c)
     d.categories[c.name] = c
 
-    d.linked_items = {'_ext_category.foo':
-                           '_test_mandatory_category.foo'}
+    d.linked_items = {'_ext_category.foo': '_test_mandatory_category.foo'}
     return d
+
 
 class Tests(unittest.TestCase):
     def test_keyword_enum_case_insen(self):
@@ -86,7 +89,7 @@ class Tests(unittest.TestCase):
         """Test read() function"""
         # Note that _item.category_id is intentionally missing from
         # save_unknown_code
-        cif = """
+        cif = r"""
 loop_
 _item_type_list.code
 _item_type_list.primitive_code
@@ -148,8 +151,9 @@ save_
                           'test_category3'])
         c1 = d.categories['test_category1']
         self.assertTrue(c1.mandatory)
-        self.assertEqual(sorted(c1.keywords.keys()),
-                ['bar', 'insensitive_code', 'missing_code', 'unknown_code'])
+        self.assertEqual(
+            sorted(c1.keywords.keys()),
+            ['bar', 'insensitive_code', 'missing_code', 'unknown_code'])
         self.assertFalse(c1.keywords['bar'].mandatory)
         self.assertIsNone(c1.keywords['bar'].enumeration)
         self.assertEqual(c1.keywords['bar'].item_type.name, "code")
@@ -157,7 +161,7 @@ save_
         self.assertIsNone(c1.keywords['missing_code'].item_type)
         self.assertIsNone(c1.keywords['unknown_code'].item_type)
         self.assertFalse(
-                c1.keywords['insensitive_code'].item_type.case_sensitive)
+            c1.keywords['insensitive_code'].item_type.case_sensitive)
 
         c2 = d.categories['test_category2']
         self.assertIsNone(c2.mandatory)
@@ -330,7 +334,8 @@ _test_mandatory_category.bar 2
         c.name = 'chem_comp_atom'
         add_keyword("foo", False, c)
         d.categories[c.name] = c
-        d.linked_items['_test_optional_category.bar']= '_chem_comp_atom.atom_id'
+        d.linked_items['_test_optional_category.bar'] \
+            = '_chem_comp_atom.atom_id'
 
         # OK: same key in child and parent
         d.validate(StringIO(prefix +

@@ -1,13 +1,13 @@
 /**
  *  \file IMP/em2d/SpiderImageReaderWriter.h
  *  \brief Management of Images in Spider format
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_SPIDER_IMAGE_READER_WRITER_H
 #define IMPEM2D_SPIDER_IMAGE_READER_WRITER_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/ImageReaderWriter.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em/ImageHeader.h"

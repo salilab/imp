@@ -18,9 +18,7 @@ No repository directories are changed.
 """
 
 import os
-import sys
 import os.path
-import shutil
 import platform
 import tools
 from optparse import OptionParser
@@ -36,8 +34,8 @@ def link_headers(modules):
     root = os.path.join(target, "IMP")
     tools.mkdir(root)
     for module in modules:
-        modroot = os.path.join(root, '' if module.name == 'kernel'
-                                        else module.name)
+        modroot = os.path.join(root,
+                               '' if module.name == 'kernel' else module.name)
         tools.link_dir(os.path.join(module.path, "include"),
                        modroot, match=["*.h"])
         tools.link_dir(os.path.join(module.path, "include", "internal"),
@@ -93,19 +91,22 @@ def link_swig(modules):
 class _ExcludeTopLevelPythonInit(object):
     def __init__(self, topdir):
         self.pyinit = os.path.join(topdir, '__init__.py')
+
     def __call__(self, fname):
         return fname != self.pyinit
+
 
 def link_python(modules):
     target = os.path.join("lib")
     tools.mkdir(target, clean=False)
     for module in modules:
-        path = os.path.join(target, "IMP", '' if module.name == 'kernel'
-                                              else module.name)
+        path = os.path.join(target, "IMP",
+                            '' if module.name == 'kernel' else module.name)
         tools.mkdir(path, clean=False)
         for old in tools.get_glob([os.path.join(path, "*.py")]):
             # don't unlink the generated file
-            if os.path.split(old)[1] != "__init__.py" and os.path.split(old)[1] != "_version_check.py":
+            if (os.path.split(old)[1] != "__init__.py"
+                    and os.path.split(old)[1] != "_version_check.py"):
                 os.unlink(old)
                 # print "linking", path
         topdir = os.path.join(module.path, "pyext", "src")
@@ -133,18 +134,19 @@ class TestCppProgram(IMP.test.TestCase):
         exename = os.path.join(os.path.split(outf)[0], os.path.split(tbase)[1])
         if platform.system == "Windows":
             exename = exename + ".exe"
-        out.write(
-"""    def test_%(name)s(self):
+        out.write("""    def test_%(name)s(self):
         \"\"\"Running C++ test %(name)s\"\"\"
         if subprocess is None:
             self.skipTest("subprocess module unavailable")
         # Note: Windows binaries look for needed DLLs in the current
-        # directory. So we need to change into the directory where the DLLs have
-        # been installed for the binary to load correctly.
+        # directory. So we need to change into the directory where the DLLs
+        # have been installed for the binary to load correctly.
         p = subprocess.Popen(["%(path)s"],
                              shell=False, cwd="%(libdir)s")
         self.assertEqual(p.wait(), 0)
-""" % {'name': nm, 'path': os.path.abspath(exename), 'libdir': os.path.abspath("lib")})
+"""
+                  % {'name': nm, 'path': os.path.abspath(exename),
+                     'libdir': os.path.abspath("lib")})
     out.write("""
 if __name__ == '__main__':
     IMP.test.main()
@@ -197,7 +199,8 @@ if __name__ == '__main__':
              'class_name_exceptions': [],
              'spelling_exceptions': []}
         try:
-            exec(open(exceptions, "r").read(), d)
+            with open(exceptions, "r") as fh:
+                exec(fh.read(), d)
         except IOError:
             pass
         impmodule = "IMP" if module.name == 'kernel' else "IMP." + module.name
@@ -215,7 +218,8 @@ if __name__ == '__main__':
                             'spelling_exceptions':
                                 str(d['spelling_exceptions'])})
         gen = tools.PythonFileGenerator()
-        gen.write(os.path.join("test", module.name, "medium_test_standards.py"),
+        gen.write(os.path.join("test", module.name,
+                               "medium_test_standards.py"),
                   test, show_diff=False)
 
         cpptests = tools.get_glob([os.path.join(module.path, "test",
@@ -251,10 +255,11 @@ def clean_pyc(dir):
 
 
 def generate_src_dirs(modules):
-    """Make src directories for each module. This way we don't have to worry about whether
-    it exists later."""
+    """Make src directories for each module. This way we don't have to
+       worry about whether it exists later."""
     for module in modules:
         tools.mkdir(os.path.join("src", module.name), clean=False)
+
 
 parser = OptionParser()
 parser.add_option("--build_dir", help="IMP build directory", default=None)
@@ -288,6 +293,7 @@ def main():
     link_data(all_modules)
     generate_tests(all_modules, options.scons)
     generate_src_dirs(all_modules)
+
 
 if __name__ == '__main__':
     main()

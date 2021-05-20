@@ -1,7 +1,7 @@
 /**
  *  \file converters.cpp
  *  \brief impl
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #include <IMP/em/converters.h>
@@ -80,7 +80,7 @@ Float calculate_intersection_score(const SurfaceShellDensityMap *d1,
   // calculate the correlation between the maps
   // voxels with value 1 are surface and higher values are internal voxels
   // first check that the bounding boxes of the maps are intersecting
-  return CoarseCC::cross_correlation_coefficient(d1, d2, 1. + EPS, true);
+  return get_coarse_cc_coefficient(d1, d2, 1. + EPS, true);
 }
 
 IMPEM_END_NAMESPACE

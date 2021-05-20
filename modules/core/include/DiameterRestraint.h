@@ -2,7 +2,7 @@
  *  \file IMP/core/DiameterRestraint.h
  *  \brief A restraint to maintain the diameter of a set of points
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_DIAMETER_RESTRAINT_H

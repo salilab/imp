@@ -31,7 +31,8 @@ lsc = IMP.container.ListSingletonContainer(m, l)
 cpc = IMP.container.ClosePairContainer(lsc, 0.0)
 
 m.update()
-print("without", [(x[0].get_name(), x[1].get_name()) for x in cpc.get_particle_pairs()])
+print("without", [(m.get_particle_name(x[0]), m.get_particle_name(x[1]))
+                  for x in cpc.get_contents()])
 
 
 class ConsecutiveFilter(IMP.PairPredicate):
@@ -53,4 +54,5 @@ class ConsecutiveFilter(IMP.PairPredicate):
 f = ConsecutiveFilter()
 cpc.add_pair_filter(f)
 m.update()
-print("with", [(x[0].get_name(), x[1].get_name()) for x in cpc.get_particle_pairs()])
+print("with", [(m.get_particle_name(x[0]), m.get_particle_name(x[1]))
+               for x in cpc.get_contents()])

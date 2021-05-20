@@ -1,8 +1,8 @@
 /**
  *  \file IMP/particle_index.h
- *  \brief Various general useful functions for IMP.
+ *  \brief Functions and adaptors for dealing with particle indexes.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,17 +18,17 @@ IMPKERNEL_BEGIN_NAMESPACE
 class Particle;
 class Decorator;
 
-/** Get the indexes from a list of particles.*/
+//! Get the indexes from a list of particles.
 IMPKERNELEXPORT ParticleIndexes get_indexes(const ParticlesTemp &ps);
 
-/** Get the particles from a list of indexes.*/
+//! Get the particles from a list of indexes.
 IMPKERNELEXPORT ParticlesTemp
     get_particles(Model *m, const ParticleIndexes &ps);
 
-/** Get the indexes from a list of particle pairs. */
+//! Get the indexes from a list of particle pairs.
 IMPKERNELEXPORT ParticleIndexPairs get_indexes(const ParticlePairsTemp &ps);
 
-/** Take Decorator, Particle or ParticleIndex. */
+//! Take Decorator, Particle or ParticleIndex.
 class IMPKERNELEXPORT ParticleIndexAdaptor
 #ifndef SWIG
     // suppress swig warning that doesn't make sense and I can't make go away
@@ -46,7 +46,7 @@ class IMPKERNELEXPORT ParticleIndexAdaptor
 #endif
 };
 
-/** Take Decorator, Particle or ParticleIndex. */
+//! Take Decorator, Particle or ParticleIndex.
 class IMPKERNELEXPORT ParticleIndexesAdaptor : public InputAdaptor {
   boost::shared_ptr<ParticleIndexes> tmp_;
   const ParticleIndexes *val_;
@@ -83,7 +83,7 @@ class IMPKERNELEXPORT ParticleIndexesAdaptor : public InputAdaptor {
 #endif
 };
 
-/** Take ParticlePairs or ParticleIndexPairs. */
+//! Take ParticlePairs or ParticleIndexPairs.
 class IMPKERNELEXPORT ParticleIndexPairsAdaptor
 #ifndef SWIG
     // suppress swig warning that doesn't make sense and I can't make go away

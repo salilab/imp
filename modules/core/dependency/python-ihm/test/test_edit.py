@@ -12,6 +12,7 @@ utils.set_search_paths(TOPDIR)
 import ihm.reader
 import ihm.dumper
 
+
 class Tests(unittest.TestCase):
     def test_entity(self):
         """Test Entity read followed by write"""

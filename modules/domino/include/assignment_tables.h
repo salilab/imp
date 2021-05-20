@@ -2,7 +2,7 @@
  *  \file IMP/domino/assignment_tables.h
  *  \brief A Bayesian inference-based sampler.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,11 +20,7 @@
 #include <IMP/macros.h>
 #include <boost/unordered_map.hpp>
 #include <boost/pending/disjoint_sets.hpp>
-#if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#endif
 
 IMPDOMINO_BEGIN_NAMESPACE
 class DominoSampler;

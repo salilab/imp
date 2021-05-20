@@ -1,8 +1,8 @@
 /**
- *  \file IMP/functor.h    \brief Various important functionality
- *                                for implementing decorators.
+ *  \file IMP/functor.h
+ *  \brief Helper functionality for functors.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

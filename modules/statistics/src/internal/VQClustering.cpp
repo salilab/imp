@@ -2,14 +2,12 @@
  *  \file VQClustering.cpp
  *  \brief Vector quantization clustering. Based on Wriggers et at, JMB 1998
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/statistics/internal/VQClustering.h>
 #include <IMP/statistics/internal/DataPoints.h>
-#include <IMP/algebra/internal/tnt_array2d_utils.h>
-#include <IMP/algebra/internal/tnt_array1d_utils.h>
 #include <IMP/algebra/vector_search.h>
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>
@@ -32,8 +30,8 @@ class CenterSorter {
   void set_point(Array1DD *p) { p_ = p; }
   void set_centers(Array1DD_VEC *cs) { cs_ = cs; }
   bool operator()(int c_i, int c_j) {
-    double d_i = TNT::dot_product(*p_ - (*cs_)[c_i], *p_ - (*cs_)[c_i]);
-    double d_j = TNT::dot_product(*p_ - (*cs_)[c_j], *p_ - (*cs_)[c_j]);
+    double d_i = (*p_ - (*cs_)[c_i]).dot(*p_ - (*cs_)[c_i]);
+    double d_j = (*p_ - (*cs_)[c_j]).dot(*p_ - (*cs_)[c_j]);
     if (d_i < d_j)
       return true;
     else
@@ -55,7 +53,7 @@ VQClustering::VQClustering(DataPoints *data, int k) : k_(k) {
   full_data_ = data;
   data_ = full_data_->get_data();
   IMP_INTERNAL_CHECK(data_->size() > 0, "no data points to cluster");
-  dim_ = (*data_)[0].dim1();
+  dim_ = (*data_)[0].size();
   par_ = VQClusteringParameters(dim_, k_);
   is_set_ = false;
 }
@@ -159,7 +157,7 @@ void VQClustering::clustering(Array1DD_VEC *tracking, Array1DD_VEC *centers) {
   std::vector<std::vector<int> > closest_center;
   double min_dist, curr_dist;
   int closest_center_ind = 0;
-  Array1DD att_sum(dim_, 0.);
+  Array1DD att_sum(Eigen::VectorXd::Zero(dim_));
   double wdiff = INT_MAX;
   Array1DD_VEC last_centers;
   for (int i = 0; i < k_; i++) {
@@ -176,8 +174,8 @@ void VQClustering::clustering(Array1DD_VEC *tracking, Array1DD_VEC *centers) {
     for (unsigned int j = 0; j < tracking->size(); j++) {
       min_dist = 1e20;
       for (int cen_ind = 0; cen_ind < k_; cen_ind++) {
-        curr_dist = TNT::dot_product((*centers)[cen_ind] - (*tracking)[j],
-                                     (*centers)[cen_ind] - (*tracking)[j]);
+        curr_dist = ((*centers)[cen_ind] - (*tracking)[j]).dot(
+                                (*centers)[cen_ind] - (*tracking)[j]);
         if (curr_dist < min_dist) {
           min_dist = curr_dist;
           closest_center_ind = cen_ind;
@@ -210,8 +208,8 @@ void VQClustering::clustering(Array1DD_VEC *tracking, Array1DD_VEC *centers) {
     // compute stopping criterion
     wdiff = 0.;
     for (int i = 0; i < k_; ++i) {
-      wdiff += TNT::dot_product((*centers)[i] - last_centers[i],
-                                (*centers)[i] - last_centers[i]);
+      wdiff += ((*centers)[i] - last_centers[i]).dot(
+                            (*centers)[i] - last_centers[i]);
     }
     wdiff = sqrt(wdiff / (double)k_);
   } while (wdiff > 1e-5);
@@ -237,8 +235,8 @@ void VQClustering::get_eq_centers(Array1DD_VEC *centers,
       Array1DD a1 = (*centers)[i];
       Array1DD a2 = (*data)[j];
       distances[i * num_points + j] =
-          std::make_pair(TNT::dot_product((*centers)[i] - (*data)[j],
-                                          (*centers)[i] - (*data)[j]),
+          std::make_pair(((*centers)[i] - (*data)[j]).dot(
+                                     (*centers)[i] - (*data)[j]),
                          i * num_points + j);
     }
   }

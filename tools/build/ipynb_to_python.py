@@ -5,6 +5,7 @@
 import json
 import sys
 
+
 def dump_cells(cells, sourcekey, of):
     for i, cell in enumerate(cells):
         if cell['cell_type'] == 'code':
@@ -15,6 +16,7 @@ def dump_cells(cells, sourcekey, of):
             for line in cell['source']:
                 of.write('# ' + line)
             of.write('\n\n')
+
 
 j = json.load(sys.stdin)
 of = sys.stdout

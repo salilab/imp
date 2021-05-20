@@ -2,7 +2,7 @@
  *  \file grid_close_pair_impl.h
  *  \brief Implementation of close pairs finder that is based on a grid hierarchy
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -543,12 +543,12 @@ struct Helper {
           fill_grid(bin_contents_g[i], tr, gg);
           fill_grid(bin_contents_q[j], tr, gq);
           IMP_IF_CHECK(USAGE) {
-            for (unsigned int i = 0; i < 3; ++i) {
+            for (unsigned int ic = 0; ic < 3; ++ic) {
               IMP_USAGE_CHECK(
-                  gg.get_number_of_voxels(i) == gq.get_number_of_voxels(i),
-                  "Do not match on dimension i " << gg.get_number_of_voxels(i)
-                                                 << " vs "
-                                                 << gq.get_number_of_voxels(i));
+                  gg.get_number_of_voxels(ic) == gq.get_number_of_voxels(ic),
+                  "Do not match on dimension " << ic << ": "
+                  << gg.get_number_of_voxels(ic) << " vs "
+                  << gq.get_number_of_voxels(ic));
             }
           }
           for (typename Grid::AllConstIterator it = gq.all_begin();

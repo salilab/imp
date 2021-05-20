@@ -2,14 +2,14 @@
  *  \file IMP/spb/pt_stuff.h
  *  \brief Useful stuff for parallel tempering
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPSPB_PT_STUFF_H
 #define IMPSPB_PT_STUFF_H
 #include <IMP.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

@@ -13,6 +13,7 @@ try:
 finally:
     del sys.path[0]
 
+
 class Tests(unittest.TestCase):
 
     def test_do_not_commit(self):
@@ -22,7 +23,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(errors), 0)
         check_standards._check_do_not_commit("DO NOT COMMIT", 'foo', 0, errors)
         self.assertEqual(errors,
-                   ['foo:1: Line contains the string "DO NOT COMMIT"'])
+                         ['foo:1: Line contains the string "DO NOT COMMIT"'])
 
     def test_get_file(self):
         """Test get_file function"""
@@ -42,7 +43,7 @@ class Tests(unittest.TestCase):
 
     def test_get_all_files(self):
         """Test get_all_files function"""
-        with utils.RunInTempDir() as tmpdir:
+        with utils.RunInTempDir():
             for subdir in ('.sconf_temp', os.path.join('build', 'include'),
                            'ok'):
                 os.makedirs(subdir)
@@ -161,12 +162,13 @@ import bar as baz
                 imp_info = os.path.join(tmpdir, ".imp_info.py")
                 utils.write_file(imp_info, '{\n  "name": "IMP.test"\n}\n')
                 fname = os.path.join(tmpdir, "test" + ext)
-                utils.write_file(fname, "#define FOO BAR\n#define IMP_FOO BAR\n"
-                                        "#undef FOO\n"
-                                        "#define BAZ BAR\n"
-                                        "#define IMPTEST_FOO BAR\n"
-                                        "#define EIGEN_YES_I_KNOW_SPARSE_"
-                                        "MODULE_IS_NOT_STABLE_YET BAR\n")
+                utils.write_file(fname,
+                                 "#define FOO BAR\n#define IMP_FOO BAR\n"
+                                 "#undef FOO\n"
+                                 "#define BAZ BAR\n"
+                                 "#define IMPTEST_FOO BAR\n"
+                                 "#define EIGEN_YES_I_KNOW_SPARSE_"
+                                 "MODULE_IS_NOT_STABLE_YET BAR\n")
                 errors = []
                 check_standards.check_c_file(fname, errors)
                 if ext == '.h':
@@ -228,6 +230,7 @@ import bar as baz
             errors = []
             check_standards.check_c_file(fname, errors)
             self.assertEqual(len(errors), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

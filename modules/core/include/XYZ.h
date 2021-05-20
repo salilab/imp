@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/XYZ.h     \brief Simple XYZ decorator.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -132,7 +132,7 @@ inline void set_vector_geometry(XYZ d, const algebra::Vector3D &v) {
   d.set_coordinates(v);
 }
 /** \genericgeometry */
-inline const algebra::Vector3D get_vector_geometry(XYZ d) {
+inline const algebra::Vector3D &get_vector_geometry(XYZ d) {
   return d.get_coordinates();
 }
 
@@ -144,7 +144,7 @@ IMPCORE_END_NAMESPACE
 IMPKERNEL_BEGIN_NAMESPACE
 
 /** \genericgeometry */
-inline const algebra::Vector3D get_vector_geometry(Particle *p) {
+inline const algebra::Vector3D &get_vector_geometry(Particle *p) {
   return core::XYZ(p).get_coordinates();
 }
 /** \genericgeometry */
@@ -152,7 +152,7 @@ inline void set_vector_geometry(Particle *p, const algebra::Vector3D &v) {
   core::XYZ(p).set_coordinates(v);
 }
 
-inline const algebra::Vector3D get_vector_geometry(Decorator d) {
+inline const algebra::Vector3D &get_vector_geometry(Decorator d) {
   return core::XYZ(d).get_coordinates();
 }
 /** \genericgeometry */
@@ -160,7 +160,7 @@ inline void set_vector_geometry(Decorator d, const algebra::Vector3D &v) {
   core::XYZ(d).set_coordinates(v);
 }
 
-inline const algebra::Vector3D get_vector_geometry(
+inline const algebra::Vector3D &get_vector_geometry(
     WeakPointer<Particle> d) {
   return core::XYZ(d).get_coordinates();
 }
@@ -169,7 +169,7 @@ inline void set_vector_geometry(WeakPointer<Particle> d,
                                 const algebra::Vector3D &v) {
   core::XYZ(d).set_coordinates(v);
 }
-inline const algebra::Vector3D get_vector_geometry(
+inline const algebra::Vector3D &get_vector_geometry(
     Pointer<Particle> d) {
   return core::XYZ(d).get_coordinates();
 }

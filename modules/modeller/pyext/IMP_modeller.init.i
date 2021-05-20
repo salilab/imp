@@ -11,6 +11,13 @@ import IMP.container
 import modeller.scripts
 import modeller.optimizers
 
+
+# Use Modeller 10 class names
+if not hasattr(modeller.terms, 'EnergyTerm'):
+    modeller.terms.EnergyTerm = modeller.terms.energy_term
+    modeller.Selection = modeller.selection
+
+
 class _TempDir(object):
     """Make a temporary directory that is deleted when the object is."""
 
@@ -21,7 +28,7 @@ class _TempDir(object):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
 
-class IMPRestraints(modeller.terms.energy_term):
+class IMPRestraints(modeller.terms.EnergyTerm):
     """A Modeller restraint which evaluates an IMP scoring function.
        This can be used to incorporate IMP Restraints into an existing
        comparative modeling pipeline, or to use Modeller optimizers or
@@ -41,7 +48,7 @@ class IMPRestraints(modeller.terms.energy_term):
                  Modeller and then use ModelLoader to load it into IMP,
                  since that will preserve the Modeller atom ordering in IMP.
         """
-        modeller.terms.energy_term.__init__(self)
+        modeller.terms.EnergyTerm.__init__(self)
         self._particles = particles
         if scoring_function:
             self._sf = scoring_function
@@ -98,7 +105,7 @@ class ModellerRestraints(IMP.Restraint):
 
     def unprotected_evaluate(self, accum):
         atoms = self._modeller_model.atoms
-        sel = modeller.selection(self._modeller_model)
+        sel = modeller.Selection(self._modeller_model)
         _copy_imp_coords_to_modeller(self._particles, atoms)
         energies = sel.energy()
         if accum:
@@ -292,15 +299,15 @@ def _load_restraints_line(line, atom_particles):
 def _load_entire_restraints_file(filename, protein):
     """Yield a set of IMP restraints from a Modeller restraints file."""
     atoms = _get_protein_atom_particles(protein)
-    fh = open(filename, 'r')
-    for line in fh:
-        try:
-            rsr = _load_restraints_line(line, atoms)
-            if rsr is not None:
-                yield rsr
-        except Exception as err:
-            print("Cannot read restraints file line:\n" + line)
-            raise
+    with open(filename, 'r') as fh:
+        for line in fh:
+            try:
+                rsr = _load_restraints_line(line, atoms)
+                if rsr is not None:
+                    yield rsr
+            except Exception as err:
+                print("Cannot read restraints file line:\n" + line)
+                raise
 
 
 def _copy_residue(r, model):
@@ -354,11 +361,12 @@ def add_soft_sphere_radii(hierarchy, submodel, scale=1.0, filename=None):
     if filename is None:
         filename = IMP.atom.get_data_path('radii.lib')
     radii = {}
-    for line in open(filename):
-        if line.startswith('#'): continue
-        spl = line.split()
-        if len(spl) > 11:
-            radii[spl[0]] = float(spl[submodel])
+    with open(filename) as fh:
+        for line in fh:
+            if line.startswith('#'): continue
+            spl = line.split()
+            if len(spl) > 11:
+                radii[spl[0]] = float(spl[submodel])
     atoms = IMP.atom.get_by_type(hierarchy, IMP.atom.ATOM_TYPE)
     for a in atoms:
         p = a.get_particle()

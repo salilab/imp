@@ -1,13 +1,13 @@
 /**
  *  \file IMP/em2d/opencv_interface.h
  *  \brief Interface with OpenCV
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_OPENCV_INTERFACE_H
 #define IMPEM2D_OPENCV_INTERFACE_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/algebra/Transformation2D.h"
 
 #if IMP_EM2D_HAS_OPENCV22 || IMP_EM2D_HAS_OPENCV3

@@ -22,13 +22,13 @@ to see if the code is currently stable enough for your purposes.
 
 In order to build %IMP from source, you will need:
 
-- [CMake](https://cmake.org) (2.8 or later; 3.14 or later is recommended)
-- [Boost](https://www.boost.org) (1.41 or later; Boost.Iostreams must be built
+- [CMake](https://cmake.org) (2.8.12 or later; 3.14 or later is recommended)
+- [Boost](https://www.boost.org) (1.53 or later; Boost.Iostreams must be built
   with its [zlib filter enabled](https://www.boost.org/doc/libs/1_67_0/libs/iostreams/doc/installation.html))
 - [Eigen](https://eigen.tuxfamily.org/) (3.0 or later)
-- [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later; 1.10 should also
-  work)
-- [Python](https://www.python.org) (2.6 or later, or any version of Python 3)
+- [HDF5](https://support.hdfgroup.org/HDF5/) (1.8 or later; 1.10 or 1.12
+  should also work)
+- [Python](https://www.python.org) (2.7 or later, or any version of Python 3)
 - [SWIG](http://www.swig.org) (1.3.40 or later; 2.0.4 or later is needed
   if you want to use Python 3)
 
@@ -59,36 +59,49 @@ will not build, and some will not function optimally.
   [scikit-learn](http://scikit-learn.org/stable/install.html),
   and [matplotlib](http://matplotlib.org/downloads.html)
   Python libraries are also recommended.
-- [Chimera](https://www.cgl.ucsf.edu/chimera/download.html) is recommended
+- [Chimera](https://www.cgl.ucsf.edu/chimera/download.html) or
+  [ChimeraX](https://www.rbvi.ucsf.edu/chimerax/) are recommended
   for visualization of results.
+
+The following prerequisites are _bundled_, i.e. they are included with %IMP
+itself and will be built at the same time as %IMP, unless explicitly
+requested otherwise (see [CMake](@ref cmake_config) for more information):
+
+- [RMF](https://integrativemodeling.org/rmf/) (1.3 or later) for handling
+  RMF files, and the IMP.rmf module.
+- [python-ihm](https://github.com/ihmwg/python-ihm) for handling mmCIF and
+  BinaryCIF files.
 
 ### Getting prerequisites on Linux {#installation_prereqs_linux}
 All of the prerequisites should be available as pre-built packages for
 your Linux distribution of choice. For example, on a Fedora system the
 following should install most of the prerequisites:
 
-        sudo dnf install boost-devel gperftools-devel CGAL-devel graphviz gsl-devel cmake doxygen hdf5-devel swig fftw-devel opencv-devel
+        sudo dnf install boost-devel gperftools-devel CGAL-devel graphviz gsl-devel cmake hdf5-devel swig fftw-devel opencv-devel
 
 ### Getting prerequisites on a Mac {#installation_prereqs_mac}
 
-Mac users must first install Xcode (previously known as Developer Tools)
-which is not installed by default with OS X, but is available from the App store
-(or from the Mac OS install DVD for old versions of Mac OS). They will also
-need the Xcode command line tools (install by going to Xcode Preferences, then
-Downloads, then Components, and select "Command Line Tools").
+Mac users must first install the developer Command Line Tools, which can be
+done from the command line by running
+
+        sudo xcode-select --install
+
+These can also be obtained by installing Xcode from the App store, then trying
+to run a command line tool (such as `clang`) which will prompt to install the
+tools.
 
 Then Mac users should use one of the available collections of Unix tools,
 such as
-- [Homebrew](http://brew.sh) (_recommended_) Once you installed `homebrew`
+- [Homebrew](https://brew.sh) (_recommended_) Once you installed `homebrew`
   do
 
         brew tap salilab/salilab
-        brew install boost gmp google-perftools cgal graphviz gsl cmake doxygen hdf5 swig fftw mpfr opencv libtau eigen
+        brew install boost gmp google-perftools cgal graphviz gsl cmake hdf5 swig fftw mpfr opencv libtau eigen
 
   to install everything %IMP finds useful (or that you will want for installing various useful Python libs that %IMP finds useful). On older Macs, you may also need to `brew install git` if you want to use git (newer Macs include git).
-- [Macports](http://www.macports.org/) If you use MacPorts, you must verify `/opt/local/bin` is in your path (this may be taken care of by MacPorts automatically, and can be done manually either by modifying your shell's config file or by making an `environment.plist` file), and then do
+- [Macports](https://www.macports.org/) If you use MacPorts, you must verify `/opt/local/bin` is in your path (this may be taken care of by MacPorts automatically, and can be done manually either by modifying your shell's config file or by making an `environment.plist` file), and then do
 
-        sudo port install boost cgal cmake doxygen fftw gmp gperftools graphviz gsl eigen hdf5 mpfr ninja opencv protobuf-cpp swig swig-python  
+        sudo port install boost cgal cmake fftw gmp gperftools graphviz gsl eigen hdf5 mpfr ninja opencv protobuf-cpp swig swig-python  
   (as in brew, some of these packages may be optional)
 
 - or [Fink](http://www.finkproject.org/) (not supported)
@@ -112,10 +125,10 @@ procedure we use.
   directly from our [GitHub repository](https://github.com/salilab/imp)
   with something like:
 
-        git clone -b master https://github.com/salilab/imp.git
+        git clone -b main https://github.com/salilab/imp.git
         (cd imp && git submodule update --init && ./setup_git.py)
 
-  (the `master` branch tracks the most recent stable
+  (the `main` branch tracks the most recent stable
   release; alternatively you can use `develop` to get the most recent code,
   but please check out the [nightly builds results page](https://integrativemodeling.org/nightly/results/)
   to see if the code is currently stable enough for your purposes).

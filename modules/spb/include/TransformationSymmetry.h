@@ -2,7 +2,7 @@
  *  \file IMP/spb/TransformationSymmetry.h
  *  \brief Implement various types of symmetry
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,7 +15,7 @@
 #include <IMP/singleton_macros.h>
 #include "IMP/core/XYZ.h"
 #include "IMP/core/rigid_bodies.h"
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

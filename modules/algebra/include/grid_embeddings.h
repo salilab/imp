@@ -2,7 +2,7 @@
  *  \file IMP/algebra/grid_embeddings.h
  *  \brief A class to represent a voxel grid.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

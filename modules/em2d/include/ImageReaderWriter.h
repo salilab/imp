@@ -1,13 +1,13 @@
 /**
  *  \file IMP/em2d/ImageReaderWriter.h
  *  \brief Virtual class for reader/writers of images
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_IMAGE_READER_WRITER_H
 #define IMPEM2D_IMAGE_READER_WRITER_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/Object.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em/ImageHeader.h"

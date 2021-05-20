@@ -2,7 +2,7 @@
  *  \file IMP/spb/TiltSingletonScore.h
  *  \brief A Score on the distance to a fixed point.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_TILT_SINGLETON_SCORE_H
@@ -13,7 +13,7 @@
 #include <IMP/UnaryFunction.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/singleton_macros.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

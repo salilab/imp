@@ -2,14 +2,14 @@
  * \file IMP/kinematics/local_planners.h
  * \brief Planners
  *
- * Copyright 2007-2020 IMP Inventors. All rights reserved.
+ * Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPKINEMATICS_LOCAL_PLANNERS_H
 #define IMPKINEMATICS_LOCAL_PLANNERS_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include "DOFValues.h"
 #include "directional_DOFs.h"
 #include "DOFsSampler.h"

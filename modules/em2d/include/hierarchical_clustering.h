@@ -2,14 +2,14 @@
  *  \file IMP/em2d/hierarchical_clustering.h
  *  \brief Agglomerative clustering algorithm
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPEM2D_HIERARCHICAL_CLUSTERING_H
 #define IMPEM2D_HIERARCHICAL_CLUSTERING_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/scores2D.h"
 #include <IMP/em2d/internal/clustering_helper.h>
 #include "IMP/base_types.h"

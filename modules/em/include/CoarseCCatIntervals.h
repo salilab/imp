@@ -2,7 +2,7 @@
  *  \file IMP/em/CoarseCCatIntervals.h
  *  \brief Cross correlation coefficient calculator.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -19,7 +19,7 @@ IMPEM_BEGIN_NAMESPACE
 //! Cross correlation coefficient calculator.
 /** Store CCC and derivative values and recompute then every X steps.
  */
-class IMPEMEXPORT CoarseCCatIntervals : public CoarseCC {
+class IMPEMEXPORT CoarseCCatIntervals : public IMP::Object {
 
  public:
   CoarseCCatIntervals(const int &ncd);

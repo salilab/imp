@@ -1,14 +1,14 @@
 /*!
  *  \file IMP/em2d/RegistrationResult.h
  *  \brief Registration results class
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_REGISTRATION_RESULT_H
 #define IMPEM2D_REGISTRATION_RESULT_H
 
 #include "IMP/em2d/internal/rotation_helper.h"
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em/ImageHeader.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Vector2D.h"

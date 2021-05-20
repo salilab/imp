@@ -3,14 +3,14 @@
  * \brief
  *
  * \authors Dina Schneidman
- * Copyright 2007-2020 IMP Inventors. All rights reserved.
+ * Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPKINEMATICS_HELPERS_H
 #define IMPKINEMATICS_HELPERS_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>

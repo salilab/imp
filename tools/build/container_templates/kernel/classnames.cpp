@@ -1,7 +1,7 @@
 /**
  *  \file ClassnameContainer.cpp   \brief Container for classname.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -34,12 +34,8 @@ ClassnameContainer::ClassnameContainer(Model *m, std::string name)
 ClassnameContainer::~ClassnameContainer() {}
 
 PLURALVARIABLETYPE ClassnameContainer::get_FUNCTIONNAMEs() const {
+  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_contents()");
   return IMP::internal::get_particle(get_model(), get_indexes());
-}
-
-VARIABLETYPE ClassnameContainer::get_FUNCTIONNAME(unsigned int i) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_indexes()");
-  return get(i);
 }
 
 bool ClassnameContainer::get_provides_access() const {

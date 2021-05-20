@@ -52,6 +52,8 @@ Various aspects of %IMP build behavior can be controlled via variables. These ca
 - `IMP_MAX_LOG`: One of `SILENT`, `PROGRESS`, `TERSE`, `VERBOSE` to control what log levels are supported.
 - `IMP_PER_CPP_COMPILATION`: A colon-separated list of modules to build one .cpp at a time.
 - `USE_PYTHON2`: Set to `on` to have CMake build %IMP with Python 2 (by default it will use Python 3 if available).
+- `IMP_USE_SYSTEM_RMF`: Set to `on` to build %IMP using an external (system) copy of the RMF library, instead of that bundled with IMP itself.
+- `IMP_USE_SYSTEM_IHM`: Set to `on` to build %IMP using an external (system) copy of the python-ihm library, instead of that bundled with IMP itself.
 
 There also are a [variety of standard cmake options](https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/Useful-Variables)
 which control the build. For example:
@@ -108,11 +110,4 @@ Note also that CMake searches in the system path (`PATH` environment variable)
 for command line tools such as `python` and `swig`. Thus, if you have multiple
 versions of tools (e.g. `/usr/bin/swig` and `/usr/local/bin/swig`) make sure
 the `PATH` variable is set correctly so that the right tool is found *before*
-you run CMake. You may need to make symlinks or copies to help it out if your
-binaries are named oddly; for example on a RHEL5 system we need to force CMake
-to use `/usr/bin/python2.6` rather than `/usr/bin/python` (which is Python 2.4,
-which is too old to work with %IMP) by doing something like:
-
-    mkdir bin
-    ln -sf /usr/bin/python26 bin/python
-    PATH=`pwd`/bin:$PATH
+you run CMake.

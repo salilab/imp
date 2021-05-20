@@ -29,9 +29,11 @@ def _coverage_cleanup(c):
 atexit.register(_coverage_cleanup, _cov)
 """ % os.path.abspath('coverage/.coverage'))
 
+
 def main():
     clean_gcdas()
     setup_python_coverage()
+
 
 if __name__ == '__main__':
     main()

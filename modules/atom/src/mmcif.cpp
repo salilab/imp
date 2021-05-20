@@ -2,7 +2,7 @@
  *  \file mmcif.cpp
  *  \brief Functions to read PDBs in mmCIF format
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -14,13 +14,8 @@
 #include "ihm_format.h"
 
 #include <boost/version.hpp>
-#if BOOST_VERSION >= 105000
 #define BOOST_FILESYSTEM_VERSION 3
 #include <boost/filesystem.hpp>
-#else
-#define BOOST_FILESYSTEM_VERSION 2
-#include <boost/filesystem/path.hpp>
-#endif
 #include <boost/lexical_cast.hpp>
 
 extern "C" {
@@ -281,11 +276,7 @@ public:
 
 std::string cif_nicename(std::string name) {
   boost::filesystem::path path(name);
-#if BOOST_VERSION >= 105000
   return path.string();
-#else
-  return path.filename();
-#endif
 }
 
 ssize_t read_callback(char *buffer, size_t buffer_len,

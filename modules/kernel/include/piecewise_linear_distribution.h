@@ -2,7 +2,7 @@
  *  \file IMP/piecewise_linear_distribution.h
  *  \brief boost piecewise linear.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -21,16 +21,13 @@
 #include <stdexcept>
 
 IMPKERNEL_BEGIN_NAMESPACE
-/** Draw random numbers from a distribution defined as a
-       piecewise
-       linear function. It models the boost random number
-       generators
-       and is made redundant by the
-       boost::piecewise_linear_distribution in
-       boost 1.47. Currently, it won't use that class if
-       available, but
-       that is just due to lack of boost 1.47 to test on.
-   */
+
+//! Draw random nums from a distribution defined as a piecewise linear function.
+/** It models the boost random number generators and is made redundant by the
+    boost::piecewise_linear_distribution in boost 1.47. Currently, it won't
+    use that class if available, but that is just due to lack of
+    boost 1.47 to test on.
+ */
 template <class T = double>
 class piecewise_linear_distribution {
   Vector<T> dividers_;

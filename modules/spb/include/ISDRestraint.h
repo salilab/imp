@@ -3,7 +3,7 @@
  *  \brief A lognormal restraint that uses the ISPA model to model NOE-derived
  *  distance fit.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,7 +16,7 @@
 #include <IMP/SingletonScore.h>
 #include <IMP/core/XYZ.h>
 #include <string>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

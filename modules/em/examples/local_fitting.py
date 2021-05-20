@@ -52,7 +52,7 @@ sampled_input_density.resample()
 sampled_input_density.calcRMS()
 IMP.em.write_map(sampled_input_density, "vv0.mrc", IMP.em.MRCReaderWriter())
 # 3.2 calculate the cross-correlation score, which should be close to 1
-best_score = IMP.em.CoarseCC.cross_correlation_coefficient(
+best_score = IMP.em.get_coarse_cc_coefficient(
     dmap, sampled_input_density, sampled_input_density.get_header().dmin)
 print("The CC score of the native transformation is:", best_score)
 
@@ -82,7 +82,7 @@ IMP.atom.write_pdb(mh, "input2.pdb")
 sampled_input_density.resample()
 sampled_input_density.calcRMS()
 IMP.em.write_map(sampled_input_density, "vv.mrc", IMP.em.MRCReaderWriter())
-start_score = IMP.em.CoarseCC.cross_correlation_coefficient(
+start_score = IMP.em.get_coarse_cc_coefficient(
     dmap, sampled_input_density, sampled_input_density.get_header().dmin)
 start_rmsd = IMP.atom.get_rmsd(IMP.core.XYZs(ps), IMP.core.XYZs(ps_ref))
 print("The start score is:", start_score, "with rmsd of:", start_rmsd)
@@ -96,7 +96,7 @@ m.update()  # to make sure the transformation was applied
 sampled_input_density.resample()
 sampled_input_density.calcRMS()
 rmsd = IMP.atom.get_rmsd(IMP.core.XYZs(ps), IMP.core.XYZs(ps_ref))
-score2 = IMP.em.CoarseCC.cross_correlation_coefficient(
+score2 = IMP.em.get_coarse_cc_coefficient(
     dmap, sampled_input_density, sampled_input_density.get_header().dmin)
 print("The score after centering is:", score2, "with rmsd of:", rmsd)
 # IMP.em.local_rigid_fitting_grid_search(

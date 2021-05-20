@@ -1,9 +1,8 @@
 /**
- *  \file IMP/declare_ScoringFunction.h
- *  \brief Storage of a model, its restraints,
- *                         constraints and particles.
+ *  \file IMP/internal/RestraintsScoringFunction.h
+ *  \brief A scoring function on a list of restraints
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -18,8 +17,8 @@
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
-/** Create a scoring function on a list of restraints.
-
+//! Create a scoring function on a list of restraints.
+/**
     The templated storage is so that non-ref counted pointers can
     be used when creating the cache function in Restraints.
 */

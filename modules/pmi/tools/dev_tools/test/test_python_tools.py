@@ -1,5 +1,4 @@
 import unittest
-import subprocess
 import os
 import utils
 import sys
@@ -8,12 +7,13 @@ TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(TOPDIR)
 import python_tools
 
+
 class Tests(unittest.TestCase):
 
     def test_to_from_cmake_path(self):
         """Test to/from_cmake_path functions"""
         # todo: check both paths (by reimporting the module)
-        if os.sep == '\\': # Windows
+        if os.sep == '\\':  # Windows
             self.assertEqual(python_tools.to_cmake_path('\\foo\\bar'),
                              '/foo/bar')
             self.assertEqual(python_tools.from_cmake_path('/foo/bar'),
@@ -62,8 +62,9 @@ class Tests(unittest.TestCase):
         with utils.TempDir() as tmpdir:
             path = os.path.join(tmpdir, 'path')
             os.mkdir(path)
-            fname, pytest, ok_link, bad_link = [os.path.join(path, x)
-                         for x in ['orig', 'foo.pytests', 'ok_lnk', 'bad_lnk']]
+            fname, pytest, ok_link, bad_link = [
+                os.path.join(path, x)
+                for x in ['orig', 'foo.pytests', 'ok_lnk', 'bad_lnk']]
             utils.write_file(fname, 'foo')
             utils.write_file(pytest, 'foo')
             os.symlink(fname, ok_link)
@@ -127,7 +128,8 @@ class Tests(unittest.TestCase):
         """Test link() with nonexistent source"""
         for verbose in (True, False):
             # no-op if source does not exist
-            python_tools.link('/not/exist', '/other/not/exist', verbose=verbose)
+            python_tools.link('/not/exist', '/other/not/exist',
+                              verbose=verbose)
 
     def test_link_already_linked(self):
         """Test link() with target already linked to source"""
@@ -182,7 +184,7 @@ class Tests(unittest.TestCase):
             utils.write_file(fname, '{\n"name": "foo"\n}\n')
             for d in subdir, tmpdir:
                 self.assertEqual(python_tools.get_project_info(d),
-                                 {'name':'foo'})
+                                 {'name': 'foo'})
             self.assertRaises(ValueError, python_tools.get_project_info,
                               '/not/exist')
 
@@ -204,7 +206,7 @@ class Tests(unittest.TestCase):
                          ["foo", "bar", "baz"])
         self.assertEqual(python_tools.split("foo::baz"),
                          ["foo", "baz"])
-        self.assertEqual(python_tools.split("foo\:bar:b@z"),
+        self.assertEqual(python_tools.split("foo\\:bar:b@z"),
                          ["foo:bar", "b:z"])
 
     def test_link_dir(self):
@@ -230,7 +232,8 @@ class Tests(unittest.TestCase):
             self.assertRaises(TypeError, python_tools.link_dir,
                               source, target, match='foo')
             # all links should have been removed
-            self.assertEqual(sorted(os.listdir(target)), sorted(['foo', 'baz']))
+            self.assertEqual(sorted(os.listdir(target)),
+                             sorted(['foo', 'baz']))
 
     def test_link_dir_no_clean(self):
         """Test link_dir() with clean=False"""
@@ -255,6 +258,7 @@ class Tests(unittest.TestCase):
             # bad link should have been removed, but not the good link
             self.assertEqual(sorted(os.listdir(target)),
                              sorted(['foo', 'baz', 'goodln']))
+
 
 if __name__ == '__main__':
     unittest.main()

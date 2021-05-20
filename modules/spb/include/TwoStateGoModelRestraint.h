@@ -2,14 +2,14 @@
  *  \file IMP/spb/TwoStateGoModelRestraint.h
  *  \brief Two-state Go-Model Restraint
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_TWO_STATE_GO_MODEL_RESTRAINT_H
 #define IMPSPB_TWO_STATE_GO_MODEL_RESTRAINT_H
 
 #include "IMP/Restraint.h"
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <map>

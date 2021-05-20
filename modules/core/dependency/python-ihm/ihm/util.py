@@ -3,6 +3,7 @@
 import string
 import os
 
+
 class _AsymIDs(object):
     """Map indices to multi-character asym (chain) IDs.
        We label the first 26 chains A-Z, then we move to two-letter
@@ -24,6 +25,7 @@ def _remove_id(obj, attr='_id'):
     if hasattr(obj, attr):
         delattr(obj, attr)
 
+
 def _assign_id(obj, seen_objs, obj_by_id, attr='_id', seen_obj=None):
     """Assign a unique ID to obj, and track all ids in obj_by_id."""
     if seen_obj is None:
@@ -35,6 +37,7 @@ def _assign_id(obj, seen_objs, obj_by_id, attr='_id', seen_obj=None):
         seen_objs[seen_obj] = getattr(obj, attr)
     else:
         setattr(obj, attr, seen_objs[seen_obj])
+
 
 def _get_relative_path(reference, path):
     """Return `path` interpreted relative to `reference`"""

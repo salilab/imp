@@ -1,9 +1,7 @@
 import unittest
 import os
 import sys
-import re
 import utils
-import subprocess
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, TOPDIR)
@@ -16,21 +14,22 @@ from pygments import token
 
 # Tokens we'd expect to see in an OK header
 ok_header_tokens = [
-  (token.Comment.Multiline, "/* Comment"),
-  (token.Text, "\n"),
-  (token.Text, "\n"),
-  (token.Comment.Preproc, "#"),
-  (token.Comment.Preproc, "ifndef IMPKERNEL_TEST_H"),
-  (token.Comment.Preproc, "\n"),
-  (token.Comment.Preproc, "#"),
-  (token.Comment.Preproc, "define IMPKERNEL_TEST_H"),
-  (token.Comment.Preproc, "\n"),
-  (token.Text, "\n"),
-  (token.Comment.Preproc, '#'),
-  (token.Comment.Preproc, 'endif '),
-  (token.Comment.Multiline, '/* IMPKERNEL_TEST_H */'),
-  (token.Comment.Preproc, '\n')
+    (token.Comment.Multiline, "/* Comment"),
+    (token.Text, "\n"),
+    (token.Text, "\n"),
+    (token.Comment.Preproc, "#"),
+    (token.Comment.Preproc, "ifndef IMPKERNEL_TEST_H"),
+    (token.Comment.Preproc, "\n"),
+    (token.Comment.Preproc, "#"),
+    (token.Comment.Preproc, "define IMPKERNEL_TEST_H"),
+    (token.Comment.Preproc, "\n"),
+    (token.Text, "\n"),
+    (token.Comment.Preproc, '#'),
+    (token.Comment.Preproc, 'endif '),
+    (token.Comment.Multiline, '/* IMPKERNEL_TEST_H */'),
+    (token.Comment.Preproc, '\n')
 ]
+
 
 class Tests(unittest.TestCase):
 
@@ -218,11 +217,13 @@ class Tests(unittest.TestCase):
         """Test check_cpp_file() with a test file"""
         def empty_tokenize(fh):
             return []
-        with utils.mocked_function(cpp_format, 'tokenize_file', empty_tokenize):
+        with utils.mocked_function(cpp_format, 'tokenize_file',
+                                   empty_tokenize):
             errors = []
             cpp_format.check_cpp_file((None, "/foo/bar/test_foo.cpp"),
                                       "IMP.kernel", errors)
             self.assertEqual(errors, [])
+
 
 if __name__ == '__main__':
     unittest.main()

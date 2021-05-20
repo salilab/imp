@@ -10,6 +10,7 @@ sys.path.insert(0, TOPDIR)
 import setup_cmake as setup_cmake_module
 del sys.path[0]
 
+
 class Tests(unittest.TestCase):
 
     def test_get_files(self):
@@ -76,6 +77,7 @@ class Tests(unittest.TestCase):
                 os.unlink(os.path.join(tmpdir, s, 'foo.py'))
                 os.rmdir(os.path.join(tmpdir, s))
             self.assertEqual(os.listdir(tmpdir), [])
+
 
 if __name__ == '__main__':
     unittest.main()

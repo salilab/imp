@@ -3,10 +3,10 @@
    @ingroup python
 """
 
-import re, math
+import re
+import math
 import sys
 import os
-import re
 import tempfile
 import random
 import IMP
@@ -15,39 +15,13 @@ import types
 import shutil
 import difflib
 import pprint
-from . import _compat_python
-from ._compat_python import unittest2
-from ._compat_python.unittest2.util import safe_repr
+import unittest
+from unittest.util import safe_repr
 import datetime
 import pickle
 import contextlib
+import subprocess
 
-# Load a new enough unittest package (should have the 'skip' decorator)
-# - On Python 2.7 or 3.2, the standard 'unittest' package will work.
-# - On older Pythons, use the 'unittest2' package if available, otherwise use
-#   our bundled version of this package.
-def __load_unittest_package():
-    errors = []
-    for modname, fromlist in (('unittest', []),
-                              ('unittest2', []),
-                              ):
-        try:
-            u = __import__(modname, {}, {}, fromlist)
-            if hasattr(u, 'skip'):
-                return u
-            else:
-                errors.append("'%s' does not have the 'skip' decorator" \
-                              % modname)
-        except ImportError as e:
-            errors.append(str(e))
-        #u = __import__("_compat_python.unittest2
-        return _compat_python.unittest2
-    raise ImportError("IMP.test requires a newer version of Python's unittest "
-                      "package than is available. Either upgrade to a new "
-                      "enough Python (at least 2.7 or 3.2) or install the "
-                      "unittest2 package. Encountered errors: %s" \
-                      % "; ".join(errors))
-unittest = __load_unittest_package()
 
 # Expose some unittest decorators for convenience
 expectedFailure = unittest.expectedFailure
@@ -55,11 +29,14 @@ skip = unittest.skip
 skipIf = unittest.skipIf
 skipUnless = unittest.skipUnless
 
+
 class _TempDir(object):
     def __init__(self, dir=None):
         self.tmpdir = tempfile.mkdtemp(dir=dir)
+
     def __del__(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
+
 
 @contextlib.contextmanager
 def temporary_working_directory():
@@ -75,6 +52,7 @@ def temporary_working_directory():
     os.chdir(origdir)
     shutil.rmtree(tmpdir, ignore_errors=True)
 
+
 @contextlib.contextmanager
 def temporary_directory(dir=None):
     """Simple context manager to make a temporary directory.
@@ -89,6 +67,7 @@ def temporary_directory(dir=None):
     tmpdir = tempfile.mkdtemp(dir=dir)
     yield tmpdir
     shutil.rmtree(tmpdir, ignore_errors=True)
+
 
 def numerical_derivative(func, val, step):
     """Calculate the derivative of the single-value function `func` at
@@ -138,13 +117,14 @@ def xyz_numerical_derivatives(sf, xyz, step):
             self._starting_coordinates = xyz.get_coordinates()
 
         def __call__(self, val):
-            self._xyz.set_coordinates(self._starting_coordinates + \
+            self._xyz.set_coordinates(self._starting_coordinates +
                                       self._basis_vector * val)
             return self._sf.evaluate(False)
 
-    return tuple([IMP.test.numerical_derivative(_XYZDerivativeFunc(sf, xyz,
-                                          IMP.algebra.Vector3D(*x)), 0, 0.01) \
-                  for x in ((1,0,0), (0,1,0), (0,0,1))])
+    return tuple([IMP.test.numerical_derivative(
+                  _XYZDerivativeFunc(sf, xyz, IMP.algebra.Vector3D(*x)),
+                  0, 0.01)
+                  for x in ((1, 0, 0), (0, 1, 0), (0, 0, 1))])
 
 
 class TestCase(unittest.TestCase):
@@ -172,7 +152,7 @@ class TestCase(unittest.TestCase):
         IMP.set_check_level(IMP.USAGE_AND_INTERNAL)
         # python ints are bigger than C++ ones, so we need to make sure it fits
         # otherwise python throws fits
-        IMP.random_number_generator.seed(hash(time.time())%2**30)
+        IMP.random_number_generator.seed(hash(time.time()) % 2**30)
 
     def tearDown(self):
         # Restore original check level
@@ -189,12 +169,12 @@ class TestCase(unittest.TestCase):
             testdir = os.path.dirname(sys.modules[self.__module__].__file__)
         dirs = testdir.split(os.path.sep)
         for i in range(len(dirs), 0, -1):
-                input = os.path.sep.join(dirs[:i] + ['input'])
-                if os.path.isdir(input):
-                    ret = os.path.join(input, filename)
-                    if not os.path.exists(ret):
-                         raise IOError("Test input file "+ret+" does not exist")
-                    return ret
+            input = os.path.sep.join(dirs[:i] + ['input'])
+            if os.path.isdir(input):
+                ret = os.path.join(input, filename)
+                if not os.path.exists(ret):
+                    raise IOError("Test input file "+ret+" does not exist")
+                return ret
         raise IOError("No test input directory found")
 
     def open_input_file(self, filename, mode='rb'):
@@ -242,9 +222,10 @@ class TestCase(unittest.TestCase):
         derivs = xyz.get_derivatives()
         num_derivs = xyz_numerical_derivatives(sf, xyz, 0.01)
         pct = percentage / 100.0
-        self.assertAlmostEqual(self.get_magnitude(derivs-num_derivs),0,
-                               delta=tolerance+percentage*self.get_magnitude(num_derivs),
-                               msg="Don't match "+str(derivs) + str(num_derivs))
+        self.assertAlmostEqual(
+            self.get_magnitude(derivs-num_derivs), 0,
+            delta=tolerance+percentage*self.get_magnitude(num_derivs),
+            msg="Don't match "+str(derivs) + str(num_derivs))
         self.assertAlmostEqual(derivs[0], num_derivs[0],
                                delta=max(tolerance, abs(derivs[0]) * pct))
         self.assertAlmostEqual(derivs[1], num_derivs[1],
@@ -308,7 +289,8 @@ class TestCase(unittest.TestCase):
             try:
                 self.assertAlmostEqual(
                     f, s, places=places, msg=msg, delta=delta)
-            except (TypeError, ValueError, NotImplementedError, AssertionError):
+            except (TypeError, ValueError, NotImplementedError,
+                    AssertionError):
                 differing += (
                     "\nFirst differing element "
                     "%d:\n%s\n%s\n") % (i, safe_repr(f), safe_repr(s))
@@ -343,32 +325,32 @@ class TestCase(unittest.TestCase):
               it fails consistently (and remove the corner case from the
               old test).
         """
-        prob=chance_of_failure
-        tries=1
+        prob = chance_of_failure
+        tries = 1
         while prob > .001:
-            tries=tries+1
-            prob= prob*chance_of_failure
+            tries += 1
+            prob = prob*chance_of_failure
         for i in range(0, tries):
             try:
                 eval(testcall)
-            except:
+            except:  # noqa: E722
                 pass
             else:
                 return
         eval(testcall)
-        raise AssertError("Too many failures")
+        raise AssertionError("Too many failures")
 
     def failure_probability(self, testcall):
         """Estimate how likely a given block of code is to raise an
         AssertionError."""
-        failures=0
-        tries=0.0
-        while failures < 10 and tries <1000:
+        failures = 0
+        tries = 0.0
+        while failures < 10 and tries < 1000:
             try:
                 eval(testcall)
-            except:
-                failures=failures+1
-            tries=tries+1
+            except:  # noqa: E722
+                failures += 1
+            tries = tries+1
         return failures/tries
 
     def randomize_particles(self, particles, deviation):
@@ -396,9 +378,9 @@ class TestCase(unittest.TestCase):
         """Check the unary function func's derivatives against numerical
            approximations between lb and ub"""
         for f in [lb + i * step for i in range(1, int((ub-lb)/step))]:
-            (v,d)= func.evaluate_with_derivative(f)
+            (v, d) = func.evaluate_with_derivative(f)
             da = numerical_derivative(func.evaluate, f, step / 10.)
-            self.assertAlmostEqual(d, da, delta=max(abs(.1 *d), 0.01))
+            self.assertAlmostEqual(d, da, delta=max(abs(.1 * d), 0.01))
 
     def check_unary_function_min(self, func, lb, ub, step, expected_fmin):
         """Make sure that the minimum of the unary function func over the
@@ -428,60 +410,69 @@ class TestCase(unittest.TestCase):
         obj.thisown = o
 
     def create_particles_in_box(self, model, num=10,
-                                lb= [0,0,0],
-                                ub= [10,10,10]):
+                                lb=[0, 0, 0],
+                                ub=[10, 10, 10]):
         """Create a bunch of particles in a box"""
         import IMP.algebra
-        lbv=IMP.algebra.Vector3D(lb[0],lb[1],lb[2])
-        ubv=IMP.algebra.Vector3D(ub[0],ub[1],ub[2])
-        ps= []
-        for i in range(0,num):
-            v = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(lbv, ubv))
+        lbv = IMP.algebra.Vector3D(lb[0], lb[1], lb[2])
+        ubv = IMP.algebra.Vector3D(ub[0], ub[1], ub[2])
+        ps = []
+        for i in range(0, num):
+            v = IMP.algebra.get_random_vector_in(
+                IMP.algebra.BoundingBox3D(lbv, ubv))
             p = self.create_point_particle(model, v[0], v[1], v[2])
             ps.append(p)
         return ps
+
     def _get_type(self, module, name):
         return eval('type('+module+"."+name+')')
+
     def assertValueObjects(self, module, exceptions_list):
         "Check that all the C++ classes in the module are values or objects."
-        all= dir(module)
-        ok = set(exceptions_list + module._value_types + module._object_types + module._raii_types + module._plural_types)
+        all = dir(module)
+        ok = set(exceptions_list + module._value_types + module._object_types
+                 + module._raii_types + module._plural_types)
 
-        bad=[]
+        bad = []
         for name in all:
-            if self._get_type(module.__name__, name)==type and not name.startswith("_"):
+            if self._get_type(module.__name__, name) == type \
+                    and not name.startswith("_"):
                 if name.find("SwigPyIterator") != -1:
                     continue
                 # Exclude Python-only classes
-                if not eval('hasattr(%s.%s, "__swig_destroy__")' \
+                if not eval('hasattr(%s.%s, "__swig_destroy__")'
                             % (module.__name__, name)):
                     continue
                 if name in ok:
                     continue
                 bad.append(name)
-        message="All IMP classes should be labeled as values or objects to get memory management correct in Python. The following are not:\n%s\nPlease add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the Python wrapper, or if the class has a good reason to be neither, add the name to the value_object_exceptions list in the IMPModuleTest call." \
-                          % (str(bad))
-        self.assertEqual(len(bad), 0, message)
+        self.assertEqual(
+            len(bad), 0,
+            "All IMP classes should be labeled as values or objects to get "
+            "memory management correct in Python. The following are not:\n%s\n"
+            "Please add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the "
+            "Python wrapper, or if the class has a good reason to be "
+            "neither, add the name to the value_object_exceptions list in "
+            "the IMPModuleTest call." % str(bad))
         for e in exceptions_list:
-            self.assertTrue(e not in module._value_types
-                       + module._object_types
-                       + module._raii_types
-                       + module._plural_types,
-                        "Value/Object exception "+e+" is not an exception")
+            self.assertTrue(
+                e not in module._value_types + module._object_types
+                + module._raii_types + module._plural_types,
+                "Value/Object exception "+e+" is not an exception")
 
     def _check_spelling(self, word, words):
         """Check that the word is spelled correctly"""
         if "words" not in dir(self):
             with open(IMP.test.get_data_path("linux.words"), "r") as fh:
-                wordlist= fh.read().split("\n")
+                wordlist = fh.read().split("\n")
             # why is "all" missing on my mac?
-            custom_words=["info", "prechange", "int", "ints", "optimizeds", "graphviz",
-                          "voxel", "voxels", "endian", 'rna', 'dna',
-                          "xyzr", "pdbs", "fft", "ccc", "gaussian"]
+            custom_words = ["info", "prechange", "int", "ints", "optimizeds",
+                            "graphviz", "voxel", "voxels", "endian", 'rna',
+                            'dna', "xyzr", "pdbs", "fft", "ccc", "gaussian"]
             # Exclude some common alternative spellings - we want to
             # be consistent
             exclude_words = set(["adapter", "grey"])
-            self.words=set(wordlist+custom_words) - exclude_words
+            self.words = set(wordlist+custom_words) - exclude_words
         if self.words:
             for i in "0123456789":
                 if i in word:
@@ -494,15 +485,17 @@ class TestCase(unittest.TestCase):
                 return False
         else:
             return True
+
     def assertClassNames(self, module, exceptions, words):
         """Check that all the classes in the module follow the IMP
            naming conventions."""
-        all= dir(module)
+        all = dir(module)
         misspelled = []
-        bad=[]
-        cc=re.compile("([A-Z][a-z]*)")
+        bad = []
+        cc = re.compile("([A-Z][a-z]*)")
         for name in all:
-            if self._get_type(module.__name__, name)==type and not name.startswith("_"):
+            if self._get_type(module.__name__, name) == type \
+                    and not name.startswith("_"):
                 if name.find("SwigPyIterator") != -1:
                     continue
                 for t in re.findall(cc, name):
@@ -510,39 +503,44 @@ class TestCase(unittest.TestCase):
                         misspelled.append(t.lower())
                         bad.append(name)
 
-        self.assertEqual(len(bad), 0,
-                         "All IMP classes should be properly spelled. The following are not: %s.\nMisspelled words: %s. Add words to the spelling_exceptions variable of the IMPModuleTest if needed." \
-                         % (str(bad), ", ".join(set(misspelled))))
+        self.assertEqual(
+            len(bad), 0,
+            "All IMP classes should be properly spelled. The following "
+            "are not: %s.\nMisspelled words: %s. Add words to the "
+            "spelling_exceptions variable of the IMPModuleTest if needed."
+            % (str(bad), ", ".join(set(misspelled))))
 
         for name in all:
-            if self._get_type(module.__name__, name)==type and not name.startswith("_"):
+            if self._get_type(module.__name__, name) == type \
+                    and not name.startswith("_"):
                 if name.find("SwigPyIterator") != -1:
                     continue
                 if name.find('_') != -1:
                     bad.append(name)
-                if name.lower== name:
+                if name.lower == name:
                     bad.append(name)
                 for t in re.findall(cc, name):
                     if not self._check_spelling(t.lower(), words):
                         print("misspelled %s in %s" % (t, name))
                         bad.append(name)
-        message="All IMP classes should have CamelCase names. The following do not: %s." \
-                          % ("\n".join(bad))
-        self.assertEqual(len(bad), 0, message)
+        self.assertEqual(
+            len(bad), 0,
+            "All IMP classes should have CamelCase names. The following "
+            "do not: %s." % "\n".join(bad))
 
     def _check_function_name(self, prefix, name, verbs, all, exceptions, words,
                              misspelled):
         if prefix:
-            fullname=prefix+"."+name
+            fullname = prefix+"."+name
         else:
-            fullname=name
-        old_exceptions=['unprotected_evaluate', "unprotected_evaluate_if_good",
-                        "unprotected_evaluate_if_below",
-                        "after_evaluate", "before_evaluate", "has_attribute",
-                        "decorate_particle","particle_is_instance"]
+            fullname = name
+        old_exceptions = [
+            'unprotected_evaluate', "unprotected_evaluate_if_good",
+            "unprotected_evaluate_if_below",
+            "after_evaluate", "before_evaluate", "has_attribute",
+            "decorate_particle", "particle_is_instance"]
         if name in old_exceptions:
             return []
-        #print "name", fullname
         if fullname in exceptions:
             return []
         if name.endswith("swigregister"):
@@ -553,7 +551,7 @@ class TestCase(unittest.TestCase):
                 return []
             else:
                 return [fullname]
-        tokens= name.split("_")
+        tokens = name.split("_")
         if tokens[0] not in verbs:
             return [fullname]
         for t in tokens:
@@ -577,19 +575,19 @@ class TestCase(unittest.TestCase):
 
     def _check_function_names(self, module, prefix, names, verbs, all,
                               exceptions, words, misspelled):
-        bad=[]
+        bad = []
         for name in names:
             typ = self._get_type(module, name)
-            if name.startswith("_") or name =="weakref_proxy":
+            if name.startswith("_") or name == "weakref_proxy":
                 continue
             if typ in (types.BuiltinMethodType, types.MethodType) \
-               or (typ == types.FunctionType and \
-                   not self._static_method(module, prefix, name)):
+                    or (typ == types.FunctionType and  # noqa: E721
+                        not self._static_method(module, prefix, name)):
                 bad.extend(self._check_function_name(prefix, name, verbs, all,
                                                      exceptions, words,
                                                      misspelled))
             if typ == type and "SwigPyIterator" not in name:
-                members=eval("dir("+module+"."+name+")")
+                members = eval("dir("+module+"."+name+")")
                 bad.extend(self._check_function_names(module+"."+name,
                                                       name, members, verbs, [],
                                                       exceptions, words,
@@ -599,68 +597,85 @@ class TestCase(unittest.TestCase):
     def assertFunctionNames(self, module, exceptions, words):
         """Check that all the functions in the module follow the IMP
            naming conventions."""
-        all= dir(module)
-        verbs=set(["add", "remove", "get", "set", "evaluate", "compute", "show", "create", "destroy",
-               "push", "pop", "write", "read", "do", "show", "load", "save", "reset",
-               "accept", "reject",
-               "clear", "handle", "update", "apply", "optimize", "reserve", "dump",
-               "propose", "setup", "teardown", "visit", "find", "run", "swap", "link",
+        all = dir(module)
+        verbs = set(["add", "remove", "get", "set", "evaluate", "compute",
+                     "show", "create", "destroy", "push", "pop", "write",
+                     "read", "do", "show", "load", "save", "reset", "accept",
+                     "reject", "clear", "handle", "update", "apply",
+                     "optimize", "reserve", "dump", "propose", "setup",
+                     "teardown", "visit", "find", "run", "swap", "link",
                      "validate"])
         misspelled = []
-        bad=self._check_function_names(module.__name__, None, all, verbs, all, exceptions, words, misspelled)
-        message="All IMP methods and functions should have lower case names separated by underscores and beginning with a verb, preferably one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. Each of the words should be a properly spelled English word. The following do not (given our limited list of verbs that we check for):\n%(bad)s\nIf there is a good reason for them not to (eg it does start with a verb, just one with a meaning that is not covered by the normal list), add them to the function_name_exceptions variable in the standards_exceptions file. Otherwise, please fix. The current verb list is %(verbs)s" \
-                          % {"bad":"\n".join(bad), "verbs":verbs}
+        bad = self._check_function_names(module.__name__, None, all, verbs,
+                                         all, exceptions, words, misspelled)
+        message = ("All IMP methods and functions should have lower case "
+                   "names separated by underscores and beginning with a "
+                   "verb, preferably one of ['add', 'remove', 'get', 'set', "
+                   "'create', 'destroy']. Each of the words should be a "
+                   "properly spelled English word. The following do not "
+                   "(given our limited list of verbs that we check for):\n"
+                   "%(bad)s\nIf there is a good reason for them not to "
+                   "(eg it does start with a verb, just one with a meaning "
+                   "that is not covered by the normal list), add them to the "
+                   "function_name_exceptions variable in the "
+                   "standards_exceptions file. Otherwise, please fix. "
+                   "The current verb list is %(verbs)s"
+                   % {"bad": "\n".join(bad), "verbs": verbs})
         if len(misspelled) > 0:
             message += "\nMisspelled words: " + ", ".join(set(misspelled)) \
                        + ". Add words to the spelling_exceptions variable " \
                        + "of the standards_exceptions file if needed."
         self.assertEqual(len(bad), 0, message)
 
-
     def assertShow(self, modulename, exceptions):
         """Check that all the classes in modulename have a show method"""
-        all= dir(modulename)
-        not_found=[]
+        all = dir(modulename)
+        not_found = []
         for f in all:
             # Exclude SWIG C global variables object
             if f == 'cvar':
                 continue
             # Exclude Python-only classes; they are all showable
-            if not eval('hasattr(%s.%s, "__swig_destroy__")' \
+            if not eval('hasattr(%s.%s, "__swig_destroy__")'
                         % (modulename.__name__, f)):
                 continue
             if self._get_type(modulename.__name__, f) == type \
-                   and not f.startswith("_") \
-                   and not f.endswith("_swigregister")\
-                   and f not in exceptions\
-                   and not f.endswith("Temp") and not f.endswith("Iterator")\
-                   and not f.endswith("Exception") and\
-                   f not in modulename._raii_types and \
-                   f not in modulename._plural_types:
+                    and not f.startswith("_") \
+                    and not f.endswith("_swigregister")\
+                    and f not in exceptions\
+                    and not f.endswith("Temp") and not f.endswith("Iterator")\
+                    and not f.endswith("Exception") and\
+                    f not in modulename._raii_types and \
+                    f not in modulename._plural_types:
                 if not hasattr(getattr(modulename, f), 'show'):
                     not_found.append(f)
-        message="All IMP classes should support show and __str__. The following do not:\n%s\n If there is a good reason for them not to, add them to the show_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
-                          % "\n".join(not_found)
-        self.assertEqual(len(not_found), 0, message)
+        self.assertEqual(
+            len(not_found), 0,
+            "All IMP classes should support show and __str__. The following "
+            "do not:\n%s\n If there is a good reason for them not to, add "
+            "them to the show_exceptions variable in the IMPModuleTest "
+            "call. Otherwise, please fix." % "\n".join(not_found))
         for e in exceptions:
-            self.assertIn(e, all, "Show exception "+e+" is not a class in module")
+            self.assertIn(e, all,
+                          "Show exception "+e+" is not a class in module")
             self.assertTrue(not hasattr(getattr(modulename, e), 'show'),
-                             "Exception "+e+" is not really a show exception")
+                            "Exception "+e+" is not really a show exception")
 
     def run_example(self, filename):
         """Run the named example script.
            @return a dictionary of all the script's global variables.
                    This can be queried in a test case to make sure
                    the example performed correctly."""
-        class _FatalError(Exception): pass
+        class _FatalError(Exception):
+            pass
 
         # Add directory containing the example to sys.path, so it can import
         # other Python modules in the same directory
         path, name = os.path.split(filename)
         oldsyspath = sys.path[:]
-        olssysargv= sys.argv[:]
+        olssysargv = sys.argv[:]
         sys.path.insert(0, path)
-        sys.argv=[filename]
+        sys.argv = [filename]
         vars = {}
         try:
             try:
@@ -669,12 +684,13 @@ class TestCase(unittest.TestCase):
             # value should cause the test case to fail
             except SystemExit as e:
                 if e.code != 0 and e.code is not None:
-                    raise _FatalError("Example exit with code %s" % str(e.code))
+                    raise _FatalError(
+                        "Example exit with code %s" % str(e.code))
         finally:
             # Restore sys.path (note that Python 2.3 does not allow
             # try/except/finally, so we need to use nested trys)
             sys.path = oldsyspath
-            sys.argv= olssysargv
+            sys.argv = olssysargv
 
         return _ExecDictProxy(vars)
 
@@ -736,6 +752,7 @@ class _ExecDictProxy(object):
        IMP destructors to fire."""
     def __init__(self, d):
         self._d = d
+
     def __del__(self):
         # Try to release example objects in a sensible order
         module_type = type(IMP)
@@ -766,14 +783,14 @@ class _TestResult(unittest.TextTestResult):
 
     def startTest(self, test):
         super(_TestResult, self).startTest(test)
-        test.start_time=datetime.datetime.now()
+        test.start_time = datetime.datetime.now()
 
     def _test_finished(self, test, state, detail=None):
         delta = datetime.datetime.now() - test.start_time
         try:
-            pv= delta.total_seconds()
+            pv = delta.total_seconds()
         except AttributeError:
-            pv = (float(delta.microseconds) \
+            pv = (float(delta.microseconds)
                   + (delta.seconds + delta.days * 24 * 3600) * 10**6) / 10**6
         if pv > 1:
             self.stream.write("in %.3fs ... " % pv)
@@ -835,7 +852,7 @@ def main(*args, **keys):
     IMP.set_deprecation_exceptions(True)
     return unittest.main(testRunner=_TestRunner, *args, **keys)
 
-import subprocess
+
 class _SubprocessWrapper(subprocess.Popen):
     def __init__(self, app, args, cwd=None):
         # For (non-Python) applications to work on Windows, the
@@ -861,9 +878,6 @@ class ApplicationTestCase(TestCase):
         # the top-level test directory
         if sys.platform == 'win32':
             filename += '.exe'
-        #if 'IMP_BUILD_ROOT' in os.environ:
-        #    testdir = os.environ['IMP_BUILD_ROOT']
-        #    return os.path.join(testdir, "build", "bin", filename)
         return filename
 
     def run_application(self, app, args, cwd=None):
@@ -888,8 +902,9 @@ class ApplicationTestCase(TestCase):
         """
         # Handle platforms where /usr/bin/python doesn't work
         if sys.executable != '/usr/bin/python' and 'IMP_BIN_DIR' in os.environ:
-            return _SubprocessWrapper(sys.executable,
-                         [os.path.join(os.environ['IMP_BIN_DIR'], app)] + args)
+            return _SubprocessWrapper(
+                sys.executable,
+                [os.path.join(os.environ['IMP_BIN_DIR'], app)] + args)
         else:
             return _SubprocessWrapper(app, args)
 
@@ -920,12 +935,13 @@ class ApplicationTestCase(TestCase):
     def assertApplicationExitedCleanly(self, ret, error):
         """Assert that the application exited cleanly (return value = 0)."""
         if ret < 0:
-            raise OSError("Application exited with signal %d\n" % -ret\
-                          +error)
+            raise OSError("Application exited with signal %d\n" % -ret
+                          + error)
         else:
-            self.assertEqual(ret, 0,
-                       "Application exited uncleanly, with exit code %d\n" % ret\
-                             + error)
+            self.assertEqual(
+                ret, 0,
+                "Application exited uncleanly, with exit code %d\n" % ret
+                + error)
 
     def read_shell_commands(self, doxfile):
         """Read and return a set of shell commands from a doxygen file.
@@ -938,6 +954,7 @@ class ApplicationTestCase(TestCase):
             # Sometimes Windows can read Unix-style paths, but sometimes it
             # gets confused... so normalize all paths to be sure
             return " ".join([os.path.normpath(x) for x in p.split()])
+
         def fix_win32_command(cmd):
             # Make substitutions so a Unix shell command works on Windows
             if cmd.startswith('cp -r '):
@@ -966,7 +983,6 @@ class ApplicationTestCase(TestCase):
 
     def run_shell_command(self, cmd):
         "Print and run a shell command, as returned by read_shell_commands()"
-        import subprocess
         print(cmd)
         p = subprocess.call(cmd, shell=True)
         if p != 0:
@@ -984,21 +1000,20 @@ class RefCountChecker(object):
         self.__testcase = testcase
         if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
             self.__basenum = IMP.Object.get_number_of_live_objects()
-            self.__names= IMP.get_live_object_names()
+            self.__names = IMP.get_live_object_names()
 
     def assert_number(self, expected):
         "Make sure that the number of references matches the expected value."
         t = self.__testcase
         IMP._director_objects.cleanup()
         if IMP.get_check_level() >= IMP.USAGE_AND_INTERNAL:
-            newnames=[x for x in IMP.get_live_object_names() if x not in self.__names]
-            newnum=IMP.Object.get_number_of_live_objects()-self.__basenum
+            newnames = [x for x in IMP.get_live_object_names()
+                        if x not in self.__names]
+            newnum = IMP.Object.get_number_of_live_objects()-self.__basenum
             t.assertEqual(newnum, expected,
-                          "Number of objects don't match: "\
-                           +str(newnum)\
-                            +" != "+ str(expected) +" found "+\
-                            str(newnames))
-
+                          "Number of objects don't match: "
+                          + str(newnum) + " != " + str(expected) + " found "
+                          + str(newnames))
 
 
 class DirectorObjectChecker(object):
@@ -1017,8 +1032,9 @@ class DirectorObjectChecker(object):
         t = self.__testcase
         if force_cleanup:
             IMP._director_objects.cleanup()
-        t.assertEqual(IMP._director_objects.get_object_count() \
+        t.assertEqual(IMP._director_objects.get_object_count()
                       - self.__basenum, expected)
+
 
 # Make sure that the IMP binary directory (build/bin) is in the PATH, if
 # we're running under wine (the imppy.sh script normally ensures this, but

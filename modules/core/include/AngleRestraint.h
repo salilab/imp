@@ -2,7 +2,7 @@
  *  \file IMP/core/AngleRestraint.h
  *  \brief Angle restraint between three particles.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,7 +13,7 @@
 #include "AngleTripletScore.h"
 #include "XYZ.h"
 
-#include "TripletRestraint.h"
+#include <IMP/core/TripletRestraint.h>
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE

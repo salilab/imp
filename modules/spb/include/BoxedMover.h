@@ -2,14 +2,14 @@
  *  \file IMP/spb/BoxedMover.h
  *  \brief A mover that keeps a particle in a box
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPSPB_BOXED_MOVER_H
 #define IMPSPB_BOXED_MOVER_H
 
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core.h>
 #include <IMP/core/MonteCarloMover.h>

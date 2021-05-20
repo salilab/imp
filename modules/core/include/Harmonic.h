@@ -1,7 +1,7 @@
 /**
  *  \file IMP/core/Harmonic.h    \brief Harmonic function.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_HARMONIC_H

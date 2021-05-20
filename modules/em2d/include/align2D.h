@@ -1,13 +1,13 @@
 /*!
  *  \file IMP/em2d/align2D.h
  *  \brief Alignment of images in 2D
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_ALIGN_2D_H
 #define IMPEM2D_ALIGN_2D_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/algebra/utility.h"
 #include "IMP/algebra/Transformation2D.h"

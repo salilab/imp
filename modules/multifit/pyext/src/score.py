@@ -88,7 +88,6 @@ def decompose(dmap, mhs):
 def score_each_protein(dmap, mhs, sd):
     norm_factors = decompose(dmap, mhs)
     scores = []
-    cc = IMP.em.CoarseCC()
     mdl = mhs[0].get_model()
     for i in range(len(mhs)):
         leaves = IMP.core.get_leaves(mhs[i])
@@ -104,7 +103,7 @@ def score_each_protein(dmap, mhs, sd):
             IMP.core.transform(rb, fit.get_fit_transformation())
             mh_dmap.resample()
             mh_scores.append(
-                cc.cross_correlation_coefficient(
+                IMP.em.get_coarse_cc_coefficient(
                     dmap,
                     mh_dmap,
                     0.,

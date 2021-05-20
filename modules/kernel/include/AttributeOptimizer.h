@@ -1,8 +1,8 @@
 /**
  *  \file IMP/AttributeOptimizer.h
- *   \brief Base class for all optimizers.
+ *  \brief Base class for optimizers that act on individual attributes.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

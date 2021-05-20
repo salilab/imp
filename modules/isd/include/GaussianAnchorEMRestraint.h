@@ -2,14 +2,14 @@
  *  \file IMP/isd/GaussianAnchorEMRestraint.h
  *  \brief Restraint between two sets of anchor points "model" and "EM density"
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPISD_GAUSSIAN_ANCHOR_EMRESTRAINT_H
 #define IMPISD_GAUSSIAN_ANCHOR_EMRESTRAINT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/isd/Scale.h>

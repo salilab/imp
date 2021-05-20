@@ -2,7 +2,7 @@
  *  \file IMP/core/classname_predicates.h
  *  \brief Define some predicates.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CLASSNAME_PREDICATES_H
@@ -71,9 +71,6 @@ class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
  public:
   OrderedTypeClassnamePredicate(std::string name =
                                     "OrderedTypeClassnamePredicate%1%");
-#ifndef SWIG
-  using ClassnamePredicate::get_value;
-#endif
   //! Compute the predicate for specified types
   int get_value(const core::ParticleTypes &types) {
     return internal::get_ordered_type_hash(types);

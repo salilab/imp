@@ -2,7 +2,7 @@
  *  \file IMP/spb/ContactMapMetric.h
  *  \brief Contact Map Metric
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_CONTACT_MAP_METRIC_H
@@ -10,7 +10,7 @@
 
 #include <IMP/algebra.h>
 #include <IMP/statistics.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

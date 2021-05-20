@@ -94,18 +94,8 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
 %{
 #include <boost/version.hpp>
 #if !defined(BOOST_FILESYSTEM_VERSION)
-#if BOOST_VERSION >= 105000
 #define BOOST_FILESYSTEM_VERSION 3
-#else
-#define BOOST_FILESYSTEM_VERSION 2
-#endif
-
-#if BOOST_VERSION >= 105000
 #include <boost/filesystem.hpp>
-#else
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/exception.hpp>
-#endif
 #endif
 
   /* Code to convert C++ exceptions into scripting language errors. Saves
@@ -153,11 +143,9 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
     } catch (const std::exception &e) {
       PyErr_SetString(PyExc_RuntimeError,
                       e.what());
-#if BOOST_VERSION > 103600
     } catch (const boost::exception &e) {
       PyErr_SetString(PyExc_RuntimeError,
                       boost::diagnostic_information(e).c_str());
-#endif
     } catch (...) {
       PyErr_SetString(PyExc_RuntimeError,
                       "Unknown error caught by Python wrapper");

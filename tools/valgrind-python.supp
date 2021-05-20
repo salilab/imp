@@ -724,7 +724,7 @@
 }
 
 {
-   <insert_a_suppression_name_here>
+   SWIG module static client data
    Memcheck:Leak
    fun:malloc
    fun:SwigPyClientData_New

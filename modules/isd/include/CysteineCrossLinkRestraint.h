@@ -5,13 +5,13 @@
  *  and ambiguous assignment. To be used with
  *  cross-linking mass-spectrometry data.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPISD_CYSTEINE_CROSS_LINK_RESTRAINT_H
 #define IMPISD_CYSTEINE_CROSS_LINK_RESTRAINT_H
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/isd/CrossLinkData.h>
 #include <IMP/isd/CysteineCrossLinkData.h>

@@ -2,7 +2,7 @@
  *  \file IMP/container/generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,7 +12,7 @@
 #include <IMP/container/container_config.h>
 #include <IMP/internal/ContainerRestraint.h>
 #include <IMP/internal/ContainerConstraint.h>
-#include "InContainerPairFilter.h"
+#include <IMP/container/InContainerPairFilter.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

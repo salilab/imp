@@ -2,14 +2,14 @@
  *  \file IMP/isd/WeightRestraint.h
  *  \brief Put description here
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPISD_WEIGHT_RESTRAINT_H
 #define IMPISD_WEIGHT_RESTRAINT_H
 #include <IMP/isd/Scale.h>
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 
 IMPISD_BEGIN_NAMESPACE

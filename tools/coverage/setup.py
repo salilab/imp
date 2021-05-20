@@ -15,7 +15,8 @@ def setup_python_coverage():
     if os.path.exists('coverage'):
         shutil.rmtree('coverage')
     os.mkdir('coverage')
-    open('coverage/sitecustomize.py', 'w').write("""
+    with open('coverage/sitecustomize.py', 'w') as fh:
+        fh.write("""
 import coverage
 import atexit
 import os
@@ -43,6 +44,7 @@ atexit.register(_coverage_cleanup, _cov)
 def main():
     clean_gcdas()
     setup_python_coverage()
+
 
 if __name__ == '__main__':
     main()

@@ -12,7 +12,7 @@ class Tests(IMP.test.TestCase):
         """Get a Modeller environ object"""
         if not hasattr(self, '_modeller_environ'):
             # Speed tests up a little by only creating this object once
-            env = modeller.environ()
+            env = modeller.Environ()
             env.libs.topology.read('${LIB}/top_heav.lib')
             env.libs.parameters.read('${LIB}/par.lib')
             Tests._modeller_environ = env
@@ -21,9 +21,9 @@ class Tests(IMP.test.TestCase):
     def test_read_alnstructure(self):
         """Check reading a Modeller alignment structure"""
         env = self.get_environ()
-        m = modeller.model(env)
+        m = modeller.Model(env)
         m.build_sequence('C')
-        a = modeller.alignment(env)
+        a = modeller.Alignment(env)
         a.append_model(m, align_codes='test', atom_files='test')
         m = IMP.Model()
         loader = IMP.modeller.ModelLoader(a[0])

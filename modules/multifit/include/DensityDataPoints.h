@@ -2,7 +2,7 @@
  *  \file IMP/multifit/DensityDataPoints.h
  *  \brief Handling of data for anchor points segmentation
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,8 +17,6 @@
 #include <IMP/em/converters.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/algebra/internal/tnt_array2d.h>
-#include <IMP/algebra/internal/tnt_array2d_utils.h>
 #include <IMP/atom/Hierarchy.h>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/multifit/multifit_config.h>

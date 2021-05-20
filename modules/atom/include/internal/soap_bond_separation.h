@@ -2,7 +2,7 @@
  * \file soap_bond_separation.h
  * \brief SOAP bond separation filter
  *
- * Copyright 2007-2020 IMP Inventors. All rights reserved.
+ * Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

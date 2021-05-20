@@ -2,7 +2,7 @@
  *  \file IMP/core/ClosePairsFinder.h
  *  \brief A base class for algorithms to detect proximities.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CLOSE_PAIRS_FINDER_H
@@ -67,7 +67,7 @@ class IMPCOREEXPORT ClosePairsFinder : public ParticleInputs,
   /** @name Methods to control the set of filters
 
      PairPredicates objects can be used as filters to prevent
-     the addition of pairs to the containeroutput list. Pairs
+     the addition of pairs to the container output list. Pairs
      for which the predicate evaluates to a non-zero value are
      excluded.
   */

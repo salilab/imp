@@ -38,7 +38,6 @@ class Tests(IMP.test.TestCase):
         self.EM_map.std_normalize()
         self.EM_map.get_header_writable().compute_xyz_top()
 
-        self.ccc = IMP.em.CoarseCC()
         self.ccc_intervals = IMP.em.CoarseCCatIntervals()
 
     def calc_simple_correlation(self):
@@ -46,7 +45,7 @@ class Tests(IMP.test.TestCase):
         self.model_map.calcRMS()
         threshold = self.model_map.get_header().dmin - 0.1
         return (
-            self.ccc.cross_correlation_coefficient(
+            IMP.em.get_coarse_cc_coefficient(
                 self.EM_map,
                 self.model_map,
                 threshold,
@@ -56,15 +55,16 @@ class Tests(IMP.test.TestCase):
     def test_simple_correlation(self):
         """ test that the simple fast ccc function works """
         score = self.calc_simple_correlation()
+        print("CCC_score:", score)
         self.assertAlmostEqual(1.000, score, 2)
 
     def test_correlation_with_padding(self):
         """ test that padding option does not affect the CC score"""
         self.model_map.calcRMS()
         threshold = self.model_map.get_header().dmin - 0.001
-        score1 = self.ccc.cross_correlation_coefficient(
+        score1 = IMP.em.get_coarse_cc_coefficient(
             self.EM_map, self.model_map, threshold, False)
-        score2 = self.ccc.cross_correlation_coefficient(
+        score2 = IMP.em.get_coarse_cc_coefficient(
             self.EM_map, self.model_map, threshold, True)
         self.assertAlmostEqual(score1, score2, 2)
 
@@ -85,7 +85,7 @@ class Tests(IMP.test.TestCase):
         threshold = self.model_map.get_header().dmin
 
         self.EM_map.get_header_writable().compute_xyz_top()
-        score1 = self.ccc.cross_correlation_coefficient(
+        score1 = IMP.em.get_coarse_cc_coefficient(
             self.EM_map, self.model_map, threshold, False)
 
         # compute correlation translating the particles
@@ -94,7 +94,7 @@ class Tests(IMP.test.TestCase):
             IMP.core.XYZ(atom.get_particle()).set_coordinates(
                 translation.get_transformed(IMP.core.XYZ(atom.get_particle()).get_coordinates()))
         interval = 1
-        score = self.ccc.calc_score(self.EM_map, self.model_map, 1.0)
+        score = IMP.em.get_coarse_cc_score(self.EM_map, self.model_map, 1.0)
         score2 = 1. - score
         self.assertAlmostEqual(score1, score2, delta=.05 * (score1 + score2))
 
@@ -112,7 +112,7 @@ class Tests(IMP.test.TestCase):
 
         self.model_map.set_origin(self.xo - xm, self.yo - ym, self.zo - zm)
         interval = 1
-        score = self.ccc.calc_score(self.EM_map, self.model_map, 1.0)
+        score = IMP.em.get_coarse_cc_score(self.EM_map, self.model_map, 1.0)
         score = 1. - score
         self.assertAlmostEqual(simple_score, score, 2)
 
@@ -133,7 +133,7 @@ class Tests(IMP.test.TestCase):
         # calculate correlation
         for i in range(0, times):
             scores_wo_intervals.append(
-                self.ccc.calc_score(
+                IMP.em.get_coarse_cc_score(
                     self.EM_map,
                     self.model_map,
                     1.0))
@@ -159,6 +159,18 @@ class Tests(IMP.test.TestCase):
                                        scores_intervals[i][0],
                                        delta=1e-8)
             self.assertAlmostEqual(result, scores_intervals[i][0], delta=1e-8)
+
+    @IMP.test.expectedFailure
+    def test_correlation_of_added_maps(self):
+        mrw = IMP.em.MRCReaderWriter()
+        ic_mrc = IMP.em.read_map(self.get_input_file_name("inv_crop_map.mrc"), mrw)
+        c_mrc = IMP.em.read_map(self.get_input_file_name("crop_map.mrc"), mrw)
+        mrc = IMP.em.read_map(self.get_input_file_name("1mbn.6.eman.mrc"), mrw)
+
+        ic_mrc.add(c_mrc)
+        ccc =  IMP.em.CoarseCC.cross_correlation_coefficient(mrc, ic_mrc, 0)
+
+        self.assertLess(ccc, 1.00001)
 
 if __name__ == '__main__':
     IMP.test.main()

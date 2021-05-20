@@ -2,7 +2,7 @@
  *  \file IMP/spb/DistanceRMSDMetric.h
  *  \brief Distance RMSD Metric
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_DISTANCE_RMSD_METRIC_H
@@ -12,7 +12,7 @@
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/statistics.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

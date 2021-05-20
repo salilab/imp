@@ -2,7 +2,7 @@
  *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -44,7 +44,7 @@ struct TypeData : RMF_SMALL_UNORDERED_MAP<ID<Traits>, KeyData<Traits> > {
     P::operator=(o);
     return *this;
   }
-  void swap(TypeData<Traits>& o) { std::swap<P>(*this, o); }
+  void swap(TypeData<Traits>& o) { P::swap(o); }
 };
 
 #define RMF_SHARED_DATA_TYPE_PARENT(Traits, UCName) , public TypeData<Traits>

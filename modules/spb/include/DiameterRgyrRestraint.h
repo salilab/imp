@@ -2,14 +2,14 @@
  *  \file IMP/spb/DiameterRgyrRestraint.h
  *  \brief Diameter Restraint
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_DIAMETER_RGYR_RESTRAINT_H
 #define IMPSPB_DIAMETER_RGYR_RESTRAINT_H
 
 #include "IMP/Restraint.h"
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <map>

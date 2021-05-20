@@ -2,13 +2,13 @@
  *  \file IMP/spb/RigidBodyPackingScore.h
  *  \brief A Score on the crossing angle between two rigid bodies
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_RIGID_BODY_PACKING_SCORE_H
 #define IMPSPB_RIGID_BODY_PACKING_SCORE_H
 
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 #include <IMP/Pointer.h>
 #include <IMP/PairScore.h>
 #include <IMP/core/TableRefiner.h>

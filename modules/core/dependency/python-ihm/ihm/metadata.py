@@ -32,6 +32,7 @@ except ImportError:
     urllib = MockUrlLib()
     urllib.request = urllib.error = __import__('urllib2')
 
+
 class Parser(object):
     """Base class for all metadata parsers."""
 
@@ -60,17 +61,17 @@ class MRCParser(Parser):
         """
         emdb = self._get_emdb(filename)
         if emdb:
-            l = _ParsedEMDBLocation(emdb)
+            loc = _ParsedEMDBLocation(emdb)
         else:
-            l = location.InputFileLocation(filename,
-                                      details="Electron microscopy density map")
-        return {'dataset': dataset.EMDensityDataset(l)}
+            loc = location.InputFileLocation(
+                filename, details="Electron microscopy density map")
+        return {'dataset': dataset.EMDensityDataset(loc)}
 
     def _get_emdb(self, filename):
         """Return the EMDB id of the file, or None."""
         r = re.compile(b'EMDATABANK\\.org.*(EMD\\-\\d+)')
         with open(filename, 'rb') as fh:
-            fh.seek(220) # Offset of number of labels
+            fh.seek(220)  # Offset of number of labels
             num_labels_raw = fh.read(4)
             # Number of labels in MRC is usually a very small number, so it's
             # very likely to be the smaller of the big-endian and little-endian
@@ -94,20 +95,22 @@ class _ParsedEMDBLocation(location.EMDBLocation):
     def __init__(self, emdb):
         self.__emdb_info = None
         super(_ParsedEMDBLocation, self).__init__(
-                                      db_code=emdb, version=None,
-                                      details=None)
+            db_code=emdb, version=None, details=None)
         self.__emdb_info = None
 
     def __get_version(self):
         self._get_emdb_info()
         return self.__emdb_info[0]
+
     def __set_version(self, val):
         if self.__emdb_info is None:
             self.__emdb_info = [None, None]
         self.__emdb_info[0] = val
+
     def __get_details(self):
         self._get_emdb_info()
         return self.__emdb_info[1] or "Electron microscopy density map"
+
     def __set_details(self, val):
         if self.__emdb_info is None:
             self.__emdb_info = [None, None]
@@ -118,8 +121,8 @@ class _ParsedEMDBLocation(location.EMDBLocation):
         if self.__emdb_info is not None:
             return
         req = urllib.request.Request(
-                'https://www.ebi.ac.uk/pdbe/api/emdb/entry/summary/%s'
-                % self.access_code, None, {})
+            'https://www.ebi.ac.uk/pdbe/api/emdb/entry/summary/%s'
+            % self.access_code, None, {})
         try:
             response = urllib.request.urlopen(req, timeout=10)
         except urllib.error.URLError as err:
@@ -171,9 +174,11 @@ def _get_swiss_model_metadata(filename):
                             in_header[key] = val
     return meta
 
+
 def _parse_seq(seq):
     """Get a primary sequence and its length (without gaps)"""
     return seq, len(seq.replace('-', ''))
+
 
 def _get_aligned_region(tgt_seq, tmpl_seq):
     """Given two primary sequences, return the range of each that is
@@ -211,8 +216,8 @@ class PDBParser(Parser):
            :param str filename: the file to extract metadata from.
            :return: a dict with key `dataset` pointing to the PDB dataset;
                     'templates' pointing to a dict with keys the asym (chain)
-                    IDs in the PDB file and values the list of comparative model
-                    templates used to model that chain as
+                    IDs in the PDB file and values the list of comparative
+                    model templates used to model that chain as
                     :class:`ihm.startmodel.Template` objects;
                     'entity_source' pointing to a dict with keys the asym IDs
                     and values :class:`ihm.source.Source` objects;
@@ -230,8 +235,8 @@ class PDBParser(Parser):
            version of some other resource. Additional details will be extracted
            from other PDB headers if available, such as ``TITLE`` records.
 
-           If the first line of the file starts with ``HEADER`` then the file is
-           assumed to live in the PDB database. For example, the following
+           If the first line of the file starts with ``HEADER`` then the file
+           is assumed to live in the PDB database. For example, the following
            will be interpreted as PDB entry 2HBJ::
 
                HEADER    HYDROLASE, GENE REGULATION              14-JUN-06   2HBJ
@@ -254,8 +259,9 @@ class PDBParser(Parser):
            by modern versions of Modeller are parsed to extract information
            about the comparative modeling script, plus the templates used and
            their alignment.
-           Templates named ``1abcX`` or ``1abcX_N`` are assumed to be structures
-           deposited in PDB (in this case, chain X in structure 1ABC).
+           Templates named ``1abcX`` or ``1abcX_N`` are assumed to be
+           structures deposited in PDB (in this case, chain X in
+           structure 1ABC).
            A custom ``TEMPLATE PATH`` header can be used to point to templates
            that are not deposited in the PDB database. For example, the model
            below is assumed to be constructed using templates from PDB codes
@@ -273,13 +279,13 @@ class PDBParser(Parser):
            A first line starting with ``TITLE     SWISS-MODEL SERVER``
            is assumed to be a model generated by SWISS-MODEL, and information
            about the template(s) is extracted from ``REMARK    3`` records.
-        """
-        ret = {'templates':{}, 'software':[], 'metadata':[], 'script':None,
-               'entity_source':{}}
+        """  # noqa:  E501
+        ret = {'templates': {}, 'software': [], 'metadata': [], 'script': None,
+               'entity_source': {}}
         with open(filename) as fh:
             first_line = fh.readline()
-            local_file = location.InputFileLocation(filename,
-                                          details="Starting model structure")
+            local_file = location.InputFileLocation(
+                filename, details="Starting model structure")
             if first_line.startswith('HEADER'):
                 self._parse_official_pdb(fh, first_line, ret)
             elif first_line.startswith('EXPDTA    DERIVED FROM PDB:'):
@@ -293,7 +299,8 @@ class PDBParser(Parser):
                                        'MODEL, DOI:'):
                 self._parse_derived_from_int_model(fh, first_line, local_file,
                                                    ret)
-            elif first_line.startswith('EXPDTA    THEORETICAL MODEL, MODELLER'):
+            elif first_line.startswith(
+                    'EXPDTA    THEORETICAL MODEL, MODELLER'):
                 self._parse_modeller_model(fh, first_line, local_file,
                                            filename, ret)
             elif first_line.startswith('REMARK  99  Chain ID :'):
@@ -310,33 +317,34 @@ class PDBParser(Parser):
     def _parse_official_pdb(self, fh, first_line, ret):
         """Handle a file that's from the official PDB database."""
         version, details, metadata, entity_source \
-                                = self._parse_pdb_records(fh, first_line)
-        l = location.PDBLocation(first_line[62:66].strip(), version, details)
+            = self._parse_pdb_records(fh, first_line)
+        loc = location.PDBLocation(first_line[62:66].strip(), version, details)
         ret['entity_source'] = entity_source
         ret['metadata'] = metadata
-        ret['dataset'] = dataset.PDBDataset(l)
+        ret['dataset'] = dataset.PDBDataset(loc, details=loc.details)
 
     def _parse_derived_from_pdb(self, fh, first_line, local_file, ret):
         # Model derived from a PDB structure; treat as a local experimental
         # model with the official PDB as a parent
         local_file.details = self._parse_details(fh)
         db_code = first_line[27:].strip()
-        d = dataset.PDBDataset(local_file)
+        d = dataset.PDBDataset(local_file, details=local_file.details)
         d.parents.append(dataset.PDBDataset(location.PDBLocation(db_code)))
         ret['dataset'] = d
 
     def _parse_derived_from_comp_model(self, fh, first_line, local_file, ret):
         """Model derived from a comparative model; link back to the original
            model as a parent"""
-        self._parse_derived_from_model(fh, first_line, local_file, ret,
-                dataset.ComparativeModelDataset, 'comparative')
-
+        self._parse_derived_from_model(
+            fh, first_line, local_file, ret, dataset.ComparativeModelDataset,
+            'comparative')
 
     def _parse_derived_from_int_model(self, fh, first_line, local_file, ret):
         """Model derived from an integrative model; link back to the original
            model as a parent"""
-        self._parse_derived_from_model(fh, first_line, local_file, ret,
-                dataset.IntegrativeModelDataset, 'integrative')
+        self._parse_derived_from_model(
+            fh, first_line, local_file, ret, dataset.IntegrativeModelDataset,
+            'integrative')
 
     def _parse_derived_from_model(self, fh, first_line, local_file, ret,
                                   dataset_class, model_type):
@@ -344,29 +352,30 @@ class PDBParser(Parser):
         d = dataset_class(local_file)
         repo = location.Repository(doi=first_line[46:].strip())
         # todo: better specify an unknown path
-        orig_loc = location.InputFileLocation(repo=repo, path='.',
-                          details="Starting %s model structure" % model_type)
+        orig_loc = location.InputFileLocation(
+            repo=repo, path='.',
+            details="Starting %s model structure" % model_type)
         d.parents.append(dataset_class(orig_loc))
         ret['dataset'] = d
 
     def _parse_modeller_model(self, fh, first_line, local_file, filename, ret):
         version, date = first_line[38:].rstrip('\r\n').split(' ', 1)
         s = ihm.Software(
-                name='MODELLER', classification='comparative modeling',
-                description='Comparative modeling by satisfaction '
-                            'of spatial restraints, build ' + date,
-                location='https://salilab.org/modeller/',
-                version=version)
+            name='MODELLER', classification='comparative modeling',
+            description='Comparative modeling by satisfaction '
+                        'of spatial restraints, build ' + date,
+            location='https://salilab.org/modeller/',
+            version=version)
         ret['software'].append(s)
         self._handle_comparative_model(local_file, filename, ret)
 
     def _parse_phyre_model(self, fh, first_line, local_file, filename, ret):
         # Model generated by Phyre2
         s = ihm.Software(
-               name='Phyre2', classification='protein homology modeling',
-               description='Protein Homology/analogY Recognition '
-                           'Engine V 2.0',
-               version='2.0', location='http://www.sbg.bio.ic.ac.uk/~phyre2/')
+            name='Phyre2', classification='protein homology modeling',
+            description='Protein Homology/analogY Recognition '
+                        'Engine V 2.0',
+            version='2.0', location='http://www.sbg.bio.ic.ac.uk/~phyre2/')
         ret['software'].append(s)
         self._handle_comparative_model(local_file, filename, ret)
 
@@ -374,28 +383,28 @@ class PDBParser(Parser):
         # Model generated by SWISS-MODEL
         meta = _get_swiss_model_metadata(filename)
         s = ihm.Software(
-               name='SWISS-MODEL', classification='protein homology modeling',
-               description='SWISS-MODEL: homology modelling of protein '
-                           'structures and complexes, using %s engine'
-                           % meta.get('info', {}).get('ENGIN', 'unknown'),
-               version=meta.get('info', {}).get('VERSN', ihm.unknown),
-               location='https://swissmodel.expasy.org/')
+            name='SWISS-MODEL', classification='protein homology modeling',
+            description='SWISS-MODEL: homology modelling of protein '
+                        'structures and complexes, using %s engine'
+                        % meta.get('info', {}).get('ENGIN', 'unknown'),
+            version=meta.get('info', {}).get('VERSN', ihm.unknown),
+            location='https://swissmodel.expasy.org/')
         ret['software'].append(s)
         comp_model_ds = dataset.ComparativeModelDataset(local_file)
         ret['dataset'] = comp_model_ds
 
         ret['templates'] = self._add_swiss_model_templates(
-                local_file, meta, comp_model_ds, ret)
+            local_file, meta, comp_model_ds, ret)
 
     def _add_swiss_model_templates(self, local_file, meta, comp_model_ds, ret):
         """Add template information extracted from SWISS-MODEL PDB metadata"""
         ret_templates = {}
-        templates = [v for k,v in sorted(((k, v) for k,v in meta.items()
+        templates = [v for k, v in sorted(((k, v) for k, v in meta.items()
                                           if k.startswith('TEMPLATE')),
                                           key=operator.itemgetter(0))]
         for t in templates:
-            l = location.PDBLocation(t['PDBID'])
-            d = dataset.PDBDataset(l)
+            loc = location.PDBLocation(t['PDBID'])
+            d = dataset.PDBDataset(loc)
             # Make the comparative model dataset derive from the template's
             comp_model_ds.parents.append(d)
             for chain in t['MMCIF']:
@@ -413,11 +422,10 @@ class PDBParser(Parser):
                 seq_id = startmodel.SequenceIdentity(
                     float(t['SID']),
                     SequenceIdentityDenominator.NUM_ALIGNED_WITHOUT_GAPS)
-                tmpl = startmodel.Template(dataset=d, asym_id=chain,
-                                   seq_id_range=tgt_rng,
-                                   template_seq_id_range=tmpl_rng,
-                                   sequence_identity=seq_id,
-                                   alignment_file=local_file)
+                tmpl = startmodel.Template(
+                    dataset=d, asym_id=chain, seq_id_range=tgt_rng,
+                    template_seq_id_range=tmpl_rng, sequence_identity=seq_id,
+                    alignment_file=local_file)
                 ret_templates[chain] = [tmpl]
         return ret_templates
 
@@ -429,7 +437,8 @@ class PDBParser(Parser):
     def _handle_comparative_model(self, local_file, pdbname, ret):
         d = dataset.ComparativeModelDataset(local_file)
         ret['dataset'] = d
-        ret['templates'], ret['script'] = self._get_templates_script(pdbname, d)
+        ret['templates'], ret['script'] \
+            = self._get_templates_script(pdbname, d)
 
     def _get_templates_script(self, pdbname, target_dataset):
         template_path_map = {}
@@ -445,26 +454,25 @@ class PDBParser(Parser):
 
         with open(pdbname) as fh:
             for line in fh:
-                if line.startswith('ATOM'): # Read only the header
+                if line.startswith('ATOM'):  # Read only the header
                     break
                 m = tmppathre.match(line)
                 if m:
                     template_path_map[m.group(1)] = \
-                              util._get_relative_path(pdbname, m.group(2))
+                        util._get_relative_path(pdbname, m.group(2))
                 m = alnfilere.match(line)
                 if m:
                     # Path to alignment is relative to that of the PDB file
                     fname = util._get_relative_path(pdbname, m.group(1))
-                    alnfile = location.InputFileLocation(fname,
-                                        details="Alignment for starting "
-                                               "comparative model")
+                    alnfile = location.InputFileLocation(
+                        fname,
+                        details="Alignment for starting comparative model")
                 m = scriptre.match(line)
                 if m:
                     # Path to script is relative to that of the PDB file
                     fname = util._get_relative_path(pdbname, m.group(1))
-                    script = location.WorkflowFileLocation(fname,
-                                        details="Script for starting "
-                                                "comparative model")
+                    script = location.WorkflowFileLocation(
+                        fname, details="Script for starting comparative model")
                 m = tmpre.match(line)
                 if m:
                     template_info.append(m)
@@ -491,31 +499,31 @@ class PDBParser(Parser):
         seq_id_range = (int(info.group(5)), int(info.group(7)))
         target_asym_id = info.group(6)
         sequence_identity = startmodel.SequenceIdentity(
-                          float(info.group(8)),
-                          SequenceIdentityDenominator.SHORTER_LENGTH)
+            float(info.group(8)), SequenceIdentityDenominator.SHORTER_LENGTH)
 
         # Assume a code of 1abc, 1abc_N, 1abcX, or 1abcX_N refers
         # to a real PDB structure
         m = re.match(r'(\d[a-zA-Z0-9]{3})[a-zA-Z]?(_.*)?$', template_code)
         if m:
             template_db_code = m.group(1).upper()
-            l = location.PDBLocation(template_db_code)
+            loc = location.PDBLocation(template_db_code)
         else:
             # Otherwise, look up the PDB file in TEMPLATE PATH remarks
             fname = template_path_map[template_code]
-            l = location.InputFileLocation(fname,
-                             details="Template for comparative modeling")
-        d = dataset.PDBDataset(l)
+            loc = location.InputFileLocation(
+                fname, details="Template for comparative modeling")
+        d = dataset.PDBDataset(loc, details=loc.details)
 
         # Make the comparative model dataset derive from the template's
         target_dataset.parents.append(d)
 
         return (target_asym_id,
-                startmodel.Template(dataset=d, asym_id=template_asym_id,
-                                   seq_id_range=seq_id_range,
-                                   template_seq_id_range=template_seq_id_range,
-                                   sequence_identity=sequence_identity,
-                                   alignment_file=alnfile))
+                startmodel.Template(
+                    dataset=d, asym_id=template_asym_id,
+                    seq_id_range=seq_id_range,
+                    template_seq_id_range=template_seq_id_range,
+                    sequence_identity=sequence_identity,
+                    alignment_file=alnfile))
 
     def _parse_pdb_records(self, fh, first_line):
         """Extract information from an official PDB"""
@@ -546,10 +554,10 @@ class PDBParser(Parser):
         if compnd.get('ENGINEERED', None) == 'YES':
             gene = make_from_source(ihm.source.Details)
             host = ihm.source.Details(
-                    scientific_name=source.get('EXPRESSION_SYSTEM'),
-                    common_name=source.get('EXPRESSION_SYSTEM_COMMON'),
-                    strain=source.get('EXPRESSION_SYSTEM_STRAIN'),
-                    ncbi_taxonomy_id=source.get('EXPRESSION_SYSTEM_TAXID'))
+                scientific_name=source.get('EXPRESSION_SYSTEM'),
+                common_name=source.get('EXPRESSION_SYSTEM_COMMON'),
+                strain=source.get('EXPRESSION_SYSTEM_STRAIN'),
+                ncbi_taxonomy_id=source.get('EXPRESSION_SYSTEM_TAXID'))
             return ihm.source.Manipulated(gene=gene, host=host)
         else:
             if source.get('SYNTHETIC', None) == 'YES':

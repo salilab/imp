@@ -2,7 +2,7 @@
  *  \file IMP/algebra/eigen_analysis.h
  *  \brief Principal component analysis of a set of points
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_EIGEN_ANALYSIS_H
@@ -13,7 +13,6 @@
 #include "GeometricPrimitiveD.h"
 #include "IMP/algebra/internal/utility.h"
 #include "IMP/algebra/ReferenceFrame3D.h"
-#include <IMP/algebra/internal/jama_svd.h>
 #include <IMP/log.h>
 #include <IMP/log_macros.h>
 
@@ -113,21 +112,20 @@ PrincipalComponentAnalysisD<D> get_principal_components(
   VectorD<D> m =
       std::accumulate(ps.begin(), ps.end(), get_zero_vector_kd(dim)) /
       ps.size();
-  internal::TNT::Array2D<double> cov = internal::get_covariance_matrix(ps, m);
+  Eigen::MatrixXd cov = internal::get_covariance_matrix(ps, m);
   IMP_LOG_VERBOSE("The covariance matrix is " << cov << std::endl);
-  internal::JAMA::SVD<double> svd(cov);
-  internal::TNT::Array2D<double> V(dim, dim);
-  internal::TNT::Array1D<double> SV;
 
-  svd.getV(V);
+  Eigen::JacobiSVD<Eigen::MatrixXd> svd = cov.jacobiSvd(Eigen::ComputeFullV);
+  Eigen::MatrixXd V = svd.matrixV();
+  Eigen::VectorXd SV = svd.singularValues();
+
   IMP_LOG_VERBOSE("V is " << V << std::endl);
-  svd.getSingularValues(SV);
   VectorD<D> values = ps[0];
   Vector<VectorD<D> > vectors(dim, values);
   for (unsigned int i = 0; i < dim; ++i) {
     values[i] = SV[i];
     for (unsigned int j = 0; j < dim; ++j) {
-      vectors[i][j] = V[j][i];
+      vectors[i][j] = V(j, i);
     }
   }
   // the principal components are the columns of V

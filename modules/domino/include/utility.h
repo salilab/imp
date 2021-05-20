@@ -2,7 +2,7 @@
  *  \file IMP/domino/utility.h
  *  \brief Functions for helping optimize and understand DOMINO-based sampling.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDOMINO_UTILITY_H

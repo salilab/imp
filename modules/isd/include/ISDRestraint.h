@@ -1,14 +1,14 @@
 /**
  *  \file IMP/isd/ISDRestraint.h
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPISD_ISD_RESTRAINT_H
 #define IMPISD_ISD_RESTRAINT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/ScoringFunction.h>
 #include <IMP/Restraint.h>
 #include <string>

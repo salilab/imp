@@ -2,7 +2,7 @@
  *  \file IMP/WarningContext.h
  *  \brief Logging and error reporting support.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,7 +15,8 @@
 
 IMPKERNEL_BEGIN_NAMESPACE
 #if IMP_HAS_LOG
-/** Warnings with the same key within the context are only output once.*/
+
+//! Warnings with the same key within the context are only output once.
 struct IMPKERNELEXPORT WarningContext {
   mutable boost::unordered_set<std::string> data_;
 

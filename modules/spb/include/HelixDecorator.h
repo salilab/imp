@@ -2,14 +2,14 @@
  *  \file IMP/spb/HelixDecorator.h
  *  \brief Add helix parameters to a particle.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPSPB_HELIX_DECORATOR_H
 #define IMPSPB_HELIX_DECORATOR_H
 
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 #include <IMP/Decorator.h>
 #include <IMP/Model.h>

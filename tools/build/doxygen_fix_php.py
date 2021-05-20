@@ -26,7 +26,7 @@ for f in glob.glob('%s/*.php' % sys.argv[1]):
                 elif in_script and line.startswith('</script>'):
                     # Note that this won't handle nested <script> tags
                     in_script = False
-                    out = "?>\n";
+                    out = "?>\n"
                 else:
                     out = line
                 out_f.write(out)

@@ -1,13 +1,13 @@
 /**
  *  \file IMP/isd/FretData.h \brief Auxiliary class useful for FRET_R restraint
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_FRET_DATA_H
 #define IMPISD_FRET_DATA_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
 #include <IMP/Model.h>
 #include <IMP/constants.h>

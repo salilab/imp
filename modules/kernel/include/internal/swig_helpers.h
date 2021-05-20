@@ -2,7 +2,7 @@
  *  \file internal/swig_helpers.h
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_SWIG_HELPERS_H
@@ -10,10 +10,10 @@
 
 // Python.h must be included first
 #include <IMP/kernel_config.h>
-#include "../Particle.h"
-#include "../Restraint.h"
-#include "../SingletonScore.h"
-#include "../macros.h"
+#include <IMP/Particle.h>
+#include <IMP/Restraint.h>
+#include <IMP/SingletonScore.h>
+#include <IMP/macros.h>
 #include <IMP/internal/swig_helpers_base.h>
 
 using namespace IMP;

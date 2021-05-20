@@ -2,13 +2,13 @@
  *  \file IMP/spb/MonteCarloWithWte.h
  *  \brief An exotic version of MonteCarlo
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSPB_MONTE_CARLO_WITH_WTE_H
 #define IMPSPB_MONTE_CARLO_WITH_WTE_H
 
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 #include <IMP/Restraint.h>
 #include <IMP/core.h>

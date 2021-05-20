@@ -2,7 +2,7 @@
  *  \file IMP/saxs/Profile.h
  *  \brief A class for profile storing and computation
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -293,7 +293,7 @@ class IMPSAXSEXPORT Profile : public Object {
   double average_volume_;  // average volume
 
   // mapping from q values to vector index for fast profile resampling
-  std::map<double, unsigned int> q_mapping_;
+  mutable std::map<double, unsigned int> q_mapping_;
 
   std::string name_;  // file name
   unsigned int id_;   // identifier

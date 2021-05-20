@@ -2,13 +2,13 @@
  *  \file IMP/em2d/image_processing.h
  *  \brief Image processing functions
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_IMAGE_PROCESSING_H
 #define IMPEM2D_IMAGE_PROCESSING_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/base_types.h"

@@ -11,7 +11,8 @@ parser.add_option("-f", "--file", dest="file",
 
 def main():
     (options, args) = parser.parse_args()
-    input = open(options.file, "r").read()
+    with open(options.file, "r") as fh:
+        input = fh.read()
     input = input.replace(
         "<name>index</name>",
         "<name>IMP.%s</name>" %
@@ -20,7 +21,9 @@ def main():
         "<title></title>",
         "<title>IMP.%s</title>" %
         options.module)
-    open(options.file, "w").write(input)
+    with open(options.file, "w") as fh:
+        fh.write(input)
+
 
 if __name__ == '__main__':
     main()

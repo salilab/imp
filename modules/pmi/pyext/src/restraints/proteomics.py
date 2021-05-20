@@ -13,7 +13,6 @@ import IMP.pmi.tools
 import IMP.pmi.output
 import numpy
 import math
-import math
 import sys
 import warnings
 
@@ -103,8 +102,8 @@ class CompositeRestraint(object):
             compositeparticle_list.append(tmplist)
             self.compositeparticles += tmplist
 
-        ln = IMP.pmi.CompositeRestraint(self.m, self.handleparticles, cut_off,
-            lam, True, plateau)
+        ln = IMP.pmi.CompositeRestraint(
+            self.m, self.handleparticles, cut_off, lam, True, plateau)
 
         for ps in compositeparticle_list:
             # composite particles is a list of list of particles
@@ -174,6 +173,7 @@ class AmbiguousCompositeRestraint(object):
                                      molecule=c1, residue_index=r1)
             ps1 = ps1.get_selected_particles()
             hrc1 = [p.get_name() for p in ps1]
+
             def nosym_subset(ps):
                 return [p for p in ps if not IMP.pmi.Symmetric.get_is_setup(p)
                         or IMP.pmi.Symmetric(p).get_symmetric() == 0]
@@ -276,7 +276,7 @@ class AmbiguousCompositeRestraint(object):
         return self.rs
 
     def set_output_level(self, level="low"):
-            # this might be "low" or "high"
+        # this might be "low" or "high"
         self.outputlevel = level
 
     def set_weight(self, weight):
@@ -387,8 +387,6 @@ class SimplifiedPEMAP(object):
                 upperdist, self.strength, 15, limit)
 
             # This is harmonic for the X-link
-            #hub= IMP.core.TruncatedHarmonicBound(17.0,self.strength,upperdist+15,limit)
-
             df = IMP.core.SphereDistancePairScore(hub)
             dr = IMP.core.PairRestraint(self.m, df, (p1, p2))
             self.rs.add_restraint(dr)
@@ -401,8 +399,6 @@ class SimplifiedPEMAP(object):
                 lowerdist, self.strength, 15, limit)
 
             # This is harmonic for the X-link
-            #hub2= IMP.core.TruncatedHarmonicBound(17.0,self.strength,upperdist+15,limit)
-
             df2 = IMP.core.SphereDistancePairScore(hub2)
             dr2 = IMP.core.PairRestraint(self.m, df2, (p1, p2))
             self.rs.add_restraint(dr2)
@@ -428,7 +424,7 @@ class SimplifiedPEMAP(object):
         return self.rs
 
     def set_output_level(self, level="low"):
-            # this might be "low" or "high"
+        # this might be "low" or "high"
         self.outputlevel = level
 
     def get_output(self):
@@ -467,7 +463,8 @@ class SetupConnectivityNetworkRestraint(object):
     '''
     generates and wraps a IMP.pmi.ConnectivityRestraint between domains
     example:
-    cr=restraints.ConnectivityNetworkRestraint(simo,["CCC",(1,100,"TTT"),(100,150,"AAA")])
+    cr=restraints.ConnectivityNetworkRestraint(
+        simo,["CCC",(1,100,"TTT"),(100,150,"AAA")])
     cr.add_to_model()
     cr.set_label("CR1")
 
@@ -482,17 +479,15 @@ class SetupConnectivityNetworkRestraint(object):
         self.kappa = kappa
         self.label = label
         if self.label == "None":
-            self.label = str(selection_tuples)
+            self.label = str(selection_tuples)  # noqa: F821
 
-        hiers=[]
+        hiers = []
 
         for obj in objects:
-            hiers.append(IMP.pmi.tools.input_adaptor(obj,
-                                                resolution,
-                                                flatten=True))
-            self.m=hiers[0][0].get_model()
+            hiers.append(IMP.pmi.tools.input_adaptor(
+                obj, resolution, flatten=True))
+            self.m = hiers[0][0].get_model()
 
-        #particles=[h.get_particle() for h in hiers]
         cr = ConnectivityNetworkRestraint(self.m)
         for hs in hiers:
             cr.add_particles([h.get_particle() for h in hs])
@@ -536,7 +531,8 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
     Authors: G. Bouvier, R. Pellarin. Pasteur Institute.
     '''
 
-    def __init__(self, m, slope=1.0, theta=0.0, plateau=0.0000000001, linear_slope=0.015):
+    def __init__(self, m, slope=1.0, theta=0.0, plateau=0.0000000001,
+                 linear_slope=0.015):
         '''
         input a list of particles, the slope and theta of the sigmoid potential
         theta is the cutoff distance for a protein-protein contact
@@ -569,7 +565,8 @@ class ConnectivityNetworkRestraint(IMP.Restraint):
         '''
         import scipy.spatial
         pdist_array = numpy.array(
-            IMP.pmi.get_list_of_bipartite_minimum_sphere_distance(self.particles_blocks))
+            IMP.pmi.get_list_of_bipartite_minimum_sphere_distance(
+                self.particles_blocks))
         pdist_mat = scipy.spatial.distance.squareform(pdist_array)
         pdist_mat[pdist_mat < 0] = 0
         graph = self.networkx.Graph(pdist_mat)
@@ -712,7 +709,8 @@ class FuzzyRestraint(IMP.Restraint):
         d2 = IMP.core.XYZ(self.particle_pair[1])
         d = IMP.core.get_distance(d1, d2)
         argvalue = (d-self.theta)/self.slope
-        return -math.log(1.0 -(1.0-self.plateau)/(1.0+math.exp(-argvalue)))+self.innerslope*d
+        return (-math.log(1.0 - (1.0-self.plateau) / (1.0+math.exp(-argvalue)))
+                + self.innerslope*d)
 
     def add_to_model(self):
         IMP.pmi.tools.add_restraint_to_model(self.m, self)
@@ -725,15 +723,16 @@ class FuzzyRestraint(IMP.Restraint):
             return str(self.particle_pair)
         FuzzyRestraint1, op, FuzzyRestraint2 = self.operations
         if FuzzyRestraint2 is not None:
-            return str(FuzzyRestraint1) +str(op)+str(FuzzyRestraint2)
+            return str(FuzzyRestraint1) + str(op) + str(FuzzyRestraint2)
         else:
-            return str(FuzzyRestraint1) +str(op)
+            return str(FuzzyRestraint1) + str(op)
 
     def do_get_inputs(self):
         if len(self.operations) == 0:
             return list(self.particle_pair)
         FuzzyRestraint1, op, FuzzyRestraint2 = self.operations
         if FuzzyRestraint2 is not None:
-            return list(set(FuzzyRestraint1.do_get_inputs() +FuzzyRestraint2.do_get_inputs()))
+            return list(set(FuzzyRestraint1.do_get_inputs()
+                            + FuzzyRestraint2.do_get_inputs()))
         else:
             return list(set(FuzzyRestraint1.do_get_inputs()))

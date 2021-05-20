@@ -1,13 +1,13 @@
 /**
  *  \file IMP/em2d/PolarResamplingParameters.h
  *  \brief Functions related with rotations in em2d
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_POLAR_RESAMPLING_PARAMETERS_H
 #define IMPEM2D_POLAR_RESAMPLING_PARAMETERS_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/algebra/constants.h"
 #include "IMP/exception.h"

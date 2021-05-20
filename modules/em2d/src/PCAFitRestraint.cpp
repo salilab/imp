@@ -3,7 +3,7 @@
  * \brief fast scoring of fit between Particles in 3D and 2D class averages
  *
  * \authors Dina Schneidman
- * Copyright 2007-2020 IMP Inventors. All rights reserved.
+ * Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -79,11 +79,10 @@ double PCAFitRestraint::unprotected_evaluate(
   // score each image against projections
   double total_score = 0.0;
   double area_threshold = 0.4;
-  PCAFitRestraint* non_const_this = const_cast<PCAFitRestraint *>(this);
-  non_const_this->best_projections_.clear();
-  non_const_this->best_projections_info_.clear();
-  non_const_this->best_projections_axis_.clear();
-  non_const_this->best_image_transform_.clear();
+  best_projections_.clear();
+  best_projections_info_.clear();
+  best_projections_axis_.clear();
+  best_image_transform_.clear();
   for (unsigned int i = 0; i < images_.size(); i++) {
     internal::ImageTransform best_transform;
     best_transform.set_score(0.000000001);
@@ -121,10 +120,10 @@ double PCAFitRestraint::unprotected_evaluate(
     projections[best_projection_id]
         .rotate_circular(transformed_image, best_transform.get_angle());
     transformed_image.translate(best_transform.get_x(), best_transform.get_y());
-    non_const_this->best_projections_.push_back(transformed_image);
-    non_const_this->best_projections_info_.push_back(pinfo);
-    non_const_this->best_projections_axis_.push_back(projections[best_projection_id].get_axis());
-    non_const_this->best_image_transform_.push_back(best_transform);
+    best_projections_.push_back(transformed_image);
+    best_projections_info_.push_back(pinfo);
+    best_projections_axis_.push_back(projections[best_projection_id].get_axis());
+    best_image_transform_.push_back(best_transform);
   }
   return total_score;
 }

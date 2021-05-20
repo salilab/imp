@@ -2,14 +2,14 @@
  *  \file IMP/isd/WeightMover.h
  *  \brief A mover that perturbs a Weight particle.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPISD_WEIGHT_MOVER_H
 #define IMPISD_WEIGHT_MOVER_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/core/MonteCarloMover.h>
 #include <IMP/algebra/VectorD.h>
 #include <IMP/isd/Weight.h>

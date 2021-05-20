@@ -3,14 +3,14 @@
  * \brief
  *
  * \authors Dina Schneidman, Yannick Spill
- * Copyright 2007-2020 IMP Inventors. All rights reserved.
+ * Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPKINEMATICS_CCD_LOOP_CLOSURE_H
 #define IMPKINEMATICS_CCD_LOOP_CLOSURE_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/kinematics/revolute_joints.h>
 #include <IMP/algebra/Vector3D.h>
 

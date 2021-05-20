@@ -2,13 +2,13 @@
  *  \file IMP/em2d/ProjectionFinder.h
  *  \brief Coarse registration of 2D projections from a 3D volume
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PROJECTION_FINDER_H
 #define IMPEM2D_PROJECTION_FINDER_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/align2D.h"
 #include "IMP/em2d/project.h"

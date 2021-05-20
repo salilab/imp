@@ -2,14 +2,14 @@
  *  \file IMP/isd/LogWrapper.h
  *  \brief Calculate the -Log of a list of restraints.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPISD_LOG_WRAPPER_H
 #define IMPISD_LOG_WRAPPER_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/container_macros.h>
 #include <IMP/RestraintSet.h>
 

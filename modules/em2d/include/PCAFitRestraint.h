@@ -3,7 +3,7 @@
  * \brief fast scoring of fit between Particles in 3D and 2D class averages
  *
  * \authors Dina Schneidman
- * Copyright 2007-2020 IMP Inventors. All rights reserved.
+ * Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -108,12 +108,12 @@ public:
   unsigned int projection_number_;
 
   // from last score calculation
-  std::vector<internal::Image2D<> > best_projections_;
+  mutable std::vector<internal::Image2D<> > best_projections_;
 
   // from last calculation
-  std::vector<internal::ProjectionInfo> best_projections_info_;
-  IMP::algebra::Vector3Ds best_projections_axis_;
-  std::vector<internal::ImageTransform> best_image_transform_;
+  mutable std::vector<internal::ProjectionInfo> best_projections_info_;
+  mutable IMP::algebra::Vector3Ds best_projections_axis_;
+  mutable std::vector<internal::ImageTransform> best_image_transform_;
 
   // Projector class instance
   internal::Projector projector_;

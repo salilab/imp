@@ -1,7 +1,7 @@
 try:
-    from queue import Queue # Python3
+    from queue import Queue  # Python3
 except ImportError:
-    from Queue import Queue # Python2
+    from Queue import Queue  # Python2
 from threading import Thread
 
 if hasattr(Queue, 'task_done'):
@@ -32,7 +32,6 @@ if hasattr(Queue, 'task_done'):
                     func(*args, **kargs)
                 except Exception as e:
                     print(e)
-                    error = str(e)
                 self.tasks.task_done()
 
     class ThreadPool:

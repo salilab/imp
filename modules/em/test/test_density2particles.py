@@ -50,10 +50,6 @@ class Tests(IMP.test.TestCase):
         dmap = IMP.em.particles2density(ps, res, apix)
         r = IMP.em.FitRestraint(ps, dmap)
         self.check_standard_object_methods(r)
-        # Test deprecated cast() static method
-        with IMP.allow_deprecated():
-            self.assertTrue(IMP.em.FitRestraint.cast(r))
-            self.assertFalse(IMP.em.FitRestraint.cast(None))
 
     def test_particles2density(self):
         """Test conversion of particles to a density map"""

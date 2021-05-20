@@ -2,7 +2,7 @@
  *  \file tunneler_helpers.h
  *  \brief Helper functions for rigid body tunneler
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_TUNNELER_HELPERS_H

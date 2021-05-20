@@ -1,13 +1,13 @@
 /**
  *  \file IMP/isd/CysteineCrossLinkData.h \brief Normal distribution of Function
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_CYSTEINE_CROSS_LINK_DATA_H
 #define IMPISD_CYSTEINE_CROSS_LINK_DATA_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/macros.h>
 #include <IMP/Model.h>
 #include <IMP/constants.h>

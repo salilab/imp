@@ -1,7 +1,6 @@
 from __future__ import print_function
 import IMP
 import IMP.test
-import sys
 import IMP.em
 import os
 
@@ -96,17 +95,19 @@ class Tests(IMP.test.TestCase):
         model_map2.resample()
         model_map2.calcRMS()
 
-        #IMP.em.write_map(model_map2, "yyy.mrc",mrw)
+        IMP.em.write_map(model_map2, "yyy.mrc", mrw)
         reloaded_model_map.calcRMS()
-        print(model_map.get_header().rms, ": ", \
-            reloaded_model_map.get_header().rms, " : ",\
+        print(
+            model_map.get_header().rms, ": ",
+            reloaded_model_map.get_header().rms, " : ",
             model_map2.get_header().rms)
 
         self.assertAlmostEqual(reloaded_model_map.get_header().rms,
                                model_map2.get_header().rms, delta=.001,
                                msg="standard deviations of maps differ")
+
         os.unlink("xxx.mrc")
-        # os.unlink("yyy.mrc")
+        os.unlink("yyy.mrc")
 
 
 if __name__ == '__main__':

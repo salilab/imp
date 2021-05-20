@@ -2,14 +2,13 @@
  *  \file anchors_reader.cpp
  *  \brief handles reading of anchors data
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/multifit/anchors_reader.h>
 #include <IMP/multifit/internal/reader_writer_utility.h>
 #include <IMP/atom/SecondaryStructureResidue.h>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>

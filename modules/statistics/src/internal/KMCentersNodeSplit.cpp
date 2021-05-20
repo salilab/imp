@@ -2,7 +2,7 @@
  * \file KMCenetersNodeSplit.cpp
  * \brief a split node in the kc-tree with two children
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

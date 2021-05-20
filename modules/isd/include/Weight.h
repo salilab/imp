@@ -2,14 +2,14 @@
  *  \file IMP/isd/Weight.h
  *  \brief Add weights constrained to the unit simplex to a particle.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPISD_WEIGHT_H
 #define IMPISD_WEIGHT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/algebra/UnitSimplexD.h>
 #include <IMP/Particle.h>
 #include <IMP/decorator_macros.h>

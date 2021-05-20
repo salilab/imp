@@ -8,6 +8,7 @@ import os
 import stat
 import sys
 
+
 def check_dir(dir, group, world, dangle):
     """Check a single directory for file permissions problems"""
     for dirpath, dirnames, filenames in os.walk(dir):
@@ -23,6 +24,7 @@ def check_dir(dir, group, world, dangle):
                 if mode & stat.S_IWGRP:
                     group.append(path)
 
+
 def add_errors(errs, files, desc):
     num = len(files)
     if num > 0:
@@ -30,6 +32,7 @@ def add_errors(errs, files, desc):
         if num > 1:
             msg += "s"
         errs.append(msg + ": " + ", ".join([repr(x) for x in files]))
+
 
 def main():
     group = []
@@ -43,6 +46,7 @@ def main():
     add_errors(errs, dangle, "dangling symlink")
     if len(errs) > 0:
         raise ValueError("; ".join(errs))
+
 
 if __name__ == '__main__':
     main()

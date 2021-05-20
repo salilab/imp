@@ -53,9 +53,9 @@ class Tests(IMP.test.TestCase):
         """Check get_principal_components()"""
         pca = IMP.algebra.get_principal_components(
             [IMP.algebra.Vector3D(0, 0, 1), IMP.algebra.Vector3D(1, 0, 0)])
-        exp_vecs = [IMP.algebra.Vector3D(-0.707107, 0, 0.707107),
-                    IMP.algebra.Vector3D(-0.707107, 0, -0.707107),
-                    IMP.algebra.Vector3D(0, 1, 0)]
+        exp_vecs = [IMP.algebra.Vector3D(0.707107, 0, -0.707107),
+                    IMP.algebra.Vector3D(0, 1, 0),
+                    IMP.algebra.Vector3D(0.707107, 0, 0.707107)]
         vecs = pca.get_principal_components()
         for i, ev in enumerate(exp_vecs):
             self.assertAlmostEqual(IMP.algebra.get_squared_distance(ev,

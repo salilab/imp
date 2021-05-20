@@ -89,6 +89,14 @@ class Tests(IMP.test.TestCase):
         IMP.em.write_map(scene, out_filename, mrc_rw)
         os.unlink(out_filename)
 
+    def test_read_from_name(self):
+        """Test create_reader_writer_from_name"""
+        d1 = IMP.em.read_map(self.get_input_file_name('mini.mrc'))
+        d2 = IMP.em.read_map(self.get_input_file_name('mini.map'))
+        d3 = IMP.em.read_map(self.get_input_file_name('cube.em'))
+        self.assertRaises(IOError,  IMP.em.read_map,
+                          self.get_input_file_name('mini.pdb'))
+
     def test_emheader(self):
         """test correct I/O of EM header"""
         in_filename = self.get_input_file_name("cube.em")

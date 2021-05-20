@@ -5,12 +5,10 @@ import IMP.rmf
 import IMP.pmi
 import IMP.pmi.tools
 import IMP.pmi.analysis
-try:
-    import argparse
-except ImportError:
-    from IMP._compat_argparse import argparse
+import argparse
 import os
 from collections import defaultdict
+
 
 def parse_args():
     parser = argparse.ArgumentParser(

@@ -3,7 +3,7 @@
  *  \brief a prismatic joint between rigid bodies
  *  \authors Dina Schneidman, Barak Raveh
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/core/rigid_bodies.h>

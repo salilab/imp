@@ -1,8 +1,8 @@
 /**
- *  \file Model.cpp \brief Storage of a model, its restraints,
- *                         constraints and particles.
+ *  \file Model_dependencies.cpp
+ *  \brief Logic to track dependencies between ModelObjects
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

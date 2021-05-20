@@ -2,7 +2,7 @@
  *  \file IMP/spb/RigidBodyNewMover.h
  *  \brief A mover that transform a rigid body
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,7 +15,7 @@
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/MonteCarloMover.h>
 #include <IMP/core/rigid_bodies.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

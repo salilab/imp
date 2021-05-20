@@ -6,14 +6,10 @@ Check for left over files that might break build:
 """
 
 import os
-import sys
 import os.path
 import shutil
-import platform
 import tools
 import glob
-import itertools
-import shutil
 
 
 def check_config():
@@ -22,7 +18,8 @@ def check_config():
 
 
 def declare_container():
-    for f in glob.glob(os.path.join("include", "IMP", "kernel", "declare_*Container.h")):
+    for f in glob.glob(os.path.join("include", "IMP", "kernel",
+                                    "declare_*Container.h")):
         os.unlink(f)
 
 
@@ -32,7 +29,7 @@ def build_info():
 
 
 def clean_headers():
-    for f in [x for l in ["refiner_macros.h",
+    for f in [x for h in ["refiner_macros.h",
                           "log.h",
                           "exception.h",
                           "Object.h",
@@ -44,7 +41,7 @@ def clean_headers():
                           "scoring_function_macros.h",
                           "VersionInfo.h",
                           "key_macros.h"] for x in glob.glob(
-            os.path.join("include", "IMP", l))]:
+            os.path.join("include", "IMP", h))]:
         os.unlink(f)
 
 
@@ -93,6 +90,7 @@ def main():
     clean_pyc("lib")
     clean_restrainer()
     clean_standards()
+
 
 if __name__ == '__main__':
     main()

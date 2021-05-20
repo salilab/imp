@@ -2,7 +2,7 @@
  *  \file proteomics_reader.cpp
  *  \brief handles reading proteomics data
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,7 +11,7 @@
 #include <boost/lexical_cast.hpp>
 #include <IMP/multifit/internal/reader_writer_utility.h>
 #include <boost/format.hpp>
-#include <boost/bind.hpp>
+
 IMPMULTIFIT_BEGIN_NAMESPACE
 namespace {
 

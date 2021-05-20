@@ -2,7 +2,7 @@
  *  \file IMP/spb/PbcBoxedMover.h
  *  \brief A mover that keeps a particle in a box
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,7 +12,7 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core.h>
 #include <IMP/core/MonteCarlo.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

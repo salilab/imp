@@ -2,7 +2,7 @@
  *  \file cross_link_score.cpp \brief A program for scoring of docking models
  *  with cross linking data
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/Model.h>

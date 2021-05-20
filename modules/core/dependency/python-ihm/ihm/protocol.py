@@ -1,6 +1,7 @@
 """Classes for handling modeling protocols.
 """
 
+
 class Step(object):
     """A single step in a :class:`Protocol`.
 

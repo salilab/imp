@@ -2,7 +2,7 @@
  *  \file IMP/compiler_macros.h
  *  \brief Various compiler workarounds
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_COMPILER_MACROS_H
@@ -10,7 +10,7 @@
 
 #include <boost/config.hpp>
 #include <boost/version.hpp>
-#if defined(BOOST_NO_CXX11_RANGE_BASED_FOR) || BOOST_VERSION < 105300
+#if defined(BOOST_NO_CXX11_RANGE_BASED_FOR)
 #include <boost/foreach.hpp>
 #define IMP_FOREACH(v, r) BOOST_FOREACH(v, r)
 #else

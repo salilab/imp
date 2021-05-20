@@ -2,7 +2,7 @@
  *  \file IMP/rmf/HierarchyLoadLink.h
  *  \brief Manages loading links from an RMF file to an atom::Hierarchy.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

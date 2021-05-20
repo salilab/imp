@@ -2,14 +2,14 @@
  *  \file IMP/isd/GaussianEMRestraint.h
  *  \brief Restrain two sets of Gaussians (model and GMM derived from EM map)
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPISD_GAUSSIAN_EM_RESTRAINT_H
 #define IMPISD_GAUSSIAN_EM_RESTRAINT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/file.h>
 #include <IMP/PairContainer.h>
 #include <IMP/container/ListSingletonContainer.h>

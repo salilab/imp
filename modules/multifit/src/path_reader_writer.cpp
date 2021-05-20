@@ -2,13 +2,12 @@
  *  \file path_reader_writer.cpp
  *  \brief Read and write paths.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/multifit/path_reader_writer.h>
 #include <IMP/multifit/internal/reader_writer_utility.h>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 #include <IMP/log.h>

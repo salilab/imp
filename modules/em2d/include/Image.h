@@ -1,13 +1,13 @@
 /**
  *  \file IMP/em2d/Image.h
  *  \brief IMP images for Electron Microscopy using openCV matrices
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_IMAGE_H
 #define IMPEM2D_IMAGE_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em2d/ImageReaderWriter.h"
 #include "IMP/em2d/opencv_interface.h"

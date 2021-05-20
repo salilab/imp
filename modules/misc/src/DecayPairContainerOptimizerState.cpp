@@ -2,7 +2,7 @@
  *  \file DecayPairContainerOptimizerState.cpp
  *  \brief A pair container with a decaying list of pairs.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/misc/DecayPairContainerOptimizerState.h>
@@ -37,7 +37,7 @@ void DecayPairContainerOptimizerState::do_update(unsigned int) {
     std::set_difference(old.begin(), old.end(), to_remove.begin(),
                         to_remove.end(), std::back_inserter(out));
     output_->set(out);
-    IMP_LOG_VERBOSE("Remaining " << output_->get_particle_pairs() << " ");
+    IMP_LOG_VERBOSE("Remaining " << output_->get_contents() << " ");
   }
 }
 

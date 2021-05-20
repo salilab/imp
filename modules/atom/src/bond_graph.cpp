@@ -1,7 +1,7 @@
 /**
  *  \file bond_graph.cpp     \brief Decorators for a bond
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,11 +16,7 @@
 #include <boost/graph/isomorphism.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/graph_utility.hpp>
-#if BOOST_VERSION >= 104000
 #include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#endif
 
 IMPATOM_BEGIN_NAMESPACE
 BondGraph::BondGraph(Hierarchy bd)

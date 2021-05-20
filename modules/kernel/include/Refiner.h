@@ -2,7 +2,7 @@
  *  \file IMP/Refiner.h
  *  \brief Refine a particle into a list of particles.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_REFINER_H
@@ -36,8 +36,8 @@ class IMPKERNELEXPORT Refiner : public ParticleInputs, public Object {
   bool is_by_ref_;
 
  public:
-  /** Constructs the refiner
-
+  //! Constructs the refiner
+  /**
       @param name object name for refiner
       @param is_by_ref if true, this refiner is expected to support
                        the get_refined_indexes_by_ref method,
@@ -45,6 +45,7 @@ class IMPKERNELEXPORT Refiner : public ParticleInputs, public Object {
                        list of particles, etc.
   */
   Refiner(std::string name = "Refiner %1%", bool is_by_ref = false);
+
   //! Return true if this refiner can refine that particle
   /** This should not throw, so be careful what fields are touched.
    */

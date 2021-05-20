@@ -1,7 +1,7 @@
 /**
- *  \file IMP/enums.h    \brief Basic types used by IMP.
+ *  \file IMP/enums.h    \brief Basic enumeration types used by IMP.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -20,20 +20,18 @@ enum LogLevel {
   /** Use to specify that the global log level should be used
       (eg  in IMP::Object::set_log_level())*/
   DEFAULT = -1,
-  /** Do not output any text.*/
+  //! Do not output any text.
   SILENT = IMP_SILENT,
-  /** Output only warnings.*/
+  //! Output only warnings.
   WARNING = IMP_SILENT + 1,
   /** Output only progress meter style displays and occasional printouts
       when switching phases of work.*/
   PROGRESS = IMP_PROGRESS,
-  /** Output a line or two per evaluation call.*/
+  //! Output a line or two per evaluation call.
   TERSE = IMP_TERSE,
-  /** Produce copious output to allow someone to trace through
-      the computation.
-  */
+  //! Produce copious output to allow someone to trace through the computation.
   VERBOSE = IMP_VERBOSE,
-  /** Log memory allocations and frees.*/
+  //! Log memory allocations and frees.
   MEMORY = IMP_MEMORY
 #ifndef IMP_DOXYGEN
   ,

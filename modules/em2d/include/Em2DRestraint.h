@@ -2,14 +2,14 @@
  *  \file IMP/em2d/Em2DRestraint.h
   *  \brief A restraint to score the fitness of a model to a set of EM images
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPEM2D_EM_2DRESTRAINT_H
 #define IMPEM2D_EM_2DRESTRAINT_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/ProjectionFinder.h"
 #include "IMP/em2d/ProjectionMask.h"

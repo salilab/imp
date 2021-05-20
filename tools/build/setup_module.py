@@ -49,11 +49,11 @@ def make_header(options, module):
     else:
         dir = os.path.join("include", "IMP", module.name)
     file = os.path.join(dir, "%s_config.h" % module.name)
-    header_template = tools.CPPFileGenerator(os.path.join(TOPDIR,
-                                         "config_templates", "header.h"))
+    header_template = tools.CPPFileGenerator(
+        os.path.join(TOPDIR, "config_templates", "header.h"))
     try:
         os.makedirs(dir)
-    except:
+    except OSError:
         # exists
         pass
 
@@ -115,6 +115,7 @@ using ::IMP::hash_value;
     data["cppdefines"] = "\n".join(cppdefines)
     header_template.write(file, data)
 
+
 class ModuleDoxFileGenerator(tools.FileGenerator):
     def __init__(self, template_file, module, modules, finder):
         self.module = module
@@ -141,8 +142,9 @@ class ModuleDoxFileGenerator(tools.FileGenerator):
         template = template.replace("@XML_OUTPUT@", "xml")
         template = template.replace("@TREEVIEW@", "NO")
         template = template.replace("@GENERATE_TAGFILE@", "tags")
-        template = template.replace("@LAYOUT_FILE@",
-                          "%s/doc/doxygen/module_layout.xml" % options.source)
+        template = template.replace(
+            "@LAYOUT_FILE@",
+            "%s/doc/doxygen/module_layout.xml" % options.source)
         template = template.replace("@MAINPAGE@", "README.md")
         template = template.replace("@INCLUDE_PATH@", "include")
         template = template.replace("@FILE_PATTERNS@",
@@ -156,8 +158,8 @@ class ModuleDoxFileGenerator(tools.FileGenerator):
             exclude = ["include/IMP/%s include/IMP/%s.h lib/IMP/%s"
                        % (m, m, m) for m in sorted(self.finder.keys())]
             exclude.append("include/IMP/base include/IMP/base.h lib/IMP/base")
-            template = template.replace("@EXCLUDE@",
-                               " \\\n                         ".join(exclude))
+            template = template.replace(
+                "@EXCLUDE@", " \\\n                         ".join(exclude))
         else:
             template = template.replace("@EXCLUDE@", "")
             inputs.append("include/IMP/" + module.name)
@@ -170,35 +172,39 @@ class ModuleDoxFileGenerator(tools.FileGenerator):
             inputs.append(docpath)
         # overview for module
         inputs.append("../generated/IMP_%s.dox" % module.name)
-        template = template.replace("@INPUT_PATH@",
-                                " \\\n                         ".join(inputs))
+        template = template.replace(
+            "@INPUT_PATH@", " \\\n                         ".join(inputs))
         tags = [os.path.join(options.source, 'doc', 'doxygen',
                              'dummy_module_tags.xml')]
         for m in modules:
             tags.append(os.path.join("../", m.name, "tags")
                         + "=" + "../" + m.name)
-        template = template.replace("@TAGS@",
-                                 " \\\n                         ".join(tags))
+        template = template.replace(
+            "@TAGS@", " \\\n                         ".join(tags))
         if module.name == "example":
-            template = template.replace("@EXAMPLE_PATH@",
-                         "examples/example %s/modules/example" % options.source)
+            template = template.replace(
+                "@EXAMPLE_PATH@",
+                "examples/example %s/modules/example" % options.source)
         else:
             template = template.replace("@EXAMPLE_PATH@",
-                                       "examples/" + module.name)
+                                        "examples/" + module.name)
         return template
+
 
 def make_doxygen(options, module, modules, finder):
     file = os.path.join("doxygen", module.name, "Doxyfile")
-    g = ModuleDoxFileGenerator(os.path.join(TOPDIR,
-                                            "doxygen_templates", "Doxyfile.in"),
-                               module, modules, finder)
+    g = ModuleDoxFileGenerator(
+        os.path.join(TOPDIR, "doxygen_templates", "Doxyfile.in"),
+        module, modules, finder)
     g.write(file, options)
+
 
 def write_no_ok(module):
     new_order = [x for x in tools.get_sorted_order() if x != module]
     tools.set_sorted_order(new_order)
     tools.rewrite(os.path.join("build_info", "IMP." + module),
                   "ok=False\n", verbose=False)
+
 
 def write_ok(module, modules, unfound_modules, dependencies,
              unfound_dependencies, swig_includes, swig_wrapper_includes,
@@ -218,6 +224,7 @@ def write_ok(module, modules, unfound_modules, dependencies,
         config.append("python_only = True")
     tools.rewrite(os.path.join("build_info", "IMP." + module.name),
                   "\n".join(config))
+
 
 def setup_module(module, finder):
     sys.stdout.write("Configuring module %s ..." % module.name)
@@ -246,14 +253,15 @@ def setup_module(module, finder):
         else:
             unfound_modules.append(d)
     all_modules = finder.get_dependent_modules(modules)
-    moddir = os.path.join('IMP', '' if module.name == 'kernel' else module.name)
-    swig_includes = [os.path.split(x)[1]
-                     for x in tools.get_glob(
-                         [os.path.join(module.path, "pyext",
-                                       "include", "*.i")])] \
-                    + [os.path.join(moddir, os.path.split(x)[1])
-                       for x in tools.get_glob(
-                           [os.path.join("include", moddir, "*_macros.h")])]
+    moddir = os.path.join('IMP',
+                          '' if module.name == 'kernel' else module.name)
+    swig_includes = \
+        [os.path.split(x)[1]
+         for x in tools.get_glob([os.path.join(module.path, "pyext",
+                                               "include", "*.i")])] \
+        + [os.path.join(moddir, os.path.split(x)[1])
+           for x in tools.get_glob([os.path.join("include", moddir,
+                                                 "*_macros.h")])]
     swig_wrapper_includes = [os.path.join(moddir, "internal",
                                           os.path.split(x)[1])
                              for x in tools.get_glob(
@@ -283,7 +291,8 @@ with open(fname) as fh:
 """ % (sys.executable, source_bin)
         dest_bin = os.path.join("bin", os.path.basename(source_bin))
         tools.rewrite(dest_bin, contents, verbose=False)
-        os.chmod(dest_bin, 493) # 493 = 0755, i.e. executable
+        os.chmod(dest_bin, 493)  # 493 = 0755, i.e. executable
+
 
 def link_bin(options, module):
     path = os.path.join("module_bin", options.name)
@@ -293,6 +302,7 @@ def link_bin(options, module):
     tools.link_dir(os.path.join(module.path, "bin"),
                    path, clean=False, match=["*.py"])
 
+
 def link_benchmark(options, module):
     path = os.path.join("benchmark", options.name)
     tools.mkdir(path, clean=False)
@@ -301,19 +311,21 @@ def link_benchmark(options, module):
     tools.link_dir(os.path.join(module.path, "benchmark"),
                    path, clean=False, match=["*.py"])
 
+
 def find_cmdline_links(mod, docdir, cmdline_tools):
     """Look for (sub)sections in the .dox or .md docs for each cmdline tool,
-       and return a mapping from tool name to (doxygen link, brief desc, num)"""
+       and return a mapping from tool name to
+       (doxygen link, brief desc, num)"""
     links = dict.fromkeys(cmdline_tools)
     num = 0
     todo = {}
     docre = re.compile(r'\\(subsection|section|page)\s+(\S+)\s+(\S+):\s*(.*)$')
     docre_sep = re.compile(r'\\(subsection|section|page)\s+(\S+)\s+(\S+)\s*$')
-    mdre = re.compile('#*\s*(\S+):\s*([^#]+)#*\s*{#(\S+)}')
-    mdre_sep = re.compile('#*\s*(\S+)\s*#*\s*{#(\S+)}')
+    mdre = re.compile(r'#*\s*(\S+):\s*([^#]+)#*\s*{#(\S+)}')
+    mdre_sep = re.compile(r'#*\s*(\S+)\s*#*\s*{#(\S+)}')
     for g in [os.path.join(docdir, "README.md")] \
-             + glob.glob(os.path.join(docdir, "doc", "*.dox")) \
-             + glob.glob(os.path.join(docdir, "doc", "*.md")):
+            + glob.glob(os.path.join(docdir, "doc", "*.dox")) \
+            + glob.glob(os.path.join(docdir, "doc", "*.md")):
         for line in tools.open_utf8(g):
             if todo and len(line.rstrip('\r\n ')) > 0 \
                and line[0] not in " =-\\":
@@ -349,14 +361,14 @@ brief description (separated by a colon), followed by a unique doxygen ID.
 Alternatively, the brief description can be given in the body immediately
 following the title. For example, the tool do_foo.py could be documented with
 
-\section do_foo_bin do_foo.py: Do something with foo
+\\section do_foo_bin do_foo.py: Do something with foo
 
 or
 
-\section do_foo_bin do_foo.py
+\\section do_foo_bin do_foo.py
 Do something with foo
 
-in doxygen (\subsection or \page can also be used) or
+in doxygen (\\subsection or \\page can also be used) or
 
 doo_foo.py: Do something with foo {#do_foo_bin}
 =================================
@@ -375,6 +387,7 @@ in Markdown.
         sys.exit(1)
     return links
 
+
 def make_overview(module, cmdline_tools):
     cmdline_links = find_cmdline_links(module.name, module.path, cmdline_tools)
     pickle.dump(cmdline_links,
@@ -383,7 +396,7 @@ def make_overview(module, cmdline_tools):
     rmd = tools.open_utf8(os.path.join(module.path, "README.md"), "r").read()
     tools.rewrite(
         os.path.join("doxygen", "generated", "IMP_%s.dox" % module.name),
-                  """/** \\namespace %s
+        """/** \\namespace %s
 \\tableofcontents
 
 %s
@@ -393,7 +406,8 @@ def make_overview(module, cmdline_tools):
 
 def main():
     options, apps = parser.parse_args()
-    disabled = tools.split(open("build_info/disabled", "r").read(), "\n")
+    with open("build_info/disabled", "r") as fh:
+        disabled = tools.split(fh.read(), "\n")
     if options.name in disabled:
         print("%s is disabled" % options.name)
         write_no_ok(options.name)
@@ -419,6 +433,7 @@ def main():
         tools.rmdir(os.path.join("benchmark", options.name))
         tools.rmdir(os.path.join("lib", "IMP", options.name))
         sys.exit(1)
+
 
 if __name__ == '__main__':
     main()

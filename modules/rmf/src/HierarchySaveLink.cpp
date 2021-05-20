@@ -2,7 +2,7 @@
  *  \file IMP/rmf/HierarchySaveLink.cpp
  *  \brief Handle writing of atom hierarchy to rmf files.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

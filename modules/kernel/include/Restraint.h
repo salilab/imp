@@ -2,7 +2,7 @@
  *  \file IMP/Restraint.h
  *  \brief Abstract base class for all restraints.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -23,7 +23,7 @@
 IMPKERNEL_BEGIN_NAMESPACE
 class DerivativeAccumulator;
 
-//!  A restraint is a term in an \imp ScoringFunction.
+//! A restraint is a term in an \imp ScoringFunction.
 /**
     To implement a new restraint, just implement the two methods:
     - IMP::Restraint::do_add_score_and_derivatives()

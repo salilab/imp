@@ -2,14 +2,14 @@
  *  \file IMP/symmetry/BallMover.h
  *  \brief A mover that keeps a particle in a box
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPSYMMETRY_BALL_MOVER_H
 #define IMPSYMMETRY_BALL_MOVER_H
 
-#include "symmetry_config.h"
+#include <IMP/symmetry/symmetry_config.h>
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/MonteCarloMover.h>
 #include <IMP/algebra.h>

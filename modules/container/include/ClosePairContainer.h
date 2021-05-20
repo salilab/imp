@@ -2,7 +2,7 @@
  *  \file IMP/container/ClosePairContainer.h
  *  \brief Return all pairs from a SingletonContainer
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CLOSE_PAIR_CONTAINER_H
@@ -30,7 +30,7 @@ are closer than `distance_cutoff + 2 * slack`. This allows us to reuse the list
 and only recompute it when a particle moves more than `slack`.
 The class keeps track
 internally of how far the particles have moved using a score state,
-and is also updated via a score state. A too small a `slack`
+and is also updated via a score state. Too small a `slack`
 value can slow things down because the non-bonded list will be updated
 frequently. Also, too large a slack value generates many particle pairs
 whose score is zero, thereby unnecessarily slowing down the score
@@ -41,7 +41,8 @@ the get_slack_estimate() function to help with this experimentation.
 \note The non-bonded list will contain pairs that are further than
 `distance_cutoff` apart. If you use an IMP::PairScore with the generated
 list of pairs, make sure the IMP::PairScore is 0 for distances beyond
-the `distance_cutoff`.
+the `distance_cutoff`. One way to accomplish this is to use a smoothing
+function (see IMP::atom::SmoothingFunction).
 
 \note As with any invariant in \imp, the contents of the container will
 only be valid during restraint evaluation, or immediately following
@@ -111,7 +112,7 @@ class IMPCONTAINEREXPORT ClosePairContainer :
   /** Get the number of times this container has been asked to update its
       contents. */
   unsigned int get_number_of_update_calls() const;
-  /** Get the number of times this container has computed it contents from
+  /** Get the number of times this container has computed its contents from
       scratch. */
   unsigned int get_number_of_full_rebuilds() const;
   /** Get the number of times this container has performed a partial

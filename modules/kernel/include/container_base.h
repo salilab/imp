@@ -2,7 +2,7 @@
  *  \file IMP/container_base.h
  *  \brief Abstract base class for containers of particles.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

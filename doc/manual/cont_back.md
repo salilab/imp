@@ -17,7 +17,7 @@ Once your code is ready to go, [open a pull request](@ref devsetup) to get
 the changes from [your fork](@ref devsetup) back into the main repository.
 
 \note that all development occurs in the `develop` branch. No development
-is done directly in the `master` branch - it is updated for each release by
+is done directly in the `main` branch - it is updated for each release by
 merging from the `develop` branch, as per the
 [gitflow branching model](http://nvie.com/posts/a-successful-git-branching-model/).
 If your change is a bug fix that should also patch the last release, once your

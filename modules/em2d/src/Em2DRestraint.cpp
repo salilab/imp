@@ -2,7 +2,7 @@
  *  \file Em2DRestraint.cpp
  *  \brief A restraint to score the fitness of a model to a set of EM images
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -32,7 +32,9 @@ void Em2DRestraint::set_variance_images(const em2d::Images var_images) {
 void Em2DRestraint::set_particles(SingletonContainer *particles_container) {
   particles_container_ = particles_container;
   particles_container_->set_was_used(true);
-  finder_->set_model_particles(particles_container_->get_particles());
+  finder_->set_model_particles(
+    IMP::get_particles(particles_container_->get_model(),
+                       particles_container_->get_contents()));
 }
 
 void Em2DRestraint::set_fast_mode(unsigned int n) {
@@ -52,8 +54,10 @@ double Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
   unsigned int cols = em_images_[0]->get_header().get_number_of_columns();
 
   ProjectingOptions options(params_.pixel_size, params_.resolution);
-  Images projections = get_projections(particles_container_->get_particles(),
-                                       regs, rows, cols, options);
+  Images projections = get_projections(
+        IMP::get_particles(particles_container_->get_model(),
+                           particles_container_->get_contents()),
+        regs, rows, cols, options);
   finder_->set_projections(projections);
 
   if (only_coarse_registration_) {
@@ -78,7 +82,9 @@ double Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
 // We also need to know which particles are used (as some are
 //   used, but don't create interactions).
 ModelObjectsTemp Em2DRestraint::do_get_inputs() const {
-  ModelObjectsTemp ret = particles_container_->get_particles();
+  ModelObjectsTemp ret =
+    IMP::get_particles(particles_container_->get_model(),
+                       particles_container_->get_contents());
   ret.push_back(particles_container_);
   return ret;
 }

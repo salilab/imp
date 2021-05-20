@@ -1,7 +1,7 @@
 /**
  * \file IMP/integrative_docking/EMFit.cpp \brief
  *
- * Copyright 2007-2020 IMP Inventors. All rights reserved.
+ * Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/integrative_docking/internal/EMFit.h>

@@ -2,7 +2,7 @@
  *  \file CoarseCCatIntervals.cpp
  *  \brief Cross correlation coefficient calculator.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -12,12 +12,14 @@
 IMPEM_BEGIN_NAMESPACE
 
 CoarseCCatIntervals::CoarseCCatIntervals(const int &ncd)
-     : calls_counter_(0), stored_cc_(0.0), dv_memory_allocated_(false) {
+     : Object("CoarseCCatIntervals%1%"), calls_counter_(0), stored_cc_(0.0),
+       dv_memory_allocated_(false) {
   allocate_derivatives_array(ncd);
 }
 
 CoarseCCatIntervals::CoarseCCatIntervals()
-     : calls_counter_(0), stored_cc_(0.0), dv_memory_allocated_(false) {
+     : Object("CoarseCCatIntervals%1%"), calls_counter_(0), stored_cc_(0.0),
+       dv_memory_allocated_(false) {
 }
 
 void CoarseCCatIntervals::allocate_derivatives_array(int ncd) {
@@ -45,9 +47,9 @@ std::pair<double, algebra::Vector3Ds> CoarseCCatIntervals::evaluate(
   // If the function requires to be evaluated
   if (calls_counter_ % eval_interval == 0) {
     // The base evaluate function calculates the derivatives of the EM term.
-    stored_cc_ = CoarseCC::calc_score(em_map, model_map, scalefac);
+    stored_cc_ = get_coarse_cc_score(em_map, model_map, scalefac);
     if (lderiv) {
-      out_dv = CoarseCC::calc_derivatives(
+      out_dv = get_coarse_cc_derivatives(
           em_map, model_map, model_map->get_sampled_particles(),
           model_map->get_weight_key(), model_map->get_kernel_params(), scalefac,
           deriv);

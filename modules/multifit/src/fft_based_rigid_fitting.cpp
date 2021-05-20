@@ -2,7 +2,7 @@
  *  \file FFTFitting.cpp
  *  \brief FFT based fitting
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/multifit/fft_based_rigid_fitting.h>
@@ -12,7 +12,6 @@
 #include <IMP/log.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>

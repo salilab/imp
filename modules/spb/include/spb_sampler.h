@@ -2,7 +2,7 @@
  *  \file IMP/spb/spb_sampler.h
  *  \brief SPB Sampler
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,7 +11,7 @@
 #include <IMP.h>
 #include <IMP/atom.h>
 #include <IMP/core.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

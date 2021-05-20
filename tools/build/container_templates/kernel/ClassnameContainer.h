@@ -2,7 +2,7 @@
  *  \file IMP/ClassnameContainer.h
  *  \brief A container for Classnames.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_CLASSNAME_CONTAINER_H
@@ -48,7 +48,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   /** Get all the indexes that might possibly be contained in the
       container, useful with dynamic containers. For example,
       with a container::ClosePairContainer, this is the list
-      of all pairs taken from input list (those that are far apart
+      of all pairs taken from the input list (those that are far apart
       in addition to those that are close).
   */
   virtual PLURALINDEXTYPE get_range_indexes() const = 0;
@@ -109,13 +109,8 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   /** \deprecated_at{2.1}
       Use get_contents() instead.
    */
-  PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
-
-  /** \deprecated_at{2.1}
-      Use get_contents() instead and consider using the
-      IMP_CONTAINER_FOREACH() macro.*/
   IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
+  PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
 
  protected:
   ClassnameContainer(Model *m,

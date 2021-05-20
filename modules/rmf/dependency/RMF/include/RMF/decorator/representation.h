@@ -2,7 +2,7 @@
  *  \file RMF/decorator/representation.h
  *  \brief Helper functions for manipulating RMF files.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

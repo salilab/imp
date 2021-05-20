@@ -15,7 +15,8 @@ parser.add_option("--build_dir", help="IMP build directory", default=None)
 parser.add_option("--module_name", help="Module name", default=None)
 parser.add_option("--include", help="Extra header include path", default=None)
 parser.add_option("-s", "--swig",
-                  dest="swig", default="swig", help="The name of the swig command.")
+                  dest="swig", default="swig",
+                  help="The name of the swig command.")
 parser.add_option("-b", "--build_system",
                   dest="build_system", help="The build system being used.")
 
@@ -46,7 +47,8 @@ def setup_one(finder, module, build_system, swig, extra_data_path, include):
                                  extra_data_path)
     swigpath = get_dep_merged(finder, [module], "swigpath", extra_data_path)
 
-    depf = open("src/%s_swig.deps.in" % module.name, "w")
+    with open("src/%s_swig.deps.in" % module.name, "w") as _:
+        pass
     baseincludes = []
     if include:
         baseincludes.append(include)
@@ -62,7 +64,8 @@ def setup_one(finder, module, build_system, swig, extra_data_path, include):
         if x.endswith("\\"):
             x = x[:-1]
         x = x.strip()
-        if not x.endswith(".h") and not x.endswith(".i") and not x.endswith(".i-in"):
+        if not x.endswith(".h") and not x.endswith(".i") \
+                and not x.endswith(".i-in"):
             continue
         names.append(x)
 

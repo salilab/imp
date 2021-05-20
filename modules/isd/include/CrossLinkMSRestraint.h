@@ -3,13 +3,13 @@
  *  \brief A pmf based likelihood function
  *  with prior knowledge on the false positive rate.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPISD_CROSS_LINK_MSRESTRAINT_H
 #define IMPISD_CROSS_LINK_MSRESTRAINT_H
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/particle_index.h>
 #include <IMP/isd/Scale.h>

@@ -1,7 +1,8 @@
 /**
- *  \file IMP/cache.h    \brief Various general useful functions for IMP.
+ *  \file IMP/cache.h
+ *  \brief Helper classes for various types of caching
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -26,15 +27,14 @@
 #endif
 
 IMPKERNEL_BEGIN_NAMESPACE
-/** This is a helper class for writing memoizers: things
-       that
-       store the results of a computation to look up later.
-       The result
-       type must support
+
+//! Helper class for writing memoizers
+/** A memoizer stores the results of a computation to look up later.
+    The result type must support
        - \c operator=
        - \c operator==
        - default construction
-   */
+ */
 template <class Generator,
           class Checker = std::equal_to<typename Generator::result_type> >
 class Memoizer {
@@ -242,8 +242,8 @@ class SparseSymmetricPairMemoizer {
   Generator &access_generator() const { return gen_; }
 };
 
-/** Implement a simple least recently used cache. As with
-    the Memoizer, it is parameterized by a generator that is
+//! Implement a simple least recently used cache.
+/** As with the Memoizer, it is parameterized by a generator that is
     used to generate values if they are not in the cache.
 
     The Generator should have a method:

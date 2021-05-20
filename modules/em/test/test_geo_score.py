@@ -46,10 +46,9 @@ class Tests(IMP.test.TestCase):
         self.good_mh2_shell_map.pad(nx, ny, nz)
         self.mh1_shell_map.calcRMS()
         self.good_mh2_shell_map.calcRMS()
-        conv = IMP.em.CoarseCC()
-        score = conv.cross_correlation_coefficient(self.mh1_shell_map,
-                                                   self.good_mh2_shell_map,
-                                                   0.0, False)
+        score = IMP.em.get_coarse_cc_coefficient(self.mh1_shell_map,
+                                                 self.good_mh2_shell_map,
+                                                 0.0, False)
         print("SCORE : " + str(score))
 
     def test_bad_geo_comp(self):
@@ -68,8 +67,7 @@ class Tests(IMP.test.TestCase):
         self.bad_mh2_shell_map.pad(nx, ny, nz)
         self.mh1_shell_map.calcRMS()
         self.bad_mh2_shell_map.calcRMS()
-        conv = IMP.em.CoarseCC()
-        score = conv.cross_correlation_coefficient(self.mh1_shell_map,
+        score = IMP.em.get_coarse_cc_coefficient(self.mh1_shell_map,
                                                    self.bad_mh2_shell_map,
                                                    0.0, False)
         print("SCORE BAD : " + str(score))

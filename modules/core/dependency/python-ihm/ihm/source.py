@@ -1,6 +1,7 @@
 """Classes for describing the source of an entity.
 """
 
+
 class Source(object):
     """Base class to describe the source of an :class:`ihm.Entity`.
        See :class:`Manipulated`, :class:`Natural` and :class:`Synthetic`.

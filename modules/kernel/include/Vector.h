@@ -2,7 +2,7 @@
  *  \file IMP/Vector.h
  *  \brief A class for storing lists of IMP items.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -27,6 +27,7 @@
 #endif
 
 IMPKERNEL_BEGIN_NAMESPACE
+
 //! A more \imp-like version of the \c std::vector.
 /** Specifically this class adds functionality from \c Python arrays such as
     - hashing

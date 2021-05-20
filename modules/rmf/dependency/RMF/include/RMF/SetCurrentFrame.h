@@ -2,7 +2,7 @@
  *  \file RMF/SetCurrentFrame.h
  *  \brief Temporarily change the current frame.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

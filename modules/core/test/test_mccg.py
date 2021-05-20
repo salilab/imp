@@ -12,17 +12,17 @@ class Tests(IMP.test.TestCase):
     def check_model(self, m, sf, lsc, lpc):
         s = sf.evaluate(False)
         print("score is ", s)
-        for p0 in lsc.get_particles():
-            p0.show()
+        for pi0 in lsc.get_contents():
+            m.get_particle(pi0).show()
         self.assertLessEqual(s, max_score)
-        alli = lpc.get_particle_pairs()
-        for p0 in lsc.get_particles():
-            for p1 in lsc.get_particles():
-                if p0 != p1:
-                    d0 = IMP.core.XYZR(p0)
-                    d1 = IMP.core.XYZR(p1)
+        alli = lpc.get_contents()
+        for pi0 in lsc.get_contents():
+            for pi1 in lsc.get_contents():
+                if pi0 != pi1:
+                    d0 = IMP.core.XYZR(m, pi0)
+                    d1 = IMP.core.XYZR(m, pi1)
                     d = IMP.core.get_distance(d0, d1)
-                    if (p0, p1) in alli or (p1, p0) in alli:
+                    if (pi0, pi1) in alli or (pi1, pi0) in alli:
                         self.assertAlmostEqual(d, 0, delta=.2)
                     else:
                         self.assertGreaterEqual(d, -.2)

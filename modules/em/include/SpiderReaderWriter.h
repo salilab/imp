@@ -2,17 +2,17 @@
  *  \file IMP/em/SpiderReaderWriter.h
  *  \brief Management of Spider Headers Electron Microscopy. Compatible with
  *  Spider and Xmipp formats
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM_SPIDER_READER_WRITER_H
 #define IMPEM_SPIDER_READER_WRITER_H
 
-#include "IMP/em/em_config.h"
-#include "IMP/em/ImageHeader.h"
-#include "IMP/em/header_converters.h"
-#include "IMP/em/MapReaderWriter.h"
-#include "IMP/em/DensityHeader.h"
+#include <IMP/em/em_config.h>
+#include <IMP/em/ImageHeader.h>
+#include <IMP/em/header_converters.h>
+#include <IMP/em/MapReaderWriter.h>
+#include <IMP/em/DensityHeader.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/endian.h>
 #include <IMP/exception.h>

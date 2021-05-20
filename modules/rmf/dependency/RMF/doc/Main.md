@@ -10,6 +10,7 @@ It can be built standalone, although it is generally used as part of
 [IMP](http://integrativemodeling.org).
 
 See
+- [Installation](\ref installation) for information on obtaining and installing RMF.
 - [RMF viewers](\ref viewing) for more information about viewing RMF files,
 - [RMF file format](\ref format) for more information about the files,
 - [RMF Library](\ref library) for more information about using the library.
@@ -18,7 +19,7 @@ See
 Also see the [rmf examples](https://github.com/salilab/rmf_examples) repository
 for examples of interesting or problematic RMF files.
 
-Copyright 2007-2020 IMP Inventors.
+Copyright 2007-2021 IMP Inventors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

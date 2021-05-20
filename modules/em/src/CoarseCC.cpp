@@ -2,7 +2,7 @@
  *  \file CoarseCC.cpp
  *  \brief Perform coarse fitting between two density objects.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,8 +11,8 @@
 #include <IMP/core/utility.h>
 IMPEM_BEGIN_NAMESPACE
 
-float CoarseCC::calc_score(DensityMap *em_map, SampledDensityMap *model_map,
-                           float scalefac, bool recalc_rms, bool resample,
+double get_coarse_cc_score(DensityMap *em_map, SampledDensityMap *model_map,
+                           double scalefac, bool recalc_rms, bool resample,
                            FloatPair norm_factors) {
   // resample the map for the particles provided
   if (resample) {
@@ -26,11 +26,11 @@ float CoarseCC::calc_score(DensityMap *em_map, SampledDensityMap *model_map,
   }
   emreal voxel_data_threshold = model_map->get_header()->dmin - EPS;
   // rmss have already been calculated
-  float escore = cross_correlation_coefficient(
+  double escore = get_coarse_cc_coefficient(
       em_map, model_map, voxel_data_threshold, false, norm_factors);
-  IMP_LOG_VERBOSE("CoarseCC::evaluate parameters:  threshold:"
+  IMP_LOG_VERBOSE("get_coarse_cc_score parameters:  threshold:"
                   << voxel_data_threshold << std::endl);
-  IMP_LOG_VERBOSE("CoarseCC::evaluate: the score is:" << escore << std::endl);
+  IMP_LOG_VERBOSE("get_coarse_cc_score: the score is:" << escore << std::endl);
   escore = scalefac * (1. - escore);
 
   return escore;
@@ -127,11 +127,11 @@ double cross_correlation_coefficient_internal(const DensityMap *grid1,
 }
 }
 
-double CoarseCC::cross_correlation_coefficient(const DensityMap *grid1,
-                                               const DensityMap *grid2,
-                                               float grid2_voxel_data_threshold,
-                                               bool allow_padding,
-                                               FloatPair norm_factors) {
+double get_coarse_cc_coefficient(const DensityMap *grid1,
+                                 const DensityMap *grid2,
+                                 double grid2_voxel_data_threshold,
+                                 bool allow_padding,
+                                 FloatPair norm_factors) {
   IMP_LOG_VERBOSE("Going to calculate correlation score with values: "
                   << "grid2_voxel_data_threshold:" << grid2_voxel_data_threshold
                   << " allow_padding:" << allow_padding << " norm factors:"
@@ -201,9 +201,9 @@ double CoarseCC::cross_correlation_coefficient(const DensityMap *grid1,
   }
 }
 
-float CoarseCC::local_cross_correlation_coefficient(
+double get_coarse_cc_local_coefficient(
     const DensityMap *em_map, DensityMap *model_map,
-    float voxel_data_threshold) {
+    double voxel_data_threshold) {
   IMP_INTERNAL_CHECK(
       model_map->get_header()->dmax > voxel_data_threshold,
       "voxel_data_threshold: " << voxel_data_threshold
@@ -244,7 +244,7 @@ float CoarseCC::local_cross_correlation_coefficient(
 
   // calculate the difference in voxels between the origin of the  model map
   // and the origin of the em map.
-  float voxel_size = em_map->get_header()->get_spacing();
+  double voxel_size = em_map->get_header()->get_spacing();
   int ivoxx_shift = (int)floor(
       (model_header->get_xorigin() - em_header->get_xorigin()) / voxel_size);
   int ivoxy_shift = (int)floor(
@@ -303,13 +303,13 @@ float CoarseCC::local_cross_correlation_coefficient(
   return ccc;
 }
 
-algebra::Vector3Ds CoarseCC::calc_derivatives(const DensityMap *em_map,
-                                              const DensityMap *model_map,
-                                              const Particles &model_ps,
-                                              const FloatKey &w_key,
-                                              KernelParameters *kernel_params,
-                                              const float &scalefac,
-                                              const algebra::Vector3Ds &dv) {
+algebra::Vector3Ds get_coarse_cc_derivatives(const DensityMap *em_map,
+                                             const DensityMap *model_map,
+                                             const Particles &model_ps,
+                                             const FloatKey &w_key,
+                                             KernelParameters *kernel_params,
+                                             double scalefac,
+                                             const algebra::Vector3Ds &dv) {
   algebra::Vector3Ds dv_out;
   dv_out.insert(dv_out.end(), dv.size(), algebra::Vector3D(0., 0., 0.));
   double tdvx = 0., tdvy = 0., tdvz = 0., tmp, rsq;
@@ -414,6 +414,45 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(const DensityMap *em_map,
 
   }  // particles
   return dv_out;
+}
+
+float CoarseCC::calc_score(DensityMap *em_map, SampledDensityMap *model_map,
+                           float scalefac, bool recalc_rms, bool resample,
+                           FloatPair norm_factors) {
+  IMPEM_DEPRECATED_METHOD_DEF(2.15, "Use get_coarse_cc_score() instead");
+  return get_coarse_cc_score(em_map, model_map, scalefac, recalc_rms,
+                             resample, norm_factors);
+}
+
+double CoarseCC::cross_correlation_coefficient(const DensityMap *grid1,
+                                               const DensityMap *grid2,
+                                               float grid2_voxel_data_threshold,
+                                               bool allow_padding,
+                                               FloatPair norm_factors) {
+  IMPEM_DEPRECATED_METHOD_DEF(2.15, "Use get_coarse_cc_coefficient() instead");
+  return get_coarse_cc_coefficient(grid1, grid2, grid2_voxel_data_threshold,
+                                   allow_padding, norm_factors);
+}
+
+float CoarseCC::local_cross_correlation_coefficient(
+    const DensityMap *em_map, DensityMap *model_map,
+    float voxel_data_threshold) {
+  IMPEM_DEPRECATED_METHOD_DEF(2.15,
+                  "Use get_coarse_cc_local_coefficient() instead");
+  return get_coarse_cc_local_coefficient(em_map, model_map,
+                                         voxel_data_threshold);
+}
+
+algebra::Vector3Ds CoarseCC::calc_derivatives(const DensityMap *em_map,
+                                              const DensityMap *model_map,
+                                              const Particles &model_ps,
+                                              const FloatKey &w_key,
+                                              KernelParameters *kernel_params,
+                                              const float &scalefac,
+                                              const algebra::Vector3Ds &dv) {
+  IMPEM_DEPRECATED_METHOD_DEF(2.15, "Use get_coarse_cc_derivatives() instead");
+  return get_coarse_cc_derivatives(em_map, model_map, model_ps, w_key,
+                                   kernel_params, scalefac, dv);
 }
 
 IMPEM_END_NAMESPACE

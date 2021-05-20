@@ -2,13 +2,13 @@
  *  \file IMP/em2d/model_interaction.h
  *  \brief operations implying interaction of models and the EM module
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_MODEL_INTERACTION_H
 #define IMPEM2D_MODEL_INTERACTION_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em/DensityMap.h"
 #include "IMP/em/SampledDensityMap.h"
 #include "IMP/em/MapReaderWriter.h"

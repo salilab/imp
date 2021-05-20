@@ -2026,14 +2026,6 @@ _ihm_model_representation_details.description
                 self.actions = []
 
         fh = StringIO()
-        with IMP.allow_deprecated():
-            po = IMP.pmi.mmcif.ProtocolOutput(fh)
-        po.system = MockSystem()
-        with IMP.allow_deprecated():
-            po.flush()
-        self.assertEqual(po.system.actions, [])
-
-        fh = StringIO()
         po = IMP.pmi.mmcif.ProtocolOutput()
         po.system = MockSystem()
         ihm.dumper.write(fh, [po.system], dumpers=IMP.pmi.mmcif.get_dumpers())
@@ -2098,21 +2090,17 @@ _imp_replica_exchange_protocol.replica_exchange_maximum_temperature
 """
 
         fh = StringIO(mmcif)
-        s1, = ihm.reader.read(fh, handlers=IMP.pmi.mmcif.get_handlers())
+        s, = ihm.reader.read(fh, handlers=IMP.pmi.mmcif.get_handlers())
 
-        with IMP.allow_deprecated():
-            fh = StringIO(mmcif)
-            s2, = IMP.pmi.mmcif.read(fh)
-        for s in s1, s2:
-            p1, = s.orphan_protocols
-            step = p1.steps[0]
-            self.assertIsInstance(step,
-                                  IMP.pmi.mmcif._ReplicaExchangeProtocolStep)
-            self.assertAlmostEqual(step.monte_carlo_temperature, 1., delta=1e-4)
-            self.assertAlmostEqual(step.replica_exchange_minimum_temperature,
-                                   2., delta=1e-4)
-            self.assertAlmostEqual(step.replica_exchange_maximum_temperature,
-                                   3., delta=1e-4)
+        p1, = s.orphan_protocols
+        step = p1.steps[0]
+        self.assertIsInstance(step,
+                              IMP.pmi.mmcif._ReplicaExchangeProtocolStep)
+        self.assertAlmostEqual(step.monte_carlo_temperature, 1., delta=1e-4)
+        self.assertAlmostEqual(step.replica_exchange_minimum_temperature,
+                               2., delta=1e-4)
+        self.assertAlmostEqual(step.replica_exchange_maximum_temperature,
+                               3., delta=1e-4)
 
     def test_gmm_parser_local_mrc(self):
         """Test GMMParser pointing to a locally-available MRC file"""

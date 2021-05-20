@@ -1,7 +1,7 @@
 /**
  *  \file Log.cpp   \brief Logging and error reporting support.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -152,7 +152,7 @@ void write_help(std::ostream &out) {
   }
   out << "This program is part of IMP, the Integrative Modeling Platform,"
       << std::endl;
-  out << "which is Copyright 2007-2020 IMP Inventors." << std::endl;
+  out << "which is Copyright 2007-2021 IMP Inventors." << std::endl;
   out << "For additional information about IMP, "
       << "see <https://integrativemodeling.org>." << std::endl;
 }

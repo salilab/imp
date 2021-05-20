@@ -3,7 +3,6 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.container
-import math
 
 
 class SingletonTestModifier(IMP.SingletonModifier):
@@ -126,14 +125,14 @@ class Tests(IMP.test.TestCase):
             cs.append(t)
         print("dl")
         k = IMP.IntKey("thevalue")
-        f = ClassnameTestModifier(k)
+        f = ClassnameTestModifier(k)  # noqa: F821
         print("apply")
         s = IMP.container.ClassnamesConstraint(f, None, c)
         print("add")
         m.add_score_state(s)
         m.update()
         for p in cs:
-            self.assertTrue(FUNCTIONNAME_has_attribute(p, k))
+            self.assertTrue(FUNCTIONNAME_has_attribute(p, k))  # noqa: F821
         print("done")
 
     def test_sset(self):
@@ -147,14 +146,15 @@ class Tests(IMP.test.TestCase):
         t = self.create_FUNCTIONNAME(m)
         print("dl")
         k = IMP.IntKey("thevalue")
-        f = ClassnameTestModifier(k)
+        f = ClassnameTestModifier(k)  # noqa: F821
         print("apply")
         s = self.create_CLASSFUNCTIONNAME_score_state(f, None, m, t)
         m.add_score_state(s)
         print("add")
         m.update()
-        self.assertTrue(FUNCTIONNAME_has_attribute(t, k))
+        self.assertTrue(FUNCTIONNAME_has_attribute(t, k))  # noqa: F821
         print("done")
+
 
 if __name__ == '__main__':
     IMP.test.main()

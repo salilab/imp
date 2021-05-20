@@ -2,7 +2,7 @@
  *  \file mpi_helpers.cpp
  *  \brief Helper functions to set up MPI.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/mpi/internal/mpi_helpers.h>

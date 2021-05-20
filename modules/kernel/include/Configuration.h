@@ -2,7 +2,7 @@
  *  \file IMP/Configuration.h
  *  \brief Store a set of configurations of the model.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -17,7 +17,6 @@
 IMPKERNEL_BEGIN_NAMESPACE
 
 //! A class to store a configuration of a model
-/** */
 class IMPKERNELEXPORT Configuration : public IMP::Object {
   mutable Pointer<Model> model_;
   Pointer<Object> base_;

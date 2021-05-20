@@ -1,8 +1,8 @@
 /**
  *  \file IMP/showable_macros.h
- *  \brief Various general useful macros for IMP.
+ *  \brief Macros to help with objects that can be printed to a stream.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,6 +13,7 @@
 #include "warning_macros.h"
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
+
 /** \name Showable
     Declare the methods needed by an object that can be printed,
     both from C++ and Python. Each value-type class should have an

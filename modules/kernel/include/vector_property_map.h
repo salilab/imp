@@ -6,7 +6,7 @@
  *  in the boost versions supported by \imp. This header makes sure the correct
  *  file is included.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_VECTOR_PROPERTY_MAP_H
@@ -14,11 +14,6 @@
 
 #include <IMP/kernel_config.h>
 #include <boost/version.hpp>
-#if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
 
 #endif /* IMPKERNEL_VECTOR_PROPERTY_MAP_H */

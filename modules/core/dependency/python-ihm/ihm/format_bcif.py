@@ -27,13 +27,14 @@ _Float32 = 32
 _Float64 = 33
 
 # msgpack data is binary (bytes); need to convert to/from str in Python 3
-# All mmCIF data is ASCII
+# All mmCIF data is supposed to be ASCII, but be tolerant of random 8-bit data
+# on input by using an 8-bit superset of ASCII (latin-1)
 if sys.version_info[0] >= 3:
     def _decode_bytes(bs):
-        return bs.decode('ascii')
+        return bs.decode('latin-1')
 
     def _encode_str(s):
-        return s.encode('ascii')
+        return s.encode('ascii', errors='replace')
 else:
     def _decode_bytes(bs):
         return bs
@@ -65,7 +66,7 @@ class _StringArrayDecoder(_Decoder):
         substr = []
         string_data = _decode_bytes(enc[b'stringData'])
         for i in range(0, len(offsets) - 1):
-            substr.append(string_data[offsets[i]:offsets[i+1]])
+            substr.append(string_data[offsets[i]:offsets[i + 1]])
         # todo: return a listlike class instead?
         for i in indices:
             yield None if i < 0 else substr[i]
@@ -152,7 +153,7 @@ class _RunLengthDecoder(_Decoder):
     def __call__(self, enc, data):
         data = list(data)
         for i in range(0, len(data), 2):
-            for j in range(data[i+1]):
+            for j in range(data[i + 1]):
                 yield data[i]
 
 
@@ -374,7 +375,7 @@ class _DeltaEncoder(_Encoder):
         data_type = _get_int_float_type(data)
         encdict = {b'kind': b'Delta', b'origin': data[0],
                    b'srcType': data_type}
-        encdata = [0] + [data[i] - data[i-1] for i in range(1, len(data))]
+        encdata = [0] + [data[i] - data[i - 1] for i in range(1, len(data))]
         return encdata, encdict
 
 
@@ -393,7 +394,7 @@ class _RunLengthEncoder(_Encoder):
         for d in data:
             if d != val:
                 if val is not None:
-                    encdata.extend((val, repeat))
+                    encdata.extend((val, repeat))   # noqa: F821
                 val = d
                 repeat = 1
             else:
@@ -509,7 +510,7 @@ def _get_mask_and_type(data):
         return mask, float
     elif int in seen_types:
         return mask, int
-    elif sys.version_info[0] < 3 and long in seen_types:
+    elif sys.version_info[0] < 3 and long in seen_types:   # noqa: F821
         # Handle long like int (we don't have a 64-bit int type in BCIF anyway,
         # so hopefully the data can be represented in an int)
         return mask, int

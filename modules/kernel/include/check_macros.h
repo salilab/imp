@@ -1,8 +1,8 @@
 /**
  *  \file IMP/check_macros.h
- *  \brief Exception definitions and assertions.
+ *  \brief Helper macros for throwing and handling exceptions
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

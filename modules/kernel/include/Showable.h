@@ -1,7 +1,8 @@
 /**
- *  \file IMP/Showable.h    \brief IO support.
+ *  \file IMP/Showable.h
+ *  \brief Helper class to aid in output of \imp classes to streams.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -16,12 +17,11 @@
 #include <sstream>
 
 IMPKERNEL_BEGIN_NAMESPACE
-/** This is a helper class to aid in output of the
-       various classes in \imp.
-       To support output to streams, a class can use the
-       IMP_SHOWABLE macros
-       to define an implicit conversion to Showable.
-   */
+
+//! Helper class to aid in output of \imp classes to streams.
+/** To support output to streams, a class can use the IMP_SHOWABLE macros
+    to define an implicit conversion to Showable.
+  */
 class IMPKERNELEXPORT Showable {
   std::string str_;
   template <class T>

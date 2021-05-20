@@ -2,7 +2,7 @@
  *  \file file.cpp
  *  \brief Get directories used by IMP.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -13,11 +13,7 @@
 //#include <unistd.h>
 #include <boost/version.hpp>
 #if defined(BOOST_FILESYSTEM_VERSION)
-#if BOOST_VERSION >= 104600
 #define BOOST_FILESYSTEM_VERSION 3
-#else
-#define BOOST_FILESYSTEM_VERSION 2
-#endif
 #endif
 #include <boost/scoped_array.hpp>
 #include <boost/filesystem/path.hpp>

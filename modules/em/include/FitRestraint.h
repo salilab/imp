@@ -2,7 +2,7 @@
  *  \file IMP/em/FitRestraint.h
  *  \brief Calculate score based on fit to EM map.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -92,7 +92,7 @@ class IMPEMEXPORT FitRestraint : public Restraint {
   float scalefac_;
   core::XYZs xyz_;
   // derivatives
-  algebra::Vector3Ds dv_;
+  mutable algebra::Vector3Ds dv_;
   algebra::ReferenceFrame3Ds rbs_orig_rf_;
   FloatKey weight_key_;
   KernelParameters *kernel_params_;

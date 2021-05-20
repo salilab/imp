@@ -1,13 +1,13 @@
 /**
  *  \file IMP/em2d/FFToperations.h
  *  \brief Operations involving FFT
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_FF_TOPERATIONS_H
 #define IMPEM2D_FF_TOPERATIONS_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/opencv_interface.h"
 #include <IMP/log_macros.h>
 

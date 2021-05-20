@@ -1,13 +1,13 @@
 /**
  *  \file IMP/em2d/Fine2DRegistrationRestraint.h
  *  \brief Alignment of 2D projections of a 3D volume
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_FINE_2DREGISTRATION_RESTRAINT_H
 #define IMPEM2D_FINE_2DREGISTRATION_RESTRAINT_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/RegistrationResult.h"

@@ -2,20 +2,20 @@
  *  \file internal/swig.h
  *  \brief Functions for use in swig wrappers
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_SWIG_H
 #define IMPKERNEL_INTERNAL_SWIG_H
 
 #include <IMP/kernel_config.h>
-#include "../Particle.h"
-#include "../Restraint.h"
-#include "../SingletonScore.h"
-#include "../PairScore.h"
-#include "../macros.h"
-#include "../Decorator.h"
-#include "../Optimizer.h"
+#include <IMP/Particle.h>
+#include <IMP/Restraint.h>
+#include <IMP/SingletonScore.h>
+#include <IMP/PairScore.h>
+#include <IMP/macros.h>
+#include <IMP/Decorator.h>
+#include <IMP/Optimizer.h>
 #include "container_helpers.h"
 #include <boost/unordered_map.hpp>
 #include <IMP/internal/swig_base.h>

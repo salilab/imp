@@ -2,14 +2,14 @@
  * \file IMP/atom/CAAngleRestraint.h
  * \brief Angle restraint between three residues in CA-only representation.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPATOM_CA_ANGLE_RESTRAINT_H
 #define IMPATOM_CA_ANGLE_RESTRAINT_H
 
-#include "atom_config.h"
+#include <IMP/atom/atom_config.h>
 
 #include <IMP/Restraint.h>
 #include <IMP/Particle.h>

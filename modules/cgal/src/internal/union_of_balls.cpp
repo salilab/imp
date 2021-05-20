@@ -3,7 +3,7 @@
  *  \brief computation of molecular volumetrics :
  *   surface and area of an union of balls
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/cgal/internal/union_of_balls.h>
@@ -36,33 +36,33 @@ IMP_CLANG_PRAGMA(+diagnostic ignored "-Wconversion")
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 
-typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
+typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
 
-typedef K::Point_3 Point;
-typedef K::Segment_3 Segment;
-typedef K::Vector_3 Vector;
-typedef K::Line_3 Line;
-typedef K::Triangle_3 Triangle3;
+typedef Kernel::Point_3 Point;
+typedef Kernel::Segment_3 Segment;
+typedef Kernel::Vector_3 Vector;
+typedef Kernel::Line_3 Line;
+typedef Kernel::Triangle_3 Triangle3;
 
-// typedef CGAL::Regular_triangulation_euclidean_traits_3<K> Gt;
+// typedef CGAL::Regular_triangulation_euclidean_traits_3<Kernel> Gt;
 #if CGAL_VERSION_NR > 1040911000
-typedef K Gt;
-typedef CGAL::Regular_triangulation_vertex_base_3<K> Vbb;
-typedef CGAL::Fixed_alpha_shape_vertex_base_3<K,Vbb> Vb;
-typedef CGAL::Regular_triangulation_cell_base_3<K> Fbb;
-typedef CGAL::Fixed_alpha_shape_cell_base_3<K,Fbb> Fb;
+typedef Kernel Gt;
+typedef CGAL::Regular_triangulation_vertex_base_3<Kernel> Vbb;
+typedef CGAL::Fixed_alpha_shape_vertex_base_3<Kernel,Vbb> Vb;
+typedef CGAL::Regular_triangulation_cell_base_3<Kernel> Fbb;
+typedef CGAL::Fixed_alpha_shape_cell_base_3<Kernel,Fbb> Fb;
 typedef CGAL::Triangulation_data_structure_3<Vb, Fb> TDS;
-typedef CGAL::Regular_triangulation_3<K, TDS> Triangulation;
+typedef CGAL::Regular_triangulation_3<Kernel, TDS> Triangulation;
 typedef CGAL::Fixed_alpha_shape_3<Triangulation> Alpha_shape;
 #elif CGAL_VERSION_NR > 1030701000
-typedef CGAL::Regular_triangulation_euclidean_traits_3<K> Gt;
+typedef CGAL::Regular_triangulation_euclidean_traits_3<Kernel> Gt;
 typedef CGAL::Fixed_alpha_shape_vertex_base_3<Gt> Vb;
 typedef CGAL::Fixed_alpha_shape_cell_base_3<Gt> Fb;
 typedef CGAL::Triangulation_data_structure_3<Vb, Fb> TDS;
 typedef CGAL::Regular_triangulation_3<Gt, TDS> Triangulation;
 typedef CGAL::Fixed_alpha_shape_3<Triangulation> Alpha_shape;
 #else
-typedef CGAL::Weighted_alpha_shape_euclidean_traits_3<K> Gt;
+typedef CGAL::Weighted_alpha_shape_euclidean_traits_3<Kernel> Gt;
 typedef CGAL::Triangulation_vertex_base_3<Gt> Vf;
 typedef CGAL::Alpha_shape_vertex_base_3<Gt, Vf> Vb;
 
@@ -76,7 +76,7 @@ typedef CGAL::Alpha_shape_3<Triangulation> Alpha_shape;
 #endif
 
 #if CGAL_VERSION_NR > 1040911000
-typedef K::Weighted_point_3 Wpoint;
+typedef Kernel::Weighted_point_3 Wpoint;
 #else
 typedef Gt::Point Wpoint;
 #endif
@@ -112,7 +112,7 @@ double safe_sqrt(double v) {
 /*! This class mainly stores geometric functions for the computation
  * of volumetrics on balls and lines it is parameterized with Gt, a
  * Geometrical traits arguments that will most of the time be
- * somehting like CGAL::Weighted_alpha_shape_euclidean_traits_3<K>
+ * somehting like CGAL::Weighted_alpha_shape_euclidean_traits_3<Kernel>
  *
  * \todo should singleton this class, what about static members ?
  * \todo should const every functions
@@ -126,8 +126,8 @@ class SpacefillingVolumetric {
   // types
   typedef typename Gt::Vector_3 Vector;
 #if CGAL_VERSION_NR > 1040911000
-  typedef typename K::Point_3 Point;
-  typedef typename K::Weighted_point_3 Wpoint;
+  typedef typename Kernel::Point_3 Point;
+  typedef typename Kernel::Weighted_point_3 Wpoint;
 #else
   typedef typename Gt::Point_3 Point;
   typedef typename Gt::Point Wpoint;

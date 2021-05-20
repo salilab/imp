@@ -2,21 +2,20 @@
  *  \file protein_anchors_mapping_reader.cpp
  *  \brief handles reading matches between a protein and its anchors
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
 #include <IMP/multifit/protein_anchors_mapping_reader.h>
 #include <IMP/multifit/internal/reader_writer_utility.h>
 #include <boost/algorithm/string.hpp>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 #include <IMP/file.h>
 #include <IMP/multifit/path_reader_writer.h>
 #include <IMP/multifit/anchors_reader.h>
 #include <boost/algorithm/string.hpp>
-#include "boost/tuple/tuple.hpp"
+#include <boost/tuple/tuple.hpp>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 

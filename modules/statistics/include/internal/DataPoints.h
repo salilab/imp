@@ -2,7 +2,7 @@
  *  \file IMP/statistics/DataPoints.h
  *  \brief Handling of data for anchor points segmentation
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -15,8 +15,7 @@
 //#include <IMP/em/converters.h>
 //#include <IMP/em/DensityMap.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/algebra/internal/tnt_array2d.h>
-#include <IMP/algebra/internal/tnt_array2d_utils.h>
+#include <Eigen/Dense>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/statistics/statistics_config.h>
 #include <map>
@@ -24,8 +23,8 @@
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 // TODO all of that should be internal
 // TODO convert all to standard IMP base types?
-typedef algebra::internal::TNT::Array2D<double> Array2DD;
-typedef algebra::internal::TNT::Array1D<double> Array1DD;
+typedef Eigen::MatrixXd Array2DD;
+typedef Eigen::VectorXd Array1DD;
 typedef std::vector<Array1DD> Array1DD_VEC;
 
 // density grid (to remove once DensityMap is grid3d)

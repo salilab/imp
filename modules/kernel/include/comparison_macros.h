@@ -1,8 +1,8 @@
 /**
  *  \file IMP/comparison_macros.h
- *  \brief Various general useful macros for IMP.
+ *  \brief Helper macros for implementing comparisons of \imp objects
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

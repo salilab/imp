@@ -18,5 +18,6 @@ jobs:
         uses: docker://github/super-linter:v2.1.0
         env:
           VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
           VALIDATE_PYTHON: true
           VALIDATE_BASH: true

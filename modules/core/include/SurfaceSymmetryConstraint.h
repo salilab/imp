@@ -2,7 +2,7 @@
  *  \file IMP/core/SurfaceSymmetryConstraint.h
  *  \brief Constrain orientation of surfaces with respect to rigid bodies.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

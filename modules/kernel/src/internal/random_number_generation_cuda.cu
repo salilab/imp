@@ -2,7 +2,7 @@
  *  \file IMP/kernel/src/internal/random_number_generation_cuda.cu
  *  \brief GPU or CPU pooled random number generation
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 

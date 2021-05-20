@@ -1,7 +1,7 @@
 /**
  *  \file IMP/random.h    \brief Random number generators used by IMP.
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 
@@ -22,6 +22,10 @@ typedef ::boost::mt19937 RandomNumberGenerator;
    Otherwise, the default seed is retrieved from among either
    boost::random_device, `/dev/urandom`, or the system clock, based on which
    method is available in this priority order.
+
+   To set the seed, call the `seed` method, which takes a single integer
+   argument. This object is also callable, and returns a new random integer
+   on each call.
 
 This generator can be used by the
 [Boost.Random](http://www.boost.org/doc/libs/1_39_0/libs/random/index.html)

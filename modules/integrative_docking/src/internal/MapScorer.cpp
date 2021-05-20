@@ -2,7 +2,7 @@
  *  \file IMP/integrative_docking/MapScorer.cpp
  *  \brief A class for fast cc scoring of docking models
  *
- *  Copyright 2007-2020 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/integrative_docking/internal/MapScorer.h>
@@ -47,7 +47,7 @@ float MapScorer::score(const IMP::algebra::Transformation3D& rec_trans,
   float voxel_data_threshold = complex_map_.get_header()->dmin;
   IMP::em::DensityMap* transformed_complex_map =
       get_transformed(rec_trans, lig_trans);
-  float cc = IMP::em::CoarseCC::cross_correlation_coefficient(
+  float cc = IMP::em::get_coarse_cc_coefficient(
       &complex_map_, transformed_complex_map, voxel_data_threshold);
   return cc;
 }
@@ -55,7 +55,7 @@ float MapScorer::score(const IMP::algebra::Transformation3D& rec_trans,
 float MapScorer::score(const IMP::algebra::Transformation3D& trans) const {
   float voxel_data_threshold = complex_map_.get_header()->dmin;
   IMP::em::DensityMap* transformed_complex_map = get_transformed(trans);
-  float cc = IMP::em::CoarseCC::cross_correlation_coefficient(
+  float cc = IMP::em::get_coarse_cc_coefficient(
       &complex_map_, transformed_complex_map, voxel_data_threshold);
   return cc;
 }

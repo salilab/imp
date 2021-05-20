@@ -15,6 +15,7 @@ import string
 import weakref
 import operator
 
+
 class _ChainIDs(object):
     """Map indices to multi-character chain IDs.
        We label the first 26 chains A-Z, then we move to two-letter
@@ -79,7 +80,8 @@ class _NonModeledChain(object):
         self.sequence = sequence
         self.chain_type = chain_type
 
-    get_sequence = lambda self: self.sequence
+    def get_sequence(self):
+        return self.sequence
 
 
 class System(object):
@@ -136,9 +138,9 @@ class System(object):
                 state.modeled_assembly.append(component.asym_unit)
             else:
                 state.modeled_assembly.append(component.entity)
-            state.repsegments[component] \
-                = list(self._get_repsegments(c, component,
-                                     self._get_all_starting_models(component)))
+            state.repsegments[component] = \
+                list(self._get_repsegments(
+                    c, component, self._get_all_starting_models(component)))
             # Number of states that have representation for this component
             num_state_reps = len([s for s in self._states
                                   if component in s.repsegments])
@@ -224,8 +226,9 @@ class State(ihm.model.State):
         self._wrapped_restraints = []
         # The assembly of all components modeled by IMP in this state.
         # This may be smaller than the complete assembly.
-        self.modeled_assembly = ihm.Assembly(name="Modeled assembly",
-                            description="All components modeled by IMP")
+        self.modeled_assembly = ihm.Assembly(
+            name="Modeled assembly",
+            description="All components modeled by IMP")
         system.system.orphan_assemblies.append(self.modeled_assembly)
         # A list of ihm.representation.Segment objects for each Component
         self.repsegments = {}
@@ -258,8 +261,9 @@ class State(ihm.model.State):
     def _remove_duplicate_chain_ids(self, new_hiers):
         chains = []
         for h in self.hiers:
-            chains.extend(IMP.atom.Chain(c)
-                          for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE))
+            chains.extend(
+                IMP.atom.Chain(c)
+                for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE))
         if new_hiers:
             self._assigned_chain_ids = []
             chain_ids = [c.get_id() for c in chains]
