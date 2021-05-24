@@ -442,7 +442,7 @@ endif(IMP_DOXYGEN_FOUND)
 file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(IMP_INSTALL_PREFIX \"${CMAKE_BINARY_DIR}\" )\n"
      "set(IMP_TOOLS_DIR \"${CMAKE_SOURCE_DIR}/tools\" )\n"
-     "set(IMP_MODULES_DIR \"${CMAKE_SOURCE_DIR}/tools/cmake\" )\n"
+     "set(IMP_USE_DIR \"${CMAKE_SOURCE_DIR}/tools/cmake\" )\n"
      "set(IMP_BUILD_INFO_DIR \"${CMAKE_BINARY_DIR}/build_info\" )\n"
      "set(IMP_INCLUDE_DIR \"${CMAKE_BINARY_DIR}/include\" )\n"
      "set(IMP_BIN_DIR \"${CMAKE_BINARY_DIR}/bin\" )\n"
@@ -451,14 +451,14 @@ file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(IMP_DATA_DIR \"${CMAKE_BINARY_DIR}/data\" )\n"
      "set(IMP_SWIG_DIR \"${CMAKE_BINARY_DIR}/swig\" )\n"
      "set(RMF_SWIG_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/swig\" )\n"
-     "set(RMF_MODULES_DIR \"${CMAKE_SOURCE_DIR}/cmake_modules\" )\n"
+     "set(IMP_MODULES_DIR \"${CMAKE_SOURCE_DIR}/cmake_modules\" )\n"
      "set(RMF_INCLUDE_PATH \"${RMF_INCLUDE_PATH}\" )\n"
-     "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
+     "set(IMP_USE_FILE \"\${IMP_USE_DIR}/UseIMP.cmake\" )\n")
 # Installed locations
 file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(IMP_INSTALL_PREFIX \"${CMAKE_INSTALL_PREFIX}\" )\n"
      "set(IMP_TOOLS_DIR \"${CMAKE_INSTALL_FULL_TOOLSDIR}\" )\n"
-     "set(IMP_MODULES_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
+     "set(IMP_USE_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
      "set(IMP_BUILD_INFO_DIR \"${CMAKE_INSTALL_FULL_BUILDINFODIR}\" )\n"
      "set(IMP_INCLUDE_DIR \"${CMAKE_INSTALL_FULL_INCLUDEDIR}\" )\n"
      "set(IMP_BIN_DIR \"${CMAKE_INSTALL_FULL_BINDIR}\" )\n"
@@ -467,9 +467,9 @@ file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(IMP_DATA_DIR \"${CMAKE_INSTALL_FULL_DATADIR}/IMP\" )\n"
      "set(IMP_SWIG_DIR \"${CMAKE_INSTALL_FULL_SWIGDIR}\" )\n"
      "set(RMF_SWIG_DIR \"${CMAKE_INSTALL_FULL_SWIGDIR}\" )\n"
-     "set(RMF_MODULES_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
+     "set(IMP_MODULES_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
      "set(RMF_INCLUDE_PATH \"${CMAKE_INSTALL_FULL_INCLUDEDIR}\" )\n"
-     "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
+     "set(IMP_USE_FILE \"\${IMP_USE_DIR}/UseIMP.cmake\" )\n")
 list(REMOVE_DUPLICATES IMP_ALL_DEPENDS_VARS)
 foreach(cmakefile ${CMAKE_BINARY_DIR}/IMPConfig.cmake
                   ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake)

@@ -11,12 +11,12 @@
 if(NOT USE_IMP_FILE_INCLUDED)
   set(USE_IMP_FILE_INCLUDED 1)
 
-  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${RMF_MODULES_DIR})
+  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${IMP_MODULES_DIR})
 
-  include(${RMF_MODULES_DIR}/IMPExecuteProcess.cmake)
-  include(${RMF_MODULES_DIR}/IMPAddTests.cmake)
-  include(${RMF_MODULES_DIR}/CheckCompiles.cmake)
-  include(${RMF_MODULES_DIR}/IMPFindPython.cmake)
+  include(${IMP_MODULES_DIR}/IMPExecuteProcess.cmake)
+  include(${IMP_MODULES_DIR}/IMPAddTests.cmake)
+  include(${IMP_MODULES_DIR}/CheckCompiles.cmake)
+  include(${IMP_MODULES_DIR}/IMPFindPython.cmake)
 
 endif()
 
@@ -34,8 +34,8 @@ function(imp_build_module sourcedir)
   endif()
 
   # Use same compiler flags as IMP itself
-  include(${RMF_MODULES_DIR}/IMPFindC++11.cmake)
-  include(${RMF_MODULES_DIR}/IMPFindCompilerFlags.cmake)
+  include(${IMP_MODULES_DIR}/IMPFindC++11.cmake)
+  include(${IMP_MODULES_DIR}/IMPFindCompilerFlags.cmake)
 
   # Add include directories of mandatory IMP dependencies
   include_directories(SYSTEM ${Boost_INCLUDE_DIR})
@@ -216,7 +216,7 @@ function(imp_build_module sourcedir)
        "    exec(fh.read())\n"
        "del __oldpathlen, extend_path\n")
 
-  include(${RMF_MODULES_DIR}/InstallDeref.cmake)
+  include(${IMP_MODULES_DIR}/InstallDeref.cmake)
 
   # Install headers
   install_deref(${CMAKE_BINARY_DIR}/include/IMP *
