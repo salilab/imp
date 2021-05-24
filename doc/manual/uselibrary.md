@@ -19,7 +19,8 @@ The `IMPConfig.cmake` file defines a number of CMake variables:
 - `IMP_xxx_LIBRARY`: the full path to the dynamic library for the `xxx` module
   (for example `IMP_kernel_LIBRARY` points to the IMP kernel and
   `IMP_atom_LIBRARY` to the IMP::atom library).
-- `RMF_INCLUDE_PATH`: the path containing RMF C++ headers.
+- `RMF_INCLUDE_PATH`: the path containing RMF C++ headers (if RMF is
+  bundled with %IMP).
 - `IMP_DATA_DIR`: the path containing %IMP data files.
 - `IMP_SWIG_DIR`: the path containing SWIG `.i` files for all %IMP modules.
 
@@ -30,6 +31,10 @@ A [FindIMP.cmake](https://github.com/salilab/pmi/blob/develop/tools/FindIMP.cmak
 file is provided to help CMake find this %IMP configuration (using the
 [find_package](https://cmake.org/cmake/help/v3.13/command/find_package.html)
 command), and can be used in other CMake projects. 
+
+If you also need to use [RMF](https://integrativemodeling.org/rmf/)
+this should be searched for separately using a
+[FindRMF.cmake](https://github.com/salilab/npctransport/blob/develop/tools/FindRMF.cmake) file. See the [npctransport repository](https://github.com/salilab/npctransport/blob/develop/CMakeLists.txt) for example usage.
 
 See also the tutorial on
 [using IMP as a C++ library](https://integrativemodeling.org/tutorials/using_cpp/)
