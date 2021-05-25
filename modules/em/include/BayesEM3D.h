@@ -71,7 +71,8 @@ IMPEMEXPORT std::vector<double> bayesem3d_get_value_no_deriv(
 //! Compute a generated EM density map given particles.
 //! Header and box size is copied from reference EM density map
 IMPEMEXPORT DensityMap *bayesem3d_get_density_from_particle(
-    DensityMap *em, const IMP::ParticlesTemp &ps, double resolution);
+    DensityMap *em, const IMP::ParticlesTemp &ps,
+    double resolution, const double window_size = 1.0);
 
 //! Compute a normalized cross-correlation coefficient
 IMPEMEXPORT double bayesem3d_get_cross_correlation_coefficient(const DensityMap *em1,
@@ -95,12 +96,16 @@ IMPEMEXPORT double bayesem3d_get_cross_correlation_coefficient(const DensityMap 
       \param[in] sigma The expected variance of the difference between
       the normalized EM density map and the tested model.
 
+      \param[in] window_size The size of the window to extend
+      the blur of the model
+
       \return a numerically stable value for the score and its derivatives.
 
 */
 IMPEMEXPORT std::pair<double, algebra::Vector3Ds>
-bayesem3d_get_score_and_derivative(DensityMap *em, const IMP::ParticlesTemp &ps,
-                                   double resolution, double sigma);
+bayesem3d_get_score_and_derivative(DensityMap *em, 
+  const IMP::ParticlesTemp &ps, double resolution,
+  double sigma, const double window_size = 1.0);
 
 //! Normalization of an EM map by histogram matching against
 //! the CDF of the EM map generated from a set of particles.

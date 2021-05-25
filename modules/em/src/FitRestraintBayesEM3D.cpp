@@ -24,7 +24,8 @@ FitRestraintBayesEM3D::FitRestraintBayesEM3D(ParticlesTemp ps,
                                              DensityMap *em_map,
                                              FloatKey weight_key,
                                              bool use_rigid_bodies,
-                                             double sigma)
+                                             double sigma, 
+                                             double window_size)
     : Restraint(IMP::internal::get_model(ps), "Fit restraint BayesEM3D %1%") {
   target_dens_map_ = em_map;
   ps_ = get_as<Particles>(ps);
@@ -35,7 +36,7 @@ FitRestraintBayesEM3D::FitRestraintBayesEM3D(ParticlesTemp ps,
 
   weight_key_ = weight_key;
   sigma_ = sigma;
-
+  window_size_ = window_size;
   score_ = 0.;
   dv_.insert(dv_.end(), ps_.size(), algebra::Vector3D(0., 0., 0.));
 }
@@ -47,7 +48,7 @@ double FitRestraintBayesEM3D::unprotected_evaluate(
   std::pair<double, algebra::Vector3Ds> vals =
       IMP::em::bayesem3d_get_score_and_derivative(
           const_cast<DensityMap *>(target_dens_map_.get()), ps_, resolution_,
-          sigma_);
+          sigma_, window_size_);
 
   score_ = vals.first;
   dv_ = vals.second;
