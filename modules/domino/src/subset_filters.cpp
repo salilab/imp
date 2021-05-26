@@ -25,7 +25,7 @@ namespace {
 /** A minimum restraint score based SubsetFilter.
     See MinimumRestraintScoreSubsetFilterTable.
  */
-class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter : public SubsetFilter {
+class MinimumRestraintScoreSubsetFilter : public SubsetFilter {
   Pointer<RestraintCache> rc_;
   RestraintsTemp rs_;
   Slices slices_;

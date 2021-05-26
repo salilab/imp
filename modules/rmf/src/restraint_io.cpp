@@ -32,7 +32,7 @@ class RMFRestraint;
 IMP_OBJECTS(RMFRestraint, RMFRestraints);
 /** A dummy restraint object to represent restraints loaded from
     an RMF file.*/
-class IMPRMFEXPORT RMFRestraint : public Restraint {
+class RMFRestraint : public Restraint {
   ParticlesTemp ps_;
   PointerMember<RestraintInfo> info_;
 
