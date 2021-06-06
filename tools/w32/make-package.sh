@@ -95,16 +95,13 @@ rmdir ${ROOT}/pylib || exit 1
 perl -pi -e 's/from \. import _format/from _ihm_pyd import _format/' \
      ${ROOT}/python/ihm/format.py || exit 1
 
-# Remove scratch module and example application/system/dependency
+# Remove scratch module and example application/dependency
 # (if installed)
-rm -rf ${ROOT}/bin/example \
-       ${ROOT}/bin/libimp_example_system* \
+rm -rf ${ROOT}/bin/imp_example_app.exe \
        ${ROOT}/bin/libimp_scratch.* \
        ${ROOT}/bin/libexample* \
        ${ROOT}/include/example* \
-       ${ROOT}/python/IMP/scratch ${ROOT}/python/*/_IMP_scratch.pyd \
-       ${ROOT}/python/IMP/example_system_local \
-       ${ROOT}/python/*/_IMP_example_system_local.pyd
+       ${ROOT}/python/IMP/scratch ${ROOT}/python/*/_IMP_scratch.pyd
 
 # Remove any .svn directories
 rm -rf `find ${ROOT} -name .svn`
