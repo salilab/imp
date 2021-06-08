@@ -33,11 +33,6 @@ ClassnameContainer::ClassnameContainer(Model *m, std::string name)
 // here for gcc
 ClassnameContainer::~ClassnameContainer() {}
 
-PLURALVARIABLETYPE ClassnameContainer::get_FUNCTIONNAMEs() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_contents()");
-  return IMP::internal::get_particle(get_model(), get_indexes());
-}
-
 bool ClassnameContainer::get_provides_access() const {
   validate_readable();
   return do_get_provides_access();

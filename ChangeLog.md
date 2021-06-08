@@ -5,6 +5,11 @@ ChangeLog {#changelog}
 - The deprecated methods
   IMP::{Singleton,Pair,Triplet,Quad}Predicate::get_value() have been removed.
   Use the get_value_index() methods instead.
+- The deprecated methods IMP::SingletonContainer::get_particles(),
+  IMP::PairContainer::get_particle_pairs(),
+  IMP::TripletContainer::get_particle_triplets(), and
+  IMP::QuadContainer::get_particle_quads() have been removed. Use the
+  get_contents() method instead.
 
 # 2.15.0 - 2021-06-02 # {#changelog_2_15_0}
 - The [Homebrew](https://brew.sh/) Mac packages now support Apple Silicon.
