@@ -135,7 +135,7 @@ IMP_OBJECTS(ClosePairContainer, ClosePairContainers);
     - the time taken to compute the close pairs as a function
     of slack size
 
-    For best results, make the particles start in a
+    For best results, make the particles start in a configuration
     that is "typical" for the optimization.
 */
 IMPCONTAINEREXPORT double get_slack_estimate(
