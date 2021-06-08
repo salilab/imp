@@ -139,6 +139,12 @@ IMP_OBJECTS(ClosePairContainer, ClosePairContainers);
     that is "typical" for the optimization.
 */
 IMPCONTAINEREXPORT double get_slack_estimate(
+    Model *m, ParticleIndexes ps, double upper_bound, double step,
+    const RestraintsTemp &restraints, bool derivatives, Optimizer *opt,
+    ClosePairContainer *cpc);
+
+IMPCONTAINER_DEPRECATED_METHOD_DECL(2.16)
+IMPCONTAINEREXPORT double get_slack_estimate(
     const ParticlesTemp &ps, double upper_bound, double step,
     const RestraintsTemp &restraints, bool derivatives, Optimizer *opt,
     ClosePairContainer *cpc);

@@ -39,7 +39,7 @@ struct Data {
 };
 }
 
-double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
+double get_slack_estimate(Model *m, ParticleIndexes ps, double upper_bound,
                           double step, const RestraintsTemp &restraints,
                           bool derivatives, Optimizer *opt,
                           ClosePairContainer *cpc) {
@@ -90,7 +90,7 @@ double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
   std::vector<std::vector<algebra::Vector3D> > pos(
       1, std::vector<algebra::Vector3D>(ps.size()));
   for (unsigned int j = 0; j < ps.size(); ++j) {
-    pos[0][j] = core::XYZ(ps[j]).get_coordinates();
+    pos[0][j] = core::XYZ(m, ps[j]).get_coordinates();
   }
   do {
     IMP_LOG_VERBOSE("Stepping from " << last_ns << " to " << ns << std::endl);
@@ -103,7 +103,7 @@ double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
     for (int i = last_ns; i < ns; ++i) {
       opt->optimize(1);
       for (unsigned int j = 0; j < ps.size(); ++j) {
-        pos[i][j] = core::XYZ(ps[j]).get_coordinates();
+        pos[i][j] = core::XYZ(m, ps[j]).get_coordinates();
       }
     }
     for (int i = last_ns; i < ns; ++i) {
@@ -183,6 +183,18 @@ double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
     // if it more than 1000, just decide that is enough
   } while (datas[opt_i].lifetime > ns / 4.0 && ns < 1000);
   return datas[opt_i].slack;
+}
+
+double get_slack_estimate(const ParticlesTemp &ps, double upper_bound,
+                          double step, const RestraintsTemp &restraints,
+                          bool derivatives, Optimizer *opt,
+                          ClosePairContainer *cpc) {
+  IMPCONTAINER_DEPRECATED_FUNCTION_DEF(
+        2.16, "Use the index-based function instead");
+  Model *m = ps[0]->get_model();
+  return get_slack_estimate(m, IMP::internal::get_index(ps),
+                            upper_bound, step, restraints, derivatives,
+                            opt, cpc);
 }
 
 IMPCONTAINER_END_NAMESPACE
