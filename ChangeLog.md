@@ -1,6 +1,11 @@
 ChangeLog {#changelog}
 =========
 
+# HEAD
+- The deprecated methods
+  IMP::{Singleton,Pair,Triplet,Quad}Predicate::get_value() have been removed.
+  Use the get_value_index() methods instead.
+
 # 2.15.0 - 2021-06-02 # {#changelog_2_15_0}
 - The [Homebrew](https://brew.sh/) Mac packages now support Apple Silicon.
 - We no longer provide RPMs for CentOS 6, since it has reached end of life.
