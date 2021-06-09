@@ -9,8 +9,8 @@ ik = IMP.IntKey("hi")
 
 class Odd(IMP.SingletonPredicate):
 
-    def get_value(self, p):
-        return p.get_value(ik) % 2
+    def get_value_index(self, m, p):
+        return m.get_attribute(ik, p) % 2
 
     def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
@@ -18,8 +18,8 @@ class Odd(IMP.SingletonPredicate):
 
 class Mod5(IMP.SingletonPredicate):
 
-    def get_value(self, p):
-        return p.get_value(ik) % 5
+    def get_value_index(self, m, p):
+        return m.get_attribute(ik, p) % 5
 
     def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
