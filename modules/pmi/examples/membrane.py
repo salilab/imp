@@ -102,16 +102,13 @@ print(dof.get_movers())
 ##############################
 
 frames = 10 if IMP.get_is_quick_test() else 2000
-rex = IMP.pmi.macros.ReplicaExchange0(model,
-                                      root_hier=hier,
-                                      crosslink_restraints=rmf_restraints,
-                                      monte_carlo_sample_objects=dof.get_movers(),
-                                      replica_exchange_maximum_temperature=3.0,
-                                      global_output_directory="output/",
-                                      output_objects=output_objects,
-                                      monte_carlo_steps=10,
-                                      number_of_frames=frames,
-                                      number_of_best_scoring_models=0)
+rex = IMP.pmi.macros.ReplicaExchange0(
+    model, root_hier=hier, crosslink_restraints=rmf_restraints,
+    monte_carlo_sample_objects=dof.get_movers(),
+    replica_exchange_maximum_temperature=3.0,
+    global_output_directory="output/", output_objects=output_objects,
+    monte_carlo_steps=10, number_of_frames=frames,
+    number_of_best_scoring_models=0)
 
 rex.execute_macro()
 exit()
