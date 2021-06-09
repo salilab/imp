@@ -1,5 +1,5 @@
 ## \example kernel/graph.py
-# A simple example showing how to use the graph interface for in python.
+# A simple example showing how to use the graph interface for in Python.
 
 from __future__ import print_function
 import IMP
@@ -31,7 +31,7 @@ try:
     matplotlib.use("macosx")
     import matplotlib.pyplot
 
-    # the method below requires the altgraph python package
+    # the method below requires the altgraph Python package
     xg = IMP.get_networkx_graph(g)
 
     # the networkx visualization tools suck, so skip them

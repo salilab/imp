@@ -17,7 +17,7 @@ mp0 = IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)
 # get the 16th residue of the first chain
 hchain = IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]
 # decorate the chain particle with an IMP.atom.Chain decorator.
-# unfortunately, our python wrapper does not handle converseions properly
+# unfortunately, our Python wrapper does not handle conversions properly
 # as a result you have to manually get the particle for that chain
 chain = IMP.atom.Chain(hchain.get_particle())
 r16 = IMP.atom.get_residue(chain, 16)

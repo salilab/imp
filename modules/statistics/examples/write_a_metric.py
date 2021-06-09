@@ -1,5 +1,5 @@
 ## \example statistics/write_a_metric.py
-# This simple example shows how to write an IMP.statistics.Metric in python.
+# This simple example shows how to write an IMP.statistics.Metric in Python.
 
 import IMP.statistics
 import math

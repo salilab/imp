@@ -15,7 +15,7 @@ rbd = IMP.core.RigidBody.setup_particle(p, IMP.algebra.ReferenceFrame3D())
 translation = IMP.algebra.get_random_vector_in(
     IMP.algebra.get_unit_bounding_box_3d())
 
-# we don't yet have python code to generate a nearby rotation
+# we don't yet have Python code to generate a nearby rotation
 rotation = IMP.algebra.get_random_rotation_3d()
 transformation = IMP.algebra.Transformation3D(rotation, translation)
 # Option 1:

@@ -3,7 +3,7 @@
 # the IMP.container.ClosePairContainer (or
 # IMP.container.CloseBipartitePairContainer). Eventually the filter should
 # probably be implemented in C++, for speed but implementing the filter in
-# python is good for prototyping.
+# Python is good for prototyping.
 
 from __future__ import print_function
 import IMP

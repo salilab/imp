@@ -36,7 +36,7 @@ rs = IMP.RestraintSet([r0, r1], 1.0)
 sf = rs.create_scoring_function()
 
 os = MyOptimizerState([r0, r1])
-os.set_name("python optimizer state")
+os.set_name("Python optimizer state")
 # we don't have any optimizers either
 co = IMP._ConstOptimizer(m)
 co.set_scoring_function(sf)
