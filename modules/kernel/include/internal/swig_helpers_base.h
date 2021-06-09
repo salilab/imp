@@ -585,13 +585,23 @@ struct Convert<int> {
     } else if (PyLong_Check(o)) {
       return PyLong_AsLong(o);
     } else {
-      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
-                TypeException);
+      long ret = PyLong_AsLong(o);
+#if PY_VERSION_HEX < 0x03000000
+      if (ret == -1 && PyErr_Occurred()) {
+        ret = PyInt_AsLong(o);
+      }
+#endif
+      if (ret != -1 || !PyErr_Occurred()) {
+        return ret;
+      } else {
+        IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
+                  TypeException);
+      }
     }
   }
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData, SwigData, SwigData) {
-    return PyLong_Check(o) || PyInt_Check(o);
+    return PyLong_Check(o) || PyInt_Check(o) || PyNumber_Check(o);
   }
   template <class SwigData>
   static PyObject* create_python_object(int f, SwigData, int) {
