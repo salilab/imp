@@ -21,8 +21,8 @@ ps = IMP.get_indexes([IMP.core.XYZ.setup_particle(IMP.Particle(m))
                       for x in range(0, 3)])
 
 s = IMP.core.HarmonicDistancePairScore(1, 1)
-lpc = IMP.container.ListPairContainer(m,
-    [(ps[i[0]], ps[i[1]]) for i in [(0, 1), (1, 2)]])
+lpc = IMP.container.ListPairContainer(
+    m, [(ps[i[0]], ps[i[1]]) for i in [(0, 1), (1, 2)]])
 print([(m.get_particle_name(p[0]), m.get_particle_name(p[1]))
        for p in lpc.get_contents()])
 r = IMP.container.PairsRestraint(s, lpc)
@@ -80,6 +80,7 @@ def get_assignments(vertex):
         (ss, IMP.domino.ReadHDF5AssignmentContainer(
             dataset, ss, pst.get_particles(), ssn))
     )
+
 
 # the root is the last vetex
 all = get_assignments(mt.get_vertices()[-1])

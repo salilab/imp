@@ -6,7 +6,6 @@
 from __future__ import print_function
 import IMP.atom
 import IMP.core
-import random
 import RMF
 import IMP.container
 import IMP.rmf

@@ -21,8 +21,8 @@ m = IMP.Model()
 ps = []
 for i in range(2):
     p = m.add_particle("P%d" % i)
-    d = IMP.core.XYZR.setup_particle(m, p,
-                                     IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0., 0., 0.), 1.0))
+    d = IMP.core.XYZR.setup_particle(
+        m, p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0., 0., 0.), 1.0))
     d.set_coordinates_are_optimized(True)
     ps.append(p)
 
@@ -48,7 +48,7 @@ for ctr in ctrs:
 movers = []
 # symmetry mover with ps[0] being the master particle
 movers.append(IMP.symmetry.BallMover(m.get_particle(ps[0]),
-                              [m.get_particle(ps[1])], 1.0, ctrs, trs))
+                                     [m.get_particle(ps[1])], 1.0, ctrs, trs))
 # normal BallMover for the other particle
 movers.append(IMP.core.BallMover(m, ps[1], 1.0))
 # serial mover

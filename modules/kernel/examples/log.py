@@ -6,6 +6,7 @@ import sys
 
 IMP.setup_from_argv(sys.argv, "Log example")
 
+
 class DummyObject(IMP.Object):
 
     def __init__(self):
@@ -20,6 +21,7 @@ class DummyObject(IMP.Object):
                 self.set_was_used(True)
                 IMP.add_to_log(IMP.VERBOSE,
                                "A verbose message in the object\n")
+
 
 # we can set the log level for all of IMP
 IMP.set_log_level(IMP.TERSE)

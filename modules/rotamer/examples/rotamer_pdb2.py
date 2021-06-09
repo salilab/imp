@@ -11,7 +11,7 @@
 #
 # Example (the result will be saved into transformed_1z5s_A.pdb):
 #
-# `../../../tools/imppy.sh python rotamer_pdb.py -i ../../atom/test/input/1z5s_A.pdb \
+# `python rotamer_pdb.py -i ../../atom/test/input/1z5s_A.pdb \
 # -l /path/to/ALL.bbdep.rotamers.lib -o transformed_1z5s_A.pdb`
 #
 
@@ -34,7 +34,7 @@ def transform(input_pdb, input_lib, output_pdb):
     # read the original PDB
     m = IMP.Model()
     orig_h = IMP.atom.read_pdb(input_pdb, m)
-    mh = IMP.atom.get_by_type(orig_h, IMP.atom.RESIDUE_TYPE)
+    # mh = IMP.atom.get_by_type(orig_h, IMP.atom.RESIDUE_TYPE)
 
     # transform...
     hps = IMP.core.HarmonicDistancePairScore(1, 100)

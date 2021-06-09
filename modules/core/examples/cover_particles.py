@@ -7,7 +7,6 @@
 import IMP
 import IMP.core
 import IMP.atom
-import IMP.atom
 import sys
 
 IMP.setup_from_argv(sys.argv, "cover particles")

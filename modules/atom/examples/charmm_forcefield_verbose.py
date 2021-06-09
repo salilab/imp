@@ -1,5 +1,9 @@
 ## \example atom/charmm_forcefield_verbose.py
-# In this example, a PDB file is read in and scored using the CHARMM forcefield. It is similar to the 'charmm_forcefield.py' example, but fully works through each step of the procedure using lower-level IMP classes. This is useful if you want to customize the way in which the forcefield is applied.
+# In this example, a PDB file is read in and scored using the CHARMM
+# forcefield. It is similar to the 'charmm_forcefield.py' example, but fully
+# works through each step of the procedure using lower-level IMP classes.
+# This is useful if you want to customize the way in which the forcefield
+# is applied.
 #
 
 from __future__ import print_function
@@ -58,10 +62,10 @@ impropers = topology.add_impropers(prot)
 # - A BondSingletonScore, when given a bond particle, scores the bond by
 #   calculating the distance between the two atoms it bonds, subtracting the
 #   ideal value, and weighting the result by the bond's "stiffness", such that
-#   an "ideal" bond scores zero, and bonds away from equilibrium score non-zero.
-#   It then hands off to a UnaryFunction to actually penalize the value. In
-#   this case, a Harmonic UnaryFunction is used with a mean of zero, so that
-#   bond lengths are harmonically restrained.
+#   an "ideal" bond scores zero, and bonds away from equilibrium score
+#   non-zero. It then hands off to a UnaryFunction to actually penalize the
+#   value. In this case, a Harmonic UnaryFunction is used with a mean of zero,
+#   so that bond lengths are harmonically restrained.
 # - A SingletonsRestraint simply goes through each of the bonds in the
 #   container and scores each one in turn.
 cont = IMP.container.ListSingletonContainer(m, bonds, "bonds")
@@ -102,7 +106,8 @@ cont = IMP.container.ListSingletonContainer(m, atoms)
 # of all pairs of Particles that are close. A StereochemistryPairFilter is used
 # to exclude atoms from this list that are bonded to each other or are involved
 # in an angle or dihedral (1-3 or 1-4 interaction). Then, a
-# LennardJonesPairScore scores a pair of atoms with the Lennard-Jones potential.
+# LennardJonesPairScore scores a pair of atoms with the
+# Lennard-Jones potential.
 # Finally, a PairsRestraint is used which simply applies the
 # LennardJonesPairScore to each pair in the ClosePairContainer.
 nbl = IMP.container.ClosePairContainer(cont, 4.0)

@@ -11,7 +11,7 @@ IMP.setup_from_argv(sys.argv, "Optimizer state")
 
 
 class MyOptimizerState(IMP.OptimizerState):
-    """An optimizer state which prints out the last scores of some restraints"""
+    "An optimizer state which prints out the last scores of some restraints"
 
     def __init__(self, rs):
         IMP.OptimizerState.__init__(self, rs[0].get_model(),
@@ -21,6 +21,7 @@ class MyOptimizerState(IMP.OptimizerState):
     def update(self):
         for r in self.rs:
             print(r.get_name(), r.get_last_score())
+
 
 # some code to create and evaluate it
 k = IMP.FloatKey("a key")

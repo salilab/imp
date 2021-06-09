@@ -16,6 +16,7 @@ def create_one():
     h = IMP.atom.read_pdb(IMP.atom.get_example_path("1d3d-protein.pdb"), m)
     return h
 
+
 h0 = create_one()
 rt.add_child(h0)
 IMP.atom.State.setup_particle(h0, 0)

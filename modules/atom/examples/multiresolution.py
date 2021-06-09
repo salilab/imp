@@ -43,12 +43,18 @@ print("resolutions are", resolutions)
 
 # note these resolutions need to be fixed
 print("atoms")
-print(IMP.atom.Selection(root, residue_index=15, resolution=1).get_selected_particles())
+print(IMP.atom.Selection(
+    root, residue_index=15, resolution=1).get_selected_particles())
 print("residues")
-print(IMP.atom.Selection(root, residue_index=15, resolution=.3).get_selected_particles())
+print(IMP.atom.Selection(
+    root, residue_index=15, resolution=.3).get_selected_particles())
 print("several residues")
-print(IMP.atom.Selection(root, residue_index=15, resolution=.2).get_selected_particles())
+print(IMP.atom.Selection(
+    root, residue_index=15, resolution=.2).get_selected_particles())
 print("very coarse")
-print(IMP.atom.Selection(root, residue_index=15, resolution=.01).get_selected_particles())
+print(IMP.atom.Selection(
+    root, residue_index=15, resolution=.01).get_selected_particles())
 print("all")
-print(IMP.atom.Selection(root, residue_index=15, resolution=IMP.atom.ALL_RESOLUTIONS).get_selected_particles())
+print(IMP.atom.Selection(
+    root, residue_index=15,
+    resolution=IMP.atom.ALL_RESOLUTIONS).get_selected_particles())

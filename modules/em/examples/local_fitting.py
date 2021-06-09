@@ -90,8 +90,11 @@ print("The start score is:", start_score, "with rmsd of:", start_rmsd)
 # 5.1 run local fitting
 print("performing local refinement, may run for 3-4 minutes")
 # translate the molecule to the center of the density
-IMP.core.transform(prot_rb, IMP.algebra.Transformation3D(
-    IMP.algebra.get_identity_rotation_3d(), dmap.get_centroid() - IMP.core.get_centroid(ps)))
+IMP.core.transform(
+    prot_rb,
+    IMP.algebra.Transformation3D(
+        IMP.algebra.get_identity_rotation_3d(),
+        dmap.get_centroid() - IMP.core.get_centroid(ps)))
 m.update()  # to make sure the transformation was applied
 sampled_input_density.resample()
 sampled_input_density.calcRMS()
@@ -99,10 +102,6 @@ rmsd = IMP.atom.get_rmsd(IMP.core.XYZs(ps), IMP.core.XYZs(ps_ref))
 score2 = IMP.em.get_coarse_cc_coefficient(
     dmap, sampled_input_density, sampled_input_density.get_header().dmin)
 print("The score after centering is:", score2, "with rmsd of:", rmsd)
-# IMP.em.local_rigid_fitting_grid_search(
-#    ps,IMP.core.XYZR.get_radius_key(),
-#    IMP.atom.Mass.get_mass_key(),
-#    dmap,fitting_sols)
 
 refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
 fitting_sols = IMP.em.local_rigid_fitting(
@@ -115,13 +114,13 @@ fitting_sols = IMP.em.local_rigid_fitting(
 print("The start score is:", start_score, "with rmsd of:", start_rmsd)
 for i in range(fitting_sols.get_number_of_solutions()):
     IMP.core.transform(prot_rb, fitting_sols.get_transformation(i))
-    # prot_rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(fitting_sols.get_transformation(i)))
     m.update()  # to make sure the transformation was applied
-# 5.2.2 calc rmsd to native configuration
+    # 5.2.2 calc rmsd to native configuration
     rmsd = IMP.atom.get_rmsd(
         IMP.core.XYZs(ps), IMP.core.XYZs(IMP.core.get_leaves(mh_ref)))
     IMP.atom.write_pdb(mh, "temp_" + str(i) + ".pdb")
-    print("Fit with index:", i, " with cc: ", 1. - fitting_sols.get_score(i), " and rmsd to native of:", rmsd)
+    print("Fit with index:", i, " with cc: ", 1. - fitting_sols.get_score(i),
+          " and rmsd to native of:", rmsd)
     IMP.atom.write_pdb(mh, "sol_" + str(i) + ".pdb")
     IMP.core.transform(
         prot_rb, fitting_sols.get_transformation(i).get_inverse())

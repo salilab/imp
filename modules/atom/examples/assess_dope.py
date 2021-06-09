@@ -9,6 +9,7 @@ import sys
 
 IMP.setup_from_argv(sys.argv, "assess dope")
 
+
 def create_representation():
     m = IMP.Model()
     mp0 = IMP.atom.read_pdb(IMP.atom.get_example_path(
@@ -34,6 +35,7 @@ def add_dope(m, prot):
     dps = IMP.atom.DopePairScore(15.0)
     d = IMP.container.PairsRestraint(dps, dpc)
     return d
+
 
 print("creating representation")
 (m, prot) = create_representation()

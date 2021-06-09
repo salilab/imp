@@ -1,6 +1,6 @@
 ## \example kernel/basic_optimization.py
-# This illustrates a basic main loop for optimization and searching for the best
-# scoring conformation.
+# This illustrates a basic main loop for optimization and searching for the
+# best scoring conformation.
 #
 
 from __future__ import print_function

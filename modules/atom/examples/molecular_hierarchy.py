@@ -1,8 +1,9 @@
 ## \example atom/molecular_hierarchy.py
-# In this example, we read a protein from a PDB file and set the center and radius of each residue to enclose the atoms in that residue.
+# In this example, we read a protein from a PDB file and set the center and
+# radius of each residue to enclose the atoms in that residue.
 #
-# Then a second copy of the protein is loaded and they are both added to the same hierarchy
-# to define a hypothetical assembly.
+# Then a second copy of the protein is loaded and they are both added to the
+# same hierarchy to define a hypothetical assembly.
 #
 
 import IMP

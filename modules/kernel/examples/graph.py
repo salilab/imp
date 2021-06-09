@@ -35,7 +35,7 @@ try:
     xg = IMP.get_networkx_graph(g)
 
     # the networkx visualization tools suck, so skip them
-    #import networkx
+    # import networkx
     # networkx.draw(xg)
     # networkx.draw_shell(xg)
     # matplotlib.pyplot.show()

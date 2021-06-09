@@ -10,12 +10,13 @@ import IMP.display
 import IMP.example
 import sys
 import IMP.rmf
-#import IMP.benchmark
 import RMF
 import random
 
 IMP.setup_from_argv(
-    sys.argv, "Use the IMP::misc::DecayPairContainerOptimizerState to gradually break the bonds in a bd simulation")
+    sys.argv,
+    "Use the IMP::misc::DecayPairContainerOptimizerState to gradually "
+    "break the bonds in a bd simulation")
 
 if IMP.get_bool_flag("run_quick_test"):
     np = 8
@@ -38,7 +39,8 @@ ps = []
 for i in range(0, np):
     p = m.add_particle("p")
     d = IMP.core.XYZR.setup_particle(m, p)
-    d.set_coordinates(IMP.algebra.Vector3D(10. * (i/10), 10. * (i%10), 10.))
+    d.set_coordinates(
+        IMP.algebra.Vector3D(10. * (i / 10), 10. * (i % 10), 10.))
     d.set_radius(10)
     d.set_coordinates_are_optimized(True)
     IMP.atom.Hierarchy.setup_particle(m, p)

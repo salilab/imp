@@ -41,6 +41,7 @@ def display(i, w, hs):
         g = IMP.atom.HierarchyGeometry(h)
         w.add_geometry(g)
 
+
 m = IMP.Model()
 IMP.set_log_level(IMP.SILENT)
 
@@ -53,10 +54,6 @@ ev = IMP.core.ExcludedVolumeRestraint(
     IMP.container.ListSingletonContainer(
         m, rb0.get_rigid_members() + rb1.get_rigid_members()), 1, 3)
 
-#h= IMP.core.Harmonic(0,1)
-#s= IMP.core.DistanceToSingletonScore(h, IMP.algebra.Vector3D(0,0,0))
-#r= IMP.core.SingletonRestraint(s, rb0.get_member(0))
-# m.add_restraint(r)
 cr = IMP.atom.create_distance_restraint(
     IMP.atom.Selection(h0), IMP.atom.Selection(h1), 0, 1)
 

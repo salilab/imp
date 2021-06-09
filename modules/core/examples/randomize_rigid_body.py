@@ -23,9 +23,8 @@ transformation = IMP.algebra.Transformation3D(rotation, translation)
 rbd.set_reference_frame(IMP.algebra.ReferenceFrame3D(transformation))
 # Option 2:
 # perturb the existing transformation
-composed_tr = IMP.algebra.compose \
-    (rbd.get_reference_frame().get_transformation_to(),
-     transformation)
+composed_tr = IMP.algebra.compose(
+    rbd.get_reference_frame().get_transformation_to(), transformation)
 rbd.set_reference_frame(IMP.algebra.ReferenceFrame3D(composed_tr))
 # Alternative to Option 2:
 IMP.core.transform(rbd, transformation)

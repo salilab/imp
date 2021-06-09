@@ -11,8 +11,8 @@ IMP.setup_from_argv(sys.argv, "geometry")
 # we can create some spheres
 s = []
 for i in range(0, 10):
-    s.append(IMP.algebra.Sphere3D(
-        IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()), .1))
+    s.append(IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(
+        IMP.algebra.get_unit_bounding_box_3d()), .1))
 
 # we can compute a sphere which contains them all
 enclosing = IMP.algebra.get_enclosing_sphere(s)

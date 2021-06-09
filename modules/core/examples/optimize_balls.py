@@ -88,8 +88,8 @@ mc.add_mover(sm)
 isf = IMP.core.IncrementalScoringFunction(m, aps, restraints)
 isf.set_name("I")
 # use special incremental support for the non-bonded part
-# apply the pair score sps to all touching ball pairs from the list of particles
-# aps, using the filters to remove undersired pairs
+# apply the pair score sps to all touching ball pairs from the list
+# of particles aps, using the filters to remove undersired pairs
 # this is equivalent to the nbl construction above but optimized for
 # incremental
 isf.add_close_pair_score(sps, 0, aps, filters)
@@ -122,8 +122,9 @@ for i in range(1, nouter):
     factor = .1 * i
     for p in aps:
         rs.append(
-            IMP.ScopedSetFloatAttribute(p, IMP.core.XYZR.get_radius_key(),
-                                        IMP.core.XYZR(p).get_radius() * factor))
+            IMP.ScopedSetFloatAttribute(
+                p, IMP.core.XYZR.get_radius_key(),
+                IMP.core.XYZR(p).get_radius() * factor))
     # move each particle nmc times
     print(factor)
     for j in range(0, ninner):

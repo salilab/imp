@@ -34,4 +34,5 @@ for i in g.get_extended_indexes(IMP.algebra.get_bounding_box(s)):
         g.add_voxel(i, -1)
         in_count += 1
 
-print("There are", len(g.get_all_indexes()), "distinct values", count, in_count)
+print("There are", len(g.get_all_indexes()), "distinct values",
+      count, in_count)

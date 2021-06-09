@@ -69,6 +69,7 @@ m.set_log_level(IMP.SILENT)
 opt = IMP.core.ConjugateGradients(m)
 opt.set_scoring_function(sf)
 
+
 def try_point(i, j, k):
     print("trying", i, j, k)
     vc = IMP.algebra.Vector3D(i, j, k)
@@ -92,6 +93,7 @@ def try_point(i, j, k):
     sg.set_color(converge_color)
     sg.set_name("converge")
     w.add_geometry(sg)
+
 
 try_point(-bd, -bd, -bd)
 

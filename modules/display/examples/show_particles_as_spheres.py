@@ -9,7 +9,8 @@ import IMP.core
 import IMP.display
 import sys
 
-IMP.setup_from_argv(sys.argv,
+IMP.setup_from_argv(
+    sys.argv,
     "Write two colored sets of random XYZR particles to a Pymol input file")
 
 # create two lists of random particles for display

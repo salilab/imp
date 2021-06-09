@@ -32,13 +32,13 @@ expected_spring_diffusion_length =\
                                   4 * expected_delta ** 2, time_step)
 
 print("with a time step of", time_step, "fs")
-print("an object of radius", minimum_particle_radius, "A will move",\
-    expected_delta, "A and a point on its surface will move",\
-    expected_rotational_delta, "A more")
-print("the motion from fluctuations in the spring compression will be",\
-    expected_spring_diffusion_length, "A")
-print("and a compression of 10% of the radius will induce a motion of",\
-    IMP.atom.get_diffusion_length(maximum_diffusion_coefficient,
-                         .5 * maximum_spring_constant *
-                         (.1 * minimum_particle_radius) ** 2,
-                         time_step), "A")
+print("an object of radius", minimum_particle_radius, "A will move",
+      expected_delta, "A and a point on its surface will move",
+      expected_rotational_delta, "A more")
+print("the motion from fluctuations in the spring compression will be",
+      expected_spring_diffusion_length, "A")
+print("and a compression of 10% of the radius will induce a motion of",
+      IMP.atom.get_diffusion_length(maximum_diffusion_coefficient,
+                                    .5 * maximum_spring_constant *
+                                    (.1 * minimum_particle_radius) ** 2,
+                                    time_step), "A")

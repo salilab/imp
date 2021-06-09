@@ -44,6 +44,7 @@ def recursive_approximation(res):
         hc.add_child(mm)
     return [hc]
 
+
 for c in chains:
     res = IMP.atom.get_by_type(h, IMP.atom.RESIDUE_TYPE)
     for r in res:
