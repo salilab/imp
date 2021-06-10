@@ -2,29 +2,10 @@
 
 
 %{
-#if IMP_KERNEL_HAS_NUMPY
-#include <numpy/arrayobject.h>
-
-static bool import_numpy_module()
-{
-  static bool imported;
-
-  if (imported) {
-    return true;
-  } else {
-    int ret = _import_array();
-    if (ret == 0) {
-      imported = true;
-    }
-    return (ret == 0);
-  }
-}
-#endif
-
 PyObject *_get_floats_data_numpy(PyObject *m_pyobj, unsigned sz, double *data)
 {
 #if IMP_KERNEL_HAS_NUMPY
-  if (!import_numpy_module()) {
+  if (numpy_import_retval != 0) {
     return NULL;
   }
 
@@ -55,7 +36,7 @@ PyObject *_get_floats_data_numpy(PyObject *m_pyobj, unsigned sz, double *data)
 PyObject *_get_ints_data_numpy(PyObject *m_pyobj, unsigned sz, int *data)
 {
 #if IMP_KERNEL_HAS_NUMPY
-  if (!import_numpy_module()) {
+  if (numpy_import_retval != 0) {
     return NULL;
   }
 
@@ -113,7 +94,7 @@ PyObject *_get_spheres_data_numpy(PyObject *m_pyobj, unsigned sz,
                                   algebra::Sphere3D *data)
 {
 #if IMP_KERNEL_HAS_NUMPY
-  if (!import_numpy_module()) {
+  if (numpy_import_retval != 0) {
     return NULL;
   }
 
