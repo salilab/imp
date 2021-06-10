@@ -22,6 +22,28 @@
 #include <vector>
 #include <cstdio>
 
+#if IMP_KERNEL_HAS_NUMPY
+#include <numpy/arrayobject.h>
+// This should be defined in the including module's SWIG wrapper
+extern int numpy_import_retval;
+
+// Return true iff `o` is a 1D numpy array of the given type laid out in
+// a contiguous chunk of memory
+bool is_native_numpy_array(PyObject *o, int numpy_type) {
+  if (!o || !PyArray_Check(o)) return false; // not a numpy array
+
+  PyArrayObject *a = (PyArrayObject *)o;
+  int array_type = PyArray_TYPE(a);
+  if (array_type != NPY_NOTYPE
+      && !PyArray_EquivTypenums(array_type, numpy_type)) {
+    return false;  // data type does not match
+  }
+
+  return PyArray_ISCONTIGUOUS(a) && PyArray_ISNOTSWAPPED(a)
+         && PyArray_NDIM(a) == 1;
+}
+#endif
+
 // using namespace IMP;
 using namespace IMP;
 #ifndef SWIG
@@ -491,6 +513,69 @@ struct ConvertSequence<
     ConvertT> : public ConvertVectorBase<ConstVector<T, TS>, ConvertT> {
   static const int converter = 31;
 };
+
+#if IMP_KERNEL_HAS_NUMPY
+/* Provide template specializations that copy directly between IMP
+   arrays and numpy objects, without having to construct Python objects
+   for each sequence element */
+template <class ConvertT>
+struct ConvertSequence<Ints, ConvertT> : public ConvertVectorBase<
+                                                        Ints, ConvertT> {
+  static const int converter = 32;
+  typedef ConvertVectorBase<Ints, ConvertT> Base;
+
+  template <class SwigData>
+  static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
+                                SwigData decorator_st) {
+    return (numpy_import_retval == 0 && is_native_numpy_array(in, NPY_INT))
+           || Base::get_is_cpp_object(in, st, particle_st, decorator_st);
+  }
+
+  template <class SwigData>
+  static Ints get_cpp_object(PyObject* o, const char *symname, int argnum,
+                             const char *argtype, SwigData st,
+                             SwigData particle_st,
+                             SwigData decorator_st) {
+    if (numpy_import_retval == 0 && is_native_numpy_array(o, NPY_INT)) {
+      int dim = PyArray_DIM((PyArrayObject*)o, 0);
+      int *data = (int *)PyArray_DATA((PyArrayObject*)o);
+      return Ints(data, data+dim);
+    } else {
+      return Base::get_cpp_object(o, symname, argnum, argtype, st,
+                                  particle_st, decorator_st);
+    }
+  }
+};
+
+template <class ConvertT>
+struct ConvertSequence<Floats, ConvertT> : public ConvertVectorBase<
+                                                        Floats, ConvertT> {
+  static const int converter = 33;
+  typedef ConvertVectorBase<Floats, ConvertT> Base;
+
+  template <class SwigData>
+  static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
+                                SwigData decorator_st) {
+    return (numpy_import_retval == 0 && is_native_numpy_array(in, NPY_DOUBLE))
+           || Base::get_is_cpp_object(in, st, particle_st, decorator_st);
+  }
+
+  template <class SwigData>
+  static Floats get_cpp_object(PyObject* o, const char *symname, int argnum,
+                               const char *argtype, SwigData st,
+                               SwigData particle_st,
+                               SwigData decorator_st) {
+    if (numpy_import_retval == 0 && is_native_numpy_array(o, NPY_DOUBLE)) {
+      int dim = PyArray_DIM((PyArrayObject*)o, 0);
+      double *data = (double *)PyArray_DATA((PyArrayObject*)o);
+      return Floats(data, data+dim);
+    } else {
+      return Base::get_cpp_object(o, symname, argnum, argtype, st,
+                                  particle_st, decorator_st);
+    }
+  }
+};
+#endif
 
 template <>
 struct Convert<std::string> {

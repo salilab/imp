@@ -1,5 +1,7 @@
 import IMP
 import IMP.test
+if IMP.IMP_KERNEL_HAS_NUMPY:
+    import numpy
 
 
 xkey = IMP.FloatKey("x")
@@ -46,6 +48,36 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(m.get_attribute(ik, p.get_index()), 1)
         m.add_attribute(isk, p.get_index(), [IntLike(9)])
         self.assertEqual(m.get_attribute(isk, p.get_index()), [9])
+
+    @IMP.test.skipIf(not IMP.IMP_KERNEL_HAS_NUMPY, "No numpy support")
+    def test_numpy_int(self):
+        """Test using numpy arrays as input for Ints attributes"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        isk = IMP.IntsKey("hi")
+        m.add_attribute(isk, p.get_index(), [1])
+
+        # 32-bit int should be copied directly from numpy to IMP; 64-bit should
+        # use the normal per-element typemaps
+        for dtype in (numpy.int32, numpy.int64):
+            n = numpy.array([1,2,3,4,5,6], dtype=dtype)
+            p.set_value(isk, n)
+            self.assertEqual(p.get_value(isk), [1,2,3,4,5,6])
+
+    @IMP.test.skipIf(not IMP.IMP_KERNEL_HAS_NUMPY, "No numpy support")
+    def test_numpy_float(self):
+        """Test using numpy arrays as input for Floats attributes"""
+        m = IMP.Model()
+        p = IMP.Particle(m)
+        fsk = IMP.FloatsKey("hi")
+        m.add_attribute(fsk, p.get_index(), [1.])
+
+        # double should be copied directly from numpy to IMP; float should
+        # use the normal per-element typemaps
+        for dtype in (numpy.float32, numpy.float64):
+            n = numpy.array([1.,2.,3.,4.,5.,6.], dtype=dtype)
+            p.set_value(fsk, n)
+            self.assertEqual(p.get_value(fsk), [1.,2.,3.,4.,5.,6.])
 
 
 if __name__ == '__main__':
