@@ -87,6 +87,37 @@ class IMPInstallTests(unittest.TestCase):
                                  "Return code for %s app is %d, not 0; "
                                  "output is %s" % (app.name, ret, out))
 
+    def test_get_numpy(self):
+        """Test numpy support"""
+        m1 = IMP.Model("numpy get_ints")
+        p1 = IMP.Particle(m1)
+        p2 = IMP.Particle(m1)
+        p3 = IMP.Particle(m1)
+
+        m2 = IMP.Model("numpy no get_ints")
+        p12 = IMP.Particle(m2)
+
+        k = IMP.IntKey("myf")
+        p1.add_attribute(k, 1)
+        p2.add_attribute(k, 2)
+
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            n = m1._get_ints_numpy(k)
+            self.assertIs(n.base, m1)
+            self.assertEqual(len(n), 2) # no int attribute for p3
+            self.assertEqual(n[0], 1)
+            self.assertEqual(n[1], 2)
+            n[0] = 42
+            n[1] = 24
+            self.assertEqual(p1.get_value(k), 42)
+            self.assertEqual(p2.get_value(k), 24)
+
+            n = m2._get_ints_numpy(k)
+            self.assertIs(n.base, m2)
+            self.assertEqual(len(n), 0) # no int key for this model
+        else:
+            self.assertRaises(NotImplementedError, m1._get_ints_numpy, k)
+
 
 if __name__ == '__main__':
     unittest.main()
