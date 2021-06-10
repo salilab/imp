@@ -1,17 +1,13 @@
 from __future__ import print_function
 import IMP
-import subprocess
-import random
 import IMP.domino
 import IMP.core
 import IMP.rmf
 import RMF
 import time
 import IMP.algebra
-import types
 import re
 import sys
-import operator
 import os
 import resource
 from . import atomicDominoUtilities
@@ -110,7 +106,6 @@ class AtomicDomino:
         # make dependency graph for stats
         for r in IMP.get_restraints([self.model.get_root_restraint_set()]):
             restraintList.append(r)
-        dg = IMP.get_dependency_graph(restraintList)
 
         stateCounter = 0
         passedCounter = 0
@@ -129,9 +124,11 @@ class AtomicDomino:
 
             stateCounter += 1
         fraction = (passedCounter * 1.0) / (stateCounter * 1.0)
-        print("%s states passed out of %s total for this subset (fraction %s)" % (passedCounter, stateCounter, fraction))
+        print("%s states passed out of %s total for this subset (fraction %s)"
+              % (passedCounter, stateCounter, fraction))
         if (passedCounter == 0):
-            print("subset %s had 0 assignments (out of %s) pass. Exiting..." % (subset, stateCounter))
+            print("subset %s had 0 assignments (out of %s) pass. Exiting..."
+                  % (subset, stateCounter))
             sys.exit()
 
         return filteredAssignments
@@ -172,7 +169,8 @@ class AtomicDomino:
 
         self.sampler = s
 
-    # Use the model restraint set to get the interaction graph, junction tree, and merge tree, and also get subsets
+    # Use the model restraint set to get the interaction graph, junction tree,
+    # and merge tree, and also get subsets
     # from the junction tree and return them
     def createSubsets(self):
         self.initializeParticleStatesTable()
@@ -252,7 +250,8 @@ class AtomicDomino:
             subset = self.mt.get_vertex_name(nodeIndex)
             particleList = self.quickSubsetName(subset)
             mtIndexToParticles[nodeIndex] = particleList
-            print("createtMtIndexToParticles: index %s is particleList %s " % (nodeIndex, particleList))
+            print("createtMtIndexToParticles: index %s is particleList %s "
+                  % (nodeIndex, particleList))
 
         return mtIndexToParticles
 
@@ -277,7 +276,6 @@ class AtomicDomino:
                 print("execption in loading frame %s" % i)
                 continue
             score = self.model.evaluate(False)
-            leaves = IMP.atom.get_leaves(self.protein)
             # for leaf in leaves:
             #    xyzD = IMP.core.XYZ.decorate_particle(leaf)
             # print "read trajectory file: coordinates for frame %s particle %s
@@ -322,8 +320,9 @@ class AtomicDomino:
                 print("didn't add domino states due to skip parameters")
         return [bestScore, bestScoreFrame, bestRmsd, bestRmsdFrame]
 
-    # Get the grid index for the given particle. Returns an integer that can be used to get the center
-    # of the grid space for discretizing the particle
+    # Get the grid index for the given particle. Returns an integer that
+    # can be used to get the center of the grid space for discretizing
+    # the particle
     def getParticleGridIndex(self, leaf):
         xyzDecorator = IMP.core.XYZ(leaf)
         coordinates = xyzDecorator.get_coordinates()
@@ -415,8 +414,8 @@ class AtomicDomino:
 
         self.grid = g
 
-    # Create Particle States Table and for each particle in the system, add XYZStates with that particle's
-    # initial location
+    # Create Particle States Table and for each particle in the system,
+    # add XYZStates with that particle's initial location
     def initializeParticleStatesTable(self):
 
         dominoPst = IMP.domino.ParticleStatesTable()
@@ -424,8 +423,6 @@ class AtomicDomino:
             self.protein, self.model, self.namesToParticles)
 
         for p in restrainedParticles:
-
-            xyzD = IMP.core.XYZ(p)
             xyz = IMP.core.XYZ(p).get_coordinates()
             xyzStates = IMP.domino.XYZStates([xyz])
             dominoPst.set_particle_states(p, xyzStates)
@@ -477,12 +474,12 @@ class AtomicDomino:
         print("preparing to read md frames %s" % framesToRead)
         # prepare data structures for tracking
         particleInfo = {}
-            # for each particle, list where each entry corresponds to an md step, and its value [domino state, coordinates]
+        # for each particle, list where each entry corresponds to an md step,
+        # and its value [domino state, coordinates]
         # for each particle, dictionary where the key is the grid index and
         # value is domino state
         particleStatesSeen = {}
         for atomName in atomList:
-            particle = self.namesToParticles[atomName]
             particleInfo[atomName] = []
             particleStatesSeen[atomName] = {}
 
@@ -510,7 +507,6 @@ class AtomicDomino:
             fullFile,
             bestScoreFrame,
             self.getParam("best_md_score_output_file"))
-        #self.singlePdbResults(fullFile, 10000, self.getParam("best_md_score_output_file"))
 
         self.singlePdbResults(
             fullFile,
@@ -568,9 +564,12 @@ class AtomicDomino:
                 cgScoreOutputFile = os.path.join(
                     outputDir, "%s%s" %
                     (self.getParam("cg_score_output_file"), cgNumber))
-                [cgScore, cgScoreFrame, cgRmsd, cgRmsdFrame] = self.readTrajectoryFile(
-                    atomList, rh, cgFrames, cgScoreOutputFile, skipCgDomino, flexibleAtoms)
-                print("cg number %s rmsd %s score %s" % (cgNumber, cgRmsd, cgScore))
+                [cgScore, cgScoreFrame, cgRmsd, cgRmsdFrame] = \
+                    self.readTrajectoryFile(atomList, rh, cgFrames,
+                                            cgScoreOutputFile, skipCgDomino,
+                                            flexibleAtoms)
+                print("cg number %s rmsd %s score %s"
+                      % (cgNumber, cgRmsd, cgScore))
                 # Update best score
                 if (cgScore < bestCgScore):
                     bestCgScore = cgScore
@@ -589,8 +588,8 @@ class AtomicDomino:
                 -1,
                 self.getParam("best_cg_rmsd_output_file"))
             self.singlePdbResults(
-                "%s%s" %
-                (cgFileName, framesToRead[-1]), -1, self.getParam("final_cg_frame_output_file"))
+                "%s%s" % (cgFileName, framesToRead[-1]),
+                -1, self.getParam("final_cg_frame_output_file"))
             finalCgRmsd = self.calculateNativeRmsd(flexibleAtoms)
             print("final cg rmsd is %s " % finalCgRmsd)
         self.bestCgScore = round(bestCgScore, 2)
@@ -647,7 +646,6 @@ class AtomicDomino:
         trajectoryFrame,
             flexibleAtoms):
         pdbName = self.getParam("native_pdb_input_file")
-        otherModel = IMP.Model()
         otherProtein = IMP.atom.read_pdb(
             pdbName,
             self.nativeModel,
@@ -710,7 +708,8 @@ class AtomicDomino:
             print("computing assignments for leaf %s" % nodeIndex)
 
             self.sampler.load_vertex_assignments(nodeIndex, mine)
-            print("leaf node %s has %s leaf assignments" % (nodeIndex, mine.get_number_of_assignments()))
+            print("leaf node %s has %s leaf assignments"
+                  % (nodeIndex, mine.get_number_of_assignments()))
         else:
             if (children[0] > children[1]):
                 children = [children[1], children[0]]
@@ -722,8 +721,11 @@ class AtomicDomino:
                 nodeIndex, firstAc, secondAc, mine)
 
             timeDifference = self.logTimePoint(0)
-            print("Done Parent %s Assignments %s first child %s second child %s time %s" % (nodeIndex, mine.get_number_of_assignments(), firstAc.get_number_of_assignments(),
-                                                                                            secondAc.get_number_of_assignments(), timeDifference))
+            print("Done Parent %s Assignments %s first child %s "
+                  "second child %s time %s"
+                  % (nodeIndex, mine.get_number_of_assignments(),
+                     firstAc.get_number_of_assignments(),
+                     secondAc.get_number_of_assignments(), timeDifference))
         self.totalAssignments += mine.get_number_of_assignments()
         self.logMemory()
         return mine
@@ -747,7 +749,8 @@ class AtomicDomino:
         print("best md rmsd is %s" % self.bestMdRmsd)
         print("best cg score is %s" % self.bestCgScore)
         print("best cg rmsd is %s" % self.bestCgRmsd)
-        print("merge tree contained %s total assignments" % self.totalAssignments)
+        print("merge tree contained %s total assignments"
+              % self.totalAssignments)
 
         IMP.domino.load_particle_states(
             self.dominoPst.get_subset(),
@@ -781,7 +784,11 @@ class AtomicDomino:
         print("final domino rmsd: %s" % dominoRmsd)
         print("best domino rmsd with best md score: %s" % dominoVsMdRmsd)
         print("domino rmsd with best cg score: %s" % dominoVsCgRmsd)
-        print("Final Results\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (self.bestMdScore, self.bestMdRmsd, self.bestCgScore, self.bestCgRmsd, bestDominoScore, dominoRmsd, dominoMinimizedScore, dominoVsCgRmsd, self.totalAssignments, self.maxMem, runTime))
+        print("Final Results\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s"
+              % (self.bestMdScore, self.bestMdRmsd, self.bestCgScore,
+                 self.bestCgRmsd, bestDominoScore, dominoRmsd,
+                 dominoMinimizedScore, dominoVsCgRmsd, self.totalAssignments,
+                 self.maxMem, runTime))
 
     #
     # Parallel methods
@@ -846,23 +853,31 @@ class AtomicDomino:
                 secondChildIndex, mtIndexToSubsetOrder[secondChildIndex], 1)
             secondAcCreateTime = self.logTimePoint(0)
 
-            print("getting assignments for nodeIndex %s first child %s second child %s" % (nodeIndex, firstChildIndex, secondChildIndex))
+            print("getting assignments for nodeIndex %s first child %s "
+                  "second child %s"
+                  % (nodeIndex, firstChildIndex, secondChildIndex))
             firstChildParticles = mtIndexToSubsetOrder[firstChildIndex]
             secondChildParticles = mtIndexToSubsetOrder[secondChildIndex]
             myParticles = mtIndexToParticles[nodeIndex]
 
-            print("first child particles %s\nsecond child particles %s\nmy particles; %s\n" % (firstChildParticles, secondChildParticles, myParticles))
+            print("first child particles %s\nsecond child particles %s\n"
+                  "my particles; %s\n"
+                  % (firstChildParticles, secondChildParticles, myParticles))
             for p in firstSubset:
-                print("next particle in first subset: %s" % self.quickParticleName(p))
+                print("next particle in first subset: %s"
+                      % self.quickParticleName(p))
 
             for p in secondSubset:
-                print("next particle in second subset: %s" % self.quickParticleName(p))
+                print("next particle in second subset: %s"
+                      % self.quickParticleName(p))
 
             for assignment in firstAc.get_assignments():
-                print("next assignment for first child %s: %s" % (firstChildIndex, assignment))
+                print("next assignment for first child %s: %s"
+                      % (firstChildIndex, assignment))
 
             for assignment in secondAc.get_assignments():
-                print("next assignment for second child %s: %s" % (secondChildIndex, assignment))
+                print("next assignment for second child %s: %s"
+                      % (secondChildIndex, assignment))
 
             [mySubset, myAc] = self.createHdf5AssignmentContainer(
                 nodeIndex, mtIndexToParticles[nodeIndex], 0)
@@ -871,9 +886,6 @@ class AtomicDomino:
             rssft = IMP.domino.RestraintScoreSubsetFilterTable(
                 self.model.get_root_restraint_set(),
                 self.dominoPst)
-            rssf = rssft.get_subset_filter(mySubset, [])
-
-            #heapAc = IMP.domino.HeapAssignmentContainer(1000, rssf)
 
             IMP.domino.load_merged_assignments(
                 firstSubset,
@@ -887,22 +899,25 @@ class AtomicDomino:
             # myAc.add_assignments(heapAc.get_assignments())
             addTime = self.logTimePoint(0)
             for assignment in myAc.get_assignments():
-                print("loadAssignmentsParallel next assignment for %s: %s" % (nodeIndex, assignment))
+                print("loadAssignmentsParallel next assignment for %s: %s"
+                      % (nodeIndex, assignment))
             doneTime = self.logTimePoint(0)
             firstChildCount = firstAc.get_number_of_assignments()
             secondChildCount = secondAc.get_number_of_assignments()
-            print("first count: %s second count: %s begin: %s firstAc: %s secondAc: %s  prep: %s heap: %s add: %s done: %s" % (firstChildCount, secondChildCount, beginTime, firstAcCreateTime, secondAcCreateTime, prepTime, heapTime, addTime, doneTime))
+            print("first count: %s second count: %s begin: %s firstAc: %s "
+                  "secondAc: %s  prep: %s heap: %s add: %s done: %s"
+                  % (firstChildCount, secondChildCount, beginTime,
+                     firstAcCreateTime, secondAcCreateTime, prepTime,
+                     heapTime, addTime, doneTime))
             subsetOrder = self.getSubsetOrderList(mySubset)
             return subsetOrder
 
-    def createAssignmentsParallel(
-        self,
-        particleInfo,
-        nodeIndex,
-            mtIndexToParticles):
+    def createAssignmentsParallel(self, particleInfo, nodeIndex,
+                                  mtIndexToParticles):
 
         subsetName = mtIndexToParticles[nodeIndex]
-        print("starting assignments parallel leaf index %s subset name %s" % (nodeIndex, subsetName))
+        print("starting assignments parallel leaf index %s subset name %s"
+              % (nodeIndex, subsetName))
         [subset, particleList] = self.createSubsetFromParticles(subsetName)
 
         particleNameList = subsetName.split(" ")
@@ -911,10 +926,6 @@ class AtomicDomino:
         finalAssignments = self.createUniqueLeafAssignments(
             particleNameList, particleInfo)
 
-        #lat = IMP.domino.ListAssignmentsTable()
-        #lat.set_assignments(subset, finalAssignmentContainer)
-        # self.sampler.set_assignments_table(lat)
-        #hdf5AssignmentContainer = IMP.domino.HDF5AssignmentContainer(dataset, subset, self.dominoPst.get_particles(), subsetName)
         rssft = IMP.domino.RestraintScoreSubsetFilterTable(
             self.model.get_root_restraint_set(),
             self.dominoPst)
@@ -925,13 +936,14 @@ class AtomicDomino:
         dataset.set_size([0, len(subset)])
 
         hdf5AssignmentContainer = IMP.domino.create_assignments_container(
-            dataset, subset, particleOrder)
+                dataset, subset, particleOrder)   # noqa: F821
         for assignment in filteredAssignments:
             hdf5AssignmentContainer.add_assignment(assignment)
         for assignment in hdf5AssignmentContainer.get_assignments():
-            print("hdf5 assignment container node %s next assignmet %s" % (nodeIndex, assignment))
+            print("hdf5 assignment container node %s next assignmet %s"
+                  % (nodeIndex, assignment))
 
-        #self.checkAssignments(subset, nodeIndex, particleOrder)
+        # self.checkAssignments(subset, nodeIndex, particleOrder)
         subsetOrder = self.getSubsetOrderList(subset)
         print("leaf node returning with order %s" % subsetOrder)
         return subsetOrder
@@ -960,8 +972,8 @@ class AtomicDomino:
 
         # not sure if any vertices still have a Subset prefix but keeping
         # anyway
-        nodeRe = re.compile('Subset\(\[(.*?)\s*\]')
-        secondNodeRe = re.compile('\[(.*?)\s*\]')  # atom name
+        nodeRe = re.compile(r'Subset\(\[(.*?)\s*\]')
+        secondNodeRe = re.compile(r'\[(.*?)\s*\]')  # atom name
         node = nodeRe.search(str(vertexName))
         secondNode = secondNodeRe.search(str(vertexName))
         vertexNameFinal = ""
@@ -1011,7 +1023,8 @@ class AtomicDomino:
             self.parentSiblingMap[secondChild] = {}
             self.parentSiblingMap[secondChild]["sibling"] = firstChild
             self.parentSiblingMap[secondChild]["parent"] = parentIndex
-            print("created map for parent %s first child %s second child %s" % (parentIndex, firstChild, secondChild))
+            print("created map for parent %s first child %s second child %s"
+                  % (parentIndex, firstChild, secondChild))
 
             self.parentSiblingMap[parentIndex]["firstChild"] = firstChild
             self.parentSiblingMap[parentIndex]["secondChild"] = secondChild
@@ -1030,7 +1043,7 @@ class AtomicDomino:
             leafParentNodeIndexList[parent] = 1
         return leafParentNodeIndexList
 
-    def getMtIndexToNameList(selt):
+    def getMtIndexToNameList(self):
         mtIndexToNames = {}
         for index in self.mt.get_vertices():
             name = self.mt.get_vertex_name(index)
@@ -1098,13 +1111,13 @@ class AtomicDomino:
         # read file
         graphLogRead = open(fileName, 'r')
 
-        nodeRe = re.compile('^(\d+)\[label\=\"\[*(.*?)\s*\]*\"')  # atom name
+        nodeRe = re.compile(r'^(\d+)\[label\=\"\[*(.*?)\s*\]*\"')  # atom name
         separatorEscape = "\\" + separator
-        edgeString = "^(\d+)\-%s(\d+)" % separatorEscape
+        edgeString = r"^(\d+)\-%s(\d+)" % separatorEscape
         edgeRe = re.compile(edgeString)
 
         nodesToNodes = {}
-            # keys: source node, value: target node (track edges)
+        # keys: source node, value: target node (track edges)
         nodesToNames = {}  # keys: node number, value; string parsed from file
 
         for line in graphLogRead:
@@ -1180,8 +1193,8 @@ class AtomicDomino:
             nodesToNodes,
             self.getParam("mtree_cytoscape_input_file"))
         self.writeNodeNameAttributes(
-            nodesToNames, self.getParam("mtree_cytoscape_atom_name_file"), self.getParam(
-                "mtree_cytoscape_atom_summary_file"),
+            nodesToNames, self.getParam("mtree_cytoscape_atom_name_file"),
+            self.getParam("mtree_cytoscape_atom_summary_file"),
             self.getParam("mtree_cytoscape_atom_chain_file"))
 
     def writeCytoscapeJtInput(self):
@@ -1196,8 +1209,8 @@ class AtomicDomino:
             self.getParam("jtree_cytoscape_input_file"))
 
         self.writeNodeNameAttributes(
-            nodesToNames, self.getParam("jtree_cytoscape_atom_name_file"), self.getParam(
-                "jtree_cytoscape_atom_summary_file"),
+            nodesToNames, self.getParam("jtree_cytoscape_atom_name_file"),
+            self.getParam("jtree_cytoscape_atom_summary_file"),
             self.getParam("jtree_cytoscape_atom_chain_file"))
 
         # write edge weight file -- weights are number of shared particles
@@ -1275,8 +1288,6 @@ class AtomicDomino:
         subsetAtomChainFile.close()
         subsetAtomSummaryFile.close()
         subsetAtomNameFile.close()
-
-
     #
     # End Cytoscape Methods
     #

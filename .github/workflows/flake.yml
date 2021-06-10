@@ -21,4 +21,4 @@ jobs:
     - name: Test
       run: |
         pip install flake8
-        flake8 tools modules/parallel/pyext modules/test/pyext modules/mmcif/pyext modules/statistics/pyext
+        flake8 tools modules/parallel/pyext modules/test/pyext modules/mmcif/pyext modules/statistics/pyext modules/pepdock/pyext
