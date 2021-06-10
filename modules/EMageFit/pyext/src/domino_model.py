@@ -2,17 +2,13 @@
    Classes to manage a model using DOMINO.
 """
 
-import sys
 import time
 import csv
 import logging
-log = logging.getLogger("DominoModel")
 
 import IMP
 import IMP.domino as domino
 import IMP.core as core
-import IMP.container as container
-import IMP.display as display
 import IMP.atom as atom
 import IMP.algebra as alg
 import IMP.em2d as em2d
@@ -28,10 +24,11 @@ import IMP.EMageFit.buildxlinks as buildxlinks
 import IMP.EMageFit.solutions_io as solutions_io
 import IMP.EMageFit.csv_related as csv_related
 
+log = logging.getLogger("DominoModel")
 
 field_delim = ","  # separate fields in the output text file
 unit_delim = "/"  # separate units within a field (eg, reference frames).
-                 # It is used in output text files and in databse files
+                  # It is used in output text files and in databse files
 
 
 class DominoModel:
@@ -62,7 +59,8 @@ class DominoModel:
             @param name Name for the restraint
             @param weight Weight for the restraint
             @param max_score Maximum score allowed for the restraint. If
-            max_score is False, there is no limit for the value of the restraint
+            max_score is False, there is no limit for the value of
+            the restraint
         """
         log.info("Adding restraint %s weight %s max_score %s",
                  name, weight, max_score)
@@ -82,19 +80,21 @@ class DominoModel:
                 1) reads the possible reference frames that the
                     rb_states_table stores for each rigid body. This table
                     must be filled before using this function. Usually it is
-                    filled with the results from a previous Monte Carlo sampling.
-                    If the solutions from Monte Carlo seem to have the same structure
-                    but they are not aligned to each other, this function can
-                    help setting better starting positions to use with DOMINO.
+                    filled with the results from a previous Monte Carlo
+                    sampling. If the solutions from Monte Carlo seem to have
+                    the same structure but they are not aligned to each other,
+                    this function can help setting better starting positions
+                    to use with DOMINO.
                 2) Gets the first state for each of the rigid bodies and sets
                    a reference structure using such states.
-                3) Aligns all the rest of the structures respect to the reference
+                3) Aligns all the rest of the structures respect to the
+                   reference
                 4) Replaces the values of the reference frames stored in the
-                   rb_states_table with the new values obtained from the alignments.
-                   It does it for all states of a rigid body.
-            @note: If this function is applied, the parameters "anchor" and "fixed"
-               are ignored, as they are superseded by the use of the alignments
-               calculated here.
+                   rb_states_table with the new values obtained from the
+                   alignments. It does it for all states of a rigid body.
+            @note: If this function is applied, the parameters "anchor"
+               and "fixed" are ignored, as they are superseded by the use
+               of the alignments calculated here.
         """
         log.debug("Align the configurations read from the database before "
                   "running DOMINO")
@@ -206,8 +206,8 @@ class DominoModel:
                  rname, name1, name2)
         A = representation.get_component(self.assembly, name1)
         B = representation.get_component(self.assembly, name2)
-        restraint = multifit.ComplementarityRestraint(atom.get_leaves(A),
-                                                      atom.get_leaves(B), rname)
+        restraint = multifit.ComplementarityRestraint(
+            atom.get_leaves(A), atom.get_leaves(B), rname)
         restraint.set_maximum_separation(max_sep_distance)
         restraint.set_maximum_penetration(max_penetration)
         log.debug("Maximum separation: %s Maximum penetration score: %s",
@@ -221,9 +221,8 @@ class DominoModel:
         """
         if self.create_coarse:
             log.info("Creating simplified assembly")
-            self.coarse_assembly = \
-                representation.create_simplified_assembly(self.assembly,
-                                                          self.components_rbs, n_residues)
+            self.coarse_assembly = representation.create_simplified_assembly(
+                self.assembly, self.components_rbs, n_residues)
         self.create_coarse = False
 
     def do_sampling(self, mode="assignments_heap_container", params=None):
@@ -357,8 +356,8 @@ class DominoModel:
             Domino sampling that recovers the assignments for the root of the
             merge tree, but
             conserving only the best k scores for each vertex of the tree.
-            @param[in] vertex Vertex with the root of the current merge tree. This
-            function is recursive.
+            @param[in] vertex Vertex with the root of the current
+                              merge tree. This function is recursive.
             @param[in] k
         """
         if(self.sampler.get_number_of_subset_filter_tables() == 0):
@@ -370,8 +369,8 @@ class DominoModel:
         subset = self.merge_tree.get_vertex_name(vertex)
         log.info("computing assignments for vertex %s", subset)
         t0 = time.time()
-        assignments_container = domino.HeapAssignmentContainer(subset, k,
-                                                               self.restraint_cache, "my_heap_assignments_container")
+        assignments_container = domino.HeapAssignmentContainer(
+            subset, k, self.restraint_cache, "my_heap_assignments_container")
         neighbors = self.merge_tree.get_out_neighbors(vertex)
         if len(neighbors) == 0:  # A leaf
             # Fill the container with the assignments for the leaf
@@ -408,7 +407,7 @@ class DominoModel:
             log.debug("rb - %s",
                       rb.get_reference_frame().get_transformation_to())
         val = self.restraints[name].evaluate(False)
-        log.debug("restraint %s = %s", restraint.get_name(), val)
+        log.debug("restraint %s = %s", name, val)
         return val
 
     def set_native_assembly_for_benchmark(self, params):
@@ -419,17 +418,18 @@ class DominoModel:
         self.measure_models = True
         self.native_model = IMP.Model()
         if hasattr(params.benchmark, "fn_pdb_native"):
-            self.native_assembly = \
-                representation.create_assembly_from_pdb(self.native_model,
-                                                        params.benchmark.fn_pdb_native, params.names)
+            self.native_assembly = representation.create_assembly_from_pdb(
+                self.native_model, params.benchmark.fn_pdb_native,
+                params.names)
         elif hasattr(params.benchmark, "fn_pdbs_native"):
-            self.native_assembly = \
-                representation.create_assembly(self.native_model,
-                                               params.benchmark.fn_pdbs_native, params.names)
+            self.native_assembly = representation.create_assembly(
+                self.native_model, params.benchmark.fn_pdbs_native,
+                params.names)
         else:
-            raise ValueError("set_native_assembly_for_benchmark: Requested "
-                             "to set a native assembly for benchmark but did not provide "
-                             "its pdb, or the pdbs of the components")
+            raise ValueError(
+                "set_native_assembly_for_benchmark: Requested "
+                "to set a native assembly for benchmark but did not provide "
+                "its pdb, or the pdbs of the components")
         self.native_rbs = representation.create_rigid_bodies(
             self.native_assembly)
         anchor_assembly(self.native_rbs, params.anchor)
@@ -564,10 +564,10 @@ class DominoModel:
             # get particles in the subset
             particles = []
             for name in names:
-                l = [p for p in ps if p.get_name() == name]
-                if (len(l) > 1):
+                lp = [p for p in ps if p.get_name() == name]
+                if (len(lp) > 1):
                     ValueError("More than one particle with same name" % names)
-                particles.extend(l)
+                particles.extend(lp)
             s = domino.Subset(particles)
             subset_names = [p.get_name() for p in particles]
             log.debug("Merge tree Subset %s. Particles %s ", s, subset_names)
@@ -619,7 +619,8 @@ class DominoModel:
             raise ValueError("No merge tree")
         f = open(fn, "w")
         f.write(
-            "# Vertex index | Child0 | Child1 | label (names of the particles)\n")
+            "# Vertex index | Child0 | Child1 | label "
+            "(names of the particles)\n")
         w = csv.writer(f, delimiter=field_delim)
         root = self.merge_tree.get_vertices()[-1]
         self.write_subset(root, w)
@@ -636,8 +637,9 @@ class DominoModel:
         names = [p.get_name() for p in subset]
         reps = [x for x in names if names.count(x) > 1]  # repeated names
         if(len(reps)):
-            raise ValueError("The names of the "
-                             "particles in the subset %s are not unique" % subset)
+            raise ValueError(
+                "The names of the particles in the subset %s are not unique"
+                % subset)
         names = unit_delim.join(names)
         neighbors = self.merge_tree.get_out_neighbors(v)
         if len(neighbors) == 0:  # A leaf
@@ -721,9 +723,8 @@ class DominoModel:
         rb_name = representation.get_rb_name(name)
         self.not_optimized_rbs.append(rb_name)
 
-    def set_close_pairs_excluded_volume_restraint(self, distance=10,
-                                                  weight=1.0, ratio=0.05, stddev=2,
-                                                  max_score=False):
+    def set_close_pairs_excluded_volume_restraint(
+        self, distance=10, weight=1.0, ratio=0.05, stddev=2, max_score=False):
         """
             Creates an excluded volume restraint between all the components
             of the coarse assembly.See help for
@@ -770,8 +771,9 @@ class DominoModel:
                         minimum_distance_allowed = 0
                         max_score = weight * n_pairs * \
                             score.evaluate(minimum_distance_allowed)
-                    log.debug("Setting close_pairs_excluded_volume_restraint(), "
-                              "max_score %s", max_score)
+                    log.debug(
+                        "Setting close_pairs_excluded_volume_restraint(), "
+                        "max_score %s", max_score)
                     self.add_restraint(r, name, weight, max_score)
 
     def set_pair_score_restraint(self, name1, name2,
@@ -889,7 +891,8 @@ class DominoModel:
             # align and put rb in the position of rn
             if len(rn_coords) != len(rb_coords):
                 raise ValueError("Mismatch in the number of members. "
-                                 "Reference %d Aligned %d " % (len(rn_coords), len(rb_coords)))
+                                 "Reference %d Aligned %d "
+                                 % (len(rn_coords), len(rb_coords)))
             T = alg.get_transformation_aligning_first_to_second(rb_coords,
                                                                 rn_coords)
             t = rb.get_reference_frame().get_transformation_to()
@@ -1064,14 +1067,16 @@ def measure_model(assembly, native_assembly, rbs, native_rbs):
 
 def get_coordinates(rigid_bodies):
     """
-        Return a list of the coordinates of all the members of the rigid bodies
+        Return a list of the coordinates of all the members
+        of the rigid bodies
     """
     if len(rigid_bodies) == 0:
         raise ValueError(
-            "get_coordinates: There are not rigid bodies to get coordinates from")
+            "get_coordinates: There are no rigid bodies to get "
+            "coordinates from")
     coords = []
     for rb in rigid_bodies:
-            # remove sub-rigid bodies
+        # remove sub-rigid bodies
         rb_members = [m for m in rb.get_members()
                       if not core.RigidBody.get_is_setup(m.get_particle())]
         coords.extend([m.get_coordinates() for m in rb_members])

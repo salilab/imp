@@ -5,7 +5,10 @@
 import sqlite3 as sqlite
 import os
 import csv
+import sys
 import logging
+if sys.version_info[0] == 2:
+    input = raw_input
 
 log = logging.getLogger("Database")
 
@@ -82,9 +85,7 @@ class Database2:
         sql_command = "INSERT INTO %s VALUES %s " % (table_name, tuple_format)
         # Fill the table with the info in the tuples
         types = self.get_table_types(table_name)
-#        log.debug("Storing types: %s", types)
         for x in data:
-#            log.debug("DATA %s", x)
             # convert (applies the types stored in the table dictionary to each
             # value in x
             y = [apply_type(i) for i, apply_type in zip(x, types)]
@@ -169,7 +170,8 @@ class Database2:
         except:
             pass
         sql_command = """CREATE VIEW %s AS SELECT * FROM %s
-                         ORDER BY %s ASC LIMIT %d """ % (view_name, table_name, orderby, n_records)
+                         ORDER BY %s ASC LIMIT %d """ % (view_name, table_name,
+                                                         orderby, n_records)
         log.info("Creating view %s", sql_command)
         self.cursor.execute(sql_command)
 
@@ -284,7 +286,7 @@ class Database2:
         for t in tables:
             say = ''
             while say not in ('n', 'y'):
-                say = raw_input("Use table %s (y/n) " % t)
+                say = input("Use table %s (y/n) " % t)
             if say == 'y':
                 table_name = t
                 columns = self.get_table_column_names(t)
@@ -352,9 +354,9 @@ def read_data(fn_database, sql_command):
     return data
 
 
-def get_sorting_indices(l):
-    """ Return indices that sort the list l """
-    pairs = sorted([(element, i) for i, element in enumerate(l)])
+def get_sorting_indices(ls):
+    """ Return indices that sort the list ls"""
+    pairs = sorted([(element, i) for i, element in enumerate(ls)])
     indices = [p[1] for p in pairs]
     return indices
 
