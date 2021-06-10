@@ -195,6 +195,9 @@ Requires:      python2
 %if 0%{?fedora} > 0 && 0%{?fedora} < 32
 Requires: python2-protobuf
 %endif
+%if 0%{?fedora} < 34 || 0%{?rhel}
+Requires: python2-numpy
+%endif
 
 %description python2
 This package contains wrappers for Python 2 (the base package already
