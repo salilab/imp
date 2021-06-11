@@ -2,6 +2,8 @@ ChangeLog {#changelog}
 =========
 
 # HEAD
+- OpenCubicSpline now throws a ValueException for out-of-range values, to
+  be consistent with ClosedCubicSpline (previously it threw ModelException).
 - The deprecated methods
   IMP::{Singleton,Pair,Triplet,Quad}Predicate::get_value() have been removed.
   Use the get_value_index() methods instead.
