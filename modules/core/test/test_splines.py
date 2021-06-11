@@ -34,8 +34,8 @@ class Tests(IMP.test.TestCase):
         self.assertRaises(IMP.ModelException, open_spline.evaluate, 20.1)
         self.assertEqual(closed_spline.evaluate(10.0), 0.0)
         self.assertEqual(closed_spline.evaluate(25.0), 0.0)
-        self.assertRaises(IMP.ModelException, open_spline.evaluate, 9.9)
-        self.assertRaises(IMP.ModelException, open_spline.evaluate, 25.1)
+        self.assertRaises(ValueError, closed_spline.evaluate, 9.9)
+        self.assertRaises(ValueError, closed_spline.evaluate, 25.1)
 
     def test_interpolate(self):
         """Test that spline-interpolated values are correct"""
