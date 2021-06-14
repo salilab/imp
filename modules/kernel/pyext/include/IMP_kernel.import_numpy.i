@@ -11,5 +11,7 @@ static int numpy_import_retval;
 
 %init {
   numpy_import_retval = _import_array();
+  /* If numpy was not found, continue anyway without numpy support */
+  PyErr_Clear();
 }
 #endif
