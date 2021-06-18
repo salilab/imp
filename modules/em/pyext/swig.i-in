@@ -28,6 +28,86 @@ IMP_SWIG_VALUE(IMP::em, FittingSolutions, FittingSolutionsList);
 IMP_SWIG_OBJECT(IMP::em, MapDistanceTransform, MapDistanceTransforms);
 IMP_SWIG_OBJECT(IMP::em, EnvelopeScore, EnvelopeScores);
 
+%{
+PyObject *_get_float_view_numpy(PyObject *pyobj, unsigned sz, float *data)
+{
+#if IMP_KERNEL_HAS_NUMPY
+  if (numpy_import_retval != 0) {
+    return NULL;
+  }
+
+  npy_intp dims[1];
+  dims[0] = sz;
+
+  PyObject *obj = PyArray_New(&PyArray_Type, 1, dims, NPY_FLOAT, NULL,
+                              data, 0, 0, NULL);
+  if (!obj) {
+    return NULL;
+  }
+
+  /* Ensure that the DensityMap is kept around as long as the numpy object
+     is alive. */
+  Py_INCREF(pyobj);
+  PyArray_BASE(obj) = pyobj;
+
+  return obj;
+#else
+  PyErr_SetString(PyExc_NotImplementedError,
+                  "IMP was built without NumPy support");
+  return NULL;
+#endif
+}
+%}
+
+%inline %{
+  PyObject *_get_density_map_x_loc(IMP::em::DensityMap *m, PyObject *pyobj) {
+    return _get_float_view_numpy(pyobj, m->get_number_of_voxels(),
+                                 m->get_x_loc());
+  }
+
+  PyObject *_get_density_map_y_loc(IMP::em::DensityMap *m, PyObject *pyobj) {
+    return _get_float_view_numpy(pyobj, m->get_number_of_voxels(),
+                                 m->get_y_loc());
+  }
+
+  PyObject *_get_density_map_z_loc(IMP::em::DensityMap *m, PyObject *pyobj) {
+    return _get_float_view_numpy(pyobj, m->get_number_of_voxels(),
+                                 m->get_z_loc());
+  }
+
+  PyObject *_get_density_map_data(IMP::em::DensityMap *m, PyObject *pyobj) {
+#if IMP_KERNEL_HAS_NUMPY
+    if (numpy_import_retval != 0) {
+      return NULL;
+    }
+
+    const IMP::em::DensityHeader *header = m->get_header();
+    npy_intp dims[3];
+    dims[0] = header->get_nz();
+    dims[1] = header->get_ny();
+    dims[2] = header->get_nx();
+
+    PyObject *obj = PyArray_New(&PyArray_Type, 3, dims, NPY_DOUBLE, NULL,
+                                m->get_data(), 0, NPY_WRITEABLE, NULL);
+    if (!obj) {
+      return NULL;
+    }
+
+    /* Ensure that the DensityMap is kept around as long as the numpy object
+       is alive. */
+    Py_INCREF(pyobj);
+    PyArray_BASE(obj) = pyobj;
+
+    return obj;
+#else
+    PyErr_SetString(PyExc_NotImplementedError,
+                    "IMP was built without NumPy support");
+    return NULL;
+#endif
+  }
+%}
+
+
 /* Since DensityHeaders are not values or Objects, we must ensure that whenever
    pointers to them are returned to Python, the object that manages the header's
    storage (usually a DensityMap) must be kept alive so that the header is not
@@ -50,6 +130,24 @@ namespace IMP {
         h._owner = self
         return h
   %}
+
+  // If we have numpy, provide methods to give access to internal data
+  // as numpy arrays
+  %extend DensityMap {
+    %pythoncode %{
+      def get_x_loc(self):
+          return _get_density_map_x_loc(self, self)
+
+      def get_y_loc(self):
+          return _get_density_map_y_loc(self, self)
+
+      def get_z_loc(self):
+          return _get_density_map_z_loc(self, self)
+
+      def get_data(self):
+          return _get_density_map_data(self, self)
+    %}
+  }
  }
 }
 
