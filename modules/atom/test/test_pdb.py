@@ -40,6 +40,12 @@ class Tests(IMP.test.TestCase):
         self.check_standard_object_methods(IMP.atom.NonWaterPDBSelector())
         self.check_standard_object_methods(IMP.atom.NPDBSelector())
 
+    def test_invalid(self):
+        """Check handling of invalid format PDB files"""
+        m = IMP.Model()
+        mp = IMP.atom.read_pdb(self.open_input_file("invalid.pdb"),
+                               m, IMP.atom.NonWaterPDBSelector())
+
     def test_read(self):
         """Check reading a pdb with one protein"""
         m = IMP.Model()
