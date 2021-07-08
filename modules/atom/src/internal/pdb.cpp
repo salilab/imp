@@ -111,12 +111,14 @@ Particle* chain_particle(Model* m, std::string chain_id, std::string filename) {
 }
 
 bool is_ATOM_rec(const String& pdb_line) {
-  return (pdb_line[0] == 'A' && pdb_line[1] == 'T' && pdb_line[2] == 'O' &&
+  return (pdb_line.length() >= atom_zcoord_field_ + 8 &&
+          pdb_line[0] == 'A' && pdb_line[1] == 'T' && pdb_line[2] == 'O' &&
           pdb_line[3] == 'M');
 }
 
 bool is_HETATM_rec(const String& pdb_line) {
-  return (pdb_line[0] == 'H' && pdb_line[1] == 'E' && pdb_line[2] == 'T' &&
+  return (pdb_line.length() >= atom_zcoord_field_ + 8 &&
+          pdb_line[0] == 'H' && pdb_line[1] == 'E' && pdb_line[2] == 'T' &&
           pdb_line[3] == 'A' && pdb_line[4] == 'T' && pdb_line[5] == 'M');
 }
 
