@@ -1038,7 +1038,7 @@ void Profile::background_adjust(double start_q) {
     return;
   }
 
-  algebra::ParabolicFit p(data);
+  algebra::ParabolicFit2D p(data);
   double P3 = p.get_a();
   double P2 = p.get_b();
   double P1 = p.get_c();
