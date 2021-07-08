@@ -51,10 +51,14 @@ int main(int argc, char **argv)
   float radii_scaling = 0.5;
   bool reset_angles = false;
   std::string connect_chains_file;
-  po::options_description desc("Options");
+  po::options_description desc(
+      "Usage: <pdb_file> <rotatable_angles_file>\n\n"
+      "This program is part of IMP, the Integrative Modeling Platform,\n"
+      "which is Copyright 2007-2021 IMP Inventors.\n\n"
+      "Options");
   desc.add_options()
-    ("help", "PDB file and rotatable angles file")
-    ("version", "Written by Dina Schneidman.")
+    ("help", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")
     ("number_of_iterations,i", po::value<int>(&number_of_iterations)->default_value(100),
      "number of iterations")
     ("number_of_nodes,n", po::value<int>(&number_of_nodes)->default_value(100),
@@ -84,9 +88,6 @@ int main(int argc, char **argv)
   po::options_description cmdline_options;
   cmdline_options.add(desc).add(hidden);
 
-  po::options_description visible("Usage: <pdb_file> <rotatable_angles_file>");
-  visible.add(desc);
-
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
@@ -94,12 +95,17 @@ int main(int argc, char **argv)
             argv).options(cmdline_options).positional(p).run(), vm);
   po::notify(vm);
 
+  if (vm.count("version")) {
+    std::cerr << "Version: \"" << get_module_version() << "\"" << std::endl;
+    return 0;
+  }
+
   std::vector<std::string> files;
   if(vm.count("input-files")) {
     files = vm["input-files"].as< std::vector<std::string> >();
   }
   if(vm.count("help") || files.size() == 0) {
-    std::cout << visible << "\n";
+    std::cout << desc << "\n";
     return 0;
   }
   if(radii_scaling < 0.5 || radii_scaling > 1.0) {

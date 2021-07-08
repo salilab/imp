@@ -48,14 +48,16 @@ int main(int argc, char** argv) {
   bool score_log = false;
   bool gnuplot_script = false;
   bool explicit_water = false;
-  po::options_description desc("Options");
+  po::options_description desc(
+      "Usage: <pdb_file1> <pdb_file2> ... <profile_file1> <profile_file2> ...\n"
+      "\nAny number of input PDBs and profiles is supported.\n"
+      "Each PDB will be fitted against each profile.\n\n"
+      "This program is part of IMP, the Integrative Modeling Platform,\n"
+      "which is Copyright 2007-2021 IMP Inventors.\n\n"
+      "Options");
   desc.add_options()
-    ("help", "Any number of input PDBs and profiles is supported. \
-Each PDB will be fitted against each profile.")
-    ("version", "FoXS (IMP applications)\nCopyright 2007-2021 IMP Inventors.\n\
-All rights reserved. \nLicense: GNU LGPL version 2.1 or later\n\
-<http://gnu.org/licenses/lgpl.html>.\n\
-Written by Dina Schneidman.")
+    ("help", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")
     ("profile_size,s", po::value<int>(&profile_size)->default_value(500, "500"),
      "number of points in the profile")
     ("max_q,q", po::value<float>(&max_q)->default_value(0.5, "0.50"), "max q value")
@@ -109,10 +111,6 @@ constant form factor (default = false)")
   po::options_description cmdline_options;
   cmdline_options.add(desc).add(hidden);
 
-  po::options_description visible(
-      "Usage: <pdb_file1> <pdb_file2> ... <profile_file1> <profile_file2> ... ");
-  visible.add(desc);
-
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
@@ -122,6 +120,10 @@ constant form factor (default = false)")
                 .run(),
             vm);
   po::notify(vm);
+  if (vm.count("version")) {
+    std::cerr << "Version: \"" << get_module_version() << "\"" << std::endl;
+    return 0;
+  }
 
   bool fit = true;
   std::vector<std::string> files, pdb_files, dat_files;
@@ -129,7 +131,7 @@ constant form factor (default = false)")
     files = vm["input-files"].as<std::vector<std::string> >();
   }
   if (vm.count("help") || files.size() == 0) {
-    std::cout << visible << "\n";
+    std::cout << desc << "\n";
     return 0;
   }
   if (vm.count("hydrogens")) heavy_atoms_only = false;
