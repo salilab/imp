@@ -19,6 +19,16 @@ class Tests(IMP.test.TestCase):
                           self.open_input_file("notapdb.pdb"),
                           m)
 
+    def test_read_pdb_or_mmcif(self):
+        """Check reading mmCIF with read_pdb_or_mmcif"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_pdb_or_mmcif(
+            self.get_input_file_name("input.cif"), m)
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual(len(m.get_particle_indexes()), 435)
+
     def test_read(self):
         """Check reading an mmCIF file with one protein"""
         m = IMP.Model()
@@ -37,6 +47,20 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(indices, [-1, 0, 0, 4])
         inscodes = [r.get_insertion_code() for r in rs[:4]]
         self.assertEqual(inscodes, [' ', ' ', 'A', ' '])
+
+    def test_read_multimodel_pdb_or_mmcif(self):
+        """Check reading mmCIF with read_multimodel_pdb_or_mmcif"""
+        m = IMP.Model()
+
+        mps = IMP.atom.read_multimodel_pdb_or_mmcif(
+            self.get_input_file_name("input.cif"), m)
+        mp1, mp2 = mps
+        chains1 = [IMP.atom.Chain(x)
+                   for x in IMP.atom.get_by_type(mp1, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual([c.get_id() for c in chains1], ['', 'X', 'A'])
+        chains2 = [IMP.atom.Chain(x)
+                   for x in IMP.atom.get_by_type(mp2, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual([c.get_id() for c in chains2], [''])
 
     def test_read_multimodel(self):
         """Check reading a multimodel mmCIF file"""

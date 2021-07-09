@@ -46,6 +46,15 @@ class Tests(IMP.test.TestCase):
         mp = IMP.atom.read_pdb(self.open_input_file("invalid.pdb"),
                                m, IMP.atom.NonWaterPDBSelector())
 
+    def test_read_mmcif_or_pdb(self):
+        """Check reading a PDB with read_pdb_or_mmcif()"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_pdb_or_mmcif(
+            self.open_input_file("input.pdb"),
+            m, IMP.atom.NonWaterPDBSelector())
+        self.assertEqual(len(m.get_particle_indexes()), 1133)
+
     def test_read(self):
         """Check reading a pdb with one protein"""
         m = IMP.Model()
@@ -195,6 +204,15 @@ class Tests(IMP.test.TestCase):
         mp = IMP.atom.read_pdb(self.open_input_file("problem_lines.pdb"), m)
         a = IMP.atom.get_leaves(mp)
         self.assertEqual(len(a), 1)
+
+    def test_read_multimodel_pdb_or_mmcif(self):
+        """Check reading PDB with read_multimodel_pdb_or_mmcif"""
+        m = IMP.Model()
+        h = IMP.atom.read_multimodel_pdb_or_mmcif(
+            self.open_input_file("multimodel.pdb"), m,
+            IMP.atom.AllPDBSelector())
+        ln = IMP.atom.get_leaves(h)
+        self.assertEqual(len(ln), 19740)
 
     def test_read_one_model(self):
         """Check that only the first model is read"""
