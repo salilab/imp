@@ -30,9 +30,6 @@ const char *basename(const char *path) {
 
 
 int main(int argc, char **argv) {
-  // output arguments
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
   double max_q = 0.0;
   po::options_description desc("Usage: <profile_file1> <profile_file2> ...");
   desc.add_options()("help",

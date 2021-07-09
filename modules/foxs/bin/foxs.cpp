@@ -27,10 +27,6 @@ using namespace IMP::saxs;
 using namespace IMP::foxs::internal;
 
 int main(int argc, char** argv) {
-  // output arguments
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
-
   int profile_size = 500;
   float max_q = 0.0; // change after read
   float min_c1 = 0.99;

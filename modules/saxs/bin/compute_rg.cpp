@@ -18,10 +18,6 @@ namespace po = boost::program_options;
 using namespace IMP::saxs;
 
 int main(int argc, char **argv) {
-  // output arguments
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
-
   double end_q_rg = 1.3;
   int multi_model_pdb = 1;
   po::options_description desc(

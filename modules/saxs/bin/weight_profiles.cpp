@@ -14,10 +14,6 @@ namespace po = boost::program_options;
 
 int main(int argc, char **argv)
 {
-  // output arguments
-  for (int i = 0; i < argc; i++) std::cerr << argv[i] << " ";
-  std::cerr << std::endl;
-
   float percentage = 0.0;
   std::string out_file_name  = "weighted.dat";
 
