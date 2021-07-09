@@ -22,26 +22,40 @@ int main(int argc, char **argv) {
   std::string reference_profile_file;
 
   po::options_description desc(
-      "Usage: <mes_input_file>\n \
-Provide a text file with profile filenames:\n\
-exp_profile_file\nfit_file1\nfit_file2\n...\nfit_filen\n");
-  desc.add_options()("help",
-                     "Clusters input profiles that were previously fitted \
-to exp_profile. Please provide the exp_profile and at least two fit files.\n")(
-      "input-files", po::value<std::vector<std::string> >(),
-      "input profile-list file")(
-      "threshold,t", po::value<double>(&threshold)->default_value(1.0),
-      "chi value for profile similarity (default = 1.0)")(
-      "reference_profile,r", po::value<std::string>(&reference_profile_file),
+      "Usage: cluster_profiles <mes_input_file>\n\n"
+      "Clusters input profiles that were previously fitted to exp_profile\n\n"
+      "Provide a text file <mes_input_file> with the exp_profile and at\n"
+      "least two fit files:\n\n"
+      "exp_profile_file\nfit_file1\nfit_file2\n...\nfit_filen\n\n"
+      "Options");
+  desc.add_options()
+    ("help,h", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")
+    ("threshold,t", po::value<double>(&threshold)->default_value(1.0),
+      "chi value for profile similarity (default = 1.0)")
+    ("reference_profile,r", po::value<std::string>(&reference_profile_file),
       "get all profiles within the threshold from a given reference profile");
+
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+    ("input-files", po::value<std::vector<std::string> >(),
+     "input files");
+
+  po::options_description allopt;
+  allopt.add(desc).add(hidden);
 
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
   po::store(
-      po::command_line_parser(argc, argv).options(desc).positional(p).run(),
+      po::command_line_parser(argc, argv).options(allopt).positional(p).run(),
       vm);
   po::notify(vm);
+  if (vm.count("version")) {
+    std::cerr << "Version: \"" << IMP::saxs::get_module_version()
+              << "\"" << std::endl;
+    return 0;
+  }
 
   std::vector<std::string> files;
   if (vm.count("input-files")) {

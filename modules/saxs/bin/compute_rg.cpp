@@ -21,11 +21,12 @@ int main(int argc, char **argv) {
   double end_q_rg = 1.3;
   int multi_model_pdb = 1;
   po::options_description desc(
-      "Usage: <pdb_file1> <pdb_file2> ... <profile_file1> <profile_file2> ...");
+      "Usage: compute_rg <pdb_file1> <pdb_file2> ... <profile_file1> <profile_file2> ...\n\n"
+      "Any number of input PDBs and profiles is supported.\n\n"
+      "Options");
   desc.add_options()
-    ("help", "Any number of input PDBs and profiles is supported")
-    ("input-files", po::value<std::vector<std::string> >(),
-     "input PDB and profile files")
+    ("help,h", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")
     ("end_q_rg,q*rg", po::value<double>(&end_q_rg)->default_value(1.3),
      "end q*rg value for rg computation, q*rg<end_q_rg (default = 1.3), \
 use 0.8 for elongated proteins")
@@ -34,13 +35,25 @@ use 0.8 for elongated proteins")
 2 - read each MODEL into a separate structure, \
 3 - read all models into a single structure");
 
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+    ("input-files", po::value<std::vector<std::string> >(), "input files");
+
+  po::options_description allopt;
+  allopt.add(desc).add(hidden);
+
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
   po::store(
-      po::command_line_parser(argc, argv).options(desc).positional(p).run(),
+      po::command_line_parser(argc, argv).options(allopt).positional(p).run(),
       vm);
   po::notify(vm);
+  if (vm.count("version")) {
+    std::cerr << "Version: \"" << IMP::saxs::get_module_version()
+              << "\"" << std::endl;
+    return 0;
+  }
 
   std::vector<std::string> files, pdb_files, dat_files;
   if (vm.count("input-files")) {

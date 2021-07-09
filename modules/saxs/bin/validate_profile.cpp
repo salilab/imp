@@ -31,20 +31,36 @@ const char *basename(const char *path) {
 
 int main(int argc, char **argv) {
   double max_q = 0.0;
-  po::options_description desc("Usage: <profile_file1> <profile_file2> ...");
-  desc.add_options()("help",
-                     "Any number of input profiles is supported. \
-Each profile is read and written back, with simulated error added if necessary")(
-      "max_q,q", po::value<double>(&max_q)->default_value(0.0),
-      "maximal q value")("input-files", po::value<std::vector<std::string> >(),
-                         "input PDB and profile files");
+  po::options_description desc("Usage: validate_profile <profile_file1> <profile_file2> ...\n\n"
+          "Any number of input profiles is supported.\n"
+          "Each profile is read and written back, with simulated error\n"
+          "added if necessary\n\n"
+          "Options");
+  desc.add_options()
+    ("help,h", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")
+    ("max_q,q", po::value<double>(&max_q)->default_value(0.0),
+      "maximal q value");
+
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+    ("input-files", po::value<std::vector<std::string> >(), "input files");
+
+  po::options_description allopt;
+  allopt.add(desc).add(hidden);
+
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
   po::store(
-      po::command_line_parser(argc, argv).options(desc).positional(p).run(),
+      po::command_line_parser(argc, argv).options(allopt).positional(p).run(),
       vm);
   po::notify(vm);
+  if (vm.count("version")) {
+    std::cerr << "Version: \"" << IMP::saxs::get_module_version()
+              << "\"" << std::endl;
+    return 0;
+  }
 
   std::vector<std::string> files, dat_files;
   if (vm.count("input-files")) {

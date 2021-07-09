@@ -19,18 +19,35 @@ int main(int argc, char **argv) {
   bool use_offset = false;
 
   po::options_description desc(
-      "Usage: <experimental_profile> <profile_file1> <profile_file2> ...");
+      "Usage: compute_vr <experimental_profile> <profile_file1> <profile_file2> ...\n\n"
+      "Any number of input profiles is supported.\n"
+      "The chi value is computed relative to the first profile using\n"
+      "its error column.\n\n"
+      "Options");
   desc.add_options()
-    ("help", "Any number of input profiles is supported. \
-The chi value is computed relative to the first profile using its error column")
-    ("input-files", po::value<std::vector<std::string> >(),
-     "input profile files")
+    ("help,h", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")
     ("offset,o", "use offset in fitting (default = false)");
+
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+    ("input-files", po::value<std::vector<std::string> >(), "input files");
+
+  po::options_description allopt;
+  allopt.add(desc).add(hidden);
+
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
-  po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
+  po::store(
+       po::command_line_parser(argc, argv).options(allopt).positional(p).run(),
+       vm);
   po::notify(vm);
+  if (vm.count("version")) {
+    std::cerr << "Version: \"" << IMP::saxs::get_module_version()
+              << "\"" << std::endl;
+    return 0;
+  }
 
   std::vector<std::string> files, dat_files;
   if (vm.count("input-files")) {

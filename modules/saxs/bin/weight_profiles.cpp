@@ -17,24 +17,40 @@ int main(int argc, char **argv)
   float percentage = 0.0;
   std::string out_file_name  = "weighted.dat";
 
-  po::options_description desc("Usage: <profile_file1> <w1> <profile_file2> <w2> ...");
+  po::options_description desc("Usage: weight_profiles <profile_file1> <w1> <profile_file2> <w2> ...\n\n"
+         "Any number of input profiles is supported.\n"
+         "Each profile is read and written back, with simulated error\n"
+         "added if necessary\n\n"
+         "Options");
   desc.add_options()
-    ("help", "Any number of input profiles is supported. \
-Each profile is read and written back, with simulated error added if necessary")
-    ("input-files", po::value< std::vector<std::string> >(),
-     "input PDB and profile files")
+    ("help,h", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")
     ("percentage,p", po::value<float>(&percentage)->default_value(0.00),
      "percentage of noise (default = 0.00 (0%))")
      ("output_file,o",
       po::value<std::string>(&out_file_name)->default_value("weighted.dat"),
       "output file name, default name weighted.dat")
     ;
+
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+    ("input-files", po::value<std::vector<std::string> >(), "input files");
+
+  po::options_description allopt;
+  allopt.add(desc).add(hidden);
+
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
   po::store(
-      po::command_line_parser(argc,argv).options(desc).positional(p).run(), vm);
+      po::command_line_parser(argc,argv).options(allopt).positional(p).run(),
+      vm);
   po::notify(vm);
+  if (vm.count("version")) {
+    std::cerr << "Version: \"" << IMP::saxs::get_module_version()
+              << "\"" << std::endl;
+    return 0;
+  }
 
   std::vector<std::string> arguments, dat_files;
   IMP::Vector<double> weights;
