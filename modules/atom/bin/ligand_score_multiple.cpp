@@ -7,6 +7,7 @@
 
 #include <IMP/atom/protein_ligand_score.h>
 #include <IMP/atom/pdb.h>
+#include <IMP/atom/mmcif.h>
 #include <IMP/atom/mol2.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/particle_index.h>
@@ -53,12 +54,12 @@ int main(int argc, char *argv[]) {
   IMP::set_log_level(IMP::SILENT);
   std::string mol2name, pdbname, trans_file, out_file_name;
 
-  po::options_description desc("Usage: <pdb> <mol2> [trans file]");
+  po::options_description desc("Usage: <pdb|mmcif> <mol2> [trans file]");
   desc.add_options()
     ("help", "static and transformed molecules from docking with \
 transformation file.")
     ("input-files", po::value< std::vector<std::string> >(),
-     "input PDB, mol2, and transformation files")
+     "input PDB/mmCIF, mol2, and transformation files")
     ("output_file,o",
      po::value<std::string>(&out_file_name)->default_value("mol2_score.res"),
      "output file name, default name mol2_score.res");
@@ -94,7 +95,8 @@ transformation file.")
   IMP::atom::Hierarchy protein, ligand;
   {
     IMP::SetLogState ss(IMP::SILENT);
-    protein = IMP::atom::read_pdb(pdbname, m, new IMP::atom::ATOMPDBSelector());
+    protein = IMP::atom::read_pdb_or_mmcif(
+                        pdbname, m, new IMP::atom::ATOMPDBSelector());
     IMP::atom::add_protein_ligand_score_data(protein);
     ligand = IMP::atom::read_mol2(mol2name, m);
     IMP::atom::add_protein_ligand_score_data(ligand);

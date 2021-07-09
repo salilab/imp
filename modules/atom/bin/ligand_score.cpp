@@ -7,6 +7,7 @@
 
 #include <IMP/atom/protein_ligand_score.h>
 #include <IMP/atom/pdb.h>
+#include <IMP/atom/mmcif.h>
 #include <IMP/atom/mol2.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/particle_index.h>
@@ -37,7 +38,7 @@ namespace {
 int main(int argc, char *argv[]) {
   IMP::Strings args = IMP::setup_from_argv(argc, argv,
                               "Score a protein-ligand complex",
-                              "file.mol2 file.pdb [libfile]", -1);
+                              "file.mol2 file.(pdb|cif) [libfile]", -1);
 
   IMP::set_log_level(IMP::SILENT);
   std::string mol2name, pdbname;
@@ -45,14 +46,15 @@ int main(int argc, char *argv[]) {
     std::string nm(args[i]);
     if (nm.rfind(".mol2") == nm.size() - 5) {
       mol2name = nm;
-    } else if (nm.rfind(".pdb") == nm.size() - 4) {
+    } else if (nm.rfind(".pdb") == nm.size() - 4
+               ||  nm.rfind(".cif") == nm.size() - 4) {
       pdbname = nm;
     } else {
       break;
     }
   }
   if (mol2name.empty() || pdbname.empty()) {
-    std::cerr << "Usage: " << argv[0] << " file.mol2 file.pdb [libfile]"
+    std::cerr << "Usage: " << argv[0] << " file.mol2 file.(pdb|cif) [libfile]"
               << std::endl;
     return EXIT_FAILURE;
   }
@@ -77,7 +79,8 @@ int main(int argc, char *argv[]) {
   IMP::atom::Hierarchy p, l;
   {
     IMP::SetLogState ss(IMP::SILENT);
-    p = IMP::atom::read_pdb(pdbname, m, new IMP::atom::ATOMPDBSelector());
+    p = IMP::atom::read_pdb_or_mmcif(
+                         pdbname, m, new IMP::atom::ATOMPDBSelector());
     IMP::atom::add_protein_ligand_score_data(p);
     l = IMP::atom::read_mol2(mol2name, m);
     IMP::atom::add_protein_ligand_score_data(l);

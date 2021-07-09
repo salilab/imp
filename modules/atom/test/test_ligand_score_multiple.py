@@ -6,8 +6,16 @@ import os
 
 class Tests(IMP.test.ApplicationTestCase):
 
-    def test_score(self):
-        """Simple test of ligand_score_multiple application"""
+    def test_score_pdb(self):
+        """Simple test of ligand_score_multiple application, PDB input"""
+        self._run_score_test(cif=False)
+
+    def test_score_cif(self):
+        """Simple test of ligand_score_multiple application, mmCIF input"""
+        self._run_score_test(cif=True)
+
+    def _run_score_test(self, cif):
+        ext = 'cif' if cif else 'pdb'
         # Make transforms file from PatchDock output
         with open(self.get_input_file_name('ligscore_test.res')) as fh:
             data = fh.readlines()
@@ -16,7 +24,7 @@ class Tests(IMP.test.ApplicationTestCase):
                 d = d.strip().split('|')
                 fh.write(d[0]+' '+d[-1]+'\n')
         p = self.run_application('ligand_score_multiple',
-                      [self.get_input_file_name('ligscore_test.pdb'),
+                      [self.get_input_file_name('ligscore_test.%s' % ext),
                        self.get_input_file_name('2F2.mol2'), 'tr'])
         out, err = p.communicate()
         self.assertApplicationExitedCleanly(p.returncode, err)
