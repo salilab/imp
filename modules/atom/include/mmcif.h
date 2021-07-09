@@ -46,7 +46,7 @@ Hierarchy read_pdb_or_mmcif(TextInput input, Model *model,
   if (filename.find(".cif") == filename.size() - 4) {
     return read_mmcif(input, model, selector, noradii);
   } else {
-    return read_pdb(input, model, selector, noradii);
+    return read_pdb(input, model, selector, true, noradii);
   }
 }
 
