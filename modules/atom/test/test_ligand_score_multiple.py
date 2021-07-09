@@ -36,5 +36,20 @@ class Tests(IMP.test.ApplicationTestCase):
         os.unlink('tr')
         os.unlink('mol2_score.res')
 
+    def test_help(self):
+        """Test ligand_score_multiple --help"""
+        p = self.run_application('ligand_score_multiple', ['--help'])
+        out, err = p.communicate()
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        self.assertIn('Usage: <pdb|mmcif> <mol2>', out)
+
+    def test_version(self):
+        """Test ligand_score_multiple --version"""
+        p = self.run_application('ligand_score_multiple', ['--version'])
+        out, err = p.communicate()
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        self.assertIn('Version:', err)
+
+
 if __name__ == '__main__':
     IMP.test.main()
