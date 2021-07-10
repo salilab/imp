@@ -36,7 +36,7 @@ IMPATOMEXPORT Hierarchy read_mmcif(TextInput input, Model *model,
     otherwise a PDB file is read.
     Note that TextInputs created from streams don't have a name and so
     will always be treated as PDB. */
-Hierarchy read_pdb_or_mmcif(TextInput input, Model *model,
+inline Hierarchy read_pdb_or_mmcif(TextInput input, Model *model,
                          PDBSelector *selector = get_default_pdb_selector()
 #ifndef IMP_DOXYGEN
                          , bool noradii = false
@@ -55,7 +55,7 @@ Hierarchy read_pdb_or_mmcif(TextInput input, Model *model,
     otherwise a PDB file is read.
     Note that TextInputs created from streams don't have a name and so
     will always be treated as PDB. */
-Hierarchies read_multimodel_pdb_or_mmcif(TextInput input, Model *model,
+inline Hierarchies read_multimodel_pdb_or_mmcif(TextInput input, Model *model,
                          PDBSelector *selector = get_default_pdb_selector()
 #ifndef IMP_DOXYGEN
                          , bool noradii = false
