@@ -19,7 +19,7 @@ saxs_score program scores results of docking of two molecules against the SAXS p
 
   The first number is the transformation number followed by three rotational and three translational parameters.
 
-\<exp_profile_file\> - The SAXS profile of the complex. see http://modbase.compbio.ucsf.edu/foxs/help.html for format details.
+\<exp_profile_file\> - The SAXS profile of the complex. see https://modbase.compbio.ucsf.edu/foxs/help for format details.
 </pre>
 
 
