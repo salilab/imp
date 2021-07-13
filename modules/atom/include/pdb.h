@@ -475,6 +475,17 @@ inline PDBSelector *get_default_pdb_selector() {
 }
 
 //! Read all the molecules in the first model of the PDB file.
+/** \param[in] input   The file or stream to read the model from.
+    \param[in] model   The IMP::Model object to read into.
+    \param[in] selector A PDBSelector object used to read only
+               part of the model (e.g. only a single chain).
+    \param[in] select_first_model When reading a multi-model file (with
+               multiple MODEL/ENDMDL records) read only the first model if
+               set true. If set false, combine all models into a single
+               hierarchy (see read_multimodel_pdb to read each model into
+               a separate hierarchy).
+    \return a molecular hierarchy corresponding to the PDB model
+  */
 IMPATOMEXPORT Hierarchy
     read_pdb(TextInput input, Model *model,
              PDBSelector *selector = get_default_pdb_selector(),
