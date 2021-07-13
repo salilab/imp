@@ -219,10 +219,18 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         h = IMP.atom.read_pdb(self.open_input_file("multimodel.pdb"), m,
                               IMP.atom.AllPDBSelector(), True)
-        # print m.number
-        ln = IMP.atom.get_leaves(h)
-        print(len(ln))
-        self.assertLess(len(ln), 1000)
+        self.assertEqual(len(IMP.atom.get_leaves(h)), 987)
+        self.assertEqual(len(IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)),
+                         1)
+
+    def test_read_combine_models(self):
+        """Check read_pdb() reading multimodel into single hierarchy"""
+        m = IMP.Model()
+        h = IMP.atom.read_pdb(self.open_input_file("multimodel.pdb"), m,
+                              IMP.atom.AllPDBSelector(), False)
+        self.assertEqual(len(IMP.atom.get_leaves(h)), 19740)
+        self.assertEqual(len(IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)),
+                         1)
 
     def test_one_atom(self):
         """Test reading a PDB containing a single atom"""

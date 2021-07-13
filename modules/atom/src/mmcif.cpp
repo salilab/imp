@@ -75,7 +75,7 @@ class AtomSiteCategory : public Category {
   std::string name_, filename_;
   Model *model_;
   IMP::PointerMember<PDBSelector> selector_;
-  bool select_first_model_;
+  bool read_all_models_, honor_model_num_;
   Keyword atom_name_, residue_name_, chain_, auth_chain_, element_, seq_id_,
           group_, id_, occupancy_, temp_factor_, ins_code_, x_, y_, z_,
           model_num_, auth_seq_id_, alt_loc_id_;
@@ -98,11 +98,13 @@ class AtomSiteCategory : public Category {
 public:
   AtomSiteCategory(struct ihm_reader *reader, std::string name,
                    std::string filename, Model *model, Hierarchies *hiers,
-                   PDBSelector *selector, bool select_first_model) :
+                   PDBSelector *selector, bool read_all_models,
+                   bool honor_model_num) :
         Category(reader, "_atom_site", callback),
         name_(name), filename_(filename), model_(model),
         selector_(selector),
-        select_first_model_(select_first_model),
+        read_all_models_(read_all_models),
+        honor_model_num_(honor_model_num),
         atom_name_(c_, "label_atom_id"),
         residue_name_(c_, "label_comp_id"),
         chain_(c_, "label_asym_id"),
@@ -141,7 +143,7 @@ public:
   // Return false if this model should be skipped.
   bool get_root_particle(int model_num) {
     if (root_p_ == nullptr || model_num != curr_model_num_) {
-      if (select_first_model_ && root_p_ != nullptr) {
+      if (!read_all_models_ && root_p_ != nullptr) {
         return false;
       }
       curr_model_num_ = model_num;
@@ -226,7 +228,7 @@ public:
     if (!get_is_selected()) {
       return;
     }
-    if (!get_root_particle(model_num_.as_int())) {
+    if (!get_root_particle(honor_model_num_ ? model_num_.as_int() : 1)) {
       return;
     }
 
@@ -294,7 +296,8 @@ ssize_t read_callback(char *buffer, size_t buffer_len,
 
 Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
                        Model* model, PDBSelector *selector,
-                       bool select_first_model, bool noradii)
+                       bool read_all_models, bool honor_model_num,
+                       bool noradii)
 {
   IMP::PointerMember<PDBSelector> sp(selector);
   struct ihm_error *err = nullptr;
@@ -304,7 +307,7 @@ Hierarchies read_mmcif(std::istream& in, std::string name, std::string filename,
   Hierarchies ret;
 
   AtomSiteCategory asc(r, name, filename, model, &ret, selector,
-                       select_first_model);
+                       read_all_models, honor_model_num);
 
   int more_data;
   if (!ihm_read_file(r, &more_data, &err)) {
@@ -329,7 +332,7 @@ Hierarchies read_multimodel_mmcif(TextInput in, Model *model,
 {
   IMP::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_mmcif(in, cif_nicename(in.get_name()), in.get_name(),
-                               model, selector, false, noradii);
+                               model, selector, true, true, noradii);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
   }
@@ -337,11 +340,12 @@ Hierarchies read_multimodel_mmcif(TextInput in, Model *model,
 }
 
 Hierarchy read_mmcif(TextInput in, Model *model, PDBSelector* selector,
-                     bool noradii)
+                     bool select_first_model, bool noradii)
 {
   IMP::PointerMember<PDBSelector> sp(selector);
   Hierarchies ret = read_mmcif(in, cif_nicename(in.get_name()), in.get_name(),
-                               model, selector, true, noradii);
+                               model, selector, false, select_first_model,
+                               noradii);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(), ValueException);
   }

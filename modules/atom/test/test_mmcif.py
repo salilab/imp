@@ -27,7 +27,20 @@ class Tests(IMP.test.TestCase):
             self.get_input_file_name("input.cif"), m)
         chains = [IMP.atom.Chain(x)
                   for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual(len(chains), 3)
         self.assertEqual(len(m.get_particle_indexes()), 435)
+
+    def test_read_pdb_or_mmcif_no_num(self):
+        """Check reading mmCIF with read_pdb_or_mmcif, ignoring model num"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_pdb_or_mmcif(
+            self.get_input_file_name("input.cif"), m,
+            IMP.atom.NonWaterPDBSelector(), False)
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual(len(chains), 3)
+        self.assertEqual(len(m.get_particle_indexes()), 441)
 
     def test_read(self):
         """Check reading an mmCIF file with one protein"""
@@ -47,6 +60,18 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(indices, [-1, 0, 0, 4])
         inscodes = [r.get_insertion_code() for r in rs[:4]]
         self.assertEqual(inscodes, [' ', ' ', 'A', ' '])
+
+    def test_read_pdb_no_num(self):
+        """Check reading mmCIF with read_mmcif, ignoring model num"""
+        m = IMP.Model()
+
+        mp = IMP.atom.read_mmcif(
+            self.get_input_file_name("input.cif"), m,
+            IMP.atom.NonWaterPDBSelector(), False)
+        chains = [IMP.atom.Chain(x)
+                  for x in IMP.atom.get_by_type(mp, IMP.atom.CHAIN_TYPE)]
+        self.assertEqual(len(chains), 3)
+        self.assertEqual(len(m.get_particle_indexes()), 441)
 
     def test_read_multimodel_pdb_or_mmcif(self):
         """Check reading mmCIF with read_multimodel_pdb_or_mmcif"""

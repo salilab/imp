@@ -25,7 +25,8 @@ IMPATOMEXPORT Hierarchies read_multimodel_mmcif(TextInput input, Model *model,
 
 //! Read all the molecules in the first model of the mmCIF file.
 IMPATOMEXPORT Hierarchy read_mmcif(TextInput input, Model *model,
-                         PDBSelector *selector = get_default_pdb_selector()
+                         PDBSelector *selector = get_default_pdb_selector(),
+                         bool select_first_model = true
 #ifndef IMP_DOXYGEN
                          , bool noradii = false
 #endif
@@ -37,16 +38,17 @@ IMPATOMEXPORT Hierarchy read_mmcif(TextInput input, Model *model,
     Note that TextInputs created from streams don't have a name and so
     will always be treated as PDB. */
 inline Hierarchy read_pdb_or_mmcif(TextInput input, Model *model,
-                         PDBSelector *selector = get_default_pdb_selector()
+                         PDBSelector *selector = get_default_pdb_selector(),
+                         bool select_first_model = true
 #ifndef IMP_DOXYGEN
                          , bool noradii = false
 #endif
                         ) {
   std::string filename = input.get_name();
   if (filename.find(".cif") == filename.size() - 4) {
-    return read_mmcif(input, model, selector, noradii);
+    return read_mmcif(input, model, selector, select_first_model, noradii);
   } else {
-    return read_pdb(input, model, selector, true, noradii);
+    return read_pdb(input, model, selector, select_first_model, noradii);
   }
 }
 
