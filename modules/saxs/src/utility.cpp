@@ -6,7 +6,7 @@
 
 #include <IMP/saxs/utility.h>
 #include <IMP/saxs/SolventAccessibleSurface.h>
-#include <IMP/atom/pdb.h>
+#include <IMP/atom/mmcif.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -77,15 +77,15 @@ void read_pdb(Model *model, const std::string file,
   }
 
   if (multi_model_pdb == 2) {
-    mhds = read_multimodel_pdb(file, model, selector, true);
+    mhds = read_multimodel_pdb_or_mmcif(file, model, selector, true);
   } else {
     if (multi_model_pdb == 3) {
       IMP::atom::Hierarchy mhd =
-          IMP::atom::read_pdb(file, model, selector, false, true);
+          IMP::atom::read_pdb_or_mmcif(file, model, selector, false, true);
       mhds.push_back(mhd);
     } else {
       IMP::atom::Hierarchy mhd =
-          IMP::atom::read_pdb(file, model, selector, true, true);
+          IMP::atom::read_pdb_or_mmcif(file, model, selector, true, true);
       mhds.push_back(mhd);
     }
   }
@@ -128,7 +128,7 @@ void read_files(Model *m, const std::vector<std::string>& files,
       IMP_WARN("Can't open file " << files[i] << std::endl);
       return;
     }
-    // 1. try as pdb
+    // 1. try as pdb or mmcif
     try {
       read_pdb(m, files[i], pdb_file_names, particles_vec, residue_level,
                heavy_atoms_only, multi_model_pdb, explicit_water);

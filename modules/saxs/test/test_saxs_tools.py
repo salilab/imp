@@ -25,6 +25,21 @@ class SAXSToolsTest(IMP.test.ApplicationTestCase):
         self.assertIsNotNone(m, msg="Rg value output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 13.966, delta=0.1)
 
+    def test_compute_rg_cif(self):
+        """Simple test of Rg calculation with mmCIF input"""
+        p = self.run_application('compute_rg',
+                                 [self.get_input_file_name('6lyz.cif'),
+                                  self.get_input_file_name('lyzexp.dat')])
+        out, err = p.communicate()
+        sys.stderr.write(err)
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        m = re.search('lyzexp.dat Rg= ([\d\.]+)', out)
+        self.assertIsNotNone(m, msg="Rg value output not found in " + str(out))
+        self.assertAlmostEqual(float(m.group(1)), 15.14, delta=0.1)
+        m = re.search('6lyz.cif Rg= ([\d\.]+)', out)
+        self.assertIsNotNone(m, msg="Rg value output not found in " + str(out))
+        self.assertAlmostEqual(float(m.group(1)), 13.966, delta=0.1)
+
     def test_compute_chi(self):
         """Simple test of Chi calculation"""
         print(self.get_input_file_name('6lyz.pdb'))
