@@ -15,8 +15,8 @@ class Tests(IMP.test.TestCase):
         mrw = IMP.em.MRCReaderWriter()
         scene = IMP.em.read_map(self.get_input_file_name("3points.mrc"), mrw)
         scene.get_header_writable().set_resolution(8.)
-        mp = IMP.atom.read_pdb(self.open_input_file("3points.pdb"),
-                               model, IMP.atom.CAlphaPDBSelector())
+        with self.open_input_file("3points.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, model, IMP.atom.CAlphaPDBSelector())
         rb = IMP.atom.create_rigid_body(mp)
         ref = IMP.multifit.RigidLeavesRefiner()
         return model, rb, ref, scene

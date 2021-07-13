@@ -18,8 +18,9 @@ class Tests(IMP.test.TestCase):
 
     def load_protein(self, pdb_filename):
         self.m = IMP.Model()
-        self.mh = IMP.atom.read_pdb(self.open_input_file(pdb_filename),
-                                    self.m, IMP.atom.NonWaterNonHydrogenPDBSelector())
+        with self.open_input_file(pdb_filename) as fh:
+            self.mh = IMP.atom.read_pdb(
+                fh, self.m, IMP.atom.NonWaterNonHydrogenPDBSelector())
         self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         IMP.atom.add_radii(self.mh)

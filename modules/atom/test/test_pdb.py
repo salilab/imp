@@ -30,10 +30,8 @@ class Tests(IMP.test.TestCase):
         # we don't actually check if a file is a pdb or not
         # and can't conclude it is not due to not reading any atoms
         # as the selector may filter them all.
-        self.assertRaises(IMP.ValueException,
-                          IMP.atom.read_pdb,
-                          self.open_input_file("notapdb.pdb"),
-                          m)
+        with self.open_input_file("notapdb.pdb") as fh:
+            self.assertRaises(IMP.ValueException, IMP.atom.read_pdb, fh, m)
 
     def test_selector_standard_object_methods(self):
         """Check standard object methods of selectors"""
@@ -43,16 +41,16 @@ class Tests(IMP.test.TestCase):
     def test_invalid(self):
         """Check handling of invalid format PDB files"""
         m = IMP.Model()
-        mp = IMP.atom.read_pdb(self.open_input_file("invalid.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("invalid.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
 
     def test_read_mmcif_or_pdb(self):
         """Check reading a PDB with read_pdb_or_mmcif()"""
         m = IMP.Model()
 
-        mp = IMP.atom.read_pdb_or_mmcif(
-            self.open_input_file("input.pdb"),
-            m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb_or_mmcif(
+                fh, m, IMP.atom.NonWaterPDBSelector())
         self.assertEqual(len(m.get_particle_indexes()), 1133)
 
     def test_read(self):
@@ -60,8 +58,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
 
         #! read PDB
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
         self.assertEqual(len(m.get_particle_indexes()), 1133)
         # IMP.atom.show_molecular_hierarchy(mp)
         IMP.atom.show(mp)
@@ -72,8 +70,8 @@ class Tests(IMP.test.TestCase):
         IMP.atom.show_molecular_hierarchy(mp)
 
         m2 = IMP.Model()
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m2, IMP.atom.CAlphaPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m2, IMP.atom.CAlphaPDBSelector())
         self.assertEqual(len(m2.get_particle_indexes()), 261)
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 129)
@@ -82,19 +80,19 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(bds), 0)
 
         # more selector testing
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.BackbonePDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.BackbonePDBSelector())
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 516)
 
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.NPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NPDBSelector())
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 129)
 
         # one more test for DNA
-        mp = IMP.atom.read_pdb(self.open_input_file("single_dna.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("single_dna.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 3011)
 
@@ -102,8 +100,8 @@ class Tests(IMP.test.TestCase):
         """Check that the default pdb reader skips waters"""
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
-        mp = IMP.atom.read_pdb(self.open_input_file("protein_water.pdb"),
-                               m)
+        with self.open_input_file("protein_water.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m)
         a = IMP.atom.get_leaves(mp)
         IMP.atom.write_pdb(mp, self.get_tmp_file_name("water_write.pdb"))
         self.assertEqual(len(a), 320)
@@ -112,8 +110,8 @@ class Tests(IMP.test.TestCase):
         """Check that the Hydrogen selector can identify all hydrogens"""
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
-        mp = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
-                               m, IMP.atom.HydrogenPDBSelector())
+        with self.open_input_file("hydrogen.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.HydrogenPDBSelector())
         a = IMP.atom.get_leaves(mp)
         self.assertEqual(len(a), 22)
 
@@ -121,58 +119,65 @@ class Tests(IMP.test.TestCase):
         """Check NonHydrogenPDBSelector"""
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
-        mp = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
-                               m, IMP.atom.NonHydrogenPDBSelector())
+        with self.open_input_file("hydrogen.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonHydrogenPDBSelector())
         a = IMP.atom.get_leaves(mp)
         self.assertEqual(len(a), 3)
 
     def test_atom_type(self):
         """Test AtomTypePDBSelector"""
         m = IMP.Model()
-        mp = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
-                               m, IMP.atom.AtomTypePDBSelector(["HA", "3HE"]))
+        with self.open_input_file("hydrogen.pdb") as fh:
+            mp = IMP.atom.read_pdb(
+                fh, m, IMP.atom.AtomTypePDBSelector(["HA", "3HE"]))
         self.assertEqual(len(IMP.atom.get_leaves(mp)), 3)
 
     def test_residue_type(self):
         """Test ResidueTypePDBSelector"""
         m = IMP.Model()
-        mp = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
-                               m, IMP.atom.ResidueTypePDBSelector(["MET"]))
+        with self.open_input_file("hydrogen.pdb") as fh:
+            mp = IMP.atom.read_pdb(
+                fh, m, IMP.atom.ResidueTypePDBSelector(["MET"]))
         self.assertEqual(len(IMP.atom.get_leaves(mp)), 22)
 
     def test_sel_logic(self):
         """Test boolean logic selectors"""
         m = IMP.Model()
-        mp = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
-                               m, IMP.atom.HydrogenPDBSelector())
+        with self.open_input_file("hydrogen.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.HydrogenPDBSelector())
         a = IMP.atom.get_leaves(mp)
-        mpn = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
-                                m, IMP.atom.NotPDBSelector(IMP.atom.HydrogenPDBSelector()))
+        with self.open_input_file("hydrogen.pdb") as fh:
+            mpn = IMP.atom.read_pdb(
+                fh, m, IMP.atom.NotPDBSelector(IMP.atom.HydrogenPDBSelector()))
         an = IMP.atom.get_leaves(mpn)
         for s in (IMP.atom.OrPDBSelector(IMP.atom.NotPDBSelector(IMP.atom.HydrogenPDBSelector()), IMP.atom.HydrogenPDBSelector()),
               ~IMP.atom.HydrogenPDBSelector() | IMP.atom.HydrogenPDBSelector()):
-            mpb = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"), m, s)
+            with self.open_input_file("hydrogen.pdb") as fh:
+                mpb = IMP.atom.read_pdb(fh, m, s)
             ab = IMP.atom.get_leaves(mpb)
             self.assertEqual(len(ab), len(an) + len(a))
         for s in (IMP.atom.AndPDBSelector(IMP.atom.HydrogenPDBSelector(),
                                           IMP.atom.ChainPDBSelector('L')),
                   IMP.atom.HydrogenPDBSelector()
                         & IMP.atom.ChainPDBSelector('L')):
-            mpb = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"), m, s)
+            with self.open_input_file("hydrogen.pdb") as fh:
+                mpb = IMP.atom.read_pdb(fh, m, s)
             ab = IMP.atom.get_leaves(mpb)
             self.assertEqual(len(ab), 9)
         for s in (IMP.atom.XorPDBSelector(IMP.atom.HydrogenPDBSelector(),
                                           IMP.atom.ChainPDBSelector('L')),
                   IMP.atom.HydrogenPDBSelector()
                         ^ IMP.atom.ChainPDBSelector('L')):
-            mpb = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"), m, s)
+            with self.open_input_file("hydrogen.pdb") as fh:
+                mpb = IMP.atom.read_pdb(fh, m, s)
             ab = IMP.atom.get_leaves(mpb)
             self.assertEqual(len(ab), 14)
         for s in (IMP.atom.AndPDBSelector(IMP.atom.HydrogenPDBSelector(),
                       IMP.atom.NotPDBSelector(IMP.atom.ChainPDBSelector('L'))),
                   IMP.atom.HydrogenPDBSelector()
                         - IMP.atom.ChainPDBSelector('L')):
-            mpb = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"), m, s)
+            with self.open_input_file("hydrogen.pdb") as fh:
+                mpb = IMP.atom.read_pdb(fh, m, s)
             ab = IMP.atom.get_leaves(mpb)
             self.assertEqual(len(ab), 13)
 
@@ -187,10 +192,10 @@ class Tests(IMP.test.TestCase):
                 return ln.startswith("ATOM")
 
         m = IMP.Model()
-        mp = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
-                               m, IMP.atom.ATOMPDBSelector())
-        mp_py = IMP.atom.read_pdb(self.open_input_file("hydrogen.pdb"),
-                                  m, my_selector())
+        with self.open_input_file("hydrogen.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.ATOMPDBSelector())
+        with self.open_input_file("hydrogen.pdb") as fh:
+            mp_py = IMP.atom.read_pdb(fh, m, my_selector())
 
         l = IMP.atom.get_leaves(mp)
         self.assertEqual(len(l), 25)
@@ -201,24 +206,25 @@ class Tests(IMP.test.TestCase):
         """Check that problem lines are read properly"""
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
-        mp = IMP.atom.read_pdb(self.open_input_file("problem_lines.pdb"), m)
+        with self.open_input_file("problem_lines.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m)
         a = IMP.atom.get_leaves(mp)
         self.assertEqual(len(a), 1)
 
     def test_read_multimodel_pdb_or_mmcif(self):
         """Check reading PDB with read_multimodel_pdb_or_mmcif"""
         m = IMP.Model()
-        h = IMP.atom.read_multimodel_pdb_or_mmcif(
-            self.open_input_file("multimodel.pdb"), m,
-            IMP.atom.AllPDBSelector())
+        with self.open_input_file("multimodel.pdb") as fh:
+            h = IMP.atom.read_multimodel_pdb_or_mmcif(
+                fh, m, IMP.atom.AllPDBSelector())
         ln = IMP.atom.get_leaves(h)
         self.assertEqual(len(ln), 19740)
 
     def test_read_one_model(self):
         """Check that only the first model is read"""
         m = IMP.Model()
-        h = IMP.atom.read_pdb(self.open_input_file("multimodel.pdb"), m,
-                              IMP.atom.AllPDBSelector(), True)
+        with self.open_input_file("multimodel.pdb") as fh:
+            h = IMP.atom.read_pdb(fh, m, IMP.atom.AllPDBSelector(), True)
         self.assertEqual(len(IMP.atom.get_leaves(h)), 987)
         self.assertEqual(len(IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)),
                          1)
@@ -226,8 +232,8 @@ class Tests(IMP.test.TestCase):
     def test_read_combine_models(self):
         """Check read_pdb() reading multimodel into single hierarchy"""
         m = IMP.Model()
-        h = IMP.atom.read_pdb(self.open_input_file("multimodel.pdb"), m,
-                              IMP.atom.AllPDBSelector(), False)
+        with self.open_input_file("multimodel.pdb") as fh:
+            h = IMP.atom.read_pdb(fh, m, IMP.atom.AllPDBSelector(), False)
         self.assertEqual(len(IMP.atom.get_leaves(h)), 19740)
         self.assertEqual(len(IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)),
                          1)
@@ -235,8 +241,8 @@ class Tests(IMP.test.TestCase):
     def test_one_atom(self):
         """Test reading a PDB containing a single atom"""
         m = IMP.Model()
-        h = IMP.atom.read_pdb(self.open_input_file("single_atom.pdb"), m,
-                              IMP.atom.AllPDBSelector(), True)
+        with self.open_input_file("single_atom.pdb") as fh:
+            h = IMP.atom.read_pdb(fh, m, IMP.atom.AllPDBSelector(), True)
         # print m.number
         ln = IMP.atom.get_leaves(h)
         print(len(ln))
@@ -244,7 +250,8 @@ class Tests(IMP.test.TestCase):
 
     def test_indexes(self):
         m = IMP.Model()
-        h = IMP.atom.read_pdb(self.open_input_file("dna.pdb"), m)
+        with self.open_input_file("dna.pdb") as fh:
+            h = IMP.atom.read_pdb(fh, m)
         tn = self.get_tmp_file_name("out_dna.pdb")
         IMP.atom.write_pdb(h, tn)
         hp = IMP.atom.read_pdb(tn, m)

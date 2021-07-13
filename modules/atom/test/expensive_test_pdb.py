@@ -48,8 +48,8 @@ class PDBReadWriteTest(IMP.test.TestCase):
         m = IMP.Model()
 
         #! read PDB
-        mp = IMP.atom.read_pdb(self.open_input_file("1DQK.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("1DQK.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 4060)
         # IMP.atom.show_molecular_hierarchy(mp)
@@ -60,8 +60,8 @@ class PDBReadWriteTest(IMP.test.TestCase):
         IMP.atom.add_radii(mp)
         IMP.atom.show_molecular_hierarchy(mp)
         # read another PDB
-        mp = IMP.atom.read_pdb(self.open_input_file("1aon.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("1aon.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 58870)
 

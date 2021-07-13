@@ -66,7 +66,8 @@ class Test(IMP.test.TestCase):
     '''
     def test_protein_kinematics(self):
         m, hier = self.construct_peptide()
-        #hier = IMP.atom.read_pdb(self.open_input_file("three.pdb"), m)
+        #with self.open_input_file("three.pdb") as fh:
+        #    hier = IMP.atom.read_pdb(fh, m)
         pk = IMP.kinematics.ProteinKinematics(hier)
         pi = 3.1415
 

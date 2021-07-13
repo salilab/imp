@@ -9,7 +9,8 @@ class Tests(IMP.test.TestCase):
     def test_one(self):
         """Test that writing hierarchies to pdb as cas works"""
         m = IMP.Model()
-        h = IMP.atom.read_pdb(self.open_input_file("input.pdb"), m)
+        with self.open_input_file("input.pdb") as fh:
+            h = IMP.atom.read_pdb(fh, m)
         hs = IMP.atom.create_simplified_along_backbone(h, 1)
         o = io.BytesIO()
         IMP.atom.write_pdb_of_c_alphas(hs, o)

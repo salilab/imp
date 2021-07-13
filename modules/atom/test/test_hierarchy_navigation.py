@@ -10,8 +10,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
 
         #! read PDB
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
         res = IMP.atom.get_by_type(mp, IMP.atom.RESIDUE_TYPE)
         nres = IMP.atom.get_next_residue(IMP.atom.Residue(res[0]))
 

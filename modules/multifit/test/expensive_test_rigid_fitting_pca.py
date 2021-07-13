@@ -22,11 +22,13 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.scene.update_voxel_size(1.5)
 
     def load_protein(self, pdb_filename):
-        self.mp = IMP.atom.read_pdb(self.open_input_file(pdb_filename),
-                                    self.imp_model, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file(pdb_filename) as fh:
+            self.mp = IMP.atom.read_pdb(fh, self.imp_model,
+                                        IMP.atom.NonWaterPDBSelector())
         IMP.atom.add_radii(self.mp)
-        self.mp_ref = IMP.atom.read_pdb(self.open_input_file(pdb_filename),
-                                        self.imp_model, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file(pdb_filename) as fh:
+            self.mp_ref = IMP.atom.read_pdb(fh, self.imp_model,
+                                            IMP.atom.NonWaterPDBSelector())
         IMP.atom.add_radii(self.mp_ref)
 
         self.radius_key = IMP.core.XYZR.get_radius_key()

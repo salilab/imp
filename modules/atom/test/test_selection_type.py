@@ -63,7 +63,8 @@ class Tests(IMP.test.TestCase):
         """Test selection of N and C termini"""
         IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
-        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        with self.open_input_file("mini.pdb") as fh:
+            h = IMP.atom.read_pdb(fh, m)
         cterm = IMP.atom.Selection(h, terminus=IMP.atom.Selection.C)
         nterm = IMP.atom.Selection(h, terminus=IMP.atom.Selection.N)
         print(cterm.get_selected_particles())
@@ -77,7 +78,8 @@ class Tests(IMP.test.TestCase):
         """Test selection of atoms by element"""
         IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
-        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        with self.open_input_file("mini.pdb") as fh:
+            h = IMP.atom.read_pdb(fh, m)
         c = IMP.atom.Selection(h, element=IMP.atom.C)
         fe = IMP.atom.Selection(h, element=IMP.atom.Fe)
         n = IMP.atom.Selection(h, element=IMP.atom.N)
@@ -89,7 +91,8 @@ class Tests(IMP.test.TestCase):
         """Test selection of CA atoms and indexes"""
         IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
-        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        with self.open_input_file("mini.pdb") as fh:
+            h = IMP.atom.read_pdb(fh, m)
         ca = IMP.atom.Selection(h, atom_type=IMP.atom.AT_CA)
         cas = ca.get_selected_particle_indexes()
         self.assertEqual(len(cas), 9)
@@ -110,7 +113,8 @@ class Tests(IMP.test.TestCase):
         """Test selection of residue type"""
         IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
-        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        with self.open_input_file("mini.pdb") as fh:
+            h = IMP.atom.read_pdb(fh, m)
         v = IMP.atom.Selection(h, residue_type=IMP.atom.VAL)
         ps = v.get_selected_particle_indexes()
         self.assertEqual(len(ps), 7)
@@ -175,10 +179,12 @@ class Tests(IMP.test.TestCase):
         IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
         r = IMP.atom.Hierarchy.setup_particle(m, m.add_particle("root"))
-        h0 = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        with self.open_input_file("mini.pdb") as fh:
+            h0 = IMP.atom.read_pdb(fh, m)
         h0.set_name("mini0")
         r.add_child(h0)
-        h1 = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        with self.open_input_file("mini.pdb") as fh:
+            h1 = IMP.atom.read_pdb(fh, m)
         h1.set_name("mini1")
         IMP.atom.Molecule.setup_particle(h1)
         IMP.atom.Molecule.setup_particle(h0)
@@ -197,7 +203,8 @@ class Tests(IMP.test.TestCase):
         """Test selecting residues from rigid bodies"""
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
-        r = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        with self.open_input_file("mini.pdb") as fh:
+            r = IMP.atom.read_pdb(fh, m)
         rb = IMP.atom.create_rigid_body(r)
         s = IMP.atom.Selection([r], residue_indexes=[436, 437])
         pis = s.get_selected_particle_indexes()
@@ -237,7 +244,8 @@ class Tests(IMP.test.TestCase):
         """Test selection of hierarchy types"""
         IMP.set_log_level(IMP.SILENT)
         m = IMP.Model()
-        h = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        with self.open_input_file("mini.pdb") as fh:
+            h = IMP.atom.read_pdb(fh, m)
         s = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.ATOM_TYPE])
         self.assertEqual(len(s.get_selected_particle_indexes()), 68)
         s = IMP.atom.Selection(h, hierarchy_types=[IMP.atom.RESIDUE_TYPE])
@@ -252,7 +260,8 @@ class Tests(IMP.test.TestCase):
     def test_fragment_terminus(self):
         """Test get terminus from fragment"""
         m = IMP.Model()
-        r = IMP.atom.read_pdb(self.open_input_file("mini.pdb"), m)
+        with self.open_input_file("mini.pdb") as fh:
+            r = IMP.atom.read_pdb(fh, m)
         term = IMP.atom.Selection(r,terminus=IMP.atom.Selection.N).get_selected_particles()
 
         # now put in fragments
