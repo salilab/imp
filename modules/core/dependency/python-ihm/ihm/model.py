@@ -9,6 +9,8 @@ import itertools
 class Sphere(object):
     """Coordinates of part of the model represented by a sphere.
 
+       See :meth:`Model.get_spheres` for more details.
+
        :param asym_unit: The asymmetric unit that this sphere represents
        :type asym_unit: :class:`ihm.AsymUnit`
        :param tuple seq_id_range: The range of residues represented by this
@@ -33,7 +35,11 @@ class Sphere(object):
 class Atom(object):
     """Coordinates of part of the model represented by an atom.
 
-       :param asym_unit: The asymmetric unit that this sphere represents
+       See :meth:`Model.get_atoms` for more details. Note that this class
+       is used only to represent the coordinates of an atom. To access
+       atom-specific properties of the model, see the :class:`ihm.Atom` class.
+
+       :param asym_unit: The asymmetric unit that this atom represents
        :type asym_unit: :class:`ihm.AsymUnit`
        :param int seq_id: The residue index represented by this atom
               (can be None for HETATM sites)
@@ -95,7 +101,7 @@ class Model(object):
            software's own data structures. It is recommended to subclass
            and provide a more efficient implementation. For example, the
            `modeling of Nup133 <https://github.com/integrativemodeling/nup133/>`_
-           uses a `custom subclass <https://github.com/integrativemodeling/nup133/blob/master/outputs_foxs_ensemble_new/pdb-dev/pdb.py>`_
+           uses a `custom subclass <https://github.com/integrativemodeling/nup133/blob/main/outputs_foxs_ensemble_new/pdb-dev/pdb.py>`_
            to pass `BioPython <https://biopython.org/>`_ objects through
            to python-ihm.
 

@@ -1464,7 +1464,7 @@ class _ModelDumper(Dumper):
         with writer.loop("_atom_site",
                          ["group_PDB", "id", "type_symbol",
                           "label_atom_id", "label_alt_id", "label_comp_id",
-                          "label_seq_id",
+                          "label_seq_id", "auth_seq_id",
                           "label_asym_id", "Cartn_x",
                           "Cartn_y", "Cartn_z", "occupancy", "label_entity_id",
                           "auth_asym_id",
@@ -1477,6 +1477,7 @@ class _ModelDumper(Dumper):
                     seq_id = 1 if atom.seq_id is None else atom.seq_id
                     comp = atom.asym_unit.entity.sequence[seq_id - 1]
                     seen_types[atom.type_symbol] = None
+                    auth_seq_id = atom.asym_unit._get_auth_seq_id(seq_id)
                     lp.write(id=next(ordinal),
                              type_symbol=atom.type_symbol,
                              group_PDB='HETATM' if atom.het else 'ATOM',
@@ -1485,6 +1486,7 @@ class _ModelDumper(Dumper):
                              label_asym_id=atom.asym_unit._id,
                              label_entity_id=atom.asym_unit.entity._id,
                              label_seq_id=atom.seq_id,
+                             auth_seq_id=auth_seq_id,
                              auth_asym_id=atom.asym_unit._id,
                              Cartn_x=atom.x, Cartn_y=atom.y, Cartn_z=atom.z,
                              B_iso_or_equiv=atom.biso,

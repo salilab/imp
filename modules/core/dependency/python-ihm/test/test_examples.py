@@ -39,7 +39,7 @@ class Tests(unittest.TestCase):
             # can read it
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 contents = fh.readlines()
-            self.assertEqual(len(contents), 313)
+            self.assertEqual(len(contents), 314)
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 s, = ihm.reader.read(fh)
 
@@ -94,6 +94,11 @@ class Tests(unittest.TestCase):
         with open(out) as fh:
             s, = ihm.reader.read(fh)
         os.unlink(out)
+
+    def test_stream_parser_example(self):
+        """Test stream_parser example"""
+        subprocess.check_call([sys.executable, "stream_parser.py"],
+                              cwd=get_example_dir())
 
 
 if __name__ == '__main__':

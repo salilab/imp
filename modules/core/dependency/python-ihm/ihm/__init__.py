@@ -19,7 +19,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.20'
+__version__ = '0.21'
 
 
 class __UnknownValue(object):
@@ -958,6 +958,9 @@ class EntityRange(object):
 class Atom(object):
     """A single atom in an entity or asymmetric unit. Usually these objects
        are created by calling :meth:`Residue.atom`.
+
+       Note that this class does not store atomic coordinates of a given
+       atom in a given model; for that, see :class:`ihm.model.Atom`.
     """
 
     __slots__ = ['residue', 'id']
@@ -1042,7 +1045,7 @@ class Entity(object):
            rna_with_psu = ihm.Entity(('A', 'C', psu), alphabet=ihm.RNAAlphabet)
 
        For more examples, see the
-       `ligands and water example <https://github.com/ihmwg/python-ihm/blob/master/examples/ligands_water.py>`_.
+       `ligands and water example <https://github.com/ihmwg/python-ihm/blob/main/examples/ligands_water.py>`_.
 
        All entities should be stored in the top-level System object;
        see :attr:`System.entities`.
