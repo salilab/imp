@@ -169,7 +169,7 @@ nodes.
 
 When adding data to an %RMF file that is just to be used for internal
 consumption, one should create a new category. For example,
-[IMP](http://www.integrativemodeling.org) defines an ''imp'' category
+[IMP](https://integrativemodeling.org) defines an ''imp'' category
 when arbitrary particle data are stored.
 
 If, instead, the data is likely to be a general interest, it probably
@@ -183,7 +183,7 @@ methods are supported: files with suffix `.rmf` and `.rmfz` and buffers
 in memory.
 
 The current format stores the structure in an [Avro Object
-Container](http://avro.apache.org/docs/1.7.5/spec.html#Object+Container+Files). If
+Container](https://avro.apache.org/docs/1.7.5/spec.html#Object+Container+Files). If
 the `.rmfz` suffix is used, the contents are compressed. The structure
 is stored as a series of records, each containing either a frame or
 static data (there can be multiple static data frames - they are
