@@ -13,7 +13,7 @@ else:
 
 class MockMsgPack(object):
     @staticmethod
-    def pack(data, fh):
+    def pack(data, fh, use_bin_type=True):
         fh.data = data
 
 
@@ -105,8 +105,8 @@ class Tests(IMP.test.TestCase):
         po.finalize()
         fh = MockFh()
         ihm.dumper.write(fh, [po.system], format='BCIF')
-        self.assertEqual(fh.data[b'dataBlocks'][0][b'categories'][0][b'name'],
-                         b'_entry')
+        self.assertEqual(fh.data['dataBlocks'][0]['categories'][0]['name'],
+                         '_entry')
 
     def test_entity(self):
         """Test EntityDump with PMI2-style init"""
