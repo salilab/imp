@@ -47,6 +47,10 @@ function(imp_build_module sourcedir)
     set(IMP_SWIG_LIBRARIES ${PYTHON_LIBRARIES})
   endif(WIN32)
 
+  if(PYTHON_NUMPY_FOUND)
+    include_directories(SYSTEM ${PYTHON_NUMPY_INCLUDE_DIR})
+  endif()
+
   include(GNUInstallDirs)
   # Add extra installation locations for SWIG .i files and Python code
   # As per GNUInstallDirs.cmake, set empty values in the cache and store
