@@ -18,7 +18,7 @@ tabs. [cleanup_code.py](\ref dev_tools_cleanup_code) can help you do this format
 automatically.
 
 All Python code should conform to the [Python style
-guide](http://www.python.org/dev/peps/pep-0008/).  In essence this
+guide](https://www.python.org/dev/peps/pep-0008/).  In essence this
 translates to 4-space indents, no tabs, and similar class, method and
 variable naming to the C++ code. You can check that your Python code
 is correctly formatted using the [flake8](https://pypi.org/project/flake8/)

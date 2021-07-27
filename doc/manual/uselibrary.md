@@ -2,7 +2,7 @@ Using the library in other projects {#uselibrary}
 ===================================
 
 The %IMP C++ library can be used in other projects. When %IMP is built or
-installed, it creates a [CMake](https://cmake.org/) file called
+installed, it creates a [CMake](https://cmake.org) file called
 `IMPConfig.cmake` which contains information about how %IMP was configured
 and where all the parts of %IMP can be found. This can be used to easily
 add %IMP as a dependency to other C++ projects using CMake.
