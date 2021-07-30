@@ -227,7 +227,8 @@ void write_pdb(const ParticlesTemp& ps, TextOutput out) {
   int last_index = 0;
   bool use_input_index = true;
   for (unsigned int i = 0; i < ps.size(); ++i) {
-    if (Atom(ps[i]).get_input_index() != last_index + 1) {
+    if (Atom::get_is_setup(ps[i])
+        && Atom(ps[i]).get_input_index() != last_index + 1) {
       use_input_index = false;
       break;
     } else {
