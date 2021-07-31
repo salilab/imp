@@ -23,6 +23,7 @@ import RMF
 import IMP.rmf
 from collections import defaultdict, OrderedDict
 import warnings
+import numpy
 
 
 def _get_system_for_hier(hier):
@@ -592,7 +593,7 @@ def get_residue_indexes(hier):
 
 
 def sort_by_residues(particles):
-    particles_residues = [(p, IMP.pmi.tools.get_residue_indexes(p))
+    particles_residues = [(p, list(IMP.pmi.tools.get_residue_indexes(p)))
                           for p in particles]
     sorted_particles_residues = sorted(
         particles_residues,
@@ -706,7 +707,7 @@ class Segments(object):
 
     def add(self, index):
         '''index can be a integer or a list of integers '''
-        if isinstance(index, int):
+        if isinstance(index, (int, numpy.int32, numpy.int64)):
             mergeleft = None
             mergeright = None
             for n, s in enumerate(self.segs):
