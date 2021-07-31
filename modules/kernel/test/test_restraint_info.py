@@ -69,7 +69,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(ri.get_number_of_ints(), 1)
         self.assertEqual(ri.get_ints_key(0), "test ints")
         v = ri.get_ints_value(0)
-        self.assertEqual(v, [42, 100])
+        self.assertEqual(list(v), [42, 100])
 
     def test_strings(self):
         """Test get/set of strings RestraintInfo"""

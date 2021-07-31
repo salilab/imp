@@ -47,10 +47,10 @@ class Tests(IMP.test.TestCase):
     def _test_base(self, p, n, op):
         print("testing")
         self.assertEqual(p.get_value(fk0), n)
-        self.assertEqual(p.get_value(fsk0), [n, 2.0 * n, 3.0 * n])
+        self.assertEqual(list(p.get_value(fsk0)), [n, 2.0 * n, 3.0 * n])
         self.assertEqual(p.get_value(fk1), n + 1)
         self.assertEqual(p.get_value(ik0), 100 * n)
-        self.assertEqual(p.get_value(isk0), [1 * n, 2 * n, 3 * n])
+        self.assertEqual(list(p.get_value(isk0)), [1 * n, 2 * n, 3 * n])
         self.assertEqual(p.get_value(ik1), 100 * n + 1)
         self.assertEqual(p.get_value(sk0), str(100 * n))
         self.assertEqual(p.get_value(sk1), str(100 * n + 1))

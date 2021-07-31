@@ -39,13 +39,14 @@ class Tests(IMP.test.TestCase):
         """Check ints list typemaps"""
         vs = [[1, 2, 3, 4], [5, 6, 7, 8]]
         vso = IMP._pass_ints_list(vs)
-        self._equal_lists(vs, vso)
+        self._equal_lists(vs, [list(x) for x in vso])
 
     def test_bls(self):
         """Check ints lists typemaps"""
         vs = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         vso = IMP._pass_ints_lists(vs)
-        self._equal_lists(vs, vso)
+        print("bw",vso)
+        self._equal_lists(vs, [[list(x) for x in y] for y in vso])
 
     def test_intpairs(self):
         """Check int pairs typemap"""

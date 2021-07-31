@@ -112,7 +112,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(IMP.atom.Fragment(sel1.get_selected_particles()[0]).get_residue_indexes(),
                          [432])
         sel10 = IMP.atom.Selection(root,resolution=10,residue_index=432)
-        self.assertEqual(IMP.atom.Fragment(sel10.get_selected_particles()[0]).get_residue_indexes(),
+        f = IMP.atom.Fragment(sel10.get_selected_particles()[0])
+        self.assertEqual(list(f.get_residue_indexes()),
                          list(range(432,442)))
 
     def test_rep_1and10(self):
