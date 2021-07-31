@@ -552,8 +552,10 @@ struct ConvertSequence<Ints, ConvertT> : public ConvertVectorBase<
       npy_intp dims[2];
       dims[0] = t.size();
       PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_INT));
-      PyObject *obj = ret;
-      memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(int));
+      if (t.size() > 0) {
+        PyObject *obj = ret;
+        memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(int));
+      }
       return ret.release();
     } else {
       return Base::create_python_object(t, st, OWN);
@@ -595,8 +597,10 @@ struct ConvertSequence<Floats, ConvertT> : public ConvertVectorBase<
       npy_intp dims[2];
       dims[0] = t.size();
       PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_DOUBLE));
-      PyObject *obj = ret;
-      memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(double));
+      if (t.size() > 0) {
+        PyObject *obj = ret;
+        memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(double));
+      }
       return ret.release();
     } else {
       return Base::create_python_object(t, st, OWN);
