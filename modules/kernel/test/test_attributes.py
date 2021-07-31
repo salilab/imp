@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 if IMP.IMP_KERNEL_HAS_NUMPY:
     import numpy
+    import numpy.testing
 
 
 xkey = IMP.FloatKey("x")
@@ -51,7 +52,7 @@ class Tests(IMP.test.TestCase):
 
     @IMP.test.skipIf(not IMP.IMP_KERNEL_HAS_NUMPY, "No numpy support")
     def test_numpy_int(self):
-        """Test using numpy arrays as input for Ints attributes"""
+        """Test using numpy arrays as input/output for Ints attributes"""
         m = IMP.Model()
         p = IMP.Particle(m)
         isk = IMP.IntsKey("hi")
@@ -62,11 +63,13 @@ class Tests(IMP.test.TestCase):
         for dtype in (numpy.int32, numpy.int64):
             n = numpy.array([1,2,3,4,5,6], dtype=dtype)
             p.set_value(isk, n)
-            self.assertEqual(p.get_value(isk), [1,2,3,4,5,6])
+            val = p.get_value(isk)
+            self.assertIsInstance(val, numpy.ndarray)
+            numpy.testing.assert_array_equal(val, [1,2,3,4,5,6])
 
     @IMP.test.skipIf(not IMP.IMP_KERNEL_HAS_NUMPY, "No numpy support")
     def test_numpy_float(self):
-        """Test using numpy arrays as input for Floats attributes"""
+        """Test using numpy arrays as input/output for Floats attributes"""
         m = IMP.Model()
         p = IMP.Particle(m)
         fsk = IMP.FloatsKey("hi")
@@ -77,7 +80,9 @@ class Tests(IMP.test.TestCase):
         for dtype in (numpy.float32, numpy.float64):
             n = numpy.array([1.,2.,3.,4.,5.,6.], dtype=dtype)
             p.set_value(fsk, n)
-            self.assertEqual(p.get_value(fsk), [1.,2.,3.,4.,5.,6.])
+            val = p.get_value(fsk)
+            self.assertIsInstance(val, numpy.ndarray)
+            numpy.testing.assert_allclose(val, [1.,2.,3.,4.,5.,6.])
 
 
 if __name__ == '__main__':

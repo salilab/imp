@@ -545,6 +545,20 @@ struct ConvertSequence<Ints, ConvertT> : public ConvertVectorBase<
                                   particle_st, decorator_st);
     }
   }
+
+  template <class SwigData>
+  static PyObject* create_python_object(const Ints& t, SwigData st, int OWN) {
+    if (numpy_import_retval == 0) {
+      npy_intp dims[2];
+      dims[0] = t.size();
+      PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_INT));
+      PyObject *obj = ret;
+      memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(int));
+      return ret.release();
+    } else {
+      return Base::create_python_object(t, st, OWN);
+    }
+  }
 };
 
 template <class ConvertT>
@@ -572,6 +586,20 @@ struct ConvertSequence<Floats, ConvertT> : public ConvertVectorBase<
     } else {
       return Base::get_cpp_object(o, symname, argnum, argtype, st,
                                   particle_st, decorator_st);
+    }
+  }
+
+  template <class SwigData>
+  static PyObject* create_python_object(const Floats& t, SwigData st, int OWN) {
+    if (numpy_import_retval == 0) {
+      npy_intp dims[2];
+      dims[0] = t.size();
+      PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_DOUBLE));
+      PyObject *obj = ret;
+      memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(double));
+      return ret.release();
+    } else {
+      return Base::create_python_object(t, st, OWN);
     }
   }
 };
