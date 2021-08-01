@@ -235,7 +235,7 @@ class Tests(IMP.test.TestCase):
             self.assertAlmostEqual(val[1], 99.5, delta=1e-6)
             self.assertEqual(info.get_number_of_ints(), 1)
             self.assertEqual(info.get_ints_key(0), "test ints")
-            self.assertEqual(info.get_ints_value(0), [42, 99])
+            self.assertEqual(list(info.get_ints_value(0)), [42, 99])
             self.assertEqual(info.get_number_of_strings(), 1)
             self.assertEqual(info.get_strings_key(0), "test strings")
             self.assertEqual(info.get_strings_value(0), ["bar", "baz"])
