@@ -341,7 +341,7 @@ class MonteCarlo(object):
     def get_weight_movers(self, weights, maxstep):
         mvs = []
         for weight in weights:
-            if(weight.get_number_of_states() > 1):
+            if weight.get_number_of_weights() > 1:
                 mvs.append(IMP.isd.WeightMover(weight, maxstep))
         return mvs
 
