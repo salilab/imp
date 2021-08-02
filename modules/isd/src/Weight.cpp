@@ -204,14 +204,6 @@ void Weight::add_weight(Float wi) {
   set_weights(get_weights());
 }
 
-Int Weight::get_number_of_states() const {
-  IMPISD_DEPRECATED_METHOD_DEF(
-    2.12,
-    "Use get_number_of_weights() instead."
-  );
-  return get_number_of_weights();
-}
-
 Int Weight::get_number_of_weights() const {
   return get_particle()->get_value(get_number_of_weights_key());
 }

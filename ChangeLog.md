@@ -14,6 +14,8 @@ ChangeLog {#changelog}
   IMP::TripletContainer::get_particle_triplets(), and
   IMP::QuadContainer::get_particle_quads() have been removed. Use the
   get_contents() method instead.
+- The deprecated IMP::isd::Weight::get_number_of_states() method has been
+  removed. Use get_number_of_weights() instead.
 
 # 2.15.0 - 2021-06-02 # {#changelog_2_15_0}
 - The [Homebrew](https://brew.sh/) Mac packages now support Apple Silicon.
