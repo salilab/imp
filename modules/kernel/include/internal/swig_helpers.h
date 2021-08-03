@@ -74,6 +74,9 @@ struct Convert<ParticleIndex> : public ConvertValueBase<ParticleIndex> {
                                       SwigData index_st,
                                       SwigData particle_st,
                                       SwigData decorator_st) {
+#if IMP_KERNEL_HAS_NUMPY
+    long ret;
+#endif
     void *vp;
     int res = SWIG_ConvertPtr(o, &vp, index_st, 0);
     if (SWIG_IsOK(res)) {
@@ -81,6 +84,13 @@ struct Convert<ParticleIndex> : public ConvertValueBase<ParticleIndex> {
       ParticleIndex ret = *temp;
       if (SWIG_IsNewObj(res)) delete temp;
       return ret;
+#if IMP_KERNEL_HAS_NUMPY
+    // Allow elements of int numpy arrays
+    } else if (numpy_import_retval == 0
+               && PyObject_TypeCheck(o, &PyIntArrType_Type)
+               && ((ret = PyLong_AsLong(o)) != -1 || !PyErr_Occurred())) {
+      return ParticleIndex(ret);
+#endif
     } else {
       Particle *p = Helper::get_cpp_object(o, symname, argnum, argtype,
                                            index_st, particle_st,
@@ -91,6 +101,12 @@ struct Convert<ParticleIndex> : public ConvertValueBase<ParticleIndex> {
   template <class SwigData>
   static bool get_is_cpp_object(PyObject *o, SwigData st, SwigData particle_st,
                                 SwigData decorator_st) {
+#if IMP_KERNEL_HAS_NUMPY
+    // Allow elements of int numpy arrays
+    if (numpy_import_retval == 0 && PyObject_TypeCheck(o, &PyIntArrType_Type)) {
+      return true;
+    }
+#endif
     try {
       get_cpp_object(o, "", 0, "", st, particle_st, decorator_st);
     }
