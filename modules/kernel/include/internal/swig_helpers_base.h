@@ -607,6 +607,35 @@ struct ConvertSequence<Floats, ConvertT> : public ConvertVectorBase<
     }
   }
 };
+
+/* Map list of ParticleIndex to a numpy array on integers.
+   This should be much faster than making a Python ParticleIndex object
+   for each index, at the expense of potentially allowing unsafe operations
+   on the indexes (e.g. it makes no sense to multiply or divide an index) */
+template <class ConvertT>
+struct ConvertSequence<ParticleIndexes, ConvertT> : public ConvertVectorBase<
+                                                     ParticleIndexes, ConvertT> {
+  static const int converter = 34;
+  typedef ConvertVectorBase<ParticleIndexes, ConvertT> Base;
+
+  template <class SwigData>
+  static PyObject* create_python_object(const ParticleIndexes& t, SwigData st,
+                                        int OWN) {
+    if (numpy_import_retval == 0) {
+      BOOST_STATIC_ASSERT(sizeof(ParticleIndex) == sizeof(int));
+      npy_intp dims[2];
+      dims[0] = t.size();
+      PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_INT));
+      if (t.size() > 0) {
+        PyObject *obj = ret;
+        memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(int));
+      }
+      return ret.release();
+    } else {
+      return Base::create_python_object(t, st, OWN);
+    }
+  }
+};
 #endif
 
 template <>
