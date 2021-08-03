@@ -608,7 +608,7 @@ struct ConvertSequence<Floats, ConvertT> : public ConvertVectorBase<
   }
 };
 
-/* Map list of ParticleIndex to a numpy array on integers.
+/* Map list of ParticleIndex to a numpy array of integers.
    This should be much faster than making a Python ParticleIndex object
    for each index, at the expense of potentially allowing unsafe operations
    on the indexes (e.g. it makes no sense to multiply or divide an index) */
@@ -617,6 +617,30 @@ struct ConvertSequence<ParticleIndexes, ConvertT> : public ConvertVectorBase<
                                                      ParticleIndexes, ConvertT> {
   static const int converter = 34;
   typedef ConvertVectorBase<ParticleIndexes, ConvertT> Base;
+
+  template <class SwigData>
+  static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
+                                SwigData decorator_st) {
+    return (numpy_import_retval == 0 && is_native_numpy_array(in, NPY_INT))
+           || Base::get_is_cpp_object(in, st, particle_st, decorator_st);
+  }
+
+  template <class SwigData>
+  static ParticleIndexes get_cpp_object(
+                             PyObject* o, const char *symname, int argnum,
+                             const char *argtype, SwigData st,
+                             SwigData particle_st,
+                             SwigData decorator_st) {
+    if (numpy_import_retval == 0 && is_native_numpy_array(o, NPY_INT)) {
+      BOOST_STATIC_ASSERT(sizeof(ParticleIndex) == sizeof(int));
+      int dim = PyArray_DIM((PyArrayObject*)o, 0);
+      ParticleIndex *data = (ParticleIndex *)PyArray_DATA((PyArrayObject*)o);
+      return ParticleIndexes(data, data+dim);
+    } else {
+      return Base::get_cpp_object(o, symname, argnum, argtype, st,
+                                  particle_st, decorator_st);
+    }
+  }
 
   template <class SwigData>
   static PyObject* create_python_object(const ParticleIndexes& t, SwigData st,
