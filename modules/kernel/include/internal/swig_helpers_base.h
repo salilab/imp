@@ -637,6 +637,23 @@ struct ConvertSequence<ParticleIndexes, ConvertT> : public ConvertVectorBase<
   }
 };
 
+// Convert ParticleIndex{Pairs,Triplets,Quads} to a NumPy array
+template<class IndexArray, int D>
+static PyObject* create_index_array_numpy(const IndexArray &t) {
+  npy_intp dims[2];
+  dims[0] = t.size();
+  dims[1] = D;
+  PyReceivePointer ret(PyArray_SimpleNew(2, dims, NPY_INT));
+  if (t.size() > 0) {
+    PyObject *obj = ret;
+    char *data = (char *)PyArray_DATA(obj);
+    for (size_t i = 0; i < t.size(); ++i) {
+      memcpy(data + i * D * sizeof(int), t[i].data(), sizeof(int) * D);
+    }
+  }
+  return ret.release();
+}
+
 template <class ConvertT>
 struct ConvertSequence<ParticleIndexPairs, ConvertT>
           : public ConvertVectorBase<ParticleIndexPairs, ConvertT> {
@@ -647,19 +664,41 @@ struct ConvertSequence<ParticleIndexPairs, ConvertT>
   static PyObject* create_python_object(const ParticleIndexPairs& t,
                                         SwigData st, int OWN) {
     if (numpy_import_retval == 0) {
-      npy_intp dims[2];
-      dims[0] = t.size();
-      dims[1] = 2;
-      PyReceivePointer ret(PyArray_SimpleNew(2, dims, NPY_INT));
-      if (t.size() > 0) {
-        PyObject *obj = ret;
-        char *data = (char *)PyArray_DATA(obj);
-        for (size_t i = 0; i < t.size(); ++i) {
-          memcpy(data + i * 2 * sizeof(int), t[i].data(),
-                 sizeof(int) * 2);
-        }
-      }
-      return ret.release();
+      return create_index_array_numpy<ParticleIndexPairs, 2>(t);
+    } else {
+      return Base::create_python_object(t, st, OWN);
+    }
+  }
+};
+
+template <class ConvertT>
+struct ConvertSequence<ParticleIndexTriplets, ConvertT>
+          : public ConvertVectorBase<ParticleIndexTriplets, ConvertT> {
+  static const int converter = 36;
+  typedef ConvertVectorBase<ParticleIndexTriplets, ConvertT> Base;
+
+  template <class SwigData>
+  static PyObject* create_python_object(const ParticleIndexTriplets& t,
+                                        SwigData st, int OWN) {
+    if (numpy_import_retval == 0) {
+      return create_index_array_numpy<ParticleIndexTriplets, 3>(t);
+    } else {
+      return Base::create_python_object(t, st, OWN);
+    }
+  }
+};
+
+template <class ConvertT>
+struct ConvertSequence<ParticleIndexQuads, ConvertT>
+          : public ConvertVectorBase<ParticleIndexQuads, ConvertT> {
+  static const int converter = 37;
+  typedef ConvertVectorBase<ParticleIndexQuads, ConvertT> Base;
+
+  template <class SwigData>
+  static PyObject* create_python_object(const ParticleIndexQuads& t,
+                                        SwigData st, int OWN) {
+    if (numpy_import_retval == 0) {
+      return create_index_array_numpy<ParticleIndexQuads, 4>(t);
     } else {
       return Base::create_python_object(t, st, OWN);
     }
