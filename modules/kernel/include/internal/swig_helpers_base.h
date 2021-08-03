@@ -636,6 +636,35 @@ struct ConvertSequence<ParticleIndexes, ConvertT> : public ConvertVectorBase<
     }
   }
 };
+
+template <class ConvertT>
+struct ConvertSequence<ParticleIndexPairs, ConvertT>
+          : public ConvertVectorBase<ParticleIndexPairs, ConvertT> {
+  static const int converter = 35;
+  typedef ConvertVectorBase<ParticleIndexPairs, ConvertT> Base;
+
+  template <class SwigData>
+  static PyObject* create_python_object(const ParticleIndexPairs& t,
+                                        SwigData st, int OWN) {
+    if (numpy_import_retval == 0) {
+      npy_intp dims[2];
+      dims[0] = t.size();
+      dims[1] = 2;
+      PyReceivePointer ret(PyArray_SimpleNew(2, dims, NPY_INT));
+      if (t.size() > 0) {
+        PyObject *obj = ret;
+        char *data = (char *)PyArray_DATA(obj);
+        for (size_t i = 0; i < t.size(); ++i) {
+          memcpy(data + i * 2 * sizeof(int), t[i].data(),
+                 sizeof(int) * 2);
+        }
+      }
+      return ret.release();
+    } else {
+      return Base::create_python_object(t, st, OWN);
+    }
+  }
+};
 #endif
 
 template <>

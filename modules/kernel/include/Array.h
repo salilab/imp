@@ -123,6 +123,14 @@ class Array : public Value {
   typedef typename Storage::const_iterator const_iterator;
   const_iterator begin() const { return d_.begin(); }
   const_iterator end() const { return d_.end(); }
+
+  const Data* data() const {
+    if (d_.empty()) {
+      return NULL;
+    } else {
+      return &d_.front();
+    }
+  }
 };
 
 IMPKERNEL_END_NAMESPACE
