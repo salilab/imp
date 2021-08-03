@@ -124,6 +124,14 @@ class Array : public Value {
   const_iterator begin() const { return d_.begin(); }
   const_iterator end() const { return d_.end(); }
 
+  Data* data() {
+    if (d_.empty()) {
+      return NULL;
+    } else {
+      return &d_.front();
+    }
+  }
+
   const Data* data() const {
     if (d_.empty()) {
       return NULL;
