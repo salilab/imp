@@ -6,6 +6,10 @@ ChangeLog {#changelog}
   be consistent with ClosedCubicSpline (previously it threw ModelException).
 - SAXS tools (such as `compute_rg`, `foxs`) can now read input structures
   in mmCIF format.
+- Most IMP functions that return arrays of integer or floating point values,
+  or lists of ParticleIndexes, now return NumPy arrays if IMP is built with
+  NumPy. Code that adds lists or searches for particle pairs in a list may
+  need to be modified as NumPy arrays are slightly different from Python lists.
 - The deprecated methods
   IMP::{Singleton,Pair,Triplet,Quad}Predicate::get_value() have been removed.
   Use the get_value_index() methods instead.
