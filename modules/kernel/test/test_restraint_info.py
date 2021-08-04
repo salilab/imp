@@ -103,7 +103,7 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(ri.get_number_of_particle_indexes(), 1)
         self.assertEqual(ri.get_particle_indexes_key(0), "test pis")
         v = ri.get_particle_indexes_value(0)
-        self.assertNumPyParticleIndexesEqual(
+        self.assertNumPyArrayEqual(
             v, [p1.get_index(), p2.get_index()])
 
 if __name__ == '__main__':

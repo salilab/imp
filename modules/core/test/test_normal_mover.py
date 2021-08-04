@@ -26,8 +26,6 @@ class NormalMoverTest(IMP.test.TestCase):
         result = mv.propose()
         new = m.get_attribute(att, pa)
         parts = result.get_moved_particles()
-        if IMP.IMP_KERNEL_HAS_NUMPY:
-            parts = [IMP.ParticleIndex(p) for p in parts]
         self.assertEqual(len(parts), 1)
         self.assertEqual(parts[0], pa)
         self.assertTrue(abs(old - new) > 1e-7)

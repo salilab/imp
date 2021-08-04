@@ -236,25 +236,13 @@ class TestCase(unittest.TestCase):
         self.assertAlmostEqual(derivs[2], num_derivs[2],
                                delta=max(tolerance, abs(derivs[2]) * pct))
 
-    def assertNumPyParticleIndexesEqual(self, numpy_pis, exp_pis):
-        """Fail if the given numpy array of particle indexes
-           doesn't match expected"""
+    def assertNumPyArrayEqual(self, numpy_array, exp_array):
+        """Fail if the given numpy array doesn't match expected"""
         if IMP.IMP_KERNEL_HAS_NUMPY:
-            self.assertIsInstance(numpy_pis, numpy.ndarray)
-            self.assertEqual([IMP.ParticleIndex(p) for p in numpy_pis], exp_pis)
+            self.assertIsInstance(numpy_array, numpy.ndarray)
+            numpy.testing.assert_array_equal(numpy_array, exp_array)
         else:
-            self.assertEqual(numpy_pis, exp_pis)
-
-    def assertNumPyParticleIndexPairsEqual(self, numpy_pis, exp_pis):
-        """Fail if the given numpy array of particle index pairs
-           doesn't match expected"""
-        if IMP.IMP_KERNEL_HAS_NUMPY:
-            self.assertIsInstance(numpy_pis, numpy.ndarray)
-            self.assertEqual(
-                [(IMP.ParticleIndex(p[0]), IMP.ParticleIndex(p[1]))
-                for p in numpy_pis], exp_pis)
-        else:
-            self.assertEqual(numpy_pis, exp_pis)
+            self.assertEqual(numpy_array, exp_array)
 
     def assertSequenceAlmostEqual(self, first, second, places=None, msg=None,
                                   delta=None):

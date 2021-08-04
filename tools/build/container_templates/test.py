@@ -130,11 +130,8 @@ class ClassnameContainerTest(IMP.test.TestCase):
                 lcc.add(t)
                 cs.append(t)
         ret = c.get_contents()
-        if IMP.IMP_KERNEL_HAS_NUMPY:
-            if "FUNCTIONNAME" == "particle":
-                ret = [IMP.ParticleIndex(p) for p in ret]
-            else:
-                ret = [tuple(IMP.ParticleIndex(p) for p in ps) for ps in ret]
+        if IMP.IMP_KERNEL_HAS_NUMPY and "FUNCTIONNAME" != "particle":
+            ret = [tuple(IMP.ParticleIndex(p) for p in ps) for ps in ret]
         for pi in cs:
             self.assertIn(pi, ret)
         ret.sort()

@@ -18,7 +18,7 @@ class Tests(IMP.test.TestCase):
         alli = lpc.get_contents()
         # Coerce from numpy.array to plain Python array
         if IMP.IMP_KERNEL_HAS_NUMPY:
-            alli = [(p[0], p[1]) for p in alli]
+            alli = [tuple(p) for p in alli]
         for pi0 in lsc.get_contents():
             for pi1 in lsc.get_contents():
                 if pi0 != pi1:

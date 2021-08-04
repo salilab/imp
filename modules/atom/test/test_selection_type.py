@@ -57,8 +57,7 @@ class Tests(IMP.test.TestCase):
         # Must specify either hierarchy or hierarchies
         self.assertRaises(ValueError, IMP.atom.Selection)
         s = IMP.atom.Selection([rh])
-        self.assertNumPyParticleIndexesEqual(
-            s.get_selected_particle_indexes(), [ci])
+        self.assertNumPyArrayEqual(s.get_selected_particle_indexes(), [ci])
 
     def test_one(self):
         """Test selection of N and C termini"""
@@ -150,10 +149,10 @@ class Tests(IMP.test.TestCase):
         ntm = IMP.atom.Mass.setup_particle(m, cti, 1)
         cc.add_child(cth)
         cs = IMP.atom.Selection([rh], terminus=IMP.atom.Selection.C)
-        self.assertNumPyParticleIndexesEqual(
+        self.assertNumPyArrayEqual(
             cs.get_selected_particle_indexes(), [cti])
         ns = IMP.atom.Selection([rh], terminus=IMP.atom.Selection.N)
-        self.assertNumPyParticleIndexesEqual(
+        self.assertNumPyArrayEqual(
             ns.get_selected_particle_indexes(), [nti])
 
     def test_mixed_coordinates(self):
@@ -198,8 +197,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(len(s0.get_selected_particle_indexes()), 68)
         self.assertEqual(len(s1.get_selected_particle_indexes()), 68)
         self.assertEqual(
-            len(set(s0.get_selected_particle_indexes()
-                + s1.get_selected_particle_indexes())),
+            len(set(list(s0.get_selected_particle_indexes())
+                    + list(s1.get_selected_particle_indexes()))),
             2 * 68)
 
     def test_residues_rb(self):
