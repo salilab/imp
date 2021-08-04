@@ -34,7 +34,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(m.get_attribute(ik, p.get_index()), 1)
         pisk = IMP.ParticleIndexesKey("hi")
         m.add_attribute(pisk, p.get_index(), [p.get_index()])
-        self.assertEqual(m.get_attribute(pisk, p.get_index()), [p.get_index()])
+        self.assertNumPyParticleIndexesEqual(
+            m.get_attribute(pisk, p.get_index()), [p.get_index()])
         pik = IMP.ParticleIndexKey("hi")
         m.add_attribute(pik, p.get_index(), p.get_index())
         self.assertEqual(m.get_attribute(pik, p.get_index()), p.get_index())

@@ -17,7 +17,7 @@ class Tests(IMP.test.TestCase):
         """Check that ParticleIndexesAdaptor works"""
         pis = [IMP.ParticleIndex(i) for i in range(0, 10)]
         opis = IMP._take_particle_indexes_adaptor(pis)
-        self.assertEqual(pis, opis)
+        self.assertNumPyParticleIndexesEqual(opis, pis)
 
     def test_coerce_particle_to_index(self):
         """Check that Particle is coerced to ParticleIndex in Python"""
@@ -62,13 +62,14 @@ class Tests(IMP.test.TestCase):
         d2 = IMP.core.XYZ.setup_particle(m, pi2)
         c = IMP.container.ListPairContainer(m, [(pi1, pi2)])
         c.set_was_used(True)
-        self.assertEqual(c.get_indexes(), [(pi1,pi2)])
+        self.assertNumPyParticleIndexPairsEqual(c.get_indexes(), [(pi1,pi2)])
         c = IMP.container.ListPairContainer(m, [(p1, p2)])
         c.set_was_used(True)
-        self.assertEqual(c.get_indexes(), [(pi1,pi2)])
+        self.assertNumPyParticleIndexPairsEqual(c.get_indexes(), [(pi1,pi2)])
         c = IMP.container.ListPairContainer(m, [(d1, d2)])
         c.set_was_used(True)
-        self.assertEqual(c.get_indexes(), [(pi1,pi2)])
+        self.assertNumPyParticleIndexPairsEqual(c.get_indexes(), [(pi1,pi2)])
+
 
 if __name__ == '__main__':
     IMP.test.main()

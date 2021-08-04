@@ -50,8 +50,17 @@ class Tests(IMP.test.TestCase):
         pse = [ps[i * 2] for i in range(len(ps) // 2)]
         pso = [ps[i * 2 + 1] for i in range(len(ps) // 2)]
         psf = [ps[0], ps[5]]
-        self.assertEqual(even.get_contents(), pse)
-        self.assertEqual(odd.get_contents(), pso)
-        self.assertEqual(zf.get_contents(), psf)
+        evenc = even.get_contents()
+        oddc = odd.get_contents()
+        zfc = zf.get_contents()
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            evenc = [IMP.ParticleIndex(p) for p in evenc]
+            oddc = [IMP.ParticleIndex(p) for p in oddc]
+            zfc = [IMP.ParticleIndex(p) for p in zfc]
+        self.assertEqual(evenc, pse)
+        self.assertEqual(oddc, pso)
+        self.assertEqual(zfc, psf)
+
+
 if __name__ == '__main__':
     IMP.test.main()

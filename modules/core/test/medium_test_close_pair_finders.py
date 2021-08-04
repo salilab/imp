@@ -37,6 +37,11 @@ class Tests(IMP.test.TestCase):
         print("searching")
         cps = cpf.get_close_pairs(m, ps)
         print("done ")
+        # Coerce from numpy.array to plain Python array
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            cps = [(IMP.ParticleIndex(p[0]), IMP.ParticleIndex(p[1]))
+                   for p in cps]
+            ps = [IMP.ParticleIndex(p) for p in ps]
         self._check_close_pairs(m, ps, dist, cps)
         print("Done with all test")
 
@@ -172,6 +177,9 @@ class Tests(IMP.test.TestCase):
         cpf = IMP.core.RigidClosePairsFinder()
         cpf.set_distance(dist)
         cps = cpf.get_close_pairs(m, fps)
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            cps = [(IMP.ParticleIndex(p[0]), IMP.ParticleIndex(p[1]))
+                   for p in cps]
         self._check_abiclose_pairs(m, free_ps, free_ps, dist, cps)
         self._check_abiclose_pairs(m, free_ps, rbpsa, dist, cps)
         self._check_abiclose_pairs(m, free_ps, rbpsb, dist, cps)

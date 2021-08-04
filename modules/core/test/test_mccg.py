@@ -16,6 +16,9 @@ class Tests(IMP.test.TestCase):
             m.get_particle(pi0).show()
         self.assertLessEqual(s, max_score)
         alli = lpc.get_contents()
+        # Coerce from numpy.array to plain Python array
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            alli = [(p[0], p[1]) for p in alli]
         for pi0 in lsc.get_contents():
             for pi1 in lsc.get_contents():
                 if pi0 != pi1:
