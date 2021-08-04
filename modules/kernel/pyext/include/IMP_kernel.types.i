@@ -86,6 +86,13 @@
     $1=0;
   }
 }
+
+#ifdef IMP_KERNEL_HAS_NUMPY
+%typemap(out) IMP::ParticleIndex {
+  $result = Convert<IMP::ParticleIndex >::create_python_object($1, $descriptor(IMP::ParticleIndex*), SWIG_POINTER_OWN);
+}
+#endif
+
 /* Older SWIG doesn't realize that ::IMP::ParticleIndex (e.g. as emitted
    by the IMP_DECORATOR_SETUP* macros) is the same as IMP::ParticleIndex,
    so copy the typemaps. */
