@@ -80,13 +80,14 @@ class OrientedSoap : public Score {
     int distbin =
         potential_.get_index(internal::SoapPotential::DISTANCE, distance);
     if (distbin >= 0) {
+      doublets_.check_cache_valid(m);
       atom::Atom a1(m, pis[0]);
       atom::Atom a2(m, pis[1]);
       // Find the other atoms (if any) in the two doublet(s) that (a1,a2)
       // are members of
-      DList doublets1 = doublets_.get_for_atom(a1);
+      const DList &doublets1 = doublets_.get_for_atom(a1);
       if (doublets1.size() > 0) {
-        DList doublets2 = doublets_.get_for_atom(a2);
+        const DList &doublets2 = doublets_.get_for_atom(a2);
         for (DList::const_iterator dit1 = doublets1.begin();
              dit1 != doublets1.end(); ++dit1) {
           for (DList::const_iterator dit2 = doublets2.begin();
