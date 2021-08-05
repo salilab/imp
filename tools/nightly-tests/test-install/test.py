@@ -102,7 +102,7 @@ class IMPInstallTests(unittest.TestCase):
         p2.add_attribute(k, 2)
 
         if IMP.IMP_KERNEL_HAS_NUMPY:
-            n = m1._get_ints_numpy(k)
+            n = m1.get_ints_numpy(k)
             self.assertIs(n.base, m1)
             self.assertEqual(len(n), 2)  # no int attribute for p3
             self.assertEqual(n[0], 1)
@@ -112,11 +112,11 @@ class IMPInstallTests(unittest.TestCase):
             self.assertEqual(p1.get_value(k), 42)
             self.assertEqual(p2.get_value(k), 24)
 
-            n = m2._get_ints_numpy(k)
+            n = m2.get_ints_numpy(k)
             self.assertIs(n.base, m2)
             self.assertEqual(len(n), 0)  # no int key for this model
         else:
-            self.assertRaises(NotImplementedError, m1._get_ints_numpy, k)
+            self.assertRaises(NotImplementedError, m1.get_ints_numpy, k)
 
 
 if __name__ == '__main__':
