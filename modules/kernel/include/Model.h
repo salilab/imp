@@ -361,6 +361,10 @@ class IMPKERNELEXPORT Model : public Object
       are handled. To avoid name collisions, it is recommended to prepend
       the module and/or class name to the trigger, e.g. "atom.Bond.changed".
 
+      For an example, see IMP::score_functor::OrientedSoap, which uses
+      a cache built from the molecular hierarchy, which is cleared when the
+      IMP::core::Hierarchy::get_changed_key() trigger is updated.
+
       @{ */
 
   //! Get the current 'model time'.
