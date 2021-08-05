@@ -92,6 +92,11 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
     do_setup_particle(m, pi, get_indexes(children), traits);
   }
 
+  //! Signal to the Model that this Hierarchy has changed
+  void update_changed_trigger() const {
+    get_model()->set_trigger_updated(get_changed_key());
+  }
+
  public:
   IMP_DECORATOR_WITH_TRAITS_METHODS(Hierarchy, Decorator, HierarchyTraits,
                                     traits, get_default_traits());
@@ -106,6 +111,10 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
                            HierarchyTraits = Hierarchy::get_default_traits()) {
     return true;
   }
+
+  //! The key used to signal to the Model that the Hierarchy has changed
+  static TriggerKey get_changed_key();
+
   /** \return the parent particle, or Hierarchy()
       if it has no parent.
    */
@@ -167,6 +176,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
     pis.erase(pis.begin() + i);
     get_model()->remove_attribute(get_decorator_traits().get_parent_key(),
                                   c.get_particle_index());
+    update_changed_trigger();
   }
   void remove_child(Hierarchy h) { remove_child(h.get_child_index()); }
   void clear_children() {
@@ -178,6 +188,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
     }
     get_model()->remove_attribute(get_decorator_traits().get_children_key(),
                                   get_particle_index());
+    update_changed_trigger();
   }
   void add_child(Hierarchy h) const {
     if (get_model()->get_has_attribute(
@@ -193,6 +204,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
     }
     get_model()->add_attribute(get_decorator_traits().get_parent_key(),
                                h.get_particle_index(), get_particle_index());
+    update_changed_trigger();
   }
   void add_child_at(Hierarchy h, unsigned int pos) {
     IMP_USAGE_CHECK(get_number_of_children() >= pos, "Invalid position");
@@ -208,6 +220,7 @@ class IMPCOREEXPORT Hierarchy : public Decorator {
     }
     get_model()->add_attribute(get_decorator_traits().get_parent_key(),
                                h.get_particle_index(), get_particle_index());
+    update_changed_trigger();
   }
   //! Return i such that `get_parent().get_child(i) == this`
   int get_child_index() const;
