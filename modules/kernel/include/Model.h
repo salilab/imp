@@ -121,8 +121,20 @@ class IMPKERNELEXPORT Model : public Object
 #endif
   // check more things on the first call
   bool first_call_;
+  // used to track time when triggers are activated
+  unsigned age_counter_;
+  // all triggers
+  Vector<unsigned> trigger_age_;
   // the stage of evaluation
   internal::Stage cur_stage_;
+
+  // update model age (can never be zero, even if it wraps)
+  void increase_age() {
+    age_counter_++;
+    if (age_counter_ == 0) {
+      age_counter_ = 1;
+    }
+  }
 
   ModelObjectsTemp get_dependency_graph_inputs(const ModelObject *mo) const;
   ModelObjectsTemp get_dependency_graph_outputs(const ModelObject *mo) const;
@@ -329,6 +341,52 @@ class IMPKERNELEXPORT Model : public Object
   void remove_data(ModelKey mk);
   //! Check if the model has a certain piece of data attached.
   bool get_has_data(ModelKey mk) const;
+  /** @} */
+
+  /** \name Model triggers
+
+      Triggers can be used to track when to clear and rebuild caches
+      of derived model properties. For example, a Restraint may restrain
+      two particles as a function of the number of chemical bonds between
+      them. To speed up this restraint, the bond graph can be cached; however,
+      this graph needs to be rebuilt if bonds are created or removed. This
+      can be achieved by checking that the model time (see get_age()) of the
+      cache matches the time when the 'bond added/removed' Trigger was last
+      updated (see get_trigger_last_updated()), either when the Restraint is
+      evaluated or in an associated ScoreState.
+
+      Triggers are intended for events that are rare during a typical
+      optimization. Triggers can be created by any IMP module in either C++
+      or Python by creating a new TriggerKey, much as model attributes
+      are handled. To avoid name collisions, it is recommended to prepend
+      the module and/or class name to the trigger, e.g. "atom.Bond.changed".
+
+      @{ */
+
+  //! Get the current 'model time'.
+  /** This is a number 1 or more that tracks the 'age' of the model;
+      it is incremented every time update() is called. It may wrap (and so
+      should not be assumed to always increase) but will never be 0. */
+  unsigned get_age() { return age_counter_; }
+
+  //! Get the time when the given trigger was last updated, or 0.
+  /** Return the 'model time' (as given by get_age()) when the given
+      trigger was last updated on this model, or 0 if never. */
+  unsigned get_trigger_last_updated(TriggerKey tk) {
+    if (trigger_age_.size() > tk.get_index()) {
+      return trigger_age_[tk.get_index()];
+    } else {
+      return 0;
+    }
+  }
+
+  //! Update the given trigger
+  void set_trigger_updated(TriggerKey tk) {
+    if (tk.get_index() >= trigger_age_.size()) {
+      trigger_age_.resize(tk.get_index() + 1, 0);
+    }
+    trigger_age_[tk.get_index()] = age_counter_;
+  }
   /** @} */
 
   IMP_OBJECT_METHODS(Model);
