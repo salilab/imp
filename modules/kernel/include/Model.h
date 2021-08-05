@@ -365,8 +365,9 @@ class IMPKERNELEXPORT Model : public Object
 
   //! Get the current 'model time'.
   /** This is a number 1 or more that tracks the 'age' of the model;
-      it is incremented every time update() is called. It may wrap (and so
-      should not be assumed to always increase) but will never be 0. */
+      it is incremented every time before_evaluate() is called.
+      It may wrap (and so should not be assumed to always increase)
+      but will never be 0. */
   unsigned get_age() { return age_counter_; }
 
   //! Get the time when the given trigger was last updated, or 0.

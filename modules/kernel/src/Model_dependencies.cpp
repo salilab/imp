@@ -243,8 +243,6 @@ void Model::update() {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
 
-  increase_age();
-
   set_has_all_dependencies(true);
   ScoreStatesTemp sst;
   IMP_FOREACH(DependencyGraph::value_type & vt, dependency_graph_) {

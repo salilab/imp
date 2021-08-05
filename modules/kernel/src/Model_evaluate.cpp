@@ -55,6 +55,7 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
   IMP_USAGE_CHECK(cur_stage_ == internal::NOT_EVALUATING,
                   "Can only call Model::before_evaluate() when not evaluating");
   CreateLogContext clc("update_score_states");
+  increase_age();
   internal::SFSetIt<IMP::internal::Stage> reset(
       &cur_stage_, internal::BEFORE_EVALUATING);
   unsigned int cur_begin = 0;
