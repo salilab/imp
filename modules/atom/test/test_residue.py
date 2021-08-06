@@ -12,6 +12,7 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         user = IMP.atom.ResidueType('foo')
         for typ, rna, dna, protein in ((IMP.atom.ALA, False, False, True),
+                                       (IMP.atom.MSE, False, False, True),
                                        (IMP.atom.ADE, True, False, False),
                                        (IMP.atom.DADE, False, True, False),
                                        (IMP.atom.HOH, False, False, False),
