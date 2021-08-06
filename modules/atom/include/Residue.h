@@ -90,6 +90,8 @@ IMPATOMEXPORT extern const ResidueType TRP;
 IMPATOMEXPORT extern const ResidueType ACE;
 //! end group
 IMPATOMEXPORT extern const ResidueType NH2;
+//! Selenomethionine
+IMPATOMEXPORT extern const ResidueType MSE;
 /* Code currently assumes that all indices between ADE.get_index()
    and DTHY.get_index() being nucleic acid */
 //! adenine (RNA)
