@@ -46,11 +46,12 @@ class SoapDoublets {
 
   mutable CacheMap cache_;
   mutable unsigned cache_age_;
+  mutable Model* cache_model_;
 
   int n_classes_;
 
  public:
-  SoapDoublets() : cache_age_(0), n_classes_(0) {}
+  SoapDoublets() : cache_age_(0), cache_model_(nullptr), n_classes_(0) {}
 
   void read(Hdf5File &file_id) {
     Hdf5Group group(file_id.get(), "/library/tuples");
@@ -83,13 +84,15 @@ class SoapDoublets {
 
   int get_number_of_classes() const { return n_classes_; }
 
-  // Clear the cache if any model hierarchy has changed
+  // Clear the cache if any model hierarchy has changed, or we're being
+  // called for a different Model than we have cached
   void check_cache_valid(Model *m) const {
     unsigned ta = m->get_trigger_last_updated(
                         core::Hierarchy::get_changed_key());
-    if (ta != 0 && ta != cache_age_) {
+    if ((ta != 0 && ta != cache_age_) || (cache_model_ != m)) {
       cache_.clear();
       cache_age_ = ta;
+      cache_model_ = m;
     }
   }
 

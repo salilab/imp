@@ -25,8 +25,8 @@ class Tests(IMP.test.TestCase):
         score = r.evaluate(False)
         self.assertAlmostEqual(score, 1.0, delta=0.01)
 
-    def test_oriented_soap_cache(self):
-        """Check that OD-SOAP score cache is updated when necessary"""
+    def test_oriented_soap_cache_hierarchy(self):
+        """Check that OD-SOAP score cache is updated when Hierarchy changes"""
         m = IMP.Model()
         mh = IMP.atom.read_pdb(self.get_input_file_name('soap_loop_test.pdb'),
                                m)
@@ -65,6 +65,49 @@ class Tests(IMP.test.TestCase):
         residues[0].add_child(p1caa)
         score = r.evaluate(False)
         self.assertAlmostEqual(score, 1.0, delta=0.01)
+
+    def test_oriented_soap_cache_model(self):
+        """Check that OD-SOAP score cache is updated when Model changes"""
+        m1 = IMP.Model()
+        m2 = IMP.Model()
+        mh1 = IMP.atom.read_pdb(self.get_input_file_name('soap_loop_test.pdb'),
+                                m1)
+        mh2 = IMP.atom.read_pdb(self.get_input_file_name('soap_loop_test.pdb'),
+                                m2)
+        residues = [IMP.atom.Residue(r)
+                    for r in IMP.atom.get_by_type(mh2, IMP.atom.RESIDUE_TYPE)]
+        p1ca = IMP.atom.Selection(
+            mh2, residue_index=1,
+            atom_type=IMP.atom.AT_CA).get_selected_particle_indexes()[0]
+        p1caa = IMP.atom.Atom(m2, p1ca)
+        residues[0].remove_child(p1caa)
+
+        sl = IMP.atom.OrientedSoapPairScore(
+            self.get_input_file_name('soap_loop_test.hdf5'))
+
+        p11 = IMP.atom.Selection(
+            mh1, residue_index=1,
+            atom_type=IMP.atom.AT_C).get_selected_particle_indexes()[0]
+        p21 = IMP.atom.Selection(
+            mh1, residue_index=3,
+            atom_type=IMP.atom.AT_C).get_selected_particle_indexes()[0]
+        # Score for m1 should be 1.0 since all atoms are present
+        self.assertAlmostEqual(sl.evaluate_index(m1, (p11, p21), None),
+                               1.0, delta=1e-6)
+
+        p12 = IMP.atom.Selection(
+            mh2, residue_index=1,
+            atom_type=IMP.atom.AT_C).get_selected_particle_indexes()[0]
+        p22 = IMP.atom.Selection(
+            mh2, residue_index=3,
+            atom_type=IMP.atom.AT_C).get_selected_particle_indexes()[0]
+        # Score for m2 should be 0.0 (not cached value) since we removed
+        # the needed atom CA for the interaction
+        self.assertAlmostEqual(sl.evaluate_index(m2, (p12, p22), None),
+                               0.0, delta=1e-6)
+
+        self.assertAlmostEqual(sl.evaluate_index(m1, (p11, p21), None),
+                               1.0, delta=1e-6)
 
 
 if __name__ == '__main__':
