@@ -21,10 +21,6 @@ import datetime
 import pickle
 import contextlib
 import subprocess
-if IMP.IMP_KERNEL_HAS_NUMPY:
-    import numpy
-    import numpy.testing
-
 
 # Expose some unittest decorators for convenience
 expectedFailure = unittest.expectedFailure
@@ -239,6 +235,7 @@ class TestCase(unittest.TestCase):
     def assertNumPyArrayEqual(self, numpy_array, exp_array):
         """Fail if the given numpy array doesn't match expected"""
         if IMP.IMP_KERNEL_HAS_NUMPY:
+            import numpy.testing
             self.assertIsInstance(numpy_array, numpy.ndarray)
             numpy.testing.assert_array_equal(numpy_array, exp_array)
         else:
