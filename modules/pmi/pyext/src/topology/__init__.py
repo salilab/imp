@@ -918,8 +918,9 @@ class _FindCloseStructure(object):
     def add_residues(self, residues):
         for r in residues:
             idx = IMP.atom.Residue(r).get_index()
+            catypes = [IMP.atom.AT_CA, system_tools._AT_HET_CA]
             ca = IMP.atom.Selection(
-                r, atom_type=IMP.atom.AtomType("CA")).get_selected_particles()
+                r, atom_types=catypes).get_selected_particles()
             p = IMP.atom.Selection(
                 r, atom_type=IMP.atom.AtomType("P")).get_selected_particles()
             if len(ca) == 1:
@@ -929,7 +930,7 @@ class _FindCloseStructure(object):
                 xyz = IMP.core.XYZ(p[0]).get_coordinates()
                 self.coords.append([idx, xyz])
             else:
-                raise("_FindCloseStructure: wrong selection")
+                raise ValueError("_FindCloseStructure: wrong selection")
 
         self.coords.sort(key=itemgetter(0))
 
@@ -1237,7 +1238,12 @@ class TempResidue(object):
 
     def set_structure(self, res, soft_check=False):
         if res.get_residue_type() != self.get_residue_type():
-            if soft_check:
+            if (res.get_residue_type() == IMP.atom.MSE
+                    and self.get_residue_type() == IMP.atom.MET):
+                # MSE in the PDB file is OK to match with MET in the FASTA
+                # sequence
+                pass
+            elif soft_check:
                 # note from commit a2c13eaa1 we give priority to the
                 # FASTA and not the PDB
                 warnings.warn(
