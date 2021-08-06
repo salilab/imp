@@ -31,18 +31,14 @@ class Tests(IMP.test.TestCase):
         mh = IMP.atom.read_pdb(self.get_input_file_name('soap_loop_test.pdb'),
                                m)
 
+        ps = IMP.atom.get_by_type(mh, IMP.atom.ATOM_TYPE)
+        c = IMP.container.ClosePairContainer(ps, 15.0, 0.0)
+
         sl = IMP.atom.OrientedSoapPairScore(
             self.get_input_file_name('soap_loop_test.hdf5'))
 
-        # Check score between 1:CYS:C:CA and 3:GLY:C:CA
-        p1 = IMP.atom.Selection(
-            mh, residue_index=1,
-            atom_type=IMP.atom.AT_C).get_selected_particle_indexes()[0]
-        p2 = IMP.atom.Selection(
-            mh, residue_index=3,
-            atom_type=IMP.atom.AT_C).get_selected_particle_indexes()[0]
+        r = IMP.container.PairsRestraint(sl, c)
 
-        r = IMP.core.PairRestraint(m, sl, (p1, p2))
         score = r.evaluate(False)
         self.assertAlmostEqual(score, 1.0, delta=0.01)
 
@@ -51,19 +47,22 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(score, 1.0, delta=0.01)
 
         # Altering the hierarchy should force the cache to be rebuilt
+        residues = [IMP.atom.Residue(r)
+                    for r in IMP.atom.get_by_type(mh, IMP.atom.RESIDUE_TYPE)]
         p1ca = IMP.atom.Selection(
             mh, residue_index=1,
             atom_type=IMP.atom.AT_CA).get_selected_particle_indexes()[0]
         p1caa = IMP.atom.Atom(m, p1ca)
-        p1res = IMP.atom.get_residue(p1caa)
-        p1res.remove_child(p1caa)
+        residues[0].remove_child(p1caa)
+        residues[1].add_child(p1caa)
 
         score = r.evaluate(False)
         # We removed the CA atom need for the interaction, so score=0
         self.assertAlmostEqual(score, 0.0, delta=0.01)
 
         # Restoring the CA atom should restore the score
-        p1res.add_child(p1caa)
+        residues[1].remove_child(p1caa)
+        residues[0].add_child(p1caa)
         score = r.evaluate(False)
         self.assertAlmostEqual(score, 1.0, delta=0.01)
 
