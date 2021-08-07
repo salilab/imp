@@ -26,6 +26,11 @@ IMPKERNEL_BEGIN_NAMESPACE
     IMP::core::ClassnameRestraint. The restraints couple the score
     functions with appropriate lists of object(s) of type INDEXTYPE.
 
+    It is possible to call the various evaluate* methods directly, but
+    this is not recommended as they do not ensure that Model invariants
+    (e.g. ScoreStates) are preserved. Use a Restraint or ScoringFunction
+    to score the model instead.
+
     Implementers should check out IMP_CLASSNAME_SCORE().
 
     \see PredicateClassnameRestraint
