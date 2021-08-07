@@ -66,6 +66,68 @@ class Tests(IMP.test.TestCase):
         score = r.evaluate(False)
         self.assertAlmostEqual(score, 1.0, delta=0.01)
 
+    def test_oriented_soap_cache_atom_type(self):
+        """Check that OD-SOAP score cache is updated when atom type changes"""
+        m = IMP.Model()
+        mh = IMP.atom.read_pdb(self.get_input_file_name('soap_loop_test.pdb'),
+                               m)
+
+        ps = IMP.atom.get_by_type(mh, IMP.atom.ATOM_TYPE)
+        c = IMP.container.ClosePairContainer(ps, 15.0, 0.0)
+
+        sl = IMP.atom.OrientedSoapPairScore(
+            self.get_input_file_name('soap_loop_test.hdf5'))
+
+        r = IMP.container.PairsRestraint(sl, c)
+
+        score = r.evaluate(False)
+        self.assertAlmostEqual(score, 1.0, delta=0.01)
+
+        # Second score should be cached
+        score = r.evaluate(False)
+        self.assertAlmostEqual(score, 1.0, delta=0.01)
+
+        # Altering the atom type should force the cache to be rebuilt
+        p1ca = IMP.atom.Selection(
+            mh, residue_index=1,
+            atom_type=IMP.atom.AT_CA).get_selected_particle_indexes()[0]
+        p1caa = IMP.atom.Atom(m, p1ca)
+        p1caa.set_atom_type(IMP.atom.AT_SG)
+
+        score = r.evaluate(False)
+        # We changed the CA atom needed for the interaction, so score=0
+        self.assertAlmostEqual(score, 0.0, delta=0.01)
+
+    def test_oriented_soap_cache_residue_type(self):
+        "Check that OD-SOAP score cache is updated when residue type changes"
+        m = IMP.Model()
+        mh = IMP.atom.read_pdb(self.get_input_file_name('soap_loop_test.pdb'),
+                               m)
+
+        ps = IMP.atom.get_by_type(mh, IMP.atom.ATOM_TYPE)
+        c = IMP.container.ClosePairContainer(ps, 15.0, 0.0)
+
+        sl = IMP.atom.OrientedSoapPairScore(
+            self.get_input_file_name('soap_loop_test.hdf5'))
+
+        r = IMP.container.PairsRestraint(sl, c)
+
+        score = r.evaluate(False)
+        self.assertAlmostEqual(score, 1.0, delta=0.01)
+
+        # Second score should be cached
+        score = r.evaluate(False)
+        self.assertAlmostEqual(score, 1.0, delta=0.01)
+
+        # Altering the residue type should force the cache to be rebuilt
+        residues = [IMP.atom.Residue(r)
+                    for r in IMP.atom.get_by_type(mh, IMP.atom.RESIDUE_TYPE)]
+        residues[0].set_residue_type(IMP.atom.ADE)
+
+        score = r.evaluate(False)
+        # We changed the CYS residue needed for the interaction, so score=0
+        self.assertAlmostEqual(score, 0.0, delta=0.01)
+
     def test_oriented_soap_cache_model(self):
         """Check that OD-SOAP score cache is updated when Model changes"""
         m1 = IMP.Model()

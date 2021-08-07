@@ -45,13 +45,15 @@ class SoapDoublets {
   DoubletMap doublets_;
 
   mutable CacheMap cache_;
-  mutable unsigned cache_age_;
+  mutable unsigned cache_hierarchy_age_;
+  mutable unsigned cache_resatm_type_age_;
   mutable Model* cache_model_;
 
   int n_classes_;
 
  public:
-  SoapDoublets() : cache_age_(0), cache_model_(nullptr), n_classes_(0) {}
+  SoapDoublets() : cache_hierarchy_age_(0), cache_resatm_type_age_(0),
+                   cache_model_(nullptr), n_classes_(0) {}
 
   void read(Hdf5File &file_id) {
     Hdf5Group group(file_id.get(), "/library/tuples");
@@ -87,11 +89,16 @@ class SoapDoublets {
   // Clear the cache if any model hierarchy has changed, or we're being
   // called for a different Model than we have cached
   void check_cache_valid(Model *m) const {
-    unsigned ta = m->get_trigger_last_updated(
+    unsigned tha = m->get_trigger_last_updated(
                         core::Hierarchy::get_changed_key());
-    if ((ta != 0 && ta != cache_age_) || (cache_model_ != m)) {
+    unsigned tta = m->get_trigger_last_updated(
+                        atom::Residue::get_type_changed_key());
+    if ((tha != 0 && tha != cache_hierarchy_age_)
+        || (tta != 0 && tta != cache_resatm_type_age_)
+        || (cache_model_ != m)) {
       cache_.clear();
-      cache_age_ = ta;
+      cache_hierarchy_age_ = tha;
+      cache_resatm_type_age_ = tta;
       cache_model_ = m;
     }
   }
