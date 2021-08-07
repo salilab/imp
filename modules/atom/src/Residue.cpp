@@ -83,6 +83,9 @@ void Residue::show(std::ostream &out) const {
 
 void Residue::set_residue_type(ResidueType t) {
   get_particle()->set_value(get_residue_type_key(), t.get_index());
+
+  // Signal to the Model that the type has changed
+  get_model()->set_trigger_updated(get_type_changed_key());
 }
 
 IntKey Residue::get_index_key() {
@@ -97,6 +100,11 @@ IntKey Residue::get_residue_type_key() {
 
 IntKey Residue::get_insertion_code_key() {
   static IntKey k("residue_icode");
+  return k;
+}
+
+TriggerKey Residue::get_type_changed_key() {
+  static TriggerKey k("atom.type_changed");
   return k;
 }
 

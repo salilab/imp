@@ -210,6 +210,9 @@ class IMPATOMEXPORT Residue : public Hierarchy {
   static IntKey get_residue_type_key();
 
   static IntKey get_insertion_code_key();
+
+  //! The key used to signal to the Model that residue/atom type has changed
+  static TriggerKey get_type_changed_key();
 };
 
 IMP_DECORATORS(Residue, Residues, Hierarchies);

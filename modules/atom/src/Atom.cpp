@@ -242,6 +242,9 @@ void Atom::set_atom_type(AtomType t) {
   if (e != UNKNOWN_ELEMENT) {
     set_element(e);
   }
+
+  // Signal to the Model that the type has changed
+  get_model()->set_trigger_updated(Residue::get_type_changed_key());
 }
 
 IntKey Atom::get_atom_type_key() {
