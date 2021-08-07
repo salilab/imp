@@ -47,8 +47,8 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(score, 1.0, delta=0.01)
 
         # Altering the hierarchy should force the cache to be rebuilt
-        residues = [IMP.atom.Residue(r)
-                    for r in IMP.atom.get_by_type(mh, IMP.atom.RESIDUE_TYPE)]
+        residues = [IMP.atom.Residue(x)
+                    for x in IMP.atom.get_by_type(mh, IMP.atom.RESIDUE_TYPE)]
         p1ca = IMP.atom.Selection(
             mh, residue_index=1,
             atom_type=IMP.atom.AT_CA).get_selected_particle_indexes()[0]
@@ -120,8 +120,8 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(score, 1.0, delta=0.01)
 
         # Altering the residue type should force the cache to be rebuilt
-        residues = [IMP.atom.Residue(r)
-                    for r in IMP.atom.get_by_type(mh, IMP.atom.RESIDUE_TYPE)]
+        residues = [IMP.atom.Residue(x)
+                    for x in IMP.atom.get_by_type(mh, IMP.atom.RESIDUE_TYPE)]
         residues[0].set_residue_type(IMP.atom.ADE)
 
         score = r.evaluate(False)
