@@ -11,6 +11,7 @@
 
 #include <IMP/atom/atom_config.h>
 #include <IMP/score_functor/OrientedSoap.h>
+#include <IMP/score_functor/DistancePairScoreWithCache.h>
 #include <IMP/atom/SoapPairFilter.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -23,8 +24,10 @@ IMPATOM_BEGIN_NAMESPACE
     here. They can be downloaded separately from https://salilab.org/SOAP/.
 */
 class OrientedSoapPairScore
-    : public score_functor::DistancePairScore<score_functor::OrientedSoap> {
-  typedef score_functor::DistancePairScore<score_functor::OrientedSoap> P;
+    : public score_functor::DistancePairScoreWithCache<
+                                 score_functor::OrientedSoap> {
+  typedef score_functor::DistancePairScoreWithCache<
+                                    score_functor::OrientedSoap> P;
   std::string library_;
 
  public:

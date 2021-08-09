@@ -14,7 +14,7 @@
 #include <IMP/core/internal/dihedral_helpers.h>
 #include "internal/soap_hdf5.h"
 #include "internal/soap_helpers.h"
-#include "Score.h"
+#include "ScoreWithCache.h"
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
@@ -25,7 +25,7 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
     soap_protein_od.hdf5, are rather large (~1.5GB) and so are not included
     here. They can be downloaded separately from https://salilab.org/SOAP/.
  */
-class OrientedSoap : public Score {
+class OrientedSoap : public ScoreWithCache {
   double maxrange_;
   std::string library_;
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
@@ -71,16 +71,19 @@ class OrientedSoap : public Score {
     IMP_THROW("Must configure IMP with HDF5 to use this class", ValueException);
 #endif
   }
+
+  void check_cache_valid(Model *m) const {
+    doublets_.check_cache_valid(m);
+  }
+
   template <unsigned int D>
-  double get_score(Model *m,
-                   const Array<D, ParticleIndex> &pis,
-                   double distance) const {
+  double get_score_with_cache(Model *m, const Array<D, ParticleIndex> &pis,
+                              double distance) const {
     double score = 0;
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
     int distbin =
         potential_.get_index(internal::SoapPotential::DISTANCE, distance);
     if (distbin >= 0) {
-      doublets_.check_cache_valid(m);
       atom::Atom a1(m, pis[0]);
       atom::Atom a2(m, pis[1]);
       // Find the other atoms (if any) in the two doublet(s) that (a1,a2)
@@ -101,11 +104,11 @@ class OrientedSoap : public Score {
     return score;
   }
   template <unsigned int D>
-  DerivativePair get_score_and_derivative(
+  DerivativePair get_score_and_derivative_with_cache(
       Model *m, const Array<D, ParticleIndex> &pis,
       double distance) const {
     // No derivatives are available
-    return DerivativePair(get_score(m, pis, distance), 0.);
+    return DerivativePair(get_score_with_cache(m, pis, distance), 0.);
   }
   template <unsigned int D>
   double get_maximum_range(
@@ -116,7 +119,7 @@ class OrientedSoap : public Score {
   double get_distance_threshold() const { return maxrange_; }
 
   template <unsigned int D>
-  bool get_is_trivially_zero(Model *,
+  bool get_is_trivially_zero_with_cache(Model *,
                              const Array<D, ParticleIndex> &,
                              double squared_distance) const {
     return squared_distance > algebra::get_squared(maxrange_);
