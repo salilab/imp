@@ -73,7 +73,9 @@ class OrientedSoap : public ScoreWithCache {
   }
 
   void check_cache_valid(Model *m) const {
+#ifdef IMP_SCORE_FUNCTOR_USE_HDF5
     doublets_.check_cache_valid(m);
+#endif
   }
 
   template <unsigned int D>
