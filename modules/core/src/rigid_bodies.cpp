@@ -598,10 +598,10 @@ void RigidBody::update_members() {
   {
     const ParticleIndexes &members = get_member_particle_indexes();
     Model *m = get_model();
+    algebra::Vector3D const *ic = m->access_internal_coordinates_data();
     for (unsigned int i = 0; i < members.size(); ++i) {
       XYZ rm(m, members[i]);
-      const algebra::Vector3D &v = m->get_internal_coordinates(members[i]);
-      rm.set_coordinates(tr.get_transformed(v));
+      rm.set_coordinates(tr.get_transformed(ic[members[i].get_index()]));
     }
   }
   {
