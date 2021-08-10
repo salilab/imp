@@ -599,8 +599,8 @@ void RigidBody::update_members() {
     const ParticleIndexes &members = get_member_particle_indexes();
     Model *m = get_model();
     for (unsigned int i = 0; i < members.size(); ++i) {
-      XYZ rm(get_model(), members[i]);
-      algebra::Vector3D v = m->get_internal_coordinates(members[i]);
+      XYZ rm(m, members[i]);
+      const algebra::Vector3D &v = m->get_internal_coordinates(members[i]);
       rm.set_coordinates(tr.get_transformed(v));
     }
   }
