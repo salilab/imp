@@ -82,6 +82,7 @@ double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
   }
 
   // score
+  soap_score->check_cache_valid(model);
   double score = 0.0;
   // iterate ligand atoms
   for (unsigned int l_index = 0; l_index < pis2.size(); l_index++) {
@@ -99,7 +100,7 @@ double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
         float dist2 =
             IMP::algebra::get_squared_distance(coordinates1[r_index], v);
         if (dist2 < distance_threshold2) {
-          score += soap_score->get_score(
+          score += soap_score->get_score_with_cache(
               model,
               IMP::ParticleIndexPair(pis1[r_index], pis2[l_index]),
               sqrt(dist2));
@@ -121,6 +122,7 @@ double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
     coordinates.push_back(IMP::core::XYZ(model, pis[i]).get_coordinates());
   }
 
+  soap_score->check_cache_valid(model);
   float distance_threshold = soap_score->get_distance_threshold();
   float distance_threshold2 = distance_threshold * distance_threshold;
 
@@ -131,7 +133,7 @@ double oriented_soap_score(const IMP::score_functor::OrientedSoap* soap_score,
         float dist2 =
           IMP::algebra::get_squared_distance(coordinates[i], coordinates[j]);
         if (dist2 < distance_threshold2) {
-          score += soap_score->get_score(
+          score += soap_score->get_score_with_cache(
               model,
               IMP::ParticleIndexPair(pis[i], pis[j]),
               sqrt(dist2));
