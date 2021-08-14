@@ -182,10 +182,10 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
       isf_->set_moved_particles(moved);
     }
     if (get_maximum_difference() < NO_MAX) {
-      return get_scoring_function()->evaluate_if_below(
-          false, last_energy_ + max_difference_);
+      return get_scoring_function()->evaluate_moved_if_below(
+          false, moved, last_energy_ + max_difference_);
     } else {
-      return get_scoring_function()->evaluate(false);
+      return get_scoring_function()->evaluate_moved(false, moved);
     }
   }
 
