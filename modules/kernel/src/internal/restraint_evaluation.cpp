@@ -75,7 +75,7 @@ void do_evaluate_one(IMP::ScoreAccumulator sa, RS *restraint,
   if (m->first_call_) {
     try {
       SetNumberOfThreads no(1);
-      check_restraint_and_masks<RS>(m, restraint);
+      check_restraint_and_masks<RS>(restraint, m);
       restraint->add_score_and_derivatives(sa);
     }
     catch (const InputOutputException &d) {
@@ -98,7 +98,7 @@ void do_evaluate_one_moved(IMP::ScoreAccumulator sa, RS *restraint,
   if (m->first_call_) {
     try {
       SetNumberOfThreads no(1);
-      check_restraint_and_masks<RS>(m, restraint);
+      check_restraint_and_masks<RS>(restraint, m);
       restraint->add_score_and_derivatives_moved(sa, moved_pis);
     }
     catch (const InputOutputException &d) {
