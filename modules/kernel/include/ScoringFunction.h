@@ -95,6 +95,12 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
    */
   double evaluate_moved(bool derivatives, const ParticleIndexes &moved_pis);
 
+  double evaluate_moved_if_below(
+             bool derivatives, const ParticleIndexes &moved_pis, double max);
+
+  double evaluate_moved_if_good(
+             bool derivatives, const ParticleIndexes &moved_pis);
+
   double evaluate_if_below(bool derivatives, double max);
 
   /** Return true if the last evaluate satisfied all the restraint

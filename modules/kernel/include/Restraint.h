@@ -78,6 +78,12 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   double evaluate_moved(bool calc_derivs,
                         const ParticleIndexes &moved_pis) const;
 
+  double evaluate_moved_if_below(bool calc_derivatives,
+                      const ParticleIndexes &moved_pis, double max) const;
+
+  double evaluate_moved_if_good(bool calc_derivatives,
+                      const ParticleIndexes &moved_pis) const;
+
   double evaluate_if_good(bool calc_derivatives) const;
 
   //! \see Model::evaluate_with_maximum()
@@ -123,6 +129,21 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
     IMP_UNUSED(max);
     return unprotected_evaluate(da);
   }
+
+  virtual double unprotected_evaluate_moved_if_below(
+           DerivativeAccumulator *da, const ParticleIndexes &moved_pis,
+           double max) const {
+    IMP_UNUSED(max);
+    return unprotected_evaluate_moved(da, moved_pis);
+  }
+
+  virtual double unprotected_evaluate_moved_if_good(
+           DerivativeAccumulator *da, const ParticleIndexes &moved_pis,
+           double max) const {
+    IMP_UNUSED(max);
+    return unprotected_evaluate_moved(da, moved_pis);
+  }
+
 /** @} */
 
 #endif

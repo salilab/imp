@@ -80,6 +80,35 @@ double ScoringFunction::evaluate_moved(bool derivatives,
   return es_.score;
 }
 
+double ScoringFunction::evaluate_moved_if_below(bool derivatives,
+                                       const ParticleIndexes &moved_pis,
+                                       double max) {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  set_has_required_score_states(true);
+  es_.score = 0;
+  es_.good = true;
+  const ScoreAccumulator sa = get_score_accumulator_if_below(derivatives, max);
+  // todo: only get ScoreStates that involve moved_pis?
+  do_add_score_and_derivatives_moved(sa, moved_pis,
+                                     get_required_score_states());
+  return es_.score;
+}
+
+double ScoringFunction::evaluate_moved_if_good(bool derivatives,
+                                       const ParticleIndexes &moved_pis) {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  set_has_required_score_states(true);
+  es_.score = 0;
+  es_.good = true;
+  const ScoreAccumulator sa = get_score_accumulator_if_good(derivatives);
+  // todo: only get ScoreStates that involve moved_pis?
+  do_add_score_and_derivatives_moved(sa, moved_pis,
+                                     get_required_score_states());
+  return es_.score;
+}
+
 double ScoringFunction::evaluate_if_below(bool derivatives, double max) {
   IMP_OBJECT_LOG;
   set_was_used(true);

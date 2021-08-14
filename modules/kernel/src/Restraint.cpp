@@ -42,6 +42,21 @@ double Restraint::evaluate_moved(
   return sf->evaluate_moved(calc_derivs, moved_pis);
 }
 
+double Restraint::evaluate_moved_if_below(
+                bool calc_derivs, const ParticleIndexes &moved_pis,
+                double max) const {
+  IMP_OBJECT_LOG;
+  Pointer<ScoringFunction> sf = create_internal_scoring_function();
+  return sf->evaluate_moved_if_below(calc_derivs, moved_pis, max);
+}
+
+double Restraint::evaluate_moved_if_good(
+                bool calc_derivs, const ParticleIndexes &moved_pis) const {
+  IMP_OBJECT_LOG;
+  Pointer<ScoringFunction> sf = create_internal_scoring_function();
+  return sf->evaluate_moved_if_good(calc_derivs, moved_pis);
+}
+
 double Restraint::evaluate_if_good(bool calc_derivs) const {
   IMP_OBJECT_LOG;
   Pointer<ScoringFunction> sf = create_internal_scoring_function();
@@ -228,11 +243,11 @@ void Restraint::do_add_score_and_derivatives_moved(
   if (!sa.get_abort_evaluation()) {
     double score;
     if (sa.get_is_evaluate_if_below()) {
-      score = unprotected_evaluate_if_below(sa.get_derivative_accumulator(),
-                                            sa.get_maximum());
+      score = unprotected_evaluate_moved_if_below(
+                 sa.get_derivative_accumulator(), moved_pis, sa.get_maximum());
     } else if (sa.get_is_evaluate_if_good()) {
-      score = unprotected_evaluate_if_good(sa.get_derivative_accumulator(),
-                                           sa.get_maximum());
+      score = unprotected_evaluate_moved_if_good(
+                 sa.get_derivative_accumulator(), moved_pis, sa.get_maximum());
     } else {
       score = unprotected_evaluate_moved(sa.get_derivative_accumulator(),
                                          moved_pis);
