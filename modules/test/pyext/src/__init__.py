@@ -545,6 +545,8 @@ class TestCase(unittest.TestCase):
         old_exceptions = [
             'unprotected_evaluate', "unprotected_evaluate_if_good",
             "unprotected_evaluate_if_below",
+            'unprotected_evaluate_moved', "unprotected_evaluate_moved_if_good",
+            "unprotected_evaluate_moved_if_below",
             "after_evaluate", "before_evaluate", "has_attribute",
             "decorate_particle", "particle_is_instance"]
         if name in old_exceptions:
