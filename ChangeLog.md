@@ -10,6 +10,9 @@ ChangeLog {#changelog}
   or lists of ParticleIndexes, now return NumPy arrays if IMP is built with
   NumPy. Code that adds lists or searches for particle pairs in a list may
   need to be modified as NumPy arrays are slightly different from Python lists.
+- IMP::pmi now handles MSE (selenomethionine) residues in input structures;
+  structure is read for such residues and they are considered equivalent to
+  regular MET in the FASTA sequence.
 - The deprecated methods
   IMP::{Singleton,Pair,Triplet,Quad}Predicate::get_value() have been removed.
   Use the get_value_index() methods instead.
