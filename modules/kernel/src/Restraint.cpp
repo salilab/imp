@@ -35,6 +35,13 @@ double Restraint::evaluate(bool calc_derivs) const {
   return sf->evaluate(calc_derivs);
 }
 
+double Restraint::evaluate_moved(
+                bool calc_derivs, const ParticleIndexes &moved_pis) const {
+  IMP_OBJECT_LOG;
+  Pointer<ScoringFunction> sf = create_internal_scoring_function();
+  return sf->evaluate_moved(calc_derivs, moved_pis);
+}
+
 double Restraint::evaluate_if_good(bool calc_derivs) const {
   IMP_OBJECT_LOG;
   Pointer<ScoringFunction> sf = create_internal_scoring_function();
@@ -215,6 +222,28 @@ void Restraint::do_add_score_and_derivatives(ScoreAccumulator sa) const {
   }
 }
 
+void Restraint::do_add_score_and_derivatives_moved(
+                ScoreAccumulator sa, const ParticleIndexes &moved_pis) const {
+  IMP_OBJECT_LOG;
+  if (!sa.get_abort_evaluation()) {
+    double score;
+    if (sa.get_is_evaluate_if_below()) {
+      score = unprotected_evaluate_if_below(sa.get_derivative_accumulator(),
+                                            sa.get_maximum());
+    } else if (sa.get_is_evaluate_if_good()) {
+      score = unprotected_evaluate_if_good(sa.get_derivative_accumulator(),
+                                           sa.get_maximum());
+    } else {
+      score = unprotected_evaluate_moved(sa.get_derivative_accumulator(),
+                                         moved_pis);
+    }
+    IMP_LOG_TERSE("Adding " << score << " from restraint " << get_name()
+                            << std::endl);
+    sa.add_score(score);
+    set_last_score(score);
+  }
+}
+
 double Restraint::get_score() const { return evaluate(false); }
 
 void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
@@ -224,6 +253,18 @@ void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
   validate_inputs();
   validate_outputs();
   IMP_TASK((nsa), do_add_score_and_derivatives(nsa),
+           "add score and derivatives");
+  set_was_used(true);
+}
+
+void Restraint::add_score_and_derivatives_moved(
+                ScoreAccumulator sa, const ParticleIndexes &moved_pis) const {
+  IMP_OBJECT_LOG;
+  // implement these in macros to avoid extra virtual function call
+  ScoreAccumulator nsa(sa, this);
+  validate_inputs();
+  validate_outputs();
+  IMP_TASK((nsa, moved_pis), do_add_score_and_derivatives_moved(nsa, moved_pis),
            "add score and derivatives");
   set_was_used(true);
 }

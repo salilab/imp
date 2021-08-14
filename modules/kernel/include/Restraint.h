@@ -26,7 +26,7 @@ class DerivativeAccumulator;
 //! A restraint is a term in an \imp ScoringFunction.
 /**
     To implement a new restraint, just implement the two methods:
-    - IMP::Restraint::do_add_score_and_derivatives()
+    - IMP::Restraint::unprotected_evaluate()
     - IMP::ModelObject::do_get_inputs();
     and use the macro to handle IMP::Object
     - IMP_OBJECT_METHODS()
@@ -67,6 +67,17 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
    */
   double evaluate(bool calc_derivs) const;
 
+  //! Score the restraint when some particles have moved.
+  /** No particles in the model other those listed should have been
+      changed since the last evaluation. This method should behave
+      identically to evaluate() but may be more efficient if it can
+      skip terms that involve unchanged particles.
+
+      \return Current score.
+   */
+  double evaluate_moved(bool calc_derivs,
+                        const ParticleIndexes &moved_pis) const;
+
   double evaluate_if_good(bool calc_derivatives) const;
 
   //! \see Model::evaluate_with_maximum()
@@ -86,6 +97,18 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   */
   //! Return the unweighted score for the restraint.
   virtual double unprotected_evaluate(DerivativeAccumulator *da) const;
+
+  //! Return the unweighted score, taking moving particles into account.
+  /** By default this just calls regular unprotected_evaluate(), but
+      may be overridden by restraints to be more efficient, e.g. by
+      skipping terms that involve unchanged particles.
+   */
+  virtual double unprotected_evaluate_moved(
+           DerivativeAccumulator *da, const ParticleIndexes &moved_pis) const {
+    IMP_UNUSED(moved_pis);
+    return unprotected_evaluate(da);
+  }
+
   /** The function calling this will treat any score >= get_maximum_score
       as bad and so can return early as soon as such a situation is found.*/
   virtual double unprotected_evaluate_if_good(DerivativeAccumulator *da,
@@ -136,6 +159,9 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       are up to date. The returned score should be the unweighted score.
   */
   void add_score_and_derivatives(ScoreAccumulator sa) const;
+
+  void add_score_and_derivatives_moved(
+                 ScoreAccumulator sa, const ParticleIndexes &moved_pis) const;
 
   //! Decompose this restraint into constituent terms
   /** Given the set of input particles, decompose the restraint into parts
@@ -235,8 +261,11 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   virtual Restraints do_create_current_decomposition() const {
     return do_create_decomposition();
   }
-  //! A restraint should override this to compute the score and derivatives.
+
   virtual void do_add_score_and_derivatives(ScoreAccumulator sa) const;
+
+  virtual void do_add_score_and_derivatives_moved(
+                  ScoreAccumulator sa, const ParticleIndexes &moved_pis) const;
 
   /** No outputs. */
   ModelObjectsTemp do_get_outputs() const { return ModelObjectsTemp(); }

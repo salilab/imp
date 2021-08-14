@@ -49,6 +49,17 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
       is passed.*/
   virtual void do_add_score_and_derivatives(ScoreAccumulator sa,
                                             const ScoreStatesTemp &ss) = 0;
+
+  //! Score when only some particles have moved.
+  /** \see do_add_score_and_derivatives()
+   */
+  virtual void do_add_score_and_derivatives_moved(
+                  ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+                  const ScoreStatesTemp &ss) {
+    IMP_UNUSED(moved_pis);
+    do_add_score_and_derivatives(sa, ss);
+  }
+
   ScoreAccumulator get_score_accumulator_if_below(bool deriv, double max) {
     return ScoreAccumulator(&es_, 1.0, deriv, max, NO_MAX, true);
   }
@@ -75,6 +86,14 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
                          scoring function
   */
   double evaluate(bool derivatives);
+
+  //! Score when some particles have moved.
+  /** This should behave identically to evaluate() but may be more
+      efficient if it can skip restraint terms that involve unchanged particles.
+
+      \see evaluate()
+   */
+  double evaluate_moved(bool derivatives, const ParticleIndexes &moved_pis);
 
   double evaluate_if_below(bool derivatives, double max);
 
