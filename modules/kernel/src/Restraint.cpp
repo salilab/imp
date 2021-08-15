@@ -279,8 +279,9 @@ void Restraint::add_score_and_derivatives_moved(
   ScoreAccumulator nsa(sa, this);
   validate_inputs();
   validate_outputs();
-  IMP_TASK((nsa, moved_pis), do_add_score_and_derivatives_moved(nsa, moved_pis),
-           "add score and derivatives");
+  IMP_TASK_SHARED((nsa), (moved_pis),
+                  do_add_score_and_derivatives_moved(nsa, moved_pis),
+                  "add score and derivatives");
   set_was_used(true);
 }
 
