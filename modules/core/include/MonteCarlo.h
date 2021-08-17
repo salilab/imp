@@ -56,6 +56,14 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   */
   void set_return_best(bool tf) { return_best_ = tf; }
 
+  //! If set true (default false), only rescore moved particles
+  /** By default, on each move the score of the entire system is
+      calculated. If it is guaranteed that only Movers and ScoreStates
+      move the system, then the score can potentially be calculated
+      more quickly by caching the scores on parts of the system that
+      don't move. This is still experimental. */
+  void set_score_moved(bool mv) { score_moved_ = mv; }
+
   /** \name kT
       The kT value has to be on the same scale as the differences
       in energy between good and bad states (and so the default is
@@ -177,15 +185,23 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
       The list of moved particles is passed.
    */
   virtual double do_evaluate(const ParticleIndexes &moved) const {
-    IMP_UNUSED(moved);
     if (isf_) {
       isf_->set_moved_particles(moved);
     }
     if (get_maximum_difference() < NO_MAX) {
-      return get_scoring_function()->evaluate_moved_if_below(
-          false, moved, last_energy_ + max_difference_);
+      if (score_moved_) {
+        return get_scoring_function()->evaluate_moved_if_below(
+            false, moved, last_energy_ + max_difference_);
+      } else {
+        return get_scoring_function()->evaluate_if_below(
+            false, last_energy_ + max_difference_);
+      }
     } else {
-      return get_scoring_function()->evaluate_moved(false, moved);
+      if (score_moved_) {
+        return get_scoring_function()->evaluate(false);
+      } else {
+        return get_scoring_function()->evaluate_moved(false, moved);
+      }
     }
   }
 
@@ -198,6 +214,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   unsigned int stat_upward_steps_taken_;
   unsigned int stat_num_failures_;
   bool return_best_;
+  bool score_moved_;
   double min_score_;
   IMP::PointerMember<Configuration> best_;
   ::boost::uniform_real<> rand_;

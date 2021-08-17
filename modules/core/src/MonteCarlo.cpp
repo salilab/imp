@@ -29,6 +29,7 @@ MonteCarlo::MonteCarlo(Model *m)
       stat_upward_steps_taken_(0),
       stat_num_failures_(0),
       return_best_(true),
+      score_moved_(false),
       rand_(0, 1) {
   min_score_ = -std::numeric_limits<double>::max();
 }
