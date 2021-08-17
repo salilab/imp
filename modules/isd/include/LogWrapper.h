@@ -16,6 +16,10 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Calculate the -Log of a list of restraints.
+/** This is intended to be used with restraints where their score represents
+    the probability (from 0 to 1) of being satisfied.
+    \note Any weights of the wrapped restraints are ignored.
+ */
 class IMPISDEXPORT LogWrapper : public RestraintSet {
   void show_it(std::ostream &out) const;
 
