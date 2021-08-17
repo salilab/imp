@@ -162,6 +162,16 @@ void unprotected_evaluate_one(IMP::ScoreAccumulator sa, RS *restraint,
 }
 
 template <class RS>
+void unprotected_evaluate_one_moved(IMP::ScoreAccumulator sa, RS *restraint,
+                                    const ParticleIndexes &moved_pis,
+                                    Model *m) {
+  IMP_CHECK_OBJECT(restraint);
+  internal::SFSetIt<IMP::internal::Stage> reset(&m->cur_stage_,
+                                                internal::EVALUATING);
+  do_evaluate_one_moved(sa, restraint, moved_pis, m);
+}
+
+template <class RS>
 void protected_evaluate_one(IMP::ScoreAccumulator sa, RS *restraint,
                             const ScoreStatesTemp &states, Model *m) {
   before_protected_evaluate(m, states, sa.get_derivative_accumulator());
@@ -172,6 +182,20 @@ void protected_evaluate_one(IMP::ScoreAccumulator sa, RS *restraint,
   }
   after_protected_evaluate(m, states, sa.get_derivative_accumulator());
 }
+
+template <class RS>
+void protected_evaluate_one_moved(IMP::ScoreAccumulator sa, RS *restraint,
+                                  const ParticleIndexes &moved_pis,
+                                  const ScoreStatesTemp &states, Model *m) {
+  before_protected_evaluate(m, states, sa.get_derivative_accumulator());
+  {
+    unprotected_evaluate_one_moved(sa, restraint, moved_pis, m);
+    IMP_OMP_PRAGMA(taskwait)
+    IMP_OMP_PRAGMA(flush)
+  }
+  after_protected_evaluate(m, states, sa.get_derivative_accumulator());
+}
+
 }
 
 void protected_evaluate(IMP::ScoreAccumulator sa, Restraint *restraint,
@@ -199,5 +223,11 @@ void protected_evaluate_moved(IMP::ScoreAccumulator sa,
                                                 states, m);
 }
 
+void protected_evaluate_moved(IMP::ScoreAccumulator sa,
+                        Restraint *restraint,
+                        const ParticleIndexes &moved_pis,
+                        const ScoreStatesTemp &states, Model *m) {
+  protected_evaluate_one_moved<Restraint>(sa, restraint, moved_pis, states, m);
+}
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
