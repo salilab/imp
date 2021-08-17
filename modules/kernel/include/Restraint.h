@@ -69,7 +69,9 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
 
   //! Score the restraint when some particles have moved.
   /** No particles in the model other those listed should have been
-      changed since the last evaluation. This method should behave
+      changed (e.g. by Monte Carlo movers) since the last evaluation (although
+      ScoreStates may have moved particles not in this list, as a function of
+      particles that *are* in the list). This method should behave
       identically to evaluate() but may be more efficient if it can
       skip terms that involve unchanged particles.
 
