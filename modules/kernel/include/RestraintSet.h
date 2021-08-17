@@ -51,6 +51,7 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
                const std::string &name = "RestraintSet %1%");
 
   double unprotected_evaluate(DerivativeAccumulator *da) const;
+
   IMP_OBJECT_METHODS(RestraintSet);
   /** @name Methods to control the nested Restraint objects
 
@@ -82,6 +83,8 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;
   void do_add_score_and_derivatives(ScoreAccumulator sa) const;
+  void do_add_score_and_derivatives_moved(
+                  ScoreAccumulator sa, const ParticleIndexes &moved_pis) const;
 #endif
 };
 

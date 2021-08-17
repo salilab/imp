@@ -58,6 +58,29 @@ void RestraintSet::do_add_score_and_derivatives(ScoreAccumulator sa) const {
   IMP_OMP_PRAGMA(taskwait)
 }
 
+void RestraintSet::do_add_score_and_derivatives_moved(
+                ScoreAccumulator sa, const ParticleIndexes &moved_pis) const {
+  // If we only want the score, and only a single particle moved, only
+  // evaluate the restraints that depend on that particle, and use the
+  // last score for the rest
+  if (!sa.get_derivative_accumulator() && moved_pis.size() == 1) {
+    RestraintsTemp rs = get_dependent_restraints(get_model(), moved_pis[0]);
+    std::set<Restraint *> rsset(rs.begin(), rs.end());
+    for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
+      Restraint *r = get_restraint(i);
+      if (rsset.find(r) == rsset.end()) {
+        sa.add_score(r->get_last_score() * r->get_weight());
+      } else {
+        r->add_score_and_derivatives_moved(sa, moved_pis);
+      }
+    }
+  } else {
+    do_add_score_and_derivatives(sa);
+  }
+  // for child tasks
+  IMP_OMP_PRAGMA(taskwait)
+}
+
 double RestraintSet::get_last_score() const {
   double ret = 0;
   for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
