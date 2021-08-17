@@ -198,9 +198,9 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
       }
     } else {
       if (score_moved_) {
-        return get_scoring_function()->evaluate(false);
-      } else {
         return get_scoring_function()->evaluate_moved(false, moved);
+      } else {
+        return get_scoring_function()->evaluate(false);
       }
     }
   }
