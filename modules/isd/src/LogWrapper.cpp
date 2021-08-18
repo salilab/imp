@@ -66,6 +66,13 @@ double LogWrapper::unprotected_evaluate_moved(
           r->set_last_score(rsrval);
           prob *= rsrval;
         } else {
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+          double rsrval = r->unprotected_evaluate_moved(accum, moved_pis);
+          IMP_INTERNAL_CHECK_FLOAT_EQUAL(
+                 rsrval, last_score,
+                 "Restraint " << *r
+                 << " changed score even though particles didn't move");
+#endif
           prob *= last_score;
         }
       } else {

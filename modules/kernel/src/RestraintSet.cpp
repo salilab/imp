@@ -74,7 +74,15 @@ void RestraintSet::do_add_score_and_derivatives_moved(
         if (last_score == NO_MAX) {
           r->add_score_and_derivatives(sa);
         } else {
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+          r->add_score_and_derivatives_moved(sa, moved_pis);
+          IMP_INTERNAL_CHECK_FLOAT_EQUAL(
+                 r->get_last_score(), last_score,
+                 "Restraint " << *r
+                 << " changed score even though particles didn't move");
+#else
           sa.add_score(last_score * r->get_weight());
+#endif
         }
       } else {
         r->add_score_and_derivatives_moved(sa, moved_pis);
