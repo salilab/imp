@@ -21,18 +21,19 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 RestraintSet::RestraintSet(Model *m, double weight,
                            const std::string &name)
-    : Restraint(m, name) {
+    : Restraint(m, name), moved_particles_cache_(m) {
   set_weight(weight);
 }
 
 RestraintSet::RestraintSet(Model *m, const std::string &name)
-    : Restraint(m, name) {
+    : Restraint(m, name), moved_particles_cache_(m) {
   set_weight(1.0);
 }
 
 RestraintSet::RestraintSet(const RestraintsTemp &rs, double weight,
                            const std::string &name)
-    : Restraint(internal::get_model(rs), name) {
+    : Restraint(internal::get_model(rs), name),
+      moved_particles_cache_(internal::get_model(rs)) {
   set_weight(weight);
   set_restraints(rs);
 }
@@ -64,8 +65,8 @@ void RestraintSet::do_add_score_and_derivatives_moved(
   // evaluate the restraints that depend on that particle, and use the
   // last score for the rest
   if (!sa.get_derivative_accumulator() && moved_pis.size() == 1) {
-    RestraintsTemp rs = get_dependent_restraints(get_model(), moved_pis[0]);
-    std::set<Restraint *> rsset(rs.begin(), rs.end());
+    const std::set<Restraint *> &rsset
+           = moved_particles_cache_.get_dependent_restraints(moved_pis[0]);
     for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
       Restraint *r = get_restraint(i);
       if (rsset.find(r) == rsset.end()) {

@@ -50,8 +50,8 @@ double LogWrapper::unprotected_evaluate_moved(
   // evaluate the restraints that depend on that particle, and use the
   // last score for the rest
   if (!accum && moved_pis.size() == 1) {
-    RestraintsTemp rs = get_dependent_restraints(get_model(), moved_pis[0]);
-    std::set<Restraint *> rsset(rs.begin(), rs.end());
+    const std::set<Restraint *> &rsset
+           = moved_particles_cache_.get_dependent_restraints(moved_pis[0]);
 
     double prob = 1;
     double score = 0;
