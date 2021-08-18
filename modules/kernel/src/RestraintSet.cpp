@@ -69,7 +69,13 @@ void RestraintSet::do_add_score_and_derivatives_moved(
     for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
       Restraint *r = get_restraint(i);
       if (rsset.find(r) == rsset.end()) {
-        sa.add_score(r->get_last_score() * r->get_weight());
+        double last_score = r->get_last_score();
+        // If the restraint is new, get the full score
+        if (last_score == NO_MAX) {
+          r->add_score_and_derivatives(sa);
+        } else {
+          sa.add_score(last_score * r->get_weight());
+        }
       } else {
         r->add_score_and_derivatives_moved(sa, moved_pis);
       }

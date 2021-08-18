@@ -83,6 +83,17 @@ class Tests(IMP.test.TestCase):
         self.assertFalse(r1.moved_evaluate)
         self.assertFalse(r4.moved_evaluate)
 
+        # Newly-added restraints should use regular evaluate to get first score
+        clear_restraints()
+        r3 = LogRestraint(m, [p3], 30.0)
+        r3.moved_evaluate = None
+        lw.add_restraint(r3)
+        self.assertAlmostEqual(lw.evaluate_moved(False, [p4]),
+                               -10.308, delta=1e-3)
+        self.assertIsNone(r1.moved_evaluate)
+        self.assertFalse(r3.moved_evaluate)
+        self.assertTrue(r4.moved_evaluate)
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -59,7 +59,15 @@ double LogWrapper::unprotected_evaluate_moved(
     for (unsigned int i = 0; i <get_number_of_restraints(); ++i) {
       Restraint *r = get_restraint(i);
       if (rsset.find(r) == rsset.end()) {
-        prob *= r->get_last_score();
+        double last_score = r->get_last_score();
+        // If the restraint is new, get the full score
+        if (last_score == NO_MAX) {
+          double rsrval = r->unprotected_evaluate(accum);
+          r->set_last_score(rsrval);
+          prob *= rsrval;
+        } else {
+          prob *= last_score;
+        }
       } else {
         double rsrval = r->unprotected_evaluate_moved(accum, moved_pis);
         r->set_last_score(rsrval);
