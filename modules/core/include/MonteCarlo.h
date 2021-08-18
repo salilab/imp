@@ -184,12 +184,13 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
 
       The list of moved particles is passed.
    */
-  virtual double do_evaluate(const ParticleIndexes &moved) const {
+  virtual double do_evaluate(const ParticleIndexes &moved,
+                             bool force_full_score) const {
     if (isf_) {
       isf_->set_moved_particles(moved);
     }
     if (get_maximum_difference() < NO_MAX) {
-      if (score_moved_) {
+      if (score_moved_ && !force_full_score) {
         return get_scoring_function()->evaluate_moved_if_below(
             false, moved, last_energy_ + max_difference_);
       } else {
@@ -197,7 +198,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
             false, last_energy_ + max_difference_);
       }
     } else {
-      if (score_moved_) {
+      if (score_moved_ && !force_full_score) {
         return get_scoring_function()->evaluate_moved(false, moved);
       } else {
         return get_scoring_function()->evaluate(false);
