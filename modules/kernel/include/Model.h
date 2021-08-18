@@ -115,20 +115,13 @@ class IMPKERNELEXPORT Model : public Object
   void do_check_readers_and_writers(const ModelObject *mo) const;
   void do_check_not_in_readers_and_writers(const ModelObject *mo) const;
   void do_clear_dependencies(const ModelObject *mo);
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  // things the evaluate template functions need, can't be bothered with friends
- public:
-#endif
-  // check more things on the first call
-  bool first_call_;
+
   // used to track time when triggers are activated
   unsigned age_counter_;
   // all triggers
   Vector<unsigned> trigger_age_;
   // time when dependencies were last changed
   unsigned dependencies_age_;
-  // the stage of evaluation
-  internal::Stage cur_stage_;
 
   // update model age (can never be zero, even if it wraps)
   void increase_age() {
@@ -137,6 +130,15 @@ class IMPKERNELEXPORT Model : public Object
       age_counter_ = 1;
     }
   }
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  // things the evaluate template functions need, can't be bothered with friends
+ public:
+#endif
+  // check more things on the first call
+  bool first_call_;
+  // the stage of evaluation
+  internal::Stage cur_stage_;
 
   ModelObjectsTemp get_dependency_graph_inputs(const ModelObject *mo) const;
   ModelObjectsTemp get_dependency_graph_outputs(const ModelObject *mo) const;
