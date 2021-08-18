@@ -191,6 +191,16 @@ class Tests(IMP.test.TestCase):
         self.assertIsNone(r1.moved_evaluate)
         self.assertTrue(r4.moved_evaluate)
 
+        # Cache should be cleared since we changed the dependency graph here;
+        # now moving p1 should force recalc of r1 *and* r4
+        clear_restraints()
+        ss2 = LinkScoreState(m, p1, p4)
+        m.add_score_state(ss2)
+        self.assertAlmostEqual(rs.evaluate_moved(False, [p1]),
+                               210.0, delta=1e-6)
+        self.assertTrue(r1.moved_evaluate)
+        self.assertTrue(r4.moved_evaluate)
+
 
 if __name__ == '__main__':
     IMP.test.main()

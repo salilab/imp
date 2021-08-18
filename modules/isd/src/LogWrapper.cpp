@@ -51,7 +51,7 @@ double LogWrapper::unprotected_evaluate_moved(
   // last score for the rest
   if (!accum && moved_pis.size() == 1) {
     const std::set<Restraint *> &rsset
-           = moved_particles_cache_.get_dependent_restraints(moved_pis[0]);
+           = get_model()->get_dependent_restraints(moved_pis[0]);
 
     double prob = 1;
     double score = 0;

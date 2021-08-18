@@ -21,6 +21,7 @@
 #include "Undecorator.h"
 #include "internal/AttributeTable.h"
 #include "internal/attribute_tables.h"
+#include "internal/MovedParticlesCache.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
 #include <boost/unordered_map.hpp>
@@ -120,8 +121,13 @@ class IMPKERNELEXPORT Model : public Object
   unsigned age_counter_;
   // all triggers
   Vector<unsigned> trigger_age_;
-  // time when dependencies were last changed
+  // time when dependencies were last changed, or 0
   unsigned dependencies_age_;
+  // cache of restraints that are affected by each moved particle,
+  // used for evaluate_moved() and related functions
+  internal::MovedParticlesCache moved_particles_cache_;
+  // time when moved_particles_cache_ was last updated, or 0
+  unsigned moved_particles_cache_age_;
 
   // update model age (can never be zero, even if it wraps)
   void increase_age() {
@@ -139,6 +145,10 @@ class IMPKERNELEXPORT Model : public Object
   bool first_call_;
   // the stage of evaluation
   internal::Stage cur_stage_;
+
+  const std::set<Restraint *> &get_dependent_restraints(ParticleIndex pi) {
+    return moved_particles_cache_.get_dependent_restraints(pi);
+  }
 
   ModelObjectsTemp get_dependency_graph_inputs(const ModelObject *mo) const;
   ModelObjectsTemp get_dependency_graph_outputs(const ModelObject *mo) const;

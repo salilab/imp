@@ -12,7 +12,6 @@
 #include <IMP/kernel_config.h>
 #include "Restraint.h"
 #include "container_macros.h"
-#include <IMP/internal/MovedParticlesCache.h>
 #include <string>
 
 IMPKERNEL_BEGIN_NAMESPACE
@@ -86,7 +85,6 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
   void do_add_score_and_derivatives(ScoreAccumulator sa) const;
   void do_add_score_and_derivatives_moved(
                   ScoreAccumulator sa, const ParticleIndexes &moved_pis) const;
-  mutable internal::MovedParticlesCache moved_particles_cache_;
 #endif
 };
 
