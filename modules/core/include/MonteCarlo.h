@@ -61,7 +61,13 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
       calculated. If it is guaranteed that only Movers and ScoreStates
       move the system, then the score can potentially be calculated
       more quickly by caching the scores on parts of the system that
-      don't move. This is still experimental. */
+      don't move. This is still experimental.
+
+      \note Some MonteCarlo subclasses do local optimization after each
+            move, which can move more particles than the Movers touched.
+            In this case the guarantee does not hold and this optimization
+            should probably not be used.
+   */
   void set_score_moved(bool mv) { score_moved_ = mv; }
 
   /** \name kT
