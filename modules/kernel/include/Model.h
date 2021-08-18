@@ -125,6 +125,8 @@ class IMPKERNELEXPORT Model : public Object
   unsigned age_counter_;
   // all triggers
   Vector<unsigned> trigger_age_;
+  // time when dependencies were last changed
+  unsigned dependencies_age_;
   // the stage of evaluation
   internal::Stage cur_stage_;
 
@@ -393,6 +395,12 @@ class IMPKERNELEXPORT Model : public Object
     trigger_age_[tk.get_index()] = age_counter_;
   }
   /** @} */
+
+  //! Get the model age when ModelObject dependencies were last changed, or 0.
+  /** This gives the Model age (see get_age()) when Particles, Restraints,
+      or ScoreStates were last added or removed. It is typically used to
+      help maintain caches that depend on the model's dependency graph. */
+  unsigned get_dependencies_updated() { return dependencies_age_; }
 
   IMP_OBJECT_METHODS(Model);
 

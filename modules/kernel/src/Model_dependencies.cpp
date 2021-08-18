@@ -317,6 +317,7 @@ void Model::do_add_dependencies(const ModelObject *cmo) {
   }
   // needs to be at end to not trigger input/output validation
   no_dependencies_.erase(cmo);
+  dependencies_age_ = age_counter_;
   computed.erase(cmo);
 }
 
@@ -372,6 +373,7 @@ void Model::do_clear_dependencies(const ModelObject *cmo) {
   ni.set_outputs(Edges());
   ni.set_input_outputs(Edges());
   no_dependencies_.insert(mo);
+  dependencies_age_ = age_counter_;
   {  // down stream might be affected (eg SetContainers)
     Edges readers = ni.get_readers();
     IMP_FOREACH(ModelObject * reader, readers) {
@@ -451,6 +453,7 @@ void Model::do_add_model_object(ModelObject *mo) {
     dependency_graph_[mo] = NodeInfo();
   }
   no_dependencies_.insert(mo);
+  dependencies_age_ = age_counter_;
 }
 
 void Model::do_remove_model_object(ModelObject *mo) {
@@ -478,6 +481,7 @@ void Model::do_remove_model_object(ModelObject *mo) {
     }
   }
   no_dependencies_.erase(mo);
+  dependencies_age_ = age_counter_;
   dependency_graph_.erase(mo);
 }
 
