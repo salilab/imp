@@ -31,7 +31,7 @@ class RMFEXPORT Exception : public virtual std::exception,
  public:
   RMF_CXX11_DEFAULT_COPY_CONSTRUCTOR(Exception);
   Exception();
-  const char* what() const RMF_NOEXCEPT;
+  const char* what() const RMF_NOEXCEPT RMF_OVERRIDE;
   virtual ~Exception() RMF_NOEXCEPT;
 };
 
