@@ -108,7 +108,10 @@ void MonteCarloWithWte::do_step() {
   if (do_accept) update_bias(energy);
 }
 
-double MonteCarloWithWte::do_evaluate(const ParticleIndexes &moved) const {
+double MonteCarloWithWte::do_evaluate(const ParticleIndexes &, bool) const {
+  // we don't use evaluate_moved() so don't use either input argument
+  if (get_use_incremental_scoring_function())
+    IMP_THROW("Incremental scoring not supported", ModelException);
   double totenergy = get_scoring_function()->evaluate(false);
   double energy = totenergy;
   if (full_ == false) {

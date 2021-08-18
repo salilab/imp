@@ -33,7 +33,8 @@ class IMPSPBEXPORT MonteCarloWithWte : public core::MonteCarlo {
                      double w0);
 
   void update_bias(double score);
-  virtual double do_evaluate(const ParticleIndexes &moved) const IMP_OVERRIDE;
+  virtual double do_evaluate(
+                  const ParticleIndexes &moved, bool) const IMP_OVERRIDE;
   double get_spline(double score) const;
 
  public:
