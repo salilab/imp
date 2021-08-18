@@ -54,7 +54,7 @@ class IMPCOREEXPORT ConnectivityRestraint : public Restraint {
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const { return ps_; }
 
-  Restraints do_create_current_decomposition() const;
+  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
 
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const

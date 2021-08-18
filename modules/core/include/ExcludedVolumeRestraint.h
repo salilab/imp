@@ -85,11 +85,11 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public Restraint {
                           double slack = 10,
                           std::string name = "ExcludedVolumeRestraint%1%");
 
-  void clear_caches();
+  void clear_caches() IMP_OVERRIDE;
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
-                                      double max) const;
+                                      double max) const IMP_OVERRIDE;
 #endif
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
@@ -97,8 +97,8 @@ class IMPCOREEXPORT ExcludedVolumeRestraint : public Restraint {
   IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ExcludedVolumeRestraint);
   ;
-  Restraints do_create_decomposition() const;
-  Restraints do_create_current_decomposition() const;
+  Restraints do_create_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
 #ifndef IMP_DOXYGEN
   const ParticleIndexPairs &get_indexes() const { return cur_list_; }
 #endif

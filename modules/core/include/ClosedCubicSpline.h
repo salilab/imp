@@ -27,9 +27,10 @@ class IMPCOREEXPORT ClosedCubicSpline : public UnaryFunction {
    */
   ClosedCubicSpline(const Floats &values, double minrange, double spacing);
 
-  virtual DerivativePair evaluate_with_derivative(double feature) const;
+  virtual DerivativePair evaluate_with_derivative(
+                    double feature) const IMP_OVERRIDE;
 
-  virtual double evaluate(double feature) const;
+  virtual double evaluate(double feature) const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(ClosedCubicSpline);
 

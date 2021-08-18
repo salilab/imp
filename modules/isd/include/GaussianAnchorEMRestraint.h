@@ -138,7 +138,7 @@ public:
     ParticlesTemp ret =  density_ps_;
     return ret;
   }
-  double get_probability() const {
+  double get_probability() const IMP_OVERRIDE {
     return exp(-unprotected_evaluate(NULL));
   }
 

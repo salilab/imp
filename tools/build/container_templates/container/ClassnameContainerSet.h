@@ -38,14 +38,14 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
                         std::string name = "ClassnameContainerSet %1%");
 
   /** \brief apply modifier sm to all classname containers */
-  IMP_IMPLEMENT(void do_apply(const ClassnameModifier *sm) const);
+  IMP_IMPLEMENT(void do_apply(const ClassnameModifier *sm) const IMP_OVERRIDE);
 
   template <class M>
   void apply_generic(const M *m) const {
     apply(m);
   }
 
-  ParticleIndexes get_all_possible_indexes() const;
+  ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ClassnameContainerSet);
 
   /** @name Methods to control the nested container
@@ -65,9 +65,9 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
 /**@}*/
 
 #ifndef IMP_DOXYGEN
-  PLURALINDEXTYPE get_indexes() const;
-  PLURALINDEXTYPE get_range_indexes() const;
-  ModelObjectsTemp do_get_inputs() const;
+  PLURALINDEXTYPE get_indexes() const IMP_OVERRIDE;
+  PLURALINDEXTYPE get_range_indexes() const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 #endif
 
  protected:

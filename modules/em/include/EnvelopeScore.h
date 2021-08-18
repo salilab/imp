@@ -60,7 +60,7 @@ class IMPEMEXPORT EnvelopeScore : public IMP::Object {
                const IMP::algebra::Transformation3D& trans) const;
 
   // methods required by Object
-  IMP::VersionInfo get_version_info() const {
+  IMP::VersionInfo get_version_info() const IMP_OVERRIDE {
     return IMP::VersionInfo(get_module_name(), get_module_version());
   }
 

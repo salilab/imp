@@ -69,7 +69,7 @@ class IMPKINEMATICSEXPORT PrismaticJoint : public Joint {
      @note It is assumed that external coordinates are updated before
            calling this function.
   */
-  virtual void update_joint_from_cartesian_witnesses();
+  virtual void update_joint_from_cartesian_witnesses() IMP_OVERRIDE;
 
  private:
   IMP::core::XYZ a_;  // prismatic joint from point, associated with parent

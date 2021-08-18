@@ -44,10 +44,10 @@ class ContainerRestraint : public Restraint {
 
   Score *get_score() const { return acc_->get_score_object(); }
 
-  Restraints do_create_decomposition() const;
-  Restraints do_create_current_decomposition() const;
+  Restraints do_create_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
 
-  IMP_IMPLEMENT(double get_last_score() const;);
+  IMP_IMPLEMENT(double get_last_score() const IMP_OVERRIDE;);
 };
 
 /** Helper to create a ContainerRestraint without specifying the types. Make

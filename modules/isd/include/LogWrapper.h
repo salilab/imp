@@ -37,9 +37,10 @@ class IMPISDEXPORT LogWrapper : public RestraintSet {
     virtual double unprotected_evaluate_moved(
         IMP::DerivativeAccumulator* accum,
         const ParticleIndexes &moved_pis) const IMP_OVERRIDE;
-    void do_add_score_and_derivatives(ScoreAccumulator sa) const;
+    void do_add_score_and_derivatives(ScoreAccumulator sa) const IMP_OVERRIDE;
     void do_add_score_and_derivatives_moved(
-                  ScoreAccumulator sa, const ParticleIndexes &moved_pis) const;
+                  ScoreAccumulator sa,
+                  const ParticleIndexes &moved_pis) const IMP_OVERRIDE;
 
     IMP_OBJECT_METHODS(LogWrapper);
 

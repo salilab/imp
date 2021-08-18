@@ -32,13 +32,13 @@ class IMPKINEMATICSEXPORT UniformBackboneSampler : public DOFsSampler {
    */
   UniformBackboneSampler(DihedralAngleRevoluteJoints joints, DOFs dofs);
 
-  virtual void apply(const DOFValues& values);
+  virtual void apply(const DOFValues& values) IMP_OVERRIDE;
   virtual void apply_floats(const Floats& values);
 
   DihedralAngleRevoluteJoints get_joints() { return joints_; }
 
  protected:
-  virtual DOFValues do_get_sample() const;
+  virtual DOFValues do_get_sample() const IMP_OVERRIDE;
 
  private:
   //  boost::mt19937 rng_; // init random number generator

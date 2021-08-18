@@ -71,7 +71,8 @@ class IMPEMEXPORT SpiderMapReaderWriter : public MapReaderWriter {
    *  \param[in] header DensityHeader class where to store the info
    *  from the header.
    */
-  void read(const char *filename, float **data, DensityHeader &header);
+  void read(const char *filename, float **data,
+            DensityHeader &header) IMP_OVERRIDE;
 
   //! Writes a map in Spider format from data and header.
   /**
@@ -81,7 +82,7 @@ class IMPEMEXPORT SpiderMapReaderWriter : public MapReaderWriter {
    *  data from the header.
    */
   void write(const char *filename, const float *data,
-             const DensityHeader &header);
+             const DensityHeader &header) IMP_OVERRIDE;
 #endif
   IMP_OBJECT_METHODS(SpiderMapReaderWriter);
 };

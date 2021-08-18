@@ -147,7 +147,7 @@
    public:                                                                 \
     Name##sGeometry(SingletonContainer *sc)                                \
         : display::SingletonsGeometry(sc) {}                               \
-    display::Geometries get_components() const {                           \
+    display::Geometries get_components() const IMP_OVERRIDE {              \
       display::Geometries ret;                                             \
       IMP_FOREACH(ParticleIndex pi, get_container()->get_contents()) {     \
         Decorator d(get_container()->get_model(), pi);                     \
@@ -164,7 +164,7 @@
    public:                                                             \
     Name##Geometry(const ParticlePair &pp)                     \
         : display::PairGeometry(pp) {}                                 \
-    display::Geometries get_components() const {                       \
+    display::Geometries get_components() const IMP_OVERRIDE {          \
       display::Geometries ret;                                         \
       Decorator d0(get_particle_pair()[0]);                            \
       Decorator d1(get_particle_pair()[1]);                            \
@@ -177,7 +177,7 @@
   class Name##sGeometry : public display::PairsGeometry {              \
    public:                                                             \
     Name##sGeometry(PairContainer *sc) : display::PairsGeometry(sc) {} \
-    display::Geometries get_components() const {                       \
+    display::Geometries get_components() const IMP_OVERRIDE {          \
       display::Geometries ret;                                         \
       IMP_FOREACH(ParticleIndexPair pip,                       \
                   get_container()->get_contents()) {                   \

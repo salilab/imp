@@ -118,7 +118,7 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
     get_score_for_predicate(int predicate) const;
 
 
-  Restraints do_create_current_decomposition() const;
+  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
 };
 
 

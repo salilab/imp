@@ -47,7 +47,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   MonteCarlo(Model *m);
 
  protected:
-  virtual Float do_optimize(unsigned int max_steps);
+  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(MonteCarlo)
  public:
   /** By default, the optimizer returns the lowest scoring state

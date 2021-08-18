@@ -51,7 +51,7 @@ class IMPISDEXPORT HybridMonteCarlo : public core::MonteCarlo {
   // evaluate should return the total energy
   double do_evaluate(const ParticleIndexes &, bool) const IMP_OVERRIDE;
 
-  virtual void do_step();
+  virtual void do_step() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(HybridMonteCarlo);
 
  private:

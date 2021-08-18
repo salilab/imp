@@ -36,7 +36,7 @@ class ContainerConstraint : public Constraint {
   void set_before_evaluate_modifier(Before *f) { f_ = f; }
 
   // only report actual interactions
-  ModelObjectsTemps do_get_interactions() const {
+  ModelObjectsTemps do_get_interactions() const IMP_OVERRIDE {
     ModelObjectsTemps ret;
     typename Container::ContainedIndexTypes ps = c_->get_range_indexes();
     for (unsigned int i = 0; i < ps.size(); ++i) {

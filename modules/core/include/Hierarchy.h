@@ -256,7 +256,7 @@ class IMPCOREEXPORT ModifierVisitor : public HierarchyVisitor {
 
  public:
   ModifierVisitor(SingletonModifier *sm) : sm_(sm) {}
-  virtual bool operator()(Hierarchy p) {
+  virtual bool operator()(Hierarchy p) IMP_OVERRIDE {
     sm_->apply_index(p.get_model(), p.get_particle_index());
     return true;
   }
@@ -422,7 +422,7 @@ struct HierarchyCounter : public HierarchyVisitor {
   HierarchyCounter() : ct_(0) {}
 
   //! Increment the counter
-  bool operator()(Hierarchy) {
+  bool operator()(Hierarchy) IMP_OVERRIDE {
     ++ct_;
     return true;
   }

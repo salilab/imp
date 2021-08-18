@@ -291,7 +291,9 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
                   ScoreAccumulator sa, const ParticleIndexes &moved_pis) const;
 
   /** No outputs. */
-  ModelObjectsTemp do_get_outputs() const { return ModelObjectsTemp(); }
+  ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
 
  private:
   ScoringFunction *create_internal_scoring_function() const;

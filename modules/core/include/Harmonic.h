@@ -26,12 +26,13 @@ class Harmonic : public UnaryFunction {
   /** Create with the given mean and the spring constant k */
   Harmonic(Float mean, Float k) : mean_(mean), k_(k) {}
 
-  virtual DerivativePair evaluate_with_derivative(double feature) const {
+  virtual DerivativePair evaluate_with_derivative(
+                                 double feature) const IMP_OVERRIDE {
     return DerivativePair(0.5 * k_ * square(feature - mean_),
                           k_ * (feature - mean_));
   }
 
-  virtual double evaluate(double feature) const {
+  virtual double evaluate(double feature) const IMP_OVERRIDE {
     return 0.5 * k_ * square(feature - mean_);
   }
 

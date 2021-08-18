@@ -40,7 +40,7 @@ class TupleRestraint : public Restraint {
   ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(TupleRestraint);
   ;
-  Restraints do_create_current_decomposition() const;
+  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
 };
 
 template <class Score>

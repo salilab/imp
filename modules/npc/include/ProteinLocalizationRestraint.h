@@ -42,8 +42,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(ZAxialPositionRestraint);;
 };
@@ -70,8 +71,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(ZAxialPositionLowerRestraint);;
 };
@@ -98,8 +100,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(ZAxialPositionUpperRestraint);;
 };
@@ -128,8 +131,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(YAxialPositionRestraint);;
 };
@@ -156,8 +160,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(YAxialPositionLowerRestraint);;
 };
@@ -184,8 +189,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(YAxialPositionUpperRestraint);;
 };
@@ -214,8 +220,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(XYRadialPositionRestraint);;
 };
@@ -242,8 +249,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(XYRadialPositionLowerRestraint);;
 };
@@ -270,8 +278,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(XYRadialPositionUpperRestraint);;
 };
@@ -299,8 +308,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(ProteinContactRestraint);;
 };
@@ -327,8 +337,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(ProteinChainRestraint);;
 };
@@ -357,8 +368,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(MembraneSurfaceLocationRestraint);;
 };
@@ -392,8 +404,9 @@ public:
   void set_particles2(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(MembraneSurfaceLocationConditionalRestraint);;
 };
@@ -422,8 +435,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(MembraneExclusionRestraint);;
 };
@@ -453,8 +467,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(PoreSideVolumeLocationRestraint);;
 };
@@ -484,8 +499,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(PerinuclearVolumeLocationRestraint);;
 };
@@ -513,8 +529,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(AssemblySymmetryByDistanceRestraint);;
 };
@@ -543,8 +560,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(AssemblySymmetryByDihedralRestraint);;
 };
@@ -571,8 +589,9 @@ public:
   void set_particles(const ParticlesTemp &ps);
 #endif
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(ProteinProximityRestraint);;
 };

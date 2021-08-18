@@ -44,16 +44,23 @@ class IMPDISPLAYEXPORT PymolWriter : public TextWriter {
   friend class CGOAnimationWriter;
   void setup(std::string name, Type type, bool opendata = true);
   void cleanup(std::string name, bool close = true);
-  bool handle_sphere(SphereGeometry *g, Color color, std::string name);
-  bool handle_cylinder(CylinderGeometry *g, Color color, std::string name);
-  bool handle_point(PointGeometry *g, Color color, std::string name);
-  bool handle_segment(SegmentGeometry *g, Color color, std::string name);
-  bool handle_polygon(PolygonGeometry *g, Color color, std::string name);
-  bool handle_triangle(TriangleGeometry *g, Color color, std::string name);
-  bool handle_label(LabelGeometry *g, Color color, std::string name);
+  bool handle_sphere(SphereGeometry *g, Color color,
+                     std::string name) IMP_OVERRIDE;
+  bool handle_cylinder(CylinderGeometry *g, Color color,
+                       std::string name) IMP_OVERRIDE;
+  bool handle_point(PointGeometry *g, Color color,
+                    std::string name) IMP_OVERRIDE;
+  bool handle_segment(SegmentGeometry *g, Color color,
+                      std::string name) IMP_OVERRIDE;
+  bool handle_polygon(PolygonGeometry *g, Color color,
+                      std::string name) IMP_OVERRIDE;
+  bool handle_triangle(TriangleGeometry *g, Color color,
+                       std::string name) IMP_OVERRIDE;
+  bool handle_label(LabelGeometry *g, Color color,
+                    std::string name) IMP_OVERRIDE;
   bool handle_surface(SurfaceMeshGeometry *g, Color color, std::string name);
 
-  void do_set_frame();
+  void do_set_frame() IMP_OVERRIDE;
 
  public:
   IMP_TEXT_WRITER(PymolWriter);

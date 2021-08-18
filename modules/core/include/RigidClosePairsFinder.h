@@ -68,14 +68,14 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
       const ParticleIndexes &pa,
       const ParticleIndexes &pb) const;
 
-  void set_distance(double d) {
+  void set_distance(double d) IMP_OVERRIDE {
     cpf_->set_distance(d);
     ClosePairsFinder::set_distance(d);
   }
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   internal::MovedSingletonContainer *get_moved_singleton_container(
-      SingletonContainer *c, double thresold) const;
+      SingletonContainer *c, double thresold) const IMP_OVERRIDE;
 #endif
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
       IMP_OVERRIDE;

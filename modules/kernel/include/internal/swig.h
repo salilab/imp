@@ -38,7 +38,7 @@ class IMPKERNELEXPORT _ConstRestraint : public Restraint {
   _ConstRestraint(Model *m, const ParticleIndexes &pis, double v)
       : Restraint(m, "ConstRestraint%1%"), v_(v), ps_(get_particles(m, pis)) {}
   double get_value() const { return v_; }
-  Restraints do_create_decomposition() const;
+  Restraints do_create_decomposition() const IMP_OVERRIDE;
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
   ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
