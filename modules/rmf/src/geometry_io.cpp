@@ -28,11 +28,13 @@ class GeometryLoadLink : public SimpleLoadLink<G> {
   typedef SimpleLoadLink<G> P;
   F factory_;
   RMF::decorator::ColoredFactory colored_factory_;
-  bool get_is(RMF::NodeConstHandle nh) const {
+  bool get_is(RMF::NodeConstHandle nh) const IMP_OVERRIDE {
     return nh.get_type() == RMF::GEOMETRY && factory_.get_is(nh);
   }
   using P::do_create;
-  G *do_create(RMF::NodeConstHandle name) { return new G(name.get_name()); }
+  G *do_create(RMF::NodeConstHandle name) IMP_OVERRIDE {
+    return new G(name.get_name());
+  }
 
  public:
   GeometryLoadLink(RMF::FileConstHandle fh)
@@ -63,7 +65,7 @@ class GeometrySaveLink : public SimpleSaveLink<G> {
   typedef SimpleSaveLink<G> P;
   F factory_;
   RMF::decorator::ColoredFactory colored_factory_;
-  RMF::NodeType get_type(G *) const { return RMF::GEOMETRY; }
+  RMF::NodeType get_type(G *) const IMP_OVERRIDE { return RMF::GEOMETRY; }
 
  public:
   const F &get_factory() const { return factory_; }
@@ -80,7 +82,8 @@ class SphereLoadLink : public GeometryLoadLink<display::SphereGeometry,
                                                RMF::decorator::BallFactory> {
   typedef GeometryLoadLink<display::SphereGeometry, RMF::decorator::BallFactory>
       P;
-  void do_load_one(RMF::NodeConstHandle nh, display::SphereGeometry *o) {
+  void do_load_one(RMF::NodeConstHandle nh,
+                   display::SphereGeometry *o) IMP_OVERRIDE {
     RMF::decorator::BallConst b = get_factory().get(nh);
     RMF::Vector3 cs = b.get_coordinates();
     algebra::Sphere3D s(algebra::Vector3D(cs.begin(), cs.end()),
@@ -106,7 +109,8 @@ class SphereSaveLink : public GeometrySaveLink<display::SphereGeometry,
                                                RMF::decorator::BallFactory> {
   typedef GeometrySaveLink<display::SphereGeometry, RMF::decorator::BallFactory>
       P;
-  void do_save_one(display::SphereGeometry *o, RMF::NodeHandle nh) {
+  void do_save_one(display::SphereGeometry *o,
+                   RMF::NodeHandle nh) IMP_OVERRIDE {
     save_sphere(o, nh, P::get_factory());
     P::save_color(o, nh);
     o->set_was_used(true);
@@ -122,7 +126,8 @@ class CylinderLoadLink
                               RMF::decorator::CylinderFactory> {
   typedef GeometryLoadLink<display::CylinderGeometry,
                            RMF::decorator::CylinderFactory> P;
-  void do_load_one(RMF::NodeConstHandle nh, display::CylinderGeometry *o) {
+  void do_load_one(RMF::NodeConstHandle nh,
+                   display::CylinderGeometry *o) IMP_OVERRIDE {
     RMF::decorator::CylinderConst b = get_factory().get(nh);
     RMF::Vector3s cs = b.get_coordinates_list();
     algebra::Vector3D vs[2] = {algebra::Vector3D(cs[0]),
@@ -157,7 +162,8 @@ class CylinderSaveLink
                               RMF::decorator::CylinderFactory> {
   typedef GeometrySaveLink<display::CylinderGeometry,
                            RMF::decorator::CylinderFactory> P;
-  void do_save_one(display::CylinderGeometry *o, RMF::NodeHandle nh) {
+  void do_save_one(display::CylinderGeometry *o,
+                   RMF::NodeHandle nh) IMP_OVERRIDE {
     save_cylinder(o, nh, P::get_factory());
     P::save_color(o, nh);
     o->set_was_used(true);
@@ -187,7 +193,8 @@ class SegmentLoadLink
                               RMF::decorator::SegmentFactory> {
   typedef GeometryLoadLink<display::SegmentGeometry,
                            RMF::decorator::SegmentFactory> P;
-  void do_load_one(RMF::NodeConstHandle nh, display::SegmentGeometry *o) {
+  void do_load_one(RMF::NodeConstHandle nh,
+                   display::SegmentGeometry *o) IMP_OVERRIDE {
     RMF::decorator::SegmentConst b = get_factory().get(nh);
     o->set_geometry(get_segment(b));
     P::load_color(nh, o);
@@ -210,7 +217,8 @@ class SegmentSaveLink
                               RMF::decorator::SegmentFactory> {
   typedef GeometrySaveLink<display::SegmentGeometry,
                            RMF::decorator::SegmentFactory> P;
-  void do_save_one(display::SegmentGeometry *o, RMF::NodeHandle nh) {
+  void do_save_one(display::SegmentGeometry *o,
+                   RMF::NodeHandle nh) IMP_OVERRIDE {
     save_segment(o, nh, P::get_factory());
     P::save_color(o, nh);
     o->set_was_used(true);
@@ -225,7 +233,8 @@ class BoxLoadLink : public GeometryLoadLink<display::BoundingBoxGeometry,
                                             RMF::decorator::SegmentFactory> {
   typedef GeometryLoadLink<display::BoundingBoxGeometry,
                            RMF::decorator::SegmentFactory> P;
-  void do_load_one(RMF::NodeConstHandle nh, display::BoundingBoxGeometry *o) {
+  void do_load_one(RMF::NodeConstHandle nh,
+                   display::BoundingBoxGeometry *o) IMP_OVERRIDE {
     algebra::BoundingBox3D b;
     RMF::NodeConstHandles nhs = nh.get_children();
     IMP_USAGE_CHECK(nhs.size() == 12,
@@ -240,7 +249,7 @@ class BoxLoadLink : public GeometryLoadLink<display::BoundingBoxGeometry,
     o->set_geometry(b);
     P::load_color(nh, o);
   }
-  bool get_is(RMF::NodeConstHandle nh) const {
+  bool get_is(RMF::NodeConstHandle nh) const IMP_OVERRIDE {
     if (nh.get_type() != RMF::GEOMETRY) return false;
     RMF::NodeConstHandles ch = nh.get_children();
     if (ch.size() != 12) return false;
@@ -276,12 +285,14 @@ class BoxSaveLink : public GeometrySaveLink<display::BoundingBoxGeometry,
                                             RMF::decorator::SegmentFactory> {
   typedef GeometrySaveLink<display::BoundingBoxGeometry,
                            RMF::decorator::SegmentFactory> P;
-  void do_save_one(display::BoundingBoxGeometry *o, RMF::NodeHandle nh) {
+  void do_save_one(display::BoundingBoxGeometry *o,
+                   RMF::NodeHandle nh) IMP_OVERRIDE {
     save_box(o, nh, P::get_factory());
     P::save_color(o, nh);
     o->set_was_used(true);
   }
-  void do_add(display::BoundingBoxGeometry *o, RMF::NodeHandle nh) {
+  void do_add(display::BoundingBoxGeometry *o,
+              RMF::NodeHandle nh) IMP_OVERRIDE {
     add_box(o, nh);
     P::do_add(o, nh);
   }

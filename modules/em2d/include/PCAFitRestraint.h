@@ -52,7 +52,8 @@ public:
                   bool reuse_direction = false,
                   unsigned int n_components = 1);
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  double unprotected_evaluate(
+                 IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
 
   unsigned int get_projection_number() const { return projection_number_; }
 
@@ -85,7 +86,7 @@ public:
   //! \return Information for writing to RMF files
   RestraintInfo *get_dynamic_info() const IMP_OVERRIDE;
 
-  IMP::ModelObjectsTemp do_get_inputs() const { return ps_; }
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE { return ps_; }
   IMP_OBJECT_METHODS(PCAFitRestraint);
 
  private:

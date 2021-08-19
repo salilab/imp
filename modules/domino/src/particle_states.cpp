@@ -137,8 +137,8 @@ class DummyConstraint : public Constraint {
       : Constraint(in->get_model(), "DummyConstraint%1%"), in_(in), out_(out) {}
   virtual void do_update_attributes() IMP_OVERRIDE;
   virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const;
-  virtual ModelObjectsTemp do_get_outputs() const;
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DummyConstraint);
 };
 void DummyConstraint::do_update_attributes() {}
