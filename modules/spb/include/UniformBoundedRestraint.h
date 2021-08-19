@@ -34,7 +34,7 @@ class IMPSPBEXPORT UniformBoundedRestraint
   UniformBoundedRestraint(Particle *p, FloatKey fk, Particle *a, Particle *b);
 
   /* call for probability */
-  double get_probability() const;
+  double get_probability() const IMP_OVERRIDE;
 
   /** This macro declares the basic needed methods: evaluate and show
    */
@@ -42,7 +42,7 @@ class IMPSPBEXPORT UniformBoundedRestraint
   //
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(UniformBoundedRestraint);
 };

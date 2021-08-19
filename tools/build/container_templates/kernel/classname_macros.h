@@ -21,7 +21,8 @@
 #define IMP_CLASSNAME_SCORE_METHODS(Name)                                      \
   double evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,                  \
                           DerivativeAccumulator *da, unsigned int lower_bound, \
-                          unsigned int upper_bound) const IMP_FINAL {          \
+                          unsigned int upper_bound)                            \
+                          const IMP_OVERRIDE IMP_FINAL {                       \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       ret += evaluate_index(m, p[i], da);                                      \
@@ -90,7 +91,8 @@
 #define IMP_CLASSNAME_MODIFIER_METHODS(Name)                             \
   virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,         \
                              unsigned int lower_bound,                   \
-                             unsigned int upper_bound) const IMP_FINAL { \
+                             unsigned int upper_bound)                   \
+                             const IMP_OVERRIDE IMP_FINAL {              \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {           \
       apply_index(m, o[i]);                                              \
     }                                                                    \
