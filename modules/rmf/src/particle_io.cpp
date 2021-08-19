@@ -101,7 +101,7 @@ class ParticleSaveLink : public SimpleSaveLink<Particle> {
     save_one(o, o->get_int_keys(), nh, int_);
     save_one(o, o->get_string_keys(), nh, string_);
   }
-  RMF::NodeType get_type(Particle *) const IMP_OVERRIDE { return RMF::CUSTOM; 0}
+  RMF::NodeType get_type(Particle *) const IMP_OVERRIDE { return RMF::CUSTOM; }
 
  public:
   ParticleSaveLink(RMF::FileHandle fh) : P("ParticleSaveLink%1%") {
