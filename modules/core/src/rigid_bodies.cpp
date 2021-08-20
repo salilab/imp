@@ -1047,7 +1047,8 @@ ParticlesTemp create_rigid_bodies(Model *m, unsigned int n,
     IMP_NEW(UpdateRigidBodyMembers, urbm, ());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
     Pointer<Constraint> c0 = IMP::internal::create_container_constraint(
-        urbm.get(), arbd.get(), list.get(), "rigid body positions %1%");
+        urbm.get(), arbd.get(), list.get(), "rigid body positions %1%",
+        true);
     m->add_score_state(c0);
     for (unsigned int i = 0; i < ret.size(); ++i) {
       m->add_attribute(get_rb_score_state_0_key(), ret[i]->get_index(), c0);
