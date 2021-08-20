@@ -14,6 +14,7 @@
 #include "dependency_graph.h"
 #include "Restraint.h"
 #include "ModelObject.h"
+#include "internal/moved_particles_cache.h"
 #include <IMP/InputAdaptor.h>
 #include <IMP/Pointer.h>
 
@@ -39,6 +40,15 @@ being evaluated (this is cached)
 */
 class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   EvaluationState es_;
+  // cache of ScoreStates that are affected by each moved particle,
+  // used for evaluate_moved() and related functions
+  internal::MovedParticlesScoreStateCache moved_particles_cache_;
+  // time when moved_particles_cache_ was last updated, or 0
+  unsigned moved_particles_cache_age_;
+
+  const ScoreStatesTemp& get_moved_required_score_states(
+                               const ParticleIndexes &moved_pis);
+
   // later make things implement inputs and return restraints
  public:
   typedef std::pair<double, bool> ScoreIsGoodPair;

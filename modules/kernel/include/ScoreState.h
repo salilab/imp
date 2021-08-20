@@ -53,6 +53,17 @@ IMPKERNEL_BEGIN_NAMESPACE
  */
 class IMPKERNELEXPORT ScoreState : public ModelObject {
   int update_order_;
+  bool can_skip_;
+
+ protected:
+  //! Set whether we can skip during model evaluation if appropriate
+  /** This should be set only once before the state is used (ideally in the
+      constructor), and can be used for ScoreStates that can safely be
+      skipped if their inputs or outputs didn't move. For example, a state
+      that expects to log every N frames should not be skipped.
+      By default, states are not skipped.
+   */
+  void set_can_skip(bool can_skip) { can_skip_ = can_skip; }
 
  public:
   ScoreState(Model *m, std::string name);
@@ -61,6 +72,14 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
 
   //! Do post evaluation work if needed
   void after_evaluate(DerivativeAccumulator *accpt);
+
+  //! Get whether this state can be skipped if its inputs/outputs didn't move
+  /** During Monte Carlo and other types of sampling that only move parts
+      of the system, ScoreStates where this returns true may be skipped at
+      model evaluation time if none of the inputs or outputs moved since
+      the last evaluation.
+   */
+  bool get_can_skip() const { return can_skip_; }
 
 #ifndef IMP_DOXYGEN
   bool get_has_update_order() const { return update_order_ != -1; }

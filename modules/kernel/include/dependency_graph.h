@@ -74,10 +74,14 @@ IMPKERNELEXPORT RestraintsTemp
     get_dependent_restraints(Model *m, ParticleIndex pi);
 
 //! Return all ScoreStates that depend on this Particle.
-/*  Model::set_has_all_dependencies() must be called first.
-    \note The list may contain duplicates. */
+/** \note The list may contain duplicates. */
 IMPKERNELEXPORT ScoreStatesTemp
     get_dependent_score_states(Model *m, ParticleIndex pi);
+
+//! Return all ScoreStates that are required by this Particle.
+/** \note The list may contain duplicates. */
+IMPKERNELEXPORT ScoreStatesTemp
+    get_required_score_states(Model *m, ParticleIndex pi);
 #endif
 
 IMPKERNEL_END_NAMESPACE

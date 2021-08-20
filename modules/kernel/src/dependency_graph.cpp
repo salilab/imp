@@ -370,4 +370,10 @@ ScoreStatesTemp get_dependent_score_states(Model *m, ParticleIndex pi) {
   return do_get_dependent<ScoreState, ScoreStatesTemp>(cur);
 }
 
+ScoreStatesTemp get_required_score_states(Model *m, ParticleIndex pi) {
+  Particle *p = m->get_particle(pi);
+  p->set_has_required_score_states(true);
+  return p->get_required_score_states();
+}
+
 IMPKERNEL_END_NAMESPACE

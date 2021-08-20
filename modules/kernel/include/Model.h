@@ -21,7 +21,7 @@
 #include "Undecorator.h"
 #include "internal/AttributeTable.h"
 #include "internal/attribute_tables.h"
-#include "internal/MovedParticlesCache.h"
+#include "internal/moved_particles_cache.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
 #include <boost/unordered_map.hpp>
@@ -125,7 +125,7 @@ class IMPKERNELEXPORT Model : public Object
   unsigned dependencies_age_;
   // cache of restraints that are affected by each moved particle,
   // used for evaluate_moved() and related functions
-  internal::MovedParticlesCache moved_particles_cache_;
+  internal::MovedParticlesRestraintCache moved_particles_cache_;
   // time when moved_particles_cache_ was last updated, or 0
   unsigned moved_particles_cache_age_;
 

@@ -21,7 +21,7 @@ static const std::string str_before_evaluate("before_evaluate");
 static const std::string str_after_evaluate("after_evaluate");
 
 ScoreState::ScoreState(Model *m, std::string name)
-    : ModelObject(m, name), update_order_(-1) {}
+    : ModelObject(m, name), update_order_(-1), can_skip_(false) {}
 
 void ScoreState::before_evaluate() {
   IMP_OBJECT_LOG;
