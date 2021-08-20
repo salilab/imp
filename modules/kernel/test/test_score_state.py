@@ -8,9 +8,10 @@ class LoggingScoreState(IMP.ScoreState):
 
     """ScoreState that logs all calls"""
 
-    def __init__(self, m, log):
+    def __init__(self, m, log, inputs=[]):
         IMP.ScoreState.__init__(self, m, "Logging%1%")
         self.log = log
+        self.inputs = inputs
 
     def do_before_evaluate(self):
         self.log.append('update')
@@ -31,7 +32,7 @@ class LoggingScoreState(IMP.ScoreState):
         return IMP.get_module_version_info()
 
     def do_get_inputs(self):
-        return []
+        return self.inputs
 
     def do_get_outputs(self):
         return []
@@ -48,6 +49,17 @@ class Tests(IMP.test.TestCase):
         ss = LoggingScoreState(m, log)
         m.update()
         self.assertEqual(ss.log, ["update"])
+
+    def test_get_dependent_score_states(self):
+        """Test get_dependent_score_states() function"""
+        log = []
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        ss1 = LoggingScoreState(m, log, inputs=[p1])
+        self.assertEqual(IMP.get_dependent_score_states(m, p1), [ss1])
+        self.assertEqual(IMP.get_dependent_score_states(m, p2), [])
+
 
 if __name__ == '__main__':
     IMP.test.main()
