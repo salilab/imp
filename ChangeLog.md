@@ -13,6 +13,14 @@ ChangeLog {#changelog}
 - IMP::pmi now handles MSE (selenomethionine) residues in input structures;
   structure is read for such residues and they are considered equivalent to
   regular MET in the FASTA sequence.
+- Scoring function evaluation can now be done more efficiently in some cases
+  by using information on which particles have moved since the last evaluation.
+  This behavior can be turned on (by default it is off) using
+  IMP::core::MonteCarlo::set_score_moved() or by setting the `score_moved`
+  parameter to IMP::pmi::macros::ReplicaExchange0.
+- The orientation-dependent scoring function IMP::score_functor::OrientedSoap
+  now caches the system topology and so should be roughly twice as fast in
+  typical applications.
 - The deprecated methods
   IMP::{Singleton,Pair,Triplet,Quad}Predicate::get_value() have been removed.
   Use the get_value_index() methods instead.
