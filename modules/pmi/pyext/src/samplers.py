@@ -54,12 +54,15 @@ class MonteCarlo(object):
     except ImportError:
         isd_available = False
 
-    def __init__(self, model, objects=None, temp=1.0, filterbyname=None):
+    def __init__(self, model, objects=None, temp=1.0, filterbyname=None,
+                 score_moved=False):
         """Setup Monte Carlo sampling
         @param model         The IMP Model
         @param objects       What to sample. Use flat list of particles
         @param temp The MC temperature
         @param filterbyname Not used
+        @param score_moved   If True, attempt to speed up sampling by
+               caching scoring function terms on particles that didn't move
         """
         self.losp = [
             "Rigid_Bodies",
@@ -157,6 +160,7 @@ class MonteCarlo(object):
         self.mc = IMP.core.MonteCarlo(self.model)
         self.mc.set_scoring_function(get_restraint_set(self.model))
         self.mc.set_return_best(False)
+        self.mc.set_score_moved(score_moved)
         self.mc.set_kt(self.temp)
         self.mc.add_mover(self.smv)
 
@@ -314,7 +318,8 @@ class MonteCarlo(object):
             # check is that is a rigid body member:
             if IMP.core.NonRigidMember.get_is_setup(fb):
                 # if so force the particles to move anyway
-                floatkeys = [IMP.FloatKey(4), IMP.FloatKey(5), IMP.FloatKey(6)]
+                floatkeys = \
+                    IMP.core.RigidBodyMember.get_internal_coordinate_keys()
                 for fk in floatkeys:
                     fb.set_is_optimized(fk, True)
                 mvs.append(
