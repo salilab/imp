@@ -92,8 +92,6 @@ ParticlesTemp get_dependent_particles(ModelObject *p,
                                       const ModelObjectsTemp &all,
                                       const DependencyGraph &dg,
                                       const DependencyGraphVertexIndex &index) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
-           2.1, "You should act directly on the ModelObjects instead.");
   return get_dependent<ParticlesTemp, Particle, false>(
       ModelObjectsTemp(1, p), all, dg, index);
 }
@@ -101,8 +99,6 @@ ParticlesTemp get_dependent_particles(ModelObject *p,
 ScoreStatesTemp get_required_score_states(
     ModelObject *p, const ModelObjectsTemp &all, const DependencyGraph &dg,
     const DependencyGraphVertexIndex &index) {
-  IMPKERNEL_DEPRECATED_FUNCTION_DEF(
-           2.1, "You should act directly on the ModelObjects instead.");
   return get_dependent<ScoreStatesTemp, ScoreState, true>(
       ModelObjectsTemp(1, p), all, dg, index);
 }
