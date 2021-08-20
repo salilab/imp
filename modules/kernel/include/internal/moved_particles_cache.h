@@ -12,6 +12,7 @@
 #include <IMP/kernel_config.h>
 #include <IMP/base_types.h>
 #include <IMP/dependency_graph.h>
+#include <IMP/ScoreState.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
