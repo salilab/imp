@@ -80,7 +80,7 @@ void CenterOfMass::show(std::ostream &out) const {
 //   }
 // IMP_REQUIRE_SEMICOLON_NAMESPACE;
 
-IMP_CONSTRAINT_DECORATOR_DEF(CenterOfMass);
+IMP_CONSTRAINT_DECORATOR_DEF(CenterOfMass, true);
 
 
 IMPATOM_END_NAMESPACE

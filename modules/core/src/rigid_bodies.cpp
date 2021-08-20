@@ -768,7 +768,7 @@ void RigidBody::setup_score_states() {
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
     Pointer<Constraint> c0 = IMP::internal::create_tuple_constraint(
         urbm.get(), arbd.get(), get_particle(),
-        get_particle()->get_name() + " rigid body positions");
+        get_particle()->get_name() + " rigid body positions", true);
     get_model()->add_score_state(c0);
     get_model()->add_attribute(get_rb_score_state_0_key(), get_particle_index(),
                                c0);

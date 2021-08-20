@@ -48,10 +48,12 @@ class ClassnameConstraint :
   ClassnameConstraint(ClassnameModifier *before,
                       ClassnameDerivativeModifier *after, Model *m,
                       PASSINDEXTYPE vt,
-                      std::string name = "ClassnameConstraint %1%")
+                      std::string name = "ClassnameConstraint %1%",
+                      bool can_skip=false)
       : IMP::internal::TupleConstraint<
             ClassnameModifier, ClassnameDerivativeModifier>(before, after, m,
-                                                            vt, name) {}
+                                                            vt, name,
+                                                            can_skip) {}
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
  protected:
