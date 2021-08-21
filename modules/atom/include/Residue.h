@@ -221,9 +221,6 @@ IMP_DECORATORS(Residue, Residues, Hierarchies);
 /** If no such residue exists, return Hierarchy().
 
     \see Residue
-    \note Currently, this function only works if
-    the parent of rd is the chain. This should be fixed
-    later. Ask if you need it.
 
     The return type is Hierarchy since the particle
     representing the next residue might not
