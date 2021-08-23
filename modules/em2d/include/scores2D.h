@@ -7,7 +7,7 @@
 #ifndef IMPEM2D_SCORES_2D_H
 #define IMPEM2D_SCORES_2D_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/RegistrationResult.h"
@@ -85,7 +85,7 @@ class IMPEM2DEXPORT ChiSquaredScore : public ScoreFunction {
 
  private:
   mutable Pointer<Image> variance_;
-  double get_private_score(Image *, Image *) const;
+  double get_private_score(Image *, Image *) const IMP_OVERRIDE;
   void set_variance_imag_private(Image *var) { variance_ = var; }
 };
 IMP_OBJECTS(ChiSquaredScore, ChiSquaredScores);
@@ -97,7 +97,7 @@ class IMPEM2DEXPORT EM2DScore : public ScoreFunction {
   EM2DScore() : ScoreFunction() {}
 
  private:
-  double get_private_score(Image *image, Image *projection) const {
+  double get_private_score(Image *image, Image *projection) const IMP_OVERRIDE {
     return 1 - get_cross_correlation_coefficient(image->get_data(),
                                                  projection->get_data());
   }
@@ -110,7 +110,7 @@ class IMPEM2DEXPORT MeanAbsoluteDifference : public ScoreFunction {
   MeanAbsoluteDifference() : ScoreFunction() {}
 
  private:
-  double get_private_score(Image *image, Image *projection) const;
+  double get_private_score(Image *image, Image *projection) const IMP_OVERRIDE;
 };
 IMP_OBJECTS(MeanAbsoluteDifference, MeanAbsoluteDifferences);
 

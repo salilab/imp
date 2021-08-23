@@ -26,8 +26,7 @@ void ParticlesDataPoints::populate_data_points(ParticlesTemp ps) {
     for (int d = 0; d < 3; d++) {
       data_[i][d] = double(ps[i]->get_value(FloatKey(d)));
     }
-    vecs_.push_back(algebra::Vector3D(static_cast<double *>(data_.back()),
-                                      static_cast<double *>(data_.back()) + 3));
+    vecs_.push_back(algebra::Vector3D(data_[i][0], data_[i][1], data_[i][2]));
   }
 }
 

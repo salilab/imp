@@ -139,7 +139,7 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer
       the exclusive consecutive pair container, so it can be now added to
       another exclusive consecutive pair container
   */
-  virtual void do_destroy();
+  virtual void do_destroy() IMP_OVERRIDE;
 
 
  public:

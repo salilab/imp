@@ -30,16 +30,16 @@ class ContainerScoreState : public ScoreState {
     return back_->do_score_state_before_evaluate();
   }
 
-  virtual void do_after_evaluate(DerivativeAccumulator *) {
+  virtual void do_after_evaluate(DerivativeAccumulator *) IMP_OVERRIDE {
     back_->do_score_state_after_evaluate();
   }
 
-  virtual ModelObjectsTemp do_get_inputs() const {
+  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     IMP_CHECK_OBJECT(back_);
     return back_->get_score_state_inputs();
   }
 
-  virtual ModelObjectsTemp do_get_outputs() const {
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
     IMP_CHECK_OBJECT(back_);
     return ModelObjectsTemp(1, back_);
   }

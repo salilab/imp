@@ -14,7 +14,7 @@
 #include <boost/scoped_array.hpp>
 #include "IMP/atom/Simulator.h"
 #include "IMP/atom/atom_macros.h"
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 
@@ -89,9 +89,9 @@ class IMPSPBEXPORT MolecularDynamicsWithWte : public atom::Simulator {
   void rescale_velocities(Float rescale);
 
   // IMP_SIMULATOR(MolecularDynamicsWithWte);
-  virtual void setup(const ParticleIndexes &ps);
-  virtual double do_step(const ParticleIndexes &sc, double dt);
-  virtual bool get_is_simulation_particle(ParticleIndex p) const;
+  virtual void setup(const ParticleIndexes &ps) IMP_OVERRIDE;
+  virtual double do_step(const ParticleIndexes &sc, double dt) IMP_OVERRIDE;
+  virtual bool get_is_simulation_particle(ParticleIndex p) const IMP_OVERRIDE;
 
  protected:
   void initialize();

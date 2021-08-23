@@ -211,6 +211,14 @@ class Tests(IMP.test.TestCase):
 
         self.assertAlmostEqual(saxs_score.compute_score(model_profile), 1.03, delta=0.01)
 
+    def test_background_adjust(self):
+        """Test Profile.background_adjust"""
+        exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
+        exp_profile.background_adjust(0.2)
+        # Should be a noop if start_q is greater than any profile point,
+        # rather than causing a crash
+        exp_profile.background_adjust(2000.)
+
 
 if __name__ == '__main__':
     IMP.test.main()

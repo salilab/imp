@@ -59,8 +59,11 @@ class IMPKERNELEXPORT Optimizer : public ModelObject {
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     return get_optimizer_state_inputs();
   }
+
   //! don't return anything here to avoid pointless dependencies
-  virtual ModelObjectsTemp do_get_outputs() const { return ModelObjectsTemp(); }
+  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
 
  public:
   Optimizer(Model *m, std::string name = "Optimizer %1%");

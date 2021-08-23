@@ -10,7 +10,7 @@
 
 #include <boost/config.hpp>
 #include <boost/version.hpp>
-#if defined(BOOST_NO_CXX11_RANGE_BASED_FOR) || BOOST_VERSION < 105300
+#if defined(BOOST_NO_CXX11_RANGE_BASED_FOR)
 #include <boost/foreach.hpp>
 #define IMP_FOREACH(v, r) BOOST_FOREACH(v, r)
 #else
@@ -201,6 +201,18 @@
 #define IMP_HELPER_MACRO_POP_WARNINGS
 #endif
 
+// Warn about missing IMP_OVERRIDE on virtual methods if gcc is new enough
+#if __GNUC__ > 5 || (__GNUC__ == 5 && __GNUC_MINOR__ >= 1)
+#ifdef IMP_SWIG_WRAPPER
+#define IMP_GCC_OVERRIDE
+#else
+#define IMP_GCC_OVERRIDE \
+  IMP_GCC_PRAGMA(diagnostic warning "-Wsuggest-override")
+#endif
+#else
+#define IMP_GCC_OVERRIDE
+#endif
+
 #define IMP_COMPILER_ENABLE_WARNINGS                                 \
   IMP_GCC_PUSH_POP(GCC diagnostic push)                              \
       IMP_GCC_PRAGMA(diagnostic warning "-Wall")                     \
@@ -209,8 +221,8 @@
       IMP_GCC_PRAGMA(diagnostic warning "-Wcast-align")              \
       IMP_GCC_PRAGMA(diagnostic warning "-Woverloaded-virtual")      \
       IMP_GCC_PRAGMA(diagnostic warning "-Wdeprecated-declarations") \
-      IMP_GCC_PRAGMA(diagnostic warning                              \
-                     "-Wundef") IMP_GCC_PROTOTYPES IMP_GCC_CXX0X_COMPAT
+      IMP_GCC_PRAGMA(diagnostic warning "-Wundef")                   \
+      IMP_GCC_PROTOTYPES IMP_GCC_CXX0X_COMPAT IMP_GCC_OVERRIDE
 
 #define IMP_COMPILER_DISABLE_WARNINGS IMP_GCC_PUSH_POP(GCC diagnostic pop)
 

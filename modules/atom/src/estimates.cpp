@@ -191,6 +191,8 @@ double get_diffusion_angle(double D, double dtfs) {
 }
 
 namespace {
+  // Iterates over coordinate index of displacement vectors [b..e]
+  // over timesteps dt. Subtracts mean displacement before computing D
   template <class It>
   double get_diffusion_coefficient_of_coord_i
   (It b, It e, int index, double dt)
@@ -268,21 +270,6 @@ double get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
         displacements.end(), i, dt);
   }
   IMP_LOG_TERSE("Diffusion coefficients are " << Ds << std::endl);
-  // int len = displacements.size() / 2;
-  // algebra::Vector3D Ds0;
-  // for (unsigned int i = 0; i < 3; ++i) {
-  //   Ds0[i] = get_diffusion_coefficient_of_coord_i
-  //     ( displacements.begin(),
-  //       displacements.begin() + len, i, dt);
-  // }
-  // algebra::Vector3D Ds1;
-  // for (unsigned int i = 0; i < 3; ++i) {
-  //   Ds1[i] = get_diffusion_coefficient_of_coord_i
-  //     ( displacements.begin() + len,
-  //       displacements.end(), i, dt);
-  // }
-  // IMP_LOG_TERSE("Partial coefficients are " << Ds0 << " and " << Ds1
-  //                                           << std::endl);
   return std::accumulate(Ds.begin(), Ds.end(), 0.0) / 3.0;
 }
 
@@ -299,23 +286,6 @@ double get_diffusion_coefficient
         dts.begin(), dts.end() );
   }
   IMP_LOG_TERSE("Diffusion coefficients are " << Ds << std::endl);
-  // int len = displacements.size() / 2;
-  // algebra::Vector3D Ds0;
-  // for (unsigned int i = 0; i < 3; ++i) {
-  //   Ds0[i] = get_diffusion_coefficient_of_coord_i
-  //     ( displacements.begin(),
-  //       displacements.begin() + len, i,
-  //       dts.begin(), dts.begin()+len );
-  // }
-  // algebra::Vector3D Ds1;
-  // for (unsigned int i = 0; i < 3; ++i) {
-  //   Ds1[i] = get_diffusion_coefficient_of_coord_i
-  //     ( displacements.begin() + len,
-  //       displacements.end(), i,
-  //       dts.begin() + len, dts.end() );
-  // }
-  // IMP_LOG_TERSE("Partial coefficients are " << Ds0 << " and " << Ds1
-  //               << std::endl);
   return std::accumulate(Ds.begin(), Ds.end(), 0.0) / 3.0;
 }
 
@@ -330,9 +300,6 @@ double get_rotational_diffusion_coefficient(
     algebra::Rotation3D diff = crot / orot;
     diffs[i - 1] = algebra::get_axis_and_angle(diff).second;
   }
-  //  double mean_nonrandom = std::accumulate(diffs.begin(), diffs.end(), 0.0) / diffs.size();
-  //IMP_LOG_PROGRESS("Mean non-random component: "
-  //                 << mean_nonrandom << std::endl);
   double sum2 = 0.0;
   for (unsigned int i = 0; i < diffs.size(); ++i) {
     //  double random= diffs[i]; // DEBUG: removing - mean_nonrandom;

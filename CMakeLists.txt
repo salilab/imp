@@ -18,7 +18,7 @@ if(POLICY CMP0053)
 cmake_policy(SET CMP0053 NEW)
 endif(POLICY CMP0053)
 
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindPython.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake_modules/IMPFindPython.cmake)
 imp_find_python()
 
 # Check Python version early so we can use Python >= 2.7 features in other
@@ -57,9 +57,9 @@ if(POLICY CMP0056)
 cmake_policy(SET CMP0056 NEW)
 endif(POLICY CMP0056)
 
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPExecuteProcess.cmake)
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPAddTests.cmake)
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/CheckCompiles.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake_modules/IMPExecuteProcess.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake_modules/IMPAddTests.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake_modules/CheckCompiles.cmake)
 
 imp_execute_process("check_common_problems" ${CMAKE_SOURCE_DIR}
                     COMMAND ${PYTHON_EXECUTABLE}
@@ -73,12 +73,12 @@ imp_execute_process("setup_cmake" ${CMAKE_SOURCE_DIR}
                     COMMAND ${PYTHON_EXECUTABLE}
                     ${CMAKE_SOURCE_DIR}/tools/build/setup_cmake.py)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake_modules)
 
 enable_testing()
 
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindC++11.cmake)
-include(${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/IMPFindCompilerFlags.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake_modules/IMPFindC++11.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake_modules/IMPFindCompilerFlags.cmake)
 
 if(POLICY CMP0017)
 cmake_policy(SET CMP0017 NEW)
@@ -268,11 +268,11 @@ else()
 endif()
 
 set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost 1.41.0 COMPONENTS system filesystem thread program_options REQUIRED)
+find_package(Boost 1.53.0 COMPONENTS system filesystem thread program_options REQUIRED)
 if("${Boost_SYSTEM_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
   message(FATAL_ERROR "Boost is required to build IMP.")
 endif()
-find_package(Boost 1.41.0 QUIET COMPONENTS random regex graph)
+find_package(Boost 1.53.0 QUIET COMPONENTS random regex graph)
 
 if("${Boost_RANDOM_LIBRARY_RELEASE}" MATCHES ".*NOTFOUND.*")
 set(Boost_RANDOM_LIBRARY_RELEASE "" CACHE INTERNAL "" FORCE)
@@ -442,7 +442,7 @@ endif(IMP_DOXYGEN_FOUND)
 file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(IMP_INSTALL_PREFIX \"${CMAKE_BINARY_DIR}\" )\n"
      "set(IMP_TOOLS_DIR \"${CMAKE_SOURCE_DIR}/tools\" )\n"
-     "set(IMP_MODULES_DIR \"${CMAKE_SOURCE_DIR}/tools/cmake\" )\n"
+     "set(IMP_USE_DIR \"${CMAKE_SOURCE_DIR}/tools/cmake\" )\n"
      "set(IMP_BUILD_INFO_DIR \"${CMAKE_BINARY_DIR}/build_info\" )\n"
      "set(IMP_INCLUDE_DIR \"${CMAKE_BINARY_DIR}/include\" )\n"
      "set(IMP_BIN_DIR \"${CMAKE_BINARY_DIR}/bin\" )\n"
@@ -451,14 +451,14 @@ file(WRITE ${CMAKE_BINARY_DIR}/IMPConfig.cmake
      "set(IMP_DATA_DIR \"${CMAKE_BINARY_DIR}/data\" )\n"
      "set(IMP_SWIG_DIR \"${CMAKE_BINARY_DIR}/swig\" )\n"
      "set(RMF_SWIG_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/swig\" )\n"
-     "set(RMF_MODULES_DIR \"${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules\" )\n"
+     "set(IMP_MODULES_DIR \"${CMAKE_SOURCE_DIR}/cmake_modules\" )\n"
      "set(RMF_INCLUDE_PATH \"${RMF_INCLUDE_PATH}\" )\n"
-     "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
+     "set(IMP_USE_FILE \"\${IMP_USE_DIR}/UseIMP.cmake\" )\n")
 # Installed locations
 file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(IMP_INSTALL_PREFIX \"${CMAKE_INSTALL_PREFIX}\" )\n"
      "set(IMP_TOOLS_DIR \"${CMAKE_INSTALL_FULL_TOOLSDIR}\" )\n"
-     "set(IMP_MODULES_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
+     "set(IMP_USE_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
      "set(IMP_BUILD_INFO_DIR \"${CMAKE_INSTALL_FULL_BUILDINFODIR}\" )\n"
      "set(IMP_INCLUDE_DIR \"${CMAKE_INSTALL_FULL_INCLUDEDIR}\" )\n"
      "set(IMP_BIN_DIR \"${CMAKE_INSTALL_FULL_BINDIR}\" )\n"
@@ -467,9 +467,9 @@ file(WRITE ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake
      "set(IMP_DATA_DIR \"${CMAKE_INSTALL_FULL_DATADIR}/IMP\" )\n"
      "set(IMP_SWIG_DIR \"${CMAKE_INSTALL_FULL_SWIGDIR}\" )\n"
      "set(RMF_SWIG_DIR \"${CMAKE_INSTALL_FULL_SWIGDIR}\" )\n"
-     "set(RMF_MODULES_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
+     "set(IMP_MODULES_DIR \"${CMAKE_INSTALL_FULL_CMAKEDIR}\" )\n"
      "set(RMF_INCLUDE_PATH \"${CMAKE_INSTALL_FULL_INCLUDEDIR}\" )\n"
-     "set(IMP_USE_FILE \"\${IMP_MODULES_DIR}/UseIMP.cmake\" )\n")
+     "set(IMP_USE_FILE \"\${IMP_USE_DIR}/UseIMP.cmake\" )\n")
 list(REMOVE_DUPLICATES IMP_ALL_DEPENDS_VARS)
 foreach(cmakefile ${CMAKE_BINARY_DIR}/IMPConfig.cmake
                   ${CMAKE_BINARY_DIR}/cmake/IMPConfig.cmake)
@@ -538,7 +538,7 @@ install(DIRECTORY ${dev_tools_dir}
                                    OWNER_WRITE)
 
 # Install cmake scripts and configuration
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/modules/rmf/dependency/RMF/cmake_modules/
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/cmake_modules/
                   ${CMAKE_SOURCE_DIR}/tools/cmake/
                   ${CMAKE_BINARY_DIR}/cmake/
         DESTINATION ${CMAKE_INSTALL_CMAKEDIR})

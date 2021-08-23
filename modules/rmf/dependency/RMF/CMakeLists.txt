@@ -132,9 +132,11 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
+# Version information
 set (RMF_VERSION_MAJOR 1)
-set (RMF_VERSION_MINOR 1)
+set (RMF_VERSION_MINOR 3)
 
+set(RMF_SOVERSION "${RMF_VERSION_MAJOR}.${RMF_VERSION_MINOR}" CACHE INTERNAL "" FORCE)
 set(RMF_HAS_DEBUG_VECTOR 0 CACHE BOOL "Whether to use a bounds checked vector")
 
 # configure a header file to pass some of the CMake settings
@@ -158,7 +160,7 @@ add_subdirectory(plugins/pymol/)
 if (DEFINED CMAKE_INSTALL_PYTHONDIR)
   #message(STATUS "CMAKE_INSTALL_PYTHONDIR defined as ${CMAKE_INSTALL_PYTHONDIR}")
 else()
-  set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python/site_packages")
+  set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages")
 endif()
 
 if (DEFINED CMAKE_INSTALL_SWIGDIR)

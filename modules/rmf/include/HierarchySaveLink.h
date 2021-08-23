@@ -74,7 +74,7 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
   virtual void do_add(Particle *p, RMF::NodeHandle cur) IMP_OVERRIDE;
   virtual void do_save_one(Particle *o,
                            RMF::NodeHandle nh) IMP_OVERRIDE;
-  RMF::NodeType get_type(Particle *) const {
+  RMF::NodeType get_type(Particle *) const IMP_OVERRIDE {
     return RMF::REPRESENTATION;
   }
 

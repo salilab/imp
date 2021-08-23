@@ -18,11 +18,11 @@ ps = IMP.atom.ProteinLigandAtomPairScore()
 ps.set_was_used(True)
 # label each atom of the protein with the type needed for scoring
 IMP.atom.add_protein_ligand_score_data(protein)
-for l in ligands.get_children():
+for cl in ligands.get_children():
     # compute the atom type for each ligand atom
-    IMP.atom.add_protein_ligand_score_data(l)
+    IMP.atom.add_protein_ligand_score_data(cl)
     score = 0
-    ligand_atoms = IMP.atom.get_by_type(l, IMP.atom.ATOM_TYPE)
+    ligand_atoms = IMP.atom.get_by_type(cl, IMP.atom.ATOM_TYPE)
     for pa in protein_atoms:
         for la in ligand_atoms:
             # check if the atoms are close enough together
@@ -31,4 +31,4 @@ for l in ligands.get_children():
                 score += ps.evaluate_index(m,
                                            (pa.get_particle_index(),
                                             la.get_particle_index()), None)
-    print("score for ", l.get_name(), "is", score)
+    print("score for ", cl.get_name(), "is", score)

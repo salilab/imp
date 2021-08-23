@@ -43,6 +43,8 @@ set_target_properties("RMF-lib" PROPERTIES
                       OUTPUT_NAME "RMF")
 set_property(TARGET "RMF-lib" PROPERTY FOLDER "RMF")
 set_property(TARGET "RMF-lib" PROPERTY COMPILE_DEFINITIONS RMF_EXPORT)
+set_property(TARGET "RMF-lib" PROPERTY VERSION ${RMF_SOVERSION})
+set_property(TARGET "RMF-lib" PROPERTY SOVERSION ${RMF_SOVERSION})
 
 target_link_libraries(RMF-lib
   ${Boost_FILESYSTEM_LIBRARY}

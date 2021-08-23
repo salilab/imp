@@ -42,7 +42,9 @@ ScoringFunction *get_null_scoring_function() {
 }
 
 ScoringFunction::ScoringFunction(Model *m, std::string name)
-    : ModelObject(m, name) {}
+    : ModelObject(m, name), moved_particles_cache_(m) {
+  moved_particles_cache_age_ = 0;
+}
 
 double ScoringFunction::evaluate_if_good(bool derivatives) {
   IMP_OBJECT_LOG;
@@ -63,6 +65,60 @@ double ScoringFunction::evaluate(bool derivatives) {
   es_.good = true;
   const ScoreAccumulator sa = get_score_accumulator(derivatives);
   do_add_score_and_derivatives(sa, get_required_score_states());
+  return es_.score;
+}
+
+const ScoreStatesTemp& ScoringFunction::get_moved_required_score_states(
+                               const ParticleIndexes &moved_pis) {
+  if (moved_pis.size() == 1) {
+    // Clear cache if dependencies changed
+    unsigned dependencies_age = get_model()->get_dependencies_updated();
+    if (moved_particles_cache_age_ != dependencies_age) {
+      moved_particles_cache_age_ = dependencies_age;
+      moved_particles_cache_.clear();
+    }
+    return moved_particles_cache_.get_affected_score_states(
+                                              moved_pis[0], this);
+  } else {
+    set_has_required_score_states(true);
+    return get_required_score_states();
+  }
+}
+
+double ScoringFunction::evaluate_moved(bool derivatives,
+                                       const ParticleIndexes &moved_pis) {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  es_.score = 0;
+  es_.good = true;
+  const ScoreAccumulator sa = get_score_accumulator(derivatives);
+  do_add_score_and_derivatives_moved(
+        sa, moved_pis, get_moved_required_score_states(moved_pis));
+  return es_.score;
+}
+
+double ScoringFunction::evaluate_moved_if_below(bool derivatives,
+                                       const ParticleIndexes &moved_pis,
+                                       double max) {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  es_.score = 0;
+  es_.good = true;
+  const ScoreAccumulator sa = get_score_accumulator_if_below(derivatives, max);
+  do_add_score_and_derivatives_moved(
+        sa, moved_pis, get_moved_required_score_states(moved_pis));
+  return es_.score;
+}
+
+double ScoringFunction::evaluate_moved_if_good(bool derivatives,
+                                       const ParticleIndexes &moved_pis) {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  es_.score = 0;
+  es_.good = true;
+  const ScoreAccumulator sa = get_score_accumulator_if_good(derivatives);
+  do_add_score_and_derivatives_moved(
+        sa, moved_pis, get_moved_required_score_states(moved_pis));
   return es_.score;
 }
 

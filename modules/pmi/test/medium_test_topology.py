@@ -356,6 +356,13 @@ class MultiscaleTopologyTest(IMP.test.TestCase):
 
 class Tests(IMP.test.TestCase):
 
+    # assertWarns needs Python 3.3; replace with a noop on older Pythons
+    if not hasattr(IMP.test.TestCase, 'assertWarns'):
+        import contextlib
+        @contextlib.contextmanager
+        def assertWarns(self, warncls):
+            yield None
+
     def test_read_sequences(self):
         """Test if the sequence reader returns correct strings"""
         # test without name map
@@ -437,6 +444,13 @@ class Tests(IMP.test.TestCase):
                          for r in m2.residues), seqs["Prot2"])
         self.assertEqual(''.join(r.get_code()
                          for r in m3.residues), seqs["Prot3"])
+
+    def test_molecule_name_end_number(self):
+        """Test warning when making a molecule with name ending in a number"""
+        s = IMP.pmi.topology.System()
+        st = s.create_state()
+        with self.assertWarns(IMP.pmi.ParameterWarning):
+            m1 = st.create_molecule("Prot1.3", sequence='MELS')
 
     def test_create_rna_dna_mmolecules(self):
         """Test RNA/DNA Molecule creation from State"""
@@ -755,16 +769,15 @@ class Tests(IMP.test.TestCase):
         hier = s.build()
         sel10 = IMP.atom.Selection(hier, resolution=10).get_selected_particles()
         self.assertEqual(len(sel10), 5)
-        self.assertEqual(IMP.atom.Fragment(sel10[0]).get_residue_indexes(),
-                         [1,2])
-        self.assertEqual(IMP.atom.Fragment(sel10[1]).get_residue_indexes(),
-                         [3,4])
-        self.assertEqual(IMP.atom.Fragment(sel10[2]).get_residue_indexes(),
-                         [5,6])
-        self.assertEqual(IMP.atom.Fragment(sel10[3]).get_residue_indexes(),
-                         [7,8,9])
-        self.assertEqual(IMP.atom.Residue(sel10[4]).get_index(),
-                         10)
+        self.assertEqual(
+            list(IMP.atom.Fragment(sel10[0]).get_residue_indexes()), [1,2])
+        self.assertEqual(
+            list(IMP.atom.Fragment(sel10[1]).get_residue_indexes()), [3,4])
+        self.assertEqual(
+            list(IMP.atom.Fragment(sel10[2]).get_residue_indexes()), [5,6])
+        self.assertEqual(
+            list(IMP.atom.Fragment(sel10[3]).get_residue_indexes()), [7,8,9])
+        self.assertEqual(IMP.atom.Residue(sel10[4]).get_index(), 10)
 
     def test_create_copy(self):
         """Test creation of Copies"""

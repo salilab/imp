@@ -1,8 +1,9 @@
 ## \example rotamer/rotamer_pdb.py
-# rotamer_pdb.py is a script demonstrating the usage of RotamerCalculator and RotamerLibrary.
-# It reads a PDB file and a rotamer library file, and tries to rotate the atoms based on the most
-# probable chi angles from the rotamer library. Then it saves the rotated atoms to a specified output
-# PDB file.
+# rotamer_pdb.py is a script demonstrating the usage of RotamerCalculator
+# and RotamerLibrary.
+# It reads a PDB file and a rotamer library file, and tries to rotate the
+# atoms based on the most probable chi angles from the rotamer library.
+# Then it saves the rotated atoms to a specified output PDB file.
 #
 # Usage:
 #
@@ -10,7 +11,7 @@
 #
 # Example (the result will be saved into transformed_1z5s_A.pdb):
 #
-# `../../../tools/imppy.sh python rotamer_pdb.py -i ../../atom/test/input/1z5s_A.pdb \
+# `python rotamer_pdb.py -i ../../atom/test/input/1z5s_A.pdb \
 # -l /path/to/ALL.bbdep.rotamers.lib -o transformed_1z5s_A.pdb`
 #
 

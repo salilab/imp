@@ -7,7 +7,7 @@
 #ifndef IMPEM2D_IMAGE_H
 #define IMPEM2D_IMAGE_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em2d/ImageReaderWriter.h"
 #include "IMP/em2d/opencv_interface.h"

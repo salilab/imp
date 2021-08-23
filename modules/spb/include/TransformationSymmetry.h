@@ -15,7 +15,7 @@
 #include <IMP/singleton_macros.h>
 #include "IMP/core/XYZ.h"
 #include "IMP/core/rigid_bodies.h"
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

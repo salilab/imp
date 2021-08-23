@@ -8,11 +8,11 @@
 #ifndef IMPEM_SPIDER_READER_WRITER_H
 #define IMPEM_SPIDER_READER_WRITER_H
 
-#include "IMP/em/em_config.h"
-#include "IMP/em/ImageHeader.h"
-#include "IMP/em/header_converters.h"
-#include "IMP/em/MapReaderWriter.h"
-#include "IMP/em/DensityHeader.h"
+#include <IMP/em/em_config.h>
+#include <IMP/em/ImageHeader.h>
+#include <IMP/em/header_converters.h>
+#include <IMP/em/MapReaderWriter.h>
+#include <IMP/em/DensityHeader.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/endian.h>
 #include <IMP/exception.h>
@@ -71,7 +71,8 @@ class IMPEMEXPORT SpiderMapReaderWriter : public MapReaderWriter {
    *  \param[in] header DensityHeader class where to store the info
    *  from the header.
    */
-  void read(const char *filename, float **data, DensityHeader &header);
+  void read(const char *filename, float **data,
+            DensityHeader &header) IMP_OVERRIDE;
 
   //! Writes a map in Spider format from data and header.
   /**
@@ -81,7 +82,7 @@ class IMPEMEXPORT SpiderMapReaderWriter : public MapReaderWriter {
    *  data from the header.
    */
   void write(const char *filename, const float *data,
-             const DensityHeader &header);
+             const DensityHeader &header) IMP_OVERRIDE;
 #endif
   IMP_OBJECT_METHODS(SpiderMapReaderWriter);
 };

@@ -23,7 +23,7 @@ class Tests(IMP.test.TestCase):
         for i in range(0, 6):
             dos.update()
         out = dos.get_output_container()
-        nout = len(out.get_particle_pairs())
+        nout = len(out.get_contents())
         # probabilistic
         self.assertAlmostEqual(nout, .53 * np, delta=100)
 

@@ -27,11 +27,11 @@ class IMPDISPLAYEXPORT SingletonGeometry : public Geometry {
  public:
   SingletonGeometry(Particle *p);
 
-  bool get_has_color() const {
+  bool get_has_color() const IMP_OVERRIDE {
     return Geometry::get_has_color() || Colored::get_is_setup(p_);
   }
 
-  Color get_color() const {
+  Color get_color() const IMP_OVERRIDE {
     if (Geometry::get_has_color()) {
       return Geometry::get_color();
     } else {
@@ -67,12 +67,12 @@ class IMPDISPLAYEXPORT PairGeometry : public Geometry {
  public:
   PairGeometry(const ParticlePair &pp);
 
-  bool get_has_color() const {
+  bool get_has_color() const IMP_OVERRIDE {
     return Geometry::get_has_color() || Colored::get_is_setup(p0_) ||
            Colored::get_is_setup(p1_);
   }
 
-  Color get_color() const {
+  Color get_color() const IMP_OVERRIDE {
     if (Geometry::get_has_color()) {
       return Geometry::get_color();
     } else if (Colored::get_is_setup(p0_))

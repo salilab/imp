@@ -8,7 +8,7 @@
 #ifndef IMPISD_NUISANCE_H
 #define IMPISD_NUISANCE_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 
 #include <IMP/Decorator.h>
 #include <IMP/decorator_macros.h>

@@ -1,7 +1,8 @@
 /*
  * \file RMF/RMF_config.h
- * \brief Provide macros to mark functions and classes as exported
- *        from a DLL/.so, and to set up namespaces
+ * \brief Configuration and utility macros
+ *        Provide version information, plus macros to mark functions and
+ *        classes as exported from a DLL/.so and to set up namespaces.
  *
  * Copyright 2007-2021 IMP Inventors. All rights reserved.
  *
@@ -24,7 +25,7 @@
 
 #endif // _MSC_VER
 
-
+// Version number
 #define RMF_VERSION_MAJOR @RMF_VERSION_MAJOR@
 #define RMF_VERSION_MINOR @RMF_VERSION_MINOR@
 

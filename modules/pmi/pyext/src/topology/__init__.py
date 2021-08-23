@@ -46,6 +46,7 @@ import IMP.pmi
 import IMP.pmi.tools
 import IMP.pmi.alphabets
 import os
+import re
 from collections import defaultdict, namedtuple
 from . import system_tools
 from bisect import bisect_left
@@ -133,11 +134,16 @@ class _SystemBase(object):
 
 
 class System(_SystemBase):
-    """Initializes the root node of the global IMP.atom.Hierarchy."""
+    """Represent the root node of the global IMP.atom.Hierarchy."""
 
     _all_systems = set()
 
     def __init__(self, model=None, name="System"):
+        """Constructor.
+
+           @param model The IMP::Model in which to construct this system.
+           @param name  The name of the top-level hierarchy node.
+        """
         _SystemBase.__init__(self, model)
         self._number_of_states = 0
         self._protocol_output = []
@@ -156,6 +162,7 @@ class System(_SystemBase):
                                   if x() not in (None, self))
 
     def get_states(self):
+        """Get a list of all State objects in this system"""
         return self.states
 
     def create_state(self):
@@ -173,6 +180,7 @@ class System(_SystemBase):
         return self._number_of_states
 
     def get_hierarchy(self):
+        """Return the top-level IMP.atom.Hierarchy node for this system"""
         return self.hier
 
     def build(self, **kwargs):
@@ -196,14 +204,14 @@ class System(_SystemBase):
 
 class State(_SystemBase):
     """Stores a list of Molecules all with the same State index.
-    Also stores number of copies of each Molecule for easy Selection.
+    Also stores number of copies of each Molecule for easy selection.
     """
     def __init__(self, system, state_index):
         """Define a new state
         @param system        the PMI System
         @param state_index   the index of the new state
         @note It's expected that you will not use this constructor directly,
-        but rather create it with pmi::System::create_state()
+        but rather create it with System.create_state()
         """
         self.model = system.get_hierarchy().get_model()
         self.system = system
@@ -229,7 +237,7 @@ class State(_SystemBase):
 
     def get_molecules(self):
         """Return a dictionary where key is molecule name and value
-        are the list of all copies of that molecule in setup order"""
+        is a list of all copies of that molecule in setup order"""
         return self.molecules
 
     def get_molecule(self, name, copy_num=0):
@@ -258,15 +266,30 @@ class State(_SystemBase):
         if name in self.molecules:
             raise ValueError('Cannot use a molecule name already used')
 
+        # check for something that looks like a copy number
+        if re.search(r'\.\d+$', name):
+            warnings.warn(
+                "It is recommended not to end the molecule name with "
+                ".(number) as it may be confused with the copy number "
+                "(the copy number for new molecules is always 0, so to "
+                "select this molecule, use '%s.0'). Use create_clone() or "
+                "create_copy() instead if a copy of an existing molecule "
+                "is desired." % name, IMP.pmi.ParameterWarning)
+
         mol = Molecule(self, name, sequence, chain_id, copy_num=0,
                        alphabet=alphabet)
         self.molecules[name] = [mol]
         return mol
 
     def get_hierarchy(self):
+        """Get the IMP.atom.Hierarchy node for this state"""
         return self.hier
 
     def get_number_of_copies(self, molname):
+        """Get the number of copies of the given molecule (by name)
+
+           @param molname  The name of the molecule
+        """
         return len(self.molecules[molname])
 
     def _register_copy(self, molecule):
@@ -274,7 +297,7 @@ class State(_SystemBase):
         self.molecules[molname].append(molecule)
 
     def build(self, **kwargs):
-        """call build on all molecules (automatically makes clones)"""
+        """Build all molecules (automatically makes clones)"""
         if not self.built:
             for molname in self.molecules:
                 for mol in reversed(self.molecules[molname]):
@@ -351,13 +374,16 @@ class Molecule(_SystemBase):
     It wraps an IMP.atom.Molecule and IMP.atom.Copy.
     Structure is read using this class.
     Resolutions and copies can be registered, but are only created
-    when build() is called
+    when build() is called.
+
+    A Molecule acts like a simple Python list of residues, and can be indexed
+    by integer (starting at zero) or by string (starting at 1).
     """
 
     def __init__(self, state, name, sequence, chain_id, copy_num,
                  mol_to_clone=None, alphabet=IMP.pmi.alphabets.amino_acid):
         """The user should not call this directly; instead call
-           State::create_molecule()
+           State.create_molecule()
 
         @param state           The parent PMI State
         @param name            The name of the molecule (string)
@@ -366,7 +392,7 @@ class Molecule(_SystemBase):
         @param copy_num        Store the copy number
         @param mol_to_clone    The original molecule (for cloning ONLY)
         @note It's expected that you will not use this constructor directly,
-        but rather create a Molecule with pmi::State::create_molecule()
+        but rather create a Molecule with State.create_molecule()
         """
         # internal data storage
         self.model = state.get_hierarchy().get_model()
@@ -429,7 +455,7 @@ class Molecule(_SystemBase):
         return self._ideal_helices
 
     def residue_range(self, a, b, stride=1):
-        """get residue range from a to b, inclusive.
+        """Get residue range from a to b, inclusive.
         Use integers to get 0-indexing, or strings to get PDB-indexing"""
         if isinstance(a, int) and isinstance(b, int) \
                 and isinstance(stride, int):
@@ -892,8 +918,9 @@ class _FindCloseStructure(object):
     def add_residues(self, residues):
         for r in residues:
             idx = IMP.atom.Residue(r).get_index()
+            catypes = [IMP.atom.AT_CA, system_tools._AT_HET_CA]
             ca = IMP.atom.Selection(
-                r, atom_type=IMP.atom.AtomType("CA")).get_selected_particles()
+                r, atom_types=catypes).get_selected_particles()
             p = IMP.atom.Selection(
                 r, atom_type=IMP.atom.AtomType("P")).get_selected_particles()
             if len(ca) == 1:
@@ -903,7 +930,7 @@ class _FindCloseStructure(object):
                 xyz = IMP.core.XYZ(p[0]).get_coordinates()
                 self.coords.append([idx, xyz])
             else:
-                raise("_FindCloseStructure: wrong selection")
+                raise ValueError("_FindCloseStructure: wrong selection")
 
         self.coords.sort(key=itemgetter(0))
 
@@ -927,11 +954,13 @@ class _FindCloseStructure(object):
 
 
 class Sequences(object):
-    """A dictionary-like wrapper for reading and storing sequence data"""
+    """A dictionary-like wrapper for reading and storing sequence data.
+       Keys are FASTA sequence names, and each value a string of one-letter
+       codes."""
     def __init__(self, fasta_fn, name_map=None):
-        """read a fasta file and extract all the requested sequences
+        """Read a FASTA file and extract all the requested sequences
         @param fasta_fn sequence file
-        @param name_map dictionary mapping the fasta name to final stored name
+        @param name_map dictionary mapping the FASTA name to final stored name
         """
         self.sequences = IMP.pmi.tools.OrderedDict()
         self.read_sequences(fasta_fn, name_map)
@@ -990,9 +1019,11 @@ class Sequences(object):
 
 
 class PDBSequences(object):
-    """Data_structure for reading and storing sequence data from pdb"""
+    """Data structure for reading and storing sequence data from PDBs.
+
+       @see fasta_pdb_alignments."""
     def __init__(self, model, pdb_fn, name_map=None):
-        """read a PDB file and returns all sequences for each contiguous
+        """Read a PDB file and return all sequences for each contiguous
            fragment
         @param pdb_fn  file
         @param name_map dictionary mapping the pdb chain id to final
@@ -1207,7 +1238,12 @@ class TempResidue(object):
 
     def set_structure(self, res, soft_check=False):
         if res.get_residue_type() != self.get_residue_type():
-            if soft_check:
+            if (res.get_residue_type() == IMP.atom.MSE
+                    and self.get_residue_type() == IMP.atom.MET):
+                # MSE in the PDB file is OK to match with MET in the FASTA
+                # sequence
+                pass
+            elif soft_check:
                 # note from commit a2c13eaa1 we give priority to the
                 # FASTA and not the PDB
                 warnings.warn(

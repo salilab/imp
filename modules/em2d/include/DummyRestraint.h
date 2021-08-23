@@ -9,7 +9,7 @@
 #ifndef IMPEM2D_DUMMY_RESTRAINT_H
 #define IMPEM2D_DUMMY_RESTRAINT_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/log.h"
 #include <IMP/Restraint.h>
 #include "IMP/Pointer.h"

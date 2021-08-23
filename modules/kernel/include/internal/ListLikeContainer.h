@@ -64,7 +64,9 @@ class ListLikeContainer : public Base {
 
   //! apply sm->apply_indexes to data. Use parallel mode using IMP_TASK
   //! if get_number_of_threads()>=2
-  void do_apply(const typename Base::Modifier *sm) const { apply_generic(sm); }
+  void do_apply(const typename Base::Modifier *sm) const IMP_OVERRIDE {
+    apply_generic(sm);
+  }
 
   //! returns a copy of list indexes of appropriate type
   typename Base::ContainedIndexTypes get_indexes() const IMP_OVERRIDE {

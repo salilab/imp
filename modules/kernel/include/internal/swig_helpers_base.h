@@ -22,6 +22,49 @@
 #include <vector>
 #include <cstdio>
 
+#if IMP_KERNEL_HAS_NUMPY
+#include <numpy/arrayobject.h>
+// This should be defined in the including module's SWIG wrapper
+extern int numpy_import_retval;
+
+// Return true iff `o` is a numpy array of the given type laid out in
+// a contiguous chunk of memory
+bool is_native_numpy_array(PyObject *o, int numpy_type) {
+  if (!o || !PyArray_Check(o)) return false; // not a numpy array
+
+  PyArrayObject *a = (PyArrayObject *)o;
+  int array_type = PyArray_TYPE(a);
+  if (array_type != NPY_NOTYPE
+      && !PyArray_EquivTypenums(array_type, numpy_type)) {
+    return false;  // data type does not match
+  }
+
+  return PyArray_ISCONTIGUOUS(a) && PyArray_ISNOTSWAPPED(a);
+}
+
+// Return true iff `o` is a 1D numpy array of the given type laid out in
+// a contiguous chunk of memory
+bool is_native_numpy_1d_array(PyObject *o, int numpy_type) {
+  if (is_native_numpy_array(o, numpy_type)) {
+    PyArrayObject *a = (PyArrayObject *)o;
+    return PyArray_NDIM(a) == 1;
+  } else {
+    return false;
+  }
+}
+
+// Return true iff `o` is a 2D numpy array of the given type laid out in
+// a contiguous chunk of memory
+bool is_native_numpy_2d_array(PyObject *o, int numpy_type, npy_intp ncol) {
+  if (is_native_numpy_array(o, numpy_type)) {
+    PyArrayObject *a = (PyArrayObject *)o;
+    return PyArray_NDIM(a) == 2 && PyArray_DIM(a, 1) == ncol;
+  } else {
+    return false;
+  }
+}
+#endif
+
 // using namespace IMP;
 using namespace IMP;
 #ifndef SWIG
@@ -492,6 +535,305 @@ struct ConvertSequence<
   static const int converter = 31;
 };
 
+#if IMP_KERNEL_HAS_NUMPY
+/* Provide template specializations that copy directly between IMP
+   arrays and numpy objects, without having to construct Python objects
+   for each sequence element */
+template <class ConvertT>
+struct ConvertSequence<Ints, ConvertT> : public ConvertVectorBase<
+                                                        Ints, ConvertT> {
+  static const int converter = 32;
+  typedef ConvertVectorBase<Ints, ConvertT> Base;
+
+  template <class SwigData>
+  static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
+                                SwigData decorator_st) {
+    return (numpy_import_retval == 0 && is_native_numpy_1d_array(in, NPY_INT))
+           || Base::get_is_cpp_object(in, st, particle_st, decorator_st);
+  }
+
+  template <class SwigData>
+  static Ints get_cpp_object(PyObject* o, const char *symname, int argnum,
+                             const char *argtype, SwigData st,
+                             SwigData particle_st,
+                             SwigData decorator_st) {
+    if (numpy_import_retval == 0 && is_native_numpy_1d_array(o, NPY_INT)) {
+      int dim = PyArray_DIM((PyArrayObject*)o, 0);
+      int *data = (int *)PyArray_DATA((PyArrayObject*)o);
+      return Ints(data, data+dim);
+    } else {
+      return Base::get_cpp_object(o, symname, argnum, argtype, st,
+                                  particle_st, decorator_st);
+    }
+  }
+
+  template <class SwigData>
+  static PyObject* create_python_object(const Ints& t, SwigData st, int OWN) {
+    if (numpy_import_retval == 0) {
+      npy_intp dims[2];
+      dims[0] = t.size();
+      PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_INT));
+      if (t.size() > 0) {
+        PyObject *obj = ret;
+        memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(int));
+      }
+      return ret.release();
+    } else {
+      return Base::create_python_object(t, st, OWN);
+    }
+  }
+};
+
+template <class ConvertT>
+struct ConvertSequence<Floats, ConvertT> : public ConvertVectorBase<
+                                                        Floats, ConvertT> {
+  static const int converter = 33;
+  typedef ConvertVectorBase<Floats, ConvertT> Base;
+
+  template <class SwigData>
+  static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
+                                SwigData decorator_st) {
+    return (numpy_import_retval == 0
+                    && is_native_numpy_1d_array(in, NPY_DOUBLE))
+           || Base::get_is_cpp_object(in, st, particle_st, decorator_st);
+  }
+
+  template <class SwigData>
+  static Floats get_cpp_object(PyObject* o, const char *symname, int argnum,
+                               const char *argtype, SwigData st,
+                               SwigData particle_st,
+                               SwigData decorator_st) {
+    if (numpy_import_retval == 0 && is_native_numpy_1d_array(o, NPY_DOUBLE)) {
+      int dim = PyArray_DIM((PyArrayObject*)o, 0);
+      double *data = (double *)PyArray_DATA((PyArrayObject*)o);
+      return Floats(data, data+dim);
+    } else {
+      return Base::get_cpp_object(o, symname, argnum, argtype, st,
+                                  particle_st, decorator_st);
+    }
+  }
+
+  template <class SwigData>
+  static PyObject* create_python_object(const Floats& t, SwigData st, int OWN) {
+    if (numpy_import_retval == 0) {
+      npy_intp dims[2];
+      dims[0] = t.size();
+      PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_DOUBLE));
+      if (t.size() > 0) {
+        PyObject *obj = ret;
+        memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(double));
+      }
+      return ret.release();
+    } else {
+      return Base::create_python_object(t, st, OWN);
+    }
+  }
+};
+
+/* Map list of ParticleIndex to a numpy array of integers.
+   This should be much faster than making a Python ParticleIndex object
+   for each index, at the expense of potentially allowing unsafe operations
+   on the indexes (e.g. it makes no sense to multiply or divide an index) */
+template <class ConvertT>
+struct ConvertSequence<ParticleIndexes, ConvertT> : public ConvertVectorBase<
+                                                     ParticleIndexes, ConvertT> {
+  static const int converter = 34;
+  typedef ConvertVectorBase<ParticleIndexes, ConvertT> Base;
+
+  template <class SwigData>
+  static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
+                                SwigData decorator_st) {
+    return (numpy_import_retval == 0 && is_native_numpy_1d_array(in, NPY_INT))
+           || Base::get_is_cpp_object(in, st, particle_st, decorator_st);
+  }
+
+  template <class SwigData>
+  static ParticleIndexes get_cpp_object(
+                             PyObject* o, const char *symname, int argnum,
+                             const char *argtype, SwigData st,
+                             SwigData particle_st,
+                             SwigData decorator_st) {
+    if (numpy_import_retval == 0 && is_native_numpy_1d_array(o, NPY_INT)) {
+      BOOST_STATIC_ASSERT(sizeof(ParticleIndex) == sizeof(int));
+      int dim = PyArray_DIM((PyArrayObject*)o, 0);
+      ParticleIndex *data = (ParticleIndex *)PyArray_DATA((PyArrayObject*)o);
+      return ParticleIndexes(data, data+dim);
+    } else {
+      return Base::get_cpp_object(o, symname, argnum, argtype, st,
+                                  particle_st, decorator_st);
+    }
+  }
+
+  template <class SwigData>
+  static PyObject* create_python_object(const ParticleIndexes& t, SwigData st,
+                                        int OWN) {
+    if (numpy_import_retval == 0) {
+      BOOST_STATIC_ASSERT(sizeof(ParticleIndex) == sizeof(int));
+      npy_intp dims[2];
+      dims[0] = t.size();
+      PyReceivePointer ret(PyArray_SimpleNew(1, dims, NPY_INT));
+      if (t.size() > 0) {
+        PyObject *obj = ret;
+        memcpy(PyArray_DATA(obj), &t[0], t.size() * sizeof(int));
+      }
+      return ret.release();
+    } else {
+      return Base::create_python_object(t, st, OWN);
+    }
+  }
+};
+
+// Convert NumPy array to ParticleIndex{Pairs,Triplets,Quads}
+template<class IndexArray, int D>
+static IndexArray create_index_array_cpp(PyObject *o) {
+  PyArrayObject *a = (PyArrayObject *)o;
+  npy_intp sz = PyArray_DIM(a, 0);
+
+  IndexArray arr(sz);
+  if (sz > 0) {
+    char *data = (char *)PyArray_DATA(o);
+    for (size_t i = 0; i < sz; ++i) {
+      memcpy(arr[i].data(), data + i * D * sizeof(int), sizeof(int) * D);
+    }
+  }
+  return arr;
+}
+
+// Convert ParticleIndex{Pairs,Triplets,Quads} to a NumPy array
+template<class IndexArray, int D>
+static PyObject* create_index_array_numpy(const IndexArray &t) {
+  npy_intp dims[2];
+  dims[0] = t.size();
+  dims[1] = D;
+  PyReceivePointer ret(PyArray_SimpleNew(2, dims, NPY_INT));
+  if (t.size() > 0) {
+    PyObject *obj = ret;
+    char *data = (char *)PyArray_DATA(obj);
+    for (size_t i = 0; i < t.size(); ++i) {
+      memcpy(data + i * D * sizeof(int), t[i].data(), sizeof(int) * D);
+    }
+  }
+  return ret.release();
+}
+
+template <class ConvertT>
+struct ConvertSequence<ParticleIndexPairs, ConvertT>
+          : public ConvertVectorBase<ParticleIndexPairs, ConvertT> {
+  static const int converter = 35;
+  typedef ConvertVectorBase<ParticleIndexPairs, ConvertT> Base;
+
+  template <class SwigData>
+  static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
+                                SwigData decorator_st) {
+    return (numpy_import_retval == 0
+                    && is_native_numpy_2d_array(in, NPY_INT, 2))
+           || Base::get_is_cpp_object(in, st, particle_st, decorator_st);
+  }
+
+  template <class SwigData>
+  static ParticleIndexPairs get_cpp_object(
+                             PyObject* o, const char *symname, int argnum,
+                             const char *argtype, SwigData st,
+                             SwigData particle_st,
+                             SwigData decorator_st) {
+    if (numpy_import_retval == 0 && is_native_numpy_2d_array(o, NPY_INT, 2)) {
+      return create_index_array_cpp<ParticleIndexPairs, 2>(o);
+    } else {
+      return Base::get_cpp_object(o, symname, argnum, argtype, st,
+                                  particle_st, decorator_st);
+    }
+  }
+
+  template <class SwigData>
+  static PyObject* create_python_object(const ParticleIndexPairs& t,
+                                        SwigData st, int OWN) {
+    if (numpy_import_retval == 0) {
+      return create_index_array_numpy<ParticleIndexPairs, 2>(t);
+    } else {
+      return Base::create_python_object(t, st, OWN);
+    }
+  }
+};
+
+template <class ConvertT>
+struct ConvertSequence<ParticleIndexTriplets, ConvertT>
+          : public ConvertVectorBase<ParticleIndexTriplets, ConvertT> {
+  static const int converter = 36;
+  typedef ConvertVectorBase<ParticleIndexTriplets, ConvertT> Base;
+
+  template <class SwigData>
+  static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
+                                SwigData decorator_st) {
+    return (numpy_import_retval == 0
+                    && is_native_numpy_2d_array(in, NPY_INT, 3))
+           || Base::get_is_cpp_object(in, st, particle_st, decorator_st);
+  }
+
+  template <class SwigData>
+  static ParticleIndexTriplets get_cpp_object(
+                             PyObject* o, const char *symname, int argnum,
+                             const char *argtype, SwigData st,
+                             SwigData particle_st,
+                             SwigData decorator_st) {
+    if (numpy_import_retval == 0 && is_native_numpy_2d_array(o, NPY_INT, 3)) {
+      return create_index_array_cpp<ParticleIndexTriplets, 3>(o);
+    } else {
+      return Base::get_cpp_object(o, symname, argnum, argtype, st,
+                                  particle_st, decorator_st);
+    }
+  }
+
+  template <class SwigData>
+  static PyObject* create_python_object(const ParticleIndexTriplets& t,
+                                        SwigData st, int OWN) {
+    if (numpy_import_retval == 0) {
+      return create_index_array_numpy<ParticleIndexTriplets, 3>(t);
+    } else {
+      return Base::create_python_object(t, st, OWN);
+    }
+  }
+};
+
+template <class ConvertT>
+struct ConvertSequence<ParticleIndexQuads, ConvertT>
+          : public ConvertVectorBase<ParticleIndexQuads, ConvertT> {
+  static const int converter = 37;
+  typedef ConvertVectorBase<ParticleIndexQuads, ConvertT> Base;
+
+  template <class SwigData>
+  static bool get_is_cpp_object(PyObject* in, SwigData st, SwigData particle_st,
+                                SwigData decorator_st) {
+    return (numpy_import_retval == 0
+                    && is_native_numpy_2d_array(in, NPY_INT, 4))
+           || Base::get_is_cpp_object(in, st, particle_st, decorator_st);
+  }
+
+  template <class SwigData>
+  static ParticleIndexQuads get_cpp_object(
+                             PyObject* o, const char *symname, int argnum,
+                             const char *argtype, SwigData st,
+                             SwigData particle_st,
+                             SwigData decorator_st) {
+    if (numpy_import_retval == 0 && is_native_numpy_2d_array(o, NPY_INT, 4)) {
+      return create_index_array_cpp<ParticleIndexQuads, 4>(o);
+    } else {
+      return Base::get_cpp_object(o, symname, argnum, argtype, st,
+                                  particle_st, decorator_st);
+    }
+  }
+
+  template <class SwigData>
+  static PyObject* create_python_object(const ParticleIndexQuads& t,
+                                        SwigData st, int OWN) {
+    if (numpy_import_retval == 0) {
+      return create_index_array_numpy<ParticleIndexQuads, 4>(t);
+    } else {
+      return Base::create_python_object(t, st, OWN);
+    }
+  }
+};
+#endif
+
 template <>
 struct Convert<std::string> {
   static const int converter = 10;
@@ -585,13 +927,23 @@ struct Convert<int> {
     } else if (PyLong_Check(o)) {
       return PyLong_AsLong(o);
     } else {
-      IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
-                TypeException);
+      long ret = PyLong_AsLong(o);
+#if PY_VERSION_HEX < 0x03000000
+      if (ret == -1 && PyErr_Occurred()) {
+        ret = PyInt_AsLong(o);
+      }
+#endif
+      if (ret != -1 || !PyErr_Occurred()) {
+        return ret;
+      } else {
+        IMP_THROW(get_convert_error("Wrong type", symname, argnum, argtype),
+                  TypeException);
+      }
     }
   }
   template <class SwigData>
   static bool get_is_cpp_object(PyObject* o, SwigData, SwigData, SwigData) {
-    return PyLong_Check(o) || PyInt_Check(o);
+    return PyLong_Check(o) || PyInt_Check(o) || PyNumber_Check(o);
   }
   template <class SwigData>
   static PyObject* create_python_object(int f, SwigData, int) {

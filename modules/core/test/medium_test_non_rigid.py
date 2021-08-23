@@ -49,6 +49,8 @@ class Tests(IMP.test.TestCase):
         m.update()
         ps = [p for p in m.get_particle_indexes()
               if not IMP.core.RigidBody.get_is_setup(m, p)]
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            cpcpps = [tuple(p) for p in cpcpps]
         # print cpcpps
         for i in range(0, len(ps)):
             if IMP.core.NonRigidMember.get_is_setup(m, ps[i]):

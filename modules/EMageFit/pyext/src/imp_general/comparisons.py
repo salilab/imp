@@ -168,15 +168,14 @@ def get_ccc(native_assembly, assembly, resolution, voxel_size,
         IMP.em.write_map(map_native, "map_native.mrc", mrw)
     map_native.calcRMS()
     map_solution.calcRMS()
-    coarse_cc = IMP.em.CoarseCC()
     # base the calculation of the cross_correlation coefficient on the threshold]
     # for the native map, because the threshold for the map of the model changes
     # with each model
     threshold = 0.25  # threshold AFTER normalization using calcRMS()
-    ccc = coarse_cc.cross_correlation_coefficient(map_solution,
-                                                  map_native, threshold)
+    ccc = IMP.em.get_coarse_cc_coefficient(map_solution,
+                                           map_native, threshold)
     log.debug("cross_correlation_coefficient (based on native_map "
-              "treshold %s) %s", threshold, ccc)
+              "threshold %s) %s", threshold, ccc)
     return ccc
 
 

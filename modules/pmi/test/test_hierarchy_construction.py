@@ -44,6 +44,30 @@ class Tests(IMP.test.TestCase):
         o.close_rmf("conformations.rmf")
         os.unlink('conformations.rmf')
 
+    def test_hierarchy_mse_construction(self):
+        """Test construction of a hierarchy containing MSE"""
+        pdbfile = self.get_input_file_name("mini_mse.pdb")
+        fastafile = self.get_input_file_name("mini_mse.fasta")
+        sequences = IMP.pmi.topology.Sequences(fastafile)
+
+        m = IMP.Model()
+        simo = IMP.pmi.topology.System(m)
+        st = simo.create_state()
+
+        mol = st.create_molecule('Rpb1', sequence=sequences[0])
+        atomic = mol.add_structure(pdbfile, chain_id='A')
+        # Only build residues that are in the PDB file
+        mol.add_representation(mol.get_atomic_residues(),
+                               resolutions=[1])
+        hier = simo.build()
+        residues = IMP.atom.get_by_type(hier, IMP.atom.RESIDUE_TYPE)
+        rtypes = [IMP.atom.Residue(r).get_residue_type().get_string()
+                  for r in residues]
+        # All residues in PDB file (including the first one, MSE, mapped to
+        # MET here) should be present
+        self.assertEqual(rtypes,
+                         ['MET', 'GLY', 'GLN', 'GLN', 'TYR', 'SER', 'SER'])
+
 
 if __name__ == '__main__':
     IMP.test.main()

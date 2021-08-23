@@ -22,7 +22,6 @@ import pickle
 import contextlib
 import subprocess
 
-
 # Expose some unittest decorators for convenience
 expectedFailure = unittest.expectedFailure
 skip = unittest.skip
@@ -232,6 +231,15 @@ class TestCase(unittest.TestCase):
                                delta=max(tolerance, abs(derivs[1]) * pct))
         self.assertAlmostEqual(derivs[2], num_derivs[2],
                                delta=max(tolerance, abs(derivs[2]) * pct))
+
+    def assertNumPyArrayEqual(self, numpy_array, exp_array):
+        """Fail if the given numpy array doesn't match expected"""
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            import numpy.testing
+            self.assertIsInstance(numpy_array, numpy.ndarray)
+            numpy.testing.assert_array_equal(numpy_array, exp_array)
+        else:
+            self.assertEqual(numpy_array, exp_array)
 
     def assertSequenceAlmostEqual(self, first, second, places=None, msg=None,
                                   delta=None):
@@ -537,6 +545,8 @@ class TestCase(unittest.TestCase):
         old_exceptions = [
             'unprotected_evaluate', "unprotected_evaluate_if_good",
             "unprotected_evaluate_if_below",
+            'unprotected_evaluate_moved', "unprotected_evaluate_moved_if_good",
+            "unprotected_evaluate_moved_if_below",
             "after_evaluate", "before_evaluate", "has_attribute",
             "decorate_particle", "particle_is_instance"]
         if name in old_exceptions:

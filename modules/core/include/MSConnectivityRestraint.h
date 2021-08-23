@@ -90,11 +90,12 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint {
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const { return ps_; }
 
-  Restraints do_create_current_decomposition() const;
+  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
 
-  ModelObjectsTemp do_get_inputs() const;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(MSConnectivityRestraint);
 

@@ -8,7 +8,7 @@
 #ifndef IMPMPI_REPLICA_EXCHANGE_H
 #define IMPMPI_REPLICA_EXCHANGE_H
 
-#include "mpi_config.h"
+#include <IMP/mpi/mpi_config.h>
 #include <IMP/Object.h>
 #include <IMP/types.h>
 #include <mpi.h>

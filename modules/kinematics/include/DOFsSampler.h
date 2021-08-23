@@ -8,7 +8,7 @@
 #ifndef IMPKINEMATICS_DO_FS_SAMPLER_H
 #define IMPKINEMATICS_DO_FS_SAMPLER_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include "DOFValues.h"
 
 IMPKINEMATICS_BEGIN_NAMESPACE

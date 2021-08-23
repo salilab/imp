@@ -12,7 +12,7 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core.h>
 #include <IMP/core/MonteCarlo.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

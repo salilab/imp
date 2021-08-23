@@ -67,8 +67,8 @@ void JmolWriter::prepare_jmol_script(
   outstream << "<tr><th> PDB file </th> "
             << "<th> " << show_all_checkbox_str << "</th>"
             << "<th><center> &chi;<sup>2</sup> </th>"
-            << "<th><center><a href = \"https://modbase.compbio.ucsf.edu/foxs/help.html#c1c2\"> c<sub>1</sub> </a></th>"
-            << "<th><center><a href = \"https://modbase.compbio.ucsf.edu/foxs/help.html#c1c2\"> c<sub>2</sub> </a></th>"
+            << "<th><center><a href = \"https://modbase.compbio.ucsf.edu/foxs/help#c1c2\"> c<sub>1</sub> </a></th>"
+            << "<th><center><a href = \"https://modbase.compbio.ucsf.edu/foxs/help#c1c2\"> c<sub>2</sub> </a></th>"
             << "<th><center>R<sub>g</sub></th>"
             << "<th><center> # atoms </th> <th> fit file </th><th> png file </th></tr>\n";
   for (unsigned int i = 0; i < fps.size(); i++) {
@@ -95,7 +95,7 @@ void JmolWriter::prepare_jmol_script(
 
     outstream << "</center></td><td><center> ";
     if (fps[i].get_c2() >= MAX_C2_) {
-      outstream << "<a href = \"https://modbase.compbio.ucsf.edu/foxs/help.html#c1c2\"><font color=red>";
+      outstream << "<a href = \"https://modbase.compbio.ucsf.edu/foxs/help#c1c2\"><font color=red>";
       outstream << fps[i].get_c2();
       outstream << "!</font></a>";
     } else {

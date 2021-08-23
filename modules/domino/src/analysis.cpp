@@ -25,15 +25,15 @@ class ParticleStatesEmbedding : public statistics::Embedding {
   ParticleStatesEmbedding(Particle *p, ParticleStates *ps,
                           const Ints &allowed, std::string name)
       : Embedding(name), p_(p), ps_(ps), allowed_(allowed) {}
-  algebra::VectorKD get_point(unsigned int i) const;
-  algebra::VectorKDs get_points() const {
+  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
+  algebra::VectorKDs get_points() const IMP_OVERRIDE {
     algebra::VectorKDs ret(get_number_of_items());
     for (unsigned int i = 0; i < ret.size(); ++i) {
       ret[i] = ParticleStatesEmbedding::get_point(i);
     }
     return ret;
   }
-  unsigned int get_number_of_items() const;
+  unsigned int get_number_of_items() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ParticleStatesEmbedding);
 };
 

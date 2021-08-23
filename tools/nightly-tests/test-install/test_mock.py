@@ -64,7 +64,7 @@ class IMPMockTests(unittest.TestCase):
         apps = ['cluster_profiles', 'cnmultifit',
                 'complex_to_anchor_graph', 'compute_chi',
                 'estimate_threshold_from_molecular_mass', 'foxs',
-                'imp_example_app', 'ligand_score', 'map2pca', 'mol2pca',
+                'ligand_score', 'map2pca', 'mol2pca',
                 'multifit', 'pdb_check', 'pdb_rmf', 'resample_density',
                 'compute_rg', 'rmf3_dump', 'rmf_cat', 'rmf_display',
                 'rmf_frames', 'rmf_info', 'rmf_interpolate', 'rmf_pdb',
@@ -88,6 +88,9 @@ class IMPMockTests(unittest.TestCase):
             self.assertTrue(ret == 1 or ret == 0,
                             "Return code for %s app is %d, not 0 or 1; "
                             "output is %s" % (app, ret, out))
+        # We no longer distribute the example app
+        self.assertRaises(OSError, subprocess.Popen, ['imp_example_app'],
+                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
 if __name__ == '__main__':

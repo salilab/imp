@@ -4,15 +4,6 @@ import unittest
 import sys
 import subprocess
 import pickle
-try:
-    from unittest import skipIf
-except ImportError:
-    # Python 2.6 compatibility
-    def skipIf(condition, reason):
-        if condition:
-            return lambda x: None
-        else:
-            return lambda x: x
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
@@ -30,8 +21,8 @@ def get_example_path(fname):
 
 class Tests(unittest.TestCase):
 
-    @skipIf('APPVEYOR' in os.environ,
-            "AppVeyor environments have old SSL certs")
+    @unittest.skipIf('APPVEYOR' in os.environ,
+                     "AppVeyor environments have old SSL certs")
     def test_validator_example(self):
         """Test validator example"""
         subprocess.check_call([sys.executable,
@@ -48,7 +39,7 @@ class Tests(unittest.TestCase):
             # can read it
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 contents = fh.readlines()
-            self.assertEqual(len(contents), 313)
+            self.assertEqual(len(contents), 314)
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 s, = ihm.reader.read(fh)
 
@@ -103,6 +94,11 @@ class Tests(unittest.TestCase):
         with open(out) as fh:
             s, = ihm.reader.read(fh)
         os.unlink(out)
+
+    def test_stream_parser_example(self):
+        """Test stream_parser example"""
+        subprocess.check_call([sys.executable, "stream_parser.py"],
+                              cwd=get_example_dir())
 
 
 if __name__ == '__main__':

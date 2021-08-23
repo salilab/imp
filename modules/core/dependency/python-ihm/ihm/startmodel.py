@@ -39,9 +39,6 @@ class SequenceIdentity(object):
         self.value = value
         self.denominator = denominator
 
-    def __float__(self):
-        return self.value
-
 
 class Template(object):
     """A PDB file used as a comparative modeling template for part of a

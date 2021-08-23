@@ -616,8 +616,14 @@ _struct_ref.pdbx_db_accession
 _struct_ref.pdbx_align_begin
 _struct_ref.pdbx_seq_one_letter_code
 _struct_ref.details
-1 1 UNP NUP84_YEAST P52891 3 MELSPTYQT 'test sequence'
+1 1 UNP NUP84_YEAST P52891 3
+;MELSP
+TYQT
+;
+'test sequence'
 2 1 MyDatabase testcode testacc 1 MEL 'other sequence'
+3 1 MyDatabase testcode2 testacc2 1 . 'other sequence'
+4 1 MyDatabase testcode3 testacc3 1 ? 'other sequence'
 #
 #
 loop_
@@ -648,13 +654,15 @@ _struct_ref_seq_dif.details
             for fh in cif_file_handles(cif):
                 s, = ihm.reader.read(fh)
                 e, = s.entities
-                r1, r2 = e.references
+                r1, r2, r3, r4 = e.references
                 self.assertIsInstance(r1, ihm.reference.UniProtSequence)
                 self.assertEqual(r1.db_name, 'UNP')
                 self.assertEqual(r1.db_code, 'NUP84_YEAST')
                 self.assertEqual(r1.accession, 'P52891')
                 self.assertEqual(r1.sequence, 'MELSPTYQT')
                 self.assertEqual(r1.details, 'test sequence')
+                self.assertIsNone(r3.sequence)
+                self.assertEqual(r4.sequence, ihm.unknown)
                 a1, a2 = r1.alignments
                 self.assertEqual(a1.db_begin, 3)
                 self.assertEqual(a1.db_end, 6)
@@ -1172,7 +1180,7 @@ _ihm_starting_comparative_models.alignment_file_id
             self.assertEqual(t1.asym_id, 'C')
             self.assertEqual(t1.seq_id_range, (7, 436))
             self.assertEqual(t1.template_seq_id_range, (9, 438))
-            self.assertAlmostEqual(float(t1.sequence_identity), 90.0,
+            self.assertAlmostEqual(t1.sequence_identity.value, 90.0,
                                    delta=0.1)
             self.assertEqual(t1.sequence_identity.denominator, 1)
             self.assertEqual(t1.alignment_file._id, '2')
@@ -2378,7 +2386,9 @@ loop_
 _entity.id
 _entity.type
 _entity.pdbx_description
-1 non-polymer 'CALCIUM ION'
+1 non-polymer 'CALCIUM ION entity'
+2 non-polymer 'no-chem-comp entity'
+3 water       'no-chem-comp water'
 #
 loop_
 _pdbx_entity_nonpoly.entity_id
@@ -2391,16 +2401,29 @@ _struct_asym.id
 _struct_asym.entity_id
 _struct_asym.details
 A 1 foo
+B 2 bar
+C 3 baz
 #
 loop_
 _pdbx_nonpoly_scheme.asym_id
 _pdbx_nonpoly_scheme.entity_id
+_pdbx_nonpoly_scheme.mon_id
 _pdbx_nonpoly_scheme.auth_seq_num
-A 1 1
-A 1 101
+A 1 FOO 1
+A 1 BAR 101
+B 2 BAR 1
+C 3 HOH 1
 """)
         s, = ihm.reader.read(fh)
-        asym, = s.asym_units
+        e1, e2, e3 = s.entities
+        # e1 should have sequence filled in by pdbx_entity_nonpoly
+        self.assertEqual([cc.name for cc in e1.sequence], ['CALCIUM ION'])
+        # e2,e3 should have sequence filled in by pdbx_nonpoly_scheme
+        self.assertEqual([(cc.id, cc.name) for cc in e2.sequence],
+                         [('BAR', 'no-chem-comp entity')])
+        self.assertEqual([(cc.id, cc.name) for cc in e3.sequence],
+                         [('HOH', 'WATER')])
+        asym, a2, a3 = s.asym_units
         # non-polymers have no seq_id_range
         self.assertEqual(asym.seq_id_range, (None, None))
         self.assertEqual(asym.auth_seq_id_map, {1: 101})

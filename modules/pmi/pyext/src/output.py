@@ -417,7 +417,7 @@ class Output(object):
                      None, radius))
 
             elif IMP.atom.Fragment.get_is_setup(p) and not is_a_bead:
-                resindexes = IMP.pmi.tools.get_residue_indexes(p)
+                resindexes = list(IMP.pmi.tools.get_residue_indexes(p))
                 resind = resindexes[len(resindexes) // 2]
                 if resind in resindexes_dict[protname]:
                     continue
@@ -437,7 +437,7 @@ class Output(object):
             else:
                 if is_a_bead:
                     rt = IMP.atom.ResidueType('BEA')
-                    resindexes = IMP.pmi.tools.get_residue_indexes(p)
+                    resindexes = list(IMP.pmi.tools.get_residue_indexes(p))
                     if len(resindexes) > 0:
                         resind = resindexes[len(resindexes) // 2]
                         xyz = IMP.core.XYZ(p).get_coordinates()

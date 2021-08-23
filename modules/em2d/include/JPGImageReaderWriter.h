@@ -7,7 +7,7 @@
 #ifndef IMPEM2D_JPG_IMAGE_READER_WRITER_H
 #define IMPEM2D_JPG_IMAGE_READER_WRITER_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em/ImageHeader.h"
 #include <boost/filesystem/convenience.hpp>
@@ -20,12 +20,12 @@ class JPGImageReaderWriter : public ImageReaderWriter {
   JPGImageReaderWriter() {}
 
   void read(const String &filename, em::ImageHeader &header,
-            cv::Mat &data) const {
+            cv::Mat &data) const IMP_OVERRIDE {
     this->read_from_ints(filename, header, data);
   }
 
   void write(const String &filename, em::ImageHeader &header,
-             const cv::Mat &data) const {
+             const cv::Mat &data) const IMP_OVERRIDE {
     this->write_to_ints(filename, header, data);
   }
 
@@ -39,7 +39,7 @@ class JPGImageReaderWriter : public ImageReaderWriter {
       format. Eg, Spider.
   */
   void read_from_ints(const String &filename, em::ImageHeader &header,
-                      cv::Mat &data) const {
+                      cv::Mat &data) const IMP_OVERRIDE {
     IMP_LOG_VERBOSE("reading with JPGImageReaderWriter" << std::endl);
     // read
     cv::Mat temp = cv::imread(filename, 0);
@@ -52,9 +52,10 @@ class JPGImageReaderWriter : public ImageReaderWriter {
   }
 
   void write_to_floats(const String &, em::ImageHeader &,
-                       const cv::Mat &) const {}
+                       const cv::Mat &) const IMP_OVERRIDE {}
 
-  void read_from_floats(const String &, em::ImageHeader &, cv::Mat &) const {}
+  void read_from_floats(const String &, em::ImageHeader &,
+                        cv::Mat &) const IMP_OVERRIDE {}
 
   //! Writes an EM image in JPG format
   /*!
@@ -65,7 +66,7 @@ class JPGImageReaderWriter : public ImageReaderWriter {
               You might be discarding float information.
    */
   void write_to_ints(const String &filename, em::ImageHeader &header,
-                     const cv::Mat &data) const {
+                     const cv::Mat &data) const IMP_OVERRIDE {
     IMP_UNUSED(header);
     // discard header
     IMP_LOG(IMP::WARNING,

@@ -90,6 +90,8 @@ IMPATOMEXPORT extern const ResidueType TRP;
 IMPATOMEXPORT extern const ResidueType ACE;
 //! end group
 IMPATOMEXPORT extern const ResidueType NH2;
+//! Selenomethionine
+IMPATOMEXPORT extern const ResidueType MSE;
 /* Code currently assumes that all indices between ADE.get_index()
    and DTHY.get_index() being nucleic acid */
 //! adenine (RNA)
@@ -208,6 +210,9 @@ class IMPATOMEXPORT Residue : public Hierarchy {
   static IntKey get_residue_type_key();
 
   static IntKey get_insertion_code_key();
+
+  //! The key used to signal to the Model that residue/atom type has changed
+  static TriggerKey get_type_changed_key();
 };
 
 IMP_DECORATORS(Residue, Residues, Hierarchies);
@@ -216,9 +221,6 @@ IMP_DECORATORS(Residue, Residues, Hierarchies);
 /** If no such residue exists, return Hierarchy().
 
     \see Residue
-    \note Currently, this function only works if
-    the parent of rd is the chain. This should be fixed
-    later. Ask if you need it.
 
     The return type is Hierarchy since the particle
     representing the next residue might not

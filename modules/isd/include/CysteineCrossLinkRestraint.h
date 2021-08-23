@@ -11,7 +11,7 @@
 
 #ifndef IMPISD_CYSTEINE_CROSS_LINK_RESTRAINT_H
 #define IMPISD_CYSTEINE_CROSS_LINK_RESTRAINT_H
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/isd/CrossLinkData.h>
 #include <IMP/isd/CysteineCrossLinkData.h>

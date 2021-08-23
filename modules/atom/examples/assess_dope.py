@@ -9,6 +9,7 @@ import sys
 
 IMP.setup_from_argv(sys.argv, "assess dope")
 
+
 def create_representation():
     m = IMP.Model()
     mp0 = IMP.atom.read_pdb(IMP.atom.get_example_path(
@@ -22,7 +23,7 @@ def add_dope(m, prot):
     for p in ps:
         if not IMP.atom.Atom.get_is_setup(p):
             print("Huh?", p)
-    dpc = IMP.container.ClosePairContainer(ps, 15.0, 0.0)
+    dpc = IMP.container.ClosePairContainer(ps, 15.0, 1.0)
     # By default the score is evaluated on all nearby pairs of atoms,
     # even atoms that are bonded (or related by angles or dihedrals).
     # This is consistent with the behavior of the score in MODELLER.
@@ -34,6 +35,7 @@ def add_dope(m, prot):
     dps = IMP.atom.DopePairScore(15.0)
     d = IMP.container.PairsRestraint(dps, dpc)
     return d
+
 
 print("creating representation")
 (m, prot) = create_representation()

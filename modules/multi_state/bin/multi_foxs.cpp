@@ -166,15 +166,17 @@ int main(int argc, char* argv[]) {
   bool vr_score = false;
   bool use_offset = false;
 
-  po::options_description desc("Options");
+  po::options_description desc(
+      "Usage: <experimental_profile> <pdb_file1> <pdb_file2> ... or <profiles_filename>\n\n"
+      "Any number of input profiles is supported.\n"
+      "The weights are computed to minimize the chi between the first profile\n"
+      "and a weighted average of the rest.\n\n"
+      "This program is part of IMP, the Integrative Modeling Platform,\n"
+      "which is Copyright 2007-2021 IMP Inventors.\n\n"
+      "Options");
   desc.add_options()
-    ("help", "Any number of input profiles is supported. \
-The weights are computed to minimize the chi between the first profile \
-and a weighted average of the rest.")
-    ("version", "MultiFoXS (IMP applications)\n \
-Copyright 2007-2021 IMP Inventors.\nAll rights reserved. \n \
-License: GNU LGPL version 2.1 or later<http://gnu.org/licenses/lgpl.html>.\n\
-Written by Dina Schneidman.")
+    ("help", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")
     ("number-of-states,s", po::value<int>(&number_of_states)->default_value(10),
      "maximal ensemble size")
     ("bestK,k", po::value<int>(&best_k)->default_value(1000), "bestK")
@@ -215,9 +217,6 @@ recommended q value is 0.2")
 
   po::options_description cmdline_options;
   cmdline_options.add(desc).add(hidden);
-  po::options_description visible("Usage: <experimental_profile> \
-<pdb_file1> <pdb_file2> ... or <profiles_filename>");
-  visible.add(desc);
 
   po::positional_options_description p;
   p.add("input-files", -1);
@@ -225,13 +224,18 @@ recommended q value is 0.2")
   po::store(po::command_line_parser(argc,argv)
             .options(cmdline_options).positional(p).run(), vm);
   po::notify(vm);
+  if (vm.count("version")) {
+    std::cerr << "Version: \"" << IMP::multi_state::get_module_version()
+              << "\"" << std::endl;
+    return 0;
+  }
 
   std::vector<std::string> files;
   if(vm.count("input-files")) {
     files = vm["input-files"].as< std::vector<std::string> >();
   }
   if(vm.count("help") || files.size() == 0) {
-    std::cout << visible << "\n";
+    std::cout << desc << "\n";
     return 0;
   }
   if(vm.count("nnls")) nnls = true;
@@ -325,9 +329,9 @@ recommended q value is 0.2")
       s.setf(std::ios::fixed, std::ios::floatfield);
       s << std::setw(6) << std::setprecision(3) << " Chi^2 = " << fp.get_chi_square()
         << " c1 = " << fp.get_c1() << " c2 = " << fp.get_c2() << std::endl;
-      for(unsigned int i=0; i<clustered_profiles.size(); i++) {
-        s << std::setw(4) << i << " " << clustered_profiles[i]->get_name();
-        s << std::setw(5) << std::setprecision(3) << "(" << fp.get_weights()[i] << ") ";
+      for(unsigned int j=0; j<clustered_profiles.size(); j++) {
+        s << std::setw(4) << j << " " << clustered_profiles[j]->get_name();
+        s << std::setw(5) << std::setprecision(3) << "(" << fp.get_weights()[j] << ") ";
         s << std::endl;
       }
       s.close();

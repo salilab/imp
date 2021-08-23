@@ -8,7 +8,7 @@
 #ifndef IMPSPB_MONTE_CARLO_WITH_WTE_H
 #define IMPSPB_MONTE_CARLO_WITH_WTE_H
 
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 #include <IMP/Restraint.h>
 #include <IMP/core.h>
@@ -33,7 +33,8 @@ class IMPSPBEXPORT MonteCarloWithWte : public core::MonteCarlo {
                      double w0);
 
   void update_bias(double score);
-  virtual double do_evaluate(const ParticleIndexes &moved) const IMP_OVERRIDE;
+  virtual double do_evaluate(
+                  const ParticleIndexes &moved, bool) const IMP_OVERRIDE;
   double get_spline(double score) const;
 
  public:
@@ -65,7 +66,7 @@ class IMPSPBEXPORT MonteCarloWithWte : public core::MonteCarlo {
   }
 
   // IMP_MONTE_CARLO(MonteCarloWithWte);
-  virtual void do_step();
+  virtual void do_step() IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(MonteCarloWithWte);
 };

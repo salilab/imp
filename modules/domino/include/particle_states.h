@@ -147,11 +147,12 @@ class IMPDOMINOEXPORT XYZStates : public ParticleStates {
     IMP_USAGE_CHECK(i < states_.size(), "Out of range");
     return states_[i];
   }
-  algebra::VectorKD get_embedding(unsigned int i) const {
+  algebra::VectorKD get_embedding(unsigned int i) const IMP_OVERRIDE {
     IMP_USAGE_CHECK(i < states_.size(), "Out of range");
     return states_[i];
   }
-  unsigned int get_nearest_state(const algebra::VectorKD &v) const {
+  unsigned int get_nearest_state(
+                 const algebra::VectorKD &v) const IMP_OVERRIDE {
     return nn_->get_nearest_neighbors(v, 1)[0];
   }
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
@@ -174,8 +175,8 @@ class IMPDOMINOEXPORT RigidBodyStates : public ParticleStates {
     IMP_USAGE_CHECK(i < states_.size(), "Out of range");
     return states_[i];
   }
-  algebra::VectorKD get_embedding(unsigned int i) const;
-  unsigned int get_nearest_state(const algebra::VectorKD &v) const;
+  algebra::VectorKD get_embedding(unsigned int i) const IMP_OVERRIDE;
+  unsigned int get_nearest_state(const algebra::VectorKD &v) const IMP_OVERRIDE;
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
   virtual void load_particle_state(unsigned int, Particle *) const
       IMP_OVERRIDE;
@@ -203,8 +204,8 @@ class IMPDOMINOEXPORT NestedRigidBodyStates : public ParticleStates {
     IMP_USAGE_CHECK(i < states_.size(), "Out of range");
     return states_[i];
   }
-  algebra::VectorKD get_embedding(unsigned int i) const;
-  unsigned int get_nearest_state(const algebra::VectorKD &v) const;
+  algebra::VectorKD get_embedding(unsigned int i) const IMP_OVERRIDE;
+  unsigned int get_nearest_state(const algebra::VectorKD &v) const IMP_OVERRIDE;
   virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
   virtual void load_particle_state(unsigned int, Particle *) const
       IMP_OVERRIDE;

@@ -47,7 +47,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   MonteCarlo(Model *m);
 
  protected:
-  virtual Float do_optimize(unsigned int max_steps);
+  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(MonteCarlo)
  public:
   /** By default, the optimizer returns the lowest scoring state
@@ -55,6 +55,20 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
       state, set return best to false.
   */
   void set_return_best(bool tf) { return_best_ = tf; }
+
+  //! If set true (default false), only rescore moved particles
+  /** By default, on each move the score of the entire system is
+      calculated. If it is guaranteed that only Movers and ScoreStates
+      move the system, then the score can potentially be calculated
+      more quickly by caching the scores on parts of the system that
+      don't move. This is still experimental.
+
+      \note Some MonteCarlo subclasses do local optimization after each
+            move, which can move more particles than the Movers touched.
+            In this case the guarantee does not hold and this optimization
+            should probably not be used.
+   */
+  void set_score_moved(bool mv) { score_moved_ = mv; }
 
   /** \name kT
       The kT value has to be on the same scale as the differences
@@ -176,16 +190,25 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
 
       The list of moved particles is passed.
    */
-  virtual double do_evaluate(const ParticleIndexes &moved) const {
-    IMP_UNUSED(moved);
+  virtual double do_evaluate(const ParticleIndexes &moved,
+                             bool force_full_score) const {
     if (isf_) {
       isf_->set_moved_particles(moved);
     }
     if (get_maximum_difference() < NO_MAX) {
-      return get_scoring_function()->evaluate_if_below(
-          false, last_energy_ + max_difference_);
+      if (score_moved_ && !force_full_score) {
+        return get_scoring_function()->evaluate_moved_if_below(
+            false, moved, last_energy_ + max_difference_);
+      } else {
+        return get_scoring_function()->evaluate_if_below(
+            false, last_energy_ + max_difference_);
+      }
     } else {
-      return get_scoring_function()->evaluate(false);
+      if (score_moved_ && !force_full_score) {
+        return get_scoring_function()->evaluate_moved(false, moved);
+      } else {
+        return get_scoring_function()->evaluate(false);
+      }
     }
   }
 
@@ -198,6 +221,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   unsigned int stat_upward_steps_taken_;
   unsigned int stat_num_failures_;
   bool return_best_;
+  bool score_moved_;
   double min_score_;
   IMP::PointerMember<Configuration> best_;
   ::boost::uniform_real<> rand_;

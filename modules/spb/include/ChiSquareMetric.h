@@ -10,7 +10,7 @@
 
 #include <IMP/algebra.h>
 #include <IMP/statistics.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

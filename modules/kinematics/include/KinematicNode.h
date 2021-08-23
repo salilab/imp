@@ -9,7 +9,7 @@
 #ifndef IMPKINEMATICS_KINEMATIC_NODE_H
 #define IMPKINEMATICS_KINEMATIC_NODE_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/kinematics/Joint.h>
 

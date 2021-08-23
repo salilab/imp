@@ -24,10 +24,10 @@ class Tests(IMP.test.TestCase):
         n = t.get_vertex_name(desc0)
         self.assertIsInstance(n, IMP.atom.Hierarchy)
         self.assertEqual(n.get_name(), "HT_P0")
-        self.assertEqual(t.get_in_neighbors(desc0), [])
+        self.assertEqual(list(t.get_in_neighbors(desc0)), [])
         self.assertEqual(t.get_out_neighbors(desc0), [desc1])
         self.assertEqual(t.get_in_neighbors(desc1), [desc0])
-        self.assertEqual(t.get_out_neighbors(desc1), [])
+        self.assertEqual(list(t.get_out_neighbors(desc1)), [])
         sio = BytesIO()
         t.show_graphviz(sio)
         self.assertEqual(sio.getvalue(),

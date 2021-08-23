@@ -21,7 +21,8 @@
 #define IMP_CLASSNAME_SCORE_METHODS(Name)                                      \
   double evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,                  \
                           DerivativeAccumulator *da, unsigned int lower_bound, \
-                          unsigned int upper_bound) const IMP_FINAL {          \
+                          unsigned int upper_bound)                            \
+                          const IMP_OVERRIDE IMP_FINAL {                       \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       ret += evaluate_index(m, p[i], da);                                      \
@@ -30,7 +31,8 @@
   }                                                                            \
   double evaluate_if_good_indexes(                                             \
       Model *m, const PLURALINDEXTYPE &p, DerivativeAccumulator *da,           \
-      double max, unsigned int lower_bound, unsigned int upper_bound) const {  \
+      double max, unsigned int lower_bound,                                    \
+      unsigned int upper_bound) const IMP_OVERRIDE {                           \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       ret += evaluate_if_good_index(m, p[i], da, max - ret);                   \
@@ -52,7 +54,7 @@
     }                                                                          \
     return ret;                                                                \
   }                                                                            \
-  Ints get_value_index(Model *m, const PLURALINDEXTYPE &o) const {             \
+  Ints get_value_index(Model *m, const PLURALINDEXTYPE &o) const IMP_OVERRIDE {\
     Ints ret(o.size());                                                        \
     for (unsigned int i = 0; i < o.size(); ++i) {                              \
       ret[i] += Name::get_value_index(m, o[i]);                                \
@@ -89,7 +91,8 @@
 #define IMP_CLASSNAME_MODIFIER_METHODS(Name)                             \
   virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,         \
                              unsigned int lower_bound,                   \
-                             unsigned int upper_bound) const IMP_FINAL { \
+                             unsigned int upper_bound)                   \
+                             const IMP_OVERRIDE IMP_FINAL {              \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {           \
       apply_index(m, o[i]);                                              \
     }                                                                    \
@@ -111,6 +114,7 @@
     IMP::ClassnameContainer::do_apply()
 */
 #define IMP_CLASSNAME_CONTAINER_METHODS(Name) \
-  void do_apply(const ClassnameModifier *sm) const { apply_generic(sm); }
+  void do_apply(const ClassnameModifier *sm) const IMP_OVERRIDE { \
+    apply_generic(sm); }
 
 #endif /* IMPKERNEL_CLASSNAME_MACROS_H */

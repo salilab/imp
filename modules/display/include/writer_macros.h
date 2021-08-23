@@ -31,8 +31,8 @@
                                                               \
  protected:                                                   \
   virtual void do_destroy() IMP_OVERRIDE { do_close(); }      \
-  virtual void do_open();                                     \
-  virtual void do_close()
+  virtual void do_open() IMP_OVERRIDE;                         \
+  virtual void do_close() IMP_OVERRIDE
 
 #define IMP_WRITER(Name)                                 \
   IMP_OBJECT_METHODS(Name);                              \

@@ -24,8 +24,8 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(prot_data.get_num_allowed_violated_cross_links(), 3)
         self.assertEqual(prot_data.get_num_allowed_violated_ev(), 2)
 
-        self.assertEqual(prot_data.get_interaction(0), [0, 1])
-        self.assertEqual(prot_data.get_interaction(1), [0, 1, 2])
+        self.assertEqual(list(prot_data.get_interaction(0)), [0, 1])
+        self.assertEqual(list(prot_data.get_interaction(1)), [0, 1, 2])
         self.assertEqual(prot_data.get_protein_name(0), 'A')
         self.assertEqual(prot_data.find('A'), 0)
 

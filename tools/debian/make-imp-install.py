@@ -30,6 +30,7 @@ for m in non_mpi_modules + ['rmf/dependency/RMF']:
             fname, ext = os.path.splitext(b)
             if not fname.startswith('__') and ext in ('', '.cpp', '.py'):
                 non_mpi_binaries.append(fname)
+non_mpi_binaries.remove('imp_example_app')
 
 
 def subst_line(line, template, modules):

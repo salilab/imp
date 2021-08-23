@@ -21,6 +21,7 @@
 #include "Undecorator.h"
 #include "internal/AttributeTable.h"
 #include "internal/attribute_tables.h"
+#include "internal/moved_particles_cache.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
 #include <boost/unordered_map.hpp>
@@ -115,6 +116,27 @@ class IMPKERNELEXPORT Model : public Object
   void do_check_readers_and_writers(const ModelObject *mo) const;
   void do_check_not_in_readers_and_writers(const ModelObject *mo) const;
   void do_clear_dependencies(const ModelObject *mo);
+
+  // used to track time when triggers are activated
+  unsigned age_counter_;
+  // all triggers
+  Vector<unsigned> trigger_age_;
+  // time when dependencies were last changed, or 0
+  unsigned dependencies_age_;
+  // cache of restraints that are affected by each moved particle,
+  // used for evaluate_moved() and related functions
+  internal::MovedParticlesRestraintCache moved_particles_cache_;
+  // time when moved_particles_cache_ was last updated, or 0
+  unsigned moved_particles_cache_age_;
+
+  // update model age (can never be zero, even if it wraps)
+  void increase_age() {
+    age_counter_++;
+    if (age_counter_ == 0) {
+      age_counter_ = 1;
+    }
+  }
+
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // things the evaluate template functions need, can't be bothered with friends
  public:
@@ -123,6 +145,10 @@ class IMPKERNELEXPORT Model : public Object
   bool first_call_;
   // the stage of evaluation
   internal::Stage cur_stage_;
+
+  const std::set<Restraint *> &get_dependent_restraints(ParticleIndex pi) {
+    return moved_particles_cache_.get_dependent_restraints(pi);
+  }
 
   ModelObjectsTemp get_dependency_graph_inputs(const ModelObject *mo) const;
   ModelObjectsTemp get_dependency_graph_outputs(const ModelObject *mo) const;
@@ -330,6 +356,63 @@ class IMPKERNELEXPORT Model : public Object
   //! Check if the model has a certain piece of data attached.
   bool get_has_data(ModelKey mk) const;
   /** @} */
+
+  /** \name Model triggers
+
+      Triggers can be used to track when to clear and rebuild caches
+      of derived model properties. For example, a Restraint may restrain
+      two particles as a function of the number of chemical bonds between
+      them. To speed up this restraint, the bond graph can be cached; however,
+      this graph needs to be rebuilt if bonds are created or removed. This
+      can be achieved by checking that the model time (see get_age()) of the
+      cache matches the time when the 'bond added/removed' Trigger was last
+      updated (see get_trigger_last_updated()), either when the Restraint is
+      evaluated or in an associated ScoreState.
+
+      Triggers are intended for events that are rare during a typical
+      optimization. Triggers can be created by any IMP module in either C++
+      or Python by creating a new TriggerKey, much as model attributes
+      are handled. To avoid name collisions, it is recommended to prepend
+      the module and/or class name to the trigger, e.g. "atom.Bond.changed".
+
+      For an example, see IMP::score_functor::OrientedSoap, which uses
+      a cache built from the molecular hierarchy, which is cleared when the
+      IMP::core::Hierarchy::get_changed_key() trigger is updated.
+
+      @{ */
+
+  //! Get the current 'model time'.
+  /** This is a number 1 or more that tracks the 'age' of the model;
+      it is incremented every time before_evaluate() is called.
+      It may wrap (and so should not be assumed to always increase)
+      but will never be 0. */
+  unsigned get_age() { return age_counter_; }
+
+  //! Get the time when the given trigger was last updated, or 0.
+  /** Return the 'model time' (as given by get_age()) when the given
+      trigger was last updated on this model, or 0 if never. */
+  unsigned get_trigger_last_updated(TriggerKey tk) {
+    if (trigger_age_.size() > tk.get_index()) {
+      return trigger_age_[tk.get_index()];
+    } else {
+      return 0;
+    }
+  }
+
+  //! Update the given trigger
+  void set_trigger_updated(TriggerKey tk) {
+    if (tk.get_index() >= trigger_age_.size()) {
+      trigger_age_.resize(tk.get_index() + 1, 0);
+    }
+    trigger_age_[tk.get_index()] = age_counter_;
+  }
+  /** @} */
+
+  //! Get the model age when ModelObject dependencies were last changed, or 0.
+  /** This gives the Model age (see get_age()) when Particles, Restraints,
+      or ScoreStates were last added or removed. It is typically used to
+      help maintain caches that depend on the model's dependency graph. */
+  unsigned get_dependencies_updated() { return dependencies_age_; }
 
   IMP_OBJECT_METHODS(Model);
 

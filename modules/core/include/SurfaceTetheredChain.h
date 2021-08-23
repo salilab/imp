@@ -59,7 +59,8 @@ class SurfaceTetheredChain : public UnaryFunction {
       initialize();
     }
 
-  virtual DerivativePair evaluate_with_derivative(double feature) const {
+  virtual DerivativePair evaluate_with_derivative(
+                  double feature) const IMP_OVERRIDE {
     if (feature < z_min_) {
       return DerivativePair(z_min_deriv_ * feature + z_min_int_,
                             z_min_deriv_);
@@ -70,7 +71,7 @@ class SurfaceTetheredChain : public UnaryFunction {
     }
   }
 
-  virtual double evaluate(double feature) const {
+  virtual double evaluate(double feature) const IMP_OVERRIDE {
     return evaluate_with_derivative(feature).first;
   }
 

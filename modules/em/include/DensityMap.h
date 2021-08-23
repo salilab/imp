@@ -46,7 +46,7 @@ IMPEMEXPORT DensityMap *read_map(std::string filename, MapReaderWriter *reader);
 
 //! Read a density map from a file and return it.
 /** Guess the file type from the file name. The file formats supported are:
-    - .mrc
+    - .mrc/.map
     - .em
     - .vol
     - .xplor
@@ -63,7 +63,7 @@ IMPEMEXPORT void write_map(DensityMap *m, std::string filename,
 //! Write a density map to a file.
 /** Guess the file type from the
     file name. The file formats supported are:
-    - .mrc
+    - .mrc/.map
     - .em
     - .vol
     - .xplor
@@ -325,7 +325,9 @@ class IMPEMEXPORT DensityMap : public IMP::Object {
   void pick_max(const DensityMap *other);
 
   //! Get the number of map voxels
-  long get_number_of_voxels() const;
+  long get_number_of_voxels() const {
+    return header_.get_number_of_voxels();
+  }
 
   //! Set the map dimension and reset all voxels to 0
   /** \param[in] nx x-dimension (voxels)

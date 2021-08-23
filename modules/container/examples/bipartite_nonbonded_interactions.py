@@ -14,10 +14,10 @@ IMP.setup_from_argv(sys.argv, "bipartite nonbonded interactions")
 
 m = IMP.Model()
 # The set of particles
-ps0 = IMP.container.ListSingletonContainer(m,
-                         IMP.core.create_xyzr_particles(m, 20, 1.0))
-ps1 = IMP.container.ListSingletonContainer(m,
-                         IMP.core.create_xyzr_particles(m, 20, 2.0))
+ps0 = IMP.container.ListSingletonContainer(
+    m, IMP.core.create_xyzr_particles(m, 20, 1.0))
+ps1 = IMP.container.ListSingletonContainer(
+    m, IMP.core.create_xyzr_particles(m, 20, 2.0))
 
 # Set up the nonbonded list
 nbl = IMP.container.CloseBipartitePairContainer(ps0, ps1, 0, 1)

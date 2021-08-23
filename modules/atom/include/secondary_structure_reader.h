@@ -9,10 +9,10 @@
 #ifndef IMPATOM_SECONDARY_STRUCTURE_READER_H
 #define IMPATOM_SECONDARY_STRUCTURE_READER_H
 
-#include "atom_config.h"
-#include "Hierarchy.h"
-#include "Atom.h"
-#include "SecondaryStructureResidue.h"
+#include <IMP/atom/atom_config.h>
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/atom/Atom.h>
+#include <IMP/atom/SecondaryStructureResidue.h>
 #include <IMP/file.h>
 
 IMPATOM_BEGIN_NAMESPACE

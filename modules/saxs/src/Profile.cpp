@@ -654,7 +654,7 @@ void Profile::resample(const Profile* exp_profile,
                        Profile* resampled_profile) const {
   if (q_mapping_.size() == 0)
     for (unsigned int k = 0; k < size(); k++)
-      const_cast<Profile*>(this)->q_mapping_[q_[k]] = k;
+      q_mapping_[q_[k]] = k;
 
   // init
   resampled_profile->init(exp_profile->size(), partial_profiles_.size());
@@ -1032,8 +1032,13 @@ void Profile::background_adjust(double start_q) {
       data.push_back(v);
     }
   }
+  if (data.size() == 0) {
+    IMP_WARN("No points in profile at or above start_q; no background "
+             "adjustment done" << std::endl);
+    return;
+  }
 
-  algebra::ParabolicFit p(data);
+  algebra::ParabolicFit2D p(data);
   double P3 = p.get_a();
   double P2 = p.get_b();
   double P1 = p.get_c();

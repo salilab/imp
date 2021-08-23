@@ -19,7 +19,7 @@ IMPEM_BEGIN_NAMESPACE
 //! Cross correlation coefficient calculator.
 /** Store CCC and derivative values and recompute then every X steps.
  */
-class IMPEMEXPORT CoarseCCatIntervals : public CoarseCC {
+class IMPEMEXPORT CoarseCCatIntervals : public IMP::Object {
 
  public:
   CoarseCCatIntervals(const int &ncd);

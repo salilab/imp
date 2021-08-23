@@ -24,6 +24,11 @@ HierarchyTraits::HierarchyTraits(std::string name) {
 
 void Hierarchy::show(std::ostream &out) const { out << "Hierarchy"; }
 
+TriggerKey Hierarchy::get_changed_key() {
+  static TriggerKey k("core.Hierarchy.changed");
+  return k;
+}
+
 int Hierarchy::get_child_index() const {
   if (!get_parent())
     return -1;

@@ -78,6 +78,9 @@ IMP_VALUES(ObjectsKey, ObjectsKeys);
 typedef Key<8> ModelKey;
 IMP_VALUES(ModelKey, ModelKeys);
 
+//! The type used to identify changed model properties
+typedef Key<11> TriggerKey;
+IMP_VALUES(TriggerKey, TriggerKeys);
 /** @} */
 
 class Restraint;

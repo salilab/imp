@@ -9,7 +9,7 @@
 #ifndef IMPSPB_HELIX_DECORATOR_H
 #define IMPSPB_HELIX_DECORATOR_H
 
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 #include <IMP/Decorator.h>
 #include <IMP/Model.h>

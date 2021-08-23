@@ -33,15 +33,6 @@ ClassnameContainer::ClassnameContainer(Model *m, std::string name)
 // here for gcc
 ClassnameContainer::~ClassnameContainer() {}
 
-PLURALVARIABLETYPE ClassnameContainer::get_FUNCTIONNAMEs() const {
-  return IMP::internal::get_particle(get_model(), get_indexes());
-}
-
-VARIABLETYPE ClassnameContainer::get_FUNCTIONNAME(unsigned int i) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_indexes()");
-  return get(i);
-}
-
 bool ClassnameContainer::get_provides_access() const {
   validate_readable();
   return do_get_provides_access();
@@ -92,21 +83,6 @@ void ClassnamePredicate::remove_if_equal(Model *m, PLURALINDEXTYPE &ps,
                           make_predicate_equal(this, m, value)),
            ps.end());
 }
-Ints ClassnamePredicate::get_value(const PLURALVARIABLETYPE &o) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
-  if (o.empty()) return Ints();
-  Ints ret(o.size());
-  Model *m = internal::get_model(o[0]);
-  for (unsigned int i = 0; i < o.size(); ++i) {
-    ret[i] += get_value_index(m, internal::get_index(o[i]));
-  }
-  return ret;
-}
-
-int ClassnamePredicate::get_value_index(Model *m,
-                                        PASSINDEXTYPE vt) const {
-  return get_value(internal::get_particle(m, vt));
-}
 
 void ClassnamePredicate::remove_if_not_equal(Model *m,
                                              PLURALINDEXTYPE &ps,
@@ -114,11 +90,6 @@ void ClassnamePredicate::remove_if_not_equal(Model *m,
   ps.erase(std::remove_if(ps.begin(), ps.end(),
                           make_predicate_not_equal(this, m, value)),
            ps.end());
-}
-
-int ClassnamePredicate::get_value(ARGUMENTTYPE vt) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
-  return get_value_index(internal::get_model(vt), internal::get_index(vt));
 }
 
 ClassnameScore::ClassnameScore(std::string name) : Object(name) {

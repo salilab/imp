@@ -31,9 +31,10 @@ class IMPCOREEXPORT Cosine : public UnaryFunction {
         periodicity_(periodicity),
         phase_(phase) {}
 
-  virtual DerivativePair evaluate_with_derivative(double feature) const;
+  virtual DerivativePair evaluate_with_derivative(
+                  double feature) const IMP_OVERRIDE;
 
-  virtual double evaluate(double feature) const;
+  virtual double evaluate(double feature) const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(Cosine);
 

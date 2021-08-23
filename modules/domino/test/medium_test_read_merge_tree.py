@@ -32,7 +32,9 @@ class Tests(IMP.test.TestCase):
         namesToParticles = {}
         finalPairs = []
 
-        for [p0, p1] in nbl.get_particle_pairs():
+        for [pi0, pi1] in nbl.get_contents():
+            p0 = model.get_particle(pi0)
+            p1 = model.get_particle(pi1)
 
             # filter explicitly particles greater than closePairDistance
             if (IMP.algebra.get_distance(IMP.core.XYZ(p0).get_coordinates(),

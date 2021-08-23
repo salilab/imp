@@ -9,7 +9,7 @@
 #ifndef IMPKINEMATICS_LOCAL_PLANNERS_H
 #define IMPKINEMATICS_LOCAL_PLANNERS_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include "DOFValues.h"
 #include "directional_DOFs.h"
 #include "DOFsSampler.h"
@@ -70,7 +70,7 @@ class IMPKINEMATICSEXPORT PathLocalPlanner : public LocalPlanner {
       found closest to q_rand (inclusive)
   */
   virtual std::vector<DOFValues> plan(DOFValues q_from, DOFValues q_rand,
-                                      ScoringFunction *sf);
+                                      ScoringFunction *sf) IMP_OVERRIDE;
 
  private:
   PointerMember<DirectionalDOF> d_;

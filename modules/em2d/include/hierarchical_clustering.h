@@ -9,7 +9,7 @@
 #ifndef IMPEM2D_HIERARCHICAL_CLUSTERING_H
 #define IMPEM2D_HIERARCHICAL_CLUSTERING_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/scores2D.h"
 #include <IMP/em2d/internal/clustering_helper.h>
 #include "IMP/base_types.h"

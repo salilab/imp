@@ -37,7 +37,7 @@ void DecayPairContainerOptimizerState::do_update(unsigned int) {
     std::set_difference(old.begin(), old.end(), to_remove.begin(),
                         to_remove.end(), std::back_inserter(out));
     output_->set(out);
-    IMP_LOG_VERBOSE("Remaining " << output_->get_particle_pairs() << " ");
+    IMP_LOG_VERBOSE("Remaining " << output_->get_contents() << " ");
   }
 }
 

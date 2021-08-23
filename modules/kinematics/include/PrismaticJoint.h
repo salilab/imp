@@ -9,7 +9,7 @@
 #ifndef IMPKINEMATICS_PRISMATIC_JOINT_H
 #define IMPKINEMATICS_PRISMATIC_JOINT_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/Object.h>
@@ -69,7 +69,7 @@ class IMPKINEMATICSEXPORT PrismaticJoint : public Joint {
      @note It is assumed that external coordinates are updated before
            calling this function.
   */
-  virtual void update_joint_from_cartesian_witnesses();
+  virtual void update_joint_from_cartesian_witnesses() IMP_OVERRIDE;
 
  private:
   IMP::core::XYZ a_;  // prismatic joint from point, associated with parent

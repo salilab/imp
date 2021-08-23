@@ -13,7 +13,7 @@
 #define IMPISD_LOGNORMAL_AMBIGUOUS_RESTRAINT_H
 
 #include <IMP/isd/Scale.h>
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/PairContainer.h>
 

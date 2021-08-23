@@ -150,8 +150,9 @@ class Tests(IMP.test.TestCase):
 
         self.assertEqual(s.get_number_of_particle_indexes(), 1)
         self.assertEqual(s.get_particle_indexes_key(0), "density")
-        self.assertEqual(s.get_particle_indexes_value(0),
-                [p.get_index() for p in self.density_ps])
+        self.assertNumPyArrayEqual(
+            s.get_particle_indexes_value(0),
+            [p.get_index() for p in self.density_ps])
 
         self.gem.set_density_filename('/foobar')
         s = self.gem.get_static_info()

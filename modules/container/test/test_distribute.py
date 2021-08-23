@@ -9,8 +9,8 @@ ik = IMP.IntKey("hi")
 
 class Odd(IMP.SingletonPredicate):
 
-    def get_value(self, p):
-        return p.get_value(ik) % 2
+    def get_value_index(self, m, p):
+        return m.get_attribute(ik, p) % 2
 
     def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
@@ -18,8 +18,8 @@ class Odd(IMP.SingletonPredicate):
 
 class Mod5(IMP.SingletonPredicate):
 
-    def get_value(self, p):
-        return p.get_value(ik) % 5
+    def get_value_index(self, m, p):
+        return m.get_attribute(ik, p) % 5
 
     def do_get_inputs(self, m, pis):
         return [m.get_particle(i) for i in pis]
@@ -44,14 +44,16 @@ class Tests(IMP.test.TestCase):
         odd = dss.add_predicate(Odd(), 1)
         zf = dss.add_predicate(Mod5(), 0)
         m.update()
-        print(even.get_particles())
-        print(odd.get_particles())
-        print(zf.get_particles())
+        print(even.get_contents())
+        print(odd.get_contents())
+        print(zf.get_contents())
         pse = [ps[i * 2] for i in range(len(ps) // 2)]
         pso = [ps[i * 2 + 1] for i in range(len(ps) // 2)]
         psf = [ps[0], ps[5]]
-        self.assertEqual(even.get_contents(), pse)
-        self.assertEqual(odd.get_contents(), pso)
-        self.assertEqual(zf.get_contents(), psf)
+        self.assertNumPyArrayEqual(even.get_contents(), pse)
+        self.assertNumPyArrayEqual(odd.get_contents(), pso)
+        self.assertNumPyArrayEqual(zf.get_contents(), psf)
+
+
 if __name__ == '__main__':
     IMP.test.main()

@@ -9,7 +9,7 @@
 #ifndef IMPEM2D_EM_2DRESTRAINT_H
 #define IMPEM2D_EM_2DRESTRAINT_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/ProjectionFinder.h"
 #include "IMP/em2d/ProjectionMask.h"

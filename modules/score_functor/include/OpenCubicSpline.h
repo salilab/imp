@@ -61,7 +61,8 @@ class OpenCubicSpline : public Score {
         else
           return spline_.get_last();
       } else {
-        IMP_THROW("Spline out of domain", ModelException);
+        IMP_THROW("Value " << distance << " out of range [" << minrange_ << ", "
+                  << maxrange_ << "] for open cubic spline", ValueException);
       }
     }
     return spline_.evaluate(distance - minrange_, spacing_, inverse_spacing_);
@@ -78,7 +79,8 @@ class OpenCubicSpline : public Score {
         else
           return std::make_pair(spline_.get_last(), 0.0);
       } else {
-        IMP_THROW("Spline out of domain", ModelException);
+        IMP_THROW("Value " << distance << " out of range [" << minrange_ << ", "
+                  << maxrange_ << "] for open cubic spline", ValueException);
       }
     }
     return spline_.evaluate_with_derivative(distance - minrange_, spacing_,

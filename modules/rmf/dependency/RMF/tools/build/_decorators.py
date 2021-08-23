@@ -98,9 +98,10 @@ class Attribute(Base):
   }
 """ % (self.function_name, self.function_name, self.function_name)
         if default is not None:
-            self.get_methods = self.get_methods.replace('return',
-                     'if (!get_node().get_has_value(NAME_)) return %s;\n'
-                     'return' % repr(default).replace("'", '"'))
+            self.get_methods = self.get_methods.replace(
+                'return',
+                'if (!get_node().get_has_value(NAME_)) return %s;\n'
+                'return' % repr(default).replace("'", '"'))
         self.set_methods = """
   void set_%s(TYPE v) {
     try {
@@ -209,13 +210,7 @@ class OptionalPathAttribute(Attribute):
 
 class AttributePair(Base):
 
-    def __init__(
-            self,
-            name,
-        data_type,
-        return_type,
-        begin,
-            end):
+    def __init__(self, name, data_type, return_type, begin, end):
         Base.__init__(self, name, "boost::array<%sKey, 2>" %
                       data_type, return_type)
         self.helpers = """  template <class H> DATA get_NAME_keys(H fh) const {
@@ -484,7 +479,7 @@ class Decorator:
             for a in self.attributes:
                 ret.append(a.get_check())
         else:
-        # for a in self.attributes:
+            # for a in self.attributes:
             ret.append(self.attributes[0].get_check())
         return "\n    && ".join(x for x in ret if x != "")
 
@@ -516,8 +511,8 @@ class Decorator:
                ("DATA_INITIALIZE", self._get_data_initialize())]
         ret.append(("CREATE_CHECKS", """RMF_USAGE_CHECK(%s, std::string("Bad node type. Got \\\"")
                                       + boost::lexical_cast<std::string>(nh.get_type())
-                                      + "\\\" in decorator type  %s");""" % (self._get_type_check(),
-                                                                             self.name)))
+                                      + "\\\" in decorator type  %s");"""
+                    % (self._get_type_check(), self.name)))
         ret.append(
             ("FRAME_CHECKS", self._get_checks()
              .replace("GET", "get_value")))
@@ -570,7 +565,7 @@ def make_header(name, infos, deps):
 RMF_ENABLE_WARNINGS
 namespace RMF {
 namespace decorator {
-""" % {"name": name, "NAME": name.upper()})
+""")
     for i in infos:
         fl.write(i.get() + '\n')
     fl.write("""
@@ -579,7 +574,7 @@ namespace decorator {
 RMF_DISABLE_WARNINGS
 
 #endif /* RMF_%(NAME)s_DECORATORS_H */
-""" % {"name": name, "NAME": name.upper()})
+""" % {"NAME": name.upper()})
 
     del fl
     root = os.path.split(os.path.split(sys.argv[0])[0])[0]

@@ -339,15 +339,16 @@ struct cycle_detector : public boost::default_dfs_visitor {
 };
 
 namespace {
-RestraintsTemp do_get_dependent_restraints(ModelObject *mo) {
-  RestraintsTemp ret;
-  Restraint *r = dynamic_cast<Restraint *>(mo);
+template <class MOType, class MOVector>
+MOVector do_get_dependent(ModelObject *mo) {
+  MOVector ret;
+  MOType *r = dynamic_cast<MOType *>(mo);
   if (r) {
     ret.push_back(r);
   }
   IMP_FOREACH(ModelObject * cur,
               mo->get_model()->get_dependency_graph_outputs(mo)) {
-    ret += do_get_dependent_restraints(cur);
+    ret += do_get_dependent<MOType, MOVector>(cur);
   }
   return ret;
 }
@@ -356,7 +357,19 @@ RestraintsTemp do_get_dependent_restraints(ModelObject *mo) {
 RestraintsTemp get_dependent_restraints(Model *m, ParticleIndex pi) {
   m->set_has_all_dependencies(true);
   ModelObject *cur = m->get_particle(pi);
-  return do_get_dependent_restraints(cur);
+  return do_get_dependent<Restraint, RestraintsTemp>(cur);
+}
+
+ScoreStatesTemp get_dependent_score_states(Model *m, ParticleIndex pi) {
+  m->set_has_all_dependencies(true);
+  ModelObject *cur = m->get_particle(pi);
+  return do_get_dependent<ScoreState, ScoreStatesTemp>(cur);
+}
+
+ScoreStatesTemp get_required_score_states(Model *m, ParticleIndex pi) {
+  Particle *p = m->get_particle(pi);
+  p->set_has_required_score_states(true);
+  return p->get_required_score_states();
 }
 
 IMPKERNEL_END_NAMESPACE

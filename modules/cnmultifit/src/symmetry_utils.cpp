@@ -50,7 +50,7 @@ em::FittingSolutions fast_cc(em::DensityMap *dmap1, em::DensityMap *dmap2,
        it != trans_on_dmap2.end(); it++) {
     Pointer<em::DensityMap> trans_map = em::get_transformed(dmap2, *it);
     score =
-        em::CoarseCC::cross_correlation_coefficient(dmap1, dmap2, threshold);
+        em::get_coarse_cc_coefficient(dmap1, dmap2, threshold);
     fits.add_solution(*it, score);
   }
   fits.sort();
@@ -68,7 +68,7 @@ em::FittingSolutions fast_cc_translation(
        it != trans_on_dmap2.end(); it++) {
     dmap2->set_origin(it->get_transformed(orig));
     score =
-        em::CoarseCC::cross_correlation_coefficient(dmap1, dmap2, threshold);
+        em::get_coarse_cc_coefficient(dmap1, dmap2, threshold);
     fits.add_solution(*it, score);
   }
   fits.sort();

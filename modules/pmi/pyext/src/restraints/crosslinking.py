@@ -1338,7 +1338,7 @@ class CysteineCrossLinkRestraint(object):
                    self.label] = str(self.epsilons[eps].get_scale())
         output["CysteineCrossLinkRestraint_beta_" +
                self.label] = str(self.beta.get_scale())
-        for n in range(self.weight.get_number_of_states()):
+        for n in range(self.weight.get_number_of_weights()):
             output["CysteineCrossLinkRestraint_weights_" +
                    str(n) + "_" + self.label] = str(self.weight.get_weight(n))
 

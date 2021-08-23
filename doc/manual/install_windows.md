@@ -43,8 +43,8 @@ we employed is as follows:
 
   - Install Microsoft Visual Studio Express (it is free, but registration with
     Microsoft is required).
-  - Get and install [cmake](http://www.cmake.org).
-  - Get [Python](http://www.python.org)
+  - Get and install [cmake](https://cmake.org).
+  - Get [Python](https://www.python.org)
     (make sure you get the
     32-bit version if you're going to build %IMP for 32-bit Windows).
   - Get and install the

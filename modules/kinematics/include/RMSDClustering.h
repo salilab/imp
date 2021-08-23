@@ -10,7 +10,7 @@
 #ifndef IMPKINEMATICS_RMSD_CLUSTERING_H
 #define IMPKINEMATICS_RMSD_CLUSTERING_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/algebra/distance.h>

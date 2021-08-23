@@ -9,7 +9,7 @@
 #ifndef IMPISD_WEIGHT_H
 #define IMPISD_WEIGHT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/algebra/UnitSimplexD.h>
 #include <IMP/Particle.h>
 #include <IMP/decorator_macros.h>
@@ -117,9 +117,6 @@ class IMPISDEXPORT Weight : public Decorator {
       for an optimized Weight.
    */
   void add_weight(Float wi = 0);
-
-  IMPISD_DEPRECATED_METHOD_DECL(2.12)
-  Int get_number_of_states() const;
 
   //! Get number of weights.
   Int get_number_of_weights() const;

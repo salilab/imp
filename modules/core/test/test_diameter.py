@@ -23,12 +23,12 @@ class Tests(IMP.test.TestCase):
         o.optimize(1000)
 
         max = 0
-        for p0 in lc.get_particles():
-            for p1 in lc.get_particles():
-                d = IMP.core.get_distance(IMP.core.XYZR(p0),
-                                          IMP.core.XYZR(p1))\
-                    + 2 * (IMP.core.XYZR(p0).get_radius()
-                           + IMP.core.XYZR(p1).get_radius())
+        for pi0 in lc.get_contents():
+            for pi1 in lc.get_contents():
+                d = IMP.core.get_distance(IMP.core.XYZR(m, pi0),
+                                          IMP.core.XYZR(m, pi1))\
+                    + 2 * (IMP.core.XYZR(m, pi0).get_radius()
+                           + IMP.core.XYZR(m, pi1).get_radius())
                 self.assertLess(d, 1.1 * diameter)
 
     def test_diameter(self):

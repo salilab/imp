@@ -63,7 +63,7 @@ class IMPCONTAINEREXPORT ClosePairContainer
   },
   { set_has_dependencies(false); }, );
 
-  void clear_caches() { first_call_ = true; }
+  void clear_caches() IMP_OVERRIDE  { first_call_ = true; }
   double get_slack() const { return slack_; }
   double get_distance() const { return distance_; }
   void update() { do_score_state_before_evaluate(); }

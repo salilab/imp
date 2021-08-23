@@ -176,6 +176,17 @@ class BioGRIDLocation(DatabaseLocation):
                                               details)
 
 
+class ProXLLocation(DatabaseLocation):
+    """Something stored in the ProXL database.
+       See :class:`DatabaseLocation` for a description of the parameters
+       and :class:`Location` for discussion of the usage of these objects."""
+    _db_name = 'ProXL'
+
+    def __init__(self, db_code, version=None, details=None):
+        super(ProXLLocation, self).__init__(self._db_name, db_code, version,
+                                            details)
+
+
 class FileLocation(Location):
     """Base class for an individual file or directory stored externally.
 

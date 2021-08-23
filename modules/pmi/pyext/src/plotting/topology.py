@@ -222,7 +222,7 @@ def draw_component_composition(DegreesOfFreedom, max=1000,
             if IMP.atom.Residue.get_is_setup(h):
                 res = [IMP.atom.Residue(h).get_index()]
             elif IMP.atom.Fragment.get_is_setup(h):
-                res = IMP.atom.Fragment(h).get_residue_indexes()
+                res = list(IMP.atom.Fragment(h).get_residue_indexes())
             if res:
                 is_molecule = False
                 hp = h

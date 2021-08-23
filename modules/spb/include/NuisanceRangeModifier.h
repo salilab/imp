@@ -11,7 +11,7 @@
 #include <IMP/SingletonModifier.h>
 #include <IMP/isd/Nuisance.h>
 #include <IMP/singleton_macros.h>
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 
 IMPSPB_BEGIN_NAMESPACE
 

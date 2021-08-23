@@ -62,7 +62,8 @@ class IMPSTATISTICSEXPORT VQClustering : public ClusteringEngine {
 
   void run(DataPoints *starting_centers = nullptr);
 
-  bool is_part_of_cluster(int data_point_ind, int cluster_ind) const {
+  bool is_part_of_cluster(int data_point_ind,
+                          int cluster_ind) const IMP_OVERRIDE {
     return (get_cluster_assignment(data_point_ind) == cluster_ind);
   }
 
@@ -75,12 +76,12 @@ class IMPSTATISTICSEXPORT VQClustering : public ClusteringEngine {
     return assignment_[data_point_ind];
   }
 
-  Array1DD get_center(int center_ind) const {
+  Array1DD get_center(int center_ind) const IMP_OVERRIDE {
     IMP_USAGE_CHECK(is_set_, " the clusters have not been assigned "
                                  << std::endl);
     return centers_[center_ind];
   }
-  int get_number_of_clusters() const { return k_; }
+  int get_number_of_clusters() const IMP_OVERRIDE { return k_; }
   void set_random_offset(double o) { par_.random_offset_ = o; }
   const DataPoints *get_full_data() const { return full_data_; }
   void set_fast_clustering();

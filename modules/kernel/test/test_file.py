@@ -13,7 +13,8 @@ class Tests(IMP.test.TestCase):
         IMP.set_log_level(IMP.MEMORY)
         v = IMP._test_ifile(self.get_input_file_name("text"))
         self.assertEqual(v, "word")
-        v = IMP._test_ifile(self.open_input_file("text"))
+        with self.open_input_file("text") as fh:
+            v = IMP._test_ifile(fh)
         self.assertEqual(v, "word")
         self.assertRaises(IOError, IMP._test_ifile, "notafile")
         s = BytesIO(b"hi there")
@@ -27,12 +28,12 @@ class Tests(IMP.test.TestCase):
         IMP.set_log_level(IMP.MEMORY)
         IMP._test_ofile("ofile_test")
         self.assertRaises(IOError, IMP._test_ofile, "nodir/hi")
-        f = open("hi", "w")
-        IMP._test_ofile(f)
+        with open("hi", "w") as f:
+            IMP._test_ofile(f)
         # In Python 3 binary files are handled differently (as raw bytes,
         # not Unicode)
-        f = open("hi", "wb")
-        IMP._test_ofile(f)
+        with open("hi", "wb") as f:
+            IMP._test_ofile(f)
         s = BytesIO()
         IMP._test_ofile(s)
         self.assertTrue(s.getvalue().startswith(b"hi\n"))

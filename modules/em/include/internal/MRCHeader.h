@@ -21,12 +21,12 @@ IMPEM_BEGIN_INTERNAL_NAMESPACE
 //! Class to deal with the header of MRC files
 class IMPEMEXPORT MRCHeader {
  public:
-  //! map size (x dimension)
-  int nx;
-  //! map size (y dimension)
-  int ny;
-  //! map size (z dimension)
-  int nz;
+  //! map size (columns)
+  int nc;
+  //! map size (rows)
+  int nr;
+  //! map size (sections)
+  int ns;
   //! Image mode
   /**
    * 0 image : signed 8-bit bytes range -128 to 127.
@@ -36,8 +36,8 @@ class IMPEMEXPORT MRCHeader {
    * 4 transform : complex 32-bit reals
   **/
   int mode;
-  //! number of first columns in map (default = 0)
-  int nxstart, nystart, nzstart;
+  //! number of first column/row/section in map (default = 0)
+  int ncstart, nrstart, nsstart;
   //! Intervals along dimension x
   int mx;
   //! Intervals along dimension y
@@ -89,16 +89,19 @@ class IMPEMEXPORT MRCHeader {
   char labels[IMP_MRC_NUM_LABELS][IMP_MRC_LABEL_SIZE];
 
  public:
+  //! Convert native MRC coordinates (col/row/section) to xyz
+  void convert_crs_to_xyz(int &nx, int &ny, int &nz,
+                          int &nxstart, int &nystart, int &nzstart);
   //! Converter from MRCHeader to DensityHeader
   void FromDensityHeader(const DensityHeader &h);
   //! Converter from DensityHeader to MRCHeader
   void ToDensityHeader(DensityHeader &h);
   //! Outputs coordinates delimited by single space.
   friend std::ostream &operator<<(std::ostream &s, const MRCHeader &v) {
-    s << "nx: " << v.nx << " ny: " << v.ny << " nz: " << v.nz << std::endl;
+    s << "nc: " << v.nc << " nr: " << v.nr << " ns: " << v.ns << std::endl;
     s << "mode: " << v.mode << std::endl;
-    s << "nxstart: " << v.nxstart << " nystart: " << v.nystart
-      << " nzstart: " << v.nzstart << std::endl;
+    s << "ncstart: " << v.ncstart << " nrstart: " << v.nrstart
+      << " nsstart: " << v.nsstart << std::endl;
     s << "mx: " << v.mx << " my:" << v.my << " mz: " << v.mz << std::endl;
     s << "xlen: " << v.xlen << " ylen: " << v.ylen << " zlen: " << v.zlen
       << std::endl;

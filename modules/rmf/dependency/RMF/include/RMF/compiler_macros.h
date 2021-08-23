@@ -159,6 +159,18 @@
 #define RMF_GCC_PROTOTYPES
 #endif
 
+// Warn about missing RMF_OVERRIDE on virtual methods if gcc is new enough
+#if __GNUC__ > 5 || (__GNUC__ == 5 && __GNUC_MINOR__ >= 1)
+#ifdef RMF_SWIG_WRAPPER
+#define RMF_GCC_OVERRIDE
+#else
+#define RMF_GCC_OVERRIDE \
+  RMF_GCC_PRAGMA(diagnostic warning "-Wsuggest-override")
+#endif
+#else
+#define RMF_GCC_OVERRIDE
+#endif
+
 #define RMF_COMPILER_WARNINGS                                   \
   RMF_GCC_PRAGMA(diagnostic warning "-Wall")                    \
       RMF_GCC_PRAGMA(diagnostic warning "-Wextra")              \
@@ -166,8 +178,8 @@
       RMF_GCC_PRAGMA(diagnostic warning "-Wcast-align")         \
       RMF_GCC_PRAGMA(diagnostic warning "-Woverloaded-virtual") \
       RMF_GCC_PRAGMA(diagnostic ignored "-Wconversion")         \
-      RMF_GCC_PRAGMA(diagnostic warning                         \
-                     "-Wundef") RMF_GCC_PROTOTYPES RMF_GCC_CXX0X_COMPAT
+      RMF_GCC_PRAGMA(diagnostic warning "-Wundef")              \
+      RMF_GCC_PROTOTYPES RMF_GCC_CXX0X_COMPAT RMF_GCC_OVERRIDE
 
 #elif defined(_MSC_VER)
 #define RMF_COMPILER_WARNINGS                                           \

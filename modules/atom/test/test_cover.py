@@ -44,8 +44,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
 
         #! read PDB
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.CAlphaPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.CAlphaPDBSelector())
         s = IMP.atom.Selection(mp, residue_indexes=[26, 30])
         d = IMP.atom.create_cover(s, "my cover")
         m.update()
@@ -61,8 +61,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         #! read PDB
         IMP.set_log_level(IMP.SILENT)
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.CAlphaPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.CAlphaPDBSelector())
         rb = IMP.atom.create_rigid_body(mp)
         # IMP.set_log_level(IMP.VERBOSE)
         # IMP.atom.show_molecular_hierarchy(mp)

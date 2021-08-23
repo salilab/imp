@@ -223,7 +223,7 @@ class RigidBodyTunnelerTest(IMP.test.TestCase):
         self.rbori.add_entry_point(entry2)
         self.rbori.propose()
         coords = self.rbori.get_reduced_coordinates(self.m, self.iref)
-        expected = array([-1, 5, 0] + oldcoords[3:])
+        expected = array([-1, 5, 0] + list(oldcoords[3:]))
         self.assertTrue(allclose(expected, coords))
         self.rbori.reject()
         coords = self.rbori.get_reduced_coordinates(self.m, self.iref)

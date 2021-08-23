@@ -145,9 +145,9 @@ class NormalizeRotation : public SingletonModifier {
       Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_outputs(
       Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
-  virtual void apply_indexes(Model *m, const ParticleIndexes &pis,
-                             unsigned int lower_bound,
-                             unsigned int upper_bound) const IMP_FINAL;
+  virtual void apply_indexes(
+      Model *m, const ParticleIndexes &pis, unsigned int lower_bound,
+      unsigned int upper_bound) const IMP_OVERRIDE IMP_FINAL;
   //  IMP_SINGLETON_MODIFIER_METHODS(NormalizeRotation);
   IMP_OBJECT_METHODS(NormalizeRotation);
 };
@@ -322,11 +322,11 @@ NormalizeRotation::apply_indexes
       quaternion_tables[2][pi] = 0;
       quaternion_tables[3][pi] = 0;
     } else if (std::abs(sm - 1.0) > .01) {
-      double m=std::sqrt(sm); // magnitude
-      quaternion_tables[0][pi] = v[0]/m;
-      quaternion_tables[1][pi] = v[1]/m;
-      quaternion_tables[2][pi] = v[2]/m;
-      quaternion_tables[3][pi] = v[3]/m;
+      double magnitude = std::sqrt(sm);
+      quaternion_tables[0][pi] = v[0]/magnitude;
+      quaternion_tables[1][pi] = v[1]/magnitude;
+      quaternion_tables[2][pi] = v[2]/magnitude;
+      quaternion_tables[3][pi] = v[3]/magnitude;
       IMP_LOG_TERSE( "Rotation quaternion normalized to " << v << std::endl);
     }
     IMP_INTERNAL_CHECK
@@ -598,10 +598,10 @@ void RigidBody::update_members() {
   {
     const ParticleIndexes &members = get_member_particle_indexes();
     Model *m = get_model();
+    algebra::Vector3D const *ic = m->access_internal_coordinates_data();
     for (unsigned int i = 0; i < members.size(); ++i) {
-      XYZ rm(get_model(), members[i]);
-      algebra::Vector3D v = m->get_internal_coordinates(members[i]);
-      rm.set_coordinates(tr.get_transformed(v));
+      XYZ rm(m, members[i]);
+      rm.set_coordinates(tr.get_transformed(ic[members[i].get_index()]));
     }
   }
   {
@@ -768,7 +768,7 @@ void RigidBody::setup_score_states() {
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
     Pointer<Constraint> c0 = IMP::internal::create_tuple_constraint(
         urbm.get(), arbd.get(), get_particle(),
-        get_particle()->get_name() + " rigid body positions");
+        get_particle()->get_name() + " rigid body positions", true);
     get_model()->add_score_state(c0);
     get_model()->add_attribute(get_rb_score_state_0_key(), get_particle_index(),
                                c0);
@@ -1047,7 +1047,8 @@ ParticlesTemp create_rigid_bodies(Model *m, unsigned int n,
     IMP_NEW(UpdateRigidBodyMembers, urbm, ());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
     Pointer<Constraint> c0 = IMP::internal::create_container_constraint(
-        urbm.get(), arbd.get(), list.get(), "rigid body positions %1%");
+        urbm.get(), arbd.get(), list.get(), "rigid body positions %1%",
+        true);
     m->add_score_state(c0);
     for (unsigned int i = 0; i < ret.size(); ++i) {
       m->add_attribute(get_rb_score_state_0_key(), ret[i]->get_index(), c0);

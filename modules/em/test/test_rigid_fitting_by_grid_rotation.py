@@ -59,9 +59,8 @@ class Tests(IMP.test.TestCase):
             mrw)
         IMP.em.write_map(self.scene, self.get_tmp_file_name("a2.mrc"), mrw)
         # calculate CC
-        ccc = IMP.em.CoarseCC()
         threshold = sampled_density_map.get_header().dmin
-        score1 = ccc.cross_correlation_coefficient(
+        score1 = IMP.em.get_coarse_cc_coefficient(
             self.scene,
             sampled_density_map,
             threshold,
@@ -100,9 +99,9 @@ class Tests(IMP.test.TestCase):
             transformed_density,
             self.get_tmp_file_name("b2.mrc"),
             mrw)
-        score2 = ccc.cross_correlation_coefficient(transformed_density,
-                                                   sampled_density_map1,
-                                                   threshold, True)
+        score2 = IMP.em.get_coarse_cc_coefficient(transformed_density,
+                                                  sampled_density_map1,
+                                                  threshold, True)
         print("score2:", score2)
         # move the particles back for the next test
         t_inv = t.get_inverse()
@@ -140,10 +139,8 @@ class Tests(IMP.test.TestCase):
         sampled_density_map.resample()
         sampled_density_map.calcRMS()
         # calculate CC after rotating the particles
-        ccc = IMP.em.CoarseCC()
-
         threshold = sampled_density_map.get_header().dmin
-        score1 = ccc.cross_correlation_coefficient(
+        score1 = IMP.em.get_coarse_cc_coefficient(
             self.scene,
             sampled_density_map,
             threshold,
@@ -152,7 +149,7 @@ class Tests(IMP.test.TestCase):
 
         transformed_sampled_density.calcRMS()
         threshold = transformed_sampled_density.get_header().dmin
-        score2 = IMP.em.CoarseCC.cross_correlation_coefficient(
+        score2 = IMP.em.get_coarse_cc_coefficient(
             self.scene,
             transformed_sampled_density,
             transformed_sampled_density.get_header().dmin, True)

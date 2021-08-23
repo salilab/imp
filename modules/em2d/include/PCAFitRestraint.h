@@ -52,7 +52,8 @@ public:
                   bool reuse_direction = false,
                   unsigned int n_components = 1);
 
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
+  double unprotected_evaluate(
+                 IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
 
   unsigned int get_projection_number() const { return projection_number_; }
 
@@ -85,7 +86,7 @@ public:
   //! \return Information for writing to RMF files
   RestraintInfo *get_dynamic_info() const IMP_OVERRIDE;
 
-  IMP::ModelObjectsTemp do_get_inputs() const { return ps_; }
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE { return ps_; }
   IMP_OBJECT_METHODS(PCAFitRestraint);
 
  private:
@@ -108,12 +109,12 @@ public:
   unsigned int projection_number_;
 
   // from last score calculation
-  std::vector<internal::Image2D<> > best_projections_;
+  mutable std::vector<internal::Image2D<> > best_projections_;
 
   // from last calculation
-  std::vector<internal::ProjectionInfo> best_projections_info_;
-  IMP::algebra::Vector3Ds best_projections_axis_;
-  std::vector<internal::ImageTransform> best_image_transform_;
+  mutable std::vector<internal::ProjectionInfo> best_projections_info_;
+  mutable IMP::algebra::Vector3Ds best_projections_axis_;
+  mutable std::vector<internal::ImageTransform> best_image_transform_;
 
   // Projector class instance
   internal::Projector projector_;

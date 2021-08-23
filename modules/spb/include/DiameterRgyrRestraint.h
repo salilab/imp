@@ -9,7 +9,7 @@
 #define IMPSPB_DIAMETER_RGYR_RESTRAINT_H
 
 #include "IMP/Restraint.h"
-#include "spb_config.h"
+#include <IMP/spb/spb_config.h>
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <map>
@@ -33,7 +33,7 @@ class IMPSPBEXPORT DiameterRgyrRestraint : public Restraint {
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(DiameterRgyrRestraint);
 };

@@ -7,7 +7,7 @@
 #ifndef IMPEM2D_SPIDER_IMAGE_READER_WRITER_H
 #define IMPEM2D_SPIDER_IMAGE_READER_WRITER_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/ImageReaderWriter.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em/ImageHeader.h"
@@ -65,19 +65,20 @@ class SpiderImageReaderWriter : public ImageReaderWriter {
   }
 
   void read(const String &filename, em::ImageHeader &header,
-            cv::Mat &data) const {
+            cv::Mat &data) const IMP_OVERRIDE {
     this->read_from_floats(filename, header, data);
   }
 
   void write(const String &filename, em::ImageHeader &header,
-             const cv::Mat &data) const {
+             const cv::Mat &data) const IMP_OVERRIDE {
     this->write_to_floats(filename, header, data);
   }
 
-  void read_from_ints(const String &, em::ImageHeader &, cv::Mat &) const {}
+  void read_from_ints(const String &, em::ImageHeader &,
+                      cv::Mat &) const IMP_OVERRIDE {}
 
-  void write_to_ints(const String &, em::ImageHeader &, const cv::Mat &) const {
-  }
+  void write_to_ints(const String &, em::ImageHeader &,
+                     const cv::Mat &) const IMP_OVERRIDE {}
 
   //! Reads an image file in Spider format and stores the content
   //! int the header and data parameters
@@ -87,7 +88,7 @@ class SpiderImageReaderWriter : public ImageReaderWriter {
     \param[in] data a matrix to store the grid of data of the image
   */
   void read_from_floats(const String &filename, em::ImageHeader &header,
-                        cv::Mat &data) const {
+                        cv::Mat &data) const IMP_OVERRIDE {
     IMP_LOG_VERBOSE("reading with SpiderImageReaderWriter" << std::endl);
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
@@ -129,7 +130,7 @@ class SpiderImageReaderWriter : public ImageReaderWriter {
    *  \param[in] data a matrix with the grid of data of the image
    */
   void write_to_floats(const String &filename, em::ImageHeader &header,
-                       const cv::Mat &data) const {
+                       const cv::Mat &data) const IMP_OVERRIDE {
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
     //! The image header is already in Spider format, just write it

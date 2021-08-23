@@ -1,11 +1,23 @@
-file(WRITE "${CMAKE_BINARY_DIR}/build_info/python-ihm" "ok=True\n")
+set(IMP_USE_SYSTEM_IHM off CACHE BOOL "Use an external (system) copy of python-ihm, rather than that bundled with IMP.")
 
-set(PYTHON-IHM_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/src/ CACHE INTERNAL "" FORCE)
+file(WRITE "${CMAKE_BINARY_DIR}/build_info/python-ihm" "ok=True\n")
 
 if(EXISTS ${CMAKE_BINARY_DIR}/lib/ihm
    AND IS_SYMLINK ${CMAKE_BINARY_DIR}/lib/ihm)
   file(REMOVE ${CMAKE_BINARY_DIR}/lib/ihm)
 endif()
+
+# We need ihm_format.h to build IMP's mmCIF reader, even if we're using
+# external python-ihm
+set(PYTHON-IHM_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/modules/core/dependency/python-ihm/src/ CACHE INTERNAL "" FORCE)
+
+if(IMP_USE_SYSTEM_IHM)
+# Clean up after a non-system IHM build
+execute_process(COMMAND ${CMAKE_COMMAND} -E rm -rf
+                ${CMAKE_BINARY_DIR}/lib/ihm)
+
+else(IMP_USE_SYSTEM_IHM)
+
 execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory
                 ${CMAKE_BINARY_DIR}/lib/ihm
                 RESULT_VARIABLE setup)
@@ -89,3 +101,4 @@ endif()
 
 # Install C extension
 install(TARGETS ihm-python DESTINATION ${CMAKE_INSTALL_PYTHONDIR}/ihm)
+endif(IMP_USE_SYSTEM_IHM)

@@ -5,14 +5,8 @@
 import IMP.EMageFit.imp_general.io as io
 import IMP.EMageFit.database as database
 
-import sys
 import heapq
-import math
-import os
-import csv
-import time
 import logging
-import glob
 import numpy as np
 import collections
 
@@ -21,16 +15,15 @@ log = logging.getLogger("solutions_io")
 unit_delim = "/"  # separate units within a field (eg, reference frames).
 field_delim = ","
 
-ClusterRecord = collections.namedtuple('ClusterRecord',
-                               ['cluster_id', 'n_elements', 'representative',
-                                'elements', 'solutions_ids'])
+ClusterRecord = collections.namedtuple(
+    'ClusterRecord',
+    ['cluster_id', 'n_elements', 'representative', 'elements',
+     'solutions_ids'])
+
 
 #
-
 # INPUT/OUTPUT OF SOLUTIONS OBTAINED WITH DominoModel
-
 #
-
 class HeapRecord(tuple):
 
     """
@@ -96,8 +89,8 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
     ind = names.index(orderby)
     they_are_sorted = field_delim.join(names)
     # Get the native structure data from the first database
-    sql_command = """SELECT %s FROM %s
-                  WHERE assignment="native" LIMIT 1 """ % (they_are_sorted, tbl)
+    sql_command = """SELECT %s FROM %s WHERE assignment="native"
+                     LIMIT 1 """ % (they_are_sorted, tbl)
     native_data = db.retrieve_data(sql_command)
     db.close()
     log.info("Gathering results. Saving to %s", fn_output)
@@ -192,9 +185,9 @@ def gather_solution_results(fns, fn_output, raisef=0.1):
     out_db.close()
 
 
-def get_sorting_indices(l):
-    """ Return indices that sort the list l """
-    pairs = sorted([(element, i) for i, element in enumerate(l)])
+def get_sorting_indices(ls):
+    """ Return indices that sort the list ls"""
+    pairs = sorted([(element, i) for i, element in enumerate(ls)])
     indices = [p[1] for p in pairs]
     return indices
 
@@ -306,8 +299,9 @@ class ResultsDB(database.Database2):
         """
             Get solutions from the database.
             @param fields Fields requested. If the fields are in different
-            tables, a left join is done. Otherwise get_solutions_results_table()
-            is called. See get_solutions_results_table() for the meaning
+            tables, a left join is done. Otherwise
+            get_solutions_results_table() is called. See
+            get_solutions_results_table() for the meaning
             of the parameters.
             @param max_number
             @param orderby
@@ -440,7 +434,8 @@ class ResultsDB(database.Database2):
     def add_ccc_table(self):
         """
             Add a table to the database for store the values of the cross
-            correlation coefficient between a model and the native configuration
+            correlation coefficient between a model and the native
+            configuration
         """
 
         self.check_if_is_connected()
@@ -452,7 +447,8 @@ class ResultsDB(database.Database2):
         self.add_columns(self.native_table_name,
                          table_fields, table_types, check=True)
         self.update_data(self.native_table_name,
-                         table_fields, [0, 1.00], ["assignment"], ["\"native\""])
+                         table_fields, [0, 1.00],
+                         ["assignment"], ["\"native\""])
 
     def format_ccc_record(self, solution_id, ccc):
         """ Format for the record to store in the ccc table """
@@ -561,7 +557,8 @@ class ResultsDB(database.Database2):
         """
             Recover solutions for a specific list of results
             @param fields Fields to recover fro the database
-            @param solutions_ids A list with the desired solutions. E.g. [0,3,6]
+            @param solutions_ids A list with the desired solutions.
+                   E.g. [0,3,6]
         """
         sql_command = """ SELECT %s FROM %s WHERE solution_id IN (%s) """
         f = self.get_fields_string(fields)
@@ -604,19 +601,21 @@ class ResultsDB(database.Database2):
             Recovers from the database the placement scores for a set of
             solutions, and returns the mean and standard deviation of the
             placement score for each of the components of the complex being
-            scored. This function will be typical used to compute the variation
-            of the placement of each component within a cluster of solutions
+            scored. This function will be typically used to compute the
+            variation of the placement of each component within a cluster
+            of solutions
             @param solutions_ids The ids of the solutions used to compute
                                  the statistics
             @return The output are 4 numpy vectors:
                 placement_distances_mean - The mean placement distance for each
                                             component
                 placement_distances_stddev - The standard deviation of the
-                                            placement distance for each component
+                                            placement distance for each
+                                            component
                 placement_angles_mean - The mean placement angle for each
                                             component
-                placement_angles_stddev - The standard deviation of the placement
-                                            angle for each component,
+                placement_angles_stddev - The standard deviation of the
+                                           placement angle for each component.
         """
 
         self.check_if_is_connected()

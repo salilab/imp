@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8]
+        python-version: [3.9]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -21,4 +21,4 @@ jobs:
     - name: Test
       run: |
         pip install flake8
-        flake8 tools modules/parallel/pyext modules/test/pyext modules/mmcif/pyext
+        flake8 tools modules/parallel/pyext modules/test/pyext modules/mmcif/pyext modules/statistics/pyext modules/pepdock/pyext

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import os.path
+import glob
 import os
 # first is directory, second data, third subnamespace
 output_directory = sys.argv[1]
@@ -28,7 +29,7 @@ def rewrite(filename, contents):
         old = open(filename, "r").read()
         if old == contents:
             return
-    except:
+    except IOError:
         pass
         # print "Missing", filename
     dirpath = os.path.split(filename)[0]
@@ -87,8 +88,8 @@ def write_cpp(paths):
     for n in names:
         defs.extend(["namespace %s {" % n[0],
                      "std::string %s = std::string()" % n[1], ])
-        for l in n[2]:
-            defs.append("     + \"%s\"" % l)
+        for content in n[2]:
+            defs.append("     + \"%s\"" % content)
         defs.extend([";", "}"])
     cpp = """#include "embed_jsons.h"
 namespace RMF {
@@ -98,9 +99,10 @@ namespace RMF {
     outpath = os.path.join(output_directory, "embed_jsons.cpp")
     rewrite(outpath, cpp)
 
+
 try:
     os.makedirs(output_directory)
-except:
+except OSError:
     pass
 
 

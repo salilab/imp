@@ -28,8 +28,9 @@ class Tests(IMP.test.TestCase):
         self.leaves_ref = IMP.core.LeavesRefiner(
             IMP.atom.Hierarchy.get_traits())
         for pf in pdb_filenames:
-            self.mhs.append(IMP.atom.read_pdb(self.open_input_file(pf),
-                                              self.imp_model, IMP.atom.CAlphaPDBSelector()))
+            with self.open_input_file(pf) as fh:
+                self.mhs.append(IMP.atom.read_pdb(
+                    fh, self.imp_model, IMP.atom.CAlphaPDBSelector()))
         for mh in self.mhs:
             IMP.atom.add_radii(mh)
             IMP.atom.create_rigid_body(mh)
@@ -105,7 +106,6 @@ class Tests(IMP.test.TestCase):
 
     def test_correction_vs_decompose_correlation(self):
         """Test that correlation and decomposed correlation return the same score"""
-        cc = IMP.em.CoarseCC()
         # generate all density maps:
         sampled_maps = []
         for mh in self.mhs:
@@ -116,19 +116,19 @@ class Tests(IMP.test.TestCase):
         # full sampled map
         decomposed_score = 0.
         for i in range(len(self.mhs)):
-            decomposed_score += cc.cross_correlation_coefficient(self.scene,
-                                                                 sampled_maps[i], 0., False, self.norm_factors)
+            decomposed_score += IMP.em.get_coarse_cc_coefficient(
+                self.scene, sampled_maps[i], 0., False, self.norm_factors)
         print("decomposed_score_norm:", decomposed_score)
-        print("full score:", cc.cross_correlation_coefficient(self.scene,
-                                                              self.full_sampled_map, 0., False))
-        self.assertAlmostEqual(decomposed_score,
-                               cc.cross_correlation_coefficient(self.scene,
-                                                                self.full_sampled_map, 0., False),
-                               2)
+        print("full score:", IMP.em.get_coarse_cc_coefficient(
+            self.scene, self.full_sampled_map, 0., False))
+        self.assertAlmostEqual(
+            decomposed_score,
+            IMP.em.get_coarse_cc_coefficient(self.scene, self.full_sampled_map,
+                                             0., False),
+            2)
 
     def test_fit_restraint_decomposition(self):
         """Test that the full and decomposed fit restraint return the same score"""
-        cc = IMP.em.CoarseCC()
         # generate all density maps:
         sampled_maps = []
         for mh in self.mhs:

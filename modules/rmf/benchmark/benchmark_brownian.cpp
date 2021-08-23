@@ -185,7 +185,8 @@ double simulate(It it, int ns) {
 void update_slack_estimate(It it) {
   std::cout << "Estimating slack " << std::endl;
   Restraints rt = it.bd->get_scoring_function()->create_restraints();
-  double slack = get_slack_estimate(it.lsc->get_particles(), 20, 1,
+  double slack = get_slack_estimate(it.lsc->get_model(),
+                                    it.lsc->get_contents(), 20, 1,
                                     get_restraints(rt), true, it.bd, it.cpc);
   it.sp->set_value(FloatKey("slack"), slack);
 }
@@ -288,7 +289,7 @@ int main(int argc, char **argv) {
           std::cout << Showable(all[i]) << " " << all[i]->get_last_score()
                     << std::endl;
         }
-        std::cout << "Close pairs: " << it.cpc->get_particle_pairs()
+        std::cout << "Close pairs: " << it.cpc->get_contents()
                   << std::endl;
         create(it, fh);
       }

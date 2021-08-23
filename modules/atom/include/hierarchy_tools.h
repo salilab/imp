@@ -185,7 +185,7 @@ class HierarchyGeometry : public display::SingletonGeometry {
  public:
   HierarchyGeometry(core::Hierarchy d, double resolution = 0)
       : SingletonGeometry(d), res_(resolution) {}
-  display::Geometries get_components() const {
+  display::Geometries get_components() const IMP_OVERRIDE {
     display::Geometries ret;
     atom::Hierarchy d(get_particle());
     atom::Selection sel(d);
@@ -210,7 +210,7 @@ class HierarchiesGeometry : public display::SingletonsGeometry {
  public:
   HierarchiesGeometry(SingletonContainer *sc, double resolution = -1)
       : SingletonsGeometry(sc), res_(resolution) {}
-  display::Geometries get_components() const {
+  display::Geometries get_components() const IMP_OVERRIDE {
     display::Geometries ret;
     IMP_FOREACH(ParticleIndex pi, get_container()->get_contents()) {
       Model *m = get_container()->get_model();

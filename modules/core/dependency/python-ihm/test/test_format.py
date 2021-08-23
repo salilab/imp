@@ -2,15 +2,6 @@ import utils
 import os
 import unittest
 import sys
-try:
-    from unittest import skipIf
-except ImportError:
-    # Python 2.6 compatibility
-    def skipIf(condition, reason):
-        if condition:
-            return lambda x: None
-        else:
-            return lambda x: x
 
 if sys.version_info[0] >= 3:
     from io import StringIO
@@ -583,13 +574,13 @@ x y
             h = _TestFinalizeHandler()
             self._read_cif("# _exptl.method foo\n", real_file, {'_exptl': h})
 
-    @skipIf(_format is None, "No C tokenizer")
+    @unittest.skipIf(_format is None, "No C tokenizer")
     def test_file_new_python_no_read_method(self):
         """Test ihm_file_new_from_python with object with no read method"""
         self.assertRaises(AttributeError, _format.ihm_file_new_from_python,
                           None)
 
-    @skipIf(_format is None, "No C tokenizer")
+    @unittest.skipIf(_format is None, "No C tokenizer")
     def test_python_read_exception(self):
         """Test exception in read callback is handled"""
         class MyError(Exception):
@@ -604,7 +595,7 @@ x y
         self.assertRaises(MyError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
-    @skipIf(_format is None, "No C tokenizer")
+    @unittest.skipIf(_format is None, "No C tokenizer")
     def test_python_read_not_string(self):
         """Test that read() returning an invalid type is handled"""
         class MyFileLike(object):
@@ -616,7 +607,7 @@ x y
         self.assertRaises(ValueError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
-    @skipIf(_format is None, "No C tokenizer")
+    @unittest.skipIf(_format is None, "No C tokenizer")
     def test_python_read_too_long(self):
         """Test that read() returning too many bytes is handled"""
         class MyFileLike(object):
@@ -628,8 +619,8 @@ x y
         self.assertRaises(ValueError, _format.ihm_read_file, reader)
         _format.ihm_reader_free(reader)
 
-    @skipIf(_format is None or sys.platform == 'win32',
-            "No C tokenizer, or Windows")
+    @unittest.skipIf(_format is None or sys.platform == 'win32',
+                     "No C tokenizer, or Windows")
     def test_fd_read_failure(self):
         """Test handling of C read() failure"""
         f = open('/dev/null')
@@ -637,7 +628,7 @@ x y
         r = ihm.format.CifReader(f, {})
         self.assertRaises(IOError, r.read_file)
 
-    @skipIf(_format is None, "No C tokenizer")
+    @unittest.skipIf(_format is None, "No C tokenizer")
     def test_python_read_bytes(self):
         """Test read() returning bytes (binary file)"""
         class MyFileLike(object):
@@ -655,7 +646,7 @@ x y
         r.read_file()
         self.assertEqual(h.data, [{'method': 'foo'}])
 
-    @skipIf(_format is None, "No C tokenizer")
+    @unittest.skipIf(_format is None, "No C tokenizer")
     def test_python_read_unicode(self):
         """Test read() returning Unicode (text file)"""
         class MyFileLike(object):
@@ -673,7 +664,7 @@ x y
         r.read_file()
         self.assertEqual(h.data, [{'method': 'foo'}])
 
-    @skipIf(_format is None, "No C tokenizer")
+    @unittest.skipIf(_format is None, "No C tokenizer")
     def test_line_endings(self):
         """Check that C tokenizer works with different line endings"""
         # todo: the Python tokenizer should handle the same endings
@@ -762,7 +753,7 @@ x y
                          [('_cat1', 'unknown_keyword1', 3),
                           ('_foo', 'unknown_keyword2', 7)])
 
-    @skipIf(_format is None, "No C tokenizer")
+    @unittest.skipIf(_format is None, "No C tokenizer")
     def test_multiple_set_unknown_handler(self):
         """Test setting unknown handler multiple times"""
         class Handler(object):

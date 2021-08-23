@@ -6,10 +6,7 @@ import IMP
 import IMP.atom as atom
 import IMP.algebra as alg
 import IMP.core as core
-import sys
 import logging
-from IMP.EMageFit.argminmax import keymax
-log = logging.getLogger("buildxlinks")
 
 import networkx as nx
 
@@ -18,6 +15,7 @@ try:
 except NameError:
     from sets import Set as set
 
+log = logging.getLogger("buildxlinks")
 
 class Xlink:
 
@@ -74,10 +72,10 @@ class Xlink:
             self.second_chain, self.first_chain
 
     def show(self):
-        s = "Cross Link: %s %s %d - %s %s %d. Distance %f" % (self.first_id,
-                                                              self.first_chain, self.first_residue,
-                                                              self.second_id, self.second_chain,
-                                                              self.second_residue, self.distance)
+        s = "Cross Link: %s %s %d - %s %s %d. Distance %f" % (
+            self.first_id, self.first_chain, self.first_residue,
+            self.second_id, self.second_chain, self.second_residue,
+            self.distance)
         return s
 
     def get_name(self):
@@ -159,8 +157,8 @@ class XlinksDict(dict):
             print pair_ids,"NOT FOUND, swapping to",(pair_ids[1], pair_ids[0])
             # If not found, invert the pair
             xlinks_list = self[(pair_ids[1], pair_ids[0])]
-            # swap the xlinks, so the first element of the pair corresponds to the
-            # first id in the xlink
+            # swap the xlinks, so the first element of the pair corresponds
+            # to the first id in the xlink
             for xl in xlinks_list:
                 xl.swap()
             for xl in xlinks_list:
@@ -210,13 +208,13 @@ class DockOrder (object):
         docking_pairs = []
         degs = self.G.degree(self.G.nodes())
         log.debug("Degrees: %s", degs)
-        sorted_degrees = sorted(((v,k) for (k,v) in dict(degs).items()),
+        sorted_degrees = sorted(((v, k) for (k, v) in dict(degs).items()),
                                 reverse=True)
 
         receptors_considered = []
         for degree, node in sorted_degrees:
             for n in self.G.neighbors(node):
-                if not n in receptors_considered:
+                if n not in receptors_considered:
                     docking_pairs.append((node, n))
             receptors_considered.append(node)
         log.info("The suggested order for the docking pairs is %s",

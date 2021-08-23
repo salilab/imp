@@ -6,7 +6,8 @@ import IMP.core
 import IMP.container
 import sys
 
-IMP.setup_from_argv(sys.argv,
+IMP.setup_from_argv(
+    sys.argv,
     "Example of how to use one of the IMP.display.LogOptimizerStates")
 
 m = IMP.Model()

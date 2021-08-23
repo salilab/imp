@@ -50,6 +50,16 @@ not put in the `tools` directory) and the second argument to
 being built under the `modules` directory, this second argument should
 be omitted - the module names will match those of the subdirectories.)
 
+If you also need to use [RMF](https://integrativemodeling.org/rmf/)
+this should be searched for separately; add the
+[FindRMF.cmake](https://github.com/salilab/npctransport/blob/develop/tools/FindRMF.cmake)
+file and add a suitable `find_package` call to `CMakeLists.txt` after the
+search for %IMP. A suitable `CMakeLists.txt` can be found in the
+[npctransport repository](https://github.com/salilab/npctransport/blob/develop/CMakeLists.txt).
+This is needed because while RMF is often bundled with %IMP, it can also be
+installed separately (this is the case, for example, with some of the
+Anaconda packages).
+
 ## Building
 
 The module can now be built like any other CMake project - i.e. make a

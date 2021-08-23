@@ -38,9 +38,10 @@ class Tests(IMP.test.TestCase):
         self.assertEqual(nbl.get_slack(), slack)
         # nbl.set_log_level(IMP.VERBOSE)
         m.update()
-        for p in nbl.get_particle_pairs():
-            self.assertNotEqual(IMP.core.RigidMember(p[0]).get_rigid_body(),
-                                IMP.core.RigidMember(p[1]).get_rigid_body())
+        for pi in nbl.get_contents():
+            self.assertNotEqual(
+                IMP.core.RigidMember(m, pi[0]).get_rigid_body(),
+                IMP.core.RigidMember(m, pi[1]).get_rigid_body())
 
         def test_empty():
             for l0 in ps0:

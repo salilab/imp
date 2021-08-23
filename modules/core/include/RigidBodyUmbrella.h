@@ -90,8 +90,9 @@ class IMPCOREEXPORT RigidBodyUmbrella : public Restraint {
   void set_k(double k) { k_ = k; }
 
  protected:
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  IMP::ModelObjectsTemp do_get_inputs() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RigidBodyUmbrella);
 
  private:

@@ -6,7 +6,7 @@ Python objects that together describe the system, and then dumping that
 hierarchy to an mmCIF file.
 
 For a complete worked example, see the
-`simple docking example <https://github.com/ihmwg/python-ihm/blob/master/examples/simple-docking.py>`_.
+`simple docking example <https://github.com/ihmwg/python-ihm/blob/main/examples/simple-docking.py>`_.
 
 The top level of the hierarchy in IHM is the :class:`ihm.System`. All other
 objects are referenced from a System object.
@@ -28,7 +28,7 @@ or EMPIAR, or :class:`ihm.location.InputFileLocation` for something that's
 stored as a simple file, either on the local disk or at a location described
 with a DOI such as `Zenodo <https://zenodo.org>`_ or a publication's
 supplementary information. See the
-`locations example <https://github.com/ihmwg/python-ihm/blob/master/examples/locations.py>`_
+`locations example <https://github.com/ihmwg/python-ihm/blob/main/examples/locations.py>`_
 for more examples.
 
 System architecture

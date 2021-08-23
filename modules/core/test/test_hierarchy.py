@@ -35,6 +35,48 @@ class Tests(IMP.test.TestCase):
         ppd = self._make_test_hierarchy(m)
         self.assertEqual(ppd.get_number_of_children(), 2)
 
+    def test_trigger(self):
+        """Check Hierarchy-changed Model trigger"""
+        m = IMP.Model()
+        tk = IMP.core.Hierarchy.get_changed_key()
+        # No hierarchy created yet, so trigger should be 0
+        self.assertEqual(m.get_trigger_last_updated(tk), 0)
+        self.assertEqual(m.get_age(), 1)
+        ppd = self._make_test_hierarchy(m)
+        self.assertEqual(m.get_trigger_last_updated(tk), 1)
+        self.assertEqual(m.get_age(), 1)
+
+        # Update should increase model age but not change trigger
+        m.update()
+        self.assertEqual(m.get_trigger_last_updated(tk), 1)
+        self.assertEqual(m.get_age(), 2)
+
+        # Adding a child should update the trigger
+        pc = IMP.Particle(m)
+        pcd = IMP.core.Hierarchy.setup_particle(pc)
+        ppd.add_child(pcd)
+        self.assertEqual(m.get_trigger_last_updated(tk), 2)
+
+        m.update()
+        pc = IMP.Particle(m)
+        pcd = IMP.core.Hierarchy.setup_particle(pc)
+        ppd.add_child_at(pcd, 0)
+        self.assertEqual(m.get_trigger_last_updated(tk), 3)
+
+        # Removing a child should update the trigger
+        m.update()
+        ppd.remove_child(pcd)
+        self.assertEqual(m.get_trigger_last_updated(tk), 4)
+
+        m.update()
+        ppd.remove_child(0)
+        self.assertEqual(m.get_trigger_last_updated(tk), 5)
+
+        # Clearing all children should update the trigger
+        m.update()
+        ppd.clear_children()
+        self.assertEqual(m.get_trigger_last_updated(tk), 6)
+
     def test_depth_visit_count(self):
         """Check depth-first hierarchy traversal"""
         m = IMP.Model()

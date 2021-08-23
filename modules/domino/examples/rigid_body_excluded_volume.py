@@ -86,6 +86,7 @@ def display(m, helices, name):
         g.set_color(IMP.display.get_display_color(i))
         w.add_geometry(g)
 
+
 IMP.set_log_level(IMP.SILENT)
 print("creating representation")
 (m, helices) = create_representation()

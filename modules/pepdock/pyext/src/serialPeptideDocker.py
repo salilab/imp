@@ -1,17 +1,5 @@
-import IMP
-import subprocess
-import random
-import IMP.domino
-import IMP.core
-import IMP.rmf
-import RMF
 import time
-import IMP.algebra
-import types
-import re
 import sys
-import operator
-import os
 import peptideDocker
 import atomicDomino
 

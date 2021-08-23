@@ -1,3 +1,26 @@
+0.21 - 2021-07-14
+=================
+  - BinaryCIF files now use UTF8 msgpack strings for all text, rather than
+    raw bytes. This should make python-ihm's BinaryCIF files interoperable
+    with those used by, e.g., CoordinateServer.
+  - Output mmCIF files now include author-provided numbering (auth_seq_id)
+    for atoms in the atom_site table. This should help packages that don't
+    read the pdbx_poly_seq_scheme table to show the desired residue
+    numbering (#61).
+
+0.20 - 2021-05-06
+=================
+  - Support for Python 2.6 has been dropped. The library needs Python 2.7
+    or Python 3.
+  - Bugfix: correctly read in multiline reference sequence one-letter codes.
+  - Bugfix: the reader is now more tolerant of omitted or unknown values
+    (. or ?) in input mmCIF files.
+
+0.19 - 2021-04-16
+=================
+  - A convenience class is added to describe datasets stored in the
+    ProXL database (:class:`ihm.location.ProXLLocation`).
+
 0.18 - 2020-11-06
 =================
   - Update to match latest FLR dictionary.

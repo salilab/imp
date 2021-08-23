@@ -29,6 +29,7 @@ MonteCarlo::MonteCarlo(Model *m)
       stat_upward_steps_taken_(0),
       stat_num_failures_(0),
       return_best_(true),
+      score_moved_(false),
       rand_(0, 1) {
   min_score_ = -std::numeric_limits<double>::max();
 }
@@ -116,7 +117,7 @@ struct MoverCleanup {
 void MonteCarlo::do_step() {
   MonteCarloMoverResult moved = do_move();
   MoverCleanup cleanup(this);
-  double energy = do_evaluate(moved.get_moved_particles());
+  double energy = do_evaluate(moved.get_moved_particles(), false);
   do_accept_or_reject_move(energy, moved.get_proposal_ratio());
   cleanup.reset();
 }
@@ -147,7 +148,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
   ParticleIndexes movable = get_movable_particles();
 
   // provide a way of feeding in this value
-  last_energy_ = do_evaluate(movable);
+  last_energy_ = do_evaluate(movable, true);
   if (return_best_) {
     best_ = new Configuration(get_model());
     best_energy_ = last_energy_;
@@ -173,7 +174,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     best_->swap_configuration();
     IMP_LOG_TERSE("MC Returning energy " << best_energy_ << std::endl);
     IMP_IF_CHECK(USAGE) {
-      IMP_LOG_TERSE("MC Got " << do_evaluate(get_movable_particles())
+      IMP_LOG_TERSE("MC Got " << do_evaluate(get_movable_particles(), true)
                               << std::endl);
       /*IMP_INTERNAL_CHECK((e >= std::numeric_limits<double>::max()
                           && best_energy_ >= std::numeric_limits<double>::max())
@@ -183,7 +184,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
                          << best_energy_ << " vs " << e << std::endl);*/
     }
 
-    return do_evaluate(movable);
+    return do_evaluate(movable, true);
   } else {
     return last_energy_;
   }
@@ -202,7 +203,8 @@ void MonteCarloWithLocalOptimization::do_step() {
   MonteCarloMoverResult moved = do_move();
   MoverCleanup cleanup(this);
   IMP_LOG_TERSE("MC Performing local optimization from "
-                << do_evaluate(moved.get_moved_particles()) << std::endl);
+                << do_evaluate(moved.get_moved_particles(), false)
+                << std::endl);
   // non-Mover parts of the model can be moved by the local optimizer
   // make sure they are cleaned up
   PointerMember<Configuration> cs = new Configuration(get_model());
@@ -221,7 +223,8 @@ void MonteCarloWithBasinHopping::do_step() {
   MonteCarloMoverResult moved = do_move();
   MoverCleanup cleanup(this);
   IMP_LOG_TERSE("MC Performing local optimization from "
-                << do_evaluate(moved.get_moved_particles()) << std::endl);
+                << do_evaluate(moved.get_moved_particles(), false)
+                << std::endl);
   Pointer<Configuration> cs = new Configuration(get_model());
   double ne = get_local_optimizer()->optimize(get_number_of_steps());
   cs->swap_configuration();

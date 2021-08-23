@@ -14,11 +14,11 @@ import ihm.format_bcif
 # generate real binary files
 class MockMsgPack(object):
     @staticmethod
-    def unpack(fh):
+    def unpack(fh, raw=False):
         return fh
 
     @staticmethod
-    def pack(data, fh):
+    def pack(data, fh, use_bin_type=True):
         fh.data = data
 
 
@@ -59,9 +59,9 @@ def _encode(rows):
             mask[i] = 2
     if need_mask:
         rows = ['' if r == '?' or r is None else r for r in rows]
-        mask = {b'data': ''.join(chr(i) for i in mask).encode('ascii'),
-                b'encoding': [{b'kind': b'ByteArray',
-                               b'type': ihm.format_bcif._Uint8}]}
+        mask = {u'data': ''.join(chr(i) for i in mask).encode('ascii'),
+                u'encoding': [{u'kind': u'ByteArray',
+                               u'type': ihm.format_bcif._Uint8}]}
     else:
         mask = None
     string_data = "".join(rows)
@@ -75,15 +75,15 @@ def _encode(rows):
     offsets = ''.join(chr(i) for i in offsets).encode('ascii')
     indices = ''.join(chr(i) for i in range(len(rows))).encode('ascii')
     string_array_encoding = {
-        b'kind': b'StringArray',
-        b'dataEncoding': [{b'kind': b'ByteArray',
-                           b'type': ihm.format_bcif._Uint8}],
-        b'stringData': string_data.encode('ascii'),
-        b'offsetEncoding': [{b'kind': b'ByteArray',
-                             b'type': ihm.format_bcif._Uint8}],
-        b'offsets': offsets}
-    d = {b'data': indices,
-         b'encoding': [string_array_encoding]}
+        u'kind': u'StringArray',
+        u'dataEncoding': [{u'kind': u'ByteArray',
+                           u'type': ihm.format_bcif._Uint8}],
+        u'stringData': string_data,
+        u'offsetEncoding': [{u'kind': u'ByteArray',
+                             u'type': ihm.format_bcif._Uint8}],
+        u'offsets': offsets}
+    d = {u'data': indices,
+         u'encoding': [string_array_encoding]}
     return d, mask
 
 
@@ -98,10 +98,10 @@ class Category(object):
         for name, rows in self.data.items():
             nrows = len(rows)
             data, mask = _encode(rows)
-            cols.append({b'mask': mask, b'name': name.encode('ascii'),
-                         b'data': data})
-        return {b'name': self.name.encode('ascii'),
-                b'columns': cols, b'rowCount': nrows}
+            cols.append({u'mask': mask, u'name': name,
+                         u'data': data})
+        return {u'name': self.name,
+                u'columns': cols, u'rowCount': nrows}
 
 
 class Block(list):
@@ -109,17 +109,17 @@ class Block(list):
 
 
 def _make_bcif_file(blocks):
-    blocks = [{b'header': 'ihm',
-               b'categories': [c.get_bcif() for c in block]}
+    blocks = [{u'header': 'ihm',
+               u'categories': [c.get_bcif() for c in block]}
               for block in blocks]
-    return {b'version': '0.1', b'encoder': 'python-ihm test suite',
-            b'dataBlocks': blocks}
+    return {u'version': u'0.1', u'encoder': u'python-ihm test suite',
+            u'dataBlocks': blocks}
 
 
 class Tests(unittest.TestCase):
     def test_decode_bytes(self):
         """Test decode_bytes function"""
-        d = ihm.format_bcif._decode_bytes(b'foo')
+        d = ihm.format_bcif._decode_bytes(u'foo')
         self.assertEqual(d, 'foo')
 
     def test_decoder_base(self):
@@ -131,15 +131,15 @@ class Tests(unittest.TestCase):
     def test_string_array_decoder(self):
         """Test StringArray decoder"""
         d = ihm.format_bcif._StringArrayDecoder()
-        self.assertEqual(d._kind, b'StringArray')
+        self.assertEqual(d._kind, u'StringArray')
 
         # Int8 is signed char (so FF is -1)
-        enc = {b'stringData': b'aAB',
-               b'dataEncoding': [{b'kind': b'ByteArray',
-                                  b'type': ihm.format_bcif._Int8}],
-               b'offsetEncoding': [{b'kind': b'ByteArray',
-                                    b'type': ihm.format_bcif._Int8}],
-               b'offsets': b'\x00\x01\x03'}
+        enc = {u'stringData': u'aAB',
+               u'dataEncoding': [{u'kind': u'ByteArray',
+                                  u'type': ihm.format_bcif._Int8}],
+               u'offsetEncoding': [{u'kind': u'ByteArray',
+                                    u'type': ihm.format_bcif._Int8}],
+               u'offsets': b'\x00\x01\x03'}
         data = b'\x00\x01\x00\xFF'
 
         data = d(enc, data)
@@ -148,83 +148,83 @@ class Tests(unittest.TestCase):
     def test_byte_array_decoder(self):
         """Test ByteArray decoder"""
         d = ihm.format_bcif._ByteArrayDecoder()
-        self.assertEqual(d._kind, b'ByteArray')
+        self.assertEqual(d._kind, u'ByteArray')
 
         # type 1 (signed char)
-        data = d({b'type': ihm.format_bcif._Int8}, b'\x00\x01\xFF')
+        data = d({u'type': ihm.format_bcif._Int8}, b'\x00\x01\xFF')
         self.assertEqual(list(data), [0, 1, -1])
 
         # type 2 (signed short)
-        data = d({b'type': ihm.format_bcif._Int16}, b'\x00\x01\x01\xAC')
+        data = d({u'type': ihm.format_bcif._Int16}, b'\x00\x01\x01\xAC')
         self.assertEqual(list(data), [256, -21503])
 
         # type 3 (signed int)
-        data = d({b'type': ihm.format_bcif._Int32}, b'\x00\x01\x01\x05')
+        data = d({u'type': ihm.format_bcif._Int32}, b'\x00\x01\x01\x05')
         self.assertEqual(list(data), [83951872])
 
         # type 4 (unsigned char)
-        data = d({b'type': ihm.format_bcif._Uint8}, b'\x00\xFF')
+        data = d({u'type': ihm.format_bcif._Uint8}, b'\x00\xFF')
         self.assertEqual(list(data), [0, 255])
 
         # type 5 (unsigned short)
-        data = d({b'type': ihm.format_bcif._Uint16}, b'\x00\x01\x01\xAC')
+        data = d({u'type': ihm.format_bcif._Uint16}, b'\x00\x01\x01\xAC')
         self.assertEqual(list(data), [256, 44033])
 
         # type 6 (unsigned int)
-        data = d({b'type': ihm.format_bcif._Uint32}, b'\x00\x01\x01\xFF')
+        data = d({u'type': ihm.format_bcif._Uint32}, b'\x00\x01\x01\xFF')
         self.assertEqual(list(data), [4278255872])
 
         # type 32 (32-bit float)
-        data = d({b'type': ihm.format_bcif._Float32}, b'\x00\x00(B')
+        data = d({u'type': ihm.format_bcif._Float32}, b'\x00\x00(B')
         self.assertAlmostEqual(list(data)[0], 42.0, delta=0.1)
 
         # type 33 (64-bit float)
-        data = d({b'type': ihm.format_bcif._Float64},
+        data = d({u'type': ihm.format_bcif._Float64},
                  b'\x00\x00\x00\x00\x00\x00E@')
         self.assertAlmostEqual(list(data)[0], 42.0, delta=0.1)
 
     def test_integer_packing_decoder_signed(self):
         """Test IntegerPacking decoder with signed data"""
         d = ihm.format_bcif._IntegerPackingDecoder()
-        self.assertEqual(d._kind, b'IntegerPacking')
+        self.assertEqual(d._kind, u'IntegerPacking')
 
         # 1-byte data
-        data = d({b'isUnsigned': False, b'byteCount': 1},
+        data = d({u'isUnsigned': False, u'byteCount': 1},
                  [1, 2, -3, 127, 1, -128, -5])
         self.assertEqual(list(data), [1, 2, -3, 128, -133])
 
         # 2-byte data
-        data = d({b'isUnsigned': False, b'byteCount': 2},
+        data = d({u'isUnsigned': False, u'byteCount': 2},
                  [1, 2, -3, 32767, 1, -32768, -5])
         self.assertEqual(list(data), [1, 2, -3, 32768, -32773])
 
     def test_integer_packing_decoder_unsigned(self):
         """Test IntegerPacking decoder with unsigned data"""
         d = ihm.format_bcif._IntegerPackingDecoder()
-        self.assertEqual(d._kind, b'IntegerPacking')
+        self.assertEqual(d._kind, u'IntegerPacking')
 
         # 1-byte data
-        data = d({b'isUnsigned': True, b'byteCount': 1},
+        data = d({u'isUnsigned': True, u'byteCount': 1},
                  [1, 2, 3, 127, 1, 255, 1])
         self.assertEqual(list(data), [1, 2, 3, 127, 1, 256])
 
         # 2-byte data
-        data = d({b'isUnsigned': True, b'byteCount': 2},
+        data = d({u'isUnsigned': True, u'byteCount': 2},
                  [1, 2, 3, 32767, 1, 65535, 5])
         self.assertEqual(list(data), [1, 2, 3, 32767, 1, 65540])
 
     def test_delta_decoder(self):
         """Test Delta decoder"""
         d = ihm.format_bcif._DeltaDecoder()
-        self.assertEqual(d._kind, b'Delta')
+        self.assertEqual(d._kind, u'Delta')
 
-        data = d({b'origin': 1000}, [0, 3, 2, 1])
+        data = d({u'origin': 1000}, [0, 3, 2, 1])
         self.assertEqual(list(data), [1000, 1003, 1005, 1006])
 
     def test_run_length_decoder(self):
         """Test RunLength decoder"""
         d = ihm.format_bcif._RunLengthDecoder()
-        self.assertEqual(d._kind, b'RunLength')
+        self.assertEqual(d._kind, u'RunLength')
 
         data = d({}, [1, 3, 2, 1, 3, 2])
         self.assertEqual(list(data), [1, 1, 1, 2, 3, 3])
@@ -232,9 +232,9 @@ class Tests(unittest.TestCase):
     def test_fixed_point_decoder(self):
         """Test FixedPoint decoder"""
         d = ihm.format_bcif._FixedPointDecoder()
-        self.assertEqual(d._kind, b'FixedPoint')
+        self.assertEqual(d._kind, u'FixedPoint')
 
-        data = list(d({b'factor': 100}, [120, 123, 12]))
+        data = list(d({u'factor': 100}, [120, 123, 12]))
         self.assertEqual(len(data), 3)
         self.assertAlmostEqual(data[0], 1.20, delta=0.01)
         self.assertAlmostEqual(data[1], 1.23, delta=0.01)
@@ -243,8 +243,8 @@ class Tests(unittest.TestCase):
     def test_decode(self):
         """Test _decode function"""
         data = b'\x01\x03\x02\x01\x03\x02'
-        runlen = {b'kind': b'RunLength'}
-        bytearr = {b'kind': b'ByteArray', b'type': ihm.format_bcif._Int8}
+        runlen = {u'kind': u'RunLength'}
+        bytearr = {u'kind': u'ByteArray', u'type': ihm.format_bcif._Int8}
         data = ihm.format_bcif._decode(data, [runlen, bytearr])
         self.assertEqual(list(data), [1, 1, 1, 2, 3, 3])
 
@@ -380,44 +380,44 @@ class Tests(unittest.TestCase):
         # type 1 (signed char)
         data, encd = d([0, 1, -1])
         self.assertEqual(data, b'\x00\x01\xFF')
-        self.assertEqual(encd, {b'kind': b'ByteArray',
-                                b'type': ihm.format_bcif._Int8})
+        self.assertEqual(encd, {'kind': 'ByteArray',
+                                'type': ihm.format_bcif._Int8})
 
         # type 2 (signed short)
         data, encd = d([256, -21503])
         self.assertEqual(data, b'\x00\x01\x01\xAC')
-        self.assertEqual(encd, {b'kind': b'ByteArray',
-                                b'type': ihm.format_bcif._Int16})
+        self.assertEqual(encd, {'kind': 'ByteArray',
+                                'type': ihm.format_bcif._Int16})
 
         # type 3 (signed int)
         data, encd = d([-83951872])
         self.assertEqual(data, b'\x00\xff\xfe\xfa')
-        self.assertEqual(encd, {b'kind': b'ByteArray',
-                                b'type': ihm.format_bcif._Int32})
+        self.assertEqual(encd, {'kind': 'ByteArray',
+                                'type': ihm.format_bcif._Int32})
 
         # type 4 (unsigned char)
         data, encd = d([0, 255])
         self.assertEqual(data, b'\x00\xFF')
-        self.assertEqual(encd, {b'kind': b'ByteArray',
-                                b'type': ihm.format_bcif._Uint8})
+        self.assertEqual(encd, {'kind': 'ByteArray',
+                                'type': ihm.format_bcif._Uint8})
 
         # type 5 (unsigned short)
         data, encd = d([256, 44033])
         self.assertEqual(data, b'\x00\x01\x01\xAC')
-        self.assertEqual(encd, {b'kind': b'ByteArray',
-                                b'type': ihm.format_bcif._Uint16})
+        self.assertEqual(encd, {'kind': 'ByteArray',
+                                'type': ihm.format_bcif._Uint16})
 
         # type 6 (unsigned int)
         data, encd = d([4278255872])
         self.assertEqual(data, b'\x00\x01\x01\xFF')
-        self.assertEqual(encd, {b'kind': b'ByteArray',
-                                b'type': ihm.format_bcif._Uint32})
+        self.assertEqual(encd, {'kind': 'ByteArray',
+                                'type': ihm.format_bcif._Uint32})
 
         # type 32 (32-bit float)
         data, encd = d([42.0])
         self.assertEqual(len(data), 4)
-        self.assertEqual(encd, {b'kind': b'ByteArray',
-                                b'type': ihm.format_bcif._Float32})
+        self.assertEqual(encd, {'kind': 'ByteArray',
+                                'type': ihm.format_bcif._Float32})
 
         # Too-large ints should cause an error
         self.assertRaises(TypeError, d, [2**34])
@@ -437,8 +437,8 @@ class Tests(unittest.TestCase):
         data = [0, 1, -1] + [-1] * 40
         encdata, encdict = d(data)
         self.assertEqual(encdata, [0, 1, -2] + [0] * 40)
-        self.assertEqual(encdict, {b'origin': 0, b'kind': b'Delta',
-                                   b'srcType': ihm.format_bcif._Int8})
+        self.assertEqual(encdict, {'origin': 0, 'kind': 'Delta',
+                                   'srcType': ihm.format_bcif._Int8})
 
     def test_run_length_encoder(self):
         """Test RunLength encoder"""
@@ -460,8 +460,8 @@ class Tests(unittest.TestCase):
         data = [0] * 30 + [1] * 40
         encdata, encdict = d(data)
         self.assertEqual(encdata, [0, 30, 1, 40])
-        self.assertEqual(encdict, {b'kind': b'RunLength', b'srcSize': 70,
-                                   b'srcType': ihm.format_bcif._Uint8})
+        self.assertEqual(encdict, {'kind': 'RunLength', 'srcSize': 70,
+                                   'srcType': ihm.format_bcif._Uint8})
 
     def test_encode(self):
         """Test _encode function"""
@@ -469,16 +469,16 @@ class Tests(unittest.TestCase):
         encoders = [ihm.format_bcif._ByteArrayEncoder()]
         encdata, encds = ihm.format_bcif._encode(data, encoders)
         self.assertEqual(encdata, b'\x01\x01\x01\x02\x03\x03')
-        self.assertEqual(encds, [{b'kind': b'ByteArray',
-                                  b'type': ihm.format_bcif._Uint8}])
+        self.assertEqual(encds, [{'kind': 'ByteArray',
+                                  'type': ihm.format_bcif._Uint8}])
 
         # DeltaEncoder will be a noop here since data is small
         encoders = [ihm.format_bcif._DeltaEncoder(),
                     ihm.format_bcif._ByteArrayEncoder()]
         encdata, encds = ihm.format_bcif._encode(data, encoders)
         self.assertEqual(encdata, b'\x01\x01\x01\x02\x03\x03')
-        self.assertEqual(encds, [{b'kind': b'ByteArray',
-                                  b'type': ihm.format_bcif._Uint8}])
+        self.assertEqual(encds, [{'kind': 'ByteArray',
+                                  'type': ihm.format_bcif._Uint8}])
 
     def test_mask_type_no_mask(self):
         """Test get_mask_and_type with no mask"""
@@ -564,14 +564,14 @@ class Tests(unittest.TestCase):
         indices, encs = d(['a', 'AB', 'a'], None)
         self.assertEqual(indices, b'\x00\x01\x00')
         enc, = encs
-        self.assertEqual(enc[b'dataEncoding'],
-                         [{b'kind': b'ByteArray',
-                           b'type': ihm.format_bcif._Uint8}])
-        self.assertEqual(enc[b'offsetEncoding'],
-                         [{b'kind': b'ByteArray',
-                           b'type': ihm.format_bcif._Uint8}])
-        self.assertEqual(enc[b'offsets'], b'\x00\x01\x03')
-        self.assertEqual(enc[b'stringData'], b'aAB')
+        self.assertEqual(enc['dataEncoding'],
+                         [{'kind': 'ByteArray',
+                           'type': ihm.format_bcif._Uint8}])
+        self.assertEqual(enc['offsetEncoding'],
+                         [{'kind': 'ByteArray',
+                           'type': ihm.format_bcif._Uint8}])
+        self.assertEqual(enc['offsets'], b'\x00\x01\x03')
+        self.assertEqual(enc['stringData'], 'aAB')
 
     def test_string_array_encoder_mask(self):
         """Test StringArray encoder with mask"""
@@ -584,22 +584,22 @@ class Tests(unittest.TestCase):
         # \xff is -1 (masked value) as a signed char (Int8)
         self.assertEqual(indices, b'\x00\x01\x02\xff\xff\x00\x03\x04\x05')
         enc, = encs
-        self.assertEqual(enc[b'dataEncoding'],
-                         [{b'kind': b'ByteArray',
-                           b'type': ihm.format_bcif._Int8}])
-        self.assertEqual(enc[b'offsetEncoding'],
-                         [{b'kind': b'ByteArray',
-                           b'type': ihm.format_bcif._Uint8}])
-        self.assertEqual(enc[b'offsets'], b'\x00\x01\x03\x06\x07\x08\t')
-        self.assertEqual(enc[b'stringData'], b'aABYES3.?')
+        self.assertEqual(enc['dataEncoding'],
+                         [{'kind': 'ByteArray',
+                           'type': ihm.format_bcif._Int8}])
+        self.assertEqual(enc['offsetEncoding'],
+                         [{'kind': 'ByteArray',
+                           'type': ihm.format_bcif._Uint8}])
+        self.assertEqual(enc['offsets'], b'\x00\x01\x03\x06\x07\x08\t')
+        self.assertEqual(enc['stringData'], 'aABYES3.?')
 
     def test_int_array_encoder_no_mask(self):
         """Test IntArray encoder with no mask"""
         d = ihm.format_bcif._IntArrayMaskedEncoder()
         data, encs = d([5, 7, 8], None)
         self.assertEqual(data, b'\x05\x07\x08')
-        self.assertEqual(encs, [{b'kind': b'ByteArray',
-                                 b'type': ihm.format_bcif._Uint8}])
+        self.assertEqual(encs, [{'kind': 'ByteArray',
+                                 'type': ihm.format_bcif._Uint8}])
 
     def test_int_array_encoder_mask(self):
         """Test IntArray encoder with mask"""
@@ -607,8 +607,8 @@ class Tests(unittest.TestCase):
         data, encs = d([5, 7, '?', 8, None], [0, 0, 2, 0, 1])
         # \xff is -1 (masked value) as a signed char (Int8)
         self.assertEqual(data, b'\x05\x07\xff\x08\xff')
-        self.assertEqual(encs, [{b'kind': b'ByteArray',
-                                 b'type': ihm.format_bcif._Int8}])
+        self.assertEqual(encs, [{'kind': 'ByteArray',
+                                 'type': ihm.format_bcif._Int8}])
 
     def test_float_array_encoder_no_mask(self):
         """Test FloatArray encoder with no mask"""
@@ -616,16 +616,16 @@ class Tests(unittest.TestCase):
         # int data should be coerced to float
         data, encs = d([5.0, 7.0, 8.0, 4], None)
         self.assertEqual(len(data), 4 * 4)
-        self.assertEqual(encs, [{b'kind': b'ByteArray',
-                                 b'type': ihm.format_bcif._Float32}])
+        self.assertEqual(encs, [{'kind': 'ByteArray',
+                                 'type': ihm.format_bcif._Float32}])
 
     def test_float_array_encoder_mask(self):
         """Test FloatArray encoder with mask"""
         d = ihm.format_bcif._FloatArrayMaskedEncoder()
         data, encs = d([5., 7., '?', 8., None], [0, 0, 2, 0, 1])
         self.assertEqual(len(data), 5 * 4)
-        self.assertEqual(encs, [{b'kind': b'ByteArray',
-                                 b'type': ihm.format_bcif._Float32}])
+        self.assertEqual(encs, [{'kind': 'ByteArray',
+                                 'type': ihm.format_bcif._Float32}])
 
     def test_category(self):
         """Test CategoryWriter class"""
@@ -636,15 +636,15 @@ class Tests(unittest.TestCase):
         with writer.category('foo') as loc:
             loc.write(bar='baz')
         writer.flush()
-        block, = fh.data[b'dataBlocks']
-        category, = block[b'categories']
-        column, = category[b'columns']
-        self.assertEqual(block[b'header'], b'ihm')
-        self.assertEqual(category[b'name'], b'foo')
-        self.assertEqual(category[b'rowCount'], 1)
-        self.assertEqual(column[b'name'], b'bar')
-        self.assertEqual(column[b'data'][b'encoding'][0][b'stringData'],
-                         b'baz')
+        block, = fh.data['dataBlocks']
+        category, = block['categories']
+        column, = category['columns']
+        self.assertEqual(block['header'], 'ihm')
+        self.assertEqual(category['name'], 'foo')
+        self.assertEqual(category['rowCount'], 1)
+        self.assertEqual(column['name'], 'bar')
+        self.assertEqual(column['data']['encoding'][0]['stringData'],
+                         'baz')
 
     def test_empty_loop(self):
         """Test LoopWriter class with no values"""
@@ -655,7 +655,7 @@ class Tests(unittest.TestCase):
         with writer.loop('foo', ["bar", "baz"]):
             pass
         writer.flush()
-        self.assertEqual(fh.data[b'dataBlocks'][0][b'categories'], [])
+        self.assertEqual(fh.data['dataBlocks'][0]['categories'], [])
 
     def test_loop(self):
         """Test LoopWriter class"""
@@ -671,14 +671,14 @@ class Tests(unittest.TestCase):
             lp.write(bar='?', baz='z')
             lp.write(baz='y')
         writer.flush()
-        block, = fh.data[b'dataBlocks']
-        category, = block[b'categories']
-        self.assertEqual(category[b'name'], b'foo')
-        self.assertEqual(category[b'rowCount'], 6)
-        cols = sorted(category[b'columns'], key=lambda x: x[b'name'])
+        block, = fh.data['dataBlocks']
+        category, = block['categories']
+        self.assertEqual(category['name'], 'foo')
+        self.assertEqual(category['rowCount'], 6)
+        cols = sorted(category['columns'], key=lambda x: x['name'])
         self.assertEqual(len(cols), 2)
         # Check mask for bar column; literal . and ? should not be masked (=0)
-        self.assertEqual(cols[0][b'mask'][b'data'],
+        self.assertEqual(cols[0]['mask']['data'],
                          b'\x00\x01\x02\x00\x00\x01')
 
 

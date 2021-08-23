@@ -276,7 +276,7 @@ class IMPKMEANSEXPORT KMlocalLloyds : public KMlocal {
   double accumRDL() {  // relative RDL for run
     return (initRunDist - curr.getDist()) / initRunDist;
   }
-  virtual void printStageStats() {  // print end of stage info
+  virtual void printStageStats() IMP_OVERRIDE {  // print end of stage info
     if (kmStatLev >= STAGE) {
       *kmOut << "\t<stage: " << stageNo << " curr: " << curr.getAvgDist()
              << " best: " << best.getAvgDist()
@@ -296,22 +296,22 @@ class IMPKMEANSEXPORT KMlocalLloyds : public KMlocal {
       : KMlocal(sol, t) {}
 
  protected:  // overridden methods
-  virtual void reset() {
+  virtual void reset() IMP_OVERRIDE {
     KMlocal::reset();              // reset base class
     isNewPhase = false;            // first phase was started
     initRunDist = curr.getDist();  // initialize run dist
     printStageStats();
   }
-  virtual KMalg selectMethod() {           // method = Lloyd's
+  virtual KMalg selectMethod() IMP_OVERRIDE {           // method = Lloyd's
     return (isNewPhase ? RANDOM : LLOYD);  // ...unless start of phase
   }
-  virtual void endStage() {  // end of stage processing
+  virtual void endStage() IMP_OVERRIDE {  // end of stage processing
     KMlocal::endStage();     // base class processing
     // get distortions
     if (curr.getAvgDist() < best.getAvgDist()) best = curr;  // update if better
     printStageStats();
   }
-  virtual bool isRunDone() {     // is run done
+  virtual bool isRunDone() IMP_OVERRIDE {     // is run done
     if (KMlocal::isRunDone() ||  // check base conditions
         stageNo - runInitStage >= term.getMaxRunStage()) {
       return true;                   // too many stages
@@ -323,7 +323,7 @@ class IMPKMEANSEXPORT KMlocalLloyds : public KMlocal {
       return accumRDL() >= term.getMinAccumRDL();
     }
   }
-  virtual void endRun() {                      // end of run processing
+  virtual void endRun() IMP_OVERRIDE {         // end of run processing
     if (accumRDL() < term.getMinAccumRDL()) {  // unsuccessful run?
       isNewPhase = true;                       // start a new phase
     } else {
@@ -376,29 +376,29 @@ class IMPKMEANSEXPORT KMlocalSwap : public KMlocal {
       : KMlocal(sol, t), maxSwaps(p) {}
 
  protected:  // overridden methods
-  virtual void reset() {
+  virtual void reset() IMP_OVERRIDE {
     KMlocal::reset();  // reset base class
     printStageStats();
   }
-  virtual void beginRun() {  // start of run processing
+  virtual void beginRun() IMP_OVERRIDE {  // start of run processing
     KMlocal::beginRun();     // base class processing
     swapNo = 0;              // init number of swaps
   }
-  virtual KMalg selectMethod() {  // method = Swap
+  virtual KMalg selectMethod() IMP_OVERRIDE {  // method = Swap
     return SWAP;
   }
-  virtual void endStage() {}        // do nothing
-  virtual bool isRunDone() {        // run is done
+  virtual void endStage() IMP_OVERRIDE {}        // do nothing
+  virtual bool isRunDone() IMP_OVERRIDE {        // run is done
     return KMlocal::isRunDone() ||  // base class say's done
            ++swapNo >= maxSwaps;    // or enough swaps done
   }
 
-  virtual void endRun() {  // end of run processing
+  virtual void endRun() IMP_OVERRIDE {  // end of run processing
     curr.getDist();
     stageNo++;
     printStageStats();  // print stage info
   }
-  virtual void tryAcceptance() {            // test acceptance
+  virtual void tryAcceptance() IMP_OVERRIDE { // test acceptance
     if (curr.getDist() < best.getDist()) {  // current distortion lower?
       best = curr;                          // then save the current
     } else {                                // current distortion worse
@@ -616,7 +616,7 @@ class IMPKMEANSEXPORT KMlocalHybrid : public KMlocal {
     return (prevDist - curr.getDist()) / prevDist;
   }
 
-  virtual void printStageStats() {  // print end of stage info
+  virtual void printStageStats() IMP_OVERRIDE {  // print end of stage info
     if (kmStatLev >= STAGE) {
       *kmOut << "    <stage: " << stageNo << " curr: " << curr.getAvgDist()
              << " best: " << best.getAvgDist() << " save: " << save.getAvgDist()
@@ -670,25 +670,25 @@ class IMPKMEANSEXPORT KMlocalHybrid : public KMlocal {
       : KMlocal(sol, t), save(sol) {}
 
  protected:  // overridden methods
-  virtual void reset() {
+  virtual void reset() IMP_OVERRIDE {
     KMlocal::reset();    // reset base class
     save = curr;         // save initial centers
     areSwapping = true;  // start with swapping
     initTempRuns();      // initialize sim. annealing
     printStageStats();
   }
-  virtual void beginStage() {   // start of stage processing
+  virtual void beginStage() IMP_OVERRIDE {  // start of stage processing
     prevDist = curr.getDist();  // save previous distortion
   }
-  virtual KMalg selectMethod() {  // select method
+  virtual KMalg selectMethod() IMP_OVERRIDE {  // select method
     return (areSwapping ? SWAP : LLOYD);
   }
-  virtual void endStage() {  // end of stage processing
+  virtual void endStage() IMP_OVERRIDE {  // end of stage processing
     stageNo++;               // increment stage number
     curr.getDist();          // get distortion
     printStageStats();
   }
-  virtual bool isRunDone() {                // run is done
+  virtual bool isRunDone() IMP_OVERRIDE {   // run is done
     if (areSwapping) {                      // swapping?
       if (!simAnnealAccept(consecRDL())) {  // check SA acceptance
         areSwapping = false;                // transition to Lloyd's
@@ -698,12 +698,12 @@ class IMPKMEANSEXPORT KMlocalHybrid : public KMlocal {
       return consecRDL() <= term.getMinConsecRDL();  // test for convergence
     }
   }
-  virtual void endRun() {               // end of run processing
+  virtual void endRun() IMP_OVERRIDE {  // end of run processing
     if (isTempRunDone()) endTempRun();  // check/process end of temp run
     areSwapping = true;                 // return to swapping
     printRunStats();
   }
-  virtual void tryAcceptance() {              // test acceptance
+  virtual void tryAcceptance() IMP_OVERRIDE { // test acceptance
     if (accumRDL() > 0) {                     // improvement over saved?
       save = curr;                            // save this one
       if (save.getDist() < best.getDist()) {  // new best?
@@ -795,7 +795,7 @@ class IMPKMEANSEXPORT KMlocalEZ_Hybrid : public KMlocal {
     return (prevDist - curr.getDist()) / prevDist;
   }
 
-  virtual void printStageStats() {  // print end of stage info
+  virtual void printStageStats() IMP_OVERRIDE {  // print end of stage info
     if (kmStatLev >= STAGE) {
       *kmOut << "    <stage: " << stageNo << " curr: " << curr.getAvgDist()
              << " best: " << best.getAvgDist() << " consecRDL: " << consecRDL()
@@ -814,23 +814,23 @@ class IMPKMEANSEXPORT KMlocalEZ_Hybrid : public KMlocal {
       : KMlocal(sol, t) {}
 
  protected:  // overridden methods
-  virtual void reset() {
+  virtual void reset() IMP_OVERRIDE {
     KMlocal::reset();    // reset base class
     areSwapping = true;  // start with swapping
     printStageStats();
   }
-  virtual void beginStage() {   // start of stage processing
+  virtual void beginStage() IMP_OVERRIDE {   // start of stage processing
     prevDist = curr.getDist();  // save previous distortion
   }
-  virtual KMalg selectMethod() {  // select method
+  virtual KMalg selectMethod() IMP_OVERRIDE {  // select method
     return (areSwapping ? SWAP : LLOYD);
   }
-  virtual void endStage() {  // end of stage processing
+  virtual void endStage() IMP_OVERRIDE {  // end of stage processing
     stageNo++;               // increment stage number
     curr.getDist();          // get distortion
     printStageStats();
   }
-  virtual bool isRunDone() {  // run is done
+  virtual bool isRunDone() IMP_OVERRIDE {  // run is done
     if (areSwapping) {        // swapping?
       areSwapping = false;    // transition to Lloyd's
       return false;
@@ -838,11 +838,11 @@ class IMPKMEANSEXPORT KMlocalEZ_Hybrid : public KMlocal {
       return consecRDL() <= term.getMinConsecRDL();  // test for convergence
     }
   }
-  virtual void endRun() {  // end of run processing
+  virtual void endRun() IMP_OVERRIDE {  // end of run processing
     areSwapping = true;    // return to swapping
     printRunStats();
   }
-  virtual void tryAcceptance() {            // test acceptance
+  virtual void tryAcceptance() IMP_OVERRIDE { // test acceptance
     if (curr.getDist() < best.getDist()) {  // new best?
       best = curr;
     }

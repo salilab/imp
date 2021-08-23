@@ -9,13 +9,13 @@
 #define IMPKERNEL_INTERNAL_SWIG_H
 
 #include <IMP/kernel_config.h>
-#include "../Particle.h"
-#include "../Restraint.h"
-#include "../SingletonScore.h"
-#include "../PairScore.h"
-#include "../macros.h"
-#include "../Decorator.h"
-#include "../Optimizer.h"
+#include <IMP/Particle.h>
+#include <IMP/Restraint.h>
+#include <IMP/SingletonScore.h>
+#include <IMP/PairScore.h>
+#include <IMP/macros.h>
+#include <IMP/Decorator.h>
+#include <IMP/Optimizer.h>
 #include "container_helpers.h"
 #include <boost/unordered_map.hpp>
 #include <IMP/internal/swig_base.h>
@@ -38,7 +38,7 @@ class IMPKERNELEXPORT _ConstRestraint : public Restraint {
   _ConstRestraint(Model *m, const ParticleIndexes &pis, double v)
       : Restraint(m, "ConstRestraint%1%"), v_(v), ps_(get_particles(m, pis)) {}
   double get_value() const { return v_; }
-  Restraints do_create_decomposition() const;
+  Restraints do_create_decomposition() const IMP_OVERRIDE;
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
   ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;

@@ -127,7 +127,17 @@ class VectorBaseD : public GeometricPrimitiveD<D> {
     return ret;
   }
 
-  double get_squared_magnitude() const { return get_scalar_product(*this); }
+  double get_squared_magnitude() const {
+    // Could be equivalently written as get_scalar_product(*this)
+    // This should be faster though since checks on 'o' can be skipped
+    IMP_ALGEBRA_VECTOR_CHECK;
+    double ret = 0;
+    const double *data = get_data();
+    for (unsigned int i = 0; i < get_dimension(); ++i) {
+      ret += data[i] * data[i];
+    }
+    return ret;
+  }
 
   double get_magnitude() const { return std::sqrt(get_squared_magnitude()); }
 

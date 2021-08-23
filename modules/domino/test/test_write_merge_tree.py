@@ -32,8 +32,8 @@ class Tests(IMP.test.TestCase):
             ps)
         # IMP.show_graphviz(mbt)
         # IMP.show_graphviz(mbt2)
-        self.assertEqual(mbt2.get_vertices(),
-                         mbt.get_vertices())
+        self.assertEqual(list(mbt2.get_vertices()),
+                         list(mbt.get_vertices()))
         self.assertEqual(mbt2.get_vertex_name(0),
                          mbt.get_vertex_name(0))
 if __name__ == '__main__':

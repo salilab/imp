@@ -25,7 +25,8 @@ HybridMonteCarlo::HybridMonteCarlo(Model *m, Float kT, unsigned steps,
   persistence_counter_ = 0;
 }
 
-double HybridMonteCarlo::do_evaluate(const ParticleIndexes &) const {
+double HybridMonteCarlo::do_evaluate(const ParticleIndexes &, bool) const {
+  // we don't use evaluate_moved() so don't use either input argument
   if (get_use_incremental_scoring_function())
     IMP_THROW("Incremental scoring not supported", ModelException);
   double ekin = md_->get_kinetic_energy();
@@ -50,10 +51,10 @@ void HybridMonteCarlo::do_step() {
     md_->assign_velocities(get_kt() / kB);
   }
   ParticleIndexes unused;
-  double last = do_evaluate(unused);
+  double last = do_evaluate(unused, true);
   core::MonteCarloMoverResult moved = do_move();
 
-  double energy = do_evaluate(unused);
+  double energy = do_evaluate(unused, true);
   bool accepted =
       do_accept_or_reject_move(energy, last, moved.get_proposal_ratio());
   while ((!accepted) && (persistence_counter_ < persistence_ - 1)) {

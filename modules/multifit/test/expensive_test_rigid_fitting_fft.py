@@ -20,11 +20,13 @@ class Tests(IMP.test.TestCase):
         return scene
 
     def load_protein(self, model, pdb_filename):
-        self.mp = IMP.atom.read_pdb(self.open_input_file(pdb_filename),
-                                    model, IMP.atom.CAlphaPDBSelector())
+        with self.open_input_file(pdb_filename) as fh:
+            self.mp = IMP.atom.read_pdb(fh, model,
+                                        IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(self.mp)
-        self.mp_ref = IMP.atom.read_pdb(self.open_input_file(pdb_filename),
-                                        model, IMP.atom.CAlphaPDBSelector())
+        with self.open_input_file(pdb_filename) as fh:
+            self.mp_ref = IMP.atom.read_pdb(fh, model,
+                                            IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(self.mp_ref)
 
         self.ps = IMP.core.get_leaves(self.mp)

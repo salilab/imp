@@ -20,7 +20,6 @@ IMPSPB_BEGIN_NAMESPACE
   desc.add_options()(#name, value<type>(&name), #name);
 
 SPBParameters get_SPBParameters(IMP::TextInput in, std::string suffix) {
-#if BOOST_VERSION >= 104100
   using namespace boost::program_options;
   options_description desc;
   bool do_wte;
@@ -433,9 +432,6 @@ SPBParameters get_SPBParameters(IMP::TextInput in, std::string suffix) {
   }
 
   return ret;
-#else
-  IMP_FAILURE("Need newer boost");
-#endif
 }
 
 IMPSPB_END_NAMESPACE

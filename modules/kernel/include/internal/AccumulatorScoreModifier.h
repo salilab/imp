@@ -9,15 +9,15 @@
 #ifndef IMPKERNEL_ACCUMULATOR_SCORE_MODIFIER_H
 #define IMPKERNEL_ACCUMULATOR_SCORE_MODIFIER_H
 
-#include "../Constraint.h"
-#include "../Restraint.h"
+#include <IMP/Constraint.h>
+#include <IMP/Restraint.h>
 #include "container_helpers.h"
 #include <IMP/Pointer.h>
-#include "../constants.h"
-#include "../SingletonModifier.h"
-#include "../PairModifier.h"
-#include "../TripletModifier.h"
-#include "../QuadModifier.h"
+#include <IMP/constants.h>
+#include <IMP/SingletonModifier.h>
+#include <IMP/PairModifier.h>
+#include <IMP/TripletModifier.h>
+#include <IMP/QuadModifier.h>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 

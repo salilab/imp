@@ -53,7 +53,7 @@ class IMPATOMEXPORT BondPairContainer : public PairContainer {
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     return ModelObjects(1, sc_);
   }
-  ParticleIndexes get_all_possible_indexes() const;
+  ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
   IMP_PAIR_CONTAINER_METHODS(BondPairContainer);
   IMP_OBJECT_METHODS(BondPairContainer);
 };

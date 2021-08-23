@@ -62,13 +62,7 @@ def build_wrapper(module, finder, sorted, target, source):
 
 %%{
 #include <boost/version.hpp>
-#if BOOST_VERSION > 103600
-#if BOOST_VERSION > 103800
 #include <boost/exception/all.hpp>
-#else
-#include <boost/exception.hpp>
-#endif
-#endif
 
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/utility/enable_if.hpp>

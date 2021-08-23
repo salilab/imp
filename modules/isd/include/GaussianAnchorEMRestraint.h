@@ -9,7 +9,7 @@
 #ifndef IMPISD_GAUSSIAN_ANCHOR_EMRESTRAINT_H
 #define IMPISD_GAUSSIAN_ANCHOR_EMRESTRAINT_H
 
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/isd/Scale.h>
@@ -138,7 +138,7 @@ public:
     ParticlesTemp ret =  density_ps_;
     return ret;
   }
-  double get_probability() const {
+  double get_probability() const IMP_OVERRIDE {
     return exp(-unprotected_evaluate(NULL));
   }
 

@@ -11,7 +11,7 @@
 #ifndef IMPKINEMATICS_COMPOSITE_JOINT_H
 #define IMPKINEMATICS_COMPOSITE_JOINT_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/Object.h>
@@ -97,7 +97,7 @@ class IMPKINEMATICSEXPORT CompositeJoint : public Joint {
 
  protected:
   //! Update the child node reference frame by applying all the inner joints
-  virtual void update_child_node_reference_frame() const;
+  virtual void update_child_node_reference_frame() const IMP_OVERRIDE;
 
   /**
     Updates all inner joints value, and the overall transformation
@@ -108,7 +108,7 @@ class IMPKINEMATICSEXPORT CompositeJoint : public Joint {
           calling this function.
   */
 
-  virtual void update_joint_from_cartesian_witnesses();
+  virtual void update_joint_from_cartesian_witnesses() IMP_OVERRIDE;
 
  private:
   Joints joints_;  // list of inner joints

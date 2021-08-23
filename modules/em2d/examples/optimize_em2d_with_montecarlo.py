@@ -9,7 +9,6 @@ import IMP.atom
 import IMP.em2d
 import IMP.algebra
 import IMP.container
-import random
 import sys
 
 IMP.setup_from_argv(sys.argv, "optimize EM2D with MonteCarlo")
@@ -30,8 +29,6 @@ class WriteStatisticsOptimizerScore(IMP.OptimizerState):
             return
         else:
             self.count = 0
-        o = self.get_optimizer()
-        m = o.get_model()
         for r in self.restraints:
             print(r.get_name(), r.get_last_score())
         # for i in range(0,m.get_number_of_restraints()):
@@ -58,8 +55,8 @@ for c in chains:
     rbd = IMP.core.RigidBody.setup_particle(c, atoms)
     rbd.set_coordinates_are_optimized(True)
     rigid_bodies.append(rbd)
-    print("chain has", rbd.get_number_of_members(), \
-        "atoms", "coordinates: ", rbd.get_coordinates())
+    print("chain has", rbd.get_number_of_members(),
+          "atoms", "coordinates: ", rbd.get_coordinates())
     native_chain_centers.append(rbd.get_coordinates())
 
 bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-25, -40, -60),
@@ -80,30 +77,30 @@ for rbd in rigid_bodies:
 print("Writing transformed assembly")
 IMP.atom.write_pdb(prot, "1z5s-transformed.pdb")
 
-# set distance restraints measusring some distances between rigid bodies
+# set distance restraints measuring some distances between rigid bodies
 # for the solution.
 d01 = IMP.algebra.get_distance(
     native_chain_centers[0], native_chain_centers[1])
-r01 = IMP.core.DistanceRestraint(m,
-    IMP.core.Harmonic(d01, 1), chains[0], chains[1])
+r01 = IMP.core.DistanceRestraint(
+    m, IMP.core.Harmonic(d01, 1), chains[0], chains[1])
 r01.set_name("distance 0-1")
 d12 = IMP.algebra.get_distance(
     native_chain_centers[1], native_chain_centers[2])
-r12 = IMP.core.DistanceRestraint(m,
-    IMP.core.Harmonic(d12, 1), chains[1], chains[2])
+r12 = IMP.core.DistanceRestraint(
+    m, IMP.core.Harmonic(d12, 1), chains[1], chains[2])
 r12.set_name("distance 1-2")
 d23 = IMP.algebra.get_distance(
     native_chain_centers[2], native_chain_centers[3])
-r23 = IMP.core.DistanceRestraint(m,
-    IMP.core.Harmonic(d23, 1), chains[2], chains[3])
+r23 = IMP.core.DistanceRestraint(
+    m, IMP.core.Harmonic(d23, 1), chains[2], chains[3])
 r23.set_name("distance 2-3")
 d30 = IMP.algebra.get_distance(
     native_chain_centers[3], native_chain_centers[0])
-r30 = IMP.core.DistanceRestraint(m,
-    IMP.core.Harmonic(d30, 1), chains[3], chains[0])
+r30 = IMP.core.DistanceRestraint(
+    m, IMP.core.Harmonic(d30, 1), chains[3], chains[0])
 r30.set_name("distance 3-0")
-print("Distances in the solution: d01 =", \
-    d01, "d12 =", d12, "d23 =", d23, "d30 =", d30)
+print("Distances in the solution: d01 =",
+      d01, "d12 =", d12, "d23 =", d23, "d30 =", d30)
 
 # set em2D restraint
 srw = IMP.em2d.SpiderImageReaderWriter()
@@ -181,13 +178,13 @@ IMP.atom.write_pdb(prot, "solution.pdb")
 print("*** End optimization ***")
 new_centers = []
 for rbd in rigid_bodies:
-    print("chain has", rbd.get_number_of_members(), \
-        "atoms", "coordinates: ", rbd.get_coordinates())
+    print("chain has", rbd.get_number_of_members(),
+          "atoms", "coordinates: ", rbd.get_coordinates())
     new_centers.append(rbd.get_coordinates())
 
 d01 = IMP.algebra.get_distance(new_centers[0], new_centers[1])
 d12 = IMP.algebra.get_distance(new_centers[1], new_centers[2])
 d23 = IMP.algebra.get_distance(new_centers[2], new_centers[3])
 d30 = IMP.algebra.get_distance(new_centers[3], new_centers[0])
-print("Distances at the end of the optimization: d01 =", \
-    d01, "d12 =", d12, "d23 =", d23, "d30 =", d30)
+print("Distances at the end of the optimization: d01 =",
+      d01, "d12 =", d12, "d23 =", d23, "d30 =", d30)

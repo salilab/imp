@@ -9,7 +9,7 @@
 #ifndef IMPISD_FRET_RESTRAINT_H
 #define IMPISD_FRET_RESTRAINT_H
 #include <IMP/isd/Scale.h>
-#include "isd_config.h"
+#include <IMP/isd/isd_config.h>
 #include <IMP/Restraint.h>
 #include <IMP/isd/FretData.h>
 

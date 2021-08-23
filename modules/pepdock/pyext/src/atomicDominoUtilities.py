@@ -1,16 +1,14 @@
 from __future__ import print_function
 import IMP
 import re
-import sys
-import os
 
 
 def readParameters(parameterFileName):
 
     parameters = {}
     parameterFh = open(parameterFileName)
-    blankRe = re.compile('^\s*$')
-    skipRe = re.compile('^\#')
+    blankRe = re.compile(r'^\s*$')
+    skipRe = re.compile(r'^\#')
     for line in parameterFh:
 
         blankLine = blankRe.search(line)
@@ -28,9 +26,11 @@ def readParameters(parameterFileName):
     parameterFh.close()
     return parameters
 
-# Represents an atom particle as a string (contains its chain ID, residue ID, and atom name)
-# Other methods parse the name so if the name format changes they need to be updated
-#getPeptideCa(); writeCytoscapeIgInput(); getAtomTypeCounts()
+# Represents an atom particle as a string (contains its chain ID, residue ID,
+# and atom name)
+# Other methods parse the name so if the name format changes they need to
+# be updated
+# getPeptideCa(); writeCytoscapeIgInput(); getAtomTypeCounts()
 
 
 def quickParticleName(particle):
@@ -63,7 +63,8 @@ def makeNamesToParticles(protein):
     return namesToParticles
 
 
-# get the chain id, residue id, and atom name from the particle name -- slightly cleaner in that if we change the name
+# get the chain id, residue id, and atom name from the particle name --
+# slightly cleaner in that if we change the name
 # format, we don't have to change all the methods that rely on that format
 def getAtomInfoFromName(particleName):
     [chain, residue, atom] = particleName.split("_")
@@ -87,8 +88,6 @@ def isAtomParticle(p):
 
 # Get particles in model that are contained in model's restraints
 def getRestrainedParticles(protein, model, namesToParticles):
-    leaves = IMP.atom.get_leaves(protein)
-
     particleDict = {}
     count = 0
     for r in IMP.get_restraints([model.get_root_restraint_set()]):
@@ -101,7 +100,7 @@ def getRestrainedParticles(protein, model, namesToParticles):
             name = quickParticleName(p)
             # use dictionary keyed on names to avoid duplication
             particleDict[name] = 1
-        score = r.evaluate(0)
+        _ = r.evaluate(0)
 
     restrainedParticles = []
     for name in particleDict.keys():

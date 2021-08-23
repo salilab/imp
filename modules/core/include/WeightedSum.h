@@ -25,7 +25,8 @@ class WeightedSum : public UnaryFunction {
                     "More than one function and weight must be provided.");
   }
 
-  virtual DerivativePair evaluate_with_derivative(double feature) const {
+  virtual DerivativePair evaluate_with_derivative(
+                  double feature) const IMP_OVERRIDE {
     double eval = 0;
     double derv = 0;
     DerivativePair fout;
@@ -37,7 +38,7 @@ class WeightedSum : public UnaryFunction {
     return DerivativePair(eval, derv);
   }
 
-  virtual double evaluate(double feature) const {
+  virtual double evaluate(double feature) const IMP_OVERRIDE {
     double ret = 0;
     for (unsigned int i = 0; i < funcs_.size(); ++i) {
         ret += weights_[i] * funcs_[i]->evaluate(feature);

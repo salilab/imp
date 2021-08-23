@@ -6,17 +6,18 @@ import RMF
 
 colors = {}
 
-periodic_table = ["INV", "H", "He", "Li", "Be", "B", "C", "N", "O",
-                  "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca",
-                  "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge",
-                  "As", "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru",
-                  "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba",
-                  "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho",
-                  "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au",
-                  "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th",
-                  "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No",
-                  "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Uut",
-                  "Fl", "Uup", "Lv", "Uus", "Uuo"]
+periodic_table = [
+    "INV", "H", "He", "Li", "Be", "B", "C", "N", "O",
+    "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca",
+    "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge",
+    "As", "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru",
+    "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba",
+    "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho",
+    "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au",
+    "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th",
+    "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No",
+    "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Uut",
+    "Fl", "Uup", "Lv", "Uus", "Uuo"]
 
 
 class MyData:
@@ -36,7 +37,7 @@ def _handle_atom_color(c, at):
     ck = tuple((int(255. * x) for x in c))
     if ck not in colors:
         name = "rmf" + str(len(colors))
-        print "color", name, c, ck
+        print "color", name, c, ck    # noqa: E999
         cmd.set_color(name, list(c))
         colors[ck] = name
         at.color = name
@@ -100,7 +101,8 @@ def _create_atoms(helper, mydata, model, cgol, created):
         if _create_atoms(ch, mydata, model, cgol, created):
             child = True
     tp = helper.get_type()
-    if tp == RMF.REPRESENTATION and not child and mydata.particle_factory.get_is(helper):
+    if tp == RMF.REPRESENTATION and not child \
+            and mydata.particle_factory.get_is(helper):
         _handle_atom(helper, mydata, model, cgol)
         child = True
     elif tp == RMF.GEOMETRY:
@@ -191,4 +193,6 @@ def _do_it(path):
 def _open_rmf(path):
     # exec("_do_it(path)")
     cProfile.runctx("_do_it(path)", globals(), locals())
+
+
 cmd.extend('rmf', _open_rmf)

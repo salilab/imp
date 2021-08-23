@@ -33,6 +33,12 @@ jobs:
           flags: '--coverage'
           tests: RMF
           build: Debug
+        - os: macos-latest
+          python-version: 3.9
+          install: ''
+          flags: '--coverage'
+          tests: RMF
+          build: Release
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -41,10 +47,16 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Install dependencies (Linux)
+      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update -qq
         sudo apt-get install -qq libboost-all-dev swig libc-dbg ${{ matrix.install }}
+        pip install coverage
+    - name: Install dependencies (Mac)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install swig boost ${{ matrix.install }}
         pip install coverage
     - name: Build and test
       run: |
@@ -55,8 +67,8 @@ jobs:
         make -j 2
         export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
         ctest -j 2 --output-on-failure -L ${{ matrix.tests }}
-    - name: Upload coverage to codecov
+    - name: Combine coverage
       run: |
-        cd build
-        (cd coverage && coverage combine && mv .coverage ..)
-        bash <(curl -s https://codecov.io/bash)
+        cd build/coverage
+        coverage combine && mv .coverage ../..
+    - uses: codecov/codecov-action@v1

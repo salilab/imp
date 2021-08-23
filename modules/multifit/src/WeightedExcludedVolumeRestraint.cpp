@@ -77,7 +77,7 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
     for (unsigned int j = i + 1; j < rbs_.size(); j++) {
       if (get_interiors_intersect(resampled_surfaces[i],
                                   resampled_surfaces[j])) {
-        score += em::CoarseCC::cross_correlation_coefficient(
+        score += em::get_coarse_cc_coefficient(
             resampled_surfaces[i], resampled_surfaces[j], 1., true,
             FloatPair(0., 0.));
       }

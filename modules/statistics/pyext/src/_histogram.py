@@ -1,10 +1,10 @@
+import IMP.algebra
+
+
 def _show_histogram_1d(h, yscale, xscale, curves):
-    import numpy as np
     import matplotlib.pyplot as plt
-    import matplotlib.mlab as mlab
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    data = []
     countsgrid = h.get_counts()
     bins = [countsgrid.get_bounding_box(i).get_corner(0)[0]
             for i in countsgrid.get_all_indexes()]
@@ -18,7 +18,7 @@ def _show_histogram_1d(h, yscale, xscale, curves):
                 gbb.get_corner(1)[0])
     ax.set_xscale(xscale)
     ax.set_yscale(yscale)
-        # only scale based on histogram
+    # only scale based on histogram
     ax.set_autoscaley_on(False)
     for c in curves:
         ax.plot(bins, [c(x) for x in bins], "go-", linewidth=1)
@@ -28,7 +28,6 @@ def _show_histogram_1d(h, yscale, xscale, curves):
 def _show_histogram_2d(h, yscale, xscale):
     import numpy as np
     import matplotlib.cm as cm
-    import matplotlib.mlab as mlab
     import matplotlib.pyplot as plt
     cg = h.get_counts()
     steps = cg.get_unit_cell()
@@ -49,9 +48,9 @@ def _show_histogram_2d(h, yscale, xscale):
 def _get_min_dim(bb):
     md = 100000
     for i in range(0, bb.get_dimension()):
-        l = bb.get_corner(1)[i] - bb.get_corner(0)[i]
-        if l < md:
-            md = l
+        ld = bb.get_corner(1)[i] - bb.get_corner(0)[i]
+        if ld < md:
+            md = ld
     return md
 
 

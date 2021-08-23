@@ -50,7 +50,8 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
   RestraintSet(const RestraintsTemp &rs, double weight,
                const std::string &name = "RestraintSet %1%");
 
-  double unprotected_evaluate(DerivativeAccumulator *da) const;
+  double unprotected_evaluate(DerivativeAccumulator *da) const IMP_OVERRIDE;
+
   IMP_OBJECT_METHODS(RestraintSet);
   /** @name Methods to control the nested Restraint objects
 
@@ -71,17 +72,20 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
 
  public:
 #ifndef IMP_DOXYGEN
-  ModelObjectsTemp do_get_inputs() const;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   ScoringFunction *create_scoring_function(
       double weight = 1.0,
-      double max = std::numeric_limits<double>::max()) const;
+      double max = std::numeric_limits<double>::max()) const IMP_OVERRIDE;
 #endif
-  double get_last_score() const;
+  double get_last_score() const IMP_OVERRIDE;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
  protected:
-  Restraints do_create_decomposition() const;
-  Restraints do_create_current_decomposition() const;
-  void do_add_score_and_derivatives(ScoreAccumulator sa) const;
+  Restraints do_create_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
+  void do_add_score_and_derivatives(ScoreAccumulator sa) const IMP_OVERRIDE;
+  void do_add_score_and_derivatives_moved(
+                  ScoreAccumulator sa,
+                  const ParticleIndexes &moved_pis) const IMP_OVERRIDE;
 #endif
 };
 

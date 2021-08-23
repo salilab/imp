@@ -64,8 +64,8 @@ core::MonteCarloMoverResult BallMover::do_propose() {
     // store old coordinates
     oldcoords_.push_back(oc);
     // apply transformation
-    algebra::Vector3D nc = cell_tr.get_transformed(oc);
-    xyz.set_coordinates(nc);
+    algebra::Vector3D transnc = cell_tr.get_transformed(oc);
+    xyz.set_coordinates(transnc);
   }
 
   ParticlesTemp ret;

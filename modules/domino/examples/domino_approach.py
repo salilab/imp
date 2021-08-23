@@ -9,6 +9,7 @@ import sys
 
 IMP.setup_from_argv(sys.argv, "domino approach")
 
+
 def optimize_subsets(subsets):
     pst = IMP.domino.ParticleStatesTable()
     for subset in subsets:
@@ -51,6 +52,7 @@ def initiate_configuration(domino_smp, ps):
     # Map states of particles
     for p in ps:
         domino_smp.set_particle_states(p, states)
+
 
 sys.exit()
 # REPRESENTATION

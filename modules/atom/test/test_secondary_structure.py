@@ -82,7 +82,8 @@ class Tests(IMP.test.TestCase):
     def test_psipred_reader(self):
         """Test if psipred file is read into SecondaryStructureResidues"""
         m = IMP.Model()
-        ssres = IMP.atom.read_psipred(self.open_input_file("yGCP2.psipred"), m)
+        with self.open_input_file("yGCP2.psipred") as fh:
+            ssres = IMP.atom.read_psipred(fh, m)
         self.assertEqual(len(ssres), 769)
         self.assertAlmostEqual(ssres[0].get_prob_coil(), 1.0, delta=1e-6)
         self.assertAlmostEqual(ssres[0].get_prob_helix(), 0.0, delta=1e-6)
@@ -103,9 +104,8 @@ class Tests(IMP.test.TestCase):
             p = IMP.Particle(m)
             ps.append(p)
 
-        ssres = IMP.atom.read_psipred(
-            self.open_input_file("yGCP2.psipred"),
-            ps)
+        with self.open_input_file("yGCP2.psipred") as fh:
+            ssres = IMP.atom.read_psipred(fh, ps)
         self.assertEqual(len(ssres), 769)
         self.assertAlmostEqual(ssres[0].get_prob_coil(), 1.0, delta=1e-6)
         self.assertAlmostEqual(ssres[0].get_prob_helix(), 0.0, delta=1e-6)

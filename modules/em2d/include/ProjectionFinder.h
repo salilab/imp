@@ -8,7 +8,7 @@
 #ifndef IMPEM2D_PROJECTION_FINDER_H
 #define IMPEM2D_PROJECTION_FINDER_H
 
-#include "IMP/em2d/em2d_config.h"
+#include <IMP/em2d/em2d_config.h>
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/align2D.h"
 #include "IMP/em2d/project.h"

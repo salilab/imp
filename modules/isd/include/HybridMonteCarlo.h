@@ -49,9 +49,9 @@ class IMPISDEXPORT HybridMonteCarlo : public core::MonteCarlo {
   MolecularDynamics *get_md() const;
 
   // evaluate should return the total energy
-  double do_evaluate(const ParticleIndexes &) const;
+  double do_evaluate(const ParticleIndexes &, bool) const IMP_OVERRIDE;
 
-  virtual void do_step();
+  virtual void do_step() IMP_OVERRIDE;
   IMP_OBJECT_METHODS(HybridMonteCarlo);
 
  private:

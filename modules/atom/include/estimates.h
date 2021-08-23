@@ -168,7 +168,7 @@ IMPATOMEXPORT double get_diffusion_angle
     @param dt time step in femtoseconds
 
     @note The units of displacements and dt params could be actually
-    arbitrary.  The units of thE returned value will simply change to
+    arbitrary.  The units of the returned value will simply change to
     e.g.  cm^2/sec if displacements and dt are specified in cm and
     seconds, resp.
 

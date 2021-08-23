@@ -206,15 +206,13 @@ class AlignmentClustering:
         map_solution.set_was_used(True)
 
         map_solution.calcRMS()
-        coarse_cc = IMP.em.CoarseCC()
-        coarse_cc.set_was_used(True)
         # base the calculation of the cross_correlation coefficient on the threshold
         # for the native map, because the threshold for the map of the model changes
         # with each model
         # map_solution.get_header().show()
         threshold = 0.01  # threshold AFTER normalization using calcRMS()
-        ccc = coarse_cc.cross_correlation_coefficient(map_solution,
-                                                      self.dmap, threshold)
+        ccc = IMP.em.get_coarse_cc_coefficient(map_solution,
+                                               self.dmap, threshold)
         return ccc
 
     def get_cluster_representative_combination(self, query_cluster_ind):

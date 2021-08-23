@@ -84,7 +84,7 @@ class IMPMULTIFITEXPORT ComplementarityRestraint : public Restraint {
   IMP_OBJECT_METHODS(ComplementarityRestraint);
 #ifndef IMP_DOXYGEN
   double unprotected_evaluate_if_good(DerivativeAccumulator *accum,
-                                      double max) const;
+                                      double max) const IMP_OVERRIDE;
 #endif
  private:
   typedef std::pair<algebra::Transformation3D, algebra::DenseGrid3D<float> >

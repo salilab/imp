@@ -455,7 +455,7 @@
    and publicly getting that constraint. The constraint is added as a
    score state to the model.
  */
-#define IMP_CONSTRAINT_DECORATOR_DEF(Name)                                \
+#define IMP_CONSTRAINT_DECORATOR_DEF(Name, can_skip)                      \
   ObjectKey Name::get_constraint_key() {                                  \
     static ObjectKey ret(#Name " score state");                           \
     return ret;                                                           \
@@ -472,7 +472,8 @@
     } else {                                                            \
       Constraint* ss = new core::SingletonConstraint(                     \
           before, after, m, pi,                                           \
-          std::string(#Name "updater for ") + m->get_particle_name(pi));  \
+          std::string(#Name "updater for ") + m->get_particle_name(pi),   \
+          can_skip);                                                      \
       m->add_attribute(get_constraint_key(), pi, ss);                     \
       m->add_score_state(ss);                                             \
     }                                                                     \
@@ -555,7 +556,7 @@
 */
 #define IMP_SUMMARIZE_DECORATOR_DEF(Name, Parent, Members,                \
                                   create_pre_modifier,                  \
-                                  create_post_modifier)                 \
+                                  create_post_modifier, can_skip)       \
   void Name::do_setup_particle(Model *m, ParticleIndex pi,      \
                                const ParticleIndexes &pis) {            \
     Refiner *ref = new FixedRefiner(IMP::get_particles(m, pis)); \
@@ -576,6 +577,6 @@
     void Name::show(std::ostream &out) const {                          \
       out << #Name << " at " << static_cast<Parent>(*this);             \
     }                                                                   \
-      IMP_CONSTRAINT_DECORATOR_DEF(Name)
+      IMP_CONSTRAINT_DECORATOR_DEF(Name, can_skip)
 
 #endif /* IMPKERNEL_DECORATOR_MACROS_H */

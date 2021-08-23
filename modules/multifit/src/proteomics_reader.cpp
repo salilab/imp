@@ -11,7 +11,7 @@
 #include <boost/lexical_cast.hpp>
 #include <IMP/multifit/internal/reader_writer_utility.h>
 #include <boost/format.hpp>
-#include <boost/bind.hpp>
+
 IMPMULTIFIT_BEGIN_NAMESPACE
 namespace {
 

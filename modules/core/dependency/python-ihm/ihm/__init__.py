@@ -19,7 +19,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.18'
+__version__ = '0.21'
 
 
 class __UnknownValue(object):
@@ -33,6 +33,11 @@ class __UnknownValue(object):
         return False
     # Python2 compatibility
     __nonzero__ = __bool__
+
+    # Needs to be hashable so that classes like Software (that might
+    # use unknown values as attributes) are hashable
+    def __hash__(self):
+        return 0
 
     # Unknown value is a singleton and should only compare equal to itself
     def __eq__(self, other):
@@ -267,7 +272,8 @@ class System(object):
                     yield model_group
         if not only_in_states:
             for ensemble in self.ensembles:
-                yield ensemble.model_group
+                if ensemble.model_group:
+                    yield ensemble.model_group
                 for ss in ensemble.subsamples:
                     if ss.model_group:
                         yield ss.model_group
@@ -290,8 +296,8 @@ class System(object):
 
     def _all_representations(self):
         """Iterate over all Representations in the system.
-           This includes all Representations referenced from other objects, plus
-           any orphaned Representations. Duplicates are filtered out."""
+           This includes all Representations referenced from other objects,
+           plus any orphaned Representations. Duplicates are filtered out."""
         return _remove_identical(itertools.chain(
             self.orphan_representations,
             (model.representation for group, model in self._all_models()
@@ -952,6 +958,9 @@ class EntityRange(object):
 class Atom(object):
     """A single atom in an entity or asymmetric unit. Usually these objects
        are created by calling :meth:`Residue.atom`.
+
+       Note that this class does not store atomic coordinates of a given
+       atom in a given model; for that, see :class:`ihm.model.Atom`.
     """
 
     __slots__ = ['residue', 'id']
@@ -1036,11 +1045,11 @@ class Entity(object):
            rna_with_psu = ihm.Entity(('A', 'C', psu), alphabet=ihm.RNAAlphabet)
 
        For more examples, see the
-       `ligands and water example <https://github.com/ihmwg/python-ihm/blob/master/examples/ligands_water.py>`_.
+       `ligands and water example <https://github.com/ihmwg/python-ihm/blob/main/examples/ligands_water.py>`_.
 
        All entities should be stored in the top-level System object;
        see :attr:`System.entities`.
-    """
+    """  # noqa: E501
 
     number_of_molecules = 1
 

@@ -28,23 +28,23 @@ class IMPISDEXPORT MolecularDynamics : public atom::MolecularDynamics {
   MolecularDynamics(Model *m = nullptr);
 
   //! Return the current kinetic energy of the system, in kcal/mol
-  Float get_kinetic_energy() const;
+  Float get_kinetic_energy() const IMP_OVERRIDE;
 
   //! Assign velocities representative of the given temperature
-  void assign_velocities(Float temperature);
+  void assign_velocities(Float temperature) IMP_OVERRIDE;
 
  protected:
-  bool get_is_simulation_particle(ParticleIndex pi) const;
+  bool get_is_simulation_particle(ParticleIndex pi) const IMP_OVERRIDE;
 
-  void setup_degrees_of_freedom(const ParticleIndexes &ps);
+  void setup_degrees_of_freedom(const ParticleIndexes &ps) IMP_OVERRIDE;
 
   //! First part of velocity Verlet (update coordinates and half-step velocity)
   void propagate_coordinates(const ParticleIndexes &ps,
-                             double step_size);
+                             double step_size) IMP_OVERRIDE;
 
   //! Second part of velocity Verlet (update velocity)
   void propagate_velocities(const ParticleIndexes &ps,
-                            double step_size);
+                            double step_size) IMP_OVERRIDE;
 
   //! Keys of the xyz velocities
   FloatKey vnuis_;

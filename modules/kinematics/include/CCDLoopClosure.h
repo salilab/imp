@@ -10,7 +10,7 @@
 #ifndef IMPKINEMATICS_CCD_LOOP_CLOSURE_H
 #define IMPKINEMATICS_CCD_LOOP_CLOSURE_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/kinematics/revolute_joints.h>
 #include <IMP/algebra/Vector3D.h>
 

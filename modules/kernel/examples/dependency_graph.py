@@ -1,5 +1,12 @@
 ## \example kernel/dependency_graph.py
-# When trying to understand what is going on in \imp, it can often be useful to view the dependency graph, that is, the graph showing how various entities relate to one another. In it, an arrow leads from an IMP::Container or IMP::Particle to an IMP::Restraint if the IMP::Restraint reads from that container or particle. Similarly, an arrow leads from an IMP::Container or IMP::Particle to an IMP::ScoreState if the score state reads from it, and an arrow leads from an IMP::ScoreState to an IMP::Container or IMP::Particle if the score state updates the particle.
+# When trying to understand what is going on in \imp, it can often be useful
+# to view the dependency graph, that is, the graph showing how various
+# entities relate to one another. In it, an arrow leads from an IMP::Container
+# or IMP::Particle to an IMP::Restraint if the IMP::Restraint reads from that
+# container or particle. Similarly, an arrow leads from an IMP::Container or
+# IMP::Particle to an IMP::ScoreState if the score state reads from it, and
+# an arrow leads from an IMP::ScoreState to an IMP::Container or IMP::Particle
+# if the score state updates the particle.
 #
 # The resulting pruned dependency graph is:
 # \dotgraph{ \dot
@@ -141,11 +148,10 @@ def create_representation():
 
     def create_protein(name, ds):
         h = IMP.atom.create_protein(m, name, 10, ds)
-        leaves = IMP.atom.get_leaves(h)
+        # leaves = IMP.atom.get_leaves(h)
         all.add_child(h)
-        r = IMP.atom.create_connectivity_restraint([IMP.atom.Selection(c)
-                                                    for c in h.get_children()],
-                                                   1)
+        r = IMP.atom.create_connectivity_restraint(
+            [IMP.atom.Selection(c) for c in h.get_children()], 1)
         if r:
             rs.append(r)
 
@@ -153,8 +159,8 @@ def create_representation():
         def create_from_pdb(file):
             with IMP.SetLogState(IMP.NONE):
                 t = IMP.atom.read_pdb(
-                      IMP.get_example_path("data/" + file), m,
-                      IMP.atom.ATOMPDBSelector())
+                    IMP.get_example_path("data/" + file), m,
+                    IMP.atom.ATOMPDBSelector())
             # IMP.atom.show_molecular_hierarchy(t)
             c = IMP.atom.Chain(IMP.atom.get_by_type(t, IMP.atom.CHAIN_TYPE)[0])
             if c.get_number_of_children() == 0:
@@ -176,10 +182,8 @@ def create_representation():
                 c = create_from_pdb(f)
                 h.add_child(c)
                 c.set_name(name + " chain " + str(i))
-            r = IMP.atom.create_connectivity_restraint([IMP.atom.Selection(c)
-                                                        for c in h.get_children(
-                                                        )],
-                                                       1)
+            r = IMP.atom.create_connectivity_restraint(
+                [IMP.atom.Selection(c) for c in h.get_children()], 1)
             if r:
                 rs.append(r)
         else:
@@ -221,8 +225,9 @@ def create_restraints(m, rs, all):
         IMP.atom.Selection(hierarchy=all, molecule="Nup120",
                            residue_indexes=range(500, 762)))
     add_distance_restraint(IMP.atom.Selection(hierarchy=all, molecule="Nup84"),
-                           IMP.atom.Selection(hierarchy=all, molecule="Nup133",
-                                              residue_indexes=range(778, 1160)))
+                           IMP.atom.Selection(
+                               hierarchy=all, molecule="Nup133",
+                               residue_indexes=range(778, 1160)))
     add_distance_restraint(IMP.atom.Selection(hierarchy=all, molecule="Nup85"),
                            IMP.atom.Selection(hierarchy=all, molecule="Seh1"))
     add_distance_restraint(
@@ -230,14 +235,15 @@ def create_restraints(m, rs, all):
                            residue_indexes=range(0, 423)),
         IMP.atom.Selection(hierarchy=all, molecule="Sec13"))
 
+
 # now do the actual work
 (m, rs, all) = create_representation()
 create_restraints(m, rs, all)
 
 sf = IMP.core.RestraintsScoringFunction(rs)
 
-# we can get the full dependency graph for the whole model with all the restraints
-# but it is pretty complex
+# we can get the full dependency graph for the whole model with all
+# the restraints but it is pretty complex
 dg = IMP.get_dependency_graph(m)
 IMP.show_graphviz(dg)
 

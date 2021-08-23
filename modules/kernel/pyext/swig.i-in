@@ -288,6 +288,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndexKey, Key, ParticleIndexKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndexesKey, Key, ParticleIndexesKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ObjectKey, Key, ObjectKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ModelKey, Key, ModelKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, TriggerKey, Key, TriggerKeys);
 IMP_SWIG_VALUE_TEMPLATE(IMP, Key);
 IMP_SWIG_RAII_TEMPLATE(IMP, ScopedSetAttribute);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedSetFloatAttribute, ScopedSetAttribute);
@@ -321,6 +322,7 @@ namespace IMP {
   %template(IntsKey) ::IMP::Key<5>;
   %template(ParticleIndexesKey) ::IMP::Key<6>;
   %template(ModelKey) ::IMP::Key<8>;
+  %template(TriggerKey) ::IMP::Key<11>;
   %template(ParticleIndex) ::IMP::Index<IMP::ParticleIndexTag>;
   %template(FloatsKey) ::IMP::Key<10>;
 }

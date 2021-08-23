@@ -42,7 +42,9 @@ class Dataset(object):
         self.parents = []
 
     def add_primary(self, dataset):
-        """Add another Dataset from which this one was ultimately derived."""
+        """Add another Dataset from which this one was ultimately derived,
+           i.e. it is added as a parent, unless a parent already exists,
+           in which case it is added as a grandparent, and so on."""
         root = self
         while root.parents:
             if len(root.parents) > 1:

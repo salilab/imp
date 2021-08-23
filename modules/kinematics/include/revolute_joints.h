@@ -13,7 +13,7 @@
 #ifndef IMPKINEMATICS_REVOLUTE_JOINTS_H
 #define IMPKINEMATICS_REVOLUTE_JOINTS_H
 
-#include "kinematics_config.h"
+#include <IMP/kinematics/kinematics_config.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/Joint.h>
 #include <IMP/Object.h>
@@ -92,7 +92,7 @@ class IMPKINEMATICSEXPORT RevoluteJoint : public Joint {
      that affect update_axis_of_rotation_from_cartesian_witnesses()
      are all updated already
   */
-  virtual void update_child_node_reference_frame() const;
+  virtual void update_child_node_reference_frame() const IMP_OVERRIDE;
 
   /**
       this protected method updates the rot_axis_unit_vector_
@@ -116,7 +116,7 @@ class IMPKINEMATICSEXPORT RevoluteJoint : public Joint {
      Update the joint internal parameters based on external reference frames
      of witnesses and rigid bodies, assuming external parameters are updated
    */
-  virtual void update_joint_from_cartesian_witnesses() {
+  virtual void update_joint_from_cartesian_witnesses() IMP_OVERRIDE {
     update_axis_of_rotation_from_cartesian_witnesses();
     angle_ = get_current_angle_from_cartesian_witnesses();
     last_updated_angle_ = angle_;
@@ -200,7 +200,7 @@ class IMPKINEMATICSEXPORT DihedralAngleRevoluteJoint : public RevoluteJoint {
       using b_-c_ as the axis of rotation
       @note it is assumed b_ and c_ have update Cartesian coordinates
   */
-  virtual void update_axis_of_rotation_from_cartesian_witnesses() {
+  virtual void update_axis_of_rotation_from_cartesian_witnesses() IMP_OVERRIDE {
     using namespace IMP::algebra;
     IMP_USAGE_CHECK(
         get_distance(b_.get_coordinates(), c_.get_coordinates()) > 1e-12,
@@ -226,7 +226,8 @@ class IMPKINEMATICSEXPORT DihedralAngleRevoluteJoint : public RevoluteJoint {
       external coordinates of required Cartesian witnesses are up to
       date)
   */
-  virtual double get_current_angle_from_cartesian_witnesses() const;
+  virtual double get_current_angle_from_cartesian_witnesses()
+                             const IMP_OVERRIDE;
 
  private:
   IMP::core::XYZ a_;
@@ -265,7 +266,8 @@ class IMPKINEMATICSEXPORT BondAngleRevoluteJoint : public RevoluteJoint {
      actual current bond angle of this joint (assuming external
      coordinates of required Cartesian witnesses are up to date)
   */
-  virtual double get_current_angle_from_cartesian_witnesses() const;
+  virtual double get_current_angle_from_cartesian_witnesses()
+                                  const IMP_OVERRIDE;
 
   /**
      updates the rot_axis_unit_vector_ and rot_axis_origin_ variables
@@ -273,7 +275,7 @@ class IMPKINEMATICSEXPORT BondAngleRevoluteJoint : public RevoluteJoint {
      plane containing a_,b_,c_ as axis of rotation, in global
      coordinates
   */
-  virtual void update_axis_of_rotation_from_cartesian_witnesses() {
+  virtual void update_axis_of_rotation_from_cartesian_witnesses() IMP_OVERRIDE {
     using namespace IMP::algebra;
 
     IMP_USAGE_CHECK(
