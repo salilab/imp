@@ -1005,16 +1005,21 @@ algebra::ReferenceFrame3D get_initial_reference_frame(
   IMP_USAGE_CHECK(mass > 0, "Zero mass when computing axis.");
   v /= mass;
   // IMP_LOG_VERBOSE( "Center of mass is " << v << std::endl);
-  // for a sphere 2/5 m r^2 (diagonal)
-  // parallel axis theorem
-  // I'ij= Iij+M(v^2delta_ij-vi*vj)
-  // compute I
+  /* compute inertia tensor, I
+  Iij= M(v^2 * delta_ij-vi*vj), where delta is the kronecker delta
+  i.e. delta_ij  = 1 only when i == j else 0
+  */
   Eigen::Matrix3d I =
       compute_I(m, ps, v, IMP::algebra::get_identity_rotation_3d());
   // IMP_LOG_VERBOSE( "Initial I is " << I << std::endl);
-  // diagonalize it
-  Eigen::EigenSolver<Eigen::Matrix3d> eig(I);
-  Eigen::Matrix3d rm = eig.eigenvectors().real();
+  
+  /* Inertia tensor is symmetric, thus guaranteeing all real eigenvectors.
+  So use the fastest method provided by Eigen, namely
+  Eigen::SelfAdjointEigenSolver. This also automatically sorts the
+  eigenvalues (and correspondingly, the eigenvectors) in increasing order.
+  */  
+  Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> eig(I);
+  Eigen::Matrix3d rm = eig.eigenvectors();
   if (rm.determinant() < 0) {
     rm.array() *= -1.0;
   }
