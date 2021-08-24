@@ -48,6 +48,9 @@ void CenterOfMass::do_setup_particle(Model *m, ParticleIndex pi,
   set_constraint(pre_mod, post_mod, m, pi);
 }
 
+void CenterOfMass::teardown_particle(CenterOfMass com) {
+  set_constraint(nullptr, nullptr, com.get_model(), com.get_particle_index());
+}
 
 void CenterOfMass::show(std::ostream &out) const {
   core::XYZ xyz(get_particle());
