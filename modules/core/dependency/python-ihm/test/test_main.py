@@ -237,7 +237,8 @@ class Tests(unittest.TestCase):
         s4 = ihm.Software(name='bar', version='1.0',
                           classification='a', description='b', location='c')
         s5 = ihm.Software(name='bar', version=ihm.unknown,
-                          classification='a', description='b', location='c')
+                          classification='a', description='b', location='c',
+                          citation='foo')
         # Should compare equal iff name and version both match
         self.assertEqual(s1, s3)
         self.assertEqual(hash(s1), hash(s3))
@@ -581,17 +582,31 @@ class Tests(unittest.TestCase):
                           authors=['Smith A', 'Jones B'],
                           doi='1.2.3.4',
                           pmid='1234')
+        c3 = ihm.Citation(title='Test paper2', journal='J Mol Biol2',
+                          volume=46, page_range=(1, 20), year=2017,
+                          authors=['Smith A', 'Jones B'],
+                          doi='5.6.7.8',
+                          pmid='5678')
         rsr1 = MockObject()  # Not a 3dem restraint
         rsr2 = MockObject()  # 3dem but with no provided citation
         rsr2.fitting_method_citation_id = None
         rsr3 = MockObject()
         rsr2.fitting_method_citation_id = c1
 
+        s1 = ihm.Software(name='test', classification='test code',
+                          description='Some test program',
+                          version=1, location='http://test.org')
+        s2 = ihm.Software(name='test', classification='test code',
+                          description='Some test program',
+                          version=1, location='http://test.org',
+                          citation=c3)
+
         s = ihm.System()
         s.restraints.extend((rsr1, rsr2, rsr3))
         s.citations.extend((c2, c2))
+        s.software.extend((s1, s2))
         # duplicates should be filtered globally
-        self.assertEqual(list(s._all_citations()), [c2, c1])
+        self.assertEqual(list(s._all_citations()), [c2, c3, c1])
 
     def test_all_software(self):
         """Test _all_software() method"""

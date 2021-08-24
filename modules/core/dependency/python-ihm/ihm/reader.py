@@ -900,12 +900,13 @@ class _SoftwareHandler(Handler):
     category = '_software'
 
     def __call__(self, pdbx_ordinal, name, classification, description,
-                 version, type, location):
+                 version, type, location, citation_id):
         s = self.sysr.software.get_by_id(pdbx_ordinal)
         self.copy_if_present(
             s, locals(),
             keys=('name', 'classification', 'description', 'version',
                   'type', 'location'))
+        s.citation = self.sysr.citations.get_by_id_or_none(citation_id)
 
 
 class _CitationHandler(Handler):

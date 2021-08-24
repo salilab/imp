@@ -132,16 +132,23 @@ _struct.title 'test model'
     def test_software(self):
         """Test SoftwareDumper"""
         system = ihm.System()
+        c1 = ihm.Citation(
+            pmid='25161197', title='foo',
+            journal="Mol Cell Proteomics", volume=13, page_range=(2927, 2943),
+            year=2014, authors=['auth1', 'auth2', 'auth3'], doi='doi1')
         system.software.append(ihm.Software(
             name='test', classification='test code',
             description='Some test program',
             version=1, location='http://test.org'))
         system.software.append(ihm.Software(
             name='foo', classification='test code',
-            description='Other test program', location='http://test2.org'))
+            description='Other test program', location='http://test2.org',
+            citation=c1))
         # Duplicate should be removed
         system.software.append(ihm.Software(
             name='foo', classification='x', description='y', location='z'))
+        dumper = ihm.dumper._CitationDumper()
+        dumper.finalize(system)
         dumper = ihm.dumper._SoftwareDumper()
         dumper.finalize(system)
         self.assertEqual(len(dumper._software_by_id), 2)
@@ -158,8 +165,9 @@ _software.description
 _software.version
 _software.type
 _software.location
-1 test 'test code' 'Some test program' 1 program http://test.org
-2 foo 'test code' 'Other test program' . program http://test2.org
+_software.citation_id
+1 test 'test code' 'Some test program' 1 program http://test.org .
+2 foo 'test code' 'Other test program' . program http://test2.org 1
 #
 """)
 
@@ -235,6 +243,17 @@ _citation_author.ordinal
             journal="Mol Cell Proteomics", volume=13, page_range=(2927, 2943),
             year=2014, authors=['auth2', 'auth4'], doi='doi2')
         system.citations.extend((c1, c2))
+
+        # Citations indirectly referenced by software should *not* be used
+        c3 = ihm.Citation(
+            pmid='455', title='baz',
+            journal="Mol Cell Proteomics", volume=13, page_range=(2927, 2943),
+            year=2014, authors=['auth5', 'auth6', 'auth7'], doi='doi3')
+        software = ihm.Software(name='test', classification='test code',
+                                description='Some test program',
+                                version=1, location='http://test.org',
+                                citation=c3)
+        system.software.append(software)
 
         dumper = ihm.dumper._AuditAuthorDumper()
         out = _get_dumper_output(dumper, system)

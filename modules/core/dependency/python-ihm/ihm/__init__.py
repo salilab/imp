@@ -507,6 +507,8 @@ class System(object):
            Duplicates are filtered out."""
         return _remove_identical(itertools.chain(
             self.citations,
+            (software.citation for software in self._all_software()
+             if software.citation),
             (restraint.fitting_method_citation_id
              for restraint in self._all_restraints()
              if hasattr(restraint, 'fitting_method_citation_id')
@@ -548,6 +550,8 @@ class Software(object):
        :param str location: Place where the software can be found (e.g. URL).
        :param str type: Type of software (program/package/library/other).
        :param str version: The version used.
+       :param citation: Publication describing the software.
+       :type citation: :class:`Citation`
 
        Generally these objects are added to :attr:`System.software` or
        passed to :class:`ihm.startmodel.StartingModel`,
@@ -556,13 +560,14 @@ class Software(object):
        :class:`ihm.restraint.PredictedContactResstraint` objects.
     """
     def __init__(self, name, classification, description, location,
-                 type='program', version=None):
+                 type='program', version=None, citation=None):
         self.name = name
         self.classification = classification
         self.description = description
         self.location = location
         self.type = type
         self.version = version
+        self.citation = citation
 
     # Software compares equal if the names and versions are the same
     def _eq_vals(self):
@@ -596,7 +601,8 @@ class Citation(object):
     """A publication that describes the modeling.
 
        Generally citations are added to :attr:`System.citations` or
-       passed to :class:`ihm.restraint.EM3DRestraint` objects.
+       passed to :class:`ihm.Software` or
+       :class:`ihm.restraint.EM3DRestraint` objects.
 
        :param str pmid: The PubMed ID.
        :param str title: Full title of the publication.

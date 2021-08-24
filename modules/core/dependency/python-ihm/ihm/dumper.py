@@ -113,12 +113,14 @@ class _SoftwareDumper(Dumper):
         # Software class)
         with writer.loop("_software",
                          ["pdbx_ordinal", "name", "classification",
-                          "description", "version", "type", "location"]) as lp:
+                          "description", "version", "type", "location",
+                          "citation_id"]) as lp:
             for s in self._software_by_id:
                 lp.write(pdbx_ordinal=s._id, name=s.name,
                          classification=s.classification,
                          description=s.description, version=s.version,
-                         type=s.type, location=s.location)
+                         type=s.type, location=s.location,
+                         citation_id=s.citation._id if s.citation else None)
 
 
 class _CitationDumper(Dumper):
@@ -163,7 +165,10 @@ class _AuditAuthorDumper(Dumper):
         # If system.authors is empty, get the set of all citation authors
         # instead
         seen_authors = set()
-        for c in system._all_citations():
+        # Only look at explictly-added citations (since these are likely to
+        # describe the modeling) not that describe a method or a piece of
+        # software we used (system._all_citations())
+        for c in system.citations:
             for a in c.authors:
                 if a not in seen_authors:
                     seen_authors.add(a)
@@ -3107,8 +3112,7 @@ def write(fh, systems, format='mmCIF', dumpers=[]):
               These can be used to add extra categories to the file."""
     dumpers = [_EntryDumper(),  # must be first
                _StructDumper(), _CommentDumper(),
-               _AuditConformDumper(), _SoftwareDumper(),
-               _CitationDumper(),
+               _AuditConformDumper(), _CitationDumper(), _SoftwareDumper(),
                _AuditAuthorDumper(), _GrantDumper(),
                _ChemCompDumper(), _ChemDescriptorDumper(),
                _EntityDumper(), _EntitySrcGenDumper(), _EntitySrcNatDumper(),

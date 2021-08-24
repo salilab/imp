@@ -203,6 +203,17 @@ _struct.entry_id id3
         """Test SoftwareHandler"""
         cif = """
 loop_
+_citation.id
+_citation.journal_abbrev
+_citation.journal_volume
+_citation.page_first
+_citation.page_last
+_citation.year
+_citation.pdbx_database_id_PubMed
+_citation.pdbx_database_id_DOI
+1 'Mol Cell Proteomics' 9 2943 . 2014 1234 .
+#
+loop_
 _software.pdbx_ordinal
 _software.name
 _software.classification
@@ -210,14 +221,21 @@ _software.description
 _software.version
 _software.type
 _software.location
-1 'test software' 'test class' 'test desc' program 1.0.1 https://example.org
+_software.citation_id
+1 'test software' 'test class' 'test desc' program 1.0.1 https://example.org .
+2 'other software' 'oth class' 'test desc' program 1.0.1 https://example.org 1
 """
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
-            software, = s.software
+            software, s2 = s.software
             self.assertEqual(software._id, '1')
             self.assertEqual(software.name, 'test software')
             self.assertEqual(software.classification, 'test class')
+            self.assertIsNone(software.citation)
+            self.assertEqual(s2._id, '2')
+            self.assertEqual(s2.name, 'other software')
+            self.assertEqual(s2.classification, 'oth class')
+            self.assertEqual(s2.citation.pmid, '1234')
 
     def test_audit_author_handler(self):
         """Test AuditAuthorHandler"""
