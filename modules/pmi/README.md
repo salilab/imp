@@ -56,3 +56,4 @@ version 2 of the License, or (at your option) any later version.
 
 _Publications_:
  - See [main IMP papers list](@ref publications).
+ - D. Saltzberg, C. H Greenberg, S. Viswanath, I. Chemmama, B. Webb, R. Pellarin, I. Echeverria, A. Sali. ["Modeling Biological Complexes Using Integrative Modeling Platform", Methods Mol Biol 2022, 2019](https://pubmed.ncbi.nlm.nih.gov/31396911/).

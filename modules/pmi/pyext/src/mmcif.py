@@ -133,29 +133,73 @@ class _AllSoftware(object):
                  classification="integrative model building",
                  description="integrative model building",
                  location='https://integrativemodeling.org')
+        # Only recent versions of python-ihm support adding citations for
+        # software
+        if hasattr(self.imp, 'citation'):
+            if sys.version_info[0] > 2:
+                # Don't include UTF8 characters in source; it confuses Python 2
+                javi = 'Vel\u00e1zquez-Muriel J'
+            else:
+                javi = 'Velazquez-Muriel J'
+            self.imp.citation = ihm.Citation(
+                pmid='22272186',
+                title='Putting the pieces together: integrative modeling '
+                      'platform software for structure determination of '
+                      'macromolecular assemblies',
+                journal='PLoS Biol', volume=10, page_range='e1001244',
+                year=2012,
+                authors=['Russel D', 'Lasker K', 'Webb B', javi, 'Tjioe E',
+                         'Schneidman-Duhovny D', 'Peterson B', 'Sali A'],
+                doi='10.1371/journal.pbio.1001244')
+            self.pmi.citation = ihm.Citation(
+                pmid='31396911',
+                title='Modeling Biological Complexes Using Integrative '
+                      'Modeling Platform.',
+                journal='Methods Mol Biol', volume=2022, page_range=(353, 377),
+                year=2019,
+                authors=['Saltzberg D', 'Greenberg CH', 'Viswanath S',
+                         'Chemmama I', 'Webb B', 'Pellarin R', 'Echeverria I',
+                         'Sali A'],
+                doi='10.1007/978-1-4939-9608-7_15')
         self.system.software.extend([self.pmi, self.imp])
 
     def set_modeller_used(self, version, date):
         if self.modeller_used:
             return
         self.modeller_used = True
-        self.system.software.append(ihm.Software(
-                    name='MODELLER', classification='comparative modeling',
-                    description='Comparative modeling by satisfaction '
-                                'of spatial restraints, build ' + date,
-                    location='https://salilab.org/modeller/',
-                    version=version))
+        s = ihm.Software(
+            name='MODELLER', classification='comparative modeling',
+            description='Comparative modeling by satisfaction '
+                        'of spatial restraints, build ' + date,
+            location='https://salilab.org/modeller/', version=version)
+        self.system.software.append(s)
+        if hasattr(s, 'citation'):
+            s.citation = ihm.Citation(
+                pmid='8254673',
+                title='Comparative protein modelling by satisfaction of '
+                      'spatial restraints.',
+                journal='J Mol Biol', volume=234, page_range=(779, 815),
+                year=1993, authors=['Sali A', 'Blundell TL'],
+                doi='10.1006/jmbi.1993.1626')
 
     def set_phyre2_used(self):
         if self.phyre2_used:
             return
         self.phyre2_used = True
-        self.system.software.append(ihm.Software(
-                   name='Phyre2', classification='protein homology modeling',
-                   description='Protein Homology/analogY Recognition '
-                               'Engine V 2.0',
-                   version='2.0',
-                   location='http://www.sbg.bio.ic.ac.uk/~phyre2/'))
+        s = ihm.Software(
+            name='Phyre2', classification='protein homology modeling',
+            description='Protein Homology/analogY Recognition Engine V 2.0',
+            version='2.0', location='http://www.sbg.bio.ic.ac.uk/~phyre2/')
+        if hasattr(s, 'citation'):
+            s.citation = ihm.Citation(
+                pmid='25950237',
+                title='The Phyre2 web portal for protein modeling, '
+                      'prediction and analysis.',
+                journal='Nat Protoc', volume=10, page_range=(845, 858),
+                authors=['Kelley LA', 'Mezulis S', 'Yates CM', 'Wass MN',
+                         'Sternberg MJ'],
+                year=2015, doi='10.1038/nprot.2015.053')
+        self.system.software.append(s)
 
 
 def _get_fragment_is_rigid(fragment):
