@@ -31,6 +31,8 @@ ChangeLog {#changelog}
   get_contents() method instead.
 - The deprecated IMP::isd::Weight::get_number_of_states() method has been
   removed. Use get_number_of_weights() instead.
+- We no longer provide packages for Ubuntu 16.04 LTS (Xenial Xerus), as it
+  reached end of life in April 2021.
 
 # 2.15.0 - 2021-06-02 # {#changelog_2_15_0}
 - The [Homebrew](https://brew.sh/) Mac packages now support Apple Silicon.
