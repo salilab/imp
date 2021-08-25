@@ -109,8 +109,9 @@ _software.description
 _software.version
 _software.type
 _software.location
+_software.citation_id
 1 'Integrative Modeling Platform (IMP)' 'integrative model building' .
-%s program https://integrativemodeling.org
+%s program https://integrativemodeling.org .
 #
 """ % IMP.get_module_version()).replace('\n', ' '))
 
