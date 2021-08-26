@@ -78,7 +78,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
       @{
   */
   void set_kt(Float t) {
-    IMP_INTERNAL_CHECK(t > 0, "Temperature must be positive");
+    IMP_INTERNAL_CHECK(t >= 0, "Temperature must not be negative");
     temp_ = t;
   }
   Float get_kt() const { return temp_; }
