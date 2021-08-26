@@ -58,6 +58,30 @@ void RestraintSet::do_add_score_and_derivatives(ScoreAccumulator sa) const {
   IMP_OMP_PRAGMA(taskwait)
 }
 
+namespace {
+void add_last_score_restraint(Restraint *r, ScoreAccumulator &sa,
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+                              const ParticleIndexes &moved_pis,
+                              const ParticleIndexes &reset_pis,
+#endif
+                              double last_score) {
+  // If the restraint is new, get the full score
+  if (last_score == NO_MAX) {
+    r->add_score_and_derivatives(sa);
+  } else {
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+    r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
+    IMP_INTERNAL_CHECK_FLOAT_EQUAL(
+           r->get_last_score(), last_score,
+           "Restraint " << *r
+           << " changed score even though particles didn't move");
+#else
+    sa.add_score(last_score * r->get_weight());
+#endif
+  }
+}
+}
+
 void RestraintSet::do_add_score_and_derivatives_moved(
                 ScoreAccumulator sa, const ParticleIndexes &moved_pis,
                 const ParticleIndexes &reset_pis) const {
@@ -65,29 +89,59 @@ void RestraintSet::do_add_score_and_derivatives_moved(
   // evaluate the restraints that depend on that particle, and use the
   // last score for the rest
   if (!sa.get_derivative_accumulator() && moved_pis.size() == 1
-      && reset_pis.size() == 0) {
+      && (reset_pis.size() == 0
+          || (reset_pis.size() == 1 && reset_pis[0] == moved_pis[0]))) {
     const std::set<Restraint *> &rsset
            = get_model()->get_dependent_restraints(moved_pis[0]);
     for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
       Restraint *r = get_restraint(i);
-      if (rsset.find(r) == rsset.end()) {
-        double last_score = r->get_last_score();
-        // If the restraint is new, get the full score
-        if (last_score == NO_MAX) {
-          r->add_score_and_derivatives(sa);
-        } else {
-#if IMP_HAS_CHECKS >= IMP_INTERNAL
-          r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
-          IMP_INTERNAL_CHECK_FLOAT_EQUAL(
-                 r->get_last_score(), last_score,
-                 "Restraint " << *r
-                 << " changed score even though particles didn't move");
-#else
-          sa.add_score(last_score * r->get_weight());
-#endif
-        }
-      } else {
+      if (rsset.find(r) != rsset.end()) {
         r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
+      } else {
+        add_last_score_restraint(r, sa,
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+                                 moved_pis, reset_pis,
+#endif
+                                 r->get_last_score());
+      }
+    }
+  // If we have *both* moved and reset particles, we need to check each
+  // restraint for both
+  } else if (!sa.get_derivative_accumulator() && moved_pis.size() == 1
+             && reset_pis.size() == 1) {
+    const std::set<Restraint *> &moved_set
+           = get_model()->get_dependent_restraints(moved_pis[0]);
+    const std::set<Restraint *> &reset_set
+           = get_model()->get_dependent_restraints(reset_pis[0]);
+    for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
+      Restraint *r = get_restraint(i);
+      // must check moved first, since if a given restraint is affected by
+      // *both* moved and reset particles, we need to recalculate it
+      if (moved_set.find(r) != moved_set.end()) {
+        // preserve last-last score if reset
+        if (reset_set.find(r) != reset_set.end()) {
+          double last_last_score = r->get_last_last_score();
+          r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
+          r->set_last_last_score(last_last_score);
+        } else {
+          r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
+        }
+      } else if (reset_set.find(r) != reset_set.end()) {
+        // If reset, we can use the last-but-one score
+        double score = r->get_last_last_score();
+        add_last_score_restraint(r, sa,
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+                                 moved_pis, reset_pis,
+#endif
+                                 score);
+        r->set_last_score(score);
+      } else {
+        // If not moved, we can use the last score
+        add_last_score_restraint(r, sa,
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+                                 moved_pis, reset_pis,
+#endif
+                                 r->get_last_score());
       }
     }
   } else {
@@ -101,6 +155,14 @@ double RestraintSet::get_last_score() const {
   double ret = 0;
   for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
     ret += get_restraint(i)->get_last_score();
+  }
+  return ret;
+}
+
+double RestraintSet::get_last_last_score() const {
+  double ret = 0;
+  for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
+    ret += get_restraint(i)->get_last_last_score();
   }
   return ret;
 }

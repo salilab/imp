@@ -27,7 +27,8 @@ const double NO_MAX = std::numeric_limits<double>::max();
 const double BAD_SCORE = NO_MAX;
 
 Restraint::Restraint(Model *m, std::string name)
-    : ModelObject(m, name), weight_(1), max_(NO_MAX), last_score_(BAD_SCORE) {}
+    : ModelObject(m, name), weight_(1), max_(NO_MAX), last_score_(BAD_SCORE),
+      last_last_score_(BAD_SCORE) {}
 
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;

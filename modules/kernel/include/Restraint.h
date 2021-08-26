@@ -263,7 +263,11 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
           create_scoring_function(double weight = 1.0,
                                   double max = NO_MAX) const;
 #if !defined(IMP_DOXYGEN)
-  void set_last_score(double s) const { last_score_ = s; }
+  void set_last_score(double s) const {
+    last_last_score_ = last_score_;
+    last_score_ = s;
+  }
+  void set_last_last_score(double s) const { last_last_score_ = s; }
 #endif
 
   /** Return the (unweighted) score for this restraint last time it was
@@ -272,6 +276,12 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       was the last call, the score, if larger than the max, is not accurate.
    */
   virtual double get_last_score() const { return last_score_; }
+
+  //! Get the unweighted score from the last-but-one time it was evaluated
+  /** \see get_last_score
+    */
+  virtual double get_last_last_score() const { return last_last_score_; }
+
   /** Return whether this restraint violated its maximum last time it was
       evaluated.
    */
@@ -315,6 +325,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   double weight_;
   double max_;
   mutable double last_score_;
+  mutable double last_last_score_;
   // cannot be released outside the class
   mutable Pointer<ScoringFunction> cached_internal_scoring_function_;
 };
