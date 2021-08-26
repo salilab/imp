@@ -104,7 +104,7 @@ void MonteCarloWithWte::do_step() {
     energy = rset_->evaluate(false);
   }
   bool do_accept = do_accept_or_reject_move(totenergy + get_bias(energy),
-                                            moved.get_proposal_ratio());
+                                            moved);
   if (do_accept) update_bias(energy);
 }
 
