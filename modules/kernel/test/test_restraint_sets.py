@@ -172,21 +172,21 @@ class Tests(IMP.test.TestCase):
         assert_restraint_skipped(r1)
         assert_restraint_skipped(r4)
 
-        # Moves of multiple particles are not currently handled and will
-        # fall back to plain evaluate
+        # Moves of multiple particles are not specially handled but will
+        # pass through to evaluate_moved
         clear_restraints()
         self.assertAlmostEqual(rs.evaluate_moved(False, [p1, p2], []),
                                110.0, delta=1e-6)
-        assert_restraint_evaluate(r1)
-        assert_restraint_evaluate(r4)
+        assert_restraint_evaluate_moved(r1)
+        assert_restraint_evaluate_moved(r4)
 
-        # Moves with derivatives are not currently handled and will
-        # fall back to plain evaluate
+        # Moves with derivatives are not specially handled but will
+        # pass through to evaluate_moved
         clear_restraints()
         self.assertAlmostEqual(rs.evaluate_moved(True, [p1], []),
                                110.0, delta=1e-6)
-        assert_restraint_evaluate(r1)
-        assert_restraint_evaluate(r4)
+        assert_restraint_evaluate_moved(r1)
+        assert_restraint_evaluate_moved(r4)
 
         # Changes in weights should be handled
         innerrs.set_weight(2.)
