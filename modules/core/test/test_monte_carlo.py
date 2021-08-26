@@ -22,7 +22,8 @@ def setup_system(coords):
     rs = IMP.RestraintSet(m)
     rs.add_restraints([r1, r2, r3])
     mc.set_scoring_function(rs)
-    ms = [IMP.core.BallMover(m, x, 0.05) for x in ps]
+    ms = [IMP.core.BallMover(m, x, 0.05) for x in ps[:5]]
+    ms.append(IMP.core.BallMover(m, ps[5:8], 0.05))
     mv = IMP.core.SerialMover(ms)
     mc.add_mover(mv)
     # Always reject upwards moves
