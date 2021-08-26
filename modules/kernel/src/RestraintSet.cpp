@@ -145,7 +145,10 @@ void RestraintSet::do_add_score_and_derivatives_moved(
       }
     }
   } else {
-    do_add_score_and_derivatives(sa);
+    for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
+      get_restraint(i)->add_score_and_derivatives_moved(
+                                    sa, moved_pis, reset_pis);
+    }
   }
   // for child tasks
   IMP_OMP_PRAGMA(taskwait)
