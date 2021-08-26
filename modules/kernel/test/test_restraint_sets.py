@@ -165,6 +165,13 @@ class Tests(IMP.test.TestCase):
         assert_restraint_skipped(r1)
         assert_restraint_evaluate_moved(r4)
 
+        # reset particles should skip evaluation
+        clear_restraints()
+        self.assertAlmostEqual(rs.evaluate_moved(False, [p2], [p4]),
+                               110.0, delta=1e-6)
+        assert_restraint_skipped(r1)
+        assert_restraint_skipped(r4)
+
         # Moves of multiple particles are not currently handled and will
         # fall back to plain evaluate
         clear_restraints()
