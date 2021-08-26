@@ -59,11 +59,13 @@ void RestraintSet::do_add_score_and_derivatives(ScoreAccumulator sa) const {
 }
 
 void RestraintSet::do_add_score_and_derivatives_moved(
-                ScoreAccumulator sa, const ParticleIndexes &moved_pis) const {
+                ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+                const ParticleIndexes &reset_pis) const {
   // If we only want the score, and only a single particle moved, only
   // evaluate the restraints that depend on that particle, and use the
   // last score for the rest
-  if (!sa.get_derivative_accumulator() && moved_pis.size() == 1) {
+  if (!sa.get_derivative_accumulator() && moved_pis.size() == 1
+      && reset_pis.size() == 0) {
     const std::set<Restraint *> &rsset
            = get_model()->get_dependent_restraints(moved_pis[0]);
     for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
@@ -75,7 +77,7 @@ void RestraintSet::do_add_score_and_derivatives_moved(
           r->add_score_and_derivatives(sa);
         } else {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-          r->add_score_and_derivatives_moved(sa, moved_pis);
+          r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
           IMP_INTERNAL_CHECK_FLOAT_EQUAL(
                  r->get_last_score(), last_score,
                  "Restraint " << *r
@@ -85,7 +87,7 @@ void RestraintSet::do_add_score_and_derivatives_moved(
 #endif
         }
       } else {
-        r->add_score_and_derivatives_moved(sa, moved_pis);
+        r->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
       }
     }
   } else {

@@ -45,11 +45,12 @@ double LogWrapper::unprotected_evaluate(DerivativeAccumulator* accum) const {
 }
 
 double LogWrapper::unprotected_evaluate_moved(
-        DerivativeAccumulator* accum, const ParticleIndexes &moved_pis) const {
+        DerivativeAccumulator* accum, const ParticleIndexes &moved_pis,
+        const ParticleIndexes &reset_pis) const {
   // If we only want the score, and only a single particle moved, only
   // evaluate the restraints that depend on that particle, and use the
   // last score for the rest
-  if (!accum && moved_pis.size() == 1) {
+  if (!accum && moved_pis.size() == 1 && reset_pis.size() == 0) {
     const std::set<Restraint *> &rsset
            = get_model()->get_dependent_restraints(moved_pis[0]);
 
@@ -67,7 +68,8 @@ double LogWrapper::unprotected_evaluate_moved(
           prob *= rsrval;
         } else {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
-          double rsrval = r->unprotected_evaluate_moved(accum, moved_pis);
+          double rsrval = r->unprotected_evaluate_moved(accum, moved_pis,
+                                                        reset_pis);
           IMP_INTERNAL_CHECK_FLOAT_EQUAL(
                  rsrval, last_score,
                  "Restraint " << *r
@@ -76,7 +78,8 @@ double LogWrapper::unprotected_evaluate_moved(
           prob *= last_score;
         }
       } else {
-        double rsrval = r->unprotected_evaluate_moved(accum, moved_pis);
+        double rsrval = r->unprotected_evaluate_moved(accum, moved_pis,
+                                                      reset_pis);
         r->set_last_score(rsrval);
         prob *= rsrval;
       }
@@ -98,9 +101,10 @@ void LogWrapper::do_add_score_and_derivatives(ScoreAccumulator sa) const {
 }
 
 void LogWrapper::do_add_score_and_derivatives_moved(
-                ScoreAccumulator sa, const ParticleIndexes &moved_pis) const {
+                ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+                const ParticleIndexes &reset_pis) const {
   // override RestraintSet implementation
-  Restraint::do_add_score_and_derivatives_moved(sa, moved_pis);
+  Restraint::do_add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
 }
 
 void LogWrapper::show_it(std::ostream &out) const {

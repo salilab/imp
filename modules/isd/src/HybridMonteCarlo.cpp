@@ -56,11 +56,10 @@ void HybridMonteCarlo::do_step() {
 
   double energy = do_evaluate(unused, true);
   bool accepted =
-      do_accept_or_reject_move(energy, last, moved.get_proposal_ratio());
+      do_accept_or_reject_move(energy, last, moved);
   while ((!accepted) && (persistence_counter_ < persistence_ - 1)) {
     persistence_counter_ += 1;
-    accepted =
-        do_accept_or_reject_move(energy, last, moved.get_proposal_ratio());
+    accepted = do_accept_or_reject_move(energy, last, moved);
   }
 
   /*std::cout << "hmc"

@@ -47,6 +47,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
   MonteCarlo(Model *m);
 
  protected:
+  ParticleIndexes reset_pis_;
   virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
   IMP_OBJECT_METHODS(MonteCarlo)
  public:
@@ -167,11 +168,12 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
       state of the model. Also, if the move is accepted, the
       optimizer states will be updated.
   */
-  bool do_accept_or_reject_move(double score, double last,
-                                double proposal_ratio);
-  bool do_accept_or_reject_move(double score, double proposal_ratio) {
-    return do_accept_or_reject_move(score, get_last_accepted_energy(),
-                                    proposal_ratio);
+  bool do_accept_or_reject_move(double score, double last, 
+                                const MonteCarloMoverResult &moved);
+
+  bool do_accept_or_reject_move(double score,
+                                const MonteCarloMoverResult &moved) {
+    return do_accept_or_reject_move(score, get_last_accepted_energy(), moved);
   }
 
   MonteCarloMoverResult do_move();
@@ -198,14 +200,14 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
     if (get_maximum_difference() < NO_MAX) {
       if (score_moved_ && !force_full_score) {
         return get_scoring_function()->evaluate_moved_if_below(
-            false, moved, last_energy_ + max_difference_);
+            false, moved, reset_pis_, last_energy_ + max_difference_);
       } else {
         return get_scoring_function()->evaluate_if_below(
             false, last_energy_ + max_difference_);
       }
     } else {
       if (score_moved_ && !force_full_score) {
-        return get_scoring_function()->evaluate_moved(false, moved);
+        return get_scoring_function()->evaluate_moved(false, moved, reset_pis_);
       } else {
         return get_scoring_function()->evaluate(false);
       }

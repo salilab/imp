@@ -47,7 +47,8 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   unsigned moved_particles_cache_age_;
 
   const ScoreStatesTemp& get_moved_required_score_states(
-                               const ParticleIndexes &moved_pis);
+                               const ParticleIndexes &moved_pis,
+                               const ParticleIndexes &reset_pis);
 
   // later make things implement inputs and return restraints
  public:
@@ -65,8 +66,10 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
    */
   virtual void do_add_score_and_derivatives_moved(
                   ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+                  const ParticleIndexes &reset_pis,
                   const ScoreStatesTemp &ss) {
     IMP_UNUSED(moved_pis);
+    IMP_UNUSED(reset_pis);
     do_add_score_and_derivatives(sa, ss);
   }
 
@@ -101,15 +104,24 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   /** This should behave identically to evaluate() but may be more
       efficient if it can skip restraint terms that involve unchanged particles.
 
+      \param moved_pis Particles that have moved since the last
+             scoring function evaluation.
+      \param reset_pis Particles that have moved, but back to the
+             positions they had at the last-but-one evaluation
+             (e.g. due to a rejected Monte Carlo move).
+
       \see evaluate()
    */
-  double evaluate_moved(bool derivatives, const ParticleIndexes &moved_pis);
+  double evaluate_moved(bool derivatives, const ParticleIndexes &moved_pis,
+                        const ParticleIndexes &reset_pis);
 
   double evaluate_moved_if_below(
-             bool derivatives, const ParticleIndexes &moved_pis, double max);
+             bool derivatives, const ParticleIndexes &moved_pis,
+             const ParticleIndexes &reset_pis, double max);
 
   double evaluate_moved_if_good(
-             bool derivatives, const ParticleIndexes &moved_pis);
+             bool derivatives, const ParticleIndexes &moved_pis,
+             const ParticleIndexes &reset_pis);
 
   double evaluate_if_below(bool derivatives, double max);
 

@@ -11,10 +11,12 @@ class TestMovedRestraint(IMP.Restraint):
 
     def unprotected_evaluate(self, accum):
         self.moved_pis = None
+        self.reset_pis = None
         return self.value
 
-    def unprotected_evaluate_moved(self, accum, moved_pis):
+    def unprotected_evaluate_moved(self, accum, moved_pis, reset_pis):
         self.moved_pis = moved_pis
+        self.reset_pis = reset_pis
         return self.value * 10.
 
     def do_get_inputs(self):
@@ -71,6 +73,7 @@ class Tests(IMP.test.TestCase):
         self.assertAlmostEqual(sf.evaluate_if_below(False, 1e6),
                                42., delta=1e-6)
         self.assertIsNone(r1.moved_pis)
+        self.assertIsNone(r1.reset_pis)
 
     def test_scoring_moved(self):
         """Test scoring of RestraintsScoringFunction with moved particles"""
@@ -78,12 +81,14 @@ class Tests(IMP.test.TestCase):
         p = IMP.Particle(m)
         r1 = TestMovedRestraint(m, [p], value=42.)
         sf = IMP.core.RestraintsScoringFunction([r1])
-        self.assertAlmostEqual(sf.evaluate_moved(False, [p]), 420., delta=1e-6)
-        self.assertAlmostEqual(sf.evaluate_moved_if_good(False, [p]),
+        self.assertAlmostEqual(sf.evaluate_moved(False, [p], []),
                                420., delta=1e-6)
-        self.assertAlmostEqual(sf.evaluate_moved_if_below(False, [p], 1e6),
+        self.assertAlmostEqual(sf.evaluate_moved_if_good(False, [p], []),
+                               420., delta=1e-6)
+        self.assertAlmostEqual(sf.evaluate_moved_if_below(False, [p], [], 1e6),
                                420., delta=1e-6)
         self.assertEqual(r1.moved_pis, IMP.get_indexes([p]))
+        self.assertEqual(len(r1.reset_pis), 0)
 
 
 if __name__ == '__main__':

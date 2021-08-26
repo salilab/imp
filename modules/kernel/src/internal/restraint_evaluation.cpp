@@ -93,24 +93,25 @@ void do_evaluate_one(IMP::ScoreAccumulator sa, RS *restraint,
 
 template <class RS>
 void do_evaluate_one_moved(IMP::ScoreAccumulator sa, RS *restraint,
-                     const ParticleIndexes &moved_pis, Model *m) {
+                     const ParticleIndexes &moved_pis,
+                     const ParticleIndexes &reset_pis, Model *m) {
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   if (m->first_call_) {
     try {
       SetNumberOfThreads no(1);
       check_restraint_and_masks<RS>(restraint, m);
-      restraint->add_score_and_derivatives_moved(sa, moved_pis);
+      restraint->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
     }
     catch (const InputOutputException &d) {
       IMP_FAILURE(d.get_message(restraint));
     }
   } else {
     IMP_CHECK_OBJECT(restraint);
-    restraint->add_score_and_derivatives_moved(sa, moved_pis);
+    restraint->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
   }
 #else
   IMP_UNUSED(m);
-  restraint->add_score_and_derivatives_moved(sa, moved_pis);
+  restraint->add_score_and_derivatives_moved(sa, moved_pis, reset_pis);
 #endif
 }
 
@@ -136,6 +137,7 @@ template <class RS>
 void protected_evaluate_many_moved(IMP::ScoreAccumulator sa,
                              const RS &restraints,
                              const ParticleIndexes &moved_pis,
+                             const ParticleIndexes &reset_pis,
                              const ScoreStatesTemp &states, Model *m) {
   before_protected_evaluate(m, states, sa.get_derivative_accumulator());
   internal::SFSetIt<IMP::internal::Stage> reset(&m->cur_stage_,
@@ -144,7 +146,7 @@ void protected_evaluate_many_moved(IMP::ScoreAccumulator sa,
     // todo: skip restraints that don't take moved_pis as input
     for (unsigned int i = 0; i < restraints.size(); ++i) {
       IMP_CHECK_OBJECT(restraints[i].get());
-      do_evaluate_one_moved(sa, restraints[i].get(), moved_pis, m);
+      do_evaluate_one_moved(sa, restraints[i].get(), moved_pis, reset_pis, m);
     }
     IMP_OMP_PRAGMA(taskwait)
     IMP_OMP_PRAGMA(flush)
@@ -164,11 +166,12 @@ void unprotected_evaluate_one(IMP::ScoreAccumulator sa, RS *restraint,
 template <class RS>
 void unprotected_evaluate_one_moved(IMP::ScoreAccumulator sa, RS *restraint,
                                     const ParticleIndexes &moved_pis,
+                                    const ParticleIndexes &reset_pis,
                                     Model *m) {
   IMP_CHECK_OBJECT(restraint);
   internal::SFSetIt<IMP::internal::Stage> reset(&m->cur_stage_,
                                                 internal::EVALUATING);
-  do_evaluate_one_moved(sa, restraint, moved_pis, m);
+  do_evaluate_one_moved(sa, restraint, moved_pis, reset_pis, m);
 }
 
 template <class RS>
@@ -186,10 +189,11 @@ void protected_evaluate_one(IMP::ScoreAccumulator sa, RS *restraint,
 template <class RS>
 void protected_evaluate_one_moved(IMP::ScoreAccumulator sa, RS *restraint,
                                   const ParticleIndexes &moved_pis,
+                                  const ParticleIndexes &reset_pis,
                                   const ScoreStatesTemp &states, Model *m) {
   before_protected_evaluate(m, states, sa.get_derivative_accumulator());
   {
-    unprotected_evaluate_one_moved(sa, restraint, moved_pis, m);
+    unprotected_evaluate_one_moved(sa, restraint, moved_pis, reset_pis, m);
     IMP_OMP_PRAGMA(taskwait)
     IMP_OMP_PRAGMA(flush)
   }
@@ -218,16 +222,19 @@ void protected_evaluate(IMP::ScoreAccumulator sa,
 void protected_evaluate_moved(IMP::ScoreAccumulator sa,
                         const RestraintsTemp &restraints,
                         const ParticleIndexes &moved_pis,
+                        const ParticleIndexes &reset_pis,
                         const ScoreStatesTemp &states, Model *m) {
   protected_evaluate_many_moved<RestraintsTemp>(sa, restraints, moved_pis,
-                                                states, m);
+                                                reset_pis, states, m);
 }
 
 void protected_evaluate_moved(IMP::ScoreAccumulator sa,
                         Restraint *restraint,
                         const ParticleIndexes &moved_pis,
+                        const ParticleIndexes &reset_pis,
                         const ScoreStatesTemp &states, Model *m) {
-  protected_evaluate_one_moved<Restraint>(sa, restraint, moved_pis, states, m);
+  protected_evaluate_one_moved<Restraint>(sa, restraint, moved_pis, reset_pis,
+                                          states, m);
 }
 
 IMPKERNEL_END_INTERNAL_NAMESPACE

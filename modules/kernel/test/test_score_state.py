@@ -94,22 +94,23 @@ class Tests(IMP.test.TestCase):
         assert_score_states(r.evaluate, [noskip, s12, s2, s3])
 
         # evaluate_moved with more than one particle should call all states
-        assert_score_states(r.evaluate_moved, [noskip, s12, s2, s3], [p1, p2])
+        assert_score_states(r.evaluate_moved, [noskip, s12, s2, s3], [p1, p2],
+                            [])
 
         # p1 is direct input for s12 and indirect for s2
-        assert_score_states(r.evaluate_moved, [noskip, s12, s2], [p1])
+        assert_score_states(r.evaluate_moved, [noskip, s12, s2], [p1], [])
 
         # p2 is input for s2 and output for s21
-        assert_score_states(r.evaluate_moved, [noskip, s12, s2], [p2])
+        assert_score_states(r.evaluate_moved, [noskip, s12, s2], [p2], [])
 
         # p3 is input for s3
-        assert_score_states(r.evaluate_moved, [noskip, s3], [p3])
+        assert_score_states(r.evaluate_moved, [noskip, s3], [p3], [])
 
         # p4 is input for noskip
-        assert_score_states(r.evaluate_moved, [noskip], [p4])
+        assert_score_states(r.evaluate_moved, [noskip], [p4], [])
 
         # p5 does not affect any can_skip state
-        assert_score_states(r.evaluate_moved, [noskip], [p5])
+        assert_score_states(r.evaluate_moved, [noskip], [p5], [])
 
 
 if __name__ == '__main__':

@@ -38,6 +38,7 @@ class RestraintsScoringFunction :
 
   void do_add_score_and_derivatives_moved(
            ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+           const ParticleIndexes &reset_pis,
            const ScoreStatesTemp &ss) IMP_OVERRIDE;
 
   virtual Restraints create_restraints() const IMP_OVERRIDE;

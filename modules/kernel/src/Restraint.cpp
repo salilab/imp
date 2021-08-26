@@ -36,25 +36,27 @@ double Restraint::evaluate(bool calc_derivs) const {
 }
 
 double Restraint::evaluate_moved(
-                bool calc_derivs, const ParticleIndexes &moved_pis) const {
+                bool calc_derivs, const ParticleIndexes &moved_pis,
+                const ParticleIndexes &reset_pis) const {
   IMP_OBJECT_LOG;
   Pointer<ScoringFunction> sf = create_internal_scoring_function();
-  return sf->evaluate_moved(calc_derivs, moved_pis);
+  return sf->evaluate_moved(calc_derivs, moved_pis, reset_pis);
 }
 
 double Restraint::evaluate_moved_if_below(
                 bool calc_derivs, const ParticleIndexes &moved_pis,
-                double max) const {
+                const ParticleIndexes &reset_pis, double max) const {
   IMP_OBJECT_LOG;
   Pointer<ScoringFunction> sf = create_internal_scoring_function();
-  return sf->evaluate_moved_if_below(calc_derivs, moved_pis, max);
+  return sf->evaluate_moved_if_below(calc_derivs, moved_pis, reset_pis, max);
 }
 
 double Restraint::evaluate_moved_if_good(
-                bool calc_derivs, const ParticleIndexes &moved_pis) const {
+                bool calc_derivs, const ParticleIndexes &moved_pis,
+                const ParticleIndexes &reset_pis) const {
   IMP_OBJECT_LOG;
   Pointer<ScoringFunction> sf = create_internal_scoring_function();
-  return sf->evaluate_moved_if_good(calc_derivs, moved_pis);
+  return sf->evaluate_moved_if_good(calc_derivs, moved_pis, reset_pis);
 }
 
 double Restraint::evaluate_if_good(bool calc_derivs) const {
@@ -238,19 +240,22 @@ void Restraint::do_add_score_and_derivatives(ScoreAccumulator sa) const {
 }
 
 void Restraint::do_add_score_and_derivatives_moved(
-                ScoreAccumulator sa, const ParticleIndexes &moved_pis) const {
+                ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+                const ParticleIndexes &reset_pis) const {
   IMP_OBJECT_LOG;
   if (!sa.get_abort_evaluation()) {
     double score;
     if (sa.get_is_evaluate_if_below()) {
       score = unprotected_evaluate_moved_if_below(
-                 sa.get_derivative_accumulator(), moved_pis, sa.get_maximum());
+                 sa.get_derivative_accumulator(), moved_pis,
+                 reset_pis, sa.get_maximum());
     } else if (sa.get_is_evaluate_if_good()) {
       score = unprotected_evaluate_moved_if_good(
-                 sa.get_derivative_accumulator(), moved_pis, sa.get_maximum());
+                 sa.get_derivative_accumulator(), moved_pis,
+                 reset_pis, sa.get_maximum());
     } else {
       score = unprotected_evaluate_moved(sa.get_derivative_accumulator(),
-                                         moved_pis);
+                                         moved_pis, reset_pis);
     }
     IMP_LOG_TERSE("Adding " << score << " from restraint " << get_name()
                             << std::endl);
@@ -273,14 +278,15 @@ void Restraint::add_score_and_derivatives(ScoreAccumulator sa) const {
 }
 
 void Restraint::add_score_and_derivatives_moved(
-                ScoreAccumulator sa, const ParticleIndexes &moved_pis) const {
+                ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+                const ParticleIndexes &reset_pis) const {
   IMP_OBJECT_LOG;
   // implement these in macros to avoid extra virtual function call
   ScoreAccumulator nsa(sa, this);
   validate_inputs();
   validate_outputs();
-  IMP_TASK_SHARED((nsa), (moved_pis),
-                  do_add_score_and_derivatives_moved(nsa, moved_pis),
+  IMP_TASK_SHARED((nsa), (moved_pis, reset_pis),
+                  do_add_score_and_derivatives_moved(nsa, moved_pis, reset_pis),
                   "add score and derivatives");
   set_was_used(true);
 }

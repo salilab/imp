@@ -31,12 +31,14 @@ IMPKERNELEXPORT void protected_evaluate(IMP::ScoreAccumulator sa,
 IMPKERNELEXPORT void protected_evaluate_moved(IMP::ScoreAccumulator sa,
                                         const RestraintsTemp &restraints,
                                         const ParticleIndexes &moved_pis,
+                                        const ParticleIndexes &reset_pis,
                                         const ScoreStatesTemp &states,
                                         Model *m);
 
 IMPKERNELEXPORT void protected_evaluate_moved(IMP::ScoreAccumulator sa,
                                         Restraint *restraint,
                                         const ParticleIndexes &moved_pis,
+                                        const ParticleIndexes &reset_pis,
                                         const ScoreStatesTemp &states,
                                         Model *m);
 

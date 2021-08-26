@@ -36,7 +36,7 @@ class LogRestraint(IMP.Restraint):
         self.moved_evaluate = False
         return self.value
 
-    def unprotected_evaluate_moved(self, accum, moved_pis):
+    def unprotected_evaluate_moved(self, accum, moved_pis, reset_pis):
         self.moved_evaluate = True
         return self.value
 
@@ -138,14 +138,14 @@ class Tests(IMP.test.TestCase):
         # If we move p1, r1 should be evaluate_moved, r4 skipped
         # (and score should be unchanged, of course)
         clear_restraints()
-        self.assertAlmostEqual(rs.evaluate_moved(False, [p1]),
+        self.assertAlmostEqual(rs.evaluate_moved(False, [p1], []),
                                110.0, delta=1e-6)
         assert_restraint_evaluate_moved(r1)
         assert_restraint_skipped(r4)
 
         # No restraints depend on p2
         clear_restraints()
-        self.assertAlmostEqual(rs.evaluate_moved(False, [p2]),
+        self.assertAlmostEqual(rs.evaluate_moved(False, [p2], []),
                                110.0, delta=1e-6)
         assert_restraint_skipped(r1)
         assert_restraint_skipped(r4)
@@ -153,14 +153,14 @@ class Tests(IMP.test.TestCase):
         # If we move p3, p4 is touched (by the LinkScoreState) so r4 should
         # be evaluate_moved
         clear_restraints()
-        self.assertAlmostEqual(rs.evaluate_moved(False, [p3]),
+        self.assertAlmostEqual(rs.evaluate_moved(False, [p3], []),
                                110.0, delta=1e-6)
         assert_restraint_skipped(r1)
         assert_restraint_evaluate_moved(r4)
 
         # p4 causes r4 to be updated
         clear_restraints()
-        self.assertAlmostEqual(rs.evaluate_moved(False, [p4]),
+        self.assertAlmostEqual(rs.evaluate_moved(False, [p4], []),
                                110.0, delta=1e-6)
         assert_restraint_skipped(r1)
         assert_restraint_evaluate_moved(r4)
@@ -168,7 +168,7 @@ class Tests(IMP.test.TestCase):
         # Moves of multiple particles are not currently handled and will
         # fall back to plain evaluate
         clear_restraints()
-        self.assertAlmostEqual(rs.evaluate_moved(False, [p1, p2]),
+        self.assertAlmostEqual(rs.evaluate_moved(False, [p1, p2], []),
                                110.0, delta=1e-6)
         assert_restraint_evaluate(r1)
         assert_restraint_evaluate(r4)
@@ -176,28 +176,28 @@ class Tests(IMP.test.TestCase):
         # Moves with derivatives are not currently handled and will
         # fall back to plain evaluate
         clear_restraints()
-        self.assertAlmostEqual(rs.evaluate_moved(True, [p1]),
+        self.assertAlmostEqual(rs.evaluate_moved(True, [p1], []),
                                110.0, delta=1e-6)
         assert_restraint_evaluate(r1)
         assert_restraint_evaluate(r4)
 
         # Changes in weights should be handled
         innerrs.set_weight(2.)
-        self.assertAlmostEqual(rs.evaluate_moved(False, [p1]),
+        self.assertAlmostEqual(rs.evaluate_moved(False, [p1], []),
                                220.0, delta=1e-6)
         innerrs.set_weight(1.)
 
         # Changing weight of an evaluated restraint should be OK
         r1.set_weight(2.)
         clear_restraints()
-        self.assertAlmostEqual(rs.evaluate_moved(False, [p1]),
+        self.assertAlmostEqual(rs.evaluate_moved(False, [p1], []),
                                210.0, delta=1e-6)
         assert_restraint_evaluate_moved(r1)
         assert_restraint_skipped(r4)
 
         # Changing weight of a skipped restraint should be OK
         clear_restraints()
-        self.assertAlmostEqual(rs.evaluate_moved(False, [p4]),
+        self.assertAlmostEqual(rs.evaluate_moved(False, [p4], []),
                                210.0, delta=1e-6)
         assert_restraint_skipped(r1)
         assert_restraint_evaluate_moved(r4)
@@ -207,7 +207,7 @@ class Tests(IMP.test.TestCase):
         clear_restraints()
         ss2 = LinkScoreState(m, p1, p4)
         m.add_score_state(ss2)
-        self.assertAlmostEqual(rs.evaluate_moved(False, [p1]),
+        self.assertAlmostEqual(rs.evaluate_moved(False, [p1], []),
                                210.0, delta=1e-6)
         assert_restraint_evaluate_moved(r1)
         assert_restraint_evaluate_moved(r4)
@@ -217,7 +217,7 @@ class Tests(IMP.test.TestCase):
         r3 = LogRestraint(m, [p3], 30.0)
         r3.moved_evaluate = None
         innerrs.add_restraint(r3)
-        self.assertAlmostEqual(rs.evaluate_moved(False, [p4]),
+        self.assertAlmostEqual(rs.evaluate_moved(False, [p4], []),
                                240.0, delta=1e-6)
         assert_restraint_skipped(r1)
         assert_restraint_evaluate(r3)

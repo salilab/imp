@@ -75,16 +75,26 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       identically to evaluate() but may be more efficient if it can
       skip terms that involve unchanged particles.
 
+      \param calc_derivs Whether to calculate first derivatives.
+      \param moved_pis Particles that have moved since the last
+             scoring function evaluation.
+      \param reset_pis Particles that have moved, but back to the
+             positions they had at the last-but-one evaluation
+             (e.g. due to a rejected Monte Carlo move).
+
       \return Current score.
    */
   double evaluate_moved(bool calc_derivs,
-                        const ParticleIndexes &moved_pis) const;
+                        const ParticleIndexes &moved_pis,
+                        const ParticleIndexes &reset_pis) const;
 
   double evaluate_moved_if_below(bool calc_derivatives,
-                      const ParticleIndexes &moved_pis, double max) const;
+                      const ParticleIndexes &moved_pis,
+                      const ParticleIndexes &reset_pis, double max) const;
 
   double evaluate_moved_if_good(bool calc_derivatives,
-                      const ParticleIndexes &moved_pis) const;
+                      const ParticleIndexes &moved_pis,
+                      const ParticleIndexes &reset_pis) const;
 
   double evaluate_if_good(bool calc_derivatives) const;
 
@@ -112,8 +122,10 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       skipping terms that involve unchanged particles.
    */
   virtual double unprotected_evaluate_moved(
-           DerivativeAccumulator *da, const ParticleIndexes &moved_pis) const {
+           DerivativeAccumulator *da, const ParticleIndexes &moved_pis,
+           const ParticleIndexes &reset_pis) const {
     IMP_UNUSED(moved_pis);
+    IMP_UNUSED(reset_pis);
     return unprotected_evaluate(da);
   }
 
@@ -134,16 +146,16 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
 
   virtual double unprotected_evaluate_moved_if_below(
            DerivativeAccumulator *da, const ParticleIndexes &moved_pis,
-           double max) const {
+           const ParticleIndexes &reset_pis, double max) const {
     IMP_UNUSED(max);
-    return unprotected_evaluate_moved(da, moved_pis);
+    return unprotected_evaluate_moved(da, moved_pis, reset_pis);
   }
 
   virtual double unprotected_evaluate_moved_if_good(
            DerivativeAccumulator *da, const ParticleIndexes &moved_pis,
-           double max) const {
+           const ParticleIndexes &reset_pis, double max) const {
     IMP_UNUSED(max);
-    return unprotected_evaluate_moved(da, moved_pis);
+    return unprotected_evaluate_moved(da, moved_pis, reset_pis);
   }
 
 /** @} */
@@ -184,7 +196,8 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   void add_score_and_derivatives(ScoreAccumulator sa) const;
 
   void add_score_and_derivatives_moved(
-                 ScoreAccumulator sa, const ParticleIndexes &moved_pis) const;
+                 ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+                 const ParticleIndexes &reset_pis) const;
 
   //! Decompose this restraint into constituent terms
   /** Given the set of input particles, decompose the restraint into parts
@@ -288,7 +301,8 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   virtual void do_add_score_and_derivatives(ScoreAccumulator sa) const;
 
   virtual void do_add_score_and_derivatives_moved(
-                  ScoreAccumulator sa, const ParticleIndexes &moved_pis) const;
+                  ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+                  const ParticleIndexes &reset_pis) const;
 
   /** No outputs. */
   ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {

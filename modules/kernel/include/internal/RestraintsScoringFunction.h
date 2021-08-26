@@ -53,9 +53,11 @@ class GenericRestraintsScoringFunction : public ScoringFunction {
 
   void do_add_score_and_derivatives_moved(IMP::ScoreAccumulator sa,
                                     const ParticleIndexes &moved_pis,
+                                    const ParticleIndexes &reset_pis,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE {
     IMP_OBJECT_LOG;
-    protected_evaluate_moved(sa, restraints_, moved_pis, ss, get_model());
+    protected_evaluate_moved(sa, restraints_, moved_pis, reset_pis,
+                             ss, get_model());
   }
 
   Restraints create_restraints() const IMP_OVERRIDE {

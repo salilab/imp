@@ -85,7 +85,8 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
   void do_add_score_and_derivatives(ScoreAccumulator sa) const IMP_OVERRIDE;
   void do_add_score_and_derivatives_moved(
                   ScoreAccumulator sa,
-                  const ParticleIndexes &moved_pis) const IMP_OVERRIDE;
+                  const ParticleIndexes &moved_pis,
+                  const ParticleIndexes &reset_pis) const IMP_OVERRIDE;
 #endif
 };
 
