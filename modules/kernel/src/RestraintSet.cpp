@@ -89,8 +89,7 @@ void RestraintSet::do_add_score_and_derivatives_moved(
   // evaluate the restraints that depend on that particle, and use the
   // last score for the rest
   if (!sa.get_derivative_accumulator() && moved_pis.size() == 1
-      && (reset_pis.size() == 0
-          || (reset_pis.size() == 1 && reset_pis[0] == moved_pis[0]))) {
+      && reset_pis.size() == 0) {
     const std::set<Restraint *> &rsset
            = get_model()->get_dependent_restraints(moved_pis[0]);
     for (unsigned int i = 0; i < get_number_of_restraints(); ++i) {
