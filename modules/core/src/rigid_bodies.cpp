@@ -1019,7 +1019,13 @@ algebra::ReferenceFrame3D get_initial_reference_frame(
   eigenvalues (and correspondingly, the eigenvectors) in increasing order.
   */  
   Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> eig(I);
-  Eigen::Matrix3d rm = eig.eigenvectors();
+  Eigen::Matrix3d evecs = eig.eigenvectors();
+  Eigen::Matrix3d rm;
+  rm.resizeLike(evecs);
+  for (int i=0; i<3; i++) {
+    rm.col(i) = evecs.col(2-i);
+  }
+  
   if (rm.determinant() < 0) {
     rm.array() *= -1.0;
   }
