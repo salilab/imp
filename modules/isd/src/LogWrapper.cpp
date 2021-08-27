@@ -156,7 +156,25 @@ double LogWrapper::unprotected_evaluate_moved(
     }
     return score-std::log(prob);
   } else {
-    return unprotected_evaluate(accum);
+    double prob = 1;
+    double score = 0;
+
+    for (unsigned int i = 0; i <get_number_of_restraints(); ++i) {
+      double rsrval = get_restraint(i)->unprotected_evaluate_moved(
+                                           accum, moved_pis, reset_pis);
+      get_restraint(i)->set_last_score(rsrval);
+      prob *= rsrval;
+      if (prob<=std::numeric_limits<double>::min()*1000000.0){
+        score=score-std::log(prob);
+        prob=1.0;
+      }
+    }
+
+    score=score-std::log(prob);
+    if (accum) {
+      // derivatives should be accurately handled in the restraints
+    }
+    return score;
   }
 }
 
