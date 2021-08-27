@@ -28,8 +28,8 @@ Float RigidBodyAnglePairScore::evaluate_index(Model *m,
                   "Particle is not a rigid body");
 
   // principal axis of inertia is aligned to z axis when creating rigid body
-  algebra::Vector3D inertia=algebra::Vector3D(0.0,0.0,1.0);
-  algebra::Vector3D  origin=algebra::Vector3D(0.0,0.0,1.0);
+  algebra::Vector3D inertia=algebra::Vector3D(1.0,0.0,0.0);
+  algebra::Vector3D  origin=algebra::Vector3D(0.0,0.0,0.0);
 
   // get the two references frames
   algebra::ReferenceFrame3D rf0 = RigidBody(m, pi[0]).get_reference_frame();

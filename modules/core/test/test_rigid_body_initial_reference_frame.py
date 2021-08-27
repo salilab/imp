@@ -14,7 +14,7 @@ class Tests(IMP.test.TestCase):
     construction for rigid bodies"""
 
     def make_binary_complex(self, conf_num=1):
-        pdb_file = os.path.abspath("input/1gp2/1gp2_AB_conf%d.pdb" % conf_num)
+        pdb_file = self.get_input_file_name("1gp2/1gp2_AB_conf%d.pdb" % conf_num)
         m = IMP.Model()
         selector = IMP.atom.ATOMPDBSelector() & \
                    IMP.atom.NonWaterNonHydrogenPDBSelector() & \
@@ -35,8 +35,7 @@ class Tests(IMP.test.TestCase):
             rf = IMP.algebra.ReferenceFrame3D(tr)
 
             rb = IMP.core.RigidBody.setup_particle(IMP.Particle(m), rf)
-            for h in calpha_hiers:
-                rb.add_member(h.get_particle())
+            [rb.add_member(h) for h in calpha_hiers]
             rbs.append(rb)
         return m, root_hier, rbs
 
@@ -83,20 +82,20 @@ class Tests(IMP.test.TestCase):
         # restore the conformations
         self._align_to_reference(rbs, rbs_ref, invert=True)
 
-        print("Rigid body 1:")
-        print("%15s" % "params_before: " + fmt % params_before[0])
-        print("%15s" % "params_ref: " + fmt % params_ref[0])
-        print("%15s" % "params_after: " + fmt % params_after[0])
-        print("--------------------------------------------------")
-        print("Rigid body 2:")
-        print("%15s" % "params_before: " + fmt % params_before[1])
-        print("%15s" % "params_ref: " + fmt % params_ref[1])
-        print("%15s" % "params_after: " + fmt % params_after[1])
+        #print("Rigid body 1:")
+        #print("%15s" % "params_before: " + fmt % params_before[0])
+        #print("%15s" % "params_ref: " + fmt % params_ref[0])
+        #print("%15s" % "params_after: " + fmt % params_after[0])
+        #print("--------------------------------------------------")
+        #print("Rigid body 2:")
+        #print("%15s" % "params_before: " + fmt % params_before[1])
+        #print("%15s" % "params_ref: " + fmt % params_ref[1])
+        #print("%15s" % "params_after: " + fmt % params_after[1])
 
         # check that for rigid body 1, params are
         # very close between ref and after. For the particular conformations
         # used in this test, the parameters of reference and after alignment
-        # agreed to within 1%. However, they are reasonably close as can be
+        # agreed to within 10%. However, they are reasonably close as can be
         # seen from the printed log.
         test = np.allclose(params_after[0], params_ref[0], atol=0.1)
         self.assertTrue(test)
@@ -107,8 +106,8 @@ class Tests(IMP.test.TestCase):
         two conformations of the same rigid body, aligned with a common
         reference
         """
-        # create complexes from all (5) conformations
-        n_conf = 5
+        # create complexes from all (3) conformations
+        n_conf = 3
         conf = [self.make_binary_complex(i+1) for i in range(n_conf)]
 
         # treating each complex as reference
@@ -116,7 +115,7 @@ class Tests(IMP.test.TestCase):
             rbs_ref = conf[i][-1]
             # for each conformation
             for j in range(n_conf):
-                print("\nReference conf = %d, conf = %d" % (i+1, j+1))
+                #print("\nReference conf = %d, conf = %d" % (i+1, j+1))
                 rbs = conf[j][-1]
                 self._test_conf_against_reference(rbs, rbs_ref)
 
