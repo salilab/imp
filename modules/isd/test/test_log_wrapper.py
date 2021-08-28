@@ -78,21 +78,21 @@ class Tests(IMP.test.TestCase):
         assert_restraint_skipped(r1)
         assert_restraint_evaluate_moved(r4)
 
-        # Moves of multiple particles are not currently handled and will
-        # fall back to plain evaluate
+        # Moves of multiple particles are not specially handled but will
+        # pass through to evaluate_moved
         clear_restraints()
         self.assertAlmostEqual(lw.evaluate_moved(False, [p1, p2], []),
                                -6.908, delta=1e-3)
-        assert_restraint_evaluate(r1)
-        assert_restraint_evaluate(r4)
+        assert_restraint_evaluate_moved(r1)
+        assert_restraint_evaluate_moved(r4)
 
-        # Moves with derivatives are not currently handled and will
-        # fall back to plain evaluate
+        # Moves with derivatives are not specially handled but will
+        # pass through to evaluate_moved
         clear_restraints()
         self.assertAlmostEqual(lw.evaluate_moved(True, [p1], []),
                                -6.908, delta=1e-3)
-        assert_restraint_evaluate(r1)
-        assert_restraint_evaluate(r4)
+        assert_restraint_evaluate_moved(r1)
+        assert_restraint_evaluate_moved(r4)
 
         # Newly-added restraints should use regular evaluate to get first score
         clear_restraints()
