@@ -28,6 +28,7 @@ def setup_system(coords):
         d.set_coordinates(coords[i])
         d.set_radius(.1)
         d.set_coordinates_are_optimized(True)
+    cent = IMP.core.Centroid.setup_particle(IMP.Particle(m), [ps[5], ps[6]])
 
     sigma1 = setupnuisance(m, 1., 0, 100, False)
     sigma2 = setupnuisance(m, 1., 0, 100, False)
@@ -38,7 +39,9 @@ def setup_system(coords):
     r2.add_contribution((ps[1], ps[2]), (sigma1, sigma2), psi)
     r3 = IMP.isd.CrossLinkMSRestraint(m, 1.0, 0.01)
     r3.add_contribution((ps[2], ps[3]), (sigma1, sigma2), psi)
-    lw = IMP.isd.LogWrapper([r1, r2, r3], 1.0)
+    r4 = IMP.isd.CrossLinkMSRestraint(m, 1.0, 0.01)
+    r4.add_contribution((ps[4], cent), (sigma1, sigma2), psi)
+    lw = IMP.isd.LogWrapper([r1, r2, r3, r4], 1.0)
     mc.set_scoring_function(lw)
     ms = [IMP.core.BallMover(m, x, 0.05) for x in ps[:5]]
     ms.append(IMP.core.BallMover(m, ps[5:8], 0.05))

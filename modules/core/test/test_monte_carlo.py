@@ -15,12 +15,16 @@ def setup_system(coords):
         d.set_coordinates(coords[i])
         d.set_radius(.1)
         d.set_coordinates_are_optimized(True)
+    # Make the scoring function dependent on at least one ScoreState,
+    # so we can check that any needed states are updated
+    cent = IMP.core.Centroid.setup_particle(IMP.Particle(m), [ps[5], ps[6]])
     hps = IMP.core.HarmonicDistancePairScore(1, 100)
     r1 = IMP.core.PairRestraint(m, hps, [ps[0], ps[1]])
     r2 = IMP.core.PairRestraint(m, hps, [ps[1], ps[2]])
     r3 = IMP.core.PairRestraint(m, hps, [ps[2], ps[3]])
+    r4 = IMP.core.PairRestraint(m, hps, [ps[4], cent])
     rs = IMP.RestraintSet(m)
-    rs.add_restraints([r1, r2, r3])
+    rs.add_restraints([r1, r2, r3, r4])
     mc.set_scoring_function(rs)
     ms = [IMP.core.BallMover(m, x, 0.05) for x in ps[:5]]
     ms.append(IMP.core.BallMover(m, ps[5:8], 0.05))
