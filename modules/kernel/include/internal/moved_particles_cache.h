@@ -41,19 +41,15 @@ public:
 //! Cache ScoreStates that change when a Particle moves
 class MovedParticlesScoreStateCache {
   Model *m_;
-  typedef std::map<ParticleIndex, ScoreStatesTemp> CacheMap;
+  typedef std::map<ParticleIndex, std::set<ScoreState *> > CacheMap;
   CacheMap cache_;
 
 public:
   MovedParticlesScoreStateCache(Model *m) : m_(m) {}
 
-  //! Get a list of all ScoreStates affected by this particle
-  /** The list is a subset of ScoreStates that the given ScoringFunction
-      requires, that either take the particle as input/output or are marked
-      as always requiring evaluation (e.g. for logging).
-    */
-  const ScoreStatesTemp &get_affected_score_states(ParticleIndex pi,
-                                                   ScoringFunction *sf);
+  //! Get the set of all ScoreStates affected by this particle
+  /** The set is all ScoreStates that take the particle as input/output. */
+  const std::set<ScoreState *> &get_affected_score_states(ParticleIndex pi);
 
   // clear when dependency graph changes, and/or
   // particles/scorestates added/removed

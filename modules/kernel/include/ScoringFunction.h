@@ -46,7 +46,7 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   // time when moved_particles_cache_ was last updated, or 0
   unsigned moved_particles_cache_age_;
 
-  const ScoreStatesTemp& get_moved_required_score_states(
+  ScoreStatesTemp get_moved_required_score_states(
                                const ParticleIndexes &moved_pis,
                                const ParticleIndexes &reset_pis);
 
