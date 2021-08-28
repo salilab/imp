@@ -61,7 +61,7 @@ class Tests(IMP.test.TestCase):
         rf = IMP.core.get_initial_reference_frame(ps)
         q = rf.get_transformation_to().get_rotation().get_quaternion()
         v = rf.get_transformation_to().get_translation()
-        return (*v, *q)
+        return list(v) + list(q)
 
     def _test_conf_against_reference(self, rbs, rbs_ref):
         # get reference frame params before alignment
