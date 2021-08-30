@@ -38,6 +38,7 @@ API Reference:
    geometry
    restraint
    cross_linkers
+   citations
    protocol
    analysis
    model

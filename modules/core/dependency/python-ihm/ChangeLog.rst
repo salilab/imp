@@ -1,3 +1,10 @@
+HEAD
+====
+  - The :class:`ihm.Software` class now allows a citation for the software
+    to be provided.
+  - A new :mod:`ihm.citations` module contains citations for some packages
+    that are commonly used in integrative modeling.
+
 0.21 - 2021-07-14
 =================
   - BinaryCIF files now use UTF8 msgpack strings for all text, rather than
