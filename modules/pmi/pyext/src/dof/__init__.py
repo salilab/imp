@@ -154,6 +154,13 @@ class DegreesOfFreedom(object):
             com = IMP.atom.CenterOfMass.setup_particle(IMP.Particle(model),
                                                        hiers)
             comcoor = IMP.core.XYZ(com).get_coordinates()
+
+            # Don't needlessly update the COM of this particle for the
+            # entire sampling run; we are done with both the ScoreState
+            # and the Particle.
+            IMP.atom.CenterOfMass.teardown_particle(com)
+            model.remove_particle(com)
+
             tr = IMP.algebra.Transformation3D(
                 IMP.algebra.get_identity_rotation_3d(), comcoor)
             rf = IMP.algebra.ReferenceFrame3D(tr)
