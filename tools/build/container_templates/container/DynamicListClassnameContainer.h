@@ -66,6 +66,9 @@ class IMPCONTAINEREXPORT DynamicListClassnameContainer :
   PLURALINDEXTYPE get_range_indexes() const;
   ModelObjectsTemp do_get_inputs() const;
   void do_apply(const ClassnameModifier *sm) const;
+  void do_apply_moved(const ClassnameModifier *sm,
+                      const ParticleIndexes &moved_pis,
+                      const ParticleIndexes &reset_pis) const;
   ParticleIndexes get_all_possible_indexes() const;
 #endif
   IMP_OBJECT_METHODS(DynamicListClassnameContainer);

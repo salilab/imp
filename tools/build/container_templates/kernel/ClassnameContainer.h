@@ -42,8 +42,18 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   //! Just use apply() in the base class
   void apply_generic(const ClassnameModifier *m) const;
 
-  //! Apply a SingletonModifier to the contents
+  //! Just use apply_moved() in the base class
+  void apply_generic_moved(const ClassnameModifier *m,
+                           const ParticleIndexes &moved_pis,
+                           const ParticleIndexes &reset_pis) const;
+
+  //! Apply a ClassnameModifier to the contents
   void apply(const ClassnameModifier *sm) const;
+
+  //! Apply a ClassnameModifier to the contents
+  void apply_moved(const ClassnameModifier *sm,
+                   const ParticleIndexes &moved_pis,
+                   const ParticleIndexes &reset_pis) const;
 
   /** Get all the indexes that might possibly be contained in the
       container, useful with dynamic containers. For example,
@@ -111,6 +121,9 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
                      std::string name = "ClassnameContainer %1%");
 
   virtual void do_apply(const ClassnameModifier *sm) const = 0;
+  virtual void do_apply_moved(const ClassnameModifier *sm,
+                              const ParticleIndexes &moved_pis,
+                              const ParticleIndexes &reset_pis) const = 0;
   virtual bool do_get_provides_access() const { return false; }
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)

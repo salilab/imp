@@ -42,9 +42,24 @@ void ClassnameContainer::apply_generic(const ClassnameModifier *m) const {
   apply(m);
 }
 
+void ClassnameContainer::apply_generic_moved(
+          const ClassnameModifier *m,
+          const ParticleIndexes &moved_pis,
+          const ParticleIndexes &reset_pis) const {
+  apply_moved(m, moved_pis, reset_pis);
+}
+
 void ClassnameContainer::apply(const ClassnameModifier *sm) const {
   validate_readable();
   do_apply(sm);
+}
+
+void ClassnameContainer::apply_moved(
+               const ClassnameModifier *sm,
+               const ParticleIndexes &moved_pis,
+               const ParticleIndexes &reset_pis) const {
+  validate_readable();
+  do_apply_moved(sm, moved_pis, reset_pis);
 }
 
 ClassnameContainerAdaptor::ClassnameContainerAdaptor(ClassnameContainer *c)

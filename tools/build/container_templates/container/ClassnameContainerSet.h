@@ -30,7 +30,7 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
   virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;
 
  public:
-  //! Construct and empty set
+  //! Construct an empty set
   ClassnameContainerSet(Model *m,
                         std::string name = "ClassnameContainerSet %1%");
 
@@ -40,9 +40,19 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
   /** \brief apply modifier sm to all classname containers */
   IMP_IMPLEMENT(void do_apply(const ClassnameModifier *sm) const IMP_OVERRIDE);
 
+  IMP_IMPLEMENT(void do_apply_moved(const ClassnameModifier *sm,
+                          const ParticleIndexes &moved_pis,
+                          const ParticleIndexes &reset_pis) const IMP_OVERRIDE);
+
   template <class M>
   void apply_generic(const M *m) const {
     apply(m);
+  }
+
+  template <class M>
+  void apply_generic_moved(const M *m, const ParticleIndexes &moved_pis,
+                           const ParticleIndexes &reset_pis) const {
+    apply_moved(m, moved_pis, reset_pis);
   }
 
   ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;

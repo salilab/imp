@@ -106,15 +106,24 @@
 #define IMP_IMPLEMENT_CLASSNAME_CONTAINER(Name)                          \
   IMP_IMPLEMENT_INLINE(void do_apply(const ClassnameModifier *sm) const, \
   { apply_generic(sm); });                                               \
+  IMP_IMPLEMENT_INLINE(void do_apply_moved(const ClassnameModifier *sm,  \
+                             const ParticleIndexes &moved_pis,           \
+                             const ParticleIndexes &reset_pis) const,    \
+  { apply_generic_moved(sm, moved_pis, reset_pis); });                   \
   virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE; \
   IMP_OBJECT_METHODS(Name)
 #endif
 
 /** Use this to fill in container methods
     IMP::ClassnameContainer::do_apply()
+    IMP::ClassnameContainer::do_apply_moved()
 */
 #define IMP_CLASSNAME_CONTAINER_METHODS(Name) \
   void do_apply(const ClassnameModifier *sm) const IMP_OVERRIDE { \
-    apply_generic(sm); }
+    apply_generic(sm); }                                          \
+  void do_apply_moved(const ClassnameModifier *sm,                \
+                      const ParticleIndexes &moved_pis,           \
+                      const ParticleIndexes &reset_pis) const IMP_OVERRIDE { \
+    apply_generic_moved(sm, moved_pis, reset_pis); }
 
 #endif /* IMPKERNEL_CLASSNAME_MACROS_H */

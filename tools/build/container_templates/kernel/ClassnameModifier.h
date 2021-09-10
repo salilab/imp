@@ -46,6 +46,20 @@ class IMPKERNELEXPORT ClassnameModifier : public ParticleInputs,
       apply_index(m, o[i]);
     }
   }
+
+  /** Apply the function to a collection of PLURALVARIABLETYPE */
+  /** Information on particles that moved since the last scoring function
+      evaluation is also passed, which may be used to accelerate the
+      computation. */
+  virtual void apply_indexes_moved(
+              Model *m, const PLURALINDEXTYPE &o,
+              unsigned int lower_bound, unsigned int upper_bound,
+              const ParticleIndexes &moved_pis,
+              const ParticleIndexes &reset_pis) const {
+    IMP_UNUSED(moved_pis);
+    IMP_UNUSED(reset_pis);
+    apply_indexes(m, o, lower_bound, upper_bound);
+  }
 };
 
 IMPKERNEL_END_NAMESPACE
