@@ -33,6 +33,11 @@ class ContainerRestraint : public Restraint {
  public:
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
       IMP_OVERRIDE;
+
+  void do_add_score_and_derivatives_moved(IMP::ScoreAccumulator sa,
+                const ParticleIndexes &moved_pis,
+                const ParticleIndexes &reset_pis) const IMP_OVERRIDE;
+
   ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ContainerRestraint);
   ;
@@ -84,6 +89,18 @@ void ContainerRestraint<Score, C>::do_add_score_and_derivatives(
   IMP_CHECK_OBJECT(pc_);
   acc_->set_accumulator(accum);
   pc_->apply_generic(acc_.get());
+}
+
+template <class Score, class C>
+void ContainerRestraint<Score, C>::do_add_score_and_derivatives_moved(
+    ScoreAccumulator accum,
+    const ParticleIndexes &moved_pis,
+    const ParticleIndexes &reset_pis) const {
+  IMP_OBJECT_LOG;
+  IMP_CHECK_OBJECT(acc_);
+  IMP_CHECK_OBJECT(pc_);
+  acc_->set_accumulator(accum);
+  pc_->apply_generic_moved(acc_.get(), moved_pis, reset_pis);
 }
 
 template <class Score, class C>

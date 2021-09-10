@@ -69,6 +69,20 @@ class AccumulatorScoreModifier : public Score::Modifier {
     sa_.add_score(score);
   }
 
+  virtual void apply_indexes_moved(
+      Model *m, const Vector<typename Score::IndexArgument> &a,
+      unsigned int lower_bound, unsigned int upper_bound,
+      const ParticleIndexes &moved_pis,
+      const ParticleIndexes &reset_pis) const IMP_OVERRIDE {
+    IMP_UNUSED(moved_pis);
+    IMP_UNUSED(reset_pis);
+    double score = ss_->evaluate_indexes(m, a, sa_.get_derivative_accumulator(),
+                                         lower_bound, upper_bound);
+    IMP_OMP_PRAGMA(atomic)
+    score_ += score;
+    sa_.add_score(score);
+  }
+
   virtual ModelObjectsTemp do_get_inputs(Model *m,
                                          const ParticleIndexes &pis) const
       IMP_OVERRIDE {
