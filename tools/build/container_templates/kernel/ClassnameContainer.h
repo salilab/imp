@@ -123,7 +123,11 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   virtual void do_apply(const ClassnameModifier *sm) const = 0;
   virtual void do_apply_moved(const ClassnameModifier *sm,
                               const ParticleIndexes &moved_pis,
-                              const ParticleIndexes &reset_pis) const = 0;
+                              const ParticleIndexes &reset_pis) const {
+    IMP_UNUSED(moved_pis);
+    IMP_UNUSED(reset_pis);
+    do_apply(sm);
+  }
   virtual bool do_get_provides_access() const { return false; }
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
