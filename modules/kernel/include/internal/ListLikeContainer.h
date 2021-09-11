@@ -75,7 +75,7 @@ class ListLikeContainer : public Base {
         unsigned int lb = i * chunk_size;
         unsigned int ub =
             std::min<unsigned int>(data_.size(), (i + 1) * chunk_size);
-        IMP_TASK((lb, ub, m, f, moved_pis, reset_pis),
+        IMP_TASK_SHARED((lb, ub, m, f), (moved_pis, reset_pis),
                  f->apply_indexes_moved(m, data_, lb, ub, moved_pis, reset_pis),
                  "apply");
       }
