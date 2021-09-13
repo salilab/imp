@@ -57,6 +57,17 @@ class DistancePairScoreWithCache : public PairScore {
        DerivativeAccumulator *da, unsigned int lower_bound,
        unsigned int upper_bound) const IMP_OVERRIDE;
 
+  virtual double evaluate_indexes_scores(
+       Model *m, const ParticleIndexPairs &p, DerivativeAccumulator *da,
+       unsigned int lower_bound, unsigned int upper_bound,
+       std::vector<double> &score,
+       std::vector<double> &last_score) const IMP_OVERRIDE;
+
+  virtual double evaluate_indexes_scores(
+       Model *m, const ParticleIndexPairs &p, DerivativeAccumulator *da,
+       const std::vector<unsigned> &indexes, std::vector<double> &score,
+       std::vector<double> &last_score) const IMP_OVERRIDE;
+
   IMP_OBJECT_METHODS(DistancePairScoreWithCache);
 };
 
@@ -70,6 +81,42 @@ inline double DistancePairScoreWithCache<DistanceScore>::evaluate_indexes(
   ds_.check_cache_valid(m);
   for (unsigned int i = lower_bound; i < upper_bound; ++i) {
     ret += evaluate_index_with_cache(m, p[i], da);
+  }
+  return ret;
+}
+
+template <class DistanceScore>
+inline double
+DistancePairScoreWithCache<DistanceScore>::evaluate_indexes_scores(
+       Model *m, const ParticleIndexPairs &p, DerivativeAccumulator *da,
+       unsigned int lower_bound, unsigned int upper_bound,
+       std::vector<double> &score,
+       std::vector<double> &last_score) const {
+  double ret = 0;
+  ds_.check_cache_valid(m);
+  for (unsigned int i = lower_bound; i < upper_bound; ++i) {
+    double s = evaluate_index_with_cache(m, p[i], da);
+    last_score[i] = score[i];
+    score[i] = s;
+    ret += s;
+  }
+  return ret;
+}
+
+template <class DistanceScore>
+inline double
+DistancePairScoreWithCache<DistanceScore>::evaluate_indexes_scores(
+       Model *m, const ParticleIndexPairs &p, DerivativeAccumulator *da,
+       const std::vector<unsigned> &indexes, std::vector<double> &score,
+       std::vector<double> &last_score) const {
+  double ret = 0;
+  ds_.check_cache_valid(m);
+  for (std::vector<unsigned>::const_iterator it = indexes.begin();
+       it != indexes.end(); ++it) {
+    double s = evaluate_index_with_cache(m, p[*it], da);
+    last_score[*it] = score[*it];
+    score[*it] = s;
+    ret += s;
   }
   return ret;
 }
