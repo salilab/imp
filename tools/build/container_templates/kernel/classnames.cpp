@@ -124,28 +124,34 @@ double ClassnameScore::evaluate_indexes(Model *m,
   return ret;
 }
 
-double ClassnameScore::evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,
-                          DerivativeAccumulator *da, unsigned int lower_bound,
-                          unsigned int upper_bound,
-                          std::vector<double> &scores) const {
+double ClassnameScore::evaluate_indexes_scores(
+                Model *m, const PLURALINDEXTYPE &p,
+                DerivativeAccumulator *da, unsigned int lower_bound,
+                unsigned int upper_bound,
+                std::vector<double> &score,
+                std::vector<double> &last_score) const {
   double ret = 0;
   for (unsigned int i = lower_bound; i < upper_bound; ++i) {
     double s = evaluate_index(m, p[i], da);
-    scores[i] = s;
+    last_score[i] = score[i];
+    score[i] = s;
     ret += s;
   }
   return ret;
 }
 
-double ClassnameScore::evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,
-                          DerivativeAccumulator *da,
-                          const std::vector<unsigned> &indexes,
-                          std::vector<double> &scores) const {
+double ClassnameScore::evaluate_indexes_scores(
+                Model *m, const PLURALINDEXTYPE &p,
+                DerivativeAccumulator *da,
+                const std::vector<unsigned> &indexes,
+                std::vector<double> &score,
+                std::vector<double> &last_score) const {
   double ret = 0;
   for (std::vector<unsigned>::const_iterator it = indexes.begin();
        it != indexes.end(); ++it) {
     double s = evaluate_index(m, p[*it], da);
-    scores[*it] = s;
+    last_score[*it] = score[*it];
+    score[*it] = s;
     ret += s;
   }
   return ret;
