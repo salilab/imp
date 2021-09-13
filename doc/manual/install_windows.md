@@ -96,7 +96,7 @@ we employed is as follows:
     [libTAU](https://integrativemodeling.org/libTAU.html)
      - Copy `libTAU.lib` to `TAU.lib` to help cmake find it.
   - (Optional) Get the [OpenCV source code](http://opencv.org/)
-    and build it by [following these instructions](http://docs.opencv.org/doc/tutorials/introduction/windows_install/windows_install.html)
+    and build it by [following these instructions](https://docs.opencv.org/3.4.15/d3/d52/tutorial_windows_install.html#tutorial_windows_install_build)
      - Copy each `opencv_*.lib` to a similar file without the version extension
        (e.g. copy `opencv_ml244.lib` to `opencv_ml.lib`) to help cmake find it
   - Set PATH, INCLUDE, and/or LIB environment variables so that the compiler
