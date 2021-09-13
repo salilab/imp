@@ -29,6 +29,33 @@
     }                                                                          \
     return ret;                                                                \
   }                                                                            \
+  double evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,                  \
+                          DerivativeAccumulator *da, unsigned int lower_bound, \
+                          unsigned int upper_bound,                            \
+                          std::vector<double> &scores)                         \
+                          const IMP_OVERRIDE IMP_FINAL {                       \
+    double ret = 0;                                                            \
+    for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
+      double s = evaluate_index(m, p[i], da);                                  \
+      scores[i] = s;                                                           \
+      ret += s;                                                                \
+    }                                                                          \
+    return ret;                                                                \
+  }                                                                            \
+  double evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,                  \
+                          DerivativeAccumulator *da,                           \
+                          const std::vector<unsigned> &indexes,                \
+                          std::vector<double> &scores)                         \
+                          const IMP_OVERRIDE IMP_FINAL {                       \
+    double ret = 0;                                                            \
+    for (std::vector<unsigned>::const_iterator it = indexes.begin();           \
+         it != indexes.end(); ++it) {                                          \
+      double s = evaluate_index(m, p[*it], da);                                \
+      scores[*it] = s;                                                         \
+      ret += s;                                                                \
+    }                                                                          \
+    return ret;                                                                \
+  }                                                                            \
   double evaluate_if_good_indexes(                                             \
       Model *m, const PLURALINDEXTYPE &p, DerivativeAccumulator *da,           \
       double max, unsigned int lower_bound,                                    \

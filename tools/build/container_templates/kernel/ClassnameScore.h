@@ -72,6 +72,23 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                                   unsigned int lower_bound,
                                   unsigned int upper_bound) const;
 
+  //! Compute the score and the derivative if needed over a set.
+  /** Like regular evaluate_indexes(), but the score for each o[x] is also
+      returned as scores[x]. */
+  virtual double evaluate_indexes(Model *m, const PLURALINDEXTYPE &o,
+                                  DerivativeAccumulator *da,
+                                  unsigned int lower_bound,
+                                  unsigned int upper_bound,
+                                  std::vector<double> &scores) const;
+
+  //! Compute the score and the derivative if needed over a set.
+  /** The score for each o[indexes[x]] is returned in scores[indexes[x]]
+      and the total score is also returned. */
+  virtual double evaluate_indexes(Model *m, const PLURALINDEXTYPE &o,
+                                  DerivativeAccumulator *da,
+                                  const std::vector<unsigned> &indexes,
+                                  std::vector<double> &scores) const;
+
   //! Compute the score and the derivative if needed, only if "good".
   /** This functions similarly to evaluate_index(),
       but may terminate the computation early if the score is higher than max.
