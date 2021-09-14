@@ -41,6 +41,18 @@ class Tests(IMP.test.TestCase):
         s1 = NullConstraint(m, inputs=[p1], outputs=[p0])
         self.assertRaises(IMP.ModelException, m.update)
 
+    def test_get_dependent_particles(self):
+        """Test get_dependent_particles() function"""
+        log = []
+        m = IMP.Model()
+        p0 = IMP.Particle(m)
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        s0 = NullConstraint(m, inputs=[p0], outputs=[p1])
+        self.assertEqual(IMP.get_dependent_particles(m, p0), [p0, p1])
+        self.assertEqual(IMP.get_dependent_particles(m, p1), [p1])
+        self.assertEqual(IMP.get_dependent_particles(m, p2), [p2])
+
     def test_dependency_age(self):
         """Test dependency age counter"""
         m = IMP.Model()

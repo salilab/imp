@@ -372,4 +372,10 @@ ScoreStatesTemp get_required_score_states(Model *m, ParticleIndex pi) {
   return p->get_required_score_states();
 }
 
+ParticlesTemp get_dependent_particles(Model *m, ParticleIndex pi) {
+  m->set_has_all_dependencies(true);
+  ModelObject *cur = m->get_particle(pi);
+  return do_get_dependent<Particle, ParticlesTemp>(cur);
+}
+
 IMPKERNEL_END_NAMESPACE

@@ -76,6 +76,12 @@ IMPKERNELEXPORT ScoreStatesTemp
 /** \note The list may contain duplicates. */
 IMPKERNELEXPORT ScoreStatesTemp
     get_required_score_states(Model *m, ParticleIndex pi);
+
+//! Return all Particles that depend on this Particle.
+/** \note The list may contain duplicates. */
+IMPKERNELEXPORT ParticlesTemp
+    get_dependent_particles(Model *m, ParticleIndex pi);
+
 #endif
 
 IMPKERNEL_END_NAMESPACE
