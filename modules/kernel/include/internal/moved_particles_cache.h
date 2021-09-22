@@ -38,6 +38,26 @@ public:
   void clear() { cache_.clear(); }
 };
 
+//! Cache Particles that change when a Particle moves
+class MovedParticlesParticleCache {
+  Model *m_;
+  typedef std::map<ParticleIndex, std::set<ParticleIndex> > CacheMap;
+  CacheMap cache_;
+
+public:
+  MovedParticlesParticleCache(Model *m) : m_(m) {}
+
+  //! Get a set of all particles that move when this particle moves
+  /** The result is cached; the cache should be cleared whenever the
+      dependency graph changes.
+    */
+  const std::set<ParticleIndex> &get_dependent_particles(ParticleIndex pi);
+
+  // clear when dependency graph changes, and/or
+  // particles/restraints added/removed
+  void clear() { cache_.clear(); }
+};
+
 //! Cache ScoreStates that change when a Particle moves
 class MovedParticlesScoreStateCache {
   Model *m_;

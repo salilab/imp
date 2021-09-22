@@ -25,6 +25,21 @@ MovedParticlesRestraintCache::get_dependent_restraints(ParticleIndex pi) {
   return it->second;
 }
 
+const std::set<ParticleIndex> &
+MovedParticlesParticleCache::get_dependent_particles(ParticleIndex pi) {
+  CacheMap::const_iterator it = cache_.find(pi);
+  if (it == cache_.end()) {
+    ParticlesTemp ps = IMP::get_dependent_particles(m_, pi);
+    std::set<ParticleIndex> psset;
+    for (ParticlesTemp::const_iterator pi = ps.begin(); pi != ps.end(); ++pi) {
+      psset.insert((*pi)->get_index());
+    }
+    cache_[pi] = psset;
+    it = cache_.find(pi);
+  }
+  return it->second;
+}
+
 const std::set<ScoreState *> &
 MovedParticlesScoreStateCache::get_affected_score_states(ParticleIndex pi) {
   CacheMap::const_iterator it = cache_.find(pi);

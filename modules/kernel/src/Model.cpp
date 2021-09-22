@@ -14,7 +14,8 @@ IMPKERNEL_BEGIN_NAMESPACE
 
 //! Constructor
 Model::Model(std::string name)
-          : Object(name), moved_particles_cache_(this) {
+          : Object(name), moved_particles_restraint_cache_(this),
+            moved_particles_particle_cache_(this) {
   cur_stage_ = internal::NOT_EVALUATING;
   set_was_used(true);
   first_call_ = true;

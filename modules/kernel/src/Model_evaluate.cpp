@@ -56,10 +56,11 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
                   "Can only call Model::before_evaluate() when not evaluating");
   CreateLogContext clc("update_score_states");
   increase_age();
-  // Clear cache if dependencies changed
+  // Clear caches if dependencies changed
   if (moved_particles_cache_age_ != dependencies_age_) {
     moved_particles_cache_age_ = dependencies_age_;
-    moved_particles_cache_.clear();
+    moved_particles_restraint_cache_.clear();
+    moved_particles_particle_cache_.clear();
   }
   internal::SFSetIt<IMP::internal::Stage> reset(
       &cur_stage_, internal::BEFORE_EVALUATING);

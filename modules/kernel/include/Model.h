@@ -125,8 +125,10 @@ class IMPKERNELEXPORT Model : public Object
   unsigned dependencies_age_;
   // cache of restraints that are affected by each moved particle,
   // used for evaluate_moved() and related functions
-  internal::MovedParticlesRestraintCache moved_particles_cache_;
-  // time when moved_particles_cache_ was last updated, or 0
+  internal::MovedParticlesRestraintCache moved_particles_restraint_cache_;
+  // cache of particles that are affected by each moved particle
+  internal::MovedParticlesParticleCache moved_particles_particle_cache_;
+  // time when moved_particles_*_cache_ were last updated, or 0
   unsigned moved_particles_cache_age_;
 
   // update model age (can never be zero, even if it wraps)
@@ -146,8 +148,14 @@ class IMPKERNELEXPORT Model : public Object
   // the stage of evaluation
   internal::Stage cur_stage_;
 
+  //! Get all Restraints that depend on the given particle
   const std::set<Restraint *> &get_dependent_restraints(ParticleIndex pi) {
-    return moved_particles_cache_.get_dependent_restraints(pi);
+    return moved_particles_restraint_cache_.get_dependent_restraints(pi);
+  }
+
+  //! Get all particles that depend on the given particle
+  const std::set<ParticleIndex> &get_dependent_particles(ParticleIndex pi) {
+    return moved_particles_particle_cache_.get_dependent_particles(pi);
   }
 
   ModelObjectsTemp get_dependency_graph_inputs(const ModelObject *mo) const;
