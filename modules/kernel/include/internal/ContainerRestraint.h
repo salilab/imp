@@ -24,7 +24,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 template <class Score, class Container>
 class ContainerRestraint : public Restraint {
   IMP::PointerMember<Container> pc_;
-  IMP::Pointer<AccumulatorScoreModifier<Score> > acc_;
+  IMP::Pointer<AccumulatorScoreModifier<Score, Container> > acc_;
 
  public:
   ContainerRestraint(Score *ss, Container *pc,
@@ -74,7 +74,7 @@ ContainerRestraint<Score, C>::ContainerRestraint(Score *ss, C *pc,
                                                  std::string name)
     : Restraint(pc->get_model(), name),
       pc_(pc),
-      acc_(create_accumulator_score_modifier(ss)) {}
+      acc_(create_accumulator_score_modifier(ss, pc)) {}
 
 template <class Score, class C>
 double ContainerRestraint<Score, C>::get_last_score() const {
@@ -100,6 +100,7 @@ void ContainerRestraint<Score, C>::do_add_score_and_derivatives_moved(
   IMP_CHECK_OBJECT(acc_);
   IMP_CHECK_OBJECT(pc_);
   acc_->set_accumulator(accum);
+  acc_->set_container(pc_);
   pc_->apply_generic_moved(acc_.get(), moved_pis, reset_pis);
 }
 
