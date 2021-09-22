@@ -62,7 +62,7 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                 computed derivatives. If nullptr, derivatives
                 will not be computed.
       @param lower_bound index of first item in o to evaluate
-      @param upper_bound index of last item in o to evaluate
+      @param upper_bound index one past last item in o to evaluate
 
       @note Implementations for these are provided by
             the IMP_CLASSNAME_SCORE() macro.
