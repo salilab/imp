@@ -97,7 +97,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   }
 
   //! Return size of current container content
-  //! Note that this may be expensive since my evaluate
+  //! Note that this may be expensive since it may involve
   //! refreshing of the container
   unsigned int get_number() const { return get_indexes().size(); }
 #ifndef SWIG
