@@ -38,13 +38,19 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
         p1 = IMP.Particle(m)
         p2 = IMP.Particle(m)
-        lpc = IMP.container.ListPairContainer(m, [(p1, p2)])
-        p1 = TestMovedScore(value=42.)
-        r1 = IMP.container.PairsRestraint(p1, lpc)
+        p3 = IMP.Particle(m)
+        p4 = IMP.Particle(m)
+        lpc = IMP.container.ListPairContainer(m, [(p1, p2), (p2, p3), (p3, p4)])
+        s1 = TestMovedScore(value=42.)
+        r1 = IMP.container.PairsRestraint(s1, lpc)
         self.assertAlmostEqual(r1.evaluate_moved(False, [], []),
-                               42., delta=1e-6)
-        self.assertIsNone(p1.moved_pis)
-        self.assertIsNone(p1.reset_pis)
+                               126., delta=1e-6)
+        self.assertIsNone(s1.moved_pis)
+        self.assertIsNone(s1.reset_pis)
+        self.assertAlmostEqual(r1.evaluate_moved(False, [p1], []),
+                               126., delta=1e-6)
+        self.assertAlmostEqual(r1.evaluate_moved(False, [p2], []),
+                               126., delta=1e-6)
 
 
 if __name__ == '__main__':
