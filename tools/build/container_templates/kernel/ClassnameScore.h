@@ -80,18 +80,17 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                         DerivativeAccumulator *da,
                         unsigned int lower_bound,
                         unsigned int upper_bound,
-                        std::vector<double> &score,
-                        std::vector<double> &last_score) const;
+                        std::vector<double> &score) const;
 
-  //! Compute the score and the derivative if needed over a set.
-  /** The score for each o[indexes[x]] is returned in score[indexes[x]]
-      and the total score is also returned. */
-  virtual double evaluate_indexes_scores(
+  //! Compute the change in score and the derivative if needed over a set.
+  /** The score for each o[indexes[x]] is updated in score[indexes[x]]
+      and the total difference between the old and new score values (over the
+      set) is returned. */
+  virtual double evaluate_indexes_delta(
                         Model *m, const PLURALINDEXTYPE &o,
                         DerivativeAccumulator *da,
                         const std::vector<unsigned> &indexes,
-                        std::vector<double> &score,
-                        std::vector<double> &last_score) const;
+                        std::vector<double> &score) const;
 
   //! Compute the score and the derivative if needed, only if "good".
   /** This functions similarly to evaluate_index(),
