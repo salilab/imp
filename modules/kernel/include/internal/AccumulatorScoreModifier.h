@@ -199,16 +199,15 @@ class AccumulatorScoreModifier : public Score::Modifier {
                  lower_bound, upper_bound, last_score_);
       last_moved_delta_ = BAD_SCORE;
     } else {
+      bool rescore_reset = false;
       score = total_last_score_;
       // First, score any reset particles
       if (reset_pis.size() == 1) {
-        std::cerr << "reset particle " << reset_pis[0] << std::endl;
         const std::vector<unsigned> &inds = moved_indexes_map_.get(
                                                    m, reset_pis[0]);
         // If we moved these same particles before, we know the delta
         if (last_moved_particle_ == reset_pis[0]
             && last_moved_delta_ != BAD_SCORE) {
-          std::cerr << "reset of previous move, subtract delta" << std::endl;
           score -= last_moved_delta_;
           // Reset the previous per-index scores
           std::vector<double>::const_iterator scoreit;
@@ -221,33 +220,48 @@ class AccumulatorScoreModifier : public Score::Modifier {
         // moved the same set of particles, in which case it will be
         // handled by moved_pis, below)
         } else if (moved_pis.size() == 0 || moved_pis[0] != reset_pis[0]) {
-          std::cerr << "rescore reset particles" << std::endl;
-          double moved_score = ss_->evaluate_indexes_delta(
+          rescore_reset = true;
+          score += ss_->evaluate_indexes_delta(
                  m, a, sa_.get_derivative_accumulator(), inds, last_score_);
-          std::cerr << ", giving score delta " << moved_score << std::endl;
-          score += moved_score;
         }
       }
       last_moved_delta_ = BAD_SCORE;
       // Next, score any moved particles
       if (moved_pis.size() == 1) {
-        std::cerr << "moved particle " << moved_pis[0] << std::endl;
         const std::vector<unsigned> &inds = moved_indexes_map_.get(
                                                      m, moved_pis[0]);
         // Record per-index scores in case we need to reset them later
-        last_last_score_.clear();
-        for (std::vector<unsigned>::const_iterator indsit = inds.begin();
-             indsit != inds.end(); ++indsit) {
-          last_last_score_.push_back(last_score_[*indsit]);
+        if (!rescore_reset) {
+          last_last_score_.clear();
+          for (std::vector<unsigned>::const_iterator indsit = inds.begin();
+               indsit != inds.end(); ++indsit) {
+            last_last_score_.push_back(last_score_[*indsit]);
+          }
         }
         double moved_score = ss_->evaluate_indexes_delta(
                m, a, sa_.get_derivative_accumulator(), inds, last_score_);
         // Record score delta in case we need to reset it later
         last_moved_delta_ = moved_score;
         last_moved_particle_ = moved_pis[0];
-        std::cerr << ", giving score delta " << moved_score << std::endl;
+        // If we had to rescore any reset particles, we actually rescored
+        // them on their *current* positions, which also includes any moved_pis.
+        // Thus, if the inds from moved_pis and reset_pis overlap, we cannot
+        // reset the score to the "after reset but before move" state because
+        // the reset would actually go to "before reset and before move".
+        if (rescore_reset) {
+          // strictly speaking this is only needed if inds(moved_pis) and
+          // inds(reset_pis) overlap
+          last_moved_delta_ = BAD_SCORE;
+        }
         score += moved_score;
       }
+#if IMP_HAS_CHECKS >= IMP_INTERNAL
+      double full_score = ss_->evaluate_indexes(
+                   m, a, sa_.get_derivative_accumulator(),
+                   lower_bound, upper_bound);
+      IMP_INTERNAL_CHECK_FLOAT_EQUAL(score, full_score,
+                    "Moved score does not match full score");
+#endif
     }
     IMP_OMP_PRAGMA(atomic)
     score_ += score;
