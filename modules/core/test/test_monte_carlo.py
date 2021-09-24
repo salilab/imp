@@ -20,9 +20,15 @@ def setup_system(coords, use_container):
     cent = IMP.core.Centroid.setup_particle(IMP.Particle(m), [ps[5], ps[6]])
     hps = IMP.core.HarmonicDistancePairScore(1, 100)
     pairs = ((ps[0], ps[1]), (ps[1], ps[2]), (ps[2], ps[3]), (ps[4], cent))
-    if use_container:
+    if use_container == 'pair':
         lpc = IMP.container.ListPairContainer(m, pairs)
         rs = IMP.container.PairsRestraint(hps, lpc)
+    elif use_container == 'singleton':
+        sps = IMP.core.DistanceToSingletonScore(
+                IMP.core.Harmonic(0, 1), (0, 0, 0))
+        singles = [item for subl in pairs for item in subl]
+        lsc = IMP.container.ListSingletonContainer(m, singles)
+        rs = IMP.container.SingletonsRestraint(sps, lsc)
     else:
         prs = [IMP.core.PairRestraint(m, hps, p) for p in pairs]
         rs = IMP.RestraintSet(m)
@@ -96,8 +102,26 @@ class Tests(IMP.test.TestCase):
            when using ListPairContainer"""
         bb = IMP.algebra.get_unit_bounding_box_3d()
         coords = [IMP.algebra.get_random_vector_in(bb) for _ in range(10)]
-        m1, mc1 = setup_system(coords, use_container=True)
-        m2, mc2 = setup_system(coords, use_container=True)
+        m1, mc1 = setup_system(coords, use_container='pair')
+        m2, mc2 = setup_system(coords, use_container='pair')
+
+        # Same seeed, same system, so we should get identical trajectories
+        IMP.random_number_generator.seed(99)
+        mc1_score = mc1.optimize(100)
+
+        mc2.set_score_moved(True)
+        IMP.random_number_generator.seed(99)
+        mc2_score = mc2.optimize(100)
+
+        self.assertAlmostEqual(mc1_score, mc2_score, delta=1e-2)
+
+    def test_singleton_container_moved_same_trajectory(self):
+        """MonteCarlo trajectory should not be changed by set_score_moved()
+           when using ListSingletonContainer"""
+        bb = IMP.algebra.get_unit_bounding_box_3d()
+        coords = [IMP.algebra.get_random_vector_in(bb) for _ in range(10)]
+        m1, mc1 = setup_system(coords, use_container='singleton')
+        m2, mc2 = setup_system(coords, use_container='singleton')
 
         # Same seeed, same system, so we should get identical trajectories
         IMP.random_number_generator.seed(99)
