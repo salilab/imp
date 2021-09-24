@@ -19,14 +19,16 @@
 #include <IMP/TripletModifier.h>
 #include <IMP/QuadModifier.h>
 #include <IMP/SingletonScore.h>
-#include <IMP/SingletonContainer.h>
 #include <IMP/check_macros.h>
+#include <boost/utility/enable_if.hpp>
 
 IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 
 //! Get indexes of container contents that involve any of the given particles
-template<typename Score, typename Container>
-inline std::vector<unsigned> get_container_indexes(
+template<typename Score> inline
+typename boost::disable_if<boost::is_base_of<SingletonScore, Score>,
+                           std::vector<unsigned> >::type
+get_container_indexes(
             const Vector<typename Score::IndexArgument> &contents,
             const std::set<ParticleIndex> &ps) {
   std::vector<unsigned> ret;
@@ -46,10 +48,12 @@ inline std::vector<unsigned> get_container_indexes(
 
 // Specialization for SingletonContainer, where each content entry is
 // a ParticleIndex, not a fixed-size array of indexes
-template<> inline std::vector<unsigned>
-get_container_indexes<SingletonScore, SingletonContainer>(
-         const Vector<ParticleIndex> &contents,
-         const std::set<ParticleIndex> &ps) {
+template<typename Score> inline
+typename boost::enable_if<boost::is_base_of<SingletonScore, Score>,
+                          std::vector<unsigned> >::type
+get_container_indexes(
+            const Vector<typename Score::IndexArgument> &contents,
+            const std::set<ParticleIndex> &ps) {
   std::vector<unsigned> ret;
   unsigned i = 0;
   for (Vector<ParticleIndex>::const_iterator cit = contents.begin();
@@ -81,7 +85,7 @@ public:
   const std::vector<unsigned> &get(Model *m, ParticleIndex pi) const {
     CacheMap::const_iterator it = cache_.find(pi);
     if (it == cache_.end()) {
-      cache_[pi] = get_container_indexes<Score, Container>(
+      cache_[pi] = get_container_indexes<Score>(
                       container_->get_contents(),
                       m->get_dependent_particles(pi));
       it = cache_.find(pi);
