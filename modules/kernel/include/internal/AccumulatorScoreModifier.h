@@ -105,6 +105,7 @@ class AccumulatorScoreModifier : public Score::Modifier {
   mutable std::vector<double> last_score_;
   mutable double total_last_score_;
   mutable ParticleIndex last_moved_particle_;
+  mutable std::vector<double> last_last_score_;
   mutable double last_moved_delta_;
   MovedIndexesMap<Score, Container> moved_indexes_map_;
 
@@ -199,18 +200,25 @@ class AccumulatorScoreModifier : public Score::Modifier {
       // First, score any reset particles
       if (reset_pis.size() == 1) {
         std::cerr << "reset particle " << reset_pis[0] << std::endl;
+        const std::vector<unsigned> &inds = moved_indexes_map_.get(
+                                                   m, reset_pis[0]);
         // If we moved these same particles before, we know the delta
         if (last_moved_particle_ == reset_pis[0]
             && last_moved_delta_ != BAD_SCORE) {
           std::cerr << "reset of previous move, subtract delta" << std::endl;
           score -= last_moved_delta_;
+          // Reset the previous per-index scores
+          std::vector<double>::const_iterator scoreit;
+          std::vector<unsigned>::const_iterator indsit;
+          for (scoreit = last_last_score_.begin(), indsit = inds.begin();
+               scoreit != last_last_score_.end(); ++scoreit, ++indsit) {
+            last_score_[*indsit] = *scoreit;
+          }
         // Otherwise, rescore just like moved_pis (unless we both reset *and*
         // moved the same set of particles, in which case it will be
         // handled by moved_pis, below)
         } else if (moved_pis.size() == 0 || moved_pis[0] != reset_pis[0]) {
           std::cerr << "rescore reset particles" << std::endl;
-          const std::vector<unsigned> &inds = moved_indexes_map_.get(
-                                                     m, reset_pis[0]);
           double moved_score = ss_->evaluate_indexes_delta(
                  m, a, sa_.get_derivative_accumulator(), inds, last_score_);
           std::cerr << ", giving score delta " << moved_score << std::endl;
@@ -223,6 +231,12 @@ class AccumulatorScoreModifier : public Score::Modifier {
         std::cerr << "moved particle " << moved_pis[0] << std::endl;
         const std::vector<unsigned> &inds = moved_indexes_map_.get(
                                                      m, moved_pis[0]);
+        // Record per-index scores in case we need to reset them later
+        last_last_score_.clear();
+        for (std::vector<unsigned>::const_iterator indsit = inds.begin();
+             indsit != inds.end(); ++indsit) {
+          last_last_score_.push_back(last_score_[*indsit]);
+        }
         double moved_score = ss_->evaluate_indexes_delta(
                m, a, sa_.get_derivative_accumulator(), inds, last_score_);
         // Record score delta in case we need to reset it later
