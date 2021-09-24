@@ -60,7 +60,6 @@ get_container_indexes(
        cit != contents.end(); ++cit, ++i) {
     if (ps.find(*cit) != ps.end()) {
       ret.push_back(i);
-      break;
     }
   }
   return ret;
