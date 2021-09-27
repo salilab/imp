@@ -21,6 +21,8 @@ ChangeLog {#changelog}
 - The orientation-dependent scoring function IMP::score_functor::OrientedSoap
   now caches the system topology and so should be roughly twice as fast in
   typical applications.
+- The unused IMP::piecewise_linear_distribution class has been removed.
+  Use boost::piecewise_linear_distribution instead.
 - The deprecated methods
   IMP::{Singleton,Pair,Triplet,Quad}Predicate::get_value() have been removed.
   Use the get_value_index() methods instead.
