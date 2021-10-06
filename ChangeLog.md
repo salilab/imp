@@ -13,6 +13,7 @@ ChangeLog {#changelog}
 - IMP::pmi now handles MSE (selenomethionine) residues in input structures;
   structure is read for such residues and they are considered equivalent to
   regular MET in the FASTA sequence.
+- The Windows .exe installer now supports Python 3.10.
 - Scoring function evaluation can now be done more efficiently in some cases
   by using information on which particles have moved since the last evaluation.
   This behavior can be turned on (by default it is off) using
