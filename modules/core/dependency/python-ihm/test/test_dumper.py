@@ -469,7 +469,15 @@ _entity_src_gen.pdbx_host_org_strain
             db_begin=4, db_end=5, entity_begin=2, entity_end=3))
         r2.alignments.append(ihm.reference.Alignment(
             db_begin=9, db_end=9, entity_begin=4, entity_end=4))
-        system.entities.append(ihm.Entity('LSPT', references=[r1, r2]))
+        r3 = ihm.reference.UniProtSequence(
+            db_code='testcode2', accession='testacc2', sequence=None)
+        r3.alignments.append(ihm.reference.Alignment(
+            db_begin=4, db_end=5, entity_begin=2, entity_end=3))
+        r4 = ihm.reference.UniProtSequence(
+            db_code='testcode3', accession='testacc3', sequence=ihm.unknown)
+        r4.alignments.append(ihm.reference.Alignment(
+            db_begin=4, db_end=5, entity_begin=2, entity_end=3))
+        system.entities.append(ihm.Entity('LSPT', references=[r1, r2, r3, r4]))
         dumper = ihm.dumper._EntityDumper()
         dumper.finalize(system)  # Assign entity IDs
 
@@ -488,6 +496,8 @@ _struct_ref.pdbx_seq_one_letter_code
 _struct_ref.details
 1 1 UNP NUP84_YEAST P52891 3 MELWPTYQT 'test sequence'
 2 1 UNP testcode testacc 4 MELSPTYQT test2
+3 1 UNP testcode2 testacc2 4 . .
+4 1 UNP testcode3 testacc3 4 ? .
 #
 #
 loop_
@@ -500,6 +510,8 @@ _struct_ref_seq.db_align_end
 1 1 1 4 3 6
 2 2 2 3 4 5
 3 2 4 4 9 9
+4 3 2 3 4 5
+5 4 2 3 4 5
 #
 #
 loop_

@@ -234,11 +234,15 @@ class ItemType(object):
        :class:`Keyword`. For example, integer values can only contain
        the digits 0-9 with an optional +/- prefix."""
     def __init__(self, name, primitive_code, construct):
-        self.name, self.construct = name, construct
+        self.name = name
+        # The dictionary only defines matches against ASCII characters.
+        # Extend this to match any Unicode "word" character so we don't
+        # fail to validate as soon as we see an accented character.
+        self.construct = construct.replace('A-Za-z0-9', r'\w')
         self.primitive_code = primitive_code
         # Ensure that regex matches the entire value
         try:
-            self.regex = re.compile(construct + '$')
+            self.regex = re.compile(self.construct + '$')
         except re.error:
             # Some CIF regexes aren't valid Python regexes; skip these
             self.regex = _DoNothingRegEx()

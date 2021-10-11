@@ -3055,6 +3055,23 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
        so is used if built. The BinaryCIF reader needs the msgpack Python
        module to function.
 
+       The file handle should be opened in text mode for mmCIF files.
+       Traditionally, mmCIF files used ASCII encoding. More and more
+       recent files are UTF-8 encoded instead, but some use other encodings
+       such as latin-1. To handle most current files use something like::
+
+           try:
+               with open('input.cif', encoding='utf-8') as fh:
+                   systems = ihm.reader.read(fh)
+           except UnicodeDecodeError:
+               with open('input.cif', encoding='latin-1') as fh:
+                   systems = ihm.reader.read(fh)
+
+       The file handle should be opened in binary mode for BinaryCIF files::
+
+           with open('input.bcif', 'rb') as fh:
+               systems = ihm.reader.read(fh, format='BCIF')
+
        :param file fh: The file handle to read from. (For BinaryCIF files,
               the file should be opened in binary mode. For mmCIF files,
               files opened in binary mode with Python 3 will be treated as
