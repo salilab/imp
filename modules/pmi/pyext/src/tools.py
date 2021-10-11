@@ -10,7 +10,10 @@ import IMP.algebra
 import IMP.isd
 import IMP.pmi
 import IMP.pmi.topology
-import collections
+try:
+    from collections.abc import MutableSet  # needs Python 3.3 or later
+except ImportError:
+    from collections import MutableSet
 import itertools
 import math
 import sys
@@ -824,7 +827,7 @@ class ColorChange(object):
 
 
 # -------------- Collections --------------- #
-class OrderedSet(collections.MutableSet):
+class OrderedSet(MutableSet):
 
     def __init__(self, iterable=None):
         self.end = end = []
