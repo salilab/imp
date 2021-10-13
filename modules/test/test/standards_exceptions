@@ -15,7 +15,7 @@ standard_unittest_attributes = [
    'failUnlessAlmostEqual', 'failUnlessEqual', 'failUnlessRaises', 'id',
    'setUp', 'setUpClass', 'shortDescription', 'skipTest', 'tearDown',
    'tearDownClass', 'assertLogs', 'subTest', 'addClassCleanup',
-   'doClassCleanups' ]
+   'doClassCleanups', 'assertNoLogs' ]
 exceptions = ["TestCase." + x for x in standard_unittest_attributes] \
            + ["ApplicationTestCase." + x for x in standard_unittest_attributes]
 
