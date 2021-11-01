@@ -635,7 +635,7 @@ _struct_ref.pdbx_align_begin
 _struct_ref.pdbx_seq_one_letter_code
 _struct_ref.details
 1 1 UNP NUP84_YEAST P52891 3
-;MELSP
+;LSP
 TYQT
 ;
 'test sequence'
@@ -677,7 +677,7 @@ _struct_ref_seq_dif.details
                 self.assertEqual(r1.db_name, 'UNP')
                 self.assertEqual(r1.db_code, 'NUP84_YEAST')
                 self.assertEqual(r1.accession, 'P52891')
-                self.assertEqual(r1.sequence, 'MELSPTYQT')
+                self.assertEqual(r1.sequence, '--LSPTYQT')
                 self.assertEqual(r1.details, 'test sequence')
                 self.assertIsNone(r3.sequence)
                 self.assertEqual(r4.sequence, ihm.unknown)

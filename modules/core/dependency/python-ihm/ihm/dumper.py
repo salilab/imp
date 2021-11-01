@@ -370,8 +370,13 @@ class _StructRefDumper(Dumper):
         """Get the sequence string"""
         if reference.sequence in (None, ihm.unknown):
             return reference.sequence
+        # We only want the subset of the sequence that overlaps with
+        # our entities
+        db_begin = min(a.db_begin for a in reference._get_alignments())
+        db_end = max(a.db_end for a in reference._get_alignments())
         # Split into lines to get tidier CIF output
-        return "\n".join(_prettyprint_seq(reference.sequence, 70))
+        return "\n".join(_prettyprint_seq(
+            reference.sequence[db_begin - 1:db_end], 70))
 
     def _check_seq_dif(self, entity, ref, align):
         """Check all SeqDif objects for the Entity sequence. Return the mutated
@@ -1191,7 +1196,6 @@ class _ProtocolDumper(Dumper):
         with writer.loop("_ihm_modeling_protocol_details",
                          ["id", "protocol_id", "step_id",
                           "struct_assembly_id", "dataset_group_id",
-                          "struct_assembly_description",
                           "step_name", "step_method", "num_models_begin",
                           "num_models_end", "multi_scale_flag",
                           "multi_state_flag", "ordered_flag",
@@ -1205,7 +1209,6 @@ class _ProtocolDumper(Dumper):
                         struct_assembly_id=s.assembly._id,
                         dataset_group_id=s.dataset_group._id
                         if s.dataset_group else None,
-                        struct_assembly_description=s.assembly.description,
                         step_name=s.name, step_method=s.method,
                         num_models_begin=s.num_models_begin,
                         num_models_end=s.num_models_end,

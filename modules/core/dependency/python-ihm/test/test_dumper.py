@@ -494,8 +494,8 @@ _struct_ref.pdbx_db_accession
 _struct_ref.pdbx_align_begin
 _struct_ref.pdbx_seq_one_letter_code
 _struct_ref.details
-1 1 UNP NUP84_YEAST P52891 3 MELWPTYQT 'test sequence'
-2 1 UNP testcode testacc 4 MELSPTYQT test2
+1 1 UNP NUP84_YEAST P52891 3 LWPTYQT 'test sequence'
+2 1 UNP testcode testacc 4 SPTYQT test2
 3 1 UNP testcode2 testacc2 4 . .
 4 1 UNP testcode3 testacc3 4 ? .
 #
@@ -1618,7 +1618,6 @@ _ihm_modeling_protocol_details.protocol_id
 _ihm_modeling_protocol_details.step_id
 _ihm_modeling_protocol_details.struct_assembly_id
 _ihm_modeling_protocol_details.dataset_group_id
-_ihm_modeling_protocol_details.struct_assembly_description
 _ihm_modeling_protocol_details.step_name
 _ihm_modeling_protocol_details.step_method
 _ihm_modeling_protocol_details.num_models_begin
@@ -1629,9 +1628,9 @@ _ihm_modeling_protocol_details.ordered_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
 _ihm_modeling_protocol_details.description
-1 1 1 42 99 foo s1 'Monte Carlo' 0 500 YES NO NO . . .
-2 1 2 42 99 foo . 'Replica exchange' 500 2000 YES NO NO . . .
-3 2 1 42 101 foo . 'Replica exchange' 2000 1000 YES NO NO 80 90 'test step'
+1 1 1 42 99 s1 'Monte Carlo' 0 500 YES NO NO . . .
+2 1 2 42 99 . 'Replica exchange' 500 2000 YES NO NO . . .
+3 2 1 42 101 . 'Replica exchange' 2000 1000 YES NO NO 80 90 'test step'
 #
 """)
 

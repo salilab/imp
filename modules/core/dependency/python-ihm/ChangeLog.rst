@@ -1,5 +1,11 @@
-HEAD
-====
+0.23 - 2021-11-01
+=================
+  - Bugfix: _struct_ref.pdbx_seq_one_letter_code is now treated as the subset
+    of the reference (e.g. UniProt) sequence that overlaps with our Entities,
+    not the entire sequence (#64).
+
+0.22 - 2021-10-22
+=================
   - The :class:`ihm.Software` class now allows a citation for the software
     to be provided.
   - A new :mod:`ihm.citations` module contains citations for some packages

@@ -1063,8 +1063,22 @@ class _StructRefHandler(Handler):
         self.copy_if_present(
             ref, locals(), keys=('db_name', 'db_code', 'details'),
             mapkeys={'pdbx_db_accession': 'accession',
-                     'pdbx_seq_one_letter_code': 'sequence'})
+                     'pdbx_seq_one_letter_code': '_partial_sequence'})
         e.references.append(ref)
+
+    def finalize(self):
+        # The mmCIF file only contains the subset of the sequence that
+        # overlaps with our entities, but we need the full sequence. Pad it
+        # out with gaps if necessary so that indexing works correctly.
+        for e in self.system.entities:
+            for r in e.references:
+                if hasattr(r, '_partial_sequence'):
+                    if r._partial_sequence in (None, ihm.unknown):
+                        r.sequence = r._partial_sequence
+                    else:
+                        db_begin = min(a.db_begin for a in r._get_alignments())
+                        r.sequence = '-' * (db_begin - 1) + r._partial_sequence
+                    del r._partial_sequence
 
 
 class _StructRefSeqHandler(Handler):
