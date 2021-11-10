@@ -152,7 +152,8 @@ def _write_mmcif_internal(flpdb, particle_infos_for_pdb, geometric_center,
             lp.write(entity_id=e.id, pdbx_seq_one_letter_code=e.seq)
 
     with writer.loop("_struct_asym", ["id", "entity_id", "details"]) as lp:
-        for chid in sorted(chains.values()):
+        # Longer chain IDs (e.g. AA) should always come after shorter (e.g. Z)
+        for chid in sorted(chains.values(), key=lambda x: (len(x.strip()), x)):
             ci = chain_info[chid]
             lp.write(id=chid, entity_id=ci.entity.id, details=ci.name)
 
@@ -235,7 +236,7 @@ class Output(object):
     def get_stat_names(self):
         return list(self.dictionary_stats.keys())
 
-    def _init_dictchain(self, name, prot, multichar_chain=False):
+    def _init_dictchain(self, name, prot, multichar_chain=False, mmcif=False):
         self.dictchain[name] = {}
         self.use_pmi2 = False
         seen_chains = set()
@@ -246,8 +247,16 @@ class Output(object):
             self.atomistic = True  # detects automatically
             for n, mol in enumerate(IMP.atom.get_by_type(
                     prot, IMP.atom.MOLECULE_TYPE)):
-                chid = _disambiguate_chain(IMP.atom.Chain(mol).get_id(),
-                                           seen_chains)
+                chid = IMP.atom.Chain(mol).get_id()
+                if not mmcif and len(chid) > 1:
+                    raise ValueError(
+                        "The system contains at least one chain ID (%s) that "
+                        "is more than 1 character long; this cannot be "
+                        "represented in PDB. Either write mmCIF files "
+                        "instead, or assign 1-character IDs to all chains "
+                        "(this can be done with the `chain_ids` argument to "
+                        "BuildSystem.add_state())." % chid)
+                chid = _disambiguate_chain(chid, seen_chains)
                 molname = IMP.pmi.get_molecule_name_and_copy(mol)
                 self.dictchain[name][molname] = chid
         else:
@@ -268,7 +277,7 @@ class Output(object):
         flpdb.close()
         self.dictionary_pdbs[name] = prot
         self._pdb_mmcif[name] = mmcif
-        self._init_dictchain(name, prot)
+        self._init_dictchain(name, prot, mmcif=mmcif)
 
     def write_psf(self, filename, name):
         flpsf = open(filename, 'w')
@@ -499,7 +508,7 @@ class Output(object):
             flpdb.close()
             self.dictionary_pdbs[name] = prot
             self._pdb_mmcif[name] = mmcif
-            self._init_dictchain(name, prot)
+            self._init_dictchain(name, prot, mmcif=mmcif)
 
     def write_pdb_best_scoring(self, score):
         if self.nbestscoring is None:

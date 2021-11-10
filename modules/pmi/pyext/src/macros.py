@@ -18,7 +18,6 @@ import glob
 from operator import itemgetter
 from collections import defaultdict
 import numpy as np
-import string
 import itertools
 import warnings
 import math
@@ -615,20 +614,28 @@ class BuildSystem(object):
         self.force_create_gmm_files = force_create_gmm_files
         self.resolutions = resolutions
 
-    def add_state(self, reader, keep_chain_id=False, fasta_name_map=None):
+    def add_state(self, reader, keep_chain_id=False, fasta_name_map=None,
+                  chain_ids=None):
         """Add a state using the topology info in a
            IMP::pmi::topology::TopologyReader object.
         When you are done adding states, call execute_macro()
         @param reader The TopologyReader object
         @param fasta_name_map dictionary for converting protein names
                found in the fasta file
+        @param chain_ids A list or string of chain IDs for assigning to
+               newly-created molecules, e.g.
+               `string.ascii_uppercase+string.ascii_lowercase+string.digits`.
+               If not specified, chain IDs A through Z are assigned, then
+               AA through AZ, then BA through BZ, and so on, in the same
+               fashion as PDB.
         """
         state = self.system.create_state()
         self._readers.append(reader)
         # key is unique name, value is (atomic res, nonatomicres)
         these_domain_res = {}
         these_domains = {}       # key is unique name, value is _Component
-        chain_ids = string.ascii_uppercase+string.ascii_lowercase+'0123456789'
+        if chain_ids is None:
+            chain_ids = IMP.pmi.output._ChainIDs()
         numchain = 0
 
         # setup representation
