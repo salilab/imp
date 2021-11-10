@@ -10,7 +10,7 @@
 #define IMPATOM_COPY_H
 
 #include <IMP/atom/atom_config.h>
-#include "../macros.h"
+#include <IMP/macros.h>
 
 #include "Molecule.h"
 #include <IMP/Decorator.h>
