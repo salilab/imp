@@ -22,6 +22,12 @@ ChangeLog {#changelog}
 - The orientation-dependent scoring function IMP::score_functor::OrientedSoap
   now caches the system topology and so should be roughly twice as fast in
   typical applications.
+- IMP::pmi::macros::BuildSystem::add_state() now assigns multi-character
+  chain IDs by default, so that it is no longer limited to creating 62
+  molecules.
+- IMP::pmi::output::Output now reports a ValueError if asked to write out
+  a PDB file containing multi-character chain IDs, rather than silently
+  truncating them.
 - The unused IMP::piecewise_linear_distribution class has been removed.
   Use boost::piecewise_linear_distribution instead.
 - The deprecated methods
