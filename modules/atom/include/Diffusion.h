@@ -24,9 +24,8 @@ IMPATOM_BEGIN_NAMESPACE
 /** \ingroup helper
     \ingroup decorators
     \see BrownianDynamics
-    \unstable{Diffusion} The name really should be fixed.
 
-    Diffusion is used to decorate diffusing particle with a diffusion
+    Diffusion is used to decorate a diffusing particle with a diffusion
     coefficient D. D is assumed to be in units of \f$A^2/fs\f$.
 
     \see RigidBodyDiffusion
@@ -43,6 +42,15 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
     XYZ::setup_particle(m, pi, v);
     do_setup_particle(m, pi, D);
   }
+
+  /**
+     Same as do_setup_particle(m, pi, D) but D is automatically set
+     to IMP::atom::get_einstein_diffusion_coefficient(radius) for radius
+     IMP::core::XYZR(m, pi).get_radius(). 
+
+     Note a different D should probably be set manually if the temperature is
+     not the default IMP temperature (297.15).
+   */
   static void do_setup_particle(Model *m, ParticleIndex pi);
 
  public:
@@ -52,7 +60,7 @@ class IMPATOMEXPORT Diffusion : public IMP::core::XYZ {
   /** Assume particle is already a core::XYZR particle. */
   IMP_DECORATOR_SETUP_0(Diffusion);
 
-  //! Return true if the particle is an instance of an Diffusion
+  //! Return true if the particle is an instance of Diffusion
   static bool get_is_setup(Model *m, ParticleIndex p) {
     return m->get_has_attribute(get_diffusion_coefficient_key(), p);
   }
@@ -76,7 +84,16 @@ IMP_DECORATORS(Diffusion, Diffusions, core::XYZs);
 
 /** A rigid body that is diffusing, so it also has a rotation diffusion
     coefficient. The units on the rotational coefficient are
-    \f$radians^2/fs\f$.*/
+    \f$radians^2/fs\f$.
+
+    The translational and rotational diffusion coefficients are set automatically
+    using IMP::atom::get_einstein_diffusion_coefficient(radius) and 
+    IMP::atom::get_einstein_rotational_diffusion_coefficient(radius) for radius
+    IMP::core::XYZR(m, pi).get_radius(). 
+
+    Note that different translational and rotational coefficients should probably 
+    be set manually if the temperature is not the default IMP temperature.
+*/
 class IMPATOMEXPORT RigidBodyDiffusion : public Diffusion {
   static void do_setup_particle(Model *m, ParticleIndex pi);
 
