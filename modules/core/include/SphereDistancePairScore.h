@@ -27,7 +27,7 @@ typedef score_functor::SphereDistance<score_functor::UnaryFunctionEvaluate>
 
 //! A score on the distance between the surfaces of two spheres.
 /** Scores based on the distance between the surfaces of two spheres,
-    implicitly assuming they are decoarated as XYZR, using an arbitrary
+    implicitly assuming they are decorated as XYZR, using an arbitrary
     unary function. Note the distance may be negative if the spheres overlap.
 
     \see XYZR
@@ -88,9 +88,9 @@ IMP_OBJECTS(HarmonicUpperBoundSphereDiameterPairScore,
 typedef score_functor::SphereDistance<
     score_functor::Shift<score_functor::Harmonic> > HarmonicSphereDistanceScore;
 
-//!A harmonic score on the distance between two spheres
+//! A harmonic score on the distance between two spheres
 /** A harmonic score on the distance between two spheres, implicitly
-    assuming they are decoarated as XYZR.
+    assuming they are decorated as XYZR.
 
     \see XYZR
     \see SpherePairScore
