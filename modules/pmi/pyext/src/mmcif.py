@@ -871,10 +871,12 @@ class _AllStartingModels(object):
             # Break circular ref between fragment and model
             models[-1].fragments.append(weakref.proxy(fragment))
             # Update residue range to cover all fragments
+            # We don't use fragment.offset here because fragment numbering
+            # is already in seq_id, not PDB numbering
             pmi_offset = models[-1].asym_unit.entity.pmi_offset
-            sid_begin = min(fragment.start + fragment.offset - pmi_offset,
+            sid_begin = min(fragment.start - pmi_offset,
                             models[-1].asym_unit.seq_id_range[0])
-            sid_end = max(fragment.end + fragment.offset - pmi_offset,
+            sid_end = max(fragment.end - pmi_offset,
                           models[-1].asym_unit.seq_id_range[1])
             models[-1].asym_unit = fragment.asym_unit.asym(sid_begin, sid_end)
         fragment.starting_model = models[-1]
