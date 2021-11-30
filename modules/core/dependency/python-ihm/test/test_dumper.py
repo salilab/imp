@@ -685,8 +685,8 @@ _ihm_chemical_component_descriptor.inchi_key
         system.entities.extend((e1, e2, e3, e4, e5, e6))
         # One protein entity is modeled (with an asym unit) the other not;
         # this should be reflected in pdbx_strand_id
-        system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
-        system.asym_units.append(ihm.AsymUnit(e1, 'bar'))
+        system.asym_units.append(ihm.AsymUnit(e1, 'foo', strand_id='a'))
+        system.asym_units.append(ihm.AsymUnit(e1, 'bar', strand_id='b'))
 
         rna = ihm.Entity('AC', alphabet=ihm.RNAAlphabet)
         dna = ihm.Entity(('DA', 'DC'), alphabet=ihm.DNAAlphabet)
@@ -708,7 +708,7 @@ _entity_poly.nstd_monomer
 _entity_poly.pdbx_strand_id
 _entity_poly.pdbx_seq_one_letter_code
 _entity_poly.pdbx_seq_one_letter_code_can
-1 polypeptide(L) no no A ACGT ACGT
+1 polypeptide(L) no no a ACGT ACGT
 2 polypeptide(L) no no . ACC(MSE) ACCM
 3 polypeptide(D) no no . (DAL)(DCY)G ACG
 4 polypeptide(D) no no . (DAL)(DCY) AC
@@ -790,7 +790,9 @@ _entity_poly_seq.hetero
         system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
         system.asym_units.append(ihm.AsymUnit(e2, 'bar', auth_seq_id_map=5))
         system.asym_units.append(ihm.AsymUnit(e3, 'baz'))
-        system.asym_units.append(ihm.AsymUnit(e4, 'test'))
+        system.asym_units.append(ihm.AsymUnit(e4, 'test', strand_id='X',
+                                              auth_seq_id_map={1: (1, 'A'),
+                                                               2: (1, 'B')}))
         system.asym_units.append(ihm.AsymUnit(e5, 'heme'))
         ihm.dumper._EntityDumper().finalize(system)
         ihm.dumper._StructAsymDumper().finalize(system)
@@ -807,17 +809,18 @@ _pdbx_poly_seq_scheme.auth_seq_num
 _pdbx_poly_seq_scheme.pdb_mon_id
 _pdbx_poly_seq_scheme.auth_mon_id
 _pdbx_poly_seq_scheme.pdb_strand_id
-A 1 1 ALA 1 1 ALA ALA A
-A 1 2 CYS 2 2 CYS CYS A
-A 1 3 GLY 3 3 GLY GLY A
-A 1 4 THR 4 4 THR THR A
-B 2 1 ALA 6 6 ALA ALA B
-B 2 2 CYS 7 7 CYS CYS B
-B 2 3 CYS 8 8 CYS CYS B
-C 3 1 A 1 1 A A C
-C 3 2 C 2 2 C C C
-D 4 1 DA 1 1 DA DA D
-D 4 2 DC 2 2 DC DC D
+_pdbx_poly_seq_scheme.pdb_ins_code
+A 1 1 ALA 1 1 ALA ALA A .
+A 1 2 CYS 2 2 CYS CYS A .
+A 1 3 GLY 3 3 GLY GLY A .
+A 1 4 THR 4 4 THR THR A .
+B 2 1 ALA 6 6 ALA ALA B .
+B 2 2 CYS 7 7 CYS CYS B .
+B 2 3 CYS 8 8 CYS CYS B .
+C 3 1 A 1 1 A A C .
+C 3 2 C 2 2 C C C .
+D 4 1 DA 1 1 DA DA X A
+D 4 2 DC 1 1 DC DC X B
 #
 """)
 
@@ -829,7 +832,7 @@ D 4 2 DC 2 2 DC DC D
         e3 = ihm.Entity([ihm.NonPolymerChemComp('ZN')])
         system.entities.extend((e1, e2, e3))
         system.asym_units.append(ihm.AsymUnit(e1, 'foo'))
-        system.asym_units.append(ihm.AsymUnit(e2, 'baz'))
+        system.asym_units.append(ihm.AsymUnit(e2, 'baz', strand_id='Q'))
         system.asym_units.append(ihm.AsymUnit(e3, 'bar', auth_seq_id_map=5))
         ihm.dumper._EntityDumper().finalize(system)
         ihm.dumper._StructAsymDumper().finalize(system)
@@ -845,8 +848,9 @@ _pdbx_nonpoly_scheme.auth_seq_num
 _pdbx_nonpoly_scheme.pdb_mon_id
 _pdbx_nonpoly_scheme.auth_mon_id
 _pdbx_nonpoly_scheme.pdb_strand_id
-B 2 HEM 1 1 HEM HEM B
-C 3 ZN 6 6 ZN ZN C
+_pdbx_nonpoly_scheme.pdb_ins_code
+B 2 HEM 1 1 HEM HEM Q .
+C 3 ZN 6 6 ZN ZN C .
 #
 """)
 
@@ -2171,6 +2175,7 @@ _atom_site.label_alt_id
 _atom_site.label_comp_id
 _atom_site.label_seq_id
 _atom_site.auth_seq_id
+_atom_site.pdbx_PDB_ins_code
 _atom_site.label_asym_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
@@ -2181,9 +2186,9 @@ _atom_site.auth_asym_id
 _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
-ATOM 1 C C . ALA 1 1 X 1.000 2.000 3.000 . 9 X . 1 1
-HETATM 2 C CA . ALA 1 1 X 10.000 20.000 30.000 . 9 X . 1 1
-ATOM 3 N N . CYS 2 2 X 4.000 5.000 6.000 0.200 9 X 42.000 1 1
+ATOM 1 C C . ALA 1 1 ? X 1.000 2.000 3.000 . 9 X . 1 1
+HETATM 2 C CA . ALA 1 1 ? X 10.000 20.000 30.000 . 9 X . 1 1
+ATOM 3 N N . CYS 2 2 ? X 4.000 5.000 6.000 0.200 9 X 42.000 1 1
 #
 #
 loop_
@@ -2196,17 +2201,19 @@ N
         asym.auth_seq_id_map = -1
         out = _get_dumper_output(dumper, system)
         self.assertEqual(
-            out.split('\n')[42:45:2],
-            ["ATOM 1 C C . ALA 1 0 X 1.000 2.000 3.000 . 9 X . 1 1",
-             "ATOM 3 N N . CYS 2 1 X 4.000 5.000 6.000 0.200 9 X 42.000 1 1"])
+            out.split('\n')[43:46:2],
+            ["ATOM 1 C C . ALA 1 0 ? X 1.000 2.000 3.000 . 9 X . 1 1",
+             "ATOM 3 N N . CYS 2 1 ? X 4.000 5.000 6.000 "
+             "0.200 9 X 42.000 1 1"])
 
         # With auth_seq_id map
         asym.auth_seq_id_map = {1: 42, 2: 99}
         out = _get_dumper_output(dumper, system)
         self.assertEqual(
-            out.split('\n')[42:45:2],
-            ["ATOM 1 C C . ALA 1 42 X 1.000 2.000 3.000 . 9 X . 1 1",
-             "ATOM 3 N N . CYS 2 99 X 4.000 5.000 6.000 0.200 9 X 42.000 1 1"])
+            out.split('\n')[43:46:2],
+            ["ATOM 1 C C . ALA 1 42 ? X 1.000 2.000 3.000 . 9 X . 1 1",
+             "ATOM 3 N N . CYS 2 99 ? X 4.000 5.000 6.000 "
+             "0.200 9 X 42.000 1 1"])
 
     def test_ensemble_dumper(self):
         """Test EnsembleDumper"""

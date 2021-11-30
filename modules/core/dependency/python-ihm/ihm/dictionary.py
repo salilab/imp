@@ -173,7 +173,13 @@ class Dictionary(object):
         self.linked_items = {}
 
     def __iadd__(self, other):
-        self.categories.update(other.categories)
+        for name, cat in other.categories.items():
+            if name in self.categories:
+                # If both dictionaries contain information on the same
+                # category, combine it
+                self.categories[name]._update(cat)
+            else:
+                self.categories[name] = cat
         self.linked_items.update(other.linked_items)
         return self
 
@@ -220,6 +226,18 @@ class Category(object):
         self.keywords = {}
         #: True iff this category is required in a compliant mmCIF file
         self.mandatory = None
+
+    def _update(self, other):
+        """Update with information from another Category object"""
+        assert other.name == self.name
+        self.keywords.update(other.keywords)
+        self.description = self.description or other.description
+        if self.mandatory is None:
+            # e.g. if other.mandatory is False and self.mandatory is None
+            # we want to use False; "None or False" returns None.
+            self.mandatory = other.mandatory
+        else:
+            self.mandatory = self.mandatory or other.mandatory
 
 
 class _DoNothingRegEx(object):

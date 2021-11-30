@@ -326,6 +326,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.asym, a)
         self.assertEqual(r.seq_id, 3)
         self.assertEqual(r.auth_seq_id, 8)
+        self.assertIsNone(r.ins_code)
 
     def test_atom_entity(self):
         """Test Atom class built from an Entity"""
@@ -396,23 +397,23 @@ class Tests(unittest.TestCase):
         """Test auth_seq_id offset from seq_id"""
         e = ihm.Entity('AHCDAH')
         a = ihm.AsymUnit(e, auth_seq_id_map=5)
-        self.assertEqual(a._get_auth_seq_id(1), 6)
+        self.assertEqual(a._get_auth_seq_id_ins_code(1), (6, None))
 
     def test_auth_seq_id_dict(self):
         """Test auth_seq_id dict map from seq_id"""
         e = ihm.Entity('AHCDAH')
-        a = ihm.AsymUnit(e, auth_seq_id_map={1: 0, 2: 4})
-        self.assertEqual(a._get_auth_seq_id(1), 0)
-        self.assertEqual(a._get_auth_seq_id(2), 4)
-        self.assertEqual(a._get_auth_seq_id(3), 3)
+        a = ihm.AsymUnit(e, auth_seq_id_map={1: 0, 2: (4, 'A')})
+        self.assertEqual(a._get_auth_seq_id_ins_code(1), (0, None))
+        self.assertEqual(a._get_auth_seq_id_ins_code(2), (4, 'A'))
+        self.assertEqual(a._get_auth_seq_id_ins_code(3), (3, None))
 
     def test_auth_seq_id_list(self):
         """Test auth_seq_id list map from seq_id"""
         e = ihm.Entity('AHCDAH')
         a = ihm.AsymUnit(e, auth_seq_id_map=[None, 0, 4])
-        self.assertEqual(a._get_auth_seq_id(1), 0)
-        self.assertEqual(a._get_auth_seq_id(2), 4)
-        self.assertEqual(a._get_auth_seq_id(3), 3)
+        self.assertEqual(a._get_auth_seq_id_ins_code(1), (0, None))
+        self.assertEqual(a._get_auth_seq_id_ins_code(2), (4, None))
+        self.assertEqual(a._get_auth_seq_id_ins_code(3), (3, None))
 
     def test_assembly(self):
         """Test Assembly class"""

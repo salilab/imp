@@ -538,7 +538,7 @@ class _EntityPolyDumper(Dumper):
         strand = {}
         for asym in system.asym_units:
             if asym.entity._id not in strand:
-                strand[asym.entity._id] = asym._id
+                strand[asym.entity._id] = asym.strand_id
         with writer.loop("_entity_poly",
                          ["entity_id", "type", "nstd_linkage",
                           "nstd_monomer", "pdbx_strand_id",
@@ -623,19 +623,21 @@ class _PolySeqSchemeDumper(Dumper):
         with writer.loop("_pdbx_poly_seq_scheme",
                          ["asym_id", "entity_id", "seq_id", "mon_id",
                           "pdb_seq_num", "auth_seq_num", "pdb_mon_id",
-                          "auth_mon_id", "pdb_strand_id"]) as lp:
+                          "auth_mon_id", "pdb_strand_id",
+                          "pdb_ins_code"]) as lp:
             for asym in system.asym_units:
                 entity = asym.entity
                 if not entity.is_polymeric():
                     continue
                 for num, comp in enumerate(entity.sequence):
-                    auth_seq_num = asym._get_auth_seq_id(num + 1)
-                    lp.write(asym_id=asym._id, pdb_strand_id=asym._id,
+                    auth_seq_num, ins = asym._get_auth_seq_id_ins_code(num + 1)
+                    lp.write(asym_id=asym._id, pdb_strand_id=asym.strand_id,
                              entity_id=entity._id,
                              seq_id=num + 1, pdb_seq_num=auth_seq_num,
                              auth_seq_num=auth_seq_num,
                              mon_id=comp.id, pdb_mon_id=comp.id,
-                             auth_mon_id=comp.id)
+                             auth_mon_id=comp.id,
+                             pdb_ins_code=ins)
 
 
 class _NonPolySchemeDumper(Dumper):
@@ -645,20 +647,21 @@ class _NonPolySchemeDumper(Dumper):
         with writer.loop("_pdbx_nonpoly_scheme",
                          ["asym_id", "entity_id", "mon_id",
                           "pdb_seq_num", "auth_seq_num", "pdb_mon_id",
-                          "auth_mon_id", "pdb_strand_id"]) as lp:
+                          "auth_mon_id", "pdb_strand_id",
+                          "pdb_ins_code"]) as lp:
             for asym in system.asym_units:
                 entity = asym.entity
                 if entity.is_polymeric():
                     continue
                 # todo: handle multiple waters
                 for num, comp in enumerate(entity.sequence):
-                    auth_seq_num = asym._get_auth_seq_id(num + 1)
-                    lp.write(asym_id=asym._id, pdb_strand_id=asym._id,
+                    auth_seq_num, ins = asym._get_auth_seq_id_ins_code(num + 1)
+                    lp.write(asym_id=asym._id, pdb_strand_id=asym.strand_id,
                              entity_id=entity._id,
                              pdb_seq_num=auth_seq_num,
                              auth_seq_num=auth_seq_num,
                              mon_id=comp.id, pdb_mon_id=comp.id,
-                             auth_mon_id=comp.id)
+                             auth_mon_id=comp.id, pdb_ins_code=ins)
 
 
 class _AsymIDProvider(object):
@@ -1477,7 +1480,7 @@ class _ModelDumper(Dumper):
         with writer.loop("_atom_site",
                          ["group_PDB", "id", "type_symbol",
                           "label_atom_id", "label_alt_id", "label_comp_id",
-                          "label_seq_id", "auth_seq_id",
+                          "label_seq_id", "auth_seq_id", "pdbx_PDB_ins_code",
                           "label_asym_id", "Cartn_x",
                           "Cartn_y", "Cartn_z", "occupancy", "label_entity_id",
                           "auth_asym_id",
@@ -1490,7 +1493,8 @@ class _ModelDumper(Dumper):
                     seq_id = 1 if atom.seq_id is None else atom.seq_id
                     comp = atom.asym_unit.entity.sequence[seq_id - 1]
                     seen_types[atom.type_symbol] = None
-                    auth_seq_id = atom.asym_unit._get_auth_seq_id(seq_id)
+                    auth_seq_id, ins = \
+                        atom.asym_unit._get_auth_seq_id_ins_code(seq_id)
                     lp.write(id=next(ordinal),
                              type_symbol=atom.type_symbol,
                              group_PDB='HETATM' if atom.het else 'ATOM',
@@ -1500,7 +1504,8 @@ class _ModelDumper(Dumper):
                              label_entity_id=atom.asym_unit.entity._id,
                              label_seq_id=atom.seq_id,
                              auth_seq_id=auth_seq_id,
-                             auth_asym_id=atom.asym_unit._id,
+                             pdbx_PDB_ins_code=ins or ihm.unknown,
+                             auth_asym_id=atom.asym_unit.strand_id,
                              Cartn_x=atom.x, Cartn_y=atom.y, Cartn_z=atom.z,
                              B_iso_or_equiv=atom.biso,
                              occupancy=atom.occupancy,

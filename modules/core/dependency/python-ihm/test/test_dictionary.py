@@ -196,6 +196,49 @@ save_
         self._check_other_test_dictionary(d2)
         self._check_summed_dictionary(d)
 
+    def test_add_update(self):
+        """Test add Dictionaries that both contain same Category"""
+        d1 = make_test_dictionary()
+        d2 = ihm.dictionary.Dictionary()
+
+        c = ihm.dictionary.Category()
+        c.name = 'test_mandatory_category'
+        c.mandatory = True
+        add_keyword("baz", False, c)
+        d2.categories[c.name] = c
+        d = d1 + d2
+        self.assertEqual(sorted(d.categories.keys()),
+                         ['test_mandatory_category', 'test_optional_category'])
+        ks = sorted(d.categories['test_mandatory_category'].keywords.keys())
+        # Category should now contain keywords from from dictionaries
+        self.assertEqual(ks, ['bar', 'baz', 'foo'])
+
+    def test_category_update(self):
+        """Test Category._update()"""
+        cman = ihm.dictionary.Category()
+        cman.name = 'test_mandatory_category'
+        cman.description = 'my description'
+        cman.mandatory = True
+        add_keyword("foo", False, cman)
+
+        coth = ihm.dictionary.Category()
+        coth.name = 'test_mandatory_category'
+        coth.description = 'desc2'
+        coth.mandatory = False
+        add_keyword("bar", False, coth)
+
+        cman._update(coth)
+        self.assertIs(cman.mandatory, True)
+        self.assertEqual(cman.description, 'my description')
+        self.assertEqual(sorted(cman.keywords.keys()), ['bar', 'foo'])
+
+        cnone = ihm.dictionary.Category()
+        cnone.name = 'test_mandatory_category'
+        cnone._update(coth)
+        self.assertIs(cnone.mandatory, False)
+        self.assertEqual(cnone.description, 'desc2')
+        self.assertEqual(sorted(cnone.keywords.keys()), ['bar'])
+
     def test_add_inplace(self):
         """Test adding two Dictionaries in place"""
         d1 = make_test_dictionary()

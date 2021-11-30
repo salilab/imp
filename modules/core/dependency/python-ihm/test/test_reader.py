@@ -1869,7 +1869,7 @@ HETATM 2 C CA . SER . B 54.452 -48.492 -35.210 0.200 1 A 42.0 1 1
         self.assertAlmostEqual(a2.occupancy, 0.2, delta=0.1)
 
     def test_atom_site_handler_auth_seq_id(self):
-        """Test AtomSiteHandler handling of auth_seq_id"""
+        """Test AtomSiteHandler handling of auth_seq_id and ins_code"""
         fh = StringIO(ASYM_ENTITY + """
 loop_
 _ihm_model_list.model_id
@@ -1899,6 +1899,7 @@ _atom_site.label_alt_id
 _atom_site.label_comp_id
 _atom_site.label_seq_id
 _atom_site.auth_seq_id
+_atom_site.pdbx_PDB_ins_code
 _atom_site.label_asym_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
@@ -1908,13 +1909,13 @@ _atom_site.auth_asym_id
 _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
-ATOM 1 N N . SER 1 2 A 54.401 -49.984 -35.287 1 A . 1 1
-HETATM 2 C CA . SER 2 20A A 54.452 -48.492 -35.210 1 A 42.0 1 1
-ATOM 3 N N . SER 3 3 A 54.401 -49.984 -35.287 1 A . 1 1
+ATOM 1 N N . SER 1 2 A A 54.401 -49.984 -35.287 1 A . 1 1
+HETATM 2 C CA . SER 2 20A . A 54.452 -48.492 -35.210 1 A 42.0 1 1
+ATOM 3 N N . SER 3 3 . A 54.401 -49.984 -35.287 1 A . 1 1
 """)
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
-        self.assertEqual(asym.auth_seq_id_map, {1: 2, 2: '20A'})
+        self.assertEqual(asym.auth_seq_id_map, {1: (2, 'A'), 2: ('20A', None)})
 
     def test_derived_distance_restraint_handler(self):
         """Test DerivedDistanceRestraintHandler"""
@@ -2296,16 +2297,44 @@ _pdbx_poly_seq_scheme.asym_id
 _pdbx_poly_seq_scheme.entity_id
 _pdbx_poly_seq_scheme.seq_id
 _pdbx_poly_seq_scheme.auth_seq_num
-A 1 1 6
-A 1 2 7
-A 1 3 8
-A 1 4 9
+_pdbx_poly_seq_scheme.pdb_strand_id
+A 1 1 6 A
+A 1 2 7 A
+A 1 3 8 A
+A 1 4 9 A
 """)
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
         self.assertEqual(asym.auth_seq_id_map, 5)
+        self.assertIsNone(asym._strand_id)
         self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
                          [6, 7, 8, 9])
+
+    def test_poly_seq_scheme_handler_offset_ins_code(self):
+        """Test PolySeqSchemeHandler with constant offset but inscodes"""
+        fh = StringIO(ASYM_ENTITY + """
+loop_
+_pdbx_poly_seq_scheme.asym_id
+_pdbx_poly_seq_scheme.entity_id
+_pdbx_poly_seq_scheme.seq_id
+_pdbx_poly_seq_scheme.auth_seq_num
+_pdbx_poly_seq_scheme.pdb_strand_id
+_pdbx_poly_seq_scheme.pdb_ins_code
+A 1 1 6 A .
+A 1 2 7 A .
+A 1 3 8 A .
+A 1 4 9 A A
+""")
+        s, = ihm.reader.read(fh)
+        asym, = s.asym_units
+        self.assertEqual(asym.auth_seq_id_map,
+                         {1: (6, None), 2: (7, None), 3: (8, None),
+                          4: (9, 'A')})
+        self.assertIsNone(asym._strand_id)
+        self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
+                         [6, 7, 8, 9])
+        self.assertIsNone(asym.residue(1).ins_code)
+        self.assertEqual(asym.residue(4).ins_code, 'A')
 
     def test_poly_seq_scheme_handler_empty(self):
         """Test PolySeqSchemeHandler with no poly_seq_scheme"""
@@ -2348,10 +2377,12 @@ A 1 3 8
 """)
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
-        # No mapping for residue 4
-        self.assertEqual(asym.auth_seq_id_map, {1: 6, 2: 7, 3: 8})
+        # No mapping for residue 4 (and no insertion codes at all)
+        self.assertEqual(asym.auth_seq_id_map, {1: (6, None), 2: (7, None),
+                                                3: (8, None)})
         self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
                          [6, 7, 8, 4])
+        self.assertIsNone(asym.residue(1).ins_code)
 
     def test_poly_seq_scheme_handler_incon_off(self):
         """Test PolySeqSchemeHandler with inconsistent offset"""
@@ -2361,16 +2392,20 @@ _pdbx_poly_seq_scheme.asym_id
 _pdbx_poly_seq_scheme.entity_id
 _pdbx_poly_seq_scheme.seq_id
 _pdbx_poly_seq_scheme.auth_seq_num
-A 1 1 6
-A 1 2 7
-A 1 3 8
-A 1 4 10
+_pdbx_poly_seq_scheme.pdb_strand_id
+A 1 1 6 X
+A 1 2 7 X
+A 1 3 8 X
+A 1 4 10 X
 """)
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
-        self.assertEqual(asym.auth_seq_id_map, {1: 6, 2: 7, 3: 8, 4: 10})
+        self.assertEqual(asym._strand_id, 'X')
+        self.assertEqual(asym.auth_seq_id_map, {1: (6, None), 2: (7, None),
+                                                3: (8, None), 4: (10, None)})
         self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
                          [6, 7, 8, 10])
+        self.assertIsNone(asym.residue(1).ins_code)
 
     def test_poly_seq_scheme_handler_str_seq_id(self):
         """Test PolySeqSchemeHandler with a non-integer auth_seq_num"""
@@ -2380,16 +2415,22 @@ _pdbx_poly_seq_scheme.asym_id
 _pdbx_poly_seq_scheme.entity_id
 _pdbx_poly_seq_scheme.seq_id
 _pdbx_poly_seq_scheme.auth_seq_num
-A 1 1 6
-A 1 2 7
-A 1 3 8
-A 1 4 9A
+_pdbx_poly_seq_scheme.pdb_strand_id
+_pdbx_poly_seq_scheme.pdb_ins_code
+A 1 1 6 ? .
+A 1 2 7 ? .
+A 1 3 8 ? X
+A 1 4 9A ? .
 """)
         s, = ihm.reader.read(fh)
         asym, = s.asym_units
-        self.assertEqual(asym.auth_seq_id_map, {1: 6, 2: 7, 3: 8, 4: '9A'})
+        self.assertIsNone(asym._strand_id)
+        self.assertEqual(asym.auth_seq_id_map, {1: (6, None), 2: (7, None),
+                                                3: (8, 'X'), 4: ('9A', None)})
         self.assertEqual([asym.residue(i).auth_seq_id for i in range(1, 5)],
                          [6, 7, 8, '9A'])
+        self.assertIsNone(asym.residue(1).ins_code)
+        self.assertEqual(asym.residue(3).ins_code, 'X')
 
     def test_nonpoly_scheme_handler(self):
         """Test NonPolySchemeHandler"""
@@ -2427,10 +2468,12 @@ _pdbx_nonpoly_scheme.asym_id
 _pdbx_nonpoly_scheme.entity_id
 _pdbx_nonpoly_scheme.mon_id
 _pdbx_nonpoly_scheme.auth_seq_num
-A 1 FOO 1
-A 1 BAR 101
-B 2 BAR 1
-C 3 HOH 1
+_pdbx_nonpoly_scheme.pdb_strand_id
+_pdbx_nonpoly_scheme.pdb_ins_code
+A 1 FOO 1 . .
+A 1 BAR 101 . .
+B 2 BAR 1 Q X
+C 3 HOH 1 . .
 """)
         s, = ihm.reader.read(fh)
         e1, e2, e3 = s.entities
@@ -2444,8 +2487,17 @@ C 3 HOH 1
         asym, a2, a3 = s.asym_units
         # non-polymers have no seq_id_range
         self.assertEqual(asym.seq_id_range, (None, None))
-        self.assertEqual(asym.auth_seq_id_map, {1: 101})
+        self.assertEqual(asym.auth_seq_id_map, {1: (101, None)})
         self.assertEqual(asym.residue(1).auth_seq_id, 101)
+        self.assertIsNone(asym.residue(1).ins_code)
+        self.assertEqual(asym.strand_id, asym._id)
+        self.assertIsNone(asym._strand_id)
+
+        self.assertEqual(a2.auth_seq_id_map, {1: (1, 'X')})
+        self.assertEqual(a2.residue(1).auth_seq_id, 1)
+        self.assertEqual(a2.residue(1).ins_code, 'X')
+        self.assertEqual(a2.strand_id, 'Q')
+        self.assertEqual(a2._strand_id, 'Q')
 
     def test_cross_link_list_handler(self):
         """Test CrossLinkListHandler"""
