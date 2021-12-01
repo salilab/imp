@@ -2,11 +2,13 @@ import utils
 import os
 import unittest
 import sys
+from test_format_bcif import MockMsgPack, MockFh
 
 if sys.version_info[0] >= 3:
     from io import StringIO, BytesIO
 else:
-    from io import BytesIO as StringIO
+    from io import BytesIO
+    StringIO = BytesIO
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
@@ -275,6 +277,20 @@ save_
         """Test successful validation"""
         d = make_test_dictionary()
         d.validate(StringIO("_test_mandatory_category.bar 1"))
+
+    def test_validate_ok_binary_cif(self):
+        """Test successful validation of BinaryCIF input"""
+        sys.modules['msgpack'] = MockMsgPack
+        d = make_test_dictionary()
+        fh = MockFh()
+        writer = ihm.format_bcif.BinaryCifWriter(fh)
+        writer.start_block('ihm')
+        with writer.category('_test_mandatory_category') as loc:
+            loc.write(bar=1)
+        with writer.category('_test_optional_category') as loc:
+            loc.write(bar='enum1')
+        writer.flush()
+        d.validate(fh.data, format='BCIF')
 
     def test_validate_multi_data_ok(self):
         """Test successful validation of multiple data blocks"""

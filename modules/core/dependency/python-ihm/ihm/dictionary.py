@@ -110,7 +110,7 @@ class _ValidatorReader(object):
                                    "enumerated value (options are %s)"
                                    % (category.name, key, value,
                                       ", ".join(sorted(kwobj.enumeration))))
-            if kwobj.item_type and not kwobj.item_type.regex.match(value):
+            if kwobj.item_type and not kwobj.item_type.regex.match(str(value)):
                 self.errors.append("Keyword %s.%s value %s does not match "
                                    "item type (%s) regular expression (%s)"
                                    % (category.name, key, value,
