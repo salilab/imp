@@ -81,6 +81,8 @@ class _ValidatorReader(object):
     def __init__(self, dictionary):
         self.dictionary = dictionary
         self._seen_categories = set()
+        self._unknown_categories = set()
+        self._unknown_keywords = set()
         # Keep track of all values (IDs) seen for keys that are involved in
         # parent-child relationships
         self._seen_ids = {}
@@ -147,11 +149,40 @@ class _ValidatorReader(object):
                         "were not defined in the parent category (%s): %s"
                         % (child, parent, ", ".join(missing)))
 
+    def _check_unknown(self):
+        """Report errors for any unknown keywords or categories"""
+        if self._unknown_categories:
+            self.errors.append(
+                "The following categories are not defined in the "
+                "dictionary: %s"
+                % ", ".join(sorted(self._unknown_categories)))
+        if self._unknown_keywords:
+            self.errors.append(
+                "The following keywords are not defined in the dictionary: %s"
+                % ", ".join(sorted(self._unknown_keywords)))
+
     def report_errors(self):
         self._check_mandatory_categories()
         self._check_linked_items()
+        self._check_unknown()
         if self.errors:
             raise ValidatorError("\n\n".join(self.errors))
+
+
+class _UnknownCategoryHandler(object):
+    def __init__(self, sysr):
+        self.sysr = sysr
+
+    def __call__(self, catname, line):
+        self.sysr._unknown_categories.add(catname)
+
+
+class _UnknownKeywordHandler(object):
+    def __init__(self, sysr):
+        self.sysr = sysr
+
+    def __call__(self, catname, keyname, line):
+        self.sysr._unknown_keywords.add("%s.%s" % (catname, keyname))
 
 
 class Dictionary(object):
@@ -197,15 +228,14 @@ class Dictionary(object):
               default) for the (text-based) mmCIF format or 'BCIF' for
               BinaryCIF.
            :raises: :class:`ValidatorError` if the file fails to validate.
-
-           .. note:: Only basic validation is performed. In particular, extra
-              categories or keywords that are not present in the dictionary
-              are ignored rather than treated as errors.
         """
         reader_map = {'mmCIF': ihm.format.CifReader,
                       'BCIF': ihm.format_bcif.BinaryCifReader}
-        r = reader_map[format](fh, {})
         s = _ValidatorReader(self)
+        uchandler = _UnknownCategoryHandler(s)
+        ukhandler = _UnknownKeywordHandler(s)
+        r = reader_map[format](fh, {}, unknown_category_handler=uchandler,
+                               unknown_keyword_handler=ukhandler)
         handlers = [_ValidatorCategoryHandler(s, cat)
                     for cat in self.categories.values()]
         r.category_handler = dict((h.category, h) for h in handlers)

@@ -53,6 +53,9 @@ class Tests(unittest.TestCase):
         # Formula with known elements and no charge
         cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P')
         self.assertAlmostEqual(cc.formula_weight, 115.136, delta=0.01)
+        # Formula with element 'X' (e.g. GLX, ASX)
+        cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P X2')
+        self.assertAlmostEqual(cc.formula_weight, 115.136, delta=0.01)
         # Formula with known elements and formal charge
         cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P 1')
         self.assertAlmostEqual(cc.formula_weight, 115.136, delta=0.01)
@@ -101,13 +104,19 @@ class Tests(unittest.TestCase):
         self.assertAlmostEqual(a._comps['M'].formula_weight, 149.211,
                                delta=0.01)
 
+        self.assertEqual(a._comps['Z'].id, 'GLX')
+        self.assertEqual(a._comps['Z'].name, "GLU/GLN AMBIGUOUS")
+        self.assertEqual(a._comps['Z'].formula, 'C5 H8 N O2 X2')
+        self.assertAlmostEqual(a._comps['Z'].formula_weight, 114.124,
+                               delta=0.01)
+
         a = ihm.LPeptideAlphabet()
         self.assertIn('MSE', a)
         self.assertNotIn('DG', a)
-        self.assertEqual(len(a.keys), 22)
-        self.assertEqual(len(a.values), 22)
+        self.assertEqual(len(a.keys), 24)
+        self.assertEqual(len(a.values), 24)
         self.assertEqual(sorted(a.keys)[0], 'A')
-        self.assertEqual(len(a.items), 22)
+        self.assertEqual(len(a.items), 24)
         item0 = sorted(a.items)[0]
         self.assertEqual(item0[0], 'A')
         self.assertEqual(item0[1].id, 'ALA')

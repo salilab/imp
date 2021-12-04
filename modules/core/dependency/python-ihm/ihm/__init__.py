@@ -19,7 +19,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.24'
+__version__ = '0.25'
 
 
 class __UnknownValue(object):
@@ -737,8 +737,9 @@ class ChemComp(object):
             emass = self._element_mass.get(m.group(1), None)
             if emass:
                 weight += emass * (int(m.group(2)) if m.group(2) else 1)
-            else:
+            elif m.group(1) != 'X':
                 # If element is unknown, weight is unknown too
+                # Element 'X' is used for GLX/ASX and has zero weight
                 return None
         return weight
 
@@ -864,7 +865,9 @@ class LPeptideAlphabet(Alphabet):
                   ('T', 'THR', 'THREONINE', 'C4 H9 N O3'),
                   ('V', 'VAL', 'VALINE', 'C5 H11 N O2'),
                   ('W', 'TRP', 'TRYPTOPHAN', 'C11 H12 N2 O2'),
-                  ('Y', 'TYR', 'TYROSINE', 'C9 H11 N O3')])
+                  ('Y', 'TYR', 'TYROSINE', 'C9 H11 N O3'),
+                  ('B', 'ASX', 'ASP/ASN AMBIGUOUS', 'C4 H6 N O2 X2'),
+                  ('Z', 'GLX', 'GLU/GLN AMBIGUOUS', 'C5 H8 N O2 X2')])
     _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE',
                                   formula="C2 H5 N O2")
 

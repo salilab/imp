@@ -420,6 +420,21 @@ _test_mandatory_category.bar 2
                                    "_test_optional_category.bar .\n"
                                    "_test_optional_category.baz 42"))
 
+    def test_unknown_category(self):
+        """Test validator failure for unknown categories"""
+        d = make_test_dictionary()
+        self.assertRaises(
+            ihm.dictionary.ValidatorError, d.validate,
+            StringIO("_test_mandatory_category.bar 1\n_foo.bar baz"))
+
+    def test_unknown_keyword(self):
+        """Test validator failure for unknown keywords"""
+        d = make_test_dictionary()
+        self.assertRaises(
+            ihm.dictionary.ValidatorError, d.validate,
+            StringIO("_test_mandatory_category.bar 1\n"
+                     "_test_mandatory_category.unk 42"))
+
 
 if __name__ == '__main__':
     unittest.main()
