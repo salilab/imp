@@ -1,7 +1,7 @@
 ChangeLog {#changelog}
 =========
 
-# HEAD
+# 2.16.0 - 2021-12-16 # {#changelog_2_16_0}
 - OpenCubicSpline now throws a ValueException for out-of-range values, to
   be consistent with ClosedCubicSpline (previously it threw ModelException).
 - SAXS tools (such as `compute_rg`, `foxs`) can now read input structures
