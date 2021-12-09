@@ -42,8 +42,18 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   //! Just use apply() in the base class
   void apply_generic(const ClassnameModifier *m) const;
 
-  //! Apply a SingletonModifier to the contents
+  //! Just use apply_moved() in the base class
+  void apply_generic_moved(const ClassnameModifier *m,
+                           const ParticleIndexes &moved_pis,
+                           const ParticleIndexes &reset_pis) const;
+
+  //! Apply a ClassnameModifier to the contents
   void apply(const ClassnameModifier *sm) const;
+
+  //! Apply a ClassnameModifier to the contents
+  void apply_moved(const ClassnameModifier *sm,
+                   const ParticleIndexes &moved_pis,
+                   const ParticleIndexes &reset_pis) const;
 
   /** Get all the indexes that might possibly be contained in the
       container, useful with dynamic containers. For example,
@@ -87,7 +97,7 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
   }
 
   //! Return size of current container content
-  //! Note that this may be expensive since my evaluate
+  //! Note that this may be expensive since it may involve
   //! refreshing of the container
   unsigned int get_number() const { return get_indexes().size(); }
 #ifndef SWIG
@@ -106,17 +116,18 @@ class IMPKERNELEXPORT ClassnameContainer : public Container {
 #endif
 #endif
 
-  /** \deprecated_at{2.1}
-      Use get_contents() instead.
-   */
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  PLURALVARIABLETYPE get_FUNCTIONNAMEs() const;
-
  protected:
   ClassnameContainer(Model *m,
                      std::string name = "ClassnameContainer %1%");
 
   virtual void do_apply(const ClassnameModifier *sm) const = 0;
+  virtual void do_apply_moved(const ClassnameModifier *sm,
+                              const ParticleIndexes &moved_pis,
+                              const ParticleIndexes &reset_pis) const {
+    IMP_UNUSED(moved_pis);
+    IMP_UNUSED(reset_pis);
+    do_apply(sm);
+  }
   virtual bool do_get_provides_access() const { return false; }
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)

@@ -105,20 +105,20 @@ class IMPCOREEXPORT XYZRMovedSingletonContainer
 
   //! return any particles whose center
   //! may have moved by more than get_threshold()
-  virtual ParticleIndexes do_get_moved();
+  virtual ParticleIndexes do_get_moved() IMP_OVERRIDE;
 
-  virtual void do_reset_all();
+  virtual void do_reset_all() IMP_OVERRIDE;
 
-  virtual void do_reset_moved();
+  virtual void do_reset_moved() IMP_OVERRIDE;
 
-  virtual ParticleIndexes do_initialize();
+  virtual ParticleIndexes do_initialize() IMP_OVERRIDE;
 
-  ModelObjectsTemp get_extra_inputs() const {
+  ModelObjectsTemp get_extra_inputs() const IMP_OVERRIDE {
     return ModelObjectsTemp();
   }
 
  public:
-  virtual void validate() const;
+  virtual void validate() const IMP_OVERRIDE;
 
   //! Track the changes of contained particles, such that at least all
   //! particles that moved by threshold are tracked
@@ -146,18 +146,18 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
 
   //! return all rigid body members that may have moved
   //! by more than get_threshold() (since last reset?)
-  virtual ParticleIndexes do_get_moved();
+  virtual ParticleIndexes do_get_moved() IMP_OVERRIDE;
 
   //! update backup_ with the current reference frames of all
   //! bodies_, clear moved_
-  virtual void do_reset_all();
+  virtual void do_reset_all() IMP_OVERRIDE;
 
   //! update backup_ only for moved_ bodies, clear moved_
-  virtual void do_reset_moved();
+  virtual void do_reset_moved() IMP_OVERRIDE;
 
-  virtual ParticleIndexes do_initialize();
+  virtual ParticleIndexes do_initialize() IMP_OVERRIDE;
   void do_initialize_particle(ParticleIndex pi);
-  virtual void validate() const;
+  virtual void validate() const IMP_OVERRIDE;
 
   /**
      If internal checks are on, compare the global cartesian coordinates of all members of
@@ -191,7 +191,7 @@ class IMPCOREEXPORT RigidMovedSingletonContainer
                                 .get_rotation());
     }
   }
-  ModelObjectsTemp get_extra_inputs() const;
+  ModelObjectsTemp get_extra_inputs() const IMP_OVERRIDE;
 
  public:
   //! Track the changes with the specified keys.

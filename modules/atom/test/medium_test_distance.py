@@ -12,14 +12,14 @@ class Tests(IMP.test.TestCase):
         """Testing that component placement score returns the same transformation if called twice"""
         m = IMP.Model()
         # read PDB
-        mp1_ref = atom.read_pdb(self.open_input_file("1z5s_A.pdb"),
-                                m, atom.NonWaterPDBSelector())
-        mp1_mdl = atom.read_pdb(self.open_input_file("1z5s_A.pdb"),
-                                m, atom.NonWaterPDBSelector())
-        mp2_ref = atom.read_pdb(self.open_input_file("1z5s_C.pdb"),
-                                m, atom.NonWaterPDBSelector())
-        mp2_mdl = atom.read_pdb(self.open_input_file("1z5s_C.pdb"),
-                                m, atom.NonWaterPDBSelector())
+        with self.open_input_file("1z5s_A.pdb") as fh:
+            mp1_ref = atom.read_pdb(fh, m, atom.NonWaterPDBSelector())
+        with self.open_input_file("1z5s_A.pdb") as fh:
+            mp1_mdl = atom.read_pdb(fh, m, atom.NonWaterPDBSelector())
+        with self.open_input_file("1z5s_C.pdb") as fh:
+            mp2_ref = atom.read_pdb(fh, m, atom.NonWaterPDBSelector())
+        with self.open_input_file("1z5s_C.pdb") as fh:
+            mp2_mdl = atom.read_pdb(fh, m, atom.NonWaterPDBSelector())
         xyz1_ref = core.XYZs(atom.get_leaves(mp1_ref))
         xyz1_mdl = core.XYZs(atom.get_leaves(mp1_mdl))
         xyz2_ref = core.XYZs(atom.get_leaves(mp2_ref))

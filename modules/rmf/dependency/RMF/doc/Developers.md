@@ -9,11 +9,11 @@ This page documents various internal aspects of how the RMF library works and is
 
 # Developer tools # {#dev_tools}
 
-RMF uses the [Salilab developer tools](http://www.github.com/salilab/developer_tools) to provide basic developer tools in a way that is shared with [IMP](http://integrativemodeling.org). This is included as a subrepository. Read the docs of that repository for more information.
+RMF uses the [Salilab developer tools](https://github.com/salilab/developer_tools) to provide basic developer tools in a way that is shared with [IMP](https://integrativemodeling.org). This is included as a subrepository. Read the docs of that repository for more information.
 
 # CMake tools # {#cmake_tools}
 
-RMF uses [Salilab cmake modules](http://www.github.com/salilab/cmake_modules) to provide some extensions to [CMake](http://cmake.org). This is included as a subrepository.
+RMF uses [Salilab cmake modules](https://github.com/salilab/cmake_modules) to provide some extensions to [CMake](https://cmake.org). This is included as a subrepository.
 
 # Decorators # {#makedecorators}
 

@@ -14,7 +14,6 @@ import IMP.algebra
 import IMP.core
 import IMP.atom
 import IMP.em2d
-import os
 import sys
 import csv
 
@@ -63,14 +62,10 @@ def argmin(sequence):
     min_value = sequence[0]
     min_index = 0
     for i in range(0, len(sequence)):
-#        print "argmin - checking ",sequence[i]
         if(sequence[i] < min_value):
             min_value = sequence[i]
             min_index = i
-#            print "argmin - selecting ",min_value,min_index
     return min_value, min_index
-
-#***************************
 
 
 fn_selection = IMP.em2d.get_example_path("all-models-1z5s.sel")
@@ -139,7 +134,8 @@ for c in clusters:
         pdb_name = "cluster-%03d-elem-%03d.pdb" % (c, i)
 
         if(i != min_elem_id):
-            print("Writing element", i, "aligned to ", min_elem_id, ":", pdb_name)
+            print("Writing element", i, "aligned to ", min_elem_id, ":",
+                  pdb_name)
             T = IMP.core.Transform(transformations[i][min_elem_id])
             ps = IMP.atom.get_leaves(hierarchies[i])
             for p in ps:

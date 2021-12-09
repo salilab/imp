@@ -31,8 +31,6 @@ namespace {
     for (typename M::const_iterator it = m.begin(); it != m.end(); ++it)
       v.push_back(it->second);
   }
-
-  const double window_size = 1.0;
 }  // anonymous namespace
 
 
@@ -281,7 +279,8 @@ double bayesem3d_get_cross_correlation_coefficient(const DensityMap *em1,
 
 DensityMap *bayesem3d_get_density_from_particle(DensityMap *em,
                                                 const IMP::ParticlesTemp &ps,
-                                                double resolution) {
+                                                double resolution,
+                                                const double window_size) {
   const DensityHeader *em_header = em->get_header();
   IMP::algebra::BoundingBox3D density_bb = get_bounding_box(em);
   IMP::em::KernelParameters kps(resolution);
@@ -340,7 +339,7 @@ DensityMap *bayesem3d_get_density_from_particle(DensityMap *em,
 
 std::pair<double, algebra::Vector3Ds> bayesem3d_get_score_and_derivative(
     DensityMap *em, const IMP::ParticlesTemp &ps, double resolution,
-    double sigma) {
+    double sigma, const double window_size) {
   const DensityHeader *em_header = em->get_header();
   const double *em_data = em->get_data();
 

@@ -492,6 +492,8 @@ _atom_site.label_atom_id
 _atom_site.label_alt_id
 _atom_site.label_comp_id
 _atom_site.label_seq_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_PDB_ins_code
 _atom_site.label_asym_id
 _atom_site.Cartn_x
 _atom_site.Cartn_y
@@ -502,8 +504,8 @@ _atom_site.auth_asym_id
 _atom_site.B_iso_or_equiv
 _atom_site.pdbx_PDB_model_num
 _atom_site.ihm_model_id
-ATOM 1 . CA . MET 1 A -8.986 11.688 -5.817 . 1 A . 1 1
-ATOM 2 . CA . GLU 2 A -8.986 11.688 -5.817 . 1 A . 1 1
+ATOM 1 . CA . MET 1 1 ? A -8.986 11.688 -5.817 . 1 A . 1 1
+ATOM 2 . CA . GLU 2 2 ? A -8.986 11.688 -5.817 . 1 A . 1 1
 #
 #
 loop_
@@ -773,7 +775,6 @@ _ihm_modeling_protocol_details.protocol_id
 _ihm_modeling_protocol_details.step_id
 _ihm_modeling_protocol_details.struct_assembly_id
 _ihm_modeling_protocol_details.dataset_group_id
-_ihm_modeling_protocol_details.struct_assembly_description
 _ihm_modeling_protocol_details.step_name
 _ihm_modeling_protocol_details.step_method
 _ihm_modeling_protocol_details.num_models_begin
@@ -784,10 +785,8 @@ _ihm_modeling_protocol_details.ordered_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
 _ihm_modeling_protocol_details.description
-1 1 1 2 1 'All components modeled by IMP in state State_0' Sampling
-'Replica exchange monte carlo' 0 1000 YES NO NO 1 . .
-2 1 2 2 1 'All components modeled by IMP in state State_0' Sampling
-'Replica exchange monte carlo' 1000 1000 YES NO NO 1 . .
+1 1 1 2 1 Sampling 'Replica exchange monte carlo' 0 1000 YES NO NO 1 . .
+2 1 2 2 1 Sampling 'Replica exchange monte carlo' 1000 1000 YES NO NO 1 . .
 #
 """)
 

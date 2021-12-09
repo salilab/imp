@@ -113,12 +113,14 @@ class _SoftwareDumper(Dumper):
         # Software class)
         with writer.loop("_software",
                          ["pdbx_ordinal", "name", "classification",
-                          "description", "version", "type", "location"]) as lp:
+                          "description", "version", "type", "location",
+                          "citation_id"]) as lp:
             for s in self._software_by_id:
                 lp.write(pdbx_ordinal=s._id, name=s.name,
                          classification=s.classification,
                          description=s.description, version=s.version,
-                         type=s.type, location=s.location)
+                         type=s.type, location=s.location,
+                         citation_id=s.citation._id if s.citation else None)
 
 
 class _CitationDumper(Dumper):
@@ -163,7 +165,10 @@ class _AuditAuthorDumper(Dumper):
         # If system.authors is empty, get the set of all citation authors
         # instead
         seen_authors = set()
-        for c in system._all_citations():
+        # Only look at explictly-added citations (since these are likely to
+        # describe the modeling) not that describe a method or a piece of
+        # software we used (system._all_citations())
+        for c in system.citations:
             for a in c.authors:
                 if a not in seen_authors:
                     seen_authors.add(a)
@@ -363,8 +368,15 @@ class _StructRefDumper(Dumper):
 
     def _get_sequence(self, reference):
         """Get the sequence string"""
+        if reference.sequence in (None, ihm.unknown):
+            return reference.sequence
+        # We only want the subset of the sequence that overlaps with
+        # our entities
+        db_begin = min(a.db_begin for a in reference._get_alignments())
+        db_end = max(a.db_end for a in reference._get_alignments())
         # Split into lines to get tidier CIF output
-        return "\n".join(_prettyprint_seq(reference.sequence, 70))
+        return "\n".join(_prettyprint_seq(
+            reference.sequence[db_begin - 1:db_end], 70))
 
     def _check_seq_dif(self, entity, ref, align):
         """Check all SeqDif objects for the Entity sequence. Return the mutated
@@ -398,6 +410,9 @@ class _StructRefDumper(Dumper):
 
     def _check_alignment(self, entity, ref, align):
         """Make sure that an alignment makes sense"""
+        if ref.sequence in (None, ihm.unknown):
+            # We just have to trust the range if the ref sequence is blank
+            return
         entseq = self._check_seq_dif(entity, ref, align)
 
         def check_rng(rng, seq, rngstr, obj):
@@ -523,7 +538,7 @@ class _EntityPolyDumper(Dumper):
         strand = {}
         for asym in system.asym_units:
             if asym.entity._id not in strand:
-                strand[asym.entity._id] = asym._id
+                strand[asym.entity._id] = asym.strand_id
         with writer.loop("_entity_poly",
                          ["entity_id", "type", "nstd_linkage",
                           "nstd_monomer", "pdbx_strand_id",
@@ -608,19 +623,21 @@ class _PolySeqSchemeDumper(Dumper):
         with writer.loop("_pdbx_poly_seq_scheme",
                          ["asym_id", "entity_id", "seq_id", "mon_id",
                           "pdb_seq_num", "auth_seq_num", "pdb_mon_id",
-                          "auth_mon_id", "pdb_strand_id"]) as lp:
+                          "auth_mon_id", "pdb_strand_id",
+                          "pdb_ins_code"]) as lp:
             for asym in system.asym_units:
                 entity = asym.entity
                 if not entity.is_polymeric():
                     continue
                 for num, comp in enumerate(entity.sequence):
-                    auth_seq_num = asym._get_auth_seq_id(num + 1)
-                    lp.write(asym_id=asym._id, pdb_strand_id=asym._id,
+                    auth_seq_num, ins = asym._get_auth_seq_id_ins_code(num + 1)
+                    lp.write(asym_id=asym._id, pdb_strand_id=asym.strand_id,
                              entity_id=entity._id,
                              seq_id=num + 1, pdb_seq_num=auth_seq_num,
                              auth_seq_num=auth_seq_num,
                              mon_id=comp.id, pdb_mon_id=comp.id,
-                             auth_mon_id=comp.id)
+                             auth_mon_id=comp.id,
+                             pdb_ins_code=ins)
 
 
 class _NonPolySchemeDumper(Dumper):
@@ -630,20 +647,21 @@ class _NonPolySchemeDumper(Dumper):
         with writer.loop("_pdbx_nonpoly_scheme",
                          ["asym_id", "entity_id", "mon_id",
                           "pdb_seq_num", "auth_seq_num", "pdb_mon_id",
-                          "auth_mon_id", "pdb_strand_id"]) as lp:
+                          "auth_mon_id", "pdb_strand_id",
+                          "pdb_ins_code"]) as lp:
             for asym in system.asym_units:
                 entity = asym.entity
                 if entity.is_polymeric():
                     continue
                 # todo: handle multiple waters
                 for num, comp in enumerate(entity.sequence):
-                    auth_seq_num = asym._get_auth_seq_id(num + 1)
-                    lp.write(asym_id=asym._id, pdb_strand_id=asym._id,
+                    auth_seq_num, ins = asym._get_auth_seq_id_ins_code(num + 1)
+                    lp.write(asym_id=asym._id, pdb_strand_id=asym.strand_id,
                              entity_id=entity._id,
                              pdb_seq_num=auth_seq_num,
                              auth_seq_num=auth_seq_num,
                              mon_id=comp.id, pdb_mon_id=comp.id,
-                             auth_mon_id=comp.id)
+                             auth_mon_id=comp.id, pdb_ins_code=ins)
 
 
 class _AsymIDProvider(object):
@@ -1181,7 +1199,6 @@ class _ProtocolDumper(Dumper):
         with writer.loop("_ihm_modeling_protocol_details",
                          ["id", "protocol_id", "step_id",
                           "struct_assembly_id", "dataset_group_id",
-                          "struct_assembly_description",
                           "step_name", "step_method", "num_models_begin",
                           "num_models_end", "multi_scale_flag",
                           "multi_state_flag", "ordered_flag",
@@ -1195,7 +1212,6 @@ class _ProtocolDumper(Dumper):
                         struct_assembly_id=s.assembly._id,
                         dataset_group_id=s.dataset_group._id
                         if s.dataset_group else None,
-                        struct_assembly_description=s.assembly.description,
                         step_name=s.name, step_method=s.method,
                         num_models_begin=s.num_models_begin,
                         num_models_end=s.num_models_end,
@@ -1464,7 +1480,7 @@ class _ModelDumper(Dumper):
         with writer.loop("_atom_site",
                          ["group_PDB", "id", "type_symbol",
                           "label_atom_id", "label_alt_id", "label_comp_id",
-                          "label_seq_id",
+                          "label_seq_id", "auth_seq_id", "pdbx_PDB_ins_code",
                           "label_asym_id", "Cartn_x",
                           "Cartn_y", "Cartn_z", "occupancy", "label_entity_id",
                           "auth_asym_id",
@@ -1477,6 +1493,8 @@ class _ModelDumper(Dumper):
                     seq_id = 1 if atom.seq_id is None else atom.seq_id
                     comp = atom.asym_unit.entity.sequence[seq_id - 1]
                     seen_types[atom.type_symbol] = None
+                    auth_seq_id, ins = \
+                        atom.asym_unit._get_auth_seq_id_ins_code(seq_id)
                     lp.write(id=next(ordinal),
                              type_symbol=atom.type_symbol,
                              group_PDB='HETATM' if atom.het else 'ATOM',
@@ -1485,7 +1503,9 @@ class _ModelDumper(Dumper):
                              label_asym_id=atom.asym_unit._id,
                              label_entity_id=atom.asym_unit.entity._id,
                              label_seq_id=atom.seq_id,
-                             auth_asym_id=atom.asym_unit._id,
+                             auth_seq_id=auth_seq_id,
+                             pdbx_PDB_ins_code=ins or ihm.unknown,
+                             auth_asym_id=atom.asym_unit.strand_id,
                              Cartn_x=atom.x, Cartn_y=atom.y, Cartn_z=atom.z,
                              B_iso_or_equiv=atom.biso,
                              occupancy=atom.occupancy,
@@ -3096,6 +3116,14 @@ def write(fh, systems, format='mmCIF', dumpers=[]):
        BinaryCIF format. The BinaryCIF writer needs the msgpack Python
        module to function.
 
+       The file handle should be opened in binary mode for BinaryCIF files.
+       For mmCIF, text mode should be used, usually with UTF-8 encoding, e.g.::
+
+           with open('output.cif', 'w', encoding='utf-8') as fh:
+               ihm.dumper.write(fh, systems)
+           with open('output.bcif', 'wb') as fh:
+               ihm.dumper.write(fh, systems, format='BCIF')
+
        :param file fh: The file handle to write to.
        :param list systems: The list of :class:`ihm.System` objects to write.
        :param str format: The format of the file. This can be 'mmCIF' (the
@@ -3105,8 +3133,7 @@ def write(fh, systems, format='mmCIF', dumpers=[]):
               These can be used to add extra categories to the file."""
     dumpers = [_EntryDumper(),  # must be first
                _StructDumper(), _CommentDumper(),
-               _AuditConformDumper(), _SoftwareDumper(),
-               _CitationDumper(),
+               _AuditConformDumper(), _CitationDumper(), _SoftwareDumper(),
                _AuditAuthorDumper(), _GrantDumper(),
                _ChemCompDumper(), _ChemDescriptorDumper(),
                _EntityDumper(), _EntitySrcGenDumper(), _EntitySrcNatDumper(),

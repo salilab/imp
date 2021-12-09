@@ -1,6 +1,48 @@
 ChangeLog {#changelog}
 =========
 
+# 2.16.0 - 2021-12-16 # {#changelog_2_16_0}
+- OpenCubicSpline now throws a ValueException for out-of-range values, to
+  be consistent with ClosedCubicSpline (previously it threw ModelException).
+- SAXS tools (such as `compute_rg`, `foxs`) can now read input structures
+  in mmCIF format.
+- Most IMP functions that return arrays of integer or floating point values,
+  or lists of ParticleIndexes, now return NumPy arrays if IMP is built with
+  NumPy. Code that adds lists or searches for particle pairs in a list may
+  need to be modified as NumPy arrays are slightly different from Python lists.
+- IMP::pmi now handles MSE (selenomethionine) residues in input structures;
+  structure is read for such residues and they are considered equivalent to
+  regular MET in the FASTA sequence.
+- The Windows .exe installer now supports Python 3.10.
+- Scoring function evaluation can now be done more efficiently in some cases
+  by using information on which particles have moved since the last evaluation.
+  This behavior can be turned on (by default it is off) using
+  IMP::core::MonteCarlo::set_score_moved() or by setting the `score_moved`
+  parameter to IMP::pmi::macros::ReplicaExchange0.
+- The orientation-dependent scoring function IMP::score_functor::OrientedSoap
+  now caches the system topology and so should be roughly twice as fast in
+  typical applications.
+- IMP::pmi::macros::BuildSystem::add_state() now assigns multi-character
+  chain IDs by default, so that it is no longer limited to creating 62
+  molecules.
+- IMP::pmi::output::Output now reports a ValueError if asked to write out
+  a PDB file containing multi-character chain IDs, rather than silently
+  truncating them.
+- The unused IMP::piecewise_linear_distribution class has been removed.
+  Use boost::piecewise_linear_distribution instead.
+- The deprecated methods
+  IMP::{Singleton,Pair,Triplet,Quad}Predicate::get_value() have been removed.
+  Use the get_value_index() methods instead.
+- The deprecated methods IMP::SingletonContainer::get_particles(),
+  IMP::PairContainer::get_particle_pairs(),
+  IMP::TripletContainer::get_particle_triplets(), and
+  IMP::QuadContainer::get_particle_quads() have been removed. Use the
+  get_contents() method instead.
+- The deprecated IMP::isd::Weight::get_number_of_states() method has been
+  removed. Use get_number_of_weights() instead.
+- We no longer provide packages for Ubuntu 16.04 LTS (Xenial Xerus), as it
+  reached end of life in April 2021.
+
 # 2.15.0 - 2021-06-02 # {#changelog_2_15_0}
 - The [Homebrew](https://brew.sh/) Mac packages now support Apple Silicon.
 - We no longer provide RPMs for CentOS 6, since it has reached end of life.
@@ -549,7 +591,7 @@ tools/git/developer_tools/init_git if you have an existing clone.
 - 11/3: IMP::container::InContainerPairFilter and friends now treat pairs as unordered. A flag was added to control this.
 - 9/5: IMP::base::Object classes now have a method IMP::base::Object::clear_caches() that clears all cache data in the object. This is not universally implemented, but now provides a correct path for doing that. The IMP_LIST() type macros call that method when their contents changes.
 ## Summer 2012
-- 7/3: IMP_PERIODIC_OPTIMIZER_STATE() was superceded by the class IMP::core::PeriodicOptimizerState as it is rather cleaner than the macro.
+- 7/3: IMP_PERIODIC_OPTIMIZER_STATE() was superseded by the class IMP::core::PeriodicOptimizerState as it is rather cleaner than the macro.
 - 7/2: in order to make various base classes in IMP more Python friendly, macros IMP_PROTECTED_METHOD(), IMP_PROTECTED_CONSTRUCTOR() were added that properly expose such methods to Python. The standards checks now complain if \c protected is used an a class in the API.
 - 6/24: Executables from \c module/bin are now put in \b build/module_bin/module. This removes a recurring source of errors in the build script due to the origin and destination directory have the same name in scons.
 - 6/24: Benchmarks are now put int \c module/benchmark and build to \c build/benchmark/module to remove a recurring source of errors.
@@ -557,7 +599,7 @@ tools/git/developer_tools/init_git if you have an existing clone.
 - 6/12: The naming rules for .i files that are in module \c pyext directories changed. They should now be \c IMP_modulename.name.i instead of \c IMP_modulename_name.i. This is to better support underscores in names.
 ## Winter 2011/2012
 - 20/4: A method, IMP::atom::read_pdb(IMP::base::TextInput, int, IMP::atom::Hierarchy), was added to load coordinates from a pdb file into an existing IMP::atom::Hierarchy.
-- 4/4: the filter types were superceded by the predicate types. You will only see a difference if you develop a filter class (eg IMP::PairFilter -derived class) or directly call methods on filters (specifically IMP::PairFilter::get_contains()).
+- 4/4: the filter types were superseded by the predicate types. You will only see a difference if you develop a filter class (eg IMP::PairFilter -derived class) or directly call methods on filters (specifically IMP::PairFilter::get_contains()).
 - 29/3: IMP::Particle::get_has_model() has been changed to IMP::ModelObject::get_is_part_of_model() to be consistent with other classes.
 - 28/3: IMP::core::Mover changed slightly, adding an extra method IMP::core::Mover::get_output_particles() and requiring the IMP::Model be passed to the constructor. All movers in IMP SVN were updated without any difficulty. This allows movers to use information contained in the dependency graph amongst particles so they can, for example, weight moves based on scores.
 - 26/3: IMP::SingletonContainerInput etc were added. Methods that take these as their arguments can be passed either containers or lists of particles (or tuples), as convenient. All methods that take IMP::SingletonContainer objects should eventually move over to taking this (changing just requires changing the argument from a pointer to an Input).
@@ -584,7 +626,7 @@ tools/git/developer_tools/init_git if you have an existing clone.
 - IMP::compatibility::checked_vector was renamed to IMP::compatibility::vector and made available to IMP as IMP::vector. Typedefs should use this type (IMP::vector).
 - Various IMP::algebra plural typedefs which had been using std::vector (since they never were updated), have now been moved to IMP::vector.
 - IMP::statistics::HistogramD now supports display with \c matplotlib.
-- IMP::statistics::HistogramD supercedes IMP::statistics::Histogram
+- IMP::statistics::HistogramD supersedes IMP::statistics::Histogram
 - predicate base classes have been added: IMP::SingletonPredicate, IMP::PairPredicate etc. These take particles and return an integer. Current functionality using them includes IMP::core::PredicateSingletonScore that uses a predicate to choose which score to apply.
 - the core generic restraint and score state support was moved to the kernel to avoid breaking various scores outside of IMP svn.
 - the IMP::display module was refactored and moved up to be a dependency of IMP::core and IMP::atom rather than vice versa. The main observable results are that you should now use IMP::atom::HierarchyGeometry, IMP::atom::SelectionGeometry, IMP::atom::HierarchiesGeometry, IMP::core::XYZRGeometry, IMP::atom::BondGeometry etc instead of finding them in IMP::display. This change means that, display can be used internally when testing and debugging functionality in IMP::core and IMP::atom and that tests that use IMP::display don't need to build all of IMP::atom.
@@ -653,7 +695,7 @@ tools/git/developer_tools/init_git if you have an existing clone.
 - the name of the clustering methods have been changed to create_ from get_ since they create objects.
 - the names of the recently added metric based clustering support has been changed to Metric rather than Distance.
 - IMP now has the ability to have certain tests designated as expensive and to skip those tests when test-fast is run. The motivation for this is that the tests take a really long time making it impractical to run before every commit. And it is hard to tell which tests have not been run when running with the necessary multiple build processes. My thought is that tests that take about a second or less on a debug build should be left along (this is probably  >95% of the tests), but the few that take longer should be marked as expensive. To do that, rename the test to expensive_text_XXX.py (from test_XXX.py) and add expensive_python_tests= env.IMPModuleGetExpensivePythonTests() to the IMPModuleTest call in the test SConscript.
-- the fuction IMP::display::create_restraint_geometry() was added to do what its name says.
+- the function IMP::display::create_restraint_geometry() was added to do what its name says.
 - runtime dimensional geometric objects have been added. These include IMP::algebra::VectorKD, IMP::algebra::BoundingBoxKD and IMP::algebra::SphereKD. The IMP::statistics::Embedding classes now use IMP::algebra::VectorKD instead of Floats. The sparse grids also support variable dimensions as to the nearest neighbor searches.
 - IMP::atom::DopePairScore has been added to IMP.
 - IMP::atom::CHARMMStereochemistryRestraint provides a high-level simplified

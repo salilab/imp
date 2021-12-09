@@ -23,8 +23,8 @@ ps = IMP.get_indexes([IMP.core.XYZ.setup_particle(IMP.Particle(m))
                       for x in range(0, 3)])
 
 s = IMP.core.HarmonicDistancePairScore(1, 1)
-lpc = IMP.container.ListPairContainer(m,
-    [(ps[i[0]], ps[i[1]]) for i in [(0, 1), (1, 2)]])
+lpc = IMP.container.ListPairContainer(
+    m, [(ps[i[0]], ps[i[1]]) for i in [(0, 1), (1, 2)]])
 print([(m.get_particle_name(p[0]), m.get_particle_name(p[1]))
        for p in lpc.get_contents()])
 r = IMP.container.PairsRestraint(s, lpc)
@@ -73,9 +73,9 @@ def get_assignments(vertex):
     print(mt.get_vertex_name(vertex), [str(r) for r in ret])
     return ret
 
+
 # the root is the last vetex
 get_assignments(mt.get_vertices()[-1])
-
 
 schedule = []
 # we could instead decompose the tree into independent sets of jobs
@@ -94,6 +94,7 @@ def schedule_job(vertex):
     # add myself to the next free phase
     schedule[my_time].append(vertex)
     return my_time
+
 
 schedule_job(mt.get_vertices()[-1])
 print("The merging can be scheduled as", schedule)

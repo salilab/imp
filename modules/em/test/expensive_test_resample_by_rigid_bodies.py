@@ -29,11 +29,11 @@ class Tests(IMP.test.TestCase):
         self.rbs_of_copy = IMP.core.RigidBodies()  # 3 rigid bodies
         sel = IMP.atom.CAlphaPDBSelector()
         for n, fn in enumerate(fnames):
-            self.mhs.append(IMP.atom.read_pdb(self.open_input_file(fn),
-                                              self.imp_model, sel))
+            with self.open_input_file(fn) as fh:
+                self.mhs.append(IMP.atom.read_pdb(fh, self.imp_model, sel))
             self.mhs[-1].set_name("mol" + str(n))
-            self.mhs_copy.append(IMP.atom.read_pdb(self.open_input_file(fn),
-                                                   self.imp_model, sel))
+            with self.open_input_file(fn) as fh:
+                self.mhs_copy.append(IMP.atom.read_pdb(fh, self.imp_model, sel))
             self.mhs_copy[-1].set_name("mol" + str(n))
             IMP.atom.add_radii(self.mhs[n])
             self.all_ps_copy += IMP.core.get_leaves(self.mhs_copy[-1])
@@ -134,10 +134,8 @@ class Tests(IMP.test.TestCase):
         # 3 copies of the molecular hierarchies used later as rigid bodies
         self.mhs_copy = []
         sel = IMP.atom.NonWaterPDBSelector()
-        mh = IMP.atom.read_pdb(
-            self.open_input_file("1atiB01.pdb"),
-            self.imp_model,
-            sel)
+        with self.open_input_file("1atiB01.pdb") as fh:
+            mh = IMP.atom.read_pdb(fh, self.imp_model, sel)
         IMP.atom.add_radii(mh)
         rb = IMP.atom.setup_as_rigid_body(mh)
         ps = IMP.Particles(IMP.core.get_leaves(IMP.atom.Hierarchy(mh)))

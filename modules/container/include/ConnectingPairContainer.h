@@ -76,7 +76,7 @@ class IMPCONTAINEREXPORT ConnectingPairContainer :
   void do_score_state_after_evaluate() {}
   virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ConnectingPairContainer);
-  bool get_is_decomposable() const { return false; }
+  bool get_is_decomposable() const IMP_OVERRIDE { return false; }
 #endif
 };
 

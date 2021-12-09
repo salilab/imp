@@ -43,7 +43,8 @@ class IMPEMEXPORT FitRestraintBayesEM3D : public Restraint {
   //! Constructor
   FitRestraintBayesEM3D(ParticlesTemp ps, DensityMap *em_map,
                         FloatKey weight_key = atom::Mass::get_mass_key(),
-                        bool use_rigid_bodies = true, double sigma = .1);
+                        bool use_rigid_bodies = true, double sigma = .1, 
+                        double window_size = 1.0);
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
       IMP_OVERRIDE;
@@ -55,7 +56,7 @@ class IMPEMEXPORT FitRestraintBayesEM3D : public Restraint {
   double resolution_;
   double voxel_size_;
   double sigma_;
-
+  double window_size_;
   // reference to the IMP environment
   core::XYZs xyzs_;
 

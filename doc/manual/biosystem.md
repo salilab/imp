@@ -20,7 +20,9 @@ recommend that you manage your application as a GitHub repository so that
 
 We recommend the following contents for your repository (see the
 [Nup84 repository](https://github.com/integrativemodeling/nup84)
-for an example):
+for an example, or
+[this journal article](https://doi.org/10.1002/1873-3468.14067) for more
+general recommendations):
 
  - subdirectories containing
    - your modeling protocol (generally one or more Python scripts).
@@ -80,3 +82,9 @@ for an example):
      - `parallel`: if set, the tests will be run in an MPI environment, with
        the given number of cores available (by default, a serial environment
        is used)
+
+Publication or deposition generally require a [DOI](https://www.doi.org/).
+We generally do this by uploading a snapshot of the GitHub repository to
+[Zenodo](https://zenodo.org), alongside other input/output datasets that
+aren't deposited in a specialist repository such as
+[PDB](https://www.wwpdb.org/), [EMDB](https://www.ebi.ac.uk/emdb/) etc.

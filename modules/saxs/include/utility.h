@@ -101,7 +101,7 @@ Profile* compute_profile(Particles particles,
                          bool vacuum = false,
                          std::string beam_profile_file = "");
 
-//! Read PDB files
+//! Read PDB (or mmCIF) files
 IMPSAXSEXPORT
 void read_pdb(Model *m, const std::string file,
               std::vector<std::string>& pdb_file_names,

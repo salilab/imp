@@ -7,6 +7,7 @@
 
 #include <IMP/atom/protein_ligand_score.h>
 #include <IMP/atom/pdb.h>
+#include <IMP/atom/mmcif.h>
 #include <IMP/atom/mol2.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/particle_index.h>
@@ -44,31 +45,41 @@ void read_trans_file(const std::string file_name,
 }
 
 int main(int argc, char *argv[]) {
-  // print command
-  for(int i=0; i<argc; i++) {
-    std::cerr << argv[i] << " ";
-  }
-  std::cerr << std::endl;
-
   IMP::set_log_level(IMP::SILENT);
   std::string mol2name, pdbname, trans_file, out_file_name;
 
-  po::options_description desc("Usage: <pdb> <mol2> [trans file]");
+  po::options_description desc("Usage: <pdb|mmcif> <mol2> [trans file]\n\n"
+          "static and transformed molecules from docking with "
+          "transformation file.\n\n"
+          "Inputs are PDB/mmCIF, mol2, and transformation files\n\n"
+          "Options");
   desc.add_options()
-    ("help", "static and transformed molecules from docking with \
-transformation file.")
-    ("input-files", po::value< std::vector<std::string> >(),
-     "input PDB, mol2, and transformation files")
+    ("help,h", "Show command line arguments and exit.")
+    ("version", "Show version info and exit.")
     ("output_file,o",
      po::value<std::string>(&out_file_name)->default_value("mol2_score.res"),
      "output file name, default name mol2_score.res");
+
+  po::options_description hidden("Hidden options");
+  hidden.add_options()
+    ("input-files", po::value<std::vector<std::string> >(),
+     "input files");
+
+  po::options_description allopt;
+  allopt.add(desc).add(hidden);
 
   po::positional_options_description p;
   p.add("input-files", -1);
   po::variables_map vm;
   po::store(
-      po::command_line_parser(argc,argv).options(desc).positional(p).run(), vm);
+      po::command_line_parser(argc,argv).options(allopt).positional(p).run(),
+      vm);
   po::notify(vm);
+  if (vm.count("version")) {
+    std::cerr << "Version: \"" << IMP::atom::get_module_version()
+              << "\"" << std::endl;
+    return 0;
+  }
 
   // parse filenames
   std::vector<std::string> files;
@@ -94,7 +105,8 @@ transformation file.")
   IMP::atom::Hierarchy protein, ligand;
   {
     IMP::SetLogState ss(IMP::SILENT);
-    protein = IMP::atom::read_pdb(pdbname, m, new IMP::atom::ATOMPDBSelector());
+    protein = IMP::atom::read_pdb_or_mmcif(
+                        pdbname, m, new IMP::atom::ATOMPDBSelector());
     IMP::atom::add_protein_ligand_score_data(protein);
     ligand = IMP::atom::read_mol2(mol2name, m);
     IMP::atom::add_protein_ligand_score_data(ligand);

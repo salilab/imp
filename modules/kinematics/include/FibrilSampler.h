@@ -36,14 +36,14 @@ class IMPKINEMATICSEXPORT FibrilSampler : public DOFsSampler {
    */
   FibrilSampler(TransformationJoints trans_joint, DihedralAngleRevoluteJoints dihedral_joints, DOFs dofs);
 
-  virtual void apply(const DOFValues& values);
+  virtual void apply(const DOFValues& values) IMP_OVERRIDE;
   virtual void apply_floats(const Floats& values);
   DihedralAngleRevoluteJoints get_dihedral_joints() { return dihedral_joints_; }
 
   TransformationJoints get_transformation_joint() { return trans_joint_; }
 
  protected:
-  virtual DOFValues do_get_sample() const;
+  virtual DOFValues do_get_sample() const IMP_OVERRIDE;
 
  private:
   //  boost::mt19937 rng_; // init random number generator

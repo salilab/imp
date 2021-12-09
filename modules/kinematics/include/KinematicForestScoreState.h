@@ -50,13 +50,17 @@ class IMPKINEMATICSEXPORT KinematicForestScoreState : public IMP::ScoreState {
         atoms_(atoms) {}
 
   // functions that ScoreState requires
-  void do_before_evaluate() { kf_->update_all_external_coordinates(); }
+  void do_before_evaluate() IMP_OVERRIDE {
+    kf_->update_all_external_coordinates();
+  }
 
-  void do_after_evaluate(DerivativeAccumulator *da) { IMP_UNUSED(da); }
+  void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE {
+    IMP_UNUSED(da);
+  }
 
-  ModelObjectsTemp do_get_inputs() const;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
-  ModelObjectsTemp do_get_outputs() const;
+  ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
 
  private:
   KinematicForest *kf_;

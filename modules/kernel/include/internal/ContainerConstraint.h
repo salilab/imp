@@ -27,7 +27,8 @@ class ContainerConstraint : public Constraint {
 
  public:
   ContainerConstraint(Before *before, After *after, Container *c,
-                      std::string name = "ContainerConstraint %1%");
+                      std::string name="ContainerConstraint %1%",
+                      bool can_skip=false);
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(After *f) { af_ = f; }
@@ -36,7 +37,7 @@ class ContainerConstraint : public Constraint {
   void set_before_evaluate_modifier(Before *f) { f_ = f; }
 
   // only report actual interactions
-  ModelObjectsTemps do_get_interactions() const {
+  ModelObjectsTemps do_get_interactions() const IMP_OVERRIDE {
     ModelObjectsTemps ret;
     typename Container::ContainedIndexTypes ps = c_->get_range_indexes();
     for (unsigned int i = 0; i < ps.size(); ++i) {
@@ -78,22 +79,25 @@ class ContainerConstraint : public Constraint {
 template <class Before, class After, class Container>
 inline Constraint *create_container_constraint(Before *b, After *a,
                                                Container *c,
-                                               std::string name =
-                                                   std::string()) {
+                                               std::string name=std::string(),
+                                               bool can_skip=false) {
   if (name == std::string()) {
     if (b) name += " and  " + b->get_name();
     if (a) name += " and " + a->get_name();
   }
-  return new ContainerConstraint<Before, After, Container>(b, a, c, name);
+  return new ContainerConstraint<Before, After, Container>(b, a, c, name,
+                                                           can_skip);
 }
 
 template <class Before, class After, class C>
 ContainerConstraint<Before, After, C>::ContainerConstraint(Before *before,
                                                            After *after, C *c,
-                                                           std::string name)
+                                                           std::string name,
+                                                           bool can_skip)
     : Constraint(c->get_model(), name), c_(c) {
   if (before) f_ = before;
   if (after) af_ = after;
+  set_can_skip(can_skip);
 }
 
 template <class Before, class After, class C>

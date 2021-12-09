@@ -92,6 +92,9 @@ class IMPATOMEXPORT CenterOfMass : public IMP::Decorator {
     */
     IMP_DECORATOR_SETUP_1(CenterOfMass, Refiner *, refiner);
 
+    //! Make the particle no longer a center of mass.
+    static void teardown_particle(CenterOfMass com);
+
     static bool get_is_setup(Model *m, ParticleIndex pi) {
       return m->get_has_attribute(get_constraint_key(), pi) &&
         IMP::atom::Mass::get_is_setup(m, pi) &&

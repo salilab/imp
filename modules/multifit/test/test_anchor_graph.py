@@ -13,8 +13,8 @@ class Tests(IMP.test.TestCase):
     """Class to test anchor graph functionalities"""
 
     def load_data(self):
-        self.anchor_graph = load_anchor_graph(
-            self.open_input_file("1z5s_4_anchors.cmm"))
+        with self.open_input_file("1z5s_4_anchors.cmm") as fh:
+            self.anchor_graph = load_anchor_graph(fh)
 
     def setUp(self):
         """Build test model and optimizer"""

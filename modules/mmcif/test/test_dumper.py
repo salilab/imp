@@ -109,8 +109,9 @@ _software.description
 _software.version
 _software.type
 _software.location
+_software.citation_id
 1 'Integrative Modeling Platform (IMP)' 'integrative model building' .
-%s program https://integrativemodeling.org
+%s program https://integrativemodeling.org .
 #
 """ % IMP.get_module_version()).replace('\n', ' '))
 
@@ -495,7 +496,6 @@ _ihm_modeling_protocol_details.protocol_id
 _ihm_modeling_protocol_details.step_id
 _ihm_modeling_protocol_details.struct_assembly_id
 _ihm_modeling_protocol_details.dataset_group_id
-_ihm_modeling_protocol_details.struct_assembly_description
 _ihm_modeling_protocol_details.step_name
 _ihm_modeling_protocol_details.step_method
 _ihm_modeling_protocol_details.num_models_begin
@@ -506,10 +506,9 @@ _ihm_modeling_protocol_details.ordered_flag
 _ihm_modeling_protocol_details.software_id
 _ihm_modeling_protocol_details.script_file_id
 _ihm_modeling_protocol_details.description
-1 1 1 2 . 'All components modeled by IMP' Sampling 'Monte Carlo' 0 500 YES NO NO
-. . .
-2 2 1 2 . 'All components modeled by IMP' Sampling
-'Replica exchange Molecular Dynamics' 400 2000 YES NO NO . . .
+1 1 1 2 . Sampling 'Monte Carlo' 0 500 YES NO NO . . .
+2 2 1 2 . Sampling 'Replica exchange Molecular Dynamics' 400 2000 YES NO NO . .
+.
 #
 """)
 

@@ -61,7 +61,7 @@ class IMPSPBEXPORT EM2DRestraint : public spb::ISDRestraint {
   double get_element(double fmod, double sigma) const;
 
   // get probability
-  double get_probability() const;
+  double get_probability() const IMP_OVERRIDE;
 
   /** This macro declares the basic needed methods: evaluate and show
    */
@@ -73,7 +73,7 @@ class IMPSPBEXPORT EM2DRestraint : public spb::ISDRestraint {
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum) const
       IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const;
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
 
   IMP_OBJECT_METHODS(EM2DRestraint);
 };

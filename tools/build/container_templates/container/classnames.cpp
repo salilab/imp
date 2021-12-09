@@ -120,6 +120,15 @@ void ClassnameContainerSet::do_apply(const ClassnameModifier *sm) const {
   }
 }
 
+void ClassnameContainerSet::do_apply_moved(
+             const ClassnameModifier *sm,
+             const ParticleIndexes &moved_pis,
+             const ParticleIndexes &reset_pis) const {
+  IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {
+    c->apply_moved(sm, moved_pis, reset_pis);
+  }
+}
+
 ParticleIndexes ClassnameContainerSet::get_all_possible_indexes() const {
   ParticleIndexes ret;
   IMP_FOREACH(ClassnameContainer * c, get_classname_containers()) {

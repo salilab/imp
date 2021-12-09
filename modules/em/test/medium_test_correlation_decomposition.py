@@ -28,8 +28,9 @@ class Tests(IMP.test.TestCase):
         self.leaves_ref = IMP.core.LeavesRefiner(
             IMP.atom.Hierarchy.get_traits())
         for pf in pdb_filenames:
-            self.mhs.append(IMP.atom.read_pdb(self.open_input_file(pf),
-                                              self.imp_model, IMP.atom.CAlphaPDBSelector()))
+            with self.open_input_file(pf) as fh:
+                self.mhs.append(IMP.atom.read_pdb(
+                    fh, self.imp_model, IMP.atom.CAlphaPDBSelector()))
         for mh in self.mhs:
             IMP.atom.add_radii(mh)
             IMP.atom.create_rigid_body(mh)

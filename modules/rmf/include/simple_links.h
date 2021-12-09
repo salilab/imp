@@ -35,7 +35,7 @@ class SimpleLoadLink : public LoadLink {
 
  protected:
   virtual void do_load_one(RMF::NodeConstHandle nh, O *o) = 0;
-  void do_load(RMF::FileConstHandle fh) {
+  void do_load(RMF::FileConstHandle fh) IMP_OVERRIDE {
     IMP_OBJECT_LOG;
     for (unsigned int i = 0; i < os_.size(); ++i) {
       IMP_LOG_VERBOSE("Loading " << fh.get_node(nhs_[i]) << std::endl);
@@ -135,7 +135,7 @@ class SimpleSaveLink : public SaveLink {
 
  protected:
   virtual void do_save_one(O *o, RMF::NodeHandle nh) = 0;
-  void do_save(RMF::FileHandle fh) {
+  void do_save(RMF::FileHandle fh) IMP_OVERRIDE {
     for (unsigned int i = 0; i < os_.size(); ++i) {
       IMP_LOG_VERBOSE("Saving to " << fh.get_node(nhs_[i]) << std::endl);
 

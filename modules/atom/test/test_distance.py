@@ -12,10 +12,10 @@ class Tests(IMP.test.TestCase):
         """Test placement score"""
         m = IMP.Model()
         # read PDB
-        mp = atom.read_pdb(self.open_input_file("mini.pdb"),
-                           m, atom.NonWaterPDBSelector())
-        mp1 = atom.read_pdb(self.open_input_file("mini.pdb"),
-                            m, atom.NonWaterPDBSelector())
+        with self.open_input_file("mini.pdb") as fh:
+            mp = atom.read_pdb(fh, m, atom.NonWaterPDBSelector())
+        with self.open_input_file("mini.pdb") as fh:
+            mp1 = atom.read_pdb(fh, m, atom.NonWaterPDBSelector())
         xyz = core.XYZs(atom.get_leaves(mp))
         xyz1 = core.XYZs(atom.get_leaves(mp1))
         # create a random transformation
@@ -33,8 +33,10 @@ class Tests(IMP.test.TestCase):
         """ Test drms measure """
         m = IMP.Model()
         sel = atom.CAlphaPDBSelector()
-        prot1 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
-        prot2 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
+        with self.open_input_file("mini.pdb") as fh:
+            prot1 = atom.read_pdb(fh, m, sel)
+        with self.open_input_file("mini.pdb") as fh:
+            prot2 = atom.read_pdb(fh, m, sel)
         xyzs1 = core.XYZs(atom.get_leaves(prot1))
         xyzs2 = core.XYZs(atom.get_leaves(prot2))
         drms = atom.get_drms(xyzs1, xyzs2)
@@ -61,8 +63,10 @@ class Tests(IMP.test.TestCase):
         """ Test drms measure taking into account rigid bodies"""
         m = IMP.Model()
         sel = atom.CAlphaPDBSelector()
-        prot1 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
-        prot2 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
+        with self.open_input_file("mini.pdb") as fh:
+            prot1 = atom.read_pdb(fh, m, sel)
+        with self.open_input_file("mini.pdb") as fh:
+            prot2 = atom.read_pdb(fh, m, sel)
 
         hchains1 = atom.get_by_type(prot1, atom.CHAIN_TYPE)
         hchains2 = atom.get_by_type(prot2, atom.CHAIN_TYPE)
@@ -99,8 +103,10 @@ class Tests(IMP.test.TestCase):
         """ Test drmsd measure"""
         m = IMP.Model()
         sel = atom.CAlphaPDBSelector()
-        prot1 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
-        prot2 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
+        with self.open_input_file("mini.pdb") as fh:
+            prot1 = atom.read_pdb(fh, m, sel)
+        with self.open_input_file("mini.pdb") as fh:
+            prot2 = atom.read_pdb(fh, m, sel)
 
         xyzs1 = core.XYZs(atom.get_leaves(prot1))
         xyzs2 = core.XYZs(atom.get_leaves(prot2))
@@ -138,8 +144,10 @@ class Tests(IMP.test.TestCase):
         """ Test drmsd_Q measure"""
         m = IMP.Model()
         sel = atom.CAlphaPDBSelector()
-        prot1 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
-        prot2 = atom.read_pdb(self.open_input_file("mini.pdb"), m, sel)
+        with self.open_input_file("mini.pdb") as fh:
+            prot1 = atom.read_pdb(fh, m, sel)
+        with self.open_input_file("mini.pdb") as fh:
+            prot2 = atom.read_pdb(fh, m, sel)
 
         xyzs1 = core.XYZs(atom.get_leaves(prot1))
         xyzs2 = core.XYZs(atom.get_leaves(prot2))

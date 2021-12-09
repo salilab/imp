@@ -19,7 +19,7 @@ except ImportError:
     import urllib2
 import json
 
-__version__ = '0.20'
+__version__ = '0.25'
 
 
 class __UnknownValue(object):
@@ -507,6 +507,8 @@ class System(object):
            Duplicates are filtered out."""
         return _remove_identical(itertools.chain(
             self.citations,
+            (software.citation for software in self._all_software()
+             if software.citation),
             (restraint.fitting_method_citation_id
              for restraint in self._all_restraints()
              if hasattr(restraint, 'fitting_method_citation_id')
@@ -548,6 +550,8 @@ class Software(object):
        :param str location: Place where the software can be found (e.g. URL).
        :param str type: Type of software (program/package/library/other).
        :param str version: The version used.
+       :param citation: Publication describing the software.
+       :type citation: :class:`Citation`
 
        Generally these objects are added to :attr:`System.software` or
        passed to :class:`ihm.startmodel.StartingModel`,
@@ -556,13 +560,14 @@ class Software(object):
        :class:`ihm.restraint.PredictedContactResstraint` objects.
     """
     def __init__(self, name, classification, description, location,
-                 type='program', version=None):
+                 type='program', version=None, citation=None):
         self.name = name
         self.classification = classification
         self.description = description
         self.location = location
         self.type = type
         self.version = version
+        self.citation = citation
 
     # Software compares equal if the names and versions are the same
     def _eq_vals(self):
@@ -596,7 +601,8 @@ class Citation(object):
     """A publication that describes the modeling.
 
        Generally citations are added to :attr:`System.citations` or
-       passed to :class:`ihm.restraint.EM3DRestraint` objects.
+       passed to :class:`ihm.Software` or
+       :class:`ihm.restraint.EM3DRestraint` objects.
 
        :param str pmid: The PubMed ID.
        :param str title: Full title of the publication.
@@ -731,8 +737,9 @@ class ChemComp(object):
             emass = self._element_mass.get(m.group(1), None)
             if emass:
                 weight += emass * (int(m.group(2)) if m.group(2) else 1)
-            else:
+            elif m.group(1) != 'X':
                 # If element is unknown, weight is unknown too
+                # Element 'X' is used for GLX/ASX and has zero weight
                 return None
         return weight
 
@@ -858,7 +865,9 @@ class LPeptideAlphabet(Alphabet):
                   ('T', 'THR', 'THREONINE', 'C4 H9 N O3'),
                   ('V', 'VAL', 'VALINE', 'C5 H11 N O2'),
                   ('W', 'TRP', 'TRYPTOPHAN', 'C11 H12 N2 O2'),
-                  ('Y', 'TYR', 'TYROSINE', 'C9 H11 N O3')])
+                  ('Y', 'TYR', 'TYROSINE', 'C9 H11 N O3'),
+                  ('B', 'ASX', 'ASP/ASN AMBIGUOUS', 'C4 H6 N O2 X2'),
+                  ('Z', 'GLX', 'GLU/GLN AMBIGUOUS', 'C5 H8 N O2 X2')])
     _comps['G'] = PeptideChemComp('GLY', 'G', 'G', name='GLYCINE',
                                   formula="C2 H5 N O2")
 
@@ -958,6 +967,9 @@ class EntityRange(object):
 class Atom(object):
     """A single atom in an entity or asymmetric unit. Usually these objects
        are created by calling :meth:`Residue.atom`.
+
+       Note that this class does not store atomic coordinates of a given
+       atom in a given model; for that, see :class:`ihm.model.Atom`.
     """
 
     __slots__ = ['residue', 'id']
@@ -989,10 +1001,17 @@ class Residue(object):
         return Atom(residue=self, id=atom_id)
 
     def _get_auth_seq_id(self):
-        return self.asym._get_auth_seq_id(self.seq_id)
+        return self.asym._get_auth_seq_id_ins_code(self.seq_id)[0]
     auth_seq_id = property(_get_auth_seq_id,
                            doc="Author-provided seq_id; only makes sense "
                                "for asymmetric units")
+
+    def _get_ins_code(self):
+        return self.asym._get_auth_seq_id_ins_code(self.seq_id)[1]
+    ins_code = property(_get_ins_code,
+                        doc="Insertion code; only makes sense "
+                            "for asymmetric units")
+
     # Allow passing residues where a range is requested
     # (e.g. to ResidueFeature)
     seq_id_range = property(lambda self: (self.seq_id, self.seq_id))
@@ -1042,7 +1061,7 @@ class Entity(object):
            rna_with_psu = ihm.Entity(('A', 'C', psu), alphabet=ihm.RNAAlphabet)
 
        For more examples, see the
-       `ligands and water example <https://github.com/ihmwg/python-ihm/blob/master/examples/ligands_water.py>`_.
+       `ligands and water example <https://github.com/ihmwg/python-ihm/blob/main/examples/ligands_water.py>`_.
 
        All entities should be stored in the top-level System object;
        see :attr:`System.entities`.
@@ -1170,35 +1189,49 @@ class AsymUnit(object):
        :param str details: Longer text description of this unit.
        :param auth_seq_id_map: Mapping from internal 1-based consecutive
               residue numbering (`seq_id`) to "author-provided" numbering
-              (`auth_seq_id`). This can be either be an int offset, in
-              which case ``auth_seq_id = seq_id + auth_seq_id_map``, or
-              a mapping type (dict, list, tuple) in which case
-              ``auth_seq_id = auth_seq_id_map[seq_id]``. (Note that if a `list`
-              or `tuple` is used, the first element in the list or tuple does
+              (`auth_seq_id` plus an optional `ins_code`). This can be either
+              be an int offset, in which case
+              ``auth_seq_id = seq_id + auth_seq_id_map`` with no insertion
+              codes, or a mapping type (dict, list, tuple) in which case
+              ``auth_seq_id = auth_seq_id_map[seq_id]`` with no insertion
+              codes, or
+              ``auth_seq_id, ins_code = auth_seq_id_map[seq_id]`` - i.e. the
+              output of the mapping is either the author-provided number, or a
+              2-element tuple containing that number and an insertion code.
+              (Note that if a `list` or `tuple` is used for the mapping, the
+              first element in the list or tuple does
               **not** correspond to the first residue and will never be used -
               since `seq_id` can never be zero.) The default if
               not specified, or not in the mapping, is for
-              ``auth_seq_id == seq_id``.
+              ``auth_seq_id == seq_id`` and for no insertion codes to be used.
        :param str id: User-specified ID (usually a string of one or more
               upper-case letters, e.g. A, B, C, AA). If not specified,
               IDs are automatically assigned alphabetically.
+       :param str strand_id: PDB or "author-provided" strand/chain ID.
+              If not specified, it will be the same as the regular ID.
 
        See :attr:`System.asym_units`.
     """
 
-    def __init__(self, entity, details=None, auth_seq_id_map=0, id=None):
+    def __init__(self, entity, details=None, auth_seq_id_map=0, id=None,
+                 strand_id=None):
         self.entity, self.details = entity, details
         self.auth_seq_id_map = auth_seq_id_map
         self.id = id
+        self._strand_id = strand_id
 
-    def _get_auth_seq_id(self, seq_id):
+    def _get_auth_seq_id_ins_code(self, seq_id):
         if isinstance(self.auth_seq_id_map, int):
-            return seq_id + self.auth_seq_id_map
+            return seq_id + self.auth_seq_id_map, None
         else:
             try:
-                return self.auth_seq_id_map[seq_id]
+                ret = self.auth_seq_id_map[seq_id]
+                if isinstance(ret, (int, str)):
+                    return ret, None
+                else:
+                    return ret
             except (KeyError, IndexError):
-                return seq_id
+                return seq_id, None
 
     def __call__(self, seq_id_begin, seq_id_end):
         return AsymUnitRange(self, seq_id_begin, seq_id_end)
@@ -1209,6 +1242,9 @@ class AsymUnit(object):
 
     seq_id_range = property(lambda self: self.entity.seq_id_range,
                             doc="Sequence range")
+
+    strand_id = property(lambda self: self._strand_id or self._id,
+                         doc="PDB or author-provided strand/chain ID")
 
 
 class Assembly(list):

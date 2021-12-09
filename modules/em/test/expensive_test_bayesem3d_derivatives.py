@@ -26,7 +26,7 @@ class EMFitRestraint(IMP.Restraint):
         dh = self.dmap.get_header()
         dh.set_resolution(resolution)
         fr = IMP.em.FitRestraintBayesEM3D(
-            self.ps, self.dmap, weight_keys, True, self.sigma)
+            self.ps, self.dmap, weight_keys, True, self.sigma, 1.0)
 
         self.rs = IMP.RestraintSet(self.model, "EMFitRestraintBayesEM3D")
         self.rs.add_restraint(fr)

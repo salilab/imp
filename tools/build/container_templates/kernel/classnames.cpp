@@ -33,11 +33,6 @@ ClassnameContainer::ClassnameContainer(Model *m, std::string name)
 // here for gcc
 ClassnameContainer::~ClassnameContainer() {}
 
-PLURALVARIABLETYPE ClassnameContainer::get_FUNCTIONNAMEs() const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use get_contents()");
-  return IMP::internal::get_particle(get_model(), get_indexes());
-}
-
 bool ClassnameContainer::get_provides_access() const {
   validate_readable();
   return do_get_provides_access();
@@ -47,9 +42,24 @@ void ClassnameContainer::apply_generic(const ClassnameModifier *m) const {
   apply(m);
 }
 
+void ClassnameContainer::apply_generic_moved(
+          const ClassnameModifier *m,
+          const ParticleIndexes &moved_pis,
+          const ParticleIndexes &reset_pis) const {
+  apply_moved(m, moved_pis, reset_pis);
+}
+
 void ClassnameContainer::apply(const ClassnameModifier *sm) const {
   validate_readable();
   do_apply(sm);
+}
+
+void ClassnameContainer::apply_moved(
+               const ClassnameModifier *sm,
+               const ParticleIndexes &moved_pis,
+               const ParticleIndexes &reset_pis) const {
+  validate_readable();
+  do_apply_moved(sm, moved_pis, reset_pis);
 }
 
 ClassnameContainerAdaptor::ClassnameContainerAdaptor(ClassnameContainer *c)
@@ -88,21 +98,6 @@ void ClassnamePredicate::remove_if_equal(Model *m, PLURALINDEXTYPE &ps,
                           make_predicate_equal(this, m, value)),
            ps.end());
 }
-Ints ClassnamePredicate::get_value(const PLURALVARIABLETYPE &o) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
-  if (o.empty()) return Ints();
-  Ints ret(o.size());
-  Model *m = internal::get_model(o[0]);
-  for (unsigned int i = 0; i < o.size(); ++i) {
-    ret[i] += get_value_index(m, internal::get_index(o[i]));
-  }
-  return ret;
-}
-
-int ClassnamePredicate::get_value_index(Model *m,
-                                        PASSINDEXTYPE vt) const {
-  return get_value(internal::get_particle(m, vt));
-}
 
 void ClassnamePredicate::remove_if_not_equal(Model *m,
                                              PLURALINDEXTYPE &ps,
@@ -110,11 +105,6 @@ void ClassnamePredicate::remove_if_not_equal(Model *m,
   ps.erase(std::remove_if(ps.begin(), ps.end(),
                           make_predicate_not_equal(this, m, value)),
            ps.end());
-}
-
-int ClassnamePredicate::get_value(ARGUMENTTYPE vt) const {
-  IMPKERNEL_DEPRECATED_METHOD_DEF(2.1, "Use index version");
-  return get_value_index(internal::get_model(vt), internal::get_index(vt));
 }
 
 ClassnameScore::ClassnameScore(std::string name) : Object(name) {
@@ -130,6 +120,35 @@ double ClassnameScore::evaluate_indexes(Model *m,
   double ret = 0;
   for (unsigned int i = lower_bound; i < upper_bound; ++i) {
     ret += evaluate_index(m, o[i], da);
+  }
+  return ret;
+}
+
+double ClassnameScore::evaluate_indexes_scores(
+                Model *m, const PLURALINDEXTYPE &p,
+                DerivativeAccumulator *da, unsigned int lower_bound,
+                unsigned int upper_bound,
+                std::vector<double> &score) const {
+  double ret = 0;
+  for (unsigned int i = lower_bound; i < upper_bound; ++i) {
+    double s = evaluate_index(m, p[i], da);
+    score[i] = s;
+    ret += s;
+  }
+  return ret;
+}
+
+double ClassnameScore::evaluate_indexes_delta(
+                Model *m, const PLURALINDEXTYPE &p,
+                DerivativeAccumulator *da,
+                const std::vector<unsigned> &indexes,
+                std::vector<double> &score) const {
+  double ret = 0;
+  for (std::vector<unsigned>::const_iterator it = indexes.begin();
+       it != indexes.end(); ++it) {
+    double s = evaluate_index(m, p[*it], da);
+    ret = ret - score[*it] + s;
+    score[*it] = s;
   }
   return ret;
 }

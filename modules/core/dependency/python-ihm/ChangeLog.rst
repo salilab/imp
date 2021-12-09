@@ -1,3 +1,49 @@
+0.25 - 2021-12-03
+=================
+  - :func:`ihm.dictionary.Dictionary.validate` will now report errors for
+    any keywords or categories in the file that are not present in the
+    dictionary.
+  - :class:`ihm.LPeptideAlphabet` now supports the ASX and GLX ambiguous
+    residue types.
+
+0.24 - 2021-12-01
+=================
+  - :class:`ihm.AsymUnit` now supports insertion codes in its
+    ``auth_seq_id_map``. The target of this mapping can either be an
+    author-provided residue number (as previously) or a 2-element tuple
+    containing this number and an insertion code.
+  - :class:`ihm.AsymUnit` now allows the PDB or author-provided strand/chain ID
+    to be different from the regular ID.
+  - Bugfix: if two :class:`ihm.dictionary.Dictionary` objects both contain
+    information about a given category, adding the two dictionaries together
+    now combines the category information, rather than just using that from
+    one dictionary.
+  - Bugfix: :class:`ihm.dictionary.Dictionary` should now be able to validate
+    BinaryCIF files containing integer or float values (#66).
+
+0.23 - 2021-11-01
+=================
+  - Bugfix: _struct_ref.pdbx_seq_one_letter_code is now treated as the subset
+    of the reference (e.g. UniProt) sequence that overlaps with our Entities,
+    not the entire sequence (#64).
+
+0.22 - 2021-10-22
+=================
+  - The :class:`ihm.Software` class now allows a citation for the software
+    to be provided.
+  - A new :mod:`ihm.citations` module contains citations for some packages
+    that are commonly used in integrative modeling.
+
+0.21 - 2021-07-14
+=================
+  - BinaryCIF files now use UTF8 msgpack strings for all text, rather than
+    raw bytes. This should make python-ihm's BinaryCIF files interoperable
+    with those used by, e.g., CoordinateServer.
+  - Output mmCIF files now include author-provided numbering (auth_seq_id)
+    for atoms in the atom_site table. This should help packages that don't
+    read the pdbx_poly_seq_scheme table to show the desired residue
+    numbering (#61).
+
 0.20 - 2021-05-06
 =================
   - Support for Python 2.6 has been dropped. The library needs Python 2.7

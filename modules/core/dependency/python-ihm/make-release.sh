@@ -7,6 +7,8 @@
 # - Make release on GitHub
 # - Upload the release tarball from
 #   https://github.com/ihmwg/python-ihm/releases to Zenodo as a new release
+# - Make sure there are no extraneous .py files (setup.py will include them
+#   in the pypi package)
 
 # Make SWIG wrapper so users don't need SWIG
 rm -rf build src/ihm_format_wrap.c

@@ -28,9 +28,9 @@ struct KeyData : public RMF_LARGE_UNORDERED_MAP<NodeID, typename Traits::Type> {
   KeyData() {}
 };
 
-// boost flat_map::operator[] segfaults on Fedora 32; use std::map instead
+// boost flat_map::operator[] segfaults on Fedora 32+; use std::map instead
 template <class Traits>
-#if __GNUC__ == 10 && __GNUC_MINOR__ == 0
+#if __GNUC__ >= 10
 struct TypeData : std::map<ID<Traits>, KeyData<Traits> > {
   typedef std::map<ID<Traits>, KeyData<Traits> > P;
 #else

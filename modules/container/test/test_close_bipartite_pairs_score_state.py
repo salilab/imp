@@ -93,8 +93,8 @@ class Tests(IMP.test.TestCase):
     def test_filtering(self):
         """Testing that CloseBipartitePairContainer responds to changes in filters"""
         m = IMP.Model()
-        ps0 = IMP.get_indexes(self.create_particles_in_box(m, 30))
-        ps1 = IMP.get_indexes(self.create_particles_in_box(m, 30))
+        ps0 = list(IMP.get_indexes(self.create_particles_in_box(m, 30)))
+        ps1 = list(IMP.get_indexes(self.create_particles_in_box(m, 30)))
         for p in ps0 + ps1:
             IMP.core.XYZR.setup_particle(m, p, 1)
         # test rebuilding under move, set input and change radius

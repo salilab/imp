@@ -1087,7 +1087,7 @@ class PlaneDihedralRestraint(IMP.pmi.restraints.RestraintBase):
                                                      weight=weight)
 
         angle = math.pi * angle / 180.
-        ds = IMP.core.Cosine(.5 * k, 1., -angle)
+        ds = IMP.core.Cosine(.5 * k, 1, -angle)
         for i, t1 in enumerate(particle_triplets[:-1]):
             t2 = particle_triplets[i + 1]
             q1 = [t1[1], t1[0], t2[0], t2[1]]

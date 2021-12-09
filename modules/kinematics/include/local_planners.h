@@ -70,7 +70,7 @@ class IMPKINEMATICSEXPORT PathLocalPlanner : public LocalPlanner {
       found closest to q_rand (inclusive)
   */
   virtual std::vector<DOFValues> plan(DOFValues q_from, DOFValues q_rand,
-                                      ScoringFunction *sf);
+                                      ScoringFunction *sf) IMP_OVERRIDE;
 
  private:
   PointerMember<DirectionalDOF> d_;

@@ -46,6 +46,7 @@ RNAME_DEF(TYR);
 RNAME_DEF(TRP);
 RNAME_DEF(ACE);
 RNAME_DEF(NH2);
+RNAME_DEF(MSE);
 
 // RNA/DNA
 RNAME_DEF2(ADE, "A");
@@ -82,6 +83,9 @@ void Residue::show(std::ostream &out) const {
 
 void Residue::set_residue_type(ResidueType t) {
   get_particle()->set_value(get_residue_type_key(), t.get_index());
+
+  // Signal to the Model that the type has changed
+  get_model()->set_trigger_updated(get_type_changed_key());
 }
 
 IntKey Residue::get_index_key() {
@@ -99,24 +103,27 @@ IntKey Residue::get_insertion_code_key() {
   return k;
 }
 
+TriggerKey Residue::get_type_changed_key() {
+  static TriggerKey k("atom.type_changed");
+  return k;
+}
+
 Hierarchy get_next_residue(Residue rd) {
-  // only handle simple case so far
   Hierarchy p = rd.get_parent();
-  /*if (!p.get_as_chain()) {
-    IMP_NOT_IMPLEMENTED("get_next_residue() only handles the simple case"
-                        << " so far. Complain about it.");
-                        }*/
-  IMP_USAGE_CHECK(Chain::get_is_setup(p),
-                  "Parent of residue must be a chain. It is not.");
-  Hierarchy r = get_residue(Chain(p), rd.get_index() + 1);
-  return r;
+  while (p && !Chain::get_is_setup(p)) {
+    p = p.get_parent();
+  }
+  IMP_USAGE_CHECK(p, "Parent of residue must be a chain. It is not.");
+  return get_residue(Chain(p), rd.get_index() + 1);
 }
 
 Hierarchy get_previous_residue(Residue rd) {
-  // only handle simple case so far
   Hierarchy p = rd.get_parent();
-  Hierarchy r = get_residue(Chain(p), rd.get_index() - 1);
-  return r;
+  while (p && !Chain::get_is_setup(p)) {
+    p = p.get_parent();
+  }
+  IMP_USAGE_CHECK(p, "Parent of residue must be a chain. It is not.");
+  return get_residue(Chain(p), rd.get_index() - 1);
 }
 
 namespace {

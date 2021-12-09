@@ -27,7 +27,9 @@ class IMPEMEXPORT EMReaderWriter : public MapReaderWriter {
    \param[in] header DensityHeader() to store the header information
    \exception IOException in case that the filename was not found
    */
-  void read(const char *filename, float **data, DensityHeader &header);
+  void read(const char *filename, float **data,
+            DensityHeader &header) IMP_OVERRIDE;
+
   //! Writes a density file in EM format with the header information
   /**
      \param[in] filename name of the file to read
@@ -35,7 +37,7 @@ class IMPEMEXPORT EMReaderWriter : public MapReaderWriter {
      \param[in] header DensityHeader() with the header information
   */
   void write(const char *filename, const float *data,
-             const DensityHeader &header);
+             const DensityHeader &header) IMP_OVERRIDE;
 #endif
  protected:
   //! Reads the header

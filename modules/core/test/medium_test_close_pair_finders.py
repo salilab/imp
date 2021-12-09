@@ -30,13 +30,16 @@ class Tests(IMP.test.TestCase):
         # cpf.set_radius_key(rk)
         cpf.set_distance(dist)
         m = IMP.Model()
-        ps = IMP.get_indexes(self.create_particles_in_box(m, num))
+        ps = list(IMP.get_indexes(self.create_particles_in_box(m, num)))
         for i in range(0, len(ps)):
             IMP.core.XYZR.setup_particle(m, ps[i], random.uniform(rmin, rmax))
         # out.show()
         print("searching")
         cps = cpf.get_close_pairs(m, ps)
         print("done ")
+        # Coerce from numpy.array to plain Python array
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            cps = [tuple(p) for p in cps]
         self._check_close_pairs(m, ps, dist, cps)
         print("Done with all test")
 
@@ -172,6 +175,8 @@ class Tests(IMP.test.TestCase):
         cpf = IMP.core.RigidClosePairsFinder()
         cpf.set_distance(dist)
         cps = cpf.get_close_pairs(m, fps)
+        if IMP.IMP_KERNEL_HAS_NUMPY:
+            cps = [tuple(p) for p in cps]
         self._check_abiclose_pairs(m, free_ps, free_ps, dist, cps)
         self._check_abiclose_pairs(m, free_ps, rbpsa, dist, cps)
         self._check_abiclose_pairs(m, free_ps, rbpsb, dist, cps)

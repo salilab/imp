@@ -11,10 +11,10 @@ class Tests(IMP.test.TestCase):
         """Testing proper results for RMSD"""
         m = IMP.Model()
         # read PDB
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
-        mp1 = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                                m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp1 = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
         xyz = IMP.core.XYZs(IMP.atom.get_leaves(mp))
         xyz1 = IMP.core.XYZs(IMP.atom.get_leaves(mp1))
         # create a random transformation
@@ -57,10 +57,10 @@ class Tests(IMP.test.TestCase):
         """Testing proper results for native overlap"""
         m = IMP.Model()
         # read PDB
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
-        mp1 = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                                m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp1 = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
         xyz = IMP.core.XYZs(IMP.atom.get_leaves(mp))
         xyz1 = IMP.core.XYZs(IMP.atom.get_leaves(mp1))
         # create a random transformation

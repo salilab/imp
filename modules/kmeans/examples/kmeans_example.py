@@ -22,6 +22,7 @@ def add_points(km):
     km.add_data_pt([9.2, 11])
     km.add_data_pt([0, 0])
 
+
 IMP.set_log_level(IMP.PROGRESS)
 km = IMP.kmeans.KMeans()
 add_points(km)
@@ -43,5 +44,5 @@ print("Number of points: ", n)
 for i in range(0, n):
     print("Point ", i, ": ")
     print(km.get_data_point(i))
-    print("Cluster center: ", assignments[i], \
-        " sqrt-dist: ", sqrdist[i])
+    print("Cluster center: ", assignments[i],
+          " sqrt-dist: ", sqrdist[i])

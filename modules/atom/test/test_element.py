@@ -12,8 +12,8 @@ class Tests(IMP.test.TestCase):
         """Check assigning elements and masses to pdb with one protein"""
         m = IMP.Model()
         # read PDB, assign elements and masses
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
         atoms = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         # compute mass
         # mass is assigned using elements, so we are testing both here
@@ -42,8 +42,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
 
         #! read PDB
-        mp = IMP.atom.read_pdb(self.open_input_file("elements.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("elements.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 13)
         self.assertEqual(

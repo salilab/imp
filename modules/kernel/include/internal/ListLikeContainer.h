@@ -62,9 +62,41 @@ class ListLikeContainer : public Base {
     }
   }
 
+  template <class F>
+  void apply_generic_moved(const F *f, const ParticleIndexes &moved_pis,
+                           const ParticleIndexes &reset_pis) const {
+    Base::validate_readable();
+    if (get_number_of_threads() > 1) {
+      unsigned int tasks = 2 * get_number_of_threads();
+      unsigned int chunk_size =
+          std::max<unsigned int>(1U, data_.size() / tasks) + 1;
+      Model *m = Base::get_model();
+      for (unsigned int i = 0; i < tasks; ++i) {
+        unsigned int lb = i * chunk_size;
+        unsigned int ub =
+            std::min<unsigned int>(data_.size(), (i + 1) * chunk_size);
+        IMP_TASK_SHARED((lb, ub, m, f), (moved_pis, reset_pis),
+                 f->apply_indexes_moved(m, data_, lb, ub, moved_pis, reset_pis),
+                 "apply");
+      }
+      IMP_OMP_PRAGMA(taskwait)
+    } else {
+      f->apply_indexes_moved(Base::get_model(), data_, 0, data_.size(),
+                             moved_pis, reset_pis);
+    }
+  }
+
   //! apply sm->apply_indexes to data. Use parallel mode using IMP_TASK
   //! if get_number_of_threads()>=2
-  void do_apply(const typename Base::Modifier *sm) const { apply_generic(sm); }
+  void do_apply(const typename Base::Modifier *sm) const IMP_OVERRIDE {
+    apply_generic(sm);
+  }
+
+  void do_apply_moved(const typename Base::Modifier *sm,
+                      const ParticleIndexes &moved_pis,
+                      const ParticleIndexes &reset_pis) const IMP_OVERRIDE {
+    apply_generic_moved(sm, moved_pis, reset_pis);
+  }
 
   //! returns a copy of list indexes of appropriate type
   typename Base::ContainedIndexTypes get_indexes() const IMP_OVERRIDE {

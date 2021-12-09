@@ -24,8 +24,8 @@ def create_scoring(m, ps):
                                          "Restrained pairs")
     pr = IMP.container.PairsRestraint(score, pc)
     pr.set_maximum_score(.01)
-    d = IMP.core.DistanceToSingletonScore(IMP.core.HarmonicUpperBound(2, 1),
-                                          IMP.algebra.Vector3D(2, 0, 0))
+    # d = IMP.core.DistanceToSingletonScore(IMP.core.HarmonicUpperBound(2, 1),
+    #                                       IMP.algebra.Vector3D(2, 0, 0))
     return [pr]
 
 
@@ -96,7 +96,8 @@ class MyFilterTable(IMP.domino.SubsetFilterTable):
 
     def get_subset_filter(self, subset, excluded):
         # create a filter if self.p is in subset but not in excluded
-        if self.p in subset and self.p not in sum([list(x) for x in excluded], []):
+        if (self.p in subset
+                and self.p not in sum([list(x) for x in excluded], [])):
             # pass the position of self.p and the value that it must have
             return self.MyFilter(list(subset).index(self.p), self.s)
         else:
@@ -125,6 +126,7 @@ def create_sampler(m, ps, rs, pst):
     s.set_assignments_table(states)
     s.set_subset_filter_tables(filters)
     return s
+
 
 IMP.set_log_level(IMP.TERSE)
 m = IMP.Model()

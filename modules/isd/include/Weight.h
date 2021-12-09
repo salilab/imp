@@ -118,9 +118,6 @@ class IMPISDEXPORT Weight : public Decorator {
    */
   void add_weight(Float wi = 0);
 
-  IMPISD_DEPRECATED_METHOD_DECL(2.12)
-  Int get_number_of_states() const;
-
   //! Get number of weights.
   Int get_number_of_weights() const;
 

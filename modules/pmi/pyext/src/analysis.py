@@ -1329,7 +1329,7 @@ class GetContactMap(object):
             residue_indexes = []
             for p in particles_dictionary[name]:
                 print(p.get_name())
-                residue_indexes += IMP.pmi.tools.get_residue_indexes(p)
+                residue_indexes.extend(IMP.pmi.tools.get_residue_indexes(p))
 
             if len(residue_indexes) != 0:
                 self.protnames.append(name)
@@ -1707,7 +1707,7 @@ class CrossLinkTable(object):
             name = i.get_name()
             residue_indexes = []
             for p in IMP.atom.get_leaves(i):
-                residue_indexes += IMP.pmi.tools.get_residue_indexes(p)
+                residue_indexes.extend(IMP.pmi.tools.get_residue_indexes(p))
 
             if len(residue_indexes) != 0:
                 self.prot_length_dict[name] = max(residue_indexes)

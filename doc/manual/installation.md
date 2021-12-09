@@ -35,6 +35,9 @@ In order to build %IMP from source, you will need:
 The following prerequisites are _optional_; without them some parts of %IMP
 will not build, and some will not function optimally.
 
+- The [NumPy](https://numpy.org/) library is strongly recommended; if %IMP
+  is built with NumPy, many operations that transfer data between C++ and Python
+  become more efficient.
 - [Doxygen](http://www.doxygen.org/) (only exactly version 1.8.6 is supported)
   and [Graphviz](http://www.graphviz.org/): required for building
   documentation.
@@ -55,7 +58,7 @@ will not build, and some will not function optimally.
 - [Protobuf](https://github.com/google/protobuf): needed to use the
   IMP.npctransport module.
 - An [MPI](@ref IMP::mpi) library is needed to use the IMP.mpi module.
-- The [numpy, scipy](http://www.scipy.org/scipylib/download.html),
+- The [scipy](http://www.scipy.org/scipylib/download.html),
   [scikit-learn](http://scikit-learn.org/stable/install.html),
   and [matplotlib](http://matplotlib.org/downloads.html)
   Python libraries are also recommended.
@@ -77,7 +80,7 @@ All of the prerequisites should be available as pre-built packages for
 your Linux distribution of choice. For example, on a Fedora system the
 following should install most of the prerequisites:
 
-        sudo dnf install boost-devel gperftools-devel CGAL-devel graphviz gsl-devel cmake hdf5-devel swig fftw-devel opencv-devel
+        sudo dnf install boost-devel gperftools-devel CGAL-devel graphviz gsl-devel cmake hdf5-devel swig fftw-devel opencv-devel python3-numpy
 
 ### Getting prerequisites on a Mac {#installation_prereqs_mac}
 

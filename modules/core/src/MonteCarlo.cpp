@@ -29,13 +29,15 @@ MonteCarlo::MonteCarlo(Model *m)
       stat_upward_steps_taken_(0),
       stat_num_failures_(0),
       return_best_(true),
+      score_moved_(false),
       rand_(0, 1) {
   min_score_ = -std::numeric_limits<double>::max();
 }
 
 bool MonteCarlo::do_accept_or_reject_move(double score, double last,
-                                          double proposal_ratio) {
+                                          const MonteCarloMoverResult &moved) {
   bool ok = false;
+  double proposal_ratio = moved.get_proposal_ratio();
   if (score < last) {
     ++stat_downward_steps_taken_;
     ok = true;
@@ -63,6 +65,9 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last,
     for (int i = get_number_of_movers() - 1; i >= 0; --i) {
       get_mover(i)->accept();
     }
+    if (score_moved_) {
+      reset_pis_.clear();
+    }
     return true;
   } else {
     IMP_LOG_TERSE("Reject: " << score << " current score stays " << last
@@ -71,6 +76,11 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last,
       get_mover(i)->reject();
     }
     ++stat_num_failures_;
+    if (score_moved_) {
+      // Need to return the moved particles' restraints to their previous
+      // values at the next scoring function evaluation
+      reset_pis_ = moved.get_moved_particles();
+    }
     if (isf_) {
       isf_->reset_moved_particles();
     }
@@ -116,8 +126,8 @@ struct MoverCleanup {
 void MonteCarlo::do_step() {
   MonteCarloMoverResult moved = do_move();
   MoverCleanup cleanup(this);
-  double energy = do_evaluate(moved.get_moved_particles());
-  do_accept_or_reject_move(energy, moved.get_proposal_ratio());
+  double energy = do_evaluate(moved.get_moved_particles(), false);
+  do_accept_or_reject_move(energy, moved);
   cleanup.reset();
 }
 
@@ -144,10 +154,11 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
               ValueException);
   }
 
+  reset_pis_.clear();
   ParticleIndexes movable = get_movable_particles();
 
   // provide a way of feeding in this value
-  last_energy_ = do_evaluate(movable);
+  last_energy_ = do_evaluate(movable, true);
   if (return_best_) {
     best_ = new Configuration(get_model());
     best_energy_ = last_energy_;
@@ -173,7 +184,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     best_->swap_configuration();
     IMP_LOG_TERSE("MC Returning energy " << best_energy_ << std::endl);
     IMP_IF_CHECK(USAGE) {
-      IMP_LOG_TERSE("MC Got " << do_evaluate(get_movable_particles())
+      IMP_LOG_TERSE("MC Got " << do_evaluate(get_movable_particles(), true)
                               << std::endl);
       /*IMP_INTERNAL_CHECK((e >= std::numeric_limits<double>::max()
                           && best_energy_ >= std::numeric_limits<double>::max())
@@ -183,7 +194,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
                          << best_energy_ << " vs " << e << std::endl);*/
     }
 
-    return do_evaluate(movable);
+    return do_evaluate(movable, true);
   } else {
     return last_energy_;
   }
@@ -202,12 +213,13 @@ void MonteCarloWithLocalOptimization::do_step() {
   MonteCarloMoverResult moved = do_move();
   MoverCleanup cleanup(this);
   IMP_LOG_TERSE("MC Performing local optimization from "
-                << do_evaluate(moved.get_moved_particles()) << std::endl);
+                << do_evaluate(moved.get_moved_particles(), false)
+                << std::endl);
   // non-Mover parts of the model can be moved by the local optimizer
   // make sure they are cleaned up
   PointerMember<Configuration> cs = new Configuration(get_model());
   double ne = opt_->optimize(num_local_);
-  if (!do_accept_or_reject_move(ne, moved.get_proposal_ratio())) {
+  if (!do_accept_or_reject_move(ne, moved)) {
     cs->swap_configuration();
   }
   cleanup.reset();
@@ -221,11 +233,12 @@ void MonteCarloWithBasinHopping::do_step() {
   MonteCarloMoverResult moved = do_move();
   MoverCleanup cleanup(this);
   IMP_LOG_TERSE("MC Performing local optimization from "
-                << do_evaluate(moved.get_moved_particles()) << std::endl);
+                << do_evaluate(moved.get_moved_particles(), false)
+                << std::endl);
   Pointer<Configuration> cs = new Configuration(get_model());
   double ne = get_local_optimizer()->optimize(get_number_of_steps());
   cs->swap_configuration();
-  do_accept_or_reject_move(ne, moved.get_proposal_ratio());
+  do_accept_or_reject_move(ne, moved);
   cleanup.reset();
 }
 

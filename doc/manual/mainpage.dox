@@ -70,6 +70,7 @@ complex might want to skip ahead to
    - [Writing new code](@ref new_code)
    - [Working with source control](@ref scm)
    - [Adding external dependencies](@ref extdepends)
+   - [Python-only modules](@ref pyonlymod)
    - [Design example](@ref design_example)
    - [Tools for developers](@ref dev_tools)
    - [Documenting your code](@ref documenting)

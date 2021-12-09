@@ -2,29 +2,10 @@
 
 
 %{
-#if IMP_KERNEL_HAS_NUMPY
-#include <numpy/arrayobject.h>
-
-static bool import_numpy_module()
-{
-  static bool imported;
-
-  if (imported) {
-    return true;
-  } else {
-    int ret = _import_array();
-    if (ret == 0) {
-      imported = true;
-    }
-    return (ret == 0);
-  }
-}
-#endif
-
 PyObject *_get_floats_data_numpy(PyObject *m_pyobj, unsigned sz, double *data)
 {
 #if IMP_KERNEL_HAS_NUMPY
-  if (!import_numpy_module()) {
+  if (numpy_import_retval != 0) {
     return NULL;
   }
 
@@ -55,7 +36,7 @@ PyObject *_get_floats_data_numpy(PyObject *m_pyobj, unsigned sz, double *data)
 PyObject *_get_ints_data_numpy(PyObject *m_pyobj, unsigned sz, int *data)
 {
 #if IMP_KERNEL_HAS_NUMPY
-  if (!import_numpy_module()) {
+  if (numpy_import_retval != 0) {
     return NULL;
   }
 
@@ -113,7 +94,7 @@ PyObject *_get_spheres_data_numpy(PyObject *m_pyobj, unsigned sz,
                                   algebra::Sphere3D *data)
 {
 #if IMP_KERNEL_HAS_NUMPY
-  if (!import_numpy_module()) {
+  if (numpy_import_retval != 0) {
     return NULL;
   }
 
@@ -197,19 +178,51 @@ PyObject *_get_sphere_derivatives_numpy(IMP::Model *m, PyObject *m_pyobj)
 
 %extend IMP::Model {
   %pythoncode %{
-    def _get_ints_numpy(self, k):
+    def get_ints_numpy(self, k):
+        """Get the model's attribute array for IntKey k as a NumPy array.
+           The array is indexed by ParticleIndex; particles that don't have
+           this attribute will either be off the end of the array or will have
+           the value INT_MAX.
+           This is a NumPy view that shares memory with the Model. Thus,
+           any changes to values in this list will be reflected in the Model.
+           Also, if the Model attribute array moves in memory (e.g. if particles
+           or attributes are added) this array will be invalidated, so it is
+           unsafe to keep it around long term.
+        """
         return _get_ints_numpy(self, k, self)
 
-    def _get_floats_numpy(self, k):
+    def get_floats_numpy(self, k):
+        """Get the model's attribute array for FloatKey k as a NumPy array.
+           See Model::get_ints_numpy() for more details."""
         return _get_floats_numpy(self, k, self)
 
-    def _get_derivatives_numpy(self, k):
+    def get_derivatives_numpy(self, k):
+        """Get the model's attribute derivatives array for FloatKey k
+           as a NumPy array. See Model::get_ints_numpy() for more details."""
         return _get_derivatives_numpy(self, k, self)
 
-    def _get_spheres_numpy(self):
+    def get_spheres_numpy(self):
+        """Get the model's XYZR attribute arrays as NumPy arrays.
+           The attribute arrays for Cartesian coordinates and radii are
+           stored separately from those for other FloatKeys. This function
+           returns a tuple of two NumPy arrays, the first of coordinates and
+           the second of radii. See Model::get_ints_numpy() for more details."""
         return _get_spheres_numpy(self, self)
 
-    def _get_sphere_derivatives_numpy(self):
+    def get_sphere_derivatives_numpy(self):
+        """Get the model's XYZR attribute derivatives arrays as NumPy arrays.
+           See Model::get_ints_numpy() for more details."""
         return _get_sphere_derivatives_numpy(self, self)
   %}
 }
+
+// Always treat particle indexes as numpy.int32 when using numpy
+#if IMP_KERNEL_HAS_NUMPY
+%pythoncode %{
+try:
+    import numpy
+    ParticleIndex = numpy.int32
+except ImportError:
+    pass
+%}
+#endif

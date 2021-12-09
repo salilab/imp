@@ -1,8 +1,8 @@
 ## \example domino/six_particles_optimization.py
-# Optimize six particles on a 2D unit grid. In order to remove translation degrees
-# of freedom, the 0th particle is pinned at the origin by allowing it only a
-# single conformation. To remove flips, the first particle is restrained to
-# have a positive x coordinate.
+# Optimize six particles on a 2D unit grid. In order to remove translation
+# degrees of freedom, the 0th particle is pinned at the origin by allowing
+# it only a single conformation. To remove flips, the first particle is
+# restrained to have a positive x coordinate.
 
 from __future__ import print_function
 import IMP
@@ -87,6 +87,7 @@ def create_sampler(m, r, pst):
     s.set_subset_filter_tables(filters)
 
     return s
+
 
 IMP.set_log_level(IMP.TERSE)
 m = IMP.Model()

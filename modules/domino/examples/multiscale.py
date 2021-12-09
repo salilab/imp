@@ -19,22 +19,20 @@ for i, d in enumerate(ds):
 
 k = 1
 h = IMP.core.Harmonic(0, k)
-r0 = IMP.core.SingletonRestraint(m,
-    IMP.core.DistanceToSingletonScore(h, IMP.algebra.Vector3D(0, 0, 0)),
+r0 = IMP.core.SingletonRestraint(
+    m, IMP.core.DistanceToSingletonScore(h, IMP.algebra.Vector3D(0, 0, 0)),
     ds[0].get_particle_index(), "0 at origin")
 
-r1 = IMP.core.SingletonRestraint(m, IMP.core.AttributeSingletonScore(h,
-                                                                  IMP.core.XYZ.get_xyz_keys(
-                                                                  )[0]),
-                                 ds[1].get_particle_index(), "1 on axis")
+r1 = IMP.core.SingletonRestraint(
+    m, IMP.core.AttributeSingletonScore(h, IMP.core.XYZ.get_xyz_keys()[0]),
+    ds[1].get_particle_index(), "1 on axis")
 
 rs = [r0, r1]
 for pr in [(0, 1), (1, 2), (0, 2)]:
-    r = IMP.core.PairRestraint(m,
-                 IMP.core.HarmonicSphereDistancePairScore(0, k),
-                 (ds[pr[0]].get_particle_index(),
-                  ds[pr[1]].get_particle_index()),
-                 "R for " + str(pr))
+    r = IMP.core.PairRestraint(
+        m, IMP.core.HarmonicSphereDistancePairScore(0, k),
+        (ds[pr[0]].get_particle_index(), ds[pr[1]].get_particle_index()),
+        "R for " + str(pr))
     rs.append(r)
 
 
@@ -66,6 +64,7 @@ def setup(cover, scale):
     sampler.set_log_level(IMP.SILENT)
     return (sampler, lf, pst)
 
+
 (sampler, lf, pst) = setup(covers[0], 4.0)
 
 subset = IMP.domino.Subset(ds)
@@ -81,6 +80,7 @@ def get_mapping(cover0, cover1):
         nns = nn.get_nearest_neighbor(p)
         ret[nns].append(i)
     return ret
+
 
 mw = IMP.display.PymolWriter("mapping.pym")
 

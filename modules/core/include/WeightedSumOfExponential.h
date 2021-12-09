@@ -38,7 +38,8 @@ class WeightedSumOfExponential : public UnaryFunction {
 
   }
 
-  virtual DerivativePair evaluate_with_derivative(double feature) const {
+  virtual DerivativePair evaluate_with_derivative(
+                  double feature) const IMP_OVERRIDE {
     double exp_sum = 0;
     double derv_num = 0;
     double weight_exp;
@@ -52,7 +53,7 @@ class WeightedSumOfExponential : public UnaryFunction {
     return DerivativePair(-std::log(exp_sum) * denom_, derv_num / exp_sum);
   }
 
-  virtual double evaluate(double feature) const {
+  virtual double evaluate(double feature) const IMP_OVERRIDE {
     double exp_sum = 0;
     for (unsigned int i = 0; i < funcs_.size(); ++i) {
       exp_sum += weights_[i] * std::exp(-funcs_[i]->evaluate(feature) / denom_);

@@ -2,11 +2,13 @@ import utils
 import os
 import unittest
 import sys
+from test_format_bcif import MockMsgPack, MockFh
 
 if sys.version_info[0] >= 3:
     from io import StringIO, BytesIO
 else:
-    from io import BytesIO as StringIO
+    from io import BytesIO
+    StringIO = BytesIO
 
 TOPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 utils.set_search_paths(TOPDIR)
@@ -196,6 +198,49 @@ save_
         self._check_other_test_dictionary(d2)
         self._check_summed_dictionary(d)
 
+    def test_add_update(self):
+        """Test add Dictionaries that both contain same Category"""
+        d1 = make_test_dictionary()
+        d2 = ihm.dictionary.Dictionary()
+
+        c = ihm.dictionary.Category()
+        c.name = 'test_mandatory_category'
+        c.mandatory = True
+        add_keyword("baz", False, c)
+        d2.categories[c.name] = c
+        d = d1 + d2
+        self.assertEqual(sorted(d.categories.keys()),
+                         ['test_mandatory_category', 'test_optional_category'])
+        ks = sorted(d.categories['test_mandatory_category'].keywords.keys())
+        # Category should now contain keywords from from dictionaries
+        self.assertEqual(ks, ['bar', 'baz', 'foo'])
+
+    def test_category_update(self):
+        """Test Category._update()"""
+        cman = ihm.dictionary.Category()
+        cman.name = 'test_mandatory_category'
+        cman.description = 'my description'
+        cman.mandatory = True
+        add_keyword("foo", False, cman)
+
+        coth = ihm.dictionary.Category()
+        coth.name = 'test_mandatory_category'
+        coth.description = 'desc2'
+        coth.mandatory = False
+        add_keyword("bar", False, coth)
+
+        cman._update(coth)
+        self.assertIs(cman.mandatory, True)
+        self.assertEqual(cman.description, 'my description')
+        self.assertEqual(sorted(cman.keywords.keys()), ['bar', 'foo'])
+
+        cnone = ihm.dictionary.Category()
+        cnone.name = 'test_mandatory_category'
+        cnone._update(coth)
+        self.assertIs(cnone.mandatory, False)
+        self.assertEqual(cnone.description, 'desc2')
+        self.assertEqual(sorted(cnone.keywords.keys()), ['bar'])
+
     def test_add_inplace(self):
         """Test adding two Dictionaries in place"""
         d1 = make_test_dictionary()
@@ -232,6 +277,20 @@ save_
         """Test successful validation"""
         d = make_test_dictionary()
         d.validate(StringIO("_test_mandatory_category.bar 1"))
+
+    def test_validate_ok_binary_cif(self):
+        """Test successful validation of BinaryCIF input"""
+        sys.modules['msgpack'] = MockMsgPack
+        d = make_test_dictionary()
+        fh = MockFh()
+        writer = ihm.format_bcif.BinaryCifWriter(fh)
+        writer.start_block('ihm')
+        with writer.category('_test_mandatory_category') as loc:
+            loc.write(bar=1)
+        with writer.category('_test_optional_category') as loc:
+            loc.write(bar='enum1')
+        writer.flush()
+        d.validate(fh.data, format='BCIF')
 
     def test_validate_multi_data_ok(self):
         """Test successful validation of multiple data blocks"""
@@ -360,6 +419,21 @@ _test_mandatory_category.bar 2
                           StringIO(prefix +
                                    "_test_optional_category.bar .\n"
                                    "_test_optional_category.baz 42"))
+
+    def test_unknown_category(self):
+        """Test validator failure for unknown categories"""
+        d = make_test_dictionary()
+        self.assertRaises(
+            ihm.dictionary.ValidatorError, d.validate,
+            StringIO("_test_mandatory_category.bar 1\n_foo.bar baz"))
+
+    def test_unknown_keyword(self):
+        """Test validator failure for unknown keywords"""
+        d = make_test_dictionary()
+        self.assertRaises(
+            ihm.dictionary.ValidatorError, d.validate,
+            StringIO("_test_mandatory_category.bar 1\n"
+                     "_test_mandatory_category.unk 42"))
 
 
 if __name__ == '__main__':

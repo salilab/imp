@@ -51,16 +51,10 @@ IMPKERNELEXPORT DependencyGraph get_dependency_graph(Model *m);
 */
 IMPKERNELEXPORT DependencyGraph get_pruned_dependency_graph(Model *m);
 
-/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
-IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
 IMPKERNELEXPORT ScoreStatesTemp
     get_required_score_states(ModelObject *p, const ModelObjectsTemp &all,
                               const DependencyGraph &dg,
                               const DependencyGraphVertexIndex &index);
-/** @} */
-
-/** \deprecated_at{2.1} You should act directly on the ModelObjects instead. */
-IMPKERNEL_DEPRECATED_FUNCTION_DECL(2.1)
 IMPKERNELEXPORT ParticlesTemp
     get_dependent_particles(ModelObject *p, const ModelObjectsTemp &all,
                             const DependencyGraph &dg,
@@ -72,6 +66,22 @@ IMPKERNELEXPORT ParticlesTemp
     \note The list may contain duplicates. */
 IMPKERNELEXPORT RestraintsTemp
     get_dependent_restraints(Model *m, ParticleIndex pi);
+
+//! Return all ScoreStates that depend on this Particle.
+/** \note The list may contain duplicates. */
+IMPKERNELEXPORT ScoreStatesTemp
+    get_dependent_score_states(Model *m, ParticleIndex pi);
+
+//! Return all ScoreStates that are required by this Particle.
+/** \note The list may contain duplicates. */
+IMPKERNELEXPORT ScoreStatesTemp
+    get_required_score_states(Model *m, ParticleIndex pi);
+
+//! Return all Particles that depend on this Particle.
+/** \note The list may contain duplicates. */
+IMPKERNELEXPORT ParticlesTemp
+    get_dependent_particles(Model *m, ParticleIndex pi);
+
 #endif
 
 IMPKERNEL_END_NAMESPACE

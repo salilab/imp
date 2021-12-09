@@ -195,6 +195,9 @@ Requires:      python2
 %if 0%{?fedora} > 0 && 0%{?fedora} < 32
 Requires: python2-protobuf
 %endif
+%if 0%{?fedora} < 34 || 0%{?rhel}
+Requires: python2-numpy
+%endif
 
 %description python2
 This package contains wrappers for Python 2 (the base package already
@@ -435,14 +438,10 @@ cp /usr/%{_lib}/libCGAL.so.10 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 %endif
 %endif
 
-# Don't distribute example application, dependency, or system
-pydir=${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages
-rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/example \
-       ${RPM_BUILD_ROOT}%{_libdir}/libimp_example_system* \
+# Don't distribute example application or dependency
+rm -rf ${RPM_BUILD_ROOT}%{_prefix}/bin/imp_example_app \
        ${RPM_BUILD_ROOT}%{_libdir}/libexample* \
-       ${RPM_BUILD_ROOT}%{_prefix}/include/example* \
-       ${pydir}/IMP/example_system_local \
-       ${pydir}/_IMP_example_system_local.so
+       ${RPM_BUILD_ROOT}%{_prefix}/include/example*
 
 # Make sure all Python applications and build tools use the same Python
 # we built with
@@ -543,6 +542,9 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %endif
 
 %changelog
+* Thu Dec 16 2021 Ben Webb <ben@salilab.org>   2.16.0-1
+- 2.16.0 release.
+
 * Wed Jun 02 2021 Ben Webb <ben@salilab.org>   2.15.0-1
 - 2.15.0 release.
 

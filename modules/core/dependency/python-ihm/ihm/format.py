@@ -4,7 +4,9 @@
    only concerned with handling syntactically correct CIF - it does not know
    the set of tables or the mapping to ihm objects. For that,
    see :mod:`ihm.dumper` for writing and :mod:`ihm.reader` for reading.
-"""
+
+   See also the `stream parser example <https://github.com/ihmwg/python-ihm/blob/main/examples/stream_parser.py>`_.
+"""  # noqa: E501
 
 from __future__ import print_function
 import sys
@@ -293,15 +295,18 @@ class CifReader(_Reader):
        :param dict category_handler: A dict to handle data
               extracted from the file. Keys are category names
               (e.g. "_entry") and values are objects that have a `__call__`
-              method. The names of the arguments to this `__call__` method
+              method and `not_in_file`, `omitted`, and `unknown` attributes.
+              The names of the arguments to this `__call__` method
               are mmCIF keywords that are extracted from the file (for the
               keywords tr_vector[N] and rot_matrix[N][M] simply omit the [
               and ] characters, since these are not valid for Python
               identifiers). The object will be called with the data from
-              the file as a set of strings, or None for any keyword that is
-              not present in the file or is the mmCIF omitted value (.).
-              (mmCIF keywords are case insensitive, so this class always treats
-              them as lowercase regardless of the file contents.)
+              the file as a set of strings, or `not_in_file`, `omitted` or
+              `unkonwn` for any keyword that is not present in the file,
+              the mmCIF omitted value (.), or mmCIF unknown value (?)
+              respectively. (mmCIF keywords are case insensitive, so this
+              class always treats them as lowercase regardless of the
+              file contents.)
        :param unknown_category_handler: A callable (or `None`) that is called
               for each category in the file that isn't handled; it is given
               two arguments: the name of the category, and the line in the

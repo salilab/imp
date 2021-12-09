@@ -7,7 +7,7 @@ and score data.
 
 The RMF source code is available [on github](https://github.com/salilab/rmf/).
 It can be built standalone, although it is generally used as part of
-[IMP](http://integrativemodeling.org).
+[IMP](https://integrativemodeling.org).
 
 See
 - [Installation](\ref installation) for information on obtaining and installing RMF.
@@ -25,4 +25,4 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    https://www.apache.org/licenses/LICENSE-2.0

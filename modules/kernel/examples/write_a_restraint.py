@@ -1,5 +1,7 @@
 ## \example kernel/write_a_restraint.py
-# While we do not recommend doing serious work using restraints written in Python, it is often useful when prototyping or testing code. Copy this example and modify as needed.
+# While we do not recommend doing serious work using restraints written
+# in Python, it is often useful when prototyping or testing code.
+# Copy this example and modify as needed.
 #
 
 from __future__ import print_function
@@ -37,6 +39,7 @@ class MyRestraint(IMP.Restraint):
 
     def do_get_inputs(self):
         return self.ps
+
 
 # some code to create and evaluate it
 k = IMP.FloatKey("a key")

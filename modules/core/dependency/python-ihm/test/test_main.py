@@ -53,6 +53,9 @@ class Tests(unittest.TestCase):
         # Formula with known elements and no charge
         cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P')
         self.assertAlmostEqual(cc.formula_weight, 115.136, delta=0.01)
+        # Formula with element 'X' (e.g. GLX, ASX)
+        cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P X2')
+        self.assertAlmostEqual(cc.formula_weight, 115.136, delta=0.01)
         # Formula with known elements and formal charge
         cc = ihm.ChemComp('X', 'X', 'X', formula='C6 H12 P 1')
         self.assertAlmostEqual(cc.formula_weight, 115.136, delta=0.01)
@@ -101,13 +104,19 @@ class Tests(unittest.TestCase):
         self.assertAlmostEqual(a._comps['M'].formula_weight, 149.211,
                                delta=0.01)
 
+        self.assertEqual(a._comps['Z'].id, 'GLX')
+        self.assertEqual(a._comps['Z'].name, "GLU/GLN AMBIGUOUS")
+        self.assertEqual(a._comps['Z'].formula, 'C5 H8 N O2 X2')
+        self.assertAlmostEqual(a._comps['Z'].formula_weight, 114.124,
+                               delta=0.01)
+
         a = ihm.LPeptideAlphabet()
         self.assertIn('MSE', a)
         self.assertNotIn('DG', a)
-        self.assertEqual(len(a.keys), 22)
-        self.assertEqual(len(a.values), 22)
+        self.assertEqual(len(a.keys), 24)
+        self.assertEqual(len(a.values), 24)
         self.assertEqual(sorted(a.keys)[0], 'A')
-        self.assertEqual(len(a.items), 22)
+        self.assertEqual(len(a.items), 24)
         item0 = sorted(a.items)[0]
         self.assertEqual(item0[0], 'A')
         self.assertEqual(item0[1].id, 'ALA')
@@ -237,7 +246,8 @@ class Tests(unittest.TestCase):
         s4 = ihm.Software(name='bar', version='1.0',
                           classification='a', description='b', location='c')
         s5 = ihm.Software(name='bar', version=ihm.unknown,
-                          classification='a', description='b', location='c')
+                          classification='a', description='b', location='c',
+                          citation='foo')
         # Should compare equal iff name and version both match
         self.assertEqual(s1, s3)
         self.assertEqual(hash(s1), hash(s3))
@@ -325,6 +335,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(r.asym, a)
         self.assertEqual(r.seq_id, 3)
         self.assertEqual(r.auth_seq_id, 8)
+        self.assertIsNone(r.ins_code)
 
     def test_atom_entity(self):
         """Test Atom class built from an Entity"""
@@ -395,23 +406,23 @@ class Tests(unittest.TestCase):
         """Test auth_seq_id offset from seq_id"""
         e = ihm.Entity('AHCDAH')
         a = ihm.AsymUnit(e, auth_seq_id_map=5)
-        self.assertEqual(a._get_auth_seq_id(1), 6)
+        self.assertEqual(a._get_auth_seq_id_ins_code(1), (6, None))
 
     def test_auth_seq_id_dict(self):
         """Test auth_seq_id dict map from seq_id"""
         e = ihm.Entity('AHCDAH')
-        a = ihm.AsymUnit(e, auth_seq_id_map={1: 0, 2: 4})
-        self.assertEqual(a._get_auth_seq_id(1), 0)
-        self.assertEqual(a._get_auth_seq_id(2), 4)
-        self.assertEqual(a._get_auth_seq_id(3), 3)
+        a = ihm.AsymUnit(e, auth_seq_id_map={1: 0, 2: (4, 'A')})
+        self.assertEqual(a._get_auth_seq_id_ins_code(1), (0, None))
+        self.assertEqual(a._get_auth_seq_id_ins_code(2), (4, 'A'))
+        self.assertEqual(a._get_auth_seq_id_ins_code(3), (3, None))
 
     def test_auth_seq_id_list(self):
         """Test auth_seq_id list map from seq_id"""
         e = ihm.Entity('AHCDAH')
         a = ihm.AsymUnit(e, auth_seq_id_map=[None, 0, 4])
-        self.assertEqual(a._get_auth_seq_id(1), 0)
-        self.assertEqual(a._get_auth_seq_id(2), 4)
-        self.assertEqual(a._get_auth_seq_id(3), 3)
+        self.assertEqual(a._get_auth_seq_id_ins_code(1), (0, None))
+        self.assertEqual(a._get_auth_seq_id_ins_code(2), (4, None))
+        self.assertEqual(a._get_auth_seq_id_ins_code(3), (3, None))
 
     def test_assembly(self):
         """Test Assembly class"""
@@ -581,17 +592,31 @@ class Tests(unittest.TestCase):
                           authors=['Smith A', 'Jones B'],
                           doi='1.2.3.4',
                           pmid='1234')
+        c3 = ihm.Citation(title='Test paper2', journal='J Mol Biol2',
+                          volume=46, page_range=(1, 20), year=2017,
+                          authors=['Smith A', 'Jones B'],
+                          doi='5.6.7.8',
+                          pmid='5678')
         rsr1 = MockObject()  # Not a 3dem restraint
         rsr2 = MockObject()  # 3dem but with no provided citation
         rsr2.fitting_method_citation_id = None
         rsr3 = MockObject()
         rsr2.fitting_method_citation_id = c1
 
+        s1 = ihm.Software(name='test', classification='test code',
+                          description='Some test program',
+                          version=1, location='http://test.org')
+        s2 = ihm.Software(name='test', classification='test code',
+                          description='Some test program',
+                          version=1, location='http://test.org',
+                          citation=c3)
+
         s = ihm.System()
         s.restraints.extend((rsr1, rsr2, rsr3))
         s.citations.extend((c2, c2))
+        s.software.extend((s1, s2))
         # duplicates should be filtered globally
-        self.assertEqual(list(s._all_citations()), [c2, c1])
+        self.assertEqual(list(s._all_citations()), [c2, c3, c1])
 
     def test_all_software(self):
         """Test _all_software() method"""

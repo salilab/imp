@@ -3,6 +3,7 @@ import IMP.pmi
 import IMP.pmi.topology
 import IMP.pmi.macros
 import os
+import string
 import warnings
 import IMP.test
 import IMP.rmf
@@ -119,6 +120,21 @@ class Tests(IMP.test.TestCase):
                       str(w.message))
         self.assertIs(w.category, IMP.pmi.StructureWarning)
 
+    def test_custom_chain_ids(self):
+        """Check that custom chain IDs can be given to BuildSystem"""
+        mdl = IMP.Model()
+        tfile = self.get_input_file_name('topology_simple.txt')
+        input_dir = os.path.dirname(tfile)
+        t = IMP.pmi.topology.TopologyReader(tfile,
+                                            pdb_dir=input_dir,
+                                            fasta_dir=input_dir,
+                                            gmm_dir=input_dir)
+        bs = IMP.pmi.macros.BuildSystem(mdl)
+        bs.add_state(t, chain_ids='0123456789')
+        root_hier, dof = bs.execute_macro()
+        chains = IMP.atom.get_by_type(root_hier, IMP.atom.CHAIN_TYPE)
+        self.assertEqual([IMP.atom.Chain(c).get_id() for c in chains], ['0'])
+
     def test_keep_chain_id(self):
         """Check that keep_chain_id works"""
         mdl = IMP.Model()
@@ -141,6 +157,49 @@ class Tests(IMP.test.TestCase):
         w, = cw
         self.assertIn("No PDBs specified for Prot3,", str(w.message))
         self.assertIs(w.category, IMP.pmi.ParameterWarning)
+
+    def test_multi_char_chain(self):
+        """Check that multi-char chain IDs work"""
+        mdl = IMP.Model()
+        tfile = self.get_input_file_name('topology_multi_char_chain.txt')
+        input_dir = os.path.dirname(tfile)
+        t = IMP.pmi.topology.TopologyReader(tfile,
+                                            pdb_dir=input_dir,
+                                            fasta_dir=input_dir,
+                                            gmm_dir=input_dir)
+        bs = IMP.pmi.macros.BuildSystem(mdl)
+        bs.add_state(t)
+        root_hier, dof = bs.execute_macro()
+        chains = IMP.atom.get_by_type(root_hier, IMP.atom.CHAIN_TYPE)
+        self.assertEqual([IMP.atom.Chain(c).get_id() for c in chains],
+                         list(string.ascii_uppercase)
+                         + ['A'+x for x in string.ascii_uppercase]
+                         + ['B'+x for x in string.ascii_uppercase[:17]])
+
+        # Cannot output PDB since we have multi-char chains
+        output = IMP.pmi.output.Output()
+        self.assertRaises(ValueError, output.init_pdb,
+                          "test_multi_char.pdb", root_hier)
+        os.unlink('test_multi_char.pdb')
+
+        # Make sure chains in struct_asym are in the right order
+        output = IMP.pmi.output.Output()
+        output.init_pdb("test_multi_char.cif", root_hier, mmcif=True)
+        output.write_pdb("test_multi_char.cif")
+        asym = []
+        with open('test_multi_char.cif') as fh:
+            for line in fh:
+                if line.startswith('_struct_asym.details'):
+                    break
+            for line in fh:
+                if line.startswith('#'):
+                    break
+                asym.append(line.split()[0])
+        self.assertEqual(asym,
+                         list(string.ascii_uppercase)
+                         + ['A'+x for x in string.ascii_uppercase]
+                         + ['B'+x for x in string.ascii_uppercase[:17]])
+        os.unlink('test_multi_char.cif')
 
     def test_draw_molecular_composition(self):
         try:

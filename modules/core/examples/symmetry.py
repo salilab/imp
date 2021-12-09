@@ -29,8 +29,9 @@ for i, p in enumerate(ps[1:]):
                                                 i + 1)),
         IMP.algebra.Vector3D(0, 0, 0))
     sm = IMP.core.TransformationSymmetry(tr)
-    # set up a constraint for the one particle, if you have more than one with the same symmetry
-    # transform, you should use an IMP.container.SingletonsConstraint.
+    # set up a constraint for the one particle; if you have more than one
+    # with the same symmetry transform, you should use
+    # an IMP.container.SingletonsConstraint.
     c = IMP.core.SingletonConstraint(sm, None, m, p)
     m.add_score_state(c)
 lsc = IMP.container.ListSingletonContainer(m, ps)

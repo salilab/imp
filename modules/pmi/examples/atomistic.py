@@ -27,14 +27,15 @@ st1 = s.create_state()
 
 # Read sequences and create Molecules
 seqs = IMP.pmi.topology.Sequences(IMP.pmi.get_example_path('data/gcp2.fasta'))
-gcp2 = st1.create_molecule("GCP2",sequence=seqs["GCP2_YEAST"],chain_id='A')
+gcp2 = st1.create_molecule("GCP2", sequence=seqs["GCP2_YEAST"], chain_id='A')
 
-# Add structure. This function returns a list of the residues that now have structure
+# Add structure. This function returns a list of the residues that now
+# have structure
 a1 = gcp2.add_structure(IMP.pmi.get_example_path('data/gcp2.pdb'),
                         chain_id='A')
 
 # Add structured part representation and then build
-gcp2.add_representation(a1,resolutions=[0])
+gcp2.add_representation(a1, resolutions=[0])
 print('building molecule')
 hier = s.build()
 
@@ -44,8 +45,8 @@ charmm = IMP.pmi.restraints.stereochemistry.CharmmForceFieldRestraint(hier)
 charmm.add_to_model()
 
 # add elastic network on secondary structure units
-sses = IMP.pmi.io.parse_dssp(IMP.pmi.get_example_path('data/gcp2.dssp'),'A',
-                             name_map={'A':'GCP2'})
+sses = IMP.pmi.io.parse_dssp(IMP.pmi.get_example_path('data/gcp2.dssp'), 'A',
+                             name_map={'A': 'GCP2'})
 all_rs = []
 for sse in sses['helix']+sses['beta']:
     er = IMP.pmi.restraints.stereochemistry.ElasticNetworkRestraint(
@@ -57,15 +58,19 @@ for sse in sses['helix']+sses['beta']:
     all_rs.append(er)
     er.add_to_model()
 
-# seutp MD and run
+# setup MD and run
 dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
 md_ps = dof.setup_md(gcp2)
-rex = IMP.pmi.macros.ReplicaExchange0(mdl,
-                                      root_hier=hier,
-                                      crosslink_restraints = all_rs,        #for visualizing SSEs in RMF
-                                      molecular_dynamics_sample_objects=md_ps,
-                                      molecular_dynamics_steps=5,
-                                      number_of_best_scoring_models=0,      # set >0 to store best PDB files (but this is slow to do online)
-                                      number_of_frames=1,                   # increase number of frames to get better results!
-                                      global_output_directory='atomistic_output/')
+rex = IMP.pmi.macros.ReplicaExchange0(
+    mdl,
+    root_hier=hier,
+    # for visualizing SSEs in RMF
+    crosslink_restraints=all_rs,
+    molecular_dynamics_sample_objects=md_ps,
+    molecular_dynamics_steps=5,
+    # set >0 to store best PDB files (but this is slow to do online)
+    number_of_best_scoring_models=0,
+    # increase number of frames to get better results!
+    number_of_frames=1,
+    global_output_directory='atomistic_output/')
 rex.execute_macro()

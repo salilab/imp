@@ -32,7 +32,7 @@ class RMFRestraint;
 IMP_OBJECTS(RMFRestraint, RMFRestraints);
 /** A dummy restraint object to represent restraints loaded from
     an RMF file.*/
-class IMPRMFEXPORT RMFRestraint : public Restraint {
+class RMFRestraint : public Restraint {
   ParticlesTemp ps_;
   PointerMember<RestraintInfo> info_;
 
@@ -52,9 +52,10 @@ class IMPRMFEXPORT RMFRestraint : public Restraint {
   RestraintInfo *get_static_info() const IMP_OVERRIDE { return info_; }
 
 #endif
-  double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const;
-  ModelObjectsTemp do_get_inputs() const;
-  Restraints do_create_current_decomposition() const;
+  double unprotected_evaluate(
+                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RMFRestraint);
 };
 
@@ -178,7 +179,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   RMF::StringKeys filenameks_;
   RMF::StringsKeys filenamesks_;
 
-  void do_load_one(RMF::NodeConstHandle nh, Restraint *oi) {
+  void do_load_one(RMF::NodeConstHandle nh, Restraint *oi) IMP_OVERRIDE {
     RMF::NodeConstHandles chs = nh.get_children();
     if (sf_.get_is(nh)) {
       RMF::decorator::ScoreConst d = sf_.get(nh);
@@ -195,11 +196,11 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     }
   }
 
-  bool get_is(RMF::NodeConstHandle nh) const {
+  bool get_is(RMF::NodeConstHandle nh) const IMP_OVERRIDE {
     return nh.get_type() == RMF::FEATURE;
   }
   using P::do_create;
-  Restraint *do_create(RMF::NodeConstHandle name, Model *m) {
+  Restraint *do_create(RMF::NodeConstHandle name, Model *m) IMP_OVERRIDE {
     RMF::NodeConstHandles chs = name.get_children();
     Restraints childr;
     ParticlesTemp inputs;
@@ -492,7 +493,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   unsigned int max_terms_;
   boost::unordered_set<Restraint *> no_terms_;
 
-  void do_add(Restraint *r, RMF::NodeHandle nh) {
+  void do_add(Restraint *r, RMF::NodeHandle nh) IMP_OVERRIDE {
     // handle restraints being in multiple sets
     all_.push_back(r);
     rsf_ = new core::RestraintsScoringFunction(all_);
@@ -515,7 +516,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
       }
     }
   }
-  void do_save_one(Restraint *o, RMF::NodeHandle nh) {
+  void do_save_one(Restraint *o, RMF::NodeHandle nh) IMP_OVERRIDE {
     IMP_OBJECT_LOG;
     IMP_LOG_TERSE("Saving restraint info for " << o->get_name() << std::endl);
     RestraintSaveData &d = data_[o];
@@ -810,11 +811,13 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
     }
   }
 
-  void do_save(RMF::FileHandle fh) {
+  void do_save(RMF::FileHandle fh) IMP_OVERRIDE {
     rsf_->evaluate(false);
     P::do_save(fh);
   }
-  RMF::NodeType get_type(Restraint *) const { return RMF::FEATURE; }
+  RMF::NodeType get_type(Restraint *) const IMP_OVERRIDE {
+    return RMF::FEATURE;
+  }
 
  public:
   RestraintSaveLink(RMF::FileHandle fh)

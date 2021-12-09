@@ -13,10 +13,15 @@
 IMPKERNEL_BEGIN_NAMESPACE
 
 //! Constructor
-Model::Model(std::string name) : Object(name) {
+Model::Model(std::string name)
+          : Object(name), moved_particles_restraint_cache_(this),
+            moved_particles_particle_cache_(this) {
   cur_stage_ = internal::NOT_EVALUATING;
   set_was_used(true);
   first_call_ = true;
+  age_counter_ = 1;
+  dependencies_age_ = 0;
+  moved_particles_cache_age_ = 0;
 #if IMP_HAS_CHECKS >= IMP_INTERNAL
   internal::FloatAttributeTable::set_masks(
       &this->Masks::read_mask_, &this->Masks::write_mask_,

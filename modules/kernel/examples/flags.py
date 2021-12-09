@@ -1,5 +1,5 @@
 ## \example kernel/flags.py
-# A simple example of how to use IMP flags support in a python
+# A simple example of how to use IMP flags support in a Python
 # executable. Run with "--help" to see all available flags.
 
 import IMP

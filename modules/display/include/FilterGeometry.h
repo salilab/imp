@@ -28,10 +28,14 @@ class IMPDISPLAYEXPORT FilterGeometry : public GeometryProcessor,
   const algebra::Plane3D &p_;
   Geometries gdata_;
   mutable Geometries filtered_;
-  bool handle_sphere(SphereGeometry *g, Color color, std::string name);
-  bool handle_cylinder(CylinderGeometry *g, Color color, std::string name);
-  bool handle_point(PointGeometry *g, Color color, std::string name);
-  bool handle_segment(SegmentGeometry *g, Color color, std::string name);
+  bool handle_sphere(SphereGeometry *g, Color color,
+                     std::string name) IMP_OVERRIDE;
+  bool handle_cylinder(CylinderGeometry *g, Color color,
+                       std::string name) IMP_OVERRIDE;
+  bool handle_point(PointGeometry *g, Color color,
+                    std::string name) IMP_OVERRIDE;
+  bool handle_segment(SegmentGeometry *g, Color color,
+                      std::string name) IMP_OVERRIDE;
 
  public:
   //! Pay attention to the orientation of the plane.

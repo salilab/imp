@@ -52,11 +52,11 @@ class IMPSTATISTICSEXPORT KMCentersNodeSplit : public KMCentersNode {
       The sum on a specific dimension is the sum of the sums of the children
       on that dimension.
    */
-  void compute_sums();
+  void compute_sums() IMP_OVERRIDE;
   //! Compute neighbors for centers
   void get_neighbors(const Ints &cands, KMPointArray *sums, KMPoint *sum_sqs,
-                     Ints *weights);
-  void get_assignments(const Ints &cands, Ints &close_center);
+                     Ints *weights) IMP_OVERRIDE;
+  void get_assignments(const Ints &cands, Ints &close_center) IMP_OVERRIDE;
   /** Let m denote the number of data points
       descended from this node.  Then with probability 1/(2m-1), this cell is
       chosen.  Otherwise, let mL and mR denote the number of points associated
@@ -71,10 +71,10 @@ class IMPSTATISTICSEXPORT KMCentersNodeSplit : public KMCentersNode {
       sampled with probability 1/(2m-1), and the subtrees should be sampled
       with the given probabilities.
     */
-  KMPoint sample_center();
+  KMPoint sample_center() IMP_OVERRIDE;
 
   //! Print node
-  void show(std::ostream &out = std::cout) const;
+  void show(std::ostream &out = std::cout) const IMP_OVERRIDE;
 
  protected:
   int cut_dim_;                 // dim orthogonal to cutting plane

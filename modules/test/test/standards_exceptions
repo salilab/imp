@@ -15,7 +15,7 @@ standard_unittest_attributes = [
    'failUnlessAlmostEqual', 'failUnlessEqual', 'failUnlessRaises', 'id',
    'setUp', 'setUpClass', 'shortDescription', 'skipTest', 'tearDown',
    'tearDownClass', 'assertLogs', 'subTest', 'addClassCleanup',
-   'doClassCleanups' ]
+   'doClassCleanups', 'assertNoLogs' ]
 exceptions = ["TestCase." + x for x in standard_unittest_attributes] \
            + ["ApplicationTestCase." + x for x in standard_unittest_attributes]
 
@@ -26,6 +26,7 @@ exceptions.extend([
    'ApplicationTestCase.assertRaisesInternalException',
    'ApplicationTestCase.assertNotImplemented',
    'ApplicationTestCase.assertXYZDerivativesInTolerance',
+   'ApplicationTestCase.assertNumPyArrayEqual',
    'ApplicationTestCase.check_runnable_python_module',
    'ApplicationTestCase.check_unary_function_deriv',
    'ApplicationTestCase.check_unary_function_min',
@@ -51,6 +52,7 @@ exceptions.extend([
    'TestCase.assertRaisesInternalException',
    'TestCase.assertNotImplemented',
    'TestCase.assertXYZDerivativesInTolerance',
+   'TestCase.assertNumPyArrayEqual',
    'TestCase.check_runnable_python_module',
    'TestCase.check_unary_function_deriv',
    'TestCase.check_unary_function_min',

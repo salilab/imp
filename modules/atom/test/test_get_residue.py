@@ -10,8 +10,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
 
         #! read PDB
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
         chain = mp.get_child(0)
         r = IMP.atom.get_residue(chain, 10)
         self.assertNotEqual(r, IMP.atom.Hierarchy())
@@ -24,8 +24,8 @@ class Tests(IMP.test.TestCase):
         m = IMP.Model()
 
         #! read PDB
-        mp = IMP.atom.read_pdb(self.open_input_file("input.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
+        with self.open_input_file("input.pdb") as fh:
+            mp = IMP.atom.read_pdb(fh, m, IMP.atom.NonWaterPDBSelector())
         chain = mp.get_child(0)
         r = IMP.atom.get_residue(chain, 10)
         rr = IMP.atom.Residue(r.get_particle())

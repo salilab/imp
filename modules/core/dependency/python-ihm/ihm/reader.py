@@ -900,12 +900,13 @@ class _SoftwareHandler(Handler):
     category = '_software'
 
     def __call__(self, pdbx_ordinal, name, classification, description,
-                 version, type, location):
+                 version, type, location, citation_id):
         s = self.sysr.software.get_by_id(pdbx_ordinal)
         self.copy_if_present(
             s, locals(),
             keys=('name', 'classification', 'description', 'version',
                   'type', 'location'))
+        s.citation = self.sysr.citations.get_by_id_or_none(citation_id)
 
 
 class _CitationHandler(Handler):
@@ -1056,14 +1057,28 @@ class _StructRefHandler(Handler):
         typ = self.type_map.get(db_name.lower())
         ref = self.sysr.references.get_by_id(id, typ)
         # Strip newlines if code is split over multiple lines
-        if pdbx_seq_one_letter_code is not None:
+        if pdbx_seq_one_letter_code not in (None, ihm.unknown):
             pdbx_seq_one_letter_code \
                 = pdbx_seq_one_letter_code.replace('\n', '')
         self.copy_if_present(
             ref, locals(), keys=('db_name', 'db_code', 'details'),
             mapkeys={'pdbx_db_accession': 'accession',
-                     'pdbx_seq_one_letter_code': 'sequence'})
+                     'pdbx_seq_one_letter_code': '_partial_sequence'})
         e.references.append(ref)
+
+    def finalize(self):
+        # The mmCIF file only contains the subset of the sequence that
+        # overlaps with our entities, but we need the full sequence. Pad it
+        # out with gaps if necessary so that indexing works correctly.
+        for e in self.system.entities:
+            for r in e.references:
+                if hasattr(r, '_partial_sequence'):
+                    if r._partial_sequence in (None, ihm.unknown):
+                        r.sequence = r._partial_sequence
+                    else:
+                        db_begin = min(a.db_begin for a in r._get_alignments())
+                        r.sequence = '-' * (db_begin - 1) + r._partial_sequence
+                    del r._partial_sequence
 
 
 class _StructRefSeqHandler(Handler):
@@ -1873,9 +1888,9 @@ class _AtomSiteHandler(Handler):
 
     def __call__(self, pdbx_pdb_model_num, label_asym_id, b_iso_or_equiv,
                  label_seq_id, label_atom_id, type_symbol, cartn_x, cartn_y,
-                 cartn_z, occupancy, group_pdb, auth_seq_id):
+                 cartn_z, occupancy, group_pdb, auth_seq_id,
+                 pdbx_pdb_ins_code):
         # todo: handle fields other than those output by us
-        # todo: handle insertion codes
         model = self.sysr.models.get_by_id(pdbx_pdb_model_num)
         asym = self.sysr.asym_units.get_by_id(label_asym_id)
         biso = self.get_float(b_iso_or_equiv)
@@ -1892,10 +1907,12 @@ class _AtomSiteHandler(Handler):
 
         auth_seq_id = self.get_int_or_string(auth_seq_id)
         # Note any residues that have different seq_id and auth_seq_id
-        if auth_seq_id is not None and seq_id != auth_seq_id:
+        if (auth_seq_id is not None and
+                (seq_id != auth_seq_id
+                 or pdbx_pdb_ins_code not in (None, ihm.unknown))):
             if asym.auth_seq_id_map == 0:
                 asym.auth_seq_id_map = {}
-            asym.auth_seq_id_map[seq_id] = auth_seq_id
+            asym.auth_seq_id_map[seq_id] = auth_seq_id, pdbx_pdb_ins_code
 
 
 class _StartingModelCoordHandler(Handler):
@@ -2231,23 +2248,28 @@ class _PolySeqSchemeHandler(Handler):
     if _format is not None:
         _add_c_handler = _format.add_poly_seq_scheme_handler
 
-    # Note: do not change the ordering of the first 4 parameters to this
+    # Note: do not change the ordering of the first 6 parameters to this
     # function; the C parser expects them in this order
-    def __call__(self, asym_id, seq_id, auth_seq_num):
+    def __call__(self, asym_id, seq_id, auth_seq_num, pdb_ins_code,
+                 pdb_strand_id):
         asym = self.sysr.asym_units.get_by_id(asym_id)
         seq_id = self.get_int(seq_id)
+        if pdb_strand_id not in (None, ihm.unknown, asym_id):
+            asym._strand_id = pdb_strand_id
         auth_seq_num = self.get_int_or_string(auth_seq_num)
         # Note any residues that have different seq_id and auth_seq_id
         if seq_id is not None and auth_seq_num is not None \
-           and seq_id != auth_seq_num:
+           and (seq_id != auth_seq_num
+                or pdb_ins_code not in (None, ihm.unknown)):
             if asym.auth_seq_id_map == 0:
                 asym.auth_seq_id_map = {}
-            asym.auth_seq_id_map[seq_id] = auth_seq_num
+            asym.auth_seq_id_map[seq_id] = auth_seq_num, pdb_ins_code
 
     def finalize(self):
         for asym in self.sysr.system.asym_units:
             # If every residue in auth_seq_id_map is offset by the same
-            # amount, replace the map with a simple offset
+            # amount, and no insertion codes, replace the map with a
+            # simple offset
             offset = self._get_auth_seq_id_offset(asym)
             if offset is not None:
                 asym.auth_seq_id_map = offset
@@ -2269,9 +2291,12 @@ class _PolySeqSchemeHandler(Handler):
             # a nonzero offset by construction)
             if seq_id not in asym.auth_seq_id_map:
                 return
-            auth_seq_id = asym.auth_seq_id_map[seq_id]
+            auth_seq_id, ins_code = asym.auth_seq_id_map[seq_id]
             # If auth_seq_id is a string, we can't use any offset
             if not isinstance(auth_seq_id, int):
+                return
+            # If insertion codes are provided, we can't use any offset
+            if ins_code not in (None, ihm.unknown):
                 return
             this_offset = auth_seq_id - seq_id
             if offset is None:
@@ -2285,12 +2310,27 @@ class _PolySeqSchemeHandler(Handler):
 class _NonPolySchemeHandler(Handler):
     category = '_pdbx_nonpoly_scheme'
 
-    def __call__(self, asym_id, auth_seq_num):
+    def __call__(self, asym_id, entity_id, auth_seq_num, mon_id, pdb_ins_code,
+                 pdb_strand_id):
+        entity = self.sysr.entities.get_by_id(entity_id)
+        # nonpolymer entities generally have information on their chemical
+        # component in pdbx_entity_nonpoly, but if that's missing, at least
+        # get the name from mon_id here, so that we don't end up with an
+        # empty sequence
+        if len(entity.sequence) == 0 and mon_id:
+            if mon_id == 'HOH':
+                s = ihm.WaterChemComp()
+            else:
+                s = ihm.NonPolymerChemComp(
+                    mon_id, name=entity.description)
+            entity.sequence.append(s)
         asym = self.sysr.asym_units.get_by_id(asym_id)
+        if pdb_strand_id not in (None, ihm.unknown, asym_id):
+            asym._strand_id = pdb_strand_id
         # todo: handle multiple instances (e.g. water)
         auth_seq_num = self.get_int_or_string(auth_seq_num)
-        if auth_seq_num != 1:
-            asym.auth_seq_id_map = {1: auth_seq_num}
+        if auth_seq_num != 1 or pdb_ins_code not in (None, ihm.unknown):
+            asym.auth_seq_id_map = {1: (auth_seq_num, pdb_ins_code)}
 
 
 class _CrossLinkListHandler(Handler):
@@ -3041,6 +3081,23 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
        C-accelerated version. The C-accelerated version is much faster and
        so is used if built. The BinaryCIF reader needs the msgpack Python
        module to function.
+
+       The file handle should be opened in text mode for mmCIF files.
+       Traditionally, mmCIF files used ASCII encoding. More and more
+       recent files are UTF-8 encoded instead, but some use other encodings
+       such as latin-1. To handle most current files use something like::
+
+           try:
+               with open('input.cif', encoding='utf-8') as fh:
+                   systems = ihm.reader.read(fh)
+           except UnicodeDecodeError:
+               with open('input.cif', encoding='latin-1') as fh:
+                   systems = ihm.reader.read(fh)
+
+       The file handle should be opened in binary mode for BinaryCIF files::
+
+           with open('input.bcif', 'rb') as fh:
+               systems = ihm.reader.read(fh, format='BCIF')
 
        :param file fh: The file handle to read from. (For BinaryCIF files,
               the file should be opened in binary mode. For mmCIF files,

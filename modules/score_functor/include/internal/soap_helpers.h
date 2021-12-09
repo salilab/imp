@@ -13,6 +13,7 @@
 
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
 
+#include <IMP/core/Hierarchy.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include "soap_hdf5.h"
@@ -39,12 +40,20 @@ class SoapDoublets {
   typedef std::pair<atom::ResidueType, atom::AtomType> Key;
   typedef std::map<Key, OtherAtoms> DoubletMap;
 
+  typedef std::map<ParticleIndex, std::vector<SoapModelDoublet> > CacheMap;
+
   DoubletMap doublets_;
+
+  mutable CacheMap cache_;
+  mutable unsigned cache_hierarchy_age_;
+  mutable unsigned cache_resatm_type_age_;
+  mutable Model* cache_model_;
 
   int n_classes_;
 
  public:
-  SoapDoublets() : n_classes_(0) {}
+  SoapDoublets() : cache_hierarchy_age_(0), cache_resatm_type_age_(0),
+                   cache_model_(nullptr), n_classes_(0) {}
 
   void read(Hdf5File &file_id) {
     Hdf5Group group(file_id.get(), "/library/tuples");
@@ -77,8 +86,31 @@ class SoapDoublets {
 
   int get_number_of_classes() const { return n_classes_; }
 
+  // Clear the cache if any model hierarchy has changed, or we're being
+  // called for a different Model than we have cached
+  void check_cache_valid(Model *m) const {
+    unsigned tha = m->get_trigger_last_updated(
+                        core::Hierarchy::get_changed_key());
+    unsigned tta = m->get_trigger_last_updated(
+                        atom::Residue::get_type_changed_key());
+    if ((tha != 0 && tha != cache_hierarchy_age_)
+        || (tta != 0 && tta != cache_resatm_type_age_)
+        || (cache_model_ != m)) {
+      cache_.clear();
+      cache_hierarchy_age_ = tha;
+      cache_resatm_type_age_ = tta;
+      cache_model_ = m;
+    }
+  }
+
   // Get a list of all doublets that the given atom is involved in
-  std::vector<SoapModelDoublet> get_for_atom(atom::Atom a1) const {
+  const std::vector<SoapModelDoublet> &get_for_atom(atom::Atom a1) const {
+    ParticleIndex pi1 = a1.get_particle_index();
+    // Get cached list if available
+    CacheMap::const_iterator it = cache_.find(pi1);
+    if (it != cache_.end()) {
+      return it->second;
+    }
     std::vector<SoapModelDoublet> ret;
     atom::Residue r = atom::get_residue(a1);
     atom::AtomType a1t = a1.get_atom_type();
@@ -97,7 +129,9 @@ class SoapDoublets {
         }
       }
     }
-    return ret;
+    cache_[pi1] = ret;
+    it = cache_.find(pi1);
+    return it->second;
   }
 };
 

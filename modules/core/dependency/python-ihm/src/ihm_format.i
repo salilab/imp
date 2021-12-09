@@ -441,18 +441,31 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
   struct category_handler_data *hd = data;
   struct ihm_keyword **keys;
 
-  for (i = 0, keys = hd->keywords; i < hd->num_keywords; ++i, ++keys) {
-    /* Do nothing if any key is missing */
+  /* If both asym_id (1st keyword) and pdb_strand_id (5th keyword) are
+     present, but different, call the Python handler */
+  if (hd->keywords[0]->in_file && hd->keywords[4]->in_file &&
+      !hd->keywords[0]->omitted && !hd->keywords[4]->omitted &&
+      !hd->keywords[0]->unknown && !hd->keywords[4]->unknown &&
+      strcmp(hd->keywords[0]->data, hd->keywords[4]->data) != 0) {
+    handle_category_data(reader, data, err);
+    return;
+  }
+
+  for (i = 0, keys = hd->keywords; i < 3; ++i, ++keys) {
+    /* Do nothing if seq_id or auth_seq_num is missing */
     if (!(*keys)->in_file || (*keys)->omitted || (*keys)->unknown) {
       return;
     }
   }
 
   /* If seq_id (2nd keyword) and auth_seq_num (3rd keyword) are identical
-     integers, nothing needs to be done */
+     integers, and pdb_ins_code (4th keyword) is blank or missing,
+     nothing needs to be done */
   seq_id = strtol(hd->keywords[1]->data, &seq_id_endptr, 10);
   auth_seq_num = strtol(hd->keywords[2]->data, &auth_seq_num_endptr, 10);
-  if (!*seq_id_endptr && !*auth_seq_num_endptr && seq_id == auth_seq_num) {
+  if (!*seq_id_endptr && !*auth_seq_num_endptr && seq_id == auth_seq_num
+      && (!hd->keywords[3]->in_file || hd->keywords[3]->omitted
+          || hd->keywords[3]->unknown)) {
     return;
   } else {
     /* Otherwise, call the normal handler */
@@ -464,7 +477,8 @@ static void handle_poly_seq_scheme_data(struct ihm_reader *reader,
 %inline %{
 /* Add a handler specifically for the _pdbx_poly_seq_scheme table.
    This speeds up processing by skipping the callback to Python in
-   the common case where seq_id==auth_seq_num */
+   the common case where seq_id==auth_seq_num, asym_id==pdb_strand_id,
+   and pdb_ins_code is blank */
 void add_poly_seq_scheme_handler(struct ihm_reader *reader, char *name,
                                  PyObject *keywords, PyObject *callable,
                                  struct ihm_error **err)
@@ -475,9 +489,11 @@ void add_poly_seq_scheme_handler(struct ihm_reader *reader, char *name,
   if (hd) {
     /* Make sure the Python handler and the C handler agree on the order
        of the keywords */
-    assert(hd->num_keywords >= 3);
+    assert(hd->num_keywords >= 5);
     assert(strcmp(hd->keywords[1]->name, "seq_id") == 0);
     assert(strcmp(hd->keywords[2]->name, "auth_seq_num") == 0);
+    assert(strcmp(hd->keywords[3]->name, "pdb_ins_code") == 0);
+    assert(strcmp(hd->keywords[4]->name, "pdb_strand_id") == 0);
   }
 }
 

@@ -26,6 +26,11 @@ IMPKERNEL_BEGIN_NAMESPACE
     IMP::core::ClassnameRestraint. The restraints couple the score
     functions with appropriate lists of object(s) of type INDEXTYPE.
 
+    It is possible to call the various evaluate* methods directly, but
+    this is not recommended as they do not ensure that Model invariants
+    (e.g. ScoreStates) are preserved. Use a Restraint or ScoringFunction
+    to score the model instead.
+
     Implementers should check out IMP_CLASSNAME_SCORE().
 
     \see PredicateClassnameRestraint
@@ -57,7 +62,7 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                 computed derivatives. If nullptr, derivatives
                 will not be computed.
       @param lower_bound index of first item in o to evaluate
-      @param upper_bound index of last item in o to evaluate
+      @param upper_bound index one past last item in o to evaluate
 
       @note Implementations for these are provided by
             the IMP_CLASSNAME_SCORE() macro.
@@ -66,6 +71,26 @@ class IMPKERNELEXPORT ClassnameScore : public ParticleInputs,
                                   DerivativeAccumulator *da,
                                   unsigned int lower_bound,
                                   unsigned int upper_bound) const;
+
+  //! Compute the score and the derivative if needed over a set.
+  /** Like regular evaluate_indexes(), but the score for each o[x] is also
+      returned as score[x]. */
+  virtual double evaluate_indexes_scores(
+                        Model *m, const PLURALINDEXTYPE &o,
+                        DerivativeAccumulator *da,
+                        unsigned int lower_bound,
+                        unsigned int upper_bound,
+                        std::vector<double> &score) const;
+
+  //! Compute the change in score and the derivative if needed over a set.
+  /** The score for each o[indexes[x]] is updated in score[indexes[x]]
+      and the total difference between the old and new score values (over the
+      set) is returned. */
+  virtual double evaluate_indexes_delta(
+                        Model *m, const PLURALINDEXTYPE &o,
+                        DerivativeAccumulator *da,
+                        const std::vector<unsigned> &indexes,
+                        std::vector<double> &score) const;
 
   //! Compute the score and the derivative if needed, only if "good".
   /** This functions similarly to evaluate_index(),

@@ -1,6 +1,12 @@
 Change Log {#changelog}
 ==========
 
+# 1.3.1 - 2021-12-01 # {#changelog_1_3_1}
+- Various build fixes for newer versions of gcc and clang.
+- Build fixes for Fedora 33 or later.
+- Add support for Python 3.10.
+- Minor documentation improvements.
+
 # 1.3 - 2021-04-21 # {#changelog_1_3}
 - All RMF binaries now support the --version flag, and the RMF library itself
   is versioned.

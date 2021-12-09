@@ -42,7 +42,9 @@ ScoringFunction *get_null_scoring_function() {
 }
 
 ScoringFunction::ScoringFunction(Model *m, std::string name)
-    : ModelObject(m, name) {}
+    : ModelObject(m, name), moved_particles_cache_(m) {
+  moved_particles_cache_age_ = 0;
+}
 
 double ScoringFunction::evaluate_if_good(bool derivatives) {
   IMP_OBJECT_LOG;
@@ -63,6 +65,98 @@ double ScoringFunction::evaluate(bool derivatives) {
   es_.good = true;
   const ScoreAccumulator sa = get_score_accumulator(derivatives);
   do_add_score_and_derivatives(sa, get_required_score_states());
+  return es_.score;
+}
+
+namespace {
+class should_skip_score_state {
+  const std::set<ScoreState *> &needed_ss_;
+public:
+  should_skip_score_state(const std::set<ScoreState *> &needed_ss)
+       : needed_ss_(needed_ss) {}
+
+  bool operator()(const ScoreState *ss) {
+    return ss->get_can_skip()
+        && needed_ss_.find(const_cast<ScoreState *>(ss)) == needed_ss_.end();
+  }
+};
+}
+
+ScoreStatesTemp ScoringFunction::get_moved_required_score_states(
+                               const ParticleIndexes &moved_pis,
+                               const ParticleIndexes &reset_pis) {
+  if (moved_pis.size() <= 1 && reset_pis.size() <= 1) {
+    // Clear cache if dependencies changed
+    unsigned dependencies_age = get_model()->get_dependencies_updated();
+    if (moved_particles_cache_age_ != dependencies_age) {
+      moved_particles_cache_age_ = dependencies_age;
+      moved_particles_cache_.clear();
+    }
+    set_has_required_score_states(true);
+    ScoreStatesTemp allss = get_required_score_states();
+    std::set<ScoreState *> sset;
+    if (moved_pis.size() == 1) {
+      const std::set<ScoreState *> &moved_set =
+            moved_particles_cache_.get_affected_score_states(moved_pis[0]);
+      sset.insert(moved_set.begin(), moved_set.end());
+    }
+    if (reset_pis.size() == 1) {
+      const std::set<ScoreState *> &reset_set =
+            moved_particles_cache_.get_affected_score_states(reset_pis[0]);
+      sset.insert(reset_set.begin(), reset_set.end());
+    }
+    // Remove any ScoreState that can be skipped and that
+    // doesn't affect the moved/reset particle(s)
+    allss.erase(std::remove_if(allss.begin(), allss.end(),
+                               should_skip_score_state(sset)),
+                allss.end());
+    return allss;
+  } else {
+    set_has_required_score_states(true);
+    return get_required_score_states();
+  }
+}
+
+double ScoringFunction::evaluate_moved(bool derivatives,
+                                       const ParticleIndexes &moved_pis,
+                                       const ParticleIndexes &reset_pis) {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  es_.score = 0;
+  es_.good = true;
+  const ScoreAccumulator sa = get_score_accumulator(derivatives);
+  do_add_score_and_derivatives_moved(
+        sa, moved_pis, reset_pis,
+        get_moved_required_score_states(moved_pis, reset_pis));
+  return es_.score;
+}
+
+double ScoringFunction::evaluate_moved_if_below(bool derivatives,
+                                       const ParticleIndexes &moved_pis,
+                                       const ParticleIndexes &reset_pis,
+                                       double max) {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  es_.score = 0;
+  es_.good = true;
+  const ScoreAccumulator sa = get_score_accumulator_if_below(derivatives, max);
+  do_add_score_and_derivatives_moved(
+        sa, moved_pis, reset_pis,
+        get_moved_required_score_states(moved_pis, reset_pis));
+  return es_.score;
+}
+
+double ScoringFunction::evaluate_moved_if_good(bool derivatives,
+                                       const ParticleIndexes &moved_pis,
+                                       const ParticleIndexes &reset_pis) {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  es_.score = 0;
+  es_.good = true;
+  const ScoreAccumulator sa = get_score_accumulator_if_good(derivatives);
+  do_add_score_and_derivatives_moved(
+        sa, moved_pis, reset_pis,
+        get_moved_required_score_states(moved_pis, reset_pis));
   return es_.score;
 }
 

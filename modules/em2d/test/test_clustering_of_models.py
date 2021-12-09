@@ -102,7 +102,7 @@ class Tests(IMP.test.TestCase):
         # get clusters with distances below 1.4
         rmsd_cutoff = 1.4
         complete_cls = cluster_set.get_clusters_below_cutoff(rmsd_cutoff)
-        complete_cls_elems = [cluster_set.get_cluster_elements(c)
+        complete_cls_elems = [list(cluster_set.get_cluster_elements(c))
                               for c in complete_cls]
 
 #        print "Average distance Linkage Matrix"
@@ -136,7 +136,7 @@ class Tests(IMP.test.TestCase):
         # check cluster elements
 #        print "complete_cls",complete_cls
 #        print "complete_cls_elems",complete_cls_elems
-        self.assertEqual(complete_cls, [10, 9],
+        self.assertEqual(list(complete_cls), [10, 9],
                          "Clusters below 1.4 rmsd are not equal")
         self.assertEqual(complete_cls_elems, [[2, 3], [0, 4, 1]],
                          "Clusters below 1.4 rmsd are not equal")

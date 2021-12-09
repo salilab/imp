@@ -81,6 +81,8 @@ class _ValidatorReader(object):
     def __init__(self, dictionary):
         self.dictionary = dictionary
         self._seen_categories = set()
+        self._unknown_categories = set()
+        self._unknown_keywords = set()
         # Keep track of all values (IDs) seen for keys that are involved in
         # parent-child relationships
         self._seen_ids = {}
@@ -110,7 +112,7 @@ class _ValidatorReader(object):
                                    "enumerated value (options are %s)"
                                    % (category.name, key, value,
                                       ", ".join(sorted(kwobj.enumeration))))
-            if kwobj.item_type and not kwobj.item_type.regex.match(value):
+            if kwobj.item_type and not kwobj.item_type.regex.match(str(value)):
                 self.errors.append("Keyword %s.%s value %s does not match "
                                    "item type (%s) regular expression (%s)"
                                    % (category.name, key, value,
@@ -147,11 +149,40 @@ class _ValidatorReader(object):
                         "were not defined in the parent category (%s): %s"
                         % (child, parent, ", ".join(missing)))
 
+    def _check_unknown(self):
+        """Report errors for any unknown keywords or categories"""
+        if self._unknown_categories:
+            self.errors.append(
+                "The following categories are not defined in the "
+                "dictionary: %s"
+                % ", ".join(sorted(self._unknown_categories)))
+        if self._unknown_keywords:
+            self.errors.append(
+                "The following keywords are not defined in the dictionary: %s"
+                % ", ".join(sorted(self._unknown_keywords)))
+
     def report_errors(self):
         self._check_mandatory_categories()
         self._check_linked_items()
+        self._check_unknown()
         if self.errors:
             raise ValidatorError("\n\n".join(self.errors))
+
+
+class _UnknownCategoryHandler(object):
+    def __init__(self, sysr):
+        self.sysr = sysr
+
+    def __call__(self, catname, line):
+        self.sysr._unknown_categories.add(catname)
+
+
+class _UnknownKeywordHandler(object):
+    def __init__(self, sysr):
+        self.sysr = sysr
+
+    def __call__(self, catname, keyname, line):
+        self.sysr._unknown_keywords.add("%s.%s" % (catname, keyname))
 
 
 class Dictionary(object):
@@ -161,7 +192,7 @@ class Dictionary(object):
        Multiple Dictionaries can be added together to yield a Dictionary
        that includes all the data in the original Dictionaries.
 
-       See the `validator example <https://github.com/ihmwg/python-ihm/blob/master/examples/validate_pdb_dev.py>`_
+       See the `validator example <https://github.com/ihmwg/python-ihm/blob/main/examples/validate_pdb_dev.py>`_
        for an example of using this class."""  # noqa: E501
     def __init__(self):
         #: Mapping from name to :class:`Category` objects
@@ -173,7 +204,13 @@ class Dictionary(object):
         self.linked_items = {}
 
     def __iadd__(self, other):
-        self.categories.update(other.categories)
+        for name, cat in other.categories.items():
+            if name in self.categories:
+                # If both dictionaries contain information on the same
+                # category, combine it
+                self.categories[name]._update(cat)
+            else:
+                self.categories[name] = cat
         self.linked_items.update(other.linked_items)
         return self
 
@@ -191,15 +228,14 @@ class Dictionary(object):
               default) for the (text-based) mmCIF format or 'BCIF' for
               BinaryCIF.
            :raises: :class:`ValidatorError` if the file fails to validate.
-
-           .. note:: Only basic validation is performed. In particular, extra
-              categories or keywords that are not present in the dictionary
-              are ignored rather than treated as errors.
         """
         reader_map = {'mmCIF': ihm.format.CifReader,
                       'BCIF': ihm.format_bcif.BinaryCifReader}
-        r = reader_map[format](fh, {})
         s = _ValidatorReader(self)
+        uchandler = _UnknownCategoryHandler(s)
+        ukhandler = _UnknownKeywordHandler(s)
+        r = reader_map[format](fh, {}, unknown_category_handler=uchandler,
+                               unknown_keyword_handler=ukhandler)
         handlers = [_ValidatorCategoryHandler(s, cat)
                     for cat in self.categories.values()]
         r.category_handler = dict((h.category, h) for h in handlers)
@@ -221,6 +257,18 @@ class Category(object):
         #: True iff this category is required in a compliant mmCIF file
         self.mandatory = None
 
+    def _update(self, other):
+        """Update with information from another Category object"""
+        assert other.name == self.name
+        self.keywords.update(other.keywords)
+        self.description = self.description or other.description
+        if self.mandatory is None:
+            # e.g. if other.mandatory is False and self.mandatory is None
+            # we want to use False; "None or False" returns None.
+            self.mandatory = other.mandatory
+        else:
+            self.mandatory = self.mandatory or other.mandatory
+
 
 class _DoNothingRegEx(object):
     """A mock regex object which always matches"""
@@ -234,11 +282,15 @@ class ItemType(object):
        :class:`Keyword`. For example, integer values can only contain
        the digits 0-9 with an optional +/- prefix."""
     def __init__(self, name, primitive_code, construct):
-        self.name, self.construct = name, construct
+        self.name = name
+        # The dictionary only defines matches against ASCII characters.
+        # Extend this to match any Unicode "word" character so we don't
+        # fail to validate as soon as we see an accented character.
+        self.construct = construct.replace('A-Za-z0-9', r'\w')
         self.primitive_code = primitive_code
         # Ensure that regex matches the entire value
         try:
-            self.regex = re.compile(construct + '$')
+            self.regex = re.compile(self.construct + '$')
         except re.error:
             # Some CIF regexes aren't valid Python regexes; skip these
             self.regex = _DoNothingRegEx()

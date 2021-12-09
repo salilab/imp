@@ -49,11 +49,14 @@ class HarmonicWell : public UnaryFunction {
     IMP_USAGE_CHECK(k >= 0, "The k should be non-negative");
   }
 
-  virtual DerivativePair evaluate_with_derivative(double feature) const {
+  virtual DerivativePair evaluate_with_derivative(
+                  double feature) const IMP_OVERRIDE {
     return DerivativePair(get_score(feature), get_derivative(feature));
   }
 
-  virtual double evaluate(double feature) const { return get_score(feature); }
+  virtual double evaluate(double feature) const IMP_OVERRIDE {
+    return get_score(feature);
+  }
 
   IMP_OBJECT_METHODS(HarmonicWell);
 

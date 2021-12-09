@@ -67,8 +67,8 @@ jobs:
         make -j 2
         export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
         ctest -j 2 --output-on-failure -L ${{ matrix.tests }}
-    - name: Upload coverage to codecov
+    - name: Combine coverage
       run: |
-        cd build
-        (cd coverage && coverage combine && mv .coverage ..)
-        bash <(curl -s https://codecov.io/bash)
+        cd build/coverage
+        coverage combine && mv .coverage ../..
+    - uses: codecov/codecov-action@v1

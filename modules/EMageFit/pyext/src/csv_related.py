@@ -39,7 +39,7 @@ def read_csv_keyword(fn_or_f, keyword, delimiter="|",
     """
     if(isinstance(fn_or_f, str)):
         f = open(fn_or_f, "r")
-    elif(isinstance(fn_or_f, file)):
+    else:
         f = fn_or_f
 
     reader = csv.reader(f, delimiter=delimiter)

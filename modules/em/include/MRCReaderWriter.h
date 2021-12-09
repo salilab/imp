@@ -28,9 +28,11 @@ class IMPEMEXPORT MRCReaderWriter : public MapReaderWriter {
   MRCReaderWriter(std::string fn) { filename = fn; }
 #if !defined(DOXYGEN) && !defined(SWIG)
   //! Reads an MRC file and translates the header to the general DensityHeader
-  void read(const char *fn_in, float **data, DensityHeader &head);
+  void read(const char *fn_in, float **data, DensityHeader &head) IMP_OVERRIDE;
+
   //! Writes an MRC file from the data and the general DensityHeader
-  void write(const char *fn_out, const float *data, const DensityHeader &head);
+  void write(const char *fn_out, const float *data,
+             const DensityHeader &head) IMP_OVERRIDE;
 #endif
 
  private:

@@ -1,16 +1,16 @@
 ## \example domino/marina_party.py
 #
 # This is a not very serious example that shows how to use domino from scratch
-# to solve a problem. It is illustrative of creating your own type of particles,
-# a pair score, particle states for DOMINO, a decorator, and using subset filter
-# tables with DOMINO.
+# to solve a problem. It is illustrative of creating your own type of
+# particles, a pair score, particle states for DOMINO, a decorator, and using
+# subset filter tables with DOMINO.
 #
 # Solution of the Marina Party Problem with DOMINO:
 #
 # - Girls attend a party
 # - Each girl has dresses of different price
 # - There can not be repeated dresses in the party within a group of connected
-# people
+#   people
 # - Girls that are friends can call each other to agree
 # - The objective is to maximize the total price of all dresses in the party
 #
@@ -24,6 +24,7 @@ import random
 import sys
 
 IMP.setup_from_argv(sys.argv, "marina party")
+
 
 class SumPricePairScore(IMP.PairScore):
 
@@ -83,7 +84,6 @@ def get_total_price(states_table, subset, assignment):
 
 
 def print_assignment(states_table, subset, assignment):
-    total_price = 0
     print("########## solution assignment", assignment)
     for i, p in enumerate(subset):
         price_states = states_table.get_particle_states(p)
@@ -123,7 +123,8 @@ for i in range(n_girls):
     # Each girl has a selection of dresses
     selection = random.sample(prices, n_dresses)
     allowed_states_indices = [prices.index(price) for price in selection]
-    print(p.get_name(), "prices selected", selection, "indices", allowed_states_indices)
+    print(p.get_name(), "prices selected", selection, "indices",
+          allowed_states_indices)
     list_states_table = IMP.domino.ListSubsetFilterTable(states_table)
     list_states_table.set_allowed_states(p, allowed_states_indices)
     sampler.add_subset_filter_table(list_states_table)

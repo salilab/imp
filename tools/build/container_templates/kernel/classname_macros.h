@@ -21,16 +21,47 @@
 #define IMP_CLASSNAME_SCORE_METHODS(Name)                                      \
   double evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,                  \
                           DerivativeAccumulator *da, unsigned int lower_bound, \
-                          unsigned int upper_bound) const IMP_FINAL {          \
+                          unsigned int upper_bound)                            \
+                          const IMP_OVERRIDE IMP_FINAL {                       \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       ret += evaluate_index(m, p[i], da);                                      \
     }                                                                          \
     return ret;                                                                \
   }                                                                            \
+  double evaluate_indexes_scores(                                              \
+                  Model *m, const PLURALINDEXTYPE &p,                          \
+                  DerivativeAccumulator *da, unsigned int lower_bound,         \
+                  unsigned int upper_bound,                                    \
+                  std::vector<double> &score)                                  \
+                  const IMP_OVERRIDE IMP_FINAL {                               \
+    double ret = 0;                                                            \
+    for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
+      double s = evaluate_index(m, p[i], da);                                  \
+      score[i] = s;                                                            \
+      ret += s;                                                                \
+    }                                                                          \
+    return ret;                                                                \
+  }                                                                            \
+  double evaluate_indexes_delta(                                               \
+                  Model *m, const PLURALINDEXTYPE &p,                          \
+                  DerivativeAccumulator *da,                                   \
+                  const std::vector<unsigned> &indexes,                        \
+                  std::vector<double> &score)                                  \
+                  const IMP_OVERRIDE IMP_FINAL {                               \
+    double ret = 0;                                                            \
+    for (std::vector<unsigned>::const_iterator it = indexes.begin();           \
+         it != indexes.end(); ++it) {                                          \
+      double s = evaluate_index(m, p[*it], da);                                \
+      ret = ret - score[*it] + s;                                              \
+      score[*it] = s;                                                          \
+    }                                                                          \
+    return ret;                                                                \
+  }                                                                            \
   double evaluate_if_good_indexes(                                             \
       Model *m, const PLURALINDEXTYPE &p, DerivativeAccumulator *da,           \
-      double max, unsigned int lower_bound, unsigned int upper_bound) const {  \
+      double max, unsigned int lower_bound,                                    \
+      unsigned int upper_bound) const IMP_OVERRIDE {                           \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       ret += evaluate_if_good_index(m, p[i], da, max - ret);                   \
@@ -52,7 +83,7 @@
     }                                                                          \
     return ret;                                                                \
   }                                                                            \
-  Ints get_value_index(Model *m, const PLURALINDEXTYPE &o) const {             \
+  Ints get_value_index(Model *m, const PLURALINDEXTYPE &o) const IMP_OVERRIDE {\
     Ints ret(o.size());                                                        \
     for (unsigned int i = 0; i < o.size(); ++i) {                              \
       ret[i] += Name::get_value_index(m, o[i]);                                \
@@ -89,7 +120,8 @@
 #define IMP_CLASSNAME_MODIFIER_METHODS(Name)                             \
   virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,         \
                              unsigned int lower_bound,                   \
-                             unsigned int upper_bound) const IMP_FINAL { \
+                             unsigned int upper_bound)                   \
+                             const IMP_OVERRIDE IMP_FINAL {              \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {           \
       apply_index(m, o[i]);                                              \
     }                                                                    \
@@ -103,14 +135,24 @@
 #define IMP_IMPLEMENT_CLASSNAME_CONTAINER(Name)                          \
   IMP_IMPLEMENT_INLINE(void do_apply(const ClassnameModifier *sm) const, \
   { apply_generic(sm); });                                               \
+  IMP_IMPLEMENT_INLINE(void do_apply_moved(const ClassnameModifier *sm,  \
+                             const ParticleIndexes &moved_pis,           \
+                             const ParticleIndexes &reset_pis) const,    \
+  { apply_generic_moved(sm, moved_pis, reset_pis); });                   \
   virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE; \
   IMP_OBJECT_METHODS(Name)
 #endif
 
 /** Use this to fill in container methods
     IMP::ClassnameContainer::do_apply()
+    IMP::ClassnameContainer::do_apply_moved()
 */
 #define IMP_CLASSNAME_CONTAINER_METHODS(Name) \
-  void do_apply(const ClassnameModifier *sm) const { apply_generic(sm); }
+  void do_apply(const ClassnameModifier *sm) const IMP_OVERRIDE { \
+    apply_generic(sm); }                                          \
+  void do_apply_moved(const ClassnameModifier *sm,                \
+                      const ParticleIndexes &moved_pis,           \
+                      const ParticleIndexes &reset_pis) const IMP_OVERRIDE { \
+    apply_generic_moved(sm, moved_pis, reset_pis); }
 
 #endif /* IMPKERNEL_CLASSNAME_MACROS_H */

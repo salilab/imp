@@ -49,8 +49,8 @@ class IMPCOREEXPORT DiameterRestraint : public Restraint {
   virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(DiameterRestraint);
 #ifndef IMP_DOXYGEN
-  Restraints do_create_decomposition() const;
-  Restraints do_create_current_decomposition() const;
+  Restraints do_create_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
 #endif
 };
 

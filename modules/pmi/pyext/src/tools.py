@@ -10,7 +10,10 @@ import IMP.algebra
 import IMP.isd
 import IMP.pmi
 import IMP.pmi.topology
-import collections
+try:
+    from collections.abc import MutableSet  # needs Python 3.3 or later
+except ImportError:
+    from collections import MutableSet
 import itertools
 import math
 import sys
@@ -23,6 +26,7 @@ import RMF
 import IMP.rmf
 from collections import defaultdict, OrderedDict
 import warnings
+import numpy
 
 
 def _get_system_for_hier(hier):
@@ -592,7 +596,7 @@ def get_residue_indexes(hier):
 
 
 def sort_by_residues(particles):
-    particles_residues = [(p, IMP.pmi.tools.get_residue_indexes(p))
+    particles_residues = [(p, list(IMP.pmi.tools.get_residue_indexes(p)))
                           for p in particles]
     sorted_particles_residues = sorted(
         particles_residues,
@@ -706,7 +710,7 @@ class Segments(object):
 
     def add(self, index):
         '''index can be a integer or a list of integers '''
-        if isinstance(index, int):
+        if isinstance(index, (int, numpy.int32, numpy.int64)):
             mergeleft = None
             mergeright = None
             for n, s in enumerate(self.segs):
@@ -823,7 +827,7 @@ class ColorChange(object):
 
 
 # -------------- Collections --------------- #
-class OrderedSet(collections.MutableSet):
+class OrderedSet(MutableSet):
 
     def __init__(self, iterable=None):
         self.end = end = []

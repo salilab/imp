@@ -25,7 +25,7 @@ namespace {
 /** A minimum restraint score based SubsetFilter.
     See MinimumRestraintScoreSubsetFilterTable.
  */
-class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter : public SubsetFilter {
+class MinimumRestraintScoreSubsetFilter : public SubsetFilter {
   Pointer<RestraintCache> rc_;
   RestraintsTemp rs_;
   Slices slices_;
@@ -144,7 +144,7 @@ class DisjointSetsSubsetFilter : public SubsetFilter {
     }
   }
   IMP_OBJECT_METHODS(DisjointSetsSubsetFilter);
-  bool get_is_ok(const Assignment &state) const {
+  bool get_is_ok(const Assignment &state) const IMP_OVERRIDE {
     IMP_OBJECT_LOG;
     set_was_used(true);
     Filter f;
@@ -153,7 +153,7 @@ class DisjointSetsSubsetFilter : public SubsetFilter {
     }
     return true;
   }
-  int get_next_state(int pos, const Assignment &state) const {
+  int get_next_state(int pos, const Assignment &state) const IMP_OVERRIDE {
     for (unsigned int i = 0; i < sets_.size(); ++i) {
       for (unsigned int j = 0; j < sets_[i].size(); ++j) {
         if (sets_[i][j] == pos) {
@@ -473,7 +473,7 @@ class ListSubsetFilter : public SubsetFilter {
  public:
   ListSubsetFilter(const ListSubsetFilterTable *ka, const Ints indexes)
       : SubsetFilter("List score filter"), keepalive_(ka), indexes_(indexes) {}
-  int get_next_state(int pos, const Assignment &state) const;
+  int get_next_state(int pos, const Assignment &state) const IMP_OVERRIDE;
   virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
       IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ListSubsetFilter);

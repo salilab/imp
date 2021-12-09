@@ -18,7 +18,6 @@ import glob
 from operator import itemgetter
 from collections import defaultdict
 import numpy as np
-import string
 import itertools
 import warnings
 import math
@@ -100,7 +99,8 @@ class ReplicaExchange0(object):
                  em_object_for_rmf=None,
                  atomistic=False,
                  replica_exchange_object=None,
-                 test_mode=False):
+                 test_mode=False,
+                 score_moved=False):
         """Constructor.
            @param model The IMP model
            @param root_hier Top-level (System)hierarchy
@@ -158,6 +158,9 @@ class ReplicaExchange0(object):
                   output.
            @param test_mode Set to True to avoid writing any files, just test
                   one frame.
+           @param score_moved   If True, attempt to speed up Monte Carlo
+                  sampling by caching scoring function terms on particles
+                  that didn't move.
         """
         self.model = model
         self.vars = {}
@@ -245,6 +248,7 @@ class ReplicaExchange0(object):
         self.vars["replica_stat_file_suffix"] = replica_stat_file_suffix
         self.vars["geometries"] = None
         self.test_mode = test_mode
+        self.score_moved = score_moved
 
     def add_geometries(self, geometries):
         if self.vars["geometries"] is None:
@@ -299,7 +303,8 @@ class ReplicaExchange0(object):
             print("Setting up MonteCarlo")
             sampler_mc = IMP.pmi.samplers.MonteCarlo(
                 self.model, self.monte_carlo_sample_objects,
-                self.vars["monte_carlo_temperature"])
+                self.vars["monte_carlo_temperature"],
+                score_moved=self.score_moved)
             if self.vars["simulated_annealing"]:
                 tmin = self.vars["simulated_annealing_minimum_temperature"]
                 tmax = self.vars["simulated_annealing_maximum_temperature"]
@@ -609,20 +614,28 @@ class BuildSystem(object):
         self.force_create_gmm_files = force_create_gmm_files
         self.resolutions = resolutions
 
-    def add_state(self, reader, keep_chain_id=False, fasta_name_map=None):
+    def add_state(self, reader, keep_chain_id=False, fasta_name_map=None,
+                  chain_ids=None):
         """Add a state using the topology info in a
            IMP::pmi::topology::TopologyReader object.
         When you are done adding states, call execute_macro()
         @param reader The TopologyReader object
         @param fasta_name_map dictionary for converting protein names
                found in the fasta file
+        @param chain_ids A list or string of chain IDs for assigning to
+               newly-created molecules, e.g.
+               `string.ascii_uppercase+string.ascii_lowercase+string.digits`.
+               If not specified, chain IDs A through Z are assigned, then
+               AA through AZ, then BA through BZ, and so on, in the same
+               fashion as PDB.
         """
         state = self.system.create_state()
         self._readers.append(reader)
         # key is unique name, value is (atomic res, nonatomicres)
         these_domain_res = {}
         these_domains = {}       # key is unique name, value is _Component
-        chain_ids = string.ascii_uppercase+string.ascii_lowercase+'0123456789'
+        if chain_ids is None:
+            chain_ids = IMP.pmi.output._ChainIDs()
         numchain = 0
 
         # setup representation
@@ -804,7 +817,8 @@ class BuildSystem(object):
                                            nonrigid_parts=bead_res,
                                            max_trans=max_rb_trans,
                                            max_rot=max_rb_rot,
-                                           nonrigid_max_trans=max_bead_trans)
+                                           nonrigid_max_trans=max_bead_trans,
+                                           name="RigidBody %s" % dname)
 
             # if you have any domains not in an RB, set them as flexible beads
             for dname, domain in self._domains[nstate].items():

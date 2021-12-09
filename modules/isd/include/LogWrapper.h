@@ -16,6 +16,10 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Calculate the -Log of a list of restraints.
+/** This is intended to be used with restraints where their score represents
+    the probability (from 0 to 1) of being satisfied.
+    \note Any weights of the wrapped restraints are ignored.
+ */
 class IMPISDEXPORT LogWrapper : public RestraintSet {
   void show_it(std::ostream &out) const;
 
@@ -30,7 +34,13 @@ class IMPISDEXPORT LogWrapper : public RestraintSet {
 
     virtual double unprotected_evaluate(
         IMP::DerivativeAccumulator* accum) const IMP_OVERRIDE;
-    void do_add_score_and_derivatives(ScoreAccumulator sa) const;
+    virtual double unprotected_evaluate_moved(
+        IMP::DerivativeAccumulator* accum, const ParticleIndexes &moved_pis,
+        const ParticleIndexes &reset_pis) const IMP_OVERRIDE;
+    void do_add_score_and_derivatives(ScoreAccumulator sa) const IMP_OVERRIDE;
+    void do_add_score_and_derivatives_moved(
+                  ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+                  const ParticleIndexes &reset_pis) const IMP_OVERRIDE;
 
     IMP_OBJECT_METHODS(LogWrapper);
 

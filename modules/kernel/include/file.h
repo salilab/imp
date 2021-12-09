@@ -128,6 +128,7 @@ IMPKERNELEXPORT void set_log_target(TextOutput l);
 IMPKERNELEXPORT TextOutput get_log_target();
 #endif
 
+//! Temporarily set log target
 /** Set the log target to a given value and reset it
     when the object is destroyed. Use this in Python
     to set the target of logs.
@@ -150,11 +151,11 @@ class SetLogTarget : public RAII {
 IMP_VALUES(TextInput, TextInputs);
 IMP_VALUES(TextOutput, TextOutputs);
 
-/** Create a temporary file. The path can be extracted from the TextOutput.
+//! Create a temporary file. The path can be extracted from the TextOutput.
 
-    If suffix is non-empty, there is some small chance of a collision on
+/** If suffix is non-empty, there is some small chance of a collision on
     non-BSD systems as a unique temporary file is first created, and then
-    a file with that suffix appended is created.*/
+    a file with that suffix appended is created. */
 IMPKERNELEXPORT TextOutput create_temporary_file(std::string prefix = "imp_temp",
                                                std::string suffix = "");
 

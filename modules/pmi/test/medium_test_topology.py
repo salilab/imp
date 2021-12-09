@@ -769,16 +769,15 @@ class Tests(IMP.test.TestCase):
         hier = s.build()
         sel10 = IMP.atom.Selection(hier, resolution=10).get_selected_particles()
         self.assertEqual(len(sel10), 5)
-        self.assertEqual(IMP.atom.Fragment(sel10[0]).get_residue_indexes(),
-                         [1,2])
-        self.assertEqual(IMP.atom.Fragment(sel10[1]).get_residue_indexes(),
-                         [3,4])
-        self.assertEqual(IMP.atom.Fragment(sel10[2]).get_residue_indexes(),
-                         [5,6])
-        self.assertEqual(IMP.atom.Fragment(sel10[3]).get_residue_indexes(),
-                         [7,8,9])
-        self.assertEqual(IMP.atom.Residue(sel10[4]).get_index(),
-                         10)
+        self.assertEqual(
+            list(IMP.atom.Fragment(sel10[0]).get_residue_indexes()), [1,2])
+        self.assertEqual(
+            list(IMP.atom.Fragment(sel10[1]).get_residue_indexes()), [3,4])
+        self.assertEqual(
+            list(IMP.atom.Fragment(sel10[2]).get_residue_indexes()), [5,6])
+        self.assertEqual(
+            list(IMP.atom.Fragment(sel10[3]).get_residue_indexes()), [7,8,9])
+        self.assertEqual(IMP.atom.Residue(sel10[4]).get_index(), 10)
 
     def test_create_copy(self):
         """Test creation of Copies"""

@@ -11,7 +11,7 @@ class Tests(IMP.test.TestCase):
         """Test proper ints list"""
         iin = [[0, 1, 2, 3], [4, 5, 6, 7, 8]]
         out = IMP.domino._get_ints_list(iin)
-        self.assertEqual(iin, out)
+        self.assertEqual(iin, [list(x) for x in out])
 
 if __name__ == '__main__':
     IMP.test.main()

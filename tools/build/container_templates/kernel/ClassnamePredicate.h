@@ -30,13 +30,6 @@ class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
   typedef VARIABLETYPE Argument;
   typedef INDEXTYPE IndexArgument;
   ClassnamePredicate(std::string name = "ClassnamePredicate %1%");
-  /** \deprecated_at{2.1} Use the index based version.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual int get_value(ARGUMENTTYPE vt) const;
-
-  /** \deprecated_at{2.1} Use the index based version.*/
-  IMPKERNEL_DEPRECATED_METHOD_DECL(2.1)
-  virtual Ints get_value(const PLURALVARIABLETYPE &o) const;
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! remove any particles in ps for which this predicate evaluates to v
@@ -48,7 +41,7 @@ class IMPKERNELEXPORT ClassnamePredicate : public ParticleInputs,
 #endif
 
   //! Compute the predicate and the derivative if needed.
-  virtual int get_value_index(Model *m, PASSINDEXTYPE vt) const;
+  virtual int get_value_index(Model *m, PASSINDEXTYPE vt) const = 0;
 
   //! Setup for a batch of calls to get_value_index_in_batch()
   //! (could be used for improving performance - e.g. preload various

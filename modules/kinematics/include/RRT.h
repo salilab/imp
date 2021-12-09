@@ -119,7 +119,7 @@ class IMPKINEMATICSEXPORT RRT : public IMP::Sampler {
   // function required by Sampler
   // TODO: think how to save configurations in internal coords
   // to be more memory efficient
-  IMP::ConfigurationSet* do_sample() const {
+  IMP::ConfigurationSet* do_sample() const IMP_OVERRIDE {
     const_cast<RRT*>(this)->run();
     return nullptr;
   }

@@ -9,10 +9,7 @@ import RMF
 
 import time
 import IMP.algebra
-import types
-import re
 import sys
-import operator
 import os
 from . import atomicDominoUtilities
 
@@ -35,14 +32,13 @@ class PeptideDocker:
 
     # Processing specific to peptide docking and this script
     def loadDockingHelpers(self):
-        outputDir = self.getParam("output_directory")
         mkdirProcess = subprocess.Popen(
             ['mkdir',
              '-p',
              self.getParam('output_directory')],
             shell=False,
             stderr=subprocess.PIPE)
-        output = mkdirProcess.communicate()
+        _ = mkdirProcess.communicate()
 
         self.namesToParticles = atomicDominoUtilities.makeNamesToParticles(
             self.protein)
@@ -163,7 +159,8 @@ class PeptideDocker:
                 return 0
         return 1
 
-    # Check if we should skip processing of this pair of particles. Don't add restraints between particles that aren't optimized,
+    # Check if we should skip processing of this pair of particles. Don't add
+    # restraints between particles that aren't optimized,
     # and don't add restraints between particles on the same residue (for now
     # assume stereochemistry is good enough for this)
     def skipNonBondedPair(self, pair):
@@ -173,11 +170,14 @@ class PeptideDocker:
             return 1
 
         # skip if neither is flexible
-        if ((self.quickParticleName(pair[0]) in self.flexibleAtoms) == 0 and (self.quickParticleName(pair[1]) in self.flexibleAtoms) == 0):
+        if ((self.quickParticleName(pair[0]) in self.flexibleAtoms) == 0
+            and (self.quickParticleName(pair[1])
+                 in self.flexibleAtoms) == 0):
             return 1
         return 0
 
-    # Set up degrees of freedom for the system. Either we are dealing with a fixed protein or a flexible one.
+    # Set up degrees of freedom for the system. Either we are dealing with
+    # a fixed protein or a flexible one.
     # Determine which atoms are flexible and save them in self.flexibleAtoms
     def initDof(self):
 
@@ -217,7 +217,8 @@ class PeptideDocker:
                 fixedAtoms[leafName] = 1
         return fixedAtoms
 
-    # for each flexible atom, give it the coordinates of another flexible atom (ensures that each atom starts out in the binding site)
+    # for each flexible atom, give it the coordinates of another flexible
+    # atom (ensures that each atom starts out in the binding site)
     # Although it does guarantee a very random initial configuration, it is
     # cheating since we are using knowledge of the native state
     def initializeRandomExisting(self):
@@ -231,7 +232,8 @@ class PeptideDocker:
         for pName in particlesToVary:
             randomPname = random.choice(particlesToVary)
             randomP = self.namesToParticles[randomPname]
-            print("setting coordinates for particle %s to the ones currently set for particle %s" % (pName, randomPname))
+            print("setting coordinates for particle %s to the ones currently "
+                  "set for particle %s" % (pName, randomPname))
             atomToCoordinates[pName] = IMP.core.XYZ(randomP).get_coordinates()
 
         for pName in particlesToVary:
@@ -246,9 +248,9 @@ class PeptideDocker:
     def setInitialPositions(self):
         initialPositionMethod = self.getParam("initial_position_method")
 
-        # set random coordinates for atom by creating bounding box around native coordinates, increasing it
-        # by defined offset plus random number (necessary when running on
-        # cluster)
+        # set random coordinates for atom by creating bounding box around
+        # native coordinates, increasing it by defined offset plus random
+        # number (necessary when running on cluster)
         if (initialPositionMethod == "random"):
 
             myRandom = random.random()
@@ -286,8 +288,10 @@ class PeptideDocker:
 
         elif (initialPositionMethod == "random_box"):
 
-            # Get bounding box containing all particles within close pair distance of flexible atoms
-            # This doesn't work perfectly; can put initial positions in the fixed atoms accidentally
+            # Get bounding box containing all particles within close pair
+            # distance of flexible atoms
+            # This doesn't work perfectly; can put initial positions in the
+            # fixed atoms accidentally
             # As constructed it is specific to peptide atoms only and not
             # flexible protein atoms
             bsParticles = []
@@ -299,7 +303,8 @@ class PeptideDocker:
                         fixedAtom = self.namesToParticles[firstPname]
 
                         bsParticles.append(IMP.core.XYZ(fixedAtom))
-                        print("added next close atom %s to bounding box particles" % firstPname)
+                        print("added next close atom %s to bounding box "
+                              "particles" % firstPname)
             # bsBoundingBox = IMP.core.get_bounding_box(bsParticles)  -- revert
             # if I can figure out how
             peptideParticles = []
@@ -337,7 +342,8 @@ class PeptideDocker:
         elif (initialPositionMethod == "random_full"):
             bb = IMP.atom.get_bounding_box(self.protein)
             for particleName in self.flexibleAtoms.keys():
-                print("creating random position for particle %s" % particleName)
+                print("creating random position for particle %s"
+                      % particleName)
                 p = self.namesToParticles[particleName]
                 xyzDecorator = IMP.core.XYZ(p)
                 randomXyz = IMP.algebra.get_random_vector_in(bb)
@@ -366,9 +372,12 @@ class PeptideDocker:
                     existingLeafXyz.set_coordinates(
                         initialLeafXyz.get_coordinates())
                 else:
-                    print("Read in initial positions from file %s but this file contained particle %s which is not in current model" % (initialPositionFile, name))
+                    print("Read in initial positions from file %s but this "
+                          "file contained particle %s which is not in current "
+                          "model" % (initialPositionFile, name))
         else:
-            print("Please specify valid initial position method (random or file)\n")
+            print("Please specify valid initial position method "
+                  "(random or file)\n")
             sys.exit()
 
         # output initial positions
@@ -391,8 +400,8 @@ class PeptideDocker:
             particlePairs = self.getClosePairs()
         elif (nonBondedDefinition == "random"):
             particlePairs = self.getRandomParticlePairs()
-        elif (nonBondedDefinition == "manual"):
-            particlePairs = self.readManualRestraints(nativeProtein, 6)
+#       elif (nonBondedDefinition == "manual"):
+#           particlePairs = self.readManualRestraints(nativeProtein, 6)
         else:
             print("Please specify valid non bonded pair definition")
             sys.exit()
@@ -425,10 +434,10 @@ class PeptideDocker:
         finalPairs = []
         for pair in particlePairs:
             distance = self.getXyzDistance(pair)
-            q0 = self.quickParticleName(pair[0])
-            q1 = self.quickParticleName(pair[1])
 
-            if (useHardCutoff == "0" or (useHardCutoff == "1" and distance < closePairDistance)):
+            if (useHardCutoff == "0"
+                or (useHardCutoff == "1"
+                    and distance < closePairDistance)):
                 finalPairs.append([pair[0], pair[1]])
 
         return finalPairs
@@ -443,8 +452,8 @@ class PeptideDocker:
                 IMP.atom.get_data_path("top_heav.lib"),
                 IMP.atom.get_data_path("par.lib"))
 
-            # Set up and evaluate the stereochemical part (bonds, angles, dihedrals,
-            # impropers) of the CHARMM forcefield
+            # Set up and evaluate the stereochemical part (bonds, angles,
+            # dihedrals, impropers) of the CHARMM forcefield
             bonds = self.topology.add_bonds(self.protein)
             angles = ff.create_angles(bonds)
             dihedrals = ff.create_dihedrals(bonds)
@@ -486,10 +495,11 @@ class PeptideDocker:
                         1)))
 
         else:
-            print ("Skipping forcefield restraints")
+            print("Skipping forcefield restraints")
 
-    # Create one type of forcefield restraint. The restraint is initially across the full model and needs to be decomposed
-    # so it can be used in the restraint graph.
+    # Create one type of forcefield restraint. The restraint is initially
+    # across the full model and needs to be decomposed so it can be used
+    # in the restraint graph.
     def createForceFieldRestraintsForModel(
         self,
         ffParticles,
@@ -508,7 +518,6 @@ class PeptideDocker:
         decomposedRestraintTemp = listBondRestraint.create_decomposition()
         decomposedRestraints = IMP.RestraintSet.get_from(
             decomposedRestraintTemp)
-        rs_restraints = decomposedRestraints.get_restraints()
 
         # manually remove the full restraint after getting the decomposition
         del listBondRestraint
@@ -523,20 +532,18 @@ class PeptideDocker:
                 self.model.add_restraint(r)
                 r.set_maximum_score(maxForceFieldScore)
                 self.addParticlesToGroups(r)
-            else:
-                t = 1
-                # self.model.remove_restraint(r)
 
-    # Add all atoms in r to ffParticleGroups; tracks which atoms are restrained by forcefield terms so
-    # we don't restrain them in other methods (e.g. excluded volume) --
-    # essentially a manual pair-filter
+    # Add all atoms in r to ffParticleGroups; tracks which atoms are
+    # restrained by forcefield terms so we don't restrain them in other
+    # methods (e.g. excluded volume) -- essentially a manual pair-filter
     def addParticlesToGroups(self, r):
         inputParticles = []
         ps = r.get_input_particles()
 
         for p in ps:
 
-            if (self.isAtomParticle(p) == 0):  # skip particles that aren't actually atoms (e.g. bond particles)
+            # skip particles that aren't actually atoms (e.g. bond particles)
+            if (self.isAtomParticle(p) == 0):
                 continue
             inputParticles.append(p.get_name())
 
@@ -546,9 +553,9 @@ class PeptideDocker:
                     continue
                 self.ffParticleGroups[firstName][secondName] = 1
 
-    # Add excluded volume restraints across close pairs. Still a work in progress as they have been slowing down
-    # the code quite a bit and we'll probably want to turn them on only at a
-    # defined time
+    # Add excluded volume restraints across close pairs. Still a work in
+    # progress as they have been slowing down the code quite a bit and
+    # we'll probably want to turn them on only at a defined time
     def addExcludedVolumeRestraints(self):
 
         restrainedParticles = atomicDominoUtilities.getRestrainedParticles(
@@ -563,10 +570,10 @@ class PeptideDocker:
     # factor
     def addFlexFlexLjRestraints(self, scalingFactor):
         if (self.initializedFlexFlexLjRestraints == 0):
-            print("adding initial lennard jones restraints between pairs of flexible atoms")
+            print("adding initial lennard jones restraints between pairs "
+                  "of flexible atoms")
             self.initializedFlexFlexLjRestraints = 1
             leaves = IMP.atom.get_leaves(self.protein)
-            counter = 0
 
             sf = IMP.atom.ForceSwitch(6.0, 7.0)
             ps = IMP.atom.LennardJonesPairScore(sf)
@@ -574,14 +581,14 @@ class PeptideDocker:
                 iLeaf = leaves[i]
                 for j in range(i + 1, len(leaves)):
                     jLeaf = leaves[j]
-                    if ((self.quickParticleName(iLeaf) in self.flexibleAtoms) == 1 and (self.quickParticleName(jLeaf) in self.flexibleAtoms) == 1):
+                    if ((self.quickParticleName(iLeaf) in self.flexibleAtoms)
+                        == 1 and
+                        (self.quickParticleName(jLeaf) in self.flexibleAtoms)
+                            == 1):
                         ljpr = IMP.core.PairRestraint(
                             ps, [iLeaf, jLeaf], "LennardJones %s_%s" %
                             (i, j))
                         self.model.add_restraint(ljpr)
-        chainHierarchies = IMP.atom.get_by_type(
-            self.protein, IMP.atom.CHAIN_TYPE)
-        peptideChainHierarchy = None
         print("scaling atomic radii by scaling factor %s" % scalingFactor)
         # reset radii back to original in preparation for rescaling
         self.ff.add_radii(self.protein)
@@ -622,7 +629,7 @@ class PeptideDocker:
         self.model.add_restraint(pairRestraint)
         maxNonBondedScore = float(self.getParam("max_non_bonded_score"))
         pairRestraint.set_maximum_score(maxNonBondedScore)
-        #initialScore = pairRestraint.evaluate(0)
+        # initialScore = pairRestraint.evaluate(0)
 
     # add non-bonded restraints across close pairs. At least one atom in each
     # pair should be flexible
@@ -632,7 +639,7 @@ class PeptideDocker:
         nonBondedRestraintType = self.getParam("non_bonded_restraint_type")
         dopeCutoff = float(self.getParam("dope_cutoff"))
 
-        k = IMP.core.Harmonic.get_k_from_standard_deviation(1)
+        # k = IMP.core.Harmonic.get_k_from_standard_deviation(1)
 
         ps = 0
         if (nonBondedRestraintType == "dope"):
@@ -667,7 +674,9 @@ class PeptideDocker:
             for j in range(i + 1, len(leaves)):
                 jLeaf = leaves[j]
 
-                if ((self.quickParticleName(jLeaf) in self.nonBondedPairs[self.quickParticleName(iLeaf)]) == 1):
+                if ((self.quickParticleName(jLeaf)
+                     in self.nonBondedPairs[self.quickParticleName(iLeaf)])
+                        == 1):
                     continue
                 if (self.skipNonBondedPair([iLeaf, jLeaf]) == 1):
                     continue
@@ -712,7 +721,7 @@ class PeptideDocker:
             fileName = os.path.join(outputDir, mdFileName)
             print("creating rmf file with filename %s" % fileName)
             rh = RMF.create_rmf_file(fileName)
-            my_kc = rh.add_category("my data")
+            # my_kc = rh.add_category("my data")
             IMP.rmf.add_hierarchy(rh, self.protein)
 
             self.rootHandle = rh
@@ -756,7 +765,7 @@ class PeptideDocker:
         vsos = IMP.atom.VelocityScalingOptimizerState(
             IMP.atom.get_leaves(self.protein),
             0)  # temperature is set later
-        vsIndex = self.mdOptimizer.add_optimizer_state(vsos)
+        # vsIndex = self.mdOptimizer.add_optimizer_state(vsos)
 
         # SaveHierarchyConfigurationOptimizerState
         hdos = IMP.rmf.SaveHierarchyConfigurationOptimizerState(
@@ -796,7 +805,8 @@ class PeptideDocker:
                 IMP.rmf.load_frame(rh, frameCount - 1, self.protein)
                 score = self.model.evaluate(False)
                 rmsd = self.calculateNativeRmsd(self.flexibleAtoms)
-                print("cg number %s has score %s rmsd %s" % (cgNumber, score, rmsd))
+                print("cg number %s has score %s rmsd %s"
+                      % (cgNumber, score, rmsd))
                 if (score < bestCgScore):
                     bestCgScore = score
                     bestCgScoreFile = fullCgFileName
@@ -814,8 +824,8 @@ class PeptideDocker:
                 -1,
                 self.getParam("best_cg_rmsd_output_file"))
             self.singlePdbResults(
-                "%s%s" %
-                (cgFileName, framesToRead[-1]), -1, self.getParam("final_cg_frame_output_file"))
+                "%s%s" % (cgFileName, framesToRead[-1]),
+                -1, self.getParam("final_cg_frame_output_file"))
             finalCgRmsd = self.calculateNativeRmsd(self.flexibleAtoms)
             self.bestCgScore = bestCgScore
             self.bestCgRmsd = bestCgRmsd
@@ -877,19 +887,23 @@ class PeptideDocker:
             [steps, temperature, excludedVolume] = stage.split('_')
             stepsSoFar += int(steps)
             self.vsos.set_temperature(int(temperature))
-            if (excludedVolume == "1"):  # add lennard jones restraints between flexible atoms and fixed atoms (don't add between flex atoms)
+            # add lennard jones restraints between flexible atoms and
+            # fixed atoms (don't add between flex atoms)
+            if excludedVolume == "1":
                 self.addFixedFlexibleLjRestraints()
             elif (excludedVolume != "0"):
                 # add lennard jones restraints between flexible atoms
                 if (self.getParam("excluded_volume_type") == "lj"):
                     self.addFlexFlexLjRestraints(float(excludedVolume))
                 elif (self.getParam("excluded_volume_type") == "ev"):
-                    self.addExcludedVolumeRestraints(
-                    )  # add full excluded volume restraints (just take everything in the protein)
+                    # add full excluded volume restraints (just take
+                    # everything in the protein)
+                    self.addExcludedVolumeRestraints()
                 else:
                     "please set excluded_volume_type to either lj or ev"
                     sys.exit()
-            print("running md at temperature %s for %s steps" % (temperature, steps))
+            print("running md at temperature %s for %s steps"
+                  % (temperature, steps))
             self.mdOptimizer.optimize(int(steps))
 
             IMP.atom.write_pdb(
@@ -899,7 +913,8 @@ class PeptideDocker:
                         "output_directory"),
                     "md_after_%s.pdb" %
                     stepsSoFar))
-            print("model score after stage %s is %s" % (stage, self.model.evaluate(False)))
+            print("model score after stage %s is %s"
+                  % (stage, self.model.evaluate(False)))
         print("done running md")
 
     def runAllCg(self):
@@ -932,7 +947,7 @@ class PeptideDocker:
         fileName = os.path.join(outputDir, cgFileName)
         print("creating cg hdf5 file %s" % fileName)
         rh = RMF.create_rmf_file(fileName)
-        my_kc = rh.add_category("my data")
+        # my_kc = rh.add_category("my data")
         IMP.rmf.add_hierarchy(rh, self.protein)
 
         # apply cg
@@ -949,14 +964,16 @@ class PeptideDocker:
         print("running cg")
         cg.optimize(cgSteps)
         secondScore = self.model.evaluate(False)
-        print("cg score after md step %s before %s after %s" % (mdStepStart, firstScore, secondScore))
+        print("cg score after md step %s before %s after %s"
+              % (mdStepStart, firstScore, secondScore))
         return secondScore
 
     # Tell the optimizer not to move atoms we have determined ar fixed
     def fixNonFlexibleAtoms(self):
         if (self.createdMdOptimizer == 0):
             self.createMdOptimizer()
-            # print "ERROR: must create md optimizer and optimize once before set_particles_are_optimized is called"
+            # print "ERROR: must create md optimizer and optimize once before
+            # set_particles_are_optimized is called"
             # sys.exit()
 
         self.fixedNonFlexibleAtoms = 1

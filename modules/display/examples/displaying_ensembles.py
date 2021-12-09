@@ -11,8 +11,8 @@ import IMP.display
 import IMP.atom
 import sys
 
-IMP.setup_from_argv(sys.argv,
-    "Experiments with trying to visualize an ensemble of structures")
+IMP.setup_from_argv(
+    sys.argv, "Experiments with trying to visualize an ensemble of structures")
 
 Segment = IMP.algebra.Segment3D
 Cylinder = IMP.algebra.Cylinder3D
@@ -36,8 +36,6 @@ def read(m, beyond_file):
                 IMP.atom.Chain(c), 4)
             hr.add_child(simp)
         IMP.atom.destroy(h)
-        if i == 0:
-            base = IMP.atom.get_leaves(hr)
         print(" ", i)
     return hs
 
@@ -109,6 +107,7 @@ def add_skeleton(h, c, r, w, chain_colors):
                 g.set_name(get_nice_name(h) + "_skel")
                 w.add_geometry(g)
 
+
 IMP.set_log_level(IMP.TERSE)
 m = IMP.Model()
 
@@ -134,20 +133,19 @@ for i, h in enumerate(hs):
         if h == hs[0]:
             crb = IMP.atom.create_rigid_body(hc)
         else:
-            # make sure the rigid bodies have equivalent defining reference frames
-            # if we just used IMP.atom.create_rigid_body, globular proteins are likely
-            # to have different axis computed when starting in different
-            # orientations
+            # Make sure the rigid bodies have equivalent defining reference
+            # frames. If we just used IMP.atom.create_rigid_body, globular
+            # proteins are likely to have different axes computed when
+            # starting in different orientations
             crb = IMP.atom.create_compatible_rigid_body(
                 hc, base_chains[c.get_id()])
     print(" ", i)
 
 chains = IMP.atom.get_by_type(hs[0], IMP.atom.CHAIN_TYPE)
-chains.sort(key = lambda x: IMP.core.XYZ(x).get_x() + IMP.core.XYZ(x).get_y())
+chains.sort(key=lambda x: IMP.core.XYZ(x).get_x() + IMP.core.XYZ(x).get_y())
 chain_colors = {}
 for i, c in enumerate(chains):
     id = IMP.atom.Chain(c).get_id()
-    #f= i/float(len(chains))
     color = IMP.display.get_display_color(i)
     # IMP.display.get_jet_color(f)
     chain_colors[id] = color
@@ -157,10 +155,10 @@ add_markers(hs[0], IMP.display.Color(1, 1, 1), w)
 hso = hs[1:]
 
 
-# sort them spatially so the colors are nicely arranged and allow one to visually connect
-# the position of one end with that of the other
-hso.sort(key=lambda h: IMP.core.XYZ(IMP.atom.Selection(h, chain='I',
-                       residue_index=237).get_selected_particles()[0]).get_z())
+# sort them spatially so the colors are nicely arranged and allow one to
+# visually connect the position of one end with that of the other
+hso.sort(key=lambda h: IMP.core.XYZ(IMP.atom.Selection(
+    h, chain='I', residue_index=237).get_selected_particles()[0]).get_z())
 print("adding markers", end=' ')
 for i, h in enumerate(hso):
     c = IMP.display.get_interpolated_rgb(

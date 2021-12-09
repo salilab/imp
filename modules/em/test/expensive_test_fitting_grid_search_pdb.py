@@ -23,8 +23,9 @@ class Tests(IMP.test.TestCase):
 
     def load_protein(self, pdb_filename):
         self.m = IMP.Model()
-        self.mp = IMP.atom.read_pdb(self.open_input_file(pdb_filename),
-                                    self.m, IMP.atom.CAlphaPDBSelector())  # IMP.atom.NonWaterSelector())
+        with self.open_input_file(pdb_filename) as fh:
+            self.mp = IMP.atom.read_pdb(
+                fh, self.m, IMP.atom.CAlphaPDBSelector())
         self.mps = IMP.atom.Hierarchies()
         self.mps.append(self.mp)
         self.weight_key = IMP.FloatKey("weight")

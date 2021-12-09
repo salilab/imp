@@ -28,10 +28,12 @@ class Tests(IMP.test.TestCase):
         self.scene.set_origin(34.0, 8.0, -92.0)
 
     def load_protein(self, pdb_filename):
-        self.mp = IMP.atom.read_pdb(self.open_input_file(pdb_filename),
-                                    self.imp_model, IMP.atom.CAlphaPDBSelector())
-        self.mp_ref = IMP.atom.read_pdb(self.open_input_file(pdb_filename),
-                                        self.imp_model, IMP.atom.CAlphaPDBSelector())  # IMP.
+        with self.open_input_file(pdb_filename) as fh:
+            self.mp = IMP.atom.read_pdb(
+                fh, self.imp_model, IMP.atom.CAlphaPDBSelector())
+        with self.open_input_file(pdb_filename) as fh:
+            self.mp_ref = IMP.atom.read_pdb(
+                fh, self.imp_model, IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(self.mp)
         self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()

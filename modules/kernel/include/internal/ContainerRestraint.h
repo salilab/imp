@@ -24,7 +24,7 @@ IMPKERNEL_BEGIN_INTERNAL_NAMESPACE
 template <class Score, class Container>
 class ContainerRestraint : public Restraint {
   IMP::PointerMember<Container> pc_;
-  IMP::Pointer<AccumulatorScoreModifier<Score> > acc_;
+  IMP::Pointer<AccumulatorScoreModifier<Score, Container> > acc_;
 
  public:
   ContainerRestraint(Score *ss, Container *pc,
@@ -33,6 +33,11 @@ class ContainerRestraint : public Restraint {
  public:
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
       IMP_OVERRIDE;
+
+  void do_add_score_and_derivatives_moved(IMP::ScoreAccumulator sa,
+                const ParticleIndexes &moved_pis,
+                const ParticleIndexes &reset_pis) const IMP_OVERRIDE;
+
   ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(ContainerRestraint);
   ;
@@ -44,10 +49,10 @@ class ContainerRestraint : public Restraint {
 
   Score *get_score() const { return acc_->get_score_object(); }
 
-  Restraints do_create_decomposition() const;
-  Restraints do_create_current_decomposition() const;
+  Restraints do_create_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
 
-  IMP_IMPLEMENT(double get_last_score() const;);
+  IMP_IMPLEMENT(double get_last_score() const IMP_OVERRIDE;);
 };
 
 /** Helper to create a ContainerRestraint without specifying the types. Make
@@ -69,7 +74,7 @@ ContainerRestraint<Score, C>::ContainerRestraint(Score *ss, C *pc,
                                                  std::string name)
     : Restraint(pc->get_model(), name),
       pc_(pc),
-      acc_(create_accumulator_score_modifier(ss)) {}
+      acc_(create_accumulator_score_modifier(ss, pc)) {}
 
 template <class Score, class C>
 double ContainerRestraint<Score, C>::get_last_score() const {
@@ -84,6 +89,19 @@ void ContainerRestraint<Score, C>::do_add_score_and_derivatives(
   IMP_CHECK_OBJECT(pc_);
   acc_->set_accumulator(accum);
   pc_->apply_generic(acc_.get());
+}
+
+template <class Score, class C>
+void ContainerRestraint<Score, C>::do_add_score_and_derivatives_moved(
+    ScoreAccumulator accum,
+    const ParticleIndexes &moved_pis,
+    const ParticleIndexes &reset_pis) const {
+  IMP_OBJECT_LOG;
+  IMP_CHECK_OBJECT(acc_);
+  IMP_CHECK_OBJECT(pc_);
+  acc_->set_accumulator(accum);
+  acc_->set_container(pc_);
+  pc_->apply_generic_moved(acc_.get(), moved_pis, reset_pis);
 }
 
 template <class Score, class C>

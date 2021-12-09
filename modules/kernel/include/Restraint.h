@@ -26,7 +26,7 @@ class DerivativeAccumulator;
 //! A restraint is a term in an \imp ScoringFunction.
 /**
     To implement a new restraint, just implement the two methods:
-    - IMP::Restraint::do_add_score_and_derivatives()
+    - IMP::Restraint::unprotected_evaluate()
     - IMP::ModelObject::do_get_inputs();
     and use the macro to handle IMP::Object
     - IMP_OBJECT_METHODS()
@@ -67,6 +67,35 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
    */
   double evaluate(bool calc_derivs) const;
 
+  //! Score the restraint when some particles have moved.
+  /** No particles in the model other those listed should have been
+      changed (e.g. by Monte Carlo movers) since the last evaluation (although
+      ScoreStates may have moved particles not in this list, as a function of
+      particles that *are* in the list). This method should behave
+      identically to evaluate() but may be more efficient if it can
+      skip terms that involve unchanged particles.
+
+      \param calc_derivs Whether to calculate first derivatives.
+      \param moved_pis Particles that have moved since the last
+             scoring function evaluation.
+      \param reset_pis Particles that have moved, but back to the
+             positions they had at the last-but-one evaluation
+             (e.g. due to a rejected Monte Carlo move).
+
+      \return Current score.
+   */
+  double evaluate_moved(bool calc_derivs,
+                        const ParticleIndexes &moved_pis,
+                        const ParticleIndexes &reset_pis) const;
+
+  double evaluate_moved_if_below(bool calc_derivatives,
+                      const ParticleIndexes &moved_pis,
+                      const ParticleIndexes &reset_pis, double max) const;
+
+  double evaluate_moved_if_good(bool calc_derivatives,
+                      const ParticleIndexes &moved_pis,
+                      const ParticleIndexes &reset_pis) const;
+
   double evaluate_if_good(bool calc_derivatives) const;
 
   //! \see Model::evaluate_with_maximum()
@@ -86,6 +115,20 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   */
   //! Return the unweighted score for the restraint.
   virtual double unprotected_evaluate(DerivativeAccumulator *da) const;
+
+  //! Return the unweighted score, taking moving particles into account.
+  /** By default this just calls regular unprotected_evaluate(), but
+      may be overridden by restraints to be more efficient, e.g. by
+      skipping terms that involve unchanged particles.
+   */
+  virtual double unprotected_evaluate_moved(
+           DerivativeAccumulator *da, const ParticleIndexes &moved_pis,
+           const ParticleIndexes &reset_pis) const {
+    IMP_UNUSED(moved_pis);
+    IMP_UNUSED(reset_pis);
+    return unprotected_evaluate(da);
+  }
+
   /** The function calling this will treat any score >= get_maximum_score
       as bad and so can return early as soon as such a situation is found.*/
   virtual double unprotected_evaluate_if_good(DerivativeAccumulator *da,
@@ -100,6 +143,21 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
     IMP_UNUSED(max);
     return unprotected_evaluate(da);
   }
+
+  virtual double unprotected_evaluate_moved_if_below(
+           DerivativeAccumulator *da, const ParticleIndexes &moved_pis,
+           const ParticleIndexes &reset_pis, double max) const {
+    IMP_UNUSED(max);
+    return unprotected_evaluate_moved(da, moved_pis, reset_pis);
+  }
+
+  virtual double unprotected_evaluate_moved_if_good(
+           DerivativeAccumulator *da, const ParticleIndexes &moved_pis,
+           const ParticleIndexes &reset_pis, double max) const {
+    IMP_UNUSED(max);
+    return unprotected_evaluate_moved(da, moved_pis, reset_pis);
+  }
+
 /** @} */
 
 #endif
@@ -136,6 +194,10 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       are up to date. The returned score should be the unweighted score.
   */
   void add_score_and_derivatives(ScoreAccumulator sa) const;
+
+  void add_score_and_derivatives_moved(
+                 ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+                 const ParticleIndexes &reset_pis) const;
 
   //! Decompose this restraint into constituent terms
   /** Given the set of input particles, decompose the restraint into parts
@@ -201,7 +263,11 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
           create_scoring_function(double weight = 1.0,
                                   double max = NO_MAX) const;
 #if !defined(IMP_DOXYGEN)
-  void set_last_score(double s) const { last_score_ = s; }
+  void set_last_score(double s) const {
+    last_last_score_ = last_score_;
+    last_score_ = s;
+  }
+  void set_last_last_score(double s) const { last_last_score_ = s; }
 #endif
 
   /** Return the (unweighted) score for this restraint last time it was
@@ -210,6 +276,12 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
       was the last call, the score, if larger than the max, is not accurate.
    */
   virtual double get_last_score() const { return last_score_; }
+
+  //! Get the unweighted score from the last-but-one time it was evaluated
+  /** \see get_last_score
+    */
+  virtual double get_last_last_score() const { return last_last_score_; }
+
   /** Return whether this restraint violated its maximum last time it was
       evaluated.
    */
@@ -235,11 +307,17 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   virtual Restraints do_create_current_decomposition() const {
     return do_create_decomposition();
   }
-  //! A restraint should override this to compute the score and derivatives.
+
   virtual void do_add_score_and_derivatives(ScoreAccumulator sa) const;
 
+  virtual void do_add_score_and_derivatives_moved(
+                  ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+                  const ParticleIndexes &reset_pis) const;
+
   /** No outputs. */
-  ModelObjectsTemp do_get_outputs() const { return ModelObjectsTemp(); }
+  ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+    return ModelObjectsTemp();
+  }
 
  private:
   ScoringFunction *create_internal_scoring_function() const;
@@ -247,6 +325,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   double weight_;
   double max_;
   mutable double last_score_;
+  mutable double last_last_score_;
   // cannot be released outside the class
   mutable Pointer<ScoringFunction> cached_internal_scoring_function_;
 };

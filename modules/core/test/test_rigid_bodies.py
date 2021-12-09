@@ -111,15 +111,18 @@ class Tests(IMP.test.TestCase):
         # Rigid members/bodies
         self.assertEqual(rb.get_rigid_members(), [rigid_member, rigid_body])
         # All members, rigid/nonrigid, member/body
-        self.assertEqual(rb.get_member_indexes(),
-                         IMP.get_indexes([rigid_member, non_rigid_member,
-                                          rigid_body, non_rigid_body]))
+        self.assertNumPyArrayEqual(
+            rb.get_member_indexes(),
+            IMP.get_indexes([rigid_member, non_rigid_member,
+                             rigid_body, non_rigid_body]))
         # Rigid/nonrigid members
-        self.assertEqual(rb.get_member_particle_indexes(),
-                         IMP.get_indexes([rigid_member, non_rigid_member]))
+        self.assertNumPyArrayEqual(
+            rb.get_member_particle_indexes(),
+            IMP.get_indexes([rigid_member, non_rigid_member]))
         # Rigid/nonrigid bodies
-        self.assertEqual(rb.get_body_member_particle_indexes(),
-                         IMP.get_indexes([rigid_body, non_rigid_body]))
+        self.assertNumPyArrayEqual(
+            rb.get_body_member_particle_indexes(),
+            IMP.get_indexes([rigid_body, non_rigid_body]))
 
     def test_create_one_from_pdb(self):
         """Testing create_rigid_bodies"""

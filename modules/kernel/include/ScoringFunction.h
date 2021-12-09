@@ -14,6 +14,7 @@
 #include "dependency_graph.h"
 #include "Restraint.h"
 #include "ModelObject.h"
+#include "internal/moved_particles_cache.h"
 #include <IMP/InputAdaptor.h>
 #include <IMP/Pointer.h>
 
@@ -39,6 +40,16 @@ being evaluated (this is cached)
 */
 class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   EvaluationState es_;
+  // cache of ScoreStates that are affected by each moved particle,
+  // used for evaluate_moved() and related functions
+  internal::MovedParticlesScoreStateCache moved_particles_cache_;
+  // time when moved_particles_cache_ was last updated, or 0
+  unsigned moved_particles_cache_age_;
+
+  ScoreStatesTemp get_moved_required_score_states(
+                               const ParticleIndexes &moved_pis,
+                               const ParticleIndexes &reset_pis);
+
   // later make things implement inputs and return restraints
  public:
   typedef std::pair<double, bool> ScoreIsGoodPair;
@@ -49,6 +60,19 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
       is passed.*/
   virtual void do_add_score_and_derivatives(ScoreAccumulator sa,
                                             const ScoreStatesTemp &ss) = 0;
+
+  //! Score when only some particles have moved.
+  /** \see do_add_score_and_derivatives()
+   */
+  virtual void do_add_score_and_derivatives_moved(
+                  ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+                  const ParticleIndexes &reset_pis,
+                  const ScoreStatesTemp &ss) {
+    IMP_UNUSED(moved_pis);
+    IMP_UNUSED(reset_pis);
+    do_add_score_and_derivatives(sa, ss);
+  }
+
   ScoreAccumulator get_score_accumulator_if_below(bool deriv, double max) {
     return ScoreAccumulator(&es_, 1.0, deriv, max, NO_MAX, true);
   }
@@ -75,6 +99,29 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
                          scoring function
   */
   double evaluate(bool derivatives);
+
+  //! Score when some particles have moved.
+  /** This should behave identically to evaluate() but may be more
+      efficient if it can skip restraint terms that involve unchanged particles.
+
+      \param moved_pis Particles that have moved since the last
+             scoring function evaluation.
+      \param reset_pis Particles that have moved, but back to the
+             positions they had at the last-but-one evaluation
+             (e.g. due to a rejected Monte Carlo move).
+
+      \see evaluate()
+   */
+  double evaluate_moved(bool derivatives, const ParticleIndexes &moved_pis,
+                        const ParticleIndexes &reset_pis);
+
+  double evaluate_moved_if_below(
+             bool derivatives, const ParticleIndexes &moved_pis,
+             const ParticleIndexes &reset_pis, double max);
+
+  double evaluate_moved_if_good(
+             bool derivatives, const ParticleIndexes &moved_pis,
+             const ParticleIndexes &reset_pis);
 
   double evaluate_if_below(bool derivatives, double max);
 

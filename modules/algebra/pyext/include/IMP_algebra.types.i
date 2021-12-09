@@ -352,6 +352,30 @@ struct ConvertEigenMatrix {
   }
   template <class SwigData>
   static PyObject* create_python_object(const M& t, SwigData st, int OWN) {
+#if IMP_KERNEL_HAS_NUMPY
+    // We are called for both float and double. Map to equivalent NumPy
+    // types by checking the size of the type (a little ugly)
+    BOOST_STATIC_ASSERT(sizeof(typename M::Scalar) == sizeof(double) ||
+                        sizeof(typename M::Scalar) == sizeof(float));
+    if (numpy_import_retval == 0) {
+      npy_intp dims[2];
+      dims[0] = t.rows();
+      dims[1] = t.cols();
+      int typenum = sizeof(typename M::Scalar) == sizeof(double)
+                    ? NPY_DOUBLE : NPY_FLOAT;
+      // Eigen matrices are column major by default; numpy is row major
+      // by default, so force column major (Fortran-contiguous style)
+      PyReceivePointer ret(PyArray_NewFromDescr(
+             &PyArray_Type, PyArray_DescrFromType(typenum), 2, dims,
+             NULL, NULL, NPY_ARRAY_F_CONTIGUOUS, NULL));
+      if (t.rows()*t.cols() > 0) {
+        PyObject *obj = ret;
+        memcpy(PyArray_DATA(obj), t.data(),
+               t.rows() * t.cols() * sizeof(typename M::Scalar));
+      }
+      return ret.release();
+    } else {
+#endif
     PyReceivePointer ret(PyList_New(t.rows()));
     for (unsigned int i = 0; i < t.rows(); ++i) {
       PyReceivePointer inner(PyList_New(t.cols()));
@@ -363,6 +387,10 @@ struct ConvertEigenMatrix {
       IMP_PYTHON_CALL(PyList_SetItem(ret, i, inner.release()));
     }
     return ret.release();
+#if IMP_KERNEL_HAS_NUMPY
+    }
+#endif
+
   }
 };
 
@@ -400,6 +428,25 @@ struct ConvertEigenVector {
   }
   template <class SwigData>
   static PyObject* create_python_object(const M& t, SwigData st, int OWN) {
+#if IMP_KERNEL_HAS_NUMPY
+    // We are called for both float and double. Map to equivalent NumPy
+    // types by checking the size of the type (a little ugly)
+    BOOST_STATIC_ASSERT(sizeof(typename M::Scalar) == sizeof(double) ||
+                        sizeof(typename M::Scalar) == sizeof(float));
+    if (numpy_import_retval == 0) {
+      npy_intp dims[2];
+      dims[0] = t.rows();
+      PyReceivePointer ret(PyArray_SimpleNew(1, dims,
+                   sizeof(typename M::Scalar) == sizeof(double)
+                   ? NPY_DOUBLE : NPY_FLOAT));
+      if (t.rows() > 0) {
+        PyObject *obj = ret;
+        memcpy(PyArray_DATA(obj), t.data(),
+               t.rows() * sizeof(typename M::Scalar));
+      }
+      return ret.release();
+    } else {
+#endif
     PyReceivePointer ret(PyList_New(t.rows()));
     for (unsigned int i = 0; i < t.rows(); ++i) {
       PyReceivePointer o(PyFloat_FromDouble(t(i)));
@@ -407,6 +454,9 @@ struct ConvertEigenVector {
       IMP_PYTHON_CALL(PyList_SetItem(ret, i, o.release()));
     }
     return ret.release();
+#if IMP_KERNEL_HAS_NUMPY
+    }
+#endif
   }
 };
 

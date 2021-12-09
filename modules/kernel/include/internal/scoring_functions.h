@@ -52,6 +52,10 @@ class RestraintScoringFunction : public ScoringFunction {
       : ScoringFunction(IMP::internal::get_model(r), name), r_(r) {}
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa,
                                     const ScoreStatesTemp &ss) IMP_OVERRIDE;
+  void do_add_score_and_derivatives_moved(IMP::ScoreAccumulator sa,
+                                    const ParticleIndexes &moved_pis,
+                                    const ParticleIndexes &reset_pis,
+                                    const ScoreStatesTemp &ss) IMP_OVERRIDE;
   Restraints create_restraints() const IMP_OVERRIDE;
   virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
   IMP_OBJECT_METHODS(RestraintScoringFunction);
@@ -61,6 +65,14 @@ template <class RestraintType>
 void RestraintScoringFunction<RestraintType>::do_add_score_and_derivatives(
     IMP::ScoreAccumulator sa, const ScoreStatesTemp &ss) {
   internal::protected_evaluate(sa, r_.get(), ss, get_model());
+}
+
+template <class RestraintType> void
+RestraintScoringFunction<RestraintType>::do_add_score_and_derivatives_moved(
+    IMP::ScoreAccumulator sa, const ParticleIndexes &moved_pis,
+    const ParticleIndexes &reset_pis, const ScoreStatesTemp &ss) {
+  internal::protected_evaluate_moved(sa, r_.get(), moved_pis, reset_pis,
+                                     ss, get_model());
 }
 
 template <class RestraintType>

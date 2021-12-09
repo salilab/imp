@@ -58,7 +58,7 @@ class IMPCOREEXPORT FixedRefiner : public Refiner {
   }
 
   virtual ParticleIndexes const& get_refined_indexes_by_ref
-    (Model *m, ParticleIndex pi) const
+    (Model *m, ParticleIndex pi) const IMP_OVERRIDE
   {
     IMP_USAGE_CHECK(m == m_,
                     "mismatching models for refined and coarse particles");

@@ -394,6 +394,10 @@ def make_overview(module, cmdline_tools):
                 open(os.path.join("build_info",
                                   "IMP_%s.pck" % module.name), 'wb'), -1)
     rmd = tools.open_utf8(os.path.join(module.path, "README.md"), "r").read()
+    # Since we wrap everything in a C++ comment, make sure nothing in the
+    # Markdown closes this comment (and thus truncates the page). This fixes
+    # truncation of the help page for IMP.sampcon.
+    rmd = rmd.replace('*/', r'*\/')
     tools.rewrite(
         os.path.join("doxygen", "generated", "IMP_%s.dox" % module.name),
         """/** \\namespace %s

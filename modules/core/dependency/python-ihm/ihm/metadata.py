@@ -14,6 +14,7 @@ import ihm
 from . import location, dataset, startmodel, util
 from .startmodel import SequenceIdentityDenominator
 import ihm.source
+import ihm.citations
 
 import operator
 import struct
@@ -365,7 +366,8 @@ class PDBParser(Parser):
             description='Comparative modeling by satisfaction '
                         'of spatial restraints, build ' + date,
             location='https://salilab.org/modeller/',
-            version=version)
+            version=version,
+            citation=ihm.citations.modeller)
         ret['software'].append(s)
         self._handle_comparative_model(local_file, filename, ret)
 
@@ -375,7 +377,8 @@ class PDBParser(Parser):
             name='Phyre2', classification='protein homology modeling',
             description='Protein Homology/analogY Recognition '
                         'Engine V 2.0',
-            version='2.0', location='http://www.sbg.bio.ic.ac.uk/~phyre2/')
+            version='2.0', location='http://www.sbg.bio.ic.ac.uk/~phyre2/',
+            citation=ihm.citations.phyre2)
         ret['software'].append(s)
         self._handle_comparative_model(local_file, filename, ret)
 
@@ -388,7 +391,8 @@ class PDBParser(Parser):
                         'structures and complexes, using %s engine'
                         % meta.get('info', {}).get('ENGIN', 'unknown'),
             version=meta.get('info', {}).get('VERSN', ihm.unknown),
-            location='https://swissmodel.expasy.org/')
+            location='https://swissmodel.expasy.org/',
+            citation=ihm.citations.swiss_model)
         ret['software'].append(s)
         comp_model_ds = dataset.ComparativeModelDataset(local_file)
         ret['dataset'] = comp_model_ds

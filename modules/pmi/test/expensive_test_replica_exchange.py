@@ -202,7 +202,8 @@ class Tests(IMP.test.TestCase):
                       best_pdb_dir="pdbs/",
                       replica_stat_file_suffix="stat_replica",
                       em_object_for_rmf=None,
-                      replica_exchange_object=None)
+                      replica_exchange_object=None,
+                      score_moved=True)
 
         # check whether the directory is existing, in case remove it
         try:

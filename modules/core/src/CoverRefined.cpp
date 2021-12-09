@@ -44,5 +44,5 @@ void CoverRefined::apply_index(Model *m,
 
 IMP_SUMMARIZE_DECORATOR_DEF(Cover, XYZR, XYZs,
                             new CoverRefined(ref, 0),
-                            new DerivativesToRefined(ref));
+                            new DerivativesToRefined(ref), false);
 IMPCORE_END_NAMESPACE

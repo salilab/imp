@@ -28,6 +28,20 @@ IMPKERNELEXPORT void protected_evaluate(IMP::ScoreAccumulator sa,
                                         const ScoreStatesTemp &states,
                                         Model *m);
 
+IMPKERNELEXPORT void protected_evaluate_moved(IMP::ScoreAccumulator sa,
+                                        const RestraintsTemp &restraints,
+                                        const ParticleIndexes &moved_pis,
+                                        const ParticleIndexes &reset_pis,
+                                        const ScoreStatesTemp &states,
+                                        Model *m);
+
+IMPKERNELEXPORT void protected_evaluate_moved(IMP::ScoreAccumulator sa,
+                                        Restraint *restraint,
+                                        const ParticleIndexes &moved_pis,
+                                        const ParticleIndexes &reset_pis,
+                                        const ScoreStatesTemp &states,
+                                        Model *m);
+
 IMPKERNEL_END_INTERNAL_NAMESPACE
 
 #endif /* IMPKERNEL_INTERNAL_RESTRAINT_EVALUATION_H */

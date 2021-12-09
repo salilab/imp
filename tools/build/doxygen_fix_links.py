@@ -33,6 +33,11 @@ for f in glob.glob('%s/*.html' % sys.argv[1]):
     for line in open(f):
         out = r1.sub(r'\2', line)
         out = r2.sub(r'<img src="\2" alt="\1">', out)
+        # setup_module.py replaced */ with *\/ so that doxygen didn't think
+        # */ in Markdown terminated the page (which was wrapped in a C++
+        # comment). Revert that replacement here so that the HTML output
+        # looks as intended.
+        out = out.replace(r'*\/', '*/')
         outf.write(out)
     outf.close()
     os.rename(f + '.out', f)

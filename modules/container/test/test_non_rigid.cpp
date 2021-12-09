@@ -23,7 +23,7 @@ class ICMover : public IMP::core::MonteCarloMover {
     pi_ = pi;
     ball_ = IMP::algebra::Sphere3D(IMP::algebra::get_zero_vector_d<3>(), r);
   }
-  IMP::core::MonteCarloMoverResult do_propose() {
+  IMP::core::MonteCarloMoverResult do_propose() IMP_OVERRIDE {
     IMP::core::NonRigidMember nrm(get_model(), pi_);
     IMP::algebra::Vector3D ic = nrm.get_internal_coordinates();
     old_ = ic;
@@ -32,12 +32,12 @@ class ICMover : public IMP::core::MonteCarloMover {
     return IMP::core::MonteCarloMoverResult(
         IMP::ParticleIndexes(1, pi_), 1.0);
   }
-  void do_reject() {
+  void do_reject() IMP_OVERRIDE {
     IMP::core::NonRigidMember nrm(get_model(), pi_);
     nrm.set_internal_coordinates(old_);
   }
-  void do_accept() {}
-  IMP::ModelObjectsTemp do_get_inputs() const {
+  void do_accept() IMP_OVERRIDE {}
+  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
     return IMP::ModelObjectsTemp(1, get_model()->get_particle(pi_));
   }
   IMP_OBJECT_METHODS(ICMover);

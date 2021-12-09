@@ -250,7 +250,7 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::atom::AtomType, IMP::atom::AtomTypes, IMP:
 %template(_BDopeBase) IMP::score_functor::DistancePairScore< IMP::score_functor::Statistical< IMP::atom::DopeType,false,true,false > >;
 %template(_ALoopStatisticalBase) IMP::score_functor::DistancePairScore<IMP::score_functor::LoopStatistical>;
 %template(_BLoopStatisticalBase) IMP::score_functor::DistancePairScore< IMP::score_functor::Statistical< IMP::atom::LoopStatisticalType,false,true,false > >;
-%template(_OrientedSoapBase) IMP::score_functor::DistancePairScore<IMP::score_functor::OrientedSoap>;
+%template(_OrientedSoapBase) IMP::score_functor::DistancePairScoreWithCache<IMP::score_functor::OrientedSoap>;
 namespace IMP {
   namespace atom {
    %template(_SPSFTB) ::IMP::score_functor::DistancePairScore<score_functor::Statistical< IMP::atom::ProteinLigandType, true, false> >;
