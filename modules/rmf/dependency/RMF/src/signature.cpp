@@ -2,7 +2,7 @@
  *  \file RMF/signature.cpp
  *  \brief Return a (long) string describing a file that can be compared.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

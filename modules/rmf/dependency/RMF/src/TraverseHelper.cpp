@@ -2,7 +2,7 @@
  *  \file RMF/TraverseHelper.cpp
  *  \brief A helper class for managing data when traversing an RMF.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

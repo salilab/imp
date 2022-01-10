@@ -2,7 +2,7 @@
  *  \file test_fill.cpp
  *  \brief A nullptr-initialized pointer to an \imp Object.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

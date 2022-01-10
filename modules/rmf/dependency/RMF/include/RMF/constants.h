@@ -2,7 +2,7 @@
  *  \file RMF/constants.h
  *  \brief Various constants.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
