@@ -23,6 +23,8 @@ class Tests(unittest.TestCase):
 
     @unittest.skipIf('APPVEYOR' in os.environ,
                      "AppVeyor environments have old SSL certs")
+    @unittest.skipIf('GITHUB_ACTIONS' in os.environ,
+                     "Example is slow and fails when PDB-Dev is down")
     def test_validator_example(self):
         """Test validator example"""
         subprocess.check_call([sys.executable,

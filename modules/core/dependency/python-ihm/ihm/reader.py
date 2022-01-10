@@ -417,6 +417,12 @@ class SystemReader(object):
         #: Mapping from ID to :class:`ihm.source.Synthetic` objects
         self.src_syns = IDMapper(None, ihm.source.Synthetic)
 
+        #: Mapping from ID to :class:`ihm.AsymUnit` objects
+        self.asym_units = IDMapper(self.system.asym_units, ihm.AsymUnit, None)
+
+        #: Mapping from ID to :class:`ihm.ChemComp` objects
+        self.chem_comps = _ChemCompIDMapper(None, ihm.ChemComp, *(None,) * 3)
+
         #: Mapping from ID to :class:`ihm.reference.Alignment` objects
         self.alignments = IDMapper(None, ihm.reference.Alignment)
 
@@ -426,12 +432,6 @@ class SystemReader(object):
         #: Mapping from ID to :class:`ihm.ChemDescriptor` objects
         self.chem_descriptors = IDMapper(self.system.orphan_chem_descriptors,
                                          ihm.ChemDescriptor, None)
-
-        #: Mapping from ID to :class:`ihm.AsymUnit` objects
-        self.asym_units = IDMapper(self.system.asym_units, ihm.AsymUnit, None)
-
-        #: Mapping from ID to :class:`ihm.ChemComp` objects
-        self.chem_comps = _ChemCompIDMapper(None, ihm.ChemComp, *(None,) * 3)
 
         #: Mapping from ID to :class:`ihm.Assembly` objects
         self.assemblies = IDMapper(self.system.orphan_assemblies, ihm.Assembly)
@@ -3060,11 +3060,105 @@ class _FLRFPSMPPModelingHandler(Handler):
                 mpp_atom_position_group_id)
 
 
+_flr_handlers = [_FLRChemDescriptorHandler, _FLRInstSettingHandler,
+                 _FLRExpConditionHandler, _FLRInstrumentHandler,
+                 _FLRSampleConditionHandler, _FLREntityAssemblyHandler,
+                 _FLRSampleHandler, _FLRExperimentHandler,
+                 _FLRProbeListHandler, _FLRProbeDescriptorHandler,
+                 _FLRPolyProbePositionHandler,
+                 _FLRPolyProbePositionModifiedHandler,
+                 _FLRPolyProbePositionMutatedHandler,
+                 _FLRSampleProbeDetailsHandler, _FLRPolyProbeConjugateHandler,
+                 _FLRFretForsterRadiusHandler,
+                 _FLRFretCalibrationParametersHandler, _FLRFretAnalysisHandler,
+                 _FLRFretAnalysisIntensityHandler,
+                 _FLRFretAnalysisLifetimeHandler, _FLRLifetimeFitModelHandler,
+                 _FLRRefMeasurementHandler, _FLRRefMeasurementGroupHandler,
+                 _FLRRefMeasurementGroupLinkHandler,
+                 _FLRRefMeasurementLifetimeHandler, _FLRPeakAssignmentHandler,
+                 _FLRFretDistanceRestraintHandler, _FLRFretModelQualityHandler,
+                 _FLRFretModelDistanceHandler, _FLRFPSGlobalParameterHandler,
+                 _FLRFPSModelingHandler, _FLRFPSAVParameterHandler,
+                 _FLRFPSAVModelingHandler, _FLRFPSMPPHandler,
+                 _FLRFPSMPPAtomPositionHandler, _FLRFPSMPPModelingHandler]
+
+
+class Variant(object):
+    """Utility class to select the type of file to read with :func:`read`."""
+
+    #: Class to track global file information, e.g. :class:`SystemReader`
+    system_reader = None
+
+    def get_handlers(self, sysr):
+        """Get the :class:`Handler` objects to use to parse input.
+
+           :param sysr: class to track global file information.
+           :type sysr: :class:`SystemReader`
+           :return: a list of :class:`Dumper` objects.
+        """
+        pass
+
+    def get_audit_conform_handler(self, sysr):
+        """Get a :class:`Handler` to check the audit_conform table.
+           If :func:`read` is called with ``reject_old_file=True``, this
+           handler is used to check the audit_conform table and reject the
+           file if it is deemed to be too old.
+
+           :param sysr: class to track global file information.
+           :type sysr: :class:`SystemReader`
+           :return: a suitable handler.
+           :rtype: :class:`Handler`
+        """
+        pass
+
+
+class IHMVariant(Variant):
+    """Used to select typical PDBx/IHM file input. See :func:`read`."""
+    system_reader = SystemReader
+
+    _handlers = [
+        _StructHandler, _SoftwareHandler, _CitationHandler,
+        _AuditAuthorHandler, _GrantHandler, _CitationAuthorHandler,
+        _ChemCompHandler, _ChemDescriptorHandler, _EntityHandler,
+        _EntitySrcNatHandler, _EntitySrcGenHandler, _EntitySrcSynHandler,
+        _StructRefHandler, _StructRefSeqHandler, _StructRefSeqDifHandler,
+        _EntityPolyHandler, _EntityPolySeqHandler, _EntityNonPolyHandler,
+        _EntityPolySegmentHandler, _StructAsymHandler, _AssemblyDetailsHandler,
+        _AssemblyHandler, _ExtRefHandler, _ExtFileHandler, _DatasetListHandler,
+        _DatasetGroupHandler, _DatasetGroupLinkHandler, _DatasetExtRefHandler,
+        _DatasetDBRefHandler, _DataTransformationHandler,
+        _RelatedDatasetsHandler, _ModelRepresentationHandler,
+        _ModelRepresentationDetailsHandler, _StartingModelDetailsHandler,
+        _StartingComputationalModelsHandler, _StartingComparativeModelsHandler,
+        _ProtocolHandler, _ProtocolDetailsHandler, _PostProcessHandler,
+        _ModelListHandler, _ModelGroupHandler, _ModelGroupLinkHandler,
+        _MultiStateHandler, _MultiStateLinkHandler, _EnsembleHandler,
+        _DensityHandler, _SubsampleHandler, _EM3DRestraintHandler,
+        _EM2DRestraintHandler, _EM2DFittingHandler, _SASRestraintHandler,
+        _SphereObjSiteHandler, _AtomSiteHandler, _FeatureListHandler,
+        _PolyResidueFeatureHandler, _PolyAtomFeatureHandler,
+        _NonPolyFeatureHandler, _PseudoSiteFeatureHandler, _PseudoSiteHandler,
+        _DerivedDistanceRestraintHandler, _PredictedContactRestraintHandler,
+        _CenterHandler, _TransformationHandler, _GeometricObjectHandler,
+        _SphereHandler, _TorusHandler, _HalfTorusHandler, _AxisHandler,
+        _PlaneHandler, _GeometricRestraintHandler, _PolySeqSchemeHandler,
+        _NonPolySchemeHandler, _CrossLinkListHandler,
+        _CrossLinkRestraintHandler, _CrossLinkPseudoSiteHandler,
+        _CrossLinkResultHandler, _StartingModelSeqDifHandler,
+        _OrderedEnsembleHandler]
+
+    def get_handlers(self, sysr):
+        return [h(sysr) for h in self._handlers + _flr_handlers]
+
+    def get_audit_conform_handler(self, sysr):
+        return _AuditConformHandler(sysr)
+
+
 def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
          warn_unknown_category=False, warn_unknown_keyword=False,
          read_starting_model_coord=True,
          starting_model_class=ihm.startmodel.StartingModel,
-         reject_old_file=False):
+         reject_old_file=False, variant=IHMVariant):
     """Read data from the file handle `fh`.
 
        Note that the reader currently expects to see a file compliant
@@ -3132,8 +3226,15 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
               :exc:`ihm.reader.OldFileError` if the file conforms to an
               older version of the dictionary than this library supports
               (by default the library will read what it can from the file).
+       :param variant: A class or object that selects the type of file to
+              read. This primarily controls the set of tables that are
+              read from the file. In most cases the default
+              :class:`IHMVariant` should be used.
+       :type variant: :class:`Variant`
        :return: A list of :class:`ihm.System` objects.
     """
+    if isinstance(variant, type):
+        variant = variant()
     systems = []
     reader_map = {'mmCIF': ihm.format.CifReader,
                   'BCIF': ihm.format_bcif.BinaryCifReader}
@@ -3144,88 +3245,10 @@ def read(fh, model_class=ihm.model.Model, format='mmCIF', handlers=[],
     r = reader_map[format](fh, {}, unknown_category_handler=uchandler,
                            unknown_keyword_handler=ukhandler)
     while True:
-        s = SystemReader(model_class, starting_model_class)
-        hs = [_StructHandler(s), _SoftwareHandler(s), _CitationHandler(s),
-              _AuditAuthorHandler(s), _GrantHandler(s),
-              _CitationAuthorHandler(s), _ChemCompHandler(s),
-              _ChemDescriptorHandler(s), _EntityHandler(s),
-              _EntitySrcNatHandler(s), _EntitySrcGenHandler(s),
-              _EntitySrcSynHandler(s), _StructRefHandler(s),
-              _StructRefSeqHandler(s), _StructRefSeqDifHandler(s),
-              _EntityPolyHandler(s),
-              _EntityPolySeqHandler(s), _EntityNonPolyHandler(s),
-              _EntityPolySegmentHandler(s),
-              _StructAsymHandler(s), _AssemblyDetailsHandler(s),
-              _AssemblyHandler(s), _ExtRefHandler(s), _ExtFileHandler(s),
-              _DatasetListHandler(s), _DatasetGroupHandler(s),
-              _DatasetGroupLinkHandler(s),
-              _DatasetExtRefHandler(s), _DatasetDBRefHandler(s),
-              _DataTransformationHandler(s),
-              _RelatedDatasetsHandler(s), _ModelRepresentationHandler(s),
-              _ModelRepresentationDetailsHandler(s),
-              _StartingModelDetailsHandler(s),
-              _StartingComputationalModelsHandler(s),
-              _StartingComparativeModelsHandler(s),
-              _ProtocolHandler(s), _ProtocolDetailsHandler(s),
-              _PostProcessHandler(s), _ModelListHandler(s),
-              _ModelGroupHandler(s), _ModelGroupLinkHandler(s),
-              _MultiStateHandler(s), _MultiStateLinkHandler(s),
-              _EnsembleHandler(s), _DensityHandler(s),
-              _SubsampleHandler(s),
-              _EM3DRestraintHandler(s), _EM2DRestraintHandler(s),
-              _EM2DFittingHandler(s), _SASRestraintHandler(s),
-              _SphereObjSiteHandler(s), _AtomSiteHandler(s),
-              _FeatureListHandler(s),
-              _PolyResidueFeatureHandler(s), _PolyAtomFeatureHandler(s),
-              _NonPolyFeatureHandler(s), _PseudoSiteFeatureHandler(s),
-              _PseudoSiteHandler(s),
-              _DerivedDistanceRestraintHandler(s),
-              _PredictedContactRestraintHandler(s), _CenterHandler(s),
-              _TransformationHandler(s), _GeometricObjectHandler(s),
-              _SphereHandler(s), _TorusHandler(s), _HalfTorusHandler(s),
-              _AxisHandler(s), _PlaneHandler(s), _GeometricRestraintHandler(s),
-              _PolySeqSchemeHandler(s), _NonPolySchemeHandler(s),
-              _CrossLinkListHandler(s), _CrossLinkRestraintHandler(s),
-              _CrossLinkPseudoSiteHandler(s),
-              _CrossLinkResultHandler(s), _StartingModelSeqDifHandler(s),
-              _OrderedEnsembleHandler(s), _FLRChemDescriptorHandler(s),
-              _FLRInstSettingHandler(s),
-              _FLRExpConditionHandler(s),
-              _FLRInstrumentHandler(s),
-              _FLRSampleConditionHandler(s),
-              _FLREntityAssemblyHandler(s),
-              _FLRSampleHandler(s),
-              _FLRExperimentHandler(s),
-              _FLRProbeListHandler(s),
-              _FLRProbeDescriptorHandler(s),
-              _FLRPolyProbePositionHandler(s),
-              _FLRPolyProbePositionModifiedHandler(s),
-              _FLRPolyProbePositionMutatedHandler(s),
-              _FLRSampleProbeDetailsHandler(s),
-              _FLRPolyProbeConjugateHandler(s),
-              _FLRFretForsterRadiusHandler(s),
-              _FLRFretCalibrationParametersHandler(s),
-              _FLRFretAnalysisHandler(s),
-              _FLRFretAnalysisIntensityHandler(s),
-              _FLRFretAnalysisLifetimeHandler(s),
-              _FLRLifetimeFitModelHandler(s),
-              _FLRRefMeasurementHandler(s),
-              _FLRRefMeasurementGroupHandler(s),
-              _FLRRefMeasurementGroupLinkHandler(s),
-              _FLRRefMeasurementLifetimeHandler(s),
-              _FLRPeakAssignmentHandler(s),
-              _FLRFretDistanceRestraintHandler(s),
-              _FLRFretModelQualityHandler(s),
-              _FLRFretModelDistanceHandler(s),
-              _FLRFPSGlobalParameterHandler(s),
-              _FLRFPSModelingHandler(s),
-              _FLRFPSAVParameterHandler(s),
-              _FLRFPSAVModelingHandler(s),
-              _FLRFPSMPPHandler(s),
-              _FLRFPSMPPAtomPositionHandler(s),
-              _FLRFPSMPPModelingHandler(s)] + [h(s) for h in handlers]
+        s = variant.system_reader(model_class, starting_model_class)
+        hs = variant.get_handlers(s) + [h(s) for h in handlers]
         if reject_old_file:
-            hs.append(_AuditConformHandler(s))
+            hs.append(variant.get_audit_conform_handler(s))
         if read_starting_model_coord:
             hs.append(_StartingModelCoordHandler(s))
         if uchandler:

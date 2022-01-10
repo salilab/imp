@@ -20,9 +20,16 @@ The :mod:`ihm.reader` Python module
 
 .. autoclass:: SystemReader
    :members:
+   :inherited-members:
 
 .. autoclass:: IDMapper
    :members:
 
 .. autoclass:: RangeIDMapper
+   :members:
+
+.. autoclass:: Variant
+   :members:
+
+.. autoclass:: IHMVariant
    :members:

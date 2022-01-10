@@ -402,6 +402,14 @@ class Tests(unittest.TestCase):
         self.assertNotEqual(r, e(3, 4))  # asym_range != entity_range
         self.assertNotEqual(r, e)        # asym_range != entity
 
+    def test_asym_segment(self):
+        """Test AsymUnitSegment class"""
+        e = ihm.Entity('AHCDAH')
+        a = ihm.AsymUnit(e)
+        seg = a.segment('AH--CD', 1, 4)
+        self.assertEqual(seg.gapped_sequence, 'AH--CD')
+        self.assertEqual(seg.seq_id_range, (1, 4))
+
     def test_auth_seq_id_offset(self):
         """Test auth_seq_id offset from seq_id"""
         e = ihm.Entity('AHCDAH')

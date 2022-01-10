@@ -10,4 +10,10 @@ The :mod:`ihm.dumper` Python module
 .. autoclass:: Dumper
    :members:
 
+.. autoclass:: Variant
+   :members:
+
+.. autoclass:: IHMVariant
+   :members:
+
 .. autofunction:: write
