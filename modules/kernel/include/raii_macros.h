@@ -2,7 +2,7 @@
  *  \file IMP/raii_macros.h
  *  \brief Macros to aid in writing RAII-style classes.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

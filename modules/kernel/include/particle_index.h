@@ -2,7 +2,7 @@
  *  \file IMP/particle_index.h
  *  \brief Functions and adaptors for dealing with particle indexes.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

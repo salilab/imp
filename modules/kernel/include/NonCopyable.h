@@ -2,7 +2,7 @@
  *  \file IMP/NonCopyable.h
  *  \brief Base class for all objects that cannot be copied.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

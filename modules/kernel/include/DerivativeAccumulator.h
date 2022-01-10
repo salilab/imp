@@ -2,7 +2,7 @@
  *  \file IMP/DerivativeAccumulator.h
  *  \brief Class for adding derivatives from restraints to the model.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

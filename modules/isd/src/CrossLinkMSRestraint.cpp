@@ -5,7 +5,7 @@
  *  and ambiguous assignment. To be used with
  *  cross-linking mass-spectrometry data.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

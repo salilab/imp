@@ -2,7 +2,7 @@
  *  \file IMP/InputAdaptor.h
  *  \brief Convenience class to accept multiple input types.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/WeakPointer.h
  *  \brief A weak pointer to an Object or RefCountedObject.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file IMP/ModelObject.h
  *  \brief Base class for objects in a Model that depend on other objects.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_MODEL_OBJECT_H

@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
       "\nAny number of input PDBs and profiles is supported.\n"
       "Each PDB will be fitted against each profile.\n\n"
       "This program is part of IMP, the Integrative Modeling Platform,\n"
-      "which is Copyright 2007-2021 IMP Inventors.\n\n"
+      "which is Copyright 2007-2022 IMP Inventors.\n\n"
       "Options");
   desc.add_options()
     ("help", "Show command line arguments and exit.")

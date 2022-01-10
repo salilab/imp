@@ -2,7 +2,7 @@
  *  \file IMP/Showable.h
  *  \brief Helper class to aid in output of \imp classes to streams.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

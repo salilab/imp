@@ -2,7 +2,7 @@
  *  \file IMP/hash_macros.h
  *  \brief Helper macros for implementing hashable classes.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

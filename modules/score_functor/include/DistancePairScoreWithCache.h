@@ -2,7 +2,7 @@
  *  \file IMP/score_functor/DistancePairScoreWithCache.h
  *  \brief A Score on the distance between a pair of particles, using cache.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPSCORE_FUNCTOR_DISTANCE_PAIR_SCORE_WITH_CACHE_H

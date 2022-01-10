@@ -2,7 +2,7 @@
  *  \file incremental_scoring_function.cpp
  *  \brief Helper functions for incremental scoring functions.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 

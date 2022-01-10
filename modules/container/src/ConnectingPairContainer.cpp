@@ -1,7 +1,7 @@
 /**
  *  \file ConnectingPairContainer.cpp   \brief A list of ParticlePairs.
  *
- *  Copyright 2007-2021 IMP Inventors. Connecting rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. Connecting rights reserved.
  *
  */
 

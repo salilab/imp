@@ -2,7 +2,7 @@
  *  \file IMP/misc/MetricClosePairsFinder.h
  *  \brief Decorator for a sphere-like particle.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */
 
