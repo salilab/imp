@@ -32,7 +32,7 @@ class Tests(unittest.TestCase):
  *  \\file test.h
  *  \\brief Include all non-deprecated headers in test.
  *
- *  Copyright 2007-2021 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */
 
 #ifndef TEST_H

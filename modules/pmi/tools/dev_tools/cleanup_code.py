@@ -14,7 +14,10 @@ try:
 except ImportError:
     from Queue import Queue  # python2
 from threading import Thread
-import distutils.spawn
+try:
+    from shutil import which  # python3.3 or later
+except ImportError:
+    from distutils.spawn import find_executable as which
 
 sys.path.append(os.path.split(sys.argv[0]))
 import python_tools
@@ -60,13 +63,13 @@ if not args and not options.all_files:
 if options.clang_format == "auto":
     options.clang_format = None
     for name in ["clang-format-3.4", "clang-format"]:
-        if distutils.spawn.find_executable(name):
+        if which(name):
             options.clang_format = name
             break
 if options.autopep8 == "auto":
     options.autopep8 = None
     for name in ["autopep8"]:
-        if distutils.spawn.find_executable(name):
+        if which(name):
             options.autopep8 = name
             break
 
