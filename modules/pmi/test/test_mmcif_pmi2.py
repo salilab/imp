@@ -42,7 +42,8 @@ class Tests(IMP.test.TestCase):
         po = IMP.pmi.mmcif.ProtocolOutput()
         s.add_protocol_output(po)
         state = s.create_state()
-        nup84 = state.create_molecule("Nup84", "MELS", "A")
+        # Should be OK with a multi-character chain ID
+        nup84 = state.create_molecule("Nup84", "MELS", "AA")
         nup84.add_representation(resolutions=[1])
         hier = s.build()
         c = IMP.pmi.mmcif._ComponentMapper(hier)

@@ -65,7 +65,8 @@ class _ComponentMapper(object):
         self.prot = prot
         self.name = 'cif-output'
         self.o.dictionary_pdbs[self.name] = self.prot
-        self.o._init_dictchain(self.name, self.prot, multichar_chain=True)
+        self.o._init_dictchain(self.name, self.prot,
+                               multichar_chain=True, mmcif=True)
 
     def __getitem__(self, p):
         protname, is_a_bead = self.o.get_prot_name_from_particle(self.name, p)
