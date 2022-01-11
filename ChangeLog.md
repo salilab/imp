@@ -1,6 +1,10 @@
 ChangeLog {#changelog}
 =========
 
+# HEAD
+- The IMP::em::CoarseCC class has been removed. Use similarly-named free
+  functions instead to calculate coarse cross correlation.
+
 # 2.16.0 - 2021-12-16 # {#changelog_2_16_0}
 - OpenCubicSpline now throws a ValueException for out-of-range values, to
   be consistent with ClosedCubicSpline (previously it threw ModelException).

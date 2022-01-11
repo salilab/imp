@@ -111,55 +111,6 @@ double get_coarse_cc_local_coefficient(const DensityMap *em_map,
                                        DensityMap *model_map,
                                        double voxel_data_threshold);
 
-
-//! Responsible for performing coarse fitting between two density objects.
-/**
-    \note Do not use this class as an example for writing new code!
-          The design (a class with no storage, and only static methods)
-	  is not ideal. A better implementation would just be a collection
-	  of free functions, not in a class; see above.
- */
-class IMPEMEXPORT CoarseCC : public IMP::Object {
-
- public:
-  IMPEM_DEPRECATED_OBJECT_DECL(2.15)
-  CoarseCC() : Object("CoarseCC%1%") {
-    IMPEM_DEPRECATED_OBJECT_DEF(2.15, "Use free functions instead");
-  }
-
-  IMPEM_DEPRECATED_METHOD_DECL(2.15)
-  static float calc_score(DensityMap *data, SampledDensityMap *model_map,
-                          float scalefactor, bool recalc_rms = true,
-                          bool resample = true,
-                          FloatPair norm_factors = FloatPair(0., 0.));
-
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  IMPEM_DEPRECATED_METHOD_DECL(2.15)
-  static algebra::Vector3Ds calc_derivatives(const DensityMap *em_map,
-                                             const DensityMap *model_map,
-                                             const Particles &model_ps,
-                                             const FloatKey &mass_key,
-                                             KernelParameters *kernel_params,
-                                             const float &scalefac,
-                                             const algebra::Vector3Ds &dv);
-#endif
-
-  IMPEM_DEPRECATED_METHOD_DECL(2.15)
-  static double cross_correlation_coefficient(const DensityMap *grid1,
-                                              const DensityMap *grid2,
-                                              float grid2_voxel_data_threshold,
-                                              bool allow_padding = false,
-                                              FloatPair norm_factors =
-                                                  FloatPair(0., 0.));
-
-  IMPEM_DEPRECATED_METHOD_DECL(2.15)
-  static float local_cross_correlation_coefficient(const DensityMap *em_map,
-                                                   DensityMap *model_map,
-                                                   float voxel_data_threshold);
-
-  IMP_OBJECT_METHODS(CoarseCC);
-};
-
 IMPEM_END_NAMESPACE
 
 #endif /* IMPEM_COARSE_CC_H */
