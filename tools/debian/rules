@@ -22,15 +22,16 @@ override_dh_auto_configure:
 	cd build/libTAU-1.0.1/lib/debian && ln -sf libTAU.so.1 libTAU.so
 	# Allow mpiexec to work inside a docker/podman container (as root)
 	perl -pi -e 's#\{MPIEXEC_PREFLAGS\}#\{MPIEXEC_PREFLAGS\};--allow-run-as-root#' modules/mpi/dependency/MPI.cmake
-	cd build && cmake .. -DCMAKE_BUILD_TYPE=Release \
+	cd build && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
+	         && cmake .. -DCMAKE_BUILD_TYPE=Release \
 		-DCGAL_DIR=/usr/lib/x86_64-linux-gnu/cmake/CGAL/ \
-	        -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python2.7/dist-packages \
+	        -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python$${py3_ver}/dist-packages \
 	        -DCMAKE_INCLUDE_PATH=`pwd` \
 	        -DCMAKE_LIBRARY_PATH=`pwd`/libTAU-1.0.1/lib/debian \
                 -DCMAKE_INSTALL_PREFIX=/usr \
                 -DIMP_TIMEOUT_FACTOR=4 \
                 -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/imp \
-                -DIMP_DISABLED_MODULES=scratch -DUSE_PYTHON2=on
+                -DIMP_DISABLED_MODULES=scratch -DUSE_PYTHON2=off
 
 override_dh_auto_build:
 	mkdir build/logs
@@ -38,19 +39,18 @@ override_dh_auto_build:
 
 override_dh_install:
 	$(MAKE) -C build DESTDIR=$(CURDIR)/debian/tmp install
-	# Install Python 3 extension modules
+	# Install Python 2 extension modules
 	cd build \
 	   && py2_ver=`python2 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
-	   && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
 	   && unamem=`uname -m` \
-	   && py3_lib=`echo /usr/lib/$${unamem}-*/libpython3*.so` \
-	   && py3_inc=/usr/include/python$${py3_ver} \
+	   && py2_lib=`echo /usr/lib/$${unamem}-*/libpython2*.so` \
+	   && py2_inc=/usr/include/python$${py2_ver} \
 	   && cmake .. \
-	    -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python$${py3_ver}/dist-packages \
-	    -DSWIG_PYTHON_LIBRARIES=$${py3_lib} \
-	    -DPYTHON_INCLUDE_DIRS=$${py3_inc} \
-	    -DPYTHON_INCLUDE_PATH=$${py3_inc} -DPYTHON_LIBRARIES=$${py3_lib} \
-	    -DUSE_PYTHON2=off \
+	    -DCMAKE_INSTALL_PYTHONDIR=/usr/lib/python2.7/dist-packages \
+	    -DSWIG_PYTHON_LIBRARIES=$${py2_lib} \
+	    -DPYTHON_INCLUDE_DIRS=$${py2_inc} \
+	    -DPYTHON_INCLUDE_PATH=$${py2_inc} -DPYTHON_LIBRARIES=$${py2_lib} \
+	    -DUSE_PYTHON2=on \
 	   && $(MAKE) -j4 DESTDIR=$(CURDIR)/debian/tmp install
 	# Bundle libTAU so users don't have to get it separately
 	cp build/libTAU-1.0.1/lib/debian/libTAU.so.1 debian/tmp/usr/lib/*linux*/
