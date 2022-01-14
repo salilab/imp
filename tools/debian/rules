@@ -63,10 +63,13 @@ override_dh_install:
 	rm -f debian/tmp/usr/lib/*/libimp_mpi*.so
 	rm -f debian/tmp/usr/lib/*/libimp_spb*.so
 	# Replace Python 2 .py files with symlinks to Python 3 files
-	# (since they are the same)
+	# (since they are the same) but not the SWIG-generated __init__.py
+	# files (since these contain config information which might be
+	# different; e.g. in Ubuntu 22.04 the Python 3 wrappers include numpy
+	# support but the Python 2 wrappers do not)
 	(cd debian/tmp/usr/lib/python2* \
          && py3_ver=`python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"` \
-	 && find dist-packages -name '*.py' \
+	 && find dist-packages -name '*.py' -a ! -name __init__.py \
 	      -exec ln -sf $(CURDIR)/debian/tmp/usr/lib/python$${py3_ver}/\{\} \{\} \; \
 	 && symlinks -rc .)
 	# Make sure all Python applications use the system Python in /usr/bin
