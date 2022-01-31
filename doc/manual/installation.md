@@ -58,7 +58,7 @@ will not build, and some will not function optimally.
 - [Protobuf](https://github.com/google/protobuf): needed to use the
   IMP.npctransport module.
 - An [MPI](@ref IMP::mpi) library is needed to use the IMP.mpi module.
-- The [scipy](http://www.scipy.org/scipylib/download.html),
+- The [scipy](https://scipy.org/download/),
   [scikit-learn](http://scikit-learn.org/stable/install.html),
   and [matplotlib](http://matplotlib.org/downloads.html)
   Python libraries are also recommended.
