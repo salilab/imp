@@ -51,7 +51,7 @@ class Tests(unittest.TestCase):
         ihm.dumper.write(fh, [sys1, sys2])
         lines = fh.getvalue().split('\n')
         self.assertEqual(lines[:2], ["data_system1", "_entry.id system1"])
-        self.assertEqual(lines[14:16],
+        self.assertEqual(lines[15:17],
                          ["data_system23", "_entry.id 'system 2+3'"])
 
     def test_write_custom_dumper(self):
@@ -113,6 +113,7 @@ class Tests(unittest.TestCase):
         dumper = ihm.dumper._StructDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """_struct.entry_id model
+_struct.pdbx_structure_determination_methodology integrative
 _struct.title 'test model'
 """)
 

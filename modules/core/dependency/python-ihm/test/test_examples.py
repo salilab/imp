@@ -41,7 +41,7 @@ class Tests(unittest.TestCase):
             # can read it
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 contents = fh.readlines()
-            self.assertEqual(len(contents), 314)
+            self.assertEqual(len(contents), 315)
             with open(os.path.join(tmpdir, 'output.cif')) as fh:
                 s, = ihm.reader.read(fh)
 
@@ -55,7 +55,7 @@ class Tests(unittest.TestCase):
         # can read it
         with open(out) as fh:
             contents = fh.readlines()
-        self.assertEqual(len(contents), 68)
+        self.assertEqual(len(contents), 69)
         with open(out) as fh:
             s, = ihm.reader.read(fh)
         os.unlink(out)
@@ -70,7 +70,7 @@ class Tests(unittest.TestCase):
         # can read it
         with open(out) as fh:
             contents = fh.readlines()
-        self.assertEqual(len(contents), 160)
+        self.assertEqual(len(contents), 161)
         with open(out) as fh:
             s, = ihm.reader.read(fh)
         # Make sure that resulting Python objects are picklable
@@ -92,7 +92,7 @@ class Tests(unittest.TestCase):
         # can read it
         with open(out) as fh:
             contents = fh.readlines()
-        self.assertEqual(len(contents), 64)
+        self.assertEqual(len(contents), 65)
         with open(out) as fh:
             s, = ihm.reader.read(fh)
         os.unlink(out)

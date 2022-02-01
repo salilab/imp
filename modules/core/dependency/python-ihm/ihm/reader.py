@@ -3094,7 +3094,7 @@ class Variant(object):
 
            :param sysr: class to track global file information.
            :type sysr: :class:`SystemReader`
-           :return: a list of :class:`Dumper` objects.
+           :return: a list of :class:`Handler` objects.
         """
         pass
 

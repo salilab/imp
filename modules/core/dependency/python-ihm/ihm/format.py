@@ -120,9 +120,10 @@ class CifWriter(_Writer):
        to write to - and provides methods to write Python objects to
        that file. Most simple Python types are supported (string, float,
        bool, int). The Python bool type is mapped to CIF strings
-       'NO' and 'YES'. Floats are always represented with 3 decimal places;
-       if a different amount of precision is desired, convert the float to
-       a string first."""
+       'NO' and 'YES'. Floats are always represented with 3 decimal places
+       (or in scientific notation with 3 digits of precision if smaller
+       than 1e-3); if a different amount of precision is desired, convert
+       the float to a string first."""
 
     def flush(self):
         # noop - data is written as it is encountered
@@ -191,7 +192,10 @@ class CifWriter(_Writer):
            and obj not in ('save_', 'loop_', 'stop_', 'global_', '?', '.'):
             return obj
         elif isinstance(obj, float):
-            return "%.3f" % obj
+            if abs(obj) < 1e-3:
+                return "%.3g" % obj
+            else:
+                return "%.3f" % obj
         elif isinstance(obj, bool):
             return self._boolmap[obj]
         # Don't use repr(x) if type(x) == long since that adds an 'L' suffix,

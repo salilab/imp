@@ -1,7 +1,10 @@
 # This example demonstrates the use of the Python IHM library's validator.
 # A structure is downloaded from the PDB-Dev database and checked against
 # the PDBx and IHM dictionaries for compliance. This validator can be used
-# to perform basic integrity checking against any mmCIF dictionary.
+# to perform basic integrity checking against any mmCIF dictionary; for an
+# example of using it to validate homology models against the ModelCIF
+# dictionary, see
+# https://github.com/ihmwg/python-modelcif/blob/main/examples/validate_modbase.py.
 
 import io
 import sys

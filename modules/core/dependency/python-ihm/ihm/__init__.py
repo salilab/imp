@@ -20,7 +20,7 @@ except ImportError:
 import json
 from . import util
 
-__version__ = '0.25'
+__version__ = '0.27'
 
 
 class __UnknownValue(object):
@@ -73,6 +73,8 @@ class System(object):
        :param str title: Title (longer text description) of the system.
        :param str id: Unique identifier for this system in the mmCIF file.
     """
+
+    structure_determination_methodology = "integrative"
 
     def __init__(self, title=None, id='model'):
         self.id = id

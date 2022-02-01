@@ -1,3 +1,16 @@
+0.27 - 2022-01-27
+=================
+  - Minor documentation improvements.
+  - Add support for the _struct.pdbx_structure_determination_methodology
+    mmCIF data item.
+
+0.26 - 2022-01-12
+=================
+  - :func:`ihm.dumper.write` and :func:`ihm.reader.read` both now take
+    a ``variant`` argument which can be used to control the set of tables
+    that are read/written. This can be used by other libraries (such as
+    python-ma) to support other mmCIF extensions.
+
 0.25 - 2021-12-03
 =================
   - :func:`ihm.dictionary.Dictionary.validate` will now report errors for

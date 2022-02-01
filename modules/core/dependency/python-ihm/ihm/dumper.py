@@ -90,7 +90,9 @@ class _AuditConformDumper(Dumper):
 class _StructDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_struct") as lp:
-            lp.write(title=system.title, entry_id=system.id)
+            mth = system.structure_determination_methodology
+            lp.write(title=system.title, entry_id=system.id,
+                     pdbx_structure_determination_methodology=mth)
 
 
 class _CommentDumper(Dumper):

@@ -182,6 +182,8 @@ x
         self.assertEqual(w._repr("fo'o"), '"fo\'o"')
         self.assertEqual(w._repr('foo bar'), "'foo bar'")
         self.assertEqual(w._repr(42.123456), '42.123')
+        self.assertEqual(w._repr(0.000123456), '0.000123')
+        self.assertEqual(w._repr(0.00000123456), '1.23e-06')
         self.assertEqual(w._repr(False), 'NO')
         self.assertEqual(w._repr(True), 'YES')
         if sys.version_info[0] == 2:

@@ -32,4 +32,3 @@ The :mod:`ihm.reader` Python module
    :members:
 
 .. autoclass:: IHMVariant
-   :members:
