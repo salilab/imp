@@ -20,7 +20,7 @@ following:
 
  - Periodically run `git pull` to get latest 'upstream' changes into your
    copy (if you [made a fork](@ref devsetup), you should also periodically
-   [sync it with the main repository](https://help.github.com/articles/syncing-a-fork/).
+   [sync it with the main repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork).
    `git imp update` is similar but will also show you any new entries from
    the changelog.
 
