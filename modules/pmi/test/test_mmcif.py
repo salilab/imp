@@ -1364,7 +1364,7 @@ _ihm_2dem_class_average_fitting.tr_vector[1]
 _ihm_2dem_class_average_fitting.tr_vector[2]
 _ihm_2dem_class_average_fitting.tr_vector[3]
 1 1 9 0.873 -0.406503 -0.909500 -0.086975 0.379444 -0.254653 0.889480 -0.831131
-0.328574 0.448622 304.187 219.586 0.000
+0.328574 0.448622 304.187 219.586 0
 #
 """)
 
@@ -1525,13 +1525,13 @@ _ihm_geometric_object_distance_restraint.dataset_list_id
         """Test add_membrane_surface_restraint method"""
         self._check_membrane_restraint(
                    'add_membrane_surface_location_restraint',
-                   "'upper bound' 0.500 . 0.000")
+                   "'upper bound' 0.500 . 0")
 
     def test_add_membrane_exclusion_restraint(self):
         """Test add_membrane_exclusion_restraint method"""
         self._check_membrane_restraint(
                    'add_membrane_exclusion_restraint',
-                   "'lower bound' 0.500 0.000 .")
+                   "'lower bound' 0.500 0 .")
 
     def _check_membrane_restraint(self, method_name, expected_dist_rsr):
         class MockObject(object):
@@ -1586,7 +1586,7 @@ _ihm_geometric_object_transformation.tr_vector[1]
 _ihm_geometric_object_transformation.tr_vector[2]
 _ihm_geometric_object_transformation.tr_vector[3]
 1 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000
-1.000000 0.000 0.000 0.000
+1.000000 0 0 0
 #
 #
 loop_
