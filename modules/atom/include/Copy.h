@@ -21,7 +21,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 //! A decorator for keeping track of copies of a molecule.
 /** This decorator is for differentiating and keeping track
-    of identity when there are multiple copies of
+    of identity when there are multiple copies of a
     molecule in the system. It should only be applied to
     Molecule particles.
  */
@@ -38,7 +38,7 @@ class IMPATOMEXPORT Copy : public Molecule {
   static IntKey get_copy_index_key();
 
   IMP_DECORATOR_METHODS(Copy, Molecule);
-  /** Create a decorator for the numberth copy. */
+  //! Create a decorator for the numberth copy.
   IMP_DECORATOR_SETUP_1(Copy, Int, number);
 
   static bool get_is_setup(Model *m, ParticleIndex pi) {

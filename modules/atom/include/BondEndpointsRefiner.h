@@ -14,9 +14,8 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! Return the endpoints of a bond.
-/**
- \ingroup bond
- \see Bond
+/** \ingroup bond
+    \see Bond
  */
 class IMPATOMEXPORT BondEndpointsRefiner : public Refiner {
  public:

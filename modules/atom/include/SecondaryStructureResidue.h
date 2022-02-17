@@ -1,6 +1,7 @@
 /**
  *  \file IMP/atom/SecondaryStructureResidue.h
  *  \brief A decorator for storing secondary structure probabilities.
+ *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
  */

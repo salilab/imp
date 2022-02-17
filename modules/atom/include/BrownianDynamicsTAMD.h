@@ -89,9 +89,8 @@ class IMPATOMEXPORT BrownianDynamicsTAMD : public BrownianDynamics {
                        double wave_factor = 1.0);
 
  protected:
-  /** advances a chunk of ps from index begin to end
-
-      @param dtfs time step in femtoseconds
+  //! advances a chunk of ps from index begin to end
+  /** @param dtfs time step in femtoseconds
       @param ikt inverse kT for current chunk step
       @param ps particle indexes to advance
       @param begin beginning index of chunk of ps

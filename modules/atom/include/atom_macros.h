@@ -1,6 +1,6 @@
 /**
- *  \file IMP/atom/atom_macros.h    \brief Various important macros
- *                           for implementing decorators.
+ *  \file IMP/atom/atom_macros.h
+ *  \brief Macros for maintaining molecular hierarchies.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *

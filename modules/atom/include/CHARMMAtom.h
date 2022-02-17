@@ -31,8 +31,8 @@ class IMPATOMEXPORT CHARMMAtom : public Atom {
 
  public:
   IMP_DECORATOR_METHODS(CHARMMAtom, Atom);
-  /** Create a decorator with the passed CHARMM type.
-      The particle is assumed to already have all atom attributes.
+  //! Create a decorator with the passed CHARMM type.
+  /** The particle is assumed to already have all atom attributes.
    */
   IMP_DECORATOR_SETUP_1(CHARMMAtom, String, charmm_type);
 

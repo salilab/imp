@@ -1,6 +1,6 @@
 /**
  *  \file IMP/atom/SameResiduePairFilter.h
- *  \brief A Score on the distance between a pair of particles.
+ *  \brief Filter out atoms that belong to the same residue.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  */

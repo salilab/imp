@@ -1,6 +1,6 @@
 /**
  *  \file IMP/atom/Simulator.h
- *  \brief Simple molecular dynamics optimizer.
+ *  \brief Base class for "simulators", such as molecular dynamics.
  *
  *  Copyright 2007-2022 IMP Inventors. All rights reserved.
  *
