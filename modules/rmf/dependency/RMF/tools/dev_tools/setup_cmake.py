@@ -39,7 +39,7 @@ def make_files(d):
 
 def search_start(d):
     for cd in [o for o in os.listdir(d) if os.path.isdir(os.path.join(d, o))]:
-        if cd.startswith("."):
+        if cd.startswith(".") or cd == 'components':
             continue
         cp = os.path.join(d, cd)
         if cd in ["bin", "src", "test", "examples", "benchmark", "utility"]:
