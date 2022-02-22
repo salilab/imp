@@ -41,10 +41,10 @@ struct Configurator {
 
 void do_init() {
   // "%-4r [%t] %-5p %c %x - %m%n"
-  static log4cxx::PatternLayoutPtr layout =
-      new log4cxx::PatternLayout(LOG4CXX_STR("%-6r %-5p %c- %m%n"));
-  static log4cxx::ConsoleAppenderPtr appender =
-      new log4cxx::ConsoleAppender(layout);
+  static log4cxx::PatternLayoutPtr layout(
+      new log4cxx::PatternLayout(LOG4CXX_STR("%-6r %-5p %c- %m%n")));
+  static log4cxx::ConsoleAppenderPtr appender(
+      new log4cxx::ConsoleAppender(layout));
   static Configurator config(appender);
   use(config);
   set_log_level("off");

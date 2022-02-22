@@ -16,7 +16,6 @@
 #include <log4cxx/logger.h>                 // IWYU pragma: export
 #include <log4cxx/ndc.h>                    // IWYU pragma: export
 #include <log4cxx/helpers/messagebuffer.h>  // IWYU pragma: export
-#include <log4cxx/helpers/objectptr.h>      // IWYU pragma: export
 #include <log4cxx/logger.h>                 // IWYU pragma: export
 #endif
 
