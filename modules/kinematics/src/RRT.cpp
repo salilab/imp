@@ -21,7 +21,7 @@ std::ostream& operator<<(std::ostream& s, const RRT::Parameters& p) {
 
 namespace {
 
-#if !IMP_COMPILER_HAS_RANDOM_SHUFFLE
+#if IMP_COMPILER_HAS_RANDOM_SHUFFLE
 int myrandom (int i) { return std::rand()%i;}
 #endif
 

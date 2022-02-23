@@ -173,7 +173,7 @@ void RecursiveStates::load_particle_state(unsigned int i,
   }
 }
 
-#if !IMP_COMPILER_HAS_RANDOM_SHUFFLE
+#if IMP_COMPILER_HAS_RANDOM_SHUFFLE
 namespace {
 struct RandomWrapper {
   int operator()(int i) {
