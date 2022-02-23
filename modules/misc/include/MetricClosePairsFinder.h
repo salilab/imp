@@ -51,7 +51,11 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
   Index get_index(Model *m, ParticleIndexes inputs) const {
     unsigned int index_size = std::min<unsigned int>(
         1U, std::sqrt(static_cast<double>(inputs.size())));
+#if IMP_COMPILER_HAS_RANDOM_SHUFFLE
+    std::random_shuffle(inputs.begin(), inputs.end());
+#else
     std::shuffle(inputs.begin(), inputs.end(), random_number_generator);
+#endif
     Index ret;
     ParticleIndexes indexes(inputs.begin(),
                                     inputs.begin() + index_size);
