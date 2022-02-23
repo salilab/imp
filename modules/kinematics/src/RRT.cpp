@@ -6,6 +6,7 @@
  *
  */
 #include <IMP/kinematics/RRT.h>
+#include <IMP/random.h>
 
 IMPKINEMATICS_BEGIN_NAMESPACE
 
@@ -20,12 +21,10 @@ std::ostream& operator<<(std::ostream& s, const RRT::Parameters& p) {
 
 namespace {
 
-int myrandom (int i) { return std::rand()%i;}
-
 std::vector<bool> select_k_out_of_n_dofs(unsigned int k, unsigned int n) {
   std::vector<unsigned int> arr(n);
   for(unsigned int i=0; i<n; i++) arr[i] = i;
-  std::random_shuffle(arr.begin(), arr.end(), myrandom);
+  std::shuffle(arr.begin(), arr.end(), random_number_generator);
   std::vector<bool> ret(n, false);
   for(unsigned int i=0; i<k; i++) ret[arr[i]] = true;
   //std::vector<unsigned int> ret(k);

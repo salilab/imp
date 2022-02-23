@@ -12,6 +12,7 @@
 #include <IMP/misc/misc_config.h>
 #include <IMP/core/ClosePairsFinder.h>
 #include <IMP/Pointer.h>
+#include <IMP/random.h>
 #include <IMP/particle_index.h>
 #include <boost/unordered_map.hpp>
 #include <algorithm>
@@ -50,7 +51,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
   Index get_index(Model *m, ParticleIndexes inputs) const {
     unsigned int index_size = std::min<unsigned int>(
         1U, std::sqrt(static_cast<double>(inputs.size())));
-    std::random_shuffle(inputs.begin(), inputs.end());
+    std::shuffle(inputs.begin(), inputs.end(), random_number_generator);
     Index ret;
     ParticleIndexes indexes(inputs.begin(),
                                     inputs.begin() + index_size);

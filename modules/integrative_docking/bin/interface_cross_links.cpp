@@ -9,6 +9,7 @@
 #include <IMP/integrative_docking/internal/CrossLink.h>
 
 #include <IMP/Model.h>
+#include <IMP/random.h>
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/atom/hierarchy_tools.h>
@@ -216,7 +217,8 @@ int main(int argc, char** argv) {
   }
 
   select_cross_links(cross_links, selected_cross_links);
-  std::random_shuffle(selected_cross_links.begin(), selected_cross_links.end());
+  std::shuffle(selected_cross_links.begin(), selected_cross_links.end(),
+               IMP::random_number_generator);
 
   if (selected_cross_links.size() > 0) {
     write_cross_link_file(out_file_name, selected_cross_links);

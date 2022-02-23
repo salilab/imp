@@ -173,17 +173,6 @@ void RecursiveStates::load_particle_state(unsigned int i,
   }
 }
 
-namespace {
-struct RandomWrapper {
-  int operator()(int i) {
-    IMP_INTERNAL_CHECK(i > 0, "Zero i");
-    boost::uniform_int<unsigned int> ri(0, i - i);
-    unsigned int ret = ri(random_number_generator);
-    return ret;
-  }
-};
-}
-
 PermutationStates::PermutationStates(ParticleStates *inner)
     : ParticleStates("PermutationStates %1%"),
       inner_(inner),
@@ -191,8 +180,8 @@ PermutationStates::PermutationStates(ParticleStates *inner)
   for (unsigned int i = 0; i < permutation_.size(); ++i) {
     permutation_[i] = i;
   }
-  RandomWrapper rr;
-  std::random_shuffle(permutation_.begin(), permutation_.end(), rr);
+  std::shuffle(permutation_.begin(), permutation_.end(),
+               random_number_generator);
 }
 
 IMPDOMINO_END_NAMESPACE
