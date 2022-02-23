@@ -41,9 +41,9 @@ IMPKMEANS_BEGIN_INTERNAL_NAMESPACE
 
 KMdist kmDist(  // interpoint squared distance
     int dim, KMpoint p, KMpoint q) {
-  register int d;
-  register KMcoord diff;
-  register KMcoord dist;
+  int d;
+  KMcoord diff;
+  KMcoord dist;
 
   dist = 0;
   for (d = 0; d < dim; d++) {
