@@ -167,7 +167,7 @@ if [ "${TARGET_OSX_VER}" != "10.4" ]; then
                 /usr/local/lib/libopencv_core.2.4.dylib \
                 /usr/local/lib/libopencv_imgproc.2.4.13.dylib \
                 /usr/local/lib/libopencv_imgproc.2.4.dylib \
-                /usr/local/lib/libjpeg.8.dylib \
+                /usr/local/lib/libjpeg.9.dylib \
                 /usr/local/lib/libtiff.5.dylib \
                 /usr/local/lib/liblzma.5.dylib \
                 /usr/local/lib/libprotobuf.9.dylib \
