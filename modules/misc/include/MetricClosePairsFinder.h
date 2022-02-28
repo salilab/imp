@@ -154,18 +154,18 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
       : core::ClosePairsFinder(name), lb_(lb), ub_(ub) {}
   /** Not supported.*/
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &) const
-      IMP_OVERRIDE {
+      override {
     IMP_FAILURE("Bounding boxes are not supported.");
   }
   /** Not supported.*/
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &,
                                    const algebra::BoundingBox3Ds &) const
-      IMP_OVERRIDE {
+      override {
     IMP_FAILURE("Bounding boxes are not supported.");
   }
 
   virtual ParticleIndexPairs get_close_pairs(
-      Model *m, const ParticleIndexes &pc) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pc) const override {
     IMP_OBJECT_LOG;
     if (pc.empty()) return ParticleIndexPairs();
     Index index = get_index(m, pc);
@@ -173,7 +173,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
   }
   virtual ParticleIndexPairs get_close_pairs(
       Model *m, const ParticleIndexes &pca,
-      const ParticleIndexes &pcb) const IMP_OVERRIDE {
+      const ParticleIndexes &pcb) const override {
     IMP_OBJECT_LOG;
     if (pca.empty() || pcb.empty()) return ParticleIndexPairs();
     Index indexa = get_index(m, pca);
@@ -181,7 +181,7 @@ class MetricClosePairsFinder : public core::ClosePairsFinder {
     return get_close_pairs_internal(m, indexa, indexb, false);
   }
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pis) const override {
     // for now assume we just read the particles
     return IMP::get_particles(m, pis);
   }

@@ -21,7 +21,7 @@ class ExampleSubsetFilter : public domino::SubsetFilter {
         indices_(indices),
         max_(max) {}
   virtual bool get_is_ok(const IMP::domino::Assignment& assignment) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(ExampleSubsetFilter);
 };
 

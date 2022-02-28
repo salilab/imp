@@ -24,9 +24,9 @@ class IMPATOMEXPORT SameResiduePairFilter : public PairPredicate {
   SameResiduePairFilter();
   virtual int get_value_index(Model *m,
                               const ParticleIndexPair &p) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_PREDICATE_METHODS(SameResiduePairFilter);
   IMP_OBJECT_METHODS(SameResiduePairFilter);
   ;

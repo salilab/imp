@@ -31,9 +31,9 @@ class IMPCOREEXPORT RefinedPairsPairScore : public PairScore {
    */
   RefinedPairsPairScore(Refiner *r, PairScore *f);
   double evaluate_index(Model *m, const ParticleIndexPair &p,
-                        DerivativeAccumulator *da) const IMP_OVERRIDE;
+                        DerivativeAccumulator *da) const override;
   ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_SCORE_METHODS(RefinedPairsPairScore);
   IMP_OBJECT_METHODS(RefinedPairsPairScore);
   ;

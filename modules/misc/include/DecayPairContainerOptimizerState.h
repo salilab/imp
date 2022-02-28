@@ -38,7 +38,7 @@ class IMPMISCEXPORT DecayPairContainerOptimizerState
       std::string name = "DecayPairContainerOptimizerState%1%");
 
   PairContainer *get_output_container() const { return output_; }
-  virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
+  virtual void do_update(unsigned int call_num) override;
   IMP_OBJECT_METHODS(DecayPairContainerOptimizerState);
 };
 

@@ -25,7 +25,7 @@ class ListLikeContainer : public Base {
  private:
   std::size_t version_;
   typename Base::ContainedIndexTypes data_;
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {
+  virtual std::size_t do_get_contents_hash() const override {
     return version_;
   }
 
@@ -88,24 +88,24 @@ class ListLikeContainer : public Base {
 
   //! apply sm->apply_indexes to data. Use parallel mode using IMP_TASK
   //! if get_number_of_threads()>=2
-  void do_apply(const typename Base::Modifier *sm) const IMP_OVERRIDE {
+  void do_apply(const typename Base::Modifier *sm) const override {
     apply_generic(sm);
   }
 
   void do_apply_moved(const typename Base::Modifier *sm,
                       const ParticleIndexes &moved_pis,
-                      const ParticleIndexes &reset_pis) const IMP_OVERRIDE {
+                      const ParticleIndexes &reset_pis) const override {
     apply_generic_moved(sm, moved_pis, reset_pis);
   }
 
   //! returns a copy of list indexes of appropriate type
-  typename Base::ContainedIndexTypes get_indexes() const IMP_OVERRIDE {
+  typename Base::ContainedIndexTypes get_indexes() const override {
     return data_;
   }
-  bool do_get_provides_access() const IMP_OVERRIDE { return true; }
+  bool do_get_provides_access() const override { return true; }
 
   //! direct access to contained data (which may or may not be properly updated)
-  const typename Base::ContainedIndexTypes &get_access() const IMP_OVERRIDE {
+  const typename Base::ContainedIndexTypes &get_access() const override {
     return data_;
   }
 

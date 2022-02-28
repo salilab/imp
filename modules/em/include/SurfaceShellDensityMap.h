@@ -60,7 +60,7 @@ class IMPEMEXPORT SurfaceShellDensityMap : public SampledDensityMap {
   corresponding shell ( the value increases as the voxel is further away
   from the surface).
   */
-  void resample() IMP_OVERRIDE;
+  void resample() override;
   //! Set the value of the map voxels as either scene or background
   /**
     \param[in] scene_val      all voxels corresponding to particles will

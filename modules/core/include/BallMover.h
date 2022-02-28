@@ -65,13 +65,13 @@ class IMPCOREEXPORT BallMover : public MonteCarloMover {
   Float get_radius() const { return radius_; }
 
  protected:
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const override;
 
   //! Move particle attributes within a ball, as specified in constructor
-  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
+  virtual MonteCarloMoverResult do_propose() override;
 
   //! Restore original attributes from before do_propose()
-  virtual void do_reject() IMP_OVERRIDE;
+  virtual void do_reject() override;
   IMP_OBJECT_METHODS(BallMover);
 };
 

@@ -98,7 +98,7 @@ class IMPDISPLAYEXPORT TextWriter : public Writer {
   //! Get the stream for inheriting classes to write to
   std::ostream& get_stream() { return out_; }
 
-  virtual void do_set_frame() IMP_OVERRIDE;
+  virtual void do_set_frame() override;
 
  public:
   //! Create a writer opening the file with the passed sink

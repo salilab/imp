@@ -50,7 +50,7 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
   RestraintSet(const RestraintsTemp &rs, double weight,
                const std::string &name = "RestraintSet %1%");
 
-  double unprotected_evaluate(DerivativeAccumulator *da) const IMP_OVERRIDE;
+  double unprotected_evaluate(DerivativeAccumulator *da) const override;
 
   IMP_OBJECT_METHODS(RestraintSet);
   /** @name Methods to control the nested Restraint objects
@@ -72,22 +72,22 @@ class IMPKERNELEXPORT RestraintSet : public Restraint {
 
  public:
 #ifndef IMP_DOXYGEN
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  ModelObjectsTemp do_get_inputs() const override;
   ScoringFunction *create_scoring_function(
       double weight = 1.0,
-      double max = std::numeric_limits<double>::max()) const IMP_OVERRIDE;
+      double max = std::numeric_limits<double>::max()) const override;
 #endif
-  double get_last_score() const IMP_OVERRIDE;
-  double get_last_last_score() const IMP_OVERRIDE;
+  double get_last_score() const override;
+  double get_last_last_score() const override;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
  protected:
-  Restraints do_create_decomposition() const IMP_OVERRIDE;
-  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
-  void do_add_score_and_derivatives(ScoreAccumulator sa) const IMP_OVERRIDE;
+  Restraints do_create_decomposition() const override;
+  Restraints do_create_current_decomposition() const override;
+  void do_add_score_and_derivatives(ScoreAccumulator sa) const override;
   void do_add_score_and_derivatives_moved(
                   ScoreAccumulator sa,
                   const ParticleIndexes &moved_pis,
-                  const ParticleIndexes &reset_pis) const IMP_OVERRIDE;
+                  const ParticleIndexes &reset_pis) const override;
 #endif
 };
 

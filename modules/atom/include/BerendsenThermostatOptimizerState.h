@@ -55,7 +55,7 @@ class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState {
   IMP_OBJECT_METHODS(BerendsenThermostatOptimizerState);
 
  protected:
-  virtual void do_update(unsigned int) IMP_OVERRIDE;
+  virtual void do_update(unsigned int) override;
 
  private:
   Particles pis_;

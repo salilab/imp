@@ -79,12 +79,12 @@ class IMPMULTIFITEXPORT ComplementarityRestraint : public Restraint {
   void set_boundary_coefficient(double bc) { boundary_coef_ = bc; }
   float get_voxel_size() const { return voxel_size_; }
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(ComplementarityRestraint);
 #ifndef IMP_DOXYGEN
   double unprotected_evaluate_if_good(DerivativeAccumulator *accum,
-                                      double max) const IMP_OVERRIDE;
+                                      double max) const override;
 #endif
  private:
   typedef std::pair<algebra::Transformation3D, algebra::DenseGrid3D<float> >

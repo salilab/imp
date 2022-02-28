@@ -27,9 +27,9 @@ class IMPCOREEXPORT AngleTripletScore : public TripletScore {
   AngleTripletScore(UnaryFunction *f);
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexTriplet &pi,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_TRIPLET_SCORE_METHODS(AngleTripletScore);
   IMP_OBJECT_METHODS(AngleTripletScore);
 };

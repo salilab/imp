@@ -22,20 +22,20 @@ class TIFFImageReaderWriter : public ImageReaderWriter {
   TIFFImageReaderWriter() {}
 
   void read(const String &filename, em::ImageHeader &header,
-            cv::Mat &data) const IMP_OVERRIDE {
+            cv::Mat &data) const override {
     this->read_from_ints(filename, header, data);
   }
 
   void write(const String &filename, em::ImageHeader &header,
-             const cv::Mat &data) const IMP_OVERRIDE {
+             const cv::Mat &data) const override {
     this->write_to_ints(filename, header, data);
   }
 
   void write_to_floats(const String &, em::ImageHeader &,
-                       const cv::Mat &) const IMP_OVERRIDE {}
+                       const cv::Mat &) const override {}
 
   void read_from_floats(const String &, em::ImageHeader &,
-                        cv::Mat &) const IMP_OVERRIDE {}
+                        cv::Mat &) const override {}
 
   //! Reads an image file in TIFF format
   /*!
@@ -47,7 +47,7 @@ class TIFFImageReaderWriter : public ImageReaderWriter {
       format. Eg, Spider.
   */
   void read_from_ints(const String &filename, em::ImageHeader &header,
-                      cv::Mat &data) const IMP_OVERRIDE {
+                      cv::Mat &data) const override {
     IMP_LOG_VERBOSE("reading with TIFFImageReaderWriter" << std::endl);
     // read
     cv::Mat temp = cv::imread(filename, 0);
@@ -68,7 +68,7 @@ class TIFFImageReaderWriter : public ImageReaderWriter {
               You might be discarding float information.
    */
   void write_to_ints(const String &filename, em::ImageHeader &header,
-                     const cv::Mat &data) const IMP_OVERRIDE {
+                     const cv::Mat &data) const override {
     IMP_UNUSED(header);
     // discard header
     IMP_LOG(IMP::WARNING,

@@ -30,9 +30,9 @@ class IMPSYMMETRYEXPORT BallMover : public core::MonteCarloMover {
             algebra::Vector3Ds ctrs, algebra::Transformation3Ds trs);
 
  protected:
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual core::MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
   IMP_OBJECT_METHODS(BallMover);
 
  private:

@@ -22,11 +22,11 @@ class IMPSPBEXPORT NuisanceRangeModifier : public SingletonModifier {
 
   // note, Doxygen wants a semicolon at the end of macro lines
   virtual void apply_index(IMP::Model *m,
-                           IMP::ParticleIndex p) const IMP_OVERRIDE;
+                           IMP::ParticleIndex p) const override;
   virtual IMP::ModelObjectsTemp do_get_inputs(
-      IMP::Model *m, const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
+      IMP::Model *m, const IMP::ParticleIndexes &pis) const override;
   virtual IMP::ModelObjectsTemp do_get_outputs(
-      IMP::Model *m, const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
+      IMP::Model *m, const IMP::ParticleIndexes &pis) const override;
 
   IMP_SINGLETON_MODIFIER_METHODS(NuisanceRangeModifier);
   IMP_OBJECT_METHODS(NuisanceRangeModifier);

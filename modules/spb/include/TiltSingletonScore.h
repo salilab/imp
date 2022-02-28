@@ -36,10 +36,10 @@ class IMPSPBEXPORT TiltSingletonScore : public SingletonScore {
                      const algebra::VectorD<3> &v2);
 
   virtual double evaluate_index(IMP::Model *m, const IMP::ParticleIndex p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
 
   virtual IMP::ModelObjectsTemp do_get_inputs(
-      IMP::Model *m, const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
+      IMP::Model *m, const IMP::ParticleIndexes &pis) const override;
 
   IMP_SINGLETON_SCORE_METHODS(TiltSingletonScore);
   IMP_OBJECT_METHODS(TiltSingletonScore);

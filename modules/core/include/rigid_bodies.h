@@ -837,14 +837,14 @@ class IMPCOREEXPORT RigidMembersRefiner : public Refiner {
  public:
   RigidMembersRefiner(std::string name = "RigidMembersRefiner%d")
       : Refiner(name) {}
-  virtual bool get_can_refine(Particle *) const IMP_OVERRIDE;
+  virtual bool get_can_refine(Particle *) const override;
 #ifndef SWIG
   using Refiner::get_refined;
 #endif
   virtual const ParticlesTemp get_refined(Particle *) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_OBJECT_METHODS(RigidMembersRefiner);
 };
 

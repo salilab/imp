@@ -99,7 +99,7 @@ class IMPATOMEXPORT BrownianDynamicsTAMD : public BrownianDynamics {
   void do_advance_chunk(double dtfs, double ikt,
                         const ParticleIndexes &ps,
                         unsigned int begin, unsigned int end)
-    IMP_OVERRIDE;
+    override;
 
  private:
   void advance_coordinates_1(ParticleIndex pi, unsigned int i,

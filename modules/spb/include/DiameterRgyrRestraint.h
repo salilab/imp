@@ -32,8 +32,8 @@ class IMPSPBEXPORT DiameterRgyrRestraint : public Restraint {
   DiameterRgyrRestraint(Particles ps, Float diameter, Float rgyr, Float kappa);
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
-      IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  IMP::ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(DiameterRgyrRestraint);
 };

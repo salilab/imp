@@ -66,7 +66,7 @@ class IMPKERNELEXPORT ModelObject : public Object {
   const ScoreStatesTemp &get_required_score_states() const;
 
  protected:
-  // virtual void do_destroy() IMP_OVERRIDE {set_has_dependencies(false);}
+  // virtual void do_destroy() override {set_has_dependencies(false);}
   /** Called when set_has_required_score_states() is called.*/
   virtual void handle_set_has_required_score_states(bool) {}
   /** Get any Particle, Container or other ModelObjects read by

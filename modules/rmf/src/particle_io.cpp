@@ -58,17 +58,17 @@ class ParticleLoadLink : public SimpleLoadLink<Particle> {
       }
     }
   }
-  void do_load_one(RMF::NodeConstHandle nh, Particle *o) IMP_OVERRIDE {
+  void do_load_one(RMF::NodeConstHandle nh, Particle *o) override {
     RMF::Category cat = nh.get_file().get_category("IMP");
     load_one<IMP::FloatKey, RMF::FloatKey>(o, nh, cat);
     load_one<IMP::IntKey, RMF::IntKey>(o, nh, cat);
     load_one<IMP::StringKey, RMF::StringKey>(o, nh, cat);
   }
-  bool get_is(RMF::NodeConstHandle nh) const IMP_OVERRIDE {
+  bool get_is(RMF::NodeConstHandle nh) const override {
     return nh.get_type() == RMF::CUSTOM;
   }
   using P::do_create;
-  Particle *do_create(RMF::NodeConstHandle name, Model *m) IMP_OVERRIDE {
+  Particle *do_create(RMF::NodeConstHandle name, Model *m) override {
     return new Particle(m, name.get_name());
   }
 
@@ -96,12 +96,12 @@ class ParticleSaveLink : public SimpleSaveLink<Particle> {
     }
   }
 
-  void do_save_one(Particle *o, RMF::NodeHandle nh) IMP_OVERRIDE {
+  void do_save_one(Particle *o, RMF::NodeHandle nh) override {
     save_one(o, o->get_float_keys(), nh, float_);
     save_one(o, o->get_int_keys(), nh, int_);
     save_one(o, o->get_string_keys(), nh, string_);
   }
-  RMF::NodeType get_type(Particle *) const IMP_OVERRIDE { return RMF::CUSTOM; }
+  RMF::NodeType get_type(Particle *) const override { return RMF::CUSTOM; }
 
  public:
   ParticleSaveLink(RMF::FileHandle fh) : P("ParticleSaveLink%1%") {

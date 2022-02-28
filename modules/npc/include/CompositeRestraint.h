@@ -73,8 +73,8 @@ class IMPNPCEXPORT CompositeRestraint : public Restraint {
   */
   ParticleIndexPairs get_connected_pairs() const;
 
-  double unprotected_evaluate(DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  double unprotected_evaluate(DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(CompositeRestraint);
 };
 

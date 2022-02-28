@@ -62,9 +62,9 @@ class ScoreWeightedIncrementalBallMover : public MonteCarloMover {
  public:
   ScoreWeightedIncrementalBallMover(const ParticlesTemp &ps,
                                     unsigned int n, Float radius);
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
   IMP_OBJECT_METHODS(ScoreWeightedIncrementalBallMover);
 
  private:

@@ -64,7 +64,7 @@ class IMPKERNELEXPORT Container : public ModelObject {
   std::size_t get_contents_hash() const { return do_get_contents_hash(); }
 
   //! containers don't have outputs
-  ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  ModelObjectsTemp do_get_outputs() const override {
     return ModelObjectsTemp();
   }
 

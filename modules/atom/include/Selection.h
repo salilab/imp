@@ -353,7 +353,7 @@ class IMPATOMEXPORT SelectionGeometry : public display::Geometry {
  public:
   SelectionGeometry(atom::Selection d, std::string name = "Selection")
       : display::Geometry(name), res_(d) {}
-  display::Geometries get_components() const IMP_OVERRIDE;
+  display::Geometries get_components() const override;
   IMP_OBJECT_METHODS(SelectionGeometry);
 };
 

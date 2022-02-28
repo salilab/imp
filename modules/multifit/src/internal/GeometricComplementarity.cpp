@@ -29,7 +29,7 @@ class SurfaceDistanceMap : public IMP::em::SampledDensityMap {
 
   // Resample needs to be overloaded so that the number of layers
   // is not limited by num_shells_
-  void resample() IMP_OVERRIDE;
+  void resample() override;
 
  private:
   void set_surface_shell(std::vector<long> *shell);

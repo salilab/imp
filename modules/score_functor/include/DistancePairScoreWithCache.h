@@ -40,10 +40,10 @@ class DistancePairScoreWithCache : public PairScore {
 
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &pip,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
 
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
 
   /**
       return a reference to the functor that is applied on a pair of particles
@@ -55,17 +55,17 @@ class DistancePairScoreWithCache : public PairScore {
   virtual double evaluate_indexes(
        Model *m, const ParticleIndexPairs &p,
        DerivativeAccumulator *da, unsigned int lower_bound,
-       unsigned int upper_bound) const IMP_OVERRIDE;
+       unsigned int upper_bound) const override;
 
   virtual double evaluate_indexes_scores(
        Model *m, const ParticleIndexPairs &p, DerivativeAccumulator *da,
        unsigned int lower_bound, unsigned int upper_bound,
-       std::vector<double> &score) const IMP_OVERRIDE;
+       std::vector<double> &score) const override;
 
   virtual double evaluate_indexes_delta(
        Model *m, const ParticleIndexPairs &p, DerivativeAccumulator *da,
        const std::vector<unsigned> &indexes,
-       std::vector<double> &score) const IMP_OVERRIDE;
+       std::vector<double> &score) const override;
 
   IMP_OBJECT_METHODS(DistancePairScoreWithCache);
 };

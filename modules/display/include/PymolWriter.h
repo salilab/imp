@@ -45,22 +45,22 @@ class IMPDISPLAYEXPORT PymolWriter : public TextWriter {
   void setup(std::string name, Type type, bool opendata = true);
   void cleanup(std::string name, bool close = true);
   bool handle_sphere(SphereGeometry *g, Color color,
-                     std::string name) IMP_OVERRIDE;
+                     std::string name) override;
   bool handle_cylinder(CylinderGeometry *g, Color color,
-                       std::string name) IMP_OVERRIDE;
+                       std::string name) override;
   bool handle_point(PointGeometry *g, Color color,
-                    std::string name) IMP_OVERRIDE;
+                    std::string name) override;
   bool handle_segment(SegmentGeometry *g, Color color,
-                      std::string name) IMP_OVERRIDE;
+                      std::string name) override;
   bool handle_polygon(PolygonGeometry *g, Color color,
-                      std::string name) IMP_OVERRIDE;
+                      std::string name) override;
   bool handle_triangle(TriangleGeometry *g, Color color,
-                       std::string name) IMP_OVERRIDE;
+                       std::string name) override;
   bool handle_label(LabelGeometry *g, Color color,
-                    std::string name) IMP_OVERRIDE;
+                    std::string name) override;
   bool handle_surface(SurfaceMeshGeometry *g, Color color, std::string name);
 
-  void do_set_frame() IMP_OVERRIDE;
+  void do_set_frame() override;
 
  public:
   IMP_TEXT_WRITER(PymolWriter);

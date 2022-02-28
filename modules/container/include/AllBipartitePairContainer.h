@@ -29,7 +29,7 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
   IMP::PointerMember<SingletonContainer> a_, b_;
 
  protected:
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {
+  virtual std::size_t do_get_contents_hash() const override {
     std::size_t ret = a_->get_contents_hash();
     boost::hash_combine(ret, b_->get_contents_hash());
     return ret;
@@ -54,10 +54,10 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
   AllBipartitePairContainer(SingletonContainerAdaptor a,
                             SingletonContainerAdaptor b,
                             std::string name = "AllBipartitePairContainer%1%");
-  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_indexes() const override;
+  virtual ParticleIndexPairs get_range_indexes() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual ParticleIndexes get_all_possible_indexes() const override;
   IMP_PAIR_CONTAINER_METHODS(AllBipartitePairContainer);
   IMP_OBJECT_METHODS(AllBipartitePairContainer);
 };

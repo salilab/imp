@@ -30,7 +30,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT BondPairContainer : public PairContainer {
   IMP::PointerMember<SingletonContainer> sc_;
 
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE {
+  virtual std::size_t do_get_contents_hash() const override {
     return sc_->get_contents_hash();
   }
 
@@ -48,12 +48,12 @@ class IMPATOMEXPORT BondPairContainer : public PairContainer {
   //! The container containing the bonds
   BondPairContainer(SingletonContainer* sc);
 
-  virtual ParticleIndexPairs get_indexes() const IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+  virtual ParticleIndexPairs get_indexes() const override;
+  virtual ParticleIndexPairs get_range_indexes() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override {
     return ModelObjects(1, sc_);
   }
-  ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  ParticleIndexes get_all_possible_indexes() const override;
   IMP_PAIR_CONTAINER_METHODS(BondPairContainer);
   IMP_OBJECT_METHODS(BondPairContainer);
 };

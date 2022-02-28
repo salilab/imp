@@ -45,9 +45,9 @@ class IMPCONTAINEREXPORT ClosePairContainer
 
  public:
   ModelObjectsTemp get_score_state_inputs() const;
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ParticleIndexes get_all_possible_indexes() const override;
+  virtual ParticleIndexPairs get_range_indexes() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
   void do_score_state_before_evaluate();
   void do_score_state_after_evaluate() {}
 
@@ -63,7 +63,7 @@ class IMPCONTAINEREXPORT ClosePairContainer
   },
   { set_has_dependencies(false); }, );
 
-  void clear_caches() IMP_OVERRIDE  { first_call_ = true; }
+  void clear_caches() override  { first_call_ = true; }
   double get_slack() const { return slack_; }
   double get_distance() const { return distance_; }
   void update() { do_score_state_before_evaluate(); }

@@ -60,10 +60,10 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT FStudentT : public OneDimensionalSufficientDistribution {
   protected:
-    virtual void do_update_sufficient_statistics(Floats FXs) IMP_OVERRIDE;
+    virtual void do_update_sufficient_statistics(Floats FXs) override;
     virtual void do_update_sufficient_statistics(Floats FXs, Floats JXs);
-    virtual Floats do_get_sufficient_statistics() const IMP_OVERRIDE;
-    virtual double do_evaluate() const IMP_OVERRIDE;
+    virtual Floats do_get_sufficient_statistics() const override;
+    virtual double do_evaluate() const override;
 
   public:
     //! Create from observations vectors.

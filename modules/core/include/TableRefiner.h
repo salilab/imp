@@ -34,14 +34,14 @@ class IMPCOREEXPORT TableRefiner : public Refiner {
   //! Set the mapping for a particular particle
   void set_particle(Particle *p, const ParticlesTemp &ps);
 
-  virtual bool get_can_refine(Particle *) const IMP_OVERRIDE;
+  virtual bool get_can_refine(Particle *) const override;
   virtual const ParticlesTemp get_refined(Particle *) const
-      IMP_OVERRIDE;
+      override;
 #ifndef SWIG
   using Refiner::get_refined;
 #endif
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_OBJECT_METHODS(TableRefiner);
 };
 

@@ -31,8 +31,8 @@ class IMPATOMEXPORT EzRestraint : public Restraint {
 
  protected:
   virtual double unprotected_evaluate(DerivativeAccumulator *da) const
-      IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
 
  public:
   EzRestraint(Model *m, ParticleIndexesAdaptor ps);

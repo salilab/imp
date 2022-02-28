@@ -67,16 +67,16 @@ class IMPCONTAINEREXPORT ConnectingPairContainer :
   IMP_OBJECT_METHODS(ConnectingPairContainer);
 
  private:
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;
+  virtual std::size_t do_get_contents_hash() const override;
 #else
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ParticleIndexes get_all_possible_indexes() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
   ModelObjectsTemp get_score_state_inputs() const;
   void do_score_state_before_evaluate();
   void do_score_state_after_evaluate() {}
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const override;
   IMP_OBJECT_METHODS(ConnectingPairContainer);
-  bool get_is_decomposable() const IMP_OVERRIDE { return false; }
+  bool get_is_decomposable() const override { return false; }
 #endif
 };
 

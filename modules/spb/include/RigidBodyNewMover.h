@@ -37,9 +37,9 @@ class IMPSPBEXPORT RigidBodyNewMover : public core::MonteCarloMover {
   // IMP_MOVER(RigidBodyNewMover);
 
  protected:
-  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual core::MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(RigidBodyNewMover);
   IMP_SHOWABLE(RigidBodyNewMover);

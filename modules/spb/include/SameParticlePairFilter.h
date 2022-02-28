@@ -22,10 +22,10 @@ class IMPSPBEXPORT SameParticlePairFilter : public PairPredicate {
   SameParticlePairFilter();
 
   virtual int get_value_index(
-      IMP::Model *m, const IMP::ParticleIndexPair &p) const IMP_OVERRIDE;
+      IMP::Model *m, const IMP::ParticleIndexPair &p) const override;
 
   virtual IMP::ModelObjectsTemp do_get_inputs(
-      IMP::Model *m, const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
+      IMP::Model *m, const IMP::ParticleIndexes &pis) const override;
 
   IMP_PAIR_PREDICATE_METHODS(SameParticlePairFilter);
   IMP_OBJECT_METHODS(SameParticlePairFilter);

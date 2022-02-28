@@ -125,9 +125,9 @@ class IMPDOMINOEXPORT IndexStates : public ParticleStates {
       to use.*/
   IndexStates(unsigned int n, IntKey k = IntKey("state"))
       : ParticleStates("IndexStates %1%"), n_(n), k_(k) {}
-  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual unsigned int get_number_of_particle_states() const override;
   virtual void load_particle_state(unsigned int, Particle *) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(IndexStates);
 };
 
@@ -147,17 +147,17 @@ class IMPDOMINOEXPORT XYZStates : public ParticleStates {
     IMP_USAGE_CHECK(i < states_.size(), "Out of range");
     return states_[i];
   }
-  algebra::VectorKD get_embedding(unsigned int i) const IMP_OVERRIDE {
+  algebra::VectorKD get_embedding(unsigned int i) const override {
     IMP_USAGE_CHECK(i < states_.size(), "Out of range");
     return states_[i];
   }
   unsigned int get_nearest_state(
-                 const algebra::VectorKD &v) const IMP_OVERRIDE {
+                 const algebra::VectorKD &v) const override {
     return nn_->get_nearest_neighbors(v, 1)[0];
   }
-  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual unsigned int get_number_of_particle_states() const override;
   virtual void load_particle_state(unsigned int, Particle *) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(XYZStates);
 };
 
@@ -175,11 +175,11 @@ class IMPDOMINOEXPORT RigidBodyStates : public ParticleStates {
     IMP_USAGE_CHECK(i < states_.size(), "Out of range");
     return states_[i];
   }
-  algebra::VectorKD get_embedding(unsigned int i) const IMP_OVERRIDE;
-  unsigned int get_nearest_state(const algebra::VectorKD &v) const IMP_OVERRIDE;
-  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  algebra::VectorKD get_embedding(unsigned int i) const override;
+  unsigned int get_nearest_state(const algebra::VectorKD &v) const override;
+  virtual unsigned int get_number_of_particle_states() const override;
   virtual void load_particle_state(unsigned int, Particle *) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(RigidBodyStates);
 };
 
@@ -204,11 +204,11 @@ class IMPDOMINOEXPORT NestedRigidBodyStates : public ParticleStates {
     IMP_USAGE_CHECK(i < states_.size(), "Out of range");
     return states_[i];
   }
-  algebra::VectorKD get_embedding(unsigned int i) const IMP_OVERRIDE;
-  unsigned int get_nearest_state(const algebra::VectorKD &v) const IMP_OVERRIDE;
-  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  algebra::VectorKD get_embedding(unsigned int i) const override;
+  unsigned int get_nearest_state(const algebra::VectorKD &v) const override;
+  virtual unsigned int get_number_of_particle_states() const override;
   virtual void load_particle_state(unsigned int, Particle *) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(NestedRigidBodyStates);
 };
 
@@ -221,9 +221,9 @@ class IMPDOMINOEXPORT CompoundStates : public ParticleStates {
  public:
   CompoundStates(ParticleStates *a, ParticleStates *b)
       : ParticleStates("CompoundStates %1%"), a_(a), b_(b) {}
-  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual unsigned int get_number_of_particle_states() const override;
   virtual void load_particle_state(unsigned int, Particle *) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(CompoundStates);
 };
 
@@ -242,9 +242,9 @@ class IMPDOMINOEXPORT RecursiveStates : public ParticleStates {
  public:
   RecursiveStates(Particle *p, Subset s, const Assignments &ss,
                   ParticleStatesTable *pst);
-  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual unsigned int get_number_of_particle_states() const override;
   virtual void load_particle_state(unsigned int, Particle *) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(RecursiveStates);
 };
 
@@ -268,9 +268,9 @@ class IMPDOMINOEXPORT PermutationStates : public ParticleStates {
                        "Out of range state returned. This is perplexing.");
     return cur;
   }
-  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual unsigned int get_number_of_particle_states() const override;
   virtual void load_particle_state(unsigned int, Particle *) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(PermutationStates);
 };
 

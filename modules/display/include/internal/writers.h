@@ -28,7 +28,7 @@ template <class Wr>
 class WriterFactoryHelper : public WriterFactory {
  public:
   WriterFactoryHelper() {}
-  Writer *create(std::string name) const IMP_OVERRIDE {
+  Writer *create(std::string name) const override {
     return new Wr(TextOutput(name));
   }
 };

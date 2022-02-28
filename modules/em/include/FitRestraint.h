@@ -68,8 +68,8 @@ class IMPEMEXPORT FitRestraint : public Restraint {
   void set_scale_factor(float scale) { scalefac_ = scale; }
   float get_scale_factor() const { return scalefac_; }
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(FitRestraint);
 
 #ifndef SWIG

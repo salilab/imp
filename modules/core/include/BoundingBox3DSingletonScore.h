@@ -35,9 +35,9 @@ class GenericBoundingBox3DSingletonScore : public SingletonScore {
   GenericBoundingBox3DSingletonScore(UF *f, const algebra::BoundingBoxD<3> &bb);
 
   virtual double evaluate_index(Model *m, ParticleIndex p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pis) const override {
     return IMP::get_particles(m, pis);
   }
   IMP_SINGLETON_SCORE_METHODS(GenericBoundingBox3DSingletonScore);

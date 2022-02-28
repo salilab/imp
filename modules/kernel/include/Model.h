@@ -426,7 +426,7 @@ class IMPKERNELEXPORT Model : public Object
 
  public:
 #if !defined(IMP_DOXYGEN)
-  virtual void do_destroy() IMP_OVERRIDE;
+  virtual void do_destroy() override;
 #endif
 };
 

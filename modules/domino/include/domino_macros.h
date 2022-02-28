@@ -27,10 +27,10 @@
     Name##SubsetFilterTable() : P(std::string(#Name) + std::string(" %1%")) {} \
     virtual IMP::domino::SubsetFilter *get_subset_filter(                      \
         const IMP::domino::Subset &s,                                          \
-        const IMP::domino::Subsets &excluded) const IMP_OVERRIDE;              \
+        const IMP::domino::Subsets &excluded) const override;                  \
     virtual double get_strength(const IMP::domino::Subset &s,                  \
                                 const IMP::domino::Subsets &excluded) const    \
-        IMP_OVERRIDE;                                                          \
+        override;                                                              \
     IMP_OBJECT_METHODS(Name##SubsetFilterTable);                               \
   };                                                                           \
   IMP_OBJECTS(Name##SubsetFilterTable, Name##SubsetFilterTables)
@@ -81,23 +81,23 @@
 */
 #define IMP_ASSIGNMENT_CONTAINER_METHODS(Name)                             \
  public:                                                                   \
-  virtual Assignments get_assignments(IntRange r) const IMP_OVERRIDE {     \
+  virtual Assignments get_assignments(IntRange r) const override {         \
     Assignments ret(r.second - r.first);                                   \
     for (unsigned int i = 0; i != ret.size(); ++i) {                       \
       ret[i] = Name::get_assignment(r.first + i);                          \
     }                                                                      \
     return ret;                                                            \
   }                                                                        \
-  virtual Assignments get_assignments() const IMP_OVERRIDE {               \
+  virtual Assignments get_assignments() const override {                   \
     return get_assignments(IntRange(0, get_number_of_assignments()));      \
   };                                                                       \
-  virtual void add_assignments(const Assignments &asgn) IMP_OVERRIDE {     \
+  virtual void add_assignments(const Assignments &asgn) override {         \
     for (unsigned int i = 0; i < asgn.size(); ++i) {                       \
       Name::add_assignment(asgn[i]);                                       \
     }                                                                      \
   }                                                                        \
   virtual Ints get_particle_assignments(unsigned int index) const          \
-      IMP_OVERRIDE {                                                       \
+      override {                                                           \
     Ints ret(Name::get_number_of_assignments());                           \
     for (unsigned int i = 0; i < Name::get_number_of_assignments(); ++i) { \
       ret[i] = get_assignment(i)[index];                                   \

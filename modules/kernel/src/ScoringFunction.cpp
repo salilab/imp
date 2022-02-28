@@ -25,9 +25,9 @@ class NullScoringFunction : public ScoringFunction {
                       std::string name = "NullScoringFunction%1%")
       : ScoringFunction(m, name) {}
   void do_add_score_and_derivatives(IMP::ScoreAccumulator,
-                                    const ScoreStatesTemp &) IMP_OVERRIDE {}
-  Restraints create_restraints() const IMP_OVERRIDE { return Restraints(); }
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+                                    const ScoreStatesTemp &) override {}
+  Restraints create_restraints() const override { return Restraints(); }
+  virtual ModelObjectsTemp do_get_inputs() const override {
     return ModelObjectsTemp();
   }
   IMP_OBJECT_METHODS(NullScoringFunction);

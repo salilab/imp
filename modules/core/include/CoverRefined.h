@@ -52,11 +52,11 @@ class IMPCOREEXPORT CoverRefined : public SingletonModifier {
   void set_slack(Float slack) { slack_ = slack; }
 
   virtual void apply_index(Model *m, ParticleIndex a) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(CoverRefined);
   IMP_OBJECT_METHODS(CoverRefined);
 };

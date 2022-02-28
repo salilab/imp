@@ -40,11 +40,11 @@ class IMPEM2DEXPORT DistanceFilterTable : public domino::SubsetFilterTable {
   virtual IMP::domino::SubsetFilter *
       get_subset_filter(const IMP::domino::Subset &s,
                         const IMP::domino::Subsets &excluded) const
-      IMP_OVERRIDE;
+      override;
 
   virtual double get_strength(const IMP::domino::Subset &s,
                               const IMP::domino::Subsets &excluded) const
-      IMP_OVERRIDE;
+      override;
 
   IMP_OBJECT_METHODS(DistanceFilterTable);
 };

@@ -117,7 +117,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
     update();
   }
 
-  bool has_changed() const IMP_OVERRIDE {
+  bool has_changed() const override {
     double tmpa = Nuisance(a_).get_nuisance();
     double tmpb = Nuisance(b_).get_nuisance();
     if ((std::abs(tmpa - a_val_) > IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM) ||
@@ -130,20 +130,20 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
     }
   }
 
-  void update() IMP_OVERRIDE {
+  void update() override {
     a_val_ = Nuisance(a_).get_nuisance();
     b_val_ = Nuisance(b_).get_nuisance();
     IMP_LOG_TERSE("Linear1DFunction: update()  a:= " << a_val_ << " b:="
                                                      << b_val_ << std::endl);
   }
 
-  Floats operator()(const Floats& x) const IMP_OVERRIDE {
+  Floats operator()(const Floats& x) const override {
     IMP_USAGE_CHECK(x.size() == 1, "expecting a 1-D vector");
     Floats ret(1, a_val_ * x[0] + b_val_);
     return ret;
   }
 
-  Eigen::VectorXd operator()(const FloatsList& xlist) const IMP_OVERRIDE {
+  Eigen::VectorXd operator()(const FloatsList& xlist) const override {
     unsigned M = xlist.size();
     Eigen::VectorXd retlist(M);
     for (unsigned i = 0; i < M; i++) {
@@ -153,7 +153,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
     return retlist;
   }
 
-  FloatsList operator()(const FloatsList& xlist, bool) const IMP_OVERRIDE {
+  FloatsList operator()(const FloatsList& xlist, bool) const override {
     Eigen::VectorXd vec((*this)(xlist));
     FloatsList ret;
     for (unsigned i = 0; i < xlist.size(); i++)
@@ -162,7 +162,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
   }
 
   void add_to_derivatives(const Floats& x,
-                          DerivativeAccumulator& accum) const IMP_OVERRIDE {
+                          DerivativeAccumulator& accum) const override {
     // d[f(x)]/da = x
     Nuisance(a_).add_to_nuisance_derivative(x[0], accum);
     // d[f(x)]/db = 1
@@ -170,7 +170,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
   }
 
   void add_to_particle_derivative(unsigned particle_no, double value,
-                          DerivativeAccumulator& accum) const IMP_OVERRIDE {
+                          DerivativeAccumulator& accum) const override {
     switch (particle_no) {
       case 0:
         Nuisance(a_).add_to_nuisance_derivative(value, accum);
@@ -184,7 +184,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
   }
 
   Eigen::VectorXd get_derivative_vector(unsigned particle_no,
-                               const FloatsList& xlist) const IMP_OVERRIDE {
+                               const FloatsList& xlist) const override {
     unsigned N = xlist.size();
     Eigen::VectorXd ret(N);
     switch (particle_no) {
@@ -201,7 +201,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
   }
 
   FloatsList get_derivative_matrix(
-                  const FloatsList& xlist, bool) const IMP_OVERRIDE {
+                  const FloatsList& xlist, bool) const override {
     Eigen::MatrixXd mat(xlist.size(), 2);
     mat.col(0) = get_derivative_vector(0, xlist);
     mat.col(1) = get_derivative_vector(1, xlist);
@@ -215,7 +215,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
   }
 
   Eigen::VectorXd get_second_derivative_vector(
-      unsigned, unsigned, const FloatsList& xlist) const IMP_OVERRIDE {
+      unsigned, unsigned, const FloatsList& xlist) const override {
     // The Hessian is zero for all particles.
     unsigned N = xlist.size();
     Eigen::VectorXd H(Eigen::VectorXd::Zero(N));
@@ -224,7 +224,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
 
   FloatsList get_second_derivative_vector(
                 unsigned particle_a, unsigned particle_b,
-                const FloatsList& xlist, bool) const IMP_OVERRIDE {
+                const FloatsList& xlist, bool) const override {
     Eigen::VectorXd mat(
         get_second_derivative_vector(particle_a, particle_b, xlist));
     FloatsList ret;
@@ -236,12 +236,12 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
     return ret;
   }
 
-  unsigned get_ndims_x() const IMP_OVERRIDE { return 1; }
-  unsigned get_ndims_y() const IMP_OVERRIDE { return 1; }
+  unsigned get_ndims_x() const override { return 1; }
+  unsigned get_ndims_y() const override { return 1; }
 
-  unsigned get_number_of_particles() const IMP_OVERRIDE { return 2; }
+  unsigned get_number_of_particles() const override { return 2; }
 
-  bool get_particle_is_optimized(unsigned particle_no) const IMP_OVERRIDE {
+  bool get_particle_is_optimized(unsigned particle_no) const override {
     switch (particle_no) {
       case 0:  // a
         return Nuisance(a_).get_nuisance_is_optimized();
@@ -252,14 +252,14 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction {
     }
   }
 
-  unsigned get_number_of_optimized_particles() const IMP_OVERRIDE {
+  unsigned get_number_of_optimized_particles() const override {
     unsigned count = 0;
     if (Nuisance(a_).get_nuisance_is_optimized()) count++;
     if (Nuisance(b_).get_nuisance_is_optimized()) count++;
     return count;
   }
 
-  ModelObjectsTemp get_inputs() const IMP_OVERRIDE {
+  ModelObjectsTemp get_inputs() const override {
     ModelObjectsTemp ret;
     ret.push_back(a_);
     ret.push_back(b_);
@@ -301,7 +301,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
     update();
   }
 
-  bool has_changed() const IMP_OVERRIDE {
+  bool has_changed() const override {
     double tmpG = Scale(G_).get_scale();
     double tmpRg = Scale(Rg_).get_scale();
     double tmpd = Scale(d_).get_scale();
@@ -320,7 +320,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
     }
   }
 
-  void update() IMP_OVERRIDE {
+  void update() override {
     G_val_ = Scale(G_).get_scale();
     Rg_val_ = Scale(Rg_).get_scale();
     d_val_ = Scale(d_).get_scale();
@@ -354,13 +354,13 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
         <<std::endl;*/
   }
 
-  Floats operator()(const Floats& x) const IMP_OVERRIDE {
+  Floats operator()(const Floats& x) const override {
     IMP_USAGE_CHECK(x.size() == 1, "expecting a 1-D vector");
     Floats ret(1, get_value(x[0]));
     return ret;
   }
 
-  Eigen::VectorXd operator()(const FloatsList& xlist) const IMP_OVERRIDE {
+  Eigen::VectorXd operator()(const FloatsList& xlist) const override {
     unsigned M = xlist.size();
     Eigen::VectorXd retlist(M);
     for (unsigned i = 0; i < M; i++) {
@@ -370,7 +370,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
     return retlist;
   }
 
-  FloatsList operator()(const FloatsList& xlist, bool) const IMP_OVERRIDE {
+  FloatsList operator()(const FloatsList& xlist, bool) const override {
     Eigen::VectorXd vec((*this)(xlist));
     FloatsList ret;
     for (unsigned i = 0; i < xlist.size(); i++)
@@ -379,7 +379,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
   }
 
   void add_to_derivatives(
-            const Floats& x, DerivativeAccumulator& accum) const IMP_OVERRIDE {
+            const Floats& x, DerivativeAccumulator& accum) const override {
     double qval = x[0];
     double value = get_value(qval) - A_val_;
     double deriv;
@@ -420,7 +420,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
   }
 
   void add_to_particle_derivative(unsigned particle_no, double value,
-                         DerivativeAccumulator& accum) const IMP_OVERRIDE {
+                         DerivativeAccumulator& accum) const override {
     switch (particle_no) {
       case 0:
         IMP_INTERNAL_CHECK(!IMP::isnan(value), "derivative for G is nan.");
@@ -448,7 +448,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
   }
 
   Eigen::VectorXd get_derivative_vector(unsigned particle_no,
-                                const FloatsList& xlist) const IMP_OVERRIDE {
+                                const FloatsList& xlist) const override {
     unsigned N = xlist.size();
     Eigen::VectorXd ret(N);
     switch (particle_no) {
@@ -509,7 +509,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
   }
 
   FloatsList get_derivative_matrix(
-                  const FloatsList& xlist, bool) const IMP_OVERRIDE {
+                  const FloatsList& xlist, bool) const override {
     Eigen::MatrixXd mat(xlist.size(), 5);
     mat.col(0) = get_derivative_vector(0, xlist);
     mat.col(1) = get_derivative_vector(1, xlist);
@@ -527,7 +527,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
 
   Eigen::VectorXd get_second_derivative_vector(
       unsigned particle_a, unsigned particle_b,
-      const FloatsList& xlist) const IMP_OVERRIDE {
+      const FloatsList& xlist) const override {
     if (particle_a >= 5) IMP_THROW("Invalid particle 1 number", ModelException);
     if (particle_b >= 5) IMP_THROW("Invalid particle 2 number", ModelException);
     unsigned N = xlist.size();
@@ -717,7 +717,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
 
   FloatsList get_second_derivative_vector(
          unsigned particle_a, unsigned particle_b,
-         const FloatsList& xlist, bool) const IMP_OVERRIDE {
+         const FloatsList& xlist, bool) const override {
     Eigen::VectorXd mat(
         get_second_derivative_vector(particle_a, particle_b, xlist));
     FloatsList ret;
@@ -729,12 +729,12 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
     return ret;
   }
 
-  unsigned get_ndims_x() const IMP_OVERRIDE { return 1; }
-  unsigned get_ndims_y() const IMP_OVERRIDE { return 1; }
+  unsigned get_ndims_x() const override { return 1; }
+  unsigned get_ndims_y() const override { return 1; }
 
-  unsigned get_number_of_particles() const IMP_OVERRIDE { return 5; }
+  unsigned get_number_of_particles() const override { return 5; }
 
-  bool get_particle_is_optimized(unsigned particle_no) const IMP_OVERRIDE {
+  bool get_particle_is_optimized(unsigned particle_no) const override {
     switch (particle_no) {
       case 0:  // G
         return Scale(G_).get_scale_is_optimized();
@@ -751,7 +751,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
     }
   }
 
-  unsigned get_number_of_optimized_particles() const IMP_OVERRIDE {
+  unsigned get_number_of_optimized_particles() const override {
     unsigned count = 0;
     if (Scale(G_).get_scale_is_optimized()) count++;
     if (Scale(Rg_).get_scale_is_optimized()) count++;
@@ -761,7 +761,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction {
     return count;
   }
 
-  ModelObjectsTemp get_inputs() const IMP_OVERRIDE {
+  ModelObjectsTemp get_inputs() const override {
     ModelObjectsTemp ret;
     ret.push_back(G_);
     ret.push_back(Rg_);

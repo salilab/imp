@@ -32,17 +32,17 @@ class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder {
   bool get_are_close_and_filtered(Model *m, ParticleIndex a,
                      ParticleIndex b) const;
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
-      IMP_OVERRIDE;
+      override;
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
                                    const algebra::BoundingBox3Ds &bbs) const
-      IMP_OVERRIDE;
+      override;
   virtual ParticleIndexPairs get_close_pairs(
-      Model *m, const ParticleIndexes &pc) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pc) const override;
   virtual ParticleIndexPairs get_close_pairs(
       Model *m, const ParticleIndexes &pca,
-      const ParticleIndexes &pcb) const IMP_OVERRIDE;
+      const ParticleIndexes &pcb) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
 
   IMP_OBJECT_METHODS(QuadraticClosePairsFinder);
 };

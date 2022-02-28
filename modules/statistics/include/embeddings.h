@@ -37,8 +37,8 @@ class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding : public Embedding {
   ConfigurationSetXYZEmbedding(ConfigurationSet *cs,
                                SingletonContainerAdaptor pi,
                                bool align = false);
-  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
-  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  algebra::VectorKD get_point(unsigned int i) const override;
+  unsigned int get_number_of_items() const override;
   IMP_OBJECT_METHODS(ConfigurationSetXYZEmbedding);
 };
 
@@ -70,8 +70,8 @@ class IMPSTATISTICSEXPORT ParticleEmbedding : public Embedding {
 #endif
                     ,
                     bool rescale = false);
-  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
-  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  algebra::VectorKD get_point(unsigned int i) const override;
+  unsigned int get_number_of_items() const override;
   IMP_OBJECT_METHODS(ParticleEmbedding);
 };
 
@@ -96,8 +96,8 @@ class IMPSTATISTICSEXPORT VectorDEmbedding : public Embedding {
   VectorDEmbedding(const algebra::Vector5Ds &vs);
   VectorDEmbedding(const algebra::Vector6Ds &vs);
 #endif
-  algebra::VectorKD get_point(unsigned int i) const IMP_OVERRIDE;
-  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  algebra::VectorKD get_point(unsigned int i) const override;
+  unsigned int get_number_of_items() const override;
   IMP_OBJECT_METHODS(VectorDEmbedding);
 };
 

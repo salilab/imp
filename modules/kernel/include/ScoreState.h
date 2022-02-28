@@ -84,7 +84,7 @@ class IMPKERNELEXPORT ScoreState : public ModelObject {
 #ifndef IMP_DOXYGEN
   bool get_has_update_order() const { return update_order_ != -1; }
   unsigned int get_update_order() const { return update_order_; }
-  virtual void handle_set_has_required_score_states(bool tf) IMP_OVERRIDE;
+  virtual void handle_set_has_required_score_states(bool tf) override;
 
 #endif
 

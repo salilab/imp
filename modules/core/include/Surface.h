@@ -184,7 +184,7 @@ class IMPCOREEXPORT SurfaceGeometry : public display::Geometry {
   SurfaceGeometry(Surface s, const display::Color &c, std::string n="SurfaceGeometry");
   virtual const Surface get_geometry() const { return s_; }
   void set_geometry(Surface s);
-  virtual display::Geometries get_components() const IMP_OVERRIDE;
+  virtual display::Geometries get_components() const override;
   IMP_OBJECT_METHODS(SurfaceGeometry);
 };
 //! Create a geometry from a Surface
@@ -211,20 +211,20 @@ class IMPCOREEXPORT SurfaceGeometryConstraint : public IMP::Constraint {
 
     SurfaceGeometry* get_geometry() const { return g_; }
 
-    virtual void do_update_attributes() IMP_OVERRIDE {};
-    virtual void do_update_derivatives(DerivativeAccumulator *) IMP_OVERRIDE {};
-    virtual void do_before_evaluate() IMP_OVERRIDE { g_->set_geometry(get_surface());}
-    virtual void do_after_evaluate(DerivativeAccumulator *) IMP_OVERRIDE {
+    virtual void do_update_attributes() override {};
+    virtual void do_update_derivatives(DerivativeAccumulator *) override {};
+    virtual void do_before_evaluate() override { g_->set_geometry(get_surface());}
+    virtual void do_after_evaluate(DerivativeAccumulator *) override {
       g_->set_geometry(get_surface());
     };
 
 
-    virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    virtual ModelObjectsTemp do_get_inputs() const override {
       ParticlesTemp ps = ParticlesTemp(1, get_surface().get_particle());
       return ps;
     }
 
-    virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+    virtual ModelObjectsTemp do_get_outputs() const override {
       ParticlesTemp ps = ParticlesTemp(1, get_surface().get_particle());
       return ps;
     }
@@ -256,23 +256,23 @@ class IMPCOREEXPORT LateralSurfaceConstraint : public IMP::Constraint {
       : IMP::Constraint(s.get_model(), "LateralSurfaceConstraint%1%")
       , spi_(s.get_particle_index()), dpi_(d.get_particle_index()) {}
 
-    virtual void do_update_attributes() IMP_OVERRIDE {}
-    virtual void do_update_derivatives(DerivativeAccumulator *) IMP_OVERRIDE {}
-    virtual void do_before_evaluate() IMP_OVERRIDE {
+    virtual void do_update_attributes() override {}
+    virtual void do_update_derivatives(DerivativeAccumulator *) override {}
+    virtual void do_before_evaluate() override {
       algebra::Vector3D d = XYZ(get_model(), dpi_).get_coordinates();
       Surface s = Surface(get_model(), spi_);
       s.set_coordinates(s.get_plane().get_projected(d));
     }
-    virtual void do_after_evaluate(DerivativeAccumulator *) IMP_OVERRIDE {}
+    virtual void do_after_evaluate(DerivativeAccumulator *) override {}
 
-    virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+    virtual ModelObjectsTemp do_get_inputs() const override {
       ParticlesTemp ps;
       ps.push_back(get_model()->get_particle(dpi_));
       ps.push_back(get_model()->get_particle(spi_));
       return ps;
     }
 
-    virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+    virtual ModelObjectsTemp do_get_outputs() const override {
       ParticlesTemp ps = ParticlesTemp(1, get_model()->get_particle(spi_));
       return ps;
     }

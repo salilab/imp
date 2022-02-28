@@ -60,28 +60,12 @@
 #define IMP_RESTRICT
 #endif
 
-#if defined(__clang__) && __clang_major__ >= 5
-#define IMP_COMPILER_HAS_OVERRIDE 1
-#elif !defined(__clang__) && defined(__GNUC__) && __cplusplus >= 201103L
-// probably should be finer here
-#define IMP_COMPILER_HAS_OVERRIDE 1
-#else
-#define IMP_COMPILER_HAS_OVERRIDE 0
-#endif
 
+// Deprecated: just use the 'override' keyword directly
 #ifdef IMP_DOXYGEN
-//! Cause a compile error if this method does not override a parent method
-/** This is helpful to catch accidental mismatches of call signatures between
-    the method and the parent method, which would cause the method to be
-    overloaded rather than overridden. Usually this macro should be used
-    whenever implementing a method that is declared virtual in the parent. */
 #define IMP_OVERRIDE
 #else
-#if IMP_COMPILER_HAS_OVERRIDE
 #define IMP_OVERRIDE override
-#else
-#define IMP_OVERRIDE
-#endif
 #endif
 
 #if defined(IMP_SWIG_WRAPPER)

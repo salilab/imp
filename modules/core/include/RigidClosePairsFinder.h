@@ -68,28 +68,28 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder {
       const ParticleIndexes &pa,
       const ParticleIndexes &pb) const;
 
-  void set_distance(double d) IMP_OVERRIDE {
+  void set_distance(double d) override {
     cpf_->set_distance(d);
     ClosePairsFinder::set_distance(d);
   }
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   internal::MovedSingletonContainer *get_moved_singleton_container(
-      SingletonContainer *c, double thresold) const IMP_OVERRIDE;
+      SingletonContainer *c, double thresold) const override;
 #endif
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const
-      IMP_OVERRIDE;
+      override;
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
                                    const algebra::BoundingBox3Ds &bbs) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
 
   virtual ParticleIndexPairs get_close_pairs(
-      Model *m, const ParticleIndexes &pc) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pc) const override;
   virtual ParticleIndexPairs get_close_pairs(
       Model *m, const ParticleIndexes &pca,
-      const ParticleIndexes &pcb) const IMP_OVERRIDE;
+      const ParticleIndexes &pcb) const override;
   IMP_OBJECT_METHODS(RigidClosePairsFinder);
 };
 

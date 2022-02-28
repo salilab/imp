@@ -34,14 +34,14 @@ class Gaussian : public UnaryFunction {
   */
 
   virtual DerivativePair evaluate_with_derivative(double feature) const
-      IMP_OVERRIDE {
+      override {
     return DerivativePair(evaluate(feature),
                           -Emin_ * exp(-(feature - Zmin_) * (feature - Zmin_) /
                                        sigma_ / sigma_ / 2.0) *
                               (feature - Zmin_) / sigma_ / sigma_);
   }
 
-  virtual double evaluate(double feature) const IMP_OVERRIDE {
+  virtual double evaluate(double feature) const override {
     return Emin_ *
            exp(-(feature - Zmin_) * (feature - Zmin_) / sigma_ / sigma_ / 2.0);
   }

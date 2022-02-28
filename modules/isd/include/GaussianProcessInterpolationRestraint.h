@@ -72,8 +72,8 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint
 
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
-      IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(GaussianProcessInterpolationRestraint);
 
   // to allow the scorestate to get the restraint's objects
@@ -95,10 +95,10 @@ class IMPISDEXPORT GaussianProcessInterpolationScoreState : public ScoreState {
  public:
   // only the GPIR can create this and add it to the model
   friend class GaussianProcessInterpolationRestraint;
-  virtual void do_before_evaluate() IMP_OVERRIDE;
-  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() override;
+  virtual void do_after_evaluate(DerivativeAccumulator *da) override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual ModelObjectsTemp do_get_outputs() const override;
   IMP_OBJECT_METHODS(GaussianProcessInterpolationScoreState);
 };
 #endif

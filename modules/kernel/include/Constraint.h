@@ -52,8 +52,8 @@ class IMPKERNELEXPORT Constraint : public ScoreState {
   virtual void do_update_attributes() = 0;
   virtual void do_update_derivatives(DerivativeAccumulator *da) = 0;
 
-  virtual void do_before_evaluate() IMP_OVERRIDE { do_update_attributes(); }
-  virtual void do_after_evaluate(DerivativeAccumulator *da) IMP_OVERRIDE {
+  virtual void do_before_evaluate() override { do_update_attributes(); }
+  virtual void do_after_evaluate(DerivativeAccumulator *da) override {
     if (da) do_update_derivatives(da);
   }
   IMP_REF_COUNTED_DESTRUCTOR(Constraint);

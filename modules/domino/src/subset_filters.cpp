@@ -44,7 +44,7 @@ class MinimumRestraintScoreSubsetFilter : public SubsetFilter {
 
  public:
   virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(MinimumRestraintScoreSubsetFilter);
 };
 
@@ -144,7 +144,7 @@ class DisjointSetsSubsetFilter : public SubsetFilter {
     }
   }
   IMP_OBJECT_METHODS(DisjointSetsSubsetFilter);
-  bool get_is_ok(const Assignment &state) const IMP_OVERRIDE {
+  bool get_is_ok(const Assignment &state) const override {
     IMP_OBJECT_LOG;
     set_was_used(true);
     Filter f;
@@ -153,7 +153,7 @@ class DisjointSetsSubsetFilter : public SubsetFilter {
     }
     return true;
   }
-  int get_next_state(int pos, const Assignment &state) const IMP_OVERRIDE {
+  int get_next_state(int pos, const Assignment &state) const override {
     for (unsigned int i = 0; i < sets_.size(); ++i) {
       for (unsigned int j = 0; j < sets_[i].size(); ++j) {
         if (sets_[i][j] == pos) {
@@ -473,9 +473,9 @@ class ListSubsetFilter : public SubsetFilter {
  public:
   ListSubsetFilter(const ListSubsetFilterTable *ka, const Ints indexes)
       : SubsetFilter("List score filter"), keepalive_(ka), indexes_(indexes) {}
-  int get_next_state(int pos, const Assignment &state) const IMP_OVERRIDE;
+  int get_next_state(int pos, const Assignment &state) const override;
   virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(ListSubsetFilter);
 };
 
@@ -600,7 +600,7 @@ class PairListSubsetFilter : public SubsetFilter {
   PairListSubsetFilter(const IntPairs &i, const Vector<IntPairs> &a)
       : SubsetFilter("Pair list score filter"), indexes_(i), allowed_(a) {}
   virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(PairListSubsetFilter);
 };
 
@@ -688,7 +688,7 @@ class ProbabilisticSubsetFilter : public SubsetFilter {
   ProbabilisticSubsetFilter(double p)
       : SubsetFilter("ProbabilisticSubsetFilter %1%"), p_(p), r_(0, 1) {}
   virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(ProbabilisticSubsetFilter);
 };
 
@@ -741,7 +741,7 @@ class RestraintScoreSubsetFilter : public SubsetFilter {
     }
   }
   virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(RestraintScoreSubsetFilter);
 };
 

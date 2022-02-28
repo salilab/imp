@@ -38,10 +38,10 @@ class IMPKERNELEXPORT _ConstRestraint : public Restraint {
   _ConstRestraint(Model *m, const ParticleIndexes &pis, double v)
       : Restraint(m, "ConstRestraint%1%"), v_(v), ps_(get_particles(m, pis)) {}
   double get_value() const { return v_; }
-  Restraints do_create_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_decomposition() const override;
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
-      IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(_ConstRestraint);
 };
 
@@ -53,11 +53,11 @@ class _ConstSingletonScore : public SingletonScore {
  public:
   _ConstSingletonScore(double v) : v_(v) {}
   virtual double evaluate_index(Model *, ParticleIndex,
-                                DerivativeAccumulator *) const IMP_OVERRIDE {
+                                DerivativeAccumulator *) const override {
     return v_;
   }
   virtual ModelObjectsTemp do_get_inputs(Model *, const ParticleIndexes &) const
-      IMP_OVERRIDE {
+      override {
     return ModelObjectsTemp();
   }
   IMP_SINGLETON_SCORE_METHODS(_ConstSingletonScore);
@@ -71,11 +71,11 @@ class IMPKERNELEXPORT _ConstPairScore : public PairScore {
  public:
   _ConstPairScore(double v) : v_(v) {}
   virtual double evaluate_index(Model *, const ParticleIndexPair &,
-                                DerivativeAccumulator *) const IMP_OVERRIDE {
+                                DerivativeAccumulator *) const override {
     return v_;
   }
   virtual ModelObjectsTemp do_get_inputs(Model *, const ParticleIndexes &) const
-      IMP_OVERRIDE {
+      override {
     return ModelObjectsTemp();
   }
   IMP_PAIR_SCORE_METHODS(_ConstPairScore);
@@ -129,7 +129,7 @@ IMP_DECORATORS_WITH_TRAITS(_TrivialTraitsDecorator, _TrivialTraitsDecorators,
 class IMPKERNELEXPORT _ConstOptimizer : public Optimizer {
  public:
   _ConstOptimizer(Model *m) : Optimizer(m, "ConstOptimizer%1%") {}
-  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(_ConstOptimizer);
 };
 
@@ -198,9 +198,9 @@ class IMPKERNELEXPORT _LogPairScore : public PairScore {
   //! create with an empty map
   _LogPairScore() {}
   virtual double evaluate_index(Model *m, const ParticleIndexPair &p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(Model *, const ParticleIndexes &) const
-      IMP_OVERRIDE {
+      override {
     return ModelObjectsTemp();
   }
   IMP_PAIR_SCORE_METHODS(_LogPairScore);

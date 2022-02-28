@@ -44,7 +44,7 @@ class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState {
   IMP_OBJECT_METHODS(LangevinThermostatOptimizerState);
 
  protected:
-  virtual void do_update(unsigned int) IMP_OVERRIDE;
+  virtual void do_update(unsigned int) override;
 
  private:
   Particles pis_;

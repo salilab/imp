@@ -45,12 +45,12 @@ class IMPCOREEXPORT DiameterRestraint : public Restraint {
   DiameterRestraint(UnaryFunction *f, SingletonContainer *sc, Float diameter);
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator *accum)
-      const IMP_OVERRIDE;
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      const override;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(DiameterRestraint);
 #ifndef IMP_DOXYGEN
-  Restraints do_create_decomposition() const IMP_OVERRIDE;
-  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_decomposition() const override;
+  Restraints do_create_current_decomposition() const override;
 #endif
 };
 

@@ -36,10 +36,10 @@ class ExampleUnaryFunction : public UnaryFunction {
   }
 
   virtual DerivativePair evaluate_with_derivative(double feature) const
-      IMP_OVERRIDE {
+      override {
     return DerivativePair(evaluate(feature), k_ * (feature - center_));
   }
-  virtual double evaluate(double feature) const IMP_OVERRIDE {
+  virtual double evaluate(double feature) const override {
     return .5 * k_ * algebra::get_squared(feature - center_);
   }
   IMP_OBJECT_METHODS(ExampleUnaryFunction);

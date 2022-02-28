@@ -30,12 +30,12 @@ class IMPCOREEXPORT MinimumRestraint : public Restraint {
                    const Restraints &rs = Restraints(),
                    std::string name = "MinimumRestraint %1%");
 
-  void clear_caches() IMP_OVERRIDE;
+  void clear_caches() override;
 
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
-      IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(MinimumRestraint);
   ;
 

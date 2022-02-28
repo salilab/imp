@@ -38,11 +38,11 @@ class IMPEXAMPLEEXPORT ExampleSingletonModifier : public SingletonModifier {
 
   // note, Doxygen wants a semicolon at the end of macro lines
   virtual void apply_index(Model *m, ParticleIndex p) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(ExampleSingletonModifier);
   IMP_OBJECT_METHODS(ExampleSingletonModifier);
 };

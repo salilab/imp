@@ -157,7 +157,7 @@ class AccumulatorScoreModifier : public Score::Modifier {
   }
 
   virtual void apply_index(Model *m, typename Score::PassIndexArgument a) const
-      IMP_OVERRIDE {
+      override {
     double score =
         (ss_->evaluate_index(m, a, sa_.get_derivative_accumulator()));
     IMP_OMP_PRAGMA(atomic)
@@ -167,7 +167,7 @@ class AccumulatorScoreModifier : public Score::Modifier {
 
   virtual void apply_indexes(
       Model *m, const Vector<typename Score::IndexArgument> &a,
-      unsigned int lower_bound, unsigned int upper_bound) const IMP_OVERRIDE {
+      unsigned int lower_bound, unsigned int upper_bound) const override {
     double score = ss_->evaluate_indexes(m, a, sa_.get_derivative_accumulator(),
                                          lower_bound, upper_bound);
     IMP_OMP_PRAGMA(atomic)
@@ -179,7 +179,7 @@ class AccumulatorScoreModifier : public Score::Modifier {
       Model *m, const Vector<typename Score::IndexArgument> &a,
       unsigned int lower_bound, unsigned int upper_bound,
       const ParticleIndexes &moved_pis,
-      const ParticleIndexes &reset_pis) const IMP_OVERRIDE {
+      const ParticleIndexes &reset_pis) const override {
     // Only support moved speedups when evaluating the entire container,
     // and without derivatives, for now
     if (lower_bound != 0 || upper_bound != a.size()
@@ -271,13 +271,13 @@ class AccumulatorScoreModifier : public Score::Modifier {
 
   virtual ModelObjectsTemp do_get_inputs(Model *m,
                                          const ParticleIndexes &pis) const
-      IMP_OVERRIDE {
+      override {
     return ss_->get_inputs(m, pis);
   }
 
   virtual ModelObjectsTemp do_get_outputs(Model *,
                                           const ParticleIndexes &) const
-      IMP_OVERRIDE {
+      override {
     return ModelObjectsTemp();
   }
 

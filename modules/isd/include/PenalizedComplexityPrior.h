@@ -51,10 +51,10 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT PenalizedComplexityPrior : public OneDimensionalSufficientDistribution {
   protected:
-    virtual void do_update_sufficient_statistics(Floats Dxis) IMP_OVERRIDE;
+    virtual void do_update_sufficient_statistics(Floats Dxis) override;
     virtual void do_update_sufficient_statistics(Floats Dxis, Floats Jxis);
-    virtual Floats do_get_sufficient_statistics() const IMP_OVERRIDE;
-    virtual double do_evaluate() const IMP_OVERRIDE;
+    virtual Floats do_get_sufficient_statistics() const override;
+    virtual double do_evaluate() const override;
 
   public:
     //! Create from normalized KL divergence.

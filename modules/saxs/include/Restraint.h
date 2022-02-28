@@ -54,12 +54,12 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint {
             FormFactorType ff_type = HEAVY_ATOMS);
 
   virtual double unprotected_evaluate(IMP::DerivativeAccumulator* accum)
-      const IMP_OVERRIDE;
+      const override;
 
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
 
   //! \return Information for writing to RMF files
-  RestraintInfo *get_static_info() const IMP_OVERRIDE;
+  RestraintInfo *get_static_info() const override;
 
   IMP_OBJECT_METHODS(Restraint);
 

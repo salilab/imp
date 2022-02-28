@@ -27,9 +27,9 @@ class IMPISDEXPORT ISDRestraint : public Restraint {
   virtual double get_probability() const;
 
   virtual double unprotected_evaluate(DerivativeAccumulator *accum) const
-      IMP_OVERRIDE;
+      override;
 
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(ISDRestraint);
 };

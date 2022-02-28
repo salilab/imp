@@ -50,11 +50,11 @@ class HarmonicWell : public UnaryFunction {
   }
 
   virtual DerivativePair evaluate_with_derivative(
-                  double feature) const IMP_OVERRIDE {
+                  double feature) const override {
     return DerivativePair(get_score(feature), get_derivative(feature));
   }
 
-  virtual double evaluate(double feature) const IMP_OVERRIDE {
+  virtual double evaluate(double feature) const override {
     return get_score(feature);
   }
 

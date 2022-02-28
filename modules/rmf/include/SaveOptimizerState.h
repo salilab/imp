@@ -52,7 +52,7 @@ class IMPRMFEXPORT SaveOptimizerState : public OptimizerState {
   void update_always(std::string name);
   // to prevent it from being hidden
   void update_always() { OptimizerState::update_always(); }
-  virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
+  virtual void do_update(unsigned int call_num) override;
   IMP_OBJECT_METHODS(SaveOptimizerState);
 };
 

@@ -37,7 +37,7 @@ class ContainerConstraint : public Constraint {
   void set_before_evaluate_modifier(Before *f) { f_ = f; }
 
   // only report actual interactions
-  ModelObjectsTemps do_get_interactions() const IMP_OVERRIDE {
+  ModelObjectsTemps do_get_interactions() const override {
     ModelObjectsTemps ret;
     typename Container::ContainedIndexTypes ps = c_->get_range_indexes();
     for (unsigned int i = 0; i < ps.size(); ++i) {
@@ -64,10 +64,10 @@ class ContainerConstraint : public Constraint {
   }
 
  protected:
-  virtual void do_update_attributes() IMP_OVERRIDE;
-  virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual void do_update_attributes() override;
+  virtual void do_update_derivatives(DerivativeAccumulator *da) override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual ModelObjectsTemp do_get_outputs() const override;
   IMP_OBJECT_METHODS(ContainerConstraint);
   ;
 };

@@ -52,13 +52,13 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore {
 
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual double evaluate_if_good_index(Model *m,
                                         const ParticleIndexPair &vt,
                                         DerivativeAccumulator *da,
-                                        double max) const IMP_OVERRIDE;
+                                        double max) const override;
   IMP_PAIR_SCORE_METHODS(KClosePairsPairScore);
   IMP_OBJECT_METHODS(KClosePairsPairScore);
 };
@@ -96,13 +96,13 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore {
 
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
   virtual double evaluate_if_good_index(Model *m,
                                         const ParticleIndexPair &vt,
                                         DerivativeAccumulator *da,
-                                        double max) const IMP_OVERRIDE;
+                                        double max) const override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_PAIR_SCORE_METHODS(KClosePairsPairScore);
   IMP_OBJECT_METHODS(ClosePairsPairScore);
 };

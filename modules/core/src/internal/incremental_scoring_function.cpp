@@ -30,10 +30,10 @@ class DummyPairContainer
 
  public:
   DummyPairContainer(SingletonContainer *c, ClosePairsFinder *cpf);
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  virtual ParticleIndexes get_all_possible_indexes() const override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
   void do_score_state_before_evaluate() {}
-  virtual ParticleIndexPairs get_range_indexes() const IMP_OVERRIDE;
+  virtual ParticleIndexPairs get_range_indexes() const override;
 
   IMP_CLANG_PRAGMA(diagnostic push)
   IMP_CLANG_PRAGMA(diagnostic ignored "-Wunused-member-function")

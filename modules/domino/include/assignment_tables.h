@@ -54,7 +54,7 @@ class IMPDOMINOEXPORT SimpleAssignmentsTable : public AssignmentsTable {
                          unsigned int max =
                              std::numeric_limits<unsigned int>::max());
   virtual void load_assignments(const IMP::domino::Subset &s,
-                                AssignmentContainer *ac) const IMP_OVERRIDE;
+                                AssignmentContainer *ac) const override;
   IMP_OBJECT_METHODS(SimpleAssignmentsTable);
 };
 
@@ -74,7 +74,7 @@ class IMPDOMINOEXPORT RecursiveAssignmentsTable : public AssignmentsTable {
                             unsigned int max =
                                 std::numeric_limits<unsigned int>::max());
   virtual void load_assignments(const IMP::domino::Subset &s,
-                                AssignmentContainer *ac) const IMP_OVERRIDE;
+                                AssignmentContainer *ac) const override;
   IMP_OBJECT_METHODS(RecursiveAssignmentsTable);
 };
 
@@ -107,7 +107,7 @@ class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable : public AssignmentsTable {
                                  unsigned int max =
                                      std::numeric_limits<unsigned int>::max());
   virtual void load_assignments(const IMP::domino::Subset &s,
-                                AssignmentContainer *ac) const IMP_OVERRIDE;
+                                AssignmentContainer *ac) const override;
   IMP_OBJECT_METHODS(BranchAndBoundAssignmentsTable);
 };
 
@@ -127,7 +127,7 @@ class IMPDOMINOEXPORT ListAssignmentsTable : public AssignmentsTable {
     states_[s] = lsc;
   }
   virtual void load_assignments(const IMP::domino::Subset &s,
-                                AssignmentContainer *ac) const IMP_OVERRIDE;
+                                AssignmentContainer *ac) const override;
   IMP_OBJECT_METHODS(ListAssignmentsTable);
 };
 

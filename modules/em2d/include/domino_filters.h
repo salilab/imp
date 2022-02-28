@@ -55,7 +55,7 @@ class IMPEM2DEXPORT DistanceFilter : public domino::SubsetFilter {
   }
 
   virtual bool get_is_ok(const IMP::domino::Assignment &assignment) const
-        IMP_OVERRIDE;
+        override;
 
   IMP_OBJECT_METHODS(DistanceFilter);
 };

@@ -27,9 +27,9 @@ class IMPMULTIFITEXPORT FittingStates : public domino::ParticleStates {
         states_(states),
         fit_state_key_(fit_state_key) {}
 
-  virtual unsigned int get_number_of_particle_states() const IMP_OVERRIDE;
+  virtual unsigned int get_number_of_particle_states() const override;
   virtual void load_particle_state(unsigned int, Particle *) const
-      IMP_OVERRIDE;
+      override;
 
   IMP_OBJECT_METHODS(FittingStates);
 };

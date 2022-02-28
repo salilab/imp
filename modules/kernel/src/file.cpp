@@ -33,7 +33,7 @@ struct LazyFileStorage : public internal::IOStorage<BaseStream> {
   FileStream stream_;
   LazyFileStorage(std::string name, bool append = false)
       : P(name), open_(false), append_(append) {}
-  BaseStream &get_stream() IMP_OVERRIDE {
+  BaseStream &get_stream() override {
     if (!open_) {
       if (append_) {
         stream_.open(P::get_name().c_str(), std::fstream::app);
@@ -67,7 +67,7 @@ struct StreamStorage : public internal::IOStorage<BaseStream> {
   BaseStream &stream_;
   StreamStorage(BaseStream &stream, std::string name)
       : P(name), stream_(stream) {}
-  BaseStream &get_stream() IMP_OVERRIDE { return stream_; }
+  BaseStream &get_stream() override { return stream_; }
 };
 
 template <class BaseStream>
@@ -77,7 +77,7 @@ struct OwnedStreamStorage : public internal::IOStorage<BaseStream> {
   PointerMember<Object> ref_;
   OwnedStreamStorage(BaseStream &stream, Object *o)
       : P("python stream"), stream_(stream), ref_(o) {}
-  BaseStream &get_stream() IMP_OVERRIDE { return stream_; }
+  BaseStream &get_stream() override { return stream_; }
 };
 }
 

@@ -24,8 +24,8 @@
 */
 #define IMP_OBJECT_METHODS(Name)                                              \
  public:                                                                      \
-  virtual std::string get_type_name() const IMP_OVERRIDE { return #Name; }    \
-  virtual ::IMP::VersionInfo get_version_info() const IMP_OVERRIDE {    \
+  virtual std::string get_type_name() const override { return #Name; }        \
+  virtual ::IMP::VersionInfo get_version_info() const override {        \
     return ::IMP::VersionInfo(get_module_name(), get_module_version()); \
   }                                                                           \
                                                                               \

@@ -42,7 +42,7 @@ class SoapPairFilter : public PairPredicate {
 
   virtual int get_value_index(Model *m,
                               const ParticleIndexPair &p) const
-      IMP_OVERRIDE {
+      override {
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
     return !chainsep_.get_separation_ok(m, p) ||
            !bondsep_.get_separation_ok(m, p);
@@ -52,7 +52,7 @@ class SoapPairFilter : public PairPredicate {
   }
 
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pis) const override {
     ModelObjectsTemp ret = IMP::get_particles(m, pis);
 #ifdef IMP_SCORE_FUNCTOR_USE_HDF5
     if (chainsep_.enabled() || bondsep_.enabled()) {

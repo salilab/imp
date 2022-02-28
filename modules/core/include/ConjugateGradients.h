@@ -46,7 +46,7 @@ class IMPCOREEXPORT ConjugateGradients : public AttributeOptimizer {
   //! Limit how far anything can change each time step
   void set_max_change(Float t) { max_change_ = t; }
 
-  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(ConjugateGradients);
 
  private:

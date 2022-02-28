@@ -33,14 +33,14 @@ class IMPISDEXPORT LogWrapper : public RestraintSet {
                const std::string &name = "LogWrapper %1%");
 
     virtual double unprotected_evaluate(
-        IMP::DerivativeAccumulator* accum) const IMP_OVERRIDE;
+        IMP::DerivativeAccumulator* accum) const override;
     virtual double unprotected_evaluate_moved(
         IMP::DerivativeAccumulator* accum, const ParticleIndexes &moved_pis,
-        const ParticleIndexes &reset_pis) const IMP_OVERRIDE;
-    void do_add_score_and_derivatives(ScoreAccumulator sa) const IMP_OVERRIDE;
+        const ParticleIndexes &reset_pis) const override;
+    void do_add_score_and_derivatives(ScoreAccumulator sa) const override;
     void do_add_score_and_derivatives_moved(
                   ScoreAccumulator sa, const ParticleIndexes &moved_pis,
-                  const ParticleIndexes &reset_pis) const IMP_OVERRIDE;
+                  const ParticleIndexes &reset_pis) const override;
 
     IMP_OBJECT_METHODS(LogWrapper);
 

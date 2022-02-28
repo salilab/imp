@@ -53,14 +53,14 @@ class StaticListContainer : public ListLikeContainer<Base> {
     typename Base::ContainedIndexTypes t;
     P::swap(t);
   }
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE {
+  virtual ParticleIndexes get_all_possible_indexes() const override {
     return flatten(P::get_indexes());
   }
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_inputs() const override {
     return ModelObjectsTemp();
   }
   virtual typename Base::ContainedIndexTypes get_range_indexes() const
-      IMP_OVERRIDE {
+      override {
     return P::get_indexes();
   }
   IMP_OBJECT_METHODS(StaticListContainer);

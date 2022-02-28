@@ -37,8 +37,8 @@ class IMPSPBEXPORT ContactMapMetric : public statistics::Metric {
   Floats get_item(unsigned i) const;
 
   // IMP_METRIC(ContactMapMetric);
-  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
-  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  double get_distance(unsigned int i, unsigned int j) const override;
+  unsigned int get_number_of_items() const override;
   IMP_OBJECT_METHODS(ContactMapMetric);
 };
 

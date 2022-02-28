@@ -324,7 +324,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   IMP_OBJECT_METHODS(CHARMMParameters);
 
  private:
-  virtual String get_force_field_atom_type(Atom atom) const IMP_OVERRIDE;
+  virtual String get_force_field_atom_type(Atom atom) const override;
 
   void read_parameter_file(TextInput input_file);
   // read topology file

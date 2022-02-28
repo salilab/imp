@@ -43,10 +43,10 @@ class TupleConstraint : public Constraint {
   }
 
  protected:
-  virtual void do_update_attributes() IMP_OVERRIDE;
-  virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual void do_update_attributes() override;
+  virtual void do_update_derivatives(DerivativeAccumulator *da) override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual ModelObjectsTemp do_get_outputs() const override;
   IMP_OBJECT_METHODS(TupleConstraint);
   ;
 };

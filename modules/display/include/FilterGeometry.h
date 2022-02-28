@@ -29,13 +29,13 @@ class IMPDISPLAYEXPORT FilterGeometry : public GeometryProcessor,
   Geometries gdata_;
   mutable Geometries filtered_;
   bool handle_sphere(SphereGeometry *g, Color color,
-                     std::string name) IMP_OVERRIDE;
+                     std::string name) override;
   bool handle_cylinder(CylinderGeometry *g, Color color,
-                       std::string name) IMP_OVERRIDE;
+                       std::string name) override;
   bool handle_point(PointGeometry *g, Color color,
-                    std::string name) IMP_OVERRIDE;
+                    std::string name) override;
   bool handle_segment(SegmentGeometry *g, Color color,
-                      std::string name) IMP_OVERRIDE;
+                      std::string name) override;
 
  public:
   //! Pay attention to the orientation of the plane.
@@ -45,7 +45,7 @@ class IMPDISPLAYEXPORT FilterGeometry : public GeometryProcessor,
 
   void add_geometry(const Geometries &g);
 
-  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  virtual IMP::display::Geometries get_components() const override;
   IMP_OBJECT_METHODS(FilterGeometry);
 };
 

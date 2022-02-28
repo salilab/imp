@@ -24,10 +24,10 @@ class IMPEMEXPORT XplorReaderWriter : public MapReaderWriter {
 #if !defined(DOXYGEN) && !defined(SWIG)
  public:
   void read(const char *filename, float **data,
-            DensityHeader &header) IMP_OVERRIDE;
+            DensityHeader &header) override;
 
   void write(const char *filename, const float *data,
-             const DensityHeader &header) IMP_OVERRIDE;
+             const DensityHeader &header) override;
 
  protected:
   int read_header(std::ifstream &XPLORstream, internal::XplorHeader &header);

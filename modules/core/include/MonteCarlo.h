@@ -48,7 +48,7 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
 
  protected:
   ParticleIndexes reset_pis_;
-  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(MonteCarlo)
  public:
   /** By default, the optimizer returns the lowest scoring state
@@ -244,7 +244,7 @@ class IMPCOREEXPORT MonteCarloWithLocalOptimization : public MonteCarlo {
   Optimizer *get_local_optimizer() const { return opt_; }
 
  protected:
-  virtual void do_step() IMP_OVERRIDE;
+  virtual void do_step() override;
   IMP_OBJECT_METHODS(MonteCarloWithLocalOptimization);
 };
 
@@ -262,7 +262,7 @@ class IMPCOREEXPORT MonteCarloWithBasinHopping
   MonteCarloWithBasinHopping(Optimizer *opt, unsigned int ns);
 
  protected:
-  virtual void do_step() IMP_OVERRIDE;
+  virtual void do_step() override;
   IMP_OBJECT_METHODS(MonteCarloWithBasinHopping);
 };
 

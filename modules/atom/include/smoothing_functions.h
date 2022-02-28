@@ -104,13 +104,13 @@ class IMPATOMEXPORT ForceSwitch : public SmoothingFunction {
     deriv_prefactor_ = 6.0 * value_prefactor_;
   }
 
-  double operator()(double score, double distance) const IMP_OVERRIDE {
+  double operator()(double score, double distance) const override {
     double factor = get_value(distance);
     return score * factor;
   }
 
   DerivativePair operator()(double score, double deriv,
-                            double distance) const IMP_OVERRIDE {
+                            double distance) const override {
     double factor = get_value(distance);
     double deriv_factor = get_deriv(distance);
     return std::make_pair(score * factor,

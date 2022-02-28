@@ -31,7 +31,7 @@ class IMPCOREEXPORT WriteRestraintScoresOptimizerState
                                      TextOutput out);
 
  protected:
-  virtual void do_update(unsigned int call_num) IMP_OVERRIDE;
+  virtual void do_update(unsigned int call_num) override;
   IMP_OBJECT_METHODS(WriteRestraintScoresOptimizerState);
 };
 

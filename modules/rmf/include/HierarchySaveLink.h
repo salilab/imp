@@ -71,10 +71,10 @@ class IMPRMFEXPORT HierarchySaveLink : public SimpleSaveLink<Particle> {
   // Make RMF PROVENANCE nodes corresponding to those in IMP
   void add_provenance(Model *m, ParticleIndex p, RMF::NodeHandle cur);
 
-  virtual void do_add(Particle *p, RMF::NodeHandle cur) IMP_OVERRIDE;
+  virtual void do_add(Particle *p, RMF::NodeHandle cur) override;
   virtual void do_save_one(Particle *o,
-                           RMF::NodeHandle nh) IMP_OVERRIDE;
-  RMF::NodeType get_type(Particle *) const IMP_OVERRIDE {
+                           RMF::NodeHandle nh) override;
+  RMF::NodeType get_type(Particle *) const override {
     return RMF::REPRESENTATION;
   }
 

@@ -58,8 +58,8 @@ class IMPEM2DEXPORT RelativePositionMover : public core::RigidBodyMover {
   void set_random_move_probability(Float p) { probability_of_random_move_ = p; }
 
  protected:
-  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
+  virtual core::MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
   IMP_OBJECT_METHODS(RelativePositionMover);
 };
 

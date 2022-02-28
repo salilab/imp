@@ -34,7 +34,7 @@ class IMPATOMEXPORT RemoveTranslationOptimizerState : public OptimizerState {
   IMP_OBJECT_METHODS(RemoveTranslationOptimizerState);
 
  protected:
-  virtual void do_update(unsigned int call) IMP_OVERRIDE;
+  virtual void do_update(unsigned int call) override;
 
  private:
   Particles pis_;

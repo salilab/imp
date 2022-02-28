@@ -27,12 +27,12 @@ class Harmonic : public UnaryFunction {
   Harmonic(Float mean, Float k) : mean_(mean), k_(k) {}
 
   virtual DerivativePair evaluate_with_derivative(
-                                 double feature) const IMP_OVERRIDE {
+                                 double feature) const override {
     return DerivativePair(0.5 * k_ * square(feature - mean_),
                           k_ * (feature - mean_));
   }
 
-  virtual double evaluate(double feature) const IMP_OVERRIDE {
+  virtual double evaluate(double feature) const override {
     return 0.5 * k_ * square(feature - mean_);
   }
 

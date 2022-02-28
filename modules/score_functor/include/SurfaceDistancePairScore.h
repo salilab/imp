@@ -55,10 +55,10 @@ class SurfaceDistancePairScore : public PairScore {
      */
     virtual double evaluate_index(Model *m,
                                   const ParticleIndexPair &pip,
-                                  DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                  DerivativeAccumulator *da) const override;
 
     virtual ModelObjectsTemp do_get_inputs(
-        Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+        Model *m, const ParticleIndexes &pis) const override;
 
     DistanceScoreT& get_score_functor()
       { return ds_; }
@@ -131,7 +131,7 @@ class SurfaceHeightPairScore : public SurfaceDistancePairScore<
     virtual double get_distance(const algebra::Vector3D &center,
                                 const algebra::Vector3D &normal,
                                 const algebra::Vector3D &point,
-                                algebra::Vector3D *delta) const IMP_OVERRIDE {
+                                algebra::Vector3D *delta) const override {
       return internal::get_height_above_surface(center, normal, point, delta);
     }
   public:
@@ -170,7 +170,7 @@ class SurfaceDepthPairScore : public SurfaceDistancePairScore<
     virtual double get_distance(const algebra::Vector3D &center,
                                 const algebra::Vector3D &normal,
                                 const algebra::Vector3D &point,
-                                algebra::Vector3D *delta) const IMP_OVERRIDE {
+                                algebra::Vector3D *delta) const override {
       return internal::get_depth_below_surface(center, normal, point, delta);
     }
   public:

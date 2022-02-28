@@ -27,10 +27,10 @@ class IMPEXAMPLEEXPORT ExampleConstraint : public Constraint {
  public:
   ExampleConstraint(Particle *p);
 
-  virtual void do_update_attributes() IMP_OVERRIDE;
-  virtual void do_update_derivatives(DerivativeAccumulator *da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual void do_update_attributes() override;
+  virtual void do_update_derivatives(DerivativeAccumulator *da) override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual ModelObjectsTemp do_get_outputs() const override;
 
   static IntKey get_key();
   IMP_OBJECT_METHODS(ExampleConstraint);

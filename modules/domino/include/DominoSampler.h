@@ -42,7 +42,7 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler {
   DominoSampler(Model *m, ParticleStatesTable *pst,
                 std::string name = "DominoSampler %1%");
   Assignments do_get_sample_assignments(const IMP::domino::Subset &known) const
-      IMP_OVERRIDE;
+      override;
   IMP_OBJECT_METHODS(DominoSampler);
 
  public:

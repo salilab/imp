@@ -77,7 +77,7 @@ class IMPCONTAINEREXPORT CloseBipartitePairContainer :
   ParticleIndexes get_all_possible_indexes() const;
 
  private:
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;
+  virtual std::size_t do_get_contents_hash() const override;
 #endif
   IMP_OBJECT_METHODS(CloseBipartitePairContainer);
 };

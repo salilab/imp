@@ -30,10 +30,10 @@ class IMPSPBEXPORT AttributeDistancePairScore : public PairScore {
   AttributeDistancePairScore(UnaryFunction *f, FloatKey k);
 
   virtual double evaluate_index(IMP::Model *m, const IMP::ParticleIndexPair &p,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
 
   virtual IMP::ModelObjectsTemp do_get_inputs(
-      IMP::Model *m, const IMP::ParticleIndexes &pis) const IMP_OVERRIDE;
+      IMP::Model *m, const IMP::ParticleIndexes &pis) const override;
 
   // void show(std::ostream &out) const ;
 

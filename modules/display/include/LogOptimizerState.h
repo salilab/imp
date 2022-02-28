@@ -31,7 +31,7 @@ class IMPDISPLAYEXPORT WriteOptimizerState : public OptimizerState {
                   Geometry *, Geometries, , , );
 
  protected:
-  virtual void do_update(unsigned int) IMP_OVERRIDE;
+  virtual void do_update(unsigned int) override;
   IMP_OBJECT_METHODS(WriteOptimizerState);
 };
 

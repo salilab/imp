@@ -64,7 +64,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
   typedef boost::unordered_map<ParticleIndex, boost::shared_ptr<Data> >
       DM;
   DM data_;
-  virtual bool get_is(RMF::NodeConstHandle nh) const IMP_OVERRIDE {
+  virtual bool get_is(RMF::NodeConstHandle nh) const override {
     return nh.get_type() == RMF::REPRESENTATION;
   }
   virtual void add_link_recursive(Model *m, ParticleIndex root,
@@ -74,10 +74,10 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
                                   Data &data);
 
   virtual void do_add_link(Particle *o,
-                           RMF::NodeConstHandle node) IMP_FINAL IMP_OVERRIDE;
+                           RMF::NodeConstHandle node) IMP_FINAL override;
   using P::do_create;
   virtual Particle *do_create(RMF::NodeConstHandle name,
-                                      Model *m) IMP_FINAL IMP_OVERRIDE;
+                                      Model *m) IMP_FINAL override;
   void create_recursive(Model *m, ParticleIndex root,
                         ParticleIndex cur, RMF::NodeConstHandle name,
                         ParticleIndexes rigid_bodies, Data &data);
@@ -90,7 +90,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
   core::Provenance create_one_provenance(Model *m, RMF::NodeConstHandle node);
 
   virtual void do_load_one(RMF::NodeConstHandle nh,
-                           Particle *o) IMP_FINAL IMP_OVERRIDE;
+                           Particle *o) IMP_FINAL override;
 
  protected:
   /** This method is called for the hierarchy.*/

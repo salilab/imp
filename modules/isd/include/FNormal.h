@@ -46,16 +46,16 @@ class IMPISDEXPORT FNormal : public OneDimensionalSufficientDistribution {
     set_FA(FA);
   }
 
-  virtual void do_update_sufficient_statistics(Floats data) IMP_OVERRIDE {
+  virtual void do_update_sufficient_statistics(Floats data) override {
     update_sufficient_statistics(data[0]);
   }
 
-  virtual Floats do_get_sufficient_statistics() const IMP_OVERRIDE {
+  virtual Floats do_get_sufficient_statistics() const override {
     return Floats(1, FA_);
   }
 
   /* energy (score) functions, aka -log(p) */
-  virtual double do_evaluate() const IMP_OVERRIDE {
+  virtual double do_evaluate() const override {
     return -log(JA_ / sigma_) + 0.5 * log(2 * IMP::PI) +
            1 / (2 * square(sigma_)) * square(FA_ - FM_);
   }
@@ -77,7 +77,7 @@ class IMPISDEXPORT FNormal : public OneDimensionalSufficientDistribution {
   }
 
   /* probability density function */
-  virtual double do_get_density() const IMP_OVERRIDE {
+  virtual double do_get_density() const override {
     return JA_ / (sqrt(2 * IMP::PI) * sigma_) *
            exp(-square(FA_ - FM_) / (2 * square(sigma_)));
   }

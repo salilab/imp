@@ -136,13 +136,13 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   ParticleIndex get_index() const;
 
 #if !defined(IMP_DOXYGEN)
-  void clear_caches() IMP_OVERRIDE;
+  void clear_caches() override;
 #endif
  protected:
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE IMP_FINAL {
+  virtual ModelObjectsTemp do_get_inputs() const override IMP_FINAL {
     return ModelObjectsTemp();
   }
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE IMP_FINAL {
+  virtual ModelObjectsTemp do_get_outputs() const override IMP_FINAL {
     return ModelObjectsTemp();
   }
 };

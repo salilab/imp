@@ -134,7 +134,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
     update();
   }
 
-  bool has_changed() const IMP_OVERRIDE {
+  bool has_changed() const override {
     double tmpt = Scale(tau_).get_nuisance();
     double tmpl = Scale(lambda_).get_nuisance();
     IMP_LOG_VERBOSE("Covariance1DFunction: has_changed(): ");
@@ -150,7 +150,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
     }
   }
 
-  void update() IMP_OVERRIDE {
+  void update() override {
     lambda_val_ = Scale(lambda_).get_nuisance();
     tau_val_ = Scale(tau_).get_nuisance();
     IMP_LOG_TERSE("Covariance1DFunction: update()  tau:= "
@@ -162,14 +162,14 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
     IMP_INTERNAL_CHECK(lambda_val_ != 0, "lambda is zero.");
   }
 
-  Floats operator()(const Floats& x1, const Floats& x2) const IMP_OVERRIDE {
+  Floats operator()(const Floats& x1, const Floats& x2) const override {
     IMP_USAGE_CHECK(x1.size() == 1, "expecting a 1-D vector");
     IMP_USAGE_CHECK(x2.size() == 1, "expecting a 1-D vector");
     Floats ret(1, get_value(x1[0], x2[0]));
     return ret;
   }
 
-  Eigen::MatrixXd operator()(const IMP::FloatsList& xlist) const IMP_OVERRIDE {
+  Eigen::MatrixXd operator()(const IMP::FloatsList& xlist) const override {
     const unsigned M = xlist.size();
     Eigen::MatrixXd Mret(M, M);
     for (unsigned i = 0; i < M; i++) {
@@ -186,7 +186,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
     return Mret;
   }
 
-  FloatsList operator()(const IMP::FloatsList& xlist, bool) const IMP_OVERRIDE {
+  FloatsList operator()(const IMP::FloatsList& xlist, bool) const override {
     Eigen::MatrixXd mat((*this)(xlist));
     FloatsList ret;
     for (unsigned i = 0; i < xlist.size(); i++)
@@ -196,7 +196,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
   }
 
   void add_to_derivatives(const Floats& x1, const Floats& x2,
-                          DerivativeAccumulator& accum) const IMP_OVERRIDE {
+                          DerivativeAccumulator& accum) const override {
     // d[w(x1,x2)]/dtau = 2/tau*(w(x1,x2))
     double val = get_value(x1[0], x2[0]);
     double tauderiv = 2. / tau_val_ * val;
@@ -213,7 +213,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
   }
 
   void add_to_particle_derivative(unsigned particle_no, double value,
-                          DerivativeAccumulator& accum) const IMP_OVERRIDE {
+                          DerivativeAccumulator& accum) const override {
     switch (particle_no) {
       case 0:  // tau
         IMP_INTERNAL_CHECK(!IMP::isnan(value), "tau derivative is nan.");
@@ -229,7 +229,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
   }
 
   Eigen::MatrixXd get_derivative_matrix(unsigned particle_no,
-                                const FloatsList& xlist) const IMP_OVERRIDE {
+                                const FloatsList& xlist) const override {
     // Strategy: fill in the main diagonal, then fill with zeros
     // if the value of the function falls below cutoff.
     // assumes data points are ordered!
@@ -315,7 +315,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
   }
 
   FloatsList get_derivative_matrix(unsigned particle_no,
-                         const FloatsList& xlist, bool) const IMP_OVERRIDE {
+                         const FloatsList& xlist, bool) const override {
     Eigen::MatrixXd mat(get_derivative_matrix(particle_no, xlist));
     FloatsList ret;
     for (int i = 0; i < mat.rows(); i++) {
@@ -328,7 +328,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
 
   Eigen::MatrixXd get_second_derivative_matrix(
       unsigned particle_a, unsigned particle_b,
-      const FloatsList& xlist) const IMP_OVERRIDE {
+      const FloatsList& xlist) const override {
     unsigned N(xlist.size());
     Eigen::MatrixXd ret(N, N);
     if (particle_a > 1) IMP_THROW("Invalid particle 1 number", ModelException);
@@ -372,7 +372,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
 
   FloatsList get_second_derivative_matrix(
           unsigned particle_a, unsigned particle_b,
-          const FloatsList& xlist, bool) const IMP_OVERRIDE {
+          const FloatsList& xlist, bool) const override {
     Eigen::MatrixXd mat(
         get_second_derivative_matrix(particle_a, particle_b, xlist));
     FloatsList ret;
@@ -384,13 +384,13 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
     return ret;
   }
 
-  unsigned get_ndims_x1() const IMP_OVERRIDE { return 1; }
-  unsigned get_ndims_x2() const IMP_OVERRIDE { return 1; }
-  unsigned get_ndims_y() const IMP_OVERRIDE { return 1; }
+  unsigned get_ndims_x1() const override { return 1; }
+  unsigned get_ndims_x2() const override { return 1; }
+  unsigned get_ndims_y() const override { return 1; }
 
-  unsigned get_number_of_particles() const IMP_OVERRIDE { return 2; }
+  unsigned get_number_of_particles() const override { return 2; }
 
-  bool get_particle_is_optimized(unsigned particle_no) const IMP_OVERRIDE {
+  bool get_particle_is_optimized(unsigned particle_no) const override {
     switch (particle_no) {
       case 0:  // tau
         return Scale(tau_).get_nuisance_is_optimized();
@@ -401,14 +401,14 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction {
     }
   }
 
-  unsigned get_number_of_optimized_particles() const IMP_OVERRIDE {
+  unsigned get_number_of_optimized_particles() const override {
     unsigned count = 0;
     if (Scale(tau_).get_nuisance_is_optimized()) count++;
     if (Scale(lambda_).get_nuisance_is_optimized()) count++;
     return count;
   }
 
-  ModelObjectsTemp get_inputs() const IMP_OVERRIDE {
+  ModelObjectsTemp get_inputs() const override {
     ModelObjectsTemp ret;
     ret.push_back(tau_);
     ret.push_back(lambda_);

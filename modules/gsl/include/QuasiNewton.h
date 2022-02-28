@@ -45,7 +45,7 @@ class IMPGSLEXPORT QuasiNewton : public GSLOptimizer {
     IMP_USAGE_CHECK(d > 0 && d <= 1, "The minimum gradient is relative.");
     min_gradient_ = d;
   }
-  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(QuasiNewton);
 };
 

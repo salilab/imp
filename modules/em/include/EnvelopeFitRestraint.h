@@ -46,7 +46,7 @@ class IMPEMEXPORT EnvelopeFitRestraint : public IMP::Restraint {
                        double density_threshold, double penetration_threshold);
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
 
   // compute and return best scoring transformation
   algebra::Transformation3D get_transformation() const {
@@ -57,7 +57,7 @@ class IMPEMEXPORT EnvelopeFitRestraint : public IMP::Restraint {
   // compute best scoring transformation and apply it on the particles
   void apply_transformation();
 
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE { return ps_; }
+  IMP::ModelObjectsTemp do_get_inputs() const override { return ps_; }
   IMP_OBJECT_METHODS(EnvelopeFitRestraint);
 
  private:

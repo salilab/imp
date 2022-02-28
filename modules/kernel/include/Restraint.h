@@ -315,7 +315,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
                   const ParticleIndexes &reset_pis) const;
 
   /** No outputs. */
-  ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  ModelObjectsTemp do_get_outputs() const override {
     return ModelObjectsTemp();
   }
 

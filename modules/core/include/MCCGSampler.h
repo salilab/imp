@@ -116,7 +116,7 @@ class IMPCOREEXPORT MCCGSampler : public Sampler {
   IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState *,
            OptimizerStates);
 
-  virtual ConfigurationSet *do_sample() const IMP_OVERRIDE;
+  virtual ConfigurationSet *do_sample() const override;
   IMP_OBJECT_METHODS(MCCGSampler);
 };
 

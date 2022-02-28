@@ -100,11 +100,11 @@ class AccumulateRigidBodyDerivatives : public SingletonDerivativeModifier {
                                      "AccumulateRigidBodyDerivatives%1%")
       : SingletonDerivativeModifier(name) {}
   virtual void apply_index(Model *m, ParticleIndex pi) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(AccumulateRigidBodyDerivatives);
   IMP_OBJECT_METHODS(AccumulateRigidBodyDerivatives);
 };
@@ -125,11 +125,11 @@ class UpdateRigidBodyMembers : public SingletonModifier {
   UpdateRigidBodyMembers(std::string name = "UpdateRigidBodyMembers%1%")
       : SingletonModifier(name) {}
   virtual void apply_index(Model *m, ParticleIndex pi) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(UpdateRigidBodyMembers);
   IMP_OBJECT_METHODS(UpdateRigidBodyMembers);
 };
@@ -140,14 +140,14 @@ class NormalizeRotation : public SingletonModifier {
   NormalizeRotation(std::string name = "NormalizeRotation%1%")
       : SingletonModifier(name) {}
   virtual void apply_index(Model *m, ParticleIndex pi) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual void apply_indexes(
       Model *m, const ParticleIndexes &pis, unsigned int lower_bound,
-      unsigned int upper_bound) const IMP_OVERRIDE IMP_FINAL;
+      unsigned int upper_bound) const override IMP_FINAL;
   //  IMP_SINGLETON_MODIFIER_METHODS(NormalizeRotation);
   IMP_OBJECT_METHODS(NormalizeRotation);
 };
@@ -158,11 +158,11 @@ class NullSDM : public SingletonDerivativeModifier {
   NullSDM(std::string name = "NullModifier%1%")
       : SingletonDerivativeModifier(name) {}
   virtual void apply_index(Model *m, ParticleIndex pi) const
-      IMP_OVERRIDE;
+      override;
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   virtual ModelObjectsTemp do_get_outputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
   IMP_SINGLETON_MODIFIER_METHODS(NullSDM);
   IMP_OBJECT_METHODS(NullSDM);
 };

@@ -53,16 +53,16 @@ class IMPSTATISTICSEXPORT KMCentersNodeLeaf : public KMCentersNode {
        the node. The sum of squares is the sum of dot products of each
        point with itself.
   */
-  void compute_sums() IMP_OVERRIDE;
+  void compute_sums() override;
   //! Compute neighbors for centers
   void get_neighbors(const Ints &cands, KMPointArray *sums, KMPoint *sum_sqs,
-                     Ints *weights) IMP_OVERRIDE;
+                     Ints *weights) override;
   //! Get assignments for leaf node
-  void get_assignments(const Ints &cands, Ints &close_center) IMP_OVERRIDE;
+  void get_assignments(const Ints &cands, Ints &close_center) override;
 
   //! Sample a center point c
-  KMPoint sample_center() IMP_OVERRIDE;
-  void show(std::ostream &out = std::cout) const IMP_OVERRIDE;
+  KMPoint sample_center() override;
+  void show(std::ostream &out = std::cout) const override;
 
  protected:
   Ints data_ps_;  // the indexes of data points

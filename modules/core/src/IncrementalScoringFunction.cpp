@@ -48,7 +48,7 @@ class IncrementalRestraintsScoringFunction
       std::string name = "IncrementalRestraintsScoringFunction%1%")
       : IMP::internal::RestraintsScoringFunction(rs, weight, max, name) {}
   // don't depend on optimized particles
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_inputs() const override {
     return get_restraints();
   }
 };

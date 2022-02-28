@@ -34,10 +34,10 @@ class IMPCOREEXPORT MoveStatisticsScoreState : public ScoreState {
   MoveStatisticsScoreState(const ParticlesTemp& ps);
   void show_statistics(std::ostream& out = std::cout) const;
   void reset();
-  virtual void do_before_evaluate() IMP_OVERRIDE;
-  virtual void do_after_evaluate(DerivativeAccumulator* da) IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE;
+  virtual void do_before_evaluate() override;
+  virtual void do_after_evaluate(DerivativeAccumulator* da) override;
+  virtual ModelObjectsTemp do_get_inputs() const override;
+  virtual ModelObjectsTemp do_get_outputs() const override;
   IMP_OBJECT_METHODS(MoveStatisticsScoreState);
 };
 

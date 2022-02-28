@@ -78,7 +78,7 @@ class IMPSTATISTICSEXPORT KMFilterCenters : public KMCenters {
 
   //! Generate random centers
   virtual void generate_random_centers(int k);
-  void show(std::ostream &out = std::cout) const IMP_OVERRIDE;
+  void show(std::ostream &out = std::cout) const override;
   //!  move centers to cluster centroids
   /** Moves each center point to the centroid of its associated cluster.
       We call compute_distortion() if necessary to compute the weights
@@ -204,7 +204,7 @@ class IMPSTATISTICSEXPORT KMFilterCentersResults : public KMCenters {
   //! Get the assignment of points to centers
   const Ints *get_assignments() const { return &close_center_; }
 
-  void show(std::ostream &out = std::cout) const IMP_OVERRIDE {
+  void show(std::ostream &out = std::cout) const override {
     for (int j = 0; j < get_number_of_centers(); j++) {
       out << "    " << std::setw(4) << j << "\t";
       print_point(*((*centers_)[j]), out);

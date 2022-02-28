@@ -29,8 +29,8 @@ class IMPSPBEXPORT RMSDMetric : public statistics::Metric {
   Float get_weight(unsigned i);
 
   // IMP_METRIC(RMSDMetric);
-  double get_distance(unsigned int i, unsigned int j) const IMP_OVERRIDE;
-  unsigned int get_number_of_items() const IMP_OVERRIDE;
+  double get_distance(unsigned int i, unsigned int j) const override;
+  unsigned int get_number_of_items() const override;
   IMP_OBJECT_METHODS(RMSDMetric);
 };
 

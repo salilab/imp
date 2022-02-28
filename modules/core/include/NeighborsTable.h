@@ -31,14 +31,14 @@ class IMPCOREEXPORT NeighborsTable : public ScoreState {
   boost::unordered_map<ParticleIndex, ParticleIndexes> data_;
 
  protected:
-  virtual ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_inputs() const override {
     return ModelObjectsTemp(1, input_);
   }
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_outputs() const override {
     return ModelObjectsTemp();
   }
-  virtual void do_before_evaluate() IMP_OVERRIDE;
-  virtual void do_after_evaluate(DerivativeAccumulator *) IMP_OVERRIDE {}
+  virtual void do_before_evaluate() override;
+  virtual void do_after_evaluate(DerivativeAccumulator *) override {}
 
  public:
   NeighborsTable(PairContainer *input,

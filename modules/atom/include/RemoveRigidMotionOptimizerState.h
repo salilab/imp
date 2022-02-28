@@ -31,7 +31,7 @@ class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState {
   IMP_OBJECT_METHODS(RemoveRigidMotionOptimizerState);
 
  protected:
-  virtual void do_update(unsigned int call) IMP_OVERRIDE;
+  virtual void do_update(unsigned int call) override;
 
  private:
   void remove_linear() const;

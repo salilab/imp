@@ -43,8 +43,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(ZAxialPositionRestraint);;
 };
@@ -72,8 +72,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(ZAxialPositionLowerRestraint);;
 };
@@ -101,8 +101,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(ZAxialPositionUpperRestraint);;
 };
@@ -132,8 +132,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(YAxialPositionRestraint);;
 };
@@ -161,8 +161,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(YAxialPositionLowerRestraint);;
 };
@@ -190,8 +190,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(YAxialPositionUpperRestraint);;
 };
@@ -221,8 +221,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(XYRadialPositionRestraint);;
 };
@@ -250,8 +250,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(XYRadialPositionLowerRestraint);;
 };
@@ -279,8 +279,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(XYRadialPositionUpperRestraint);;
 };
@@ -309,8 +309,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(ProteinContactRestraint);;
 };
@@ -338,8 +338,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(ProteinChainRestraint);;
 };
@@ -369,8 +369,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(MembraneSurfaceLocationRestraint);;
 };
@@ -405,8 +405,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(MembraneSurfaceLocationConditionalRestraint);;
 };
@@ -436,8 +436,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(MembraneExclusionRestraint);;
 };
@@ -468,8 +468,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(PoreSideVolumeLocationRestraint);;
 };
@@ -500,8 +500,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(PerinuclearVolumeLocationRestraint);;
 };
@@ -530,8 +530,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(AssemblySymmetryByDistanceRestraint);;
 };
@@ -561,8 +561,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(AssemblySymmetryByDihedralRestraint);;
 };
@@ -590,8 +590,8 @@ public:
 #endif
 
   double unprotected_evaluate(
-                  IMP::DerivativeAccumulator *accum) const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+                  IMP::DerivativeAccumulator *accum) const override;
+  ModelObjectsTemp do_get_inputs() const override;
 
   IMP_OBJECT_METHODS(ProteinProximityRestraint);;
 };

@@ -39,10 +39,10 @@ class DistancePairScore : public PairScore {
 
   virtual double evaluate_index(Model *m,
                                 const ParticleIndexPair &pip,
-                                DerivativeAccumulator *da) const IMP_OVERRIDE;
+                                DerivativeAccumulator *da) const override;
 
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE;
+      Model *m, const ParticleIndexes &pis) const override;
 
   /**
       return a reference to the functor that is applied on a pair of particles

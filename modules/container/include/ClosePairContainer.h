@@ -120,7 +120,7 @@ class IMPCONTAINEREXPORT ClosePairContainer :
   unsigned int get_number_of_partial_rebuilds() const;
 
  private:
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;
+  virtual std::size_t do_get_contents_hash() const override;
 #endif
   IMP_OBJECT_METHODS(ClosePairContainer);
 };

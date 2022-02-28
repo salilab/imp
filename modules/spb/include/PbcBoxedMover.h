@@ -33,9 +33,9 @@ class IMPSPBEXPORT PbcBoxedMover : public core::MonteCarloMover {
                 Particle *py, Particle *pz);
 
  protected:
-  virtual IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
-  virtual core::MonteCarloMoverResult do_propose() IMP_OVERRIDE;
-  virtual void do_reject() IMP_OVERRIDE;
+  virtual IMP::ModelObjectsTemp do_get_inputs() const override;
+  virtual core::MonteCarloMoverResult do_propose() override;
+  virtual void do_reject() override;
   IMP_OBJECT_METHODS(PbcBoxedMover);
   IMP_SHOWABLE(PbcBoxedMover);
 

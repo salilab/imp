@@ -62,19 +62,19 @@ namespace {
                           std::string name = "NotSelectionPredicate%1%")
           : internal::SelectionPredicate(name), predicate_(predicate) {}
 
-    virtual unsigned get_number_of_children() const IMP_OVERRIDE {
+    virtual unsigned get_number_of_children() const override {
       return 1;
     }
-    virtual SelectionPredicate *get_child(unsigned) const IMP_OVERRIDE {
+    virtual SelectionPredicate *get_child(unsigned) const override {
       return predicate_;
     }
 
-    virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
+    virtual SelectionPredicate *clone(bool) override {
       set_was_used(true);
       return new NotSelectionPredicate(predicate_->clone(false));
     }
 
-    virtual int setup_bitset(int index) IMP_OVERRIDE {
+    virtual int setup_bitset(int index) override {
       index = internal::SelectionPredicate::setup_bitset(index);
       /* Set index for subpredicate */
       index = predicate_->setup_bitset(index);
@@ -83,13 +83,13 @@ namespace {
 
     virtual ModelObjectsTemp do_get_inputs(
           Model *m, const ParticleIndexes &pis) const
-          IMP_OVERRIDE {
+          override {
       return IMP::get_particles(m, pis);
     }
 
     virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
                                          boost::dynamic_bitset<> &bs)
-                                             const IMP_OVERRIDE {
+                                             const override {
       MatchType v = predicate_->get_value_index(m, pi, bs);
       switch(v) {
       case NO_MATCH:
@@ -116,7 +116,7 @@ namespace {
     AndSelectionPredicate(std::string name = "AndSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
 
-    virtual SelectionPredicate *clone(bool toplevel) IMP_OVERRIDE {
+    virtual SelectionPredicate *clone(bool toplevel) override {
       set_was_used(true);
       // If only one predicate and we're not the top level,
       // no need to keep ourself around
@@ -131,7 +131,7 @@ namespace {
 
     virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
                                          boost::dynamic_bitset<> &bs)
-                                             const IMP_OVERRIDE {
+                                             const override {
       // Empty list matches everything
       if (predicates_.size() == 0) {
         return MATCH_WITH_CHILDREN;
@@ -165,7 +165,7 @@ namespace {
     OrSelectionPredicate(std::string name = "OrSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
 
-    virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
+    virtual SelectionPredicate *clone(bool) override {
       set_was_used(true);
       Pointer<ListSelectionPredicate> a = new OrSelectionPredicate();
       clone_predicates(a);
@@ -174,7 +174,7 @@ namespace {
 
     virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
                                          boost::dynamic_bitset<> &bs)
-                                             const IMP_OVERRIDE {
+                                             const override {
       // Empty list matches everything
       if (predicates_.size() == 0) {
         return MATCH_WITH_CHILDREN;
@@ -208,7 +208,7 @@ namespace {
     XorSelectionPredicate(std::string name = "XorSelectionPredicate%1%")
           : internal::ListSelectionPredicate(name) {}
 
-    virtual SelectionPredicate *clone(bool) IMP_OVERRIDE {
+    virtual SelectionPredicate *clone(bool) override {
       set_was_used(true);
       Pointer<ListSelectionPredicate> a = new XorSelectionPredicate();
       clone_predicates(a);
@@ -217,7 +217,7 @@ namespace {
 
     virtual MatchType do_get_value_index(Model *m, ParticleIndex pi,
                                          boost::dynamic_bitset<> &bs)
-                                             const IMP_OVERRIDE {
+                                             const override {
       // Empty list matches everything
       if (predicates_.size() == 0) {
         return MATCH_WITH_CHILDREN;
@@ -339,12 +339,11 @@ namespace {
     virtual MatchType do_get_value_index(Model *m,                             \
                                    ParticleIndex pi,                           \
                                    boost::dynamic_bitset<> &)                  \
-                                            const IMP_OVERRIDE {               \
+                                            const override {                   \
       check;                                                                   \
     }                                                                          \
     virtual ModelObjectsTemp do_get_inputs(                            \
-        Model *m, const ParticleIndexes &pis) const            \
-        IMP_OVERRIDE {                                                         \
+        Model *m, const ParticleIndexes &pis) const override {                 \
       return IMP::get_particles(m, pis);                                       \
     }                                                                          \
     IMP_OBJECT_METHODS(Name##SelectionPredicate);                              \

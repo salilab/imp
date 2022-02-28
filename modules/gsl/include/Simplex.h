@@ -63,7 +63,7 @@ class IMPGSLEXPORT Simplex : public GSLOptimizer {
     min_length_ = d;
   }
   /** @} */
-  virtual Float do_optimize(unsigned int max_steps) IMP_OVERRIDE;
+  virtual Float do_optimize(unsigned int max_steps) override;
   IMP_OBJECT_METHODS(Simplex);
 };
 

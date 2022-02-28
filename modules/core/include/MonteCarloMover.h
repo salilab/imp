@@ -101,7 +101,7 @@ class IMPCOREEXPORT MonteCarloMover : public ModelObject {
   //! Implement accept_proposed_move(); default implementation is empty
   virtual void do_accept() {}
 
-  virtual ModelObjectsTemp do_get_outputs() const IMP_OVERRIDE {
+  virtual ModelObjectsTemp do_get_outputs() const override {
     return get_inputs();
   }
 };

@@ -33,7 +33,7 @@ class IMPDISPLAYEXPORT RestraintGeometry : public Geometry {
  public:
   RestraintGeometry(Restraint *p);
   Restraint *get_restraint() const { return r_; }
-  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  virtual IMP::display::Geometries get_components() const override;
   IMP_OBJECT_METHODS(RestraintGeometry);
 };
 
@@ -44,7 +44,7 @@ class IMPDISPLAYEXPORT RestraintSetGeometry : public Geometry {
  public:
   RestraintSetGeometry(RestraintSet *p);
   RestraintSet *get_restraint_set() const { return r_; }
-  virtual IMP::display::Geometries get_components() const IMP_OVERRIDE;
+  virtual IMP::display::Geometries get_components() const override;
   IMP_OBJECT_METHODS(RestraintSetGeometry);
 };
 

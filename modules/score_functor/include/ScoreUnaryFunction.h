@@ -25,12 +25,12 @@ class ScoreUnaryFunction : public IMP::UnaryFunction {
       : UnaryFunction(name), score_(score) {}
 
   virtual DerivativePair evaluate_with_derivative(double feature) const
-      IMP_OVERRIDE {
+      override {
     return score_.get_score_and_derivative(
         nullptr, Array<D, ParticleIndex>(), feature);
   }
 
-  virtual double evaluate(double feature) const IMP_OVERRIDE {
+  virtual double evaluate(double feature) const override {
     return score_.get_score(nullptr, Array<D, ParticleIndex>(),
                             feature);
   }
