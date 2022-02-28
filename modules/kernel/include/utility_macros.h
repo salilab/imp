@@ -42,11 +42,9 @@
  */
 #define IMP_UNIQUE_PTR
 #else
-#if IMP_COMPILER_HAS_UNIQUE_PTR
-#define IMP_UNIQUE_PTR std::unique_ptr
-#else
-#define IMP_UNIQUE_PTR std::auto_ptr
-#endif
+#define IMP_UNIQUE_PTR \
+  IMPKERNEL_DEPRECATED_MACRO(2.17, "Use std::unique_ptr instead."); \
+  std::unique_ptr
 #endif
 
 #endif /* IMPKERNEL_UTILITY_MACROS_H */
