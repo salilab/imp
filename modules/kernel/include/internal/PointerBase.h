@@ -285,6 +285,12 @@ inline void swap(PointerBase<Traits>& a, PointerBase<Traits>& b) {
   a.swap_with(b);
 }
 
+#if IMP_COMPILER_HAS_THREE_WAY
+template <class OT, class OTraits>
+inline std::strong_ordering operator<=>(OT* o, const PointerBase<OTraits>& p) {
+  return p <=> o;
+}
+#else
 template <class OT, class OTraits>
 inline bool operator==(OT* o, const PointerBase<OTraits>& p) {
   return p == o;
@@ -309,6 +315,7 @@ template <class OT, class OTraits>
 inline bool operator<=(OT* o, const PointerBase<OTraits>& p) {
   return p >= o;
 }
+#endif
 #endif
 
 IMPKERNEL_END_INTERNAL_NAMESPACE
