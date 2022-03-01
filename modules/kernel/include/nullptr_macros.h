@@ -10,13 +10,9 @@
 
 #include <IMP/kernel_config.h>
 
-#if(defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)) && \
-    !defined(nullptr)
-#define IMP_NULLPTR IMP::nullptr
-#define IMP_NULLPTR_T IMP::nullptr_t
-#else
+IMPKERNEL_DEPRECATED_HEADER(
+         2.17, "Use the nullptr keyword or std::nullptr_t type directly");
 #define IMP_NULLPTR nullptr
 #define IMP_NULLPTR_T std::nullptr_t
-#endif  // IMP_COMPILER_HAS_NULLPTR
 
 #endif /* IMPKERNEL_NULLPTR_MACROS_H */
