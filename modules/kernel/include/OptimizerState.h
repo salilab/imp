@@ -124,7 +124,7 @@ class IMPKERNELEXPORT OptimizerState : public ModelObject {
   virtual ModelObjectsTemp do_get_inputs() const override {
     return ModelObjectsTemp();
   }
-  virtual ModelObjectsTemp do_get_outputs() const override IMP_FINAL {
+  virtual ModelObjectsTemp do_get_outputs() const override IMP_SWIG_FINAL {
     return ModelObjectsTemp();
   }
 

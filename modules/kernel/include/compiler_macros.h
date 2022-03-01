@@ -68,25 +68,17 @@
 #define IMP_OVERRIDE override
 #endif
 
-#if defined(IMP_SWIG_WRAPPER)
-#define IMP_COMPILER_HAS_FINAL 0
-#elif defined(__clang__)
-#define IMP_COMPILER_HAS_FINAL 1
-#elif defined(__GNUC__) && __cplusplus >= 201103L
-// probably should be finer here
-#define IMP_COMPILER_HAS_FINAL 1
-#else
-#define IMP_COMPILER_HAS_FINAL 0
-#endif
-
 #ifdef IMP_DOXYGEN
+#define IMP_FINAL
 //! Have the compiler report an error if anything overrides this method
-#define IMP_FINAL
+#define IMP_SWIG_FINAL
 #else
-#if IMP_COMPILER_HAS_FINAL
+#if defined(IMP_SWIG_WRAPPER) || defined(SWIG)
+#define IMP_FINAL
+#define IMP_SWIG_FINAL
+#else
 #define IMP_FINAL final
-#else
-#define IMP_FINAL
+#define IMP_SWIG_FINAL final
 #endif
 #endif
 

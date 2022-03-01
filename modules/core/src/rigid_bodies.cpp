@@ -147,7 +147,7 @@ class NormalizeRotation : public SingletonModifier {
       Model *m, const ParticleIndexes &pis) const override;
   virtual void apply_indexes(
       Model *m, const ParticleIndexes &pis, unsigned int lower_bound,
-      unsigned int upper_bound) const override IMP_FINAL;
+      unsigned int upper_bound) const override final;
   //  IMP_SINGLETON_MODIFIER_METHODS(NormalizeRotation);
   IMP_OBJECT_METHODS(NormalizeRotation);
 };

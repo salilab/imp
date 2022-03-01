@@ -22,7 +22,7 @@
   double evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,                  \
                           DerivativeAccumulator *da, unsigned int lower_bound, \
                           unsigned int upper_bound)                            \
-                          const IMP_OVERRIDE IMP_FINAL {                       \
+                          const IMP_OVERRIDE final {                           \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       ret += evaluate_index(m, p[i], da);                                      \
@@ -34,7 +34,7 @@
                   DerivativeAccumulator *da, unsigned int lower_bound,         \
                   unsigned int upper_bound,                                    \
                   std::vector<double> &score)                                  \
-                  const IMP_OVERRIDE IMP_FINAL {                               \
+                  const IMP_OVERRIDE final {                                   \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       double s = evaluate_index(m, p[i], da);                                  \
@@ -48,7 +48,7 @@
                   DerivativeAccumulator *da,                                   \
                   const std::vector<unsigned> &indexes,                        \
                   std::vector<double> &score)                                  \
-                  const IMP_OVERRIDE IMP_FINAL {                               \
+                  const IMP_OVERRIDE final {                                   \
     double ret = 0;                                                            \
     for (std::vector<unsigned>::const_iterator it = indexes.begin();           \
          it != indexes.end(); ++it) {                                          \
@@ -121,7 +121,7 @@
   virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,         \
                              unsigned int lower_bound,                   \
                              unsigned int upper_bound)                   \
-                             const IMP_OVERRIDE IMP_FINAL {              \
+                             const IMP_OVERRIDE final {                  \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {           \
       apply_index(m, o[i]);                                              \
     }                                                                    \

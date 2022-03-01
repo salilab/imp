@@ -139,10 +139,10 @@ class IMPKERNELEXPORT Particle : public ModelObject {
   void clear_caches() override;
 #endif
  protected:
-  virtual ModelObjectsTemp do_get_inputs() const override IMP_FINAL {
+  virtual ModelObjectsTemp do_get_inputs() const override final {
     return ModelObjectsTemp();
   }
-  virtual ModelObjectsTemp do_get_outputs() const override IMP_FINAL {
+  virtual ModelObjectsTemp do_get_outputs() const override final {
     return ModelObjectsTemp();
   }
 };

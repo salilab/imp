@@ -167,7 +167,7 @@ class IMPATOMEXPORT Simulator : public Optimizer {
 
  protected:
   /** @} */
-  virtual Float do_optimize(unsigned int max_steps) override IMP_FINAL;
+  virtual Float do_optimize(unsigned int max_steps) override IMP_SWIG_FINAL;
 
   /** Perform any setup operations needed before running a series
       of simulation steps

@@ -74,10 +74,10 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
                                   Data &data);
 
   virtual void do_add_link(Particle *o,
-                           RMF::NodeConstHandle node) IMP_FINAL override;
+                           RMF::NodeConstHandle node) final override;
   using P::do_create;
   virtual Particle *do_create(RMF::NodeConstHandle name,
-                                      Model *m) IMP_FINAL override;
+                                      Model *m) final override;
   void create_recursive(Model *m, ParticleIndex root,
                         ParticleIndex cur, RMF::NodeConstHandle name,
                         ParticleIndexes rigid_bodies, Data &data);
@@ -90,7 +90,7 @@ class IMPRMFEXPORT HierarchyLoadLink : public SimpleLoadLink<Particle> {
   core::Provenance create_one_provenance(Model *m, RMF::NodeConstHandle node);
 
   virtual void do_load_one(RMF::NodeConstHandle nh,
-                           Particle *o) IMP_FINAL override;
+                           Particle *o) final override;
 
  protected:
   /** This method is called for the hierarchy.*/
