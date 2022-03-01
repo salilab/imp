@@ -62,39 +62,27 @@ BuildRequires: protobuf-devel
 Requires: python3-protobuf
 %endif
 # No Python protobuf package in RHEL8
-%if 0%{?rhel} >= 6 && 0%{?rhel} <= 7
+%if 0%{?rhel} == 7
 Requires: protobuf-python
 %endif
 
 BuildRequires: cmake >= 2.8
 BuildRequires: boost-devel >= 1.53
 
-# RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
-# doesn't have a new enough OpenCV in the base distribution or in EPEL until
-# RHEL7, so disable the em2d module.
-# On Fedora, all of these packages are available; add them as dependencies
+# RHEL doesn't have a CGAL package, so build without CGAL on RHEL.
 %if 0%{?fedora}
-BuildRequires: CGAL-devel, opencv-devel
+BuildRequires: CGAL-devel
 %endif
-%if 0%{?rhel} >= 7
 BuildRequires: opencv-devel
-%endif
 
 # If building in the Sali lab, pass '-D "RHEL_SALI_LAB 1"' to your rpmbuild
-# invocation. This will pull in our custom OpenCV (on RHEL6) and CGAL packages
+# invocation. This will pull in our custom CGAL package
 # and bundle the libraries with IMP.
 # If building outside of the lab and you still want these packages, get them
 # from https://integrativemodeling.org/build-extras/
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
-%if 0%{?rhel} < 7
-BuildRequires: opencv-nogui-devel
-%endif
 BuildRequires: CGAL-nogui-devel
-%if 0%{?rhel} < 7
-%define bundled libcv\\.so\\|libcxcore\\.so\\|libhighgui.so\\|libTAU\\.so\\|libCGAL\\.so
-%else
 %define bundled libTAU\\.so\\|libCGAL\\.so
-%endif
 %else
 %define bundled libTAU\\.so
 %endif
@@ -114,13 +102,6 @@ BuildRequires: numpy, scipy
 Requires: numpy, scipy
 %endif
 
-# RHEL 6 ships with Python 2.6, which doesn't have the argparse module,
-# so pull in the extra package that provides it
-%if 0%{?rhel} == 6
-BuildRequires: python-argparse
-Requires: python-argparse
-%endif
-
 %define cmake_opts -DCMAKE_INSTALL_RPATH=%{_libdir}/IMP
 
 # Use user-visible (not "platform") Python on RHEL8
@@ -128,11 +109,7 @@ Requires: python-argparse
 %define __python3 /usr/bin/python3
 %endif
 
-%if 0%{?rhel} == 6
-%define mpiprefix %{nil}
-%else
 %define mpiprefix mpi/
-%endif
 
 # Don't build debug source packages; they cause the build to fail with
 # error: Empty %files file [...]/debugsourcefiles.list
@@ -181,11 +158,9 @@ Requires:      python3-devel
 Requires:      %{PYTHON2}-devel
 %endif
 %if 0%{?fedora}
-Requires:      CGAL-devel, opencv-devel
+Requires:      CGAL-devel
 %endif
-%if 0%{?rhel} >= 7
 Requires:      opencv-devel
-%endif
 
 %description devel
 This package contains the include files for building applications that link
@@ -396,17 +371,6 @@ for mod in %{MPI_MODULES}; do
   (cd ${RPM_BUILD_ROOT}%{_libdir} && rm libimp_${mod}.so \
    && ln -sf mpich/lib/libimp_${mod}.so.* libimp_${mod}.so)
 done
-
-# Add MPI-dependent directory to Python search path
-%if 0%{?rhel} == 6
-(cd ${RPM_BUILD_ROOT}%{_libdir}/%{default_python}*/site-packages && cat > imp-mpi.pth <<END)
-# Set MPI implementation-specific Python search path, for IMP.
-# On Fedora this is handled by the python3-mpich package, while in RHEL7
-# the mpich modulefile sets PYTHONPATH, but nothing appears to handle it
-# in RHEL6, so we'll do it ourselves.
-import sys, os; s = os.getenv('MPI_PYTHON_SITEARCH'); s and (s in sys.path or sys.path.append(s))
-END
-%endif
 %endif
 
 # Note that we currently don't include the documentation in the RPM, since
@@ -431,12 +395,7 @@ mkdir ${RPM_BUILD_ROOT}%{_libdir}/IMP
 cp /usr/%{_lib}/libTAU.so.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 
 %if 0%{?rhel} && 0%{?RHEL_SALI_LAB}
-# Bundle OpenCV and CGAL libraries
-%if 0%{?rhel} < 7
-for cvlib in cv cxcore highgui; do
-  cp /usr/%{_lib}/lib${cvlib}.so.2.1 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
-done
-%endif
+# Bundle CGAL libraries
 %if 0%{?rhel} == 8
 cp /usr/%{_lib}/libCGAL.so.13 ${RPM_BUILD_ROOT}%{_libdir}/IMP/
 %else
@@ -502,9 +461,6 @@ find ${RPM_BUILD_ROOT}%{_prefix}/share/IMP/tools -name '*.py' -exec perl -pi -e 
 %{_prefix}/share/IMP/build_info/IMP_spb.pck
 %{_libdir}/%{default_python}*/site-packages/IMP/mpi
 %{_libdir}/%{default_python}*/site-packages/IMP/spb
-%if 0%{?rhel} == 6
-%{_libdir}/%{default_python}*/site-packages/imp-mpi.pth
-%endif
 %{_libdir}/%{default_python}*/site-packages/mpich/_IMP_mpi.so
 %{_libdir}/%{default_python}*/site-packages/mpich/_IMP_spb.so
 %{_libdir}/mpich/lib/libimp_mpi.so.*
