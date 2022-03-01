@@ -11,7 +11,6 @@
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/kinematics/CompositeJoint.h>
 #include <IMP/Object.h>
-#include <IMP/nullptr.h>
 #include <IMP/exception.h>
 #include <IMP/algebra/Transformation3D.h>
 

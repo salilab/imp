@@ -17,7 +17,6 @@
 #include <IMP/atom/pdb.h>
 
 #include <IMP/algebra/constants.h>
-#include <IMP/nullptr.h>
 
 IMPINTEGRATIVEDOCKING_BEGIN_INTERNAL_NAMESPACE
 
