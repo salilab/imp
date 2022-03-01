@@ -10,8 +10,10 @@
 
 #include <IMP/kernel_config.h>
 
+#ifndef IMP_SWIG_WRAPPER
 IMPKERNEL_DEPRECATED_HEADER(
          2.17, "Use the nullptr keyword or std::nullptr_t type directly");
+#endif
 // Does nothing: the nullptr keyword should now be available on all
 // supported IMP build platforms
 
