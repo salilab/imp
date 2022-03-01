@@ -17,7 +17,6 @@
 #include "base_types.h"
 #include <IMP/InputAdaptor.h>
 #include <IMP/deprecation_macros.h>
-#include <IMP/nullptr.h>
 #include <IMP/RestraintInfo.h>
 
 IMPKERNEL_BEGIN_NAMESPACE

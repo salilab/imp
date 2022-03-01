@@ -9,7 +9,6 @@
 #include <IMP/showable_macros.h>
 #include <IMP/comparison_macros.h>
 #include <IMP/hash_macros.h>
-#include <IMP/nullptr_macros.h>
 #include <IMP/tuple_macros.h>
 #include <IMP/flags.h>
 #include <IMP/test/test_macros.h>
@@ -30,7 +29,7 @@ const int threshold = 2;
 namespace IMP {
 struct IP {
   int *p_;
-  IP() : p_(IMP_NULLPTR) {}
+  IP() : p_(nullptr) {}
   IP(int *p) : p_(p) {}
   operator int *() const { return p_; }
   // operator int*(){return p_;}

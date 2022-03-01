@@ -13,7 +13,6 @@
 #include "enums.h"
 #include "raii_macros.h"
 #include "value_macros.h"
-#include <IMP/nullptr.h>
 
 IMPKERNEL_BEGIN_NAMESPACE
 class Object;

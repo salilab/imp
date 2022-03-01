@@ -12,7 +12,6 @@
 #include <IMP/integrative_docking/internal/helpers.h>
 
 #include <IMP/Model.h>
-#include <IMP/nullptr_macros.h>
 
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/pdb.h>
@@ -119,8 +118,8 @@ each pair of PDB file names in the input file filenames.txt.")
 
   // init SOAP table
   float distance_threshold = 15.0;
-  IMP::score_functor::Soap* soap_distance_score = IMP_NULLPTR;
-  IMP::score_functor::OrientedSoap* soap_oriented_score = IMP_NULLPTR;
+  IMP::score_functor::Soap* soap_distance_score = nullptr;
+  IMP::score_functor::OrientedSoap* soap_oriented_score = nullptr;
 
   if (oriented_potentials) {
     soap_oriented_score = new IMP::score_functor::OrientedSoap(potentials_file);

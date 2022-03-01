@@ -18,7 +18,6 @@
 #include <IMP/log_macros.h>
 #include <IMP/tuple_macros.h>
 #include <IMP/math.h>
-#include <IMP/nullptr.h>
 #include <IMP/exception.h>
 
 IMPKERNEL_BEGIN_NAMESPACE

@@ -14,7 +14,6 @@
 #include "../warning_macros.h"
 #include "../hash.h"
 #include "../hash_macros.h"
-#include "../nullptr.h"
 
 #if defined(BOOST_NO_CXX11_NULLPTR) || defined(BOOST_NO_NULLPTR)
 #include <boost/type_traits.hpp>

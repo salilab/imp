@@ -16,9 +16,7 @@
 #include "../Vector.h"
 #include "../Array.h"
 #include "../ConstVector.h"
-#include "../nullptr_macros.h"
 #include "IMP/Vector.h"
-#include "IMP/nullptr.h"
 #include <vector>
 #include <cstdio>
 
@@ -84,7 +82,7 @@ struct PyPointer : boost::noncopyable {
   PyObject* release() {
     IMP_INTERNAL_CHECK(ptr_->ob_refcnt >= 1, "No refcount");
     PyObject* ret = ptr_;
-    ptr_ = IMP_NULLPTR;
+    ptr_ = nullptr;
     return ret;
   }
   ~PyPointer() {

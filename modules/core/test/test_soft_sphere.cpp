@@ -14,7 +14,6 @@
 #include <IMP/Model.h>
 #include <IMP/ref_counted_macros.h>
 #include <IMP/flags.h>
-#include <IMP/nullptr_macros.h>
 
 namespace {
 
@@ -36,8 +35,7 @@ int main(int argc, char *argv[]) {
       m, p1, IMP::algebra::Sphere3D(IMP::algebra::Vector3D(1, 0, 0), 1));
   IMP_NEW(SoftSpherePairScore, ssps, (1));
   IMP_TEST_GREATER_THAN(
-      ssps->evaluate_index(m, IMP::ParticleIndexPair(p0, p1),
-                           IMP_NULLPTR),
+      ssps->evaluate_index(m, IMP::ParticleIndexPair(p0, p1), nullptr),
       0);
   ssps->set_was_used(true);
   return 0;

@@ -14,7 +14,6 @@
 #include <IMP/kinematics/kinematics_config.h>
 #include <IMP/kinematics/KinematicNode.h>
 #include <IMP/Object.h>
-//#include <IMP/nullptr.h>
 #include <IMP/exception.h>
 #include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/algebra/Vector3D.h>

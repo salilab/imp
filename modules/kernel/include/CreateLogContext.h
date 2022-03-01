@@ -12,7 +12,6 @@
 #include <IMP/kernel_config.h>
 #include "raii_macros.h"
 #include "log.h"
-#include <IMP/nullptr.h>
 #include "Object.h"
 #if IMP_KERNEL_HAS_LOG4CXX
 #include <log4cxx/ndc.h>

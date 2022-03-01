@@ -13,7 +13,6 @@
 #include "base_macros.h"
 #include "exception.h"
 #include "Value.h"
-#include <IMP/nullptr.h>
 #include <boost/scoped_array.hpp>
 #include <IMP/hash.h>
 #include <iterator>

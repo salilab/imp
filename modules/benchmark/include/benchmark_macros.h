@@ -11,7 +11,6 @@
 
 #include <IMP/benchmark/benchmark_config.h>
 #include <IMP/flags.h>
-#include <IMP/nullptr_macros.h>
 #include <boost/timer.hpp>
 #include <boost/scoped_ptr.hpp>
 #include "internal/control.h"
@@ -77,7 +76,7 @@
 #define IMP_BENCHMARK_HEAP_CHECKING_END                         \
   if (IMP::benchmark::internal::heap_check_benchmarks) {        \
     if (!heap_checker->NoLeaks()) std::cerr << "Leaks found\n"; \
-    heap_checker.reset(IMP_NULLPTR);                            \
+    heap_checker.reset(nullptr);                                \
   }
 #else
 #define IMP_BENCHMARK_HEAP_CHECKING_BEGIN
