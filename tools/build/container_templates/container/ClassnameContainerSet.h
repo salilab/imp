@@ -27,7 +27,7 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
   static ClassnameContainerSet *get_set(ClassnameContainer *c) {
     return dynamic_cast<ClassnameContainerSet *>(c);
   }
-  virtual std::size_t do_get_contents_hash() const IMP_OVERRIDE;
+  virtual std::size_t do_get_contents_hash() const override;
 
  public:
   //! Construct an empty set
@@ -38,11 +38,11 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
                         std::string name = "ClassnameContainerSet %1%");
 
   /** \brief apply modifier sm to all classname containers */
-  IMP_IMPLEMENT(void do_apply(const ClassnameModifier *sm) const IMP_OVERRIDE);
+  IMP_IMPLEMENT(void do_apply(const ClassnameModifier *sm) const override);
 
   IMP_IMPLEMENT(void do_apply_moved(const ClassnameModifier *sm,
                           const ParticleIndexes &moved_pis,
-                          const ParticleIndexes &reset_pis) const IMP_OVERRIDE);
+                          const ParticleIndexes &reset_pis) const override);
 
   template <class M>
   void apply_generic(const M *m) const {
@@ -55,7 +55,7 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
     apply_moved(m, moved_pis, reset_pis);
   }
 
-  ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE;
+  ParticleIndexes get_all_possible_indexes() const override;
   IMP_OBJECT_METHODS(ClassnameContainerSet);
 
   /** @name Methods to control the nested container
@@ -75,16 +75,16 @@ class IMPCONTAINEREXPORT ClassnameContainerSet : public ClassnameContainer {
 /**@}*/
 
 #ifndef IMP_DOXYGEN
-  PLURALINDEXTYPE get_indexes() const IMP_OVERRIDE;
-  PLURALINDEXTYPE get_range_indexes() const IMP_OVERRIDE;
-  ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+  PLURALINDEXTYPE get_indexes() const override;
+  PLURALINDEXTYPE get_range_indexes() const override;
+  ModelObjectsTemp do_get_inputs() const override;
 #endif
 
  protected:
   //! Insert the contents of the container into output
   //! instead of output's current content
   virtual void get_indexes_in_place(PLURALINDEXTYPE& output)
-    const IMP_OVERRIDE;
+    const override;
 };
 
 IMPCONTAINER_END_NAMESPACE

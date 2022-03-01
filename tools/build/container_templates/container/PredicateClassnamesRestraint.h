@@ -91,8 +91,8 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
 
  public:
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
-      IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  IMP::ModelObjectsTemp do_get_inputs() const override;
 
 #ifndef SWIG
   //! use at own risk - for efficiency in case e.g. all scores use same inputs
@@ -118,7 +118,7 @@ class IMPCONTAINEREXPORT PredicateClassnamesRestraint : public Restraint {
     get_score_for_predicate(int predicate) const;
 
 
-  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_current_decomposition() const override;
 };
 
 

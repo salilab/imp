@@ -23,8 +23,8 @@ class ExpensiveRestraint : public IMP::Restraint {
                      const IMP::ParticleIndexes &pis)
       : Restraint(m, "ExpensiveRestraint%1%"), pis_(pis) {}
   void do_add_score_and_derivatives(IMP::ScoreAccumulator sa) const
-      IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(ExpensiveRestraint);
 };
 

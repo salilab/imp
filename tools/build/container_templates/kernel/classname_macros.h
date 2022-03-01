@@ -22,7 +22,7 @@
   double evaluate_indexes(Model *m, const PLURALINDEXTYPE &p,                  \
                           DerivativeAccumulator *da, unsigned int lower_bound, \
                           unsigned int upper_bound)                            \
-                          const IMP_OVERRIDE final {                           \
+                          const override final {                               \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       ret += evaluate_index(m, p[i], da);                                      \
@@ -34,7 +34,7 @@
                   DerivativeAccumulator *da, unsigned int lower_bound,         \
                   unsigned int upper_bound,                                    \
                   std::vector<double> &score)                                  \
-                  const IMP_OVERRIDE final {                                   \
+                  const override final {                                       \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       double s = evaluate_index(m, p[i], da);                                  \
@@ -48,7 +48,7 @@
                   DerivativeAccumulator *da,                                   \
                   const std::vector<unsigned> &indexes,                        \
                   std::vector<double> &score)                                  \
-                  const IMP_OVERRIDE final {                                   \
+                  const override final {                                       \
     double ret = 0;                                                            \
     for (std::vector<unsigned>::const_iterator it = indexes.begin();           \
          it != indexes.end(); ++it) {                                          \
@@ -61,7 +61,7 @@
   double evaluate_if_good_indexes(                                             \
       Model *m, const PLURALINDEXTYPE &p, DerivativeAccumulator *da,           \
       double max, unsigned int lower_bound,                                    \
-      unsigned int upper_bound) const IMP_OVERRIDE {                           \
+      unsigned int upper_bound) const override {                               \
     double ret = 0;                                                            \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 \
       ret += evaluate_if_good_index(m, p[i], da, max - ret);                   \
@@ -83,7 +83,7 @@
     }                                                                          \
     return ret;                                                                \
   }                                                                            \
-  Ints get_value_index(Model *m, const PLURALINDEXTYPE &o) const IMP_OVERRIDE {\
+  Ints get_value_index(Model *m, const PLURALINDEXTYPE &o) const override {    \
     Ints ret(o.size());                                                        \
     for (unsigned int i = 0; i < o.size(); ++i) {                              \
       ret[i] += Name::get_value_index(m, o[i]);                                \
@@ -121,7 +121,7 @@
   virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,         \
                              unsigned int lower_bound,                   \
                              unsigned int upper_bound)                   \
-                             const IMP_OVERRIDE final {                  \
+                             const override final {                      \
     for (unsigned int i = lower_bound; i < upper_bound; ++i) {           \
       apply_index(m, o[i]);                                              \
     }                                                                    \
@@ -139,7 +139,7 @@
                              const ParticleIndexes &moved_pis,           \
                              const ParticleIndexes &reset_pis) const,    \
   { apply_generic_moved(sm, moved_pis, reset_pis); });                   \
-  virtual ParticleIndexes get_all_possible_indexes() const IMP_OVERRIDE; \
+  virtual ParticleIndexes get_all_possible_indexes() const override;     \
   IMP_OBJECT_METHODS(Name)
 #endif
 
@@ -148,11 +148,11 @@
     IMP::ClassnameContainer::do_apply_moved()
 */
 #define IMP_CLASSNAME_CONTAINER_METHODS(Name) \
-  void do_apply(const ClassnameModifier *sm) const IMP_OVERRIDE { \
+  void do_apply(const ClassnameModifier *sm) const override {     \
     apply_generic(sm); }                                          \
   void do_apply_moved(const ClassnameModifier *sm,                \
                       const ParticleIndexes &moved_pis,           \
-                      const ParticleIndexes &reset_pis) const IMP_OVERRIDE { \
+                      const ParticleIndexes &reset_pis) const override { \
     apply_generic_moved(sm, moved_pis, reset_pis); }
 
 #endif /* IMPKERNEL_CLASSNAME_MACROS_H */

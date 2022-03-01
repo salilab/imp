@@ -35,17 +35,17 @@ class IMPCONTAINEREXPORT MinimumClassnameRestraint : public Restraint {
 
  public:
   double unprotected_evaluate(IMP::DerivativeAccumulator *accum) const
-      IMP_OVERRIDE;
-  IMP::ModelObjectsTemp do_get_inputs() const IMP_OVERRIDE;
+      override;
+  IMP::ModelObjectsTemp do_get_inputs() const override;
   IMP_OBJECT_METHODS(MinimumClassnameRestraint);
   ;
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_ = n; }
 #ifndef IMP_DOXYGEN
-  Restraints do_create_current_decomposition() const IMP_OVERRIDE;
+  Restraints do_create_current_decomposition() const override;
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
-                                      double max) const IMP_OVERRIDE;
+                                      double max) const override;
 #endif
 };
 

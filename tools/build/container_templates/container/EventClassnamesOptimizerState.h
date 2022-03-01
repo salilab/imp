@@ -32,7 +32,7 @@ class IMPCONTAINEREXPORT EventClassnamesOptimizerState : public OptimizerState {
                                 int min_count, int max_count,
                                 std::string name =
                                     "ConstClassnamePredicate%1%");
-  virtual void update() IMP_OVERRIDE;
+  virtual void update() override;
   IMP_OBJECT_METHODS(EventClassnamesOptimizerState);
 };
 

@@ -26,11 +26,11 @@ class IMPCOREEXPORT ConstantClassnamePredicate : public ClassnamePredicate {
   ConstantClassnamePredicate(int v,
                              std::string name = "ConstClassnamePredicate%1%");
   virtual int get_value_index(Model *, PASSINDEXTYPE) const
-      IMP_OVERRIDE {
+      override {
     return v_;
   }
   virtual ModelObjectsTemp do_get_inputs(
-      Model *, const ParticleIndexes &) const IMP_OVERRIDE {
+      Model *, const ParticleIndexes &) const override {
     return ModelObjectsTemp();
   }
   IMP_CLASSNAME_PREDICATE_METHODS(ConstantClassnamePredicate);
@@ -48,11 +48,11 @@ class IMPCOREEXPORT UnorderedTypeClassnamePredicate
   UnorderedTypeClassnamePredicate(std::string name =
                                       "UnorderedTypeClassnamePredicate%1%");
   virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const
-      IMP_OVERRIDE {
+      override {
     return internal::get_type_hash(m, pi);
   }
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pis) const override {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pis);
     return ret;
@@ -77,14 +77,14 @@ class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
   }
   //! Compute the predicate for types of specific pi
   virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const
-      IMP_OVERRIDE {
+      override {
     return internal::get_ordered_type_hash(m, pi);
   }
 
   //! Setup for a batch of calls to get_value_index_in_batch()
   //! (used for improving performance)
   virtual void setup_for_get_value_index_in_batch(Model* m) const
-  IMP_OVERRIDE{
+  override{
     cached_particle_type_ids_table_=
       m->IMP::internal::IntAttributeTable::access_attribute_data(Typed::get_type_key());
     cached_n_particle_types_= ParticleType::get_number_unique();
@@ -94,7 +94,7 @@ class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
   //! for a batch of calls. Call setup_for_get_value_index_in_batch()
   //! right before calling a batch of those, otherwise unexpected behavior.
   virtual int get_value_index_in_batch(Model* m, PASSINDEXTYPE pi) const
-  IMP_OVERRIDE{
+  override{
     IMP_UNUSED(m);
     return internal::get_ordered_type_hash( pi,
                                             cached_particle_type_ids_table_,
@@ -102,7 +102,7 @@ class IMPCOREEXPORT OrderedTypeClassnamePredicate : public ClassnamePredicate {
   }
 
   virtual ModelObjectsTemp do_get_inputs(
-      Model *m, const ParticleIndexes &pis) const IMP_OVERRIDE {
+      Model *m, const ParticleIndexes &pis) const override {
     ModelObjectsTemp ret;
     ret += IMP::get_particles(m, pis);
     return ret;
@@ -116,11 +116,11 @@ class IMPCOREEXPORT AllSameClassnamePredicate : public ClassnamePredicate {
  public:
   AllSameClassnamePredicate(std::string name = "AllSameClassnamePredicate%1%");
   virtual int get_value_index(Model *m, PASSINDEXTYPE pi) const
-      IMP_OVERRIDE {
+      override {
     return internal::get_all_same(m, pi);
   }
   virtual ModelObjectsTemp do_get_inputs(
-      Model *, const ParticleIndexes &) const IMP_OVERRIDE {
+      Model *, const ParticleIndexes &) const override {
     return ModelObjectsTemp();
   }
   IMP_CLASSNAME_PREDICATE_METHODS(AllSameClassnamePredicate);
@@ -136,14 +136,14 @@ class IMPCOREEXPORT CoinFlipClassnamePredicate : public ClassnamePredicate {
   CoinFlipClassnamePredicate(double p, std::string name =
                                            "CoinFlipClassnamePredicate%1%");
   virtual int get_value_index(Model *, PASSINDEXTYPE) const
-      IMP_OVERRIDE {
+      override {
     if (rng_(random_number_generator) < p_)
       return 1;
     else
       return 0;
   }
   virtual ModelObjectsTemp do_get_inputs(
-      Model *, const ParticleIndexes &) const IMP_OVERRIDE {
+      Model *, const ParticleIndexes &) const override {
     return ModelObjectsTemp();
   }
   IMP_CLASSNAME_PREDICATE_METHODS(CoinFlipClassnamePredicate);
