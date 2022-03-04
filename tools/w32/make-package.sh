@@ -55,8 +55,13 @@ cp ${TOOLDIR}/pkg-README.txt ${ROOT}/README.txt || exit 1
 # Move pure Python code to Windows location
 mkdir ${ROOT}/python || exit 1
 mkdir ${ROOT}/python/ihm || exit 1
-mv ${ROOT}/pylib/2.7/*.py ${ROOT}/pylib/2.7/IMP ${ROOT}/python || exit 1
-mv ${ROOT}/pylib/2.7/ihm/*.py ${ROOT}/python/ihm || exit 1
+if [ "${BITS}" = "32" ]; then
+  mv ${ROOT}/pylib/3.6/*.py ${ROOT}/pylib/3.6/IMP ${ROOT}/python || exit 1
+  mv ${ROOT}/pylib/3.6/ihm/*.py ${ROOT}/python/ihm || exit 1
+else
+  mv ${ROOT}/pylib/2.7/*.py ${ROOT}/pylib/2.7/IMP ${ROOT}/python || exit 1
+  mv ${ROOT}/pylib/2.7/ihm/*.py ${ROOT}/python/ihm || exit 1
+fi
 rm -rf ${ROOT}/pylib/*/*.py ${ROOT}/pylib/*/ihm/*.py ${ROOT}/pylib/*/IMP || exit 1
 
 # Patch IMP/__init__.py, ihm/__init__.py, and RMF.py so they can find Python
@@ -80,7 +85,11 @@ for app in ${ROOT}/bin/*; do
 done
 
 # Make Python version-specific directories for extensions (.pyd)
-PYVERS="2.7 3.6 3.7 3.8 3.9 3.10"
+if [ "${BITS}" = "32" ]; then
+  PYVERS="3.6 3.7 3.8 3.9 3.10"
+else
+  PYVERS="2.7 3.6 3.7 3.8 3.9 3.10"
+fi
 for PYVER in ${PYVERS}; do
   mkdir ${ROOT}/python/python${PYVER} || exit 1
   mkdir ${ROOT}/python/python${PYVER}/_ihm_pyd || exit 1
@@ -108,32 +117,30 @@ rm -rf ${ROOT}/bin/imp_example_app.exe \
 rm -rf `find ${ROOT} -name .svn`
 
 if [ "${BITS}" = "32" ]; then
-  PYVERS="27 36 37 38 39 310"
+  PYVERS="36 37 38 39 310"
   MAKENSIS="makensis"
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w32comp/windows/system
-  cp ${DLLSRC}/msvc*100.dll ${ROOT}/bin || exit 1
+  cp ${DLLSRC}/msvc*140.dll ${ROOT}/bin || exit 1
   # Add other DLL dependencies
   cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
-     ${DLLSRC}/boost_filesystem-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_program_options-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_system-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_date_time-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_graph-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_regex-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_thread-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_random-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_iostreams-vc100-mt-1_53.dll \
-     ${DLLSRC}/boost_zlib-vc100-mt-1_53.dll \
-     ${DLLSRC}/CGAL-vc100-mt-4.1.dll \
+     ${DLLSRC}/boost_filesystem-vc140-mt-x32-1_72.dll \
+     ${DLLSRC}/boost_program_options-vc140-mt-x32-1_72.dll \
+     ${DLLSRC}/boost_system-vc140-mt-x32-1_72.dll \
+     ${DLLSRC}/boost_date_time-vc140-mt-x32-1_72.dll \
+     ${DLLSRC}/boost_graph-vc140-mt-x32-1_72.dll \
+     ${DLLSRC}/boost_regex-vc140-mt-x32-1_72.dll \
+     ${DLLSRC}/boost_thread-vc140-mt-x32-1_72.dll \
+     ${DLLSRC}/boost_random-vc140-mt-x32-1_72.dll \
+     ${DLLSRC}/boost_iostreams-vc140-mt-x32-1_72.dll \
+     ${DLLSRC}/boost_zlib-vc140-mt-x32-1_72.dll \
      ${DLLSRC}/libgmp-10.dll \
      ${DLLSRC}/libmpfr-4.dll \
      ${DLLSRC}/libfftw3-3.dll \
      ${DLLSRC}/libTAU1.dll \
      ${DLLSRC}/zlib1.dll \
-     ${DLLSRC}/opencv_core220.dll ${DLLSRC}/opencv_highgui220.dll \
-     ${DLLSRC}/opencv_ffmpeg220.dll \
-     ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/bin || exit 1
+     ${DLLSRC}/opencv_core455.dll ${DLLSRC}/opencv_highgui455.dll \
+     ${DLLSRC}/opencv_imgproc455.dll ${ROOT}/bin || exit 1
 else
   PYVERS="27 36 37 38 39 310"
   MAKENSIS="makensis -DIMP_64BIT"
