@@ -23,7 +23,7 @@ DecayPairContainerOptimizerState::DecayPairContainerOptimizerState(
 void DecayPairContainerOptimizerState::do_update(unsigned int) {
   IMP_OBJECT_LOG;
   ParticleIndexPairs to_remove;
-  IMP_FOREACH(ParticleIndexPair pip, output_->get_contents()) {
+  for(ParticleIndexPair pip : output_->get_contents()) {
     if (pred_->get_value_index(input_->get_model(), pip) == 0) {
       to_remove.push_back(pip);
     }
