@@ -56,6 +56,8 @@ cp ${TOOLDIR}/pkg-README.txt ${ROOT}/README.txt || exit 1
 mkdir ${ROOT}/python || exit 1
 mkdir ${ROOT}/python/ihm || exit 1
 if [ "${BITS}" = "32" ]; then
+  # Remove .pyc files
+  find ${ROOT} -name __pycache__ -exec rm -rf \{\} \; 2>/dev/null
   mv ${ROOT}/pylib/3.6/*.py ${ROOT}/pylib/3.6/IMP ${ROOT}/python || exit 1
   mv ${ROOT}/pylib/3.6/ihm/*.py ${ROOT}/python/ihm || exit 1
 else
