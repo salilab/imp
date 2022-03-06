@@ -5,11 +5,11 @@ ChangeLog {#changelog}
 - The IMP::em::CoarseCC class has been removed. Use similarly-named free
   functions instead to calculate coarse cross correlation.
 - IMP now requires a C++11 compiler and SWIG 3 (or later) to build. Most
-  compilers less than 10 years old should support C++11, such as gcc, clang
-  or MS Visual Studio 2010 or later. Various IMP macro and header workarounds
+  recent compilers should support C++11, such as gcc, clang
+  or MS Visual Studio 2015 or later. Various IMP macro and header workarounds
   for pre-C++11 environments are thus no longer needed and are deprecated:
   `IMP_NULLPTR`, `IMP_NULLPTR_T`, `IMP_OVERRIDE`, `IMP_FINAL`, `IMP_UNIQUE_PTR`,
-  `IMP/nullptr.h`, `IMP/nullptr_macros.h`
+  `IMP_FOREACH`, `IMP/nullptr.h`, and `IMP/nullptr_macros.h`.
 
 # 2.16.0 - 2021-12-16 # {#changelog_2_16_0}
 - OpenCubicSpline now throws a ValueException for out-of-range values, to

@@ -8,15 +8,8 @@
 #ifndef IMPKERNEL_COMPILER_MACROS_H
 #define IMPKERNEL_COMPILER_MACROS_H
 
-#include <boost/config.hpp>
-#include <boost/version.hpp>
-#if defined(BOOST_NO_CXX11_RANGE_BASED_FOR)
-#include <boost/foreach.hpp>
-#define IMP_FOREACH(v, r) BOOST_FOREACH(v, r)
-#else
-/** Use C++11 range-based for if available or BOOST_FOREACH if not. */
+// Deprecated: just use C++11 range-based for instead
 #define IMP_FOREACH(v, r) for (v : r)
-#endif
 
 #define IMP_STRINGIFY(x) #x
 
