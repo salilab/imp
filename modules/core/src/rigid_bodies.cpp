@@ -546,14 +546,14 @@ void RigidBody::teardown_particle(RigidBody rb) {
   rb.on_change();
   {
     const ParticleIndexes &members = rb.get_member_particle_indexes();
-    IMP_FOREACH(ParticleIndex pi, members) {
+    for(ParticleIndex pi : members) {
       internal::remove_required_attributes_for_member(rb.get_model(), pi);
     }
   }
   {
     const ParticleIndexes &members =
         rb.get_body_member_particle_indexes();
-    IMP_FOREACH(ParticleIndex pi, members) {
+    for(ParticleIndex pi : members) {
       internal::remove_required_attributes_for_body_member(rb.get_model(), pi);
     }
   }
@@ -569,7 +569,7 @@ void RigidBody::set_reference_frame_from_members(
                   "Can't initialize a rigid body reference frame "
                       << "with < 3 particles.");
   Model *m = get_model();
-  IMP_FOREACH(ParticleIndex pi, rms) {
+  for(ParticleIndex pi : rms) {
     local.push_back(RigidMember(m, pi).get_internal_coordinates());
     global.push_back(RigidMember(m, pi).get_coordinates());
   }
@@ -577,7 +577,7 @@ void RigidBody::set_reference_frame_from_members(
       algebra::get_transformation_aligning_first_to_second(local, global);
   set_reference_frame_lazy(algebra::ReferenceFrame3D(t3));
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    IMP_FOREACH(ParticleIndex pi, rms) {
+    for(ParticleIndex pi : rms) {
       algebra::Vector3D local =
           RigidBodyMember(m, pi).get_internal_coordinates();
       algebra::Vector3D back = t3.get_transformed(local);
@@ -1082,7 +1082,7 @@ void show_rigid_body_hierarchy(RigidBody rb, TextOutput out) {
     if (core::RigidBody::get_is_setup(m, pi)) {
       out.get_stream() << " + " << m->get_particle_name(pi) << std::endl;
       core::RigidBody rb(m, pi);
-      IMP_FOREACH(ParticleIndex ch,
+      for(ParticleIndex ch :
                   rb.get_member_particle_indexes() +
                       rb.get_body_member_particle_indexes()) {
         queue.push_back(boost::make_tuple(prefix1 + " ", prefix1 + " ", ch));

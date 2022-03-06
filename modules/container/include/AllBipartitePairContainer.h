@@ -43,8 +43,8 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer {
     // needed.
     validate_readable();
     ParticleIndexPairs pips;
-    IMP_FOREACH(ParticleIndex pa, a_->get_contents()) {
-      IMP_FOREACH(ParticleIndex pb, b_->get_contents()) {
+    for(ParticleIndex pa : a_->get_contents()) {
+      for(ParticleIndex pb : b_->get_contents()) {
         pips.push_back(ParticleIndexPair(pa, pb));
       }
     }

@@ -46,7 +46,7 @@ class ICMover : public IMP::core::MonteCarloMover {
 IMP::core::MonteCarloMovers create_ic_movers(IMP::Model *m,
                                              IMP::ParticleIndexes pis) {
   IMP::core::MonteCarloMovers ret;
-  IMP_FOREACH(IMP::ParticleIndex pi, pis) {
+  for(IMP::ParticleIndex pi : pis) {
     ret.push_back(new ICMover(m, pi, 1));
   }
   return ret;
@@ -95,7 +95,7 @@ IMP::ParticleIndexes add_non_rigid(IMP::Model *m,
 }
 
 void move(IMP::core::MonteCarloMovers mvs) {
-  IMP_FOREACH(IMP::core::MonteCarloMover * m, mvs) {
+  for(IMP::core::MonteCarloMover * m : mvs) {
     m->propose();
     m->accept();
   }

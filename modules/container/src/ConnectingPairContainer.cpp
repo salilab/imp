@@ -113,7 +113,7 @@ ModelObjectsTemp ConnectingPairContainer::get_score_state_inputs() const {
   ModelObjectsTemp ret = get_particles(get_model(), sc_->get_indexes());
   ret.push_back(sc_);
   ret.push_back(mv_);
-  IMP_FOREACH(ModelObject * mo, ret) {
+  for(ModelObject * mo : ret) {
     IMP_UNUSED(mo);
     IMP_INTERNAL_CHECK(mo, "Null object found in " << ret);
   }

@@ -346,8 +346,8 @@ MOVector do_get_dependent(ModelObject *mo) {
   if (r) {
     ret.push_back(r);
   }
-  IMP_FOREACH(ModelObject * cur,
-              mo->get_model()->get_dependency_graph_outputs(mo)) {
+  for(ModelObject * cur :
+      mo->get_model()->get_dependency_graph_outputs(mo)) {
     ret += do_get_dependent<MOType, MOVector>(cur);
   }
   return ret;

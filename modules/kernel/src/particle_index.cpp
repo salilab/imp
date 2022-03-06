@@ -48,12 +48,12 @@ ParticleIndexPairsAdaptor::ParticleIndexPairsAdaptor(
     : ParticleIndexPairs(get_indexes(ps)) {}
 
 namespace {
-/* Check to make sure that IMP_FOREACH compiles correctly */
+/* Check to make sure that range-based for compiles correctly */
 void foreach_test() IMP_UNUSED_FUNCTION;
 void foreach_test() {
   ParticleIndexes pis;
   ParticleIndexesAdaptor pia(pis);
-  IMP_FOREACH(ParticleIndex pi, pia) { IMP_UNUSED(pi); }
+  for(ParticleIndex pi : pia) { IMP_UNUSED(pi); }
 }
 }
 IMPKERNEL_END_NAMESPACE

@@ -122,7 +122,7 @@ ParticleIndexes Model::get_particle_indexes() {
 ModelObjectsTemp Model::get_model_objects() const {
   ModelObjectsTemp ret;
   ret.reserve(dependency_graph_.size());
-  IMP_FOREACH(const DependencyGraph::value_type & vt, dependency_graph_) {
+  for(const DependencyGraph::value_type & vt : dependency_graph_) {
     ret.push_back(const_cast<ModelObject *>(vt.first));
   }
   return ret;
@@ -199,7 +199,7 @@ void Model::do_destroy() {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Destroying model" << std::endl);
   // make sure we clear their data to free model objects they are keeping alive
-  IMP_FOREACH(Particle * p, particle_index_) {
+  for(Particle * p : particle_index_) {
     if (p) {
       remove_particle(p->get_index());
     }
