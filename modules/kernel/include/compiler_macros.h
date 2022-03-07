@@ -75,24 +75,11 @@
 #endif
 #endif
 
-#if defined(__GNUC__) && __cplusplus >= 201103L
-#define IMP_HAS_NOEXCEPT 1
-#elif defined(__clang__) && defined(__has_feature)
-#define IMP_HAS_NOEXCEPT __has_feature(cxx_noexcept)
-#else
-#define IMP_HAS_NOEXCEPT 0
-#endif
-
-#if IMP_HAS_NOEXCEPT
+// Deprecated: just use 'noexcept' directly
 #define IMP_NOEXCEPT noexcept
 #define IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Name) \
   Name(const Name &) = default;                  \
   Name &operator=(const Name &) = default
-#else
-// probably should be finer here
-#define IMP_NOEXCEPT throw()
-#define IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Name)
-#endif
 
 #if defined(__clang__) || defined(__GNUC__)
 #define IMP_PRAGMA(x) _Pragma(IMP_STRINGIFY(x))

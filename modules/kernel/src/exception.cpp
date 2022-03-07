@@ -14,24 +14,24 @@ void handle_error(const char *message) {
   // this method is just here to provide a place to break in the debugger
 }
 
-Exception::~Exception() throw() {}
+Exception::~Exception() noexcept {}
 
 Exception::Exception(const char *message) : std::runtime_error(message) {}
 
-InternalException::~InternalException() throw() {}
+InternalException::~InternalException() noexcept {}
 
-UsageException::~UsageException() throw() {}
+UsageException::~UsageException() noexcept {}
 
-IndexException::~IndexException() throw() {}
+IndexException::~IndexException() noexcept {}
 
-ValueException::~ValueException() throw() {}
+ValueException::~ValueException() noexcept {}
 
-ModelException::~ModelException() throw() {}
+ModelException::~ModelException() noexcept {}
 
-EventException::~EventException() throw() {}
+EventException::~EventException() noexcept {}
 
-IOException::~IOException() throw() {}
+IOException::~IOException() noexcept {}
 
-TypeException::~TypeException() throw() {}
+TypeException::~TypeException() noexcept {}
 
 IMPKERNEL_END_NAMESPACE
