@@ -201,6 +201,10 @@ echo "oleaut32.dll" >> w32.dlls
 echo "user32.dll" >> w32.dlls
 echo "wsock32.dll" >> w32.dlls
 echo "ws2_32.dll" >> w32.dlls
+echo "mf.dll" >> w32.dlls
+echo "mfplat.dll" >> w32.dlls
+echo "mfreadwrite.dll" >> w32.dlls
+echo "shlwapi.dll" >> w32.dlls
 
 # People that want to run MPI-enabled binaries will need their own copy
 # of MS-MPI - we don't bundle it.
