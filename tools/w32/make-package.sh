@@ -124,7 +124,11 @@ if [ "${BITS}" = "32" ]; then
   # Add redist MSVC runtime DLLs
   DLLSRC=/usr/lib/w32comp/windows/system
   cp ${DLLSRC}/msvc*140.dll ${DLLSRC}/concrt140.dll \
-     ${DLLSRC}/vcruntime140.dll ${ROOT}/bin || exit 1
+     ${DLLSRC}/vcruntime140.dll ${DLLSRC}/ucrtbase.dll ${ROOT}/bin || exit 1
+  for crt in convert environment filesystem heap locale math multibyte \
+	   runtime stdio string time utility; do
+    cp ${DLLSRC}/api-ms-win-crt-${crt}-l1-1-0.dll ${ROOT}/bin || exit 1
+  done
   # Add other DLL dependencies
   cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
      ${DLLSRC}/boost_filesystem-vc140-mt-x32-1_72.dll \
@@ -197,10 +201,6 @@ echo "oleaut32.dll" >> w32.dlls
 echo "user32.dll" >> w32.dlls
 echo "wsock32.dll" >> w32.dlls
 echo "ws2_32.dll" >> w32.dlls
-for crt in convert environment filesystem heap locale math multibyte \
-	   runtime stdio string time utility; do
-  echo "api-ms-win-crt-${crt}-l1-1-0.dll" >> w32.dlls
-done
 
 # People that want to run MPI-enabled binaries will need their own copy
 # of MS-MPI - we don't bundle it.
