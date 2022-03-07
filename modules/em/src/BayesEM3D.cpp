@@ -10,10 +10,8 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/core/utility.h>
 #include <IMP/em/BayesEM3D.h>
-#include <math.h>
-#include <boost/math/special_functions/sign.hpp>
-#include <boost/math/special_functions/log1p.hpp>
-#include <boost/unordered_set.hpp>
+#include <cmath>
+#include <unordered_set>
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -135,16 +133,16 @@ FloatPair bayesem3d_get_logabssumexp(double x, double y, double sx, double sy) {
   }
 
   if (x > y) {
-    return FloatPair(x + boost::math::log1p(sx * sy * exp(y - x)), sx);
+    return FloatPair(x + std::log1p(sx * sy * exp(y - x)), sx);
   } else {
-    return FloatPair(y + boost::math::log1p(sx * sy * exp(x - y)), sy);
+    return FloatPair(y + std::log1p(sx * sy * exp(x - y)), sy);
   }
 }
 
 FloatPair bayesem3d_get_logabssumprodexp(double x, double y, double wx,
                                          double wy) {
-  double sx = boost::math::copysign(1.0, wx);
-  double sy = boost::math::copysign(1.0, wy);
+  double sx = std::copysign(1.0, wx);
+  double sy = std::copysign(1.0, wy);
 
   return bayesem3d_get_logabssumexp(x + log(wx * sx), y + log(wy * sy), sx, sy);
 }
@@ -159,9 +157,9 @@ double bayesem3d_get_logsumexp(double x, double y) {
   }
 
   if (x > y) {
-    return x + boost::math::log1p(exp(y - x));
+    return x + std::log1p(exp(y - x));
   } else {
-    return y + boost::math::log1p(exp(x - y));
+    return y + std::log1p(exp(x - y));
   }
 }
 
@@ -295,7 +293,7 @@ DensityMap *bayesem3d_get_density_from_particle(DensityMap *em,
   int nxny = em_header->get_nx() * em_header->get_ny();
   int znxny;
 
-  boost::unordered_set<int> visited_voxels;
+  std::unordered_set<int> visited_voxels;
 
   for (unsigned int ii = 0; ii < xyzr.size(); ii++) {
     double px = xyzr[ii].get_x();
@@ -329,9 +327,8 @@ DensityMap *bayesem3d_get_density_from_particle(DensityMap *em,
     }
   }
 
-  for (boost::unordered_set<int>::iterator vv = visited_voxels.begin();
-       vv != visited_voxels.end(); ++vv) {
-    vals[*vv] = exp(vals[*vv]) - 1.;
+  for (auto &vv : visited_voxels) {
+    vals[vv] = exp(vals[vv]) - 1.;
   }
 
   return ret.release();
