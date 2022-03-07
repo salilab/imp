@@ -81,7 +81,6 @@ Section ""
   WriteRegDWORD HKLM "${UNINST_KEY}" "NoModify" 1
   WriteRegDWORD HKLM "${UNINST_KEY}" "NoRepair" 1
 
-  WriteRegStr HKLM "Software\Python\PythonCore\2.7\PythonPath\${PRODVER}" "" "$INSTDIR\python"
   WriteRegStr HKLM "Software\Python\PythonCore\3.6${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}" "" "$INSTDIR\python"
   WriteRegStr HKLM "Software\Python\PythonCore\3.7${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}" "" "$INSTDIR\python"
   WriteRegStr HKLM "Software\Python\PythonCore\3.8${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}" "" "$INSTDIR\python"
@@ -115,7 +114,6 @@ Section "Uninstall"
 
   DeleteRegKey /ifempty HKLM "Software\${PRODVER}"
   DeleteRegKey HKLM "${UNINST_KEY}"
-  DeleteRegKey HKLM "Software\Python\PythonCore\2.7\PythonPath\${PRODVER}"
   DeleteRegKey HKLM "Software\Python\PythonCore\3.6${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}"
   DeleteRegKey HKLM "Software\Python\PythonCore\3.7${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}"
   DeleteRegKey HKLM "Software\Python\PythonCore\3.8${PYTHON_ARCH_SUFFIX}\PythonPath\${PRODVER}"
