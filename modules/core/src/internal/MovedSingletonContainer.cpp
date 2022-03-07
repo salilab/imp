@@ -131,7 +131,7 @@ void XYZRMovedSingletonContainer::do_reset_moved() {
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Resetting moved particles" << std::endl);
   IMP_CONTAINER_ACCESS(SingletonContainer, get_singleton_container(), {
-      IMP_FOREACH(int m, moved_) {
+      for(int m : moved_) {
         backup_[m] =
             XYZR(get_model(), imp_indexes[m]).get_sphere();
       }
@@ -220,8 +220,7 @@ ParticleIndexes RigidMovedSingletonContainer::do_initialize() {
   backup_.clear();
   rbs_members_.clear();
   bodies_.clear();
-  IMP_FOREACH(ParticleIndex pi,
-              get_singleton_container()->get_contents()) {
+  for(ParticleIndex pi : get_singleton_container()->get_contents()) {
     do_initialize_particle(pi);
   }
   for (unsigned int i = 0; i < bodies_.size(); ++i) {
@@ -240,7 +239,7 @@ void RigidMovedSingletonContainer::do_reset_all() {
 
 void RigidMovedSingletonContainer::do_reset_moved() {
   IMP_OBJECT_LOG;
-  IMP_FOREACH(int m, moved_) { backup_[m] = get_data(bodies_[m]); }
+  for(int m : moved_) { backup_[m] = get_data(bodies_[m]); }
   moved_.clear();
 }
 
@@ -254,7 +253,7 @@ std::ostream &operator<<(
                                                   ParticleIndexes> &m) {
   typedef std::pair<ParticleIndex, ParticleIndexes> P;
   out << "{";
-  IMP_FOREACH(P p, m) { out << p.first << ": " << p.second << ", "; }
+  for(P p : m) { out << p.first << ": " << p.second << ", "; }
   out << "}";
   return out;
 }
@@ -325,8 +324,7 @@ RigidMovedSingletonContainer::RigidMovedSingletonContainer(
 ModelObjectsTemp RigidMovedSingletonContainer::get_extra_inputs()
     const {
   ModelObjectsTemp ret;
-  IMP_FOREACH(ParticleIndex pi,
-              get_singleton_container()->get_contents()) {
+  for(ParticleIndex pi : get_singleton_container()->get_contents()) {
     if (core::RigidMember::get_is_setup(get_model(), pi)) {
       RigidBody rb = core::RigidMember(get_model(), pi).get_rigid_body();
       ret.push_back(rb);

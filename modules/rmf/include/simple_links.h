@@ -106,7 +106,7 @@ class SimpleLoadLink : public LoadLink {
     set_was_used(true);
     RMF::NodeConstHandles chs = rt.get_children();
     RMF::NodeConstHandles matching_chs;
-    IMP_FOREACH(RMF::NodeConstHandle ch, rt.get_children()) {
+    for(RMF::NodeConstHandle ch : rt.get_children()) {
       IMP_LOG_VERBOSE("Checking " << ch << std::endl);
       if (get_is(ch)) matching_chs.push_back(ch);
     }

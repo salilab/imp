@@ -82,13 +82,13 @@ void HierarchyLoadXYZs::link_particle(
 }
 
 void HierarchyLoadXYZs::load(RMF::FileConstHandle fh, Model *m) {
-  IMP_FOREACH(Pair pp, global_) {
+  for(Pair pp : global_) {
     IMP_LOG_VERBOSE("Loading global coordinates for "
                     << m->get_particle_name(pp.second) << std::endl);
     algebra::Vector3D rf(get_coordinates(fh.get_node(pp.first), ip_factory_));
     core::XYZ(m, pp.second).set_coordinates(rf);
   }
-  IMP_FOREACH(Pair pp, local_) {
+  for(Pair pp : local_) {
     IMP_LOG_VERBOSE("Loading local coordinates for "
                     << m->get_particle_name(pp.second) << std::endl);
     algebra::Vector3D rf(get_coordinates(fh.get_node(pp.first), ip_factory_));
@@ -127,11 +127,11 @@ void HierarchySaveXYZs::setup_node(
 }
 
 void HierarchySaveXYZs::save(Model *m, RMF::FileHandle fh) {
-  IMP_FOREACH(Pair pp, global_) {
+  for(Pair pp : global_) {
     copy_to_frame_particle(core::XYZ(m, pp.second).get_coordinates(),
                            fh.get_node(pp.first), ip_factory_);
   }
-  IMP_FOREACH(Triplet pp, rigid_nonmember_) {
+  for(Triplet pp : rigid_nonmember_) {
     /* Transform global coordinates to those relative to the "parent"
        rigid body */
     algebra::Vector3D global_coord
@@ -142,7 +142,7 @@ void HierarchySaveXYZs::save(Model *m, RMF::FileHandle fh) {
                    rf.get_transformation_from().get_transformed(global_coord),
                    fh.get_node(pp.first), ip_factory_);
   }
-  IMP_FOREACH(Pair pp, local_) {
+  for(Pair pp : local_) {
     copy_to_frame_particle(
         core::RigidBodyMember(m, pp.second).get_internal_coordinates(),
         fh.get_node(pp.first), ip_factory_);

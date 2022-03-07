@@ -196,24 +196,24 @@ Vector3Ds get_uniform_surface_cover(const Sphere3Ds &in,
   const double scale = 1.0 / resolution;
 
   BoundingBox3D bb;
-  IMP_FOREACH(Sphere3D s, in) { bb += get_bounding_box(s); }
+  for(Sphere3D s : in) { bb += get_bounding_box(s); }
   bb += scale;
 
   typedef DenseGrid3D<char> Grid;
   Grid grid(scale, bb, 0);
-  IMP_FOREACH(Sphere3D s, in) {
+  for(Sphere3D s : in) {
     BoundingBox3D bb = get_bounding_box(s);
-    IMP_FOREACH(Grid::Index i, grid.get_indexes(bb)) {
+    for(Grid::Index i : grid.get_indexes(bb)) {
       Vector3D c = grid.get_center(i);
       if (get_distance(c, s.get_center()) <= s.get_radius()) {
         grid[i] = 1;
       }
     }
   }
-  IMP_FOREACH(Sphere3D s, in) {
+  for(Sphere3D s : in) {
     double a = get_surface_area(s);
     double n = a * resolution * resolution;
-    IMP_FOREACH(Vector3D v, get_uniform_surface_cover(s, std::ceil(n))) {
+    for(Vector3D v : get_uniform_surface_cover(s, std::ceil(n))) {
       if (!grid[v]) {
         ret.push_back(v);
       }

@@ -181,7 +181,7 @@ class IMPKINEMATICSEXPORT ProteinKinematics : public IMP::Object {
   //! root(s) of the kinematic structure
   DihedralAngleRevoluteJoints get_ordered_joints() {
     DihedralAngleRevoluteJoints ret;
-    IMP_FOREACH(Joint *j, kf_->get_ordered_joints() ){
+    for(Joint *j : kf_->get_ordered_joints() ){
       ret.push_back(dynamic_cast<DihedralAngleRevoluteJoint*>(j));
     }
     return ret;

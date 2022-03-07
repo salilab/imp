@@ -21,7 +21,7 @@ void load_frame(RMF::FileConstHandle fh, RMF::FrameID frame) {
   std::string what;
   try {
     fh.set_current_frame(frame);
-    IMP_FOREACH(LoadLink * ll, internal::get_load_linkers(fh)) { ll->load(fh); }
+    for(LoadLink * ll : internal::get_load_linkers(fh)) { ll->load(fh); }
   }
   catch (const std::exception& e) {
     except = true;
@@ -39,7 +39,7 @@ RMF::FrameID save_frame(RMF::FileHandle file, std::string name) {
   try {
     file.set_producer("IMP " + get_module_version());
     RMF::FrameID cur = file.add_frame(name, RMF::FRAME);
-    IMP_FOREACH(SaveLink * ll, internal::get_save_linkers(file)) {
+    for(SaveLink * ll : internal::get_save_linkers(file)) {
       ll->save(file);
     }
     file.flush();

@@ -73,7 +73,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
   const double resolution = 1.0 / maximum_allowed_error_angstroms;
   const double probe = maximum_allowed_error_angstroms;
 
-  IMP_FOREACH(Sphere3D & s, in) {
+  for(Sphere3D & s : in) {
     s = Sphere3D(s.get_center(), s.get_radius() + probe);
   }
 
@@ -93,7 +93,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
       SphereIndex si(i);
       unsigned int nn = nns->get_nearest_neighbor(in[i].get_center());
       double r = get_distance(sps[nn], in[i].get_center());
-      IMP_FOREACH(Vector3D v, sps) {
+      for(Vector3D v : sps) {
         IMP_INTERNAL_CHECK(get_distance(v, in[i].get_center()) > .9 * r,
                            "Bad nearest neighbor. Found one at "
                                << v << " with distance "
@@ -103,7 +103,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
       IMP::Ints support =
           nns->get_in_ball(in[i].get_center(), r + 1.0 / resolution);
 
-      IMP_FOREACH(int i, support) { supports[si].insert(SPIndex(i)); }
+      for(int i : support) { supports[si].insert(SPIndex(i)); }
       radii[si] = r + .5 / resolution;
       /*cpout << ".sphere " << in[i].get_center()[0] << " "
             << in[i].get_center()[1] << " " << in[i].get_center()[2] << " " << r
@@ -118,8 +118,8 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
   if (0) SupportedPair();  // suppress warning
   IMP_KERNEL_LARGE_UNORDERED_MAP<SPIndex, SphereIndexSet> supported;
   typedef std::pair<SphereIndex, SPIndexSet> SupportsPair;
-  IMP_FOREACH(const SupportsPair & ps, supports) {
-    IMP_FOREACH(SPIndex spi, ps.second) { supported[spi].insert(ps.first); }
+  for(const SupportsPair & ps : supports) {
+    for(SPIndex spi : ps.second) { supported[spi].insert(ps.first); }
   }
 
   IMP_LOG_TERSE("Generating output." << std::endl);
@@ -129,7 +129,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
     IMP_USAGE_CHECK(!supports.empty(), "Out of spheres");
     SphereIndex max;
     double max_score = 0;
-    IMP_FOREACH(const SupportsPair & sp, supports) {
+    for(const SupportsPair & sp : supports) {
       double score = sp.second.size();
       if (score > max_score) {
         max_score = score;
@@ -137,8 +137,8 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
       }
     }
     SPIndexSet max_supports = supports.find(max)->second;
-    IMP_FOREACH(SPIndex spi, max_supports) {
-      IMP_FOREACH(SphereIndex si, supported.find(spi)->second) {
+    for(SPIndex spi : max_supports) {
+      for(SphereIndex si : supported.find(spi)->second) {
         if (si != max) {
           supports[si].erase(spi);
           if (supports[si].empty()) supports.erase(si);

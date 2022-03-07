@@ -156,7 +156,7 @@ void HierarchyLoadRigidBodies::fix_rigid_body(Model *m, const RB &in) const {
   // core::RigidMembers rms=in.second;
   core::RigidBody rb(m, in.rb);
   ParticleIndexes rigid_bits;
-  IMP_FOREACH(ParticleIndex pi, in.members) {
+  for(ParticleIndex pi : in.members) {
     if (core::RigidMember::get_is_setup(rb.get_model(), pi)) {
       rigid_bits.push_back(pi);
     }
@@ -169,7 +169,7 @@ void HierarchyLoadRigidBodies::fix_rigid_body(Model *m, const RB &in) const {
   rb.set_reference_frame_from_members(rigid_bits);
   algebra::ReferenceFrame3D rf = rb.get_reference_frame();
   // fix rigid bodies that aren't rigid
-  IMP_FOREACH(ParticleIndex mb, in.members) {
+  for(ParticleIndex mb : in.members) {
     if (core::NonRigidMember::get_is_setup(rb.get_model(), mb)) {
       fix_internal_coordinates(rb, rf,
                                core::RigidBodyMember(rb.get_model(), mb));
@@ -186,7 +186,7 @@ void HierarchyLoadRigidBodies::initialize_rigid_body(Model *m, RB &in) const {
       core::get_initial_reference_frame(m, in.members);
   IMP_LOG_TERSE("Initial rf is " << rf << std::endl);
   rb.set_reference_frame_lazy(rf);
-  IMP_FOREACH(ParticleIndex pi, in.members) {
+  for(ParticleIndex pi : in.members) {
     core::RigidBodyMember rbm(m, pi);
     if (core::RigidBody::get_is_setup(m, pi)) {
       algebra::Transformation3D lc =
@@ -208,14 +208,14 @@ void HierarchyLoadRigidBodies::initialize_rigid_body(Model *m, RB &in) const {
 }
 
 void HierarchyLoadRigidBodies::load(RMF::FileConstHandle fh, Model *m) {
-  IMP_FOREACH(Pair pp, global_) {
+  for(Pair pp : global_) {
     IMP_LOG_VERBOSE("Loading global rigid body "
                     << m->get_particle_name(pp.second) << std::endl);
     algebra::ReferenceFrame3D rf(
         get_transformation(fh.get_node(pp.first), reference_frame_factory_));
     core::RigidBody(m, pp.second).set_reference_frame_lazy(rf);
   }
-  IMP_FOREACH(Pair pp, local_) {
+  for(Pair pp : local_) {
     IMP_LOG_VERBOSE("Loading local rigid body "
                     << m->get_particle_name(pp.second) << std::endl);
     algebra::ReferenceFrame3D rf(
@@ -229,14 +229,14 @@ void HierarchyLoadRigidBodies::update_rigid_bodies(RMF::FileConstHandle,
                                                    Model *m) {
   /* Make sure that the global coordinates of any nested rigid bodies are
      set from their parents */
-  IMP_FOREACH(Pair pp, global_) {
+  for(Pair pp : global_) {
     core::RigidBody rb(m, pp.second);
     rb.update_members();
   }
 
   // backwards compat
   typedef std::pair<const int, RB> P;
-  IMP_FOREACH(P & pp, rigid_body_compositions_) {
+  for(P & pp : rigid_body_compositions_) {
     if (!pp.second.initialized) {
       initialize_rigid_body(m, pp.second);
     } else {
@@ -255,7 +255,7 @@ HierarchySaveRigidBodies::HierarchySaveRigidBodies(RMF::FileHandle f)
 ParticleIndex HierarchySaveRigidBodies::fill_external(
     Model *m, ParticleIndex p) {
   RMF_SMALL_UNORDERED_SET<ParticleIndex> rbs;
-  IMP_FOREACH(ParticleIndex ch,
+  for(ParticleIndex ch :
               atom::Hierarchy(m, p).get_children_indexes()) {
     ParticleIndex cur = fill_external(m, ch);
     rbs.insert(cur);
@@ -274,8 +274,7 @@ ParticleIndex HierarchySaveRigidBodies::fill_external(
       *rbs.begin() != IMP::get_invalid_index<ParticleIndexTag>()) {
     externals_[p] = *rbs.begin();
     external_index_[externals_[p]] = externals_[p].get_index();
-    IMP_FOREACH(ParticleIndex ch,
-                atom::Hierarchy(m, p).get_children_indexes()) {
+    for(ParticleIndex ch : atom::Hierarchy(m, p).get_children_indexes()) {
       not_externals_.insert(ch);
       externals_.erase(ch);
     }
@@ -325,14 +324,14 @@ void HierarchySaveRigidBodies::setup_node(
 }
 
 void HierarchySaveRigidBodies::save(Model *m, RMF::FileHandle fh) {
-  IMP_FOREACH(Pair pp, global_) {
+  for(Pair pp : global_) {
     copy_to_frame_reference_frame(core::RigidBody(m, pp.second)
                                       .get_reference_frame()
                                       .get_transformation_to(),
                                   fh.get_node(pp.first),
                                   reference_frame_factory_);
   }
-  IMP_FOREACH(Pair pp, local_) {
+  for(Pair pp : local_) {
     copy_to_frame_reference_frame(
         core::RigidBodyMember(m, pp.second).get_internal_transformation(),
         fh.get_node(pp.first), reference_frame_factory_);

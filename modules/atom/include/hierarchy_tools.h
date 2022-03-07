@@ -212,7 +212,7 @@ class HierarchiesGeometry : public display::SingletonsGeometry {
       : SingletonsGeometry(sc), res_(resolution) {}
   display::Geometries get_components() const override {
     display::Geometries ret;
-    IMP_FOREACH(ParticleIndex pi, get_container()->get_contents()) {
+    for(ParticleIndex pi : get_container()->get_contents()) {
       Model *m = get_container()->get_model();
       if (components_.find(pi) == components_.end()) {
         IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(m, pi), res_));

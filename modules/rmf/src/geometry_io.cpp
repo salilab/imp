@@ -239,7 +239,7 @@ class BoxLoadLink : public GeometryLoadLink<display::BoundingBoxGeometry,
     RMF::NodeConstHandles nhs = nh.get_children();
     IMP_USAGE_CHECK(nhs.size() == 12,
                     "Wrong number of child segments for box: " << nhs.size());
-    IMP_FOREACH(RMF::NodeConstHandle n, nhs) {
+    for(RMF::NodeConstHandle n : nhs) {
       IMP_USAGE_CHECK(get_factory().get_is(n),
                       "It is not a segment: " << n.get_name());
       algebra::Segment3D s = get_segment(get_factory().get(n));

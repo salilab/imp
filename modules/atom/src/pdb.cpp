@@ -498,7 +498,7 @@ WritePDBOptimizerState::WritePDBOptimizerState(const atom::Hierarchies mh,
                                                std::string filename)
     : OptimizerState(mh[0].get_model(), filename + "Writer"),
       filename_(filename) {
-  IMP_FOREACH(atom::Hierarchy h, mh) { pis_.push_back(h.get_particle_index()); }
+  for(atom::Hierarchy h : mh) { pis_.push_back(h.get_particle_index()); }
 }
 
 void WritePDBOptimizerState::do_update(unsigned int call) {
@@ -506,7 +506,7 @@ void WritePDBOptimizerState::do_update(unsigned int call) {
   bool append = (call != 0);
   std::string filename;
   Hierarchies hs;
-  IMP_FOREACH(ParticleIndex pi, pis_) {
+  for(ParticleIndex pi : pis_) {
     hs.push_back(Hierarchy(get_model(), pi));
   }
   try {
@@ -525,7 +525,7 @@ void WritePDBOptimizerState::do_update(unsigned int call) {
 
 ModelObjectsTemp WritePDBOptimizerState::do_get_inputs() const {
   ModelObjectsTemp ret;
-  IMP_FOREACH(ParticleIndex pi, pis_) {
+  for(ParticleIndex pi : pis_) {
     ret += get_leaves(Hierarchy(get_model(), pi));
   }
   return ret;

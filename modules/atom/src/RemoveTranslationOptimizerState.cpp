@@ -16,7 +16,7 @@ IMPATOM_BEGIN_NAMESPACE
 RemoveTranslationOptimizerState::RemoveTranslationOptimizerState(
     Model *m, ParticleIndexesAdaptor pis)
     : OptimizerState(m, "RemoveTranslationOptimizerState%1%") {
-  IMP_FOREACH(ParticleIndex pi, pis) {
+  for(ParticleIndex pi : pis) {
     pis_.push_back(m->get_particle(pi));
   }
 }

@@ -189,7 +189,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     } else {
       oi->set_last_score(0);
     }
-    IMP_FOREACH(RMF::NodeConstHandle ch, chs) {
+    for(RMF::NodeConstHandle ch : chs) {
       if (ch.get_type() == RMF::ORGANIZATIONAL) {
         load_restraint_particles(ch);
       }
@@ -205,7 +205,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
     Restraints childr;
     ParticlesTemp inputs;
     std::vector<ParticleIndexesData> static_pis, dynamic_pis;
-    IMP_FOREACH(RMF::NodeConstHandle ch, chs) {
+    for(RMF::NodeConstHandle ch : chs) {
       if (ch.get_type() == RMF::FEATURE) {
         childr.push_back(do_create(ch, m));
         add_link(childr.back(), ch);
@@ -214,7 +214,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
       }
     }
     if (rf_.get_is(name)) {
-      IMP_FOREACH(RMF::NodeConstHandle an, rf_.get(name).get_representation()) {
+      for(RMF::NodeConstHandle an : rf_.get(name).get_representation()) {
         IMP_LOG_TERSE("Found alias child to " << an.get_name() << " of type "
                                               << an.get_type() << std::endl);
         Particle *p = get_association<Particle>(an);
@@ -248,7 +248,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
   }
 
   void load_restraint_particles(RMF::NodeConstHandle parent) {
-    IMP_FOREACH(RMF::NodeConstHandle ch, parent.get_children()) {
+    for(RMF::NodeConstHandle ch : parent.get_children()) {
       Particle *p = get_association<Particle>(ch);
       if (p) {
         load_particle(ch, p->get_model(), p->get_index());
@@ -262,10 +262,10 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
      (or its children) */
   void create_restraint_particles(RMF::NodeConstHandle parent, Model *m) {
     RMF::NodeConstHandles chs = parent.get_children();
-    IMP_FOREACH(RMF::NodeConstHandle ch, chs) {
+    for(RMF::NodeConstHandle ch : chs) {
       if (ch.get_type() == RMF::ORGANIZATIONAL) {
         ParticleIndexes pis;
-        IMP_FOREACH(RMF::NodeConstHandle pch, ch.get_children()) {
+        for(RMF::NodeConstHandle pch : ch.get_children()) {
           Pointer<Particle> pi = new IMP::Particle(m, pch.get_name());
           set_association(pch, pi.get(), true);
         }
@@ -280,7 +280,7 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
       std::vector<ParticleIndexesData> &static_pis,
       std::vector<ParticleIndexesData> &dynamic_pis) {
     ParticleIndexes pis;
-    IMP_FOREACH(RMF::NodeConstHandle ch, parent.get_children()) {
+    for(RMF::NodeConstHandle ch : parent.get_children()) {
       Particle *p = get_association<Particle>(ch);
       pis.push_back(p->get_index());
       setup_particle(ch, m, p->get_index());
@@ -562,7 +562,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
               no_terms_.insert(o);
               // delete old children
             } else {
-              IMP_FOREACH(Restraint * r, rs) {
+              for(Restraint * r : rs) {
                 Subset s(get_input_particles(r->get_inputs()));
                 double score = r->get_last_score();
                 r->set_was_used(true);
@@ -853,7 +853,7 @@ void add_restraints_as_bonds(RMF::FileHandle fh, const Restraints &rs) {
   RMF::decorator::BondFactory bf(fh);
   Restraints decomp;
 
-  IMP_FOREACH(Restraint * r, rs) {
+  for(Restraint * r : rs) {
     Pointer<Restraint> rd = r->create_decomposition();
     if (rd == r) {
       decomp.push_back(rd);
@@ -864,12 +864,11 @@ void add_restraints_as_bonds(RMF::FileHandle fh, const Restraints &rs) {
   }
   RMF::NodeHandle bdr =
       fh.get_root_node().add_child("restraint bonds", RMF::ORGANIZATIONAL);
-  IMP_FOREACH(Restraint * bd, decomp) {
+  for(Restraint * bd : decomp) {
     Subset s(get_input_particles(bd->get_inputs()));
     bd->set_was_used(bd);
     RMF::NodeHandles inputs;
-    IMP_FOREACH(Particle * cur,
-                get_input_particles(bd->get_inputs())) {
+    for(Particle * cur : get_input_particles(bd->get_inputs())) {
       RMF::NodeHandle n = get_node_from_association(fh, cur);
       if (n != RMF::NodeHandle()) {
         inputs.push_back(n);

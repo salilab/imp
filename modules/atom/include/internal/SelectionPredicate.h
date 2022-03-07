@@ -107,7 +107,7 @@ protected:
   SelectionPredicates predicates_;
   void clone_predicates(ListSelectionPredicate *s) {
     s->predicates_.reserve(predicates_.size());
-    IMP_FOREACH(SelectionPredicate *p, predicates_) {
+    for(SelectionPredicate *p : predicates_) {
       s->predicates_.push_back(p->clone(false));
     }
   }
@@ -129,7 +129,7 @@ public:
   virtual int setup_bitset(int index) override {
     index = SelectionPredicate::setup_bitset(index);
     /* Set indexes for subpredicates */
-    IMP_FOREACH(SelectionPredicate *p, predicates_) {
+    for(SelectionPredicate *p : predicates_) {
       index = p->setup_bitset(index);
     }
     return index;

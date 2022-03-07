@@ -53,7 +53,7 @@ void HierarchyLoadLink::create_recursive(Model *m,
   Floats bresols, gresols;
   std::map<RMF::NodeConstHandle, ParticleIndex> rep_map;
   if (af_.get_is(name)) {
-    IMP_FOREACH(RMF::NodeConstHandle alt,
+    for(RMF::NodeConstHandle alt :
                 af_.get(name).get_alternatives(RMF::PARTICLE)) {
       if (alt == name) continue;
       ParticleIndex cur_rep = m->add_particle(alt.get_name());
@@ -68,7 +68,7 @@ void HierarchyLoadLink::create_recursive(Model *m,
       }
       IMP_LOG_TERSE("Found particle alternative " << alt << std::endl);
     }
-    IMP_FOREACH(RMF::NodeConstHandle alt,
+    for(RMF::NodeConstHandle alt :
                 af_.get(name).get_alternatives(RMF::GAUSSIAN_PARTICLE)) {
       if (alt == name) continue;
       ParticleIndex cur_rep = m->add_particle(alt.get_name());
@@ -92,7 +92,7 @@ void HierarchyLoadLink::create_recursive(Model *m,
   data.load_xyzs.setup_particle(name, m, cur, rigid_bodies);
   data.load_gaussians.setup_particle(name, m, cur, rigid_bodies);
 
-  IMP_FOREACH(RMF::NodeConstHandle ch, name.get_children()) {
+  for(RMF::NodeConstHandle ch : name.get_children()) {
     if (ch.get_type() == RMF::REPRESENTATION) {
       if (rep_map.find(ch) == rep_map.end()) {
         ParticleIndex child = m->add_particle(ch.get_name());
@@ -260,7 +260,7 @@ void HierarchyLoadLink::add_link_recursive(Model *m,
   do_link_particle(m, root, cur, node);
 
   RMF::NodeConstHandles nchs;
-  IMP_FOREACH(RMF::NodeConstHandle ch, node.get_children()) {
+  for(RMF::NodeConstHandle ch : node.get_children()) {
     if (ch.get_type() == RMF::REPRESENTATION) {
       nchs.push_back(ch);
     }

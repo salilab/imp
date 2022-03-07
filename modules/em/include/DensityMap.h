@@ -665,7 +665,7 @@ inline DensityMap *create_density_map(
   IMP_USAGE_CHECK(arg.get_number_of_voxels(2) ==
                       static_cast<unsigned int>(ret->get_header()->get_nz()),
                   "Z voxels don't match");
-  IMP_FOREACH(typename Grid::Index i, arg.get_all_indexes()) {
+  for(typename Grid::Index i : arg.get_all_indexes()) {
     long vi = ret->xyz_ind2voxel(i[0], i[1], i[2]);
     ret->set_value(vi, arg[vi]);
   }

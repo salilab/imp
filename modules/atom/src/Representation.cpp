@@ -20,7 +20,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 double get_resolution(Model* m, ParticleIndex pi) {
   double min = std::numeric_limits<double>::max();
-  IMP_FOREACH(Hierarchy l, get_leaves(Hierarchy(m, pi))) {
+  for(Hierarchy l : get_leaves(Hierarchy(m, pi))) {
     double cur = core::XYZR(l).get_radius();
     IMP_USAGE_CHECK(cur > 0, "Particle " << l << " has an invalid radius");
     min = std::min(min, cur);

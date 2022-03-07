@@ -94,7 +94,7 @@ DensityGrid get_rasterized(const Gaussian3Ds &gmm, const Floats &weights,
     double pre(get_gaussian_eval_prefactor(determinant));
     Eigen::Vector3d center(gmm[ng].get_center().get_data());
     IMP_INTERNAL_CHECK(invertible, "matrix wasn't invertible! uh oh!");
-    IMP_FOREACH(const DensityGrid::Index & i, ret.get_all_indexes()) {
+    for(const DensityGrid::Index & i : ret.get_all_indexes()) {
       Eigen::Vector3d r(get_vec_from_center(i, ret, center));
       update_value(&ret, i, r, inverse, pre, weights[ng]);
     }

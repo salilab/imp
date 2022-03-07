@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     IMP::atom::add_bonds(hr);
   }
 
-  IMP_FOREACH(IMP::atom::Hierarchy c,
+  for(IMP::atom::Hierarchy c :
               IMP::atom::get_by_type(hr, IMP::atom::CHAIN_TYPE)) {
     IMP::atom::Hierarchy cur =
         create_simplified_assembly_from_volume(c, resolution);

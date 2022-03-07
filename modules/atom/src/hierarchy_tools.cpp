@@ -442,8 +442,7 @@ void transform_impl(
   } else if (core::XYZ::get_is_setup(m, cur)) {
     core::transform(core::XYZ(m, cur), tr);
   }
-  IMP_FOREACH(ParticleIndex pi,
-              atom::Hierarchy(m, cur).get_children_indexes()) {
+  for(ParticleIndex pi : atom::Hierarchy(m, cur).get_children_indexes()) {
     transform_impl(m, pi, tr, rigid_bodies);
   }
 }
@@ -455,7 +454,7 @@ void transform(atom::Hierarchy h, const algebra::Transformation3D &tr) {
   boost::unordered_map<ParticleIndex, ParticleIndexes>
       rigid_bodies;
   transform_impl(m, h.get_particle_index(), tr, rigid_bodies);
-  IMP_FOREACH(const RBP & rbp, rigid_bodies) {
+  for(const RBP & rbp : rigid_bodies) {
     core::RigidBody rb(m, rbp.first);
     ParticleIndexes members = rb.get_member_indexes();
     if (rbp.second.size() != members.size()) {
@@ -477,7 +476,7 @@ void assign_residues(IMP::atom::Hierarchy in,
   IMP_FUNCTION_LOG;
   IMP_KERNEL_LARGE_UNORDERED_MAP<IMP::atom::Hierarchy,
                                IMP_KERNEL_SMALL_UNORDERED_SET<int> > indexes;
-  IMP_FOREACH(IMP::atom::Hierarchy l, IMP::atom::get_leaves(in)) {
+  for(IMP::atom::Hierarchy l : IMP::atom::get_leaves(in)) {
     IMP::core::XYZR d(l);
     IMP::Ints cur;
     if (IMP::atom::Atom::get_is_setup(l) &&
@@ -497,7 +496,7 @@ void assign_residues(IMP::atom::Hierarchy in,
     }
     IMP::atom::Hierarchy min;
     double min_distance = std::numeric_limits<double>::max();
-    IMP_FOREACH(IMP::atom::Hierarchy c, out) {
+    for(IMP::atom::Hierarchy c : out) {
       double cur_dist = IMP::core::get_distance(IMP::core::XYZR(c), d);
       if (cur_dist < min_distance) {
         min_distance = cur_dist;
@@ -508,7 +507,7 @@ void assign_residues(IMP::atom::Hierarchy in,
   }
   typedef std::pair<IMP::atom::Hierarchy, IMP_KERNEL_SMALL_UNORDERED_SET<int> >
       IP;
-  IMP_FOREACH(IP ip, indexes) {
+  for(IP ip : indexes) {
     IMP::atom::Fragment::setup_particle(
         ip.first, IMP::Ints(ip.second.begin(), ip.second.end()));
     IMP::atom::Mass::setup_particle(
@@ -519,7 +518,7 @@ void assign_residues(IMP::atom::Hierarchy in,
 
 void add_bonds(const IMP::atom::Hierarchies &out) {
   IMP_FUNCTION_LOG;
-  IMP_FOREACH(IMP::atom::Hierarchy c, out) {
+  for(IMP::atom::Hierarchy c : out) {
     IMP::atom::Bonded::setup_particle(c);
   }
   IMP::set_progress_display("adding bonds", out.size());
@@ -529,7 +528,7 @@ void add_bonds(const IMP::atom::Hierarchies &out) {
     for (unsigned int j = 0; j < i; ++j) {
       IMP::Ints ij = IMP::atom::Fragment(out[j]).get_residue_indexes();
       std::sort(ij.begin(), ij.end());
-      IMP_FOREACH(int iic, ii) {
+      for(int iic : ii) {
         if (std::binary_search(ij.begin(), ij.end(), iic + 1) ||
             std::binary_search(ij.begin(), ij.end(), iic - 1) ||
             std::binary_search(ij.begin(), ij.end(), iic)) {
@@ -551,7 +550,7 @@ Hierarchy create_simplified_from_volume(Hierarchy h, double resolution) {
   IMP_FUNCTION_LOG;
   Model *m = h.get_model();
   IMP::algebra::Sphere3Ds in_spheres;
-  IMP_FOREACH(IMP::atom::Hierarchy child, IMP::atom::get_leaves(h)) {
+  for(IMP::atom::Hierarchy child : IMP::atom::get_leaves(h)) {
     in_spheres.push_back(IMP::core::XYZR(child).get_sphere());
   }
 
@@ -563,7 +562,7 @@ Hierarchy create_simplified_from_volume(Hierarchy h, double resolution) {
                                        << out_spheres.size() << std::endl);
 
   IMP::atom::Hierarchies leaves;
-  IMP_FOREACH(IMP::algebra::Sphere3D s, out_spheres) {
+  for(IMP::algebra::Sphere3D s : out_spheres) {
     IMP::ParticleIndex cur = m->add_particle("fragment");
     leaves.push_back(IMP::atom::Hierarchy::setup_particle(m, cur));
     IMP::core::XYZR::setup_particle(m, cur, s);
@@ -571,7 +570,7 @@ Hierarchy create_simplified_from_volume(Hierarchy h, double resolution) {
   assign_residues(h, leaves);
   add_bonds(leaves);
   Hierarchy ret = Hierarchy::setup_particle(m, m->add_particle(h->get_name()));
-  IMP_FOREACH(Hierarchy c, leaves) { ret.add_child(c); }
+  for(Hierarchy c : leaves) { ret.add_child(c); }
   return ret;
 }
 
@@ -589,7 +588,7 @@ Hierarchy create_simplified_assembly_from_volume(Hierarchy h,
   } else {
     Hierarchy ret = Hierarchy::setup_particle(
         h.get_model(), h.get_model()->add_particle(h->get_name()));
-    IMP_FOREACH(Hierarchy c, h.get_children()) {
+    for(Hierarchy c : h.get_children()) {
       ret.add_child(create_simplified_assembly_from_volume(c, resolution));
     }
     return ret;

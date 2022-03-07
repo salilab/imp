@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
                               double> Grid;
   Grid grid(1, bb, 0);
   // fill it with a gradient
-  IMP_FOREACH(Grid::Index i, grid.get_all_indexes()) {
+  for(Grid::Index i : grid.get_all_indexes()) {
     IMP::algebra::Vector3D c = grid.get_center(i);
     grid[i] = IMP::algebra::get_distance(c, IMP::algebra::Vector3D(10, 10, 10));
   }

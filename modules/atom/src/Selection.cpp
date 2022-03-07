@@ -137,7 +137,7 @@ namespace {
         return MATCH_WITH_CHILDREN;
       }
       bool no_match = false, cached_match = true;
-      IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
+      for(internal::SelectionPredicate *p : predicates_) {
         MatchType v = p->get_value_index(m, pi, bs);
         if (v == MISMATCH) {
           return MISMATCH;
@@ -180,7 +180,7 @@ namespace {
         return MATCH_WITH_CHILDREN;
       }
       bool no_match = false, no_cached_match = false;
-      IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
+      for(internal::SelectionPredicate *p : predicates_) {
         MatchType v = p->get_value_index(m, pi, bs);
         if (v == MATCH_WITH_CHILDREN) {
           return MATCH_WITH_CHILDREN;
@@ -223,7 +223,7 @@ namespace {
         return MATCH_WITH_CHILDREN;
       }
       bool no_match = false, match = false;
-      IMP_FOREACH(internal::SelectionPredicate *p, predicates_) {
+      for(internal::SelectionPredicate *p : predicates_) {
         MatchType v = p->get_value_index(m, pi, bs);
         if (v == MATCH_WITH_CHILDREN || v == MATCH_SELF_ONLY) {
           match = !match;
@@ -544,7 +544,7 @@ ExpandResults expand_children_search(Model *m,
                                      RepresentationType representation_type) {
   Hierarchy h(m, pi);
   ExpandResults ret;
-  IMP_FOREACH(Hierarchy c, h.get_children()) {
+  for(Hierarchy c : h.get_children()) {
     ExpandResult r = expand_search(m, c, resolution, representation_type);
     if (r.get_indexes().size()>0) ret.push_back(r);
   }
@@ -579,9 +579,9 @@ Selection::SearchResult Selection::search(
   bool children_covered = true;
   bool matched = (val == internal::SelectionPredicate::MATCH_WITH_CHILDREN
                   || val == internal::SelectionPredicate::MATCH_SELF_ONLY);
-  IMP_FOREACH(ExpandResult chlist, cur_children) {
+  for(ExpandResult chlist : cur_children) {
     found_rep_node |= chlist.get_from_rep();
-    IMP_FOREACH(ParticleIndex ch, chlist.get_indexes()) {
+    for(ParticleIndex ch : chlist.get_indexes()) {
       SearchResult curr = search(m, ch, parent, with_representation, found_rep_node);
       matched |= curr.get_match();
       if (curr.get_match()) {
@@ -629,10 +629,10 @@ Selection::get_selected_particle_indexes(bool with_representation) const {
   IMP_LOG_TERSE("Processing selection on " << h_ << " with predicates "
                 << std::endl);
   IMP_LOG_WRITE(VERBOSE, show_predicate(predicate_, IMP_STREAM));
-  IMP_FOREACH(ParticleIndex pi, h_) {
+  for(ParticleIndex pi : h_) {
     ExpandResult res = expand_search(m_, pi, resolution_,
                                      representation_type_);
-    IMP_FOREACH(ParticleIndex rpi, res.get_indexes()) {
+    for(ParticleIndex rpi : res.get_indexes()) {
       ret += search(m_, rpi, base, with_representation, res.get_from_rep()).get_indexes();
     }
   }
@@ -835,7 +835,7 @@ Restraint *create_connectivity_restraint(const Selections &s, double x0,
                                          double k, std::string name) {
   IMP_IF_CHECK(USAGE) {
     boost::unordered_set<ParticleIndex> used;
-    IMP_FOREACH(const Selection & sel, s) {
+    for(const Selection & sel : s) {
       ParticleIndexes cur = sel.get_selected_particle_indexes();
       int old = used.size();
       IMP_UNUSED(old);

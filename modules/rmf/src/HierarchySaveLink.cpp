@@ -69,7 +69,7 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
     {
       atom::Hierarchies reps = rep.get_representations(atom::BALLS);
       int i = 0; /* Skip first (default) resolution */
-      IMP_FOREACH(atom::Hierarchy cr, reps) {
+      for(atom::Hierarchy cr : reps) {
         i++;
         if (cr.get_particle_index() == p) continue;
         RMF::NodeHandle cn = cur.get_file().add_node
@@ -86,7 +86,7 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
       atom::Hierarchies reps = rep.get_representations(atom::DENSITIES);
       Floats gresols = rep.get_resolutions(atom::DENSITIES);
       int i = -1;
-      IMP_FOREACH(atom::Hierarchy cr, reps) {
+      for(atom::Hierarchy cr : reps) {
         i++;
         if (cr.get_particle_index() == p) continue;
         RMF::NodeHandle cn = cur.get_file().add_node
@@ -131,10 +131,10 @@ void HierarchySaveLink::add_recursive(Model *m, ParticleIndex root,
 
   if (!prep_nodes.empty() || !grep_nodes.empty()) {
     RMF::decorator::Alternatives ad = af_.get(cur);
-    IMP_FOREACH(RMF::NodeHandle nh, prep_nodes) {
+    for(RMF::NodeHandle nh : prep_nodes) {
       ad.add_alternative(nh, RMF::PARTICLE);
     }
-    IMP_FOREACH(RMF::NodeHandle nh, grep_nodes) {
+    for(RMF::NodeHandle nh : grep_nodes) {
       ad.add_alternative(nh, RMF::GAUSSIAN_PARTICLE);
     }
   }
