@@ -29,10 +29,9 @@ class ParticleLoadLink : public SimpleLoadLink<Particle> {
       map[ks[i]] = ik;
       IMP_LOG_TERSE("Found " << ks[i] << " with " << ik << std::endl);
     }
-    for (typename boost::unordered_map<RK, IK>::const_iterator it = map.begin();
-         it != map.end(); ++it) {
-      IMP_LOG_TERSE("Added key assoc " << fh.get_name(it->first) << " with "
-                                       << it->second << std::endl);
+    for (const auto &item : map) {
+      IMP_LOG_TERSE("Added key assoc " << fh.get_name(item.first) << " with "
+                                       << item.second << std::endl);
     }
   }
   template <class IK, class RK>
@@ -42,18 +41,17 @@ class ParticleLoadLink : public SimpleLoadLink<Particle> {
     load_keys(nh.get_file(), cat, map);
     /*RMF::show_hierarchy_with_values(nh,
       frame);*/
-    for (typename boost::unordered_map<RK, IK>::const_iterator it = map.begin();
-         it != map.end(); ++it) {
-      if (nh.get_has_value(it->first)) {
-        IK ik = it->second;
+    for (const auto &it : map) {
+      if (nh.get_has_value(it.first)) {
+        IK ik = it.second;
         if (o->has_attribute(ik)) {
-          o->set_value(ik, nh.get_value(it->first));
+          o->set_value(ik, nh.get_value(it.first));
         } else {
-          o->add_attribute(ik, nh.get_value(it->first));
+          o->add_attribute(ik, nh.get_value(it.first));
         }
       } else {
-        if (o->has_attribute(it->second)) {
-          o->remove_attribute(it->second);
+        if (o->has_attribute(it.second)) {
+          o->remove_attribute(it.second);
         }
       }
     }

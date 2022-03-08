@@ -107,11 +107,10 @@ DistancePairScoreWithCache<DistanceScore>::evaluate_indexes_delta(
        const std::vector<unsigned> &indexes, std::vector<double> &score) const {
   double ret = 0;
   ds_.check_cache_valid(m);
-  for (std::vector<unsigned>::const_iterator it = indexes.begin();
-       it != indexes.end(); ++it) {
-    double s = evaluate_index_with_cache(m, p[*it], da);
-    ret = ret - score[*it] + s;
-    score[*it] = s;
+  for (unsigned it : indexes) {
+    double s = evaluate_index_with_cache(m, p[it], da);
+    ret = ret - score[it] + s;
+    score[it] = s;
   }
   return ret;
 }

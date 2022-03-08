@@ -59,9 +59,8 @@ class IMPNPCEXPORT CompositeRestraint : public Restraint {
   /** The restraint will ensure that at least one Particle of each type
       is present in the composite. */
   void add_type(ParticleIndexes ps) {
-    for (ParticleIndexes::const_iterator it = ps.begin(); it != ps.end();
-         ++it) {
-      tps_.push_back(TypedParticle(num_particle_types_, *it));
+    for (const ParticleIndex &it : ps) {
+      tps_.push_back(TypedParticle(num_particle_types_, it));
     }
     ++num_particle_types_;
   }

@@ -93,11 +93,9 @@ class OrientedSoap : public ScoreWithCache {
       const DList &doublets1 = doublets_.get_for_atom(a1);
       if (doublets1.size() > 0) {
         const DList &doublets2 = doublets_.get_for_atom(a2);
-        for (DList::const_iterator dit1 = doublets1.begin();
-             dit1 != doublets1.end(); ++dit1) {
-          for (DList::const_iterator dit2 = doublets2.begin();
-               dit2 != doublets2.end(); ++dit2) {
-            score += score_doublets(a1, a2, distbin, *dit1, *dit2);
+        for (const internal::SoapModelDoublet &dit1 : doublets1) {
+          for (const internal::SoapModelDoublet &dit2 : doublets2) {
+            score += score_doublets(a1, a2, distbin, dit1, dit2);
           }
         }
       }

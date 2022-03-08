@@ -23,9 +23,8 @@ double MinimumSphereDistancePairScore::evaluate_index(Model *m,
   double dist2_min = algebra::get_squared_distance(c0, c1_orig);
 
   /* Find transformation that gives the minimum pairwise distance */
-  for (algebra::Transformation3Ds::const_iterator it = transforms_.begin();
-       it != transforms_.end(); ++it) {
-    algebra::Vector3D c1_transformed = (*it) * c1_orig;
+  for (const algebra::Transformation3D &it : transforms_) {
+    algebra::Vector3D c1_transformed = it * c1_orig;
     double dist2 = algebra::get_squared_distance(c0, c1_transformed);
     if (dist2 < dist2_min) {
       c1_min = c1_transformed;

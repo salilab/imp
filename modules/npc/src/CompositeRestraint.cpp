@@ -65,10 +65,9 @@ namespace {
 
     // Build new graph containing only the mst edges
     FullGraphWeightMap weight_map = boost::get(boost::edge_weight, full_g);
-    for (std::vector<FullGraphEdge>::const_iterator it = mst.begin();
-         it != mst.end(); ++it) {
-      boost::add_edge(boost::source(*it, full_g),
-                      boost::target(*it, full_g), weight_map[*it], g);
+    for (const FullGraphEdge &it : mst) {
+      boost::add_edge(boost::source(it, full_g),
+                      boost::target(it, full_g), weight_map[it], g);
     }
   }
 
@@ -91,9 +90,8 @@ namespace {
                               int num_particle_types) {
     boost::dynamic_bitset<> have_types(num_particle_types);
     have_types.set();
-    for (std::vector<Vertex>::const_iterator it = subset_so_far.begin();
-         it != subset_so_far.end(); ++it) {
-      have_types.reset(tps[*it].first);
+    for (const Vertex &it : subset_so_far) {
+      have_types.reset(tps[it].first);
     }
     return have_types.none();
   }
@@ -187,10 +185,9 @@ namespace {
                                 const TypedParticles &tps,
                                 ParticleIndexPairs &pis) {
     pis.reserve(edges.size());
-    for (std::vector<Edge>::const_iterator it = edges.begin();
-         it != edges.end(); ++it) {
-      int i = boost::target(*it, g);
-      int j = boost::source(*it, g);
+    for (const Edge &it : edges) {
+      int i = boost::target(it, g);
+      int j = boost::source(it, g);
       pis.push_back(ParticleIndexPair(tps[i].second, tps[j].second));
     }
   }
@@ -209,10 +206,9 @@ double CompositeRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
     ParticleIndexPairs pis;
     get_particles_from_edges(edges, g, tps_, pis);
     IMP_LOG_VERBOSE("Minimum subtree is [");
-    for (ParticleIndexPairs::const_iterator it = pis.begin(); it != pis.end();
-         ++it) {
-      IMP_LOG_VERBOSE("(" << get_model()->get_particle_name((*it)[0])
-                      << ", " << get_model()->get_particle_name((*it)[1])
+    for (const ParticleIndexPair &it : pis) {
+      IMP_LOG_VERBOSE("(" << get_model()->get_particle_name(it[0])
+                      << ", " << get_model()->get_particle_name(it[1])
                       << ") ");
     }
     IMP_LOG_VERBOSE("]" << std::endl);
@@ -244,9 +240,8 @@ ModelObjectsTemp CompositeRestraint::do_get_inputs() const {
   ModelObjectsTemp ret;
   ret.reserve(tps_.size());
   Model *m = get_model();
-  for (TypedParticles::const_iterator it = tps_.begin(); it != tps_.end();
-       ++it) {
-    ret.push_back(m->get_particle(it->second));
+  for (const TypedParticle &it : tps_) {
+    ret.push_back(m->get_particle(it.second));
   }
   return ret;
 }

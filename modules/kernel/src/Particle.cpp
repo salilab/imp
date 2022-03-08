@@ -96,9 +96,7 @@ void Particle::show(std::ostream &out) const {
       if (!fks.empty()) {
         preout << "float attributes:" << std::endl;
         preout.set_prefix("  ");
-        for (FloatKeys::const_iterator it = fks.begin(); it != fks.end();
-             ++it) {
-          FloatKey k = *it;
+        for (const FloatKey &k : fks) {
           preout << k << ": ";
 	  preout << get_model()->get_attribute(k, id_, false);
           preout << " (" << get_model()->get_derivative(k, id_, false) << ") ";

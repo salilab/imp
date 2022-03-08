@@ -395,9 +395,8 @@ class RestraintLoadLink : public SimpleLoadLink<Restraint> {
         RMF::Strings rvalue = nh.get_value(k);
         // Convert RMF relative paths to absolute
         Strings value;
-        for (RMF::Strings::const_iterator it = rvalue.begin();
-             it != rvalue.end(); ++it) {
-          value.push_back(RMF::internal::get_absolute_path(fh.get_path(), *it));
+        for (const auto &it : rvalue) {
+          value.push_back(RMF::internal::get_absolute_path(fh.get_path(), it));
         }
         r->get_info()->add_filenames(fh.get_name(k), value);
       }
@@ -641,9 +640,8 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
                              imp_restraint_fn_cat_, ri->get_filenames_key(i));
       Strings value = ri->get_filenames_value(i);
       RMF::Strings rvalue;
-      for (Strings::const_iterator it = value.begin();
-           it != value.end(); ++it) {
-        rvalue.push_back(RMF::internal::get_relative_path(fh.get_path(), *it));
+      for (const auto &it : value) {
+        rvalue.push_back(RMF::internal::get_relative_path(fh.get_path(), it));
       }
       nh.set_frame_value(key, rvalue);
     }
@@ -709,9 +707,8 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
                              imp_restraint_fn_cat_, ri->get_filenames_key(i));
       Strings value = ri->get_filenames_value(i);
       RMF::Strings rvalue;
-      for (Strings::const_iterator it = value.begin();
-           it != value.end(); ++it) {
-        rvalue.push_back(RMF::internal::get_relative_path(fh.get_path(), *it));
+      for (const auto &it : value) {
+        rvalue.push_back(RMF::internal::get_relative_path(fh.get_path(), it));
       }
       nh.set_static_value(key, rvalue);
     }
@@ -748,8 +745,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   }
 
   void save_dynamic_particles(RMF::FileHandle file, ParticlesTemp ps) {
-    for (ParticlesTemp::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
-      Particle *p = *pit;
+    for (Particle *p : ps) {
       RMF::NodeHandle nh = get_node_from_association(file, p);
       save_node(p->get_model(), p->get_index(), nh);
     }
@@ -758,8 +754,7 @@ class RestraintSaveLink : public SimpleSaveLink<Restraint> {
   void add_static_particles(RMF::NodeHandle parent, ParticlesTemp ps) {
     RMF::FileHandle file = parent.get_file();
     RMF::decorator::AliasFactory af(file);
-    for (ParticlesTemp::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
-      Particle *p = *pit;
+    for (Particle *p : ps) {
       std::string nicename = RMF::get_as_node_name(p->get_name());
       if (get_has_associated_node(file, p)) {
         RMF::NodeHandle c = parent.add_child(nicename, RMF::ALIAS);

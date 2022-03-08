@@ -80,10 +80,8 @@ void read_particles_from_buffer(const Vector<char> &buffer,
   read_particles_from_buffer(&buffer.front(), buffer.size() * sizeof(double),
                              particles, keys);
   Model *m = particles[0]->get_model();
-  ParticleIndexes pis = m->get_particle_indexes();
-  for (ParticleIndexes::iterator pi = pis.begin(); pi != pis.end();
-       ++pi) {
-    IMP::check_particle(m, *pi);
+  for (ParticleIndex pi : m->get_particle_indexes()) {
+    IMP::check_particle(m, pi);
   }
 }
 
