@@ -450,11 +450,10 @@ void transform_impl(
 
 void transform(atom::Hierarchy h, const algebra::Transformation3D &tr) {
   Model *m = h.get_model();
-  typedef std::pair<ParticleIndex, ParticleIndexes> RBP;
   boost::unordered_map<ParticleIndex, ParticleIndexes>
       rigid_bodies;
   transform_impl(m, h.get_particle_index(), tr, rigid_bodies);
-  for(const RBP & rbp : rigid_bodies) {
+  for(const auto &rbp : rigid_bodies) {
     core::RigidBody rb(m, rbp.first);
     ParticleIndexes members = rb.get_member_indexes();
     if (rbp.second.size() != members.size()) {
