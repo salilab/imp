@@ -127,6 +127,16 @@ for crt in convert environment filesystem heap locale math multibyte \
            runtime stdio string time utility; do
   cp ${DLLSRC}/api-ms-win-crt-${crt}-l1-1-0.dll ${ROOT}/bin || exit 1
 done
+for core in console-l1-1-0 datetime-l1-1-0 debug-l1-1-0 errorhandling-l1-1-0 \
+            file-l1-1-0 file-l1-2-0 file-l2-1-0 handle-l1-1-0 heap-l1-1-0 \
+            interlocked-l1-1-0 libraryloader-l1-1-0 localization-l1-2-0 \
+            memory-l1-1-0 namedpipe-l1-1-0 processenvironment-l1-1-0 \
+	    processthreads-l1-1-0 processthreads-l1-1-1 profile-l1-1-0 \
+            rtlsupport-l1-1-0 string-l1-1-0 synch-l1-1-0 synch-l1-2-0 \
+            sysinfo-l1-1-0 timezone-l1-1-0 util-l1-1-0; do
+  cp ${DLLSRC}/api-ms-win-core-${core}.dll ${ROOT}/bin || exit 1
+done
+
 # Add other DLL dependencies
 cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
    ${DLLSRC}/boost_filesystem-vc140-mt-x${BITS}-1_72.dll \
