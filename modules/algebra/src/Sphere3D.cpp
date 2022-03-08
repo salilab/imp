@@ -117,8 +117,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
   typedef std::pair<SPIndex, SphereIndexSet> SupportedPair;
   if (0) SupportedPair();  // suppress warning
   IMP_KERNEL_LARGE_UNORDERED_MAP<SPIndex, SphereIndexSet> supported;
-  typedef std::pair<SphereIndex, SPIndexSet> SupportsPair;
-  for(const SupportsPair & ps : supports) {
+  for(const auto &ps : supports) {
     for(SPIndex spi : ps.second) { supported[spi].insert(ps.first); }
   }
 
@@ -129,7 +128,7 @@ Sphere3Ds get_simplified_from_volume(Sphere3Ds in,
     IMP_USAGE_CHECK(!supports.empty(), "Out of spheres");
     SphereIndex max;
     double max_score = 0;
-    for(const SupportsPair & sp : supports) {
+    for(const auto &sp : supports) {
       double score = sp.second.size();
       if (score > max_score) {
         max_score = score;
