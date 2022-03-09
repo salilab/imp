@@ -122,7 +122,7 @@ As a result, such functions do not need to obey all the coding conventions
 
 # C++ 11 {#codeconv_cxx11}
 Latest %IMP requires a compiler that supports C++ 11, unlike older versions.
-Thus, C++ 11 features, such as the `override`, `final`, `auto`, `noexcept`
-and `nullptr` keywords, and range-based for loops, can be used where
-appropriate.  The old compatibility macros (such as `IMP_OVERRIDE`, `IMP_FINAL`,
-`IMP_NOEXCEPT`, `IMP_NULLPTR` and `IMP_FOREACH`) should no longer be used.
+Thus, C++ 11 features, such as the `override`, `final`, `auto` and `nullptr`
+keywords, and range-based for loops, can be used where appropriate.
+The old compatibility macros (such as `IMP_OVERRIDE`, `IMP_FINAL`,
+`IMP_NULLPTR` and `IMP_FOREACH`) should no longer be used.

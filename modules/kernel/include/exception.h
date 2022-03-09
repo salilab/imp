@@ -52,11 +52,11 @@ class IMPKERNELEXPORT Exception
       {
  public:
 #if defined(SWIG) || defined(IMP_DOXYGEN)
-  const char *what() const noexcept;
+  const char *what() const IMP_NOEXCEPT;
 #endif
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(Exception);
   Exception(const char *message);
-  ~Exception() noexcept;
+  ~Exception() IMP_NOEXCEPT;
 };
 
 #endif
@@ -106,7 +106,7 @@ struct IMPKERNELEXPORT InternalException
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(InternalException);
   InternalException(const char *msg = "Fatal error")
       : std::runtime_error(msg) {}
-  ~InternalException() noexcept;
+  ~InternalException() IMP_NOEXCEPT;
 };
 
 //! An exception for an invalid usage of \imp
@@ -127,7 +127,7 @@ class IMPKERNELEXPORT UsageException
  public:
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(UsageException);
   UsageException(const char *t) : std::runtime_error(t) {}
-  ~UsageException() noexcept;
+  ~UsageException() IMP_NOEXCEPT;
 };
 
 //! An exception for an invalid value being passed to \imp
@@ -137,7 +137,7 @@ class IMPKERNELEXPORT ValueException : public Exception {
  public:
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(ValueException);
   ValueException(const char *t) : Exception(t) {}
-  ~ValueException() noexcept;
+  ~ValueException() IMP_NOEXCEPT;
 };
 
 //! An exception for an invalid type being passed to \imp
@@ -147,7 +147,7 @@ class IMPKERNELEXPORT TypeException : public Exception {
  public:
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(TypeException);
   TypeException(const char *t) : Exception(t) {}
-  ~TypeException() noexcept;
+  ~TypeException() IMP_NOEXCEPT;
 };
 
 //! An exception for a request for an invalid member of a container
@@ -158,7 +158,7 @@ class IMPKERNELEXPORT IndexException : public Exception {
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(IndexException);
   //! Create exception with an error message
   IndexException(const char *t) : Exception(t) {}
-  ~IndexException() noexcept;
+  ~IndexException() IMP_NOEXCEPT;
 };
 
 //! An input/output exception
@@ -174,7 +174,7 @@ class IMPKERNELEXPORT IOException : public Exception {
  public:
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(IOException);
   IOException(const char *t) : Exception(t) {}
-  ~IOException() noexcept;
+  ~IOException() IMP_NOEXCEPT;
 };
 
 /** \brief An exception which is thrown when the Model has
@@ -190,7 +190,7 @@ class IMPKERNELEXPORT ModelException : public Exception {
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(ModelException);
   //! Create exception with an error message
   ModelException(const char *t) : Exception(t) {}
-  ~ModelException() noexcept;
+  ~ModelException() IMP_NOEXCEPT;
 };
 
 //! An exception that signifies some event occurred.
@@ -205,7 +205,7 @@ class IMPKERNELEXPORT EventException : public Exception {
   IMP_CXX11_DEFAULT_COPY_CONSTRUCTOR(EventException);
   //! Create exception with an error message
   EventException(const char *t = "") : Exception(t) {}
-  ~EventException() noexcept;
+  ~EventException() IMP_NOEXCEPT;
 };
 #endif
 

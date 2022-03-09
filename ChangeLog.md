@@ -9,7 +9,7 @@ ChangeLog {#changelog}
   or MS Visual Studio 2015 or later. Various IMP macro and header workarounds
   for pre-C++11 environments are thus no longer needed and are deprecated:
   `IMP_NULLPTR`, `IMP_NULLPTR_T`, `IMP_OVERRIDE`, `IMP_FINAL`, `IMP_UNIQUE_PTR`,
-  `IMP_FOREACH`, `IMP_NOEXCEPT`, `IMP/nullptr.h`, and `IMP/nullptr_macros.h`.
+  `IMP_FOREACH`, `IMP/nullptr.h`, and `IMP/nullptr_macros.h`.
 
 # 2.16.0 - 2021-12-16 # {#changelog_2_16_0}
 - OpenCubicSpline now throws a ValueException for out-of-range values, to
