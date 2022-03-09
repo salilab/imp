@@ -120,21 +120,8 @@ if [ "${BITS}" = "32" ]; then
   DLLSRC=/usr/lib/w32comp/windows/system
 
   # Add redist MSVC runtime DLLs
-  cp ${DLLSRC}/msvc*140.dll ${DLLSRC}/concrt140.dll \
-  ${DLLSRC}/vcruntime140.dll ${DLLSRC}/ucrtbase.dll ${ROOT}/bin || exit 1
-  for crt in convert environment filesystem heap locale math multibyte \
-             runtime stdio string time utility; do
-    cp ${DLLSRC}/api-ms-win-crt-${crt}-l1-1-0.dll ${ROOT}/bin || exit 1
-  done
-  for core in console-l1-1-0 datetime-l1-1-0 debug-l1-1-0 errorhandling-l1-1-0 \
-              file-l1-1-0 file-l1-2-0 file-l2-1-0 handle-l1-1-0 heap-l1-1-0 \
-              interlocked-l1-1-0 libraryloader-l1-1-0 localization-l1-2-0 \
-              memory-l1-1-0 namedpipe-l1-1-0 processenvironment-l1-1-0 \
-	      processthreads-l1-1-0 processthreads-l1-1-1 profile-l1-1-0 \
-              rtlsupport-l1-1-0 string-l1-1-0 synch-l1-1-0 synch-l1-2-0 \
-              sysinfo-l1-1-0 timezone-l1-1-0 util-l1-1-0; do
-    cp ${DLLSRC}/api-ms-win-core-${core}.dll ${ROOT}/bin || exit 1
-  done
+  cp ${DLLSRC}/msvcp140.dll ${DLLSRC}/concrt140.dll ${DLLSRC}/vcruntime140.dll \
+     ${ROOT}/bin || exit 1
 
   # Add other DLL dependencies
   cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
@@ -210,6 +197,25 @@ echo "mf.dll" >> w32.dlls
 echo "mfplat.dll" >> w32.dlls
 echo "mfreadwrite.dll" >> w32.dlls
 echo "shlwapi.dll" >> w32.dlls
+
+# Also exclude Universal C runtime and Windows API sets, which
+# should be present on any up to date Windows 7 system (via KB2999226),
+# or by default in Windows 10.
+echo "ucrtbase.dll" >> w32.dlls
+
+for crt in convert environment filesystem heap locale math multibyte \
+           runtime stdio string time utility; do
+  echo "api-ms-win-crt-${crt}-l1-1-0.dll" >> w32.dlls
+done
+for core in console-l1-1-0 datetime-l1-1-0 debug-l1-1-0 errorhandling-l1-1-0 \
+            file-l1-1-0 file-l1-2-0 file-l2-1-0 handle-l1-1-0 heap-l1-1-0 \
+            interlocked-l1-1-0 libraryloader-l1-1-0 localization-l1-2-0 \
+            memory-l1-1-0 namedpipe-l1-1-0 processenvironment-l1-1-0 \
+            processthreads-l1-1-0 processthreads-l1-1-1 profile-l1-1-0 \
+            rtlsupport-l1-1-0 string-l1-1-0 synch-l1-1-0 synch-l1-2-0 \
+            sysinfo-l1-1-0 timezone-l1-1-0 util-l1-1-0; do
+  echo "api-ms-win-core-${core}.dll" >> w32.dlls
+done
 
 # People that want to run MPI-enabled binaries will need their own copy
 # of MS-MPI - we don't bundle it.
