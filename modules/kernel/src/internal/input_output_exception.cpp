@@ -27,7 +27,7 @@ InputOutputException::InputOutputException(std::string container_name,
       operation_(operation),
       entity_(NO_ENTITY) {}
 
-InputOutputException::~InputOutputException() throw() {}
+InputOutputException::~InputOutputException() IMP_NOEXCEPT {}
 
 std::string InputOutputException::get_message(ModelObject *o) const {
   std::ostringstream oss;
