@@ -56,6 +56,9 @@ cp ${TOOLDIR}/pkg-README.txt ${ROOT}/README.txt || exit 1
 mkdir ${ROOT}/python || exit 1
 mkdir ${ROOT}/python/ihm || exit 1
 
+# Drop Python 2
+rm -rf ${ROOT}/pylib/2.7/
+
 # Remove .pyc files
 find ${ROOT} -name __pycache__ -exec rm -rf \{\} \; 2>/dev/null
 mv ${ROOT}/pylib/3.6/*.py ${ROOT}/pylib/3.6/IMP ${ROOT}/python || exit 1
@@ -115,48 +118,71 @@ PYVERS="36 37 38 39 310"
 if [ "${BITS}" = "32" ]; then
   MAKENSIS="makensis"
   DLLSRC=/usr/lib/w32comp/windows/system
+
+  # Add redist MSVC runtime DLLs
+  cp ${DLLSRC}/msvc*140.dll ${DLLSRC}/concrt140.dll \
+  ${DLLSRC}/vcruntime140.dll ${DLLSRC}/ucrtbase.dll ${ROOT}/bin || exit 1
+  for crt in convert environment filesystem heap locale math multibyte \
+             runtime stdio string time utility; do
+    cp ${DLLSRC}/api-ms-win-crt-${crt}-l1-1-0.dll ${ROOT}/bin || exit 1
+  done
+  for core in console-l1-1-0 datetime-l1-1-0 debug-l1-1-0 errorhandling-l1-1-0 \
+              file-l1-1-0 file-l1-2-0 file-l2-1-0 handle-l1-1-0 heap-l1-1-0 \
+              interlocked-l1-1-0 libraryloader-l1-1-0 localization-l1-2-0 \
+              memory-l1-1-0 namedpipe-l1-1-0 processenvironment-l1-1-0 \
+	      processthreads-l1-1-0 processthreads-l1-1-1 profile-l1-1-0 \
+              rtlsupport-l1-1-0 string-l1-1-0 synch-l1-1-0 synch-l1-2-0 \
+              sysinfo-l1-1-0 timezone-l1-1-0 util-l1-1-0; do
+    cp ${DLLSRC}/api-ms-win-core-${core}.dll ${ROOT}/bin || exit 1
+  done
+
+  # Add other DLL dependencies
+  cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
+     ${DLLSRC}/boost_filesystem-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_program_options-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_system-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_date_time-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_graph-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_regex-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_thread-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_random-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_iostreams-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/boost_zlib-vc140-mt-x${BITS}-1_72.dll \
+     ${DLLSRC}/libgmp-10.dll \
+     ${DLLSRC}/libmpfr-4.dll \
+     ${DLLSRC}/libfftw3-3.dll \
+     ${DLLSRC}/libTAU1.dll \
+     ${DLLSRC}/zlib1.dll \
+     ${DLLSRC}/opencv_core455.dll ${DLLSRC}/opencv_highgui455.dll \
+     ${DLLSRC}/opencv_imgcodecs455.dll ${DLLSRC}/opencv_videoio455.dll \
+     ${DLLSRC}/opencv_imgproc455.dll ${ROOT}/bin || exit 1
 else
   MAKENSIS="makensis -DIMP_64BIT"
   DLLSRC=/usr/lib/w64comp/windows/system32
+  # Add redist MSVC runtime DLLs
+  cp ${DLLSRC}/msvc*110.dll ${ROOT}/bin || exit 1
+  # Add other DLL dependencies
+  cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
+     ${DLLSRC}/boost_filesystem-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_program_options-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_system-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_date_time-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_graph-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_regex-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_thread-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_random-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_iostreams-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_zlib-vc110-mt-1_55.dll \
+     ${DLLSRC}/boost_chrono-vc110-mt-1_55.dll \
+     ${DLLSRC}/CGAL-vc110-mt-4.4.dll \
+     ${DLLSRC}/libgmp-10.dll \
+     ${DLLSRC}/libmpfr-4.dll \
+     ${DLLSRC}/libfftw3-3.dll \
+     ${DLLSRC}/libTAU1.dll \
+     ${DLLSRC}/zlib1.dll \
+     ${DLLSRC}/opencv_core248.dll ${DLLSRC}/opencv_highgui248.dll \
+     ${DLLSRC}/opencv_imgproc248.dll ${ROOT}/bin || exit 1
 fi
-
-# Add redist MSVC runtime DLLs
-cp ${DLLSRC}/msvc*140.dll ${DLLSRC}/concrt140.dll \
-${DLLSRC}/vcruntime140.dll ${DLLSRC}/ucrtbase.dll ${ROOT}/bin || exit 1
-for crt in convert environment filesystem heap locale math multibyte \
-           runtime stdio string time utility; do
-  cp ${DLLSRC}/api-ms-win-crt-${crt}-l1-1-0.dll ${ROOT}/bin || exit 1
-done
-for core in console-l1-1-0 datetime-l1-1-0 debug-l1-1-0 errorhandling-l1-1-0 \
-            file-l1-1-0 file-l1-2-0 file-l2-1-0 handle-l1-1-0 heap-l1-1-0 \
-            interlocked-l1-1-0 libraryloader-l1-1-0 localization-l1-2-0 \
-            memory-l1-1-0 namedpipe-l1-1-0 processenvironment-l1-1-0 \
-	    processthreads-l1-1-0 processthreads-l1-1-1 profile-l1-1-0 \
-            rtlsupport-l1-1-0 string-l1-1-0 synch-l1-1-0 synch-l1-2-0 \
-            sysinfo-l1-1-0 timezone-l1-1-0 util-l1-1-0; do
-  cp ${DLLSRC}/api-ms-win-core-${core}.dll ${ROOT}/bin || exit 1
-done
-
-# Add other DLL dependencies
-cp ${DLLSRC}/hdf5.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
-   ${DLLSRC}/boost_filesystem-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_program_options-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_system-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_date_time-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_graph-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_regex-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_thread-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_random-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_iostreams-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/boost_zlib-vc140-mt-x${BITS}-1_72.dll \
-   ${DLLSRC}/libgmp-10.dll \
-   ${DLLSRC}/libmpfr-4.dll \
-   ${DLLSRC}/libfftw3-3.dll \
-   ${DLLSRC}/libTAU1.dll \
-   ${DLLSRC}/zlib1.dll \
-   ${DLLSRC}/opencv_core455.dll ${DLLSRC}/opencv_highgui455.dll \
-   ${DLLSRC}/opencv_imgcodecs455.dll ${DLLSRC}/opencv_videoio455.dll \
-   ${DLLSRC}/opencv_imgproc455.dll ${ROOT}/bin || exit 1
 
 # Check all installed binaries for DLL dependencies, to make sure we
 # didn't miss any
