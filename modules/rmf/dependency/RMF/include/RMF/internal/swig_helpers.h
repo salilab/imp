@@ -42,7 +42,7 @@ struct PyPointer : boost::noncopyable {
   PyObject* release() {
     RMF_INTERNAL_CHECK(ptr_->ob_refcnt >= 1, "No refcount");
     PyObject* ret = ptr_;
-    ptr_ = NULL;
+    ptr_ = nullptr;
     return ret;
   }
   ~PyPointer() {

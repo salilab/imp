@@ -110,7 +110,7 @@ std::pair<double, std::size_t> create_frame(RMF::FileHandle fh,
                                             int frame) {
   RMF::Vector3 ret(0, 0, 0);
   std::size_t total_size = 0;
-  RMF_FOREACH(RMF::NodeID n, atoms) {
+  for(RMF::NodeID n : atoms) {
     RMF::Vector3 v((n.get_index() + 0 + frame) / 17.0,
                    (n.get_index() + 1 + frame) / 19.0,
                    (n.get_index() + 2 + frame) / 23.0);
@@ -125,7 +125,7 @@ std::pair<double, std::size_t> create_frame(RMF::FileHandle fh,
 
 boost::tuple<std::size_t> create(RMF::FileHandle file, RMF::NodeIDs& atoms) {
   std::size_t hierarchy_size = create_hierarchy(file);
-  RMF_FOREACH(RMF::NodeID n, file.get_node_ids()) {
+  for(RMF::NodeID n : file.get_node_ids()) {
     if (file.get_node(n).get_children().empty()) {
       atoms.push_back(n);
     }
@@ -166,9 +166,9 @@ double traverse(RMF::FileConstHandle file) {
 double load(RMF::FileConstHandle file, const RMF::NodeIDs& nodes) {
   RMF::decorator::IntermediateParticleFactory ipcf(file);
   RMF::Vector3 v(0, 0, 0);
-  RMF_FOREACH(RMF::FrameID fr, file.get_frames()) {
+  for(RMF::FrameID fr : file.get_frames()) {
     file.set_current_frame(fr);
-    RMF_FOREACH(RMF::NodeID n, nodes) {
+    for(RMF::NodeID n : nodes) {
       RMF::Vector3 cur = ipcf.get(file.get_node(n)).get_coordinates();
       v[0] += cur[0];
       v[1] += cur[1];
@@ -208,7 +208,7 @@ void benchmark_traverse(RMF::FileConstHandle file, std::string type) {
 void benchmark_load(RMF::FileConstHandle file, std::string type) {
   RMF::NodeIDs nodes;
   RMF::decorator::ParticleFactory ipcf(file);
-  RMF_FOREACH(RMF::NodeID n, file.get_node_ids()) {
+  for(RMF::NodeID n : file.get_node_ids()) {
     if (ipcf.get_is(file.get_node(n))) nodes.push_back(n);
   }
   boost::timer timer;

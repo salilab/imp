@@ -205,7 +205,7 @@ struct SimplePluralTraits {
     if (data.len > 0) {
       data.p = const_cast<typename Type::pointer>(&v[0]);
     } else {
-      data.p = NULL;
+      data.p = nullptr;
     }
     RMF_HDF5_CALL(
         H5Dwrite(d, get_hdf5_memory_type(), iss, s, H5P_DEFAULT, &data));

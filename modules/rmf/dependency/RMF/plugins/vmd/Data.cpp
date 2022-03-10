@@ -91,7 +91,7 @@ double Data::get_resolution() {
 
 int Data::get_show_restraints() {
   bool has_restraints = false;
-  RMF_FOREACH(RMF::NodeID n, file_.get_node_ids()) {
+  for(RMF::NodeID n : file_.get_node_ids()) {
     if (rcf_.get_is(file_.get_node(n))) {
       has_restraints = true;
       break;
@@ -157,7 +157,7 @@ Data::handle_alternative(RMF::NodeConstHandle cur, int body,
   } else {
     RMF::NodeConstHandles alts = altf_.get(cur).get_alternatives(RMF::PARTICLE);
     int alt = 1;
-    RMF_FOREACH(RMF::NodeConstHandle c,
+    for(RMF::NodeConstHandle c :
                 boost::make_iterator_range(alts.begin() + 1, alts.end())) {
       altid[0] = 'A' + alt;
       boost::array<int, 2> cur = fill_bodies(c, body, chain, resid, resname,
@@ -202,7 +202,7 @@ boost::array<int, 2> Data::fill_bodies(RMF::NodeConstHandle cur, int body,
     my_copy_n(rf_.get(cur).get_residue_type(), 8, resname.begin());
   }
 
-  RMF_FOREACH(RMF::NodeConstHandle c, cur.get_children()) {
+  for(RMF::NodeConstHandle c : cur.get_children()) {
     boost::array<int, 2> count =
         fill_bodies(c, body, chain, resid, resname, altid, segment, resolution);
     for (unsigned int i = 0; i < 2; ++i) {
@@ -225,11 +225,11 @@ boost::array<int, 2> Data::fill_bodies(RMF::NodeConstHandle cur, int body,
 
 void Data::fill_index() {
   int cur_index = -1;
-  RMF_FOREACH(const Body & body, bodies_) {
-    RMF_FOREACH(const AtomInfo & n, body.particles) {
+  for(const Body & body : bodies_) {
+    for(const AtomInfo & n : body.particles) {
       index_[n.node_id] = ++cur_index;
     }
-    RMF_FOREACH(const AtomInfo & n, body.balls) {
+    for(const AtomInfo & n : body.balls) {
       index_[n.node_id] = ++cur_index;
     }
   }
@@ -251,7 +251,7 @@ void Data::fill_graphics(RMF::NodeConstHandle cur,
       size = cf_.get(cur).get_radius();
     }
     RMF::Vector3 last_coords = tr.get_global_coordinates(coords[0]);
-    RMF_FOREACH(const RMF::Vector3 & cc,
+    for(const RMF::Vector3 & cc :
                 boost::make_iterator_range(coords.begin() + 1, coords.end())) {
       molfile_graphics_t g;
       g.type = type;
@@ -263,7 +263,7 @@ void Data::fill_graphics(RMF::NodeConstHandle cur,
       graphics_.push_back(g);
     }
   }
-  RMF_FOREACH(RMF::NodeConstHandle c, cur.get_children()) {
+  for(RMF::NodeConstHandle c : cur.get_children()) {
     fill_graphics(c, tr);
   }
 }
@@ -282,7 +282,7 @@ void Data::handle_bond(RMF::NodeConstHandle cur) {
 
 void Data::handle_restraint(RMF::NodeConstHandle cur) {
   bool child_feature = false;
-  RMF_FOREACH(RMF::NodeConstHandle c, cur.get_children()) {
+  for(RMF::NodeConstHandle c : cur.get_children()) {
     if (c.get_type() == RMF::FEATURE) {
       child_feature = true;
       break;
@@ -312,7 +312,7 @@ void Data::fill_bonds(RMF::NodeConstHandle cur) {
   if (show_restraints_ & RESTRAINTS && cur.get_type() == RMF::FEATURE) {
     handle_restraint(cur);
   }
-  RMF_FOREACH(RMF::NodeConstHandle c, cur.get_children()) { fill_bonds(c); }
+  for(RMF::NodeConstHandle c : cur.get_children()) { fill_bonds(c); }
 }
 
 void Data::copy_basics(const AtomInfo &n, molfile_atom_t *out) {
@@ -327,7 +327,7 @@ void Data::copy_basics(const AtomInfo &n, molfile_atom_t *out) {
 
 molfile_atom_t *Data::copy_particles(const std::vector<AtomInfo> &atoms,
                                      molfile_atom_t *out) {
-  RMF_FOREACH(const AtomInfo & n, atoms) {
+  for(const AtomInfo & n : atoms) {
     copy_basics(n, out);
 
     RMF::NodeConstHandle cur = file_.get_node(n.node_id);
@@ -353,7 +353,7 @@ molfile_atom_t *Data::copy_particles(const std::vector<AtomInfo> &atoms,
 
 molfile_atom_t *Data::copy_balls(const std::vector<AtomInfo> &balls,
                                  molfile_atom_t *out) {
-  RMF_FOREACH(AtomInfo n, balls) {
+  for(AtomInfo n : balls) {
     copy_basics(n, out);
 
     RMF::NodeConstHandle cur = file_.get_node(n.node_id);

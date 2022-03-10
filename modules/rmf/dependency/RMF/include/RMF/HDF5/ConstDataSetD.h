@@ -72,7 +72,7 @@ class ConstDataSetD : public ConstDataSetAttributes {
   }
   void initialize() {
     hsize_t one = 1;
-    data_->ids_.open(H5Screate_simple(1, &one, NULL), &H5Sclose);
+    data_->ids_.open(H5Screate_simple(1, &one, nullptr), &H5Sclose);
     std::fill(data_->ones_, data_->ones_ + D, 1);
     // pos_.reset(new hsize_t[dim_]);
     // sel_= new SharedHandle(H5Dget_space(h_->get_hid()), &H5Sclose);
@@ -139,19 +139,19 @@ class ConstDataSetD : public ConstDataSetAttributes {
     // must be second
     hsize_t ret[D];
     std::fill(ret, ret + D, -1);
-    RMF_HDF5_CALL(H5Sget_simple_extent_dims(get_data_space(), ret, NULL));
+    RMF_HDF5_CALL(H5Sget_simple_extent_dims(get_data_space(), ret, nullptr));
     RMF_INTERNAL_CHECK(ret[D - 1] < 1000000, "extents not returned properly");
     if (ret[D - 1] > 0) {
       // some versions will spew an error on this
       // we will call this function again before rds_ is needed
       // std::cout << "initializing row to " << ret[data_->dim_-1] << std::endl;
-      data_->rds_.open(H5Screate_simple(1, ret + D - 1, NULL), &H5Sclose);
+      data_->rds_.open(H5Screate_simple(1, ret + D - 1, nullptr), &H5Sclose);
     } else {
       // std::cout << "clearing row data" << std::endl;
       data_->rds_.close();
     }
     RMF_HDF5_CALL(H5Sget_simple_extent_dims(get_data_space(),
-                                            data_->size_.begin(), NULL));
+                                            data_->size_.begin(), nullptr));
   }
 
  public:
@@ -182,7 +182,7 @@ class ConstDataSetD : public ConstDataSetAttributes {
     // RMF_HDF5_HANDLE(sel, H5Dget_space(h_->get_hid()), &H5Sclose);
     RMF_HDF5_CALL(H5Sselect_hyperslab(get_data_space(), H5S_SELECT_SET,
                                       ijk.get(), data_->ones_, data_->ones_,
-                                      NULL));
+                                      nullptr));
     return TypeTraits::read_value_dataset(
         Object::get_handle(), data_->ids_.get_hid(), get_data_space());
   }
@@ -199,7 +199,8 @@ class ConstDataSetD : public ConstDataSetAttributes {
     size[D - 1] = get_size()[D - 1];  // set last to size of row
     // RMF_HDF5_HANDLE(sel, H5Dget_space(h_->get_hid()), &H5Sclose);
     RMF_HDF5_CALL(H5Sselect_hyperslab(get_data_space(), H5S_SELECT_SET,
-                                      ijk.get(), data_->ones_, &size[0], NULL));
+                                      ijk.get(), data_->ones_, &size[0],
+                                      nullptr));
     return TypeTraits::read_values_dataset(Object::get_handle(),
                                            get_row_data_space().get_hid(),
                                            get_data_space(), size[D - 1]);
@@ -216,8 +217,8 @@ class ConstDataSetD : public ConstDataSetAttributes {
     // RMF_HDF5_HANDLE(sel, H5Dget_space(h_->get_hid()), &H5Sclose);
     RMF_HDF5_CALL(H5Sselect_hyperslab(get_data_space(), H5S_SELECT_SET,
                                       lb.get(), data_->ones_, size.get(),
-                                      NULL));
-    RMF_HDF5_HANDLE(input, H5Screate_simple(1, &total, NULL), &H5Sclose);
+                                      nullptr));
+    RMF_HDF5_HANDLE(input, H5Screate_simple(1, &total, nullptr), &H5Sclose);
     typename TypeTraits::Types ret = TypeTraits::read_values_dataset(
         Object::get_handle(), input, get_data_space(), total);
     RMF_INTERNAL_CHECK(ret.size() == total, "Size mismatch");

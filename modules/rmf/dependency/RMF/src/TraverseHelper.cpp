@@ -95,7 +95,7 @@ unsigned int TraverseHelper::get_index(NodeID n) const {
 std::vector<TraverseHelper> TraverseHelper::get_children() const {
   std::vector<TraverseHelper> ret;
   // handle alternatives later
-  RMF_FOREACH(NodeConstHandle ch, NodeConstHandle::get_children()) {
+  for(NodeConstHandle ch : NodeConstHandle::get_children()) {
     if (data_->state_filter_ != -1 && data_->state_factory_.get_is(ch) &&
         data_->state_factory_.get(ch).get_state_index() != data_->state_filter_)
       continue;

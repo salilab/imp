@@ -15,7 +15,7 @@ int main(int, char * []) {
   fh.add_frame("hi", RMF::FRAME);
   assert(boost::distance(fh.get_frames()) == 1);
   int count = 0;
-  RMF_FOREACH(RMF::NodeID n, fh.get_node_ids()) {
+  for(RMF::NodeID n : fh.get_node_ids()) {
     RMF_UNUSED(n);
     ++count;
   }

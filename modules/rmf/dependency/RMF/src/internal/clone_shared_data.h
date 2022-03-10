@@ -60,9 +60,9 @@ void clone_hierarchy(SDA* sda, SDB* sdb) {
   RMF_LARGE_UNORDERED_MAP<NodeID, NodeID> parents, deferred_parents;
   typedef RMF_LARGE_UNORDERED_MAP<NodeID, NodeID>::value_type NodeIDMapValue;
 
-  RMF_FOREACH(NodeID na, get_nodes(sda)) {
+  for(NodeID na : get_nodes(sda)) {
     NodeIDs children = sda->get_children(na);
-    RMF_FOREACH(NodeID c, children) {
+    for(NodeID c : children) {
       if (parents.find(c) == parents.end() &&
           c.get_index() >= sdb->get_number_of_nodes()) {
         parents[c] = na;
@@ -73,13 +73,13 @@ void clone_hierarchy(SDA* sda, SDB* sdb) {
   RMF_LARGE_UNORDERED_SET<NodeID> existing;
   RMF_LARGE_UNORDERED_MAP<NodeID, RMF_SMALL_UNORDERED_SET<NodeID> >
       existing_parents;
-  RMF_FOREACH(NodeID nb, get_nodes(sdb)) {
+  for(NodeID nb : get_nodes(sdb)) {
     existing.insert(nb);
-    RMF_FOREACH(NodeID ch, sdb->get_children(nb)) {
+    for(NodeID ch : sdb->get_children(nb)) {
       existing_parents[ch].insert(nb);
     }
   }
-  RMF_FOREACH(NodeID na, get_nodes(sda)) {
+  for(NodeID na : get_nodes(sda)) {
     if (existing.find(na) != existing.end()) continue;
     if (parents.find(na) != parents.end()) {
       NodeID parent = parents.find(na)->second;
@@ -102,13 +102,13 @@ void clone_hierarchy(SDA* sda, SDB* sdb) {
       RMF_INTERNAL_CHECK(nid == na, "Don't match");
     }
   }
-  RMF_FOREACH(NodeIDMapValue v, deferred_parents) {
+  for(NodeIDMapValue v : deferred_parents) {
     sdb->add_child(v.second, v.first);
   }
 
-  RMF_FOREACH(NodeID na, get_nodes(sda)) {
+  for(NodeID na : get_nodes(sda)) {
     NodeIDs children = sda->get_children(na);
-    RMF_FOREACH(NodeID c, children) {
+    for(NodeID c : children) {
       if (parents.find(c) != parents.end() && parents.find(c)->second != na &&
           existing_parents[c].find(na) == existing_parents[c].end()) {
         sdb->add_child(na, c);
@@ -142,9 +142,8 @@ void clone_values_type(SDA* sda, Category cata, SDB* sdb, Category catb, H) {
   RMF_LARGE_UNORDERED_MAP<ID<TraitsA>, ID<TraitsB> > keys =
       get_key_map<TraitsA, TraitsB>(sda, cata, sdb, catb);
   if (keys.empty()) return;
-  typedef std::pair<ID<TraitsA>, ID<TraitsB> > KP;
-  RMF_FOREACH(KP ks, keys) {
-    RMF_FOREACH(NodeID n, get_nodes(sda)) {
+  for(const auto &ks : keys) {
+    for(NodeID n : get_nodes(sda)) {
       typename TraitsA::ReturnType rt = H::get(sda, n, ks.first);
       if (!TraitsA::get_is_null_value(rt)) {
         H::set(sdb, n, ks.second, get_as<typename TraitsB::Type>(rt));
@@ -170,7 +169,7 @@ void clone_values_category(SDA* sda, Category cata, SDB* sdb, Category catb,
 
 template <class SDA, class SDB>
 void clone_static_data(SDA* sda, SDB* sdb) {
-  RMF_FOREACH(Category cata, sda->get_categories()) {
+  for(Category cata : sda->get_categories()) {
     Category catb = sdb->get_category(sda->get_name(cata));
     clone_values_category(sda, cata, sdb, catb, StaticValues());
   }
@@ -178,7 +177,7 @@ void clone_static_data(SDA* sda, SDB* sdb) {
 
 template <class SDA, class SDB>
 void clone_loaded_data(SDA* sda, SDB* sdb) {
-  RMF_FOREACH(Category cata, sda->get_categories()) {
+  for(Category cata : sda->get_categories()) {
     Category catb = sdb->get_category(sda->get_name(cata));
     clone_values_category(sda, cata, sdb, catb, LoadedValues());
   }

@@ -32,7 +32,7 @@ namespace avro2 {
 template <bool GZIP, bool OLD>
 class Avro2IOFileFactory : public backends::IOFactory {
  public:
-  virtual std::string get_file_extension() const RMF_OVERRIDE {
+  virtual std::string get_file_extension() const override {
     if (OLD) return ".rmf3";
     if (GZIP)
       return ".rmfz";
@@ -40,22 +40,22 @@ class Avro2IOFileFactory : public backends::IOFactory {
       return ".rmf";
   }
   virtual boost::shared_ptr<backends::IO> read_file(const std::string &name)
-      const RMF_OVERRIDE {
+      const override {
     return boost::make_shared<Avro2IO<ReaderTraits<FileReaderBase> > >(name);
   }
   virtual boost::shared_ptr<backends::IO> create_file(const std::string &name)
-      const RMF_OVERRIDE {
+      const override {
     return boost::make_shared<Avro2IO<FileWriterTraits<GZIP> > >(name);
   }
 };
 
 class Avro2IOBufferFactory : public backends::IOFactory {
  public:
-  virtual std::string get_file_extension() const RMF_OVERRIDE {
+  virtual std::string get_file_extension() const override {
     return ".none";
   }
   virtual boost::shared_ptr<backends::IO> read_buffer(BufferConstHandle buffer)
-      const RMF_OVERRIDE {
+      const override {
     try {
       return boost::make_shared<Avro2IO<ReaderTraits<BufferReaderBase> > >(
           buffer);
@@ -66,7 +66,7 @@ class Avro2IOBufferFactory : public backends::IOFactory {
     }
   }
   virtual boost::shared_ptr<backends::IO> create_buffer(BufferHandle buffer)
-      const RMF_OVERRIDE {
+      const override {
     return boost::make_shared<Avro2IO<BufferWriterTraits> >(buffer);
   }
 };

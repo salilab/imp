@@ -26,7 +26,7 @@ std::pair<double, bool> get_resolution_impl(NodeConstHandle root,
                                               IntermediateParticleFactory ipcf,
                                               GaussianParticleFactory gpf) {
   std::pair<double, bool> ret(std::numeric_limits<double>::max(), false);
-  RMF_FOREACH(NodeConstHandle ch, root.get_children()) {
+  for(NodeConstHandle ch : root.get_children()) {
     std::pair<double, bool> cur = get_resolution_impl(ch, ipcf, gpf);
     ret.first = std::min(ret.first, cur.first);
     ret.second = ret.second || cur.second;
@@ -139,7 +139,7 @@ NodeConstHandle AlternativesConst::get_alternative(RepresentationType type,
 NodeConstHandles AlternativesConst::get_alternatives(RepresentationType type)
     const {
   NodeConstHandles ret;
-  RMF_FOREACH(NodeID nid, get_alternatives_impl(type)) {
+  for(NodeID nid : get_alternatives_impl(type)) {
     ret.push_back(get_node().get_file().get_node(nid));
   }
   return ret;
@@ -162,11 +162,11 @@ Floats get_resolutions_impl(NodeConstHandle root, AlternativesFactory af,
                             RepresentationType type) {
   Floats ret;
   if (af.get_is(root)) {
-    RMF_FOREACH(NodeConstHandle a, af.get(root).get_alternatives(type)) {
+    for(NodeConstHandle a : af.get(root).get_alternatives(type)) {
       ret.push_back(get_resolution(a));
     }
   } else {
-    RMF_FOREACH(NodeConstHandle ch, root.get_children()) {
+    for(NodeConstHandle ch : root.get_children()) {
       Floats cur = get_resolutions_impl(ch, af, type);
       ret.insert(ret.end(), cur.begin(), cur.end());
     }
@@ -184,7 +184,7 @@ Floats get_resolutions(NodeConstHandle root, RepresentationType type,
   double lb = unclustered[0];
   double ub = lb;
   Floats ret;
-  RMF_FOREACH(double r, unclustered) {
+  for(double r : unclustered) {
     if (r > lb + accuracy) {
       ret.push_back(.5 * (lb + ub));
       lb = r;

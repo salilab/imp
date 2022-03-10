@@ -55,7 +55,7 @@ boost::shared_ptr<IO> create_file(const std::string &name) {
     test_buffers[name] = BufferHandle();
     return create_buffer(test_buffers.find(name)->second);
   } else {
-    RMF_FOREACH(boost::shared_ptr<IOFactory> f, factories) {
+    for(boost::shared_ptr<IOFactory> f : factories) {
       if (!boost::algorithm::ends_with(name, f->get_file_extension())) continue;
       boost::shared_ptr<IO> cur = f->create_file(name);
       if (cur) return cur;
@@ -64,7 +64,7 @@ boost::shared_ptr<IO> create_file(const std::string &name) {
   return boost::shared_ptr<IO>();
 }
 boost::shared_ptr<IO> create_buffer(BufferHandle buffer) {
-  RMF_FOREACH(boost::shared_ptr<IOFactory> f, factories) {
+  for(boost::shared_ptr<IOFactory> f : factories) {
     boost::shared_ptr<IO> cur = f->create_buffer(buffer);
     if (cur) return cur;
   }
@@ -74,7 +74,7 @@ boost::shared_ptr<IO> read_file(const std::string &name) {
   if (boost::algorithm::ends_with(name, "_rmf_test_buffer")) {
     return read_buffer(test_buffers.find(name)->second);
   } else {
-    RMF_FOREACH(boost::shared_ptr<IOFactory> f, factories) {
+    for(boost::shared_ptr<IOFactory> f : factories) {
       // if (!boost::algorithm::ends_with(name, f->get_file_extension()))
       // continue;
       try {
@@ -89,7 +89,7 @@ boost::shared_ptr<IO> read_file(const std::string &name) {
   return boost::shared_ptr<IO>();
 }
 boost::shared_ptr<IO> read_buffer(BufferConstHandle buffer) {
-  RMF_FOREACH(boost::shared_ptr<IOFactory> f, factories) {
+  for(boost::shared_ptr<IOFactory> f : factories) {
     boost::shared_ptr<IO> cur = f->read_buffer(buffer);
     if (cur) return cur;
   }

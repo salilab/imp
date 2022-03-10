@@ -32,7 +32,7 @@ bool validate_impl(NodeConstHandle cur, decorator::ParticleFactory pcf,
       ret = false;
     }
   }
-  RMF_FOREACH(NodeConstHandle c, ch) {
+  for(NodeConstHandle c : ch) {
     ret = ret && validate_impl(c, pcf, rcf, acf);
   }
   return ret;

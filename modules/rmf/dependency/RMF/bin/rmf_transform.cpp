@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
     RMF::decorator::BallFactory bf(rh);
     RMF::decorator::CylinderFactory cf(rh);
     RMF::decorator::SegmentFactory sf(rh);
-    RMF_FOREACH(RMF::FrameID frame, rhi.get_frames()) {
+    for(RMF::FrameID frame : rhi.get_frames()) {
       RMF::clone_loaded_frame(rhi, rh);
       RMF_INFO("Processing frame " << frame);
       rh.set_current_frame(frame);

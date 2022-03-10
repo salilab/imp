@@ -26,7 +26,7 @@ RMF_LARGE_UNORDERED_MAP<ID<TraitsA>, ID<TraitsB> > get_key_map(SDA* sda,
                                                                Category catb) {
   RMF_LARGE_UNORDERED_MAP<ID<TraitsA>, ID<TraitsB> > ret;
   std::vector<ID<TraitsA> > keysa = sda->get_keys(cata, TraitsA());
-  RMF_FOREACH(ID<TraitsA> keya, keysa) {
+  for(ID<TraitsA> keya : keysa) {
     ret[keya] = sdb->get_key(catb, sda->get_name(keya), TraitsB());
     RMF_TRACE(sda->get_name(keya) << " maps to " << sdb->get_name(ret[keya]));
   }

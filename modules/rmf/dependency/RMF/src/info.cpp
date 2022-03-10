@@ -26,9 +26,9 @@ namespace RMF {
 template <class Traits>
 void show_key_info(FileConstHandle rh, Category cat, std::string name,
                    std::ostream& out) {
-  RMF_FOREACH(ID<Traits> k, rh.get_keys<Traits>(cat)) {
+  for(ID<Traits> k : rh.get_keys<Traits>(cat)) {
     int static_count = 0, frame_count = 0;
-    RMF_FOREACH(NodeID n, rh.get_node_ids()) {
+    for(NodeID n : rh.get_node_ids()) {
       NodeConstHandle nh = rh.get_node(n);
       if (rh.get_current_frame() != FrameID() &&
           !nh.get_frame_value(k).get_is_null()) {
@@ -48,7 +48,7 @@ void show_key_info(FileConstHandle rh, Category cat, std::string name,
 void show_info(FileConstHandle rh, std::ostream& out) {
   out << "Nodes: " << rh.get_number_of_nodes() << std::endl;
   out << "Frames: " << rh.get_number_of_frames() << std::endl;
-  RMF_FOREACH(Category c, rh.get_categories()) {
+  for(Category c : rh.get_categories()) {
     out << rh.get_name(c) << ":" << std::endl;
     RMF_FOREACH_TYPE(RMF_SHOW_TYPE_DATA_INFO);
   }

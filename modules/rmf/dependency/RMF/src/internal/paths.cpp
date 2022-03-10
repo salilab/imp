@@ -157,7 +157,7 @@ std::string get_unique_path() {
   boost::filesystem::path temp = boost::filesystem::unique_path();
   return temp.string();
 #else
-  return tmpnam(NULL);
+  return tmpnam(nullptr);
 #endif
 }
 

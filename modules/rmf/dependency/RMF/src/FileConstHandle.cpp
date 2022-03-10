@@ -67,7 +67,7 @@ FileConstHandle open_rmf_buffer_read_only(BufferConstHandle buffer) {
 
 FrameIDs FileConstHandle::get_root_frames() const {
   FrameIDs ret;
-  RMF_FOREACH(FrameID fr, get_frames()) {
+  for(FrameID fr : get_frames()) {
     if (get_parents(fr).empty()) ret.push_back(fr);
   }
   return ret;

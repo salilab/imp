@@ -42,7 +42,7 @@ class SharedDataCategory {
   SharedDataCategory() {}
   Categories get_categories() const {
     Categories ret;
-    RMF_FOREACH(const CategoryData::From::value_type & it, data_.from_name) {
+    for(const auto &it : data_.from_name) {
       ret.push_back(it.second);
     }
     return ret;

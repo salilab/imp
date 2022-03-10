@@ -139,12 +139,12 @@ void get_bounding_box_impl(NodeConstHandle root, CoordinateTransformer tr,
                   bb);
   }
   if (sf.get_is(root)) {
-    RMF_FOREACH(const Vector3 & v, sf.get(root).get_coordinates_list()) {
+    for(const Vector3 &v : sf.get(root).get_coordinates_list()) {
       handle_vector(tr, v, cf.get_is(root) ? cf.get(root).get_radius() : 0.0f,
                     bb);
     }
   }
-  RMF_FOREACH(NodeConstHandle ch, root.get_children()) {
+  for(NodeConstHandle ch : root.get_children()) {
     get_bounding_box_impl(ch, tr, ipf, bf, sf, cf, gpf, rff, bb);
   }
 }

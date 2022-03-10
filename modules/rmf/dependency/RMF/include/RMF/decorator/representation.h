@@ -33,7 +33,7 @@ class RepresentationConst : public Decorator {
   template <class T>
   std::vector<T> get_it(const Ints &in) const {
     std::vector<T> ret;
-    RMF_FOREACH(int i, in) {
+    for(int i : in) {
       ret.push_back(get_node().get_file().get_node(NodeID(i)));
     }
     return ret;
@@ -77,13 +77,13 @@ class Representation : public RepresentationConst {
   Ints set_it(const std::vector<T> &in) const {
     Ints ret;
     ret.reserve(in.size());
-    RMF_FOREACH(T n, in) { ret.push_back(n.get_id().get_index()); }
+    for(T n : in) { ret.push_back(n.get_id().get_index()); }
     return ret;
   }
   Ints set_it(const NodeIDs &in) {
     Ints ret;
     ret.reserve(in.size());
-    RMF_FOREACH(NodeID n, in) { ret.push_back(n.get_index()); }
+    for(NodeID n : in) { ret.push_back(n.get_index()); }
     return ret;
   }
 
