@@ -240,5 +240,5 @@ rm -f w32.dlls w32.deps w32.unmet_deps
 
 ${TOOLDIR}/gen-w32instlist w32-inst > w32files.tmp || exit 1
 sed -e '/\.pyc"$/d' < w32files.tmp > w32files.install || exit 1
-tac w32files.tmp | sed -e 's/File "w32-inst\\/Delete "$INSTDIR\\/' -e 's/^SetOutPath/RMDir/' > w32files.uninstall || exit 1
+tac w32files.tmp | sed -e 's/File "w32-inst\\/Delete "$INSTDIR\\/' -e 's#^SetOutPath "\(.*\)"#RMDir /r "\1\\__pycache__"\nRMDir "\1"#' > w32files.uninstall || exit 1
 ${MAKENSIS} -DVERSION=${VER} -NOCD ${TOOLDIR}/w32-install.nsi || exit 1
