@@ -8,13 +8,17 @@
 
 #ifndef IMPPMI_MEMBRANE_RESTRAINT_H
 #define IMPPMI_MEMBRANE_RESTRAINT_H
+
 #include <IMP/pmi/pmi_config.h>
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/Particle.h>
 
 IMPPMI_BEGIN_NAMESPACE
+
 //! Membrane Restraint
-/** Favors configurations where target is in the membrane
+/** Favors configurations where target is in the membrane.
+    This is the C++ implementation; for most modeling the Python wrapper
+    is more useful - see IMP.pmi.restraints.basic.MembraneRestraint.
  */
 class IMPPMIEXPORT MembraneRestraint : public isd::ISDRestraint {
   ParticleIndex z_nuisance_;
