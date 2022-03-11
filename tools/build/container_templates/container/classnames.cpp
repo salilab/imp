@@ -513,8 +513,7 @@ void PredicateClassnamesRestraint::do_add_score_and_derivatives(
   // currently ignores all maxima
   // no longer parallizable
   update_lists_if_necessary();
-  typedef std::pair<int, PLURALINDEXTYPE> LP;
-  for(const LP & lp : lists_) {
+  for(const auto &lp : lists_) {
     IMP_LOG_VERBOSE("Evaluating score for predicate value " << lp.first
                                                             << std::endl);
     ClassnameScore* score= get_score_for_predicate(lp.first);
@@ -533,8 +532,7 @@ ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
   ParticleIndexes all = input_->get_all_possible_indexes();
   ret += predicate_->get_inputs(get_model(), all);
   if(!is_get_inputs_ignores_individual_scores_){
-    typedef std::pair<int, PointerMember<ClassnameScore> > SP;
-    for(const SP & sp : scores_) {
+    for(const auto &sp : scores_) {
       ret += sp.second->get_inputs(get_model(), all);
     }
   }
@@ -544,8 +542,7 @@ ModelObjectsTemp PredicateClassnamesRestraint::do_get_inputs() const {
 Restraints PredicateClassnamesRestraint::do_create_current_decomposition()
     const {
   Restraints ret;
-  typedef std::pair<int, PLURALINDEXTYPE> LP;
-  for(const LP & lp : lists_) {
+  for(const auto &lp : lists_) {
     if(lists_.size()>0){
       ClassnameScore* score= get_score_for_predicate(lp.first);
       if(IMP_LIKELY(score != nullptr)){
@@ -575,8 +572,7 @@ void PredicateClassnamesRestraint::update_lists_if_necessary() const {
     lists_it.value().clear();
   }
 #else
-  typedef std::pair<const int, PLURALINDEXTYPE> LP;
-  for(LP & lp : lists_) {
+  for(auto &lp : lists_) {
     lp.second.clear();
   }
 #endif
