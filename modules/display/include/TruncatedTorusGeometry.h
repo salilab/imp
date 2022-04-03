@@ -1,5 +1,5 @@
 /**
- *  \file TruncatedTorusGeometry.h
+ *  \file IMP/display/TruncatedTorusGeometry.h
  *  \brief A geometry for a slice of a torus, 
  *         capped at the ends by half-spheres
  *
