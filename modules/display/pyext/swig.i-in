@@ -16,6 +16,7 @@ IMP_SWIG_OBJECT(IMP::display, SegmentGeometry, SegmentGeometries);
 IMP_SWIG_OBJECT(IMP::display, PolygonGeometry, PolygonGeometries);
 IMP_SWIG_OBJECT(IMP::display, ReferenceFrameGeometry, ReferenceFrameGeometries);
 IMP_SWIG_OBJECT(IMP::display, BoundingBoxGeometry, BoundingBoxGeometries);
+IMP_SWIG_OBJECT(IMP::display, TruncatedTorusWireGeometry, TruncatedTorusWireGeometries);
 IMP_SWIG_OBJECT(IMP::display, LabelGeometry, LabelGeometries);
 IMP_SWIG_OBJECT(IMP::display, RestraintGeometry, RestraintGeometries);
 IMP_SWIG_OBJECT(IMP::display, RestraintSetGeometry, RestraintSetGeometries);
@@ -60,7 +61,7 @@ IMP_SWIG_OBJECT(IMP::display, SkinSurfaceGeometry, SkinSurfaceGeometries);
 %include "IMP/display/particle_geometry.h"
 %include "IMP/display/PymolWriter.h"
 %include "IMP/display/restraint_geometry.h"
-
+%include "IMP/display/TruncatedTorusGeometry.h"
 %pythoncode %{
 from . import _pivy
 PivyWriter= _pivy.get_writer(Writer)
