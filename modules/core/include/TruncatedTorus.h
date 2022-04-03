@@ -45,7 +45,7 @@ class IMPCOREEXPORT TruncatedTorus
 
 
  public:
-  IMP_DECORATOR_METHODS(SlabWithToroidalPore, SlabWithPore);
+  IMP_DECORATOR_METHODS(TruncatedTorus, Decorator);
 
 
   /** Decorate a particle that represents a truncated torus. 
@@ -57,36 +57,37 @@ class IMPCOREEXPORT TruncatedTorus
       @param theta the angle in radians of the truncated torus slice, following an
              arc of the same angle along its tube.
   */
-  IMP_DECORATOR_SETUP_2(SlabWithToroidalPore,
+  IMP_DECORATOR_SETUP_3(TruncatedTorus,
 			double, R,
 			double, r,
 			double, theta);
 
-  //! Return true if the particle is an instance of SlabWithToroidalPore
+  //! Return true if the particle is an instance of TruncatedTorus
   static bool get_is_setup(Model *m, ParticleIndex pi) {
-    return SlabWithPore::get_is_setup(m, pi) &&
+    return 
       m->get_has_attribute(get_major_radius_key(), pi) &&
       m->get_has_attribute(get_minor_radius_key(), pi) &&
-      m->get_has_attribute(get_theta_key(), pi) 
+      m->get_has_attribute(get_theta_key(), pi); 
   }
 
-  //! return the distance from the center of the torus hole to the center of
-  //! its tube
+  //! return the distance from the origin (center of the torus hole) to the
+  //! central axis of its tube
   double get_major_radius() const{
     return get_particle()->get_value(get_major_radius_key());
   }
 
-  //! set the distance from the center of the torus hole to the center of its tube
+  //! set the distance from the origin (center of the torus hole) to the
+  //! central axis of its tube
   void set_major_radius(double R) {
-    get_particle()->set_value(get_major_radius_key(), r);
+    get_particle()->set_value(get_major_radius_key(), R);
   }
 
-  //! return the distance from the center of the torus tube to its surface
-  double get_torus_minor_radius() const{
+  //! return the distance from the central axis of the torus tube to its surface
+  double get_minor_radius() const{
     return get_particle()->get_value(get_minor_radius_key());
   }
 
-  //! set the distance from the center of the torus tube to its surface
+  //! set the distance from the central axis of the torus tube to its surface
   void set_minor_radius(double r) {
     get_particle()->set_value(get_minor_radius_key(), r);
   }

@@ -13,7 +13,7 @@
 #define IMPDISPLAY_TRUNCATED_TORUS_GEOMETRY_H
 
 #include "display_config.h"
-#include <IMP/core/TruncatedTorus.h
+#include <IMP/core/TruncatedTorus.h>
 #include <IMP/display/geometry.h>
 #include <IMP/display/display_macros.h>
 
@@ -42,7 +42,7 @@ class IMPDISPLAYEXPORT TruncatedTorusWireGeometry
   TruncatedTorusWireGeometry(double R, double r, double theta);
 
   //! A truncated torus with parameters retrieved from decorator truncated_torus 
-  TruncatedTorusWireGeometry(const TruncatedTorus& truncated_torus);
+  TruncatedTorusWireGeometry(const core::TruncatedTorus& truncated_torus);
 
   //! returns the set of geometric components that comprise this geometry
   //! (for e.g. storing in RMF format)

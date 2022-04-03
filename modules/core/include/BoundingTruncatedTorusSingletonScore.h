@@ -42,7 +42,7 @@ class GenericBoundingTruncatedTorusSingletonScore
     theta_cached_; // cache for efficiency
 
  public:
-  GenericBoundingTruncatedTorusSingletonScore(UF *f, const Truncated_Torus_& truncated_torus);
+  GenericBoundingTruncatedTorusSingletonScore(UF *f, const Truncated_Torus& truncated_torus);
 
   virtual double evaluate_index(Model *m, ParticleIndex p,
                                 DerivativeAccumulator *da) const override;
@@ -52,6 +52,7 @@ class GenericBoundingTruncatedTorusSingletonScore
   virtual ModelObjectsTemp do_get_inputs(
       Model *m, const ParticleIndexes &pis) const override {
     return IMP::get_particles(m, pis);
+  }
   private:
     void update_cached_torus_params();
     evaluate_index_with_cached_torus_params(Model *m, ParticleIndex p,

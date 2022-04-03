@@ -7,19 +7,20 @@
 
 #include "IMP/display/TruncatedTorusGeometry.h"
 #include <IMP/display/geometry.h>
-
+#include <IMP/core/TruncatedTorus.h>
 #include <IMP/constants.h>
 #include <IMP/algebra/Plane3D.h>
-#ifdef IMP_NPCTRANSPORT_USE_IMP_CGAL
+#ifdef IMP_CORE_USE_IMP_CGAL
 #include <IMP/cgal/internal/polyhedrons.h>
 #endif
 #include <boost/tuple/tuple.hpp>
 #include <algorithm>
+#include <cmath>
 #include <set>
 
-IMPNPCTRANSPORT_BEGIN_NAMESPACE
+IMPDISPLAY_BEGIN_NAMESPACE
 
-#define N_SEGMENTS_CIRCLE
+#define N_SEGMENTS_CIRCLE 30
 
 TruncatedTorusWireGeometry::TruncatedTorusWireGeometry
 (double R, double r, double theta)
@@ -28,20 +29,19 @@ TruncatedTorusWireGeometry::TruncatedTorusWireGeometry
 {}
 
 TruncatedTorusWireGeometry::TruncatedTorusWireGeometry
-(const TruncatedTorus& truncated_torus);
+(const core::TruncatedTorus& truncated_torus)
 : TruncatedTorusWireGeometry(truncated_torus.get_major_radius(),
 			     truncated_torus.get_minor_radius(),
 			     truncated_torus.get_theta())
 {}
 
-//
 display::Geometries
 TruncatedTorusWireGeometry::get_components() const
 {
   display::Geometries ret;
   // number of segmennts is proportional to theta_,
   // the size of the truncated torus arc in radians
-  const int n1= N_SEGMENTS_CIRCLE * int(theta_ / (2 * IMP.PI)) + 1; 
+  const int n1= N_SEGMENTS_CIRCLE * round(theta_ / (2 * IMP::PI)) + 1; 
   const int n2= N_SEGMENTS_CIRCLE;
   for (int i= 1; i <= n1; ++i) { // major radius
     double f= static_cast<double>(i) / n1;
@@ -71,4 +71,4 @@ TruncatedTorusWireGeometry::get_components() const
   return ret;
 }
 
-IMPNPCTRANSPORT_END_NAMESPACE
+IMPDISPLAY_END_NAMESPACE
