@@ -155,7 +155,7 @@ void GenericBoundingTruncatedTorusSingletonScore<UF>
 namespace {
   //! @return a projection of p on an XY-plane arc of radius R about
   //! origin (0,0,0), spanning 0 to theta radians.
-  IMP::algebra::Vector2D 
+  IMP::algebra::Vector3D 
   get_projection_on_arc_on_XY_plane(algebra::Vector3D p, double R, double theta) {
     IMP::algebra::Vector3D rv(0.0, 0.0, 0.0);
     const double EPS = .000001;
