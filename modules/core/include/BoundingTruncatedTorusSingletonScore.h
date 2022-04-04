@@ -99,9 +99,9 @@ class GenericBoundingTruncatedTorusSingletonScore
   IMP_OBJECT_METHODS(GenericBoundingTruncatedTorusSingletonScore);
 
  private:
-  void update_cached_torus_params();
+  void update_cached_torus_params() const;
   double evaluate_index_with_cached_torus_params(Model *m, ParticleIndex p,
-					    DerivativeAccumulator *da) const;
+    DerivativeAccumulator *da) const;
   ;
 };
 
@@ -146,7 +146,7 @@ double GenericBoundingTruncatedTorusSingletonScore<UF>
 //! ** PRIVATE MEMBER FUNCTIONS **
 template <class UF>
 void GenericBoundingTruncatedTorusSingletonScore<UF>
-::update_cached_torus_params() {
+::update_cached_torus_params() const {
   R_cached_ = truncated_torus_.get_major_radius();
   r_cached_ = truncated_torus_.get_minor_radius();
   theta_cached_ = truncated_torus_.get_theta();
