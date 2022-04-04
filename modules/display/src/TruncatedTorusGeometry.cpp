@@ -7,10 +7,9 @@
 
 #include "IMP/display/TruncatedTorusGeometry.h"
 #include <IMP/display/geometry.h>
-#include <IMP/core/TruncatedTorus.h>
 #include <IMP/constants.h>
 #include <IMP/algebra/Plane3D.h>
-#ifdef IMP_CORE_USE_IMP_CGAL
+#ifdef IMP_DISPLAY_USE_IMP_CGAL
 #include <IMP/cgal/internal/polyhedrons.h>
 #endif
 #include <boost/tuple/tuple.hpp>
@@ -26,13 +25,6 @@ TruncatedTorusWireGeometry::TruncatedTorusWireGeometry
 (double R, double r, double theta)
   : Geometry("TruncatedTorus"),
     R_(R), r_(r), theta_(theta)
-{}
-
-TruncatedTorusWireGeometry::TruncatedTorusWireGeometry
-(const core::TruncatedTorus& truncated_torus)
-: TruncatedTorusWireGeometry(truncated_torus.get_major_radius(),
-			     truncated_torus.get_minor_radius(),
-			     truncated_torus.get_theta())
 {}
 
 display::Geometries

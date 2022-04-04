@@ -112,7 +112,7 @@ class IMPCOREEXPORT TruncatedTorus
 
 
 
-IMP_DECORATORS(TruncatedTorus, TruncatedTori, IMP::Decorator);
+IMP_DECORATORS(TruncatedTorus, TruncatedTori, IMP::Decorators);
 
 IMPCORE_END_NAMESPACE
 
