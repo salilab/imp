@@ -11,7 +11,7 @@ When the graph changes, it must be updated. This is done by simply invalidating 
 - a new IMP::ModelObject is created that has a non-empty IMP::ModelObject::get_outputs().
 - when IMP::Model::set_has_dependencies(false) is called to deliberately invalidate all dependencies
 
-Each IMP::ModelObject has a bit for whether it's dependencies are valid (IMP::ModelObject::get_has_dependencies()). Its dependencies will be updated any time they are needed (particularly when its IMP::ModelObject::get_required_score_states() method is called. This occurs by having the IMP::Model create the dependency graph if needed and then for each input
+Each IMP::ModelObject has a bit for whether its dependencies are valid (IMP::ModelObject::get_has_dependencies()). Its dependencies will be updated any time they are needed (particularly when its IMP::ModelObject::get_required_score_states() method is called. This occurs by having the IMP::Model create the dependency graph if needed and then for each input
 - add its IMP::ModelObject::get_required_score_state() to the list
 - if it is an IMP::ScoreState, add it to the list.
 
