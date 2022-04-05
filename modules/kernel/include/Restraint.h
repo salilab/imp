@@ -99,6 +99,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
 
   //! \see Model::evaluate_with_maximum()
   double evaluate_if_below(bool calc_derivatives, double max) const;
+#endif
 
   /** \name Evaluation implementation
       These methods are called in order to perform the actual restraint
@@ -119,6 +120,15 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   /** By default this just calls regular unprotected_evaluate(), but
       may be overridden by restraints to be more efficient, e.g. by
       skipping terms that involve unchanged particles.
+
+      \param da Object to accumulate derivatives, or nullptr.
+      \param moved_pis Particles that have moved since the last
+             scoring function evaluation.
+      \param reset_pis Particles that have moved, but back to the
+             positions they had at the last-but-one evaluation
+             (e.g. due to a rejected Monte Carlo move).
+
+      \return Current score.
    */
   virtual double unprotected_evaluate_moved(
            DerivativeAccumulator *da, const ParticleIndexes &moved_pis,
@@ -159,8 +169,6 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
 
 /** @} */
 
-#endif
-
   //! \return static key:value information about this restraint, or null.
   /** \return a set of key:value pairs that contain static information
       about this restraint (i.e. information that doesn't change during
@@ -187,6 +195,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
     return nullptr;
   }
 
+#ifndef IMP_DOXYGEN
   //! Perform the actual restraint scoring.
   /** The restraints should assume that all appropriate ScoreState
       objects have been updated and so that the input particles and containers
@@ -197,6 +206,7 @@ class IMPKERNELEXPORT Restraint : public ModelObject {
   void add_score_and_derivatives_moved(
                  ScoreAccumulator sa, const ParticleIndexes &moved_pis,
                  const ParticleIndexes &reset_pis) const;
+#endif
 
   //! Decompose this restraint into constituent terms
   /** Given the set of input particles, decompose the restraint into parts
