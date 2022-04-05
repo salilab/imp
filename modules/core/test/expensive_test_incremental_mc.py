@@ -96,7 +96,7 @@ class Tests(IMP.test.TestCase):
             #    g= IMP.core.XYZRGeometry(p)
             #    w.add_geometry(g);
         print(sf.evaluate(False))
-        self.assert_(sf.evaluate(False) < 3)
+        self.assertLess(sf.evaluate(False), 3)
 
 
 if __name__ == '__main__':
