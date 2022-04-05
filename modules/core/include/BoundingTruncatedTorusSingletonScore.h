@@ -24,6 +24,7 @@
 #include <IMP/algebra/constants.h>
 #include <IMP/algebra/Vector3D.h>
 #include <cmath>
+#include <iomanip>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -42,66 +43,46 @@ class GenericBoundingTruncatedTorusSingletonScore
     theta_cached_; // cache for efficiency
 
  public:
-  GenericBoundingTruncatedTorusSingletonScore(UF *f, const TruncatedTorus& truncated_torus);
+  GenericBoundingTruncatedTorusSingletonScore
+  (UF *f, const TruncatedTorus& truncated_torus);
 
-  virtual double evaluate_index(Model *m, ParticleIndex p,
-                                DerivativeAccumulator *da) const override;
-  virtual double evaluate_indexes(Model *m, const ParticleIndexes &pis,
-				 DerivativeAccumulator *da,
-				 unsigned int lower_bound, unsigned int upper_bound) const override final;
-  double evaluate_indexes_scores(                                              
-                  Model *m, const ParticleIndexes &p,                          
-                  DerivativeAccumulator *da, unsigned int lower_bound,         
-                  unsigned int upper_bound,                                    
-                  std::vector<double> &score)                                  
-                  const override final {
-    update_cached_torus_params();
-    double ret = 0;                                                            
-    for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 
-      double s = evaluate_index_with_cached_torus_params(m, p[i], da);                                  
-      score[i] = s;                                                            
-      ret += s;                                                                
-    }                                                                          
-    return ret;                                                                
-  }                                                                            
-  double evaluate_indexes_delta(                                               
-                  Model *m, const ParticleIndexes &p,                          
-                  DerivativeAccumulator *da,                                   
-                  const std::vector<unsigned> &indexes,                        
-                  std::vector<double> &score)                                  
-                  const override final {
-    update_cached_torus_params();
-    double ret = 0;                                                            
-    for (std::vector<unsigned>::const_iterator it = indexes.begin();           
-         it != indexes.end(); ++it) {                                          
-      double s = evaluate_index_with_cached_torus_params(m, p[*it], da);                                
-      ret = ret - score[*it] + s;                                              
-      score[*it] = s;                                                          
-    }                                                                          
-    return ret;                                                                
-  }                                                                            
-  double evaluate_if_good_indexes(                                             
-      Model *m, const ParticleIndexes &p, DerivativeAccumulator *da,           
-      double max, unsigned int lower_bound,                                    
-      unsigned int upper_bound) const override {
-    double ret = 0;                                                            
-    for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 
-      ret += evaluate_if_good_index(m, p[i], da, max - ret);                   
-      if (ret > max) return std::numeric_limits<double>::max();                
-    }                                                                          
-    return ret;                                                                
-  }
-  virtual ModelObjectsTemp do_get_inputs(
-    Model *m, const ParticleIndexes &pis) const override {
+  virtual double evaluate_index
+  (Model *m, ParticleIndex p, DerivativeAccumulator *da)
+    const override;
+
+  virtual double evaluate_indexes
+  (Model *m, const ParticleIndexes &pis, DerivativeAccumulator *da,
+    unsigned int lower_bound, unsigned int upper_bound)
+    const override final;
+  
+  double evaluate_indexes_scores
+  (Model *m, const ParticleIndexes &p, DerivativeAccumulator *da,
+    unsigned int lower_bound, unsigned int upper_bound, std::vector<double> &score)   
+    const override final;
+
+  double evaluate_indexes_delta
+  (Model *m, const ParticleIndexes &p, DerivativeAccumulator *da,                                   
+    const std::vector<unsigned> &indexes, std::vector<double> &score)                                  
+    const override final;                                                      
+
+  double evaluate_if_good_indexes
+  (Model *m, const ParticleIndexes &p, DerivativeAccumulator *da,           
+    double max, unsigned int lower_bound, unsigned int upper_bound)
+    const override;
+  
+  virtual ModelObjectsTemp do_get_inputs
+  (Model *m, const ParticleIndexes &pis) const override {
     return IMP::get_particles(m, pis);
   }
+  
   //IMP_SINGLETON_SCORE_METHODS(GenericBoundingTruncatedTorusSingletonScore);
   IMP_OBJECT_METHODS(GenericBoundingTruncatedTorusSingletonScore);
 
  private:
   void update_cached_torus_params() const;
-  double evaluate_index_with_cached_torus_params(Model *m, ParticleIndex p,
-    DerivativeAccumulator *da) const;
+
+  double evaluate_index_with_cached_torus_params
+  (Model *m, ParticleIndex p, DerivativeAccumulator *da) const;
   ;
 };
 
@@ -109,9 +90,10 @@ class GenericBoundingTruncatedTorusSingletonScore
 //! ** PUBLIC MEMBER FUNCTIONS **
 template <class UF>
 GenericBoundingTruncatedTorusSingletonScore<UF>
-::GenericBoundingTruncatedTorusSingletonScore(
-    UF *f, const TruncatedTorus &truncated_torus)
-  : f_(f), truncated_torus_(truncated_torus_) {
+::GenericBoundingTruncatedTorusSingletonScore
+(UF *f, const TruncatedTorus &truncated_torus)
+  : f_(f), truncated_torus_(truncated_torus_)
+{
   IMP_USAGE_CHECK(std::abs(f_->evaluate(0)) < .000001,
                   "The unary function should return "
                   " 0 when passed a value of 0. Not "
@@ -120,20 +102,23 @@ GenericBoundingTruncatedTorusSingletonScore<UF>
 
 template <class UF>
 double GenericBoundingTruncatedTorusSingletonScore<UF>
-::evaluate_index(
-    Model *m, ParticleIndex pi,
-    DerivativeAccumulator *da) const {
+::evaluate_index
+(Model *m, ParticleIndex pi,
+  DerivativeAccumulator *da) const
+{
   IMP_OBJECT_LOG;
+  IMP_LOG_VERBOSE("evaluate_index()");
   update_cached_torus_params();
   return evaluate_index_with_cached_torus_params(m, pi, da);
 }
 
 template <class UF>
 double GenericBoundingTruncatedTorusSingletonScore<UF>
-::evaluate_indexes(
-    Model *m, const ParticleIndexes &pis,
-    DerivativeAccumulator *da,
-    unsigned int lower_bound, unsigned int upper_bound) const {
+::evaluate_indexes
+(Model *m, const ParticleIndexes &pis,
+  DerivativeAccumulator *da,
+  unsigned int lower_bound, unsigned int upper_bound) const
+{
   IMP_OBJECT_LOG;
   update_cached_torus_params();
   double score = 0.0;
@@ -143,22 +128,78 @@ double GenericBoundingTruncatedTorusSingletonScore<UF>
   return score;
 }
 
-//! ** PRIVATE MEMBER FUNCTIONS **
+template <class UF>
+double GenericBoundingTruncatedTorusSingletonScore<UF>
+::evaluate_indexes_scores
+(Model *m, const ParticleIndexes &p,                          
+  DerivativeAccumulator *da, unsigned int lower_bound,         
+  unsigned int upper_bound,                                    
+  std::vector<double> &score) const
+{
+    update_cached_torus_params();
+    double ret = 0;                                                            
+    for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 
+      double s = evaluate_index_with_cached_torus_params(m, p[i], da);                                  
+      score[i] = s;                                                            
+      ret += s;                                                                
+    }                                                                          
+    return ret;                                                                
+}                                                                            
+
+template <class UF>
+double GenericBoundingTruncatedTorusSingletonScore<UF>
+::evaluate_indexes_delta
+(Model *m, const ParticleIndexes &p,                          
+  DerivativeAccumulator *da,                                   
+  const std::vector<unsigned> &indexes,                        
+  std::vector<double> &score) const 
+{
+  update_cached_torus_params();
+  double ret = 0;                                                            
+  for (std::vector<unsigned>::const_iterator it = indexes.begin();           
+       it != indexes.end(); ++it) {                                          
+    double s = evaluate_index_with_cached_torus_params(m, p[*it], da);                                
+    ret = ret - score[*it] + s;                                              
+    score[*it] = s;                                                          
+  }                                                                          
+  return ret;                                                                
+}                                                                            
+
+template <class UF>
+double GenericBoundingTruncatedTorusSingletonScore<UF>
+::evaluate_if_good_indexes
+(Model *m, const ParticleIndexes &p, DerivativeAccumulator *da,           
+  double max, unsigned int lower_bound,                                    
+  unsigned int upper_bound) const
+{
+  double ret = 0;                                                            
+  for (unsigned int i = lower_bound; i < upper_bound; ++i) {                 
+    ret += evaluate_if_good_index(m, p[i], da, max - ret);                   
+    if (ret > max) return std::numeric_limits<double>::max();                
+  }                                                                          
+  return ret;                                                                
+}
+
+//! *** PRIVATE MEMBER FUNCTIONS ***
+
 template <class UF>
 void GenericBoundingTruncatedTorusSingletonScore<UF>
-::update_cached_torus_params() const {
+::update_cached_torus_params() const
+{
   R_cached_ = truncated_torus_.get_major_radius();
   r_cached_ = truncated_torus_.get_minor_radius();
   theta_cached_ = truncated_torus_.get_theta();
 }
 
-namespace {
+namespace
+{
   //! @return a projection of p on an XY-plane arc of radius R about
   //! origin (0,0,0), spanning 0 to theta radians.
   IMP::algebra::Vector3D 
-  get_projection_on_arc_on_XY_plane(algebra::Vector3D p, double R, double theta) {
+  get_projection_on_arc_on_XY_plane
+  (algebra::Vector3D p, double R, double theta)
+  {
     IMP::algebra::Vector3D rv(0.0, 0.0, 0.0);
-    const double EPS = .000001;
     const double two_pi = 2*IMP::algebra::PI;
     const double& x = p[0];
     const double& y = p[1];
@@ -182,10 +223,13 @@ namespace {
 
 template <class UF>
 double GenericBoundingTruncatedTorusSingletonScore<UF>
-::evaluate_index_with_cached_torus_params(
-    Model *m, ParticleIndex pi,
-    DerivativeAccumulator *da) const {
+::evaluate_index_with_cached_torus_params
+(Model *m, ParticleIndex pi,
+  DerivativeAccumulator *da) const
+{
   IMP_OBJECT_LOG;
+  IMP_LOG_VERBOSE("evaluate_index_with_cached_torus_params()");
+  IMP_USAGE_CHECK(core::XYZ::get_is_setup(m, pi), "Particle should be XYZ decorated");
   const double EPSILON = .000001;
   core::XYZ xyz(m, pi);
   algebra::Vector3D p(xyz.get_coordinates());
@@ -195,8 +239,11 @@ double GenericBoundingTruncatedTorusSingletonScore<UF>
   algebra::Vector3D central_axis_projection = get_projection_on_arc_on_XY_plane(p, R, theta);
   algebra::Vector3D v_from_central_axis = p - central_axis_projection;
   double d_from_surface = v_from_central_axis.get_magnitude() - r;
-  if(core::XYZR::get_is_setup(m,pi)) { // 
-    core::XYZR xyzr(m,pi);
+  IMP_LOG_VERBOSE("Particle " << Showable(pi) << " distance from surface of "
+    << Showable(truncated_torus_) << " is "
+    << std::setprecision(1) << d_from_surface << std::endl);
+  if(core::XYZR::get_is_setup(m, pi)) { // 
+    core::XYZR xyzr(m, pi);
     d_from_surface += xyzr.get_radius();
   }
   if (IMP_LIKELY(d_from_surface < EPSILON)) {
