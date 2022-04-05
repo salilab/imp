@@ -30,8 +30,8 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.RestraintsScoringFunction([r])
         with IMP.allow_deprecated():
             isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
+            mc.set_incremental_scoring_function(isf)
         isf.set_log_level(IMP.SILENT)
-        mc.set_incremental_scoring_function(isf)
         ms = [IMP.core.BallMover(m, [x], .1) for x in ps]
         mv = IMP.core.SerialMover(ms)
         mc.add_mover(mv)
@@ -73,7 +73,7 @@ class Tests(IMP.test.TestCase):
         sf = IMP.core.RestraintsScoringFunction([r])
         with IMP.allow_deprecated():
             isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
-        mc.set_incremental_scoring_function(isf)
+            mc.set_incremental_scoring_function(isf)
         ms = [IMP.core.BallMover(m, [x], 2) for x in ps]
         mv = IMP.core.SerialMover(ms)
         mc.add_mover(mv)

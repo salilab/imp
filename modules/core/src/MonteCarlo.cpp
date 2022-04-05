@@ -201,6 +201,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
 }
 void MonteCarlo::set_incremental_scoring_function(
     IncrementalScoringFunction *isf) {
+  IMPCORE_DEPRECATED_METHOD_DEF(2.17, "Use set_score_moved() instead.")
   isf_ = isf;
   Optimizer::set_scoring_function(isf);
 }

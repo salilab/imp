@@ -148,20 +148,20 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
                   MonteCarloMovers, {}, {}, {});
   /** @} */
 
-  /** \name Incremental
-      Efficient evaluation of non-bonded list based restraints is
-      a bit tricky with incremental evaluation.
-      @{
-  */
   /** Set whether to use incremental evaluate or evaluate all restraints
       each time. This cannot be changed during optimization.
+
+      \deprecated_at{2.17} Use set_score_moved() instead
   */
+  IMPCORE_DEPRECATED_METHOD_DECL(2.17)
   void set_incremental_scoring_function(IncrementalScoringFunction *isf);
+
   bool get_use_incremental_scoring_function() const { return isf_; }
+
   IncrementalScoringFunction *get_incremental_scoring_function() const {
     return isf_;
   }
-  /** @} */
+
  protected:
   /** Get all movable particles (those that can be moved by the current
       movers.*/
