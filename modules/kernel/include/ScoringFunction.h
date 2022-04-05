@@ -104,6 +104,8 @@ class IMPKERNELEXPORT ScoringFunction : public ModelObject {
   /** This should behave identically to evaluate() but may be more
       efficient if it can skip restraint terms that involve unchanged particles.
 
+      \see IMP::core::MonteCarlo::set_score_moved
+
       \param moved_pis Particles that have moved since the last
              scoring function evaluation.
       \param reset_pis Particles that have moved, but back to the

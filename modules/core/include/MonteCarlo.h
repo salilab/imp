@@ -64,6 +64,8 @@ class IMPCOREEXPORT MonteCarlo : public Optimizer {
       more quickly by caching the scores on parts of the system that
       don't move. This is still experimental.
 
+      \see IMP::ScoringFunction::evaluate_moved
+
       \note Some MonteCarlo subclasses do local optimization after each
             move, which can move more particles than the Movers touched.
             In this case the guarantee does not hold and this optimization
