@@ -10,6 +10,8 @@ ChangeLog {#changelog}
   for pre-C++11 environments are thus no longer needed and are deprecated:
   `IMP_NULLPTR`, `IMP_NULLPTR_T`, `IMP_OVERRIDE`, `IMP_FINAL`, `IMP_UNIQUE_PTR`,
   `IMP_FOREACH`, `IMP/nullptr.h`, and `IMP/nullptr_macros.h`.
+- The IMP::core::IncrementalScoringFunction class is now deprecated. Use
+  IMP::ScoringFunction::evaluate_moved instead.
 
 # 2.16.0 - 2021-12-16 # {#changelog_2_16_0}
 - OpenCubicSpline now throws a ValueException for out-of-range values, to

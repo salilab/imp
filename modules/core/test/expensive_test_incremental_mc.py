@@ -28,7 +28,8 @@ class Tests(IMP.test.TestCase):
         # hps.set_log_level(IMP.VERBOSE)
         r = IMP.container.PairsRestraint(hps, cpc)
         sf = IMP.core.RestraintsScoringFunction([r])
-        isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
+        with IMP.allow_deprecated():
+            isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
         isf.set_log_level(IMP.SILENT)
         mc.set_incremental_scoring_function(isf)
         ms = [IMP.core.BallMover(m, [x], .1) for x in ps]
@@ -70,7 +71,8 @@ class Tests(IMP.test.TestCase):
         r = IMP.container.PairsRestraint(hps, cpc)
         # r.set_log_level(IMP.VERBOSE)
         sf = IMP.core.RestraintsScoringFunction([r])
-        isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
+        with IMP.allow_deprecated():
+            isf = IMP.core.IncrementalScoringFunction(m, ps, [r])
         mc.set_incremental_scoring_function(isf)
         ms = [IMP.core.BallMover(m, [x], 2) for x in ps]
         mv = IMP.core.SerialMover(ms)

@@ -35,6 +35,8 @@ class NBLScoring;
 
     To ensure proper evaluation, the ScoringFunction is divided into a number
     of sub scoring functions, one for each possibly moved particle.
+
+    \deprecated_at{2.17} Use IMP::ScoringFunction::evaluate_moved instead.
 */
 class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
   struct Data {
@@ -87,6 +89,7 @@ class IMPCOREEXPORT IncrementalScoringFunction : public ScoringFunction {
                  can be ignored for most purposes
       @param name The name template to use for the scoring function.
 */
+  IMPCORE_DEPRECATED_OBJECT_DECL(2.17)
   IncrementalScoringFunction(Model *m,
 		             const ParticleIndexes &to_move,
                              const RestraintsTemp &rs,

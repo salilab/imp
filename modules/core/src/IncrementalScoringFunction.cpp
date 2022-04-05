@@ -28,6 +28,8 @@ IncrementalScoringFunction::IncrementalScoringFunction(
     Model *m, const ParticleIndexes &ps, const RestraintsTemp &rs,
     double weight, double max, std::string name)
     : ScoringFunction(m, name), weight_(weight), max_(max) {
+  IMPCORE_DEPRECATED_OBJECT_DEF(
+            2.17, "Use IMP::ScoringFunction::evaluate_moved() instead.");
   IMP_OBJECT_LOG;
   IMP_LOG_TERSE("Creating IncrementalScoringFunction with particles "
                 << ps << " and restraints " << rs << std::endl);
