@@ -11,6 +11,7 @@ ChangeLog {#changelog}
   `IMP_NULLPTR`, `IMP_NULLPTR_T`, `IMP_OVERRIDE`, `IMP_FINAL`, `IMP_UNIQUE_PTR`,
   `IMP_FOREACH`, `IMP/nullptr.h`, and `IMP/nullptr_macros.h`.
 - The IMP::core::IncrementalScoringFunction class is now deprecated. Use
+  IMP::core::MonteCarlo::set_score_moved or
   IMP::ScoringFunction::evaluate_moved instead.
 
 # 2.16.0 - 2021-12-16 # {#changelog_2_16_0}
