@@ -20,7 +20,7 @@ except ImportError:
 import json
 from . import util
 
-__version__ = '0.27'
+__version__ = '0.30'
 
 
 class __UnknownValue(object):
@@ -72,13 +72,16 @@ class System(object):
 
        :param str title: Title (longer text description) of the system.
        :param str id: Unique identifier for this system in the mmCIF file.
+       :param str model_details: Detailed description of the system, like an
+                                 abstract.
     """
 
     structure_determination_methodology = "integrative"
 
-    def __init__(self, title=None, id='model'):
+    def __init__(self, title=None, id='model', model_details=None):
         self.id = id
         self.title = title
+        self.model_details = model_details
 
         #: List of plain text comments. These will be added to the top of
         #: the mmCIF file.
@@ -631,20 +634,27 @@ class Citation(object):
        :param str pmid: The PubMed ID.
        :param str title: Full title of the publication.
        :param str journal: Abbreviated journal name.
-       :param int volume: Journal volume number.
+       :param volume: Journal volume as int for a plain number or str for
+                      journals adding a label to the number (e.g. "46(W1)" for
+                      a web server issue).
        :param page_range: The page (int) or page range (as a 2-element
-              int tuple).
+              int tuple). Using str also works for labelled page numbers.
        :param int year: Year of publication.
        :param authors: All authors in order, as a list of strings (last name
               followed by initials, e.g. "Smith AJ").
        :param str doi: Digital Object Identifier of the publication.
+       :param bool is_primary: Denotes the most pertinent publication for the
+              modeling itself (as opposed to a method or piece of software used
+              in the protocol). Only one such publication is allowed, and it
+              is assigned the ID "primary" in the mmCIF file.
     """
     def __init__(self, pmid, title, journal, volume, page_range, year, authors,
-                 doi):
+                 doi, is_primary=False):
         self.title, self.journal, self.volume = title, journal, volume
         self.page_range, self.year = page_range, year
         self.pmid, self.doi = pmid, doi
         self.authors = authors if authors is not None else []
+        self.is_primary = is_primary
 
     @classmethod
     def from_pubmed_id(cls, pubmed_id):
@@ -813,19 +823,22 @@ class RNAChemComp(ChemComp):
 
 
 class NonPolymerChemComp(ChemComp):
-    """A non-polymer chemical component, such as a ligand
-       (for crystal waters, use :class:`WaterChemComp`).
+    """A non-polymer chemical component, such as a ligand or a non-standard
+       residue (for crystal waters, use :class:`WaterChemComp`).
 
        :param str id: A globally unique identifier for this component.
+       :param str code_canonical: Canonical one-letter identifier. This is
+              used for non-standard residues and should be the one-letter code
+              of the closest standard residue (or by default, 'X').
        :param str name: A longer human-readable name for the component.
        :param str formula: The chemical formula. See :class:`ChemComp` for
               more details.
     """
     type = "non-polymer"
 
-    def __init__(self, id, name=None, formula=None):
-        super(NonPolymerChemComp, self).__init__(id, id, id, name=name,
-                                                 formula=formula)
+    def __init__(self, id, code_canonical='X', name=None, formula=None):
+        super(NonPolymerChemComp, self).__init__(id, id, code_canonical,
+                                                 name=name, formula=formula)
 
 
 class WaterChemComp(NonPolymerChemComp):
@@ -1092,6 +1105,7 @@ class Entity(object):
     """  # noqa: E501
 
     number_of_molecules = 1
+    _force_polymer = None
 
     def __get_type(self):
         if self.is_polymeric():
@@ -1147,8 +1161,11 @@ class Entity(object):
     def is_polymeric(self):
         """Return True iff this entity represents a polymer, such as an
            amino acid sequence or DNA/RNA chain (and not a ligand or water)"""
-        return len(self.sequence) != 1 or not isinstance(self.sequence[0],
-                                                         NonPolymerChemComp)
+        return (self._force_polymer or
+                len(self.sequence) == 0 or
+                len(self.sequence) > 1
+                and any(isinstance(x, (PeptideChemComp, DNAChemComp,
+                                       RNAChemComp)) for x in self.sequence))
 
     def residue(self, seq_id):
         """Get a :class:`Residue` at the given sequence position"""

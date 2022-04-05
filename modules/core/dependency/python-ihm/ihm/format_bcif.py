@@ -577,6 +577,10 @@ class BinaryCifWriter(ihm.format._Writer):
         self._categories = block[u'categories']
         self._blocks.append(block)
 
+    def end_block(self):
+        # noop - end-of-block is handled by start_block() and flush()
+        pass
+
     def _add_category(self, category, data):
         row_count = 0
         cols = []

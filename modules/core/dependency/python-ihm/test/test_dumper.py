@@ -51,7 +51,7 @@ class Tests(unittest.TestCase):
         ihm.dumper.write(fh, [sys1, sys2])
         lines = fh.getvalue().split('\n')
         self.assertEqual(lines[:2], ["data_system1", "_entry.id system1"])
-        self.assertEqual(lines[15:17],
+        self.assertEqual(lines[16:18],
                          ["data_system23", "_entry.id 'system 2+3'"])
 
     def test_write_custom_dumper(self):
@@ -96,6 +96,14 @@ class Tests(unittest.TestCase):
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, "data_test_model\n_entry.id test_model\n")
 
+    def test_entry_dumper_data_chars(self):
+        """Test allowed characters in data_ block with EntryDumper"""
+        system = ihm.System(id='foo99-bar94_ABC $#% x')
+        dumper = ihm.dumper._EntryDumper()
+        out = _get_dumper_output(dumper, system).split('\n')[0]
+        # Whitespace and special characters (except - _) should be removed
+        self.assertEqual(out, "data_foo99-bar94_ABCx")
+
     def test_audit_conform_dumper(self):
         """Test AuditConformDumper"""
         system = ihm.System()
@@ -109,10 +117,11 @@ class Tests(unittest.TestCase):
 
     def test_struct_dumper(self):
         """Test StructDumper"""
-        system = ihm.System(title='test model')
+        system = ihm.System(title='test model', model_details="test details")
         dumper = ihm.dumper._StructDumper()
         out = _get_dumper_output(dumper, system)
         self.assertEqual(out, """_struct.entry_id model
+_struct.pdbx_model_details 'test details'
 _struct.pdbx_structure_determination_methodology integrative
 _struct.title 'test model'
 """)
@@ -228,8 +237,50 @@ _citation_author.ordinal
         # Handle no last page
         c1.page_range = 'e1637'
         dumper = ihm.dumper._CitationDumper()
+        dumper.finalize(system)  # Assign IDs
         out = _get_dumper_output(dumper, system)
         self.assertIn("'Mol Cell Proteomics' 13 e1637 . 2014 ", out)
+
+    def test_citation_primary(self):
+        """Test CitationDumper with a primary citation"""
+        system = ihm.System()
+        c1 = ihm.Citation(pmid='x', title='y', journal='z', year=2014,
+                          authors=[], volume=1, page_range=1, doi='d')
+        c2 = ihm.Citation(pmid='x2', title='y2', journal='z2', year=2015,
+                          authors=[], volume=1, page_range=1, doi='e',
+                          is_primary=True)
+        system.citations.extend((c1, c2))
+        dumper = ihm.dumper._CitationDumper()
+        dumper.finalize(system)  # Assign IDs
+        out = _get_dumper_output(dumper, system)
+        self.assertEqual(out, """#
+loop_
+_citation.id
+_citation.title
+_citation.journal_abbrev
+_citation.journal_volume
+_citation.page_first
+_citation.page_last
+_citation.year
+_citation.pdbx_database_id_PubMed
+_citation.pdbx_database_id_DOI
+primary y2 z2 1 1 . 2015 x2 e
+2 y z 1 1 . 2014 x d
+#
+""")
+
+    def test_citation_multiple_primary(self):
+        """Test CitationDumper with multiple primary citations"""
+        system = ihm.System()
+        c1 = ihm.Citation(pmid='x', title='y', journal='z', year=2014,
+                          authors=[], volume=1, page_range=1, doi='d',
+                          is_primary=True)
+        c2 = ihm.Citation(pmid='x2', title='y2', journal='z2', year=2015,
+                          authors=[], volume=1, page_range=1, doi='e',
+                          is_primary=True)
+        system.citations.extend((c1, c2))
+        dumper = ihm.dumper._CitationDumper()
+        self.assertRaises(ValueError, dumper.finalize, system)
 
     def test_audit_author_empty(self):
         """Test AuditAuthorDumper with empty list"""
@@ -673,7 +724,7 @@ _ihm_chemical_component_descriptor.inchi_key
         """Test EntityPolyDumper"""
         system = ihm.System()
         e1 = ihm.Entity('ACGT')  # sequence containing glycine
-        e2 = ihm.Entity(('A', 'C', 'C', 'MSE'))  # no glycine
+        e2 = ihm.Entity(('A', 'C', 'C', 'UNK', 'MSE'))  # no glycine
         # All D-peptides (with glycine)
         e3 = ihm.Entity(('DAL', 'DCY', 'G'), alphabet=ihm.DPeptideAlphabet)
         # All D-peptides (without glycine)
@@ -683,7 +734,9 @@ _ihm_chemical_component_descriptor.inchi_key
         e5 = ihm.Entity(('A', dpep_al['DCY'], 'G'))
         # Non-polymeric entity
         e6 = ihm.Entity([ihm.NonPolymerChemComp('HEM')])
-        system.entities.extend((e1, e2, e3, e4, e5, e6))
+        # Sequence containing a non-standard residue
+        e7 = ihm.Entity((ihm.NonPolymerChemComp('ACE'), 'C', 'C'))
+        system.entities.extend((e1, e2, e3, e4, e5, e6, e7))
         # One protein entity is modeled (with an asym unit) the other not;
         # this should be reflected in pdbx_strand_id
         system.asym_units.append(ihm.AsymUnit(e1, 'foo', strand_id='a'))
@@ -710,13 +763,14 @@ _entity_poly.pdbx_strand_id
 _entity_poly.pdbx_seq_one_letter_code
 _entity_poly.pdbx_seq_one_letter_code_can
 1 polypeptide(L) no no a ACGT ACGT
-2 polypeptide(L) no no . ACC(MSE) ACCM
+2 polypeptide(L) no no . ACC(UNK)(MSE) ACCXM
 3 polypeptide(D) no no . (DAL)(DCY)G ACG
 4 polypeptide(D) no no . (DAL)(DCY) AC
 5 polypeptide(L) no no . A(DCY)G ACG
-7 polyribonucleotide no no . AC AC
-8 polydeoxyribonucleotide no no . (DA)(DC) AC
-9 'polydeoxyribonucleotide/polyribonucleotide hybrid' no no . AC(DA)(DC) ACAC
+7 polypeptide(L) no yes . (ACE)CC XCC
+8 polyribonucleotide no no . AC AC
+9 polydeoxyribonucleotide no no . (DA)(DC) AC
+10 'polydeoxyribonucleotide/polyribonucleotide hybrid' no no . AC(DA)(DC) ACAC
 #
 """)
 
@@ -844,14 +898,15 @@ loop_
 _pdbx_nonpoly_scheme.asym_id
 _pdbx_nonpoly_scheme.entity_id
 _pdbx_nonpoly_scheme.mon_id
+_pdbx_nonpoly_scheme.ndb_seq_num
 _pdbx_nonpoly_scheme.pdb_seq_num
 _pdbx_nonpoly_scheme.auth_seq_num
 _pdbx_nonpoly_scheme.pdb_mon_id
 _pdbx_nonpoly_scheme.auth_mon_id
 _pdbx_nonpoly_scheme.pdb_strand_id
 _pdbx_nonpoly_scheme.pdb_ins_code
-B 2 HEM 1 1 HEM HEM Q .
-C 3 ZN 6 6 ZN ZN C .
+B 2 HEM 1 1 1 HEM HEM Q .
+C 3 ZN 1 6 6 ZN ZN C .
 #
 """)
 
@@ -2198,6 +2253,12 @@ C
 N
 #
 """)
+        # Test dump_atoms with add_ihm=False
+        fh = StringIO()
+        writer = ihm.format.CifWriter(fh)
+        dumper.dump_atoms(system, writer, add_ihm=False)
+        self.assertNotIn('ihm_model_id', fh.getvalue())
+
         # With auth_seq_id == seq_id-1
         asym.auth_seq_id_map = -1
         out = _get_dumper_output(dumper, system)
@@ -4189,6 +4250,19 @@ _flr_FPS_MPP_modeling.mpp_atom_position_group_id
 2 2 2 1
 #
 """)
+
+    def test_variant_base(self):
+        """Test Variant base class"""
+        v = ihm.dumper.Variant()
+        self.assertIsNone(v.get_dumpers())
+        self.assertEqual(
+            v.get_system_writer('system', 'writer_class', 'writer'), 'writer')
+
+    def test_write_variant(self):
+        """Test write() function with Variant object"""
+        sys1 = ihm.System(id='system1')
+        fh = StringIO()
+        ihm.dumper.write(fh, [sys1], variant=ihm.dumper.IHMVariant())
 
 
 if __name__ == '__main__':

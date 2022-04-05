@@ -84,6 +84,9 @@ class Tests(unittest.TestCase):
         """Test NonPolymerChemComp class"""
         cc1 = ihm.NonPolymerChemComp('HEM')
         self.assertEqual(cc1.type, 'non-polymer')
+        self.assertEqual(cc1.code_canonical, 'X')
+        cc2 = ihm.NonPolymerChemComp('HEM', code_canonical='G')
+        self.assertEqual(cc2.code_canonical, 'G')
 
     def test_water_chem_comp(self):
         """Test WaterChemComp class"""
@@ -210,6 +213,21 @@ class Tests(unittest.TestCase):
         self.assertFalse(heme.is_polymeric())
         self.assertEqual(water.type, 'water')
         self.assertFalse(water.is_polymeric())
+
+        # A single amino acid should be classified non-polymer
+        single_aa = ihm.Entity('A')
+        self.assertEqual(single_aa.type, 'non-polymer')
+        self.assertFalse(single_aa.is_polymeric())
+
+        # ... unless forced polymer
+        single_aa._force_polymer = True
+        self.assertEqual(single_aa.type, 'polymer')
+        self.assertTrue(single_aa.is_polymeric())
+
+        # An entity with no sequence is a polymer
+        empty = ihm.Entity([])
+        self.assertEqual(empty.type, 'polymer')
+        self.assertTrue(empty.is_polymeric())
 
     def test_entity_src_method_default(self):
         """Test default values of Entity.src_method"""

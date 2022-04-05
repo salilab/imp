@@ -1,3 +1,26 @@
+0.30 - 2022-04-05
+=================
+  - Add support for a long description of the system (like an abstract)
+    using struct.pdbx_model_details (#80).
+  - Bugfix: correctly read mmCIF files with missing entity.type.
+
+0.29 - 2022-04-01
+=================
+  - Output mmCIF files containing non-polymers should now validate against
+    the PDBx dictionary (#76).
+  - Bugfix: non-polymers that are erroneously marked as polymers in
+    the input mmCIF can now be read in without causing a Python
+    exception (#78).
+  - Bugfix: strings starting with an underscore (e.g. chain names) are now
+    quoted in mmCIF output to conform to the CIF syntax (#75).
+
+0.28 - 2022-03-21
+=================
+  - :class:`ihm.Citation` now takes a ``is_primary`` argument, which can
+    be used to denote the most pertinent publication for the modeling.
+  - Improved support for non-standard residues, and for standard amino acids
+    used as nonpolymers.
+
 0.27 - 2022-01-27
 =================
   - Minor documentation improvements.

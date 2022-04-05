@@ -177,11 +177,16 @@ class Tests(unittest.TestCase):
 
     def test_struct_handler(self):
         """Test StructHandler"""
-        cif = "_struct.entry_id eid\n_struct.title 'Test title'"
+        cif = """
+_struct.entry_id eid
+_struct.title 'Test title'
+_struct.pdbx_model_details 'Test details'
+"""
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             self.assertEqual(s.id, 'eid')
             self.assertEqual(s.title, 'Test title')
+            self.assertEqual(s.model_details, 'Test details')
 
     def test_multiple_systems(self):
         """Test multiple systems from data blocks"""
@@ -192,12 +197,17 @@ data_id2
 _struct.entry_id id2
 data_id3
 _struct.entry_id id3
+data_long-entry$#<>
+_struct.entry_id id4
 """
         for fh in cif_file_handles(cif):
-            s1, s2, s3 = ihm.reader.read(fh)
+            s1, s2, s3, s4 = ihm.reader.read(fh)
             self.assertEqual(s1.id, 'id1')
             self.assertEqual(s2.id, 'id2')
             self.assertEqual(s3.id, 'id3')
+            # Should not be tripped up by odd characters in data_ block,
+            # and the system ID should match entry_id
+            self.assertEqual(s4.id, 'id4')
 
     def test_software_handler(self):
         """Test SoftwareHandler"""
@@ -284,7 +294,7 @@ _citation.page_last
 _citation.year
 _citation.pdbx_database_id_PubMed
 _citation.pdbx_database_id_DOI
-2 'Mol Cell Proteomics' 9 2943 . 2014 1234 .
+primary 'Mol Cell Proteomics' 9 2943 . 2014 1234 .
 3 'Mol Cell Proteomics' 9 2943 2946 2014 1234 1.2.3.4
 4 'Mol Cell Proteomics' 9 . . 2014 1234 1.2.3.4
 #
@@ -301,18 +311,21 @@ _citation_author.ordinal
         for fh in cif_file_handles(cif):
             s, = ihm.reader.read(fh)
             citation1, citation2, citation3, citation4 = s.citations
-            self.assertEqual(citation1._id, '2')
+            self.assertEqual(citation1._id, 'primary')
+            self.assertTrue(citation1.is_primary)
             self.assertEqual(citation1.page_range, '2943')
             self.assertEqual(citation1.authors, [])
             self.assertEqual(citation1.pmid, '1234')
             self.assertIsNone(citation1.doi)
 
             self.assertEqual(citation2._id, '3')
+            self.assertFalse(citation2.is_primary)
             self.assertEqual(citation2.page_range, ('2943', '2946'))
             self.assertEqual(citation2.authors, ['Foo A', 'Bar C'])
             self.assertEqual(citation2.doi, '1.2.3.4')
 
             self.assertEqual(citation3._id, '4')
+            self.assertFalse(citation3.is_primary)
             self.assertEqual(citation3.authors, [])
             self.assertIsNone(citation3.page_range)
 
@@ -487,12 +500,25 @@ _entity.details
             s, = ihm.reader.read(fh)
             e1, e2, e3, e4 = s.entities
             self.assertEqual(e1.description, 'Nup84')
+            self.assertTrue(e1._force_polymer)
             self.assertEqual(
                 e1.number_of_molecules, '2')  # todo: coerce to int
             self.assertEqual(e1.source.src_method, 'nat')
             self.assertEqual(e2.source.src_method, 'syn')
             self.assertIsNone(e3.source)
             self.assertIsNone(e4.source)
+
+    def test_entity_handler_minimal(self):
+        """Test EntityHandler with minimal entity category"""
+        cif = """
+loop_
+_entity.id
+1
+"""
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh)
+            e1, = s.entities
+            self.assertIsNone(e1.description)
 
     def test_entity_src_gen_handler(self):
         """Test EntitySrcGenHandler"""
@@ -754,7 +780,9 @@ _entity_poly_seq.entity_id
 _entity_poly_seq.num
 _entity_poly_seq.mon_id
 1 1 ALA
+1 2 ALA
 2 1 ALA
+2 2 ALA
 #
 loop_
 _ihm_entity_poly_segment.id
@@ -763,9 +791,9 @@ _ihm_entity_poly_segment.seq_id_begin
 _ihm_entity_poly_segment.seq_id_end
 1 1 1 726
 2 2 1 744
-3 1 1 1
+3 1 1 2
 4 2 1 50
-5 2 1 1
+5 2 1 2
 #
 loop_
 _struct_asym.id
@@ -4019,6 +4047,19 @@ _flr_FPS_MPP_modeling.mpp_atom_position_group_id
         self.assertIsInstance(m.mpp_atom_position_group,
                               ihm.flr.FPSMPPAtomPositionGroup)
         self.assertEqual(m.mpp_atom_position_group._id, '5')
+
+    def test_variant_base(self):
+        """Test Variant base class"""
+        v = ihm.reader.Variant()
+        self.assertIsNone(v.get_handlers(None))
+        self.assertIsNone(v.get_audit_conform_handler(None))
+
+    def test_write_variant(self):
+        """Test write() function with Variant object"""
+        cif = "data_model\n_struct.entry_id testid\n"
+        for fh in cif_file_handles(cif):
+            s, = ihm.reader.read(fh, variant=ihm.reader.IHMVariant())
+            self.assertEqual(s.id, 'testid')
 
 
 if __name__ == '__main__':

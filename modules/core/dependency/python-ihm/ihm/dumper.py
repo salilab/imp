@@ -71,7 +71,7 @@ def _get_transform(rot_matrix, tr_vector):
 class _EntryDumper(Dumper):
     def dump(self, system, writer):
         # Write CIF header (so this dumper should always be first)
-        writer.start_block(re.subn('[^0-9a-zA-z_]', '', system.id)[0])
+        writer.start_block(re.subn('[^0-9a-zA-z_-]', '', system.id)[0])
         with writer.category("_entry") as lp:
             lp.write(id=system.id)
 
@@ -83,8 +83,8 @@ class _AuditConformDumper(Dumper):
     def dump(self, system, writer):
         with writer.category("_audit_conform") as lp:
             # Update to match the version of the IHM dictionary we support:
-            lp.write(dict_name="ihm-extension.dic", dict_version="1.09",
-                     dict_location=self.URL % "b4fe8af")
+            lp.write(dict_name="ihm-extension.dic", dict_version="1.17",
+                     dict_location=self.URL % "f15a6bb")
 
 
 class _StructDumper(Dumper):
@@ -92,7 +92,8 @@ class _StructDumper(Dumper):
         with writer.category("_struct") as lp:
             mth = system.structure_determination_methodology
             lp.write(title=system.title, entry_id=system.id,
-                     pdbx_structure_determination_methodology=mth)
+                     pdbx_structure_determination_methodology=mth,
+                     pdbx_model_details=system.model_details)
 
 
 class _CommentDumper(Dumper):
@@ -127,13 +128,25 @@ class _SoftwareDumper(Dumper):
 
 class _CitationDumper(Dumper):
     def finalize(self, system):
-        for nc, c in enumerate(system._all_citations()):
+        primaries = []
+        non_primaries = []
+        for c in system._all_citations():
+            (primaries if c.is_primary else non_primaries).append(c)
+        # Put primary citations first in list
+        self._all_citations = primaries + non_primaries
+        for nc, c in enumerate(self._all_citations):
             c._id = nc + 1
+        if primaries:
+            if len(primaries) > 1:
+                raise ValueError(
+                    "Multiple Citations with is_primary=True; only one can "
+                    "be primary: %s" % primaries)
+            else:
+                primaries[0]._id = 'primary'
 
     def dump(self, system, writer):
-        citations = list(system._all_citations())
-        self.dump_citations(citations, writer)
-        self.dump_authors(citations, writer)
+        self.dump_citations(self._all_citations, writer)
+        self.dump_authors(self._all_citations, writer)
 
     def dump_citations(self, citations, writer):
         with writer.loop("_citation",
@@ -549,8 +562,11 @@ class _EntityPolyDumper(Dumper):
             for entity in system.entities:
                 if not entity.is_polymeric():
                     continue
+                nstd = any(isinstance(x, ihm.NonPolymerChemComp)
+                           for x in entity.sequence)
                 lp.write(entity_id=entity._id, type=self._get_seq_type(entity),
-                         nstd_linkage='no', nstd_monomer='no',
+                         nstd_linkage='no',
+                         nstd_monomer='yes' if nstd else 'no',
                          pdbx_strand_id=strand.get(entity._id, None),
                          pdbx_seq_one_letter_code=self._get_sequence(entity),
                          pdbx_seq_one_letter_code_can=self._get_canon(entity))
@@ -647,7 +663,7 @@ class _NonPolySchemeDumper(Dumper):
        For now we assume we're using auth_seq_num==pdb_seq_num."""
     def dump(self, system, writer):
         with writer.loop("_pdbx_nonpoly_scheme",
-                         ["asym_id", "entity_id", "mon_id",
+                         ["asym_id", "entity_id", "mon_id", "ndb_seq_num",
                           "pdb_seq_num", "auth_seq_num", "pdb_mon_id",
                           "auth_mon_id", "pdb_strand_id",
                           "pdb_ins_code"]) as lp:
@@ -658,8 +674,13 @@ class _NonPolySchemeDumper(Dumper):
                 # todo: handle multiple waters
                 for num, comp in enumerate(entity.sequence):
                     auth_seq_num, ins = asym._get_auth_seq_id_ins_code(num + 1)
+                    # ndb_seq_num is described as the "NDB/RCSB residue
+                    # number". We don't have one of those but real PDBs
+                    # usually seem to just count sequentially from 1, so
+                    # we'll do that too.
                     lp.write(asym_id=asym._id, pdb_strand_id=asym.strand_id,
                              entity_id=entity._id,
+                             ndb_seq_num=num + 1,
                              pdb_seq_num=auth_seq_num,
                              auth_seq_num=auth_seq_num,
                              mon_id=comp.id, pdb_mon_id=comp.id,
@@ -3120,6 +3141,11 @@ class Variant(object):
         """
         pass
 
+    def get_system_writer(self, system, writer_class, writer):
+        """Get a writer tailored to the given system.
+           By default, this just returns the ``writer`` unchanged."""
+        return writer
+
 
 class IHMVariant(Variant):
     """Used to select typical PDBx/IHM file output. See :func:`write`."""
@@ -3179,11 +3205,13 @@ def write(fh, systems, format='mmCIF', dumpers=[], variant=IHMVariant):
 
     writer = writer_map[format](fh)
     for system in systems:
+        w = variant.get_system_writer(system, writer_map[format], writer)
         system._before_write()
 
         for d in dumpers:
             d.finalize(system)
         system._check_after_write()
         for d in dumpers:
-            d.dump(system, writer)
+            d.dump(system, w)
+        w.end_block()  # start_block is called by EntryDumper
     writer.flush()

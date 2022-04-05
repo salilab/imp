@@ -4,6 +4,9 @@
 
 import ihm
 import ihm.dumper
+import ihm.protocol
+import ihm.representation
+import ihm.model
 
 system = ihm.System()
 
@@ -44,6 +47,35 @@ system.asym_units.extend((asym_protein, asym_rna, asym_dna, asym_heme1,
                           asym_heme2, asym_h2o))
 
 # todo: show handling of multiple waters
+
+# Just as in the simple-docking.py example, we can add models with coordinates.
+# Here we define an atomic model containing just the two hemes and the water.
+assembly = ihm.Assembly((asym_heme1, asym_heme2, asym_h2o),
+                        name="Modeled assembly")
+rep = ihm.representation.Representation(
+    [ihm.representation.AtomicSegment(asym_heme1, rigid=False),
+     ihm.representation.AtomicSegment(asym_heme2, rigid=False),
+     ihm.representation.AtomicSegment(asym_h2o, rigid=False)])
+protocol = ihm.protocol.Protocol(name='Modeling')
+
+
+class MyModel(ihm.model.Model):
+    def get_atoms(self):
+        # seq_id only makes sense for polymers; for ligands it should be None
+        yield ihm.model.Atom(asym_unit=asym_heme1, type_symbol='FE', het=True,
+                             seq_id=None, atom_id='FE', x=0., y=0., z=0.)
+        yield ihm.model.Atom(asym_unit=asym_heme2, type_symbol='FE', het=True,
+                             seq_id=None, atom_id='FE', x=10., y=10., z=10.)
+        yield ihm.model.Atom(asym_unit=asym_h2o, type_symbol='O', het=True,
+                             seq_id=None, atom_id='O', x=20., y=20., z=20.)
+
+
+# We have only a single model in a single state:
+model = MyModel(assembly=assembly, protocol=protocol, representation=rep,
+                name='Best model')
+model_group = ihm.model.ModelGroup([model], name='All models')
+state = ihm.model.State([model_group])
+system.state_groups.append(ihm.model.StateGroup([state]))
 
 # Once the system is complete, we can write it out to an mmCIF file:
 with open('output.cif', 'w') as fh:

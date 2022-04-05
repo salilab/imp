@@ -193,6 +193,8 @@ x
         self.assertEqual(w._repr('data_'), "'data_'")
         # [ is a reserved character and cannot start a nonquoted string
         self.assertEqual(w._repr('[foo'), "'[foo'")
+        # _ indicates an identifier and cannot start a nonquoted string
+        self.assertEqual(w._repr('_foo'), "'_foo'")
         # Empty string must be quoted
         self.assertEqual(w._repr(""), "''")
         # Reserved words must be quoted (but just a prefix is OK)

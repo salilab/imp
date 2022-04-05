@@ -873,9 +873,10 @@ class Handler(object):
 class _StructHandler(Handler):
     category = '_struct'
 
-    def __call__(self, title, entry_id):
+    def __call__(self, title, entry_id, pdbx_model_details):
         self.copy_if_present(self.system, locals(), keys=('title',),
-                             mapkeys={'entry_id': 'id'})
+                             mapkeys={'entry_id': 'id',
+                                      'pdbx_model_details': 'model_details'})
 
 
 class _AuditConformHandler(Handler):
@@ -916,6 +917,7 @@ class _CitationHandler(Handler):
                  journal_abbrev, journal_volume, pdbx_database_id_doi,
                  page_first, page_last):
         s = self.sysr.citations.get_by_id(id)
+        s.is_primary = (id == 'primary')
         self.copy_if_present(
             s, locals(), keys=('title', 'year'),
             mapkeys={'pdbx_database_id_pubmed': 'pmid',
@@ -1008,6 +1010,10 @@ class _EntityHandler(Handler):
             source_cls = self.src_map.get(src_method.lower(), None)
             if source_cls and s.source is None:
                 s.source = source_cls()
+        # Force polymer if _entity.type says so, even if it doesn't look like
+        # one (e.g. just a single amino acid)
+        if type and type.lower() == 'polymer':
+            s._force_polymer = True
 
 
 class _EntitySrcNatHandler(Handler):
