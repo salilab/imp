@@ -654,8 +654,8 @@ _ihm_3dem_restraint.cross_correlation_coefficient
     def test_site_dumper_spheres_only(self):
         """Test SiteDumper, spheres only"""
         system = IMP.mmcif.System()
-        h, state = self.make_model(system, [("foo", "A", 'A'),
-                                            ("bar", "AA", "B")])
+        h, state = self.make_model(system, [("foo", "AA", 'A'),
+                                            ("bar", "AAA", "B")])
         m = state.model
 
         # Add coordinates
