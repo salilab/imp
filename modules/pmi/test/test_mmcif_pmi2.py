@@ -92,11 +92,22 @@ class Tests(IMP.test.TestCase):
         po.finalize()
         fh = StringIO()
         ihm.dumper.write(fh, [po.system])
-        self.assertEqual(
-            fh.getvalue().split('\n')[:5],
-            ['data_model', '_entry.id model', '_struct.entry_id model',
-             '_struct.pdbx_structure_determination_methodology integrative',
-             '_struct.title .'])
+        val = fh.getvalue()
+        # Work with both latest stable ihm and that bundled with IMP
+        if '_struct.pdbx_model_details' in val:
+            self.assertEqual(
+                val.split('\n')[:5],
+                ['data_model', '_entry.id model', '_struct.entry_id model',
+                 '_struct.pdbx_model_details .',
+                 '_struct.pdbx_structure_determination_methodology '
+                 'integrative'])
+        else:
+            self.assertEqual(
+                val.split('\n')[:5],
+                ['data_model', '_entry.id model', '_struct.entry_id model',
+                 '_struct.pdbx_structure_determination_methodology '
+                 'integrative',
+                 '_struct.title .'])
 
     def test_finalize_write_bcif(self):
         """Test ProtocolOutput.finalize() and BinaryCIF output"""

@@ -142,9 +142,9 @@ def _write_mmcif_internal(flpdb, particle_infos_for_pdb, geometric_center,
     with writer.category("_entry") as lp:
         lp.write(id='model')
 
-    with writer.loop("_entity", ["id"]) as lp:
+    with writer.loop("_entity", ["id", "type"]) as lp:
         for e in entities:
-            lp.write(id=e.id)
+            lp.write(id=e.id, type="polymer")
 
     with writer.loop("_entity_poly",
                      ["entity_id", "pdbx_seq_one_letter_code"]) as lp:

@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 """Call the main setup_git.py. This should be
 copied to the main directory of your project and named setup_git.py."""
 
