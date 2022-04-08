@@ -18,6 +18,7 @@
 #include "TruncatedTorus.h"
 #include <IMP/compiler_macros.h>
 #include <IMP/generic.h>
+#include <IMP/Showable.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/singleton_macros.h>
 #include <IMP/UnaryFunction.h>
@@ -186,9 +187,13 @@ template <class UF>
 void GenericBoundingTruncatedTorusSingletonScore<UF>
 ::update_cached_torus_params() const
 {
+  IMP_LOG_VERBOSE("update_cached_torus_params() begin" << std::endl);
+  IMP_LOG_VERBOSE("Truncated torus pi " << truncated_torus_.get_particle_index() << std::endl);
+  IMP_LOG_VERBOSE("Truncated torus " << IMP::Showable(truncated_torus_) << std::endl);
   R_cached_ = truncated_torus_.get_major_radius();
   r_cached_ = truncated_torus_.get_minor_radius();
   theta_cached_ = truncated_torus_.get_theta();
+  IMP_LOG_VERBOSE("update_cached_torus_params() end" << std::endl);
 }
 
 namespace
@@ -239,8 +244,8 @@ double GenericBoundingTruncatedTorusSingletonScore<UF>
   algebra::Vector3D central_axis_projection = get_projection_on_arc_on_XY_plane(p, R, theta);
   algebra::Vector3D v_from_central_axis = p - central_axis_projection;
   double d_from_surface = v_from_central_axis.get_magnitude() - r;
-  IMP_LOG_VERBOSE("Particle " << Showable(pi) << " distance from surface of "
-    << Showable(truncated_torus_) << " is "
+  IMP_LOG_VERBOSE("Particle " << IMP::Showable(pi) << " distance from surface of "
+    << IMP::Showable(truncated_torus_) << " is "
     << std::setprecision(1) << d_from_surface << std::endl);
   if(core::XYZR::get_is_setup(m, pi)) { // 
     core::XYZR xyzr(m, pi);
@@ -249,8 +254,8 @@ double GenericBoundingTruncatedTorusSingletonScore<UF>
   if (IMP_LIKELY(d_from_surface < EPSILON)) {
     return 0.0;
   }
-  IMP_LOG_VERBOSE("Particle " << Showable(pi) << " is outside truncated torus: " 
-		  << Showable(truncated_torus_) << std::endl);
+  IMP_LOG_VERBOSE("Particle " << IMP::Showable(pi) << " is outside truncated torus: " 
+    << IMP::Showable(truncated_torus_) << std::endl);
   if (IMP_LIKELY(da)) {
     IMP::DerivativePair dp= f_->evaluate_with_derivative(d_from_surface);
     algebra::Vector3D deriv= v_from_central_axis.get_unit_vector() * dp.second;
