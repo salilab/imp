@@ -30,10 +30,11 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Score XYZ or XYZR particles based on how far outside a torus they are.
-/** The radius of the particle is taken into account if it is XYZR decorated.
-    A particle that is contained within the bounding truncated torus has
-    a score of 0. The UnaryFunction passed should return 0 when given
-    a feature size of 0 and a positive value when the feature is positive.
+/** 
+ * The radius of the particle is taken into account if it is XYZR decorated.
+ * A particle that is contained within the bounding truncated torus has
+ * a score of 0. The UnaryFunction passed should return 0 when given
+ * feature size of 0 and a positive value when the feature is positive.
  */
 template <class UF>
 class GenericBoundingTruncatedTorusSingletonScore
@@ -44,6 +45,8 @@ class GenericBoundingTruncatedTorusSingletonScore
     theta_cached_; // cache for efficiency
 
  public:
+  //! A truncated torus score computed by applying unary function UF to the
+  //! distance of particles from the surface of a bounding truncated_torus
   GenericBoundingTruncatedTorusSingletonScore
   (UF *f, const TruncatedTorus& truncated_torus);
 
@@ -93,7 +96,7 @@ template <class UF>
 GenericBoundingTruncatedTorusSingletonScore<UF>
 ::GenericBoundingTruncatedTorusSingletonScore
 (UF *f, const TruncatedTorus &truncated_torus)
-  : f_(f), truncated_torus_(truncated_torus_)
+  : f_(f), truncated_torus_(truncated_torus)
 {
   IMP_USAGE_CHECK(std::abs(f_->evaluate(0)) < .000001,
                   "The unary function should return "
@@ -108,7 +111,6 @@ double GenericBoundingTruncatedTorusSingletonScore<UF>
   DerivativeAccumulator *da) const
 {
   IMP_OBJECT_LOG;
-  IMP_LOG_VERBOSE("evaluate_index()");
   update_cached_torus_params();
   return evaluate_index_with_cached_torus_params(m, pi, da);
 }
@@ -187,9 +189,9 @@ template <class UF>
 void GenericBoundingTruncatedTorusSingletonScore<UF>
 ::update_cached_torus_params() const
 {
-  IMP_LOG_VERBOSE("update_cached_torus_params() begin" << std::endl);
+  IMP_LOG_VERBOSE("update_cached_torus_params() begin\n");
   IMP_LOG_VERBOSE("Truncated torus pi " << truncated_torus_.get_particle_index() << std::endl);
-  IMP_LOG_VERBOSE("Truncated torus " << IMP::Showable(truncated_torus_) << std::endl);
+  IMP_LOG_VERBOSE("Truncated torus " << truncated_torus_ << std::endl);
   R_cached_ = truncated_torus_.get_major_radius();
   r_cached_ = truncated_torus_.get_minor_radius();
   theta_cached_ = truncated_torus_.get_theta();
@@ -244,12 +246,15 @@ double GenericBoundingTruncatedTorusSingletonScore<UF>
   algebra::Vector3D central_axis_projection = get_projection_on_arc_on_XY_plane(p, R, theta);
   algebra::Vector3D v_from_central_axis = p - central_axis_projection;
   double d_from_surface = v_from_central_axis.get_magnitude() - r;
-  IMP_LOG_VERBOSE("Particle " << IMP::Showable(pi) << " distance from surface of "
-    << IMP::Showable(truncated_torus_) << " is "
-    << std::setprecision(1) << d_from_surface << std::endl);
   if(core::XYZR::get_is_setup(m, pi)) { // 
     core::XYZR xyzr(m, pi);
     d_from_surface += xyzr.get_radius();
+    IMP_LOG_VERBOSE("Particle " << xyzr << " sphere distance from surface of "
+      << truncated_torus_ << " is " << std::setprecision(1) << d_from_surface << " A\n");
+  } else {
+    IMP_LOG_VERBOSE("Particle " << xyz << " point distance from surface of "
+      << truncated_torus_ << " is " << std::setprecision(1) << d_from_surface << " A\n");
+
   }
   if (IMP_LIKELY(d_from_surface < EPSILON)) {
     return 0.0;
@@ -268,6 +273,9 @@ double GenericBoundingTruncatedTorusSingletonScore<UF>
 
 #endif
 
+//! Score particles based on how far outside a truncated torus they
+//! are by applying f to the distance.
+//! \see GenericBoundingTruncatedTorusSingletonScore
 IMP_GENERIC_OBJECT(BoundingTruncatedTorusSingletonScore,
   bounding_truncated_torus_singleton_score,
   UnaryFunction,

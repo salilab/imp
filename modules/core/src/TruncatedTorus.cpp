@@ -41,10 +41,12 @@ FloatKey TruncatedTorus::get_theta_key() {
 }
 
 void TruncatedTorus::show(std::ostream &out) const {
+  IMP_LOG_VERBOSE("Showing truncated torus" << std::endl);
   out <<  std::setprecision(1)
-      << "TruncatedTorus R=" << get_major_radius() << " A"
-      << " r=" << get_minor_radius() << " A"
-      << " theta=" << get_theta() << " Radians";
+      << "TruncatedTorus R: " << get_major_radius() << " A"
+      << " r: " << get_minor_radius() << " A"
+      << " theta: " << get_theta()/3.141256*180 << " Degrees";
+  IMP_LOG_VERBOSE("Done showing truncated torus" << std::endl);
 }
 
 IMPCORE_END_NAMESPACE
