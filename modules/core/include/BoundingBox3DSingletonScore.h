@@ -91,6 +91,9 @@ double GenericBoundingBox3DSingletonScore<UF>::evaluate_index(
 
 #endif
 
+//! Score particles based on how far outside a box they are by
+//! applying f to the distance.
+//! \see GenericBoundingBox3DSingletonScore
 IMP_GENERIC_OBJECT(BoundingBox3DSingletonScore, bounding_box_3d_singleton_score,
                    UnaryFunction,
                    (UnaryFunction *f, const algebra::BoundingBoxD<3> &bb),
@@ -99,3 +102,4 @@ IMP_GENERIC_OBJECT(BoundingBox3DSingletonScore, bounding_box_3d_singleton_score,
 IMPCORE_END_NAMESPACE
 
 #endif /* IMPCORE_BOUNDING_BOX_3DSINGLETON_SCORE_H */
+

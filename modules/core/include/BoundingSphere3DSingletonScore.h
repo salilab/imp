@@ -89,6 +89,10 @@ double GenericBoundingSphere3DSingletonScore<UF>::evaluate_index(
 
 #endif
 
+
+//! Score particles based on how far outside a sphere they are by
+//! applying f to the distance.
+//! \see GenericBoundingSphere3DSingletonScore
 IMP_GENERIC_OBJECT(BoundingSphere3DSingletonScore, bounding_sphere_3d_singleton_score,
                    UnaryFunction,
                    (UnaryFunction *f, const algebra::Sphere3D &sphere),
