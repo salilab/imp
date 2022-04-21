@@ -1945,6 +1945,73 @@ ATOM 3 N N . SER 3 3 . A 54.401 -49.984 -35.287 1 A . 1 1
         asym, = s.asym_units
         self.assertEqual(asym.auth_seq_id_map, {1: (2, 'A'), 2: ('20A', None)})
 
+    def test_atom_site_handler_no_asym_id(self):
+        """Test AtomSiteHandler with missing asym_id"""
+        fh = StringIO("""
+loop_
+_entity_poly_seq.entity_id
+_entity_poly_seq.num
+_entity_poly_seq.mon_id
+_entity_poly_seq.hetero
+5 1 MET .
+5 2 CYS .
+5 3 MET .
+5 4 SER .
+#
+loop_
+_struct_asym.id
+_struct_asym.entity_id
+_struct_asym.details
+D 5 foo
+#
+loop_
+_atom_site.group_PDB
+_atom_site.id
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.label_entity_id
+_atom_site.label_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.pdbx_formal_charge
+_atom_site.auth_asym_id
+_atom_site.pdbx_PDB_model_num
+ATOM   1  C CA  . MET . . 1 ?  1.000 1.000 1.000 1.00   2.95 0 A 1
+ATOM   2  C CA  . ASP . . 2 ?  2.000 2.000 2.000 1.00   0.95 0 A 1
+ATOM   3  C CA  . CYS . . 3 ?  3.000 3.000 3.000 1.00   0.95 0 A 1
+ATOM   4  C CA  . MET . . 1 ?  1.000 1.000 1.000 1.00   2.95 0 B 1
+ATOM   5  C CA  . ASP . . 2 ?  2.000 2.000 2.000 1.00   0.95 0 B 1
+ATOM   6  C CA  . CYS . . 3 ?  3.000 3.000 3.000 1.00   0.95 0 B 1
+ATOM   7  C CA  . CYS . . 2 ?  1.000 1.000 1.000 1.00   0.95 0 C 1
+ATOM   8  C CA  . CYS . . 5 ?  3.000 3.000 3.000 1.00   0.95 0 C 1
+ATOM   9  C CA  . MET . . 1 ?  3.000 3.000 3.000 1.00   0.95 0 D 1
+""")
+        s, = ihm.reader.read(fh)
+        # No asym_id, so use auth_asym_id
+        a1, a2, a3, a4 = s.asym_units
+        self.assertEqual(a1._id, 'D')
+        self.assertEqual(a2._id, 'A')
+        self.assertEqual(a3._id, 'B')
+        self.assertEqual(a4._id, 'C')
+        # A and B should have same sequence, thus same entity
+        self.assertIs(a2.entity, a3.entity)
+        # Sequence should have been populated from comp_ids
+        self.assertEqual("".join(c.code for c in a2.entity.sequence), "MDC")
+        # C has different entity and sequence, with gaps
+        self.assertEqual("".join(c.code_canonical for c in a4.entity.sequence),
+                         "XCXXC")
+        # D is defined in struct_asym and entity_poly so should use that
+        # sequence
+        self.assertEqual("".join(c.code_canonical for c in a1.entity.sequence),
+                         "MCMS")
+
     def test_derived_distance_restraint_handler(self):
         """Test DerivedDistanceRestraintHandler"""
         feats = """

@@ -1,3 +1,13 @@
+0.31 - 2022-04-14
+=================
+  - The :class:`ihm.dumper.IgnoreVariant` class can now be used to exclude
+    selected categories from the mmCIF/BinaryCIF output.
+  - The _pdbx_nonpoly_scheme CIF table should now fully comply with the
+    PDBx dictionary.
+  - Atoms are now checked at file-output time to ensure that a given model
+    chain does not contain multiple atoms with the same atom_id and
+    seq_id (#81).
+
 0.30 - 2022-04-05
 =================
   - Add support for a long description of the system (like an abstract)

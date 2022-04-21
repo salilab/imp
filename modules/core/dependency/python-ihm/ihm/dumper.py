@@ -664,7 +664,7 @@ class _NonPolySchemeDumper(Dumper):
     def dump(self, system, writer):
         with writer.loop("_pdbx_nonpoly_scheme",
                          ["asym_id", "entity_id", "mon_id", "ndb_seq_num",
-                          "pdb_seq_num", "auth_seq_num", "pdb_mon_id",
+                          "pdb_seq_num", "auth_seq_num",
                           "auth_mon_id", "pdb_strand_id",
                           "pdb_ins_code"]) as lp:
             for asym in system.asym_units:
@@ -683,7 +683,7 @@ class _NonPolySchemeDumper(Dumper):
                              ndb_seq_num=num + 1,
                              pdb_seq_num=auth_seq_num,
                              auth_seq_num=auth_seq_num,
-                             mon_id=comp.id, pdb_mon_id=comp.id,
+                             mon_id=comp.id,
                              auth_mon_id=comp.id, pdb_ins_code=ins)
 
 
@@ -1296,6 +1296,7 @@ class _RangeChecker(object):
     def __init__(self, model):
         self._setup_representation(model)
         self._setup_assembly(model)
+        self._seen_atoms = set()
 
     def _setup_representation(self, model):
         """Make map from asym_id to representation segments for that ID"""
@@ -1353,8 +1354,18 @@ class _RangeChecker(object):
         else:
             type_check = self._type_check_atom
             seq_id_range = (obj.seq_id, obj.seq_id)
+            self._check_duplicate_atom(obj)
         self._check_assembly(obj, asym, seq_id_range)
         self._check_representation(obj, asym, type_check, seq_id_range)
+
+    def _check_duplicate_atom(self, atom):
+        k = (atom.asym_unit._id, atom.atom_id, atom.seq_id)
+        if k in self._seen_atoms:
+            raise ValueError(
+                "Multiple atoms with same atom_id (%s) and seq_id (%d) "
+                "found in asym ID %s"
+                % (atom.atom_id, atom.seq_id, atom.asym_unit._id))
+        self._seen_atoms.add(k)
 
     def _check_assembly(self, obj, asym, seq_id_range):
         # Check last match first
@@ -3131,6 +3142,54 @@ _flr_dumpers = [_FLRExperimentDumper, _FLRInstSettingDumper,
                 _FLRFPSMPPModelingDumper]
 
 
+class _NullLoopCategoryWriter(object):
+    """A do-nothing replacement for format._CifLoopWriter
+       or format._CifCategoryWriter"""
+    def write(self, *args, **keys):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
+
+
+class _IgnoreWriter(object):
+    """Utility class which normally just passes through to the default
+       ``base_writer``, but ignores selected categories."""
+    def __init__(self, base_writer, ignores):
+        self._base_writer = base_writer
+        # Allow for categories with or without leading underscore
+        self._ignore_category = frozenset('_' + c.lstrip('_').lower()
+                                          for c in ignores)
+
+    def category(self, category):
+        if category in self._ignore_category:
+            return _NullLoopCategoryWriter()
+        else:
+            return self._base_writer.category(category)
+
+    def loop(self, category, keys):
+        if category in self._ignore_category:
+            return _NullLoopCategoryWriter()
+        else:
+            return self._base_writer.loop(category, keys)
+
+    # Pass through other methods to base_writer
+    def flush(self):
+        return self._base_writer.flush()
+
+    def end_block(self):
+        return self._base_writer.end_block()
+
+    def start_block(self, name):
+        return self._base_writer.start_block(name)
+
+    def write_comment(self, comment):
+        return self._base_writer.write_comment(comment)
+
+
 class Variant(object):
     """Utility class to select the type of file to output by :func:`write`."""
 
@@ -3168,6 +3227,27 @@ class IHMVariant(Variant):
 
     def get_dumpers(self):
         return [d() for d in self._dumpers + _flr_dumpers]
+
+
+class IgnoreVariant(IHMVariant):
+    """Exclude selected CIF categories from output.
+
+       This generates the same PDBx/IHM output as :class:`IHMVariant`,
+       but explicitly listed CIF categories are discarded, for example::
+
+           ihm.dumper.write(fh, systems,
+                            variant=IgnoreVariant(['_audit_conform']))
+
+       This is intended for advanced users that have a working knowledge
+       of the PDBx and IHM CIF dictionaries.
+
+       :param sequence ignores: A list or tuple of CIF categories to exclude.
+    """
+    def __init__(self, ignores):
+        self._ignores = ignores
+
+    def get_system_writer(self, system, writer_class, writer):
+        return _IgnoreWriter(writer, self._ignores)
 
 
 def write(fh, systems, format='mmCIF', dumpers=[], variant=IHMVariant):

@@ -17,6 +17,7 @@ import ihm.cross_linkers
 import ihm.flr
 import inspect
 import warnings
+import collections
 try:
     from . import _format
 except ImportError:
@@ -1892,17 +1893,29 @@ class _SphereObjSiteHandler(Handler):
 class _AtomSiteHandler(Handler):
     category = '_atom_site'
 
+    def __init__(self, *args):
+        super(_AtomSiteHandler, self).__init__(*args)
+        self._missing_sequence = collections.defaultdict(dict)
+
     def __call__(self, pdbx_pdb_model_num, label_asym_id, b_iso_or_equiv,
                  label_seq_id, label_atom_id, type_symbol, cartn_x, cartn_y,
                  cartn_z, occupancy, group_pdb, auth_seq_id,
-                 pdbx_pdb_ins_code):
-        # todo: handle fields other than those output by us
-        model = self.sysr.models.get_by_id(pdbx_pdb_model_num)
-        asym = self.sysr.asym_units.get_by_id(label_asym_id)
-        biso = self.get_float(b_iso_or_equiv)
-        occupancy = self.get_float(occupancy)
+                 pdbx_pdb_ins_code, auth_asym_id, label_comp_id):
         # seq_id can be None for non-polymers (HETATM)
         seq_id = self.get_int(label_seq_id)
+        # todo: handle fields other than those output by us
+        model = self.sysr.models.get_by_id(pdbx_pdb_model_num)
+        if label_asym_id is None:
+            # If no asym_id is provided (e.g. minimal PyMOL output) then
+            # use the author-provided ID instead
+            asym = self.sysr.asym_units.get_by_id(auth_asym_id)
+            # Chances are the entity_poly table is missing too, so remember
+            # the comp_id to help us construct missing sequence info
+            self._missing_sequence[asym][seq_id] = label_comp_id
+        else:
+            asym = self.sysr.asym_units.get_by_id(label_asym_id)
+        biso = self.get_float(b_iso_or_equiv)
+        occupancy = self.get_float(occupancy)
         group = 'ATOM' if group_pdb is None else group_pdb
         a = ihm.model.Atom(
             asym_unit=asym, seq_id=seq_id, atom_id=label_atom_id,
@@ -1919,6 +1932,25 @@ class _AtomSiteHandler(Handler):
             if asym.auth_seq_id_map == 0:
                 asym.auth_seq_id_map = {}
             asym.auth_seq_id_map[seq_id] = auth_seq_id, pdbx_pdb_ins_code
+
+    def finalize(self):
+        # Fill in missing Entity information from comp_ids
+        entity_from_seq = {}
+        for asym, comp_from_seq_id in self._missing_sequence.items():
+            if asym.entity is None:
+                # Fill in gaps in seq_id with UNK residues
+                seq_len = max(comp_from_seq_id.keys())
+                unk = ihm.LPeptideAlphabet()['UNK']
+                seq = [unk] * seq_len
+                for seq_id, comp_id in comp_from_seq_id.items():
+                    seq[seq_id - 1] = self.sysr.chem_comps.get_by_id(comp_id)
+                seq = tuple(seq)  # Lists are not hashable
+                if seq in entity_from_seq:
+                    asym.entity = entity_from_seq[seq]
+                else:
+                    asym.entity = ihm.Entity(seq)
+                    entity_from_seq[seq] = asym.entity
+                    self.system.entities.append(asym.entity)
 
 
 class _StartingModelCoordHandler(Handler):

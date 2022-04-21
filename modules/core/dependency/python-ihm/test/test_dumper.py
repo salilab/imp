@@ -901,12 +901,11 @@ _pdbx_nonpoly_scheme.mon_id
 _pdbx_nonpoly_scheme.ndb_seq_num
 _pdbx_nonpoly_scheme.pdb_seq_num
 _pdbx_nonpoly_scheme.auth_seq_num
-_pdbx_nonpoly_scheme.pdb_mon_id
 _pdbx_nonpoly_scheme.auth_mon_id
 _pdbx_nonpoly_scheme.pdb_strand_id
 _pdbx_nonpoly_scheme.pdb_ins_code
-B 2 HEM 1 1 1 HEM HEM Q .
-C 3 ZN 1 6 6 ZN ZN C .
+B 2 HEM 1 1 1 HEM Q .
+C 3 ZN 1 6 6 ZN C .
 #
 """)
 
@@ -1906,7 +1905,9 @@ _ihm_model_group_link.model_id
         # Cache should now be set
         self.assertEqual(rngcheck._last_asmb_range_matched, (1, 2))
         self.assertEqual(rngcheck._last_asmb_asym_matched, 'X')
-        # 2nd check should use the cache
+        # 2nd check with same seq_id should use the cache
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0)
         rngcheck(atom)
         # Sphere is OK (good range)
         sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 2),
@@ -1922,6 +1923,25 @@ _ihm_model_group_link.model_id
         sphere = ihm.model.Sphere(asym_unit=asym, seq_id_range=(1, 10),
                                   x=1.0, y=2.0, z=3.0, radius=4.0)
         self.assertRaises(ValueError, rngcheck, sphere)
+
+    def test_range_checker_duplicate_atoms(self):
+        """Test RangeChecker class checking duplicate atoms"""
+        system, model, asym = self._make_test_model()
+        asmb = ihm.Assembly([asym])
+        model.assembly = asmb
+
+        # Everything is represented
+        s = ihm.representation.AtomicSegment(asym, rigid=True)
+        model.representation.append(s)
+
+        rngcheck = ihm.dumper._RangeChecker(model)
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0)
+        rngcheck(atom)
+        # Error to write another atom with same atom_id to same seq_id
+        atom = ihm.model.Atom(asym_unit=asym, seq_id=1, atom_id='CA',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0)
+        self.assertRaises(ValueError, rngcheck, atom)
 
     def test_range_checker_repr_asym(self):
         """Test RangeChecker class checking representation asym ID match"""
@@ -1995,7 +2015,9 @@ _ihm_model_group_link.model_id
         # Cache should now be set
         self.assertEqual(
             rngcheck._last_repr_segment_matched.asym_unit.seq_id_range, (1, 2))
-        # 2nd check should use the cache
+        # 2nd check with same seq_id should use the cache
+        atom = ihm.model.Atom(asym_unit=asym2, seq_id=1, atom_id='CA',
+                              type_symbol='C', x=1.0, y=2.0, z=3.0)
         rngcheck(atom)
         # Sphere is OK (good range)
         sphere = ihm.model.Sphere(asym_unit=asym2, seq_id_range=(1, 2),
@@ -4263,6 +4285,41 @@ _flr_FPS_MPP_modeling.mpp_atom_position_group_id
         sys1 = ihm.System(id='system1')
         fh = StringIO()
         ihm.dumper.write(fh, [sys1], variant=ihm.dumper.IHMVariant())
+
+    def test_ignore_writer(self):
+        """Test _IgnoreWriter utility class"""
+        class BaseWriter(object):
+            def flush(self):
+                return 'flush called'
+
+            def write_comment(self, comment):
+                return 'write comment ' + comment
+
+        s = ihm.dumper._IgnoreWriter(BaseWriter(), [])
+        # These methods are not usually called in ordinary operation, but
+        # we should provide them for Writer compatibility
+        self.assertEqual(s.flush(), 'flush called')
+        self.assertEqual(s.write_comment('foo'), 'write comment foo')
+
+    def test_write_ignore_variant(self):
+        """Test write() function with IgnoreVariant object"""
+        sys1 = ihm.System(id='system1')
+        fh = StringIO()
+        ihm.dumper.write(fh, [sys1])
+        self.assertIn('_ihm_struct_assembly', fh.getvalue())
+        # Test exclude of ihm_struct_assembly category
+        fh = StringIO()
+        ihm.dumper.write(
+            fh, [sys1],
+            variant=ihm.dumper.IgnoreVariant(['_ihm_struct_assembly']))
+        self.assertNotIn('_ihm_struct_assembly', fh.getvalue())
+        # Should be case-insensitive and tolerant of missing underscore
+        fh = StringIO()
+        ihm.dumper.write(
+            fh, [sys1],
+            variant=ihm.dumper.IgnoreVariant(['IHM_STRUCT_ASSEMBLY',
+                                              'AUDIT_CONFORM']))
+        self.assertNotIn('_ihm_struct_assembly', fh.getvalue())
 
 
 if __name__ == '__main__':

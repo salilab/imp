@@ -15,4 +15,6 @@ The :mod:`ihm.dumper` Python module
 
 .. autoclass:: IHMVariant
 
+.. autoclass:: IgnoreVariant
+
 .. autofunction:: write

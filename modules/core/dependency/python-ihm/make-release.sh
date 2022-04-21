@@ -2,6 +2,7 @@
 
 # First, do
 # - Update AuditConformDumper to match latest IHM dictionary if necessary
+# - Run util/validate-outputs.py to make sure all example outputs validate
 # - Update ChangeLog.rst with the release number
 # - Update release number in ihm/__init__.py, MANIFEST.in, and setup.py
 # - Commit, tag, and push
