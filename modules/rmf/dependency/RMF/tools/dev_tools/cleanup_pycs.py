@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Traverses the directory tree deleting any .pyc's who do not have a
    source .py. Helpful when switching between revisions with source control."""

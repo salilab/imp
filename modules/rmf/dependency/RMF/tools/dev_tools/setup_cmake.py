@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Build Files.cmake listing source files for each src, test, examples,
    benchmark directory in the subtree."""
