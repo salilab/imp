@@ -109,9 +109,9 @@ class Tests(IMP.test.TestCase):
         print(atoms)
         print("Optimizing")
         bd.optimize(BD_CYCLES)
-        print(f"Atoms after optimizing for {BD_CYCLES} cycles:")
+        print("Atoms after optimizing for %d cycles:" % BD_CYCLES)
         print(atoms)
-        print("Final score = {:.2f}".format(sf.evaluate(False)))
+        print("Final score = %.2f" % sf.evaluate(False))
 
 
 if __name__ == '__main__':
