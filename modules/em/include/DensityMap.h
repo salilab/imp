@@ -607,9 +607,9 @@ IMPEMEXPORT DensityMap *binarize(DensityMap *orig_map, float threshold,
                                  bool reverse = false);
 
 //! Return a map with 0 for all voxels below the threshold
-/** \param[in] orig_map the map to binarize
+/** \param[in] orig_map the map to threshold
     \param[in] threshold values below the threshold are set to 0 and
-                         1 otherwise
+                         left unchanged otherwise
  */
 IMPEMEXPORT DensityMap *get_threshold_map(const DensityMap *orig_map,
                                           float threshold);
