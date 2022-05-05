@@ -31,9 +31,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 namespace {
-  class HasHigherCCCPointer
-  : public std::binary_function<RegistrationResult*, RegistrationResult*, bool>
-  {
+  class HasHigherCCCPointer {
     HasHigherCCC<RegistrationResult> hhccc_;
   public:
     bool operator()(const RegistrationResult *a,

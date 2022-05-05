@@ -116,11 +116,7 @@ IMP_OBJECTS(MeanAbsoluteDifference, MeanAbsoluteDifferences);
 
 //! Comparison by value of the ccc
 template <class T>
-class HasHigherCCC
-#ifndef SWIG
-    : public std::binary_function<T, T, bool>
-#endif
-      {
+class HasHigherCCC {
  public:
   bool operator()(const T &a, const T &b) const {
     return a.get_ccc() >= b.get_ccc();
@@ -130,11 +126,7 @@ class HasHigherCCC
 
 //! Comparison of pairs by checking the second element
 template <class T>
-class LessPairBySecond
-#ifndef SWIG
-    : public std::binary_function<T, T, bool>
-#endif
-      {
+class LessPairBySecond {
  public:
   bool operator()(const T &a, const T &b) const { return a.second < b.second; }
   void show(std::ostream &) const {}
@@ -142,11 +134,7 @@ class LessPairBySecond
 
 //! Compare two classes that return a score
 template <class T>
-class HasLowerScore
-#ifndef SWIG
-    : public std::binary_function<T, T, bool>
-#endif
-      {
+class HasLowerScore {
  public:
   bool operator()(const T &a, const T &b) const {
     return a.get_score() < b.get_score();
