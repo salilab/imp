@@ -314,7 +314,7 @@ class Output(object):
             # get the index list
             indexes = [x[0] for x in ls]
             # get the contiguous pairs
-            indexes_pairs += list(IMP.pmi.tools.sublist_iterator(
+            indexes_pairs.extend(IMP.pmi.tools.sublist_iterator(
                 indexes, lmin=2, lmax=2))
         nbonds = len(indexes_pairs)
         flpsf.write(str(nbonds)+" !NBOND: bonds"+"\n")

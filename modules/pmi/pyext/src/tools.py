@@ -641,19 +641,16 @@ def scatter_and_gather(data):
 #
 
 
-def sublist_iterator(ls, lmin=None, lmax=None):
+def sublist_iterator(ls, lmin=1, lmax=None):
     '''
     Yield all sublists of length >= lmin and <= lmax
     '''
-    if lmin is None:
-        lmin = 0
     if lmax is None:
         lmax = len(ls)
-    n = len(ls) + 1
+    n = len(ls)
     for i in range(n):
-        for j in range(i + 1, n):
-            if len(ls[i:j]) <= lmax and len(ls[i:j]) >= lmin:
-                yield ls[i:j]
+        for j in range(i + lmin, min(n + 1, i + 1 + lmax)):
+            yield ls[i:j]
 
 
 def flatten_list(ls):
